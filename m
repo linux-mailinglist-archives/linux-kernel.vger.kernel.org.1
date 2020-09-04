@@ -2,277 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55AEE25E41E
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Sep 2020 01:21:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D85F25E428
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Sep 2020 01:27:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728280AbgIDXVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 19:21:07 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:59760 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728249AbgIDXVF (ORCPT
+        id S1728360AbgIDX1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 19:27:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58564 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728295AbgIDX1R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 19:21:05 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 084NG2LG132422;
-        Fri, 4 Sep 2020 23:20:38 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to;
- s=corp-2020-01-29; bh=3U+AWzZ3VOvj5CDDuDWGs0DpY0EazstKv2374JGKZMQ=;
- b=bjrYzJsHfZVC4SlZKC/XSIwbMSDXq0tVME7GYOCMuDH/ikV9WyNsu2KPzDlF2+uOtJGr
- NN7mo3hCWdLhJm1SmsUDfm0tGl6/OL4eCUIEvDgUoUKiLfQIx+R/wdyFaC/BOjIniJ0f
- Q7rPTNG5e6C05tJZEGhjASB+DKJck5xyRP+9I8+V5nfkDpz/oouHVi0/hj3hJoPkcMyE
- rZsE1eKKr8YufTnN68jSjC1X9O9Q6Y2aazgEuXZ2K5VTomnw5TEQlcRPchEhZPZ0YiWc
- oXhi5/0CdCgA7aZXaTr7D5qEiK/6Z6li9fgJ7vp0wh+YhCuwQSwdDivpO7cv/dXMLORs JA== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 337eerguwj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 04 Sep 2020 23:20:38 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 084NFEM4103386;
-        Fri, 4 Sep 2020 23:20:38 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 33bhs5an24-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 04 Sep 2020 23:20:38 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 084NKK3c016818;
-        Fri, 4 Sep 2020 23:20:21 GMT
-Received: from dhcp-10-65-147-1.vpn.oracle.com (/10.65.147.1)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 04 Sep 2020 16:20:20 -0700
-Content-Type: text/plain; charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [RFC PATCH] certs: Add EFI_CERT_X509_GUID support for dbx
- entries]
-From:   Eric Snowberg <eric.snowberg@oracle.com>
-In-Reply-To: <20200904125931.GE39023@linux.intel.com>
-Date:   Fri, 4 Sep 2020 17:20:17 -0600
-Cc:     dhowells@redhat.com, dwmw2@infradead.org, jmorris@namei.org,
-        serge@hallyn.com, Mimi Zohar <zohar@linux.ibm.com>,
-        erichte@linux.ibm.com, nayna@linux.ibm.com, mpe@ellerman.id.au,
-        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <D842021F-3054-45FC-8519-9DF5A85AFC37@oracle.com>
-References: <20200901165143.10295-1-eric.snowberg@oracle.com>
- <20200904125931.GE39023@linux.intel.com>
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-X-Mailer: Apple Mail (2.3273)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9734 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxscore=0 bulkscore=0
- mlxlogscore=999 spamscore=0 adultscore=0 suspectscore=3 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009040196
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9734 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 priorityscore=1501
- lowpriorityscore=0 malwarescore=0 adultscore=0 spamscore=0 mlxscore=0
- phishscore=0 impostorscore=0 mlxlogscore=999 bulkscore=0 suspectscore=3
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009040196
+        Fri, 4 Sep 2020 19:27:17 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9E29C061244
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 16:27:16 -0700 (PDT)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1599262033;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=EJwojlnE2s15WtGyxEEC0ksdWuHJjbLM8eHBhqQhp8Q=;
+        b=yBv6nkBce73q+hz4KYoBD90PqwfisE7nPKDNd/b+1H5ORngRitHMYM9SGn6HNym/UjY71G
+        pTfIxXr3dwsbB1wo5wMq/kmCK48Y15qDgWB+0rbxAoNHzylPNAZDIisXLr+D791yMtE1K4
+        ePunaVcuMODXBrmTdD+ezysaGaoq8qApYB3j4bJ9SBVi0t4KXGy9PckibIBEmgNEHfdocR
+        VrcAZTvFgVJDeEJm+t/qKTWOVMjsViZ/OXbB3D5pH1+Q7KxntFBdKBU2yUCzc6yhcGPqqV
+        78mapU9YwkVrs7ROxgDbKzLdr6D3wQfpPUsB6ur80l93puWjIPdiz4JGAJoguw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1599262033;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=EJwojlnE2s15WtGyxEEC0ksdWuHJjbLM8eHBhqQhp8Q=;
+        b=jlZDiNAOOM+0b10Th/R+icvRew6HUukQV70WEJOFtrk9Dw040wbVG1tUXNxbYnvnUp5CTE
+        0TwCYIXmBz6AL8CQ==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Changki Kim <changki.kim@samsung.com>,
+        sergey.senozhatsky@gmail.com, rostedt@goodmis.org,
+        changbin.du@intel.com, masahiroy@kernel.org, rd.dunlap@gmail.com,
+        gregkh@linuxfoundation.org, krzk@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: printk: Add process name information to printk() output.
+In-Reply-To: <20200904151336.GC20558@alley>
+References: <CGME20200904082449epcas2p4420d5df2083325b328a182c79f5c0948@epcas2p4.samsung.com> <20200904082438.20707-1-changki.kim@samsung.com> <874kod6fgh.fsf@jogness.linutronix.de> <20200904124530.GB20558@alley> <87y2lp4r6o.fsf@jogness.linutronix.de> <20200904151336.GC20558@alley>
+Date:   Sat, 05 Sep 2020 01:33:12 +0206
+Message-ID: <87ft7xazsf.fsf@jogness.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2020-09-04, Petr Mladek <pmladek@suse.com> wrote:
+>>> I am currently playing with support for all three timestamps based
+>>> on https://lore.kernel.org/lkml/20200814101933.574326079@linutronix.de/
+>>>
+>>> And I got the following idea:
+>>>
+>>> 1. Storing side:
+>>>
+>>>    Create one more ring/array for storing the optional metadata.
+>>>    It might eventually replace dict ring, see below.
+>>>
+>>>    struct struct printk_ext_info {
+>>> 	u64 ts_boot;			/* timestamp from boot clock */
+>>> 	u64 ts_real;			/* timestamp from real clock */
+>>> 	char process[TASK_COMM_LEN];	/* process name */
+>>>    };
+>>>
+>>>    It must be in a separate array so that struct prb_desc stay stable
+>>>    and crashdump tools do not need to be updated so often.
+>>>
+>>>    But the number of these structures must be the same as descriptors.
+>>>    So it might be:
+>>>
+>>>    struct prb_desc_ring {
+>>> 	unsigned int		count_bits;
+>>> 	struct prb_desc		*descs;
+>>> 	struct printk_ext_info  *ext_info
+>>> 	atomic_long_t		head_id;
+>>> 	atomic_long_t		tail_id;
+>>>    };
+>>>
+>>>    One huge advantage is that these extra information would not block
+>>>    pushing lockless printk buffer upstream.
+>>>
+>>>    It might be even possible to get rid of dict ring and just
+>>>    add two more elements into struct printk_ext_info:
+>>>
+>>> 	  char subsystem[16];	/* for SUBSYSTEM= dict value */
+>>> 	  char device[48];	/* for DEVICE= dict value */
+>
+> From my POV, if we support 3 timestamps then they must be stored
+> reliably. And dict ring is out of the game.
 
-> On Sep 4, 2020, at 6:59 AM, Jarkko Sakkinen =
-<jarkko.sakkinen@linux.intel.com> wrote:
->=20
-> On Tue, Sep 01, 2020 at 12:51:43PM -0400, Eric Snowberg wrote:
->> The Secure Boot Forbidden Signature Database, dbx, contains a list of =
-now
->> revoked signatures and keys previously approved to boot with UEFI =
-Secure
->> Boot enabled.  The dbx is capable of containing any number of
->> EFI_CERT_X509_SHA256_GUID, EFI_CERT_SHA256_GUID, and =
-EFI_CERT_X509_GUID
->> entries.
->>=20
->> Currently when EFI_CERT_X509_GUID are contained in the dbx, the =
-entries are
->> skipped.
->>=20
->> This change adds support for EFI_CERT_X509_GUID dbx entries. When a
->> EFI_CERT_X509_GUID is found, it is added as an asymmetrical key to =
-the
->> .blacklist keyring.  Anytime the .platform keyring is used, the keys =
-in
->> the .blacklist keyring are referenced, if a matching key is found, =
-the
->> key will be rejected.
->>=20
->> Signed-off-by: Eric Snowberg <eric.snowberg@oracle.com>
->=20
-> In the last paragraph, please use imperative form: "Add support for =
-=E2=80=A6".
+Agreed. I am just trying to think of how to better manage the strings,
+which currently are rare and optional. That is where the dict_ring
+becomes interesting.
 
-I will change this in V2.
+Perhaps we should use both the fixed structs with the variable
+dict_ring. printk_ext_info could look like this:
 
->=20
->> ---
->> certs/blacklist.c                             | 36 =
-+++++++++++++++++++
->> certs/system_keyring.c                        |  6 ++++
->> include/keys/system_keyring.h                 | 11 ++++++
->> .../platform_certs/keyring_handler.c          | 11 ++++++
->> 4 files changed, 64 insertions(+)
->>=20
->> diff --git a/certs/blacklist.c b/certs/blacklist.c
->> index 6514f9ebc943..17ebf50cf0ae 100644
->> --- a/certs/blacklist.c
->> +++ b/certs/blacklist.c
->> @@ -15,6 +15,7 @@
->> #include <linux/err.h>
->> #include <linux/seq_file.h>
->> #include <keys/system_keyring.h>
->> +#include <crypto/pkcs7.h>
->> #include "blacklist.h"
->>=20
->> static struct key *blacklist_keyring;
->> @@ -100,6 +101,41 @@ int mark_hash_blacklisted(const char *hash)
->> 	return 0;
->> }
->>=20
->> +int mark_key_revocationlisted(const char *data, size_t size)
->> +{
->> +	key_ref_t key;
->> +
->> +	key =3D key_create_or_update(make_key_ref(blacklist_keyring, =
-true),
->> +				   "asymmetric",
->> +				   NULL,
->> +				   data,
->> +				   size,
->> +				   ((KEY_POS_ALL & ~KEY_POS_SETATTR) |
->> +				    KEY_USR_VIEW),
->> +				   KEY_ALLOC_NOT_IN_QUOTA |
->> +				   KEY_ALLOC_BUILT_IN);
->> +
->> +	if (IS_ERR(key)) {
->> +		pr_err("Problem with revocation key (%ld)\n", =
-PTR_ERR(key));
->> +		return PTR_ERR(key);
->> +	}
->> +
->> +	return 0;
->> +}
->> +
->> +int is_key_revocationlisted(struct pkcs7_message *pkcs7)
->> +{
->> +	int ret;
->> +
->> +	ret =3D pkcs7_validate_trust(pkcs7, blacklist_keyring);
->> +
->> +	if (ret =3D=3D 0)
->> +		return -EKEYREJECTED;
->> +
->> +	return -ENOKEY;
->> +}
->> +EXPORT_SYMBOL_GPL(is_key_revocationlisted);
->> +
->> /**
->>  * is_hash_blacklisted - Determine if a hash is blacklisted
->>  * @hash: The hash to be checked as a binary blob
->> diff --git a/certs/system_keyring.c b/certs/system_keyring.c
->> index 798291177186..f8ea96219155 100644
->> --- a/certs/system_keyring.c
->> +++ b/certs/system_keyring.c
->> @@ -241,6 +241,12 @@ int verify_pkcs7_message_sig(const void *data, =
-size_t len,
->> 			pr_devel("PKCS#7 platform keyring is not =
-available\n");
->> 			goto error;
->> 		}
->> +
->> +		ret =3D is_key_revocationlisted(pkcs7);
->> +		if (ret !=3D -ENOKEY) {
->> +			pr_devel("PKCS#7 platform key =
-revocationlisted\n");
->> +			goto error;
->> +		}
->> 	}
->> 	ret =3D pkcs7_validate_trust(pkcs7, trusted_keys);
->> 	if (ret < 0) {
->> diff --git a/include/keys/system_keyring.h =
-b/include/keys/system_keyring.h
->> index fb8b07daa9d1..b6991cfe1b6d 100644
->> --- a/include/keys/system_keyring.h
->> +++ b/include/keys/system_keyring.h
->> @@ -31,11 +31,14 @@ extern int =
-restrict_link_by_builtin_and_secondary_trusted(
->> #define restrict_link_by_builtin_and_secondary_trusted =
-restrict_link_by_builtin_trusted
->> #endif
->>=20
->> +extern struct pkcs7_message *pkcs7;
->> #ifdef CONFIG_SYSTEM_BLACKLIST_KEYRING
->> extern int mark_hash_blacklisted(const char *hash);
->> +extern int mark_key_revocationlisted(const char *data, size_t size);
->> extern int is_hash_blacklisted(const u8 *hash, size_t hash_len,
->> 			       const char *type);
->> extern int is_binary_blacklisted(const u8 *hash, size_t hash_len);
->> +extern int is_key_revocationlisted(struct pkcs7_message *pkcs7);
->> #else
->> static inline int is_hash_blacklisted(const u8 *hash, size_t =
-hash_len,
->> 				      const char *type)
->> @@ -47,6 +50,14 @@ static inline int is_binary_blacklisted(const u8 =
-*hash, size_t hash_len)
->> {
->> 	return 0;
->> }
->> +static inline int mark_key_revocationlisted(const char *data, size_t =
-size)
->> +{
->> +	return 0;
->> +}
->> +static inline int is_key_revocationlisted(struct pkcs7_message =
-*pkcs7)
->> +{
->> +	return -ENOKEY;
->> +}
->> #endif
->>=20
->> #ifdef CONFIG_IMA_BLACKLIST_KEYRING
->> diff --git a/security/integrity/platform_certs/keyring_handler.c =
-b/security/integrity/platform_certs/keyring_handler.c
->> index c5ba695c10e3..cc5a43804bc4 100644
->> --- a/security/integrity/platform_certs/keyring_handler.c
->> +++ b/security/integrity/platform_certs/keyring_handler.c
->> @@ -55,6 +55,15 @@ static __init void uefi_blacklist_binary(const =
-char *source,
->> 	uefi_blacklist_hash(source, data, len, "bin:", 4);
->> }
->>=20
->> +/*
->> + * Revocationlist the X509 cert
->> + */
->> +static __init void uefi_revocationlist_x509(const char *source,
->> +					    const void *data, size_t =
-len)
->> +{
->> +	mark_key_revocationlisted(data, len);
->> +}
->> +
->> /*
->>  * Return the appropriate handler for particular signature list types =
-found in
->>  * the UEFI db and MokListRT tables.
->> @@ -76,5 +85,7 @@ __init efi_element_handler_t =
-get_handler_for_dbx(const efi_guid_t *sig_type)
->> 		return uefi_blacklist_x509_tbs;
->> 	if (efi_guidcmp(*sig_type, efi_cert_sha256_guid) =3D=3D 0)
->> 		return uefi_blacklist_binary;
->> +	if (efi_guidcmp(*sig_type, efi_cert_x509_guid) =3D=3D 0)
->> +		return uefi_revocationlist_x509;
->> 	return 0;
->> }
->> --=20
->> 2.18.1
->>=20
->=20
-> I did not find anything wrong with the code change.
+struct struct printk_ext_info {
+    u64 ts_boot;
+    u64 ts_real;
+    char *process;
+    char *subsystem;
+    char *device;
+};
 
-Thanks
+And @process, @subsystem, @device could all point to null-terminated
+trings within the dict_ring. So printk.c code looks something like this:
 
+size_t process_sz = strlen(process) + 1;
+size_t subsystem_sz = strlen(subsystem) + 1;
+size_t device_sz = strlen(device) + 1;
+struct prb_reserved_entry e;
+struct printk_record r;
+char *p;
+
+prb_rec_init_wr(&r, text_len, process_sz + subsystem_sz + device_sz);
+prb_reserve(&e, prb, &r);
+
+memcpy(r.text_buf, text, text_len);
+r.info->text_len = text_len;
+
+/* guaranteed ext data */
+r.ext_info->ts_boot = time_boot();
+r.ext_info->ts_real = time_real();
+
+/* optional ext data */
+if (r.dict_buf) {
+    p = r.dict_buf;
+
+    memcpy(p, process, process_sz);
+    r.ext_info->process = p;
+    p += process_sz;
+    
+    memcpy(p, subsystem, subsystem_sz);
+    r.ext_info->subsystem = p;    
+    p += subsystem_sz;
+    
+    memcpy(p, device, device_sz);
+    r.ext_info->device = p;
+
+    r.info->dict_len = process_sz + subsystem_sz + device_sz;
+}
+
+> And I am not comfortable even with the current dictionary handling.
+> I already wrote this somewhere. The following command is supposed
+> to show all kernel messages printed by "pci" subsystem:
+>
+> 	$> journalctl _KERNEL_SUBSYSTEM=pci
+>
+> It will be incomplete when the dictionary metadata were not saved.
+
+In that case, perhaps @subsystem should be a static array in
+printk_ext_info instead.
+
+> Regarding the waste of space. The dict ring currently has the same
+> size as the text ring. It is likely a waste of space as well. Any
+> tuning is complicated because it depends on the use case.
+
+The whole point of the dict_ring is that it allows for variable length
+_optional_ data to be stored. If we decide there is no optional data,
+then dict_ring is not needed.
+
+> The advantage of the fixed @ext_info[] array is that everything is
+> clear, simple, and predictable (taken space and name length limits).
+> We could easily tell users what they will get for a given cost.
+
+Agreed. For non-optional data (such as your timestamps), I am in full
+agreement that a fixed array is the way to go. And it would only require
+a couple lines of code added to the ringbuffer.
+
+My concern is if we need to guarantee space for all possible dictionary
+data of all records. I think the dict_ring can be very helpful here.
+
+John Ogness
