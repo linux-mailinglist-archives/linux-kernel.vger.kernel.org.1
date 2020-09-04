@@ -2,103 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE53325D31A
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 09:59:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 366F525D31F
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 10:00:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729723AbgIDH7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 03:59:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56366 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729683AbgIDH7m (ORCPT
+        id S1729788AbgIDH75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 03:59:57 -0400
+Received: from song.cn.fujitsu.com ([218.97.8.244]:53253 "EHLO
+        song.cn.fujitsu.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729674AbgIDH7u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 03:59:42 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66134C061245
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 00:59:42 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id k15so2820714pji.3
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 00:59:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=4sO3K9KUt0lx1jX3LT5Qymn7SNSmjZ7mgkYLWSMNBaA=;
-        b=IIT8ojs3Nphf5jUQlNRD+WdyJ7QgPdCDWGeS+Cf9dHwvTtzymqZ5CJfN6cYwvNnzfL
-         RZt4TKNYjzspKAP86CMfbqvRCqZyvIsCXJX59+jz8vKOnvZuyYZK2sYmgORS55b/zH6w
-         jCut7AyX94mREgkX9hgMWHU3ZArX7DJhi2Br/oDphVk49Dx3j+bwrAikNhvv5XLJ6ZfZ
-         pIa5063N+161yywi96AGx/Z8XvbHjbDp40eiLIBm0H7avjGvFjkaLi3EsSMVBVa83XHC
-         SOhhVrMZUG0A1cD23H4oS+HIKCrJgv7D0BT2KYJV74W8cB+FA7Xw7dAQqIzBM8TG0IU7
-         8/Ag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=4sO3K9KUt0lx1jX3LT5Qymn7SNSmjZ7mgkYLWSMNBaA=;
-        b=b3wmT0yhEwp6pnyJ8zdq2sPFrG/nSBcil3TSGjvMjyVmIN89f7Oj1jEdFjITfuVuJk
-         gPSFZZgL6iHfBT/7NrqLideArocbFFyu8i84bsGkRvEhp+WRk+T1DzEyqSanfxdPtnhA
-         poN+DeAzUenSd+E3DMnQjtAwi7FbJgqAoWT6FskRFuPCTvTUMmBYb8I39Mlm9tYSuuxD
-         Vynp7g2aYHdFBHg/uauRsYstBP0GaRMYsdT3kqqHwjQs/mq6hjnWlSLvRtkoqo4fdA+P
-         1ocjrkv+pze+PZ7fUTKaxx6Is4MKYb2XmMaDNmG86MjmAiU6gL4ctUyph439YnzbmGl0
-         mAbg==
-X-Gm-Message-State: AOAM533c34nmsHCOzU3RkheDoVfHhEzEY7acSSSLnNNzPD/tIvjiW4Tr
-        qrzulia8bT/219h0SLHUvuve65gIzl2PUDPtoOIPnw==
-X-Google-Smtp-Source: ABdhPJwcr9ntIJAx1uVoOxLFhbawv85XiwvUMkctNVJ4VlDH49I6YFh6OAIpfBe+5b5h6pqAcSyv6KOQPu/P1CqMTME=
-X-Received: by 2002:a17:90a:fe07:: with SMTP id ck7mr7022389pjb.20.1599206381503;
- Fri, 04 Sep 2020 00:59:41 -0700 (PDT)
+        Fri, 4 Sep 2020 03:59:50 -0400
+X-IronPort-AV: E=Sophos;i="5.76,388,1592841600"; 
+   d="scan'208";a="4857907"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.250.3])
+  by song.cn.fujitsu.com with ESMTP; 04 Sep 2020 15:59:41 +0800
+Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
+        by cn.fujitsu.com (Postfix) with ESMTP id 5D55241AF17F;
+        Fri,  4 Sep 2020 15:59:41 +0800 (CST)
+Received: from G08CNEXCHPEKD06.g08.fujitsu.local (10.167.33.205) by
+ G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.2; Fri, 4 Sep 2020 15:59:41 +0800
+Received: from localhost.localdomain (10.167.225.206) by
+ G08CNEXCHPEKD06.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
+ id 15.0.1497.2 via Frontend Transport; Fri, 4 Sep 2020 15:59:39 +0800
+From:   Hao Li <lihao2018.fnst@cn.fujitsu.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>
+CC:     <david@fromorbit.com>, <ira.weiny@intel.com>,
+        <linux-xfs@vger.kernel.org>, <lihao2018.fnst@cn.fujitsu.com>,
+        <y-goto@fujitsu.com>
+Subject: [PATCH v2] fs: Handle I_DONTCACHE in iput_final() instead of generic_drop_inode()
+Date:   Fri, 4 Sep 2020 15:59:39 +0800
+Message-ID: <20200904075939.176366-1-lihao2018.fnst@cn.fujitsu.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20200902180950.4bc7c4de@canb.auug.org.au> <3abfa193-a56e-66ba-1080-885906fa0196@infradead.org>
- <fdf322d4-cc01-2c85-67cd-86b2d6f4ebff@infradead.org>
-In-Reply-To: <fdf322d4-cc01-2c85-67cd-86b2d6f4ebff@infradead.org>
-From:   Brendan Higgins <brendanhiggins@google.com>
-Date:   Fri, 4 Sep 2020 00:59:30 -0700
-Message-ID: <CAFd5g44g6OrL3fxQNRZ1rR0PruAty8tBZr8JDzM-oonZJRDZyw@mail.gmail.com>
-Subject: Re: linux-next: Tree for Sep 2 (lib/ubsan.c)
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-yoursite-MailScanner-ID: 5D55241AF17F.ABDC4
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: lihao2018.fnst@cn.fujitsu.com
+X-Spam-Status: No
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 3, 2020 at 11:12 PM Randy Dunlap <rdunlap@infradead.org> wrote:
->
-> On 9/2/20 8:44 AM, Randy Dunlap wrote:
-> > On 9/2/20 1:09 AM, Stephen Rothwell wrote:
-> >> Hi all,
-> >>
-> >> Changes since 20200828:
-> >>
-> >
-> >
-> > on i386:
-> >
-> > ../lib/ubsan.c: In function =E2=80=98ubsan_prologue=E2=80=99:
-> > ../lib/ubsan.c:141:2: error: implicit declaration of function =E2=80=98=
-kunit_fail_current_test=E2=80=99; did you mean =E2=80=98kunit_init_test=E2=
-=80=99? [-Werror=3Dimplicit-function-declaration]
-> >   kunit_fail_current_test();
-> >
-> >
-> > Full randconfig file is attached.
-> >
->
-> Hi Brendan,
->
-> Do you know anything about this build error?
->
-> I can't find kunit_fail_current_test() anywhere.
+If generic_drop_inode() returns true, it means iput_final() can evict
+this inode regardless of whether it is dirty or not. If we check
+I_DONTCACHE in generic_drop_inode(), any inode with this bit set will be
+evicted unconditionally. This is not the desired behavior because
+I_DONTCACHE only means the inode shouldn't be cached on the LRU list.
+As for whether we need to evict this inode, this is what
+generic_drop_inode() should do. This patch corrects the usage of
+I_DONTCACHE.
 
-Yeah, this got applied for some reason without the prerequisite
-patches. It is from a two patch series, the other being here:
+This patch was proposed in [1].
 
-https://lore.kernel.org/linux-kselftest/20200813205722.1384108-1-urielguaja=
-rdojr@gmail.com/
+[1]: https://lore.kernel.org/linux-fsdevel/20200831003407.GE12096@dread.disaster.area/
 
-which in turn depends on another patchset which didn't make it into 5.9.
+Fixes: dae2f8ed7992 ("fs: Lift XFS_IDONTCACHE to the VFS layer")
+Signed-off-by: Hao Li <lihao2018.fnst@cn.fujitsu.com>
+---
+Changes in v2:
+ - Adjust code format
+ - Add Fixes tag in commit message
 
-Again, I don't know why this was applied without it's prereqs. Sorry about =
-that.
+ fs/inode.c         | 4 +++-
+ include/linux/fs.h | 3 +--
+ 2 files changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/fs/inode.c b/fs/inode.c
+index 72c4c347afb7..19ad823f781c 100644
+--- a/fs/inode.c
++++ b/fs/inode.c
+@@ -1625,7 +1625,9 @@ static void iput_final(struct inode *inode)
+ 	else
+ 		drop = generic_drop_inode(inode);
+ 
+-	if (!drop && (sb->s_flags & SB_ACTIVE)) {
++	if (!drop &&
++	    !(inode->i_state & I_DONTCACHE) &&
++	    (sb->s_flags & SB_ACTIVE)) {
+ 		inode_add_lru(inode);
+ 		spin_unlock(&inode->i_lock);
+ 		return;
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index e019ea2f1347..93caee80ce47 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -2922,8 +2922,7 @@ extern int inode_needs_sync(struct inode *inode);
+ extern int generic_delete_inode(struct inode *inode);
+ static inline int generic_drop_inode(struct inode *inode)
+ {
+-	return !inode->i_nlink || inode_unhashed(inode) ||
+-		(inode->i_state & I_DONTCACHE);
++	return !inode->i_nlink || inode_unhashed(inode);
+ }
+ extern void d_mark_dontcache(struct inode *inode);
+ 
+-- 
+2.28.0
+
+
+
