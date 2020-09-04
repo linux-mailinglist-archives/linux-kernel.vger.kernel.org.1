@@ -2,113 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D363625D5AE
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 12:08:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFEE425D5AF
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 12:08:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729987AbgIDKIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 06:08:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48052 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726811AbgIDKIF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 06:08:05 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4798C061244
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 03:08:04 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id g128so6496534iof.11
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 03:08:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=ZV60vz7OREPGMabTbmBzheGT/NljIP/4M+G9Nac3jAU=;
-        b=qsto0/v8W+MXIZ2PbWJviYD+E/93MfSNoCrKvED/jvBQ59+ZWunbSUWuDD9qpLhXZP
-         WU4wTTK2Nh9jeSnSpeHPOKTn61//shTOtcli7Rf7fhll4zS5K5rmwrD7sCZkMKRvcrWm
-         2lPcauNTYQT/EbBkcHrP64lrEQNlAcJSjVOkADQHEdPabxjDIRlVRo51TPlFm4RqTah3
-         bnmsiwW4tPWdqxlxAIy18eAyBj9x+VVAtme5TYEY91i687VH8YR5gJYF+3sV7GtSDP0i
-         s3BitYwcecV52qRbtTO8pq49Pb7cvBOjm9wGgo6iDXPak5MtAdmEGInfy3edXBFpkt54
-         ulDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=ZV60vz7OREPGMabTbmBzheGT/NljIP/4M+G9Nac3jAU=;
-        b=fCho/NEyi4ADqItaL/TeCTAz9Tkd8lGM3XDKrE8noFYaTvIOkTrO1DgE6J7lePcJUD
-         CQdIoBkDFc2vuWWLTqnTfFoL83are8U7nF/+TBezUnZBPrpuDU2iN9+ptnWbO3goZgl6
-         RWk+u+cDjH5cfkpHOtwF0bCT4aefx2gJl2QfHy9VedzDFykTEeHq9eX/2Q98JM+vlX2q
-         SA6l91m8QUfK3WYIlvbH/OlOFRtX1Z2xrTDAdD6jytucNpYi/4QvX4KBtzIPNl8bgzhz
-         XDvX0Eoy+WYEvCrJRH3wU8eeIMWEefXd6WqM8YhgTomcYl3EOGZ71EHNfaQZmHlA1f4B
-         ZG0Q==
-X-Gm-Message-State: AOAM533PHco4nvWS+PXJnUHjak6TvL6VX7mo27CizMcno10NwFNsr6J9
-        /Rx1jm/ocPxHdPyK++Dpn/F8pwvyF4F0NbMs4go=
-X-Google-Smtp-Source: ABdhPJzvlzN63gHN3fv2E5X/Sprr09klLLZl7nT2RFEVKsXKAdZbb6OzAUmJ/lhPtuVXePdWgzyWuA4/16sGyTkTjcE=
-X-Received: by 2002:a6b:da16:: with SMTP id x22mr6837093iob.33.1599214084089;
- Fri, 04 Sep 2020 03:08:04 -0700 (PDT)
+        id S1729981AbgIDKId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 06:08:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38696 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726114AbgIDKIX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 06:08:23 -0400
+Received: from localhost (unknown [122.182.253.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 310ED206D4;
+        Fri,  4 Sep 2020 10:08:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599214103;
+        bh=YuSrsI5KqLBnMX+vksl2yVrjohdpsF5I/0/1S7u3drc=;
+        h=Date:From:To:Cc:Subject:From;
+        b=kPauqMoXES0825Hrny9OK5pTmG1Ex+Fh+3cyoMNoO2zles3wRmH2L/BS/8lSFKP+o
+         0iuaglP9yLcoFOkHYffAYTx+GWcw5IeQNIo7SY73HK2Zw+lvRHgsUP7FaFV+itToHU
+         M+9wjhIX6+c8K6jRyEC/X59udPV9ba+lY1uWyZgw=
+Date:   Fri, 4 Sep 2020 15:38:18 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Bard Liao <yung-chuan.liao@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL]: soundwire fixes for v5.9
+Message-ID: <20200904100818.GZ2639@vkoul-mobl>
 MIME-Version: 1.0
-Received: by 2002:a05:6638:1313:0:0:0:0 with HTTP; Fri, 4 Sep 2020 03:08:02
- -0700 (PDT)
-Reply-To: robertandersonhappy1@gmail.com
-From:   robert <photakachi@gmail.com>
-Date:   Fri, 4 Sep 2020 03:08:02 -0700
-Message-ID: <CAKTgzwypcMVB5Gu3Udkz81nKyg+x=XDjHoZ=6jzdTS1W4V9rOA@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="mxv5cy4qt+RJ9ypb"
+Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-0JTQvtCx0YDQvtCz0L4g0LLRgNC10LzQtdC90Lgg0YHRg9GC0L7QuiDQvNC+0Lkg0YXQvtGA0L7R
-iNC40Lkg0LTRgNGD0LMuDQoNCtCa0LDQuiDRgyDRgtC10LHRjyDRgdC10LPQvtC00L3RjyDQtNC1
-0LvQsD8g0K8g0LTQsNCy0L3QviDRgdC70YvRiNGDINC+0YIg0YLQtdCx0Y8sINGH0YLQviDQv9GA
-0L7QuNGB0YXQvtC00LjRgg0K0KLQstC+0Y8g0YHRgtC+0YDQvtC90LA/INCh0LXQs9C+0LTQvdGP
-INGPINC+0YfQtdC90Ywg0YDQsNC0INGB0L7QvtCx0YnQuNGC0Ywg0LLQsNC8INC+INC80L7QtdC8
-INGD0YHQv9C10YXQtSDQsg0K0L/QvtC70YPRh9C10L3QuNC1INGN0YLQuNGFINC90LDRgdC70LXQ
-tNGB0YLQstC10L3QvdGL0YUg0YHRgNC10LTRgdGC0LIsINC/0LXRgNC10LTQsNC90L3Ri9GFINC/
-0YDQuCDRgdC+0YLRgNGD0LTQvdC40YfQtdGB0YLQstC1INC90L7QstC+0LPQvg0K0L/QsNGA0YLQ
-vdC10YAg0LjQtyDQmNC90LTQuNC4INCQ0LfQuNGPLiDQntC9INC60LDQvdCw0LTQtdGGLCDQvdC+
-INC20LjQstC10YIg0LIg0JjQvdC00LjQuCwg0L3QviDQsiDQvdCw0YHRgtC+0Y/RidC10LUg0LLR
-gNC10LzRjw0K0Y8g0L/RgNC40LXQt9C20LDRjiDQsiDQmNC90LTQuNGOINC/0L4g0LjQvdCy0LXR
-gdGC0LjRhtC40L7QvdC90YvQvCDQv9GA0L7QtdC60YLQsNC8INGB0L4g0YHQstC+0LXQuSDQtNC+
-0LvQtdC5INC+0YIg0L7QsdGJ0LXQuSDRgdGD0LzQvNGLDQrQvNC40LvQu9C40L7QvdGLINC00L7Q
-u9C70LDRgNC+0LIuINCc0LXQttC00YMg0YLQtdC8LCDRjyDQvdC1INC30LDQsdGL0Lsg0YLQstC+
-0Lgg0L/RgNC+0YjQu9GL0LUg0YPRgdC40LvQuNGPINC4INC/0L7Qv9GL0YLQutC4DQrRh9GC0L7Q
-sdGLINC/0L7QvNC+0YfRjCDQvNC90LUg0L/QtdGA0LXQtNCw0YLRjCDRjdGC0Lgg0L3QsNGB0LvQ
-tdC00YHRgtCy0LXQvdC90YvQtSDRgdGA0LXQtNGB0YLQstCwLCDQvdC10YHQvNC+0YLRgNGPINC9
-0LAg0YLQviwNCtGH0YLQviDRjdGC0L4g0L3QtSDRg9C00LDQu9C+0YHRjA0K0L3QsNC8INC60LDQ
-ui3QvdC40LHRg9C00YwsINGPINGF0L7Rh9GDLCDRh9GC0L7QsdGLINCy0Ysg0YHQstGP0LfQsNC7
-0LjRgdGMINGBINC80L7QuNC8INGB0LXQutGA0LXRgtCw0YDQtdC8INCyINCb0L7QvNC1LA0K0JfQ
-sNC/0LDQtCDQotC+0LPQviDQoNC10YHQv9GD0LHQu9C40LrQuA0K0JDRhNGA0LjQutCwLCDQtdC1
-INC30L7QstGD0YIg0KHQvtC70L7QvNC+0L0g0JHRgNGN0L3QtNC4LCDRjdGC0L4g0LXQs9C+INCw
-0LTRgNC10YEg0Y3Qu9C10LrRgtGA0L7QvdC90L7QuSDQv9C+0YfRgtGLDQooc29sb21vbmJyYW5k
-eTAwNEBnbWFpbC5jb20pDQosINC/0L7Qv9GA0L7RgdC40YLQtSDQtdCz0L4g0YHQstGP0LfQsNGC
-0YzRgdGPINGBINCQ0YTRgNC40LrQsNC90YHQutC40Lwg0LHQsNC90LrQvtC8INGA0LDQt9Cy0LjR
-gtC40Y8sINC10YHQu9C4INGPDQrRgdC+0YXRgNCw0L3QuNC7INGB0YPQvNC80YMg0LIg0YDQsNC3
-0LzQtdGA0LUgMzUwIDAwMCwwMCDQtNC+0LvQu9Cw0YDQvtCyINC00LvRjyDQstCw0YjQtdC5INC6
-0L7QvNC/0LXQvdGB0LDRhtC40LgsDQrRjdGC0L7RgiDQutC+0LzQv9C10L3RgdCw0YbQuNC+0L3Q
-vdGL0Lkg0YTQvtC90LQNCtC30LAg0LLRgdC1INC/0YDQvtGI0LvRi9C1INGD0YHQuNC70LjRjyDQ
-uCDQv9C+0L/Ri9GC0LrQuCDQv9C+0LzQvtGH0Ywg0LzQvdC1INCyINC/0YDQvtC50LTQtdC90L3Q
-vtC8DQrRgdC00LXQu9C60LAuINCvINC+0YfQtdC90Ywg0YbQtdC90LjQuyDQstCw0YjQuCDRg9GB
-0LjQu9C40Y8g0LIg0YLQviDQstGA0LXQvNGPLiDRgtCw0Log0YfRg9Cy0YHRgtCy0YPRjg0K0LHQ
-tdGB0L/Qu9Cw0YLQvdC+LCDRgdCy0Y/QttC40YLQtdGB0Ywg0YEg0LzQvtC40Lwg0YHQtdC60YDQ
-tdGC0LDRgNC10LwsINC80LjRgdGC0LXRgNC+0Lwg0KHQvtC70L7QvNC+0L3QvtC8INCR0YDRjdC9
-0LTQuCwg0LgNCtGB0L7QvtCx0YnQuNGC0LUg0LXQuSwg0LPQtNC1DQrQkNGE0YDQuNC60LDQvdGB
-0LrQuNC5INCx0LDQvdC6INGA0LDQt9Cy0LjRgtC40Y8g0L/QtdGA0LXRh9C40YHQu9C40YIg0L7Q
-sdGJ0YPRjiDRgdGD0LzQvNGDINCyINGA0LDQt9C80LXRgNC1IDM1MCAwMDAg0LTQvtC70LvQsNGA
-0L7QsiDQodCo0JAuDQoNCtCf0L7QttCw0LvRg9C50YHRgtCwLCDQvdC10LzQtdC00LvQtdC90L3Q
-viDQtNCw0LnRgtC1INC80L3QtSDQt9C90LDRgtGMINC/0LXRgNC10LLQvtC0INCQ0YTRgNC40LrQ
-sNC90YHQutC+0LPQviDQsdCw0L3QutCwINGA0LDQt9Cy0LjRgtC40Y8NCtGE0L7QvdC0ICQgMzUw
-LjAwMC4wMA0K0L3QsCDRgdCy0L7QuSDQsdCw0L3QutC+0LLRgdC60LjQuSDRgdGH0LXRgiwg0YHQ
-tdC50YfQsNGBINGPINGB0LvQuNGI0LrQvtC8INC30LDQvdGP0YIg0LjQty3Qt9CwDQrQuNC90LLQ
-tdGB0YLQuNGG0LjQvtC90L3Ri9C1INC/0YDQvtC10LrRgtGLLCDQutC+0YLQvtGA0YvQtSDRjyDQ
-stC10LTRgyDRgSDQvNC+0LjQvCDQvdC+0LLRi9C8INC/0LDRgNGC0L3QtdGA0L7QvCwg0L/QvtGN
-0YLQvtC80YMNCtGB0LLRj9C20LjRgtC10YHRjCDRgSDQvNC40YHRgtC10YDQvtC8INCh0L7Qu9C+
-0LzQvtC90L7QvCDQkdGA0Y3QvdC00Lgg0L3QsCDQtdCz0L4g0LDQtNGA0LXRgSDRjdC70LXQutGC
-0YDQvtC90L3QvtC5INC/0L7Rh9GC0YssINC+0L0NCtCx0LXQtyDQv9GA0L7QvNC10LTQu9C10L3Q
-uNGPINGB0LLRj9C20LjRgtC10YHRjCDRgSDQkNGE0YDQuNC60LDQvdGB0LrQuNC8INCx0LDQvdC6
-0L7QvCDRgNCw0LfQstC40YLQuNGPINC+0YIg0LLQsNGI0LXQs9C+INC40LzQtdC90LguDQrQkdGD
-0LTRjNGC0LUg0LIg0LHQtdC30L7Qv9Cw0YHQvdC+0YHRgtC4INC+0YIgQ292aWQgMTkuDQoNCtCh
-INGD0LLQsNC20LXQvdC40LXQvCwNCtCU0L7QutGC0L7RgCDRgNC+0LHQtdGA0YIg0LDQvdC00LXR
-gNGB0L7QvQ0K
+
+--mxv5cy4qt+RJ9ypb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hello Greg,
+
+I have two fixes for soundwire subsystem, please pull.
+
+The following changes since commit 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5:
+
+  Linux 5.9-rc1 (2020-08-16 13:04:57 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/soundwire.git tags/so=
+undwire-5.9-fixes
+
+for you to fetch changes up to 3fbbf2148a406b3e350fe91e6fdd78eb42ecad24:
+
+  soundwire: fix double free of dangling pointer (2020-09-03 14:10:19 +0530)
+
+----------------------------------------------------------------
+soundwire fixes for v5.8
+
+This contains two fixes to sdw core for dangling pointer and a typo for
+INTSTAT register
+
+----------------------------------------------------------------
+Pierre-Louis Bossart (1):
+      soundwire: bus: fix typo in comment on INTSTAT registers
+
+Tom Rix (1):
+      soundwire: fix double free of dangling pointer
+
+ drivers/soundwire/bus.c    | 2 +-
+ drivers/soundwire/stream.c | 8 +++++---
+ 2 files changed, 6 insertions(+), 4 deletions(-)
+
+Thanks
+--=20
+~Vinod
+
+--mxv5cy4qt+RJ9ypb
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEE+vs47OPLdNbVcHzyfBQHDyUjg0cFAl9SEhIACgkQfBQHDyUj
+g0eclg/+P7eLv1f9mAgEuiwe55Uzi7WPAB7PbkCQr6pdxA25ViJWdVEwZrTW9Hmr
++GbB86Pakj+lx2P3Lpwyy9A0nuIq8ouQiTjKJZ1HgtMRKTr3tlhHFVlSrjmBqhmz
+Rrq2bp5Dv/OCHkqXapdU9zZ1HVaLRvqjGxzie6KK9/c3kG4vzv3aoBMBRjHAOgRC
+i0rzdFWOnFaxWhGQONLic0WNUh2N6XG7iQRVekMGW6GRn66qUIn0K2yOUMnChrhG
+hDlWXwL5GZ3BE6JtEGBLjU//MPzS2pkB3SPhDUTszg33nYkGNK8PJcVDi/vNZ/oe
+DXm++nPZ1QGgCKo2aIEiX/mr9esb/N4eu6gDJ/IC3RR2206baFfIyXsmpNvDhDwt
+9YKo3YGvBRYNrRKqozIWCa4MVyJcMjyoIufDJ5PnJQ2c1BXPGqKkWjVUQ2OTdlk5
+p2uXOYrSLecdBi5LOnFGxQARX17p1ILk0swYFo4LxNTqJMf3PnqcetxBmUYf0J6U
+F9HMKw+WJEwzEqyRRGel2wObD/lVAzrnLyU6KOrcdJYQIW1jWFtYFlmm5lYP3EjN
++ENPUCPse+RHIuah1gbT+xS2la8g9j+9jwXVC6No7a0ZWtb6/DTsAo3ubtOo51xu
+CFpfejmVe06vUmV57K1s51u9Ll17oFZWvOSn4LKrzuWV+A7f6tU=
+=XdIt
+-----END PGP SIGNATURE-----
+
+--mxv5cy4qt+RJ9ypb--
