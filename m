@@ -2,177 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A97D25D532
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 11:35:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC64025D53E
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 11:37:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730186AbgIDJfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 05:35:01 -0400
-Received: from mail-eopbgr10118.outbound.protection.outlook.com ([40.107.1.118]:32373
-        "EHLO EUR02-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725812AbgIDJe7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 05:34:59 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HsOsglI+TMmxP+2/wyHrWpk8HlG+STlYHIEkbW+IL4kx8SJmWk6GYNQoj7fdOLde8Hok6dFQgrdSUiKUFZK7sxjgHVE3Yw2AdjodxNkhth3wPepFH/UDj1+DaIjMCOWbyDeO22z9GqPVw3jb+odSj2Ue2Kv8GlPBYRsjdm6uvFF6CYn4DOlfdnNt7Wr5cs9d8zRlxdPvwprCcaIDNG9BiGn8pr6IzrrRgCmxuxODb8GItUCouBoEDqW2HwmtxtNJBgI2NkAn4IwUvCChQ2GY2bLCkdx3szTN9jSPHT/CP/cm1z2S8UsGSaEzDgi4nqKj0kvk35cREAb4ReD6issUHQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+nCTOZ2dPtmkiz2hIM5WIjnJnsSkL/LGBsBqGTJBeMw=;
- b=LDFnroLkwAXvmfa3K9hhY323yBe8SNRW1YYDfEkYo2NgOVZsNF2F7hmcpOqr8D638FwJPa2niDf+xfnpFZn0FgCN0VGjJlFIFqBKknPJcXMrVjFl+jGDdHdGHpJNqcWpmMByOGG5dcFa4jNqlgyuWuBDQOweic1/Dgb2n7W2TPh656Ot/kxDbsBGD0JGF+jVvIGXHP57uaKDT7p9C2fzI1u1ehohcLfw4ThhVuAAJ9SbM+XN+nbRdwobEX2wlOMI1kCM9HyvPLCJG6C3XdIPmpAd9TJyuBu2oMluc1sgU/zVBhPYR5oj7oFm/JbnGGh9r2YX6pBl4Jl+0bFJETffWg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=plvision.eu; dmarc=pass action=none header.from=plvision.eu;
- dkim=pass header.d=plvision.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plvision.eu;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+nCTOZ2dPtmkiz2hIM5WIjnJnsSkL/LGBsBqGTJBeMw=;
- b=b+s4Rdcf59CAG19hnkoJyDC9FhTYkKh4uJOxSWie7RB7sItYUihpSEcGbvepUuPmGvv+Ttb6OuaIXGszAusLCKkiY+aDLPTwBz/s71Qp3PunAzPA/2qEW/krILv3FjBCN+vyMN8KQfK3lotS5b9nryZ3nqWDo+FFV97QXn3tmY0=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=plvision.eu;
-Received: from DB6P190MB0535.EURP190.PROD.OUTLOOK.COM (2603:10a6:6:3e::26) by
- DB6P190MB0117.EURP190.PROD.OUTLOOK.COM (2603:10a6:4:87::9) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3348.16; Fri, 4 Sep 2020 09:34:55 +0000
-Received: from DB6P190MB0535.EURP190.PROD.OUTLOOK.COM
- ([fe80::9cbe:fafc:3c8a:3765]) by DB6P190MB0535.EURP190.PROD.OUTLOOK.COM
- ([fe80::9cbe:fafc:3c8a:3765%4]) with mapi id 15.20.3348.016; Fri, 4 Sep 2020
- 09:34:55 +0000
-Date:   Fri, 4 Sep 2020 12:34:51 +0300
-From:   Vadym Kochan <vadym.kochan@plvision.eu>
-To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jiri Pirko <jiri@mellanox.com>,
-        Ido Schimmel <idosch@mellanox.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Oleksandr Mazur <oleksandr.mazur@plvision.eu>,
-        Serhiy Boiko <serhiy.boiko@plvision.eu>,
-        Serhiy Pshyk <serhiy.pshyk@plvision.eu>,
-        Volodymyr Mytnyk <volodymyr.mytnyk@plvision.eu>,
-        Taras Chornyi <taras.chornyi@plvision.eu>,
-        Andrii Savka <andrii.savka@plvision.eu>,
-        Network Development <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Mickey Rachamim <mickeyr@marvell.com>
-Subject: Re: [PATCH net v6 5/6] net: marvell: prestera: Add Switchdev driver
- implementation
-Message-ID: <20200904093451.GC10654@plvision.eu>
-References: <20200902150442.2779-1-vadym.kochan@plvision.eu>
- <20200902150442.2779-6-vadym.kochan@plvision.eu>
- <CA+FuTSfNX0vYL2QmomVBrjXzmQ7WUUmOhtyM_9WfMkSQD1EuPw@mail.gmail.com>
+        id S1730020AbgIDJhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 05:37:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43306 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725812AbgIDJhA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 05:37:00 -0400
+Received: from hillosipuli.retiisi.org.uk (hillosipuli.retiisi.org.uk [IPv6:2a01:4f9:c010:4572::81:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76B63C061244;
+        Fri,  4 Sep 2020 02:36:59 -0700 (PDT)
+Received: from valkosipuli.localdomain (valkosipuli.retiisi.org.uk [IPv6:2a01:4f9:c010:4572::80:2])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by hillosipuli.retiisi.org.uk (Postfix) with ESMTPS id ABB79634C8C;
+        Fri,  4 Sep 2020 12:36:26 +0300 (EEST)
+Received: from sailus by valkosipuli.localdomain with local (Exim 4.92)
+        (envelope-from <sakari.ailus@retiisi.org.uk>)
+        id 1kE88w-0001Zt-I0; Fri, 04 Sep 2020 12:36:26 +0300
+Date:   Fri, 4 Sep 2020 12:36:26 +0300
+From:   Sakari Ailus <sakari.ailus@iki.fi>
+To:     Jacopo Mondi <jacopo@jmondi.org>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil@xs4all.nl>, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Subject: Re: [PATCH v3 1/2] media: i2c: ov772x: Add support for BT656 mode
+Message-ID: <20200904093626.GF4392@valkosipuli.retiisi.org.uk>
+References: <20200824190406.27478-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20200824190406.27478-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20200904012000.GA9369@pendragon.ideasonboard.com>
+ <20200904075553.qjdyskcpext7fxcy@uno.localdomain>
+ <20200904082104.GE4392@valkosipuli.retiisi.org.uk>
+ <20200904092049.6lokfmln4vulswrn@uno.localdomain>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CA+FuTSfNX0vYL2QmomVBrjXzmQ7WUUmOhtyM_9WfMkSQD1EuPw@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: AM5PR0202CA0022.eurprd02.prod.outlook.com
- (2603:10a6:203:69::32) To DB6P190MB0535.EURP190.PROD.OUTLOOK.COM
- (2603:10a6:6:3e::26)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from plvision.eu (217.20.186.93) by AM5PR0202CA0022.eurprd02.prod.outlook.com (2603:10a6:203:69::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.15 via Frontend Transport; Fri, 4 Sep 2020 09:34:53 +0000
-X-Originating-IP: [217.20.186.93]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 7bcb82a0-2a5a-49c0-a134-08d850b5c841
-X-MS-TrafficTypeDiagnostic: DB6P190MB0117:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DB6P190MB01176E8A9969238012865358952D0@DB6P190MB0117.EURP190.PROD.OUTLOOK.COM>
-X-MS-Oob-TLC-OOBClassifiers: OLM:123;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: HQ1JnOBbr7XXEFSn/lqkXO4nsHDabcz1W5U2kcFnFl3/zTfv+U0s6bP3BBRXddUp6AWm18KTUB3N9PiLq6TR14BfNnqQh9tTaAIh06kJxovVi1KDOhsUMhOJ4wBnCv6uuqbcw9pHOLfXlgniGQeB4CZlb5Au0GktmljzZE5ethybe3MVv52p0VKYqWU6c20kmmKqQsiv4grSj7UdrdgBVLX1jk4UL8kLXMm4Kmf1VBO3qkc80vRzhmD0dkiZ3IDKV4uACxA0iw+9AqtuE8G4lsyiNfwjZ888NgA4T0zhwu1WLKI+Z8noXuKPHZ1ZSHZccQL+ApuIQU9oCB4QVDw2Jg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6P190MB0535.EURP190.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(39830400003)(136003)(376002)(396003)(346002)(366004)(478600001)(186003)(54906003)(55016002)(316002)(1076003)(7416002)(6916009)(52116002)(8676002)(44832011)(83380400001)(956004)(7696005)(2616005)(8936002)(36756003)(86362001)(33656002)(53546011)(2906002)(4326008)(66476007)(16526019)(26005)(5660300002)(8886007)(66556008)(66946007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: J5YnYIV5O+lHSabJ00ocq6hooSPtx0kTg1PxHu+bNFPEaq/tkqeLRXE3ojCFrGBPuTe3FBhCnfq63UZM+v9TIAdOV0AxXJ0lsGxNY+27ZuZbnqKir41zCdxe3jKZ8sb4Ze7t/nnrkI5VTIL+VNBWzQ9dQZLHdCLNBYMm0ziduiEzQmN0OMBJb1XnQVI/vi/FkrPJIiB/v3nCK+nvSoTKPPfH3AfVEHGPB8UR2T7BUPJx04md4Ly7cou+CrQ4glpUB7vikSZTmRg+P1qwVEgNM39QscLBZHHOQcuE27vTmEtaijBkMwvHnJnqktI79VKx1vAI+zS4WXzk8Onod2hdp7BGv3bRgd/B6VL8J7Tjp+Lz1ZjLslSA0kW0xGrYOg13KdpJwZSp2Gh2ptRZ0D2QDZFSqBqPauQX/inQjyeIaPcZAbNQHzYpvWESD+UDKROnUr9R46hnXuIXwA1ZtAsmJFHM/ckkpZSuSobyQhVez0ZmK/TTPmFCFnBd5NHm35K32x+Wd6pK3StsRNtLrqsK5CkOPWC+dOnT0SRTulB+YgKfmmoVF8aZV4Kig/KZj9ZjWusRMh5kS1gfca4vXY6OEKihNQk3+yUyXH/EbiGp8sMF03TJmEEgbQRvR55kfxyUPh1GY/5DH4RFTW2hvcZVcA==
-X-OriginatorOrg: plvision.eu
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7bcb82a0-2a5a-49c0-a134-08d850b5c841
-X-MS-Exchange-CrossTenant-AuthSource: DB6P190MB0535.EURP190.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Sep 2020 09:34:55.3351
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 03707b74-30f3-46b6-a0e0-ff0a7438c9c4
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: sex/3yhgschhaX2oQIGCzVHmlRkIa0ZQpBvYRueVkw1hEZAL1OC8PCpNyTTgYO6NE8lu9ZAuoiSel2NWBBZg+ev1ICs/sjrndDxLLe9uG4Q=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6P190MB0117
+In-Reply-To: <20200904092049.6lokfmln4vulswrn@uno.localdomain>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 03, 2020 at 07:18:59PM +0200, Willem de Bruijn wrote:
-> On Wed, Sep 2, 2020 at 5:07 PM Vadym Kochan <vadym.kochan@plvision.eu> wrote:
-> >
-> > The following features are supported:
-> >
-> >     - VLAN-aware bridge offloading
-> >     - VLAN-unaware bridge offloading
-> >     - FDB offloading (learning, ageing)
-> >     - Switchport configuration
-> >
-> > Currently there are some limitations like:
-> >
-> >     - Only 1 VLAN-aware bridge instance supported
-> >     - FDB ageing timeout parameter is set globally per device
-> >
-> > Co-developed-by: Serhiy Boiko <serhiy.boiko@plvision.eu>
-> > Signed-off-by: Serhiy Boiko <serhiy.boiko@plvision.eu>
-> > Co-developed-by: Serhiy Pshyk <serhiy.pshyk@plvision.eu>
-> > Signed-off-by: Serhiy Pshyk <serhiy.pshyk@plvision.eu>
-> > Co-developed-by: Taras Chornyi <taras.chornyi@plvision.eu>
-> > Signed-off-by: Taras Chornyi <taras.chornyi@plvision.eu>
-> > Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
+On Fri, Sep 04, 2020 at 11:20:49AM +0200, Jacopo Mondi wrote:
+> Hi Sakari,
 > 
+> On Fri, Sep 04, 2020 at 11:21:04AM +0300, Sakari Ailus wrote:
+> > Hi Laurent, Jacopo,
+> >
+> > On Fri, Sep 04, 2020 at 09:55:53AM +0200, Jacopo Mondi wrote:
+> > > Hi Laurent,
+> > >
+> > > On Fri, Sep 04, 2020 at 04:20:00AM +0300, Laurent Pinchart wrote:
+> > > > Hi Prabhakar,
+> > > >
+> > > > Thank you for the patch.
+> > > >
+> > > > On Mon, Aug 24, 2020 at 08:04:05PM +0100, Lad Prabhakar wrote:
+> > > > > Add support to read the bus-type and enable BT656 mode if needed.
+> > > > >
+> > > > > Also fail probe if unsupported bus_type is detected.
+> > > > >
+> > > > > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > > > > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+> > > > > ---
+> > > > >  drivers/media/i2c/ov772x.c | 32 ++++++++++++++++++++++++++++++++
+> > > > >  1 file changed, 32 insertions(+)
+> > > > >
+> > > > > diff --git a/drivers/media/i2c/ov772x.c b/drivers/media/i2c/ov772x.c
+> > > > > index 2cc6a678069a..67764d647526 100644
+> > > > > --- a/drivers/media/i2c/ov772x.c
+> > > > > +++ b/drivers/media/i2c/ov772x.c
+> > > > > @@ -31,6 +31,7 @@
+> > > > >  #include <media/v4l2-ctrls.h>
+> > > > >  #include <media/v4l2-device.h>
+> > > > >  #include <media/v4l2-event.h>
+> > > > > +#include <media/v4l2-fwnode.h>
+> > > > >  #include <media/v4l2-image-sizes.h>
+> > > > >  #include <media/v4l2-subdev.h>
+> > > > >
+> > > > > @@ -434,6 +435,7 @@ struct ov772x_priv {
+> > > > >  #ifdef CONFIG_MEDIA_CONTROLLER
+> > > > >  	struct media_pad pad;
+> > > > >  #endif
+> > > > > +	struct v4l2_fwnode_endpoint ep;
+> > > > >  };
+> > > > >
+> > > > >  /*
+> > > > > @@ -581,6 +583,13 @@ static int ov772x_s_stream(struct v4l2_subdev *sd, int enable)
+> > > > >  	if (priv->streaming == enable)
+> > > > >  		goto done;
+> > > > >
+> > > > > +	if (priv->ep.bus_type == V4L2_MBUS_BT656) {
+> > > > > +		ret = regmap_update_bits(priv->regmap, COM7, ITU656_ON_OFF,
+> > > > > +					 enable ? ITU656_ON_OFF : ~ITU656_ON_OFF);
+> > > > > +		if (ret)
+> > > > > +			goto done;
+> > > > > +	}
+> > > > > +
+> > > > >  	ret = regmap_update_bits(priv->regmap, COM2, SOFT_SLEEP_MODE,
+> > > > >  				 enable ? 0 : SOFT_SLEEP_MODE);
+> > > > >  	if (ret)
+> > > > > @@ -1354,6 +1363,7 @@ static const struct v4l2_subdev_ops ov772x_subdev_ops = {
+> > > > >
+> > > > >  static int ov772x_probe(struct i2c_client *client)
+> > > > >  {
+> > > > > +	struct fwnode_handle *endpoint;
+> > > > >  	struct ov772x_priv	*priv;
+> > > > >  	int			ret;
+> > > > >  	static const struct regmap_config ov772x_regmap_config = {
+> > > > > @@ -1415,6 +1425,28 @@ static int ov772x_probe(struct i2c_client *client)
+> > > > >  		goto error_clk_put;
+> > > > >  	}
+> > > > >
+> > > > > +	endpoint = fwnode_graph_get_next_endpoint(dev_fwnode(&client->dev),
+> > > > > +						  NULL);
+> > > > > +	if (!endpoint) {
+> > > > > +		dev_err(&client->dev, "endpoint node not found\n");
+> > > > > +		ret = -EINVAL;
+> > > > > +		goto error_clk_put;
+> > > > > +	}
+> > > > > +
+> > > > > +	ret = v4l2_fwnode_endpoint_parse(endpoint, &priv->ep);
+> > > >
+> > > > v4l2_fwnode_endpoint_parse() is deprecated for new drivers,
+> > > > v4l2_fwnode_endpoint_alloc_parse() is recommended instead. Please note
+> > > > that v4l2_fwnode_endpoint_free() then needs to be called in the error
+> > > > path and in remove().
+> > >
+> > > Doesn't alloc_parse() differ from just _parse() as it reserve space
+> > > for the 'link-frequencies' array ? As this device does not support
+> > > CSI-2 and the 'link-frequencies' property is not allows in bindings,
+> > > isn't using endpoint_parse() better as it saves a call to _free() ?
+> >
+> > Yeah. I think the documentation needs to be updated.
+> >
+> > The thinking was there would be other variable size properties that drivers
+> > would need but that didn't happen. So feel free to continue use
+> > v4l2_fwnode_endpoint_parse() where it does the job.
+> >
+> > >
+> > > Or are we deprecating that function unconditionally ? The
+> > > documentation suggests "please use v4l2_fwnode_endpoint_alloc_parse()
+> > > in new drivers" but here it doesn't seem required..
+> > >
+> > > >
+> > > > On the other hand, not setting .bus_type and letting the parse()
+> > > > function determine the but type automatically is also deprecated, and I
+> > > > don't think forcing drivers to call v4l2_fwnode_endpoint_alloc_parse()
+> > > > once for each bus type until one succeeds is a good API. As change will
+> > > > be needed in that API, you can ignore v4l2_fwnode_endpoint_alloc_parse()
+> > > > for the time being if you want.
+> > >
+> > > But indeed relying on auto-guessing of the bus type is deprecated since
+> > > some time now (and the API could be improved, yes). Sorry I missed
+> > > that yesterday.
+> >
+> > There's one case where the bus type does not need to be set: when bindings
+> > require it *and* at the same time you have no default configuration that
+> > requires something to be set in the bus specific struct. Bindings where
+> > bus-type is required were added later so I think the documentation should
+> > be changed there, too.
+> >
+> > I can send the patches.
+> >
+> > >
+> > > As we support parallel and bt.656 only I must be honest I don't mind
+> > > it here as otherwise the code would be more complex for no real gain,
+> > > but I defer this to Sakari which has been fighting the battle against
+> > > auto-guessing since a long time now  :)
+> >
+> > I think you should require bus-type property in bindings in that case.
+> >
+> > But as it's an existing driver, bus-type will be optional. You'll need to
+> > default to what was supported earlier. This is actually an interesting case
+> > as bindings do not document it.
 > 
-> > +int prestera_switchdev_init(struct prestera_switch *sw)
-> > +{
-> > +       struct prestera_switchdev *swdev;
-> > +       int err;
-> > +
-> > +       swdev = kzalloc(sizeof(*swdev), GFP_KERNEL);
-> > +       if (!swdev)
-> > +               return -ENOMEM;
-> > +
-> > +       sw->swdev = swdev;
-> > +       swdev->sw = sw;
-> > +
-> > +       INIT_LIST_HEAD(&swdev->bridge_list);
-> > +
-> > +       swdev_wq = alloc_ordered_workqueue("%s_ordered", 0, "prestera_br");
-> > +       if (!swdev_wq) {
-> > +               err = -ENOMEM;
-> > +               goto err_alloc_wq;
-> > +       }
-> > +
-> > +       err = prestera_switchdev_handler_init(swdev);
-> > +       if (err)
-> > +               goto err_swdev_init;
-> > +
-> > +       err = prestera_fdb_init(sw);
-> > +       if (err)
-> > +               goto err_fdb_init;
-> > +
-> > +       return 0;
-> > +
-> > +err_fdb_init:
-> > +err_swdev_init:
-> > +err_alloc_wq:
-> > +       kfree(swdev);
-> > +
-> > +       return err;
-> > +}
-> > +
-> > +void prestera_switchdev_fini(struct prestera_switch *sw)
-> > +{
-> > +       struct prestera_switchdev *swdev = sw->swdev;
-> > +
-> > +       prestera_fdb_fini(sw);
-> > +       prestera_switchdev_handler_fini(swdev);
-> > +       destroy_workqueue(swdev_wq);
+> For reference:
+> https://patchwork.linuxtv.org/project/linux-media/patch/20200903131029.18334-3-jacopo+renesas@jmondi.org/
 > 
-> this cleanup is also needed on the error path of prestera_switchdev_init
-> 
+> But yes, we might have DTBs in the wild without bus-type specified :(
 
-Thanks! I will fix it.
+Shouldn't that be then that the bus-type is optional and defaults to
+parallel?
 
-> > +       kfree(swdev);
-> > +}
+-- 
+Sakari Ailus
