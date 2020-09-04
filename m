@@ -2,135 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B18025E14A
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 20:05:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0F3E25E149
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 20:04:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726317AbgIDSF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 14:05:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39946 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726029AbgIDSF2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 14:05:28 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7C083217BA;
-        Fri,  4 Sep 2020 17:50:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599241811;
-        bh=Ag1A+X+Az5QSLdpFFohLqvlwDSmyTZHVcII5luMVwUw=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=rELap8gXcynnujzMa1ArCQy5i1oLKt+Pgk2mQDiH1C/Jyun9ESs4BlzjsUyssTzP3
-         hF/fYmLWCKu4NR718SioPAbtEnn/sgYIhbKsgQP+G5iabZPYepOxPdIEOrrntCahLj
-         jGFCjcvukZRL8Ut5pVD8Qw6+4juZuRDjYy46dzvU=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 552E935215BE; Fri,  4 Sep 2020 10:50:07 -0700 (PDT)
-Date:   Fri, 4 Sep 2020 10:50:07 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     chao <chao@eero.com>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu: allow multiple stalls before panic
-Message-ID: <20200904175007.GG29330@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <1598856077-58603-1-git-send-email-chao@eero.com>
+        id S1726226AbgIDSEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 14:04:54 -0400
+Received: from mout.kundenserver.de ([212.227.126.187]:42155 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725984AbgIDSEx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 14:04:53 -0400
+Received: from mail-qt1-f181.google.com ([209.85.160.181]) by
+ mrelayeu.kundenserver.de (mreue012 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1MsJXG-1kXRrF2QQc-00tjbC; Fri, 04 Sep 2020 20:04:51 +0200
+Received: by mail-qt1-f181.google.com with SMTP id n10so5326328qtv.3;
+        Fri, 04 Sep 2020 11:04:51 -0700 (PDT)
+X-Gm-Message-State: AOAM532i2Zgortc+jdYp4gwDiE8QCVbgzkrPQCG+qnYdaF4WXF+wdVYf
+        xQOEARxvvNoP6rsLv04mk7GyO3xKaUl0PHpKmBI=
+X-Google-Smtp-Source: ABdhPJwKzhgqFAMC09LYvzrY70ahhbEpa/CeWyBR83Ccx3AuOB1/vZONwnfNbBWCJD4p/77P5oC/C+vZjOmK8LQVsYA=
+X-Received: by 2002:aed:2414:: with SMTP id r20mr9970750qtc.304.1599242690288;
+ Fri, 04 Sep 2020 11:04:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1598856077-58603-1-git-send-email-chao@eero.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200904165216.1799796-1-hch@lst.de> <20200904165216.1799796-4-hch@lst.de>
+In-Reply-To: <20200904165216.1799796-4-hch@lst.de>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 4 Sep 2020 20:04:34 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1=udSEq8kpsmLk-b7ye0p=6eKTvBV74jBoGYmufL2oEw@mail.gmail.com>
+Message-ID: <CAK8P3a1=udSEq8kpsmLk-b7ye0p=6eKTvBV74jBoGYmufL2oEw@mail.gmail.com>
+Subject: Re: [PATCH 3/8] asm-generic: fix unaligned access hamdling in raw_copy_{from,to}_user
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:6MO0b0CUNaQ6Os9JHibIyRp08mfdhmxnxN+PwfFQq1OASMaeS/b
+ rUIIFKjwSIN+o44XTLUutoF2FPDWFHgbMolIT1QCaIx/l2gZKaZRNPHfGOrYhUxtI60i+15
+ BkCyH8sDLgLwap3vnyil+H/BBXMSs4oGsLD82ki9o/WViAZKzcD98aa2u3MwJmJgPkTl2IY
+ CPqx42KnbipwbyfgxCd9A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:GsVbHphrEDY=:b6qsBZemjP56jcY0o4PEJo
+ 3IQX/aipeBiKMhSQp3O1VCI5FCWPNmULZu1a8HlGpRdLNwyL/DcDiTFc2i015xNib52Kr4QtA
+ YPEOpqZVQpE4rwQ6OiPseq1KWh/ZQOy7dZnEb2rlv67oOTVak+2YKwD4SuJ8UcNfAQ4DvNQ9a
+ QRi6DAJ7hBDYqe4PyVfkmM9ND79NwmsHMkxvt0i48gUequNoktUJuGGtnGLIEq3NVAWY3Teea
+ dNMi1nUnCQyUoRRkjWyBAWsvyr4qww2yE2syWEMnMaZNjOsZqpKtYSQUW3r74gyrsubzg3Zkt
+ UHbeirDDT779TFH2tsZmJ/DI7ZVEC2iKp9CTOidgtLMaByHc/kTpX0kXDwTU60XJPWwhtbgUf
+ lNjIliA9pwiJH2eOfQRCjBChv8mJIKsZ8yc/F6rOqpBQCe8UqPY0uIFuiCS3YdPyqYpROGLac
+ 8d7FLQPS594ocMvihMyHnodv6bx+nZ/TGFJypXiwvl5Buxds/yS5kvb0wN35pKanKIFrlZi2V
+ caQ6ZAuUhNsAm7lXzMNNRWe5ZlqcEPdaH35qibUE74IRh1To1/sar22U/zwTl8cafa6axoEVY
+ ARjIgt7DCCsWnnz9nnQftcvoC9dP4u+tl/I+9uG1x0dqKtIYiGekEbRWeoH0e7F+XRKH3iqZr
+ Scb4IUubHU3i87Wt79EvJohMxS/Nk/S0nw4juAI3Hm+8TakooFpc5YbsqEh073PV6K0vsWKtX
+ v/h/GZoOgTrV7LO7tssxjIM8MOcSj8mKuYjl4C51+aQtlrySBX7rmIDn8Iq9XnEOWz7c5FMtq
+ hnIJG+Toq7iC3/UQTEjlQ+KwrxDyp3H5hFkMbFvRAPjElV6AfD6VwHSsuzvLzw2dYRyznL3aA
+ M26lfUhK/D81SjqGtgSOS2h3zy+un8eelWKxtGoSdrVQHeJnlSRpiwvBJPN+k9k2PokqwYkvb
+ 3Kk91LnVT+DLeAh3Af0c9z/Hw0YeCmT6p1O0ptJMRNzWPM4jwId03
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 30, 2020 at 11:41:17PM -0700, chao wrote:
-> Some stalls are transient and system can fully recover.
-> Allow users to configure the number of stalls experienced
-> to trigger kernel Panic.
-> 
-> Signed-off-by: chao <chao@eero.com>
+On Fri, Sep 4, 2020 at 6:52 PM Christoph Hellwig <hch@lst.de> wrote:
+>
+> Use get_unaligned and put_unaligned for the small constant size cases
+> in the generic uaccess routines.  This ensures they can be used for
+> architectures that do not support unaligned loads and stores, while
+> being a no-op for those that do.
+>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  include/asm-generic/uaccess.h | 20 ++++++++------------
+>  1 file changed, 8 insertions(+), 12 deletions(-)
+>
+> diff --git a/include/asm-generic/uaccess.h b/include/asm-generic/uaccess.h
+> index cc3b2c8b68fab4..768502bbfb154e 100644
+> --- a/include/asm-generic/uaccess.h
+> +++ b/include/asm-generic/uaccess.h
+> @@ -36,19 +36,17 @@ raw_copy_from_user(void *to, const void __user * from, unsigned long n)
+>         if (__builtin_constant_p(n)) {
+>                 switch(n) {
+>                 case 1:
+> -                       *(u8 *)to = *(u8 __force *)from;
+> +                       *(u8 *)to = get_unaligned((u8 __force *)from);
+>                         return 0;
+>                 case 2:
+> -                       *(u16 *)to = *(u16 __force *)from;
+> +                       *(u16 *)to = get_unaligned((u16 __force *)from);
+>                         return 0;
 
-Hearing no objections, I have queued this with wordsmithing as shown
-below.  Please let me know if I messed something up.
+The change look correct and necessary, but I wonder if this could be done
+in a way that is a little easier on the compiler than the nested switch/case.
 
-One question, though.  It looks like setting this to (say) 5 would panic
-after the fifth RCU CPU stall warning message, regardless whether all
-five were reporting the same RCU CPU stall event or whether they instead
-were five widely separated transient RCU CPU stall events, where the
-system fully recovered from each event.  Is this the intent?
+If I see it right, __put_user() and __get_user() can probably
+be reduced to a plain put_unaligned() and get_unaligned() here,
+which would simplify these a lot.
 
-							Thanx, Paul
+In turn it seems that the generic raw_copy_to_user() can just be the
+a plain memcpy(), IIRC the optimization for small sizes should also
+be done by modern compilers whenever they can.
 
-------------------------------------------------------------------------
-
-commit e710c928fb52d8e56bc6173515805301da6aa22b
-Author: chao <chao@eero.com>
-Date:   Sun Aug 30 23:41:17 2020 -0700
-
-    rcu: Panic after fixed number of stalls
-    
-    Some stalls are transient, so that system fully recovers.  This commit
-    therefore allows users to configure the number of stalls that must happen
-    in order to trigger kernel panic.
-    
-    Signed-off-by: chao <chao@eero.com>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-
-diff --git a/include/linux/kernel.h b/include/linux/kernel.h
-index 500def6..fc2dd3f 100644
---- a/include/linux/kernel.h
-+++ b/include/linux/kernel.h
-@@ -536,6 +536,7 @@ extern int panic_on_warn;
- extern unsigned long panic_on_taint;
- extern bool panic_on_taint_nousertaint;
- extern int sysctl_panic_on_rcu_stall;
-+extern int sysctl_max_rcu_stall_to_panic;
- extern int sysctl_panic_on_stackoverflow;
- 
- extern bool crash_kexec_post_notifiers;
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index 0fde39b..228c55f 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -13,6 +13,7 @@
- 
- /* panic() on RCU Stall sysctl. */
- int sysctl_panic_on_rcu_stall __read_mostly;
-+int sysctl_max_rcu_stall_to_panic __read_mostly;
- 
- #ifdef CONFIG_PROVE_RCU
- #define RCU_STALL_DELAY_DELTA		(5 * HZ)
-@@ -106,6 +107,11 @@ early_initcall(check_cpu_stall_init);
- /* If so specified via sysctl, panic, yielding cleaner stall-warning output. */
- static void panic_on_rcu_stall(void)
- {
-+	static int cpu_stall;
-+
-+	if (++cpu_stall < sysctl_max_rcu_stall_to_panic)
-+		return;
-+
- 	if (sysctl_panic_on_rcu_stall)
- 		panic("RCU Stall\n");
- }
-diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-index 287862f..1bca490 100644
---- a/kernel/sysctl.c
-+++ b/kernel/sysctl.c
-@@ -2651,6 +2651,17 @@ static struct ctl_table kern_table[] = {
- 		.extra2		= SYSCTL_ONE,
- 	},
- #endif
-+#if defined(CONFIG_TREE_RCU)
-+	{
-+		.procname	= "max_rcu_stall_to_panic",
-+		.data		= &sysctl_max_rcu_stall_to_panic,
-+		.maxlen		= sizeof(sysctl_max_rcu_stall_to_panic),
-+		.mode		= 0644,
-+		.proc_handler	= proc_dointvec_minmax,
-+		.extra1		= SYSCTL_ONE,
-+		.extra2		= SYSCTL_INT_MAX,
-+	},
-+#endif
- #ifdef CONFIG_STACKLEAK_RUNTIME_DISABLE
- 	{
- 		.procname	= "stack_erasing",
+     Arnd
