@@ -2,159 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68D0B25DAF0
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 16:07:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D29F025DAD1
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 16:00:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730545AbgIDOHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 10:07:05 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:60964 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730504AbgIDOFH (ORCPT
+        id S1730663AbgIDOAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 10:00:48 -0400
+Received: from smtp114.ord1d.emailsrvr.com ([184.106.54.114]:48125 "EHLO
+        smtp114.ord1d.emailsrvr.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730603AbgIDNqu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 10:05:07 -0400
-Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 084DM2qK005938;
-        Fri, 4 Sep 2020 15:23:04 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=STMicroelectronics;
- bh=9tDNNyjW1JFlsbbCLIY7DyEV8OK1r9OXdF3FnYfERXw=;
- b=Igs8SeG/ZKp3N0XD8OfxBgvi/CRjxUi0S9+7BaZJ9q139ip+kCpiFe6mmtCBU71yMNnc
- 4Z71DgRMm2U78YwyMo78Z4KWA6jt5CxjYxIGRsQ+kW9m5yaf7Sl1rTkJwCKPYIh/igvS
- U5TyC+njDLQHWmR28nlZ9XNq+t9q5Z5OB10PWGTV5ywvgm0H4Zci3iiovApvJWqUN5pI
- y+bDQc+Nz2GXdB6Ke+J2L4B9CFL6APrNREUMEWckiumicZ9V6SUqC1xfk15pm6DjtiTf
- yaDGGtDZmrtyP/g9qt/rYG6ub1C4qumM9c07c6Wq1dT6xGoXt2ik+C5hEbmpdJP6aKZ2 rw== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 337csw9xvg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 04 Sep 2020 15:23:04 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 4FA1B10002A;
-        Fri,  4 Sep 2020 15:23:04 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag6node2.st.com [10.75.127.17])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 447B82B0EBD;
-        Fri,  4 Sep 2020 15:23:04 +0200 (CEST)
-Received: from localhost (10.75.127.49) by SFHDAG6NODE2.st.com (10.75.127.17)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 4 Sep 2020 15:23:03
- +0200
-From:   Christophe Kerello <christophe.kerello@st.com>
-To:     <robh+dt@kernel.org>, <alexandre.torgue@st.com>,
-        <linux@armlinux.org.uk>
-CC:     <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Christophe Kerello <christophe.kerello@st.com>
-Subject: [PATCH 2/2] ARM: dts: stm32: add FMC2 EBI support for stm32mp157c
-Date:   Fri, 4 Sep 2020 15:20:43 +0200
-Message-ID: <1599225643-5558-3-git-send-email-christophe.kerello@st.com>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1599225643-5558-1-git-send-email-christophe.kerello@st.com>
-References: <1599225643-5558-1-git-send-email-christophe.kerello@st.com>
+        Fri, 4 Sep 2020 09:46:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=g001.emailsrvr.com;
+        s=20190322-9u7zjiwi; t=1599225715;
+        bh=+hF0AoicIpbtubwK4GqyqoxzstMgY9/dX9rfPFlOUJY=;
+        h=From:To:Subject:Date:From;
+        b=vM2qvAolOxWJnPodgEM39U55ySz/PRn6NqI97lhBP2fmm5JQjXTWyWtnPbnJg7hXu
+         RSxp8QNwcDSK/Qa4v0ZXVfQJ1MR11cB0h7MpT2IO1Ef4nBe4bQRnNXFl+wpM6TPayo
+         Vwvy/+TbCYDlPGPSVhKO3sw0T4iNcOWBuyMc7f50=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
+        s=20190130-41we5z8j; t=1599225715;
+        bh=+hF0AoicIpbtubwK4GqyqoxzstMgY9/dX9rfPFlOUJY=;
+        h=From:To:Subject:Date:From;
+        b=D0/Aq/TIUeXVM/BhVSy/7NwDofDkYH/j9Y37ePtZ2u3oG85ymaOihHqxa0M3wmrGf
+         Pfm7G3ahdirxcNJcJGHi1SfdchJOetwaMl38p0jgZTSAD6rmThqCtIcMr1p7LsbdIa
+         tnlUdAlrxgpBuGUPJayAWTgYicWy2dSvFtsNQa00=
+X-Auth-ID: abbotti@mev.co.uk
+Received: by smtp23.relay.ord1d.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id E6526200AB;
+        Fri,  4 Sep 2020 09:21:53 -0400 (EDT)
+From:   Ian Abbott <abbotti@mev.co.uk>
+To:     linux-input@vger.kernel.org
+Cc:     David Rheinsberg <david.rheinsberg@gmail.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Ian Abbott <abbotti@mev.co.uk>, linux-kernel@vger.kernel.org
+Subject: {PATCH 0/2] HID: wiimote: Minor change to spinlock usage
+Date:   Fri,  4 Sep 2020 14:21:41 +0100
+Message-Id: <20200904132143.9496-1-abbotti@mev.co.uk>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.49]
-X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG6NODE2.st.com
- (10.75.127.17)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-04_07:2020-09-04,2020-09-04 signatures=0
+Content-Transfer-Encoding: 8bit
+X-Classification-ID: ee464daf-2bdc-4db4-9ef3-697c4738b247-1-1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds FMC2 External Bus Interface support on stm32mp157c.
+[I have posted these patches previously, but that was over a year ago.
+--IA]
 
-Signed-off-by: Christophe Kerello <christophe.kerello@st.com>
----
- arch/arm/boot/dts/stm32mp151.dtsi     | 43 +++++++++++++++++++++++------------
- arch/arm/boot/dts/stm32mp157c-ev1.dts | 16 +++++++------
- 2 files changed, 38 insertions(+), 21 deletions(-)
+A couple of minor changes to the wiimote core module.  They do not
+change functionality of the driver:
 
-diff --git a/arch/arm/boot/dts/stm32mp151.dtsi b/arch/arm/boot/dts/stm32mp151.dtsi
-index bfe2902..4fd7572 100644
---- a/arch/arm/boot/dts/stm32mp151.dtsi
-+++ b/arch/arm/boot/dts/stm32mp151.dtsi
-@@ -1302,23 +1302,38 @@
- 			dma-requests = <48>;
- 		};
- 
--		fmc: nand-controller@58002000 {
--			compatible = "st,stm32mp15-fmc2";
--			reg = <0x58002000 0x1000>,
--			      <0x80000000 0x1000>,
--			      <0x88010000 0x1000>,
--			      <0x88020000 0x1000>,
--			      <0x81000000 0x1000>,
--			      <0x89010000 0x1000>,
--			      <0x89020000 0x1000>;
--			interrupts = <GIC_SPI 48 IRQ_TYPE_LEVEL_HIGH>;
--			dmas = <&mdma1 20 0x10 0x12000a02 0x0 0x0>,
--			       <&mdma1 20 0x10 0x12000a08 0x0 0x0>,
--			       <&mdma1 21 0x10 0x12000a0a 0x0 0x0>;
--			dma-names = "tx", "rx", "ecc";
-+		fmc: memory-controller@58002000 {
-+			#address-cells = <2>;
-+			#size-cells = <1>;
-+			compatible = "st,stm32mp1-fmc2-ebi";
-+			reg = <0x58002000 0x1000>;
- 			clocks = <&rcc FMC_K>;
- 			resets = <&rcc FMC_R>;
- 			status = "disabled";
-+
-+			ranges = <0 0 0x60000000 0x04000000>, /* EBI CS 1 */
-+				 <1 0 0x64000000 0x04000000>, /* EBI CS 2 */
-+				 <2 0 0x68000000 0x04000000>, /* EBI CS 3 */
-+				 <3 0 0x6c000000 0x04000000>, /* EBI CS 4 */
-+				 <4 0 0x80000000 0x10000000>; /* NAND */
-+
-+			nand-controller@4,0 {
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				compatible = "st,stm32mp1-fmc2-nfc";
-+				reg = <4 0x00000000 0x1000>,
-+				      <4 0x08010000 0x1000>,
-+				      <4 0x08020000 0x1000>,
-+				      <4 0x01000000 0x1000>,
-+				      <4 0x09010000 0x1000>,
-+				      <4 0x09020000 0x1000>;
-+				interrupts = <GIC_SPI 48 IRQ_TYPE_LEVEL_HIGH>;
-+				dmas = <&mdma1 20 0x2 0x12000a02 0x0 0x0>,
-+				       <&mdma1 20 0x2 0x12000a08 0x0 0x0>,
-+				       <&mdma1 21 0x2 0x12000a0a 0x0 0x0>;
-+				dma-names = "tx", "rx", "ecc";
-+				status = "disabled";
-+			};
- 		};
- 
- 		qspi: spi@58003000 {
-diff --git a/arch/arm/boot/dts/stm32mp157c-ev1.dts b/arch/arm/boot/dts/stm32mp157c-ev1.dts
-index 85628e1..a55e80c 100644
---- a/arch/arm/boot/dts/stm32mp157c-ev1.dts
-+++ b/arch/arm/boot/dts/stm32mp157c-ev1.dts
-@@ -158,14 +158,16 @@
- 	pinctrl-0 = <&fmc_pins_a>;
- 	pinctrl-1 = <&fmc_sleep_pins_a>;
- 	status = "okay";
--	#address-cells = <1>;
--	#size-cells = <0>;
- 
--	nand@0 {
--		reg = <0>;
--		nand-on-flash-bbt;
--		#address-cells = <1>;
--		#size-cells = <1>;
-+	nand-controller@4,0 {
-+		status = "okay";
-+
-+		nand@0 {
-+			reg = <0>;
-+			nand-on-flash-bbt;
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+		};
- 	};
- };
- 
--- 
-1.9.1
+1) HID: wiimote: make handlers[] const
+2) HID: wiimote: narrow spinlock range in wiimote_hid_event()
+
+ drivers/hid/hid-wiimote-core.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
