@@ -2,509 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3C3825DD5D
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 17:25:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 427BF25DDAE
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 17:28:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731089AbgIDPZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 11:25:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34184 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731056AbgIDPZ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 11:25:26 -0400
-Received: from kozik-lap.mshome.net (unknown [194.230.155.106])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B959A20770;
-        Fri,  4 Sep 2020 15:25:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599233124;
-        bh=jTjsLAriGTsac5PZWo3rZlx2ocUPijGc78uBb8WH4Js=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fL3kIiMG0+IHZvRFmML+ytJlgChyyBqtnMZb35N0GoX6oje6ks1uKdknAEYJf8pCN
-         OKl1EUOiiQexCn2i02mFhPZaSwr8JhDg80Fq5DL9Xkl64B6V9j2cZqnFbhMvPiVgjB
-         j2KK/ZvCxoi9vb9n76M8pp1kQ9F9CDVEzifRtXr0=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Rob Herring <robh+dt@kernel.org>, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-pwm@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-watchdog@vger.kernel.org
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH v3 14/14] dt-bindings: clock: imx8m: Integrate duplicated i.MX 8M schemas
-Date:   Fri,  4 Sep 2020 17:24:04 +0200
-Message-Id: <20200904152404.20636-15-krzk@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200904152404.20636-1-krzk@kernel.org>
-References: <20200904152404.20636-1-krzk@kernel.org>
+        id S1726226AbgIDP2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 11:28:16 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:36452 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730388AbgIDP2H (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 11:28:07 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 084FJi3i188512;
+        Fri, 4 Sep 2020 15:28:03 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=oisI33Zpu5BicchVLKMPafK1jiLJVKXmuASoEoz4pKQ=;
+ b=FjGzQ3Bgrhfw5U6SmoO0rXJaE2YqfhO1B3Fv07YuD8KaHwoZVPZlHZCJ76J7gEUpp8MR
+ 4F+kTT0ma5v59fAi/cJ5hS/u9fPyXBMDLqIpRpGr0rk4v0WiYIKVtH+pKw7TL/6hvoeK
+ MV3cL91q8emn5J+mWwXIzL04pLJYPWzpTtsSjs04XTlgVdx2GBR35vgzj47snfcdhTLU
+ odgFgNscdvHfVF1NQRz9/LAN1CFsUtf1SCAhblZ6V6SbVcncNTGGvpvKQPbZX/EWPk9Q
+ LXyzwfQA1TdhqA6X4FTabNaVy618QQLmKIduaPqBl125xSkm+hhMTtwdhlKAG9UL6haI jg== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 339dmndgut-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 04 Sep 2020 15:28:03 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 084FLE6x117158;
+        Fri, 4 Sep 2020 15:26:03 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 33bhs4mxc5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 04 Sep 2020 15:26:02 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 084FQ0xh003470;
+        Fri, 4 Sep 2020 15:26:00 GMT
+Received: from localhost (/67.169.218.210)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 04 Sep 2020 08:26:00 -0700
+Date:   Fri, 4 Sep 2020 08:25:59 -0700
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ext4: flag as supporting buffered async reads
+Message-ID: <20200904152559.GB6088@magnolia>
+References: <990cc101-d4a1-f346-fe78-0fb5b963b406@kernel.dk>
+ <20c844c8-b649-3250-ff5b-b7420f72ff38@kernel.dk>
+ <20200822143326.GC199705@mit.edu>
+ <aff250ad-4c31-15c2-fa1d-3f3945cb7aa5@kernel.dk>
+ <7f0e2d99-5da2-237e-a894-0afddc0ace1e@kernel.dk>
+ <049a97db-c362-bcfb-59e5-4b1d2df59383@kernel.dk>
+ <5140ba6c-779c-2a71-b7f2-3c3220cdf19c@kernel.dk>
+ <68510957-c887-8e26-4a1a-a7a93488586a@kernel.dk>
+ <20200904035528.GE558530@mit.edu>
+ <73f14124-e660-de0d-95ad-7fb21f18cdef@kernel.dk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <73f14124-e660-de0d-95ad-7fb21f18cdef@kernel.dk>
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9734 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxscore=0 bulkscore=0
+ mlxlogscore=999 spamscore=0 adultscore=0 suspectscore=1 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009040134
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9734 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0
+ mlxlogscore=999 adultscore=0 impostorscore=0 mlxscore=0 suspectscore=1
+ spamscore=0 clxscore=1015 malwarescore=0 lowpriorityscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009040134
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The clock controller schemas for i.MX 8M Mini, 8M Nano, 8M Plus and 8M
-Quad are basically the same.  The only minor difference appears on 8M
-Quad which needs one more clock.
+On Fri, Sep 04, 2020 at 08:51:24AM -0600, Jens Axboe wrote:
+> On 9/3/20 9:55 PM, Theodore Y. Ts'o wrote:
+> > Hi Jens,
+> > 
+> > Sorry, the past few months have been *crazy* insane.  Between Linux
+> > Plumbers Conference organizing, having to deal with some interns at
+> > $WORK, performance reviews, etc.., etc., it's been a perfect storm.
+> > As a result, I was late getting the primary ext4 pull request to
+> > Linus, and he's already yelled at me for a late pull request.
+> > 
+> > As a result, I'm being super paranoid about asking Linus for anything,
+> > even a one-time change, if it's not a bug fix.  And what you are
+> > asking for isn't a bug fix, but enabling a new feature.
+> 
+> That's fine, we blew past the 5.9 window long ago imho. As mentioned,
+> back in May we could have solved this by just adding your acked-by
+> or reviewed-by to the patch like we did for xfs/btrfs. That removes the
+> ext4 tree dependency. Obviously that's no longer a concern for 5.10, but
+> I need to know if we're going one of two routes:
+> 
+> a) I'm queueing this up, in which case I'll still need that ack/review
+> b) you're queueing it up, in which case you can just grab it
+> 
+> I just don't want to end up in the same situation for 5.10, and then
+> we're pushing this out 2 releases at that point...
+> 
+> > Worse, right now, -rc1 and -rc2 is causing random crashes in my
+> > gce-xfstests framework.  Sometimes it happens before we've run even a
+> > single xfstests; sometimes it happens after we have successfully
+> > completed all of the tests, and we're doing a shutdown of the VM under
+> > test.  Other times it happens in the middle of a test run.  Given that
+> > I'm seeing this at -rc1, which is before my late ext4 pull request to
+> > Linus, it's probably not an ext4 related bug.  But it also means that
+> > I'm partially blind in terms of my kernel testing at the moment.  So I
+> > can't even tell Linus that I've run lots of tests and I'm 100%
+> > confident your one-line change is 100% safe.
+> > 
+> > Next week after Labor Day, I should be completely done with the
+> > performance review writeups that are on my plate, and I will hopefully
+> > have a bit more time to try to debug these mysterious failures.  Or
+> > maybe someone else will be able to figure out what the heck is going
+> > wrong, and perhaps -rc3 will make all of these failures go away.
 
-There is no point to have four schemas for almost the same binding.  Any
-fixes or changes would have to be duplicated four times.
+FWIW I saw a strange crash in the xfs/iomap directio code that I could
+never reproduce again, but none of my newly onlined ext4 fstests vms
+have died, and I've been running a combination of 5.9-rc1 and 5.9-rc3 +
+other xfs goodies.  Good luck!
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- .../bindings/clock/imx8m-clock.yaml           | 125 ++++++++++++++++++
- .../bindings/clock/imx8mm-clock.yaml          |  68 ----------
- .../bindings/clock/imx8mn-clock.yaml          |  70 ----------
- .../bindings/clock/imx8mp-clock.yaml          |  70 ----------
- .../bindings/clock/imx8mq-clock.yaml          |  72 ----------
- 5 files changed, 125 insertions(+), 280 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/clock/imx8m-clock.yaml
- delete mode 100644 Documentation/devicetree/bindings/clock/imx8mm-clock.yaml
- delete mode 100644 Documentation/devicetree/bindings/clock/imx8mn-clock.yaml
- delete mode 100644 Documentation/devicetree/bindings/clock/imx8mp-clock.yaml
- delete mode 100644 Documentation/devicetree/bindings/clock/imx8mq-clock.yaml
+--D
 
-diff --git a/Documentation/devicetree/bindings/clock/imx8m-clock.yaml b/Documentation/devicetree/bindings/clock/imx8m-clock.yaml
-new file mode 100644
-index 000000000000..31e7cc9693c3
---- /dev/null
-+++ b/Documentation/devicetree/bindings/clock/imx8m-clock.yaml
-@@ -0,0 +1,125 @@
-+# SPDX-License-Identifier: GPL-2.0
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/clock/imx8m-clock.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: NXP i.MX8M Family Clock Control Module Binding
-+
-+maintainers:
-+  - Anson Huang <Anson.Huang@nxp.com>
-+
-+description: |
-+  NXP i.MX8M Mini/Nano/Plus/Quad clock control module is an integrated clock
-+  controller, which generates and supplies to all modules.
-+
-+properties:
-+  compatible:
-+    enum:
-+      - fsl,imx8mm-ccm
-+      - fsl,imx8mn-ccm
-+      - fsl,imx8mp-ccm
-+      - fsl,imx8mq-ccm
-+
-+  reg:
-+    maxItems: 1
-+
-+  clocks:
-+    minItems: 6
-+    maxItems: 7
-+
-+  clock-names:
-+    minItems: 6
-+    maxItems: 7
-+
-+  '#clock-cells':
-+    const: 1
-+    description:
-+      The clock consumer should specify the desired clock by having the clock
-+      ID in its "clocks" phandle cell. See include/dt-bindings/clock/imx8m-clock.h
-+      for the full list of i.MX8M clock IDs.
-+
-+required:
-+  - compatible
-+  - reg
-+  - clocks
-+  - clock-names
-+  - '#clock-cells'
-+
-+allOf:
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: fsl,imx8mq-ccm
-+    then:
-+      properties:
-+        clocks:
-+          minItems: 7
-+          maxItems: 7
-+          items:
-+            - description: 32k osc
-+            - description: 25m osc
-+            - description: 27m osc
-+            - description: ext1 clock input
-+            - description: ext2 clock input
-+            - description: ext3 clock input
-+            - description: ext4 clock input
-+        clock-names:
-+          minItems: 7
-+          maxItems: 7
-+          items:
-+            - const: ckil
-+            - const: osc_25m
-+            - const: osc_27m
-+            - const: clk_ext1
-+            - const: clk_ext2
-+            - const: clk_ext3
-+            - const: clk_ext4
-+    else:
-+      properties:
-+        clocks:
-+          items:
-+            - description: 32k osc
-+            - description: 24m osc
-+            - description: ext1 clock input
-+            - description: ext2 clock input
-+            - description: ext3 clock input
-+            - description: ext4 clock input
-+
-+        clock-names:
-+          items:
-+            - const: osc_32k
-+            - const: osc_24m
-+            - const: clk_ext1
-+            - const: clk_ext2
-+            - const: clk_ext3
-+            - const: clk_ext4
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  # Clock Control Module node:
-+  - |
-+    clock-controller@30380000 {
-+        compatible = "fsl,imx8mm-ccm";
-+        reg = <0x30380000 0x10000>;
-+        #clock-cells = <1>;
-+        clocks = <&osc_32k>, <&osc_24m>, <&clk_ext1>, <&clk_ext2>,
-+                 <&clk_ext3>, <&clk_ext4>;
-+        clock-names = "osc_32k", "osc_24m", "clk_ext1", "clk_ext2",
-+                      "clk_ext3", "clk_ext4";
-+    };
-+
-+  - |
-+    clock-controller@30390000 {
-+        compatible = "fsl,imx8mq-ccm";
-+        reg = <0x30380000 0x10000>;
-+        #clock-cells = <1>;
-+        clocks = <&ckil>, <&osc_25m>, <&osc_27m>, <&clk_ext1>,
-+                 <&clk_ext2>, <&clk_ext3>, <&clk_ext4>;
-+        clock-names = "ckil", "osc_25m", "osc_27m", "clk_ext1",
-+                      "clk_ext2", "clk_ext3", "clk_ext4";
-+    };
-+
-+...
-diff --git a/Documentation/devicetree/bindings/clock/imx8mm-clock.yaml b/Documentation/devicetree/bindings/clock/imx8mm-clock.yaml
-deleted file mode 100644
-index ec830db1367b..000000000000
---- a/Documentation/devicetree/bindings/clock/imx8mm-clock.yaml
-+++ /dev/null
-@@ -1,68 +0,0 @@
--# SPDX-License-Identifier: GPL-2.0
--%YAML 1.2
-----
--$id: http://devicetree.org/schemas/clock/imx8mm-clock.yaml#
--$schema: http://devicetree.org/meta-schemas/core.yaml#
--
--title: NXP i.MX8M Mini Clock Control Module Binding
--
--maintainers:
--  - Anson Huang <Anson.Huang@nxp.com>
--
--description: |
--  NXP i.MX8M Mini clock control module is an integrated clock controller, which
--  generates and supplies to all modules.
--
--properties:
--  compatible:
--    const: fsl,imx8mm-ccm
--
--  reg:
--    maxItems: 1
--
--  clocks:
--    items:
--      - description: 32k osc
--      - description: 24m osc
--      - description: ext1 clock input
--      - description: ext2 clock input
--      - description: ext3 clock input
--      - description: ext4 clock input
--
--  clock-names:
--    items:
--      - const: osc_32k
--      - const: osc_24m
--      - const: clk_ext1
--      - const: clk_ext2
--      - const: clk_ext3
--      - const: clk_ext4
--
--  '#clock-cells':
--    const: 1
--    description:
--      The clock consumer should specify the desired clock by having the clock
--      ID in its "clocks" phandle cell. See include/dt-bindings/clock/imx8mm-clock.h
--      for the full list of i.MX8M Mini clock IDs.
--
--required:
--  - compatible
--  - reg
--  - clocks
--  - clock-names
--  - '#clock-cells'
--
--examples:
--  # Clock Control Module node:
--  - |
--    clk: clock-controller@30380000 {
--        compatible = "fsl,imx8mm-ccm";
--        reg = <0x30380000 0x10000>;
--        #clock-cells = <1>;
--        clocks = <&osc_32k>, <&osc_24m>, <&clk_ext1>, <&clk_ext2>,
--                 <&clk_ext3>, <&clk_ext4>;
--        clock-names = "osc_32k", "osc_24m", "clk_ext1", "clk_ext2",
--                      "clk_ext3", "clk_ext4";
--    };
--
--...
-diff --git a/Documentation/devicetree/bindings/clock/imx8mn-clock.yaml b/Documentation/devicetree/bindings/clock/imx8mn-clock.yaml
-deleted file mode 100644
-index bdaa29616ab1..000000000000
---- a/Documentation/devicetree/bindings/clock/imx8mn-clock.yaml
-+++ /dev/null
-@@ -1,70 +0,0 @@
--# SPDX-License-Identifier: GPL-2.0
--%YAML 1.2
-----
--$id: http://devicetree.org/schemas/clock/imx8mn-clock.yaml#
--$schema: http://devicetree.org/meta-schemas/core.yaml#
--
--title: NXP i.MX8M Nano Clock Control Module Binding
--
--maintainers:
--  - Anson Huang <Anson.Huang@nxp.com>
--
--description: |
--  NXP i.MX8M Nano clock control module is an integrated clock controller, which
--  generates and supplies to all modules.
--
--properties:
--  compatible:
--    const: fsl,imx8mn-ccm
--
--  reg:
--    maxItems: 1
--
--  clocks:
--    items:
--      - description: 32k osc
--      - description: 24m osc
--      - description: ext1 clock input
--      - description: ext2 clock input
--      - description: ext3 clock input
--      - description: ext4 clock input
--
--  clock-names:
--    items:
--      - const: osc_32k
--      - const: osc_24m
--      - const: clk_ext1
--      - const: clk_ext2
--      - const: clk_ext3
--      - const: clk_ext4
--
--  '#clock-cells':
--    const: 1
--    description:
--      The clock consumer should specify the desired clock by having the clock
--      ID in its "clocks" phandle cell. See include/dt-bindings/clock/imx8mn-clock.h
--      for the full list of i.MX8M Nano clock IDs.
--
--required:
--  - compatible
--  - reg
--  - clocks
--  - clock-names
--  - '#clock-cells'
--
--additionalProperties: false
--
--examples:
--  # Clock Control Module node:
--  - |
--    clk: clock-controller@30380000 {
--        compatible = "fsl,imx8mn-ccm";
--        reg = <0x30380000 0x10000>;
--        #clock-cells = <1>;
--        clocks = <&osc_32k>, <&osc_24m>, <&clk_ext1>,
--                 <&clk_ext2>, <&clk_ext3>, <&clk_ext4>;
--        clock-names = "osc_32k", "osc_24m", "clk_ext1",
--                      "clk_ext2", "clk_ext3", "clk_ext4";
--    };
--
--...
-diff --git a/Documentation/devicetree/bindings/clock/imx8mp-clock.yaml b/Documentation/devicetree/bindings/clock/imx8mp-clock.yaml
-deleted file mode 100644
-index 4351a1dbb4f7..000000000000
---- a/Documentation/devicetree/bindings/clock/imx8mp-clock.yaml
-+++ /dev/null
-@@ -1,70 +0,0 @@
--# SPDX-License-Identifier: GPL-2.0
--%YAML 1.2
-----
--$id: http://devicetree.org/schemas/clock/imx8mp-clock.yaml#
--$schema: http://devicetree.org/meta-schemas/core.yaml#
--
--title: NXP i.MX8M Plus Clock Control Module Binding
--
--maintainers:
--  - Anson Huang <Anson.Huang@nxp.com>
--
--description:
--  NXP i.MX8M Plus clock control module is an integrated clock controller, which
--  generates and supplies to all modules.
--
--properties:
--  compatible:
--    const: fsl,imx8mp-ccm
--
--  reg:
--    maxItems: 1
--
--  clocks:
--    items:
--      - description: 32k osc
--      - description: 24m osc
--      - description: ext1 clock input
--      - description: ext2 clock input
--      - description: ext3 clock input
--      - description: ext4 clock input
--
--  clock-names:
--    items:
--      - const: osc_32k
--      - const: osc_24m
--      - const: clk_ext1
--      - const: clk_ext2
--      - const: clk_ext3
--      - const: clk_ext4
--
--  '#clock-cells':
--    const: 1
--    description:
--      The clock consumer should specify the desired clock by having the clock
--      ID in its "clocks" phandle cell. See include/dt-bindings/clock/imx8mp-clock.h
--      for the full list of i.MX8M Plus clock IDs.
--
--required:
--  - compatible
--  - reg
--  - clocks
--  - clock-names
--  - '#clock-cells'
--
--additionalProperties: false
--
--examples:
--  # Clock Control Module node:
--  - |
--    clk: clock-controller@30380000 {
--        compatible = "fsl,imx8mp-ccm";
--        reg = <0x30380000 0x10000>;
--        #clock-cells = <1>;
--        clocks = <&osc_32k>, <&osc_24m>, <&clk_ext1>,
--                 <&clk_ext2>, <&clk_ext3>, <&clk_ext4>;
--        clock-names = "osc_32k", "osc_24m", "clk_ext1",
--                      "clk_ext2", "clk_ext3", "clk_ext4";
--    };
--
--...
-diff --git a/Documentation/devicetree/bindings/clock/imx8mq-clock.yaml b/Documentation/devicetree/bindings/clock/imx8mq-clock.yaml
-deleted file mode 100644
-index 05d7d1471e0c..000000000000
---- a/Documentation/devicetree/bindings/clock/imx8mq-clock.yaml
-+++ /dev/null
-@@ -1,72 +0,0 @@
--# SPDX-License-Identifier: GPL-2.0
--%YAML 1.2
-----
--$id: http://devicetree.org/schemas/clock/imx8mq-clock.yaml#
--$schema: http://devicetree.org/meta-schemas/core.yaml#
--
--title: NXP i.MX8M Quad Clock Control Module Binding
--
--maintainers:
--  - Anson Huang <Anson.Huang@nxp.com>
--
--description: |
--  NXP i.MX8M Quad clock control module is an integrated clock controller, which
--  generates and supplies to all modules.
--
--properties:
--  compatible:
--    const: fsl,imx8mq-ccm
--
--  reg:
--    maxItems: 1
--
--  clocks:
--    items:
--      - description: 32k osc
--      - description: 25m osc
--      - description: 27m osc
--      - description: ext1 clock input
--      - description: ext2 clock input
--      - description: ext3 clock input
--      - description: ext4 clock input
--
--  clock-names:
--    items:
--      - const: ckil
--      - const: osc_25m
--      - const: osc_27m
--      - const: clk_ext1
--      - const: clk_ext2
--      - const: clk_ext3
--      - const: clk_ext4
--
--  '#clock-cells':
--    const: 1
--    description:
--      The clock consumer should specify the desired clock by having the clock
--      ID in its "clocks" phandle cell. See include/dt-bindings/clock/imx8mq-clock.h
--      for the full list of i.MX8M Quad clock IDs.
--
--required:
--  - compatible
--  - reg
--  - clocks
--  - clock-names
--  - '#clock-cells'
--
--examples:
--  # Clock Control Module node:
--  - |
--    clk: clock-controller@30380000 {
--        compatible = "fsl,imx8mq-ccm";
--        reg = <0x30380000 0x10000>;
--        #clock-cells = <1>;
--        clocks = <&ckil>, <&osc_25m>, <&osc_27m>,
--                 <&clk_ext1>, <&clk_ext2>,
--                 <&clk_ext3>, <&clk_ext4>;
--        clock-names = "ckil", "osc_25m", "osc_27m",
--                      "clk_ext1", "clk_ext2",
--                      "clk_ext3", "clk_ext4";
--    };
--
--...
--- 
-2.17.1
-
+> > I'm sorry your frustrated; I'm frustrated too!  But until I can find
+> > the time to do a full bisect (v5.8 works just fine.  v5.9-rc1 is
+> > flakey as hell when booting my test config in a GCE VM), I'm not in a
+> > position to send anything to Linus.
+> 
+> That looks nasty, good luck! Hopefully the bisect will be helpful. FWIW,
+> in the testing I've done (with this patch) on ext4 and with XFS, I
+> haven't seen anything odd. That's using real hardware though, and qemu
+> on the laptop, no GCE.
+> 
+> -- 
+> Jens Axboe
+> 
