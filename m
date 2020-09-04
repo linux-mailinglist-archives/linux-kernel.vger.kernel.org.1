@@ -2,72 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C04B825D855
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 14:03:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 635DB25D850
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 14:03:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730094AbgIDMDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 08:03:42 -0400
-Received: from mail.monom.org ([188.138.9.77]:54882 "EHLO mail.monom.org"
+        id S1730139AbgIDMCu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 08:02:50 -0400
+Received: from mout.gmx.net ([212.227.17.20]:60721 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730163AbgIDMDI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 08:03:08 -0400
-Received: from mail.monom.org (localhost [127.0.0.1])
-        by filter.mynetwork.local (Postfix) with ESMTP id C1FF550035A;
-        Fri,  4 Sep 2020 14:02:57 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.monom.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=5.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=ham autolearn_force=no version=3.4.2
-Received: from localhost (unknown [94.31.100.251])
-        by mail.monom.org (Postfix) with ESMTPSA id 1963D50016C;
-        Fri,  4 Sep 2020 14:02:57 +0200 (CEST)
-From:   Daniel Wagner <dwagner@suse.de>
-Subject: [ANNOUNCE] 4.4.234-rt205
-Date:   Fri, 04 Sep 2020 11:55:24 -0000
-Message-ID: <159922052495.29454.693485315909832584@beryllium>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        John Kacur <jkacur@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Tom Zanussi <tom.zanussi@linux.intel.com>,
-        Clark Williams <williams@redhat.com>,
-        Pavel Machek <pavel@denx.de>
+        id S1728588AbgIDMBh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 08:01:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1599220869;
+        bh=FT13C0ebJTxXE8wqcoPUKihv4j2mIvTpRNrXVWEUsZo=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=VdK4aqwnvEzkJZy0Odb4qneBQFsuRJgMyhgvrHREkpAVAwUuQWU31uIpa9+4Uk02+
+         LHGeE4kB5sbNhkd3tr9vB091c7hsMfQGnUEmHTouAk5srp/asL0oQhsFImk9qKjFWU
+         DuedyXBNYT2zGNYyi31OKv1IJnNDVAQbG03MKKdQ=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [217.61.147.193] ([217.61.147.193]) by web-mail.gmx.net
+ (3c-app-gmx-bs07.server.lan [172.19.170.56]) (via HTTP); Fri, 4 Sep 2020
+ 14:01:09 +0200
+MIME-Version: 1.0
+Message-ID: <trinity-0d5c85ee-1f7f-44ee-9e5c-6349d4edb3d3-1599220869440@3c-app-gmx-bs07>
+From:   Frank Wunderlich <frank-w@public-files.de>
+To:     Frank Wunderlich <linux@fw-web.de>
+Cc:     linux-mediatek@lists.infradead.org,
+        Alex Ryabchenko <d3adme4t@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        chunkuang.hu@kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Aw: [PATCH] arm: dts: mt7623: add lima related regulator
+Content-Type: text/plain; charset=UTF-8
+Date:   Fri, 4 Sep 2020 14:01:09 +0200
+Importance: normal
+Sensitivity: Normal
+In-Reply-To: <20200831143937.28259-1-linux@fw-web.de>
+References: <20200831143937.28259-1-linux@fw-web.de>
+X-UI-Message-Type: mail
+X-Priority: 3
+X-Provags-ID: V03:K1:Zdcm2VtIlFuzIg9+2N4g48+JIQEWJ90Ozh5sFswZjRYm38b1Nq1kEi9atHNr1ObC+tCy0
+ TJfkljY75fRhxXVJ1KSRT/xfiSE90L69s8Klm5vrENXG5PNU27+Int6fZUXBQZBM96Pd9za6NHKz
+ 1WP3CqvfFZ96IGCXt0kcpTNWQbByYDrSWYYQleP05HinLLgChqPMbEMBJ83pElU1HCshWtym8oHK
+ 0FCuGdva1vxhNuHkYPtcHIBV4D2yX1loE2pnseKbeYKGTOHHUVQxEH7HgQ1laM4QH+EHIStOwPH7
+ 1A=
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:q4A+iZp4si4=:Aj6oa9ix1kGaFT+HdJfD3f
+ W6/eJcn7F8dSsaiJRG/FeYXvf23b8+5lYbBKzlsS6nDbbGIk0bfkNhSgFTC2kO+GOh9kB1cIf
+ qUd/c2nLTyX9VAQ0sSjvbDdO4IfNEF3gD7cK+xVPzn3rN4zzSewX3bj8rKF8L6zyIFa5lemd6
+ QwRWZZxzftMrB7duyjC7AX6Vla/UnfyH6yAAEXn8F8G6OgjHK1EivMUYuq48S+p6tCVj0VbAq
+ T4Mef4D0KvZAQAFJ2GLNl1JvdIF75Go6ERLjnbSZrJTG3rlx3BhrWs4QBJzok3eMiQHVQ5wH5
+ CBH3QAG03cnyZqz4IWS6Mpm+9f1ZU8dISj5dVmGwHOVaAE/cAyy3i9tuoTj/MDuMSQugzT1xJ
+ d57cm8zVsKUwQxccE9AP2VhxGLovnGmDuePfY7qnjql9G344j+dQnqQeyl0eFKsf728SPE+Wn
+ +0XUsj2knHpNczCN3waISDfEXWTJ+TJ5xDOylJp+BjZwBsW8SDvOqtyV6w6GvRsczRB6GBrGA
+ bNioBZf61uUzdKUGOHySqiKosptEKGgTPtD2kr4ZjzL7bIy0EMlRgpzRcunVWnDUPtOraKPxW
+ murolT6ixoHgFkUPWAGnut7+Z3NzIkKumNfYXJBSJwyigA7hqK6qlxXwB9aY1chiJlGXtztK2
+ R/RDHG5MGwbO+7Oq4jJhGet1cHSD3yk6G4FlXUu2bMQV/qYYJu+w81B4+oKDijDZAJLE=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello RT-list!
+this Patch is now Part of my hdmi-series v6
 
-I'm pleased to announce the 4.4.234-rt205 stable release.
+https://patchwork.kernel.org/project/linux-mediatek/list/?series=343565
 
-This updates the v4.4-rt almost to the latest stable release. Just
-can't keep up with Greg. Anyway there was a small merge conflict in
-page_alloc.c but with the help from Vlastimil Babka it was easy to
-resolve. Thanks!
+so comments please to this series
 
-Also I included Matt Fleming's fix for the signal code:
-
-  signal: Prevent double-free of user struct
-
-You can get this release via the git tree at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
-
-  branch: v4.4-rt
-  Head SHA1: 89c4f38681e9b025859146f144f167ef7a3dd83f
-
-Or to build 4.4.234-rt205 directly, the following patches should be applied:
-
-  https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.4.tar.xz
-
-  https://www.kernel.org/pub/linux/kernel/v4.x/patch-4.4.234.xz
-
-  https://www.kernel.org/pub/linux/kernel/projects/rt/4.4/patch-4.4.234-rt205.patch.xz
-
-
-Enjoy!
-Daniel
+regards Frank
