@@ -2,203 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E448325D30F
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 09:57:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98D7225D314
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 09:59:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728248AbgIDH5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 03:57:42 -0400
-Received: from mail.codeweavers.com ([50.203.203.244]:42092 "EHLO
-        mail.codeweavers.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726151AbgIDH5l (ORCPT
+        id S1729651AbgIDH7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 03:59:23 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:39294 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726127AbgIDH7R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 03:57:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=codeweavers.com; s=6377696661; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=UX09Qx4my4iQJ9tpbhbv55z9gt8MX+X9FF9KxeKoY3c=; b=HlfKGcc3anetVZvH2Ir+dLNkjB
-        F60whqXQio34uUCPSTbsJKvetmgJxyIid0sShmatr9d3m8L2E01qVrotRP6c5qLivntA7M9g7Ce/T
-        W25gnp6dQKv6mJryFxShE+bZ1vRTlMFtUpmxTkx63/4niflzgQjKUtN4OI67Cc3AZolw=;
-Received: from lfbn-mar-1-582-44.w109-208.abo.wanadoo.fr ([109.208.127.44] helo=[192.168.1.116])
-        by mail.codeweavers.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <rbernon@codeweavers.com>)
-        id 1kE6bI-0003Od-6F; Fri, 04 Sep 2020 02:57:38 -0500
-Subject: Re: [PATCH v3 1/3] perf dso: Use libbfd to read build_id and
- .gnu_debuglink section
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jacek Caban <jacek@codeweavers.com>
-References: <20200821165238.1340315-1-rbernon@codeweavers.com>
- <20200903002519.GA3487700@kernel.org> <20200903165132.GA3495158@kernel.org>
-From:   Remi Bernon <rbernon@codeweavers.com>
-Message-ID: <76cc6da5-bf1e-4de3-7b79-b9759dc6e5b9@codeweavers.com>
-Date:   Fri, 4 Sep 2020 09:57:33 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Fri, 4 Sep 2020 03:59:17 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-181-u9TZWDNaNCSHyguiU6M2MQ-1; Fri, 04 Sep 2020 08:59:13 +0100
+X-MC-Unique: u9TZWDNaNCSHyguiU6M2MQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Fri, 4 Sep 2020 08:59:12 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Fri, 4 Sep 2020 08:59:12 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Linus Torvalds' <torvalds@linux-foundation.org>
+CC:     Christoph Hellwig <hch@lst.de>, Al Viro <viro@zeniv.linux.org.uk>,
+        "Michael Ellerman" <mpe@ellerman.id.au>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "Alexey Dobriyan" <adobriyan@gmail.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        "Kees Cook" <keescook@chromium.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+Subject: RE: [PATCH 12/14] x86: remove address space overrides using set_fs()
+Thread-Topic: [PATCH 12/14] x86: remove address space overrides using set_fs()
+Thread-Index: AQHWggEOyEQXa7QqyE6TJTq6U2S8aalXbNZggAARhwCAAJziAA==
+Date:   Fri, 4 Sep 2020 07:59:12 +0000
+Message-ID: <4ec56728ace54dd081f02a6c0f32f781@AcuMS.aculab.com>
+References: <20200903142242.925828-1-hch@lst.de>
+ <20200903142242.925828-13-hch@lst.de>
+ <9ab40244a2164f7db2ff0c1d23ab59a0@AcuMS.aculab.com>
+ <CAHk-=whDtnudkbZ8-hR8HiDE7zog0dv+Gu9Sx5i6SPakrDtajQ@mail.gmail.com>
+In-Reply-To: <CAHk-=whDtnudkbZ8-hR8HiDE7zog0dv+Gu9Sx5i6SPakrDtajQ@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-In-Reply-To: <20200903165132.GA3495158@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0.001
+X-Mimecast-Originator: aculab.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Spam-Score: -34.2
-X-Spam-Report: Spam detection software, running on the system "mail.codeweavers.com",
- has NOT identified this incoming email as spam.  The original
- message has been attached to this so you can view it or label
- similar future email.  If you have any questions, see
- the administrator of that system for details.
- Content preview:  On 2020-09-03 18:51, Arnaldo Carvalho de Melo wrote: > Em
-   Wed, Sep 02, 2020 at 09:25:19PM -0300, Arnaldo Carvalho de Melo escreveu:
-   >> Em Fri, Aug 21, 2020 at 06:52:36PM +0200, Remi Bernon escreveu: > [...]
- Content analysis details:   (-34.2 points, 5.0 required)
-  pts rule name              description
- ---- ---------------------- --------------------------------------------------
- -0.0 USER_IN_WELCOMELIST    user is listed in 'welcomelist_from'
-  -20 USER_IN_WHITELIST      DEPRECATED: See USER_IN_WELCOMELIST
-  -20 ALL_TRUSTED            Passed through trusted hosts only via SMTP
- -0.5 BAYES_00               BODY: Bayes spam probability is 0 to 1%
-                             [score: 0.0000]
- -2.4 NICE_REPLY_A           Looks like a legit reply (A)
-  8.7 AWL                    AWL: Adjusted score from AWL reputation of From: address
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-03 18:51, Arnaldo Carvalho de Melo wrote:
-> Em Wed, Sep 02, 2020 at 09:25:19PM -0300, Arnaldo Carvalho de Melo escreveu:
->> Em Fri, Aug 21, 2020 at 06:52:36PM +0200, Remi Bernon escreveu:
->>> Wine generates PE binaries for most of its modules and perf is unable
->>> to parse these files to get build_id or .gnu_debuglink section.
->>>
->>> Using libbfd when available, instead of libelf, makes it possible to
->>> resolve debug file location regardless of the dso binary format.
->>>
->>> Signed-off-by: Remi Bernon <rbernon@codeweavers.com>
->>> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
->>> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
->>> Cc: Ingo Molnar <mingo@redhat.com>
->>> Cc: Jiri Olsa <jolsa@redhat.com>
->>> Cc: Mark Rutland <mark.rutland@arm.com>
->>> Cc: Namhyung Kim <namhyung@kernel.org>
->>> Cc: Peter Zijlstra <peterz@infradead.org>
->>> Cc: Jacek Caban <jacek@codeweavers.com>
->>> ---
->>>
->>> v3: Rebase and small changes to PATCH 2/3 and and PATCH 3/3.
->>>
->>>   tools/perf/util/symbol-elf.c | 80 ++++++++++++++++++++++++++++++++++--
->>>   1 file changed, 77 insertions(+), 3 deletions(-)
->>>
->>> diff --git a/tools/perf/util/symbol-elf.c b/tools/perf/util/symbol-elf.c
->>> index 8cc4b0059fb0..f7432c4a4154 100644
->>> --- a/tools/perf/util/symbol-elf.c
->>> +++ b/tools/perf/util/symbol-elf.c
->>> @@ -50,6 +50,10 @@ typedef Elf64_Nhdr GElf_Nhdr;
->>>   #define DMGL_ANSI        (1 << 1)       /* Include const, volatile, etc */
->>>   #endif
->>>   
->>> +#ifdef HAVE_LIBBFD_SUPPORT
->>
->> So, the feature test should also test for the buildid struct field, see
->> below:
->>
->>> +#define PACKAGE 'perf'
->>> +#include <bfd.h>
->>> +#else
->>>   #ifdef HAVE_CPLUS_DEMANGLE_SUPPORT
->>>   extern char *cplus_demangle(const char *, int);
->>>   
->>> @@ -65,9 +69,7 @@ static inline char *bfd_demangle(void __maybe_unused *v,
->>>   {
->>>   	return NULL;
->>>   }
->>> -#else
->>> -#define PACKAGE 'perf'
->>> -#include <bfd.h>
->>> +#endif
->>>   #endif
->>>   #endif
->>>   
->>> @@ -530,6 +532,36 @@ static int elf_read_build_id(Elf *elf, void *bf, size_t size)
->>>   	return err;
->>>   }
->>>   
->>> +#ifdef HAVE_LIBBFD_SUPPORT
->>> +
->>> +int filename__read_build_id(const char *filename, void *bf, size_t size)
->>> +{
->>> +	int err = -1;
->>> +	bfd *abfd;
->>> +
->>> +	abfd = bfd_openr(filename, NULL);
->>> +	if (!abfd)
->>> +		return -1;
->>> +
->>> +	if (!bfd_check_format(abfd, bfd_object)) {
->>> +		pr_debug2("%s: cannot read %s bfd file.\n", __func__, filename);
->>> +		goto out_close;
->>> +	}
->>> +
->>> +	if (!abfd->build_id || abfd->build_id->size > size)
->>> +		goto out_close;
->>
->> amazonlinux:1, centos:6, debian:8, mageia:5, oraclelinux:6, ubuntu:14.04
->> fail, its all old stuff, but adding a reference to abfd->build_id to the
->> feature test that ends up defining HAVE_LIBBFD_SUPPORT will solve that,
->> I'll do it tomorrow morning if you don't beat me to it.
->>
->> util/symbol-elf.c: In function 'filename__read_build_id':
->> util/symbol-elf.c:551:11: error: 'bfd {aka struct bfd}' has no member named 'build_id'
->>    if (!abfd->build_id || abfd->build_id->size > size)
->>             ^~
->> util/symbol-elf.c:551:29: error: 'bfd {aka struct bfd}' has no member named 'build_id'
->>    if (!abfd->build_id || abfd->build_id->size > size)
->>                               ^~
->> util/symbol-elf.c:554:17: error: 'bfd {aka struct bfd}' has no member named 'build_id'
->>    memcpy(bf, abfd->build_id->data, abfd->build_id->size);
->>                   ^~
->> util/symbol-elf.c:554:39: error: 'bfd {aka struct bfd}' has no member named 'build_id'
->>    memcpy(bf, abfd->build_id->data, abfd->build_id->size);
->>                                         ^~
->> util/symbol-elf.c:555:18: error: 'bfd {aka struct bfd}' has no member named 'build_id'
->>    memset(bf + abfd->build_id->size, 0, size - abfd->build_id->size);
->>                    ^~
->> util/symbol-elf.c:555:50: error: 'bfd {aka struct bfd}' has no member named 'build_id'
->>    memset(bf + abfd->build_id->size, 0, size - abfd->build_id->size);
->>                                                    ^~
->> util/symbol-elf.c:556:12: error: 'bfd {aka struct bfd}' has no member named 'build_id'
->>    err = abfd->build_id->size;
->>              ^~
->>    CC       /tmp/build/perf/util/cap.o
->> make[4]: *** [/tmp/build/perf/util/symbol-elf.o] Error 1
->> make[4]: *** Waiting for unfinished jobs....
->>    LD       /tmp/build/perf/util/scripting-engines/perf-in.o
->>    LD       /tmp/build/perf/util/intel-pt-decoder/perf-in.o
->> make[3]: *** [util] Error 2
->> make[2]: *** [/tmp/build/perf/perf-in.o] Error 2
->> make[2]: *** Waiting for unfinished jobs....
->> make[1]: *** [sub-make] Error 2
->> make: *** [all] Error 2
->> make: Leaving directory `/git/linux/tools/perf'
->> + exit 1
->> [perfbuilder@five ~]$
-> 
-> So, I have the cset at the end of this message in front of your series +
-> the following patch applied to your patch, the debuglink part seems ok
-> and can continue depending on just libbfd, having or not abfd->buildid.
-> 
+RnJvbTogTGludXMgVG9ydmFsZHMNCj4gU2VudDogMDQgU2VwdGVtYmVyIDIwMjAgMDA6MjYNCj4g
+DQo+IE9uIFRodSwgU2VwIDMsIDIwMjAgYXQgMjozMCBQTSBEYXZpZCBMYWlnaHQgPERhdmlkLkxh
+aWdodEBhY3VsYWIuY29tPiB3cm90ZToNCj4gPg0KPiA+IEEgbm9uLWNhbm9uaWNhbCAoaXMgdGhh
+dCB0aGUgcmlnaHQgdGVybSkgYWRkcmVzcyBiZXR3ZWVuIHRoZSBoaWdoZXN0DQo+ID4gdmFsaWQg
+dXNlciBhZGRyZXNzIGFuZCB0aGUgbG93ZXN0IHZhbGlkIGtlcm5lbCBhZGRyZXNzICg3ZmZlIHRv
+IGZmZmU/KQ0KPiA+IHdpbGwgZmF1bHQgYW55d2F5Lg0KPiANCj4gWWVzLg0KPiANCj4gQnV0IHdl
+IGFjdHVhbGx5IHdhcm4gYWdhaW5zdCB0aGF0IGZhdWx0LCBiZWNhdXNlIGl0J3MgYmVlbiBhIGdv
+b2Qgd2F5DQo+IHRvIGNhdGNoIHBsYWNlcyB0aGF0IGRpZG4ndCB1c2UgdGhlIHByb3BlciAiYWNj
+ZXNzX29rKCkiIHBhdHRlcm4uDQo+IA0KPiBTZWUgZXhfaGFuZGxlcl91YWNjZXNzKCkgYW5kIHRo
+ZQ0KPiANCj4gICAgICAgICBXQVJOX09OQ0UodHJhcG5yID09IFg4Nl9UUkFQX0dQLCAiR2VuZXJh
+bCBwcm90ZWN0aW9uIGZhdWx0IGluDQo+IHVzZXIgYWNjZXNzLiBOb24tY2Fub25pY2FsIGFkZHJl
+c3M/Iik7DQo+IA0KPiB3YXJuaW5nLiBJdCdzIGJlZW4gZ29vZCBmb3IgcmFuZG9taXplZCB0ZXN0
+aW5nIC0gYSBtaXNzaW5nIHJhbmdlIGNoZWNrDQo+IG9uIGEgdXNlciBhZGRyZXNzIHdpbGwgb2Z0
+ZW4gaGl0IHRoaXMuDQo+IA0KPiBPZiBjb3Vyc2UsIHlvdSBzaG91bGQgbmV2ZXIgc2VlIGl0IGlu
+IHJlYWwgbGlmZSAoYW5kIGhvcGVmdWxseSBub3QgaW4NCj4gdGVzdGluZyBlaXRoZXIgYW55IG1v
+cmUpLiBCdXQgYmVsdC1hbmQtc3VzcGVuZGVycy4uDQoNClRoYXQgY291bGQgc3RpbGwgYmUgZWZm
+ZWN0aXZlLCBqdXN0IHBpY2sgYW4gYWRkcmVzcyBsaW1pdCB0aGF0IGlzDQphcHByb3ByaWF0ZSBm
+b3IgdGhlIG9uZSBhY2Nlc3Nfb2soKSBpcyB1c2luZy4NCg0KRXZlbiBpZiBhY2Nlc3Nfb2soKSB1
+c2VzIDE8PDYzIHRoZXJlIGFyZSBwbGVudHkgb2YgYWRkcmVzc2VzIGFib3ZlIGl0IHRoYXQgZmF1
+bHQuDQpCdXQgdGhlIHVwcGVyIGxpbWl0IGZvciA1LWxldmVsIHBhZ2UgdGFibGVzIGNvdWxkIGJl
+IHVzZWQgYWxsIHRoZSB0aW1lLg0KDQpPbmUgb3B0aW9uIGlzIHRvIHRlc3QgJyhhZGRyZXNzIHwg
+bGVuZ3RoKSA8ICgzPDw2MiknIGluIGFjY2Vzc19vaygpLg0KVGhhdCBpcyBhbHNvIG1vZGVyYXRl
+bHkgc3VpdGFibGUgZm9yIG1hc2tpbmcgaW52YWxpZCBhZGRyZXNzZXMgdG8gMC4NCg0KCURhdmlk
+DQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBG
+YXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2
+IChXYWxlcykNCg==
 
-Thanks! I may have missed the first changeset you mention -- IIUC the 
-one adding the feature check -- but it sounds good to me nonetheless.
-
-Should I do anything?
--- 
-Rémi Bernon <rbernon@codeweavers.com>
