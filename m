@@ -2,113 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BC2B25DBE0
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 16:35:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 130C625DBC0
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 16:31:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730770AbgIDOfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 10:35:10 -0400
-Received: from mx1.tq-group.com ([62.157.118.193]:32814 "EHLO mx1.tq-group.com"
+        id S1730599AbgIDObw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 10:31:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39494 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727049AbgIDOev (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 10:34:51 -0400
-IronPort-SDR: MRED0OCmkjLNXo8Kz0rHdFOUZXQAYc9NHl180JrekTcYuQIAO0vPEsXeL+umr+g/QzVPwBhdNR
- AvWaWeCdqCPGTYSKlqEeT3TN0J6ti8UmioQeIMFtFZIYdHtKh1UsAJm/Rzq79pijLpGE6jvnhj
- u6i0bm57/HjEYqmL9kug62dq9dpP0V+pOwd7HCpaVs8QxzFFbP4awbH0PWoU6KUuLnqkSi8vfk
- 3gwt9F19U19ZWC35alSqQrEaPYSYrfZgWcEyo8Urfi03icVRs4KjoWtSEdcQvPyYWg9j3GzndC
- tRQ=
-X-IronPort-AV: E=Sophos;i="5.76,389,1592863200"; 
-   d="scan'208";a="13737379"
-Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
-  by mx1-pgp.tq-group.com with ESMTP; 04 Sep 2020 16:34:43 +0200
-Received: from mx1.tq-group.com ([192.168.6.7])
-  by tq-pgp-pr1.tq-net.de (PGP Universal service);
-  Fri, 04 Sep 2020 16:34:43 +0200
-X-PGP-Universal: processed;
-        by tq-pgp-pr1.tq-net.de on Fri, 04 Sep 2020 16:34:43 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1599230083; x=1630766083;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=T7XiVlDr00IMxMBe764lGNk5PWpuISV6o8DZWMwHMFg=;
-  b=LkEW6cNWfD2yMDFHAcyzgn8dVUHnbsuMNQ93VYO2eFrGIavOcnEJ8XX7
-   ck4AGrnqy10Y8t+ZwqL2XbOvRHgYB+IlKSI5XPSe0Oz9w3LjV5uIYMzUH
-   prqIxqtcoQjLIo7noYIVp/yY02QHUaitpTfmW2ujDos3Px4Jsvxlo7gtS
-   /aHkXkMr1a0WrK2tPsGeY5WQaYLViDDAcyD3NkXqqyVnwpJ9TN2CTQHSA
-   ECeS/U4ep5JeepQdjp/p1ifeQf97EH7MxKeQNaS3UL3gTNTSMbitUMtaK
-   Qv5VKPVpR0yxvwozdZL+Pc9tTpmuA/v7lLX/CRoRb2wD4CQluO5r9PeAm
-   Q==;
-IronPort-SDR: XWepbQyV2JQ+1ituWt8O4o77v0i8ltrFzVdO3CzJgRlRnMO1bNPMKAW/gXDaGQtRwqfihgutVX
- UoAMCc/OKxXSJ6NmGgesXMCjAjFNbnDJqT2kzVktpcuddkgFs13C71LDKHh7YJsO3U2PJiRmCl
- xUdRn3BMWQMq7OKTd5NskyELgH0o4NyMWVl6PcidcmvLop19HQXhXsr68n9Q3WO6NENrNxmLaz
- ExALDZnJ2W6IqYfSY09zWjnIwzY1JFn4yd4RyWtEWUOgg8nXfhhQuq0qu4aAAucqIZnEdUoh8t
- SSM=
-X-IronPort-AV: E=Sophos;i="5.76,389,1592863200"; 
-   d="scan'208";a="13737378"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 04 Sep 2020 16:34:43 +0200
-Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.117.49.26])
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 38FF9280065;
-        Fri,  4 Sep 2020 16:34:43 +0200 (CEST)
-Message-ID: <f753882996235439b9ef53747d24382e896dc4e7.camel@ew.tq-group.com>
-Subject: Re: (EXT) Re: (EXT) Re: [PATCH] spi-imx: remove num-cs support, set
- num_chipselect to 4
-From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-To:     Fabio Estevam <festevam@gmail.com>
-Cc:     Mark Brown <broonie@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Date:   Fri, 04 Sep 2020 16:34:43 +0200
-In-Reply-To: <CAOMZO5C7yyA11EOQvU0Fq-uDd5RK-B7WmbtvAy8OtPzfThYXRg@mail.gmail.com>
-References: <20200903144028.20416-1-matthias.schiffer@ew.tq-group.com>
-         <CAOMZO5DGHoG_8X+fbrGCHR4g=sGdEaF7bYrHbC_2T=aUnfTs8g@mail.gmail.com>
-         <e1431dd2653dbffdfec39a2e7167db07836e30ac.camel@ew.tq-group.com>
-         <CAOMZO5C7yyA11EOQvU0Fq-uDd5RK-B7WmbtvAy8OtPzfThYXRg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S1730395AbgIDObi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 10:31:38 -0400
+Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EE301206B8;
+        Fri,  4 Sep 2020 14:31:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599229897;
+        bh=Ovne3zPGozEcouB+wDQ/5CsnhQR2Yaomg+oiECsR7c4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ys2qUxkdrc2bt7b+dBy/+jS317c4d7xtuPAKrXIXg//u0JUvlm0/azD+UP0UL/3oc
+         arIq7LwSUlMnT/oq5GGpSVdyI18HDgX/f1muAN1Nrj4h+UaP4vIid+cv4Y3HmON6po
+         uOPI7u7lN8wFPEf+S80Qh65xr3zmFsjIjfY9tf+k=
+Date:   Fri, 4 Sep 2020 09:37:53 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     Rustam Kovhaev <rkovhaev@gmail.com>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        pbonzini@redhat.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org
+Subject: Re: [PATCH v2] KVM: fix memory leak in kvm_io_bus_unregister_dev()
+Message-ID: <20200904143753.GE31464@embeddedor>
+References: <20200902225718.675314-1-rkovhaev@gmail.com>
+ <c5990c86-ab01-d748-5505-375f50a4ed7d@embeddedor.com>
+ <20200903172215.GA870347@thinkpad>
+ <87ft7xoiig.fsf@vitty.brq.redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87ft7xoiig.fsf@vitty.brq.redhat.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-09-04 at 10:57 -0300, Fabio Estevam wrote:
-> On Fri, Sep 4, 2020 at 10:02 AM Matthias Schiffer
-> <matthias.schiffer@ew.tq-group.com> wrote:
+On Fri, Sep 04, 2020 at 02:04:23PM +0200, Vitaly Kuznetsov wrote:
+> Rustam Kovhaev <rkovhaev@gmail.com> writes:
 > 
-> > This would make num_chipselect default to 1 again (set by
-> > __spi_alloc_controller()), breaking every i.MX board that uses more
-> > than 1 native CS.
+> > On Wed, Sep 02, 2020 at 06:34:11PM -0500, Gustavo A. R. Silva wrote:
+> >> Hi,
+> >> 
+> >> On 9/2/20 17:57, Rustam Kovhaev wrote:
+> >> > when kmalloc() fails in kvm_io_bus_unregister_dev(), before removing
+> >> > the bus, we should iterate over all other devices linked to it and call
+> >> > kvm_iodevice_destructor() for them
+> >> > 
+> >> > Reported-and-tested-by: syzbot+f196caa45793d6374707@syzkaller.appspotmail.com
+> >> > Link: https://syzkaller.appspot.com/bug?extid=f196caa45793d6374707
+> >> > Signed-off-by: Rustam Kovhaev <rkovhaev@gmail.com>
+> >> > Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+> >> 
+> >> I think it's worthwhile to add a Fixes tag for this, too.
+> >> 
+> >> Please, see more comments below...
+[..]
+> >
+> > hi Gustavo, thank you for the review, i'll send the new patch.
+> > Vitaly, i think i will need to drop your "Reviewed-by", because there is
+> > going to be a bit more changes
+> >
 > 
-> Which boards are that? Are you referring to non-DT i.MX boards?
+> Personally, I'd prefer to make struct_size()/flex_array_size() a
+> separate preparatory patch so the real fix is small but I don't have a
+> strong opinion. I'll take look at v3 so feel free to drop R-b if you
+> decide to make a combined patch and feel free to keep it if you make the
+> preparatory changes separate :-)
 > 
-> If so, I have sent a patch removing all non-DT i.MX boards.
-> 
-> > I'm aware that using cs-gpios instead of native CS is probably a
-> > good
-> > idea in any case, as the native CS of this SPI controller is kinda
-> > flaky (and at a glance it looks like all in-tree DTs do this; not
-> > sure
-> > about board files that don't use DTs?), but I'm not convinced that
-> > breaking native CS support completely is desirable either.
-> 
-> Initial i.MX chips with this SPI IP had issues in using chip-select
-> in
-> native mode and GPIO chip-select has been used since them.
-> 
-> Do we have i.MX dts that make use of native chip select?
 
-As mentioned in my previous mail, all in-tree DTS use cs-gpios (unless
-I've overlooked something - I grepped for CSPIn_SSm pinmuxings), so
-removing support for native CS should not break anything we know of.
+I agree. A two-patch series is much better in this case.
 
-Nevertheless, I don't see why we should deliberately remove the native
-CS support - my understanding was that we try to avoid breaking changes
-to DT interpretation even for unknown/out-of-tree DTS.
+Rustam - please add a Fixes tag to the first patch and see if it can be
+applied to -stable. If so, you should Cc stable@vger.kernel.org, too.
 
+Thanks
+--
+Gustavo
