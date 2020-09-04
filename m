@@ -2,195 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60A2F25DDD0
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 17:33:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 721D625DDD7
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 17:34:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726742AbgIDPc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 11:32:59 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:33754 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726406AbgIDPca (ORCPT
+        id S1726892AbgIDPep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 11:34:45 -0400
+Received: from bedivere.hansenpartnership.com ([66.63.167.143]:47250 "EHLO
+        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726111AbgIDPem (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 11:32:30 -0400
-From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1599233547;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=t3aTXUWOFUY6rMm9X7d1EuCalQEcR/WTioCR4C7q4F8=;
-        b=kHVNSAsvvteInNP5oNANH57rTRn36oQ/5zodjwhLfpDeIqhmzg2kRUK87iBeOKqn16zvcC
-        I/aWwvBv048I09iPKWK0tOonrB60UfJQyjQyOoj6dBXNZuxTZDZhRv/B/XRqnwj4CAsJJu
-        uLELOxWRiVAmGmVu1XFGjYvjHZ8uT73KuHnQDOBqYTIg2A+LrW7d2yn41tVhVUKHW1o2dx
-        8vXDd6cb/BrOorv2/GbLDnr4wZ3eEeCZXXO1rJjB6xye7bnzzLxIVJc+/thp3BOaAfqkPV
-        0IrIbe0FNMxwTkSAx/LlMVxkGPvOTEYKijnW3SYAnT3X2/kr8aftiiw8J+hGgg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1599233548;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=t3aTXUWOFUY6rMm9X7d1EuCalQEcR/WTioCR4C7q4F8=;
-        b=v8Ek/F4lB/eyVfaLzdCxREoKbWISzJ7xACajorteCh1heIv2M0H3+o0UveCs+DR3qJOfz+
-        9te4GHzFirp0k/AA==
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        "Sebastian A. Siewior" <bigeasy@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>
-Subject: [PATCH v2 5/5] seqlock: PREEMPT_RT: Do not starve seqlock_t writers
-Date:   Fri,  4 Sep 2020 17:32:31 +0200
-Message-Id: <20200904153231.11994-6-a.darwish@linutronix.de>
-In-Reply-To: <20200904153231.11994-1-a.darwish@linutronix.de>
-References: <20200904153231.11994-1-a.darwish@linutronix.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Fri, 4 Sep 2020 11:34:42 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id E23378EE112;
+        Fri,  4 Sep 2020 08:34:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+        s=20151216; t=1599233681;
+        bh=aqBYVVDxSPcR+4WRGd2XXdbYUrXI1R2tpGt8e2CxOqk=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=OSKCiZVY/HICluT+E+gBea2klKfGTnSyh+e5emDR2r1NB8op0pvrrhFcgY6WpLXfi
+         BgwwbeRb5VG2jPAx3sUPZQpMPsfm8M1dAfUAh8brrNXhqqe8gVtdtzwSB3orIrDD7l
+         YoD02xMi9/Vnz3qACuvRNiD5YpaTVrPCKQCyS0ro=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 0lY_VcvizQiN; Fri,  4 Sep 2020 08:34:41 -0700 (PDT)
+Received: from [153.66.254.174] (c-73-35-198-56.hsd1.wa.comcast.net [73.35.198.56])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 432438EE064;
+        Fri,  4 Sep 2020 08:34:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+        s=20151216; t=1599233681;
+        bh=aqBYVVDxSPcR+4WRGd2XXdbYUrXI1R2tpGt8e2CxOqk=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=OSKCiZVY/HICluT+E+gBea2klKfGTnSyh+e5emDR2r1NB8op0pvrrhFcgY6WpLXfi
+         BgwwbeRb5VG2jPAx3sUPZQpMPsfm8M1dAfUAh8brrNXhqqe8gVtdtzwSB3orIrDD7l
+         YoD02xMi9/Vnz3qACuvRNiD5YpaTVrPCKQCyS0ro=
+Message-ID: <1599233679.5231.4.camel@HansenPartnership.com>
+Subject: Re: [PATCH] dma-direct: zero out DMA_ATTR_NO_KERNEL_MAPPING buf
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Hillf Danton <hdanton@sina.com>, Christoph Hellwig <hch@lst.de>
+Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Kees Cook <keescook@chromium.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Date:   Fri, 04 Sep 2020 08:34:39 -0700
+In-Reply-To: <20200904152550.17964-1-hdanton@sina.com>
+References: <20200904152550.17964-1-hdanton@sina.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.26.6 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On PREEMPT_RT, seqlock_t is transformed to a sleeping lock that do not
-disable preemption. A seqlock_t reader can thus preempt its write side
-section and spin for the enter scheduler tick. If that reader belongs to
-a real-time scheduling class, it can spin forever and the kernel will
-livelock.
+On Fri, 2020-09-04 at 23:25 +0800, Hillf Danton wrote:
+> The DMA buffer allocated is always cleared in DMA core and this is
+> making DMA_ATTR_NO_KERNEL_MAPPING non-special.
+> 
+> Fixes: d98849aff879 ("dma-direct: handle DMA_ATTR_NO_KERNEL_MAPPING
+> in common code")
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: Matthew Wilcox <willy@infradead.org>
+> Cc: Marek Szyprowski <m.szyprowski@samsung.com>
+> Cc: James Bottomley <James.Bottomley@HansenPartnership.com>
+> Signed-off-by: Hillf Danton <hdanton@sina.com>
+> ---
+> 
+> --- a/kernel/dma/direct.c
+> +++ b/kernel/dma/direct.c
+> @@ -178,9 +178,17 @@ void *dma_direct_alloc_pages(struct devi
+>  
+>  	if ((attrs & DMA_ATTR_NO_KERNEL_MAPPING) &&
+>  	    !force_dma_unencrypted(dev)) {
+> +		int i;
+> +
+>  		/* remove any dirty cache lines on the kernel alias
+> */
+>  		if (!PageHighMem(page))
+>  			arch_dma_prep_coherent(page, size);
+> +
+> +		for (i = 0; i < size/PAGE_SIZE; i++) {
+> +			ret = kmap_atomic(page + i);
+> +			memset(ret, 0, PAGE_SIZE);
+> +			kunmap_atomic(ret);
 
-To break this livelock possibility on PREEMPT_RT, implement seqlock_t in
-terms of "seqcount_spinlock_t" instead of plain "seqcount_t".
+This is massively expensive on PARISC and likely other VIPT/VIVT
+architectures.  What's the reason for clearing it?  This could also be
+really inefficient even on PIPT architectures if the memory is device
+remote.
 
-Beside its pure annotational value, this will leverage the existing
-seqcount_LOCKNAME_T PREEMPT_RT anti-livelock mechanisms, without adding
-any extra code.
+If we really have to do this, it should likely be done in the arch or
+driver hooks because there are potentially more efficient ways we can
+do this knowing how the architecture behaves.
 
-Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
----
- include/linux/seqlock.h | 32 +++++++++++++++++++++-----------
- 1 file changed, 21 insertions(+), 11 deletions(-)
-
-diff --git a/include/linux/seqlock.h b/include/linux/seqlock.h
-index 6ac5a63fc536..06a339355c3a 100644
---- a/include/linux/seqlock.h
-+++ b/include/linux/seqlock.h
-@@ -757,13 +757,17 @@ static inline void raw_write_seqcount_t_latch(seqcount_t *s)
-  *    - Documentation/locking/seqlock.rst
-  */
- typedef struct {
--	struct seqcount seqcount;
-+	/*
-+	 * Make sure that readers don't starve writers on PREEMPT_RT: use
-+	 * seqcount_spinlock_t instead of seqcount_t. Check __SEQ_LOCK().
-+	 */
-+	seqcount_spinlock_t seqcount;
- 	spinlock_t lock;
- } seqlock_t;
- 
- #define __SEQLOCK_UNLOCKED(lockname)					\
- 	{								\
--		.seqcount = SEQCNT_ZERO(lockname),			\
-+		.seqcount = SEQCNT_SPINLOCK_ZERO(lockname, &(lockname).lock), \
- 		.lock =	__SPIN_LOCK_UNLOCKED(lockname)			\
- 	}
- 
-@@ -773,8 +777,8 @@ typedef struct {
-  */
- #define seqlock_init(sl)						\
- 	do {								\
--		seqcount_init(&(sl)->seqcount);				\
- 		spin_lock_init(&(sl)->lock);				\
-+		seqcount_spinlock_init(&(sl)->seqcount, &(sl)->lock);	\
- 	} while (0)
- 
- /**
-@@ -821,6 +825,12 @@ static inline unsigned read_seqretry(const seqlock_t *sl, unsigned start)
- 	return read_seqcount_retry(&sl->seqcount, start);
- }
- 
-+/*
-+ * For all seqlock_t write side functions, use write_seqcount_*t*_begin()
-+ * instead of the generic write_seqcount_begin(). This way, no redundant
-+ * lockdep_assert_held() checks are added.
-+ */
-+
- /**
-  * write_seqlock() - start a seqlock_t write side critical section
-  * @sl: Pointer to seqlock_t
-@@ -837,7 +847,7 @@ static inline unsigned read_seqretry(const seqlock_t *sl, unsigned start)
- static inline void write_seqlock(seqlock_t *sl)
- {
- 	spin_lock(&sl->lock);
--	write_seqcount_t_begin(&sl->seqcount);
-+	write_seqcount_t_begin(&sl->seqcount.seqcount);
- }
- 
- /**
-@@ -849,7 +859,7 @@ static inline void write_seqlock(seqlock_t *sl)
-  */
- static inline void write_sequnlock(seqlock_t *sl)
- {
--	write_seqcount_t_end(&sl->seqcount);
-+	write_seqcount_t_end(&sl->seqcount.seqcount);
- 	spin_unlock(&sl->lock);
- }
- 
-@@ -863,7 +873,7 @@ static inline void write_sequnlock(seqlock_t *sl)
- static inline void write_seqlock_bh(seqlock_t *sl)
- {
- 	spin_lock_bh(&sl->lock);
--	write_seqcount_t_begin(&sl->seqcount);
-+	write_seqcount_t_begin(&sl->seqcount.seqcount);
- }
- 
- /**
-@@ -876,7 +886,7 @@ static inline void write_seqlock_bh(seqlock_t *sl)
-  */
- static inline void write_sequnlock_bh(seqlock_t *sl)
- {
--	write_seqcount_t_end(&sl->seqcount);
-+	write_seqcount_t_end(&sl->seqcount.seqcount);
- 	spin_unlock_bh(&sl->lock);
- }
- 
-@@ -890,7 +900,7 @@ static inline void write_sequnlock_bh(seqlock_t *sl)
- static inline void write_seqlock_irq(seqlock_t *sl)
- {
- 	spin_lock_irq(&sl->lock);
--	write_seqcount_t_begin(&sl->seqcount);
-+	write_seqcount_t_begin(&sl->seqcount.seqcount);
- }
- 
- /**
-@@ -902,7 +912,7 @@ static inline void write_seqlock_irq(seqlock_t *sl)
-  */
- static inline void write_sequnlock_irq(seqlock_t *sl)
- {
--	write_seqcount_t_end(&sl->seqcount);
-+	write_seqcount_t_end(&sl->seqcount.seqcount);
- 	spin_unlock_irq(&sl->lock);
- }
- 
-@@ -911,7 +921,7 @@ static inline unsigned long __write_seqlock_irqsave(seqlock_t *sl)
- 	unsigned long flags;
- 
- 	spin_lock_irqsave(&sl->lock, flags);
--	write_seqcount_t_begin(&sl->seqcount);
-+	write_seqcount_t_begin(&sl->seqcount.seqcount);
- 	return flags;
- }
- 
-@@ -940,7 +950,7 @@ static inline unsigned long __write_seqlock_irqsave(seqlock_t *sl)
- static inline void
- write_sequnlock_irqrestore(seqlock_t *sl, unsigned long flags)
- {
--	write_seqcount_t_end(&sl->seqcount);
-+	write_seqcount_t_end(&sl->seqcount.seqcount);
- 	spin_unlock_irqrestore(&sl->lock, flags);
- }
- 
--- 
-2.28.0
+James
 
