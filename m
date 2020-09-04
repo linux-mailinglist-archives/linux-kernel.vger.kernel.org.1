@@ -2,99 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E0FB25D538
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 11:36:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F11625D542
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 11:37:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729986AbgIDJgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 05:36:36 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:33927 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725812AbgIDJgf (ORCPT
+        id S1729869AbgIDJhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 05:37:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43408 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725812AbgIDJhj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 05:36:35 -0400
-Received: from ip5f5af70b.dynamic.kabel-deutschland.de ([95.90.247.11] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1kE890-0006Sg-0v; Fri, 04 Sep 2020 09:36:30 +0000
-Date:   Fri, 4 Sep 2020 11:36:27 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     Florian Weimer <fw@deneb.enyo.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, linux-api@vger.kernel.org,
-        oleksandr@redhat.com, Suren Baghdasaryan <surenb@google.com>,
-        Tim Murray <timmurray@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        Sonny Rao <sonnyrao@google.com>,
-        Brian Geffon <bgeffon@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        John Dias <joaodias@google.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Jann Horn <jannh@google.com>,
-        alexander.h.duyck@linux.intel.com, sj38.park@gmail.com,
-        David Rientjes <rientjes@google.com>,
-        Arjun Roy <arjunroy@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Christian Brauner <christian@brauner.io>,
-        Daniel Colascione <dancol@google.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        SeongJae Park <sjpark@amazon.de>, linux-man@vger.kernel.org
-Subject: Re: [PATCH v9 3/3] mm/madvise: introduce process_madvise() syscall:
- an external memory hinting API
-Message-ID: <20200904093627.vj6t6q5spicfyonh@wittgenstein>
-References: <20200901000633.1920247-1-minchan@kernel.org>
- <20200901000633.1920247-4-minchan@kernel.org>
- <87blippc7p.fsf@mid.deneb.enyo.de>
- <20200903172618.GB1959033@google.com>
- <87pn72lq65.fsf@mid.deneb.enyo.de>
- <20200903175949.GC1959033@google.com>
+        Fri, 4 Sep 2020 05:37:39 -0400
+Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA4B7C061244
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 02:37:34 -0700 (PDT)
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id 92BC3A6D; Fri,  4 Sep 2020 11:37:33 +0200 (CEST)
+Date:   Fri, 4 Sep 2020 11:37:32 +0200
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Shaokun Zhang <zhangshaokun@hisilicon.com>
+Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        Yuqi Jin <jinyuqi@huawei.com>,
+        Robin Murphy <robin.murphy@arm.com>
+Subject: Re: [PATCH] iommu/iova: Replace cmpxchg with xchg in queue_iova
+Message-ID: <20200904093732.GN6714@8bytes.org>
+References: <1598517834-30275-1-git-send-email-zhangshaokun@hisilicon.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200903175949.GC1959033@google.com>
+In-Reply-To: <1598517834-30275-1-git-send-email-zhangshaokun@hisilicon.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 03, 2020 at 10:59:49AM -0700, Minchan Kim wrote:
-> On Thu, Sep 03, 2020 at 07:34:58PM +0200, Florian Weimer wrote:
-> > * Minchan Kim:
-> > 
-> > > On Tue, Sep 01, 2020 at 08:46:02PM +0200, Florian Weimer wrote:
-> > >> * Minchan Kim:
-> > >> 
-> > >> >       ssize_t process_madvise(int pidfd, const struct iovec *iovec,
-> > >> >                 unsigned long vlen, int advice, unsigned int flags);
-> > >> 
-> > >> size_t for vlen provides a clearer hint regarding the type of special
-> > >> treatment needed for ILP32 here (zero extension, not changing the type
-> > >> to long long).
-> > >> 
-> > >
-> > > All existing system calls using iove in Linux uses unsigned long so
-> > > I want to be consistent with them unless process_madvise need something
-> > > speicial.
-> > 
-> > Userspace uses int, following POSIX (where applicable).  There is no
-> > consistency to be had here.
+Adding Robin.
+
+On Thu, Aug 27, 2020 at 04:43:54PM +0800, Shaokun Zhang wrote:
+> From: Yuqi Jin <jinyuqi@huawei.com>
 > 
-> Okay, I changed it with size_t.
-
-Maybe some context helps. We had the discussion about syscall
-conventions during LPC both in the KernelSummit and in the glibc
-toolchain session and one of wishlist conventions from libc was to
-always use size_t and not unsigned long for sizes.
-I know this has been a little frustrating having to change types and so
-on for the syscall quite a bit but I'm going to start drafting an
-updated version of our howto for adding syscalls now so things like this
-are more transparent going forward. I just hadn't gotten around to it
-right after Plumbers.
-
-Christian
+> The performance of the atomic_xchg is better than atomic_cmpxchg because
+> no comparison is required. While the value of @fq_timer_on can only be 0
+> or 1. Let's use atomic_xchg instead of atomic_cmpxchg here because we
+> only need to check that the value changes from 0 to 1 or from 1 to 1.
+> 
+> Cc: Joerg Roedel <joro@8bytes.org>
+> Signed-off-by: Yuqi Jin <jinyuqi@huawei.com>
+> Signed-off-by: Shaokun Zhang <zhangshaokun@hisilicon.com>
+> ---
+>  drivers/iommu/iova.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/iommu/iova.c b/drivers/iommu/iova.c
+> index 45a251da5453..30d969a4c5fd 100644
+> --- a/drivers/iommu/iova.c
+> +++ b/drivers/iommu/iova.c
+> @@ -579,7 +579,7 @@ void queue_iova(struct iova_domain *iovad,
+>  
+>  	/* Avoid false sharing as much as possible. */
+>  	if (!atomic_read(&iovad->fq_timer_on) &&
+> -	    !atomic_cmpxchg(&iovad->fq_timer_on, 0, 1))
+> +	    !atomic_xchg(&iovad->fq_timer_on, 1))
+>  		mod_timer(&iovad->fq_timer,
+>  			  jiffies + msecs_to_jiffies(IOVA_FQ_TIMEOUT));
+>  }
+> -- 
+> 2.7.4
