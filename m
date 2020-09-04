@@ -2,147 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAF7D25CF6E
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 04:39:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E02AF25CF70
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 04:42:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729564AbgIDCj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 22:39:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36058 "EHLO mail.kernel.org"
+        id S1729598AbgIDCm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 22:42:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36548 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728697AbgIDCj4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 22:39:56 -0400
+        id S1728484AbgIDCm3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 22:42:29 -0400
 Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F107D206D4;
-        Fri,  4 Sep 2020 02:39:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 535F82075D;
+        Fri,  4 Sep 2020 02:42:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599187196;
-        bh=Gx4Q5qe+KCoxGI03EpDx33dmvhQFLS1/UkVjl6tbZqA=;
+        s=default; t=1599187348;
+        bh=RZp2z2lZ4ZEa5XCcqc63rPN5V8YW2idBP8wQngWLmmQ=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=wHGTgWWNf47GLCUSRBQFUyHXongWWL7BkCHykoDAufFgTqmVlFN1LhAIcyF3GEK6J
-         p8xMVBSwusMdjwHyLVfLczKGG/xX27XIPLZgloqJDGyEBpesVNJEGWmV70qHLseBcu
-         /YoJRsXrkok85KPDZ643waxfvhPXCAp6Bl97Balo=
+        b=tXKNVi9V3hfKEMuoSuYwyRWW7ZIGntoNqZ3Lo3DB+WPn7rlyZ/Mui9HDfcdrBIV/B
+         +qS8DYEv62qXSSsD9P2GgY47YHZytU+h2lgtRzFZeRUuemykJ8Kh4IqtdApQSmuYZW
+         Vvw8x2AGyUq5hbGAeKk8k2rS1u9t0edIHX3rUJqc=
 Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id C8AB63522636; Thu,  3 Sep 2020 19:39:55 -0700 (PDT)
-Date:   Thu, 3 Sep 2020 19:39:55 -0700
+        id 3006D3522636; Thu,  3 Sep 2020 19:42:28 -0700 (PDT)
+Date:   Thu, 3 Sep 2020 19:42:28 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     Boqun Feng <boqun.feng@gmail.com>
-Cc:     peterz@infradead.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        stern@rowland.harvard.edu, parri.andrea@gmail.com, will@kernel.org,
-        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
-        luc.maranget@inria.fr, akiyks@gmail.com
-Subject: Re: [PATCH kcsan 6/9] tools/memory-model: Expand the cheatsheet.txt
- notion of relaxed
-Message-ID: <20200904023955.GX29330@paulmck-ThinkPad-P72>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        dipankar@in.ibm.com, akpm@linux-foundation.org,
+        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
+        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
+        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, joel@joelfernandes.org,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Frederic Weisbecker <frederic@kernel.org>
+Subject: Re: [PATCH tip/core/rcu 2/4] smp: Add source and destination CPUs to
+ __call_single_data
+Message-ID: <20200904024228.GY29330@paulmck-ThinkPad-P72>
 Reply-To: paulmck@kernel.org
-References: <20200831182012.GA1965@paulmck-ThinkPad-P72>
- <20200831182037.2034-6-paulmck@kernel.org>
- <20200902035448.GC49492@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
- <20200902101412.GC1362448@hirez.programming.kicks-ass.net>
- <20200902123715.GD49492@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
- <20200903233037.GW29330@paulmck-ThinkPad-P72>
- <20200904005921.GA7503@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
+References: <20200831181356.GA1224@paulmck-ThinkPad-P72>
+ <20200831181417.1378-2-paulmck@kernel.org>
+ <20200904021610.GA7922@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200904005921.GA7503@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
+In-Reply-To: <20200904021610.GA7922@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 04, 2020 at 08:59:21AM +0800, Boqun Feng wrote:
-> On Thu, Sep 03, 2020 at 04:30:37PM -0700, Paul E. McKenney wrote:
-
-[ . . . ]
-
-> > How about like this, adding "Relaxed" to the WRITE_ONCE() and READ_ONCE()
-> > rows and "RMW" to the "Relaxed operation" row?
-> > 
+On Fri, Sep 04, 2020 at 10:16:10AM +0800, Boqun Feng wrote:
+> Hi Paul,
 > 
-> Much better now, thanks! However ...
-> 
-> > The file contents are followed by a diff against the previous version.
+> On Mon, Aug 31, 2020 at 11:14:15AM -0700, paulmck@kernel.org wrote:
+> > From: "Paul E. McKenney" <paulmck@kernel.org>
 > > 
-> > 							Thanx, Paul
+> > This commit adds a destination CPU to __call_single_data, and is inspired
+> > by an earlier commit by Peter Zijlstra.  This version adds #ifdef to
+> > permit use by 32-bit systems and supplying the destination CPU for all
+> > smp_call_function*() requests, not just smp_call_function_single().
 > > 
-> > ------------------------------------------------------------------------
-
-[ . . . ]
-
-> > Key:	Relaxed:  A relaxed operation is either a *_relaxed() RMW
-> > 		  operation, an unsuccessful RMW operation, READ_ONCE(),
-> > 		  WRITE_ONCE(), or one of the atomic_read() and
-> > 		  atomic_set() family of operations.
+> > If need be, 32-bit systems could be accommodated by shrinking the flags
+> > field to 16 bits (the atomic_t variant is currently unused) and by
+> > providing only eight bits for CPU on such systems.
+> > 
+> > It is not clear that the addition of the fields to __call_single_node
+> > are really needed.
+> > 
+> > Link: https://lore.kernel.org/lkml/20200615164048.GC2531@hirez.programming.kicks-ass.net/
+> > Cc: Peter Zijlstra <peterz@infradead.org>
+> > Cc: Ingo Molnar <mingo@kernel.org>
+> > Cc: Thomas Gleixner <tglx@linutronix.de>
+> > Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> > Cc: Frederic Weisbecker <frederic@kernel.org>
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > ---
+> >  include/linux/smp.h       | 3 +++
+> >  include/linux/smp_types.h | 3 +++
+> >  kernel/smp.c              | 2 ++
+> >  3 files changed, 8 insertions(+)
+> > 
+> > diff --git a/include/linux/smp.h b/include/linux/smp.h
+> > index 80d557e..9f13966 100644
+> > --- a/include/linux/smp.h
+> > +++ b/include/linux/smp.h
+> > @@ -26,6 +26,9 @@ struct __call_single_data {
+> >  		struct {
+> >  			struct llist_node llist;
+> >  			unsigned int flags;
+> > +#ifdef CONFIG_64BIT
+> > +			u16 src, dst;
+> > +#endif
+> >  		};
+> >  	};
+> >  	smp_call_func_t func;
+> > diff --git a/include/linux/smp_types.h b/include/linux/smp_types.h
+> > index 364b3ae..2e8461a 100644
+> > --- a/include/linux/smp_types.h
+> > +++ b/include/linux/smp_types.h
+> > @@ -61,6 +61,9 @@ struct __call_single_node {
+> >  		unsigned int	u_flags;
+> >  		atomic_t	a_flags;
+> >  	};
+> > +#ifdef CONFIG_64BIT
+> > +	u16 src, dst;
+> > +#endif
+> >  };
+> >  
+> >  #endif /* __LINUX_SMP_TYPES_H */
+> > diff --git a/kernel/smp.c b/kernel/smp.c
+> > index d0ae8eb..a47382d 100644
+> > --- a/kernel/smp.c
+> > +++ b/kernel/smp.c
+> > @@ -375,6 +375,7 @@ int smp_call_function_single(int cpu, smp_call_func_t func, void *info,
+> >  
+> >  	csd->func = func;
+> >  	csd->info = info;
+> > +	csd->dst = cpu;
 > 
-> And:
-> 		  a RMW operation that doesn't return any value (e.g
-> 		  atomic_inc()), IOW it's a void Relaxed operation.
+> Would this and the next modification cause compile errors with
+> CONFIG_64BIT = n? I saw you add #ifdef guard in the next patch, so maybe
+> move those two into next patch (of course, if they trigger compile
+> errors)
 
-Good point!  Please see below.
+Good point, will fix, thank you!
 
 							Thanx, Paul
 
-------------------------------------------------------------------------
-
-                                  Prior Operation     Subsequent Operation
-                                  ---------------  ---------------------------
-                               C  Self  R  W  RMW  Self  R  W  DR  DW  RMW  SV
-                              --  ----  -  -  ---  ----  -  -  --  --  ---  --
-
-Relaxed store                        Y                                       Y
-Relaxed load                         Y                          Y   Y        Y
-Relaxed RMW operation                Y                          Y   Y        Y
-rcu_dereference()                    Y                          Y   Y        Y
-Successful *_acquire()               R                   Y  Y   Y   Y    Y   Y
-Successful *_release()         C        Y  Y    Y     W                      Y
-smp_rmb()                               Y       R        Y      Y        R
-smp_wmb()                                  Y    W           Y       Y    W
-smp_mb() & synchronize_rcu()  CP        Y  Y    Y        Y  Y   Y   Y    Y
-Successful full non-void RMW  CP     Y  Y  Y    Y     Y  Y  Y   Y   Y    Y   Y
-smp_mb__before_atomic()       CP        Y  Y    Y        a  a   a   a    Y
-smp_mb__after_atomic()        CP        a  a    Y        Y  Y   Y   Y    Y
-
-
-Key:	Relaxed:  A relaxed operation is either READ_ONCE(), WRITE_ONCE(),
-		  a *_relaxed() RMW operation, an unsuccessful RMW
-		  operation, a non-value-returning RMW operation such
-		  as atomic_inc(), or one of the atomic*_read() and
-		  atomic*_set() family of operations.
-	C:	  Ordering is cumulative
-	P:	  Ordering propagates
-	R:	  Read, for example, READ_ONCE(), or read portion of RMW
-	W:	  Write, for example, WRITE_ONCE(), or write portion of RMW
-	Y:	  Provides ordering
-	a:	  Provides ordering given intervening RMW atomic operation
-	DR:	  Dependent read (address dependency)
-	DW:	  Dependent write (address, data, or control dependency)
-	RMW:	  Atomic read-modify-write operation
-	SELF:	  Orders self, as opposed to accesses before and/or after
-	SV:	  Orders later accesses to the same variable
-
-------------------------------------------------------------------------
-
-diff --git a/tools/memory-model/Documentation/cheatsheet.txt b/tools/memory-model/Documentation/cheatsheet.txt
-index 4146b8d..99d0087 100644
---- a/tools/memory-model/Documentation/cheatsheet.txt
-+++ b/tools/memory-model/Documentation/cheatsheet.txt
-@@ -17,10 +17,11 @@ smp_mb__before_atomic()       CP        Y  Y    Y        a  a   a   a    Y
- smp_mb__after_atomic()        CP        a  a    Y        Y  Y   Y   Y    Y
- 
- 
--Key:	Relaxed:  A relaxed operation is either a *_relaxed() RMW
--		  operation, an unsuccessful RMW operation, READ_ONCE(),
--		  WRITE_ONCE(), or one of the atomic_read() and
--		  atomic_set() family of operations.
-+Key:	Relaxed:  A relaxed operation is either READ_ONCE(), WRITE_ONCE(),
-+		  a *_relaxed() RMW operation, an unsuccessful RMW
-+		  operation, a non-value-returning RMW operation such
-+		  as atomic_inc(), or one of the atomic*_read() and
-+		  atomic*_set() family of operations.
- 	C:	  Ordering is cumulative
- 	P:	  Ordering propagates
- 	R:	  Read, for example, READ_ONCE(), or read portion of RMW
+> Regards,
+> Boqun
+> 
+> >  
+> >  	err = generic_exec_single(cpu, csd);
+> >  
+> > @@ -540,6 +541,7 @@ static void smp_call_function_many_cond(const struct cpumask *mask,
+> >  			csd->flags |= CSD_TYPE_SYNC;
+> >  		csd->func = func;
+> >  		csd->info = info;
+> > +		csd->dst = cpu;
+> >  		if (llist_add(&csd->llist, &per_cpu(call_single_queue, cpu)))
+> >  			__cpumask_set_cpu(cpu, cfd->cpumask_ipi);
+> >  	}
+> > -- 
+> > 2.9.5
+> > 
