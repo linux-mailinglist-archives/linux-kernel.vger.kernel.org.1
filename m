@@ -2,56 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93D5125D9B5
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 15:34:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6A0625DAAB
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 15:56:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730505AbgIDNep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 09:34:45 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59172 "EHLO mx2.suse.de"
+        id S1730720AbgIDN4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 09:56:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50884 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730443AbgIDNaQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 09:30:16 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C7267AC19;
-        Fri,  4 Sep 2020 13:29:33 +0000 (UTC)
-Date:   Fri, 4 Sep 2020 15:30:01 +0200
-From:   Cyril Hrubis <chrubis@suse.cz>
-To:     Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-Cc:     ltp@lists.linux.it,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, lkp@lists.01.org,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [LTP] [PATCH] syscall/ptrace08: Simplify the test.
-Message-ID: <20200904133001.GA9091@yuki.lan>
-References: <20200904115817.8024-1-chrubis@suse.cz>
- <20200904132121.GE4768@mussarela>
+        id S1730641AbgIDNz2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 09:55:28 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F1192208C7;
+        Fri,  4 Sep 2020 13:30:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599226210;
+        bh=TFnCzz/oxl1Z9g3HmDAlM7mLxYJEGSfxJEqQhLnHhfE=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=P/ZcULZo5H4VT4/zgjRSHf5X4Y+z/Sy+CVto82I7Bnq6rTtkJsL8k34i0gcTjaTDW
+         tIdtzqAVf0EfcesZomWvN72k3hKdY6W6ol0eLNWeJn3yvSsVAE2fe4kZOVQf+Wir1G
+         t3MwkAygRZhKmDbuwbnXM7IjoIn+62f5ScJXEIV8=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, James Morse <james.morse@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Andre Przywara <andre.przywara@arm.com>
+Subject: [PATCH 5.4 08/16] KVM: arm64: Set HCR_EL2.PTW to prevent AT taking synchronous exception
+Date:   Fri,  4 Sep 2020 15:30:01 +0200
+Message-Id: <20200904120257.605755537@linuxfoundation.org>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200904120257.203708503@linuxfoundation.org>
+References: <20200904120257.203708503@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200904132121.GE4768@mussarela>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
-> This is failing on our 4.4 and 4.15 kernels, though they passed with the
-> previous test and have commit f67b15037a7a applied.
-> 
-> So, this is dependent on some other behavior/commit that has changed. It passes
-> on 5.4, for example. I'll try to investigate further.
+From: James Morse <james.morse@arm.com>
 
-We are looking at it now in SUSE, looks like the initial fix to the
-kernel postponed the check to the write to the dr7 that enabled the
-breakpoint, so when the dr0 wasn't enabled you could write anything
-there.
+commit 71a7f8cb1ca4ca7214a700b1243626759b6c11d4 upstream.
 
-Also looks like somehow the EINVAL is not propagated into the POKEUSER
-call to the dr7 as it should have been.
+AT instructions do a translation table walk and return the result, or
+the fault in PAR_EL1. KVM uses these to find the IPA when the value is
+not provided by the CPU in HPFAR_EL1.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+If a translation table walk causes an external abort it is taken as an
+exception, even if it was due to an AT instruction. (DDI0487F.a's D5.2.11
+"Synchronous faults generated by address translation instructions")
+
+While we previously made KVM resilient to exceptions taken due to AT
+instructions, the device access causes mismatched attributes, and may
+occur speculatively. Prevent this, by forbidding a walk through memory
+described as device at stage2. Now such AT instructions will report a
+stage2 fault.
+
+Such a fault will cause KVM to restart the guest. If the AT instructions
+always walk the page tables, but guest execution uses the translation cached
+in the TLB, the guest can't make forward progress until the TLB entry is
+evicted. This isn't a problem, as since commit 5dcd0fdbb492 ("KVM: arm64:
+Defer guest entry when an asynchronous exception is pending"), KVM will
+return to the host to process IRQs allowing the rest of the system to keep
+running.
+
+Cc: stable@vger.kernel.org # <v5.3: 5dcd0fdbb492 ("KVM: arm64: Defer guest entry when an asynchronous exception is pending")
+Signed-off-by: James Morse <james.morse@arm.com>
+Reviewed-by: Marc Zyngier <maz@kernel.org>
+Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
+Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ arch/arm64/include/asm/kvm_arm.h |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+--- a/arch/arm64/include/asm/kvm_arm.h
++++ b/arch/arm64/include/asm/kvm_arm.h
+@@ -72,11 +72,12 @@
+  * IMO:		Override CPSR.I and enable signaling with VI
+  * FMO:		Override CPSR.F and enable signaling with VF
+  * SWIO:	Turn set/way invalidates into set/way clean+invalidate
++ * PTW:		Take a stage2 fault if a stage1 walk steps in device memory
+  */
+ #define HCR_GUEST_FLAGS (HCR_TSC | HCR_TSW | HCR_TWE | HCR_TWI | HCR_VM | \
+ 			 HCR_TVM | HCR_BSU_IS | HCR_FB | HCR_TAC | \
+ 			 HCR_AMO | HCR_SWIO | HCR_TIDCP | HCR_RW | HCR_TLOR | \
+-			 HCR_FMO | HCR_IMO)
++			 HCR_FMO | HCR_IMO | HCR_PTW )
+ #define HCR_VIRT_EXCP_MASK (HCR_VSE | HCR_VI | HCR_VF)
+ #define HCR_HOST_NVHE_FLAGS (HCR_RW | HCR_API | HCR_APK)
+ #define HCR_HOST_VHE_FLAGS (HCR_RW | HCR_TGE | HCR_E2H)
+
+
