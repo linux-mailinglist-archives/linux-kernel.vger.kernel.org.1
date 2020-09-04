@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CDDF25E085
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 19:05:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3210325E08B
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 19:08:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727077AbgIDRFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 13:05:18 -0400
-Received: from honk.sigxcpu.org ([24.134.29.49]:60420 "EHLO honk.sigxcpu.org"
+        id S1726441AbgIDRII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 13:08:08 -0400
+Received: from honk.sigxcpu.org ([24.134.29.49]:60510 "EHLO honk.sigxcpu.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725966AbgIDRFO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 13:05:14 -0400
+        id S1725966AbgIDRIG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 13:08:06 -0400
 Received: from localhost (localhost [127.0.0.1])
-        by honk.sigxcpu.org (Postfix) with ESMTP id B58C0FB05;
-        Fri,  4 Sep 2020 19:05:11 +0200 (CEST)
+        by honk.sigxcpu.org (Postfix) with ESMTP id 40D12FB04;
+        Fri,  4 Sep 2020 19:08:04 +0200 (CEST)
 X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
 Received: from honk.sigxcpu.org ([127.0.0.1])
         by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id AfEx02JO_YPx; Fri,  4 Sep 2020 19:05:10 +0200 (CEST)
+        with ESMTP id jLj9SpQdZr4N; Fri,  4 Sep 2020 19:08:02 +0200 (CEST)
 Received: by bogon.sigxcpu.org (Postfix, from userid 1000)
-        id E869445B81; Fri,  4 Sep 2020 19:05:09 +0200 (CEST)
-Date:   Fri, 4 Sep 2020 19:05:09 +0200
+        id 1891C45B81; Fri,  4 Sep 2020 19:08:02 +0200 (CEST)
+Date:   Fri, 4 Sep 2020 19:08:02 +0200
 From:   Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>
 To:     "Robert Chiras (OSS)" <robert.chiras@oss.nxp.com>
 Cc:     Rob Herring <robh+dt@kernel.org>,
@@ -36,49 +36,70 @@ Cc:     Rob Herring <robh+dt@kernel.org>,
         Daniel Vetter <daniel@ffwll.ch>,
         dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-imx@nxp.com
-Subject: Re: [PATCH 4/5] dt-bindings: display/bridge: nwl-dsi: Document
- fsl,clock-drop-level property
-Message-ID: <20200904170509.GC755526@bogon.m.sigxcpu.org>
+Subject: Re: [PATCH 0/5] Add new features to nwl-dsi driver
+Message-ID: <20200904170802.GD755526@bogon.m.sigxcpu.org>
 References: <1598613212-1113-1-git-send-email-robert.chiras@oss.nxp.com>
- <1598613212-1113-5-git-send-email-robert.chiras@oss.nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <1598613212-1113-5-git-send-email-robert.chiras@oss.nxp.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1598613212-1113-1-git-send-email-robert.chiras@oss.nxp.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-On Fri, Aug 28, 2020 at 02:13:31PM +0300, Robert Chiras (OSS) wrote:
+Hi Robert,
+On Fri, Aug 28, 2020 at 02:13:27PM +0300, Robert Chiras (OSS) wrote:
 > From: Robert Chiras <robert.chiras@nxp.com>
 > 
-> Add documentation for a new property: 'fsl,clock-drop-level'.
+> This patch-set adds the new following features to the nwl-dsi bridge driver:
 > 
-> Signed-off-by: Robert Chiras <robert.chiras@nxp.com>
-> ---
->  Documentation/devicetree/bindings/display/bridge/nwl-dsi.yaml | 4 ++++
->  1 file changed, 4 insertions(+)
+> 1. Control Video PLL from nwl-dsi driver
 > 
-> diff --git a/Documentation/devicetree/bindings/display/bridge/nwl-dsi.yaml b/Documentation/devicetree/bindings/display/bridge/nwl-dsi.yaml
-> index 8b5741b..b415f4e 100644
-> --- a/Documentation/devicetree/bindings/display/bridge/nwl-dsi.yaml
-> +++ b/Documentation/devicetree/bindings/display/bridge/nwl-dsi.yaml
-> @@ -143,6 +143,10 @@ properties:
->  
->      additionalProperties: false
->  
-> +  clock-drop-level:
+> Add support for the Video PLL into the nwl-dsi driver, in order
+> to better control it's rate, depending on the requested video mode.
+> Controlling the Video PLL from nwl-dsi is usefull, since it both drives the DC
+> pixel-clock and DPHY phy_ref clock.
+> On i.MX8MQ, the DC can be either DCSS or LCDIF.
+> 
+> 2. Add new property to nwl-dsi: clock-drop-level
+> 
+> This new property is usefull in order to use DSI panels with the nwl-dsi
+> driver which require a higher overhead to the pixel-clock.
+> For example, the Raydium RM67191 DSI Panel works with 132M pixel-clock,
+> but it needs an overhead in order to work properly. So, the actual pixel-clock
+> fed into the DSI DPI interface needs to be lower than the one used ad DSI output.
+> This new property addresses this matter.
+> 
+> 3. Add support to handle both inputs for nwl-dsi: DCSS and LCDIF
 
-Property is called fsl,clock-drop-level.
+Thanks. I've tested the drop-clock-level part with mxsfb on a Librem 5
+devkit and it removes the slight flickering we've seen before (and which
+could be worked around by reducing the input pixel clock so 1 and 3 are
 
-> +    description:
-> +      Specifies the level at wich the crtc_clock should be dropped
-> +
->  patternProperties:
->    "^panel@[0-9]+$":
->      type: object
+Tested-by: Guido Günther <agx@sigxcpu.org>
+
+I've have added some comments to the individual patches and try to get
+around to check out the DCSS part too.
+Cheers,
+ -- Guido
+
+> 
+> Laurentiu Palcu (1):
+>   drm/bridge: nwl-dsi: add support for DCSS
+> 
+> Robert Chiras (4):
+>   drm/bridge: nwl-dsi: Add support for video_pll
+>   dt-bindings: display/bridge: nwl-dsi: Document video_pll clock
+>   drm/bridge: nwl-dsi: Add support for clock-drop-level
+>   dt-bindings: display/bridge: nwl-dsi: Document fsl,clock-drop-level
+>     property
+> 
+>  .../bindings/display/bridge/nwl-dsi.yaml           |   7 +
+>  drivers/gpu/drm/bridge/nwl-dsi.c                   | 338 ++++++++++++++++++++-
+>  2 files changed, 336 insertions(+), 9 deletions(-)
+> 
 > -- 
 > 2.7.4
 > 
