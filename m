@@ -2,140 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EC2A25E2D8
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 22:32:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF49F25E2E4
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 22:35:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728229AbgIDUci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 16:32:38 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:42132 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728202AbgIDUc2 (ORCPT
+        id S1728012AbgIDUf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 16:35:28 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:43224 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726791AbgIDUfZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 16:32:28 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: krisman)
-        with ESMTPSA id C61EE29B03D
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     luto@kernel.org, tglx@linutronix.de, keescook@chromium.org
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, willy@infradead.org,
-        linux-kselftest@vger.kernel.org, shuah@kernel.org,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        kernel@collabora.com
-Subject: [PATCH v6 9/9] doc: Document Syscall User Dispatch
-Date:   Fri,  4 Sep 2020 16:31:47 -0400
-Message-Id: <20200904203147.2908430-10-krisman@collabora.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200904203147.2908430-1-krisman@collabora.com>
-References: <20200904203147.2908430-1-krisman@collabora.com>
+        Fri, 4 Sep 2020 16:35:25 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 084KXh1E103561;
+        Fri, 4 Sep 2020 16:35:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : mime-version : content-type; s=pp1;
+ bh=BVyZ2nAB3v5M7F/19fDZoBq2lGDP29RSzKi61iZ1s98=;
+ b=bNDjJdCvxtrYnf0n8XkMlHiIg+ozl6VETISNXNqcl1mOgg0fhz+1W4ggX7CaSEUau5xG
+ wIvrJtjf215wQrer5wscs5hBrqKM2ske7uakATAWsDNpEm6kGmSW5woxtRByWz+9Ar7m
+ jXJUcDsKKZJbgf4HX1yU3r6fW4ccv4wVHC3tpjQnAJbsc+U8Fa8Pi5c2BhPU8Upr6//6
+ Wzd8lsVfvHAd3Q4j7LDCuH7nevtez9vMtZZG5Ku1hSc4t6PDkIqVNz8IrA5saUZryAVC
+ TCgxy3SmcWu8JamrviH4aaHvxL9KHd6KPbGXzI9AQ0hSiqmQRCwEuz9ivdQu+t655Rby tw== 
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33bvgdra0e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 04 Sep 2020 16:35:22 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 084KWmLm029402;
+        Fri, 4 Sep 2020 20:35:19 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma02fra.de.ibm.com with ESMTP id 337en7medt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 04 Sep 2020 20:35:19 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 084KZGRx39518520
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 4 Sep 2020 20:35:16 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C213AAE045;
+        Fri,  4 Sep 2020 20:35:16 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 611B9AE053;
+        Fri,  4 Sep 2020 20:35:16 +0000 (GMT)
+Received: from localhost (unknown [9.145.72.143])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Fri,  4 Sep 2020 20:35:16 +0000 (GMT)
+Date:   Fri, 4 Sep 2020 22:35:14 +0200
+From:   Vasily Gorbik <gor@linux.ibm.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Heiko Carstens <hca@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
+Subject: [GIT PULL] s390 updates for 5.9-rc4
+Message-ID: <your-ad-here.call-01599251714-ext-8456@work.hours>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-04_15:2020-09-04,2020-09-04 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ clxscore=1015 mlxscore=0 impostorscore=0 suspectscore=2 spamscore=0
+ priorityscore=1501 bulkscore=0 mlxlogscore=999 malwarescore=0 adultscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009040172
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Explain the interface, provide some background and security notes.
+Hello Linus,
 
-Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
----
- .../admin-guide/syscall-user-dispatch.rst     | 87 +++++++++++++++++++
- 1 file changed, 87 insertions(+)
- create mode 100644 Documentation/admin-guide/syscall-user-dispatch.rst
+please pull s390 changes for 5.9-rc4.
 
-diff --git a/Documentation/admin-guide/syscall-user-dispatch.rst b/Documentation/admin-guide/syscall-user-dispatch.rst
-new file mode 100644
-index 000000000000..96616660fded
---- /dev/null
-+++ b/Documentation/admin-guide/syscall-user-dispatch.rst
-@@ -0,0 +1,87 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+=====================
-+Syscall User Dispatch
-+=====================
-+
-+Background
-+----------
-+
-+Compatibility layers like Wine need a way to efficiently emulate system
-+calls of only a part of their process - the part that has the
-+incompatible code - while being able to execute native syscalls without
-+a high performance penalty on the native part of the process.  Seccomp
-+falls short on this task, since it has limited support to efficiently
-+filter syscalls based on memory regions, and it doesn't support removing
-+filters.  Therefore a new mechanism is necessary.
-+
-+Syscall User Dispatch brings the filtering of the syscall dispatcher
-+address back to userspace.  The application is in control of a flip
-+switch, indicating the current personality of the process.  A
-+multiple-personality application can then flip the switch without
-+invoking the kernel, when crossing the compatibility layer API
-+boundaries, to enable/disable the syscall redirection and execute
-+syscalls directly (disabled) or send them to be emulated in userspace
-+through a SIGSYS.
-+
-+The goal of this design is to provide very quick compatibility layer
-+boundary crosses, which is achieved by not executing a syscall to change
-+personality every time the compatibility layer executes.  Instead, a
-+userspace memory region exposed to the kernel indicates the current
-+personality, and the application simply modifies that variable to
-+configure the mechanism.
-+
-+There is a relatively high cost associated with handling signals on most
-+architectures, like x86, but at least for Wine, syscalls issued by
-+native Windows code are currently not known to be a performance problem,
-+since they are quite rare, at least for modern gaming applications.
-+
-+Since this mechanism is designed to capture syscalls issued by
-+non-native applications, it must function on syscalls whose invocation
-+ABI is completely unexpected to Linux.  Syscall User Dispatch, therefore
-+doesn't rely on any of the syscall ABI to make the filtering.  It uses
-+only the syscall dispatcher address and the userspace key.
-+
-+Interface
-+---------
-+
-+A process can setup this mechanism on supported kernels
-+CONFIG_SYSCALL_USER_DISPATCH) by executing the following prctl:
-+
-+   prctl(PR_SET_SYSCALL_USER_DISPATCH, <op>, <start_addr>, <end_addr>, [selector])
-+
-+<op> is either PR_SYS_DISPATCH_ON or PR_SYS_DISPATCH_OFF, to enable and
-+disable the mechanism globally for that thread.  When
-+PR_SYS_DISPATCH_OFF is used, the other fields must be zero.
-+
-+<start_addr> and <end_addr> delimit a closed memory region interval from
-+which syscalls are always executed directly, regardless of the userspace
-+selector.  This provides a fast path for the C library, which includes
-+the most common syscall dispatchers in the native code applications, and
-+also provides a way for the signal handler to return without triggering
-+a nested SIGSYS on (rt_)sigreturn.  Users of this interface should make
-+sure that at least the signal trampoline code is included in this
-+region. In addition, for syscalls that implement the trampoline code on
-+the vDSO, that trampoline is never intercepted.
-+
-+[selector] is a pointer to a char-sized region in the process memory
-+region, that provides a quick way to enable disable syscall redirection
-+thread-wide, without the need to invoke the kernel directly.  selector
-+can be set to PR_SYS_DISPATCH_ON or PR_SYS_DISPATCH_OFF.  Any other
-+value should terminate the program with a SIGSYS.
-+
-+Security Notes
-+--------------
-+
-+Syscall User Dispatch provides functionality for compatibility layers to
-+quickly capture system calls issued by a non-native part of the
-+application, while not impacting the Linux native regions of the
-+process.  It is not a mechanism for sandboxing system calls, and it
-+should not be seen as a security mechanism, since it is trivial for a
-+malicious application to subvert the mechanism by jumping to an allowed
-+dispatcher region prior to executing the syscall, or to discover the
-+address and modify the selector value.  If the use case requires any
-+kind of security sandboxing, Seccomp should be used instead.
-+
-+Any fork or exec of the existing process resets the mechanism to
-+PR_SYS_DISPATCH_OFF.
--- 
-2.28.0
+Thank you,
+Vasily
 
+The following changes since commit f75aef392f869018f78cfedf3c320a6b3fcfda6b:
+
+  Linux 5.9-rc3 (2020-08-30 16:01:54 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.9-5
+
+for you to fetch changes up to 5c60ed283e1d87e161441bb273541a948ee96f6a:
+
+  s390: update defconfigs (2020-09-02 13:17:05 +0200)
+
+----------------------------------------------------------------
+s390 fixes for 5.9-rc4
+
+- Fix GENERIC_LOCKBREAK dependency on PREEMPTION in Kconfig broken
+  because of a typo.
+
+- Update defconfigs.
+
+----------------------------------------------------------------
+Eric Farman (1):
+      s390: fix GENERIC_LOCKBREAK dependency typo in Kconfig
+
+Heiko Carstens (1):
+      s390: update defconfigs
+
+ arch/s390/Kconfig                    | 2 +-
+ arch/s390/configs/debug_defconfig    | 4 ++++
+ arch/s390/configs/defconfig          | 3 +++
+ arch/s390/configs/zfcpdump_defconfig | 1 +
+ 4 files changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
+index 3d86e12e8e3c..b29fcc66ec39 100644
+--- a/arch/s390/Kconfig
++++ b/arch/s390/Kconfig
+@@ -30,7 +30,7 @@ config GENERIC_BUG_RELATIVE_POINTERS
+ 	def_bool y
+ 
+ config GENERIC_LOCKBREAK
+-	def_bool y if PREEMPTTION
++	def_bool y if PREEMPTION
+ 
+ config PGSTE
+ 	def_bool y if KVM
+diff --git a/arch/s390/configs/debug_defconfig b/arch/s390/configs/debug_defconfig
+index 0cf9a82326a8..7228aabe9da6 100644
+--- a/arch/s390/configs/debug_defconfig
++++ b/arch/s390/configs/debug_defconfig
+@@ -626,6 +626,7 @@ CONFIG_NTFS_RW=y
+ CONFIG_PROC_KCORE=y
+ CONFIG_TMPFS=y
+ CONFIG_TMPFS_POSIX_ACL=y
++CONFIG_TMPFS_INODE64=y
+ CONFIG_HUGETLBFS=y
+ CONFIG_CONFIGFS_FS=m
+ CONFIG_ECRYPT_FS=m
+@@ -807,6 +808,7 @@ CONFIG_DEBUG_NOTIFIERS=y
+ CONFIG_BUG_ON_DATA_CORRUPTION=y
+ CONFIG_DEBUG_CREDENTIALS=y
+ CONFIG_RCU_TORTURE_TEST=m
++CONFIG_RCU_REF_SCALE_TEST=m
+ CONFIG_RCU_CPU_STALL_TIMEOUT=300
+ # CONFIG_RCU_TRACE is not set
+ CONFIG_LATENCYTOP=y
+@@ -818,6 +820,7 @@ CONFIG_PREEMPT_TRACER=y
+ CONFIG_SCHED_TRACER=y
+ CONFIG_FTRACE_SYSCALLS=y
+ CONFIG_BLK_DEV_IO_TRACE=y
++CONFIG_BPF_KPROBE_OVERRIDE=y
+ CONFIG_HIST_TRIGGERS=y
+ CONFIG_S390_PTDUMP=y
+ CONFIG_NOTIFIER_ERROR_INJECTION=m
+@@ -829,6 +832,7 @@ CONFIG_FAIL_MAKE_REQUEST=y
+ CONFIG_FAIL_IO_TIMEOUT=y
+ CONFIG_FAIL_FUTEX=y
+ CONFIG_FAULT_INJECTION_DEBUG_FS=y
++CONFIG_FAIL_FUNCTION=y
+ CONFIG_FAULT_INJECTION_STACKTRACE_FILTER=y
+ CONFIG_LKDTM=m
+ CONFIG_TEST_LIST_SORT=y
+diff --git a/arch/s390/configs/defconfig b/arch/s390/configs/defconfig
+index 5df9759e8ff6..fab03b7a6932 100644
+--- a/arch/s390/configs/defconfig
++++ b/arch/s390/configs/defconfig
+@@ -617,6 +617,7 @@ CONFIG_NTFS_RW=y
+ CONFIG_PROC_KCORE=y
+ CONFIG_TMPFS=y
+ CONFIG_TMPFS_POSIX_ACL=y
++CONFIG_TMPFS_INODE64=y
+ CONFIG_HUGETLBFS=y
+ CONFIG_CONFIGFS_FS=m
+ CONFIG_ECRYPT_FS=m
+@@ -763,6 +764,7 @@ CONFIG_PANIC_ON_OOPS=y
+ CONFIG_TEST_LOCKUP=m
+ CONFIG_BUG_ON_DATA_CORRUPTION=y
+ CONFIG_RCU_TORTURE_TEST=m
++CONFIG_RCU_REF_SCALE_TEST=m
+ CONFIG_RCU_CPU_STALL_TIMEOUT=60
+ CONFIG_LATENCYTOP=y
+ CONFIG_BOOTTIME_TRACING=y
+@@ -771,6 +773,7 @@ CONFIG_STACK_TRACER=y
+ CONFIG_SCHED_TRACER=y
+ CONFIG_FTRACE_SYSCALLS=y
+ CONFIG_BLK_DEV_IO_TRACE=y
++CONFIG_BPF_KPROBE_OVERRIDE=y
+ CONFIG_HIST_TRIGGERS=y
+ CONFIG_S390_PTDUMP=y
+ CONFIG_LKDTM=m
+diff --git a/arch/s390/configs/zfcpdump_defconfig b/arch/s390/configs/zfcpdump_defconfig
+index 4091c50449cd..8f67c55625f9 100644
+--- a/arch/s390/configs/zfcpdump_defconfig
++++ b/arch/s390/configs/zfcpdump_defconfig
+@@ -74,5 +74,6 @@ CONFIG_DEBUG_KERNEL=y
+ CONFIG_PANIC_ON_OOPS=y
+ # CONFIG_SCHED_DEBUG is not set
+ CONFIG_RCU_CPU_STALL_TIMEOUT=60
++# CONFIG_RCU_TRACE is not set
+ # CONFIG_FTRACE is not set
+ # CONFIG_RUNTIME_TESTING_MENU is not set
