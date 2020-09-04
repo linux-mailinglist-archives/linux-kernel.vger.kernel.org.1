@@ -2,122 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BA0F25CF7B
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 04:51:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1888425CF83
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 04:54:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729671AbgIDCvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 22:51:45 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:50267 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729600AbgIDCvn (ORCPT
+        id S1729647AbgIDCyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 22:54:46 -0400
+Received: from wnew1-smtp.messagingengine.com ([64.147.123.26]:45677 "EHLO
+        wnew1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728697AbgIDCyo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 22:51:43 -0400
-Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200904025140epoutp017956d558079e25c758ead803479ab189~xdOxHv9Oe1044210442epoutp019
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 02:51:40 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200904025140epoutp017956d558079e25c758ead803479ab189~xdOxHv9Oe1044210442epoutp019
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1599187900;
-        bh=3j9wXFPoXrGR29SzTgKQa2jvraHCbCGq1Geo06fCDFc=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=QUVcsk1+COo5cvzKxlDucqiFHSa8lHdwVaFZW/7tSif8LvfB2qL0xIyUioohcv4Xu
-         6Dc86UEOc6agz9L5MtshahaxnXxN/wCIeZO38ANr9xVrwgly3TgMVVxQB6uv8cqrlA
-         MZFwvoLgINFcUI0hPq5SUe70yG6J0RF8bn/ZYGxE=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
-        20200904025140epcas1p4e5bbc3942f86f7a7ce336a8fd5e06cfd~xdOwdHCAg2235622356epcas1p4s;
-        Fri,  4 Sep 2020 02:51:40 +0000 (GMT)
-Received: from epsmges1p1.samsung.com (unknown [182.195.40.161]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 4BjMdR1qRBzMqYlr; Fri,  4 Sep
-        2020 02:51:39 +0000 (GMT)
-Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
-        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        0D.F9.18978.BBBA15F5; Fri,  4 Sep 2020 11:51:39 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20200904025138epcas1p2aa6ede81a216c41405a57ef1ede0ff39~xdOuzWmYA1801918019epcas1p2Z;
-        Fri,  4 Sep 2020 02:51:38 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20200904025138epsmtrp2b855f2394fa9e428c2b2707252745bc7~xdOuyjqrX1999719997epsmtrp2T;
-        Fri,  4 Sep 2020 02:51:38 +0000 (GMT)
-X-AuditID: b6c32a35-5edff70000004a22-f1-5f51abbb106e
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        DB.7B.08303.ABBA15F5; Fri,  4 Sep 2020 11:51:38 +0900 (KST)
-Received: from namjaejeon01 (unknown [10.88.104.63]) by epsmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20200904025138epsmtip2d0b4f7b4ccbd54e4049ebf81df3fa01d~xdOuhyiv72414624146epsmtip2W;
-        Fri,  4 Sep 2020 02:51:38 +0000 (GMT)
-From:   "Namjae Jeon" <namjae.jeon@samsung.com>
-To:     "'Sungjong Seo'" <sj1557.seo@samsung.com>,
-        "'Tetsuhiro Kohada'" <kohada.t2@gmail.com>
-Cc:     <kohada.tetsuhiro@dc.mitsubishielectric.co.jp>,
-        <mori.takahiro@ab.mitsubishielectric.co.jp>,
-        <motai.hirotaka@aj.mitsubishielectric.co.jp>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-In-Reply-To: <000001d681e3$2da33bc0$88e9b340$@samsung.com>
-Subject: RE: [PATCH] exfat: eliminate dead code in exfat_find()
-Date:   Fri, 4 Sep 2020 11:51:38 +0900
-Message-ID: <001a01d68266$4f416850$edc438f0$@samsung.com>
+        Thu, 3 Sep 2020 22:54:44 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.west.internal (Postfix) with ESMTP id 890341215;
+        Thu,  3 Sep 2020 22:54:42 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Thu, 03 Sep 2020 22:54:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+        subject:to:cc:references:from:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=fm3; bh=2
+        MrtNsPdGNPef5FGEOgH91i69aC1KMGFVmVOimjCpVk=; b=NZEOWGU5IZzlKIvKW
+        7A57X+yxV1mOcKljSbP52OK/teyu7AsGvGS7OKwPuT9N29Uojt5pepmCag47uXen
+        7w2bSGGQGa3CQB4kaHwFsy25pHiibDST3NSZAyT9ZF4KqVCGpnrvLAztFAy3bgWm
+        1C25Aw0glDKqL41niLNdtfgYqITATrcVlOvxbtumwWjinlmSbj6Qz2FNSQeUnVLZ
+        wISaravx3QBJ+HF8v1m0C/ZrR1r5hI/lhTN4UcnvxhV8W6tgXz+prHousFZZsMEu
+        ZSO0rWT11aQFE/6skGlxdnC7dqP4owB2go8COCoI6rcGTqUHsegmud5B6gKwGz51
+        cDkhw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=2MrtNsPdGNPef5FGEOgH91i69aC1KMGFVmVOimjCp
+        Vk=; b=FE2CLV0QUfcQ7FGV3QbSwgb8HtsdIn/zGP6Jam3SJNGIqFD+ya6f9vuWo
+        9nRNmRRDTFsBT27S1hegzWdoD1ibVgWPHHHG5juE2kOb1UuZvTLkdhnG1u+bXFj2
+        gT9Pxi9SpKyNQbmfnEXUA68/Rnv9g45tigDtwzc1WR89HPNfBavD0SY2UCjYnp7G
+        oGbT2n+eQR7eA8SBV9AEh8WlV1rUanG5izgDYg2EoY68R8rWQH1DDNgYYyb5p7+q
+        lcHgkOfEJMGyuVUdxbKcTO8Ds1BVTyK8w4xKD8cwaw84w/jQhwPMqgLgr9uepl3H
+        +hmuSeiWbx8BZXLnZnloE5FzIftQg==
+X-ME-Sender: <xms:cKxRX4RT2pMhAMn_YkI-TpoFMwfbFvM6PB1fMfnzUXgsOiC9TjRPDg>
+    <xme:cKxRX1xDpNhS45dj975Rkrv2BfwBvH1HMOIbClaLyoCUia6dt9jIpr2SgGyjy0oTF
+    o2CHJRLSGqcek69GQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudegvddgieegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepuffvfhfhkffffgggjggtgfesthekredttdefjeenucfhrhhomhepufgrmhhu
+    vghlucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecugg
+    ftrfgrthhtvghrnhepuddvleffkeejhfduieelheejteehleefieeikefgteeugefhtdev
+    keefvefgheeinecuffhomhgrihhnpehgihhthhhusgdrtghomhenucfkphepjedtrddufe
+    ehrddugeekrdduhedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghi
+    lhhfrhhomhepshgrmhhuvghlsehshhholhhlrghnugdrohhrgh
+X-ME-Proxy: <xmx:cKxRX12upaoOiqkof3NsEibZYtSy5AY-ezAEzgX6QTQt3aKDRl2MPg>
+    <xmx:cKxRX8A30is-bbvw5yq7suIZdXE7gdtEqMXZcEwI7111LlmrdoPnpA>
+    <xmx:cKxRXxgB3KdIb4x6GNXpInTeVUvNE6yEsIrqJxXeBxGjRBacie7fGQ>
+    <xmx:cqxRX8qsvBZR9o2fIGJPkqKi-HWeWSSTJ8Th7Fh-oR842UNtwT-SYRs_qvQ>
+Received: from [192.168.50.169] (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 1A946328005D;
+        Thu,  3 Sep 2020 22:54:40 -0400 (EDT)
+Subject: Re: [PATCH v3 3/7] ASoC: sun4i-i2s: Add support for H6 I2S
+To:     Maxime Ripard <maxime@cerno.tech>,
+        =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Marcus Cooper <codekipper@gmail.com>
+References: <CAJiuCcdVs_drs40Q6537BYfz24F7NmC6B8S5-Lt4V4ggs-FXWA@mail.gmail.com>
+ <20200429123529.y24dpy63wxq7uvkt@gilmour.lan>
+ <CAJiuCcfXqizcq_JuXRCsqEqM2562cr1SGJ0pmy07jcJxAXojOw@mail.gmail.com>
+ <20200430084600.samghw4zxb5zdbez@gilmour.lan>
+ <CAJiuCcf_LHrJ6QdZgH8HyN6TRiT+GiD+t4UggFCrz-VwVHXV6w@mail.gmail.com>
+ <20200504120942.lnrxnnmykqnvw3fb@gilmour.lan>
+ <CAJiuCceF340FiLvyeXNZtvqftQMAmk=MtFDLT_9696ix+eH1Yw@mail.gmail.com>
+ <20200729143927.47f5tbuaob4ph3lp@gilmour.lan>
+ <20200729151548.GB5612@sirena.org.uk>
+ <CAJiuCcdf=TNLPTUPzHP9NzPHqdxG06TRDkQfONY+ScK0DV_v5w@mail.gmail.com>
+ <20200903205851.gdnpthserywsxrbs@gilmour.lan>
+From:   Samuel Holland <samuel@sholland.org>
+Message-ID: <80b5a4e3-c8bc-9521-4ff1-12bb6424516f@sholland.org>
+Date:   Thu, 3 Sep 2020 21:54:39 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQHi/AdGy7WFjhE0CTAe/r6eZnJXbwGnddttAjFSwr+pIA0swA==
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprLJsWRmVeSWpSXmKPExsWy7bCmge7u1YHxBgf+8Vj8mHubxeLNyaks
-        Fnv2nmSxuLxrDpvF5f+fWCyWfZnMYrHl3xFWB3aPL3OOs3u0Tf7H7tF8bCWbx85Zd9k9+ras
-        YvT4vEkugC0qxyYjNTEltUghNS85PyUzL91WyTs43jne1MzAUNfQ0sJcSSEvMTfVVsnFJ0DX
-        LTMH6BYlhbLEnFKgUEBicbGSvp1NUX5pSapCRn5xia1SakFKToGhQYFecWJucWleul5yfq6V
-        oYGBkSlQZUJOxpN3V1gK1jBVrNrTxNjA+Juxi5GTQ0LAROLo7P2sXYxcHEICOxgltrb/h3I+
-        MUqcX7CLDcL5zCgx980lJpiW6Y3LmCASuxgl7i9ezgLhvGSU6Lu0khmkik1AV+Lfn/1sILaI
-        QLTEsR3nGUGKmAWuMEo8eDQLbBSngJXEjttzwGxhAXuJGc27wBpYBFQkLmztZwWxeQUsJe6f
-        usEOYQtKnJz5hAXEZhaQl9j+dg4zxEkKEj+fLmOFWOYksWzfd0aIGhGJ2Z1tUDUzOSQ2nmeB
-        sF0k3p7Yww5hC0u8Or4FypaS+PxuL9ANHEB2tcTH/VCtHYwSL77bQtjGEjfXb2AFKWEW0JRY
-        v0sfIqwosfP3XKitfBLvvvawQkzhlehoE4IoUQWGzmFoGEpLdLV/YJ/AqDQLyV+zkPw1C8n9
-        sxCWLWBkWcUollpQnJueWmxYYIgc2ZsYwelUy3QH48S3H/QOMTJxMB5ilOBgVhLhnXnDN16I
-        NyWxsiq1KD++qDQntfgQoykwpCcyS4km5wMTel5JvKGpkbGxsYWJmbmZqbGSOO/DWwrxQgLp
-        iSWp2ampBalFMH1MHJxSDUwTLBiNnsdJ6EtOPlx9o/pwSs+r16qq73od/h2bnPronrIFU5eb
-        gsCHS5OPq15a/bOS2Yfb2KWwSP/GwQjTeVobV20613FnTm5drxGvFtfem+V9myP4ZNTsrsZl
-        Lfn/M3xv08GYqZNMbvVqfFr5wnqbS+icDzNeOIVH5ZTUbnnw/8km+cWCu7bPa8lx0moTXulx
-        Q2Ht+TbzoBevGi4nXw83P8c92SBsFlPGnXtz77DLTLO7eZar9IvlYyExE6akT0ve7C3U7Vxh
-        eFR0RquV4hFTg5zIOlszk+1+B1+3LLgjsqmI4R4Pg8Hn5RNu3/BI5lieocBiNSHxcPK9I0HC
-        aSe4mGoKC8OW2saVTBL8FK/EUpyRaKjFXFScCABlTiogMAQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupgkeLIzCtJLcpLzFFi42LZdlhJXnfX6sB4gzcfeS1+zL3NYvHm5FQW
-        iz17T7JYXN41h83i8v9PLBbLvkxmsdjy7wirA7vHlznH2T3aJv9j92g+tpLNY+esu+wefVtW
-        MXp83iQXwBbFZZOSmpNZllqkb5fAlfHk3RWWgjVMFav2NDE2MP5m7GLk5JAQMJGY3riMqYuR
-        i0NIYAejxJp525khEtISx06cAbI5gGxhicOHiyFqnjNKbGw5wARSwyagK/Hvz342EFtEIFri
-        6t+/LCA2s8A1Ronv07MhGrYzStxe/YEVJMEpYCWx4/YcsGZhAXuJGc27wJpZBFQkLmztB6vh
-        FbCUuH/qBjuELShxcuYTqKHaEk9vPoWy5SW2v50DdaiCxM+ny1ghjnCSWLbvOyNEjYjE7M42
-        5gmMwrOQjJqFZNQsJKNmIWlZwMiyilEytaA4Nz232LDAKC+1XK84Mbe4NC9dLzk/dxMjOLK0
-        tHYw7ln1Qe8QIxMH4yFGCQ5mJRHemTd844V4UxIrq1KL8uOLSnNSiw8xSnOwKInzfp21ME5I
-        ID2xJDU7NbUgtQgmy8TBKdXAFM87WY35Wka+IMMzAz8fUdcolWqv+d++LOVJ6Stz9uxT9wwX
-        qZ1lpti+un6auTyHqdFMr3WcHgbbNaU0XsVKPP73udB5T19desjsExYCF82suq8ZWZ/wD8qJ
-        TN5lmtfds0l6SopJ6JQl+tNzeCbIOZ2tfi04y7U6bcb02TFmv42mLjbOZg55uM1AT/oUt1ck
-        V6uHncqjEo4pk24KbHeMXX1R5HiBr/eaZba/29dcf2n2rfvIC46u6M6qkEWKd39+n+y3eV5I
-        qkrrhadLTVbO3Td780mbCatbKuXSTlpWthYlzTWS7Dh15Lt4yeG38yck/RKqP6J8++m0j32s
-        mvOOXhfcuO+p9qsPzPzTa24osRRnJBpqMRcVJwIAKlLWdxsDAAA=
-X-CMS-MailID: 20200904025138epcas1p2aa6ede81a216c41405a57ef1ede0ff39
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20200902075318epcas1p3c35299366ec32bb4947362f73b50b56f
-References: <CGME20200902075318epcas1p3c35299366ec32bb4947362f73b50b56f@epcas1p3.samsung.com>
-        <20200902075306.8439-1-kohada.t2@gmail.com>
-        <000001d681e3$2da33bc0$88e9b340$@samsung.com>
+In-Reply-To: <20200903205851.gdnpthserywsxrbs@gilmour.lan>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > The exfat_find_dir_entry() called by exfat_find() doesn't return -EEXIST.
-> > Therefore, the root-dir information setting is never executed.
-> >
-> > Signed-off-by: Tetsuhiro Kohada <kohada.t2@gmail.com>
-> 
-> Acked-by: Sungjong Seo <sj1557.seo@samsung.com>
-Applied. Thanks for your work!
+Maxime,
 
+On 9/3/20 3:58 PM, Maxime Ripard wrote:
+> On Thu, Sep 03, 2020 at 10:02:31PM +0200, Clément Péron wrote:
+>> Hi Maxime,
+>>
+>> On Wed, 29 Jul 2020 at 17:16, Mark Brown <broonie@kernel.org> wrote:
+>>>
+>>> On Wed, Jul 29, 2020 at 04:39:27PM +0200, Maxime Ripard wrote:
+>>>
+>>>> It really looks like the polarity of LRCK is fine though. The first word
+>>>> is sent with LRCK low, and then high, so we have channel 0 and then
+>>>> channel 1 which seems to be the proper ordering?
+
+Which image file is this in reference to?
+
+>>> Yes, that's normal.
+>>
+>> Thank you very much for this test.
+>>
+>> So I will revert the following commit:
+>>
+>> ASoC: sun4i-i2s: Fix the LRCK polarity
+>>
+>> https://github.com/clementperon/linux/commit/dd657eae8164f7e4bafe8b875031a7c6c50646a9
+> 
+> Like I said, the current code is working as expected with regard to the
+> LRCK polarity. The issue is that the samples are delayed and start to be
+> transmitted on the wrong phase of the signal.
+
+Since an I2S LRCK frame is radially symmetric, "wrong phase" and "inverted
+polarity" look the same. The only way to definitively distinguish them is by
+looking at the sample data.
+
+In "i2s-h6.png", the samples are all zeroes, so you're assuming that the first
+sample transmitted (that is, when the bit clock starts transitioning) was a
+"left" sample.
+
+However, in "h6-i2s-start-data.png", there are pairs of samples we can look at.
+I'm still assuming that similar samples are a left/right pair, but that's
+probably a safe assumption. Here we see the first sample in each pair is
+transmitted with LRCK *high*, and the second sample in the pair is transmitted
+with LRCK *low*. This is the opposite of your claim above.
+
+An ideal test would put left/right markers and frame numbers in the data
+channel. The Python script below can generate such a file. Then you would know
+how much startup delay there is, which channel the "first sample" came from, and
+how each channel maps to the LRCK level.
+
+It would also be helpful to test DSP_A mode, where the LRCK signal is asymmetric
+and an inversion would be obvious.
+
+> But the LRCK polarity is fine.
+> 
+> Maxime
+> 
+
+Samuel
+
+----8<----
+import wave
+from struct import Struct
+
+markers = (0x2, 0xe)
+rate    = 8000
+seconds = 10
+
+struct  = Struct('<' + 'H' * len(markers))
+nframes = seconds * rate
+data    = bytearray(nframes * struct.size)
+
+for i in range(nframes):
+    frame  = [(m << 12) + (i % 2**12) for m in markers]
+    offset = i * struct.size
+    struct.pack_into(data, offset, *frame)
+
+with wave.open('test.wav', 'wb') as wf:
+    wf.setparams((len(markers), 2, rate, nframes, 'NONE', ''))
+    wf.writeframes(data)
