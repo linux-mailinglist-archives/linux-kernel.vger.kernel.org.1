@@ -2,79 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9A4B25DF9F
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 18:17:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9347925DFAA
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 18:18:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727903AbgIDQRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 12:17:13 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:29255 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726855AbgIDQRH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 12:17:07 -0400
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-303-Ek8Rsh5oNBSYzj7yaAiRkA-1; Fri, 04 Sep 2020 12:17:04 -0400
-X-MC-Unique: Ek8Rsh5oNBSYzj7yaAiRkA-1
-Received: by mail-wr1-f72.google.com with SMTP id l9so348349wrq.20
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 09:17:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=bKYS9C1I1RTTs1Rj5JAj++kqqrTapttcqeGOOsRqCKU=;
-        b=AcPmD33OqfTDhNxbBPrdn2O9s0HbwzoSIm0bBJqIeWJAx70ebVaSHND6VzsE6upFoP
-         A4JCTzAHB5lwgy2GuxkOr7W8OHUFnFx7DXIK6I4uwBNqRkHyDc0n6+Bx6to8l2qOoUUM
-         D+/P5eMN9asotTBKxr6329SmeByM2X5EIyJ/k0Z2cJI9ESQRd7wJePx4P+7TIskyrNc8
-         Zo2MIfuAQgYQ2MK4dYUY8DihWEaeUj3S7RCMotJBZauXDYHjjyX5hZlTnAnpNvJhK4xo
-         KJnfPztMnbiWoP/SPMvWvJ7IgT2plWnxR1YS45Hy1wF8v4fLke6Tc5ltnW1FzH1mGsNn
-         AZcA==
-X-Gm-Message-State: AOAM5316en661+kFj7C/VxXT184QTmTNTfpdY+GNqXZne6/fBtekMGdJ
-        s/eYoquytW8ax7Jmkmk3P+phi5CyDVgcNNNKXrm1Fga2XHF73vLiY2t5H0hAS/29CUxISZLgKEi
-        PQDt6mznxlJRoMjwQo/ieKLRp
-X-Received: by 2002:a05:600c:2f8f:: with SMTP id t15mr8704494wmn.41.1599236223228;
-        Fri, 04 Sep 2020 09:17:03 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxIRgvYRfqIRaUPmLHD40jqHv7CLARR+1AlKKawwGP+duzuN3rk39PtcN4w8OxvXu5nZzs3eA==
-X-Received: by 2002:a05:600c:2f8f:: with SMTP id t15mr8704472wmn.41.1599236223016;
-        Fri, 04 Sep 2020 09:17:03 -0700 (PDT)
-Received: from x1.bristot.me (nat-cataldo.sssup.it. [193.205.81.5])
-        by smtp.gmail.com with ESMTPSA id a17sm7687867wra.24.2020.09.04.09.17.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Sep 2020 09:17:02 -0700 (PDT)
-Subject: Re: [PATCH] MAINTAINERS: Add myself as SCHED_DEADLINE reviewer
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        linux-kernel@vger.kernel.org
-References: <4476a6da70949913a59dab9aacfbd12162c1fbd7.1599146667.git.bristot@redhat.com>
- <20200904123624.GA3552@gmail.com>
-From:   Daniel Bristot de Oliveira <bristot@redhat.com>
-Message-ID: <e39ca141-34b5-666e-ceb6-d55573e9e0e9@redhat.com>
-Date:   Fri, 4 Sep 2020 18:17:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
-MIME-Version: 1.0
-In-Reply-To: <20200904123624.GA3552@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1727872AbgIDQSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 12:18:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59044 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726196AbgIDQSf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 12:18:35 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2DE0520772;
+        Fri,  4 Sep 2020 16:18:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599236314;
+        bh=FMUhyGV9mlQ4PCYa1i1PWK/1A/emXWY+TPq0ZXZJ+Bw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=HbAHyP97Z8ZCtyx8SSEgAWNvz8yb4/xTqRy4hs+9Rq/6tNt3h6dIk4tJohGLw0Mw5
+         +L3tU9NdFfHoeth2IPPhKDGq8Ud1by7sjegtyVQOQNeYL6JfF4XGBGsF+EYR7RKFH1
+         /lFYEMDqn4W4hbMrdUDZRmM756+IleR+BG9ru6UY=
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1kEEQ4-009DqG-F0; Fri, 04 Sep 2020 17:18:32 +0100
+Date:   Fri, 04 Sep 2020 17:18:31 +0100
+Message-ID: <87d031qzvs.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Jianyong Wu <jianyong.wu@arm.com>
+Cc:     netdev@vger.kernel.org, yangbo.lu@nxp.com, john.stultz@linaro.org,
+        tglx@linutronix.de, pbonzini@redhat.com,
+        sean.j.christopherson@intel.com, richardcochran@gmail.com,
+        Mark.Rutland@arm.com, will@kernel.org, suzuki.poulose@arm.com,
+        steven.price@arm.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kvm@vger.kernel.org, Steve.Capper@arm.com, justin.he@arm.com,
+        nd@arm.com
+Subject: Re: [PATCH v14 09/10] doc: add ptp_kvm introduction for arm64 support
+In-Reply-To: <20200904092744.167655-10-jianyong.wu@arm.com>
+References: <20200904092744.167655-1-jianyong.wu@arm.com>
+        <20200904092744.167655-10-jianyong.wu@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 EasyPG/1.0.0 Emacs/26.3
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: jianyong.wu@arm.com, netdev@vger.kernel.org, yangbo.lu@nxp.com, john.stultz@linaro.org, tglx@linutronix.de, pbonzini@redhat.com, sean.j.christopherson@intel.com, richardcochran@gmail.com, Mark.Rutland@arm.com, will@kernel.org, suzuki.poulose@arm.com, steven.price@arm.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org, Steve.Capper@arm.com, justin.he@arm.com, nd@arm.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/4/20 2:36 PM, Ingo Molnar wrote:
-> Welcome Daniel! :-)
+On Fri, 04 Sep 2020 10:27:43 +0100,
+Jianyong Wu <jianyong.wu@arm.com> wrote:
 > 
-> I've applied the patch to tip:sched/core.
+> ptp_kvm implementation depends on hypercall using SMCCC. So we
+> introduce a new SMCCC service ID. This doc explain how we define
+> and use this new ID.
+> 
+> Signed-off-by: Jianyong Wu <jianyong.wu@arm.com>
+> ---
+>  Documentation/virt/kvm/arm/ptp_kvm.rst | 72 ++++++++++++++++++++++++++
+>  1 file changed, 72 insertions(+)
+>  create mode 100644 Documentation/virt/kvm/arm/ptp_kvm.rst
+> 
+> diff --git a/Documentation/virt/kvm/arm/ptp_kvm.rst b/Documentation/virt/kvm/arm/ptp_kvm.rst
+> new file mode 100644
+> index 000000000000..455591e2587a
+> --- /dev/null
+> +++ b/Documentation/virt/kvm/arm/ptp_kvm.rst
+> @@ -0,0 +1,72 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +PTP_KVM support for arm64
+> +=========================
+> +
+> +PTP_KVM is used for time sync between guest and host in a high precison.
+> +It needs get wall time and counter value from host and transfer these data
+> +to guest via hypercall service. So one more hypercall service should be
+> +added.
+> +
+> +This new SMCCC hypercall will be defined as:
+> +
+> +* ARM_SMCCC_HYP_KVM_PTP_FUNC_ID: 0xC6000001
+> +
+> +As we only support 64-bits ptp_kvm client, so we choose SMC64/HVC64
+> +calling convention.
 
-Thanks Ingo! :D
+This isn't what the code does, as it is explicitly set as an SMC32
+service... Furthermore, we still run 32bit guests, and will do for the
+foreseeable future. Having removed KVM support for 32bit doesn't mean
+32bits are gone.
 
--- Daniel
+	M.
 
+-- 
+Without deviation from the norm, progress is not possible.
