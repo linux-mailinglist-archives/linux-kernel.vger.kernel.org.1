@@ -2,95 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9372625D68D
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 12:41:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24F8025D6AE
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 12:44:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730048AbgIDKk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 06:40:57 -0400
-Received: from relay5-d.mail.gandi.net ([217.70.183.197]:38157 "EHLO
-        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729957AbgIDKkb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 06:40:31 -0400
-X-Originating-IP: 93.34.118.233
-Received: from uno.localdomain (93-34-118-233.ip49.fastwebnet.it [93.34.118.233])
-        (Authenticated sender: jacopo@jmondi.org)
-        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 7269C1C000D;
-        Fri,  4 Sep 2020 10:40:27 +0000 (UTC)
-Date:   Fri, 4 Sep 2020 12:44:14 +0200
-From:   Jacopo Mondi <jacopo@jmondi.org>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Steve Longerbeam <slongerbeam@gmail.com>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Paul <paul.kocialkowski@bootlin.com>,
-        Hugues Fruchet <hugues.fruchet@st.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Subject: Re: [PATCH v3 1/3] media: i2c: ov5640: Enable data pins on poweron
- for DVP mode
-Message-ID: <20200904104414.ilqc2qhustefiwdx@uno.localdomain>
-References: <20200813171337.5540-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20200813171337.5540-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20200901221052.GC32646@paasikivi.fi.intel.com>
+        id S1730083AbgIDKo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 06:44:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57878 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726171AbgIDKo0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 06:44:26 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6D5F520770;
+        Fri,  4 Sep 2020 10:44:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599216265;
+        bh=3++H5FLh2C1YKek3cWv88BHDHieTeA4Y8dH+wVehUno=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RmdexBTFilHLSNIkaHvBO/F2/GuyHKDcS+HqsCNopLYZoCfCz5wYTnApFBMmRoxEZ
+         Dj/U4cNhG8+LwERuak5e6kX2BkeZO8HF1Ppqdm21oI5H1zqqFPlojhDeGFnAnW/JZE
+         6VrMndJL1PMyZuGO33R0viJowxGpn111DpfVFa90=
+Date:   Fri, 4 Sep 2020 12:44:47 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     PengHao <penghao@uniontech.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, johan@kernel.org, dlaz@chromium.org,
+        stern@rowland.harvard.edu, kerneldev@karsmulder.nl,
+        jonathan@jdcox.net, tomasz@meresinski.eu
+Subject: Re: [PATCH v3] HID: quirks: Add USB_QUIRK_IGNORE_REMOTE_WAKEUP quirk
+ for BYD zhaoxin notebook
+Message-ID: <20200904104447.GA2727177@kroah.com>
+References: <20200904091322.30426-1-penghao@uniontech.com>
+ <f519d8a0-9082-13c5-0222-40dd9a1fac36@redhat.com>
+ <bd5674f2-67dc-b386-f639-97ddce13b8af@uniontech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200901221052.GC32646@paasikivi.fi.intel.com>
+In-Reply-To: <bd5674f2-67dc-b386-f639-97ddce13b8af@uniontech.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prabhakar, Sakari,
+On Fri, Sep 04, 2020 at 06:38:21PM +0800, PengHao wrote:
+> Hi, Hans
+> 
+> Thanks for the review. And sorry for I'm not really familiar with
+> mailing list, so didn't reply early.
+> 
+> Actually the reason why I submit this patch, is the vendor ask we do
+> this, they do not want enable touchpad wakeup.
 
-On Wed, Sep 02, 2020 at 01:10:53AM +0300, Sakari Ailus wrote:
-> Hi Prabhakar,
->
-> My apologies for the late reply.
->
-> On Thu, Aug 13, 2020 at 06:13:35PM +0100, Lad Prabhakar wrote:
-> > During testing this sensor on iW-RainboW-G21D-Qseven platform in 8-bit DVP
-> > mode with rcar-vin bridge noticed the capture worked fine for the first run
-> > (with yavta), but for subsequent runs the bridge driver waited for the
-> > frame to be captured. Debugging further noticed the data lines were
-> > enabled/disabled in stream on/off callback and dumping the register
-> > contents 0x3017/0x3018 in ov5640_set_stream_dvp() reported the correct
-> > values, but yet frame capturing failed.
-> >
-> > To get around this issue the following actions are performed for
-> > parallel mode (DVP):
-> > 1: Keeps the sensor in software power down mode and is woken up only in
-> >    ov5640_set_stream_dvp() callback.
->
-> I'd suppose with s_power, the main driver would power the device off
-> when it's not streaming.
->
-> > 2: Enables data lines in s_power callback
-> > 3: Configures HVP lines in s_power callback instead of configuring
-> >    everytime in ov5640_set_stream_dvp().
-> > 4: Disables MIPI interface.
->
-> Could you split this into two (or even more) patches so that the first
-> refactors the receiver setup and another one changes how it actually works?
-> That way this would be quite a bit easier to review.
->
-> While some of the above seem entirely reasonable, the changes are vast and
-> testing should be done on different boards to make sure things won't break.
-> That said, this depends on others who have the hardware.
+That says _what_ they want to do, but we need to know _why_ this is the
+case.
 
-I left it as a comment during review of v2, but now more formally:
+What is wrong with the existing touchpad wakeup functionality that is
+broken on this device?  Why does this quirk have to be added, what goes
+wrong if it is not added?
 
-For CSI-2 capture operations:
-Tested-by: Jacopo Mondi <jacopo@jmondi.org>
+Please put that information in the changelog text.
 
-Thanks
-  j
+thanks,
 
->
-> --
-> Kind regards,
->
-> Sakari Ailus
+greg k-h
