@@ -2,249 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AFD625DAB5
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 15:57:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD62225DA75
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 15:51:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730538AbgIDN5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 09:57:24 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:40803 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730449AbgIDN5F (ORCPT
+        id S1730613AbgIDNvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 09:51:37 -0400
+Received: from smtp119.ord1d.emailsrvr.com ([184.106.54.119]:60930 "EHLO
+        smtp119.ord1d.emailsrvr.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730642AbgIDNrO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 09:57:05 -0400
-Received: from [179.93.167.229] (helo=mussarela)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <cascardo@canonical.com>)
-        id 1kEBeg-0003nr-LX; Fri, 04 Sep 2020 13:21:27 +0000
-Date:   Fri, 4 Sep 2020 10:21:21 -0300
-From:   Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-To:     Cyril Hrubis <chrubis@suse.cz>
-Cc:     ltp@lists.linux.it,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, lkp@lists.01.org,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [LTP] [PATCH] syscall/ptrace08: Simplify the test.
-Message-ID: <20200904132121.GE4768@mussarela>
-References: <20200904115817.8024-1-chrubis@suse.cz>
+        Fri, 4 Sep 2020 09:47:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=g001.emailsrvr.com;
+        s=20190322-9u7zjiwi; t=1599225716;
+        bh=5SJnI8WDnM0hEpvsccPY+yQSaaqaRJ06uiCw7yBDmlg=;
+        h=From:To:Subject:Date:From;
+        b=eYKsJWfOiinOZwOPFa1lPI3lop0cBdFq6UdYRd7zYzVaKaThjIeNVkz/qOz4zWixa
+         J2RDMNmQr7D1LkUQyg0utINYinplmS5imXbuNsey67xPNJq6J40ATGE6HQzghG9/Hk
+         zM1JEbeUJo+oz4E4OKgz+hMmVqTDfGMcrs359B6E=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
+        s=20190130-41we5z8j; t=1599225716;
+        bh=5SJnI8WDnM0hEpvsccPY+yQSaaqaRJ06uiCw7yBDmlg=;
+        h=From:To:Subject:Date:From;
+        b=PExss+wQoqgJVlLurQZLNPXcgP0OwsxACB1jdFkaomusbvHYp7Qp7A2KZBpkI/KuA
+         6rzFTvGrXN45mBHNEOpsWTT+CAduuHShwkifgbJ2K/5NNNOQxyjY2Jgs4IqETOJ8cf
+         f2gf7x88pavZQ27MhqhbfoSy5mN6MRsgILy9/ny8=
+X-Auth-ID: abbotti@mev.co.uk
+Received: by smtp23.relay.ord1d.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id 54E47200E6;
+        Fri,  4 Sep 2020 09:21:55 -0400 (EDT)
+From:   Ian Abbott <abbotti@mev.co.uk>
+To:     linux-input@vger.kernel.org
+Cc:     David Rheinsberg <david.rheinsberg@gmail.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Ian Abbott <abbotti@mev.co.uk>, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] HID: wiimote: make handlers[] const
+Date:   Fri,  4 Sep 2020 14:21:42 +0100
+Message-Id: <20200904132143.9496-2-abbotti@mev.co.uk>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200904132143.9496-1-abbotti@mev.co.uk>
+References: <20200904132143.9496-1-abbotti@mev.co.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200904115817.8024-1-chrubis@suse.cz>
+Content-Transfer-Encoding: 8bit
+X-Classification-ID: ee464daf-2bdc-4db4-9ef3-697c4738b247-2-1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 04, 2020 at 01:58:17PM +0200, Cyril Hrubis wrote:
-> The original test was attempting to crash the kernel by setting a
-> breakpoint on do_debug kernel function which, when triggered, caused an
-> infinite loop in the kernel. The problem with this approach is that
-> kernel internal function names are not stable at all and the name was
-> changed recently, which made the test fail for no good reason.
-> 
-> So this patch changes the test to read the breakpoint address back
-> instead, which also means that we can drop the /proc/kallsyms parsing as
-> well.
-> 
-> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-> CC: Andy Lutomirski <luto@kernel.org>
-> CC: Peter Zijlstra <peterz@infradead.org>
-> CC: Thomas Gleixner <tglx@linutronix.de>
-> CC: Alexandre Chartre <alexandre.chartre@oracle.com>
+The `handlers[]` array contents are never modified, so use the `const`
+qualifier.
 
-Hi, Cyril.
+Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
+---
+ drivers/hid/hid-wiimote-core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-This is failing on our 4.4 and 4.15 kernels, though they passed with the
-previous test and have commit f67b15037a7a applied.
+diff --git a/drivers/hid/hid-wiimote-core.c b/drivers/hid/hid-wiimote-core.c
+index e484c3618dec..e03a0ba5611a 100644
+--- a/drivers/hid/hid-wiimote-core.c
++++ b/drivers/hid/hid-wiimote-core.c
+@@ -1586,7 +1586,7 @@ struct wiiproto_handler {
+ 	void (*func)(struct wiimote_data *wdata, const __u8 *payload);
+ };
+ 
+-static struct wiiproto_handler handlers[] = {
++static const struct wiiproto_handler handlers[] = {
+ 	{ .id = WIIPROTO_REQ_STATUS, .size = 6, .func = handler_status },
+ 	{ .id = WIIPROTO_REQ_STATUS, .size = 2, .func = handler_status_K },
+ 	{ .id = WIIPROTO_REQ_DATA, .size = 21, .func = handler_data },
+@@ -1618,7 +1618,7 @@ static int wiimote_hid_event(struct hid_device *hdev, struct hid_report *report,
+ 							u8 *raw_data, int size)
+ {
+ 	struct wiimote_data *wdata = hid_get_drvdata(hdev);
+-	struct wiiproto_handler *h;
++	const struct wiiproto_handler *h;
+ 	int i;
+ 	unsigned long flags;
+ 
+-- 
+2.28.0
 
-So, this is dependent on some other behavior/commit that has changed. It passes
-on 5.4, for example. I'll try to investigate further.
-
-Cascardo.
-
-> ---
->  testcases/kernel/syscalls/ptrace/ptrace08.c | 120 ++++++++++----------
->  1 file changed, 60 insertions(+), 60 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/ptrace/ptrace08.c b/testcases/kernel/syscalls/ptrace/ptrace08.c
-> index 591aa0dd2..5587f0bbb 100644
-> --- a/testcases/kernel/syscalls/ptrace/ptrace08.c
-> +++ b/testcases/kernel/syscalls/ptrace/ptrace08.c
-> @@ -5,8 +5,17 @@
->   *
->   * CVE-2018-1000199
->   *
-> - * Test error handling when ptrace(POKEUSER) modifies debug registers.
-> - * Even if the call returns error, it may create breakpoint in kernel code.
-> + * Test error handling when ptrace(POKEUSER) modified x86 debug registers even
-> + * when the call returned error.
-> + *
-> + * When the bug was present we could create breakpoint in the kernel code,
-> + * which shoudn't be possible at all. The original CVE caused a kernel crash by
-> + * setting a breakpoint on do_debug kernel function which, when triggered,
-> + * caused an infinite loop. However we do not have to crash the kernel in order
-> + * to assert if kernel has been fixed or not. All we have to do is to try to
-> + * set a breakpoint, on any kernel address, then read it back and check if the
-> + * value has been set or not.
-> + *
->   * Kernel crash partially fixed in:
->   *
->   *  commit f67b15037a7a50c57f72e69a6d59941ad90a0f0f
-> @@ -26,69 +35,42 @@
->  #include "tst_safe_stdio.h"
->  
->  #if defined(__i386__) || defined(__x86_64__)
-> -#define SYMNAME_SIZE 256
-> -#define KERNEL_SYM "do_debug"
->  
-> -static unsigned long break_addr;
->  static pid_t child_pid;
->  
-> -static void setup(void)
-> -{
-> -	int fcount;
-> -	char endl, symname[256];
-> -	FILE *fr = SAFE_FOPEN("/proc/kallsyms", "r");
-> -
-> -	/* Find address of do_debug() in /proc/kallsyms */
-> -	do {
-> -		fcount = fscanf(fr, "%lx %*c %255s%c", &break_addr, symname,
-> -			&endl);
-> -
-> -		if (fcount <= 0 && feof(fr))
-> -			break;
-> -
-> -		if (fcount < 2) {
-> -			fclose(fr);
-> -			tst_brk(TBROK, "Unexpected data in /proc/kallsyms %d",
-> -				fcount);
-> -		}
-> -
-> -		if (fcount >= 3 && endl != '\n')
-> -			while (!feof(fr) && fgetc(fr) != '\n');
-> -	} while (!feof(fr) && strcmp(symname, KERNEL_SYM));
-> -
-> -	SAFE_FCLOSE(fr);
-> -
-> -	if (strcmp(symname, KERNEL_SYM))
-> -		tst_brk(TBROK, "Cannot find address of kernel symbol \"%s\"",
-> -			KERNEL_SYM);
-> -
-> -	if (!break_addr)
-> -		tst_brk(TCONF, "Addresses in /proc/kallsyms are hidden");
-> -
-> -	tst_res(TINFO, "Kernel symbol \"%s\" found at 0x%lx", KERNEL_SYM,
-> -		break_addr);
-> -}
-> +#if defined(__x86_64__)
-> +# define KERN_ADDR_MIN 0xffff800000000000
-> +# define KERN_ADDR_MAX 0xffffffffffffffff
-> +# define KERN_ADDR_BITS 64
-> +#elif defined(__i386__)
-> +# define KERN_ADDR_MIN 0xc0000000
-> +# define KERN_ADDR_MAX 0xffffffff
-> +# define KERN_ADDR_BITS 32
-> +#endif
->  
-> -static void debug_trap(void)
-> +static void setup(void)
->  {
-> -	/* x86 instruction INT1 */
-> -	asm volatile (".byte 0xf1");
-> +	/*
-> +	 * When running in compat mode we can't pass 64 address to ptrace so we
-> +	 * have to skip the test.
-> +	 */
-> +	if (tst_kernel_bits() != KERN_ADDR_BITS)
-> +		tst_brk(TCONF, "Cannot pass 64bit kernel address in compat mode");
->  }
->  
->  static void child_main(void)
->  {
->  	raise(SIGSTOP);
-> -	/* wait for SIGCONT from parent */
-> -	debug_trap();
->  	exit(0);
->  }
->  
-> -static void run(void)
-> +static void ptrace_try_kern_addr(unsigned long kern_addr)
->  {
->  	int status;
-> -	pid_t child;
->  
-> -	child = child_pid = SAFE_FORK();
-> +	tst_res(TINFO, "Trying address 0x%lx", kern_addr);
-> +
-> +	child_pid = SAFE_FORK();
->  
->  	if (!child_pid)
->  		child_main();
-> @@ -103,22 +85,41 @@ static void run(void)
->  		(void *)offsetof(struct user, u_debugreg[7]), (void *)1);
->  
->  	/* Return value intentionally ignored here */
-> -	ptrace(PTRACE_POKEUSER, child_pid,
-> +	TEST(ptrace(PTRACE_POKEUSER, child_pid,
->  		(void *)offsetof(struct user, u_debugreg[0]),
-> -		(void *)break_addr);
-> +		(void *)kern_addr));
-> +
-> +	if (TST_RET != -1) {
-> +		tst_res(TFAIL, "ptrace() breakpoint with kernel addr succeeded");
-> +	} else {
-> +		if (TST_ERR == EINVAL) {
-> +			tst_res(TPASS | TTERRNO,
-> +				"ptrace() breakpoint with kernel addr failed");
-> +		} else {
-> +			tst_res(TFAIL | TTERRNO,
-> +				"ptrace() breakpoint on kernel addr should return EINVAL, got");
-> +		}
-> +	}
-> +
-> +	unsigned long addr;
-> +
-> +	addr = ptrace(PTRACE_PEEKUSER, child_pid,
-> +	              (void*)offsetof(struct user, u_debugreg[0]), NULL);
-> +
-> +	if (addr == kern_addr)
-> +		tst_res(TFAIL, "Was able to set breakpoint on kernel addr");
->  
->  	SAFE_PTRACE(PTRACE_DETACH, child_pid, NULL, NULL);
->  	SAFE_KILL(child_pid, SIGCONT);
->  	child_pid = 0;
-> +	tst_reap_children();
-> +}
->  
-> -	if (SAFE_WAITPID(child, &status, 0) != child)
-> -		tst_brk(TBROK, "Received event from unexpected PID");
-> -
-> -	if (!WIFSIGNALED(status))
-> -		tst_brk(TBROK, "Received unexpected event from child");
-> -
-> -	tst_res(TPASS, "Child killed by %s", tst_strsig(WTERMSIG(status)));
-> -	tst_res(TPASS, "We're still here. Nothing bad happened, probably.");
-> +static void run(void)
-> +{
-> +	ptrace_try_kern_addr(KERN_ADDR_MIN);
-> +	ptrace_try_kern_addr(KERN_ADDR_MAX);
-> +	ptrace_try_kern_addr(KERN_ADDR_MIN + (KERN_ADDR_MAX - KERN_ADDR_MIN)/2);
->  }
->  
->  static void cleanup(void)
-> @@ -133,7 +134,6 @@ static struct tst_test test = {
->  	.setup = setup,
->  	.cleanup = cleanup,
->  	.forks_child = 1,
-> -	.taint_check = TST_TAINT_W | TST_TAINT_D,
->  	.tags = (const struct tst_tag[]) {
->  		{"linux-git", "f67b15037a7a"},
->  		{"CVE", "2018-1000199"},
-> -- 
-> 2.26.2
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
