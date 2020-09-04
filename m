@@ -2,89 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FBC825D4AD
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 11:23:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 201AC25D4C4
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 11:27:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730063AbgIDJXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 05:23:10 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39698 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728588AbgIDJXK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 05:23:10 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 899CAB165;
-        Fri,  4 Sep 2020 09:23:08 +0000 (UTC)
-Subject: Re: rework check_disk_change()
-To:     dgilbert@interlog.com, Christoph Hellwig <hch@lst.de>,
-        Jens Axboe <axboe@kernel.dk>
-Cc:     Denis Efremov <efremov@linux.com>, Tim Waugh <tim@cyberelk.net>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Borislav Petkov <bp@alien8.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Song Liu <song@kernel.org>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        linux-m68k@lists.linux-m68k.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-ide@vger.kernel.org,
-        linux-raid@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-References: <20200902141218.212614-1-hch@lst.de>
- <730eced4-c804-a78f-3d52-2a448dbd1b84@interlog.com>
-From:   Hannes Reinecke <hare@suse.de>
-Message-ID: <29ec4708-3a8d-a4f2-5eea-a08908a8d093@suse.de>
-Date:   Fri, 4 Sep 2020 11:23:04 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1730039AbgIDJ1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 05:27:22 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2753 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728205AbgIDJ1V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 05:27:21 -0400
+Received: from lhreml740-chm.china.huawei.com (unknown [172.18.7.107])
+        by Forcepoint Email with ESMTP id EC5356981EE86CB54334;
+        Fri,  4 Sep 2020 10:27:19 +0100 (IST)
+Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
+ lhreml740-chm.china.huawei.com (10.201.108.190) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Fri, 4 Sep 2020 10:27:19 +0100
+Received: from roberto-HP-EliteDesk-800-G2-DM-65W.huawei.com (10.204.65.160)
+ by fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.1913.5; Fri, 4 Sep 2020 11:27:18 +0200
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     <zohar@linux.ibm.com>, <mjg59@google.com>
+CC:     <linux-integrity@vger.kernel.org>,
+        <linux-security-module@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <silviu.vlasceanu@huawei.com>,
+        Roberto Sassu <roberto.sassu@huawei.com>
+Subject: [PATCH v2 00/12] IMA/EVM fixes
+Date:   Fri, 4 Sep 2020 11:23:27 +0200
+Message-ID: <20200904092339.19598-1-roberto.sassu@huawei.com>
+X-Mailer: git-send-email 2.27.GIT
 MIME-Version: 1.0
-In-Reply-To: <730eced4-c804-a78f-3d52-2a448dbd1b84@interlog.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.204.65.160]
+X-ClientProxiedBy: lhreml709-chm.china.huawei.com (10.201.108.58) To
+ fraeml714-chm.china.huawei.com (10.206.15.33)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/2/20 5:38 PM, Douglas Gilbert wrote:
-> On 2020-09-02 10:11 a.m., Christoph Hellwig wrote:
->> Hi Jens,
->>
->> this series replaced the not very nice check_disk_change() function with
->> a new bdev_media_changed that avoids having the ->revalidate_disk call
->> at its end.  As a result ->revalidate_disk can be removed from a lot of
->> drivers.
->>
-> 
-> For over 20 years the sg driver has been carrying this snippet that hangs
-> off the completion callback:
-> 
->         if (driver_stat & DRIVER_SENSE) {
->                  struct scsi_sense_hdr ssh;
-> 
->                  if (scsi_normalize_sense(sbp, sense_len, &ssh)) {
->                          if (!scsi_sense_is_deferred(&ssh)) {
->                                  if (ssh.sense_key == UNIT_ATTENTION) {
->                                          if (sdp->device->removable)
->                                                  sdp->device->changed = 1;
->                                  }
->                          }
->                  }
->          }
-> 
-> Is it needed? The unit attention (UA) may not be associated with the
-> device changing. Shouldn't the SCSI mid-level monitor UAs if they
-> impact the state of a scsi_device object?
-> 
-We do; check scsi_io_completion_action() in drivers/scsi/scsi_lib.c
-So I don't think you'd need to keep it in sg.c.
+This patch set includes various fixes for IMA and EVM.
 
-Cheers,
+Patches 1-3 are trivial fixes. The remaining improve support and usability
+of EVM portable signatures. In particular patch 4 allows EVM to be used
+without an HMAC key. Patch 5 avoids appraisal verification of public keys
+(they are already verified by the key subsystem).
 
-Hannes
+Patches 6-7 allow metadata verification to be turned off when the HMAC key
+is not already loaded and to use this mode in a safe way (by ensuring that
+IMA revalidates metadata when there is a change).
+
+Patches 8-9 make portable signatures more usable if metadata verification
+cannot be turned off (because the HMAC key is loaded) by accepting any
+metadata modification until signature verification succeeds (useful when
+xattrs/attrs are copied in a sequence from a source) and by allowing
+operations that don't change metadata.
+
+Patch 10 makes it possible to use portable signatures when the IMA policy
+requires file signatures and patch 11 shows portable signatures when the
+ima-sig measurement list template is selected.
+
+Lastly, patch 12 avoids undesired removal of security.ima when a file is
+not selected by the IMA policy.
+
+Roberto Sassu (12):
+  ima: Don't ignore errors from crypto_shash_update()
+  ima: Remove semicolon at the end of ima_get_binary_runtime_size()
+  evm: Check size of security.evm before using it
+  evm: Execute evm_inode_init_security() only when the HMAC key is
+    loaded
+  evm: Load EVM key in ima_load_x509() to avoid appraisal
+  evm: Refuse EVM_ALLOW_METADATA_WRITES only if the HMAC key is loaded
+  evm: Introduce EVM_RESET_STATUS atomic flag
+  evm: Allow xattr/attr operations for portable signatures if check
+    fails
+  evm: Allow setxattr() and setattr() if metadata digest won't change
+  ima: Allow imasig requirement to be satisfied by EVM portable
+    signatures
+  ima: Introduce template field evmsig and write to field sig as
+    fallback
+  ima: Don't remove security.ima if file must not be appraised
+
+ Documentation/ABI/testing/evm             |   6 +-
+ Documentation/security/IMA-templates.rst  |   4 +-
+ include/linux/integrity.h                 |   1 +
+ security/integrity/evm/evm_main.c         | 151 ++++++++++++++++++++--
+ security/integrity/evm/evm_secfs.c        |   2 +-
+ security/integrity/iint.c                 |   2 +
+ security/integrity/ima/ima_appraise.c     |  26 ++--
+ security/integrity/ima/ima_crypto.c       |   2 +
+ security/integrity/ima/ima_init.c         |   4 +
+ security/integrity/ima/ima_main.c         |   8 +-
+ security/integrity/ima/ima_queue.c        |   2 +-
+ security/integrity/ima/ima_template.c     |   2 +
+ security/integrity/ima/ima_template_lib.c |  39 +++++-
+ security/integrity/ima/ima_template_lib.h |   2 +
+ security/integrity/integrity.h            |   1 +
+ 15 files changed, 225 insertions(+), 27 deletions(-)
+
 -- 
-Dr. Hannes Reinecke                Kernel Storage Architect
-hare@suse.de                              +49 911 74053 688
-SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
-HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
+2.27.GIT
+
