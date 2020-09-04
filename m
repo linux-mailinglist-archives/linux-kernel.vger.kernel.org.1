@@ -2,104 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EFC525D290
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 09:43:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14F7125D292
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 09:44:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726667AbgIDHni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 03:43:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53916 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726089AbgIDHnh (ORCPT
+        id S1729726AbgIDHoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 03:44:17 -0400
+Received: from lucky1.263xmail.com ([211.157.147.130]:54374 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726171AbgIDHoQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 03:43:37 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69B5EC061244
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 00:43:37 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id g29so3919310pgl.2
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 00:43:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=tQaAklUi4mOHolVXLrurT6V8jWl51s1fx1oUnBoO5Jw=;
-        b=bNMhJyTsoVn1gKktUBUxgiXMXLoUoVG4WJERz+LrnRQFWwPg3JjS0tDQIlZJR+RSjF
-         Roo8emi2j4ZW2gCmGswCZGlg7atyt9XdJD/n68RuwLxnIeMBUkPhFvsd32ye7MXFdeUD
-         STKGEIxy6HzCwU1xvNkntsaqMoSP9ZToLTi/zPMI6sRgNp7xJnMMUiG2iZvlJFSifiV3
-         KVUR7DufJU48KbT+p+tnQxPK37ia9MdBudy5LoWlj6dheB4xbwVNvzSJS4GvI8UjrcwA
-         T8dFV3nBdz1l4TYPvDn9u4qWdFIcKIV8gqgx7RgnD8xEl06D9orcNbA5X62k5lnZjU5N
-         pNHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tQaAklUi4mOHolVXLrurT6V8jWl51s1fx1oUnBoO5Jw=;
-        b=AG1zh+w7wdRUdgiwmzp589Hwvjsq2qBV4lr2kME2UeyqPne6Iiyr3/5hP1Y4g9vmKg
-         v7plrOxAo1gG9RYRq+4TV7MnUWqduNltkulJWdEVdomu5vtLiHT3aM+lWmbcl/p18G8O
-         7WjpUC70K3qS4FCZfHAo/6H+rckjX18ZLj/OJ0LxTNIvDTEOUjqkMUnVxTE6/Lc2J8S7
-         IqUagpRHb/bndJmN9hIX1/skvBcdNsaZv5J0DT/NV3B1AqWx3t952T2+wuXeaTEvTWMg
-         D5CtsULm2cH4T7fFA9wDAJ3dPcgY/5vhBA5pmMLKx/UHTgBG48oa7ectq0ecLcUA9bdI
-         Lwow==
-X-Gm-Message-State: AOAM533u6htOFdR5muHJI39iDHFUoFBSIml6cqJQnIyUi8G8BpwR10pX
-        FAFapMpz0WhB9RrHgwmsuKM=
-X-Google-Smtp-Source: ABdhPJy0dpwBb+ewWrTMHGfbTGgK2HDi3d1BTNRXUiZ+npxFGNhc8qLtFmhm+EKDyVc956Eq+vUnTg==
-X-Received: by 2002:a63:ca0c:: with SMTP id n12mr3215793pgi.209.1599205416920;
-        Fri, 04 Sep 2020 00:43:36 -0700 (PDT)
-Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id b20sm5966248pfb.198.2020.09.04.00.43.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Sep 2020 00:43:35 -0700 (PDT)
-Date:   Fri, 4 Sep 2020 16:43:33 +0900
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-To:     Artem Savkov <asavkov@redhat.com>
-Cc:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        threeearcat@gmail.com, sergey.senozhatsky@gmail.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] pty: do tty_flip_buffer_push without port->lock in
- pty_write
-Message-ID: <20200904074333.GA410@jagdpanzerIV.localdomain>
-References: <20200901120157.3412245-1-asavkov@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200901120157.3412245-1-asavkov@redhat.com>
+        Fri, 4 Sep 2020 03:44:16 -0400
+Received: from localhost (unknown [192.168.167.223])
+        by lucky1.263xmail.com (Postfix) with ESMTP id CCA0FCC317;
+        Fri,  4 Sep 2020 15:44:09 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P15471T140656136742656S1599205448140075_;
+        Fri, 04 Sep 2020 15:44:09 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <476be6e72284b797704417aaac901372>
+X-RL-SENDER: zhangqing@rock-chips.com
+X-SENDER: zhangqing@rock-chips.com
+X-LOGIN-NAME: zhangqing@rock-chips.com
+X-FST-TO: heiko@sntech.de
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-DNS-TYPE: 0
+X-System-Flag: 0
+From:   Elaine Zhang <zhangqing@rock-chips.com>
+To:     heiko@sntech.de
+Cc:     mturquette@baylibre.com, sboyd@kernel.org,
+        linux-clk@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-kernel@vger.kernel.org, xxx@rock-chips.com,
+        xf@rock-chips.com, huangtao@rock-chips.com,
+        kever.yang@rock-chips.com, Elaine Zhang <zhangqing@rock-chips.com>
+Subject: [PATCH v3 0/6] clk: rockchip: Support module build
+Date:   Fri,  4 Sep 2020 15:43:59 +0800
+Message-Id: <20200904074405.24439-1-zhangqing@rock-chips.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (20/09/01 14:01), Artem Savkov wrote:
-[..]
-> It looks like the commit was aimed to protect tty_insert_flip_string and
-> there is no need for tty_flip_buffer_push to be under this lock.
->
-[..]
-> @@ -120,10 +120,10 @@ static int pty_write(struct tty_struct *tty, const unsigned char *buf, int c)
->  		spin_lock_irqsave(&to->port->lock, flags);
->  		/* Stuff the data into the input queue of the other end */
->  		c = tty_insert_flip_string(to->port, buf, c);
-> +		spin_unlock_irqrestore(&to->port->lock, flags);
->  		/* And shovel */
->  		if (c)
->  			tty_flip_buffer_push(to->port);
-> -		spin_unlock_irqrestore(&to->port->lock, flags);
+Export some APIs for module drivers.
+Fix the clock config to support module build.
+Fix the clk driver init, add module author, description
+and license to support building RK3399 SoC clock driver as module.
 
-Performing unprotected
+Change in V2:
+[PATCH v2 1/6]: remove "clk",and check "hw" isn't an error value.
+[PATCH v2 6/6]: store a function pointer in the match data.
 
-	smp_store_release(&buf->tail->commit, buf->tail->used);
+Change in V3:
+[PATCH v3 1/6]: fix up the compiler warning.
+drivers/clk/rockchip/clk.c: In function 'rockchip_clk_register_branch':
+>> drivers/clk/rockchip/clk.c:52:6: warning: variable 'ret' set but not
+>> used [-Wunused-but-set-variable]
+      52 |  int ret;
+         |      ^~~
 
-does not look safe to me.
+Elaine Zhang (6):
+  clk: rockchip: Use clk_hw_register_composite instead of
+    clk_register_composite calls
+  clk: rockchip: Export rockchip_clk_register_ddrclk()
+  clk: rockchip: Export rockchip_register_softrst()
+  clk: rockchip: Export some clock common APIs for module drivers
+  clk: rockchip: fix the clk config to support module build
+  clk: rockchip: rk3399: Support module build
+
+ drivers/clk/Kconfig                     |   1 +
+ drivers/clk/rockchip/Kconfig            |  78 ++++++++++++++++
+ drivers/clk/rockchip/Makefile           |  42 ++++-----
+ drivers/clk/rockchip/clk-ddr.c          |   1 +
+ drivers/clk/rockchip/clk-half-divider.c |  18 ++--
+ drivers/clk/rockchip/clk-rk3399.c       |  55 ++++++++++++
+ drivers/clk/rockchip/clk.c              | 113 +++++++++++++-----------
+ drivers/clk/rockchip/softrst.c          |   7 +-
+ 8 files changed, 231 insertions(+), 84 deletions(-)
+ create mode 100644 drivers/clk/rockchip/Kconfig
 
 
-This path can be called concurrently - "pty_write vs console's IRQ handler
-(TX/RX)", for instance.
+base-commit: b36c969764ab12faebb74711c942fa3e6eaf1e96
+-- 
+2.17.1
 
-Doing this
 
-	queue_work(system_unbound_wq, &buf->work);
 
-outside of port->lock scope also sounds like possible concurrent data
-modification.
-
-I'm not sure I see how this patch is safe.
-
-	-ss
