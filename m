@@ -2,66 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF87325D643
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 12:31:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B0F825D677
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 12:37:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730068AbgIDKbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 06:31:34 -0400
-Received: from mx2.suse.de ([195.135.220.15]:48002 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730161AbgIDKaJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 06:30:09 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id CE966B802;
-        Fri,  4 Sep 2020 10:30:08 +0000 (UTC)
-Subject: Re: [PATCH 18/19] z2ram: use separate gendisk for the different modes
-To:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Denis Efremov <efremov@linux.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Song Liu <song@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-ide@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-m68k@lists.linux-m68k.org
-References: <20200903080119.441674-1-hch@lst.de>
- <20200903080119.441674-19-hch@lst.de>
-From:   Hannes Reinecke <hare@suse.de>
-Message-ID: <c4d3abbf-ee71-d07b-58b2-72340a777b35@suse.de>
-Date:   Fri, 4 Sep 2020 12:30:06 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1730191AbgIDKhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 06:37:41 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:35595 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730155AbgIDKaW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 06:30:22 -0400
+Received: from ip5f5af70b.dynamic.kabel-deutschland.de ([95.90.247.11] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1kE8z6-0001vn-BT; Fri, 04 Sep 2020 10:30:20 +0000
+Date:   Fri, 4 Sep 2020 12:30:19 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Josh Triplett <josh@joshtriplett.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Christian Brauner <christian@brauner.io>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Oleg Nesterov <oleg@redhat.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        linux-kselftest@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        linux-api@vger.kernel.org
+Subject: Re: [PATCH v2 0/4] Support non-blocking pidfds
+Message-ID: <20200904103019.6tmbfuzzmj7r5vup@wittgenstein>
+References: <20200902102130.147672-1-christian.brauner@ubuntu.com>
+ <20200903235855.GD210207@localhost>
 MIME-Version: 1.0
-In-Reply-To: <20200903080119.441674-19-hch@lst.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200903235855.GD210207@localhost>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/3/20 10:01 AM, Christoph Hellwig wrote:
-> Use separate gendisks (which share a tag_set) for the different operating
-> modes instead of redirecting the gendisk lookup using a probe callback.
-> This avoids potential problems with aliased block_device instances and
-> will eventually allow for removing the blk_register_region framework.
+On Thu, Sep 03, 2020 at 04:58:55PM -0700, Josh Triplett wrote:
+> On Wed, Sep 02, 2020 at 12:21:26PM +0200, Christian Brauner wrote:
+> > Hi,
+> > 
+> > Passing a non-blocking pidfd to waitid() currently has no effect, i.e.
+> > is not supported. There are users which would like to use waitid() on
+> > pidfds that are O_NONBLOCK and mix it with pidfds that are blocking and
+> > both pass them to waitid().
+> > The expected behavior is to have waitid() return -EAGAIN for
+> > non-blocking pidfds and to block for blocking pidfds without needing to
+> > perform any additional checks for flags set on the pidfd before passing
+> > it to waitid().
+> > Non-blocking pidfds will return EAGAIN from waitid() when no child
+> > process is ready yet. Returning -EAGAIN for non-blocking pidfds makes it
+> > easier for event loops that handle EAGAIN specially.
+> > 
+> > It also makes the API more consistent and uniform. In essence, waitid()
+> > is treated like a read on a non-blocking pidfd or a recvmsg() on a
+> > non-blocking socket.
+> > With the addition of support for non-blocking pidfds we support the same
+> > functionality that sockets do. For sockets() recvmsg() supports
+> > MSG_DONTWAIT for pidfds waitid() supports WNOHANG. Both flags are
+> > per-call options. In contrast non-blocking pidfds and non-blocking
+> > sockets are a setting on an open file description affecting all threads
+> > in the calling process as well as other processes that hold file
+> > descriptors referring to the same open file description. Both behaviors,
+> > per call and per open file description, have genuine use-cases.
+> > 
+> > A concrete use-case that was brought on-list (see [1]) was Josh's async
+> > pidfd library. Ever since the introduction of pidfds and more advanced
+> > async io various programming languages such as Rust have grown support
+> > for async event libraries. These libraries are created to help build
+> > epoll-based event loops around file descriptors. A common pattern is to
+> > automatically make all file descriptors they manage to O_NONBLOCK.
+> > 
+> > For such libraries the EAGAIN error code is treated specially. When a
+> > function is called that returns EAGAIN the function isn't called again
+> > until the event loop indicates the the file descriptor is ready.
+> > Supporting EAGAIN when waiting on pidfds makes such libraries just work
+> > with little effort.
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->   drivers/block/z2ram.c | 100 ++++++++++++++++++++++++------------------
->   1 file changed, 58 insertions(+), 42 deletions(-)
+> Thanks for the patch series, Christian!
 > 
-Reviewed-by: Hannes Reinecke <hare@suse.de>
+> This will make it much easier to use pidfd in non-blocking event loops.
+> 
+> Reviewed-by: Josh Triplett <josh@joshtriplett.org>
 
-Cheers,
+Thank you and thanks for your input on a bunch of other stuff as well. :)
 
-Hannes
--- 
-Dr. Hannes Reinecke                Kernel Storage Architect
-hare@suse.de                              +49 911 74053 688
-SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
-HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
+Christian
