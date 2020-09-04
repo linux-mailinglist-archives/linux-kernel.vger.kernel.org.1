@@ -2,75 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD74B25D620
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 12:28:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE46425D62F
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 12:29:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730060AbgIDK2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 06:28:08 -0400
-Received: from mx2.suse.de ([195.135.220.15]:46158 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726171AbgIDK2F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 06:28:05 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id CBBB2AF6D;
-        Fri,  4 Sep 2020 10:28:03 +0000 (UTC)
-Subject: Re: [PATCH 14/19] floppy: use a separate gendisk for each media
- format
-To:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Denis Efremov <efremov@linux.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Song Liu <song@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-ide@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-m68k@lists.linux-m68k.org
-References: <20200903080119.441674-1-hch@lst.de>
- <20200903080119.441674-15-hch@lst.de>
-From:   Hannes Reinecke <hare@suse.de>
-Message-ID: <6a89e295-fd16-1930-c5a1-474c1ed47718@suse.de>
-Date:   Fri, 4 Sep 2020 12:28:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
-MIME-Version: 1.0
-In-Reply-To: <20200903080119.441674-15-hch@lst.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S1729998AbgIDK3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 06:29:08 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:42762 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726171AbgIDK3A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 06:29:00 -0400
+Received: from bogon.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx+MTFFlJfq8AQAA--.90S2;
+        Fri, 04 Sep 2020 18:28:23 +0800 (CST)
+From:   Jinyang He <hejinyang@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Matthew Wilcox <willy@infradead.org>
+Subject: [PATCH] MIPS: Make NUMA select SMP
+Date:   Fri,  4 Sep 2020 18:28:21 +0800
+Message-Id: <1599215301-2480-1-git-send-email-hejinyang@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9Dx+MTFFlJfq8AQAA--.90S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7Xw45Wr18GryrGF4kXr18Xwb_yoWxKrg_tw
+        sFva48WF1Syr97Wryagws5Z340ya4rWF15AFsIqF1UZ343Xr15Jay7Jayktr17G3WDWFWr
+        ZrWruFnrZr42yjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb2xYjsxI4VWkKwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4
+        A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
+        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26F4j6r4UJw
+        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc2xSY4AK67AK6r4DMxAIw28I
+        cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
+        IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI
+        42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42
+        IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
+        87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUqLZcUUUUU
+X-CM-SenderInfo: pkhmx0p1dqwqxorr0wxvrqhubq/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/3/20 10:01 AM, Christoph Hellwig wrote:
-> The floppy driver usually autodetects the media when used with the
-> normal /dev/fd? devices, which also are the only nodes created by udev.
-> But it also supports various aliases that force a given media format.
-> That is currently supported using the blk_register_region framework
-> which finds the floppy gendisk even for a 'mismatched' dev_t.  The
-> problem with this (besides the code complexity) is that it creates
-> multiple struct block_device instances for the whole device of a
-> single gendisk, which can lead to interesting issues in code not
-> aware of that fact.
-> 
-> To fix this just create a separate gendisk for each of the aliases
-> if they are accessed.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->   drivers/block/floppy.c | 154 ++++++++++++++++++++++++++---------------
->   1 file changed, 97 insertions(+), 57 deletions(-)
-> 
-Reviewed-by: Hannes Reinecke <hare@suse.de>
+While it does make sense to allow CONFIG_NUMA and !CONFIG_SMP
+in theory, it doesn't make much sense in practice. Follow other
+architectures and make CONFIG_NUMA select CONFIG_SMP.
 
-Cheers,
+Signed-off-by: Jinyang He <hejinyang@loongson.cn>
+---
+ arch/mips/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-Hannes
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index 99220e7..b8e3331 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -2657,6 +2657,7 @@ config ARCH_SPARSEMEM_ENABLE
+ config NUMA
+ 	bool "NUMA Support"
+ 	depends on SYS_SUPPORTS_NUMA
++	select SMP
+ 	help
+ 	  Say Y to compile the kernel to support NUMA (Non-Uniform Memory
+ 	  Access).  This option improves performance on systems with more
 -- 
-Dr. Hannes Reinecke                Kernel Storage Architect
-hare@suse.de                              +49 911 74053 688
-SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
-HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
+2.1.0
+
