@@ -2,145 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65FC125D851
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 14:03:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D5EE25D859
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 14:04:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730142AbgIDMDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 08:03:31 -0400
-Received: from mga06.intel.com ([134.134.136.31]:7973 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730114AbgIDMBv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 08:01:51 -0400
-IronPort-SDR: 1I8Rtwh4GWOdeWX7J7eIEpl+QU7QjKZ9Egp+qCty8QrPl9PLcuDF5Vunz+D2G0TgvPl1hv2yM1
- YSFOXsT3oDgQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9733"; a="219283543"
-X-IronPort-AV: E=Sophos;i="5.76,389,1592895600"; 
-   d="scan'208";a="219283543"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2020 05:01:34 -0700
-IronPort-SDR: JBhmnVDQJvbdd61JWWR8kZUG+owj8Bw5jHT4ua8fCs3yJvwjj2wBZCZEB0ACc/MeYpvQb5GIuI
- Z1Fx+DDEHNdg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,389,1592895600"; 
-   d="scan'208";a="478460799"
-Received: from pipper-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.56.104])
-  by orsmga005.jf.intel.com with ESMTP; 04 Sep 2020 05:01:27 -0700
-Date:   Fri, 4 Sep 2020 15:01:26 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Haitao Huang <haitao.huang@linux.intel.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Jethro Beekman <jethro@fortanix.com>,
-        Chunyang Hui <sanqian.hcy@antfin.com>,
-        Jordan Hand <jorhand@linux.microsoft.com>,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        Seth Moore <sethmo@google.com>,
-        Suresh Siddha <suresh.b.siddha@intel.com>,
-        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, bp@alien8.de, cedric.xing@intel.com,
-        chenalexchen@google.com, conradparker@google.com,
-        cyhanish@google.com, dave.hansen@intel.com, josh@joshtriplett.org,
-        kai.huang@intel.com, kai.svahn@intel.com, kmoy@google.com,
-        ludloff@google.com, luto@kernel.org, nhorman@redhat.com,
-        puiterwijk@redhat.com, rientjes@google.com, tglx@linutronix.de,
-        yaozhangx@google.com
-Subject: Re: [PATCH v33 11/21] x86/sgx: Linux Enclave Driver
-Message-ID: <20200904120126.GB39023@linux.intel.com>
-References: <20200617220844.57423-1-jarkko.sakkinen@linux.intel.com>
- <20200617220844.57423-12-jarkko.sakkinen@linux.intel.com>
- <20200702035902.GC1819@linux.intel.com>
- <20200704033025.GA144756@linux.intel.com>
- <op.0qaqw6rvwjvjmi@hhuan26-mobl1.amr.corp.intel.com>
+        id S1729753AbgIDMEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 08:04:02 -0400
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:34961 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730160AbgIDMCy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 08:02:54 -0400
+Received: by mail-ot1-f67.google.com with SMTP id i4so5649024ota.2;
+        Fri, 04 Sep 2020 05:02:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ukvd//aAW110cXpWs2S4slyQ27lJWEeHAGcDPXmvUPg=;
+        b=kyELYHHcqKSspFHozuvy6XiCK/1OYXt2aqDpfVVV9Mo7vmx26gf/SV/V6POuAb4TcW
+         6eOqi2/jHHkme08NqY3wW0iRTFcQuFY2xAJpLZt51HHUiWoYJMYaEl/Fap5Icr5zsMr6
+         /0D1K8gfvVM4rwa+sz9jL/hcV0zKU5hyMuOonCP/JolqNsClE6pv2xRnyfJ59HF9B7k2
+         ar97ujD7ZIEl+9hR5kSw9iPjNuZBiAQL2M2lCcKDIul9GTPrr0ITZOIfvVWpGzCuwcsg
+         FEclf0dRJrSwd/FI4gZuKSP9GyzhNGO6HWuRg7QBfrGuyCyLczmTNXW88Z7o8mu2UXa1
+         0TNQ==
+X-Gm-Message-State: AOAM533+vA1b/5nhtJpFS6z5Q/70EMXae9GM5t59RNzUgvJdrcHUNva7
+        N5ICrFeQMoiPCgT/95csaujiTibUisRKqMqnMPw=
+X-Google-Smtp-Source: ABdhPJwZ4Cx5KfC2gKhC3iG2JjMNxBPWddp4GhRs/zydiWXuSmWwiH5W/NIzx+jZsINXrGzQLm6wW/3PB9DqBnC+KoI=
+X-Received: by 2002:a9d:162:: with SMTP id 89mr5264289otu.250.1599220973051;
+ Fri, 04 Sep 2020 05:02:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <op.0qaqw6rvwjvjmi@hhuan26-mobl1.amr.corp.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20200904103851.3946-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20200904103851.3946-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20200904103851.3946-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 4 Sep 2020 14:02:41 +0200
+Message-ID: <CAMuHMdVXOZ8AYiocxs-v6cHz10-47OTArU45915SJAK3rz93Lg@mail.gmail.com>
+Subject: Re: [PATCH 2/3] arm64: dts: renesas: r8a774e1: Add PCIe EP nodes
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 01, 2020 at 10:06:32PM -0500, Haitao Huang wrote:
-> On Fri, 03 Jul 2020 22:31:10 -0500, Jarkko Sakkinen
-> <jarkko.sakkinen@linux.intel.com> wrote:
-> 
-> > On Wed, Jul 01, 2020 at 08:59:02PM -0700, Sean Christopherson wrote:
-> > > On Thu, Jun 18, 2020 at 01:08:33AM +0300, Jarkko Sakkinen wrote:
-> > > > +static int sgx_validate_secs(const struct sgx_secs *secs,
-> > > > +			     unsigned long ssaframesize)
-> > > > +{
-> > > > +	if (secs->size < (2 * PAGE_SIZE) || !is_power_of_2(secs->size))
-> > > > +		return -EINVAL;
-> > > > +
-> > > > +	if (secs->base & (secs->size - 1))
-> > > > +		return -EINVAL;
-> > > > +
-> > > > +	if (secs->miscselect & sgx_misc_reserved_mask ||
-> > > > +	    secs->attributes & sgx_attributes_reserved_mask ||
-> > > > +	    secs->xfrm & sgx_xfrm_reserved_mask)
-> > > > +		return -EINVAL;
-> > > > +
-> > > > +	if (secs->attributes & SGX_ATTR_MODE64BIT) {
-> > > > +		if (secs->size > sgx_encl_size_max_64)
-> > > > +			return -EINVAL;
-> > > > +	} else if (secs->size > sgx_encl_size_max_32)
-> > > > +		return -EINVAL;
-> > > 
-> > > These should be >=, not >, the SDM uses one of those fancy ≥ ligatures.
-> > > 
-> > > Internal versions use more obvious pseudocode, e.g.:
-> > > 
-> > >     if ((DS:TMP_SECS.ATTRIBUTES.MODE64BIT = 1) AND
-> > >         (DS:TMP_SECS.SIZE AND (~((1 << CPUID.18.0:EDX[15:8]) – 1)))
-> > >     {
-> > >         #GP(0);
-> > 
-> > Updated as:
-> > 
-> > static int sgx_validate_secs(const struct sgx_secs *secs)
-> > {
-> > 	u64 max_size = (secs->attributes & SGX_ATTR_MODE64BIT) ?
-> > 		       sgx_encl_size_max_64 : sgx_encl_size_max_32;
-> > 
-> > 	if (secs->size < (2 * PAGE_SIZE) || !is_power_of_2(secs->size))
-> > 		return -EINVAL;
-> > 
-> > 	if (secs->base & (secs->size - 1))
-> > 		return -EINVAL;
-> > 
-> > 	if (secs->miscselect & sgx_misc_reserved_mask ||
-> > 	    secs->attributes & sgx_attributes_reserved_mask ||
-> > 	    secs->xfrm & sgx_xfrm_reserved_mask)
-> > 		return -EINVAL;
-> > 
-> > 	if (secs->size >= max_size)
-> > 		return -EINVAL;
-> > 
-> 
-> This should be > not >=. Issue raised and fixed by Fábio Silva for ported
-> patches for OOT SGX support:
-> https://github.com/intel/SGXDataCenterAttestationPrimitives/pull/123
-> 
-> I tested and verified with Intel arch, the comparison indeed should be >.
-> 
-> Thanks
-> Haitao
+On Fri, Sep 4, 2020 at 12:40 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> Add PCIe EP nodes for R8A774E1 Soc dtsi.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
 
-Thans a lot!
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-devel for v5.10.
 
-I added this changelog entry to the v37 log:
+Gr{oetje,eeting}s,
 
-* Fixed off-by-one error in a size calculation:
-  https://github.com/intel/SGXDataCenterAttestationPrimitives/commit/e44cc238becf584cc079aef40b557c6af9a03f38
+                        Geert
 
-Given the Boris' earlier feedback I xref every changelog
-entry in v37 changelog. Then it is also less time consuming
-to spot if something is missing.
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-/Jarkko
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
