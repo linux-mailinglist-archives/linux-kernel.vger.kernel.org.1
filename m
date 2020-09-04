@@ -2,157 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5D1525DEAC
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 17:55:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 549E025DEC3
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 17:57:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727077AbgIDPzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 11:55:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45332 "EHLO
+        id S1726623AbgIDP5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 11:57:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727019AbgIDPz2 (ORCPT
+        with ESMTP id S1726063AbgIDP52 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 11:55:28 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E436C061264
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 08:55:25 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id w186so6761831qkd.1
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 08:55:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=D1yn3SCzU30h04jFGZXM8u3sA7NFVzSbPZqsPP+oWTg=;
-        b=e29uwL+EpSoES/+z1K7U/GWcIt61CkRtvS0de6u87FjQ4LIGnpTSAeb20AmUaBcCZ8
-         qtWzRwMAkZO+FFYyxWZgTURdUzTgq6bhfj60DTRKFmf9wWPT10+0oU/yOGpjFBtn9Yab
-         oAuX8ffQuctwoR52w0eq8k+Qv0iHkXxsn4ZzCB7xDfRKFO6+vWmJc2uHQb5HuinMDXj0
-         4x11oTIlnbY00jrQyfglYGC0moCfhrkmlrCmXpOejfircLaXWuz1uHJerPmGG6PAYKWP
-         Bep1fwiC1Nn43wd0BDxFgDLF5fMFxZJxsemZJJfrYPg9oMu1dtnkwBanuwslteLyGari
-         kW2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=D1yn3SCzU30h04jFGZXM8u3sA7NFVzSbPZqsPP+oWTg=;
-        b=ckkGddWghxbx56QAzG2zzYiK/ZXCxsHGOVl0R/0/DkfvkhRPDnscb0ACIpoXrd0Vdn
-         UQwDXouc7DBKgMocz+X2+zKf03lthS8VKOMYkNgnP9OrFCb8UI4Fwkjvwrxqyhet09oT
-         rh6bN1byUFns5HLI0awkT5c44XJEGiyiFSgSh7kBgvVTdmb5hjkMP0yAMo/Wr/YwkRts
-         O9u1dvYFQX6yK0jBUAZDXnyIoWIFHub1fXMQsp2iGdzgR2nduovEUIXVahsX0VSizyWE
-         uzPc+afnZ2G4qX/jz6uOZf4+jLIc3QZ4TrlbdbAVRrC908KqO6wJIrVNSaH/rjM2CPdZ
-         1HSw==
-X-Gm-Message-State: AOAM532Z9Ly0svvF21Oemd0JbbFk89KhZcacZj7VWiFF8nP+XgHvOx9t
-        qc4msFb/AwZZr+TD+Rarr+9+vbQaQIDBMg==
-X-Google-Smtp-Source: ABdhPJyFYlEUGi9gN4pbIp7iXdUMIwRXrisWYKCYwXf+631ilHcizfoLcG9kkcGDBzyGaKjC1Bz+iw==
-X-Received: by 2002:a37:6108:: with SMTP id v8mr7108268qkb.264.1599234924005;
-        Fri, 04 Sep 2020 08:55:24 -0700 (PDT)
-Received: from localhost.localdomain (ec2-34-197-84-77.compute-1.amazonaws.com. [34.197.84.77])
-        by smtp.gmail.com with ESMTPSA id v18sm4724473qtq.15.2020.09.04.08.55.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Sep 2020 08:55:23 -0700 (PDT)
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Rob Clark <robdclark@chromium.org>
-Cc:     Sibi Sankar <sibis@codeaurora.org>,
-        linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Subject: [PATCH v3 8/8] iommu/arm-smmu-qcom: Setup identity domain for boot mappings
-Date:   Fri,  4 Sep 2020 15:55:13 +0000
-Message-Id: <20200904155513.282067-9-bjorn.andersson@linaro.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200904155513.282067-1-bjorn.andersson@linaro.org>
-References: <20200904155513.282067-1-bjorn.andersson@linaro.org>
+        Fri, 4 Sep 2020 11:57:28 -0400
+Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [IPv6:2001:67c:2050::465:101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4828C061244;
+        Fri,  4 Sep 2020 08:57:27 -0700 (PDT)
+Received: from smtp2.mailbox.org (smtp2.mailbox.org [80.241.60.241])
+        (using TLSv1.2 with cipher ECDHE-RSA-CHACHA20-POLY1305 (256/256 bits))
+        (No client certificate requested)
+        by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4Bjj4202B3zKmgZ;
+        Fri,  4 Sep 2020 17:57:22 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mailbox.org; h=
+        content-language:content-transfer-encoding:content-type
+        :content-type:in-reply-to:mime-version:date:date:message-id:from
+        :from:references:subject:subject:received; s=mail20150812; t=
+        1599235038; bh=IfbqbAynnmqph8MOdKpdNnD6H2jlmEmAh/USR0WprNQ=; b=J
+        vHApvPT+4EMxw6SriHQ/P9Fnd6/XIqD37ZcMH/Nih4tMYqBx2x+IamTY3uEDYAt8
+        skSRkKnHAmL2MeJVSDBmJUejgcMDHI9vVLAFhhynMEnayFfDOYwS7yA21kRq29CM
+        R5ALAaAkgAB/LYZ3EEjNZdx+7F3y3p6/vR8ib2jnvWUX4o632hP/VPpcjjvloHdd
+        h3xRBcqjZWb8W5hSvkJkwgTTgmZRGEnJv8QXyanhkC8wFfHyHUJQA0eT7NjcbafR
+        fAJN5YU+kJDN+XiWdG6iPTsSR9RzKyeht0sPA1f6e8KQ3s84wQxOxIgiCcnCLEXl
+        VeAHykOg9Fap3RPft3i5w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
+        t=1599235040;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zpbGrYXWP/yGCKsnNdD8K9eAP1BmEsLdGpvnWaHq9rI=;
+        b=bmt+oMpuCBXaASht7+BBjNGx6BVxlcZiBEQl7R2mdwqFSIXGO//tJep7BNls1dtL3qtsxF
+        yAcAvUJlJAMauTOWJtg0wj3JRD26nMY/2sSPa/1oPjaY5NTxDFFhFe5L2E5pcWICVKyUBH
+        fxJj2hUngCu1DVJAHW40aiaEYLGjoN8lBpP+yk5M210jadeoY75prly0CkO4FXHwyag0B7
+        8iFpNwbic26uhHY5WhNcg1vgM9C10VTmf7mLjgXt3cK/yNRfP9Y+Gvlthe6TZ/r/glulMq
+        1rd8jDDsprHJj6LRpk0FZYvrrN7VU7IDuG+I3691jev+3AZxkU5G+kLPQ8AQ0g==
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+Received: from smtp2.mailbox.org ([80.241.60.241])
+        by spamfilter05.heinlein-hosting.de (spamfilter05.heinlein-hosting.de [80.241.56.123]) (amavisd-new, port 10030)
+        with ESMTP id F7yNVVoBbHKf; Fri,  4 Sep 2020 17:57:18 +0200 (CEST)
+Subject: Re: kworker/0:3+pm hogging CPU
+To:     Michal Hocko <mhocko@suse.com>,
+        Mathias Nyman <mathias.nyman@linux.intel.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Salvatore Bonaccorso <carnil@debian.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>
+References: <20200720173807.GJ1228057@rowland.harvard.edu>
+ <20200720174530.GB4061@dhcp22.suse.cz>
+ <20200720174812.GK1228057@rowland.harvard.edu>
+ <20200720181605.GC4061@dhcp22.suse.cz>
+ <20200720200243.GA1244989@rowland.harvard.edu>
+ <20200721055917.GD4061@dhcp22.suse.cz>
+ <20200721143325.GB1272082@rowland.harvard.edu>
+ <20200829095003.GA2446485@eldamar.local>
+ <20200829155949.GA499295@rowland.harvard.edu>
+ <38dfdef4-f9ab-1755-8418-2285d843af86@linux.intel.com>
+ <20200901152728.GI16650@dhcp22.suse.cz>
+From:   Dirk Kostrewa <dirk.kostrewa@mailbox.org>
+Message-ID: <f723f5a7-1b2e-e8d1-3b0b-201069b7a40c@mailbox.org>
+Date:   Fri, 4 Sep 2020 17:57:16 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200901152728.GI16650@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-MBO-SPAM-Probability: 
+X-Rspamd-Score: -2.84 / 15.00 / 15.00
+X-Rspamd-Queue-Id: A6E0A179E
+X-Rspamd-UID: 7fae64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With many Qualcomm platforms not having functional S2CR BYPASS a
-temporary IOMMU domain, without translation, needs to be allocated in
-order to allow these memory transactions.
+Hi,
 
-Unfortunately the boot loader uses the first few context banks, so
-rather than overwriting a active bank the last context bank is used and
-streams are diverted here during initialization.
+meanwhile, I convinced Dell that I have a hardware issue (and not a 
+Linux issue), and Dell has replaced the mainboard of my laptop. After 
+that, both the USB over-current kernel messages and the kworker 
+processes with permanent high CPU load are gone. So, this was indeed a 
+hardware issue!
 
-This also performs the readback of SMR registers for the Qualcomm
-platform, to trigger the mechanism.
+Many thanks for your feedback and help!
 
-This is based on prior work by Thierry Reding and Laurentiu Tudor.
+Best regards,
 
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
----
+Dirk.
 
-Changes since v2:
-- Combined from pieces spread between the Qualcomm impl and generic code in v2.
-- Moved to use the newly introduced inherit_mapping op.
+Am 01.09.20 um 17:27 schrieb Michal Hocko:
 
- drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 33 ++++++++++++++++++++++
- 1 file changed, 33 insertions(+)
-
-diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-index 70a1eaa52e14..a54302190932 100644
---- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-+++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-@@ -12,6 +12,7 @@
- struct qcom_smmu {
- 	struct arm_smmu_device smmu;
- 	bool bypass_broken;
-+	struct iommu_domain *identity;
- };
- 
- static struct qcom_smmu *to_qcom_smmu(struct arm_smmu_device *smmu)
-@@ -228,6 +229,37 @@ static int qcom_smmu_cfg_probe(struct arm_smmu_device *smmu)
- 	return 0;
- }
- 
-+static int qcom_smmu_inherit_mappings(struct arm_smmu_device *smmu)
-+{
-+	struct qcom_smmu *qsmmu = to_qcom_smmu(smmu);
-+	int cbndx;
-+	u32 smr;
-+	int i;
-+
-+	qsmmu->identity = arm_smmu_alloc_identity_domain(smmu);
-+	if (IS_ERR(qsmmu->identity))
-+		return PTR_ERR(qsmmu->identity);
-+
-+	cbndx = to_smmu_domain(qsmmu->identity)->cfg.cbndx;
-+
-+	for (i = 0; i < smmu->num_mapping_groups; i++) {
-+		smr = arm_smmu_gr0_read(smmu, ARM_SMMU_GR0_SMR(i));
-+
-+		if (FIELD_GET(ARM_SMMU_SMR_VALID, smr)) {
-+			smmu->smrs[i].id = FIELD_GET(ARM_SMMU_SMR_ID, smr);
-+			smmu->smrs[i].mask = FIELD_GET(ARM_SMMU_SMR_MASK, smr);
-+			smmu->smrs[i].valid = true;
-+
-+			smmu->s2crs[i].type = S2CR_TYPE_TRANS;
-+			smmu->s2crs[i].privcfg = S2CR_PRIVCFG_DEFAULT;
-+			smmu->s2crs[i].cbndx = cbndx;
-+			smmu->s2crs[i].count++;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
- static int qcom_smmu_def_domain_type(struct device *dev)
- {
- 	const struct of_device_id *match =
-@@ -270,6 +302,7 @@ static const struct arm_smmu_impl qcom_smmu_impl = {
- 	.cfg_probe = qcom_smmu_cfg_probe,
- 	.def_domain_type = qcom_smmu_def_domain_type,
- 	.reset = qcom_smmu500_reset,
-+	.inherit_mappings = qcom_smmu_inherit_mappings,
- };
- 
- static const struct arm_smmu_impl qcom_adreno_smmu_impl = {
--- 
-2.28.0
-
+> On Mon 31-08-20 14:37:10, Mathias Nyman wrote:
+> [...]
+>> I can't come up with any good solution to this right now.
+>> Only bad ideas such as
+>> a. Add a sleep to the over-current case,
+>>     doesn't solve anything else than the ~100% cpu hogging part of the problem
+> This sounds like a better thing from the user space point of view. I do
+> not have any insight on what kind of other side effects this might have
+> so I didn't dare to try that on my piece of (broken) HW. I do not see
+> the problem all the time and I plan to replace it soon anyway.
+>
+> Considering that tweaking the power management helps maybe that could be
+> done automagically after many consecutive failures.
+>
+> Just my 2c
