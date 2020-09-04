@@ -2,94 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C022425E090
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 19:10:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8BB825E091
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 19:11:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726877AbgIDRKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 13:10:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56942 "EHLO
+        id S1726521AbgIDRL3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 13:11:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726220AbgIDRKS (ORCPT
+        with ESMTP id S1726127AbgIDRL2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 13:10:18 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 746F5C061245
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 10:10:17 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id a9so6748633wmm.2
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 10:10:17 -0700 (PDT)
+        Fri, 4 Sep 2020 13:11:28 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADAC8C061244
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 10:11:27 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id e11so8843614ljn.6
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 10:11:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=WxJFiAHqmCNHBnOnEhnoypPyWw0qL1gXmCoUBa+7iVU=;
-        b=DY3Pf14fjD+wnOiE1RQcasnd9yVDlAO+srkP/gYoJGx8nnNC2pNplWL93ni4oVDZQP
-         pwoksoK6V/aAidA1XQk+KMJtCCOdU8kU/zBM/m+IB+Ep/ew+5d36Aeo2R77JKjSjiHIg
-         TidAMRoQ7Nt6LuOtROz7e1ISTp9Usmyqge2ESLDhejTesVklkFiv3EowcJwvXurGHmUf
-         wDQhu3YQ21akPFgqmKbCo0dtj7TsSvC1UiStmwvp5Tcv3eZFtxZIBkLqGGbg+CaCcFdi
-         AX3d4IhvQb8jmj//MZ83KwmEhSvfCa9Ee52T4jwyC+YFSmgcBCubqZQsU7JxEI+CzkbZ
-         Wf5Q==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LwSOZ3VxHk2DxOprDUCFltuLBh+Nnc13XxZ9vhv/VSM=;
+        b=Ai5VYeCU8N0HEbW+IM5blqtlPgBAdGE7a3XFUEbRHQk5rk29NE1Y6tMiu2T/EMq17a
+         oE42EL494zdqelcOJfkWDvC8gduDspSWRXtrBLodjT6PNtuIMZdw4lEZsKoERdT4+qfQ
+         DzOZXMaeU+RmNmSqU9sHI/NrjQBcHXnvyzI6I=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=WxJFiAHqmCNHBnOnEhnoypPyWw0qL1gXmCoUBa+7iVU=;
-        b=ta0MePx8nyA3gm0aenEso4lT1FY0Yc5MTQvMx8ItklQfXsi/hwJBMrKk4tBwjcjrpG
-         3PMeKtT/8tB0M9TfEZd3EklMyUdquKSYtxKa4CPcXJyNhAViEjWL3IJxLy/GfBr2FndR
-         gRVPqErIokBWSpqAPPsrCtFFXhz3T5Y86aFKY7nOBbyvSA07qAou05bioic6STEr5vy4
-         jvPHtzISFXHhlsM2/jtHQFSpnxxZsR5a8Ie7RDmW/YebCl/bq1GQbBfGQhFC0IPHRJSs
-         M/coBmpcXhRfZ+5qvuLb6tp2gPumxhr1U46QxfroKtwun4x4yVjNTejyJtb4oBlDAh+j
-         jSnw==
-X-Gm-Message-State: AOAM531JTNUpuknbRqsX1v6uStvqaSekTtuCGYFxv0Q5+pPIDQYt0Iov
-        jHSKlTd7YIiLCnVE0jYNwBs=
-X-Google-Smtp-Source: ABdhPJwaFucIUGW3WR849mU+T6OEQNYynmsCPe1Je8+q99d8YZxVoWvc1alr7AzFrGfI2WJSqvEgoQ==
-X-Received: by 2002:a1c:1904:: with SMTP id 4mr8482034wmz.119.1599239416140;
-        Fri, 04 Sep 2020 10:10:16 -0700 (PDT)
-Received: from localhost.localdomain (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
-        by smtp.gmail.com with ESMTPSA id n16sm13368215wrj.25.2020.09.04.10.10.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Sep 2020 10:10:15 -0700 (PDT)
-From:   Alex Dewar <alex.dewar90@gmail.com>
-Cc:     Alex Dewar <alex.dewar90@gmail.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] mtd: onenand: omap2: Allow for compile-testing on !ARM
-Date:   Fri,  4 Sep 2020 18:09:55 +0100
-Message-Id: <20200904170954.18321-1-alex.dewar90@gmail.com>
-X-Mailer: git-send-email 2.28.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LwSOZ3VxHk2DxOprDUCFltuLBh+Nnc13XxZ9vhv/VSM=;
+        b=Qb4v7A+8KoO7g0+GkGfw67IhLOzkWbZgXvrJRlf4V6Zg8lIZCi/ZGbS9NE/NoTrqso
+         gKSjz66vklt0llCGP6YQ3wLUgjnl39Dr99O2vmQXgglHu2ZvEcEgsAg2TvUfQzLA05LQ
+         AdCjGbrF+GdbHlASjnqCMO1cQ6BNiCFR0CoaruHgKD1xVSFfNm0ePL/9qIJfk0dzRiam
+         8fK9KfHX4R2YkMA0PxwZa1ucDQgZUDLOnh8dXts43YQwfew+XCzwKybvmI4z2ZWf538B
+         JVQR3dF701rkjJ94SkIGgI7RU3PztycbYZyoVTSmKTN94zFOoW/ITuQCVTVtuUB5M6ZT
+         npdw==
+X-Gm-Message-State: AOAM531NEBuDTxwwGwfkiXHitBbjBaSxSz9zRwn++A+3sh/i5hRLTFiI
+        DfyplHEsY5MqHNdo3DaYVr+/3fwNiybv2g==
+X-Google-Smtp-Source: ABdhPJy+LfFDnhB2nLi6blePpdS7U79a2JkZgd/mzOmUv4ottMvXO/eSPY47M2bkHirmdF8057DRpg==
+X-Received: by 2002:a05:651c:503:: with SMTP id o3mr4691383ljp.312.1599239485901;
+        Fri, 04 Sep 2020 10:11:25 -0700 (PDT)
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
+        by smtp.gmail.com with ESMTPSA id s4sm1360943lja.124.2020.09.04.10.11.22
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 04 Sep 2020 10:11:22 -0700 (PDT)
+Received: by mail-lf1-f43.google.com with SMTP id y11so4249396lfl.5
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 10:11:22 -0700 (PDT)
+X-Received: by 2002:a05:6512:50c:: with SMTP id o12mr4298936lfb.192.1599239481877;
+ Fri, 04 Sep 2020 10:11:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+References: <alpine.LRH.2.02.2009031328040.6929@file01.intranet.prod.int.rdu2.redhat.com>
+ <CAHk-=whpJp9W_eyhqJU3Y2JsnX45xMfQHFNQSsb9dNirdMFnaA@mail.gmail.com> <alpine.LRH.2.02.2009040402560.14993@file01.intranet.prod.int.rdu2.redhat.com>
+In-Reply-To: <alpine.LRH.2.02.2009040402560.14993@file01.intranet.prod.int.rdu2.redhat.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 4 Sep 2020 10:11:06 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgmhDNm7+w0atqAj3X=izWxNut_4kQGTG8n=+HhtxEbRw@mail.gmail.com>
+Message-ID: <CAHk-=wgmhDNm7+w0atqAj3X=izWxNut_4kQGTG8n=+HhtxEbRw@mail.gmail.com>
+Subject: Re: a crash when running strace from persistent memory
+To:     Mikulas Patocka <mpatocka@redhat.com>
+Cc:     Peter Xu <peterx@redhat.com>, Jann Horn <jannh@google.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Jan Kara <jack@suse.cz>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There seems no particular reason for building on ARM only, so remove the
-restriction to increase test coverage.
+On Fri, Sep 4, 2020 at 1:08 AM Mikulas Patocka <mpatocka@redhat.com> wrote:
+>
+> I applied these four patches and strace works well. There is no longer any
+> warning or crash.
 
-Build-tested on x86 with allyesconfig.
+Ok. I obviously approve of that series whole-heartedly, but I still
+didn't want to apply it this way (and with this kind of "mid-rc"
+timing).
 
-Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
----
- drivers/mtd/nand/onenand/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I was hoping to just leave it for the next merge window, but there are
+now two independent problems that that forced COW patch of mine
+caused, and a plain revert isn't acceptable either, so I've just
+applied that series to my tree despite the garbage timing.
 
-diff --git a/drivers/mtd/nand/onenand/Kconfig b/drivers/mtd/nand/onenand/Kconfig
-index 1a0e65bc246e..e2272f07d500 100644
---- a/drivers/mtd/nand/onenand/Kconfig
-+++ b/drivers/mtd/nand/onenand/Kconfig
-@@ -24,7 +24,7 @@ config MTD_ONENAND_GENERIC
- 
- config MTD_ONENAND_OMAP2
- 	tristate "OneNAND on OMAP2/OMAP3 support"
--	depends on ARCH_OMAP2 || ARCH_OMAP3 || (COMPILE_TEST && ARM)
-+	depends on ARCH_OMAP2 || ARCH_OMAP3 || COMPILE_TEST
- 	depends on OF || COMPILE_TEST
- 	help
- 	  Support for a OneNAND flash device connected to an OMAP2/OMAP3 SoC
--- 
-2.28.0
+Maybe I'm just making excuses and rationalizing because I wanted that
+series anyway, and patches that remove lines in core code make me
+happy, but I don't see other great alternatives.
 
+              Linus
