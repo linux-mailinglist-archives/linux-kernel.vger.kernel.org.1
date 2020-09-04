@@ -2,96 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9326125D8BE
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 14:39:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BD7125D8C8
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 14:41:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730259AbgIDMjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 08:39:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43162 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729977AbgIDMi5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 08:38:57 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28374C061244;
-        Fri,  4 Sep 2020 05:38:57 -0700 (PDT)
-Date:   Fri, 04 Sep 2020 12:38:53 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1599223134;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2BtwCFAPeIXzjXcS32i88wEyUjEx2NjSefEqQEE7hVQ=;
-        b=B6NcvCBR/B0Harbi8qrbNhSbAa5U6ajDgeLVBhqaxY+83QDXsWX+3qK5MTJNqd9wRrBEwu
-        Uqev3FDBAj+TBmW+L4N8oVXhWUambGbDJJ1WtsQ2MYCDa9cGhHQSU3EMGUBIwcxQneYpHG
-        s4vZRj3hUjCv/QxVhuNGGTdemEpwEAH0A5hGjRa/Klyqwim3MIN84bk04UgpT+dW+qXR6l
-        dpxV+LMi9VdB6izpE/Oqd6S84Ba6E6vfyDGZHwxwwl6akEXmniWrgHkb9+ayesleIQcvGd
-        fhR1VYID2fMwFjfmb7CgxRhpe53C5DLM4JOd0jB/jQCBiucal6PrsU6sOyliLw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1599223134;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2BtwCFAPeIXzjXcS32i88wEyUjEx2NjSefEqQEE7hVQ=;
-        b=fweQi5FWg3TQrkSMAwm8PBYdB/YUfjtBNRoLNOcG31wyuad/soV7sHgyQDIrSSq2xI/gDR
-        ljnIa8UmmD/nlsCg==
-From:   "tip-bot2 for Daniel Bristot de Oliveira" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] MAINTAINERS: Add myself as SCHED_DEADLINE reviewer
-Cc:     Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Juri Lelli <juri.lelli@redhat.com>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <4476a6da70949913a59dab9aacfbd12162c1fbd7.1599146667.git.bristot@redhat.com>
-References: <4476a6da70949913a59dab9aacfbd12162c1fbd7.1599146667.git.bristot@redhat.com>
+        id S1730262AbgIDMkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 08:40:41 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56396 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730218AbgIDMk3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 08:40:29 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 348C0ACB5;
+        Fri,  4 Sep 2020 12:40:28 +0000 (UTC)
+Subject: Re: [PATCH v5 3/3] xen: add helpers to allocate unpopulated memory
+To:     =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>, Wei Liu <wl@xen.org>,
+        Yan Yankovskyi <yyankovskyi@gmail.com>,
+        dri-devel@lists.freedesktop.org, xen-devel@lists.xenproject.org,
+        linux-mm@kvack.org, David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>
+References: <20200901083326.21264-1-roger.pau@citrix.com>
+ <20200901083326.21264-4-roger.pau@citrix.com>
+ <b1713f26-8202-ac1e-c18a-4989312219b9@suse.com>
+ <20200903163837.GM753@Air-de-Roger>
+ <6fd73d30-5525-7f00-1e9c-d7bb96ea34a6@suse.com>
+ <20200904084229.GN753@Air-de-Roger>
+From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Message-ID: <41905296-c157-938b-4953-19af3435c085@suse.com>
+Date:   Fri, 4 Sep 2020 14:40:26 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Message-ID: <159922313318.20229.15806981631955100999.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20200904084229.GN753@Air-de-Roger>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/core branch of tip:
+On 04.09.20 10:42, Roger Pau Monné wrote:
+> On Fri, Sep 04, 2020 at 09:00:18AM +0200, Jürgen Groß wrote:
+>> On 03.09.20 18:38, Roger Pau Monné wrote:
+>>> On Thu, Sep 03, 2020 at 05:30:07PM +0200, Jürgen Groß wrote:
+>>>> On 01.09.20 10:33, Roger Pau Monne wrote:
+>>>>> To be used in order to create foreign mappings. This is based on the
+>>>>> ZONE_DEVICE facility which is used by persistent memory devices in
+>>>>> order to create struct pages and kernel virtual mappings for the IOMEM
+>>>>> areas of such devices. Note that on kernels without support for
+>>>>> ZONE_DEVICE Xen will fallback to use ballooned pages in order to
+>>>>> create foreign mappings.
+>>>>>
+>>>>> The newly added helpers use the same parameters as the existing
+>>>>> {alloc/free}_xenballooned_pages functions, which allows for in-place
+>>>>> replacement of the callers. Once a memory region has been added to be
+>>>>> used as scratch mapping space it will no longer be released, and pages
+>>>>> returned are kept in a linked list. This allows to have a buffer of
+>>>>> pages and prevents resorting to frequent additions and removals of
+>>>>> regions.
+>>>>>
+>>>>> If enabled (because ZONE_DEVICE is supported) the usage of the new
+>>>>> functionality untangles Xen balloon and RAM hotplug from the usage of
+>>>>> unpopulated physical memory ranges to map foreign pages, which is the
+>>>>> correct thing to do in order to avoid mappings of foreign pages depend
+>>>>> on memory hotplug.
+>>>>>
+>>>>> Note the driver is currently not enabled on Arm platforms because it
+>>>>> would interfere with the identity mapping required on some platforms.
+>>>>>
+>>>>> Signed-off-by: Roger Pau Monné <roger.pau@citrix.com>
+>>>>
+>>>> Sorry, I just got a build error for x86 32-bit build:
+>>>>
+>>>> WARNING: unmet direct dependencies detected for ZONE_DEVICE
+>>>>     Depends on [n]: MEMORY_HOTPLUG [=n] && MEMORY_HOTREMOVE [=n] &&
+>>>> SPARSEMEM_VMEMMAP [=n] && ARCH_HAS_PTE_DEVMAP [=n]
+>>>>     Selected by [y]:
+>>>>     - XEN_UNPOPULATED_ALLOC [=y] && XEN [=y] && X86 [=y]
+>>>>     GEN     Makefile
+>>>>     CC      kernel/bounds.s
+>>>>     CALL    /home/gross/korg/src/scripts/atomic/check-atomics.sh
+>>>>     UPD     include/generated/bounds.h
+>>>>     CC      arch/x86/kernel/asm-offsets.s
+>>>> In file included from /home/gross/korg/src/include/linux/mmzone.h:19:0,
+>>>>                    from /home/gross/korg/src/include/linux/gfp.h:6,
+>>>>                    from /home/gross/korg/src/include/linux/slab.h:15,
+>>>>                    from /home/gross/korg/src/include/linux/crypto.h:19,
+>>>>                    from /home/gross/korg/src/arch/x86/kernel/asm-offsets.c:9:
+>>>> /home/gross/korg/src/include/linux/page-flags-layout.h:95:2: error: #error
+>>>> "Not enough bits in page flags"
+>>>>    #error "Not enough bits in page flags"
+>>>>     ^~~~~
+>>>> make[2]: *** [/home/gross/korg/src/scripts/Makefile.build:114:
+>>>> arch/x86/kernel/asm-offsets.s] Error 1
+>>>> make[1]: *** [/home/gross/korg/src/Makefile:1175: prepare0] Error 2
+>>>> make[1]: Leaving directory '/home/gross/korg/x8632'
+>>>> make: *** [Makefile:185: __sub-make] Error 2
+>>>
+>>> Sorry for this. I've tested a 32bit build but I think it was before
+>>> the last Kconfig changes. I'm a little unsure how to solve this, as
+>>> ZONE_DEVICE doesn't select the required options for it to run, but
+>>> rather depends on them to be available.
+>>>
+>>> You can trigger something similar on x86-64 by doing:
+>>>
+>>> $ make ARCH=x86_64 xen.config
+>>> Using .config as base
+>>> Merging ./kernel/configs/xen.config
+>>> Merging ./arch/x86/configs/xen.config
+>>> #
+>>> # merged configuration written to .config (needs make)
+>>> #
+>>> scripts/kconfig/conf  --olddefconfig Kconfig
+>>>
+>>> WARNING: unmet direct dependencies detected for ZONE_DEVICE
+>>>     Depends on [n]: MEMORY_HOTPLUG [=y] && MEMORY_HOTREMOVE [=n] && SPARSEMEM_VMEMMAP [=y] && ARCH_HAS_PTE_DEVMAP [=y]
+>>>     Selected by [y]:
+>>>     - XEN_UNPOPULATED_ALLOC [=y] && XEN [=y] && X86_64 [=y]
+>>> #
+>>> # configuration written to .config
+>>> #
+>>>
+>>> I think the only solution is to have XEN_UNPOPULATED_ALLOC depend on
+>>> ZONE_DEVICE rather than select it?
+>>
+>> Yes, I think so.
+>>
+>> I've folded that in and now build is fine.
+> 
+> Thanks, I assume no further action is needed on my side.
 
-Commit-ID:     153908ebc8b5721658c4aba92779fc6e3e2d5a61
-Gitweb:        https://git.kernel.org/tip/153908ebc8b5721658c4aba92779fc6e3e2d5a61
-Author:        Daniel Bristot de Oliveira <bristot@redhat.com>
-AuthorDate:    Fri, 04 Sep 2020 11:26:23 +02:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Fri, 04 Sep 2020 14:35:40 +02:00
+Right.
 
-MAINTAINERS: Add myself as SCHED_DEADLINE reviewer
 
-As discussed with Juri and Peter.
-
-Signed-off-by: Daniel Bristot de Oliveira <bristot@redhat.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Acked-by: Peter Zijlstra <a.p.zijlstra@chello.nl>
-Acked-by: Juri Lelli <juri.lelli@redhat.com>
-Link: https://lore.kernel.org/r/4476a6da70949913a59dab9aacfbd12162c1fbd7.1599146667.git.bristot@redhat.com
----
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index deaafb6..713f82b 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -15355,6 +15355,7 @@ R:	Dietmar Eggemann <dietmar.eggemann@arm.com> (SCHED_NORMAL)
- R:	Steven Rostedt <rostedt@goodmis.org> (SCHED_FIFO/SCHED_RR)
- R:	Ben Segall <bsegall@google.com> (CONFIG_CFS_BANDWIDTH)
- R:	Mel Gorman <mgorman@suse.de> (CONFIG_NUMA_BALANCING)
-+R:	Daniel Bristot de Oliveira <bristot@redhat.com> (SCHED_DEADLINE)
- L:	linux-kernel@vger.kernel.org
- S:	Maintained
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/core
+Juergen
