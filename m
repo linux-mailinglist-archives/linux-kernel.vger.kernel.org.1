@@ -2,67 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24F8025D6AE
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 12:44:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D61225D697
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 12:41:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730083AbgIDKo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 06:44:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57878 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726171AbgIDKo0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 06:44:26 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6D5F520770;
-        Fri,  4 Sep 2020 10:44:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599216265;
-        bh=3++H5FLh2C1YKek3cWv88BHDHieTeA4Y8dH+wVehUno=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RmdexBTFilHLSNIkaHvBO/F2/GuyHKDcS+HqsCNopLYZoCfCz5wYTnApFBMmRoxEZ
-         Dj/U4cNhG8+LwERuak5e6kX2BkeZO8HF1Ppqdm21oI5H1zqqFPlojhDeGFnAnW/JZE
-         6VrMndJL1PMyZuGO33R0viJowxGpn111DpfVFa90=
-Date:   Fri, 4 Sep 2020 12:44:47 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     PengHao <penghao@uniontech.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, johan@kernel.org, dlaz@chromium.org,
-        stern@rowland.harvard.edu, kerneldev@karsmulder.nl,
-        jonathan@jdcox.net, tomasz@meresinski.eu
-Subject: Re: [PATCH v3] HID: quirks: Add USB_QUIRK_IGNORE_REMOTE_WAKEUP quirk
- for BYD zhaoxin notebook
-Message-ID: <20200904104447.GA2727177@kroah.com>
-References: <20200904091322.30426-1-penghao@uniontech.com>
- <f519d8a0-9082-13c5-0222-40dd9a1fac36@redhat.com>
- <bd5674f2-67dc-b386-f639-97ddce13b8af@uniontech.com>
+        id S1730231AbgIDKlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 06:41:51 -0400
+Received: from relay6-d.mail.gandi.net ([217.70.183.198]:37763 "EHLO
+        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730200AbgIDKlL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 06:41:11 -0400
+X-Originating-IP: 93.34.118.233
+Received: from uno.localdomain (93-34-118-233.ip49.fastwebnet.it [93.34.118.233])
+        (Authenticated sender: jacopo@jmondi.org)
+        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 711E4C0004;
+        Fri,  4 Sep 2020 10:41:06 +0000 (UTC)
+Date:   Fri, 4 Sep 2020 12:44:53 +0200
+From:   Jacopo Mondi <jacopo@jmondi.org>
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Steve Longerbeam <slongerbeam@gmail.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Paul <paul.kocialkowski@bootlin.com>,
+        Hugues Fruchet <hugues.fruchet@st.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Subject: Re: [PATCH v3 3/3] media: i2c: ov5640: Fail probe on unsupported
+ bus_type
+Message-ID: <20200904104453.le66sdczzcjyhecz@uno.localdomain>
+References: <20200813171337.5540-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20200813171337.5540-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <bd5674f2-67dc-b386-f639-97ddce13b8af@uniontech.com>
+In-Reply-To: <20200813171337.5540-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 04, 2020 at 06:38:21PM +0800, PengHao wrote:
-> Hi, Hans
-> 
-> Thanks for the review. And sorry for I'm not really familiar with
-> mailing list, so didn't reply early.
-> 
-> Actually the reason why I submit this patch, is the vendor ask we do
-> this, they do not want enable touchpad wakeup.
+Hi Prabhakar
 
-That says _what_ they want to do, but we need to know _why_ this is the
-case.
+On Thu, Aug 13, 2020 at 06:13:37PM +0100, Lad Prabhakar wrote:
+> Fail probe if unsupported bus_type is detected.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-What is wrong with the existing touchpad wakeup functionality that is
-broken on this device?  Why does this quirk have to be added, what goes
-wrong if it is not added?
+Thanks
 
-Please put that information in the changelog text.
+Reviewed-by: Jacopo Mondi <jacopo@jmondi.org>
 
-thanks,
 
-greg k-h
+> ---
+>  drivers/media/i2c/ov5640.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+>
+> diff --git a/drivers/media/i2c/ov5640.c b/drivers/media/i2c/ov5640.c
+> index 160d2857352a..3191e2b223c3 100644
+> --- a/drivers/media/i2c/ov5640.c
+> +++ b/drivers/media/i2c/ov5640.c
+> @@ -3078,6 +3078,13 @@ static int ov5640_probe(struct i2c_client *client)
+>  		return ret;
+>  	}
+>
+> +	if (sensor->ep.bus_type != V4L2_MBUS_PARALLEL &&
+> +	    sensor->ep.bus_type != V4L2_MBUS_CSI2_DPHY &&
+> +	    sensor->ep.bus_type != V4L2_MBUS_BT656) {
+> +		dev_err(dev, "Unsupported bus type %d\n", sensor->ep.bus_type);
+> +		return -EINVAL;
+> +	}
+> +
+>  	/* get system clock (xclk) */
+>  	sensor->xclk = devm_clk_get(dev, "xclk");
+>  	if (IS_ERR(sensor->xclk)) {
+> --
+> 2.17.1
+>
