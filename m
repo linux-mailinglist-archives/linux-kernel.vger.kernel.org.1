@@ -2,56 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A25D725E1F9
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 21:31:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE1A025E1FC
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 21:33:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727939AbgIDTa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 15:30:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47934 "EHLO mail.kernel.org"
+        id S1727860AbgIDTdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 15:33:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52386 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726221AbgIDTa6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 15:30:58 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.1])
+        id S1726317AbgIDTdM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 15:33:12 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 115372083B;
-        Fri,  4 Sep 2020 19:30:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CCA342083B;
+        Fri,  4 Sep 2020 19:33:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599247858;
-        bh=yVfay0lnd28NGJIxYtJjCxfY3h/kQDiVEdTJTo3zdqo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=sbjs4j1GsbYMvW8mYOyi3jkEfTGFjmwIdbDQIje4T8Py5E4fP1yW7CbFP0/9oNNxr
-         cdyX8Uyi3PSx+gBh2kD1JZasP61J1SwQmp0Dg1lfldTUKQbo0Hcqgu+kiSC7Ap5xGk
-         /sNIoQeSfqaBqfm3tn3OhAqQf5EZTM2Ua8pBZ4DU=
-Date:   Fri, 4 Sep 2020 12:30:56 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Po-Hsu Lin <po-hsu.lin@canonical.com>
-Cc:     David Miller <davem@davemloft.net>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCHv2] selftests: rtnetlink: load fou module for
- kci_test_encap_fou()
-Message-ID: <20200904123056.5f00ff9a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <CAMy_GT8jOOPw+esd53X2LQ4aY9eqpE0rv9vDgr_eBD6fy5Wmqg@mail.gmail.com>
-References: <20200813044422.46713-1-po-hsu.lin@canonical.com>
-        <CAMy_GT8jOOPw+esd53X2LQ4aY9eqpE0rv9vDgr_eBD6fy5Wmqg@mail.gmail.com>
+        s=default; t=1599247992;
+        bh=EwWqQCCeyt59RTTQb8UOoKzovguyPsH4Mq6GX6zmhgE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oAFKDW9FXgJ9pwPBOyWGU4pwAGUBLMfyCrWC9AT7td4hEN/jGrNoU6Nlc99D52Bek
+         ZzCYBYCNliEs2PerjM4pemO3H16rQxtb8tkiqQHxi6s3LzktxNreOh7ST0J7Pr9NXJ
+         aY1PSZIfg5GJlFPFYD+mt4deFJ66LcD2qoie0odE=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id ECB2C40D3D; Fri,  4 Sep 2020 16:33:09 -0300 (-03)
+Date:   Fri, 4 Sep 2020 16:33:09 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Kim Phillips <kim.phillips@amd.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Vijay Thakkar <vijaythakkar@me.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Yunfeng Ye <yeyunfeng@huawei.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Martin =?utf-8?B?TGnFoWth?= <mliska@suse.cz>,
+        Borislav Petkov <bp@suse.de>, Jon Grimm <jon.grimm@amd.com>,
+        Martin Jambor <mjambor@suse.cz>,
+        Michael Petlan <mpetlan@redhat.com>,
+        William Cohen <wcohen@redhat.com>,
+        Stephane Eranian <eranian@google.com>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 4/4] perf vendor events amd: Enable Family 19h users by
+ matching Zen2 events
+Message-ID: <20200904193309.GH3753976@kernel.org>
+References: <20200901220944.277505-1-kim.phillips@amd.com>
+ <20200901220944.277505-4-kim.phillips@amd.com>
+ <CAP-5=fXs6WJoJ5HTkkgXVx=TR6=G1VaP6kcZHhf4Zq9Nhxb4Xw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAP-5=fXs6WJoJ5HTkkgXVx=TR6=G1VaP6kcZHhf4Zq9Nhxb4Xw@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 4 Sep 2020 17:10:39 +0800 Po-Hsu Lin wrote:
-> Hello David,
+Em Wed, Sep 02, 2020 at 11:20:20PM -0700, Ian Rogers escreveu:
+> On Tue, Sep 1, 2020 at 3:10 PM Kim Phillips <kim.phillips@amd.com> wrote:
+> >
+> > This enables zen3 users by reusing mostly-compatible zen2 events
+> > until the official public list of zen3 events is published in a
+> > future PPR.
+> >
+> > Signed-off-by: Kim Phillips <kim.phillips@amd.com>
 > 
-> do you need more information for this V2 patch?
+> Acked-by: Ian Rogers <irogers@google.com>
 
-Something strange happened here, did you perhaps edit the patch
-manually and resend the same email? I think the Message-ID header 
-may had been the same on v1 and v2 of your patch and it confused 
-all systems indexing by Message-ID..
+Thanks, applied,
 
-Please regenerate the patch fully and resend.
+- Arnaldo
+ 
+> Thanks!
+> Ian
+> 
+> > Cc: Peter Zijlstra <peterz@infradead.org>
+> > Cc: Ingo Molnar <mingo@redhat.com>
+> > Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+> > Cc: Mark Rutland <mark.rutland@arm.com>
+> > Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+> > Cc: Jiri Olsa <jolsa@redhat.com>
+> > Cc: Namhyung Kim <namhyung@kernel.org>
+> > Cc: Vijay Thakkar <vijaythakkar@me.com>
+> > Cc: Andi Kleen <ak@linux.intel.com>
+> > Cc: John Garry <john.garry@huawei.com>
+> > Cc: Kan Liang <kan.liang@linux.intel.com>
+> > Cc: Yunfeng Ye <yeyunfeng@huawei.com>
+> > Cc: Jin Yao <yao.jin@linux.intel.com>
+> > Cc: "Martin Liška" <mliska@suse.cz>
+> > Cc: Borislav Petkov <bp@suse.de>
+> > Cc: Jon Grimm <jon.grimm@amd.com>
+> > Cc: Martin Jambor <mjambor@suse.cz>
+> > Cc: Michael Petlan <mpetlan@redhat.com>
+> > Cc: William Cohen <wcohen@redhat.com>
+> > Cc: Stephane Eranian <eranian@google.com>
+> > Cc: Ian Rogers <irogers@google.com>
+> > Cc: linux-perf-users@vger.kernel.org
+> > Cc: linux-kernel@vger.kernel.org
+> > ---
+> >  tools/perf/pmu-events/arch/x86/mapfile.csv | 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+> > diff --git a/tools/perf/pmu-events/arch/x86/mapfile.csv b/tools/perf/pmu-events/arch/x86/mapfile.csv
+> > index 25b06cf98747..2f2a209e87e1 100644
+> > --- a/tools/perf/pmu-events/arch/x86/mapfile.csv
+> > +++ b/tools/perf/pmu-events/arch/x86/mapfile.csv
+> > @@ -38,3 +38,4 @@ GenuineIntel-6-7E,v1,icelake,core
+> >  GenuineIntel-6-86,v1,tremontx,core
+> >  AuthenticAMD-23-([12][0-9A-F]|[0-9A-F]),v2,amdzen1,core
+> >  AuthenticAMD-23-[[:xdigit:]]+,v1,amdzen2,core
+> > +AuthenticAMD-25-[[:xdigit:]]+,v1,amdzen2,core
+> > --
+> > 2.27.0
+> >
+
+-- 
+
+- Arnaldo
