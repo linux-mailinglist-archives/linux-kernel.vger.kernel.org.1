@@ -2,229 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1389225D829
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 13:58:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81AEE25D830
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 13:58:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729659AbgIDL6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 07:58:15 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57000 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729942AbgIDL5u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 07:57:50 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 963CCAC37;
-        Fri,  4 Sep 2020 11:57:49 +0000 (UTC)
-From:   Cyril Hrubis <chrubis@suse.cz>
-To:     ltp@lists.linux.it
-Cc:     linux-kernel@vger.kernel.org, lkp@lists.01.org,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>
-Subject: [PATCH] syscall/ptrace08: Simplify the test.
-Date:   Fri,  4 Sep 2020 13:58:17 +0200
-Message-Id: <20200904115817.8024-1-chrubis@suse.cz>
-X-Mailer: git-send-email 2.26.2
+        id S1730154AbgIDL6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 07:58:42 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:27037 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730110AbgIDL6d (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 07:58:33 -0400
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-399-0fypSvtTPzuBU8yy6NCR7w-1; Fri, 04 Sep 2020 07:58:28 -0400
+X-MC-Unique: 0fypSvtTPzuBU8yy6NCR7w-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8E773873085;
+        Fri,  4 Sep 2020 11:58:27 +0000 (UTC)
+Received: from colo-mx.corp.redhat.com (colo-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.21])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 87BF95D9CC;
+        Fri,  4 Sep 2020 11:58:27 +0000 (UTC)
+Received: from zmail21.collab.prod.int.phx2.redhat.com (zmail21.collab.prod.int.phx2.redhat.com [10.5.83.24])
+        by colo-mx.corp.redhat.com (Postfix) with ESMTP id 7B26D79DA2;
+        Fri,  4 Sep 2020 11:58:27 +0000 (UTC)
+Date:   Fri, 4 Sep 2020 07:58:27 -0400 (EDT)
+From:   Vladis Dronov <vdronov@redhat.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-ID: <1368247890.15496631.1599220707457.JavaMail.zimbra@redhat.com>
+In-Reply-To: <20200904115048.GA2964117@kroah.com>
+References: <20200811150129.53343-1-vdronov@redhat.com> <20200904114207.375220-1-vdronov@redhat.com> <20200904115048.GA2964117@kroah.com>
+Subject: Re: [PATCH] debugfs: Fix module state check condition
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.40.208.51, 10.4.195.2]
+Thread-Topic: debugfs: Fix module state check condition
+Thread-Index: e5aKqC+SWN99YQvQqyZUd2FQT/pMlQ==
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The original test was attempting to crash the kernel by setting a
-breakpoint on do_debug kernel function which, when triggered, caused an
-infinite loop in the kernel. The problem with this approach is that
-kernel internal function names are not stable at all and the name was
-changed recently, which made the test fail for no good reason.
+Hello, Greg, all,
 
-So this patch changes the test to read the breakpoint address back
-instead, which also means that we can drop the /proc/kallsyms parsing as
-well.
+----- Original Message -----
+> From: "Greg KH" <gregkh@linuxfoundation.org>
+> Subject: Re: [PATCH] debugfs: Fix module state check condition
+> 
+...skip...
+> 
+> It's in my queue, but bugs you can only trigger while root are a bit
+> lower on the priority list :)
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-CC: Andy Lutomirski <luto@kernel.org>
-CC: Peter Zijlstra <peterz@infradead.org>
-CC: Thomas Gleixner <tglx@linutronix.de>
-CC: Alexandre Chartre <alexandre.chartre@oracle.com>
----
- testcases/kernel/syscalls/ptrace/ptrace08.c | 120 ++++++++++----------
- 1 file changed, 60 insertions(+), 60 deletions(-)
+Oh, apologies. I really thought this has been somehow lost/slipped.
+Thank you for the reply and a confirmation.
 
-diff --git a/testcases/kernel/syscalls/ptrace/ptrace08.c b/testcases/kernel/syscalls/ptrace/ptrace08.c
-index 591aa0dd2..5587f0bbb 100644
---- a/testcases/kernel/syscalls/ptrace/ptrace08.c
-+++ b/testcases/kernel/syscalls/ptrace/ptrace08.c
-@@ -5,8 +5,17 @@
-  *
-  * CVE-2018-1000199
-  *
-- * Test error handling when ptrace(POKEUSER) modifies debug registers.
-- * Even if the call returns error, it may create breakpoint in kernel code.
-+ * Test error handling when ptrace(POKEUSER) modified x86 debug registers even
-+ * when the call returned error.
-+ *
-+ * When the bug was present we could create breakpoint in the kernel code,
-+ * which shoudn't be possible at all. The original CVE caused a kernel crash by
-+ * setting a breakpoint on do_debug kernel function which, when triggered,
-+ * caused an infinite loop. However we do not have to crash the kernel in order
-+ * to assert if kernel has been fixed or not. All we have to do is to try to
-+ * set a breakpoint, on any kernel address, then read it back and check if the
-+ * value has been set or not.
-+ *
-  * Kernel crash partially fixed in:
-  *
-  *  commit f67b15037a7a50c57f72e69a6d59941ad90a0f0f
-@@ -26,69 +35,42 @@
- #include "tst_safe_stdio.h"
- 
- #if defined(__i386__) || defined(__x86_64__)
--#define SYMNAME_SIZE 256
--#define KERNEL_SYM "do_debug"
- 
--static unsigned long break_addr;
- static pid_t child_pid;
- 
--static void setup(void)
--{
--	int fcount;
--	char endl, symname[256];
--	FILE *fr = SAFE_FOPEN("/proc/kallsyms", "r");
--
--	/* Find address of do_debug() in /proc/kallsyms */
--	do {
--		fcount = fscanf(fr, "%lx %*c %255s%c", &break_addr, symname,
--			&endl);
--
--		if (fcount <= 0 && feof(fr))
--			break;
--
--		if (fcount < 2) {
--			fclose(fr);
--			tst_brk(TBROK, "Unexpected data in /proc/kallsyms %d",
--				fcount);
--		}
--
--		if (fcount >= 3 && endl != '\n')
--			while (!feof(fr) && fgetc(fr) != '\n');
--	} while (!feof(fr) && strcmp(symname, KERNEL_SYM));
--
--	SAFE_FCLOSE(fr);
--
--	if (strcmp(symname, KERNEL_SYM))
--		tst_brk(TBROK, "Cannot find address of kernel symbol \"%s\"",
--			KERNEL_SYM);
--
--	if (!break_addr)
--		tst_brk(TCONF, "Addresses in /proc/kallsyms are hidden");
--
--	tst_res(TINFO, "Kernel symbol \"%s\" found at 0x%lx", KERNEL_SYM,
--		break_addr);
--}
-+#if defined(__x86_64__)
-+# define KERN_ADDR_MIN 0xffff800000000000
-+# define KERN_ADDR_MAX 0xffffffffffffffff
-+# define KERN_ADDR_BITS 64
-+#elif defined(__i386__)
-+# define KERN_ADDR_MIN 0xc0000000
-+# define KERN_ADDR_MAX 0xffffffff
-+# define KERN_ADDR_BITS 32
-+#endif
- 
--static void debug_trap(void)
-+static void setup(void)
- {
--	/* x86 instruction INT1 */
--	asm volatile (".byte 0xf1");
-+	/*
-+	 * When running in compat mode we can't pass 64 address to ptrace so we
-+	 * have to skip the test.
-+	 */
-+	if (tst_kernel_bits() != KERN_ADDR_BITS)
-+		tst_brk(TCONF, "Cannot pass 64bit kernel address in compat mode");
- }
- 
- static void child_main(void)
- {
- 	raise(SIGSTOP);
--	/* wait for SIGCONT from parent */
--	debug_trap();
- 	exit(0);
- }
- 
--static void run(void)
-+static void ptrace_try_kern_addr(unsigned long kern_addr)
- {
- 	int status;
--	pid_t child;
- 
--	child = child_pid = SAFE_FORK();
-+	tst_res(TINFO, "Trying address 0x%lx", kern_addr);
-+
-+	child_pid = SAFE_FORK();
- 
- 	if (!child_pid)
- 		child_main();
-@@ -103,22 +85,41 @@ static void run(void)
- 		(void *)offsetof(struct user, u_debugreg[7]), (void *)1);
- 
- 	/* Return value intentionally ignored here */
--	ptrace(PTRACE_POKEUSER, child_pid,
-+	TEST(ptrace(PTRACE_POKEUSER, child_pid,
- 		(void *)offsetof(struct user, u_debugreg[0]),
--		(void *)break_addr);
-+		(void *)kern_addr));
-+
-+	if (TST_RET != -1) {
-+		tst_res(TFAIL, "ptrace() breakpoint with kernel addr succeeded");
-+	} else {
-+		if (TST_ERR == EINVAL) {
-+			tst_res(TPASS | TTERRNO,
-+				"ptrace() breakpoint with kernel addr failed");
-+		} else {
-+			tst_res(TFAIL | TTERRNO,
-+				"ptrace() breakpoint on kernel addr should return EINVAL, got");
-+		}
-+	}
-+
-+	unsigned long addr;
-+
-+	addr = ptrace(PTRACE_PEEKUSER, child_pid,
-+	              (void*)offsetof(struct user, u_debugreg[0]), NULL);
-+
-+	if (addr == kern_addr)
-+		tst_res(TFAIL, "Was able to set breakpoint on kernel addr");
- 
- 	SAFE_PTRACE(PTRACE_DETACH, child_pid, NULL, NULL);
- 	SAFE_KILL(child_pid, SIGCONT);
- 	child_pid = 0;
-+	tst_reap_children();
-+}
- 
--	if (SAFE_WAITPID(child, &status, 0) != child)
--		tst_brk(TBROK, "Received event from unexpected PID");
--
--	if (!WIFSIGNALED(status))
--		tst_brk(TBROK, "Received unexpected event from child");
--
--	tst_res(TPASS, "Child killed by %s", tst_strsig(WTERMSIG(status)));
--	tst_res(TPASS, "We're still here. Nothing bad happened, probably.");
-+static void run(void)
-+{
-+	ptrace_try_kern_addr(KERN_ADDR_MIN);
-+	ptrace_try_kern_addr(KERN_ADDR_MAX);
-+	ptrace_try_kern_addr(KERN_ADDR_MIN + (KERN_ADDR_MAX - KERN_ADDR_MIN)/2);
- }
- 
- static void cleanup(void)
-@@ -133,7 +134,6 @@ static struct tst_test test = {
- 	.setup = setup,
- 	.cleanup = cleanup,
- 	.forks_child = 1,
--	.taint_check = TST_TAINT_W | TST_TAINT_D,
- 	.tags = (const struct tst_tag[]) {
- 		{"linux-git", "f67b15037a7a"},
- 		{"CVE", "2018-1000199"},
--- 
-2.26.2
+/me stops bothering people.
+
+> thanks,
+> 
+> greg k-h
+> 
+> 
+
+Regards,
+Vladis
+
