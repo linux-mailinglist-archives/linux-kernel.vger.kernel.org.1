@@ -2,221 +2,297 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 127DE26FFE2
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 16:30:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D987227002E
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Sep 2020 16:49:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726609AbgIROaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Sep 2020 10:30:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42616 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725955AbgIROaR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Sep 2020 10:30:17 -0400
-Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7449A2396D;
-        Fri, 18 Sep 2020 14:30:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600439415;
-        bh=BzRCCHrMyRtEbFXS+WPF2C06UQOXtwZQ6+AR7KwiNeY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=M78Nd8HJqpaE3j9eXFP+0zTJkt2DJ3JP2vG2rY2s+E2Ucjhb1yZtupM/PYNzuUdOV
-         7j9z8YCTnNoaiuky8aGripKJaCqvG3MNujOgGJ57GaOrjyaHNHJWRRh2mRAdM4mzf/
-         0+TNIX/OYTI78EOul2yVt4CZmk8rrF0HMp4lqS3s=
-Received: by mail-ot1-f49.google.com with SMTP id a2so5528319otr.11;
-        Fri, 18 Sep 2020 07:30:15 -0700 (PDT)
-X-Gm-Message-State: AOAM532yQ4ObGx0RRqNObm0vMioebQcY79P4fcFTvc63A6dO6JrV2Nvh
-        VFP4l8AqTF2AMbkI4se2Zg2iLnqxZ12qVBdp0g==
-X-Google-Smtp-Source: ABdhPJwB1Ma/MKweZxwzRdC4MQG3s3W4wg0oVoNXdP8sSb8gUQ626v5DX61EKMyUVGmHFAKJsNKSrOjgarNcaCyLkpU=
-X-Received: by 2002:a05:6830:1008:: with SMTP id a8mr21429982otp.107.1600439413814;
- Fri, 18 Sep 2020 07:30:13 -0700 (PDT)
+        id S1726864AbgIROtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Sep 2020 10:49:18 -0400
+Received: from mail-dm6nam10on2057.outbound.protection.outlook.com ([40.107.93.57]:20967
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725955AbgIROtS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Sep 2020 10:49:18 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DeT6jUPby05E8XLU42DZPSEcdnoGAdN6ywGhpvhfAchdCFSqAMBzadmmg1gRIyvN8cpfOCVtgaclWPIph+5L5zw1e2PrJowPABvWtCmUB62C3m2wcqG6ySG5s5TUqWI41Uf6XBy4vLVKZKZAuauMuR46oTmUnY0gCOwv1G20l1zWVvc9VIumCqXRlU5b2qr1jOI4Sjs/zbWuXh7Or7WtMbCPDuzZoFeB9WACtcLrEFIRTwTCITSNE8KRstYmx5ZMGtjiM9FR3PenASaOV9peOLNKybGC9R7UY1a/9fLvKDm83ADeVvfoHyM5V1z0f6LNYHDaHdJC2nctnww7iTZv1A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=09A6sRsgRHY7bMHDNZrt8tKZ1wLV706KIkTiTa79h1M=;
+ b=VTuzM6w1zdaGvH35byPvvvgMLqIpGpPAk2UwsUPMtHbeProsQIFdmTz7ahVhYP9ttqMAtEz8aT3KYtozHf5ySWJt+Fhrh4+IQ+KhfXrDEnn/aNBtEK8EX9GtmlBTwXaC9XLSH2XHEQNiS/lc1aZnn/ywcgHpcWwOzTIyKr/caduVI3TTI+vCruJ/5L6N/M9F+X+l4CotT8IirgqCHnsyXYtn7Uwb8Cf/5doIwd3y7sj36lMzw7pZDkceMQMPn3n0jncFKfghUs8z10BdsvwTiXFCLUy38URSihiXTC4gkH/AV61Mg3MZRcyVo9gA99DfVA/nZXsdLDIv9iT5XtoVEA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=09A6sRsgRHY7bMHDNZrt8tKZ1wLV706KIkTiTa79h1M=;
+ b=SYvJZcLodWOQtanE1RYVv3j5HGCNV4quRvJYeteoJvon3B2Vg11DUG/2+bEqW4slaqjtbfEMSNfYEZO1BbOqhTZ6RYp5e3Z7yTT4fdmxQX0gAd6YQlhM9puepvnYY4kYaqTxHTg15uVM95tuRfqhIOA66kPDHK3iJSzFTV1qt6w=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from SN6PR12MB2685.namprd12.prod.outlook.com (2603:10b6:805:67::33)
+ by SN1PR12MB2368.namprd12.prod.outlook.com (2603:10b6:802:32::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.15; Fri, 18 Sep
+ 2020 14:49:12 +0000
+Received: from SN6PR12MB2685.namprd12.prod.outlook.com
+ ([fe80::c0c8:60e:9d04:1409]) by SN6PR12MB2685.namprd12.prod.outlook.com
+ ([fe80::c0c8:60e:9d04:1409%5]) with mapi id 15.20.3370.019; Fri, 18 Sep 2020
+ 14:49:12 +0000
+From:   Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
+To:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-edac@vger.kernel.org,
+        linux-efi@vger.kernel.org, linux-acpi@vger.kernel.org,
+        devel@acpica.org
+Cc:     Borislav Petkov <bp@alien8.de>, Tony Luck <tony.luck@intel.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <len.brown@intel.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Yazen Ghannam <yazen.ghannam@amd.com>,
+        Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
+Subject: [PATCH v4] cper, apei, mce: Pass x86 CPER through the MCA handling chain
+Date:   Fri,  4 Sep 2020 09:04:44 -0500
+Message-Id: <20200904140444.161291-1-Smita.KoralahalliChannabasappa@amd.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-ClientProxiedBy: SN6PR16CA0067.namprd16.prod.outlook.com
+ (2603:10b6:805:ca::44) To SN6PR12MB2685.namprd12.prod.outlook.com
+ (2603:10b6:805:67::33)
 MIME-Version: 1.0
-References: <20200917165301.23100-1-krzk@kernel.org> <20200917165301.23100-2-krzk@kernel.org>
-In-Reply-To: <20200917165301.23100-2-krzk@kernel.org>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Fri, 18 Sep 2020 08:30:02 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqJCLgf6syqV=jNPHPyu02ygwWCDDV+U9VCm0qRpLkirSQ@mail.gmail.com>
-Message-ID: <CAL_JsqJCLgf6syqV=jNPHPyu02ygwWCDDV+U9VCm0qRpLkirSQ@mail.gmail.com>
-Subject: Re: [PATCH v2 01/13] dt-bindings: gpio: add common schema for GPIO controllers
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Hoan Tran <hoan@os.amperecomputing.com>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        =?UTF-8?Q?Niklas_S=C3=B6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        Sungbo Eo <mans0n@gorani.run>, Stefan Agner <stefan@agner.ch>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Yash Shah <yash.shah@sifive.com>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        - <patches@opensource.cirrus.com>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Amelie Delaunay <amelie.delaunay@st.com>,
-        Cristian Ciocaltea <cristian.ciocaltea@gmail.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Andy Teng <andy.teng@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Sricharan R <sricharan@codeaurora.org>,
-        Chris Brandt <chris.brandt@renesas.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        devicetree@vger.kernel.org,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-unisoc@lists.infradead.org,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linux-ALSA <alsa-devel@alsa-project.org>,
-        "moderated list:ARM/STM32 ARCHITECTURE" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        "open list:MEDIA DRIVERS FOR RENESAS - FCP" 
-        <linux-renesas-soc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ethanolx024ehost.amd.com (165.204.78.2) by SN6PR16CA0067.namprd16.prod.outlook.com (2603:10b6:805:ca::44) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.13 via Frontend Transport; Fri, 18 Sep 2020 14:49:11 +0000
+X-Mailer: git-send-email 2.17.1
+X-Originating-IP: [165.204.78.2]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 73688174-1ca6-4948-82ba-08d85be2018b
+X-MS-TrafficTypeDiagnostic: SN1PR12MB2368:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SN1PR12MB2368D5A49B77E75024B61300903F0@SN1PR12MB2368.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: KlWb5EF47diCyT6TBI++1qQqfizcJwqtaS7zLDWPD/rLh+V6I6J9csyzZHxgOhAJuju18cs9IyfUebB+c8dau7M6gUP7iO+7DVJJ6up8GVllD/PFd60arnPu/z1aOGw2vBqB9Oa0eri1pQ0eMRNAsWYMjpbppXBYfMZDzt3tZ1zbeC8lrZooYzWuTvqaIgplQKWgEoW12vs3a0Fv+3wbphsFi6HDBIJ+U59eBaEh7R7lQxz7TakEcGQnlElBUtKePlzgBfBx/gH65vtve+XYERY9KW2rTZrZ6157T1zjRGNRJE/HpBOHkYpBTm7fZqQgbn7m6851OJZBE6FtbI9PFebgp8pB8gHJkKQAflpuCcAXO8eTvv6IdNg8LI/nA8/v39OXq4tHBOLMubuV5Kj66w==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(136003)(366004)(39860400002)(396003)(26005)(5660300002)(478600001)(52116002)(7696005)(2616005)(956004)(83380400001)(36756003)(86362001)(1076003)(7416002)(8676002)(6486002)(966005)(2906002)(6666004)(54906003)(4326008)(16526019)(186003)(66476007)(316002)(66556008)(66946007)(8936002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: Plf0OTrnKkvpJ7qsNvdhfb3UXuXqj3cRheUwn6wcO0NRmAZV5exOjUWpAam8ETLsxSv4RudmuOZmNzLrfdvpMawYwjKjWKjFrPinZ7+ENRgrHZmaax2qwyvsllksgT1zPVR+NfNT0qCaXNk/WoUTpRPZGaOE5Eul9dU8bRBakoTtR6IfyEpHIg1LG8nd0/KWpLH/H44h9Cb1TYvxaUngAbSWQ8omX38hVHlRyoYDA8JE58VjWmjAsL0PE0GJqi2/dhcw+Z4XEUyL48byMR7A6E47VVoRTBNstQv8FL854t1ur6szvjs0wq95HuTQ6RI4SVkgnN4BM4EcX5mSw1W73gaWVtLQp2Jpf5wF59FJXkxEDWgD2NI/Uaf2nI7XWwSwgShOKQtdNVnnbsGC+MzRuptnyRUAHXYdztUpqX22ByVOsBv5i9IPwdOjbCxxpkcLkA5MqOJauPjJLJ9NUX8NCXFmFO8XEt0cKXPRbGCUwpdCjQPFQzrlXstiC6BrYox7BAfZdSyUmpi2Ss1l2SBZGYVUc9S5W9u6aEAsxgcobfxhemmBU1rHmoPhWgmUKdv1fzBSLdma5TFvKtLdwgr5b4C7+Gqyo9k710i0e7wrM8441yOZUdnmh68L9AHdRgyGCQ5q4RNZ4sPyqJX8FQsFjw==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 73688174-1ca6-4948-82ba-08d85be2018b
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2685.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Sep 2020 14:49:12.1410
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 9jfXcpwFfATqB1Y4NEFtCHaB/3KTj9maxMaF/9Vdv/eTiROWgd0RIKEwC+N3Zt35ylS1hfIqKFgQzLRY6QokcA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN1PR12MB2368
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 10:53 AM Krzysztof Kozlowski <krzk@kernel.org> wrote:
->
-> Convert parts of gpio.txt bindings into common dtschema file for GPIO
-> controllers.  The schema enforces proper naming of GPIO controller nodes
-> and GPIO hogs.
+Linux Kernel uses ACPI Boot Error Record Table (BERT) to report fatal
+errors that occurred in a previous boot. The MCA errors in the BERT are
+reported using the x86 Processor Error Common Platform Error Record (CPER)
+format. Currently, the record prints out the raw MSR values and AMD relies
+on the raw record to provide MCA information.
 
-Did you not see my previous reply about a common schema? We already
-have a common GPIO and hog schema in dtschema. Please add to it
-whatever is missing.
+Extract the raw MSR values of MCA registers from the BERT and feed it into
+the standard mce_log() function through the existing x86/MCA RAS
+infrastructure. This will result in better decoding from the EDAC MCE
+decoder or the default notifier.
 
-My goal is all common schema end up in dtschema, but I haven't pushed
-folks to do that yet. Ones I've done are there though. One issue is
-what's in dtschema should be GPL/BSD and the existing text bindings
-are default GPL, so there's a relicensing exercise. In some cases, the
-schema is there but I haven't copied over the descriptions.
+The implementation is SMCA specific as the raw MCA register values are
+given in the register offset order of the MCAX address space.
 
-Rob
+[ Build error in patch v1. ]
 
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
+---
+Link:
+https://lkml.kernel.org/r/20200903234531.162484-2-Smita.KoralahalliChannabasappa@amd.com
 
-> +    description:
-> +      Indicates the start and size of the GPIOs that can't be used.
-> +
-> +  ngpios:
-> +    description: |
-> +      Optionally, a GPIO controller may have a "ngpios" property. This property
-> +      indicates the number of in-use slots of available slots for GPIOs. The
-> +      typical example is something like this: the hardware register is 32 bits
-> +      wide, but only 18 of the bits have a physical counterpart. The driver is
-> +      generally written so that all 32 bits can be used, but the IP block is
-> +      reused in a lot of designs, some using all 32 bits, some using 18 and
-> +      some using 12. In this case, setting "ngpios = <18>;" informs the driver
-> +      that only the first 18 GPIOs, at local offset 0 .. 17, are in use.
-> +
-> +      If these GPIOs do not happen to be the first N GPIOs at offset 0...N-1,
-> +      an additional set of tuples is needed to specify which GPIOs are
-> +      unusable, with the gpio-reserved-ranges binding.
-> +
-> +patternProperties:
-> +  "^(hog-[0-9]+|.+-hog(-[0-9]+)?)$":
-> +    type: object
-> +    description:
-> +      The GPIO chip may contain GPIO hog definitions. GPIO hogging is a mechanism
-> +      providing automatic GPIO request and configuration as part of the
-> +      gpio-controller's driver probe function.
-> +      Each GPIO hog definition is represented as a child node of the GPIO controller.
-> +
-> +    properties:
-> +      gpio-hog: true
-> +      gpios: true
-> +      input: true
-> +      output-high: true
-> +      output-low: true
-> +      line-name:
-> +        description:
-> +          The GPIO label name. If not present the node name is used.
-> +
-> +    required:
-> +      - gpio-hog
-> +      - gpios
-> +
-> +    oneOf:
-> +      - required:
-> +          - input
-> +      - required:
-> +          - output-high
-> +      - required:
-> +          - output-low
-> +
-> +    additionalProperties: false
-> +
-> +required:
-> +  - "#gpio-cells"
-> +  - gpio-controller
-> +
-> +examples:
-> +  - |
-> +    gpio-controller@15000000 {
-> +        compatible = "foo";
-> +        reg = <0x15000000 0x1000>;
-> +        gpio-controller;
-> +        #gpio-cells = <2>;
-> +        ngpios = <18>;
-> +        gpio-reserved-ranges = <0 4>, <12 2>;
-> +        gpio-line-names = "MMC-CD", "MMC-WP", "VDD eth", "RST eth", "LED R",
-> +                          "LED G", "LED B", "Col A", "Col B", "Col C", "Col D",
-> +                          "Row A", "Row B", "Row C", "Row D", "NMI button",
-> +                          "poweroff", "reset";
-> +    };
-> +
-> +  - |
-> +    gpio-controller@1400 {
-> +        compatible = "fsl,qe-pario-bank-a", "fsl,qe-pario-bank";
-> +        reg = <0x1400 0x18>;
-> +        gpio-controller;
-> +        #gpio-cells = <2>;
-> +
-> +        line-b-hog {
-> +            gpio-hog;
-> +            gpios = <6 0>;
-> +            input;
-> +            line-name = "foo-bar-gpio";
-> +        };
-> +    };
-> --
-> 2.17.1
->
+v4:
+	Included what kernel test robot reported.
+	Changed function name from apei_mce_report_x86_error ->
+	apei_smca_report_x86_error.
+	Added comment for MASK_MCA_STATUS definition.
+	Wrapped apei_smca_report_x86_error() with CONFIG_X86_MCE in
+	arch/x86/include/asm/mce.h
+v3:
+	Moved arch specific declarations from generic headers to arch
+	specific headers.
+	Cleaned additional declarations which are unnecessary.
+	Included the check for context type.
+	Added additional check to verify for appropriate MSR address in
+	the register layout.
+v2:
+	Fixed build error reported by kernel test robot.
+	Passed struct variable as function argument instead of entire struct.
+---
+ arch/x86/include/asm/acpi.h     | 11 ++++++++
+ arch/x86/include/asm/mce.h      |  5 ++++
+ arch/x86/kernel/acpi/apei.c     |  5 ++++
+ arch/x86/kernel/cpu/mce/apei.c  | 49 +++++++++++++++++++++++++++++++++
+ drivers/firmware/efi/cper-x86.c | 10 +++++--
+ 5 files changed, 77 insertions(+), 3 deletions(-)
+
+diff --git a/arch/x86/include/asm/acpi.h b/arch/x86/include/asm/acpi.h
+index 6d2df1ee427b..65064d9f7fa6 100644
+--- a/arch/x86/include/asm/acpi.h
++++ b/arch/x86/include/asm/acpi.h
+@@ -159,6 +159,8 @@ static inline u64 x86_default_get_root_pointer(void)
+ extern int x86_acpi_numa_init(void);
+ #endif /* CONFIG_ACPI_NUMA */
+ 
++struct cper_ia_proc_ctx;
++
+ #ifdef CONFIG_ACPI_APEI
+ static inline pgprot_t arch_apei_get_mem_attribute(phys_addr_t addr)
+ {
+@@ -177,6 +179,15 @@ static inline pgprot_t arch_apei_get_mem_attribute(phys_addr_t addr)
+ 	 */
+ 	return PAGE_KERNEL_NOENC;
+ }
++
++int arch_apei_report_x86_error(struct cper_ia_proc_ctx *ctx_info,
++			       u64 lapic_id);
++#else
++static inline int arch_apei_report_x86_error(struct cper_ia_proc_ctx *ctx_info,
++					     u64 lapic_id)
++{
++	return -EINVAL;
++}
+ #endif
+ 
+ #define ACPI_TABLE_UPGRADE_MAX_PHYS (max_low_pfn_mapped << PAGE_SHIFT)
+diff --git a/arch/x86/include/asm/mce.h b/arch/x86/include/asm/mce.h
+index 109af5c7f515..d07bd635acfd 100644
+--- a/arch/x86/include/asm/mce.h
++++ b/arch/x86/include/asm/mce.h
+@@ -173,17 +173,22 @@ extern void mce_unregister_decode_chain(struct notifier_block *nb);
+ #include <linux/atomic.h>
+ 
+ extern int mce_p5_enabled;
++struct cper_ia_proc_ctx;
+ 
+ #ifdef CONFIG_X86_MCE
+ int mcheck_init(void);
+ void mcheck_cpu_init(struct cpuinfo_x86 *c);
+ void mcheck_cpu_clear(struct cpuinfo_x86 *c);
+ void mcheck_vendor_init_severity(void);
++int apei_smca_report_x86_error(struct cper_ia_proc_ctx *ctx_info,
++			       u64 lapic_id);
+ #else
+ static inline int mcheck_init(void) { return 0; }
+ static inline void mcheck_cpu_init(struct cpuinfo_x86 *c) {}
+ static inline void mcheck_cpu_clear(struct cpuinfo_x86 *c) {}
+ static inline void mcheck_vendor_init_severity(void) {}
++static inline int apei_smca_report_x86_error(struct cper_ia_proc_ctx *ctx_info,
++					     u64 lapic_id) { return -EINVAL; }
+ #endif
+ 
+ #ifdef CONFIG_X86_ANCIENT_MCE
+diff --git a/arch/x86/kernel/acpi/apei.c b/arch/x86/kernel/acpi/apei.c
+index c22fb55abcfd..0916f00a992e 100644
+--- a/arch/x86/kernel/acpi/apei.c
++++ b/arch/x86/kernel/acpi/apei.c
+@@ -43,3 +43,8 @@ void arch_apei_report_mem_error(int sev, struct cper_sec_mem_err *mem_err)
+ 	apei_mce_report_mem_error(sev, mem_err);
+ #endif
+ }
++
++int arch_apei_report_x86_error(struct cper_ia_proc_ctx *ctx_info, u64 lapic_id)
++{
++	return apei_smca_report_x86_error(ctx_info, lapic_id);
++}
+diff --git a/arch/x86/kernel/cpu/mce/apei.c b/arch/x86/kernel/cpu/mce/apei.c
+index af8d37962586..d4b3a2053eef 100644
+--- a/arch/x86/kernel/cpu/mce/apei.c
++++ b/arch/x86/kernel/cpu/mce/apei.c
+@@ -51,6 +51,55 @@ void apei_mce_report_mem_error(int severity, struct cper_sec_mem_err *mem_err)
+ }
+ EXPORT_SYMBOL_GPL(apei_mce_report_mem_error);
+ 
++/*
++ * The first expected register in the register layout of MCAX address space.
++ * The address defined must match with the first MSR address extracted from
++ * BERT which in SMCA systems is the bank's MCA_STATUS register.
++ *
++ * Note that the decoding of the raw MSR values in BERT is implementation
++ * specific and follows register offset order of MCAX address space.
++ */
++#define MASK_MCA_STATUS 0xC0002001
++
++int apei_smca_report_x86_error(struct cper_ia_proc_ctx *ctx_info, u64 lapic_id)
++{
++	const u64 *i_mce = ((const void *) (ctx_info + 1));
++	unsigned int cpu;
++	struct mce m;
++
++	if (!boot_cpu_has(X86_FEATURE_SMCA))
++		return -EINVAL;
++
++	if ((ctx_info->msr_addr & MASK_MCA_STATUS) != MASK_MCA_STATUS)
++		return -EINVAL;
++
++	mce_setup(&m);
++
++	m.extcpu = -1;
++	m.socketid = -1;
++
++	for_each_possible_cpu(cpu) {
++		if (cpu_data(cpu).initial_apicid == lapic_id) {
++			m.extcpu = cpu;
++			m.socketid = cpu_data(m.extcpu).phys_proc_id;
++			break;
++		}
++	}
++
++	m.apicid = lapic_id;
++	m.bank = (ctx_info->msr_addr >> 4) & 0xFF;
++	m.status = *i_mce;
++	m.addr = *(i_mce + 1);
++	m.misc = *(i_mce + 2);
++	/* Skipping MCA_CONFIG */
++	m.ipid = *(i_mce + 4);
++	m.synd = *(i_mce + 5);
++
++	mce_log(&m);
++
++	return 0;
++}
++
+ #define CPER_CREATOR_MCE						\
+ 	GUID_INIT(0x75a574e3, 0x5052, 0x4b29, 0x8a, 0x8e, 0xbe, 0x2c,	\
+ 		  0x64, 0x90, 0xb8, 0x9d)
+diff --git a/drivers/firmware/efi/cper-x86.c b/drivers/firmware/efi/cper-x86.c
+index 2531de49f56c..2f2b0c431c18 100644
+--- a/drivers/firmware/efi/cper-x86.c
++++ b/drivers/firmware/efi/cper-x86.c
+@@ -2,6 +2,7 @@
+ // Copyright (C) 2018, Advanced Micro Devices, Inc.
+ 
+ #include <linux/cper.h>
++#include <linux/acpi.h>
+ 
+ /*
+  * We don't need a "CPER_IA" prefix since these are all locally defined.
+@@ -347,9 +348,12 @@ void cper_print_proc_ia(const char *pfx, const struct cper_sec_proc_ia *proc)
+ 			       ctx_info->mm_reg_addr);
+ 		}
+ 
+-		printk("%sRegister Array:\n", newpfx);
+-		print_hex_dump(newpfx, "", DUMP_PREFIX_OFFSET, 16, groupsize,
+-			       (ctx_info + 1), ctx_info->reg_arr_size, 0);
++		if (ctx_info->reg_ctx_type != CTX_TYPE_MSR ||
++		    arch_apei_report_x86_error(ctx_info, proc->lapic_id)) {
++			printk("%sRegister Array:\n", newpfx);
++			print_hex_dump(newpfx, "", DUMP_PREFIX_OFFSET, 16, groupsize,
++				       (ctx_info + 1), ctx_info->reg_arr_size, 0);
++		}
+ 
+ 		ctx_info = (struct cper_ia_proc_ctx *)((long)ctx_info + size);
+ 	}
+-- 
+2.17.1
+
