@@ -2,70 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 173A925E68B
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Sep 2020 10:35:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7189225E686
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Sep 2020 10:31:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728297AbgIEIfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Sep 2020 04:35:39 -0400
-Received: from smtp.h3c.com ([60.191.123.50]:59841 "EHLO h3cspam02-ex.h3c.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725818AbgIEIfi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Sep 2020 04:35:38 -0400
-Received: from h3cspam02-ex.h3c.com (localhost [127.0.0.2] (may be forged))
-        by h3cspam02-ex.h3c.com with ESMTP id 0857MrRw079323;
-        Sat, 5 Sep 2020 15:22:53 +0800 (GMT-8)
-        (envelope-from tian.xianting@h3c.com)
-Received: from DAG2EX03-BASE.srv.huawei-3com.com ([10.8.0.66])
-        by h3cspam02-ex.h3c.com with ESMTPS id 0857MkCp079300
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sat, 5 Sep 2020 15:22:46 +0800 (GMT-8)
-        (envelope-from tian.xianting@h3c.com)
-Received: from localhost.localdomain (10.99.212.201) by
- DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Sat, 5 Sep 2020 15:22:48 +0800
-From:   Xianting Tian <tian.xianting@h3c.com>
-To:     <viro@zeniv.linux.org.uk>
-CC:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Xianting Tian <tian.xianting@h3c.com>
-Subject: [PATCH] fs: use correct parameter in notes of generic_file_llseek_size()
-Date:   Sat, 5 Sep 2020 15:15:25 +0800
-Message-ID: <20200905071525.12259-1-tian.xianting@h3c.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726597AbgIEIbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Sep 2020 04:31:45 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:10821 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725818AbgIEIbp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Sep 2020 04:31:45 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 9013058B589323AA0492;
+        Sat,  5 Sep 2020 16:31:42 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by DGGEMS401-HUB.china.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server id 14.3.487.0; Sat, 5 Sep 2020
+ 16:31:32 +0800
+From:   Yu Kuai <yukuai3@huawei.com>
+To:     <chunkuang.hu@kernel.org>, <p.zabel@pengutronix.de>,
+        <airlied@linux.ie>, <daniel@ffwll.ch>, <matthias.bgg@gmail.com>,
+        <yt.shen@mediatek.com>, <ck.hu@mediatek.com>,
+        <bibby.hsieh@mediatek.com>, <yongqiang.niu@mediatek.com>
+CC:     <dri-devel@lists.freedesktop.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <yukuai3@huawei.com>,
+        <yi.zhang@huawei.com>
+Subject: [PATCH] drm/mediatek: add missing put_device() call in mtk_ddp_comp_init()
+Date:   Sat, 5 Sep 2020 16:30:58 +0800
+Message-ID: <20200905083058.1631726-1-yukuai3@huawei.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.99.212.201]
-X-ClientProxiedBy: BJSMTP01-EX.srv.huawei-3com.com (10.63.20.132) To
- DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66)
-X-DNSRBL: 
-X-MAIL: h3cspam02-ex.h3c.com 0857MkCp079300
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix warning when compiling with W=1:
-fs/read_write.c:88: warning: Function parameter or member 'maxsize' not described in 'generic_file_llseek_size'
-fs/read_write.c:88: warning: Excess function parameter 'size' description in 'generic_file_llseek_size'
+if of_find_device_by_node() succeed, mtk_ddp_comp_init() doesn't have
+a corresponding put_device(). Thus add put_device() to fix the exception
+handling for this function implementation.
 
-Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
+Fixes: d0afe37f5209 ("drm/mediatek: support CMDQ interface in ddp component")
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- fs/read_write.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/read_write.c b/fs/read_write.c
-index 5db58b8c7..058563ee2 100644
---- a/fs/read_write.c
-+++ b/fs/read_write.c
-@@ -71,7 +71,7 @@ EXPORT_SYMBOL(vfs_setpos);
-  * @file:	file structure to seek on
-  * @offset:	file offset to seek to
-  * @whence:	type of seek
-- * @size:	max size of this file in file system
-+ * @maxsize:	max size of this file in file system
-  * @eof:	offset used for SEEK_END position
-  *
-  * This is a variant of generic_file_llseek that allows passing in a custom
+diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
+index 57c88de9a329..526648885b97 100644
+--- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
++++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
+@@ -496,6 +496,7 @@ int mtk_ddp_comp_init(struct device *dev, struct device_node *node,
+ #if IS_REACHABLE(CONFIG_MTK_CMDQ)
+ 	if (of_address_to_resource(node, 0, &res) != 0) {
+ 		dev_err(dev, "Missing reg in %s node\n", node->full_name);
++		put_device(&larb_pdev->dev);
+ 		return -EINVAL;
+ 	}
+ 	comp->regs_pa = res.start;
 -- 
-2.17.1
+2.25.4
 
