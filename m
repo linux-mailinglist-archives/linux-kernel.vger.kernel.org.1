@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DF9D25EAAC
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Sep 2020 22:45:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D991525EAA7
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Sep 2020 22:45:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728967AbgIEUp0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Sep 2020 16:45:26 -0400
-Received: from mout.gmx.net ([212.227.15.19]:40847 "EHLO mout.gmx.net"
+        id S1728963AbgIEUpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Sep 2020 16:45:12 -0400
+Received: from mout.gmx.net ([212.227.17.22]:52897 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728771AbgIEUoV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Sep 2020 16:44:21 -0400
+        id S1728423AbgIEUow (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Sep 2020 16:44:52 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1599338612;
-        bh=bor4CEdYF1V2mtU3/M6bTkzsiyDSM5d0H+HasDvMa98=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=BRNqQB+U7XaqYbK8YClKi8BjTqQGx3k7rJuKGfQaFkhlkMDGHNXrvfsvQbShjGvMJ
-         ICWjHJ8QM6VaqvymrFcEMsCpwCjd8no1EUN3eT8Jv/bpTGM0LkdVev90DJeeEiVgCd
-         57qmvz0UzIYYSj7VWVENGW5S7I1eKx9zQT47pThs=
+        s=badeba3b8450; t=1599338645;
+        bh=srqAocpg+qFA810VKjx0Q4fyVeb/swOxFzZHhnyTYg4=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=ELv20a6XJgDEttfp9zoZ4p+RJjgPjUa0PeNl+0OgalamqAyfL7hu+XR0KTcCxoCM4
+         6QcZ/PPu6H0osPsI7Y8gJXazKQyjYQUueUW5yWlYF92taNbxXrvYB09LJHdKX7IIW/
+         355wLPfE2XjUr8eTGzCNyDh5JtqKpuaozuCDhZfM=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from longitude ([5.146.195.151]) by mail.gmx.com (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MMXUD-1jxH8d0oMh-00JeMR; Sat, 05
- Sep 2020 22:43:32 +0200
+Received: from longitude ([5.146.195.151]) by mail.gmx.com (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1Md6R1-1kmtnS02Ut-00aER8; Sat, 05
+ Sep 2020 22:44:05 +0200
 From:   =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
 To:     linux-mtd@lists.infradead.org
 Cc:     Jonathan Corbet <corbet@lwn.net>,
@@ -38,61 +38,60 @@ Cc:     Jonathan Corbet <corbet@lwn.net>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Jonathan Cameron <Jonathan.Cameron@huawei.com>,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 0/2] ubifs: Fixes around ubifs-authentication.rst
-Date:   Sat,  5 Sep 2020 22:43:24 +0200
-Message-Id: <20200905204326.1378339-1-j.neuschaefer@gmx.net>
+Subject: [PATCH v2 1/2] MAINTAINERS: Add ubifs-authentication.rst to UBIFS
+Date:   Sat,  5 Sep 2020 22:43:25 +0200
+Message-Id: <20200905204326.1378339-2-j.neuschaefer@gmx.net>
 X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200905204326.1378339-1-j.neuschaefer@gmx.net>
+References: <20200905204326.1378339-1-j.neuschaefer@gmx.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:6Mu0SdARJcxwbmery0IeDoo6tYPNLibtRBfZ3PBuSS279pqe03n
- t99PeIZEDrGDlKLxiRYfUcaGosOTs+g6UYhcG9lIHc7Kd4qdtdlbtCA8wKRfV7/lllCegE1
- G4dhk0svxySQcGcUfwTCt3MaXjaAqZQgmzjk8A7MDeCzCQpsM6SxToPoXXmrVqBZtUij4i2
- VxGp6soRb/MdvhAVw96cQ==
+X-Provags-ID: V03:K1:vHub08Obk2f8katnYdRDwvodrOZOCSe71bpCue3F8Qd4rvhzTSm
+ aQvTDKdWAfGK+oaIDMsoZVQGVqOXpapQLdWMKMMNo/mIb3jPySGpn68HqWF+AjxOHgUSoEv
+ Wjw5WT0CQ/o47CwDDzhgiTVyNpyDxqAb7uIMDA/RjD6ECivLyFOZdOMMAzjXFpStgndkgZg
+ v5ou117OWmn7MxJhEPIZw==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Yjg9DmiD66A=:gcQuXrtC0vq3wkc0nOHdKT
- gJ0+Up+6T5F8z0crIxm886kZ6Iu9EMzzw+8fbW7N7h9EJpwtwFXCq3x9kBHc5xy6cxTHwVPic
- ziFOwJMEDrLMaTtTEvWFs5NNdZ4JpdGMnvkaKMBJ9YgPEfDWqfuamZpJo2gd5hI+ArnWKyBId
- DUYtJxiG0BmVCyQqBFBmubSx+mTlq/rHUESyTjdoUBLoqI2/RxKlSVOJ/HAApjJoVa6qGqhNc
- NLPeXW9qlWm2LWiUjKcw8xvMcFdbwdgmrcs5GCUnyRZWWcexn8+82N/N2yOnUIgt0INQptYgO
- pw7IUAt26O0+IhPERQOqxvuqF+MJiS+ArKoGJqMsQFCVvTGKg7/sRJDBk4SvSfGK0bqJCvlLi
- qHMl6+rjaOB1MXPlTOlDOeS0qBXxXZw6dF4akMJ7D8dKm/W/YDq6j1peV7F6WsmF/O4CwQ5kQ
- Bk62QJttFQbtUJUNxnY4vnbODKhqFAE22M1v4mGWhMPdVT/Mg2vXWBH6I5G4mXcP1GJrrWI/C
- DB6jFlpgcz/Iv/RcKe7FO8UAJANQybvd8ZA6PoVsh7D8BVNotbXPWqtTjT3xmF2+3ACz2AZeA
- O/GTQjSSDvI2xEZG+3tAdv5S5I/bTQJyqlvY/BNHS6ndwdsbdqjQORdgPAVuNitvaqLb2IAry
- GrMSjQfeBh7JumZrWZlfw6PwPsLFOzcp67yBeko2aVMp6Q90vYHX5XftAu4H/8ehKLdOwM6Yd
- bdfVDqIRd11O28v3S7MBfQ2j4gTFWeUAsCk1arvIrnHzrkeBlZID7C1CqTnHdbKqrvUp7Oh11
- OmoNUyugGsvHzXaUt2biXdB6Gq59FgfxEmBVInJFXYJbfk7GYaq0EZmEXRbUXK+sztWtbqT4a
- rDZ5lNS9BglVFYNed7iXrz9lMWdtmp5WP6+OSo2R5K9uSeIDikMk89iLVbtloaj28NRUbOhaF
- PDnTm8L6TD9hmrKytfAz0wV9tlIRZznxWRMF1EseCn9I8ysVlYQyR8swz5bNPucOVWxTZpaOu
- tkWE377lFwk8CL5WcFFrVbc0hBEm6jMbFPBISLQ3LPCiD6UgfqudigcxClyNRdp9/T5I8SLWN
- U1Od/fXIkV51aN8fpisJaGQW8pqsbajp0vjxJE6eKSGeGEXOTqoPz4tEgyiERwhyzcVd5V9hT
- HFjRQilG54of6VRKQJ1LXWHhGy8/n7pjn+sHxEIKjkND601JZGQGUjwOGycQ2pHoRtcsSf40f
- 9cMdxyOo20BgUCz1ectxTlGBpS9rScfsMryW6Tg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:IMAZyOAfxOw=:hAc5ulTA2IhIW/JWArfXLx
+ bM7N5cjYrwYAcx0/E2JWrC0BwrqDZKpt1deaP2JSW4qsx0CQGwIWV3C94bvVHWOqP9w26vqZ5
+ FxEb3BPYShxfj4VtznANM+tBot8QpwwuIpbIuYpYN6ZP9NtpFm+ePhsZISTReCT7DSDfJ10SO
+ bDxRLY7qpoPdkUxXqKmWN7owcV5kAl4oUMoCWH8vHtO3UqELB5h81i6zN57ZNrMY9F0v+tguo
+ 040beivG5G2gFNx64zAmssrXa1p698TvSTtYCqa6V1j10nzo2JcCjKSt2qXFpusOGGrhqnDmw
+ Pf6J76LeE5IZCFv7L9RdcrJuT8birU9YBbd/v9+FXSYGR5R18D1/wcFIfKTWUvi81+1muqbd7
+ ia9p35M97ODZqGhSnnBbDnWouSKeY+rFieqE4PYmCdGDgKu1upraJix1l2HXq4/fPulTgde01
+ 8iSX5PjnBLKGGWgiQMLwJYWbGBSxr2dk5pd7lIjc9gSpLY8QTNc2FhsWynRDczlv53Se1+9lg
+ 76nlH/se08LPoftqzFroM82eGGgzwpt2A54ymMxGcUroD0n/xWWDRD/1gT4k+plwuwDofSHQA
+ emMYw2tPTxmAlMoqrN0uPhe9U0mZryYwh6GQB2CNvjB5z3ctIy2nL+qwO43Frmnr5mDbbv+x1
+ hlqtQcvTQ2JfYbEu2WKNmBjOVFuPkC6H7koBGZJeY/UUmXcoWn0GHv+92s/7ZAF6UQ5SRAJpw
+ /lrve9a3i4AxRyf5vM9KiIjksySNNPxdFFa0Ad/adUqvRbW4Qo2MIrx91Mwv1gehx930caDTE
+ WwudR4E0lXHEyqghYX7jsx7U1dUEogbDyaonGhfILSqjdJX2eQUsFD7sV8dHPiGmSeFlmnUN8
+ /nKm0u/A5cLSkLjTPnrrlHDDMjdfIyhkBkYe4zQTSI6/PzKJ5DIr5rACDB1ERcz5mOuVBRBKi
+ 3I9AzsSgBh+O3BM79TWuh4cM5wYov8bO1oEygSl9AkcxYe78u4v7Qhb5HRELsh4/a33ATH4gr
+ FrjzdxiIGZ5X2/Wns+Bkn3l0mv3nd0jC7dXIxDA6pjxTMw5MFb1k8pvN30bB4ZUHpe2bUoKeL
+ zfXYeR0anKC06xI62bcFvKg0o9tdAObA2pA24fyWnFsnKz6/ZV3rEGlGuMjDdNer5n3ME74Fq
+ ZYT1U1SMoQLNlx3sSm3678zToCjEQ7qMIza3P11SdoULvrbyrEDvRsH4q1l0lOo3kf9zh2hbV
+ TB80RF23uTtFEc5bLyfuBZbyRNe2FS1qBTkoA2Q==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In these two patches, I add ubifs-authentication.rst to MAINTAINERS and
-add a heading to prevent the chapter headings from being listed in
-filesystems/index.html.
+Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
+=2D--
+ MAINTAINERS | 1 +
+ 1 file changed, 1 insertion(+)
 
-v2:
-- Rebased on 5.9-rc3
-- Removed patches that have become obsolete
-
-v1:
-- https://lore.kernel.org/lkml/20200214170833.25803-1-j.neuschaefer@gmx.ne=
-t/
-
-Jonathan Neusch=C3=A4fer (2):
-  MAINTAINERS: Add ubifs-authentication.rst to UBIFS
-  docs: ubifs-authentication: Add a top-level heading
-
- Documentation/filesystems/ubifs-authentication.rst | 6 ++++--
- MAINTAINERS                                        | 1 +
- 2 files changed, 5 insertions(+), 2 deletions(-)
+diff --git a/MAINTAINERS b/MAINTAINERS
+index e4647c84c987e..b85671736108e 100644
+=2D-- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -17699,6 +17699,7 @@ S:	Supported
+ W:	http://www.linux-mtd.infradead.org/doc/ubifs.html
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git next
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git fixes
++F:	Documentation/filesystems/ubifs-authentication.rst
+ F:	Documentation/filesystems/ubifs.rst
+ F:	fs/ubifs/
 
 =2D-
 2.28.0
