@@ -2,166 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1640925EA97
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Sep 2020 22:44:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DF9D25EAAC
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Sep 2020 22:45:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728843AbgIEUnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Sep 2020 16:43:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55462 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728780AbgIEUmz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Sep 2020 16:42:55 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAAFEC061251;
-        Sat,  5 Sep 2020 13:42:54 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id d15so4721234lfq.11;
-        Sat, 05 Sep 2020 13:42:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=jM6mZMS3phZex18xRxgLb8dTfS3i1wzqX7A67SdzArY=;
-        b=QpVEf4XR/wrDAnscle5Y3vF5VsY2yDje+XxXNxx0K6LAlcil+blfQ/6Drei+QuGemA
-         GV+yRmP1tXbrq4I7EW/6tcmBcUlf+2+GGx2tjJdHyEVJNkb2cHpgIjcZQP1sb8HHUI/Q
-         FYapWb8IpQgoQnki1N+RGtymjt0e4JEeFA7Xv+/44ugRJOvuY9L5IHMJtHaPdmdJOhqK
-         qlX5J0Tbta5zb1HfkvSL5yOfXyXDITJOxiz5756DQsrgpGKbcnHFtXtE7rlAw4ptiK17
-         hPQ/J/DbItvAq+M1+zgxnL3baVvDiP9IQUsNSvDxDA8RCJsX5c8Y2pI7lQK90hzqZnQc
-         DKrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=jM6mZMS3phZex18xRxgLb8dTfS3i1wzqX7A67SdzArY=;
-        b=nXlYJwClVk6ChlSieRwAuNns72Jz9C8t/itVY5VlCfNugPkqhdsgpQPqSlHDu3dxY4
-         1Sww5Tpu8L1Fa+q03HTbb1GBg1Nfr6s5oEQCGKHkRkJwVekL047nGiWZSQPXn3GeVykU
-         rOTEPnwnSAeOi8h7qECGnrfAi2s6dp/+zZmhuExO52zhVin3FXaPA+RnVgmRmdbG/n/W
-         bmRoH//p1u/7LHwUqlR0oSVBoH4guam2Sc1c/p1IYS1oef/8D1184lwdmly9qgl6Vr9Z
-         xOVXoWNzRIic+AOibkVXAGHukFrXXn2xxZqEgBvILGsXk8O1l8yuBIg9YXTqY9Ix/kLn
-         5Ybw==
-X-Gm-Message-State: AOAM5330othOC18BUuZln0BefMNcdeCd19PL6eqrXC9NlMeRpbzs85/L
-        hnkJd05JtPDAZ0ePloRR1UY=
-X-Google-Smtp-Source: ABdhPJy4/4rI717ynezqEUoBsa4mLZSJXWegT/gG4g5/D0EUJxjcdpbNKt4OHZS7i+ThPsZSX84htA==
-X-Received: by 2002:ac2:5597:: with SMTP id v23mr6743710lfg.5.1599338573105;
-        Sat, 05 Sep 2020 13:42:53 -0700 (PDT)
-Received: from localhost.localdomain (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
-        by smtp.gmail.com with ESMTPSA id e17sm1677763ljn.18.2020.09.05.13.42.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 05 Sep 2020 13:42:52 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     linux-i2c@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4 31/31] i2c: tegra: Rename couple "ret" variables to "err"
-Date:   Sat,  5 Sep 2020 23:41:51 +0300
-Message-Id: <20200905204151.25343-32-digetx@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200905204151.25343-1-digetx@gmail.com>
-References: <20200905204151.25343-1-digetx@gmail.com>
+        id S1728967AbgIEUp0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Sep 2020 16:45:26 -0400
+Received: from mout.gmx.net ([212.227.15.19]:40847 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728771AbgIEUoV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Sep 2020 16:44:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1599338612;
+        bh=bor4CEdYF1V2mtU3/M6bTkzsiyDSM5d0H+HasDvMa98=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=BRNqQB+U7XaqYbK8YClKi8BjTqQGx3k7rJuKGfQaFkhlkMDGHNXrvfsvQbShjGvMJ
+         ICWjHJ8QM6VaqvymrFcEMsCpwCjd8no1EUN3eT8Jv/bpTGM0LkdVev90DJeeEiVgCd
+         57qmvz0UzIYYSj7VWVENGW5S7I1eKx9zQT47pThs=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from longitude ([5.146.195.151]) by mail.gmx.com (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MMXUD-1jxH8d0oMh-00JeMR; Sat, 05
+ Sep 2020 22:43:32 +0200
+From:   =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+To:     linux-mtd@lists.infradead.org
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Richard Weinberger <richard@nod.at>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>,
+        Jaskaran Singh <jaskaransingh7654321@gmail.com>,
+        =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        "Tobin C. Harding" <tobin@kernel.org>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/2] ubifs: Fixes around ubifs-authentication.rst
+Date:   Sat,  5 Sep 2020 22:43:24 +0200
+Message-Id: <20200905204326.1378339-1-j.neuschaefer@gmx.net>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:6Mu0SdARJcxwbmery0IeDoo6tYPNLibtRBfZ3PBuSS279pqe03n
+ t99PeIZEDrGDlKLxiRYfUcaGosOTs+g6UYhcG9lIHc7Kd4qdtdlbtCA8wKRfV7/lllCegE1
+ G4dhk0svxySQcGcUfwTCt3MaXjaAqZQgmzjk8A7MDeCzCQpsM6SxToPoXXmrVqBZtUij4i2
+ VxGp6soRb/MdvhAVw96cQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Yjg9DmiD66A=:gcQuXrtC0vq3wkc0nOHdKT
+ gJ0+Up+6T5F8z0crIxm886kZ6Iu9EMzzw+8fbW7N7h9EJpwtwFXCq3x9kBHc5xy6cxTHwVPic
+ ziFOwJMEDrLMaTtTEvWFs5NNdZ4JpdGMnvkaKMBJ9YgPEfDWqfuamZpJo2gd5hI+ArnWKyBId
+ DUYtJxiG0BmVCyQqBFBmubSx+mTlq/rHUESyTjdoUBLoqI2/RxKlSVOJ/HAApjJoVa6qGqhNc
+ NLPeXW9qlWm2LWiUjKcw8xvMcFdbwdgmrcs5GCUnyRZWWcexn8+82N/N2yOnUIgt0INQptYgO
+ pw7IUAt26O0+IhPERQOqxvuqF+MJiS+ArKoGJqMsQFCVvTGKg7/sRJDBk4SvSfGK0bqJCvlLi
+ qHMl6+rjaOB1MXPlTOlDOeS0qBXxXZw6dF4akMJ7D8dKm/W/YDq6j1peV7F6WsmF/O4CwQ5kQ
+ Bk62QJttFQbtUJUNxnY4vnbODKhqFAE22M1v4mGWhMPdVT/Mg2vXWBH6I5G4mXcP1GJrrWI/C
+ DB6jFlpgcz/Iv/RcKe7FO8UAJANQybvd8ZA6PoVsh7D8BVNotbXPWqtTjT3xmF2+3ACz2AZeA
+ O/GTQjSSDvI2xEZG+3tAdv5S5I/bTQJyqlvY/BNHS6ndwdsbdqjQORdgPAVuNitvaqLb2IAry
+ GrMSjQfeBh7JumZrWZlfw6PwPsLFOzcp67yBeko2aVMp6Q90vYHX5XftAu4H/8ehKLdOwM6Yd
+ bdfVDqIRd11O28v3S7MBfQ2j4gTFWeUAsCk1arvIrnHzrkeBlZID7C1CqTnHdbKqrvUp7Oh11
+ OmoNUyugGsvHzXaUt2biXdB6Gq59FgfxEmBVInJFXYJbfk7GYaq0EZmEXRbUXK+sztWtbqT4a
+ rDZ5lNS9BglVFYNed7iXrz9lMWdtmp5WP6+OSo2R5K9uSeIDikMk89iLVbtloaj28NRUbOhaF
+ PDnTm8L6TD9hmrKytfAz0wV9tlIRZznxWRMF1EseCn9I8ysVlYQyR8swz5bNPucOVWxTZpaOu
+ tkWE377lFwk8CL5WcFFrVbc0hBEm6jMbFPBISLQ3LPCiD6UgfqudigcxClyNRdp9/T5I8SLWN
+ U1Od/fXIkV51aN8fpisJaGQW8pqsbajp0vjxJE6eKSGeGEXOTqoPz4tEgyiERwhyzcVd5V9hT
+ HFjRQilG54of6VRKQJ1LXWHhGy8/n7pjn+sHxEIKjkND601JZGQGUjwOGycQ2pHoRtcsSf40f
+ 9cMdxyOo20BgUCz1ectxTlGBpS9rScfsMryW6Tg==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rename "ret" variables to "err" in order to make code a bit more
-expressive, emphasizing that the returned value is a error code.
+In these two patches, I add ubifs-authentication.rst to MAINTAINERS and
+add a heading to prevent the chapter headings from being listed in
+filesystems/index.html.
 
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- drivers/i2c/busses/i2c-tegra.c | 34 +++++++++++++++++-----------------
- 1 file changed, 17 insertions(+), 17 deletions(-)
+v2:
+- Rebased on 5.9-rc3
+- Removed patches that have become obsolete
 
-diff --git a/drivers/i2c/busses/i2c-tegra.c b/drivers/i2c/busses/i2c-tegra.c
-index d389ea5813c3..2c84d5848e29 100644
---- a/drivers/i2c/busses/i2c-tegra.c
-+++ b/drivers/i2c/busses/i2c-tegra.c
-@@ -935,7 +935,7 @@ static void tegra_i2c_config_fifo_trig(struct tegra_i2c_dev *i2c_dev,
- 	unsigned long reg_offset;
- 	u32 val, reg, dma_burst;
- 	struct dma_chan *chan;
--	int ret;
-+	int err;
- 
- 	if (i2c_dev->hw->has_mst_fifo)
- 		reg = I2C_MST_FIFO_CONTROL;
-@@ -975,9 +975,9 @@ static void tegra_i2c_config_fifo_trig(struct tegra_i2c_dev *i2c_dev,
- 		}
- 
- 		slv_config.device_fc = true;
--		ret = dmaengine_slave_config(chan, &slv_config);
--		if (ret) {
--			dev_err(i2c_dev->dev, "DMA config failed: %d\n", ret);
-+		err = dmaengine_slave_config(chan, &slv_config);
-+		if (err) {
-+			dev_err(i2c_dev->dev, "DMA config failed: %d\n", err);
- 			dev_err(i2c_dev->dev, "falling back to PIO\n");
- 			tegra_i2c_release_dma(i2c_dev);
- 			i2c_dev->is_curr_dma_xfer = false;
-@@ -1584,11 +1584,11 @@ static void tegra_i2c_parse_dt(struct tegra_i2c_dev *i2c_dev)
- {
- 	struct device_node *np = i2c_dev->dev->of_node;
- 	bool multi_mode;
--	int ret;
-+	int err;
- 
--	ret = of_property_read_u32(np, "clock-frequency",
-+	err = of_property_read_u32(np, "clock-frequency",
- 				   &i2c_dev->bus_clk_rate);
--	if (ret)
-+	if (err)
- 		i2c_dev->bus_clk_rate = I2C_MAX_STANDARD_MODE_FREQ;
- 
- 	multi_mode = of_property_read_bool(np, "multi-master");
-@@ -1796,15 +1796,15 @@ static int tegra_i2c_remove(struct platform_device *pdev)
- static int __maybe_unused tegra_i2c_runtime_resume(struct device *dev)
- {
- 	struct tegra_i2c_dev *i2c_dev = dev_get_drvdata(dev);
--	int ret;
-+	int err;
- 
--	ret = pinctrl_pm_select_default_state(i2c_dev->dev);
--	if (ret)
--		return ret;
-+	err = pinctrl_pm_select_default_state(i2c_dev->dev);
-+	if (err)
-+		return err;
- 
--	ret = clk_bulk_enable(i2c_dev->nclocks, i2c_dev->clocks);
--	if (ret)
--		return ret;
-+	err = clk_bulk_enable(i2c_dev->nclocks, i2c_dev->clocks);
-+	if (err)
-+		return err;
- 
- 	/*
- 	 * VI I2C device is attached to VE power domain which goes through
-@@ -1812,8 +1812,8 @@ static int __maybe_unused tegra_i2c_runtime_resume(struct device *dev)
- 	 * controller needs to be re-initialized after power ON.
- 	 */
- 	if (i2c_dev->is_vi) {
--		ret = tegra_i2c_init(i2c_dev);
--		if (ret)
-+		err = tegra_i2c_init(i2c_dev);
-+		if (err)
- 			goto disable_clocks;
- 	}
- 
-@@ -1822,7 +1822,7 @@ static int __maybe_unused tegra_i2c_runtime_resume(struct device *dev)
- disable_clocks:
- 	clk_bulk_disable(i2c_dev->nclocks, i2c_dev->clocks);
- 
--	return ret;
-+	return err;
- }
- 
- static int __maybe_unused tegra_i2c_runtime_suspend(struct device *dev)
--- 
-2.27.0
+v1:
+- https://lore.kernel.org/lkml/20200214170833.25803-1-j.neuschaefer@gmx.ne=
+t/
+
+Jonathan Neusch=C3=A4fer (2):
+  MAINTAINERS: Add ubifs-authentication.rst to UBIFS
+  docs: ubifs-authentication: Add a top-level heading
+
+ Documentation/filesystems/ubifs-authentication.rst | 6 ++++--
+ MAINTAINERS                                        | 1 +
+ 2 files changed, 5 insertions(+), 2 deletions(-)
+
+=2D-
+2.28.0
 
