@@ -2,66 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E711325E5A7
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Sep 2020 08:02:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BDFB25E5A8
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Sep 2020 08:04:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726486AbgIEGCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Sep 2020 02:02:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44652 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726273AbgIEGCG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Sep 2020 02:02:06 -0400
-Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5190A208DB;
-        Sat,  5 Sep 2020 06:02:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599285725;
-        bh=Baa+vCVEDyUV7eOx+FInEWcsp0zp8TLXiBCsCiQ2+LI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=g4yabjZ9UashSqLcV2bYmUclpYFvRCHHve59hAcTbNLFiu9oTIKZ0YCtw6HM5spE2
-         Qi67m6oMcysjJRCES+Z4Dq05Clh6NA+kkiwv3Xn2W0Hx6M5iNDf3FYxFKzKc0+eTTe
-         MYisn8n0ZCjhPrep8J7Stg80DHIDihOvrtAwSJA0=
-Date:   Sat, 5 Sep 2020 14:02:00 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 2/4] ARM: dts: imx23: Align GPMI NAND node name with
- schema
-Message-ID: <20200905060158.GE7508@dragon>
-References: <20200828192037.22897-1-krzk@kernel.org>
- <20200828192037.22897-2-krzk@kernel.org>
+        id S1726582AbgIEGEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Sep 2020 02:04:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34418 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726302AbgIEGEh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Sep 2020 02:04:37 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 260A3C061244
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 23:04:37 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id 7so5387314pgm.11
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 23:04:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+N5fopK2fadGjRXyoImn8Tt1p4TzHbOsZlKc73Tq7SQ=;
+        b=ld67UrrjZcLMg3MDR9GurkEbZDHAbxiOuFIi8QEKjwUmeoFFmf76XFQHbPK/xQHoBJ
+         5qfzQq8YdJA3RavOltq+AcGDAJfJ4sJl739sDaAh+TyUZvZihPJPbB5tfjqN+CDMyegT
+         n4hHTVaCnOyuUaPxCOLWy4ymjAjexH7pwSlmm7Vc+OlJGGr6q+jr+HxlnKT4IpwWFP/2
+         Nm1TdcPuvjmPOoFXKcikIZp5rgNcSH9M3rjp6AYnN73dbmEaTHkvBnQVvXkp8zi36ch2
+         cLAuSXZxpWqdxzvtPd35R4JXWe3JK9khiEqmtZaa0QpDqowBk2ZMSBB97s4zUO/waa/H
+         r3hQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+N5fopK2fadGjRXyoImn8Tt1p4TzHbOsZlKc73Tq7SQ=;
+        b=l18zpCVjB0vxsPsEHWtZkO5H00XiwF7EsuiLWajfm5ztxXzmO9G25t+4LuDWoFicjJ
+         KLq+jLNYM/c7ernV+tUGvBXgD6DEWNtQbwsUaOH3+BT9zsvcgQZABXE+CaYXwzh2DRZM
+         xualCPEHhFvD3BlXNoDPuCNA4odgRZYvS6KlkDZTkVMXPb5PhqUMX7NndMHYYTVljAZO
+         aOjHTiumC+T+Id8ofObB+ZMk7U7DZ8pIdENxIo1rGN1OMXSsjRBfbjkpwIJLmnahDeH1
+         1ocJDnGjanItVgvZdKtrfpcYA3ygQoSGkXJtfKIuzetY05zz9G14dpvPyOKSN/5AA76E
+         W24g==
+X-Gm-Message-State: AOAM531XSKZD4fdJYfahlgVKM9U+J/JXqA7s0w2EnehU3c8Oq44w5Rup
+        XYgQhwOd5EDMH3SNYH3OhQTSXg==
+X-Google-Smtp-Source: ABdhPJw+8Kxoak1cDEggyclA0c7eAfZuR8igs4Z76HOl2PcFFW8FbWLu0LVt81gMNvYh4wgsEow+wA==
+X-Received: by 2002:a63:1323:: with SMTP id i35mr9483599pgl.41.1599285871728;
+        Fri, 04 Sep 2020 23:04:31 -0700 (PDT)
+Received: from localhost.localdomain ([103.136.220.68])
+        by smtp.gmail.com with ESMTPSA id 190sm8781306pfy.22.2020.09.04.23.04.28
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 04 Sep 2020 23:04:31 -0700 (PDT)
+From:   Muchun Song <songmuchun@bytedance.com>
+To:     rostedt@goodmis.org, mingo@kernel.org, tglx@linutronix.de,
+        peterz@infradead.org, will@kernel.org, romain.perier@gmail.com
+Cc:     linux-kernel@vger.kernel.org,
+        Muchun Song <songmuchun@bytedance.com>
+Subject: [PATCH] tasklet: Introduce tasklet tracepoints
+Date:   Sat,  5 Sep 2020 14:04:12 +0800
+Message-Id: <20200905060412.88560-1-songmuchun@bytedance.com>
+X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200828192037.22897-2-krzk@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 28, 2020 at 09:20:35PM +0200, Krzysztof Kozlowski wrote:
-> Device tree schema expects NAND controller to be named
-> "nand-controller", otherwise dtbs_check complain with a warning like:
-> 
->     arch/arm/boot/dts/imx28-eukrea-mbmx283lc.dt.yaml: gpmi-nand@8000c000:
->         $nodename:0: 'gpmi-nand@8000c000' does not match '^nand-controller(@.*)?'
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Introduce tracepoints for tasklets just like softirq does. In this case,
+we can calculate tasklet latency and know what tasklet run.
 
-I already applied one patch from Anson [1].
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+---
+ include/trace/events/irq.h | 44 ++++++++++++++++++++++++++++++++++++++
+ kernel/softirq.c           |  2 ++
+ 2 files changed, 46 insertions(+)
 
-Shawn
+diff --git a/include/trace/events/irq.h b/include/trace/events/irq.h
+index eeceafaaea4c..69a16f3a21c2 100644
+--- a/include/trace/events/irq.h
++++ b/include/trace/events/irq.h
+@@ -160,6 +160,50 @@ DEFINE_EVENT(softirq, softirq_raise,
+ 	TP_ARGS(vec_nr)
+ );
+ 
++DECLARE_EVENT_CLASS(tasklet,
++
++	TP_PROTO(struct tasklet_struct *t),
++
++	TP_ARGS(t),
++
++	TP_STRUCT__entry(
++		__field(	void *,	callback	)
++	),
++
++	TP_fast_assign(
++		__entry->callback = t->callback;
++	),
++
++	TP_printk("callback=%ps", __entry->callback)
++);
++
++/**
++ * tasklet_entry - called immediately before the tasklet handler
++ * @t: pointer to struct tasklet_struct
++ *
++ * When used in combination with the tasklet_exit tracepoint
++ * we can determine the tasklet handler routine.
++ */
++DEFINE_EVENT(tasklet, tasklet_entry,
++
++	TP_PROTO(struct tasklet_struct *t),
++
++	TP_ARGS(t)
++);
++
++/**
++ * tasklet_exit - called immediately after the tasklet handler returns
++ * @t: pointer to struct tasklet_struct
++ *
++ * When used in combination with the tasklet_entry tracepoint
++ * we can determine the tasklet handler routine.
++ */
++DEFINE_EVENT(tasklet, tasklet_exit,
++
++	TP_PROTO(struct tasklet_struct *t),
++
++	TP_ARGS(t)
++);
+ #endif /*  _TRACE_IRQ_H */
+ 
+ /* This part must be outside protection */
+diff --git a/kernel/softirq.c b/kernel/softirq.c
+index bf88d7f62433..0f9f5b2cc3d3 100644
+--- a/kernel/softirq.c
++++ b/kernel/softirq.c
+@@ -553,10 +553,12 @@ static void tasklet_action_common(struct softirq_action *a,
+ 				if (!test_and_clear_bit(TASKLET_STATE_SCHED,
+ 							&t->state))
+ 					BUG();
++				trace_tasklet_entry(t);
+ 				if (t->use_callback)
+ 					t->callback(t);
+ 				else
+ 					t->func(t->data);
++				trace_tasklet_exit(t);
+ 				tasklet_unlock(t);
+ 				continue;
+ 			}
+-- 
+2.20.1
 
-[1] https://lkml.org/lkml/2020/7/30/610
