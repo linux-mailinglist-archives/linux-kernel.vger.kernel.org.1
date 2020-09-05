@@ -2,102 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFDC625E504
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Sep 2020 04:04:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF28E25E509
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Sep 2020 04:18:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728210AbgIECEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 22:04:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54284 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726317AbgIECEh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 22:04:37 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E780C061244;
-        Fri,  4 Sep 2020 19:04:36 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id b16so4010366pjp.0;
-        Fri, 04 Sep 2020 19:04:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=n+kZoKqKGDj4sxz/spgYXr9LUZZuZ+0ogBgOuprttQg=;
-        b=uhSZsLneznox8j/wfTxJSSTDG30ykKmjtFg76kdzEeZLYy/fOrBdy2QgFGXwCKlf00
-         TBtbJTueT11YFsFBkNqv2h7LKAf4bUOoigdlQZxT3U99VyTdqLoEeKJMYm/RYODVk6Fs
-         LwjgGVYTI9gNPsPUxZFkT92XD244ihXCTgyY/bDaeEZ0LLT2OUgeWv5JDxBnbua2IP8i
-         FrCxFp05KjRAaU5qD/0WwO8oHm86YSF9W3aksgUToopVNjzUclLczjEciCwoUGMlh5IJ
-         6QSlRmCNY5K7ztgh6WsrLaCr38Jf+9hTlyY/D7Qr9r17CPEPIEErx7p2wCVsD538JqFb
-         llRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=n+kZoKqKGDj4sxz/spgYXr9LUZZuZ+0ogBgOuprttQg=;
-        b=dehFF2cN3brBxg/Wr5stzwLBdZG3sH/saP1j1LH/wx6s1VpFkvy3nNqmWqXqWJe3Wb
-         RvJzLl8R5bnz2/De/eu31N42M315Mr+JVtpBJBeID6VjhgI364BucnVvIYAt7P5SQzGc
-         8+zeJbtoBbvI7FJ5LRzzdA0ZNQs+s8GMZBgtNjeO7RPm2S5fME+p37AFPFtWlKd9D4Q0
-         wEQ0yEfTCpDa1NFzUeTzEW+CRG1prVWbgu7R5qwYIqV+zPFhqZDaTev8sSGt+bfTBzZP
-         9oeRBixPuwMUBmTJaxKh1v9PRsy9jb027owyo2zXay3TgK2umSi/p1ZcpuGmefbbVLal
-         /RmQ==
-X-Gm-Message-State: AOAM533UG0HQU+h9S0SmP4niNiS94Ze364hLUmTx2P9Zn7YFejxEWOex
-        zcQYwXa3imkG/mc+NQfGcyDFqFRAqAW3io7q
-X-Google-Smtp-Source: ABdhPJxseGxIt0034578p+AgKbObcHKZ69MVPLi1F41nrP4o5X6UV+hRLg5jABu0zSRgG8VcoBhCAw==
-X-Received: by 2002:a17:90b:4d0f:: with SMTP id mw15mr10517822pjb.174.1599271474699;
-        Fri, 04 Sep 2020 19:04:34 -0700 (PDT)
-Received: from localhost.localdomain ([49.207.195.77])
-        by smtp.gmail.com with ESMTPSA id x19sm2245332pge.22.2020.09.04.19.04.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Sep 2020 19:04:33 -0700 (PDT)
-From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
-To:     linux-kernel-mentees@lists.linuxfoundation.org
-Cc:     Anant Thazhemadam <anant.thazhemadam@gmail.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [Linux-kernel-mentees] [PATCH] Fix uninit-value in hci_chan_lookup_handle
-Date:   Sat,  5 Sep 2020 07:34:10 +0530
-Message-Id: <20200905020410.20350-1-anant.thazhemadam@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S1728210AbgIECSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 22:18:41 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:52747 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726317AbgIECSk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 22:18:40 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Bjyrs6MPBz9sTd;
+        Sat,  5 Sep 2020 12:18:37 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1599272318;
+        bh=9xTsIfpKFrJK+6CcxEyuNQq1X6wX2Zpz7mBvSHpJa+8=;
+        h=Date:From:To:Cc:Subject:From;
+        b=VdmgoSgtUsgcWLKyiYYKApVHPr/bIRN65VNzEem2NeVLSA7ukGRyegsoKXkfhXhLt
+         pbB+dOELBVrNaJEO6SSMGtfK3iFV8VR9P2L/FNAaZJa8ox9AVw3bbkJfvmw3+wUWfZ
+         tZp43Pgbd4o5Y2xWvsR+nkj0sZVLjrakm/r2rHPzrWIHO2bdBTfbe/ZQyHqRFc8rRN
+         CdQff9khtMiBSdsLdrTRZsBTPiZHaGRnKmqrYB21aCA+ti3A1OMc7zWvHxvKmt1n3p
+         GJlgpdKbv3LUAJamiI9psws7eWXA/lsPoYguOSAgiwdCntDZcTcIknZzlmXmsnRnZp
+         1yg/SvLjlxurw==
+Date:   Sat, 5 Sep 2020 12:18:27 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the printk tree
+Message-ID: <20200905121827.22fb4037@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/ae+uAE5g57V.AWQ6ZTLbzem";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the amount of data stored in the location corresponding to
-iov_iter *from is less then 4, some data seems to go uninitialized.
+--Sig_/ae+uAE5g57V.AWQ6ZTLbzem
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Updating this condition accordingly, makes sense both intuitively and 
-logically as well, since the other check for extreme condition done is if
-len > HCI_MAX_FRAME_SIZE, which is HCI_MAX_ACL_SIZE (which is 1024) + 4;
-which itself gives some idea about what must be the ideal mininum size.
+Hi all,
 
-Reported-and-tested by: syzbot+4c14a8f574461e1c3659@syzkaller.appspotmail.com
-Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
----
-If there is some explicit reason why len < 4 doesn't work, and only len < 2 works, 
-please do let me know.
-The commit message that introduced the initial change 
-(512b2268156a4e15ebf897f9a883bdee153a54b7) wasn't exactly very helpful in this 
-respect, and I couldn't find a whole lot of discussion regarding this either.
+Commit
 
- drivers/bluetooth/hci_vhci.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+  4c31ead75f41 ("printk: ringbuffer: support dataless records")
 
-diff --git a/drivers/bluetooth/hci_vhci.c b/drivers/bluetooth/hci_vhci.c
-index 8ab26dec5f6e..0c49821d7b98 100644
---- a/drivers/bluetooth/hci_vhci.c
-+++ b/drivers/bluetooth/hci_vhci.c
-@@ -159,7 +159,7 @@ static inline ssize_t vhci_get_user(struct vhci_data *data,
- 	__u8 pkt_type, opcode;
- 	int ret;
- 
--	if (len < 2 || len > HCI_MAX_FRAME_SIZE)
-+	if (len < 4 || len > HCI_MAX_FRAME_SIZE)
- 		return -EINVAL;
- 
- 	skb = bt_skb_alloc(len, GFP_KERNEL);
--- 
-2.25.1
+is missing a Signed-off-by from its committer.
 
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/ae+uAE5g57V.AWQ6ZTLbzem
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9S9XMACgkQAVBC80lX
+0GyeBggAhLs/myYpmuJulQz/QfTiSizT5ROEVYr/pPbLXIPC3kAaxTd0W2LEbMSq
+NkUv56TOlT9yDDRkOolzPPXximDk9vXQp3z78T+Ie6KNMVIjOg3U/j7XjJ5gRIBl
+iJF4aaU3E8qLmdp8cbs+n+FECX8tpWqV5ELARmaFn71LVztmhxmNuW0xz3u7ILw5
+z73omK6fHSA+N/6+15A8GtmwMChlgArTOphefH9g3IbixJtIMqjZtu8x5cfUXZmn
+7GHf3HFvLkUcr8u7sjjJY2AWoBg3dSyDlM/ZQ4wV8e8V1ZvdHT1BkGckuZOLdg5H
+daDdAwvI/S8MA0muShAO6nVqLMo9bQ==
+=cz9H
+-----END PGP SIGNATURE-----
+
+--Sig_/ae+uAE5g57V.AWQ6ZTLbzem--
