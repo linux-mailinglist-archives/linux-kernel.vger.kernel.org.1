@@ -2,65 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFDC725E6BC
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Sep 2020 11:28:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CBBF25E6C7
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Sep 2020 11:41:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728415AbgIEJ2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Sep 2020 05:28:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40704 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726568AbgIEJ2a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Sep 2020 05:28:30 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D690E2074D;
-        Sat,  5 Sep 2020 09:28:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599298110;
-        bh=/A50ZbK+4T3DpwzsRWE24zHeV6HPq3Y0Se11BWsh19M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sEQWMwmI7ro+bm1OkH8+f/b0k9wZ8cBrKWRK0ZGB4FlfsT8SJAjifnDeOX5oQNVNA
-         Xwcp+6o7yQUbynj75qI78+ozqug1F8YPdBwrEsvRzav5uYc3TzCO4CiKaFxKcn7euC
-         VuM+VeBuEqMtsxSAlqZVt5/ceoFzonuPa4sLHFWQ=
-Date:   Sat, 5 Sep 2020 11:28:49 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH 5.8 00/17] 5.8.7-rc1 review
-Message-ID: <20200905092849.GB3975295@kroah.com>
-References: <20200904120257.983551609@linuxfoundation.org>
- <20200904192345.GB211974@roeck-us.net>
+        id S1728302AbgIEJla (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Sep 2020 05:41:30 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:50458 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726591AbgIEJla (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Sep 2020 05:41:30 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 591326FA0D4FCDD412BF;
+        Sat,  5 Sep 2020 17:41:28 +0800 (CST)
+Received: from huawei.com (10.175.104.175) by DGGEMS403-HUB.china.huawei.com
+ (10.3.19.203) with Microsoft SMTP Server id 14.3.487.0; Sat, 5 Sep 2020
+ 17:41:19 +0800
+From:   Miaohe Lin <linmiaohe@huawei.com>
+To:     <axboe@kernel.dk>, <martin.petersen@oracle.com>,
+        <kbusch@kernel.org>, <johannes.thumshirn@wdc.com>, <hare@suse.de>
+CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linmiaohe@huawei.com>
+Subject: [PATCH] block: Fix potential page reference leak in __bio_iov_append_get_pages()
+Date:   Sat, 5 Sep 2020 05:40:06 -0400
+Message-ID: <20200905094006.1925-1-linmiaohe@huawei.com>
+X-Mailer: git-send-email 2.19.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200904192345.GB211974@roeck-us.net>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.175]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 04, 2020 at 12:23:45PM -0700, Guenter Roeck wrote:
-> On Fri, Sep 04, 2020 at 03:29:59PM +0200, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 5.8.7 release.
-> > There are 17 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> > 
-> > Responses should be made by Sun, 06 Sep 2020 12:02:48 +0000.
-> > Anything received after that time might be too late.
-> > 
-> 
-> Build results:
-> 	total: 154 pass: 154 fail: 0
-> Qemu test results:
-> 	total: 430 pass: 430 fail: 0
-> 
-> Tested-by: Guenter Roeck <linux@roeck-us.net>
+When bio_add_hw_page() failed, we left page reference still held in pages.
+Release these references and advance the iov_iter according to what we
+have done successfully yet.
 
-Thanks for testing both of these and letting me know.
+Fixes: 0512a75b98f8 ("block: Introduce REQ_OP_ZONE_APPEND")
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+---
+ block/bio.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
-greg k-h
+diff --git a/block/bio.c b/block/bio.c
+index e113073958cb..a323a5446221 100644
+--- a/block/bio.c
++++ b/block/bio.c
+@@ -1080,7 +1080,7 @@ static int __bio_iov_append_get_pages(struct bio *bio, struct iov_iter *iter)
+ 		len = min_t(size_t, PAGE_SIZE - offset, left);
+ 		if (bio_add_hw_page(q, bio, page, len, offset,
+ 				max_append_sectors, &same_page) != len)
+-			return -EINVAL;
++			goto put_pages;
+ 		if (same_page)
+ 			put_page(page);
+ 		offset = 0;
+@@ -1088,6 +1088,16 @@ static int __bio_iov_append_get_pages(struct bio *bio, struct iov_iter *iter)
+ 
+ 	iov_iter_advance(iter, size);
+ 	return 0;
++put_pages:
++	iov_iter_advance(iter, size - left);
++	for (; left > 0; left -= len, i++) {
++		struct page *page = pages[i];
++
++		len = min_t(size_t, PAGE_SIZE - offset, left);
++		put_page(page);
++		offset = 0;
++	}
++	return -EINVAL;
+ }
+ 
+ /**
+-- 
+2.19.1
+
