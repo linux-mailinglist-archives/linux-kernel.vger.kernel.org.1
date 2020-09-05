@@ -2,67 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A01A25E7BB
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Sep 2020 15:07:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B57EA25E7D0
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Sep 2020 15:20:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728631AbgIENGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Sep 2020 09:06:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42002 "EHLO
+        id S1728407AbgIENUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Sep 2020 09:20:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728400AbgIENF4 (ORCPT
+        with ESMTP id S1728314AbgIENUA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Sep 2020 09:05:56 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98958C061258
-        for <linux-kernel@vger.kernel.org>; Sat,  5 Sep 2020 06:05:55 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id m22so12057325eje.10
-        for <linux-kernel@vger.kernel.org>; Sat, 05 Sep 2020 06:05:55 -0700 (PDT)
+        Sat, 5 Sep 2020 09:20:00 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 870E9C061244
+        for <linux-kernel@vger.kernel.org>; Sat,  5 Sep 2020 06:19:58 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id z19so3978148pfn.8
+        for <linux-kernel@vger.kernel.org>; Sat, 05 Sep 2020 06:19:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=322eLsEkmbv53gakapl+TlGOtJ3WQUkBPPAQWpyScfE=;
-        b=kQNjQbg24wE2noUhH/XL3Yv48U/r42eVaF/Vcl6GP9z139gppRyLfkLNMKrcUheWD8
-         St2+aHKvpcrSBPge0mIzvBo3Hfg/iLDojHnF8cwbUuSvyDyuZm+fuhMTKxlPdI8NaxCh
-         JIWUsqGem8KmLGBftrsb1MIXf3av9mgDc55ZsqIOtDjJZ9V4SNelbJqI8DfFrk9HYJRD
-         EemIaP+fOJOQOueqoIaTqnGnAanjJzzUl71Z33NzkOwDuwO+ZVCeCPGkZZVp1ZEdWLlP
-         lFBI03nMva2ZDWuYc77pPrq7LeyevivgPlX8wetBM8Qqut/kbl5IjlsgBPRrUMKBPlVT
-         CSGA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UAw8Sm/IkMvzjBwyktfr8BKCwjcevIKR23o9IKJSixs=;
+        b=N88l9/kQJz3e3m+lqb6Iwqb2TOu16918EdsProjfzS7cYu4YMM0RPCfvoEpIKMYhEi
+         b3bYKx4otu6ihVZV5uefDZ425frevO2bkaKWItKz9VtZpBiAl+CVo2VGrNZZJd4AbWZW
+         FsZnK6/zkQ7pLK86vdaS5EW8248Dx9Xp7X7jZGXQRnHzEX/vJ2givsXZPALv+vAVqsI4
+         LIbrxASns7pyYskzDSKDwqc+jY2rrfGg2TocWBhYW0Fi40Hl9jp3atzjf47H9nSIo8yF
+         mcH8yoo85Fi1cbnN9MvbpeZqOxIsurylnGETdMMKqkOYbk/M2zQBdN5e77/fv2pAIzKL
+         VHaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=322eLsEkmbv53gakapl+TlGOtJ3WQUkBPPAQWpyScfE=;
-        b=cylQLYCi3DJZc+az1sZYDs1X5TCg7NGfuelRihe7hlRFe1CO7t7H73Czh54SN2jOFD
-         OEY2CNPnAJpXIzVofvOIXeiSdG1/OKH9mjqIHZItgLQCRTZ+HNk8jAGko2nv9ar6dP/q
-         dLPEOTiZ7xAy4J7J31n27gD4D5FZ6kJVsGSzKzdoEoszznebwhH/V94Z+geZDWZuE/2M
-         FMUeLOL7SAzvZWndEjseU7t9N5NxvkYO5ec3u9dlFKnVhhBrncjgIPsDnI/RfNVjWV48
-         TTKcJfGqCjXhG0OSedGJNZCDMk/oj/Uac8XQxXOfUIqTeg4bz0t9MiryxsL2HQgaSjUV
-         5yyw==
-X-Gm-Message-State: AOAM5317A4kP6U/JyNPMukUQl2eRXYmc0C/FXqzB020w5AuTEDGPKlKh
-        Z++ta08oK6Ne3H6R3L3wLVT/NXwzrsJujUF9szk/FLqlsa01cjsFyUR+A2FriVJIF1aPDIN+e49
-        OKv6Mq6ikrvgQ5Lf4n5CItbKKhoNlVbmADFYxu3vnOAU/ZAMtQCUoTn4qwriZplChxnVwOzpNHA
-        sGQAsDVDH4LQ==
-X-Google-Smtp-Source: ABdhPJwTFofQxT5+Xqmduh9lEX7PsTno/supz5boDjSPMZy4MCfbWku9BL2CzrpPh1wWjP/gUjz9/w==
-X-Received: by 2002:a17:906:4cc7:: with SMTP id q7mr12780600ejt.437.1599311153536;
-        Sat, 05 Sep 2020 06:05:53 -0700 (PDT)
-Received: from localhost.localdomain ([2a00:ee2:4b0d:3002:290:faff:fe54:449c])
-        by smtp.gmail.com with ESMTPSA id s18sm9372655ejd.54.2020.09.05.06.05.52
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UAw8Sm/IkMvzjBwyktfr8BKCwjcevIKR23o9IKJSixs=;
+        b=paLNwf1d/dI7mOBFRwxLurh2qxSC3GdCfO7BEMTrM1rdeQNP5CPWQE5sUxa8MS/Zy+
+         jW3MmRMURRba7NaAWAVPzV7/PSzxHcrBDU9MiXQXCxfQ11BgT2WdCpZkfIrvqF3KRHyo
+         +hfCcJaYh2K7kPMja00xuNKhj0+nI7fwbXAHZzwgOvlHQXD9/TcacTF+GJndY6abiuxR
+         rIYIt0A0s9v4HekXWEwmedSbhWtcTDT51fDCu7TdAsCfu1TQhjQo/xxzpyMteoz/9kts
+         /5C+kbTLL7f52icQyjNBkCxNS2CDQYYDq5QBPvBYgndq3fnoDe3TUqmI6Exh0CzOmnR7
+         INdg==
+X-Gm-Message-State: AOAM533L6MAsXtIuD8sSioMXzwokbBlwlXbGGMj+iO58ETntWTGJGxkU
+        9Z14gOq7yVr7N3oyfAgIxPf8B+sHTe0=
+X-Google-Smtp-Source: ABdhPJwCz1IGuv2sxpK36Q5IqtIQvhUfahJ/kq2FS8B3zRy47H3fH/+zPQqb339Txs3NLDkQ2MnD8g==
+X-Received: by 2002:a63:5047:: with SMTP id q7mr9993583pgl.59.1599311997556;
+        Sat, 05 Sep 2020 06:19:57 -0700 (PDT)
+Received: from localhost (g223.115-65-55.ppp.wakwak.ne.jp. [115.65.55.223])
+        by smtp.gmail.com with ESMTPSA id t15sm10150569pfl.175.2020.09.05.06.19.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 05 Sep 2020 06:05:52 -0700 (PDT)
-From:   Luka Kovacic <luka.kovacic@sartura.hr>
-To:     linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-leds@vger.kernel.org
-Cc:     lee.jones@linaro.org, pavel@ucw.cz, dmurphy@ti.com,
-        robh+dt@kernel.org, jdelvare@suse.com, linux@roeck-us.net,
-        andrew@lunn.ch, jason@lakedaemon.net, gregory.clement@bootlin.com,
-        luka.perkov@sartura.hr, Luka Kovacic <luka.kovacic@sartura.hr>
-Subject: [PATCH 7/7] arm64: dts: marvell: Add a device tree for the iEi Puzzle-M801 board
-Date:   Sat,  5 Sep 2020 15:03:36 +0200
-Message-Id: <20200905130336.967622-8-luka.kovacic@sartura.hr>
+        Sat, 05 Sep 2020 06:19:56 -0700 (PDT)
+From:   Stafford Horne <shorne@gmail.com>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Stafford Horne <shorne@gmail.com>
+Subject: [PATCH v2 0/3] OpenRISC fixes for 5.9
+Date:   Sat,  5 Sep 2020 22:19:32 +0900
+Message-Id: <20200905131935.972386-1-shorne@gmail.com>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200905130336.967622-1-luka.kovacic@sartura.hr>
-References: <20200905130336.967622-1-luka.kovacic@sartura.hr>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -70,573 +62,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add initial support for the iEi Puzzle-M801 1U Rackmount Network
-Appliance board.
+Changes since v1:
 
-The board is based on the quad-core Marvell Armada 8040 SoC and supports
-up to 16 GB of DDR4 2400 MHz ECC RAM. It has a PCIe x16 slot (x2 lanes
-only) and an M.2 type B slot.
+ - Now a series, v1 was only the "Reserve memblock for initrd" patch
+ - Added fixes for compiler issues pointed out by the kbuild robot
 
-Main system hardware:
-2x USB 3.0
-4x Gigabit Ethernet
-2x SFP+
-1x SATA 3.0
-1x M.2 type B
-1x RJ45 UART
-1x SPI flash
-1x iEi WT61P803 PUZZLE Microcontroller
-1x EPSON RX8010 RTC (used instead of the integrated Marvell RTC controller)
-6x SFP+ LED
-1x HDD LED
+This is a few fixes found during testing 5.9.
 
-All of the hardware listed above is supported and tested in this port.
+Stafford Horne (3):
+  openrisc: Reserve memblock for initrd
+  openrisc: Fix cache API compile issue when not inlining
+  openrisc: Fix issue with get_user for 64-bit values
 
-Signed-off-by: Luka Kovacic <luka.kovacic@sartura.hr>
-Cc: Luka Perkov <luka.perkov@sartura.hr>
----
- arch/arm64/boot/dts/marvell/Makefile          |   1 +
- .../dts/marvell/armada-8040-puzzle-m801.dts   | 519 ++++++++++++++++++
- 2 files changed, 520 insertions(+)
- create mode 100644 arch/arm64/boot/dts/marvell/armada-8040-puzzle-m801.dts
+ arch/openrisc/include/asm/uaccess.h | 16 ++++++++--------
+ arch/openrisc/kernel/setup.c        | 10 ++++++++++
+ arch/openrisc/mm/cache.c            |  2 +-
+ 3 files changed, 19 insertions(+), 9 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/marvell/Makefile b/arch/arm64/boot/dts/marvell/Makefile
-index 3e5f2e7a040c..e413c3261792 100644
---- a/arch/arm64/boot/dts/marvell/Makefile
-+++ b/arch/arm64/boot/dts/marvell/Makefile
-@@ -12,6 +12,7 @@ dtb-$(CONFIG_ARCH_MVEBU) += armada-8040-clearfog-gt-8k.dtb
- dtb-$(CONFIG_ARCH_MVEBU) += armada-8040-db.dtb
- dtb-$(CONFIG_ARCH_MVEBU) += armada-8040-mcbin.dtb
- dtb-$(CONFIG_ARCH_MVEBU) += armada-8040-mcbin-singleshot.dtb
-+dtb-$(CONFIG_ARCH_MVEBU) += armada-8040-puzzle-m801.dtb
- dtb-$(CONFIG_ARCH_MVEBU) += armada-8080-db.dtb
- dtb-$(CONFIG_ARCH_MVEBU) += cn9130-db.dtb
- dtb-$(CONFIG_ARCH_MVEBU) += cn9131-db.dtb
-diff --git a/arch/arm64/boot/dts/marvell/armada-8040-puzzle-m801.dts b/arch/arm64/boot/dts/marvell/armada-8040-puzzle-m801.dts
-new file mode 100644
-index 000000000000..2921202b4f7b
---- /dev/null
-+++ b/arch/arm64/boot/dts/marvell/armada-8040-puzzle-m801.dts
-@@ -0,0 +1,519 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright (C) 2016 Marvell Technology Group Ltd.
-+ * Copyright (C) 2020 Sartura Ltd.
-+ *
-+ * Device Tree file for iEi Puzzle-M801
-+ */
-+
-+#include "armada-8040.dtsi"
-+
-+#include <dt-bindings/gpio/gpio.h>
-+#include <dt-bindings/leds/common.h>
-+
-+/ {
-+	model = "iEi-Puzzle-M801";
-+	compatible = "marvell,armada8040", "marvell,armada-ap806-quad", "marvell,armada-ap806";
-+
-+	aliases {
-+		ethernet0 = &cp0_eth0;
-+		ethernet1 = &cp1_eth0;
-+		ethernet2 = &cp0_eth1;
-+		ethernet3 = &cp0_eth2;
-+		ethernet4 = &cp1_eth1;
-+		ethernet5 = &cp1_eth2;
-+	};
-+
-+	chosen {
-+		stdout-path = "serial0:115200n8";
-+	};
-+
-+	memory@0 {
-+		device_type = "memory";
-+		reg = <0x0 0x0 0x0 0x80000000>;
-+	};
-+
-+	/* Regulator labels correspond with schematics */
-+	v_3_3: regulator-3-3v {
-+		compatible = "regulator-fixed";
-+		regulator-name = "v_3_3";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		regulator-always-on;
-+		status = "okay";
-+	};
-+
-+	v_5v0_usb3_hst_vbus: regulator-usb3-vbus0 {
-+		compatible = "regulator-fixed";
-+		enable-active-high;
-+		gpio = <&cp0_gpio2 15 GPIO_ACTIVE_HIGH>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&cp0_xhci_vbus_pins>;
-+		regulator-name = "v_5v0_usb3_hst_vbus";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+		status = "okay";
-+	};
-+
-+	v_vddo_h: regulator-1-8v {
-+		compatible = "regulator-fixed";
-+		regulator-name = "v_vddo_h";
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <1800000>;
-+		regulator-always-on;
-+		status = "okay";
-+	};
-+
-+	sfp_cp0_eth0: sfp-cp0-eth0 {
-+		compatible = "sff,sfp";
-+		i2c-bus = <&sfpplus0_i2c>;
-+		los-gpio = <&sfpplus_gpio 11 GPIO_ACTIVE_HIGH>;
-+		mod-def0-gpio = <&sfpplus_gpio 10 GPIO_ACTIVE_LOW>;
-+		tx-disable-gpio = <&sfpplus_gpio 9 GPIO_ACTIVE_HIGH>;
-+		tx-fault-gpio  = <&sfpplus_gpio 8 GPIO_ACTIVE_HIGH>;
-+		maximum-power-milliwatt = <3000>;
-+	};
-+
-+	sfp_cp1_eth0: sfp-cp1-eth0 {
-+		compatible = "sff,sfp";
-+		i2c-bus = <&sfpplus1_i2c>;
-+		los-gpio = <&sfpplus_gpio 3 GPIO_ACTIVE_HIGH>;
-+		mod-def0-gpio = <&sfpplus_gpio 2 GPIO_ACTIVE_LOW>;
-+		tx-disable-gpio = <&sfpplus_gpio 1 GPIO_ACTIVE_HIGH>;
-+		tx-fault-gpio  = <&sfpplus_gpio 0 GPIO_ACTIVE_HIGH>;
-+		maximum-power-milliwatt = <3000>;
-+	};
-+
-+	leds {
-+		compatible = "gpio-leds";
-+		status = "okay";
-+		pinctrl-0 = <&cp0_sfpplus_led_pins &cp1_sfpplus_led_pins>;
-+		pinctrl-names = "default";
-+
-+		led0 {
-+			function = LED_FUNCTION_STATUS;
-+			label = "p2_act";
-+			gpios = <&cp1_gpio1 6 GPIO_ACTIVE_LOW>;
-+		};
-+
-+		led1 {
-+			function = LED_FUNCTION_STATUS;
-+			label = "p1_act";
-+			gpios = <&cp1_gpio1 14 GPIO_ACTIVE_LOW>;
-+		};
-+
-+		led2 {
-+			function = LED_FUNCTION_STATUS;
-+			label = "p2_10g";
-+			gpios = <&cp1_gpio1 7 GPIO_ACTIVE_LOW>;
-+		};
-+
-+		led3 {
-+			function = LED_FUNCTION_STATUS;
-+			label = "p2_1g";
-+			gpios = <&cp1_gpio1 8 GPIO_ACTIVE_LOW>;
-+		};
-+
-+		led4 {
-+			function = LED_FUNCTION_STATUS;
-+			label = "p1_10g";
-+			gpios = <&cp1_gpio1 10 GPIO_ACTIVE_LOW>;
-+		};
-+
-+		led5 {
-+			function = LED_FUNCTION_STATUS;
-+			label = "p1_1g";
-+			gpios = <&cp1_gpio1 31 GPIO_ACTIVE_LOW>;
-+		};
-+
-+		led6 {
-+			function = LED_FUNCTION_STATUS;
-+			linux,default-trigger = "disk-activity";
-+			label = "front-hdd-led";
-+			gpios = <&cp0_gpio2 22 GPIO_ACTIVE_HIGH>;
-+		};
-+
-+	};
-+};
-+
-+&ap_sdhci0 {
-+	bus-width = <8>;
-+	/*
-+	 * Not stable in HS modes - phy needs "more calibration", so add
-+	 * the "slow-mode" and disable SDR104, SDR50 and DDR50 modes.
-+	 */
-+	marvell,xenon-phy-slow-mode;
-+	no-1-8-v;
-+	no-sd;
-+	no-sdio;
-+	non-removable;
-+	status = "okay";
-+	vqmmc-supply = <&v_vddo_h>;
-+};
-+
-+&ap_thermal_cpu1 {
-+	trips {
-+		cpu_active: cpu-active {
-+			temperature = <44000>;
-+			hysteresis = <2000>;
-+			type = "active";
-+		};
-+	};
-+	cooling-maps {
-+		fan-map {
-+			trip = <&cpu_active>;
-+			cooling-device = <&chassis_fan_group0 64 THERMAL_NO_LIMIT>,
-+					<&chassis_fan_group1 64 THERMAL_NO_LIMIT>;
-+		};
-+	};
-+};
-+
-+&i2c0 {
-+	clock-frequency = <100000>;
-+	status = "okay";
-+
-+	rtc@32 {
-+		compatible = "epson,rx8010";
-+		reg = <0x32>;
-+	};
-+};
-+
-+&spi0 {
-+	status = "okay";
-+	spi-flash@0 {
-+		#address-cells = <0x1>;
-+		#size-cells = <0x1>;
-+		compatible = "jedec,spi-nor";
-+		reg = <0x0>;
-+		spi-max-frequency = <20000000>;
-+		partition@u-boot {
-+			label = "u-boot";
-+			reg = <0x00000000 0x001f0000>;
-+		};
-+		partition@u-boot-env {
-+			label = "u-boot-env";
-+			reg = <0x001f0000 0x00010000>;
-+		};
-+		partition@ubi1 {
-+			label = "ubi1";
-+			reg = <0x00200000 0x03f00000>;
-+		};
-+		partition@ubi2 {
-+			label = "ubi2";
-+			reg = <0x04100000 0x03f00000>;
-+		};
-+	};
-+};
-+
-+&uart0 {
-+	status = "okay";
-+	pinctrl-0 = <&uart0_pins>;
-+	pinctrl-names = "default";
-+};
-+
-+&uart1 {
-+	status = "okay";
-+	/* iEi WT61P803 PUZZLE MCU Controller */
-+	mcu {
-+		compatible = "iei,wt61p803-puzzle";
-+		current-speed = <115200>;
-+		enable-probe-beep;
-+
-+		leds {
-+			compatible = "iei,wt61p803-puzzle-leds";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			led@0 {
-+				reg = <0>;
-+				color = <LED_COLOR_ID_BLUE>;
-+				label = "front-power-led";
-+			};
-+		};
-+
-+		iei-wt61p803-puzzle-hwmon {
-+			compatible = "iei,wt61p803-puzzle-hwmon";
-+
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			chassis_fan_group0:fan-group@0 {
-+				#cooling-cells = <2>;
-+				reg = <0x00>;
-+				cooling-levels = <64 102 170 230 250>;
-+			};
-+
-+			chassis_fan_group1:fan-group@1 {
-+				#cooling-cells = <2>;
-+				reg = <0x01>;
-+				cooling-levels = <64 102 170 230 250>;
-+			};
-+		};
-+	};
-+};
-+
-+&cp0_rtc {
-+	status = "disabled";
-+};
-+
-+&cp0_i2c0 {
-+	clock-frequency = <100000>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&cp0_i2c0_pins>;
-+	status = "okay";
-+
-+	sfpplus_gpio: gpio@21 {
-+		compatible = "nxp,pca9555";
-+		reg = <0x21>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+	};
-+
-+	eeprom@54 {
-+		compatible = "atmel,24c04";
-+		reg = <0x54>;
-+	};
-+};
-+
-+&cp0_i2c1 {
-+	clock-frequency = <100000>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&cp0_i2c1_pins>;
-+	status = "okay";
-+
-+	i2c-switch@70 {
-+		compatible = "nxp,pca9544";
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		reg = <0x70>;
-+
-+		sfpplus0_i2c: i2c@0 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0>;
-+		};
-+
-+		sfpplus1_i2c: i2c@1 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <1>;
-+		};
-+	};
-+};
-+
-+&cp0_uart1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&cp0_uart1_pins>;
-+	status = "okay";
-+};
-+
-+&cp0_mdio {
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+
-+	status = "okay";
-+
-+	ge_phy2: ethernet-phy@2 {
-+		reg = <0>;
-+	};
-+
-+	ge_phy3: ethernet-phy@3 {
-+		reg = <1>;
-+	};
-+};
-+
-+&cp0_pcie0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&cp0_pcie_pins>;
-+	num-lanes = <1>;
-+	num-viewport = <8>;
-+	reset-gpios = <&cp0_gpio2 20 GPIO_ACTIVE_LOW>;
-+	ranges = <0x82000000 0x0 0xc0000000 0x0 0xc0000000 0x0 0x20000000>;
-+	phys = <&cp0_comphy0 0>;
-+	phy-names = "cp0-pcie0-x1-phy";
-+	status = "okay";
-+};
-+
-+&cp0_pinctrl {
-+	cp0_ge_mdio_pins: ge-mdio-pins {
-+		marvell,pins = "mpp32", "mpp34";
-+		marvell,function = "ge";
-+	};
-+	cp0_i2c1_pins: i2c1-pins {
-+		marvell,pins = "mpp35", "mpp36";
-+		marvell,function = "i2c1";
-+	};
-+	cp0_i2c0_pins: i2c0-pins {
-+		marvell,pins = "mpp37", "mpp38";
-+		marvell,function = "i2c0";
-+	};
-+	cp0_uart1_pins: uart1-pins {
-+		marvell,pins = "mpp40", "mpp41";
-+		marvell,function = "uart1";
-+	};
-+	cp0_xhci_vbus_pins: xhci0-vbus-pins {
-+		marvell,pins = "mpp47";
-+		marvell,function = "gpio";
-+	};
-+	cp0_pcie_pins: pcie-pins {
-+		marvell,pins = "mpp52";
-+		marvell,function = "gpio";
-+	};
-+	cp0_sdhci_pins: sdhci-pins {
-+		marvell,pins = "mpp55", "mpp56", "mpp57", "mpp58", "mpp59",
-+			       "mpp60", "mpp61";
-+		marvell,function = "sdio";
-+	};
-+	cp0_sfpplus_led_pins: sfpplus-led-pins {
-+		marvell,pins = "mpp54";
-+		marvell,function = "gpio";
-+	};
-+};
-+
-+&cp0_ethernet {
-+	status = "okay";
-+};
-+
-+&cp0_eth0 {
-+	status = "okay";
-+	phy-mode = "10gbase-r";
-+	phys = <&cp0_comphy4 0>;
-+	local-mac-address = [00 50 43 de ff 00];
-+	sfp = <&sfp_cp0_eth0>;
-+	managed = "in-band-status";
-+};
-+
-+&cp0_eth1 {
-+	status = "okay";
-+	phy = <&ge_phy2>;
-+	phy-mode = "sgmii";
-+	local-mac-address = [00 50 43 de ff 01];
-+	phys = <&cp0_comphy3 1>;
-+};
-+
-+&cp0_eth2 {
-+	status = "okay";
-+	phy-mode = "sgmii";
-+	phys = <&cp0_comphy1 2>;
-+	local-mac-address = [00 50 43 de ff 02];
-+	phy = <&ge_phy3>;
-+};
-+
-+&cp0_sata0 {
-+	status = "okay";
-+
-+	sata-port@0 {
-+		phys = <&cp0_comphy2 0>;
-+		phy-names = "cp0-sata0-0-phy";
-+	};
-+
-+	sata-port@1 {
-+		phys = <&cp0_comphy5 1>;
-+		phy-names = "cp0-sata0-1-phy";
-+	};
-+};
-+
-+&cp0_sdhci0 {
-+	broken-cd;
-+	bus-width = <4>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&cp0_sdhci_pins>;
-+	status = "okay";
-+	vqmmc-supply = <&v_3_3>;
-+};
-+
-+&cp0_usb3_0 {
-+	status = "okay";
-+};
-+
-+&cp0_usb3_1 {
-+	status = "okay";
-+};
-+
-+&cp1_i2c0 {
-+	clock-frequency = <100000>;
-+	status = "disabled";
-+};
-+
-+&cp1_i2c1 {
-+	clock-frequency = <100000>;
-+	status = "disabled";
-+};
-+
-+&cp1_rtc {
-+	status = "disabled";
-+};
-+
-+&cp1_ethernet {
-+	status = "okay";
-+};
-+
-+&cp1_eth0 {
-+	status = "okay";
-+	phy-mode = "10gbase-r";
-+	phys = <&cp1_comphy4 0>;
-+	local-mac-address = [00 50 43 de ff 03];
-+	sfp = <&sfp_cp1_eth0>;
-+	managed = "in-band-status";
-+};
-+
-+&cp1_eth1 {
-+	status = "okay";
-+	phy = <&ge_phy4>;
-+	phy-mode = "sgmii";
-+	local-mac-address = [00 50 43 de ff 04];
-+	phys = <&cp1_comphy3 1>;
-+};
-+
-+&cp1_eth2 {
-+	status = "okay";
-+	phy-mode = "sgmii";
-+	local-mac-address = [00 50 43 de ff 05];
-+	phys = <&cp1_comphy5 2>;
-+	phy = <&ge_phy5>;
-+};
-+
-+&cp1_pinctrl {
-+	cp1_sfpplus_led_pins: sfpplus-led-pins {
-+		marvell,pins = "mpp6", "mpp7", "mpp8", "mpp10", "mpp14", "mpp31";
-+		marvell,function = "gpio";
-+	};
-+};
-+
-+&cp1_uart0 {
-+	status = "disabled";
-+};
-+
-+&cp1_comphy2 {
-+	cp1_usbh0_con: connector {
-+		compatible = "usb-a-connector";
-+		phy-supply = <&v_5v0_usb3_hst_vbus>;
-+	};
-+};
-+
-+&cp1_usb3_0 {
-+	phys = <&cp1_comphy2 0>;
-+	phy-names = "cp1-usb3h0-comphy";
-+	status = "okay";
-+};
-+
-+&cp1_mdio {
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+
-+	status = "okay";
-+
-+	ge_phy4: ethernet-phy@4 {
-+		reg = <1>;
-+	};
-+	ge_phy5: ethernet-phy@5 {
-+		reg = <0>;
-+	};
-+};
-+
-+&cp1_pcie0 {
-+	num-lanes = <2>;
-+	phys = <&cp1_comphy0 0>, <&cp1_comphy1 0>;
-+	phy-names = "cp1-pcie0-x2-lane0-phy", "cp1-pcie0-x2-lane1-phy";
-+	status = "okay";
-+};
 -- 
-2.20.1
+2.26.2
 
