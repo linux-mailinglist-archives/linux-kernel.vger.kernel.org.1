@@ -2,87 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1331025EB4D
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Sep 2020 00:09:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A91325EB51
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Sep 2020 00:10:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728792AbgIEWJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Sep 2020 18:09:31 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:33806 "EHLO gloria.sntech.de"
+        id S1728760AbgIEWKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Sep 2020 18:10:46 -0400
+Received: from rere.qmqm.pl ([91.227.64.183]:2432 "EHLO rere.qmqm.pl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728680AbgIEWJ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Sep 2020 18:09:28 -0400
-Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1kEgNC-0005mD-Pd; Sun, 06 Sep 2020 00:09:26 +0200
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     linus.walleij@linaro.org, Jianqun Xu <jay.xu@rock-chips.com>
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        Jianqun Xu <jay.xu@rock-chips.com>
-Subject: Re: [PATCH 4/6] pinctrl: rockchip: do not set gpio if bank invalid
-Date:   Sun, 06 Sep 2020 00:09:26 +0200
-Message-ID: <1687104.4lZP0y4C37@diego>
-In-Reply-To: <20200831084753.7115-5-jay.xu@rock-chips.com>
-References: <20200831084753.7115-1-jay.xu@rock-chips.com> <20200831084753.7115-5-jay.xu@rock-chips.com>
+        id S1728563AbgIEWKp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Sep 2020 18:10:45 -0400
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4BkTHN1bC9z2F;
+        Sun,  6 Sep 2020 00:09:52 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1599343792; bh=sCmAZA43hEK5ITAt71q/tlretXbcM8e9LoMlx1QzCXQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ro3pMIse9R3FLxhO0BX8OoOZ3px/+AL9aAaVYSNdPB4yRWqJNqGFLEKYbTC7HJuHm
+         jEOAdLNT85fU5pDZnNh+vOW3G7CY3nkrKg06sggSSgxfyQ9NJRMH7witMr0MNS7Tz7
+         W7EXNayGQXVFT+2gUfOwoXPtjF0CT4mZWiNEyRi1fnXpKB++ZOOhlJej+KTI6bMyYK
+         iqCw7sIrBEr/ip+0QhJJZ0JQVDKquid50GKdjYvbGNy1cAzw9XxltLm1P1rhfO9aiw
+         iObmpWze7HWuunQ8LQpE57ACSAXl8mT3AkKF7xhyD6S4YEAN8O2ZPr1WKlAab5gaFQ
+         BHs43pcAXVtkA==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.102.4 at mail
+Date:   Sun, 6 Sep 2020 00:10:42 +0200
+From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-i2c@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 11/31] i2c: tegra: Factor out runtime PM and hardware
+ initialization
+Message-ID: <20200905221042.GB18554@qmqm.qmqm.pl>
+References: <20200905204151.25343-1-digetx@gmail.com>
+ <20200905204151.25343-12-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=iso-8859-2
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200905204151.25343-12-digetx@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Montag, 31. August 2020, 10:47:51 CEST schrieb Jianqun Xu:
-> Add valid check for gpio bank.
+On Sat, Sep 05, 2020 at 11:41:31PM +0300, Dmitry Osipenko wrote:
+> Factor out runtime PM and hardware initialization into separate function
+> in order have a cleaner error unwinding in the probe function.
+[...]
+> +	ret = tegra_i2c_init_runtime_pm_and_hardware(i2c_dev);
+[...]
 
-As this obviously fixes a problem you encountered please elaborate a bit more.
-Just so that people reading the log later understand when this issue surfaced.
+This one doesn't improve the code for me. The problems are: 1) putting two
+unrelated parts in one function, 2) silently reordered initialization.
 
-Also - maybe even more important - why is this limited to PIN_CONFIG_OUTPUT?
-Like when the whole bank is not valid, you should be able to return the -ENOTSUPP
-even before entering the "for" loop in these functions.
-
-
-> Change-Id: Ib03e2910a7316bd61df18236151e371c4d04077a
-
-Please remove the changeId.
-
-Thanks
-Heiko
-
-> Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
-> ---
->  drivers/pinctrl/pinctrl-rockchip.c | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/drivers/pinctrl/pinctrl-rockchip.c b/drivers/pinctrl/pinctrl-rockchip.c
-> index 265d64b8c4f5..6080573155f6 100644
-> --- a/drivers/pinctrl/pinctrl-rockchip.c
-> +++ b/drivers/pinctrl/pinctrl-rockchip.c
-> @@ -2687,6 +2687,9 @@ static int rockchip_pinconf_set(struct pinctrl_dev *pctldev, unsigned int pin,
->  				return rc;
->  			break;
->  		case PIN_CONFIG_OUTPUT:
-> +			if (!bank->valid)
-> +				return -ENOTSUPP;
-> +
->  			rockchip_gpio_set(&bank->gpio_chip,
->  					  pin - bank->pin_base, arg);
->  			rc = _rockchip_pmx_gpio_set_direction(&bank->gpio_chip,
-> @@ -2752,6 +2755,9 @@ static int rockchip_pinconf_get(struct pinctrl_dev *pctldev, unsigned int pin,
->  		arg = 1;
->  		break;
->  	case PIN_CONFIG_OUTPUT:
-> +		if (!bank->valid)
-> +			return -ENOTSUPP;
-> +
->  		rc = rockchip_get_mux(bank, pin - bank->pin_base);
->  		if (rc != RK_FUNC_GPIO)
->  			return -EINVAL;
-> 
-
-
-
-
+Best Regards,
+Micha³ Miros³aw
