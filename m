@@ -2,89 +2,317 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7C7E25E97B
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Sep 2020 19:40:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDA1825E996
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Sep 2020 19:55:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728472AbgIERk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Sep 2020 13:40:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55920 "EHLO
+        id S1728426AbgIERzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Sep 2020 13:55:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727875AbgIERkF (ORCPT
+        with ESMTP id S1728376AbgIERzW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Sep 2020 13:40:05 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F6BEC061244;
-        Sat,  5 Sep 2020 10:40:04 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id w186so9460726qkd.1;
-        Sat, 05 Sep 2020 10:40:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-transfer-encoding:content-language;
-        bh=FT2fvVKVJcJnfLDFKoXi+lvCScvW2jBOGcN2i14P3/w=;
-        b=Lqo5n7TLIXEQT9AIIOV6WKKDMeUGoeymIrJPgzDqEihOzktfTzcXMnsRmVEYsWA2nx
-         0x67Xb4gDgNUhUXll3kfmiH664UdPCJCOE3/Kvd2nf3jwQoUBu0IAuBcF834kTjOUera
-         4X+XyenrjgprjwH3oMQw3Zrng+AV4CoGWYc7no8t2PCmSMi0frEJ0eIiYuNU8p4Dwi65
-         T87P5wUrBoDf37JalrZl6IHhxwxrWzGrqlMyCp+8+Th2ZhLbV+lvRWSFI4hdyqszvKE8
-         YzQEZQEkfb4XF7OOV/fPTnn1i/4ACEPDBHFrMAc4xKljsUOBQypQyc+YThs/USlZJiCS
-         Teeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-transfer-encoding:content-language;
-        bh=FT2fvVKVJcJnfLDFKoXi+lvCScvW2jBOGcN2i14P3/w=;
-        b=F8FEYyDMlDFc/jiTL2ehm5m41l+5xAg7eiHgrCjgqn1ILcZqDTQC202UPoQDWIIaqn
-         xCEDCTLUBgnfbMyVzQSG1tPD0B8uYq8SLN/uzbra6I8ysewdiYaQE/M5blF4OAKKp7C2
-         vrpfaamqZTQ2E3R3ZHifG4+dM/jnfXfy1YJHawrkAleciJ2x7js3OMYUbAPMXbORiIHP
-         t1+9tEOD503QfIZskZga8BFmcYnW+u+thgOekdBSuaHHuUsMWQPygC2aywcF76E4+u0E
-         2jCbH35sZ47fqXrzLP825bBKGoRTVa7jDzwz3KraG2VVjEIhkGxu9sAAtFS08Qi/U99t
-         fH2Q==
-X-Gm-Message-State: AOAM5316cGKgJtZJeNxsSD2xkCH8oGE0WtfgJ5z1HWEgL9kInBZ3rM8j
-        z1iee12VdCptpheb4EVgMqyg4pu9pEWJRw==
-X-Google-Smtp-Source: ABdhPJyYbr4n/cq8l1/LRCoE4oFaV5Fky5lEJ/Xnlo5eIuO5doXVJSqYvaY4d3wwM2J2vldeL9hF2g==
-X-Received: by 2002:a37:9f4e:: with SMTP id i75mr12417322qke.180.1599327600705;
-        Sat, 05 Sep 2020 10:40:00 -0700 (PDT)
-Received: from ?IPv6:2800:270:c:c::1000? ([2800:270:c:c::1000])
-        by smtp.gmail.com with ESMTPSA id z37sm7665883qtz.67.2020.09.05.10.39.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 05 Sep 2020 10:40:00 -0700 (PDT)
-To:     linux-tegra@vger.kernel.org
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Nagarjuna Kristam <nkristam@nvidia.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-From:   =?UTF-8?B?TWF0w61hcyBaw7rDsWlnYQ==?= <matias.nicolas.zc@gmail.com>
-Subject: [xhci-tegra] Kernel 5.7 regression - tegra124-nyan
-Message-ID: <eb0e8cd1-8f6c-f1df-fe15-6e23572b7655@gmail.com>
-Date:   Sat, 5 Sep 2020 13:39:57 -0400
+        Sat, 5 Sep 2020 13:55:22 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF932C061244
+        for <linux-kernel@vger.kernel.org>; Sat,  5 Sep 2020 10:55:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=jUZ7wVkTOQQmJc8x+4KhnWzCxul2cSsRNxbx56SPfxo=; b=A71gB59mhOADuO2PBRZ+b0N9W3
+        gbr1xRbj0gHTU0+Kf1tucuyOehTVwO3UKP8z9tG+rOjoNFAfYYvoZA/RwE4VHKpGFu6ukgjk6SpkJ
+        ksVeRt79gOp9LvCMXa6XAmjSPiZ1RJJEHYNeeqtQDOAnNKWCHPsYIDNv4ivXY97uXBSeERqFAJAoL
+        qFcLWtRAJux0E8aX0oJzSes/PyyK1ASQuHKnD68zCj0aNHuD2h/9dpdnmKTAM60JZ/IaPe3BBBhP9
+        lI71qOXqTCzrn6IWOLi+5j2gLuI2Zc8wi2L+jHiGgcqaq+i7r+TpLNW2F8M7/F02sfqadFXncqGFo
+        W+eow98g==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kEcP4-0001qg-LN; Sat, 05 Sep 2020 17:55:06 +0000
+Subject: Re: [PATCH v7 3/9] docs: x86: Add documentation for SVA (Shared
+ Virtual Addressing)
+To:     Fenghua Yu <fenghua.yu@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        H Peter Anvin <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Jacob Jun Pan <jacob.jun.pan@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Sohil Mehta <sohil.mehta@intel.com>,
+        Ravi V Shankar <ravi.v.shankar@intel.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>, x86 <x86@kernel.org>,
+        iommu@lists.linux-foundation.org
+References: <1598540794-132666-1-git-send-email-fenghua.yu@intel.com>
+ <1598540794-132666-4-git-send-email-fenghua.yu@intel.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <626fe21c-1f82-f4f8-e37b-32d91e7d557a@infradead.org>
+Date:   Sat, 5 Sep 2020 10:54:59 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1598540794-132666-4-git-send-email-fenghua.yu@intel.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+Hi,
 
-Since kernel 5.7 (specifically commits 
-f67213cee2b35fe169a723746b7f37debf20fa29) the xhci-tegra driver fails to 
-initialize the USB ports of tegra124-nyan devices with the message 
-"usb-role-switch not found for otg".
+I'll add a few edits other than those that Borislav made.
+(nice review job, BP)
 
-The named commit, which adds usb-role-switch support, effectively broke 
-all device trees with "otg" or "peripheral" modes that do not include 
-the "usb-role-switch" property.
 
-Given that the otg port of nyan devices is just a type A connector, I 
-can patch the device tree to use the "host" mode and it works fine, but 
-since it seems to be an otg port internally, maybe it's better to add 
-the usb-role-switch property with a "connector" subnode.
-However, I don't know if other devices are affected, so I think the 
-driver should be "fixed" to work again with DTs without usb-role-switch.
+On 8/27/20 8:06 AM, Fenghua Yu wrote:
+> From: Ashok Raj <ashok.raj@intel.com>
+> 
+> ENQCMD and Data Streaming Accelerator (DSA) and all of their associated
+> features are a complicated stack with lots of interconnected pieces.
+> This documentation provides a big picture overview for all of the
+> features.
+> 
+> Signed-off-by: Ashok Raj <ashok.raj@intel.com>
+> Co-developed-by: Fenghua Yu <fenghua.yu@intel.com>
+> Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
+> Reviewed-by: Tony Luck <tony.luck@intel.com>
+> ---
+> v7:
+> - Change the doc for updating PASID by IPI and context switch (Andy).
+> 
+> v3:
+> - Replace deprecated intel_svm_bind_mm() by iommu_sva_bind_mm() (Baolu)
+> - Fix a couple of typos (Baolu)
+> 
+> v2:
+> - Fix the doc format and add the doc in toctree (Thomas)
+> - Modify the doc for better description (Thomas, Tony, Dave)
+> 
+>  Documentation/x86/index.rst |   1 +
+>  Documentation/x86/sva.rst   | 254 ++++++++++++++++++++++++++++++++++++
+>  2 files changed, 255 insertions(+)
+>  create mode 100644 Documentation/x86/sva.rst
 
-Cheers,
-Matías Zúñiga
+
+> diff --git a/Documentation/x86/sva.rst b/Documentation/x86/sva.rst
+> new file mode 100644
+> index 000000000000..6e7ac565e127
+> --- /dev/null
+> +++ b/Documentation/x86/sva.rst
+> @@ -0,0 +1,254 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +===========================================
+> +Shared Virtual Addressing (SVA) with ENQCMD
+> +===========================================
+> +
+> +Background
+> +==========
+> +
+
+...
+
+> +
+> +Shared Hardware Workqueues
+> +==========================
+> +
+> +Unlike Single Root I/O Virtualization (SRIOV), Scalable IOV (SIOV) permits
+> +the use of Shared Work Queues (SWQ) by both applications and Virtual
+> +Machines (VM's). This allows better hardware utilization vs. hard
+> +partitioning resources that could result in under utilization. In order to
+> +allow the hardware to distinguish the context for which work is being
+> +executed in the hardware by SWQ interface, SIOV uses Process Address Space
+> +ID (PASID), which is a 20bit number defined by the PCIe SIG.
+
+                          20-bit
+
+> +
+> +PASID value is encoded in all transactions from the device. This allows the
+> +IOMMU to track I/O on a per-PASID granularity in addition to using the PCIe
+> +Resource Identifier (RID) which is the Bus/Device/Function.
+> +
+> +
+> +ENQCMD
+> +======
+> +
+
+...
+
+> +
+> +Process Address Space Tagging
+> +=============================
+> +
+
+...
+
+> +
+> +PASID Management
+> +================
+> +
+
+...
+
+> +
+> +Relationships
+> +=============
+> +
+> + * Each process has many threads, but only one PASID
+
+                           (end with)             PASID.
+
+> + * Devices have a limited number (~10's to 1000's) of hardware
+> +   workqueues and each portal maps down to a single workqueue.
+> +   The device driver manages allocating hardware workqueues.
+> + * A single mmap() maps a single hardware workqueue as a "portal"
+
+                         (end with)                                  .
+
+> + * For each device with which a process interacts, there must be
+> +   one or more mmap()'d portals.
+> + * Many threads within a process can share a single portal to access
+> +   a single device.
+> + * Multiple processes can separately mmap() the same portal, in
+> +   which case they still share one device hardware workqueue.
+> + * The single process-wide PASID is used by all threads to interact
+> +   with all devices.  There is not, for instance, a PASID for each
+> +   thread or each thread<->device pair.
+> +
+> +FAQ
+> +===
+> +
+> +* What is SVA/SVM?
+> +
+> +Shared Virtual Addressing (SVA) permits I/O hardware and the processor to
+> +work in the same address space. In short, sharing the address space. Some
+> +call it Shared Virtual Memory (SVM), but Linux community wanted to avoid
+
+                                                            waned to avoid confusing
+
+> +it with Posix Shared Memory and Secure Virtual Machines which were terms
+
+           POSIX
+
+> +already in circulation.
+> +
+> +* What is a PASID?
+> +
+> +A Process Address Space ID (PASID) is a PCIe-defined TLP Prefix. A PASID is
+
+ah, BP already commented about using acronyms to define acronyms.  :)
+
+> +a 20 bit number allocated and managed by the OS. PASID is included in all
+
+     20-bit
+
+> +transactions between the platform and the device.
+> +
+> +* How are shared work queues different?
+> +
+> +Traditionally to allow user space applications interact with hardware,
+> +there is a separate instance required per process. For example, consider
+> +doorbells as a mechanism of informing hardware about work to process. Each
+> +doorbell is required to be spaced 4k (or page-size) apart for process
+> +isolation. This requires hardware to provision that space and reserve in
+
+                                                                 reserve it in
+
+> +MMIO. This doesn't scale as the number of threads becomes quite large. The
+> +hardware also manages the queue depth for Shared Work Queues (SWQ), and
+> +consumers don't need to track queue depth. If there is no space to accept
+> +a command, the device will return an error indicating retry. Also
+> +submitting a command to an MMIO address that can't accept ENQCMD will
+> +return retry in response. In the new DMWr PCIe terminology, devices need to
+
+so how does a submitter know whether a return of "retry" means no_space or
+invalid_for_this_device?
+
+> +support DMWr completer capability. In addition it requires all switch ports
+> +to support DMWr routing and must be enabled by the PCIe subsystem, much
+> +like how PCIe Atomics() are managed for instance.
+> +
+> +SWQ allows hardware to provision just a single address in the device. When
+> +used with ENQCMD to submit work, the device can distinguish the process
+> +submitting the work since it will include the PASID assigned to that
+> +process. This decreases the pressure of hardware requiring to support
+> +hardware to scale to a large number of processes.
+> +
+> +* Is this the same as a user space device driver?
+> +
+> +Communicating with the device via the shared work queue is much simpler
+> +than a full blown user space driver. The kernel driver does all the
+> +initialization of the hardware. User space only needs to worry about
+> +submitting work and processing completions.
+> +
+> +* Is this the same as SR-IOV?
+> +
+> +Single Root I/O Virtualization (SR-IOV) focuses on providing independent
+
+In 2 other places, SR-IOV is just SRIOV. Please be consistent.
+
+> +hardware interfaces for virtualizing hardware. Hence its required to be
+> +almost fully functional interface to software supporting the traditional
+> +BAR's, space for interrupts via MSI-x, its own register layout.
+
+   BARs,                           MSI-X,
+
+> +Virtual Functions (VFs) are assisted by the Physical Function (PF)
+> +driver.
+> +
+> +Scalable I/O Virtualization builds on the PASID concept to create device
+> +instances for virtualization. SIOV requires host software to assist in
+> +creating virtual devices, each virtual device is represented by a PASID
+
+                    devices; each
+
+> +along with the BDF of the device.  This allows device hardware to optimize
+
+what is BDF?  ah, bus/device/function.  still, not nice here.
+
+> +device resource creation and can grow dynamically on demand. SR-IOV creation
+> +and management is very static in nature. Consult references below for more
+> +details.
+> +
+> +* Why not just create a virtual function for each app?
+> +
+> +Creating PCIe SRIOV type virtual functions (VF) are expensive. They create
+
+                                                   is
+
+> +duplicated hardware for PCI config space requirements, Interrupts such as
+
+                                            requirements -- interrupts
+
+> +MSIx for instance. Resources such as interrupts have to be hard partitioned
+
+   MSI-X
+
+> +between VF's at creation time, and cannot scale dynamically on demand. The
+
+           VFs
+
+> +VF's are not completely independent from the Physical function (PF). Most
+
+   VFs
+
+> +VF's require some communication and assistance from the PF driver. SIOV
+
+   VFs
+
+> +creates a software defined device. Where all the configuration and control
+> +aspects are mediated via the slow path. The work submission and completion
+> +happen without any mediation.
+
+...
+
+
+-- 
+~Randy
 
