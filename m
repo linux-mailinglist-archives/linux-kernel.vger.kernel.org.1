@@ -2,79 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB1B225E6BD
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Sep 2020 11:28:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75AA225E6BA
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Sep 2020 11:28:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728450AbgIEJ2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Sep 2020 05:28:53 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:10772 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728430AbgIEJ2w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Sep 2020 05:28:52 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 40BF594029903E1A9AF8;
-        Sat,  5 Sep 2020 17:28:48 +0800 (CST)
-Received: from huawei.com (10.175.104.175) by DGGEMS413-HUB.china.huawei.com
- (10.3.19.213) with Microsoft SMTP Server id 14.3.487.0; Sat, 5 Sep 2020
- 17:28:40 +0800
-From:   Miaohe Lin <linmiaohe@huawei.com>
-To:     <mingo@redhat.com>, <peterz@infradead.org>,
-        <juri.lelli@redhat.com>, <vincent.guittot@linaro.org>,
-        <dietmar.eggemann@arm.com>, <rostedt@goodmis.org>,
-        <bsegall@google.com>, <mgorman@suse.de>
-CC:     <linux-kernel@vger.kernel.org>, <linmiaohe@huawei.com>
-Subject: [PATCH] sched: Fix some comments
-Date:   Sat, 5 Sep 2020 05:27:27 -0400
-Message-ID: <20200905092727.57471-1-linmiaohe@huawei.com>
-X-Mailer: git-send-email 2.19.1
+        id S1728331AbgIEJ2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Sep 2020 05:28:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40598 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726568AbgIEJ2S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Sep 2020 05:28:18 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BA9AB206A5;
+        Sat,  5 Sep 2020 09:28:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599298098;
+        bh=qbGRxJSVtAFz8x1JSRuPA0iFYaXeunLT5C9VXt8avnQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=u9mVN5lAoOZObsq30cVOzuTJJFzcrqMOZH1VMSgRyv7JsLyYTlFqU3XQkjWXM6vcf
+         +jQKa/X+gSJPFk364znr7VdfdiYxa3ZN8T0z8NRHIyOimHmpPdmCIc6dxY15vSn9/f
+         UAAhONpxvUw4tpa/RfXcZa77s+3BLrlIjo6ZUAko=
+Date:   Sat, 5 Sep 2020 11:28:37 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, ben.hutchings@codethink.co.uk,
+        lkft-triage@lists.linaro.org, stable@vger.kernel.org
+Subject: Re: [PATCH 5.8 00/17] 5.8.7-rc1 review
+Message-ID: <20200905092837.GA3975295@kroah.com>
+References: <20200904120257.983551609@linuxfoundation.org>
+ <46d98b44-ec5a-2f86-55ab-ac69e36c4c53@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.175]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <46d98b44-ec5a-2f86-55ab-ac69e36c4c53@linuxfoundation.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit dfa50b605c2a ("sched: Make finish_task_switch() return 'struct
-rq *'"), prev == current is incorrect in finish_task_switch(). Also fix a
-typo in the comment of struct dl_bandwidth.
+On Fri, Sep 04, 2020 at 02:11:08PM -0600, Shuah Khan wrote:
+> On 9/4/20 7:29 AM, Greg Kroah-Hartman wrote:
+> > This is the start of the stable review cycle for the 5.8.7 release.
+> > There are 17 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> > 
+> > Responses should be made by Sun, 06 Sep 2020 12:02:48 +0000.
+> > Anything received after that time might be too late.
+> > 
+> > The whole patch series can be found in one patch at:
+> > 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.8.7-rc1.gz
+> > or in the git tree and branch at:
+> > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.8.y
+> > and the diffstat can be found below.
+> > 
+> > thanks,
+> > 
+> > greg k-h
+> > 
+> 
+> Compiled and booted on my test system. No dmesg regressions.
+> 
+> Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
----
- kernel/sched/core.c  | 4 ++--
- kernel/sched/sched.h | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+Thanks for testing both of these and letting me know.
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 8471a0f7eb32..725ccab230da 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -3571,8 +3571,8 @@ prepare_task_switch(struct rq *rq, struct task_struct *prev,
-  *
-  * The context switch have flipped the stack from under us and restored the
-  * local variables which were saved when this task called schedule() in the
-- * past. prev == current is still correct but we need to recalculate this_rq
-- * because prev may have moved to another CPU.
-+ * past. We need to recalculate this_rq because prev may have moved to
-+ * another CPU.
-  */
- static struct rq *finish_task_switch(struct task_struct *prev)
- 	__releases(rq->lock)
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 28709f6b0975..1d7e45f7fbb9 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -278,7 +278,7 @@ void __dl_clear_params(struct task_struct *p);
-  * consume bandwidth on the CPU they're running on.
-  * Finally, dl_total_bw_cpu is used to cache the index of dl_total_bw
-  * that will be shown the next time the proc or cgroup controls will
-- * be red. It on its turn can be changed by writing on its own
-+ * be read. It on its turn can be changed by writing on its own
-  * control.
-  */
- struct dl_bandwidth {
--- 
-2.19.1
-
+greg k-h
