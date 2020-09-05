@@ -2,64 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7269D25E69D
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Sep 2020 10:53:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8755E25E6A7
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Sep 2020 11:16:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726653AbgIEIxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Sep 2020 04:53:39 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:34558 "EHLO huawei.com"
+        id S1728331AbgIEJQL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Sep 2020 05:16:11 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:52730 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726320AbgIEIxi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Sep 2020 04:53:38 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 2D783C827977FB1DA8A5;
-        Sat,  5 Sep 2020 16:53:36 +0800 (CST)
-Received: from huawei.com (10.175.113.133) by DGGEMS402-HUB.china.huawei.com
- (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Sat, 5 Sep 2020
- 16:53:35 +0800
-From:   Wang Hai <wanghai38@huawei.com>
-To:     <willemdebruijn.kernel@gmail.com>, <davem@davemloft.net>,
-        <kuba@kernel.org>, <willemb@google.com>,
-        <john.ogness@linutronix.de>, <maowenan@huawei.com>,
-        <jrosen@cisco.com>, <arnd@arndb.de>, <colin.king@canonical.com>,
-        <edumazet@google.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH net-next v2] net/packet: Remove unused macro BLOCK_PRIV
-Date:   Sat, 5 Sep 2020 16:50:58 +0800
-Message-ID: <20200905085058.68312-1-wanghai38@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726302AbgIEJQK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Sep 2020 05:16:10 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 349ED62A50FAD10BA682;
+        Sat,  5 Sep 2020 17:16:08 +0800 (CST)
+Received: from huawei.com (10.175.104.175) by DGGEMS414-HUB.china.huawei.com
+ (10.3.19.214) with Microsoft SMTP Server id 14.3.487.0; Sat, 5 Sep 2020
+ 17:16:00 +0800
+From:   Miaohe Lin <linmiaohe@huawei.com>
+To:     <davem@davemloft.net>, <steffen.klassert@secunet.com>,
+        <willemb@google.com>, <mstarovoitov@marvell.com>,
+        <kuba@kernel.org>, <mchehab+huawei@kernel.org>,
+        <antoine.tenart@bootlin.com>, <edumazet@google.com>,
+        <Jason@zx2c4.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linmiaohe@huawei.com>
+Subject: [PATCH] net: Fix some comments
+Date:   Sat, 5 Sep 2020 05:14:48 -0400
+Message-ID: <20200905091448.48165-1-linmiaohe@huawei.com>
+X-Mailer: git-send-email 2.19.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.113.133]
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.175]
 X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-BLOCK_PRIV is never used after it was introduced.
-So better to remove it.
+Since commit 8d7017fd621d ("blackhole_netdev: use blackhole_netdev to
+invalidate dst entries"), we use blackhole_netdev to invalidate dst entries
+instead of loopback device anymore. Also fix broken NETIF_F_HW_CSUM spell.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 ---
-v1->v2:
- Corrected the wrong comment
- net/packet/af_packet.c | 1 -
- 1 file changed, 1 deletion(-)
+ include/linux/netdev_features.h | 2 +-
+ net/core/dst.c                  | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/packet/af_packet.c b/net/packet/af_packet.c
-index da8254e680f9..c430672c6a67 100644
---- a/net/packet/af_packet.c
-+++ b/net/packet/af_packet.c
-@@ -177,7 +177,6 @@ static int packet_set_ring(struct sock *sk, union tpacket_req_u *req_u,
- #define BLOCK_LEN(x)		((x)->hdr.bh1.blk_len)
- #define BLOCK_SNUM(x)		((x)->hdr.bh1.seq_num)
- #define BLOCK_O2PRIV(x)	((x)->offset_to_priv)
--#define BLOCK_PRIV(x)		((void *)((char *)(x) + BLOCK_O2PRIV(x)))
+diff --git a/include/linux/netdev_features.h b/include/linux/netdev_features.h
+index 2cc3cf80b49a..0b17c4322b09 100644
+--- a/include/linux/netdev_features.h
++++ b/include/linux/netdev_features.h
+@@ -193,7 +193,7 @@ static inline int find_next_netdev_feature(u64 feature, unsigned long start)
+ #define NETIF_F_GSO_MASK	(__NETIF_F_BIT(NETIF_F_GSO_LAST + 1) - \
+ 		__NETIF_F_BIT(NETIF_F_GSO_SHIFT))
  
- struct packet_sock;
- static int tpacket_rcv(struct sk_buff *skb, struct net_device *dev,
+-/* List of IP checksum features. Note that NETIF_F_ HW_CSUM should not be
++/* List of IP checksum features. Note that NETIF_F_HW_CSUM should not be
+  * set in features when NETIF_F_IP_CSUM or NETIF_F_IPV6_CSUM are set--
+  * this would be contradictory
+  */
+diff --git a/net/core/dst.c b/net/core/dst.c
+index d6b6ced0d451..0c01bd8d9d81 100644
+--- a/net/core/dst.c
++++ b/net/core/dst.c
+@@ -144,7 +144,7 @@ static void dst_destroy_rcu(struct rcu_head *head)
+ 
+ /* Operations to mark dst as DEAD and clean up the net device referenced
+  * by dst:
+- * 1. put the dst under loopback interface and discard all tx/rx packets
++ * 1. put the dst under blackhole interface and discard all tx/rx packets
+  *    on this route.
+  * 2. release the net_device
+  * This function should be called when removing routes from the fib tree
 -- 
-2.17.1
+2.19.1
 
