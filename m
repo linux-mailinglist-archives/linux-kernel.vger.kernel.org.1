@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70EAD25EB69
+	by mail.lfdr.de (Postfix) with ESMTP id DF2A825EB6A
 	for <lists+linux-kernel@lfdr.de>; Sun,  6 Sep 2020 00:23:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728809AbgIEWXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Sep 2020 18:23:35 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:39119 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728739AbgIEWX0 (ORCPT
+        id S1728786AbgIEWXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Sep 2020 18:23:31 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:42781 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728740AbgIEWX1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Sep 2020 18:23:26 -0400
-Received: by mail-qt1-f195.google.com with SMTP id 92so7459557qtb.6
-        for <linux-kernel@vger.kernel.org>; Sat, 05 Sep 2020 15:23:25 -0700 (PDT)
+        Sat, 5 Sep 2020 18:23:27 -0400
+Received: by mail-qt1-f196.google.com with SMTP id y11so1381327qtn.9
+        for <linux-kernel@vger.kernel.org>; Sat, 05 Sep 2020 15:23:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=jfCbsJHJIpPjEZXsAp6VZMgqo72dfp1L92iresHikKM=;
-        b=As4O+ga6noQaFH0NSgM3ItSlOTZXnAvmtQfz6+E+p7ZZ9uu0XnsdLdAn2XlrMhAgVD
-         BCU68iv2jKjNl47+yIjgLotrEMgTffmnqmqsY9HRXgtQtwJBPbroqpxaIacWdEbptUmB
-         VXNs2feINrMmOVquTxGxk65hXIWLidprE86lYQbh5D8YDHJnzjQpq/GwqSJkBk1Tk5NB
-         8aijKglzZUq/MluBCF8K7Sk2lQsy29GDTPC8Wy0GS2t8W+3098EByTDVoXBuMj6jrlTF
-         4GPYBSR168WjGIFI/JOIt5PwT8upnWvztYxXxmDPtlZ7BfSmTPpX86eNYP2RjjwirrIy
-         RErg==
-X-Gm-Message-State: AOAM530O0XoYe9zCSkzlk2wLH4PAntCj4SnCKTNLIi64KO+nT/IXNP7u
-        1YSiaiTsykc3Psfc0xH4kiE=
-X-Google-Smtp-Source: ABdhPJzVD81zxPO2UpAvs991SlxhYf4d3DKLnCV3tv4lDxedNfxUd5GkRlVjATyD6g3yJL/bF+hB1Q==
-X-Received: by 2002:ac8:5b47:: with SMTP id n7mr15000945qtw.7.1599344605186;
+        bh=6VKPGQC771vLuZ22hJIQJu8j65qHx+zzwcv0HoMyALk=;
+        b=I6+9fHDPgvjARdka1ZNLOb4yQs5dtdlAb+Gbmg4H9dMQ0UXC14A/oFtw0JuHq6Ddwu
+         ggieAecZmqySH4515FPoram+iV6R+0gBMmaahV1RPucV/MjU2Y3J27D7MwojNWvF5Hdc
+         WSHlr/uBr+8zReTe7WljdpwMMsmZTwcTmW/Xg4X1DRpu+oT+qD8nsC/Kh7SE6bCE+L/r
+         zZFGYUNxAVn1LeFJ2LpUk2IZYiHKir2T5NSly9Cwep7FT/s125B3Sdz5r+PL1q9XYlZO
+         c0cY7DqqVRV2jVNE24CjRKoKuxkjKcWZFsJ9td8o8a5jEKrfBadq7/S5Mt4snbcplrfb
+         qi/A==
+X-Gm-Message-State: AOAM531Q3TNKZi5nQmw6fy4sPh/M8IlJy/6aiMRVbFdCpT9Xy69oLwGB
+        6tL1xkyqrkesw5SbtcBD05s=
+X-Google-Smtp-Source: ABdhPJy25YxLs8A/wyWC4Xxmny36u8p0zSKqAgwRY/X5KqPvAX3cTPnsmTAA8t+qP/sDCe7QIx04Ag==
+X-Received: by 2002:ac8:7650:: with SMTP id i16mr15068556qtr.268.1599344605851;
         Sat, 05 Sep 2020 15:23:25 -0700 (PDT)
 Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id n203sm7323886qke.66.2020.09.05.15.23.24
+        by smtp.gmail.com with ESMTPSA id n203sm7323886qke.66.2020.09.05.15.23.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 05 Sep 2020 15:23:24 -0700 (PDT)
+        Sat, 05 Sep 2020 15:23:25 -0700 (PDT)
 From:   Arvind Sankar <nivedita@alum.mit.edu>
 To:     x86@kernel.org, kasan-dev@googlegroups.com
 Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH 1/2] lib/string: Disable instrumentation
-Date:   Sat,  5 Sep 2020 18:23:22 -0400
-Message-Id: <20200905222323.1408968-2-nivedita@alum.mit.edu>
+Subject: [RFC PATCH 2/2] x86/cmdline: Use strscpy to initialize boot_command_line
+Date:   Sat,  5 Sep 2020 18:23:23 -0400
+Message-Id: <20200905222323.1408968-3-nivedita@alum.mit.edu>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200905222323.1408968-1-nivedita@alum.mit.edu>
 References: <20200905222323.1408968-1-nivedita@alum.mit.edu>
@@ -50,56 +50,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-String functions can be useful in early boot, but using instrumented
-versions can be problematic: eg on x86, some of the early boot code is
-executing out of an identity mapping rather than the kernel virtual
-addresses. Accessing any global variables at this point will lead to a
-crash.
+The x86 boot protocol requires the kernel command line to be a
+NUL-terminated string of length at most COMMAND_LINE_SIZE (including the
+terminating NUL). In case the bootloader messed up and the command line
+is too long (hence not NUL-terminated), use strscpy to copy the command
+line into boot_command_line. This ensures that boot_command_line is
+NUL-terminated, and it also avoids accessing beyond the actual end of
+the command line if it was properly NUL-terminated.
 
-Tracing and KCOV are already disabled, and CONFIG_AMD_MEM_ENCRYPT will
-additionally disable KASAN and stack protector.
-
-Additionally disable GCOV, UBSAN, KCSAN, STACKLEAK_PLUGIN and branch
-profiling, and make it unconditional to allow safe use of string
-functions.
+Note that setup_arch() will already force command_line to be
+NUL-terminated by using strlcpy(), as well as boot_command_line if a
+builtin command line is configured. If boot_command_line was not
+initially NUL-terminated, the strlen() inside of strlcpy()/strlcat()
+will run beyond boot_command_line, but this is almost certainly
+harmless in practice.
 
 Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
 ---
- lib/Makefile | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ arch/x86/kernel/head64.c  |  2 +-
+ arch/x86/kernel/head_32.S | 11 +++++------
+ 2 files changed, 6 insertions(+), 7 deletions(-)
 
-diff --git a/lib/Makefile b/lib/Makefile
-index a4a4c6864f51..5e421769bbc6 100644
---- a/lib/Makefile
-+++ b/lib/Makefile
-@@ -8,7 +8,6 @@ ccflags-remove-$(CONFIG_FUNCTION_TRACER) += $(CC_FLAGS_FTRACE)
- # These files are disabled because they produce lots of non-interesting and/or
- # flaky coverage that is not a function of syscall inputs. For example,
- # rbtree can be global and individual rotations don't correlate with inputs.
--KCOV_INSTRUMENT_string.o := n
- KCOV_INSTRUMENT_rbtree.o := n
- KCOV_INSTRUMENT_list_debug.o := n
- KCOV_INSTRUMENT_debugobjects.o := n
-@@ -20,12 +19,16 @@ KCOV_INSTRUMENT_fault-inject.o := n
- # them into calls to themselves.
- CFLAGS_string.o := -ffreestanding
+diff --git a/arch/x86/kernel/head64.c b/arch/x86/kernel/head64.c
+index cbb71c1b574f..740dd05b9462 100644
+--- a/arch/x86/kernel/head64.c
++++ b/arch/x86/kernel/head64.c
+@@ -410,7 +410,7 @@ static void __init copy_bootdata(char *real_mode_data)
+ 	cmd_line_ptr = get_cmd_line_ptr();
+ 	if (cmd_line_ptr) {
+ 		command_line = __va(cmd_line_ptr);
+-		memcpy(boot_command_line, command_line, COMMAND_LINE_SIZE);
++		strscpy(boot_command_line, command_line, COMMAND_LINE_SIZE);
+ 	}
  
--# Early boot use of cmdline, don't instrument it
--ifdef CONFIG_AMD_MEM_ENCRYPT
-+# Early boot use of string functions, disable instrumentation
-+GCOV_PROFILE_string.o := n
-+KCOV_INSTRUMENT_string.o := n
- KASAN_SANITIZE_string.o := n
-+UBSAN_SANITIZE_string.o := n
-+KCSAN_SANITIZE_string.o := n
+ 	/*
+diff --git a/arch/x86/kernel/head_32.S b/arch/x86/kernel/head_32.S
+index 7ed84c282233..2a7ced159d6b 100644
+--- a/arch/x86/kernel/head_32.S
++++ b/arch/x86/kernel/head_32.S
+@@ -102,13 +102,12 @@ SYM_CODE_START(startup_32)
+ 	cld
+ 	rep
+ 	movsl
+-	movl pa(boot_params) + NEW_CL_POINTER,%esi
+-	andl %esi,%esi
++	movl pa(boot_params) + NEW_CL_POINTER,%edx
++	testl %edx,%edx
+ 	jz 1f			# No command line
+-	movl $pa(boot_command_line),%edi
+-	movl $(COMMAND_LINE_SIZE/4),%ecx
+-	rep
+-	movsl
++	movl $pa(boot_command_line),%eax
++	movl $COMMAND_LINE_SIZE,%ecx
++	call strscpy
+ 1:
  
- CFLAGS_string.o += -fno-stack-protector
--endif
-+CFLAGS_string.o += $(DISABLE_STACKLEAK_PLUGIN)
-+CFLAGS_string.o += -DDISABLE_BRANCH_PROFILING
- 
- # Used by KCSAN while enabled, avoid recursion.
- KCSAN_SANITIZE_random32.o := n
+ #ifdef CONFIG_OLPC
 -- 
 2.26.2
 
