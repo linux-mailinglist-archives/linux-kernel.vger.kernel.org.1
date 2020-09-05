@@ -2,97 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16D1425E5E8
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Sep 2020 09:11:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DDA325E5ED
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Sep 2020 09:15:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726456AbgIEHLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Sep 2020 03:11:31 -0400
-Received: from sonic306-1.consmr.mail.bf2.yahoo.com ([74.6.132.40]:32903 "EHLO
-        sonic306-1.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725818AbgIEHL3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Sep 2020 03:11:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1599289887; bh=+NKq2YP/4c3bLm2HmGhxa/KCZOXr0NIUKHs/ECuC0yk=; h=Date:From:Reply-To:Subject:References:From:Subject; b=irC+/cd2pOYWXMaFgVBDOrKlH0jgbyXYVyQZjSSa36SnxYqTRopObrr8aBZsRLsIV6hhHuZAjtGMQPEfa1vgSIqnFCpKvOF1AXC3nS8MfKH2/CTTmiHE4HTmNEgzLCNoDGwnvEvfXWn2uBJGCKOI2Aj8D3z8yPf2i5ybaQtbZomCadGhRJYpbN6CH+TwJeFqG9i0L0P66CJfI8CrrBpfW2Br76QK9tb1mR12pzSbqA5H+J0mzJNYriu6fT7h06QW152jAVCJW/GmhDhCizLcID0uFjFPrSdXLvQM3sLOiEvI0B6dV7M3dcLUVB8XNa6rdY4p3K8PjYxbxZw5GgymUg==
-X-YMail-OSG: 6XGF8I4VM1lS6S4o9sfSl_ZXPglQXqj34UVRP2gkOQrcViIeaT13M6h9CdDRY8L
- CvW3QxOW6H7hWxrGo.6azsruJSzz8G350WPODVyIF16qaP2bpTRg1.kklWnBAZ_fqFJdtAa6Jojj
- wGefdRo_Qj6ZBHKNHQ5fuMLBEVE3gxkFDnU6YUWiTR8I3nQLVGjCZdnVjh38iBf2F9Zd3bl4WcNV
- kj7zyQ.mOuRenmxNZa4ZKe8dkBVgAZNkpvZb3xWCCtiRB98UMzUG6ItVQ0Iapn93KPpfgSAYC_nO
- YPsyxU4m2mXUHTV8BhVbyGz05I1oV3GW59fWCk5A0.4QC7CsmP2CovNXgPmHAENX49.7UJp32P7Z
- TLtXSjc3Ig1MQ0xsADGj0hBTSclvHtvzJss5TTKj6jhI2tPWHoSZyJvwmVzvZ21RtLdxFO18gfR5
- Rq1IOLoU7RwsLoSGnB6wUCxQJAlfLSxm9S8FWV03_EeIbYXULbgJ8iHNJNv.3MFnLdE8vBQEa9_7
- tC.._wi21oZFknX5o8UGCI1Z9.y71h0a737NSE_N558dXKP3KEaBnAB4FQ_efTXV8Pu8hX2r9Ix8
- vrJZ6CzLW3mTq0_eRWUbQ508Fe5SFhJwUevPaoNN8P2xzLpvsJe91kWjlcMBSp8YIjVLgWdRYKkJ
- DXPJrbXrftsCI9EdKm8tVR8azwK372VG9i6iXzSAQi09lDrTUaibSKFfV.x3LBFZphCy_wP.PygG
- KRWmnNngEELlrmzyVwmazjdgR.Q_B53fFdscjQQ6B.eiW_ftHjKLbButaOhG4xqoMsNRf47e3ujC
- enyiZ6LA3wuoxxZG4MXqSbQgci7Q_NMnLM7xG83dnE_Y_crOh9APw9Yk447OkTJPespYFTkjS9pe
- DMtsjiBAHeV_K1Hdvs1LaLLtzp_B_QfFhjL2NWZjIfB7gV8_o5VO6IKT0RIX6.4zu8zJvG5plwms
- c3KuRk81qcRGZhise32LXiLtUgHViQKi2Ng7pvUkdOAfTIgIDnY1_nYXGehK0gAy2q2xS39kEFVf
- R9QDpnq3h2yZpBqhJ9hZCGnYkMWczMjxjo.So4dcbdPdthcln3cSDw8.qhTTyhkdLmhQhraekUww
- BJXtmc4GBHSB2qwn0gN2kxNiu8xtIhO5exACnUAieY8Ivvk.dIw9WpYLQRVLkAzX_bU9aUxHUrZn
- wgrv099lH0pMiXgquaWfeO.3jH3RUFuwxobhDv.qzKKHo1HxnSCPpN2Tgh7.fLG3culwJwRLhbSk
- BdZ4hsyT2hjR3qkILHLDGGYb.ZMNirLc_E1PGa_5.Rgo8D5SOSyjx_HJnxGrZZ35K0yRezBrXVKn
- GD8W4GuPYTo1XNwbNkeo81FGVIC2XcBUM8qgWu_CnojFQKKz0ZuZJiff3F8ArwWRMbv2yuH3_hQ6
- vS3EPGbzchzscXVbcb8wP2tVb07Y08BLiC8ArKpN88utrgDmhwpEkSQ--
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic306.consmr.mail.bf2.yahoo.com with HTTP; Sat, 5 Sep 2020 07:11:27 +0000
-Date:   Sat, 5 Sep 2020 07:11:25 +0000 (UTC)
-From:   "Mrs. Mina A. Brunel" <mrs.minaaaliyahbrunel0001@gmail.com>
-Reply-To: mrsminaabrunel@myself.com
-Message-ID: <1468514772.2614553.1599289885483@mail.yahoo.com>
-Subject: My Dear in the lord
+        id S1726597AbgIEHPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Sep 2020 03:15:05 -0400
+Received: from mail-dm6nam12on2070.outbound.protection.outlook.com ([40.107.243.70]:28480
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725818AbgIEHPD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Sep 2020 03:15:03 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=V+/LrW/OZL5LC3DVZwz/ec2C6VIgMcFIDyqO9fS1pIWxjMydznCp1FUlIF5TbxBlqtEDNvjpJj8UfT5cdGhLnE5/OhLSsyvfecpk3lix70m+OZ9F2kb/MCXKCWuimMn7AMRD2P6laT0p1NsVHQsN0iOB+EkiKbeSdpLQv8OoaCxWFwg8XzO8x6r22Txnt/5cPzR37B6MpUyqvazVIw4h1BEkJ6xm4i0TW8IIOlN9B6sopBLupqpAcgLGEmGMpeCociklqYpUZrAxJ8Pzrqn9kMJ0ejlJykZVbO7fB9elaEOx5e8jHU4BPn4wQrprlLTKat98wRReTwvUK8C2ISkQ6Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=AMYI/7IBgDn1aTWi3oacH+aF+elap3W2C5YqHBlrrRk=;
+ b=K9S6IVat2/bhUgLT3o4gMiG3AM+D07PRzayCPjfa5G2BkjtcFsnU8GLi7gKA1s+CJfy1iD9uPRdleRWGF9/npvL5sKknlj0Bv4VxZ5Zs6D+3uz8xh3f4UlxIV+W0SLwZ/CAdKA7rmZvOAr/8iM1b2MUmVUX8zL2wHWIH/EGTCNr8u4moyTqW/5A0z0vxNYtggBqUNwUoPs0OLd002gShNGRVctOpFWSniu4TAYOr85zCOlRbWGXiRE8kIBbbOutZsBAStETtlu2BJujU5JBmFOXUzu/1rYyYquYsW1den5lf8hD1JrUaACEPrrrl1AWjyQyI/bCdRxmx4OW50vTstg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=sina.com smtp.mailfrom=srdcmail.amd.com;
+ dmarc=permerror action=none header.from=amd.com; dkim=none (message not
+ signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=AMYI/7IBgDn1aTWi3oacH+aF+elap3W2C5YqHBlrrRk=;
+ b=tKCwmOelqr1ixsr0q0+5esCLIgmeuesaZn9f/xMYXbYFmrf7UD03jkon2GTRnmsfc4+SPF5efIkkw5ekC20AhevH0X7zmwmmn+5QY9Zi3iPKEioDcrh3HVlLnVFtfHT7BYKDEvKrL0is1Gp5FxqJm82inPS7zdTWjJm2ojjXry0=
+Received: from BN6PR10CA0042.namprd10.prod.outlook.com (2603:10b6:404:109::28)
+ by MN2PR12MB3519.namprd12.prod.outlook.com (2603:10b6:208:107::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.17; Sat, 5 Sep
+ 2020 07:14:57 +0000
+Received: from BN8NAM11FT063.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:404:109:cafe::6b) by BN6PR10CA0042.outlook.office365.com
+ (2603:10b6:404:109::28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.15 via Frontend
+ Transport; Sat, 5 Sep 2020 07:14:57 +0000
+X-MS-Exchange-Authentication-Results: spf=none (sender IP is 165.204.84.17)
+ smtp.mailfrom=srdcmail.amd.com; sina.com; dkim=none (message not signed)
+ header.d=none;sina.com; dmarc=permerror action=none header.from=amd.com;
+Received-SPF: None (protection.outlook.com: srdcmail.amd.com does not
+ designate permitted sender hosts)
+Received: from SATLEXMB02.amd.com (165.204.84.17) by
+ BN8NAM11FT063.mail.protection.outlook.com (10.13.177.110) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.3326.19 via Frontend Transport; Sat, 5 Sep 2020 07:14:55 +0000
+Received: from SATLEXMB02.amd.com (10.181.40.143) by SATLEXMB02.amd.com
+ (10.181.40.143) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Sat, 5 Sep 2020
+ 02:14:54 -0500
+Received: from atlvmail01.amd.com (10.180.10.61) by SATLEXMB02.amd.com
+ (10.181.40.143) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3 via Frontend
+ Transport; Sat, 5 Sep 2020 02:14:54 -0500
+Received: from srdcmail.amd.com (srdcmail.amd.com [10.237.16.23])
+        by atlvmail01.amd.com (8.14.4/8.14.4) with ESMTP id 0857Eqrb012120;
+        Sat, 5 Sep 2020 03:14:53 -0400
+Received: from srdcws1054.amd.com (srdcws1054.amd.com [10.66.16.34])
+        by srdcmail.amd.com (8.13.8/8.13.8) with ESMTP id 0857Emfw008832;
+        Sat, 5 Sep 2020 15:14:48 +0800
+Received: (from weisheng@localhost)
+        by srdcws1054.amd.com (8.14.7/8.14.7/Submit) id 0857EkwK020256;
+        Sat, 5 Sep 2020 15:14:46 +0800
+From:   Wesley Sheng <wesley.sheng@amd.com>
+To:     <joro@8bytes.org>, <iommu@lists.linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <wesleyshenggit@sina.com>, Wesley Sheng <wesley.sheng@amd.com>
+Subject: [PATCH] iommu/amd: Add prefetch iommu pages command build function
+Date:   Sat, 5 Sep 2020 15:14:20 +0800
+Message-ID: <20200905071420.20190-1-wesley.sheng@amd.com>
+X-Mailer: git-send-email 2.16.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-References: <1468514772.2614553.1599289885483.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16565 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:80.0) Gecko/20100101 Firefox/80.0
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 1deb7a25-b5dc-49ea-0500-08d8516b642c
+X-MS-TrafficTypeDiagnostic: MN2PR12MB3519:
+X-Microsoft-Antispam-PRVS: <MN2PR12MB3519484C8B6F3BDEF1C311ECF02A0@MN2PR12MB3519.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1850;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: zel1pj96iJF/B9C+xqa+aTmiCAekOiVyaD+ScFOzfEDCeTwbTs/2aTo9OlB28Dohw9/fMOyvmKj4kpgihBeDjZeq7LBO/oSvuIuTbIgGhQrlVpsxK32QDqmx9Yb2QjL/pK2tQbbk/BZch+pQbq8hLD3YztfmcU93gWQ5ODFT7qisCRHKguZeMD+DiooxgYLecCpvnEoeVbZao6uoI8YMmzu0Fd2pXZQwWZ5tvBWP2cSgDNkmo2jl69KjeQr69bhQTfAueeR7vibjs8i2uV5NyIV3E30/6HO6WCtHMKtW8fBaHznLLxpLV5PFbhnDT3t1PkFUOTc3fsWGYMSkc425Xfbv/bjV+AYfCbKuh9A/C2+zc7B+VeOLdjLTDDZtBQDp6gTIi9uY/KfDZOzSsGeQMg==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SATLEXMB02.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(396003)(136003)(346002)(39860400002)(376002)(46966005)(42186006)(4326008)(54906003)(110136005)(6666004)(5660300002)(1076003)(498600001)(26005)(316002)(44832011)(70206006)(70586007)(2616005)(336012)(426003)(8676002)(82310400003)(8936002)(356005)(82740400003)(47076004)(81166007)(2906002)(36756003)(83170400001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Sep 2020 07:14:55.6442
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1deb7a25-b5dc-49ea-0500-08d8516b642c
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB02.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT063.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB3519
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add function to build prefetch iommu pages command
 
+Signed-off-by: Wesley Sheng <wesley.sheng@amd.com>
+---
+ drivers/iommu/amd/amd_iommu_types.h |  2 ++
+ drivers/iommu/amd/iommu.c           | 19 +++++++++++++++++++
+ 2 files changed, 21 insertions(+)
 
-My Dear in the lord
+diff --git a/drivers/iommu/amd/amd_iommu_types.h b/drivers/iommu/amd/amd_iommu_types.h
+index baa31cd2411c..73734a0c4679 100644
+--- a/drivers/iommu/amd/amd_iommu_types.h
++++ b/drivers/iommu/amd/amd_iommu_types.h
+@@ -173,6 +173,7 @@
+ #define CMD_INV_IOMMU_PAGES	0x03
+ #define CMD_INV_IOTLB_PAGES	0x04
+ #define CMD_INV_IRT		0x05
++#define CMD_PF_IOMMU_PAGES	0x06
+ #define CMD_COMPLETE_PPR	0x07
+ #define CMD_INV_ALL		0x08
+ 
+@@ -181,6 +182,7 @@
+ #define CMD_INV_IOMMU_PAGES_SIZE_MASK	0x01
+ #define CMD_INV_IOMMU_PAGES_PDE_MASK	0x02
+ #define CMD_INV_IOMMU_PAGES_GN_MASK	0x04
++#define CMD_PF_IOMMU_PAGES_INV_MASK	0x10
+ 
+ #define PPR_STATUS_MASK			0xf
+ #define PPR_STATUS_SHIFT		12
+diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
+index ba9f3dbc5b94..b3971595b0e9 100644
+--- a/drivers/iommu/amd/iommu.c
++++ b/drivers/iommu/amd/iommu.c
+@@ -976,6 +976,25 @@ static void build_inv_irt(struct iommu_cmd *cmd, u16 devid)
+ 	CMD_SET_TYPE(cmd, CMD_INV_IRT);
+ }
+ 
++static void build_pf_iommu_pages(struct iommu_cmd *cmd, u64 address,
++					u16 devid, int pfcnt, bool size,
++					bool inv)
++{
++	memset(cmd, 0, sizeof(*cmd));
++
++	address &= PAGE_MASK;
++
++	cmd->data[0]  = devid;
++	cmd->data[0] |= (pfcnt & 0xff) << 24;
++	cmd->data[2]  = lower_32_bits(address);
++	cmd->data[3]  = upper_32_bits(address;
++	if (size)
++		cmd->data[2] |= CMD_INV_IOMMU_PAGES_SIZE_MASK;
++	if (inv)
++		cmd->data[2] |= CMD_PF_IOMMU_PAGES_INV_MASK;
++	CMD_SET_TYPE(cmd, CMD_PF_IOMMU_PAGES);
++}
++
+ /*
+  * Writes the command to the IOMMUs command buffer and informs the
+  * hardware about the new command.
+-- 
+2.16.2
 
-
-My name is Mrs. Mina A. Brunel I am a Norway Citizen who is living in Burki=
-na Faso, I am married to Mr. Brunel Patrice, a politician who owns a small =
-gold company in Burkina Faso; He died of Leprosy and Radesyge, in the year =
-February 2010, During his lifetime he deposited the sum of =E2=82=AC 8.5 Mi=
-llion Euro) Eight million, Five hundred thousand Euros in a bank in Ouagado=
-ugou the capital city of Burkina Faso in West Africa. The money was from th=
-e sale of his company and death benefits payment and entitlements of my dec=
-eased husband by his company.
-
-I am sending you this message with heavy tears in my eyes and great sorrow =
-in my heart, and also praying that it will reach you in good health because=
- I am not in good health, I sleep every night without knowing if I may be a=
-live to see the next day. I am suffering from long time cancer and presentl=
-y I am partially suffering from Leprosy, which has become difficult for me =
-to move around. I was married to my late husband for more than 6 years with=
-out having a child and my doctor confided that I have less chance to live, =
-having to know when the cup of death will come, I decided to contact you to=
- claim the fund since I don't have any relation I grew up from an orphanage=
- home.
-
-I have decided to donate this money for the support of helping Motherless b=
-abies/Less privileged/Widows and churches also to build the house of God be=
-cause I am dying and diagnosed with cancer for about 3 years ago. I have de=
-cided to donate from what I have inherited from my late husband to you for =
-the good work of Almighty God; I will be going in for an operation surgery =
-soon.
-
-Now I want you to stand as my next of kin to claim the funds for charity pu=
-rposes. Because of this money remains unclaimed after my death, the bank ex=
-ecutives or the government will take the money as unclaimed fund and maybe =
-use it for selfishness and worthless ventures, I need a very honest person =
-who can claim this money and use it for Charity works, for orphanages, wido=
-ws and also build schools and churches for less privilege that will be name=
-d after my late husband and my name.
-
-I need your urgent answer to know if you will be able to execute this proje=
-ct, and I will give you more information on how the fund will be transferre=
-d to your bank account or online banking.
-
-Thanks
-Mrs. Mina A. Brunel
