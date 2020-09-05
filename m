@@ -2,149 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BDFB25E5A8
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Sep 2020 08:04:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEA7025E5B0
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Sep 2020 08:13:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726582AbgIEGEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Sep 2020 02:04:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34418 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726302AbgIEGEh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Sep 2020 02:04:37 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 260A3C061244
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 23:04:37 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id 7so5387314pgm.11
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 23:04:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+N5fopK2fadGjRXyoImn8Tt1p4TzHbOsZlKc73Tq7SQ=;
-        b=ld67UrrjZcLMg3MDR9GurkEbZDHAbxiOuFIi8QEKjwUmeoFFmf76XFQHbPK/xQHoBJ
-         5qfzQq8YdJA3RavOltq+AcGDAJfJ4sJl739sDaAh+TyUZvZihPJPbB5tfjqN+CDMyegT
-         n4hHTVaCnOyuUaPxCOLWy4ymjAjexH7pwSlmm7Vc+OlJGGr6q+jr+HxlnKT4IpwWFP/2
-         Nm1TdcPuvjmPOoFXKcikIZp5rgNcSH9M3rjp6AYnN73dbmEaTHkvBnQVvXkp8zi36ch2
-         cLAuSXZxpWqdxzvtPd35R4JXWe3JK9khiEqmtZaa0QpDqowBk2ZMSBB97s4zUO/waa/H
-         r3hQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+N5fopK2fadGjRXyoImn8Tt1p4TzHbOsZlKc73Tq7SQ=;
-        b=l18zpCVjB0vxsPsEHWtZkO5H00XiwF7EsuiLWajfm5ztxXzmO9G25t+4LuDWoFicjJ
-         KLq+jLNYM/c7ernV+tUGvBXgD6DEWNtQbwsUaOH3+BT9zsvcgQZABXE+CaYXwzh2DRZM
-         xualCPEHhFvD3BlXNoDPuCNA4odgRZYvS6KlkDZTkVMXPb5PhqUMX7NndMHYYTVljAZO
-         aOjHTiumC+T+Id8ofObB+ZMk7U7DZ8pIdENxIo1rGN1OMXSsjRBfbjkpwIJLmnahDeH1
-         1ocJDnGjanItVgvZdKtrfpcYA3ygQoSGkXJtfKIuzetY05zz9G14dpvPyOKSN/5AA76E
-         W24g==
-X-Gm-Message-State: AOAM531XSKZD4fdJYfahlgVKM9U+J/JXqA7s0w2EnehU3c8Oq44w5Rup
-        XYgQhwOd5EDMH3SNYH3OhQTSXg==
-X-Google-Smtp-Source: ABdhPJw+8Kxoak1cDEggyclA0c7eAfZuR8igs4Z76HOl2PcFFW8FbWLu0LVt81gMNvYh4wgsEow+wA==
-X-Received: by 2002:a63:1323:: with SMTP id i35mr9483599pgl.41.1599285871728;
-        Fri, 04 Sep 2020 23:04:31 -0700 (PDT)
-Received: from localhost.localdomain ([103.136.220.68])
-        by smtp.gmail.com with ESMTPSA id 190sm8781306pfy.22.2020.09.04.23.04.28
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 04 Sep 2020 23:04:31 -0700 (PDT)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     rostedt@goodmis.org, mingo@kernel.org, tglx@linutronix.de,
-        peterz@infradead.org, will@kernel.org, romain.perier@gmail.com
-Cc:     linux-kernel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH] tasklet: Introduce tasklet tracepoints
-Date:   Sat,  5 Sep 2020 14:04:12 +0800
-Message-Id: <20200905060412.88560-1-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
+        id S1726948AbgIEGNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Sep 2020 02:13:54 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:10818 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726596AbgIEGNt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Sep 2020 02:13:49 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id C86D6B3233B13E01E560;
+        Sat,  5 Sep 2020 14:13:44 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.487.0; Sat, 5 Sep 2020 14:13:37 +0800
+From:   Huazhong Tan <tanhuazhong@huawei.com>
+To:     <davem@davemloft.net>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <salil.mehta@huawei.com>, <yisen.zhuang@huawei.com>,
+        <linuxarm@huawei.com>, <kuba@kernel.org>,
+        Huazhong Tan <tanhuazhong@huawei.com>
+Subject: [PATCH net-next 0/2] net: two updates related to UDP GSO
+Date:   Sat, 5 Sep 2020 14:11:11 +0800
+Message-ID: <1599286273-26553-1-git-send-email-tanhuazhong@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce tracepoints for tasklets just like softirq does. In this case,
-we can calculate tasklet latency and know what tasklet run.
+There are two updates relates to UDP GSO.
+#1 adds a new GSO type for UDPv6
+#2 adds check for UDP GSO when csum is disable in netdev_fix_features().
 
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
----
- include/trace/events/irq.h | 44 ++++++++++++++++++++++++++++++++++++++
- kernel/softirq.c           |  2 ++
- 2 files changed, 46 insertions(+)
+Changes since RFC V2:
+- modifies the timing of setting UDP GSO type when doing UDP GRO in #1.
 
-diff --git a/include/trace/events/irq.h b/include/trace/events/irq.h
-index eeceafaaea4c..69a16f3a21c2 100644
---- a/include/trace/events/irq.h
-+++ b/include/trace/events/irq.h
-@@ -160,6 +160,50 @@ DEFINE_EVENT(softirq, softirq_raise,
- 	TP_ARGS(vec_nr)
- );
- 
-+DECLARE_EVENT_CLASS(tasklet,
-+
-+	TP_PROTO(struct tasklet_struct *t),
-+
-+	TP_ARGS(t),
-+
-+	TP_STRUCT__entry(
-+		__field(	void *,	callback	)
-+	),
-+
-+	TP_fast_assign(
-+		__entry->callback = t->callback;
-+	),
-+
-+	TP_printk("callback=%ps", __entry->callback)
-+);
-+
-+/**
-+ * tasklet_entry - called immediately before the tasklet handler
-+ * @t: pointer to struct tasklet_struct
-+ *
-+ * When used in combination with the tasklet_exit tracepoint
-+ * we can determine the tasklet handler routine.
-+ */
-+DEFINE_EVENT(tasklet, tasklet_entry,
-+
-+	TP_PROTO(struct tasklet_struct *t),
-+
-+	TP_ARGS(t)
-+);
-+
-+/**
-+ * tasklet_exit - called immediately after the tasklet handler returns
-+ * @t: pointer to struct tasklet_struct
-+ *
-+ * When used in combination with the tasklet_entry tracepoint
-+ * we can determine the tasklet handler routine.
-+ */
-+DEFINE_EVENT(tasklet, tasklet_exit,
-+
-+	TP_PROTO(struct tasklet_struct *t),
-+
-+	TP_ARGS(t)
-+);
- #endif /*  _TRACE_IRQ_H */
- 
- /* This part must be outside protection */
-diff --git a/kernel/softirq.c b/kernel/softirq.c
-index bf88d7f62433..0f9f5b2cc3d3 100644
---- a/kernel/softirq.c
-+++ b/kernel/softirq.c
-@@ -553,10 +553,12 @@ static void tasklet_action_common(struct softirq_action *a,
- 				if (!test_and_clear_bit(TASKLET_STATE_SCHED,
- 							&t->state))
- 					BUG();
-+				trace_tasklet_entry(t);
- 				if (t->use_callback)
- 					t->callback(t);
- 				else
- 					t->func(t->data);
-+				trace_tasklet_exit(t);
- 				tasklet_unlock(t);
- 				continue;
- 			}
+Changes since RFC V1:
+- updates NETIF_F_GSO_LAST suggested by Willem de Bruijn.
+  and add NETIF_F_GSO_UDPV6_L4 feature for each driver who support UDP GSO in #1.
+  - add #2 who needs #1.
+
+previous version:
+RFC V2: https://lore.kernel.org/netdev/1599143659-62176-1-git-send-email-tanhuazhong@huawei.com/
+RFC V1: https://lore.kernel.org/netdev/1599048911-7923-1-git-send-email-tanhuazhong@huawei.com/
+
+Huazhong Tan (2):
+  udp: add a GSO type for UDPv6
+  net: disable UDP GSO features when CSUM is disable
+
+ drivers/net/bonding/bond_main.c                         |  4 +++-
+ drivers/net/ethernet/aquantia/atlantic/aq_nic.c         |  3 ++-
+ .../net/ethernet/aquantia/atlantic/hw_atl/hw_atl_b0.c   |  1 +
+ .../net/ethernet/aquantia/atlantic/hw_atl2/hw_atl2.c    |  1 +
+ drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c         |  2 +-
+ drivers/net/ethernet/chelsio/cxgb4/sge.c                | 17 ++++++++---------
+ drivers/net/ethernet/intel/i40e/i40e_main.c             |  1 +
+ drivers/net/ethernet/intel/i40e/i40e_txrx.c             |  2 +-
+ drivers/net/ethernet/intel/ice/ice_main.c               |  3 ++-
+ drivers/net/ethernet/intel/ice/ice_txrx.c               |  2 +-
+ drivers/net/ethernet/intel/igb/igb_main.c               |  9 ++++++---
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c           |  9 ++++++---
+ .../net/ethernet/marvell/octeontx2/nic/otx2_common.c    |  2 +-
+ drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c    |  2 +-
+ drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c  |  2 +-
+ drivers/net/ethernet/marvell/octeontx2/nic/otx2_vf.c    |  2 +-
+ .../net/ethernet/mellanox/mlx5/core/en_accel/en_accel.h |  2 +-
+ drivers/net/ethernet/mellanox/mlx5/core/en_main.c       |  9 ++++++---
+ drivers/net/ethernet/mellanox/mlx5/core/en_tx.c         |  2 +-
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c       | 11 +++++++----
+ drivers/net/team/team.c                                 |  5 +++--
+ include/linux/netdev_features.h                         |  4 +++-
+ include/linux/netdevice.h                               |  1 +
+ include/linux/skbuff.h                                  |  8 ++++++++
+ include/linux/udp.h                                     |  4 ++--
+ net/core/dev.c                                          | 12 ++++++++++++
+ net/core/filter.c                                       |  6 ++----
+ net/core/skbuff.c                                       |  2 +-
+ net/ethtool/common.c                                    |  1 +
+ net/ipv6/udp.c                                          |  2 +-
+ net/ipv6/udp_offload.c                                  |  6 +++---
+ 31 files changed, 89 insertions(+), 48 deletions(-)
+
 -- 
-2.20.1
+2.7.4
 
