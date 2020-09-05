@@ -2,60 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82C2A25E87B
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Sep 2020 16:47:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C93325E890
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Sep 2020 17:10:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728724AbgIEOri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Sep 2020 10:47:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726302AbgIEOrc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Sep 2020 10:47:32 -0400
-Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A12DC061244
-        for <linux-kernel@vger.kernel.org>; Sat,  5 Sep 2020 07:47:31 -0700 (PDT)
-Received: by mail-oo1-xc41.google.com with SMTP id h9so2309524ooo.10
-        for <linux-kernel@vger.kernel.org>; Sat, 05 Sep 2020 07:47:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
-        b=cE15RE8VGxXIzXI5uBa4PVAA6I3fuiBZ37wyl4n4biAHncRoxjA7omRfRiChnValQG
-         145sBNP+e+tGZ5ZFn/3CgloFnmcvRJ8UQ1ZTI8kKwCNLINe6j8+UjoL6jp9o9mNXiyJP
-         gqJ8PJ8Nj03XFrdLPkZZOLF/RZkjv9IE3m5nIXlTwF3NF9OrHw62QpJSyVfvRkv1h/Ew
-         sCwSObtjTNWuNM2Vg/ikSR8O8XzEm3OL7rzU8ZKu95m5xC7CdhvoGI0FfImt6X3tXHWk
-         E5uENxNl7efv6hEsHbVZvrKGu+wQ4C+S3nGMEpYgiz7jywx4i3EDQUZuJ/gcAJDNzZJc
-         hlTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
-        b=pfjAsA+TVinFXB96exvz83eKTf0L4uLVcZzP79LAEbmiPFNlFFh7ji4L7fSzKK663t
-         NLPgP6hVcHY8PJIg4yDbO51qM/P66cjpKcJ0gPiLy2GOcXAc3osLtZL5hMPH0HldR3AM
-         an2pwxSabBBiBJ+DJYseIOxVWtz5J2HokGvHETCcM4SMTqWYyJRgMHfGWGvc4vHNXk6V
-         KWDLKqCkkRqt27DchUP+uFMfbO/pvqEoSdb4PY1rIiJm5H3S8bl1p/0r6q2Gv7yVw60W
-         9jWCk9QKP9PBHt9QxjA75eNbSmYM0gUFQkDQob5i8J9buHbq2xkXB4l8UgXpN7s0n6Sg
-         NnIw==
-X-Gm-Message-State: AOAM533K8h2Z9oZicXKQfW8iS3aKqy7YMivNmHq8LBdCtpKih073UobZ
-        zowIMsQhqNuHlzRU3fbaJReDqcx+Hiuw83qGMLA=
-X-Google-Smtp-Source: ABdhPJwCEUs522hGnpDNln4/RJS2q5H3xxTni3krjyjUAC0tFpweNKZ3YWAqeMlQaeZyVc8vYbAi9W8C58sRUirFwks=
-X-Received: by 2002:a4a:cf0a:: with SMTP id l10mr9433469oos.47.1599317247443;
- Sat, 05 Sep 2020 07:47:27 -0700 (PDT)
+        id S1726468AbgIEPKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Sep 2020 11:10:44 -0400
+Received: from mout.gmx.net ([212.227.17.22]:50047 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726185AbgIEPKn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Sep 2020 11:10:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1599318628;
+        bh=fYLT42DRAjLGx4SOUkR0adm7dHZTNx1Xf2WMoFCeuKk=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=M7FlobI0lYis+I4ffNGid+M7LxUwAzYemKuG+Ckb18xCBEvgzocHTJtKzU2M9MNYx
+         MELyLM9kMQm1q+YA1JQRa5fOwERaMIqjcv8bhWhuAxEVTTeFmFRL9Xpq7bxmcoTTO9
+         zMml7NR2+4EqDaekplv5I29C3dePPHVO+Nkpp7tU=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from longitude ([5.146.195.151]) by mail.gmx.com (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1Mf0BG-1kktWI2kaw-00gXq6; Sat, 05
+ Sep 2020 17:10:28 +0200
+From:   =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+To:     linux-clk@vger.kernel.org
+Cc:     =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Abel Vesa <abel.vesa@nxp.com>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] clk: imx: gate2: Fix a few typos
+Date:   Sat,  5 Sep 2020 17:10:16 +0200
+Message-Id: <20200905151017.1086353-1-j.neuschaefer@gmx.net>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Received: by 2002:a4a:48c6:0:0:0:0:0 with HTTP; Sat, 5 Sep 2020 07:47:27 -0700 (PDT)
-Reply-To: hananahmad4u@outlook.com
-From:   Hanan Ahmad <viviengnamavo@gmail.com>
-Date:   Sat, 5 Sep 2020 15:47:27 +0100
-Message-ID: <CAGutT4V4oAhOaYe+7trbn-SWBpO72BNGUS7aDjM9w7bOpfAiVQ@mail.gmail.com>
-Subject: =?UTF-8?Q?Hej_s=C3=A5g_du_mitt_meddelande_som_jag_skickade_till_di?=
-        =?UTF-8?Q?g=3F?=
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:DvrplQMA109kQN0Whs6f25qs5lwi7GOqTpyuGc6sGt0K5Hs6qzM
+ fxqXbZj5znIN3zZJlZuR7pPef87/hP+dg78T3T+RqSnYBAEXEbVQdSQ2ayKyIGOMxqFV7bE
+ JzaAUuRsPyVkMbhmsW9oR/LhYwXq/S9Tm7gbMVeYalphJ0F8FQzfHJVOA6mov2l5QRt4YJJ
+ BJ/y9Qa+4SIvJkKZsvwng==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:8qRA+4MO+/g=:vSmJBzjGMKCBm7NMuPT/BJ
+ W5KNSEna269gMo1CY3uSN5A9WxxD+8GRXpaWwRV7FpuKzi4J/mn+SNJ62KQqJhv4byoDxyAsX
+ CE96OZWbJYbKoa/qQwHq8TULt36pKffZYV0f4tIV+tux1elZzvc0GW9xS0etl82BDp/pVSpj5
+ AG78/+Cwz6wbgxtGXK2TgPWAIDYJRs7flNnyCa4lBJQKsnG6pNgtKajEtK1PfH8tv8RvLIhB3
+ QHpKhf7yHDzO1N0wtI6uLmMtA3jwLLBy/qzbuTQXEqgwE04USxX2XYg08Xou4pgymcBVxUzgC
+ KSEHchLh/XE3Y/0V2XeLEbSHmICL0oL6/CN9reGtPQqCvAa+hYU6huusS7KRagj6Q2ns/J0/x
+ yhsKCIqlEOxdctm7qmxs784UCChcMqO1DbFrZaeS5UDkau4R51yhk4IMqyfyzopsogioWjRM+
+ b65xI2AYP1/rBKK44l9c+XSl0BrOhMBTXkHNHJ3So5Nvl6lq55e8RWkzjj7j6VWEuIQmv6K7b
+ X103jdiIJvzkQ8JdtuoWq9QFk7d8SIqLSRXVGXaz7iHF86EvnwZSTa/K1jw6qmBYDkThFXhdG
+ tDf6zteOM/09BhI7eeA/FqPj6QTeTk4/04enhQur/6GjTeKCCmFa1jdK8JiFE0psmpE/HBXek
+ NYg5f3USzBDFsdKpzoLbOkUFWOBaadQwE+iy4TJ+s+9ALCG0hg8mN2yca4QOsHKzzYqpRpJKc
+ cZuhwIjPfjYnE9ODK3pXlLm+J7yNmxhPEzu/EFaXHJUWcq4jAe0kY8TYow47efcw0kvyhKsUL
+ 5hkQWznwGBOn902XubjnXt1dbLgWxvDBjX5uIAmSY9PzXUZRsvEobhNv9IvfKt/PK9lAxZa9n
+ Q6sUegzYqnp5Of64vQqsbyxxaS8ASdmmtkfFgmftROAIeEW3iE3K7KxQ7FUf/ZYknWJMHVNIw
+ XgKuML/duPoXJUTIsagKYRK8SfIB/K99FShJoY7J2fSu+FLGlWfPSKndTeRM7mANW5T+nXp3x
+ 0hMKyD/DOcVokrB4bAEgrQKC26Hk8IR8h7iMNCApSJkfe9yo51QsqhGVOMFnSOMWlczoYhaMn
+ bPJzrPLu3X6zAsQqZlDv17BGR2Tjt7cgKNbifzTKyidra81gCPKgN0KxAR3asb5D8s88+4e98
+ o5rR6ygSOLxJd1C/ObNAYev9lpLnfFTTrDqZ11sCUWZiFaPJH1XNrgELyYT+JFBHM1bV9Bu2q
+ PUcfR/QetRocqHjrSl6nAT53YjIZhJ/MT9J5W6w==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+A few words were misspelled in this comment.
+
+Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
+=2D--
+v2:
+- Provide a patch description
+
+v1:
+- https://lore.kernel.org/lkml/20200308214927.16688-1-j.neuschaefer@gmx.ne=
+t/
+=2D--
+ drivers/clk/imx/clk-gate2.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/clk/imx/clk-gate2.c b/drivers/clk/imx/clk-gate2.c
+index b87ab3c3ba1ea..cc64713c5e5f4 100644
+=2D-- a/drivers/clk/imx/clk-gate2.c
++++ b/drivers/clk/imx/clk-gate2.c
+@@ -15,7 +15,7 @@
+ #include "clk.h"
+
+ /**
+- * DOC: basic gatable clock which can gate and ungate it's ouput
++ * DOC: basic gateable clock which can gate and ungate its output
+  *
+  * Traits of this clock:
+  * prepare - clk_(un)prepare only ensures parent is (un)prepared
+=2D-
+2.28.0
 
