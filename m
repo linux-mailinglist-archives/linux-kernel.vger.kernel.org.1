@@ -2,157 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFBC325EA6F
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Sep 2020 22:40:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D22F25EADB
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Sep 2020 22:47:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728647AbgIEUkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Sep 2020 16:40:00 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:54265 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728400AbgIEUj4 (ORCPT
+        id S1729059AbgIEUrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Sep 2020 16:47:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55440 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728323AbgIEUmb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Sep 2020 16:39:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599338395;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Kx8HzmaZpeYZYpWwlpa7IbVO/+/3Ogwe4v1RfYOzGi8=;
-        b=INjEBySK9TSpKil5sFytoBsY2jYb3sweOs8lkR3tmb8whmw4rhCUCe7I1qaNDFy/o/GAR/
-        mc/6hQypLj8lX8+wbWfBtq3W3HJRDDBrXPIK46hqTQvrl51+hkhEj7GN1yGBMWpBWiKZ7s
-        Wid45J4Vg5lgqO73hPkm2VdGCp+u6zk=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-351-_MKVJSABOVKnKbywJJQ0gg-1; Sat, 05 Sep 2020 16:39:54 -0400
-X-MC-Unique: _MKVJSABOVKnKbywJJQ0gg-1
-Received: by mail-qv1-f72.google.com with SMTP id p20so5686777qvl.4
-        for <linux-kernel@vger.kernel.org>; Sat, 05 Sep 2020 13:39:54 -0700 (PDT)
+        Sat, 5 Sep 2020 16:42:31 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82B23C061244;
+        Sat,  5 Sep 2020 13:42:28 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id z19so5615096lfr.4;
+        Sat, 05 Sep 2020 13:42:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=l/2Yi9oA04Gn2zXLl91qyD7H5oBjTtrtpwfVnvjh2FA=;
+        b=kedm53ZIacgGuBr6hF16jt18gyFz9AyEc0Ys4PpdlkPLHe01gvzOALH3YtUprh45p6
+         fDdu40+bixZyanjgKCnqjgBAfWG664a5Ct73wMsrbktvDDbAxr8QX4FeN/rPAR8UoTkM
+         74XmpefXordV8xoobxDAntA8LGCXzSNCNtDQp2wgR57WgQ2b57K4PTvpFe4thuE7PXcX
+         FgNBSdG4niDOpWmlRQNw+LbF/oaERoqObX4ixMEY8C1t8mDy2e/QprbeqB6lNtswkeNn
+         fGWEMsrhyuJU4HTaxPlkc0MTO90zmbPcV/1eEw5xDdL1tiekmyDq4YZGO3lR5dIWYB+g
+         sXJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=Kx8HzmaZpeYZYpWwlpa7IbVO/+/3Ogwe4v1RfYOzGi8=;
-        b=CwKbF3rREHWJN/3ovJTFlE6fY256JfLSZTYqAslNS4kPYzXq2K5UJ6SibYwn/7xmQ/
-         Mvs+hmwDmDdcabC1yvqN0Wq55n6Xr//m3AmhzqASlmoAGFkQnRnSiGZkGf1qj21d5doT
-         bOF/cKeskAJ8Y5zNJFGd13GdGbx8k5dhtfDvXVRCvtbNL4K3eBDdECg3dpmvQwOfd8rm
-         nDOBhirnP7JOlW8Rvs3wq/s/kSU6FMa/hUmVhtcuHPCZ8oxExxYAQb8CMvpCAc7JX990
-         uUA8PHnGsKAv79GfbbSy4RwwJkpLM7BvPzLi+WQK4A/32YSYsUdfD2MEYnGt+mzQ/xNw
-         d58w==
-X-Gm-Message-State: AOAM531f+MMLnvePjidzM66iwa7MEGgyCkNy6ezvQD8DTQKEbZAgsym7
-        6IQLkTX7xTK2TWqVKQlJFezxiwI61LxwCyjz4h7ZZLId8rBq2TKWNFdAzJNfiIafwAV1usXqZu+
-        TQ9J+UNyk1VPtPbSwUYHvrVPE
-X-Received: by 2002:ac8:411b:: with SMTP id q27mr14554196qtl.255.1599338393664;
-        Sat, 05 Sep 2020 13:39:53 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxEEppV8KOTKDOVXJjHNDLaJizH+e1HUtcIP/UpF9boOGOaBHyt97v0JQjlD2oPNxl6jMi+TQ==
-X-Received: by 2002:ac8:411b:: with SMTP id q27mr14554188qtl.255.1599338393436;
-        Sat, 05 Sep 2020 13:39:53 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id l13sm6440861qtv.82.2020.09.05.13.39.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 05 Sep 2020 13:39:52 -0700 (PDT)
-Subject: Re: [PATCH v1 03/12] fpga: expose max10 flash update counts in sysfs
-To:     Russ Weight <russell.h.weight@intel.com>, mdf@kernel.org,
-        lee.jones@linaro.org, linux-fpga@vger.kernel.org,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=l/2Yi9oA04Gn2zXLl91qyD7H5oBjTtrtpwfVnvjh2FA=;
+        b=cAB1Isp1pbNATw91j4BzMr+UvCWQbe5HcpClSErr6S6dQL0wE7OihAnpMSRfDJ0nKA
+         YRixl0FgD3vkAsOX6YK58QrSj1EjYDPg4ZCNKDmwnVNztynpJWpeUiU+LFP7rOs1Ot47
+         K6OkdegTLq3ShXOgnxSuraEuzz5bpu/anFgiYxkEyDUArkSpfypwh/8T+Z/dE1DJtSps
+         KDyNyfds9kNm9jl40EZetWj5xkwq1zANqmoSmgvBi+Y6u5Pfdn8alWiMBf+TBrhDIqgo
+         6G/tVwUNQ3AajNZlnnZc2px9d/B+fdjbDWuht4jBecULmQrAqAY/q8DXC5JE1p5CQ483
+         66iw==
+X-Gm-Message-State: AOAM532krWW7pxyiDOo00e8mCCYJhxGDhUGxTvOLaYuDk10doJgecpzs
+        MaKUnyWMtuqHND4lsVtTifVYPHKLGn8=
+X-Google-Smtp-Source: ABdhPJyakU5Ph9sxkfrNWT7+VQ+knnK/r6Y/uEC5lTQ5dWbgCvH+UGdn7KiwspRoPeTlo2aJLIBHyw==
+X-Received: by 2002:a19:f510:: with SMTP id j16mr6635793lfb.169.1599338545035;
+        Sat, 05 Sep 2020 13:42:25 -0700 (PDT)
+Received: from localhost.localdomain (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
+        by smtp.gmail.com with ESMTPSA id e17sm1677763ljn.18.2020.09.05.13.42.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 05 Sep 2020 13:42:24 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     linux-i2c@vger.kernel.org, linux-tegra@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     lgoncalv@redhat.com, yilun.xu@intel.com, hao.wu@intel.com,
-        matthew.gerlach@intel.com
-References: <20200904235305.6254-1-russell.h.weight@intel.com>
- <20200904235305.6254-4-russell.h.weight@intel.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <a4ee319d-9f6f-5a27-415e-b1fabd1d5465@redhat.com>
-Date:   Sat, 5 Sep 2020 13:39:50 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+Subject: [PATCH v4 00/31] Improvements for Tegra I2C driver
+Date:   Sat,  5 Sep 2020 23:41:20 +0300
+Message-Id: <20200905204151.25343-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <20200904235305.6254-4-russell.h.weight@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello!
 
-On 9/4/20 4:52 PM, Russ Weight wrote:
-> Extend the MAX10 BMC Security Engine driver to provide a
-> handler to expose the flash update count for the FPGA user
-> image.
->
-> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
-> Reviewed-by: Wu Hao <hao.wu@intel.com>
-> ---
->  drivers/fpga/intel-m10-bmc-secure.c | 32 +++++++++++++++++++++++++++++
->  1 file changed, 32 insertions(+)
->
-> diff --git a/drivers/fpga/intel-m10-bmc-secure.c b/drivers/fpga/intel-m10-bmc-secure.c
-> index 1f86bfb694b4..b824790e43aa 100644
-> --- a/drivers/fpga/intel-m10-bmc-secure.c
-> +++ b/drivers/fpga/intel-m10-bmc-secure.c
-> @@ -10,6 +10,7 @@
->  #include <linux/mfd/intel-m10-bmc.h>
->  #include <linux/module.h>
->  #include <linux/platform_device.h>
-> +#include <linux/slab.h>
->  #include <linux/vmalloc.h>
->  
->  struct m10bmc_sec {
-> @@ -99,7 +100,38 @@ SYSFS_GET_REH(bmc, BMC_REH_ADDR)
->  SYSFS_GET_REH(sr, SR_REH_ADDR)
->  SYSFS_GET_REH(pr, PR_REH_ADDR)
->  
-> +#define FLASH_COUNT_SIZE 4096
-This seems too high at most it should be 64.
-> +#define USER_FLASH_COUNT 0x17ffb000
-Why shouldn't this be in intel-m10-bmc.h ?
-> +
-> +static int get_qspi_flash_count(struct ifpga_sec_mgr *imgr)
+This series performs refactoring of the Tegra I2C driver code and hardens
+the atomic-transfer mode.
 
-what does 'qspi' mean ?
+Changelog:
 
-unless there are going to be several *flash_count's consider
+v4: - Reordered patches in the fixes/features/cleanups order like it was
+      suggested by Andy Shevchenko.
 
-removing this substring.
+    - Now using clk-bulk API, which was suggested by Andy Shevchenko.
 
-> +{
-> +	struct m10bmc_sec *sec = imgr->priv;
-> +	unsigned int stride = regmap_get_reg_stride(sec->m10bmc->regmap);
-> +	unsigned int cnt, num_bits = FLASH_COUNT_SIZE * 8;
-> +	u8 *flash_buf;
-> +	int ret;
-> +
-> +	flash_buf = kmalloc(FLASH_COUNT_SIZE, GFP_KERNEL);
-> +	if (!flash_buf)
-> +		return -ENOMEM;
-> +
-> +	ret = m10bmc_raw_bulk_read(sec->m10bmc, USER_FLASH_COUNT, flash_buf,
-> +				   FLASH_COUNT_SIZE / stride);
-> +	if (ret) {
-> +		dev_err(sec->dev, "%s failed to read %d\n", __func__, ret);
-> +		goto exit_free;
-> +	}
-> +
-> +	cnt = num_bits - bitmap_weight((unsigned long *)flash_buf, num_bits);
-Simplify ret = num_bits...
-> +
-> +exit_free:
-> +	kfree(flash_buf);
-> +
-> +	return ret ? : cnt;
+    - Reworked "Make tegra_i2c_flush_fifos() usable in atomic transfer"
+      patch to use iopoll API, which was suggested by Andy Shevchenko.
 
-Then simplify
+    - Separated "Clean up probe function" into several smaller patches.
 
-return ret;
+    - Squashed "Add missing newline before returns" patch into
+      "Clean up whitespaces, newlines and indentation".
 
-Tom
+    - The "Drop '_timeout' from wait/poll function names" is renamed to
+      "Rename wait/poll functions".
 
-> +}
-> +
->  static const struct ifpga_sec_mgr_ops m10bmc_iops = {
-> +	.user_flash_count = get_qspi_flash_count,
->  	.bmc_root_entry_hash = get_bmc_root_entry_hash,
->  	.sr_root_entry_hash = get_sr_root_entry_hash,
->  	.pr_root_entry_hash = get_pr_root_entry_hash,
+    - The "Use reset_control_reset()" is changed to not fail tegra_i2c_init(),
+      but only emit warning. This should be more friendly behaviour in oppose
+      to having a non-bootable machine if reset-control fails.
+
+    - New patches:
+
+        i2c: tegra: Remove error message used for devm_request_irq() failure
+        i2c: tegra: Use devm_platform_get_and_ioremap_resource()
+        i2c: tegra: Use platform_get_irq()
+        i2c: tegra: Use clk-bulk helpers
+        i2c: tegra: Remove bogus barrier()
+        i2c: tegra: Factor out register polling into separate function
+        i2c: tegra: Consolidate error handling in tegra_i2c_xfer_msg()
+        i2c: tegra: Clean up and improve comments
+        i2c: tegra: Rename couple "ret" variables to "err"
+
+v3: - Optimized "Make tegra_i2c_flush_fifos() usable in atomic transfer"
+      patch by pre-checking FIFO state before starting to poll using
+      ktime API, which may be expensive under some circumstances.
+
+    - The "Clean up messages in the code" patch now makes all messages
+      to use proper capitalization of abbreviations. Thanks to Andy Shevchenko
+      and Michał Mirosław for the suggestion.
+
+    - The "Remove unnecessary whitespaces and newlines" patch is transformed
+      into "Clean up whitespaces and newlines", it now also adds missing
+      newlines and spaces.
+
+    - Reworked the "Clean up probe function" patch in accordance to
+      suggestion from Michał Mirosław by factoring out only parts of
+      the code that make error unwinding cleaner.
+
+    - Added r-b from Michał Mirosław.
+
+    - Added more patches:
+
+        i2c: tegra: Reorder location of functions in the code
+        i2c: tegra: Factor out packet header setup from tegra_i2c_xfer_msg()
+        i2c: tegra: Remove "dma" variable
+        i2c: tegra: Initialization div-clk rate unconditionally
+        i2c: tegra: Remove i2c_dev.clk_divisor_non_hs_mode member
+
+v2: - Cleaned more messages in the "Clean up messages in the code" patch.
+
+    - The error code of reset_control_reset() is checked now.
+
+    - Added these new patches to clean up couple more things:
+
+        i2c: tegra: Check errors for both positive and negative values
+        i2c: tegra: Improve coding style of tegra_i2c_wait_for_config_load()
+        i2c: tegra: Remove unnecessary whitespaces and newlines
+        i2c: tegra: Rename variable in tegra_i2c_issue_bus_clear()
+        i2c: tegra: Improve driver module description
+
+Dmitry Osipenko (31):
+  i2c: tegra: Make tegra_i2c_flush_fifos() usable in atomic transfer
+  i2c: tegra: Handle potential error of tegra_i2c_flush_fifos()
+  i2c: tegra: Initialization div-clk rate unconditionally
+  i2c: tegra: Remove i2c_dev.clk_divisor_non_hs_mode member
+  i2c: tegra: Runtime PM always available on Tegra
+  i2c: tegra: Remove error message used for devm_request_irq() failure
+  i2c: tegra: Use reset_control_reset()
+  i2c: tegra: Use devm_platform_get_and_ioremap_resource()
+  i2c: tegra: Use platform_get_irq()
+  i2c: tegra: Use clk-bulk helpers
+  i2c: tegra: Factor out runtime PM and hardware initialization
+  i2c: tegra: Move out all device-tree parsing into tegra_i2c_parse_dt()
+  i2c: tegra: Clean up probe function
+  i2c: tegra: Remove likely/unlikely from the code
+  i2c: tegra: Remove bogus barrier()
+  i2c: tegra: Remove "dma" variable from tegra_i2c_xfer_msg()
+  i2c: tegra: Improve formatting of function variables
+  i2c: tegra: Improve coding style of tegra_i2c_wait_for_config_load()
+  i2c: tegra: Rename wait/poll functions
+  i2c: tegra: Rename variable in tegra_i2c_issue_bus_clear()
+  i2c: tegra: Factor out error recovery from tegra_i2c_xfer_msg()
+  i2c: tegra: Factor out packet header setup from tegra_i2c_xfer_msg()
+  i2c: tegra: Factor out register polling into separate function
+  i2c: tegra: Reorder location of functions in the code
+  i2c: tegra: Check errors for both positive and negative values
+  i2c: tegra: Consolidate error handling in tegra_i2c_xfer_msg()
+  i2c: tegra: Clean up printk messages
+  i2c: tegra: Clean up whitespaces, newlines and indentation
+  i2c: tegra: Improve driver module description
+  i2c: tegra: Clean up and improve comments
+  i2c: tegra: Rename couple "ret" variables to "err"
+
+ drivers/i2c/busses/i2c-tegra.c | 1272 +++++++++++++++-----------------
+ 1 file changed, 612 insertions(+), 660 deletions(-)
+
+-- 
+2.27.0
 
