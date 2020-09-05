@@ -2,123 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1062625EAAB
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Sep 2020 22:45:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 635E725EADF
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Sep 2020 22:52:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728791AbgIEUpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Sep 2020 16:45:23 -0400
-Received: from mout.gmx.net ([212.227.15.19]:55085 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728772AbgIEUoh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Sep 2020 16:44:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1599338649;
-        bh=Be/pWWRCdG9k6oAZQXTcja1Tc2WaPrzbgsSdvaLxfZ4=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=Q+F3ABzxf6onrrkrNJBPuXNu0dHuu9JfTv44cr3smoCoqnowKl48cJP03RfzrOOgV
-         W4NVpd2hjTXwrX9EEkoZAaocaQdV6foAoBm/Vx4baoGrLkHw1eoYcT5xjH8psHIz33
-         gM07c/GiOEtF8MWNhGf6Ef9XereN855HQXghhVyE=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from longitude ([5.146.195.151]) by mail.gmx.com (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1Mof5H-1ktzCz3e93-00p6n5; Sat, 05
- Sep 2020 22:44:09 +0200
-From:   =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To:     linux-mtd@lists.infradead.org
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Richard Weinberger <richard@nod.at>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>,
-        Jaskaran Singh <jaskaransingh7654321@gmail.com>,
-        =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        "Tobin C. Harding" <tobin@kernel.org>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] docs: ubifs-authentication: Add a top-level heading
-Date:   Sat,  5 Sep 2020 22:43:26 +0200
-Message-Id: <20200905204326.1378339-3-j.neuschaefer@gmx.net>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200905204326.1378339-1-j.neuschaefer@gmx.net>
-References: <20200905204326.1378339-1-j.neuschaefer@gmx.net>
+        id S1728708AbgIEUw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Sep 2020 16:52:28 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:42965 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728426AbgIEUwZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Sep 2020 16:52:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599339143;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=IX2JXUthZOK9ILrI2szDCLF/ohGIvOY3CoU57DOlSKU=;
+        b=ZUmANEce24WhyKuhc74Wy/eNnBMp33mgq7+xZeOgEx4t+VL+ILOAkW6aDeRT+bAl8cBnCy
+        fRSVsMdxjHPa+GAmNolxNOQm2ytBxCQEkaIEp4T9P7+uNmk2yrwkoGXt9uIEiTX4i6fAs1
+        oTeNombyGzvpUB8jjJZgOdrDq1sz3uc=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-387-evcVtQrhOXCWqFSA3snLCg-1; Sat, 05 Sep 2020 16:52:21 -0400
+X-MC-Unique: evcVtQrhOXCWqFSA3snLCg-1
+Received: by mail-qk1-f200.google.com with SMTP id m203so5507419qke.16
+        for <linux-kernel@vger.kernel.org>; Sat, 05 Sep 2020 13:52:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=IX2JXUthZOK9ILrI2szDCLF/ohGIvOY3CoU57DOlSKU=;
+        b=Y2NRcLcAMFXIMGM9l8bVAWPrT6VNJ0yAwqpaH4V0aHNaN/ufNfwnpEBqkz3wHaPkzi
+         azUYA9Nlf16hdbO1GBPDh+JK7q+26bcEy6LvuqQAR1OHDQtLW+YFQ9UqKm9j4a2sHM3z
+         Gm+7MMAr+8lS0YVtQvRDmlVgWa/hbJUzonHhGlJKaNiSRprqFRB5yoPxy+Nj40r9tCCm
+         RpSydkRVwyXSUdpYWoxagxZFAz3hFJ4ne+uZE3wCCG/+DHfkbWIpcypkVn0Mww97SwvA
+         PBOb397nPgFm67bltzAGl8odtCj+B238ECIdyRx4daSWDgkY1eSqPHwk9wDnhIzD8jz8
+         YIZA==
+X-Gm-Message-State: AOAM532ZZYpXa7wrJqc0YMD5VF6gbpMW6suAR8ciQzivHD8TTEipV5rZ
+        qiRu8QyDgKhyyyJXeK9Ded5fk1iGsZxiwLfqQmsiBs7IQ44C+iHgejrrtA4jAeTe9czL9hfUyEp
+        iJldiTzDrUzQqP76iw578789Q
+X-Received: by 2002:ac8:3704:: with SMTP id o4mr13711167qtb.330.1599339141119;
+        Sat, 05 Sep 2020 13:52:21 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwWt119r+a6h7uN/jiDybLwTav09PL0IKvI9o5/1oI8clZdP8FCB3iD99SalNouXUitfbQh/Q==
+X-Received: by 2002:ac8:3704:: with SMTP id o4mr13711156qtb.330.1599339140863;
+        Sat, 05 Sep 2020 13:52:20 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id j11sm1552337qko.111.2020.09.05.13.52.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 05 Sep 2020 13:52:20 -0700 (PDT)
+Subject: Re: [PATCH v1 04/12] fpga: expose max10 canceled keys in sysfs
+To:     Russ Weight <russell.h.weight@intel.com>, mdf@kernel.org,
+        lee.jones@linaro.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     lgoncalv@redhat.com, yilun.xu@intel.com, hao.wu@intel.com,
+        matthew.gerlach@intel.com
+References: <20200904235305.6254-1-russell.h.weight@intel.com>
+ <20200904235305.6254-5-russell.h.weight@intel.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <ea0be0fb-210e-823d-fad0-15e7ff5c41eb@redhat.com>
+Date:   Sat, 5 Sep 2020 13:52:18 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:JCZ9dogxu6N+RKhbMPfW1OC69oFNA7oU53WsieXUXkqlBdaEgxw
- hYf9C8XKUtNhM+adsNx2AyU1FWtSjEi+tJO0PI+5RcAUrSnXgUcPBfYmjkkpKs9VgnoA3kc
- CoWDSA6KjQrnwq8KD1aov7dV1gi3/NoD1xAKaeeI7z5nMBrZMP9rGI03q/b5ofl6UVzBVFF
- 27/UcfcBJroX8S6wxPeHg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:/tKJFPdbk3k=:gQcm/T0WkZ6j+W/XpL/lxc
- wV5Wkmt829NuLGiAFrCJPtKya5IXazn/hlJWwEjxSrB7oSj+BGzBXeMeX0Kg2dVEU5ZRZa+DH
- 46/B2zyQFsIDjC6mYTSVv+XbMStQE3/Ani/Swt4mSu1Q8ZdMre1L0GXgJZ5SIFB8FKXp7cHmE
- 5tuR81mWAFCTaEuPFedO/H8h4LSWSohFfnrDlKsDh/cfoiKjWBD13111rWMDPOos98/ZI5aXC
- k9c4cD6pzaR2biKqpiLw34T0AieqQ6v7ubNC/rDuMn8gKgA3DhGNr3RJ/1MSsCR9p+DU0KN27
- pMKNgsK6QDuI2xUJ+FVwXbIi6sFNvf+gpNeeoeYkd0jLj5590EcvV20QYcu/Qo0hACnNE46gO
- HPC3hmjS/g9BEtDi8u4vI5d6GvcC/fqwkLYRCIHekx+Bq50hDpR8nIbzMRQIWOfia119NswpZ
- VtX4RmW2KWe3pgndT1BUNx6liyQyTz3tFHpVN7JxavtuW2kLKubc3LvXnp/5zvgkuH3BJKaHx
- iDcQNKix1kD9b8mrmrkodrFB0VLRAtwgs+gzcJgK5YC0W2CND38ZwJoSAzCWIKmakm68OzSLw
- fk8PwbMFkeiQh6G8eteFm0Kjbeo88GpEgjPYDTVHvb+3Bn3vpV6P0E7qfA9SXaQb4mqilLk9h
- z3hOu9w25HnAakxUivbJblwBirV+EnXft5scev6UKtFc6qfcX5wkrqEiuzXh5fZRfC1JVWikX
- +qaUemnQ8n6yY79YA3jQ6Po+awvTuELETQXBedzzqwruDfDDA+BgJ7O7xw3khq0YB8uxbVcVv
- RpbW/O0fNL66YyeuxW6Hm17+ubi7Xj+yQ456NNoDp82/8ngxNXj11HyylOIFY8UH9lPA9obqB
- Iu6G0yf8ypjB6HZaBcLksEcxZaFFHZhsDM7IG7qzi73qgBRvtLkB5CSAlD17J1weAjBImuEPO
- qal/sV5wFVkJbl7oFPlXqjKm3W0xgdx2vXcvLqTOWyNRcdr3F9tEZHTT0PBM/RYSepem9+Z1D
- iD0QHnkIvNRl8NHlKc4pUaM8Wj1YWRZC8VZfSx5dvwB9DSki+HPR83EJOOEXj8dmvOrDLK8DC
- QhPCvhpyLBzZ/hiPA58ih8/JsoromNyNTGg/EVT07WoBemWtiIOP2ixTR1G+qnM3EdaDIG/oT
- KoM8aXAkbdj9zmxOdXk5tmMEzcmKAEBDMXvh55D+H4WrM8j/NIHVEjiXt3NcccQuDs8lQqI8K
- kIdSIiTFQitcFOpHSs0AK3unodCkOrvKIeNTv5g==
+In-Reply-To: <20200904235305.6254-5-russell.h.weight@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This prevents the chapter headings from showing up in the table of
-contents in filesystems/index.html.
 
-Note that I didn't pick "UBIFS Authentication" as the document title,
-because there is a chapter of the same name, and Sphinx complains about
-multiple headings with the same name:
+On 9/4/20 4:52 PM, Russ Weight wrote:
+> Extend the MAX10 BMC Security Engine driver to provide a
+> handler to expose the canceled code signing key (CSK) bit
+> vectors. These use the standard bitmap list format
+> (e.g. 1,2-6,9).
+>
+> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+> Reviewed-by: Wu Hao <hao.wu@intel.com>
+> ---
+>  drivers/fpga/intel-m10-bmc-secure.c | 60 +++++++++++++++++++++++++++++
+>  1 file changed, 60 insertions(+)
+>
+> diff --git a/drivers/fpga/intel-m10-bmc-secure.c b/drivers/fpga/intel-m10-bmc-secure.c
+> index b824790e43aa..46cd49a08be0 100644
+> --- a/drivers/fpga/intel-m10-bmc-secure.c
+> +++ b/drivers/fpga/intel-m10-bmc-secure.c
+> @@ -130,14 +130,74 @@ static int get_qspi_flash_count(struct ifpga_sec_mgr *imgr)
+>  	return ret ? : cnt;
+>  }
+>  
+> +#define CSK_BIT_LEN			128U
+> +#define CSK_32ARRAY_SIZE(_nbits)	DIV_ROUND_UP(_nbits, 32)
+> +
+> +#define SYSFS_GET_CSK_CANCEL_NBITS(_name) \
+> +static int get_##_name##_csk_cancel_nbits(struct ifpga_sec_mgr *imgr) \
+> +{ \
+> +	return (int)CSK_BIT_LEN; \
+> +}
+> +
+> +SYSFS_GET_CSK_CANCEL_NBITS(bmc)
+> +SYSFS_GET_CSK_CANCEL_NBITS(sr)
+> +SYSFS_GET_CSK_CANCEL_NBITS(pr)
 
-  /.../Documentation/filesystems/ubifs-authentication.rst:207:
-  WARNING: duplicate label filesystems/ubifs-authentication:ubifs
-  authentication, other instance in
-  /.../Documentation/filesystems/ubifs-authentication.rst
+> +
+> +static int get_csk_vector(struct ifpga_sec_mgr *imgr, u32 addr,
+> +			  unsigned long *csk_map, unsigned int nbits)
+> +{
+> +	unsigned int i, arr_size = CSK_32ARRAY_SIZE(nbits);
 
-Remove the :orphan: tag, as the document has been included into the
-toctree.
+> +	struct m10bmc_sec *sec = imgr->priv;
+> +	u32 *csk32;
+> +	int ret;
+> +
+> +	csk32 = vmalloc(arr_size);
+> +	if (!csk32)
+> +		return -ENOMEM;
+> +
+> +	ret = m10bmc_raw_bulk_read(sec->m10bmc, addr, csk32, arr_size);
 
-Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
-=2D--
- Documentation/filesystems/ubifs-authentication.rst | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+Is this correct ? other similar bulk read used the
 
-diff --git a/Documentation/filesystems/ubifs-authentication.rst b/Document=
-ation/filesystems/ubifs-authentication.rst
-index 1f39c8cea7029..5210aed2afbc3 100644
-=2D-- a/Documentation/filesystems/ubifs-authentication.rst
-+++ b/Documentation/filesystems/ubifs-authentication.rst
-@@ -1,11 +1,13 @@
- .. SPDX-License-Identifier: GPL-2.0
+regmap stride.
 
--:orphan:
--
- .. UBIFS Authentication
- .. sigma star gmbh
- .. 2018
+> +	if (ret) {
+> +		dev_err(sec->dev, "%s failed to read %d\n", __func__, ret);
+> +		goto vfree_exit;
+> +	}
+> +
+> +	for (i = 0; i < arr_size; i++)
+> +		csk32[i] = le32_to_cpu(csk32[i]);
+> +
+> +	bitmap_from_arr32(csk_map, csk32, nbits);
+> +	bitmap_complement(csk_map, csk_map, nbits);
+> +
+> +vfree_exit:
+> +	vfree(csk32);
+> +	return ret;
+> +}
+> +
+> +#define SYSFS_GET_CSK_VEC(_name, _addr) \
+> +static int get_##_name##_canceled_csks(struct ifpga_sec_mgr *imgr, \
+> +				       unsigned long *csk_map, \
+> +				       unsigned int nbits) \
+> +{ return get_csk_vector(imgr, _addr, csk_map, nbits); }
+> +
+> +#define CSK_VEC_OFFSET 0x34
+> +
+> +SYSFS_GET_CSK_VEC(bmc, BMC_PROG_ADDR + CSK_VEC_OFFSET)
+> +SYSFS_GET_CSK_VEC(sr, SR_PROG_ADDR + CSK_VEC_OFFSET)
+> +SYSFS_GET_CSK_VEC(pr, PR_PROG_ADDR + CSK_VEC_OFFSET)
+Issues similar with earlier patches.
+> +
+>  static const struct ifpga_sec_mgr_ops m10bmc_iops = {
+>  	.user_flash_count = get_qspi_flash_count,
+>  	.bmc_root_entry_hash = get_bmc_root_entry_hash,
+>  	.sr_root_entry_hash = get_sr_root_entry_hash,
+>  	.pr_root_entry_hash = get_pr_root_entry_hash,
+> +	.bmc_canceled_csks = get_bmc_canceled_csks,
+> +	.sr_canceled_csks = get_sr_canceled_csks,
+> +	.pr_canceled_csks = get_pr_canceled_csks,
+>  	.bmc_reh_size = get_bmc_reh_size,
+>  	.sr_reh_size = get_sr_reh_size,
+>  	.pr_reh_size = get_pr_reh_size,
+> +	.bmc_canceled_csk_nbits = get_bmc_csk_cancel_nbits,
+> +	.sr_canceled_csk_nbits = get_sr_csk_cancel_nbits,
+> +	.pr_canceled_csk_nbits = get_pr_csk_cancel_nbits
 
-+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D
-+UBIFS Authentication Support
-+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D
-+
- Introduction
- =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+These are copies the same function, replace with a
 
-=2D-
-2.28.0
+common function.
+
+Tom
+
+>  };
+>  
+>  static void ifpga_sec_mgr_uinit(struct m10bmc_sec *sec)
 
