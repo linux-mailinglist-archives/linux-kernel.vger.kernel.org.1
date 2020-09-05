@@ -2,130 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2044725E5C7
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Sep 2020 08:22:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E711325E5A7
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Sep 2020 08:02:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726683AbgIEGWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Sep 2020 02:22:55 -0400
-Received: from mga18.intel.com ([134.134.136.126]:49017 "EHLO mga18.intel.com"
+        id S1726486AbgIEGCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Sep 2020 02:02:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44652 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725818AbgIEGWw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Sep 2020 02:22:52 -0400
-IronPort-SDR: 2OFQ4m1nvSiut1YDwvID1eEQr00bkDz6RzMla967eGVnwCrgQYShfOj1y1DVXvQjd1x4M4otFt
- yWgj2vOUx+KA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9734"; a="145547461"
-X-IronPort-AV: E=Sophos;i="5.76,392,1592895600"; 
-   d="scan'208";a="145547461"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2020 23:22:51 -0700
-IronPort-SDR: XHKZPE1pnjJxVEqYHA9SQHCGYf1cI1IGLzueIWa1oY4RSdmcaJrtWtCdTpA97zCD3b+7FS0S/v
- ddaKZCMdNjgg==
-X-IronPort-AV: E=Sophos;i="5.76,392,1592895600"; 
-   d="scan'208";a="478804292"
-Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2020 23:22:47 -0700
-From:   Bard Liao <yung-chuan.liao@linux.intel.com>
-To:     alsa-devel@alsa-project.org, vkoul@kernel.org
-Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org, tiwai@suse.de,
-        broonie@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com,
-        srinivas.kandagatla@linaro.org, rander.wang@linux.intel.com,
-        ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
-        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
-        mengdong.lin@intel.com, bard.liao@intel.com
-Subject: [PATCH v3 3/3]  ASoC: Intel: sof_sdw: add dailink .prepare and .hw_free callback
-Date:   Sat,  5 Sep 2020 02:28:54 +0800
-Message-Id: <20200904182854.3944-4-yung-chuan.liao@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200904182854.3944-1-yung-chuan.liao@linux.intel.com>
-References: <20200904182854.3944-1-yung-chuan.liao@linux.intel.com>
+        id S1726273AbgIEGCG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Sep 2020 02:02:06 -0400
+Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5190A208DB;
+        Sat,  5 Sep 2020 06:02:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599285725;
+        bh=Baa+vCVEDyUV7eOx+FInEWcsp0zp8TLXiBCsCiQ2+LI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=g4yabjZ9UashSqLcV2bYmUclpYFvRCHHve59hAcTbNLFiu9oTIKZ0YCtw6HM5spE2
+         Qi67m6oMcysjJRCES+Z4Dq05Clh6NA+kkiwv3Xn2W0Hx6M5iNDf3FYxFKzKc0+eTTe
+         MYisn8n0ZCjhPrep8J7Stg80DHIDihOvrtAwSJA0=
+Date:   Sat, 5 Sep 2020 14:02:00 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 2/4] ARM: dts: imx23: Align GPMI NAND node name with
+ schema
+Message-ID: <20200905060158.GE7508@dragon>
+References: <20200828192037.22897-1-krzk@kernel.org>
+ <20200828192037.22897-2-krzk@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200828192037.22897-2-krzk@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+On Fri, Aug 28, 2020 at 09:20:35PM +0200, Krzysztof Kozlowski wrote:
+> Device tree schema expects NAND controller to be named
+> "nand-controller", otherwise dtbs_check complain with a warning like:
+> 
+>     arch/arm/boot/dts/imx28-eukrea-mbmx283lc.dt.yaml: gpmi-nand@8000c000:
+>         $nodename:0: 'gpmi-nand@8000c000' does not match '^nand-controller(@.*)?'
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-Add .prepare and .hw_free callback to dailink.
+I already applied one patch from Anson [1].
 
-The companion patch for this patch is the removal of stream operations
-in the .prepare and .hw_free callbacks at the DAI level in
-drivers/soundwire/intel.c
+Shawn
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@linux.intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
----
- sound/soc/intel/boards/sof_sdw.c | 40 ++++++++++++++++++++++++++++++++
- 1 file changed, 40 insertions(+)
-
-diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index f251e046d74d..16503772965c 100644
---- a/sound/soc/intel/boards/sof_sdw.c
-+++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -195,6 +195,25 @@ int sdw_startup(struct snd_pcm_substream *substream)
- 	return sdw_startup_stream(substream);
- }
- 
-+static int sdw_prepare(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
-+	struct sdw_stream_runtime *sdw_stream;
-+	struct snd_soc_dai *dai;
-+
-+	/* Find stream from first CPU DAI */
-+	dai = asoc_rtd_to_cpu(rtd, 0);
-+
-+	sdw_stream = snd_soc_dai_get_sdw_stream(dai, substream->stream);
-+
-+	if (IS_ERR(sdw_stream)) {
-+		dev_err(rtd->dev, "no stream found for DAI %s", dai->name);
-+		return PTR_ERR(sdw_stream);
-+	}
-+
-+	return sdw_prepare_stream(sdw_stream);
-+}
-+
- static int sdw_trigger(struct snd_pcm_substream *substream, int cmd)
- {
- 	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
-@@ -235,6 +254,25 @@ static int sdw_trigger(struct snd_pcm_substream *substream, int cmd)
- 	return ret;
- }
- 
-+static int sdw_hw_free(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
-+	struct sdw_stream_runtime *sdw_stream;
-+	struct snd_soc_dai *dai;
-+
-+	/* Find stream from first CPU DAI */
-+	dai = asoc_rtd_to_cpu(rtd, 0);
-+
-+	sdw_stream = snd_soc_dai_get_sdw_stream(dai, substream->stream);
-+
-+	if (IS_ERR(sdw_stream)) {
-+		dev_err(rtd->dev, "no stream found for DAI %s", dai->name);
-+		return PTR_ERR(sdw_stream);
-+	}
-+
-+	return sdw_deprepare_stream(sdw_stream);
-+}
-+
- void sdw_shutdown(struct snd_pcm_substream *substream)
- {
- 	sdw_shutdown_stream(substream);
-@@ -242,7 +280,9 @@ void sdw_shutdown(struct snd_pcm_substream *substream)
- 
- static const struct snd_soc_ops sdw_ops = {
- 	.startup = sdw_startup,
-+	.prepare = sdw_prepare,
- 	.trigger = sdw_trigger,
-+	.hw_free = sdw_hw_free,
- 	.shutdown = sdw_shutdown,
- };
- 
--- 
-2.17.1
-
+[1] https://lkml.org/lkml/2020/7/30/610
