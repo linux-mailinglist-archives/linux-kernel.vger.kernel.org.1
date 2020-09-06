@@ -2,125 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3FF225F0FC
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 00:49:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ECFD25F10B
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 01:10:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726722AbgIFWtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Sep 2020 18:49:35 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:38472 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726165AbgIFWtc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Sep 2020 18:49:32 -0400
-Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1kF3TU-0002fd-Ag; Mon, 07 Sep 2020 00:49:28 +0200
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     Elaine Zhang <zhangqing@rock-chips.com>
-Cc:     mturquette@baylibre.com, sboyd@kernel.org,
-        linux-clk@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-kernel@vger.kernel.org, xxx@rock-chips.com,
-        xf@rock-chips.com, huangtao@rock-chips.com,
-        kever.yang@rock-chips.com, Elaine Zhang <zhangqing@rock-chips.com>
-Subject: Re: [PATCH v3 6/6] clk: rockchip: rk3399: Support module build
-Date:   Mon, 07 Sep 2020 00:49:27 +0200
-Message-ID: <3524790.GmC4BGDxql@diego>
-In-Reply-To: <20200904074505.24917-1-zhangqing@rock-chips.com>
-References: <20200904074405.24439-1-zhangqing@rock-chips.com> <20200904074505.24917-1-zhangqing@rock-chips.com>
+        id S1726587AbgIFXKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Sep 2020 19:10:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43326 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726165AbgIFXKD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Sep 2020 19:10:03 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB233C061573;
+        Sun,  6 Sep 2020 16:10:02 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id y4so13930402ljk.8;
+        Sun, 06 Sep 2020 16:10:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=y/VuS+WEWq6WlqEUQXf1nqdiTpeCGfHiQU7o7A2icY4=;
+        b=cJAmzQ39wDBgbxuZxueEjgV8QVTHcMeXnmx3OudE85UX9W3ry0V5R672kQwFgDXJ5W
+         PR3q6pq4t5ZebwjcS9EuE/7+XHypAbNjgNUmJU24/cg9mrxOrWWKLZjU725L38O8OwTp
+         u9drca/TuRDQZq+Xk+ZyN71XBQ8pyRCY45jadCrTYfexOa8JMKvK7GRhm8Qc7eXUkn26
+         i77GUdW53jk+Oc5UqwApkaarAH9Hdv4SU9tNAONDSzaT+/FeBr5KW+OFI2UEe+YzWRUq
+         3LhIn+MK6NScuuT2fcsO6HUhbdaUOTh1z4006pyu/HiKmGQd/uh4VlLDfToITyObI1Am
+         uWJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=y/VuS+WEWq6WlqEUQXf1nqdiTpeCGfHiQU7o7A2icY4=;
+        b=LHoIZy7lBoB49oskmV8m5emtfHXLlZJ+aDrP/jgDm/C/Zbz/cWoves3J1Sq0bkkFdz
+         h1KeB8nHVwpokgIifl/g4AlRKxBWaY37nMJ08KVBUbbSGqu/ZbrXwGBo2iyRNLUzbMnT
+         kayGdAz1xzxAHdM1AJ9reyGhZDKV4IAkc6LzcCp9mQ2QxFVxFz+SxWKCSGag022geMx8
+         BJK7Y5g5f7ZCeAukiROO0WDtG6j8IWLQDn8XFuyI/5Sf+OhYigYTVq5OvMZ6axQlhyvT
+         gIxyrReuoyPXHvyy1ddVnpxKkjzjOnESRbqk9j4LLdabGsYiyHXNnbSORnxDuSoKZZCI
+         vIUQ==
+X-Gm-Message-State: AOAM530bNQ3afWFKVCmqtyQmCBwnXTD9offsxlsq1dxQycqQT1Q7efeU
+        e+SaSU6GrTZnKcwlxYWdmd8=
+X-Google-Smtp-Source: ABdhPJwNyce+VA5wGrCXOf+PqHoSye1C4DUgMCkd14tq6Y7v739twOpNPpuL74h/6NdwijCcQIePMw==
+X-Received: by 2002:a05:651c:1193:: with SMTP id w19mr8453804ljo.89.1599433801002;
+        Sun, 06 Sep 2020 16:10:01 -0700 (PDT)
+Received: from localhost.localdomain (h-82-196-111-59.NA.cust.bahnhof.se. [82.196.111.59])
+        by smtp.gmail.com with ESMTPSA id r17sm1325984ljp.117.2020.09.06.16.09.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 06 Sep 2020 16:10:00 -0700 (PDT)
+From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
+To:     linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Sudeep Holla <sudeep.holla@arm.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Subject: [PATCH 0/3] arm_scmi: Constify ops pointers in struct scmi_handle
+Date:   Mon,  7 Sep 2020 01:04:49 +0200
+Message-Id: <20200906230452.33410-1-rikard.falkeborn@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Freitag, 4. September 2020, 09:45:05 CEST schrieb Elaine Zhang:
-> support CLK_OF_DECLARE and builtin_platform_driver_probe
-> double clk init method.
-> add module author, description and license to support building
-> Soc Rk3399 clock driver as module.
-> 
-> Signed-off-by: Elaine Zhang <zhangqing@rock-chips.com>
-> Reviewed-by: Kever Yang <kever.yang@rock-chips.com>
-> ---
->  drivers/clk/rockchip/clk-rk3399.c | 55 +++++++++++++++++++++++++++++++
->  1 file changed, 55 insertions(+)
-> 
-> diff --git a/drivers/clk/rockchip/clk-rk3399.c b/drivers/clk/rockchip/clk-rk3399.c
-> index ce1d2446f142..40ff17aee5b6 100644
-> --- a/drivers/clk/rockchip/clk-rk3399.c
-> +++ b/drivers/clk/rockchip/clk-rk3399.c
-> @@ -5,9 +5,11 @@
->   */
->  
->  #include <linux/clk-provider.h>
-> +#include <linux/module.h>
->  #include <linux/io.h>
->  #include <linux/of.h>
->  #include <linux/of_address.h>
-> +#include <linux/of_device.h>
->  #include <linux/platform_device.h>
->  #include <linux/regmap.h>
->  #include <dt-bindings/clock/rk3399-cru.h>
-> @@ -1600,3 +1602,56 @@ static void __init rk3399_pmu_clk_init(struct device_node *np)
->  	rockchip_clk_of_add_provider(np, ctx);
->  }
->  CLK_OF_DECLARE(rk3399_cru_pmu, "rockchip,rk3399-pmucru", rk3399_pmu_clk_init);
-> +
-> +struct clk_rk3399_inits {
-> +		void (*inits)(struct device_node *np);
-> +};
-> +
-> +static const struct clk_rk3399_inits clk_rk3399_pmucru_init = {
-> +	.inits = rk3399_pmu_clk_init,
-> +};
-> +
-> +static const struct clk_rk3399_inits clk_rk3399_cru_init = {
-> +	.inits = rk3399_clk_init,
-> +};
-> +
-> +static const struct of_device_id clk_rk3399_match_table[] = {
-> +	{
-> +		.compatible = "rockchip,rk3399-cru",
-> +		.data = &clk_rk3399_cru_init,
-> +	},  {
-> +		.compatible = "rockchip,rk3399-pmucru",
-> +		.data = &clk_rk3399_pmucru_init,
-> +	},
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(of, clk_rk3399_match_table);
-> +
-> +static int __init clk_rk3399_probe(struct platform_device *pdev)
-> +{
-> +	struct device_node *np = pdev->dev.of_node;
-> +	const struct of_device_id *match;
-> +	const struct clk_rk3399_inits *init_data;
-> +
-> +	match = of_match_device(clk_rk3399_match_table, &pdev->dev);
-> +	if (!match || !match->data)
-> +		return -EINVAL;
-> +
-> +	init_data = match->data;
-> +	if (init_data->inits)
-> +		init_data->inits(np);
-> +
-> +	return 0;
-> +}
-> +
-> +static struct platform_driver clk_rk3399_driver = {
-> +	.driver		= {
-> +		.name	= "clk-rk3399",
-> +		.of_match_table = clk_rk3399_match_table,
+A small patch series aiming to constify static scmi_*_ops structs in
+drivers/firmware/arm_scmi. Since these are not modified, constify them
+to allow the compiler to put them in read-only memory.
 
-I guess we probably want
-		.suppress_bind_attrs = true,
+Rikard Falkeborn (3):
+  cpufreq: arm_scmi: Constify scmi_perf_ops pointers
+  firmware: arm_scmi: Constify ops pointers in scmi_handle
+  firmware: arm_scmi: Constify static scmi-ops
 
-here, because there is no unloading.
-Also what happens when you try to rmmod the module?
+ drivers/cpufreq/scmi-cpufreq.c      |  6 +++---
+ drivers/firmware/arm_scmi/clock.c   |  2 +-
+ drivers/firmware/arm_scmi/common.h  |  2 +-
+ drivers/firmware/arm_scmi/mailbox.c |  2 +-
+ drivers/firmware/arm_scmi/notify.c  |  2 +-
+ drivers/firmware/arm_scmi/perf.c    |  2 +-
+ drivers/firmware/arm_scmi/power.c   |  2 +-
+ drivers/firmware/arm_scmi/reset.c   |  2 +-
+ drivers/firmware/arm_scmi/sensors.c |  2 +-
+ drivers/firmware/arm_scmi/smc.c     |  2 +-
+ include/linux/scmi_protocol.h       | 12 ++++++------
+ 11 files changed, 18 insertions(+), 18 deletions(-)
 
-Heiko
-
+-- 
+2.28.0
 
