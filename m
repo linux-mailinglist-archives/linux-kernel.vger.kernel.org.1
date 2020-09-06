@@ -2,120 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9F9D25F057
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Sep 2020 21:52:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EA1925F04E
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Sep 2020 21:51:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726769AbgIFTwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Sep 2020 15:52:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41366 "EHLO
+        id S1726640AbgIFTvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Sep 2020 15:51:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726493AbgIFTva (ORCPT
+        with ESMTP id S1726564AbgIFTvj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Sep 2020 15:51:30 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ADC5C061756;
-        Sun,  6 Sep 2020 12:51:28 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id d15so5546574lfq.11;
-        Sun, 06 Sep 2020 12:51:28 -0700 (PDT)
+        Sun, 6 Sep 2020 15:51:39 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2135C061757;
+        Sun,  6 Sep 2020 12:51:34 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id e16so13105030wrm.2;
+        Sun, 06 Sep 2020 12:51:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=35wLUHHiL0jcYl7dr+ydbL6W/M+IENF1DgF9AQYM8t8=;
-        b=Oobg5koT9Ox8v79M5WhWmKiVhX59pyNIUp9/wkzJHs3WGEBM3+96r9IBtOQktr1S/d
-         QnHjBaLyyhA2oWdyy1KBBJULvt16SxQxcsaE/iUac+Eb1nPlamVSUD5vhGuXl5SSbe11
-         TZKFDHVz7icmCrmH3fnIR4gwjbADsDpZhue2J8nRWMnKk8GLaxP9CRFnZYkgrqdS7emM
-         hsUN+OmSZnxiSEnQaxJ+UBuYxlYjDMDKm9VHwRcoo8aogoVFWVLxtpwEftu4ChkP2XVe
-         QejLkAIFhFCu6RS0q1Y+Qg1F1176Dk+blJNhugmazRt/Rm/1qHBqUZCSvCRB7YYCXLLq
-         2B1g==
+        bh=/S5Im9/ROfqvfa1Sle39Oh3fNtnOr9/GsxUV+XEYiDw=;
+        b=hJUJQyDBSxhKiCexl2PgZJhKdzT1VEGaaTOtZpUHYMSjpePpKg3Ub8mYNYHHZuW6m1
+         wRWfcRi8mvws/10gVmCI/hyZRHdBL0E1NfIz34/SIVnBfA1XvCNMuTHc8h8Skht+q8+/
+         KC8KdC8tXzVu1uU/K2ISF+bYH8OmdKNd73tKnJ6attwIhoTHjLGS193b8VgXN0iC0kQi
+         oSlfq2VRguvdtrDgSoSxFhLq3h7jhcZfHC501BSjM8rCUjOOsD6YyV2Wly9iL6nHug7T
+         za95kOVxzlNPNFR/VJxCbhRh6Wgo8uuARFI2Hlg/SomTZaSkSz9Kw+9CAuytCHRXHE5k
+         oG/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=35wLUHHiL0jcYl7dr+ydbL6W/M+IENF1DgF9AQYM8t8=;
-        b=c9xP2TlLGJoyHP4mb33u8AzR/THQCw4x4tEMJSQ/ohg4NAjWzasJ2ijBPg3sVZLEnS
-         M3PrpEo0UFft78XjG2ibAVh69kUhI3eQRk9+ynYf8uBvLawASxOHm8MefOpDWzJSdeYD
-         T1XkaZRU4JGwiCshBwKNjKO+03KSSh8YpA1Fz6PBn57JhSKVHyXIrPfB7XSd8OYPeitf
-         3fklXST9RCehisA72W8qHUIs8zAMC0ZRQzrlHih8SvY5XMb6mhsqH6Un0zF42WoEl+ZW
-         YO/XUT1PH1t9G1sufBIL8RVsoXDjrJfEw1IaHlMzLod8LWMjWli3MWmiVrABcnFl2Hyp
-         vOOQ==
-X-Gm-Message-State: AOAM533ciFEBd13uEkkpUafX5Y45NdVI6JqWXdIf4Xf7Y4XuL6ZIE3gE
-        KrSpBSZOjX8r5qDU4hFBqyg=
-X-Google-Smtp-Source: ABdhPJz1lqvoiCo/WdRrNpCNNEaDozq2pMzlNdc8l1vYlS76MU5hhy2Z1yaXF0kfHPjprP58FS8jTw==
-X-Received: by 2002:a19:6411:: with SMTP id y17mr8719678lfb.199.1599421887058;
-        Sun, 06 Sep 2020 12:51:27 -0700 (PDT)
-Received: from localhost.localdomain (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
-        by smtp.gmail.com with ESMTPSA id b7sm4942574lfq.36.2020.09.06.12.51.26
+        bh=/S5Im9/ROfqvfa1Sle39Oh3fNtnOr9/GsxUV+XEYiDw=;
+        b=qHeJNAPqZvKWJ5XIB1l1k8m3359DbZrz6WzbjChu4hy/cgc/6/XAAvmLliAQ+jdSs4
+         bQn/qLsFteyrtGuk4dvs5eGuBeY2KD8q4tBtt69tPioP/l2JXAo9x2A22sn2BbT/gMXE
+         di8zcfkOEbQQ4FA4kCBDQUPLm/+6p9Fv8kfzhj0+kUdje4whi021DvSVzvdQgPkXuAmZ
+         e2bWArKBrbE07IkDHvMZwH2DcqZRkcJLMZMq4jGa508ibkJ4nKGDbHbZfPqA/Jm/4WaA
+         mCSD/8UR/W46QXp0Ebj9QsHUZrbPEB3EX4ko0MkUPIwPeYcYvsJN7c6l9WqgQOpMB2Kw
+         xyyQ==
+X-Gm-Message-State: AOAM5325tPdoc7z+uwGOMSRw3FE9UiBNOF1WWJViyV6Iz4nagntr/ljX
+        HbF8niEna+v5pnQz6mLs3DU=
+X-Google-Smtp-Source: ABdhPJyfbXY479yfemJKmQe+tgYWfEuqdjjGMulgXwrkYJMCIY8BbPfaKy3e2vUEOCZ7t9lim3Q18g==
+X-Received: by 2002:a5d:4d8a:: with SMTP id b10mr12495522wru.82.1599421893393;
+        Sun, 06 Sep 2020 12:51:33 -0700 (PDT)
+Received: from localhost.localdomain (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
+        by smtp.gmail.com with ESMTPSA id q6sm22817479wmq.19.2020.09.06.12.51.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 06 Sep 2020 12:51:26 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Lubomir Rintel <lkundrak@v3.sk>
-Cc:     devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-leds@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 5/5] ARM: tegra: acer-a500: Add Embedded Controller
-Date:   Sun,  6 Sep 2020 22:51:03 +0300
-Message-Id: <20200906195103.1347-6-digetx@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200906195103.1347-1-digetx@gmail.com>
-References: <20200906195103.1347-1-digetx@gmail.com>
+        Sun, 06 Sep 2020 12:51:32 -0700 (PDT)
+From:   Alex Dewar <alex.dewar90@gmail.com>
+Cc:     Alex Dewar <alex.dewar90@gmail.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andrew Murray <amurray@thegoodpenguin.co.uk>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Vidya Sagar <vidyas@nvidia.com>,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Jonathan Chocron <jonnyc@amazon.com>,
+        Dilip Kota <eswara.kota@linux.intel.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Subject: [PATCH v2] PCI: keystone: Enable compile-testing on !ARM
+Date:   Sun,  6 Sep 2020 20:51:27 +0100
+Message-Id: <20200906195128.279342-1-alex.dewar90@gmail.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200906194850.63glbnehjcuw356k@lenovo-laptop>
+References: <20200906194850.63glbnehjcuw356k@lenovo-laptop>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds device-tree node for the Embedded Controller which is
-found on the Picasso board. The Embedded Controller itself is ENE KB930,
-it provides functions like battery-gauge/LED/GPIO/etc and it uses firmware
-that is specifically customized for the Acer A500 device.
+Currently the Keystone driver can only be compile-tested on ARM, but
+this restriction seems unnecessary. Get rid of it to increase test
+coverage.
 
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+Build-tested with allyesconfig on x86, ppc, mips and riscv.
+
+Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
 ---
- arch/arm/boot/dts/tegra20-acer-a500-picasso.dts | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+ drivers/pci/controller/dwc/Kconfig | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts b/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts
-index 2d683c9a1a5d..f92712e4bd34 100644
---- a/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts
-+++ b/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts
-@@ -502,6 +502,16 @@ panel_ddc: i2c@1 {
- 			reg = <1>;
- 			#address-cells = <1>;
- 			#size-cells = <0>;
-+
-+			embedded-controller@58 {
-+				compatible = "acer,a500-iconia-ec", "ene,kb930";
-+				reg = <0x58>;
-+
-+				system-power-controller;
-+
-+				monitored-battery = <&bat1010>;
-+				power-supplies = <&mains>;
-+			};
- 		};
- 	};
+diff --git a/drivers/pci/controller/dwc/Kconfig b/drivers/pci/controller/dwc/Kconfig
+index 044a3761c44f..ca36691314ed 100644
+--- a/drivers/pci/controller/dwc/Kconfig
++++ b/drivers/pci/controller/dwc/Kconfig
+@@ -107,7 +107,7 @@ config PCI_KEYSTONE
  
-@@ -780,6 +790,13 @@ backlight: backlight {
- 		default-brightness-level = <20>;
- 	};
+ config PCI_KEYSTONE_HOST
+ 	bool "PCI Keystone Host Mode"
+-	depends on ARCH_KEYSTONE || ARCH_K3 || ((ARM || ARM64) && COMPILE_TEST)
++	depends on ARCH_KEYSTONE || ARCH_K3 || COMPILE_TEST
+ 	depends on PCI_MSI_IRQ_DOMAIN
+ 	select PCIE_DW_HOST
+ 	select PCI_KEYSTONE
+@@ -119,7 +119,7 @@ config PCI_KEYSTONE_HOST
  
-+	bat1010: battery-2s1p {
-+		compatible = "simple-battery";
-+		charge-full-design-microamp-hours = <3260000>;
-+		energy-full-design-microwatt-hours = <24000000>;
-+		operating-range-celsius = <0 40>;
-+	};
-+
- 	/* PMIC has a built-in 32KHz oscillator which is used by PMC */
- 	clk32k_in: clock@0 {
- 		compatible = "fixed-clock";
+ config PCI_KEYSTONE_EP
+ 	bool "PCI Keystone Endpoint Mode"
+-	depends on ARCH_KEYSTONE || ARCH_K3 || ((ARM || ARM64) && COMPILE_TEST)
++	depends on ARCH_KEYSTONE || ARCH_K3 || COMPILE_TEST
+ 	depends on PCI_ENDPOINT
+ 	select PCIE_DW_EP
+ 	select PCI_KEYSTONE
 -- 
-2.27.0
+2.28.0
 
