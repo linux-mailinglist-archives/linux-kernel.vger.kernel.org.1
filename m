@@ -2,70 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F365125EE11
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Sep 2020 16:16:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A74FA25EE1B
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Sep 2020 16:21:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728891AbgIFOQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Sep 2020 10:16:37 -0400
-Received: from mout.gmx.net ([212.227.15.19]:55595 "EHLO mout.gmx.net"
+        id S1728925AbgIFOUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Sep 2020 10:20:46 -0400
+Received: from crapouillou.net ([89.234.176.41]:48892 "EHLO crapouillou.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725803AbgIFOMK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Sep 2020 10:12:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1599401519;
-        bh=/6GY+vCiDq3r2TFREQwT9xodDtp5h9Zbvasvf+ukhDc=;
-        h=X-UI-Sender-Class:Date:From:To:Subject:In-Reply-To;
-        b=FzaEsvjPu8ITVusA57PsV8g3gSQLZ1y80utQdvs+suN3Y3CB1ZQZFpaxdCyvVYfIy
-         zxR4/zurThEuOnGMyAAawI+Iahj2/8nmBC8TY4KA7VYWLcHiCL9FFbDhj0e/k9Yt9e
-         8kJVYqrJGrMFaWR3mrdwE9tUAGd491SucyRS/zfg=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from ubuntu ([79.150.73.70]) by mail.gmx.com (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MnakR-1kvvFC2Psz-00jajz for
- <linux-kernel@vger.kernel.org>; Sun, 06 Sep 2020 16:11:59 +0200
-Date:   Sun, 6 Sep 2020 16:11:57 +0200
-From:   John Wood <john.wood@gmx.com>
-To:     linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 0/9] Fork brute force attack mitigation (fbfam)
-Message-ID: <20200906141157.GR4823@ubuntu>
+        id S1726931AbgIFOTf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Sep 2020 10:19:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+        s=mail; t=1599401879; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3VGHxb0zBRlqfKn0TJ498/xXSefydGPoiEnMkv22tQ0=;
+        b=hdbm0ytaOnXi89RB0Ef43tYbHh3eoWK9xR3GTw9tjGSrPusL+OTC+XpTtfaiR7p3ebAteW
+        usn63/BGzTF+UuzzcLEQy6tZqhtUdaCml0oCMJdEXbwTBppxkqjy6Mmw0ROaCq+Ty5EoA7
+        ZYw0x9ULDg04Fp9WeSFBtfHFnQpR8N4=
+Date:   Sun, 06 Sep 2020 16:17:47 +0200
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH v2 1/3] pinctrl: Ingenic: Add SSI pins support for JZ4770
+ and JZ4780.
+To:     =?UTF-8?b?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>
+Cc:     linus.walleij@linaro.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, aric.pzqi@ingenic.com,
+        dongsheng.qiu@ingenic.com, rick.tyliu@ingenic.com,
+        yanfei.li@ingenic.com, sernia.zhou@foxmail.com,
+        zhenwenjin@gmail.com
+Message-Id: <NDQ8GQ.2F1QH5XYPGSV1@crapouillou.net>
+In-Reply-To: <1QY4GQ.ER1P2TWMJCKH@crapouillou.net>
+References: <20200831154324.64951-1-zhouyanjie@wanyeetech.com>
+        <20200831154324.64951-2-zhouyanjie@wanyeetech.com>
+        <1QY4GQ.ER1P2TWMJCKH@crapouillou.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200906121544.4204-1-john.wood@gmx.com>
-X-Provags-ID: V03:K1:0WGGKJgS5fB4brnA/PN9yNFgS0Z3xvhMNX8EQdRGOiScZx+Sdzh
- qaFnuj8ezjz66hFxxnqsqeof9KpxbaFdTLEeMKJDHmjnmfTJwAHBrwhrZSXXeGwKxtNZhog
- k7aU5VUOJQsP25kfiGcFcD9RUyt/eLUb/CPlpACtM5/QcildxvK+aGgGb9Yd4k4wsuUNZ8I
- M1D/5OKWtGAs66zKEJxnw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:TUIO48j3nRI=:LFu2dWOzrE88OxVlQMwfl4
- DAZFCn2tGSqzDf5ewT+EFEUDxtpeobeq3MtBs/e1cg9MrRo05q1ltATfl7Zgkbam83/EkLXCf
- oseHIRnHOTO6pSWv85HYS9UIru06m/pn/CJQIAx6wlY10sw4penZJDCImBhRMThTu0BMwDyd0
- 5YpSyJkKxVgdt4hT4I/kuOZj67fSOyg8Fzrv6Fc4ASr1kD7wQobHBwJ+pMIlB/5c/bHjhxRgF
- EdZJfqxH1LX2tioVDcexpQILD3wNRwt8waBq9zxgF7LUTp1boC59IXJQUcrbKGoRJjpmDbvbl
- yNV1aQpTaogBcjJ/aTmHOdueHrO1zkham9GHTcCm2fd0uV8s8ZUp2k9ypkN9WXueqGedvw/bq
- yObLkZ1+leqKMIHgnSufO/oZ9PVFIW+N9JoxMtHiYhkbVdCnoJW+5miPkfZzNGl/RH3jAWh+B
- QEye7t+EHNAVUUodzp+B9yVJ7xKXrUSAav7EQiCNzi1aOE+Ttx1G51BF0a+wwdvm5NLTRln0Q
- dUJQMB0X/4To6OfUbB3KoLTKNcwr/OE8WrD/shPucYrUip9WT4g24NowX/RBQuXg4YPXAsWlC
- /zYYaln0/cQLuLK59D0gT5eJaxye/bQ1BLoELb/JVvoOQvzKv+T+8NjL0Syjg8tgVMIjiLww8
- W/tKEJDtAPig51SemhvCQ+qE6VswSNjdAO6aaCO/+wBn/xAGKycDIr60vnDRZoif0VPhZKdxM
- CHZtosUw9WfVzieJRY2ZJcUhcGDSjf0JP7xeDOzFJWl6ggf4cc8EQEJih6Qm+6dZgmwNP6cZp
- q4a4CFTYsRoQUY3IyIST2biFJ/cVhhILUYYoMNcNEKjAznUWeZ/vMJfFK+Q22fHJsLgz1aDD6
- 46jqdDcomKocJekqsYUi5SLWhdqcn3KFwTz1TX+HE2DpKckVGOwafEIi0Lh5irZCHpqypHZwE
- MzBaQM4ntpVyrh0RCyfkgHnbRy/nwJKrAAJ0E38ccookPnX2eXAlkfx6ox5OoxW51nkUrBuMY
- HCAlvLJTEV0CVZPSwdVJkACHivzcBSXj0aEqfNF1Htk3EwIxnIB+uY45RY4ERONiexafHiDc5
- 7zZPV+jtHcsjcdevAVB9huoaqkAhVXiqGtdPITfudPfC9LwkrHVXpDMxB7eLvJc8CmCgAt5I3
- oVTFOoRQLVHLiW8PslDC/3al224KaZMFxeSy8f10L2WLGYdHxz2Uf0jpTac7CT3nKJeOZjeiE
- KKZnED5gJh3vVIsBwNcLACYBD25iLKacGvVQrWg==
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi. I have problems with my email account to send the patch serie  [1] to
-all the recipients. My account blocks if I send an email to a big amount of
-recipients.
+Hi Zhou,
 
-Please don't reply to this message.
-Thanks
+Le ven. 4 sept. 2020 =C3=A0 15:27, Paul Cercueil <paul@crapouillou.net> a=20
+=C3=A9crit :
+> Hi Zhou,
+>=20
+> Le lun. 31 ao=C3=BBt 2020 =C3=A0 23:43, =E5=91=A8=E7=90=B0=E6=9D=B0 (Zhou=
+ Yanjie)=20
+> <zhouyanjie@wanyeetech.com> a =C3=A9crit :
+>> Add SSI pins support for the JZ4770 SoC and the
+>> JZ4780 SoC from Ingenic.
+>>=20
+>> Signed-off-by: =E5=91=A8=E7=90=B0=E6=9D=B0 (Zhou Yanjie) <zhouyanjie@wan=
+yeetech.com>
+>> ---
+>>=20
+>> Notes:
+>>     v1->v2:
+>>     Rebase on top of kernel 5.9-rc3.
+>>=20
+>>  drivers/pinctrl/pinctrl-ingenic.c | 267=20
+>> =7F++++++++++++++++++++++++++++++++++++++
+>>  1 file changed, 267 insertions(+)
+>>=20
+>> diff --git a/drivers/pinctrl/pinctrl-ingenic.c=20
+>> =7Fb/drivers/pinctrl/pinctrl-ingenic.c
+>> index a8d1b53ec4c1..00f29fd684fa 100644
+>> --- a/drivers/pinctrl/pinctrl-ingenic.c
+>> +++ b/drivers/pinctrl/pinctrl-ingenic.c
+>> @@ -633,6 +633,46 @@ static int jz4770_uart2_data_pins[] =3D { 0x5c,=20
+>> =7F0x5e, };
+>>  static int jz4770_uart2_hwflow_pins[] =3D { 0x5d, 0x5f, };
+>>  static int jz4770_uart3_data_pins[] =3D { 0x6c, 0x85, };
+>>  static int jz4770_uart3_hwflow_pins[] =3D { 0x88, 0x89, };
+>> +static int jz4770_ssi0_dt_a_pins[] =3D { 0x15, };
+>> +static int jz4770_ssi0_dt_b_pins[] =3D { 0x35, };
+>> +static int jz4770_ssi0_dt_d_pins[] =3D { 0x55, };
+>> +static int jz4770_ssi0_dt_e_pins[] =3D { 0x71, };
+>> +static int jz4770_ssi0_dr_a_pins[] =3D { 0x14, };
+>> +static int jz4770_ssi0_dr_b_pins[] =3D { 0x34, };
+>> +static int jz4770_ssi0_dr_d_pins[] =3D { 0x54, };
+>> +static int jz4770_ssi0_dr_e_pins[] =3D { 0x6e, };
+>> +static int jz4770_ssi0_clk_a_pins[] =3D { 0x12, };
+>> +static int jz4770_ssi0_clk_b_pins[] =3D { 0x3c, };
+>> +static int jz4770_ssi0_clk_d_pins[] =3D { 0x58, };
+>> +static int jz4770_ssi0_clk_e_pins[] =3D { 0x6f, };
+>> +static int jz4770_ssi0_gpc_b_pins[] =3D { 0x3e, };
+>> +static int jz4770_ssi0_gpc_d_pins[] =3D { 0x56, };
+>> +static int jz4770_ssi0_gpc_e_pins[] =3D { 0x73, };
+>> +static int jz4770_ssi0_ce0_a_pins[] =3D { 0x13, };
+>> +static int jz4770_ssi0_ce0_b_pins[] =3D { 0x3d, };
+>> +static int jz4770_ssi0_ce0_d_pins[] =3D { 0x59, };
+>> +static int jz4770_ssi0_ce0_e_pins[] =3D { 0x70, };
+>> +static int jz4770_ssi0_ce1_b_pins[] =3D { 0x3f, };
+>> +static int jz4770_ssi0_ce1_d_pins[] =3D { 0x57, };
+>> +static int jz4770_ssi0_ce1_e_pins[] =3D { 0x72, };
+>> +static int jz4770_ssi1_dt_b_pins[] =3D { 0x35, };
+>> +static int jz4770_ssi1_dt_d_pins[] =3D { 0x55, };
+>> +static int jz4770_ssi1_dt_e_pins[] =3D { 0x71, };
+>> +static int jz4770_ssi1_dr_b_pins[] =3D { 0x34, };
+>> +static int jz4770_ssi1_dr_d_pins[] =3D { 0x54, };
+>> +static int jz4770_ssi1_dr_e_pins[] =3D { 0x6e, };
+>> +static int jz4770_ssi1_clk_b_pins[] =3D { 0x3c, };
+>> +static int jz4770_ssi1_clk_d_pins[] =3D { 0x58, };
+>> +static int jz4770_ssi1_clk_e_pins[] =3D { 0x6f, };
+>> +static int jz4770_ssi1_gpc_b_pins[] =3D { 0x3e, };
+>> +static int jz4770_ssi1_gpc_d_pins[] =3D { 0x56, };
+>> +static int jz4770_ssi1_gpc_e_pins[] =3D { 0x73, };
+>> +static int jz4770_ssi1_ce0_b_pins[] =3D { 0x3d, };
+>> +static int jz4770_ssi1_ce0_d_pins[] =3D { 0x59, };
+>> +static int jz4770_ssi1_ce0_e_pins[] =3D { 0x70, };
+>> +static int jz4770_ssi1_ce1_b_pins[] =3D { 0x3f, };
+>> +static int jz4770_ssi1_ce1_d_pins[] =3D { 0x57, };
+>> +static int jz4770_ssi1_ce1_e_pins[] =3D { 0x72, };
+>>  static int jz4770_mmc0_1bit_a_pins[] =3D { 0x12, 0x13, 0x14, };
+>>  static int jz4770_mmc0_4bit_a_pins[] =3D { 0x15, 0x16, 0x17, };
+>>  static int jz4770_mmc0_1bit_e_pins[] =3D { 0x9c, 0x9d, 0x94, };
+>> @@ -703,6 +743,46 @@ static int jz4770_uart2_data_funcs[] =3D { 0, 0,=20
+>> };
+>>  static int jz4770_uart2_hwflow_funcs[] =3D { 0, 0, };
+>>  static int jz4770_uart3_data_funcs[] =3D { 0, 1, };
+>>  static int jz4770_uart3_hwflow_funcs[] =3D { 0, 0, };
+>> +static int jz4770_ssi0_dt_a_funcs[] =3D { 2, };
+>> +static int jz4770_ssi0_dt_b_funcs[] =3D { 1, };
+>> +static int jz4770_ssi0_dt_d_funcs[] =3D { 1, };
+>> +static int jz4770_ssi0_dt_e_funcs[] =3D { 0, };
+>> +static int jz4770_ssi0_dr_a_funcs[] =3D { 1, };
+>> +static int jz4770_ssi0_dr_b_funcs[] =3D { 1, };
+>> +static int jz4770_ssi0_dr_d_funcs[] =3D { 1, };
+>> +static int jz4770_ssi0_dr_e_funcs[] =3D { 0, };
+>> +static int jz4770_ssi0_clk_a_funcs[] =3D { 2, };
+>> +static int jz4770_ssi0_clk_b_funcs[] =3D { 1, };
+>> +static int jz4770_ssi0_clk_d_funcs[] =3D { 1, };
+>> +static int jz4770_ssi0_clk_e_funcs[] =3D { 0, };
+>> +static int jz4770_ssi0_gpc_b_funcs[] =3D { 1, };
+>> +static int jz4770_ssi0_gpc_d_funcs[] =3D { 1, };
+>> +static int jz4770_ssi0_gpc_e_funcs[] =3D { 0, };
+>> +static int jz4770_ssi0_ce0_a_funcs[] =3D { 2, };
+>> +static int jz4770_ssi0_ce0_b_funcs[] =3D { 1, };
+>> +static int jz4770_ssi0_ce0_d_funcs[] =3D { 1, };
+>> +static int jz4770_ssi0_ce0_e_funcs[] =3D { 0, };
+>> +static int jz4770_ssi0_ce1_b_funcs[] =3D { 1, };
+>> +static int jz4770_ssi0_ce1_d_funcs[] =3D { 1, };
+>> +static int jz4770_ssi0_ce1_e_funcs[] =3D { 0, };
+>> +static int jz4770_ssi1_dt_b_funcs[] =3D { 2, };
+>> +static int jz4770_ssi1_dt_d_funcs[] =3D { 2, };
+>> +static int jz4770_ssi1_dt_e_funcs[] =3D { 1, };
+>> +static int jz4770_ssi1_dr_b_funcs[] =3D { 2, };
+>> +static int jz4770_ssi1_dr_d_funcs[] =3D { 2, };
+>> +static int jz4770_ssi1_dr_e_funcs[] =3D { 1, };
+>> +static int jz4770_ssi1_clk_b_funcs[] =3D { 2, };
+>> +static int jz4770_ssi1_clk_d_funcs[] =3D { 2, };
+>> +static int jz4770_ssi1_clk_e_funcs[] =3D { 1, };
+>> +static int jz4770_ssi1_gpc_b_funcs[] =3D { 2, };
+>> +static int jz4770_ssi1_gpc_d_funcs[] =3D { 2, };
+>> +static int jz4770_ssi1_gpc_e_funcs[] =3D { 1, };
+>> +static int jz4770_ssi1_ce0_b_funcs[] =3D { 2, };
+>> +static int jz4770_ssi1_ce0_d_funcs[] =3D { 2, };
+>> +static int jz4770_ssi1_ce0_e_funcs[] =3D { 1, };
+>> +static int jz4770_ssi1_ce1_b_funcs[] =3D { 2, };
+>> +static int jz4770_ssi1_ce1_d_funcs[] =3D { 2, };
+>> +static int jz4770_ssi1_ce1_e_funcs[] =3D { 1, };
+>>  static int jz4770_mmc0_1bit_a_funcs[] =3D { 1, 1, 0, };
+>>  static int jz4770_mmc0_4bit_a_funcs[] =3D { 1, 1, 1, };
+>>  static int jz4770_mmc0_1bit_e_funcs[] =3D { 0, 0, 0, };
+>> @@ -763,6 +843,46 @@ static const struct group_desc jz4770_groups[]=20
+>> =3D =7F{
+>>  	INGENIC_PIN_GROUP("uart2-hwflow", jz4770_uart2_hwflow),
+>>  	INGENIC_PIN_GROUP("uart3-data", jz4770_uart3_data),
+>>  	INGENIC_PIN_GROUP("uart3-hwflow", jz4770_uart3_hwflow),
+>> +	INGENIC_PIN_GROUP("ssi0-dt-a", jz4770_ssi0_dt_a),
+>> +	INGENIC_PIN_GROUP("ssi0-dt-b", jz4770_ssi0_dt_b),
+>> +	INGENIC_PIN_GROUP("ssi0-dt-d", jz4770_ssi0_dt_d),
+>> +	INGENIC_PIN_GROUP("ssi0-dt-e", jz4770_ssi0_dt_e),
+>> +	INGENIC_PIN_GROUP("ssi0-dr-a", jz4770_ssi0_dr_a),
+>> +	INGENIC_PIN_GROUP("ssi0-dr-b", jz4770_ssi0_dr_b),
+>> +	INGENIC_PIN_GROUP("ssi0-dr-d", jz4770_ssi0_dr_d),
+>> +	INGENIC_PIN_GROUP("ssi0-dr-e", jz4770_ssi0_dr_e),
+>=20
+> The common acronyms associated with SPI are MISO / MOSI, I think it=20
+> would make sense to use them instead of DR / DT. What do you think?
 
-[1] https://lore.kernel.org/kernel-hardening/20200906121544.4204-1-john.wood@gmx.com/
+Just noticed that the X1000 has already SPI pins named DR / DT, so=20
+disregard my comment, it's better to use the same name convention=20
+across the whole file.
+
+So:
+Reviewed-by: Paul Cercueil <paul@crapouillou.net>
+
+Cheers,
+-Paul
+
 
