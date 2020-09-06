@@ -2,55 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B2EC25F066
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Sep 2020 21:54:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4A4425F069
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Sep 2020 21:56:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726592AbgIFTyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Sep 2020 15:54:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58756 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726127AbgIFTyA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Sep 2020 15:54:00 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1E6D2208B3;
-        Sun,  6 Sep 2020 19:54:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599422040;
-        bh=oBKLczEV77qvBkz0mJGWX9SWJA35KC0/Ff6JsnS75+A=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=IqDexc9OopTiNlPmkyHtBluvxD5NQ3BP9gq8/tpKP+k/YItX1qBcIgPW8Q+99YJa8
-         fiw9GOKVDtAMwd+7l+Bmqz21e4gSE/cVI/QQDTN+p1vuHDqgemnNpxsj1YHgMjkXYN
-         WQLB6hohGHHlMZ4ioPsoiRr/euBi1oOwPInQVxW0=
-Date:   Sun, 6 Sep 2020 12:53:58 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     benve@cisco.com, govind@gmx.com, davem@davemloft.net,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] enic: switch from 'pci_' to 'dma_' API
-Message-ID: <20200906125358.04be09a6@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20200906124541.309003-1-christophe.jaillet@wanadoo.fr>
-References: <20200906124541.309003-1-christophe.jaillet@wanadoo.fr>
+        id S1726622AbgIFT4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Sep 2020 15:56:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42066 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725939AbgIFT4I (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Sep 2020 15:56:08 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1190FC061573;
+        Sun,  6 Sep 2020 12:56:07 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id j7so670843plk.11;
+        Sun, 06 Sep 2020 12:56:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=1IXttThf4jyHpYSWfgTpKyb7p67P6B6pcEltUS/FQSw=;
+        b=ndBAShkgtmaR2l9T41FfLSCmxUBwDA5Bzi8ffM8TmGdSRjotboIlsWYvt2jqcIq3nW
+         WsOpk8vfVtQXuu3464m3LNfvPHk0WwTdBcxguc4KabSRpSKS7cwtmsnUphP0pmU0hm0j
+         niMqpdh73W51ys/oGjcnCuN4hU8veqIA0DP5oix5bm4jvEbokSfoObGNEE9R4woYGJ5w
+         1tgnGYBeVnGWDS+jfeQXkxNcXMzxBIxi2SfMXHq+NRr582XbVjYXBnrjp0MpgkpL0a2j
+         0QyjDZAPb8waTvPrrGgQPRxhP+41MGUI0r+kXVxOXN9NpY/YA4kolpZxwBmLMApEkRZZ
+         dREA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=1IXttThf4jyHpYSWfgTpKyb7p67P6B6pcEltUS/FQSw=;
+        b=NjPH0IEz17BQVNzgDeELCyOz8cqsz+QuljzoQjjIi6wWSzrZ91sFyxrlnrUzbdveXZ
+         /Xc1iKQIlcz+IHR6sUUXdRDNpH4es/2ZwidA/VquKGZp3vIFsN5vfW9VDIAkii0rURGQ
+         CaB7Mcsx9dXB7a8rFIWgccvgSZhIgXDUikXtaVi3KEaVV58T9iaaQr9xwzPrDgcH2fGt
+         3Od1V1BXvrYpPpAsPW1/utcDW0L2ZTLQibZ6jopLfEJURJYOXR8hJgJ4VX2M0NpF9zox
+         nm0zPdLtBWqB2tQ3GIZjw2CVto4wwFN+8kKNWD1SJfdsHR+8ZBE9bxHoM6dv1dsFKVbi
+         D7Lg==
+X-Gm-Message-State: AOAM533sIFBhuZcIaxFu97aHs4HSbxn+BQnj4hGlsso5D9riwOGMb3vR
+        XqVvZbqPo/UJQ6txfpLSNLw=
+X-Google-Smtp-Source: ABdhPJycC1t0Ejn5FeHP5HT9zklQHsEf7BcHDQ8yq8+00RuJH+GXazfojGRIxUWnvrKWq8QuAu4SMQ==
+X-Received: by 2002:a17:90a:e2cc:: with SMTP id fr12mr17564131pjb.125.1599422161888;
+        Sun, 06 Sep 2020 12:56:01 -0700 (PDT)
+Received: from [10.230.30.107] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id o30sm11023817pgc.45.2020.09.06.12.56.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 06 Sep 2020 12:56:01 -0700 (PDT)
+Subject: Re: [PATCH] MAINTAINERS: Add entry for Broadcom BDC driver
+To:     linux-usb@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com, balbi@kernel.org,
+        gregkh@linuxfoundation.org, matthias.bgg@gmail.com,
+        swboyd@chromium.org, chunfeng.yun@mediatek.com,
+        linux-arm-kernel@lists.infradead.org, alcooperx@gmail.com
+References: <20200710034806.15650-1-f.fainelli@gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <830cd104-87de-4246-35ff-47a0ed5b05a9@gmail.com>
+Date:   Sun, 6 Sep 2020 12:55:59 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.2.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20200710034806.15650-1-f.fainelli@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun,  6 Sep 2020 14:45:41 +0200 Christophe JAILLET wrote:
-> The wrappers in include/linux/pci-dma-compat.h should go away.
-> 
-> The patch has been generated with the coccinelle script below and has been
-> hand modified to replace GFP_ with a correct flag.
-> It has been compile tested.
-> 
-> When memory is allocated in 'vnic_dev_classifier()', 'vnic_dev_fw_info()',
-> 'vnic_dev_notify_set()' and 'vnic_dev_stats_dump()' (vnic_dev.c) GFP_ATOMIC
-> must be used because its callers take a spinlock before calling these
-> functions.
 
-Applied, thank you!
+
+On 7/9/2020 8:48 PM, Florian Fainelli wrote:
+> The Broadcom BDC driver did not have a MAINTAINERS entry which made it
+> escape review from Al and myself, add an entry so the relevant mailing
+> lists and people are copied.
+> 
+> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+
+This patch still does not seem to have been picked up (not seeing it in 
+linux-next), can this be applied so we have an accurate maintainer 
+information for this driver?
+
+Thanks
+
+> ---
+>   MAINTAINERS | 8 ++++++++
+>   1 file changed, 8 insertions(+)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 1d4aa7f942de..360d001b81b8 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -3434,6 +3434,14 @@ F:	drivers/bus/brcmstb_gisb.c
+>   F:	drivers/pci/controller/pcie-brcmstb.c
+>   N:	brcmstb
+>   
+> +BROADCOM BDC DRIVER
+> +M:	Al Cooper <alcooperx@gmail.com>
+> +L:	linux-usb@vger.kernel.org
+> +L:	bcm-kernel-feedback-list@broadcom.com
+> +S:	Maintained
+> +F:	Documentation/devicetree/bindings/usb/brcm,bdc.txt
+> +F:	drivers/usb/gadget/udc/bdc/
+> +
+>   BROADCOM BMIPS CPUFREQ DRIVER
+>   M:	Markus Mayer <mmayer@broadcom.com>
+>   M:	bcm-kernel-feedback-list@broadcom.com
+> 
+
+-- 
+Florian
