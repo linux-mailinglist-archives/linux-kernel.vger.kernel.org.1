@@ -2,177 +2,586 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BF5425EF01
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Sep 2020 18:09:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FD5225EF03
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Sep 2020 18:11:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729049AbgIFQJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Sep 2020 12:09:08 -0400
-Received: from mail-bn8nam08on2048.outbound.protection.outlook.com ([40.107.100.48]:15521
-        "EHLO NAM04-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726931AbgIFQJB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Sep 2020 12:09:01 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IUPD+xFYsV39rI+eUUkHfqsi8ZVz4qTldYQz2pRr2tZVdNOS25jroDDmiiV7MM39Mi2CYRK3pHR7ngqi3P52/x2H+I3P6wbzPQ6G1BXSklfXAyEjjA44ZAxf9TNY6mTirVH3qE86lBoBfngfjlKsB0/IVWmYLi/JFDNSn1rZ5qDs5GyJKJdn1dZyIQ1sD78XvA5yM0BFbp0122ZGWFBXGHxZsxKWUwIGkU6XtQACoZA6q61aaS1fqK06awGQKS9GmYH2qxLH6DFCeX/y4QTPq87OwJkwHYY1g6Efiz1Mbk0SLULi4/89Kb6Tg5gWXvY1vV9ogACpUABz+7cxbC9fdA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=h7zCx4T7mpicWt4iBAcTh0zATijjcrntP4QFMvYBeYk=;
- b=C7fYrvscx73r9XuxoPsKfuknmBWIVJOQqYAKRb9iSvg/rWuN5QPUPzjD77ilBPTYne55atkLE9UX/96Z1430Rqldt8WXRByPnsFXqarzvNhvWxZ2Eite7laujXjpYWSW9TRszi2SaZCzmD4ia0f+ChzWnbOqwr4SRP6qVkt9bV+mVN7rDg+aQVSfyL2r63a7wuCH+swAMh1Q/h0VXW0VJO9WnU5tOB8sBy3TOmS0NeK7gG0PLD+Z82XjVdeGl754elQtFtNEZBmEXu8m8UsQGU8nvAHcmcI/lqWQ/TwPsGSZ33eE31kqbIWo9bJqMUfw7zceaj1VXQS+neXq06c6Rw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=h7zCx4T7mpicWt4iBAcTh0zATijjcrntP4QFMvYBeYk=;
- b=pFhtvm8RZ8Jj02BEeZr4iRTjQDxetk8VBBK8hlWlnXnePnMeE6YxGOLGS1MD49q9NxWCmMBCsrCs1wt8ioSF+L/1+ypN9ZS1tv8OSqTcC1CHCgoE8CzSxqYXRsWy3GI1YAxAqElGSsHf4t/XQtiqqRJnxk+Fps7k2i3E3+rxhkk=
-Received: from MN2PR12MB4488.namprd12.prod.outlook.com (2603:10b6:208:24e::19)
- by MN2PR12MB4174.namprd12.prod.outlook.com (2603:10b6:208:15f::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.15; Sun, 6 Sep
- 2020 16:08:59 +0000
-Received: from MN2PR12MB4488.namprd12.prod.outlook.com
- ([fe80::889d:3c2f:a794:67fb]) by MN2PR12MB4488.namprd12.prod.outlook.com
- ([fe80::889d:3c2f:a794:67fb%7]) with mapi id 15.20.3348.019; Sun, 6 Sep 2020
- 16:08:59 +0000
-From:   "Deucher, Alexander" <Alexander.Deucher@amd.com>
-To:     Joerg Roedel <joro@8bytes.org>
-CC:     "jroedel@suse.de" <jroedel@suse.de>,
-        "Kuehling, Felix" <Felix.Kuehling@amd.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "Huang, Ray" <Ray.Huang@amd.com>,
-        "Koenig, Christian" <Christian.Koenig@amd.com>,
-        "Lendacky, Thomas" <Thomas.Lendacky@amd.com>,
-        "Suthikulpanit, Suravee" <Suravee.Suthikulpanit@amd.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 0/2] iommu/amd: Fix IOMMUv2 devices when SME is active
-Thread-Topic: [PATCH 0/2] iommu/amd: Fix IOMMUv2 devices when SME is active
-Thread-Index: AQHWegTrKFaLvteaIU+zNTDEWFvNM6lKcXK8gAATzoCAAABa0IADCauAgAACVICAABPWsIAABqKAgAAEcBCACqFqAIADfFNw
-Date:   Sun, 6 Sep 2020 16:08:58 +0000
-Message-ID: <MN2PR12MB448843EC6D3D5B71613BEAAFF72B0@MN2PR12MB4488.namprd12.prod.outlook.com>
-References: <20200824105415.21000-1-joro@8bytes.org>
- <MN2PR12MB4488D6B7BBF98845DF796E0BF7540@MN2PR12MB4488.namprd12.prod.outlook.com>
- <34db343f-cd23-09af-3bc5-29b9d385f85d@amd.com>
- <MN2PR12MB4488BF7DDE700378F7B2776CF7540@MN2PR12MB4488.namprd12.prod.outlook.com>
- <20200828134639.GW3354@suse.de>
- <60067932-dbf4-d67b-cf11-4dd2b016ed63@amd.com>
- <MN2PR12MB448849D3AD019749DB64A146F7520@MN2PR12MB4488.namprd12.prod.outlook.com>
- <20200828152943.GY3354@suse.de>
- <MN2PR12MB4488BE2F12F85BDBC91E2C0CF7520@MN2PR12MB4488.namprd12.prod.outlook.com>
- <20200904100556.GU6714@8bytes.org>
-In-Reply-To: <20200904100556.GU6714@8bytes.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: yes
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_76546daa-41b6-470c-bb85-f6f40f044d7f_Enabled=True;MSIP_Label_76546daa-41b6-470c-bb85-f6f40f044d7f_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;MSIP_Label_76546daa-41b6-470c-bb85-f6f40f044d7f_SetDate=2020-09-06T16:08:58.298Z;MSIP_Label_76546daa-41b6-470c-bb85-f6f40f044d7f_Name=Internal
- Distribution
- Only;MSIP_Label_76546daa-41b6-470c-bb85-f6f40f044d7f_ContentBits=0;MSIP_Label_76546daa-41b6-470c-bb85-f6f40f044d7f_Method=Standard;
-authentication-results: 8bytes.org; dkim=none (message not signed)
- header.d=none;8bytes.org; dmarc=none action=none header.from=amd.com;
-x-originating-ip: [172.58.187.214]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 2e8984bc-d580-4fb3-2a27-08d8527f29fc
-x-ms-traffictypediagnostic: MN2PR12MB4174:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MN2PR12MB417474FB31E013B4CA85AEEAF72B0@MN2PR12MB4174.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:107;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: tvsY8buXvvtnkZtWrLxU59sF/UPp2GrvErR9l8xXnCyBQrS7TIP0HtAvQs7MEPTzqxZKmAoCkPHeVrpMhuwsZp5im4Ru19sqEWetkeazllU5CV+j6HpXWT1Dduh8/JfLeaJ7GPpLfPMWKS6YQIjYV9qwAyWRXachcGS1DvtaVJl9M9l24y2jBgBVPcqsAWRlpPShFijwtlwuWL8yqiaVpXNXZQdu9Wz8giaZCYCAoLj8COB9JgqclulJ4fW66XMQI9kSoElCbqWz17wqb1DpCe5CI9I3yvQF85E62Svg+hM6fAjcYeHXSXRVeKnvY7O2
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB4488.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(346002)(396003)(136003)(39860400002)(5660300002)(33656002)(8676002)(52536014)(66946007)(71200400001)(66556008)(6916009)(4326008)(8936002)(186003)(478600001)(64756008)(53546011)(99936003)(6506007)(54906003)(26005)(86362001)(66446008)(7696005)(66616009)(83380400001)(4744005)(2906002)(9686003)(316002)(66476007)(55016002)(76116006);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: +py1oJjksXVGlGb7yihXMqOcdbbwAGXq5lKJ6AJlkib0RjVVP0MnWzGLvGMyZ22QBjUCDCYStjTjfgjHkmSt/ZkTJbTSGmYAdq0iOZRKVlqxiAXdZROxal0Aocrfh2XcE2NsYpbVfoxU6e0HFxoI1qcEV9yPQQ/LOWssM37XvvuiKahxqY77CxmGq0D0iGWGhDTiPwVtvSbsSstXUs6NgDxKtl6nZXrGcg66dJ0zC5oEHVbOE5f4yWnIwrp4JIWxS6oppmMp20dW2bt5OGNMi1KDoCk13D0CootoJExSTDtczsWxgvJw/znCSmGQgiNNO6Cx47pLGZuzmDI9YKv1fOTmpO1Y5lZCjqMxZLG3c27Ohs8fW8k5lvMBpxs8ux2GbEKf7UiIcl01dbBFUyz/Jjm7cC48M8UQkH7nKUUXyUc4udZCwb+3SaT5NZ/rrvIsi7ANsqTN/+ORrDafN8oZEEacI8e327lyKJb0+PdG8uiYfLvTckZd+3aR7q5Yh86cgtVNdz0iCt2u2w2e8dZXTIG+g1C9wI4dilQxDW63lNbxUeG9wAm4chUJ6sySrljK9hdQuJnAL3eElr6QIZlfQrhuRSc/Gqf2+Qtibw+Qlkonjt3kpTI3lbonHDSs2TR7x934HLF4qoxhepR8ejPN6w==
-Content-Type: multipart/mixed;
-        boundary="_002_MN2PR12MB448843EC6D3D5B71613BEAAFF72B0MN2PR12MB4488namp_"
+        id S1729056AbgIFQKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Sep 2020 12:10:55 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:56182 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728973AbgIFQKv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Sep 2020 12:10:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599408647;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=evanJmvS8Oxv4e53W/nFLNAVlGlq7hvo4eyIZqMPcNQ=;
+        b=IrrYDkjj9I9CLKuWXWEmKPllgRXa2rCGxfcSHiV3DmaKqPI+JwRHzALglqXELZFc1VJ2SP
+        sRImCtKTmFQhw4qj0UgZFAUfZHN431LJnbB1zDFYNNmlxu4glwrgy8CTcoOyAv4syrllLA
+        g656TXoQEeuSuj2GoZC2TqS9SVFFrIc=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-453-TlU7orf3PVeeIYIUWWyhIA-1; Sun, 06 Sep 2020 12:10:46 -0400
+X-MC-Unique: TlU7orf3PVeeIYIUWWyhIA-1
+Received: by mail-qk1-f200.google.com with SMTP id v16so6387241qka.18
+        for <linux-kernel@vger.kernel.org>; Sun, 06 Sep 2020 09:10:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=evanJmvS8Oxv4e53W/nFLNAVlGlq7hvo4eyIZqMPcNQ=;
+        b=CGhbBeL9J7BhL3ldzyuq9BT7E/Lk6bElAQVk+BeeKglVX7gzJZDVncbvo/NZR675j2
+         vqRsKzaxgRk5Uw6sN5IHQ9Lwraiu1cNtj88ImmpOSTIOx3WlDZeWoIhOFKXLcoUejxP5
+         hwuNBF+JGOmOsIrp8fMFMkrpOGXHzD935B6uFTUNtOy147jn4uwpjaGKcdM3Xe3TtBfZ
+         af4ca8ahbBYlvFFF8zyeWxCccr+38xXcMGHVy5lEI4GNjoUblGJ5pYVhF3Wo90u8hRAl
+         IuEdHMDNY+YkLTAAXXVIa2icT4aV97Rr0jqIlloSj839PLOSik7VsQLvEZ/4lS1yjoRh
+         QjIQ==
+X-Gm-Message-State: AOAM531dqHK6vh+EvbGn1siE7aYLWyowJpxjvI39oay7kD7av3O1Xapg
+        1J7cFuSGwKiDJHo9Bf09gQkzGSDUFfG2rygDBQU66LlYQsN2QbNfkHoSOXAWPG4c72I9e7G3eNM
+        Obf0WXWOEfs6Ywz5bCE4y6zbh
+X-Received: by 2002:a05:620a:159b:: with SMTP id d27mr16198241qkk.28.1599408644654;
+        Sun, 06 Sep 2020 09:10:44 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyb3Ml78VijBbwEbMLyNWAjtu6JS1ALgALYFs3hEmszdS1294eGuCvnByjUe6FCsIwIYFMwNg==
+X-Received: by 2002:a05:620a:159b:: with SMTP id d27mr16198209qkk.28.1599408644189;
+        Sun, 06 Sep 2020 09:10:44 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id j88sm7249336qte.96.2020.09.06.09.10.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 06 Sep 2020 09:10:43 -0700 (PDT)
+Subject: Re: [PATCH v1 06/12] fpga: add max10 secure update functions
+To:     Russ Weight <russell.h.weight@intel.com>, mdf@kernel.org,
+        lee.jones@linaro.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     lgoncalv@redhat.com, yilun.xu@intel.com, hao.wu@intel.com,
+        matthew.gerlach@intel.com
+References: <20200904235305.6254-1-russell.h.weight@intel.com>
+ <20200904235305.6254-7-russell.h.weight@intel.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <3c371972-2331-a191-0acf-b880f11f2ef1@redhat.com>
+Date:   Sun, 6 Sep 2020 09:10:41 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB4488.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2e8984bc-d580-4fb3-2a27-08d8527f29fc
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Sep 2020 16:08:58.9580
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 5eiqX+sLC62Mm6UtoR8nUc9Rh/tfThsRNp6LSFAQ47QQQ60SySLImo0ZxvlqPTDdZ3mCAJD7xS6QSBjf2NtxCw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4174
+In-Reply-To: <20200904235305.6254-7-russell.h.weight@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---_002_MN2PR12MB448843EC6D3D5B71613BEAAFF72B0MN2PR12MB4488namp_
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+With the v4 max10 change, this patch did not apply to linux-next.
 
-[AMD Official Use Only - Internal Distribution Only]
+So it will need at least another review when max10 lands in linux-next.
 
-> -----Original Message-----
-> From: Joerg Roedel <joro@8bytes.org>
-> Sent: Friday, September 4, 2020 6:06 AM
-> To: Deucher, Alexander <Alexander.Deucher@amd.com>
-> Cc: jroedel@suse.de; Kuehling, Felix <Felix.Kuehling@amd.com>;
-> iommu@lists.linux-foundation.org; Huang, Ray <Ray.Huang@amd.com>;
-> Koenig, Christian <Christian.Koenig@amd.com>; Lendacky, Thomas
-> <Thomas.Lendacky@amd.com>; Suthikulpanit, Suravee
-> <Suravee.Suthikulpanit@amd.com>; linux-kernel@vger.kernel.org
-> Subject: Re: [PATCH 0/2] iommu/amd: Fix IOMMUv2 devices when SME is
-> active
+On 9/4/20 4:52 PM, Russ Weight wrote:
+> Extend the MAX10 BMC Security Engine driver to include
+> the functions that enable secure updates of BMC images,
+> FPGA images, etc.
 >
-> On Fri, Aug 28, 2020 at 03:47:07PM +0000, Deucher, Alexander wrote:
-> > Ah, right,  So CZ and ST are not an issue.  Raven is paired with Zen ba=
-sed
-> CPUs.
+> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+> Reviewed-by: Wu Hao <hao.wu@intel.com>
+> ---
+>  drivers/fpga/intel-m10-bmc-secure.c | 272 +++++++++++++++++++++++++++-
+>  include/linux/mfd/intel-m10-bmc.h   | 101 +++++++++++
+>  2 files changed, 372 insertions(+), 1 deletion(-)
 >
-> Okay, so for the Raven case, can you add code to the amdgpu driver which
-> makes it fail to initialize on Raven when SME is active? There is a globa=
-l
-> checking function for that, so that shouldn't be hard to do.
->
+> diff --git a/drivers/fpga/intel-m10-bmc-secure.c b/drivers/fpga/intel-m10-bmc-secure.c
+> index 46cd49a08be0..4a66c2d448eb 100644
+> --- a/drivers/fpga/intel-m10-bmc-secure.c
+> +++ b/drivers/fpga/intel-m10-bmc-secure.c
+> @@ -5,6 +5,7 @@
+>   * Copyright (C) 2019-2020 Intel Corporation. All rights reserved.
+>   *
+>   */
+> +#include <linux/bitfield.h>
+>  #include <linux/device.h>
+>  #include <linux/fpga/ifpga-sec-mgr.h>
+>  #include <linux/mfd/intel-m10-bmc.h>
+> @@ -184,6 +185,271 @@ SYSFS_GET_CSK_VEC(bmc, BMC_PROG_ADDR + CSK_VEC_OFFSET)
+>  SYSFS_GET_CSK_VEC(sr, SR_PROG_ADDR + CSK_VEC_OFFSET)
+>  SYSFS_GET_CSK_VEC(pr, PR_PROG_ADDR + CSK_VEC_OFFSET)
+>  
+> +static void log_error_regs(struct m10bmc_sec *sec, u32 doorbell)
+> +{
+> +	u32 auth_result;
+> +
+> +	dev_err(sec->dev, "RSU error status: 0x%08x\n", doorbell);
+> +
+> +	if (!m10bmc_sys_read(sec->m10bmc, M10BMC_AUTH_RESULT, &auth_result))
+> +		dev_err(sec->dev, "RSU auth result: 0x%08x\n", auth_result);
 
-Sure.  How about the attached patch?
+If the read fails, auth_result will have garbage in it.
 
-Alex
+> +}
+> +
+> +static enum ifpga_sec_err rsu_check_idle(struct m10bmc_sec *sec)
+> +{
+> +	u32 doorbell;
+> +	int ret;
+> +
+> +	ret = m10bmc_sys_read(sec->m10bmc, M10BMC_DOORBELL, &doorbell);
+> +	if (ret)
+> +		return IFPGA_SEC_ERR_RW_ERROR;
+> +
+> +	if (rsu_prog(doorbell) != RSU_PROG_IDLE &&
+> +	    rsu_prog(doorbell) != RSU_PROG_RSU_DONE) {
+> +		log_error_regs(sec, doorbell);
+> +		return IFPGA_SEC_ERR_BUSY;
+> +	}
+> +
+> +	return IFPGA_SEC_ERR_NONE;
 
+Why do you need custom error codes here and below ?
 
---_002_MN2PR12MB448843EC6D3D5B71613BEAAFF72B0MN2PR12MB4488namp_
-Content-Type: text/x-patch;
-	name="0001-drm-amdgpu-Fail-to-load-on-RAVEN-if-SME-is-active.patch"
-Content-Description:
- 0001-drm-amdgpu-Fail-to-load-on-RAVEN-if-SME-is-active.patch
-Content-Disposition: attachment;
-	filename="0001-drm-amdgpu-Fail-to-load-on-RAVEN-if-SME-is-active.patch";
-	size=1438; creation-date="Sun, 06 Sep 2020 16:08:52 GMT";
-	modification-date="Sun, 06 Sep 2020 16:08:52 GMT"
-Content-Transfer-Encoding: base64
+Should return int and use -EIO, -EBUSY, 0
 
-RnJvbSBmNDc5YjlkYTM1M2MyNTQ3YzI2ZWJhYzg5MzBhNWRjZDlhMTM0ZWI3IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBBbGV4IERldWNoZXIgPGFsZXhhbmRlci5kZXVjaGVyQGFtZC5j
-b20+CkRhdGU6IFN1biwgNiBTZXAgMjAyMCAxMjowNToxMiAtMDQwMApTdWJqZWN0OiBbUEFUQ0hd
-IGRybS9hbWRncHU6IEZhaWwgdG8gbG9hZCBvbiBSQVZFTiBpZiBTTUUgaXMgYWN0aXZlCgpEdWUg
-dG8gaGFyZHdhcmUgYnVncywgc2NhdHRlci9nYXRoZXIgZGlzcGxheSBvbiByYXZlbiByZXF1aXJl
-cwphIDE6MSBJT01NVSBtYXBwaW5nLCBob3dldmVyLCBTTUUgKFN5c3RlbSBNZW1vcnkgRW5jcnlw
-dGlvbikKcmVxdWlyZXMgYW4gaW5kaXJlY3QgSU9NTVUgbWFwcGluZyBiZWNhdXNlIHRoZSBlbmNy
-eXB0aW9uIGJpdAppcyBiZXlvbmQgdGhlIERNQSBtYXNrIG9mIHRoZSBjaGlwLiAgQXMgc3VjaCwg
-dGhlIHR3byBhcmUKaW5jb21wYXRpYmxlLgoKU2lnbmVkLW9mZi1ieTogQWxleCBEZXVjaGVyIDxh
-bGV4YW5kZXIuZGV1Y2hlckBhbWQuY29tPgotLS0KIGRyaXZlcnMvZ3B1L2RybS9hbWQvYW1kZ3B1
-L2FtZGdwdV9kcnYuYyB8IDEwICsrKysrKysrKysKIDEgZmlsZSBjaGFuZ2VkLCAxMCBpbnNlcnRp
-b25zKCspCgpkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRncHUvYW1kZ3B1X2Ry
-di5jIGIvZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRncHUvYW1kZ3B1X2Rydi5jCmluZGV4IDEyZTE2
-NDQ1ZGY3Yy4uZDg3ZDM3YzI1MzI5IDEwMDY0NAotLS0gYS9kcml2ZXJzL2dwdS9kcm0vYW1kL2Ft
-ZGdwdS9hbWRncHVfZHJ2LmMKKysrIGIvZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRncHUvYW1kZ3B1
-X2Rydi5jCkBAIC0xMTAyLDYgKzExMDIsMTYgQEAgc3RhdGljIGludCBhbWRncHVfcGNpX3Byb2Jl
-KHN0cnVjdCBwY2lfZGV2ICpwZGV2LAogCQlyZXR1cm4gLUVOT0RFVjsKIAl9CiAKKwkvKiBEdWUg
-dG8gaGFyZHdhcmUgYnVncywgUy9HIERpc3BsYXkgb24gcmF2ZW4gcmVxdWlyZXMgYSAxOjEgSU9N
-TVUgbWFwcGluZywKKwkgKiBob3dldmVyLCBTTUUgcmVxdWlyZXMgYW4gaW5kaXJlY3QgSU9NTVUg
-bWFwcGluZyBiZWNhdXNlIHRoZSBlbmNyeXB0aW9uCisJICogYml0IGlzIGJleW9uZCB0aGUgRE1B
-IG1hc2sgb2YgdGhlIGNoaXAuCisJICovCisJaWYgKG1lbV9lbmNyeXB0X2FjdGl2ZSgpICYmICgo
-ZmxhZ3MgJiBBTURfQVNJQ19NQVNLKSA9PSBDSElQX1JBVkVOKSkgeworCQlkZXZfaW5mbygmcGRl
-di0+ZGV2LAorCQkJICJTTUUgaXMgbm90IGNvbXBhdGlibGUgd2l0aCBSQVZFTlxuIik7CisJCXJl
-dHVybiAtRU5PVFNVUFA7CisJfQorCiAjaWZkZWYgQ09ORklHX0RSTV9BTURHUFVfU0kKIAlpZiAo
-IWFtZGdwdV9zaV9zdXBwb3J0KSB7CiAJCXN3aXRjaCAoZmxhZ3MgJiBBTURfQVNJQ19NQVNLKSB7
-Ci0tIAoyLjI1LjQKCg==
+> +}
+> +
+> +static inline bool rsu_start_done(u32 doorbell)
+> +{
+> +	return (!(doorbell & RSU_REQUEST) &&
+> +		(rsu_stat(doorbell) == RSU_STAT_ERASE_FAIL ||
+> +		rsu_stat(doorbell) == RSU_STAT_WEAROUT ||
+> +		(rsu_prog(doorbell) != RSU_PROG_IDLE &&
+> +		 rsu_prog(doorbell) != RSU_PROG_RSU_DONE)));
 
---_002_MN2PR12MB448843EC6D3D5B71613BEAAFF72B0MN2PR12MB4488namp_--
+This is complicated, try simplifying or adding a comment.
+
+The rsu_stat & rsu_prog only need to be called once.
+
+stat = rsu_stat(doorbell)
+
+.. and then something like ..
+
+if (stat & (RSU_STAT_ERASE_FAIL | RSU_STAT_WEAROUT))
+
+> +}
+> +
+> +static enum ifpga_sec_err rsu_update_init(struct m10bmc_sec *sec)
+> +{
+> +	u32 doorbell;
+> +	int ret;
+> +
+> +	ret = m10bmc_sys_update_bits(sec->m10bmc, M10BMC_DOORBELL,
+> +				     RSU_REQUEST | HOST_STATUS, RSU_REQUEST |
+> +				     FIELD_PREP(HOST_STATUS, HOST_STATUS_IDLE));
+> +	if (ret)
+> +		return IFPGA_SEC_ERR_RW_ERROR;
+> +
+> +	ret = regmap_read_poll_timeout(sec->m10bmc->regmap,
+> +				       M10BMC_SYS_BASE + M10BMC_DOORBELL,
+> +				       doorbell,
+> +				       rsu_start_done(doorbell),
+doorbell needs to be initialized to 0
+> +				       NIOS_HANDSHAKE_INTERVAL_US,
+> +				       NIOS_HANDSHAKE_TIMEOUT_US);
+> +
+> +	if (ret == -ETIMEDOUT) {
+> +		log_error_regs(sec, doorbell);
+> +		return IFPGA_SEC_ERR_TIMEOUT;
+> +	} else if (ret) {
+> +		return IFPGA_SEC_ERR_RW_ERROR;
+> +	}
+> +
+> +	if (rsu_stat(doorbell) == RSU_STAT_WEAROUT) {
+call rsu_stat once
+> +		dev_warn(sec->dev, "Excessive flash update count detected\n");
+> +		return IFPGA_SEC_ERR_WEAROUT;
+> +	} else if (rsu_stat(doorbell) == RSU_STAT_ERASE_FAIL) {
+> +		log_error_regs(sec, doorbell);
+> +		return IFPGA_SEC_ERR_HW_ERROR;
+> +	}
+> +
+> +	return IFPGA_SEC_ERR_NONE;
+> +}
+> +
+> +static enum ifpga_sec_err rsu_prog_ready(struct m10bmc_sec *sec)
+> +{
+> +	unsigned long poll_timeout;
+> +	u32 doorbell;
+> +	int ret;
+> +
+> +	ret = m10bmc_sys_read(sec->m10bmc, M10BMC_DOORBELL, &doorbell);
+return here on error.
+> +	poll_timeout = jiffies + msecs_to_jiffies(RSU_PREP_TIMEOUT_MS);
+> +	while (!ret && !time_after(jiffies, poll_timeout)) {
+> +		if (rsu_prog(doorbell) != RSU_PROG_PREPARE)
+
+This seems to be the main condition, consider exchanging
+
+it for the time_after in your while() condition
+
+> +			break;
+> +		msleep(RSU_PREP_INTERVAL_MS);
+> +		ret = m10bmc_sys_read(sec->m10bmc, M10BMC_DOORBELL, &doorbell);
+return here on error
+> +	}
+> +
+> +	if (ret) {
+> +		return IFPGA_SEC_ERR_RW_ERROR;
+> +	} else if (rsu_prog(doorbell) == RSU_PROG_PREPARE) {
+> +		log_error_regs(sec, doorbell);
+> +		return IFPGA_SEC_ERR_TIMEOUT;
+> +	} else if (rsu_prog(doorbell) != RSU_PROG_READY) {
+> +		log_error_regs(sec, doorbell);
+> +		return IFPGA_SEC_ERR_HW_ERROR;
+> +	}
+> +
+> +	return IFPGA_SEC_ERR_NONE;
+> +}
+> +
+> +static enum ifpga_sec_err rsu_send_data(struct m10bmc_sec *sec)
+> +{
+> +	u32 doorbell;
+> +	int ret;
+> +
+> +	ret = m10bmc_sys_update_bits(sec->m10bmc, M10BMC_DOORBELL, HOST_STATUS,
+> +				     FIELD_PREP(HOST_STATUS,
+> +						HOST_STATUS_WRITE_DONE));
+> +	if (ret)
+> +		return IFPGA_SEC_ERR_RW_ERROR;
+> +
+> +	ret = regmap_read_poll_timeout(sec->m10bmc->regmap,
+> +				       M10BMC_SYS_BASE + M10BMC_DOORBELL,
+> +				       doorbell,
+> +				       rsu_prog(doorbell) != RSU_PROG_READY,
+similar to above doorbell must be initialized to 0
+> +				       NIOS_HANDSHAKE_INTERVAL_US,
+> +				       NIOS_HANDSHAKE_TIMEOUT_US);
+> +
+> +	if (ret == -ETIMEDOUT) {
+> +		log_error_regs(sec, doorbell);
+> +		return IFPGA_SEC_ERR_TIMEOUT;
+> +	} else if (ret) {
+> +		return IFPGA_SEC_ERR_RW_ERROR;
+> +	}
+> +
+> +	switch (rsu_stat(doorbell)) {
+> +	case RSU_STAT_NORMAL:
+> +	case RSU_STAT_NIOS_OK:
+> +	case RSU_STAT_USER_OK:
+> +	case RSU_STAT_FACTORY_OK:
+> +		break;
+> +	default:
+> +		log_error_regs(sec, doorbell);
+> +		return IFPGA_SEC_ERR_HW_ERROR;
+> +	}
+> +
+> +	return IFPGA_SEC_ERR_NONE;
+> +}
+> +
+> +static int rsu_check_complete(struct m10bmc_sec *sec, u32 *doorbell)
+> +{
+> +	if (m10bmc_sys_read(sec->m10bmc, M10BMC_DOORBELL, doorbell))
+> +		return -EIO;
+> +
+> +	switch (rsu_stat(*doorbell)) {
+> +	case RSU_STAT_NORMAL:
+> +	case RSU_STAT_NIOS_OK:
+> +	case RSU_STAT_USER_OK:
+> +	case RSU_STAT_FACTORY_OK:
+> +	case RSU_STAT_WEAROUT:
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +
+> +	switch (rsu_prog(*doorbell)) {
+> +	case RSU_PROG_IDLE:
+> +	case RSU_PROG_RSU_DONE:
+> +		return 0;
+> +	case RSU_PROG_AUTHENTICATING:
+> +	case RSU_PROG_COPYING:
+> +	case RSU_PROG_UPDATE_CANCEL:
+> +	case RSU_PROG_PROGRAM_KEY_HASH:
+> +		return -EAGAIN;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +}
+> +
+> +static enum ifpga_sec_err m10bmc_sec_prepare(struct ifpga_sec_mgr *imgr)
+> +{
+> +	struct m10bmc_sec *sec = imgr->priv;
+> +	enum ifpga_sec_err ret;
+> +
+> +	if (imgr->remaining_size > M10BMC_STAGING_SIZE)
+> +		return IFPGA_SEC_ERR_INVALID_SIZE;
+Could this check be moved closer to when the fw is opened ?
+> +
+> +	ret = rsu_check_idle(sec);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = rsu_update_init(sec);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return rsu_prog_ready(sec);
+> +}
+> +
+> +static enum ifpga_sec_err
+> +m10bmc_sec_write_blk(struct ifpga_sec_mgr *imgr, u32 offset, u32 size)
+
+Function name should be consistent with existing
+
+m10bmc_raw_bulk_write, likely m10bmc_sec_bulk_write.
+
+Why should not this call go in to intel-m10-bmc.c ?
+
+the imgr parameter is only used to get to the m10bmc.
+
+> +{
+> +	struct m10bmc_sec *sec = imgr->priv;
+> +	unsigned int stride = regmap_get_reg_stride(sec->m10bmc->regmap);
+> +	u32 doorbell;
+> +	int ret;
+> +
+> +	ret = m10bmc_sys_read(sec->m10bmc, M10BMC_DOORBELL, &doorbell);
+> +	if (ret) {
+> +		return IFPGA_SEC_ERR_RW_ERROR;
+> +	} else if (rsu_prog(doorbell) != RSU_PROG_READY) {
+> +		log_error_regs(sec, doorbell);
+> +		return IFPGA_SEC_ERR_HW_ERROR;
+> +	}
+> +
+> +	ret = m10bmc_raw_bulk_write(sec->m10bmc, M10BMC_STAGING_BASE + offset,
+> +				    (void *)imgr->data + offset, size / stride);
+> +
+> +	return ret ? IFPGA_SEC_ERR_RW_ERROR : IFPGA_SEC_ERR_NONE;
+> +}
+> +
+> +static enum ifpga_sec_err m10bmc_sec_poll_complete(struct ifpga_sec_mgr *imgr)
+> +{
+> +	struct m10bmc_sec *sec = imgr->priv;
+> +	unsigned long poll_timeout;
+> +	enum ifpga_sec_err result;
+> +	u32 doorbell;
+> +	int ret;
+> +
+> +	result = rsu_send_data(sec);
+> +	if (result)
+> +		return result;
+> +
+> +	ret = rsu_check_complete(sec, &doorbell);
+> +	poll_timeout = jiffies + msecs_to_jiffies(RSU_COMPLETE_TIMEOUT_MS);
+Maybe a whitespace issue here.
+> +	while (ret == -EAGAIN && !time_after(jiffies, poll_timeout)) {
+> +		msleep(RSU_COMPLETE_INTERVAL_MS);
+> +		ret = rsu_check_complete(sec, &doorbell);
+> +		if (imgr->driver_unload)
+> +			return IFPGA_SEC_ERR_CANCELED;
+unload was not checked in other polling, why not ?
+> +	}
+> +
+> +	if (ret == -EAGAIN) {
+> +		log_error_regs(sec, doorbell);
+> +		return IFPGA_SEC_ERR_TIMEOUT;
+> +	} else if (ret == -EIO) {
+> +		return IFPGA_SEC_ERR_RW_ERROR;
+> +	} else if (ret) {
+> +		log_error_regs(sec, doorbell);
+> +		return IFPGA_SEC_ERR_HW_ERROR;
+> +	}
+> +
+> +	return IFPGA_SEC_ERR_NONE;
+> +}
+> +
+> +static enum ifpga_sec_err m10bmc_sec_cancel(struct ifpga_sec_mgr *imgr)
+> +{
+> +	struct m10bmc_sec *sec = imgr->priv;
+> +	u32 doorbell;
+> +	int ret;
+> +
+> +	ret = m10bmc_sys_read(sec->m10bmc, M10BMC_DOORBELL, &doorbell);
+> +	if (ret)
+> +		return IFPGA_SEC_ERR_RW_ERROR;
+> +
+> +	if (rsu_prog(doorbell) != RSU_PROG_READY)
+> +		return IFPGA_SEC_ERR_BUSY;
+> +
+> +	ret = m10bmc_sys_update_bits(sec->m10bmc, M10BMC_DOORBELL, HOST_STATUS,
+> +				     FIELD_PREP(HOST_STATUS,
+> +						HOST_STATUS_ABORT_RSU));
+> +
+> +	return ret ? IFPGA_SEC_ERR_RW_ERROR : IFPGA_SEC_ERR_NONE;
+> +}
+> +
+>  static const struct ifpga_sec_mgr_ops m10bmc_iops = {
+>  	.user_flash_count = get_qspi_flash_count,
+>  	.bmc_root_entry_hash = get_bmc_root_entry_hash,
+> @@ -197,7 +463,11 @@ static const struct ifpga_sec_mgr_ops m10bmc_iops = {
+>  	.pr_reh_size = get_pr_reh_size,
+>  	.bmc_canceled_csk_nbits = get_bmc_csk_cancel_nbits,
+>  	.sr_canceled_csk_nbits = get_sr_csk_cancel_nbits,
+> -	.pr_canceled_csk_nbits = get_pr_csk_cancel_nbits
+> +	.pr_canceled_csk_nbits = get_pr_csk_cancel_nbits,
+> +	.prepare = m10bmc_sec_prepare,
+> +	.write_blk = m10bmc_sec_write_blk,
+> +	.poll_complete = m10bmc_sec_poll_complete,
+> +	.cancel = m10bmc_sec_cancel
+>  };
+>  
+>  static void ifpga_sec_mgr_uinit(struct m10bmc_sec *sec)
+> diff --git a/include/linux/mfd/intel-m10-bmc.h b/include/linux/mfd/intel-m10-bmc.h
+
+This likely needs to be split out into it's own patch
+
+since it is another subsystem. Deferring to Lee.
+
+> index 7fe465c320c2..5d2860d8a0cf 100644
+> --- a/include/linux/mfd/intel-m10-bmc.h
+> +++ b/include/linux/mfd/intel-m10-bmc.h
+> @@ -13,6 +13,9 @@
+>  #define M10BMC_SYS_BASE			0x300800
+>  #define M10BMC_MEM_END			0x200000fc
+>  
+> +#define M10BMC_STAGING_BASE		0x18000000
+> +#define M10BMC_STAGING_SIZE		0x3800000
+> +
+>  /* Register offset of system registers */
+>  #define NIOS2_FW_VERSION		0x0
+>  #define M10BMC_MACADDR1			0x10
+> @@ -36,6 +39,70 @@
+>  #define SERDES_VERSION			GENMASK(15, 0)
+>  #define SBUS_VERSION			GENMASK(31, 16)
+>  
+> +/* Secure update doorbell register, in system register region */
+> +#define M10BMC_DOORBELL			0x400
+> +#define RSU_REQUEST			BIT(0)
+> +#define RSU_PROGRESS			GENMASK(7, 4)
+> +#define HOST_STATUS			GENMASK(11, 8)
+> +#define RSU_STATUS			GENMASK(23, 16)
+> +#define PKVL_EEPROM_LOAD_SEC		BIT(24)
+> +#define PKVL1_POLL_EN			BIT(25)
+> +#define PKVL2_POLL_EN			BIT(26)
+> +#define CONFIG_SEL			BIT(28)
+> +#define REBOOT_REQ			BIT(29)
+> +#define REBOOT_DISABLED			BIT(30)
+These are similar should have a prefix, likely M10BMC_SEC_
+> +
+> +/* Progress states */
+> +#define RSU_PROG_IDLE			0x0
+> +#define RSU_PROG_PREPARE		0x1
+> +#define RSU_PROG_READY			0x3
+> +#define RSU_PROG_AUTHENTICATING		0x4
+> +#define RSU_PROG_COPYING		0x5
+> +#define RSU_PROG_UPDATE_CANCEL		0x6
+> +#define RSU_PROG_PROGRAM_KEY_HASH	0x7
+> +#define RSU_PROG_RSU_DONE		0x8
+> +#define RSU_PROG_PKVL_PROM_DONE		0x9
+> +
+> +/* Device and error states */
+> +#define RSU_STAT_NORMAL			0x0
+> +#define RSU_STAT_TIMEOUT		0x1
+> +#define RSU_STAT_AUTH_FAIL		0x2
+> +#define RSU_STAT_COPY_FAIL		0x3
+> +#define RSU_STAT_FATAL			0x4
+> +#define RSU_STAT_PKVL_REJECT		0x5
+> +#define RSU_STAT_NON_INC		0x6
+> +#define RSU_STAT_ERASE_FAIL		0x7
+> +#define RSU_STAT_WEAROUT		0x8
+> +#define RSU_STAT_NIOS_OK		0x80
+> +#define RSU_STAT_USER_OK		0x81
+> +#define RSU_STAT_FACTORY_OK		0x82
+> +#define RSU_STAT_USER_FAIL		0x83
+> +#define RSU_STAT_FACTORY_FAIL		0x84
+> +#define RSU_STAT_NIOS_FLASH_ERR		0x85
+> +#define RSU_STAT_FPGA_FLASH_ERR		0x86
+> +
+> +#define HOST_STATUS_IDLE		0x0
+> +#define HOST_STATUS_WRITE_DONE		0x1
+> +#define HOST_STATUS_ABORT_RSU		0x2
+> +
+> +#define rsu_prog(doorbell)		FIELD_GET(RSU_PROGRESS, doorbell)
+> +#define rsu_stat(doorbell)		FIELD_GET(RSU_STATUS, doorbell)
+> +
+> +/* interval 100ms and timeout 5s */
+> +#define NIOS_HANDSHAKE_INTERVAL_US	(100 * 1000)
+> +#define NIOS_HANDSHAKE_TIMEOUT_US	(5 * 1000 * 1000)
+> +
+> +/* RSU PREP Timeout (2 minutes) to erase flash staging area */
+> +#define RSU_PREP_INTERVAL_MS		100
+> +#define RSU_PREP_TIMEOUT_MS		(2 * 60 * 1000)
+> +
+> +/* RSU Complete Timeout (40 minutes) for full flash update */
+> +#define RSU_COMPLETE_INTERVAL_MS	1000
+> +#define RSU_COMPLETE_TIMEOUT_MS		(40 * 60 * 1000)
+> +
+> +/* Authorization Result register, in system register region */
+> +#define M10BMC_AUTH_RESULT		0x404
+
+Needs to move to where the other registers are
+
+defined.
+
+> +
+>  /**
+>   * struct intel_m10bmc_retimer_pdata - subdev retimer platform data
+>   *
+> @@ -64,7 +131,10 @@ struct intel_m10bmc {
+>   *
+>   * m10bmc_raw_read - read m10bmc register per addr
+>   * m10bmc_raw_bulk_read - bulk_read max10 registers per addr
+> + * m10bmc_raw_bulk_write - bulk_write max10 registers per addr
+> + * m10bmc_raw_update_bits - update max10 register per addr
+>   * m10bmc_sys_read - read m10bmc system register per offset
+> + * m10bmc_sys_update_bits - update max10 system register per offset
+>   */
+>  static inline int
+>  m10bmc_raw_read(struct intel_m10bmc *m10bmc, unsigned int addr,
+> @@ -94,7 +164,38 @@ m10bmc_raw_bulk_read(struct intel_m10bmc *m10bmc, unsigned int addr,
+>  	return ret;
+>  }
+>  
+> +static inline int
+> +m10bmc_raw_bulk_write(struct intel_m10bmc *m10bmc, unsigned int addr,
+> +		      void *val, size_t cnt)
+> +{
+> +	int ret;
+> +
+> +	ret = regmap_bulk_write(m10bmc->regmap, addr, val, cnt);
+> +	if (ret)
+> +		dev_err(m10bmc->dev, "fail to write raw reg %x cnt %zx: %d\n",
+> +			addr, cnt, ret);
+> +
+> +	return ret;
+> +}
+> +
+> +static inline int
+> +m10bmc_raw_update_bits(struct intel_m10bmc *m10bmc, unsigned int addr,
+> +		       unsigned int msk, unsigned int val)
+> +{
+> +	int ret;
+> +
+> +	ret = regmap_update_bits(m10bmc->regmap, addr, msk, val);
+> +	if (ret)
+> +		dev_err(m10bmc->dev, "fail to update raw reg %x: %d\n",
+> +			addr, ret);
+> +
+> +	return ret;
+> +}
+> +
+>  #define m10bmc_sys_read(m10bmc, offset, val) \
+>  	m10bmc_raw_read(m10bmc, M10BMC_SYS_BASE + (offset), val)
+>  
+> +#define m10bmc_sys_update_bits(m10bmc, offset, msk, val) \
+> +	m10bmc_raw_update_bits(m10bmc, M10BMC_SYS_BASE + (offset), msk, val)
+> +
+
+There is discussion on m10bmc patch around the
+
+#define m10bmc_sys_read.
+
+It would be better if m10bmc_sys_update_bits was a real function.
+
+Tom
+
+>  #endif /* __MFD_INTEL_M10_BMC_H */
+
