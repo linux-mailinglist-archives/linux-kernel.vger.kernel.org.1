@@ -2,354 +2,326 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E09D125EFA9
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Sep 2020 20:53:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F05CE25F001
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Sep 2020 21:01:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729309AbgIFSxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Sep 2020 14:53:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60584 "EHLO
+        id S1726194AbgIFTBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Sep 2020 15:01:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729229AbgIFSwO (ORCPT
+        with ESMTP id S1725931AbgIFTBE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Sep 2020 14:52:14 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7848BC06179E;
-        Sun,  6 Sep 2020 11:52:12 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id a22so7172552ljp.13;
-        Sun, 06 Sep 2020 11:52:12 -0700 (PDT)
+        Sun, 6 Sep 2020 15:01:04 -0400
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 864E8C061573;
+        Sun,  6 Sep 2020 12:01:04 -0700 (PDT)
+Received: by mail-yb1-xb43.google.com with SMTP id h126so8067868ybg.4;
+        Sun, 06 Sep 2020 12:01:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=SVokk+6bWdAw9HUovaB17WkapTo9mXA0U6FBVoYTkhM=;
-        b=rhlcKc0+ydITRxVq9r+ByRSjn4m/+tVJNd+wHxmrGv7eX/4LwOLfpZer8tg8jdvatX
-         GVXx74L5m5Dv5vNkCqV7GdsvVrhFQORhKsjzObr9c6QtIHw3F0rTIRqukUMoGjgNmg2c
-         LXCE9PJgtrXotzrVcvHgRl7NQHeoggDhydpyGz81qVf6Kd0TxLgYKC8R4rH5vT8Wu7W6
-         G2L3aElurGJgrmsPv32pA4OVJ2BWAJRvgc3zPZhv1NQNKn3Ekva3t45d2Md8hsSnd8lv
-         EMj721QTCU9yeOjSD7V7BZfrw2BTSOWyWd53f5b8V1hYB6bjVW6+ca3X32i4PPZMBxDG
-         1Lug==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XsHC9lTcc4RBLL8W6mz/G6S0azEWp94qjUR8/JDaxjQ=;
+        b=e7deJ5jYwFXbRwRK4zSKbqZ/sDBpk8pqJUcpemN1e8jGXGBtdvYyhIWsjMXgeSnLYD
+         buaPJMvWNmRy5vBL57uoKboc8uiVcsf3ewDe4uuLvp/10Ub6vhkNDcC/gO5ySa7sCBVx
+         pBDUDBFbZRGPhxkCxXgw+IE+bCAxwmLprRByvqSVdd3LqXzs84n0mtTN4YYIcNcTEbF/
+         HrBDpdlhqKNgLOxahlf3FTraqMON04y8GgBWutRjRUnU/QkGVUcJJjKE7gc72pP2qvb5
+         JTyU1KAsW8pp6Qg8YLD8Km0gCdDif6mSKjfNoKx/tQp8FQJ5TqmTypgK9vCQuhxYxdZi
+         cn9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=SVokk+6bWdAw9HUovaB17WkapTo9mXA0U6FBVoYTkhM=;
-        b=emmr1FyvltQKJyeL8aLGTWdXiEyzrpepqIGUvY6Y/Nh20UQLrDhGnc40lcKK3Ed/mI
-         mrCFid46j1rnLCjTA/suYRfavKYJkzndeEEP5YXdiUesZpqhGjec9RWPmyTFE5xAMHfN
-         HjN72lC/DVpr4AJfoo36YO1fjBeY98EG31PkfpXKMS1pAsAHJzexR6sAhA3qUV2uOb41
-         015DlPChXNwvztxCkTxBQnl8cyt3Xl1sEw+iweSJsOSJLUOnkLPY9SApNwp9XgU3Tsd7
-         GtH1MK4ZPJYeWi5ntA1ez6R/Q/3bnQtxIXvs0/uRpco5vhy+Z2O4K5hrf4dHPYPRQ0mX
-         ELZw==
-X-Gm-Message-State: AOAM531EEdCQ3AOJP84fzTLvj4WEy15gxuhy2chYzqFaxvuYhHn+xbJd
-        Qj37m4Whpz/6V+zfD3PRv0JAswvsYEk=
-X-Google-Smtp-Source: ABdhPJwH/fLvUrFc7+sNM5PhMdWm0qqX3f5Oq9fGuXFcsJQARFAjNRreIYp47CdiQwNrrXeDilo9BA==
-X-Received: by 2002:a05:651c:2c9:: with SMTP id f9mr8333472ljo.257.1599418330924;
-        Sun, 06 Sep 2020 11:52:10 -0700 (PDT)
-Received: from localhost.localdomain (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
-        by smtp.gmail.com with ESMTPSA id s3sm4883407ljd.44.2020.09.06.11.52.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 06 Sep 2020 11:52:10 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     linux-i2c@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v5 36/36] i2c: tegra: Improve tegra_i2c_dev structure
-Date:   Sun,  6 Sep 2020 21:50:39 +0300
-Message-Id: <20200906185039.22700-37-digetx@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200906185039.22700-1-digetx@gmail.com>
-References: <20200906185039.22700-1-digetx@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XsHC9lTcc4RBLL8W6mz/G6S0azEWp94qjUR8/JDaxjQ=;
+        b=dPYm2FvuTt8DJooJB3ml9LmgvGabaRLq9OvMDkqPp0/7U6tH4AHnK4xVKHYXNUpkAV
+         FPwEH3FNHMATDf7opBnpn4pE5ZzYyvPYNGRGk8YBlOJcrm/1U5XJYxUu/PVycgwAHwTN
+         RsC1R2SESyTA5A+679xiy/Qpk4j+vFctEyTHtvwt1N/4HL3PkEccpIziFWYk3IC1vxwV
+         CRkasoITkkq9VUSKFBouzWBNgSkZsrXeWdbmmtb5p7GL4y5Y/xTMDYMFCDgbqpi7u38+
+         yFhfk+J6I0V9InZhnGR7YiwpqRW0HGiV7+DzIR1iU4AqITDJ++iW6C5J5mWEy8Gm3/bW
+         2M0g==
+X-Gm-Message-State: AOAM531wFyD9OdteQkGuSz38qSTriEo0I2+7NviJv5Fj1qk6XIyx00w0
+        Fs/296O7CxS8tts7AG5CpPGjDDNk5Rvll2D/B1M50HRwCyvjHQ==
+X-Google-Smtp-Source: ABdhPJxJnU/UQhI2sppxRmx1tyVZz3Vya0gaNRO2//fq2jx2CSMDerC+Ec/yj8fSnyDRl/7qaNQae/X5I04QB8uzz+4=
+X-Received: by 2002:a25:5384:: with SMTP id h126mr24477964ybb.445.1599418858098;
+ Sun, 06 Sep 2020 12:00:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200804100510.GA2566810@oden.dyn.berto.se> <CAMuHMdW6DtbBUdEPi1DiCUv1n6dxCjvD3b1vVY7tnJq-R+vyiw@mail.gmail.com>
+ <CA+V-a8tEdrap_kaDk+K+KuA8_WWndwn4KbqD5i9n0YPVnbJ5Tg@mail.gmail.com>
+ <CAMuHMdU2N30vn-SO-AAEf34uW81pqEjfBiCN6pBLZChNucd34g@mail.gmail.com>
+ <CA+V-a8v+FH08mcmnR=0RnqvYTeydw4AifbsyT6_KcHxxEokp5w@mail.gmail.com>
+ <CAMuHMdXt95CSTOkWotrXad6_9+bhWrA8Q-WKA3_NdApbTTLVrA@mail.gmail.com>
+ <20200805123451.GA5925@pendragon.ideasonboard.com> <CA+V-a8tWO2XRsTqu+dSkexrx0dEqw9t8Be0QouR6U+BhQY5Yow@mail.gmail.com>
+ <20200811114111.GH6054@pendragon.ideasonboard.com> <CA+V-a8tiWf0PabLQzcbfguB=R-dbofJ6rCmCHEowuOXKBA0i2Q@mail.gmail.com>
+ <20200904021622.GC9369@pendragon.ideasonboard.com>
+In-Reply-To: <20200904021622.GC9369@pendragon.ideasonboard.com>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Sun, 6 Sep 2020 20:00:31 +0100
+Message-ID: <CA+V-a8s5K4uuTTS_yoGfoLNp7ocdFy1yEXL6ewo9szP=T1pYAw@mail.gmail.com>
+Subject: Re: [PATCH v2] media: rcar-vin: Add support to select data pins for
+ YCbCr422-8bit input
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Niklas <niklas.soderlund@ragnatech.se>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media <linux-media@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Chris Paterson <Chris.Paterson2@renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rename, reorder and change type of a few members of the tegra_i2c_dev
-structure in order to improve readability of the code and have consistent
-typing of the variables.
+Hi Laurent,
 
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- drivers/i2c/busses/i2c-tegra.c | 94 ++++++++++++++++++----------------
- 1 file changed, 50 insertions(+), 44 deletions(-)
+On Fri, Sep 4, 2020 at 3:16 AM Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
+>
+> Hi Prabhakar,
+>
+> On Tue, Aug 11, 2020 at 06:40:58PM +0100, Lad, Prabhakar wrote:
+> > On Tue, Aug 11, 2020 at 12:41 PM Laurent Pinchart wrote:
+> > > On Fri, Aug 07, 2020 at 09:20:36PM +0100, Lad, Prabhakar wrote:
+> > > > On Wed, Aug 5, 2020 at 1:35 PM Laurent Pinchart wrote:
+> > > > > On Wed, Aug 05, 2020 at 10:43:25AM +0200, Geert Uytterhoeven wrote:
+> > > > >> On Wed, Aug 5, 2020 at 10:01 AM Lad, Prabhakar wrote:
+> > > > >>> On Tue, Aug 4, 2020 at 4:32 PM Geert Uytterhoeven wrote:
+> > > > >>>> On Tue, Aug 4, 2020 at 5:12 PM Lad, Prabhakar wrote:
+> > > > >>>>> On Tue, Aug 4, 2020 at 11:17 AM Geert Uytterhoeven wrote:
+> > > > >>>>>> On Tue, Aug 4, 2020 at 12:05 PM Niklas wrote:
+> > > > >>>>>>> On 2020-08-04 09:04:25 +0100, Lad, Prabhakar wrote:
+> > > > >>>>>>>> On Mon, Aug 3, 2020 at 8:28 PM Niklas wrote:
+> > > > >>>>>>>>> On 2020-08-03 20:17:54 +0100, Lad, Prabhakar wrote:
+> > > > >>>>>>>>>> On Mon, Aug 3, 2020 at 7:06 PM Niklas wrote:
+> > > > >>>>>>>>>>> On 2020-08-03 17:02:53 +0100, Lad Prabhakar wrote:
+> > > > >>>>>>>>>>>> Select the data pins for YCbCr422-8bit input format depending on
+> > > > >>>>>>>>>>>> bus_width and data_shift passed as part of DT.
+> > > > >>>>>>>>>>>>
+> > > > >>>>>>>>>>>> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > > > >>>>>>>>>>>> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+> > > > >>>>>>>>>>>>
+> > > > >>>>>>>>>>>> --- a/drivers/media/platform/rcar-vin/rcar-core.c
+> > > > >>>>>>>>>>>> +++ b/drivers/media/platform/rcar-vin/rcar-core.c
+> > > > >>>>>>>>>>>> @@ -624,6 +624,11 @@ static int rvin_parallel_parse_v4l2(struct device *dev,
+> > > > >>>>>>>>>>>>       vin->parallel = rvpe;
+> > > > >>>>>>>>>>>>       vin->parallel->mbus_type = vep->bus_type;
+> > > > >>>>>>>>>>>>
+> > > > >>>>>>>>>>>> +     /* select VInDATA[15:8] pins for YCbCr422-8bit format */
+> > > > >>>>>>>>>>>> +     if (vep->bus.parallel.bus_width == BUS_WIDTH_8 &&
+> > > > >>>>>>>>>>>> +         vep->bus.parallel.data_shift == DATA_SHIFT_8)
+> > > > >>>>>>>>>>>> +             vin->parallel->ycbcr_8b_g = true;
+> > > > >>>>>>>>>>>> +
+> > > > >>>>>>>>>>>
+> > > > >>>>>>>>>>> I would store the bus_width and bus_shift values in the struct
+> > > > >>>>>>>>>>> rvin_parallel_entity and evaluate them in place rater then create a flag
+> > > > >>>>>>>>>>> for this specific use-case..
+> > > > >>>>>>>>>>>
+> > > > >>>>>>>>>> Ok will do that.
+> > > > >>>>>>>>>>
+> > > > >>>>>>>>>>> Also according to the documentation is the check correct? Do we not wish
+> > > > >>>>>>>>>>> to use the new mode when bus_width == 16 and bus_shift == 8. The check
+> > > > >>>>>>>>>>> you have here seems to describe a 8 lane bus where 0 lanes are used.
+> > > > >>>>>>>>>>>
+> > > > >>>>>>>>>> bus-width is the actual data lines used, so bus_width == 16 and
+> > > > >>>>>>>>>> bus_shift == 8 would mean use lines 23:8, so just check for bus_width
+> > > > >>>>>>>>>> == 8 and bus_shift == 8 should be sufficient.
+> > > > >>>>>>>>>
+> > > > >>>>>>>>> As you and Geert points out I was wrong, they should indeed both be 8.
+> > > > >>>>>>>>>
+> > > > >>>>>>>>>>> I think you should also verify that bus_shift is either 0 or 8 as that
+> > > > >>>>>>>>>>> is all the driver supports.
+> > > > >>>>>>>>>>>
+> > > > >>>>>>>>>> Not sure if thats correct.In that case this patch wont make sense, I
+> > > > >>>>>>>>>> believed we agreed upon we determine the YDS depending on both
+> > > > >>>>>>>>>> bus-width and bus-shift.
+> > > > >>>>>>>>>
+> > > > >>>>>>>>> I'm sorry I think I lost you :-) The driver is not capable of supporting
+> > > > >>>>>>>>> bus_width = 8 and bus_shift = 2 right? Maybe we are talking about
+> > > > >>>>>>>>> different things.
+> > > > >>>>>>>>>
+> > > > >>>>>>>>> What I tried to say (updated with the knowledge of that bus_width should
+> > > > >>>>>>>>> indeed be 8 and not 16) was that would it make sens to with bus_width=8
+> > > > >>>>>>>>> allow for a bus_shift value other then 0 or 8? What for example would
+> > > > >>>>>>>>> the driver do if the value was 2?
+> > > > >>>>>>>>>
+> > > > >>>>>>>> I think this should be possible but I am not sure how this will work.
+> > > > >>>>>>>> For example on iWave G21D-Q7 platform with 16-bit wired bus say we
+> > > > >>>>>>>> connect a 8-bit camera as below:
+> > > > >>>>>>>>
+> > > > >>>>>>>> bus-width = 8 and bus-shift = 2
+> > > > >>>>>>>> VI1_G0_B        -> Not connected
+> > > > >>>>>>>> VI1_G1_B        -> Not connected
+> > > > >>>>>>>> VI1_G2_B_16        -> Connected
+> > > > >>>>>>>> VI1_G3_B        -> Connected
+> > > > >>>>>>>> VI1_G4_B        -> Connected
+> > > > >>>>>>>> VI1_G5_B        -> Connected
+> > > > >>>>>>>> VI1_G6_B        -> Connected
+> > > > >>>>>>>> VI1_G7_B        -> Connected
+> > > > >>>>>>>> VI1_DATA7_B/VI1_B7_B_16    -> Connected
+> > > > >>>>>>>> VI1_DATA6_B/VI1_B6_B_16    -> Connected
+> > > > >>>>>>>> VI1_DATA5_B/VI1_B5_B_16    -> Not connected
+> > > > >>>>>>>> VI1_DATA4_B/VI1_B4_B_16    -> Not connected
+> > > > >>>>>>>> VI1_DATA3_B/VI1_B3_B_16    -> Not connected
+> > > > >>>>>>>> VI1_DATA2_B/VI1_B2_B_16    -> Not connected
+> > > > >>>>>>>> VI1_DATA1_B/VI1_B1_B_16    -> Not connected
+> > > > >>>>>>>> VI1_DATA0_B/VI1_B0_B_16    -> Not connected
+> > > > >>>>>>>
+> > > > >>>>>>> I agree this is how I would imagine bus-width = 8 and bus-shift = 2 to
+> > > > >>>>>>> be wired.
+> > > > >>>>>>>
+> > > > >>>>>>>> So in this case for 8-bit YCbCr422 format should YDS be set I am not
+> > > > >>>>>>>> sure. Or is this not a valid case at all ?
+> > > > >>>>>>>
+> > > > >>>>>>> That is my question :-)
+> > > > >>>>>>>
+> > > > >>>>>>> I can't find anything int the documentation that would allow is to do
+> > > > >>>>>>> anything other then bus-width = 8 together with bus-shift = 0 (do not
+> > > > >>>>>>> set YDS) or bus-shift = 8 (set YDS). So that is why I suggested you
+> > > > >>>>>>> check for this and print a warning if bus-shift is anything else :-)
+> > > > >>>>>>>
+> > > > >>>>>>> But if you can figured out how we can do a bus-shift = 2 as in your
+> > > > >>>>>>> example then of course the check is wrong. I have not read the docs
+> > > > >>>>>>> carefully enough about this to rule it out as impossible.
+> > > > >>>>>>
+> > > > >>>>>> IIUIC, this is a completely different scenario than "low" or "high" wiring
+> > > > >>>>>> of 8-bit YCbCr-422, hence YDS does not apply?
+> > > > >>>>>>
+> > > > >>>>> I tend to agree. We only enable YDS if bus-width = 8 and bus-shift=8
+> > > > >>>>> as done by this patch. (Although there isn't enough documentation to
+> > > > >>>>> prove it)
+> > > > >>>>>
+> > > > >>>>>> The iWave G21D-Q7 wiring seems to be 10-bit YCbCr-422 with the 2 LSB
+> > > > >>>>>> bits unconnected?
+> > > > >>>>>
+> > > > >>>>> B-8bit/ BG-16 bit for VI0 and  B-8bit/ BG-16 bit for VI0
+> > > > >>>>>
+> > > > >>>>>> Interestingly, that mode is supported on all RZ/G1 SoCs, on most R-Car
+> > > > >>>>>> Gen3 SoCs, but only on a single R-Car Gen2 SoC (V2H).
+> > > > >>>>>
+> > > > >>>>> YDS mode ?
+> > > > >>>>
+> > > > >>>> No, 10-bit YCbCr-422. But please forget my comment, I was looking at
+> > > > >>>> the wrong table.
+> > > > >>>>
+> > > > >>>> VI1_G[7:2] plus VI1_DATA[7:6] is not even a contiguous subset (I had
+> > > > >>>> misread the used subset to be G[1:0] and B[7:2]), so it cannot be represented
+> > > > >>>> using just bus-width and bus-shift properties?
+> > > > >>>>
+> > > > >>> Yes and here is my explanation.
+> > > > >>>
+> > > > >>> In Gen1 manual for YDS bit it says the below:
+> > > > >>> 0: Vin_B[7:0] pins
+> > > > >>> 1: Vin_G[7:0] pins
+> > > > >>>
+> > > > >>> And in Gen2 manual it says,
+> > > > >>> 0: Vin_DATA[7:0] pins
+> > > > >>> 1: Vin_DATA[7:0] pins
+> > > > >>
+> > > > >> Vin_DATA[15:8]
+> > > > >>
+> > > > >> The difference is due to some SoCs naming the signals R[7:0], G[7:0], B[7:0],
+> > > > >> while other SoCs use DATA[23:0], the latter presumably to avoid
+> > > > >> confusion when using non-RGB input formats.
+> > > > >> R-Car V2H uses a mix: D[23:16]_R[7:0], D[15:8]_G[7:0], D[7:0]_B[7:0] ;-)
+> > > > >>
+> > > > >> However, the underlying behavior is the same, which is clear from the
+> > > > >> RGB-666 mode, which is not using contiguous DATA[17:0], but sparse
+> > > > >> DATA[23:18], DATA[15:10], DATA[7:2], i.e. the 6 MSB of each color
+> > > > >> component.
+> > > > >>
+> > > > >>> On iwave platform for the VIN2 interface the following G pins are connected:
+> > > > >>>
+> > > > >>>  VI2_G0_MARK, VI2_G1_MARK,
+> > > > >>>  VI2_G2_MARK, VI2_G3_MARK,
+> > > > >>>  VI2_G4_MARK, VI2_G5_MARK,
+> > > > >>>  VI2_G6_MARK, VI2_G7_MARK,
+> > > > >>>
+> > > > >>> And for capture to work on this interface the YDS bit has to be set.
+> > > > >>>
+> > > > >>> Now suppose some day we have a platform with 16 bit interface where G
+> > > > >>> and R pins are connected:
+> > > > >>>
+> > > > >>>         VI2_G0_MARK, VI2_G1_MARK,
+> > > > >>>         VI2_G2_MARK, VI2_G3_MARK,
+> > > > >>>         VI2_G4_MARK, VI2_G5_MARK,
+> > > > >>>         VI2_G6_MARK, VI2_G7_MARK,
+> > > > >>>         /* R */
+> > > > >>>         VI2_R0_MARK, VI2_R1_MARK,
+> > > > >>>         VI2_R2_MARK, VI2_R3_MARK,
+> > > > >>>         VI2_R4_MARK, VI2_R5_MARK,
+> > > > >>>         VI2_R6_MARK, VI2_R7_MARK,
+> > > > >>>
+> > > > >>> Scenarios
+> > > > >>> 1: Say we connect a 8-bit camera just  with the G pins - YDS has to be
+> > > > >>> 1 for 8-bit YCbCr
+> > > > >>> 2: Say we connect a 8-bit camera just with the R pins - YDS has to be
+> > > > >>> 0 for 8-bit YCbCr
+> > > > >>> 3: Now say we use G2-G7 along with R0 and R1 pins to connect a 8 bit
+> > > > >>> camera - YDS has to be 1 for 8-bit camera
+> > > > >>>
+> > > > >>> And looking at the Gen1 description of YDS bit, having a combination
+> > > > >>> of B and G is not a valid case.
+> > > > >>
+> > > > >> Scenario 3 is indeed not supported. But G[1:0] and B[7:2] (= DATA[9:2])
+> > > > >> could work when using 10-bit YCbCr.
+> > > > >>
+> > > > >>> So my vote is to have a property in the endpoint to say if YDS has to
+> > > > >>> be enabled as done in my first version of the patch.
+> > > > >>
+> > > > >> "YDS" is not a generic property, "data-shift" is.
+> > > > >
+> > > > > Agreed, we want something standard.
+> > > >
+> > > > How do we proceed on this ?
+> > >
+> > > I may have lost track of the discussion here. Would a bus-width of 18 or
+> > > 24, like mentioned below, be enough to solve the problem, or do we need
+> > > something else ?
+> >
+> > Sorry maybe I miss-read your email, are you suggesting me to set the
+> > YDS bit to1 if bus-width=18/24 ?
+> >
+> > On the RZ/G1H parallel port for VIN2 interface the bus-width=8 since
+> > just the VI2_Gx pins are used YDS has to be set to 1 for it to work.
+>
+> Yes, sorry, I had misread the discussion.
+>
+> I think bus-width and data-shift should be set to 8 and 8 in this case,
+> but that will likely not be enough. The issue is that we need to match
+> the two ends of the link. With bus-width set to 8, the VIN will assume a
+> 8-bit format will be received. However, the sensor will report sending a
+> 10-bit format, and link validation will fail.
+>
+On the VIN side when bus-width and data-shift is set to 8, even on
+sensor end bus-width would be set to 8 if I am not wrong.
 
-diff --git a/drivers/i2c/busses/i2c-tegra.c b/drivers/i2c/busses/i2c-tegra.c
-index 880fbcd28c5e..10372c582aed 100644
---- a/drivers/i2c/busses/i2c-tegra.c
-+++ b/drivers/i2c/busses/i2c-tegra.c
-@@ -246,45 +246,52 @@ struct tegra_i2c_hw_feature {
-  * @msg_buf_remaining: size of unsent data in the message buffer
-  * @msg_read: indicates read direction of a transfer
-  * @bus_clk_rate: current I2C bus clock rate
-- * @is_multimaster_mode: indicates that I2C controller is in multi-master mode
-+ * @multimaster_mode: indicates that I2C controller is in multi-master mode
-  * @tx_dma_chan: DMA transmit channel
-  * @rx_dma_chan: DMA receive channel
-  * @dma_phys: handle to DMA resources
-  * @dma_buf: pointer to allocated DMA buffer
-  * @dma_buf_size: DMA buffer size
-- * @is_curr_dma_xfer: indicates active DMA transfer
-+ * @dma_mode: indicates active DMA transfer
-  * @dma_complete: DMA completion notifier
-- * @is_curr_atomic_xfer: indicates active atomic transfer
-+ * @atomic_mode: indicates active atomic transfer
-  */
- struct tegra_i2c_dev {
- 	struct device *dev;
--	const struct tegra_i2c_hw_feature *hw;
- 	struct i2c_adapter adapter;
--	struct clk *div_clk;
--	struct clk_bulk_data *clocks;
--	unsigned int nclocks;
-+
-+	const struct tegra_i2c_hw_feature *hw;
- 	struct reset_control *rst;
--	void __iomem *base;
-+	unsigned int cont_id;
-+	unsigned int irq;
-+
- 	phys_addr_t base_phys;
--	int cont_id;
--	int irq;
--	int is_dvc;
--	bool is_vi;
-+	void __iomem *base;
-+
-+	struct clk_bulk_data *clocks;
-+	unsigned int nclocks;
-+
-+	struct clk *div_clk;
-+	unsigned int bus_clk_rate;
-+
- 	struct completion msg_complete;
-+	size_t msg_buf_remaining;
- 	int msg_err;
- 	u8 *msg_buf;
--	size_t msg_buf_remaining;
--	int msg_read;
--	u32 bus_clk_rate;
--	bool is_multimaster_mode;
-+
-+	struct completion dma_complete;
- 	struct dma_chan *tx_dma_chan;
- 	struct dma_chan *rx_dma_chan;
-+	size_t dma_buf_size;
- 	dma_addr_t dma_phys;
- 	u32 *dma_buf;
--	unsigned int dma_buf_size;
--	bool is_curr_dma_xfer;
--	struct completion dma_complete;
--	bool is_curr_atomic_xfer;
-+
-+	bool multimaster_mode;
-+	bool atomic_mode;
-+	bool msg_read;
-+	bool dma_mode;
-+	bool is_dvc;
-+	bool is_vi;
- };
- 
- static void dvc_writel(struct tegra_i2c_dev *i2c_dev, u32 val, u32 reg)
-@@ -523,7 +530,7 @@ static int tegra_i2c_poll_register(struct tegra_i2c_dev *i2c_dev,
- 	void __iomem *addr = i2c_dev->base + tegra_i2c_reg_addr(i2c_dev, reg);
- 	u32 val;
- 
--	if (!i2c_dev->is_curr_atomic_xfer)
-+	if (!i2c_dev->atomic_mode)
- 		return readl_relaxed_poll_timeout(addr, val, !(val & mask),
- 						  delay_us, timeout_us);
- 
-@@ -663,7 +670,7 @@ static int tegra_i2c_init(struct tegra_i2c_dev *i2c_dev)
- 	if (err)
- 		return err;
- 
--	if (i2c_dev->is_multimaster_mode && i2c_dev->hw->has_slcg_override_reg)
-+	if (i2c_dev->multimaster_mode && i2c_dev->hw->has_slcg_override_reg)
- 		i2c_writel(i2c_dev, I2C_MST_CORE_CLKEN_OVR, I2C_CLKEN_OVERRIDE);
- 
- 	err = tegra_i2c_wait_for_config_load(i2c_dev);
-@@ -854,7 +861,7 @@ static irqreturn_t tegra_i2c_isr(int irq, void *dev_id)
- 	if (i2c_dev->hw->supports_bus_clear && (status & I2C_INT_BUS_CLR_DONE))
- 		goto err;
- 
--	if (!i2c_dev->is_curr_dma_xfer) {
-+	if (!i2c_dev->dma_mode) {
- 		if (i2c_dev->msg_read && (status & I2C_INT_RX_FIFO_DATA_REQ)) {
- 			if (tegra_i2c_empty_rx_fifo(i2c_dev)) {
- 				/*
-@@ -889,7 +896,7 @@ static irqreturn_t tegra_i2c_isr(int irq, void *dev_id)
- 	 * so forcing msg_buf_remaining to 0 in DMA mode.
- 	 */
- 	if (status & I2C_INT_PACKET_XFER_COMPLETE) {
--		if (i2c_dev->is_curr_dma_xfer)
-+		if (i2c_dev->dma_mode)
- 			i2c_dev->msg_buf_remaining = 0;
- 		/*
- 		 * Underflow error condition: XFER_COMPLETE before message
-@@ -919,7 +926,7 @@ static irqreturn_t tegra_i2c_isr(int irq, void *dev_id)
- 	if (i2c_dev->is_dvc)
- 		dvc_writel(i2c_dev, DVC_STATUS_I2C_DONE_INTR, DVC_STATUS);
- 
--	if (i2c_dev->is_curr_dma_xfer) {
-+	if (i2c_dev->dma_mode) {
- 		if (i2c_dev->msg_read)
- 			dmaengine_terminate_async(i2c_dev->rx_dma_chan);
- 		else
-@@ -945,7 +952,7 @@ static int tegra_i2c_config_fifo_trig(struct tegra_i2c_dev *i2c_dev, size_t len)
- 	else
- 		reg = I2C_FIFO_CONTROL;
- 
--	if (i2c_dev->is_curr_dma_xfer) {
-+	if (i2c_dev->dma_mode) {
- 		if (len & 0xF)
- 			dma_burst = 1;
- 		else if (len & 0x10)
-@@ -1031,7 +1038,7 @@ static unsigned long tegra_i2c_wait_completion(struct tegra_i2c_dev *i2c_dev,
- {
- 	unsigned long ret;
- 
--	if (i2c_dev->is_curr_atomic_xfer) {
-+	if (i2c_dev->atomic_mode) {
- 		ret = tegra_i2c_poll_completion(i2c_dev, complete, timeout_ms);
- 	} else {
- 		enable_irq(i2c_dev->irq);
-@@ -1107,14 +1114,14 @@ static void tegra_i2c_push_packet_header(struct tegra_i2c_dev *i2c_dev,
- 			FIELD_PREP(PACKET_HEADER0_CONT_ID, i2c_dev->cont_id) |
- 			FIELD_PREP(PACKET_HEADER0_PACKET_ID, 1);
- 
--	if (i2c_dev->is_curr_dma_xfer && !i2c_dev->msg_read)
-+	if (i2c_dev->dma_mode && !i2c_dev->msg_read)
- 		*dma_buf++ = packet_header;
- 	else
- 		i2c_writel(i2c_dev, packet_header, I2C_TX_FIFO);
- 
- 	packet_header = msg->len - 1;
- 
--	if (i2c_dev->is_curr_dma_xfer && !i2c_dev->msg_read)
-+	if (i2c_dev->dma_mode && !i2c_dev->msg_read)
- 		*dma_buf++ = packet_header;
- 	else
- 		i2c_writel(i2c_dev, packet_header, I2C_TX_FIFO);
-@@ -1139,7 +1146,7 @@ static void tegra_i2c_push_packet_header(struct tegra_i2c_dev *i2c_dev,
- 	if (msg->flags & I2C_M_RD)
- 		packet_header |= I2C_HEADER_READ;
- 
--	if (i2c_dev->is_curr_dma_xfer && !i2c_dev->msg_read)
-+	if (i2c_dev->dma_mode && !i2c_dev->msg_read)
- 		*dma_buf++ = packet_header;
- 	else
- 		i2c_writel(i2c_dev, packet_header, I2C_TX_FIFO);
-@@ -1155,7 +1162,7 @@ static int tegra_i2c_error_recover(struct tegra_i2c_dev *i2c_dev,
- 
- 	/* start recovery upon arbitration loss in single master mode */
- 	if (i2c_dev->msg_err == I2C_ERR_ARBITRATION_LOST) {
--		if (!i2c_dev->is_multimaster_mode)
-+		if (!i2c_dev->multimaster_mode)
- 			return i2c_recover_bus(&i2c_dev->adapter);
- 
- 		return -EAGAIN;
-@@ -1197,9 +1204,8 @@ static int tegra_i2c_xfer_msg(struct tegra_i2c_dev *i2c_dev,
- 
- 	xfer_size = ALIGN(xfer_size, BYTES_PER_FIFO_WORD);
- 
--	i2c_dev->is_curr_dma_xfer = (xfer_size > I2C_PIO_MODE_PREFERRED_LEN) &&
--				    i2c_dev->dma_buf &&
--				    !i2c_dev->is_curr_atomic_xfer;
-+	i2c_dev->dma_mode = xfer_size > I2C_PIO_MODE_PREFERRED_LEN &&
-+			    i2c_dev->dma_buf && !i2c_dev->atomic_mode;
- 
- 	err = tegra_i2c_config_fifo_trig(i2c_dev, xfer_size);
- 	if (err)
-@@ -1215,7 +1221,7 @@ static int tegra_i2c_xfer_msg(struct tegra_i2c_dev *i2c_dev,
- 	int_mask = I2C_INT_NO_ACK | I2C_INT_ARBITRATION_LOST;
- 	tegra_i2c_unmask_irq(i2c_dev, int_mask);
- 
--	if (i2c_dev->is_curr_dma_xfer) {
-+	if (i2c_dev->dma_mode) {
- 		if (i2c_dev->msg_read) {
- 			dma_sync_single_for_device(i2c_dev->dev,
- 						   i2c_dev->dma_phys,
-@@ -1234,7 +1240,7 @@ static int tegra_i2c_xfer_msg(struct tegra_i2c_dev *i2c_dev,
- 	tegra_i2c_push_packet_header(i2c_dev, msg, end_state);
- 
- 	if (!i2c_dev->msg_read) {
--		if (i2c_dev->is_curr_dma_xfer) {
-+		if (i2c_dev->dma_mode) {
- 			memcpy(i2c_dev->dma_buf, msg->buf, msg->len);
- 
- 			dma_sync_single_for_device(i2c_dev->dev,
-@@ -1252,7 +1258,7 @@ static int tegra_i2c_xfer_msg(struct tegra_i2c_dev *i2c_dev,
- 	if (i2c_dev->hw->has_per_pkt_xfer_complete_irq)
- 		int_mask |= I2C_INT_PACKET_XFER_COMPLETE;
- 
--	if (!i2c_dev->is_curr_dma_xfer) {
-+	if (!i2c_dev->dma_mode) {
- 		if (msg->flags & I2C_M_RD)
- 			int_mask |= I2C_INT_RX_FIFO_DATA_REQ;
- 		else if (i2c_dev->msg_buf_remaining)
-@@ -1263,7 +1269,7 @@ static int tegra_i2c_xfer_msg(struct tegra_i2c_dev *i2c_dev,
- 	dev_dbg(i2c_dev->dev, "unmasked IRQ: %02x\n",
- 		i2c_readl(i2c_dev, I2C_INT_MASK));
- 
--	if (i2c_dev->is_curr_dma_xfer) {
-+	if (i2c_dev->dma_mode) {
- 		time_left = tegra_i2c_wait_completion(i2c_dev,
- 						      &i2c_dev->dma_complete,
- 						      xfer_time);
-@@ -1311,7 +1317,7 @@ static int tegra_i2c_xfer_msg(struct tegra_i2c_dev *i2c_dev,
- 		time_left, completion_done(&i2c_dev->msg_complete),
- 		i2c_dev->msg_err);
- 
--	i2c_dev->is_curr_dma_xfer = false;
-+	i2c_dev->dma_mode = false;
- 
- 	err = tegra_i2c_error_recover(i2c_dev, msg);
- 	if (err)
-@@ -1363,9 +1369,9 @@ static int tegra_i2c_xfer_atomic(struct i2c_adapter *adap,
- 	struct tegra_i2c_dev *i2c_dev = i2c_get_adapdata(adap);
- 	int ret;
- 
--	i2c_dev->is_curr_atomic_xfer = true;
-+	i2c_dev->atomic_mode = true;
- 	ret = tegra_i2c_xfer(adap, msgs, num);
--	i2c_dev->is_curr_atomic_xfer = false;
-+	i2c_dev->atomic_mode = false;
- 
- 	return ret;
- }
-@@ -1598,7 +1604,7 @@ static void tegra_i2c_parse_dt(struct tegra_i2c_dev *i2c_dev)
- 		i2c_dev->bus_clk_rate = I2C_MAX_STANDARD_MODE_FREQ;
- 
- 	multi_mode = of_property_read_bool(np, "multi-master");
--	i2c_dev->is_multimaster_mode = multi_mode;
-+	i2c_dev->multimaster_mode = multi_mode;
- 
- 	if (of_device_is_compatible(np, "nvidia,tegra20-i2c-dvc"))
- 		i2c_dev->is_dvc = true;
-@@ -1629,7 +1635,7 @@ static int tegra_i2c_init_clocks(struct tegra_i2c_dev *i2c_dev)
- 		}
- 	}
- 
--	if (!i2c_dev->is_multimaster_mode)
-+	if (!i2c_dev->multimaster_mode)
- 		return 0;
- 
- 	err = clk_enable(i2c_dev->div_clk);
-@@ -1648,7 +1654,7 @@ static int tegra_i2c_init_clocks(struct tegra_i2c_dev *i2c_dev)
- 
- static void tegra_i2c_release_clocks(struct tegra_i2c_dev *i2c_dev)
- {
--	if (i2c_dev->is_multimaster_mode)
-+	if (i2c_dev->multimaster_mode)
- 		clk_disable(i2c_dev->div_clk);
- 
- 	clk_bulk_unprepare(i2c_dev->nclocks, i2c_dev->clocks);
--- 
-2.27.0
+> We need either the VIN to expect a 10-bit media bus format, or the
+> sensor to advertise a 8-bit media bus format. The former isn't possible
+> with the properties we have in DT today. The later should work if we set
+> bus-width and data-shift to 10 and 2 on the sensor side. The sensor
+> driver would need to parse that, and adjust the media bus code
+> accordingly. That's more work for sensor drivers, which isn't very nice,
+> but I don't really see what other option we have today.
+>
+Agreed.
 
+> Would that work for your use case ? YDS would be set when data-shift is
+> 8 on the VIN side.
+>
+Looking again at the RZ/G2 manual, Table 26.8.1 " Channel 4 Data Pin
+Connections" and Table 26.9.1 "Channel 5 Data Pin Connections "
+YDS=1, data-shift=8 and bus-width=8.
+Compared with RZ/G1 manual, Table 23.5  "Channel 0 Data Pin
+Connections", Table 23.6 " Channel 1 Data Pin Connections" and Table
+23.7 "Channel 2 Data Pin Connections" YDS=1, data-shift=8 and
+bus-width=8.
+
+This patch does the same where it checks for data-shift=8 and
+bus-width=8 and the set YDS bit.
+
+Cheers,
+Prabhakar
