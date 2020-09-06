@@ -2,114 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37DEC25EF04
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Sep 2020 18:11:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EB8725EF0A
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Sep 2020 18:16:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729083AbgIFQK7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Sep 2020 12:10:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56604 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729023AbgIFQKy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Sep 2020 12:10:54 -0400
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 44B1120709;
-        Sun,  6 Sep 2020 16:10:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599408654;
-        bh=EKKo/Pr7cbvXEL/uhyjxvvcTU18RWBi/KO8A9ZBpESM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=RRVLstSGSZAGrFXwmLxAMRpdW09YPwib93S8F0KNv+TVU2IrGUjKhkrkehP1XQmhv
-         At1b9wRn4fncsLuSOdS2lR8U2T3FIdL91IrFdjfuxH0LiNDeBFT+wldmDbWNzOwhq4
-         SNDU8xOVKJGLiO0rh06cKhy5kQO0O7bnBnRVZ43s=
-Date:   Sun, 6 Sep 2020 17:10:49 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH v3 2/2] MAINTAINERS: Move Hartmut Knaack to Credits
-Message-ID: <20200906171049.5aa5b99b@archlinux>
-In-Reply-To: <20200903181926.5606-2-krzk@kernel.org>
-References: <20200903181926.5606-1-krzk@kernel.org>
-        <20200903181926.5606-2-krzk@kernel.org>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1729033AbgIFQQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Sep 2020 12:16:47 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:43690 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728779AbgIFQQi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Sep 2020 12:16:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599408996;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hPP5lg7k+pqpXO4LqmsOWDF2WRHtXNsleur3yoDeHCo=;
+        b=F+U9h8Yk/mDIjNbKMaX1MuEUjKnPXka7m0pPi7rMAvOnZJUXkHB66eXRZwFZGFc4rkIq8C
+        9amFM4xB/JxNOI4URyTwkdSZLKRLAfDHIX7d+45dGERiqRKyQujoqdXT/iuEin+KrVQcU8
+        B3maD548QZGbkZqofIt0Aa85UtC+Rgk=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-427-DSBPDOiaM1WfL8PdQOEXBg-1; Sun, 06 Sep 2020 12:16:34 -0400
+X-MC-Unique: DSBPDOiaM1WfL8PdQOEXBg-1
+Received: by mail-qt1-f198.google.com with SMTP id g1so7591256qtc.22
+        for <linux-kernel@vger.kernel.org>; Sun, 06 Sep 2020 09:16:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=hPP5lg7k+pqpXO4LqmsOWDF2WRHtXNsleur3yoDeHCo=;
+        b=p26Yb52pRbVHpkYITINeAVFV3pcYaMopVKh7nPeQ+EL2Bvtl4y6R045Ua/FTG/UgsN
+         H4ynxPsjABET8L/mwNi5c8wO5rhiyPlE8JCg0X/NQWK8XA0vfSlC4KGsrlMBzB7aYUhl
+         467h8mcDJJ1hB4d6qd3zBAjWf6eRrNGaRuRaz/A16/plVo6G1PhmHiExJmhmhCEMpL7c
+         Rlf//kwM1Kbb+RQATXG6fX4yjj+NFSmij8xBec1hbujxgD0TwK+7Pq6fmmVwMlyAqoXj
+         3XodTXu35tEiIy4DYc6WDm/yfr3IeLbPBUxHsVWGDjkrK3ERfcD/vz4W4KQsTcw09Uc4
+         j+/w==
+X-Gm-Message-State: AOAM531BdCRkjHRsxKaH/ahVVPnc1EP1wAP453YdB+Mg/PBTnm1Hu+56
+        ZpQcavMLfwFHyJ2yWALN9cz9YLKC5cUvIEok3Ftk7M5LLVdV9ycfurJwTxmy9gdYyWjIbPzSR/l
+        het9eWlJybO08uByXGOJAAJDU
+X-Received: by 2002:ac8:7650:: with SMTP id i16mr17566628qtr.268.1599408994033;
+        Sun, 06 Sep 2020 09:16:34 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzcYEz2ZgzUM/FAXVJ/NnpekBCMRXU+GZiYruI2Jb5lbYH2yTiwBoVy83dBUJxicfns8viOIg==
+X-Received: by 2002:ac8:7650:: with SMTP id i16mr17566606qtr.268.1599408993770;
+        Sun, 06 Sep 2020 09:16:33 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id d10sm8939186qkk.1.2020.09.06.09.16.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 06 Sep 2020 09:16:33 -0700 (PDT)
+Subject: Re: [PATCH v1 07/12] fpga: expose sec-mgr update status
+To:     Russ Weight <russell.h.weight@intel.com>, mdf@kernel.org,
+        lee.jones@linaro.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     lgoncalv@redhat.com, yilun.xu@intel.com, hao.wu@intel.com,
+        matthew.gerlach@intel.com
+References: <20200904235305.6254-1-russell.h.weight@intel.com>
+ <20200904235305.6254-8-russell.h.weight@intel.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <4fdb6000-ced9-1713-cace-8e7b09c6d586@redhat.com>
+Date:   Sun, 6 Sep 2020 09:16:31 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20200904235305.6254-8-russell.h.weight@intel.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu,  3 Sep 2020 20:19:26 +0200
-Krzysztof Kozlowski <krzk@kernel.org> wrote:
 
-> Hartmut Knaack was an active reviewer and contributor to the IIO
-> subsystem and drivers.  However his last message on LKML is from
-> October 2015.
-> 
-> In thanks for Hartmut's effort, move him name to the Credits.
-> 
-> Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Cc: Jonathan Cameron <jic23@kernel.org>
-> Cc: linux-iio <linux-iio@vger.kernel.org>
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Applied.
-
-Thanks Hartmut.  With the other reviewers, you dug me out of
-several holes where I was completely swamped.
-
-Hope to see you again one day, but fully understand if you've
-moved on to other things.
-
-I probably don't say this often enough, but those who review
-for IIO are the only reason I keep up with things when life gets
-busy.  It is very much appreciated.
-
-Thanks,
-
-Jonathan
-
-> 
+On 9/4/20 4:53 PM, Russ Weight wrote:
+> Extend the Intel Security Manager class driver to
+> include an update/status sysfs node that can be polled
+> and read to monitor the progress of an ongoing secure
+> update. Sysfs_notify() is used to signal transitions
+> between different phases of the update process.
+>
+> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+> Reviewed-by: Wu Hao <hao.wu@intel.com>
 > ---
-> 
-> Changes since v1:
-> 1. Fix order in CREDITS
-> ---
->  CREDITS     | 4 ++++
->  MAINTAINERS | 1 -
->  2 files changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/CREDITS b/CREDITS
-> index 32ee70a7562e..c741455498a4 100644
-> --- a/CREDITS
-> +++ b/CREDITS
-> @@ -1942,6 +1942,10 @@ S: Post Office Box 611311
->  S: San Jose, California 95161-1311
->  S: USA
->  
-> +N: Hartmut Knaack
-> +E: knaack.h@gmx.de
-> +D: IIO subsystem and drivers
+>  .../ABI/testing/sysfs-class-ifpga-sec-mgr     | 11 ++++++
+>  drivers/fpga/ifpga-sec-mgr.c                  | 34 ++++++++++++++++---
+>  2 files changed, 41 insertions(+), 4 deletions(-)
+>
+> diff --git a/Documentation/ABI/testing/sysfs-class-ifpga-sec-mgr b/Documentation/ABI/testing/sysfs-class-ifpga-sec-mgr
+> index a476504b7ae9..849ccb2802f8 100644
+> --- a/Documentation/ABI/testing/sysfs-class-ifpga-sec-mgr
+> +++ b/Documentation/ABI/testing/sysfs-class-ifpga-sec-mgr
+> @@ -86,3 +86,14 @@ Description:	Write only. Write the filename of an Intel image
+>  		BMC images, BMC firmware, Static Region images,
+>  		and Root Entry Hashes, and to cancel Code Signing
+>  		Keys (CSK).
 > +
->  N: Thorsten Knabe
->  E: Thorsten Knabe <tek@rbg.informatik.tu-darmstadt.de>
->  E: Thorsten Knabe <tek01@hrzpub.tu-darmstadt.de>
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 4a120aec90a2..c585449b9084 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -8488,7 +8488,6 @@ F:	drivers/iio/multiplexer/iio-mux.c
+> +What: 		/sys/class/ifpga_sec_mgr/ifpga_secX/update/status
+> +Date:		Sep 2020
+> +KernelVersion:  5.10
+> +Contact:	Russ Weight <russell.h.weight@intel.com>
+> +Description:	Read-only. Returns a string describing the current
+> +		status of an update. The string will be one of the
+> +		following: idle, read_file, preparing, writing,
+For consistency, read_file -> reading
+> +		programming. Userspace code can poll on this file,
+> +		as it will be signaled by sysfs_notify() on each
+> +		state change.
+> diff --git a/drivers/fpga/ifpga-sec-mgr.c b/drivers/fpga/ifpga-sec-mgr.c
+> index 73173badbe96..5fe3d85e2963 100644
+> --- a/drivers/fpga/ifpga-sec-mgr.c
+> +++ b/drivers/fpga/ifpga-sec-mgr.c
+> @@ -139,6 +139,13 @@ static struct attribute *sec_mgr_security_attrs[] = {
+>  	NULL,
+>  };
 >  
->  IIO SUBSYSTEM AND DRIVERS
->  M:	Jonathan Cameron <jic23@kernel.org>
-> -R:	Hartmut Knaack <knaack.h@gmx.de>
->  R:	Lars-Peter Clausen <lars@metafoo.de>
->  R:	Peter Meerwald-Stadler <pmeerw@pmeerw.net>
->  L:	linux-iio@vger.kernel.org
+> +static void update_progress(struct ifpga_sec_mgr *imgr,
+> +			    enum ifpga_sec_prog new_progress)
+> +{
+> +	imgr->progress = new_progress;
+> +	sysfs_notify(&imgr->dev.kobj, "update", "status");
+> +}
+> +
+>  static void ifpga_sec_dev_error(struct ifpga_sec_mgr *imgr,
+>  				enum ifpga_sec_err err_code)
+>  {
+> @@ -149,7 +156,7 @@ static void ifpga_sec_dev_error(struct ifpga_sec_mgr *imgr,
+>  static void progress_complete(struct ifpga_sec_mgr *imgr)
+>  {
+>  	mutex_lock(&imgr->lock);
+> -	imgr->progress = IFPGA_SEC_PROG_IDLE;
+> +	update_progress(imgr, IFPGA_SEC_PROG_IDLE);
+>  	complete_all(&imgr->update_done);
+>  	mutex_unlock(&imgr->lock);
+>  }
+> @@ -177,14 +184,14 @@ static void ifpga_sec_mgr_update(struct work_struct *work)
+>  		goto release_fw_exit;
+>  	}
+>  
+> -	imgr->progress = IFPGA_SEC_PROG_PREPARING;
+> +	update_progress(imgr, IFPGA_SEC_PROG_PREPARING);
+>  	ret = imgr->iops->prepare(imgr);
+>  	if (ret) {
+>  		ifpga_sec_dev_error(imgr, ret);
+>  		goto modput_exit;
+>  	}
+>  
+> -	imgr->progress = IFPGA_SEC_PROG_WRITING;
+> +	update_progress(imgr, IFPGA_SEC_PROG_WRITING);
+>  	size = imgr->remaining_size;
+>  	while (size) {
+>  		blk_size = min_t(u32, size, WRITE_BLOCK_SIZE);
+> @@ -199,7 +206,7 @@ static void ifpga_sec_mgr_update(struct work_struct *work)
+>  		offset += blk_size;
+>  	}
+>  
+> -	imgr->progress = IFPGA_SEC_PROG_PROGRAMMING;
+> +	update_progress(imgr, IFPGA_SEC_PROG_PROGRAMMING);
+>  	ret = imgr->iops->poll_complete(imgr);
+>  	if (ret) {
+>  		ifpga_sec_dev_error(imgr, ret);
+> @@ -251,6 +258,24 @@ static struct attribute_group sec_mgr_security_attr_group = {
+>  	.is_visible = sec_mgr_visible,
+>  };
+>  
+> +static const char * const sec_mgr_prog_str[] = {
+> +	"idle",			/* IFPGA_SEC_PROG_IDLE */
+> +	"read_file",		/* IFPGA_SEC_PROG_READ_FILE */
+"reading"
+> +	"preparing",		/* IFPGA_SEC_PROG_PREPARING */
+> +	"writing",		/* IFPGA_SEC_PROG_WRITING */
+> +	"programming"		/* IFPGA_SEC_PROG_PROGRAMMING */
+> +};
+> +
+> +static ssize_t
+> +status_show(struct device *dev, struct device_attribute *attr, char *buf)
+> +{
+> +	struct ifpga_sec_mgr *imgr = to_sec_mgr(dev);
+> +
+> +	return sprintf(buf, "%s\n", (imgr->progress < IFPGA_SEC_PROG_MAX) ?
+> +		       sec_mgr_prog_str[imgr->progress] : "unknown-status");
+
+when imgr->progress is unknown, should there be a dev_warn ?
+
+Tom
+
+> +}
+> +static DEVICE_ATTR_RO(status);
+> +
+>  static ssize_t filename_store(struct device *dev, struct device_attribute *attr,
+>  			      const char *buf, size_t count)
+>  {
+> @@ -288,6 +313,7 @@ static DEVICE_ATTR_WO(filename);
+>  
+>  static struct attribute *sec_mgr_update_attrs[] = {
+>  	&dev_attr_filename.attr,
+> +	&dev_attr_status.attr,
+>  	NULL,
+>  };
+>  
 
