@@ -2,245 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEBB025EF55
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Sep 2020 19:24:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46AEF25EF5A
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Sep 2020 19:24:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729123AbgIFRX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Sep 2020 13:23:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47130 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725816AbgIFRXv (ORCPT
+        id S1729153AbgIFRY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Sep 2020 13:24:29 -0400
+Received: from smtprelay0084.hostedemail.com ([216.40.44.84]:46130 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725816AbgIFRY1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Sep 2020 13:23:51 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 126EEC061573
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Sep 2020 10:23:50 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id e16so12586571wrm.2
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Sep 2020 10:23:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=5LFv5ZzrVOAZXLCXj1U+E9oMgR2hqbPqCxx8fHUWScg=;
-        b=GSYmCjav2aZ0QhgMTTV2qcj7Jla39knHA76pCWIbROE5UHL1B9bue+wfrpvN6uUQ+u
-         Mt471x1TRdzFcB2Hovb9nv1XWxAVTGOc4yd3LS9jyA8Eo7XoVXR83/X/eVOqOS/3FA1g
-         RblNCxiwOGushHpmwDedToQykLg1aa3C29ePp+XuqhbkxX1QAu4EFdkX9JGXzuSCkhfb
-         yir95FfKypfPGgQT+tyOvkHtmn3nNrzlT4MbFzgQ2Moh4ciUVxa5+/jxTL1wBdqSJU1D
-         nGNs6t2sFGAXTXFmoUdir4ih8dho/XmuoECl60z5gK73qlfw4DkGAva44YPtencAF9Cm
-         gR3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=5LFv5ZzrVOAZXLCXj1U+E9oMgR2hqbPqCxx8fHUWScg=;
-        b=hE2/M9GtEAsfSlC7sKkBmO0/GMi8mswYFVL1n4i1POZp8GupnPioS+q+YwQQFdd2vW
-         78tVa/tORDgIIHCrqeg4LmcvgGhTAm9TBRCGKjjuBaaSqOmpbIAnrXByJ/MtmQEQjnY2
-         qow6hDwqwpDy8QXCcnaeh45Sr06rSAULpZ5ox2xSrSOtfCGaDwvgGhSaC9jWwrle9NXO
-         4He7UqoleNiRj7lOlkR0ni8MOCR14QUbMZA9ZoF4gHxQkx9g8HgPXeO27lvDtzp5OSZK
-         Ro+aZUMPdKmxVow3+Q4xK5EmcOHOAXo8OBiLlGzjukGRwg4sgwJ9kVnhXVVGENidljvD
-         pXgg==
-X-Gm-Message-State: AOAM531aml4TthF7ka0/R31GcVBBeJPjsNmVQ1DRUEr3l0xRqo/RXBHt
-        Rdq7O6k7sFjcQPZciIedc32WUQ==
-X-Google-Smtp-Source: ABdhPJxdwKrbmm/JNyMDgs0+HCcl31Zmvuic08YJEaYa3l1Ok6Ysb6o9cijYOYLzCz/0m5GNM6rTAQ==
-X-Received: by 2002:adf:e2c7:: with SMTP id d7mr17499432wrj.110.1599413029588;
-        Sun, 06 Sep 2020 10:23:49 -0700 (PDT)
-Received: from localhost.localdomain (208.19.23.93.rev.sfr.net. [93.23.19.208])
-        by smtp.gmail.com with ESMTPSA id p18sm4490311wrx.47.2020.09.06.10.23.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 06 Sep 2020 10:23:49 -0700 (PDT)
-From:   Fabien Parent <fparent@baylibre.com>
-To:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Cc:     krzk@kernel.org, mars.cheng@mediatek.com, owen.chen@mediatek.com,
-        macpaul.lin@mediatek.com, ulf.hansson@linaro.org,
-        matthias.bgg@gmail.com, robh+dt@kernel.org,
-        Fabien Parent <fparent@baylibre.com>
-Subject: [PATCH 2/2] soc: mediatek: add SCPSYS power dmain for MT8167 SoC
-Date:   Sun,  6 Sep 2020 19:23:37 +0200
-Message-Id: <20200906172337.1052933-2-fparent@baylibre.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200906172337.1052933-1-fparent@baylibre.com>
-References: <20200906172337.1052933-1-fparent@baylibre.com>
+        Sun, 6 Sep 2020 13:24:27 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 5816F18224D93;
+        Sun,  6 Sep 2020 17:24:25 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1543:1593:1594:1711:1730:1747:1777:1792:1981:2194:2199:2393:2559:2562:2828:2914:3138:3139:3140:3141:3142:3355:3622:3865:3866:3867:3868:3870:3871:3872:3874:4321:5007:6119:7875:7903:8603:8660:9010:10004:10400:10848:11026:11232:11473:11658:11914:12043:12291:12296:12297:12555:12683:12740:12760:12895:12986:13148:13230:13439:14181:14659:14721:21080:21451:21627:21939:21990:30003:30034:30054:30069:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: wall63_3303465270c5
+X-Filterd-Recvd-Size: 4608
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf06.hostedemail.com (Postfix) with ESMTPA;
+        Sun,  6 Sep 2020 17:24:23 +0000 (UTC)
+Message-ID: <743a648dc817cddd2e7046283c868f1c08742f29.camel@perches.com>
+Subject: Re: [PATCH V2] sysfs: Add sysfs_emit and sysfs_emit_at to format
+ sysfs output
+From:   Joe Perches <joe@perches.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Denis Efremov <efremov@linux.com>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Alex Dewar <alex.dewar90@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Sun, 06 Sep 2020 10:24:20 -0700
+In-Reply-To: <a9054fb521e65f2809671fa9c18e2453061e9d91.1598744610.git.joe@perches.com>
+References: <a9054fb521e65f2809671fa9c18e2453061e9d91.1598744610.git.joe@perches.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add SCPSYS power domain support for MT8167 SoC.
+On Sat, 2020-08-29 at 16:48 -0700, Joe Perches wrote:
+> Output defects can exist in sysfs content using sprintf and snprintf.
+> 
+> sprintf does not know the PAGE_SIZE maximum of the temporary buffer
+> used for outputting sysfs content and it's possible to overrun the
+> PAGE_SIZE buffer length.
+> 
+> Add a generic sysfs_emit function that knows that the size of the
+> temporary buffer and ensures that no overrun is done.
+> 
+> Add a generic sysfs_emit_at function that can be used in multiple
+> call situations that also ensures that no overrun is done.
+> 
+> Signed-off-by: Joe Perches <joe@perches.com>
+> ---
+> 
+> V2: Simplify sysfs_emit and add sysfs_emit_at
+>     Include Documentation change
 
-Signed-off-by: Fabien Parent <fparent@baylibre.com>
+Greg?  Rafael? Thoughts on this?
+
+One additional possibility is to validate the buf address to be
+page aligned by adding a test of buf and offset_in_page(buf)
+
+ie: WARN(!buf || offset_in_page(buf), etc...
+
+Output defects can exist in sysfs content using sprintf and snprintf.
+
+sprintf does not know the PAGE_SIZE maximum of the temporary buffer
+used for outputting sysfs content and it's possible to overrun the
+PAGE_SIZE buffer length.
+
+Add a generic sysfs_emit function that knows that the size of the
+temporary buffer and ensures that no overrun is done.
+
+Add a generic sysfs_emit_at function that can be used in multiple
+call situations that also ensures that no overrun is done.
+
+Validate the output buffer argument to be page aligned.
+Validate the offset len argument to be within the PAGE_SIZE buf.
+
+Signed-off-by: Joe Perches <joe@perches.com>
 ---
- drivers/soc/mediatek/mtk-scpsys.c     | 99 +++++++++++++++++++++++++++
- include/linux/soc/mediatek/infracfg.h |  8 +++
- 2 files changed, 107 insertions(+)
+ fs/sysfs/file.c | 55 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 55 insertions(+)
 
-diff --git a/drivers/soc/mediatek/mtk-scpsys.c b/drivers/soc/mediatek/mtk-scpsys.c
-index f669d3754627..ce897720ef17 100644
---- a/drivers/soc/mediatek/mtk-scpsys.c
-+++ b/drivers/soc/mediatek/mtk-scpsys.c
-@@ -18,6 +18,7 @@
- #include <dt-bindings/power/mt6797-power.h>
- #include <dt-bindings/power/mt7622-power.h>
- #include <dt-bindings/power/mt7623a-power.h>
-+#include <dt-bindings/power/mt8167-power.h>
- #include <dt-bindings/power/mt8173-power.h>
+diff --git a/fs/sysfs/file.c b/fs/sysfs/file.c
+index eb6897ab78e7..96d0da65e088 100644
+--- a/fs/sysfs/file.c
++++ b/fs/sysfs/file.c
+@@ -15,6 +15,7 @@
+ #include <linux/list.h>
+ #include <linux/mutex.h>
+ #include <linux/seq_file.h>
++#include <linux/mm.h>
  
- #define MTK_POLL_DELAY_US   10
-@@ -89,6 +90,7 @@ enum clk_id {
- 	CLK_HIFSEL,
- 	CLK_JPGDEC,
- 	CLK_AUDIO,
-+	CLK_AXI_MFG,
- 	CLK_MAX,
- };
+ #include "sysfs.h"
  
-@@ -103,6 +105,7 @@ static const char * const clk_names[] = {
- 	"hif_sel",
- 	"jpgdec",
- 	"audio",
-+	"axi_mfg",
- 	NULL,
- };
- 
-@@ -911,6 +914,87 @@ static const struct scp_domain_data scp_domain_data_mt7623a[] = {
- 	},
- };
- 
-+/*
-+ * MT8167 power domain support
+@@ -707,3 +708,57 @@ int sysfs_change_owner(struct kobject *kobj, kuid_t kuid, kgid_t kgid)
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(sysfs_change_owner);
++
++/**
++ *	sysfs_emit - scnprintf equivalent, aware of PAGE_SIZE buffer.
++ *	@buf:	start of PAGE_SIZE buffer.
++ *	@fmt:	format
++ *	@...:	optional arguments to @format
++ *
++ *
++ * Returns number of characters written to @buf.
 + */
-+#define PWR_STATUS_MFG_2D_MT8167	BIT(24)
-+#define PWR_STATUS_MFG_ASYNC_MT8167	BIT(25)
++int sysfs_emit(char *buf, const char *fmt, ...)
++{
++	va_list args;
++	int len;
 +
-+static const struct scp_domain_data scp_domain_data_mt8167[] = {
-+	[MT8167_POWER_DOMAIN_DISP] = {
-+		.name = "disp",
-+		.sta_mask = PWR_STATUS_DISP,
-+		.ctl_offs = SPM_DIS_PWR_CON,
-+		.sram_pdn_bits = GENMASK(11, 8),
-+		.sram_pdn_ack_bits = GENMASK(12, 12),
-+		.bus_prot_mask = MT8167_TOP_AXI_PROT_EN_MM_EMI |
-+				 MT8167_TOP_AXI_PROT_EN_MCU_MM,
-+		.clk_id = {CLK_MM},
-+		.caps = MTK_SCPD_ACTIVE_WAKEUP,
-+	},
-+	[MT8167_POWER_DOMAIN_VDEC] = {
-+		.name = "vdec",
-+		.sta_mask = PWR_STATUS_VDEC,
-+		.ctl_offs = SPM_VDE_PWR_CON,
-+		.sram_pdn_bits = GENMASK(8, 8),
-+		.sram_pdn_ack_bits = GENMASK(12, 12),
-+		.clk_id = {CLK_MM, CLK_VDEC},
-+		.caps = MTK_SCPD_ACTIVE_WAKEUP,
-+	},
-+	[MT8167_POWER_DOMAIN_ISP] = {
-+		.name = "isp",
-+		.sta_mask = PWR_STATUS_ISP,
-+		.ctl_offs = SPM_ISP_PWR_CON,
-+		.sram_pdn_bits = GENMASK(11, 8),
-+		.sram_pdn_ack_bits = GENMASK(13, 12),
-+		.clk_id = {CLK_MM},
-+		.caps = MTK_SCPD_ACTIVE_WAKEUP,
-+	},
-+	[MT8167_POWER_DOMAIN_MFG_ASYNC] = {
-+		.name = "mfg_async",
-+		.sta_mask = PWR_STATUS_MFG_ASYNC_MT8167,
-+		.ctl_offs = SPM_MFG_ASYNC_PWR_CON,
-+		.sram_pdn_bits = 0,
-+		.sram_pdn_ack_bits = 0,
-+		.bus_prot_mask = MT8167_TOP_AXI_PROT_EN_MCU_MFG |
-+				 MT8167_TOP_AXI_PROT_EN_MFG_EMI,
-+		.clk_id = {CLK_MFG, CLK_AXI_MFG},
-+	},
-+	[MT8167_POWER_DOMAIN_MFG_2D] = {
-+		.name = "mfg_2d",
-+		.sta_mask = PWR_STATUS_MFG_2D_MT8167,
-+		.ctl_offs = SPM_MFG_2D_PWR_CON,
-+		.sram_pdn_bits = GENMASK(11, 8),
-+		.sram_pdn_ack_bits = GENMASK(15, 12),
-+		.clk_id = {CLK_NONE},
-+	},
-+	[MT8167_POWER_DOMAIN_MFG] = {
-+		.name = "mfg",
-+		.sta_mask = PWR_STATUS_MFG,
-+		.ctl_offs = SPM_MFG_PWR_CON,
-+		.sram_pdn_bits = GENMASK(11, 8),
-+		.sram_pdn_ack_bits = GENMASK(15, 12),
-+		.clk_id = {CLK_NONE},
-+	},
-+	[MT8167_POWER_DOMAIN_CONN] = {
-+		.name = "conn",
-+		.sta_mask = PWR_STATUS_CONN,
-+		.ctl_offs = SPM_CONN_PWR_CON,
-+		.sram_pdn_bits = GENMASK(8, 8),
-+		.sram_pdn_ack_bits = 0,
-+		.bus_prot_mask = MT8167_TOP_AXI_PROT_EN_CONN_EMI |
-+				 MT8167_TOP_AXI_PROT_EN_CONN_MCU |
-+				 MT8167_TOP_AXI_PROT_EN_MCU_CONN,
-+		.clk_id = {CLK_NONE},
-+		.caps = MTK_SCPD_ACTIVE_WAKEUP,
-+	},
-+};
++	if (WARN(!buf || offset_in_page(buf),
++		 "invalid sysfs_emit: buf:%p\n", buf))
++		return 0;
 +
-+static const struct scp_subdomain scp_subdomain_mt8167[] = {
-+	{MT8167_POWER_DOMAIN_MFG_ASYNC, MT8167_POWER_DOMAIN_MFG_2D},
-+	{MT8167_POWER_DOMAIN_MFG_2D, MT8167_POWER_DOMAIN_MFG},
-+};
++	va_start(args, fmt);
++	len = vscnprintf(buf, PAGE_SIZE, fmt, args);
++	va_end(args);
 +
- /*
-  * MT8173 power domain support
-  */
-@@ -1064,6 +1148,18 @@ static const struct scp_soc_data mt7623a_data = {
- 	.bus_prot_reg_update = true,
- };
- 
-+static const struct scp_soc_data mt8167_data = {
-+	.domains = scp_domain_data_mt8167,
-+	.num_domains = ARRAY_SIZE(scp_domain_data_mt8167),
-+	.subdomains = scp_subdomain_mt8167,
-+	.num_subdomains = ARRAY_SIZE(scp_subdomain_mt8167),
-+	.regs = {
-+		.pwr_sta_offs = SPM_PWR_STATUS,
-+		.pwr_sta2nd_offs = SPM_PWR_STATUS_2ND
-+	},
-+	.bus_prot_reg_update = true,
-+};
++	return len;
++}
++EXPORT_SYMBOL_GPL(sysfs_emit);
 +
- static const struct scp_soc_data mt8173_data = {
- 	.domains = scp_domain_data_mt8173,
- 	.num_domains = ARRAY_SIZE(scp_domain_data_mt8173),
-@@ -1096,6 +1192,9 @@ static const struct of_device_id of_scpsys_match_tbl[] = {
- 	}, {
- 		.compatible = "mediatek,mt7623a-scpsys",
- 		.data = &mt7623a_data,
-+	}, {
-+		.compatible = "mediatek,mt8167-scpsys",
-+		.data = &mt8167_data,
- 	}, {
- 		.compatible = "mediatek,mt8173-scpsys",
- 		.data = &mt8173_data,
-diff --git a/include/linux/soc/mediatek/infracfg.h b/include/linux/soc/mediatek/infracfg.h
-index fd25f0148566..6ee49bf90acf 100644
---- a/include/linux/soc/mediatek/infracfg.h
-+++ b/include/linux/soc/mediatek/infracfg.h
-@@ -2,6 +2,14 @@
- #ifndef __SOC_MEDIATEK_INFRACFG_H
- #define __SOC_MEDIATEK_INFRACFG_H
- 
-+#define MT8167_TOP_AXI_PROT_EN_MM_EMI		BIT(1)
-+#define MT8167_TOP_AXI_PROT_EN_MCU_MFG		BIT(2)
-+#define MT8167_TOP_AXI_PROT_EN_CONN_EMI		BIT(4)
-+#define MT8167_TOP_AXI_PROT_EN_MFG_EMI		BIT(5)
-+#define MT8167_TOP_AXI_PROT_EN_CONN_MCU		BIT(8)
-+#define MT8167_TOP_AXI_PROT_EN_MCU_CONN		BIT(9)
-+#define MT8167_TOP_AXI_PROT_EN_MCU_MM		BIT(11)
++/**
++ *	sysfs_emit_at - scnprintf equivalent, aware of PAGE_SIZE buffer.
++ *	@buf:	start of PAGE_SIZE buffer.
++ *	@at:	offset in @buf to start write in bytes
++ *		@at must be >= 0 && < PAGE_SIZE
++ *	@fmt:	format
++ *	@...:	optional arguments to @fmt
++ *
++ *
++ * Returns number of characters written starting at &@buf[@at].
++ */
++int sysfs_emit_at(char *buf, int at, const char *fmt, ...)
++{
++	va_list args;
++	int len;
 +
- #define MT8173_TOP_AXI_PROT_EN_MCI_M2		BIT(0)
- #define MT8173_TOP_AXI_PROT_EN_MM_M0		BIT(1)
- #define MT8173_TOP_AXI_PROT_EN_MM_M1		BIT(2)
--- 
-2.28.0
++	if (WARN(!buf || offset_in_page(buf) || at < 0 || at >= PAGE_SIZE,
++		 "invalid sysfs_emit_at: buf:%p at:%d\n", buf, at))
++		return 0;
++
++	va_start(args, fmt);
++	len = vscnprintf(buf + at, PAGE_SIZE - at, fmt, args);
++	va_end(args);
++
++	return len;
++}
++EXPORT_SYMBOL_GPL(sysfs_emit_at);
+
 
