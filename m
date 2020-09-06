@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2613125EDA4
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Sep 2020 13:27:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 034F725EDA6
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Sep 2020 13:28:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728853AbgIFL0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Sep 2020 07:26:22 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:3636 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727773AbgIFLVI (ORCPT
+        id S1728779AbgIFL2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Sep 2020 07:28:44 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:60372 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728663AbgIFLVH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Sep 2020 07:21:08 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 086B0cZ1070777;
-        Sun, 6 Sep 2020 07:20:46 -0400
+        Sun, 6 Sep 2020 07:21:07 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 086B3DjB140406;
+        Sun, 6 Sep 2020 07:20:56 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=pp1;
- bh=NCbeFYiMPWnRERCUZboUbQJzhywxoSdgdnZaGad2MH0=;
- b=qEEFWWG8Bjx3Z/nXf1ld3y+dejO/mwKv4lfxY6Aui1qGkVZjh8VuEUzVALTsOpMFvzwX
- ZmuFCzaoFmssJL9weqYJmBCUS63tEM8xwRGFoLWM4LzfaYX/a99K6BtQ7Rvp+vK05Z+I
- bitO4jCgOlvo9BS/0rZ0MC3lM+Arnmlx6Qx37+4ISS2xh7NkCN/Ze6njdnSSAIA9fvZq
- 4jhdoka+JkY92NIdMXETgsw5rTtGbxCXwU25/b2v6ujQV2DCs7kBjYFH1oC9LEABROb1
- TzVlFDCcqc0Yg0kANNpT58bwh7ivW0sfOD+cZTBgfEO2Y/HGai1w1A4zPV/oxVOP26Zc Ug== 
+ bh=9Z27I6/VSefaye0QjCi4u7nSfNIdCETo11iggYiT4gc=;
+ b=kR1j0YoOuc13x0IAwevupoWZi2MKVW5j5kTa6CI/N5alLVXAx/BijT0qUnPso+36mOEj
+ JJoSF9JVNExDf6pi5ptWPIJkdy38PyflLFjSoixHxLqa/V/DGzQop0mEC1h8vc6/iGFR
+ cfxmI/aQcnENha5TtKeAdbXx1+R0QYVxFuP4qbn9buj4W9ewQ8Mv4QwkKjwrg4s7Qq87
+ ZSaJ31U5gEVP3dINWskmS8k6nwzRf0a58LVpiKiYPh6CiWLB6uPTLl3iVg6SLN2SCR+j
+ F1c8fKH6lDyuZDumF4NKbmKVFN15P1Y4+JXIPzqIHCU44h5uxwufp21f7oMO7zndwkfF 1g== 
 Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 33cwkbs6ya-1
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33cwtyrypv-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 06 Sep 2020 07:20:46 -0400
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 086BIdmG104326;
-        Sun, 6 Sep 2020 07:20:45 -0400
+        Sun, 06 Sep 2020 07:20:55 -0400
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 086BFhJh167295;
+        Sun, 6 Sep 2020 07:20:55 -0400
 Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 33cwkbs6xw-1
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33cwtyryph-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 06 Sep 2020 07:20:45 -0400
+        Sun, 06 Sep 2020 07:20:55 -0400
 Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 086BIAsU013744;
-        Sun, 6 Sep 2020 11:20:43 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma06ams.nl.ibm.com with ESMTP id 33c5jts23g-1
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 086BHljD013690;
+        Sun, 6 Sep 2020 11:20:52 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma06ams.nl.ibm.com with ESMTP id 33c5jts23j-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 06 Sep 2020 11:20:43 +0000
+        Sun, 06 Sep 2020 11:20:52 +0000
 Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 086BKeXS38076866
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 086BKnM037945800
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 6 Sep 2020 11:20:41 GMT
+        Sun, 6 Sep 2020 11:20:49 GMT
 Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DB79BAE04D;
-        Sun,  6 Sep 2020 11:20:40 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id BC558AE04D;
+        Sun,  6 Sep 2020 11:20:49 +0000 (GMT)
 Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B589AAE045;
-        Sun,  6 Sep 2020 11:20:33 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id D32EAAE045;
+        Sun,  6 Sep 2020 11:20:41 +0000 (GMT)
 Received: from localhost.localdomain.com (unknown [9.79.216.239])
         by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Sun,  6 Sep 2020 11:20:33 +0000 (GMT)
+        Sun,  6 Sep 2020 11:20:41 +0000 (GMT)
 From:   Kajol Jain <kjain@linux.ibm.com>
 To:     acme@kernel.org
 Cc:     peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com,
@@ -64,9 +64,9 @@ Cc:     peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com,
         linux-perf-users@vger.kernel.org, irogers@google.com,
         maddy@linux.ibm.com, ravi.bangoria@linux.ibm.com,
         john.garry@huawei.com, kjain@linux.ibm.com
-Subject: [PATCH v8 2/5] perf/jevents: Add new structure to pass json fields.
-Date:   Sun,  6 Sep 2020 16:50:01 +0530
-Message-Id: <20200906112004.49574-3-kjain@linux.ibm.com>
+Subject: [PATCH v8 3/5] perf jevents: Add support for parsing perchip/percore events
+Date:   Sun,  6 Sep 2020 16:50:02 +0530
+Message-Id: <20200906112004.49574-4-kjain@linux.ibm.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200906112004.49574-1-kjain@linux.ibm.com>
 References: <20200906112004.49574-1-kjain@linux.ibm.com>
@@ -75,385 +75,126 @@ Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
  definitions=2020-09-06_07:2020-09-04,2020-09-06 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=4
- adultscore=0 lowpriorityscore=0 bulkscore=0 impostorscore=0 spamscore=0
- malwarescore=0 clxscore=1015 phishscore=0 priorityscore=1501
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009060104
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=1 bulkscore=0
+ clxscore=1015 priorityscore=1501 mlxlogscore=999 impostorscore=0
+ adultscore=0 lowpriorityscore=0 mlxscore=0 phishscore=0 spamscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009060109
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds new structure called 'json_event' inside jevents.c
-file to improve the callback prototype inside jevent files.
-Initially, whenever user want to add new field, they need to update
-in all function callback which make it more and more complex with
-increased number of parmeters.
-With this change, we just need to add it in new structure 'json_event'.
+Initially, every time we want to add new terms like chip, core thread etc,
+we need to create corrsponding fields in pmu_events and event struct.
+This patch adds an enum called 'aggr_mode_class' which store all these
+aggregation like perchip/percore. It also adds new field 'aggr_mode'
+to capture these terms.
+Now, if user wants to add any new term, they just need to add it in
+the enum defined.
 
 Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
-Reviewed-by: John Garry <john.garry@huawei.com>
 ---
- tools/perf/pmu-events/jevents.c | 212 +++++++++++++++-----------------
- 1 file changed, 97 insertions(+), 115 deletions(-)
+ tools/perf/pmu-events/jevents.c    | 19 +++++++++++++++++++
+ tools/perf/pmu-events/pmu-events.h |  6 ++++++
+ 2 files changed, 25 insertions(+)
 
 diff --git a/tools/perf/pmu-events/jevents.c b/tools/perf/pmu-events/jevents.c
-index 1b1c3606f62e..388dd287d736 100644
+index 388dd287d736..ebfb295bba05 100644
 --- a/tools/perf/pmu-events/jevents.c
 +++ b/tools/perf/pmu-events/jevents.c
-@@ -52,6 +52,23 @@
+@@ -48,6 +48,7 @@
+ #include <linux/list.h>
+ #include "jsmn.h"
+ #include "json.h"
++#include "pmu-events.h"
+ 
  int verbose;
  char *prog;
- 
-+struct json_event {
-+	char *name;
-+	char *event;
-+	char *desc;
-+	char *long_desc;
-+	char *pmu;
-+	char *unit;
-+	char *perpkg;
-+	char *metric_expr;
-+	char *metric_name;
-+	char *metric_group;
-+	char *deprecated;
-+	char *metric_constraint;
-+};
-+
-+typedef int (*func)(void *data, struct json_event *je);
-+
- int eprintf(int level, int var, const char *fmt, ...)
- {
- 
-@@ -70,11 +87,6 @@ int eprintf(int level, int var, const char *fmt, ...)
- 	return ret;
- }
- 
--__attribute__((weak)) char *get_cpu_str(void)
--{
--	return NULL;
--}
--
- static void addfield(char *map, char **dst, const char *sep,
- 		     const char *a, jsmntok_t *bt)
- {
-@@ -317,12 +329,7 @@ static void print_events_table_prefix(FILE *fp, const char *tblname)
- 	close_table = 1;
- }
- 
--static int print_events_table_entry(void *data, char *name, char *event,
--				    char *desc, char *long_desc,
--				    char *pmu, char *unit, char *perpkg,
--				    char *metric_expr,
--				    char *metric_name, char *metric_group,
--				    char *deprecated, char *metric_constraint)
-+static int print_events_table_entry(void *data, struct json_event *je)
- {
- 	struct perf_entry_data *pd = data;
- 	FILE *outfp = pd->outfp;
-@@ -334,30 +341,30 @@ static int print_events_table_entry(void *data, char *name, char *event,
- 	 */
- 	fprintf(outfp, "{\n");
- 
--	if (name)
--		fprintf(outfp, "\t.name = \"%s\",\n", name);
--	if (event)
--		fprintf(outfp, "\t.event = \"%s\",\n", event);
--	fprintf(outfp, "\t.desc = \"%s\",\n", desc);
-+	if (je->name)
-+		fprintf(outfp, "\t.name = \"%s\",\n", je->name);
-+	if (je->event)
-+		fprintf(outfp, "\t.event = \"%s\",\n", je->event);
-+	fprintf(outfp, "\t.desc = \"%s\",\n", je->desc);
- 	fprintf(outfp, "\t.topic = \"%s\",\n", topic);
--	if (long_desc && long_desc[0])
--		fprintf(outfp, "\t.long_desc = \"%s\",\n", long_desc);
--	if (pmu)
--		fprintf(outfp, "\t.pmu = \"%s\",\n", pmu);
--	if (unit)
--		fprintf(outfp, "\t.unit = \"%s\",\n", unit);
--	if (perpkg)
--		fprintf(outfp, "\t.perpkg = \"%s\",\n", perpkg);
--	if (metric_expr)
--		fprintf(outfp, "\t.metric_expr = \"%s\",\n", metric_expr);
--	if (metric_name)
--		fprintf(outfp, "\t.metric_name = \"%s\",\n", metric_name);
--	if (metric_group)
--		fprintf(outfp, "\t.metric_group = \"%s\",\n", metric_group);
--	if (deprecated)
--		fprintf(outfp, "\t.deprecated = \"%s\",\n", deprecated);
--	if (metric_constraint)
--		fprintf(outfp, "\t.metric_constraint = \"%s\",\n", metric_constraint);
-+	if (je->long_desc && je->long_desc[0])
-+		fprintf(outfp, "\t.long_desc = \"%s\",\n", je->long_desc);
-+	if (je->pmu)
-+		fprintf(outfp, "\t.pmu = \"%s\",\n", je->pmu);
-+	if (je->unit)
-+		fprintf(outfp, "\t.unit = \"%s\",\n", je->unit);
-+	if (je->perpkg)
-+		fprintf(outfp, "\t.perpkg = \"%s\",\n", je->perpkg);
-+	if (je->metric_expr)
-+		fprintf(outfp, "\t.metric_expr = \"%s\",\n", je->metric_expr);
-+	if (je->metric_name)
-+		fprintf(outfp, "\t.metric_name = \"%s\",\n", je->metric_name);
-+	if (je->metric_group)
-+		fprintf(outfp, "\t.metric_group = \"%s\",\n", je->metric_group);
-+	if (je->deprecated)
-+		fprintf(outfp, "\t.deprecated = \"%s\",\n", je->deprecated);
-+	if (je->metric_constraint)
-+		fprintf(outfp, "\t.metric_constraint = \"%s\",\n", je->metric_constraint);
- 	fprintf(outfp, "},\n");
- 
- 	return 0;
-@@ -379,17 +386,17 @@ struct event_struct {
+@@ -60,6 +61,7 @@ struct json_event {
+ 	char *pmu;
+ 	char *unit;
+ 	char *perpkg;
++	char *aggr_mode;
+ 	char *metric_expr;
+ 	char *metric_name;
+ 	char *metric_group;
+@@ -67,6 +69,17 @@ struct json_event {
  	char *metric_constraint;
  };
  
--#define ADD_EVENT_FIELD(field) do { if (field) {		\
--	es->field = strdup(field);				\
-+#define ADD_EVENT_FIELD(field) do { if (je->field) {		\
-+	es->field = strdup(je->field);				\
- 	if (!es->field)						\
- 		goto out_free;					\
- } } while (0)
++enum aggr_mode_class convert(const char *aggr_mode)
++{
++	if (!strcmp(aggr_mode, "PerCore"))
++		return PerCore;
++	else if (!strcmp(aggr_mode, "PerChip"))
++		return PerChip;
++
++	pr_err("%s: Wrong AggregationMode value '%s'\n", prog, aggr_mode);
++	return -1;
++}
++
+ typedef int (*func)(void *data, struct json_event *je);
  
- #define FREE_EVENT_FIELD(field) free(es->field)
- 
--#define TRY_FIXUP_FIELD(field) do { if (es->field && !*field) {\
--	*field = strdup(es->field);				\
--	if (!*field)						\
-+#define TRY_FIXUP_FIELD(field) do { if (es->field && !je->field) {\
-+	je->field = strdup(es->field);				\
-+	if (!je->field)						\
- 		return -ENOMEM;					\
- } } while (0)
- 
-@@ -420,11 +427,7 @@ static void free_arch_std_events(void)
- 	}
- }
- 
--static int save_arch_std_events(void *data, char *name, char *event,
--				char *desc, char *long_desc, char *pmu,
--				char *unit, char *perpkg, char *metric_expr,
--				char *metric_name, char *metric_group,
--				char *deprecated, char *metric_constraint)
-+static int save_arch_std_events(void *data, struct json_event *je)
- {
- 	struct event_struct *es;
- 
-@@ -484,11 +487,8 @@ static char *real_event(const char *name, char *event)
- }
- 
- static int
--try_fixup(const char *fn, char *arch_std, char **event, char **desc,
--	  char **name, char **long_desc, char **pmu, char **filter,
--	  char **perpkg, char **unit, char **metric_expr, char **metric_name,
--	  char **metric_group, unsigned long long eventcode,
--	  char **deprecated, char **metric_constraint)
-+try_fixup(const char *fn, char *arch_std, unsigned long long eventcode,
-+	  struct json_event *je)
- {
- 	/* try to find matching event from arch standard values */
- 	struct event_struct *es;
-@@ -497,8 +497,8 @@ try_fixup(const char *fn, char *arch_std, char **event, char **desc,
- 		if (!strcmp(arch_std, es->name)) {
- 			if (!eventcode && es->event) {
- 				/* allow EventCode to be overridden */
--				free(*event);
--				*event = NULL;
-+				free(je->event);
-+				je->event = NULL;
- 			}
- 			FOR_ALL_EVENT_STRUCT_FIELDS(TRY_FIXUP_FIELD);
- 			return 0;
-@@ -512,13 +512,8 @@ try_fixup(const char *fn, char *arch_std, char **event, char **desc,
- 
- /* Call func with each event in the json file */
- static int json_events(const char *fn,
--	  int (*func)(void *data, char *name, char *event, char *desc,
--		      char *long_desc,
--		      char *pmu, char *unit, char *perpkg,
--		      char *metric_expr,
--		      char *metric_name, char *metric_group,
--		      char *deprecated, char *metric_constraint),
--	  void *data)
-+		int (*func)(void *data, struct json_event *je),
-+			void *data)
- {
- 	int err;
- 	size_t size;
-@@ -536,18 +531,10 @@ static int json_events(const char *fn,
- 	EXPECT(tokens->type == JSMN_ARRAY, tokens, "expected top level array");
- 	tok = tokens + 1;
- 	for (i = 0; i < tokens->size; i++) {
--		char *event = NULL, *desc = NULL, *name = NULL;
--		char *long_desc = NULL;
-+		char *event = NULL;
- 		char *extra_desc = NULL;
--		char *pmu = NULL;
- 		char *filter = NULL;
--		char *perpkg = NULL;
--		char *unit = NULL;
--		char *metric_expr = NULL;
--		char *metric_name = NULL;
--		char *metric_group = NULL;
--		char *deprecated = NULL;
--		char *metric_constraint = NULL;
-+		struct json_event je = {};
- 		char *arch_std = NULL;
- 		unsigned long long eventcode = 0;
- 		struct msrmap *msr = NULL;
-@@ -582,14 +569,14 @@ static int json_events(const char *fn,
- 				eventcode |= strtoul(code, NULL, 0) << 21;
- 				free(code);
- 			} else if (json_streq(map, field, "EventName")) {
--				addfield(map, &name, "", "", val);
-+				addfield(map, &je.name, "", "", val);
- 			} else if (json_streq(map, field, "BriefDescription")) {
--				addfield(map, &desc, "", "", val);
--				fixdesc(desc);
-+				addfield(map, &je.desc, "", "", val);
-+				fixdesc(je.desc);
- 			} else if (json_streq(map, field,
- 					     "PublicDescription")) {
--				addfield(map, &long_desc, "", "", val);
--				fixdesc(long_desc);
-+				addfield(map, &je.long_desc, "", "", val);
-+				fixdesc(je.long_desc);
- 			} else if (json_streq(map, field, "PEBS") && nz) {
- 				precise = val;
- 			} else if (json_streq(map, field, "MSRIndex") && nz) {
-@@ -609,34 +596,34 @@ static int json_events(const char *fn,
- 
- 				ppmu = field_to_perf(unit_to_pmu, map, val);
- 				if (ppmu) {
--					pmu = strdup(ppmu);
-+					je.pmu = strdup(ppmu);
- 				} else {
--					if (!pmu)
--						pmu = strdup("uncore_");
--					addfield(map, &pmu, "", "", val);
--					for (s = pmu; *s; s++)
-+					if (!je.pmu)
-+						je.pmu = strdup("uncore_");
-+					addfield(map, &je.pmu, "", "", val);
-+					for (s = je.pmu; *s; s++)
- 						*s = tolower(*s);
- 				}
--				addfield(map, &desc, ". ", "Unit: ", NULL);
--				addfield(map, &desc, "", pmu, NULL);
--				addfield(map, &desc, "", " ", NULL);
-+				addfield(map, &je.desc, ". ", "Unit: ", NULL);
-+				addfield(map, &je.desc, "", je.pmu, NULL);
-+				addfield(map, &je.desc, "", " ", NULL);
- 			} else if (json_streq(map, field, "Filter")) {
- 				addfield(map, &filter, "", "", val);
- 			} else if (json_streq(map, field, "ScaleUnit")) {
--				addfield(map, &unit, "", "", val);
-+				addfield(map, &je.unit, "", "", val);
+ int eprintf(int level, int var, const char *fmt, ...)
+@@ -355,6 +368,8 @@ static int print_events_table_entry(void *data, struct json_event *je)
+ 		fprintf(outfp, "\t.unit = \"%s\",\n", je->unit);
+ 	if (je->perpkg)
+ 		fprintf(outfp, "\t.perpkg = \"%s\",\n", je->perpkg);
++	if (je->aggr_mode)
++		fprintf(outfp, "\t.aggr_mode = \"%d\",\n", convert(je->aggr_mode));
+ 	if (je->metric_expr)
+ 		fprintf(outfp, "\t.metric_expr = \"%s\",\n", je->metric_expr);
+ 	if (je->metric_name)
+@@ -379,6 +394,7 @@ struct event_struct {
+ 	char *pmu;
+ 	char *unit;
+ 	char *perpkg;
++	char *aggr_mode;
+ 	char *metric_expr;
+ 	char *metric_name;
+ 	char *metric_group;
+@@ -408,6 +424,7 @@ struct event_struct {
+ 	op(pmu);						\
+ 	op(unit);						\
+ 	op(perpkg);						\
++	op(aggr_mode);						\
+ 	op(metric_expr);					\
+ 	op(metric_name);					\
+ 	op(metric_group);					\
+@@ -613,6 +630,8 @@ static int json_events(const char *fn,
+ 				addfield(map, &je.unit, "", "", val);
  			} else if (json_streq(map, field, "PerPkg")) {
--				addfield(map, &perpkg, "", "", val);
-+				addfield(map, &je.perpkg, "", "", val);
+ 				addfield(map, &je.perpkg, "", "", val);
++			} else if (json_streq(map, field, "AggregationMode")) {
++				addfield(map, &je.aggr_mode, "", "", val);
  			} else if (json_streq(map, field, "Deprecated")) {
--				addfield(map, &deprecated, "", "", val);
-+				addfield(map, &je.deprecated, "", "", val);
+ 				addfield(map, &je.deprecated, "", "", val);
  			} else if (json_streq(map, field, "MetricName")) {
--				addfield(map, &metric_name, "", "", val);
-+				addfield(map, &je.metric_name, "", "", val);
- 			} else if (json_streq(map, field, "MetricGroup")) {
--				addfield(map, &metric_group, "", "", val);
-+				addfield(map, &je.metric_group, "", "", val);
- 			} else if (json_streq(map, field, "MetricConstraint")) {
--				addfield(map, &metric_constraint, "", "", val);
-+				addfield(map, &je.metric_constraint, "", "", val);
- 			} else if (json_streq(map, field, "MetricExpr")) {
--				addfield(map, &metric_expr, "", "", val);
--				for (s = metric_expr; *s; s++)
-+				addfield(map, &je.metric_expr, "", "", val);
-+				for (s = je.metric_expr; *s; s++)
- 					*s = tolower(*s);
- 			} else if (json_streq(map, field, "ArchStdEvent")) {
- 				addfield(map, &arch_std, "", "", val);
-@@ -645,7 +632,7 @@ static int json_events(const char *fn,
- 			}
- 			/* ignore unknown fields */
- 		}
--		if (precise && desc && !strstr(desc, "(Precise Event)")) {
-+		if (precise && je.desc && !strstr(je.desc, "(Precise Event)")) {
- 			if (json_streq(map, precise, "2"))
- 				addfield(map, &extra_desc, " ",
- 						"(Must be precise)", NULL);
-@@ -655,48 +642,43 @@ static int json_events(const char *fn,
- 		}
- 		snprintf(buf, sizeof buf, "event=%#llx", eventcode);
- 		addfield(map, &event, ",", buf, NULL);
--		if (desc && extra_desc)
--			addfield(map, &desc, " ", extra_desc, NULL);
--		if (long_desc && extra_desc)
--			addfield(map, &long_desc, " ", extra_desc, NULL);
-+		if (je.desc && extra_desc)
-+			addfield(map, &je.desc, " ", extra_desc, NULL);
-+		if (je.long_desc && extra_desc)
-+			addfield(map, &je.long_desc, " ", extra_desc, NULL);
- 		if (filter)
- 			addfield(map, &event, ",", filter, NULL);
- 		if (msr != NULL)
- 			addfield(map, &event, ",", msr->pname, msrval);
--		if (name)
--			fixname(name);
-+		if (je.name)
-+			fixname(je.name);
+diff --git a/tools/perf/pmu-events/pmu-events.h b/tools/perf/pmu-events/pmu-events.h
+index c8f306b572f4..7da1a3743b77 100644
+--- a/tools/perf/pmu-events/pmu-events.h
++++ b/tools/perf/pmu-events/pmu-events.h
+@@ -2,6 +2,11 @@
+ #ifndef PMU_EVENTS_H
+ #define PMU_EVENTS_H
  
- 		if (arch_std) {
- 			/*
- 			 * An arch standard event is referenced, so try to
- 			 * fixup any unassigned values.
- 			 */
--			err = try_fixup(fn, arch_std, &event, &desc, &name,
--					&long_desc, &pmu, &filter, &perpkg,
--					&unit, &metric_expr, &metric_name,
--					&metric_group, eventcode,
--					&deprecated, &metric_constraint);
-+			err = try_fixup(fn, arch_std, eventcode, &je);
- 			if (err)
- 				goto free_strings;
- 		}
--		err = func(data, name, real_event(name, event), desc, long_desc,
--			   pmu, unit, perpkg, metric_expr, metric_name,
--			   metric_group, deprecated, metric_constraint);
-+		je.event = real_event(je.name, event);
-+		err = func(data, &je);
- free_strings:
- 		free(event);
--		free(desc);
--		free(name);
--		free(long_desc);
-+		free(je.desc);
-+		free(je.name);
-+		free(je.long_desc);
- 		free(extra_desc);
--		free(pmu);
-+		free(je.pmu);
- 		free(filter);
--		free(perpkg);
--		free(deprecated);
--		free(unit);
--		free(metric_expr);
--		free(metric_name);
--		free(metric_group);
--		free(metric_constraint);
-+		free(je.perpkg);
-+		free(je.deprecated);
-+		free(je.unit);
-+		free(je.metric_expr);
-+		free(je.metric_name);
-+		free(je.metric_group);
-+		free(je.metric_constraint);
- 		free(arch_std);
- 
- 		if (err)
++enum aggr_mode_class {
++	PerChip = 1,
++	PerCore
++};
++
+ /*
+  * Describe each PMU event. Each CPU has a table of PMU events.
+  */
+@@ -14,6 +19,7 @@ struct pmu_event {
+ 	const char *pmu;
+ 	const char *unit;
+ 	const char *perpkg;
++	const char *aggr_mode;
+ 	const char *metric_expr;
+ 	const char *metric_name;
+ 	const char *metric_group;
 -- 
 2.26.2
 
