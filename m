@@ -2,111 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40F8625EE32
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Sep 2020 16:30:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B12BC25EE46
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Sep 2020 16:37:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728932AbgIFOaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Sep 2020 10:30:20 -0400
-Received: from crapouillou.net ([89.234.176.41]:49254 "EHLO crapouillou.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728910AbgIFO1Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Sep 2020 10:27:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1599402405; h=from:from:sender:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KMIg6gSjoUBBkt1vAul5NwvJlELxUbfxEDSLNOU8Bco=;
-        b=I3kztgB55Yjx2lb2vme0LIw94rJJmvRipu9FG+441WmmD/Awg+Rs/Ynyv0MDsvP5DuwIS1
-        TxYrsN9sM0A9Ytpf5bUa9VrA5yPlAnFm+g6dN6KGBDG/RnFzjrbZl3NOLW2u4Y0xkMm1zA
-        5+JRvk5g9r3z6g1k+0aSJJCP7R/QZ6Y=
-Date:   Sun, 06 Sep 2020 16:26:34 +0200
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH v2 2/3] pinctrl: Ingenic: Correct the pullup and pulldown
- parameters of JZ4780
-To:     =?UTF-8?b?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>
-Cc:     linus.walleij@linaro.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, aric.pzqi@ingenic.com,
-        dongsheng.qiu@ingenic.com, rick.tyliu@ingenic.com,
-        yanfei.li@ingenic.com, sernia.zhou@foxmail.com,
-        zhenwenjin@gmail.com
-Message-Id: <ASQ8GQ.DEHG1O3SW93A3@crapouillou.net>
-In-Reply-To: <20200831154324.64951-3-zhouyanjie@wanyeetech.com>
-References: <20200831154324.64951-1-zhouyanjie@wanyeetech.com>
-        <20200831154324.64951-3-zhouyanjie@wanyeetech.com>
+        id S1728907AbgIFOh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Sep 2020 10:37:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49838 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728873AbgIFOf6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Sep 2020 10:35:58 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25CDDC061573;
+        Sun,  6 Sep 2020 07:35:57 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id p9so14529757ejf.6;
+        Sun, 06 Sep 2020 07:35:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Q89aax93ehgqnDpqySkCBxqHYn5Oh9gR6hW/u8LFBr8=;
+        b=ovHw4eZBdY3L8OapmuNsE8LMwJhhYdwszsQKROWai2wIn78QnSkp5omaRK6a9PWScI
+         M6U8XYgiO4J1uIOy4vzYaxoOOsAQNxzi6sYgj1zUvIMAFnkucTo04lTufCgOVQ5XBn/E
+         LAk+OGyN6WuQ06F49ytIQzl1D577655JnUnE10PgYF+p7ay3UUw9wAGgO9aL76tGpn6F
+         GPuojurSVSU3jB7FdqSm2Y4IBUx/C65Xi9GBRmPRDSZz0TwEc+xzLXW+9dlfL6lG/ujE
+         FWjYhVnsbjCfC+jUa/VQRBoH8SDruTH5HKIm89p644eWTBjfDFmfDlhte/Z8MHSnrOdA
+         cYaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Q89aax93ehgqnDpqySkCBxqHYn5Oh9gR6hW/u8LFBr8=;
+        b=j2nKVxa1eG4UV+CMfxAlrfkmHfDiOwXmi5QTL9thXgWPwsEo4wXlHQO5VJ2KdGNJUJ
+         1NcPPa+FpvI9EtdXGy9mp6lpnJsJE+csRzqy/vLiSUoF54A0nfjpjaAF5ZrVoUmuo5jl
+         ed2iLdsypI+gIhm6J6DkHN8L1ViRjCxaGSY8NHmOycEpUsfsOHY/bz3o3ObzP0TpEw3a
+         B6FO6W7D7CrkU0unaZGCfwqPlAObJLafxsVmWd6C7PrVMFOt/y5QywRN33a3Ez9HKc1h
+         ilYXg/DDo+NFMlGvAH/j7WQsnULTs1lxrrXS0hSuZzHntJ2JCWGVMJ6Wo9FTys9rQI1n
+         Nodw==
+X-Gm-Message-State: AOAM53264jbUOiWobdEXeU3RVo47o9XoF+Fcgg/D0pdKCP5f0MIseFO5
+        /9DjM+h5KEh3nehcrTkbMScrtVKudLabFs8D+M8=
+X-Google-Smtp-Source: ABdhPJwBUn7FkQqOkATGfYcz2f4qyMFSilmgB8JIga3Anw9QHKUw13llcT0tygQd2Jo1U8P9yH0qMB88oMP8Duj/6co=
+X-Received: by 2002:a17:906:2c44:: with SMTP id f4mr17092348ejh.52.1599402956383;
+ Sun, 06 Sep 2020 07:35:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+References: <1598851448-5493-1-git-send-email-amit.pundir@linaro.org>
+ <CAMi1Hd3n2rfr+k09L8WO1S1Tn1s3xJencmr1q3a6e-FOgXr5Qg@mail.gmail.com>
+ <CAMS8qEXcANkb-HoTk8zrXQEzkQO4cnFw4hj5tMp82UEVKd+eHQ@mail.gmail.com> <CAMi1Hd2ZakhXm+qNh-VMF_OndqCaQxxY3CC+UfQ6x2PyL_5sPQ@mail.gmail.com>
+In-Reply-To: <CAMi1Hd2ZakhXm+qNh-VMF_OndqCaQxxY3CC+UfQ6x2PyL_5sPQ@mail.gmail.com>
+From:   Konrad Dybcio <konradybcio@gmail.com>
+Date:   Sun, 6 Sep 2020 16:35:20 +0200
+Message-ID: <CAMS8qEVrSBPqtnMhAMY25yrUJ+M+3UrrGt+yikLaCyFDCUqCCw@mail.gmail.com>
+Subject: Re: [PATCH v6] arm64: dts: qcom: Add support for Xiaomi Poco F1 (Beryllium)
+To:     Amit Pundir <amit.pundir@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        dt <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zhou,
+> Thank you for the pointer. I dug around the vph_pwr fixed-regulator
+> node used by fellow sdm845 devices. I assume it is safe to copy it
+> from sdm845-mtp but I couldn't verify it in the downstream
+> device-tree, so I'm a bit hesitant. My main concern is that I don't
+> want to burn down my only device :)
 
-Le lun. 31 ao=C3=BBt 2020 =C3=A0 23:43, =E5=91=A8=E7=90=B0=E6=9D=B0 (Zhou Y=
-anjie)=20
-<zhouyanjie@wanyeetech.com> a =C3=A9crit :
-> Correct the pullup and pulldown parameters of JZ4780 to make them
-> consistent with the parameters on the datasheet.
->=20
-> Signed-off-by: =E5=91=A8=E7=90=B0=E6=9D=B0 (Zhou Yanjie) <zhouyanjie@wany=
-eetech.com>
-> ---
->=20
-> Notes:
->     v2:
->     New patch.
->=20
->  drivers/pinctrl/pinctrl-ingenic.c | 12 ++++++++++--
->  1 file changed, 10 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/pinctrl/pinctrl-ingenic.c=20
-> b/drivers/pinctrl/pinctrl-ingenic.c
-> index 00f29fd684fa..ae7b8876d3b4 100644
-> --- a/drivers/pinctrl/pinctrl-ingenic.c
-> +++ b/drivers/pinctrl/pinctrl-ingenic.c
-> @@ -1035,6 +1035,14 @@ static const struct ingenic_chip_info=20
-> jz4770_chip_info =3D {
->  	.pull_downs =3D jz4770_pull_downs,
->  };
->=20
-> +static const u32 jz4780_pull_ups[6] =3D {
-> +	0x3fffffff, 0xfff0f3fc, 0x0fffffff, 0xffff4fff, 0xffff7b7c,=20
-> 0x7fa7f00f,
-> +};
+Sure, nobody does ^^
 
-PE15 has a pull-up in my datasheet.
+> I did find a few regulator nodes downstream which matches with
+> upstream sdm845-mtp but since I'm not using any of them in my
+> beryllium dts, I'm going to skip them for now.
 
-The rest looks good.
+Looking at their DTSes, Xiaomi doesn't seem to stray far away from MTP designs.
 
-Cheers,
--Paul
+> As you pointed out, in case of regulator lookup failure Linux will
+> fall back to dummy regulators, which is working fine for me so far.
+> Also I see that vdd-*-supply properties are optional according to
+> Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.txt,
+> so I assume it is safe to skip them?
 
-> +
-> +static const u32 jz4780_pull_downs[6] =3D {
-> +	0x00000000, 0x000f0c03, 0x00000000, 0x0000b000, 0x00000483,=20
-> 0x00580ff0,
-> +};
-> +
->  static int jz4780_uart2_data_pins[] =3D { 0x66, 0x67, };
->  static int jz4780_uart2_hwflow_pins[] =3D { 0x65, 0x64, };
->  static int jz4780_uart4_data_pins[] =3D { 0x54, 0x4a, };
-> @@ -1301,8 +1309,8 @@ static const struct ingenic_chip_info=20
-> jz4780_chip_info =3D {
->  	.num_groups =3D ARRAY_SIZE(jz4780_groups),
->  	.functions =3D jz4780_functions,
->  	.num_functions =3D ARRAY_SIZE(jz4780_functions),
-> -	.pull_ups =3D jz4770_pull_ups,
-> -	.pull_downs =3D jz4770_pull_downs,
-> +	.pull_ups =3D jz4780_pull_ups,
-> +	.pull_downs =3D jz4780_pull_downs,
->  };
->=20
->  static const u32 x1000_pull_ups[4] =3D {
-> --
-> 2.11.0
->=20
+Yes, but keep in mind it would be a good idea to add them later, after
+you're sure everything's okay :)
 
 
+P.S. My current daily driver is Xiaomi Mi 8, which is basically Poco
+with an OLED and glass back (among some other minor nicer things), so
+thanks for your work, I might benefit from it in the future :)
+
+Konrad
