@@ -2,100 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C9B125EDF4
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Sep 2020 15:27:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1108725EDFA
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Sep 2020 15:40:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728763AbgIFN1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Sep 2020 09:27:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39080 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728028AbgIFNZK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Sep 2020 09:25:10 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80B17C061573
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Sep 2020 06:25:03 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id b79so10789564wmb.4
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Sep 2020 06:25:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=+z524mDmvYq+baR0BWogYM0GjW8snYS+Z6ogchoEokY=;
-        b=nkX7o1doUdTvFc6YIq19FNKg/SOPppNG12JyxTYAnN2TWR2tDp4c/uTPhlh0mR0vFT
-         LxtjvOiSbVtLEUpLUSv/vr9pX6ShiEDQAV7x8vDsr1cjo7D+uGl4+6ZV7p9lXRiAyiz4
-         FZSeBhR5rtw8I8t5fBg5C+HPUL4BICtQLrtS/OLBXQsvmb9lDEPUGRZDghYmAOKsamGS
-         1qXS5y732mQubfwI96kJuSR1BHwRhCU9OGT7doGGrPFTCtgw5SodqRfTMzTgeDLUv64A
-         3dzj1Q2oD9O5xI/hpIoSNYiYmxFXmliXYkCD9jYvNIwrhxdxVxBchadtGnwQZwFIBQ9s
-         o0VQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=+z524mDmvYq+baR0BWogYM0GjW8snYS+Z6ogchoEokY=;
-        b=dyDMFFBXVmm1O5vU7bD92wdm1ebJ9rWKel1sC0XDxiXrgOcf9BPKNi17qsV6hXArO+
-         v+StKVOseZBbCokKlsY1WlTLCwdnVbGY8+N71DpIOYz8Vtdj9G5qtiirzvgDtFIl/MqN
-         xWacOpa1hUlmX3yh+ZRT3csB+aW59icVY+c4tXxYyiiuAyWu5XvameAHQLMMRt9qcgcV
-         e3vng/Q5J3iK+mUXRjtr8XcKA83pSziwTZkoIsJJa698CSu3xPb8cnijww2T+oTsAcyj
-         wjpH0gkJQvcg8+CGGI1SbJB1c/cebpHbdvuQYxUrydRhVcO8DQZJuwntx7Hte5gOj0W9
-         LdnQ==
-X-Gm-Message-State: AOAM531D8BnF5dbF1IXVf/cF3AXmdcb0jqonyXHgEIMcTD7lI4SikSCt
-        J2NimLQ6HYGnBC/+9fdTIHKuaY5dszIiB1Klgm0=
-X-Google-Smtp-Source: ABdhPJxEi9K+S0ks1sKNvEPo/NxHsXsFuOItn4ZiLzkdC0h55uoYDmyTTIY5UPU6p/QyBSjZuatEhwxWWkjnfesBaCM=
-X-Received: by 2002:a1c:40c4:: with SMTP id n187mr16630330wma.180.1599398702008;
- Sun, 06 Sep 2020 06:25:02 -0700 (PDT)
+        id S1728873AbgIFNb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Sep 2020 09:31:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46722 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728028AbgIFN1t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Sep 2020 09:27:49 -0400
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DE6D320708;
+        Sun,  6 Sep 2020 13:27:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599398848;
+        bh=Jg/ONzkyfeFBjpvfr7GYskrOf0uT3DsXsl8BYu/mmDg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=a8M9yC8Dd5apF5MDYMZgecvVUe/oS6CVtEiYH5Jf2RKAnxqqIjbiU10vUElvQkWH6
+         miOlGk9Tf92/BS+a3Pg+pQlJL5l4nsR1k6ToXS/LVscdh2PmUPvxIFKo6OC2XSXB9w
+         v8urqfH3XfAUsVDjtbAMs0Fx24BjJQu6lRXLAH/Q=
+Date:   Sun, 6 Sep 2020 14:27:21 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Heiko =?UTF-8?B?U3TDvGJuZXI=?= <heiko@sntech.de>
+Cc:     Alex Dewar <alex.dewar90@gmail.com>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Beniamin Bia <beniamin.bia@analog.com>,
+        Michael Hennerich <michael.hennerich@analog.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Artur Rojek <contact@artur-rojek.eu>,
+        Alexandru Tachici <alexandru.tachici@analog.com>,
+        Vincent Pelletier <plr.vincent@gmail.com>,
+        Saravanan Sekar <sravanhome@gmail.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org
+Subject: Re: [PATCH] iio: adc: rockchip_saradc: Allow compile-testing with
+ !ARM
+Message-ID: <20200906142721.73a533dd@archlinux>
+In-Reply-To: <1602652.ZmzXO7uU3z@diego>
+References: <20200904170416.16061-1-alex.dewar90@gmail.com>
+        <1602652.ZmzXO7uU3z@diego>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Received: by 2002:adf:c98d:0:0:0:0:0 with HTTP; Sun, 6 Sep 2020 06:25:01 -0700 (PDT)
-Reply-To: mrs.sophia202@list.ru
-From:   "Mrs. Sophia Robin" <mrs.aishamuammar.gaddafi@gmail.com>
-Date:   Sun, 6 Sep 2020 06:25:01 -0700
-Message-ID: <CAKDKtgxkzTiaW3FY8p8O6j-LMQMhMQAMqUumzx0p1vvOfLs0Hw@mail.gmail.com>
-Subject: Hello My Dearest
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello My Dearest
+On Fri, 04 Sep 2020 19:32:22 +0200
+Heiko St=C3=BCbner <heiko@sntech.de> wrote:
 
-Please I appeal to you to exercise a little patience and read through
-my mail carefully, I am contacting you personally for investment
-assistance and a long term business relationship in your Country.
+> Am Freitag, 4. September 2020, 19:04:16 CEST schrieb Alex Dewar:
+> > There seems no reason to allow for compile-testing on ARM only, so
+> > remove this restriction.
+> >=20
+> > Build-tested with allyesconfig on x86.
+> >=20
+> > Signed-off-by: Alex Dewar <alex.dewar90@gmail.com> =20
+>=20
+> Reviewed-by: Heiko Stuebner <heiko@sntech.de>
+Applied to the togreg branch of iio.git and pushed out as testing for
+the autobuilders to poke at it and see if we missed anything.
 
-I am Mrs. Sophia Robin a citizen of the united state of America; I
-work in HSBC Bank in Milan Italy as a Telex Manager charge of wire
-transfer and online banking department.
+Thanks,
 
-I am contacting you for an important and  urgent business transaction,
-I  want the bank to transfer the money left by Dr. Cheng Chao,  A
-Chinese  Politicians who  died, March 17th 2020 without any trace of
-his family member,  he used our bank to launder money overseas through
-the help of their Political advisers. And most of the funds which they
-transferred out of the shores of China were gold and oil money that
-was supposed to have been used to develop the continent.
+Jonathan
 
-Can you invest this money and also help the poor? The amount value at
-($15.5million Dollars), left in his account still unclaimed, if you
-know that you are capable to invest this fund into any  profitable
-business in your country kindly send me your details information as
-listed below to enable me draft you an application form of claim which
-you are going to fill with your bank account detail necessary and
-contact the HSBC Bank in Italy  for immediate transfer of the Amounted
-sum into your bank account direct  Or open an online banking for you.
+>=20
+> > ---
+> >  drivers/iio/adc/Kconfig | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >=20
+> > diff --git a/drivers/iio/adc/Kconfig b/drivers/iio/adc/Kconfig
+> > index d94dc800b842..03929606bb01 100644
+> > --- a/drivers/iio/adc/Kconfig
+> > +++ b/drivers/iio/adc/Kconfig
+> > @@ -863,7 +863,7 @@ config RN5T618_ADC
+> > =20
+> >  config ROCKCHIP_SARADC
+> >  	tristate "Rockchip SARADC driver"
+> > -	depends on ARCH_ROCKCHIP || (ARM && COMPILE_TEST)
+> > +	depends on ARCH_ROCKCHIP || COMPILE_TEST
+> >  	depends on RESET_CONTROLLER
+> >  	select IIO_BUFFER
+> >  	select IIO_TRIGGERED_BUFFER
+> >  =20
+>=20
+>=20
+>=20
+>=20
 
-Percentage share will be 60, for me/ 40, for you.
-
-(1) Your full name..................................................
-(2) Your address....................................................
-(3) Your Nationality.................................................
-(4) Your Age / Sex.....................................................
-(5) Your Occupation............................................
-(6) Your marital status......................................
-(7) Your direct telephone number..................
-(8) your ID Card.......................................
-
-Thanks with my best regards.
-Mrs. Sophia Robin
-Telex / Online Banking Manager
-Milan Italy  (H.S.B.C)
