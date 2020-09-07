@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 965FC25F54F
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 10:33:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C58FD25F552
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 10:33:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728273AbgIGIdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 04:33:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44512 "EHLO
+        id S1728201AbgIGIdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 04:33:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727807AbgIGIdJ (ORCPT
+        with ESMTP id S1728091AbgIGIdL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 04:33:09 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 687C6C061575
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 01:33:09 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id w5so14840335wrp.8
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 01:33:09 -0700 (PDT)
+        Mon, 7 Sep 2020 04:33:11 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2534C061755
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 01:33:10 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id a65so13497825wme.5
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 01:33:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=O6qLbu0TtBTfYgth1hWlAemiGy5RB2khWzOLpHhAyBI=;
-        b=JxENpTaSzdENzNRSzGCLWUGLeF/XmOTECCoSk1vC7uO9L8B2ykKPDu6K64peit6pOx
-         0NZvd7zEhkh1fXOsvxqTJKFnXnbgSD7qe6VT0SFEn531G+cEYazGPu5V4ViroD7XgF3p
-         zU7y4SaS8J8ulJhY+h1hnwANDAcAxWHmR0lFgh83Crj3bdd/xNPFtG7aujyKaERRvuSp
-         D0PrVnkrL/4KB9Luno+bGiWUcjTE6jSYNFx34Pz5B0MgMfCeR5nSSTL65snHqc+qTtk6
-         mP/QJMlkNIIZ1by97c1xVA68Be+jZk11dvGB/Vvmv7xKg74HgrSY0+Ux5uZHcJbTrXym
-         THFg==
+        bh=Tf/pPuP/quD6UX7EbsHW6QHRSABL9O5KfoCfXcuWE28=;
+        b=JPOB01GQC1EyMKgIY9XWJHIybEP5Kk0Mpazg12h1ld+lYOavG/ORNCQ5E+DVx8sZkV
+         yeSp/Iza0lKp0ly4OCn1zK5IbdKv75HP7DeNlJCa8yDUt4Ylwgl+7ekFHntm05cdt2iB
+         NUorJTBx29g9kSLL3BY6M3iRw9AjeoA0xpaTMVG64YqKLc9yT7srFA0fjlBgvqa0KeMa
+         9+14TezNRNDJoZ8/56DGplnxQ0InDL3adAX/vCps1gwkD21czgLgyRev9+CqMQl2KkV1
+         jC2pwhNvoQ4zAVN2g2rOZxx2xbdAKiwK62uIzX34TvxfaJl/VCk2q7BeXg69nOaATQU+
+         x4oQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=O6qLbu0TtBTfYgth1hWlAemiGy5RB2khWzOLpHhAyBI=;
-        b=iV+iALXyQnaopzpc2oDmFM1l7jPTTCmT4KXu+/hm4idGVDbOrJKIYLOPChTUEyjxtX
-         x028LOPrRLT4U5jFjtxEgITcRj4goqMGgmdIxlgIaePGULp/OIpdps5nFd4sHxrywgvG
-         vxkxTp1s6+QT4QR5jDRsdrq1rbjTE9kxrQwnkBGqLx+fKVulkabMILUtCKcryXF3R3wY
-         b+BKjpI2QXisRf6MN3BvflbK1FHECJ5hjhyL1zGHsroFjw0nOE6NG88DTrfRebvkUckl
-         zdFznejk5yK4D535YB/dkdmH2tDJv2T5bwPTJp3gHu+yX76vYWn6t0MngKtexXGWXQlW
-         gBOA==
-X-Gm-Message-State: AOAM53137ThMU5ZCVtjOhtjnYDjJtYYnTY9BeFidUwdkZ1xRQ+XDyK/D
-        c1sdbDgo8kNbYi53cATq16X81w==
-X-Google-Smtp-Source: ABdhPJyLgypVdwA1Lo6t3FhgX081NBLm9msKduMOXHwEixOYFiNCnVa+gMazKFjvp9LbLHgOFoeoWQ==
-X-Received: by 2002:adf:f3c4:: with SMTP id g4mr20609544wrp.168.1599467587962;
-        Mon, 07 Sep 2020 01:33:07 -0700 (PDT)
+        bh=Tf/pPuP/quD6UX7EbsHW6QHRSABL9O5KfoCfXcuWE28=;
+        b=Fvt2ozR4aSLIeUg+mgUrkoUYRTM7SixePMHZy0QwRKoSatkiK6OnHrh+coCALuFQb8
+         WPUcZYfcY6rMjYZf21g7HBPjAC3mMKYYJsFLJHJuJvUVQuIUMkhahW/UIjFRX2mkUZrX
+         SvyDDJ6lopu0zGXj8LARTrV2sDl4K18m9cZ0P1FR0eCHv27y+N0RB0/AL5rKX+amY7r2
+         ZgRU+Tv8VPunwLys/mHDLs3VYxt9+19g4xrfrZN6zlKv/f2l55VWSJEaWJcjuipeIA3O
+         xGzWkSswbtwZemfnU77dvwgHtls7TlGUJhoc+EHHM37aKsMHjxqA+16SKeLWCPi22gEJ
+         i5AQ==
+X-Gm-Message-State: AOAM5310+/ly6zWXz2Rzu/9p88Um6VWS5au9Uj/PT9FODhQctMGC3O8T
+        rnJKDrkL1cU/hi9y964pu6o6Og==
+X-Google-Smtp-Source: ABdhPJzlXWWJxUL+NR0WVb8iGxSGFRhnUwwKhX4IAQt9btsq140rrTUEi09a9mEZEaHQVqchSMIfZQ==
+X-Received: by 2002:a1c:62d4:: with SMTP id w203mr18358593wmb.146.1599467589332;
+        Mon, 07 Sep 2020 01:33:09 -0700 (PDT)
 Received: from bender.baylibre.local ([2a01:e35:2ec0:82b0:5405:9623:e2f1:b2ac])
-        by smtp.gmail.com with ESMTPSA id o5sm25205111wmc.33.2020.09.07.01.33.06
+        by smtp.gmail.com with ESMTPSA id o5sm25205111wmc.33.2020.09.07.01.33.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Sep 2020 01:33:07 -0700 (PDT)
+        Mon, 07 Sep 2020 01:33:08 -0700 (PDT)
 From:   Neil Armstrong <narmstrong@baylibre.com>
 To:     khilman@baylibre.com
 Cc:     linux-amlogic@lists.infradead.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Neil Armstrong <narmstrong@baylibre.com>
-Subject: [PATCH 2/3] arm64: dts: meson-axg: add MIPI DSI Nodes
-Date:   Mon,  7 Sep 2020 10:32:59 +0200
-Message-Id: <20200907083300.14412-3-narmstrong@baylibre.com>
+Subject: [PATCH 3/3] arm64: dts: meson-axg-s400: add MIPI DSI panel nodes
+Date:   Mon,  7 Sep 2020 10:33:00 +0200
+Message-Id: <20200907083300.14412-4-narmstrong@baylibre.com>
 X-Mailer: git-send-email 2.22.0
 In-Reply-To: <20200907083300.14412-1-narmstrong@baylibre.com>
 References: <20200907083300.14412-1-narmstrong@baylibre.com>
@@ -67,121 +67,96 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 This adds the nodes for :
-- MIPI DSI+PCIe analog phy
-- MIPI D-PHY
-- Synopsys MIPI-DSI Transceiver
+- Backlight of the tl070wsh30 panel
+- MIPI-DSI attributes
+- TDO TL070WSH30 TFT-LCD panel
 
 Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
 ---
- arch/arm64/boot/dts/amlogic/meson-axg.dtsi | 60 ++++++++++++++++++++++
- 1 file changed, 60 insertions(+)
+ .../arm64/boot/dts/amlogic/meson-axg-s400.dts | 49 ++++++++++++++++++-
+ 1 file changed, 48 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/amlogic/meson-axg.dtsi b/arch/arm64/boot/dts/amlogic/meson-axg.dtsi
-index 4a93e3fecd90..f1501b19f617 100644
---- a/arch/arm64/boot/dts/amlogic/meson-axg.dtsi
-+++ b/arch/arm64/boot/dts/amlogic/meson-axg.dtsi
-@@ -13,6 +13,7 @@
- #include <dt-bindings/reset/amlogic,meson-axg-audio-arb.h>
- #include <dt-bindings/reset/amlogic,meson-axg-reset.h>
- #include <dt-bindings/power/meson-axg-power.h>
-+#include <dt-bindings/phy/phy.h>
+diff --git a/arch/arm64/boot/dts/amlogic/meson-axg-s400.dts b/arch/arm64/boot/dts/amlogic/meson-axg-s400.dts
+index cb1360ae1211..abfad67ca06b 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-axg-s400.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-axg-s400.dts
+@@ -7,6 +7,7 @@
+ 
+ #include "meson-axg.dtsi"
+ #include <dt-bindings/input/input.h>
++#include <dt-bindings/pwm/pwm.h>
  
  / {
- 	compatible = "amlogic,meson-axg";
-@@ -1111,6 +1112,8 @@
- 			sysctrl: system-controller@0 {
- 				compatible = "amlogic,meson-axg-hhi-sysctrl",
- 					     "simple-mfd", "syscon";
-+				#address-cells = <2>;
-+				#size-cells = <2>;
- 				reg = <0 0 0 0x400>;
+ 	compatible = "amlogic,s400", "amlogic,a113d", "amlogic,meson-axg";
+@@ -116,6 +117,16 @@
+ 		reg = <0x0 0x0 0x0 0x40000000>;
+ 	};
  
- 				clkc: clock-controller {
-@@ -1159,6 +1162,12 @@
- 							       <250000000>,
- 							       <0>; /* Do Nothing */
- 				};
++	panel_backlight: backlight {
++		compatible = "pwm-backlight";
++		pwms = <&pwm_ab 1 78125 PWM_POLARITY_INVERTED>;
++		enable-gpios = <&gpio GPIOZ_5 GPIO_ACTIVE_HIGH>;
++		power-supply = <&vcc_5v>;
++		brightness-levels = <0 255>;
++		num-interpolated-steps = <255>;
++		default-brightness-level = <250>;
++	};
 +
-+				mipi_pcie_analog_dphy: phy {
-+					compatible = "amlogic,axg-mipi-pcie-analog-phy";
-+					#phy-cells = <0>;
-+					status = "disabled";
-+				};
- 			};
- 		};
+ 	main_12v: regulator-main_12v {
+ 		compatible = "regulator-fixed";
+ 		regulator-name = "12V";
+@@ -434,6 +445,42 @@
+ 	};
+ };
  
-@@ -1171,6 +1180,19 @@
- 			#mbox-cells = <1>;
- 		};
- 
-+		mipi_dphy: phy@ff640000 {
-+			compatible = "amlogic,axg-mipi-dphy";
-+			reg = <0x0 0xff640000 0x0 0x100>;
-+			clocks = <&clkc CLKID_MIPI_DSI_PHY>;
-+			clock-names = "pclk";
-+			resets = <&reset RESET_MIPI_PHY>;
-+			reset-names = "phy";
-+			phys = <&mipi_pcie_analog_dphy>;
-+			phy-names = "analog";
-+			#phy-cells = <0>;
-+			status = "disabled";
-+		};
 +
- 		audio: bus@ff642000 {
- 			compatible = "simple-bus";
- 			reg = <0x0 0xff642000 0x0 0x2000>;
-@@ -1618,6 +1640,10 @@
- 			/* DPI output port */
- 			dpi_port: port@2 {
- 				reg = <2>;
++&mipi_dsi {
++	status = "okay";
 +
-+				dpi_out: endpoint {
-+					remote-endpoint = <&mipi_dsi_in>;
-+				};
- 			};
- 		};
- 
-@@ -1647,6 +1673,40 @@
- 				#reset-cells = <1>;
- 			};
- 
-+			mipi_dsi: dsi@7000 {
-+				compatible = "amlogic,meson-axg-dw-mipi-dsi";
-+				reg = <0x0 0x6000 0x0 0x400>;
-+				resets = <&reset RESET_MIPI_HOST>;
-+				reset-names = "top";
-+				clocks = <&clkc CLKID_MIPI_DSI_HOST>,
-+					 <&clkc CLKID_GP0_PLL>;
-+				clock-names = "pclk", "px_clk";
-+				phys = <&mipi_dphy>;
-+				phy-names = "dphy";
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				status = "disabled";
++	assigned-clocks = <&clkc CLKID_GP0_PLL>;
++	assigned-clock-rates = <283500000>;
 +
-+				ports {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
++	panel@0 {
++		compatible = "tdo,tl070wsh30";
++		reset-gpios = <&gpio GPIOZ_6 GPIO_ACTIVE_LOW>;
++		power-supply = <&vcc_3v3>;
++		backlight = <&panel_backlight>;
++		reg = <0>;
 +
-+					/* VPU VENC Input */
-+					mipi_dsi_venc_port: port@0 {
-+						reg = <0>;
-+
-+						mipi_dsi_in: endpoint {
-+							remote-endpoint = <&dpi_out>;
-+						};
-+					};
-+
-+					/* DSI Output */
-+					mipi_dsi_panel_port: port@1 {
-+						reg = <1>;
-+					};
-+				};
++		port {
++			mipi_in_panel: endpoint {
++				remote-endpoint = <&mipi_out_panel>;
 +			};
++		};
++	};
++};
 +
- 			gpio_intc: interrupt-controller@f080 {
- 				compatible = "amlogic,meson-axg-gpio-intc",
- 					     "amlogic,meson-gpio-intc";
++&mipi_pcie_analog_dphy {
++	status = "okay";
++};
++
++&mipi_dphy {
++	status = "okay";
++};
++
++&mipi_dsi_panel_port {
++	mipi_out_panel: endpoint {
++		remote-endpoint = <&mipi_in_panel>;
++	};
++};
++
+ &pdm {
+ 	pinctrl-0 = <&pdm_dclk_a14_pins>, <&pdm_din0_pins>,
+ 		    <&pdm_din1_pins>, <&pdm_din2_pins>, <&pdm_din3_pins>;
+@@ -443,7 +490,7 @@
+ 
+ &pwm_ab {
+ 	status = "okay";
+-	pinctrl-0 = <&pwm_a_x20_pins>;
++	pinctrl-0 = <&pwm_a_x20_pins>, <&pwm_b_z_pins>;
+ 	pinctrl-names = "default";
+ };
+ 
 -- 
 2.22.0
 
