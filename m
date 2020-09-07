@@ -2,150 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD49625FD07
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 17:27:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2698525FCFF
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 17:25:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729982AbgIGP0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 11:26:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51144 "EHLO
+        id S1730138AbgIGPZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 11:25:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730072AbgIGPVT (ORCPT
+        with ESMTP id S1730153AbgIGPXj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 11:21:19 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC66AC061574
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 08:21:06 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id q4so696970pjh.5
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 08:21:06 -0700 (PDT)
+        Mon, 7 Sep 2020 11:23:39 -0400
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2FF5C061573;
+        Mon,  7 Sep 2020 08:23:37 -0700 (PDT)
+Received: by mail-yb1-xb44.google.com with SMTP id r7so9411736ybl.6;
+        Mon, 07 Sep 2020 08:23:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=dDm50BpVZuQLGYSLkY4kWAnKOu+NYX3j/JL82/yvZsw=;
-        b=RJ5s9MaqhEHO5V2IfABHfKScBVvIYJl1uOESsM7TA208JtB/i5pnrUk2euFVdZxGtL
-         SCLkhk/eIrtAkx1cLJKi22+NOfrmPt8QkuNR46/J1HRaTDtu9vJfUADlOkWbjk++iTYE
-         bSkFWGf+ueXnY2ceeXi2ZlMTUPg4CCwa+AoxfIqrtJv7WGlvtpdjBdUxsiVe4N94hREX
-         Jf+nv+PpTodpJOgDl6Y593FKFbDcoNzI15eNc2927OzNd0UzoaHGxt1n44c6sbh4zpg9
-         6BSJ5eKGkCwCFAbSPTM4gECqlw7yqcIm53BmXklX/vWRaWdjxmxLGv1jRvE213dVfdOn
-         BVKw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=atNQu443wohaZMIITwmFzOCQT4mAdD+gEFufNnG4IJE=;
+        b=ZSd/QbpLkn/LjM7Y2du9R/pLZypRLQpjjYyVcOS0+/oHAl7CvAy0/+UAWQPn7BL4bj
+         E2HUCzUQIo2TIJ+bosFjR3mQgxKe9GEJAdilc0QEIv/p+HnNDN+wT/BjrwWhGNPIFXha
+         q3n3OJcCIfARs/2DIW/iaCoVvQ0jSChSm7RC+IF5L4h9dB19N3x7fXYvT5VLH7pax8mk
+         fbMVrgI/VzOlUaZEOArUfRo0Y+DwEHLvfQhUaUwSQmDw10tKrrVeHJ2BGvavpeNQYB+a
+         ETZgnbtU1Wrj4kHJ0EHhTbcGWmWZF/yoKBNX62U3xrEXa4PDMeVmvDoFbM9pHCvsOHWk
+         qCgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=dDm50BpVZuQLGYSLkY4kWAnKOu+NYX3j/JL82/yvZsw=;
-        b=f3v/gW11o8t7t/wiu08Dfl3ksANUsqpzLuWRd9peS8X8HOT1SnYdPFgiXe5bIUh3UY
-         ctuVGNPT9WQMH8bvqBM0e30baICZ+LLDz9Z5q0ysN59WyvDUxEA+NC2W/snJGDOtnsEr
-         AKWw3BLupWxrHn35YMnqD+j8V1+PD/C/UVFuCO/e1tq0boeUI29rJgfGIDd1q+5PvpXG
-         FsbSygjZw0A84OZW3VvO3/hcoD6U7+a/HEph/Uf3cStnQGihKXg3mLsjWQ+hvT87ObeM
-         6nBv1W72+A4pkMnar3qoIsxCvivvBxI2zkT7hszjVzhVOLPrZ2pVS9cwV8EnLhoo/g0n
-         E5/A==
-X-Gm-Message-State: AOAM533RpmnUkG7bhn4THTJpqMWz+PXRyrqQRCwbPigGBQO7J62ncFam
-        8Cy9ixiMP4l4JDr4FDdlyuTNBLQ2EJ+E4q/T
-X-Google-Smtp-Source: ABdhPJzGXrFSoWODyKXpSqClx55jfJGJNH5FkVEzm0uYE4X+iByW1zd19ffrfKEOs/9XX5s+bReuUQ==
-X-Received: by 2002:a17:90a:de17:: with SMTP id m23mr21430575pjv.51.1599492065082;
-        Mon, 07 Sep 2020 08:21:05 -0700 (PDT)
-Received: from [192.168.1.182] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id f9sm2399964pjq.26.2020.09.07.08.21.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Sep 2020 08:21:04 -0700 (PDT)
-To:     Alexander Viro <viro@zeniv.linux.org.uk>
-Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-From:   Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH] pipe: honor IOCB_NOWAIT
-Message-ID: <cedfa436-47a3-7cbc-1948-75d0e28cfdc5@kernel.dk>
-Date:   Mon, 7 Sep 2020 09:21:02 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=atNQu443wohaZMIITwmFzOCQT4mAdD+gEFufNnG4IJE=;
+        b=gmLS6DwIOIYwyIe+Gv54Ypo/4nUfTmKn/LD5DY9JsLFUDkuZuFOJq9hNsFn32EXQpT
+         y03HSToFHv6HP2VNcMBi3pp9+mWRvWcui/T82tzC2odkPxLiiLfQgtPey5tZExTuVwFS
+         s6yx8OvS/POtnArKxZTGmvUuSt4xlvlsJj3FZu46Cr8ZAtNyIk2P8Gu5FWTTZqcoHX57
+         JwdxqvN70MldelE0t5NBAlpuk9jCog5ph+0OSWs1ZBoRRh+Al34uT+hhgHWtJsOfcKnh
+         PXfLKboNOcVfuvzbSW8KU6h2UGXHCIKcv6fSORiEHLvvyyinYDdprNCVf71bb8AjiFtO
+         cDsA==
+X-Gm-Message-State: AOAM533Cx0mpLB9uNh9AR3/mVd2smPnBl2crdTY3Z4Knqu3z58V2yLAX
+        uX9BHAICmqQ9XXYVZFHFHizk8O8NNOuIHXPcZBJCGUDrkppgrg==
+X-Google-Smtp-Source: ABdhPJy3zKtooXkqbJLFceevNpH4Mj2uLh3ybXnb6/QzswnK4s67ONxNoQ25ri4wXoVAjymqjj82QIJaCffrAFaaKtc=
+X-Received: by 2002:a25:7608:: with SMTP id r8mr30831434ybc.518.1599492215825;
+ Mon, 07 Sep 2020 08:23:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200825162718.5838-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20200825162718.5838-5-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <CAMuHMdXkGBfwNOwd5-=U3wg6U0O+3BErbXuybbuytgzsCmZqRQ@mail.gmail.com>
+ <CA+V-a8uT8d8P8REuXcW9qtCxM84DH+Q4LXZnVTYhT--kswKF=g@mail.gmail.com> <CAMuHMdW+JBd2iu4BsQHdEV=4dt7mh_14TyHLMQcywAJVPFZZCg@mail.gmail.com>
+In-Reply-To: <CAMuHMdW+JBd2iu4BsQHdEV=4dt7mh_14TyHLMQcywAJVPFZZCg@mail.gmail.com>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Mon, 7 Sep 2020 16:23:09 +0100
+Message-ID: <CA+V-a8so3b7A-KdVN5DZEEwUwPckut_v0DDnw6r_ci=wL9owUw@mail.gmail.com>
+Subject: Re: [PATCH 4/4] ARM: dts: r8a7742-iwg21d-q7: Enable SD2 LED indication
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pipe only looks at O_NONBLOCK for non-blocking operation, which means that
-io_uring can't easily poll for it or attempt non-blocking issues. Check for
-IOCB_NOWAIT in locking the pipe for reads and writes, and ditto when we
-decide on whether or not to block or return -EAGAIN.
+Hi Geert,
 
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+On Mon, Sep 7, 2020 at 8:55 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> Hi Prabhakar,
+>
+> On Fri, Sep 4, 2020 at 7:15 PM Lad, Prabhakar
+> <prabhakar.csengg@gmail.com> wrote:
+> > On Thu, Sep 3, 2020 at 1:20 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > On Tue, Aug 25, 2020 at 6:28 PM Lad Prabhakar
+> > > <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> > > > Add support for LED trigger on SD2 interface.
+> > > >
+> > > > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > > > Reviewed-by: Chris Paterson <Chris.Paterson2@renesas.com>
+> > >
+> > > > --- a/arch/arm/boot/dts/r8a7742-iwg21d-q7.dts
+> > > > +++ b/arch/arm/boot/dts/r8a7742-iwg21d-q7.dts
+> > > > @@ -63,6 +63,16 @@
+> > > >                 enable-gpios = <&gpio3 11 GPIO_ACTIVE_HIGH>;
+> > > >         };
+> > > >
+> > > > +       leds {
+> > > > +               compatible = "gpio-leds";
+> > > > +
+> > > > +               sdhi2_led {
+> > > > +                       label = "sdio-led";
+> > > > +                       gpios = <&gpio5 22 GPIO_ACTIVE_LOW>;
+> > >
+> > > GPIO_ACTIVE_HIGH?
+> > >
+> > > The LED is driven by an NPN transistor, with the LED between 3.3V and
+> > > the transistor's collector.
+>
+> Oops, 3.3V is not VCC_3V3, but SD_3V3, so it is not always-on, but
+> controlled by SDIO_PWR.
+>
+> > I did try with GPIO_ACTIVE_HIGH and it didn't work as expected. To
+> > make sure I can control the LED through sysfs I deleted the node from
+> > DTS and exported the pin GP5_22 (858) and writing the value "out"
+> > direction and setting the values 0/1 to value did not toggle the SDIO
+> > LED as expected and it stayed OFF all the time.
+>
+> Hence when SDIO_PWR is turned off, you cannot control the LED just by
+> toggling GP5_22.
+>
+> > Looks like there is some information missing in the schematics.
+> >
+> > I did some experiments. I completely removed the SDHI, LED and
+> > regulator  nodes and  booted the system and exported GP1_27 (989) and
+> > wrote values 0/1  and this toggled the SDIO_LED.
+> >
+> > U-boot sets the below, so in u-boot the SDIO_LED is ON:
+> >     gpio_direction_output(GPIO_GP_1_27, 0); /* power on */
+> >     gpio_set_value(GPIO_GP_1_27, 0);
+> >     gpio_direction_output(GPIO_GP_5_22, 0); /* LED  */
+> >     gpio_set_value(GPIO_GP_5_22, 1);
+> >     gpio_direction_output(GPIO_GP_1_8, 0); /* 1: 3.3V, 0: 1.8V*/
+> >     gpio_set_value(GPIO_GP_1_8, 1);
+> >
+> > So in comparison we would need a hog node as below (and with this the
+> > LED triggers correctly as expected),
+> >
+> > &gpio5 {
+> >     sdio-led-gpio {
+> >         gpio-hog;
+> >         gpios = <22 GPIO_ACTIVE_HIGH>;
+> >         output-high;
+> >         line-name = "sdio-led-gpio";
+> >     };
+> > };
+> >
+> > Let me know if you are OK with the above.
+>
+> The above means the LED is always lit when SDIO_PWR is enabled.
+> While I agree that's some kind of SD activity indicator, probably it's less
+> fine-grained than using the mmc1 trigger?
+> I assume the mmc1 trigger is only activated when SDIO_PWR is enabled.
+> Are you sure this doesn't work?
+> Perhaps your kernel was missing SD trigger support, or "mmc1" is the
+> wrong SD instance?
+>
+> > Looks like the SDIO_PWR is tied up with an SDIO_LED pin and the
+> > information is missing from schematics.
+>
+> No, I think we just misread the schematics.
+>
+My bad I misinterpreted the trigger, with GP5_22 being GPIO_ACTIVE_LOW
+the LED remained ON when the card was inserted and turned OFF when the
+card was pulled out.
 
----
+When GP5_22 being GPIO_ACTIVE_HIGH the LED blinked and stayed OFF when
+the card was inserted and remained OFF when the card was pulled out.
+As a result I misinterpreted it.
 
-If this is acceptable, then I can add S_ISFIFO to the whitelist on file
-descriptors we can IOCB_NOWAIT try for, then poll if we get -EAGAIN
-instead of using thread offload.
+I can confirm when GP5_22 is GPIO_ACTIVE_HIGH and there is any
+activity on SD (read/write) the led turns ON.
 
-diff --git a/fs/pipe.c b/fs/pipe.c
-index 60dbee457143..3cee28e35985 100644
---- a/fs/pipe.c
-+++ b/fs/pipe.c
-@@ -82,6 +82,13 @@ void pipe_unlock(struct pipe_inode_info *pipe)
- }
- EXPORT_SYMBOL(pipe_unlock);
- 
-+static inline bool __pipe_lock_nonblock(struct pipe_inode_info *pipe)
-+{
-+	if (mutex_trylock(&pipe->mutex))
-+		return true;
-+	return false;
-+}
-+
- static inline void __pipe_lock(struct pipe_inode_info *pipe)
- {
- 	mutex_lock_nested(&pipe->mutex, I_MUTEX_PARENT);
-@@ -244,7 +251,12 @@ pipe_read(struct kiocb *iocb, struct iov_iter *to)
- 		return 0;
- 
- 	ret = 0;
--	__pipe_lock(pipe);
-+	if (iocb->ki_flags & IOCB_NOWAIT) {
-+		if (!__pipe_lock_nonblock(pipe))
-+			return -EAGAIN;
-+	} else {
-+		__pipe_lock(pipe);
-+	}
- 
- 	/*
- 	 * We only wake up writers if the pipe was full when we started
-@@ -344,7 +356,8 @@ pipe_read(struct kiocb *iocb, struct iov_iter *to)
- 			break;
- 		if (ret)
- 			break;
--		if (filp->f_flags & O_NONBLOCK) {
-+		if ((filp->f_flags & O_NONBLOCK) ||
-+		    (iocb->ki_flags & IOCB_NOWAIT)) {
- 			ret = -EAGAIN;
- 			break;
- 		}
-@@ -432,7 +445,12 @@ pipe_write(struct kiocb *iocb, struct iov_iter *from)
- 	if (unlikely(total_len == 0))
- 		return 0;
- 
--	__pipe_lock(pipe);
-+	if (iocb->ki_flags & IOCB_NOWAIT) {
-+		if (!__pipe_lock_nonblock(pipe))
-+			return -EAGAIN;
-+	} else {
-+		__pipe_lock(pipe);
-+	}
- 
- 	if (!pipe->readers) {
- 		send_sig(SIGPIPE, current, 0);
-@@ -554,7 +572,8 @@ pipe_write(struct kiocb *iocb, struct iov_iter *from)
- 			continue;
- 
- 		/* Wait for buffer space to become available. */
--		if (filp->f_flags & O_NONBLOCK) {
-+		if ((filp->f_flags & O_NONBLOCK) ||
-+		    (iocb->ki_flags & IOCB_NOWAIT)) {
- 			if (!ret)
- 				ret = -EAGAIN;
- 			break;
-
--- 
-Jens Axboe
-
+Cheers,
+Prabhakar
