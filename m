@@ -2,222 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3293D25F38F
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 09:04:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92E9125F389
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 09:04:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726948AbgIGHEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 03:04:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59118 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726918AbgIGHEj (ORCPT
+        id S1726278AbgIGHEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 03:04:01 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:37679 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726918AbgIGHCq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 03:04:39 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38283C061573;
-        Mon,  7 Sep 2020 00:04:39 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id s2so6029684pjr.4;
-        Mon, 07 Sep 2020 00:04:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=otRXxNiL4gSVNa6K+8BQSdss/DJNJyTyG/m0dhQQX4E=;
-        b=d/9XZbf8zBLic3hhAGLncVNdyG0TwyTfynJpAld5tq79kmX0SOkdpmDyqAIBL30wlb
-         aULzdbdV+lJvW3nEfzrmlVWkA4YIJSOLrTeUmi7aQQ+pkVLgEw7OqOud1NeumKrId6N1
-         Ktk/DAsQYVBQBGoHTyk86gZhkQ2SV0/Mdws9Y01qnoAjNYevPWVql7n9do/M7CNK7bsS
-         wELmhMdL4kmdkrd20bytyRPo/+a6+7Y/Q/uQ0Tydn7kRdbN1czFETmusI44MhYF8LVe9
-         yPF8mMXcwIgwj8uZgI4wf02cvNF3JsfJBpcahHN9JslE2567YXvYEZDZ3UZkT51MoviL
-         3hdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=otRXxNiL4gSVNa6K+8BQSdss/DJNJyTyG/m0dhQQX4E=;
-        b=ZSnEoOzfWaWOMxkiGwaR4HdWTB1XlKIw/6iqq5pGZ8ivx61HGGotT9mEreUQb1CDGT
-         Q4I8TxKBa10OQnts4s93eUuuugT5NSXbCXJaKysGaAHMuAlPifBmkdA8P6uqiuFMEnfB
-         yuBAYFLTL2r16j6ae76qb2fEcxD5BHbYZGXDeEk3gTaFyzu8TbZ1ioXCPdU0ZbdBohSk
-         ANWKgHVn6UhU+MoOkMRxi9Q5K/PzZsuQXc9wjyMvGIb9qLc7js+pcgibZWQz/YHXG8+G
-         rncqT34QeieAeHZOyeZ5cxZpQgwH0LcrjlR/6SO0bXA7CwzQ5ms+0w3+pwM1roRmnejq
-         5wDg==
-X-Gm-Message-State: AOAM531KE5bRktysq5U+cTXzItscpoHm2lsyaAw27+dEMy5huIJDMd7g
-        sA4c2ipZsvFr5Ry497ojgjE=
-X-Google-Smtp-Source: ABdhPJziIj0PK6yoiJ5wRQoy70TbrlXD62vEEh0t/EONVWa+t0n3CsaU5tuooBUNzIBa8VXeI3MeXA==
-X-Received: by 2002:a17:902:ac8b:b029:d0:89f4:6220 with SMTP id h11-20020a170902ac8bb02900d089f46220mr16867680plr.8.1599462278714;
-        Mon, 07 Sep 2020 00:04:38 -0700 (PDT)
-Received: from varodek.localdomain ([106.201.26.241])
-        by smtp.gmail.com with ESMTPSA id 204sm6804733pfc.200.2020.09.07.00.04.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Sep 2020 00:04:38 -0700 (PDT)
-From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Bjorn Helgaas <bjorn@helgaas.com>,
-        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Thierry Reding <treding@nvidia.com>
-Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
-        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-Subject: [PATCH v1 2/2] fbdev: radeonfb:use generic power management
-Date:   Mon,  7 Sep 2020 12:32:21 +0530
-Message-Id: <20200907070221.29938-3-vaibhavgupta40@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200907070221.29938-1-vaibhavgupta40@gmail.com>
-References: <20200907070221.29938-1-vaibhavgupta40@gmail.com>
+        Mon, 7 Sep 2020 03:02:46 -0400
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200907070236euoutp01cd73acaec4763bf456fac175f85fee73~ybltWsgmT0711607116euoutp01Y
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 07:02:36 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200907070236euoutp01cd73acaec4763bf456fac175f85fee73~ybltWsgmT0711607116euoutp01Y
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1599462156;
+        bh=ZxtWY66LgnHBrNYge2f9PDhTZ3Wz5P0yo+LHPKSot+Q=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=I+h/3I2VjIcxlVZDH/lNlOOjvMOZclTLJ/2t/GoftpsGxg9jk53gZdIy7AEvehtPh
+         W8gtcUN9X/CZqLNWGwHS/yqyTr6bfdI2FE3fery7EjL+uqjNJOnrTpzDb0lu2EC3DE
+         fd2OpcYiVOeJ0iCTvHb5u/KsiZBPrL0CBZMD8Avk=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20200907070236eucas1p29628d0052b264a54f3844c09e8df4730~ybltI412B0068800688eucas1p2Z;
+        Mon,  7 Sep 2020 07:02:36 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id 9B.D3.06456.B0BD55F5; Mon,  7
+        Sep 2020 08:02:35 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20200907070235eucas1p22f87f67c713f5b6adcb494a54c5e75d4~yblst14op2412324123eucas1p2F;
+        Mon,  7 Sep 2020 07:02:35 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200907070235eusmtrp1feae73e9984626b93ea2470d306c898e~yblstILju0412504125eusmtrp1u;
+        Mon,  7 Sep 2020 07:02:35 +0000 (GMT)
+X-AuditID: cbfec7f2-809ff70000001938-c8-5f55db0b287d
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id 12.46.06017.B0BD55F5; Mon,  7
+        Sep 2020 08:02:35 +0100 (BST)
+Received: from [106.210.88.143] (unknown [106.210.88.143]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20200907070235eusmtip1a5111a2a4d5e325b24b610d4fe22cfd2~yblsNoKBC0360403604eusmtip1F;
+        Mon,  7 Sep 2020 07:02:34 +0000 (GMT)
+Subject: Re: [PATCH] dma-direct: zero out DMA_ATTR_NO_KERNEL_MAPPING buf
+To:     James Bottomley <James.Bottomley@HansenPartnership.com>,
+        Hillf Danton <hdanton@sina.com>
+Cc:     Christoph Hellwig <hch@lst.de>, linux-nvme@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-arch@vger.kernel.org
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+Message-ID: <1eb4a2b0-2fd4-9f3c-e610-c8f856027181@samsung.com>
+Date:   Mon, 7 Sep 2020 09:02:34 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+        Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1599321042.11726.6.camel@HansenPartnership.com>
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrCKsWRmVeSWpSXmKPExsWy7djPc7rct0PjDZ6sN7NYufook8WBn89Z
+        LDb2c1ic6c616Nj1lcXi8q45bBbzlz1lt/j9Yw6bA4fH7IaLLB7TJp1i89i8Qstj85J6j903
+        G9g8Jr1w9/i8SS6APYrLJiU1J7MstUjfLoErY98VzoKvEhWNsx4zNTC2iHQxcnJICJhIdM1u
+        Y+ti5OIQEljBKHH8/3UmkISQwBdGiRVNghCJz4wSHxf+Ze5i5ADr+NnDDhFfzigx7+pOVgjn
+        PaPEokUzWUC6hQU8JBbtWQBmiwjESVw9PxlsBbPASUaJi5v+MIMk2AQMJbredrGB2LwCdhKf
+        ZrWxgtgsAioSp7tXMoLYokDNx049YoGoEZQ4OfMJmM0pYCux9e0EdhCbWUBeYvvbOcwQtrjE
+        rSfzmUCWSQjsY5f4+eIpG8SjLhKX2m9B2cISr45vYYewZSROT+5hgWhoZpR4eG4tO4TTwyhx
+        uWkGI0SVtcSdc7/YQAHALKApsX6XPkTYUeL+93tMkHDhk7jxVhDiCD6JSdumQ4OLV6KjTQii
+        Wk1i1vF1cGsPXrjEPIFRaRaS12YheWcWkndmIexdwMiyilE8tbQ4Nz212DAvtVyvODG3uDQv
+        XS85P3cTIzAtnf53/NMOxq+Xkg4xCnAwKvHwvhAPjRdiTSwrrsw9xCjBwawkwut09nScEG9K
+        YmVValF+fFFpTmrxIUZpDhYlcV7jRS9jhQTSE0tSs1NTC1KLYLJMHJxSDYyMlYqff9rJd3Nu
+        t0jJWzS5h8Hlg/SpkBdW9z7W/9fQX/zCTFGO60xjr3LawglmPz9paDNWXwjd/ZL9sv3M44s2
+        TUucOe+MywKthxcOWCY/3uEbMm0x+/Pc2Ev/j2+15z13ojY86j33YmNunS9G5x5xHli/cSX7
+        o6VdzpuDFvPzKS7/8+1vuE6vEktxRqKhFnNRcSIAF/iMU0cDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrGIsWRmVeSWpSXmKPExsVy+t/xu7rct0PjDY68kLFYufook8WBn89Z
+        LDb2c1ic6c616Nj1lcXi8q45bBbzlz1lt/j9Yw6bA4fH7IaLLB7TJp1i89i8Qstj85J6j903
+        G9g8Jr1w9/i8SS6APUrPpii/tCRVISO/uMRWKdrQwkjP0NJCz8jEUs/Q2DzWyshUSd/OJiU1
+        J7MstUjfLkEvY98VzoKvEhWNsx4zNTC2iHQxcnBICJhI/Oxh72Lk4hASWMooseTJdLYuRk6g
+        uIzEyWkNrBC2sMSfa11sEEVvGSXezO0GKxIW8JBYtGcBC4gtIhAnceXYAyYQm1ngJKPEom1R
+        EA3PGSWmLZzDDpJgEzCU6HrbBdbMK2An8WlWG9gGFgEVidPdKxlBbFGgQWd6XkDVCEqcnPkE
+        bAGngK3E1rcT2CEWmEnM2/yQGcKWl9j+dg6ULS5x68l8pgmMQrOQtM9C0jILScssJC0LGFlW
+        MYqklhbnpucWG+kVJ+YWl+al6yXn525iBMbhtmM/t+xg7HoXfIhRgINRiYf3hXhovBBrYllx
+        Ze4hRgkOZiURXqezp+OEeFMSK6tSi/Lji0pzUosPMZoCPTeRWUo0OR+YIvJK4g1NDc0tLA3N
+        jc2NzSyUxHk7BA7GCAmkJ5akZqemFqQWwfQxcXBKNTDm2638/Zc7706cmv6d9swCgZMTTsja
+        NT88E8174e73AGlns4Uyn59eebRipWfhnFtsDRNvh89Q3O1/7/uu3a/7ruiziKgYSRzKjn1y
+        +7VtfvbNmm/FZ/wb8xud5nw+8saNq9HsmqqXwWSrK1tnnT5urCny/RKz700zqwuK16YGn1/S
+        xsj5+qyTEktxRqKhFnNRcSIAItHzPtkCAAA=
+X-CMS-MailID: 20200907070235eucas1p22f87f67c713f5b6adcb494a54c5e75d4
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20200905155056eucas1p2d4a2249f73506a765fce2d2f7089748d
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20200905155056eucas1p2d4a2249f73506a765fce2d2f7089748d
+References: <20200904152550.17964-1-hdanton@sina.com>
+        <20200905073528.9464-1-hdanton@sina.com>
+        <CGME20200905155056eucas1p2d4a2249f73506a765fce2d2f7089748d@eucas1p2.samsung.com>
+        <1599321042.11726.6.camel@HansenPartnership.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drivers using legacy PCI power management .suspend()/.resume() callbacks
-have to manage PCI states and device's PM states themselves. They also
-need to take care of standard configuration registers.
+Hi James,
 
-Switch to generic power management framework using a "struct dev_pm_ops"
-variable to take the unnecessary load from the driver.
-This also avoids the need for the driver to directly call most of the PCI
-helper functions and device power state control functions, as through
-the generic framework PCI Core takes care of the necessary operations,
-and drivers are required to do only device-specific jobs.
+On 05.09.2020 17:50, James Bottomley wrote:
+> [resend with correct linux-arch address]
+> On Sat, 2020-09-05 at 15:35 +0800, Hillf Danton wrote:
+>> On Fri, 04 Sep 2020 08:34:39 -0700 James Bottomley wrote:
+>>> On Fri, 2020-09-04 at 23:25 +0800, Hillf Danton wrote:
+>>>> The DMA buffer allocated is always cleared in DMA core and this
+>>>> is making DMA_ATTR_NO_KERNEL_MAPPING non-special.
+>>>>
+>>>> Fixes: d98849aff879 ("dma-direct: handle
+>>>> DMA_ATTR_NO_KERNEL_MAPPING
+>>>> in common code")
+>>>> Cc: Kees Cook <keescook@chromium.org>
+>>>> Cc: Matthew Wilcox <willy@infradead.org>
+>>>> Cc: Marek Szyprowski <m.szyprowski@samsung.com>
+>>>> Cc: James Bottomley <James.Bottomley@HansenPartnership.com>
+>>>> Signed-off-by: Hillf Danton <hdanton@sina.com>
+>>>> ---
+>>>>
+>>>> --- a/kernel/dma/direct.c
+>>>> +++ b/kernel/dma/direct.c
+>>>> @@ -178,9 +178,17 @@ void *dma_direct_alloc_pages(struct devi
+>>>>   
+>>>>   	if ((attrs & DMA_ATTR_NO_KERNEL_MAPPING) &&
+>>>>   	    !force_dma_unencrypted(dev)) {
+>>>> +		int i;
+>>>> +
+>>>>   		/* remove any dirty cache lines on the kernel
+>>>> alias
+>>>> */
+>>>>   		if (!PageHighMem(page))
+>>>>   			arch_dma_prep_coherent(page, size);
+>>>> +
+>>>> +		for (i = 0; i < size/PAGE_SIZE; i++) {
+>>>> +			ret = kmap_atomic(page + i);
+>>>> +			memset(ret, 0, PAGE_SIZE);
+>>>> +			kunmap_atomic(ret);
+>> Hi James
+>>> This is massively expensive on PARISC and likely other VIPT/VIVT
+>>> architectures.
+>> Correct.
+>>
+>>> What's the reason for clearing it?  This could also be
+>> 	/* we always manually zero the memory once we are done: */
+>> 	gfp &= ~__GFP_ZERO;
+>> 	gfp |= dma_direct_optimal_gfp_mask(dev, dev->coherent_dma_mask,
+>> 					   &phys_limit);
+> That's not a reason ... that comment was put in for coherent mappings.
+> What is the reason we should incur all this expense for clearing pages
+> which aren't unmapped in the kernel, because we can update the comment?
+>   The usual rationale for kernel mapped pages is security, because they
+> may leak information but unmapped pages shouldn't have this problem.
 
-Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
----
- drivers/video/fbdev/aty/radeon_base.c | 10 +++++---
- drivers/video/fbdev/aty/radeon_pm.c   | 36 +++++++++++++++++++++------
- drivers/video/fbdev/aty/radeonfb.h    |  3 +--
- 3 files changed, 35 insertions(+), 14 deletions(-)
+Any dma_alloc_attrs() buffer might be mmaped to userspace, so the 
+security reason is still valid. Possible lack if kernel mapping was only 
+a hint that driver doesn't need it, so it might be skipped on some 
+architectures, where creating it requires significant resources (i.e. 
+vmalloc area).
 
-diff --git a/drivers/video/fbdev/aty/radeon_base.c b/drivers/video/fbdev/aty/radeon_base.c
-index e116a3f9ad56..232dbe154666 100644
---- a/drivers/video/fbdev/aty/radeon_base.c
-+++ b/drivers/video/fbdev/aty/radeon_base.c
-@@ -2559,16 +2559,18 @@ static void radeonfb_pci_unregister(struct pci_dev *pdev)
-         framebuffer_release(info);
- }
- 
-+#ifdef CONFIG_PM
-+#define RADEONFB_PCI_PM_OPS (&radeonfb_pci_pm_ops)
-+#else
-+#define RADEONFB_PCI_PM_OPS NULL
-+#endif
- 
- static struct pci_driver radeonfb_driver = {
- 	.name		= "radeonfb",
- 	.id_table	= radeonfb_pci_table,
- 	.probe		= radeonfb_pci_register,
- 	.remove		= radeonfb_pci_unregister,
--#ifdef CONFIG_PM
--	.suspend       	= radeonfb_pci_suspend,
--	.resume		= radeonfb_pci_resume,
--#endif /* CONFIG_PM */
-+	.driver.pm	= RADEONFB_PCI_PM_OPS,
- };
- 
- #ifndef MODULE
-diff --git a/drivers/video/fbdev/aty/radeon_pm.c b/drivers/video/fbdev/aty/radeon_pm.c
-index b9af70bd656a..352d0bb4773a 100644
---- a/drivers/video/fbdev/aty/radeon_pm.c
-+++ b/drivers/video/fbdev/aty/radeon_pm.c
-@@ -2611,8 +2611,9 @@ static void radeon_set_suspend(struct radeonfb_info *rinfo, int suspend)
- 	}
- }
- 
--int radeonfb_pci_suspend(struct pci_dev *pdev, pm_message_t mesg)
-+static int radeonfb_pci_suspend_late(struct device *dev, pm_message_t mesg)
- {
-+	struct pci_dev *pdev = to_pci_dev(dev);
-         struct fb_info *info = pci_get_drvdata(pdev);
-         struct radeonfb_info *rinfo = info->par;
- 
-@@ -2660,11 +2661,6 @@ int radeonfb_pci_suspend(struct pci_dev *pdev, pm_message_t mesg)
- 	pmac_suspend_agp_for_card(pdev);
- #endif /* CONFIG_PPC_PMAC */
- 
--	/* It's unclear whether or when the generic code will do that, so let's
--	 * do it ourselves. We save state before we do any power management
--	 */
--	pci_save_state(pdev);
--
- 	/* If we support wakeup from poweroff, we save all regs we can including cfg
- 	 * space
- 	 */
-@@ -2689,7 +2685,6 @@ int radeonfb_pci_suspend(struct pci_dev *pdev, pm_message_t mesg)
- 			msleep(20);
- 			OUTREG(LVDS_GEN_CNTL, INREG(LVDS_GEN_CNTL) & ~(LVDS_DIGON));
- 		}
--		pci_disable_device(pdev);
- 	}
- 	/* If we support D2, we go to it (should be fixed later with a flag forcing
- 	 * D3 only for some laptops)
-@@ -2705,6 +2700,21 @@ int radeonfb_pci_suspend(struct pci_dev *pdev, pm_message_t mesg)
- 	return 0;
- }
- 
-+static int radeonfb_pci_suspend(struct device *dev)
-+{
-+	return radeonfb_pci_suspend_late(dev, PMSG_SUSPEND);
-+}
-+
-+static int radeonfb_pci_hibernate(struct device *dev)
-+{
-+	return radeonfb_pci_suspend_late(dev, PMSG_HIBERNATE);
-+}
-+
-+static int radeonfb_pci_freeze(struct device *dev)
-+{
-+	return radeonfb_pci_suspend_late(dev, PMSG_FREEZE);
-+}
-+
- static int radeon_check_power_loss(struct radeonfb_info *rinfo)
- {
- 	return rinfo->save_regs[4] != INPLL(CLK_PIN_CNTL) ||
-@@ -2712,8 +2722,9 @@ static int radeon_check_power_loss(struct radeonfb_info *rinfo)
- 	       rinfo->save_regs[3] != INPLL(SCLK_CNTL);
- }
- 
--int radeonfb_pci_resume(struct pci_dev *pdev)
-+static int radeonfb_pci_resume(struct device *dev)
- {
-+	struct pci_dev *pdev = to_pci_dev(dev);
-         struct fb_info *info = pci_get_drvdata(pdev);
-         struct radeonfb_info *rinfo = info->par;
- 	int rc = 0;
-@@ -2795,6 +2806,15 @@ int radeonfb_pci_resume(struct pci_dev *pdev)
- 	return rc;
- }
- 
-+const struct dev_pm_ops radeonfb_pci_pm_ops = {
-+	.suspend	= radeonfb_pci_suspend,
-+	.resume		= radeonfb_pci_resume,
-+	.freeze		= radeonfb_pci_freeze,
-+	.thaw		= radeonfb_pci_resume,
-+	.poweroff	= radeonfb_pci_hibernate,
-+	.restore	= radeonfb_pci_resume,
-+};
-+
- #ifdef CONFIG_PPC__disabled
- static void radeonfb_early_resume(void *data)
- {
-diff --git a/drivers/video/fbdev/aty/radeonfb.h b/drivers/video/fbdev/aty/radeonfb.h
-index 131b34dd65af..93f403cbb415 100644
---- a/drivers/video/fbdev/aty/radeonfb.h
-+++ b/drivers/video/fbdev/aty/radeonfb.h
-@@ -483,8 +483,7 @@ extern void radeon_delete_i2c_busses(struct radeonfb_info *rinfo);
- extern int radeon_probe_i2c_connector(struct radeonfb_info *rinfo, int conn, u8 **out_edid);
- 
- /* PM Functions */
--extern int radeonfb_pci_suspend(struct pci_dev *pdev, pm_message_t state);
--extern int radeonfb_pci_resume(struct pci_dev *pdev);
-+extern const struct dev_pm_ops radeonfb_pci_pm_ops;
- extern void radeonfb_pm_init(struct radeonfb_info *rinfo, int dynclk, int ignore_devlist, int force_sleep);
- extern void radeonfb_pm_exit(struct radeonfb_info *rinfo);
- 
+>>> really inefficient even on PIPT architectures if the memory is
+>>> device remote.
+>>>
+>>> If we really have to do this, it should likely be done in the arch
+>>> or driver hooks because there are potentially more efficient ways
+>>> we can do this knowing how the architecture behaves.
+>> I'm open to any vintage ideas in your mind wrt clearing dma buf e.g
+>> on platforms like PARISC. Or feel free to offload me the work if it
+>> makes sense to you who are rich of PARISC knowledge.
+> OK, I've cc'd linux-arch because this is a problem for more than just
+> parisc.  However, not having to do it is the best solution ... sort of
+> the doctor, doctor it hurts when I do this answer.
+
+Best regards
 -- 
-2.27.0
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
 
