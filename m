@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5371C25F24A
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 06:17:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E01B425F24B
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 06:17:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726530AbgIGEQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 00:16:58 -0400
-Received: from mga14.intel.com ([192.55.52.115]:58719 "EHLO mga14.intel.com"
+        id S1726582AbgIGERB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 00:17:01 -0400
+Received: from mga14.intel.com ([192.55.52.115]:58721 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726376AbgIGEQx (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 00:16:53 -0400
-IronPort-SDR: +4hNBy4KbWpeX4FIHaXBLuGjfLyiI91WPtl1F25ODdf7P+ZLN5L4daqw5/W+hXhOdBpZRhH1vA
- NTALiAi4inUQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9736"; a="157215556"
+        id S1726132AbgIGEQz (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 00:16:55 -0400
+IronPort-SDR: HVpVEEGTSr8cEC6YZ5sKdltHd+BjdTe2dKgBeEiP0oHG9WItFw7UGsC3ie0mnA0nayDwO4c1Bx
+ LGcpKnqEnk1A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9736"; a="157215560"
 X-IronPort-AV: E=Sophos;i="5.76,400,1592895600"; 
-   d="scan'208";a="157215556"
+   d="scan'208";a="157215560"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2020 21:16:53 -0700
-IronPort-SDR: /1N+pY4NZGOh3DnzWjqZGq/ij2hOY7AZQCv2/3vxyG+vus2D726hZBYG0Bzf9sJ12YiTlru4MA
- ikGs5zfMzXiA==
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2020 21:16:55 -0700
+IronPort-SDR: 4IeShO1W0kSru4lTLYtCIOQA56JzP/iKf4OVwdGAD4j+a9HrYPa4oNDtp2yc/zXU5Ut1oLG+Mp
+ az6CN+4eZhrQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.76,400,1592895600"; 
-   d="scan'208";a="406709935"
+   d="scan'208";a="406709942"
 Received: from kbl-ppc.sh.intel.com ([10.239.159.55])
-  by fmsmga001.fm.intel.com with ESMTP; 06 Sep 2020 21:16:50 -0700
+  by fmsmga001.fm.intel.com with ESMTP; 06 Sep 2020 21:16:53 -0700
 From:   Jin Yao <yao.jin@linux.intel.com>
 To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
         mingo@redhat.com, alexander.shishkin@linux.intel.com
 Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
         kan.liang@intel.com, yao.jin@intel.com,
         Jin Yao <yao.jin@linux.intel.com>
-Subject: [PATCH v5 4/7] perf util: Link stream pair
-Date:   Mon,  7 Sep 2020 12:16:03 +0800
-Message-Id: <20200907041606.14500-5-yao.jin@linux.intel.com>
+Subject: [PATCH v5 5/7] perf util: Calculate the sum of total streams hits
+Date:   Mon,  7 Sep 2020 12:16:04 +0800
+Message-Id: <20200907041606.14500-6-yao.jin@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200907041606.14500-1-yao.jin@linux.intel.com>
 References: <20200907041606.14500-1-yao.jin@linux.intel.com>
@@ -44,95 +44,116 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In previous patch, we have created an evsel_streams for one event,
-and top N hottest streams will be saved in a stream array in
-evsel_streams.
+We have used callchain_node->hit to measure the hot level of one
+stream. This patch calculates the sum of hits of total streams.
 
-This patch compares total streams among two evsel_streams.
+Thus in next patch, we can use following formula to report hot
+percent for one stream.
 
-Once two streams are fully matched, they will be linked as
-a pair. From the pair, we can know which streams are matched.
+hot percent = callchain_node->hit / sum of total hits
 
 Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
 ---
  v5:
-   - Remove enum stream_type
+   - Rebase to perf/core
 
  v4:
-   - New patch in v4.
+   - No functional change.
 
- tools/perf/util/stream.c | 40 ++++++++++++++++++++++++++++++++++++++++
- tools/perf/util/stream.h |  4 ++++
- 2 files changed, 44 insertions(+)
+ v2:
+   - Combine the variable decl line with its initial assignment
+     in total_callchain_hits().
 
-diff --git a/tools/perf/util/stream.c b/tools/perf/util/stream.c
-index 7882a7f05d97..e96e21d6e07b 100644
---- a/tools/perf/util/stream.c
-+++ b/tools/perf/util/stream.c
-@@ -157,3 +157,43 @@ struct evsel_streams *evsel_streams_get(struct evsel_streams *es,
+ tools/perf/util/callchain.c | 32 ++++++++++++++++++++++++++++++++
+ tools/perf/util/callchain.h |  3 +++
+ tools/perf/util/stream.c    |  2 ++
+ tools/perf/util/stream.h    |  1 +
+ 4 files changed, 38 insertions(+)
+
+diff --git a/tools/perf/util/callchain.c b/tools/perf/util/callchain.c
+index 7cab271e656b..90d31582393e 100644
+--- a/tools/perf/util/callchain.c
++++ b/tools/perf/util/callchain.c
+@@ -1653,3 +1653,35 @@ bool callchain_cnode_matched(struct callchain_node *base_cnode,
  
- 	return NULL;
+ 	return match;
  }
 +
-+static struct stream *stream_callchain_match(struct stream *base_stream,
-+					     struct evsel_streams *es_pair)
++static u64 count_callchain_hits(struct hist_entry *he)
 +{
-+	for (int i = 0; i < es_pair->nr_streams; i++) {
-+		struct stream *pair_stream = &es_pair->streams[i];
++	struct rb_root *root = &he->sorted_chain;
++	struct rb_node *rb_node = rb_first(root);
++	struct callchain_node *node;
++	u64 chain_hits = 0;
 +
-+		if (callchain_cnode_matched(base_stream->cnode,
-+					    pair_stream->cnode)) {
-+			return pair_stream;
-+		}
++	while (rb_node) {
++		node = rb_entry(rb_node, struct callchain_node, rb_node);
++		chain_hits += node->hit;
++		rb_node = rb_next(rb_node);
 +	}
 +
-+	return NULL;
++	return chain_hits;
 +}
 +
-+static struct stream *stream_match(struct stream *base_stream,
-+				   struct evsel_streams *es_pair)
++u64 callchain_total_hits(struct hists *hists)
 +{
-+	return stream_callchain_match(base_stream, es_pair);
-+}
++	struct rb_node *next = rb_first_cached(&hists->entries);
++	u64 chain_hits = 0;
 +
-+static void stream_link(struct stream *base_stream, struct stream *pair_stream)
-+{
-+	base_stream->pair_cnode = pair_stream->cnode;
-+	pair_stream->pair_cnode = base_stream->cnode;
-+}
++	while (next) {
++		struct hist_entry *he = rb_entry(next, struct hist_entry,
++						 rb_node);
 +
-+void match_evsel_streams(struct evsel_streams *es_base,
-+			 struct evsel_streams *es_pair)
-+{
-+	for (int i = 0; i < es_base->nr_streams; i++) {
-+		struct stream *base_stream = &es_base->streams[i];
-+		struct stream *pair_stream;
-+
-+		pair_stream = stream_match(base_stream, es_pair);
-+		if (pair_stream)
-+			stream_link(base_stream, pair_stream);
++		chain_hits += count_callchain_hits(he);
++		next = rb_next(&he->rb_node);
 +	}
++
++	return chain_hits;
 +}
+diff --git a/tools/perf/util/callchain.h b/tools/perf/util/callchain.h
+index 72134bed49d8..082f73524c9a 100644
+--- a/tools/perf/util/callchain.h
++++ b/tools/perf/util/callchain.h
+@@ -13,6 +13,7 @@ struct ip_callchain;
+ struct map;
+ struct perf_sample;
+ struct thread;
++struct hists;
+ 
+ #define HELP_PAD "\t\t\t\t"
+ 
+@@ -293,4 +294,6 @@ int callchain_branch_counts(struct callchain_root *root,
+ bool callchain_cnode_matched(struct callchain_node *base_cnode,
+ 			     struct callchain_node *pair_cnode);
+ 
++u64 callchain_total_hits(struct hists *hists);
++
+ #endif	/* __PERF_CALLCHAIN_H */
+diff --git a/tools/perf/util/stream.c b/tools/perf/util/stream.c
+index e96e21d6e07b..642316078e40 100644
+--- a/tools/perf/util/stream.c
++++ b/tools/perf/util/stream.c
+@@ -106,6 +106,8 @@ static void init_hot_callchain(struct hists *hists, struct evsel_streams *es)
+ 		update_hot_callchain(he, es);
+ 		next = rb_next(&he->rb_node);
+ 	}
++
++	es->streams_hits = callchain_total_hits(hists);
+ }
+ 
+ static int evlist_init_callchain_streams(struct evlist *evlist,
 diff --git a/tools/perf/util/stream.h b/tools/perf/util/stream.h
-index 66f61d954eef..2eb6f17a834e 100644
+index 2eb6f17a834e..56dfa90c810d 100644
 --- a/tools/perf/util/stream.h
 +++ b/tools/perf/util/stream.h
-@@ -6,6 +6,7 @@
- 
- struct stream {
- 	struct callchain_node	*cnode;
-+	struct callchain_node	*pair_cnode;
+@@ -14,6 +14,7 @@ struct evsel_streams {
+ 	int			nr_streams_max;
+ 	int			nr_streams;
+ 	int			evsel_idx;
++	u64			streams_hits;
  };
  
- struct evsel_streams {
-@@ -23,4 +24,7 @@ struct evsel_streams *perf_evlist__create_streams(struct evlist *evlist,
- struct evsel_streams *evsel_streams_get(struct evsel_streams *es,
- 					int nr_evsel, int evsel_idx);
- 
-+void match_evsel_streams(struct evsel_streams *es_base,
-+			 struct evsel_streams *es_pair);
-+
- #endif /* __PERF_STREAM_H */
+ struct evlist;
 -- 
 2.17.1
 
