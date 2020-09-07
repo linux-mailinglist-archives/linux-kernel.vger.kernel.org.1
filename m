@@ -2,70 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE16B25FC7C
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 17:00:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7523825FCC6
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 17:14:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730052AbgIGPAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 11:00:45 -0400
-Received: from jptosegrel01.sonyericsson.com ([124.215.201.71]:2715 "EHLO
-        JPTOSEGREL01.sonyericsson.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730056AbgIGOxj (ORCPT
+        id S1730113AbgIGPOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 11:14:42 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:56096 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730044AbgIGOwW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 10:53:39 -0400
-Subject: Re: [PATCH v7 3/3] binder: add transaction latency tracer
-To:     Frankie Chang <Frankie.Chang@mediatek.com>,
-        Todd Kjos <tkjos@google.com>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Martijn Coenen <maco@android.com>,
-        =?UTF-8?Q?Arve_Hj=c3=b8nnev=c3=a5g?= <arve@android.com>,
-        Christian Brauner <christian@brauner.io>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>,
-        Jian-Min Liu <Jian-Min.Liu@mediatek.com>
-References: <1596509145.5207.21.camel@mtkswgap22>
- <1596549552-5466-1-git-send-email-Frankie.Chang@mediatek.com>
- <1596549552-5466-4-git-send-email-Frankie.Chang@mediatek.com>
-From:   peter enderborg <peter.enderborg@sony.com>
-Message-ID: <f8ff8cb2-913d-c009-53a4-2918ce923a89@sony.com>
-Date:   Mon, 7 Sep 2020 16:41:56 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 7 Sep 2020 10:52:22 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 087EqHfW020796;
+        Mon, 7 Sep 2020 09:52:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1599490337;
+        bh=BiO2xGTFZ9AuNUE4ZBMLZe1ln1m1EdPZezT+KHBj8tE=;
+        h=From:To:CC:Subject:Date;
+        b=cX2kXwJKqboEK748JXGafVDPLNslC6LTpneWmVB3K9OtSY5zYZZsbPDt9HlBo9E4q
+         L0yEeKCk+tDPrpstPn5DyUCfx9Ou2FggeaggSJkur8z4spJjhj6NTHuYCxpg3aVoeP
+         roCC1K56JdcQWW5YaGiZglHxHJJJ4dPIufr3xY64=
+Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 087EqH5I128061
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 7 Sep 2020 09:52:17 -0500
+Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 7 Sep
+ 2020 09:52:17 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 7 Sep 2020 09:52:17 -0500
+Received: from lta0400828a.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 087EqEEL010923;
+        Mon, 7 Sep 2020 09:52:14 -0500
+From:   Roger Quadros <rogerq@ti.com>
+To:     <t-kristo@ti.com>, <nm@ti.com>
+CC:     <robh+dt@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <nsekhar@ti.com>,
+        <kishon@ti.com>, Roger Quadros <rogerq@ti.com>
+Subject: [PATCH v2 0/6] arm64: dts: ti: Add USB support for J7200 EVM
+Date:   Mon, 7 Sep 2020 17:52:07 +0300
+Message-ID: <20200907145213.30788-1-rogerq@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <1596549552-5466-4-git-send-email-Frankie.Chang@mediatek.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=FfdJO626 c=1 sm=1 tr=0 a=CGteIMthFL3x4Fb36c5kWA==:117 a=IkcTkHD0fZMA:10 a=reM5J-MqmosA:10 a=9zETfiKQeoRBRZLemOoA:9 a=QEXdDO2ut3YA:10
-X-SEG-SpamProfiler-Score: 0
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/4/20 3:59 PM, Frankie Chang wrote:
-> +void probe_binder_txn_latency_free(void *ignore, struct binder_transaction *t,
-> +					int from_proc, int from_thread,
-> +					int to_proc, int to_thread)
-> +{
-> +	struct rtc_time tm;
-> +	struct timespec64 *startime;
-> +	struct timespec64 cur, sub_t;
-> +
-> +	ktime_get_ts64(&cur);
+Hi Tero/Nishanth,
 
+This series adds USB2.0 support for the J7200 EVM.
 
-I think sched_clock is what you want.
+Series is based on top of:
 
+    Faiz's MMC/SD support series
+    https://lore.kernel.org/lkml/20200907090520.25313-1-faiz_abbas@ti.com/
+    Lokesh's initial support series
+    https://patchwork.kernel.org/cover/11740039/
+    Vignesh's I2C support series
+    https://lore.kernel.org/patchwork/cover/1282152/
+    Vignesh's Hyperflash series
+    https://lore.kernel.org/patchwork/cover/1285326/
 
-> +	startime = &t->timestamp;
-> +	sub_t = timespec64_sub(cur, *startime);
-> +
-> +	/* if transaction time is over than binder_txn_latency_threshold (sec),
-> +	 * show timeout warning log.
-> +	 */
-> +	if (sub_t.tv_sec < binder_txn_latency_threshold)
-> +		return;
-> +
-> +	rtc_time_to_tm(t->tv.tv_sec, &tm);
+cheers,
+-roger
+
+Changelog:
+v2:
+- fixed warnings when built with W=2. Still one warning is present
+as property name "dr_mode" by USB core contains underscore.
+
+Kishon Vijay Abraham I (1):
+  arm64: dts: ti: k3-j7200-common-proc-board: Configure the SERDES lane
+    function
+
+Roger Quadros (5):
+  dt-bindings: mux-j7200-wiz: Add lane function defines
+  arm64: dts: ti: k3-j7200-main: Add SERDES lane control mux
+  arm64: dts: ti: k3-j7200-main.dtsi: Add USB to SERDES lane MUX
+  arm64: dts: ti: k3-j7200-main: Add USB controller
+  arm64: dts: ti: k3-j7200-common-proc-board: Add USB support
+
+ .../dts/ti/k3-j7200-common-proc-board.dts     | 28 ++++++++++
+ arch/arm64/boot/dts/ti/k3-j7200-main.dtsi     | 51 +++++++++++++++++++
+ include/dt-bindings/mux/mux-j7200-wiz.h       | 29 +++++++++++
+ 3 files changed, 108 insertions(+)
+ create mode 100644 include/dt-bindings/mux/mux-j7200-wiz.h
+
+-- 
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
 
