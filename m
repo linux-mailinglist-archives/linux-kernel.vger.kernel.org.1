@@ -2,124 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECD1A25FA4F
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 14:17:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7773625FA53
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 14:18:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729292AbgIGMRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 08:17:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49356 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729198AbgIGMGk (ORCPT
+        id S1729258AbgIGMSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 08:18:51 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:33879 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729236AbgIGMK4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 08:06:40 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F772C061574
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 05:06:27 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id z22so17893302ejl.7
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 05:06:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Tw4f2wX8YqmmfCG4fLEsa1aDy9xcwa2clW6NhysDtyc=;
-        b=vXqecv/JD1j08x2l2xv8uMY2f5Yrx4K3HukAwUizDgeJSij+T75ajGmL1q9blQ9UrJ
-         qCvwj8FsbXkYLIOkfpnIyoCMd0YWDwu7jzDwuPBz5d/I0pvFV2rv2MaIlzwpB+L6BBvL
-         KLuAAE/uYoT21Qcb0Ek9uNjNv+Tc1kJZB6gBNZEqfR4K8F3owTI8UDBaBNdeerEXBRQf
-         svknQedIT00FvncGNd3SMt5eJGRvr9n1qI1k7jYBXFJTuIChik7GAJQR8GK7RuqOeYDV
-         6OpI9z0F1CVv5xPg/cyAf/YafdgiGJcwRMOp33wT+hcztaMEzFbH2LHAvgY5FPcU8BxK
-         qNyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Tw4f2wX8YqmmfCG4fLEsa1aDy9xcwa2clW6NhysDtyc=;
-        b=OT1xUqQyeCML9glgJ5RU5hI5nuV8qvJRSBSn0cYvIzT2/v13GyFlmeBjBVZ8O7XCHk
-         sbHmqUoolpH4z5d5VzSCKcKNvhYn0rhbkvGdUKh7/04Ri1JbLNSFPWyTHWyS2clUKaWO
-         IG7EmIOxJ0SPASJhHCI/XUfDxTUFNoA/+7PDHsngWCnGue4X9VL+lTWxxno/9A2zQ2fE
-         vRlM5i4qrtI3JFELGpPGzevycgbqf4hDe/hRj/s2IIYlznyY4Ui1OtYDZKAkMzhsZtDi
-         dkFJmql8JvGqWZizEB3Iuh2W292Mncp5hAh5i4S0ddQbcgllbBYGydEOJkQrIbCCFRTP
-         gD8w==
-X-Gm-Message-State: AOAM532TuAUjwwpxGQCXWeF7exgB0zIumjtIFcAMmMKZLu5AsAuvNr1/
-        J/WoHBtlhcSQP3p6fTDUL4DPgpdVIu+ClOri7Z/I5w==
-X-Google-Smtp-Source: ABdhPJw+GbBoK76Yk9oXUxiHnhTP8BrVOQx6dDXADdyKLjOSvFHDs9IyPG0ZhERjAUhRxXRKmTxwpbMibpY7sdicuFI=
-X-Received: by 2002:a17:906:f11:: with SMTP id z17mr2135074eji.88.1599480386425;
- Mon, 07 Sep 2020 05:06:26 -0700 (PDT)
+        Mon, 7 Sep 2020 08:10:56 -0400
+X-UUID: 2dabae5c51bd471fbdfdd5bd53216433-20200907
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=fV5jHebeyEfLp5i1jQbRfIe1nBzzc22w8CcM/KCSvdQ=;
+        b=D0HjMw0153gFXmvMGuhqSF+aJVaGIwFe2tGOKHvwvTyDa4/EW4+JPjiNb+dugbLmfaS7zGKp2oy7ZX0LNFD9RoRR3ggYfL9YoMYPD5eCzdxM1QWqjDOwH816a+/pzTmq+HB9WfSpBYX6aZKYaqajkrjQHksYAMYp3CEzvJggBiQ=;
+X-UUID: 2dabae5c51bd471fbdfdd5bd53216433-20200907
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <jianjun.wang@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1796186004; Mon, 07 Sep 2020 20:10:52 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 7 Sep 2020 20:10:48 +0800
+Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 7 Sep 2020 20:10:48 +0800
+From:   Jianjun Wang <jianjun.wang@mediatek.com>
+To:     Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Ryder Lee <ryder.lee@mediatek.com>
+CC:     Philipp Zabel <p.zabel@pengutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        <davem@davemloft.net>, <linux-pci@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Sj Huang <sj.huang@mediatek.com>,
+        Jianjun Wang <jianjun.wang@mediatek.com>
+Subject: [v1,1/3] dt-bindings: Add YAML schemas for Gen3 PCIe controller
+Date:   Mon, 7 Sep 2020 20:08:50 +0800
+Message-ID: <20200907120852.12090-2-jianjun.wang@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20200907120852.12090-1-jianjun.wang@mediatek.com>
+References: <20200907120852.12090-1-jianjun.wang@mediatek.com>
 MIME-Version: 1.0
-References: <20200904154547.3836-1-brgl@bgdev.pl> <20200904154547.3836-24-brgl@bgdev.pl>
- <26ea1683-da8f-30e7-f004-3616e96d56b3@infradead.org> <20200907095932.GU1891694@smile.fi.intel.com>
- <CAMpxmJXvhYOVkZY7LLf=v+o8E2xKTh1RYhLrdVsS9nN1XZ5QJQ@mail.gmail.com> <20200907115310.GA1891694@smile.fi.intel.com>
-In-Reply-To: <20200907115310.GA1891694@smile.fi.intel.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Mon, 7 Sep 2020 14:06:15 +0200
-Message-ID: <CAMpxmJUfNkko4Rrb4N5CF_rdwRAWGhVr9DSOHfhYyTxYSH7dsQ@mail.gmail.com>
-Subject: Re: [PATCH 23/23] Documentation: gpio: add documentation for gpio-mockup
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Kent Gibson <warthog618@gmail.com>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        linux-doc <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 7, 2020 at 1:53 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Mon, Sep 07, 2020 at 12:26:34PM +0200, Bartosz Golaszewski wrote:
-> > On Mon, Sep 7, 2020 at 11:59 AM Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> wrote:
-> > >
-> > > On Fri, Sep 04, 2020 at 08:15:59PM -0700, Randy Dunlap wrote:
-> > > > On 9/4/20 8:45 AM, Bartosz Golaszewski wrote:
-> > >
-> > > ...
-> > >
-> > > > > +GPIO Testing Driver
-> > > > > +===================
-> > > > > +
-> > > > > +The GPIO Testing Driver (gpio-mockup) provides a way to create simulated GPIO
-> > > > > +chips for testing purposes. There are two ways of configuring the chips exposed
-> > > > > +by the module. The lines can be accessed using the standard GPIO character
-> > > > > +device interface as well as manipulated using the dedicated debugfs directory
-> > > > > +structure.
-> > > >
-> > > > Could configfs be used for this instead of debugfs?
-> > > > debugfs is ad hoc.
-> > >
-> > > Actually sounds like a good idea.
-> > >
-> >
-> > Well, then we can go on and write an entirely new mockup driver
-> > (ditching module params and dropping any backwards compatibility)
-> > because we're already using debugfs for line values.
-> >
-> > How would we pass the device properties to configfs created GPIO chips
-> > anyway? Devices seem to only be created using mkdir. Am I missing
-> > something?
->
-> Same way how USB composite works, no?
->
+QWRkIFlBTUwgc2NoZW1hcyBkb2N1bWVudGF0aW9uIGZvciBHZW4zIFBDSWUgY29udHJvbGxlciBv
+bg0KTWVkaWFUZWsgU29Dcy4NCg0KQWNrZWQtYnk6IFJ5ZGVyIExlZSA8cnlkZXIubGVlQG1lZGlh
+dGVrLmNvbT4NClNpZ25lZC1vZmYtYnk6IEppYW5qdW4gV2FuZyA8amlhbmp1bi53YW5nQG1lZGlh
+dGVrLmNvbT4NCi0tLQ0KIC4uLi9iaW5kaW5ncy9wY2kvbWVkaWF0ZWstcGNpZS1nZW4zLnlhbWwg
+ICAgICB8IDE1OCArKysrKysrKysrKysrKysrKysNCiAxIGZpbGUgY2hhbmdlZCwgMTU4IGluc2Vy
+dGlvbnMoKykNCiBjcmVhdGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2Jp
+bmRpbmdzL3BjaS9tZWRpYXRlay1wY2llLWdlbjMueWFtbA0KDQpkaWZmIC0tZ2l0IGEvRG9jdW1l
+bnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3BjaS9tZWRpYXRlay1wY2llLWdlbjMueWFtbCBi
+L0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9wY2kvbWVkaWF0ZWstcGNpZS1nZW4z
+LnlhbWwNCm5ldyBmaWxlIG1vZGUgMTAwNjQ0DQppbmRleCAwMDAwMDAwMDAwMDAuLjEwOGQyOTI1
+OWMwNQ0KLS0tIC9kZXYvbnVsbA0KKysrIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRp
+bmdzL3BjaS9tZWRpYXRlay1wY2llLWdlbjMueWFtbA0KQEAgLTAsMCArMSwxNTggQEANCisjIFNQ
+RFgtTGljZW5zZS1JZGVudGlmaWVyOiAoR1BMLTIuMCBPUiBCU0QtMi1DbGF1c2UpDQorJVlBTUwg
+MS4yDQorLS0tDQorJGlkOiBodHRwOi8vZGV2aWNldHJlZS5vcmcvc2NoZW1hcy9wY2kvbWVkaWF0
+ZWstcGNpZS1nZW4zLnlhbWwjDQorJHNjaGVtYTogaHR0cDovL2RldmljZXRyZWUub3JnL21ldGEt
+c2NoZW1hcy9jb3JlLnlhbWwjDQorDQordGl0bGU6IEdlbjMgUENJZSBjb250cm9sbGVyIG9uIE1l
+ZGlhVGVrIFNvQ3MNCisNCittYWludGFpbmVyczoNCisgIC0gSmlhbmp1biBXYW5nIDxqaWFuanVu
+LndhbmdAbWVkaWF0ZWsuY29tPg0KKw0KK2FsbE9mOg0KKyAgLSAkcmVmOiAvc2NoZW1hcy9wY2kv
+cGNpLWJ1cy55YW1sIw0KKw0KK3Byb3BlcnRpZXM6DQorICBjb21wYXRpYmxlOg0KKyAgICBvbmVP
+ZjoNCisgICAgICAtIGNvbnN0OiBtZWRpYXRlayxnZW4zLXBjaWUNCisgICAgICAtIGNvbnN0OiBt
+ZWRpYXRlayxtdDgxOTItcGNpZQ0KKw0KKyAgZGV2aWNlX3R5cGU6DQorICAgIGNvbnN0OiBwY2kN
+CisNCisgICIjYWRkcmVzcy1jZWxscyI6DQorICAgIGNvbnN0OiAzDQorDQorICAiI3NpemUtY2Vs
+bHMiOg0KKyAgICBjb25zdDogMg0KKw0KKyAgcmVnOg0KKyAgICBpdGVtczoNCisgICAgICAtIGRl
+c2NyaXB0aW9uOiBDb250cm9sbGVyIGNvbnRyb2wgYW5kIHN0YXR1cyByZWdpc3RlcnMuDQorDQor
+ICByZWctbmFtZXM6DQorICAgIGl0ZW1zOg0KKyAgICAgIC0gY29uc3Q6IHBjaWUtbWFjDQorDQor
+ICBpbnRlcnJ1cHRzOg0KKyAgICBtYXhJdGVtczogMQ0KKw0KKyAgYnVzLXJhbmdlOg0KKyAgICBk
+ZXNjcmlwdGlvbjogUmFuZ2Ugb2YgYnVzIG51bWJlcnMgYXNzb2NpYXRlZCB3aXRoIHRoaXMgY29u
+dHJvbGxlci4NCisNCisgIHJhbmdlczoNCisgICAgbWluSXRlbXM6IDENCisgICAgbWF4SXRlbXM6
+IDgNCisNCisgIHJlc2V0czoNCisgICAgbWluSXRlbXM6IDENCisgICAgbWF4SXRlbXM6IDINCisN
+CisgIHJlc2V0LW5hbWVzOg0KKyAgICBhbnlPZjoNCisgICAgICAtIGNvbnN0OiBtYWMtcnN0DQor
+ICAgICAgLSBjb25zdDogcGh5LXJzdA0KKw0KKyAgY2xvY2tzOg0KKyAgICBtYXhJdGVtczogNQ0K
+Kw0KKyAgYXNzaWduZWQtY2xvY2tzOg0KKyAgICBtYXhJdGVtczogMQ0KKw0KKyAgYXNzaWduZWQt
+Y2xvY2stcGFyZW50czoNCisgICAgbWF4SXRlbXM6IDENCisNCisgIHBoeXM6DQorICAgIG1heEl0
+ZW1zOiAxDQorDQorICBwaHktbmFtZXM6DQorICAgIGNvbnN0OiBwY2llLXBoeQ0KKw0KKyAgJyNp
+bnRlcnJ1cHQtY2VsbHMnOg0KKyAgICBjb25zdDogMQ0KKw0KKyAgaW50ZXJydXB0LW1hcC1tYXNr
+Og0KKyAgICBkZXNjcmlwdGlvbjogU3RhbmRhcmQgUENJIElSUSBtYXBwaW5nIHByb3BlcnRpZXMu
+DQorDQorICBpbnRlcnJ1cHQtbWFwOg0KKyAgICBkZXNjcmlwdGlvbjogU3RhbmRhcmQgUENJIElS
+USBtYXBwaW5nIHByb3BlcnRpZXMuDQorDQorICBsZWdhY3ktaW50ZXJydXB0LWNvbnRyb2xsZXI6
+DQorICAgIGRlc2NyaXB0aW9uOiBJbnRlcnJ1cHQgY29udHJvbGxlciBub2RlIGZvciBoYW5kbGlu
+ZyBsZWdhY3kgUENJIGludGVycnVwdHMuDQorICAgIHR5cGU6IG9iamVjdA0KKyAgICBwcm9wZXJ0
+aWVzOg0KKyAgICAgICIjYWRkcmVzcy1jZWxscyI6DQorICAgICAgICBjb25zdDogMA0KKyAgICAg
+ICIjaW50ZXJydXB0LWNlbGxzIjoNCisgICAgICAgIGNvbnN0OiAxDQorICAgICAgaW50ZXJydXB0
+LWNvbnRyb2xsZXI6IHRydWUNCisNCisgICAgcmVxdWlyZWQ6DQorICAgICAgLSAiI2FkZHJlc3Mt
+Y2VsbHMiDQorICAgICAgLSAiI2ludGVycnVwdC1jZWxscyINCisgICAgICAtIGludGVycnVwdC1j
+b250cm9sbGVyDQorDQorcmVxdWlyZWQ6DQorICAtIGNvbXBhdGlibGUNCisgIC0gZGV2aWNlX3R5
+cGUNCisgIC0gIiNhZGRyZXNzLWNlbGxzIg0KKyAgLSAiI3NpemUtY2VsbHMiDQorICAtIHJlZw0K
+KyAgLSByZWctbmFtZXMNCisgIC0gYnVzLXJhbmdlDQorICAtIGludGVycnVwdHMNCisgIC0gcmFu
+Z2VzDQorICAtIGNsb2Nrcw0KKyAgLSAnI2ludGVycnVwdC1jZWxscycNCisgIC0gaW50ZXJydXB0
+LW1hcA0KKyAgLSBpbnRlcnJ1cHQtbWFwLW1hc2sNCisgIC0gbGVnYWN5LWludGVycnVwdC1jb250
+cm9sbGVyDQorDQorYWRkaXRpb25hbFByb3BlcnRpZXM6IGZhbHNlDQorDQorZXhhbXBsZXM6DQor
+ICAtIHwNCisgICAgI2luY2x1ZGUgPGR0LWJpbmRpbmdzL2ludGVycnVwdC1jb250cm9sbGVyL2Fy
+bS1naWMuaD4NCisgICAgI2luY2x1ZGUgPGR0LWJpbmRpbmdzL2ludGVycnVwdC1jb250cm9sbGVy
+L2lycS5oPg0KKw0KKyAgICBidXMgew0KKyAgICAgICAgI2FkZHJlc3MtY2VsbHMgPSA8Mj47DQor
+ICAgICAgICAjc2l6ZS1jZWxscyA9IDwyPjsNCisNCisgICAgICAgIHBjaWU6IHBjaWVAMTEyMzAw
+MDAgew0KKyAgICAgICAgICAgIGNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ4MTkyLXBjaWUiOw0K
+KyAgICAgICAgICAgIGRldmljZV90eXBlID0gInBjaSI7DQorICAgICAgICAgICAgI2FkZHJlc3Mt
+Y2VsbHMgPSA8Mz47DQorICAgICAgICAgICAgI3NpemUtY2VsbHMgPSA8Mj47DQorICAgICAgICAg
+ICAgcmVnID0gPDB4MDAgMHgxMTIzMDAwMCAweDAwIDB4NDAwMD47DQorICAgICAgICAgICAgcmVn
+LW5hbWVzID0gInBjaWUtbWFjIjsNCisgICAgICAgICAgICBpbnRlcnJ1cHRzID0gPEdJQ19TUEkg
+MjUxIElSUV9UWVBFX0xFVkVMX0hJR0ggMD47DQorICAgICAgICAgICAgYnVzLXJhbmdlID0gPDB4
+MDAgMHhmZj47DQorICAgICAgICAgICAgcmFuZ2VzID0gPDB4ODIwMDAwMDAgMHgwMCAweDEyMDAw
+MDAwIDB4MDAgMHgxMjAwMDAwMCAweDAwIDB4MTAwMDAwMD47DQorICAgICAgICAgICAgY2xvY2tz
+ID0gPCZpbmZyYWNmZyA0MD4sDQorICAgICAgICAgICAgICAgICAgICAgPCZpbmZyYWNmZyA0Mz4s
+DQorICAgICAgICAgICAgICAgICAgICAgPCZpbmZyYWNmZyA5Nz4sDQorICAgICAgICAgICAgICAg
+ICAgICAgPCZpbmZyYWNmZyA5OT4sDQorICAgICAgICAgICAgICAgICAgICAgPCZpbmZyYWNmZyAx
+MTE+Ow0KKyAgICAgICAgICAgIGFzc2lnbmVkLWNsb2NrcyA9IDwmdG9wY2tnZW4gNTA+Ow0KKyAg
+ICAgICAgICAgIGFzc2lnbmVkLWNsb2NrLXBhcmVudHMgPSA8JnRvcGNrZ2VuIDkxPjsNCisNCisg
+ICAgICAgICAgICBwaHlzID0gPCZwY2llcGh5PjsNCisgICAgICAgICAgICBwaHktbmFtZXMgPSAi
+cGNpZS1waHkiOw0KKyAgICAgICAgICAgIHJlc2V0cyA9IDwmaW5mcmFjZmdfcnN0IDA+Ow0KKyAg
+ICAgICAgICAgIHJlc2V0LW5hbWVzID0gInBoeS1yc3QiOw0KKw0KKyAgICAgICAgICAgICNpbnRl
+cnJ1cHQtY2VsbHMgPSA8MT47DQorICAgICAgICAgICAgaW50ZXJydXB0LW1hcC1tYXNrID0gPDAg
+MCAwIDB4Nz47DQorICAgICAgICAgICAgaW50ZXJydXB0LW1hcCA9IDwwIDAgMCAxICZwY2llX2lu
+dGMgMD4sDQorICAgICAgICAgICAgICAgICAgICAgICAgICAgIDwwIDAgMCAyICZwY2llX2ludGMg
+MT4sDQorICAgICAgICAgICAgICAgICAgICAgICAgICAgIDwwIDAgMCAzICZwY2llX2ludGMgMj4s
+DQorICAgICAgICAgICAgICAgICAgICAgICAgICAgIDwwIDAgMCA0ICZwY2llX2ludGMgMz47DQor
+ICAgICAgICAgICAgcGNpZV9pbnRjOiBsZWdhY3ktaW50ZXJydXB0LWNvbnRyb2xsZXIgew0KKyAg
+ICAgICAgICAgICAgICAgICAgICAjYWRkcmVzcy1jZWxscyA9IDwwPjsNCisgICAgICAgICAgICAg
+ICAgICAgICAgI2ludGVycnVwdC1jZWxscyA9IDwxPjsNCisgICAgICAgICAgICAgICAgICAgICAg
+aW50ZXJydXB0LWNvbnRyb2xsZXI7DQorICAgICAgICAgICAgfTsNCisgICAgICAgIH07DQorICAg
+IH07DQotLSANCjIuMjUuMQ0K
 
-OK, so create a new chip directory in configfs, configure it using
-some defined configfs attributes and then finally instantiate it from
-sysfs?
-
-Makes sense and is probably the right way to go. Now the question is:
-is it fine to just entirely remove the previous gpio-mockup? Should we
-keep some backwards compatibility? Should we introduce an entirely new
-module and have a transition period before removing previous
-gpio-mockup?
-
-Also: this is a testing module so to me debugfs is just fine. Is
-configfs considered stable ABI like sysfs?
-
-Bart
