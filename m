@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F37625FE1F
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 18:08:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A86F25FE1A
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 18:06:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729960AbgIGQIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 12:08:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58106 "EHLO mail.kernel.org"
+        id S1730354AbgIGQGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 12:06:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58140 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730284AbgIGQGB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 12:06:01 -0400
+        id S1730308AbgIGQGE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 12:06:04 -0400
 Received: from localhost.localdomain (236.31.169.217.in-addr.arpa [217.169.31.236])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C0ABD21789;
-        Mon,  7 Sep 2020 16:05:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C379E2080A;
+        Mon,  7 Sep 2020 16:06:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599494761;
-        bh=u+k7kNV35vshUGOv/l53aOVXGrjP+5BmSgodlKTxJ1A=;
+        s=default; t=1599494763;
+        bh=YlOm7PO2xV5e/CZRpqTxMonNUO2cZ/+UjCy+doAEfAg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EB1zGfdI/2Irq6huzU1qnpnAJgCC56yqMX8YrqhjMhF+71NiOtRxfBYvFWR0CL9rv
-         ELZQCy6nONVEkOamdDCy0xQI+Ax0137BrSgVFoc1OJiYCCb/7uEWL6Uw8GHMGm3E+l
-         r39M9YH667xes+vMr0eqvXmUfhUS/3GN+R6WJSYo=
+        b=Xnbj6ZRhSgaPvGGBub3MrAyWTkZiPioVzI7sXjMEgkC+mgkV+C3dOytGiNhVEAO88
+         bi2AtxyVF2IW5r1V6GemH4n9KKxZEvkD1ifmxK2VlYG1emVseqakSUNJifyvsjiY15
+         7CU2ai/k6vBDXrw9BSYLs0zb9uMwkJRYq+tNmChw=
 From:   Will Deacon <will@kernel.org>
-To:     robin.murphy@arm.com, Zenghui Yu <yuzenghui@huawei.com>
+To:     lorenzo.pieralisi@arm.com, sudeep.holla@arm.com,
+        Zenghui Yu <yuzenghui@huawei.com>, guohanjun@huawei.com
 Cc:     catalin.marinas@arm.com, kernel-team@android.com,
         Will Deacon <will@kernel.org>, wanghaibin.wang@huawei.com,
-        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] iommu/arm-smmu-v3: Fix l1 stream table size in the error message
-Date:   Mon,  7 Sep 2020 17:05:38 +0100
-Message-Id: <159948439400.581956.11158746781131068189.b4-ty@kernel.org>
+        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/2] ACPI/IORT: Code cleanups
+Date:   Mon,  7 Sep 2020 17:05:39 +0100
+Message-Id: <159948518636.584310.6195489797624791903.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200826141758.341-1-yuzenghui@huawei.com>
-References: <20200826141758.341-1-yuzenghui@huawei.com>
+In-Reply-To: <20200818063625.980-1-yuzenghui@huawei.com>
+References: <20200818063625.980-1-yuzenghui@huawei.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -42,19 +43,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 26 Aug 2020 22:17:58 +0800, Zenghui Yu wrote:
-> The actual size of level-1 stream table is l1size. This looks like an
-> oversight on commit d2e88e7c081ef ("iommu/arm-smmu: Fix LOG2SIZE setting
-> for 2-level stream tables") which forgot to update the @size in error
-> message as well.
+On Tue, 18 Aug 2020 14:36:23 +0800, Zenghui Yu wrote:
+> * From v1 [1]:
+>   - As pointed out by Hanjun, remove two now unused inline functions.
+>     Compile tested with CONFIG_IOMMU_API is not selected.
 > 
-> As memory allocation failure is already bad enough, nothing worse would
-> happen. But let's be careful.
+> [1] https://lore.kernel.org/r/20200817105946.1511-1-yuzenghui@huawei.com
+> 
+> Zenghui Yu (2):
+>   ACPI/IORT: Drop the unused @ops of iort_add_device_replay()
+>   ACPI/IORT: Remove the unused inline functions
+> 
+> [...]
 
-Applied to will (for-joerg/arm-smmu/updates), thanks!
+Applied to arm64 (for-next/acpi), thanks!
 
-[1/1] iommu/arm-smmu-v3: Fix l1 stream table size in the error message
-      https://git.kernel.org/will/c/dc898eb84b25
+[1/2] ACPI/IORT: Drop the unused @ops of iort_add_device_replay()
+      https://git.kernel.org/arm64/c/1ab64cf81489
+[2/2] ACPI/IORT: Remove the unused inline functions
+      https://git.kernel.org/arm64/c/c2bea7a1a1c0
 
 Cheers,
 -- 
