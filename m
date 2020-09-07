@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 958342604F3
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 20:57:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8C502604EC
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 20:56:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730348AbgIGS5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 14:57:01 -0400
-Received: from mx0a-002e3701.pphosted.com ([148.163.147.86]:61166 "EHLO
+        id S1730261AbgIGS4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 14:56:41 -0400
+Received: from mx0a-002e3701.pphosted.com ([148.163.147.86]:53310 "EHLO
         mx0a-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729429AbgIGSzH (ORCPT
+        by vger.kernel.org with ESMTP id S1729887AbgIGS4I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 14:55:07 -0400
+        Mon, 7 Sep 2020 14:56:08 -0400
 Received: from pps.filterd (m0134421.ppops.net [127.0.0.1])
-        by mx0b-002e3701.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 087IoIJs010917;
+        by mx0b-002e3701.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 087IoVCc011081;
         Mon, 7 Sep 2020 18:54:33 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=message-id : date : from
  : to : cc : subject : references : mime-version : content-type; s=pps0720;
- bh=jhgn6CIUTGSk9V7LFzw7oFegTAqikNVinvzMFHWF2A4=;
- b=OJ/Y8jx90+jmg4bVit6ACINQ7cNePuXpAWMlOqoVwa2uOEv+stAG698y8PnE9vATn3JJ
- pM2KGXUIgNKjrzG186BCyQaiqEP3LH48hGlSqNnEZwjv9Mz5V9hfIn+pYVf82oOF+eei
- GNusZCj8EVg8x/Fo+UbL3/KWvvjAcunJ+cNmrsHYiKHCPc3SKIf/tI5l6nOGCF3aSsyc
- +nho4/6YgqzAzfHdk/lGbgm/ziUYVy0G3cDC67qNbtoF9t8mQq4UpSqxJ96ZkQb+X2xE
- Rpk/9aVrhWi6NhMjR8moZLWAmHHYk13h+qSA3nUeQOsBL1k5s+Wd9nXjjDAfIxIGGm12 mw== 
-Received: from g4t3425.houston.hpe.com (g4t3425.houston.hpe.com [15.241.140.78])
-        by mx0b-002e3701.pphosted.com with ESMTP id 33cm1x4r5b-1
+ bh=LB8gDcP5xT5vI1DQi4l4ZXWlIg0XZilz2Y2Ki/ifv2Q=;
+ b=DtKHEcqECbLk6WLQAnOD0FzZiGg5VI+uHI5g9lSClYAxCQcPir9wZAt3uk4GzjVSqgnf
+ /QXu8pRcmPgb1FZrC8953FbfPJ4rfDCiXuFEB/dEnHDRWvybvel3ma5p83ExRvML+nCn
+ +FBTSvtg6CvuNx3rMvc9pacrQI2pFMl002fXmCuNikVdspE7ykhWX4peNl8ASzgViByY
+ io1SGep6T/NE7t9oTV6B2ZAumoOX2TFfsKiMO06pNY4M2o0DeyXaFk/wwSP1U+ovckYP
+ Fg2nv+Q07QgMe1wVhuBifAumFpXhDOjFl0QEmicFT98ixXXIZw+064So4+3TickNHWdG yA== 
+Received: from g2t2354.austin.hpe.com (g2t2354.austin.hpe.com [15.233.44.27])
+        by mx0b-002e3701.pphosted.com with ESMTP id 33cm1x4r57-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 07 Sep 2020 18:54:33 +0000
+        Mon, 07 Sep 2020 18:54:32 +0000
 Received: from dog.eag.rdlabs.hpecorp.net (dog.eag.rdlabs.hpecorp.net [128.162.243.181])
-        by g4t3425.houston.hpe.com (Postfix) with ESMTP id 458819A;
+        by g2t2354.austin.hpe.com (Postfix) with ESMTP id 4F331AF;
         Mon,  7 Sep 2020 18:54:31 +0000 (UTC)
 Received: by dog.eag.rdlabs.hpecorp.net (Postfix, from userid 5508)
-        id A567230060F09; Mon,  7 Sep 2020 13:54:30 -0500 (CDT)
-Message-ID: <20200907185430.589444060@hpe.com>
+        id BC63230060F0B; Mon,  7 Sep 2020 13:54:30 -0500 (CDT)
+Message-ID: <20200907185430.685975987@hpe.com>
 User-Agent: quilt/0.66
-Date:   Mon, 07 Sep 2020 13:54:32 -0500
+Date:   Mon, 07 Sep 2020 13:54:33 -0500
 From:   Mike Travis <mike.travis@hpe.com>
 To:     Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
@@ -53,7 +53,7 @@ Cc:     Dimitri Sivanich <dimitri.sivanich@hpe.com>,
         Jian Cai <caij2003@gmail.com>,
         Vitaly Kuznetsov <vkuznets@redhat.com>,
         linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
-Subject: [PATCH 02/12] x86/platform/uv: Remove SCIR MMR references for UVY systems.
+Subject: [PATCH 03/12] x86/platform/uv: Adjust references in UV kernel modules
 References: <20200907185430.363197758@hpe.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-15
@@ -61,7 +61,7 @@ X-HPE-SCL: -1
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
  definitions=2020-09-07_11:2020-09-07,2020-09-07 signatures=0
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- malwarescore=0 phishscore=0 lowpriorityscore=0 spamscore=0 mlxlogscore=904
+ malwarescore=0 phishscore=0 lowpriorityscore=0 spamscore=0 mlxlogscore=718
  bulkscore=0 priorityscore=1501 adultscore=0 clxscore=1015 mlxscore=0
  suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2006250000 definitions=main-2009070181
@@ -70,221 +70,197 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-UV class systems no longer use System Controller for monitoring of CPU
-activity provided by this driver.  Other methods have been developed
-for BIOS and the management controller (BMC).  This patch removes that
-supporting code.
+There is a symbol clash from the auto-generated uv_mmrs.h file that
+clashes with code in the UV kernel modules (is_uv() is the symbol).
+Change those prior to the symbol clash so as to not cause a compile error.
 
 Signed-off-by: Mike Travis <mike.travis@hpe.com>
 Reviewed-by: Dimitri Sivanich <dimitri.sivanich@hpe.com>
+Reviewed-by: Steve Wahl <steve.wahl@hpe.com>
 ---
- arch/x86/include/asm/uv/uv_hub.h   |   46 ++------------------
- arch/x86/kernel/apic/x2apic_uv_x.c |   85 -------------------------------------
- 2 files changed, 7 insertions(+), 124 deletions(-)
+ drivers/misc/sgi-xp/xp.h            |   11 ++++++-----
+ drivers/misc/sgi-xp/xp_main.c       |    7 ++++---
+ drivers/misc/sgi-xp/xp_uv.c         |    9 ++++++---
+ drivers/misc/sgi-xp/xpc_main.c      |    9 +++++----
+ drivers/misc/sgi-xp/xpc_partition.c |    5 +++--
+ drivers/misc/sgi-xp/xpnet.c         |    5 +++--
+ 6 files changed, 27 insertions(+), 19 deletions(-)
 
---- linux.orig/arch/x86/include/asm/uv/uv_hub.h
-+++ linux/arch/x86/include/asm/uv/uv_hub.h
-@@ -5,7 +5,8 @@
+--- linux.orig/drivers/misc/sgi-xp/xp.h
++++ linux/drivers/misc/sgi-xp/xp.h
+@@ -3,7 +3,8 @@
+  * License.  See the file "COPYING" in the main directory of this archive
+  * for more details.
   *
-  * SGI UV architectural definitions
-  *
-- * Copyright (C) 2007-2014 Silicon Graphics, Inc. All rights reserved.
-+ * Copyright (C) 2018-2020 Hewlett Packard Enterprise Development LP
-+ * Copyright (C) 2007-2017 Silicon Graphics, Inc. All rights reserved.
+- * Copyright (C) 2004-2008 Silicon Graphics, Inc. All rights reserved.
++ * Copyright (c) 2018-2020 Hewlett Packard Enterprise Development LP
++ * Copyright (c) 2008-2017 Silicon Graphics, Inc.  All Rights Reserved.
   */
  
- #ifndef _ASM_X86_UV_UV_HUB_H
-@@ -129,17 +130,6 @@
-  */
- #define UV_MAX_NASID_VALUE	(UV_MAX_NUMALINK_BLADES * 2)
- 
--/* System Controller Interface Reg info */
--struct uv_scir_s {
--	struct timer_list timer;
--	unsigned long	offset;
--	unsigned long	last;
--	unsigned long	idle_on;
--	unsigned long	idle_off;
--	unsigned char	state;
--	unsigned char	enabled;
--};
--
- /* GAM (globally addressed memory) range table */
- struct uv_gam_range_s {
- 	u32	limit;		/* PA bits 56:26 (GAM_RANGE_SHFT) */
-@@ -191,16 +181,13 @@ struct uv_hub_info_s {
- struct uv_cpu_info_s {
- 	void			*p_uv_hub_info;
- 	unsigned char		blade_cpu_id;
--	struct uv_scir_s	scir;
-+	void			*reserved;
- };
- DECLARE_PER_CPU(struct uv_cpu_info_s, __uv_cpu_info);
- 
- #define uv_cpu_info		this_cpu_ptr(&__uv_cpu_info)
- #define uv_cpu_info_per(cpu)	(&per_cpu(__uv_cpu_info, cpu))
- 
--#define	uv_scir_info		(&uv_cpu_info->scir)
--#define	uv_cpu_scir_info(cpu)	(&uv_cpu_info_per(cpu)->scir)
--
- /* Node specific hub common info struct */
- extern void **__uv_hub_info_list;
- static inline struct uv_hub_info_s *uv_hub_info_list(int node)
-@@ -297,9 +284,9 @@ union uvh_apicid {
- #define UV3_GLOBAL_MMR32_SIZE		(32UL * 1024 * 1024)
- 
- #define UV4_LOCAL_MMR_BASE		0xfa000000UL
--#define UV4_GLOBAL_MMR32_BASE		0xfc000000UL
-+#define UV4_GLOBAL_MMR32_BASE		0
- #define UV4_LOCAL_MMR_SIZE		(32UL * 1024 * 1024)
--#define UV4_GLOBAL_MMR32_SIZE		(16UL * 1024 * 1024)
-+#define UV4_GLOBAL_MMR32_SIZE		0
- 
- #define UV_LOCAL_MMR_BASE		(				\
- 					is_uv2_hub() ? UV2_LOCAL_MMR_BASE : \
-@@ -772,29 +759,6 @@ DECLARE_PER_CPU(struct uv_cpu_nmi_s, uv_
- #define	UV_NMI_STATE_DUMP		2
- #define	UV_NMI_STATE_DUMP_DONE		3
- 
--/* Update SCIR state */
--static inline void uv_set_scir_bits(unsigned char value)
--{
--	if (uv_scir_info->state != value) {
--		uv_scir_info->state = value;
--		uv_write_local_mmr8(uv_scir_info->offset, value);
--	}
--}
--
--static inline unsigned long uv_scir_offset(int apicid)
--{
--	return SCIR_LOCAL_MMR_BASE | (apicid & 0x3f);
--}
--
--static inline void uv_set_cpu_scir_bits(int cpu, unsigned char value)
--{
--	if (uv_cpu_scir_info(cpu)->state != value) {
--		uv_write_global_mmr8(uv_cpu_to_pnode(cpu),
--				uv_cpu_scir_info(cpu)->offset, value);
--		uv_cpu_scir_info(cpu)->state = value;
--	}
--}
--
  /*
-  * Get the minimum revision number of the hub chips within the partition.
-  * (See UVx_HUB_REVISION_BASE above for specific values.)
---- linux.orig/arch/x86/kernel/apic/x2apic_uv_x.c
-+++ linux/arch/x86/kernel/apic/x2apic_uv_x.c
-@@ -5,7 +5,8 @@
+@@ -17,11 +18,11 @@
+ 
+ #if defined CONFIG_X86_UV || defined CONFIG_IA64_SGI_UV
+ #include <asm/uv/uv.h>
+-#define is_uv()		is_uv_system()
++#define is_uv_sys()		is_uv_system()
+ #endif
+ 
+-#ifndef is_uv
+-#define is_uv()		0
++#ifndef is_uv_sys
++#define is_uv_sys()		0
+ #endif
+ 
+ #ifdef USE_DBUG_ON
+@@ -79,7 +80,7 @@
+ 
+ #define XPC_MSG_SIZE(_payload_size) \
+ 				ALIGN(XPC_MSG_HDR_MAX_SIZE + (_payload_size), \
+-				      is_uv() ? 64 : 128)
++				      is_uv_sys() ? 64 : 128)
+ 
+ 
+ /*
+--- linux.orig/drivers/misc/sgi-xp/xp_main.c
++++ linux/drivers/misc/sgi-xp/xp_main.c
+@@ -3,7 +3,8 @@
+  * License.  See the file "COPYING" in the main directory of this archive
+  * for more details.
   *
-  * SGI UV APIC functions (note: not an Intel compatible APIC)
-  *
-- * Copyright (C) 2007-2014 Silicon Graphics, Inc. All rights reserved.
-+ * Copyright (C) 2018-2020 Hewlett Packard Enterprise Development LP
-+ * Copyright (C) 2007-2017 Silicon Graphics, Inc. All rights reserved.
+- * Copyright (c) 2004-2008 Silicon Graphics, Inc.  All Rights Reserved.
++ * Copyright (c) 2018-2020 Hewlett Packard Enterprise Development LP
++ * Copyright (c) 2008-2017 Silicon Graphics, Inc.  All Rights Reserved.
   */
- #include <linux/crash_dump.h>
- #include <linux/cpuhotplug.h>
-@@ -909,85 +910,6 @@ static __init void uv_rtc_init(void)
- 	}
+ 
+ /*
+@@ -233,7 +234,7 @@ xp_init(void)
+ 	for (ch_number = 0; ch_number < XPC_MAX_NCHANNELS; ch_number++)
+ 		mutex_init(&xpc_registrations[ch_number].mutex);
+ 
+-	if (is_uv())
++	if (is_uv_sys())
+ 		ret = xp_init_uv();
+ 	else
+ 		ret = 0;
+@@ -249,7 +250,7 @@ module_init(xp_init);
+ void __exit
+ xp_exit(void)
+ {
+-	if (is_uv())
++	if (is_uv_sys())
+ 		xp_exit_uv();
  }
  
--/*
-- * percpu heartbeat timer
-- */
--static void uv_heartbeat(struct timer_list *timer)
--{
--	unsigned char bits = uv_scir_info->state;
--
--	/* Flip heartbeat bit: */
--	bits ^= SCIR_CPU_HEARTBEAT;
--
--	/* Is this CPU idle? */
--	if (idle_cpu(raw_smp_processor_id()))
--		bits &= ~SCIR_CPU_ACTIVITY;
--	else
--		bits |= SCIR_CPU_ACTIVITY;
--
--	/* Update system controller interface reg: */
--	uv_set_scir_bits(bits);
--
--	/* Enable next timer period: */
--	mod_timer(timer, jiffies + SCIR_CPU_HB_INTERVAL);
--}
--
--static int uv_heartbeat_enable(unsigned int cpu)
--{
--	while (!uv_cpu_scir_info(cpu)->enabled) {
--		struct timer_list *timer = &uv_cpu_scir_info(cpu)->timer;
--
--		uv_set_cpu_scir_bits(cpu, SCIR_CPU_HEARTBEAT|SCIR_CPU_ACTIVITY);
--		timer_setup(timer, uv_heartbeat, TIMER_PINNED);
--		timer->expires = jiffies + SCIR_CPU_HB_INTERVAL;
--		add_timer_on(timer, cpu);
--		uv_cpu_scir_info(cpu)->enabled = 1;
--
--		/* Also ensure that boot CPU is enabled: */
--		cpu = 0;
--	}
--	return 0;
--}
--
--#ifdef CONFIG_HOTPLUG_CPU
--static int uv_heartbeat_disable(unsigned int cpu)
--{
--	if (uv_cpu_scir_info(cpu)->enabled) {
--		uv_cpu_scir_info(cpu)->enabled = 0;
--		del_timer(&uv_cpu_scir_info(cpu)->timer);
--	}
--	uv_set_cpu_scir_bits(cpu, 0xff);
--	return 0;
--}
--
--static __init void uv_scir_register_cpu_notifier(void)
--{
--	cpuhp_setup_state_nocalls(CPUHP_AP_ONLINE_DYN, "x86/x2apic-uvx:online",
--				  uv_heartbeat_enable, uv_heartbeat_disable);
--}
--
--#else /* !CONFIG_HOTPLUG_CPU */
--
--static __init void uv_scir_register_cpu_notifier(void)
--{
--}
--
--static __init int uv_init_heartbeat(void)
--{
--	int cpu;
--
--	if (is_uv_system()) {
--		for_each_online_cpu(cpu)
--			uv_heartbeat_enable(cpu);
--	}
--
--	return 0;
--}
--
--late_initcall(uv_init_heartbeat);
--
--#endif /* !CONFIG_HOTPLUG_CPU */
--
- /* Direct Legacy VGA I/O traffic to designated IOH */
- static int uv_set_vga_state(struct pci_dev *pdev, bool decode, unsigned int command_bits, u32 flags)
+--- linux.orig/drivers/misc/sgi-xp/xp_uv.c
++++ linux/drivers/misc/sgi-xp/xp_uv.c
+@@ -3,7 +3,8 @@
+  * License.  See the file "COPYING" in the main directory of this archive
+  * for more details.
+  *
+- * Copyright (c) 2008 Silicon Graphics, Inc.  All Rights Reserved.
++ * Copyright (c) 2018-2020 Hewlett Packard Enterprise Development LP
++ * Copyright (c) 2008-2017 Silicon Graphics, Inc.  All Rights Reserved.
+  */
+ 
+ /*
+@@ -148,7 +149,9 @@ xp_restrict_memprotect_uv(unsigned long
+ enum xp_retval
+ xp_init_uv(void)
  {
-@@ -1517,8 +1439,6 @@ static void __init uv_system_init_hub(vo
- 			uv_hub_info_list(numa_node_id)->pnode = pnode;
- 		else if (uv_cpu_hub_info(cpu)->pnode == 0xffff)
- 			uv_cpu_hub_info(cpu)->pnode = pnode;
--
--		uv_cpu_scir_info(cpu)->offset = uv_scir_offset(apicid);
- 	}
+-	BUG_ON(!is_uv());
++	WARN_ON(!is_uv_sys());
++	if (!is_uv_sys())
++		return xpUnsupported;
  
- 	for_each_node(nodeid) {
-@@ -1547,7 +1467,6 @@ static void __init uv_system_init_hub(vo
+ 	xp_max_npartitions = XP_MAX_NPARTITIONS_UV;
+ #ifdef CONFIG_X86
+@@ -168,5 +171,5 @@ xp_init_uv(void)
+ void
+ xp_exit_uv(void)
+ {
+-	BUG_ON(!is_uv());
++	WARN_ON(!is_uv_sys());
+ }
+--- linux.orig/drivers/misc/sgi-xp/xpc_main.c
++++ linux/drivers/misc/sgi-xp/xpc_main.c
+@@ -3,7 +3,8 @@
+  * License.  See the file "COPYING" in the main directory of this archive
+  * for more details.
+  *
+- * Copyright (c) 2004-2009 Silicon Graphics, Inc.  All Rights Reserved.
++ * Copyright (c) 2018-2020 Hewlett Packard Enterprise Development LP
++ * Copyright (c) 2008-2017 Silicon Graphics, Inc.  All Rights Reserved.
+  */
  
- 	uv_nmi_setup();
- 	uv_cpu_init();
--	uv_scir_register_cpu_notifier();
- 	uv_setup_proc_files(0);
+ /*
+@@ -1043,7 +1044,7 @@ xpc_do_exit(enum xp_retval reason)
  
- 	/* Register Legacy VGA I/O redirection handler: */
+ 	xpc_teardown_partitions();
+ 
+-	if (is_uv())
++	if (is_uv_sys())
+ 		xpc_exit_uv();
+ }
+ 
+@@ -1226,7 +1227,7 @@ xpc_init(void)
+ 	dev_set_name(xpc_part, "part");
+ 	dev_set_name(xpc_chan, "chan");
+ 
+-	if (is_uv()) {
++	if (is_uv_sys()) {
+ 		ret = xpc_init_uv();
+ 
+ 	} else {
+@@ -1312,7 +1313,7 @@ out_2:
+ 
+ 	xpc_teardown_partitions();
+ out_1:
+-	if (is_uv())
++	if (is_uv_sys())
+ 		xpc_exit_uv();
+ 	return ret;
+ }
+--- linux.orig/drivers/misc/sgi-xp/xpc_partition.c
++++ linux/drivers/misc/sgi-xp/xpc_partition.c
+@@ -3,7 +3,8 @@
+  * License.  See the file "COPYING" in the main directory of this archive
+  * for more details.
+  *
+- * Copyright (c) 2004-2008 Silicon Graphics, Inc.  All Rights Reserved.
++ * Copyright (c) 2018-2020 Hewlett Packard Enterprise Development LP
++ * Copyright (c) 2008-2017 Silicon Graphics, Inc.  All Rights Reserved.
+  */
+ 
+ /*
+@@ -433,7 +434,7 @@ xpc_discovery(void)
+ 	 */
+ 	region_size = xp_region_size;
+ 
+-	if (is_uv())
++	if (is_uv_sys())
+ 		max_regions = 256;
+ 	else {
+ 		max_regions = 64;
+--- linux.orig/drivers/misc/sgi-xp/xpnet.c
++++ linux/drivers/misc/sgi-xp/xpnet.c
+@@ -3,7 +3,8 @@
+  * License.  See the file "COPYING" in the main directory of this archive
+  * for more details.
+  *
+- * Copyright (C) 1999-2009 Silicon Graphics, Inc. All rights reserved.
++ * Copyright (c) 2018-2020 Hewlett Packard Enterprise Development LP
++ * Copyright (c) 2008-2017 Silicon Graphics, Inc.  All Rights Reserved.
+  */
+ 
+ /*
+@@ -515,7 +516,7 @@ xpnet_init(void)
+ {
+ 	int result;
+ 
+-	if (!is_uv())
++	if (!is_uv_sys())
+ 		return -ENODEV;
+ 
+ 	dev_info(xpnet, "registering network device %s\n", XPNET_DEVICE_NAME);
 
