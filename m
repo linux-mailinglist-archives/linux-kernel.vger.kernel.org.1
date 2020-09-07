@@ -2,87 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAB4025FCC3
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 17:13:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9CC025FC95
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 17:03:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730102AbgIGPNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 11:13:45 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:41628 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730048AbgIGOw2 (ORCPT
+        id S1730096AbgIGPDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 11:03:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47130 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729890AbgIGOzG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 10:52:28 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 087EqOTj083979;
-        Mon, 7 Sep 2020 09:52:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1599490344;
-        bh=maV1HnxzUqcAea8SA8agGpNMSixjUoS/2oLuG+aMCVM=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=eiHKKSqzh+8nGrh8IHiCbgINb30UHAWojxqd9w622NuQ9AhmeS4m37ibjCgU1d6fI
-         AwPjQZprYih03rAXP0ui+KVKJMYbhpxiFRZ1N6EOmLu/cAeknGOc2JwEUFzmf0xz7r
-         M11MYP7Z4wpE9EBSe6fcH5iX5BNCQyL/XDPeqtNw=
-Received: from DLEE106.ent.ti.com (dlee106.ent.ti.com [157.170.170.36])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 087EqOQ1128161
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 7 Sep 2020 09:52:24 -0500
-Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 7 Sep
- 2020 09:52:24 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 7 Sep 2020 09:52:24 -0500
-Received: from lta0400828a.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 087EqEEO010923;
-        Mon, 7 Sep 2020 09:52:22 -0500
-From:   Roger Quadros <rogerq@ti.com>
-To:     <t-kristo@ti.com>, <nm@ti.com>
-CC:     <robh+dt@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <nsekhar@ti.com>,
-        <kishon@ti.com>, Roger Quadros <rogerq@ti.com>
-Subject: [PATCH v2 3/6] arm64: dts: ti: k3-j7200-main.dtsi: Add USB to SERDES lane MUX
-Date:   Mon, 7 Sep 2020 17:52:10 +0300
-Message-ID: <20200907145213.30788-4-rogerq@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200907145213.30788-1-rogerq@ti.com>
-References: <20200907145213.30788-1-rogerq@ti.com>
+        Mon, 7 Sep 2020 10:55:06 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 641C8C061573;
+        Mon,  7 Sep 2020 07:55:05 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id x23so4704764wmi.3;
+        Mon, 07 Sep 2020 07:55:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=DA8mt+a8EH1CC0yZ7uKHeWsCnJnXRPDo9uEB8E8AISY=;
+        b=jFT4wvP4T3fVEUAycW3J7ySI3oeMadWmVlEgPe16Etc1FgD6zPz11FETURPhEt3Ui+
+         AblqeWlgy5lQMqY77I0ve+J8GDpmDAKJgMP6EWyZL53yTSzWzfU16GUW5b81jacyOwjv
+         amURSBMkw6/UD0ViPggP2+fdmVc6GecyAd6SrZeugqgtjyej0onZiXuTL88DKEcXFR+U
+         8a/27hfxsU1gr2lCU9JsTNPa6f4kiEnneaj1CiYHHn+kyxLMiOlLOTKJcDkzDud5CCaE
+         ovDBb3msvBXQUcvy6N8puGw3bg3b29ufyAitgZmT80ip7Yj6GF29zZtEIUfd8ueasHlQ
+         70YA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DA8mt+a8EH1CC0yZ7uKHeWsCnJnXRPDo9uEB8E8AISY=;
+        b=oWlsDgu1Bnr8Q0yy9tzREvKRdC8irbBJ+UtehwtHXNsoZM75iv21meAHVQ3CXwkOSE
+         j9W9GUaO7KMcvUtwIoU1RWGdipJ161iqjgezoFTa4EgoF/kmumiYj8q5PX5D05pFgePC
+         pvVra13VFxTR860sEktKK4gb/Xo+KnkJSDd8bt001oSWeDPRKzP+1XGeEXtdWXSya2H1
+         9Ii6/qoHcBxgSUKoIkzWYKtyFmOougRRL3PcAoenyEccwry59LEWhXIKf0fvgiNPvMUp
+         npw7GQPmyyOljzIlgtaU75BDirf9sHWc/QVlLkGsxgQdnN3AzuMrqEkv/6qiJigIX/Km
+         iAvw==
+X-Gm-Message-State: AOAM530bhP8Nt69U5LFlo5Gy/waODNAiWcpZ42MWbyIK2Q6MtUtfO1Hk
+        IZAaROl+MRLOS3rKXbnyieC2hjaNMQo=
+X-Google-Smtp-Source: ABdhPJxIvaKTAJnzoWVfazf4Iteh4NvH9jeyGHHLlpYv+NMm5ePWS4z5SNxtQRZ0aA/+HOhK6ZkXKw==
+X-Received: by 2002:a7b:c387:: with SMTP id s7mr20872656wmj.171.1599490503785;
+        Mon, 07 Sep 2020 07:55:03 -0700 (PDT)
+Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
+        by smtp.googlemail.com with ESMTPSA id g186sm8893629wmg.25.2020.09.07.07.55.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Sep 2020 07:55:02 -0700 (PDT)
+Date:   Mon, 7 Sep 2020 16:55:01 +0200
+From:   Corentin Labbe <clabbe.montjoie@gmail.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+Subject: Re: [PATCH] crypto: sun4i-ss - Fix SHA1 hash on A33-variant with BE
+ CPU
+Message-ID: <20200907145501.GB11894@Red>
+References: <202009061621.J89kO43Q%lkp@intel.com>
+ <20200907062400.GA15841@gondor.apana.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200907062400.GA15841@gondor.apana.org.au>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The USB controller can be connected to one of the 2 lanes
-of SERDES0 using a MUX. Add a MUX controller node for that.
+On Mon, Sep 07, 2020 at 04:24:00PM +1000, Herbert Xu wrote:
+> On Sun, Sep 06, 2020 at 04:52:24PM +0800, kernel test robot wrote:
+> >
+> > >> drivers/crypto/allwinner/sun4i-ss/sun4i-ss-hash.c:483:35: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [assigned] [usertype] v @@     got restricted __le32 [usertype] @@
+> >    drivers/crypto/allwinner/sun4i-ss/sun4i-ss-hash.c:483:35: sparse:     expected unsigned int [assigned] [usertype] v
+> >    drivers/crypto/allwinner/sun4i-ss/sun4i-ss-hash.c:483:35: sparse:     got restricted __le32 [usertype]
+> >    drivers/crypto/allwinner/sun4i-ss/sun4i-ss-hash.c:485:35: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [assigned] [usertype] v @@     got restricted __be32 [usertype] @@
+> >    drivers/crypto/allwinner/sun4i-ss/sun4i-ss-hash.c:485:35: sparse:     expected unsigned int [assigned] [usertype] v
+> >    drivers/crypto/allwinner/sun4i-ss/sun4i-ss-hash.c:485:35: sparse:     got restricted __be32 [usertype]
+> >    drivers/crypto/allwinner/sun4i-ss/sun4i-ss-hash.c:490:27: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [addressable] [assigned] [usertype] v @@     got restricted __le32 [usertype] @@
+> >    drivers/crypto/allwinner/sun4i-ss/sun4i-ss-hash.c:490:27: sparse:     expected unsigned int [addressable] [assigned] [usertype] v
+> >    drivers/crypto/allwinner/sun4i-ss/sun4i-ss-hash.c:490:27: sparse:     got restricted __le32 [usertype]
+> 
+> This appears to be a genuine bug, on big-endian CPUs at least.
+> 
+> ---8<---
+> When the hash is written out on the A33 variant, it is incorrectly
+> swabbed on big-endian CPUs, when it should simply be written out as
+> is because it's already in the right format.  This was caught by
+> sparse warnings.
+> 
+> Instead of using cpu_to_Xe32 followed by a memcpy, this patch
+> converts the final hash write to use put_unaligned instead.  This
+> simplifies the code and makes the A33 variant handling a lot clearer.
+> 
+> This patch also fixes the incorrect endianness marking on wb,
+> although this should have no effect in the genereated code.
+> 
+> Fixes: 1e02e6fbdadb ("crypto: sun4i-ss - add the A33 variant of SS")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+> 
+> diff --git a/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-hash.c b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-hash.c
+> index dc35edd90034..84f7921de577 100644
+> --- a/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-hash.c
+> +++ b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-hash.c
+> @@ -9,6 +9,7 @@
+>   * You could find the datasheet in Documentation/arm/sunxi.rst
+>   */
+>  #include "sun4i-ss.h"
+> +#include <asm/unaligned.h>
+>  #include <linux/scatterlist.h>
+>  
+>  /* This is a totally arbitrary value */
+> @@ -196,7 +197,7 @@ static int sun4i_hash(struct ahash_request *areq)
+>  	struct sg_mapping_iter mi;
+>  	int in_r, err = 0;
+>  	size_t copied = 0;
+> -	__le32 wb = 0;
+> +	u32 wb = 0;
+>  
+>  	dev_dbg(ss->dev, "%s %s bc=%llu len=%u mode=%x wl=%u h0=%0x",
+>  		__func__, crypto_tfm_alg_name(areq->base.tfm),
+> @@ -408,7 +409,7 @@ static int sun4i_hash(struct ahash_request *areq)
+>  
+>  		nbw = op->len - 4 * nwait;
+>  		if (nbw) {
+> -			wb = cpu_to_le32(*(u32 *)(op->buf + nwait * 4));
+> +			wb = le32_to_cpup((__le32 *)(op->buf + nwait * 4));
+>  			wb &= GENMASK((nbw * 8) - 1, 0);
+>  
+>  			op->byte_count += nbw;
+> @@ -417,7 +418,7 @@ static int sun4i_hash(struct ahash_request *areq)
+>  
+>  	/* write the remaining bytes of the nbw buffer */
+>  	wb |= ((1 << 7) << (nbw * 8));
+> -	bf[j++] = le32_to_cpu(wb);
+> +	((__le32 *)bf)[j++] = cpu_to_le32(wb);
+>  
+>  	/*
+>  	 * number of space to pad to obtain 64o minus 8(size) minus 4 (final 1)
+> @@ -479,16 +480,16 @@ static int sun4i_hash(struct ahash_request *areq)
+>  	/* Get the hash from the device */
+>  	if (op->mode == SS_OP_SHA1) {
+>  		for (i = 0; i < 5; i++) {
+> +			v = readl(ss->base + SS_MD0 + i * 4);
+>  			if (ss->variant->sha1_in_be)
+> -				v = cpu_to_le32(readl(ss->base + SS_MD0 + i * 4));
+> +				put_unaligned(v, areq->result + i * 4);
+>  			else
+> -				v = cpu_to_be32(readl(ss->base + SS_MD0 + i * 4));
+> -			memcpy(areq->result + i * 4, &v, 4);
+> +				put_unaligned_be32(v, areq->result + i * 4);
+>  		}
+>  	} else {
+>  		for (i = 0; i < 4; i++) {
+> -			v = cpu_to_le32(readl(ss->base + SS_MD0 + i * 4));
+> -			memcpy(areq->result + i * 4, &v, 4);
+> +			v = readl(ss->base + SS_MD0 + i * 4);
+> +			put_unaligned_le32(v, areq->result + i * 4);
+>  		}
+>  	}
+>  
 
-Signed-off-by: Roger Quadros <rogerq@ti.com>
----
- arch/arm64/boot/dts/ti/k3-j7200-main.dtsi | 6 ++++++
- 1 file changed, 6 insertions(+)
+modprobe tcrypt on BE+next-20200828 fail with this patch on A33:
+alg: ahash: sha1-sun4i-ss test failed (wrong result) on test vector 0, cfg=\"init+update+final aligned buffer\"
 
-diff --git a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
-index e72c7a0ccad5..af9e8e46b49e 100644
---- a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
-@@ -31,6 +31,12 @@
- 			mux-reg-masks = <0x4080 0x3>, <0x4084 0x3>, /* SERDES0 lane0/1 select */
- 					<0x4088 0x3>, <0x408c 0x3>; /* SERDES0 lane2/3 select */
- 		};
-+
-+		usb_serdes_mux: mux-controller@4000 {
-+			compatible = "mmio-mux";
-+			#mux-control-cells = <1>;
-+			mux-reg-masks = <0x4000 0x8000000>; /* USB0 to SERDES0 lane 1/3 mux */
-+		};
- 	};
- 
- 	gic500: interrupt-controller@1800000 {
--- 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
-
+I will try to debug it.
