@@ -2,65 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 996D625FE77
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 18:17:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8858D25FE83
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 18:18:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730477AbgIGQRU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 12:17:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730517AbgIGQQ6 (ORCPT
+        id S1729950AbgIGQSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 12:18:20 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:38690 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730363AbgIGQR5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 12:16:58 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2861C061573
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 09:16:57 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=localhost)
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <l.stach@pengutronix.de>)
-        id 1kFJp7-0002Ke-ID; Mon, 07 Sep 2020 18:16:53 +0200
-Message-ID: <68d7b3327052757d0cd6359a6c9015a85b437232.camel@pengutronix.de>
-Subject: tracer_init_tracefs really slow
-From:   Lucas Stach <l.stach@pengutronix.de>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de
-Date:   Mon, 07 Sep 2020 18:16:52 +0200
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.30.5-1.1 
+        Mon, 7 Sep 2020 12:17:57 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 216E53E;
+        Mon,  7 Sep 2020 18:17:36 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1599495457;
+        bh=oUXDtmb/aWHYuEDGLK0yDkObyVcA366/VIqlbIpXLAU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=baX7fTKt2b1L58jlqgWnPkjrSCV4QUur25+tDNBEhpeS/yHIOAtaoMaP5TYK3iPOn
+         tlKrBYyt6uPAAc7XB2q22S/1zK4pdAvWU214gn4lydYNPzdXM98PmEKykc0sQe24I4
+         04Q289KjDUzKdloEpOiGT2uAfSno8ceF8330AaN0=
+Date:   Mon, 7 Sep 2020 19:17:12 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Stefan Agner <stefan@agner.ch>
+Cc:     marex@denx.de, airlied@linux.ie, daniel@ffwll.ch,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm: mxsfb: check framebuffer pitch
+Message-ID: <20200907161712.GF6047@pendragon.ideasonboard.com>
+References: <20200907160343.124405-1-stefan@agner.ch>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: l.stach@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200907160343.124405-1-stefan@agner.ch>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+Hi Stefan,
 
-one of my colleagues has taken a look at device boot times and stumbled
-across a pretty big amount of kernel boot time being spent in
-tracer_init_tracefs(). On this particular i.MX6Q based device the
-kernel spends more than 1 second in this function, which is a
-significant amount of the overall kernel inititalization time. While
-this machine is no rocket with its Cortex A9 @ 800MHz, the amount of
-CPU time being used there is pretty irritating.
+Thank you for the patch.
 
-Specifically the issue lies within trace_event_eval_update where ~1100
-trace_event_calls get updated with ~500 trace_eval_maps. I haven't had
-a chance yet to dig any deeper or try to understand more of what's
-going on there, but I wanted to get the issue out there in case anyone
-has some cycles to spare to help us along.
+On Mon, Sep 07, 2020 at 06:03:43PM +0200, Stefan Agner wrote:
+> The lcdif IP does not support a framebuffer pitch (stride) other than
+> the CRTC width. Check for equality and reject the state otherwise.
+> 
+> This prevents a distorted picture when using 640x800 and running the
+> Mesa graphics stack. Mesa tires to use a cache aligned stride, which
 
-The obvious questions for now are:
-1. Why is this function so damn expensive (at least on this whimpy ARM
-machine)? and
-2. Could any of this be done asynchronously, to not block the kernel in
-early init?
+s/tires/tries/
 
+> leads at that particular resolution to width != stride. Currently
+> Mesa has no fallback behavior, but rejecting this configuration allows
+> userspace to handle the issue correctly.
+
+I'm increasingly impressed by how featureful this IP core is :-)
+
+> Signed-off-by: Stefan Agner <stefan@agner.ch>
+> ---
+>  drivers/gpu/drm/mxsfb/mxsfb_kms.c | 22 ++++++++++++++++++----
+>  1 file changed, 18 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/mxsfb/mxsfb_kms.c b/drivers/gpu/drm/mxsfb/mxsfb_kms.c
+> index b721b8b262ce..79aa14027f91 100644
+> --- a/drivers/gpu/drm/mxsfb/mxsfb_kms.c
+> +++ b/drivers/gpu/drm/mxsfb/mxsfb_kms.c
+> @@ -403,14 +403,28 @@ static int mxsfb_plane_atomic_check(struct drm_plane *plane,
+>  {
+>  	struct mxsfb_drm_private *mxsfb = to_mxsfb_drm_private(plane->dev);
+>  	struct drm_crtc_state *crtc_state;
+> +	unsigned int pitch;
+> +	int ret;
+>  
+>  	crtc_state = drm_atomic_get_new_crtc_state(plane_state->state,
+>  						   &mxsfb->crtc);
+>  
+> -	return drm_atomic_helper_check_plane_state(plane_state, crtc_state,
+> -						   DRM_PLANE_HELPER_NO_SCALING,
+> -						   DRM_PLANE_HELPER_NO_SCALING,
+> -						   false, true);
+> +	ret = drm_atomic_helper_check_plane_state(plane_state, crtc_state,
+> +						  DRM_PLANE_HELPER_NO_SCALING,
+> +						  DRM_PLANE_HELPER_NO_SCALING,
+> +						  false, true);
+> +	if (ret || !plane_state->visible)
+
+Would it be more explict to check for !plane_state->fb ? Otherwise I'll
+have to verify that !fb always implies !visible :-)
+
+> +		return ret;
+> +
+> +	pitch = crtc_state->mode.hdisplay *
+> +		plane_state->fb->format->cpp[0];
+
+This holds on a single line.
+
+> +	if (plane_state->fb->pitches[0] != pitch) {
+> +		dev_err(plane->dev->dev,
+> +			"Invalid pitch: fb and crtc widths must be the same");
+
+I'd turn this into a dev_dbg(), printing error messages to the kernel
+log in response to user-triggered conditions is a bit too verbose and
+could flood the log.
+
+Wouldn't it be best to catch this issue when creating the framebuffer ?
+
+> +		return -EINVAL;
+> +	}
+> +
+> +	return 0;
+>  }
+>  
+>  static void mxsfb_plane_primary_atomic_update(struct drm_plane *plane,
+
+-- 
 Regards,
-Lucas
 
+Laurent Pinchart
