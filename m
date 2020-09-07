@@ -2,259 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 651622601F6
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:15:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5141D260202
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:16:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731226AbgIGRPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 13:15:18 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:10831 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729665AbgIGOH3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 10:07:29 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 6EE913EE4F8741CD6BFC;
-        Mon,  7 Sep 2020 22:07:24 +0800 (CST)
-Received: from lhrphicprd00229.huawei.com (10.123.41.22) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 7 Sep 2020 22:07:15 +0800
-From:   Jonathan Cameron <Jonathan.Cameron@huawei.com>
-To:     <linux-mm@kvack.org>, <linux-acpi@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <x86@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        <rafael@kernel.org>, Ingo Molnar <mingo@redhat.com>
-CC:     Bjorn Helgaas <bhelgaas@google.com>,
-        <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>, <linuxarm@huawei.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Brice Goglin <Brice.Goglin@inria.fr>,
-        "Sean V Kelley" <sean.v.kelley@linux.intel.com>,
-        <linux-api@vger.kernel.org>, "Hanjun Guo" <guohanjun@huawei.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH v10 5/6] node: Add access1 class to represent CPU to memory characteristics
-Date:   Mon, 7 Sep 2020 22:03:06 +0800
-Message-ID: <20200907140307.571932-6-Jonathan.Cameron@huawei.com>
-X-Mailer: git-send-email 2.19.1
-In-Reply-To: <20200907140307.571932-1-Jonathan.Cameron@huawei.com>
-References: <20200907140307.571932-1-Jonathan.Cameron@huawei.com>
+        id S1731200AbgIGRQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 13:16:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45516 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729731AbgIGOFQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 10:05:16 -0400
+Received: from saruman (91-155-214-58.elisa-laajakaista.fi [91.155.214.58])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B35A12064B;
+        Mon,  7 Sep 2020 14:04:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599487481;
+        bh=43vQhSIdl0+3eXxBWtFTpn4oJEVlsfZOH+X1/8xm4zQ=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=g8KKUImy+BP8HbHX3vY2vbd58JExwtSgOTzmtbPmx4VtaTqYadL3dfzH2A8U3jQlt
+         xAu/ObxyPT56Ox/HLThXLuVuOxi9tyEZZfIOhombzJWIHBBDqAk5NByUjS4D3pUonU
+         0Y1SAB/dT+5eClcuKvTVF+APb7HAhefzPRSjMqJE=
+From:   Felipe Balbi <balbi@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Yu Chen <chenyu56@huawei.com>, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        john.stultz@linaro.org, suzhuangluan@hisilicon.com,
+        kongfei@hisilicon.com, liuyu712@hisilicon.com,
+        wanghu17@hisilicon.com, butao@hisilicon.com, chenyao11@huawei.com,
+        fangshengzhou@hisilicon.com, lipengcheng8@huawei.com,
+        songxiaowei@hisilicon.com, xuyiping@hisilicon.com,
+        xuyoujun4@huawei.com, yudongbin@hisilicon.com,
+        zangleigang@hisilicon.com,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Binghui Wang <wangbinghui@hisilicon.com>
+Subject: Re: [PATCH v6 04/13] usb: dwc3: Add splitdisable quirk for
+ Hisilicon Kirin Soc
+In-Reply-To: <20200907150631.70e1bce0@coco.lan>
+References: <20190420064019.57522-1-chenyu56@huawei.com>
+ <20190420064019.57522-5-chenyu56@huawei.com>
+ <20200907150631.70e1bce0@coco.lan>
+Date:   Mon, 07 Sep 2020 17:04:31 +0300
+Message-ID: <874ko9of80.fsf@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.123.41.22]
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-New access1 class is nearly the same as access0, but always provides
-characteristics for CPUs to memory.   The existing access0 class
-provides characteristics to nearest or direct connnect initiator
-which may be a Generic Initiator such as a GPU or network adapter.
+--=-=-=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-This new class allows thread placement on CPUs to be performed
-so as to give optimal access characteristics to memory, even if that
-memory is for example attached to a GPU or similar and only accessible
-to the CPU via an appropriate bus.
 
-Suggested-by: Dan Willaims <dan.j.williams@intel.com>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
----
- drivers/acpi/numa/hmat.c | 87 +++++++++++++++++++++++++++++++---------
- 1 file changed, 68 insertions(+), 19 deletions(-)
+Hi Mauro,
 
-diff --git a/drivers/acpi/numa/hmat.c b/drivers/acpi/numa/hmat.c
-index 6a91a55229ae..daacb1cb9cee 100644
---- a/drivers/acpi/numa/hmat.c
-+++ b/drivers/acpi/numa/hmat.c
-@@ -56,7 +56,7 @@ struct memory_target {
- 	unsigned int memory_pxm;
- 	unsigned int processor_pxm;
- 	struct resource memregions;
--	struct node_hmem_attrs hmem_attrs;
-+	struct node_hmem_attrs hmem_attrs[2];
- 	struct list_head caches;
- 	struct node_cache_attrs cache_attrs;
- 	bool registered;
-@@ -65,6 +65,7 @@ struct memory_target {
- struct memory_initiator {
- 	struct list_head node;
- 	unsigned int processor_pxm;
-+	bool has_cpu;
- };
- 
- struct memory_locality {
-@@ -108,6 +109,7 @@ static __init void alloc_memory_initiator(unsigned int cpu_pxm)
- 		return;
- 
- 	initiator->processor_pxm = cpu_pxm;
-+	initiator->has_cpu = node_state(pxm_to_node(cpu_pxm), N_CPU);
- 	list_add_tail(&initiator->node, &initiators);
- }
- 
-@@ -215,28 +217,28 @@ static u32 hmat_normalize(u16 entry, u64 base, u8 type)
- }
- 
- static void hmat_update_target_access(struct memory_target *target,
--					     u8 type, u32 value)
-+				      u8 type, u32 value, int access)
- {
- 	switch (type) {
- 	case ACPI_HMAT_ACCESS_LATENCY:
--		target->hmem_attrs.read_latency = value;
--		target->hmem_attrs.write_latency = value;
-+		target->hmem_attrs[access].read_latency = value;
-+		target->hmem_attrs[access].write_latency = value;
- 		break;
- 	case ACPI_HMAT_READ_LATENCY:
--		target->hmem_attrs.read_latency = value;
-+		target->hmem_attrs[access].read_latency = value;
- 		break;
- 	case ACPI_HMAT_WRITE_LATENCY:
--		target->hmem_attrs.write_latency = value;
-+		target->hmem_attrs[access].write_latency = value;
- 		break;
- 	case ACPI_HMAT_ACCESS_BANDWIDTH:
--		target->hmem_attrs.read_bandwidth = value;
--		target->hmem_attrs.write_bandwidth = value;
-+		target->hmem_attrs[access].read_bandwidth = value;
-+		target->hmem_attrs[access].write_bandwidth = value;
- 		break;
- 	case ACPI_HMAT_READ_BANDWIDTH:
--		target->hmem_attrs.read_bandwidth = value;
-+		target->hmem_attrs[access].read_bandwidth = value;
- 		break;
- 	case ACPI_HMAT_WRITE_BANDWIDTH:
--		target->hmem_attrs.write_bandwidth = value;
-+		target->hmem_attrs[access].write_bandwidth = value;
- 		break;
- 	default:
- 		break;
-@@ -329,8 +331,12 @@ static __init int hmat_parse_locality(union acpi_subtable_headers *header,
- 
- 			if (mem_hier == ACPI_HMAT_MEMORY) {
- 				target = find_mem_target(targs[targ]);
--				if (target && target->processor_pxm == inits[init])
--					hmat_update_target_access(target, type, value);
-+				if (target && target->processor_pxm == inits[init]) {
-+					hmat_update_target_access(target, type, value, 0);
-+					/* If the node has a CPU, update access 1*/
-+					if (node_state(pxm_to_node(inits[init]), N_CPU))
-+						hmat_update_target_access(target, type, value, 1);
-+				}
- 			}
- 		}
- 	}
-@@ -567,6 +573,7 @@ static void hmat_register_target_initiators(struct memory_target *target)
- 	unsigned int mem_nid, cpu_nid;
- 	struct memory_locality *loc = NULL;
- 	u32 best = 0;
-+	bool access0done = false;
- 	int i;
- 
- 	mem_nid = pxm_to_node(target->memory_pxm);
-@@ -578,7 +585,11 @@ static void hmat_register_target_initiators(struct memory_target *target)
- 	if (target->processor_pxm != PXM_INVAL) {
- 		cpu_nid = pxm_to_node(target->processor_pxm);
- 		register_memory_node_under_compute_node(mem_nid, cpu_nid, 0);
--		return;
-+		access0done = true;
-+		if (node_state(cpu_nid, N_CPU)) {
-+			register_memory_node_under_compute_node(mem_nid, cpu_nid, 1);
-+			return;
-+		}
- 	}
- 
- 	if (list_empty(&localities))
-@@ -592,6 +603,40 @@ static void hmat_register_target_initiators(struct memory_target *target)
- 	 */
- 	bitmap_zero(p_nodes, MAX_NUMNODES);
- 	list_sort(p_nodes, &initiators, initiator_cmp);
-+	if (!access0done) {
-+		for (i = WRITE_LATENCY; i <= READ_BANDWIDTH; i++) {
-+			loc = localities_types[i];
-+			if (!loc)
-+				continue;
-+
-+			best = 0;
-+			list_for_each_entry(initiator, &initiators, node) {
-+				u32 value;
-+
-+				if (!test_bit(initiator->processor_pxm, p_nodes))
-+					continue;
-+
-+				value = hmat_initiator_perf(target, initiator,
-+							    loc->hmat_loc);
-+				if (hmat_update_best(loc->hmat_loc->data_type, value, &best))
-+					bitmap_clear(p_nodes, 0, initiator->processor_pxm);
-+				if (value != best)
-+					clear_bit(initiator->processor_pxm, p_nodes);
-+			}
-+			if (best)
-+				hmat_update_target_access(target, loc->hmat_loc->data_type, best, 0);
-+		}
-+
-+		for_each_set_bit(i, p_nodes, MAX_NUMNODES) {
-+			cpu_nid = pxm_to_node(i);
-+			register_memory_node_under_compute_node(mem_nid, cpu_nid, 0);
-+		}
-+	}
-+
-+	/* Access 1 ignores Generic Initiators */
-+	bitmap_zero(p_nodes, MAX_NUMNODES);
-+	list_sort(p_nodes, &initiators, initiator_cmp);
-+	best = 0;
- 	for (i = WRITE_LATENCY; i <= READ_BANDWIDTH; i++) {
- 		loc = localities_types[i];
- 		if (!loc)
-@@ -601,6 +646,10 @@ static void hmat_register_target_initiators(struct memory_target *target)
- 		list_for_each_entry(initiator, &initiators, node) {
- 			u32 value;
- 
-+			if (!initiator->has_cpu) {
-+				clear_bit(initiator->processor_pxm, p_nodes);
-+				continue;
-+			}
- 			if (!test_bit(initiator->processor_pxm, p_nodes))
- 				continue;
- 
-@@ -611,12 +660,11 @@ static void hmat_register_target_initiators(struct memory_target *target)
- 				clear_bit(initiator->processor_pxm, p_nodes);
- 		}
- 		if (best)
--			hmat_update_target_access(target, loc->hmat_loc->data_type, best);
-+			hmat_update_target_access(target, loc->hmat_loc->data_type, best, 1);
- 	}
--
- 	for_each_set_bit(i, p_nodes, MAX_NUMNODES) {
- 		cpu_nid = pxm_to_node(i);
--		register_memory_node_under_compute_node(mem_nid, cpu_nid, 0);
-+		register_memory_node_under_compute_node(mem_nid, cpu_nid, 1);
- 	}
- }
- 
-@@ -629,10 +677,10 @@ static void hmat_register_target_cache(struct memory_target *target)
- 		node_add_cache(mem_nid, &tcache->cache_attrs);
- }
- 
--static void hmat_register_target_perf(struct memory_target *target)
-+static void hmat_register_target_perf(struct memory_target *target, int access)
- {
- 	unsigned mem_nid = pxm_to_node(target->memory_pxm);
--	node_set_perf_attrs(mem_nid, &target->hmem_attrs, 0);
-+	node_set_perf_attrs(mem_nid, &target->hmem_attrs[access], access);
- }
- 
- static void hmat_register_target_device(struct memory_target *target,
-@@ -734,7 +782,8 @@ static void hmat_register_target(struct memory_target *target)
- 	if (!target->registered) {
- 		hmat_register_target_initiators(target);
- 		hmat_register_target_cache(target);
--		hmat_register_target_perf(target);
-+		hmat_register_target_perf(target, 0);
-+		hmat_register_target_perf(target, 1);
- 		target->registered = true;
- 	}
- 	mutex_unlock(&target_lock);
--- 
-2.19.1
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org> writes:
 
+> Hi Felipe/Greg,
+>
+> What's the status of this patch?=20
+
+to be frank, I don't think I have this in my inbox anymore.
+
+> I tested here, together with the Hikey 970 phy RFC patches I sent
+> last week.
+>
+> Without this patch, the USB HID driver receives -EPROTO from
+> submitted URBs, causing it to enter into an endless reset cycle
+> on every 500 ms, at the hid_io_error() logic.
+
+> Tested-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+>
+> If you prefer, I can re-submit this one with my SOB.
+
+Please do, but since you're changing device tree, I need Rob's acked-by.
+
+> Thanks,
+> Mauro
+>
+> Em Sat, 20 Apr 2019 14:40:10 +0800
+> Yu Chen <chenyu56@huawei.com> escreveu:
+>
+>> SPLIT_BOUNDARY_DISABLE should be set for DesignWare USB3 DRD Core
+>> of Hisilicon Kirin Soc when dwc3 core act as host.
+
+is this Kirin-specific or is this something that we should do a revision
+check? Why does it affect only Hikey kirin? What's the dwc3 revision on
+that SoC (grep SNPSID /sys/kernel/debugfs/*dwc3/regdump)?
+
+>> @@ -1825,10 +1834,27 @@ static int dwc3_resume(struct device *dev)
+>>=20=20
+>>  	return 0;
+>>  }
+>> +
+>> +static void dwc3_complete(struct device *dev)
+>> +{
+>> +	struct dwc3	*dwc =3D dev_get_drvdata(dev);
+>> +	u32		reg;
+>> +
+>> +	if (dwc->current_dr_role =3D=3D DWC3_GCTL_PRTCAP_HOST &&
+>> +			dwc->dis_split_quirk) {
+>> +		dev_dbg(dwc->dev, "set DWC3_GUCTL3_SPLITDISABLE\n");
+
+no more dev_dbg() should be added. This driver relies exclusively on
+tracepoints for debugging.
+
+>> +		reg =3D dwc3_readl(dwc->regs, DWC3_GUCTL3);
+>> +		reg |=3D DWC3_GUCTL3_SPLITDISABLE;
+>> +		dwc3_writel(dwc->regs, DWC3_GUCTL3, reg);
+>> +	}
+>> +}
+>> +#else
+>> +#define dwc3_complete NULL
+>>  #endif /* CONFIG_PM_SLEEP */
+>>=20=20
+>>  static const struct dev_pm_ops dwc3_dev_pm_ops =3D {
+>>  	SET_SYSTEM_SLEEP_PM_OPS(dwc3_suspend, dwc3_resume)
+>> +	.complete =3D dwc3_complete,
+
+why is this done on complete? Why can't it be done at the end of
+dwc3_resume()?
+
+=2D-=20
+balbi
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJFBAEBCAAvFiEElLzh7wn96CXwjh2IzL64meEamQYFAl9WPe8RHGJhbGJpQGtl
+cm5lbC5vcmcACgkQzL64meEamQZWyg/+LSkAFDUcHpgZ1Z3VDh+wv/KQkud9pmoE
+VkCPKqYGL5kG9kAQaHpB03tenK4Y9rSA4UVdG5fODhcqrcHe/3irBZeJ+/TVxnDd
+FD4aZmDNCmcHYBE09GqXTpGQAdBxApkNaFgLzIdNJq4ydCHd8Eb9qQeVskZQCtpi
+emWTBKOTAJyl9WMlifucJqH9A/IKqb8oMrUxaBqRSAbKjLzki4HEZ3Z3MZ9ivHnY
+w0bo69HybeVAMI2QqUAQ2JY26GpbnsdJhTL6fGwGPjnrHqoEY0d+7D0RTQinYcxG
+LXeA2Ote9sOE02rGm0Vh+3isF8fsf+GJ1odDi7IsjJR//upPtoPBXtWBJd6w9vsI
+M6clI4UaWrQoK2JZ7HqislIqqO1yms0BgUMx4NuuL+7GOzYCcO23/hFgC8Lb7/xm
+936q25tJM91Ipgl62fa5XRAcxg8MkyDS5aRbRwQBr7Q+v3hABXIxSKoWtJP8L7TV
+9OGcZoChy3uEz5NokYlp2qo0BoKmj8a0/CdkdCEr7RAIn7DMaOhg21T9zomgo6wM
+/1zbJTeZlhLabPEUMEm2w38RH5A7D/ZyHkYAqZHuCKUwKfLK4AFTMlHyZKVJOVXd
+uGsglmA1e4jWqojDI0SVdYTPiZrBRX44DX0qzvc0GNMxPOLs+dKL/R1/b1JY2iOR
+rAZZ8gVV7BY=
+=fXYk
+-----END PGP SIGNATURE-----
+--=-=-=--
