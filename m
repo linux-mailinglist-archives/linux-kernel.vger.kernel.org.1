@@ -2,66 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A7DC2602A5
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:31:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 588152602C9
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:35:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730656AbgIGRbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 13:31:47 -0400
-Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:42176
-        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729626AbgIGRbm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 13:31:42 -0400
-X-IronPort-AV: E=Sophos;i="5.76,359,1592863200"; 
-   d="scan'208";a="358318231"
-Received: from abo-173-121-68.mrs.modulonet.fr (HELO hadrien) ([85.68.121.173])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 07 Sep 2020 19:31:40 +0200
-Date:   Mon, 7 Sep 2020 19:31:40 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Markus Elfring <Markus.Elfring@web.de>
-cc:     Coccinelle <cocci@systeme.lip6.fr>,
-        Dejin Zheng <zhengdejin5@gmail.com>,
-        Denis Efremov <efremov@linux.com>,
-        Gilles Muller <Gilles.Muller@lip6.fr>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nicolas Palix <nicolas.palix@imag.fr>,
-        kernel-janitors@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: =?UTF-8?Q?Re=3A_=5BPATCH_v2=5D_Coccinelle=3A_api=3A_Add_SmPL?=
- =?UTF-8?Q?_script_=E2=80=9Cuse=5Fdevm=5Fplatform=5Fget=5Fand=5Fiorema?=
- =?UTF-8?Q?p=5Fresource=2Ecocci=E2=80=9D?=
-In-Reply-To: <8fb7782c-538b-b657-af13-da71124e6afa@web.de>
-Message-ID: <alpine.DEB.2.22.394.2009071930510.2476@hadrien>
-References: <25b804fd-0d04-475d-f614-26c03c9fd544@web.de> <5f9fdd59-4b0b-1cb5-c3a2-92efc5bb3841@web.de> <4b505afc-ae48-d8eb-f4e1-8e3f7192f73d@web.de> <alpine.DEB.2.22.394.2009071900450.2476@hadrien> <8fb7782c-538b-b657-af13-da71124e6afa@web.de>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        id S1730678AbgIGRfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 13:35:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47576 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729556AbgIGRfh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 13:35:37 -0400
+Received: from pali.im (pali.im [31.31.79.79])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 22758206E6;
+        Mon,  7 Sep 2020 17:35:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599500137;
+        bh=knLI9PAaOaLWwtvsDxPWo7sMJhQNOsdOp6l9yFu1nkE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=2VFYVledBQxpBKSHwzHJZYiJM9XJyeHcUYTIcgiIYtk7ejQ2rC9K5xJdKCx/di2y5
+         tf1ZogZ5lRmr/rf9Sl1ggNGtw77PQqlIy0YX2pur3271qxnVhUEoiaZ/VROrf5HXX5
+         ivK13d1HJ1YSg5KEdX09GMrr8kVokhJqlrJZFf5w=
+Received: by pali.im (Postfix)
+        id DC0DD814; Mon,  7 Sep 2020 19:35:34 +0200 (CEST)
+Date:   Mon, 7 Sep 2020 19:35:34 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Andrew Lunn <andrew@lunn.ch>, Andre Heider <a.heider@gmail.com>
+Cc:     Jason Cooper <jason@lakedaemon.net>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Tomasz Maciej Nowak <tmn505@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: marvell: espressobin: Add ethernet switch
+ aliases
+Message-ID: <20200907173534.aoupftjkxgcftfqo@pali>
+References: <20200907112718.5994-1-pali@kernel.org>
+ <3ec54259-4bfe-8462-e8d5-083fc009707a@gmail.com>
+ <20200907172303.GA3254313@lunn.ch>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200907172303.GA3254313@lunn.ch>
+User-Agent: NeoMutt/20180716
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Monday 07 September 2020 19:23:03 Andrew Lunn wrote:
+> > My dts-foo is a little rusty, but now that you labeled the ports in the
+> > .dtsi, can this whole "switch0" block reduced to something like:
+> > 
+> > &switch0port1 {
+> > 	label = "lan1";
+> > };
+> > 
+> > &switch0port3 {
+> > 	label = "wan";
+> > };
+> 
+> Probably yes.
+> 
+> But that is definitely too much for stable.
 
+Yes, this suggested change is not for stable, but looks like a nice
+cleanup. So it could be done in followup patch.
 
-On Mon, 7 Sep 2020, Markus Elfring wrote:
-
-> >> +++ b/scripts/coccinelle/api/use_devm_platform_get_and_ioremap_resource.cocci
-> >> @@ -0,0 +1,48 @@
-> >> +// SPDX-License-Identifier: GPL-2.0
-> >> +/// Simplify a function call combination by using a known wrapper function.
-> >> +//
-> >> +// Keywords: wrapper function conversion ioremap resources
-> >> +// Confidence: High
-> >
-> > Shouldn't there be some options?  --no-includes and perhaps
-> > --include-headers would seem reasonable.
->
-> I imagine that the proposed source code transformation can work also without
-> additional semantic patch command options.
-
-It can.  But it will be more efficient and more exhaustive if you include
-them.
-
-julia
+Andre, are you going to prepare and test this followup change?
