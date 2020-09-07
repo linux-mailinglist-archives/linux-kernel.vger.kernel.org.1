@@ -2,147 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 883E125FADA
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 14:59:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5935125FAE2
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 15:00:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729353AbgIGM7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 08:59:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57198 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729368AbgIGM5m (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 08:57:42 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F926C061755
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 05:57:42 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id a26so18147829ejc.2
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 05:57:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YucY+gKGhRi1ywbzRpYu6vJHZlJfD5eC4RFNZlM+vEU=;
-        b=1DzPBq8QjNiAQmlUVLnJE9yHuQ5x3n8G/vy0ZHLOXkG6W/kp2qThs+PrIcQgSO+DLl
-         Mtr+mRX9iTNI1t3koKVQTf3UTcrsvsBk9AQUu3frC/lANh5EF5ujvpUOLRLLLbN02Fv/
-         Ejg2Mv8zLuigka+OAZV8Em2LcGiq60oOD0K3R9TgkVbTkWwRtngnyPew7C504FOK/kxt
-         a0SLzOflYvfHL/WwdZELsw3cyyzQudmNHsXJhRnvJ4MUojJze58ec0y4c3+/cLTceGGq
-         AU2p5RCEC7tkzqvI4yVyeEh229yaW3rpoEmpZeqzfMcDpv7V3rMCkYHNJJJvwbEMmkwA
-         foZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YucY+gKGhRi1ywbzRpYu6vJHZlJfD5eC4RFNZlM+vEU=;
-        b=Ok5IryuW+Iq8dO+NPAuwveTgrjSVV/Lk0A2U1R5kIB0zueyOsl4sLOH3KxeC+cihfN
-         6ZkcUtWFY/YRh++mCFYzhLmaH/EDG8pCK+jWVpu7g2VLFORqkTbW39TC59JjpGFkohPx
-         rpgsULWQxWSX2CbA94+VqIdA5LzoE+5AxROf1vJTwrhMK0IegG1GGvpYrL3ysxA4FAl8
-         83+uA22Uky9+Npm0JWmtiSab38hcfSVRKzFdt0cu+Nph7TOO6wQI7k2xW8Tp55lAnKhv
-         qWnpMZoVhAuEHV5ArOJVR7uYN19Sy7RGu5oUeOaBDtWNgdevbFEVT/4DqCA0PNAQIAcA
-         Xmgw==
-X-Gm-Message-State: AOAM533MfecMmjtG7UXdKylLLngt/BWZBY+dvLxQsweahf2OfVW2WZT7
-        qFa/l+S/tMRtnDs1FvQMUvkagLO+oJoOYCU4/7Rfew==
-X-Google-Smtp-Source: ABdhPJzUQafzXEGFCABczGMzi5b/L3y2GqxJ0LOSr4ft7RzvZoPkp2ieYMUtiQRIu+JpJvYoyuFNg39EZzYaGsKijH4=
-X-Received: by 2002:a17:906:19db:: with SMTP id h27mr19207447ejd.154.1599483460603;
- Mon, 07 Sep 2020 05:57:40 -0700 (PDT)
+        id S1729290AbgIGNAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 09:00:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52638 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729162AbgIGM64 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 08:58:56 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4FB5821481;
+        Mon,  7 Sep 2020 12:58:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599483529;
+        bh=tTNxmJ4jcJ4aD21IqESGwfJw58XiGcHeIj4d4qcIdiM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NWfY8J1ZIMU4ZX4aYaDKe0hXhzsGwABV0tkTyeYkRZVLhpbrVwc54OY8ic1Vb/xux
+         TIzDw1ejYj2Ue1gCnLpqxFGbmXblUZIchelxQkgS7DZvwqvL23Rc1PPICpuKhqcMzQ
+         hVqiAEtb5AylhxDhE+f9OQYbOyXM35EHUzp3KS24=
+Date:   Mon, 7 Sep 2020 13:58:44 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     peterz@infradead.org, linux-kernel@vger.kernel.org,
+        io-uring@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Jens Axboe <axboe@kernel.dk>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Subject: Re: [PATCH 1/2] sched: Bring the PF_IO_WORKER and PF_WQ_WORKER bits
+ closer together
+Message-ID: <20200907125843.GC12237@willie-the-truck>
+References: <20200819142134.GD2674@hirez.programming.kicks-ass.net>
+ <20200819195505.y3fxk72sotnrkczi@linutronix.de>
 MIME-Version: 1.0
-References: <20200904154547.3836-1-brgl@bgdev.pl> <20200904154547.3836-24-brgl@bgdev.pl>
- <26ea1683-da8f-30e7-f004-3616e96d56b3@infradead.org> <20200907095932.GU1891694@smile.fi.intel.com>
- <CAMpxmJXvhYOVkZY7LLf=v+o8E2xKTh1RYhLrdVsS9nN1XZ5QJQ@mail.gmail.com>
- <20200907115310.GA1891694@smile.fi.intel.com> <CAMpxmJUfNkko4Rrb4N5CF_rdwRAWGhVr9DSOHfhYyTxYSH7dsQ@mail.gmail.com>
- <20200907123837.GG1891694@smile.fi.intel.com>
-In-Reply-To: <20200907123837.GG1891694@smile.fi.intel.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Mon, 7 Sep 2020 14:57:29 +0200
-Message-ID: <CAMpxmJXNYZb66SPuzR_3CEVwD=PQ6z6Ew3ia7ZL=wSU0QGhjEA@mail.gmail.com>
-Subject: Re: [PATCH 23/23] Documentation: gpio: add documentation for gpio-mockup
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Kent Gibson <warthog618@gmail.com>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        linux-doc <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200819195505.y3fxk72sotnrkczi@linutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 7, 2020 at 2:38 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Mon, Sep 07, 2020 at 02:06:15PM +0200, Bartosz Golaszewski wrote:
-> > On Mon, Sep 7, 2020 at 1:53 PM Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> wrote:
-> > > On Mon, Sep 07, 2020 at 12:26:34PM +0200, Bartosz Golaszewski wrote:
-> > > > On Mon, Sep 7, 2020 at 11:59 AM Andy Shevchenko
-> > > > <andriy.shevchenko@linux.intel.com> wrote:
-> > > > > On Fri, Sep 04, 2020 at 08:15:59PM -0700, Randy Dunlap wrote:
-> > > > > > On 9/4/20 8:45 AM, Bartosz Golaszewski wrote:
->
-> ...
->
-> > > > > > > +GPIO Testing Driver
-> > > > > > > +===================
-> > > > > > > +
-> > > > > > > +The GPIO Testing Driver (gpio-mockup) provides a way to create simulated GPIO
-> > > > > > > +chips for testing purposes. There are two ways of configuring the chips exposed
-> > > > > > > +by the module. The lines can be accessed using the standard GPIO character
-> > > > > > > +device interface as well as manipulated using the dedicated debugfs directory
-> > > > > > > +structure.
-> > > > > >
-> > > > > > Could configfs be used for this instead of debugfs?
-> > > > > > debugfs is ad hoc.
-> > > > >
-> > > > > Actually sounds like a good idea.
-> > > > >
-> > > >
-> > > > Well, then we can go on and write an entirely new mockup driver
-> > > > (ditching module params and dropping any backwards compatibility)
-> > > > because we're already using debugfs for line values.
-> > > >
-> > > > How would we pass the device properties to configfs created GPIO chips
-> > > > anyway? Devices seem to only be created using mkdir. Am I missing
-> > > > something?
-> > >
-> > > Same way how USB composite works, no?
-> > >
-> >
-> > OK, so create a new chip directory in configfs, configure it using
-> > some defined configfs attributes and then finally instantiate it from
-> > sysfs?
-> >
-> > Makes sense and is probably the right way to go. Now the question is:
-> > is it fine to just entirely remove the previous gpio-mockup?
->
-> Since, for example, I never saw device property bindings for that driver I
-> assume that it was never considered as an ABI, so feel free to hack it in
-> either direction.
->
-> > Should we
-> > keep some backwards compatibility?
->
-> I wouldn't probably spend time on this.
->
-> > Should we introduce an entirely new
-> > module and have a transition period before removing previous
-> > gpio-mockup?
->
-> Neither transition period.
->
+On Wed, Aug 19, 2020 at 09:55:05PM +0200, Sebastian Andrzej Siewior wrote:
+> The bits PF_IO_WORKER and PF_WQ_WORKER are tested together in
+> sched_submit_work() which is considered to be a hot path.
+> If the two bits cross the 8 or 16 bit boundary then most architecture
+> require multiple load instructions in order to create the constant
+> value. Also, such a value can not be encoded within the compare opcode.
+> 
+> By moving the bit definition within the same block, the compiler can
+> create/use one immediate value.
+> 
+> For some reason gcc-10 on ARM64 requires both bits to be next to each
+> other in order to issue "tst reg, val; bne label". Otherwise the result
+> is "mov reg1, val; tst reg, reg1; bne label".
+> 
+> Move PF_VCPU out of the way so that PF_IO_WORKER can be next to
+> PF_WQ_WORKER.
+> 
+> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> ---
+> 
+> Could someone from the ARM64 camp please verify if this a gcc "bug" or
+> opcode/arch limitation? With PF_IO_WORKER as 1 (without the PF_VCPU
+> swap) I get for ARM:
+> 
+> | tst     r2, #33 @ task_flags,
+> | beq     .L998           @,
+> 
+> however ARM64 does here:
+> | mov     w0, 33  // tmp117,
+> | tst     w19, w0 // task_flags, tmp117
+> | bne     .L453           //,
+> 
+> the extra mov operation. Moving PF_IO_WORKER next to PF_WQ_WORKER as
+> this patch gives me:
+> | tst     w19, 48 // task_flags,
+> | bne     .L453           //,
 
-I wouldn't rush this actually. gpio-mockup is used a lot by libgpiod
-and probably by Kent's Go library. My main goal with this series is to
-extend it to allow for more advanced testing like simulating spurious
-irqs to test the software debouncer or custom line name formats to
-test name lookups.
+Moving an immediate into a register really shouldn't be a performance
+issue, so I don't think this is a problem. However, the reason GCC does
+this is because of the slightly weird way in which immediates are encoded,
+meaning that '33' can't be packed into the 'tst' alias. You can try to
+decipher the "DecodeBitMasks()" pseudocode in the Arm ARM if you're
+interested.
 
-I need to think about it some more. An entirely new configfs interface
-would take time too.
-
-Bart
+Will
