@@ -2,111 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53CC726019B
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:10:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 707722601C0
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:12:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730820AbgIGRK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 13:10:26 -0400
-Received: from foss.arm.com ([217.140.110.172]:41654 "EHLO foss.arm.com"
+        id S1730721AbgIGRMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 13:12:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39298 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730662AbgIGRKL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 13:10:11 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1B1BB31B;
-        Mon,  7 Sep 2020 10:10:11 -0700 (PDT)
-Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 39C633F66E;
-        Mon,  7 Sep 2020 10:10:09 -0700 (PDT)
-Date:   Mon, 7 Sep 2020 18:10:06 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Vidya Sagar <vidyas@nvidia.com>
-Cc:     Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>,
-        "jingoohan1@gmail.com" <jingoohan1@gmail.com>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "amurray@thegoodpenguin.co.uk" <amurray@thegoodpenguin.co.uk>,
-        "robh@kernel.org" <robh@kernel.org>,
-        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
-        "jonathanh@nvidia.com" <jonathanh@nvidia.com>,
-        alan.mikhak@sifive.com, kishon@ti.com,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kthota@nvidia.com" <kthota@nvidia.com>,
-        "mmaddireddy@nvidia.com" <mmaddireddy@nvidia.com>,
-        "sagar.tv@gmail.com" <sagar.tv@gmail.com>
-Subject: Re: [PATCH 0/2] PCI: dwc: Add support to handle prefetchable memory
- separately
-Message-ID: <20200907171006.GD10272@e121166-lin.cambridge.arm.com>
-References: <20200602100940.10575-1-vidyas@nvidia.com>
- <DM5PR12MB127675E8C053755CB82A54BCDA8B0@DM5PR12MB1276.namprd12.prod.outlook.com>
- <389018aa-79c8-4a1e-5379-8b8e42939859@nvidia.com>
- <dd32f413-aa1c-b2e6-d76f-9d2897a8cfad@nvidia.com>
+        id S1731183AbgIGRMM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 13:12:12 -0400
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7DA43217A0;
+        Mon,  7 Sep 2020 17:12:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599498731;
+        bh=DPat3ZlRzIlx3pGvdlS9ov4+JwXoTqRT6aH65lpZpUw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=hDIxuj2XhhhEEqVgjAA3HcCmq5ToR/R66AcQtmotmjrIDZak1xnhMwZhFXqG9mJVl
+         7gx4HAq0nxoE/XiAVFScPLr9HnUwWyEzmXGrGcVisKN4f76KZkCiy8vk4j7HSLwCIM
+         zLC88dGIlGzNeTM4sDs8L5lj74Oyn5DD+fXSDc78=
+Received: by mail-ed1-f46.google.com with SMTP id c10so13404467edk.6;
+        Mon, 07 Sep 2020 10:12:11 -0700 (PDT)
+X-Gm-Message-State: AOAM5305R91HP1SniJPOH1bTem9grAExEjciNUjX+7V/6HqighDmuHdT
+        PdUIZMn73wB0QGOc2EIEL6LBB88HMaZwNRGeh9Y=
+X-Google-Smtp-Source: ABdhPJzMyTdkAJy73PxNoZs+gNdlcqSGeh07/2bjshW3rB0M3t0yIQeyrq5QnkZWdasM4Y6BXvKIZqTmLZdf4IZC5FI=
+X-Received: by 2002:aa7:da16:: with SMTP id r22mr23231660eds.132.1599498730074;
+ Mon, 07 Sep 2020 10:12:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dd32f413-aa1c-b2e6-d76f-9d2897a8cfad@nvidia.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200907161141.31034-1-krzk@kernel.org> <20200907161141.31034-3-krzk@kernel.org>
+ <20200907173819.00005a48@Huawei.com>
+In-Reply-To: <20200907173819.00005a48@Huawei.com>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Mon, 7 Sep 2020 19:11:57 +0200
+X-Gmail-Original-Message-ID: <CAJKOXPe0W_+hN=pk9F5O61w7riYuBhmK3=JvrYzDY8LU7xvH4A@mail.gmail.com>
+Message-ID: <CAJKOXPe0W_+hN=pk9F5O61w7riYuBhmK3=JvrYzDY8LU7xvH4A@mail.gmail.com>
+Subject: Re: [PATCH 02/25] dt-bindings: iio: adc: exynos-adc: require second
+ interrupt with touch screen
+To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc:     Kukjin Kim <kgene@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Jonathan Bakker <xc-racer2@live.ca>,
+        =?UTF-8?Q?Pawe=C5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
+        linux-arm-kernel@lists.infradead.org,
+        "linux-samsung-soc@vger.kernel.org" 
+        <linux-samsung-soc@vger.kernel.org>, devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-iio@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 06, 2020 at 10:05:06AM +0530, Vidya Sagar wrote:
-> 
-> 
-> On 18-Jun-20 12:26 AM, Vidya Sagar wrote:
-> > 
-> > 
-> > On 02-Jun-20 10:37 PM, Gustavo Pimentel wrote:
-> > > External email: Use caution opening links or attachments
-> > > 
-> > > 
-> > > On Tue, Jun 2, 2020 at 11:9:38, Vidya Sagar <vidyas@nvidia.com> wrote:
-> > > 
-> > > > In this patch series,
-> > > > Patch-1
-> > > > adds required infrastructure to deal with prefetchable memory region
-> > > > information coming from 'ranges' property of the respective
-> > > > device-tree node
-> > > > separately from non-prefetchable memory region information.
-> > > > Patch-2
-> > > > Adds support to use ATU region-3 for establishing the mapping
-> > > > between CPU
-> > > > addresses and PCIe bus addresses.
-> > > > It also changes the logic to determine whether mapping is
-> > > > required or not by
-> > > > checking both CPU address and PCIe bus address for both prefetchable and
-> > > > non-prefetchable regions. If the addresses are same, then, it is
-> > > > understood
-> > > > that 1:1 mapping is in place and there is no need to setup ATU mapping
-> > > > whereas if the addresses are not the same, then, there is a need
-> > > > to setup ATU
-> > > > mapping. This is certainly true for Tegra194 and what I heard
-> > > > from our HW
-> > > > engineers is that it should generally be true for any DWC based
-> > > > implementation
-> > > > also.
-> > > > Hence, I request Synopsys folks (Jingoo Han & Gustavo Pimentel
-> > > > ??) to confirm
-> > > > the same so that this particular patch won't cause any
-> > > > regressions for other
-> > > > DWC based platforms.
-> > > 
-> > > Hi Vidya,
-> > > 
-> > > Unfortunately due to the COVID-19 lockdown, I can't access my development
-> > > prototype setup to test your patch.
-> > > It might take some while until I get the possibility to get access to it
-> > > again.
-> > Hi Gustavo,
-> > Did you find time to check this?
-> > Adding Kishon and Alan as well to take a look at this and verify on
-> > their platforms if possible.
-> Hi Kishon and Alan, did you find time to verify this on your respective
-> platforms?
+On Mon, 7 Sep 2020 at 18:39, Jonathan Cameron
+<Jonathan.Cameron@huawei.com> wrote:
+>
+> On Mon,  7 Sep 2020 18:11:18 +0200
+> Krzysztof Kozlowski <krzk@kernel.org> wrote:
+>
+> > The ADC in S3C/S5P/Exynos SoCs can be used also for handling touch
+> > screen.  In such case the second interrupt is required.  This second
+> > interrupt can be anyway provided, even without touch screens.  This
+> > fixes dtbs_check warnings like:
+> >
+> >   arch/arm/boot/dts/s5pv210-aquila.dt.yaml: adc@e1700000: interrupts: [[23], [24]] is too long
+> >
+> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+>
+> Acked-by: Jonathan Cameron <Jonathan.Cameron@huwei.com>
+>
+> Or I can pick this up through the IIO tree if that makes sense.
+> I doubt anything else will touch this binding this cycle, so either
+> way works for me.
 
-Yes please. I would like to merge this code, in preparation for that
-to happen mind rebasing the series against my pci/dwc branch with
-Rob's suggested changes implemented ?
+Let's wait for Rob's review and then if you could, please pick it up.
 
-Thanks a lot,
-Lorenzo
+Best regards,
+Krzysztof
