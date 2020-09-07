@@ -2,99 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9D2E25F9DA
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 13:49:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E949E25F9C8
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 13:47:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729159AbgIGLtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 07:49:16 -0400
-Received: from mga01.intel.com ([192.55.52.88]:18497 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729109AbgIGLq3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 07:46:29 -0400
-IronPort-SDR: u4KohBcvYcG9RbkmPJ3ozmpfiYzDMsjWNloDyxd9KR012bFb7MH/gw1Y3NYSAU8MddCr0BTx8J
- BVlYhcWaDl4A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9736"; a="176046003"
-X-IronPort-AV: E=Sophos;i="5.76,401,1592895600"; 
-   d="scan'208";a="176046003"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2020 04:45:57 -0700
-IronPort-SDR: 2c5/thtWfGsvF/VAAo2KUZsh1d3mpudhrE42tnry+4xfAzgIgzUSc25JQ7BeBaa6gPcu27O6tp
- kRAMhOH3CdHA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,401,1592895600"; 
-   d="scan'208";a="333141071"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga008.jf.intel.com with ESMTP; 07 Sep 2020 04:45:54 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andy.shevchenko@gmail.com>)
-        id 1kFFap-00EwG6-Fz; Mon, 07 Sep 2020 14:45:51 +0300
-Date:   Mon, 7 Sep 2020 14:45:51 +0300
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Kent Gibson <warthog618@gmail.com>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        linux-doc <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>
-Subject: Re: [PATCH 03/23] lib: uaccess: provide getline_from_user()
-Message-ID: <20200907114551.GV1891694@smile.fi.intel.com>
-References: <20200904154547.3836-1-brgl@bgdev.pl>
- <20200904154547.3836-4-brgl@bgdev.pl>
- <20200904163517.GW1891694@smile.fi.intel.com>
- <CAMpxmJWQsgV5WZrdPW3UUOVTEy1L6Y_rb7ThQK1QTRinmHSqWA@mail.gmail.com>
- <CAHp75VdOWdwT-e5ufsZ8MEH=YtdBgm1=TDKn3f8fJxXY4YKh9A@mail.gmail.com>
- <CAMpxmJXmY8oBpPue5v0wBvmjHkFGaUmzHScHoV-1pNEQ59am4w@mail.gmail.com>
+        id S1729122AbgIGLqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 07:46:46 -0400
+Received: from asavdk3.altibox.net ([109.247.116.14]:42196 "EHLO
+        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728973AbgIGLp5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 07:45:57 -0400
+Received: from ravnborg.org (unknown [188.228.123.71])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by asavdk3.altibox.net (Postfix) with ESMTPS id 184F420024;
+        Mon,  7 Sep 2020 13:45:54 +0200 (CEST)
+Date:   Mon, 7 Sep 2020 13:45:52 +0200
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Neil Armstrong <narmstrong@baylibre.com>
+Cc:     thierry.reding@gmail.com, devicetree@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-amlogic@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/3] dt-bindings: display: panel: add TDO tl070wsh30
+ DSI panel bindings
+Message-ID: <20200907114552.GA526406@ravnborg.org>
+References: <20200907111027.21933-1-narmstrong@baylibre.com>
+ <20200907111027.21933-3-narmstrong@baylibre.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMpxmJXmY8oBpPue5v0wBvmjHkFGaUmzHScHoV-1pNEQ59am4w@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20200907111027.21933-3-narmstrong@baylibre.com>
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=CaYmGojl c=1 sm=1 tr=0
+        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
+        a=kj9zAlcOel0A:10 a=IpJZQVW2AAAA:8 a=gEfo2CItAAAA:8
+        a=3nj7rlk6SGwJzBwD0W8A:9 a=CjuIK1q_8ugA:10 a=IawgGOuG5U0WyFbmm1f5:22
+        a=sptkURWiP4Gy88Gu7hUp:22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 07, 2020 at 12:28:05PM +0200, Bartosz Golaszewski wrote:
-> On Mon, Sep 7, 2020 at 12:19 PM Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
-> >
-> > On Mon, Sep 7, 2020 at 1:05 PM Bartosz Golaszewski
-> > <bgolaszewski@baylibre.com> wrote:
-> > > On Fri, Sep 4, 2020 at 6:35 PM Andy Shevchenko
-> > > <andriy.shevchenko@linux.intel.com> wrote:
-> > > > On Fri, Sep 04, 2020 at 05:45:27PM +0200, Bartosz Golaszewski wrote:
-> > > > > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> >
-> > > > Doesn't mm/util.c provides us something like this?
-> > > > strndup_user()?
-> > > >
-> > >
-> > > Yes, there's both strndup_user() as well as strncpy_from_user(). The
-> > > problem is that they rely on the strings being NULL-terminated. This
-> > > is not guaranteed for debugfs file_operations write callbacks. We need
-> > > some helper that takes the minimum of bytes provided by userspace and
-> > > the buffer size and figure out how many bytes to actually copy IMO.
-> >
-> > Wouldn't this [1] approach work?
-> >
-> > [1]: https://elixir.bootlin.com/linux/v5.9-rc3/source/arch/x86/kernel/cpu/mtrr/if.c#L93
-> >
+Hi Neil.
+
+On Mon, Sep 07, 2020 at 01:10:26PM +0200, Neil Armstrong wrote:
+> This add the bindings for the 1024*600 tl070wsh30 DSI panel.
+
+The binding looks like a panel-simple-dsi.yaml candidate.
+Only differen is enable-gpios versus reset-gpios
+
+Could you check if we can use panel-simple-dsi-yaml.
+
+	Sam
+
 > 
-> Sure, but this is pretty much what I do in getline_from_user(). If
-> anything we should port mtrr_write() to using getline_from_user() once
-> it's available upstream, no?
-
-But you may provide getline_from_user() as inline in the same header where
-strncpy_from_user() is declared. It will be like 3 LOCs?
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+> ---
+>  .../display/panel/tdo,tl070wsh30.yaml         | 58 +++++++++++++++++++
+>  1 file changed, 58 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/display/panel/tdo,tl070wsh30.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/display/panel/tdo,tl070wsh30.yaml b/Documentation/devicetree/bindings/display/panel/tdo,tl070wsh30.yaml
+> new file mode 100644
+> index 000000000000..20f4fdedfcb0
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/display/panel/tdo,tl070wsh30.yaml
+> @@ -0,0 +1,58 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only or BSD-2-Clause)
+> +# Copyright 2020 BayLibre, SAS
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/display/panel/tdo,tl070wsh30.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: TDO TL070WSH30 DSI panel
+> +
+> +maintainers:
+> +  - Neil Armstrong <narmstrong@baylibre.com>
+> +
+> +allOf:
+> +  - $ref: panel-common.yaml#
+> +
+> +properties:
+> +
+> +  compatible:
+> +    enum:
+> +      - tdo,tl070wsh30
+> +
+> +  reg:
+> +    maxItems: 1
+> +    description: DSI virtual channel
+> +
+> +  backlight: true
+> +  reset-gpios: true
+> +  port: true
+> +  power-supply: true
+> +
+> +additionalProperties: false
+> +
+> +required:
+> +  - compatible
+> +  - power-supply
+> +  - reset-gpios
+> +  - port
+> +  - reg
+> +
+> +examples:
+> +  - |
+> +    dsi {
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +      panel@0 {
+> +        compatible = "tdo,tl070wsh30";
+> +        reg = <0>;
+> +        power-supply = <&vcc_lcd_reg>;
+> +        backlight = <&panel_backlight>;
+> +        reset-gpios = <&gpio_reset>;
+> +
+> +        port {
+> +          panel: endpoint {
+> +            remote-endpoint = <&mipi_dsi_out>;
+> +          };
+> +        };
+> +      };
+> +    };
+> -- 
+> 2.22.0
