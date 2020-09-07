@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D93DA2604DD
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 20:55:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27CBB2604DB
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 20:55:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729662AbgIGSza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 14:55:30 -0400
-Received: from mx0a-002e3701.pphosted.com ([148.163.147.86]:45272 "EHLO
+        id S1729598AbgIGSzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 14:55:23 -0400
+Received: from mx0a-002e3701.pphosted.com ([148.163.147.86]:47792 "EHLO
         mx0a-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729396AbgIGSzG (ORCPT
+        by vger.kernel.org with ESMTP id S1729446AbgIGSzG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 7 Sep 2020 14:55:06 -0400
-Received: from pps.filterd (m0134422.ppops.net [127.0.0.1])
-        by mx0b-002e3701.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 087IpMOA024433;
-        Mon, 7 Sep 2020 18:54:35 GMT
+Received: from pps.filterd (m0150242.ppops.net [127.0.0.1])
+        by mx0a-002e3701.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 087ImqFG026414;
+        Mon, 7 Sep 2020 18:54:34 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=message-id : date : from
  : to : cc : subject : references : mime-version : content-type; s=pps0720;
- bh=H+cdkTz6AIUSAUqLFeeWxJgkuKFgtRS7QFH3d08OKZQ=;
- b=dJ8ETu0Fi3ofa2r/D6y+LlXcJX9Axxu8g0s0rbD/uFOLT0y/Wb+rE4rtcfXQncAwsKmW
- xRNAafIDzpSTvfw9I0AeEVHDkqtPuj6B+nW3U0TXSRBA1eyT5WjiHEgtyvxHMlbMxQ78
- AmLHMZ5yt7bZ6Vzt7lpZ6j4sqWW2HTADr8eysNt5KeaJx3XI0Z7cXR0XtkMNvoJfY+Js
- wqo9zkMQoSuGykomEtOT7mi6Zx79Vflydick2WUsmrtcbFSM+Uo7osOlFYyHtGflsqNY
- EEOi2hIGU2VTxELNMnITJDoOSz4QWBFiIhOn4pANXbL8fGNXk5iWRpEZ8UoQJTsAjGdW /Q== 
-Received: from g9t5009.houston.hpe.com (g9t5009.houston.hpe.com [15.241.48.73])
-        by mx0b-002e3701.pphosted.com with ESMTP id 33cmd54fdh-1
+ bh=44ezGx9xoJR9KmSJvezKkdXC7SRoSyd4qvEbeCtaU88=;
+ b=Oy4DFTrqRq28Vygs15CPlbZUVIlygGvNXSNyILAUI/Bj8wmmhjSDwUmLf0mWL0Tp9N26
+ X59iEVQUlsQVSY+HzufK1FMOmVUS1upqqrzeUyvdlhbI1wFya8+pUYoUy2+zpevnWPkU
+ MZvF902Ltn+Id45oUUt2/fl+YaF0auoDwdYL86NAEsyJEQ72cqoHVe77lyWcsFzLMoWs
+ 9DMA4W8wqEmiLl/pMVL6oJjrOVp7pszJ138r8KHrzIZF5A34PTDly2u2O+Rr7l4EjX6J
+ E7qz83WhkhINkd2OcxU5cBrHzyJcvGryvmrpuYI3efHJMySstSrWAKILcQwQdXkO/ZWE 8Q== 
+Received: from g2t2354.austin.hpe.com (g2t2354.austin.hpe.com [15.233.44.27])
+        by mx0a-002e3701.pphosted.com with ESMTP id 33cmremq9d-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 07 Sep 2020 18:54:35 +0000
+        Mon, 07 Sep 2020 18:54:34 +0000
 Received: from dog.eag.rdlabs.hpecorp.net (dog.eag.rdlabs.hpecorp.net [128.162.243.181])
-        by g9t5009.houston.hpe.com (Postfix) with ESMTP id F309058;
-        Mon,  7 Sep 2020 18:54:32 +0000 (UTC)
+        by g2t2354.austin.hpe.com (Postfix) with ESMTP id 1AC4DB4;
+        Mon,  7 Sep 2020 18:54:33 +0000 (UTC)
 Received: by dog.eag.rdlabs.hpecorp.net (Postfix, from userid 5508)
-        id 6B27130060F12; Mon,  7 Sep 2020 13:54:31 -0500 (CDT)
-Message-ID: <20200907185431.351814173@hpe.com>
+        id 8199D30060F13; Mon,  7 Sep 2020 13:54:31 -0500 (CDT)
+Message-ID: <20200907185431.445769235@hpe.com>
 User-Agent: quilt/0.66
-Date:   Mon, 07 Sep 2020 13:54:40 -0500
+Date:   Mon, 07 Sep 2020 13:54:41 -0500
 From:   Mike Travis <mike.travis@hpe.com>
 To:     Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
@@ -53,74 +53,91 @@ Cc:     Dimitri Sivanich <dimitri.sivanich@hpe.com>,
         Jian Cai <caij2003@gmail.com>,
         Vitaly Kuznetsov <vkuznets@redhat.com>,
         linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
-Subject: [PATCH 10/12] x86/platform/uv: Update Node Present Counting
+Subject: [PATCH 11/12] x86/platform/uv: Update UV5 TSC Checking
 References: <20200907185430.363197758@hpe.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-15
 X-HPE-SCL: -1
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
  definitions=2020-09-07_11:2020-09-07,2020-09-07 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
- mlxlogscore=999 malwarescore=0 spamscore=0 bulkscore=0 phishscore=0
- adultscore=0 clxscore=1015 impostorscore=0 suspectscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 malwarescore=0
+ clxscore=1015 lowpriorityscore=0 suspectscore=0 priorityscore=1501
+ mlxscore=0 bulkscore=0 adultscore=0 spamscore=0 mlxlogscore=999
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2006250000 definitions=main-2009070181
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The changes in the UV5 arch shrunk the NODE PRESENT table to just 2x64
-entries (128 total) so are in to 64 bit MMRs instead of a depth of 64
-bits in an array.  Adjust references when counting up the nodes present.
+Update check of BIOS TSC sync status to include both possible "invalid"
+states provided by newer UV5 BIOS.
 
 Signed-off-by: Mike Travis <mike.travis@hpe.com>
-Reviewed-by: Dimitri Sivanich <dimitri.sivanich@hpe.com>
 Reviewed-by: Steve Wahl <steve.wahl@hpe.com>
 ---
- arch/x86/kernel/apic/x2apic_uv_x.c |   26 +++++++++++++++++++-------
- 1 file changed, 19 insertions(+), 7 deletions(-)
+ arch/x86/include/asm/uv/uv_hub.h   |    2 +-
+ arch/x86/kernel/apic/x2apic_uv_x.c |   24 ++++++++++--------------
+ 2 files changed, 11 insertions(+), 15 deletions(-)
 
+--- linux.orig/arch/x86/include/asm/uv/uv_hub.h
++++ linux/arch/x86/include/asm/uv/uv_hub.h
+@@ -727,7 +727,7 @@ extern void uv_nmi_setup_hubless(void);
+ #define UVH_TSC_SYNC_SHIFT_UV2K	16	/* UV2/3k have different bits */
+ #define UVH_TSC_SYNC_MASK	3	/* 0011 */
+ #define UVH_TSC_SYNC_VALID	3	/* 0011 */
+-#define UVH_TSC_SYNC_INVALID	2	/* 0010 */
++#define UVH_TSC_SYNC_UNKNOWN	0	/* 0000 */
+ 
+ /* BMC sets a bit this MMR non-zero before sending an NMI */
+ #define UVH_NMI_MMR		UVH_BIOS_KERNEL_MMR
 --- linux.orig/arch/x86/kernel/apic/x2apic_uv_x.c
 +++ linux/arch/x86/kernel/apic/x2apic_uv_x.c
-@@ -1437,20 +1437,32 @@ static int __init decode_uv_systab(void)
- /* Set up physical blade translations from UVH_NODE_PRESENT_TABLE */
- static __init void boot_init_possible_blades(struct uv_hub_info_s *hub_info)
- {
-+	unsigned long np;
- 	int i, uv_pb = 0;
+@@ -200,36 +200,32 @@ static void __init uv_tsc_check_sync(voi
+ 	int sync_state;
+ 	int mmr_shift;
+ 	char *state;
+-	bool valid;
  
--	pr_info("UV: NODE_PRESENT_DEPTH = %d\n", UVH_NODE_PRESENT_TABLE_DEPTH);
--	for (i = 0; i < UVH_NODE_PRESENT_TABLE_DEPTH; i++) {
--		unsigned long np;
--
--		np = uv_read_local_mmr(UVH_NODE_PRESENT_TABLE + i * 8);
--		if (np)
-+	if (UVH_NODE_PRESENT_TABLE) {
-+		pr_info("UV: NODE_PRESENT_DEPTH = %d\n",
-+			UVH_NODE_PRESENT_TABLE_DEPTH);
-+		for (i = 0; i < UVH_NODE_PRESENT_TABLE_DEPTH; i++) {
-+			np = uv_read_local_mmr(UVH_NODE_PRESENT_TABLE + i * 8);
- 			pr_info("UV: NODE_PRESENT(%d) = 0x%016lx\n", i, np);
--
-+			uv_pb += hweight64(np);
-+		}
-+	}
-+	if (UVH_NODE_PRESENT_0) {
-+		np = uv_read_local_mmr(UVH_NODE_PRESENT_0);
-+		pr_info("UV: NODE_PRESENT_0 = 0x%016lx\n", np);
-+		uv_pb += hweight64(np);
-+	}
-+	if (UVH_NODE_PRESENT_1) {
-+		np = uv_read_local_mmr(UVH_NODE_PRESENT_1);
-+		pr_info("UV: NODE_PRESENT_1 = 0x%016lx\n", np);
- 		uv_pb += hweight64(np);
- 	}
- 	if (uv_possible_blades != uv_pb)
- 		uv_possible_blades = uv_pb;
+-	/* Accommodate different UV arch BIOSes */
++	/* Different returns from different UV BIOS versions */
+ 	mmr = uv_early_read_mmr(UVH_TSC_SYNC_MMR);
+ 	mmr_shift =
+ 		is_uv2_hub() ? UVH_TSC_SYNC_SHIFT_UV2K : UVH_TSC_SYNC_SHIFT;
+ 	sync_state = (mmr >> mmr_shift) & UVH_TSC_SYNC_MASK;
+ 
++	/* Check if TSC is valid for all sockets */
+ 	switch (sync_state) {
+ 	case UVH_TSC_SYNC_VALID:
+ 		state = "in sync";
+-		valid = true;
++		mark_tsc_async_resets("UV BIOS");
+ 		break;
+ 
+-	case UVH_TSC_SYNC_INVALID:
+-		state = "unstable";
+-		valid = false;
++	/* If BIOS state unknown, don't do anything */
++	case UVH_TSC_SYNC_UNKNOWN:
++		state = "unknown";
+ 		break;
 +
-+	pr_info("UV: number nodes/possible blades %d\n", uv_pb);
++	/* Otherwise, BIOS indicates problem with TSC */
+ 	default:
+-		state = "unknown: assuming valid";
+-		valid = true;
++		state = "unstable";
++		mark_tsc_unstable("UV BIOS");
+ 		break;
+ 	}
+ 	pr_info("UV: TSC sync state from BIOS:0%d(%s)\n", sync_state, state);
+-
+-	/* Mark flag that says TSC != 0 is valid for socket 0 */
+-	if (valid)
+-		mark_tsc_async_resets("UV BIOS");
+-	else
+-		mark_tsc_unstable("UV BIOS");
  }
  
- static void __init build_socket_tables(void)
+ /* Selector for (4|4A|5) structs */
 
