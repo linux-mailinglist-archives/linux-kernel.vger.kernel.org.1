@@ -2,106 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0EC125FF20
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 18:28:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9839225FF23
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 18:28:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730629AbgIGQ2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 12:28:13 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:55838 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729907AbgIGOcx (ORCPT
+        id S1730271AbgIGQ2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 12:28:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43586 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729909AbgIGOcx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 7 Sep 2020 10:32:53 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 087EW19q113953;
-        Mon, 7 Sep 2020 09:32:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1599489121;
-        bh=MrJ8oniUAvkpJjFUq2IygbIoO9wyGKNWBqzzRnaJdfQ=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=uTk/+NJ2x0OKWkJuUuziM8OUrVHTH2oIuF2/o06X6MLgm0OM6BR9XoRWvx3paa1up
-         P63yF8MMJN1LPUkAj5YI1aZy0+EC14Xrx2hYeQ2fOosFwZ9SEAaJPryhcjq9tpmP9t
-         tn6Q/xajwjj8T99Ro9C2Y2PR+n1TXhaUr4yoU5Ww=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 087EW1pY066922
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 7 Sep 2020 09:32:01 -0500
-Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 7 Sep
- 2020 09:32:00 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 7 Sep 2020 09:32:00 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 087EW08r106572;
-        Mon, 7 Sep 2020 09:32:00 -0500
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-To:     "David S. Miller" <davem@davemloft.net>, <netdev@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Murali Karicheri <m-karicheri2@ti.com>
-CC:     Sekhar Nori <nsekhar@ti.com>, <linux-kernel@vger.kernel.org>,
-        <linux-omap@vger.kernel.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>
-Subject: [PATCH net-next v2 9/9] net: ethernet: ti: ale: add support for multi port k3 cpsw versions
-Date:   Mon, 7 Sep 2020 17:31:43 +0300
-Message-ID: <20200907143143.13735-10-grygorii.strashko@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200907143143.13735-1-grygorii.strashko@ti.com>
-References: <20200907143143.13735-1-grygorii.strashko@ti.com>
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67994C061574;
+        Mon,  7 Sep 2020 07:32:06 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id b19so16338459lji.11;
+        Mon, 07 Sep 2020 07:32:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Ofy7ZMVoqjvyTlxeeuL9h0P/hht6T3NltPSUDtHJ0KE=;
+        b=vX+Z4WVx7eFg5vnkA4Jhui6+VxcDMXwA1C/U7uTPx9uZqE6ws2rUh7GD0mtWmLY+ut
+         dsQvHx4ZQzcJirbpwQBb9Zu0YwSAnMhkxgqTI7z9fg6iQuxChmR+Fn7/ifxfaltZwUQC
+         Wq5FVa6PiaaZ19rX2kTYhjkE5JJKiMn4BzVdX63eKkm4mSrjP5tozltKSAydkPXEkQ87
+         eXBNbLnMBuDdQ1EK2tlY9asSEyAYdNnuV9ABAhcjlQRm1wqthpAr/QhcDdaYakTzGA1A
+         rzUUnlFN/B9pk/AeCcQDf9JNaaEkGRC6bpgvM3gSpWxKafiBXu95NwVwIquohDRqttJn
+         Zn1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Ofy7ZMVoqjvyTlxeeuL9h0P/hht6T3NltPSUDtHJ0KE=;
+        b=d269Qq/ycrZ891qqmPaQhOrxl/kLgV7xqyTVruwb4bHRLbD5IOAJt4efhVcFGPSmhR
+         jVKy5iABAMMMX50FFPbdjZTM+jcFaSWdImGhelH8mQQxRC/KkqgpG1n+Z9DvaxSYGX6L
+         IQGRSPjJiqdO7gN2stb0G7v1cMKbobboqaI2+hCpa7X6koi9B3sA/8X6sOYep7tYV+Ka
+         s6zf675b6o0dLu7jmcRxLRdCD0TRtGxWcGmJL6AQ07kOHjP8e0+YB9jmEXPfP80jBGMZ
+         BkI0F2KmHBNhcbk3XU2vpbilnwe2bBpj2UYw0lw3cX4tlODc8aaEfNmDK11ShPk12Ysr
+         290A==
+X-Gm-Message-State: AOAM533xKbV5bAnndtRDoRMkI1NzQjeEHtx8BoEldHLLHeIW57j86VCv
+        o+mJ+/tjlQIQLPu/Ashty8tI1S1gD1g=
+X-Google-Smtp-Source: ABdhPJwe7QvksfELWM6mw/4N9gawNqQNoQimqKF9TUdngnJpm9X6w2JplWBJrigWolgKM3jNe4nKgw==
+X-Received: by 2002:a05:651c:506:: with SMTP id o6mr10876663ljp.233.1599489120157;
+        Mon, 07 Sep 2020 07:32:00 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
+        by smtp.googlemail.com with ESMTPSA id u22sm6783238lji.65.2020.09.07.07.31.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Sep 2020 07:31:59 -0700 (PDT)
+Subject: Re: [PATCH v5 06/36] i2c: tegra: Runtime PM always available on Tegra
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        linux-tegra@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20200906185039.22700-1-digetx@gmail.com>
+ <20200906185039.22700-7-digetx@gmail.com>
+ <CAHp75VevXe3c2LGF3jZyDfvPpRAz+-GQKvXEO4OKvuur=RgXCQ@mail.gmail.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <f9ec5178-e38e-ed9a-25f8-21e53ccd31d1@gmail.com>
+Date:   Mon, 7 Sep 2020 17:31:58 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <CAHp75VevXe3c2LGF3jZyDfvPpRAz+-GQKvXEO4OKvuur=RgXCQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The TI J721E (CPSW9g) ALE version is similar, in general, to Sitara AM3/4/5
-CPSW ALE, but has more extended functions and different ALE VLAN entry
-format.
+07.09.2020 11:10, Andy Shevchenko пишет:
+> On Sun, Sep 6, 2020 at 9:51 PM Dmitry Osipenko <digetx@gmail.com> wrote:
+>>
+>> The runtime PM is guaranteed to be always available on Tegra after commit
+>> 40b2bb1b132a ("ARM: tegra: enforce PM requirement"). Hence let's remove
+>> all the RPM-availability checking and handling from the code.
+> 
+>> +       ret = pm_runtime_get_sync(i2c_dev->dev);
+>> +       if (ret < 0) {
+>> +               dev_err(dev, "runtime resume failed\n");
+>> +               goto disable_rpm;
+> 
+> As in the original code here is a refcount leak.
+> Should call pm_runtime_put_noidle(). (Possible to use goto put_rpm;
+> but in that case the code a bit confusing to the reader)
 
-This patch adds support for for multi port TI J721E (CPSW9g) ALE variant.
+Good point! I already forgot about this RPM API problem! I'll add a
+patch to address this.
 
-Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
----
- drivers/net/ethernet/ti/cpsw_ale.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
-
-diff --git a/drivers/net/ethernet/ti/cpsw_ale.c b/drivers/net/ethernet/ti/cpsw_ale.c
-index 0dd0c3329dee..a6a455c32628 100644
---- a/drivers/net/ethernet/ti/cpsw_ale.c
-+++ b/drivers/net/ethernet/ti/cpsw_ale.c
-@@ -191,6 +191,14 @@ static const struct ale_entry_fld vlan_entry_nu[ALE_ENT_VID_LAST] = {
- 	ALE_ENTRY_FLD(ALE_ENT_VID_REG_MCAST_IDX, 44, 3),
- };
- 
-+/* K3 j721e/j7200 cpsw9g/5g, am64x cpsw3g  */
-+static const struct ale_entry_fld vlan_entry_k3_cpswxg[] = {
-+	ALE_ENTRY_FLD_DYN_MSK_SIZE(ALE_ENT_VID_MEMBER_LIST, 0),
-+	ALE_ENTRY_FLD_DYN_MSK_SIZE(ALE_ENT_VID_UNREG_MCAST_MSK, 12),
-+	ALE_ENTRY_FLD_DYN_MSK_SIZE(ALE_ENT_VID_FORCE_UNTAGGED_MSK, 24),
-+	ALE_ENTRY_FLD_DYN_MSK_SIZE(ALE_ENT_VID_REG_MCAST_MSK, 36),
-+};
-+
- DEFINE_ALE_FIELD(entry_type,		60,	2)
- DEFINE_ALE_FIELD(vlan_id,		48,	12)
- DEFINE_ALE_FIELD(mcast_state,		62,	2)
-@@ -1213,6 +1221,12 @@ static const struct cpsw_ale_dev_id cpsw_ale_id_match[] = {
- 		.nu_switch_ale = true,
- 		.vlan_entry_tbl = vlan_entry_nu,
- 	},
-+	{
-+		.dev_id = "j721e-cpswxg",
-+		.features = CPSW_ALE_F_STATUS_REG | CPSW_ALE_F_HW_AUTOAGING,
-+		.major_ver_mask = 0x7,
-+		.vlan_entry_tbl = vlan_entry_k3_cpswxg,
-+	},
- 	{ },
- };
- 
--- 
-2.17.1
-
+Would be great if anyone could put effort into changing the default
+get_sync() behaviour and add get_sync_nofail(). Otherwise this will be a
+never ending problem.
