@@ -2,94 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B66625F993
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 13:35:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78F1825F977
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 13:31:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729142AbgIGLfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 07:35:40 -0400
-Received: from foss.arm.com ([217.140.110.172]:33510 "EHLO foss.arm.com"
+        id S1729049AbgIGLbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 07:31:12 -0400
+Received: from mga07.intel.com ([134.134.136.100]:14653 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729135AbgIGLfH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 07:35:07 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C99461045;
-        Mon,  7 Sep 2020 04:02:13 -0700 (PDT)
-Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5E3693F66E;
-        Mon,  7 Sep 2020 04:02:12 -0700 (PDT)
-Date:   Mon, 7 Sep 2020 12:02:07 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Stanimir Varbanov <svarbanov@mm-sol.com>, stable@vger.kernel.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] PCI: qcom: Make sure PCIe is reset before init for rev
- 2.1.0
-Message-ID: <20200907110207.GA7573@e121166-lin.cambridge.arm.com>
-References: <20200901124955.137-1-ansuelsmth@gmail.com>
+        id S1728913AbgIGLY6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 07:24:58 -0400
+IronPort-SDR: wwd0a+z9M75QE6cjLp5ZXtBLRm9ILwtaQVtT1vMKEPMXPK5dQ+6LMcNa+H0drDelarUCsAEXhr
+ zXTcePAcDz5g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9736"; a="222196737"
+X-IronPort-AV: E=Sophos;i="5.76,401,1592895600"; 
+   d="scan'208";a="222196737"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2020 04:05:47 -0700
+IronPort-SDR: /v5b++m3kkkbfFA9wbim3ZJdffEEVpxjZhqPtTvjdgKUi4hmW4iO8F388Pcbzls2iqus21xquf
+ ByBivjDzRdqQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,401,1592895600"; 
+   d="scan'208";a="303700090"
+Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.174])
+  by orsmga006.jf.intel.com with SMTP; 07 Sep 2020 04:05:45 -0700
+Received: by stinkbox (sSMTP sendmail emulation); Mon, 07 Sep 2020 14:05:44 +0300
+Date:   Mon, 7 Sep 2020 14:05:44 +0300
+From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To:     Zwane Mwaikambo <zwane@yosper.io>
+Cc:     Lyude Paul <lyude@redhat.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>, zwanem@gmail.com,
+        dkwon@redhat.com, Linux Kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH]] drm/dp check aux_dev before use in
+ drm_dp_aux_dev_get_by_minor()
+Message-ID: <20200907110544.GE6112@intel.com>
+References: <alpine.DEB.2.21.2008101004110.27032@montezuma.home>
+ <20200811085830.GZ2352366@phenom.ffwll.local>
+ <alpine.DEB.2.21.2008111514210.35094@montezuma.home>
+ <CAKMK7uHxikojLQNbsnnfDfGZ3tFP9CRUTzvr+DsZghzQupaBGg@mail.gmail.com>
+ <a1141faf8c6a0a924d87132fb4a297cd6d47e09d.camel@redhat.com>
+ <alpine.DEB.2.21.2008121314020.39850@montezuma.home>
+ <alpine.DEB.2.21.2009031042400.44355@montezuma.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20200901124955.137-1-ansuelsmth@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <alpine.DEB.2.21.2009031042400.44355@montezuma.home>
+X-Patchwork-Hint: comment
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 01, 2020 at 02:49:54PM +0200, Ansuel Smith wrote:
-> Qsdk U-Boot can incorrectly leave the PCIe interface in an undefined
-> state if bootm command is used instead of bootipq. This is caused by the
-> not deinit of PCIe when bootm is called. Reset the PCIe before init
-> anyway to fix this U-Boot bug.
+On Fri, Sep 04, 2020 at 12:21:26AM -0700, Zwane Mwaikambo wrote:
+> I observed this when unplugging a DP monitor whilst a computer is asleep 
+> and then waking it up. This left DP chardev nodes still being present on 
+> the filesystem and accessing these device nodes caused an oops because 
+> drm_dp_aux_dev_get_by_minor() assumes a device exists if it is opened. 
+> This can also be reproduced by creating a device node with mknod(1) and 
+> issuing an open(2)
 > 
-> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-> Fixes: 82a823833f4e ("PCI: qcom: Add Qualcomm PCIe controller driver")
-> Cc: stable@vger.kernel.org # v4.19+
+> [166164.933198] BUG: kernel NULL pointer dereference, address: 0000000000000018
+> [166164.933202] #PF: supervisor read access in kernel mode
+> [166164.933204] #PF: error_code(0x0000) - not-present page
+> [166164.933205] PGD 0 P4D 0 
+> [166164.933208] Oops: 0000 [#1] PREEMPT SMP NOPTI
+> [166164.933211] CPU: 4 PID: 99071 Comm: fwupd Tainted: G        W         
+> 5.8.0-rc6+ #1
+> [166164.933213] Hardware name: LENOVO 20RD002VUS/20RD002VUS, BIOS R16ET25W 
+> (1.11 ) 04/21/2020
+> [166164.933232] RIP: 0010:drm_dp_aux_dev_get_by_minor+0x29/0x70 
+> [drm_kms_helper]
+> [166164.933234] Code: 00 0f 1f 44 00 00 55 48 89 e5 41 54 41 89 fc 48 c7 
+> c7 60 01 a4 c0 e8 26 ab 30 d7 44 89 e6 48 c7 c7 80 01 a4 c0 e8 47 94 d6 d6 
+> <8b> 50 18 49 89 c4 48 8d 78 18 85 d2 74 33 8d 4a 01 89 d0 f0 0f b1
+> [166164.933236] RSP: 0018:ffffb7d7c41cbbf0 EFLAGS: 00010246
+> [166164.933237] RAX: 0000000000000000 RBX: ffff8a90001fe900 RCX: 0000000000000000
+> [166164.933238] RDX: 0000000000000000 RSI: 0000000000000003 RDI: ffffffffc0a40180
+> [166164.933239] RBP: ffffb7d7c41cbbf8 R08: 0000000000000000 R09: ffff8a93e157d6d0
+> [166164.933240] R10: 0000000000000000 R11: ffffffffc0a40188 R12: 0000000000000003
+> [166164.933241] R13: ffff8a9402200e80 R14: ffff8a90001fe900 R15: 0000000000000000
+> [166164.933244] FS:  00007f7fb041eb00(0000) GS:ffff8a9411500000(0000) 
+> knlGS:0000000000000000
+> [166164.933245] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [166164.933246] CR2: 0000000000000018 CR3: 00000000352c2003 CR4: 00000000003606e0
+> [166164.933247] Call Trace:
+> [166164.933264]  auxdev_open+0x1b/0x40 [drm_kms_helper]
+> [166164.933278]  chrdev_open+0xa7/0x1c0
+> [166164.933282]  ? cdev_put.part.0+0x20/0x20
+> [166164.933287]  do_dentry_open+0x161/0x3c0
+> [166164.933291]  vfs_open+0x2d/0x30
+> [166164.933297]  path_openat+0xb27/0x10e0
+> [166164.933306]  ? atime_needs_update+0x73/0xd0
+> [166164.933309]  do_filp_open+0x91/0x100
+> [166164.933313]  ? __alloc_fd+0xb2/0x150
+> [166164.933316]  do_sys_openat2+0x210/0x2d0
+> [166164.933318]  do_sys_open+0x46/0x80
+> [166164.933320]  __x64_sys_openat+0x20/0x30
+> [166164.933328]  do_syscall_64+0x52/0xc0
+> [166164.933336]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> 
+> 
+> (gdb) disassemble drm_dp_aux_dev_get_by_minor+0x29
+> Dump of assembler code for function drm_dp_aux_dev_get_by_minor:
+>    0x0000000000017b10 <+0>:     callq  0x17b15 <drm_dp_aux_dev_get_by_minor+5>
+>    0x0000000000017b15 <+5>:     push   %rbp
+>    0x0000000000017b16 <+6>:     mov    %rsp,%rbp
+>    0x0000000000017b19 <+9>:     push   %r12
+>    0x0000000000017b1b <+11>:    mov    %edi,%r12d
+>    0x0000000000017b1e <+14>:    mov    $0x0,%rdi
+>    0x0000000000017b25 <+21>:    callq  0x17b2a <drm_dp_aux_dev_get_by_minor+26>
+>    0x0000000000017b2a <+26>:    mov    %r12d,%esi
+>    0x0000000000017b2d <+29>:    mov    $0x0,%rdi
+>    0x0000000000017b34 <+36>:    callq  0x17b39 <drm_dp_aux_dev_get_by_minor+41>
+>    0x0000000000017b39 <+41>:    mov    0x18(%rax),%edx <=========
+>    0x0000000000017b3c <+44>:    mov    %rax,%r12
+>    0x0000000000017b3f <+47>:    lea    0x18(%rax),%rdi
+>    0x0000000000017b43 <+51>:    test   %edx,%edx
+>    0x0000000000017b45 <+53>:    je     0x17b7a <drm_dp_aux_dev_get_by_minor+106>
+>    0x0000000000017b47 <+55>:    lea    0x1(%rdx),%ecx
+>    0x0000000000017b4a <+58>:    mov    %edx,%eax
+>    0x0000000000017b4c <+60>:    lock cmpxchg %ecx,(%rdi)
+>    0x0000000000017b50 <+64>:    jne    0x17b76 <drm_dp_aux_dev_get_by_minor+102>
+>    0x0000000000017b52 <+66>:    test   %edx,%edx
+>    0x0000000000017b54 <+68>:    js     0x17b6d <drm_dp_aux_dev_get_by_minor+93>
+>    0x0000000000017b56 <+70>:    test   %ecx,%ecx
+>    0x0000000000017b58 <+72>:    js     0x17b6d <drm_dp_aux_dev_get_by_minor+93>
+>    0x0000000000017b5a <+74>:    mov    $0x0,%rdi
+>    0x0000000000017b61 <+81>:    callq  0x17b66 <drm_dp_aux_dev_get_by_minor+86>
+>    0x0000000000017b66 <+86>:    mov    %r12,%rax
+>    0x0000000000017b69 <+89>:    pop    %r12
+>    0x0000000000017b6b <+91>:    pop    %rbp
+>    0x0000000000017b6c <+92>:    retq   
+>    0x0000000000017b6d <+93>:    xor    %esi,%esi
+>    0x0000000000017b6f <+95>:    callq  0x17b74 <drm_dp_aux_dev_get_by_minor+100>
+>    0x0000000000017b74 <+100>:   jmp    0x17b5a <drm_dp_aux_dev_get_by_minor+74>
+>    0x0000000000017b76 <+102>:   mov    %eax,%edx
+>    0x0000000000017b78 <+104>:   jmp    0x17b43 <drm_dp_aux_dev_get_by_minor+51>
+>    0x0000000000017b7a <+106>:   xor    %r12d,%r12d
+>    0x0000000000017b7d <+109>:   jmp    0x17b5a <drm_dp_aux_dev_get_by_minor+74>
+> End of assembler dump.
+> 
+> (gdb) list *drm_dp_aux_dev_get_by_minor+0x29
+> 0x17b39 is in drm_dp_aux_dev_get_by_minor (drivers/gpu/drm/drm_dp_aux_dev.c:65).
+> 60      static struct drm_dp_aux_dev *drm_dp_aux_dev_get_by_minor(unsigned index)
+> 61      {
+> 62              struct drm_dp_aux_dev *aux_dev = NULL;
+> 63
+> 64              mutex_lock(&aux_idr_mutex);
+> 65              aux_dev = idr_find(&aux_idr, index);
+> 66              if (!kref_get_unless_zero(&aux_dev->refcount))
+> 67                      aux_dev = NULL;
+> 68              mutex_unlock(&aux_idr_mutex);
+> 69
+> (gdb) p/x &((struct drm_dp_aux_dev *)(0x0))->refcount
+> $8 = 0x18
+> 
+> Looking at the caller, checks on the minor are pushed down to 
+> drm_dp_aux_dev_get_by_minor()
+> 
+> static int auxdev_open(struct inode *inode, struct file *file)
+> {
+>     unsigned int minor = iminor(inode);
+>     struct drm_dp_aux_dev *aux_dev;
+> 
+>     aux_dev = drm_dp_aux_dev_get_by_minor(minor); <====
+>     if (!aux_dev)
+>         return -ENODEV;
+> 
+>     file->private_data = aux_dev;
+>     return 0;
+> }
+> 
+> 
+> Fixes: e94cb37b34eb8 ("Add a drm_aux-dev module for reading/writing dpcd registers")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Zwane Mwaikambo <zwane@yosper.io>
 > ---
->  drivers/pci/controller/dwc/pcie-qcom.c | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
-
-Applied to pci/qcom, thanks.
-
-Lorenzo
-
-> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-> index 3aac77a295ba..82336bbaf8dc 100644
-> --- a/drivers/pci/controller/dwc/pcie-qcom.c
-> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
-> @@ -302,6 +302,9 @@ static void qcom_pcie_deinit_2_1_0(struct qcom_pcie *pcie)
->  	reset_control_assert(res->por_reset);
->  	reset_control_assert(res->ext_reset);
->  	reset_control_assert(res->phy_reset);
-> +
-> +	writel(1, pcie->parf + PCIE20_PARF_PHY_CTRL);
-> +
->  	regulator_bulk_disable(ARRAY_SIZE(res->supplies), res->supplies);
->  }
->  
-> @@ -314,6 +317,16 @@ static int qcom_pcie_init_2_1_0(struct qcom_pcie *pcie)
->  	u32 val;
->  	int ret;
->  
-> +	/* reset the PCIe interface as uboot can leave it undefined state */
-> +	reset_control_assert(res->pci_reset);
-> +	reset_control_assert(res->axi_reset);
-> +	reset_control_assert(res->ahb_reset);
-> +	reset_control_assert(res->por_reset);
-> +	reset_control_assert(res->ext_reset);
-> +	reset_control_assert(res->phy_reset);
-> +
-> +	writel(1, pcie->parf + PCIE20_PARF_PHY_CTRL);
-> +
->  	ret = regulator_bulk_enable(ARRAY_SIZE(res->supplies), res->supplies);
->  	if (ret < 0) {
->  		dev_err(dev, "cannot enable regulators\n");
-> -- 
-> 2.27.0
 > 
+> diff --git a/drivers/gpu/drm/drm_dp_aux_dev.c b/drivers/gpu/drm/drm_dp_aux_dev.c
+> index 2510717d5a08..e25181bf2c48 100644
+> --- a/drivers/gpu/drm/drm_dp_aux_dev.c
+> +++ b/drivers/gpu/drm/drm_dp_aux_dev.c
+> @@ -63,7 +63,7 @@ static struct drm_dp_aux_dev *drm_dp_aux_dev_get_by_minor(unsigned index)
+>  
+>  	mutex_lock(&aux_idr_mutex);
+>  	aux_dev = idr_find(&aux_idr, index);
+> -	if (!kref_get_unless_zero(&aux_dev->refcount))
+> +	if (aux_dev && !kref_get_unless_zero(&aux_dev->refcount))
+
+Dejavu
+
+https://lists.freedesktop.org/archives/dri-devel/2019-May/218855.html
+https://lists.freedesktop.org/archives/dri-devel/2019-July/226168.html
+
+I guess we just got stuck waiting for confirmation that it reproduces
+with the bogus device node trick.
+
+>  		aux_dev = NULL;
+>  	mutex_unlock(&aux_idr_mutex);
+>  
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+
+-- 
+Ville Syrjälä
+Intel
