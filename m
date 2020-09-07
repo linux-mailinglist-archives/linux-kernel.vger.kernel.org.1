@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CBB125F226
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 05:45:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A646B25F228
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 05:45:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726616AbgIGDp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Sep 2020 23:45:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56928 "EHLO
+        id S1726653AbgIGDpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Sep 2020 23:45:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726568AbgIGDpY (ORCPT
+        with ESMTP id S1726568AbgIGDpb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Sep 2020 23:45:24 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B012C061573
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Sep 2020 20:45:22 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id w7so7921898pfi.4
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Sep 2020 20:45:22 -0700 (PDT)
+        Sun, 6 Sep 2020 23:45:31 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDAC0C061574
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Sep 2020 20:45:28 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id m8so2098563pgi.3
+        for <linux-kernel@vger.kernel.org>; Sun, 06 Sep 2020 20:45:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=aCKz8nVuklulWh7GFYMhEjxq6Ekku02F9Z+kP7jt6fk=;
-        b=EyVQaIXUO2fxakmEH2ScvEf6gpwcdL7D352Zs2su5yOvIUb0BZJwPbPtMYXm+KM+1K
-         zRMgZzL1jmJvOXwmXqX2Zv/eVFXqkVv2ZbD0iIxZ98EQSyuKunJIqm3Yolhzq4ifXg8j
-         XxOk7nnf5Np6IeDFS/p9jXJMPagj2UO1j66/NhtazJGvYA8dCPbepFr2XgmO1tG4ZhvM
-         h0Tvr/DIL404IG9aw3mZdByhLhD+dTv3L4dxIsKLYrsJqNnbd+Uf/V2IalI3CiY/09Qe
-         KPmOzC3PaEBSOROOvWyqYtaqADJ6De7Z89Z1lgm+gAtw1X/aTZghCJaxe7SVg9qswVoy
-         9i7w==
+        bh=PgKa/8P8JpumyV74AKHX3waSKtY+T2XKr+2JUnMHcys=;
+        b=hXay9QC9PqqrIzeZyAOUOuX7E7jIwPtvXYbJNcg0h83JL/DQ1yZOo73NB/m/GsStZ+
+         Ic68Ib8QHYqs0W4YlCPlLo8TGYXm1iw7HAe4w8Yxgl632dRpEKaUt9XI/ydHXIWu2I4L
+         kpVZcySmja6hQxiC4UChgblunlYUVu+mGoLUjto2HTb0tX8jC8e7zeE38RJk5AKa/M/V
+         L5Ad8alrfZik8dsFHqzTrwCHq3UeNkI3l68TxE6RZremNSUIKo24zaNfAvTE8JgNfymG
+         1IRo3Md8fUG8Ieqdr0NrktR4e4Hi52x/OJbCzwrDfjWxQz2u2o+MGZynFaoIrrmUvIV+
+         6I1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
          :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=aCKz8nVuklulWh7GFYMhEjxq6Ekku02F9Z+kP7jt6fk=;
-        b=kT2QMIExp6VFdSjP/iAXYFuavrmtugr9/uMJXQXVAptUNdrzCqWnI651icPNYiaEpg
-         8D0uznPQ0nWfwJOfsEn5oD6R5CQITILlMnG+/DZyyWOZwBAC0jprOsxc10bM+h0pbQk6
-         3bs0n28dG7b6z3pwnHPjwe5cfyploJUNob4i11aHAe2FaanRAt7h+vTrvJVMvHRwmb0h
-         x780EE+qhs/wjhUgOG6sFWJEfuLAJ+PHhla8hBEXDi3+OGJpy9olKXUKln8oZ1+oCKGr
-         b2jYHCsILdZ9bgXbJDWfo0VzlkPhFEj7Zl3rTyivjEJ74Rk0x2pU9OPmK6VlTiEWMPzK
-         nH9g==
-X-Gm-Message-State: AOAM530rJUNd7lvnG9GYZvs78caB8IZvlzAIgc7zPIdZCogjoyh8loB0
-        pWL24c11sC0hNs1iJ31hpBc=
-X-Google-Smtp-Source: ABdhPJxZUNiVslsQGKD0o0lt7KHS6pGZRXlokcsbuMlXGon7WbSg9bE1S0ORtmSY53iH6qk6CbWlUw==
-X-Received: by 2002:aa7:8285:: with SMTP id s5mr19185495pfm.226.1599450321772;
-        Sun, 06 Sep 2020 20:45:21 -0700 (PDT)
+        bh=PgKa/8P8JpumyV74AKHX3waSKtY+T2XKr+2JUnMHcys=;
+        b=APJ4Lta7qshPnsBnxmMUbMosLaSazTPnTFGt205nMhJ7qMvjMare6XT8tWJ3GMFw/f
+         YMPR/h4Kk2Vl06IjOyXjUtiMhf5qbRyZ1H6fC0wEXeZC2zkmgkw5xLF6nxGylGbEpyMX
+         HxSdjz2p6NTzbi4DYIxQNhECIvJqE3l7+sBZR+qQ4E1ZXCJLUYwBl6ruRmfB6t1S2Sjs
+         o+j6guHjP49qEZrxlBYuL4FMxT0h84P1Q6JPEbDtyz+8qMV7xUanQXDQFVNdx8VaFk3C
+         QXP3Y3MT1Co2J9gxmoa++bBP5t3Doy6Fab127yRX6tLhzV3lzLjnI0ciKLyFCd1jA63s
+         wWgw==
+X-Gm-Message-State: AOAM530RxbYQRhHSHDFSazKm9PfJia/QZTMgh9YpTzwzkgDwu/uEhhDE
+        6YaUhN2bGsiQxXam423wNF4=
+X-Google-Smtp-Source: ABdhPJxIilmaMd68Ebk45KbButwTciRD0P9llB0uudsL8TehBQxLVLFR5FX2rG+R/dt5rnyBrDoW0g==
+X-Received: by 2002:a62:7809:: with SMTP id t9mr18427096pfc.105.1599450326184;
+        Sun, 06 Sep 2020 20:45:26 -0700 (PDT)
 Received: from balhae.roam.corp.google.com ([101.235.31.111])
-        by smtp.gmail.com with ESMTPSA id l123sm11099672pgl.24.2020.09.06.20.45.17
+        by smtp.gmail.com with ESMTPSA id l123sm11099672pgl.24.2020.09.06.20.45.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 06 Sep 2020 20:45:21 -0700 (PDT)
+        Sun, 06 Sep 2020 20:45:25 -0700 (PDT)
 From:   Namhyung Kim <namhyung@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Jiri Olsa <jolsa@redhat.com>
@@ -59,9 +59,9 @@ Cc:     Ingo Molnar <mingo@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
         Andi Kleen <andi@firstfloor.org>,
         Ian Rogers <irogers@google.com>
-Subject: [PATCH 2/9] perf parse-event: Fix cpu map leaks
-Date:   Mon,  7 Sep 2020 12:44:55 +0900
-Message-Id: <20200907034502.753230-3-namhyung@kernel.org>
+Subject: [PATCH 3/9] perf parse-event: Fix memory leak in evsel->unit
+Date:   Mon,  7 Sep 2020 12:44:56 +0900
+Message-Id: <20200907034502.753230-4-namhyung@kernel.org>
 X-Mailer: git-send-email 2.28.0.526.ge36021eeef-goog
 In-Reply-To: <20200907034502.753230-1-namhyung@kernel.org>
 References: <20200907034502.753230-1-namhyung@kernel.org>
@@ -72,70 +72,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Like evlist cpu map, evsel's cpu map should have proper refcount by
-releasing the original count after creation.
+The evsel->unit borrows a pointer of pmu event or alias instead of
+owns a string.  But tool event (duration_time) passes a result of
+strdup() caused a leak.
 
-This fixes the following ASAN report:
+It was found by ASAN during metric test:
 
-  Direct leak of 840 byte(s) in 70 object(s) allocated from:
-    #0 0x7fe36703f628 in malloc (/lib/x86_64-linux-gnu/libasan.so.5+0x107628)
-    #1 0x559fbbf611ca in cpu_map__trim_new /home/namhyung/project/linux/tools/lib/perf/cpumap.c:79
-    #2 0x559fbbf6229c in perf_cpu_map__new /home/namhyung/project/linux/tools/lib/perf/cpumap.c:237
-    #3 0x559fbbcc6c6d in __add_event util/parse-events.c:357
-    #4 0x559fbbcc6c6d in add_event_tool util/parse-events.c:408
-    #5 0x559fbbcc6c6d in parse_events_add_tool util/parse-events.c:1414
-    #6 0x559fbbd8474d in parse_events_parse util/parse-events.y:439
-    #7 0x559fbbcc95da in parse_events__scanner util/parse-events.c:2096
-    #8 0x559fbbcc95da in __parse_events util/parse-events.c:2141
-    #9 0x559fbbc2788b in check_parse_id tests/pmu-events.c:406
-    #10 0x559fbbc2788b in check_parse_id tests/pmu-events.c:393
-    #11 0x559fbbc2788b in check_parse_fake tests/pmu-events.c:436
-    #12 0x559fbbc2788b in metric_parse_fake tests/pmu-events.c:553
-    #13 0x559fbbc27e2d in test_parsing_fake tests/pmu-events.c:599
-    #14 0x559fbbc27e2d in test_parsing_fake tests/pmu-events.c:574
-    #15 0x559fbbc0109b in run_test tests/builtin-test.c:410
-    #16 0x559fbbc0109b in test_and_print tests/builtin-test.c:440
-    #17 0x559fbbc03e69 in __cmd_test tests/builtin-test.c:695
-    #18 0x559fbbc03e69 in cmd_test tests/builtin-test.c:807
-    #19 0x559fbbc691f4 in run_builtin /home/namhyung/project/linux/tools/perf/perf.c:312
-    #20 0x559fbbb071a8 in handle_internal_command /home/namhyung/project/linux/tools/perf/perf.c:364
-    #21 0x559fbbb071a8 in run_argv /home/namhyung/project/linux/tools/perf/perf.c:408
-    #22 0x559fbbb071a8 in main /home/namhyung/project/linux/tools/perf/perf.c:538
-    #23 0x7fe366b68cc9 in __libc_start_main ../csu/libc-start.c:308
+  Direct leak of 210 byte(s) in 70 object(s) allocated from:
+    #0 0x7fe366fca0b5 in strdup (/lib/x86_64-linux-gnu/libasan.so.5+0x920b5)
+    #1 0x559fbbcc6ea3 in add_event_tool util/parse-events.c:414
+    #2 0x559fbbcc6ea3 in parse_events_add_tool util/parse-events.c:1414
+    #3 0x559fbbd8474d in parse_events_parse util/parse-events.y:439
+    #4 0x559fbbcc95da in parse_events__scanner util/parse-events.c:2096
+    #5 0x559fbbcc95da in __parse_events util/parse-events.c:2141
+    #6 0x559fbbc28555 in check_parse_id tests/pmu-events.c:406
+    #7 0x559fbbc28555 in check_parse_id tests/pmu-events.c:393
+    #8 0x559fbbc28555 in check_parse_cpu tests/pmu-events.c:415
+    #9 0x559fbbc28555 in test_parsing tests/pmu-events.c:498
+    #10 0x559fbbc0109b in run_test tests/builtin-test.c:410
+    #11 0x559fbbc0109b in test_and_print tests/builtin-test.c:440
+    #12 0x559fbbc03e69 in __cmd_test tests/builtin-test.c:695
+    #13 0x559fbbc03e69 in cmd_test tests/builtin-test.c:807
+    #14 0x559fbbc691f4 in run_builtin /home/namhyung/project/linux/tools/perf/perf.c:312
+    #15 0x559fbbb071a8 in handle_internal_command /home/namhyung/project/linux/tools/perf/perf.c:364
+    #16 0x559fbbb071a8 in run_argv /home/namhyung/project/linux/tools/perf/perf.c:408
+    #17 0x559fbbb071a8 in main /home/namhyung/project/linux/tools/perf/perf.c:538
+    #18 0x7fe366b68cc9 in __libc_start_main ../csu/libc-start.c:308
 
-And I've failed which commit introduced this bug as the code was
-heavily changed since then. ;-/
-
+Fixes: f0fbb114e3025 ("perf stat: Implement duration_time as a proper event")
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/perf/util/parse-events.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ tools/perf/util/parse-events.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-index c4d2394e2b2d..b35e4bb1cecb 100644
+index b35e4bb1cecb..ece321ccf599 100644
 --- a/tools/perf/util/parse-events.c
 +++ b/tools/perf/util/parse-events.c
-@@ -360,8 +360,11 @@ __add_event(struct list_head *list, int *idx,
- 		event_attr_init(attr);
- 
- 	evsel = evsel__new_idx(attr, *idx);
--	if (!evsel)
-+	if (!evsel) {
-+		if (!pmu)
-+			perf_cpu_map__put(cpus);
- 		return NULL;
-+	}
- 
- 	(*idx)++;
- 	evsel->core.cpus   = perf_cpu_map__get(cpus);
-@@ -369,6 +372,8 @@ __add_event(struct list_head *list, int *idx,
- 	evsel->core.system_wide = pmu ? pmu->is_uncore : false;
- 	evsel->auto_merge_stats = auto_merge_stats;
- 
-+	if (!pmu)
-+		perf_cpu_map__put(cpus);
- 	if (name)
- 		evsel->name = strdup(name);
+@@ -416,7 +416,7 @@ static int add_event_tool(struct list_head *list, int *idx,
+ 		return -ENOMEM;
+ 	evsel->tool_event = tool_event;
+ 	if (tool_event == PERF_TOOL_DURATION_TIME)
+-		evsel->unit = strdup("ns");
++		evsel->unit = "ns";
+ 	return 0;
+ }
  
 -- 
 2.28.0.526.ge36021eeef-goog
