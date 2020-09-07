@@ -2,112 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E674A25FC1A
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 16:29:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC45B25FC08
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 16:28:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729789AbgIGO3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 10:29:49 -0400
-Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:46885
-        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729786AbgIGOWH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 10:22:07 -0400
-X-IronPort-AV: E=Sophos;i="5.76,359,1592863200"; 
-   d="scan'208";a="358301232"
-Received: from abo-173-121-68.mrs.modulonet.fr (HELO hadrien) ([85.68.121.173])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 07 Sep 2020 16:18:57 +0200
-Date:   Mon, 7 Sep 2020 16:18:56 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Markus Elfring <Markus.Elfring@web.de>
-cc:     Dejin Zheng <zhengdejin5@gmail.com>,
-        Coccinelle <cocci@systeme.lip6.fr>,
-        Denis Efremov <efremov@linux.com>,
-        Gilles Muller <Gilles.Muller@lip6.fr>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nicolas Palix <nicolas.palix@imag.fr>,
-        kernel-janitors@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: =?UTF-8?Q?Re=3A_=5BPATCH=5D_Coccinelle=3A_api=3A_Add_SmPL_scr?=
- =?UTF-8?Q?ipt_=E2=80=9Cuse=5Fdevm=5Fplatform=5Fget=5Fand=5Fioremap=5Fre?=
- =?UTF-8?Q?source=2Ecocci=E2=80=9D?=
-In-Reply-To: <8aaa799f-0ec4-cfd0-854a-e1006d0d200a@web.de>
-Message-ID: <alpine.DEB.2.22.394.2009071618200.2476@hadrien>
-References: <25b804fd-0d04-475d-f614-26c03c9fd544@web.de> <5f9fdd59-4b0b-1cb5-c3a2-92efc5bb3841@web.de> <alpine.DEB.2.22.394.2009071357140.2476@hadrien> <477abcea-e008-e509-d03f-f2753ebdfb20@web.de> <alpine.DEB.2.22.394.2009071506350.2476@hadrien>
- <46d314d5-822e-3d73-2d70-015794556e56@web.de> <alpine.DEB.2.22.394.2009071544460.2476@hadrien> <8aaa799f-0ec4-cfd0-854a-e1006d0d200a@web.de>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        id S1729869AbgIGO2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 10:28:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50276 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729817AbgIGOWI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 10:22:08 -0400
+Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4378821481;
+        Mon,  7 Sep 2020 14:22:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599488527;
+        bh=T0OLbhI3b6Sj7Jv2x6WXbH/uamfr/jukm5TLqaMkvf0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ckECwtrM3NnyvKb9RcZ1ux02kwtc167Z79WuPxdKnxHssx2/1+BjKoTkbZ79ETUQD
+         AF79MIo3eY/rPd2Sx3VITyYhAAKu4XnTUkIQEphVwIfXDc3CcmBVNoFEswXaeCpvlR
+         kND3li/EzcessCRkdQ4EDUDTI71ug77tl3J4TEvY=
+Date:   Mon, 7 Sep 2020 10:22:06 -0400
+From:   Sasha Levin <sashal@kernel.org>
+To:     "H. Nikolaus Schaller" <hns@goldelico.com>
+Cc:     David Brazdil <dbrazdil@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Marc Zyngier <maz@kernel.org>
+Subject: Re: [BUG]: KVM: arm64: Fix symbol dependency in __hyp_call_panic_nvhe
+Message-ID: <20200907142206.GL8670@sasha-vm>
+References: <3750C774-62A4-4D02-8C07-6C98304F32F3@goldelico.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-540454265-1599488337=:2476"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <3750C774-62A4-4D02-8C07-6C98304F32F3@goldelico.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-
---8323329-540454265-1599488337=:2476
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-
-
-
-On Mon, 7 Sep 2020, Markus Elfring wrote:
-
-> >>>>>> +@replacement depends on patch@
-> >>>>>> +expression base, device1, device2, index, private, resource;
-> >>>>>> +@@
-> >>>>>> +(
-> >>>>>> +-resource = platform_get_resource(device1, IORESOURCE_MEM, index);
-> >>>>>> + base =
-> >>>>>> +-       devm_ioremap_resource
-> >>>>>> ++       devm_platform_get_and_ioremap_resource
-> >>>>>> +                             (
-> >>>>>> +-                             &
-> >>>>>> +                               device1
-> >>>>>> +-                                     ->dev
-> >>>>>> +                              ,
-> >>>>>> +-                             resource
-> >>>>>> ++                             index, &resource
-> >>>>>> +                             );
-> >>>>>> +|
-> >>>>>> +-private->res = platform_get_resource(device1, IORESOURCE_MEM, index);
-> >>>>>> + base =
-> >>>>>> +-       devm_ioremap_resource
-> >>>>>> ++       devm_platform_get_and_ioremap_resource
-> >>>>>> +                             (device2,
-> …
-> >> Both source code change patterns from these branches of a SmPL disjunction
-> >> work as I would expect it by the current Coccinelle software.
-> >> Would you like to clarify any remaining related open issues?
-> >
-> > In one case the first argument of devm_ioremap_resource has to be changed
-> > to produce the first argument of devm_platform_get_and_ioremap_resource
-> > and in the other case there is no such change.  "work as I would expect"
-> > is not a proper explanation of why this is correct.
+On Mon, Sep 07, 2020 at 03:29:40PM +0200, H. Nikolaus Schaller wrote:
+>Hi,
+>it seems as if your patch
 >
-> Would like to achieve that a SmPL script (like the one which I present here)
-> can help to adjust the implementation of the functions “mvebu_sei_probe”
-> and “hi655x_pmic_probe” (for example) for the desired reuse of the wrapper
-> function “devm_platform_get_and_ioremap_resource”?
+>34f379956e9d7 ("KVM: arm64: Fix symbol dependency in __hyp_call_panic_nvhe")
+>[ Upstream commit b38b298aa4397e2dc74a89b4dd3eac9e59b64c96 ]
 >
+>fails to compile in v5.8.7 for me (using an aarch64 gcc 4.9 cross-toolchain to try
+>to build a kernel for the PinePhone):
 >
-> > Maybe you can point to some previous commits that have made the change in this way.
+>  CC      arch/arm64/kvm/hyp/switch.o - due to target missing
+>arch/arm64/kvm/hyp/switch.c: In function 'hyp_panic':
+>arch/arm64/kvm/hyp/switch.c:904:2: error: impossible constraint in 'asm'
+>  asm volatile("ldr %0, =%1" : "=r" (str_va) : "S" (__hyp_panic_string));
+>  ^
 
-I looked at some of the provided examples, but none of them leaves the
-first argument of devm_ioremap_resource unchanged.
+Does upstream build correctly for you?
 
-julia
+>I can find the commit b38b298aa4397e2dc74a89b4dd3eac9e59b64c96 in upstream
+>but not the affected file. There is also "KVM: arm64: Split hyp/switch.c to VHE/nVHE"
+>which does a cleanup and rename and v5.9-rc4 compiles fine.
 
->
-> Not yet for these source code examples.
->
-> Some patches were contributed.
-> https://lore.kernel.org/patchwork/project/lkml/list/?q=devm_platform_get_and_ioremap_resource&archive=both&state=*
-> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/log/?qt=grep&q=devm_platform_get_and_ioremap_resource
->
-> Regards,
-> Markus
->
---8323329-540454265-1599488337=:2476--
+Right, it got moved around in upstream.
+
+-- 
+Thanks,
+Sasha
