@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AF722604AD
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 20:34:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFA012604AA
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 20:34:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730306AbgIGSeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 14:34:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41520 "EHLO mail.kernel.org"
+        id S1730275AbgIGSeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 14:34:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41586 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730226AbgIGSdy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 14:33:54 -0400
+        id S1730248AbgIGSd5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 14:33:57 -0400
 Received: from kozik-lap.mshome.net (unknown [194.230.155.174])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E0FA72087D;
-        Mon,  7 Sep 2020 18:33:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E4DCC20C09;
+        Mon,  7 Sep 2020 18:33:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599503634;
-        bh=t266Nu1lB7LStASkQx6vx6QrRbEc2k7w1JLEvAlzAJc=;
+        s=default; t=1599503637;
+        bh=VxTPRC2Ecn8ToUITeJ8A0G6gERdgh9kacdWNQsyLjew=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DUBHzOWIgCRdcU0dSwV3do+czaKmzBjG/mqhWRLUmK5mQkpZdrxYisfCl2NN/sRWf
-         v9Q4apQPRU2UhKc3dwOO7KbfQtnBY8IFUywDR8798XNegaf0770XfhU6Z8Pagitg8i
-         KJQPGkxPXp3CiH0aK0F3vGuaiGYsbVwX3gVZyPFA=
+        b=OyeyUV1S2wnWVYJpF22jPEjXh43I7GUu7rTEw0tS+jHbQeydIglu/Lf+/whNSFKVU
+         OM8DbofbIF6vJXO9xc+kvTJWhDFxU58N2LTWwJvyjJ0oxMipld6ZCcTEX5yg93/phw
+         hnWM1nKpHoIgtb+fc1LC22hR//zi7sgZVWsl4wCM=
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 To:     Kukjin Kim <kgene@kernel.org>,
         Krzysztof Kozlowski <krzk@kernel.org>,
@@ -35,9 +35,9 @@ Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
         Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
         Sylwester Nawrocki <snawrocki@kernel.org>,
         Tomasz Figa <tomasz.figa@gmail.com>
-Subject: [PATCH 10/11] ARM: dts: s3c24xx: add address to CPU node
-Date:   Mon,  7 Sep 2020 20:33:12 +0200
-Message-Id: <20200907183313.29234-11-krzk@kernel.org>
+Subject: [PATCH 11/11] ARM: dts: s3c24xx: move fixed clocks under root node in SMDK2416
+Date:   Mon,  7 Sep 2020 20:33:13 +0200
+Message-Id: <20200907183313.29234-12-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200907183313.29234-1-krzk@kernel.org>
 References: <20200907183313.29234-1-krzk@kernel.org>
@@ -46,37 +46,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The CPU nodes should be described as children of "cpus" bus node with
-appropriate "reg" properties:
+The fixed clocks are kept under dedicated 'clocks' node but this causes
+multiple dtschema warnings:
 
-  cpus: '#address-cells' is a required property
-  cpus: '#size-cells' is a required property
-  cpu: 'device_type' is a required property
-  cpu: 'reg' is a required property
+  clocks: $nodename:0: 'clocks' does not match '^([a-z][a-z0-9\\-]+-bus|bus|soc|axi|ahb|apb)(@[0-9a-f]+)?$'
+  clocks: #size-cells:0:0: 0 is not one of [1, 2]
+  clocks: xti@0:reg:0: [0] is too short
+  clocks: 'ranges' is a required property
+  xti@0: 'reg' does not match any of the regexes: 'pinctrl-[0-9]+'
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- arch/arm/boot/dts/s3c2416.dtsi | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ arch/arm/boot/dts/s3c2416-smdk2416.dts | 17 +++++------------
+ 1 file changed, 5 insertions(+), 12 deletions(-)
 
-diff --git a/arch/arm/boot/dts/s3c2416.dtsi b/arch/arm/boot/dts/s3c2416.dtsi
-index d1dec9f52f69..4f084f4fe44f 100644
---- a/arch/arm/boot/dts/s3c2416.dtsi
-+++ b/arch/arm/boot/dts/s3c2416.dtsi
-@@ -18,8 +18,13 @@
+diff --git a/arch/arm/boot/dts/s3c2416-smdk2416.dts b/arch/arm/boot/dts/s3c2416-smdk2416.dts
+index 811bfdef4e9b..47626ede6fdd 100644
+--- a/arch/arm/boot/dts/s3c2416-smdk2416.dts
++++ b/arch/arm/boot/dts/s3c2416-smdk2416.dts
+@@ -17,18 +17,11 @@
+ 		reg =  <0x30000000 0x4000000>;
  	};
  
- 	cpus {
--		cpu {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		cpu@0 {
-+			device_type = "cpu";
- 			compatible = "arm,arm926ej-s";
-+			reg = <0x0>;
- 		};
+-	clocks {
+-		compatible = "simple-bus";
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+-
+-		xti: xti@0 {
+-			compatible = "fixed-clock";
+-			reg = <0>;
+-			clock-frequency = <12000000>;
+-			clock-output-names = "xti";
+-			#clock-cells = <0>;
+-		};
++	xti: clock-0 {
++		compatible = "fixed-clock";
++		clock-frequency = <12000000>;
++		clock-output-names = "xti";
++		#clock-cells = <0>;
  	};
+ };
  
 -- 
 2.17.1
