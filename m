@@ -2,255 +2,338 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB65525FB0C
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 15:14:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FAEF25FB33
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 15:17:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729414AbgIGNOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 09:14:02 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:41689 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729418AbgIGNIj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 09:08:39 -0400
-Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
-  by alexa-out.qualcomm.com with ESMTP; 07 Sep 2020 06:08:15 -0700
-Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
-  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 07 Sep 2020 06:08:13 -0700
-Received: from c-rojay-linux.qualcomm.com ([10.206.21.80])
-  by ironmsg02-blr.qualcomm.com with ESMTP; 07 Sep 2020 18:37:35 +0530
-Received: by c-rojay-linux.qualcomm.com (Postfix, from userid 88981)
-        id C17E920F7; Mon,  7 Sep 2020 18:37:33 +0530 (IST)
-From:   Roja Rani Yarubandi <rojay@codeaurora.org>
-To:     wsa@kernel.org
-Cc:     swboyd@chromium.org, dianders@chromium.org,
-        saiprakash.ranjan@codeaurora.org, gregkh@linuxfoundation.org,
-        mka@chromium.org, akashast@codeaurora.org,
-        msavaliy@qti.qualcomm.com, skakit@codeaurora.org,
-        rnayak@codeaurora.org, agross@kernel.org,
-        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sumit.semwal@linaro.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        Roja Rani Yarubandi <rojay@codeaurora.org>
-Subject: [PATCH V3] i2c: i2c-qcom-geni: Add shutdown callback for i2c
-Date:   Mon,  7 Sep 2020 18:37:31 +0530
-Message-Id: <20200907130731.2607-1-rojay@codeaurora.org>
-X-Mailer: git-send-email 2.26.2
+        id S1729451AbgIGNRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 09:17:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55552 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729323AbgIGNK4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 09:10:56 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9356021481;
+        Mon,  7 Sep 2020 13:10:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599484207;
+        bh=N5zwS1SwbQXmonrHwuqGV2GKLymlY/0dB1tFcUdNLis=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JyAzNRs9Oq1DHj72hini5MBXBgY1KxD0MelkmEq6Ennr6rEovS21M/PLwMcDL79ww
+         hpf/35WD4c5xMdKpHWaqksf1/nZmCNWwwi4OrWHUvNwCuyl4waptF3bno8UXH6xi1x
+         nucnyXUbM7sLB4LpW0Wy0+MvIYZVMROpwe6oaJxY=
+Date:   Mon, 7 Sep 2020 15:10:21 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Gage Eads <gage.eads@intel.com>
+Cc:     linux-kernel@vger.kernel.org, arnd@arndb.de,
+        magnus.karlsson@intel.com, bjorn.topel@intel.com
+Subject: Re: [PATCH v3 01/19] dlb2: add skeleton for DLB 2.0 driver
+Message-ID: <20200907131021.GF2371705@kroah.com>
+References: <20200901191548.31646-1-gage.eads@intel.com>
+ <20200901191548.31646-2-gage.eads@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200901191548.31646-2-gage.eads@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the hardware is still accessing memory after SMMU translation
-is disabled (as part of smmu shutdown callback), then the
-IOVAs (I/O virtual address) which it was using will go on the bus
-as the physical addresses which will result in unknown crashes
-like NoC/interconnect errors.
+On Tue, Sep 01, 2020 at 02:15:30PM -0500, Gage Eads wrote:
+> --- /dev/null
+> +++ b/drivers/misc/dlb2/dlb2_hw_types.h
+> @@ -0,0 +1,29 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only
+> + * Copyright(c) 2016-2020 Intel Corporation
+> + */
+> +
+> +#ifndef __DLB2_HW_TYPES_H
+> +#define __DLB2_HW_TYPES_H
+> +
+> +#define DLB2_MAX_NUM_VDEVS			16
+> +#define DLB2_MAX_NUM_DOMAINS			32
+> +#define DLB2_MAX_NUM_LDB_QUEUES			32 /* LDB == load-balanced */
+> +#define DLB2_MAX_NUM_DIR_QUEUES			64 /* DIR == directed */
+> +#define DLB2_MAX_NUM_LDB_PORTS			64
+> +#define DLB2_MAX_NUM_DIR_PORTS			DLB2_MAX_NUM_DIR_QUEUES
+> +#define DLB2_MAX_NUM_LDB_CREDITS		8192
+> +#define DLB2_MAX_NUM_DIR_CREDITS		2048
+> +#define DLB2_MAX_NUM_HIST_LIST_ENTRIES		2048
+> +#define DLB2_MAX_NUM_AQED_ENTRIES		2048
+> +#define DLB2_MAX_NUM_QIDS_PER_LDB_CQ		8
+> +#define DLB2_MAX_NUM_SEQUENCE_NUMBER_GROUPS	2
+> +#define DLB2_MAX_NUM_SEQUENCE_NUMBER_MODES	5
+> +#define DLB2_QID_PRIORITIES			8
+> +#define DLB2_NUM_ARB_WEIGHTS			8
+> +#define DLB2_MAX_WEIGHT				255
+> +#define DLB2_NUM_COS_DOMAINS			4
+> +#define DLB2_MAX_CQ_COMP_CHECK_LOOPS		409600
+> +#define DLB2_MAX_QID_EMPTY_CHECK_LOOPS		(32 * 64 * 1024 * (800 / 30))
+> +#define DLB2_HZ					800000000
+> +
+> +#endif /* __DLB2_HW_TYPES_H */
+> diff --git a/drivers/misc/dlb2/dlb2_main.c b/drivers/misc/dlb2/dlb2_main.c
+> new file mode 100644
+> index 000000000000..ffd6df788e2e
+> --- /dev/null
+> +++ b/drivers/misc/dlb2/dlb2_main.c
+> @@ -0,0 +1,208 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/* Copyright(c) 2018-2020 Intel Corporation */
+> +
+> +#include <linux/aer.h>
+> +#include <linux/cdev.h>
+> +#include <linux/delay.h>
+> +#include <linux/fs.h>
+> +#include <linux/init.h>
+> +#include <linux/list.h>
+> +#include <linux/module.h>
+> +#include <linux/pci.h>
+> +#include <linux/uaccess.h>
+> +
+> +#include "dlb2_main.h"
+> +
+> +static const char
+> +dlb2_driver_copyright[] = "Copyright(c) 2018-2020 Intel Corporation";
+> +
+> +MODULE_LICENSE("GPL v2");
+> +MODULE_AUTHOR("Copyright(c) 2018-2020 Intel Corporation");
+> +MODULE_DESCRIPTION("Intel(R) Dynamic Load Balancer 2.0 Driver");
+> +
+> +/* The driver lock protects data structures that used by multiple devices. */
+> +static DEFINE_MUTEX(dlb2_driver_lock);
+> +static struct list_head dlb2_dev_list = LIST_HEAD_INIT(dlb2_dev_list);
 
-So, implement shutdown callback to i2c driver to stop on-going transfer
-and unmap DMA mappings during system "reboot" or "shutdown".
+A static list of your devices?  Why?  Who is going to need to ever walk
+the list, shouldn't you be able to just access it from the device node
+directly?
 
-Store DMA mapping data in geni_i2c_dev struct to enhance DMA mapping
-data scope. For example during shutdown callback to unmap DMA mapping,
-this stored DMA mapping data can be used to call geni_se_tx_dma_unprep
-and geni_se_rx_dma_unprep functions.
 
-Fixes: 37692de5d523 ("i2c: i2c-qcom-geni: Add bus driver for the Qualcomm GENI I2C controller")
-Signed-off-by: Roja Rani Yarubandi <rojay@codeaurora.org>
----
-Changes in V2:
- - As per Stephen's comments added seperate function for stop transfer,
-   fixed minor nitpicks.
- - As per Stephen's comments, changed commit text.
+> +
+> +static struct class *dlb2_class;
+> +static dev_t dlb2_dev_number_base;
 
-Changes in V3:
- - As per Stephen's comments, squashed patch 1 into patch 2, added Fixes tag.
- - As per Akash's comments, included FIFO case in stop_xfer, fixed minor nitpicks.
+"number_base"?
 
- drivers/i2c/busses/i2c-qcom-geni.c | 70 +++++++++++++++++++++++++++---
- include/linux/qcom-geni-se.h       |  5 +++
- 2 files changed, 69 insertions(+), 6 deletions(-)
+> +
+> +/*****************************/
+> +/****** Devfs callbacks ******/
+> +/*****************************/
 
-diff --git a/drivers/i2c/busses/i2c-qcom-geni.c b/drivers/i2c/busses/i2c-qcom-geni.c
-index dead5db3315a..b3609760909f 100644
---- a/drivers/i2c/busses/i2c-qcom-geni.c
-+++ b/drivers/i2c/busses/i2c-qcom-geni.c
-@@ -86,6 +86,9 @@ struct geni_i2c_dev {
- 	u32 clk_freq_out;
- 	const struct geni_i2c_clk_fld *clk_fld;
- 	int suspended;
-+	dma_addr_t tx_dma;
-+	dma_addr_t rx_dma;
-+	size_t xfer_len;
- };
- 
- struct geni_i2c_err_log {
-@@ -352,12 +355,12 @@ static void geni_i2c_tx_fsm_rst(struct geni_i2c_dev *gi2c)
- static int geni_i2c_rx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
- 				u32 m_param)
- {
--	dma_addr_t rx_dma;
- 	unsigned long time_left;
- 	void *dma_buf = NULL;
- 	struct geni_se *se = &gi2c->se;
- 	size_t len = msg->len;
- 
-+	gi2c->xfer_len = len;
- 	if (!of_machine_is_compatible("lenovo,yoga-c630"))
- 		dma_buf = i2c_get_dma_safe_msg_buf(msg, 32);
- 
-@@ -368,7 +371,7 @@ static int geni_i2c_rx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
- 
- 	writel_relaxed(len, se->base + SE_I2C_RX_TRANS_LEN);
- 
--	if (dma_buf && geni_se_rx_dma_prep(se, dma_buf, len, &rx_dma)) {
-+	if (dma_buf && geni_se_rx_dma_prep(se, dma_buf, len, &gi2c->rx_dma)) {
- 		geni_se_select_mode(se, GENI_SE_FIFO);
- 		i2c_put_dma_safe_msg_buf(dma_buf, msg, false);
- 		dma_buf = NULL;
-@@ -384,7 +387,8 @@ static int geni_i2c_rx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
- 	if (dma_buf) {
- 		if (gi2c->err)
- 			geni_i2c_rx_fsm_rst(gi2c);
--		geni_se_rx_dma_unprep(se, rx_dma, len);
-+		geni_se_rx_dma_unprep(se, gi2c->rx_dma, len);
-+		gi2c->rx_dma = (dma_addr_t)NULL;
- 		i2c_put_dma_safe_msg_buf(dma_buf, msg, !gi2c->err);
- 	}
- 
-@@ -394,12 +398,12 @@ static int geni_i2c_rx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
- static int geni_i2c_tx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
- 				u32 m_param)
- {
--	dma_addr_t tx_dma;
- 	unsigned long time_left;
- 	void *dma_buf = NULL;
- 	struct geni_se *se = &gi2c->se;
- 	size_t len = msg->len;
- 
-+	gi2c->xfer_len = len;
- 	if (!of_machine_is_compatible("lenovo,yoga-c630"))
- 		dma_buf = i2c_get_dma_safe_msg_buf(msg, 32);
- 
-@@ -410,7 +414,7 @@ static int geni_i2c_tx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
- 
- 	writel_relaxed(len, se->base + SE_I2C_TX_TRANS_LEN);
- 
--	if (dma_buf && geni_se_tx_dma_prep(se, dma_buf, len, &tx_dma)) {
-+	if (dma_buf && geni_se_tx_dma_prep(se, dma_buf, len, &gi2c->tx_dma)) {
- 		geni_se_select_mode(se, GENI_SE_FIFO);
- 		i2c_put_dma_safe_msg_buf(dma_buf, msg, false);
- 		dma_buf = NULL;
-@@ -429,7 +433,8 @@ static int geni_i2c_tx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
- 	if (dma_buf) {
- 		if (gi2c->err)
- 			geni_i2c_tx_fsm_rst(gi2c);
--		geni_se_tx_dma_unprep(se, tx_dma, len);
-+		geni_se_tx_dma_unprep(se, gi2c->tx_dma, len);
-+		gi2c->tx_dma = (dma_addr_t)NULL;
- 		i2c_put_dma_safe_msg_buf(dma_buf, msg, !gi2c->err);
- 	}
- 
-@@ -479,6 +484,51 @@ static int geni_i2c_xfer(struct i2c_adapter *adap,
- 	return ret;
- }
- 
-+static void geni_i2c_stop_xfer(struct geni_i2c_dev *gi2c)
-+{
-+	int ret;
-+	u32 dma;
-+	u32 val;
-+	u32 geni_status;
-+	struct geni_se *se = &gi2c->se;
-+
-+	ret = pm_runtime_get_sync(gi2c->se.dev);
-+	if (ret < 0) {
-+		dev_err(gi2c->se.dev, "Failed to resume device: %d\n", ret);
-+		return;
-+	}
-+
-+	geni_status = readl_relaxed(gi2c->se.base + SE_GENI_STATUS);
-+	if (geni_status & M_GENI_CMD_ACTIVE) {
-+		geni_i2c_abort_xfer(gi2c);
-+		dma = readl_relaxed(se->base + SE_GENI_DMA_MODE_EN);
-+		if (dma) {
-+			val = readl_relaxed(gi2c->se.base + SE_DMA_DEBUG_REG0);
-+			if (val & DMA_TX_ACTIVE) {
-+				gi2c->cur_wr = 0;
-+				if (gi2c->err)
-+					geni_i2c_tx_fsm_rst(gi2c);
-+				if (gi2c->tx_dma) {
-+					geni_se_tx_dma_unprep(se,
-+						 gi2c->tx_dma, gi2c->xfer_len);
-+					gi2c->tx_dma = (dma_addr_t)NULL;
-+				}
-+			} else if (val & DMA_RX_ACTIVE) {
-+				gi2c->cur_rd = 0;
-+				if (gi2c->err)
-+					geni_i2c_rx_fsm_rst(gi2c);
-+				if (gi2c->rx_dma) {
-+					geni_se_rx_dma_unprep(se,
-+						gi2c->rx_dma, gi2c->xfer_len);
-+					gi2c->rx_dma = (dma_addr_t)NULL;
-+				}
-+			}
-+		}
-+	}
-+
-+	pm_runtime_put_sync_suspend(gi2c->se.dev);
-+}
-+
- static u32 geni_i2c_func(struct i2c_adapter *adap)
- {
- 	return I2C_FUNC_I2C | (I2C_FUNC_SMBUS_EMUL & ~I2C_FUNC_SMBUS_QUICK);
-@@ -630,6 +680,13 @@ static int geni_i2c_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
-+static void geni_i2c_shutdown(struct platform_device *pdev)
-+{
-+	struct geni_i2c_dev *gi2c = platform_get_drvdata(pdev);
-+
-+	geni_i2c_stop_xfer(gi2c);
-+}
-+
- static int __maybe_unused geni_i2c_runtime_suspend(struct device *dev)
- {
- 	int ret;
-@@ -694,6 +751,7 @@ MODULE_DEVICE_TABLE(of, geni_i2c_dt_match);
- static struct platform_driver geni_i2c_driver = {
- 	.probe  = geni_i2c_probe,
- 	.remove = geni_i2c_remove,
-+	.shutdown = geni_i2c_shutdown,
- 	.driver = {
- 		.name = "geni_i2c",
- 		.pm = &geni_i2c_pm_ops,
-diff --git a/include/linux/qcom-geni-se.h b/include/linux/qcom-geni-se.h
-index 8f385fbe5a0e..7279d8b3b04c 100644
---- a/include/linux/qcom-geni-se.h
-+++ b/include/linux/qcom-geni-se.h
-@@ -96,6 +96,7 @@ struct geni_se {
- #define SE_DMA_RX_FSM_RST		0xd58
- #define SE_HW_PARAM_0			0xe24
- #define SE_HW_PARAM_1			0xe28
-+#define SE_DMA_DEBUG_REG0		0xe40
- 
- /* GENI_FORCE_DEFAULT_REG fields */
- #define FORCE_DEFAULT	BIT(0)
-@@ -226,6 +227,10 @@ struct geni_se {
- #define RX_GENI_CANCEL_IRQ		BIT(11)
- #define RX_GENI_GP_IRQ_EXT		GENMASK(13, 12)
- 
-+/* SE_DMA_DEBUG_REG0 Register fields */
-+#define DMA_TX_ACTIVE			BIT(0)
-+#define DMA_RX_ACTIVE			BIT(1)
-+
- /* SE_HW_PARAM_0 fields */
- #define TX_FIFO_WIDTH_MSK		GENMASK(29, 24)
- #define TX_FIFO_WIDTH_SHFT		24
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
-of Code Aurora Forum, hosted by The Linux Foundation
+I said this before, but it seems to have been ignored, so I'm guessing
+my other comments were also ignored...
 
+Anyway, there has not been anything called "Devfs" for 15+ years now,
+where did you port this code from that had a horrid, out-of-date comment
+block like that?
+
+> +
+> +static int dlb2_open(struct inode *i, struct file *f)
+> +{
+> +	return 0;
+> +}
+> +
+> +static int dlb2_close(struct inode *i, struct file *f)
+> +{
+> +	return 0;
+> +}
+
+If open/close do not do anything, then do not include them as a callback
+please.
+
+> +
+> +static const struct file_operations dlb2_fops = {
+> +	.owner   = THIS_MODULE,
+> +	.open    = dlb2_open,
+> +	.release = dlb2_close,
+> +};
+> +
+> +/**********************************/
+> +/****** PCI driver callbacks ******/
+> +/**********************************/
+> +
+> +static DEFINE_IDA(dlb2_ids);
+
+This is not a PCI driver callback :)
+
+Bad comments are worse than no comments at all.
+
+> +
+> +static int dlb2_alloc_id(void)
+> +{
+> +	return ida_alloc_max(&dlb2_ids, DLB2_MAX_NUM_DEVICES - 1, GFP_KERNEL);
+> +}
+> +
+> +static void dlb2_free_id(int id)
+> +{
+> +	ida_free(&dlb2_ids, id);
+
+Why have wrapper functions for simple one line calls, especially when
+you only call these once?  They aren't needed, right?
+
+> +}
+> +
+> +static int dlb2_probe(struct pci_dev *pdev,
+> +		      const struct pci_device_id *pdev_id)
+> +{
+> +	struct dlb2_dev *dlb2_dev;
+> +	int ret;
+> +
+> +	dlb2_dev = devm_kzalloc(&pdev->dev, sizeof(*dlb2_dev), GFP_KERNEL);
+> +	if (!dlb2_dev)
+> +		return -ENOMEM;
+> +
+> +	pci_set_drvdata(pdev, dlb2_dev);
+> +
+> +	dlb2_dev->pdev = pdev;
+
+No reference counting?  Brave...
+
+> +
+> +	dlb2_dev->id = dlb2_alloc_id();
+> +	if (dlb2_dev->id < 0) {
+> +		dev_err(&pdev->dev, "probe: device ID allocation failed\n");
+> +
+> +		ret = dlb2_dev->id;
+> +		goto alloc_id_fail;
+> +	}
+> +
+> +	ret = pci_enable_device(pdev);
+> +	if (ret != 0) {
+> +		dev_err(&pdev->dev, "pci_enable_device() returned %d\n", ret);
+> +
+> +		goto pci_enable_device_fail;
+> +	}
+> +
+> +	ret = pci_request_regions(pdev, dlb2_driver_name);
+> +	if (ret != 0) {
+> +		dev_err(&pdev->dev,
+> +			"pci_request_regions(): returned %d\n", ret);
+> +
+> +		goto pci_request_regions_fail;
+> +	}
+> +
+> +	pci_set_master(pdev);
+> +
+> +	if (pci_enable_pcie_error_reporting(pdev))
+> +		dev_info(&pdev->dev, "[%s()] Failed to enable AER\n", __func__);
+
+dev_err()?  And if this fails, why not really error out?
+
+> +
+> +	mutex_lock(&dlb2_driver_lock);
+> +	list_add(&dlb2_dev->list, &dlb2_dev_list);
+
+What is this list for?
+
+> +	mutex_unlock(&dlb2_driver_lock);
+> +
+> +	return 0;
+> +
+> +pci_request_regions_fail:
+> +	pci_disable_device(pdev);
+> +pci_enable_device_fail:
+> +	dlb2_free_id(dlb2_dev->id);
+> +alloc_id_fail:
+> +	devm_kfree(&pdev->dev, dlb2_dev);
+> +	return ret;
+> +}
+> +
+> +static void dlb2_remove(struct pci_dev *pdev)
+> +{
+> +	struct dlb2_dev *dlb2_dev;
+> +
+> +	/* Undo all the dlb2_probe() operations */
+> +	dlb2_dev = pci_get_drvdata(pdev);
+> +
+> +	mutex_lock(&dlb2_driver_lock);
+> +	list_del(&dlb2_dev->list);
+> +	mutex_unlock(&dlb2_driver_lock);
+> +
+> +	pci_disable_pcie_error_reporting(pdev);
+> +
+> +	pci_release_regions(pdev);
+> +
+> +	pci_disable_device(pdev);
+> +
+> +	dlb2_free_id(dlb2_dev->id);
+> +
+> +	devm_kfree(&pdev->dev, dlb2_dev);
+> +}
+> +
+> +static struct pci_device_id dlb2_id_table[] = {
+> +	{ PCI_DEVICE_DATA(INTEL, DLB2_PF, NULL) },
+
+If you don't have a data pointer, PCI_DEVICE() works, right?
+
+> +	{ 0 }
+> +};
+> +MODULE_DEVICE_TABLE(pci, dlb2_id_table);
+> +
+> +static struct pci_driver dlb2_pci_driver = {
+> +	.name		 = (char *)dlb2_driver_name,
+
+Hm, we should const that name in the structure, right?
+
+> +	.id_table	 = dlb2_id_table,
+> +	.probe		 = dlb2_probe,
+> +	.remove		 = dlb2_remove,
+> +};
+> +
+> +static int __init dlb2_init_module(void)
+> +{
+> +	int err;
+> +
+> +	dlb2_class = class_create(THIS_MODULE, dlb2_driver_name);
+> +
+> +	if (IS_ERR(dlb2_class)) {
+> +		pr_err("%s: class_create() returned %ld\n",
+> +		       dlb2_driver_name, PTR_ERR(dlb2_class));
+> +
+> +		return PTR_ERR(dlb2_class);
+> +	}
+> +
+> +	/* Allocate one minor number per domain */
+> +	err = alloc_chrdev_region(&dlb2_dev_number_base,
+> +				  0,
+> +				  DLB2_MAX_NUM_DEVICES,
+> +				  dlb2_driver_name);
+
+Shouldn't you allocate your device ids when you have a device show up in
+the system?  Why try to "pre-allocate" them all here?  That feels really
+wasteful.
+
+Same for allocating your class, why not just do that once your first PCI
+device shows up?
+
+
+> +
+> +	if (err < 0) {
+> +		pr_err("%s: alloc_chrdev_region() returned %d\n",
+> +		       dlb2_driver_name, err);
+> +
+> +		return err;
+> +	}
+> +
+> +	err = pci_register_driver(&dlb2_pci_driver);
+> +	if (err < 0) {
+> +		pr_err("%s: pci_register_driver() returned %d\n",
+> +		       dlb2_driver_name, err);
+> +		return err;
+
+Nice, you just leaked device ids, and your class is stuck around for
+forever...
+
+{sigh}
+
+Why am I finding such Linux device-driver-101 errors here?
+
+Please go back and follow the Intel-documented procedures and find
+someone who has experience with pci and misc drivers and get their
+review before sending this whole thing out again.  To lean on
+maintainers without that experience makes the documented policy that you
+should be following pretty worthless :(
+
+greg "your company still owes me a lot of liquor" k-h
