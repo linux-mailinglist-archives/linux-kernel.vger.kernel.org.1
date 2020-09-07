@@ -2,95 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3996525F9BC
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 13:45:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9D2E25F9DA
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 13:49:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729097AbgIGLpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 07:45:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:30815 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729043AbgIGLnL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 07:43:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599478990;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Up+NtoEoKF1B3IFUbGlV4iwCjaDtp0Abje/+V+Ja+dY=;
-        b=gidG8iko2bR8798ai1rgrwdV/XPFt9G0nsZCxcMRq3BOjgv6nLhi+V+aI7GFWw4q+CW0c1
-        MWLeSn1ZxmWKjzMMrB0mwHM4Yc139rE4nNqFbXSZysch81gCyb/Sdktsj0mD6atNxpVYbD
-        NpGcXBf/cTD8a4ZsJ/gAixDqj13Y3e8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-2-KTPUyLjDNq2xpVad29wziw-1; Mon, 07 Sep 2020 07:43:06 -0400
-X-MC-Unique: KTPUyLjDNq2xpVad29wziw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2BAFA1007461;
-        Mon,  7 Sep 2020 11:43:05 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.127])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 724625C26B;
-        Mon,  7 Sep 2020 11:43:03 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Mon,  7 Sep 2020 13:43:04 +0200 (CEST)
-Date:   Mon, 7 Sep 2020 13:43:02 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Davidlohr Bueso <dave@stgolabs.net>
-Cc:     rostedt@goodmis.org, mingo@kernel.org,
-        linux-kernel@vger.kernel.org, Davidlohr Bueso <dbueso@suse.de>
-Subject: Re: [PATCH] fgraph: Convert ret_stack tasklist scanning to rcu
-Message-ID: <20200907114301.GA31050@redhat.com>
-References: <20200907013326.9870-1-dave@stgolabs.net>
+        id S1729159AbgIGLtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 07:49:16 -0400
+Received: from mga01.intel.com ([192.55.52.88]:18497 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729109AbgIGLq3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 07:46:29 -0400
+IronPort-SDR: u4KohBcvYcG9RbkmPJ3ozmpfiYzDMsjWNloDyxd9KR012bFb7MH/gw1Y3NYSAU8MddCr0BTx8J
+ BVlYhcWaDl4A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9736"; a="176046003"
+X-IronPort-AV: E=Sophos;i="5.76,401,1592895600"; 
+   d="scan'208";a="176046003"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2020 04:45:57 -0700
+IronPort-SDR: 2c5/thtWfGsvF/VAAo2KUZsh1d3mpudhrE42tnry+4xfAzgIgzUSc25JQ7BeBaa6gPcu27O6tp
+ kRAMhOH3CdHA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,401,1592895600"; 
+   d="scan'208";a="333141071"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga008.jf.intel.com with ESMTP; 07 Sep 2020 04:45:54 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andy.shevchenko@gmail.com>)
+        id 1kFFap-00EwG6-Fz; Mon, 07 Sep 2020 14:45:51 +0300
+Date:   Mon, 7 Sep 2020 14:45:51 +0300
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Kent Gibson <warthog618@gmail.com>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        linux-doc <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>
+Subject: Re: [PATCH 03/23] lib: uaccess: provide getline_from_user()
+Message-ID: <20200907114551.GV1891694@smile.fi.intel.com>
+References: <20200904154547.3836-1-brgl@bgdev.pl>
+ <20200904154547.3836-4-brgl@bgdev.pl>
+ <20200904163517.GW1891694@smile.fi.intel.com>
+ <CAMpxmJWQsgV5WZrdPW3UUOVTEy1L6Y_rb7ThQK1QTRinmHSqWA@mail.gmail.com>
+ <CAHp75VdOWdwT-e5ufsZ8MEH=YtdBgm1=TDKn3f8fJxXY4YKh9A@mail.gmail.com>
+ <CAMpxmJXmY8oBpPue5v0wBvmjHkFGaUmzHScHoV-1pNEQ59am4w@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200907013326.9870-1-dave@stgolabs.net>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <CAMpxmJXmY8oBpPue5v0wBvmjHkFGaUmzHScHoV-1pNEQ59am4w@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/06, Davidlohr Bueso wrote:
->
-> Here tasklist_lock does not protect anything other than the list
-> against concurrent fork/exit. And considering that the whole thing
-> is capped by FTRACE_RETSTACK_ALLOC_SIZE (32), it should not be a
-> problem to have a pontentially stale, yet stable, list. The task cannot
-> go away either, so we don't risk racing with ftrace_graph_exit_task()
-> which clears the retstack.
+On Mon, Sep 07, 2020 at 12:28:05PM +0200, Bartosz Golaszewski wrote:
+> On Mon, Sep 7, 2020 at 12:19 PM Andy Shevchenko
+> <andy.shevchenko@gmail.com> wrote:
+> >
+> > On Mon, Sep 7, 2020 at 1:05 PM Bartosz Golaszewski
+> > <bgolaszewski@baylibre.com> wrote:
+> > > On Fri, Sep 4, 2020 at 6:35 PM Andy Shevchenko
+> > > <andriy.shevchenko@linux.intel.com> wrote:
+> > > > On Fri, Sep 04, 2020 at 05:45:27PM +0200, Bartosz Golaszewski wrote:
+> > > > > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> >
+> > > > Doesn't mm/util.c provides us something like this?
+> > > > strndup_user()?
+> > > >
+> > >
+> > > Yes, there's both strndup_user() as well as strncpy_from_user(). The
+> > > problem is that they rely on the strings being NULL-terminated. This
+> > > is not guaranteed for debugfs file_operations write callbacks. We need
+> > > some helper that takes the minimum of bytes provided by userspace and
+> > > the buffer size and figure out how many bytes to actually copy IMO.
+> >
+> > Wouldn't this [1] approach work?
+> >
+> > [1]: https://elixir.bootlin.com/linux/v5.9-rc3/source/arch/x86/kernel/cpu/mtrr/if.c#L93
+> >
+> 
+> Sure, but this is pretty much what I do in getline_from_user(). If
+> anything we should port mtrr_write() to using getline_from_user() once
+> it's available upstream, no?
 
-I don't understand this code but I think you right, tasklist_lock buys
-nothing.
+But you may provide getline_from_user() as inline in the same header where
+strncpy_from_user() is declared. It will be like 3 LOCs?
 
-Afaics, with or without this change alloc_retstack_tasklist() can race
-with copy_process() and miss the new child; ftrace_graph_init_task()
-can't help, ftrace_graph_active can be set right after the check and
-for_each_process_thread() can't see the new process yet.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-This can't race with ftrace_graph_exit_task(), it is called after the
-full gp pass. But this function looks very confusing to me, I don't
-understand the barrier and the "NULL must become visible to IRQs before
-we free it" comment.
-
-Looks like, ftrace_graph_exit_task() was called by the exiting task
-in the past? Indeed, see 65afa5e603d50 ("tracing/function-return-tracer:
-free the return stack on free_task()"). I think it makes sense to
-simplify this function now, it can simply do kfree(t->ret_stack) and
-nothing more.
-
-ACK, but ...
-
-> @@ -387,8 +387,8 @@ static int alloc_retstack_tasklist(struct ftrace_ret_stack **ret_stack_list)
->  		}
->  	}
->  
-> -	read_lock(&tasklist_lock);
-
-then you should probably rename alloc_retstack_tasklist() ?
-
-Oleg.
 
