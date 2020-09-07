@@ -2,87 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F95326023F
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:21:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA77826021E
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:19:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731009AbgIGRVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 13:21:16 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:62077 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729667AbgIGNri (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 09:47:38 -0400
-X-IronPort-AV: E=Sophos;i="5.76,359,1592863200"; 
-   d="scan'208";a="466420197"
-Received: from abo-173-121-68.mrs.modulonet.fr (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 07 Sep 2020 15:46:44 +0200
-Date:   Mon, 7 Sep 2020 15:46:44 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Markus Elfring <Markus.Elfring@web.de>
-cc:     Coccinelle <cocci@systeme.lip6.fr>,
-        Dejin Zheng <zhengdejin5@gmail.com>,
-        Denis Efremov <efremov@linux.com>,
-        Gilles Muller <Gilles.Muller@lip6.fr>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nicolas Palix <nicolas.palix@imag.fr>,
-        kernel-janitors@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: =?UTF-8?Q?Re=3A_=5BPATCH=5D_Coccinelle=3A_api=3A_Add_SmPL_scr?=
- =?UTF-8?Q?ipt_=E2=80=9Cuse=5Fdevm=5Fplatform=5Fget=5Fand=5Fioremap=5Fre?=
- =?UTF-8?Q?source=2Ecocci=E2=80=9D?=
-In-Reply-To: <46d314d5-822e-3d73-2d70-015794556e56@web.de>
-Message-ID: <alpine.DEB.2.22.394.2009071544460.2476@hadrien>
-References: <25b804fd-0d04-475d-f614-26c03c9fd544@web.de> <5f9fdd59-4b0b-1cb5-c3a2-92efc5bb3841@web.de> <alpine.DEB.2.22.394.2009071357140.2476@hadrien> <477abcea-e008-e509-d03f-f2753ebdfb20@web.de> <alpine.DEB.2.22.394.2009071506350.2476@hadrien>
- <46d314d5-822e-3d73-2d70-015794556e56@web.de>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        id S1729722AbgIGN62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 09:58:28 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2775 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729619AbgIGNt5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 09:49:57 -0400
+Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.108])
+        by Forcepoint Email with ESMTP id 42244569D0965377F815;
+        Mon,  7 Sep 2020 14:49:51 +0100 (IST)
+Received: from [127.0.0.1] (10.47.2.208) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Mon, 7 Sep 2020
+ 14:49:50 +0100
+Subject: Re: [PATCH 8/9] perf test: Free aliases for PMU event map aliases
+ test
+To:     Namhyung Kim <namhyung@kernel.org>
+CC:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Stephane Eranian <eranian@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <andi@firstfloor.org>,
+        Ian Rogers <irogers@google.com>
+References: <20200907034502.753230-1-namhyung@kernel.org>
+ <20200907034502.753230-9-namhyung@kernel.org>
+ <78911dd7-8a93-0f1b-7805-1fad87ad6979@huawei.com>
+ <CAM9d7ci=knY_Wu8vbdfOzCtJX_onciz2eri8E=d2KM2qwG6QGQ@mail.gmail.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <04594390-55ab-9063-aee6-ab0f560f3e0d@huawei.com>
+Date:   Mon, 7 Sep 2020 14:47:13 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <CAM9d7ci=knY_Wu8vbdfOzCtJX_onciz2eri8E=d2KM2qwG6QGQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.2.208]
+X-ClientProxiedBy: lhreml726-chm.china.huawei.com (10.201.108.77) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> >>>> +@replacement depends on patch@
-> >>>> +expression base, device1, device2, index, private, resource;
-> >>>> +@@
-> >>>> +(
-> >>>> +-resource = platform_get_resource(device1, IORESOURCE_MEM, index);
-> >>>> + base =
-> >>>> +-       devm_ioremap_resource
-> >>>> ++       devm_platform_get_and_ioremap_resource
-> >>>> +                             (
-> >>>> +-                             &
-> >>>> +                               device1
-> >>>> +-                                     ->dev
-> >>>> +                              ,
-> >>>> +-                             resource
-> >>>> ++                             index, &resource
-> >>>> +                             );
-> >>>> +|
-> >>>> +-private->res = platform_get_resource(device1, IORESOURCE_MEM, index);
-> >>>> + base =
-> >>>> +-       devm_ioremap_resource
-> >>>> ++       devm_platform_get_and_ioremap_resource
-> >>>> +                             (device2,
-> >>>
-> >>> It is very suspicious that in one case you change the first argument of
-> >>> devm_platform_get_and_ioremap_resource and in one case you don't.
-> >>
-> >> I noticed a few special cases during my source code analysis approach.
-> >
-> > This is not a reasonable answer.  Does the rule work correctly or not?
-> > If it doesn't work correctly, it needs to be removed.
->
-> Both source code change patterns from these branches of a SmPL disjunction
-> work as I would expect it by the current Coccinelle software.
-> Would you like to clarify any remaining related open issues?
+On 07/09/2020 14:20, Namhyung Kim wrote:
+>> I also notice that we have other paths like this, where the allocated
+>> pmu (and aliases) are not freed for later error paths, it seems:
+>>
+>> parse_events_add_pmu() -> perf_pmu_find() -> pmu_lookup() ->
+>> pmu_add_cpu_aliases().
+>>
+>> I had a quick look at the rest of the series, and could not see if we
+>> fix up any of this.
 
-In one case the first argument of devm_ioremap_resource has to be changed
-to produce the first argument of devm_platform_get_and_ioremap_resource
-and in the other case there is no such change.  "work as I would expect"
-is not a proper explanation of why this is correct.  Maybe you can point
-to some previous commits that have made the change in this way.
+Hi Namhyung,
 
-julia
+> Right, I also found that and wondered why ASAN didn't report it.
+> I think we should free all pmu instances from the pmus list.
+> But this can be a later work..
+
+ok, good. I was going to say that we could at least add a pmu free 
+helper in pmu.c now (and reference it here, from this test code, for 
+now), but maybe you just want to fix the reported leaks for now and work 
+on this as a follow up.
+
+Thanks,
+John
