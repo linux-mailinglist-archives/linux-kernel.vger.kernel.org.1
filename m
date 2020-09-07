@@ -2,113 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59FA425FF31
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 18:29:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B366525FF0D
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 18:26:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730507AbgIGQ3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 12:29:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43518 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729895AbgIGObp (ORCPT
+        id S1730615AbgIGQ0G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 12:26:06 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:39198 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729901AbgIGOcy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 10:31:45 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 784D5C061573;
-        Mon,  7 Sep 2020 07:31:43 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id a22so9976766ljp.13;
-        Mon, 07 Sep 2020 07:31:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=4HCwT5VeeawjAucidjJ8dUXtWRA7EV8ZxyXVxojBpMQ=;
-        b=FPrb8tOx20gTiMwOa1l+Lg05WnDC1bSkwecWvfGM2y7U2UEE39gQMAsVlny5a5K4hG
-         5pqodWmurJEU2Kk1+TFvJ3B84NyC546CuIWn7Kj7xJMjq06RNfAUdpGb24zhb7sjIvVv
-         Pa+iGVJ3zN02M1fD4hCk/GgfpU6Rjn4aYQEHMNZj0LSG1fZRVmeCdcSv+ndxnSojnkWH
-         ifq4/u6Ev6MD5SJ1KzNrdN5coam3vmE7TyZeB10102yN5e0JcawtuhbEvphkaVlu3kIe
-         xogGUkEGMWXS8MVg9ocUgQ2vHOBcxzmH1TeO7MB+F8k4xYf4QPa2Ugyiuk2+tYzeqMVx
-         Yk7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4HCwT5VeeawjAucidjJ8dUXtWRA7EV8ZxyXVxojBpMQ=;
-        b=OylSh2jfQ9pByJfHmMz2F//Si2pW6/1KE5jmoQu95ZeSaBV7pYLAq9+imOJCWaog5n
-         ESJ71OgJWhahgjs8o+vqoILvijDLO2EDy+tCxCh1PACjsRcLvkjkztf3oap+JILaZyqC
-         8yS1nCF1nu/A/xUlviBM5JlFPI4aZcDzEen93hqGrGz4g5q5BdSPmDSXSuxZ4ALD70/7
-         zJSdTffLNyM0yEN3kAHLipAmXG34rWH1q7dPY1CC1xOOPFlLNfdtn7ThHJ7nN3teaNZM
-         xdFuCq7ABzXxXL8W6OdMeEthfBDm1KqE8t/KauesIMDd/J5M+8jYPmsGeRA/LW76zsU+
-         21IA==
-X-Gm-Message-State: AOAM532pRPurNOAmGne80b6M1jLwniif1Qnx/dADZ7sitKzttSQR3AoT
-        LbVecfZZn/aXb1hNb+/ngc+JCTjbehI=
-X-Google-Smtp-Source: ABdhPJxsxsJOhrx//7QJF9bND1r8Dv5qiBPxCgjjLtYZSM0x0yLCl9xRNsuextXw/nXKkkx7SakCpA==
-X-Received: by 2002:a2e:92cd:: with SMTP id k13mr10801560ljh.441.1599489098724;
-        Mon, 07 Sep 2020 07:31:38 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
-        by smtp.googlemail.com with ESMTPSA id 30sm7169937ljv.35.2020.09.07.07.31.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Sep 2020 07:31:38 -0700 (PDT)
-Subject: Re: [PATCH v5 01/36] i2c: tegra: Make tegra_i2c_flush_fifos() usable
- in atomic transfer
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        linux-tegra@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20200906185039.22700-1-digetx@gmail.com>
- <20200906185039.22700-2-digetx@gmail.com>
- <CAHp75VfGjk-91P5ENQ4=j0F99o7uVK10NxEqCS3tPEsM1o3NAQ@mail.gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <272065fe-950a-24e9-ba8f-8b1a782c203f@gmail.com>
-Date:   Mon, 7 Sep 2020 17:31:37 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 7 Sep 2020 10:32:54 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 087EVra6078584;
+        Mon, 7 Sep 2020 09:31:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1599489113;
+        bh=scvlOAiGSgD3OrgroUOlwub3qAe8XPMOn8s7uBm6JO0=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=IUhN0vEiH11b9Re0vTmNyQqM7u1/IrtzaKgTFGx0OkpWdU0vkGQ45Py52h+iRQADq
+         DH933ZfhqUQT4EybXkV4+KKDGaiemBVJY40HaCIdO02Q8EgY/6oBmxKnb/uWi1zmsV
+         FNvmbYaOcQv8Tdh5nBHStZQboW5Ha1lT8g0BAkwM=
+Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 087EVrOO095432
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 7 Sep 2020 09:31:53 -0500
+Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 7 Sep
+ 2020 09:31:52 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 7 Sep 2020 09:31:52 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 087EVpWP106437;
+        Mon, 7 Sep 2020 09:31:52 -0500
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+To:     "David S. Miller" <davem@davemloft.net>, <netdev@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Murali Karicheri <m-karicheri2@ti.com>
+CC:     Sekhar Nori <nsekhar@ti.com>, <linux-kernel@vger.kernel.org>,
+        <linux-omap@vger.kernel.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>
+Subject: [PATCH net-next v2 4/9] net: netcp: ethss: use dev_id for ale configuration
+Date:   Mon, 7 Sep 2020 17:31:38 +0300
+Message-ID: <20200907143143.13735-5-grygorii.strashko@ti.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200907143143.13735-1-grygorii.strashko@ti.com>
+References: <20200907143143.13735-1-grygorii.strashko@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VfGjk-91P5ENQ4=j0F99o7uVK10NxEqCS3tPEsM1o3NAQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-07.09.2020 10:56, Andy Shevchenko пишет:
-> On Sun, Sep 6, 2020 at 9:51 PM Dmitry Osipenko <digetx@gmail.com> wrote:
->>
->> The tegra_i2c_flush_fifos() shouldn't sleep in atomic transfer and jiffies
->> are not updating if interrupts are disabled. Let's switch to use iopoll
->> API helpers for register-polling. The iopoll API provides helpers for both
->> atomic and non-atomic cases.
->>
->> Note that this patch doesn't fix any known problem because normally FIFO
->> is flushed at the time of starting a new transfer.
-> 
-> ...
-> 
->> +       if (i2c_dev->is_curr_atomic_xfer)
->> +               err = readl_relaxed_poll_timeout_atomic(addr, val, !(val & mask),
->> +                                                       1000, 1000000);
->> +       else
->> +               err = readl_relaxed_poll_timeout(addr, val, !(val & mask),
->> +                                                1000, 1000000);
->> +
->> +       if (err) {
->> +               dev_err(i2c_dev->dev, "failed to flush FIFO\n");
-> 
->> +               return err;
->>         }
->>         return 0;
-> 
-> return err; ?
-> 
+The previous patch has introduced possibility to select CPSW ALE by using
+ALE dev_id identifier. Switch TI Keystone 2 NETCP driver to use dev_id and
+perform clean up by removing "ale_entries" configuration code.
 
-The return 0 is intentional here because returned "err" implies that
-error happened and error code is returned, while 0 explicitly shows the
-success status. Hence it's always cleaner and more expressive to
-directly return 0 on success, IMO. I'd prefer to keep this part as-is.
+Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
+---
+ drivers/net/ethernet/ti/netcp_ethss.c | 18 ++++++++----------
+ 1 file changed, 8 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/net/ethernet/ti/netcp_ethss.c b/drivers/net/ethernet/ti/netcp_ethss.c
+index 28093923a7fb..33c1592d5381 100644
+--- a/drivers/net/ethernet/ti/netcp_ethss.c
++++ b/drivers/net/ethernet/ti/netcp_ethss.c
+@@ -51,7 +51,6 @@
+ #define GBE13_CPTS_OFFSET		0x500
+ #define GBE13_ALE_OFFSET		0x600
+ #define GBE13_HOST_PORT_NUM		0
+-#define GBE13_NUM_ALE_ENTRIES		1024
+ 
+ /* 1G Ethernet NU SS defines */
+ #define GBENU_MODULE_NAME		"netcp-gbenu"
+@@ -101,7 +100,6 @@
+ #define XGBE10_ALE_OFFSET		0x700
+ #define XGBE10_HW_STATS_OFFSET		0x800
+ #define XGBE10_HOST_PORT_NUM		0
+-#define XGBE10_NUM_ALE_ENTRIES		2048
+ 
+ #define	GBE_TIMER_INTERVAL			(HZ / 2)
+ 
+@@ -711,7 +709,6 @@ struct gbe_priv {
+ 	struct netcp_device		*netcp_device;
+ 	struct timer_list		timer;
+ 	u32				num_slaves;
+-	u32				ale_entries;
+ 	u32				ale_ports;
+ 	bool				enable_ale;
+ 	u8				max_num_slaves;
+@@ -3309,7 +3306,6 @@ static int set_xgbe_ethss10_priv(struct gbe_priv *gbe_dev,
+ 	gbe_dev->cpts_reg = gbe_dev->switch_regs + XGBE10_CPTS_OFFSET;
+ 	gbe_dev->ale_ports = gbe_dev->max_num_ports;
+ 	gbe_dev->host_port = XGBE10_HOST_PORT_NUM;
+-	gbe_dev->ale_entries = XGBE10_NUM_ALE_ENTRIES;
+ 	gbe_dev->stats_en_mask = (1 << (gbe_dev->max_num_ports)) - 1;
+ 
+ 	/* Subsystem registers */
+@@ -3433,7 +3429,6 @@ static int set_gbe_ethss14_priv(struct gbe_priv *gbe_dev,
+ 	gbe_dev->ale_reg = gbe_dev->switch_regs + GBE13_ALE_OFFSET;
+ 	gbe_dev->ale_ports = gbe_dev->max_num_ports;
+ 	gbe_dev->host_port = GBE13_HOST_PORT_NUM;
+-	gbe_dev->ale_entries = GBE13_NUM_ALE_ENTRIES;
+ 	gbe_dev->stats_en_mask = GBE13_REG_VAL_STAT_ENABLE_ALL;
+ 
+ 	/* Subsystem registers */
+@@ -3697,12 +3692,15 @@ static int gbe_probe(struct netcp_device *netcp_device, struct device *dev,
+ 	ale_params.dev		= gbe_dev->dev;
+ 	ale_params.ale_regs	= gbe_dev->ale_reg;
+ 	ale_params.ale_ageout	= GBE_DEFAULT_ALE_AGEOUT;
+-	ale_params.ale_entries	= gbe_dev->ale_entries;
+ 	ale_params.ale_ports	= gbe_dev->ale_ports;
+-	if (IS_SS_ID_MU(gbe_dev)) {
+-		ale_params.major_ver_mask = 0x7;
+-		ale_params.nu_switch_ale = true;
+-	}
++	ale_params.dev_id	= "cpsw";
++	if (IS_SS_ID_NU(gbe_dev))
++		ale_params.dev_id = "66ak2el";
++	else if (IS_SS_ID_2U(gbe_dev))
++		ale_params.dev_id = "66ak2g";
++	else if (IS_SS_ID_XGBE(gbe_dev))
++		ale_params.dev_id = "66ak2h-xgbe";
++
+ 	gbe_dev->ale = cpsw_ale_create(&ale_params);
+ 	if (IS_ERR(gbe_dev->ale)) {
+ 		dev_err(gbe_dev->dev, "error initializing ale engine\n");
+-- 
+2.17.1
+
