@@ -2,104 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E91225FEC8
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 18:23:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77A9025FED2
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 18:24:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730532AbgIGQXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 12:23:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60802 "EHLO
+        id S1730543AbgIGQYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 12:24:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730411AbgIGQXk (ORCPT
+        with ESMTP id S1730454AbgIGQYI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 12:23:40 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95A56C061573
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 09:23:39 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id c3so4400925plz.5
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 09:23:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sslab.ics.keio.ac.jp; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=SDxUUQ+8c+YEIDDJur8rYrh3CcLj60cM5IrQcltAbJU=;
-        b=Wy+lY5pi2y0MXKbzHqJ4nxyLK8FkoENJ+OWduamenQCm/MHiU+zeaS9LOSSiSk7TmX
-         OQwBenpNoA2RRwW+bDYWYnuPBVvGkPeIZJXm0ZMBz4gBd2pC5Kw5z5E0N3ZbM34nAw+k
-         OdteM1Ed8drJUGv6ZCa9m6kJPpuG9BZzrYu+w=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=SDxUUQ+8c+YEIDDJur8rYrh3CcLj60cM5IrQcltAbJU=;
-        b=AROd8RDtjE2wbvSdl9L3reFR+b3fngfKYBd/gtW+Q1CBeSsdHCQ7pEJ3rI0ywLU24M
-         Co2N5w6BK6+UHLb17VHaMWIth4AdmmlabkHkYgonpxqauWbUr66gjqoLgVYVK74FloAm
-         Fbp1Axgy+Zx9cTqnlAWhwMZzEUsApyjamHr/MppgJHYdIPIO0ZvsnjFZY/TRL2IOsCSk
-         lztWKrh/dHcyl1eP7zXLST9xGHN643Mt3a6IDvgFeYIy2QQ0B+Cfwu8l5MkHzi8IqFMw
-         iBQD4n2gIORqqP0YBXFWM2C7oMUPdH67MjaS6QmwMX5zGpWFEpOvxFW15eIrdq593H6s
-         pGjw==
-X-Gm-Message-State: AOAM530vWUQDyR3TW/KE4ju3p1Ktq0PZcDY1xcds0TNEx0E4HbHj3B+V
-        3hGscfD/byTTL2USulgG7ly8Dw==
-X-Google-Smtp-Source: ABdhPJyt1f1puArMGZEw7H7IWnsOdW3BtYIeDECpZMGG2uhioAhtb/hu+XxvwnoXRKkOXMIXD2nqUQ==
-X-Received: by 2002:a17:902:d353:: with SMTP id l19mr9227410plk.220.1599495818901;
-        Mon, 07 Sep 2020 09:23:38 -0700 (PDT)
-Received: from brooklyn.i.sslab.ics.keio.ac.jp (sslab-relay.ics.keio.ac.jp. [131.113.126.173])
-        by smtp.googlemail.com with ESMTPSA id v1sm3229622pjn.1.2020.09.07.09.23.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Sep 2020 09:23:38 -0700 (PDT)
-From:   Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
-Cc:     keitasuzuki.park@sslab.ics.keio.ac.jp,
-        takafumi@sslab.ics.keio.ac.jp,
-        Arend van Spriel <arend.vanspriel@broadcom.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Chi-Hsien Lin <chi-hsien.lin@cypress.com>,
-        Wright Feng <wright.feng@cypress.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org (open list:BROADCOM BRCM80211
-        IEEE802.11n WIRELESS DRIVER),
-        brcm80211-dev-list.pdl@broadcom.com (open list:BROADCOM BRCM80211
-        IEEE802.11n WIRELESS DRIVER),
-        brcm80211-dev-list@cypress.com (open list:BROADCOM BRCM80211
-        IEEE802.11n WIRELESS DRIVER),
-        netdev@vger.kernel.org (open list:NETWORKING DRIVERS),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] brcmsmac: fix potential memory leak in wlc_phy_attach_lcnphy
-Date:   Mon,  7 Sep 2020 16:22:43 +0000
-Message-Id: <20200907162245.17997-1-keitasuzuki.park@sslab.ics.keio.ac.jp>
-X-Mailer: git-send-email 2.17.1
-To:     unlisted-recipients:; (no To-header on input)
+        Mon, 7 Sep 2020 12:24:08 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E50BFC061573
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 09:24:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=AlY6K7nk4h/9FDXvqafZ5ameUxU+w3HsZJFnlBkrX8k=; b=NkK5M2iaWEVbBqiE4MDuObwGPo
+        7eAy+vAZPOdDFDW+EHPdjN3T9TcZlfrLNwA0/ILJKDaeL6teYG/SiOmalktG+P2dqO3rQxwXJB8vp
+        24N4g6xeQuJXJJ8KAk61DxcNacPlzgpyZwcJQuZ7t8sfFy9sY588j5jGN+WDXJPpgXofTYovGBGLV
+        HqdI4LAiEHOVEm0IeFeluVbzyiO7BKgCsdWeFKpwhmEGZTQaBBDm28B+vtganJIKhfP9oOrOmwtM5
+        j2eBv9iBuGHCE0XeK2NsFKjMb8XmsNMVFyenHJuS46wT4RGmyusoUxu39wDhEjpZolTYS4wjfMCJ6
+        CWVYoOBg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kFJvg-0008Mb-5n; Mon, 07 Sep 2020 16:23:40 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D51A6305C16;
+        Mon,  7 Sep 2020 18:23:38 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B9D2220CB2046; Mon,  7 Sep 2020 18:23:38 +0200 (CEST)
+Date:   Mon, 7 Sep 2020 18:23:38 +0200
+From:   peterz@infradead.org
+To:     Joerg Vehlow <lkml@jv-coder.de>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Huang Ying <ying.huang@intel.com>,
+        linux-kernel@vger.kernel.org,
+        Joerg Vehlow <joerg.vehlow@aox-tech.de>
+Subject: Re: [BUG RT] dump-capture kernel not executed for panic in interrupt
+ context
+Message-ID: <20200907162338.GN1362448@hirez.programming.kicks-ass.net>
+References: <20200528084614.0c949e8d@gandalf.local.home>
+ <cbbf7926-148e-7acb-dc03-3f055d73364b@jv-coder.de>
+ <20200727163655.8c94c8e245637b62311f5053@linux-foundation.org>
+ <c6b095af-fc92-420f-303f-d2efd9f28873@jv-coder.de>
+ <20200821110848.6c3183d1@oasis.local.home>
+ <20200821134753.9547695c9b782275be3c95b5@linux-foundation.org>
+ <20200821170334.73b52fdd@oasis.local.home>
+ <95d7a489-a295-1c11-ac62-83e941ed3a87@jv-coder.de>
+ <20200907114618.GR2674@hirez.programming.kicks-ass.net>
+ <5c3a502f-2255-5aae-3599-5220aa4b8328@jv-coder.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5c3a502f-2255-5aae-3599-5220aa4b8328@jv-coder.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When wlc_phy_txpwr_srom_read_lcnphy fails in wlc_phy_attach_lcnphy,
-the allocated pi->u.pi_lcnphy is leaked, since struct brcms_phy will be
-freed in the caller function.
+On Mon, Sep 07, 2020 at 02:03:09PM +0200, Joerg Vehlow wrote:
+> 
+> 
+> On 9/7/2020 1:46 PM, peterz@infradead.org wrote:
+> > I think it's too complicated for that is needed, did you see my
+> > suggestion from a year ago? Did i miss something obvious?
+> > 
+> This one? https://lore.kernel.org/linux-fsdevel/20191219090535.GV2844@hirez.programming.kicks-ass.net/
+> 
+> I think it may be a bit incorrect?
+> According to the original comment in __crash_kexec, the mutex was used to
+> prevent a sys_kexec_load, while crash_kexec is executed. Your proposed patch
+> does not lock the mutex in crash_kexec.
 
-Fix this by calling wlc_phy_detach_lcnphy in the error handler of
-wlc_phy_txpwr_srom_read_lcnphy before returning.
+Sure, but any mutex taker will (spin) wait for panic_cpu==CPU_INVALID.
+And if the mutex is already held, we'll not run __crash_kexec() just
+like the trylock() would do today.
 
-Signed-off-by: Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
----
- .../net/wireless/broadcom/brcm80211/brcmsmac/phy/phy_lcn.c    | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+> This does not cover the original use
+> case anymore. The only thing that is protected now are two panicing cores at
+> the same time.
 
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmsmac/phy/phy_lcn.c b/drivers/net/wireless/broadcom/brcm80211/brcmsmac/phy/phy_lcn.c
-index 7ef36234a25d..6d70f51b2ddf 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmsmac/phy/phy_lcn.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmsmac/phy/phy_lcn.c
-@@ -5065,8 +5065,10 @@ bool wlc_phy_attach_lcnphy(struct brcms_phy *pi)
- 	pi->pi_fptr.radioloftget = wlc_lcnphy_get_radio_loft;
- 	pi->pi_fptr.detach = wlc_phy_detach_lcnphy;
- 
--	if (!wlc_phy_txpwr_srom_read_lcnphy(pi))
-+	if (!wlc_phy_txpwr_srom_read_lcnphy(pi)) {
-+		wlc_phy_detach_lcnphy(pi);
- 		return false;
-+	}
- 
- 	if (LCNREV_IS(pi->pubpi.phy_rev, 1)) {
- 		if (pi_lcn->lcnphy_tempsense_option == 3) {
--- 
-2.17.1
+I'm not following. AFAICT it does exactly what the old code did.
+Although maybe I didn't replace all kexec_mutex users, I now see that
+thing isn't static.
 
+> Actually, this implementation feels even more hacky to me....
+
+It's more minimal ;-) It's simpler in that it only provides the required
+semantics (as I understand them) and does not attempt to implement a
+more general trylock() like primitive that isn't needed.
+
+Also, read the kexec_lock() implementation you posted and explain to me
+what happens when kexec_busy is elevated. Also note the lack of
+confusing loops in my code.
