@@ -2,95 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E6FC25FCD3
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 17:17:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4428C25FCDA
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 17:20:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730157AbgIGPR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 11:17:29 -0400
-Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:53487 "EHLO
-        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730120AbgIGPQb (ORCPT
+        id S1730040AbgIGPTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 11:19:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50536 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730102AbgIGPRI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 11:16:31 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id 1DD539F4;
-        Mon,  7 Sep 2020 11:06:23 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Mon, 07 Sep 2020 11:06:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:content-transfer-encoding:in-reply-to; s=fm3; bh=L
-        NZ9BDmmfmh8OGRK1OlhnYmyHiIUpzUacs8VOuZ8w04=; b=b4Lsgrtj1BefwDoze
-        GoY+2YUuX9foRM6JEnPjjbbzW3QWu/bmUz7Y8VZC4vdfCNVhOUQiYrsxE/tjM15Z
-        Dz64NKf4bO8eO2RwyKiQldZs/Uae1LIH4kuGpm0Grf56IJOGGLh0qooWon9sE726
-        dg2PMCTq12IomJMDwyUYRfkUiaTD8dYE3dqupxdT5k1vcHp5HZMF34JjKOwvg8RR
-        qlFRsdwzqpn7M4CXw3FXWJWT+w7qflADPCCxF37YVrC8M4D1QxqbrlD99nc+dewU
-        R6XLlo2+gJRoXlokO3wjiJsxVtyO/ueqSt5A5n+xZhBWEjKAeFiI3WygY9yCoIvA
-        8RYeg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; bh=LNZ9BDmmfmh8OGRK1OlhnYmyHiIUpzUacs8VOuZ8w
-        04=; b=oit6HXSQwQ3Pc5j8CLHTcfTDtPuanq54o0vpR49cmF06zmWpqYYUm14wp
-        R27+FUag2zO+7urGk+wkNjLto/xXB+MLX+i7a2750r/Z7IQKhnn2+RBp/UYsRTtw
-        hEnnp49RKcfHKGmcc0VhMhW4u5gwFYxeO5N+EiD0LokC6RLILSFyo1UUOnmMBoDA
-        6ghcZ3feLz13Pkcrq5W6KuklbwjnmYuLJUqToZGGjafxjFzD0PpedTWM531MPdSB
-        VC7Uog1yTkJ9ShtAhICaubzvvWhhuxCyfT6+ZJcxOD9aFJDcUEjZb8eq1eyA0our
-        9DpsB3HDTG2/DCx9Fwo/dgHRkDk2Q==
-X-ME-Sender: <xms:bExWX5hvB2c1DXTApKg9kSFi8rcMFPEaFQSf7cgwA8l09xl8hei9kg>
-    <xme:bExWX-Avg4SIZpEj2QHC8TJ4CiByNHtPQMuSKNUNMuQ2tHC4-GUKCM9g-Ohbmjvq8
-    zqkujN-LfaYxK3zmWo>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudehtddgkeeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtugfgjgesthhqredttddtvdenucfhrhhomhepofgrgihi
-    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
-    htthgvrhhnpefgjeettdejgffgffdvteeutdehtdehgeehueetkeefgefhtdetjeekledu
-    gedvudenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtne
-    curfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:bUxWX5H6vqLO6TSycubojKKngmIoVKgGlCxCk9NQg_-rQoIcb3dNUA>
-    <xmx:bUxWX-Rh_uDvmu5v3LsrQmpThnnVvDA9u5fnXK-vEXEFGSN2z9aO0w>
-    <xmx:bUxWX2xKtoq9D8FkMWi-ZJUHfZ5flWSVaDEo3i9ciggeuL2BhVHccQ>
-    <xmx:bkxWXws13rGW-YmoakDpzmdVREQJx3esuT1q_JWn754Jk6pNqTiohA>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id B5E35328005A;
-        Mon,  7 Sep 2020 11:06:20 -0400 (EDT)
-Date:   Mon, 7 Sep 2020 17:06:18 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     Chen-Yu Tsai <wens@csie.org>, iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Joerg Roedel <jroedel@suse.de>,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] iommu/sun50i: Fix set-but-not-used variable warning
-Message-ID: <20200907150618.g6jbkmvosfh2ek73@gilmour.lan>
-References: <20200904113906.3906-1-joro@8bytes.org>
+        Mon, 7 Sep 2020 11:17:08 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AEBAC061575
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 08:07:09 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id c8so13099758edv.5
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 08:07:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tessares-net.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=XxcidO8a+cinJq3hmwByDbolPQmkAkMTZXQIbSdXVHo=;
+        b=JwCUzCxYZpnniVuXgc0XE+9Ctb8F7Rof6IBnPXAFlQ4iG7m9CpTgS0vqjUatRzgSy7
+         85uMzvIt8naJC8pHuvjdc77iwjh10lqDTAns1cS1qj4V6Upl8iq9mnzD1V1iUm+hEQCA
+         qL5e8OkMxIw9cjeuqx0qNEQnfU4xRit8JcLch8HdflzAuuFAhwwRJFPEGPJ+sjkv4yzI
+         7by0gPVUgUKHA5ShrO9eVq97r0pdtx7MKMjfrLs5hQ/oENZxpx2vJq4pp4QVt8xZ2ScT
+         iEtTmU4bbZkSQmDCQBJ+mb9Inm9pZh84ZT8gz0DwiooZYRuukPSMXmxvyW0mr0ht5WgG
+         n/+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=XxcidO8a+cinJq3hmwByDbolPQmkAkMTZXQIbSdXVHo=;
+        b=j6AnhvQ86lqBx0QmWFTAweB2+V02ONdx6X2PjJddqrGQ4RApqx56O7pd1G9WxMNCEN
+         /+yq19V/upPh8add7wuZ3SE/qmutRTlH/ULKPNPqENhcoWn/yvLkdq3Mf+bI1EPsbEFd
+         xAa4I1XRbtSqkckzwkewzyo9Ud6aMccDSyTlT9hGV3Hx7JIRN4zwwD25XxfGotb+6oEr
+         kYoYP7tdUhm/jnuS/xzpzItp2FxQQw15IchYIGShFRr+07QJp27M7sN5xR8NDvemrajN
+         jZHOktaJCqcyavLtIDwBpXjwstYtf9rcm1ZHqBeDXdj01g4Wpqa2isg+6fC320cWkQ1Y
+         9fpw==
+X-Gm-Message-State: AOAM530/M5nUyFALPqt559oo4ntI6/7E6kEgz4ouEP35DaLEoj+nMagc
+        HtEbJjpkgOlAbj4CtlE3nemTWoNab8ivwA==
+X-Google-Smtp-Source: ABdhPJwUYtu5Wh4wP00EeoH9Nc/nnekbcAB308ysGJIKxnvaJOGwL647SZ9eyrk9dI+ksoBfrfmlnw==
+X-Received: by 2002:a05:6402:1d0f:: with SMTP id dg15mr23107770edb.342.1599491227444;
+        Mon, 07 Sep 2020 08:07:07 -0700 (PDT)
+Received: from tsr-lap-08.nix.tessares.net ([2a02:578:85b0:e00:8ddf:bedd:580e:7a7e])
+        by smtp.gmail.com with ESMTPSA id r9sm2634939eji.111.2020.09.07.08.07.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Sep 2020 08:07:06 -0700 (PDT)
+Subject: Re: [MPTCP][PATCH net 1/2] mptcp: fix subflow's local_id issues
+To:     Geliang Tang <geliangtang@gmail.com>
+Cc:     Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        mptcp@lists.01.org, linux-kernel@vger.kernel.org
+References: <f24ee917e4043d2befe2a0f96cd57aa74d2a4b26.1599474422.git.geliangtang@gmail.com>
+From:   Matthieu Baerts <matthieu.baerts@tessares.net>
+Message-ID: <16c012eb-7bf9-2606-5a60-d43c2579873b@tessares.net>
+Date:   Mon, 7 Sep 2020 17:07:05 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200904113906.3906-1-joro@8bytes.org>
+In-Reply-To: <f24ee917e4043d2befe2a0f96cd57aa74d2a4b26.1599474422.git.geliangtang@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 04, 2020 at 01:39:06PM +0200, Joerg Roedel wrote:
-> From: Joerg Roedel <jroedel@suse.de>
->=20
-> Fix the following warning the the SUN50I driver:
->=20
->    drivers/iommu/sun50i-iommu.c: In function 'sun50i_iommu_irq':
->    drivers/iommu/sun50i-iommu.c:890:14: warning: variable 'iova' set but =
-not used [-Wunused-but-set-variable]
->      890 |  phys_addr_t iova;
->          |              ^~~~
->=20
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Hi Geliang,
 
-Acked-by: Maxime Ripard <mripard@kernel.org>
+On 07/09/2020 12:29, Geliang Tang wrote:
+> In mptcp_pm_nl_get_local_id, skc_local is the same as msk_local, so it
+> always return 0. Thus every subflow's local_id is 0. It's incorrect.
+> 
+> This patch fixed this issue.
+> 
+> Also, we need to ignore the zero address here, like 0.0.0.0 in IPv4. When
+> we use the zero address as a local address, it means that we can use any
+> one of the local addresses. The zero address is not a new address, we don't
+> need to add it to PM, so this patch added a new function address_zero to
+> check whether an address is the zero address, if it is, we ignore this
+> address.
 
-Thanks!
-Maxime
+Thank you for this patch!
+
+As any patch for -net, may you add a "Fixes:" tag please?
+
+(Also, I don't know if it is normal but I didn't receive the cover-letter)
+
+(...)
+
+> diff --git a/net/mptcp/pm_netlink.c b/net/mptcp/pm_netlink.c
+> index 2c208d2e65cd..dc2c57860d2d 100644
+> --- a/net/mptcp/pm_netlink.c
+> +++ b/net/mptcp/pm_netlink.c
+> @@ -66,6 +66,19 @@ static bool addresses_equal(const struct mptcp_addr_info *a,
+>   	return a->port == b->port;
+>   }
+>   
+> +static bool address_zero(const struct mptcp_addr_info *addr)
+> +{
+> +	struct mptcp_addr_info zero;
+> +
+> +	memset(&zero, 0, sizeof(zero));
+> +	zero.family = addr->family;
+> +
+> +	if (addresses_equal(addr, &zero, false))
+
+Small detail: here you can simply have:
+
+   return addresses_equal(addr, &zero, false);
+
+Cheers,
+Matt
+-- 
+Tessares | Belgium | Hybrid Access Solutions
+www.tessares.net
