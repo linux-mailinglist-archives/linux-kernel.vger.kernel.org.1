@@ -2,67 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1056D25FF10
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 18:26:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8A0625FF0F
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 18:26:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730475AbgIGQ0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1730551AbgIGQ0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 7 Sep 2020 12:26:30 -0400
-Received: from gw.c-home.cz ([89.24.150.100]:42063 "EHLO dmz.c-home.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730406AbgIGQ0A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 12:26:00 -0400
-Received: from ubuntu1804.c-home.cz (unifi.c-home.cz [192.168.1.239])
-        by dmz.c-home.cz (8.14.4+Sun/8.14.4) with ESMTP id 087GP1f3019439;
-        Mon, 7 Sep 2020 18:25:09 +0200 (CEST)
-From:   Martin Cerveny <m.cerveny@computer.org>
-To:     Maxime Ripard <mripard@kernel.org>
-Cc:     Martin Cerveny <m.cerveny@computer.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>
-Subject: [PATCH v3 2/2] ARM: dts: sun8i: v3s: Enable crypto engine
-Date:   Mon,  7 Sep 2020 18:24:58 +0200
-Message-Id: <20200907162458.23730-3-m.cerveny@computer.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200907162458.23730-1-m.cerveny@computer.org>
-References: <20200907162458.23730-1-m.cerveny@computer.org>
+Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:13398 "EHLO
+        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729946AbgIGQ01 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 12:26:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1599495986; x=1631031986;
+  h=from:to:cc:subject:date:message-id;
+  bh=VnpGX/rq2G60jYuw3svogFQniQh9VvXUtLdT7zfMxQA=;
+  b=iq7W+AY3BPXmL7CprOnyVEJY2YBektUVHQuZV4KtoUds56RGblhkjQcO
+   y/vOnavYBrOsA2ny3kokR9XDojIHK5UNc2cCYw5+aEz2+t56zF0Xe3Qcw
+   yROPydvd4xSZtdnLByk4n0CHHMVTfE65NmBlzLyNIDlzKHQYnb5C+Y4Mk
+   s=;
+X-IronPort-AV: E=Sophos;i="5.76,402,1592870400"; 
+   d="scan'208";a="52586337"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1d-5dd976cd.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 07 Sep 2020 16:26:24 +0000
+Received: from uc85b769cb7f9591afac0.ant.amazon.com (iad7-ws-svc-lb50-vlan2.amazon.com [10.0.93.210])
+        by email-inbound-relay-1d-5dd976cd.us-east-1.amazon.com (Postfix) with ESMTPS id 06CFDA252B;
+        Mon,  7 Sep 2020 16:26:22 +0000 (UTC)
+Received: from uc85b769cb7f9591afac0.ant.amazon.com (uc85b769cb7f9591afac0 [127.0.0.1])
+        by uc85b769cb7f9591afac0.ant.amazon.com (8.15.2/8.15.2/Debian-3) with ESMTP id 087GQIbD010913;
+        Mon, 7 Sep 2020 18:26:18 +0200
+Received: (from markubo@localhost)
+        by uc85b769cb7f9591afac0.ant.amazon.com (8.15.2/8.15.2/Submit) id 087GQHcc010906;
+        Mon, 7 Sep 2020 18:26:17 +0200
+From:   Markus Boehme <markubo@amazon.com>
+To:     Corey Minyard <minyard@acm.org>,
+        openipmi-developer@lists.sourceforge.net
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, Stefan Nuernberger <snu@amazon.com>,
+        SeongJae Park <sjpark@amazon.com>, Amit Shah <aams@amazon.com>,
+        Markus Boehme <markubo@amazon.com>
+Subject: [PATCH 1/3] ipmi: Reset response handler when failing to send the command
+Date:   Mon,  7 Sep 2020 18:25:35 +0200
+Message-Id: <1599495937-10654-1-git-send-email-markubo@amazon.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-V3s contains crypto engine that is compatible with A33.
-Add device tree node.
+When failing to send a command we don't expect a response. Clear the
+`null_user_handler` like is done in the success path.
 
-Signed-off-by: Martin Cerveny <m.cerveny@computer.org>
+Signed-off-by: Markus Boehme <markubo@amazon.com>
 ---
- arch/arm/boot/dts/sun8i-v3s.dtsi | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ drivers/char/ipmi/ipmi_msghandler.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/sun8i-v3s.dtsi b/arch/arm/boot/dts/sun8i-v3s.dtsi
-index e5312869c0d2..6eb9c39aa93f 100644
---- a/arch/arm/boot/dts/sun8i-v3s.dtsi
-+++ b/arch/arm/boot/dts/sun8i-v3s.dtsi
-@@ -234,6 +234,17 @@
- 			#size-cells = <0>;
- 		};
+diff --git a/drivers/char/ipmi/ipmi_msghandler.c b/drivers/char/ipmi/ipmi_msghandler.c
+index 737c0b6..2b213c9 100644
+--- a/drivers/char/ipmi/ipmi_msghandler.c
++++ b/drivers/char/ipmi/ipmi_msghandler.c
+@@ -2433,7 +2433,7 @@ static int __get_device_id(struct ipmi_smi *intf, struct bmc_device *bmc)
  
-+		crypto@1c15000 {
-+			compatible = "allwinner,sun8i-v3s-crypto",
-+				     "allwinner,sun8i-a33-crypto";
-+			reg = <0x01c15000 0x1000>;
-+			interrupts = <GIC_SPI 80 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&ccu CLK_BUS_CE>, <&ccu CLK_CE>;
-+			clock-names = "ahb", "mod";
-+			resets = <&ccu RST_BUS_CE>;
-+			reset-names = "ahb";
-+		};
-+
- 		usb_otg: usb@1c19000 {
- 			compatible = "allwinner,sun8i-h3-musb";
- 			reg = <0x01c19000 0x0400>;
+ 	rv = send_get_device_id_cmd(intf);
+ 	if (rv)
+-		return rv;
++		goto out_reset_handler;
+ 
+ 	wait_event(intf->waitq, bmc->dyn_id_set != 2);
+ 
+@@ -2443,6 +2443,7 @@ static int __get_device_id(struct ipmi_smi *intf, struct bmc_device *bmc)
+ 	/* dyn_id_set makes the id data available. */
+ 	smp_rmb();
+ 
++out_reset_handler:
+ 	intf->null_user_handler = NULL;
+ 
+ 	return rv;
+@@ -3329,6 +3330,7 @@ static int __scan_channels(struct ipmi_smi *intf, struct ipmi_device_id *id)
+ 			dev_warn(intf->si_dev,
+ 				 "Error sending channel information for channel 0, %d\n",
+ 				 rv);
++			intf->null_user_handler = NULL;
+ 			return -EIO;
+ 		}
+ 
 -- 
-2.17.1
+2.7.4
 
