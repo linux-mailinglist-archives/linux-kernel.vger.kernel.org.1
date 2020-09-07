@@ -2,211 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDEDF2603E7
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:56:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79A4B2603B1
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:53:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730684AbgIGR4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 13:56:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46832 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728761AbgIGLUn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 07:20:43 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A825121473;
-        Mon,  7 Sep 2020 11:02:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599476561;
-        bh=5LnHy+uS2JT8LQglM7XzLIkWp4JKXPHRBbX6klDBkg8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WuU9qRi8sYGjNywoL7UYUJslezd7VyaemYbf0n59dKheUMNgiGZcGyL0iIA+ekKMr
-         1n0OxJUCDNmE9jatlVJMFMrPu7ZTVbtmOwlniSc1ceecRfVkZWf2cBfkel6un0Q1Ry
-         fOi6tQehwaxjsT3805WgwTU/n/v0XNj+5Jspsmck=
-Date:   Mon, 7 Sep 2020 12:02:37 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Tuan Phan <tuanphan@os.amperecomputing.com>, suzuki.poulose@arm.com
-Cc:     patches@amperecomputing.com, Mark Rutland <mark.rutland@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] perf: arm_dsu: Support DSU ACPI devices
-Message-ID: <20200907110236.GA12174@willie-the-truck>
-References: <1597451980-11405-1-git-send-email-tuanphan@os.amperecomputing.com>
+        id S1729049AbgIGRxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 13:53:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42562 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728899AbgIGLW4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 07:22:56 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C11E0C061799
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 04:03:08 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id g4so15358118wrs.5
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 04:03:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:autocrypt:organization:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=8n9UBdmSPt9AcN2RJccixomSQpzWZXcjxq43oTGl0S0=;
+        b=GOq2hxOYUW2iFQrIQt6AS2z5BaJCR33F1EdySI7xSaBhe5ONjeKZWJKsS5oOhkiIo2
+         wTTAuFEopsVxT/lD+jLyXBGNI7gV0TzrVNIfnEtfXlg9UUri75ludpaclzo/513F/IBb
+         HurqMnf96KO1BUTKh0gmchHqOVYW4p1ygN+MDAw99qn5aOdoziPkJcw5/KXQCbniHLm9
+         OhfTmHkYyMCPLFTCnexTuA7p+Qn3DBnc7vNnDAwWJQNlwTH6yYPn3Vw5bur0xGmsXiV3
+         QXLMhWVu+44qUU0qy2Jhs0mzy8nWLUJ3kf1XZA7YcBLIohfriqevxiejt9LMXMVn/M/5
+         LNFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :organization:message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=8n9UBdmSPt9AcN2RJccixomSQpzWZXcjxq43oTGl0S0=;
+        b=rCTuKgqssPuoI9m6ihnXhRypehRj1Pucrd8+HLyxN3LbEjmY8tikVUrM1QAeV1zhj6
+         w1b18q7QSK+MwrgsRnbXxRv4huFDNicefEtWZ9zfGo6PC3HHo7dIbgi4ZktWguWdVEQZ
+         8G8kGRptyt9YlcAj/t09MlHyZlolGzBpNKqlfy1AE7zaK/I126hRi5ZRoHNrDzeNE8j+
+         pWIw9eqDHreCkRwE4bbxbmugQuKOgmktaS2Y4ygTmj5gTQeVoo2LbXd/ahs40utzjxY1
+         Adu+HEJJDiV+OMiwA99zIN/G2+5hY2y+mUEsodSSXTaoRAKJ6ZwqZ/CbYaJPU06n4nTr
+         0yVA==
+X-Gm-Message-State: AOAM531kYTMRJKS1op09BWGawi61tGctIv4KtDKcWdprLmIdEgw8Izcd
+        QtZuGJoRVvqENYgFSPPINhUQLMc7DY3rImmb
+X-Google-Smtp-Source: ABdhPJwJ4KPi20Y4sFZwAKoZEDkDTRUzze2vvULpeWOCFaD+5vrTNIoP7+/bVCaEn3DQSR99o10+kg==
+X-Received: by 2002:adf:f707:: with SMTP id r7mr21205209wrp.413.1599476586640;
+        Mon, 07 Sep 2020 04:03:06 -0700 (PDT)
+Received: from ?IPv6:2a01:e35:2ec0:82b0:5405:9623:e2f1:b2ac? ([2a01:e35:2ec0:82b0:5405:9623:e2f1:b2ac])
+        by smtp.gmail.com with ESMTPSA id 71sm28657252wrm.23.2020.09.07.04.03.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Sep 2020 04:03:05 -0700 (PDT)
+Subject: Re: [PATCH 0/2] drm: panel: add support for TDO tl070wsh30 panel
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     thierry.reding@gmail.com, dri-devel@lists.freedesktop.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20200904161504.23915-1-narmstrong@baylibre.com>
+ <7e63abb2-89d1-3047-29c2-d312ba5ce16d@baylibre.com>
+ <20200907105428.GA523433@ravnborg.org>
+From:   Neil Armstrong <narmstrong@baylibre.com>
+Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
+ 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
+ BSwxi7g3Mu7u5kUByanqHyA=
+Organization: Baylibre
+Message-ID: <9ba744f2-cac3-c13f-4f65-407e47dd3d02@baylibre.com>
+Date:   Mon, 7 Sep 2020 13:03:04 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1597451980-11405-1-git-send-email-tuanphan@os.amperecomputing.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200907105428.GA523433@ravnborg.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+ Suzuki as I'd like his Ack on this]
+Hi Sam,
 
-On Fri, Aug 14, 2020 at 05:39:40PM -0700, Tuan Phan wrote:
-> Add support for probing device from ACPI node.
-> Each DSU ACPI node and its associated cpus are inside a cluster node.
+On 07/09/2020 12:54, Sam Ravnborg wrote:
+> On Mon, Sep 07, 2020 at 12:33:41PM +0200, Neil Armstrong wrote:
+>> Hi,
+>>
+>> Please ignore this serie, the vendors patch is missing and the panel driver
+>> still has the vrefresh...
+>>
+>> Will repost.
 > 
-> Signed-off-by: Tuan Phan <tuanphan@os.amperecomputing.com>
-> ---
-> Changes in v3:
-> - Based on the latest ARM ACPI binding at: https://developer.arm.com/documentation/den0093/c/
+> Please fix so DRM_DEV_* is replaced by dev_* logging.
+> We no longer use the DRM_ based logging for panels.
 > 
-> Changes in v2:
-> - Removed IRQF_SHARED.
-> - Fixed ACPI runtime detection.
+> Drop drm_print.h from includes and fix build.
+
+Done, thanks for noticing.
+
+Neil
+
 > 
->  drivers/perf/arm_dsu_pmu.c | 68 ++++++++++++++++++++++++++++++++++++++++------
->  1 file changed, 60 insertions(+), 8 deletions(-)
+> I did not read the code just noticed this detail.
 > 
-> diff --git a/drivers/perf/arm_dsu_pmu.c b/drivers/perf/arm_dsu_pmu.c
-> index 96ed93c..4be355d 100644
-> --- a/drivers/perf/arm_dsu_pmu.c
-> +++ b/drivers/perf/arm_dsu_pmu.c
-> @@ -11,6 +11,7 @@
->  #define DRVNAME		PMUNAME "_pmu"
->  #define pr_fmt(fmt)	DRVNAME ": " fmt
->  
-> +#include <linux/acpi.h>
->  #include <linux/bitmap.h>
->  #include <linux/bitops.h>
->  #include <linux/bug.h>
-> @@ -603,18 +604,21 @@ static struct dsu_pmu *dsu_pmu_alloc(struct platform_device *pdev)
->  }
->  
->  /**
-> - * dsu_pmu_dt_get_cpus: Get the list of CPUs in the cluster.
-> + * dsu_pmu_dt_get_cpus: Get the list of CPUs in the cluster
-> + * from device tree.
->   */
-> -static int dsu_pmu_dt_get_cpus(struct device_node *dev, cpumask_t *mask)
-> +static int dsu_pmu_dt_get_cpus(struct platform_device *pdev)
->  {
->  	int i = 0, n, cpu;
->  	struct device_node *cpu_node;
-> +	struct dsu_pmu *dsu_pmu =
-> +		(struct dsu_pmu *) platform_get_drvdata(pdev);
->  
-> -	n = of_count_phandle_with_args(dev, "cpus", NULL);
-> +	n = of_count_phandle_with_args(pdev->dev.of_node, "cpus", NULL);
->  	if (n <= 0)
->  		return -ENODEV;
->  	for (; i < n; i++) {
-> -		cpu_node = of_parse_phandle(dev, "cpus", i);
-> +		cpu_node = of_parse_phandle(pdev->dev.of_node, "cpus", i);
->  		if (!cpu_node)
->  			break;
->  		cpu = of_cpu_node_to_id(cpu_node);
-> @@ -626,11 +630,51 @@ static int dsu_pmu_dt_get_cpus(struct device_node *dev, cpumask_t *mask)
->  		 */
->  		if (cpu < 0)
->  			continue;
-> -		cpumask_set_cpu(cpu, mask);
-> +		cpumask_set_cpu(cpu, &dsu_pmu->associated_cpus);
->  	}
->  	return 0;
->  }
->  
-> +/**
-> + * dsu_pmu_acpi_get_cpus: Get the list of CPUs in the cluster
-> + * from ACPI.
-> + */
-> +static int dsu_pmu_acpi_get_cpus(struct platform_device *pdev)
-> +{
-> +	int cpu;
-> +	struct dsu_pmu *dsu_pmu = (struct dsu_pmu *) platform_get_drvdata(pdev);
-> +
-> +	/*
-> +	 * A dsu pmu node is inside a cluster parent node along with cpu nodes.
-> +	 * We need to find out all cpus that have the same parent with this pmu.
-> +	 */
-> +	for_each_possible_cpu(cpu) {
-> +		struct acpi_device *acpi_dev = ACPI_COMPANION(get_cpu_device(cpu));
-> +
-> +		if (acpi_dev &&
-> +			acpi_dev->parent == ACPI_COMPANION(&pdev->dev)->parent)
-> +			cpumask_set_cpu(cpu, &dsu_pmu->associated_cpus);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int dsu_pmu_platform_get_cpus(struct platform_device *pdev)
-> +{
-> +	int ret = -ENOENT;
-> +	struct fwnode_handle *fwnode = dev_fwnode(&pdev->dev);
-> +
-> +	if (IS_ERR_OR_NULL(fwnode))
-> +		return ret;
-> +
-> +	if (is_of_node(fwnode))
-> +		ret = dsu_pmu_dt_get_cpus(pdev);
-> +	else if (is_acpi_device_node(fwnode))
-> +		ret = dsu_pmu_acpi_get_cpus(pdev);
-> +
-> +	return ret;
-> +}
-> +
->  /*
->   * dsu_pmu_probe_pmu: Probe the PMU details on a CPU in the cluster.
->   */
-> @@ -683,7 +727,9 @@ static int dsu_pmu_device_probe(struct platform_device *pdev)
->  	if (IS_ERR(dsu_pmu))
->  		return PTR_ERR(dsu_pmu);
->  
-> -	rc = dsu_pmu_dt_get_cpus(pdev->dev.of_node, &dsu_pmu->associated_cpus);
-> +	platform_set_drvdata(pdev, dsu_pmu);
+> 	Sam
+> 
 
-Hmm, this is a bit nasty because we haven't finished initialising the
-dsu_pmu yet. I think it would actually be cleaner if you kept:
-
-	static int dsu_pmu_dt_get_cpus(struct device_node *dev, cpumask_t *mask)
-
-for the DT case and added:
-
-	static int dsu_pmu_acpi_get_cpus(struct device *dev, cpumask_t *mask)
-
-for the ACPI case. I suppose the DT case could take the struct device * too
-if you wanted the prototypes to be the same.
-
-> +	rc = dsu_pmu_platform_get_cpus(pdev);
->  	if (rc) {
->  		dev_warn(&pdev->dev, "Failed to parse the CPUs\n");
->  		return rc;
-> @@ -705,7 +751,6 @@ static int dsu_pmu_device_probe(struct platform_device *pdev)
->  	}
->  
->  	dsu_pmu->irq = irq;
-> -	platform_set_drvdata(pdev, dsu_pmu);
->  	rc = cpuhp_state_add_instance(dsu_pmu_cpuhp_state,
->  						&dsu_pmu->cpuhp_node);
->  	if (rc)
-> @@ -752,11 +797,19 @@ static const struct of_device_id dsu_pmu_of_match[] = {
->  	{ .compatible = "arm,dsu-pmu", },
->  	{},
->  };
-> +MODULE_DEVICE_TABLE(of, dsu_pmu_of_match);
-> +
-> +static const struct acpi_device_id dsu_pmu_acpi_match[] = {
-> +	{ "ARMHD500", 0},
-> +	{},
-> +};
-> +MODULE_DEVICE_TABLE(acpi, dsu_pmu_acpi_match);
->  
->  static struct platform_driver dsu_pmu_driver = {
->  	.driver = {
->  		.name	= DRVNAME,
->  		.of_match_table = of_match_ptr(dsu_pmu_of_match),
-> +		.acpi_match_table = ACPI_PTR(dsu_pmu_acpi_match),
->  		.suppress_bind_attrs = true,
->  	},
->  	.probe = dsu_pmu_device_probe,
-> @@ -826,7 +879,6 @@ static void __exit dsu_pmu_exit(void)
->  module_init(dsu_pmu_init);
->  module_exit(dsu_pmu_exit);
->  
-> -MODULE_DEVICE_TABLE(of, dsu_pmu_of_match);
-
-Why have you moved this line?
-
-Will
