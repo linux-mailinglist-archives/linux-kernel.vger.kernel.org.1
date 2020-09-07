@@ -2,115 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07C722601F3
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:15:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 414722601F5
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:15:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730704AbgIGRPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 13:15:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46718 "EHLO mail.kernel.org"
+        id S1731072AbgIGRPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 13:15:11 -0400
+Received: from foss.arm.com ([217.140.110.172]:36604 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729783AbgIGOHu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 10:07:50 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E38C520714;
-        Mon,  7 Sep 2020 14:07:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599487669;
-        bh=iVJ4oDTE3gYccFF+I2iu/ZdtCGQPx73HrYF3gXuC4M4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=glkIdbX6CZZiAclL+SW/fAIYhujdUPu4LDZ4JR8ScNJL91L3PJ+3OvwpMh3VJSKki
-         dHr3tXDaVE1WVoVz95yZMK8vy9yavYJsvfwRGPaIn5m1ICApC8/nOp2tFPO2Adhuad
-         cs+HF1nnbe6EeSMYKN9Zs9QNptsa4InijNsjK2BI=
-Date:   Mon, 7 Sep 2020 16:08:03 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     "Paraschiv, Andra-Irina" <andraprs@amazon.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Anthony Liguori <aliguori@amazon.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Colm MacCarthaigh <colmmacc@amazon.com>,
-        David Duncan <davdunc@amazon.com>,
-        Bjoern Doebel <doebel@amazon.de>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Frank van der Linden <fllinden@amazon.com>,
-        Alexander Graf <graf@amazon.de>, Karen Noel <knoel@redhat.com>,
-        Martin Pohlack <mpohlack@amazon.de>,
-        Matt Wilson <msw@amazon.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Balbir Singh <sblbir@amazon.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stewart Smith <trawets@amazon.com>,
-        Uwe Dannowski <uwed@amazon.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        kvm <kvm@vger.kernel.org>,
-        ne-devel-upstream <ne-devel-upstream@amazon.com>
-Subject: Re: [PATCH v8 17/18] nitro_enclaves: Add overview documentation
-Message-ID: <20200907140803.GA3719869@kroah.com>
-References: <20200904173718.64857-1-andraprs@amazon.com>
- <20200904173718.64857-18-andraprs@amazon.com>
- <20200907090126.GD1101646@kroah.com>
- <44a8a921-1fb4-87ab-b8f2-c168c615dbbd@amazon.com>
+        id S1729715AbgIGOGG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 10:06:06 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B78F91045;
+        Mon,  7 Sep 2020 07:05:57 -0700 (PDT)
+Received: from [10.57.6.175] (unknown [10.57.6.175])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6E9023F73C;
+        Mon,  7 Sep 2020 07:05:54 -0700 (PDT)
+Subject: Re: [PATCH v7] perf test: Introduce script for Arm CoreSight testing
+To:     leo.yan@linaro.org, acme@kernel.org, mathieu.poirier@linaro.org,
+        mike.leach@linaro.org, peterz@infradead.org, mingo@redhat.com,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, namhyung@kernel.org, linux-kernel@vger.kernel.org
+References: <20200907130154.9601-1-leo.yan@linaro.org>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <6333f002-1213-0e20-0fcc-b3bfc0723b97@arm.com>
+Date:   Mon, 7 Sep 2020 15:10:37 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <44a8a921-1fb4-87ab-b8f2-c168c615dbbd@amazon.com>
+In-Reply-To: <20200907130154.9601-1-leo.yan@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 07, 2020 at 04:43:11PM +0300, Paraschiv, Andra-Irina wrote:
+On 09/07/2020 02:01 PM, Leo Yan wrote:
+> We need a simple method to test Perf with Arm CoreSight drivers, this
+> could be used for smoke testing when new patch is coming for perf or
+> CoreSight drivers, and we also can use the test to confirm if the
+> CoreSight has been enabled successfully on new platforms.
 > 
-> 
-> On 07/09/2020 12:01, Greg KH wrote:
-> > 
-> > On Fri, Sep 04, 2020 at 08:37:17PM +0300, Andra Paraschiv wrote:
-> > > Signed-off-by: Andra Paraschiv <andraprs@amazon.com>
-> > > Reviewed-by: Alexander Graf <graf@amazon.com>
-> > > ---
-> > > Changelog
-> > > 
-> > > v7 -> v8
-> > > 
-> > > * Add info about the primary / parent VM CID value.
-> > > * Update reference link for huge pages.
-> > > * Add reference link for the x86 boot protocol.
-> > > * Add license mention and update doc title / chapter formatting.
-> > > 
-> > > v6 -> v7
-> > > 
-> > > * No changes.
-> > > 
-> > > v5 -> v6
-> > > 
-> > > * No changes.
-> > > 
-> > > v4 -> v5
-> > > 
-> > > * No changes.
-> > > 
-> > > v3 -> v4
-> > > 
-> > > * Update doc type from .txt to .rst.
-> > > * Update documentation based on the changes from v4.
-> > > 
-> > > v2 -> v3
-> > > 
-> > > * No changes.
-> > > 
-> > > v1 -> v2
-> > > 
-> > > * New in v2.
-> > > ---
-> > >   Documentation/nitro_enclaves/ne_overview.rst | 95 ++++++++++++++++++++
-> > >   1 file changed, 95 insertions(+)
-> > >   create mode 100644 Documentation/nitro_enclaves/ne_overview.rst
-> > A whole new subdir, for a single driver, and not tied into the kernel
-> > documentation build process at all?  Not good :(
-> > 
-> 
-> Would the "virt" directory be a better option for this doc file?
+> This patch introduces the shell script test_arm_coresight.sh which is
+> under the 'pert test' framework.  This script provides three testing
+> scenarios:
 
-Yes.
+...
+
+> Below is detailed usage for it:
+> 
+>    # cd $linux/tools/perf  -> This is important so can use shell script
+>    # perf test list
+>      [...]
+>      70: probe libc's inet_pton & backtrace it with ping
+>      71: Check Arm CoreSight trace data recording and synthesized samples
+>      72: Check open filename arg using perf trace + vfs_getname
+>      73: Zstd perf.data compression/decompression
+>      74: Add vfs_getname probe to get syscall args filenames
+>      75: Use vfs_getname probe to get syscall args filenames
+> 
+>    # perf test 71
+>      71: Check Arm CoreSight trace data recording and branch samples: Ok
+> 
+> Signed-off-by: Leo Yan <leo.yan@linaro.org>
+
+Leo,
+
+Thank you so much for testcase !
+
+Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
