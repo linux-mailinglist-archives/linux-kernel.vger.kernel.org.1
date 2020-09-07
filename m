@@ -2,114 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9633625FC65
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 16:57:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B641225FC74
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 16:59:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729899AbgIGO5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 10:57:44 -0400
-Received: from foss.arm.com ([217.140.110.172]:37686 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730037AbgIGOv7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 10:51:59 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 15915106F;
-        Mon,  7 Sep 2020 07:51:59 -0700 (PDT)
-Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EF8AA3F73C;
-        Mon,  7 Sep 2020 07:51:57 -0700 (PDT)
-Date:   Mon, 7 Sep 2020 15:51:55 +0100
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     peterz@infradead.org
-Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        vincent.donnefort@arm.com, mingo@redhat.com,
-        vincent.guittot@linaro.org, linux-kernel@vger.kernel.org,
-        valentin.schneider@arm.com, Phil Auld <pauld@redhat.com>
-Subject: Re: [PATCH v2] sched/debug: Add new tracepoint to track cpu_capacity
-Message-ID: <20200907145155.fsmeygi4fiypikzk@e107158-lin.cambridge.arm.com>
-References: <1598605249-72651-1-git-send-email-vincent.donnefort@arm.com>
- <20200828102724.wmng7p6je2pkc33n@e107158-lin.cambridge.arm.com>
- <1e806d48-fd54-fd86-5b3a-372d9876f360@arm.com>
- <20200828172658.dxygk7j672gho4ax@e107158-lin.cambridge.arm.com>
- <58f5d2e8-493b-7ce1-6abd-57705e5ab437@arm.com>
- <20200907104845.6rust2lf2o3d5gmq@e107158-lin.cambridge.arm.com>
- <20200907111320.GP2674@hirez.programming.kicks-ass.net>
+        id S1730099AbgIGO7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 10:59:33 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:41638 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730049AbgIGOwb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 10:52:31 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 087EqR5k083985;
+        Mon, 7 Sep 2020 09:52:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1599490347;
+        bh=SKjEARJSEdZouxBFx9iMfSktRPFzjW/EAp3EiPowD5g=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=zBLox/2D6xSZrodBqQ6+1kl8lnUMriOJqCD2tlEOTsTVoFYepFJ2W7WDSVQPnjp4T
+         fgEwgh1N8cCfQyhA5x7NsroLMl24xfct4qBYLhppzmuf1LPmxssh/BUimtxDVjO3U7
+         BwOAuQCd2/pmtD5RfHfGNrTpNRAA5KtlvpxCy5YE=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 087EqQ5a034660;
+        Mon, 7 Sep 2020 09:52:27 -0500
+Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 7 Sep
+ 2020 09:52:26 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 7 Sep 2020 09:52:26 -0500
+Received: from lta0400828a.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 087EqEEP010923;
+        Mon, 7 Sep 2020 09:52:24 -0500
+From:   Roger Quadros <rogerq@ti.com>
+To:     <t-kristo@ti.com>, <nm@ti.com>
+CC:     <robh+dt@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <nsekhar@ti.com>,
+        <kishon@ti.com>, Roger Quadros <rogerq@ti.com>
+Subject: [PATCH v2 4/6] arm64: dts: ti: k3-j7200-main: Add USB controller
+Date:   Mon, 7 Sep 2020 17:52:11 +0300
+Message-ID: <20200907145213.30788-5-rogerq@ti.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200907145213.30788-1-rogerq@ti.com>
+References: <20200907145213.30788-1-rogerq@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200907111320.GP2674@hirez.programming.kicks-ass.net>
-User-Agent: NeoMutt/20171215
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/07/20 13:13, peterz@infradead.org wrote:
-> On Mon, Sep 07, 2020 at 11:48:45AM +0100, Qais Yousef wrote:
-> > IMHO the above is a hack. Out-of-tree modules should rely on public headers and
-> > exported functions only. What you propose means that people who want to use
-> > these tracepoints in meaningful way must have a prebuilt kernel handy. Which is
-> > maybe true for us who work in the embedded world. But users who run normal
-> > distro kernels (desktop/servers) will fail to build against
-> 
-> But this isn't really aimed at regular users. We're aiming this at
-> developers (IIUC) so I dont really see this as a problem.
-> 
-> > FWIW, I did raise this concern with Peter in 2019 OSPM and he was okay with the
-> > exports as it's still not a contract and they can disappear anytime we want.
-> > Migrating to using BTF is the right way forward IMO. I don't think what we have
-> > here is out-of-control yet. Though I agree they're annoying.
-> 
-> Right, we're hiding behind the explicit lack of ABI for modules.
-> 
-> Anyway, CTF/BTF/random other crap that isn't DWARFs should work fine to
-> replace all this muck. Just no idea what the state of any of that is.
+j7200 has on USB controller instance. Add that.
 
-So I was thinking of having a function that allows a module to read member of
-struct rq (or any struct for that matters), but I think that's the harder
-(though neater) way around.
+Signed-off-by: Roger Quadros <rogerq@ti.com>
+---
+ arch/arm64/boot/dts/ti/k3-j7200-main.dtsi | 30 +++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
 
-Just compiled a kernel with CONFIG_DEBUG_INFO_BTF_INFO; and doing
+diff --git a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
+index af9e8e46b49e..c64bf652f0d2 100644
+--- a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
+@@ -331,4 +331,34 @@
+ 		no-1-8-v;
+ 		dma-coherent;
+ 	};
++
++	usbss0: cdns-usb@4104000 {
++		compatible = "ti,j721e-usb";
++		reg = <0x00 0x4104000 0x00 0x100>;
++		dma-coherent;
++		power-domains = <&k3_pds 288 TI_SCI_PD_EXCLUSIVE>;
++		clocks = <&k3_clks 288 12>, <&k3_clks 288 3>;
++		clock-names = "ref", "lpm";
++		assigned-clocks = <&k3_clks 288 12>;	/* USB2_REFCLK */
++		assigned-clock-parents = <&k3_clks 288 13>; /* HFOSC0 */
++		#address-cells = <2>;
++		#size-cells = <2>;
++		ranges;
++
++		usb0: usb@6000000 {
++			compatible = "cdns,usb3";
++			reg = <0x00 0x6000000 0x00 0x10000>,
++			      <0x00 0x6010000 0x00 0x10000>,
++			      <0x00 0x6020000 0x00 0x10000>;
++			reg-names = "otg", "xhci", "dev";
++			interrupts = <GIC_SPI 96 IRQ_TYPE_LEVEL_HIGH>,	/* irq.0 */
++				     <GIC_SPI 102 IRQ_TYPE_LEVEL_HIGH>,	/* irq.6 */
++				     <GIC_SPI 120 IRQ_TYPE_LEVEL_HIGH>;	/* otgirq.0 */
++			interrupt-names = "host",
++					  "peripheral",
++					  "otg";
++			maximum-speed = "super-speed";
++			dr_mode = "otg";
++		};
++	};
+ };
+-- 
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
 
-	$ pahole rq
-	struct rq {
-        raw_spinlock_t             lock;                 /*     0     4 */
-        unsigned int               nr_running;           /*     4     4 */
-        long unsigned int          last_blocked_load_update_tick; /*     8     8 */
-        unsigned int               has_blocked_load;     /*    16     4 */
-
-        /* XXX 12 bytes hole, try to pack */
-
-        call_single_data_t         nohz_csd;             /*    32    32 */
-        /* --- cacheline 1 boundary (64 bytes) --- */
-        unsigned int               nohz_tick_stopped;    /*    64     4 */
-        atomic_t                   nohz_flags;           /*    68     4 */
-        unsigned int               ttwu_pending;         /*    72     4 */
-
-        /* XXX 4 bytes hole, try to pack */
-
-        u64                        nr_switches;          /*    80     8 */
-	.
-	.
-	.
-	}
-
-dumps the struct rq {...}; which means one can easily use that to autogenerate
-a header containing the structs they care about accessing for their running
-kernel.
-
-pahole automatically knows how to find /sys/kernel/btf/vmlinux to parse the
-debug info btw.
-
-The only caveat is that one has to recompile the module for each running
-kernel; but that's acceptable I think. Not sure how many allow loading a module
-that's not compiled for that particular kernel version anyway.
-
-Note to try this you'll need pahole v1.16 or newer. And compiling pahole on
-Ubuntu is a pain. I had to create a fedora docker image to compile it in.
-
-So I think we have this already solved. Though not sure how to document it..
-
-Thanks
-
---
-Qais Yousef
