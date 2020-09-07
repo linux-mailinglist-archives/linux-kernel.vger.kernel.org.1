@@ -2,170 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CA8125FDD0
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 17:58:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C904825FD38
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 17:33:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730227AbgIGP6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 11:58:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58154 "EHLO mail.kernel.org"
+        id S1730202AbgIGPdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 11:33:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58566 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730008AbgIGOuJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 10:50:09 -0400
-Received: from coco.lan (ip5f5ad5cf.dynamic.kabel-deutschland.de [95.90.213.207])
+        id S1730027AbgIGOvu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 10:51:50 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 650DE21532;
-        Mon,  7 Sep 2020 14:50:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2730E215A4;
+        Mon,  7 Sep 2020 14:51:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599490208;
-        bh=ucJr+saLVcP0I55uqGtU5DQWyYXMW2U5WBZWrLtx+zk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=jJTNEKN6B2ykUQfSlOxxOquiv+y2ri4qBpvBA0yy2WBHyYQ7U60vuSx9SEBF9QlBn
-         Ar+/7pK9BivK2eSYEDscpEZzduRbW2j7hxwiRljDzqT3vtxs/9Pq1T4PlIi/i4lUpu
-         MPpNKwTKS8Igkyfh9QzkF30mEKEu4P5RLAI0SoJo=
-Date:   Mon, 7 Sep 2020 16:50:00 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Felipe Balbi <balbi@kernel.org>, Yu Chen <chenyu56@huawei.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, john.stultz@linaro.org,
-        suzhuangluan@hisilicon.com, kongfei@hisilicon.com,
-        liuyu712@hisilicon.com, wanghu17@hisilicon.com,
-        butao@hisilicon.com, chenyao11@huawei.com,
-        fangshengzhou@hisilicon.com, lipengcheng8@huawei.com,
-        songxiaowei@hisilicon.com, xuyiping@hisilicon.com,
-        xuyoujun4@huawei.com, yudongbin@hisilicon.com,
-        zangleigang@hisilicon.com,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Binghui Wang <wangbinghui@hisilicon.com>
-Subject: Re: [PATCH v6 04/13] usb: dwc3: Add splitdisable quirk for
- Hisilicon Kirin Soc
-Message-ID: <20200907165000.7c42a6da@coco.lan>
-In-Reply-To: <874ko9of80.fsf@kernel.org>
-References: <20190420064019.57522-1-chenyu56@huawei.com>
-        <20190420064019.57522-5-chenyu56@huawei.com>
-        <20200907150631.70e1bce0@coco.lan>
-        <874ko9of80.fsf@kernel.org>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        s=default; t=1599490271;
+        bh=h4qo13MuKIBOL36f408Cp8YPzjpxFs19uVUOnTY6W1w=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=liinFBkFyHLaJLIeSey9AzpTVwo5tAq0lxmr747pa6hxz84x2NY96OcOTKndkh0XD
+         KV2QLRR7HfaN1g4yS+xd2LBRulccUYEUBCqiwu+w/Y44/YXFkAEBTYnZmdFRXMMOrG
+         ///n3xyMGV/pjWpxQjfL2rYb/dkDjwh1OjQTPC/c=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     himadrispandya@gmail.com, dvyukov@google.com,
+        linux-usb@vger.kernel.org
+Cc:     perex@perex.cz, tiwai@suse.com, stern@rowland.harvard.ed,
+        linux-kernel@vger.kernel.org, marcel@holtmann.org,
+        johan.hedberg@gmail.com, linux-bluetooth@vger.kernel.org,
+        alsa-devel@alsa-project.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH v2 02/11] USB: add usb_control_msg_send() and usb_control_msg_recv()
+Date:   Mon,  7 Sep 2020 16:50:59 +0200
+Message-Id: <20200907145108.3766613-3-gregkh@linuxfoundation.org>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200907145108.3766613-1-gregkh@linuxfoundation.org>
+References: <20200907145108.3766613-1-gregkh@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, 07 Sep 2020 17:04:31 +0300
-Felipe Balbi <balbi@kernel.org> escreveu:
+New core functions to make sending/receiving USB control messages easier
+and saner.
 
-> Hi Mauro,
-> 
-> Mauro Carvalho Chehab <mchehab+huawei@kernel.org> writes:
-> 
-> > Hi Felipe/Greg,
-> >
-> > What's the status of this patch?   
-> 
-> to be frank, I don't think I have this in my inbox anymore.
-> 
-> > I tested here, together with the Hikey 970 phy RFC patches I sent
-> > last week.
-> >
-> > Without this patch, the USB HID driver receives -EPROTO from
-> > submitted URBs, causing it to enter into an endless reset cycle
-> > on every 500 ms, at the hid_io_error() logic.  
-> 
-> > Tested-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> >
-> > If you prefer, I can re-submit this one with my SOB.  
-> 
-> Please do, but since you're changing device tree, I need Rob's acked-by.
+In discussions, it turns out that the large majority of users of
+usb_control_msg() do so in potentially incorrect ways.  The most common
+issue is where a "short" message is received, yet never detected
+properly due to "incorrect" error handling.
 
-Ok, I'll do that.
+Handle all of this in the USB core with two new functions to try to make
+working with USB control messages simpler.
 
-> > Thanks,
-> > Mauro
-> >
-> > Em Sat, 20 Apr 2019 14:40:10 +0800
-> > Yu Chen <chenyu56@huawei.com> escreveu:
-> >  
-> >> SPLIT_BOUNDARY_DISABLE should be set for DesignWare USB3 DRD Core
-> >> of Hisilicon Kirin Soc when dwc3 core act as host.  
-> 
-> is this Kirin-specific or is this something that we should do a revision
-> check? 
+No more need for dynamic data, messages can be on the stack, and only
+"complete" send/receive will work without causing an error.
 
-I've no idea. I don't have any datasheets from this device.
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+v2:
+ - no change from v1
 
-> Why does it affect only Hikey kirin? 
+ drivers/usb/core/message.c | 133 +++++++++++++++++++++++++++++++++++++
+ include/linux/usb.h        |   6 ++
+ 2 files changed, 139 insertions(+)
 
-As John Stultz didn't re-submit this one (and looking at the DT
-between Kirin 960 and 970 from the original Kernel 4.9 official
-drivers), I suspect that only Kirin 970 requires this quirk.
+diff --git a/drivers/usb/core/message.c b/drivers/usb/core/message.c
+index 6197938dcc2d..6aa49b237717 100644
+--- a/drivers/usb/core/message.c
++++ b/drivers/usb/core/message.c
+@@ -162,6 +162,139 @@ int usb_control_msg(struct usb_device *dev, unsigned int pipe, __u8 request,
+ }
+ EXPORT_SYMBOL_GPL(usb_control_msg);
+ 
++/**
++ * usb_control_msg_send - Builds a control "send" message, sends it off and waits for completion
++ * @dev: pointer to the usb device to send the message to
++ * @endpoint: endpoint to send the message to
++ * @request: USB message request value
++ * @requesttype: USB message request type value
++ * @value: USB message value
++ * @index: USB message index value
++ * @driver_data: pointer to the data to send
++ * @size: length in bytes of the data to send
++ * @timeout: time in msecs to wait for the message to complete before timing
++ *	out (if 0 the wait is forever)
++ *
++ * Context: !in_interrupt ()
++ *
++ * This function sends a control message to a specified endpoint that is not
++ * expected to fill in a response (i.e. a "send message") and waits for the
++ * message to complete, or timeout.
++ *
++ * Do not use this function from within an interrupt context. If you need
++ * an asynchronous message, or need to send a message from within interrupt
++ * context, use usb_submit_urb(). If a thread in your driver uses this call,
++ * make sure your disconnect() method can wait for it to complete. Since you
++ * don't have a handle on the URB used, you can't cancel the request.
++ *
++ * The data pointer can be made to a reference on the stack, or anywhere else,
++ * as it will not be modified at all.  This does not have the restriction that
++ * usb_control_msg() has where the data pointer must be to dynamically allocated
++ * memory (i.e. memory that can be successfully DMAed to a device).
++ *
++ * Return: If successful, 0 is returned, Otherwise, a negative error number.
++ */
++int usb_control_msg_send(struct usb_device *dev, __u8 endpoint, __u8 request,
++			 __u8 requesttype, __u16 value, __u16 index,
++			 const void *driver_data, __u16 size, int timeout)
++{
++	unsigned int pipe = usb_sndctrlpipe(dev, endpoint);
++	int ret;
++	u8 *data = NULL;
++
++	if (usb_pipe_type_check(dev, pipe))
++		return -EINVAL;
++
++	if (size) {
++		data = kmemdup(driver_data, size, GFP_KERNEL);
++		if (!data)
++			return -ENOMEM;
++	}
++
++	ret = usb_control_msg(dev, pipe, request, requesttype, value, index,
++			      data, size, timeout);
++	kfree(data);
++
++	if (ret < 0)
++		return ret;
++	if (ret == size)
++		return 0;
++	return -EINVAL;
++}
++EXPORT_SYMBOL_GPL(usb_control_msg_send);
++
++/**
++ * usb_control_msg_recv - Builds a control "receive" message, sends it off and waits for completion
++ * @dev: pointer to the usb device to send the message to
++ * @endpoint: endpoint to send the message to
++ * @request: USB message request value
++ * @requesttype: USB message request type value
++ * @value: USB message value
++ * @index: USB message index value
++ * @driver_data: pointer to the data to be filled in by the message
++ * @size: length in bytes of the data to be received
++ * @timeout: time in msecs to wait for the message to complete before timing
++ *	out (if 0 the wait is forever)
++ *
++ * Context: !in_interrupt ()
++ *
++ * This function sends a control message to a specified endpoint that is
++ * expected to fill in a response (i.e. a "receive message") and waits for the
++ * message to complete, or timeout.
++ *
++ * Do not use this function from within an interrupt context. If you need
++ * an asynchronous message, or need to send a message from within interrupt
++ * context, use usb_submit_urb(). If a thread in your driver uses this call,
++ * make sure your disconnect() method can wait for it to complete. Since you
++ * don't have a handle on the URB used, you can't cancel the request.
++ *
++ * The data pointer can be made to a reference on the stack, or anywhere else
++ * that can be successfully written to.  This function does not have the
++ * restriction that usb_control_msg() has where the data pointer must be to
++ * dynamically allocated memory (i.e. memory that can be successfully DMAed to a
++ * device).
++ *
++ * The "whole" message must be properly received from the device in order for
++ * this function to be successful.  If a device returns less than the expected
++ * amount of data, then the function will fail.  Do not use this for messages
++ * where a variable amount of data might be returned.
++ *
++ * Return: If successful, 0 is returned, Otherwise, a negative error number.
++ */
++int usb_control_msg_recv(struct usb_device *dev, __u8 endpoint, __u8 request,
++			 __u8 requesttype, __u16 value, __u16 index,
++			 void *driver_data, __u16 size, int timeout)
++{
++	unsigned int pipe = usb_rcvctrlpipe(dev, endpoint);
++	int ret;
++	u8 *data;
++
++	if (!size || !driver_data || usb_pipe_type_check(dev, pipe))
++		return -EINVAL;
++
++	data = kmalloc(size, GFP_KERNEL);
++	if (!data)
++		return -ENOMEM;
++
++	ret = usb_control_msg(dev, pipe, request, requesttype, value, index,
++			      data, size, timeout);
++
++	if (ret < 0)
++		goto exit;
++
++	if (ret == size) {
++		memcpy(driver_data, data, size);
++		ret = 0;
++	} else {
++		ret = -EINVAL;
++	}
++
++exit:
++	kfree(data);
++	return ret;
++}
++EXPORT_SYMBOL_GPL(usb_control_msg_recv);
++
+ /**
+  * usb_interrupt_msg - Builds an interrupt urb, sends it off and waits for completion
+  * @usb_dev: pointer to the usb device to send the message to
+diff --git a/include/linux/usb.h b/include/linux/usb.h
+index 0b3963d7ec38..a5460f08126e 100644
+--- a/include/linux/usb.h
++++ b/include/linux/usb.h
+@@ -1802,6 +1802,12 @@ extern int usb_bulk_msg(struct usb_device *usb_dev, unsigned int pipe,
+ 	int timeout);
+ 
+ /* wrappers around usb_control_msg() for the most common standard requests */
++int usb_control_msg_send(struct usb_device *dev, __u8 endpoint, __u8 request,
++			 __u8 requesttype, __u16 value, __u16 index,
++			 const void *data, __u16 size, int timeout);
++int usb_control_msg_recv(struct usb_device *dev, __u8 endpoint, __u8 request,
++			 __u8 requesttype, __u16 value, __u16 index,
++			 void *data, __u16 size, int timeout);
+ extern int usb_get_descriptor(struct usb_device *dev, unsigned char desctype,
+ 	unsigned char descindex, void *buf, int size);
+ extern int usb_get_status(struct usb_device *dev,
+-- 
+2.28.0
 
-It could well be due to some Dwc3 revision, but it could also be due
-to some differences at the USB part of the SoC, as there are a
-few other things different between hikey 960 and 970: it has a
-different PHY driver, and there are also some differences at the
-USB HUB which is connected into it.
-
-On both devices, the USB physical ports are actually connected
-into a HUB. In the case of Hikey 970, the hub seems to be a
-TI TUSB8041 4-Port Hub:
-	
-	$ lsusb
-	Bus 002 Device 002: ID 0451:8140 Texas Instruments, Inc. TUSB8041 4-Port Hub
-	Bus 002 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
-	Bus 001 Device 004: ID 090c:1000 Silicon Motion, Inc. - Taiwan (formerly Feiya Technology Corp.) Flash Drive
-	Bus 001 Device 003: ID 413c:301a Dell Computer Corp. Dell MS116 Optical Mouse
-	Bus 001 Device 002: ID 0451:8142 Texas Instruments, Inc. TUSB8041 4-Port Hub
-	Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
-
-> What's the dwc3 revision on
-> that SoC (grep SNPSID /sys/kernel/debugfs/*dwc3/regdump)?
-
-	GSNPSID = 0x33313130
-
-> 
-> >> @@ -1825,10 +1834,27 @@ static int dwc3_resume(struct device *dev)
-> >>  
-> >>  	return 0;
-> >>  }
-> >> +
-> >> +static void dwc3_complete(struct device *dev)
-> >> +{
-> >> +	struct dwc3	*dwc = dev_get_drvdata(dev);
-> >> +	u32		reg;
-> >> +
-> >> +	if (dwc->current_dr_role == DWC3_GCTL_PRTCAP_HOST &&
-> >> +			dwc->dis_split_quirk) {
-> >> +		dev_dbg(dwc->dev, "set DWC3_GUCTL3_SPLITDISABLE\n");  
-> 
-> no more dev_dbg() should be added. This driver relies exclusively on
-> tracepoints for debugging.
-
-Ok. 
-
-> 
-> >> +		reg = dwc3_readl(dwc->regs, DWC3_GUCTL3);
-> >> +		reg |= DWC3_GUCTL3_SPLITDISABLE;
-> >> +		dwc3_writel(dwc->regs, DWC3_GUCTL3, reg);
-> >> +	}
-> >> +}
-> >> +#else
-> >> +#define dwc3_complete NULL
-> >>  #endif /* CONFIG_PM_SLEEP */
-> >>  
-> >>  static const struct dev_pm_ops dwc3_dev_pm_ops = {
-> >>  	SET_SYSTEM_SLEEP_PM_OPS(dwc3_suspend, dwc3_resume)
-> >> +	.complete = dwc3_complete,  
-> 
-> why is this done on complete? Why can't it be done at the end of
-> dwc3_resume()?
-
-Again, no idea. I didn't actually tried to suspend/resume.
-
-Maybe the original author can shed a light on it.
-
-Thanks,
-Mauro
