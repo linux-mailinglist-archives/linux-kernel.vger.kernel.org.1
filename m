@@ -2,102 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C0A225F81D
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 12:27:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01B8725F828
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 12:27:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728544AbgIGK1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 06:27:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33890 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728913AbgIGK0r (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 06:26:47 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34145C061755
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 03:26:47 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id i22so17543569eja.5
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 03:26:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HmvvDOBbOI3Ap25LolJkNiUzAqYW/BkylmIeV4YjRD8=;
-        b=QDdavu3QQmHCnnU4KwLOJr5Oqa+V9NiMQ1XwjqwN4Vf2/Yl3FamhFwkRnK9uYu0WMM
-         PSIo98ml3rL98H/MFyPHXu20UitXy3KZs6DuWoJyxF5RrbDa1aPfsa1zk2tKopjDf92t
-         oxo871xKdzsVRbGhOSWrfmLzWXP1g3/zK22U4SR+waK/pY8uV+I18/6oBOqI7kXsfGG+
-         lRPUidIYCyv/fl7hMJdze89IE3yiK8vG8YSPcuMTCt3puxMTRgbzm+XlUiKl6PSZAZFB
-         UrTltAyeJJ/5hiL9WET3bwgBk0tFhMnH+r3fxLY6lbC1V0A6JzZcriwY/wtmltFYV3GN
-         TqjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HmvvDOBbOI3Ap25LolJkNiUzAqYW/BkylmIeV4YjRD8=;
-        b=QSNvlsoSgSVYNyj39agkBbNTmSfQ+GNOzr+LPxv1gs3zkV//UjuwAWb2ygpa9eXIkP
-         zrmU0L+g+oONmMJRKe+xVLzIR2dZ9/K5z6JkvkKYOb20MgcJPj09F0DuTl20T4nFehA4
-         sMuzEjxJNXe2ODGyxNpo38bJvw+j7d09bYkaUL1u4ur3Ew0E70eyS9ZPU7DyU5tD3dWN
-         9Dm6QQJVHWV0sraatkGLJ3kTaAsaGDi8w5Y1kqUtUgDsd6lSokUes3z7pjIScLN8OnLH
-         3eHB8bZvdpKEG5UZrDa0XDOk5vi444GWrQqfqj0W+l8HiavWthF7ue7aqLMIDuaQuDXX
-         99WQ==
-X-Gm-Message-State: AOAM530lBOnMxuGim+93aAzWUrRMeev9q1XhMLgqAf/WPSC2tIFfAarc
-        gKnXCyvS9nwaw6CLItkwquVNeV55RvE2O0ZKwTtUUg==
-X-Google-Smtp-Source: ABdhPJzU3TRrxz7IZqvY6j9hu2ty43AjKwNnl8X1LKDXaPDRCwBiEKtxjLALYuvJMHAGMXF/jF07pg9xrPNCh4fKRnk=
-X-Received: by 2002:a17:907:20d9:: with SMTP id qq25mr15792481ejb.382.1599474405853;
- Mon, 07 Sep 2020 03:26:45 -0700 (PDT)
+        id S1728879AbgIGK1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 06:27:50 -0400
+Received: from foss.arm.com ([217.140.110.172]:60084 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728186AbgIGK10 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 06:27:26 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CFFFF106F;
+        Mon,  7 Sep 2020 03:27:20 -0700 (PDT)
+Received: from arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7EAE33F66E;
+        Mon,  7 Sep 2020 03:27:19 -0700 (PDT)
+Date:   Mon, 7 Sep 2020 11:27:17 +0100
+From:   Dave Martin <Dave.Martin@arm.com>
+To:     Boyan Karatotev <boyan.karatotev@arm.com>
+Cc:     Shuah Khan <shuah@kernel.org>, boian4o1@gmail.com,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        amit.kachhap@arm.com, vincenzo.frascino@arm.com,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 3/4] kselftests/arm64: add PAuth test for whether exec()
+ changes keys
+Message-ID: <20200907102717.GM6642@arm.com>
+References: <20200828131606.7946-1-boyan.karatotev@arm.com>
+ <20200828131606.7946-4-boyan.karatotev@arm.com>
+ <20200902170052.GJ6642@arm.com>
+ <70e207ea-f7c2-2c9d-e868-3ba3b6451c6f@arm.com>
 MIME-Version: 1.0
-References: <20200904154547.3836-1-brgl@bgdev.pl> <20200904154547.3836-24-brgl@bgdev.pl>
- <26ea1683-da8f-30e7-f004-3616e96d56b3@infradead.org> <20200907095932.GU1891694@smile.fi.intel.com>
-In-Reply-To: <20200907095932.GU1891694@smile.fi.intel.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Mon, 7 Sep 2020 12:26:34 +0200
-Message-ID: <CAMpxmJXvhYOVkZY7LLf=v+o8E2xKTh1RYhLrdVsS9nN1XZ5QJQ@mail.gmail.com>
-Subject: Re: [PATCH 23/23] Documentation: gpio: add documentation for gpio-mockup
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Kent Gibson <warthog618@gmail.com>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        linux-doc <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-acpi@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <70e207ea-f7c2-2c9d-e868-3ba3b6451c6f@arm.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 7, 2020 at 11:59 AM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Fri, Sep 04, 2020 at 08:15:59PM -0700, Randy Dunlap wrote:
-> > On 9/4/20 8:45 AM, Bartosz Golaszewski wrote:
->
-> ...
->
-> > > +GPIO Testing Driver
-> > > +===================
-> > > +
-> > > +The GPIO Testing Driver (gpio-mockup) provides a way to create simulated GPIO
-> > > +chips for testing purposes. There are two ways of configuring the chips exposed
-> > > +by the module. The lines can be accessed using the standard GPIO character
-> > > +device interface as well as manipulated using the dedicated debugfs directory
-> > > +structure.
-> >
-> > Could configfs be used for this instead of debugfs?
-> > debugfs is ad hoc.
->
-> Actually sounds like a good idea.
->
+On Thu, Sep 03, 2020 at 11:20:25AM +0100, Boyan Karatotev wrote:
+> On 02/09/2020 18:00, Dave Martin wrote:
+> > On Fri, Aug 28, 2020 at 02:16:05PM +0100, Boyan Karatotev wrote:
+> >> Kernel documentation states that it will change PAuth keys on exec() calls.
+> >>
+> >> Verify that all keys are correctly switched to new ones.
+> >>
+> >> Cc: Shuah Khan <shuah@kernel.org>
+> >> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> >> Cc: Will Deacon <will@kernel.org>
+> >> Signed-off-by: Boyan Karatotev <boyan.karatotev@arm.com>
+> >> ---
 
-Well, then we can go on and write an entirely new mockup driver
-(ditching module params and dropping any backwards compatibility)
-because we're already using debugfs for line values.
+[...]
 
-How would we pass the device properties to configfs created GPIO chips
-anyway? Devices seem to only be created using mkdir. Am I missing
-something?
+> >> diff --git a/tools/testing/selftests/arm64/pauth/pac.c b/tools/testing/selftests/arm64/pauth/pac.c
+> >> index cdbffa8bf61e..16dea47b11c7 100644
+> >> --- a/tools/testing/selftests/arm64/pauth/pac.c
+> >> +++ b/tools/testing/selftests/arm64/pauth/pac.c
 
-Bart
+[...]
+
+> >> +int exec_sign_all(struct signatures *signed_vals, size_t val)
+> >> +{
+> > 
+> > Could popen(3) be used here?
+> > 
+> > Fork-and-exec is notoriously fiddly, so it's preferable to use a library
+> > function to do it where applicable.I would love to, but the worker needs a bidirectional channel and popen
+> only gives a unidirectional stream.
+
+Ah, fair point.
+
+Would it help if you created an additional pipe before calling popen()?
+
+May not be worth it, though.  For one thing, wiring that extra pipe to
+stdin or stdout in the child process would require some extra work...
+
+Cheers
+---Dave
