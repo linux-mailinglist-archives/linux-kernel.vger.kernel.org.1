@@ -2,59 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3206525F84E
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 12:31:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7D4625F881
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 12:35:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728796AbgIGKb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 06:31:27 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:47760 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728787AbgIGKat (ORCPT
+        id S1728657AbgIGKfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 06:35:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34916 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729009AbgIGKdW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 06:30:49 -0400
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1599474646;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=c11Pcz7aCb6wFsJS6HKBIQCuoYxNBcPP716dGjA76nY=;
-        b=z2COPvCUpsK3kvdLxwDCzaHGAV6+JExRlBiW+FQH7dZ+WWVOb2oD+bAfP9bu7ht1lTCjIz
-        WcsuIaHJJ4nMwP/bliXjrZDAiynU6aQgYC9nY6SZB2EGdT/ViFOeLP0R3n80jFa1MldfBM
-        OH8cF7BTe0NczS24k8b9TGq/sJVfphI91BLV72E+JjlD52ij1JqR5wnTrtBha4qYzJleWM
-        A83WRSlKC0B2uNfrN9wqFua5e7EDFUSsWFHk41NwhnSOwk0PFiQoxzFgMlonPS/KWEN06p
-        bmWLUXFmENB6J6umAbPNVvQUUcgG4Tle+DVA/J1k/+jHaPsaD2IyF3LKoT/h9g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1599474646;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=c11Pcz7aCb6wFsJS6HKBIQCuoYxNBcPP716dGjA76nY=;
-        b=E3j3efMlmqmX0wF9OZgQYWPmPhKkGjjUkE6lq8KFz4fLAWrOvOzdDY9CFnJqt0wrS5mk2g
-        oIa3yI7ZrXEL2bBQ==
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Changki Kim <changki.kim@samsung.com>,
-        sergey.senozhatsky@gmail.com, rostedt@goodmis.org,
-        changbin.du@intel.com, masahiroy@kernel.org, rd.dunlap@gmail.com,
-        gregkh@linuxfoundation.org, krzk@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: printk: Add process name information to printk() output.
-In-Reply-To: <20200907095437.GD8084@alley>
-References: <CGME20200904082449epcas2p4420d5df2083325b328a182c79f5c0948@epcas2p4.samsung.com> <20200904082438.20707-1-changki.kim@samsung.com> <874kod6fgh.fsf@jogness.linutronix.de> <20200904124530.GB20558@alley> <87y2lp4r6o.fsf@jogness.linutronix.de> <20200904151336.GC20558@alley> <87ft7xazsf.fsf@jogness.linutronix.de> <20200907095437.GD8084@alley>
-Date:   Mon, 07 Sep 2020 12:36:45 +0206
-Message-ID: <87d02xj2ui.fsf@jogness.linutronix.de>
+        Mon, 7 Sep 2020 06:33:22 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9002EC061575
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 03:33:20 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id l9so13701889wme.3
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 03:33:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zDegqVmimS9dIJwNDMtty6LSuyVmgMvA+oa1ZvHmVIY=;
+        b=gdjLbdpOV3gN6yZT5yR6EraPQlcFbNhhBhstzpB/HgTvOuSG9WyZjmNruLe4HpYA9e
+         edlT0TL47uetSEnv9IJ154SPP1ssMzk3ow7nILL3yxn7K5loUHfAm6umGcLDOnseHI5M
+         fH1Qlt3eKv19wdRfn6a9BgfVUj69P/VgMkW718b9aWdPkevXrl2ZHZxKfCWZFGd1t4fr
+         hQg86QKqz6nQ0DdoYmuT3PEBzw1kthhlKrWGc/fzAZehYPMJF0/EDWdX1QlqAMVIKsHR
+         yGBN93/uJuBddwRyC5Hj76ehMUXFzYCRX+HuFc3fqu1/vZSl235e7nOdyY2if9Tock/h
+         Qgqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zDegqVmimS9dIJwNDMtty6LSuyVmgMvA+oa1ZvHmVIY=;
+        b=OmzViOIdDUCFub4yoRThydUgl6qVKYCIuQbYLTaG9VOXrHLi75o72s9oLGFyFX0oo4
+         9D+026aug1iUHL1YjV3RxYJgz+ld/O9goG5a7fcsd+kWpVhwRD0boLNAqfIRFCjVZiCx
+         dfCgAr4m0Ungdp39IffAPGMS3tJCEAKUsY9t9x0TckqjJCt5u7iwCLLfEX5ia2PL9Wlg
+         vphzIqCa/dMZNyzlR0ftr+OrIEJFvO5xSIdMnuPywS6CMVa1pbuSBqNIsqg5crCmYW5x
+         JcgtjjR5kuQIZw7Z1r+O/L1qlJaiXbtG+aaoDXonin1UYg52NzOmhT14khDe+b2wzGW+
+         nWNA==
+X-Gm-Message-State: AOAM5301BKqF1S64Ve+0cDmcsw8PNeizo7r5Y55gFTKX7Lqpo8tLh/jE
+        1dmvjif+shpISXOJtlaATKUKgOLO4xgo9w==
+X-Google-Smtp-Source: ABdhPJwmKB1R49xT+gzxzJMk8hfpF7xfzlN8Z3JZRv87J9pj6lSBqqi2dBpFwiLaZ9qbxtlErOlEOg==
+X-Received: by 2002:a7b:cbd4:: with SMTP id n20mr21202627wmi.105.1599474798946;
+        Mon, 07 Sep 2020 03:33:18 -0700 (PDT)
+Received: from localhost.localdomain (122.105.23.93.rev.sfr.net. [93.23.105.122])
+        by smtp.gmail.com with ESMTPSA id i1sm32395936wrc.49.2020.09.07.03.33.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Sep 2020 03:33:18 -0700 (PDT)
+From:   Fabien Parent <fparent@baylibre.com>
+To:     linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-input@vger.kernel.org
+Cc:     hsin-hsiung.wang@mediatek.com, lee.jones@linaro.org,
+        matthias.bgg@gmail.com, robh+dt@kernel.org,
+        dmitry.torokhov@gmail.com, Fabien Parent <fparent@baylibre.com>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH v5 1/3] dt-bindings: mfd: mt6397: Add bindings for MT6392 PMIC
+Date:   Mon,  7 Sep 2020 12:33:09 +0200
+Message-Id: <20200907103311.1601907-1-fparent@baylibre.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-07, Petr Mladek <pmladek@suse.com> wrote:
-> This extra metadata are not currently read by crashdump tools.
+Add the currently supported bindings for the MT6392 PMIC.
 
-crash [0] prints dictionary data.
+Signed-off-by: Fabien Parent <fparent@baylibre.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
+Acked-for-mfd-by: Lee Jones <lee.jones@linaro.org>
+---
 
-John Ogness
+V5:
+	* Rebased, removed regulator documentation because it will be send later
+	on in another patch series
 
-[0] https://github.com/crash-utility/crash
+V4:
+	* No change
+
+V3:
+	* No change
+
+V2:
+	* New patch
+
+---
+ Documentation/devicetree/bindings/mfd/mt6397.txt | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/mfd/mt6397.txt b/Documentation/devicetree/bindings/mfd/mt6397.txt
+index 2661775a3825..f051a951ba72 100644
+--- a/Documentation/devicetree/bindings/mfd/mt6397.txt
++++ b/Documentation/devicetree/bindings/mfd/mt6397.txt
+@@ -21,6 +21,7 @@ Required properties:
+ compatible:
+ 	"mediatek,mt6323" for PMIC MT6323
+ 	"mediatek,mt6358" for PMIC MT6358
++	"mediatek,mt6392" for PMIC MT6392
+ 	"mediatek,mt6397" for PMIC MT6397
+ 
+ Optional subnodes:
+@@ -52,7 +53,10 @@ Optional subnodes:
+ 
+ - keys
+ 	Required properties:
+-		- compatible: "mediatek,mt6397-keys" or "mediatek,mt6323-keys"
++		- compatible:
++			- "mediatek,mt6323-keys"
++			- "mediatek,mt6392-keys", "mediatek,mt6397-keys"
++			- "mediatek,mt6397-keys"
+ 	see ../input/mtk-pmic-keys.txt
+ 
+ - power-controller
+-- 
+2.28.0
+
