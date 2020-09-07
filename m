@@ -2,75 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F17025F4D0
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 10:18:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E67C25F4DF
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 10:19:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727978AbgIGISX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 04:18:23 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:42184 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727884AbgIGISW (ORCPT
+        id S1728043AbgIGISr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 04:18:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42242 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727981AbgIGISc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 04:18:22 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-32-p6GNeqn4N_WEVzALjgPggA-1; Mon, 07 Sep 2020 09:18:14 +0100
-X-MC-Unique: p6GNeqn4N_WEVzALjgPggA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Mon, 7 Sep 2020 09:18:13 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Mon, 7 Sep 2020 09:18:13 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Christophe Leroy' <christophe.leroy@csgroup.eu>,
-        Pavel Machek <pavel@denx.de>
-CC:     Christoph Hellwig <hch@lst.de>, "arnd@arndb.de" <arnd@arndb.de>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] /dev/zero: also implement ->read
-Thread-Topic: [PATCH] /dev/zero: also implement ->read
-Thread-Index: AQHWggy41s1fAL/OckmYjTgFjgCjKqlXb8rwgASFNZ2AACUDkIAAdD8AgABMGQA=
-Date:   Mon, 7 Sep 2020 08:18:13 +0000
-Message-ID: <f09599c8e85940a6b34877854df241f8@AcuMS.aculab.com>
-References: <20200903155922.1111551-1-hch@lst.de>
- <55d1ecb8-4a0c-fa58-d3cf-bf6796eea7bd@csgroup.eu>
- <3b0b58be4b844162b73db1b108a9b995@AcuMS.aculab.com>
- <20200906182122.GA12295@amd>
- <8c353864-76a9-90bf-fa2f-f7a8231b5487@csgroup.eu>
- <f2e9c57db2b548949e6bd570a6dc3c5d@AcuMS.aculab.com>
- <7ece832b-e2b7-04af-f4bb-e84c909ee332@csgroup.eu>
-In-Reply-To: <7ece832b-e2b7-04af-f4bb-e84c909ee332@csgroup.eu>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Mon, 7 Sep 2020 04:18:32 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5497C061573
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 01:18:31 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id a9so13295849wmm.2
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 01:18:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XVkpcj81glnSnuras7YrChzwHxX/+ElP6dnTPDpVflM=;
+        b=eq8pdz4bEvw8Drm9IiyKHHS/9tFdgbwA08m44Eo5/3AjXDsoVvgB9xtCqI9yTDhZHe
+         JWhhbtGcwt6X672OqK0uhjV9ZpDs1Wdnkrdm8HSe0aMBznreCxHk7OroTON3aUfddLm1
+         NC7fuE0Ak5aP4nwxtYkewvg/z0Jq9O03FCVjJetdv4XeVtDXiq+/CAXBQIDTxuM4AraI
+         A0oDMSoo3d7XD6D3VHC5oDtBsyl3T/aSCS37kU3emyahVkV4GBseZ06BTPRVOUCjQQHw
+         UdA8A5B3ZNrRfqyEoUmZH8v1Ac+suW/fzeN/twc47tAJbxfPkd7NYADS+cFIg3nobAEI
+         5k0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XVkpcj81glnSnuras7YrChzwHxX/+ElP6dnTPDpVflM=;
+        b=jfNHUuR9ANtL57CsYL3GrjpM46I7uAB4h4Q/+HbVhoZifTWo8ui37PjZ/IIddD0aMl
+         AoSG4qFu/FyOVaEg9jfMQtjIeYPIrB4gIORDYILfNR1dc3ekIbJadUhdtFZUVu1/uR5P
+         bpBOJsZzgxUklFM3DpWmdHLt0c8TxqGQNLqMos3Uzffgbxk5gaVeHqYh840YLtupN8mt
+         ln3KYhUGsQsUC8JuX5i/adz5lHeiK54h9vMkTSXNRSH+xhiebns076NXHlFeHa8CtDFD
+         tEqPDa0vd/10JTAGbsqjOOnsWYyMkDc2xeIZqAPbPPRmUx/hizYASAm838FkgWzlQkrT
+         ySaA==
+X-Gm-Message-State: AOAM5324dGP/zKgTOYYh+gtUzexDeNXc/FvLyU3MeeVFBmz40dp1Lk7G
+        SFrNVQGeMlrdAgYTECuhyX7KOg==
+X-Google-Smtp-Source: ABdhPJwn6ZvGBo3Zj+uG7oJh3C4n8ndDDZO8Lx+buWNryuDkwiOI7oTl6RG79ry/EWhvW7HUBLE4WA==
+X-Received: by 2002:a1c:988d:: with SMTP id a135mr19191231wme.8.1599466710211;
+        Mon, 07 Sep 2020 01:18:30 -0700 (PDT)
+Received: from bender.baylibre.local ([2a01:e35:2ec0:82b0:5405:9623:e2f1:b2ac])
+        by smtp.gmail.com with ESMTPSA id q186sm28032205wma.45.2020.09.07.01.18.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Sep 2020 01:18:29 -0700 (PDT)
+From:   Neil Armstrong <narmstrong@baylibre.com>
+To:     daniel@ffwll.ch
+Cc:     dri-devel@lists.freedesktop.org, linux-amlogic@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Neil Armstrong <narmstrong@baylibre.com>
+Subject: [PATCH 0/6] drm/meson: add support for AXG & MIPI-DSI
+Date:   Mon,  7 Sep 2020 10:18:19 +0200
+Message-Id: <20200907081825.1654-1-narmstrong@baylibre.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0.002
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogQ2hyaXN0b3BoZSBMZXJveQ0KPiBTZW50OiAwNyBTZXB0ZW1iZXIgMjAyMCAwNTo0NA0K
-Li4uDQo+IElmIHlvdSBhcmUgdGFsa2luZyBhYm91dCB0aGUgdGVzdHMgYXJvdW5kIHRoZSBzZXRf
-ZnMgc2VyaWVzIGZyb20NCj4gQ2hyaXN0b3BoLCBJIGlkZW50aWZpZWQgdGhhdCB0aGUgZGVncmFk
-YXRpb24gd2FzIGxpbmtlZCB0bw0KPiBDT05GSUdfU1RBQ0tQUk9URUNUT1JfU1RST05HIGJlaW5n
-IHNlbGVjdGVkIGJ5IGRlZmF1bHQsIHdoaWNoIHByb3ZpZGVzDQo+IHVucmVsaWFibGUgcmVzdWx0
-cyBmcm9tIG9uZSBwYXRjaCB0byBhbm90aGVyLCBHQ0MgZG9pbmcgc29tZSBzdHJhbmdlDQo+IHRo
-aW5ncyBsaW5rZWQgdG8gdW5yZWxhdGVkIGNoYW5nZXMuDQo+IA0KPiBXaXRoIENPTkZJR19TVEFD
-S1BST1RFQ1RPUiBzZXQgdG8gTiwgSSBnZXQgc3RhYmxlIHBlcmZvcm1hbmNlIGFuZCBubw0KPiBk
-ZWdyYWRhdGlvbiB3aXRoIGFueSBvZiB0aGUgcGF0Y2hlcyBvZiB0aGUgc2V0X2ZzIHNlcmllcy4N
-Cg0KQWggSSBkaWRuJ3Qgc3BvdCB0aGF0IHJlc3BvbnNlIGdvaW5nIHRocm91Z2guDQoNClNvdW5k
-cyBsaWtlIHRoYXQgb3B0aW9uIHNob3VsZCBiZSBkaXNhYmxlZCBpZiBpdCBjYXVzZXMgdGhhdA0K
-bXVjaCBvZiBhIHBlcmZvcm1hbmNlIGRyb3AuDQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFk
-ZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywg
-TUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
+The Amlogic AXG SoC family has a downgraded VPU with the following
+changes :
+- Only a single OSD plane, no overlay video plane
+- The primary plane doesn't support HW scaling
+- The pixels are read directly from DDR without any Canvas module
+- Doesn't support HDMI or CVBS
+- Ouputs only with ENCL encoder to a DPI-to-DSI Synopsys DW-MIPI-DSI transceiver
+
+The Amlogic AXg SoCs embeds a Synopsys DW-MIPI-DSI transceiver (ver 1.21a), with a custom
+glue managing the IP resets, clock and data input similar to the DW-HDMI Glue on other
+Amlogic SoCs.
+
+This adds support for the Glue managing the transceiver, mimicing the init flow provided
+by Amlogic to setup the ENCl encoder, the glue, the transceiver, the digital D-PHY and the
+Analog PHY in the proper way.
+
+The DW-MIPI-DSI transceiver + D-PHY are directly clocked by the VCLK2 clock, which pixel clock
+is derived and feeds the ENCL encoder and the VIU pixel reader.
+
+An optional "MEAS" clock can be enabled to measure the delay between each vsync feeding the
+DW-MIPI-DSI transceiver.
+
+Neil Armstrong (6):
+  dt-bindings: display: amlogic,meson-vpu: add bindings for VPU found in
+    AXG SoCs
+  dt-bindings: display: add Amlogic MIPI DSI Host Controller bindings
+  drm/meson: add support for VPU found in AXG SoCs
+  drm/meson: venc: add ENCL encoder setup for MIPI-DSI output
+  drm/meson: remove useless recursive components matching
+  drm/meson: add support for MIPI-DSI transceiver
+
+ .../display/amlogic,meson-dw-mipi-dsi.yaml    | 115 ++++
+ .../bindings/display/amlogic,meson-vpu.yaml   |  36 +-
+ drivers/gpu/drm/meson/Kconfig                 |   7 +
+ drivers/gpu/drm/meson/Makefile                |   1 +
+ drivers/gpu/drm/meson/meson_crtc.c            |   8 +-
+ drivers/gpu/drm/meson/meson_drv.c             | 163 ++---
+ drivers/gpu/drm/meson/meson_drv.h             |  10 +-
+ drivers/gpu/drm/meson/meson_dw_mipi_dsi.c     | 562 ++++++++++++++++++
+ drivers/gpu/drm/meson/meson_plane.c           |  74 ++-
+ drivers/gpu/drm/meson/meson_registers.h       |   1 +
+ drivers/gpu/drm/meson/meson_venc.c            | 230 ++++++-
+ drivers/gpu/drm/meson/meson_venc.h            |   6 +
+ drivers/gpu/drm/meson/meson_viu.c             |  50 +-
+ drivers/gpu/drm/meson/meson_vpp.c             |   6 +-
+ drivers/gpu/drm/meson/meson_vpp.h             |   2 +
+ 15 files changed, 1176 insertions(+), 95 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/display/amlogic,meson-dw-mipi-dsi.yaml
+ create mode 100644 drivers/gpu/drm/meson/meson_dw_mipi_dsi.c
+
+-- 
+2.22.0
 
