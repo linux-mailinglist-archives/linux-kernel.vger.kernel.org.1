@@ -2,82 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF6A025F332
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 08:34:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38AA725F340
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 08:35:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726742AbgIGGdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 02:33:54 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:35485 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726278AbgIGGdx (ORCPT
+        id S1726769AbgIGGfn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 02:35:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54682 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726278AbgIGGfm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 02:33:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599460432;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=17hx+uQnRYN37kt9J2TS1rwaCj5ZQT0lilbznWEFqTQ=;
-        b=fL3o6MyIcQsBrTwrd+aE403ajYSyNlvZYCDwbE+xFspZeP39onyqwmrzM+FlcnauDV4n3H
-        I3xoFhfgsxD+Lc2Ko+bFSNPu0pVB7pv1x+JDEgn0ngVzXRUnw69ZKCPtOQH6xB/pXu6QoE
-        CG27XknfRnjQz0UMxYNVEP1mkbV397M=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-335-AZ6I_DA3P3amXemm0ORAjA-1; Mon, 07 Sep 2020 02:33:50 -0400
-X-MC-Unique: AZ6I_DA3P3amXemm0ORAjA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 74DC480046B;
-        Mon,  7 Sep 2020 06:33:49 +0000 (UTC)
-Received: from sirius.home.kraxel.org (ovpn-112-56.ams2.redhat.com [10.36.112.56])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7101E805E0;
-        Mon,  7 Sep 2020 06:33:45 +0000 (UTC)
-Received: by sirius.home.kraxel.org (Postfix, from userid 1000)
-        id 8C06F204A1; Mon,  7 Sep 2020 08:33:44 +0200 (CEST)
-From:   Gerd Hoffmann <kraxel@redhat.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     christian.koenig@amd.com, Gerd Hoffmann <kraxel@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        virtualization@lists.linux-foundation.org (open list:VIRTIO GPU DRIVER),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v3 2/2] drm/virtio: set max_segment
-Date:   Mon,  7 Sep 2020 08:33:43 +0200
-Message-Id: <20200907063343.18097-3-kraxel@redhat.com>
-In-Reply-To: <20200907063343.18097-1-kraxel@redhat.com>
-References: <20200907063343.18097-1-kraxel@redhat.com>
+        Mon, 7 Sep 2020 02:35:42 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08DC5C061573;
+        Sun,  6 Sep 2020 23:35:42 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id d19so600144pld.0;
+        Sun, 06 Sep 2020 23:35:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
+        b=Lght7Ifr1LpMt8ODv/ddonkYDgzWp8nZkg1/c/SjWJ8F+ZngJs82vf/xcGWrzRvqY7
+         ou1W681VqX+F9lu2Xqc0ZpV4i6UUyob9coYjA5tVJMOg07ZWGsDugXBqZBJWuaGCP+BS
+         IfGVH9pKNnx82dDz/31NRPQDtBYa2qeQEUGBeXAiBUqJB+6B7fsASnM0vRbJTHMC9Qmj
+         Wp5QykCr96OApc0FAUkWbPieinRUqhfSyP017+3ldlThqh0gNqvvYGQzol0Fi6Cm/Sp8
+         pdT+pA8htrY9tVfsBb6O2UMBh8LZF5FBkt/j1e/oP9MkvS737M2GOLwfKA0H7Cyfa2f5
+         lKJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
+        b=c8PqAQVYtad1qJIcVZFhd/kZao542IWOBPfVEmqyHXOidEGnDS6Ea1b+DysAKrB+aI
+         X2GxxK2ZDB6wAdvgZ8YTrLmCAo0UsAKb4bEMjlsynaV4cTkTRx2EnRCS4P7+Wa1ikGgs
+         h2n/i9QvrTsp41LI9pvO5/s1+IPjgXyR3ENNzliVybpftNgar5X9TQX4ha09eavT2og9
+         hRcZ/wlD9UYSo68Tmn046ArGMdkPQA1Oa6VeFnrSKFd3OARPR3R5CZscnUzzcifgObQO
+         mila4IzCitX+fnQj2VtK40hFogGq5X8ldxfqMMlQBTiSZUxTtxK1+q2GOYuIbOqrYepL
+         W/Rg==
+X-Gm-Message-State: AOAM532BOGqR3LqFFRuuEkegkHwk0xfWgMGSVLPKOmF8EXwOKrpB0QO9
+        7YlxEgb4AEiJUJTlvYoqFLk=
+X-Google-Smtp-Source: ABdhPJwOD5kJx+DFcApvOWX+p/5e9qXZZ2sVaWifSzXJ6UpEB+RbV7/BqVTOwMBbgqsIz5Cei42hAg==
+X-Received: by 2002:a17:902:8c94:: with SMTP id t20mr17926553plo.76.1599460541415;
+        Sun, 06 Sep 2020 23:35:41 -0700 (PDT)
+Received: from gmail.com ([106.201.26.241])
+        by smtp.gmail.com with ESMTPSA id y3sm11660330pjg.8.2020.09.06.23.35.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 06 Sep 2020 23:35:41 -0700 (PDT)
+Date:   Mon, 7 Sep 2020 12:03:47 +0530
+From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bjorn Helgaas <bjorn@helgaas.com>,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Thierry Reding <treding@nvidia.com>
+Cc:     linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: Re: [PATCH v1 1/2] video: fbdev: aty: radeon_pm: remove redundant
+ CONFIG_PM container
+Message-ID: <20200907063347.GB29062@gmail.com>
+References: <20200806072256.585705-1-vaibhavgupta40@gmail.com>
+ <20200806072658.592444-1-vaibhavgupta40@gmail.com>
+ <20200806072658.592444-2-vaibhavgupta40@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200806072658.592444-2-vaibhavgupta40@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When initializing call virtio_max_dma_size() to figure the scatter list
-limit.  Needed to make virtio-gpu work properly with SEV.
-
-v2: place max_segment in drm driver not gem object.
-
-Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
----
- drivers/gpu/drm/virtio/virtgpu_kms.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/gpu/drm/virtio/virtgpu_kms.c b/drivers/gpu/drm/virtio/virtgpu_kms.c
-index 75d0dc2f6d28..151471acdfcf 100644
---- a/drivers/gpu/drm/virtio/virtgpu_kms.c
-+++ b/drivers/gpu/drm/virtio/virtgpu_kms.c
-@@ -167,6 +167,7 @@ int virtio_gpu_init(struct drm_device *dev)
- 		DRM_ERROR("failed to alloc vbufs\n");
- 		goto err_vbufs;
- 	}
-+	dev->max_segment = virtio_max_dma_size(vgdev->vdev);
- 
- 	/* get display info */
- 	virtio_cread_le(vgdev->vdev, struct virtio_gpu_config,
--- 
-2.27.0
 
