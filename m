@@ -2,338 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FAEF25FB33
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 15:17:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B13325FB40
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 15:19:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729451AbgIGNRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 09:17:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55552 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729323AbgIGNK4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 09:10:56 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9356021481;
-        Mon,  7 Sep 2020 13:10:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599484207;
-        bh=N5zwS1SwbQXmonrHwuqGV2GKLymlY/0dB1tFcUdNLis=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JyAzNRs9Oq1DHj72hini5MBXBgY1KxD0MelkmEq6Ennr6rEovS21M/PLwMcDL79ww
-         hpf/35WD4c5xMdKpHWaqksf1/nZmCNWwwi4OrWHUvNwCuyl4waptF3bno8UXH6xi1x
-         nucnyXUbM7sLB4LpW0Wy0+MvIYZVMROpwe6oaJxY=
-Date:   Mon, 7 Sep 2020 15:10:21 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Gage Eads <gage.eads@intel.com>
-Cc:     linux-kernel@vger.kernel.org, arnd@arndb.de,
-        magnus.karlsson@intel.com, bjorn.topel@intel.com
-Subject: Re: [PATCH v3 01/19] dlb2: add skeleton for DLB 2.0 driver
-Message-ID: <20200907131021.GF2371705@kroah.com>
-References: <20200901191548.31646-1-gage.eads@intel.com>
- <20200901191548.31646-2-gage.eads@intel.com>
+        id S1729442AbgIGNTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 09:19:43 -0400
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:59063 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729430AbgIGNLr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 09:11:47 -0400
+X-IronPort-AV: E=Sophos;i="5.76,359,1592863200"; 
+   d="scan'208";a="466412596"
+Received: from abo-173-121-68.mrs.modulonet.fr (HELO hadrien) ([85.68.121.173])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 07 Sep 2020 15:11:31 +0200
+Date:   Mon, 7 Sep 2020 15:11:31 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Markus Elfring <Markus.Elfring@web.de>
+cc:     Coccinelle <cocci@systeme.lip6.fr>,
+        Dejin Zheng <zhengdejin5@gmail.com>,
+        Denis Efremov <efremov@linux.com>,
+        Gilles Muller <Gilles.Muller@lip6.fr>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nicolas Palix <nicolas.palix@imag.fr>,
+        kernel-janitors@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: =?UTF-8?Q?Re=3A_=5BPATCH=5D_Coccinelle=3A_api=3A_Add_SmPL_scr?=
+ =?UTF-8?Q?ipt_=E2=80=9Cuse=5Fdevm=5Fplatform=5Fget=5Fand=5Fioremap=5Fre?=
+ =?UTF-8?Q?source=2Ecocci=E2=80=9D?=
+In-Reply-To: <477abcea-e008-e509-d03f-f2753ebdfb20@web.de>
+Message-ID: <alpine.DEB.2.22.394.2009071506350.2476@hadrien>
+References: <25b804fd-0d04-475d-f614-26c03c9fd544@web.de> <5f9fdd59-4b0b-1cb5-c3a2-92efc5bb3841@web.de> <alpine.DEB.2.22.394.2009071357140.2476@hadrien> <477abcea-e008-e509-d03f-f2753ebdfb20@web.de>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200901191548.31646-2-gage.eads@intel.com>
+Content-Type: multipart/mixed; boundary="8323329-1914540151-1599484292=:2476"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 01, 2020 at 02:15:30PM -0500, Gage Eads wrote:
-> --- /dev/null
-> +++ b/drivers/misc/dlb2/dlb2_hw_types.h
-> @@ -0,0 +1,29 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only
-> + * Copyright(c) 2016-2020 Intel Corporation
-> + */
-> +
-> +#ifndef __DLB2_HW_TYPES_H
-> +#define __DLB2_HW_TYPES_H
-> +
-> +#define DLB2_MAX_NUM_VDEVS			16
-> +#define DLB2_MAX_NUM_DOMAINS			32
-> +#define DLB2_MAX_NUM_LDB_QUEUES			32 /* LDB == load-balanced */
-> +#define DLB2_MAX_NUM_DIR_QUEUES			64 /* DIR == directed */
-> +#define DLB2_MAX_NUM_LDB_PORTS			64
-> +#define DLB2_MAX_NUM_DIR_PORTS			DLB2_MAX_NUM_DIR_QUEUES
-> +#define DLB2_MAX_NUM_LDB_CREDITS		8192
-> +#define DLB2_MAX_NUM_DIR_CREDITS		2048
-> +#define DLB2_MAX_NUM_HIST_LIST_ENTRIES		2048
-> +#define DLB2_MAX_NUM_AQED_ENTRIES		2048
-> +#define DLB2_MAX_NUM_QIDS_PER_LDB_CQ		8
-> +#define DLB2_MAX_NUM_SEQUENCE_NUMBER_GROUPS	2
-> +#define DLB2_MAX_NUM_SEQUENCE_NUMBER_MODES	5
-> +#define DLB2_QID_PRIORITIES			8
-> +#define DLB2_NUM_ARB_WEIGHTS			8
-> +#define DLB2_MAX_WEIGHT				255
-> +#define DLB2_NUM_COS_DOMAINS			4
-> +#define DLB2_MAX_CQ_COMP_CHECK_LOOPS		409600
-> +#define DLB2_MAX_QID_EMPTY_CHECK_LOOPS		(32 * 64 * 1024 * (800 / 30))
-> +#define DLB2_HZ					800000000
-> +
-> +#endif /* __DLB2_HW_TYPES_H */
-> diff --git a/drivers/misc/dlb2/dlb2_main.c b/drivers/misc/dlb2/dlb2_main.c
-> new file mode 100644
-> index 000000000000..ffd6df788e2e
-> --- /dev/null
-> +++ b/drivers/misc/dlb2/dlb2_main.c
-> @@ -0,0 +1,208 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/* Copyright(c) 2018-2020 Intel Corporation */
-> +
-> +#include <linux/aer.h>
-> +#include <linux/cdev.h>
-> +#include <linux/delay.h>
-> +#include <linux/fs.h>
-> +#include <linux/init.h>
-> +#include <linux/list.h>
-> +#include <linux/module.h>
-> +#include <linux/pci.h>
-> +#include <linux/uaccess.h>
-> +
-> +#include "dlb2_main.h"
-> +
-> +static const char
-> +dlb2_driver_copyright[] = "Copyright(c) 2018-2020 Intel Corporation";
-> +
-> +MODULE_LICENSE("GPL v2");
-> +MODULE_AUTHOR("Copyright(c) 2018-2020 Intel Corporation");
-> +MODULE_DESCRIPTION("Intel(R) Dynamic Load Balancer 2.0 Driver");
-> +
-> +/* The driver lock protects data structures that used by multiple devices. */
-> +static DEFINE_MUTEX(dlb2_driver_lock);
-> +static struct list_head dlb2_dev_list = LIST_HEAD_INIT(dlb2_dev_list);
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-A static list of your devices?  Why?  Who is going to need to ever walk
-the list, shouldn't you be able to just access it from the device node
-directly?
+--8323329-1914540151-1599484292=:2476
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 
 
-> +
-> +static struct class *dlb2_class;
-> +static dev_t dlb2_dev_number_base;
 
-"number_base"?
+On Mon, 7 Sep 2020, Markus Elfring wrote:
 
-> +
-> +/*****************************/
-> +/****** Devfs callbacks ******/
-> +/*****************************/
+> >> +@display depends on context@
+> >> +expression base, device1, device2, index, private, resource;
+> >> +@@
+> >> +(
+> >> +*resource = platform_get_resource(device1, IORESOURCE_MEM, index);
+> >> + base =
+> >> +*       devm_ioremap_resource
+> >> +                             (&device1->dev, resource);
+> >
+> > Why do you require these statements to be next to each other?
+>
+> I would appreciate indications for a general change acceptance
+> also according to such a simple transformation approach.
+> I imagine that it will become more challenging to tolerate extra
+> source code between these function calls (by the specification
+> of special SmPL filters).
+>
+>
+> >> +|
+> >> +*private->res = platform_get_resource(device1, IORESOURCE_MEM, index);
+> >> + base =
+> >> +*       devm_ioremap_resource
+> >> +                             (device2, private->res);
+> >
+> > Why do you have this special case?
+>
+> The usage of the data structure member “res” triggers corresponding
+> software design consequences.
 
-I said this before, but it seems to have been ignored, so I'm guessing
-my other comments were also ignored...
+I don't think this is a reliable rule.  You included two examples below.
+They involve structures of different types. It seems unlikely that there
+is a guarantee that the res field of all structures is used in the same
+way.  Furthermore, this is the context case.  What is the purpose of
+making the distinction?  The user will have to figure out what to do by
+hand in any case.
 
-Anyway, there has not been anything called "Devfs" for 15+ years now,
-where did you port this code from that had a horrid, out-of-date comment
-block like that?
+> The expressions which are passed as the first function call parameters
+> can be different.
+>
+>
+> >> +@replacement depends on patch@
+> >> +expression base, device1, device2, index, private, resource;
+> >> +@@
+> >> +(
+> >> +-resource = platform_get_resource(device1, IORESOURCE_MEM, index);
+> >> + base =
+> >> +-       devm_ioremap_resource
+> >> ++       devm_platform_get_and_ioremap_resource
+> >> +                             (
+> >> +-                             &
+> >> +                               device1
+> >> +-                                     ->dev
+> >> +                              ,
+> >> +-                             resource
+> >> ++                             index, &resource
+> >> +                             );
+> >> +|
+> >> +-private->res = platform_get_resource(device1, IORESOURCE_MEM, index);
+> >> + base =
+> >> +-       devm_ioremap_resource
+> >> ++       devm_platform_get_and_ioremap_resource
+> >> +                             (device2,
+> >
+> > It is very suspicious that in one case you change the first argument of
+> > devm_platform_get_and_ioremap_resource and in one case you don't.
+>
+> I noticed a few special cases during my source code analysis approach.
 
-> +
-> +static int dlb2_open(struct inode *i, struct file *f)
-> +{
-> +	return 0;
-> +}
-> +
-> +static int dlb2_close(struct inode *i, struct file *f)
-> +{
-> +	return 0;
-> +}
+This is not a reasonable answer.  Does the rule work correctly or not?  If
+it doesn't work correctly, it needs to be removed.
 
-If open/close do not do anything, then do not include them as a callback
-please.
+> > If you don't know how to make the change in some cases, it would be better
+> > to do nothing at all.
+>
+> How do you think about to take another look at any update candidates?
+>
+> Examples:
+> * mvebu_sei_probe
+>   https://elixir.bootlin.com/linux/v5.9-rc4/source/drivers/irqchip/irq-mvebu-sei.c#L368
+>   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/irqchip/irq-mvebu-sei.c?id=f4d51dffc6c01a9e94650d95ce0104964f8ae822#n368
 
-> +
-> +static const struct file_operations dlb2_fops = {
-> +	.owner   = THIS_MODULE,
-> +	.open    = dlb2_open,
-> +	.release = dlb2_close,
-> +};
-> +
-> +/**********************************/
-> +/****** PCI driver callbacks ******/
-> +/**********************************/
-> +
-> +static DEFINE_IDA(dlb2_ids);
+I don't see any purpose to providing two links for everything.
 
-This is not a PCI driver callback :)
+julia
 
-Bad comments are worse than no comments at all.
-
-> +
-> +static int dlb2_alloc_id(void)
-> +{
-> +	return ida_alloc_max(&dlb2_ids, DLB2_MAX_NUM_DEVICES - 1, GFP_KERNEL);
-> +}
-> +
-> +static void dlb2_free_id(int id)
-> +{
-> +	ida_free(&dlb2_ids, id);
-
-Why have wrapper functions for simple one line calls, especially when
-you only call these once?  They aren't needed, right?
-
-> +}
-> +
-> +static int dlb2_probe(struct pci_dev *pdev,
-> +		      const struct pci_device_id *pdev_id)
-> +{
-> +	struct dlb2_dev *dlb2_dev;
-> +	int ret;
-> +
-> +	dlb2_dev = devm_kzalloc(&pdev->dev, sizeof(*dlb2_dev), GFP_KERNEL);
-> +	if (!dlb2_dev)
-> +		return -ENOMEM;
-> +
-> +	pci_set_drvdata(pdev, dlb2_dev);
-> +
-> +	dlb2_dev->pdev = pdev;
-
-No reference counting?  Brave...
-
-> +
-> +	dlb2_dev->id = dlb2_alloc_id();
-> +	if (dlb2_dev->id < 0) {
-> +		dev_err(&pdev->dev, "probe: device ID allocation failed\n");
-> +
-> +		ret = dlb2_dev->id;
-> +		goto alloc_id_fail;
-> +	}
-> +
-> +	ret = pci_enable_device(pdev);
-> +	if (ret != 0) {
-> +		dev_err(&pdev->dev, "pci_enable_device() returned %d\n", ret);
-> +
-> +		goto pci_enable_device_fail;
-> +	}
-> +
-> +	ret = pci_request_regions(pdev, dlb2_driver_name);
-> +	if (ret != 0) {
-> +		dev_err(&pdev->dev,
-> +			"pci_request_regions(): returned %d\n", ret);
-> +
-> +		goto pci_request_regions_fail;
-> +	}
-> +
-> +	pci_set_master(pdev);
-> +
-> +	if (pci_enable_pcie_error_reporting(pdev))
-> +		dev_info(&pdev->dev, "[%s()] Failed to enable AER\n", __func__);
-
-dev_err()?  And if this fails, why not really error out?
-
-> +
-> +	mutex_lock(&dlb2_driver_lock);
-> +	list_add(&dlb2_dev->list, &dlb2_dev_list);
-
-What is this list for?
-
-> +	mutex_unlock(&dlb2_driver_lock);
-> +
-> +	return 0;
-> +
-> +pci_request_regions_fail:
-> +	pci_disable_device(pdev);
-> +pci_enable_device_fail:
-> +	dlb2_free_id(dlb2_dev->id);
-> +alloc_id_fail:
-> +	devm_kfree(&pdev->dev, dlb2_dev);
-> +	return ret;
-> +}
-> +
-> +static void dlb2_remove(struct pci_dev *pdev)
-> +{
-> +	struct dlb2_dev *dlb2_dev;
-> +
-> +	/* Undo all the dlb2_probe() operations */
-> +	dlb2_dev = pci_get_drvdata(pdev);
-> +
-> +	mutex_lock(&dlb2_driver_lock);
-> +	list_del(&dlb2_dev->list);
-> +	mutex_unlock(&dlb2_driver_lock);
-> +
-> +	pci_disable_pcie_error_reporting(pdev);
-> +
-> +	pci_release_regions(pdev);
-> +
-> +	pci_disable_device(pdev);
-> +
-> +	dlb2_free_id(dlb2_dev->id);
-> +
-> +	devm_kfree(&pdev->dev, dlb2_dev);
-> +}
-> +
-> +static struct pci_device_id dlb2_id_table[] = {
-> +	{ PCI_DEVICE_DATA(INTEL, DLB2_PF, NULL) },
-
-If you don't have a data pointer, PCI_DEVICE() works, right?
-
-> +	{ 0 }
-> +};
-> +MODULE_DEVICE_TABLE(pci, dlb2_id_table);
-> +
-> +static struct pci_driver dlb2_pci_driver = {
-> +	.name		 = (char *)dlb2_driver_name,
-
-Hm, we should const that name in the structure, right?
-
-> +	.id_table	 = dlb2_id_table,
-> +	.probe		 = dlb2_probe,
-> +	.remove		 = dlb2_remove,
-> +};
-> +
-> +static int __init dlb2_init_module(void)
-> +{
-> +	int err;
-> +
-> +	dlb2_class = class_create(THIS_MODULE, dlb2_driver_name);
-> +
-> +	if (IS_ERR(dlb2_class)) {
-> +		pr_err("%s: class_create() returned %ld\n",
-> +		       dlb2_driver_name, PTR_ERR(dlb2_class));
-> +
-> +		return PTR_ERR(dlb2_class);
-> +	}
-> +
-> +	/* Allocate one minor number per domain */
-> +	err = alloc_chrdev_region(&dlb2_dev_number_base,
-> +				  0,
-> +				  DLB2_MAX_NUM_DEVICES,
-> +				  dlb2_driver_name);
-
-Shouldn't you allocate your device ids when you have a device show up in
-the system?  Why try to "pre-allocate" them all here?  That feels really
-wasteful.
-
-Same for allocating your class, why not just do that once your first PCI
-device shows up?
-
-
-> +
-> +	if (err < 0) {
-> +		pr_err("%s: alloc_chrdev_region() returned %d\n",
-> +		       dlb2_driver_name, err);
-> +
-> +		return err;
-> +	}
-> +
-> +	err = pci_register_driver(&dlb2_pci_driver);
-> +	if (err < 0) {
-> +		pr_err("%s: pci_register_driver() returned %d\n",
-> +		       dlb2_driver_name, err);
-> +		return err;
-
-Nice, you just leaked device ids, and your class is stuck around for
-forever...
-
-{sigh}
-
-Why am I finding such Linux device-driver-101 errors here?
-
-Please go back and follow the Intel-documented procedures and find
-someone who has experience with pci and misc drivers and get their
-review before sending this whole thing out again.  To lean on
-maintainers without that experience makes the documented policy that you
-should be following pretty worthless :(
-
-greg "your company still owes me a lot of liquor" k-h
+>
+> * hi655x_pmic_probe
+>   https://elixir.bootlin.com/linux/v5.9-rc4/source/drivers/mfd/hi655x-pmic.c#L92
+>   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/mfd/hi655x-pmic.c?id=f4d51dffc6c01a9e94650d95ce0104964f8ae822#n92
+>
+> Regards,
+> Markus
+>
+--8323329-1914540151-1599484292=:2476--
