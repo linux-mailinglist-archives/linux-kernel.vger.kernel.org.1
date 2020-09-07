@@ -2,166 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25B7725F946
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 13:24:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B6EF25F934
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 13:20:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728947AbgIGLYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 07:24:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46834 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728771AbgIGLUn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 07:20:43 -0400
-Received: from pali.im (pali.im [31.31.79.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E856121775;
-        Mon,  7 Sep 2020 11:11:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599477066;
-        bh=/0m+yigPqvGBsnUhvuXPpgA2r5m72bO/7HpKP+CczJg=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=oP3DCsCnKF/LtRGoPO60QSlmAmXsPSQ5z+zvjfMHbTc5yEkelWrXsPc1i8nnCL1bP
-         npTMhl67IAQ4Ypfx2ByJhMjHUPtherL0oFEy+b1Bfwf2wVP00j2iith1837uOMedIY
-         qoCcAZhiyF4qOagX3ThK3QEcl+bR9OOTdSQ3aX9A=
-Received: by pali.im (Postfix)
-        id 373771248; Mon,  7 Sep 2020 13:11:04 +0200 (CEST)
-From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        linux-pci@vger.kernel.org, Tomasz Maciej Nowak <tmn505@gmail.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-kernel@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
-        Xogium <contact@xogium.me>, marek.behun@nic.cz
-Subject: [PATCH v3 5/5] PCI: aardvark: Move PCIe reset card code to advk_pcie_train_link()
-Date:   Mon,  7 Sep 2020 13:10:38 +0200
-Message-Id: <20200907111038.5811-6-pali@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200907111038.5811-1-pali@kernel.org>
-References: <20200907111038.5811-1-pali@kernel.org>
+        id S1728724AbgIGLUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 07:20:36 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:56126 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728503AbgIGLRz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 07:17:55 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id AC6FFFEDE6F0647C125F;
+        Mon,  7 Sep 2020 19:17:40 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 7 Sep 2020 19:17:32 +0800
+From:   Yicong Yang <yangyicong@hisilicon.com>
+To:     <helgaas@kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <linuxarm@huawei.com>, <yangyicong@hisilicon.com>
+Subject: [PATCH] PCI: Factor functions of PCI function reset
+Date:   Mon, 7 Sep 2020 19:16:27 +0800
+Message-ID: <1599477387-49777-1-git-send-email-yangyicong@hisilicon.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move code which belongs to link training (delays and resets) into
-advk_pcie_train_link() function, so everything related to link training,
-including timings is at one place.
+Previosly we use pci_probe_reset_function() to probe whehter a function
+can be reset and use __pci_reset_function_locked() to perform a function
+reset. These two functions have lots of common lines.
 
-After experiments it can be observed that link training in aardvark
-hardware is very sensitive to timings and delays, so it is a good idea to
-have this code at the same place as link training calls.
+Factor the two functions and reduce the redundancy.
 
-This patch does not change behavior of aardvark initialization.
-
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Tested-by: Marek Behún <marek.behun@nic.cz>
+Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
 ---
- drivers/pci/controller/pci-aardvark.c | 64 ++++++++++++++-------------
- 1 file changed, 34 insertions(+), 30 deletions(-)
+ drivers/pci/pci.c   | 61 ++++++++++++++++-------------------------------------
+ drivers/pci/pci.h   |  2 +-
+ drivers/pci/probe.c |  2 +-
+ 3 files changed, 20 insertions(+), 45 deletions(-)
 
-diff --git a/drivers/pci/controller/pci-aardvark.c b/drivers/pci/controller/pci-aardvark.c
-index b16822e344ab..50ab6d7519ae 100644
---- a/drivers/pci/controller/pci-aardvark.c
-+++ b/drivers/pci/controller/pci-aardvark.c
-@@ -252,6 +252,25 @@ static void advk_pcie_wait_for_retrain(struct advk_pcie *pcie)
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index e39c549..e3e5f0f 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -5006,9 +5006,11 @@ static void pci_dev_restore(struct pci_dev *dev)
+ }
+ 
+ /**
+- * __pci_reset_function_locked - reset a PCI device function while holding
+- * the @dev mutex lock.
++ * pci_probe_reset_function - check whether the device can be safely reset
++ *                            or reset a PCI device function while holding
++ *                            the @dev mutex lock.
+  * @dev: PCI device to reset
++ * @probe: Probe or not whether the device can be reset.
+  *
+  * Some devices allow an individual function to be reset without affecting
+  * other functions in the same device.  The PCI device must be responsive
+@@ -5022,10 +5024,10 @@ static void pci_dev_restore(struct pci_dev *dev)
+  * device including MSI, bus mastering, BARs, decoding IO and memory spaces,
+  * etc.
+  *
+- * Returns 0 if the device function was successfully reset or negative if the
+- * device doesn't support resetting a single function.
++ * Returns 0 if the device function can be reset or was successfully reset.
++ * negative if the device doesn't support resetting a single function.
+  */
+-int __pci_reset_function_locked(struct pci_dev *dev)
++int pci_probe_reset_function(struct pci_dev *dev, int probe)
+ {
+ 	int rc;
+ 
+@@ -5039,61 +5041,34 @@ int __pci_reset_function_locked(struct pci_dev *dev)
+ 	 * other error, we're also finished: this indicates that further
+ 	 * reset mechanisms might be broken on the device.
+ 	 */
+-	rc = pci_dev_specific_reset(dev, 0);
++	rc = pci_dev_specific_reset(dev, probe);
+ 	if (rc != -ENOTTY)
+ 		return rc;
+ 	if (pcie_has_flr(dev)) {
++		if (probe)
++			return 0;
+ 		rc = pcie_flr(dev);
+ 		if (rc != -ENOTTY)
+ 			return rc;
  	}
+-	rc = pci_af_flr(dev, 0);
++	rc = pci_af_flr(dev, probe);
+ 	if (rc != -ENOTTY)
+ 		return rc;
+-	rc = pci_pm_reset(dev, 0);
++	rc = pci_pm_reset(dev, probe);
+ 	if (rc != -ENOTTY)
+ 		return rc;
+-	rc = pci_dev_reset_slot_function(dev, 0);
++	rc = pci_dev_reset_slot_function(dev, probe);
+ 	if (rc != -ENOTTY)
+ 		return rc;
+-	return pci_parent_bus_reset(dev, 0);
++
++	return pci_parent_bus_reset(dev, probe);
+ }
+-EXPORT_SYMBOL_GPL(__pci_reset_function_locked);
+ 
+-/**
+- * pci_probe_reset_function - check whether the device can be safely reset
+- * @dev: PCI device to reset
+- *
+- * Some devices allow an individual function to be reset without affecting
+- * other functions in the same device.  The PCI device must be responsive
+- * to PCI config space in order to use this function.
+- *
+- * Returns 0 if the device function can be reset or negative if the
+- * device doesn't support resetting a single function.
+- */
+-int pci_probe_reset_function(struct pci_dev *dev)
++int __pci_reset_function_locked(struct pci_dev *dev)
+ {
+-	int rc;
+-
+-	might_sleep();
+-
+-	rc = pci_dev_specific_reset(dev, 1);
+-	if (rc != -ENOTTY)
+-		return rc;
+-	if (pcie_has_flr(dev))
+-		return 0;
+-	rc = pci_af_flr(dev, 1);
+-	if (rc != -ENOTTY)
+-		return rc;
+-	rc = pci_pm_reset(dev, 1);
+-	if (rc != -ENOTTY)
+-		return rc;
+-	rc = pci_dev_reset_slot_function(dev, 1);
+-	if (rc != -ENOTTY)
+-		return rc;
+-
+-	return pci_parent_bus_reset(dev, 1);
++	return pci_probe_reset_function(dev, 0);
+ }
++EXPORT_SYMBOL_GPL(__pci_reset_function_locked);
+ 
+ /**
+  * pci_reset_function - quiesce and reset a PCI device function
+diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+index fa12f7c..73740dd 100644
+--- a/drivers/pci/pci.h
++++ b/drivers/pci/pci.h
+@@ -39,7 +39,7 @@ enum pci_mmap_api {
+ int pci_mmap_fits(struct pci_dev *pdev, int resno, struct vm_area_struct *vmai,
+ 		  enum pci_mmap_api mmap_api);
+ 
+-int pci_probe_reset_function(struct pci_dev *dev);
++int pci_probe_reset_function(struct pci_dev *dev, int probe);
+ int pci_bridge_secondary_bus_reset(struct pci_dev *dev);
+ int pci_bus_error_reset(struct pci_dev *dev);
+ 
+diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+index 03d3712..793cc8a 100644
+--- a/drivers/pci/probe.c
++++ b/drivers/pci/probe.c
+@@ -2403,7 +2403,7 @@ static void pci_init_capabilities(struct pci_dev *dev)
+ 
+ 	pcie_report_downtraining(dev);
+ 
+-	if (pci_probe_reset_function(dev) == 0)
++	if (pci_probe_reset_function(dev, 1) == 0)
+ 		dev->reset_fn = 1;
  }
  
-+static void advk_pcie_issue_perst(struct advk_pcie *pcie)
-+{
-+	u32 reg;
-+
-+	if (!pcie->reset_gpio)
-+		return;
-+
-+	/* PERST does not work for some cards when link training is enabled */
-+	reg = advk_readl(pcie, PCIE_CORE_CTRL0_REG);
-+	reg &= ~LINK_TRAINING_EN;
-+	advk_writel(pcie, reg, PCIE_CORE_CTRL0_REG);
-+
-+	/* 10ms delay is needed for some cards */
-+	dev_info(&pcie->pdev->dev, "issuing PERST via reset GPIO for 10ms\n");
-+	gpiod_set_value_cansleep(pcie->reset_gpio, 1);
-+	usleep_range(10000, 11000);
-+	gpiod_set_value_cansleep(pcie->reset_gpio, 0);
-+}
-+
- static int advk_pcie_train_at_gen(struct advk_pcie *pcie, int gen)
- {
- 	int ret, neg_gen;
-@@ -299,6 +318,21 @@ static void advk_pcie_train_link(struct advk_pcie *pcie)
- 	struct device *dev = &pcie->pdev->dev;
- 	int neg_gen = -1, gen;
- 
-+	/*
-+	 * Reset PCIe card via PERST# signal. Some cards are not detected
-+	 * during link training when they are in some non-initial state.
-+	 */
-+	advk_pcie_issue_perst(pcie);
-+
-+	/*
-+	 * PERST# signal could have been asserted by pinctrl subsystem before
-+	 * probe() callback has been called or issued explicitly by reset gpio
-+	 * function advk_pcie_issue_perst(), making the endpoint going into
-+	 * fundamental reset. As required by PCI Express spec a delay for at
-+	 * least 100ms after such a reset before link training is needed.
-+	 */
-+	msleep(PCI_PM_D3COLD_WAIT);
-+
- 	/*
- 	 * Try link training at link gen specified by device tree property
- 	 * 'max-link-speed'. If this fails, iteratively train at lower gen.
-@@ -331,31 +365,10 @@ static void advk_pcie_train_link(struct advk_pcie *pcie)
- 	dev_err(dev, "link never came up\n");
- }
- 
--static void advk_pcie_issue_perst(struct advk_pcie *pcie)
--{
--	u32 reg;
--
--	if (!pcie->reset_gpio)
--		return;
--
--	/* PERST does not work for some cards when link training is enabled */
--	reg = advk_readl(pcie, PCIE_CORE_CTRL0_REG);
--	reg &= ~LINK_TRAINING_EN;
--	advk_writel(pcie, reg, PCIE_CORE_CTRL0_REG);
--
--	/* 10ms delay is needed for some cards */
--	dev_info(&pcie->pdev->dev, "issuing PERST via reset GPIO for 10ms\n");
--	gpiod_set_value_cansleep(pcie->reset_gpio, 1);
--	usleep_range(10000, 11000);
--	gpiod_set_value_cansleep(pcie->reset_gpio, 0);
--}
--
- static void advk_pcie_setup_hw(struct advk_pcie *pcie)
- {
- 	u32 reg;
- 
--	advk_pcie_issue_perst(pcie);
--
- 	/* Enable TX */
- 	reg = advk_readl(pcie, PCIE_CORE_REF_CLK_REG);
- 	reg |= PCIE_CORE_REF_CLK_TX_ENABLE;
-@@ -432,15 +445,6 @@ static void advk_pcie_setup_hw(struct advk_pcie *pcie)
- 	reg |= PIO_CTRL_ADDR_WIN_DISABLE;
- 	advk_writel(pcie, reg, PIO_CTRL);
- 
--	/*
--	 * PERST# signal could have been asserted by pinctrl subsystem before
--	 * probe() callback has been called or issued explicitly by reset gpio
--	 * function advk_pcie_issue_perst(), making the endpoint going into
--	 * fundamental reset. As required by PCI Express spec a delay for at
--	 * least 100ms after such a reset before link training is needed.
--	 */
--	msleep(PCI_PM_D3COLD_WAIT);
--
- 	advk_pcie_train_link(pcie);
- 
- 	/*
 -- 
-2.20.1
+2.8.1
 
