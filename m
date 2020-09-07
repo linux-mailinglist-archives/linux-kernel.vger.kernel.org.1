@@ -2,78 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC9A525FBA8
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 15:51:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AB2225FBA0
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 15:47:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729708AbgIGNum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 09:50:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40572 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729604AbgIGNp3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 09:45:29 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 21F7920757;
-        Mon,  7 Sep 2020 13:35:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599485750;
-        bh=PWtmn+Z9RrLCbibZwYxdj5VdBnfGeAWKO2SOBBWHdOs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UARSrkQBalFJiyuplZd86WZgcGkPGkHh4W5UB3z6sPDs/iucB9oO+xQADt4eocjHx
-         a/hL0/+MUz5WolqcV42GXojvatVRW78Ddr5uHibtCwV4KY+/0ANcxtSt5i675YoajP
-         kCiipNsHVLex8nVpM+VaHz/nDMFGtmygwkSiWfkA=
-Date:   Mon, 7 Sep 2020 15:36:04 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Joe Perches <joe@perches.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Denis Efremov <efremov@linux.com>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Alex Dewar <alex.dewar90@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2] sysfs: Add sysfs_emit and sysfs_emit_at to format
- sysfs output
-Message-ID: <20200907133604.GA2779041@kroah.com>
-References: <a9054fb521e65f2809671fa9c18e2453061e9d91.1598744610.git.joe@perches.com>
- <c22b7006813b1776467a72e716a5970e9277b4b7.camel@perches.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c22b7006813b1776467a72e716a5970e9277b4b7.camel@perches.com>
+        id S1729683AbgIGNrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 09:47:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36122 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729596AbgIGNoI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 09:44:08 -0400
+Received: from mail-ej1-x649.google.com (mail-ej1-x649.google.com [IPv6:2a00:1450:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5999C06179F
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 06:41:28 -0700 (PDT)
+Received: by mail-ej1-x649.google.com with SMTP id w10so5559032ejq.11
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 06:41:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=6l8eSHfBJbgjXLH4YKy244cAN4v6gWSGUkqWIYWs5l8=;
+        b=gJMepwpDD2I7mUYxDrgz/A+g9gfSD/BA/UuHnQFWRrhx63jrzAm++vIK181a9bjlv9
+         +fyJs0UBhDwHyL6bmgDBoBCj+YXB5NcIWStWKiSyw+U5jw3hXU5qNrqCgVh70poBTziM
+         hVjzHzlUPAP+6ZrjPMb0VVDUmjdbm+Fic5uHT4D0LLJBRfryu3ilfMTyrvJ6Pe67zAKM
+         QPB1+20ESihTrASldDU+keBcOA+VdB6aTwV7W7EB3NGfe+MymBScoWc26UcdcpDZRQUj
+         K7o1qF+WpCWcT7AO1+jrbBJd9uRJMgPkaub7KeMCED/zCqeZW5LsKuVbAAFjxIU1VdGp
+         kNhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=6l8eSHfBJbgjXLH4YKy244cAN4v6gWSGUkqWIYWs5l8=;
+        b=Izp9TYcpWOw1IKKxhv+DO4xWdPXLHjaqpmBYaxpgnrlK6DMTu/fPrGzGKWhUu4UBNz
+         ds9g5lDRZ6JehwDznachPXILMDvivxPO3MYtSUIkXUFzpwNjYBgTLLFz37wR2GA5WKY9
+         KNo9vcIbxAcOOF47N/TZ4RGAxYVOgoqYFve2VrykjDys3Xz8mWYriE6rp5NLbqChFO3z
+         V47fc9LNmQa0A9LCsZObmusJjmS0FbC6vO5CqkAic5V/T7o3VAOgWQyiBqa1JS/tgYVT
+         +bJXb/lMDvz9Xpfeux0HZm725Yqkw12ToHbynv4acyQlVFe7s0Gzntys+PjqBmnVY00l
+         Fr5A==
+X-Gm-Message-State: AOAM533lwbi5vahqdG4wmkthE0XeTV2/HZTqAEXdrjyDTmaM9mwAzE3d
+        NLmMiUrcmC5YVf5piAtAIx1+hkbUxA==
+X-Google-Smtp-Source: ABdhPJyZu6FsfB3DPagX7+/xIWmjZXKqXJcTOhpqkU8N9KdWRQ4MmOfijnPAcqP/AO+UJAuVA1aIngFA6A==
+X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:f693:9fff:fef4:2449])
+ (user=elver job=sendgmr) by 2002:a50:be82:: with SMTP id b2mr22342862edk.303.1599486086811;
+ Mon, 07 Sep 2020 06:41:26 -0700 (PDT)
+Date:   Mon,  7 Sep 2020 15:40:52 +0200
+In-Reply-To: <20200907134055.2878499-1-elver@google.com>
+Message-Id: <20200907134055.2878499-8-elver@google.com>
+Mime-Version: 1.0
+References: <20200907134055.2878499-1-elver@google.com>
+X-Mailer: git-send-email 2.28.0.526.ge36021eeef-goog
+Subject: [PATCH RFC 07/10] kfence, kmemleak: make KFENCE compatible with KMEMLEAK
+From:   Marco Elver <elver@google.com>
+To:     elver@google.com, glider@google.com, akpm@linux-foundation.org,
+        catalin.marinas@arm.com, cl@linux.com, rientjes@google.com,
+        iamjoonsoo.kim@lge.com, mark.rutland@arm.com, penberg@kernel.org
+Cc:     hpa@zytor.com, paulmck@kernel.org, andreyknvl@google.com,
+        aryabinin@virtuozzo.com, luto@kernel.org, bp@alien8.de,
+        dave.hansen@linux.intel.com, dvyukov@google.com,
+        edumazet@google.com, gregkh@linuxfoundation.org, mingo@redhat.com,
+        jannh@google.com, corbet@lwn.net, keescook@chromium.org,
+        peterz@infradead.org, cai@lca.pw, tglx@linutronix.de,
+        will@kernel.org, x86@kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 29, 2020 at 05:43:58PM -0700, Joe Perches wrote:
-> On Sat, 2020-08-29 at 16:48 -0700, Joe Perches wrote:
-> > Output defects can exist in sysfs content using sprintf and snprintf.
-> > 
-> > sprintf does not know the PAGE_SIZE maximum of the temporary buffer
-> > used for outputting sysfs content and it's possible to overrun the
-> > PAGE_SIZE buffer length.
-> > 
-> > Add a generic sysfs_emit function that knows that the size of the
-> > temporary buffer and ensures that no overrun is done.
-> > 
-> > Add a generic sysfs_emit_at function that can be used in multiple
-> > call situations that also ensures that no overrun is done.
-> 
-> This preliminary coccinelle script converts ~5000 instances treewide.
-> There are still many remaining instances that could be converted.
-> 
-> $ git grep -w sysfs_emit -- '*.[ch]'|wc -l
-> 4702
-> $ git grep -w sysfs_emit_at -- '*.[ch]'|wc -l
-> 229
+From: Alexander Potapenko <glider@google.com>
 
-Can you send a patch that would at least convert the driver core code
-(drivers/base/*) to use these new helpers so we have an in-tree user
-when applying the first patch?
+Add compatibility with KMEMLEAK, by making KMEMLEAK aware of the KFENCE
+memory pool. This allows building debug kernels with both enabled, which
+also helped in debugging KFENCE.
 
-thanks,
+Co-developed-by: Marco Elver <elver@google.com>
+Signed-off-by: Marco Elver <elver@google.com>
+Signed-off-by: Alexander Potapenko <glider@google.com>
+---
+ mm/kmemleak.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-greg k-h
+diff --git a/mm/kmemleak.c b/mm/kmemleak.c
+index 5e252d91eb14..2809c25c0a88 100644
+--- a/mm/kmemleak.c
++++ b/mm/kmemleak.c
+@@ -97,6 +97,7 @@
+ #include <linux/atomic.h>
+ 
+ #include <linux/kasan.h>
++#include <linux/kfence.h>
+ #include <linux/kmemleak.h>
+ #include <linux/memory_hotplug.h>
+ 
+@@ -1946,8 +1947,18 @@ void __init kmemleak_init(void)
+ 	/* register the data/bss sections */
+ 	create_object((unsigned long)_sdata, _edata - _sdata,
+ 		      KMEMLEAK_GREY, GFP_ATOMIC);
++#if defined(CONFIG_KFENCE) && defined(CONFIG_HAVE_ARCH_KFENCE_STATIC_POOL)
++	/* KFENCE objects are located in .bss, which may confuse kmemleak. Skip them. */
++	create_object((unsigned long)__bss_start, __kfence_pool - __bss_start,
++		      KMEMLEAK_GREY, GFP_ATOMIC);
++	create_object((unsigned long)__kfence_pool + KFENCE_POOL_SIZE,
++		      __bss_stop - (__kfence_pool + KFENCE_POOL_SIZE),
++		      KMEMLEAK_GREY, GFP_ATOMIC);
++#else
+ 	create_object((unsigned long)__bss_start, __bss_stop - __bss_start,
+ 		      KMEMLEAK_GREY, GFP_ATOMIC);
++#endif
++
+ 	/* only register .data..ro_after_init if not within .data */
+ 	if (&__start_ro_after_init < &_sdata || &__end_ro_after_init > &_edata)
+ 		create_object((unsigned long)__start_ro_after_init,
+-- 
+2.28.0.526.ge36021eeef-goog
+
