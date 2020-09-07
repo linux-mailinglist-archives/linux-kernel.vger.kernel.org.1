@@ -2,41 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98FEA25FE02
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 18:05:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CADDC25FDEB
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 18:02:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730249AbgIGQFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 12:05:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56034 "EHLO mail.kernel.org"
+        id S1730323AbgIGQCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 12:02:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56404 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730225AbgIGP7u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 11:59:50 -0400
+        id S1730060AbgIGQAT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 12:00:19 -0400
 Received: from mail.kernel.org (ip5f5ad5cf.dynamic.kabel-deutschland.de [95.90.213.207])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 497092087D;
+        by mail.kernel.org (Postfix) with ESMTPSA id 6FCAA217A0;
         Mon,  7 Sep 2020 15:59:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1599494379;
-        bh=Yw08YHmku4/vzFPd7/maIhyRgwd1kmnlbBptyUii8dE=;
+        bh=dESNgHq0mJtVPRbaRaMjf97WeJnyxn/0wfLlTJIH4/A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cdGENI6sW8RKVjIF03eWY7C00erl/Uzsx2SEIepNgVlpvJnKgSQUmS0vK2clzSw72
-         vVXDqB8jYFq7ouQx6ZuZMrtxJieu/uiOL/M6bqv22tB4lC3agd5Ckmz7yOYTNgi62e
-         PkVmIQw64X5PclgLYL/mcVu1O05tJ9xHphvkiwxg=
+        b=n5ACPZ6DtV6hIWpLBcX61vEQY5F/yET78dNskKtUkw0jLS4jDsVL8z2Z9w6hDAuhK
+         3vYKiEEZhEZzGRVsVQ/hjRiD4AwSjIfX5Yyvr78+09YzM0jFI3GMx522hB+j77oWJ8
+         FVFyoGs42RNtNKM2r9OsUEFk2bKypsWu8xPObC6k=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kFJYP-00ATuj-5y; Mon, 07 Sep 2020 17:59:37 +0200
+        id 1kFJYP-00ATul-6o; Mon, 07 Sep 2020 17:59:37 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Yu Chen <chenyu56@huawei.com>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         John Stultz <john.stultz@linaro.org>,
         Manivannan Sadhasivam <mani@kernel.org>,
         Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 02/11] phy: hisilicon: phy-hi3670-usb3: fix some issues at the init code
-Date:   Mon,  7 Sep 2020 17:59:26 +0200
-Message-Id: <e77c29fd6830c849c64cf87de0cd6d23b6ac7755.1599493845.git.mchehab+huawei@kernel.org>
+        Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Yu Chen <chenyu56@huawei.com>, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: [PATCH v2 03/11] phy: hisilicon: phy-hi3670-usb3: use a consistent namespace
+Date:   Mon,  7 Sep 2020 17:59:27 +0200
+Message-Id: <b025e362ab119ca5321e7a3754ee9ee73a6e1fbd.1599493845.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1599493845.git.mchehab+huawei@kernel.org>
 References: <cover.1599493845.git.mchehab+huawei@kernel.org>
@@ -48,167 +50,368 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yu Chen <chenyu56@huawei.com>
+Rename hikey970 to hi3670, in order to use a namespace
+similar to hi3660 driver.
 
-There are some problems at the initialization part of this phy.
-Solve them.
-
-Signed-off-by: Yu Chen <chenyu56@huawei.com>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- drivers/phy/hisilicon/phy-hi3670-usb3.c | 70 +++++++++++--------------
- 1 file changed, 32 insertions(+), 38 deletions(-)
+ .../bindings/phy/phy-hi3670-usb3.txt          |  4 +-
+ drivers/phy/hisilicon/phy-hi3670-usb3.c       | 98 +++++++++----------
+ 2 files changed, 51 insertions(+), 51 deletions(-)
 
+diff --git a/Documentation/devicetree/bindings/phy/phy-hi3670-usb3.txt b/Documentation/devicetree/bindings/phy/phy-hi3670-usb3.txt
+index 4cb02612ff23..2fb27cb8beaf 100644
+--- a/Documentation/devicetree/bindings/phy/phy-hi3670-usb3.txt
++++ b/Documentation/devicetree/bindings/phy/phy-hi3670-usb3.txt
+@@ -2,7 +2,7 @@ Hisilicon Kirin970 usb PHY
+ -----------------------
+ 
+ Required properties:
+-- compatible: should be "hisilicon,kirin970-usb-phy"
++- compatible: should be "hisilicon,hi3670-usb-phy"
+ - #phy-cells: must be 0
+ - hisilicon,pericrg-syscon: phandle of syscon used to control phy.
+ - hisilicon,pctrl-syscon: phandle of syscon used to control phy.
+@@ -14,7 +14,7 @@ Refer to phy/phy-bindings.txt for the generic PHY binding properties
+ 
+ Example:
+ 	usb_phy: usbphy {
+-		compatible = "hisilicon,kirin970-usb-phy";
++		compatible = "hisilicon,hi3670-usb-phy";
+ 		#phy-cells = <0>;
+ 		hisilicon,pericrg-syscon = <&crg_ctrl>;
+ 		hisilicon,pctrl-syscon = <&pctrl>;
 diff --git a/drivers/phy/hisilicon/phy-hi3670-usb3.c b/drivers/phy/hisilicon/phy-hi3670-usb3.c
-index 4e04ac97728d..1d4caf7a2aaf 100644
+index 1d4caf7a2aaf..fd679b39185a 100644
 --- a/drivers/phy/hisilicon/phy-hi3670-usb3.c
 +++ b/drivers/phy/hisilicon/phy-hi3670-usb3.c
-@@ -63,6 +63,7 @@
- #define TCA_INTR_STS			(0x208)
- #define TCA_GCFG			(0x210)
- #define TCA_TCPC			(0x214)
-+#define TCA_SYSMODE_CFG			(0x218)
- #define TCA_VBUS_CTRL			(0x240)
+@@ -130,7 +130,7 @@
+ #define TX_VBOOST_LVL_START		(6)
+ #define TX_VBOOST_LVL_ENABLE		BIT(9)
  
- #define CTRL0_USB3_VBUSVLD		BIT(7)
-@@ -109,12 +110,16 @@
- #define CLK_RST_SUSPEND_CLK_EN		BIT(0)
+-struct kirin970_priv {
++struct hi3670_priv {
+ 	struct device *dev;
+ 	struct regmap *peri_crg;
+ 	struct regmap *pctrl;
+@@ -145,7 +145,7 @@ struct kirin970_priv {
+ 	u32 usb31misc_offset;
+ };
  
- #define GCFG_ROLE_HSTDEV		BIT(4)
-+#define GCFG_OP_MODE			(3 << 0)
-+#define GCFG_OP_MODE_CTRL_SYNC_MODE	BIT(0)
+-static int kirin970_phy_cr_clk(struct regmap *usb31misc)
++static int hi3670_phy_cr_clk(struct regmap *usb31misc)
+ {
+ 	int ret;
  
- #define TCPC_VALID			BIT(4)
- #define TCPC_LOW_POWER_EN		BIT(3)
- #define TCPC_MUX_CONTROL_MASK		(3 << 0)
- #define TCPC_MUX_CONTROL_USB31		(1 << 0)
- 
-+#define SYSMODE_CFG_TYPEC_DISABLE	BIT(3)
-+
- #define VBUS_CTRL_POWERPRESENT_OVERRD	(3 << 2)
- #define VBUS_CTRL_VBUSVALID_OVERRD	(3 << 0)
- 
-@@ -363,6 +368,11 @@ static int kirin970_config_phy_clock(struct kirin970_priv *priv)
- 		if (ret)
- 			goto out;
- 
-+		/* enable usb_tcxo_en */
-+		ret = regmap_write(priv->pctrl, PCTRL_PERI_CTRL3,
-+				USB_TCXO_EN |
-+				(USB_TCXO_EN << PCTRL_PERI_CTRL3_MSK_START));
-+
- 		/* select usbphy clk from abb */
- 		mask = SC_CLK_USB3PHY_3MUX1_SEL;
- 		ret = regmap_update_bits(priv->pctrl,
-@@ -437,7 +447,13 @@ static int kirin970_config_tca(struct kirin970_priv *priv)
- 		goto out;
- 
- 	ret = regmap_update_bits(priv->usb31misc, TCA_GCFG,
--			GCFG_ROLE_HSTDEV, GCFG_ROLE_HSTDEV);
-+			GCFG_ROLE_HSTDEV | GCFG_OP_MODE,
-+			GCFG_ROLE_HSTDEV | GCFG_OP_MODE_CTRL_SYNC_MODE);
-+	if (ret)
-+		goto out;
-+
-+	ret = regmap_update_bits(priv->usb31misc, TCA_SYSMODE_CFG,
-+			SYSMODE_CFG_TYPEC_DISABLE, 0);
- 	if (ret)
- 		goto out;
- 
-@@ -461,18 +477,15 @@ static int kirin970_config_tca(struct kirin970_priv *priv)
+@@ -162,13 +162,13 @@ static int kirin970_phy_cr_clk(struct regmap *usb31misc)
  	return ret;
  }
  
--static int kirin970_phy_exit(struct phy *phy);
--
- static int kirin970_phy_init(struct phy *phy)
+-static int kirin970_phy_cr_set_sel(struct regmap *usb31misc)
++static int hi3670_phy_cr_set_sel(struct regmap *usb31misc)
  {
- 	struct kirin970_priv *priv = phy_get_drvdata(phy);
+ 	return regmap_update_bits(usb31misc, USB_MISC_CFG54,
+ 			CFG54_USB31PHY_CR_SEL, CFG54_USB31PHY_CR_SEL);
+ }
+ 
+-static int kirin970_phy_cr_start(struct regmap *usb31misc, int direction)
++static int hi3670_phy_cr_start(struct regmap *usb31misc, int direction)
+ {
+ 	int ret;
+ 
+@@ -182,7 +182,7 @@ static int kirin970_phy_cr_start(struct regmap *usb31misc, int direction)
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = kirin970_phy_cr_clk(usb31misc);
++	ret = hi3670_phy_cr_clk(usb31misc);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -192,7 +192,7 @@ static int kirin970_phy_cr_start(struct regmap *usb31misc, int direction)
+ 	return ret;
+ }
+ 
+-static int kirin970_phy_cr_wait_ack(struct regmap *usb31misc)
++static int hi3670_phy_cr_wait_ack(struct regmap *usb31misc)
+ {
+ 	u32 reg;
+ 	int retry = 100000;
+@@ -205,7 +205,7 @@ static int kirin970_phy_cr_wait_ack(struct regmap *usb31misc)
+ 		if ((reg & CFG54_USB31PHY_CR_ACK) == CFG54_USB31PHY_CR_ACK)
+ 			return 0;
+ 
+-		ret = kirin970_phy_cr_clk(usb31misc);
++		ret = hi3670_phy_cr_clk(usb31misc);
+ 		if (ret)
+ 			return ret;
+ 	}
+@@ -213,7 +213,7 @@ static int kirin970_phy_cr_wait_ack(struct regmap *usb31misc)
+ 	return -ETIMEDOUT;
+ }
+ 
+-static int kirin970_phy_cr_set_addr(struct regmap *usb31misc, u32 addr)
++static int hi3670_phy_cr_set_addr(struct regmap *usb31misc, u32 addr)
+ {
+ 	u32 reg;
+ 	int ret;
+@@ -230,31 +230,31 @@ static int kirin970_phy_cr_set_addr(struct regmap *usb31misc, u32 addr)
+ 	return ret;
+ }
+ 
+-static int kirin970_phy_cr_read(struct regmap *usb31misc, u32 addr, u32 *val)
++static int hi3670_phy_cr_read(struct regmap *usb31misc, u32 addr, u32 *val)
+ {
+ 	int reg;
+ 	int i;
+ 	int ret;
+ 
+ 	for (i = 0; i < 100; i++) {
+-		ret = kirin970_phy_cr_clk(usb31misc);
++		ret = hi3670_phy_cr_clk(usb31misc);
+ 		if (ret)
+ 			return ret;
+ 	}
+ 
+-	ret = kirin970_phy_cr_set_sel(usb31misc);
++	ret = hi3670_phy_cr_set_sel(usb31misc);
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = kirin970_phy_cr_set_addr(usb31misc, addr);
++	ret = hi3670_phy_cr_set_addr(usb31misc, addr);
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = kirin970_phy_cr_start(usb31misc, 0);
++	ret = hi3670_phy_cr_start(usb31misc, 0);
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = kirin970_phy_cr_wait_ack(usb31misc);
++	ret = hi3670_phy_cr_wait_ack(usb31misc);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -268,22 +268,22 @@ static int kirin970_phy_cr_read(struct regmap *usb31misc, u32 addr, u32 *val)
+ 	return 0;
+ }
+ 
+-static int kirin970_phy_cr_write(struct regmap *usb31misc, u32 addr, u32 val)
++static int hi3670_phy_cr_write(struct regmap *usb31misc, u32 addr, u32 val)
+ {
+ 	int i;
+ 	int ret;
+ 
+ 	for (i = 0; i < 100; i++) {
+-		ret = kirin970_phy_cr_clk(usb31misc);
++		ret = hi3670_phy_cr_clk(usb31misc);
+ 		if (ret)
+ 			return ret;
+ 	}
+ 
+-	ret = kirin970_phy_cr_set_sel(usb31misc);
++	ret = hi3670_phy_cr_set_sel(usb31misc);
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = kirin970_phy_cr_set_addr(usb31misc, addr);
++	ret = hi3670_phy_cr_set_addr(usb31misc, addr);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -292,16 +292,16 @@ static int kirin970_phy_cr_write(struct regmap *usb31misc, u32 addr, u32 val)
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = kirin970_phy_cr_start(usb31misc, 1);
++	ret = hi3670_phy_cr_start(usb31misc, 1);
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = kirin970_phy_cr_wait_ack(usb31misc);
++	ret = hi3670_phy_cr_wait_ack(usb31misc);
+ 
+ 	return ret;
+ }
+ 
+-static int kirin970_phy_set_params(struct kirin970_priv *priv)
++static int hi3670_phy_set_params(struct hi3670_priv *priv)
+ {
+ 	u32 reg;
+ 	int ret;
+@@ -315,7 +315,7 @@ static int kirin970_phy_set_params(struct kirin970_priv *priv)
+ 	}
+ 
+ 	while (retry-- > 0) {
+-		ret = kirin970_phy_cr_read(priv->usb31misc,
++		ret = hi3670_phy_cr_read(priv->usb31misc,
+ 				TX_VBOOST_LVL_REG, &reg);
+ 		if (!ret)
+ 			break;
+@@ -329,14 +329,14 @@ static int kirin970_phy_set_params(struct kirin970_priv *priv)
+ 
+ 	reg |= (TX_VBOOST_LVL_ENABLE |
+ 			(priv->tx_vboost_lvl << TX_VBOOST_LVL_START));
+-	ret = kirin970_phy_cr_write(priv->usb31misc, TX_VBOOST_LVL_REG, reg);
++	ret = hi3670_phy_cr_write(priv->usb31misc, TX_VBOOST_LVL_REG, reg);
+ 	if (ret)
+ 		dev_err(priv->dev, "write TX_VBOOST_LVL_REG failed\n");
+ 
+ 	return ret;
+ }
+ 
+-static int kirin970_is_abbclk_seleted(struct kirin970_priv *priv)
++static int hi3670_is_abbclk_seleted(struct hi3670_priv *priv)
+ {
+ 	u32 reg;
+ 
+@@ -356,12 +356,12 @@ static int kirin970_is_abbclk_seleted(struct kirin970_priv *priv)
+ 	return 0;
+ }
+ 
+-static int kirin970_config_phy_clock(struct kirin970_priv *priv)
++static int hi3670_config_phy_clock(struct hi3670_priv *priv)
+ {
+ 	u32 val, mask;
+ 	int ret;
+ 
+-	if (kirin970_is_abbclk_seleted(priv)) {
++	if (hi3670_is_abbclk_seleted(priv)) {
+ 		/* usb refclk iso disable */
+ 		ret = regmap_write(priv->peri_crg, PERI_CRG_ISODIS,
+ 				USB_REFCLK_ISO_EN);
+@@ -427,7 +427,7 @@ static int kirin970_config_phy_clock(struct kirin970_priv *priv)
+ 	return ret;
+ }
+ 
+-static int kirin970_config_tca(struct kirin970_priv *priv)
++static int hi3670_config_tca(struct hi3670_priv *priv)
+ {
+ 	u32 val, mask;
+ 	int ret;
+@@ -477,9 +477,9 @@ static int kirin970_config_tca(struct kirin970_priv *priv)
+ 	return ret;
+ }
+ 
+-static int kirin970_phy_init(struct phy *phy)
++static int hi3670_phy_init(struct phy *phy)
+ {
+-	struct kirin970_priv *priv = phy_get_drvdata(phy);
++	struct hi3670_priv *priv = phy_get_drvdata(phy);
  	u32 val;
  	int ret;
  
--	kirin970_phy_exit(phy);
--	dev_info(priv->dev, "%s in\n", __func__);
- 	/* assert controller */
--	val = CFGA0_VAUX_RESET | CFGA0_USB31C_RESET;
-+	val = CFGA0_VAUX_RESET | CFGA0_USB31C_RESET |
-+		CFGA0_USB3PHY_RESET | CFGA0_USB2PHY_POR;
- 	ret = regmap_update_bits(priv->usb31misc, USB_MISC_CFGA0, val, 0);
- 	if (ret)
- 		goto out;
-@@ -493,6 +506,14 @@ static int kirin970_phy_init(struct phy *phy)
+@@ -490,7 +490,7 @@ static int kirin970_phy_init(struct phy *phy)
  	if (ret)
  		goto out;
  
-+	/* Deassert phy */
-+	val = CFGA0_USB3PHY_RESET | CFGA0_USB2PHY_POR;
-+	ret = regmap_update_bits(priv->usb31misc, USB_MISC_CFGA0, val, val);
-+	if (ret)
-+		goto out;
-+
-+	udelay(100);
-+
- 	/* Tell the PHY power is stable */
- 	val = CFG54_USB3_PHY0_ANA_PWR_EN | CFG54_PHY0_PCS_PWR_STABLE |
- 		CFG54_PHY0_PMA_PWR_STABLE;
-@@ -512,14 +533,6 @@ static int kirin970_phy_init(struct phy *phy)
+-	ret = kirin970_config_phy_clock(priv);
++	ret = hi3670_config_phy_clock(priv);
  	if (ret)
  		goto out;
  
--	/* Deassert phy */
--	val = CFGA0_USB3PHY_RESET | CFGA0_USB2PHY_POR;
--	ret = regmap_update_bits(priv->usb31misc, USB_MISC_CFGA0, val, val);
--	if (ret)
--		goto out;
--
--	udelay(100);
--
- 	/* Deassert controller */
- 	val = CFGA0_VAUX_RESET | CFGA0_USB31C_RESET;
- 	ret = regmap_update_bits(priv->usb31misc, USB_MISC_CFGA0, val, val);
-@@ -545,29 +558,6 @@ static int kirin970_phy_init(struct phy *phy)
+@@ -522,7 +522,7 @@ static int kirin970_phy_init(struct phy *phy)
  	if (ret)
  		goto out;
  
--	{
--		ret = regmap_read(priv->peri_crg, 0x4c,
--				&val);
--		if (!ret)
--			dev_info(priv->dev, "peri_crg 0x4c %x\n", val);
--		ret = regmap_read(priv->peri_crg, 0x404,
--				&val);
--		if (!ret)
--			dev_info(priv->dev, "peri_crg 0x404 %x\n", val);
--		ret = regmap_read(priv->peri_crg, 0xc,
--				&val);
--		if (!ret)
--			dev_info(priv->dev, "peri_crg 0xc %x\n", val);
--		ret = regmap_read(priv->peri_crg, 0xac,
--				&val);
--		if (!ret)
--			dev_info(priv->dev, "peri_crg 0xac %x\n", val);
--		ret = regmap_read(priv->pctrl, 0x10,
--				&val);
--		if (!ret)
--			dev_info(priv->dev, "pctrl 0x10 %x\n", val);
--	}
--
- 	return 0;
- out:
- 	dev_err(priv->dev, "failed to init phy ret: %d\n", ret);
-@@ -586,7 +576,11 @@ static int kirin970_phy_exit(struct phy *phy)
+-	ret = kirin970_config_tca(priv);
++	ret = hi3670_config_tca(priv);
  	if (ret)
  		goto out;
  
--	if (!kirin970_is_abbclk_seleted(priv)) {
-+	if (kirin970_is_abbclk_seleted(priv)) {
-+		/* disable usb_tcxo_en */
-+		ret = regmap_write(priv->pctrl, PCTRL_PERI_CTRL3,
-+				USB_TCXO_EN << PCTRL_PERI_CTRL3_MSK_START);
-+	} else {
- 		ret = regmap_write(priv->peri_crg, PERI_CRG_PERDIS6,
- 				GT_CLK_USB2PHY_REF);
- 		if (ret)
+@@ -554,7 +554,7 @@ static int kirin970_phy_init(struct phy *phy)
+ 
+ 	udelay(100);
+ 
+-	ret = kirin970_phy_set_params(priv);
++	ret = hi3670_phy_set_params(priv);
+ 	if (ret)
+ 		goto out;
+ 
+@@ -564,9 +564,9 @@ static int kirin970_phy_init(struct phy *phy)
+ 	return ret;
+ }
+ 
+-static int kirin970_phy_exit(struct phy *phy)
++static int hi3670_phy_exit(struct phy *phy)
+ {
+-	struct kirin970_priv *priv = phy_get_drvdata(phy);
++	struct hi3670_priv *priv = phy_get_drvdata(phy);
+ 	u32 mask;
+ 	int ret;
+ 
+@@ -576,7 +576,7 @@ static int kirin970_phy_exit(struct phy *phy)
+ 	if (ret)
+ 		goto out;
+ 
+-	if (kirin970_is_abbclk_seleted(priv)) {
++	if (hi3670_is_abbclk_seleted(priv)) {
+ 		/* disable usb_tcxo_en */
+ 		ret = regmap_write(priv->pctrl, PCTRL_PERI_CTRL3,
+ 				USB_TCXO_EN << PCTRL_PERI_CTRL3_MSK_START);
+@@ -593,18 +593,18 @@ static int kirin970_phy_exit(struct phy *phy)
+ 	return ret;
+ }
+ 
+-static struct phy_ops kirin970_phy_ops = {
+-	.init		= kirin970_phy_init,
+-	.exit		= kirin970_phy_exit,
++static struct phy_ops hi3670_phy_ops = {
++	.init		= hi3670_phy_init,
++	.exit		= hi3670_phy_exit,
+ 	.owner		= THIS_MODULE,
+ };
+ 
+-static int kirin970_phy_probe(struct platform_device *pdev)
++static int hi3670_phy_probe(struct platform_device *pdev)
+ {
+ 	struct phy_provider *phy_provider;
+ 	struct device *dev = &pdev->dev;
+ 	struct phy *phy;
+-	struct kirin970_priv *priv;
++	struct hi3670_priv *priv;
+ 
+ 	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+ 	if (!priv)
+@@ -647,7 +647,7 @@ static int kirin970_phy_probe(struct platform_device *pdev)
+ 				&(priv->tx_vboost_lvl)))
+ 		priv->eye_diagram_param = KIRIN970_USB_DEFAULT_PHY_VBOOST;
+ 
+-	phy = devm_phy_create(dev, NULL, &kirin970_phy_ops);
++	phy = devm_phy_create(dev, NULL, &hi3670_phy_ops);
+ 	if (IS_ERR(phy))
+ 		return PTR_ERR(phy);
+ 
+@@ -656,20 +656,20 @@ static int kirin970_phy_probe(struct platform_device *pdev)
+ 	return PTR_ERR_OR_ZERO(phy_provider);
+ }
+ 
+-static const struct of_device_id kirin970_phy_of_match[] = {
+-	{.compatible = "hisilicon,kirin970-usb-phy",},
++static const struct of_device_id hi3670_phy_of_match[] = {
++	{.compatible = "hisilicon,hi3670-usb-phy",},
+ 	{ },
+ };
+-MODULE_DEVICE_TABLE(of, kirin970_phy_of_match);
++MODULE_DEVICE_TABLE(of, hi3670_phy_of_match);
+ 
+-static struct platform_driver kirin970_phy_driver = {
+-	.probe	= kirin970_phy_probe,
++static struct platform_driver hi3670_phy_driver = {
++	.probe	= hi3670_phy_probe,
+ 	.driver = {
+-		.name	= "kirin970-usb-phy",
+-		.of_match_table	= kirin970_phy_of_match,
++		.name	= "hi3670-usb-phy",
++		.of_match_table	= hi3670_phy_of_match,
+ 	}
+ };
+-module_platform_driver(kirin970_phy_driver);
++module_platform_driver(hi3670_phy_driver);
+ 
+ MODULE_AUTHOR("Yu Chen <chenyu56@huawei.com>");
+ MODULE_LICENSE("GPL v2");
 -- 
 2.26.2
 
