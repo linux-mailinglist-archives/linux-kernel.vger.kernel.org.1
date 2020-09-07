@@ -2,180 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EA3625F97E
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 13:32:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1A1725F984
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 13:33:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729023AbgIGLcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 07:32:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49060 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729016AbgIGL1b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 07:27:31 -0400
-Received: from pali.im (pali.im [31.31.79.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CAA8F206D4;
-        Mon,  7 Sep 2020 11:27:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599478050;
-        bh=1jully7bPQ2FchgD+ghEArFdEFrPzNxnKoN/DYaezsY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=gTG0Mr5GF6xbokSqvJI+yX9P5qytixd6j28/NL8fXckC6EHBmsIZOTpgT9SW1c6ny
-         otXKv4jTA0O4gLFlCGrHmEnn3+x8CcmYLZJH6TTYi5S25A1540jw4hjbhhAiqEAFTe
-         s+My98bF/kVwiyn/L4X4DW7gELGeSqUdI0t/ZI/4=
-Received: by pali.im (Postfix)
-        id 5A6E1814; Mon,  7 Sep 2020 13:27:28 +0200 (CEST)
-From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-To:     Jason Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Tomasz Maciej Nowak <tmn505@gmail.com>,
-        Andre Heider <a.heider@gmail.com>
-Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        id S1729024AbgIGLdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 07:33:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43572 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729032AbgIGL3B (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 07:29:01 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80D96C061573;
+        Mon,  7 Sep 2020 04:28:59 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id a26so17812374ejc.2;
+        Mon, 07 Sep 2020 04:28:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=WRP9M9nSNXL4MuVp90IJd9szrbHQ4+1D+FMdTDd3MKE=;
+        b=oeTED2d8rZ8Ed5gBKxWfFoNbmp7xoC3UIr/eI9hK9SyJZZI7MG+7XJzGO/nbt479b/
+         k/AEDNeWagv85nAz/OWLRUix/73OEW3v6rf4qbgR3QqEbAzjU/StJ/E1aZ3Smo4OzsEx
+         wGeRINtjtlMIqLu//JJbiknaiLIENC2KtCBZjjUU1xEPWcFZB+1O7rLdUIQ3FoslMqUg
+         mOCvaGA0TrxFsqCZmElvb1nZ/pY9OlQ4j144+uyKm4T97S37UmnUlQ2QV/bY1rT3DZDX
+         8C1Dz4niO5k63KUW/6y4be9M1Z/xjm63dBsI4Y8dljnOXN97xyV96bG7pBTfCQCBpyne
+         9+dA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=WRP9M9nSNXL4MuVp90IJd9szrbHQ4+1D+FMdTDd3MKE=;
+        b=YF6cl6eDiw0WDZX40oysf/nYsDH7NQl1rINQL0rJJxDIeVHBGzaTaTYgoYQGfPQ31l
+         e0xvK1xj/n5G+mMLcSil1BnUAK1c8ofIYBWJBWpGRcTwmNpoyvrhYoa4rLyTRDlVL2Ua
+         4C8w2veIYaMraRA2tnZ7Jm4pSAEFajMizdctAuDfx4xdTNnmwzxn8tmV3eTu3Hv7Ml+e
+         gsTRgW1bbXMGInQIDrEeVG19ak9Fs1da5HyEAofCQDgM1tLfKnseh7lYPFeNXmhCvuxI
+         HwjRbiJpdv0eyJ1h2Y/XFEh7/Ro1rPoVepHJG/keTlkVvceXMe11yLa2UqhnuoB2rm2Z
+         NCDA==
+X-Gm-Message-State: AOAM532XjNZRW1XYwnu/1WQa1PNCHN1gRPwEsz5t+/SVbCU0Uyo7hzBE
+        wrJipFtvl8tCvKJ2uNRQDAk=
+X-Google-Smtp-Source: ABdhPJzqPI+Fn8MusvsQJ7qlymd+nHs23tmwAbfJxmXD44h2oAbDoulrqwyl1MnZfc1QNS2x8/2aUg==
+X-Received: by 2002:a17:906:692:: with SMTP id u18mr20207775ejb.43.1599478138078;
+        Mon, 07 Sep 2020 04:28:58 -0700 (PDT)
+Received: from localhost.localdomain ([2a01:598:b902:e05f:7139:914b:4eed:99b3])
+        by smtp.gmail.com with ESMTPSA id k6sm13826528edj.93.2020.09.07.04.28.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Sep 2020 04:28:57 -0700 (PDT)
+From:   Bean Huo <huobean@gmail.com>
+To:     axboe@kernel.dk, linux-block@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: dts: marvell: espressobin: Add ethernet switch aliases
-Date:   Mon,  7 Sep 2020 13:27:17 +0200
-Message-Id: <20200907112718.5994-1-pali@kernel.org>
-X-Mailer: git-send-email 2.20.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Cc:     beanhuo@micron.com
+Subject: [PATCH v2 0/2] Fix two incorrect comments
+Date:   Mon,  7 Sep 2020 13:28:43 +0200
+Message-Id: <20200907112845.3420-1-huobean@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Espressobin boards have 3 ethernet ports and some of them got assigned more
-then one MAC address. MAC addresses are stored in U-Boot environment.
+From: Bean Huo <beanhuo@micron.com>
 
-Since commit a2c7023f7075c ("net: dsa: read mac address from DT for slave
-device") kernel can use MAC addresses from DT for particular DSA port.
+v1--v2:
+    correct inaccurate patch title and commit message
 
-Currently Espressobin DTS file contains alias just for ethernet0.
+Bean Huo (2):
+  block: fix incorrect comment in vdc_port_probe()
+  fs: isofs: fix incorrect comment in zisofs_readpage()
 
-This patch defines additional ethernet aliases in Espressobin DTS files, so
-bootloader can fill correct MAC address for DSA switch ports if more MAC
-addresses were specified.
+ drivers/block/sunvdc.c | 6 +++---
+ fs/isofs/compress.c    | 2 +-
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-DT alias ethernet1 is used for wan port, DT aliases ethernet2 and ethernet3
-are used for lan ports for both Espressobin revisions (V5 and V7).
-
-Fixes: 5253cb8c00a6f ("arm64: dts: marvell: espressobin: add ethernet alias")
-Signed-off-by: Pali Rohár <pali@kernel.org>
----
- .../dts/marvell/armada-3720-espressobin-v7-emmc.dts  | 10 ++++++++--
- .../boot/dts/marvell/armada-3720-espressobin-v7.dts  | 10 ++++++++--
- .../boot/dts/marvell/armada-3720-espressobin.dtsi    | 12 ++++++++----
- 3 files changed, 24 insertions(+), 8 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts
-index 03733fd92732..215d2f702623 100644
---- a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts
-+++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts
-@@ -20,17 +20,23 @@
- 	compatible = "globalscale,espressobin-v7-emmc", "globalscale,espressobin-v7",
- 		     "globalscale,espressobin", "marvell,armada3720",
- 		     "marvell,armada3710";
-+
-+	aliases {
-+		/* ethernet1 is wan port */
-+		ethernet1 = &switch0port3;
-+		ethernet3 = &switch0port1;
-+	};
- };
- 
- &switch0 {
- 	ports {
--		port@1 {
-+		switch0port1: port@1 {
- 			reg = <1>;
- 			label = "lan1";
- 			phy-handle = <&switch0phy0>;
- 		};
- 
--		port@3 {
-+		switch0port3: port@3 {
- 			reg = <3>;
- 			label = "wan";
- 			phy-handle = <&switch0phy2>;
-diff --git a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7.dts b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7.dts
-index 8570c5f47d7d..b6f4af8ebafb 100644
---- a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7.dts
-+++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7.dts
-@@ -19,17 +19,23 @@
- 	model = "Globalscale Marvell ESPRESSOBin Board V7";
- 	compatible = "globalscale,espressobin-v7", "globalscale,espressobin",
- 		     "marvell,armada3720", "marvell,armada3710";
-+
-+	aliases {
-+		/* ethernet1 is wan port */
-+		ethernet1 = &switch0port3;
-+		ethernet3 = &switch0port1;
-+	};
- };
- 
- &switch0 {
- 	ports {
--		port@1 {
-+		switch0port1: port@1 {
- 			reg = <1>;
- 			label = "lan1";
- 			phy-handle = <&switch0phy0>;
- 		};
- 
--		port@3 {
-+		switch0port3: port@3 {
- 			reg = <3>;
- 			label = "wan";
- 			phy-handle = <&switch0phy2>;
-diff --git a/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi b/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi
-index b97218c72727..0775c16e0ec8 100644
---- a/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi
-+++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi
-@@ -13,6 +13,10 @@
- / {
- 	aliases {
- 		ethernet0 = &eth0;
-+		/* for dsa slave device */
-+		ethernet1 = &switch0port1;
-+		ethernet2 = &switch0port2;
-+		ethernet3 = &switch0port3;
- 		serial0 = &uart0;
- 		serial1 = &uart1;
- 	};
-@@ -120,7 +124,7 @@
- 			#address-cells = <1>;
- 			#size-cells = <0>;
- 
--			port@0 {
-+			switch0port0: port@0 {
- 				reg = <0>;
- 				label = "cpu";
- 				ethernet = <&eth0>;
-@@ -131,19 +135,19 @@
- 				};
- 			};
- 
--			port@1 {
-+			switch0port1: port@1 {
- 				reg = <1>;
- 				label = "wan";
- 				phy-handle = <&switch0phy0>;
- 			};
- 
--			port@2 {
-+			switch0port2: port@2 {
- 				reg = <2>;
- 				label = "lan0";
- 				phy-handle = <&switch0phy1>;
- 			};
- 
--			port@3 {
-+			switch0port3: port@3 {
- 				reg = <3>;
- 				label = "lan1";
- 				phy-handle = <&switch0phy2>;
 -- 
-2.20.1
+2.17.1
 
