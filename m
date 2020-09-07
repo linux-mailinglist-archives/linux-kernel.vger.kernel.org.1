@@ -2,273 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C303F25FA5E
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 14:21:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE49D25FA6F
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 14:24:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729323AbgIGMUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 08:20:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51102 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729298AbgIGMSB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 08:18:01 -0400
-Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87F25C061573
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 05:18:00 -0700 (PDT)
-Received: by mail-vk1-xa44.google.com with SMTP id k1so3238578vkb.7
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 05:18:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+l9vktXI4U4uuSrp4OVvdq7wfruoEhmAAsNBKcHjn1Y=;
-        b=wwLasW2btmoYC0TFlQEKjMZOYLaLBHecFWUgLUiHNG1qYCf769Gd2usd9retfFzOPx
-         RtXnFVsnDlGlVB3YKrTRsu93XO2Gb0JYHsIf380+B0/Hh5T3d1YO66Xoo48V9oqXjwWO
-         qePsgLJ+aZP84Beu3LwN4PCnielOPkvwP6TY4LA27pYVzhcAS09h23t/RYlbq6OK5Tyt
-         mqpQdgA3QB1A+dQTQdXuPz/oIbeCP8ef4tjSmYzfFAGp3a/fbciqy92ijJdCP9BNJU0p
-         Q7otRg43ziqzKQx0cQE/XlcGI+ZXjJcKO8PS82gjojJvbQkyBfRbciySbqp600rP3Ru7
-         /ySw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+l9vktXI4U4uuSrp4OVvdq7wfruoEhmAAsNBKcHjn1Y=;
-        b=OI4pZv8KNBC/FcgHu/9xat+ZzRRAMjsrwdrjjpZF4epTtQYTfL/+jkpcQfEAPCLa55
-         vrwL9txAAcRBhezhXQvzOqZt2SPOu41gnOJ6jHV/9BA3Ptv1SNX1QK03GXDcBgxC9QLl
-         Gv3p92tC92OTs30AnjyxYvsy5GUOv03NPwPXnwIHnmaYipft6DJsaDtaCuqupTBkrxTj
-         IsPiver3cxf/Ic1IPb1Cbcb+ntn3aTea+R6J7jBllKmVpkaM0Cjedkt5U9LKYsNXrp2s
-         UPlI/ioip6ZODViu0y7ybbPbDwHYMUtBt0ZYNV7VMlfh5+P/flUcubzIsgISQOlPhZQG
-         Anow==
-X-Gm-Message-State: AOAM533PTHmiw8DQLM6QK3zrZZ+Pw5NBS4U40ieQpNE8jO9tNTnXTfSB
-        BsmUHVCLkqyABGHhHwYembLneugV5aAlqz8/ZFXaWg==
-X-Google-Smtp-Source: ABdhPJxU62/1W0/nJK8t26GOQ/HOLcD8SDlE1oqG+58etM4Yd1VUv4hhcrbtXf+/0XXqVo/0lzjSgFBMVweHQRGZg1E=
-X-Received: by 2002:a1f:e443:: with SMTP id b64mr11853616vkh.17.1599481079602;
- Mon, 07 Sep 2020 05:17:59 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200907105254.31097-1-krzk@kernel.org>
-In-Reply-To: <20200907105254.31097-1-krzk@kernel.org>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 7 Sep 2020 14:17:23 +0200
-Message-ID: <CAPDyKFr=88Z48hHwAFkDqk4Rg_sNrQ5bstnRzCXLSA-WiX-asA@mail.gmail.com>
-Subject: Re: [PATCH v3] mmc: host: Enable compile testing of multiple drivers
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1728824AbgIGMXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 08:23:35 -0400
+Received: from foss.arm.com ([217.140.110.172]:34330 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729303AbgIGMSo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 08:18:44 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9D7EE1045;
+        Mon,  7 Sep 2020 05:18:38 -0700 (PDT)
+Received: from donnerap.arm.com (donnerap.cambridge.arm.com [10.1.195.35])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 830213F66E;
+        Mon,  7 Sep 2020 05:18:37 -0700 (PDT)
+From:   Andre Przywara <andre.przywara@arm.com>
+To:     soc@kernel.org
+Cc:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
+        Wei Xu <xuwei5@hisilicon.com>, Chanho Min <chanho.min@lge.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/6] ARM/arm64: dts: Fix SP804/SP805 users
+Date:   Mon,  7 Sep 2020 13:18:25 +0100
+Message-Id: <20200907121831.242281-1-andre.przywara@arm.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 7 Sep 2020 at 12:53, Krzysztof Kozlowski <krzk@kernel.org> wrote:
->
-> Multiple MMC host controller driver can be compile tested as they do not
-> depend on architecture specific headers.
->
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Those are the remaining patches of the SP804/SP805 DT fixes. [1][2]
+ARM, Broadcom and Freescale have their respective fixes queued through
+their maintainers already, but I haven't heard back from LG or HiSilicon
+so far.
+So can those patches be taken through armsoc directly?
+---------------------
 
-Applied for next, thanks!
+Some DTs in the kernel tree were not conforming to the SP804 and SP805
+binding.
+Fix those DTs to correctly describe the clocks, while making sure that
+the devices stay functional with the current Linux driver.
 
->
-> ---
->
-> Changes since v2:
-> 1. Rebase.
->
-> Please expect conflicts around MMC_SDHCI_S3C with:
-> https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux.git/log/?h=next/soc-s3c-cleanup
+Thanks,
+Andre
 
-I see. Thanks for sharing. Looks like the fixup should be possible to
-carry for Stephen in linux-next.
+[1] http://lkml.iu.edu/hypermail/linux/kernel/2008.3/07072.html
+[2] http://lkml.iu.edu/hypermail/linux/kernel/2008.3/07167.html
 
-Kind regards
-Uffe
+Andre Przywara (6):
+  ARM: dts: hisilicon: Fix SP804 users
+  ARM: dts: nspire: Fix SP804 users
+  arm64: dts: lg: Fix SP804 users
+  arm64: dts: hisilicon: Fix SP805 clocks
+  arm64: dts: lg: Fix SP805 clocks
+  ARM: dts: hisilicon: Fix SP805 clocks
 
->
-> Possible resolution:
-> -depends on PLAT_SAMSUNG || COMPILE_TEST
-> +depends on PLAT_SAMSUNG || ARCH_S5PV210 || ARCH_EXYNOS || COMPILE_TEST
-> ---
->  drivers/mmc/host/Kconfig | 40 +++++++++++++++++++++-------------------
->  1 file changed, 21 insertions(+), 19 deletions(-)
->
-> diff --git a/drivers/mmc/host/Kconfig b/drivers/mmc/host/Kconfig
-> index ddbed6f41c41..dc646359b4ff 100644
-> --- a/drivers/mmc/host/Kconfig
-> +++ b/drivers/mmc/host/Kconfig
-> @@ -178,7 +178,7 @@ config MMC_SDHCI_OF_AT91
->  config MMC_SDHCI_OF_ESDHC
->         tristate "SDHCI OF support for the Freescale eSDHC controller"
->         depends on MMC_SDHCI_PLTFM
-> -       depends on PPC || ARCH_MXC || ARCH_LAYERSCAPE
-> +       depends on PPC || ARCH_MXC || ARCH_LAYERSCAPE || COMPILE_TEST
->         select MMC_SDHCI_IO_ACCESSORS
->         select FSL_GUTS
->         help
-> @@ -216,7 +216,7 @@ config MMC_SDHCI_OF_DWCMSHC
->  config MMC_SDHCI_OF_SPARX5
->         tristate "SDHCI OF support for the MCHP Sparx5 SoC"
->         depends on MMC_SDHCI_PLTFM
-> -       depends on ARCH_SPARX5
-> +       depends on ARCH_SPARX5 || COMPILE_TEST
->         help
->           This selects the Secure Digital Host Controller Interface (SDHCI)
->           found in the MCHP Sparx5 SoC.
-> @@ -238,7 +238,7 @@ config MMC_SDHCI_CADENCE
->
->  config MMC_SDHCI_CNS3XXX
->         tristate "SDHCI support on the Cavium Networks CNS3xxx SoC"
-> -       depends on ARCH_CNS3XXX
-> +       depends on ARCH_CNS3XXX || COMPILE_TEST
->         depends on MMC_SDHCI_PLTFM
->         help
->           This selects the SDHCI support for CNS3xxx System-on-Chip devices.
-> @@ -262,7 +262,7 @@ config MMC_SDHCI_ESDHC_MCF
->
->  config MMC_SDHCI_ESDHC_IMX
->         tristate "SDHCI support for the Freescale eSDHC/uSDHC i.MX controller"
-> -       depends on ARCH_MXC
-> +       depends on ARCH_MXC || COMPILE_TEST
->         depends on MMC_SDHCI_PLTFM
->         select MMC_SDHCI_IO_ACCESSORS
->         select MMC_CQHCI
-> @@ -276,7 +276,7 @@ config MMC_SDHCI_ESDHC_IMX
->
->  config MMC_SDHCI_DOVE
->         tristate "SDHCI support on Marvell's Dove SoC"
-> -       depends on ARCH_DOVE || MACH_DOVE
-> +       depends on ARCH_DOVE || MACH_DOVE || COMPILE_TEST
->         depends on MMC_SDHCI_PLTFM
->         select MMC_SDHCI_IO_ACCESSORS
->         help
-> @@ -289,7 +289,7 @@ config MMC_SDHCI_DOVE
->
->  config MMC_SDHCI_TEGRA
->         tristate "SDHCI platform support for the Tegra SD/MMC Controller"
-> -       depends on ARCH_TEGRA
-> +       depends on ARCH_TEGRA || COMPILE_TEST
->         depends on MMC_SDHCI_PLTFM
->         select MMC_SDHCI_IO_ACCESSORS
->         select MMC_CQHCI
-> @@ -301,7 +301,8 @@ config MMC_SDHCI_TEGRA
->
->  config MMC_SDHCI_S3C
->         tristate "SDHCI support on Samsung S3C SoC"
-> -       depends on MMC_SDHCI && PLAT_SAMSUNG
-> +       depends on MMC_SDHCI
-> +       depends on PLAT_SAMSUNG || COMPILE_TEST
->         help
->           This selects the Secure Digital Host Controller Interface (SDHCI)
->           often referrered to as the HSMMC block in some of the Samsung S3C
-> @@ -313,7 +314,7 @@ config MMC_SDHCI_S3C
->
->  config MMC_SDHCI_SIRF
->         tristate "SDHCI support on CSR SiRFprimaII and SiRFmarco SoCs"
-> -       depends on ARCH_SIRF
-> +       depends on ARCH_SIRF || COMPILE_TEST
->         depends on MMC_SDHCI_PLTFM
->         select MMC_SDHCI_IO_ACCESSORS
->         help
-> @@ -351,7 +352,8 @@ config MMC_SDHCI_PXAV2
->
->  config MMC_SDHCI_SPEAR
->         tristate "SDHCI support on ST SPEAr platform"
-> -       depends on MMC_SDHCI && PLAT_SPEAR
-> +       depends on MMC_SDHCI
-> +       depends on PLAT_SPEAR || COMPILE_TEST
->         depends on OF
->         help
->           This selects the Secure Digital Host Controller Interface (SDHCI)
-> @@ -374,7 +376,7 @@ config MMC_SDHCI_S3C_DMA
->
->  config MMC_SDHCI_BCM_KONA
->         tristate "SDHCI support on Broadcom KONA platform"
-> -       depends on ARCH_BCM_MOBILE
-> +       depends on ARCH_BCM_MOBILE || COMPILE_TEST
->         depends on MMC_SDHCI_PLTFM
->         help
->           This selects the Broadcom Kona Secure Digital Host Controller
-> @@ -422,7 +424,7 @@ config MMC_SDHCI_IPROC
->
->  config MMC_MESON_GX
->         tristate "Amlogic S905/GX*/AXG SD/MMC Host Controller support"
-> -       depends on ARCH_MESON
-> +       depends on ARCH_MESON|| COMPILE_TEST
->         help
->           This selects support for the Amlogic SD/MMC Host Controller
->           found on the S905/GX*/AXG family of SoCs.  This controller is
-> @@ -458,7 +460,7 @@ config MMC_MESON_MX_SDIO
->
->  config MMC_MOXART
->         tristate "MOXART SD/MMC Host Controller support"
-> -       depends on ARCH_MOXART
-> +       depends on ARCH_MOXART || COMPILE_TEST
->         help
->           This selects support for the MOXART SD/MMC Host Controller.
->           MOXA provides one multi-functional card reader which can
-> @@ -467,7 +469,7 @@ config MMC_MOXART
->
->  config MMC_SDHCI_ST
->         tristate "SDHCI support on STMicroelectronics SoC"
-> -       depends on ARCH_STI || FSP2
-> +       depends on ARCH_STI || FSP2 || COMPILE_TEST
->         depends on MMC_SDHCI_PLTFM
->         select MMC_SDHCI_IO_ACCESSORS
->         help
-> @@ -587,7 +589,7 @@ config MMC_TIFM_SD
->
->  config MMC_MVSDIO
->         tristate "Marvell MMC/SD/SDIO host driver"
-> -       depends on PLAT_ORION
-> +       depends on PLAT_ORION || (COMPILE_TEST && ARM)
->         depends on OF
->         help
->           This selects the Marvell SDIO host driver.
-> @@ -599,7 +601,7 @@ config MMC_MVSDIO
->
->  config MMC_DAVINCI
->         tristate "TI DAVINCI Multimedia Card Interface support"
-> -       depends on ARCH_DAVINCI
-> +       depends on ARCH_DAVINCI || COMPILE_TEST
->         help
->           This selects the TI DAVINCI Multimedia card Interface.
->           If you have an DAVINCI board with a Multimedia Card slot,
-> @@ -628,7 +630,7 @@ config MMC_SPI
->
->  config MMC_S3C
->         tristate "Samsung S3C SD/MMC Card Interface support"
-> -       depends on ARCH_S3C24XX
-> +       depends on ARCH_S3C24XX || COMPILE_TEST
->         depends on S3C24XX_DMAC
->         help
->           This selects a driver for the MCI interface found in
-> @@ -681,7 +683,7 @@ config MMC_SDRICOH_CS
->
->  config MMC_SDHCI_SPRD
->         tristate "Spreadtrum SDIO host Controller"
-> -       depends on ARCH_SPRD
-> +       depends on ARCH_SPRD || COMPILE_TEST
->         depends on MMC_SDHCI_PLTFM
->         select MMC_SDHCI_IO_ACCESSORS
->         select MMC_HSQ
-> @@ -698,7 +700,7 @@ config MMC_TMIO_CORE
->
->  config MMC_TMIO
->         tristate "Toshiba Mobile IO Controller (TMIO) MMC/SD function support"
-> -       depends on MFD_TMIO || MFD_ASIC3
-> +       depends on MFD_TMIO || MFD_ASIC3 || COMPILE_TEST
->         select MMC_TMIO_CORE
->         help
->           This provides support for the SD/MMC cell found in TC6393XB,
-> @@ -971,7 +973,7 @@ config MMC_REALTEK_USB
->
->  config MMC_SUNXI
->         tristate "Allwinner sunxi SD/MMC Host Controller support"
-> -       depends on ARCH_SUNXI
-> +       depends on ARCH_SUNXI || COMPILE_TEST
->         help
->           This selects support for the SD/MMC Host Controller on
->           Allwinner sunxi SoCs.
-> --
-> 2.17.1
->
+ arch/arm/boot/dts/hi3620.dtsi             | 30 +++++++++++++++--------
+ arch/arm/boot/dts/hip04.dtsi              |  4 +--
+ arch/arm/boot/dts/hisi-x5hd2.dtsi         |  5 ++--
+ arch/arm/boot/dts/nspire.dtsi             | 12 ++++++---
+ arch/arm64/boot/dts/hisilicon/hi3660.dtsi | 10 +++++---
+ arch/arm64/boot/dts/hisilicon/hi6220.dtsi |  5 ++--
+ arch/arm64/boot/dts/lg/lg1312.dtsi        | 10 ++++----
+ arch/arm64/boot/dts/lg/lg1313.dtsi        | 10 ++++----
+ 8 files changed, 52 insertions(+), 34 deletions(-)
+
+-- 
+2.17.1
+
