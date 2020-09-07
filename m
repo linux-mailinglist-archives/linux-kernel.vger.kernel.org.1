@@ -2,65 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD79725FFE1
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 18:41:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D6B225FFF0
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 18:41:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730896AbgIGQk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 12:40:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35228 "EHLO
+        id S1731033AbgIGQlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 12:41:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731034AbgIGQkl (ORCPT
+        with ESMTP id S1730945AbgIGQlD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 12:40:41 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81FCFC061574
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 09:40:41 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id j34so2863313pgi.7
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 09:40:41 -0700 (PDT)
+        Mon, 7 Sep 2020 12:41:03 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C59EC061573
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 09:41:03 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id z1so16468986wrt.3
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 09:41:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        d=arista.com; s=googlenew;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=6vHcZZanU3rAkmAGGDrYACgZASD38A91RFONlbR7rWU=;
-        b=0oIyF9lg3hdey6DU4s6xnkQ66QbEgpXYGczJDsxGnhsac/QQ9G9HKdqxZdB1I6kC7Q
-         P3M5JLFz2UFybQWxDr3EbonIO8i+RpFXmks9Uhd6vBgEfezjLB1oB/TJt9vL6VDSoul8
-         aLG8X9T3080fCaQY3QZ6OSnQDAgT012eyMXBQVSEXMJLtY7Ru5NDq8lJY5juAXx9mxTr
-         7noINJt/NsbaGkuhV5xLpiP86qSdQUhUwc+4UIu27uNdGCL5jQY/Mss9g89iU94lQeXQ
-         m7Sq06oW44KU5vQz67ZRGPAEqZuMFdb7yZRs+xHIEj+xWOGtBteYpvpkzi9lS4acIPqe
-         T2dg==
+        bh=6HzmAVHlN6inWuhNR/qi7K/O/N8qBgMh/gLHImP3oLI=;
+        b=Rhl6gyeocRUMRqArAntovDuFoSik3QlgtAtzFotLuXqcpSRMRkqtNsIv5Gcb9Fnw0e
+         N/C/m4yQ5ky/du94q5SXnkioiql9UDJriC3NLtyFKxqOjpCS6j6HsXlJU+KoORAAK054
+         5t4BCXfaclazE189avFgwVgxqYI0mokQOcsUErfyVofMTwu5z/kxWSugjP7H8Ic89MCN
+         Yr2LriQYIN1sgWopbfmKeM1rhyMgk6hHOwOVM/TW8uCwOLJ9wPgV3wuJDZDTt3lcpt+n
+         XqyjICws/7JQsA0tlT5s/wKwXFpkcMKeZETFvzg9ltUJnKqljlYh+9QbrE0QKEdgi9R0
+         WHrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=6vHcZZanU3rAkmAGGDrYACgZASD38A91RFONlbR7rWU=;
-        b=E5noqdVFPNl4yRnub3v/tn+A3t4syguAxTs6sCbek0wBeXkB1CPQICc7+xg5p1yRKe
-         tPPGq4+hBmAnMl7jzxbd+7zdQf0XPk2TVRoHuSGtdyPyaeFYN3/shHIYOIZXWeROlg4A
-         wgSvYS0GN7DCzCDaGthFy1LIc5ORrrSXnkCIAK9Cfsg2bDyALsI9JLpmiW2VVIkQWcNy
-         3lAzDyRHMPd9dflBcUHtDjARnNFnIBvQSQPDPHvLvL0gJbWt9E34E/v1Mcms6xLdnZiP
-         Y1vdQPHBYZcDO8ffZSf5ogYLPdqvDIge75PQACjRRmmm8TUqFretORK4meS5c232eyff
-         7B+g==
-X-Gm-Message-State: AOAM530+Sas+V8YO32CL4e3Qr4hwMrEB0Gh2QJgfnFzQZPnF9LW2Iag7
-        1OY6a2fdlbdB9CEaGv9PGP/vCgNK0dKJvvbC
-X-Google-Smtp-Source: ABdhPJw5h0jlKb7DuDqBJNrm9qpQKwJDEVMdJVF2jgaFvPBoYcM70TZzsoQzznZ3s0d3GUxC/OCzkg==
-X-Received: by 2002:a63:4c11:: with SMTP id z17mr17026781pga.152.1599496840635;
-        Mon, 07 Sep 2020 09:40:40 -0700 (PDT)
-Received: from [192.168.1.182] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id s23sm12706228pjr.7.2020.09.07.09.40.39
+        bh=6HzmAVHlN6inWuhNR/qi7K/O/N8qBgMh/gLHImP3oLI=;
+        b=RMSZeg9KP0BtBZmDfL592Nqb7eebBnIgGAOH6JJzxkfJBQ9Qfvx4ivWOwhwH3hSJ3K
+         XqGwESBu/cCYWe8p5oQOJ+/31/zm/q/SZ6jDGn9OTQgvb+q2KSnkAFDwxBoS4ldmLFeR
+         1HiqA0ikJnNhNyE0S7P9sq+OEHm2l444I/tQ3EBD02H/2lgUXcyPj3ChTCnc0RBWn+U4
+         6nd0UjWCdAjIxmYdTNkNRvZj8haf+avfgy0zPhwlNGh+YXjRBOLbQC3jxKlci1bEuao2
+         18nZL0zCa61qO0pKeVBa8aUq5TSNCWhj04irzDBXrFLG2w6wYOjtJMbRigeNxHbBHr3r
+         G/3w==
+X-Gm-Message-State: AOAM531RjBQXi0FQGwDaO9D38vy6dIY9/BgAfGDHpcE1e8nrORAE1VHr
+        HK3xc9h6pEKP16OrkGpLhBRMlw==
+X-Google-Smtp-Source: ABdhPJwwFuqsNpeKNr2Xcj0G7bwyHTIOXQSxqV9C4cdGzfqKQXz/HEY2/yNVuuYEC8tByhO7f/FTTA==
+X-Received: by 2002:adf:f082:: with SMTP id n2mr16879077wro.35.1599496861873;
+        Mon, 07 Sep 2020 09:41:01 -0700 (PDT)
+Received: from ?IPv6:2a02:8084:e84:2480:228:f8ff:fe6f:83a8? ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
+        by smtp.gmail.com with ESMTPSA id i1sm34957035wrc.49.2020.09.07.09.41.00
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Sep 2020 09:40:39 -0700 (PDT)
-Subject: Re: [PATCH] block: Remove unused blk_mq_sched_free_hctx_data()
-To:     Baolin Wang <baolin.wang@linux.alibaba.com>
-Cc:     ming.lei@redhat.com, hch@lst.de, baolin.wang7@gmail.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <0b736d64c0546c292ae8f1bcbe9d801c28e12583.1599467604.git.baolin.wang@linux.alibaba.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <7d40447c-f30d-a977-92d8-f82d1789a91a@kernel.dk>
-Date:   Mon, 7 Sep 2020 10:40:38 -0600
+        Mon, 07 Sep 2020 09:41:01 -0700 (PDT)
+Subject: Re: [PATCH v2 3/6] netlink/compat: Append NLMSG_DONE/extack to
+ frag_list
+To:     Johannes Berg <johannes@sipsolutions.net>,
+        linux-kernel@vger.kernel.org
+Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Florian Westphal <fw@strlen.de>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Stephen Suryaputra <ssuryaextr@gmail.com>,
+        netdev@vger.kernel.org
+References: <20200826014949.644441-1-dima@arista.com>
+ <20200826014949.644441-4-dima@arista.com>
+ <f579efc1375e46d9c2ff999ada1bcfed40ec2a8f.camel@sipsolutions.net>
+From:   Dmitry Safonov <dima@arista.com>
+Message-ID: <ff2e3bfb-f97b-6982-05d8-5448193225ab@arista.com>
+Date:   Mon, 7 Sep 2020 17:41:00 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <0b736d64c0546c292ae8f1bcbe9d801c28e12583.1599467604.git.baolin.wang@linux.alibaba.com>
+In-Reply-To: <f579efc1375e46d9c2ff999ada1bcfed40ec2a8f.camel@sipsolutions.net>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -69,13 +79,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/7/20 2:36 AM, Baolin Wang wrote:
-> Now we usually free the hctx->sched_data by e->type->ops.exit_hctx(),
-> and no users will use blk_mq_sched_free_hctx_data() function.
-> Remove it.
+On 8/26/20 8:19 AM, Johannes Berg wrote:
+> On Wed, 2020-08-26 at 02:49 +0100, Dmitry Safonov wrote:
+[..]
+>> +	nl_dump_check_consistent(cb, nlh);
+>> +	memcpy(nlmsg_data(nlh), &nlk->dump_done_errno,
+>> +			sizeof(nlk->dump_done_errno));
+> 
+> nit: indentation here looks odd.
+> 
+> Other than that, looks reasonable to me.
+> 
+> Reviewed-by: Johannes Berg <johannes@sipsolutions.net>
 
-Applied, thanks.
+Thank you for the review!
 
 -- 
-Jens Axboe
-
+          Dmitry
