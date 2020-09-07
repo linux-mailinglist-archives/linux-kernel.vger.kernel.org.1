@@ -2,105 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7D7925F3B4
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 09:14:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77A2125F3BB
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 09:16:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726980AbgIGHOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 03:14:43 -0400
-Received: from esa5.microchip.iphmx.com ([216.71.150.166]:20714 "EHLO
-        esa5.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726888AbgIGHOi (ORCPT
+        id S1726979AbgIGHQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 03:16:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60916 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726733AbgIGHQW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 03:14:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1599462878; x=1630998878;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=Y7oDb5/FODXV7HHi1MpRdKuK+6Tp0mioP3P/5OGw8h4=;
-  b=WBK3oy+T8FUxuvhF1v+iTxhvcyx3UX3Zw+v0FHF0UcEIr2Q3UaOVisBV
-   /vn7gG2HGGNDA1BWXlQegyjj7/cIYpJKsGMzZxWKLQBXUTDFvvzH2m1cs
-   M8FrJrVOmcUCbi9bLjp5gU3uIiMDPF6rCb6qH57C/Eno7MYzDLx0BIvmZ
-   8vz7I/sYxDRSXucHNs+HAKxD9qciawivNvj16GLUTmLnkMhIAjmojEybs
-   Khz4110hQ5lpDf0fNHOzvmvqt4yx3c9K7P2rPDc54pyKZfZaoHJnW9z0p
-   wo9r7cPz5tUN/tgPobJrqgzWKYcAS7W1vUIE7TQ43GgT9hjPOOovL7d1y
-   A==;
-IronPort-SDR: z6t7A0mi6Bafol82XW8IuxqhJcFsNuIBKJe6uAoXwZpxlioNj+mUj8R5+BWt7DZChg5yaRcOw/
- 2nQAEIUhDaNMnz60xaEs9g2DnmCW5mjY5qFQNkprga0f5VjfTC6zafIGgcMbYtyKH5jj83OiHs
- spFGRCVnVUrn7fFekQXCOsR9EwtKfeQBOlAcSZFbUcolpXUEtJgAGjHE6aeJrGM8mB0u947fDs
- QWlEgBYyT48QOJO+qSAevz+8w9fDuJy1Mp1IyMGJAtIfMFlLdd1CGZqtSBr2rFlJknRzgyLarR
- EnM=
-X-IronPort-AV: E=Sophos;i="5.76,401,1592895600"; 
-   d="scan'208";a="90045661"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 07 Sep 2020 00:14:26 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 7 Sep 2020 00:14:15 -0700
-Received: from [10.171.246.27] (10.10.115.15) by chn-vm-ex01.mchp-main.com
- (10.10.85.143) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Mon, 7 Sep 2020 00:14:13 -0700
-Subject: Re: [PATCH net] net: macb: fix for pause frame receive enable bit
-To:     Parshuram Thombare <pthombar@cadence.com>,
-        <alexandre.belloni@bootlin.com>
-CC:     <claudiu.beznea@microchip.com>, <antoine.tenart@bootlin.com>,
-        <davem@davemloft.net>, <netdev@vger.kernel.org>,
-        <f.fainelli@gmail.com>, <linux-kernel@vger.kernel.org>,
-        <mparab@cadence.com>
-References: <1599294093-30758-1-git-send-email-pthombar@cadence.com>
-From:   Nicolas Ferre <nicolas.ferre@microchip.com>
-Organization: microchip
-Message-ID: <6069131d-118e-0387-f312-25449a545c2a@microchip.com>
-Date:   Mon, 7 Sep 2020 09:14:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 7 Sep 2020 03:16:22 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6936C061573;
+        Mon,  7 Sep 2020 00:16:21 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id g4so14604214wrs.5;
+        Mon, 07 Sep 2020 00:16:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=FDYoXw6R73nLiL24Ngv3nbnKg8vUmYVwbLYzsiw9DXw=;
+        b=CeQdiFgFpsSlgQHs1+T/qdd3Z7lErXzyccZxs80VwvbS1U7yT3eGtFLuknqCpY8q4a
+         XFxR8jFxaNYhRxq/tc3S9atGDtLAVeX6imfi6YHBlqbeStxIm2ZUK+GK8Gwulej5WY8M
+         0xEbE9NxtYcDlqvNd9GSSZEV+Mx8fQWfVlojVa8ia9yI+toTkjpdwX0OxSOt6qRqZUxk
+         uH19ZQE9dyb/aV7l9CZHxSwGiPu9+waMSkHyQO9+s2YqnG32Jony384nAGXed8pj5AUe
+         ikh8UC0M1u00NrPbgvILnmBh9sl7L/XIhG1erbImGgAv8WjvGzhhgOLLUuuMwFQzJIr1
+         F7kg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FDYoXw6R73nLiL24Ngv3nbnKg8vUmYVwbLYzsiw9DXw=;
+        b=O/74I4ZtwkHL01DxOTnLwWY3gTD0+JHa/Mk2ZglWo6sFjEgBFyNYN6X/YtGoQtqAKn
+         1NwHQrjNBmEqa3l5+Yg7iKeoNW35eVfAoGqGeHAZDpvPSs2cT9l5Khjvad+INicvUIYO
+         2HpM0uPYghStchXEzu/eKYgpdvoeUYa2jfuJNsoW9nZPj9p6LnGbXaU/7bKHBkfox9Td
+         zYTYv66fUN3cXjOt5KatCRLxQoLCPcaaRmnzbpAkJIHMJfGAQp0gzTu2hIX79H95zWnO
+         AFfnSsLRKakX+Gnb/ppANXjHGpjob3NB/f2SAt7cNRJamzp4Kf89HMvf2fXe2ZFl4UMd
+         sYNg==
+X-Gm-Message-State: AOAM5310dAHBGuJbGg6Mycbw9Z6m5elk0yXjnmm/uu4CsK6735W5tW0m
+        Cf9PN7LIcxcgd0cRU9C95YY=
+X-Google-Smtp-Source: ABdhPJwjXANs2pFjJmj4HveZXsqwk+OFZKCtOAQyb5/uN3UUX5zI1oih8j7thCG9V0iTaXBx4rYLAw==
+X-Received: by 2002:adf:cf01:: with SMTP id o1mr20348930wrj.421.1599462980417;
+        Mon, 07 Sep 2020 00:16:20 -0700 (PDT)
+Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
+        by smtp.googlemail.com with ESMTPSA id k84sm25699323wmf.6.2020.09.07.00.16.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Sep 2020 00:16:19 -0700 (PDT)
+Date:   Mon, 7 Sep 2020 09:16:17 +0200
+From:   Corentin Labbe <clabbe.montjoie@gmail.com>
+To:     Joe Perches <joe@perches.com>, herbert@gondor.apana.org.au
+Cc:     Corentin Labbe <clabbe@baylibre.com>, davem@davemloft.net,
+        mripard@kernel.org, wens@csie.org,
+        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com
+Subject: Re: [linux-sunxi] Re: [PATCH v6 18/18] crypto: sun8i-ce: fix some
+ style issue
+Message-ID: <20200907071617.GA11894@Red>
+References: <1599217803-29755-1-git-send-email-clabbe@baylibre.com>
+ <1599217803-29755-19-git-send-email-clabbe@baylibre.com>
+ <906c2ffb0ef6b2d87d6aecdf60b61833ea79e4fb.camel@perches.com>
 MIME-Version: 1.0
-In-Reply-To: <1599294093-30758-1-git-send-email-pthombar@cadence.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <906c2ffb0ef6b2d87d6aecdf60b61833ea79e4fb.camel@perches.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/09/2020 at 10:21, Parshuram Thombare wrote:
-> PAE bit of NCFGR register, when set, pauses transmission
-> if a non-zero 802.3 classic pause frame is received.
+On Fri, Sep 04, 2020 at 12:37:19PM -0700, Joe Perches wrote:
+> On Fri, 2020-09-04 at 11:10 +0000, Corentin Labbe wrote:
+> > This patch fix a double empty line issue reported by checkpatch.
+> > While at it, since now the maximum line length is now 100, reorder some
+> > wrapped line.
+> []
+> > diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c
+> []
+> > @@ -164,12 +164,10 @@ static int sun8i_ce_cipher_prepare(struct crypto_engine *engine, void *async_req
+> >  				goto theend_key;
+> >  			}
+> >  			offset = areq->cryptlen - ivsize;
+> > -			scatterwalk_map_and_copy(rctx->backup_iv, areq->src,
+> > -						 offset, ivsize, 0);
+> > +			scatterwalk_map_and_copy(rctx->backup_iv, areq->src, offset, ivsize, 0);
+> >  		}
+> >  		memcpy(rctx->bounce_iv, areq->iv, ivsize);
+> > -		addr_iv = dma_map_single(ce->dev, rctx->bounce_iv, rctx->ivlen,
+> > -					 DMA_TO_DEVICE);
+> > +		addr_iv = dma_map_single(ce->dev, rctx->bounce_iv, rctx->ivlen, DMA_TO_DEVICE);
 > 
-> Fixes: 7897b071ac3b ("net: macb: convert to phylink")
-> Signed-off-by: Parshuram Thombare <pthombar@cadence.com>
-
-For the record:
-Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
-
-Thanks Parshuram for having found this issue.
-Best regards,
-   Nicolas
-
-> ---
->   drivers/net/ethernet/cadence/macb_main.c |    3 +--
->   1 files changed, 1 insertions(+), 2 deletions(-)
+> coding-style.rst:
 > 
-> diff --git a/drivers/net/ethernet/cadence/macb_main.c b/drivers/net/ethernet/cadence/macb_main.c
-> index 6761f40..9179f7b 100644
-> --- a/drivers/net/ethernet/cadence/macb_main.c
-> +++ b/drivers/net/ethernet/cadence/macb_main.c
-> @@ -647,8 +647,7 @@ static void macb_mac_link_up(struct phylink_config *config,
->                                  ctrl |= GEM_BIT(GBE);
->                  }
+>    Statements longer than 80 columns should be broken into sensible chunks,
+>    unless exceeding 80 columns significantly increases readability and does
+>    not hide information.
 > 
-> -               /* We do not support MLO_PAUSE_RX yet */
-> -               if (tx_pause)
-> +               if (rx_pause)
->                          ctrl |= MACB_BIT(PAE);
-> 
->                  macb_set_tx_clk(bp->tx_clk, speed, ndev);
-> --
-> 1.7.1
+> Do these longer lines make the code significantly more readable?
+> I don't think they do.
 > 
 
+Oh I saw the increase in checkpatch.pl but didnt saw that it was still 80 in coding-style.rst.
+Anyway as maintainer of this driver, I prefer unwrapped lines.
 
--- 
-Nicolas Ferre
+I let Herbert to choose to apply the serie without this last patch or not.
