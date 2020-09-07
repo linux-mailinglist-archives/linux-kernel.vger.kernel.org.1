@@ -2,143 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76E6526014B
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:03:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08AC026015B
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:04:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731019AbgIGRDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 13:03:16 -0400
-Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:13807
-        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730783AbgIGRDK (ORCPT
+        id S1731155AbgIGRDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 13:03:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729868AbgIGRDv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 13:03:10 -0400
-X-IronPort-AV: E=Sophos;i="5.76,359,1592863200"; 
-   d="scan'208";a="358316533"
-Received: from abo-173-121-68.mrs.modulonet.fr (HELO hadrien) ([85.68.121.173])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 07 Sep 2020 19:03:05 +0200
-Date:   Mon, 7 Sep 2020 19:03:05 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Markus Elfring <Markus.Elfring@web.de>
-cc:     Coccinelle <cocci@systeme.lip6.fr>,
-        Dejin Zheng <zhengdejin5@gmail.com>,
-        Gilles Muller <Gilles.Muller@lip6.fr>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nicolas Palix <nicolas.palix@imag.fr>,
-        kernel-janitors@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: =?UTF-8?Q?Re=3A_=5BCocci=5D_=5BPATCH_v2=5D_Coccinelle=3A_api=3A?=
- =?UTF-8?Q?_Add_SmPL_script_=E2=80=9Cuse=5Fdevm=5Fplatform=5Fget?=
- =?UTF-8?Q?=5Fand=5Fioremap=5Fresource=2Ecocci=E2=80=9D?=
-In-Reply-To: <4b505afc-ae48-d8eb-f4e1-8e3f7192f73d@web.de>
-Message-ID: <alpine.DEB.2.22.394.2009071900450.2476@hadrien>
-References: <25b804fd-0d04-475d-f614-26c03c9fd544@web.de> <5f9fdd59-4b0b-1cb5-c3a2-92efc5bb3841@web.de> <4b505afc-ae48-d8eb-f4e1-8e3f7192f73d@web.de>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Mon, 7 Sep 2020 13:03:51 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7566BC061573;
+        Mon,  7 Sep 2020 10:03:51 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id 67so8253472pgd.12;
+        Mon, 07 Sep 2020 10:03:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cBoeCpJIsgMagxrNvwqBCO9DZhUD6cpLapF30icLvGY=;
+        b=rIDLXekWW5zsnDsZr9rwwnGh7AcQsXpJmtxOGLnaYEaXJ/7Sz6Ets68fQu6vR6NDRT
+         bwJ03F4A8BzzUQbMMGeTQxqkNxfwrAgutSh4utFVl1D1DE9A/ODV+mnBppSqgNlzb+FR
+         XZ8eLkzwbRQ6piUSbAQELVuV5vVJ43hENOahvDVxXil873iSxkXI0UgDW4XNZEF2SHo8
+         LTC2bYDGLqTqPy1+T1ebpGf4nMO1sUv2+QHOBzQV+PtBW6eOBk4FMgGOm1sFnlmbKhvr
+         hwD0P3TADu3J7n7WZ4MP+3cmlYiqrgsUaiFdWTmDuiIU8Bl9dAuJTGcfZi/0u7J8FYXE
+         F3EA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cBoeCpJIsgMagxrNvwqBCO9DZhUD6cpLapF30icLvGY=;
+        b=JTuDFue2MZ00VWM2ZRzhTQ8BGFAaE0gjJ4rWP3v/ojekCS2SXzfQYRdTrLe+LAO5h2
+         +0Dnd66yiE4PEV+pxfXQrh8+agbeU1KmNDNDno3p6+SCleYTFVA7O40MoGzEZkLXE1kN
+         ygQfTQg760OfwOh/boT9xGIi0RO699huB1fNrygiDmctqRO0z7TuDfUroeEss3xrFN05
+         efHzbO4yXEQhMTc4om08zhPaC16SIQyLZVXMIRXPWFaQ6pa1tAqRyWgS17/Bd3j+BMNa
+         2IcpP2jNxUWDKyENyQ/nOrl0Eo89hGUwUnIJTaFVEWSXVt5ZriMuoEjqzjZIXDN4X+8E
+         LR3Q==
+X-Gm-Message-State: AOAM533mA6d+i+kanquUvr4qo42amfqi6pmmN7LpsGYm/YLxUg4j3uQA
+        2MeGOqDq+RzZ15RKqjjl8yw=
+X-Google-Smtp-Source: ABdhPJxYfflcUtF+3SNgySp6Wk6HAI2DtYQFui4BIRaT7wEocOLQuuQWImDHVlvC2fujq7/dzSgg9Q==
+X-Received: by 2002:a63:6e01:: with SMTP id j1mr17237015pgc.147.1599498230690;
+        Mon, 07 Sep 2020 10:03:50 -0700 (PDT)
+Received: from localhost (c-73-25-156-94.hsd1.or.comcast.net. [73.25.156.94])
+        by smtp.gmail.com with ESMTPSA id j18sm13027030pgm.30.2020.09.07.10.03.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Sep 2020 10:03:49 -0700 (PDT)
+From:   Rob Clark <robdclark@gmail.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        Rob Clark <robdclark@chromium.org>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Drew Davenport <ddavenport@chromium.org>,
+        Kalyan Thota <kalyan_t@codeaurora.org>,
+        Hongbo Yao <yaohongbo@huawei.com>, Bernard <bernard@vivo.com>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH 1/2] drm/msm/dpu: move vblank events to complete_commit()
+Date:   Mon,  7 Sep 2020 10:04:47 -0700
+Message-Id: <20200907170450.370122-1-robdclark@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Rob Clark <robdclark@chromium.org>
 
+We could get a vblank event racing with the current atomic commit,
+resulting in sending the pageflip event to userspace early, causing
+tearing.  On the other hand, complete_commit() ensures that the
+pending flush is complete.
 
-On Mon, 7 Sep 2020, Markus Elfring wrote:
+Signed-off-by: Rob Clark <robdclark@chromium.org>
+---
+ drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> From: Markus Elfring <elfring@users.sourceforge.net>
-> Date: Mon, 7 Sep 2020 18:38:04 +0200
->
-> Another wrapper function is available since the commit 890cc39a879906b63912482dfc41944579df2dc6
-> ("drivers: provide devm_platform_get_and_ioremap_resource()").
-> Provide safe design options for the adjustment of affected source code
-> by the means of the semantic patch language (Coccinelle software).
->
-> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-> ---
->
-> v2:
-> Julia Lawall requested to omit case distinctions (disjunctions) from
-> the first SmPL script.
-> The usage of different expression metavariables for the first parameter
-> of function calls was too questionable for the proposed source
-> code transformation.
->
->
->  ...vm_platform_get_and_ioremap_resource.cocci | 48 +++++++++++++++++++
->  1 file changed, 48 insertions(+)
->  create mode 100644 scripts/coccinelle/api/use_devm_platform_get_and_ioremap_resource.cocci
->
-> diff --git a/scripts/coccinelle/api/use_devm_platform_get_and_ioremap_resource.cocci b/scripts/coccinelle/api/use_devm_platform_get_and_ioremap_resource.cocci
-> new file mode 100644
-> index 000000000000..319583716ac8
-> --- /dev/null
-> +++ b/scripts/coccinelle/api/use_devm_platform_get_and_ioremap_resource.cocci
-> @@ -0,0 +1,48 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/// Simplify a function call combination by using a known wrapper function.
-> +//
-> +// Keywords: wrapper function conversion ioremap resources
-> +// Confidence: High
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
+index c2729f71e2fa..89c0245b5de5 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
+@@ -297,7 +297,6 @@ void dpu_crtc_vblank_callback(struct drm_crtc *crtc)
+ 		dpu_crtc->vblank_cb_time = ktime_get();
+ 	else
+ 		dpu_crtc->vblank_cb_count++;
+-	_dpu_crtc_complete_flip(crtc);
+ 	drm_crtc_handle_vblank(crtc);
+ 	trace_dpu_crtc_vblank_cb(DRMID(crtc));
+ }
+@@ -402,6 +401,7 @@ static void dpu_crtc_frame_event_cb(void *data, u32 event)
+ void dpu_crtc_complete_commit(struct drm_crtc *crtc)
+ {
+ 	trace_dpu_crtc_complete_commit(DRMID(crtc));
++	_dpu_crtc_complete_flip(crtc);
+ }
+ 
+ static void _dpu_crtc_setup_lm_bounds(struct drm_crtc *crtc,
+-- 
+2.26.2
 
-Shouldn't there be some options?  --no-includes and perhaps
---include-headers would seem reasonable.
-
-Please also remove all of the rule names except for "or" which is
-necessary.  The rest just add clutter and make it harder to find the
-useful information, which is the depends on.  Rules only need names if
-some other rule inherits their metavariables.
-
-julia
-
-> +
-> +virtual context, patch, report, org
-> +
-> +@display depends on context@
-> +expression base, device, index, resource;
-> +@@
-> +*resource = platform_get_resource(device, IORESOURCE_MEM, index);
-> + base =
-> +*       devm_ioremap_resource
-> +                             (&device->dev, resource);
-> +
-> +@replacement depends on patch@
-> +expression base, device, index, resource;
-> +@@
-> +-resource = platform_get_resource(device, IORESOURCE_MEM, index);
-> + base =
-> +-       devm_ioremap_resource
-> ++       devm_platform_get_and_ioremap_resource
-> +                             (
-> +-                             &
-> +                               device
-> +-                                    ->dev
-> +                              ,
-> +-                             resource
-> ++                             index, &resource
-> +                             );
-> +
-> +@or depends on org || report@
-> +expression base, device, index, resource;
-> +position p;
-> +@@
-> + resource = platform_get_resource(device, IORESOURCE_MEM, index);
-> + base = devm_ioremap_resource@p(&device->dev, resource);
-> +
-> +@script:python to_do depends on org@
-> +p << or.p;
-> +@@
-> +coccilib.org.print_todo(p[0], "WARNING: opportunity for devm_platform_get_and_ioremap_resource()")
-> +
-> +@script:python reporting depends on report@
-> +p << or.p;
-> +@@
-> +coccilib.report.print_report(p[0], "WARNING: opportunity for devm_platform_get_and_ioremap_resource()")
-> --
-> 2.28.0
->
-> _______________________________________________
-> Cocci mailing list
-> Cocci@systeme.lip6.fr
-> https://systeme.lip6.fr/mailman/listinfo/cocci
->
