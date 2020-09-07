@@ -2,57 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 222F925F4EE
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 10:21:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1670725F4F6
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 10:24:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728072AbgIGIVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 04:21:43 -0400
-Received: from verein.lst.de ([213.95.11.211]:48169 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728060AbgIGIVm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 04:21:42 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 61A7168BEB; Mon,  7 Sep 2020 10:21:39 +0200 (CEST)
-Date:   Mon, 7 Sep 2020 10:21:39 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Christoph Hellwig <hch@lst.de>, arnd@arndb.de,
-        linux-kernel@vger.kernel.org,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: Re: [PATCH v2] /dev/zero: also implement ->read
-Message-ID: <20200907082139.GA23031@lst.de>
-References: <20200907075143.2023440-1-hch@lst.de> <20200907082114.GA714195@kroah.com>
+        id S1727921AbgIGIYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 04:24:34 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:37764 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726997AbgIGIYc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 04:24:32 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id A93C9ACA92DB2CE89C2A;
+        Mon,  7 Sep 2020 16:24:29 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 7 Sep 2020 16:24:23 +0800
+From:   Yang Shen <shenyang39@huawei.com>
+To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
+CC:     <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
+        <xuzaibo@huawei.com>, <wangzhou1@hisilicon.com>
+Subject: [PATCH v2 00/10] crypto: hisilicon/zip - misc clean up
+Date:   Mon, 7 Sep 2020 16:21:52 +0800
+Message-ID: <1599466922-10323-1-git-send-email-shenyang39@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200907082114.GA714195@kroah.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 07, 2020 at 10:21:14AM +0200, Greg KH wrote:
-> On Mon, Sep 07, 2020 at 09:51:43AM +0200, Christoph Hellwig wrote:
-> > Christophe reported a major speedup due to avoiding the iov_iter
-> > overhead, so just add this trivial function.
-> > 
-> > Suggested-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> > Signed-off-by: Christoph Hellwig <hch@lst.de>
-> > Tested-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> > ---
-> > 
-> > Changes since v1:
-> >  - fix the Suggested-by: tag
-> >  - report the actually read bytes in case of a partial clear_user
-> >  - remove an impossible to hit conditional
-> > 
-> >  drivers/char/mem.c | 28 ++++++++++++++++++++++++++++
-> >  1 file changed, 28 insertions(+)
-> 
-> I already merged your v1 into my tree, do you want me to revert that and
-> then add this, or can you send me the diff to apply instead?  I can't
-> rebase my public trees.
+This patchset make some clean up:
+patch 1:remove useless parameters
+patch 4:replace 'sprintf' with 'scnprintf'
+patch 7:fix static check warning
+and the rest patch fix some coding style
 
-Sure, I can send an incremental one.  I vaguely remembered you as one
-of the quilt holdouts.
+v2:
+- remove the return check of 'scnprintf' in PATCH 4
+
+Shukun Tan (1):
+  crypto: hisilicon/zip - modify debugfs interface parameters
+
+Yang Shen (9):
+  crypto: hisilicon/zip - remove some useless parameters
+  crypto: hisilicon/zip - unify naming style for functions and macros
+  crypto: hisilicon/zip - replace 'sprintf' with 'scnprintf'
+  crypto: hisilicon/zip - use a enum parameter instead of some macros
+  crypto: hisilicon/zip - add print for error branch
+  crypto: hisilicon/zip - fix static check warning
+  crypto: hisilicon/zip - move some private macros from 'zip.h' to
+    'zip_crypto.c'
+  crypto: hisilicon/zip - supplement some comments
+  crypto: hisilicon/zip - fix some coding styles
+
+ drivers/crypto/hisilicon/zip/zip.h        |  15 ----
+ drivers/crypto/hisilicon/zip/zip_crypto.c | 112 ++++++++++++++++++--------
+ drivers/crypto/hisilicon/zip/zip_main.c   | 126 ++++++++++++++----------------
+ 3 files changed, 135 insertions(+), 118 deletions(-)
+
+--
+2.7.4
+
