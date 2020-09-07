@@ -2,80 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E185260552
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 21:58:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4A8D26055A
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 22:03:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729189AbgIGT6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 15:58:41 -0400
-Received: from smtprelay0078.hostedemail.com ([216.40.44.78]:42078 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728834AbgIGT6l (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 15:58:41 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 8A7DC18029125;
-        Mon,  7 Sep 2020 19:58:40 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:541:800:960:966:973:988:989:1260:1311:1314:1345:1359:1515:1534:1541:1711:1730:1747:1777:1792:2196:2199:2393:2559:2562:3138:3139:3140:3141:3142:3352:3865:4321:4385:4605:5007:6261:10004:11026:11658:11914:12043:12048:12296:12297:12438:12555:12895:12986:13069:13311:13357:13894:14181:14384:14394:14721:21080:21627:21966:21990:30054,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: grain32_5a0cd44270ce
-X-Filterd-Recvd-Size: 2196
-Received: from joe-laptop.perches.com (unknown [172.58.35.143])
-        (Authenticated sender: joe@perches.com)
-        by omf17.hostedemail.com (Postfix) with ESMTPA;
-        Mon,  7 Sep 2020 19:58:38 +0000 (UTC)
-From:   Joe Perches <joe@perches.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Luis Chamberlain <mcgrof@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH 5/4] drivers core: Convert class uses of sprintf to sysfs_emit
-Date:   Mon,  7 Sep 2020 12:58:34 -0700
-Message-Id: <16656a69b04161d30077456e62d578e1b2392460.1599508517.git.joe@perches.com>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <cover.1599501047.git.joe@perches.com>
-References: <cover.1599501047.git.joe@perches.com>
+        id S1728964AbgIGUDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 16:03:45 -0400
+Received: from elvis.franken.de ([193.175.24.41]:58700 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726458AbgIGUDp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 16:03:45 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1kFNMc-00073E-00; Mon, 07 Sep 2020 22:03:42 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 6044CC0F58; Mon,  7 Sep 2020 21:53:37 +0200 (CEST)
+Date:   Mon, 7 Sep 2020 21:53:37 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     "Maciej W . Rozycki" <macro@linux-mips.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Zhou Yanjie <zhouyanjie@wanyeetech.com>, od@zcrc.me,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org
+Subject: Re: [PATCH v3 10/15] MIPS: generic: Increase NR_IRQS to 256
+Message-ID: <20200907195337.GA17854@alpha.franken.de>
+References: <20200906192935.107086-1-paul@crapouillou.net>
+ <20200906192935.107086-11-paul@crapouillou.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200906192935.107086-11-paul@crapouillou.net>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the sysfs_emit API.
+On Sun, Sep 06, 2020 at 09:29:30PM +0200, Paul Cercueil wrote:
+> 128 IRQs is not enough to support Ingenic SoCs.
+> 
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> ---
+> 
+> Notes:
+>     v2-v3: No change
+> 
+>  arch/mips/include/asm/mach-generic/irq.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/mips/include/asm/mach-generic/irq.h b/arch/mips/include/asm/mach-generic/irq.h
+> index 72ac2c202c55..079889ced4f3 100644
+> --- a/arch/mips/include/asm/mach-generic/irq.h
+> +++ b/arch/mips/include/asm/mach-generic/irq.h
+> @@ -9,7 +9,7 @@
+>  #define __ASM_MACH_GENERIC_IRQ_H
+>  
+>  #ifndef NR_IRQS
+> -#define NR_IRQS 128
+> +#define NR_IRQS 256
+>  #endif
 
-Signed-off-by: Joe Perches <joe@perches.com>
----
- drivers/base/devcoredump.c              | 2 +-
- drivers/base/firmware_loader/fallback.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+this will increase NR_IRQS for all platforms, which don't override
+NR_IRQS in their mach-XXX directory. Size of the data segment increases
+by 18464 bytes for a 32bit kernel and 33792 for a 64bit kernel. I would
+take this change as this allows to remove a few more mach-*/irq.h files.
+And if a platform needs save every byte it finds, we can add a irq.h file
+for that. An even nicer way would be to make NR_IRQS selectable via Kconfig.
+Something like "select NR_IRQS 51" would be quite handy for that...
 
-diff --git a/drivers/base/devcoredump.c b/drivers/base/devcoredump.c
-index e42d0b514384..9243468e2c99 100644
---- a/drivers/base/devcoredump.c
-+++ b/drivers/base/devcoredump.c
-@@ -123,7 +123,7 @@ static int devcd_free(struct device *dev, void *data)
- static ssize_t disabled_show(struct class *class, struct class_attribute *attr,
- 			     char *buf)
- {
--	return sprintf(buf, "%d\n", devcd_disabled);
-+	return sysfs_emit(buf, "%d\n", devcd_disabled);
- }
- 
- static ssize_t disabled_store(struct class *class, struct class_attribute *attr,
-diff --git a/drivers/base/firmware_loader/fallback.c b/drivers/base/firmware_loader/fallback.c
-index 7e9598a1577a..d60e6d8c967c 100644
---- a/drivers/base/firmware_loader/fallback.c
-+++ b/drivers/base/firmware_loader/fallback.c
-@@ -124,7 +124,7 @@ void kill_pending_fw_fallback_reqs(bool only_kill_custom)
- static ssize_t timeout_show(struct class *class, struct class_attribute *attr,
- 			    char *buf)
- {
--	return sprintf(buf, "%d\n", __firmware_loading_timeout());
-+	return sysfs_emit(buf, "%d\n", __firmware_loading_timeout());
- }
- 
- /**
+Thomas.
+
 -- 
-2.26.0
-
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
