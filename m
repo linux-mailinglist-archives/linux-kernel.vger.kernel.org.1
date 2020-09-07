@@ -2,105 +2,295 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB97E25F857
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 12:32:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A124125F866
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 12:32:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728941AbgIGKb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 06:31:59 -0400
-Received: from mail-eopbgr770058.outbound.protection.outlook.com ([40.107.77.58]:18596
-        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728672AbgIGKQO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 06:16:14 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jXWiNeCl8b527bbRTVrZVoJmfl2Nm4H5SW+VhhHCTqLjvBkXEQV+j4g9pohq/SW04h1NqA1zt65+kDDKFMFRa4/t2Gs4ebzM9/fiw9T6Fb8sTxwllFutjqSs+VH3dm82/YnhRgfnqVJg4LRBu068zHa0aXbUgXO6ruzx9d7JTNeZsm8TvogZhFU843M58xYwXwL2bZHvwv41M1Uc4V3H02lvSz07xCPqZHIWHWlhPOkEdeN9NrgqWoE4OG7OJty6Z5WqZXxxdMriGS6eGrii/DOcAzFMAvjzguCZPjE2p+/TRpEdEjOg/cFBatw9X8BDAOzkL/31rY2ZFqTmO7LuqA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Zq8ya5wHIwkpQIly5Lrv5/t7dlnJkuTFSda/nJRjc2k=;
- b=a7CN1JggqI0b7zKKuum7cf3nJyifn+4wJ44B9b9kXqD/U0n2qhSsXhpDAEjm6WDFrW0aNX1G/UzPMHZ5MtwEtw5mo+7Ei+nHP7kQaDc2Cbjt2ei/0BAkeLjkZs+76HLqVYGbqcpGEYft7mpTCjb4RmqLRBd3KmGgKXwAMoOVLqkyymGt/ECiRNS4J5M8YRf6rcFMKhtDluc1Z2REqaXyq5tOocn2qARijCgOZ6OYHW/xuWXfO6l26ygkO01WFsHUXysayark2JRdRPGr8++TBDrTbseecg3q6EK+2ZsJ75SjWN8NUuGeK1laIeKD1mLDn9GLgUZQ3ZTsJ7Fx9hpYMA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=silabs.com; dmarc=pass action=none header.from=silabs.com;
- dkim=pass header.d=silabs.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=silabs.onmicrosoft.com; s=selector2-silabs-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Zq8ya5wHIwkpQIly5Lrv5/t7dlnJkuTFSda/nJRjc2k=;
- b=BIX352u7++eExV5V7QSkWVEeA5qKKlpiIm4TOC7kadHtAfsC2P9z7mSeghZ7MM4+79DcZj1rplDKMT/L8AYlK7Ml3VZ2Jn7YvtxHkOzd1ovoYP85+ggKKc9NLMFfVw//ITDWUli+ZSK18JXWn18YKqXx9lJm7yHoFfGl/6wMxWI=
-Authentication-Results: driverdev.osuosl.org; dkim=none (message not signed)
- header.d=none;driverdev.osuosl.org; dmarc=none action=none
- header.from=silabs.com;
-Received: from SN6PR11MB2718.namprd11.prod.outlook.com (2603:10b6:805:63::18)
- by SN6PR11MB2606.namprd11.prod.outlook.com (2603:10b6:805:55::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.17; Mon, 7 Sep
- 2020 10:15:59 +0000
-Received: from SN6PR11MB2718.namprd11.prod.outlook.com
- ([fe80::85c9:1aa9:aeab:3fa6]) by SN6PR11MB2718.namprd11.prod.outlook.com
- ([fe80::85c9:1aa9:aeab:3fa6%4]) with mapi id 15.20.3348.019; Mon, 7 Sep 2020
- 10:15:59 +0000
-From:   Jerome Pouiller <Jerome.Pouiller@silabs.com>
-To:     devel@driverdev.osuosl.org, linux-wireless@vger.kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        =?UTF-8?q?J=C3=A9r=C3=B4me=20Pouiller?= 
-        <jerome.pouiller@silabs.com>
-Subject: [PATCH 09/31] staging: wfx: drop useless union hif_commands_ids
-Date:   Mon,  7 Sep 2020 12:14:59 +0200
-Message-Id: <20200907101521.66082-10-Jerome.Pouiller@silabs.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200907101521.66082-1-Jerome.Pouiller@silabs.com>
-References: <20200907101521.66082-1-Jerome.Pouiller@silabs.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-X-ClientProxiedBy: PR0P264CA0109.FRAP264.PROD.OUTLOOK.COM
- (2603:10a6:100:19::25) To SN6PR11MB2718.namprd11.prod.outlook.com
- (2603:10b6:805:63::18)
+        id S1728982AbgIGKcq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 06:32:46 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:59720 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728589AbgIGKQM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 06:16:12 -0400
+Received: from ip5f5af70b.dynamic.kabel-deutschland.de ([95.90.247.11] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1kFEC0-0005Vh-Sr; Mon, 07 Sep 2020 10:16:09 +0000
+Date:   Mon, 7 Sep 2020 12:16:08 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc:     luto@kernel.org, tglx@linutronix.de, keescook@chromium.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, willy@infradead.org,
+        linux-kselftest@vger.kernel.org, shuah@kernel.org,
+        kernel@collabora.com
+Subject: Re: [PATCH v6 1/9] kernel: Support TIF_SYSCALL_INTERCEPT flag
+Message-ID: <20200907101608.ldfhhvcy3vmrkg6b@wittgenstein>
+References: <20200904203147.2908430-1-krisman@collabora.com>
+ <20200904203147.2908430-2-krisman@collabora.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from pc-42.silabs.com (37.71.187.125) by PR0P264CA0109.FRAP264.PROD.OUTLOOK.COM (2603:10a6:100:19::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.16 via Frontend Transport; Mon, 7 Sep 2020 10:15:57 +0000
-X-Mailer: git-send-email 2.28.0
-X-Originating-IP: [37.71.187.125]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 78e265d2-dea5-48a6-8de4-08d8531703fa
-X-MS-TrafficTypeDiagnostic: SN6PR11MB2606:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SN6PR11MB26063D78E4AFC1E655CC7B6A93280@SN6PR11MB2606.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:296;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: AzTHSIAnnXAgrUiGu3x7XRgThcWhPgXXmd0bqNT6pza+v7+y7Nxf+7q2uEp9/fF94SriXbQpxztqW5amoKcTYokc5mKxQzh4k6lmrErJ3vCN7bcEDncNVmU9AWym2chTRq/28l5iMi3jJBkBaqNAoph0c12lsYwni51OrTJDuE5hFAt6xUvKbk0oRz7NhS49z6PetbcM9puEGQgf29OaaYlvjm04X4vB/Xv5jEUPx+6QHTe6SHlSwTqa/PIZJmp+ExhDtkY5al3sKbSOFUDqjUiYsaofb1xaFC2cpBpLLSrCTNIOdwPj+KjJxN4C+3l1orNJr7mFGeR34PPQt1OOFw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR11MB2718.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(376002)(346002)(366004)(136003)(39850400004)(4744005)(66946007)(4326008)(5660300002)(2616005)(66476007)(316002)(956004)(478600001)(54906003)(52116002)(2906002)(66556008)(1076003)(36756003)(8676002)(86362001)(6486002)(8936002)(7696005)(66574015)(83380400001)(26005)(107886003)(16526019)(186003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: 6kbuX+dtOlBWfusOZKN77qkZT77x9Lfvui/el+GB3EFdyHIjN/DdKqd/ngGyK1S5EwUOB1Kp4to+hzQGz2KYPZufnBojUmznpcjrNG+Eh7xvU3EjSH0er15lafkyeSkHjDVxzx22qRUvfzhiDS6ZxtkPtn+LhFqjSjfoOg4xxdLasImTzAWo5B2giTT6SLCyoegJfUO7OOmRgAJ3n2siPmDkpAOdlUHnsEn03NgRJpBt2ExOjc8pXbaQsLS8H8mJCYp149Y2RIbCjQHP6YHCTAN+kILtxEuairkkr5xe0FAp11Kq9TqLg5u5a+fg4S0xuNzfuml6qZixUuWaGE2HFMeYYhz4g4hNvo4lECJJO3Baqw6zImVwf8urNE4kC987Ug6LiBwJ0QEoLy00ONwpxK8EhNT3p4Y8PYtxe/I4zD2VB0p5W6RTKm/oWqd4WqixRdpIHlyOwgMcEpApsCVgsMLXYsEp/4QFWF2oYdSc5zaxFrBarIEXgQ2HUD1mf6bD6Hzzm+fMaGi26RG9q8404Q5JqKHPTCbYHrln/nIRVtRL90C5Hvwbiv7v/O/Zq+Er2Q3pS5GJILF3J/JVuPET1Ycw3clJruLONdozwar+ynJGcYrCR0PEtNCsZ/W1mVn6337HKiYjieEi6vWsTBzFOA==
-X-OriginatorOrg: silabs.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 78e265d2-dea5-48a6-8de4-08d8531703fa
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR11MB2718.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Sep 2020 10:15:59.2118
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 54dbd822-5231-4b20-944d-6f4abcd541fb
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: BO8JKs7JaibsZJlEtfRavbQGCwiMPf3F9bveIVAWF6S9SBJ70/iqqnGlq3teUre0nvVcVGFf2CLeJlP93jhrqg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR11MB2606
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200904203147.2908430-2-krisman@collabora.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogSsOpcsO0bWUgUG91aWxsZXIgPGplcm9tZS5wb3VpbGxlckBzaWxhYnMuY29tPgoKVW5p
-b24gaGlmX2NvbW1hbmRzX2lkcyBpcyB1bnVzZWQuCgpTaWduZWQtb2ZmLWJ5OiBKw6lyw7RtZSBQ
-b3VpbGxlciA8amVyb21lLnBvdWlsbGVyQHNpbGFicy5jb20+Ci0tLQogZHJpdmVycy9zdGFnaW5n
-L3dmeC9oaWZfYXBpX2NtZC5oIHwgNiAtLS0tLS0KIDEgZmlsZSBjaGFuZ2VkLCA2IGRlbGV0aW9u
-cygtKQoKZGlmZiAtLWdpdCBhL2RyaXZlcnMvc3RhZ2luZy93ZngvaGlmX2FwaV9jbWQuaCBiL2Ry
-aXZlcnMvc3RhZ2luZy93ZngvaGlmX2FwaV9jbWQuaAppbmRleCA3NWU4YzJhN2ZkZjkuLmMxMzJk
-OGU0M2I1MCAxMDA2NDQKLS0tIGEvZHJpdmVycy9zdGFnaW5nL3dmeC9oaWZfYXBpX2NtZC5oCisr
-KyBiL2RyaXZlcnMvc3RhZ2luZy93ZngvaGlmX2FwaV9jbWQuaApAQCAtNjAsMTIgKzYwLDYgQEAg
-ZW51bSBoaWZfaW5kaWNhdGlvbnNfaWRzIHsKIAlISUZfSU5EX0lEX0VWRU5UICAgICAgICAgICAg
-ICAgID0gMHg4NQogfTsKIAotdW5pb24gaGlmX2NvbW1hbmRzX2lkcyB7Ci0JZW51bSBoaWZfcmVx
-dWVzdHNfaWRzIHJlcXVlc3Q7Ci0JZW51bSBoaWZfY29uZmlybWF0aW9uc19pZHMgY29uZmlybWF0
-aW9uOwotCWVudW0gaGlmX2luZGljYXRpb25zX2lkcyBpbmRpY2F0aW9uOwotfTsKLQogc3RydWN0
-IGhpZl9yZXNldF9mbGFncyB7CiAJdTggICAgIHJlc2V0X3N0YXQ6MTsKIAl1OCAgICAgcmVzZXRf
-YWxsX2ludDoxOwotLSAKMi4yOC4wCgo=
+On Fri, Sep 04, 2020 at 04:31:39PM -0400, Gabriel Krisman Bertazi wrote:
+> Convert TIF_SECCOMP into a generic TI flag for any syscall interception
+> work being done by the kernel.  The actual type of work is exposed by a
+> new flag field outside of thread_info.  This ensures that the
+> syscall_intercept field is only accessed if struct seccomp has to be
+> accessed already, such that it doesn't incur in a much higher cost to
+> the seccomp path.
+> 
+> In order to avoid modifying every architecture at once, this patch has a
+> transition mechanism, such that architectures that define TIF_SECCOMP
+> continue to work by ignoring the syscall_intercept flag, as long as they
+> don't support other syscall interception mechanisms like the future
+> syscall user dispatch.  When migrating TIF_SECCOMP to
+> TIF_SYSCALL_INTERCEPT, they should adopt the semantics of checking the
+> syscall_intercept flag, like it is done in the common entry syscall
+> code, or even better, migrate to the common syscall entry code.
+> 
+> This was tested by running the selftests for seccomp.  No regressions
+> were observed, and all tests passed (with and without this patch).
+> 
+> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+> ---
+>  include/linux/sched.h             |  6 ++-
+>  include/linux/seccomp.h           | 20 ++++++++-
+>  include/linux/syscall_intercept.h | 70 +++++++++++++++++++++++++++++++
+>  kernel/fork.c                     | 10 ++++-
+>  kernel/seccomp.c                  |  7 ++--
+>  5 files changed, 106 insertions(+), 7 deletions(-)
+>  create mode 100644 include/linux/syscall_intercept.h
+> 
+> diff --git a/include/linux/sched.h b/include/linux/sched.h
+> index afe01e232935..3511c98a7849 100644
+> --- a/include/linux/sched.h
+> +++ b/include/linux/sched.h
+> @@ -959,7 +959,11 @@ struct task_struct {
+>  	kuid_t				loginuid;
+>  	unsigned int			sessionid;
+>  #endif
+> -	struct seccomp			seccomp;
+> +
+> +	struct {
+> +		unsigned int			syscall_intercept;
+> +		struct seccomp			seccomp;
+> +	};
+
+If there's no specific reason to do this I'd not wrap this in an
+anonymous struct. It doesn't really buy anything and there doesn't seem
+to be  precedent in struct task_struct right now. Also, if this somehow
+adds padding it seems you might end up increasing the size of struct
+task_struct more than necessary by accident? (I might be wrong though.)
+
+>  
+>  	/* Thread group tracking: */
+>  	u64				parent_exec_id;
+> diff --git a/include/linux/seccomp.h b/include/linux/seccomp.h
+> index 02aef2844c38..027dc462cea9 100644
+> --- a/include/linux/seccomp.h
+> +++ b/include/linux/seccomp.h
+> @@ -20,6 +20,24 @@
+>  #include <linux/atomic.h>
+>  #include <asm/seccomp.h>
+>  
+> +/*
+> + * Some transitional defines to avoid migrating every architecture code
+> + * at once.
+> + */
+> +
+> +#if defined(TIF_SECCOMP) && defined(TIF_SYSCALL_INTERCEPT)
+> +# error "TIF_SYSCALL_INTERCEPT and TIF_SECCOMP can't be defined at the same time"
+> +#endif
+> +
+> +/*
+> + * If the arch has not transitioned to TIF_SYSCALL_INTERCEPT, this let
+> + * seccomp work with these architectures, as long as no other syscall
+> + * intercept features are meant to be supported.
+> + */
+> +#ifdef TIF_SECCOMP
+> +# define TIF_SYSCALL_INTERCEPT TIF_SECCOMP
+> +#endif
+> +
+>  struct seccomp_filter;
+>  /**
+>   * struct seccomp - the state of a seccomp'ed process
+> @@ -42,7 +60,7 @@ struct seccomp {
+>  extern int __secure_computing(const struct seccomp_data *sd);
+>  static inline int secure_computing(void)
+>  {
+> -	if (unlikely(test_thread_flag(TIF_SECCOMP)))
+> +	if (unlikely(test_thread_flag(TIF_SYSCALL_INTERCEPT)))
+>  		return  __secure_computing(NULL);
+>  	return 0;
+>  }
+> diff --git a/include/linux/syscall_intercept.h b/include/linux/syscall_intercept.h
+> new file mode 100644
+> index 000000000000..725d157699da
+> --- /dev/null
+> +++ b/include/linux/syscall_intercept.h
+> @@ -0,0 +1,70 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Copyright (C) 2020 Collabora Ltd.
+> + */
+> +#ifndef _SYSCALL_INTERCEPT_H
+> +#define _SYSCALL_INTERCEPT_H
+> +
+> +#include <linux/sched.h>
+> +#include <linux/sched/signal.h>
+> +#include <linux/thread_info.h>
+> +
+> +#define SYSINT_SECCOMP		0x1
+
+<bikeshed>
+
+Can we maybe use a better name for this? I noone minds the extra
+characters I'd suggest:
+SYSCALL_INTERCEPT_SECCOMP
+or
+SYS_INTERCEPT_SECCOMP
+
+</bikeshed>
+
+> +
+> +#ifdef TIF_SYSCALL_INTERCEPT
+> +
+> +/* seccomp (at least) can modify TIF_SYSCALL_INTERCEPT from a different
+> + * thread, which means it can race with itself or with
+> + * syscall_user_dispatch. Therefore, TIF_SYSCALL_INTERCEPT and
+> + * syscall_intercept are synchronized by tsk->sighand->siglock.
+> + */
+> +
+> +static inline void __set_tsk_syscall_intercept(struct task_struct *tsk,
+> +					   unsigned int type)
+> +{
+> +	tsk->syscall_intercept |= type;
+> +
+> +	if (tsk->syscall_intercept)
+> +		set_tsk_thread_flag(tsk, TIF_SYSCALL_INTERCEPT);
+> +}
+> +
+> +static inline void __clear_tsk_syscall_intercept(struct task_struct *tsk,
+> +					     unsigned int type)
+> +{
+> +	tsk->syscall_intercept &= ~type;
+> +
+> +	if (tsk->syscall_intercept == 0)
+> +		clear_tsk_thread_flag(tsk, TIF_SYSCALL_INTERCEPT);
+> +}
+> +
+> +static inline void set_tsk_syscall_intercept(struct task_struct *tsk, unsigned int type)
+> +{
+> +	spin_lock_irq(&tsk->sighand->siglock);
+> +	__set_tsk_syscall_intercept(tsk, type);
+> +	spin_unlock_irq(&tsk->sighand->siglock);
+> +}
+> +
+> +static inline void clear_tsk_syscall_intercept(struct task_struct *tsk, unsigned int type)
+> +{
+> +	spin_lock_irq(&tsk->sighand->siglock);
+> +	__clear_tsk_syscall_intercept(tsk, type);
+> +	spin_unlock_irq(&tsk->sighand->siglock);
+> +}
+> +
+> +#else
+> +static inline void __set_tsk_syscall_intercept(struct task_struct *tsk, unsigned int type)
+> +{
+> +}
+> +static inline void set_tsk_syscall_intercept(struct task_struct *tsk, unsigned int type)
+> +{
+> +}
+> +static inline void __clear_tsk_syscall_intercept(struct task_struct *tsk, unsigned int type)
+> +{
+> +}
+> +static inline void clear_tsk_syscall_intercept(struct task_struct *tsk, unsigned int type)
+> +{
+> +}
+> +#endif
+> +
+> +#endif
+> +
+> diff --git a/kernel/fork.c b/kernel/fork.c
+> index 4d32190861bd..a39177bed8ea 100644
+> --- a/kernel/fork.c
+> +++ b/kernel/fork.c
+> @@ -49,7 +49,7 @@
+>  #include <linux/cgroup.h>
+>  #include <linux/security.h>
+>  #include <linux/hugetlb.h>
+> -#include <linux/seccomp.h>
+> +#include <linux/syscall_intercept.h>
+>  #include <linux/swap.h>
+>  #include <linux/syscalls.h>
+>  #include <linux/jiffies.h>
+> @@ -898,6 +898,7 @@ static struct task_struct *dup_task_struct(struct task_struct *orig, int node)
+>  	 * the usage counts on the error path calling free_task.
+>  	 */
+>  	tsk->seccomp.filter = NULL;
+> +	tsk->syscall_intercept = 0;
+>  #endif
+>  
+>  	setup_thread_stack(tsk, orig);
+> @@ -1620,9 +1621,14 @@ static void copy_seccomp(struct task_struct *p)
+>  	 * If the parent gained a seccomp mode after copying thread
+>  	 * flags and between before we held the sighand lock, we have
+>  	 * to manually enable the seccomp thread flag here.
+> +	 *
+> +	 * In addition current sighand lock is asserted, so it is safe
+> +	 * to use the unlocked version of set_tsk_syscall_intercept.
+>  	 */
+>  	if (p->seccomp.mode != SECCOMP_MODE_DISABLED)
+> -		set_tsk_thread_flag(p, TIF_SECCOMP);
+> +		__set_tsk_syscall_intercept(p, SYSINT_SECCOMP);
+> +	else
+> +		__clear_tsk_syscall_intercept(p, SYSINT_SECCOMP);
+>  #endif
+>  }
+>  
+> diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+> index 3ee59ce0a323..d0643b500f2e 100644
+> --- a/kernel/seccomp.c
+> +++ b/kernel/seccomp.c
+> @@ -28,6 +28,7 @@
+>  #include <linux/slab.h>
+>  #include <linux/syscalls.h>
+>  #include <linux/sysctl.h>
+> +#include <linux/syscall_intercept.h>
+>  
+>  #ifdef CONFIG_HAVE_ARCH_SECCOMP_FILTER
+>  #include <asm/syscall.h>
+> @@ -352,14 +353,14 @@ static inline void seccomp_assign_mode(struct task_struct *task,
+>  
+>  	task->seccomp.mode = seccomp_mode;
+>  	/*
+> -	 * Make sure TIF_SECCOMP cannot be set before the mode (and
+> +	 * Make sure SYSINT_SECCOMP cannot be set before the mode (and
+>  	 * filter) is set.
+>  	 */
+>  	smp_mb__before_atomic();
+>  	/* Assume default seccomp processes want spec flaw mitigation. */
+>  	if ((flags & SECCOMP_FILTER_FLAG_SPEC_ALLOW) == 0)
+>  		arch_seccomp_spec_mitigate(task);
+> -	set_tsk_thread_flag(task, TIF_SECCOMP);
+> +	__set_tsk_syscall_intercept(task, SYSINT_SECCOMP);
+>  }
+>  
+>  #ifdef CONFIG_SECCOMP_FILTER
+> @@ -925,7 +926,7 @@ static int __seccomp_filter(int this_syscall, const struct seccomp_data *sd,
+>  
+>  	/*
+>  	 * Make sure that any changes to mode from another thread have
+> -	 * been seen after TIF_SECCOMP was seen.
+> +	 * been seen after SYSINT_SECCOMP was seen.
+>  	 */
+>  	rmb();
+>  
+> -- 
+> 2.28.0
