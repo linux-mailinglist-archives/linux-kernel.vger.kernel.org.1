@@ -2,101 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0578225F9F9
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 13:56:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F61C25F9FF
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 13:57:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729057AbgIGL4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 07:56:25 -0400
-Received: from mga04.intel.com ([192.55.52.120]:28367 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729178AbgIGLxp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 07:53:45 -0400
-IronPort-SDR: D1BCgaLvVdV8i7RbTPUbCLG0ekRStFm4lKfXrBjjG+Eh4oU+nF+1ICumtvenkfFBVJw5SzWcro
- vj2exOHv+qQw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9736"; a="155393671"
-X-IronPort-AV: E=Sophos;i="5.76,401,1592895600"; 
-   d="scan'208";a="155393671"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2020 04:53:16 -0700
-IronPort-SDR: ixF7b9yAVn836fAh6s2qzvEa19zv5JnMJMadxQWU2fYVdf/AbkKR8SLryoAUkqNJeLEyZYAANW
- 7IyoOszCVMhQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,401,1592895600"; 
-   d="scan'208";a="333143101"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga008.jf.intel.com with ESMTP; 07 Sep 2020 04:53:13 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kFFhu-00EwMi-ER; Mon, 07 Sep 2020 14:53:10 +0300
-Date:   Mon, 7 Sep 2020 14:53:10 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Kent Gibson <warthog618@gmail.com>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        linux-doc <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-acpi@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH 23/23] Documentation: gpio: add documentation for
- gpio-mockup
-Message-ID: <20200907115310.GA1891694@smile.fi.intel.com>
-References: <20200904154547.3836-1-brgl@bgdev.pl>
- <20200904154547.3836-24-brgl@bgdev.pl>
- <26ea1683-da8f-30e7-f004-3616e96d56b3@infradead.org>
- <20200907095932.GU1891694@smile.fi.intel.com>
- <CAMpxmJXvhYOVkZY7LLf=v+o8E2xKTh1RYhLrdVsS9nN1XZ5QJQ@mail.gmail.com>
+        id S1729010AbgIGL5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 07:57:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47554 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728459AbgIGLzk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 07:55:40 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7E0BC061573
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 04:54:46 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id w2so14116540wmi.1
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 04:54:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OR+grx7rkHafCDDiGBz5vMeFbMGhU5jA0sq+dJevcqs=;
+        b=H3Ae1sQMU3QDMtnyX3+xZtz6s1GPf3SQJ48vMHTrvOqN0P90Bi8at73uXh4Hg13jk3
+         /o9/3Z1EuejT24OKfqp7aLZnu9lsD9zjP029koxPH7CiWyO11KFnw5CrRCav9GL3VJ8y
+         35ReUrwanHemCx5mhqF0M22pBQYwq1IYvogw2EZfEp9YyvM95JkR+z9QQ7fJlRJ8+QfN
+         yFDqcFdOCeQfigpb9NgvSaySzkZhGa7WVY4oItULB45o+jmw140QknPxxx8N+9EnUH08
+         lEAsQ3kP8j6YqWDaf4ETVXWNh8czD0XwxQluGOytQe9Sdp2s0bD8G32b38Eh9ojVa8Bf
+         OPTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OR+grx7rkHafCDDiGBz5vMeFbMGhU5jA0sq+dJevcqs=;
+        b=WLWdQ4Z9Ps+JbI8BZKXy4r6bmR6w9uNVWmy4K4Bqs94dRai2PB2I/0I8MVEorg22V6
+         lCJk447uD0RHVJt8bUjPJNYILJQZZFCXA+Rmc/c0Pi8WZUuHqDfrpgU2aIRt1m9tepwx
+         JwxLqIOCJI6RKnYVu+0lJVmDmob+UX4mK/UmbosCZbNnMdGmaOv+6+am4SnSV0X+xThH
+         dk2ZKSrG8ABVryHpt/9Uui2s8C1xRbA8oxutDtqaPD9uh6XKpJRoqBTak37WVIUamqNn
+         aStq3ZunrVlR3bJ/1sbVZAzN1yrCPY9ttsrb8X/Xi6KbzmcYUyuRWvrAmzPuLjpY56+f
+         PLmA==
+X-Gm-Message-State: AOAM531tY6Rc142ErqrkQcmp8wEAkdxKZ6Do8uEzF08frqHE2pX1r9th
+        Sw7jktz1vhCykO6+ZnsmwhgO4JTOfCpIa58YI3M=
+X-Google-Smtp-Source: ABdhPJwQrcj7pOMtW+ubR5dY9vTjAdfHlJlCVTWfZxIAQNeUmmUxO7ArntdPLUqJ7jvqE9jaZxgl9E7Hl5fxw2RmDkA=
+X-Received: by 2002:a7b:c384:: with SMTP id s4mr19558190wmj.138.1599479684792;
+ Mon, 07 Sep 2020 04:54:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMpxmJXvhYOVkZY7LLf=v+o8E2xKTh1RYhLrdVsS9nN1XZ5QJQ@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20200818052936.10995-1-joshi.k@samsung.com> <CGME20200818053252epcas5p4ee61d64bba5f6a131105e40330984f5e@epcas5p4.samsung.com>
+ <20200818052936.10995-2-joshi.k@samsung.com> <20200818071141.GA2544@lst.de>
+ <CA+1E3rJg0QOX4YgwWJf8Sm=6C-un4TsRX00E31fbFFPT9LYhXg@mail.gmail.com>
+ <CY4PR04MB375148979AA403CF47EADE0BE75D0@CY4PR04MB3751.namprd04.prod.outlook.com>
+ <CA+1E3r+C2KQENu=fO_+FZoUEvqZrAQcxziwSGt=FVidv85KQxA@mail.gmail.com>
+ <CY4PR04MB3751B077D152A80B19236C20E75D0@CY4PR04MB3751.namprd04.prod.outlook.com>
+ <CA+1E3r+0+jThD2KEu-d4rB=C4xL3Bb+cD=jUDbsGGBKR_GMpfQ@mail.gmail.com>
+ <CY4PR04MB375151ABDF83FE0A9804C3EDE7280@CY4PR04MB3751.namprd04.prod.outlook.com>
+ <CA+1E3r+sN8n6-ibJ1v_S5HEdfhbJ8yAYTm5ja=0M8ng2ujLZ4g@mail.gmail.com> <CY4PR04MB37516303D8C5FC32FB530FDBE7280@CY4PR04MB3751.namprd04.prod.outlook.com>
+In-Reply-To: <CY4PR04MB37516303D8C5FC32FB530FDBE7280@CY4PR04MB3751.namprd04.prod.outlook.com>
+From:   Kanchan Joshi <joshiiitr@gmail.com>
+Date:   Mon, 7 Sep 2020 17:24:18 +0530
+Message-ID: <CA+1E3rJtGTt6gss-5uAjzQ+BAXWTOTcjUzyFToz-QWbEfkLkaA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] nvme: set io-scheduler requirement for ZNS
+To:     Damien Le Moal <Damien.LeMoal@wdc.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Kanchan Joshi <joshi.k@samsung.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        "sagi@grimberg.me" <sagi@grimberg.me>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        Keith Busch <kbusch@kernel.org>,
+        Selvakumar S <selvakuma.s1@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>,
+        Nitesh Shetty <nj.shetty@samsung.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 07, 2020 at 12:26:34PM +0200, Bartosz Golaszewski wrote:
-> On Mon, Sep 7, 2020 at 11:59 AM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
+On Mon, Sep 7, 2020 at 5:07 PM Damien Le Moal <Damien.LeMoal@wdc.com> wrote:
+>
+> On 2020/09/07 20:24, Kanchan Joshi wrote:
+> > On Mon, Sep 7, 2020 at 1:52 PM Damien Le Moal <Damien.LeMoal@wdc.com> wrote:
+> >>
+> >> On 2020/09/07 16:01, Kanchan Joshi wrote:
+> >>>> Even for SMR, the user is free to set the elevator to none, which disables zone
+> >>>> write locking. Issuing writes correctly then becomes the responsibility of the
+> >>>> application. This can be useful for settings that for instance use NCQ I/O
+> >>>> priorities, which give better results when "none" is used.
+> >>>
+> >>> Was it not a problem that even if the application is sending writes
+> >>> correctly, scheduler may not preserve the order.
+> >>> And even when none is being used, re-queue can happen which may lead
+> >>> to different ordering.
+> >>
+> >> "Issuing writes correctly" means doing small writes, one per zone at most. In
+> >> that case, it does not matter if the block layer reorders writes. Per zone, they
+> >> will still be sequential.
+> >>
+> >>>> As far as I know, zoned drives are always used in tightly controlled
+> >>>> environments. Problems like "does not know what other applications would be
+> >>>> doing" are non-existent. Setting up the drive correctly for the use case at hand
+> >>>> is a sysadmin/server setup problem, based on *the* application (singular)
+> >>>> requirements.
+> >>>
+> >>> Fine.
+> >>> But what about the null-block-zone which sets MQ-deadline but does not
+> >>> actually use write-lock to avoid race among multiple appends on a
+> >>> zone.
+> >>> Does that deserve a fix?
+> >>
+> >> In nullblk, commands are executed under a spinlock. So there is no concurrency
+> >> problem. The spinlock serializes the execution of all commands. null_blk zone
+> >> append emulation thus does not need to take the scheduler level zone write lock
+> >> like scsi does.
 > >
-> > On Fri, Sep 04, 2020 at 08:15:59PM -0700, Randy Dunlap wrote:
-> > > On 9/4/20 8:45 AM, Bartosz Golaszewski wrote:
-> >
-> > ...
-> >
-> > > > +GPIO Testing Driver
-> > > > +===================
-> > > > +
-> > > > +The GPIO Testing Driver (gpio-mockup) provides a way to create simulated GPIO
-> > > > +chips for testing purposes. There are two ways of configuring the chips exposed
-> > > > +by the module. The lines can be accessed using the standard GPIO character
-> > > > +device interface as well as manipulated using the dedicated debugfs directory
-> > > > +structure.
-> > >
-> > > Could configfs be used for this instead of debugfs?
-> > > debugfs is ad hoc.
-> >
-> > Actually sounds like a good idea.
-> >
-> 
-> Well, then we can go on and write an entirely new mockup driver
-> (ditching module params and dropping any backwards compatibility)
-> because we're already using debugfs for line values.
-> 
-> How would we pass the device properties to configfs created GPIO chips
-> anyway? Devices seem to only be created using mkdir. Am I missing
-> something?
+> > I do not see spinlock for that. There is one "nullb->lock", but its
+> > scope is limited to memory-backed handling.
+> > For concurrent zone-appends on a zone, multiple threads may set the
+> > "same" write-pointer into incoming request(s).
+> > Are you referring to any other spinlock that can avoid "same wp being
+> > returned to multiple threads".
+>
+> Checking again, it looks like you are correct. nullb->lock is indeed only used
+> for processing read/write with memory backing turned on.
+> We either need to extend that spinlock use, or add one to protect the zone array
+> when doing zoned commands and checks of read/write against a zone wp.
+> Care to send a patch ? I can send one too.
 
-Same way how USB composite works, no?
+Sure, I can send.
+Do you think it is not OK to use zone write-lock (same like SCSI
+emulation) instead of introducing a new spinlock?
+
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+Kanchan
