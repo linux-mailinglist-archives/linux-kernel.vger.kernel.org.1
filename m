@@ -2,161 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90BC325FF6E
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 18:32:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E8B125FF58
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 18:30:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730565AbgIGQcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 12:32:07 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:3285 "EHLO pegase1.c-s.fr"
+        id S1730454AbgIGQaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 12:30:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50810 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729797AbgIGOWD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 10:22:03 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4BlTwZ0gQ1z9tyLs;
-        Mon,  7 Sep 2020 15:42:06 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id r1NoAQYlxdyc; Mon,  7 Sep 2020 15:42:06 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4BlTwY6QQlz9tyLn;
-        Mon,  7 Sep 2020 15:42:05 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 57B798B77F;
-        Mon,  7 Sep 2020 15:42:11 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id ZCPvErvMyktz; Mon,  7 Sep 2020 15:42:11 +0200 (CEST)
-Received: from po17688vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id EEC5E8B79D;
-        Mon,  7 Sep 2020 15:42:10 +0200 (CEST)
-Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id DBD32656F8; Mon,  7 Sep 2020 13:42:10 +0000 (UTC)
-Message-Id: <8f85e8752ac5af602db7237ef53d634f4f3d3892.1599486108.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <a027d447022a006c9c4958ac734128e577a3c5c1.1599486108.git.christophe.leroy@csgroup.eu>
-References: <a027d447022a006c9c4958ac734128e577a3c5c1.1599486108.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH 2/2] powerpc/32: Fix vmap stack - Properly set r1 before
- activating MMU
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Mon,  7 Sep 2020 13:42:10 +0000 (UTC)
+        id S1729842AbgIGOZ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 10:25:29 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8F2292064B;
+        Mon,  7 Sep 2020 14:16:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599488180;
+        bh=+hBkQu9s4/gMzHCxciSjjnQi2QtLKwBklfRKGdDcWQs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ubElOFB8q/iIS1SIkvwxPAzakDy+zGpi/JPWEGV+l+oSadsydiBT5sTCirXySPLqt
+         uFcwgKNn3JXhKu8BvcomGRstBQE9qN2SN/qJLdtwM9id25z1Lv/0d/Bbt72IA2dTay
+         GkXCdq92evvVCma8kdDninKnSyiW/ZPpouX25gls=
+Date:   Mon, 7 Sep 2020 16:16:34 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     himadrispandya@gmail.com, dvyukov@google.com,
+        linux-usb@vger.kernel.org, perex@perex.cz, tiwai@suse.com,
+        linux-kernel@vger.kernel.org, marcel@holtmann.org,
+        johan.hedberg@gmail.com, linux-bluetooth@vger.kernel.org,
+        alsa-devel@alsa-project.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Eli Billauer <eli.billauer@gmail.com>,
+        Emiliano Ingrassia <ingrassia@epigenesys.com>,
+        Alexander Tsoy <alexander@tsoy.me>,
+        "Geoffrey D. Bennett" <g@b4.vu>, Jussi Laako <jussi@sonarnerd.net>,
+        Nick Kossifidis <mickflemm@gmail.com>,
+        Dmitry Panchenko <dmitry@d-systems.ee>,
+        Chris Wulff <crwulff@gmail.com>,
+        Jesus Ramos <jesus-ramos@live.com>
+Subject: Re: [PATCH 01/10] USB: move snd_usb_pipe_sanity_check into the USB
+ core
+Message-ID: <20200907141634.GA3733019@kroah.com>
+References: <20200902110115.1994491-1-gregkh@linuxfoundation.org>
+ <20200902110115.1994491-2-gregkh@linuxfoundation.org>
+ <20200903004553.GA642955@rowland.harvard.edu>
+ <20200903073230.GA162335@kroah.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200903073230.GA162335@kroah.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We need r1 to be properly set before activating MMU, otherwise any new
-exception taken while saving registers into the stack in exception
-prologs will use the user stack, which is wrong and will even lockup
-or crash when KUAP is selected.
+On Thu, Sep 03, 2020 at 09:32:30AM +0200, Greg Kroah-Hartman wrote:
+> On Wed, Sep 02, 2020 at 08:45:53PM -0400, Alan Stern wrote:
+> > On Wed, Sep 02, 2020 at 01:01:03PM +0200, Greg Kroah-Hartman wrote:
+> > > snd_usb_pipe_sanity_check() is a great function, so let's move it into
+> > > the USB core so that other parts of the kernel, including the USB core,
+> > > can call it.
+> > > 
+> > > Name it usb_pipe_type_check() to match the existing
+> > > usb_urb_ep_type_check() call, which now uses this function.
+> > > 
+> > > Cc: Jaroslav Kysela <perex@perex.cz>
+> > > Cc: Takashi Iwai <tiwai@suse.com>
+> > > Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+> > > Cc: Eli Billauer <eli.billauer@gmail.com>
+> > > Cc: Emiliano Ingrassia <ingrassia@epigenesys.com>
+> > > Cc: Alan Stern <stern@rowland.harvard.edu>
+> > > Cc: Alexander Tsoy <alexander@tsoy.me>
+> > > Cc: "Geoffrey D. Bennett" <g@b4.vu>
+> > > Cc: Jussi Laako <jussi@sonarnerd.net>
+> > > Cc: Nick Kossifidis <mickflemm@gmail.com>
+> > > Cc: Dmitry Panchenko <dmitry@d-systems.ee>
+> > > Cc: Chris Wulff <crwulff@gmail.com>
+> > > Cc: Jesus Ramos <jesus-ramos@live.com>
+> > > Cc: linux-usb@vger.kernel.org
+> > > Cc: linux-kernel@vger.kernel.org
+> > > Cc: alsa-devel@alsa-project.org
+> > > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > ---
+> > 
+> > > diff --git a/drivers/usb/core/urb.c b/drivers/usb/core/urb.c
+> > > index 27e83e55a590..45bc2914c1ba 100644
+> > > --- a/drivers/usb/core/urb.c
+> > > +++ b/drivers/usb/core/urb.c
+> > > @@ -192,24 +192,39 @@ static const int pipetypes[4] = {
+> > >  };
+> > >  
+> > >  /**
+> > > - * usb_urb_ep_type_check - sanity check of endpoint in the given urb
+> > > - * @urb: urb to be checked
+> > > + * usb_pipe_type_check - sanity check of a specific pipe for a usb device
+> > > + * @dev: struct usb_device to be checked
+> > > + * @pipe: pipe to check
+> > >   *
+> > >   * This performs a light-weight sanity check for the endpoint in the
+> > > - * given urb.  It returns 0 if the urb contains a valid endpoint, otherwise
+> > > - * a negative error code.
+> > > + * given usb device.  It returns 0 if the pipe is a valid for the specific usb
+> > -----------------------------------------------------^
+> > Typo.
+> 
+> Oops, will fix, thanks.
+> 
+> 
+> > 
+> > > + * device, otherwise a negative error code.
+> > >   */
+> > > -int usb_urb_ep_type_check(const struct urb *urb)
+> > > +int usb_pipe_type_check(struct usb_device *dev, unsigned int pipe)
+> > >  {
+> > >  	const struct usb_host_endpoint *ep;
+> > >  
+> > > -	ep = usb_pipe_endpoint(urb->dev, urb->pipe);
+> > > +	ep = usb_pipe_endpoint(dev, pipe);
+> > >  	if (!ep)
+> > >  		return -EINVAL;
+> > > -	if (usb_pipetype(urb->pipe) != pipetypes[usb_endpoint_type(&ep->desc)])
+> > > +	if (usb_pipetype(pipe) != pipetypes[usb_endpoint_type(&ep->desc)])
+> > >  		return -EINVAL;
+> > >  	return 0;
+> > >  }
+> > > +EXPORT_SYMBOL_GPL(usb_pipe_type_check);
+> > > +
+> > > +/**
+> > > + * usb_urb_ep_type_check - sanity check of endpoint in the given urb
+> > > + * @urb: urb to be checked
+> > > + *
+> > > + * This performs a light-weight sanity check for the endpoint in the
+> > > + * given urb.  It returns 0 if the urb contains a valid endpoint, otherwise
+> > > + * a negative error code.
+> > > + */
+> > > +int usb_urb_ep_type_check(const struct urb *urb)
+> > > +{
+> > > +	return usb_pipe_type_check(urb->dev, urb->pipe);
+> > > +}
+> > >  EXPORT_SYMBOL_GPL(usb_urb_ep_type_check);
+> > 
+> > Since this routine is used in only one place in the entire kernel, you 
+> > might as well inline the code there and get rid of the function 
+> > entirely.
+> 
+> Good idea, will do.
 
-Do that by switching the meaning of r11 and r1 until we have saved r1
-to the stack: copy r1 into r11 and setup the new stack pointer in r1.
-To avoid complicating and impacting all generic and specific prolog
-code (and more), copy back r1 into r11 once r11 is save onto
-the stack.
+No, wait, the USB sound drivers call it a lot, so it needs to stick
+around for now until we clean that up.
 
-We could get rid of copying r1 back and forth at the cost of
-rewriting everything to use r1 instead of r11 all the way when
-CONFIG_VMAP_STACK is set, but the effort is probably not worth it.
+thanks,
 
-Fixes: 028474876f47 ("powerpc/32: prepare for CONFIG_VMAP_STACK")
-Cc: stable@vger.kernel.org
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/kernel/head_32.h | 43 +++++++++++++++++++++++------------
- 1 file changed, 29 insertions(+), 14 deletions(-)
-
-diff --git a/arch/powerpc/kernel/head_32.h b/arch/powerpc/kernel/head_32.h
-index 21effebb9277..cc36998c5541 100644
---- a/arch/powerpc/kernel/head_32.h
-+++ b/arch/powerpc/kernel/head_32.h
-@@ -39,15 +39,24 @@
- .endm
- 
- .macro EXCEPTION_PROLOG_1 for_rtas=0
-+#ifdef CONFIG_VMAP_STACK
-+	mr	r11, r1
-+	subi	r1, r1, INT_FRAME_SIZE		/* use r1 if kernel */
-+	beq	1f
-+	mfspr	r1,SPRN_SPRG_THREAD
-+	lwz	r1,TASK_STACK-THREAD(r1)
-+	addi	r1, r1, THREAD_SIZE - INT_FRAME_SIZE
-+#else
- 	subi	r11, r1, INT_FRAME_SIZE		/* use r1 if kernel */
- 	beq	1f
- 	mfspr	r11,SPRN_SPRG_THREAD
- 	lwz	r11,TASK_STACK-THREAD(r11)
- 	addi	r11, r11, THREAD_SIZE - INT_FRAME_SIZE
-+#endif
- 1:
- 	tophys_novmstack r11, r11
- #ifdef CONFIG_VMAP_STACK
--	mtcrf	0x7f, r11
-+	mtcrf	0x7f, r1
- 	bt	32 - THREAD_ALIGN_SHIFT, stack_overflow
- #endif
- .endm
-@@ -62,6 +71,15 @@
- 	stw	r10,_CCR(r11)		/* save registers */
- #endif
- 	mfspr	r10, SPRN_SPRG_SCRATCH0
-+#ifdef CONFIG_VMAP_STACK
-+	stw	r11,GPR1(r1)
-+	stw	r11,0(r1)
-+	mr	r11, r1
-+#else
-+	stw	r1,GPR1(r11)
-+	stw	r1,0(r11)
-+	tovirt(r1, r11)		/* set new kernel sp */
-+#endif
- 	stw	r12,GPR12(r11)
- 	stw	r9,GPR9(r11)
- 	stw	r10,GPR10(r11)
-@@ -89,9 +107,6 @@
- 	mfspr	r12,SPRN_SRR0
- 	mfspr	r9,SPRN_SRR1
- #endif
--	stw	r1,GPR1(r11)
--	stw	r1,0(r11)
--	tovirt_novmstack r1, r11	/* set new kernel sp */
- #ifdef CONFIG_40x
- 	rlwinm	r9,r9,0,14,12		/* clear MSR_WE (necessary?) */
- #else
-@@ -309,19 +324,19 @@
- .macro vmap_stack_overflow_exception
- #ifdef CONFIG_VMAP_STACK
- #ifdef CONFIG_SMP
--	mfspr	r11, SPRN_SPRG_THREAD
--	lwz	r11, TASK_CPU - THREAD(r11)
--	slwi	r11, r11, 3
--	addis	r11, r11, emergency_ctx@ha
-+	mfspr	r1, SPRN_SPRG_THREAD
-+	lwz	r1, TASK_CPU - THREAD(r1)
-+	slwi	r1, r1, 3
-+	addis	r1, r1, emergency_ctx@ha
- #else
--	lis	r11, emergency_ctx@ha
-+	lis	r1, emergency_ctx@ha
- #endif
--	lwz	r11, emergency_ctx@l(r11)
--	cmpwi	cr1, r11, 0
-+	lwz	r1, emergency_ctx@l(r1)
-+	cmpwi	cr1, r1, 0
- 	bne	cr1, 1f
--	lis	r11, init_thread_union@ha
--	addi	r11, r11, init_thread_union@l
--1:	addi	r11, r11, THREAD_SIZE - INT_FRAME_SIZE
-+	lis	r1, init_thread_union@ha
-+	addi	r1, r1, init_thread_union@l
-+1:	addi	r1, r1, THREAD_SIZE - INT_FRAME_SIZE
- 	EXCEPTION_PROLOG_2
- 	SAVE_NVGPRS(r11)
- 	addi	r3, r1, STACK_FRAME_OVERHEAD
--- 
-2.25.0
-
+greg k-h
