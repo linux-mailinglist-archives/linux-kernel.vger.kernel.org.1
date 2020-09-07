@@ -2,173 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78F0B25FA19
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 14:04:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79F2D25FA24
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 14:08:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729109AbgIGMEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 08:04:04 -0400
-Received: from kernel.crashing.org ([76.164.61.194]:59480 "EHLO
-        kernel.crashing.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729184AbgIGL7b (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 07:59:31 -0400
-Received: from localhost (gate.crashing.org [63.228.1.57])
-        (authenticated bits=0)
-        by kernel.crashing.org (8.14.7/8.14.7) with ESMTP id 087Bwjb2023420
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Mon, 7 Sep 2020 06:58:49 -0500
-Message-ID: <6161b96a30e51ff77a387a71eee6a46400530155.camel@kernel.crashing.org>
-Subject: Re: [PATCH v1 0/2] video: fbdev: radeonfb: PCI PM framework upgrade
- and fix-ups.
-From:   Benjamin Herrenschmidt <benh@kernel.crashing.org>
-To:     Daniel Vetter <daniel@ffwll.ch>,
-        Vaibhav Gupta <vaibhavgupta40@gmail.com>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Bjorn Helgaas <bjorn@helgaas.com>,
-        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Thierry Reding <treding@nvidia.com>,
-        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Date:   Mon, 07 Sep 2020 21:58:44 +1000
-In-Reply-To: <20200907075559.GN2352366@phenom.ffwll.local>
-References: <20200806072256.585705-1-vaibhavgupta40@gmail.com>
-         <20200907075559.GN2352366@phenom.ffwll.local>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S1729225AbgIGMHd convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 7 Sep 2020 08:07:33 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:3502 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729199AbgIGMA5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 08:00:57 -0400
+Received: from DGGEMM406-HUB.china.huawei.com (unknown [172.30.72.54])
+        by Forcepoint Email with ESMTP id 47B1B437D911662C7AF1;
+        Mon,  7 Sep 2020 20:00:45 +0800 (CST)
+Received: from dggemi710-chm.china.huawei.com (10.3.20.109) by
+ DGGEMM406-HUB.china.huawei.com (10.3.20.214) with Microsoft SMTP Server (TLS)
+ id 14.3.487.0; Mon, 7 Sep 2020 20:00:10 +0800
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ dggemi710-chm.china.huawei.com (10.3.20.109) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Mon, 7 Sep 2020 20:00:10 +0800
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.1913.007;
+ Mon, 7 Sep 2020 20:00:10 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Mel Gorman <mgorman@suse.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
+        "bsegall@google.com" <bsegall@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Phil Auld <pauld@redhat.com>, Hillf Danton <hdanton@sina.com>,
+        Ingo Molnar <mingo@kernel.org>
+CC:     Linuxarm <linuxarm@huawei.com>,
+        "Liguozhu (Kenneth)" <liguozhu@hisilicon.com>
+Subject: [RFC] sched/numa: don't move tasks to idle numa nodes while src node
+ has very light load?
+Thread-Topic: [RFC] sched/numa: don't move tasks to idle numa nodes while src
+ node has very light load?
+Thread-Index: AdaFDgJxar2HSiPxTFetuIpaUOKfaA==
+Date:   Mon, 7 Sep 2020 12:00:10 +0000
+Message-ID: <e7b7462375de4175a83ece3b60bab899@hisilicon.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.201.74]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-09-07 at 09:55 +0200, Daniel Vetter wrote:
-> On Thu, Aug 06, 2020 at 12:52:54PM +0530, Vaibhav Gupta wrote:
-> > Linux Kernel Mentee: Remove Legacy Power Management. 
-> > 
-> > The original goal of the patch series is to upgrade the power
-> > management
-> > framework of radeonfb fbdev driver. This has been done by upgrading
-> > .suspend()
-> > and .resume() callbacks.
-> > 
-> > The upgrade makes sure that the involvement of PCI Core does not
-> > change the
-> > order of operations executed in a driver. Thus, does not change its
-> > behavior.
-> > 
-> > During this process, it was found that "#if defined(CONFIG_PM)" at
-> > line 1434 is
-> > redundant. This was introduced in the commit
-> > 42ddb453a0cd ("radeon: Conditionally compile PM code").
-> 
-> I do wonder whether it wouldn't be better to just outright delete
-> these,
-> we have the drm radeon driver for pretty much all the same hardware
-> ...
+Hi All,
+In case we have a numa system with 4 nodes and in each node we have 24 cpus, and all of the 96 cores are idle.
+Then we start a process with 4 threads in this totally idle system. 
+Actually any one of the four numa nodes should have enough capability to run the 4 threads while they can still have 20 idle CPUS after that.
+But right now the existing code in CFS load balance will spread the 4 threads to multiple nodes.
+This results in two negative side effects:
+1. more numa nodes are awaken while they can save power in lowest frequency and halt status
+2. cache coherency overhead between numa nodes
 
-The only thing is, afaik, the DRM drivers never got the D2/D3 code that
-I wrote for radeonfb to get old powerbooks to suspend/resume.
+A proof-of-concept patch I made to "fix" this issue to some extent is like:
 
-Cheers,
-Ben.
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 1a68a05..f671e15 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -9068,9 +9068,20 @@ static inline void calculate_imbalance(struct lb_env *env, struct sd_lb_stats *s
+                }
+ 
+                /* Consider allowing a small imbalance between NUMA groups */
+-               if (env->sd->flags & SD_NUMA)
++               if (env->sd->flags & SD_NUMA) {
++                       /* if the src group uses only 1/4 capability and dst is idle
++                        * don't move task
++                        */
++                       if (busiest->sum_nr_running <= busiest->group_weight/4 &&
++                                       local->sum_nr_running == 0) {
++                               env->imbalance = 0;
++                               return;
++                       }
+                        env->imbalance = adjust_numa_imbalance(env->imbalance,
+                                                busiest->sum_nr_running);
++               }
+ 
+                return;
+        }
 
-> -Daniel
-> 
-> > 
-> > ------------
-> > 
-> > Before 42ddb453a0cd:
-> > $ git show 65122f7e80b5:drivers/video/aty/radeon_pm.c | grep -n
-> > "#ifdef\|#if\|#else\|#endif\|#elif\|#ifndef"
-> > 
-> > Based on output in terminal:
-> > 
-> > 547:#ifdef CONFIG_PM
-> >        |-- 959:#ifdef CONFIG_PPC_PMAC
-> >        |-- 972:#endif
-> >        |-- 1291:#ifdef CONFIG_PPC_OF
-> >        |-- 1301:#endif /* CONFIG_PPC_OF */
-> >        |-- 1943:#ifdef CONFIG_PPC_OF
-> >                    |-- 2206:#if 0 /* Not ready yet */
-> >                    |-- 2508:#endif /* 0 */
-> >        |-- 2510:#endif /* CONFIG_PPC_OF */
-> >        |-- 2648:#ifdef CONFIG_PPC_PMAC
-> >        |-- 2654:#endif /* CONFIG_PPC_PMAC */
-> >        |-- 2768:#ifdef CONFIG_PPC_PMAC
-> >        |-- 2774:#endif /* CONFIG_PPC_PMAC */
-> >        |-- 2791:#ifdef CONFIG_PPC_OF__disabled
-> >        |-- 2801:#endif /* CONFIG_PPC_OF */
-> > 2803:#endif /* CONFIG_PM */
-> > 
-> > ------------
-> > 
-> > After 42ddb453a0cd:
-> > $ git show 42ddb453a0cd:drivers/video/aty/radeon_pm.c | grep -n
-> > "#ifdef\|#if\|#else\|#endif\|#elif\|#ifndef"
-> > 
-> > Based on output in terminal:
-> > 
-> > 547:#ifdef CONFIG_PM
-> >        |-- 959:#ifdef CONFIG_PPC_PMAC
-> >        |-- 972:#endif
-> >        |-- 1291:#ifdef CONFIG_PPC_OF
-> >        |-- 1301:#endif /* CONFIG_PPC_OF */
-> >        |-- 1430:#if defined(CONFIG_PM)
-> >                    |-- 1431:#if defined(CONFIG_X86) ||
-> > defined(CONFIG_PPC_PMAC)
-> >                    |-- 1944:#endif
-> >                    |-- 1946:#ifdef CONFIG_PPC_OF
-> >                                |-- 1947:#ifdef CONFIG_PPC_PMAC
-> >                                |-- 2208:#endif
-> >                    |-- 2209:#endif
-> >                    |-- 2211:#if 0 /* Not ready yet */
-> >                    |-- 2513:#endif /* 0 */
-> >        |-- 2515:#endif /* CONFIG_PPC_OF */
-> >        |-- 2653:#ifdef CONFIG_PPC_PMAC
-> >        |-- 2659:#endif /* CONFIG_PPC_PMAC */
-> >        |-- 2773:#ifdef CONFIG_PPC_PMAC
-> >        |-- 2779:#endif /* CONFIG_PPC_PMAC */
-> >        |-- 2796:#ifdef CONFIG_PPC_OF__disabled
-> >        |-- 2806:#endif /* CONFIG_PPC_OF */
-> > 2808:#endif /* CONFIG_PM */
-> > 
-> > ------------
-> > 
-> > This also affected the CONFIG_PPC_OF container (line 1943 at commit
-> > 65122f7e80b5)
-> > 
-> > The patch-series fixes it along with PM upgrade.
-> > 
-> > All patches are compile-tested only.
-> > 
-> > Test tools:
-> >     - Compiler: gcc (GCC) 10.1.0
-> >     - allmodconfig build: make -j$(nproc) W=1 all
-> > 
-> > Vaibhav Gupta (2):
-> >   video: fbdev: aty: radeon_pm: remove redundant CONFIG_PM
-> > container
-> >   fbdev: radeonfb:use generic power management
-> > 
-> >  drivers/video/fbdev/aty/radeon_base.c | 10 ++++---
-> >  drivers/video/fbdev/aty/radeon_pm.c   | 38 ++++++++++++++++++++---
-> > ----
-> >  drivers/video/fbdev/aty/radeonfb.h    |  3 +--
-> >  3 files changed, 35 insertions(+), 16 deletions(-)
-> > 
-> > -- 
-> > 2.27.0
-> > 
-> > _______________________________________________
-> > dri-devel mailing list
-> > dri-devel@lists.freedesktop.org
-> > https://lists.freedesktop.org/mailman/listinfo/dri-devel
-> 
-> 
+And I wrote a simple process with 4 threads to measure the execution time:
 
+#include <stdio.h>
+#include <pthread.h>
+#include <sys/types.h>
+
+struct foo {
+    int x;
+    int y;
+} f1;
+
+void* thread_fun1(void* param)
+{
+    int s = 0; 
+    for (int i = 0; i < 1000000000; ++i)
+        s += f1.x;
+        return NULL;
+}
+
+void* thread_fun2(void* param)
+{   
+    for (int i = 0; i < 1000000000; ++i)
+        ++f1.y;
+        return NULL;
+}
+
+double difftimeval(const struct timeval *start, const struct timeval *end)
+{
+        double d;
+        time_t s;
+        suseconds_t u;
+
+        s = start->tv_sec - end->tv_sec;
+        u = start->tv_usec - end->tv_usec;
+
+        d = s;
+        d += u/1000000.0;
+
+        return d;
+}
+
+int main(void)
+{
+        pthread_t tid1,tid2,tid3,tid4;
+        struct timeval start,end;
+
+        gettimeofday(&start, NULL);
+
+        pthread_create(&tid1,NULL,thread_fun1,NULL);
+        pthread_create(&tid2,NULL,thread_fun2,NULL);
+        pthread_create(&tid3,NULL,thread_fun1,NULL);
+        pthread_create(&tid4,NULL,thread_fun2,NULL);
+
+        pthread_join(tid1,NULL);
+        pthread_join(tid2,NULL);
+        pthread_join(tid3,NULL);
+        pthread_join(tid4,NULL);
+
+        gettimeofday(&end, NULL);
+
+        printf("execution time:%f\n", difftimeval(&end, &start));
+}
+
+Before the PoC patch, the test result:
+$ ./a.out 
+execution time:10.734581
+
+After the PoC patch, the test result:
+$ ./a.out 
+execution time:6.775150
+
+The execution time reduces around 30-40% because 4 threads are put in single one numa node.
+
+On the other hand, the patch doesn't have to depend on NUMA, it can also apply to SCHED_MC with some changes. If one CPU can be still idle after they handle all tasks in the system, we maybe not need to wake up the 2nd CPU at all?
+
+I understand this PoC patch could have negative side effect in some corner cases, for example, if the four threads running in one process want more memory bandwidth by running in multiple nodes. But generally speaking, we do a tradeoff between cache locality and better CPU utilization as they are the main concerns. If one process highly depends on memory bandwidth, they may change their mempolicy?
+
+Thanks
+Barry
