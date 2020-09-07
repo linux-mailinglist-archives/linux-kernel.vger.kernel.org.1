@@ -2,115 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8934025FA81
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 14:30:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C99E25FAAC
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 14:49:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729102AbgIGMaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 08:30:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41422 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729242AbgIGMWa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 08:22:30 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B031021707;
-        Mon,  7 Sep 2020 12:22:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599481344;
-        bh=hO9ipewOxdkfWfb7kBKgMdC6UCFJZgkb2q8sjiDbxKs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=l/hORE3XgUiGv7oUQ/2rhFBTipX8xL/hiFkh+K4uXwDOgiroiPLlfnOeZmJSKYBd3
-         il7GsuOBmOQ9DpO5j+Qx/Js4rtSWIisIORjqkNhjxRSiBRZsKkOqOqEl1h2lyPtb8l
-         3q0RePLQmgUeG0HyXdgOrYFisTVJC5qD1y+h1Syc=
-Date:   Mon, 7 Sep 2020 14:22:38 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Kent Gibson <warthog618@gmail.com>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        linux-doc <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>
-Subject: Re: [PATCH 23/23] Documentation: gpio: add documentation for
- gpio-mockup
-Message-ID: <20200907122238.GA1849893@kroah.com>
-References: <20200904154547.3836-1-brgl@bgdev.pl>
- <20200904154547.3836-24-brgl@bgdev.pl>
- <26ea1683-da8f-30e7-f004-3616e96d56b3@infradead.org>
- <20200907095932.GU1891694@smile.fi.intel.com>
- <CAMpxmJXvhYOVkZY7LLf=v+o8E2xKTh1RYhLrdVsS9nN1XZ5QJQ@mail.gmail.com>
- <20200907115310.GA1891694@smile.fi.intel.com>
- <CAMpxmJUfNkko4Rrb4N5CF_rdwRAWGhVr9DSOHfhYyTxYSH7dsQ@mail.gmail.com>
+        id S1729326AbgIGMtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 08:49:22 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:54574 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729198AbgIGMmk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 08:42:40 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 087B3x3n025594;
+        Mon, 7 Sep 2020 06:03:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1599476639;
+        bh=bpMQ9siMVCgyNlXexA6tKfgUJX3SmIx6i7F6npFEAMA=;
+        h=From:To:CC:Subject:Date;
+        b=IjkTFUdcplA41NeqNBe4jg+qyZ5rtQXThBYEEY82TLqSN5GaLfAlgzFg3H131XE3I
+         GpdiBxdFdJhA4p+Ru9uzZOpyln2y0sJA4jPzu1ccyszlIRLvopSdJ0qQqbwx2BezhS
+         MQzhAGLp85gMCpUAf3QPT79bujiLXlBnY2/xhp7U=
+Received: from DFLE107.ent.ti.com (dfle107.ent.ti.com [10.64.6.28])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 087B3xep019448
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 7 Sep 2020 06:03:59 -0500
+Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 7 Sep
+ 2020 06:03:59 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 7 Sep 2020 06:03:59 -0500
+Received: from sokoban.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 087B3v3F103242;
+        Mon, 7 Sep 2020 06:03:58 -0500
+From:   Tero Kristo <t-kristo@ti.com>
+To:     <nm@ti.com>, <ssantosh@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     <linux-kernel@vger.kernel.org>
+Subject: [PATCH] firmware: ti_sci: allow frequency change for disabled clocks by default
+Date:   Mon, 7 Sep 2020 14:03:57 +0300
+Message-ID: <20200907110357.2972-1-t-kristo@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMpxmJUfNkko4Rrb4N5CF_rdwRAWGhVr9DSOHfhYyTxYSH7dsQ@mail.gmail.com>
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 07, 2020 at 02:06:15PM +0200, Bartosz Golaszewski wrote:
-> On Mon, Sep 7, 2020 at 1:53 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> >
-> > On Mon, Sep 07, 2020 at 12:26:34PM +0200, Bartosz Golaszewski wrote:
-> > > On Mon, Sep 7, 2020 at 11:59 AM Andy Shevchenko
-> > > <andriy.shevchenko@linux.intel.com> wrote:
-> > > >
-> > > > On Fri, Sep 04, 2020 at 08:15:59PM -0700, Randy Dunlap wrote:
-> > > > > On 9/4/20 8:45 AM, Bartosz Golaszewski wrote:
-> > > >
-> > > > ...
-> > > >
-> > > > > > +GPIO Testing Driver
-> > > > > > +===================
-> > > > > > +
-> > > > > > +The GPIO Testing Driver (gpio-mockup) provides a way to create simulated GPIO
-> > > > > > +chips for testing purposes. There are two ways of configuring the chips exposed
-> > > > > > +by the module. The lines can be accessed using the standard GPIO character
-> > > > > > +device interface as well as manipulated using the dedicated debugfs directory
-> > > > > > +structure.
-> > > > >
-> > > > > Could configfs be used for this instead of debugfs?
-> > > > > debugfs is ad hoc.
-> > > >
-> > > > Actually sounds like a good idea.
-> > > >
-> > >
-> > > Well, then we can go on and write an entirely new mockup driver
-> > > (ditching module params and dropping any backwards compatibility)
-> > > because we're already using debugfs for line values.
-> > >
-> > > How would we pass the device properties to configfs created GPIO chips
-> > > anyway? Devices seem to only be created using mkdir. Am I missing
-> > > something?
-> >
-> > Same way how USB composite works, no?
-> >
-> 
-> OK, so create a new chip directory in configfs, configure it using
-> some defined configfs attributes and then finally instantiate it from
-> sysfs?
-> 
-> Makes sense and is probably the right way to go. Now the question is:
-> is it fine to just entirely remove the previous gpio-mockup? Should we
-> keep some backwards compatibility? Should we introduce an entirely new
-> module and have a transition period before removing previous
-> gpio-mockup?
-> 
-> Also: this is a testing module so to me debugfs is just fine. Is
-> configfs considered stable ABI like sysfs?
+If a clock is disabled, its frequency should be allowed to change as
+it is no longer in use. Add a flag towards this to the firmware clock
+API handler routines.
 
-Yes it is.  Or at least until you fix all existing users so that if you
-do change it, no one notices it happening :)
+Tested-by: Tomi Valkeinen <tomi.valkeinen@ti.com>
+Signed-off-by: Tero Kristo <t-kristo@ti.com>
+---
+ drivers/firmware/ti_sci.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-thanks,
+diff --git a/drivers/firmware/ti_sci.c b/drivers/firmware/ti_sci.c
+index 53cee17d0115..39890665a975 100644
+--- a/drivers/firmware/ti_sci.c
++++ b/drivers/firmware/ti_sci.c
+@@ -1124,7 +1124,8 @@ static int ti_sci_cmd_get_clock(const struct ti_sci_handle *handle, u32 dev_id,
+ static int ti_sci_cmd_idle_clock(const struct ti_sci_handle *handle,
+ 				 u32 dev_id, u32 clk_id)
+ {
+-	return ti_sci_set_clock_state(handle, dev_id, clk_id, 0,
++	return ti_sci_set_clock_state(handle, dev_id, clk_id,
++				      MSG_FLAG_CLOCK_ALLOW_FREQ_CHANGE,
+ 				      MSG_CLOCK_SW_STATE_UNREQ);
+ }
+ 
+@@ -1143,7 +1144,8 @@ static int ti_sci_cmd_idle_clock(const struct ti_sci_handle *handle,
+ static int ti_sci_cmd_put_clock(const struct ti_sci_handle *handle,
+ 				u32 dev_id, u32 clk_id)
+ {
+-	return ti_sci_set_clock_state(handle, dev_id, clk_id, 0,
++	return ti_sci_set_clock_state(handle, dev_id, clk_id,
++				      MSG_FLAG_CLOCK_ALLOW_FREQ_CHANGE,
+ 				      MSG_CLOCK_SW_STATE_AUTO);
+ }
+ 
+-- 
+2.17.1
 
-greg k-h
+--
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki. Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
