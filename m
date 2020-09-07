@@ -2,124 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1706726001B
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 18:44:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40D2B260099
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 18:51:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730955AbgIGQoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 12:44:09 -0400
-Received: from foss.arm.com ([217.140.110.172]:40964 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730757AbgIGQoA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 12:44:00 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AEAF431B;
-        Mon,  7 Sep 2020 09:43:55 -0700 (PDT)
-Received: from bogus (unknown [10.57.10.112])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0E2043F68F;
-        Mon,  7 Sep 2020 09:43:53 -0700 (PDT)
-Date:   Mon, 7 Sep 2020 17:43:51 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Cristian Marussi <cristian.marussi@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        lukasz.luba@arm.com, Jonathan.Cameron@Huawei.com,
-        Sudeep Holla <sudeep.holla@arm.com>
-Subject: Re: [PATCH v5 2/3] firmware: arm_scmi: Add SCMI System Power Control
- driver
-Message-ID: <20200907164351.GB3656@bogus>
-References: <20200819161002.26637-1-cristian.marussi@arm.com>
- <20200819161002.26637-3-cristian.marussi@arm.com>
+        id S1730881AbgIGQvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 12:51:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36864 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730988AbgIGQvY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 12:51:24 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E40CEC061574
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 09:51:22 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id e11so12683322wme.0
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 09:51:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=arista.com; s=googlenew;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=MkAhet+wlF++7FXN/+TlBF4gd0vCDBXRks1SAOZwHBo=;
+        b=msuXnHFD7qVdbxah+AfMpKoWioy4ntWc1e+qaUJe457XpG07QWuqkCUbHKklZiU7X/
+         XfRHgmy8FjJuYRyoyO0PDVVqS8Sv7U9kkFMgFIuroa9UXAU1ylCab7e1eMHVkZpDQYuP
+         U9R89KcpNBvN2Uin1XuUuE/s2Ez/+q8kECql5LrwzMOka2Y3lUJx7vPuICrkDQ1R2xyz
+         fA+lmIl7+MtE19uhdyzFKhKIitVpQpg2c+SHjblJb0+Csrdr24StPy0kMWPz/gNzwAAT
+         7QN4fCdDUgiaG9R6VxvcxhWZpVYVSM/T0V8iGwhz8mglr8v1SKLS5BdYO/p3voDif3Gb
+         wNVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=MkAhet+wlF++7FXN/+TlBF4gd0vCDBXRks1SAOZwHBo=;
+        b=cMPYFcEz86bjEazunymFThKFHi3LTAkZ3XP4QCwHe6QGCvj+pWrAR0G4wJsgeWrLvZ
+         ss7dNjCny5l1OR+PlCrFF0u//buhDL8y1tlncYz9rOEkxEgTUj1tKtZ/MP25TH3QL79Z
+         DUBpZllpR0zha8EEgU4t0wxzCirWJLG35Ktw+EfbOQsxjqGnHMUqto0yM6D/sXWJb5rF
+         IlITRqFJo+E9VpllvZIxxdFEm1IiSSYN3LxhbkF9AzAL8ZvyMD3KvDgyYCJMz4zyYcIQ
+         llKtCLuXUQlHsv09nCUWrogAKXR7G0to89nKGRaCgsaDzzu8UhuTdYjzNGQMmDF5wR64
+         AIqA==
+X-Gm-Message-State: AOAM531I0qBAGgK4AoBQBL7vRcph62j43t2LGoPJXxb5QcwODSukL56v
+        9RoTSfWKqwv4ZC8/KVsn0nMeAw==
+X-Google-Smtp-Source: ABdhPJwnhG+q4RURga4Peq9RwwUWPja6cnlXV5h0sMrqUKnxF3s+3ta2GRXU/c+paOwv5zDODpupZw==
+X-Received: by 2002:a1c:4d14:: with SMTP id o20mr243417wmh.14.1599497481336;
+        Mon, 07 Sep 2020 09:51:21 -0700 (PDT)
+Received: from ?IPv6:2a02:8084:e84:2480:228:f8ff:fe6f:83a8? ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
+        by smtp.gmail.com with ESMTPSA id h6sm27190637wmb.22.2020.09.07.09.51.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Sep 2020 09:51:20 -0700 (PDT)
+Subject: Re: [PATCH v2 0/6] xfrm: Add compat layer
+To:     Steffen Klassert <steffen.klassert@secunet.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Florian Westphal <fw@strlen.de>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stephen Suryaputra <ssuryaextr@gmail.com>,
+        netdev@vger.kernel.org, Johannes Berg <johannes@sipsolutions.net>,
+        Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org
+References: <20200826014949.644441-1-dima@arista.com>
+ <20200907094314.GI20687@gauss3.secunet.de>
+From:   Dmitry Safonov <dima@arista.com>
+Message-ID: <2804926c-47cd-9756-065e-e17c517e31eb@arista.com>
+Date:   Mon, 7 Sep 2020 17:51:19 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200819161002.26637-3-cristian.marussi@arm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200907094314.GI20687@gauss3.secunet.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 19, 2020 at 05:10:01PM +0100, Cristian Marussi wrote:
-> Add an SCMI System Power control driver to handle platform's requests
-> carried by SYSTEM_POWER_STATE_NOTIFIER notifications: such platform
-> requested system power state transitions are handled accordingly,
-> gracefully or forcefully, depending on the notifications' message flags.
+On 9/7/20 10:43 AM, Steffen Klassert wrote:
+> On Wed, Aug 26, 2020 at 02:49:43AM +0100, Dmitry Safonov wrote:
+[..]
 > 
-> Graceful requests are by default relayed to userspace using the same
-> Kernel API used to handle ACPI Shutdown bus events: alternatively, instead,
-> a few available module parameters can be used to tunnel instead such
-> requests to userspace via signals addressed to CAD pid.
+> Thanks for the patches, looks good!
 > 
-> When handling graceful requests, grant userspace processes a maximum
-> (configurable) time to perform their duties and then revert to a forceful
-> transition, so avoiding completely timing out platform's maximum grace time
-> and hitting possible abrupt power-cuts.
-> 
-> Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
-> ----
-> V3 --> V4
-> - fix alignment checkpatch issues
-> V2 --> V3
-> - changed Kconfig to fix naming and defaulting to n
-> V1 --> V2
-> - use common event enums
-> - introduced optioanl alternative signal based comms 2 userspace
-> ---
->  drivers/firmware/Kconfig                      |  12 +
->  drivers/firmware/arm_scmi/Makefile            |   1 +
->  drivers/firmware/arm_scmi/driver.c            |   1 +
->  .../firmware/arm_scmi/scmi_power_control.c    | 389 ++++++++++++++++++
->  4 files changed, 403 insertions(+)
->  create mode 100644 drivers/firmware/arm_scmi/scmi_power_control.c
-> 
-> diff --git a/drivers/firmware/Kconfig b/drivers/firmware/Kconfig
-> index fbd785dd0513..a77545c08040 100644
-> --- a/drivers/firmware/Kconfig
-> +++ b/drivers/firmware/Kconfig
-> @@ -40,6 +40,18 @@ config ARM_SCMI_POWER_DOMAIN
->  	  will be called scmi_pm_domain. Note this may needed early in boot
->  	  before rootfs may be available.
->  
-> +config ARM_SCMI_POWER_CONTROL
-> +	bool "SCMI system power control driver"
-> +	depends on ARM_SCMI_PROTOCOL || (COMPILE_TEST && OF)
-> +	default n
-> +	help
-> +	  This enables System Power control logic which binds system shutdown or
-> +	  reboot actions to SCMI System Power notifications generated by SCP
-> +	  firmware.
-> +
-> +	  Graceful requests' methods and timeout and can be configured using
-> +	  a few available module parameters.
-> +
->  config ARM_SCPI_PROTOCOL
->  	tristate "ARM System Control and Power Interface (SCPI) Message Protocol"
->  	depends on ARM || ARM64 || COMPILE_TEST
-> diff --git a/drivers/firmware/arm_scmi/Makefile b/drivers/firmware/arm_scmi/Makefile
-> index 643f2320f976..6a0e24f9e0b1 100644
-> --- a/drivers/firmware/arm_scmi/Makefile
-> +++ b/drivers/firmware/arm_scmi/Makefile
-> @@ -7,3 +7,4 @@ scmi-transport-$(CONFIG_MAILBOX) += mailbox.o
->  scmi-transport-$(CONFIG_HAVE_ARM_SMCCC_DISCOVERY) += smc.o
->  scmi-protocols-y = base.o clock.o perf.o power.o reset.o sensors.o system.o
->  obj-$(CONFIG_ARM_SCMI_POWER_DOMAIN) += scmi_pm_domain.o
-> +obj-$(CONFIG_ARM_SCMI_POWER_CONTROL) += scmi_power_control.o
-> diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
-> index f749af6e79fc..484b3f7126b5 100644
-> --- a/drivers/firmware/arm_scmi/driver.c
-> +++ b/drivers/firmware/arm_scmi/driver.c
-> @@ -732,6 +732,7 @@ struct scmi_prot_devnames {
->  
->  static struct scmi_prot_devnames devnames[] = {
->  	{ SCMI_PROTOCOL_POWER,  { "genpd" },},
-> +	{ SCMI_PROTOCOL_SYSTEM, {"syspower" },},
+> Please fix the issue reported from 'kernel test robot' and resend.
 
-				^ missing space
-
-Split the above into separate patch as it doesn't depend on new config
-and can be added without it. I plan to merge the scmi system protocol
-part for v5.10 and the above addition of device. We need to wait for more
-feedback on the driver front especially user notification part.
+Thanks, will do!
 
 -- 
-Regards,
-Sudeep
+          Dmitry
