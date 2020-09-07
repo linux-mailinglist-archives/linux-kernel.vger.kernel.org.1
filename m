@@ -2,65 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E590625FF34
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 18:29:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B788325FF02
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 18:25:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730593AbgIGQ3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 12:29:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52418 "EHLO mail.kernel.org"
+        id S1729789AbgIGOdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 10:33:08 -0400
+Received: from mga12.intel.com ([192.55.52.136]:38051 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729891AbgIGOab (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 10:30:31 -0400
-Received: from localhost (unknown [122.167.151.194])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7398A20714;
-        Mon,  7 Sep 2020 14:18:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599488282;
-        bh=A/bIY1WckCrPgIOMj+IxDI6uQGFD84uO7r4OFtsQEjA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RA7qHpWqcT/wOyxkE9ohLbGlYvN/qrbtGw/RkZjV6AW5EMVtnMbYnmxQakUMQGOyU
-         lCRqmPMxHW5M0SBB0NQAXJk4O1/lZqk4gntcKdrWy34EbeXFtDpyT+aQ/SM8Q0w8rP
-         nA/oZWQ8f554p+mHA7NVB+GxE6eOKpDDX0HYzU9M=
-Date:   Mon, 7 Sep 2020 19:47:52 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Jonathan Marek <jonathan@marek.ca>
-Cc:     linux-arm-msm@vger.kernel.org,
-        "moderated list:SOUNDWIRE SUBSYSTEM" <alsa-devel@alsa-project.org>,
-        Andy Gross <agross@kernel.org>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sanyog Kale <sanyog.r.kale@intel.com>
-Subject: Re: [PATCH v2 0/4] soundwire: qcom: add support for mmio soundwire
- master
-Message-ID: <20200907141752.GD2639@vkoul-mobl>
-References: <20200905173905.16541-1-jonathan@marek.ca>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200905173905.16541-1-jonathan@marek.ca>
+        id S1729855AbgIGO2Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 10:28:25 -0400
+IronPort-SDR: 9i4PpFstBA+GSZ3Ig6HjujZGulonX8u5sZEPYgskb6ZOEZ3/umJRV1e9zyf86eQjFomFKVOoFH
+ KwnIGwbsmNlQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9736"; a="137525039"
+X-IronPort-AV: E=Sophos;i="5.76,402,1592895600"; 
+   d="scan'208";a="137525039"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2020 07:27:17 -0700
+IronPort-SDR: dBeBuHtNm44/5v8V1yPwJtYmTovXJotpsKTASoxtPFzjjIOwL6pD4ik6nwK5BbBR4pM7PhxK7Z
+ QHbdP6wx3zXw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,402,1592895600"; 
+   d="scan'208";a="299459691"
+Received: from yilunxu-optiplex-7050.sh.intel.com ([10.239.159.141])
+  by orsmga003.jf.intel.com with ESMTP; 07 Sep 2020 07:27:15 -0700
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     mdf@kernel.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     trix@redhat.com, lgoncalv@redhat.com, Xu Yilun <yilun.xu@intel.com>
+Subject: [PATCH v8 0/2] Modularization of DFL private feature drivers
+Date:   Mon,  7 Sep 2020 22:23:01 +0800
+Message-Id: <1599488581-16386-1-git-send-email-yilun.xu@intel.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05-09-20, 13:39, Jonathan Marek wrote:
-> This adds initial support for soundwire device on sm8250.
-> 
-> Tested with the "wsa" sdw device, which is simpler than the others.
-> 
-> v2 addresses some feedback, but I kept this series as simple as possible.
-> In particular, I didn't implement CMD_NACKED from FIFO_STATUS, because
-> the downstream driver doesn't define this bit, so I can't implement it.
-> Soundwire works without it and It shouldn't be difficult to implement later.
+This patchset makes it possible to develop independent driver modules
+for DFL private features. It also helps to leverage existing kernel
+drivers to enable some IP blocks in DFL.
 
-Applied all, thanks
+
+Patch #1: Introduce the dfl bus, then dfl devices could be supported by
+          independent dfl drivers.
+Patch #2: An example of the dfl driver for N3000 nios private feature.
+
+
+Main changes from v7:
+- remove the dfl_info_attr macro in dfl framework.
+- add sysfs interfaces for retimer mode in dfl-n3000-nios, also doc update.
+- delete duplicated sysfs interfaces description in dfl-n3000-nios doc.
+- minor fixes.
+
+
+Xu Yilun (2):
+  fpga: dfl: create a dfl bus type to support DFL devices
+  fpga: dfl: add support for N3000 Nios private feature
+
+ Documentation/ABI/testing/sysfs-bus-dfl            |  15 +
+ .../ABI/testing/sysfs-bus-dfl-devices-n3000-nios   |  49 ++
+ Documentation/fpga/dfl-n3000-nios.rst              |  73 +++
+ Documentation/fpga/index.rst                       |   1 +
+ drivers/fpga/Kconfig                               |  11 +
+ drivers/fpga/Makefile                              |   2 +
+ drivers/fpga/dfl-n3000-nios.c                      | 574 +++++++++++++++++++++
+ drivers/fpga/dfl.c                                 | 265 +++++++++-
+ drivers/fpga/dfl.h                                 |  86 +++
+ 9 files changed, 1068 insertions(+), 8 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-bus-dfl
+ create mode 100644 Documentation/ABI/testing/sysfs-bus-dfl-devices-n3000-nios
+ create mode 100644 Documentation/fpga/dfl-n3000-nios.rst
+ create mode 100644 drivers/fpga/dfl-n3000-nios.c
 
 -- 
-~Vinod
+2.7.4
+
