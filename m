@@ -2,324 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 323D025FDF3
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 18:03:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F86925FDE8
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 18:01:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730248AbgIGQD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 12:03:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56042 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730237AbgIGP77 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 11:59:59 -0400
-Received: from mail.kernel.org (ip5f5ad5cf.dynamic.kabel-deutschland.de [95.90.213.207])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5ADED21481;
-        Mon,  7 Sep 2020 15:59:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599494379;
-        bh=fBqDIBCosY6jOHB7XMMtIeL5J9D0ebJLl35D+xCMJOE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=a/oYXJTJhz0MsqLus8zCoUN+HnefoimE743vPzF2wu5XV91iicyzMr2KY7nkU6rFQ
-         Yx541b1z4ziyc6fDF+TtiEsZAG2UkEsiNxxS936cj445Di10fQaguv8wv4PjfqGw+6
-         gfWdTv1hj4LNMtLdtoZckovaU9cvRr17bO1X59xQ=
-Received: from mchehab by mail.kernel.org with local (Exim 4.94)
-        (envelope-from <mchehab@kernel.org>)
-        id 1kFJYP-00ATv2-EI; Mon, 07 Sep 2020 17:59:37 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 11/11] dts: hisilicon: add support for USB3 on Hikey 970
-Date:   Mon,  7 Sep 2020 17:59:35 +0200
-Message-Id: <3d67ad09724ea8ab39d17d083d971d404a26cf8b.1599493845.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <cover.1599493845.git.mchehab+huawei@kernel.org>
-References: <cover.1599493845.git.mchehab+huawei@kernel.org>
+        id S1730163AbgIGQBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 12:01:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57252 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730304AbgIGQAe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 12:00:34 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90E06C061573;
+        Mon,  7 Sep 2020 09:00:32 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id s13so14782832wmh.4;
+        Mon, 07 Sep 2020 09:00:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Hn3uhyO/mvlvshiIn0lt2/+PxvqSIlZH/wDSRWKnfLw=;
+        b=MZqWmEZSwOn1QtPNMaCQwsp+4GKFQ+218pY/kHay1m+bgEEiX4PTH6qLQ2c+PfM4vp
+         rOBMQw7xntrAyDFKeAvx8odWuBidDJ6IIaXe3gv4qanzAMQCJIswlyJUkIWkoM0HS4CV
+         UDW0OLUDTigf2KarshMcRs/rWuyWbGMCawNN+8VoQa3QsNT+6gFghbUVgqeumqVrhoKU
+         TOQt+OQCQrJTPmgErRR4aTt1lpvseRvZpXxcTrBN6y9TV/S/N4M70jxZA4RYIpnNGv4t
+         ZlCHOUqxbfToMSlMQjj0tTBYzgj15sgz2c3O82v5E7WUZVG1RY2Wu811sqa5oBDdBzaf
+         8u3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Hn3uhyO/mvlvshiIn0lt2/+PxvqSIlZH/wDSRWKnfLw=;
+        b=MhTZ0vyKRBENUAjAAb/qNrUBRjkQ6y+jHbPVKD/VeBbEtjnXZMPH/92MlQLpFEOOId
+         8qnCAp2F6sH9bt5V9hv6XAljUzjPd8kXr2263keQvnz9aDcJH9iHsTwMMCwNlkPcvKZU
+         KMklalz4tgU1olKvxaFcsAPuXJTV96aSW5Qxl7FnjHyGWffURzxhwwNXAERn7jnR3CSo
+         JfcUzDsfPRZMCNOzN4zKM7wyu6YvowfkPNA0GTPp22gjPYVrJyxQccWNaYToNZhFcoP/
+         UYd0mqHFHWlqrTaT1wN3fjHyGBC3RvQK39IjxVZd6L69wCgFiSDxfuuSfzlOO4OOhl09
+         jRFQ==
+X-Gm-Message-State: AOAM531iUpU/QB7s90hV0kVJkN2NfkouXMmXya0f1xjaxolbclnNPx0w
+        FwtGdrfddSOqMrNnadwBWXw=
+X-Google-Smtp-Source: ABdhPJyVv7RLE4gHPfQcWFy7FdMSPgXaXYOThSOaway/2OCfrdLBTFK3XRgmxstCIkRLQspxdQB08A==
+X-Received: by 2002:a7b:c3c8:: with SMTP id t8mr333wmj.101.1599494431299;
+        Mon, 07 Sep 2020 09:00:31 -0700 (PDT)
+Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
+        by smtp.googlemail.com with ESMTPSA id t6sm3343043wre.30.2020.09.07.09.00.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Sep 2020 09:00:30 -0700 (PDT)
+Date:   Mon, 7 Sep 2020 18:00:29 +0200
+From:   Corentin Labbe <clabbe.montjoie@gmail.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+Subject: Re: [PATCH] crypto: sun4i-ss - Fix SHA1 hash on A33-variant with BE
+ CPU
+Message-ID: <20200907160029.GC11894@Red>
+References: <202009061621.J89kO43Q%lkp@intel.com>
+ <20200907062400.GA15841@gondor.apana.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200907062400.GA15841@gondor.apana.org.au>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the USB3 bindings for Kirin 970 phy and Hikey 970 board.
+On Mon, Sep 07, 2020 at 04:24:00PM +1000, Herbert Xu wrote:
+> On Sun, Sep 06, 2020 at 04:52:24PM +0800, kernel test robot wrote:
+> >
+> > >> drivers/crypto/allwinner/sun4i-ss/sun4i-ss-hash.c:483:35: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [assigned] [usertype] v @@     got restricted __le32 [usertype] @@
+> >    drivers/crypto/allwinner/sun4i-ss/sun4i-ss-hash.c:483:35: sparse:     expected unsigned int [assigned] [usertype] v
+> >    drivers/crypto/allwinner/sun4i-ss/sun4i-ss-hash.c:483:35: sparse:     got restricted __le32 [usertype]
+> >    drivers/crypto/allwinner/sun4i-ss/sun4i-ss-hash.c:485:35: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [assigned] [usertype] v @@     got restricted __be32 [usertype] @@
+> >    drivers/crypto/allwinner/sun4i-ss/sun4i-ss-hash.c:485:35: sparse:     expected unsigned int [assigned] [usertype] v
+> >    drivers/crypto/allwinner/sun4i-ss/sun4i-ss-hash.c:485:35: sparse:     got restricted __be32 [usertype]
+> >    drivers/crypto/allwinner/sun4i-ss/sun4i-ss-hash.c:490:27: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [addressable] [assigned] [usertype] v @@     got restricted __le32 [usertype] @@
+> >    drivers/crypto/allwinner/sun4i-ss/sun4i-ss-hash.c:490:27: sparse:     expected unsigned int [addressable] [assigned] [usertype] v
+> >    drivers/crypto/allwinner/sun4i-ss/sun4i-ss-hash.c:490:27: sparse:     got restricted __le32 [usertype]
+> 
+> This appears to be a genuine bug, on big-endian CPUs at least.
+> 
+> ---8<---
+> When the hash is written out on the A33 variant, it is incorrectly
+> swabbed on big-endian CPUs, when it should simply be written out as
+> is because it's already in the right format.  This was caught by
+> sparse warnings.
+> 
+> Instead of using cpu_to_Xe32 followed by a memcpy, this patch
+> converts the final hash write to use put_unaligned instead.  This
+> simplifies the code and makes the A33 variant handling a lot clearer.
+> 
+> This patch also fixes the incorrect endianness marking on wb,
+> although this should have no effect in the genereated code.
+> 
+> Fixes: 1e02e6fbdadb ("crypto: sun4i-ss - add the A33 variant of SS")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+> 
+> diff --git a/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-hash.c b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-hash.c
+> index dc35edd90034..84f7921de577 100644
+> --- a/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-hash.c
+> +++ b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-hash.c
+> @@ -9,6 +9,7 @@
+>   * You could find the datasheet in Documentation/arm/sunxi.rst
+>   */
+>  #include "sun4i-ss.h"
+> +#include <asm/unaligned.h>
+>  #include <linux/scatterlist.h>
+>  
+>  /* This is a totally arbitrary value */
+> @@ -196,7 +197,7 @@ static int sun4i_hash(struct ahash_request *areq)
+>  	struct sg_mapping_iter mi;
+>  	int in_r, err = 0;
+>  	size_t copied = 0;
+> -	__le32 wb = 0;
+> +	u32 wb = 0;
+>  
+>  	dev_dbg(ss->dev, "%s %s bc=%llu len=%u mode=%x wl=%u h0=%0x",
+>  		__func__, crypto_tfm_alg_name(areq->base.tfm),
+> @@ -408,7 +409,7 @@ static int sun4i_hash(struct ahash_request *areq)
+>  
+>  		nbw = op->len - 4 * nwait;
+>  		if (nbw) {
+> -			wb = cpu_to_le32(*(u32 *)(op->buf + nwait * 4));
+> +			wb = le32_to_cpup((__le32 *)(op->buf + nwait * 4));
+>  			wb &= GENMASK((nbw * 8) - 1, 0);
+>  
+>  			op->byte_count += nbw;
+> @@ -417,7 +418,7 @@ static int sun4i_hash(struct ahash_request *areq)
+>  
+>  	/* write the remaining bytes of the nbw buffer */
+>  	wb |= ((1 << 7) << (nbw * 8));
+> -	bf[j++] = le32_to_cpu(wb);
+> +	((__le32 *)bf)[j++] = cpu_to_le32(wb);
+>  
+>  	/*
+>  	 * number of space to pad to obtain 64o minus 8(size) minus 4 (final 1)
+> @@ -479,16 +480,16 @@ static int sun4i_hash(struct ahash_request *areq)
+>  	/* Get the hash from the device */
+>  	if (op->mode == SS_OP_SHA1) {
+>  		for (i = 0; i < 5; i++) {
+> +			v = readl(ss->base + SS_MD0 + i * 4);
+>  			if (ss->variant->sha1_in_be)
+> -				v = cpu_to_le32(readl(ss->base + SS_MD0 + i * 4));
+> +				put_unaligned(v, areq->result + i * 4);
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- .../boot/dts/hisilicon/hi3670-hikey970.dts    | 102 ++++++++++++++++++
- arch/arm64/boot/dts/hisilicon/hi3670.dtsi     |  58 ++++++++++
- drivers/misc/hisi_hikey_usb.c                 |  29 ++---
- 3 files changed, 167 insertions(+), 22 deletions(-)
+The put_unaligned should be _le32.
 
-diff --git a/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts b/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
-index f218acceec0b..744cdbb9867a 100644
---- a/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
-+++ b/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
-@@ -62,6 +62,29 @@ wlan_en: wlan-en-1-8v {
- 		startup-delay-us = <70000>;
- 		enable-active-high;
- 	};
-+	hikey_usbhub: hikey_usbhub {
-+		compatible = "hisilicon,kirin970_hikey_usbhub";
-+
-+		typec-vbus-gpios = <&gpio26 1 0>;
-+		otg-switch-gpios = <&gpio4 2 0>;
-+		hub_reset_en_gpio = <&gpio0 3 0>;
-+		hub-vdd-supply = <&ldo17>;
-+		usb-role-switch;
-+
-+		port {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			hikey_usb_ep0: endpoint@0 {
-+				reg = <0>;
-+				remote-endpoint = <&dwc3_role_switch>;
-+			};
-+			hikey_usb_ep1: endpoint@1 {
-+				reg = <1>;
-+				remote-endpoint = <&rt1711h_ep>;
-+			};
-+		};
-+	};
- };
- 
- /*
-@@ -440,6 +463,57 @@ &uart6 {
- 	status = "okay";
- };
- 
-+&i2c1 {
-+	status = "okay";
-+
-+	rt1711h: rt1711h@4e {
-+		compatible = "richtek,rt1711h";
-+		reg = <0x4e>;
-+		status = "ok";
-+		interrupt-parent = <&gpio27>;
-+		interrupts = <5 IRQ_TYPE_LEVEL_LOW>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&usb_cfg_func>;
-+
-+		usb_con: connector {
-+			compatible = "usb-c-connector";
-+			label = "USB-C";
-+			data-role = "dual";
-+			power-role = "dual";
-+			try-power-role = "sink";
-+			source-pdos = <PDO_FIXED(5000, 500, PDO_FIXED_USB_COMM)>;
-+			sink-pdos = <PDO_FIXED(5000, 500, PDO_FIXED_USB_COMM)
-+				PDO_VAR(5000, 5000, 1000)>;
-+			op-sink-microwatt = <10000000>;
-+
-+			ports {
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				port@1 {
-+					reg = <1>;
-+					usb_con_ss: endpoint {
-+						remote-endpoint = <&dwc3_ss>;
-+					};
-+				};
-+			};
-+		};
-+		port {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			rt1711h_ep: endpoint@0 {
-+				reg = <0>;
-+				remote-endpoint = <&hikey_usb_ep1>;
-+			};
-+		};
-+	};
-+};
-+
-+&i2c2 {
-+	/* USB HUB is on this bus at address 0x44 */
-+	status = "okay";
-+};
-+
- &i2c4 {
- 	status = "okay";
- 
-@@ -469,3 +543,31 @@ adv7533_in: endpoint {
- 		};
- 	};
- };
-+
-+&dwc3 { /* USB */
-+	dr_mode = "otg";
-+	maximum-speed = "super-speed";
-+	phy_type = "utmi";
-+	snps,dis-del-phy-power-chg-quirk;
-+	snps,dis_u2_susphy_quirk;
-+	snps,dis_u3_susphy_quirk;
-+	snps,tx_de_emphasis_quirk;
-+	snps,tx_de_emphasis = <1>;
-+	snps,dis-split-quirk;
-+	snps,gctl-reset-quirk;
-+	usb-role-switch;
-+	role-switch-default-mode = "host";
-+	port {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		dwc3_role_switch: endpoint@0 {
-+			reg = <0>;
-+			remote-endpoint = <&hikey_usb_ep0>;
-+		};
-+
-+		dwc3_ss: endpoint@1 {
-+			reg = <1>;
-+			remote-endpoint = <&usb_con_ss>;
-+		};
-+	};
-+};
-diff --git a/arch/arm64/boot/dts/hisilicon/hi3670.dtsi b/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
-index e2b2e21295a7..bd88a67ec4a9 100644
---- a/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
-+++ b/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
-@@ -8,6 +8,7 @@
- 
- #include <dt-bindings/interrupt-controller/arm-gic.h>
- #include <dt-bindings/clock/hi3670-clock.h>
-+#include <dt-bindings/usb/pd.h>
- 
- / {
- 	compatible = "hisilicon,hi3670";
-@@ -800,5 +801,62 @@ i2c4: i2c@fdf0d000 {
- 			pinctrl-0 = <&i2c4_pmx_func &i2c4_cfg_func>;
- 			status = "disabled";
- 		};
-+
-+		usb3_otg_bc: usb3_otg_bc@ff200000 {
-+			compatible = "syscon", "simple-mfd";
-+			reg = <0x0 0xff200000 0x0 0x1000>;
-+
-+			usb_phy: usbphy {
-+				compatible = "hisilicon,hi3670-usb-phy";
-+				#phy-cells = <0>;
-+				hisilicon,pericrg-syscon = <&crg_ctrl>;
-+				hisilicon,pctrl-syscon = <&pctrl>;
-+				hisilicon,sctrl-syscon = <&sctrl>;
-+				hisilicon,eye-diagram-param = <0xFDFEE4>;
-+				hisilicon,tx-vboost-lvl = <0x5>;
-+
-+				phy-supply = <&ldo17>;
-+			};
-+		};
-+
-+		usb31_misc_rst: usb31_misc_rst_controller {
-+			compatible = "hisilicon,hi3660-reset";
-+			#reset-cells = <2>;
-+			hisi,rst-syscon = <&usb3_otg_bc>;
-+		};
-+
-+		usb3: hisi_dwc3 {
-+			compatible = "hisilicon,hi3670-dwc3";
-+			#address-cells = <2>;
-+			#size-cells = <2>;
-+			ranges;
-+
-+			clocks = <&crg_ctrl HI3670_CLK_GATE_ABB_USB>,
-+				  <&crg_ctrl HI3670_HCLK_GATE_USB3OTG>,
-+				  <&crg_ctrl HI3670_CLK_GATE_USB3OTG_REF>,
-+				  <&crg_ctrl HI3670_ACLK_GATE_USB3DVFS>;
-+			clock-names = "clk_gate_abb_usb",
-+				      "hclk_gate_usb3otg",
-+				      "clk_gate_usb3otg_ref",
-+				      "aclk_gate_usb3dvfs";
-+
-+			assigned-clocks = <&crg_ctrl HI3670_ACLK_GATE_USB3DVFS>;
-+			assigned-clock-rates = <238000000>;
-+			resets = <&crg_rst 0x90 6>,
-+				 <&crg_rst 0x90 7>,
-+				 <&usb31_misc_rst 0xA0 8>,
-+				 <&usb31_misc_rst 0xA0 9>;
-+
-+			dwc3: dwc3@ff100000 {
-+				compatible = "snps,dwc3";
-+				reg = <0x0 0xff100000 0x0 0x100000>;
-+
-+				interrupts = <0 159 IRQ_TYPE_LEVEL_HIGH>,
-+					    <0 161 IRQ_TYPE_LEVEL_HIGH>;
-+
-+				phys = <&usb_phy>;
-+				phy-names = "usb3-phy";
-+			};
-+		};
- 	};
- };
-diff --git a/drivers/misc/hisi_hikey_usb.c b/drivers/misc/hisi_hikey_usb.c
-index b884680867a5..2ddd4072788d 100644
---- a/drivers/misc/hisi_hikey_usb.c
-+++ b/drivers/misc/hisi_hikey_usb.c
-@@ -35,6 +35,7 @@ struct hisi_hikey_usb {
- 	struct gpio_desc *otg_switch;
- 	struct gpio_desc *typec_vbus;
- 	struct gpio_desc *hub_vbus;
-+	struct gpio_desc *reset;
- 
- 	struct regulator *regulator;
- 
-@@ -53,10 +54,8 @@ static void hub_power_ctrl(struct hisi_hikey_usb *hisi_hikey_usb, int value)
- {
- 	int ret, status;
- 
--	if (!hisi_hikey_usb->hub_vbus)
--		return;
--
--	gpiod_set_value_cansleep(hisi_hikey_usb->hub_vbus, value);
-+	if (hisi_hikey_usb->hub_vbus)
-+		gpiod_set_value_cansleep(hisi_hikey_usb->hub_vbus, value);
- 
- 	if (!hisi_hikey_usb->regulator)
- 		return;
-@@ -152,7 +151,6 @@ static int hisi_hikey_usb_parse_kirin970(struct platform_device *pdev,
- 					 struct hisi_hikey_usb *hisi_hikey_usb)
- {
- 	struct regulator *regulator;
--	int hub_reset_en_gpio;
- 	int ret;
- 
- 	regulator = devm_regulator_get(&pdev->dev, "hub-vdd");
-@@ -169,23 +167,10 @@ static int hisi_hikey_usb_parse_kirin970(struct platform_device *pdev,
- 	}
- 	hisi_hikey_usb->regulator = regulator;
- 
--	hub_reset_en_gpio = of_get_named_gpio(pdev->dev.of_node,
--					      "hub_reset_en_gpio", 0);
--	if (!gpio_is_valid(hub_reset_en_gpio)) {
--		dev_err(&pdev->dev, "Failed to get a valid reset gpio\n");
--		return -ENODEV;
--	}
--
--	ret = devm_gpio_request(&pdev->dev, hub_reset_en_gpio,
--				"hub_reset_en_gpio");
--	if (ret) {
--		dev_err(&pdev->dev, "Failed to request the reset gpio\n");
--		return ret;
--	}
--	ret = gpio_direction_output(hub_reset_en_gpio, 1);
--	if (ret)
--		dev_err(&pdev->dev,
--			"Failed to set the direction of the reset gpio\n");
-+	hisi_hikey_usb->reset = devm_gpiod_get(&pdev->dev, "hub_reset_en_gpio",
-+					       GPIOD_OUT_HIGH);
-+	if (IS_ERR(hisi_hikey_usb->reset))
-+		return PTR_ERR(hisi_hikey_usb->reset);
- 
- 	return ret;
- }
--- 
-2.26.2
+This fix the modprobe tcrypt fail.
 
