@@ -2,145 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E230A25FBB1
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 15:54:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5995225FBC5
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 16:03:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729543AbgIGNxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 09:53:54 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:53338 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729677AbgIGNri (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 09:47:38 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 2DADF59F934B4E5D052B;
-        Mon,  7 Sep 2020 21:47:04 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 7 Sep 2020 21:46:54 +0800
-From:   Chen Zhou <chenzhou10@huawei.com>
-To:     <catalin.marinas@arm.com>, <will@kernel.org>,
-        <james.morse@arm.com>, <tglx@linutronix.de>, <mingo@redhat.com>,
-        <dyoung@redhat.com>, <bhe@redhat.com>, <corbet@lwn.net>,
-        <John.P.donnelly@oracle.com>, <prabhakar.pkin@gmail.com>,
-        <bhsharma@redhat.com>
-CC:     <horms@verge.net.au>, <robh+dt@kernel.org>, <arnd@arndb.de>,
-        <nsaenzjulienne@suse.de>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <kexec@lists.infradead.org>,
-        <linux-doc@vger.kernel.org>, <guohanjun@huawei.com>,
-        <xiexiuqi@huawei.com>, <huawei.libin@huawei.com>,
-        <wangkefeng.wang@huawei.com>, <chenzhou10@huawei.com>
-Subject: [PATCH v12 8/9] arm64: kdump: add memory for devices by DT property linux,usable-memory-range
-Date:   Mon, 7 Sep 2020 21:47:44 +0800
-Message-ID: <20200907134745.25732-9-chenzhou10@huawei.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200907134745.25732-1-chenzhou10@huawei.com>
-References: <20200907134745.25732-1-chenzhou10@huawei.com>
+        id S1729751AbgIGODS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 10:03:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729731AbgIGN56 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 09:57:58 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED9E8C061575
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 06:46:18 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id z4so15891450wrr.4
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 06:46:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=QqRdXLbNsyiLC26IMPUlFbXwycGvbHh7pYgLoGLtyg4=;
+        b=sDvpzil3Gf7CH1I3z9v3YFEFyUo9UV34Ykm8/kSd127pXJnk1nBa2qMLorc9yEpNic
+         rTe56xsIpMN/+Rnuf95br7T9aB1cPAxXhfICjV4uBKEbxoPE9Svpqge9nT2aEqxZ8ADM
+         QT2UIoMDiNahSLGChc3utN8GNOBUWdl9Yijza4/+/KTjoI2Pve3k3KVnMREi+EcmEkxy
+         m4XULLtYAZQ4vRh+ZUsp1ts4XBE1sq4tN1hzJpEZ5ep4Pj9P9awfxsj3t71v8pAjnw+6
+         1aeaiA2YbMgH1kp7mHwYBwEZ3SIo7Cn/jmEWaZLtrwojKkZAdyrW0dH9GngyWN4p1e5j
+         bl/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=QqRdXLbNsyiLC26IMPUlFbXwycGvbHh7pYgLoGLtyg4=;
+        b=ZDrbLYF1XmFEqfm+I9a8QthD2bEIkrwjN5BwdmSKhk6W48lhE2tVbVaHwH12VOTBuo
+         ermgjcse+9TMy5ShwkgEmKeja2QyeItmkeQd0ms4TIALd+0o1YgVrxJ7JyzZb+WerQa6
+         qVBoMxHyQm60IN/oguFPIJ7t93YAjM74JPagWuUAANdML3PP4qCuxE/HTfH8W6r9y80v
+         hWP/ba0zorTBkvqC//7M6BnMjaiFr30NazZTiQV6GhT788Pka4VlJr8aolIFvYjPoLdV
+         2kGmmtOxTegjHeoXCJkSYmOvja7MYu1BvYGvBzkVYW4YJTTnqDK0u+u1DqKDGikRCGZl
+         i0fQ==
+X-Gm-Message-State: AOAM5334IVIAndH4CjRxxwn7wSLrYVIRzod+hbZt6wWkKfZFidHAYW+f
+        plciuLZi9XKkFBKKjTezpxxmHw==
+X-Google-Smtp-Source: ABdhPJz2iMdjK+R9m77aJniknbmvs6Ce2El/pj/PY4PWLuc+p8JZFWdzfM1Vy3/KUkXx422UrxG1oA==
+X-Received: by 2002:adf:ec47:: with SMTP id w7mr2796302wrn.175.1599486376968;
+        Mon, 07 Sep 2020 06:46:16 -0700 (PDT)
+Received: from holly.lan (cpc141214-aztw34-2-0-cust773.18-1.cable.virginm.net. [86.9.19.6])
+        by smtp.gmail.com with ESMTPSA id l8sm28893288wrx.22.2020.09.07.06.46.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Sep 2020 06:46:16 -0700 (PDT)
+Date:   Mon, 7 Sep 2020 14:46:14 +0100
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Davidlohr Bueso <dave@stgolabs.net>
+Cc:     jason.wessel@windriver.com, dianders@chromium.org, oleg@redhat.com,
+        kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        Davidlohr Bueso <dbueso@suse.de>
+Subject: Re: [PATCH -next] kdb: Use newer api for tasklist scanning
+Message-ID: <20200907134614.guc4tzj3knnihbe4@holly.lan>
+References: <20200831193435.22141-1-dave@stgolabs.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200831193435.22141-1-dave@stgolabs.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When reserving crashkernel in high memory, some low memory is reserved
-for crash dump kernel devices and never mapped by the first kernel.
-This memory range is advertised to crash dump kernel via DT property
-under /chosen,
-	linux,usable-memory-range = <BASE1 SIZE1 [BASE2 SIZE2]>
+On Mon, Aug 31, 2020 at 12:34:35PM -0700, Davidlohr Bueso wrote:
+> This kills the custom kdb_do_each_thread/kdb_while_each_thread
+> calls used in kdb to iterate through all tasks. It is obsolete
+> and racy to use tsk->thread_group, although in this particular
 
-We reused the DT property linux,usable-memory-range and made the low
-memory region as the second range "BASE2 SIZE2", which keeps compatibility
-with existing user-space and older kdump kernels.
+No objections to the change but kdb doesn't use tsk->thread_group,
+it uses do_each_thread/while_each_thread. Can we change this to
+say that is osbsolete and racy to use while_each_thread() (that's
+pretty much what the description of the patch that introduced
+for_each_thread said)?
 
-Crash dump kernel reads this property at boot time and call memblock_add()
-to add the low memory region after memblock_cap_memory_range() has been
-called.
+Additionally the debug_core uses do_each_thread/while_each_thread.
+Presumably that would like to be changed as well?
 
-Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
----
- arch/arm64/mm/init.c | 43 +++++++++++++++++++++++++++++++++----------
- 1 file changed, 33 insertions(+), 10 deletions(-)
 
-diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-index e56a0e5d5b77..2af8c38279d9 100644
---- a/arch/arm64/mm/init.c
-+++ b/arch/arm64/mm/init.c
-@@ -76,6 +76,15 @@ static void __init reserve_crashkernel(void)
- }
- #endif
- 
-+/*
-+ * The main usage of linux,usable-memory-range is for crash dump kernel.
-+ * Originally, the number of usable-memory regions is one. Now there may
-+ * be two regions, low region and high region.
-+ * To make compatibility with existing user-space and older kdump, the low
-+ * region is always the last range of linux,usable-memory-range if exist.
-+ */
-+#define MAX_USABLE_RANGES	2
-+
- #ifdef CONFIG_CRASH_DUMP
- static int __init early_init_dt_scan_elfcorehdr(unsigned long node,
- 		const char *uname, int depth, void *data)
-@@ -191,9 +200,9 @@ early_param("mem", early_mem);
- static int __init early_init_dt_scan_usablemem(unsigned long node,
- 		const char *uname, int depth, void *data)
- {
--	struct memblock_region *usablemem = data;
--	const __be32 *reg;
--	int len;
-+	struct memblock_region *usable_rgns = data;
-+	const __be32 *reg, *endp;
-+	int len, nr = 0;
- 
- 	if (depth != 1 || strcmp(uname, "chosen") != 0)
- 		return 0;
-@@ -202,22 +211,36 @@ static int __init early_init_dt_scan_usablemem(unsigned long node,
- 	if (!reg || (len < (dt_root_addr_cells + dt_root_size_cells)))
- 		return 1;
- 
--	usablemem->base = dt_mem_next_cell(dt_root_addr_cells, &reg);
--	usablemem->size = dt_mem_next_cell(dt_root_size_cells, &reg);
-+	endp = reg + (len / sizeof(__be32));
-+	while ((endp - reg) >= (dt_root_addr_cells + dt_root_size_cells)) {
-+		usable_rgns[nr].base = dt_mem_next_cell(dt_root_addr_cells, &reg);
-+		usable_rgns[nr].size = dt_mem_next_cell(dt_root_size_cells, &reg);
-+
-+		if (++nr >= MAX_USABLE_RANGES)
-+			break;
-+	}
- 
- 	return 1;
- }
- 
- static void __init fdt_enforce_memory_region(void)
- {
--	struct memblock_region reg = {
--		.size = 0,
-+	struct memblock_region usable_rgns[MAX_USABLE_RANGES] = {
-+		{ .size = 0 },
-+		{ .size = 0 }
- 	};
- 
--	of_scan_flat_dt(early_init_dt_scan_usablemem, &reg);
-+	of_scan_flat_dt(early_init_dt_scan_usablemem, &usable_rgns);
- 
--	if (reg.size)
--		memblock_cap_memory_range(reg.base, reg.size);
-+	/*
-+	 * The first range of usable-memory regions is for crash dump
-+	 * kernel with only one region or for high region with two regions,
-+	 * the second range is dedicated for low region if exist.
-+	 */
-+	if (usable_rgns[0].size)
-+		memblock_cap_memory_range(usable_rgns[0].base, usable_rgns[0].size);
-+	if (usable_rgns[1].size)
-+		memblock_add(usable_rgns[1].base, usable_rgns[1].size);
- }
- 
- void __init arm64_memblock_init(void)
--- 
-2.20.1
+Daniel.
 
+
+
+> case there is no concurrency so it doesn't matter. Still, lets
+> trivially replace it for the newer one, maintaining semantics,
+> of course.
+> 
+> Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
+> ---
+>  kernel/debug/kdb/kdb_bt.c      | 4 ++--
+>  kernel/debug/kdb/kdb_main.c    | 8 ++++----
+>  kernel/debug/kdb/kdb_private.h | 4 ----
+>  3 files changed, 6 insertions(+), 10 deletions(-)
+> 
+> diff --git a/kernel/debug/kdb/kdb_bt.c b/kernel/debug/kdb/kdb_bt.c
+> index 18e03aba2cfc..1f9f0e47aeda 100644
+> --- a/kernel/debug/kdb/kdb_bt.c
+> +++ b/kernel/debug/kdb/kdb_bt.c
+> @@ -149,14 +149,14 @@ kdb_bt(int argc, const char **argv)
+>  				return 0;
+>  		}
+>  		/* Now the inactive tasks */
+> -		kdb_do_each_thread(g, p) {
+> +		for_each_process_thread(g, p) {
+>  			if (KDB_FLAG(CMD_INTERRUPT))
+>  				return 0;
+>  			if (task_curr(p))
+>  				continue;
+>  			if (kdb_bt1(p, mask, btaprompt))
+>  				return 0;
+> -		} kdb_while_each_thread(g, p);
+> +		}
+>  	} else if (strcmp(argv[0], "btp") == 0) {
+>  		struct task_struct *p;
+>  		unsigned long pid;
+> diff --git a/kernel/debug/kdb/kdb_main.c b/kernel/debug/kdb/kdb_main.c
+> index 5c7949061671..930ac1b25ec7 100644
+> --- a/kernel/debug/kdb/kdb_main.c
+> +++ b/kernel/debug/kdb/kdb_main.c
+> @@ -2299,10 +2299,10 @@ void kdb_ps_suppressed(void)
+>  		if (kdb_task_state(p, mask_I))
+>  			++idle;
+>  	}
+> -	kdb_do_each_thread(g, p) {
+> +	for_each_process_thread(g, p) {
+>  		if (kdb_task_state(p, mask_M))
+>  			++daemon;
+> -	} kdb_while_each_thread(g, p);
+> +	}
+>  	if (idle || daemon) {
+>  		if (idle)
+>  			kdb_printf("%d idle process%s (state I)%s\n",
+> @@ -2370,12 +2370,12 @@ static int kdb_ps(int argc, const char **argv)
+>  	}
+>  	kdb_printf("\n");
+>  	/* Now the real tasks */
+> -	kdb_do_each_thread(g, p) {
+> +	for_each_process_thread(g, p) {
+>  		if (KDB_FLAG(CMD_INTERRUPT))
+>  			return 0;
+>  		if (kdb_task_state(p, mask))
+>  			kdb_ps1(p);
+> -	} kdb_while_each_thread(g, p);
+> +	}
+>  
+>  	return 0;
+>  }
+> diff --git a/kernel/debug/kdb/kdb_private.h b/kernel/debug/kdb/kdb_private.h
+> index 2e296e4a234c..a4281fb99299 100644
+> --- a/kernel/debug/kdb/kdb_private.h
+> +++ b/kernel/debug/kdb/kdb_private.h
+> @@ -230,10 +230,6 @@ extern struct task_struct *kdb_curr_task(int);
+>  
+>  #define kdb_task_has_cpu(p) (task_curr(p))
+>  
+> -/* Simplify coexistence with NPTL */
+> -#define	kdb_do_each_thread(g, p) do_each_thread(g, p)
+> -#define	kdb_while_each_thread(g, p) while_each_thread(g, p)
+> -
+>  #define GFP_KDB (in_interrupt() ? GFP_ATOMIC : GFP_KERNEL)
+>  
+>  extern void *debug_kmalloc(size_t size, gfp_t flags);
+> -- 
+> 2.26.2
