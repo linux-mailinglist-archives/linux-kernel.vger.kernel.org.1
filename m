@@ -2,119 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5623225F971
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 13:29:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B66625F993
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 13:35:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729045AbgIGL3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 07:29:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42854 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728780AbgIGLYU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 07:24:20 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4351EC061575
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 04:24:16 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id x14so15374742wrl.12
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 04:24:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bNFvxhnA0NnzUC7lrNJrUKsLLmz7/HC2qOyPmU9vUl0=;
-        b=uzUc11E0gok7gl6O5NNy2E0O4w9nQRfSU0c4U5Pb0vlWerd2W52/oGEaCOOf21VZvz
-         qbUWgc2jjvIpozWCfp5pFMHduvVHPw9c48sqGnfyIUUgJG8BtPryhVoO1vbQrZt1/2t5
-         BGv5rA9Q15nMiYW8wLCBNm91gw329WdwEEbDzBSo09EzeCoL4z5eMUY/Mab/sG1oaIfF
-         7eTtOIxJhimNEA8xKA/QRtsNsbmswuWJftIDEE+4nua2bEgR1PPGWBqjJRJd5dr51Jy+
-         m2vaxKwhT9k2SZY3Dh7QIltaGj2udCVRKw+lhS67Vb9tGQFVsD564QdWXYAzA5u+OU1S
-         EBDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bNFvxhnA0NnzUC7lrNJrUKsLLmz7/HC2qOyPmU9vUl0=;
-        b=FzknNLtQXdPBWbMi9oiABKGTy5kgSlh0zzEQDwFIVMpW6lyVrCA5UzbA2eERA10ltc
-         sYp7o46PodIDXwXFKg+r5dLZ4WNvZd067HNL6/yRYbAnb3+VfqJ1ivZYOZ2bgopIOtYz
-         4gC0Yiiu4s3a2W+rHqKcfAM/JwGM1aLaFwVVm8vMoBFvTqpnt3bnzanpvg1i0RToY1ye
-         hbdF0wdkSXqxMxCn+fp/b9IupCKDc5n+jpIeUupbaFMibAOAax+7rP4aewkqMAflFbOf
-         vrfFuniJqnoT80P52gZj6eU6rYsQE/VRf6xToVwOlctGi1/QeikXTXxNtbebMivjVOje
-         So0w==
-X-Gm-Message-State: AOAM530bRpRF1AEEnOKSy7E29rF1EkwD9pq7G1TClZFly28r87+ACJUi
-        P6Q1Mm06Gt3FBb7P/+Sj8alsDO8QSG4Vr38Tp1k=
-X-Google-Smtp-Source: ABdhPJy8sgbC/sJ9Rm/BrKqEAwV59GWXOOZ8VFQbp18vsLtPw1wPlO3O6XyZjZZQOJ5PDx5K8cjviVYWAdsvQNWMSFI=
-X-Received: by 2002:a5d:630a:: with SMTP id i10mr20495093wru.137.1599477853937;
- Mon, 07 Sep 2020 04:24:13 -0700 (PDT)
+        id S1729142AbgIGLfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 07:35:40 -0400
+Received: from foss.arm.com ([217.140.110.172]:33510 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729135AbgIGLfH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 07:35:07 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C99461045;
+        Mon,  7 Sep 2020 04:02:13 -0700 (PDT)
+Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5E3693F66E;
+        Mon,  7 Sep 2020 04:02:12 -0700 (PDT)
+Date:   Mon, 7 Sep 2020 12:02:07 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Stanimir Varbanov <svarbanov@mm-sol.com>, stable@vger.kernel.org,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI: qcom: Make sure PCIe is reset before init for rev
+ 2.1.0
+Message-ID: <20200907110207.GA7573@e121166-lin.cambridge.arm.com>
+References: <20200901124955.137-1-ansuelsmth@gmail.com>
 MIME-Version: 1.0
-References: <20200818052936.10995-1-joshi.k@samsung.com> <CGME20200818053252epcas5p4ee61d64bba5f6a131105e40330984f5e@epcas5p4.samsung.com>
- <20200818052936.10995-2-joshi.k@samsung.com> <20200818071141.GA2544@lst.de>
- <CA+1E3rJg0QOX4YgwWJf8Sm=6C-un4TsRX00E31fbFFPT9LYhXg@mail.gmail.com>
- <CY4PR04MB375148979AA403CF47EADE0BE75D0@CY4PR04MB3751.namprd04.prod.outlook.com>
- <CA+1E3r+C2KQENu=fO_+FZoUEvqZrAQcxziwSGt=FVidv85KQxA@mail.gmail.com>
- <CY4PR04MB3751B077D152A80B19236C20E75D0@CY4PR04MB3751.namprd04.prod.outlook.com>
- <CA+1E3r+0+jThD2KEu-d4rB=C4xL3Bb+cD=jUDbsGGBKR_GMpfQ@mail.gmail.com> <CY4PR04MB375151ABDF83FE0A9804C3EDE7280@CY4PR04MB3751.namprd04.prod.outlook.com>
-In-Reply-To: <CY4PR04MB375151ABDF83FE0A9804C3EDE7280@CY4PR04MB3751.namprd04.prod.outlook.com>
-From:   Kanchan Joshi <joshiiitr@gmail.com>
-Date:   Mon, 7 Sep 2020 16:53:47 +0530
-Message-ID: <CA+1E3r+sN8n6-ibJ1v_S5HEdfhbJ8yAYTm5ja=0M8ng2ujLZ4g@mail.gmail.com>
-Subject: Re: [PATCH 1/2] nvme: set io-scheduler requirement for ZNS
-To:     Damien Le Moal <Damien.LeMoal@wdc.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Kanchan Joshi <joshi.k@samsung.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        "sagi@grimberg.me" <sagi@grimberg.me>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        Keith Busch <kbusch@kernel.org>,
-        Selvakumar S <selvakuma.s1@samsung.com>,
-        Javier Gonzalez <javier.gonz@samsung.com>,
-        Nitesh Shetty <nj.shetty@samsung.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200901124955.137-1-ansuelsmth@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 7, 2020 at 1:52 PM Damien Le Moal <Damien.LeMoal@wdc.com> wrote:
->
-> On 2020/09/07 16:01, Kanchan Joshi wrote:
-> >> Even for SMR, the user is free to set the elevator to none, which disables zone
-> >> write locking. Issuing writes correctly then becomes the responsibility of the
-> >> application. This can be useful for settings that for instance use NCQ I/O
-> >> priorities, which give better results when "none" is used.
-> >
-> > Was it not a problem that even if the application is sending writes
-> > correctly, scheduler may not preserve the order.
-> > And even when none is being used, re-queue can happen which may lead
-> > to different ordering.
->
-> "Issuing writes correctly" means doing small writes, one per zone at most. In
-> that case, it does not matter if the block layer reorders writes. Per zone, they
-> will still be sequential.
->
-> >> As far as I know, zoned drives are always used in tightly controlled
-> >> environments. Problems like "does not know what other applications would be
-> >> doing" are non-existent. Setting up the drive correctly for the use case at hand
-> >> is a sysadmin/server setup problem, based on *the* application (singular)
-> >> requirements.
-> >
-> > Fine.
-> > But what about the null-block-zone which sets MQ-deadline but does not
-> > actually use write-lock to avoid race among multiple appends on a
-> > zone.
-> > Does that deserve a fix?
->
-> In nullblk, commands are executed under a spinlock. So there is no concurrency
-> problem. The spinlock serializes the execution of all commands. null_blk zone
-> append emulation thus does not need to take the scheduler level zone write lock
-> like scsi does.
+On Tue, Sep 01, 2020 at 02:49:54PM +0200, Ansuel Smith wrote:
+> Qsdk U-Boot can incorrectly leave the PCIe interface in an undefined
+> state if bootm command is used instead of bootipq. This is caused by the
+> not deinit of PCIe when bootm is called. Reset the PCIe before init
+> anyway to fix this U-Boot bug.
+> 
+> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> Fixes: 82a823833f4e ("PCI: qcom: Add Qualcomm PCIe controller driver")
+> Cc: stable@vger.kernel.org # v4.19+
+> ---
+>  drivers/pci/controller/dwc/pcie-qcom.c | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
 
-I do not see spinlock for that. There is one "nullb->lock", but its
-scope is limited to memory-backed handling.
-For concurrent zone-appends on a zone, multiple threads may set the
-"same" write-pointer into incoming request(s).
-Are you referring to any other spinlock that can avoid "same wp being
-returned to multiple threads".
+Applied to pci/qcom, thanks.
 
--- 
-Kanchan
+Lorenzo
+
+> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
+> index 3aac77a295ba..82336bbaf8dc 100644
+> --- a/drivers/pci/controller/dwc/pcie-qcom.c
+> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
+> @@ -302,6 +302,9 @@ static void qcom_pcie_deinit_2_1_0(struct qcom_pcie *pcie)
+>  	reset_control_assert(res->por_reset);
+>  	reset_control_assert(res->ext_reset);
+>  	reset_control_assert(res->phy_reset);
+> +
+> +	writel(1, pcie->parf + PCIE20_PARF_PHY_CTRL);
+> +
+>  	regulator_bulk_disable(ARRAY_SIZE(res->supplies), res->supplies);
+>  }
+>  
+> @@ -314,6 +317,16 @@ static int qcom_pcie_init_2_1_0(struct qcom_pcie *pcie)
+>  	u32 val;
+>  	int ret;
+>  
+> +	/* reset the PCIe interface as uboot can leave it undefined state */
+> +	reset_control_assert(res->pci_reset);
+> +	reset_control_assert(res->axi_reset);
+> +	reset_control_assert(res->ahb_reset);
+> +	reset_control_assert(res->por_reset);
+> +	reset_control_assert(res->ext_reset);
+> +	reset_control_assert(res->phy_reset);
+> +
+> +	writel(1, pcie->parf + PCIE20_PARF_PHY_CTRL);
+> +
+>  	ret = regulator_bulk_enable(ARRAY_SIZE(res->supplies), res->supplies);
+>  	if (ret < 0) {
+>  		dev_err(dev, "cannot enable regulators\n");
+> -- 
+> 2.27.0
+> 
