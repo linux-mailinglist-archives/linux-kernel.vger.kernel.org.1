@@ -2,114 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D4ED26038A
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:51:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6343A260399
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:51:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729373AbgIGRu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 13:50:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46290 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729201AbgIGRuw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 13:50:52 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77D09C061575;
-        Mon,  7 Sep 2020 10:50:51 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id g4so13541585edk.0;
-        Mon, 07 Sep 2020 10:50:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=gGQvma3nuTyV30O0fS82yIIMXNwAZqpMzL1inVOBxj4=;
-        b=XGCwG1Z2WhE6UQB2Gd6Nad0mHac2b18Vnwv77jPr3By13c0IMK8gvuclW1VW9fS+h3
-         0HHSOTlUH7fEEO4FG0AuejAaxBO+WFqITVDW2mZroL1v0GuZdPSK6GV0iOJKaryKVgHd
-         lE8KfZeXi7K9OqhuBCAJbMDTvd8sIJTU/I0z4UbVhVM4L9EuSIcl0KBxkMyLjtsvRl+c
-         vc6wer6PEzK1iTS/sOdY5NdC2KSDhTWZMDvfdDHEjFUYj9o/9++fxqUrvRRUOQdcpQpG
-         KSWZZVIp73AZjXJ20PoYB0SDmKQ+boxjhPE/+MPjSFM7Ucfcr3DI4fQo8SSQ3I7h2FDU
-         ryVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=gGQvma3nuTyV30O0fS82yIIMXNwAZqpMzL1inVOBxj4=;
-        b=ZGO6lNOrw4tgS58NQG3PBp5lLn492FunmVVa31qWt34T1U0q9cJmkbdLwWWAn3dumr
-         +sn5xSOeeaoiZ/90KUoy7OwDM6ZY/q9Uw72LhAKLNzU0We/3PTgMo9blvfExfeK7vtms
-         1a9b781Ok6is1UqFIfRaPxvhW5kyrfosYyRH7lmciS23WJmKZ7Y4Wwv/lLhE5+66gQ24
-         0b75f3JBgeX92GNzE2pUvJu37Rq/WJmrf8rQ8Bu64lmQSYzsSfJDVyOU09GoEfbQ6Nf8
-         +RwH3kIiu69ihcQEH2ZcS5NqkAF4CqSAAPoPdW75RXph5Ya5YJuDaSkbjxZGfSL7IQVj
-         CRfA==
-X-Gm-Message-State: AOAM530mH4BB+jnvAIA9j//TQUBYd8LnHfBU62/E9EsiYu5HQW/TWXqy
-        ygpp4hDzyC7v2Yvc5KixS37vP+qFMLyrvw==
-X-Google-Smtp-Source: ABdhPJyIYPLmgopLV56/2IHBu3wOSWeGmQ5jBx1w5BHnUPJhoC7ADTfKz8tjYbv+NpZMrwQo5Sstww==
-X-Received: by 2002:aa7:d296:: with SMTP id w22mr22982033edq.327.1599501049279;
-        Mon, 07 Sep 2020 10:50:49 -0700 (PDT)
-Received: from bcbook.internal (a89-183-24-75.net-htp.de. [89.183.24.75])
-        by smtp.gmail.com with ESMTPSA id bm2sm13423993edb.30.2020.09.07.10.50.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Sep 2020 10:50:48 -0700 (PDT)
-Subject: Re: [PATCH] arm64: dts: marvell: espressobin: Add ethernet switch
- aliases
-To:     =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>
-Cc:     Andrew Lunn <andrew@lunn.ch>, Jason Cooper <jason@lakedaemon.net>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        id S1729598AbgIGRvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 13:51:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55324 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729212AbgIGRvo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 13:51:44 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 47F3E2080A;
+        Mon,  7 Sep 2020 17:51:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599501103;
+        bh=YMxZ0LBQubRWUql8kN4D8NLNlVpvgs2xsR5mya0rxqE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=v5Kb6di9323FGcnbwasyBMt/IV3HEFuAzbUF+APrbb0SwX1Vz8+6BIvEfNG1YP0Sn
+         4Yyl9nTx4dUPvO6OfOBYrJ1/CQ6/Pxtf7VpWZ80gfFV/2K0iRzWwK1P8y5E1vPxDz7
+         L+SR/HeAepqOnh9a29zkFo5IyF4a3NjkhA+slzaE=
+Date:   Mon, 7 Sep 2020 18:50:59 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Tzung-Bi Shih <tzungbi@google.com>
+Cc:     Jiaxin Yu <jiaxin.yu@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
         Rob Herring <robh+dt@kernel.org>,
-        Tomasz Maciej Nowak <tmn505@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200907112718.5994-1-pali@kernel.org>
- <3ec54259-4bfe-8462-e8d5-083fc009707a@gmail.com>
- <20200907172303.GA3254313@lunn.ch> <20200907173534.aoupftjkxgcftfqo@pali>
- <f8cce9af-372b-f2bc-ea09-e1516367cb90@gmail.com>
- <20200907174705.clknw4375smvt47o@pali>
-From:   Andre Heider <a.heider@gmail.com>
-Message-ID: <97cce972-201f-dc54-644d-37bbbf369632@gmail.com>
-Date:   Mon, 7 Sep 2020 19:50:47 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.1
+        Takashi Iwai <tiwai@suse.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ALSA development <alsa-devel@alsa-project.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, howie.huang@mediatek.com,
+        eason.yen@mediatek.com, shane.chien@mediatek.com,
+        bicycle.tsai@mediatek.com
+Subject: Re: [PATCH v5 2/2] dt-bindings: mediatek: mt6359: add codec document
+Message-ID: <20200907175059.GD4907@sirena.org.uk>
+References: <1597644455-8216-1-git-send-email-jiaxin.yu@mediatek.com>
+ <1597644455-8216-3-git-send-email-jiaxin.yu@mediatek.com>
+ <CA+Px+wXSbGLb+AZnF8ETRycRUVjqk4xacm5DH6MzuMw0vh6Wzg@mail.gmail.com>
+ <CA+Px+wUMXoSL6w0wBduE7obJRWgCteeT8=_=U=8LR34JKTTGZA@mail.gmail.com>
+ <20200819103730.GB5441@sirena.org.uk>
+ <CA+Px+wUV89KO8JJd3+HpOrgFRSc7sdg-DBW44C31262Qx9NzVg@mail.gmail.com>
+ <20200819194005.GC38371@sirena.org.uk>
+ <CA+Px+wWMH6iUzFq0g4BFC5qA993r9UBobmNAyS2ie+xDwci-yg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200907174705.clknw4375smvt47o@pali>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: de-DE
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="eqp4TxRxnD4KrmFZ"
+Content-Disposition: inline
+In-Reply-To: <CA+Px+wWMH6iUzFq0g4BFC5qA993r9UBobmNAyS2ie+xDwci-yg@mail.gmail.com>
+X-Cookie: Elevators smell different to midgets.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/09/2020 19:47, Pali Rohár wrote:
-> On Monday 07 September 2020 19:43:08 Andre Heider wrote:
->> On 07/09/2020 19:35, Pali Rohár wrote:
->>> On Monday 07 September 2020 19:23:03 Andrew Lunn wrote:
->>>>> My dts-foo is a little rusty, but now that you labeled the ports in the
->>>>> .dtsi, can this whole "switch0" block reduced to something like:
->>>>>
->>>>> &switch0port1 {
->>>>> 	label = "lan1";
->>>>> };
->>>>>
->>>>> &switch0port3 {
->>>>> 	label = "wan";
->>>>> };
->>>>
->>>> Probably yes.
->>>>
->>>> But that is definitely too much for stable.
->>>
->>> Yes, this suggested change is not for stable, but looks like a nice
->>> cleanup. So it could be done in followup patch.
->>>
->>> Andre, are you going to prepare and test this followup change?
->>
->> I can prep the patch if you like, but the suggested cleanup only affects the
->> v7 dts files. I don't have that hardware version to test it, so could only
->> send an untested patch.
-> 
-> As a result of this cleanup should be binary DTB file for V7 with same
-> structure as DTB file without such cleanup patch, right? And this test
-> (structure / content of compiled file) does not need particular hardware.
 
-Ok, will do.
+--eqp4TxRxnD4KrmFZ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+On Mon, Sep 07, 2020 at 09:37:12PM +0800, Tzung-Bi Shih wrote:
+> On Thu, Aug 20, 2020 at 3:40 AM Mark Brown <broonie@kernel.org> wrote:
+
+> > That's for binding the MFD subdevice to an OF node, you don't need to do
+> > that for a device like this - you can just use the of_node of the parent
+> > to get at the properties.
+
+> There is an issue we overlooked.  In sound/soc/codecs/mt6359.c,
+
+> After removing the line at (1), mt6359_parse_dt() cannot read the DT properties.
+
+> Here are a few options we can come out with.
+> 1. adds back the compatible string in the DTS
+> 2. gets of_node of parent in mt6359.c, and iterates all children nodes
+> to get the desired properties
+
+Do this, but instead of iterating all the child nodes just look for the
+named CODEC node that you define in the bindings if you don't want to
+put the properties in the root MFD node.
+
+--eqp4TxRxnD4KrmFZ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9WcwMACgkQJNaLcl1U
+h9Dp0wf6A3eiem9QGqgDURjl9QoxRQnRXVafGmdx8S4QioV/mf+/xBOc7cNzYri6
+keaJ0K+HFWRqk4GwYx4JhRYez80iQmT6TWszym6iv0bCB5UeGXXvhsxsnAm06eKi
+FgsY9Wx48r9hxEvDr6S46HYR++HLQI2cg3krRvm6iyQ/jLc1tm1zGfRSOXYenfSJ
+HuJydCwg8AUxd0o486d5K6v8md9EK7vtFqqNTEi2NLcfLNlXhR+7L8Ft5LfhvYDk
+ScJydi1HAyayykul+n7w4r6ZlP8H5I9Ha7O7HTZMEmpWufiNAl4l+yn6vL2l73xX
+77G/jtTLhxwpYEW45hLguvCN6asf/A==
+=CY1J
+-----END PGP SIGNATURE-----
+
+--eqp4TxRxnD4KrmFZ--
