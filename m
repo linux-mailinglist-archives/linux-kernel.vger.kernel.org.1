@@ -2,87 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93CC225FA90
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 14:36:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E67E25FAAB
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 14:48:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729122AbgIGMgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 08:36:32 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:2294 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729174AbgIGMcp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 08:32:45 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f5627e70000>; Mon, 07 Sep 2020 05:30:32 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Mon, 07 Sep 2020 05:32:45 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Mon, 07 Sep 2020 05:32:45 -0700
-Received: from [172.27.12.170] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 7 Sep
- 2020 12:32:39 +0000
-Subject: Re: [PATCH rdma-next 1/4] lib/scatterlist: Refactor
- sg_alloc_table_from_pages
-To:     Christoph Hellwig <hch@lst.de>, Leon Romanovsky <leon@kernel.org>
-CC:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>
-References: <20200903121853.1145976-1-leon@kernel.org>
- <20200903155434.1153934-1-leon@kernel.org> <20200907072912.GA19875@lst.de>
-From:   Maor Gottlieb <maorg@nvidia.com>
-Message-ID: <2a4b0211-c7a0-2a82-1335-7ed935b92aa2@nvidia.com>
-Date:   Mon, 7 Sep 2020 15:32:31 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.1
-MIME-Version: 1.0
-In-Reply-To: <20200907072912.GA19875@lst.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Content-Language: en-US
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1599481832; bh=vB36ZS5TzpC7eMfT9U7YXNMKeTt+DU0w5HUuBJIhjA4=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:Content-Type:
-         Content-Transfer-Encoding:Content-Language:X-Originating-IP:
-         X-ClientProxiedBy;
-        b=HwvTIjsPofXA543PAtAD1r3ScN+KadLzOwar93ZxiWVjM8VyccMcIar+1DOnCCcai
-         uhFBsFPWKk7jKIACRKr8HrkT/t9uazUFSTwobWPM3lIjyJ1fcojYgpMAqLj+T87rDZ
-         kRTscExWfk0xbDVojnXFZEZ0BZ5O4rsf1080PS/pyHDPX0ZqIPezBRtwC1Y83EtO6H
-         9jvovM47QjLjFYlB72OLAJnEl8wosASxncaRATb9mquJYrVGmNTqAOlwJm6MmYyB9i
-         3BpcYM6PgceiapPcWZ5H4vB/aDB37RcBrlADijfA38zGcZnMTTjeZnqsQWbLCeh8ng
-         3ysl5fd3FtOuw==
+        id S1729236AbgIGMrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 08:47:43 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:51858 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729155AbgIGMke (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 08:40:34 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 301AB2000D4;
+        Mon,  7 Sep 2020 14:40:28 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id AA23E200E9A;
+        Mon,  7 Sep 2020 14:40:23 +0200 (CEST)
+Received: from 10.192.242.69 (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 35DD1402DD;
+        Mon,  7 Sep 2020 14:40:18 +0200 (CEST)
+From:   Anson Huang <Anson.Huang@nxp.com>
+To:     aisheng.dong@nxp.com, festevam@gmail.com, shawnguo@kernel.org,
+        stefan@agner.ch, kernel@pengutronix.de, linus.walleij@linaro.org,
+        s.hauer@pengutronix.de, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     Linux-imx@nxp.com
+Subject: [PATCH V2 2/3] pinctrl: imx: Support building SCU pinctrl core driver as module
+Date:   Mon,  7 Sep 2020 20:32:32 +0800
+Message-Id: <1599481953-32704-2-git-send-email-Anson.Huang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1599481953-32704-1-git-send-email-Anson.Huang@nxp.com>
+References: <1599481953-32704-1-git-send-email-Anson.Huang@nxp.com>
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Change PINCTR_IMX_SCU to tristate, remove unnecessary #ifdef and add
+module author, description and license to support building SCU pinctrl
+core driver as module.
 
-On 9/7/2020 10:29 AM, Christoph Hellwig wrote:
-> On Thu, Sep 03, 2020 at 06:54:34PM +0300, Leon Romanovsky wrote:
->> From: Maor Gottlieb <maorg@nvidia.com>
->>
->> Currently, sg_alloc_table_from_pages doesn't support dynamic chaining of
->> SG entries. Therefore it requires from user to allocate all the pages in
->> advance and hold them in a large buffer. Such a buffer consumes a lot of
->> temporary memory in HPC systems which do a very large memory registratio=
-n.
->>
->> The next patches introduce API for dynamically allocation from pages and
->> it requires us to do the following:
->>   * Extract the code to alloc_from_pages_common.
->>   * Change the build of the table to iterate on the chunks and not on th=
-e
->>     SGEs. It will allow dynamic allocation of more SGEs.
->>
->> Since sg_alloc_table_from_pages allocate exactly the number of chunks,
->> therefore chunks are equal to the number of SG entries.
-> Given how few users __sg_alloc_table_from_pages has, what about just
-> switching it to your desired calling conventions without another helper?
+Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+---
+Changes since V1:
+	- split V1 [1/2] patch to 2 patches, this patch supports building SCU pinctrl core
+	  driver as module;
+	- remove unnecessary #ifdef check and #else block.
+---
+ drivers/pinctrl/freescale/Kconfig       |  2 +-
+ drivers/pinctrl/freescale/pinctrl-imx.h | 20 --------------------
+ drivers/pinctrl/freescale/pinctrl-scu.c |  5 +++++
+ 3 files changed, 6 insertions(+), 21 deletions(-)
 
-I tried it now. It didn't save a lot.=C2=A0 Please give me your decision an=
-d=20
-if needed I will update accordingly.
+diff --git a/drivers/pinctrl/freescale/Kconfig b/drivers/pinctrl/freescale/Kconfig
+index 08fcf5c..452c499 100644
+--- a/drivers/pinctrl/freescale/Kconfig
++++ b/drivers/pinctrl/freescale/Kconfig
+@@ -7,7 +7,7 @@ config PINCTRL_IMX
+ 	select REGMAP
+ 
+ config PINCTRL_IMX_SCU
+-	bool
++	tristate "IMX SCU pinctrl core driver"
+ 	depends on IMX_SCU
+ 	select PINCTRL_IMX
+ 
+diff --git a/drivers/pinctrl/freescale/pinctrl-imx.h b/drivers/pinctrl/freescale/pinctrl-imx.h
+index 40927ca..fd8c4b6 100644
+--- a/drivers/pinctrl/freescale/pinctrl-imx.h
++++ b/drivers/pinctrl/freescale/pinctrl-imx.h
+@@ -144,7 +144,6 @@ struct imx_pinctrl_soc_info {
+ int imx_pinctrl_probe(struct platform_device *pdev,
+ 			const struct imx_pinctrl_soc_info *info);
+ 
+-#ifdef CONFIG_PINCTRL_IMX_SCU
+ #define BM_PAD_CTL_GP_ENABLE		BIT(30)
+ #define BM_PAD_CTL_IFMUX_ENABLE		BIT(31)
+ #define BP_PAD_CTL_IFMUX		27
+@@ -157,23 +156,4 @@ int imx_pinconf_set_scu(struct pinctrl_dev *pctldev, unsigned pin_id,
+ void imx_pinctrl_parse_pin_scu(struct imx_pinctrl *ipctl,
+ 			       unsigned int *pin_id, struct imx_pin *pin,
+ 			       const __be32 **list_p);
+-#else
+-static inline int imx_pinconf_get_scu(struct pinctrl_dev *pctldev,
+-				      unsigned pin_id, unsigned long *config)
+-{
+-	return -EINVAL;
+-}
+-static inline int imx_pinconf_set_scu(struct pinctrl_dev *pctldev,
+-				      unsigned pin_id, unsigned long *configs,
+-				      unsigned num_configs)
+-{
+-	return -EINVAL;
+-}
+-static inline void imx_pinctrl_parse_pin_scu(struct imx_pinctrl *ipctl,
+-					    unsigned int *pin_id,
+-					    struct imx_pin *pin,
+-					    const __be32 **list_p)
+-{
+-}
+-#endif
+ #endif /* __DRIVERS_PINCTRL_IMX_H */
+diff --git a/drivers/pinctrl/freescale/pinctrl-scu.c b/drivers/pinctrl/freescale/pinctrl-scu.c
+index 9df45d3..59b5f8a 100644
+--- a/drivers/pinctrl/freescale/pinctrl-scu.c
++++ b/drivers/pinctrl/freescale/pinctrl-scu.c
+@@ -7,6 +7,7 @@
+ 
+ #include <linux/err.h>
+ #include <linux/firmware/imx/sci.h>
++#include <linux/module.h>
+ #include <linux/of_address.h>
+ #include <linux/pinctrl/pinctrl.h>
+ #include <linux/platform_device.h>
+@@ -123,3 +124,7 @@ void imx_pinctrl_parse_pin_scu(struct imx_pinctrl *ipctl,
+ 		pin_scu->mux_mode, pin_scu->config);
+ }
+ EXPORT_SYMBOL_GPL(imx_pinctrl_parse_pin_scu);
++
++MODULE_AUTHOR("Dong Aisheng <aisheng.dong@nxp.com>");
++MODULE_DESCRIPTION("NXP i.MX SCU common pinctrl driver");
++MODULE_LICENSE("GPL v2");
+-- 
+2.7.4
+
