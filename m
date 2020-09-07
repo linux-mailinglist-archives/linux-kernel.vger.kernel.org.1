@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2715025F22A
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 05:46:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF9CF25F230
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 05:46:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726877AbgIGDpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Sep 2020 23:45:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57006 "EHLO
+        id S1726926AbgIGDqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Sep 2020 23:46:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726328AbgIGDpr (ORCPT
+        with ESMTP id S1726802AbgIGDpv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Sep 2020 23:45:47 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75622C061573
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Sep 2020 20:45:47 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id d6so858359pfn.9
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Sep 2020 20:45:47 -0700 (PDT)
+        Sun, 6 Sep 2020 23:45:51 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06006C061573
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Sep 2020 20:45:51 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id a8so3865316plm.2
+        for <linux-kernel@vger.kernel.org>; Sun, 06 Sep 2020 20:45:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=QTlcu/2luaGCL/RLv/AOF68hjXPRVqBoWMqe+lz0jaE=;
-        b=CBsCcxpnDHWFo5f9UejHLh7LFnTD6pgtGQRhArjkjyfZC45FELInjbHubOEyIsmfdJ
-         YTso06KPhQUcoi3ye2lgQDp4KvSne+B2ECxbKtPBewyaCq381o8NoXz+eRMkgKHtxN8F
-         H3jwIUC43IpXQ0LTwkBxz1dXGyYwdjpXJHwmJUSyZRinQYRL4W55SPV07XqyWPXK59hG
-         2xV/BZeF6SAhVSv6KASzm3xnJMaCzn998NGOIn7xEJtL6IU0dFAFeLH+VGr8qpwcNmj/
-         TIU4wDr3wWHdSxj87srp8mMyylR0fh/jNkTSeGGttCVM9h2W7ctsFmZ7fFdcLzyODQTX
-         /4QQ==
+        bh=27vCMqYtloZ9jlU8gp2knuFpHSbEXU/O9OXX/MacU2c=;
+        b=VhLnqld4jXuMWmCdEDuy1ONq32aCpqXNEMr5ZoJ78Qks81hIDOnWGx4MOBQxra75tN
+         BAYOxCf4m3krvQT1rryugiyi/Nax1ISKFG6z91BEqxz27Wv/y7ncJpTv5jMCQViRqjHD
+         Xl37CCHhhW7dFC7Jxil/VUak3u1gniaHpURKNlAZyKOwdjJrOk5EP2qn9l1JQE5KLpEB
+         xq+nqqzoPJMgHe/SWfVbsbS+kYwU+HPW+sXAPVhJItyziEuhGQYPKWpx6338yz0zfxIi
+         Tc9WPWjtq3wpki8W1M+kq7IQAIqL06P+oVsAu9sotyLvPGNwPufwyMl5veiCwb/8fVA5
+         KohQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
          :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=QTlcu/2luaGCL/RLv/AOF68hjXPRVqBoWMqe+lz0jaE=;
-        b=bxRAwfcG1Ls2JRl5nx7wg1a/a59ieuTpWLZLsniFxPZrJcoBK1RcevDToGRE/ERKnf
-         2McqHa4dlKyPHJBaPB4x0VGMRKUQuAlffuWa+chNbYV2ueb7nnqIOONJvB/0vFyqka19
-         D6M+zKOZzmooaTCfNRkoQ+abGQIUnAc6ag4t6m2LbR1XsImoc5OMTuhVRvCyfiyryhLp
-         D4nHL4EnnWyz3q5EpLEMSGhwVtqzLeL6d340w0Eorh5xAuNTEQsw2iOcRAw3KF8nGGgq
-         m8oN/2FecXJ/6QHFCgXvHggYXkuOlVGLJsTM+2hIMscQ4JxCOFsCAOk/flrbG07HXFVR
-         SThQ==
-X-Gm-Message-State: AOAM5328PASvQebYb2T6kd6sgcWv3s7Ae2SsOfgPF2bWCPjCiR63kq6S
-        CBjcytVOz2pHRWhvFFohyzF64ZN2Q8i5+w==
-X-Google-Smtp-Source: ABdhPJz9ZaQsAE7mcOWu6puNmHYCFKwiqTKczTBi7IBHbDRCgfEEXGq0O8rzLZK5kRsx1NurHe488g==
-X-Received: by 2002:a62:63c6:: with SMTP id x189mr19206761pfb.216.1599450347009;
-        Sun, 06 Sep 2020 20:45:47 -0700 (PDT)
+        bh=27vCMqYtloZ9jlU8gp2knuFpHSbEXU/O9OXX/MacU2c=;
+        b=UtIXm75WuMt3RY5zCVzZOM2b3Ixm/HmJR65ZJ9xBN104/bSdX19BnSRu/LK5LjyLb1
+         Y0oTR8LxBR36irwHBVDTLwjaSQ83vWDmZcIj5WqLczjSBrLXD3DChOoQfbr75zTUpYbj
+         p/kpqg9jypf0XMfTxuxilOvUWEC1AEac/rW3ef1ER97pWRftDC0meeXpPv01Yd/Oe5NZ
+         GuCfRnICYu7dhBIOrHFxKiczaNUipNqunOmh0oPrifstlaVCr7O7kimKfW3WyOTZ/BLH
+         CAsF09BtpejJJ45Obo+oDHP2RiFRrQIQgw6B6Q+P54IXZOMf6cenmi3odAUM2yaWfjdQ
+         SIWg==
+X-Gm-Message-State: AOAM532UfHHzfBkUOqUqhYQV+bxT9coJOtFYmllqf1aBp0zhBO37iUh+
+        B5wD8+s7SaiXrJ+jb6S7zAqCdMJ8eNN0UA==
+X-Google-Smtp-Source: ABdhPJyPaiDyFU7tG44Um7Jx3ufep8lkSmUZqj9UbbaTR1lXZxfbSmA4WBiG/WkdnfjfujqAQFHHEA==
+X-Received: by 2002:a17:90a:6582:: with SMTP id k2mr9412813pjj.40.1599450350597;
+        Sun, 06 Sep 2020 20:45:50 -0700 (PDT)
 Received: from balhae.roam.corp.google.com ([101.235.31.111])
-        by smtp.gmail.com with ESMTPSA id l123sm11099672pgl.24.2020.09.06.20.45.42
+        by smtp.gmail.com with ESMTPSA id l123sm11099672pgl.24.2020.09.06.20.45.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 06 Sep 2020 20:45:46 -0700 (PDT)
+        Sun, 06 Sep 2020 20:45:50 -0700 (PDT)
 From:   Namhyung Kim <namhyung@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Jiri Olsa <jolsa@redhat.com>
@@ -58,11 +58,10 @@ Cc:     Ingo Molnar <mingo@kernel.org>,
         Stephane Eranian <eranian@google.com>,
         LKML <linux-kernel@vger.kernel.org>,
         Andi Kleen <andi@firstfloor.org>,
-        Ian Rogers <irogers@google.com>,
-        John Garry <john.garry@huawei.com>
-Subject: [PATCH 8/9] perf test: Free aliases for PMU event map aliases test
-Date:   Mon,  7 Sep 2020 12:45:01 +0900
-Message-Id: <20200907034502.753230-9-namhyung@kernel.org>
+        Ian Rogers <irogers@google.com>
+Subject: [PATCH 9/9] perf test: Free formats for perf pmu parse test
+Date:   Mon,  7 Sep 2020 12:45:02 +0900
+Message-Id: <20200907034502.753230-10-namhyung@kernel.org>
 X-Mailer: git-send-email 2.28.0.526.ge36021eeef-goog
 In-Reply-To: <20200907034502.753230-1-namhyung@kernel.org>
 References: <20200907034502.753230-1-namhyung@kernel.org>
@@ -73,80 +72,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The aliases were never released causing the following leaks:
+The following leaks were detected by ASAN:
 
-  Indirect leak of 1224 byte(s) in 9 object(s) allocated from:
-    #0 0x7feefb830628 in malloc (/lib/x86_64-linux-gnu/libasan.so.5+0x107628)
-    #1 0x56332c8f1b62 in __perf_pmu__new_alias util/pmu.c:322
-    #2 0x56332c8f401f in pmu_add_cpu_aliases_map util/pmu.c:778
-    #3 0x56332c792ce9 in __test__pmu_event_aliases tests/pmu-events.c:295
-    #4 0x56332c792ce9 in test_aliases tests/pmu-events.c:367
-    #5 0x56332c76a09b in run_test tests/builtin-test.c:410
-    #6 0x56332c76a09b in test_and_print tests/builtin-test.c:440
-    #7 0x56332c76ce69 in __cmd_test tests/builtin-test.c:695
-    #8 0x56332c76ce69 in cmd_test tests/builtin-test.c:807
-    #9 0x56332c7d2214 in run_builtin /home/namhyung/project/linux/tools/perf/perf.c:312
-    #10 0x56332c6701a8 in handle_internal_command /home/namhyung/project/linux/tools/perf/perf.c:364
-    #11 0x56332c6701a8 in run_argv /home/namhyung/project/linux/tools/perf/perf.c:408
-    #12 0x56332c6701a8 in main /home/namhyung/project/linux/tools/perf/perf.c:538
-    #13 0x7feefb359cc9 in __libc_start_main ../csu/libc-start.c:308
+  Indirect leak of 360 byte(s) in 9 object(s) allocated from:
+    #0 0x7fecc305180e in calloc (/lib/x86_64-linux-gnu/libasan.so.5+0x10780e)
+    #1 0x560578f6dce5 in perf_pmu__new_format util/pmu.c:1333
+    #2 0x560578f752fc in perf_pmu_parse util/pmu.y:59
+    #3 0x560578f6a8b7 in perf_pmu__format_parse util/pmu.c:73
+    #4 0x560578e07045 in test__pmu tests/pmu.c:155
+    #5 0x560578de109b in run_test tests/builtin-test.c:410
+    #6 0x560578de109b in test_and_print tests/builtin-test.c:440
+    #7 0x560578de401a in __cmd_test tests/builtin-test.c:661
+    #8 0x560578de401a in cmd_test tests/builtin-test.c:807
+    #9 0x560578e49354 in run_builtin /home/namhyung/project/linux/tools/perf/perf.c:312
+    #10 0x560578ce71a8 in handle_internal_command /home/namhyung/project/linux/tools/perf/perf.c:364
+    #11 0x560578ce71a8 in run_argv /home/namhyung/project/linux/tools/perf/perf.c:408
+    #12 0x560578ce71a8 in main /home/namhyung/project/linux/tools/perf/perf.c:538
+    #13 0x7fecc2b7acc9 in __libc_start_main ../csu/libc-start.c:308
 
-Cc: John Garry <john.garry@huawei.com>
-Fixes: 956a78356c24c ("perf test: Test pmu-events aliases")
+Fixes: cff7f956ec4a1 ("perf tests: Move pmu tests into separate object")
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/perf/tests/pmu-events.c | 5 +++++
- tools/perf/util/pmu.c         | 2 +-
- tools/perf/util/pmu.h         | 1 +
- 3 files changed, 7 insertions(+), 1 deletion(-)
+ tools/perf/tests/pmu.c |  1 +
+ tools/perf/util/pmu.c  | 11 +++++++++++
+ tools/perf/util/pmu.h  |  1 +
+ 3 files changed, 13 insertions(+)
 
-diff --git a/tools/perf/tests/pmu-events.c b/tools/perf/tests/pmu-events.c
-index eb19f9a0bc15..d3517a74d95e 100644
---- a/tools/perf/tests/pmu-events.c
-+++ b/tools/perf/tests/pmu-events.c
-@@ -274,6 +274,7 @@ static int __test__pmu_event_aliases(char *pmu_name, int *count)
- 	int res = 0;
- 	bool use_uncore_table;
- 	struct pmu_events_map *map = __test_pmu_get_events_map();
-+	struct perf_pmu_alias *a, *tmp;
+diff --git a/tools/perf/tests/pmu.c b/tools/perf/tests/pmu.c
+index 5c11fe2b3040..714e6830a758 100644
+--- a/tools/perf/tests/pmu.c
++++ b/tools/perf/tests/pmu.c
+@@ -173,6 +173,7 @@ int test__pmu(struct test *test __maybe_unused, int subtest __maybe_unused)
+ 		ret = 0;
+ 	} while (0);
  
- 	if (!map)
- 		return -1;
-@@ -347,6 +348,10 @@ static int __test__pmu_event_aliases(char *pmu_name, int *count)
- 			  pmu_name, alias->name);
- 	}
- 
-+	list_for_each_entry_safe(a, tmp, &aliases, list) {
-+		list_del(&a->list);
-+		perf_pmu_free_alias(a);
-+	}
- 	free(pmu);
- 	return res;
++	perf_pmu__del_formats(&formats);
+ 	test_format_dir_put(format);
+ 	return ret;
  }
 diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-index f1688e1f6ed7..555cb3524c25 100644
+index 555cb3524c25..d41caeb35cf6 100644
 --- a/tools/perf/util/pmu.c
 +++ b/tools/perf/util/pmu.c
-@@ -274,7 +274,7 @@ static void perf_pmu_update_alias(struct perf_pmu_alias *old,
+@@ -1354,6 +1354,17 @@ void perf_pmu__set_format(unsigned long *bits, long from, long to)
+ 		set_bit(b, bits);
  }
  
- /* Delete an alias entry. */
--static void perf_pmu_free_alias(struct perf_pmu_alias *newalias)
-+void perf_pmu_free_alias(struct perf_pmu_alias *newalias)
++void perf_pmu__del_formats(struct list_head *formats)
++{
++	struct perf_pmu_format *fmt, *tmp;
++
++	list_for_each_entry_safe(fmt, tmp, formats, list) {
++		list_del(&fmt->list);
++		free(fmt->name);
++		free(fmt);
++	}
++}
++
+ static int sub_non_neg(int a, int b)
  {
- 	zfree(&newalias->name);
- 	zfree(&newalias->desc);
+ 	if (b > a)
 diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
-index 44ccbdbb1c37..b63c4c5e335e 100644
+index b63c4c5e335e..a64e9c9ce731 100644
 --- a/tools/perf/util/pmu.h
 +++ b/tools/perf/util/pmu.h
-@@ -113,6 +113,7 @@ void pmu_add_cpu_aliases_map(struct list_head *head, struct perf_pmu *pmu,
+@@ -94,6 +94,7 @@ int perf_pmu__new_format(struct list_head *list, char *name,
+ 			 int config, unsigned long *bits);
+ void perf_pmu__set_format(unsigned long *bits, long from, long to);
+ int perf_pmu__format_parse(char *dir, struct list_head *head);
++void perf_pmu__del_formats(struct list_head *formats);
  
- struct pmu_events_map *perf_pmu__find_map(struct perf_pmu *pmu);
- bool pmu_uncore_alias_match(const char *pmu_name, const char *name);
-+void perf_pmu_free_alias(struct perf_pmu_alias *alias);
- 
- int perf_pmu__convert_scale(const char *scale, char **end, double *sval);
+ struct perf_pmu *perf_pmu__scan(struct perf_pmu *pmu);
  
 -- 
 2.28.0.526.ge36021eeef-goog
