@@ -2,98 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38DE025FE60
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 18:15:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4316E25FEFD
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 18:25:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730483AbgIGQO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 12:14:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34096 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730453AbgIGQOG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 12:14:06 -0400
-Received: from kozik-lap.mshome.net (unknown [194.230.155.174])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2D1AB207DE;
-        Mon,  7 Sep 2020 16:14:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599495245;
-        bh=bwtOi8QElP0mGjZhVUaaYJrre3PcACxIN1rrV3SxlNw=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=UYSZxr7VgfQX85+efnx0NAZinxygKy1kqfcI7NL163KkguKnH6Q6dd6fGPoc7+E0Z
-         wxtyeFS25ChjYbXllL/KHWggeCnRQvDmF7P85PVn9/oUtIecD3rE+pknvEsLHJsstj
-         R5STZXc7cq6FhMu0OvpuG97q4DvqJIDNW8EpzziY=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Jonathan Bakker <xc-racer2@live.ca>,
-        =?UTF-8?q?Pawe=C5=82=20Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org
-Subject: [RFT 25/25] ARM: dts: s5pv210: align DMA channels with dtschema
-Date:   Mon,  7 Sep 2020 18:11:41 +0200
-Message-Id: <20200907161141.31034-26-krzk@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200907161141.31034-1-krzk@kernel.org>
-References: <20200907161141.31034-1-krzk@kernel.org>
+        id S1730590AbgIGQZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 12:25:42 -0400
+Received: from a27-11.smtp-out.us-west-2.amazonses.com ([54.240.27.11]:59240
+        "EHLO a27-11.smtp-out.us-west-2.amazonses.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729821AbgIGQMR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 12:12:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+        s=zsmsymrwgfyinv5wlfyidntwsjeeldzt; d=codeaurora.org; t=1599495137;
+        h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:MIME-Version:Content-Type;
+        bh=5LQKIMfvX9HJRYKU2mde8fU8lzIvJMwQKf6/plslzvA=;
+        b=a40DB3aocBb07ZqZ/Q4NSyeHTHdqjAfVJsxInjb7DjC/RStAiuFTsHFhSSNy6VrC
+        Kp7iUQHAry7EI/7vJt8pvhPuXcYVWttpvJlNKy4FA6wMR1Qld55EjnN7DtSkNNGGTgD
+        njgiaTGpf1/iUNwJAPN7arc6cze+KYCFMh57ykhU=
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+        s=hsbnp7p3ensaochzwyq5wwmceodymuwv; d=amazonses.com; t=1599495137;
+        h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:MIME-Version:Content-Type:Feedback-ID;
+        bh=5LQKIMfvX9HJRYKU2mde8fU8lzIvJMwQKf6/plslzvA=;
+        b=ABHiFHsKI/jA9woBIzSitiPqxEHfbR9t3htMRg+UvdDRkQ5MU55OC5jghnD+oWSy
+        ncSk+YNCk+NLsrKNwiVLDU81kG/S1Hc/DFJTiMwZfbL5W5GmJmTEmMK8vg1TbY0v5yK
+        361VaTUdsPVX+n/wvUMpZ6xhXkQmUnvaYI2bZzDg=
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 68CEDC35A23
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Govind Singh <govinds@codeaurora.org>
+Cc:     Amit Pundir <amit.pundir@linaro.org>,
+        Rakesh Pillai <pillair@qti.qualcomm.com>,
+        Brian Norris <briannorris@chromium.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        ath10k <ath10k@lists.infradead.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Niklas Cassel <niklas.cassel@linaro.org>
+Subject: Re: [PATCH] wireless: ath10k: Return early in ath10k_qmi_event_server_exit() to avoid hard crash on reboot
+References: <20200602052533.15048-1-john.stultz@linaro.org>
+        <CA+ASDXMbNvbBdsC11dzUPX7RkMFYhJev2npPsRD_SnGQB+1hag@mail.gmail.com>
+        <CALAqxLVA1ZQjwEdbX5KGbSyLnMBAzm9PoN_Ta_Z7rBf4w3GOvQ@mail.gmail.com>
+        <CA+ASDXPddgOvEX___unx7N2YsQctsZN+1vkwPbi8Ab_zfwFfzw@mail.gmail.com>
+        <20200603002715.GA5349@Mani-XPS-13-9360>
+        <87zh9diyam.fsf@codeaurora.org>
+        <CAMi1Hd3FBRrwysMX6NLhKzjDukm-YPooR7LX64i=HJHDD8_Dvw@mail.gmail.com>
+        <87ft876ify.fsf@codeaurora.org>
+        <8577175552c24b83c80eced09d54e0b3@codeaurora.org>
+Date:   Mon, 7 Sep 2020 16:12:17 +0000
+In-Reply-To: <8577175552c24b83c80eced09d54e0b3@codeaurora.org> (Govind Singh's
+        message of "Fri, 28 Aug 2020 18:37:11 +0530")
+Message-ID: <010101746956e552-1a6831c4-6a53-4452-9e13-00e689924032-000000@us-west-2.amazonses.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain
+X-SES-Outgoing: 2020.09.07-54.240.27.11
+Feedback-ID: 1.us-west-2.CZuq2qbDmUIuT3qdvXlRHZZCpfZqZ4GtG9v3VKgRyF0=:AmazonSES
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-dtschema expects DMA channels in specific order (tx, rx and tx-sec).
-The order actually should not matter because dma-names is used however
-let's make it aligned with dtschema to suppress warnings like:
+Govind Singh <govinds@codeaurora.org> writes:
 
-  i2s@eee30000: dma-names: ['rx', 'tx', 'tx-sec'] is not valid under any of the given schemas
+> On 2020-08-28 18:22, Kalle Valo wrote:
+>> Amit Pundir <amit.pundir@linaro.org> writes:
+>>
+>>> On Mon, 8 Jun 2020 at 17:07, Kalle Valo <kvalo@codeaurora.org> wrote:
+>>>> > I don't agree with this. If you read through the replies to the bug report,
+>>>> > it is clear that NS migration uncovered a corner case or even a bug. So we
+>>>> > should try to fix that indeed.
+>>>>
+>>>> I'm with Mani, we should try to fix ath10k instead. Hopefully we can
+>>>> find a fix soon.
+>>>
+>>> Hi Team,
+>>>
+>>> Any updates on this? I can reproduce this hard crash on v5.9-rc1 as
+>>> well.
+>>>
+>>> It is not a blocker for us because we switched to a userspace
+>>> workaround, where we do not wait for modem to shutdown gracefully and
+>>> SIGKILL it instead, during the shutdown/reboot process. But I'm happy
+>>> to take a swing at any intermediate/in-progress solution available.
+>>
+>> Govind submitted this patch and later he asked to drop it, but I think
+>> it would be a good idea to test it anyway:
+>>
+>> ath10k: Move msa region map/unmap to init/deinit path
+>>
+>> https://lkml.kernel.org/r/1591191231-31917-1-git-send-email-govinds@codeaurora.org
+>>
+>> (patchwork is down so I cannot give a patchwork link)
+>
+> This patchwork is not fixing the issue and changing MSA mapping
+> sequence is major design change. This issue is only seen with DB845
+> which uses SCM call, newer targets QCS404/SC7180/SM8150 will not have
+> this issue as MSA mapping is hard-coded in TZ. Probably changes in qmi
+> layer to give different indication for this scenario and changes in FW
+> is required to mitigate this issue gracefully.
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- arch/arm/boot/dts/s5pv210.dtsi | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+Oh, bad news :/ Can anyone look at that in detail? Even a quick hack
+patch would get this forward.
 
-diff --git a/arch/arm/boot/dts/s5pv210.dtsi b/arch/arm/boot/dts/s5pv210.dtsi
-index 96e667ba1c3f..72fb9d9f7ba3 100644
---- a/arch/arm/boot/dts/s5pv210.dtsi
-+++ b/arch/arm/boot/dts/s5pv210.dtsi
-@@ -240,8 +240,8 @@
- 			reg = <0xeee30000 0x1000>;
- 			interrupt-parent = <&vic2>;
- 			interrupts = <16>;
--			dma-names = "rx", "tx", "tx-sec";
--			dmas = <&pdma1 9>, <&pdma1 10>, <&pdma1 11>;
-+			dma-names = "tx", "rx", "tx-sec";
-+			dmas = <&pdma1 10>, <&pdma1 9>, <&pdma1 11>;
- 			clock-names = "iis",
- 				      "i2s_opclk0",
- 				      "i2s_opclk1";
-@@ -260,8 +260,8 @@
- 			reg = <0xe2100000 0x1000>;
- 			interrupt-parent = <&vic2>;
- 			interrupts = <17>;
--			dma-names = "rx", "tx";
--			dmas = <&pdma1 12>, <&pdma1 13>;
-+			dma-names = "tx", "rx";
-+			dmas = <&pdma1 13>, <&pdma1 12>;
- 			clock-names = "iis", "i2s_opclk0";
- 			clocks = <&clocks CLK_I2S1>, <&clocks SCLK_AUDIO1>;
- 			pinctrl-names = "default";
-@@ -275,8 +275,8 @@
- 			reg = <0xe2a00000 0x1000>;
- 			interrupt-parent = <&vic2>;
- 			interrupts = <18>;
--			dma-names = "rx", "tx";
--			dmas = <&pdma1 14>, <&pdma1 15>;
-+			dma-names = "tx", "rx";
-+			dmas = <&pdma1 15>, <&pdma1 14>;
- 			clock-names = "iis", "i2s_opclk0";
- 			clocks = <&clocks CLK_I2S2>, <&clocks SCLK_AUDIO2>;
- 			pinctrl-names = "default";
 -- 
-2.17.1
-
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
