@@ -2,79 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAF9925F95E
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 13:26:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FAB125F951
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 13:25:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729003AbgIGLZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 07:25:25 -0400
-Received: from goliath.siemens.de ([192.35.17.28]:36358 "EHLO
-        goliath.siemens.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728812AbgIGLWC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 07:22:02 -0400
-Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
-        by goliath.siemens.de (8.15.2/8.15.2) with ESMTPS id 087BL5vl002697
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 7 Sep 2020 13:21:05 +0200
-Received: from [167.87.17.27] ([167.87.17.27])
-        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 087BKxrG020843;
-        Mon, 7 Sep 2020 13:21:02 +0200
-To:     Guenter Roeck <linux@roeck-us.net>, linux-watchdog@vger.kernel.org
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        linux-kernel@vger.kernel.org,
-        "Awan, Arsalan" <Arsalan_Awan@mentor.com>,
-        "Hombourger, Cedric" <Cedric_Hombourger@mentor.com>,
-        "Farnsworth, Wade" <wade_farnsworth@mentor.com>
-From:   Jan Kiszka <jan.kiszka@siemens.com>
-Subject: watchdog: sp5100_tco support for AMD V/R/E series
-Message-ID: <15c8913e-9026-2649-9911-71d6f1c79519@siemens.com>
-Date:   Mon, 7 Sep 2020 13:20:58 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1728990AbgIGLY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 07:24:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47072 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728807AbgIGLV6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 07:21:58 -0400
+Received: from gaia (unknown [46.69.195.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 834A0206D4;
+        Mon,  7 Sep 2020 11:21:21 +0000 (UTC)
+Date:   Mon, 7 Sep 2020 12:21:19 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     George Cherian <gcherian@marvell.com>
+Cc:     Yang Yingliang <yangyingliang@huawei.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "will.deacon@arm.com" <will.deacon@arm.com>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "guohanjun@huawei.com" <guohanjun@huawei.com>,
+        Lorenzo Pieralisi <Lorenzo.Pieralisi@arm.com>
+Subject: Re: [PATCH] arm64: PCI: fix memleak when calling pci_iomap/unmap()
+Message-ID: <20200907112118.GD26513@gaia>
+References: <20200907104546.GC26513@gaia>
+ <BYAPR18MB267959E6FE4BEF38D0A4611EC5280@BYAPR18MB2679.namprd18.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BYAPR18MB267959E6FE4BEF38D0A4611EC5280@BYAPR18MB2679.namprd18.prod.outlook.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
++ Lorenzo
 
-Arsalan reported that the upstream driver for sp5100_tco does not work
-for embedded Ryzen. Meanwhile, I was able to confirm that on an R1505G:
+On Mon, Sep 07, 2020 at 10:51:21AM +0000, George Cherian wrote:
+> Catalin Marinas <catalin.marinas@arm.com> wrote:
+> > On Sat, Sep 05, 2020 at 10:48:11AM +0800, Yang Yingliang wrote:
+> > > diff --git a/arch/arm64/kernel/pci.c b/arch/arm64/kernel/pci.c index
+> > > 1006ed2d7c604..ddfa1c53def48 100644
+> > > --- a/arch/arm64/kernel/pci.c
+> > > +++ b/arch/arm64/kernel/pci.c
+> > > @@ -217,4 +217,9 @@ void pcibios_remove_bus(struct pci_bus *bus)
+> > >  	acpi_pci_remove_bus(bus);
+> > >  }
+> > >
+> > > +void pci_iounmap(struct pci_dev *dev, void __iomem *addr) {
+> > > +	iounmap(addr);
+> > > +}
+> > > +EXPORT_SYMBOL(pci_iounmap);
+> > 
+> > So, what's wrong with the generic pci_iounmap() implementation?
+> > Shouldn't it call iounmap() already?
+> 
+> Since ARM64 selects CONFIG_GENERIC_PCI_IOMAP and not
+> CONFIG_GENERIC_IOMAP,  the pci_iounmap function is reduced to a NULL
+> function. Due to this, even the managed release variants or even the explicit
+> pci_iounmap calls doesn't really remove the mappings leading to leak.
 
-[   11.607251] sp5100_tco: SP5100/SB800 TCO WatchDog Timer Driver
-[   11.607337] sp5100-tco sp5100-tco: Using 0xfed80b00 for watchdog MMIO address
-[   11.607344] sp5100-tco sp5100-tco: Watchdog hardware is disabled
+Ah, I missed the fact that pci_iounmap() depends on a different
+config option.
 
-..and fix it:
+> https://lkml.org/lkml/2020/8/20/28
 
-diff --git a/drivers/watchdog/sp5100_tco.c b/drivers/watchdog/sp5100_tco.c
-index 85e9664318c9..5482154fde42 100644
---- a/drivers/watchdog/sp5100_tco.c
-+++ b/drivers/watchdog/sp5100_tco.c
-@@ -193,7 +193,8 @@ static void tco_timer_enable(struct sp5100_tco *tco)
- 		/* Set the Watchdog timer resolution to 1 sec and enable */
- 		sp5100_tco_update_pm_reg8(EFCH_PM_DECODEEN3,
- 					  ~EFCH_PM_WATCHDOG_DISABLE,
--					  EFCH_PM_DECODEEN_SECOND_RES);
-+					  EFCH_PM_DECODEEN_SECOND_RES |
-+					  EFCH_PM_DECODEEN_WDT_TMREN);
- 		break;
- 	}
- }
+So is this going to be fixed in the generic code? That would be my
+preference.
 
-Does anyone have an idea if such unconditional setting could be 
-problematic on older/different efch? We probe for that bit in
-sp5100_tco_setupdevice but we never set it so far.
-
-I'm missing specs...
-
-Thanks,
-Jan
+A problem with the iounmap() in the proposed patch is that the region
+may have been an I/O port, so we could end up unmapping the I/O space.
 
 -- 
-Siemens AG, Corporate Technology, CT RDA IOT SES-DE
-Corporate Competence Center Embedded Linux
+Catalin
