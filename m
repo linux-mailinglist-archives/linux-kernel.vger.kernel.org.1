@@ -2,97 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35E1A26039B
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:52:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C8942603A6
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:52:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729210AbgIGMEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 08:04:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48322 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729190AbgIGL7s (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 07:59:48 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2994C061574
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 04:59:47 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id c10so12525384edk.6
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 04:59:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bR2mzR5z4Fp1s//vb7R8PemzbT1nIPea5CxsPeQGbCo=;
-        b=sdlgVprv5Ml6FcGFfq4SFwKLBdhqpgt1/tD2prJUf3yezMMf+zk3OqmlSCmjl90GHA
-         9J+0bfsuL2zGyEMQv67lgp7Uh5bekpJZkJHE6RCa3MxRx2asJEH0Rqd9mlGTMD/4z6Ur
-         rlj+DdN2WEqADLINNVdSYBEhSR/vahUY1tKDlmtHNxKtIAaiKOIlwVeS9MfAxEMbdzNI
-         veqHk6YVwBCiYL+JFMHTSCZgP67iVXGNuh01a9SlxoSynu7DM83hrYh4tzt5UwLCwkk9
-         giM2ryBZgwbxSSOdWZIXQxuIHht3JyKr6Uv/HaVrENAUpyjSEsHY1RcTVtVySWPD86y2
-         ro2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bR2mzR5z4Fp1s//vb7R8PemzbT1nIPea5CxsPeQGbCo=;
-        b=O6x6LeFBICqtwfQk6jNduTJj+qKzTSEm+RqgHccsy/+UpNYZyKnLcvdu4N5WI+rMOU
-         Z919d2YoXBBGkbpV6Se+oevVWPmHYmtRRySfcKiaFQPSzFCCmZSJSmvAYekOOXW5hSsP
-         Jchc2nkRzLSSPQmhFH/lv0pmhkY6YYLWqhP6XB+CSp6gBNmPkIAkcWr5HSP59kLJBeNd
-         9+L4c0S95A+Mu9PY2JLGdadIFNL1U+nULLuvgrpcRIbH4SOllIgPlYUZY896fnnrZqlv
-         pDZpjJ3bVLMuaSD70MS8v963ftZ1womAV+1kIDAM700F0Oa8c5J+ivKhrfBpPNz8NHMO
-         0sWQ==
-X-Gm-Message-State: AOAM532RFHOLsiIj0vvDQIuL6srd5P6dm9vVR9CYAiqkNSwckqbOVtuk
-        twqwKaN2ubfV/NJl+7NE/ghVOdT0ozVGH23fXjhUU/T6vcU=
-X-Google-Smtp-Source: ABdhPJyvgUJP0ylxO5qehk4m0jdhpk8hsO0Sw1TL7vejIAJ+s0I1Q151uttBgmbE3hq97WmzbCF8SLXZr4mDtGwGZag=
-X-Received: by 2002:a50:f687:: with SMTP id d7mr22155378edn.353.1599479986024;
- Mon, 07 Sep 2020 04:59:46 -0700 (PDT)
+        id S1728935AbgIGRwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 13:52:39 -0400
+Received: from foss.arm.com ([217.140.110.172]:33980 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729056AbgIGL5z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 07:57:55 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4472E1045;
+        Mon,  7 Sep 2020 04:57:52 -0700 (PDT)
+Received: from [10.57.6.175] (unknown [10.57.6.175])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D51103F66E;
+        Mon,  7 Sep 2020 04:57:50 -0700 (PDT)
+Subject: Re: [PATCH v3] perf: arm_dsu: Support DSU ACPI devices
+To:     will@kernel.org, tuanphan@os.amperecomputing.com
+Cc:     patches@amperecomputing.com, mark.rutland@arm.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <1597451980-11405-1-git-send-email-tuanphan@os.amperecomputing.com>
+ <20200907110236.GA12174@willie-the-truck>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <f82e8c4d-a270-0452-4071-35b22c9d2d9b@arm.com>
+Date:   Mon, 7 Sep 2020 13:02:34 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.7.0
 MIME-Version: 1.0
-References: <20200904154547.3836-1-brgl@bgdev.pl> <20200904154547.3836-16-brgl@bgdev.pl>
- <20200904164917.GC1891694@smile.fi.intel.com> <CAMRc=MeG8xuB0GNbMLi6+QZTphSN==77Hsw1fjVNU_+Z=Ky2qQ@mail.gmail.com>
- <20200907115051.GY1891694@smile.fi.intel.com>
-In-Reply-To: <20200907115051.GY1891694@smile.fi.intel.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Mon, 7 Sep 2020 13:59:35 +0200
-Message-ID: <CAMpxmJWM265uk39mddEwVUYJdnM+1Stx3Ds8O9-ucYvMnV7hRw@mail.gmail.com>
-Subject: Re: [PATCH 15/23] gpio: mockup: use dynamic device IDs
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Kent Gibson <warthog618@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-doc <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200907110236.GA12174@willie-the-truck>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 7, 2020 at 1:50 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Mon, Sep 07, 2020 at 01:04:29PM +0200, Bartosz Golaszewski wrote:
-> > On Fri, Sep 4, 2020 at 6:49 PM Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> wrote:
-> > > On Fri, Sep 04, 2020 at 05:45:39PM +0200, Bartosz Golaszewski wrote:
-> > > > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> > > >
-> > > > We're currently creating chips at module init time only so using a
-> > > > static index for dummy devices is fine. We want to support dynamically
-> > > > created chips however so we need to switch to dynamic device IDs.
-> > >
-> > > It misses ida_destroy().
-> >
-> > No, we always call ida_free() for separate IDs when removing devices
-> > and we remove all devices at module exit so no need to call
-> > ida_destroy().
->
-> Perhaps couple of words about this in the commit message?
->
+On 09/07/2020 12:02 PM, Will Deacon wrote:
+> [+ Suzuki as I'd like his Ack on this]
+> 
 
-But ida_destroy() and ida_free() are already well documented. It's
-clear that we remove all devices at exit and that every device removes
-its ID, there's really no point in mentioning it again.
+Thanks Will !
 
-Bart
+> On Fri, Aug 14, 2020 at 05:39:40PM -0700, Tuan Phan wrote:
+>> Add support for probing device from ACPI node.
+>> Each DSU ACPI node and its associated cpus are inside a cluster node.
+>>
+>> Signed-off-by: Tuan Phan <tuanphan@os.amperecomputing.com>
+>> ---
+>> Changes in v3:
+>> - Based on the latest ARM ACPI binding at: https://developer.arm.com/documentation/den0093/c/
+>>
+>> Changes in v2:
+>> - Removed IRQF_SHARED.
+>> - Fixed ACPI runtime detection.
+>>
+>>   drivers/perf/arm_dsu_pmu.c | 68 ++++++++++++++++++++++++++++++++++++++++------
+>>   1 file changed, 60 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/drivers/perf/arm_dsu_pmu.c b/drivers/perf/arm_dsu_pmu.c
+>> index 96ed93c..4be355d 100644
+>> --- a/drivers/perf/arm_dsu_pmu.c
+>> +++ b/drivers/perf/arm_dsu_pmu.c
+>> @@ -11,6 +11,7 @@
+>>   #define DRVNAME		PMUNAME "_pmu"
+>>   #define pr_fmt(fmt)	DRVNAME ": " fmt
+>>   
+>> +#include <linux/acpi.h>
+>>   #include <linux/bitmap.h>
+>>   #include <linux/bitops.h>
+>>   #include <linux/bug.h>
+>> @@ -603,18 +604,21 @@ static struct dsu_pmu *dsu_pmu_alloc(struct platform_device *pdev)
+>>   }
+>>   
+>>   /**
+>> - * dsu_pmu_dt_get_cpus: Get the list of CPUs in the cluster.
+>> + * dsu_pmu_dt_get_cpus: Get the list of CPUs in the cluster
+>> + * from device tree.
+>>    */
+>> -static int dsu_pmu_dt_get_cpus(struct device_node *dev, cpumask_t *mask)
+>> +static int dsu_pmu_dt_get_cpus(struct platform_device *pdev)
+>>   {
+>>   	int i = 0, n, cpu;
+>>   	struct device_node *cpu_node;
+>> +	struct dsu_pmu *dsu_pmu =
+>> +		(struct dsu_pmu *) platform_get_drvdata(pdev);
+>>   
+>> -	n = of_count_phandle_with_args(dev, "cpus", NULL);
+>> +	n = of_count_phandle_with_args(pdev->dev.of_node, "cpus", NULL);
+>>   	if (n <= 0)
+>>   		return -ENODEV;
+>>   	for (; i < n; i++) {
+>> -		cpu_node = of_parse_phandle(dev, "cpus", i);
+>> +		cpu_node = of_parse_phandle(pdev->dev.of_node, "cpus", i);
+>>   		if (!cpu_node)
+>>   			break;
+>>   		cpu = of_cpu_node_to_id(cpu_node);
+>> @@ -626,11 +630,51 @@ static int dsu_pmu_dt_get_cpus(struct device_node *dev, cpumask_t *mask)
+>>   		 */
+>>   		if (cpu < 0)
+>>   			continue;
+>> -		cpumask_set_cpu(cpu, mask);
+>> +		cpumask_set_cpu(cpu, &dsu_pmu->associated_cpus);
+>>   	}
+>>   	return 0;
+>>   }
+>>   
+>> +/**
+>> + * dsu_pmu_acpi_get_cpus: Get the list of CPUs in the cluster
+>> + * from ACPI.
+>> + */
+>> +static int dsu_pmu_acpi_get_cpus(struct platform_device *pdev)
+>> +{
+>> +	int cpu;
+>> +	struct dsu_pmu *dsu_pmu = (struct dsu_pmu *) platform_get_drvdata(pdev);
+>> +
+>> +	/*
+>> +	 * A dsu pmu node is inside a cluster parent node along with cpu nodes.
+>> +	 * We need to find out all cpus that have the same parent with this pmu.
+>> +	 */
+>> +	for_each_possible_cpu(cpu) {
+>> +		struct acpi_device *acpi_dev = ACPI_COMPANION(get_cpu_device(cpu));
+
+minor nit: Please could we split this into :
+		
+		struct acpi_device *acpi_dev;
+		struct device *cpu_dev = get_cpu_device(cpu);
+
+		if (!cpu_dev)
+			continue;
+
+		acpi_dev = ACPI_COMPANION(cpu_dev); ...
+
+So that we are explicitly clear that we don't end up in NULL pointer 
+dereferences (ACPI_COMPANION() is safe btw). Otherwise, with Will's
+comments addressed, looks fine to me.
+
+Appreciate a Cc in the next posting.
+
+Suzuki
