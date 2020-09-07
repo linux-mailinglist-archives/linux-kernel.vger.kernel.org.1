@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61D8A25F22F
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 05:46:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CBB125F226
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 05:45:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726583AbgIGDp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1726616AbgIGDp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Sun, 6 Sep 2020 23:45:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56916 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726278AbgIGDpS (ORCPT
+        with ESMTP id S1726568AbgIGDpY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Sep 2020 23:45:18 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C92F5C061573
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Sep 2020 20:45:17 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id o68so7925941pfg.2
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Sep 2020 20:45:17 -0700 (PDT)
+        Sun, 6 Sep 2020 23:45:24 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B012C061573
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Sep 2020 20:45:22 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id w7so7921898pfi.4
+        for <linux-kernel@vger.kernel.org>; Sun, 06 Sep 2020 20:45:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=WmsHkuXTfVjdOXmnrSnyMRHJc8MdPEuRY9I0xRhzFJ0=;
-        b=tsIgFhozZuFCIGkh6WxSJFU06AUQm1onnB+5GCl5JaOgQaaekYEWF2aiVT3hNnJRPz
-         SrrSOpEHqFWo6fByj7FwLSsjW9JmTtBk2cn//Cwb5C53iQw5sfSj0FLyAOjBTc+dsdN4
-         FxmRVWhZnbBfPf3mTxoI2I/QZV6P4fKYTsti0ZxytSBEh8lqIc5GA8oQvthi7JIzc42Z
-         kS/gU74ioR1m40mDaLs1ygNmbAlANzm/9aMG11Vzmdm3AnPEFJpfd3dAGkMfLiqx4U7P
-         dV02mC92zRX85zUouK9tDzi0tRyBUJvPSHEu+9v3u0B2VsFgujU4DIYEgEFJ6iux6/bV
-         8cTw==
+        bh=aCKz8nVuklulWh7GFYMhEjxq6Ekku02F9Z+kP7jt6fk=;
+        b=EyVQaIXUO2fxakmEH2ScvEf6gpwcdL7D352Zs2su5yOvIUb0BZJwPbPtMYXm+KM+1K
+         zRMgZzL1jmJvOXwmXqX2Zv/eVFXqkVv2ZbD0iIxZ98EQSyuKunJIqm3Yolhzq4ifXg8j
+         XxOk7nnf5Np6IeDFS/p9jXJMPagj2UO1j66/NhtazJGvYA8dCPbepFr2XgmO1tG4ZhvM
+         h0Tvr/DIL404IG9aw3mZdByhLhD+dTv3L4dxIsKLYrsJqNnbd+Uf/V2IalI3CiY/09Qe
+         KPmOzC3PaEBSOROOvWyqYtaqADJ6De7Z89Z1lgm+gAtw1X/aTZghCJaxe7SVg9qswVoy
+         9i7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
          :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=WmsHkuXTfVjdOXmnrSnyMRHJc8MdPEuRY9I0xRhzFJ0=;
-        b=ZZFLOpUaFpjbnQIcOiH+6G8vHRC9hoq2KEX1RxkCACNSgkP2GLqwU7dheI5Hq8hpaN
-         hs0e1Ld4N38ptNyOoHmGe1r3O7DR+iSyXttU8kmY7xnc879SmAyV9Q4qMOGq5G37UOtP
-         t683AUXLrOGYQGJdFK5jrbP1wbNRKiWBK66pab8H4F23vimeFe0lTVXOWSN2CC9jIH1n
-         oBV9WgNPUjjY3hLDtxz3jyqJSRk9pbXsKI1RzWqjYg9mnskD4ZCyaqOKsAmdOJ0zhFGS
-         rN8GO5eHc6urqlTT+jTbbd4uEAC2vM2EmwOfvBIQWb0Az/SbOny+SwKe4ikgpcDElAq9
-         LYgw==
-X-Gm-Message-State: AOAM5336Y0NOvuL2PcaxentrSJjyVDO9bnBvoSfPSi460/utDnNKGyVf
-        thKUTFVA9qc6A4XUWOuKxqM=
-X-Google-Smtp-Source: ABdhPJxzseEAXXnAGmyipobpU8zTPg3icPAbgJI/zKJ4RBp3t8g9rK2pPasAOr5gdQOKg5P4XD7flQ==
-X-Received: by 2002:a65:50c1:: with SMTP id s1mr15052981pgp.341.1599450317357;
-        Sun, 06 Sep 2020 20:45:17 -0700 (PDT)
+        bh=aCKz8nVuklulWh7GFYMhEjxq6Ekku02F9Z+kP7jt6fk=;
+        b=kT2QMIExp6VFdSjP/iAXYFuavrmtugr9/uMJXQXVAptUNdrzCqWnI651icPNYiaEpg
+         8D0uznPQ0nWfwJOfsEn5oD6R5CQITILlMnG+/DZyyWOZwBAC0jprOsxc10bM+h0pbQk6
+         3bs0n28dG7b6z3pwnHPjwe5cfyploJUNob4i11aHAe2FaanRAt7h+vTrvJVMvHRwmb0h
+         x780EE+qhs/wjhUgOG6sFWJEfuLAJ+PHhla8hBEXDi3+OGJpy9olKXUKln8oZ1+oCKGr
+         b2jYHCsILdZ9bgXbJDWfo0VzlkPhFEj7Zl3rTyivjEJ74Rk0x2pU9OPmK6VlTiEWMPzK
+         nH9g==
+X-Gm-Message-State: AOAM530rJUNd7lvnG9GYZvs78caB8IZvlzAIgc7zPIdZCogjoyh8loB0
+        pWL24c11sC0hNs1iJ31hpBc=
+X-Google-Smtp-Source: ABdhPJxZUNiVslsQGKD0o0lt7KHS6pGZRXlokcsbuMlXGon7WbSg9bE1S0ORtmSY53iH6qk6CbWlUw==
+X-Received: by 2002:aa7:8285:: with SMTP id s5mr19185495pfm.226.1599450321772;
+        Sun, 06 Sep 2020 20:45:21 -0700 (PDT)
 Received: from balhae.roam.corp.google.com ([101.235.31.111])
-        by smtp.gmail.com with ESMTPSA id l123sm11099672pgl.24.2020.09.06.20.45.13
+        by smtp.gmail.com with ESMTPSA id l123sm11099672pgl.24.2020.09.06.20.45.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 06 Sep 2020 20:45:16 -0700 (PDT)
+        Sun, 06 Sep 2020 20:45:21 -0700 (PDT)
 From:   Namhyung Kim <namhyung@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Jiri Olsa <jolsa@redhat.com>
@@ -59,9 +59,9 @@ Cc:     Ingo Molnar <mingo@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
         Andi Kleen <andi@firstfloor.org>,
         Ian Rogers <irogers@google.com>
-Subject: [PATCH 1/9] perf evlist: Fix cpu/thread map leak
-Date:   Mon,  7 Sep 2020 12:44:54 +0900
-Message-Id: <20200907034502.753230-2-namhyung@kernel.org>
+Subject: [PATCH 2/9] perf parse-event: Fix cpu map leaks
+Date:   Mon,  7 Sep 2020 12:44:55 +0900
+Message-Id: <20200907034502.753230-3-namhyung@kernel.org>
 X-Mailer: git-send-email 2.28.0.526.ge36021eeef-goog
 In-Reply-To: <20200907034502.753230-1-namhyung@kernel.org>
 References: <20200907034502.753230-1-namhyung@kernel.org>
@@ -72,52 +72,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Asan reported leak of cpu and thread maps as they have one more
-refcount than released.  I found that after setting evlist maps it
-should release it's refcount.
+Like evlist cpu map, evsel's cpu map should have proper refcount by
+releasing the original count after creation.
 
-It seems to be broken from the beginning so I chose the original
-commit as the culprit.  But not sure how it's applied to stable trees
-since there are many changes in the code after that.
+This fixes the following ASAN report:
 
-Fixes: 7e2ed097538c5 ("perf evlist: Store pointer to the cpu and thread maps")
-Fixes: 4112eb1899c0e ("perf evlist: Default to syswide target when no thread/cpu maps set")
+  Direct leak of 840 byte(s) in 70 object(s) allocated from:
+    #0 0x7fe36703f628 in malloc (/lib/x86_64-linux-gnu/libasan.so.5+0x107628)
+    #1 0x559fbbf611ca in cpu_map__trim_new /home/namhyung/project/linux/tools/lib/perf/cpumap.c:79
+    #2 0x559fbbf6229c in perf_cpu_map__new /home/namhyung/project/linux/tools/lib/perf/cpumap.c:237
+    #3 0x559fbbcc6c6d in __add_event util/parse-events.c:357
+    #4 0x559fbbcc6c6d in add_event_tool util/parse-events.c:408
+    #5 0x559fbbcc6c6d in parse_events_add_tool util/parse-events.c:1414
+    #6 0x559fbbd8474d in parse_events_parse util/parse-events.y:439
+    #7 0x559fbbcc95da in parse_events__scanner util/parse-events.c:2096
+    #8 0x559fbbcc95da in __parse_events util/parse-events.c:2141
+    #9 0x559fbbc2788b in check_parse_id tests/pmu-events.c:406
+    #10 0x559fbbc2788b in check_parse_id tests/pmu-events.c:393
+    #11 0x559fbbc2788b in check_parse_fake tests/pmu-events.c:436
+    #12 0x559fbbc2788b in metric_parse_fake tests/pmu-events.c:553
+    #13 0x559fbbc27e2d in test_parsing_fake tests/pmu-events.c:599
+    #14 0x559fbbc27e2d in test_parsing_fake tests/pmu-events.c:574
+    #15 0x559fbbc0109b in run_test tests/builtin-test.c:410
+    #16 0x559fbbc0109b in test_and_print tests/builtin-test.c:440
+    #17 0x559fbbc03e69 in __cmd_test tests/builtin-test.c:695
+    #18 0x559fbbc03e69 in cmd_test tests/builtin-test.c:807
+    #19 0x559fbbc691f4 in run_builtin /home/namhyung/project/linux/tools/perf/perf.c:312
+    #20 0x559fbbb071a8 in handle_internal_command /home/namhyung/project/linux/tools/perf/perf.c:364
+    #21 0x559fbbb071a8 in run_argv /home/namhyung/project/linux/tools/perf/perf.c:408
+    #22 0x559fbbb071a8 in main /home/namhyung/project/linux/tools/perf/perf.c:538
+    #23 0x7fe366b68cc9 in __libc_start_main ../csu/libc-start.c:308
+
+And I've failed which commit introduced this bug as the code was
+heavily changed since then. ;-/
+
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/perf/util/evlist.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ tools/perf/util/parse-events.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
-index e3fa3bf7498a..c0768c61eb43 100644
---- a/tools/perf/util/evlist.c
-+++ b/tools/perf/util/evlist.c
-@@ -946,6 +946,10 @@ int perf_evlist__create_maps(struct evlist *evlist, struct target *target)
+diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
+index c4d2394e2b2d..b35e4bb1cecb 100644
+--- a/tools/perf/util/parse-events.c
++++ b/tools/perf/util/parse-events.c
+@@ -360,8 +360,11 @@ __add_event(struct list_head *list, int *idx,
+ 		event_attr_init(attr);
  
- 	perf_evlist__set_maps(&evlist->core, cpus, threads);
+ 	evsel = evsel__new_idx(attr, *idx);
+-	if (!evsel)
++	if (!evsel) {
++		if (!pmu)
++			perf_cpu_map__put(cpus);
+ 		return NULL;
++	}
  
-+	/* as evlist now has references, put count here */
-+	perf_cpu_map__put(cpus);
-+	perf_thread_map__put(threads);
-+
- 	return 0;
+ 	(*idx)++;
+ 	evsel->core.cpus   = perf_cpu_map__get(cpus);
+@@ -369,6 +372,8 @@ __add_event(struct list_head *list, int *idx,
+ 	evsel->core.system_wide = pmu ? pmu->is_uncore : false;
+ 	evsel->auto_merge_stats = auto_merge_stats;
  
- out_delete_threads:
-@@ -1273,11 +1277,12 @@ static int perf_evlist__create_syswide_maps(struct evlist *evlist)
- 		goto out_put;
++	if (!pmu)
++		perf_cpu_map__put(cpus);
+ 	if (name)
+ 		evsel->name = strdup(name);
  
- 	perf_evlist__set_maps(&evlist->core, cpus, threads);
--out:
--	return err;
-+
-+	perf_thread_map__put(threads);
- out_put:
- 	perf_cpu_map__put(cpus);
--	goto out;
-+out:
-+	return err;
- }
- 
- int evlist__open(struct evlist *evlist)
 -- 
 2.28.0.526.ge36021eeef-goog
 
