@@ -2,85 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C35D925F18A
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 03:49:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6210C25F17F
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 03:37:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726323AbgIGBtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Sep 2020 21:49:24 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51400 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725773AbgIGBtY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Sep 2020 21:49:24 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D978CAB91;
-        Mon,  7 Sep 2020 01:49:22 +0000 (UTC)
-From:   Davidlohr Bueso <dave@stgolabs.net>
-To:     rostedt@goodmis.org
-Cc:     mingo@kernel.org, oleg@redhat.com, linux-kernel@vger.kernel.org,
-        dave@stgolabs.net, Davidlohr Bueso <dbueso@suse.de>
-Subject: [PATCH] fgraph: Convert ret_stack tasklist scanning to rcu
-Date:   Sun,  6 Sep 2020 18:33:26 -0700
-Message-Id: <20200907013326.9870-1-dave@stgolabs.net>
-X-Mailer: git-send-email 2.26.2
+        id S1726947AbgIGBhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Sep 2020 21:37:18 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:60238 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726620AbgIGBhS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Sep 2020 21:37:18 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id DB7DE54EDDC5E93ECC73;
+        Mon,  7 Sep 2020 09:37:15 +0800 (CST)
+Received: from [127.0.0.1] (10.174.179.92) by DGGEMS406-HUB.china.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server id 14.3.487.0; Mon, 7 Sep 2020
+ 09:37:06 +0800
+Subject: Re: [PATCH] scsi: libsas: Fix error path in
+ sas_notify_lldd_dev_found()
+To:     Dan Carpenter <dan.carpenter@oracle.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Dan Williams <dan.j.williams@intel.com>
+CC:     "Martin K. Petersen" <martin.petersen@oracle.com>,
+        John Garry <john.garry@huawei.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kernel-janitors@vger.kernel.org>
+References: <20200905125836.GF183976@mwanda>
+From:   Jason Yan <yanaijie@huawei.com>
+Message-ID: <c2e1730d-fe83-7c6a-6011-4bc6c4848f57@huawei.com>
+Date:   Mon, 7 Sep 2020 09:37:05 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.2
 MIME-Version: 1.0
+In-Reply-To: <20200905125836.GF183976@mwanda>
+Content-Type: text/plain; charset="gbk"; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.179.92]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It seems that alloc_retstack_tasklist() can also take a lockless
-approach for scanning the tasklist, instead of using the big global
-tasklist_lock. For this we also kill another deprecated and rcu-unsafe
-tsk->thread_group user replacing it with for_each_process_thread(),
-maintaining semantics.
 
-Here tasklist_lock does not protect anything other than the list
-against concurrent fork/exit. And considering that the whole thing
-is capped by FTRACE_RETSTACK_ALLOC_SIZE (32), it should not be a
-problem to have a pontentially stale, yet stable, list. The task cannot
-go away either, so we don't risk racing with ftrace_graph_exit_task()
-which clears the retstack.
+ÔÚ 2020/9/5 20:58, Dan Carpenter Ð´µÀ:
+> In sas_notify_lldd_dev_found(), if we can't find a device, then it seems
+> like the wrong thing to mark the device as found and to increment the
+> reference count.  None of the callers ever drop the reference in that
+> situation.
+> 
+> Fixes: 735f7d2fedf5 ("[SCSI] libsas: fix domain_device leak")
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> ---
+>   drivers/scsi/libsas/sas_discover.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/scsi/libsas/sas_discover.c b/drivers/scsi/libsas/sas_discover.c
+> index cd7c7d269f6f..d0f9e90e3279 100644
+> --- a/drivers/scsi/libsas/sas_discover.c
+> +++ b/drivers/scsi/libsas/sas_discover.c
+> @@ -182,10 +182,11 @@ int sas_notify_lldd_dev_found(struct domain_device *dev)
+>   		pr_warn("driver on host %s cannot handle device %016llx, error:%d\n",
+>   			dev_name(sas_ha->dev),
+>   			SAS_ADDR(dev->sas_addr), res);
+> +		return res;
+>   	}
+>   	set_bit(SAS_DEV_FOUND, &dev->state);
+>   	kref_get(&dev->kref);
+> -	return res;
+> +	return 0;
+>   }
+>   
+>   
+> 
 
-The tsk->ret_stack management is not protected by tasklist_lock, being
-serialized with the corresponding publish/subscribe barriers against
-concurrent ftrace_push_return_trace(). In addition this plays nicer
-with cachelines by avoiding two atomic ops in the uncontended case.
+Hi Dan, thanks for finding this,
 
-Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
----
- kernel/trace/fgraph.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/kernel/trace/fgraph.c b/kernel/trace/fgraph.c
-index 1af321dec0f1..5658f13037b3 100644
---- a/kernel/trace/fgraph.c
-+++ b/kernel/trace/fgraph.c
-@@ -387,8 +387,8 @@ static int alloc_retstack_tasklist(struct ftrace_ret_stack **ret_stack_list)
- 		}
- 	}
- 
--	read_lock(&tasklist_lock);
--	do_each_thread(g, t) {
-+	rcu_read_lock();
-+	for_each_process_thread(g, t) {
- 		if (start == end) {
- 			ret = -EAGAIN;
- 			goto unlock;
-@@ -403,10 +403,10 @@ static int alloc_retstack_tasklist(struct ftrace_ret_stack **ret_stack_list)
- 			smp_wmb();
- 			t->ret_stack = ret_stack_list[start++];
- 		}
--	} while_each_thread(g, t);
-+	}
- 
- unlock:
--	read_unlock(&tasklist_lock);
-+	rcu_read_unlock();
- free:
- 	for (i = start; i < end; i++)
- 		kfree(ret_stack_list[i]);
---
-2.26.2
+Reviewed-by: Jason Yan <yanaijie@huawei.com>
 
