@@ -2,90 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB8A125F980
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 13:32:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66CB225F989
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 13:33:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729079AbgIGLcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 07:32:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43580 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728575AbgIGL3B (ORCPT
+        id S1729114AbgIGLdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 07:33:53 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:32018 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729042AbgIGL3g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 07:29:01 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96021C061575;
-        Mon,  7 Sep 2020 04:29:01 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id o8so4577236ejb.10;
-        Mon, 07 Sep 2020 04:29:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=kQGNEdq+cDwHylTqbs6BpkRXROVfkl3/tiDlpY9PKjg=;
-        b=LMvw2vfIFlo+Cv7Q+U1LP91HBerow08Yy9+2U7FUmVxuEwMXRjAGo/vrnHyCRYJSEe
-         RfG3x+kOxP9GaXo+av8MSARiQ1s1RaNCmzlQzDyKaKPTz/3VniGXgFJFec15gPuGso1o
-         8sGOMcizLzmoGh9heEaK+9G+eJ5kvvF/FMrLcyHiuhInZb1pyHro+8tsbTtEy5toqh5d
-         oWK4GKkN9VFdgCSYgWQOhI7y9qSHDvhnMnqJzMJfGm2RBTfXTo14qHPAlKJFSo+VnUes
-         lx6s8xNDFCLGLHqSeYbalJWr3XOEDq0Q3/64gtQir5rSlj34T2peipvjfSB59gmSTtvh
-         dgZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=kQGNEdq+cDwHylTqbs6BpkRXROVfkl3/tiDlpY9PKjg=;
-        b=D2TyFBJCIX3D1JwjEqlxyrK4T2HcysshP6fNeuhPGJXVPJn22iZ85ybpsfonTIqV1j
-         T9YUuK7M7F89JwbO1a9iGe1P2J7f35P0Lqsz02aZ4uUnHYnX708dLnIEf+WAt0/wN1Sf
-         OfT90HLzN1oj6kbfptXFakmgSeG2hXmI6EeqfwVtTlqTnLp5lKBSMaw8eJcdbACOUwsP
-         UqHg45zWrFW1Now7BjZhQ1F6wAFCtQaOdriVtGGrLEPCCM9LxRVUbFuTxab1H4ryOZaL
-         u1aokKFMSxBo2oNEogeKQ7wis7EAivL6FdV/dtOXFumiljTGK4SHp84EHHcsZVaIZHNi
-         vSow==
-X-Gm-Message-State: AOAM533r/n9AQAkNlaq8YY2l3I6iARVcuWTwFiw+IT+nWvVxh8kho9Q5
-        w8g28m1jZKgZk9oqhNiO8/w=
-X-Google-Smtp-Source: ABdhPJyJxk/i2Mt+3kd2Kcc6jyfxcUA8iEeifyT1g06whWiFnZyRns2udxwRseJhkD5B+60VxISReg==
-X-Received: by 2002:a17:906:3bca:: with SMTP id v10mr19919515ejf.57.1599478140293;
-        Mon, 07 Sep 2020 04:29:00 -0700 (PDT)
-Received: from localhost.localdomain ([2a01:598:b902:e05f:7139:914b:4eed:99b3])
-        by smtp.gmail.com with ESMTPSA id k6sm13826528edj.93.2020.09.07.04.28.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Sep 2020 04:28:59 -0700 (PDT)
-From:   Bean Huo <huobean@gmail.com>
-To:     axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     beanhuo@micron.com
-Subject: [PATCH v2 2/2] fs: isofs: fix incorrect comment in zisofs_readpage()
-Date:   Mon,  7 Sep 2020 13:28:45 +0200
-Message-Id: <20200907112845.3420-3-huobean@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200907112845.3420-1-huobean@gmail.com>
-References: <20200907112845.3420-1-huobean@gmail.com>
+        Mon, 7 Sep 2020 07:29:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599478175;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=sdatg3+EIvbmCx4rquRr8nF8KzhV+GhB+U/I/9Y53Ew=;
+        b=b/VlkQ7ngJ4c5ZYzgKhDuz5zElfmxJMm21XyoRRVhdVnFyKwPd3ckGdMGAaOTO0c3wFpwI
+        ZLioNQr86+uoEXlTm9y4LhPa8U2bwkenJ8V4dAHiYp5N3wtUw+TOLLnO8GqGsM+D0htBBq
+        qQ9a8Usf4N/jhJRZK2yEkQ6L36721NI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-42--mIHqnlHMzq9MMno81SbDw-1; Mon, 07 Sep 2020 07:29:32 -0400
+X-MC-Unique: -mIHqnlHMzq9MMno81SbDw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 307FA8015FD;
+        Mon,  7 Sep 2020 11:29:29 +0000 (UTC)
+Received: from krava (ovpn-112-180.ams2.redhat.com [10.36.112.180])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 7B72E5D9D2;
+        Mon,  7 Sep 2020 11:29:26 +0000 (UTC)
+Date:   Mon, 7 Sep 2020 13:29:25 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Stephane Eranian <eranian@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <andi@firstfloor.org>,
+        Ian Rogers <irogers@google.com>
+Subject: Re: [PATCH 1/9] perf evlist: Fix cpu/thread map leak
+Message-ID: <20200907112925.GJ1199773@krava>
+References: <20200907034502.753230-1-namhyung@kernel.org>
+ <20200907034502.753230-2-namhyung@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200907034502.753230-2-namhyung@kernel.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bean Huo <beanhuo@micron.com>
+On Mon, Sep 07, 2020 at 12:44:54PM +0900, Namhyung Kim wrote:
+> Asan reported leak of cpu and thread maps as they have one more
+> refcount than released.  I found that after setting evlist maps it
+> should release it's refcount.
+> 
+> It seems to be broken from the beginning so I chose the original
+> commit as the culprit.  But not sure how it's applied to stable trees
+> since there are many changes in the code after that.
+> 
+> Fixes: 7e2ed097538c5 ("perf evlist: Store pointer to the cpu and thread maps")
+> Fixes: 4112eb1899c0e ("perf evlist: Default to syswide target when no thread/cpu maps set")
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> ---
+>  tools/perf/util/evlist.c | 11 ++++++++---
+>  1 file changed, 8 insertions(+), 3 deletions(-)
+> 
+> diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
+> index e3fa3bf7498a..c0768c61eb43 100644
+> --- a/tools/perf/util/evlist.c
+> +++ b/tools/perf/util/evlist.c
+> @@ -946,6 +946,10 @@ int perf_evlist__create_maps(struct evlist *evlist, struct target *target)
+>  
+>  	perf_evlist__set_maps(&evlist->core, cpus, threads);
+>  
+> +	/* as evlist now has references, put count here */
+> +	perf_cpu_map__put(cpus);
+> +	perf_thread_map__put(threads);
 
-do_generic_file_read() has been renamed to eneric_file_buffered_read()
-since commit 47c27bc46946 ("fs: pass iocb to do_generic_file_read"), so
-relpace it with generic_file_buffered_read() in the comment.
+nice catch, I checked perf_evlist__create_syswide_maps is doing this
+correctly, but I think we might have the same issue in script's
+set_maps function
 
-Signed-off-by: Bean Huo <beanhuo@micron.com>
----
- fs/isofs/compress.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+thanks,
+jirka
 
-diff --git a/fs/isofs/compress.c b/fs/isofs/compress.c
-index bc12ac7e2312..7541581c1064 100644
---- a/fs/isofs/compress.c
-+++ b/fs/isofs/compress.c
-@@ -312,7 +312,7 @@ static int zisofs_readpage(struct file *file, struct page *page)
- 	end_index = (inode->i_size + PAGE_SIZE - 1) >> PAGE_SHIFT;
- 	/*
- 	 * If this page is wholly outside i_size we just return zero;
--	 * do_generic_file_read() will handle this for us
-+	 * generic_file_buffered_read() will handle this for us
- 	 */
- 	if (index >= end_index) {
- 		SetPageUptodate(page);
--- 
-2.17.1
+> +
+>  	return 0;
+>  
+>  out_delete_threads:
+> @@ -1273,11 +1277,12 @@ static int perf_evlist__create_syswide_maps(struct evlist *evlist)
+>  		goto out_put;
+>  
+>  	perf_evlist__set_maps(&evlist->core, cpus, threads);
+> -out:
+> -	return err;
+> +
+> +	perf_thread_map__put(threads);
+>  out_put:
+>  	perf_cpu_map__put(cpus);
+> -	goto out;
+> +out:
+> +	return err;
+>  }
+>  
+>  int evlist__open(struct evlist *evlist)
+> -- 
+> 2.28.0.526.ge36021eeef-goog
+> 
 
