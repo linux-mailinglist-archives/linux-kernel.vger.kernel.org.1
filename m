@@ -2,149 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B13325FB40
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 15:19:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FD8725FB46
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 15:26:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729442AbgIGNTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 09:19:43 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:59063 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729430AbgIGNLr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 09:11:47 -0400
-X-IronPort-AV: E=Sophos;i="5.76,359,1592863200"; 
-   d="scan'208";a="466412596"
-Received: from abo-173-121-68.mrs.modulonet.fr (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 07 Sep 2020 15:11:31 +0200
-Date:   Mon, 7 Sep 2020 15:11:31 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Markus Elfring <Markus.Elfring@web.de>
-cc:     Coccinelle <cocci@systeme.lip6.fr>,
-        Dejin Zheng <zhengdejin5@gmail.com>,
-        Denis Efremov <efremov@linux.com>,
-        Gilles Muller <Gilles.Muller@lip6.fr>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nicolas Palix <nicolas.palix@imag.fr>,
-        kernel-janitors@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: =?UTF-8?Q?Re=3A_=5BPATCH=5D_Coccinelle=3A_api=3A_Add_SmPL_scr?=
- =?UTF-8?Q?ipt_=E2=80=9Cuse=5Fdevm=5Fplatform=5Fget=5Fand=5Fioremap=5Fre?=
- =?UTF-8?Q?source=2Ecocci=E2=80=9D?=
-In-Reply-To: <477abcea-e008-e509-d03f-f2753ebdfb20@web.de>
-Message-ID: <alpine.DEB.2.22.394.2009071506350.2476@hadrien>
-References: <25b804fd-0d04-475d-f614-26c03c9fd544@web.de> <5f9fdd59-4b0b-1cb5-c3a2-92efc5bb3841@web.de> <alpine.DEB.2.22.394.2009071357140.2476@hadrien> <477abcea-e008-e509-d03f-f2753ebdfb20@web.de>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        id S1729594AbgIGNZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 09:25:42 -0400
+Received: from 8bytes.org ([81.169.241.247]:41596 "EHLO theia.8bytes.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729427AbgIGNRq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 09:17:46 -0400
+Received: from cap.home.8bytes.org (p549add56.dip0.t-ipconnect.de [84.154.221.86])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by theia.8bytes.org (Postfix) with ESMTPSA id 2985EA6D;
+        Mon,  7 Sep 2020 15:16:44 +0200 (CEST)
+From:   Joerg Roedel <joro@8bytes.org>
+To:     x86@kernel.org
+Cc:     Joerg Roedel <joro@8bytes.org>, Joerg Roedel <jroedel@suse.de>,
+        Borislav Petkov <bp@alien8.de>, hpa@zytor.com,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        David Rientjes <rientjes@google.com>,
+        Cfir Cohen <cfir@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mike Stunes <mstunes@vmware.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: [PATCH v7 04/72] KVM: SVM: Use __packed shorthand
+Date:   Mon,  7 Sep 2020 15:15:05 +0200
+Message-Id: <20200907131613.12703-5-joro@8bytes.org>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200907131613.12703-1-joro@8bytes.org>
+References: <20200907131613.12703-1-joro@8bytes.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-1914540151-1599484292=:2476"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+From: Borislav Petkov <bp@alien8.de>
 
---8323329-1914540151-1599484292=:2476
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+Use the shorthand to make it more readable.
 
+No functional changes.
 
+Signed-off-by: Borislav Petkov <bp@alien8.de>
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
+---
+ arch/x86/include/asm/svm.h | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-On Mon, 7 Sep 2020, Markus Elfring wrote:
+diff --git a/arch/x86/include/asm/svm.h b/arch/x86/include/asm/svm.h
+index 06e52585aed3..cf13f9e78585 100644
+--- a/arch/x86/include/asm/svm.h
++++ b/arch/x86/include/asm/svm.h
+@@ -150,14 +150,14 @@ struct __attribute__ ((__packed__)) vmcb_control_area {
+ #define SVM_NESTED_CTL_NP_ENABLE	BIT(0)
+ #define SVM_NESTED_CTL_SEV_ENABLE	BIT(1)
+ 
+-struct __attribute__ ((__packed__)) vmcb_seg {
++struct vmcb_seg {
+ 	u16 selector;
+ 	u16 attrib;
+ 	u32 limit;
+ 	u64 base;
+-};
++} __packed;
+ 
+-struct __attribute__ ((__packed__)) vmcb_save_area {
++struct vmcb_save_area {
+ 	struct vmcb_seg es;
+ 	struct vmcb_seg cs;
+ 	struct vmcb_seg ss;
+@@ -231,7 +231,7 @@ struct __attribute__ ((__packed__)) vmcb_save_area {
+ 	u64 xcr0;
+ 	u8 valid_bitmap[16];
+ 	u64 x87_state_gpa;
+-};
++} __packed;
+ 
+ struct ghcb {
+ 	struct vmcb_save_area save;
+@@ -256,11 +256,11 @@ static inline void __unused_size_checks(void)
+ 	BUILD_BUG_ON(sizeof(struct ghcb)		!= EXPECTED_GHCB_SIZE);
+ }
+ 
+-struct __attribute__ ((__packed__)) vmcb {
++struct vmcb {
+ 	struct vmcb_control_area control;
+ 	u8 reserved_control[1024 - sizeof(struct vmcb_control_area)];
+ 	struct vmcb_save_area save;
+-};
++} __packed;
+ 
+ #define SVM_CPUID_FUNC 0x8000000a
+ 
+-- 
+2.28.0
 
-> >> +@display depends on context@
-> >> +expression base, device1, device2, index, private, resource;
-> >> +@@
-> >> +(
-> >> +*resource = platform_get_resource(device1, IORESOURCE_MEM, index);
-> >> + base =
-> >> +*       devm_ioremap_resource
-> >> +                             (&device1->dev, resource);
-> >
-> > Why do you require these statements to be next to each other?
->
-> I would appreciate indications for a general change acceptance
-> also according to such a simple transformation approach.
-> I imagine that it will become more challenging to tolerate extra
-> source code between these function calls (by the specification
-> of special SmPL filters).
->
->
-> >> +|
-> >> +*private->res = platform_get_resource(device1, IORESOURCE_MEM, index);
-> >> + base =
-> >> +*       devm_ioremap_resource
-> >> +                             (device2, private->res);
-> >
-> > Why do you have this special case?
->
-> The usage of the data structure member “res” triggers corresponding
-> software design consequences.
-
-I don't think this is a reliable rule.  You included two examples below.
-They involve structures of different types. It seems unlikely that there
-is a guarantee that the res field of all structures is used in the same
-way.  Furthermore, this is the context case.  What is the purpose of
-making the distinction?  The user will have to figure out what to do by
-hand in any case.
-
-> The expressions which are passed as the first function call parameters
-> can be different.
->
->
-> >> +@replacement depends on patch@
-> >> +expression base, device1, device2, index, private, resource;
-> >> +@@
-> >> +(
-> >> +-resource = platform_get_resource(device1, IORESOURCE_MEM, index);
-> >> + base =
-> >> +-       devm_ioremap_resource
-> >> ++       devm_platform_get_and_ioremap_resource
-> >> +                             (
-> >> +-                             &
-> >> +                               device1
-> >> +-                                     ->dev
-> >> +                              ,
-> >> +-                             resource
-> >> ++                             index, &resource
-> >> +                             );
-> >> +|
-> >> +-private->res = platform_get_resource(device1, IORESOURCE_MEM, index);
-> >> + base =
-> >> +-       devm_ioremap_resource
-> >> ++       devm_platform_get_and_ioremap_resource
-> >> +                             (device2,
-> >
-> > It is very suspicious that in one case you change the first argument of
-> > devm_platform_get_and_ioremap_resource and in one case you don't.
->
-> I noticed a few special cases during my source code analysis approach.
-
-This is not a reasonable answer.  Does the rule work correctly or not?  If
-it doesn't work correctly, it needs to be removed.
-
-> > If you don't know how to make the change in some cases, it would be better
-> > to do nothing at all.
->
-> How do you think about to take another look at any update candidates?
->
-> Examples:
-> * mvebu_sei_probe
->   https://elixir.bootlin.com/linux/v5.9-rc4/source/drivers/irqchip/irq-mvebu-sei.c#L368
->   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/irqchip/irq-mvebu-sei.c?id=f4d51dffc6c01a9e94650d95ce0104964f8ae822#n368
-
-I don't see any purpose to providing two links for everything.
-
-julia
-
->
-> * hi655x_pmic_probe
->   https://elixir.bootlin.com/linux/v5.9-rc4/source/drivers/mfd/hi655x-pmic.c#L92
->   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/mfd/hi655x-pmic.c?id=f4d51dffc6c01a9e94650d95ce0104964f8ae822#n92
->
-> Regards,
-> Markus
->
---8323329-1914540151-1599484292=:2476--
