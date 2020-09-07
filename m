@@ -2,42 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BE5125FDFA
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 18:04:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 323D025FDF3
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 18:03:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730340AbgIGQEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 12:04:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56072 "EHLO mail.kernel.org"
+        id S1730248AbgIGQD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 12:03:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56042 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730295AbgIGP77 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1730237AbgIGP77 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 7 Sep 2020 11:59:59 -0400
 Received: from mail.kernel.org (ip5f5ad5cf.dynamic.kabel-deutschland.de [95.90.213.207])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6CB4121775;
+        by mail.kernel.org (Postfix) with ESMTPSA id 5ADED21481;
         Mon,  7 Sep 2020 15:59:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1599494379;
-        bh=TunUPIzcYuVLQPmKAkSuBmmotsT9zvhar8CTxXKkGPE=;
+        bh=fBqDIBCosY6jOHB7XMMtIeL5J9D0ebJLl35D+xCMJOE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CKcoOBGzwouJOQ5MyfPX/KssWFHddHkDTzS9/Dz883Jye0V4rWJJmuEK1T0Us+V7M
-         IGMszREvPk8I3rEpCPGdvp/tUJ1rYHeC7pgLvSoGV5mCvWWwIgqW7031KpSUnP5og2
-         flHmYb4wkINQ/EUqQ3CXCGJDIHsRXg/z//KB1vGw=
+        b=a/oYXJTJhz0MsqLus8zCoUN+HnefoimE743vPzF2wu5XV91iicyzMr2KY7nkU6rFQ
+         Yx541b1z4ziyc6fDF+TtiEsZAG2UkEsiNxxS936cj445Di10fQaguv8wv4PjfqGw+6
+         gfWdTv1hj4LNMtLdtoZckovaU9cvRr17bO1X59xQ=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kFJYP-00ATv0-DP; Mon, 07 Sep 2020 17:59:37 +0200
+        id 1kFJYP-00ATv2-EI; Mon, 07 Sep 2020 17:59:37 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         John Stultz <john.stultz@linaro.org>,
         Manivannan Sadhasivam <mani@kernel.org>,
-        Felipe Balbi <balbi@kernel.org>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 10/11] dwc3-of-simple: add support for Hikey 970
-Date:   Mon,  7 Sep 2020 17:59:34 +0200
-Message-Id: <83393769e4391d038c4ab69a67ac77e2ca34efd4.1599493845.git.mchehab+huawei@kernel.org>
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 11/11] dts: hisilicon: add support for USB3 on Hikey 970
+Date:   Mon,  7 Sep 2020 17:59:35 +0200
+Message-Id: <3d67ad09724ea8ab39d17d083d971d404a26cf8b.1599493845.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1599493845.git.mchehab+huawei@kernel.org>
 References: <cover.1599493845.git.mchehab+huawei@kernel.org>
@@ -49,97 +51,275 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This binding driver is needed for Hikey 970 to work,
-as otherwise a Serror is produced:
-
-    [    1.837458] SError Interrupt on CPU0, code 0xbf000002 -- SError
-    [    1.837462] CPU: 0 PID: 74 Comm: kworker/0:1 Not tainted 5.8.0+ #205
-    [    1.837463] Hardware name: HiKey970 (DT)
-    [    1.837465] Workqueue: events deferred_probe_work_func
-    [    1.837467] pstate: 20000005 (nzCv daif -PAN -UAO BTYPE=--)
-    [    1.837468] pc : _raw_spin_unlock_irqrestore+0x18/0x50
-    [    1.837469] lr : regmap_unlock_spinlock+0x14/0x20
-    [    1.837470] sp : ffff8000124dba60
-    [    1.837471] x29: ffff8000124dba60 x28: 0000000000000000
-    [    1.837474] x27: ffff0001b7e854c8 x26: ffff80001204ea18
-    [    1.837476] x25: 0000000000000005 x24: ffff800011f918f8
-    [    1.837479] x23: ffff800011fbb588 x22: ffff0001b7e40e00
-    [    1.837481] x21: 0000000000000100 x20: 0000000000000000
-    [    1.837483] x19: ffff0001b767ec00 x18: 00000000ff10c000
-    [    1.837485] x17: 0000000000000002 x16: 0000b0740fdb9950
-    [    1.837488] x15: ffff8000116c1198 x14: ffffffffffffffff
-    [    1.837490] x13: 0000000000000030 x12: 0101010101010101
-    [    1.837493] x11: 0000000000000020 x10: ffff0001bf17d130
-    [    1.837495] x9 : 0000000000000000 x8 : ffff0001b6938080
-    [    1.837497] x7 : 0000000000000000 x6 : 000000000000003f
-    [    1.837500] x5 : 0000000000000000 x4 : 0000000000000000
-    [    1.837502] x3 : ffff80001096a880 x2 : 0000000000000000
-    [    1.837505] x1 : ffff0001b7e40e00 x0 : 0000000100000001
-    [    1.837507] Kernel panic - not syncing: Asynchronous SError Interrupt
-    [    1.837509] CPU: 0 PID: 74 Comm: kworker/0:1 Not tainted 5.8.0+ #205
-    [    1.837510] Hardware name: HiKey970 (DT)
-    [    1.837511] Workqueue: events deferred_probe_work_func
-    [    1.837513] Call trace:
-    [    1.837514]  dump_backtrace+0x0/0x1e0
-    [    1.837515]  show_stack+0x18/0x24
-    [    1.837516]  dump_stack+0xc0/0x11c
-    [    1.837517]  panic+0x15c/0x324
-    [    1.837518]  nmi_panic+0x8c/0x90
-    [    1.837519]  arm64_serror_panic+0x78/0x84
-    [    1.837520]  do_serror+0x158/0x15c
-    [    1.837521]  el1_error+0x84/0x100
-    [    1.837522]  _raw_spin_unlock_irqrestore+0x18/0x50
-    [    1.837523]  regmap_write+0x58/0x80
-    [    1.837524]  hi3660_reset_deassert+0x28/0x34
-    [    1.837526]  reset_control_deassert+0x50/0x260
-    [    1.837527]  reset_control_deassert+0xf4/0x260
-    [    1.837528]  dwc3_probe+0x5dc/0xe6c
-    [    1.837529]  platform_drv_probe+0x54/0xb0
-    [    1.837530]  really_probe+0xe0/0x490
-    [    1.837531]  driver_probe_device+0xf4/0x160
-    [    1.837532]  __device_attach_driver+0x8c/0x114
-    [    1.837533]  bus_for_each_drv+0x78/0xcc
-    [    1.837534]  __device_attach+0x108/0x1a0
-    [    1.837535]  device_initial_probe+0x14/0x20
-    [    1.837537]  bus_probe_device+0x98/0xa0
-    [    1.837538]  deferred_probe_work_func+0x88/0xe0
-    [    1.837539]  process_one_work+0x1cc/0x350
-    [    1.837540]  worker_thread+0x2c0/0x470
-    [    1.837541]  kthread+0x154/0x160
-    [    1.837542]  ret_from_fork+0x10/0x30
-    [    1.837569] SMP: stopping secondary CPUs
-    [    1.837570] Kernel Offset: 0x1d0000 from 0xffff800010000000
-    [    1.837571] PHYS_OFFSET: 0x0
-    [    1.837572] CPU features: 0x240002,20882004
-    [    1.837573] Memory Limit: none
+Add the USB3 bindings for Kirin 970 phy and Hikey 970 board.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- drivers/usb/dwc3/dwc3-of-simple.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ .../boot/dts/hisilicon/hi3670-hikey970.dts    | 102 ++++++++++++++++++
+ arch/arm64/boot/dts/hisilicon/hi3670.dtsi     |  58 ++++++++++
+ drivers/misc/hisi_hikey_usb.c                 |  29 ++---
+ 3 files changed, 167 insertions(+), 22 deletions(-)
 
-diff --git a/drivers/usb/dwc3/dwc3-of-simple.c b/drivers/usb/dwc3/dwc3-of-simple.c
-index 8852fbfdead4..2d497165efe2 100644
---- a/drivers/usb/dwc3/dwc3-of-simple.c
-+++ b/drivers/usb/dwc3/dwc3-of-simple.c
-@@ -49,7 +49,8 @@ static int dwc3_of_simple_probe(struct platform_device *pdev)
- 	 * Some controllers need to toggle the usb3-otg reset before trying to
- 	 * initialize the PHY, otherwise the PHY times out.
- 	 */
--	if (of_device_is_compatible(np, "rockchip,rk3399-dwc3"))
-+	if (of_device_is_compatible(np, "rockchip,rk3399-dwc3") ||
-+	    of_device_is_compatible(np, "hisilicon,hi3670-dwc3"))
- 		simple->need_reset = true;
- 
- 	simple->resets = of_reset_control_array_get(np, false, true,
-@@ -176,6 +177,7 @@ static const struct of_device_id of_dwc3_simple_match[] = {
- 	{ .compatible = "cavium,octeon-7130-usb-uctl" },
- 	{ .compatible = "sprd,sc9860-dwc3" },
- 	{ .compatible = "allwinner,sun50i-h6-dwc3" },
-+	{ .compatible = "hisilicon,hi3670-dwc3" },
- 	{ /* Sentinel */ }
+diff --git a/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts b/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
+index f218acceec0b..744cdbb9867a 100644
+--- a/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
++++ b/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
+@@ -62,6 +62,29 @@ wlan_en: wlan-en-1-8v {
+ 		startup-delay-us = <70000>;
+ 		enable-active-high;
+ 	};
++	hikey_usbhub: hikey_usbhub {
++		compatible = "hisilicon,kirin970_hikey_usbhub";
++
++		typec-vbus-gpios = <&gpio26 1 0>;
++		otg-switch-gpios = <&gpio4 2 0>;
++		hub_reset_en_gpio = <&gpio0 3 0>;
++		hub-vdd-supply = <&ldo17>;
++		usb-role-switch;
++
++		port {
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			hikey_usb_ep0: endpoint@0 {
++				reg = <0>;
++				remote-endpoint = <&dwc3_role_switch>;
++			};
++			hikey_usb_ep1: endpoint@1 {
++				reg = <1>;
++				remote-endpoint = <&rt1711h_ep>;
++			};
++		};
++	};
  };
- MODULE_DEVICE_TABLE(of, of_dwc3_simple_match);
+ 
+ /*
+@@ -440,6 +463,57 @@ &uart6 {
+ 	status = "okay";
+ };
+ 
++&i2c1 {
++	status = "okay";
++
++	rt1711h: rt1711h@4e {
++		compatible = "richtek,rt1711h";
++		reg = <0x4e>;
++		status = "ok";
++		interrupt-parent = <&gpio27>;
++		interrupts = <5 IRQ_TYPE_LEVEL_LOW>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&usb_cfg_func>;
++
++		usb_con: connector {
++			compatible = "usb-c-connector";
++			label = "USB-C";
++			data-role = "dual";
++			power-role = "dual";
++			try-power-role = "sink";
++			source-pdos = <PDO_FIXED(5000, 500, PDO_FIXED_USB_COMM)>;
++			sink-pdos = <PDO_FIXED(5000, 500, PDO_FIXED_USB_COMM)
++				PDO_VAR(5000, 5000, 1000)>;
++			op-sink-microwatt = <10000000>;
++
++			ports {
++				#address-cells = <1>;
++				#size-cells = <0>;
++				port@1 {
++					reg = <1>;
++					usb_con_ss: endpoint {
++						remote-endpoint = <&dwc3_ss>;
++					};
++				};
++			};
++		};
++		port {
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			rt1711h_ep: endpoint@0 {
++				reg = <0>;
++				remote-endpoint = <&hikey_usb_ep1>;
++			};
++		};
++	};
++};
++
++&i2c2 {
++	/* USB HUB is on this bus at address 0x44 */
++	status = "okay";
++};
++
+ &i2c4 {
+ 	status = "okay";
+ 
+@@ -469,3 +543,31 @@ adv7533_in: endpoint {
+ 		};
+ 	};
+ };
++
++&dwc3 { /* USB */
++	dr_mode = "otg";
++	maximum-speed = "super-speed";
++	phy_type = "utmi";
++	snps,dis-del-phy-power-chg-quirk;
++	snps,dis_u2_susphy_quirk;
++	snps,dis_u3_susphy_quirk;
++	snps,tx_de_emphasis_quirk;
++	snps,tx_de_emphasis = <1>;
++	snps,dis-split-quirk;
++	snps,gctl-reset-quirk;
++	usb-role-switch;
++	role-switch-default-mode = "host";
++	port {
++		#address-cells = <1>;
++		#size-cells = <0>;
++		dwc3_role_switch: endpoint@0 {
++			reg = <0>;
++			remote-endpoint = <&hikey_usb_ep0>;
++		};
++
++		dwc3_ss: endpoint@1 {
++			reg = <1>;
++			remote-endpoint = <&usb_con_ss>;
++		};
++	};
++};
+diff --git a/arch/arm64/boot/dts/hisilicon/hi3670.dtsi b/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
+index e2b2e21295a7..bd88a67ec4a9 100644
+--- a/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
++++ b/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
+@@ -8,6 +8,7 @@
+ 
+ #include <dt-bindings/interrupt-controller/arm-gic.h>
+ #include <dt-bindings/clock/hi3670-clock.h>
++#include <dt-bindings/usb/pd.h>
+ 
+ / {
+ 	compatible = "hisilicon,hi3670";
+@@ -800,5 +801,62 @@ i2c4: i2c@fdf0d000 {
+ 			pinctrl-0 = <&i2c4_pmx_func &i2c4_cfg_func>;
+ 			status = "disabled";
+ 		};
++
++		usb3_otg_bc: usb3_otg_bc@ff200000 {
++			compatible = "syscon", "simple-mfd";
++			reg = <0x0 0xff200000 0x0 0x1000>;
++
++			usb_phy: usbphy {
++				compatible = "hisilicon,hi3670-usb-phy";
++				#phy-cells = <0>;
++				hisilicon,pericrg-syscon = <&crg_ctrl>;
++				hisilicon,pctrl-syscon = <&pctrl>;
++				hisilicon,sctrl-syscon = <&sctrl>;
++				hisilicon,eye-diagram-param = <0xFDFEE4>;
++				hisilicon,tx-vboost-lvl = <0x5>;
++
++				phy-supply = <&ldo17>;
++			};
++		};
++
++		usb31_misc_rst: usb31_misc_rst_controller {
++			compatible = "hisilicon,hi3660-reset";
++			#reset-cells = <2>;
++			hisi,rst-syscon = <&usb3_otg_bc>;
++		};
++
++		usb3: hisi_dwc3 {
++			compatible = "hisilicon,hi3670-dwc3";
++			#address-cells = <2>;
++			#size-cells = <2>;
++			ranges;
++
++			clocks = <&crg_ctrl HI3670_CLK_GATE_ABB_USB>,
++				  <&crg_ctrl HI3670_HCLK_GATE_USB3OTG>,
++				  <&crg_ctrl HI3670_CLK_GATE_USB3OTG_REF>,
++				  <&crg_ctrl HI3670_ACLK_GATE_USB3DVFS>;
++			clock-names = "clk_gate_abb_usb",
++				      "hclk_gate_usb3otg",
++				      "clk_gate_usb3otg_ref",
++				      "aclk_gate_usb3dvfs";
++
++			assigned-clocks = <&crg_ctrl HI3670_ACLK_GATE_USB3DVFS>;
++			assigned-clock-rates = <238000000>;
++			resets = <&crg_rst 0x90 6>,
++				 <&crg_rst 0x90 7>,
++				 <&usb31_misc_rst 0xA0 8>,
++				 <&usb31_misc_rst 0xA0 9>;
++
++			dwc3: dwc3@ff100000 {
++				compatible = "snps,dwc3";
++				reg = <0x0 0xff100000 0x0 0x100000>;
++
++				interrupts = <0 159 IRQ_TYPE_LEVEL_HIGH>,
++					    <0 161 IRQ_TYPE_LEVEL_HIGH>;
++
++				phys = <&usb_phy>;
++				phy-names = "usb3-phy";
++			};
++		};
+ 	};
+ };
+diff --git a/drivers/misc/hisi_hikey_usb.c b/drivers/misc/hisi_hikey_usb.c
+index b884680867a5..2ddd4072788d 100644
+--- a/drivers/misc/hisi_hikey_usb.c
++++ b/drivers/misc/hisi_hikey_usb.c
+@@ -35,6 +35,7 @@ struct hisi_hikey_usb {
+ 	struct gpio_desc *otg_switch;
+ 	struct gpio_desc *typec_vbus;
+ 	struct gpio_desc *hub_vbus;
++	struct gpio_desc *reset;
+ 
+ 	struct regulator *regulator;
+ 
+@@ -53,10 +54,8 @@ static void hub_power_ctrl(struct hisi_hikey_usb *hisi_hikey_usb, int value)
+ {
+ 	int ret, status;
+ 
+-	if (!hisi_hikey_usb->hub_vbus)
+-		return;
+-
+-	gpiod_set_value_cansleep(hisi_hikey_usb->hub_vbus, value);
++	if (hisi_hikey_usb->hub_vbus)
++		gpiod_set_value_cansleep(hisi_hikey_usb->hub_vbus, value);
+ 
+ 	if (!hisi_hikey_usb->regulator)
+ 		return;
+@@ -152,7 +151,6 @@ static int hisi_hikey_usb_parse_kirin970(struct platform_device *pdev,
+ 					 struct hisi_hikey_usb *hisi_hikey_usb)
+ {
+ 	struct regulator *regulator;
+-	int hub_reset_en_gpio;
+ 	int ret;
+ 
+ 	regulator = devm_regulator_get(&pdev->dev, "hub-vdd");
+@@ -169,23 +167,10 @@ static int hisi_hikey_usb_parse_kirin970(struct platform_device *pdev,
+ 	}
+ 	hisi_hikey_usb->regulator = regulator;
+ 
+-	hub_reset_en_gpio = of_get_named_gpio(pdev->dev.of_node,
+-					      "hub_reset_en_gpio", 0);
+-	if (!gpio_is_valid(hub_reset_en_gpio)) {
+-		dev_err(&pdev->dev, "Failed to get a valid reset gpio\n");
+-		return -ENODEV;
+-	}
+-
+-	ret = devm_gpio_request(&pdev->dev, hub_reset_en_gpio,
+-				"hub_reset_en_gpio");
+-	if (ret) {
+-		dev_err(&pdev->dev, "Failed to request the reset gpio\n");
+-		return ret;
+-	}
+-	ret = gpio_direction_output(hub_reset_en_gpio, 1);
+-	if (ret)
+-		dev_err(&pdev->dev,
+-			"Failed to set the direction of the reset gpio\n");
++	hisi_hikey_usb->reset = devm_gpiod_get(&pdev->dev, "hub_reset_en_gpio",
++					       GPIOD_OUT_HIGH);
++	if (IS_ERR(hisi_hikey_usb->reset))
++		return PTR_ERR(hisi_hikey_usb->reset);
+ 
+ 	return ret;
+ }
 -- 
 2.26.2
 
