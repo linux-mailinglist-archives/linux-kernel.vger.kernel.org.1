@@ -2,111 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03E9025F8E5
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 12:54:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3974225F8B4
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 12:44:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728963AbgIGKyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 06:54:04 -0400
-Received: from outbound-smtp13.blacknight.com ([46.22.139.230]:56605 "EHLO
-        outbound-smtp13.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728669AbgIGKxv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 06:53:51 -0400
-X-Greylist: delayed 568 seconds by postgrey-1.27 at vger.kernel.org; Mon, 07 Sep 2020 06:53:50 EDT
-Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
-        by outbound-smtp13.blacknight.com (Postfix) with ESMTPS id D83331C3C72
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 11:44:08 +0100 (IST)
-Received: (qmail 913 invoked from network); 7 Sep 2020 10:44:08 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.21.127])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 7 Sep 2020 10:44:08 -0000
-Date:   Mon, 7 Sep 2020 11:44:06 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-Cc:     Mel Gorman <mgorman@suse.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
-        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
-        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
-        "bsegall@google.com" <bsegall@google.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Phil Auld <pauld@redhat.com>, Hillf Danton <hdanton@sina.com>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCH] sched/fair: use dst group while checking imbalance for
- NUMA balancer
-Message-ID: <20200907104406.GD3179@techsingularity.net>
-References: <20200907072708.8664-1-song.bao.hua@hisilicon.com>
- <20200907092717.GD3117@suse.de>
- <9c8e148805bc4da1a2bfdd72f1c76f06@hisilicon.com>
+        id S1728780AbgIGKo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 06:44:29 -0400
+Received: from foss.arm.com ([217.140.110.172]:60618 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728406AbgIGKoX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 06:44:23 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 12B48106F;
+        Mon,  7 Sep 2020 03:44:23 -0700 (PDT)
+Received: from bogus (unknown [10.57.10.112])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 471233F66E;
+        Mon,  7 Sep 2020 03:44:20 -0700 (PDT)
+Date:   Mon, 7 Sep 2020 11:44:18 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Sudeep Holla <sudeep.holla@arm.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Subject: Re: [PATCH 1/3] cpufreq: arm_scmi: Constify scmi_perf_ops pointers
+Message-ID: <20200907104418.GC17330@bogus>
+References: <20200906230452.33410-1-rikard.falkeborn@gmail.com>
+ <20200906230452.33410-2-rikard.falkeborn@gmail.com>
+ <20200907102200.GB17330@bogus>
+ <20200907102551.3f7zwrmd3uqthaxs@vireshk-i7>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9c8e148805bc4da1a2bfdd72f1c76f06@hisilicon.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200907102551.3f7zwrmd3uqthaxs@vireshk-i7>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 07, 2020 at 09:44:03AM +0000, Song Bao Hua (Barry Song) wrote:
-> 
-> 
-> > -----Original Message-----
-> > From: Mel Gorman [mailto:mgorman@suse.de]
-> > Sent: Monday, September 7, 2020 9:27 PM
-> > To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
-> > Cc: mingo@redhat.com; peterz@infradead.org; juri.lelli@redhat.com;
-> > vincent.guittot@linaro.org; dietmar.eggemann@arm.com;
-> > bsegall@google.com; linux-kernel@vger.kernel.org; Linuxarm
-> > <linuxarm@huawei.com>; Mel Gorman <mgorman@techsingularity.net>;
-> > Peter Zijlstra <a.p.zijlstra@chello.nl>; Valentin Schneider
-> > <valentin.schneider@arm.com>; Phil Auld <pauld@redhat.com>; Hillf Danton
-> > <hdanton@sina.com>; Ingo Molnar <mingo@kernel.org>
-> > Subject: Re: [PATCH] sched/fair: use dst group while checking imbalance for
-> > NUMA balancer
-> > 
-> > On Mon, Sep 07, 2020 at 07:27:08PM +1200, Barry Song wrote:
-> > > Something is wrong. In find_busiest_group(), we are checking if src has
-> > > higher load, however, in task_numa_find_cpu(), we are checking if dst
-> > > will have higher load after balancing. It seems it is not sensible to
-> > > check src.
-> > > It maybe cause wrong imbalance value, for example, if
-> > > dst_running = env->dst_stats.nr_running + 1 results in 3 or above, and
-> > > src_running = env->src_stats.nr_running - 1 results in 1;
-> > > The current code is thinking imbalance as 0 since src_running is smaller
-> > > than 2.
-> > > This is inconsistent with load balancer.
+On Mon, Sep 07, 2020 at 03:55:51PM +0530, Viresh Kumar wrote:
+> On 07-09-20, 11:22, Sudeep Holla wrote:
+> > Hi Viresh,
+> >
+> > On Mon, Sep 07, 2020 at 01:04:50AM +0200, Rikard Falkeborn wrote:
+> > > The perf_ops are not modified through this pointer. Make them const to
+> > > indicate that. This is in preparation to make the scmi-ops pointers in
+> > > scmi_handle const.
 > > >
-> > 
-> > It checks the conditions if the move was to happen. Have you evaluated
-> > this for a NUMA balancing load and confirmed it a) balances properly and
-> > b) does not increase the scan rate trying to "fix" the problem?
-> 
-> I think the original code was trying to check if the numa migration
-> would lead to new imbalance in load balancer. In case src is A, dst is B, and
-> both of them have nr_running as 2. A moves one task to B, then A
-> will have 1, B will have 3. In load balancer, A will try to pull task
-> from B since B's nr_running is larger than min_imbalance. But the code
-> is saying imbalance=0 by finding A's nr_running is smaller than
-> min_imbalance.
-> 
-> Will share more test data if you need.
-> 
+> >
+> > Your ack needed to take this as series via {arm-,}soc
+>
+> Can I just pick the first patch and you do the rest ? Will it result
+> in any warnings at either end ?
+>
 
-Include the test description, data and details of the system you used to
-evaluate the patch. I ask because the load/numa reconcilation took a long
-time to cover all the corner cases and it's very easy to reintroduce major
-regressions. At least one of those corner cases was trying to balance
-in the wrong direction because in some cases NUMA balancing will try to
-allow a small imbalance if it makes sense from a locality point of view.
-Another corner case was if that small imbalance is too large or done at
-the wrong time, it regresses overall even though the locality is good
-because of memory bandwidth limitations. This is obviously far from ideal
-but it does mean that it's an area that needs data backing up the changes.
+Initially I thought out suggesting the same, but then I realised(not
+checked though), without this change in arm-soc the scmi-cpufreq driver
+might produce warnings as the const value gets assigned to non const.
+No ?
 
--- 
-Mel Gorman
-SUSE Labs
+--
+Regards,
+Sudeep
