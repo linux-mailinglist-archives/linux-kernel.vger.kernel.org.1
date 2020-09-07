@@ -2,77 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE3FE25FF56
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 18:30:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83D912600D0
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 18:55:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730511AbgIGQas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 12:30:48 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:39161 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729543AbgIGOZY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 10:25:24 -0400
-Received: from ip5f5af70b.dynamic.kabel-deutschland.de ([95.90.247.11] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1kFI51-0001oo-Gp; Mon, 07 Sep 2020 14:25:11 +0000
-Date:   Mon, 7 Sep 2020 16:25:10 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Andy Lutomirski <luto@amacapital.net>
-Cc:     Gabriel Krisman Bertazi <krisman@collabora.com>, luto@kernel.org,
-        tglx@linutronix.de, keescook@chromium.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        willy@infradead.org, linux-kselftest@vger.kernel.org,
-        shuah@kernel.org, kernel@collabora.com
-Subject: Re: [PATCH v6 6/9] kernel: entry: Support Syscall User Dispatch for
- common syscall entry
-Message-ID: <20200907142510.klojh2urwyui23ox@wittgenstein>
-References: <20200907101522.zo6qzgp4qfzkz7cs@wittgenstein>
- <0639209E-B6C6-4F86-84F4-04B91E1CC8AA@amacapital.net>
+        id S1729844AbgIGQeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 12:34:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46462 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730632AbgIGQcd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 12:32:33 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 71C1E207DE;
+        Mon,  7 Sep 2020 16:32:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599496351;
+        bh=wOb0MOvzDb/ZrwrJ3pg48ni2ycaY2oXkvvjZPPz+c+Y=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=y/XDQhQdTpl4VVJ3vhgHR9D0GwHMRfNkKm5ziRoVlBrW44uiYhxJmvb//PM8a81vJ
+         rnYPfvGAD8oALyzx00qw92DhSBdXu5sjMZo+2nrfmwoUiZCe8kztmft1St7COqCFpK
+         F5t+SoB3LmBwzHlORspZy2BU8YqNBjbpsJnOYf4Y=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        "David S . Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.8 08/53] NFC: st95hf: Fix memleak in st95hf_in_send_cmd
+Date:   Mon,  7 Sep 2020 12:31:34 -0400
+Message-Id: <20200907163220.1280412-8-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200907163220.1280412-1-sashal@kernel.org>
+References: <20200907163220.1280412-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <0639209E-B6C6-4F86-84F4-04B91E1CC8AA@amacapital.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 07, 2020 at 07:15:52AM -0700, Andy Lutomirski wrote:
-> 
-> 
-> > On Sep 7, 2020, at 3:15 AM, Christian Brauner <christian.brauner@ubuntu.com> wrote:
-> > 
-> > ﻿On Fri, Sep 04, 2020 at 04:31:44PM -0400, Gabriel Krisman Bertazi wrote:
-> >> Syscall User Dispatch (SUD) must take precedence over seccomp, since the
-> >> use case is emulation (it can be invoked with a different ABI) such that
-> >> seccomp filtering by syscall number doesn't make sense in the first
-> >> place.  In addition, either the syscall is dispatched back to userspace,
-> >> in which case there is no resource for seccomp to protect, or the
-> > 
-> > Tbh, I'm torn here. I'm not a super clever attacker but it feels to me
-> > that this is still at least a clever way to circumvent a seccomp
-> > sandbox.
-> > If I'd be confined by a seccomp profile that would cause me to be
-> > SIGKILLed when I try do open() I could prctl() myself to do user
-> > dispatch to prevent that from happening, no?
-> > 
-> 
-> Not really, I think. The idea is that you didn’t actually do open().
-> You did a SYSCALL instruction which meant something else, and the
-> syscall dispatch correctly prevented the kernel from misinterpreting
-> it as open().
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-Right, for the case where you're e.g. emulating windows syscalls that's
-true. I was thinking when you're running natively on Linux: couldn't I
-first load a seccomp profile "kill me if someone does an open()", then
-I exec() the target binary and that binary is setup to do
-prctl(USER_DISPATCH) first thing. I guess, it's ok because as far as I
-had time to read it this is a nothing or all mechanism, i.e. _all_
-system calls are re-routed in contrast to e.g. seccomp where I could do
-this per-syscall. So for user-dispatch it wouldn't make sense to use it
-on Linux per se. Still makes me a little uneasy. :)
+[ Upstream commit f97c04c316d8fea16dca449fdfbe101fbdfee6a2 ]
 
-Christian
+When down_killable() fails, skb_resp should be freed
+just like when st95hf_spi_send() fails.
+
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/nfc/st95hf/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/nfc/st95hf/core.c b/drivers/nfc/st95hf/core.c
+index 9642971e89cea..4578547659839 100644
+--- a/drivers/nfc/st95hf/core.c
++++ b/drivers/nfc/st95hf/core.c
+@@ -966,7 +966,7 @@ static int st95hf_in_send_cmd(struct nfc_digital_dev *ddev,
+ 	rc = down_killable(&stcontext->exchange_lock);
+ 	if (rc) {
+ 		WARN(1, "Semaphore is not found up in st95hf_in_send_cmd\n");
+-		return rc;
++		goto free_skb_resp;
+ 	}
+ 
+ 	rc = st95hf_spi_send(&stcontext->spicontext, skb->data,
+-- 
+2.25.1
+
