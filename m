@@ -2,99 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 200A425F7C9
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 12:20:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61C8B25F7DF
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 12:22:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728901AbgIGKUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 06:20:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32794 "EHLO
+        id S1728807AbgIGKWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 06:22:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728840AbgIGKTx (ORCPT
+        with ESMTP id S1728986AbgIGKVz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 06:19:53 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 367A0C061575
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 03:19:53 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id p9so17505838ejf.6
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 03:19:52 -0700 (PDT)
+        Mon, 7 Sep 2020 06:21:55 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA2DAC061573
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 03:21:54 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id b16so6531141pjp.0
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 03:21:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=sedeRDWMoezcviADR+g7IKIn4HgyZAL0BcEk2Cj9tZo=;
-        b=cwvYwi93Xujue0A27C22FmNrzTQWwpz6kGMpuy/j7b6GdGIeyuXjDFj4uvrkKbdMY1
-         wbzjtDiqdlQmXOUvl4vMZNCWJr/AQNzh4Zu796aKup9VgeQiLwEoIessiz3aRLIUwBS1
-         9nsjDL1bBTLClspl35thzutNjbZzhMCEMlBqNKATLqC3N432Uvi09vIXMAiBO3sv5rma
-         olhEyAbmkK3XBVmDzm5Hg2wHMk5hJpY308RsaAVmF0Q4qZfb+piv6BiawJB8ErACdDaq
-         b990X8S6pYUZrMF1qTPyawdpeq8c/otVnBPgB8GanDxRpq73TqLDwyedooU3I0JK4GWL
-         fpJA==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DlZMhc8hmWDX2ZWHISagSA2inr2CmIbaM90rLlkkX2Y=;
+        b=z4FKmT751iwYNJDVxUHuh97VQixOoKqshuVLVSk+A66nwKitSyLHJHdlsOrueqQ9xZ
+         CrtM4r5aXM8/jnhXkOv5DZ2iB0654KyAgU+sLOb8JllNfE9PWGkHTqOi9TVswABW9NI0
+         qijj1z8rRtSjFbvxtcF++oL4Ce/HqJ+jpVoS96UgtiXoPBwS0Q4cqetFSJcJnNu46W5q
+         qT8ewTf0WSVfNPuuiavDKzpD5xNHE9PVgnJCUYeFXiyfM9dTr1BvL5FyhchNDVYKYdTu
+         kvXxkOLGP92pkE5vpjy30sc3HXoyzYZdo8BwY6uTICTrrm8acD4PbwXbT5cHwrksoxE3
+         ccqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=sedeRDWMoezcviADR+g7IKIn4HgyZAL0BcEk2Cj9tZo=;
-        b=PI4qlvRoKiSGHK0Xq6oZ8G2K+0RY0goeZh9O5WHu/5+EcjFr0SaqcTC40zsozXwc2g
-         pJ63ql9oxtukkJ9njixPovn6fpMGYjaOs4M63+tsm/3WR9d7p4Qnkwe7+zYrQ8V8+fIQ
-         K50EmAmD8BZ9aV3eh4tjYNPmlLmDb7npQXaw98J5TOCeKo1kVMJuA1X2WiCe+HFtZYGO
-         9CLkrqms4+R9Z+5oMPWdHFzrM9/GY3/7w2pfazG5W+dE5m1lYWnQaRdmoNXs0DoRDhuC
-         KELi/HZ2mr4bAwj3OVjBMZzYtgHyEdDM8f9SJFDV7TskTbGfSyVRdxvFWxD56TWMx6Bk
-         Zlrg==
-X-Gm-Message-State: AOAM532VsyBkJo+7gkVxLaWZxE5bpm1XIS+4vubigZN/zfshS189RPa1
-        fwYzoYDef2Bp9vI4O7jXFPlsog==
-X-Google-Smtp-Source: ABdhPJwOUdKroG6QpMUeWOaEu37lfkcf9Z+8t4vcgTfcefFW6hh8pBRW9lP+6y7DW71SXqzxffL9hA==
-X-Received: by 2002:a17:906:f6c9:: with SMTP id jo9mr20007781ejb.233.1599473991581;
-        Mon, 07 Sep 2020 03:19:51 -0700 (PDT)
-Received: from localhost.localdomain (dh207-98-39.xnet.hr. [88.207.98.39])
-        by smtp.googlemail.com with ESMTPSA id q11sm14423160eds.16.2020.09.07.03.19.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Sep 2020 03:19:50 -0700 (PDT)
-From:   Robert Marko <robert.marko@sartura.hr>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Robert Marko <robert.marko@sartura.hr>,
-        Luka Perkov <luka.perkov@sartura.hr>
-Subject: [PATCH] arm: dts: IPQ4019: add SDHCI VQMMC LDO node
-Date:   Mon,  7 Sep 2020 12:19:37 +0200
-Message-Id: <20200907101937.10155-1-robert.marko@sartura.hr>
-X-Mailer: git-send-email 2.26.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DlZMhc8hmWDX2ZWHISagSA2inr2CmIbaM90rLlkkX2Y=;
+        b=fnAfhxTYa2q61xM72iK2T4Zg46EtWcflL29VkCe1DfgsgVoOpJc++nkV46R3I/gvk4
+         +US09ub0J/GVk+biwV9NFF9473LePE8346m7Mgv8n5SRPhtVvHkqGrWHccAo2ZZe+bHe
+         f+L9vgs2R4iTwzj2bzr7ysDLWjZtzSONVl9Mg0kKuL9te2vKFwELNAW7VVqrdtCETaRV
+         thDjJt7xHFbvPX99aWajSVq0KPmFWCukfDlH5wlhTJjY2I8GdDJL6UHffqpVyc9r+a3Y
+         R2nGWA4Br1NiytJXAVH0JippZrCg/TTi5wJbXOFM/ZF9p7zhjAnsjufh4Mq8s7bebJP9
+         dpfA==
+X-Gm-Message-State: AOAM5306qpgnZG7sPE88aBlz0ygulL4IHxJ7TlJoc1tJAGhoUgyWMX46
+        Vd2TnIjlub6SHSmfQ6I962rzhKPJp5y2mn0eAHM8Yg==
+X-Google-Smtp-Source: ABdhPJwwvPyxHgWhevcGPZDwDAqnJ75Hv8xCmd648Yuwz0t6G4giWyAT3J/aElkEVJfc4WxZqGTC9KDOPdn0l8DU0Xk=
+X-Received: by 2002:a17:90a:d596:: with SMTP id v22mr7666482pju.146.1599474114280;
+ Mon, 07 Sep 2020 03:21:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200904155025.55718-1-xypron.glpk@gmx.de> <CAD8XO3ZLqkuajo3GVRdvXiFXMH9P-vp-PX5s6idgA51ouVDpKQ@mail.gmail.com>
+ <fec7e55e-154c-5348-5181-6d9efdc0245a@gmx.de>
+In-Reply-To: <fec7e55e-154c-5348-5181-6d9efdc0245a@gmx.de>
+From:   Maxim Uvarov <maxim.uvarov@linaro.org>
+Date:   Mon, 7 Sep 2020 13:21:43 +0300
+Message-ID: <CAD8XO3YGKwqbt6cYZQgauioeywLFg56tm+PFM6_nGhuJwSk4Jg@mail.gmail.com>
+Subject: Re: [PATCH 1/1] efi/libstub: DRAM base calculation
+To:     Heinrich Schuchardt <xypron.glpk@gmx.de>
+Cc:     Ard Biesheuvel <ardb@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        linux-efi@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since we now have driver for the SDHCI VQMMC LDO needed
-for I/0 voltage levels lets introduce the necessary node for it.
+On Mon, 7 Sep 2020 at 11:31, Heinrich Schuchardt <xypron.glpk@gmx.de> wrote:
+>
+> On 07.09.20 09:00, Maxim Uvarov wrote:
+> > On Fri, 4 Sep 2020 at 18:50, Heinrich Schuchardt <xypron.glpk@gmx.de> wrote:
+> >>
+> >> In the memory map the regions with the lowest addresses may be of type
+> >> EFI_RESERVED_TYPE. The reserved areas may be discontinuous relative to the
+> >> rest of the memory. So for calculating the maximum loading address for the
+> >> device tree and the initial ramdisk image these reserved areas should not
+> >> be taken into account.
+> >>
+> >> Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
+> >> ---
+> >>  drivers/firmware/efi/libstub/efi-stub.c | 3 ++-
+> >>  1 file changed, 2 insertions(+), 1 deletion(-)
+> >>
+> >> diff --git a/drivers/firmware/efi/libstub/efi-stub.c b/drivers/firmware/efi/libstub/efi-stub.c
+> >> index c2484bf75c5d..13058ac75765 100644
+> >> --- a/drivers/firmware/efi/libstub/efi-stub.c
+> >> +++ b/drivers/firmware/efi/libstub/efi-stub.c
+> >> @@ -106,7 +106,8 @@ static unsigned long get_dram_base(void)
+> >>         map.map_end = map.map + map_size;
+> >>
+> >>         for_each_efi_memory_desc_in_map(&map, md) {
+> >> -               if (md->attribute & EFI_MEMORY_WB) {
+> >> +               if (md->attribute & EFI_MEMORY_WB &&
+> >> +                   md->type != EFI_RESERVED_TYPE) {
+> >
+> > shouldn't the type here be CONVENTIONAL?
+>
+> In 32bit ARM reserve_kernel_base() the following are considered:
+>
+> * EFI_LOADER_CODE
+> * EFI_LOADER_DATA
+> * EFI_BOOT_SERVICES_CODE
+> * EFI_BOOT_SERVICES_DATA
+> * EFI_CONVENTIONAL_MEMORY
+>
+> What I have not yet fully understood is why Linux on ARM 32bit tries to
+> put the kernel into the first 128 MiB. Cf. handle_kernel_image() in
+> drivers/firmware/efi/libstub/arm32-stub.c.
+>
 
-Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-Cc: Luka Perkov <luka.perkov@sartura.hr>
----
- arch/arm/boot/dts/qcom-ipq4019.dtsi | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+Are you looking to the latest kernel?
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/firmware/efi/libstub/arm32-stub.c?h=v5.9-rc4#n211
+efi_bs_call(allocate_pages,..) is only for EFI_CONVENTIONAL_MEMORY.
 
-diff --git a/arch/arm/boot/dts/qcom-ipq4019.dtsi b/arch/arm/boot/dts/qcom-ipq4019.dtsi
-index 6741a1972e55..7774dbd3cec7 100644
---- a/arch/arm/boot/dts/qcom-ipq4019.dtsi
-+++ b/arch/arm/boot/dts/qcom-ipq4019.dtsi
-@@ -211,6 +211,16 @@ tlmm: pinctrl@1000000 {
- 			interrupts = <GIC_SPI 208 IRQ_TYPE_LEVEL_HIGH>;
- 		};
- 
-+		vqmmc: regulator@1948000 {
-+			compatible = "qcom,vqmmc-ipq4019-regulator";
-+			reg = <0x01948000 0x4>;
-+			regulator-name = "vqmmc";
-+			regulator-min-microvolt = <1500000>;
-+			regulator-max-microvolt = <3000000>;
-+			regulator-always-on;
-+			status = "disabled";
-+		};
-+
- 		sdhci: sdhci@7824900 {
- 			compatible = "qcom,sdhci-msm-v4";
- 			reg = <0x7824900 0x11c>, <0x7824000 0x800>;
--- 
-2.26.2
+> According to the comments this is due to some implementation detail in
+> the Linux zImage decompressor and not required by UEFI or the hardware:
+>
+>          Verify that the DRAM base address is compatible with the ARM
+>          boot protocol, which determines the base of DRAM by masking
+>          off the low 27 bits of the address at which the zImage is
+>          loaded. These assumptions are made by the decompressor,
+>          before any memory map is available.
 
+I think that is also fixed with:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/drivers/firmware/efi/libstub/arm32-stub.c?h=v5.9-rc4&id=d0f9ca9be11f25ef4151195eab7ea36d136084f6
+
+Maxim.
+
+>
+> Best regards
+>
+> Heinrich
+>
+> >
+> >>                         if (membase > md->phys_addr)
+> >>                                 membase = md->phys_addr;
+> >>                 }
+> >> --
+> >> 2.28.0
+> >>
+>
