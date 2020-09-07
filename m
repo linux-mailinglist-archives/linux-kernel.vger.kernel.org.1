@@ -2,136 +2,315 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDEE725FD55
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 17:43:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C42425FD6D
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 17:48:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729975AbgIGPns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 11:43:48 -0400
-Received: from mail-bn8nam12on2047.outbound.protection.outlook.com ([40.107.237.47]:61537
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        id S1730107AbgIGPsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 11:48:00 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2777 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730186AbgIGPim (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 11:38:42 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OC2ACyp6bHZx0kxfNaheYqipZ2m08f3fiSGvX9PqAG+/V1pt74fk/70SBPITQ1Oluna6KJSZqXaZ73Har3FbzD1MY7jkKpCZ9nFhx50B3Yy4LYtDhNUhSTwLDc6U7ysGd5kVYG0gk1H33MzrYXEtFMPlONaRyc3k8IAVoIdWSPZd9ALioM6b8M8xlVIPkNhnVUjr5iyUKxiX0XTugoSHhI0WWFpSV4EtbyH/xGdyhil/QCMOS9VsMF14EuXFqYfzT6Dp3Eqvpc8dIAkOI6m/pwHntMCXZ0FiFrGJVLsA712jOAXPV34q5POEpWRvur1VOCBGSQiGgF1mjFiRSC4Tfw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ihe6/PY8x7jgMUtSRi9RjGktMK+6ZT5krQXAd6IahAc=;
- b=eQWdmuj6u+FdtE/ol2TRp7HxmBVss9rGemyAkVQPCiKTpB/RapzEbmYzKUwKYZBpzF7tC06CEPPsMQMpRI/1Siz2JVx6eQyjJU7kIFU5K+NiFDxbUPkLqEkLGRbeejLaZeSLLQTF2zaY+B63pP2ReNLefEwfwr5QhFl2MO5tmMygclTadPtduWwYD8g6fUBj5ttjFLmgYKdvDrsy6lpP/JVirJIiiQhyUkMUB0Gtpm/KIvitm+SgSWYctsrL83bDYp0QESq+xAI9JBqV0VMSCXfHFtkuRk/KfaBUInnM7tXT5nK/gR2PdJBgigEmtSorwHWrpHtn0YyI637d+lT1Kg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=infinera.com; dmarc=pass action=none header.from=infinera.com;
- dkim=pass header.d=infinera.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=infinera.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ihe6/PY8x7jgMUtSRi9RjGktMK+6ZT5krQXAd6IahAc=;
- b=HX7J/T2btCfxbGzmy0IOgn9qacGA4Rq6BIZvr+XQewx8AAindcNCNXZTnaiEc6y+IO29d0ssSZ/0ewjWPJTZPtUy4WtuUyP+K+kQ6+p0VWaeOW27Zjq2N7PWWpUUtQsVJVlFsDWXwssJyn7TjDwcsRFOnQvZVZrKk2yjtUj5yEw=
-Received: from CY4PR1001MB2389.namprd10.prod.outlook.com
- (2603:10b6:910:45::21) by CY4PR1001MB2312.namprd10.prod.outlook.com
- (2603:10b6:910:49::26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.19; Mon, 7 Sep
- 2020 15:38:37 +0000
-Received: from CY4PR1001MB2389.namprd10.prod.outlook.com
- ([fe80::7c3b:e8e3:3d1b:284d]) by CY4PR1001MB2389.namprd10.prod.outlook.com
- ([fe80::7c3b:e8e3:3d1b:284d%7]) with mapi id 15.20.3326.026; Mon, 7 Sep 2020
- 15:38:37 +0000
-From:   Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
-To:     "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "paulus@samba.org" <paulus@samba.org>,
-        "npiggin@gmail.com" <npiggin@gmail.com>,
-        "Chris.Packham@alliedtelesis.co.nz" 
-        <Chris.Packham@alliedtelesis.co.nz>,
-        "benh@kernel.crashing.org" <benh@kernel.crashing.org>,
-        "hkallweit1@gmail.com" <hkallweit1@gmail.com>
-CC:     "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: fsl_espi errors on v5.7.15
-Thread-Topic: fsl_espi errors on v5.7.15
-Thread-Index: AQHWceVnik7XsBYbp0S+yHVGh1hdQak2WMaAgAQdSwCAAz9MAIAAfdcAgAD5u4CAB+sMAIAAYfwAgAEDTwCAAPtVgIAAOXwAgABIbACAAAjQgIABm7wAgAD5+gCABBXPAIAAjqOAgAALRACAAAUXgIAA9CsAgADXoQCAAFDQAIAETfoAgAVdPQCAAGBxgA==
-Date:   Mon, 7 Sep 2020 15:38:37 +0000
-Message-ID: <a6bae2a775c3e6b9115a1371157404c4e0f8a73a.camel@infinera.com>
-References: <1598940515.6e06nwgi0c.astroid@bobo.none>
-         <6054f0ec-d994-105b-6399-6cdb65ddd1b6@alliedtelesis.co.nz>
-         <23d13439e4cc1872c29db2f93e715a61f4843943.camel@infinera.com>
-In-Reply-To: <23d13439e4cc1872c29db2f93e715a61f4843943.camel@infinera.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.37.92 
-authentication-results: ellerman.id.au; dkim=none (message not signed)
- header.d=none;ellerman.id.au; dmarc=none action=none
- header.from=infinera.com;
-x-originating-ip: [88.131.87.201]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 92efe64c-e5cf-4452-de44-08d85344167d
-x-ms-traffictypediagnostic: CY4PR1001MB2312:
-x-microsoft-antispam-prvs: <CY4PR1001MB231272194898BAB67411D6ABF4280@CY4PR1001MB2312.namprd10.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: lxiyakzUWYe5hL06403QHbO5tSVKvCYHMowuV5Fcfg0vbtfY+7V6gxX3v0SZ8Q4ddZh032iR9AoUy3KmE7ByUPp5P0T7ZGsvcw5dWJYb7zBWTgdMuDHWr7Bh+Yl9ltW4ZbVhpmaKsCLoBLFKn4PuUnvPdH3cxgUJx9+BdTKx7SkdkktSFlf4PY+c76czI8WDVHkzrs6ADcvZxYo3iaHYsKG8AZSVHN6mojBFD/pK4dgaXrBH954apyPvu7arJGeMAUV+daxEwG4Cm/bm1MEVGcMgoCyqg9K/f1cI6ryFJdTb3TJGM0u1HfBLC/aUD/uuQAnstzBdUcBSfJOVtEJwJA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR1001MB2389.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(136003)(376002)(366004)(346002)(6486002)(8936002)(5660300002)(4326008)(8676002)(186003)(54906003)(2616005)(316002)(86362001)(6506007)(110136005)(478600001)(66946007)(64756008)(66446008)(36756003)(66556008)(66476007)(91956017)(76116006)(2906002)(7416002)(6512007)(71200400001)(26005)(83380400001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: L/AECQQhP2PIio0kWOwUiBwz9BLQcunhjmFRvorQA9cmyu9EkXHuFSy66Vg2petGZhwKL0h0ExGAcWNYfyZHHU+pU1JSuAJUvKvgEWJpPQPI99mHiOuJHuC8O7H3sa86rZOkYxaTRzHgV5MzSyJrs2KsQxBTlM0GYvs84Km3WAOho2Z0WOu4XJz1pnJ7Hx1QVIjuAd+CfcN6kfm8XSoMnniBjdunAAuutmL3MxvObVpWq+hkmdoAo49v11CeG1lkzuwEdAJr/mBJ96xpoVPP21NusZUMucMAElm1XsyvQ4SBRmg6Ro4kIFmGwXzzCOHB7fDlpos4GzgFPIwn4Y1JbdNBO/TcEZZ2b3TbHDpcx5XW7IvyFbiMej0PkKl+Mn96GBgGpHnh9wOtSAsoaacn9PMooMSheC9nl60WkHayIQL9SV9LNDXUAiHFNYpW5s/Wp6mMR6VT1ontaIb8hX2h/PVJBa8/GCFjo7yABN1mAwy6KlU6BUWT/TW0b5GnqOlWMJKfvrBz72V+Tu4IwSl71V2ahdWXfPt9tCvcrt+b8f7Z7/LO6+KwzVP1WTu8CmP3oLT4kdPOeKdMVq27OvYlyHsFvXnSZxJ1zIvQt1tEyKAuIeq3npqAfQtLwBMk7fDWjmHCs25IGP8U0tQPib93Pw==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <806B7407E014DA4A9B4348B2D1F8516F@namprd10.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1730208AbgIGPnj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 11:43:39 -0400
+Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.107])
+        by Forcepoint Email with ESMTP id 74F9B4109E8431945181;
+        Mon,  7 Sep 2020 16:43:24 +0100 (IST)
+Received: from localhost (10.52.124.38) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1913.5; Mon, 7 Sep 2020
+ 16:43:23 +0100
+Date:   Mon, 7 Sep 2020 16:41:48 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Marco Elver <elver@google.com>
+CC:     <glider@google.com>, <akpm@linux-foundation.org>,
+        <catalin.marinas@arm.com>, <cl@linux.com>, <rientjes@google.com>,
+        <iamjoonsoo.kim@lge.com>, <mark.rutland@arm.com>,
+        <penberg@kernel.org>, <hpa@zytor.com>, <paulmck@kernel.org>,
+        <andreyknvl@google.com>, <aryabinin@virtuozzo.com>,
+        <luto@kernel.org>, <bp@alien8.de>, <dave.hansen@linux.intel.com>,
+        <dvyukov@google.com>, <edumazet@google.com>,
+        <gregkh@linuxfoundation.org>, <mingo@redhat.com>,
+        <jannh@google.com>, <corbet@lwn.net>, <keescook@chromium.org>,
+        <peterz@infradead.org>, <cai@lca.pw>, <tglx@linutronix.de>,
+        <will@kernel.org>, <x86@kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kasan-dev@googlegroups.com>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-mm@kvack.org>
+Subject: Re: [PATCH RFC 01/10] mm: add Kernel Electric-Fence infrastructure
+Message-ID: <20200907164148.00007899@Huawei.com>
+In-Reply-To: <20200907134055.2878499-2-elver@google.com>
+References: <20200907134055.2878499-1-elver@google.com>
+        <20200907134055.2878499-2-elver@google.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-X-OriginatorOrg: infinera.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR1001MB2389.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 92efe64c-e5cf-4452-de44-08d85344167d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Sep 2020 15:38:37.1515
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 285643de-5f5b-4b03-a153-0ae2dc8aaf77
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 9Se9W/nknR1rFsXGgkMNmjO5Tnm5nGWCdNm8jVqSYINkXvgPoVTDIvvYLQYkFV4npHufv10ngzQnRnHZ97fYCg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR1001MB2312
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.124.38]
+X-ClientProxiedBy: lhreml709-chm.china.huawei.com (10.201.108.58) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-W1NOSVBdDQo+ID4gDQoNCj4gPiA+IFdvdWxkIHlvdSBiZSBhYmxlIHRvIGZ0cmFjZSB0aGUgaW50
-ZXJydXB0IGhhbmRsZXIgZnVuY3Rpb24gYW5kIHNlZSBpZiB5b3UNCj4gPiA+IGNhbiBzZWUgYSBk
-aWZmZXJlbmNlIGluIG51bWJlciBvciB0aW1pbmcgb2YgaW50ZXJydXB0cz8gSSdtIGF0IGEgYml0
-IG9mDQo+ID4gPiBhIGxvc3MuDQo+ID4gDQo+ID4gSSB0cmllZCBmdHJhY2UgYnV0IEkgcmVhbGx5
-IHdhc24ndCBzdXJlIHdoYXQgSSB3YXMgbG9va2luZyBmb3IuDQo+ID4gQ2FwdHVyaW5nIGEgImJh
-ZCIgY2FzZSB3YXMgcHJldHR5IHRyaWNreS4gQnV0IEkgdGhpbmsgSSd2ZSBpZGVudGlmaWVkIGEN
-Cj4gPiBmaXggKEknbGwgc2VuZCBpdCBhcyBhIHByb3BlciBwYXRjaCBzaG9ydGx5KS4gVGhlIGdp
-c3QgaXMNCj4gPiANCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9zcGkvc3BpLWZzbC1lc3BpLmMg
-Yi9kcml2ZXJzL3NwaS9zcGktZnNsLWVzcGkuYw0KPiA+IGluZGV4IDdlN2M5MmNhZmRiYi4uY2Ix
-MjBiNjhjMGUyIDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvc3BpL3NwaS1mc2wtZXNwaS5jDQo+
-ID4gKysrIGIvZHJpdmVycy9zcGkvc3BpLWZzbC1lc3BpLmMNCj4gPiBAQCAtNTc0LDEzICs1NzQs
-MTQgQEAgc3RhdGljIHZvaWQgZnNsX2VzcGlfY3B1X2lycShzdHJ1Y3QgZnNsX2VzcGkNCj4gPiAq
-ZXNwaSwgdTMyIGV2ZW50cykNCj4gPiDCoMKgc3RhdGljIGlycXJldHVybl90IGZzbF9lc3BpX2ly
-cShzMzIgaXJxLCB2b2lkICpjb250ZXh0X2RhdGEpDQo+ID4gwqDCoHsNCj4gPiDCoMKgwqDCoMKg
-wqDCoMKgwqBzdHJ1Y3QgZnNsX2VzcGkgKmVzcGkgPSBjb250ZXh0X2RhdGE7DQo+ID4gLSAgICAg
-ICB1MzIgZXZlbnRzOw0KPiA+ICsgICAgICAgdTMyIGV2ZW50cywgbWFzazsNCj4gPiANCj4gPiDC
-oMKgwqDCoMKgwqDCoMKgwqBzcGluX2xvY2soJmVzcGktPmxvY2spOw0KPiA+IA0KPiA+IMKgwqDC
-oMKgwqDCoMKgwqDCoC8qIEdldCBpbnRlcnJ1cHQgZXZlbnRzKHR4L3J4KSAqLw0KPiA+IMKgwqDC
-oMKgwqDCoMKgwqDCoGV2ZW50cyA9IGZzbF9lc3BpX3JlYWRfcmVnKGVzcGksIEVTUElfU1BJRSk7
-DQo+ID4gLSAgICAgICBpZiAoIWV2ZW50cykgew0KPiA+ICsgICAgICAgbWFzayA9IGZzbF9lc3Bp
-X3JlYWRfcmVnKGVzcGksIEVTUElfU1BJTSk7DQo+ID4gKyAgICAgICBpZiAoIShldmVudHMgJiBt
-YXNrKSkgew0KPiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBzcGluX3VubG9j
-aygmZXNwaS0+bG9jayk7DQo+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHJl
-dHVybiBJUlFfTk9ORTsNCj4gPiDCoMKgwqDCoMKgwqDCoMKgwqB9DQo+ID4gDQo+ID4gVGhlIFNQ
-SUUgcmVnaXN0ZXIgY29udGFpbnMgdGhlIFRYQ05UIHNvIGV2ZW50cyBpcyBwcmV0dHkgbXVjaCBh
-bHdheXMNCj4gPiBnb2luZyB0byBoYXZlIHNvbWV0aGluZyBzZXQuIEJ5IGNoZWNraW5nIGV2ZW50
-cyBhZ2FpbnN0IHdoYXQgd2UndmUNCj4gPiBhY3R1YWxseSByZXF1ZXN0ZWQgaW50ZXJydXB0cyBm
-b3Igd2UgZG9uJ3Qgc2VlIGFueSBzcHVyaW91cyBldmVudHMuDQo+ID4gDQo+ID4gSSd2ZSB0ZXN0
-ZWQgdGhpcyBvbiB0aGUgVDIwODBSREIgYW5kIG9uIG91ciBjdXN0b20gaGFyZHdhcmUgYW5kIGl0
-IHNlZW1zDQo+ID4gdG8gcmVzb2x2ZSB0aGUgcHJvYmxlbS4NCj4gPiANCj4gDQo+IEkgbG9va2Vk
-IGF0IHRoZSBmc2xfZXNwaV9pcnEoKSB0b28gYW5kIG5vdGljZWQgdGhhdCBjbGVhcmluZyBvZiB0
-aGUgSVJRIGV2ZW50cw0KPiBhcmUgYWZ0ZXIgcHJvY2Vzc2luZyBUWC9SWC4gVGhhdCBsb29rcyBh
-IGJpdCBvZGQgdG8gbWUuDQoNCkkgc2hvdWxkIGhhdmUgYmVlbiBtb3JlIHNwZWNpZmljLiBJIHRo
-aW5rIHlvdSBjYW4gbG9vc2UgSVJRcyBhcyBmc2xfZXNwaV9pcnEoKSB3b3JrcyBub3cuDQpDb25z
-aWRlciB0aGlzOg0KMSkgWW91IGdldCBUWCBJUlEgYW5kIGVudGVyIGZzbF9lc3BpX2lycSgpDQoy
-KSBFbnRlciBmc2xfZXNwaV9maWxsX3R4X2ZpZm8oKSB0byBwcm9jZXNzIGFueSBjaGFycyB1bnRp
-bCBkb25lLg0KMykgTm93IHlvdSBnZXQgb25lIG1vcmUgVFggSVJRDQo0KSBmc2xfZXNwaV9pcnEo
-KSBjbGVhciBldmVudHMgLT4gSVJRIGZyb20gMykgaXMgbG9zdC4NCg0KIEpvY2tlDQo=
+On Mon, 7 Sep 2020 15:40:46 +0200
+Marco Elver <elver@google.com> wrote:
+
+> From: Alexander Potapenko <glider@google.com>
+> 
+> This adds the Kernel Electric-Fence (KFENCE) infrastructure. KFENCE is a
+> low-overhead sampling-based memory safety error detector of heap
+> use-after-free, invalid-free, and out-of-bounds access errors.
+> 
+> KFENCE is designed to be enabled in production kernels, and has near
+> zero performance overhead. Compared to KASAN, KFENCE trades performance
+> for precision. The main motivation behind KFENCE's design, is that with
+> enough total uptime KFENCE will detect bugs in code paths not typically
+> exercised by non-production test workloads. One way to quickly achieve a
+> large enough total uptime is when the tool is deployed across a large
+> fleet of machines.
+> 
+> KFENCE objects each reside on a dedicated page, at either the left or
+> right page boundaries. The pages to the left and right of the object
+> page are "guard pages", whose attributes are changed to a protected
+> state, and cause page faults on any attempted access to them. Such page
+> faults are then intercepted by KFENCE, which handles the fault
+> gracefully by reporting a memory access error.
+> 
+> Guarded allocations are set up based on a sample interval (can be set
+> via kfence.sample_interval). After expiration of the sample interval, a
+> guarded allocation from the KFENCE object pool is returned to the main
+> allocator (SLAB or SLUB). At this point, the timer is reset, and the
+> next allocation is set up after the expiration of the interval.
+> 
+> To enable/disable a KFENCE allocation through the main allocator's
+> fast-path without overhead, KFENCE relies on static branches via the
+> static keys infrastructure. The static branch is toggled to redirect the
+> allocation to KFENCE. To date, we have verified by running synthetic
+> benchmarks (sysbench I/O workloads) that a kernel compiled with KFENCE
+> is performance-neutral compared to the non-KFENCE baseline.
+> 
+> For more details, see Documentation/dev-tools/kfence.rst (added later in
+> the series).
+> 
+> Co-developed-by: Marco Elver <elver@google.com>
+> Signed-off-by: Marco Elver <elver@google.com>
+> Signed-off-by: Alexander Potapenko <glider@google.com>
+
+Interesting bit of work. A few trivial things inline I spotted whilst having
+a first read through.
+
+Thanks,
+
+Jonathan
+
+> +
+> +static void *kfence_guarded_alloc(struct kmem_cache *cache, size_t size, gfp_t gfp)
+> +{
+> +	/*
+> +	 * Note: for allocations made before RNG initialization, will always
+> +	 * return zero. We still benefit from enabling KFENCE as early as
+> +	 * possible, even when the RNG is not yet available, as this will allow
+> +	 * KFENCE to detect bugs due to earlier allocations. The only downside
+> +	 * is that the out-of-bounds accesses detected are deterministic for
+> +	 * such allocations.
+> +	 */
+> +	const bool right = prandom_u32_max(2);
+> +	unsigned long flags;
+> +	struct kfence_metadata *meta = NULL;
+> +	void *addr = NULL;
+
+I think this is set in all paths, so no need to initialize here.
+
+> +
+> +	/* Try to obtain a free object. */
+> +	raw_spin_lock_irqsave(&kfence_freelist_lock, flags);
+> +	if (!list_empty(&kfence_freelist)) {
+> +		meta = list_entry(kfence_freelist.next, struct kfence_metadata, list);
+> +		list_del_init(&meta->list);
+> +	}
+> +	raw_spin_unlock_irqrestore(&kfence_freelist_lock, flags);
+> +	if (!meta)
+> +		return NULL;
+> +
+> +	if (unlikely(!raw_spin_trylock_irqsave(&meta->lock, flags))) {
+> +		/*
+> +		 * This is extremely unlikely -- we are reporting on a
+> +		 * use-after-free, which locked meta->lock, and the reporting
+> +		 * code via printk calls kmalloc() which ends up in
+> +		 * kfence_alloc() and tries to grab the same object that we're
+> +		 * reporting on. While it has never been observed, lockdep does
+> +		 * report that there is a possibility of deadlock. Fix it by
+> +		 * using trylock and bailing out gracefully.
+> +		 */
+> +		raw_spin_lock_irqsave(&kfence_freelist_lock, flags);
+> +		/* Put the object back on the freelist. */
+> +		list_add_tail(&meta->list, &kfence_freelist);
+> +		raw_spin_unlock_irqrestore(&kfence_freelist_lock, flags);
+> +
+> +		return NULL;
+> +	}
+> +
+> +	meta->addr = metadata_to_pageaddr(meta);
+> +	/* Unprotect if we're reusing this page. */
+> +	if (meta->state == KFENCE_OBJECT_FREED)
+> +		kfence_unprotect(meta->addr);
+> +
+> +	/* Calculate address for this allocation. */
+> +	if (right)
+> +		meta->addr += PAGE_SIZE - size;
+> +	meta->addr = ALIGN_DOWN(meta->addr, cache->align);
+> +
+> +	/* Update remaining metadata. */
+> +	metadata_update_state(meta, KFENCE_OBJECT_ALLOCATED);
+> +	/* Pairs with READ_ONCE() in kfence_shutdown_cache(). */
+> +	WRITE_ONCE(meta->cache, cache);
+> +	meta->size = right ? -size : size;
+> +	for_each_canary(meta, set_canary_byte);
+> +	virt_to_page(meta->addr)->slab_cache = cache;
+> +
+> +	raw_spin_unlock_irqrestore(&meta->lock, flags);
+> +
+> +	/* Memory initialization. */
+> +
+> +	/*
+> +	 * We check slab_want_init_on_alloc() ourselves, rather than letting
+> +	 * SL*B do the initialization, as otherwise we might overwrite KFENCE's
+> +	 * redzone.
+> +	 */
+> +	addr = (void *)meta->addr;
+> +	if (unlikely(slab_want_init_on_alloc(gfp, cache)))
+> +		memzero_explicit(addr, size);
+> +	if (cache->ctor)
+> +		cache->ctor(addr);
+> +
+> +	if (CONFIG_KFENCE_FAULT_INJECTION && !prandom_u32_max(CONFIG_KFENCE_FAULT_INJECTION))
+> +		kfence_protect(meta->addr); /* Random "faults" by protecting the object. */
+> +
+> +	atomic_long_inc(&counters[KFENCE_COUNTER_ALLOCATED]);
+> +	atomic_long_inc(&counters[KFENCE_COUNTER_ALLOCS]);
+> +
+> +	return addr;
+> +}
+
+...
+
+> +
+> +size_t kfence_ksize(const void *addr)
+> +{
+> +	const struct kfence_metadata *meta = addr_to_metadata((unsigned long)addr);
+> +
+> +	/*
+> +	 * Read locklessly -- if there is a race with __kfence_alloc(), this
+> +	 * most certainly is either a use-after-free, or invalid access.
+> +	 */
+> +	return meta ? abs(meta->size) : 0;
+> +}
+> +
+> +void *kfence_object_start(const void *addr)
+> +{
+> +	const struct kfence_metadata *meta = addr_to_metadata((unsigned long)addr);
+> +
+> +	/*
+> +	 * Read locklessly -- if there is a race with __kfence_alloc(), this
+> +	 * most certainly is either a use-after-free, or invalid access.
+
+To my reading using "most certainly" makes this statement less clear
+
+Read locklessly -- if there is a race with __kfence_alloc() this
+is either a use-after-free or invalid access.
+
+Same for other cases of that particular "most certainly".
+
+> +	 */
+> +	return meta ? (void *)meta->addr : NULL;
+> +}
+> +
+> +void __kfence_free(void *addr)
+> +{
+> +	struct kfence_metadata *meta = addr_to_metadata((unsigned long)addr);
+> +
+> +	if (unlikely(meta->cache->flags & SLAB_TYPESAFE_BY_RCU))
+> +		call_rcu(&meta->rcu_head, rcu_guarded_free);
+> +	else
+> +		kfence_guarded_free(addr, meta);
+> +}
+> +
+> +bool kfence_handle_page_fault(unsigned long addr)
+> +{
+> +	const int page_index = (addr - (unsigned long)__kfence_pool) / PAGE_SIZE;
+> +	struct kfence_metadata *to_report = NULL;
+> +	enum kfence_error_type error_type;
+> +	unsigned long flags;
+> +
+> +	if (!is_kfence_address((void *)addr))
+> +		return false;
+> +
+> +	if (!READ_ONCE(kfence_enabled)) /* If disabled at runtime ... */
+> +		return kfence_unprotect(addr); /* ... unprotect and proceed. */
+> +
+> +	atomic_long_inc(&counters[KFENCE_COUNTER_BUGS]);
+> +
+> +	if (page_index % 2) {
+> +		/* This is a redzone, report a buffer overflow. */
+> +		struct kfence_metadata *meta = NULL;
+
+Not need to set to NULL here as assigned 3 lines down.
+
+> +		int distance = 0;
+> +
+> +		meta = addr_to_metadata(addr - PAGE_SIZE)
+
+> +		if (meta && READ_ONCE(meta->state) == KFENCE_OBJECT_ALLOCATED) {
+> +			to_report = meta;
+> +			/* Data race ok; distance calculation approximate. */
+> +			distance = addr - data_race(meta->addr + abs(meta->size));
+> +		}
+> +
+> +		meta = addr_to_metadata(addr + PAGE_SIZE);
+> +		if (meta && READ_ONCE(meta->state) == KFENCE_OBJECT_ALLOCATED) {
+> +			/* Data race ok; distance calculation approximate. */
+> +			if (!to_report || distance > data_race(meta->addr) - addr)
+> +				to_report = meta;
+> +		}
+> +
+> +		if (!to_report)
+> +			goto out;
+> +
+> +		raw_spin_lock_irqsave(&to_report->lock, flags);
+> +		to_report->unprotected_page = addr;
+> +		error_type = KFENCE_ERROR_OOB;
+> +
+> +		/*
+> +		 * If the object was freed before we took the look we can still
+> +		 * report this as an OOB -- the report will simply show the
+> +		 * stacktrace of the free as well.
+> +		 */
+> +	} else {
+> +		to_report = addr_to_metadata(addr);
+> +		if (!to_report)
+> +			goto out;
+> +
+> +		raw_spin_lock_irqsave(&to_report->lock, flags);
+> +		error_type = KFENCE_ERROR_UAF;
+> +		/*
+> +		 * We may race with __kfence_alloc(), and it is possible that a
+> +		 * freed object may be reallocated. We simply report this as a
+> +		 * use-after-free, with the stack trace showing the place where
+> +		 * the object was re-allocated.
+> +		 */
+> +	}
+> +
+> +out:
+> +	if (to_report) {
+> +		kfence_report_error(addr, to_report, error_type);
+> +		raw_spin_unlock_irqrestore(&to_report->lock, flags);
+> +	} else {
+> +		/* This may be a UAF or OOB access, but we can't be sure. */
+> +		kfence_report_error(addr, NULL, KFENCE_ERROR_INVALID);
+> +	}
+> +
+> +	return kfence_unprotect(addr); /* Unprotect and let access proceed. */
+> +}
+...
+
