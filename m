@@ -2,218 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DE5725F939
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 13:21:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAF9925F95E
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 13:26:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728792AbgIGLUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 07:20:52 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:57210 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728571AbgIGLTM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 07:19:12 -0400
-Received: from zn.tnic (p200300ec2f09090030eade31917bbe1c.dip0.t-ipconnect.de [IPv6:2003:ec:2f09:900:30ea:de31:917b:be1c])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id F3EF41EC0445;
-        Mon,  7 Sep 2020 13:18:43 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1599477524;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=IchRjOSRh+sRDrPo1JFsixmldHqDwOcJjES6CFnvA5o=;
-        b=ChwnxHd8s84v/14/oxkZicv5CUVrwHYkZQqm7A5eHOdZS+/YBR9hlSCzhpTd2C/ZnVgQcH
-        1gpukxVDisQlkBvU1SgGgTMooIysBYw8sw3khE5ZZHvz7eHDqO+1FObcRba/0VuTJMavQP
-        8r8jOLU4hse5MHrYPwdI2OrHXjLt0rU=
-Date:   Mon, 7 Sep 2020 13:18:43 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Fenghua Yu <fenghua.yu@intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, H Peter Anvin <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Jacob Jun Pan <jacob.jun.pan@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Sohil Mehta <sohil.mehta@intel.com>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        x86 <x86@kernel.org>, iommu@lists.linux-foundation.org
-Subject: Re: [PATCH v7 9/9] x86/mmu: Allocate/free PASID
-Message-ID: <20200907111843.GC16029@zn.tnic>
-References: <1598540794-132666-1-git-send-email-fenghua.yu@intel.com>
- <1598540794-132666-10-git-send-email-fenghua.yu@intel.com>
+        id S1729003AbgIGLZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 07:25:25 -0400
+Received: from goliath.siemens.de ([192.35.17.28]:36358 "EHLO
+        goliath.siemens.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728812AbgIGLWC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 07:22:02 -0400
+Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
+        by goliath.siemens.de (8.15.2/8.15.2) with ESMTPS id 087BL5vl002697
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 7 Sep 2020 13:21:05 +0200
+Received: from [167.87.17.27] ([167.87.17.27])
+        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 087BKxrG020843;
+        Mon, 7 Sep 2020 13:21:02 +0200
+To:     Guenter Roeck <linux@roeck-us.net>, linux-watchdog@vger.kernel.org
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        linux-kernel@vger.kernel.org,
+        "Awan, Arsalan" <Arsalan_Awan@mentor.com>,
+        "Hombourger, Cedric" <Cedric_Hombourger@mentor.com>,
+        "Farnsworth, Wade" <wade_farnsworth@mentor.com>
+From:   Jan Kiszka <jan.kiszka@siemens.com>
+Subject: watchdog: sp5100_tco support for AMD V/R/E series
+Message-ID: <15c8913e-9026-2649-9911-71d6f1c79519@siemens.com>
+Date:   Mon, 7 Sep 2020 13:20:58 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1598540794-132666-10-git-send-email-fenghua.yu@intel.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 08:06:34AM -0700, Fenghua Yu wrote:
-> A PASID is allocated for an "mm" the first time any thread binds
-> to an SVM capable device and is freed from the "mm" when the SVM is
-> unbound by the last thread. It's possible for the "mm" to have different
-> PASID values in different binding/unbinding SVM cycles.
-> 
-> The mm's PASID (non-zero for valid PASID or 0 for invalid PASID) is
-> propagated to per-thread PASID MSR for all threads within the mm through
-> through IPI, context switch, or inherit to ensure a running thread has
-> the right PASID MSR matching the mm's PASID.
+Hi all,
 
-That sentence has grown too large and confused. Pls fix.
+Arsalan reported that the upstream driver for sp5100_tco does not work
+for embedded Ryzen. Meanwhile, I was able to confirm that on an R1505G:
 
-> Suggested-by: Andy Lutomirski <luto@kernel.org>
-> Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
-> Reviewed-by: Tony Luck <tony.luck@intel.com>
-> ---
-> v7:
-> - Don't fix up PASID in #GP. Instead, update the PASID MSR by IPI and
->   context switch after PASID allocation and free. Inherit PASID from
->   parent. (Andy)
-> 
-> Before v7:
-> - Allocate a PASID for the mm and free it until mm exit.
-> 
->  arch/x86/include/asm/disabled-features.h |  2 +-
->  arch/x86/include/asm/fpu/api.h           | 12 +++++
->  arch/x86/include/asm/fpu/internal.h      |  2 +
->  arch/x86/kernel/fpu/xstate.c             | 56 ++++++++++++++++++++++++
->  drivers/iommu/intel/svm.c                | 28 +++++++++++-
->  5 files changed, 98 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/disabled-features.h b/arch/x86/include/asm/disabled-features.h
-> index 588d83e9da49..5861d34f9771 100644
-> --- a/arch/x86/include/asm/disabled-features.h
-> +++ b/arch/x86/include/asm/disabled-features.h
-> @@ -56,7 +56,7 @@
->  # define DISABLE_PTI		(1 << (X86_FEATURE_PTI & 31))
->  #endif
->  
-> -#ifdef CONFIG_INTEL_IOMMU_SVM
-> +#ifdef CONFIG_IOMMU_SUPPORT
->  # define DISABLE_ENQCMD	0
->  #else
->  # define DISABLE_ENQCMD (1 << (X86_FEATURE_ENQCMD & 31))
+[   11.607251] sp5100_tco: SP5100/SB800 TCO WatchDog Timer Driver
+[   11.607337] sp5100-tco sp5100-tco: Using 0xfed80b00 for watchdog MMIO address
+[   11.607344] sp5100-tco sp5100-tco: Watchdog hardware is disabled
 
-That hunk belongs with the previous patch.
+..and fix it:
 
-> diff --git a/arch/x86/include/asm/fpu/api.h b/arch/x86/include/asm/fpu/api.h
-> index b774c52e5411..dcd9503b1098 100644
-> --- a/arch/x86/include/asm/fpu/api.h
-> +++ b/arch/x86/include/asm/fpu/api.h
-> @@ -62,4 +62,16 @@ extern void switch_fpu_return(void);
->   */
->  extern int cpu_has_xfeatures(u64 xfeatures_mask, const char **feature_name);
->  
-> +/*
-> + * Tasks that are not using SVA have mm->pasid set to zero to note that they
-> + * will not have the valid bit set in MSR_IA32_PASID while they are running.
-> + */
-> +#define PASID_DISABLED	0
-> +
-> +#ifdef CONFIG_IOMMU_SUPPORT
-> +/* Update current's PASID MSR/state by mm's PASID. */
-> +void update_pasid(void);
-> +#else
-> +static inline void update_pasid(void) { }
-> +#endif
->  #endif /* _ASM_X86_FPU_API_H */
-> diff --git a/arch/x86/include/asm/fpu/internal.h b/arch/x86/include/asm/fpu/internal.h
-> index 0a460f2a3f90..2d737e02b59a 100644
-> --- a/arch/x86/include/asm/fpu/internal.h
-> +++ b/arch/x86/include/asm/fpu/internal.h
-> @@ -583,6 +583,8 @@ static inline void switch_fpu_finish(struct fpu *new_fpu)
->  			pkru_val = pk->pkru;
->  	}
->  	__write_pkru(pkru_val);
-> +
-> +	update_pasid();
->  }
->  
->  /*
-> diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
-> index 67f1a03b9b23..556040e14f1c 100644
-> --- a/arch/x86/kernel/fpu/xstate.c
-> +++ b/arch/x86/kernel/fpu/xstate.c
-> @@ -1402,3 +1402,59 @@ int proc_pid_arch_status(struct seq_file *m, struct pid_namespace *ns,
->  	return 0;
->  }
->  #endif /* CONFIG_PROC_PID_ARCH_STATUS */
-> +
-> +#ifdef CONFIG_IOMMU_SUPPORT
-> +void update_pasid(void)
-> +{
-> +	u64 pasid_state;
-> +	u32 pasid;
-> +
-> +	if (!cpu_feature_enabled(X86_FEATURE_ENQCMD))
-> +		return;
-> +
-> +	if (!current->mm)
-> +		return;
-> +
-> +	pasid = READ_ONCE(current->mm->pasid);
-> +	/* Set the valid bit in the PASID MSR/state only for valid pasid. */
-> +	pasid_state = pasid == PASID_DISABLED ?
-> +		      pasid : pasid | MSR_IA32_PASID_VALID;
-> +
-> +	/*
-> +	 * No need to hold fregs_lock() since the task's fpstate won't
-> +	 * be changed by others (e.g. ptrace) while the task is being
-> +	 * switched to or is in IPI.
-> +	 */
-> +	if (!test_thread_flag(TIF_NEED_FPU_LOAD)) {
-> +		/* The MSR is active and can be directly updated. */
-> +		wrmsrl(MSR_IA32_PASID, pasid_state);
-> +	} else {
-> +		struct fpu *fpu = &current->thread.fpu;
-> +		struct ia32_pasid_state *ppasid_state;
-> +		struct xregs_state *xsave;
-> +
-> +		/*
-> +		 * The CPU's xstate registers are not currently active. Just
-> +		 * update the PASID state in the memory buffer here. The
-> +		 * PASID MSR will be loaded when returning to user mode.
-> +		 */
-> +		xsave = &fpu->state.xsave;
-> +		xsave->header.xfeatures |= XFEATURE_MASK_PASID;
-> +		ppasid_state = get_xsave_addr(xsave, XFEATURE_PASID);
-> +		if (ppasid_state) {
-> +			/*
-> +			 * Only update the task's PASID state when it's
-> +			 * different from the mm's pasid.
-> +			 */
-> +			if (ppasid_state->pasid != pasid_state) {
-> +				/*
-> +				 * Invalid fpregs so that xrstors will pick up
-							  ^^^^^^^
+diff --git a/drivers/watchdog/sp5100_tco.c b/drivers/watchdog/sp5100_tco.c
+index 85e9664318c9..5482154fde42 100644
+--- a/drivers/watchdog/sp5100_tco.c
++++ b/drivers/watchdog/sp5100_tco.c
+@@ -193,7 +193,8 @@ static void tco_timer_enable(struct sp5100_tco *tco)
+ 		/* Set the Watchdog timer resolution to 1 sec and enable */
+ 		sp5100_tco_update_pm_reg8(EFCH_PM_DECODEEN3,
+ 					  ~EFCH_PM_WATCHDOG_DISABLE,
+-					  EFCH_PM_DECODEEN_SECOND_RES);
++					  EFCH_PM_DECODEEN_SECOND_RES |
++					  EFCH_PM_DECODEEN_WDT_TMREN);
+ 		break;
+ 	}
+ }
 
-Not "xrstors" but the "state restoring" or so.
+Does anyone have an idea if such unconditional setting could be 
+problematic on older/different efch? We probe for that bit in
+sp5100_tco_setupdevice but we never set it so far.
 
+I'm missing specs...
 
-> +				 * the PASID state.
-> +				 */
-> +				__fpu_invalidate_fpregs_state(fpu);
-> +				ppasid_state->pasid = pasid_state;
-> +			}
-
-What happens if get_xsave_addr() returns NULL? A WARN_ONCE maybe?
-
-Ok, done with review.
-
-Thx.
+Thanks,
+Jan
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Siemens AG, Corporate Technology, CT RDA IOT SES-DE
+Corporate Competence Center Embedded Linux
