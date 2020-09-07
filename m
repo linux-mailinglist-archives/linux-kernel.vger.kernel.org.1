@@ -2,84 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FFF325FB87
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 15:39:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF76D25FB99
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 15:43:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729372AbgIGNjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 09:39:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33260 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729590AbgIGNZ0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 09:25:26 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64BF8C061755
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 06:25:24 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id 841552922B6
-Subject: Re: [PATCH] platform/chrome: Kconfig: Remove the transitional
- MFD_CROS_EC config
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Collabora Kernel ML <kernel@collabora.com>, groeck@chromium.org,
-        bleung@chromium.org, dtor@chromium.org, gwendal@chromium.org
-References: <20200903141746.996974-1-enric.balletbo@collabora.com>
-Message-ID: <5b2a2b4e-0b5e-7087-4e4d-d07058ee8d04@collabora.com>
-Date:   Mon, 7 Sep 2020 15:25:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1729637AbgIGNmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 09:42:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33100 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729596AbgIGN2R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 09:28:17 -0400
+Received: from pali.im (pali.im [31.31.79.79])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5079221481;
+        Mon,  7 Sep 2020 13:27:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599485245;
+        bh=zduFED1gZ/Fbzt3bmZjWW745p5Gw8g0LTixr2qTH6j0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=W7w2/HJnEneckbuZBV8qdPGq1ZRMfgpRBjAW+AIF/Im1UxWxiRgYfGn4hmFxSmlDI
+         Wl2kjguXnaWzvzfv5Mp3SQw99es+ontfMDoZxzQAp3pPeqhU293tbFA4mXIDBFNTj8
+         A3hRdXeg02UAXMc9c/5K+L1Lit0tXq+cdkG3vPuA=
+Received: by pali.im (Postfix)
+        id C2321814; Mon,  7 Sep 2020 15:27:22 +0200 (CEST)
+From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
+To:     Jason Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] cpufreq: armada-37xx: Add missing MODULE_DEVICE_TABLE
+Date:   Mon,  7 Sep 2020 15:27:16 +0200
+Message-Id: <20200907132716.6379-1-pali@kernel.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20200903141746.996974-1-enric.balletbo@collabora.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Gwendal and Guenter,
+CONFIG_ARM_ARMADA_37XX_CPUFREQ is tristate option and therefore this
+cpufreq driver can be compiled as a module. This patch adds missing
+MODULE_DEVICE_TABLE which generates correct modalias for automatic
+loading of this cpufreq driver when is compiled as an external module.
 
-Thank you for the review and tested tags.
+Signed-off-by: Pali Rohár <pali@kernel.org>
+Fixes: 92ce45fb875d7 ("cpufreq: Add DVFS support for Armada 37xx")
+---
+ drivers/cpufreq/armada-37xx-cpufreq.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-On 3/9/20 16:17, Enric Balletbo i Serra wrote:
-> The MFD_CROS_EC config was a transitional Kconfig option to not break
-> current defconfigs in the kernel. Now, this is not required anymore
-> because all the defconfigs have been removed this option and migrated to
-> enable the CrOS EC parts individually.
-> 
-> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+diff --git a/drivers/cpufreq/armada-37xx-cpufreq.c b/drivers/cpufreq/armada-37xx-cpufreq.c
+index df1c941260d1..46f33c3a7316 100644
+--- a/drivers/cpufreq/armada-37xx-cpufreq.c
++++ b/drivers/cpufreq/armada-37xx-cpufreq.c
+@@ -484,6 +484,12 @@ static int __init armada37xx_cpufreq_driver_init(void)
+ /* late_initcall, to guarantee the driver is loaded after A37xx clock driver */
+ late_initcall(armada37xx_cpufreq_driver_init);
+ 
++static const struct of_device_id armada37xx_cpufreq_of_match[] = {
++	{ .compatible = "marvell,armada-3700-nb-pm" },
++	{ },
++};
++MODULE_DEVICE_TABLE(of, armada37xx_cpufreq_of_match);
++
+ MODULE_AUTHOR("Gregory CLEMENT <gregory.clement@free-electrons.com>");
+ MODULE_DESCRIPTION("Armada 37xx cpufreq driver");
+ MODULE_LICENSE("GPL");
+-- 
+2.20.1
 
-Applied for 5.10
-
-Thanks,
- Enric
-
-> ---
-> 
->  drivers/platform/chrome/Kconfig | 10 ----------
->  1 file changed, 10 deletions(-)
-> 
-> diff --git a/drivers/platform/chrome/Kconfig b/drivers/platform/chrome/Kconfig
-> index a056031dee81..ccc23d8686e8 100644
-> --- a/drivers/platform/chrome/Kconfig
-> +++ b/drivers/platform/chrome/Kconfig
-> @@ -3,16 +3,6 @@
->  # Platform support for Chrome OS hardware (Chromebooks and Chromeboxes)
->  #
->  
-> -config MFD_CROS_EC
-> -	tristate "Platform support for Chrome hardware (transitional)"
-> -	select CHROME_PLATFORMS
-> -	select CROS_EC
-> -	select MFD_CROS_EC_DEV
-> -	depends on X86 || ARM || ARM64 || COMPILE_TEST
-> -	help
-> -	  This is a transitional Kconfig option and will be removed after
-> -	  everyone enables the parts individually.
-> -
->  menuconfig CHROME_PLATFORMS
->  	bool "Platform support for Chrome hardware"
->  	depends on X86 || ARM || ARM64 || COMPILE_TEST
-> 
