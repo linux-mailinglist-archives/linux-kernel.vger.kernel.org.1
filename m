@@ -2,92 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 417B225FBF4
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 16:21:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 660F525FBDA
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 16:11:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729543AbgIGOSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 10:18:18 -0400
-Received: from mga01.intel.com ([192.55.52.88]:29586 "EHLO mga01.intel.com"
+        id S1729774AbgIGOLi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 10:11:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46986 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729791AbgIGOI5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 10:08:57 -0400
-IronPort-SDR: qtwwns37usp1CEb0AcIjSgOVgTTY1EAgXlXpHSpw5GXK9yZVdMyOcS/IIkmEpxQ1ib0brF5mlA
- a5SePSPxMXkw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9736"; a="176061444"
-X-IronPort-AV: E=Sophos;i="5.76,402,1592895600"; 
-   d="scan'208";a="176061444"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2020 07:08:35 -0700
-IronPort-SDR: IyIJpGb7PSXbGv9nFa3L9iLxdTpINyOkMblbQ1eaJEL8yCHiEA1yOEq+JfOtmTBVxynSnAZUDe
- vS/OhuaQ/YPg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,402,1592895600"; 
-   d="scan'208";a="333173796"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga008.jf.intel.com with ESMTP; 07 Sep 2020 07:08:32 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kFHor-00Ey3d-4e; Mon, 07 Sep 2020 17:08:29 +0300
-Date:   Mon, 7 Sep 2020 17:08:29 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Kent Gibson <warthog618@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        linux-doc <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>
-Subject: Re: [PATCH 23/23] Documentation: gpio: add documentation for
- gpio-mockup
-Message-ID: <20200907140829.GL1891694@smile.fi.intel.com>
-References: <20200904154547.3836-1-brgl@bgdev.pl>
- <20200904154547.3836-24-brgl@bgdev.pl>
- <26ea1683-da8f-30e7-f004-3616e96d56b3@infradead.org>
- <20200907095932.GU1891694@smile.fi.intel.com>
- <CAMpxmJXvhYOVkZY7LLf=v+o8E2xKTh1RYhLrdVsS9nN1XZ5QJQ@mail.gmail.com>
- <20200907115310.GA1891694@smile.fi.intel.com>
- <CAMpxmJUfNkko4Rrb4N5CF_rdwRAWGhVr9DSOHfhYyTxYSH7dsQ@mail.gmail.com>
- <20200907122238.GA1849893@kroah.com>
- <CAMpxmJXM=8oGoPSGg8G8XJ4HXJFrAQ2-_EXrz3rf3+ZmCSWB7g@mail.gmail.com>
+        id S1729756AbgIGOI6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 10:08:58 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 03EEB20714;
+        Mon,  7 Sep 2020 14:08:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599487707;
+        bh=booZ9KCft0J1xaFhwDEBtifCIVwXTkQmEWPw53bkz+U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FsjiRmJ1BhfkekpBQhB2EZ6JM4FTiz6TnaaFeFlmecBdtKJM63KTRCQRCfEDMBD9A
+         XuujBW2FlMZte4GeRNxvgBTQDmM5qmQnC0FiRBFQ/7gDSWMKAnIP6Qkym6jLnaN6H7
+         666rCp5hnoFF+hGOZ119OnP6bGYvP2mJ4GFiQRNs=
+Date:   Mon, 7 Sep 2020 16:08:41 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     "Paraschiv, Andra-Irina" <andraprs@amazon.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Anthony Liguori <aliguori@amazon.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Colm MacCarthaigh <colmmacc@amazon.com>,
+        David Duncan <davdunc@amazon.com>,
+        Bjoern Doebel <doebel@amazon.de>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Frank van der Linden <fllinden@amazon.com>,
+        Alexander Graf <graf@amazon.de>, Karen Noel <knoel@redhat.com>,
+        Martin Pohlack <mpohlack@amazon.de>,
+        Matt Wilson <msw@amazon.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Balbir Singh <sblbir@amazon.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stewart Smith <trawets@amazon.com>,
+        Uwe Dannowski <uwed@amazon.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        kvm <kvm@vger.kernel.org>,
+        ne-devel-upstream <ne-devel-upstream@amazon.com>
+Subject: Re: [PATCH v8 15/18] nitro_enclaves: Add Makefile for the Nitro
+ Enclaves driver
+Message-ID: <20200907140841.GB3719869@kroah.com>
+References: <20200904173718.64857-1-andraprs@amazon.com>
+ <20200904173718.64857-16-andraprs@amazon.com>
+ <20200907090011.GC1101646@kroah.com>
+ <f5c0f79c-f581-fab5-9a3b-97380ef7fc2a@amazon.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMpxmJXM=8oGoPSGg8G8XJ4HXJFrAQ2-_EXrz3rf3+ZmCSWB7g@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <f5c0f79c-f581-fab5-9a3b-97380ef7fc2a@amazon.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 07, 2020 at 03:49:23PM +0200, Bartosz Golaszewski wrote:
-> On Mon, Sep 7, 2020 at 2:22 PM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> > On Mon, Sep 07, 2020 at 02:06:15PM +0200, Bartosz Golaszewski wrote:
-
-...
-
-> > Yes it is.  Or at least until you fix all existing users so that if you
-> > do change it, no one notices it happening :)
-> >
+On Mon, Sep 07, 2020 at 04:35:23PM +0300, Paraschiv, Andra-Irina wrote:
 > 
-> Then another question is: do we really want to commit to a stable ABI
-> for a module we only use for testing purposes and which doesn't
-> interact with any real hardware.
 > 
-> Rewriting this module without any legacy cruft is tempting though. :)
+> On 07/09/2020 12:00, Greg KH wrote:
+> > 
+> > 
+> > On Fri, Sep 04, 2020 at 08:37:15PM +0300, Andra Paraschiv wrote:
+> > > Signed-off-by: Andra Paraschiv <andraprs@amazon.com>
+> > > Reviewed-by: Alexander Graf <graf@amazon.com>
+> > > ---
+> > > Changelog
+> > > 
+> > > v7 -> v8
+> > > 
+> > > * No changes.
+> > > 
+> > > v6 -> v7
+> > > 
+> > > * No changes.
+> > > 
+> > > v5 -> v6
+> > > 
+> > > * No changes.
+> > > 
+> > > v4 -> v5
+> > > 
+> > > * No changes.
+> > > 
+> > > v3 -> v4
+> > > 
+> > > * No changes.
+> > > 
+> > > v2 -> v3
+> > > 
+> > > * Remove the GPL additional wording as SPDX-License-Identifier is
+> > >    already in place.
+> > > 
+> > > v1 -> v2
+> > > 
+> > > * Update path to Makefile to match the drivers/virt/nitro_enclaves
+> > >    directory.
+> > > ---
+> > >   drivers/virt/Makefile                |  2 ++
+> > >   drivers/virt/nitro_enclaves/Makefile | 11 +++++++++++
+> > >   2 files changed, 13 insertions(+)
+> > >   create mode 100644 drivers/virt/nitro_enclaves/Makefile
+> > > 
+> > > diff --git a/drivers/virt/Makefile b/drivers/virt/Makefile
+> > > index fd331247c27a..f28425ce4b39 100644
+> > > --- a/drivers/virt/Makefile
+> > > +++ b/drivers/virt/Makefile
+> > > @@ -5,3 +5,5 @@
+> > > 
+> > >   obj-$(CONFIG_FSL_HV_MANAGER) += fsl_hypervisor.o
+> > >   obj-y                                += vboxguest/
+> > > +
+> > > +obj-$(CONFIG_NITRO_ENCLAVES) += nitro_enclaves/
+> > > diff --git a/drivers/virt/nitro_enclaves/Makefile b/drivers/virt/nitro_enclaves/Makefile
+> > > new file mode 100644
+> > > index 000000000000..e9f4fcd1591e
+> > > --- /dev/null
+> > > +++ b/drivers/virt/nitro_enclaves/Makefile
+> > > @@ -0,0 +1,11 @@
+> > > +# SPDX-License-Identifier: GPL-2.0
+> > > +#
+> > > +# Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+> > > +
+> > > +# Enclave lifetime management support for Nitro Enclaves (NE).
+> > > +
+> > > +obj-$(CONFIG_NITRO_ENCLAVES) += nitro_enclaves.o
+> > > +
+> > > +nitro_enclaves-y := ne_pci_dev.o ne_misc_dev.o
+> > > +
+> > > +ccflags-y += -Wall
+> > That flag is _really_ risky over time, are you _SURE_ that all new
+> > versions of clang and gcc will never produce any warnings?  People work
+> > to fix up build warnings quite quickly for new compilers, you shouldn't
+> > prevent the code from being built at all just for that, right?
+> > 
+> 
+> That would also need Werror, to have warnings treated as errors and prevent
+> building the codebase. If it's about something more, just let me know.
 
-Another thought spoken loudly: maybe it can be unified with GPIO aggregator
-code? In that case it makes sense.
+No, you are right, Werror would be needed here too.
 
--- 
-With Best Regards,
-Andy Shevchenko
+W=1 gives you -Wall if you really want that, no need to add it by hand.
 
+thanks,
 
+greg k-h
