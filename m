@@ -2,152 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5141D260202
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:16:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 029FB2601F7
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:15:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731200AbgIGRQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 13:16:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45516 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729731AbgIGOFQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 10:05:16 -0400
-Received: from saruman (91-155-214-58.elisa-laajakaista.fi [91.155.214.58])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B35A12064B;
-        Mon,  7 Sep 2020 14:04:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599487481;
-        bh=43vQhSIdl0+3eXxBWtFTpn4oJEVlsfZOH+X1/8xm4zQ=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=g8KKUImy+BP8HbHX3vY2vbd58JExwtSgOTzmtbPmx4VtaTqYadL3dfzH2A8U3jQlt
-         xAu/ObxyPT56Ox/HLThXLuVuOxi9tyEZZfIOhombzJWIHBBDqAk5NByUjS4D3pUonU
-         0Y1SAB/dT+5eClcuKvTVF+APb7HAhefzPRSjMqJE=
-From:   Felipe Balbi <balbi@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Yu Chen <chenyu56@huawei.com>, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        john.stultz@linaro.org, suzhuangluan@hisilicon.com,
-        kongfei@hisilicon.com, liuyu712@hisilicon.com,
-        wanghu17@hisilicon.com, butao@hisilicon.com, chenyao11@huawei.com,
-        fangshengzhou@hisilicon.com, lipengcheng8@huawei.com,
-        songxiaowei@hisilicon.com, xuyiping@hisilicon.com,
-        xuyoujun4@huawei.com, yudongbin@hisilicon.com,
-        zangleigang@hisilicon.com,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Binghui Wang <wangbinghui@hisilicon.com>
-Subject: Re: [PATCH v6 04/13] usb: dwc3: Add splitdisable quirk for
- Hisilicon Kirin Soc
-In-Reply-To: <20200907150631.70e1bce0@coco.lan>
-References: <20190420064019.57522-1-chenyu56@huawei.com>
- <20190420064019.57522-5-chenyu56@huawei.com>
- <20200907150631.70e1bce0@coco.lan>
-Date:   Mon, 07 Sep 2020 17:04:31 +0300
-Message-ID: <874ko9of80.fsf@kernel.org>
+        id S1731270AbgIGRPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 13:15:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729768AbgIGOGG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 10:06:06 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC101C061574
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 07:06:04 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id w186so12751348qkd.1
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 07:06:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=marek-ca.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=y+uPVxGhTzkdDfUd9wvr+ZuNFUnz8aixgYzEQqrA4MY=;
+        b=ZlFYWNzHSoL0j1+55BOdgwsdhE4/eQ+f5eAIcVhoP8m16P2JaJ+kEJaWXQmU/asTan
+         +FNSTR+7/u2RvbrlmI4pPJvW73nmPOb2MxuCuE6NH6yWwFmfTNC7wNpeLXKlM9tuTmnK
+         CIXvcIk9Qq+lKbbq1o0YV4kQaoy15EP4nk2vQ5zNBoerHdy/Bx7zP3dTJfpmPvqXF1ZO
+         7bXdQXp0kzghs2BDVVQClnumXEmZKLB2D9oeHdc9mY8+3PC4Ztd3GEw1eljJOOtZ+CTE
+         tCZxuSBZ0KcjypKSTgj9lv/qq4OcUzzDAxuYJNFf/+EBzGxThQKd8qwYFubYSRoOcrMp
+         DLSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=y+uPVxGhTzkdDfUd9wvr+ZuNFUnz8aixgYzEQqrA4MY=;
+        b=dl8yinpzY5yphbq1VLjAF3p74Jhp9wFMw1Z0dflPBy2XuB7dhe27tbq8Nh+ZBppvM8
+         NpviNTXXoTVUIbMhFmN4FGa2OhC4HZZQAGk/fV7lMHiAmTxm/7xXaABdJuMG4uNs0kP3
+         PtEUASwZjPjd5cHPEvDl2tiOavV+kp2hHw32yBulIqGJUXkcVq9ToldPDt5JPTDWHgbK
+         4dVMge3ilV4vAq3SplkeBigjFaJ0fEcLL7hcLz5SVR9pR3i6fILK4qTNreq5DuGPLfBl
+         DB6muIXDDq9nwL1vOYyVOsfcGWNbo3GfKyYWavJH/ONNztbhIFPmVigIBIQhe55jI+/8
+         mNYA==
+X-Gm-Message-State: AOAM531lA/py4s+gprjyAPptE0VCZ+jxL19jfbCwtNBio6fHWyvB/XK3
+        +FoFYWp9Qio25CegWP+/MPCrtxnDXJJJk7yHoP0=
+X-Google-Smtp-Source: ABdhPJxhfyBfbzBJNaomyjjA3ICbD0lV5tfufEImskKOSDvkQXT8skDYxgZXb3Qgc3ZCK9uKhlPkew==
+X-Received: by 2002:a37:6cc1:: with SMTP id h184mr14311080qkc.18.1599487561928;
+        Mon, 07 Sep 2020 07:06:01 -0700 (PDT)
+Received: from [192.168.0.189] ([147.253.86.153])
+        by smtp.gmail.com with ESMTPSA id u15sm11951003qtj.3.2020.09.07.07.06.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Sep 2020 07:06:01 -0700 (PDT)
+Subject: Re: [PATCH] misc: fastrpc: add ioctl for attaching to sensors pd
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        linux-arm-msm@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20200901003300.11985-1-jonathan@marek.ca>
+ <fa436d55-b986-944f-e90f-b81cb32eeb0e@linaro.org>
+ <3f1f8ff1-cf23-ae2c-4cff-cdcce0b11e2e@marek.ca>
+ <f2faa7b2-1e7d-2f39-ef36-a3790cedfab9@linaro.org>
+From:   Jonathan Marek <jonathan@marek.ca>
+Message-ID: <682b2972-2762-bb4c-b31b-025ab78aba1f@marek.ca>
+Date:   Mon, 7 Sep 2020 10:05:14 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+In-Reply-To: <f2faa7b2-1e7d-2f39-ef36-a3790cedfab9@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+On 9/7/20 10:01 AM, Srinivas Kandagatla wrote:
+> 
+> 
+> On 07/09/2020 14:47, Jonathan Marek wrote:
+>> On 9/7/20 8:36 AM, Srinivas Kandagatla wrote:
+>>>
+>>>
+>>> On 01/09/2020 01:32, Jonathan Marek wrote:
+>>>> -#define FASTRPC_IOCTL_MMAP              _IOWR('R', 6, struct 
+>>>> fastrpc_req_mmap)
+>>>> -#define FASTRPC_IOCTL_MUNMAP            _IOWR('R', 7, struct 
+>>>> fastrpc_req_munmap)
+>>>> +#define FASTRPC_IOCTL_MMAP        _IOWR('R', 6, struct 
+>>>> fastrpc_req_mmap)
+>>>> +#define FASTRPC_IOCTL_MUNMAP        _IOWR('R', 7, struct 
+>>>> fastrpc_req_munmap)
+>>>
+>>> Looks like changes that do not belong to this patch!
+>>>
+>>> I wanted to try this patch on SM8250.
+>>> How do you test attaching fastrpc to sensor core?, I mean which 
+>>> userspace lib/tool do you use?
+>>>
+>>> --srini
+>>>
+>>
+>> I pushed my sdsprpcd implementation to github, which is responsible 
+>> for initializing the sensors, and uses this ioctl:
+>>
+>> https://github.com/flto/fastrpc
+> 
+> Thanks!, I can take a look and see if I can try it out with linaro 
+> fastrpc library!
 
+You don't need linaro fastrpc library to try it, everything you need is 
+in that repo.
 
-Hi Mauro,
+>>
+>> Note: it uses my own WIP fastrpc "library" instead of the one from 
+>> linaro, I also have other related code, like a sensor client, and 
+>> cDSP/aDSP compute examples, but need to confirm that I can share them
+>>
+>> Also, the corresponding dts patch I sent has a problem, the label = 
+>> "dsps"; should be label = "sdsp"; (copied the "dsps" from downstream, 
+>> but upstream expects "sdsp"), will send a v2 later today.
+> Also the dts patch will fail to apply as it is, as it seems me that you 
+> have based the patch after adding audio dts patch!
+> 
 
-Mauro Carvalho Chehab <mchehab+huawei@kernel.org> writes:
+Thanks for pointing it out, will make sure the v2 applies cleanly 
+without audio dts patches applied.
 
-> Hi Felipe/Greg,
->
-> What's the status of this patch?=20
-
-to be frank, I don't think I have this in my inbox anymore.
-
-> I tested here, together with the Hikey 970 phy RFC patches I sent
-> last week.
->
-> Without this patch, the USB HID driver receives -EPROTO from
-> submitted URBs, causing it to enter into an endless reset cycle
-> on every 500 ms, at the hid_io_error() logic.
-
-> Tested-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
->
-> If you prefer, I can re-submit this one with my SOB.
-
-Please do, but since you're changing device tree, I need Rob's acked-by.
-
-> Thanks,
-> Mauro
->
-> Em Sat, 20 Apr 2019 14:40:10 +0800
-> Yu Chen <chenyu56@huawei.com> escreveu:
->
->> SPLIT_BOUNDARY_DISABLE should be set for DesignWare USB3 DRD Core
->> of Hisilicon Kirin Soc when dwc3 core act as host.
-
-is this Kirin-specific or is this something that we should do a revision
-check? Why does it affect only Hikey kirin? What's the dwc3 revision on
-that SoC (grep SNPSID /sys/kernel/debugfs/*dwc3/regdump)?
-
->> @@ -1825,10 +1834,27 @@ static int dwc3_resume(struct device *dev)
->>=20=20
->>  	return 0;
->>  }
->> +
->> +static void dwc3_complete(struct device *dev)
->> +{
->> +	struct dwc3	*dwc =3D dev_get_drvdata(dev);
->> +	u32		reg;
->> +
->> +	if (dwc->current_dr_role =3D=3D DWC3_GCTL_PRTCAP_HOST &&
->> +			dwc->dis_split_quirk) {
->> +		dev_dbg(dwc->dev, "set DWC3_GUCTL3_SPLITDISABLE\n");
-
-no more dev_dbg() should be added. This driver relies exclusively on
-tracepoints for debugging.
-
->> +		reg =3D dwc3_readl(dwc->regs, DWC3_GUCTL3);
->> +		reg |=3D DWC3_GUCTL3_SPLITDISABLE;
->> +		dwc3_writel(dwc->regs, DWC3_GUCTL3, reg);
->> +	}
->> +}
->> +#else
->> +#define dwc3_complete NULL
->>  #endif /* CONFIG_PM_SLEEP */
->>=20=20
->>  static const struct dev_pm_ops dwc3_dev_pm_ops =3D {
->>  	SET_SYSTEM_SLEEP_PM_OPS(dwc3_suspend, dwc3_resume)
->> +	.complete =3D dwc3_complete,
-
-why is this done on complete? Why can't it be done at the end of
-dwc3_resume()?
-
-=2D-=20
-balbi
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQJFBAEBCAAvFiEElLzh7wn96CXwjh2IzL64meEamQYFAl9WPe8RHGJhbGJpQGtl
-cm5lbC5vcmcACgkQzL64meEamQZWyg/+LSkAFDUcHpgZ1Z3VDh+wv/KQkud9pmoE
-VkCPKqYGL5kG9kAQaHpB03tenK4Y9rSA4UVdG5fODhcqrcHe/3irBZeJ+/TVxnDd
-FD4aZmDNCmcHYBE09GqXTpGQAdBxApkNaFgLzIdNJq4ydCHd8Eb9qQeVskZQCtpi
-emWTBKOTAJyl9WMlifucJqH9A/IKqb8oMrUxaBqRSAbKjLzki4HEZ3Z3MZ9ivHnY
-w0bo69HybeVAMI2QqUAQ2JY26GpbnsdJhTL6fGwGPjnrHqoEY0d+7D0RTQinYcxG
-LXeA2Ote9sOE02rGm0Vh+3isF8fsf+GJ1odDi7IsjJR//upPtoPBXtWBJd6w9vsI
-M6clI4UaWrQoK2JZ7HqislIqqO1yms0BgUMx4NuuL+7GOzYCcO23/hFgC8Lb7/xm
-936q25tJM91Ipgl62fa5XRAcxg8MkyDS5aRbRwQBr7Q+v3hABXIxSKoWtJP8L7TV
-9OGcZoChy3uEz5NokYlp2qo0BoKmj8a0/CdkdCEr7RAIn7DMaOhg21T9zomgo6wM
-/1zbJTeZlhLabPEUMEm2w38RH5A7D/ZyHkYAqZHuCKUwKfLK4AFTMlHyZKVJOVXd
-uGsglmA1e4jWqojDI0SVdYTPiZrBRX44DX0qzvc0GNMxPOLs+dKL/R1/b1JY2iOR
-rAZZ8gVV7BY=
-=fXYk
------END PGP SIGNATURE-----
---=-=-=--
+> 
+> --srini
+>>
+>>>> +#define FASTRPC_IOCTL_INIT_ATTACH_SNS    _IO('R', 8)
