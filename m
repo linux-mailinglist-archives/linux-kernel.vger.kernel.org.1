@@ -2,128 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4EB3260587
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 22:20:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BAC8260591
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 22:21:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729538AbgIGUUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 16:20:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39706 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729269AbgIGUUi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 16:20:38 -0400
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BC4FA2177B
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 20:20:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599510037;
-        bh=uluieRHjASDijcIFo7gCF077dVcN0frnZrCkAriLSJ8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=GJi1QjE/YfZNlkfZqazyPBchYHM89L/Ib8IKW/Eia/680VU0lYlG8ekUz/yktHgPk
-         cu72Ky/O8tcJD9o6KawiqA0EVgH1KZECifj9Csvsh6KqFLhUTeo6fkIg7zyOIfxIhx
-         AbYxFH1xbqJFjwkQBHg2Go2Razg0mEfL5JgDn6dI=
-Received: by mail-wr1-f41.google.com with SMTP id z4so16911598wrr.4
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 13:20:36 -0700 (PDT)
-X-Gm-Message-State: AOAM533IytxxoLeigIePvoswRsXQ6PkK5YeLJisohvfakz4FuLxHSIHp
-        C3u+DtgMx+zu151HrCmdfENXb3U7ti2Gd2LASZDApA==
-X-Google-Smtp-Source: ABdhPJzhGTkslezk1jKgM4Z8egHoJMRpDSYgL+Hvr6rrEgC/Tq2OEQ3SAkb2T4jpoLviDEx/3tlo2KLQdnQeaVjVbwA=
-X-Received: by 2002:adf:db88:: with SMTP id u8mr23050764wri.184.1599510035328;
- Mon, 07 Sep 2020 13:20:35 -0700 (PDT)
+        id S1729832AbgIGUVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 16:21:47 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:43564 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729757AbgIGUVi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 16:21:38 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 087KLYuZ016372;
+        Mon, 7 Sep 2020 15:21:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1599510094;
+        bh=HElTGPfHN8eqJ8L/c6Hjkkfa9XQnaNhJXi0kU+nLVsc=;
+        h=From:To:CC:Subject:Date;
+        b=ierPQQxr6MlcDKvfJ1SCKLooiKxwZ5bYAW2xVp79KCBZb0wrZ6Tbb1eCzCeJKCH+y
+         2Vo7K6WmTUn60s6NCiUz+013HGyltTlQ2LQs4qEsn+Dkh/Y+YGJWUe7hsiEIyrXlbu
+         lpYorSvDbpzYkXCbNF0tJHL5La0obNZTDl4nK8X4=
+Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 087KLYib049308
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 7 Sep 2020 15:21:34 -0500
+Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 7 Sep
+ 2020 15:21:34 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 7 Sep 2020 15:21:33 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 087KLWog127219;
+        Mon, 7 Sep 2020 15:21:33 -0500
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+To:     Tony Lindgren <tony@atomide.com>
+CC:     <linux-omap@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Sekhar Nori <nsekhar@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Murali Karicheri <m-karicheri2@ti.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>
+Subject: [PATCH next 0/6] ARM: dts: am57xx/dra7x: switch to new cpsw switch drv
+Date:   Mon, 7 Sep 2020 23:21:19 +0300
+Message-ID: <20200907202125.22943-1-grygorii.strashko@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20200907101522.zo6qzgp4qfzkz7cs@wittgenstein> <0639209E-B6C6-4F86-84F4-04B91E1CC8AA@amacapital.net>
- <20200907142510.klojh2urwyui23ox@wittgenstein>
-In-Reply-To: <20200907142510.klojh2urwyui23ox@wittgenstein>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Mon, 7 Sep 2020 13:20:23 -0700
-X-Gmail-Original-Message-ID: <CALCETrUaAy7uU9jjneC9+ft-TtS+SuyWXxMCCE5dmcth3N4rHw@mail.gmail.com>
-Message-ID: <CALCETrUaAy7uU9jjneC9+ft-TtS+SuyWXxMCCE5dmcth3N4rHw@mail.gmail.com>
-Subject: Re: [PATCH v6 6/9] kernel: entry: Support Syscall User Dispatch for
- common syscall entry
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Andrew Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Kees Cook <keescook@chromium.org>, X86 ML <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
-        kernel@collabora.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 7, 2020 at 7:25 AM Christian Brauner
-<christian.brauner@ubuntu.com> wrote:
->
-> On Mon, Sep 07, 2020 at 07:15:52AM -0700, Andy Lutomirski wrote:
-> >
-> >
-> > > On Sep 7, 2020, at 3:15 AM, Christian Brauner <christian.brauner@ubun=
-tu.com> wrote:
-> > >
-> > > =EF=BB=BFOn Fri, Sep 04, 2020 at 04:31:44PM -0400, Gabriel Krisman Be=
-rtazi wrote:
-> > >> Syscall User Dispatch (SUD) must take precedence over seccomp, since=
- the
-> > >> use case is emulation (it can be invoked with a different ABI) such =
-that
-> > >> seccomp filtering by syscall number doesn't make sense in the first
-> > >> place.  In addition, either the syscall is dispatched back to usersp=
-ace,
-> > >> in which case there is no resource for seccomp to protect, or the
-> > >
-> > > Tbh, I'm torn here. I'm not a super clever attacker but it feels to m=
-e
-> > > that this is still at least a clever way to circumvent a seccomp
-> > > sandbox.
-> > > If I'd be confined by a seccomp profile that would cause me to be
-> > > SIGKILLed when I try do open() I could prctl() myself to do user
-> > > dispatch to prevent that from happening, no?
-> > >
-> >
-> > Not really, I think. The idea is that you didn=E2=80=99t actually do op=
-en().
-> > You did a SYSCALL instruction which meant something else, and the
-> > syscall dispatch correctly prevented the kernel from misinterpreting
-> > it as open().
->
-> Right, for the case where you're e.g. emulating windows syscalls that's
-> true. I was thinking when you're running natively on Linux: couldn't I
-> first load a seccomp profile "kill me if someone does an open()", then
-> I exec() the target binary and that binary is setup to do
-> prctl(USER_DISPATCH) first thing. I guess, it's ok because as far as I
-> had time to read it this is a nothing or all mechanism, i.e. _all_
-> system calls are re-routed in contrast to e.g. seccomp where I could do
-> this per-syscall. So for user-dispatch it wouldn't make sense to use it
-> on Linux per se. Still makes me a little uneasy. :)
+Hi Tony,
 
-There's an escape hatch, so processes using this can still make syscalls.
+Since Kernel v5.5 commits:
+ 111cf1ab4da3 ("net: ethernet: ti: introduce cpsw switchdev based driver part 2 - switch")
+ ed3525eda4c4 ("net: ethernet: ti: introduce cpsw switchdev based driver part 1 - dual-emac")
+the new CPSW driver with switchdev support has been introduced and one
+am571x-idk board was converted to use it. And since that time (Nov 2019) no
+significant issues were reported for the new CPSW driver.
 
-Maybe think about it another way: a process using user dispatch should
-definitely *not* trigger seccomp user notifiers, errno returns, or
-ptrace events, since they'll all do the wrong thing.  IMO RET_KILL is
-the same.
+Therefore it's time to switch all am57xx/dra7x boards to use new cpsw switch
+driver. Those boards have 1 or 2 Ext. port wired and configured in dual_mac mode
+by default. The dual_mac mode has been preserved the same way between
+legacy and new driver it's safe to switch drivers.
 
-Barring some very severe defect, there's no way a program can use user
-dispatch to escape seccomp -- a program could use user dispatch to
-allow them to do:
+Grygorii Strashko (6):
+  ARM: dts: am5729: beagleboneai: switch to new cpsw switch drv
+  ARM: dts: am57xx-idk: switch to new cpsw switch drv
+  ARM: dts: beagle-x15: switch to new cpsw switch drv
+  ARM: dts: dra7x-evm: switch to new cpsw switch drv
+  ARM: dts: am57xx-cl-som-am57x: switch to new cpsw switch drv
+  ARM: dts: dra7: drop legacy cpsw dt node
 
-mov $__NR_open, %rax
-syscall
+ arch/arm/boot/dts/am571x-idk.dts              | 27 ----------
+ arch/arm/boot/dts/am5729-beagleboneai.dts     | 14 +++--
+ arch/arm/boot/dts/am572x-idk.dts              |  5 --
+ arch/arm/boot/dts/am574x-idk.dts              |  5 --
+ .../boot/dts/am57xx-beagle-x15-common.dtsi    | 13 +++--
+ arch/arm/boot/dts/am57xx-cl-som-am57x.dts     | 13 +++--
+ arch/arm/boot/dts/am57xx-idk-common.dtsi      | 14 +++--
+ arch/arm/boot/dts/dra7-evm.dts                | 13 +++--
+ arch/arm/boot/dts/dra7-l4.dtsi                | 54 -------------------
+ arch/arm/boot/dts/dra7.dtsi                   |  4 +-
+ arch/arm/boot/dts/dra71-evm.dts               | 14 ++---
+ arch/arm/boot/dts/dra72-evm-common.dtsi       |  4 --
+ arch/arm/boot/dts/dra72-evm-revc.dts          | 14 ++---
+ arch/arm/boot/dts/dra72-evm.dts               | 13 +++--
+ arch/arm/boot/dts/dra76-evm.dts               | 14 +++--
+ 15 files changed, 67 insertions(+), 154 deletions(-)
 
-without dying despite the presence of a filter that would kill the
-process if it tried to do open(), but this doesn't bypass the filter
-at all.  The process could just as easily have done:
+-- 
+2.17.1
 
-mov $__NR_open
-jmp magic_stub(%rip)
-
-without tripping the filter, since no system call actually happens here.
-
---Andy
