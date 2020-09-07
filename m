@@ -2,130 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A2A9260579
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 22:16:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D662260589
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 22:21:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729400AbgIGUQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 16:16:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38852 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728834AbgIGUQ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 16:16:56 -0400
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A408F21556
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 20:16:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599509815;
-        bh=ubxD/ScZybxsf+4VI1wzau0NAHEUpkIO+E2cbdGy744=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=1ELq2FWPAEkfexsb8R6febqziegl5swmnbyXXebMq9rYC0lH8WDw5C25y6ODOXIKi
-         4HG/IxLLzmgVtieHUojDwPZ4pRLcD/YipRSz2wK4hzLMoW5j1qOtnWNhcVFpnvf6Bz
-         K6411hafJiA4ThnSRiVyuRP5Na1RizsYlH6tgxw0=
-Received: by mail-wm1-f46.google.com with SMTP id s13so15303029wmh.4
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 13:16:55 -0700 (PDT)
-X-Gm-Message-State: AOAM530nrStgRhHB3BA/ztufpdQNVrznmlgCIcebmY4oxfVzTAo75sP4
-        txEkMSc+i1SeS1pnz+5hEFmEhejhRS+rgR2gLVnGPw==
-X-Google-Smtp-Source: ABdhPJx2UM8BpaqRya476Nk2hXqdSVo1PrGufD+/Hv2y1VRUdv845YTPApnm22hs01w52l6iVs6puAuGrt3TpeIPecU=
-X-Received: by 2002:a05:600c:2183:: with SMTP id e3mr980639wme.49.1599509814240;
- Mon, 07 Sep 2020 13:16:54 -0700 (PDT)
+        id S1729572AbgIGUVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 16:21:09 -0400
+Received: from ex13-edg-ou-002.vmware.com ([208.91.0.190]:12698 "EHLO
+        EX13-EDG-OU-002.vmware.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729184AbgIGUVI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 16:21:08 -0400
+Received: from sc9-mailhost3.vmware.com (10.113.161.73) by
+ EX13-EDG-OU-002.vmware.com (10.113.208.156) with Microsoft SMTP Server id
+ 15.0.1156.6; Mon, 7 Sep 2020 13:21:07 -0700
+Received: from akaher-virtual-machine.eng.vmware.com (unknown [10.197.103.239])
+        by sc9-mailhost3.vmware.com (Postfix) with ESMTP id BDD3C4072D;
+        Mon,  7 Sep 2020 13:21:07 -0700 (PDT)
+From:   Ajay Kaher <akaher@vmware.com>
+To:     <gregkh@linuxfoundation.org>, <sashal@kernel.org>
+CC:     <alex.williamson@redhat.com>, <cohuck@redhat.com>,
+        <peterx@redhat.com>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>,
+        <srivatsab@vmware.com>, <srivatsa@csail.mit.edu>,
+        <vsirnapalli@vmware.com>, <akaher@vmware.com>
+Subject: [PATCH v4.14.y 1/3] vfio/type1: Support faulting PFNMAP vmas
+Date:   Tue, 8 Sep 2020 01:47:05 +0530
+Message-ID: <1599509828-23596-1-git-send-email-akaher@vmware.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-References: <20200906212130.GA28456@zn.tnic>
-In-Reply-To: <20200906212130.GA28456@zn.tnic>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Mon, 7 Sep 2020 13:16:43 -0700
-X-Gmail-Original-Message-ID: <CALCETrV4YN6t3Wqh+u4K=dQkj5RFQ0UbPj3nXXn2iHO+eZm4vA@mail.gmail.com>
-Message-ID: <CALCETrV4YN6t3Wqh+u4K=dQkj5RFQ0UbPj3nXXn2iHO+eZm4vA@mail.gmail.com>
-Subject: Re: [RFC PATCH] x86/mce: Make mce_rdmsrl() do a plain RDMSR only
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86-ml <x86@kernel.org>, Tony Luck <tony.luck@intel.com>,
-        lkml <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+Received-SPF: None (EX13-EDG-OU-002.vmware.com: akaher@vmware.com does not
+ designate permitted sender hosts)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 6, 2020 at 2:21 PM Borislav Petkov <bp@alien8.de> wrote:
->
-> Hi,
->
-> Ingo and I talked about this thing this morning and tglx has had it on
-> his to-fix list too so here's a first attempt at it.
->
-> Below is just a brain dump of what we talked about so let's start with
-> it and see where it would take us.
->
-> Thx.
->
-> ---
->
-> From: Borislav Petkov <bp@suse.de>
->
-> ... without any exception handling and tracing.
->
-> If an exception needs to be handled while reading an MSR - which is in
-> most of the cases caused by a #GP on a non-existent MSR - then this
-> is most likely the incarnation of a BIOS or a hardware bug. Such bug
-> violates the architectural guarantee that MSR banks are present with all
-> MSRs belonging to them.
->
-> The proper fix belongs in the hardware/firmware - not in the kernel.
->
-> Handling exceptions while in #MC and while an NMI is being handled would
-> cause the nasty NMI nesting issue because of the shortcoming of IRET
-> of reenabling NMIs when executed. And the machine is in an #MC context
-> already so <Deity> be at its side.
->
-> Tracing MSR accesses while in #MC is another no-no due to tracing being
-> inherently a bad idea in atomic context:
->
->   vmlinux.o: warning: objtool: do_machine_check()+0x4a: call to mce_rdmsrl() leaves .noinstr.text section
->
-> so remove all that "additional" functionality from mce_rdmsrl() and
-> concentrate on solely reading the MSRs.
->
-> Signed-off-by: Borislav Petkov <bp@suse.de>
-> Cc: Ingo Molnar <mingo@kernel.org>
-> ---
->  arch/x86/kernel/cpu/mce/core.c | 18 +++++++-----------
->  1 file changed, 7 insertions(+), 11 deletions(-)
->
-> diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-> index 0ba24dfffdb2..14ebdf3e22f3 100644
-> --- a/arch/x86/kernel/cpu/mce/core.c
-> +++ b/arch/x86/kernel/cpu/mce/core.c
-> @@ -376,7 +376,7 @@ static int msr_to_offset(u32 msr)
->  /* MSR access wrappers used for error injection */
->  static u64 mce_rdmsrl(u32 msr)
->  {
-> -       u64 v;
-> +       DECLARE_ARGS(val, low, high);
->
->         if (__this_cpu_read(injectm.finished)) {
->                 int offset = msr_to_offset(msr);
-> @@ -386,17 +386,13 @@ static u64 mce_rdmsrl(u32 msr)
->                 return *(u64 *)((char *)this_cpu_ptr(&injectm) + offset);
->         }
->
-> -       if (rdmsrl_safe(msr, &v)) {
-> -               WARN_ONCE(1, "mce: Unable to read MSR 0x%x!\n", msr);
-> -               /*
-> -                * Return zero in case the access faulted. This should
-> -                * not happen normally but can happen if the CPU does
-> -                * something weird, or if the code is buggy.
-> -                */
-> -               v = 0;
-> -       }
-> +       /*
-> +        * RDMSR on MCA MSRs should not fault. If they do, this is very much an
-> +        * architectural violation and needs to be reported to hw vendor.
-> +        */
-> +       asm volatile("rdmsr" : EAX_EDX_RET(val, low, high) : "c" (msr));
+From: Alex Williamson <alex.williamson@redhat.com>
 
-I don't like this.  Plain rdmsrl() will at least print a nice error if it fails.
+commit 41311242221e3482b20bfed10fa4d9db98d87016 upstream.
 
-Perhaps we should add a read_msr_panic() variant that panics on
-failure?  Or, if there is just this one case, then we can use
-rdmsrl_safe() and print a nice error and panic on failure.
+With conversion to follow_pfn(), DMA mapping a PFNMAP range depends on
+the range being faulted into the vma.  Add support to manually provide
+that, in the same way as done on KVM with hva_to_pfn_remapped().
+
+Reviewed-by: Peter Xu <peterx@redhat.com>
+Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+[Ajay: Regenerated the patch for v4.14]
+Signed-off-by: Ajay Kaher <akaher@vmware.com>
+---
+ drivers/vfio/vfio_iommu_type1.c | 36 +++++++++++++++++++++++++++++++++---
+ 1 file changed, 33 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
+index 35a3750..150be10 100644
+--- a/drivers/vfio/vfio_iommu_type1.c
++++ b/drivers/vfio/vfio_iommu_type1.c
+@@ -336,6 +336,32 @@ static int put_pfn(unsigned long pfn, int prot)
+ 	return 0;
+ }
+ 
++static int follow_fault_pfn(struct vm_area_struct *vma, struct mm_struct *mm,
++			    unsigned long vaddr, unsigned long *pfn,
++			    bool write_fault)
++{
++	int ret;
++
++	ret = follow_pfn(vma, vaddr, pfn);
++	if (ret) {
++		bool unlocked = false;
++
++		ret = fixup_user_fault(NULL, mm, vaddr,
++				       FAULT_FLAG_REMOTE |
++				       (write_fault ?  FAULT_FLAG_WRITE : 0),
++				       &unlocked);
++		if (unlocked)
++			return -EAGAIN;
++
++		if (ret)
++			return ret;
++
++		ret = follow_pfn(vma, vaddr, pfn);
++	}
++
++	return ret;
++}
++
+ static int vaddr_get_pfn(struct mm_struct *mm, unsigned long vaddr,
+ 			 int prot, unsigned long *pfn)
+ {
+@@ -375,12 +401,16 @@ static int vaddr_get_pfn(struct mm_struct *mm, unsigned long vaddr,
+ 
+ 	down_read(&mm->mmap_sem);
+ 
++retry:
+ 	vma = find_vma_intersection(mm, vaddr, vaddr + 1);
+ 
+ 	if (vma && vma->vm_flags & VM_PFNMAP) {
+-		if (!follow_pfn(vma, vaddr, pfn) &&
+-		    is_invalid_reserved_pfn(*pfn))
+-			ret = 0;
++		ret = follow_fault_pfn(vma, mm, vaddr, pfn, prot & IOMMU_WRITE);
++		if (ret == -EAGAIN)
++			goto retry;
++
++		if (!ret && !is_invalid_reserved_pfn(*pfn))
++			ret = -EFAULT;
+ 	}
+ 
+ 	up_read(&mm->mmap_sem);
+-- 
+2.7.4
+
