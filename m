@@ -2,138 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0F51260677
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 23:39:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DAC72606A8
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 23:50:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728295AbgIGVjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 17:39:53 -0400
-Received: from mail-qv1-f67.google.com ([209.85.219.67]:36823 "EHLO
-        mail-qv1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727980AbgIGVjX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 17:39:23 -0400
-Received: by mail-qv1-f67.google.com with SMTP id f11so6889302qvw.3
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 14:39:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XcYODoRB7GwFN/wo/UINuMw6V985LjmxUwFyI7ezfaU=;
-        b=To10/V8JZTxLSSiv6UD3BJdltbe7nyV2g3bEjeydff1pKYGZkLyNxSRdQ0YPQWrWR/
-         cXQPQ7Y4pqM2xKsDt7j/HqSmev+MJFaNcphuphew2SqsUZ9fSnt8ieFEYikr+P29oIZQ
-         3vAUak/3mLoKR8xpm9UCCSqDQBCP2qpxGMInsGz7PUqqfWd8la4GzWQuXCmoYKO9X0S1
-         ICGGYLQF0DYVs8P3JOv251dDpV7sAMF7930bAexfsv/03jnhnINy45mWNwzfNa5Mz8Yf
-         LXpQbFLj2KR9fZbN5HmPRObcd8e/UnnlppM1UPoxea1NAYyp9PMvOo3ZgsW3+K1dRJHL
-         zGsw==
-X-Gm-Message-State: AOAM531b31SSJTvmBCZjMARrZHVDFJ2O55wqBRScovUYFynzgFcEEX4H
-        PYKBcgLPjbWSkmmuuJnzfPE=
-X-Google-Smtp-Source: ABdhPJxIynsXWJsrajiCbAAWv1XYMnFrJysLQ7/0GWPCQB+acyKnYayy/BZu7TW+2L0sAq0WqCorvQ==
-X-Received: by 2002:a05:6214:1928:: with SMTP id es8mr21122797qvb.197.1599514760676;
-        Mon, 07 Sep 2020 14:39:20 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id 201sm12078228qkf.103.2020.09.07.14.39.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Sep 2020 14:39:20 -0700 (PDT)
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-To:     x86@kernel.org
-Cc:     Andi Kleen <ak@linux.intel.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH] x86/fpu: Allow multiple bits in clearcpuid= parameter
-Date:   Mon,  7 Sep 2020 17:39:19 -0400
-Message-Id: <20200907213919.2423441-1-nivedita@alum.mit.edu>
-X-Mailer: git-send-email 2.26.2
+        id S1727088AbgIGVt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 17:49:58 -0400
+Received: from mail-mw2nam10olkn2041.outbound.protection.outlook.com ([40.92.42.41]:10622
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726446AbgIGVt4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 17:49:56 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ABrXVH5I9P62oHstqonXwX9oD6vqc9wBHMudxgb8C/nRQ66LHuz4rDG7dZ+9fChoECMlrDPQPdb6d2AMEp0REgix/AN8d7zzH52+5hiaRNLMHU4IPC+SdzlV2T02PNqo1RJevt1MQKL2pi87S+EKIiK57DQI/C0RMuDnnmGZzrWYmJTzUq/O9Hg1+6Oq7iKlsAi9XOU5ArDCq+ITuv5R2wjLctO2ITYxUYQaP9EcgpFKjZ4toQQH1LNJdyAJ9drCQR4bGg/AWz0zXG0mnjgLshbiFpewUVOUU7Nu/AzQLmWNQJI5UrD2TWJase4rYZybFfzEJlrRkcSWeJk/+Qow/A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mZ/1QbGbVZigfYaiWJt2CRjoEpyBFGYrxNoTpUvzQ+k=;
+ b=TQ19nnDwmqvEjwniN9+yq2SX5os/pZho+chXZ/++QVn9eF3qk6ZXDm06R+Mf+kIujWr2CwNypLSpY0vdwFG7evlurAldytssktS56eIwpPkwSjS2pkRmRI5XYgCVBfse4MxVT65vhdeWLHDck/oRO5SRF08KF8RlAqYbfutSkJ6MjL5awzWE8nkzm6Rrsm2yd3Pb/cxdfQhoXIQdUuVjMmT3Mu76D0hYqOBR5nHBa2OMrGAFhSYgjdMEGR3Z/UN7K1kibcX9XkGuIrN38QoVmETVA8JXFO04WHUgLLidiO4MRAT7U7wvRIOrnGceDQhrAAZwPzlemhGNFuwsanZMSA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+Received: from MWHPR01CA0030.prod.exchangelabs.com (2603:10b6:300:101::16) by
+ BY5PR21MB1425.namprd21.prod.outlook.com (2603:10b6:a03:237::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.0; Mon, 7 Sep
+ 2020 21:49:54 +0000
+Received: from MW2NAM10FT031.eop-nam10.prod.protection.outlook.com
+ (2603:10b6:300:101:cafe::11) by MWHPR01CA0030.outlook.office365.com
+ (2603:10b6:300:101::16) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.15 via Frontend
+ Transport; Mon, 7 Sep 2020 21:49:53 +0000
+Received: from BN6PR04MB0660.namprd04.prod.outlook.com
+ (2a01:111:e400:7e87::50) by MW2NAM10FT031.mail.protection.outlook.com
+ (2a01:111:e400:7e87::488) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.16 via Frontend
+ Transport; Mon, 7 Sep 2020 21:49:53 +0000
+X-IncomingTopHeaderMarker: OriginalChecksum:F7C54E0B108E22D99F8E46A580DB0C50820B95670B5C450E06D8951D68A0F50C;UpperCasedChecksum:B253B91B88A502047AFC803EC6F3018FDB5134B72BA3DA1FF65DDE0FBA60562E;SizeAsReceived:9313;Count:48
+Received: from BN6PR04MB0660.namprd04.prod.outlook.com
+ ([fe80::303b:a75b:d03e:bd04]) by BN6PR04MB0660.namprd04.prod.outlook.com
+ ([fe80::303b:a75b:d03e:bd04%3]) with mapi id 15.20.3348.019; Mon, 7 Sep 2020
+ 21:49:53 +0000
+Subject: Re: [PATCH 03/25] dt-bindings: iio: adc: exynos-adc: do not require
+ syscon on S5Pv210
+To:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Kukjin Kim <kgene@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        =?UTF-8?Q?Pawe=c5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org
+References: <20200907161141.31034-1-krzk@kernel.org>
+ <20200907161141.31034-4-krzk@kernel.org>
+From:   Jonathan Bakker <xc-racer2@live.ca>
+Message-ID: <BN6PR04MB06601B8D0B7F1E51953024E6CB280@BN6PR04MB0660.namprd04.prod.outlook.com>
+Date:   Mon, 7 Sep 2020 14:49:49 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <20200907161141.31034-4-krzk@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MWHPR19CA0080.namprd19.prod.outlook.com
+ (2603:10b6:320:1f::18) To BN6PR04MB0660.namprd04.prod.outlook.com
+ (2603:10b6:404:d9::21)
+X-Microsoft-Original-Message-ID: <9b86ea56-6afe-cbcc-52a3-c75d23e1a62b@live.ca>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2001:569:fb68:9c00:8067:f823:1e15:7520] (2001:569:fb68:9c00:8067:f823:1e15:7520) by MWHPR19CA0080.namprd19.prod.outlook.com (2603:10b6:320:1f::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.15 via Frontend Transport; Mon, 7 Sep 2020 21:49:51 +0000
+X-Microsoft-Original-Message-ID: <9b86ea56-6afe-cbcc-52a3-c75d23e1a62b@live.ca>
+X-TMN:  [JiSKL8DRPDgGXdBt/+WDUrQFhwTmujX7oj3voAQmvt6O/7c6QorpjXIzJy99aXK4]
+X-MS-PublicTrafficType: Email
+X-IncomingHeaderCount: 48
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-Correlation-Id: e9a8be77-b337-4d60-ff26-08d85377f3fe
+X-MS-TrafficTypeDiagnostic: BY5PR21MB1425:
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: RZBATa1ANBuEEWeAOgHwvgXo1rkandmR8L9qf2nVmlCDvlPqgBdjOH3mSwlkjyJlgo8QjMvd9EM4Z6J+wBmA6G8lW/24PDRdg1dTgduBpPrpbo4uOpDpxEFXHyAN/+SgQAseLtKFryq5qfO1WeV0I1OLfUzC4hPf8icxmekt4XZOiZyjbHkiG4i0komPs2l6RWYbocg0mC/POOxll1FBOsxBPAx1RugCZqeRtk8DVizJUhNXxXSmjQmbjYey+jQ8
+X-MS-Exchange-AntiSpam-MessageData: s4E5NVFRl+DuTndJRm2WiohbiCEGNorz0s6efxlXn9uKz4j51wgC92SqoyQ6lSTManYtXdAQdgjbUwv1IButgRAIyTOd/RdX2NSlj2XE7BMjGuQtnF9EQDOqRdvTYDybqeMWK1A3sUki8c9qBEJdpTpHOW8IrZuoqy8ZAsZbbrH9WN1Yyma0PwKMMHeyRZzCs+uJePKTV9pW+QzSuFzQ9w==
+X-OriginatorOrg: sct-15-20-3174-0-msonline-outlook-fb0b2.templateTenant
+X-MS-Exchange-CrossTenant-Network-Message-Id: e9a8be77-b337-4d60-ff26-08d85377f3fe
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Sep 2020 21:49:53.7011
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-AuthSource: MW2NAM10FT031.eop-nam10.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: Internet
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR21MB1425
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit
+Looking at this again, it appears that there is actually control for
+it at offset 0x6818 of pmu_syscon (0xe0108000) [1].  However, it defaults to
+enabled so it's not required for proper use of the block.  Whether it should
+be present in the schema/DTS is up to you.
 
-  0c2a3913d6f5 ("x86/fpu: Parse clearcpuid= as early XSAVE argument")
+Thanks,
+Jonathan
 
-changed clearcpuid parsing from __setup() to cmdline_find_option().
-While the __setup() function would have been called for each clearcpuid=
-parameter on the command line, cmdline_find_option() will only return
-the last one, so the change effectively made it impossible to disable
-more than one bit.
+[1] https://android.googlesource.com/kernel/samsung/+/refs/heads/android-samsung-3.0-jb-mr0/arch/arm/mach-s5pv210/include/mach/regs-clock.h#325
 
-Allow a comma-separated list of bit numbers as the argument for
-clearcpuid to allow multiple bits to be disabled again. Log the bits
-being disabled for informational purposes.
-
-Also fix the check on the return value of cmdline_find_option(). It
-returns -1 when the option is not found, so testing as a boolean is
-incorrect.
-
-Fixes: 0c2a3913d6f5 ("x86/fpu: Parse clearcpuid= as early XSAVE argument")
-Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
----
- .../admin-guide/kernel-parameters.txt         |  2 +-
- arch/x86/kernel/fpu/init.c                    | 29 ++++++++++++++-----
- 2 files changed, 22 insertions(+), 9 deletions(-)
-
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index a1068742a6df..ffe864390c5a 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -577,7 +577,7 @@
- 			loops can be debugged more effectively on production
- 			systems.
- 
--	clearcpuid=BITNUM [X86]
-+	clearcpuid=BITNUM[,BITNUM...] [X86]
- 			Disable CPUID feature X for the kernel. See
- 			arch/x86/include/asm/cpufeatures.h for the valid bit
- 			numbers. Note the Linux specific bits are not necessarily
-diff --git a/arch/x86/kernel/fpu/init.c b/arch/x86/kernel/fpu/init.c
-index 61ddc3a5e5c2..7b2d0f54b023 100644
---- a/arch/x86/kernel/fpu/init.c
-+++ b/arch/x86/kernel/fpu/init.c
-@@ -243,9 +243,9 @@ static void __init fpu__init_system_ctx_switch(void)
-  */
- static void __init fpu__init_parse_early_param(void)
- {
--	char arg[32];
-+	char arg[128];
- 	char *argptr = arg;
--	int bit;
-+	int arglen, res, bit;
- 
- #ifdef CONFIG_X86_32
- 	if (cmdline_find_option_bool(boot_command_line, "no387"))
-@@ -268,12 +268,25 @@ static void __init fpu__init_parse_early_param(void)
- 	if (cmdline_find_option_bool(boot_command_line, "noxsaves"))
- 		setup_clear_cpu_cap(X86_FEATURE_XSAVES);
- 
--	if (cmdline_find_option(boot_command_line, "clearcpuid", arg,
--				sizeof(arg)) &&
--	    get_option(&argptr, &bit) &&
--	    bit >= 0 &&
--	    bit < NCAPINTS * 32)
--		setup_clear_cpu_cap(bit);
-+	arglen = cmdline_find_option(boot_command_line, "clearcpuid", arg, sizeof(arg));
-+	if (arglen <= 0)
-+		return;
-+
-+	pr_info("Clearing CPUID bits:");
-+	do {
-+		res = get_option(&argptr, &bit);
-+		if (res == 0 || res == 3)
-+			break;
-+		/* If the argument was too long, the last bit may be cut off */
-+		if (res == 1 && arglen >= sizeof(arg))
-+			break;
-+
-+		if (bit >= 0 && bit < NCAPINTS * 32) {
-+			pr_cont(" " X86_CAP_FMT, x86_cap_flag(bit));
-+			setup_clear_cpu_cap(bit);
-+		}
-+	} while (res == 2);
-+	pr_cont("\n");
- }
- 
- /*
--- 
-2.26.2
-
+On 2020-09-07 9:11 a.m., Krzysztof Kozlowski wrote:
+> The ADC in S5Pv210 does not have ADC phy registers in separate block for
+> which syscon would be needed.  Remove this requirement to fix dtbs_check
+> warnings like:
+> 
+>   arch/arm/boot/dts/s5pv210-fascinate4g.dt.yaml: adc@e1700000: 'samsung,syscon-phandle' is a required property
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> ---
+>  .../devicetree/bindings/iio/adc/samsung,exynos-adc.yaml          | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/iio/adc/samsung,exynos-adc.yaml b/Documentation/devicetree/bindings/iio/adc/samsung,exynos-adc.yaml
+> index 89b4f9c252a6..75174af72288 100644
+> --- a/Documentation/devicetree/bindings/iio/adc/samsung,exynos-adc.yaml
+> +++ b/Documentation/devicetree/bindings/iio/adc/samsung,exynos-adc.yaml
+> @@ -81,7 +81,6 @@ allOf:
+>                - samsung,exynos-adc-v2
+>                - samsung,exynos3250-adc
+>                - samsung,exynos4212-adc
+> -              - samsung,s5pv210-adc
+>      then:
+>        required:
+>          - samsung,syscon-phandle
+> 
