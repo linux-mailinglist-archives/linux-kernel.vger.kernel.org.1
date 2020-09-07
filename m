@@ -2,83 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D055C25F6FA
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 11:59:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D16025F72B
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 12:02:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728437AbgIGJ7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 05:59:42 -0400
-Received: from mga06.intel.com ([134.134.136.31]:30001 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728404AbgIGJ7j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 05:59:39 -0400
-IronPort-SDR: foubVbAqkP05TGdQaekpmIYVCcp6m81RT+xcKjUpnW5nF2iqwAgnb7wiwP4TeNWNqgV9s+IRuT
- JuA4K7dIhwHw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9736"; a="219538074"
-X-IronPort-AV: E=Sophos;i="5.76,401,1592895600"; 
-   d="scan'208";a="219538074"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2020 02:59:38 -0700
-IronPort-SDR: aLMRKzYrvfO0QWscFyb0B9MNzsINj/RtYJEerktDLEXmYIYAh8QRTm2YNGmcHboOoZg2ydMi32
- X/Hqwfthpkdg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,401,1592895600"; 
-   d="scan'208";a="333117121"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga008.jf.intel.com with ESMTP; 07 Sep 2020 02:59:35 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kFDvw-00Euk6-Fp; Mon, 07 Sep 2020 12:59:32 +0300
-Date:   Mon, 7 Sep 2020 12:59:32 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Kent Gibson <warthog618@gmail.com>, linux-gpio@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH 23/23] Documentation: gpio: add documentation for
- gpio-mockup
-Message-ID: <20200907095932.GU1891694@smile.fi.intel.com>
-References: <20200904154547.3836-1-brgl@bgdev.pl>
- <20200904154547.3836-24-brgl@bgdev.pl>
- <26ea1683-da8f-30e7-f004-3616e96d56b3@infradead.org>
+        id S1728659AbgIGKB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 06:01:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58010 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728564AbgIGKAv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 06:00:51 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C17AFC061575
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 03:00:50 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id o16so6503750pjr.2
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 03:00:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OwGfQpVGF54uVjosrKrhCCbwHZtSuWTZHfGMaiTiGjc=;
+        b=aAi56NwxjMP6x134clqj6hj65G9vdhvN0YOOI/N4XtwcUGjzlTHqUiCmUmd9o/qU4a
+         nAxru9ufHt5h54UqERZm37mEzSzoVUKIZ69aIHIL/eox5HKxEg2jS0kIrfxgj1dm0syb
+         cYLi+osNdsuDDWoa5fRPqzEK3+/Dxe72YvFm4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OwGfQpVGF54uVjosrKrhCCbwHZtSuWTZHfGMaiTiGjc=;
+        b=nWnSMOy9jIx3cNas4Bq8nx1FtoIfQNMsV3QVG47VmkVKNiWVKORPY9VohzYaNYwKVc
+         RU9rEmRHBsrr9O37B4BxubbcmZ/DeYNWwAn71SYdgNyQz5QTLpcdBaqYHP0PE05dSNNu
+         y6K7wh6FFluHka+nFMP2rXNQYrOKHAXLkIo9TB2RL5bx2OGEM0RCgGoF643WWAMFmjP+
+         sgHyUrd+SwbLGgDW4i7l9JxySxq6t8bON/8193cg3BZjpgGaaNXXRfeI0kiGQubtmvJa
+         OcUEKXwaEET/xapiUCynz4AFGMCSqaYJMm+xV2zHlp/bjgC6qAc0i4wPPAz3Bri8TK5T
+         SPlg==
+X-Gm-Message-State: AOAM531gf0jE2E8QXF6EuPkXbBIqBInJIthBj8l3vpJTDSSq3CCLo/v/
+        NJLgcbyva74EQke3g+N2GwjOIlVmBxBUmbHb
+X-Google-Smtp-Source: ABdhPJz54Gwktiyq3hVQb7r3EiZWPqzRcxY4y170Wirg1ACEWJJIkUdgH/CnmihT7VKVYWhFc+G2Fg==
+X-Received: by 2002:a17:90a:c917:: with SMTP id v23mr19532205pjt.97.1599472849475;
+        Mon, 07 Sep 2020 03:00:49 -0700 (PDT)
+Received: from localhost ([2401:fa00:1:10:de4a:3eff:fe7d:d39c])
+        by smtp.gmail.com with ESMTPSA id cf7sm6557786pjb.52.2020.09.07.03.00.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Sep 2020 03:00:48 -0700 (PDT)
+From:   Cheng-Yi Chiang <cychiang@chromium.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Mark Brown <broonie@kernel.org>, Taniya Das <tdas@codeaurora.org>,
+        Rohit kumar <rohitkr@codeaurora.org>,
+        Banajit Goswami <bgoswami@codeaurora.org>,
+        Patrick Lai <plai@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>, dianders@chromium.org,
+        dgreid@chromium.org, tzungbi@chromium.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org,
+        linux-rockchip@lists.infradead.org,
+        Cheng-Yi Chiang <cychiang@chromium.org>
+Subject: [PATCH v7 0/3] Add documentation and machine driver for SC7180 sound card
+Date:   Mon,  7 Sep 2020 18:00:36 +0800
+Message-Id: <20200907100039.1731457-1-cychiang@chromium.org>
+X-Mailer: git-send-email 2.28.0.526.ge36021eeef-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <26ea1683-da8f-30e7-f004-3616e96d56b3@infradead.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 04, 2020 at 08:15:59PM -0700, Randy Dunlap wrote:
-> On 9/4/20 8:45 AM, Bartosz Golaszewski wrote:
+Note:
+- The machine driver patch is made by the collaboration of
+  Cheng-Yi Chiang <cychiang@chromium.org>
+  Rohit kumar <rohitkr@codeaurora.org>
+  Ajit Pandey <ajitp@codeaurora.org>
+  But Ajit has left codeaurora.
+- This patch series needs HDMI DAI name defined in sc7180-lpass.h.
+  https://patchwork.kernel.org/patch/11745565/
 
-...
+Changes from v1 to v2:
+- Ducumentation: Addressed all suggestions from Doug.
+- Machine driver:
+  - Fix comment style for license.
+  - Sort includes.
+  - Remove sc7180_snd_hw_params.
+  - Remove sc7180_dai_init and use aux device instead for headset jack registration.
+  - Statically define format for Primary MI2S.
+  - Atomic is not a concern because there is mutex in card to make sure
+    startup and shutdown happen sequentially.
+  - Fix missing return -EINVAL in startup.
+  - Use static sound card.
+  - Use devm_kzalloc to avoid kfree.
 
-> > +GPIO Testing Driver
-> > +===================
-> > +
-> > +The GPIO Testing Driver (gpio-mockup) provides a way to create simulated GPIO
-> > +chips for testing purposes. There are two ways of configuring the chips exposed
-> > +by the module. The lines can be accessed using the standard GPIO character
-> > +device interface as well as manipulated using the dedicated debugfs directory
-> > +structure.
-> 
-> Could configfs be used for this instead of debugfs?
-> debugfs is ad hoc.
+Changes from v2 to v3:
+- Ducumentation: Addressed suggestions from Srini.
+- Machine driver:
+  - Reuse qcom_snd_parse_of to parse properties.
+  - Remove playback-only and capture-only.
+  - Misc fixes to address comments.
 
-Actually sounds like a good idea.
+Changes from v3 to v4:
+- Ducumentation: Addressed suggestions from Rob.
+ - Remove definition of dai.
+ - Use 'sound-dai: true' for sound-dai schema.
+ - Add reg property to pass 'make dt_binding_check' check although reg is not used in the driver.
+- Machine driver:
+ - Add Reviewed-by: Tzung-Bi Shih <tzungbi@google.com>
+
+Changes from v4 to v5:
+- Documentation: Addressed suggestions from Rob.
+ - Add definition for "#address-cells" and "#size-cells".
+ - Add additionalProperties: false
+ - Add required properties.
+
+Changes from v5 to v6:
+- Documentation: Addressed suggestions from Rob.
+ - Drop contains in compatible strings.
+ - Only allow dai-link@[0-9]
+ - Remove reg ref since it has a type definition already.
+
+Changes from v6 to v7
+- Documentation:
+  - Add headset-jack and hdmi-jack to specify the codec
+    responsible for jack detection.
+- HDMI codec driver:
+  - Use component set_jack ops instead of exporting hdmi_codec_set_jack_detect.
+- Machine driver:
+  - Removed aux device following Stephan's suggestion.
+  - Use headset-jack and hdmi-jack to specify the codec
+    responsible for jack detection.
+  - Add support for HDMI(actually DP) playback.
+
+Ajit Pandey (1):
+  ASoC: qcom: sc7180: Add machine driver for sound card registration
+
+Cheng-Yi Chiang (2):
+  ASoC: hdmi-codec: Use set_jack ops to set jack
+  ASoC: qcom: dt-bindings: Add sc7180 machine bindings
+
+ .../bindings/sound/qcom,sc7180.yaml           | 143 +++++++++
+ include/sound/hdmi-codec.h                    |   3 -
+ sound/soc/codecs/hdmi-codec.c                 |  12 +-
+ sound/soc/mediatek/mt8173/mt8173-rt5650.c     |   5 +-
+ .../mediatek/mt8183/mt8183-da7219-max98357.c  |   5 +-
+ .../mt8183/mt8183-mt6358-ts3a227-max98357.c   |   5 +-
+ sound/soc/qcom/Kconfig                        |  12 +
+ sound/soc/qcom/Makefile                       |   2 +
+ sound/soc/qcom/sc7180.c                       | 288 ++++++++++++++++++
+ sound/soc/rockchip/rockchip_max98090.c        |   3 +-
+ 10 files changed, 456 insertions(+), 22 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,sc7180.yaml
+ create mode 100644 sound/soc/qcom/sc7180.c
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.28.0.526.ge36021eeef-goog
 
