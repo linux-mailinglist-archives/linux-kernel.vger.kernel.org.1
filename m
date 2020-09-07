@@ -2,461 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA2AD2603DE
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:56:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 874FD2603F4
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:57:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729258AbgIGR4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 13:56:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47026 "EHLO
+        id S1729380AbgIGR5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 13:57:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730697AbgIGRzn (ORCPT
+        with ESMTP id S1728897AbgIGR5a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 13:55:43 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE5DBC061575
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 10:55:42 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id a8so4753799plm.2
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 10:55:42 -0700 (PDT)
+        Mon, 7 Sep 2020 13:57:30 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D1A6C061575
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 10:57:30 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id w2so15080518wmi.1
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 10:57:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Z4B8wz43QQLuWWblupatTWjpJe93fxRU2T0MWJH8f8E=;
-        b=NAWqvZMHlmPQJJm5AQMU0Fqio6pVD2tnoBrz4YgSAWEk++3ZTLa9YQoz9d3TgWcSS5
-         R/H8I7U0QozFU9rsOB6S1tdUd+ael3kRLTedDueuzH9j3llPup03JCsFlAioE0CLwmb7
-         0hMcan3bIGfMSMD4nvyowJayksmZo1d7PKbWcbAzI3vgIMMR6om2JatKFpIqbNKlj/H8
-         DP2xkpTLZBgulmjFqeyTbJc9z+uE31rV7U32ZaHwyzef3DWHkWXz4AEBZd0zbQynytTy
-         q1ySZ7GBm44C4EQiqcGLWLpAAF3xHhoDEss6EKY2c9nMEqwm4C5nI+rrfpgkDMtgiBfX
-         Ntfg==
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=RsFG54GV+NP4F+IIVMuYkYvf7gdGYuBHjlNkFLPcIoM=;
+        b=jXFW2vpqo0B1JyOT5VBIuG9gyefyLdQ0ycGwHcTHninipd8+5VtxLgb8IkgYYvMt+v
+         8W+GI4P2cd8TxlUpDDrsjBQnd8tqBCLuASSa1+xYojW+R0KHtDvEovie75S1Z6YMzFju
+         JSavVRhxpqkmcQ+s4OQk1bVYh4yKB5g9BqEvk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Z4B8wz43QQLuWWblupatTWjpJe93fxRU2T0MWJH8f8E=;
-        b=F5N6s2XFUQT9QaYWmYQ08OwFLp//vel/JAuKgPb2ECZUDKJlb23IkKJe8a4FHbJhNM
-         KppDE25+Fjoa74FADfDbbfkvUeRyMhJcQPqmsh9b3IggDFW74WGrwBLa/b7tV/zR8c3d
-         jqXAp1CvtmrW7mPeLlHutA2fXarkE6E/EA0+OEdhcxcw00snqIimz6h/sWGMWOSC50lf
-         3vQcC3S5n98xOqASlcr3QSMvapLMtv8cilu6ByhAFz3XPEJmGsxmYkhb4JWR/F8hE3Y9
-         OdGMLkfmcIYsTFNVwcUwfzXXMs7ovf63GodLlvOFFQJvkXcZwVoQdFBxjPRV9FdLUc3p
-         ph/A==
-X-Gm-Message-State: AOAM531lcxCC/RWrJg8r7dIGmycaSEaiFFCwQDN/yTOZEdSaSCl365rd
-        MiE6MEt+uMBwRiNzCdRpTzip/9intasy7CsfIAMcLg==
-X-Google-Smtp-Source: ABdhPJzolJVYZEv1F1ujJY7UUGd/gpHugBunzuUe0jhzEq1gWG+MDg3rUz4M6Rbxq54vA6nmfkSZKbxgoJEog82WMD4=
-X-Received: by 2002:a17:90b:140c:: with SMTP id jo12mr383099pjb.41.1599501342008;
- Mon, 07 Sep 2020 10:55:42 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=RsFG54GV+NP4F+IIVMuYkYvf7gdGYuBHjlNkFLPcIoM=;
+        b=XIm/pxCRS3DCuXfsqCscSozJqltKnzvsKpyNloX3w8skK6JYfdS2dkRSj+mkK7dRK7
+         aC50C4xd2fghAnU/eXalBdBkVtncds59FWR4ZDli2/M5izpbmwSd4Iyvu+ZzLHnZEn5j
+         t0GZZC3ua+tb5M5YwvmYWeZL//BZyhQUcgVQJGtvopdAKf7anjmj0RHSIXbHbcsPZEsO
+         g5kjWu8w98xra3Zs4nz9rog0n/0iMIw2YknfhqOtrDfxzToIS9nvkROO21lODNxnew06
+         ECNkxUmjXdS4VHyCG4XYIlqXHsrbAZfMxL1Ty33m5u54iTOvhldkqytHrc+PeY1wlISq
+         yoww==
+X-Gm-Message-State: AOAM532gsMehxKpK9imgYcySEjqZQ4BkKNU3K4Io0qe5pKypeO7hU+Mz
+        HM3f3MobSpmo9KsyZL2qOp1OcA==
+X-Google-Smtp-Source: ABdhPJwkSG6w/oKeAR2zEQQ1pJGVVVgYfJ7bv5Pg1nyA4WyBR3gTj1fQsBdjbM44Fhl2fJnj9VpuFQ==
+X-Received: by 2002:a7b:c387:: with SMTP id s7mr423949wmj.171.1599501448675;
+        Mon, 07 Sep 2020 10:57:28 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id 71sm30404303wrm.23.2020.09.07.10.57.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Sep 2020 10:57:27 -0700 (PDT)
+Date:   Mon, 7 Sep 2020 19:57:25 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Vaibhav Gupta <vaibhavgupta40@gmail.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bjorn Helgaas <bjorn@helgaas.com>,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Thierry Reding <treding@nvidia.com>,
+        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH v1 0/2] video: fbdev: radeonfb: PCI PM framework upgrade
+ and fix-ups.
+Message-ID: <20200907175725.GX2352366@phenom.ffwll.local>
+Mail-Followup-To: Vaibhav Gupta <vaibhavgupta40@gmail.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bjorn Helgaas <bjorn@helgaas.com>,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Thierry Reding <treding@nvidia.com>, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org
+References: <20200806072256.585705-1-vaibhavgupta40@gmail.com>
+ <20200907075559.GN2352366@phenom.ffwll.local>
+ <20200907091621.GA30377@gmail.com>
 MIME-Version: 1.0
-References: <20200907134055.2878499-1-elver@google.com> <20200907134055.2878499-10-elver@google.com>
- <CAAeHK+zGpJd6szPounYz6wogO9TMT18TmQu_mfXUWQd65QTf0w@mail.gmail.com> <CANpmjNM14iW8vDuLANrCGBds930r2bZ=gwkoqORpuLa5-8gW6g@mail.gmail.com>
-In-Reply-To: <CANpmjNM14iW8vDuLANrCGBds930r2bZ=gwkoqORpuLa5-8gW6g@mail.gmail.com>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Mon, 7 Sep 2020 19:55:31 +0200
-Message-ID: <CAAeHK+w35Aqt8csAvBHg5rcKHm4cL0rPCM4VupfyG-58eMK-UQ@mail.gmail.com>
-Subject: Re: [PATCH RFC 09/10] kfence, Documentation: add KFENCE documentation
-To:     Marco Elver <elver@google.com>
-Cc:     Alexander Potapenko <glider@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>, Qian Cai <cai@lca.pw>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200907091621.GA30377@gmail.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 7, 2020 at 6:33 PM Marco Elver <elver@google.com> wrote:
->
-> On Mon, 7 Sep 2020 at 17:34, Andrey Konovalov <andreyknvl@google.com> wrote:
-> >
-> > On Mon, Sep 7, 2020 at 3:41 PM Marco Elver <elver@google.com> wrote:
-> > >
-> > > Add KFENCE documentation in dev-tools/kfence.rst, and add to index.
-> > >
-> > > Co-developed-by: Alexander Potapenko <glider@google.com>
-> > > Signed-off-by: Alexander Potapenko <glider@google.com>
-> > > Signed-off-by: Marco Elver <elver@google.com>
-> > > ---
-> > >  Documentation/dev-tools/index.rst  |   1 +
-> > >  Documentation/dev-tools/kfence.rst | 285 +++++++++++++++++++++++++++++
-> > >  2 files changed, 286 insertions(+)
-> > >  create mode 100644 Documentation/dev-tools/kfence.rst
-> > >
-> > > diff --git a/Documentation/dev-tools/index.rst b/Documentation/dev-tools/index.rst
-> > > index f7809c7b1ba9..1b1cf4f5c9d9 100644
-> > > --- a/Documentation/dev-tools/index.rst
-> > > +++ b/Documentation/dev-tools/index.rst
-> > > @@ -22,6 +22,7 @@ whole; patches welcome!
-> > >     ubsan
-> > >     kmemleak
-> > >     kcsan
-> > > +   kfence
-> > >     gdb-kernel-debugging
-> > >     kgdb
-> > >     kselftest
-> > > diff --git a/Documentation/dev-tools/kfence.rst b/Documentation/dev-tools/kfence.rst
-> > > new file mode 100644
-> > > index 000000000000..254f4f089104
-> > > --- /dev/null
-> > > +++ b/Documentation/dev-tools/kfence.rst
-> > > @@ -0,0 +1,285 @@
-> > > +.. SPDX-License-Identifier: GPL-2.0
-> > > +
-> > > +Kernel Electric-Fence (KFENCE)
-> > > +==============================
-> > > +
-> > > +Kernel Electric-Fence (KFENCE) is a low-overhead sampling-based memory safety
-> > > +error detector. KFENCE detects heap out-of-bounds access, use-after-free, and
-> > > +invalid-free errors.
-> > > +
-> > > +KFENCE is designed to be enabled in production kernels, and has near zero
-> > > +performance overhead. Compared to KASAN, KFENCE trades performance for
-> > > +precision. The main motivation behind KFENCE's design, is that with enough
-> > > +total uptime KFENCE will detect bugs in code paths not typically exercised by
-> > > +non-production test workloads. One way to quickly achieve a large enough total
-> > > +uptime is when the tool is deployed across a large fleet of machines.
-> > > +
-> > > +Usage
-> > > +-----
-> > > +
-> > > +To enable KFENCE, configure the kernel with::
-> > > +
-> > > +    CONFIG_KFENCE=y
-> > > +
-> > > +KFENCE provides several other configuration options to customize behaviour (see
-> > > +the respective help text in ``lib/Kconfig.kfence`` for more info).
-> > > +
-> > > +Tuning performance
-> > > +~~~~~~~~~~~~~~~~~~
-> > > +
-> > > +The most important parameter is KFENCE's sample interval, which can be set via
-> > > +the kernel boot parameter ``kfence.sample_interval`` in milliseconds. The
-> > > +sample interval determines the frequency with which heap allocations will be
-> > > +guarded by KFENCE. The default is configurable via the Kconfig option
-> > > +``CONFIG_KFENCE_SAMPLE_INTERVAL``. Setting ``kfence.sample_interval=0``
-> > > +disables KFENCE.
-> > > +
-> > > +With the Kconfig option ``CONFIG_KFENCE_NUM_OBJECTS`` (default 255), the number
-> > > +of available guarded objects can be controlled. Each object requires 2 pages,
-> > > +one for the object itself and the other one used as a guard page; object pages
-> > > +are interleaved with guard pages, and every object page is therefore surrounded
-> > > +by two guard pages.
-> > > +
-> > > +The total memory dedicated to the KFENCE memory pool can be computed as::
-> > > +
-> > > +    ( #objects + 1 ) * 2 * PAGE_SIZE
-> > > +
-> > > +Using the default config, and assuming a page size of 4 KiB, results in
-> > > +dedicating 2 MiB to the KFENCE memory pool.
-> > > +
-> > > +Error reports
-> > > +~~~~~~~~~~~~~
-> > > +
-> > > +A typical out-of-bounds access looks like this::
-> > > +
-> > > +    ==================================================================
-> > > +    BUG: KFENCE: out-of-bounds in test_out_of_bounds_read+0xa3/0x22b
-> > > +
-> > > +    Out-of-bounds access at 0xffffffffb672efff (left of kfence-#17):
-> > > +     test_out_of_bounds_read+0xa3/0x22b
-> > > +     kunit_try_run_case+0x51/0x85
-> > > +     kunit_generic_run_threadfn_adapter+0x16/0x30
-> > > +     kthread+0x137/0x160
-> > > +     ret_from_fork+0x22/0x30
-> > > +
-> > > +    kfence-#17 [0xffffffffb672f000-0xffffffffb672f01f, size=32, cache=kmalloc-32] allocated in:
-> >
-> > Does the user need to know that this is object #17? This doesn't seem
-> > like something that can be useful for anything.
->
-> Some arguments for keeping it:
->
-> - We need to write something like "left of <object>". And then we need
-> to say where <object> is allocated. Giving objects names makes it
-> easier to understand the link between "left of <object>" and the
-> stacktrace shown after "<object> allocated in". We could make <object>
-> just "object", but reading "left/right of object" and then "object
-> allocated in:" can be a little confusing.
->
-> - We can look up the object via its number in the debugfs objects list
-> (/sys/kernel/debug/kfence/objects). For example, if we see an OOB
-> access, we can then check the objects file and see if the object is
-> still allocated or not, or if it has been recycled.
->
-> I don't believe it's distracting anyone, and if there is a chance that
-> keeping this information can help debug a problem, we ought to keep
-> it.
->
-> > > +     __kfence_alloc+0x42d/0x4c0
-> > > +     __kmalloc+0x133/0x200
-> > > +     test_alloc+0xf3/0x25b
-> > > +     test_out_of_bounds_read+0x98/0x22b
-> > > +     kunit_try_run_case+0x51/0x85
-> > > +     kunit_generic_run_threadfn_adapter+0x16/0x30
-> > > +     kthread+0x137/0x160
-> > > +     ret_from_fork+0x22/0x30
-> > > +
-> > > +    CPU: 4 PID: 107 Comm: kunit_try_catch Not tainted 5.8.0-rc6+ #7
-> > > +    Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1 04/01/2014
-> > > +    ==================================================================
-> > > +
-> > > +The header of the report provides a short summary of the function involved in
-> > > +the access. It is followed by more detailed information about the access and
-> > > +its origin.
-> > > +
-> > > +Use-after-free accesses are reported as::
-> > > +
-> > > +    ==================================================================
-> > > +    BUG: KFENCE: use-after-free in test_use_after_free_read+0xb3/0x143
-> > > +
-> > > +    Use-after-free access at 0xffffffffb673dfe0:
-> > > +     test_use_after_free_read+0xb3/0x143
-> > > +     kunit_try_run_case+0x51/0x85
-> > > +     kunit_generic_run_threadfn_adapter+0x16/0x30
-> > > +     kthread+0x137/0x160
-> > > +     ret_from_fork+0x22/0x30
-> > > +
-> > > +    kfence-#24 [0xffffffffb673dfe0-0xffffffffb673dfff, size=32, cache=kmalloc-32] allocated in:
-> >
-> > Same here.
-> >
-> > Also, this says object #24, but the stack trace above doesn't mention
-> > which object it is. Is it the same one?
->
-> Right, the above stacktrace should then say "kfence-#24". (But the
-> address also hints at this.)
->
-> > > +     __kfence_alloc+0x277/0x4c0
-> > > +     __kmalloc+0x133/0x200
-> > > +     test_alloc+0xf3/0x25b
-> > > +     test_use_after_free_read+0x76/0x143
-> > > +     kunit_try_run_case+0x51/0x85
-> > > +     kunit_generic_run_threadfn_adapter+0x16/0x30
-> > > +     kthread+0x137/0x160
-> > > +     ret_from_fork+0x22/0x30
-> > > +    freed in:
-> > > +     kfence_guarded_free+0x158/0x380
-> > > +     __kfence_free+0x38/0xc0
-> > > +     test_use_after_free_read+0xa8/0x143
-> > > +     kunit_try_run_case+0x51/0x85
-> > > +     kunit_generic_run_threadfn_adapter+0x16/0x30
-> > > +     kthread+0x137/0x160
-> > > +     ret_from_fork+0x22/0x30
-> > > +
-> > > +    CPU: 4 PID: 109 Comm: kunit_try_catch Tainted: G        W         5.8.0-rc6+ #7
-> > > +    Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1 04/01/2014
-> > > +    ==================================================================
-> > > +
-> > > +KFENCE also reports on invalid frees, such as double-frees::
-> > > +
-> > > +    ==================================================================
-> > > +    BUG: KFENCE: invalid free in test_double_free+0xdc/0x171
-> > > +
-> > > +    Invalid free of 0xffffffffb6741000:
-> > > +     test_double_free+0xdc/0x171
-> > > +     kunit_try_run_case+0x51/0x85
-> > > +     kunit_generic_run_threadfn_adapter+0x16/0x30
-> > > +     kthread+0x137/0x160
-> > > +     ret_from_fork+0x22/0x30
-> > > +
-> > > +    kfence-#26 [0xffffffffb6741000-0xffffffffb674101f, size=32, cache=kmalloc-32] allocated in:
-> > > +     __kfence_alloc+0x42d/0x4c0
-> > > +     __kmalloc+0x133/0x200
-> > > +     test_alloc+0xf3/0x25b
-> > > +     test_double_free+0x76/0x171
-> > > +     kunit_try_run_case+0x51/0x85
-> > > +     kunit_generic_run_threadfn_adapter+0x16/0x30
-> > > +     kthread+0x137/0x160
-> > > +     ret_from_fork+0x22/0x30
-> > > +    freed in:
-> > > +     kfence_guarded_free+0x158/0x380
-> > > +     __kfence_free+0x38/0xc0
-> > > +     test_double_free+0xa8/0x171
-> > > +     kunit_try_run_case+0x51/0x85
-> > > +     kunit_generic_run_threadfn_adapter+0x16/0x30
-> > > +     kthread+0x137/0x160
-> > > +     ret_from_fork+0x22/0x30
-> > > +
-> > > +    CPU: 4 PID: 111 Comm: kunit_try_catch Tainted: G        W         5.8.0-rc6+ #7
-> > > +    Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1 04/01/2014
-> > > +    ==================================================================
-> > > +
-> > > +KFENCE also uses pattern-based redzones on the other side of an object's guard
-> > > +page, to detect out-of-bounds writes on the unprotected side of the object.
-> > > +These are reported on frees::
-> > > +
-> > > +    ==================================================================
-> > > +    BUG: KFENCE: memory corruption in test_kmalloc_aligned_oob_write+0xef/0x184
-> > > +
-> > > +    Detected corrupted memory at 0xffffffffb6797ff9 [ 0xac . . . . . . ]:
-> >
-> > It's not really clear what is 0xac here. Value of the corrupted byte?
-> > What does '.' stand for?
->
-> We can probably explain that better below. The values are the corrupt
-> bytes, the '.' are untouched bytes.
->
-> > Also, if this is to be used in production, printing kernel memory
-> > bytes might lead to info-leaks.
->
-> We do not print them if !CONFIG_DEBUG_KERNEL, and instead show '!' for
-> changed bytes. Maybe we can add this somewhere here as well.
->
-> > > +     test_kmalloc_aligned_oob_write+0xef/0x184
-> > > +     kunit_try_run_case+0x51/0x85
-> > > +     kunit_generic_run_threadfn_adapter+0x16/0x30
-> > > +     kthread+0x137/0x160
-> > > +     ret_from_fork+0x22/0x30
-> > > +
-> > > +    kfence-#69 [0xffffffffb6797fb0-0xffffffffb6797ff8, size=73, cache=kmalloc-96] allocated in:
-> > > +     __kfence_alloc+0x277/0x4c0
-> > > +     __kmalloc+0x133/0x200
-> > > +     test_alloc+0xf3/0x25b
-> > > +     test_kmalloc_aligned_oob_write+0x57/0x184
-> > > +     kunit_try_run_case+0x51/0x85
-> > > +     kunit_generic_run_threadfn_adapter+0x16/0x30
-> > > +     kthread+0x137/0x160
-> > > +     ret_from_fork+0x22/0x30
-> > > +
-> > > +    CPU: 4 PID: 120 Comm: kunit_try_catch Tainted: G        W         5.8.0-rc6+ #7
-> > > +    Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1 04/01/2014
-> > > +    ==================================================================
-> > > +
-> > > +For such errors, the address where the corruption as well as the corrupt bytes
-> > > +are shown.
-> > > +
-> > > +And finally, KFENCE may also report on invalid accesses to any protected page
-> > > +where it was not possible to determine an associated object, e.g. if adjacent
-> > > +object pages had not yet been allocated::
-> > > +
-> > > +    ==================================================================
-> > > +    BUG: KFENCE: invalid access in test_invalid_access+0x26/0xe0
-> > > +
-> > > +    Invalid access at 0xffffffffb670b00a:
-> > > +     test_invalid_access+0x26/0xe0
-> > > +     kunit_try_run_case+0x51/0x85
-> > > +     kunit_generic_run_threadfn_adapter+0x16/0x30
-> > > +     kthread+0x137/0x160
-> > > +     ret_from_fork+0x22/0x30
-> > > +
-> > > +    CPU: 4 PID: 124 Comm: kunit_try_catch Tainted: G        W         5.8.0-rc6+ #7
-> > > +    Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1 04/01/2014
-> > > +    ==================================================================
-> > > +
-> > > +DebugFS interface
-> > > +~~~~~~~~~~~~~~~~~
-> > > +
-> > > +Some debugging information is exposed via debugfs:
-> > > +
-> > > +* The file ``/sys/kernel/debug/kfence/stats`` provides runtime statistics.
-> > > +
-> > > +* The file ``/sys/kernel/debug/kfence/objects`` provides a list of objects
-> > > +  allocated via KFENCE, including those already freed but protected.
-> > > +
-> > > +Implementation Details
-> > > +----------------------
-> > > +
-> > > +Guarded allocations are set up based on the sample interval. After expiration
-> > > +of the sample interval, a guarded allocation from the KFENCE object pool is
-> > > +returned to the main allocator (SLAB or SLUB).
-> >
-> > Only for freed allocations, right?
->
-> Which "freed allocation"? What this paragraph says is that after the
-> sample interval elapsed, we'll return a KFENCE allocation on kmalloc.
-> It doesn't yet talk about freeing.
+On Mon, Sep 07, 2020 at 02:46:21PM +0530, Vaibhav Gupta wrote:
+> On Mon, Sep 07, 2020 at 09:55:59AM +0200, Daniel Vetter wrote:
+> > On Thu, Aug 06, 2020 at 12:52:54PM +0530, Vaibhav Gupta wrote:
+> > > Linux Kernel Mentee: Remove Legacy Power Management. 
+> > > 
+> > > The original goal of the patch series is to upgrade the power management
+> > > framework of radeonfb fbdev driver. This has been done by upgrading .suspend()
+> > > and .resume() callbacks.
+> > > 
+> > > The upgrade makes sure that the involvement of PCI Core does not change the
+> > > order of operations executed in a driver. Thus, does not change its behavior.
+> > > 
+> > > During this process, it was found that "#if defined(CONFIG_PM)" at line 1434 is
+> > > redundant. This was introduced in the commit
+> > > 42ddb453a0cd ("radeon: Conditionally compile PM code").
+> > 
+> > I do wonder whether it wouldn't be better to just outright delete these,
+> > we have the drm radeon driver for pretty much all the same hardware ...
+> > -Daniel
+> > 
+> Hello Daniel,
+> I don't have any problem in either way. My priority is to get rid of the
+> legacy .suspend and .resume pointers from "struct pci_driver" . Hence, modifying
+> every driver that is using them.
 
-It says that an allocation is returned to the main allocator, and this
-is what is usually described with the word "freed". Do you mean
-something else here?
+Ok, also sounds like we can't just ditch it outright and merging your
+patches makes sense.
 
-> > > At this point, the timer is
-> > > +reset, and the next allocation is set up after the expiration of the interval.
-> > > +To "gate" a KFENCE allocation through the main allocator's fast-path without
-> > > +overhead, KFENCE relies on static branches via the static keys infrastructure.
-> > > +The static branch is toggled to redirect the allocation to KFENCE.
-> > > +
-> > > +KFENCE objects each reside on a dedicated page, at either the left or right
-> > > +page boundaries selected at random. The pages to the left and right of the
-> > > +object page are "guard pages", whose attributes are changed to a protected
-> > > +state, and cause page faults on any attempted access. Such page faults are then
-> > > +intercepted by KFENCE, which handles the fault gracefully by reporting an
-> > > +out-of-bounds access.
-> >
-> > I'd start a new paragraph here:
-> >
-> > > The side opposite of an object's guard page is used as a
-> >
-> > Not a native speaker, but "The side opposite _to_" sounds better. Or
-> > "The opposite side of".
->
-> All are fine. Using "to" indicates direction, which in this case is valid too.
->
-> > > +pattern-based redzone, to detect out-of-bounds writes on the unprotected sed of
-> >
-> > "sed"?
->
-> side
->
-> > > +the object on frees (for special alignment and size combinations, both sides of
-> > > +the object are redzoned).
-> > > +
-> > > +KFENCE also uses pattern-based redzones on the other side of an object's guard
-> > > +page, to detect out-of-bounds writes on the unprotected side of the object;
-> > > +these are reported on frees.
-> >
-> > Not really clear, what is "other side" and how it's different from the
-> > "opposite side" mentioned above. The figure doesn't really help.
->
-> Redzone and guard page sandwich the object. Not sure how I can make it
-> clearer yet, but I'll try.
->
-> > > +
-> > > +The following figure illustrates the page layout::
-> > > +
-> > > +    ---+-----------+-----------+-----------+-----------+-----------+---
-> > > +       | xxxxxxxxx | O :       | xxxxxxxxx |       : O | xxxxxxxxx |
-> > > +       | xxxxxxxxx | B :       | xxxxxxxxx |       : B | xxxxxxxxx |
-> > > +       | x GUARD x | J : RED-  | x GUARD x | RED-  : J | x GUARD x |
-> > > +       | xxxxxxxxx | E :  ZONE | xxxxxxxxx |  ZONE : E | xxxxxxxxx |
-> > > +       | xxxxxxxxx | C :       | xxxxxxxxx |       : C | xxxxxxxxx |
-> > > +       | xxxxxxxxx | T :       | xxxxxxxxx |       : T | xxxxxxxxx |
-> > > +    ---+-----------+-----------+-----------+-----------+-----------+---
-> > > +
-> > > +Upon deallocation of a KFENCE object, the object's page is again protected and
-> > > +the object is marked as freed. Any further access to the object causes a fault
-> > > +and KFENCE reports a use-after-free access. Freed objects are inserted at the
-> > > +tail of KFENCE's freelist, so that the least recently freed objects are reused
-> > > +first, and the chances of detecting use-after-frees of recently freed objects
-> > > +is increased.
-> >
-> > Seems really similar to KASAN's quarantine? Is the implementation much
-> > different?
->
-> It's a list, and we just insert at the tail. Why does it matter?
+Please note that Bart (he's usually picking up the fbdev patches) is on
+vacations until next week, I guess he'll then go and vacuum up everything
+for 5.10 as he usually does.
 
-If the implementation is similar, we can then reuse quarantine. But I
-guess it's not.
+Cheers, Daniel
+
+> 
+> Vaibhav Gupta
+> > > 
+> > > ------------
+> > > 
+> > > Before 42ddb453a0cd:
+> > > $ git show 65122f7e80b5:drivers/video/aty/radeon_pm.c | grep -n "#ifdef\|#if\|#else\|#endif\|#elif\|#ifndef"
+> > > 
+> > > Based on output in terminal:
+> > > 
+> > > 547:#ifdef CONFIG_PM
+> > >        |-- 959:#ifdef CONFIG_PPC_PMAC
+> > >        |-- 972:#endif
+> > >        |-- 1291:#ifdef CONFIG_PPC_OF
+> > >        |-- 1301:#endif /* CONFIG_PPC_OF */
+> > >        |-- 1943:#ifdef CONFIG_PPC_OF
+> > >                    |-- 2206:#if 0 /* Not ready yet */
+> > >                    |-- 2508:#endif /* 0 */
+> > >        |-- 2510:#endif /* CONFIG_PPC_OF */
+> > >        |-- 2648:#ifdef CONFIG_PPC_PMAC
+> > >        |-- 2654:#endif /* CONFIG_PPC_PMAC */
+> > >        |-- 2768:#ifdef CONFIG_PPC_PMAC
+> > >        |-- 2774:#endif /* CONFIG_PPC_PMAC */
+> > >        |-- 2791:#ifdef CONFIG_PPC_OF__disabled
+> > >        |-- 2801:#endif /* CONFIG_PPC_OF */
+> > > 2803:#endif /* CONFIG_PM */
+> > > 
+> > > ------------
+> > > 
+> > > After 42ddb453a0cd:
+> > > $ git show 42ddb453a0cd:drivers/video/aty/radeon_pm.c | grep -n "#ifdef\|#if\|#else\|#endif\|#elif\|#ifndef"
+> > > 
+> > > Based on output in terminal:
+> > > 
+> > > 547:#ifdef CONFIG_PM
+> > >        |-- 959:#ifdef CONFIG_PPC_PMAC
+> > >        |-- 972:#endif
+> > >        |-- 1291:#ifdef CONFIG_PPC_OF
+> > >        |-- 1301:#endif /* CONFIG_PPC_OF */
+> > >        |-- 1430:#if defined(CONFIG_PM)
+> > >                    |-- 1431:#if defined(CONFIG_X86) || defined(CONFIG_PPC_PMAC)
+> > >                    |-- 1944:#endif
+> > >                    |-- 1946:#ifdef CONFIG_PPC_OF
+> > >                                |-- 1947:#ifdef CONFIG_PPC_PMAC
+> > >                                |-- 2208:#endif
+> > >                    |-- 2209:#endif
+> > >                    |-- 2211:#if 0 /* Not ready yet */
+> > >                    |-- 2513:#endif /* 0 */
+> > >        |-- 2515:#endif /* CONFIG_PPC_OF */
+> > >        |-- 2653:#ifdef CONFIG_PPC_PMAC
+> > >        |-- 2659:#endif /* CONFIG_PPC_PMAC */
+> > >        |-- 2773:#ifdef CONFIG_PPC_PMAC
+> > >        |-- 2779:#endif /* CONFIG_PPC_PMAC */
+> > >        |-- 2796:#ifdef CONFIG_PPC_OF__disabled
+> > >        |-- 2806:#endif /* CONFIG_PPC_OF */
+> > > 2808:#endif /* CONFIG_PM */
+> > > 
+> > > ------------
+> > > 
+> > > This also affected the CONFIG_PPC_OF container (line 1943 at commit 65122f7e80b5)
+> > > 
+> > > The patch-series fixes it along with PM upgrade.
+> > > 
+> > > All patches are compile-tested only.
+> > > 
+> > > Test tools:
+> > >     - Compiler: gcc (GCC) 10.1.0
+> > >     - allmodconfig build: make -j$(nproc) W=1 all
+> > > 
+> > > Vaibhav Gupta (2):
+> > >   video: fbdev: aty: radeon_pm: remove redundant CONFIG_PM container
+> > >   fbdev: radeonfb:use generic power management
+> > > 
+> > >  drivers/video/fbdev/aty/radeon_base.c | 10 ++++---
+> > >  drivers/video/fbdev/aty/radeon_pm.c   | 38 ++++++++++++++++++++-------
+> > >  drivers/video/fbdev/aty/radeonfb.h    |  3 +--
+> > >  3 files changed, 35 insertions(+), 16 deletions(-)
+> > > 
+> > > -- 
+> > > 2.27.0
+> > > 
+> > > _______________________________________________
+> > > dri-devel mailing list
+> > > dri-devel@lists.freedesktop.org
+> > > https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> > 
+> > -- 
+> > Daniel Vetter
+> > Software Engineer, Intel Corporation
+> > http://blog.ffwll.ch
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
