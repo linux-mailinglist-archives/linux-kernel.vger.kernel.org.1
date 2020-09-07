@@ -2,71 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CC5226037F
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:50:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D789260388
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:51:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729580AbgIGRuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 13:50:21 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:48951 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729235AbgIGMKw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 08:10:52 -0400
-X-UUID: a2e268fb05e348028d30b6335d481ecd-20200907
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=mWs1TicmUihewvCBjVKC06mEcTl47586ruiLpRjWtf0=;
-        b=hGj+mUvBalskvKSo2aDFF6vMpETfhHsIqHQJKehDbZu9UTTvOzpigKiCwf3R8VA81xvV0hT9ACxY3/7Rep4N69Cf9Qx88grS36ZuAf+zaloaQuKOrf05U26M73j5mDXNOUwbsE+qELEIIHqhQtskXPhZa2Ps3ldT+rtUKvdtJdg=;
-X-UUID: a2e268fb05e348028d30b6335d481ecd-20200907
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
-        (envelope-from <jianjun.wang@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 972947843; Mon, 07 Sep 2020 20:10:49 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 7 Sep 2020 20:10:45 +0800
-Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 7 Sep 2020 20:10:45 +0800
-From:   Jianjun Wang <jianjun.wang@mediatek.com>
-To:     Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Ryder Lee <ryder.lee@mediatek.com>
-CC:     Philipp Zabel <p.zabel@pengutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        <davem@davemloft.net>, <linux-pci@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Sj Huang <sj.huang@mediatek.com>,
-        Jianjun Wang <jianjun.wang@mediatek.com>
-Subject: [v1,0/3] PCI: mediatek: Add new generation controller support
-Date:   Mon, 7 Sep 2020 20:08:49 +0800
-Message-ID: <20200907120852.12090-1-jianjun.wang@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        id S1729217AbgIGRur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 13:50:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34538 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729201AbgIGMJ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 08:09:29 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4CF7F2075A;
+        Mon,  7 Sep 2020 12:09:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599480566;
+        bh=m6sm2dHbZ+VdY8BB3/phHFFXgXyN0P2BJg1Fxa9cl5Q=;
+        h=From:To:Cc:Subject:Date:From;
+        b=jeY16xX/CDYp1EMlj1bBl42Rd2L/SICQ8XbMsMdejxThY3q6ffTaveeNM3ASl+Bk5
+         PWWrGKsfXkwS4QNyPumjnLgEpq6fNMdv7A3/Ow7DKJ/0vrtnXbXmDLNyhc1ZsRhPCp
+         pYHXHKIwxN2fgJ9zi37tHu987xWQC/O6y02+j1zA=
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        Adit Ranadive <aditr@vmware.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        Christian Benvenuti <benve@cisco.com>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Devesh Sharma <devesh.sharma@broadcom.com>,
+        Faisal Latif <faisal.latif@intel.com>,
+        Gal Pressman <galpress@amazon.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        Lijun Ou <oulijun@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org,
+        Michal Kalderon <mkalderon@marvell.com>,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        Nelson Escobar <neescoba@cisco.com>,
+        Parvi Kaustubhi <pkaustub@cisco.com>,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Somnath Kotur <somnath.kotur@broadcom.com>,
+        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
+        VMware PV-Drivers <pv-drivers@vmware.com>,
+        Weihang Li <liweihang@huawei.com>,
+        "Wei Hu(Xavier)" <huwei87@hisilicon.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Yuval Shaia <yuval.shaia@oracle.com>,
+        Zhu Yanjun <yanjunz@nvidia.com>
+Subject: [PATCH rdma-next v2 0/9] Restore failure of destroy commands
+Date:   Mon,  7 Sep 2020 15:09:12 +0300
+Message-Id: <20200907120921.476363-1-leon@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VGhlc2Ugc2VyaWVzIHBhdGNoZXMgYWRkIHBjaWUtbWVkaWF0ZWstZ2VuMy5jIGFuZCBkdC1iaW5k
-aW5ncyBmaWxlIHRvDQpzdXBwb3J0IG5ldyBnZW5lcmF0aW9uIFBDSWUgY29udHJvbGxlci4NCg0K
-Smlhbmp1biBXYW5nICgzKToNCiAgZHQtYmluZGluZ3M6IEFkZCBZQU1MIHNjaGVtYXMgZm9yIEdl
-bjMgUENJZSBjb250cm9sbGVyDQogIFBDSTogbWVkaWF0ZWs6IEFkZCBuZXcgZ2VuZXJhdGlvbiBj
-b250cm9sbGVyIHN1cHBvcnQNCiAgTUFJTlRBSU5FUlM6IHVwZGF0ZSBlbnRyeSBmb3IgTWVkaWFU
-ZWsgUENJZSBjb250cm9sbGVyDQoNCiAuLi4vYmluZGluZ3MvcGNpL21lZGlhdGVrLXBjaWUtZ2Vu
-My55YW1sICAgICAgfCAgMTU4ICsrKw0KIE1BSU5UQUlORVJTICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICB8ICAgIDEgKw0KIGRyaXZlcnMvcGNpL2NvbnRyb2xsZXIvS2NvbmZpZyAg
-ICAgICAgICAgICAgICB8ICAgMTQgKw0KIGRyaXZlcnMvcGNpL2NvbnRyb2xsZXIvTWFrZWZpbGUg
-ICAgICAgICAgICAgICB8ICAgIDEgKw0KIGRyaXZlcnMvcGNpL2NvbnRyb2xsZXIvcGNpZS1tZWRp
-YXRlay1nZW4zLmMgICB8IDEwNjMgKysrKysrKysrKysrKysrKysNCiA1IGZpbGVzIGNoYW5nZWQs
-IDEyMzcgaW5zZXJ0aW9ucygrKQ0KIGNyZWF0ZSBtb2RlIDEwMDY0NCBEb2N1bWVudGF0aW9uL2Rl
-dmljZXRyZWUvYmluZGluZ3MvcGNpL21lZGlhdGVrLXBjaWUtZ2VuMy55YW1sDQogY3JlYXRlIG1v
-ZGUgMTAwNjQ0IGRyaXZlcnMvcGNpL2NvbnRyb2xsZXIvcGNpZS1tZWRpYXRlay1nZW4zLmMNCg0K
-LS0gDQoyLjI1LjENCg==
+From: Leon Romanovsky <leonro@nvidia.com>
+
+Changelog:
+v2:
+ * Rebased on top of the 524d8ffd07f0
+ * Removed "udata" check in destroy flows
+ * Changed ib_free_cq to return early
+ * Used Jason's suggestion to implement "RDMA/mlx5: Issue FW command to destroy
+   SRQ on reentry" patch.
+v1
+ * Changed returned value in efa_destroy_ah() from EINVAL to EOPNOTSUPP
+ * https://lore.kernel.org/lkml/20200830084010.102381-1-leon@kernel.org
+v0:
+ * https://lore.kernel.org/lkml/20200824103247.1088464-1-leon@kernel.org
+
+-----------------------------------------------------------------------------
+Hi,
+
+This series restores the ability to fail on destroy commands, due to the
+fact that mlx5_ib DEVX implementation interleaved ib_core objects
+with FW objects without sharing reference counters.
+
+In retrospect, every part of the mlx5_ib flow is correct.
+
+It started from IBTA which was written by HW engineers with HW in mind and
+they allowed to fail in destruction. FW implemented it with symmetrical
+interface like any other command and propagated error back to the kernel,
+which forwarded it to the libibverbs and kernel ULPs.
+
+Libibverbs was designed with IBTA spec in hand putting destroy errors in
+stone. Up till mlx5_ib DEVX, it worked well, because the IB verbs objects
+are counted by the kernel and ib_core ensures that FW destroy will success
+by managing various reference counters on such objects.
+
+The extension of the mlx5 driver changed this flow when allowed DEVX objects
+that are not managed by ib_core to be interleaved with the ones under ib_core
+responsibility.
+
+The drivers that want to implement DEVX flows must ensure that FW/HW
+destroys are performed as early as possible before any other internal
+cleanup. After HW destroys, drivers are not allowed to fail.
+
+This series includes two patches (WQ and "potential race") that will
+require extra work in mlx5_ib, they both theoretical. WQ is not in use
+in DEVX, but is needed to make interface symmetrical to other objects.
+"Potential race" is in ULP flow that ensures that SRQ is destroyed in
+proper order.
+
+Thanks
+
+Leon Romanovsky (9):
+  RDMA: Restore ability to fail on PD deallocate
+  RDMA: Restore ability to fail on AH destroy
+  RDMA/mlx5: Issue FW command to destroy SRQ on reentry
+  RDMA: Restore ability to fail on SRQ destroy
+  RDMA/core: Delete function indirection for alloc/free kernel CQ
+  RDMA: Allow fail of destroy CQ
+  RDMA: Change XRCD destroy return value
+  RDMA: Restore ability to return error for destroy WQ
+  RDMA: Make counters destroy symmetrical
+
+ drivers/infiniband/core/cq.c                  |  30 ++---
+ drivers/infiniband/core/uverbs_std_types.c    |   3 +-
+ .../core/uverbs_std_types_counters.c          |   4 +-
+ drivers/infiniband/core/uverbs_std_types_wq.c |   2 +-
+ drivers/infiniband/core/verbs.c               |  56 +++++++---
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c      |  12 +-
+ drivers/infiniband/hw/bnxt_re/ib_verbs.h      |   8 +-
+ drivers/infiniband/hw/cxgb4/cq.c              |   3 +-
+ drivers/infiniband/hw/cxgb4/iw_cxgb4.h        |   4 +-
+ drivers/infiniband/hw/cxgb4/provider.c        |   3 +-
+ drivers/infiniband/hw/cxgb4/qp.c              |   3 +-
+ drivers/infiniband/hw/efa/efa.h               |   6 +-
+ drivers/infiniband/hw/efa/efa_verbs.c         |  11 +-
+ drivers/infiniband/hw/hns/hns_roce_ah.c       |   5 -
+ drivers/infiniband/hw/hns/hns_roce_cq.c       |   3 +-
+ drivers/infiniband/hw/hns/hns_roce_device.h   |  13 ++-
+ drivers/infiniband/hw/hns/hns_roce_hw_v1.c    |   3 +-
+ drivers/infiniband/hw/hns/hns_roce_pd.c       |   3 +-
+ drivers/infiniband/hw/hns/hns_roce_srq.c      |   3 +-
+ drivers/infiniband/hw/i40iw/i40iw_verbs.c     |   6 +-
+ drivers/infiniband/hw/mlx4/ah.c               |   5 -
+ drivers/infiniband/hw/mlx4/cq.c               |   3 +-
+ drivers/infiniband/hw/mlx4/main.c             |   6 +-
+ drivers/infiniband/hw/mlx4/mlx4_ib.h          |  11 +-
+ drivers/infiniband/hw/mlx4/qp.c               |   3 +-
+ drivers/infiniband/hw/mlx4/srq.c              |   3 +-
+ drivers/infiniband/hw/mlx5/ah.c               |   5 -
+ drivers/infiniband/hw/mlx5/cmd.c              |   4 +-
+ drivers/infiniband/hw/mlx5/cmd.h              |   2 +-
+ drivers/infiniband/hw/mlx5/counters.c         |   3 +-
+ drivers/infiniband/hw/mlx5/cq.c               |  16 ++-
+ drivers/infiniband/hw/mlx5/main.c             |   4 +-
+ drivers/infiniband/hw/mlx5/mlx5_ib.h          |  13 ++-
+ drivers/infiniband/hw/mlx5/qp.c               |  12 +-
+ drivers/infiniband/hw/mlx5/qp.h               |   4 +-
+ drivers/infiniband/hw/mlx5/qpc.c              |   5 +-
+ drivers/infiniband/hw/mlx5/srq.c              |  26 ++---
+ drivers/infiniband/hw/mlx5/srq.h              |   2 +-
+ drivers/infiniband/hw/mlx5/srq_cmd.c          |  22 +++-
+ drivers/infiniband/hw/mthca/mthca_provider.c  |  12 +-
+ drivers/infiniband/hw/ocrdma/ocrdma_ah.c      |   3 +-
+ drivers/infiniband/hw/ocrdma/ocrdma_ah.h      |   2 +-
+ drivers/infiniband/hw/ocrdma/ocrdma_verbs.c   |  11 +-
+ drivers/infiniband/hw/ocrdma/ocrdma_verbs.h   |   6 +-
+ drivers/infiniband/hw/qedr/verbs.c            |  14 ++-
+ drivers/infiniband/hw/qedr/verbs.h            |   8 +-
+ drivers/infiniband/hw/usnic/usnic_ib_verbs.c  |   7 +-
+ drivers/infiniband/hw/usnic/usnic_ib_verbs.h  |   4 +-
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma_cq.c  |   3 +-
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma_srq.c |   3 +-
+ .../infiniband/hw/vmw_pvrdma/pvrdma_verbs.c   |   8 +-
+ .../infiniband/hw/vmw_pvrdma/pvrdma_verbs.h   |   8 +-
+ drivers/infiniband/sw/rdmavt/ah.c             |   3 +-
+ drivers/infiniband/sw/rdmavt/ah.h             |   2 +-
+ drivers/infiniband/sw/rdmavt/cq.c             |   3 +-
+ drivers/infiniband/sw/rdmavt/cq.h             |   2 +-
+ drivers/infiniband/sw/rdmavt/pd.c             |   3 +-
+ drivers/infiniband/sw/rdmavt/pd.h             |   2 +-
+ drivers/infiniband/sw/rdmavt/srq.c            |   3 +-
+ drivers/infiniband/sw/rdmavt/srq.h            |   2 +-
+ drivers/infiniband/sw/rxe/rxe_verbs.c         |  12 +-
+ drivers/infiniband/sw/siw/siw_verbs.c         |   9 +-
+ drivers/infiniband/sw/siw/siw_verbs.h         |   6 +-
+ drivers/infiniband/ulp/ipoib/ipoib_cm.c       |   6 +-
+ include/rdma/ib_verbs.h                       | 105 +++++-------------
+ 65 files changed, 308 insertions(+), 269 deletions(-)
+
+--
+2.26.2
 
