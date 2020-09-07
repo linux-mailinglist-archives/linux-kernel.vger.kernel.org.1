@@ -2,108 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 660E8260312
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:43:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1938726032F
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:46:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730643AbgIGRn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 13:43:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45042 "EHLO
+        id S1730020AbgIGRqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 13:46:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729408AbgIGRnM (ORCPT
+        with ESMTP id S1730654AbgIGRoF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 13:43:12 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA0B8C061573;
-        Mon,  7 Sep 2020 10:43:11 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id gr14so18027249ejb.1;
-        Mon, 07 Sep 2020 10:43:11 -0700 (PDT)
+        Mon, 7 Sep 2020 13:44:05 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1AC7C061757
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 10:44:03 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id e17so15052846wme.0
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 10:44:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=mSurHpBmqEWBODMaG3W5ioJJMxOeKfAOUJKlwr4m2NU=;
-        b=iCLI6H4J7QZe980J+0V8cA+UCVCnRmDVw/E2/oIPS0ymSLmrheKXQ/OCmg/2P78uOV
-         rS/9HUIfvcD+EdsjOnC+5sWs3LUYCQN4NLk681u5gLlH2t4kBflkgkaMvAXkVIOfJhNd
-         nqge6kfWdiZDgbfxureKmnEO9oVHx7Ig/EhQlEW0PunuRXF25LHJeL+8jzMtpkCWw3zh
-         7u/WRwuunD+eShHQjt/3Iwas4NHNAbdSbyXbeAhYReyYxSya0SSfnN40LdeoXMGEAB5u
-         lbUFYruK2DqKkHUOMvUobAnOBb1zg+aEJlyJidCyNP8PqdMvOuQfNfBIfTMoJlxM1XDX
-         yfmA==
+        d=broadcom.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TtLg9Y4dgEBmAcytToxU0LrQsMgfNF7OgoEHJZ2Q+vw=;
+        b=A0Stn/cyvojbDX7w3lzbvMIO7gTwe43sZAGbFpuAEdS5sHSClH8/IZ2AifZ+YY+VOX
+         UVwM/aA+6tWtgJSEoCDO1PW617SUSIQB8k6b0bPqqeB7dxfGKJQUxNBeFtcQo9e3Ascw
+         6zhcNnrpuccjT086HR4puL61ghnrcI3EOoQm8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=mSurHpBmqEWBODMaG3W5ioJJMxOeKfAOUJKlwr4m2NU=;
-        b=mMCzIU065tgMmduaf/5guBWIAKXvTnC9v5ZUahHCwqBQfDShGZFqfwEvOoI9ch+WdF
-         VZvLkFNU0v8pSD9jTwxWuJRWdxjDrL6FUOuoxjoARzmyUrH/BSyue166u2+HNDeShJP6
-         PAqzSafMa/cUZjkGTM2QsSBBsMMGmF8kzGMOSzAvjMQaa5BBhuZw4lUFPQNNFqRBtgwp
-         XRPeaaI+zdeNgPRB/33WzYBimQ3D5RtSRm1C5oMrikOzZAggAbYqFJSIzs6NUC3j2Jgr
-         W3XgAVxEZKdFcqPgNsImaeNYimFKUc8NkSceeTWtYk5xfwVxGHYqhp1O72o7swe4293i
-         9Pow==
-X-Gm-Message-State: AOAM532iLRa4QuX5Zuf9JjcGw6aSfMGLTYvNvU0O0VIVlNmg0ExCZDFz
-        5s0TvSS1Vam9ene3VXzH3eStbmKY7SPeYA==
-X-Google-Smtp-Source: ABdhPJwrE/HR1BoZfbLhIcPMGkII8grsVkg5ttN7riJDB+qlyOJd19aGhtNHj3R86SHyT+D9TGrmIg==
-X-Received: by 2002:a17:906:390d:: with SMTP id f13mr21620989eje.86.1599500590132;
-        Mon, 07 Sep 2020 10:43:10 -0700 (PDT)
-Received: from bcbook.internal (a89-183-24-75.net-htp.de. [89.183.24.75])
-        by smtp.gmail.com with ESMTPSA id c8sm15921923ejp.30.2020.09.07.10.43.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Sep 2020 10:43:09 -0700 (PDT)
-Subject: Re: [PATCH] arm64: dts: marvell: espressobin: Add ethernet switch
- aliases
-To:     =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>
-Cc:     Jason Cooper <jason@lakedaemon.net>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Tomasz Maciej Nowak <tmn505@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200907112718.5994-1-pali@kernel.org>
- <3ec54259-4bfe-8462-e8d5-083fc009707a@gmail.com>
- <20200907172303.GA3254313@lunn.ch> <20200907173534.aoupftjkxgcftfqo@pali>
-From:   Andre Heider <a.heider@gmail.com>
-Message-ID: <f8cce9af-372b-f2bc-ea09-e1516367cb90@gmail.com>
-Date:   Mon, 7 Sep 2020 19:43:08 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TtLg9Y4dgEBmAcytToxU0LrQsMgfNF7OgoEHJZ2Q+vw=;
+        b=F4/xREyk18L2C2ijY4HmP5AXB4Jvo3ADjNvaRGKDA6PcmsqriHCvBRy+UT9V/dYmk1
+         WoJh43zeanxDhHyMCRL1G0aZwHrzVqMKSsPo2IdOq5C02atmJ2Qoa2M9ewAN6yP8HVWJ
+         JI34goDyJ1zkuByefvYFsfo43fmz2vAIYvsUkw8lXvqy7LJo5j+eFtsqbhOK9ptgy/ct
+         PpktBSDTkWQeZDxWPwA7lFlvtSMpUpYwNXHNkfgY+sJCkX2Z495UbbESSGsMJnz7n7Vo
+         MPbxbScUz9D33M0w8XCIzyPjnzeX0clwrHfFCnh7AKd3f8ZtbWSiby4Zy7+VgHvlAgfM
+         bdmg==
+X-Gm-Message-State: AOAM532ACZzvwoJUfc0MdI6YphOvz0ZcjkkbbbdNyBI79Q2bboeY116B
+        oLze9Q+jifbWOPlJxUFtJQto9pKTK3GhW/eNdLxhPw==
+X-Google-Smtp-Source: ABdhPJyNQsBm1Y3/ieHSfjO664M9CBhnY/ZnuJjayy1tYR+ob0ku/Wpd26F5nf8H2/xl9/84D4TcAGvzrj4IPjrxwfU=
+X-Received: by 2002:a1c:bad5:: with SMTP id k204mr408820wmf.111.1599500642170;
+ Mon, 07 Sep 2020 10:44:02 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200907173534.aoupftjkxgcftfqo@pali>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200824193036.6033-1-james.quinlan@broadcom.com>
+ <b19bc982-a0c4-c6ff-d8f5-650f2b3a83c8@gmail.com> <20200827063517.GA4637@lst.de>
+ <CA+-6iNy3U9pO0Bykzgvb9n9fcsBi6FiatLdpA1s0HgQNWZ49mg@mail.gmail.com> <20200907091649.GA6428@e121166-lin.cambridge.arm.com>
+In-Reply-To: <20200907091649.GA6428@e121166-lin.cambridge.arm.com>
+From:   Jim Quinlan <james.quinlan@broadcom.com>
+Date:   Mon, 7 Sep 2020 13:43:23 -0400
+Message-ID: <CA+-6iNzoz3pM2pJksXogeuou6wB9W-59rN-amCLERFLuY5zLMg@mail.gmail.com>
+Subject: Re: [PATCH v11 00/11] PCI: brcmstb: enable PCIe for STB chips
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "open list:PCI NATIVE HOST BRIDGE AND ENDPOINT DRIVERS" 
+        <linux-pci@vger.kernel.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Robin Murphy <robin.murphy@arm.com>,
+        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "open list:STAGING SUBSYSTEM" <devel@driverdev.osuosl.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE" 
+        <devicetree@vger.kernel.org>,
+        "open list:DRM DRIVERS FOR ALLWINNER A10" 
+        <dri-devel@lists.freedesktop.org>, Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        Julien Grall <julien.grall@arm.com>,
+        "open list:ACPI FOR ARM64 (ACPI/arm64)" <linux-acpi@vger.kernel.org>,
+        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:ALLWINNER A10 CSI DRIVER" <linux-media@vger.kernel.org>,
+        "open list:REMOTE PROCESSOR (REMOTEPROC) SUBSYSTEM" 
+        <linux-remoteproc@vger.kernel.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "open list:SUPERH" <linux-sh@vger.kernel.org>,
+        "open list:USB SUBSYSTEM" <linux-usb@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        Saravana Kannan <saravanak@google.com>,
+        Stefano Stabellini <sstabellini@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/09/2020 19:35, Pali Rohár wrote:
-> On Monday 07 September 2020 19:23:03 Andrew Lunn wrote:
->>> My dts-foo is a little rusty, but now that you labeled the ports in the
->>> .dtsi, can this whole "switch0" block reduced to something like:
->>>
->>> &switch0port1 {
->>> 	label = "lan1";
->>> };
->>>
->>> &switch0port3 {
->>> 	label = "wan";
->>> };
->>
->> Probably yes.
->>
->> But that is definitely too much for stable.
-> 
-> Yes, this suggested change is not for stable, but looks like a nice
-> cleanup. So it could be done in followup patch.
-> 
-> Andre, are you going to prepare and test this followup change?
+On Mon, Sep 7, 2020 at 5:16 AM Lorenzo Pieralisi
+<lorenzo.pieralisi@arm.com> wrote:
+>
+> On Thu, Aug 27, 2020 at 09:29:59AM -0400, Jim Quinlan wrote:
+> > On Thu, Aug 27, 2020 at 2:35 AM Christoph Hellwig <hch@lst.de> wrote:
+> > >
+> > > On Tue, Aug 25, 2020 at 10:40:27AM -0700, Florian Fainelli wrote:
+> > > > Hi,
+> > > >
+> > > > On 8/24/2020 12:30 PM, Jim Quinlan wrote:
+> > > >>
+> > > >> Patchset Summary:
+> > > >>    Enhance a PCIe host controller driver.  Because of its unusual design
+> > > >>    we are foced to change dev->dma_pfn_offset into a more general role
+> > > >>    allowing multiple offsets.  See the 'v1' notes below for more info.
+> > > >
+> > > > We are version 11 and counting, and it is not clear to me whether there is
+> > > > any chance of getting these patches reviewed and hopefully merged for the
+> > > > 5.10 merge window.
+> > > >
+> > > > There are a lot of different files being touched, so what would be the
+> > > > ideal way of routing those changes towards inclusion?
+> > >
+> > > FYI, I offered to take the dma-mapping bits through the dma-mapping tree.
+> > > I have a bit of a backlog, but plan to review and if Jim is ok with that
+> > > apply the current version.
+> > Sounds good to me.
+>
+> Hi Jim,
+>
+> is the dependency now solved ? Should we review/take this series as
+> is for v5.10 through the PCI tree ?
+Hello Lorenzo,
 
-I can prep the patch if you like, but the suggested cleanup only affects 
-the v7 dts files. I don't have that hardware version to test it, so 
-could only send an untested patch.
+We are still working out a regression with the DMA offset commit on
+the RaspberryPi.  Nicolas has found the root cause and we are now
+devising a solution.
 
-Regards,
-Andre
+Thanks,
+Jim Quinlan
+Broadcom STB
 
+>
+> Thanks,
+> Lorenzo
