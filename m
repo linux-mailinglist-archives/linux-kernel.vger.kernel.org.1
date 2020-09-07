@@ -2,110 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AAD825FCD1
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 17:17:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C4A725FD22
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 17:30:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730142AbgIGPQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 11:16:46 -0400
-Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:61867 "EHLO
-        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730048AbgIGPOJ (ORCPT
+        id S1730108AbgIGPaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 11:30:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50234 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730130AbgIGPPM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 11:14:09 -0400
+        Mon, 7 Sep 2020 11:15:12 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28B02C061795
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 08:15:11 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id a26so18684366ejc.2
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 08:15:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1599491650; x=1631027650;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=YjMSHQHURdbx/t6NUVi9Q5Iws7vt3dA1WAArwTiPwsI=;
-  b=nGCE0gaQ7gaQQNwf+JT2m+LKIAIW31CI38f3gJ53znGZJ0LVzEx1gbDU
-   ZVJPDWtcpldQMXPFUzyf0tQC7rPyQlYK1UHxrBdk6bIVF58Sqqc+I4zyg
-   StKlGxdbxWqyuV5nKd1Nk7OSprpo3ZhS667j8FoqgYWy4bpk/bsHAaDXv
-   Y=;
-X-IronPort-AV: E=Sophos;i="5.76,402,1592870400"; 
-   d="scan'208";a="52576723"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1e-17c49630.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 07 Sep 2020 15:14:08 +0000
-Received: from EX13D16EUB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-1e-17c49630.us-east-1.amazon.com (Postfix) with ESMTPS id D9334A23D5;
-        Mon,  7 Sep 2020 15:14:05 +0000 (UTC)
-Received: from 38f9d34ed3b1.ant.amazon.com (10.43.160.192) by
- EX13D16EUB001.ant.amazon.com (10.43.166.28) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 7 Sep 2020 15:13:55 +0000
-Subject: Re: [PATCH v8 17/18] nitro_enclaves: Add overview documentation
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Anthony Liguori <aliguori@amazon.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Colm MacCarthaigh <colmmacc@amazon.com>,
-        David Duncan <davdunc@amazon.com>,
-        Bjoern Doebel <doebel@amazon.de>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        "Frank van der Linden" <fllinden@amazon.com>,
-        Alexander Graf <graf@amazon.de>,
-        "Karen Noel" <knoel@redhat.com>,
-        Martin Pohlack <mpohlack@amazon.de>,
-        Matt Wilson <msw@amazon.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Balbir Singh <sblbir@amazon.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "Stefan Hajnoczi" <stefanha@redhat.com>,
-        Stewart Smith <trawets@amazon.com>,
-        "Uwe Dannowski" <uwed@amazon.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        kvm <kvm@vger.kernel.org>,
-        ne-devel-upstream <ne-devel-upstream@amazon.com>
-References: <20200904173718.64857-1-andraprs@amazon.com>
- <20200904173718.64857-18-andraprs@amazon.com>
- <20200907090126.GD1101646@kroah.com>
- <44a8a921-1fb4-87ab-b8f2-c168c615dbbd@amazon.com>
- <20200907140803.GA3719869@kroah.com>
-From:   "Paraschiv, Andra-Irina" <andraprs@amazon.com>
-Message-ID: <b8a1e66c-7674-7354-599e-159efd260ba9@amazon.com>
-Date:   Mon, 7 Sep 2020 18:13:50 +0300
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:78.0)
- Gecko/20100101 Thunderbird/78.2.1
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iCA0F/2SnnESSDI4EBT00k34dz77kYR2spCZaIF2uHY=;
+        b=su5o8fbyLOAaM8fgU+7htLf0ioeMDDxB5U7fu0pBeX1RsoTpb/1cOIek0DB/bkQsSe
+         OGOsu2MN9t/TvW2JalBS0/NCCta2ULcJbyAHpcv+hLGeiyMC9kZeGA+ZYT1ey2wBje4C
+         Fm4VCplStpeCef/cIw8oAeFLYSCR9RzsurKfZOw97nq1dSv43B1+AJ8U9WxP4U7YVRUZ
+         hgBPd5GG5Q1Epl0QxB2Ni8oYpQrTRMGHVa0lwQ4Wl/ZnBDU7GSYjG762YjRVvS7d9mNJ
+         CamhaXcst7pcZU/7wyB5C69hediUKLLRnHDNXSUs5EamIpEVI0J4UmUQ+TXPZIkcGoK6
+         f1iw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iCA0F/2SnnESSDI4EBT00k34dz77kYR2spCZaIF2uHY=;
+        b=VLM3KEmsN9VnCS2KEHXMdqNoKswA0gltN3t9CMVdh9XzM99f7EGBFPf/w21G1ZsP3C
+         LYIEgotSEuX7CRjNNJEUCqtGZf1y9OitivKn/o215AplBsRPE1ivihjNcef0kq9Asaoh
+         ooyuybLmM6z1Om73Pq0zpUwOGsOOT2AD2NkXVyZbREqN7fqfbDiDw/eQJnh0V8omTpLJ
+         vqOAEHbNYN+WUsdbVDzb0zmFSQdeD79amlpaW3OxcldWzAtC9VCo/09DR7vhgSAqmAgN
+         SKtpKOSIngllCO3+0P+4dsya8WBI7prEchYbwam9KoCWFBkscmzdli4jFsJ2yLF8pXgz
+         njYw==
+X-Gm-Message-State: AOAM533U34qvx2nSDs/MgzTmQw7G9Zx3CRTAQEbM5a0PM82FKG5MDcwj
+        KOiDhOwVZtJXH00Rexuok5mUoadXKJy/+TOScpYZqQ==
+X-Google-Smtp-Source: ABdhPJwag5uFVbOznIRFD7hUBenCZZKrZmRn3jTCX4vHYpA4VymrG36hBOtB09F9smlRBodPgmoaNTlMD/ezmHNmkOk=
+X-Received: by 2002:a17:906:19db:: with SMTP id h27mr19818725ejd.154.1599491709642;
+ Mon, 07 Sep 2020 08:15:09 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200907140803.GA3719869@kroah.com>
-Content-Language: en-US
-X-Originating-IP: [10.43.160.192]
-X-ClientProxiedBy: EX13D46UWB002.ant.amazon.com (10.43.161.70) To
- EX13D16EUB001.ant.amazon.com (10.43.166.28)
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-Content-Transfer-Encoding: base64
+References: <20200904154547.3836-1-brgl@bgdev.pl> <20200904154547.3836-24-brgl@bgdev.pl>
+ <26ea1683-da8f-30e7-f004-3616e96d56b3@infradead.org> <20200907095932.GU1891694@smile.fi.intel.com>
+ <CAMpxmJXvhYOVkZY7LLf=v+o8E2xKTh1RYhLrdVsS9nN1XZ5QJQ@mail.gmail.com>
+ <20200907115310.GA1891694@smile.fi.intel.com> <CAMpxmJUfNkko4Rrb4N5CF_rdwRAWGhVr9DSOHfhYyTxYSH7dsQ@mail.gmail.com>
+ <20200907122238.GA1849893@kroah.com> <CAMpxmJXM=8oGoPSGg8G8XJ4HXJFrAQ2-_EXrz3rf3+ZmCSWB7g@mail.gmail.com>
+ <20200907140829.GL1891694@smile.fi.intel.com>
+In-Reply-To: <20200907140829.GL1891694@smile.fi.intel.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Mon, 7 Sep 2020 17:14:58 +0200
+Message-ID: <CAMpxmJWvrW2H-QhJRACJ88MZ3uXWR2G-QKor+ZTHpiCkLgPqcg@mail.gmail.com>
+Subject: Re: [PATCH 23/23] Documentation: gpio: add documentation for gpio-mockup
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Kent Gibson <warthog618@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        linux-doc <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CgpPbiAwNy8wOS8yMDIwIDE3OjA4LCBHcmVnIEtIIHdyb3RlOgo+IE9uIE1vbiwgU2VwIDA3LCAy
-MDIwIGF0IDA0OjQzOjExUE0gKzAzMDAsIFBhcmFzY2hpdiwgQW5kcmEtSXJpbmEgd3JvdGU6Cj4+
-Cj4+IE9uIDA3LzA5LzIwMjAgMTI6MDEsIEdyZWcgS0ggd3JvdGU6Cj4+PiBPbiBGcmksIFNlcCAw
-NCwgMjAyMCBhdCAwODozNzoxN1BNICswMzAwLCBBbmRyYSBQYXJhc2NoaXYgd3JvdGU6Cj4+Pj4g
-U2lnbmVkLW9mZi1ieTogQW5kcmEgUGFyYXNjaGl2IDxhbmRyYXByc0BhbWF6b24uY29tPgo+Pj4+
-IFJldmlld2VkLWJ5OiBBbGV4YW5kZXIgR3JhZiA8Z3JhZkBhbWF6b24uY29tPgo+Pj4+IC0tLQo+
-Pj4+IENoYW5nZWxvZwo+Pj4+Cj4+Pj4gdjcgLT4gdjgKPj4+Pgo+Pj4+ICogQWRkIGluZm8gYWJv
-dXQgdGhlIHByaW1hcnkgLyBwYXJlbnQgVk0gQ0lEIHZhbHVlLgo+Pj4+ICogVXBkYXRlIHJlZmVy
-ZW5jZSBsaW5rIGZvciBodWdlIHBhZ2VzLgo+Pj4+ICogQWRkIHJlZmVyZW5jZSBsaW5rIGZvciB0
-aGUgeDg2IGJvb3QgcHJvdG9jb2wuCj4+Pj4gKiBBZGQgbGljZW5zZSBtZW50aW9uIGFuZCB1cGRh
-dGUgZG9jIHRpdGxlIC8gY2hhcHRlciBmb3JtYXR0aW5nLgo+Pj4+Cj4+Pj4gdjYgLT4gdjcKPj4+
-Pgo+Pj4+ICogTm8gY2hhbmdlcy4KPj4+Pgo+Pj4+IHY1IC0+IHY2Cj4+Pj4KPj4+PiAqIE5vIGNo
-YW5nZXMuCj4+Pj4KPj4+PiB2NCAtPiB2NQo+Pj4+Cj4+Pj4gKiBObyBjaGFuZ2VzLgo+Pj4+Cj4+
-Pj4gdjMgLT4gdjQKPj4+Pgo+Pj4+ICogVXBkYXRlIGRvYyB0eXBlIGZyb20gLnR4dCB0byAucnN0
-Lgo+Pj4+ICogVXBkYXRlIGRvY3VtZW50YXRpb24gYmFzZWQgb24gdGhlIGNoYW5nZXMgZnJvbSB2
-NC4KPj4+Pgo+Pj4+IHYyIC0+IHYzCj4+Pj4KPj4+PiAqIE5vIGNoYW5nZXMuCj4+Pj4KPj4+PiB2
-MSAtPiB2Mgo+Pj4+Cj4+Pj4gKiBOZXcgaW4gdjIuCj4+Pj4gLS0tCj4+Pj4gICAgRG9jdW1lbnRh
-dGlvbi9uaXRyb19lbmNsYXZlcy9uZV9vdmVydmlldy5yc3QgfCA5NSArKysrKysrKysrKysrKysr
-KysrKwo+Pj4+ICAgIDEgZmlsZSBjaGFuZ2VkLCA5NSBpbnNlcnRpb25zKCspCj4+Pj4gICAgY3Jl
-YXRlIG1vZGUgMTAwNjQ0IERvY3VtZW50YXRpb24vbml0cm9fZW5jbGF2ZXMvbmVfb3ZlcnZpZXcu
-cnN0Cj4+PiBBIHdob2xlIG5ldyBzdWJkaXIsIGZvciBhIHNpbmdsZSBkcml2ZXIsIGFuZCBub3Qg
-dGllZCBpbnRvIHRoZSBrZXJuZWwKPj4+IGRvY3VtZW50YXRpb24gYnVpbGQgcHJvY2VzcyBhdCBh
-bGw/ICBOb3QgZ29vZCA6KAo+Pj4KPj4gV291bGQgdGhlICJ2aXJ0IiBkaXJlY3RvcnkgYmUgYSBi
-ZXR0ZXIgb3B0aW9uIGZvciB0aGlzIGRvYyBmaWxlPwo+IFllcy4KCkFscmlnaHQsIEknbGwgdXBk
-YXRlIHRoZSBkb2MgZmlsZSBsb2NhdGlvbiwgdGhlIGluZGV4IGZpbGUgYW5kIHRoZSAKTUFJTlRB
-SU5FUlMgZW50cnkgdG8gcmVmbGVjdCB0aGUgbmV3IGRvYyBmaWxlIGxvY2F0aW9uLgoKVGhhbmtz
-LApBbmRyYQoKCgpBbWF6b24gRGV2ZWxvcG1lbnQgQ2VudGVyIChSb21hbmlhKSBTLlIuTC4gcmVn
-aXN0ZXJlZCBvZmZpY2U6IDI3QSBTZi4gTGF6YXIgU3RyZWV0LCBVQkM1LCBmbG9vciAyLCBJYXNp
-LCBJYXNpIENvdW50eSwgNzAwMDQ1LCBSb21hbmlhLiBSZWdpc3RlcmVkIGluIFJvbWFuaWEuIFJl
-Z2lzdHJhdGlvbiBudW1iZXIgSjIyLzI2MjEvMjAwNS4K
+On Mon, Sep 7, 2020 at 4:08 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> On Mon, Sep 07, 2020 at 03:49:23PM +0200, Bartosz Golaszewski wrote:
+> > On Mon, Sep 7, 2020 at 2:22 PM Greg Kroah-Hartman
+> > <gregkh@linuxfoundation.org> wrote:
+> > > On Mon, Sep 07, 2020 at 02:06:15PM +0200, Bartosz Golaszewski wrote:
+>
+> ...
+>
+> > > Yes it is.  Or at least until you fix all existing users so that if you
+> > > do change it, no one notices it happening :)
+> > >
+> >
+> > Then another question is: do we really want to commit to a stable ABI
+> > for a module we only use for testing purposes and which doesn't
+> > interact with any real hardware.
+> >
+> > Rewriting this module without any legacy cruft is tempting though. :)
+>
+> Another thought spoken loudly: maybe it can be unified with GPIO aggregator
+> code? In that case it makes sense.
+>
 
+Cc'ing Geert but I don't quite see how this would make sense. :)
+
+Also one thing I'm not sure about re configfs is the interface we use
+to read values/set pull i.e. the line attributes in debugfs, do you
+think configfs allows this type of attributes?
+
+Bart
