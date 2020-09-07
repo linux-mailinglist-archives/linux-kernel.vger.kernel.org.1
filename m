@@ -2,288 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AF1825FC63
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 16:57:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9633625FC65
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 16:57:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729839AbgIGO5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 10:57:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58394 "EHLO mail.kernel.org"
+        id S1729899AbgIGO5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 10:57:44 -0400
+Received: from foss.arm.com ([217.140.110.172]:37686 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730017AbgIGOvA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 10:51:00 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 49690207C3;
-        Mon,  7 Sep 2020 14:50:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599490258;
-        bh=VyYPJEj5Ta05TnAL4Uqngww5JY0W3tZR+jtP4bI3fM8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AO0NWMVeiykJuFlIG2+j/MgHbQ1A9SkfAaTHndL7x8pAgyokDPAePFPyq4+eMfyoJ
-         iulHCmkqToL92A4X1uEeI8AjdoLKZWWY7nECRBYr05PHYN6LFOqgRvJuN1Aw8nZwgg
-         AEJObpCRRN8wzpUSgvETVNQzKrE63S6eRb42pSiU=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     himadrispandya@gmail.com, dvyukov@google.com,
-        linux-usb@vger.kernel.org
-Cc:     perex@perex.cz, tiwai@suse.com, stern@rowland.harvard.ed,
-        linux-kernel@vger.kernel.org, marcel@holtmann.org,
-        johan.hedberg@gmail.com, linux-bluetooth@vger.kernel.org,
-        alsa-devel@alsa-project.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Eli Billauer <eli.billauer@gmail.com>,
-        Emiliano Ingrassia <ingrassia@epigenesys.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Alexander Tsoy <alexander@tsoy.me>,
-        "Geoffrey D. Bennett" <g@b4.vu>, Jussi Laako <jussi@sonarnerd.net>,
-        Nick Kossifidis <mickflemm@gmail.com>,
-        Dmitry Panchenko <dmitry@d-systems.ee>,
-        Chris Wulff <crwulff@gmail.com>,
-        Jesus Ramos <jesus-ramos@live.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH v2 01/11] USB: move snd_usb_pipe_sanity_check into the USB core
-Date:   Mon,  7 Sep 2020 16:50:58 +0200
-Message-Id: <20200907145108.3766613-2-gregkh@linuxfoundation.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200907145108.3766613-1-gregkh@linuxfoundation.org>
-References: <20200907145108.3766613-1-gregkh@linuxfoundation.org>
+        id S1730037AbgIGOv7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 10:51:59 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 15915106F;
+        Mon,  7 Sep 2020 07:51:59 -0700 (PDT)
+Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EF8AA3F73C;
+        Mon,  7 Sep 2020 07:51:57 -0700 (PDT)
+Date:   Mon, 7 Sep 2020 15:51:55 +0100
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     peterz@infradead.org
+Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        vincent.donnefort@arm.com, mingo@redhat.com,
+        vincent.guittot@linaro.org, linux-kernel@vger.kernel.org,
+        valentin.schneider@arm.com, Phil Auld <pauld@redhat.com>
+Subject: Re: [PATCH v2] sched/debug: Add new tracepoint to track cpu_capacity
+Message-ID: <20200907145155.fsmeygi4fiypikzk@e107158-lin.cambridge.arm.com>
+References: <1598605249-72651-1-git-send-email-vincent.donnefort@arm.com>
+ <20200828102724.wmng7p6je2pkc33n@e107158-lin.cambridge.arm.com>
+ <1e806d48-fd54-fd86-5b3a-372d9876f360@arm.com>
+ <20200828172658.dxygk7j672gho4ax@e107158-lin.cambridge.arm.com>
+ <58f5d2e8-493b-7ce1-6abd-57705e5ab437@arm.com>
+ <20200907104845.6rust2lf2o3d5gmq@e107158-lin.cambridge.arm.com>
+ <20200907111320.GP2674@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200907111320.GP2674@hirez.programming.kicks-ass.net>
+User-Agent: NeoMutt/20171215
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-snd_usb_pipe_sanity_check() is a great function, so let's move it into
-the USB core so that other parts of the kernel, including the USB core,
-can call it.
+On 09/07/20 13:13, peterz@infradead.org wrote:
+> On Mon, Sep 07, 2020 at 11:48:45AM +0100, Qais Yousef wrote:
+> > IMHO the above is a hack. Out-of-tree modules should rely on public headers and
+> > exported functions only. What you propose means that people who want to use
+> > these tracepoints in meaningful way must have a prebuilt kernel handy. Which is
+> > maybe true for us who work in the embedded world. But users who run normal
+> > distro kernels (desktop/servers) will fail to build against
+> 
+> But this isn't really aimed at regular users. We're aiming this at
+> developers (IIUC) so I dont really see this as a problem.
+> 
+> > FWIW, I did raise this concern with Peter in 2019 OSPM and he was okay with the
+> > exports as it's still not a contract and they can disappear anytime we want.
+> > Migrating to using BTF is the right way forward IMO. I don't think what we have
+> > here is out-of-control yet. Though I agree they're annoying.
+> 
+> Right, we're hiding behind the explicit lack of ABI for modules.
+> 
+> Anyway, CTF/BTF/random other crap that isn't DWARFs should work fine to
+> replace all this muck. Just no idea what the state of any of that is.
 
-Name it usb_pipe_type_check() to match the existing
-usb_urb_ep_type_check() call, which now uses this function.
+So I was thinking of having a function that allows a module to read member of
+struct rq (or any struct for that matters), but I think that's the harder
+(though neater) way around.
 
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.com>
-Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc: Eli Billauer <eli.billauer@gmail.com>
-Cc: Emiliano Ingrassia <ingrassia@epigenesys.com>
-Cc: Alan Stern <stern@rowland.harvard.edu>
-Cc: Alexander Tsoy <alexander@tsoy.me>
-Cc: "Geoffrey D. Bennett" <g@b4.vu>
-Cc: Jussi Laako <jussi@sonarnerd.net>
-Cc: Nick Kossifidis <mickflemm@gmail.com>
-Cc: Dmitry Panchenko <dmitry@d-systems.ee>
-Cc: Chris Wulff <crwulff@gmail.com>
-Cc: Jesus Ramos <jesus-ramos@live.com>
-Cc: linux-usb@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: alsa-devel@alsa-project.org
-Reviewed-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
-v2:
- - use usb_pipe_type_check() instead of usb_urb_ep_type_check in urb.c
- - fix typo in function description
- - both changes thanks to Alan Stern's review comments
- - added Takashi Iwai's reviewed-by
+Just compiled a kernel with CONFIG_DEBUG_INFO_BTF_INFO; and doing
 
- drivers/usb/core/urb.c          | 31 +++++++++++++++++++++++--------
- include/linux/usb.h             |  1 +
- sound/usb/helper.c              | 16 +---------------
- sound/usb/helper.h              |  1 -
- sound/usb/mixer_scarlett_gen2.c |  2 +-
- sound/usb/quirks.c              | 12 ++++++------
- 6 files changed, 32 insertions(+), 31 deletions(-)
+	$ pahole rq
+	struct rq {
+        raw_spinlock_t             lock;                 /*     0     4 */
+        unsigned int               nr_running;           /*     4     4 */
+        long unsigned int          last_blocked_load_update_tick; /*     8     8 */
+        unsigned int               has_blocked_load;     /*    16     4 */
 
-diff --git a/drivers/usb/core/urb.c b/drivers/usb/core/urb.c
-index 27e83e55a590..357b149b20d3 100644
---- a/drivers/usb/core/urb.c
-+++ b/drivers/usb/core/urb.c
-@@ -192,24 +192,39 @@ static const int pipetypes[4] = {
- };
- 
- /**
-- * usb_urb_ep_type_check - sanity check of endpoint in the given urb
-- * @urb: urb to be checked
-+ * usb_pipe_type_check - sanity check of a specific pipe for a usb device
-+ * @dev: struct usb_device to be checked
-+ * @pipe: pipe to check
-  *
-  * This performs a light-weight sanity check for the endpoint in the
-- * given urb.  It returns 0 if the urb contains a valid endpoint, otherwise
-- * a negative error code.
-+ * given usb device.  It returns 0 if the pipe is valid for the specific usb
-+ * device, otherwise a negative error code.
-  */
--int usb_urb_ep_type_check(const struct urb *urb)
-+int usb_pipe_type_check(struct usb_device *dev, unsigned int pipe)
- {
- 	const struct usb_host_endpoint *ep;
- 
--	ep = usb_pipe_endpoint(urb->dev, urb->pipe);
-+	ep = usb_pipe_endpoint(dev, pipe);
- 	if (!ep)
- 		return -EINVAL;
--	if (usb_pipetype(urb->pipe) != pipetypes[usb_endpoint_type(&ep->desc)])
-+	if (usb_pipetype(pipe) != pipetypes[usb_endpoint_type(&ep->desc)])
- 		return -EINVAL;
- 	return 0;
- }
-+EXPORT_SYMBOL_GPL(usb_pipe_type_check);
-+
-+/**
-+ * usb_urb_ep_type_check - sanity check of endpoint in the given urb
-+ * @urb: urb to be checked
-+ *
-+ * This performs a light-weight sanity check for the endpoint in the
-+ * given urb.  It returns 0 if the urb contains a valid endpoint, otherwise
-+ * a negative error code.
-+ */
-+int usb_urb_ep_type_check(const struct urb *urb)
-+{
-+	return usb_pipe_type_check(urb->dev, urb->pipe);
-+}
- EXPORT_SYMBOL_GPL(usb_urb_ep_type_check);
- 
- /**
-@@ -474,7 +489,7 @@ int usb_submit_urb(struct urb *urb, gfp_t mem_flags)
- 	 */
- 
- 	/* Check that the pipe's type matches the endpoint's type */
--	if (usb_urb_ep_type_check(urb))
-+	if (usb_pipe_type_check(urb->dev, urb->pipe))
- 		dev_WARN(&dev->dev, "BOGUS urb xfer, pipe %x != type %x\n",
- 			usb_pipetype(urb->pipe), pipetypes[xfertype]);
- 
-diff --git a/include/linux/usb.h b/include/linux/usb.h
-index 20c555db4621..0b3963d7ec38 100644
---- a/include/linux/usb.h
-+++ b/include/linux/usb.h
-@@ -1764,6 +1764,7 @@ static inline int usb_urb_dir_out(struct urb *urb)
- 	return (urb->transfer_flags & URB_DIR_MASK) == URB_DIR_OUT;
- }
- 
-+int usb_pipe_type_check(struct usb_device *dev, unsigned int pipe);
- int usb_urb_ep_type_check(const struct urb *urb);
- 
- void *usb_alloc_coherent(struct usb_device *dev, size_t size,
-diff --git a/sound/usb/helper.c b/sound/usb/helper.c
-index 4c12cc5b53fd..cf92d7110773 100644
---- a/sound/usb/helper.c
-+++ b/sound/usb/helper.c
-@@ -63,20 +63,6 @@ void *snd_usb_find_csint_desc(void *buffer, int buflen, void *after, u8 dsubtype
- 	return NULL;
- }
- 
--/* check the validity of pipe and EP types */
--int snd_usb_pipe_sanity_check(struct usb_device *dev, unsigned int pipe)
--{
--	static const int pipetypes[4] = {
--		PIPE_CONTROL, PIPE_ISOCHRONOUS, PIPE_BULK, PIPE_INTERRUPT
--	};
--	struct usb_host_endpoint *ep;
--
--	ep = usb_pipe_endpoint(dev, pipe);
--	if (!ep || usb_pipetype(pipe) != pipetypes[usb_endpoint_type(&ep->desc)])
--		return -EINVAL;
--	return 0;
--}
--
- /*
-  * Wrapper for usb_control_msg().
-  * Allocates a temp buffer to prevent dmaing from/to the stack.
-@@ -89,7 +75,7 @@ int snd_usb_ctl_msg(struct usb_device *dev, unsigned int pipe, __u8 request,
- 	void *buf = NULL;
- 	int timeout;
- 
--	if (snd_usb_pipe_sanity_check(dev, pipe))
-+	if (usb_pipe_type_check(dev, pipe))
- 		return -EINVAL;
- 
- 	if (size > 0) {
-diff --git a/sound/usb/helper.h b/sound/usb/helper.h
-index 5e8a18b4e7b9..f5b4c6647e4d 100644
---- a/sound/usb/helper.h
-+++ b/sound/usb/helper.h
-@@ -7,7 +7,6 @@ unsigned int snd_usb_combine_bytes(unsigned char *bytes, int size);
- void *snd_usb_find_desc(void *descstart, int desclen, void *after, u8 dtype);
- void *snd_usb_find_csint_desc(void *descstart, int desclen, void *after, u8 dsubtype);
- 
--int snd_usb_pipe_sanity_check(struct usb_device *dev, unsigned int pipe);
- int snd_usb_ctl_msg(struct usb_device *dev, unsigned int pipe,
- 		    __u8 request, __u8 requesttype, __u16 value, __u16 index,
- 		    void *data, __u16 size);
-diff --git a/sound/usb/mixer_scarlett_gen2.c b/sound/usb/mixer_scarlett_gen2.c
-index 0ffff7640892..9609c6d9655c 100644
---- a/sound/usb/mixer_scarlett_gen2.c
-+++ b/sound/usb/mixer_scarlett_gen2.c
-@@ -1978,7 +1978,7 @@ static int scarlett2_mixer_status_create(struct usb_mixer_interface *mixer)
- 		return 0;
- 	}
- 
--	if (snd_usb_pipe_sanity_check(dev, pipe))
-+	if (usb_pipe_type_check(dev, pipe))
- 		return -EINVAL;
- 
- 	mixer->urb = usb_alloc_urb(0, GFP_KERNEL);
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index abf99b814a0f..fc3aab04a0bc 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -846,7 +846,7 @@ static int snd_usb_accessmusic_boot_quirk(struct usb_device *dev)
- 	static const u8 seq[] = { 0x4e, 0x73, 0x52, 0x01 };
- 	void *buf;
- 
--	if (snd_usb_pipe_sanity_check(dev, usb_sndintpipe(dev, 0x05)))
-+	if (usb_pipe_type_check(dev, usb_sndintpipe(dev, 0x05)))
- 		return -EINVAL;
- 	buf = kmemdup(seq, ARRAY_SIZE(seq), GFP_KERNEL);
- 	if (!buf)
-@@ -875,7 +875,7 @@ static int snd_usb_nativeinstruments_boot_quirk(struct usb_device *dev)
- {
- 	int ret;
- 
--	if (snd_usb_pipe_sanity_check(dev, usb_sndctrlpipe(dev, 0)))
-+	if (usb_pipe_type_check(dev, usb_sndctrlpipe(dev, 0)))
- 		return -EINVAL;
- 	ret = usb_control_msg(dev, usb_sndctrlpipe(dev, 0),
- 				  0xaf, USB_TYPE_VENDOR | USB_RECIP_DEVICE,
-@@ -984,7 +984,7 @@ static int snd_usb_axefx3_boot_quirk(struct usb_device *dev)
- 
- 	dev_dbg(&dev->dev, "Waiting for Axe-Fx III to boot up...\n");
- 
--	if (snd_usb_pipe_sanity_check(dev, usb_sndctrlpipe(dev, 0)))
-+	if (usb_pipe_type_check(dev, usb_sndctrlpipe(dev, 0)))
- 		return -EINVAL;
- 	/* If the Axe-Fx III has not fully booted, it will timeout when trying
- 	 * to enable the audio streaming interface. A more generous timeout is
-@@ -1018,7 +1018,7 @@ static int snd_usb_motu_microbookii_communicate(struct usb_device *dev, u8 *buf,
- {
- 	int err, actual_length;
- 
--	if (snd_usb_pipe_sanity_check(dev, usb_sndintpipe(dev, 0x01)))
-+	if (usb_pipe_type_check(dev, usb_sndintpipe(dev, 0x01)))
- 		return -EINVAL;
- 	err = usb_interrupt_msg(dev, usb_sndintpipe(dev, 0x01), buf, *length,
- 				&actual_length, 1000);
-@@ -1030,7 +1030,7 @@ static int snd_usb_motu_microbookii_communicate(struct usb_device *dev, u8 *buf,
- 
- 	memset(buf, 0, buf_size);
- 
--	if (snd_usb_pipe_sanity_check(dev, usb_rcvintpipe(dev, 0x82)))
-+	if (usb_pipe_type_check(dev, usb_rcvintpipe(dev, 0x82)))
- 		return -EINVAL;
- 	err = usb_interrupt_msg(dev, usb_rcvintpipe(dev, 0x82), buf, buf_size,
- 				&actual_length, 1000);
-@@ -1117,7 +1117,7 @@ static int snd_usb_motu_m_series_boot_quirk(struct usb_device *dev)
- {
- 	int ret;
- 
--	if (snd_usb_pipe_sanity_check(dev, usb_sndctrlpipe(dev, 0)))
-+	if (usb_pipe_type_check(dev, usb_sndctrlpipe(dev, 0)))
- 		return -EINVAL;
- 	ret = usb_control_msg(dev, usb_sndctrlpipe(dev, 0),
- 			      1, USB_TYPE_VENDOR | USB_RECIP_DEVICE,
--- 
-2.28.0
+        /* XXX 12 bytes hole, try to pack */
 
+        call_single_data_t         nohz_csd;             /*    32    32 */
+        /* --- cacheline 1 boundary (64 bytes) --- */
+        unsigned int               nohz_tick_stopped;    /*    64     4 */
+        atomic_t                   nohz_flags;           /*    68     4 */
+        unsigned int               ttwu_pending;         /*    72     4 */
+
+        /* XXX 4 bytes hole, try to pack */
+
+        u64                        nr_switches;          /*    80     8 */
+	.
+	.
+	.
+	}
+
+dumps the struct rq {...}; which means one can easily use that to autogenerate
+a header containing the structs they care about accessing for their running
+kernel.
+
+pahole automatically knows how to find /sys/kernel/btf/vmlinux to parse the
+debug info btw.
+
+The only caveat is that one has to recompile the module for each running
+kernel; but that's acceptable I think. Not sure how many allow loading a module
+that's not compiled for that particular kernel version anyway.
+
+Note to try this you'll need pahole v1.16 or newer. And compiling pahole on
+Ubuntu is a pain. I had to create a fedora docker image to compile it in.
+
+So I think we have this already solved. Though not sure how to document it..
+
+Thanks
+
+--
+Qais Yousef
