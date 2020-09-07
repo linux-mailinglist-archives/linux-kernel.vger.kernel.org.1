@@ -2,113 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2AD72600DE
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 18:55:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC1DB260119
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 18:59:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731150AbgIGQzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 12:55:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32934 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730875AbgIGQzU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 12:55:20 -0400
-Received: from localhost (unknown [122.167.151.194])
+        id S1731176AbgIGQ72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 12:59:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38030 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730592AbgIGQ7C (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 12:59:02 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFA7DC061573;
+        Mon,  7 Sep 2020 09:58:59 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f090900c4f00348aacf37a5.dip0.t-ipconnect.de [IPv6:2003:ec:2f09:900:c4f0:348:aacf:37a5])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7C3A7208C7;
-        Mon,  7 Sep 2020 16:55:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599497719;
-        bh=RZjmdONo/8i3kJYH8JYLbprcFOu0SZPUSptiPG3+JEs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QwRkdSlw5ifquH2bt94iscfeZG6J1FXzC4tRR6o8+GXw3c+zxXVee+dciGSpRatRD
-         FOe/cOXEOSxHizq4KgmRS3LDI/dSft/VsggBsFaslSg6ite+vI3pdsqNDKfLwA8KKN
-         ERkb/4eBAxxzkgyAIMy4+dkj34ZnikDrJjZPZvVc=
-Date:   Mon, 7 Sep 2020 22:25:11 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Tom Rix <trix@redhat.com>
-Cc:     yung-chuan.liao@linux.intel.com,
-        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
-        natechancellor@gmail.com, ndesaulniers@google.com,
-        guennadi.liakhovetski@linux.intel.com,
-        kai.vehmanen@linux.intel.com, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] soundwire: stream: fix an invalid free
-Message-ID: <20200907165511.GE2639@vkoul-mobl>
-References: <20200905192613.420-1-trix@redhat.com>
- <20200907141402.GC2639@vkoul-mobl>
- <93b672ef-76c9-e87c-4526-897b0af01945@redhat.com>
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id EA64B1EC00F4;
+        Mon,  7 Sep 2020 18:58:57 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1599497938;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=f8SfAAyXeqxq2AQb205NNpHyD9AfmQyyAEljoRCFv6k=;
+        b=KXJWYBon+qIU3Dc1jqyEl0uksmyVwjboVTQXyWOm6FdZvFVbSLGKec6ejmWNdxVLAbIvwp
+        WFdL1LkX10BO5BGgpGw/Ma5JeXuDn2PCoEpdZMW/06MnMg6plGn/rQ/eG7Ad1IIX/E/Ndk
+        LYheDfFOoz3D0esSwEqyajhwcrvprWo=
+Date:   Mon, 7 Sep 2020 18:58:51 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     x86@kernel.org, Joerg Roedel <jroedel@suse.de>, hpa@zytor.com,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        David Rientjes <rientjes@google.com>,
+        Cfir Cohen <cfir@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mike Stunes <mstunes@vmware.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v7 19/72] x86/boot/compressed/64: Add stage1 #VC handler
+Message-ID: <20200907165851.GE16029@zn.tnic>
+References: <20200907131613.12703-1-joro@8bytes.org>
+ <20200907131613.12703-20-joro@8bytes.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <93b672ef-76c9-e87c-4526-897b0af01945@redhat.com>
+In-Reply-To: <20200907131613.12703-20-joro@8bytes.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07-09-20, 07:25, Tom Rix wrote:
-> 
-> On 9/7/20 7:14 AM, Vinod Koul wrote:
-> > Hello Tom,
-> >
-> > On 05-09-20, 12:26, trix@redhat.com wrote:
-> >> From: Tom Rix <trix@redhat.com>
-> >>
-> >> clang static analyzer reports this problem
-> >>
-> >> stream.c:872:2: warning: Argument to kfree() is a constant
-> >>   address (18446744073709551092), which is not memory
-> >>   allocated by malloc()
-> >>         kfree(stream);
-> >>         ^~~~~~~~~~~~~
-> >>
-> >> In sdw_shutdown_stream() the stream to free is set by
-> >> a call to snd_soc_dai_get_sdw_stream().  The problem block
-> >> is the check if the call was successful.
-> >>
-> >> 	if (!sdw_stream) {
-> >> 		dev_err(rtd->dev, "no stream found...
-> >> 		return;
-> >> 	}
-> >>
-> >> When snd_soc_dai_get_sdw_stream() fails, it does not
-> >> always return null, sometimes it returns -ENOTSUPP.
-> >>
-> >> So also check for error codes.
-> >> Fixes: 4550569bd779 ("soundwire: stream: add helper to startup/shutdown streams")
-> >> Signed-off-by: Tom Rix <trix@redhat.com>
-> >> ---
-> >>  drivers/soundwire/stream.c | 2 +-
-> >>  1 file changed, 1 insertion(+), 1 deletion(-)
-> >>
-> >> diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
-> >> index 6e36deb505b1..950231d593c2 100644
-> >> --- a/drivers/soundwire/stream.c
-> >> +++ b/drivers/soundwire/stream.c
-> >> @@ -1913,7 +1913,7 @@ void sdw_shutdown_stream(void *sdw_substream)
-> >>  
-> >>  	sdw_stream = snd_soc_dai_get_sdw_stream(dai, substream->stream);
-> >>  
-> >> -	if (!sdw_stream) {
-> >> +	if (IS_ERR_OR_NULL(sdw_stream)) {
-> > Thanks for the patch. Please see commit 3471d2a192ba ("soundwire:
-> > stream: fix NULL/IS_ERR confusion") in soundwire-next. This has already
-> > been updated to IS_ERR() and Bard has already sent patches for
-> > snd_soc_dai_get_sdw_stream() to return proper values.
-> >
-> > So I you can rerun this on next, you should see this fixed.
-> 
-> I am working on linux-next, so I will see Bard's patch when it lands there.
+On Mon, Sep 07, 2020 at 03:15:20PM +0200, Joerg Roedel wrote:
+> +static inline u64 sev_es_rd_ghcb_msr(void)
+> +{
+> +	unsigned long low, high;
+> +
+> +	asm volatile("rdmsr\n" : "=a" (low), "=d" (high) :
+> +			"c" (MSR_AMD64_SEV_ES_GHCB));
+> +
+> +	return ((high << 32) | low);
+> +}
+> +
+> +static inline void sev_es_wr_ghcb_msr(u64 val)
+> +{
+> +	u32 low, high;
+> +
+> +	low  = val & 0xffffffffUL;
+> +	high = val >> 32;
+> +
+> +	asm volatile("wrmsr\n" : : "c" (MSR_AMD64_SEV_ES_GHCB),
+			   ^^
 
-It should be already there... And I checked, looks like there was no
-linux-next for last few days and it should be back tomorrow so should be
-there
-
-> 
-> Sorry for not working on soundwire-next, but since i am fixing everywhere linux-next is easiest. 
-
-Agree, timing this time around!
+No need for that newline and the one above. I've zapped it while applying.
 
 -- 
-~Vinod
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
