@@ -2,169 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F417225F189
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 03:48:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 215D725F18D
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 03:50:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726286AbgIGBsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Sep 2020 21:48:32 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:59360 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725773AbgIGBs2 (ORCPT
+        id S1726372AbgIGBu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Sep 2020 21:50:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39438 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726339AbgIGBu0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Sep 2020 21:48:28 -0400
-Received: from epcas2p4.samsung.com (unknown [182.195.41.56])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200907014822epoutp01acaa1533e22d19b06fdfa11ea896ca9a~yXTWRx2Cd1036210362epoutp01J
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 01:48:22 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200907014822epoutp01acaa1533e22d19b06fdfa11ea896ca9a~yXTWRx2Cd1036210362epoutp01J
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1599443302;
-        bh=zhRSKR22CkR6gxmuHLjLo1wCkOI8aoqrNBBp3orQ4XY=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=hHVVBsL/JqOYls9x1VK7AbNBMB3IqjdNPE9UzxetcYEykiT8kFwMECyGWKc4i5qHb
-         SrK23hTdrn0lHKoDMCFoS+FlMsijgsC7MvoAN4eFwO+5cXBre+KvtWf+W+JmVNGxC9
-         wUne114+8QHRoZS2Yp5KQ77ajlV9c0F7wkzx/i4I=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
-        20200907014821epcas2p1a340e875134e1bae3868a591671a1d52~yXTVr6dpa0736907369epcas2p1p;
-        Mon,  7 Sep 2020 01:48:21 +0000 (GMT)
-Received: from epsmges2p3.samsung.com (unknown [182.195.40.183]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 4BlB4y2pK3zMqYmM; Mon,  7 Sep
-        2020 01:48:18 +0000 (GMT)
-Received: from epcas2p3.samsung.com ( [182.195.41.55]) by
-        epsmges2p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        C8.FF.27441.061955F5; Mon,  7 Sep 2020 10:48:17 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas2p4.samsung.com (KnoxPortal) with ESMTPA id
-        20200907014816epcas2p44dc5d7b8df2074ce8b085d5b86052ca5~yXTRGZJjx2562125621epcas2p4T;
-        Mon,  7 Sep 2020 01:48:16 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200907014816epsmtrp19701ba7715f88118cd7ae13881718a31~yXTRFkIeX0832008320epsmtrp1c;
-        Mon,  7 Sep 2020 01:48:16 +0000 (GMT)
-X-AuditID: b6c32a47-fc5ff70000006b31-4b-5f559160b757
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        78.59.08382.061955F5; Mon,  7 Sep 2020 10:48:16 +0900 (KST)
-Received: from KORDD001994 (unknown [12.36.185.71]) by epsmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20200907014816epsmtip11ff55de9e5da1c0a71674f5d9ce96ffa~yXTQ3LWOc1685716857epsmtip1O;
-        Mon,  7 Sep 2020 01:48:16 +0000 (GMT)
-From:   =?utf-8?B?6rmA7LC96riw?= <changki.kim@samsung.com>
-To:     "'Greg KH'" <gregkh@linuxfoundation.org>
-Cc:     <pmladek@suse.com>, <sergey.senozhatsky@gmail.com>,
-        <rostedt@goodmis.org>, <john.ogness@linutronix.de>,
-        <masahiroy@kernel.org>, <rd.dunlap@gmail.com>, <krzk@kernel.org>,
-        <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200904103445.GA2693206@kroah.com>
-Subject: RE: printk: Add process name information to printk() output.
-Date:   Mon, 7 Sep 2020 10:48:16 +0900
-Message-ID: <000001d684b8$f48c4290$dda4c7b0$@samsung.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQMW8ccY1/AbwLmEvIpBmAjIk1luugFhZewlAjg6wOsDEhHwGQJnpmqYppLrVNA=
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrJJsWRmVeSWpSXmKPExsWy7bCmuW7ixNB4gyc7mS2aF69ns9h2ZT6j
-        xfnzG9gtLu+aw2bx8MENVov/j7+yWrzY3Mlqsa/jAZPF2s+P2R04PXbOusvu0bLvFrvHplWd
-        bB7vzp1j99g/dw27x/otV1k8Pm+SC2CPyrHJSE1MSS1SSM1Lzk/JzEu3VfIOjneONzUzMNQ1
-        tLQwV1LIS8xNtVVy8QnQdcvMATpNSaEsMacUKBSQWFyspG9nU5RfWpKqkJFfXGKrlFqQklNg
-        aFigV5yYW1yal66XnJ9rZWhgYGQKVJmQk7H/wirmggb5ilsb9zE3MPbKdTFyckgImEisXLGO
-        qYuRi0NIYAejxJEv11ggnE+MEpNWvmSFcL4xSrR3XWLsYuQAa5n9XhwivpdRYt/nG4wQzgtG
-        iTPnXrCCFLEJWEj8vl8NskJEQEei48wJsKnMAhcYJXq+T2YCSXAKGEqs/HyIEcQWFnCVeH3y
-        HTuIzSKgIrF62WEWkDm8ApYSP29WgYR5BQQlTs58wgJiMwtoSyxb+JoZ4gUFiZ9Pl7FC7PKT
-        eP5mKytEjYjE7M42ZpC9EgI7OCRe9V5lh2hwkbg8qYsJwhaWeHV8C1RcSuJlfxuUXS/xrX8B
-        C0RzD6PE367jbBAJY4lZz9rBIcEsoCmxfpc+JFCUJY7cgrqNT6Lj8F92iDCvREebEISpKtE9
-        GapYWuLDDpsJjEqzkPw1C8lfs5DcPwth0wJGllWMYqkFxbnpqcVGBcbIMb2JEZxmtdx3MM54
-        +0HvECMTB+MhRgkOZiURXo9zgfFCvCmJlVWpRfnxRaU5qcWHGE2BAT2RWUo0OR+Y6PNK4g1N
-        jczMDCxNLUzNjCyUxHmLrS7ECQmkJ5akZqemFqQWwfQxcXBKNTAZhKduc72RU9qQfe3+rmTB
-        a3Ux5/yrt9WuVmEMjS96MP1g8d3gnXMuz+KaPuVGVLDa9c8i/L4fN13/7iqfpJi658Ya4UO+
-        x4z09p1lNj5yNmjtKw+OUzc2rk77OfPiwVkmm9TT1q3zFzKRWZoyeV2TUOm3xW8vLYuOLRRq
-        T2pePH/Rrb//wyeI3DltOVlmz8R7P/Zn30uIT144g+uT4qGnxe/nVLucOvZKqirg/50ZDt//
-        iGu0zE1XdteadahwivNey3OXd7Mdm3Jza+bSY/LHlAsPLehalGAXPidKvWv2K2uLp2typW4J
-        Houy8DOvMY7ZrrafNXvLrq0Lzx6e/UPy4Pcg86/uvVe/xi84dWxBlIsSS3FGoqEWc1FxIgAV
-        h9QPPAQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprCIsWRmVeSWpSXmKPExsWy7bCSnG7CxNB4g3031CyaF69ns9h2ZT6j
-        xfnzG9gtLu+aw2bx8MENVov/j7+yWrzY3Mlqsa/jAZPF2s+P2R04PXbOusvu0bLvFrvHplWd
-        bB7vzp1j99g/dw27x/otV1k8Pm+SC2CP4rJJSc3JLEst0rdL4Mo4/HkOY8FD4YppT/4yNzAe
-        5eti5OCQEDCRmP1evIuRi0NIYDejxKHZ+5i6GDmB4tISx1/NZoewhSXutxxhBbGFBJ4xSnxa
-        KwrSyyZgIfH7fjVIWERAR6LjzAkWkDnMArcYJVZ8eMQOUd/GJPFhhyeIzSlgKLHy8yFGEFtY
-        wFXi9cl3YDUsAioSq5cdZgGZyStgKfHzZhVImFdAUOLkzCcsIDazgLbE05tP4exlC18zQ5ym
-        IPHz6TJWiBv8JJ6/2coKUSMiMbuzjXkCo/AsJKNmIRk1C8moWUhaFjCyrGKUTC0ozk3PLTYs
-        MMxLLdcrTswtLs1L10vOz93ECI44Lc0djNtXfdA7xMjEwXiIUYKDWUmE1+NcYLwQb0piZVVq
-        UX58UWlOavEhRmkOFiVx3huFC+OEBNITS1KzU1MLUotgskwcnFINTNt36+xhX+ruXRneP/vD
-        C8buFbyV9acWnavLEspft4knZV3zlJczbOy3x66+krx06r8zr19t9kkLDV6evdBm58bnyztK
-        WnULTCSYnlx+cMI4yS9wc8QplpmaESKLXVN/788tvtU+ydderVG9TNzC1urX5a2CzNKr1A39
-        xB/V699oWcRtK1YWWW67b1qD0bRzp2dYLRX1+6s/V6PLuOrqnqzrYdIVl3OdUvmSX1z5P291
-        NFPhF871V7uN3GOWZ3O1TAyNE9SdYO4cU/b+Wdd7RX5uFxaORXXtriWLk0X+/lTVvekS51Lw
-        8f23hY0FTSoZKrnmVQ1n1M+f/Vr7fXNXRvs+m8+rtD/FnAmOrY1TYinOSDTUYi4qTgQAb7Mu
-        SScDAAA=
-X-CMS-MailID: 20200907014816epcas2p44dc5d7b8df2074ce8b085d5b86052ca5
-X-Msg-Generator: CA
+        Sun, 6 Sep 2020 21:50:26 -0400
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E634C061574
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Sep 2020 18:50:25 -0700 (PDT)
+Received: from mmarshal3.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 58F46891B0;
+        Mon,  7 Sep 2020 13:50:14 +1200 (NZST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1599443414;
+        bh=HaJSV/JZqCspnyNj8zH+yoo1VQmuoQY74/gtMgoAgNQ=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To;
+        b=h/gG0S98yHoeXto/fR4Hwd5AQd0EAD6TzxRfCNNS3ob9UzvE6MfXY4n0N4j5sDGPz
+         AHzn2bSGREZexZwFeBFBeRagRRQAkP0GxrcxZcQy7y5Kwl51bizjPlGfRgq02mc2KA
+         fYGtCm4bdHi5dh3c8AtmMPu5IJXNMVUzxJNNhulA4zp/X4xzl25EuxJHDj+Jl7p+08
+         zrKcBMTRd0h95Z1ANDjYkiz3MzRkJxsgT+5NiAyz8tmBYXDEUTLdIXJKTwjowJinGh
+         NBz7QHoraZ2gZi24frK+EOaA63BMZMAezqGP1/DBrL0p+DjKgdD4ElDcDS9Kg1wuWB
+         fHhLftl38Uk9w==
+Received: from svr-chch-ex1.atlnz.lc (Not Verified[10.32.16.77]) by mmarshal3.atlnz.lc with Trustwave SEG (v7,5,8,10121)
+        id <B5f5591d60000>; Mon, 07 Sep 2020 13:50:14 +1200
+Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) by
+ svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.2; Mon, 7 Sep 2020 13:50:10 +1200
+Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
+ svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
+ 15.00.1497.006; Mon, 7 Sep 2020 13:50:10 +1200
+From:   Hamish Martin <Hamish.Martin@alliedtelesis.co.nz>
+To:     "stern@rowland.harvard.edu" <stern@rowland.harvard.edu>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+Subject: Re: [PATCH 1/2] usb: ohci: Add per-port overcurrent quirk
+Thread-Topic: [PATCH 1/2] usb: ohci: Add per-port overcurrent quirk
+Thread-Index: AQHWgmqw+C7I38zeeUyVpdiHcFIeNalX1saAgAPNqgA=
+Date:   Mon, 7 Sep 2020 01:50:10 +0000
+Message-ID: <9ba7b4dda9ef40e3c4c9b3f1c33075e04601ef61.camel@alliedtelesis.co.nz>
+References: <20200904032247.11345-1-hamish.martin@alliedtelesis.co.nz>
+         <20200904032247.11345-2-hamish.martin@alliedtelesis.co.nz>
+         <20200904154517.GB694058@rowland.harvard.edu>
+In-Reply-To: <20200904154517.GB694058@rowland.harvard.edu>
+Accept-Language: en-NZ, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [2001:df5:b000:24:f8a2:c861:f25b:236e]
 Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20200904082449epcas2p4420d5df2083325b328a182c79f5c0948
-References: <CGME20200904082449epcas2p4420d5df2083325b328a182c79f5c0948@epcas2p4.samsung.com>
-        <20200904082438.20707-1-changki.kim@samsung.com>
-        <20200904090535.GA2440145@kroah.com>
-        <000001d6829e$2226cc60$66746520$@samsung.com>
-        <20200904103445.GA2693206@kroah.com>
+Content-ID: <1984D23B95FD2943BBE9AF67343ED460@atlnz.lc>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Fri, Sep 04, 2020 at 06:31:13PM +0900,   =C3=A2=20=20=20wrote:=0D=0A>=
-=20>=20>=20On=20Fri,=20Sep=2004,=202020=20at=2005:24:38PM=20+0900,=20Changk=
-i=20Kim=20wrote:=0D=0A>=20>=20>=20>=20Printk()=20meesages=20are=20the=20mos=
-t=20basic=20and=20useful=20debug=20method.=0D=0A>=20>=20>=20>=20However,=20=
-additional=20information=20needs=20in=20multi-processor.=0D=0A>=20>=20>=20>=
-=20If=20we=20add=20messages=20with=20processor=20id=20and=20process=20name,=
-=20we=20can=20find=0D=0A>=20>=20>=20>=20a=20problem=20only=20with=20message=
-s=20when=20the=20problem=20occurs=20with=20H/W=20IP=20or=0D=0A>=20CPU.=0D=
-=0A>=20>=20>=20>=20This=20is=20very=20useful=20in=20narrowing=20down=20the=
-=20scope=20of=20the=20problems.=0D=0A>=20>=20>=20>=0D=0A>=20>=20>=20>=20The=
-refore,=20instead=20of=20trying=20to=20help=20buffering,=20let's=20try=20to=
-=20help=0D=0A>=20>=20>=20>=20reconstructing=20messages=20by=20saving=20call=
-er=20information=20as=20of=20calling=0D=0A>=20>=20>=20>=20log_store()=20and=
-=20adding=20it=20as=20=22=5B=24processor_id:=20=24process_name:=0D=0A>=20>=
-=20>=20=24thread_id=5D=22=0D=0A>=20>=20>=20>=20upon=20printing=20to=20conso=
-les.=0D=0A>=20>=20>=20>=0D=0A>=20>=20>=20>=20Some=20examples=20for=20consol=
-e=20output:=0D=0A>=20>=20>=20>=0D=0A>=20>=20>=20>=20=20=20=5B=20=20=20=200.=
-059580=5D=20=5B0:=20=20=20=20=20=20swapper/0:=20=20=20=201=5D=20CPU:=20All=
-=20CPU(s)=20started=20at=0D=0A>=20>=20EL1i=0D=0A>=20>=20>=20>=20=20=20=5B=
-=20=20=20=202.153157=5D=20=5B5:=20=20=20=20=20=20=20=20=20=20=20init:=20=20=
-=20=201=5D=20migov:=20complete=20to=20probe=0D=0A>=20>=20migov=0D=0A>=20>=
-=20>=20>=20=20=20=5B=20=20=20=207.441317=5D=20=5B4:=20=20=20=20=20=20=20=20=
-=20=20=20init:=20=20=20=201=5D=20NET:=20Registered=20protocol=0D=0A>=20>=20=
-family=2039=0D=0A>=20>=20>=20>=20=20=20=5B=20=20=2022.793389=5D=20=5B5:=20=
-=20kworker/u16:1:=20=20184=5D=20SMP:=20stopping=20secondary=0D=0A>=20CPUs=
-=0D=0A>=20>=20>=20>=0D=0A>=20>=20>=20>=20Signed-off-by:=20Changki=20Kim=20<=
-changki.kim=40samsung.com>=0D=0A>=20>=20>=20>=20---=0D=0A>=20>=20>=20>=20=
-=20kernel/printk/printk.c=20=20=20=20=20=20=20=20=20=20=20=20=7C=2020=20+++=
-+++++++++++++++--=0D=0A>=20>=20>=20>=20=20kernel/printk/printk_ringbuffer.h=
-=20=7C=20=207=20+++++++=0D=0A>=20>=20>=20>=20=20lib/Kconfig.debug=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20=20=7C=2016=20++++++++++++++++=0D=0A=
->=20>=20>=20>=20=203=20files=20changed,=2041=20insertions(+),=202=20deletio=
-ns(-)=0D=0A>=20>=20>=0D=0A>=20>=20>=20Isn't=20the=20CPU=20number=20already=
-=20present=20if=20you=20want=20it=20today?=20=20Why=20add=0D=0A>=20>=20>=20=
-it=20again?=0D=0A>=20>=20>=0D=0A>=20>=20>=20thanks,=0D=0A>=20>=20>=0D=0A>=
-=20>=20>=20greg=20k-h=0D=0A>=20>=0D=0A>=20>=20CPU=20number=20isn't=20presen=
-t=20now.=20If=20I=20enabled=20PRINTK_CALLER,=20then=20it=20is=0D=0A>=20>=20=
-present=20cpu=20id=20or=20thread=20id.=0D=0A>=20=0D=0A>=20Great,=20that=20s=
-hould=20give=20you=20what=20you=20need=20here,=20right?=0D=0A>=20=0D=0A>=20=
->=20The=20config=20isn't=20always=20present=20cpu=20id.=0D=0A>=20=0D=0A>=20=
-What=20do=20you=20mean?=0D=0A=0D=0AWhen=20PRINTK_CALLER=20is=20enabled,=20c=
-pu=20id=20or=20thread=20id=20are=20present.=20not=20always=20cpu=20id.=0D=
-=0A>=20=0D=0A>=20>=20We=20need=20cpu=20id=20each=20each=20message.=0D=0A>=
-=20=0D=0A>=20Why=20each=20message?=20=20What=20does=20that=20provide=20you?=
-=0D=0A=0D=0AIn=20mobile=20project,=20Sometimes=20we=20can=20meet=20the=20pr=
-oblem=20in=20the=20physically=20cpu.=0D=0AIt=20is=20important=20to=20know=
-=20cpu=20id=20for=20H/W=20Issue.=0D=0A>=20=0D=0A>=20And=20if=20PRINTK_CALLE=
-R=20does=20not=20work=20properly,=20please=20fix=20it.=20=20I=20don't=20see=
-=0D=0A>=20how=20it=20would=20not=20work=20any=20different=20from=20your=20p=
-atch,=20you=20shouldn't=0D=0A>=20duplicate=20things.=0D=0A=0D=0APRINTK_CALL=
-ER=20worked=20well.=0D=0A>=20=0D=0A>=20thanks,=0D=0A>=20=0D=0A>=20greg=20k-=
-h=0D=0A=0D=0A
+SGkgQWxhbiwNCg0KVGhhbmtzIGZvciB5b3VyIHF1aWNrIGZlZWRiYWNrLiBNeSByZXBsaWVzIGFy
+ZSBpbmxpbmUgYmVsb3cuDQoNCk9uIEZyaSwgMjAyMC0wOS0wNCBhdCAxMTo0NSAtMDQwMCwgQWxh
+biBTdGVybiB3cm90ZToNCj4gT24gRnJpLCBTZXAgMDQsIDIwMjAgYXQgMDM6MjI6NDZQTSArMTIw
+MCwgSGFtaXNoIE1hcnRpbiB3cm90ZToNCj4gPiBTb21lIGludGVncmF0ZWQgT0hDSSBjb250cm9s
+bGVyIGh1YnMgZG8gbm90IGV4cG9zZSBhbGwgcG9ydHMgb2YgdGhlDQo+ID4gaHViDQo+ID4gdG8g
+cGlucyBvbiB0aGUgU29DLiBJbiBzb21lIGNhc2VzIHRoZSB1bmNvbm5lY3RlZCBwb3J0cyBnZW5l
+cmF0ZQ0KPiA+IHNwdXJpb3VzIG92ZXJjdXJyZW50IGV2ZW50cy4gRm9yIGV4YW1wbGUgdGhlIEJy
+b2FkY29tIDU2MDYwL1Jhbmdlcg0KPiA+IDIgU29DDQo+ID4gY29udGFpbnMgYSBub21pbmFsbHkg
+MyBwb3J0IGh1YiBidXQgb25seSB0aGUgZmlyc3QgcG9ydCBpcyB3aXJlZC4NCj4gPiANCj4gPiBE
+ZWZhdWx0IGJlaGF2aW91ciBmb3Igb2hjaS1wbGF0Zm9ybSBkcml2ZXIgaXMgdG8gdXNlICJnYW5n
+ZWQiDQo+ID4gb3ZlcmN1cnJlbnQgcHJvdGVjdGlvbiBtb2RlLiBUaGlzIGxlYWRzIHRvIHRoZSBz
+cHVyaW91cyBvdmVyY3VycmVudA0KPiA+IGV2ZW50cyBhZmZlY3RpbmcgYWxsIHBvcnRzIGluIHRo
+ZSBodWIuDQo+ID4gDQo+ID4gQWxsb3cgdGhpcyB0byBiZSByZWN0aWZpZWQgYnkgc3BlY2lmeWlu
+ZyBwZXItcG9ydCBvdmVyY3VycmVudA0KPiA+IHByb3RlY3Rpb24NCj4gPiBtb2RlIHZpYSB0aGUg
+ZGV2aWNlIHRyZWUuDQo+ID4gDQo+ID4gU2lnbmVkLW9mZi1ieTogSGFtaXNoIE1hcnRpbiA8aGFt
+aXNoLm1hcnRpbkBhbGxpZWR0ZWxlc2lzLmNvLm56Pg0KPiA+IC0tLQ0KPiA+ICBkcml2ZXJzL3Vz
+Yi9ob3N0L29oY2ktaGNkLmMgICAgICB8IDQgKysrKw0KPiA+ICBkcml2ZXJzL3VzYi9ob3N0L29o
+Y2ktcGxhdGZvcm0uYyB8IDMgKysrDQo+ID4gIGRyaXZlcnMvdXNiL2hvc3Qvb2hjaS5oICAgICAg
+ICAgIHwgMSArDQo+ID4gIDMgZmlsZXMgY2hhbmdlZCwgOCBpbnNlcnRpb25zKCspDQo+ID4gDQo+
+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvdXNiL2hvc3Qvb2hjaS1oY2QuYyBiL2RyaXZlcnMvdXNi
+L2hvc3Qvb2hjaS0NCj4gPiBoY2QuYw0KPiA+IGluZGV4IGRkMzdlNzdkYWUwMC4uMDFlM2Q3NWUy
+OWQ5IDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvdXNiL2hvc3Qvb2hjaS1oY2QuYw0KPiA+ICsr
+KyBiL2RyaXZlcnMvdXNiL2hvc3Qvb2hjaS1oY2QuYw0KPiA+IEBAIC02ODcsNiArNjg3LDEwIEBA
+IHN0YXRpYyBpbnQgb2hjaV9ydW4gKHN0cnVjdCBvaGNpX2hjZCAqb2hjaSkNCj4gPiAgCQl2YWwg
+fD0gUkhfQV9OUFM7DQo+ID4gIAkJb2hjaV93cml0ZWwgKG9oY2ksIHZhbCwgJm9oY2ktPnJlZ3Mt
+PnJvb3RodWIuYSk7DQo+ID4gIAl9DQo+ID4gKwlpZiAob2hjaS0+ZmxhZ3MgJiBPSENJX1FVSVJL
+X1BFUl9QT1JUX09DKSB7DQo+ID4gKwkJdmFsIHw9IFJIX0FfT0NQTTsNCj4gPiArCQlvaGNpX3dy
+aXRlbChvaGNpLCB2YWwsICZvaGNpLT5yZWdzLT5yb290aHViLmEpOw0KPiA+ICsJfQ0KPiANCj4g
+SSBkb24ndCB0aGluayB0aGlzIGlzIHJpZ2h0LCBmb3IgdHdvIHJlYXNvbnMuICBGaXJzdCwgaXNu
+J3QgcGVyLXBvcnQgDQo+IG92ZXJjdXJyZW50IHByb3RlY3Rpb24gdGhlIGRlZmF1bHQ/DQoNCk5v
+dCBhcyBmYXIgYXMgSSB1bmRlcnN0YW5kIHRoZSBjdXJyZW50IGNvZGUuIEp1c3QgYWJvdmUgd2hl
+cmUgbXkgcGF0Y2gNCmFwcGxpZXMsIHRoZSBSSF9BX09DUE0gKGFuZCBSSF9BX1BTTSkgYml0cyBh
+cmUgZXhwbGljaXRseSBjbGVhcmVkIGluDQondmFsJyB3aXRoOg0KICAgIHZhbCAmPSB+KFJIX0Ff
+UFNNIHwgUkhfQV9PQ1BNKTsNCg0KVGhpcywgY291cGxlZCB3aXRoIHRoZSBPSENJX1FVSVJLX0hV
+Ql9QT1dFUiBiZWluZyBzZXQgYnkgdmlydHVlIG9mIHRoZQ0KJ2Rpc3RydXN0X2Zpcm13YXJlJyBt
+b2R1bGUgcGFyYW0gZGVmYXVsdGluZyB0cnVlLCByZWFkcyB0byBtZSBsaWtlIHRoZQ0KZGVmYXVs
+dCBpcyBmb3IgZ2FuZ2VkIG92ZXItY3VycmVudCBwcm90ZWN0aW9uLiBBbmQgdGhhdCBpcyBteQ0K
+ZXhwZXJpZW5jZSBpbiB0aGlzIGNhc2UuIA0KSWYgbm9uZSBvZiB0aGUgcXVpcmtzIGFyZSBzZWxl
+Y3RlZCB0aGVuIGFsbCBvZiB0aGUgZmlkZGxpbmcgd2l0aCAndmFsJw0KbmV2ZXIgZ2V0cyB3cml0
+dGVuIHRvICdvaGNpLT5yZWdzLT5yb290aHViLmEnDQoNCkknZCBhcHByZWNpYXRlIHlvdXIgcmVh
+ZGluZyBvZiB0aGF0IGFuYWx5c2lzIGJlY2F1c2UgSSdtIGJ5IG5vIG1lYW5zDQpzdXJlIG9mIGl0
+Lg0KDQo+IA0KPiBTZWNvbmQsIFJIX0FfT0NQTSBkb2Vzbid0IGRvIGFueXRoaW5nIHVubGVzcyBS
+SF9BX05PQ1AgaXMgY2xlYXIuDQoNCkNvcnJlY3QsIGFuZCB0aGF0IGlzIG15IG1pc3Rha2UuIElm
+IEkgcHJvZ3Jlc3MgdG8gYSB2MiBvZiB0aGlzIHBhdGNoIEkNCndpbGwgdXBkYXRlIGFjY29yZGlu
+Z2x5Lg0KDQpUaGFua3MsDQpIYW1pc2ggTWFydGluDQoNCj4gDQo+IEFsYW4gU3Rlcm4NCj4gDQo+
+ID4gIAlvaGNpX3dyaXRlbCAob2hjaSwgUkhfSFNfTFBTQywgJm9oY2ktPnJlZ3MtPnJvb3RodWIu
+c3RhdHVzKTsNCj4gPiAgCW9oY2lfd3JpdGVsIChvaGNpLCAodmFsICYgUkhfQV9OUFMpID8gMCA6
+IFJIX0JfUFBDTSwNCj4gPiAgCQkJCQkJJm9oY2ktPnJlZ3MtDQo+ID4gPnJvb3RodWIuYik7DQo+
+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvdXNiL2hvc3Qvb2hjaS1wbGF0Zm9ybS5jDQo+ID4gYi9k
+cml2ZXJzL3VzYi9ob3N0L29oY2ktcGxhdGZvcm0uYw0KPiA+IGluZGV4IDRhODQ1NmYxMmE3My4u
+NDVlNjljZTRlZjg2IDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvdXNiL2hvc3Qvb2hjaS1wbGF0
+Zm9ybS5jDQo+ID4gKysrIGIvZHJpdmVycy91c2IvaG9zdC9vaGNpLXBsYXRmb3JtLmMNCj4gPiBA
+QCAtMTM3LDYgKzEzNyw5IEBAIHN0YXRpYyBpbnQgb2hjaV9wbGF0Zm9ybV9wcm9iZShzdHJ1Y3QN
+Cj4gPiBwbGF0Zm9ybV9kZXZpY2UgKmRldikNCj4gPiAgCQlpZiAob2ZfcHJvcGVydHlfcmVhZF9i
+b29sKGRldi0+ZGV2Lm9mX25vZGUsICJuby1iaWctDQo+ID4gZnJhbWUtbm8iKSkNCj4gPiAgCQkJ
+b2hjaS0+ZmxhZ3MgfD0gT0hDSV9RVUlSS19GUkFNRV9OTzsNCj4gPiAgDQo+ID4gKwkJaWYgKG9m
+X3Byb3BlcnR5X3JlYWRfYm9vbChkZXYtPmRldi5vZl9ub2RlLCAicGVyLXBvcnQtDQo+ID4gb3Zl
+cmN1cnJlbnQiKSkNCj4gPiArCQkJb2hjaS0+ZmxhZ3MgfD0gT0hDSV9RVUlSS19QRVJfUE9SVF9P
+QzsNCj4gPiArDQo+ID4gIAkJaWYgKG9mX3Byb3BlcnR5X3JlYWRfYm9vbChkZXYtPmRldi5vZl9u
+b2RlLA0KPiA+ICAJCQkJCSAgInJlbW90ZS13YWtldXAtY29ubmVjdGVkIikpDQo+ID4gIAkJCW9o
+Y2ktPmhjX2NvbnRyb2wgPSBPSENJX0NUUkxfUldDOw0KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJz
+L3VzYi9ob3N0L29oY2kuaCBiL2RyaXZlcnMvdXNiL2hvc3Qvb2hjaS5oDQo+ID4gaW5kZXggYWFj
+NjI4NWIzN2Y4Li45YzJiYzgxNjI0NmMgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVycy91c2IvaG9z
+dC9vaGNpLmgNCj4gPiArKysgYi9kcml2ZXJzL3VzYi9ob3N0L29oY2kuaA0KPiA+IEBAIC00MjIs
+NiArNDIyLDcgQEAgc3RydWN0IG9oY2lfaGNkIHsNCj4gPiAgI2RlZmluZQlPSENJX1FVSVJLX0FN
+RF9QUkVGRVRDSAkweDQwMAkJCS8qDQo+ID4gcHJlLWZldGNoIGZvciBJU08gdHJhbnNmZXIgKi8N
+Cj4gPiAgI2RlZmluZQlPSENJX1FVSVJLX0dMT0JBTF9TVVNQRU5ECTB4ODAwCQkvKiBtdXN0DQo+
+ID4gc3VzcGVuZCBwb3J0cyAqLw0KPiA+ICAjZGVmaW5lCU9IQ0lfUVVJUktfUUVNVQkJMHgxMDAw
+CQkJLyoNCj4gPiByZWxheCB0aW1pbmcgZXhwZWN0YXRpb25zICovDQo+ID4gKyNkZWZpbmUJT0hD
+SV9RVUlSS19QRVJfUE9SVF9PQwkweDIwMDAJCQkvKg0KPiA+IHBlci1wb3J0IG92ZXJjdXJyZW50
+IHByb3RlY3Rpb24gKi8NCj4gPiAgDQo+ID4gIAkvLyB0aGVyZSBhcmUgYWxzbyBjaGlwIHF1aXJr
+cy9idWdzIGluIGluaXQgbG9naWMNCj4gPiAgDQo+ID4gLS0gDQo+ID4gMi4yOC4wDQo+ID4gDQo=
