@@ -2,121 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DF6425F6C5
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 11:43:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B43B425F6CD
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 11:46:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728394AbgIGJnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 05:43:20 -0400
-Received: from a.mx.secunet.com ([62.96.220.36]:60318 "EHLO a.mx.secunet.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726301AbgIGJnT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 05:43:19 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by a.mx.secunet.com (Postfix) with ESMTP id 368CF201CC;
-        Mon,  7 Sep 2020 11:43:16 +0200 (CEST)
-X-Virus-Scanned: by secunet
-Received: from a.mx.secunet.com ([127.0.0.1])
-        by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id DrTO_au6XWdt; Mon,  7 Sep 2020 11:43:15 +0200 (CEST)
-Received: from mail-essen-02.secunet.de (mail-essen-02.secunet.de [10.53.40.205])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by a.mx.secunet.com (Postfix) with ESMTPS id 65E4D2009B;
-        Mon,  7 Sep 2020 11:43:15 +0200 (CEST)
-Received: from mbx-essen-01.secunet.de (10.53.40.197) by
- mail-essen-02.secunet.de (10.53.40.205) with Microsoft SMTP Server (TLS) id
- 14.3.487.0; Mon, 7 Sep 2020 11:43:15 +0200
-Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-01.secunet.de
- (10.53.40.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2044.4; Mon, 7 Sep 2020
- 11:43:15 +0200
-Received: by gauss2.secunet.de (Postfix, from userid 1000)      id B50913180513;
- Mon,  7 Sep 2020 11:43:14 +0200 (CEST)
-Date:   Mon, 7 Sep 2020 11:43:14 +0200
-From:   Steffen Klassert <steffen.klassert@secunet.com>
-To:     Dmitry Safonov <dima@arista.com>
-CC:     <linux-kernel@vger.kernel.org>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Florian Westphal <fw@strlen.de>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stephen Suryaputra <ssuryaextr@gmail.com>,
-        <netdev@vger.kernel.org>,
-        "Johannes Berg" <johannes@sipsolutions.net>,
-        Shuah Khan <shuah@kernel.org>,
-        <linux-kselftest@vger.kernel.org>
-Subject: Re: [PATCH v2 0/6] xfrm: Add compat layer
-Message-ID: <20200907094314.GI20687@gauss3.secunet.de>
-References: <20200826014949.644441-1-dima@arista.com>
-MIME-Version: 1.0
+        id S1728337AbgIGJqL convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 7 Sep 2020 05:46:11 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:52642 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726301AbgIGJqL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 05:46:11 -0400
+Received: from DGGEMM403-HUB.china.huawei.com (unknown [172.30.72.57])
+        by Forcepoint Email with ESMTP id C932CA238EC1CD0FD2CB;
+        Mon,  7 Sep 2020 17:46:08 +0800 (CST)
+Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
+ DGGEMM403-HUB.china.huawei.com (10.3.20.211) with Microsoft SMTP Server (TLS)
+ id 14.3.487.0; Mon, 7 Sep 2020 17:44:04 +0800
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Mon, 7 Sep 2020 17:44:03 +0800
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.1913.007;
+ Mon, 7 Sep 2020 17:44:04 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Mel Gorman <mgorman@suse.de>
+CC:     "mingo@redhat.com" <mingo@redhat.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
+        "bsegall@google.com" <bsegall@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Phil Auld <pauld@redhat.com>, Hillf Danton <hdanton@sina.com>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: RE: [PATCH] sched/fair: use dst group while checking imbalance for
+ NUMA balancer
+Thread-Topic: [PATCH] sched/fair: use dst group while checking imbalance for
+ NUMA balancer
+Thread-Index: AQHWhOi4NR3jMQOEjUuGVuHcF7fpAalcYjqAgACG3OA=
+Date:   Mon, 7 Sep 2020 09:44:03 +0000
+Message-ID: <9c8e148805bc4da1a2bfdd72f1c76f06@hisilicon.com>
+References: <20200907072708.8664-1-song.bao.hua@hisilicon.com>
+ <20200907092717.GD3117@suse.de>
+In-Reply-To: <20200907092717.GD3117@suse.de>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.201.74]
 Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20200826014949.644441-1-dima@arista.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: cas-essen-02.secunet.de (10.53.40.202) To
- mbx-essen-01.secunet.de (10.53.40.197)
-X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 26, 2020 at 02:49:43AM +0100, Dmitry Safonov wrote:
-> Changes since v1:
-> - reworked patches set to use translator
-> - separated the compat layer into xfrm_compat.c,
->   compiled under XFRM_USER_COMPAT config
-> - 32-bit messages now being sent in frag_list (like wext-core does)
-> - instead of __packed add compat_u64 members in compat structures
-> - selftest reworked to kselftest lib API
-> - added netlink dump testing to the selftest
-> 
-> XFRM is disabled for compatible users because of the UABI difference.
-> The difference is in structures paddings and in the result the size
-> of netlink messages differ.
-> 
-> Possibility for compatible application to manage xfrm tunnels was
-> disabled by: the commmit 19d7df69fdb2 ("xfrm: Refuse to insert 32 bit
-> userspace socket policies on 64 bit systems") and the commit 74005991b78a
-> ("xfrm: Do not parse 32bits compiled xfrm netlink msg on 64bits host").
-> 
-> This is my second attempt to resolve the xfrm/compat problem by adding
-> the 64=>32 and 32=>64 bit translators those non-visibly to a user
-> provide translation between compatible user and kernel.
-> Previous attempt was to interrupt the message ABI according to a syscall
-> by xfrm_user, which resulted in over-complicated code [1].
-> 
-> Florian Westphal provided the idea of translator and some draft patches
-> in the discussion. In these patches, his idea is reused and some of his
-> initial code is also present.
-> 
-> There were a couple of attempts to solve xfrm compat problem:
-> https://lkml.org/lkml/2017/1/20/733
-> https://patchwork.ozlabs.org/patch/44600/
-> http://netdev.vger.kernel.narkive.com/2Gesykj6/patch-net-next-xfrm-correctly-parse-netlink-msg-from-32bits-ip-command-on-64bits-host
-> 
-> All the discussions end in the conclusion that xfrm should have a full
-> compatible layer to correctly work with 32-bit applications on 64-bit
-> kernels:
-> https://lkml.org/lkml/2017/1/23/413
-> https://patchwork.ozlabs.org/patch/433279/
-> 
-> In some recent lkml discussion, Linus said that it's worth to fix this
-> problem and not giving people an excuse to stay on 32-bit kernel:
-> https://lkml.org/lkml/2018/2/13/752
-> 
-> There is also an selftest for ipsec tunnels.
-> It doesn't depend on any library and compat version can be easy
-> build with: make CFLAGS=-m32 net/ipsec
-> 
-> Patches as a .git branch:
-> https://github.com/0x7f454c46/linux/tree/xfrm-compat-v2
-> 
-> [1]: https://lkml.kernel.org/r/20180726023144.31066-1-dima@arista.com
 
-Thanks for the patches, looks good!
 
-Please fix the issue reported from 'kernel test robot' and resend.
+> -----Original Message-----
+> From: Mel Gorman [mailto:mgorman@suse.de]
+> Sent: Monday, September 7, 2020 9:27 PM
+> To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
+> Cc: mingo@redhat.com; peterz@infradead.org; juri.lelli@redhat.com;
+> vincent.guittot@linaro.org; dietmar.eggemann@arm.com;
+> bsegall@google.com; linux-kernel@vger.kernel.org; Linuxarm
+> <linuxarm@huawei.com>; Mel Gorman <mgorman@techsingularity.net>;
+> Peter Zijlstra <a.p.zijlstra@chello.nl>; Valentin Schneider
+> <valentin.schneider@arm.com>; Phil Auld <pauld@redhat.com>; Hillf Danton
+> <hdanton@sina.com>; Ingo Molnar <mingo@kernel.org>
+> Subject: Re: [PATCH] sched/fair: use dst group while checking imbalance for
+> NUMA balancer
+> 
+> On Mon, Sep 07, 2020 at 07:27:08PM +1200, Barry Song wrote:
+> > Something is wrong. In find_busiest_group(), we are checking if src has
+> > higher load, however, in task_numa_find_cpu(), we are checking if dst
+> > will have higher load after balancing. It seems it is not sensible to
+> > check src.
+> > It maybe cause wrong imbalance value, for example, if
+> > dst_running = env->dst_stats.nr_running + 1 results in 3 or above, and
+> > src_running = env->src_stats.nr_running - 1 results in 1;
+> > The current code is thinking imbalance as 0 since src_running is smaller
+> > than 2.
+> > This is inconsistent with load balancer.
+> >
+> 
+> It checks the conditions if the move was to happen. Have you evaluated
+> this for a NUMA balancing load and confirmed it a) balances properly and
+> b) does not increase the scan rate trying to "fix" the problem?
 
-Thanks!
+I think the original code was trying to check if the numa migration
+would lead to new imbalance in load balancer. In case src is A, dst is B, and
+both of them have nr_running as 2. A moves one task to B, then A
+will have 1, B will have 3. In load balancer, A will try to pull task
+from B since B's nr_running is larger than min_imbalance. But the code
+is saying imbalance=0 by finding A's nr_running is smaller than
+min_imbalance.
+
+Will share more test data if you need.
+
+> 
+> --
+> Mel Gorman
+> SUSE Labs
+
+Thanks
+Barry
