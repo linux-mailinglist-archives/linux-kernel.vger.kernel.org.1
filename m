@@ -2,99 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1122425FF66
+	by mail.lfdr.de (Postfix) with ESMTP id 7F6E125FF67
 	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 18:31:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730474AbgIGQbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 12:31:38 -0400
-Received: from foss.arm.com ([217.140.110.172]:37068 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729831AbgIGOYS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 10:24:18 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B64751045;
-        Mon,  7 Sep 2020 07:24:17 -0700 (PDT)
-Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F00903F73C;
-        Mon,  7 Sep 2020 07:24:15 -0700 (PDT)
-Date:   Mon, 7 Sep 2020 15:24:13 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Richard Zhu <hongxing.zhu@nxp.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: Re: [PATCH v2][next] PCI: imx6: Use fallthrough pseudo-keyword
-Message-ID: <20200907142413.GB9474@e121166-lin.cambridge.arm.com>
-References: <20200722031903.GA3711@embeddedor>
+        id S1730358AbgIGQbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 12:31:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42342 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729834AbgIGOYU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 10:24:20 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EA54C061574
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 07:24:19 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id u4so15458178ljd.10
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 07:24:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=c3o7vSrPtfVLY+L0kjQIwvaz2ovSHjf+IEqBu3OCb/o=;
+        b=ZfsQVh5sOFI6WXpScSWpbNwdBgiRHlDc06CeoPETYDVo+zJ2ZfpvWawcA10tLMKKD9
+         KXZ1Uvms4FAp8JxcirPU3z6GhpGTlnOK1EZ6D0+CZNjDsZm8WZFPHPlX9+1edSK5LOVb
+         s4cXB5Rw1O8xiYBKLdol3oQMaZOCHO4uolymrxNK1Xv5zLDX55nfQDY7dZxoIfRxoTqr
+         AvbaMT0+vfuRN3JXo1OAcDTmPRmS34ql8nFZKAiKqucLL5+UJ9MdfJMTZRAmqLDMkDEW
+         WWS6JlMemfEFb6yXqAF9NK8gplj4KJ58tMQcA1mFVxOSQnSg9dvyflu+8f1BhLcNmLyx
+         Gw7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=c3o7vSrPtfVLY+L0kjQIwvaz2ovSHjf+IEqBu3OCb/o=;
+        b=U+J5Lte7kReAR/TVVFMBSUwS8Y822l5d5KjWyDht0ly/J28EON37fcJKE7WrORqzOU
+         nTOd3+OJeGZ0n//oTubbwpZ9Lw3YWagt4bJmxWU4p03mZD4n+mFHhFUY+tzAhOptX0uC
+         DhJqgPxJw/SxeK/E58rSVXqJVONJlZ6g2Nh3nHI7Zaix58PDFitps+hj3MOBA7KKc2v/
+         XAwRHL9C6i7sDWgycZdCSVBbH2h0c4/1wECDv5mK8ntcMtCHdRILeLTOQZMGZmRt0s5U
+         WrUByJln99moWEhhRuJ/Rl7G1TvGpqF9Nqy1KutgAWWT7tu8tmf8g8w/YRQzmkvAgrDp
+         BXWA==
+X-Gm-Message-State: AOAM533KpDuhjoXHKOx1jidz1HbWKzytfikosZExj4Y0d8XgEoIhhW+x
+        aY4mICo9FnAwS7+/el5GOvZnRw==
+X-Google-Smtp-Source: ABdhPJziSj5qaeVTYIzqn7mGp3GSDS6K4Y8Yf+iGVKSihjNsDajXJdMvFBL//9rql7id5+Q2WjAVlQ==
+X-Received: by 2002:a2e:97c1:: with SMTP id m1mr10319433ljj.289.1599488657317;
+        Mon, 07 Sep 2020 07:24:17 -0700 (PDT)
+Received: from [192.168.1.211] ([188.162.64.144])
+        by smtp.gmail.com with ESMTPSA id t14sm7558507lfp.77.2020.09.07.07.24.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Sep 2020 07:24:16 -0700 (PDT)
+Subject: Re: [PATCH 0/3] drm/msm/dsi: support SM8150 and SM8250
+To:     Jonathan Marek <jonathan@marek.ca>, freedreno@lists.freedesktop.org
+Cc:     AngeloGioacchino Del Regno <kholk11@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <dri-devel@lists.freedesktop.org>,
+        Harigovindan P <harigovi@codeaurora.org>,
+        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Konrad Dybcio <konradybcio@gmail.com>,
+        Krzysztof Wilczynski <kw@linux.com>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, Sean Paul <sean@poorly.run>,
+        zhengbin <zhengbin13@huawei.com>
+References: <20200904172859.25633-1-jonathan@marek.ca>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Message-ID: <87a45d1e-328b-99f5-4990-d4746a24c864@linaro.org>
+Date:   Mon, 7 Sep 2020 17:24:14 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200722031903.GA3711@embeddedor>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200904172859.25633-1-jonathan@marek.ca>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 21, 2020 at 10:19:03PM -0500, Gustavo A. R. Silva wrote:
-> Replace the existing /* fall through */ comments and its variants with
-> the new pseudo-keyword macro fallthrough[1]. Also, remove unnecessary
-> fall-through markings when it is the case.
+On 04/09/2020 20:28, Jonathan Marek wrote:
+> Add support for SM8150 and SM8250 DSI.
 > 
-> [1] https://www.kernel.org/doc/html/v5.7/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
-> 
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> ---
-> Changes in v2:
->  - Update URL. Use proper URL to Linux v5.7 documentation.
-> 
->  drivers/pci/controller/dwc/pci-imx6.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+> Note I haven't tested SM8150 recently, but DSI is almost identical to SM8250.
 
-Applied to pci/imx6, thanks.
+On SM8250:
+Tested-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-Lorenzo
-
-> diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
-> index 8f08ae53f53e..6c78903b49be 100644
-> --- a/drivers/pci/controller/dwc/pci-imx6.c
-> +++ b/drivers/pci/controller/dwc/pci-imx6.c
-> @@ -439,7 +439,7 @@ static int imx6_pcie_enable_ref_clk(struct imx6_pcie *imx6_pcie)
->  		regmap_update_bits(imx6_pcie->iomuxc_gpr, IOMUXC_GPR12,
->  				   IMX6SX_GPR12_PCIE_TEST_POWERDOWN, 0);
->  		break;
-> -	case IMX6QP:		/* FALLTHROUGH */
-> +	case IMX6QP:
->  	case IMX6Q:
->  		/* power up core phy and enable ref clock */
->  		regmap_update_bits(imx6_pcie->iomuxc_gpr, IOMUXC_GPR1,
-> @@ -642,7 +642,7 @@ static void imx6_pcie_init_phy(struct imx6_pcie *imx6_pcie)
->  		regmap_update_bits(imx6_pcie->iomuxc_gpr, IOMUXC_GPR12,
->  				   IMX6SX_GPR12_PCIE_RX_EQ_MASK,
->  				   IMX6SX_GPR12_PCIE_RX_EQ_2);
-> -		/* FALLTHROUGH */
-> +		fallthrough;
->  	default:
->  		regmap_update_bits(imx6_pcie->iomuxc_gpr, IOMUXC_GPR12,
->  				   IMX6Q_GPR12_PCIE_CTL_2, 0 << 10);
-> @@ -1107,7 +1107,7 @@ static int imx6_pcie_probe(struct platform_device *pdev)
->  			dev_err(dev, "pcie_aux clock source missing or invalid\n");
->  			return PTR_ERR(imx6_pcie->pcie_aux);
->  		}
-> -		/* fall through */
-> +		fallthrough;
->  	case IMX7D:
->  		if (dbi_base->start == IMX8MQ_PCIE2_BASE_ADDR)
->  			imx6_pcie->controller_id = 1;
-> -- 
-> 2.27.0
 > 
+> Jonathan Marek (3):
+>    drm/msm/dsi: remove unused clk_pre/clk_post in msm_dsi_dphy_timing
+>    drm/msm/dsi: add DSI config for sm8150 and sm8250
+>    drm/msm/dsi: add support for 7nm DSI PHY/PLL
+> 
+>   .../devicetree/bindings/display/msm/dsi.txt   |   6 +-
+>   drivers/gpu/drm/msm/Kconfig                   |   7 +
+>   drivers/gpu/drm/msm/Makefile                  |   2 +
+>   drivers/gpu/drm/msm/dsi/dsi.h                 |   2 +
+>   drivers/gpu/drm/msm/dsi/dsi.xml.h             | 423 ++++++++
+>   drivers/gpu/drm/msm/dsi/dsi_cfg.c             |   5 +-
+>   drivers/gpu/drm/msm/dsi/dsi_cfg.h             |   2 +
+>   drivers/gpu/drm/msm/dsi/phy/dsi_phy.c         | 102 ++
+>   drivers/gpu/drm/msm/dsi/phy/dsi_phy.h         |   6 +-
+>   drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c     | 255 +++++
+>   drivers/gpu/drm/msm/dsi/pll/dsi_pll.c         |   4 +
+>   drivers/gpu/drm/msm/dsi/pll/dsi_pll.h         |  10 +
+>   drivers/gpu/drm/msm/dsi/pll/dsi_pll_7nm.c     | 902 ++++++++++++++++++
+>   13 files changed, 1721 insertions(+), 5 deletions(-)
+>   create mode 100644 drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c
+>   create mode 100644 drivers/gpu/drm/msm/dsi/pll/dsi_pll_7nm.c
+> 
+
+
+-- 
+With best wishes
+Dmitry
