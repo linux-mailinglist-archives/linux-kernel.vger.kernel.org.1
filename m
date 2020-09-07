@@ -2,105 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B22812602A4
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:31:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B76A26030F
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:43:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729615AbgIGRat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 13:30:49 -0400
-Received: from 8bytes.org ([81.169.241.247]:43598 "EHLO theia.8bytes.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729500AbgIGNSe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 09:18:34 -0400
-Received: from cap.home.8bytes.org (p549add56.dip0.t-ipconnect.de [84.154.221.86])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by theia.8bytes.org (Postfix) with ESMTPSA id 8B9AC168B;
-        Mon,  7 Sep 2020 15:17:10 +0200 (CEST)
-From:   Joerg Roedel <joro@8bytes.org>
-To:     x86@kernel.org
-Cc:     Joerg Roedel <joro@8bytes.org>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>, hpa@zytor.com,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Juergen Gross <jgross@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Rientjes <rientjes@google.com>,
-        Cfir Cohen <cfir@google.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mike Stunes <mstunes@vmware.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: [PATCH v7 55/72] x86/sev-es: Handle RDPMC Events
-Date:   Mon,  7 Sep 2020 15:15:56 +0200
-Message-Id: <20200907131613.12703-56-joro@8bytes.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200907131613.12703-1-joro@8bytes.org>
-References: <20200907131613.12703-1-joro@8bytes.org>
+        id S1730640AbgIGRnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 13:43:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60282 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729408AbgIGNRv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 09:17:51 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBB79C061573
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 06:17:48 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id 5so8040692pgl.4
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 06:17:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=tXlaUzLwVVKkp2nug9LSgDtLZzxwlV3OQrTwOaM4mCk=;
+        b=KDZFrT3FUBB8HCrkkMnC0JoRhryFVJVEbvDoEnKDDDrbvyB1TEY+8XUaj7rYgbZ/mE
+         pVjrk4ACiNUHNmMPKLOjaKbZQlbMonq3ZFL3mERUDc3PX5h68nkuoyhrTvv9JxePD0kW
+         TdllSXmLkyy25eJXKuv53OIv5xdVOsCLwYpUJppm6Q9T0SKTUBmAdxGiEvTdHUPhKqO1
+         ScGUoNxdA+/n1icMgAKHFSzzZdT6U2Kh8eL7I7KHV67SvAL7C3z8UeEBGPoxDGsb6/RX
+         Rn8WBCMmfRBR9I2CuMyrkhRhZ965+5KzcxjIjRUMnNhO94DUwtpvZnQahfveNNOKntNw
+         bXLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=tXlaUzLwVVKkp2nug9LSgDtLZzxwlV3OQrTwOaM4mCk=;
+        b=VP+waZrS/JmuC58ZXH0uf/lX5Gv32CAFz+dgFjRnNZFnwZnlrAH8l6Fxc/oOorMr5x
+         0sMJGHL7Qjsp24jpzBBvcmD6bZjYz5t7zWMAlX8caNOz8nvdlLgz5mwA0ES1nUH6UTjc
+         hc8QM4ucB3t4GC15OEo4TY5NfxqI6B2zxShV/ARndlY0zOjJr5jQA93NXYS8WMwTGMP8
+         DD/nZnrvYQPdbGdSus4l5awvwwwyE0lODuGnr7gCnWIcSu/1nJzYBFjgokCw+l+yiaAd
+         kzCzL1SykC3Zu94uecYofr6QeU2Ot2CDyj4FkEGBiAmBMQ4debzEsFZ3wdnf8YGuK7rJ
+         jz2A==
+X-Gm-Message-State: AOAM532qJMnVTeSrYcH6jrDn5XngI3AQxBO/udxEoNoJ/USfxxRC+wMq
+        I8such+ZtPUnTzNgfAIWKa7njBZFdc5DlkAP
+X-Google-Smtp-Source: ABdhPJwaTYgLkTQwOysWc7yonPdFc+sJbfNmtrJWF6MBXnMw8UrqnBEKagL7vJYmfsdcXugRtIwQAw==
+X-Received: by 2002:a62:fccf:: with SMTP id e198mr20409326pfh.183.1599484668372;
+        Mon, 07 Sep 2020 06:17:48 -0700 (PDT)
+Received: from adolin ([49.207.196.129])
+        by smtp.gmail.com with ESMTPSA id m13sm5229752pjl.45.2020.09.07.06.17.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Sep 2020 06:17:47 -0700 (PDT)
+Date:   Mon, 7 Sep 2020 18:47:44 +0530
+From:   Sumera Priyadarsini <sylphrenadin@gmail.com>
+To:     Julia.Lawall@lip6.fr
+Cc:     Gilles.Muller@lip6.fr, nicolas.palix@imag.fr,
+        michal.lkml@markovi.net, cocci@systeme.lip6.fr,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] scripts: coccicheck: Do not use shift command when rule is
+ specfified
+Message-ID: <20200907131744.xovlxbmrzrfm2w3x@adolin>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Lendacky <thomas.lendacky@amd.com>
+The command "make coccicheck C=1 CHECK=scripts/coccicheck" results in the
+error:
+	./scripts/coccicheck: line 65: -1: shift count out of range
 
-Implement a handler for #VC exceptions caused by RDPMC instructions.
+This happens because every time the C variable is specified,
+the shell arguments need to be "shifted" in order to take only
+the last argument, which is the C file to test. These shell arguments
+mostly comprise flags that have been set in the Makfeile. However,
+when coccicheck is specified in the make command as a rule,
+number of shell arguments is zero, thus paasing the invalid value -1
+to the shift command, resuting in an error.
 
-Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
-[ jroedel@suse.de: Adapt to #VC handling infrastructure ]
-Co-developed-by: Joerg Roedel <jroedel@suse.de>
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
+This patch modifies coccicheck to use the shift command only when
+number of shell arguments is not zero.
+
+Signed-off-by: Sumera Priyadarsini <sylphrenadin@gmail.com>
 ---
- arch/x86/kernel/sev-es.c | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+ scripts/coccicheck | 16 +++++++++++++---
+ 1 file changed, 13 insertions(+), 3 deletions(-)
 
-diff --git a/arch/x86/kernel/sev-es.c b/arch/x86/kernel/sev-es.c
-index 5c155f307129..2ee600f3184b 100644
---- a/arch/x86/kernel/sev-es.c
-+++ b/arch/x86/kernel/sev-es.c
-@@ -853,6 +853,25 @@ static enum es_result vc_handle_wbinvd(struct ghcb *ghcb,
- 	return sev_es_ghcb_hv_call(ghcb, ctxt, SVM_EXIT_WBINVD, 0, 0);
- }
+diff --git a/scripts/coccicheck b/scripts/coccicheck
+index e04d328210ac..5c8df337e1e3 100755
+--- a/scripts/coccicheck
++++ b/scripts/coccicheck
+@@ -61,9 +61,19 @@ COCCIINCLUDE=${COCCIINCLUDE// -include/ --include}
+ if [ "$C" = "1" -o "$C" = "2" ]; then
+     ONLINE=1
  
-+static enum es_result vc_handle_rdpmc(struct ghcb *ghcb, struct es_em_ctxt *ctxt)
-+{
-+	enum es_result ret;
-+
-+	ghcb_set_rcx(ghcb, ctxt->regs->cx);
-+
-+	ret = sev_es_ghcb_hv_call(ghcb, ctxt, SVM_EXIT_RDPMC, 0, 0);
-+	if (ret != ES_OK)
-+		return ret;
-+
-+	if (!(ghcb_rax_is_valid(ghcb) && ghcb_rdx_is_valid(ghcb)))
-+		return ES_VMM_ERROR;
-+
-+	ctxt->regs->ax = ghcb->save.rax;
-+	ctxt->regs->dx = ghcb->save.rdx;
-+
-+	return ES_OK;
-+}
-+
- static enum es_result vc_handle_exitcode(struct es_em_ctxt *ctxt,
- 					 struct ghcb *ghcb,
- 					 unsigned long exit_code)
-@@ -870,6 +889,9 @@ static enum es_result vc_handle_exitcode(struct es_em_ctxt *ctxt,
- 	case SVM_EXIT_RDTSCP:
- 		result = vc_handle_rdtsc(ghcb, ctxt, exit_code);
- 		break;
-+	case SVM_EXIT_RDPMC:
-+		result = vc_handle_rdpmc(ghcb, ctxt);
-+		break;
- 	case SVM_EXIT_CPUID:
- 		result = vc_handle_cpuid(ghcb, ctxt);
- 		break;
+-    # Take only the last argument, which is the C file to test
+-    shift $(( $# - 1 ))
+-    OPTIONS="$COCCIINCLUDE $1"
++    # If the rule coccicheck is specified when calling make, number of
++    # arguments is zero
++    if [ $# -ne 0 ]; then
++	    # Take only the last argument, which is the C file to test
++	    shift $(( $# -1 ))
++	    OPTIONS="$COCCIINCLUDE $1"
++    else
++	if [ "$KBUILD_EXTMOD" = "" ] ; then
++		OPTIONS="--dir $srctree $COCCIINCLUDE"
++	else
++		OPTIONS="--dir $KBUILD_EXTMOD $COCCIINCLUDE"
++	fi
++    fi
+ 
+     # No need to parallelize Coccinelle since this mode takes one input file.
+     NPROC=1
 -- 
-2.28.0
+2.25.1
 
