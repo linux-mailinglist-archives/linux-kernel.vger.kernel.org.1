@@ -2,380 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01A6125FA2F
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 14:11:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2738125FA51
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 14:18:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729251AbgIGMLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 08:11:37 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:24583 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729115AbgIGMEF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 08:04:05 -0400
-Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20200907120349epoutp046fb79f401ae775bbc5f9310d17b4fb18~yfstaJ3rk0179801798epoutp04R
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 12:03:49 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20200907120349epoutp046fb79f401ae775bbc5f9310d17b4fb18~yfstaJ3rk0179801798epoutp04R
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1599480229;
-        bh=3NQtzE/Bwf17qsJJtKLMZyPdfIG6mtSCemITWo63r/I=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=LtP+BpSoo+xdz7Ys9glVsr55hKptr0B7Jw/k2PoadPye1V0zTufX4iHR3REFyRzLs
-         Xj2C8J+qey+lFjZBxAyVpClERVJx8aynziEXglKHqF1KfYgjjaQHp08bdEWQ2Rah83
-         6Rh+4E4pN3/MJktqMV5uc2vcIN/fBHdwyV25xsJo=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
-        20200907120348epcas1p3d1d2273a4d4717a5ef2a6250133dd139~yfssOvQVN1878718787epcas1p3E;
-        Mon,  7 Sep 2020 12:03:48 +0000 (GMT)
-Received: from epsmges1p3.samsung.com (unknown [182.195.40.155]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4BlRl06GYhzMqYkV; Mon,  7 Sep
-        2020 12:03:40 +0000 (GMT)
-Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
-        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        C2.C2.29173.C91265F5; Mon,  7 Sep 2020 21:03:40 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20200907120340epcas1p12e32b7aae497190e609788868cbae126~yfsk0PLCL1158611586epcas1p1c;
-        Mon,  7 Sep 2020 12:03:40 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20200907120340epsmtrp26a1ff9ca97584a32692db9eea44b2872~yfskzQvpZ1568315683epsmtrp2M;
-        Mon,  7 Sep 2020 12:03:40 +0000 (GMT)
-X-AuditID: b6c32a37-9cdff700000071f5-9c-5f56219c2577
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        BD.0A.08303.C91265F5; Mon,  7 Sep 2020 21:03:40 +0900 (KST)
-Received: from [10.113.111.64] (unknown [10.113.111.64]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20200907120340epsmtip2d686ef59cc3365245253a88f1becc9f0~yfskj12ZF2418724187epsmtip2I;
-        Mon,  7 Sep 2020 12:03:40 +0000 (GMT)
-Subject: Re: [PATCH v5 80/80] ARM: dts: bcm2711: Enable the display pipeline
-To:     Maxime Ripard <maxime@cerno.tech>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Eric Anholt <eric@anholt.net>
-Cc:     Stefan Wahren <stefan.wahren@i2se.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org,
-        Phil Elwell <phil@raspberrypi.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Hoegeun Kwon <hoegeun.kwon@samsung.com>
-From:   Hoegeun Kwon <hoegeun.kwon@samsung.com>
-Message-ID: <beca0d09-7d84-e363-5368-29119fd9a0f9@samsung.com>
-Date:   Mon, 7 Sep 2020 21:03:21 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
-        Thunderbird/68.10.0
+        id S1729247AbgIGMRu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 08:17:50 -0400
+Received: from mga17.intel.com ([192.55.52.151]:8886 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729215AbgIGMFj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 08:05:39 -0400
+IronPort-SDR: schj4sZXXsm3jR4qgi3fIKafDUyqKRG8lBJyJu0pNTxIkhz9KdWiJKFsCOTy4VThq5bPgIbJtt
+ mkT5Q9IYsIaw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9736"; a="138043156"
+X-IronPort-AV: E=Sophos;i="5.76,401,1592895600"; 
+   d="scan'208";a="138043156"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2020 05:05:38 -0700
+IronPort-SDR: u3kyUqM+DzJMN1nqoCID/BSaawI1ZfVxVB69PrOnOu6JskkaUh9tjcBJrtNahUNpfu4CURW2SH
+ 7lg5Fl5hEiRw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,401,1592895600"; 
+   d="scan'208";a="406818249"
+Received: from black.fi.intel.com (HELO black.fi.intel.com.) ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 07 Sep 2020 05:05:37 -0700
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org
+Subject: [PATCH v2 2/2] Documentation: Remove device connection documentation
+Date:   Mon,  7 Sep 2020 15:05:32 +0300
+Message-Id: <20200907120532.37611-3-heikki.krogerus@linux.intel.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200907120532.37611-1-heikki.krogerus@linux.intel.com>
+References: <20200907120532.37611-1-heikki.krogerus@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <cfce2276d172d3d9c4d34d966b58fd47f77c4e46.1599120059.git-series.maxime@cerno.tech>
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrAJsWRmVeSWpSXmKPExsWy7bCmvu4cxbB4g5/PdCzW9h5lsbj+5Tmr
-        xdu5i1ksrnx9z2ZxoPEyo8X75V1sFpseX2O1uLxrDpvFxNsb2C1m/PjHaLFt1nI2i3W3XgNl
-        V9xgs3g09T6jA59H0/tjbB6z7p9l87hz7jybx9Zbph73u48zeWxeUu/RevQXi0ffllWMHptP
-        V3t83iQXwBWVbZORmpiSWqSQmpecn5KZl26r5B0c7xxvamZgqGtoaWGupJCXmJtqq+TiE6Dr
-        lpkDdL+SQlliTilQKCCxuFhJ386mKL+0JFUhI7+4xFYptSAlp8CyQK84Mbe4NC9dLzk/18rQ
-        wMDIFKgwITtj0Z8NjAWvjCsWTdzB2sB4R7WLkZNDQsBE4s7G44xdjFwcQgI7GCXuXrzKDOF8
-        YpRof/IMKvOZUeLZlMmsMC1TnixmhUjsYpSYvHkJlPOWUeLj8v8sIFXCAj4S1+b9AesQESiX
-        aO/cDzaXWWAzs8TLDY/ZQBJsAroSX3uuM4HYvAJ2Eoev7gCKc3CwCKhITDoVDxIWFYiU2Pn0
-        JTtEiaDEyZlPWEBKOAXiJbr/ioGEmQXkJba/ncMMYYtL3Hoynwni0AccEudWiUDYLhJPDz1j
-        hrCFJV4d38IOYUtJfH63lw3CLpa4MvMVC8iZEgINjBL9E2dDFRlL7F86mQlkL7OApsT6XfoQ
-        YUWJnb/nMkLs5ZN497WHFaREQoBXoqNNCKJETeJZwwFouMlInOpdDnWah8Tqk++YJzAqzkLy
-        2Cwk38xC8s0shMULGFlWMYqlFhTnpqcWGxYYI0f2JkZw0tYy38E47e0HvUOMTByMhxglOJiV
-        RHi7DoXGC/GmJFZWpRblxxeV5qQWH2I0BYb0RGYp0eR8YN7IK4k3NDUyNja2MDE0MzU0VBLn
-        fXhLIV5IID2xJDU7NbUgtQimj4mDU6qBKXnRhjn7Hza+2b0ywnHifneJOetzZscU3Pb9lWhn
-        Jnf09LPL5tN/KEuV3v+R+/JIPM8XxY2Mt8OfL/KZeCt0rrjfsxVTqtask2g5XOGU0Tl9Mtev
-        ow6/E1fys+a+138+J8VqQbOf+8ZNa6r0OS0//+VP44qduU1ou+fdYxYtq199NbHTazE9ymL+
-        /mrFivepq793PM6tt/D3O9jnPJunefKDLm6NFSEB5yWXT2T+Wzfrkp39L44FEwWWH1Y2bfP+
-        MyH1Cd/eEPadfZOS9p1OZfgXWsJ4/9nkGDtvm517z1tFC2fufqNx7OCLH+desxl2JpzZ3D3L
-        rjXOpi/22oTGQr5dJz4Jf7/vd+PkVs0mF3YlluKMREMt5qLiRAB2CaAzYwQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrHIsWRmVeSWpSXmKPExsWy7bCSvO4cxbB4g3e7uC3W9h5lsbj+5Tmr
-        xdu5i1ksrnx9z2ZxoPEyo8X75V1sFpseX2O1uLxrDpvFxNsb2C1m/PjHaLFt1nI2i3W3XgNl
-        V9xgs3g09T6jA59H0/tjbB6z7p9l87hz7jybx9Zbph73u48zeWxeUu/RevQXi0ffllWMHptP
-        V3t83iQXwBXFZZOSmpNZllqkb5fAlbHozwbGglfGFYsm7mBtYLyj2sXIySEhYCIx5cli1i5G
-        Lg4hgR2MEi/6+9khEjISq/q3ACU4gGxhicOHiyFqXjNKbP48mxmkRljAR+LavD+sILaIQKXE
-        5zm7mEGKmAU2M0tsnbWUCaKjl0li+vf9YFVsAroSX3uuM4HYvAJ2Eoev7mAD2cAioCIx6VQ8
-        iCkqECmxc4clRIWgxMmZT1hAwpwC8RLdf8VAwswCZhLzNj9khrDlJba/nQNli0vcejKfaQKj
-        0Cwk3bOQtMxC0jILScsCRpZVjJKpBcW56bnFhgVGeanlesWJucWleel6yfm5mxjBUaqltYNx
-        z6oPeocYmTgYDzFKcDArifB2HQqNF+JNSaysSi3Kjy8qzUktPsQozcGiJM77ddbCOCGB9MSS
-        1OzU1ILUIpgsEwenVANT+KlLJcKTZWSPnO8tm79BceFhlaP/1zzIWnPBLD5C/MrfCYunel6P
-        PlKZ/cd63bab4RbvOy4zCjW3CDxiWvVE3DNz7eyTSik/T/x4pmrkylT2WcvP8bqrzceGsHnW
-        m5NiN7v//eTNz/C1a/1VjwseScc2nc+ey9m+Srt/9fwTgT4i0+pfNTalfS+fH951re93/72t
-        h9td1mlOUmebvdZWKk760uTfsje+5etXWvKpGc/iWXrOJeCzstuq+Ej1Q6K3zyxs7z5WFPUx
-        hmHyylMymobchyctjxa4ZNmk0Pxpy4b8yccZvQwe3Zzts6Ke9VSzmqXHQzaLZx57v3rr/1+5
-        59mtk5oWL78ePZngtFB0qRJLcUaioRZzUXEiAGGnY1BBAwAA
-X-CMS-MailID: 20200907120340epcas1p12e32b7aae497190e609788868cbae126
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20200904071346epcas1p1cb8ab7f69bb5ed811d09b51078c2af4b
-References: <cover.dddc064d8bb83e46744336af67dcb13139e5747d.1599120059.git-series.maxime@cerno.tech>
-        <CGME20200904071346epcas1p1cb8ab7f69bb5ed811d09b51078c2af4b@epcas1p1.samsung.com>
-        <cfce2276d172d3d9c4d34d966b58fd47f77c4e46.1599120059.git-series.maxime@cerno.tech>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Maxime,
+The API that allowed device connection descriptions to
+be added is now removed, so removing also the documentation
+for it.
 
-On 9/3/20 5:01 PM, Maxime Ripard wrote:
-> Now that all the drivers have been adjusted for it, let's bring in the
-> necessary device tree changes.
->
-> The VEC and PV3 are left out for now, since it will require a more specific
-> clock setup.
->
-> Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
-> Tested-by: Chanwoo Choi <cw00.choi@samsung.com>
-> Tested-by: Hoegeun Kwon <hoegeun.kwon@samsung.com>
-> Tested-by: Stefan Wahren <stefan.wahren@i2se.com>
-> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+---
+ .../driver-api/device_connection.rst          | 43 -------------------
+ Documentation/driver-api/index.rst            |  1 -
+ 2 files changed, 44 deletions(-)
+ delete mode 100644 Documentation/driver-api/device_connection.rst
 
-Thanks for your v5 patch
+diff --git a/Documentation/driver-api/device_connection.rst b/Documentation/driver-api/device_connection.rst
+deleted file mode 100644
+index ba364224c349b..0000000000000
+--- a/Documentation/driver-api/device_connection.rst
++++ /dev/null
+@@ -1,43 +0,0 @@
+-==================
+-Device connections
+-==================
+-
+-Introduction
+-------------
+-
+-Devices often have connections to other devices that are outside of the direct
+-child/parent relationship. A serial or network communication controller, which
+-could be a PCI device, may need to be able to get a reference to its PHY
+-component, which could be attached for example to the I2C bus. Some device
+-drivers need to be able to control the clocks or the GPIOs for their devices,
+-and so on.
+-
+-Device connections are generic descriptions of any type of connection between
+-two separate devices.
+-
+-Device connections alone do not create a dependency between the two devices.
+-They are only descriptions which are not tied to either of the devices directly.
+-A dependency between the two devices exists only if one of the two endpoint
+-devices requests a reference to the other. The descriptions themselves can be
+-defined in firmware (not yet supported) or they can be built-in.
+-
+-Usage
+------
+-
+-Device connections should exist before device ``->probe`` callback is called for
+-either endpoint device in the description. If the connections are defined in
+-firmware, this is not a problem. It should be considered if the connection
+-descriptions are "built-in", and need to be added separately.
+-
+-The connection description consists of the names of the two devices with the
+-connection, i.e. the endpoints, and unique identifier for the connection which
+-is needed if there are multiple connections between the two devices.
+-
+-After a description exists, the devices in it can request reference to the other
+-endpoint device, or they can request the description itself.
+-
+-API
+----
+-
+-.. kernel-doc:: drivers/base/devcon.c
+-   :functions: device_connection_find_match device_connection_find device_connection_add device_connection_remove
+diff --git a/Documentation/driver-api/index.rst b/Documentation/driver-api/index.rst
+index 5ef2cfe3a16b3..6e7c702e0268d 100644
+--- a/Documentation/driver-api/index.rst
++++ b/Documentation/driver-api/index.rst
+@@ -22,7 +22,6 @@ available subsections can be seen below.
+    pm/index
+    clk
+    device-io
+-   device_connection
+    dma-buf
+    device_link
+    component
+-- 
+2.28.0
 
-
-Reviewed-by: Hoegeun Kwon <hoegeun.kwon@samsung.com>
-
-
-Best regards,
-
-Hoegeun
-
-> ---
->   arch/arm/boot/dts/bcm2711-rpi-4-b.dts |  48 +++++++++++-
->   arch/arm/boot/dts/bcm2711.dtsi        | 122 ++++++++++++++++++++++++++-
->   2 files changed, 169 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/arm/boot/dts/bcm2711-rpi-4-b.dts b/arch/arm/boot/dts/bcm2711-rpi-4-b.dts
-> index e94244a215af..09a1182c2936 100644
-> --- a/arch/arm/boot/dts/bcm2711-rpi-4-b.dts
-> +++ b/arch/arm/boot/dts/bcm2711-rpi-4-b.dts
-> @@ -70,6 +70,14 @@
->   	};
->   };
->   
-> +&ddc0 {
-> +	status = "okay";
-> +};
-> +
-> +&ddc1 {
-> +	status = "okay";
-> +};
-> +
->   &firmware {
->   	firmware_clocks: clocks {
->   		compatible = "raspberrypi,firmware-clocks";
-> @@ -170,6 +178,38 @@
->   			  "RGMII_TXD3";
->   };
->   
-> +&hdmi0 {
-> +	clocks = <&firmware_clocks 13>, <&firmware_clocks 14>, <&dvp 0>, <&clk_27MHz>;
-> +	clock-names = "hdmi", "bvb", "audio", "cec";
-> +	status = "okay";
-> +};
-> +
-> +&hdmi1 {
-> +	clocks = <&firmware_clocks 13>, <&firmware_clocks 14>, <&dvp 1>, <&clk_27MHz>;
-> +	clock-names = "hdmi", "bvb", "audio", "cec";
-> +	status = "okay";
-> +};
-> +
-> +&hvs {
-> +	clocks = <&firmware_clocks 4>;
-> +};
-> +
-> +&pixelvalve0 {
-> +	status = "okay";
-> +};
-> +
-> +&pixelvalve1 {
-> +	status = "okay";
-> +};
-> +
-> +&pixelvalve2 {
-> +	status = "okay";
-> +};
-> +
-> +&pixelvalve4 {
-> +	status = "okay";
-> +};
-> +
->   &pwm1 {
->   	pinctrl-names = "default";
->   	pinctrl-0 = <&pwm1_0_gpio40 &pwm1_1_gpio41>;
-> @@ -253,3 +293,11 @@
->   &vchiq {
->   	interrupts = <GIC_SPI 34 IRQ_TYPE_LEVEL_HIGH>;
->   };
-> +
-> +&vc4 {
-> +	status = "okay";
-> +};
-> +
-> +&vec {
-> +	status = "disabled";
-> +};
-> diff --git a/arch/arm/boot/dts/bcm2711.dtsi b/arch/arm/boot/dts/bcm2711.dtsi
-> index 00bcaed1be32..4847dd305317 100644
-> --- a/arch/arm/boot/dts/bcm2711.dtsi
-> +++ b/arch/arm/boot/dts/bcm2711.dtsi
-> @@ -12,6 +12,18 @@
->   
->   	interrupt-parent = <&gicv2>;
->   
-> +	vc4: gpu {
-> +		compatible = "brcm,bcm2711-vc5";
-> +		status = "disabled";
-> +	};
-> +
-> +	clk_27MHz: clk-27M {
-> +		#clock-cells = <0>;
-> +		compatible = "fixed-clock";
-> +		clock-frequency = <27000000>;
-> +		clock-output-names = "27MHz-clock";
-> +	};
-> +
->   	clk_108MHz: clk-108M {
->   		#clock-cells = <0>;
->   		compatible = "fixed-clock";
-> @@ -238,6 +250,27 @@
->   			status = "disabled";
->   		};
->   
-> +		pixelvalve0: pixelvalve@7e206000 {
-> +			compatible = "brcm,bcm2711-pixelvalve0";
-> +			reg = <0x7e206000 0x100>;
-> +			interrupts = <GIC_SPI 109 IRQ_TYPE_LEVEL_HIGH>;
-> +			status = "disabled";
-> +		};
-> +
-> +		pixelvalve1: pixelvalve@7e207000 {
-> +			compatible = "brcm,bcm2711-pixelvalve1";
-> +			reg = <0x7e207000 0x100>;
-> +			interrupts = <GIC_SPI 110 IRQ_TYPE_LEVEL_HIGH>;
-> +			status = "disabled";
-> +		};
-> +
-> +		pixelvalve2: pixelvalve@7e20a000 {
-> +			compatible = "brcm,bcm2711-pixelvalve2";
-> +			reg = <0x7e20a000 0x100>;
-> +			interrupts = <GIC_SPI 101 IRQ_TYPE_LEVEL_HIGH>;
-> +			status = "disabled";
-> +		};
-> +
->   		pwm1: pwm@7e20c800 {
->   			compatible = "brcm,bcm2835-pwm";
->   			reg = <0x7e20c800 0x28>;
-> @@ -248,10 +281,25 @@
->   			status = "disabled";
->   		};
->   
-> -		hvs@7e400000 {
-> +		pixelvalve4: pixelvalve@7e216000 {
-> +			compatible = "brcm,bcm2711-pixelvalve4";
-> +			reg = <0x7e216000 0x100>;
-> +			interrupts = <GIC_SPI 110 IRQ_TYPE_LEVEL_HIGH>;
-> +			status = "disabled";
-> +		};
-> +
-> +		hvs: hvs@7e400000 {
-> +			compatible = "brcm,bcm2711-hvs";
->   			interrupts = <GIC_SPI 97 IRQ_TYPE_LEVEL_HIGH>;
->   		};
->   
-> +		pixelvalve3: pixelvalve@7ec12000 {
-> +			compatible = "brcm,bcm2711-pixelvalve3";
-> +			reg = <0x7ec12000 0x100>;
-> +			interrupts = <GIC_SPI 106 IRQ_TYPE_LEVEL_HIGH>;
-> +			status = "disabled";
-> +		};
-> +
->   		dvp: clock@7ef00000 {
->   			compatible = "brcm,brcm2711-dvp";
->   			reg = <0x7ef00000 0x10>;
-> @@ -259,6 +307,78 @@
->   			#clock-cells = <1>;
->   			#reset-cells = <1>;
->   		};
-> +
-> +		hdmi0: hdmi@7ef00700 {
-> +			compatible = "brcm,bcm2711-hdmi0";
-> +			reg = <0x7ef00700 0x300>,
-> +			      <0x7ef00300 0x200>,
-> +			      <0x7ef00f00 0x80>,
-> +			      <0x7ef00f80 0x80>,
-> +			      <0x7ef01b00 0x200>,
-> +			      <0x7ef01f00 0x400>,
-> +			      <0x7ef00200 0x80>,
-> +			      <0x7ef04300 0x100>,
-> +			      <0x7ef20000 0x100>;
-> +			reg-names = "hdmi",
-> +				    "dvp",
-> +				    "phy",
-> +				    "rm",
-> +				    "packet",
-> +				    "metadata",
-> +				    "csc",
-> +				    "cec",
-> +				    "hd";
-> +			clock-names = "hdmi", "bvb", "audio", "cec";
-> +			resets = <&dvp 0>;
-> +			ddc = <&ddc0>;
-> +			dmas = <&dma 10>;
-> +			dma-names = "audio-rx";
-> +			status = "disabled";
-> +		};
-> +
-> +		ddc0: i2c@7ef04500 {
-> +			compatible = "brcm,bcm2711-hdmi-i2c";
-> +			reg = <0x7ef04500 0x100>, <0x7ef00b00 0x300>;
-> +			reg-names = "bsc", "auto-i2c";
-> +			clock-frequency = <97500>;
-> +			status = "disabled";
-> +		};
-> +
-> +		hdmi1: hdmi@7ef05700 {
-> +			compatible = "brcm,bcm2711-hdmi1";
-> +			reg = <0x7ef05700 0x300>,
-> +			      <0x7ef05300 0x200>,
-> +			      <0x7ef05f00 0x80>,
-> +			      <0x7ef05f80 0x80>,
-> +			      <0x7ef06b00 0x200>,
-> +			      <0x7ef06f00 0x400>,
-> +			      <0x7ef00280 0x80>,
-> +			      <0x7ef09300 0x100>,
-> +			      <0x7ef20000 0x100>;
-> +			reg-names = "hdmi",
-> +				    "dvp",
-> +				    "phy",
-> +				    "rm",
-> +				    "packet",
-> +				    "metadata",
-> +				    "csc",
-> +				    "cec",
-> +				    "hd";
-> +			ddc = <&ddc1>;
-> +			clock-names = "hdmi", "bvb", "audio", "cec";
-> +			resets = <&dvp 1>;
-> +			dmas = <&dma 17>;
-> +			dma-names = "audio-rx";
-> +			status = "disabled";
-> +		};
-> +
-> +		ddc1: i2c@7ef09500 {
-> +			compatible = "brcm,bcm2711-hdmi-i2c";
-> +			reg = <0x7ef09500 0x100>, <0x7ef05b00 0x300>;
-> +			reg-names = "bsc", "auto-i2c";
-> +			clock-frequency = <97500>;
-> +			status = "disabled";
-> +		};
->   	};
->   
->   	/*
