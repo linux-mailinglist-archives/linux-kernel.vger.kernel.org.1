@@ -2,213 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78F1825F977
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 13:31:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA82125F98B
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 13:34:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729049AbgIGLbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 07:31:12 -0400
-Received: from mga07.intel.com ([134.134.136.100]:14653 "EHLO mga07.intel.com"
+        id S1728997AbgIGLeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 07:34:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50188 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728913AbgIGLY6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 07:24:58 -0400
-IronPort-SDR: wwd0a+z9M75QE6cjLp5ZXtBLRm9ILwtaQVtT1vMKEPMXPK5dQ+6LMcNa+H0drDelarUCsAEXhr
- zXTcePAcDz5g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9736"; a="222196737"
-X-IronPort-AV: E=Sophos;i="5.76,401,1592895600"; 
-   d="scan'208";a="222196737"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2020 04:05:47 -0700
-IronPort-SDR: /v5b++m3kkkbfFA9wbim3ZJdffEEVpxjZhqPtTvjdgKUi4hmW4iO8F388Pcbzls2iqus21xquf
- ByBivjDzRdqQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,401,1592895600"; 
-   d="scan'208";a="303700090"
-Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.174])
-  by orsmga006.jf.intel.com with SMTP; 07 Sep 2020 04:05:45 -0700
-Received: by stinkbox (sSMTP sendmail emulation); Mon, 07 Sep 2020 14:05:44 +0300
-Date:   Mon, 7 Sep 2020 14:05:44 +0300
-From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-To:     Zwane Mwaikambo <zwane@yosper.io>
-Cc:     Lyude Paul <lyude@redhat.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>, zwanem@gmail.com,
-        dkwon@redhat.com, Linux Kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH]] drm/dp check aux_dev before use in
- drm_dp_aux_dev_get_by_minor()
-Message-ID: <20200907110544.GE6112@intel.com>
-References: <alpine.DEB.2.21.2008101004110.27032@montezuma.home>
- <20200811085830.GZ2352366@phenom.ffwll.local>
- <alpine.DEB.2.21.2008111514210.35094@montezuma.home>
- <CAKMK7uHxikojLQNbsnnfDfGZ3tFP9CRUTzvr+DsZghzQupaBGg@mail.gmail.com>
- <a1141faf8c6a0a924d87132fb4a297cd6d47e09d.camel@redhat.com>
- <alpine.DEB.2.21.2008121314020.39850@montezuma.home>
- <alpine.DEB.2.21.2009031042400.44355@montezuma.home>
+        id S1728807AbgIGLas (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 07:30:48 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 27918215A4;
+        Mon,  7 Sep 2020 11:06:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599476805;
+        bh=ASDavNWFz3Ru48cBueNff8IUESkv+WSF8MU9lmTCDDM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uizH5gSgQY51RFhQPtobIYQvnQMwEBDfIS1Pk252+RUx7HShA+bOPvpLPoldlaj+n
+         rgmiUppSDhdoQrrkxSWP/uOUd1vp80WvfrYpIHJOrJtcyY/dyu7AZLzzkoeIJaoAIG
+         uTmLbQhAAMZTRBZJPLle4RUGpWBdWTqFSPtlnM5U=
+Date:   Mon, 7 Sep 2020 12:06:01 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Akshu Agrawal <akshu.agrawal@amd.com>
+Cc:     derek.fang@realtek.com, Oder Chiou <oder_chiou@realtek.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." 
+        <alsa-devel@alsa-project.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ASoC: rt5682: Have global name clock option for parent
+ clk
+Message-ID: <20200907110601.GC4907@sirena.org.uk>
+References: <20200907040038.3124-1-akshu.agrawal@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="+nBD6E3TurpgldQp"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <alpine.DEB.2.21.2009031042400.44355@montezuma.home>
-X-Patchwork-Hint: comment
+In-Reply-To: <20200907040038.3124-1-akshu.agrawal@amd.com>
+X-Cookie: Elevators smell different to midgets.
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 04, 2020 at 12:21:26AM -0700, Zwane Mwaikambo wrote:
-> I observed this when unplugging a DP monitor whilst a computer is asleep 
-> and then waking it up. This left DP chardev nodes still being present on 
-> the filesystem and accessing these device nodes caused an oops because 
-> drm_dp_aux_dev_get_by_minor() assumes a device exists if it is opened. 
-> This can also be reproduced by creating a device node with mknod(1) and 
-> issuing an open(2)
-> 
-> [166164.933198] BUG: kernel NULL pointer dereference, address: 0000000000000018
-> [166164.933202] #PF: supervisor read access in kernel mode
-> [166164.933204] #PF: error_code(0x0000) - not-present page
-> [166164.933205] PGD 0 P4D 0 
-> [166164.933208] Oops: 0000 [#1] PREEMPT SMP NOPTI
-> [166164.933211] CPU: 4 PID: 99071 Comm: fwupd Tainted: G        W         
-> 5.8.0-rc6+ #1
-> [166164.933213] Hardware name: LENOVO 20RD002VUS/20RD002VUS, BIOS R16ET25W 
-> (1.11 ) 04/21/2020
-> [166164.933232] RIP: 0010:drm_dp_aux_dev_get_by_minor+0x29/0x70 
-> [drm_kms_helper]
-> [166164.933234] Code: 00 0f 1f 44 00 00 55 48 89 e5 41 54 41 89 fc 48 c7 
-> c7 60 01 a4 c0 e8 26 ab 30 d7 44 89 e6 48 c7 c7 80 01 a4 c0 e8 47 94 d6 d6 
-> <8b> 50 18 49 89 c4 48 8d 78 18 85 d2 74 33 8d 4a 01 89 d0 f0 0f b1
-> [166164.933236] RSP: 0018:ffffb7d7c41cbbf0 EFLAGS: 00010246
-> [166164.933237] RAX: 0000000000000000 RBX: ffff8a90001fe900 RCX: 0000000000000000
-> [166164.933238] RDX: 0000000000000000 RSI: 0000000000000003 RDI: ffffffffc0a40180
-> [166164.933239] RBP: ffffb7d7c41cbbf8 R08: 0000000000000000 R09: ffff8a93e157d6d0
-> [166164.933240] R10: 0000000000000000 R11: ffffffffc0a40188 R12: 0000000000000003
-> [166164.933241] R13: ffff8a9402200e80 R14: ffff8a90001fe900 R15: 0000000000000000
-> [166164.933244] FS:  00007f7fb041eb00(0000) GS:ffff8a9411500000(0000) 
-> knlGS:0000000000000000
-> [166164.933245] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [166164.933246] CR2: 0000000000000018 CR3: 00000000352c2003 CR4: 00000000003606e0
-> [166164.933247] Call Trace:
-> [166164.933264]  auxdev_open+0x1b/0x40 [drm_kms_helper]
-> [166164.933278]  chrdev_open+0xa7/0x1c0
-> [166164.933282]  ? cdev_put.part.0+0x20/0x20
-> [166164.933287]  do_dentry_open+0x161/0x3c0
-> [166164.933291]  vfs_open+0x2d/0x30
-> [166164.933297]  path_openat+0xb27/0x10e0
-> [166164.933306]  ? atime_needs_update+0x73/0xd0
-> [166164.933309]  do_filp_open+0x91/0x100
-> [166164.933313]  ? __alloc_fd+0xb2/0x150
-> [166164.933316]  do_sys_openat2+0x210/0x2d0
-> [166164.933318]  do_sys_open+0x46/0x80
-> [166164.933320]  __x64_sys_openat+0x20/0x30
-> [166164.933328]  do_syscall_64+0x52/0xc0
-> [166164.933336]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> 
-> 
-> (gdb) disassemble drm_dp_aux_dev_get_by_minor+0x29
-> Dump of assembler code for function drm_dp_aux_dev_get_by_minor:
->    0x0000000000017b10 <+0>:     callq  0x17b15 <drm_dp_aux_dev_get_by_minor+5>
->    0x0000000000017b15 <+5>:     push   %rbp
->    0x0000000000017b16 <+6>:     mov    %rsp,%rbp
->    0x0000000000017b19 <+9>:     push   %r12
->    0x0000000000017b1b <+11>:    mov    %edi,%r12d
->    0x0000000000017b1e <+14>:    mov    $0x0,%rdi
->    0x0000000000017b25 <+21>:    callq  0x17b2a <drm_dp_aux_dev_get_by_minor+26>
->    0x0000000000017b2a <+26>:    mov    %r12d,%esi
->    0x0000000000017b2d <+29>:    mov    $0x0,%rdi
->    0x0000000000017b34 <+36>:    callq  0x17b39 <drm_dp_aux_dev_get_by_minor+41>
->    0x0000000000017b39 <+41>:    mov    0x18(%rax),%edx <=========
->    0x0000000000017b3c <+44>:    mov    %rax,%r12
->    0x0000000000017b3f <+47>:    lea    0x18(%rax),%rdi
->    0x0000000000017b43 <+51>:    test   %edx,%edx
->    0x0000000000017b45 <+53>:    je     0x17b7a <drm_dp_aux_dev_get_by_minor+106>
->    0x0000000000017b47 <+55>:    lea    0x1(%rdx),%ecx
->    0x0000000000017b4a <+58>:    mov    %edx,%eax
->    0x0000000000017b4c <+60>:    lock cmpxchg %ecx,(%rdi)
->    0x0000000000017b50 <+64>:    jne    0x17b76 <drm_dp_aux_dev_get_by_minor+102>
->    0x0000000000017b52 <+66>:    test   %edx,%edx
->    0x0000000000017b54 <+68>:    js     0x17b6d <drm_dp_aux_dev_get_by_minor+93>
->    0x0000000000017b56 <+70>:    test   %ecx,%ecx
->    0x0000000000017b58 <+72>:    js     0x17b6d <drm_dp_aux_dev_get_by_minor+93>
->    0x0000000000017b5a <+74>:    mov    $0x0,%rdi
->    0x0000000000017b61 <+81>:    callq  0x17b66 <drm_dp_aux_dev_get_by_minor+86>
->    0x0000000000017b66 <+86>:    mov    %r12,%rax
->    0x0000000000017b69 <+89>:    pop    %r12
->    0x0000000000017b6b <+91>:    pop    %rbp
->    0x0000000000017b6c <+92>:    retq   
->    0x0000000000017b6d <+93>:    xor    %esi,%esi
->    0x0000000000017b6f <+95>:    callq  0x17b74 <drm_dp_aux_dev_get_by_minor+100>
->    0x0000000000017b74 <+100>:   jmp    0x17b5a <drm_dp_aux_dev_get_by_minor+74>
->    0x0000000000017b76 <+102>:   mov    %eax,%edx
->    0x0000000000017b78 <+104>:   jmp    0x17b43 <drm_dp_aux_dev_get_by_minor+51>
->    0x0000000000017b7a <+106>:   xor    %r12d,%r12d
->    0x0000000000017b7d <+109>:   jmp    0x17b5a <drm_dp_aux_dev_get_by_minor+74>
-> End of assembler dump.
-> 
-> (gdb) list *drm_dp_aux_dev_get_by_minor+0x29
-> 0x17b39 is in drm_dp_aux_dev_get_by_minor (drivers/gpu/drm/drm_dp_aux_dev.c:65).
-> 60      static struct drm_dp_aux_dev *drm_dp_aux_dev_get_by_minor(unsigned index)
-> 61      {
-> 62              struct drm_dp_aux_dev *aux_dev = NULL;
-> 63
-> 64              mutex_lock(&aux_idr_mutex);
-> 65              aux_dev = idr_find(&aux_idr, index);
-> 66              if (!kref_get_unless_zero(&aux_dev->refcount))
-> 67                      aux_dev = NULL;
-> 68              mutex_unlock(&aux_idr_mutex);
-> 69
-> (gdb) p/x &((struct drm_dp_aux_dev *)(0x0))->refcount
-> $8 = 0x18
-> 
-> Looking at the caller, checks on the minor are pushed down to 
-> drm_dp_aux_dev_get_by_minor()
-> 
-> static int auxdev_open(struct inode *inode, struct file *file)
-> {
->     unsigned int minor = iminor(inode);
->     struct drm_dp_aux_dev *aux_dev;
-> 
->     aux_dev = drm_dp_aux_dev_get_by_minor(minor); <====
->     if (!aux_dev)
->         return -ENODEV;
-> 
->     file->private_data = aux_dev;
->     return 0;
-> }
-> 
-> 
-> Fixes: e94cb37b34eb8 ("Add a drm_aux-dev module for reading/writing dpcd registers")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Zwane Mwaikambo <zwane@yosper.io>
-> ---
-> 
-> diff --git a/drivers/gpu/drm/drm_dp_aux_dev.c b/drivers/gpu/drm/drm_dp_aux_dev.c
-> index 2510717d5a08..e25181bf2c48 100644
-> --- a/drivers/gpu/drm/drm_dp_aux_dev.c
-> +++ b/drivers/gpu/drm/drm_dp_aux_dev.c
-> @@ -63,7 +63,7 @@ static struct drm_dp_aux_dev *drm_dp_aux_dev_get_by_minor(unsigned index)
->  
->  	mutex_lock(&aux_idr_mutex);
->  	aux_dev = idr_find(&aux_idr, index);
-> -	if (!kref_get_unless_zero(&aux_dev->refcount))
-> +	if (aux_dev && !kref_get_unless_zero(&aux_dev->refcount))
 
-Dejavu
+--+nBD6E3TurpgldQp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-https://lists.freedesktop.org/archives/dri-devel/2019-May/218855.html
-https://lists.freedesktop.org/archives/dri-devel/2019-July/226168.html
+On Mon, Sep 07, 2020 at 09:30:37AM +0530, Akshu Agrawal wrote:
+> When adding parent clk(mclk) to wclk, this adds fallback option
+> for the case where global clk name is used.
 
-I guess we just got stuck waiting for confirmation that it reproduces
-with the bogus device node trick.
+> @@ -2780,6 +2780,7 @@ static int rt5682_register_dai_clks(struct snd_soc_component *component)
+>  			if (rt5682->mclk) {
+>  				init.parent_data = &(struct clk_parent_data){
+>  					.fw_name = "mclk",
+> +					.name = __clk_get_name(rt5682->mclk),
+>  				};
+>  				init.num_parents = 1;
+>  			}
 
->  		aux_dev = NULL;
->  	mutex_unlock(&aux_idr_mutex);
->  
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+I don't understand this change - we clearly already have the clock so
+why can't we just use whatever we used when we originally looked it up
+here?
 
--- 
-Ville Syrjälä
-Intel
+--+nBD6E3TurpgldQp
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9WFBkACgkQJNaLcl1U
+h9BDVgf/TzUykCu0F6H22up3PWm1DPnZbDx/M60THNm08kFwphVcM57B4Jls3/U1
+QLLodHKZreIHEu3+WcNDrZdWezwElxhBTfb3PL15lsJbsfQr7v0awbLUO7beDrpB
+tHznqF+INvVCU1xHDxUXIvmOp6ftsl+ltLw1I4Va3yIpkM3uFhwJMnZJAJkWj2+9
+RPnFT6Ru9Bb7r9F9QghpW4y5rf662w/ugJRNy+1dCGm91GfN0UbbnB7HKPIBXN+2
+qsWtFP8Tjk1HBcC+o4Bi9FqF7C0JVVrR0K1dxs2TQWkItdz56TP288gVpVtHDyAm
+v/zO5tqxlx4K6u1vbPUAdM3dlMoyjQ==
+=yIiR
+-----END PGP SIGNATURE-----
+
+--+nBD6E3TurpgldQp--
