@@ -2,79 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9478326024D
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:22:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DAAD260256
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:23:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730725AbgIGRWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 13:22:51 -0400
-Received: from foss.arm.com ([217.140.110.172]:36098 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729601AbgIGNpQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 09:45:16 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1326E1045;
-        Mon,  7 Sep 2020 06:32:31 -0700 (PDT)
-Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D09663F66E;
-        Mon,  7 Sep 2020 06:32:29 -0700 (PDT)
-Date:   Mon, 7 Sep 2020 14:32:24 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
-Cc:     linux-pci@vger.kernel.org, Tomasz Maciej Nowak <tmn505@gmail.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-kernel@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
-        Xogium <contact@xogium.me>, marek.behun@nic.cz
-Subject: Re: [PATCH v3 0/5] PCIe aardvark controller improvements
-Message-ID: <20200907133224.GA9398@e121166-lin.cambridge.arm.com>
-References: <20200907111038.5811-1-pali@kernel.org>
+        id S1731164AbgIGRXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 13:23:22 -0400
+Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:19770 "EHLO
+        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729514AbgIGNnS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 09:43:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1599486198; x=1631022198;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=6VQbLOy77M7fAKsGR2G82WO7fDDbNA8p2pbqM8zfSyk=;
+  b=TtAf3lFuBU4twdxeJ4WUdiF5hITcEfoTPjkkl9dXcauTowW9w5iJxNH+
+   qXUOkrY+TRDAZOnSi4L5qZ15LQ7qJuQLzzrHvf8VqmvHHKlWVRer3WdE0
+   AeX5rOtfBkuW3LLYxvvA6fSpkZ/MdmAq5TiSB/BhhtPTzvVyz2QGIF8XK
+   E=;
+X-IronPort-AV: E=Sophos;i="5.76,401,1592870400"; 
+   d="scan'208";a="74201643"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2a-119b4f96.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 07 Sep 2020 13:35:42 +0000
+Received: from EX13D16EUB001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
+        by email-inbound-relay-2a-119b4f96.us-west-2.amazon.com (Postfix) with ESMTPS id 8709E1A067C;
+        Mon,  7 Sep 2020 13:35:39 +0000 (UTC)
+Received: from 38f9d34ed3b1.ant.amazon.com (10.43.162.38) by
+ EX13D16EUB001.ant.amazon.com (10.43.166.28) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Mon, 7 Sep 2020 13:35:28 +0000
+Subject: Re: [PATCH v8 15/18] nitro_enclaves: Add Makefile for the Nitro
+ Enclaves driver
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Anthony Liguori <aliguori@amazon.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Colm MacCarthaigh <colmmacc@amazon.com>,
+        David Duncan <davdunc@amazon.com>,
+        Bjoern Doebel <doebel@amazon.de>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        "Frank van der Linden" <fllinden@amazon.com>,
+        Alexander Graf <graf@amazon.de>,
+        "Karen Noel" <knoel@redhat.com>,
+        Martin Pohlack <mpohlack@amazon.de>,
+        Matt Wilson <msw@amazon.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Balbir Singh <sblbir@amazon.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "Stefan Hajnoczi" <stefanha@redhat.com>,
+        Stewart Smith <trawets@amazon.com>,
+        "Uwe Dannowski" <uwed@amazon.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        kvm <kvm@vger.kernel.org>,
+        ne-devel-upstream <ne-devel-upstream@amazon.com>
+References: <20200904173718.64857-1-andraprs@amazon.com>
+ <20200904173718.64857-16-andraprs@amazon.com>
+ <20200907090011.GC1101646@kroah.com>
+From:   "Paraschiv, Andra-Irina" <andraprs@amazon.com>
+Message-ID: <f5c0f79c-f581-fab5-9a3b-97380ef7fc2a@amazon.com>
+Date:   Mon, 7 Sep 2020 16:35:23 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:78.0)
+ Gecko/20100101 Thunderbird/78.2.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200907111038.5811-1-pali@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200907090011.GC1101646@kroah.com>
+Content-Language: en-US
+X-Originating-IP: [10.43.162.38]
+X-ClientProxiedBy: EX13D20UWA001.ant.amazon.com (10.43.160.34) To
+ EX13D16EUB001.ant.amazon.com (10.43.166.28)
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 07, 2020 at 01:10:33PM +0200, Pali Rohár wrote:
-> Hi,
-> 
-> we have some more improvements for PCIe aardvark controller (Armada 3720
-> SOC - EspressoBIN and Turris MOX).
-> 
-> The main improvement is that with these patches the driver can be compiled
-> as a module, and can be reloaded at runtime.
-> 
-> Marek & Pali
-> 
-> 
-> Changes in V3:
-> * Rebased on top of the v5.9-rc1 release
+CgpPbiAwNy8wOS8yMDIwIDEyOjAwLCBHcmVnIEtIIHdyb3RlOgo+Cj4KPiBPbiBGcmksIFNlcCAw
+NCwgMjAyMCBhdCAwODozNzoxNVBNICswMzAwLCBBbmRyYSBQYXJhc2NoaXYgd3JvdGU6Cj4+IFNp
+Z25lZC1vZmYtYnk6IEFuZHJhIFBhcmFzY2hpdiA8YW5kcmFwcnNAYW1hem9uLmNvbT4KPj4gUmV2
+aWV3ZWQtYnk6IEFsZXhhbmRlciBHcmFmIDxncmFmQGFtYXpvbi5jb20+Cj4+IC0tLQo+PiBDaGFu
+Z2Vsb2cKPj4KPj4gdjcgLT4gdjgKPj4KPj4gKiBObyBjaGFuZ2VzLgo+Pgo+PiB2NiAtPiB2Nwo+
+Pgo+PiAqIE5vIGNoYW5nZXMuCj4+Cj4+IHY1IC0+IHY2Cj4+Cj4+ICogTm8gY2hhbmdlcy4KPj4K
+Pj4gdjQgLT4gdjUKPj4KPj4gKiBObyBjaGFuZ2VzLgo+Pgo+PiB2MyAtPiB2NAo+Pgo+PiAqIE5v
+IGNoYW5nZXMuCj4+Cj4+IHYyIC0+IHYzCj4+Cj4+ICogUmVtb3ZlIHRoZSBHUEwgYWRkaXRpb25h
+bCB3b3JkaW5nIGFzIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyIGlzCj4+ICAgIGFscmVhZHkgaW4g
+cGxhY2UuCj4+Cj4+IHYxIC0+IHYyCj4+Cj4+ICogVXBkYXRlIHBhdGggdG8gTWFrZWZpbGUgdG8g
+bWF0Y2ggdGhlIGRyaXZlcnMvdmlydC9uaXRyb19lbmNsYXZlcwo+PiAgICBkaXJlY3RvcnkuCj4+
+IC0tLQo+PiAgIGRyaXZlcnMvdmlydC9NYWtlZmlsZSAgICAgICAgICAgICAgICB8ICAyICsrCj4+
+ICAgZHJpdmVycy92aXJ0L25pdHJvX2VuY2xhdmVzL01ha2VmaWxlIHwgMTEgKysrKysrKysrKysK
+Pj4gICAyIGZpbGVzIGNoYW5nZWQsIDEzIGluc2VydGlvbnMoKykKPj4gICBjcmVhdGUgbW9kZSAx
+MDA2NDQgZHJpdmVycy92aXJ0L25pdHJvX2VuY2xhdmVzL01ha2VmaWxlCj4+Cj4+IGRpZmYgLS1n
+aXQgYS9kcml2ZXJzL3ZpcnQvTWFrZWZpbGUgYi9kcml2ZXJzL3ZpcnQvTWFrZWZpbGUKPj4gaW5k
+ZXggZmQzMzEyNDdjMjdhLi5mMjg0MjVjZTRiMzkgMTAwNjQ0Cj4+IC0tLSBhL2RyaXZlcnMvdmly
+dC9NYWtlZmlsZQo+PiArKysgYi9kcml2ZXJzL3ZpcnQvTWFrZWZpbGUKPj4gQEAgLTUsMyArNSw1
+IEBACj4+Cj4+ICAgb2JqLSQoQ09ORklHX0ZTTF9IVl9NQU5BR0VSKSArPSBmc2xfaHlwZXJ2aXNv
+ci5vCj4+ICAgb2JqLXkgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICs9IHZib3hndWVz
+dC8KPj4gKwo+PiArb2JqLSQoQ09ORklHX05JVFJPX0VOQ0xBVkVTKSArPSBuaXRyb19lbmNsYXZl
+cy8KPj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvdmlydC9uaXRyb19lbmNsYXZlcy9NYWtlZmlsZSBi
+L2RyaXZlcnMvdmlydC9uaXRyb19lbmNsYXZlcy9NYWtlZmlsZQo+PiBuZXcgZmlsZSBtb2RlIDEw
+MDY0NAo+PiBpbmRleCAwMDAwMDAwMDAwMDAuLmU5ZjRmY2QxNTkxZQo+PiAtLS0gL2Rldi9udWxs
+Cj4+ICsrKyBiL2RyaXZlcnMvdmlydC9uaXRyb19lbmNsYXZlcy9NYWtlZmlsZQo+PiBAQCAtMCww
+ICsxLDExIEBACj4+ICsjIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiBHUEwtMi4wCj4+ICsjCj4+
+ICsjIENvcHlyaWdodCAyMDIwIEFtYXpvbi5jb20sIEluYy4gb3IgaXRzIGFmZmlsaWF0ZXMuIEFs
+bCBSaWdodHMgUmVzZXJ2ZWQuCj4+ICsKPj4gKyMgRW5jbGF2ZSBsaWZldGltZSBtYW5hZ2VtZW50
+IHN1cHBvcnQgZm9yIE5pdHJvIEVuY2xhdmVzIChORSkuCj4+ICsKPj4gK29iai0kKENPTkZJR19O
+SVRST19FTkNMQVZFUykgKz0gbml0cm9fZW5jbGF2ZXMubwo+PiArCj4+ICtuaXRyb19lbmNsYXZl
+cy15IDo9IG5lX3BjaV9kZXYubyBuZV9taXNjX2Rldi5vCj4+ICsKPj4gK2NjZmxhZ3MteSArPSAt
+V2FsbAo+IFRoYXQgZmxhZyBpcyBfcmVhbGx5XyByaXNreSBvdmVyIHRpbWUsIGFyZSB5b3UgX1NV
+UkVfIHRoYXQgYWxsIG5ldwo+IHZlcnNpb25zIG9mIGNsYW5nIGFuZCBnY2Mgd2lsbCBuZXZlciBw
+cm9kdWNlIGFueSB3YXJuaW5ncz8gIFBlb3BsZSB3b3JrCj4gdG8gZml4IHVwIGJ1aWxkIHdhcm5p
+bmdzIHF1aXRlIHF1aWNrbHkgZm9yIG5ldyBjb21waWxlcnMsIHlvdSBzaG91bGRuJ3QKPiBwcmV2
+ZW50IHRoZSBjb2RlIGZyb20gYmVpbmcgYnVpbHQgYXQgYWxsIGp1c3QgZm9yIHRoYXQsIHJpZ2h0
+Pwo+CgpUaGF0IHdvdWxkIGFsc28gbmVlZCBXZXJyb3IsIHRvIGhhdmUgd2FybmluZ3MgdHJlYXRl
+ZCBhcyBlcnJvcnMgYW5kIApwcmV2ZW50IGJ1aWxkaW5nIHRoZSBjb2RlYmFzZS4gSWYgaXQncyBh
+Ym91dCBzb21ldGhpbmcgbW9yZSwganVzdCBsZXQgbWUgCmtub3cuCgpXb3VsZCB0aGlzIGFwcGx5
+IHRvIHRoZSBzYW1wbGVzIGRpcmVjdG9yeSBhcyB3ZWxsLCBubz8KCkkgY291bGQgcmVtb3ZlIHRo
+ZSBXYWxsIGZsYWdzIGFuZCBrZWVwIGl0IGZvciBkZXZlbG9wbWVudCB2YWxpZGF0aW9uIApwdXJw
+b3NlcyBvbiBteSBzaWRlIHRvIHNvbHZlIGF0IGxlYXN0IHRoZSB3YXJuaW5ncyB0aGF0IHdvdWxk
+IGZ1cnRoZXIgc2VlLgoKVGhhbmtzLApBbmRyYQoKCgpBbWF6b24gRGV2ZWxvcG1lbnQgQ2VudGVy
+IChSb21hbmlhKSBTLlIuTC4gcmVnaXN0ZXJlZCBvZmZpY2U6IDI3QSBTZi4gTGF6YXIgU3RyZWV0
+LCBVQkM1LCBmbG9vciAyLCBJYXNpLCBJYXNpIENvdW50eSwgNzAwMDQ1LCBSb21hbmlhLiBSZWdp
+c3RlcmVkIGluIFJvbWFuaWEuIFJlZ2lzdHJhdGlvbiBudW1iZXIgSjIyLzI2MjEvMjAwNS4K
 
-Applied to pci/aardvark, thanks !
-
-Lorenzo
-
-> Changes in V2 for patch 4/5:
-> * Protect pci_stop_root_bus() and pci_remove_root_bus() function calls by
->   pci_lock_rescan_remove() and pci_unlock_rescan_remove()
-> 
-> Pali Rohár (5):
->   PCI: aardvark: Fix compilation on s390
->   PCI: aardvark: Check for errors from pci_bridge_emul_init() call
->   PCI: pci-bridge-emul: Export API functions
->   PCI: aardvark: Implement driver 'remove' function and allow to build
->     it as module
->   PCI: aardvark: Move PCIe reset card code to advk_pcie_train_link()
-> 
->  drivers/pci/controller/Kconfig        |   2 +-
->  drivers/pci/controller/pci-aardvark.c | 104 ++++++++++++++++----------
->  drivers/pci/pci-bridge-emul.c         |   4 +
->  3 files changed, 71 insertions(+), 39 deletions(-)
-> 
-> -- 
-> 2.20.1
-> 
