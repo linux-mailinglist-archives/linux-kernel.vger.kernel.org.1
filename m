@@ -2,136 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C270F25F8AF
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 12:44:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03E9025F8E5
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 12:54:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728706AbgIGKoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 06:44:03 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:42802 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728618AbgIGKn7 (ORCPT
+        id S1728963AbgIGKyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 06:54:04 -0400
+Received: from outbound-smtp13.blacknight.com ([46.22.139.230]:56605 "EHLO
+        outbound-smtp13.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728669AbgIGKxv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 06:43:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599475435;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=c1vAH2sOnIecyBuC1bgws2niE0JgFrbZ244nIj8c+DU=;
-        b=ELT9WAfQ9lZ9di6q8gu5ELBsQ3QbQFgQ/sV1dUGT+mdTPKNd0ETpiFQtkFAfDvQGTw0kKm
-        Yynf0darHZYjkXoE2V6UfWGgunRIh21fyqxA/GJioQqyuAKN25yBH3FEJjhKwuhNShzJH5
-        DM1Z97ikZvzO/atuyfF1cuAENuQC+WM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-404-uykzQjHlNiu2lD-lNSLY4w-1; Mon, 07 Sep 2020 06:43:54 -0400
-X-MC-Unique: uykzQjHlNiu2lD-lNSLY4w-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BA64E1084CA6;
-        Mon,  7 Sep 2020 10:43:52 +0000 (UTC)
-Received: from jason-ThinkPad-X1-Carbon-6th.redhat.com (ovpn-12-108.pek2.redhat.com [10.72.12.108])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4BEAA60C0F;
-        Mon,  7 Sep 2020 10:43:45 +0000 (UTC)
-From:   Jason Wang <jasowang@redhat.com>
-To:     mst@redhat.com, jasowang@redhat.com, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     lulu@redhat.com, Eli Cohen <elic@nvidia.com>,
-        Zhu Lingshan <lingshan.zhu@intel.com>
-Subject: [PATCH] vhost-vdpa: fix backend feature ioctls
-Date:   Mon,  7 Sep 2020 18:43:43 +0800
-Message-Id: <20200907104343.31141-1-jasowang@redhat.com>
+        Mon, 7 Sep 2020 06:53:51 -0400
+X-Greylist: delayed 568 seconds by postgrey-1.27 at vger.kernel.org; Mon, 07 Sep 2020 06:53:50 EDT
+Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
+        by outbound-smtp13.blacknight.com (Postfix) with ESMTPS id D83331C3C72
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 11:44:08 +0100 (IST)
+Received: (qmail 913 invoked from network); 7 Sep 2020 10:44:08 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.21.127])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 7 Sep 2020 10:44:08 -0000
+Date:   Mon, 7 Sep 2020 11:44:06 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+Cc:     Mel Gorman <mgorman@suse.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
+        "bsegall@google.com" <bsegall@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Phil Auld <pauld@redhat.com>, Hillf Danton <hdanton@sina.com>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCH] sched/fair: use dst group while checking imbalance for
+ NUMA balancer
+Message-ID: <20200907104406.GD3179@techsingularity.net>
+References: <20200907072708.8664-1-song.bao.hua@hisilicon.com>
+ <20200907092717.GD3117@suse.de>
+ <9c8e148805bc4da1a2bfdd72f1c76f06@hisilicon.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <9c8e148805bc4da1a2bfdd72f1c76f06@hisilicon.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 653055b9acd4 ("vhost-vdpa: support get/set backend features")
-introduces two malfunction backend features ioctls:
+On Mon, Sep 07, 2020 at 09:44:03AM +0000, Song Bao Hua (Barry Song) wrote:
+> 
+> 
+> > -----Original Message-----
+> > From: Mel Gorman [mailto:mgorman@suse.de]
+> > Sent: Monday, September 7, 2020 9:27 PM
+> > To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
+> > Cc: mingo@redhat.com; peterz@infradead.org; juri.lelli@redhat.com;
+> > vincent.guittot@linaro.org; dietmar.eggemann@arm.com;
+> > bsegall@google.com; linux-kernel@vger.kernel.org; Linuxarm
+> > <linuxarm@huawei.com>; Mel Gorman <mgorman@techsingularity.net>;
+> > Peter Zijlstra <a.p.zijlstra@chello.nl>; Valentin Schneider
+> > <valentin.schneider@arm.com>; Phil Auld <pauld@redhat.com>; Hillf Danton
+> > <hdanton@sina.com>; Ingo Molnar <mingo@kernel.org>
+> > Subject: Re: [PATCH] sched/fair: use dst group while checking imbalance for
+> > NUMA balancer
+> > 
+> > On Mon, Sep 07, 2020 at 07:27:08PM +1200, Barry Song wrote:
+> > > Something is wrong. In find_busiest_group(), we are checking if src has
+> > > higher load, however, in task_numa_find_cpu(), we are checking if dst
+> > > will have higher load after balancing. It seems it is not sensible to
+> > > check src.
+> > > It maybe cause wrong imbalance value, for example, if
+> > > dst_running = env->dst_stats.nr_running + 1 results in 3 or above, and
+> > > src_running = env->src_stats.nr_running - 1 results in 1;
+> > > The current code is thinking imbalance as 0 since src_running is smaller
+> > > than 2.
+> > > This is inconsistent with load balancer.
+> > >
+> > 
+> > It checks the conditions if the move was to happen. Have you evaluated
+> > this for a NUMA balancing load and confirmed it a) balances properly and
+> > b) does not increase the scan rate trying to "fix" the problem?
+> 
+> I think the original code was trying to check if the numa migration
+> would lead to new imbalance in load balancer. In case src is A, dst is B, and
+> both of them have nr_running as 2. A moves one task to B, then A
+> will have 1, B will have 3. In load balancer, A will try to pull task
+> from B since B's nr_running is larger than min_imbalance. But the code
+> is saying imbalance=0 by finding A's nr_running is smaller than
+> min_imbalance.
+> 
+> Will share more test data if you need.
+> 
 
-1) the ioctls was blindly added to vring ioctl instead of vdpa device
-   ioctl
-2) vhost_set_backend_features() was called when dev mutex has already
-   been held which will lead a deadlock
+Include the test description, data and details of the system you used to
+evaluate the patch. I ask because the load/numa reconcilation took a long
+time to cover all the corner cases and it's very easy to reintroduce major
+regressions. At least one of those corner cases was trying to balance
+in the wrong direction because in some cases NUMA balancing will try to
+allow a small imbalance if it makes sense from a locality point of view.
+Another corner case was if that small imbalance is too large or done at
+the wrong time, it regresses overall even though the locality is good
+because of memory bandwidth limitations. This is obviously far from ideal
+but it does mean that it's an area that needs data backing up the changes.
 
-This patch fixes the above issues.
-
-Cc: Eli Cohen <elic@nvidia.com>
-Reported-by: Zhu Lingshan <lingshan.zhu@intel.com>
-Fixes: 653055b9acd4 ("vhost-vdpa: support get/set backend features")
-Signed-off-by: Jason Wang <jasowang@redhat.com>
----
- drivers/vhost/vdpa.c | 30 ++++++++++++++++--------------
- 1 file changed, 16 insertions(+), 14 deletions(-)
-
-diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
-index 3fab94f88894..796fe979f997 100644
---- a/drivers/vhost/vdpa.c
-+++ b/drivers/vhost/vdpa.c
-@@ -353,8 +353,6 @@ static long vhost_vdpa_vring_ioctl(struct vhost_vdpa *v, unsigned int cmd,
- 	struct vdpa_callback cb;
- 	struct vhost_virtqueue *vq;
- 	struct vhost_vring_state s;
--	u64 __user *featurep = argp;
--	u64 features;
- 	u32 idx;
- 	long r;
- 
-@@ -381,18 +379,6 @@ static long vhost_vdpa_vring_ioctl(struct vhost_vdpa *v, unsigned int cmd,
- 
- 		vq->last_avail_idx = vq_state.avail_index;
- 		break;
--	case VHOST_GET_BACKEND_FEATURES:
--		features = VHOST_VDPA_BACKEND_FEATURES;
--		if (copy_to_user(featurep, &features, sizeof(features)))
--			return -EFAULT;
--		return 0;
--	case VHOST_SET_BACKEND_FEATURES:
--		if (copy_from_user(&features, featurep, sizeof(features)))
--			return -EFAULT;
--		if (features & ~VHOST_VDPA_BACKEND_FEATURES)
--			return -EOPNOTSUPP;
--		vhost_set_backend_features(&v->vdev, features);
--		return 0;
- 	}
- 
- 	r = vhost_vring_ioctl(&v->vdev, cmd, argp);
-@@ -440,8 +426,20 @@ static long vhost_vdpa_unlocked_ioctl(struct file *filep,
- 	struct vhost_vdpa *v = filep->private_data;
- 	struct vhost_dev *d = &v->vdev;
- 	void __user *argp = (void __user *)arg;
-+	u64 __user *featurep = argp;
-+	u64 features;
- 	long r;
- 
-+	if (cmd == VHOST_SET_BACKEND_FEATURES) {
-+		r = copy_from_user(&features, featurep, sizeof(features));
-+		if (r)
-+			return r;
-+		if (features & ~VHOST_VDPA_BACKEND_FEATURES)
-+			return -EOPNOTSUPP;
-+		vhost_set_backend_features(&v->vdev, features);
-+		return 0;
-+	}
-+
- 	mutex_lock(&d->mutex);
- 
- 	switch (cmd) {
-@@ -476,6 +474,10 @@ static long vhost_vdpa_unlocked_ioctl(struct file *filep,
- 	case VHOST_VDPA_SET_CONFIG_CALL:
- 		r = vhost_vdpa_set_config_call(v, argp);
- 		break;
-+	case VHOST_GET_BACKEND_FEATURES:
-+		features = VHOST_VDPA_BACKEND_FEATURES;
-+		r = copy_to_user(featurep, &features, sizeof(features));
-+		break;
- 	default:
- 		r = vhost_dev_ioctl(&v->vdev, cmd, argp);
- 		if (r == -ENOIOCTLCMD)
 -- 
-2.20.1
-
+Mel Gorman
+SUSE Labs
