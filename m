@@ -2,96 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6108025F22C
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 05:46:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADA1F25F225
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 05:45:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726901AbgIGDqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Sep 2020 23:46:01 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:22518 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726871AbgIGDp4 (ORCPT
+        id S1726526AbgIGDpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Sep 2020 23:45:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56908 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726278AbgIGDpP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Sep 2020 23:45:56 -0400
-X-UUID: fc2d7b33f73a41f7a03f428ee60e33c2-20200907
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=mMKGJq1Irdy84Dk7/453p0dQlCzRanBPVBBNedi1E24=;
-        b=P9EOq1ceoJ6v6yA29aGdcKM3W63uv5PYkiygfYBy6w9vVkxgGtbU+Mpeh8KIpuPKOy/ArbN13XNJxxAfNrrbDzjJf6pwFpt9h0n2n/r7fjCldYbt1rqud1RgU5/O/uTbKENeJKSt4p24R7F2Zgcm6xJRw3837t+QCkR9ssmhWcA=;
-X-UUID: fc2d7b33f73a41f7a03f428ee60e33c2-20200907
-Received: from mtkcas08.mediatek.inc [(172.21.101.126)] by mailgw02.mediatek.com
-        (envelope-from <yong.wu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1169113425; Mon, 07 Sep 2020 11:45:51 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by mtkmbs08n2.mediatek.inc
- (172.21.101.56) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 7 Sep
- 2020 11:45:40 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 7 Sep 2020 11:45:39 +0800
-Message-ID: <1599450232.27773.13.camel@mhfsdcap03>
-Subject: Re: [PATCH v3 3/3] iommu/mediatek: add support for MT8167
-From:   Yong Wu <yong.wu@mediatek.com>
-To:     Fabien Parent <fparent@baylibre.com>
-CC:     <iommu@lists.linux-foundation.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <joro@8bytes.org>,
-        <robh+dt@kernel.org>, <matthias.bgg@gmail.com>,
-        <miles.chen@mediatek.com>
-Date:   Mon, 7 Sep 2020 11:43:52 +0800
-In-Reply-To: <20200906151928.881209-3-fparent@baylibre.com>
-References: <20200906151928.881209-1-fparent@baylibre.com>
-         <20200906151928.881209-3-fparent@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Sun, 6 Sep 2020 23:45:15 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83955C061573
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Sep 2020 20:45:14 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id o68so7925871pfg.2
+        for <linux-kernel@vger.kernel.org>; Sun, 06 Sep 2020 20:45:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aMz+YuQ73Vh1ZDuBEz+vPvn5ONCfDFnCqtdgjqi8M0M=;
+        b=XYHihCBaGxZAOrBBSWhkpy+4S9vswK/RThG4BeGSyN4UJwWH5MgKTans5GKUw24MpM
+         CbNrYDRm35Hjp3JVj56Egtq4NDEYJKambyRoJSNfXy6axh6ymdwvmzaMQ7zAEj1jYHqy
+         RQueNkJsvw5jWWjiGrhXki1QYntt6o2h6TxefknP97zD201Xan+p40ap1y3GHXLzzqdk
+         Zp9GX6Jk7LV2bwPvvN1XKhi0vd6FIB7qch2lpXlAPtQLR9CqXvZ4ifB0dC2FbKO0ow4u
+         qCG0XkoJNw+i5Ubcx5iBvavKdlqrMqyds2+OVFa/vJN9bBJ2DU6r+ofGPK3HETZnFVy1
+         AGBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=aMz+YuQ73Vh1ZDuBEz+vPvn5ONCfDFnCqtdgjqi8M0M=;
+        b=U3WPBDEZnziqcKTUBta+mSrJoseIPVxWFoVEOm3mx1K+3uverauXTpKT9y/keTxAyT
+         6MOBAOBbReM32qlDuBu9gdeswSYe7LDKg19Pr6hKcInGzjaUQkF/zXqmv1gWgsqB52op
+         BOWwneCqeJAOE1oqGn0oM+W/yM6iRmiVKI5/9PoFntiy7nAbaMngqV6FDUFPjIZMs9pA
+         f9G3t3arnI03V9TTXqOODsWUZ8MMtnQliISKT5MXDZPJTuNWF8aUafFyJojdMvNdTngg
+         0+ZtcgAmH3x7Nf8ueM4s5iaat6xdwXiKV2eVlbfdNjuUhSlvDfHzKT5GAjedHvOAShzp
+         vXPg==
+X-Gm-Message-State: AOAM530zAkdiQZdpRZsbdY7FtJxlEFzq89ezPOp4JqgXIxw+QQsCr6xj
+        v2pkBU+Fxb747HDhOGTr2yM=
+X-Google-Smtp-Source: ABdhPJxrQOUJm+E3o1JD4Q0WgUcDvuHvUckrES8rurIKfRkwtoZTj3s67Cs72f2nlUiv2oR2Ih5GGA==
+X-Received: by 2002:a62:5b47:: with SMTP id p68mr18988654pfb.255.1599450312667;
+        Sun, 06 Sep 2020 20:45:12 -0700 (PDT)
+Received: from balhae.roam.corp.google.com ([101.235.31.111])
+        by smtp.gmail.com with ESMTPSA id l123sm11099672pgl.24.2020.09.06.20.45.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 06 Sep 2020 20:45:11 -0700 (PDT)
+From:   Namhyung Kim <namhyung@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Stephane Eranian <eranian@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <andi@firstfloor.org>,
+        Ian Rogers <irogers@google.com>
+Subject: [PATCHSET 0/9] perf tools: Fix various memory leaks
+Date:   Mon,  7 Sep 2020 12:44:53 +0900
+Message-Id: <20200907034502.753230-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.28.0.526.ge36021eeef-goog
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 508C82F0F2088845E7C370D4AA3DA4F89501BFD7F85F229D412844D957F046852000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gU3VuLCAyMDIwLTA5LTA2IGF0IDE3OjE5ICswMjAwLCBGYWJpZW4gUGFyZW50IHdyb3RlOg0K
-PiBBZGQgc3VwcG9ydCBmb3IgdGhlIElPTU1VIG9uIE1UODE2Nw0KPiANCj4gU2lnbmVkLW9mZi1i
-eTogRmFiaWVuIFBhcmVudCA8ZnBhcmVudEBiYXlsaWJyZS5jb20+DQo+IC0tLQ0KPiANCj4gVjM6
-DQo+IAkqIHVzZSBMRUdBQ1lfSVZSUF9QQUREUiBmbGFnIGluc3RlYWQgb2YgdXNpbmcgYSBwbGF0
-Zm9ybSBkYXRhIG1lbWJlcg0KPiBWMjoNCj4gCSogcmVtb3ZlZCBpZiBiYXNlZCBvbiBtNHVfcGxh
-dCwgYW5kIHVzaW5nIGluc3RlYWQgdGhlIG5ldw0KPiAJICBoYXNfbGVnYWN5X2l2cnBfcGFkZHIg
-bWVtYmVyIHRoYXQgd2FzIGludHJvZHVjZWQgaW4gcGF0Y2ggMi4NCj4gDQo+IC0tLQ0KPiAgZHJp
-dmVycy9pb21tdS9tdGtfaW9tbXUuYyB8IDggKysrKysrKysNCj4gIGRyaXZlcnMvaW9tbXUvbXRr
-X2lvbW11LmggfCAxICsNCj4gIDIgZmlsZXMgY2hhbmdlZCwgOSBpbnNlcnRpb25zKCspDQo+IA0K
-PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9pb21tdS9tdGtfaW9tbXUuYyBiL2RyaXZlcnMvaW9tbXUv
-bXRrX2lvbW11LmMNCj4gaW5kZXggYjFmODVhN2U5MzQ2Li42MDc5ZjZhMjNjNzQgMTAwNjQ0DQo+
-IC0tLSBhL2RyaXZlcnMvaW9tbXUvbXRrX2lvbW11LmMNCj4gKysrIGIvZHJpdmVycy9pb21tdS9t
-dGtfaW9tbXUuYw0KPiBAQCAtODE3LDYgKzgxNywxMyBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IG10
-a19pb21tdV9wbGF0X2RhdGEgbXQ2Nzc5X2RhdGEgPSB7DQo+ICAJLmxhcmJpZF9yZW1hcCAgPSB7
-ezB9LCB7MX0sIHsyfSwgezN9LCB7NX0sIHs3LCA4fSwgezEwfSwgezl9fSwNCj4gIH07DQo+ICAN
-Cj4gK3N0YXRpYyBjb25zdCBzdHJ1Y3QgbXRrX2lvbW11X3BsYXRfZGF0YSBtdDgxNjdfZGF0YSA9
-IHsNCj4gKwkubTR1X3BsYXQgICAgID0gTTRVX01UODE2NywNCj4gKwkuZmxhZ3MgICAgICAgID0g
-SEFTXzRHQl9NT0RFIHwgUkVTRVRfQVhJIHwgSEFTX0xFR0FDWV9JVlJQX1BBRERSLA0KDQpUaGUg
-NEdCIG1vZGUgZmxvdyB3YXMgaW1wcm92ZWQgYXRbMV0gd2hpY2ggaGFzIGp1c3QgYmVlbiBhcHBs
-aWVkLg0KDQpJZiB5b3UgYWRkIDRnYl9tb2RlIGZsYWcgYnV0IGRvbid0IGhhdmUgIm10ODE2Ny1p
-bmZyYWNmZyIsIHRoZSBwcm9iZSBtYXkNCmJlIGZhaWxlZC4NCg0KWzFdDQpodHRwczovL2xvcmUu
-a2VybmVsLm9yZy9saW51eC1pb21tdS8yMDIwMDkwNDExMjExNy5HQzE2NjA5QDhieXRlcy5vcmcv
-VC8jbTYxM2U5OTI2NzM1ZDA3YWQwMDRmZGRiYmNlZGFhNTBiNWFmYWNjYTENCg0KDQo+ICsJLmlu
-dl9zZWxfcmVnICA9IFJFR19NTVVfSU5WX1NFTF9HRU4xLA0KPiArCS5sYXJiaWRfcmVtYXAgPSB7
-ezB9LCB7MX0sIHsyfX0sIC8qIExpbmVhciBtYXBwaW5nLiAqLw0KPiArfTsNCj4gKw0KPiAgc3Rh
-dGljIGNvbnN0IHN0cnVjdCBtdGtfaW9tbXVfcGxhdF9kYXRhIG10ODE3M19kYXRhID0gew0KPiAg
-CS5tNHVfcGxhdCAgICAgPSBNNFVfTVQ4MTczLA0KPiAgCS5mbGFncwkgICAgICA9IEhBU180R0Jf
-TU9ERSB8IEhBU19CQ0xLIHwgUkVTRVRfQVhJIHwNCj4gQEAgLTgzNSw2ICs4NDIsNyBAQCBzdGF0
-aWMgY29uc3Qgc3RydWN0IG10a19pb21tdV9wbGF0X2RhdGEgbXQ4MTgzX2RhdGEgPSB7DQo+ICBz
-dGF0aWMgY29uc3Qgc3RydWN0IG9mX2RldmljZV9pZCBtdGtfaW9tbXVfb2ZfaWRzW10gPSB7DQo+
-ICAJeyAuY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDI3MTItbTR1IiwgLmRhdGEgPSAmbXQyNzEy
-X2RhdGF9LA0KPiAgCXsgLmNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ2Nzc5LW00dSIsIC5kYXRh
-ID0gJm10Njc3OV9kYXRhfSwNCj4gKwl7IC5jb21wYXRpYmxlID0gIm1lZGlhdGVrLG10ODE2Ny1t
-NHUiLCAuZGF0YSA9ICZtdDgxNjdfZGF0YX0sDQo+ICAJeyAuY29tcGF0aWJsZSA9ICJtZWRpYXRl
-ayxtdDgxNzMtbTR1IiwgLmRhdGEgPSAmbXQ4MTczX2RhdGF9LA0KPiAgCXsgLmNvbXBhdGlibGUg
-PSAibWVkaWF0ZWssbXQ4MTgzLW00dSIsIC5kYXRhID0gJm10ODE4M19kYXRhfSwNCj4gIAl7fQ0K
-PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9pb21tdS9tdGtfaW9tbXUuaCBiL2RyaXZlcnMvaW9tbXUv
-bXRrX2lvbW11LmgNCj4gaW5kZXggMTIyOTI1ZGJlNTQ3Li5kZjMyYjNlMzQwOGIgMTAwNjQ0DQo+
-IC0tLSBhL2RyaXZlcnMvaW9tbXUvbXRrX2lvbW11LmgNCj4gKysrIGIvZHJpdmVycy9pb21tdS9t
-dGtfaW9tbXUuaA0KPiBAQCAtMzksNiArMzksNyBAQCBlbnVtIG10a19pb21tdV9wbGF0IHsNCj4g
-IAlNNFVfTVQyNzAxLA0KPiAgCU00VV9NVDI3MTIsDQo+ICAJTTRVX01UNjc3OSwNCj4gKwlNNFVf
-TVQ4MTY3LA0KPiAgCU00VV9NVDgxNzMsDQo+ICAJTTRVX01UODE4MywNCj4gIH07DQoNCg==
+Hello,
+
+I've found and fixed a bunch of memory leaks during perf pmu and
+metric tests with address sanitizer.  Before this, the tests were
+mostly failed due to the leaks since ASAN makes it return non-zero.
+
+Now I'm seeing no error with ASAN like below:
+
+  $ ./perf test pmu metric
+   9: Parse perf pmu format                                 : Ok
+  10: PMU events                                            :
+  10.1: PMU event table sanity                              : Ok
+  10.2: PMU event map aliases                               : Ok
+  10.3: Parsing of PMU event table metrics                  : Skip (some metrics failed)
+  10.4: Parsing of PMU event table metrics with fake PMUs   : Ok
+  67: Parse and process metrics                             : Ok
+
+The failure in 10.3 seems due to parse errors like below:
+
+  Multiple errors dropping message: unknown term 'filter_opc' for pmu 'uncore_cbox_0'
+  (valid terms: event,edge,inv,umask,cmask,config,config1,config2,name,period,freq,
+                branch_type,time,call-graph,stack-size,no-inherit,inherit,max-stack,
+		nr,no-overwrite,overwrite,driver-config,percore,aux-output,aux-sample-size)
+
+
+  Parse event failed metric 'DRAM_Parallel_Reads' id 'arb/event=0x80,umask=0x2,thresh=1/'
+    expr 'arb@event\=0x80\,umask\=0x2@ / arb@event\=0x80\,umask\=0x2\,thresh\=1@'
+  Error string 'unknown term 'thresh' for pmu 'uncore_arb'' help
+    'valid terms: event,edge,inv,umask,cmask,config,config1,config2,name,period,freq,
+                  branch_type,time,call-graph,stack-size,no-inherit,inherit,max-stack,
+		  nr,no-overwrite,overwrite,driver-config,percore,aux-output,aux-sample-size'
+
+
+The patches are also available at 'perf/metric-fix-v1' branch on
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/namhyung/linux-perf.git
+
+Thanks
+Namhyung
+
+
+Namhyung Kim (9):
+  perf evlist: Fix cpu/thread map leak
+  perf parse-event: Fix cpu map leaks
+  perf parse-event: Fix memory leak in evsel->unit
+  perf test: Fix memory leaks in parse-metric test
+  perf metric: Release expr_parse_ctx after testing
+  perf metric: Free metric when it failed to resolve
+  perf metric: Do not free metric when failed to resolve
+  perf test: Free aliases for PMU event map aliases test
+  perf test: Free formats for perf pmu parse test
+
+ tools/perf/tests/parse-metric.c | 14 +++++++++-----
+ tools/perf/tests/pmu-events.c   |  5 +++++
+ tools/perf/tests/pmu.c          |  1 +
+ tools/perf/util/evlist.c        | 11 ++++++++---
+ tools/perf/util/metricgroup.c   | 26 ++++++++++++++++++--------
+ tools/perf/util/parse-events.c  |  9 +++++++--
+ tools/perf/util/pmu.c           | 13 ++++++++++++-
+ tools/perf/util/pmu.h           |  2 ++
+ tools/perf/util/stat-shadow.c   |  8 +++++---
+ 9 files changed, 67 insertions(+), 22 deletions(-)
+
+-- 
+2.28.0.526.ge36021eeef-goog
 
