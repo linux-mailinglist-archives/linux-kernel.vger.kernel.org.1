@@ -2,109 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0F0C25FCDE
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 17:22:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EE7925FD1B
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 17:29:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730090AbgIGPWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 11:22:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50532 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730151AbgIGPRI (ORCPT
+        id S1730183AbgIGP27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 11:28:59 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:40373 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1730137AbgIGPPp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 11:17:08 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D64BC061756
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 08:07:36 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id c8so13101137edv.5
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 08:07:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tessares-net.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=BsqSCPCPiaLJ8Go+KX+dmTuaOJyEKP9pJrk437CGKxg=;
-        b=l3gYcQrwwdOR9fijZnyUEmRnV41Jn1GPXnCDbFgLE3/DycIWBY+5xj64K+P4kaRsS/
-         jWcZgNfSWwU8vJc22qhfcZOz9MyrpKUMuSIf9Ab+agdioBrleVzplVKE38nLSY5cBUX1
-         ucE+0iOfFSSJCPm8cPHdOGfAEHGc6PTo2aks7VEfJc3QFzqYJEKBjF6QHscBNiJWDZFL
-         yro4UN8yf3Q34nB4re9cCV6hQxXMtz9ndNbsnZ3Ynh5pQZXM9ySv7MuphzR07H6p9bMn
-         FtQUT68lqjxh7HJ0iD4WVyQAd/X2+uiq9CM4zPbJCnZXBEPp0n3sfqRnrw0ggdAGClnB
-         VzNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=BsqSCPCPiaLJ8Go+KX+dmTuaOJyEKP9pJrk437CGKxg=;
-        b=GDu1HBdMBQe5HHUBvKH+ViX7XY9B0pZvTKuGV1P9VuO8mOqxHJqUeFt2z3AIunIXrb
-         ZwV4NbHXLevuwbu2W0+q5G1Djx6YFKhw6eyrd5wqcsVld3nCSPMYZEWVvJSilK3SX56c
-         rXlhZ5vZSMvotp6FSJFq3rMtPF3ew4ogKgv5niBBxV8+vSMRyS5Sdf56bN+8vwTL8hRh
-         2mpxMh+sZqcuzR3ITDMoqEAixIAWIbS/JxwNdvHDJIfGw51nKTfVaxW1h092xmfZE6co
-         TcwlNYEGTNeKzEhBnUEF0sTyOuSEIzEWEgUVfsyUNVnXCckQgnk+oxK7M9ZqzCGVjHtL
-         +7OA==
-X-Gm-Message-State: AOAM532LsPqeda/P8l53OtjMEKh+QGSKifIs3S59JhZstvvWnyD6hLjm
-        OfKIWn0f/6XxzaLKtdag/YFDaEXSjRkkog==
-X-Google-Smtp-Source: ABdhPJz4KjCatnUJFTsRS8yPpcGqriKrL3EhPhWrN7yE7V6S7tBAHkHGZ5mzppwc0wjk5DI/rOsxiQ==
-X-Received: by 2002:aa7:d15a:: with SMTP id r26mr22499081edo.181.1599491254960;
-        Mon, 07 Sep 2020 08:07:34 -0700 (PDT)
-Received: from tsr-lap-08.nix.tessares.net ([2a02:578:85b0:e00:8ddf:bedd:580e:7a7e])
-        by smtp.gmail.com with ESMTPSA id o11sm15104926edw.80.2020.09.07.08.07.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Sep 2020 08:07:34 -0700 (PDT)
-Subject: Re: [MPTCP][PATCH net 2/2] mptcp: fix subflow's remote_id issues
-To:     Geliang Tang <geliangtang@gmail.com>
-Cc:     Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        mptcp@lists.01.org, linux-kernel@vger.kernel.org
-References: <f24ee917e4043d2befe2a0f96cd57aa74d2a4b26.1599474422.git.geliangtang@gmail.com>
- <7187516ee5a9f17a7bf1e4aa9a849da2dd56a734.1599474422.git.geliangtang@gmail.com>
-From:   Matthieu Baerts <matthieu.baerts@tessares.net>
-Message-ID: <a62124ba-bb3e-bd19-e2b4-50e8cb1465ea@tessares.net>
-Date:   Mon, 7 Sep 2020 17:07:33 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 7 Sep 2020 11:15:45 -0400
+Received: (qmail 763212 invoked by uid 1000); 7 Sep 2020 11:08:58 -0400
+Date:   Mon, 7 Sep 2020 11:08:58 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     himadrispandya@gmail.com, dvyukov@google.com,
+        linux-usb@vger.kernel.org, perex@perex.cz, tiwai@suse.com,
+        stern@rowland.harvard.ed, linux-kernel@vger.kernel.org,
+        marcel@holtmann.org, johan.hedberg@gmail.com,
+        linux-bluetooth@vger.kernel.org, alsa-devel@alsa-project.org
+Subject: Re: [PATCH v2 04/11] USB: core: hub.c: use usb_control_msg_send() in
+ a few places
+Message-ID: <20200907150858.GD762136@rowland.harvard.edu>
+References: <20200907145108.3766613-1-gregkh@linuxfoundation.org>
+ <20200907145108.3766613-5-gregkh@linuxfoundation.org>
 MIME-Version: 1.0
-In-Reply-To: <7187516ee5a9f17a7bf1e4aa9a849da2dd56a734.1599474422.git.geliangtang@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200907145108.3766613-5-gregkh@linuxfoundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geliang,
-
-On 07/09/2020 12:29, Geliang Tang wrote:
-> This patch set the init remote_id to zero, otherwise it will be a random
-> number.
+On Mon, Sep 07, 2020 at 04:51:01PM +0200, Greg Kroah-Hartman wrote:
+> There are a few calls to usb_control_msg() that can be converted to use
+> usb_control_msg_send() instead, so do that in order to make the error
+> checking a bit simpler and the code smaller.
 > 
-> Then it added the missing subflow's remote_id setting code both in
-> __mptcp_subflow_connect and in subflow_ulp_clone.
+> Cc: Alan Stern <stern@rowland.harvard.edu>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+> v2:
+>  - dropped changes to usb_req_set_sel() thanks to review from Alan
 
-Thank you for this other patch!
+> @@ -4056,7 +4035,7 @@ static void usb_enable_link_state(struct usb_hcd *hcd, struct usb_device *udev,
+>  	 * associated with the link state we're about to enable.
+>  	 */
+>  	ret = usb_req_set_sel(udev, state);
+> -	if (ret < 0) {
+> +	if (ret) {
+>  		dev_warn(&udev->dev, "Set SEL for device-initiated %s failed.\n",
+>  				usb3_lpm_names[state]);
+>  		return;
 
-Here as well, may you add a "Fixes:" tag please?
+Did this change survive by mistake?
 
-(...)
+Actually, it looks like usb_req_set_sel needs to check the value 
+returned by usb_control_msg -- a perfect example of the sort of thing 
+you were trying to fix in the first place!
 
-> diff --git a/net/mptcp/pm_netlink.c b/net/mptcp/pm_netlink.c
-> index dc2c57860d2d..255695221309 100644
-> --- a/net/mptcp/pm_netlink.c
-> +++ b/net/mptcp/pm_netlink.c
-> @@ -186,7 +186,7 @@ static void mptcp_pm_create_subflow_or_signal_addr(struct mptcp_sock *msk)
->   {
->   	struct sock *sk = (struct sock *)msk;
->   	struct mptcp_pm_addr_entry *local;
-> -	struct mptcp_addr_info remote;
-> +	struct mptcp_addr_info remote = { 0 };
-
-To respect the "reversed Xmas tree" way to declare variables, may you 
-move this line up to be the first one in the list please?
-
-The rest looks good to me, thank you!
-
-Cheers,
-Matt
--- 
-Tessares | Belgium | Hybrid Access Solutions
-www.tessares.net
+Alan Stern
