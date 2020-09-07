@@ -2,69 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC45B25FC08
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 16:28:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B240625FC1D
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 16:31:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729869AbgIGO2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 10:28:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50276 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729817AbgIGOWI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 10:22:08 -0400
-Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4378821481;
-        Mon,  7 Sep 2020 14:22:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599488527;
-        bh=T0OLbhI3b6Sj7Jv2x6WXbH/uamfr/jukm5TLqaMkvf0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ckECwtrM3NnyvKb9RcZ1ux02kwtc167Z79WuPxdKnxHssx2/1+BjKoTkbZ79ETUQD
-         AF79MIo3eY/rPd2Sx3VITyYhAAKu4XnTUkIQEphVwIfXDc3CcmBVNoFEswXaeCpvlR
-         kND3li/EzcessCRkdQ4EDUDTI71ug77tl3J4TEvY=
-Date:   Mon, 7 Sep 2020 10:22:06 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     "H. Nikolaus Schaller" <hns@goldelico.com>
-Cc:     David Brazdil <dbrazdil@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Marc Zyngier <maz@kernel.org>
-Subject: Re: [BUG]: KVM: arm64: Fix symbol dependency in __hyp_call_panic_nvhe
-Message-ID: <20200907142206.GL8670@sasha-vm>
-References: <3750C774-62A4-4D02-8C07-6C98304F32F3@goldelico.com>
+        id S1729893AbgIGObO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 10:31:14 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:32900 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729707AbgIGOXw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 10:23:52 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 1AD2C804481131BD0AD1;
+        Mon,  7 Sep 2020 21:32:33 +0800 (CST)
+Received: from [127.0.0.1] (10.74.149.191) by DGGEMS405-HUB.china.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Mon, 7 Sep 2020
+ 21:32:23 +0800
+Subject: Re: [PATCH net-next 0/2] net: two updates related to UDP GSO
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>
+CC:     David Miller <davem@davemloft.net>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        <salil.mehta@huawei.com>, <yisen.zhuang@huawei.com>,
+        <linuxarm@huawei.com>
+References: <1599286273-26553-1-git-send-email-tanhuazhong@huawei.com>
+ <20200906114153.7dccce5d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CA+FuTSfeEuTLAGJZkzoMUvx+0j3dY265i8okPLyDO6S-8KHdbQ@mail.gmail.com>
+From:   tanhuazhong <tanhuazhong@huawei.com>
+Message-ID: <126e5424-2453-eef4-d5b6-adeaedbb6eca@huawei.com>
+Date:   Mon, 7 Sep 2020 21:32:22 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.5.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <3750C774-62A4-4D02-8C07-6C98304F32F3@goldelico.com>
+In-Reply-To: <CA+FuTSfeEuTLAGJZkzoMUvx+0j3dY265i8okPLyDO6S-8KHdbQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.74.149.191]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 07, 2020 at 03:29:40PM +0200, H. Nikolaus Schaller wrote:
->Hi,
->it seems as if your patch
->
->34f379956e9d7 ("KVM: arm64: Fix symbol dependency in __hyp_call_panic_nvhe")
->[ Upstream commit b38b298aa4397e2dc74a89b4dd3eac9e59b64c96 ]
->
->fails to compile in v5.8.7 for me (using an aarch64 gcc 4.9 cross-toolchain to try
->to build a kernel for the PinePhone):
->
->  CC      arch/arm64/kvm/hyp/switch.o - due to target missing
->arch/arm64/kvm/hyp/switch.c: In function 'hyp_panic':
->arch/arm64/kvm/hyp/switch.c:904:2: error: impossible constraint in 'asm'
->  asm volatile("ldr %0, =%1" : "=r" (str_va) : "S" (__hyp_panic_string));
->  ^
 
-Does upstream build correctly for you?
 
->I can find the commit b38b298aa4397e2dc74a89b4dd3eac9e59b64c96 in upstream
->but not the affected file. There is also "KVM: arm64: Split hyp/switch.c to VHE/nVHE"
->which does a cleanup and rename and v5.9-rc4 compiles fine.
+On 2020/9/7 17:22, Willem de Bruijn wrote:
+> On Sun, Sep 6, 2020 at 8:42 PM Jakub Kicinski <kuba@kernel.org> wrote:
+>>
+>> On Sat, 5 Sep 2020 14:11:11 +0800 Huazhong Tan wrote:
+>>> There are two updates relates to UDP GSO.
+>>> #1 adds a new GSO type for UDPv6
+>>> #2 adds check for UDP GSO when csum is disable in netdev_fix_features().
+>>>
+>>> Changes since RFC V2:
+>>> - modifies the timing of setting UDP GSO type when doing UDP GRO in #1.
+>>>
+>>> Changes since RFC V1:
+>>> - updates NETIF_F_GSO_LAST suggested by Willem de Bruijn.
+>>>    and add NETIF_F_GSO_UDPV6_L4 feature for each driver who support UDP GSO in #1.
+>>>    - add #2 who needs #1.
+>>
+>> Please CC people who gave you feedback (Willem).
+>>
+>> I don't feel good about this series. IPv6 is not optional any more.
+>> AFAIU you have some issues with csum support in your device? Can you
+>> use .ndo_features_check() to handle this?
+>>
+>> The change in semantics of NETIF_F_GSO_UDP_L4 from "v4 and v6" to
+>> "just v4" can trip people over; this is not a new feature people
+>> may be depending on the current semantics.
+>>
+>> Willem, what are your thoughts on this?
+> 
+> If that is the only reason, +1 on fixing it up in the driver's
+> ndo_features_check.
+> 
 
-Right, it got moved around in upstream.
+Hi, Willem & Jakub.
 
--- 
-Thanks,
-Sasha
+This series mainly fixes the feature dependency between hardware 
+checksum and UDP GSO.
+When turn off hardware checksum offload, run 'ethtool -k [devname]'
+we can see TSO is off as well, but udp gso still is on.
+
+[root@localhost ~]# ethtool -K eth0 tx off
+Actual changes:
+tx-checksumming: off
+	tx-checksum-ipv4: off
+	tx-checksum-ipv6: off
+	tx-checksum-sctp: off
+tcp-segmentation-offload: off
+	tx-tcp-segmentation: off [requested on]
+	tx-tcp-ecn-segmentation: off [requested on]
+	tx-tcp6-segmentation: off [requested on]
+[root@localhost ~]# ethtool -k eth0
+Features for eth0:
+rx-checksumming: on
+tx-checksumming: off
+	tx-checksum-ipv4: off
+	tx-checksum-ip-generic: off [fixed]
+	tx-checksum-ipv6: off
+	tx-checksum-fcoe-crc: off [fixed]
+	tx-checksum-sctp: off
+...
+tcp-segmentation-offload: off
+	tx-tcp-segmentation: off [requested on]
+	tx-tcp-ecn-segmentation: off [requested on]
+	tx-tcp-mangleid-segmentation: off
+	tx-tcp6-segmentation: off [requested on]
+udp-fragmentation-offload: off
+generic-segmentation-offload: on
+generic-receive-offload: on
+...
+tx-udp-segmentation: on
+...
+
+.ndo_feature_check seems unnecessary.
+Because the stack has already do this check.
+in __ip_append_data() below if branch will not run if hardware checksum 
+offload is off.
+         if (transhdrlen &&
+             length + fragheaderlen <= mtu &&
+             rt->dst.dev->features & (NETIF_F_HW_CSUM | NETIF_F_IP_CSUM) &&
+             (!(flags & MSG_MORE) || cork->gso_size) &&
+             (!exthdrlen || (rt->dst.dev->features & 
+NETIF_F_HW_ESP_TX_CSUM)))
+                 csummode = CHECKSUM_PARTIAL;
+...
+so skb->ip_summed set as CHECKSUM_NONE,
+then in udp_send_skb()
+         if (cork->gso_size) {
+		...
+                 if (skb->ip_summed != CHECKSUM_PARTIAL || is_udplite ||
+                     dst_xfrm(skb_dst(skb))) {
+                         kfree_skb(skb); 
+ 
+
+                         return -EIO;
+                 }
+the packet who needs udp gso will return ERROR.
+
+For this kind of problem how could we fix it?
+
+Thanks.
+Huazhong.
+
+> .
+> 
+
