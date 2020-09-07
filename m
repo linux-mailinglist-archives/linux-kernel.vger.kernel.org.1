@@ -2,237 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4E4825F8E2
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 12:53:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB5D525F8EB
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 12:54:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728936AbgIGKxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 06:53:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40432 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728501AbgIGKxE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 06:53:04 -0400
-Received: from kozik-lap.mshome.net (unknown [194.230.155.174])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 15C32206D4;
-        Mon,  7 Sep 2020 10:53:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599475983;
-        bh=ThKW+TJAvXsEawfQDKH67ikL2SFZLnmlMOChoh4t09A=;
-        h=From:To:Cc:Subject:Date:From;
-        b=2s4iJzOAw0AwfDl3+vGO63NsZ/wes/p5awzY0787hAdKN7DWSQBN+dujhUorptTgs
-         B/MGVeDfGBYd7CBs+MN+St91SKdMBoWlU0j3JO5YVxLgKjqDjxleNc4wcbgIh40HO/
-         0eeBWlD+1ooQHeudSrz5DoptJXgnymkcgKelCHrU=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Ulf Hansson <ulf.hansson@linaro.org>, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH v3] mmc: host: Enable compile testing of multiple drivers
-Date:   Mon,  7 Sep 2020 12:52:54 +0200
-Message-Id: <20200907105254.31097-1-krzk@kernel.org>
-X-Mailer: git-send-email 2.17.1
+        id S1728957AbgIGKyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 06:54:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38098 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728984AbgIGKyI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 06:54:08 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 137E8C061575
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 03:54:02 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id m1so12107622ilj.10
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 03:54:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=F9or7F3N4uGJ5u794zyeeQfJsXAWR+DFA8Gx8lvKsws=;
+        b=SKDKiay1D03pgiV+UpJzmTyefaJ/beR1td+hpIw98akjdM8VTUCwuMVeLlb3osZuE9
+         /KX4TukEYGI1vwQo8XNn0elPXGJ/94SDE7VmsuDbdAeXPNF3Tr21rzW8zr8TqLTlTyYE
+         1dLxcfZcjsxI15aCI4Bwujp8aEg7SyTQlu/1Xvz9KT5p1Roko10bQo9WqMrLhKId6ZUG
+         FHXGNWLYNCX+8Pnw/3+wyi60zjyrVtjbyqfaUxlJn8FQFVZoLyaV6pWJb9wRwJ88PnnS
+         2no0sLak8d1PFbnic9JnssKk8fw3Qyp486n1lAo5X7xgmIkEPmiHVQNl6UdfGL4qDc5+
+         +BDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=F9or7F3N4uGJ5u794zyeeQfJsXAWR+DFA8Gx8lvKsws=;
+        b=lTurbFt2ADlueICDrDX+oxcDMjc5MESqEbSE8nj5LEpP5pzzVB1r9cZNDur6y0vQJ7
+         25XOlk7zzTcgsYGAaLPLz1N5+DPltMXB8Do3u3nG6CBhQwWI4EdmVSfqE92MOH4CiWZU
+         GPmMu11DlaRz/4Sc5jb0DA9iJ7ulHa+0nLz30G/E78apPt9pDYW27XAqG5qC5pgTupJK
+         wFtiLzi2qvFCYJa5J5yb46AIyTC6KCBL854j9FAXO7nvuYsjHOEo6uvksrJ7g3F7S5A3
+         ZQo22Dzjq2s5Rh1zS81XWLTboTlkO9/ndvBf1K+XimkQn6ghnPlQiy89ejiaoRffwiL9
+         QG3w==
+X-Gm-Message-State: AOAM533mWaPpCFlCERxwo8bDKZBPK3vtcWwfk4BnTie/VsSlV+zc2Dia
+        VLHAKmEaCFy6IMnQgmKz2hEStVkvGbFfLD5E2k9c0Q==
+X-Google-Smtp-Source: ABdhPJxBpaWjVX3fkFg/bcWAsiU5ccj4QQBFPEMsNaOmvDrtar3fGAFBHYqxEdQBwc585SSw+vfckGQqg3PvOdHAs0M=
+X-Received: by 2002:a92:1b0b:: with SMTP id b11mr18780714ilb.287.1599476041805;
+ Mon, 07 Sep 2020 03:54:01 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200904154547.3836-1-brgl@bgdev.pl> <20200904154547.3836-6-brgl@bgdev.pl>
+ <20200904164015.GY1891694@smile.fi.intel.com>
+In-Reply-To: <20200904164015.GY1891694@smile.fi.intel.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Mon, 7 Sep 2020 12:53:51 +0200
+Message-ID: <CAMRc=MdprNhsRZm=kxkEHFbpftwgMB0a-SR4HjLgiG0tjfWM=Q@mail.gmail.com>
+Subject: Re: [PATCH 05/23] gpiolib: unexport devprop_gpiochip_set_names()
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Kent Gibson <warthog618@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-doc <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-acpi@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Multiple MMC host controller driver can be compile tested as they do not
-depend on architecture specific headers.
+On Fri, Sep 4, 2020 at 6:42 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> On Fri, Sep 04, 2020 at 05:45:29PM +0200, Bartosz Golaszewski wrote:
+> > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> >
+> > Now that devprop_gpiochip_set_names() is only used in a single place
+> > inside drivers/gpio/gpiolib.c, there's no need anymore for it to be
+> > exported or to even live in its own source file. Pull this function into
+> > the core source file for gpiolib.
+>
+> I have mixed feelings about this. We may simply unexport and attach object file
+> to gpiolib.o. Would it be expected to see more functions in this file in the
+> future?
+>
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+This file was created for this function alone over 4 years ago and
+never saw any new routines. Personally I think there's no reason to
+keep a single helper in its own file. We usually only split big chunks
+of code out of gpiolib.c.
 
----
-
-Changes since v2:
-1. Rebase.
-
-Please expect conflicts around MMC_SDHCI_S3C with:
-https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux.git/log/?h=next/soc-s3c-cleanup
-
-Possible resolution:
--depends on PLAT_SAMSUNG || COMPILE_TEST
-+depends on PLAT_SAMSUNG || ARCH_S5PV210 || ARCH_EXYNOS || COMPILE_TEST
----
- drivers/mmc/host/Kconfig | 40 +++++++++++++++++++++-------------------
- 1 file changed, 21 insertions(+), 19 deletions(-)
-
-diff --git a/drivers/mmc/host/Kconfig b/drivers/mmc/host/Kconfig
-index ddbed6f41c41..dc646359b4ff 100644
---- a/drivers/mmc/host/Kconfig
-+++ b/drivers/mmc/host/Kconfig
-@@ -178,7 +178,7 @@ config MMC_SDHCI_OF_AT91
- config MMC_SDHCI_OF_ESDHC
- 	tristate "SDHCI OF support for the Freescale eSDHC controller"
- 	depends on MMC_SDHCI_PLTFM
--	depends on PPC || ARCH_MXC || ARCH_LAYERSCAPE
-+	depends on PPC || ARCH_MXC || ARCH_LAYERSCAPE || COMPILE_TEST
- 	select MMC_SDHCI_IO_ACCESSORS
- 	select FSL_GUTS
- 	help
-@@ -216,7 +216,7 @@ config MMC_SDHCI_OF_DWCMSHC
- config MMC_SDHCI_OF_SPARX5
- 	tristate "SDHCI OF support for the MCHP Sparx5 SoC"
- 	depends on MMC_SDHCI_PLTFM
--	depends on ARCH_SPARX5
-+	depends on ARCH_SPARX5 || COMPILE_TEST
- 	help
- 	  This selects the Secure Digital Host Controller Interface (SDHCI)
- 	  found in the MCHP Sparx5 SoC.
-@@ -238,7 +238,7 @@ config MMC_SDHCI_CADENCE
- 
- config MMC_SDHCI_CNS3XXX
- 	tristate "SDHCI support on the Cavium Networks CNS3xxx SoC"
--	depends on ARCH_CNS3XXX
-+	depends on ARCH_CNS3XXX || COMPILE_TEST
- 	depends on MMC_SDHCI_PLTFM
- 	help
- 	  This selects the SDHCI support for CNS3xxx System-on-Chip devices.
-@@ -262,7 +262,7 @@ config MMC_SDHCI_ESDHC_MCF
- 
- config MMC_SDHCI_ESDHC_IMX
- 	tristate "SDHCI support for the Freescale eSDHC/uSDHC i.MX controller"
--	depends on ARCH_MXC
-+	depends on ARCH_MXC || COMPILE_TEST
- 	depends on MMC_SDHCI_PLTFM
- 	select MMC_SDHCI_IO_ACCESSORS
- 	select MMC_CQHCI
-@@ -276,7 +276,7 @@ config MMC_SDHCI_ESDHC_IMX
- 
- config MMC_SDHCI_DOVE
- 	tristate "SDHCI support on Marvell's Dove SoC"
--	depends on ARCH_DOVE || MACH_DOVE
-+	depends on ARCH_DOVE || MACH_DOVE || COMPILE_TEST
- 	depends on MMC_SDHCI_PLTFM
- 	select MMC_SDHCI_IO_ACCESSORS
- 	help
-@@ -289,7 +289,7 @@ config MMC_SDHCI_DOVE
- 
- config MMC_SDHCI_TEGRA
- 	tristate "SDHCI platform support for the Tegra SD/MMC Controller"
--	depends on ARCH_TEGRA
-+	depends on ARCH_TEGRA || COMPILE_TEST
- 	depends on MMC_SDHCI_PLTFM
- 	select MMC_SDHCI_IO_ACCESSORS
- 	select MMC_CQHCI
-@@ -301,7 +301,8 @@ config MMC_SDHCI_TEGRA
- 
- config MMC_SDHCI_S3C
- 	tristate "SDHCI support on Samsung S3C SoC"
--	depends on MMC_SDHCI && PLAT_SAMSUNG
-+	depends on MMC_SDHCI
-+	depends on PLAT_SAMSUNG || COMPILE_TEST
- 	help
- 	  This selects the Secure Digital Host Controller Interface (SDHCI)
- 	  often referrered to as the HSMMC block in some of the Samsung S3C
-@@ -313,7 +314,7 @@ config MMC_SDHCI_S3C
- 
- config MMC_SDHCI_SIRF
- 	tristate "SDHCI support on CSR SiRFprimaII and SiRFmarco SoCs"
--	depends on ARCH_SIRF
-+	depends on ARCH_SIRF || COMPILE_TEST
- 	depends on MMC_SDHCI_PLTFM
- 	select MMC_SDHCI_IO_ACCESSORS
- 	help
-@@ -351,7 +352,8 @@ config MMC_SDHCI_PXAV2
- 
- config MMC_SDHCI_SPEAR
- 	tristate "SDHCI support on ST SPEAr platform"
--	depends on MMC_SDHCI && PLAT_SPEAR
-+	depends on MMC_SDHCI
-+	depends on PLAT_SPEAR || COMPILE_TEST
- 	depends on OF
- 	help
- 	  This selects the Secure Digital Host Controller Interface (SDHCI)
-@@ -374,7 +376,7 @@ config MMC_SDHCI_S3C_DMA
- 
- config MMC_SDHCI_BCM_KONA
- 	tristate "SDHCI support on Broadcom KONA platform"
--	depends on ARCH_BCM_MOBILE
-+	depends on ARCH_BCM_MOBILE || COMPILE_TEST
- 	depends on MMC_SDHCI_PLTFM
- 	help
- 	  This selects the Broadcom Kona Secure Digital Host Controller
-@@ -422,7 +424,7 @@ config MMC_SDHCI_IPROC
- 
- config MMC_MESON_GX
- 	tristate "Amlogic S905/GX*/AXG SD/MMC Host Controller support"
--	depends on ARCH_MESON
-+	depends on ARCH_MESON|| COMPILE_TEST
- 	help
- 	  This selects support for the Amlogic SD/MMC Host Controller
- 	  found on the S905/GX*/AXG family of SoCs.  This controller is
-@@ -458,7 +460,7 @@ config MMC_MESON_MX_SDIO
- 
- config MMC_MOXART
- 	tristate "MOXART SD/MMC Host Controller support"
--	depends on ARCH_MOXART
-+	depends on ARCH_MOXART || COMPILE_TEST
- 	help
- 	  This selects support for the MOXART SD/MMC Host Controller.
- 	  MOXA provides one multi-functional card reader which can
-@@ -467,7 +469,7 @@ config MMC_MOXART
- 
- config MMC_SDHCI_ST
- 	tristate "SDHCI support on STMicroelectronics SoC"
--	depends on ARCH_STI || FSP2
-+	depends on ARCH_STI || FSP2 || COMPILE_TEST
- 	depends on MMC_SDHCI_PLTFM
- 	select MMC_SDHCI_IO_ACCESSORS
- 	help
-@@ -587,7 +589,7 @@ config MMC_TIFM_SD
- 
- config MMC_MVSDIO
- 	tristate "Marvell MMC/SD/SDIO host driver"
--	depends on PLAT_ORION
-+	depends on PLAT_ORION || (COMPILE_TEST && ARM)
- 	depends on OF
- 	help
- 	  This selects the Marvell SDIO host driver.
-@@ -599,7 +601,7 @@ config MMC_MVSDIO
- 
- config MMC_DAVINCI
- 	tristate "TI DAVINCI Multimedia Card Interface support"
--	depends on ARCH_DAVINCI
-+	depends on ARCH_DAVINCI || COMPILE_TEST
- 	help
- 	  This selects the TI DAVINCI Multimedia card Interface.
- 	  If you have an DAVINCI board with a Multimedia Card slot,
-@@ -628,7 +630,7 @@ config MMC_SPI
- 
- config MMC_S3C
- 	tristate "Samsung S3C SD/MMC Card Interface support"
--	depends on ARCH_S3C24XX
-+	depends on ARCH_S3C24XX || COMPILE_TEST
- 	depends on S3C24XX_DMAC
- 	help
- 	  This selects a driver for the MCI interface found in
-@@ -681,7 +683,7 @@ config MMC_SDRICOH_CS
- 
- config MMC_SDHCI_SPRD
- 	tristate "Spreadtrum SDIO host Controller"
--	depends on ARCH_SPRD
-+	depends on ARCH_SPRD || COMPILE_TEST
- 	depends on MMC_SDHCI_PLTFM
- 	select MMC_SDHCI_IO_ACCESSORS
- 	select MMC_HSQ
-@@ -698,7 +700,7 @@ config MMC_TMIO_CORE
- 
- config MMC_TMIO
- 	tristate "Toshiba Mobile IO Controller (TMIO) MMC/SD function support"
--	depends on MFD_TMIO || MFD_ASIC3
-+	depends on MFD_TMIO || MFD_ASIC3 || COMPILE_TEST
- 	select MMC_TMIO_CORE
- 	help
- 	  This provides support for the SD/MMC cell found in TC6393XB,
-@@ -971,7 +973,7 @@ config MMC_REALTEK_USB
- 
- config MMC_SUNXI
- 	tristate "Allwinner sunxi SD/MMC Host Controller support"
--	depends on ARCH_SUNXI
-+	depends on ARCH_SUNXI || COMPILE_TEST
- 	help
- 	  This selects support for the SD/MMC Host Controller on
- 	  Allwinner sunxi SoCs.
--- 
-2.17.1
-
+Bart
