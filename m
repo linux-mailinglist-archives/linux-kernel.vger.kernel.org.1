@@ -2,118 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4864D25F6D4
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 11:48:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A3DC25F6DA
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 11:49:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728349AbgIGJsy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 05:48:54 -0400
-Received: from mail.zx2c4.com ([192.95.5.64]:37625 "EHLO mail.zx2c4.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728243AbgIGJsy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 05:48:54 -0400
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTP id 9200af26;
-        Mon, 7 Sep 2020 09:20:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=zx2c4.com; h=from:to:cc
-        :subject:date:message-id:mime-version:content-transfer-encoding;
-         s=mail; bh=cQIv0FN/1r4pyfX0hFoYLi9BTW0=; b=iNNkv4mXUOxg5vAaCvKe
-        17VL2v+r80MJLDFm3WP9OYei28jMEkzDag0NSDB87wJuc3IIr1u6qoCQKluWu+84
-        ILk+6euSGq5OtIxPexizPLhCe/EoWl/dy2WBOhvGdPfydC8GnmJt/NTUHDaypBVF
-        72+V5x2PBeIXdoAj83SSQCJJ+IXecBi94rGZ4c5HMdAg5PKE5glcv+ULaa8i57o9
-        DOF4LcWOgqEYwYmfnb0G3dQB2hndt6PNdUqgPEuGHjF/XEoBcqvzY4fajqOX60AO
-        06j4rkQlSBwdLDQZ6T1yIHwrMxzdnQpdQQta6qdZVG7lmhgPWW3LyFGp1m62wZo3
-        nw==
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 01f808c3 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-        Mon, 7 Sep 2020 09:20:07 +0000 (UTC)
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-To:     x86@kernel.org, linux-kernel@vger.kernel.org
-Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Borislav Petkov <bp@suse.de>
-Subject: [PATCH] x86/msr: do not warn on writes to OC_MAILBOX
-Date:   Mon,  7 Sep 2020 11:48:43 +0200
-Message-Id: <20200907094843.1949-1-Jason@zx2c4.com>
+        id S1728421AbgIGJty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 05:49:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56294 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728375AbgIGJtx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 05:49:53 -0400
+Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AB9EC061573
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 02:49:52 -0700 (PDT)
+Received: by mail-vs1-xe44.google.com with SMTP id o184so7094765vsc.0
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 02:49:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=kzqniENsjTGrtzwAWBHSHJGSg8nw3GAQdgvThPSbJ54=;
+        b=lgt+hVRje3zM3OoS3Ku0gij9Z2FNqL4Q2eL2dP9ugcLQ8yXwOh4Izl2xR9RXzYZ+Bb
+         Dzk+Jpag7luj6P1fy0WNpX0N8bNHwKYowOzaoYtlmVO/eu8lNPmQzJSTET+8DH7Z1gMn
+         Bm6ta2zrhJY+7vT0JmpuDWThOYVxtu3kSbBYptL1cutlrJIM7b6i8Su+JPd426asO0Ef
+         Yv248jGQz9bG5PXf+EQKLHzaeegMaOpkpjbiHAVAZMUHofeINGf9Ah1JEkcn/V95/YI7
+         MMN2cSA1B1FIalr7gj9+lmD50nAlldWEo10HHysYmgRgdl1ga/951vKObcatTpZmhgoj
+         iKGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=kzqniENsjTGrtzwAWBHSHJGSg8nw3GAQdgvThPSbJ54=;
+        b=oUKHu7rr/YFvN/SmL0TapycRn6ceK+6JwuESE6/QB3wmConlt9MzHPK1oJWN05SVqT
+         3fVz9meWPB3Q8ysfUERekVWpH23CANmTkdEsOkqdyBMqWEpFBGXbxoznjNoWMmEw+svu
+         mxQuMaGCOLX2sMCUMDrw15cieimi866xinrqMsNtT+uwz97NjgsOJ25+Ehw5Bifc10IC
+         bUHRcqMyVgF65ixXeeSdGsaExcyGTyMuRXwN7jAWCpbVVh3nAMYCfokvtLhs3x16HN6/
+         qkj3tAI/slZlkKwdjK08BdXSmp409nNKoFh+GkXl6WUqJsevnMmocLFCtARmelJD78rH
+         Q8Ew==
+X-Gm-Message-State: AOAM533iKrFfgxAhm40Z+2hNLmYfH0GthFgqs/DgEpPwcDaSGnADCPfR
+        irY3Gpg4FsvYGiRiV8TDNuixEz1LkkCJAjN4/3s=
+X-Google-Smtp-Source: ABdhPJx8PojsLgdRgE71v9E302mF7xFfVc7IMt5FPfbixgvWz6NIHuz8qE7EwZvPNxXY2iP3Mdhs2eOra/xmLzCKnu4=
+X-Received: by 2002:a05:6102:372:: with SMTP id f18mr1701368vsa.8.1599472188809;
+ Mon, 07 Sep 2020 02:49:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:ab0:184c:0:0:0:0:0 with HTTP; Mon, 7 Sep 2020 02:49:48 -0700 (PDT)
+Reply-To: mrs.maddalenanicholaus@gmail.com
+From:   "Mrs. Maddalena Nicholaus" <dickksonpaulchambers@gmail.com>
+Date:   Mon, 7 Sep 2020 10:49:48 +0100
+Message-ID: <CAJTqzoiwvgnwH09Mvr+gaFeMnfawc7j-PuPSaMKXhh6n2sVzWQ@mail.gmail.com>
+Subject: =?UTF-8?B?R3LDvMOfZSBMaWViZXI=?=
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Popular tools, like intel-undervolt, use MSR 0x150 to control the CPU
-voltage offset. In fact, evidently the intel_turbo_max_3 driver in-tree
-also uses this MSR. So, teach the kernel's MSR list about this, so that
-intel-undervolt and other such tools don't spew warnings to dmesg, while
-unifying the constant used throughout the kernel.
+Gr=C3=BC=C3=9Fe Lieber,
 
-Fixes: a7e1f67ed29f ("x86/msr: Filter MSR writes")
-Cc: Borislav Petkov <bp@suse.de>
-Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
----
- arch/x86/include/asm/msr-index.h         | 2 ++
- arch/x86/kernel/msr.c                    | 5 ++++-
- drivers/platform/x86/intel_turbo_max_3.c | 6 +++---
- 3 files changed, 9 insertions(+), 4 deletions(-)
+Ich schreibe diesen Brief mit Tr=C3=A4nen und Trauer und bitte wegen meines
+Gesundheitszustands in London um Hilfe. Ich bin Frau Maddalena
+Nicholaus, eine 85-j=C3=A4hrige finnische Staatsb=C3=BCrgerin. Ich war eine
+Waise, adoptiert von meinem verstorbenen Vater Engr. Joakim Nicholaus,
+Vorsitzender und CEO von JNicholaus Oil and Gas Services. Nach dem Tod
+meines Vaters folgte ich diesem Beispiel und beschloss zu heiraten,
+weil ich sein einziges Kind war.
 
-diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
-index 2859ee4f39a8..0bcb3604d0e2 100644
---- a/arch/x86/include/asm/msr-index.h
-+++ b/arch/x86/include/asm/msr-index.h
-@@ -132,6 +132,8 @@
- #define MSR_IA32_MCU_OPT_CTRL		0x00000123
- #define RNGDS_MITG_DIS			BIT(0)
- 
-+#define MSR_IA32_OC_MAILBOX		0x00000150
-+
- #define MSR_IA32_SYSENTER_CS		0x00000174
- #define MSR_IA32_SYSENTER_ESP		0x00000175
- #define MSR_IA32_SYSENTER_EIP		0x00000176
-diff --git a/arch/x86/kernel/msr.c b/arch/x86/kernel/msr.c
-index 49dcfb85e773..64f6200681e3 100644
---- a/arch/x86/kernel/msr.c
-+++ b/arch/x86/kernel/msr.c
-@@ -86,8 +86,11 @@ static int filter_write(u32 reg)
- 	default: break;
- 	}
- 
--	if (reg == MSR_IA32_ENERGY_PERF_BIAS)
-+	switch (reg) {
-+	case MSR_IA32_ENERGY_PERF_BIAS:
-+	case MSR_IA32_OC_MAILBOX:
- 		return 0;
-+	}
- 
- 	pr_err_ratelimited("Write to unrecognized MSR 0x%x by %s\n"
- 			   "Please report to x86@kernel.org\n",
-diff --git a/drivers/platform/x86/intel_turbo_max_3.c b/drivers/platform/x86/intel_turbo_max_3.c
-index 892140b62898..991cdbc3295b 100644
---- a/drivers/platform/x86/intel_turbo_max_3.c
-+++ b/drivers/platform/x86/intel_turbo_max_3.c
-@@ -17,8 +17,8 @@
- 
- #include <asm/cpu_device_id.h>
- #include <asm/intel-family.h>
-+#include <asm/msr.h>
- 
--#define MSR_OC_MAILBOX			0x150
- #define MSR_OC_MAILBOX_CMD_OFFSET	32
- #define MSR_OC_MAILBOX_RSP_OFFSET	32
- #define MSR_OC_MAILBOX_BUSY_BIT		63
-@@ -41,14 +41,14 @@ static int get_oc_core_priority(unsigned int cpu)
- 	value = cmd << MSR_OC_MAILBOX_CMD_OFFSET;
- 	/* Set the busy bit to indicate OS is trying to issue command */
- 	value |=  BIT_ULL(MSR_OC_MAILBOX_BUSY_BIT);
--	ret = wrmsrl_safe(MSR_OC_MAILBOX, value);
-+	ret = wrmsrl_safe(MSR_IA32_OC_MAILBOX, value);
- 	if (ret) {
- 		pr_debug("cpu %d OC mailbox write failed\n", cpu);
- 		return ret;
- 	}
- 
- 	for (i = 0; i < OC_MAILBOX_RETRY_COUNT; ++i) {
--		ret = rdmsrl_safe(MSR_OC_MAILBOX, &value);
-+		ret = rdmsrl_safe(MSR_IA32_OC_MAILBOX, &value);
- 		if (ret) {
- 			pr_debug("cpu %d OC mailbox read failed\n", cpu);
- 			break;
--- 
-2.28.0
+Bei mir wurde eine isch=C3=A4mische Herzkrankheit diagnostiziert, die mich
+viel kostete, und die Komplikationen betrafen alle Teile meines
+K=C3=B6rpers und meiner Gehirnzellen. Erst vor 5 Tagen sagten britische
+=C3=84rzte, dass ich jederzeit sterben k=C3=B6nnte, weil mein Zustand einen
+kritischen Punkt erreicht hatte und sich in einer lebensbedrohlichen
+Phase befand. Nachdem ich etwas =C3=BCber meine Gesundheit erfahren hatte,
+beschloss ich, Ihre Hilfe / Kooperation zu nutzen, um mein
+14,5-Millionen-Dollar-Erbe f=C3=BCr den Bau eines Waisenhauses in meinem
+Ged=C3=A4chtnis zu nutzen.
 
+Ich habe diese mutige Entscheidung getroffen, weil ich keinen Ehemann,
+keine Familie oder Kinder habe, um Geld zu hinterlassen, wenn ich weg
+bin. Wenn Sie interessiert sind, k=C3=B6nnen Sie 30% des Gesamtbetrags f=C3=
+=BCr
+Hilfe nehmen und den Rest in meinen Erinnerungen verwenden, um
+Waisenh=C3=A4user zu bauen. Wenn Sie interessiert sind, kontaktieren Sie
+mich bitte bald f=C3=BCr weitere Informationen. Ich werde die
+Hinterlegungsbescheinigung und die Sterbeurkunde meines Vaters zur
+Genehmigung sowie der Bank vorlegen, um Sie als rechtm=C3=A4=C3=9Figen Empf=
+=C3=A4nger
+des Geldes in meinem Namen zu identifizieren.
+
+Ich habe diese Nachricht aus dem Englischen =C3=BCbersetzt, damit Sie mich
+verstehen. Sie k=C3=B6nnen auf Englisch zur=C3=BCckschreiben, wenn Sie vers=
+tehen
+oder noch auf Deutsch
+
+Ich freue mich auf Ihre schnelle Antwort.
+
+Sch=C3=B6ne Gr=C3=BC=C3=9Fe
+Frau Maddalena Nicholaus.
