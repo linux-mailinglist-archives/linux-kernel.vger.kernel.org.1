@@ -2,63 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA87A25FD27
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 17:31:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CA8125FDD0
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 17:58:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730104AbgIGPbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 11:31:16 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:47332 "EHLO vps0.lunn.ch"
+        id S1730227AbgIGP6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 11:58:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58154 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730080AbgIGPNP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 11:13:15 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1kFILk-00Dcsi-Ey; Mon, 07 Sep 2020 16:42:28 +0200
-Date:   Mon, 7 Sep 2020 16:42:28 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
-Cc:     Jason Cooper <jason@lakedaemon.net>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Tomasz Maciej Nowak <tmn505@gmail.com>,
-        Andre Heider <a.heider@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: marvell: espressobin: Add ethernet switch
- aliases
-Message-ID: <20200907144228.GV3112546@lunn.ch>
-References: <20200907112718.5994-1-pali@kernel.org>
+        id S1730008AbgIGOuJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 10:50:09 -0400
+Received: from coco.lan (ip5f5ad5cf.dynamic.kabel-deutschland.de [95.90.213.207])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 650DE21532;
+        Mon,  7 Sep 2020 14:50:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599490208;
+        bh=ucJr+saLVcP0I55uqGtU5DQWyYXMW2U5WBZWrLtx+zk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=jJTNEKN6B2ykUQfSlOxxOquiv+y2ri4qBpvBA0yy2WBHyYQ7U60vuSx9SEBF9QlBn
+         Ar+/7pK9BivK2eSYEDscpEZzduRbW2j7hxwiRljDzqT3vtxs/9Pq1T4PlIi/i4lUpu
+         MPpNKwTKS8Igkyfh9QzkF30mEKEu4P5RLAI0SoJo=
+Date:   Mon, 7 Sep 2020 16:50:00 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Felipe Balbi <balbi@kernel.org>, Yu Chen <chenyu56@huawei.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, john.stultz@linaro.org,
+        suzhuangluan@hisilicon.com, kongfei@hisilicon.com,
+        liuyu712@hisilicon.com, wanghu17@hisilicon.com,
+        butao@hisilicon.com, chenyao11@huawei.com,
+        fangshengzhou@hisilicon.com, lipengcheng8@huawei.com,
+        songxiaowei@hisilicon.com, xuyiping@hisilicon.com,
+        xuyoujun4@huawei.com, yudongbin@hisilicon.com,
+        zangleigang@hisilicon.com,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Binghui Wang <wangbinghui@hisilicon.com>
+Subject: Re: [PATCH v6 04/13] usb: dwc3: Add splitdisable quirk for
+ Hisilicon Kirin Soc
+Message-ID: <20200907165000.7c42a6da@coco.lan>
+In-Reply-To: <874ko9of80.fsf@kernel.org>
+References: <20190420064019.57522-1-chenyu56@huawei.com>
+        <20190420064019.57522-5-chenyu56@huawei.com>
+        <20200907150631.70e1bce0@coco.lan>
+        <874ko9of80.fsf@kernel.org>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200907112718.5994-1-pali@kernel.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 07, 2020 at 01:27:17PM +0200, Pali Rohár wrote:
-> Espressobin boards have 3 ethernet ports and some of them got assigned more
-> then one MAC address. MAC addresses are stored in U-Boot environment.
-> 
-> Since commit a2c7023f7075c ("net: dsa: read mac address from DT for slave
-> device") kernel can use MAC addresses from DT for particular DSA port.
-> 
-> Currently Espressobin DTS file contains alias just for ethernet0.
-> 
-> This patch defines additional ethernet aliases in Espressobin DTS files, so
-> bootloader can fill correct MAC address for DSA switch ports if more MAC
-> addresses were specified.
-> 
-> DT alias ethernet1 is used for wan port, DT aliases ethernet2 and ethernet3
-> are used for lan ports for both Espressobin revisions (V5 and V7).
-> 
-> Fixes: 5253cb8c00a6f ("arm64: dts: marvell: espressobin: add ethernet alias")
-> Signed-off-by: Pali Rohár <pali@kernel.org>
+Em Mon, 07 Sep 2020 17:04:31 +0300
+Felipe Balbi <balbi@kernel.org> escreveu:
 
-I'm not sure a Fixes: is appropriate here. What is actually broken?
-This just seems like a new feature.
+> Hi Mauro,
+> 
+> Mauro Carvalho Chehab <mchehab+huawei@kernel.org> writes:
+> 
+> > Hi Felipe/Greg,
+> >
+> > What's the status of this patch?   
+> 
+> to be frank, I don't think I have this in my inbox anymore.
+> 
+> > I tested here, together with the Hikey 970 phy RFC patches I sent
+> > last week.
+> >
+> > Without this patch, the USB HID driver receives -EPROTO from
+> > submitted URBs, causing it to enter into an endless reset cycle
+> > on every 500 ms, at the hid_io_error() logic.  
+> 
+> > Tested-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> >
+> > If you prefer, I can re-submit this one with my SOB.  
+> 
+> Please do, but since you're changing device tree, I need Rob's acked-by.
 
-    Andrew
+Ok, I'll do that.
+
+> > Thanks,
+> > Mauro
+> >
+> > Em Sat, 20 Apr 2019 14:40:10 +0800
+> > Yu Chen <chenyu56@huawei.com> escreveu:
+> >  
+> >> SPLIT_BOUNDARY_DISABLE should be set for DesignWare USB3 DRD Core
+> >> of Hisilicon Kirin Soc when dwc3 core act as host.  
+> 
+> is this Kirin-specific or is this something that we should do a revision
+> check? 
+
+I've no idea. I don't have any datasheets from this device.
+
+> Why does it affect only Hikey kirin? 
+
+As John Stultz didn't re-submit this one (and looking at the DT
+between Kirin 960 and 970 from the original Kernel 4.9 official
+drivers), I suspect that only Kirin 970 requires this quirk.
+
+It could well be due to some Dwc3 revision, but it could also be due
+to some differences at the USB part of the SoC, as there are a
+few other things different between hikey 960 and 970: it has a
+different PHY driver, and there are also some differences at the
+USB HUB which is connected into it.
+
+On both devices, the USB physical ports are actually connected
+into a HUB. In the case of Hikey 970, the hub seems to be a
+TI TUSB8041 4-Port Hub:
+	
+	$ lsusb
+	Bus 002 Device 002: ID 0451:8140 Texas Instruments, Inc. TUSB8041 4-Port Hub
+	Bus 002 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
+	Bus 001 Device 004: ID 090c:1000 Silicon Motion, Inc. - Taiwan (formerly Feiya Technology Corp.) Flash Drive
+	Bus 001 Device 003: ID 413c:301a Dell Computer Corp. Dell MS116 Optical Mouse
+	Bus 001 Device 002: ID 0451:8142 Texas Instruments, Inc. TUSB8041 4-Port Hub
+	Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+
+> What's the dwc3 revision on
+> that SoC (grep SNPSID /sys/kernel/debugfs/*dwc3/regdump)?
+
+	GSNPSID = 0x33313130
+
+> 
+> >> @@ -1825,10 +1834,27 @@ static int dwc3_resume(struct device *dev)
+> >>  
+> >>  	return 0;
+> >>  }
+> >> +
+> >> +static void dwc3_complete(struct device *dev)
+> >> +{
+> >> +	struct dwc3	*dwc = dev_get_drvdata(dev);
+> >> +	u32		reg;
+> >> +
+> >> +	if (dwc->current_dr_role == DWC3_GCTL_PRTCAP_HOST &&
+> >> +			dwc->dis_split_quirk) {
+> >> +		dev_dbg(dwc->dev, "set DWC3_GUCTL3_SPLITDISABLE\n");  
+> 
+> no more dev_dbg() should be added. This driver relies exclusively on
+> tracepoints for debugging.
+
+Ok. 
+
+> 
+> >> +		reg = dwc3_readl(dwc->regs, DWC3_GUCTL3);
+> >> +		reg |= DWC3_GUCTL3_SPLITDISABLE;
+> >> +		dwc3_writel(dwc->regs, DWC3_GUCTL3, reg);
+> >> +	}
+> >> +}
+> >> +#else
+> >> +#define dwc3_complete NULL
+> >>  #endif /* CONFIG_PM_SLEEP */
+> >>  
+> >>  static const struct dev_pm_ops dwc3_dev_pm_ops = {
+> >>  	SET_SYSTEM_SLEEP_PM_OPS(dwc3_suspend, dwc3_resume)
+> >> +	.complete = dwc3_complete,  
+> 
+> why is this done on complete? Why can't it be done at the end of
+> dwc3_resume()?
+
+Again, no idea. I didn't actually tried to suspend/resume.
+
+Maybe the original author can shed a light on it.
+
+Thanks,
+Mauro
