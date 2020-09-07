@@ -2,128 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F341B25F7A4
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 12:17:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBD0E25F7F0
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 12:23:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728849AbgIGKRw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 06:17:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60604 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728742AbgIGKRK (ORCPT
+        id S1728503AbgIGKXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 06:23:10 -0400
+Received: from ex13-edg-ou-002.vmware.com ([208.91.0.190]:56107 "EHLO
+        EX13-EDG-OU-002.vmware.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728637AbgIGKVj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 06:17:10 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1257C061757
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 03:17:01 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id e11so12011616wme.0
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 03:17:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=2AcZ+ht5heIUGMeBtkrSAl5QfbjkEelxxHKDjkGuZF4=;
-        b=KltwrjUzSC3k4btOVShbI2P9fHUWGgNbRAPmHJTtAi6/JEb36d5AntVkI4lzadidvf
-         4rvV0jYBTTbsZi3pZ8fjZbxeP1tjOVlfsPFwAt1bjeCZs7rJDVJbJyN5Lwa+du4rZ+Hk
-         XQEB78tFEop+SHR7b1KscY+z5cBD/vIIRFTh2g5XOrIm2acQOAB9XnMI70w/a5fRXN0U
-         HBto/oEqQAfPKHF2FssPCM57qNk6wqR87VhAw2GXUw13Ft1umShjzltUa0eIU3eZ6lC2
-         s7noChxVg5u+RbAsNvEWuhOMzXxcYL2eNpw54g3rBv4m0dwYbD2JozVlzVA8w3H6jycl
-         8oGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=2AcZ+ht5heIUGMeBtkrSAl5QfbjkEelxxHKDjkGuZF4=;
-        b=Gzh26B3aYtKL4/ecyRVgsgr3THuAMZLKM/zN06aeaq74QTKNOXwa4RcAhduhFj31ve
-         veYb+/3A3ZwkgEVvIbC7xWHAq6CPgKtkO41EdEMAahaOHDUjUfpjKL6P5K3SWq+AuPQk
-         1k7EjLtwtbmclQKI64Z2LgfP1rW0a0eDef6sLfYsMhv1HgF+T7kPEw9VbJCvOXPt+/+m
-         JDNZUWdPXcLmT9pHGlZcDeJ5wEXvy6rlhdjd8ipJphNWGUFSnC8Q+hsw4s+9UghZS133
-         9InuvU5/4n4+G3uT5mhI6baYtvdj5XaCxwk0Efw2mlG1+/T5kfgEDMaCFHvJ9hABiiq2
-         0pwQ==
-X-Gm-Message-State: AOAM533rl/Ktqeo+cD7wSnn9/BYTLCQU05Dz2tBUNcII27yQGWuVTtdf
-        z/UttyawJhZe3jlhpPsJ1N8Opg==
-X-Google-Smtp-Source: ABdhPJyud3Q1FarNaloME4DE60XHhksKDdkBuTqKpEI/obuHP2Cli5CKDBJKYcqqf9+p8T2C8RQClA==
-X-Received: by 2002:a1c:dd87:: with SMTP id u129mr19928577wmg.172.1599473820650;
-        Mon, 07 Sep 2020 03:17:00 -0700 (PDT)
-Received: from localhost.localdomain (122.105.23.93.rev.sfr.net. [93.23.105.122])
-        by smtp.gmail.com with ESMTPSA id j7sm28728689wrw.35.2020.09.07.03.16.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Sep 2020 03:17:00 -0700 (PDT)
-From:   Fabien Parent <fparent@baylibre.com>
-To:     iommu@lists.linux-foundation.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Cc:     joro@8bytes.org, robh+dt@kernel.org, matthias.bgg@gmail.com,
-        yong.wu@mediatek.com, miles.chen@mediatek.com,
-        Fabien Parent <fparent@baylibre.com>
-Subject: [PATCH v4 3/3] iommu/mediatek: add support for MT8167
-Date:   Mon,  7 Sep 2020 12:16:49 +0200
-Message-Id: <20200907101649.1573134-3-fparent@baylibre.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200907101649.1573134-1-fparent@baylibre.com>
-References: <20200907101649.1573134-1-fparent@baylibre.com>
+        Mon, 7 Sep 2020 06:21:39 -0400
+Received: from sc9-mailhost3.vmware.com (10.113.161.73) by
+ EX13-EDG-OU-002.vmware.com (10.113.208.156) with Microsoft SMTP Server id
+ 15.0.1156.6; Mon, 7 Sep 2020 03:21:21 -0700
+Received: from akaher-virtual-machine.eng.vmware.com (unknown [10.197.103.239])
+        by sc9-mailhost3.vmware.com (Postfix) with ESMTP id E71C240271;
+        Mon,  7 Sep 2020 03:21:21 -0700 (PDT)
+From:   Ajay Kaher <akaher@vmware.com>
+To:     <gregkh@linuxfoundation.org>
+CC:     <alex.williamson@redhat.com>, <cohuck@redhat.com>,
+        <peterx@redhat.com>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>,
+        <srivatsab@vmware.com>, <srivatsa@csail.mit.edu>,
+        <vsirnapalli@vmware.com>, <akaher@vmware.com>
+Subject: [PATCH v4.19.y 1/3] vfio/type1: Support faulting PFNMAP vmas
+Date:   Mon, 7 Sep 2020 15:47:20 +0530
+Message-ID: <1599473843-34234-1-git-send-email-akaher@vmware.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+Received-SPF: None (EX13-EDG-OU-002.vmware.com: akaher@vmware.com does not
+ designate permitted sender hosts)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for the IOMMU on MT8167
+From: Alex Williamson <alex.williamson@redhat.com>
 
-Signed-off-by: Fabien Parent <fparent@baylibre.com>
+commit 41311242221e3482b20bfed10fa4d9db98d87016 upstream.
+
+With conversion to follow_pfn(), DMA mapping a PFNMAP range depends on
+the range being faulted into the vma.  Add support to manually provide
+that, in the same way as done on KVM with hva_to_pfn_remapped().
+
+Reviewed-by: Peter Xu <peterx@redhat.com>
+Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+[Ajay: Regenerated the patch for v4.19]
+Signed-off-by: Ajay Kaher <akaher@vmware.com>
 ---
+ drivers/vfio/vfio_iommu_type1.c | 36 +++++++++++++++++++++++++++++++++---
+ 1 file changed, 33 insertions(+), 3 deletions(-)
 
-V4;
-	* Removed HAS_4GB_MODE flag since this SoC does not seem to support it
-V3:
-	* use LEGACY_IVRP_PADDR flag instead of using a platform data member
-V2:
-	* removed if based on m4u_plat, and using instead the new
-	  has_legacy_ivrp_paddr member that was introduced in patch 2.
-
----
- drivers/iommu/mtk_iommu.c | 8 ++++++++
- drivers/iommu/mtk_iommu.h | 1 +
- 2 files changed, 9 insertions(+)
-
-diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
-index b1f85a7e9346..4ff071eb5279 100644
---- a/drivers/iommu/mtk_iommu.c
-+++ b/drivers/iommu/mtk_iommu.c
-@@ -817,6 +817,13 @@ static const struct mtk_iommu_plat_data mt6779_data = {
- 	.larbid_remap  = {{0}, {1}, {2}, {3}, {5}, {7, 8}, {10}, {9}},
- };
+diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
+index 6dbdadb..cb8d8bb 100644
+--- a/drivers/vfio/vfio_iommu_type1.c
++++ b/drivers/vfio/vfio_iommu_type1.c
+@@ -343,6 +343,32 @@ static int put_pfn(unsigned long pfn, int prot)
+ 	return 0;
+ }
  
-+static const struct mtk_iommu_plat_data mt8167_data = {
-+	.m4u_plat     = M4U_MT8167,
-+	.flags        = RESET_AXI | HAS_LEGACY_IVRP_PADDR,
-+	.inv_sel_reg  = REG_MMU_INV_SEL_GEN1,
-+	.larbid_remap = {{0}, {1}, {2}}, /* Linear mapping. */
-+};
++static int follow_fault_pfn(struct vm_area_struct *vma, struct mm_struct *mm,
++			    unsigned long vaddr, unsigned long *pfn,
++			    bool write_fault)
++{
++	int ret;
 +
- static const struct mtk_iommu_plat_data mt8173_data = {
- 	.m4u_plat     = M4U_MT8173,
- 	.flags	      = HAS_4GB_MODE | HAS_BCLK | RESET_AXI |
-@@ -835,6 +842,7 @@ static const struct mtk_iommu_plat_data mt8183_data = {
- static const struct of_device_id mtk_iommu_of_ids[] = {
- 	{ .compatible = "mediatek,mt2712-m4u", .data = &mt2712_data},
- 	{ .compatible = "mediatek,mt6779-m4u", .data = &mt6779_data},
-+	{ .compatible = "mediatek,mt8167-m4u", .data = &mt8167_data},
- 	{ .compatible = "mediatek,mt8173-m4u", .data = &mt8173_data},
- 	{ .compatible = "mediatek,mt8183-m4u", .data = &mt8183_data},
- 	{}
-diff --git a/drivers/iommu/mtk_iommu.h b/drivers/iommu/mtk_iommu.h
-index 122925dbe547..df32b3e3408b 100644
---- a/drivers/iommu/mtk_iommu.h
-+++ b/drivers/iommu/mtk_iommu.h
-@@ -39,6 +39,7 @@ enum mtk_iommu_plat {
- 	M4U_MT2701,
- 	M4U_MT2712,
- 	M4U_MT6779,
-+	M4U_MT8167,
- 	M4U_MT8173,
- 	M4U_MT8183,
- };
++	ret = follow_pfn(vma, vaddr, pfn);
++	if (ret) {
++		bool unlocked = false;
++
++		ret = fixup_user_fault(NULL, mm, vaddr,
++				       FAULT_FLAG_REMOTE |
++				       (write_fault ?  FAULT_FLAG_WRITE : 0),
++				       &unlocked);
++		if (unlocked)
++			return -EAGAIN;
++
++		if (ret)
++			return ret;
++
++		ret = follow_pfn(vma, vaddr, pfn);
++	}
++
++	return ret;
++}
++
+ static int vaddr_get_pfn(struct mm_struct *mm, unsigned long vaddr,
+ 			 int prot, unsigned long *pfn)
+ {
+@@ -382,12 +408,16 @@ static int vaddr_get_pfn(struct mm_struct *mm, unsigned long vaddr,
+ 
+ 	down_read(&mm->mmap_sem);
+ 
++retry:
+ 	vma = find_vma_intersection(mm, vaddr, vaddr + 1);
+ 
+ 	if (vma && vma->vm_flags & VM_PFNMAP) {
+-		if (!follow_pfn(vma, vaddr, pfn) &&
+-		    is_invalid_reserved_pfn(*pfn))
+-			ret = 0;
++		ret = follow_fault_pfn(vma, mm, vaddr, pfn, prot & IOMMU_WRITE);
++		if (ret == -EAGAIN)
++			goto retry;
++
++		if (!ret && !is_invalid_reserved_pfn(*pfn))
++			ret = -EFAULT;
+ 	}
+ 
+ 	up_read(&mm->mmap_sem);
 -- 
-2.28.0
+2.7.4
 
