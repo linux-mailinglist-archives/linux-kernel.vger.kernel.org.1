@@ -2,97 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45C7525FFA6
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 18:36:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCE0C25FF74
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 18:32:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730672AbgIGQgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 12:36:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46758 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730601AbgIGQdX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 12:33:23 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 85C9D21927;
-        Mon,  7 Sep 2020 16:33:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599496403;
-        bh=TTWkATQ6EXKEp+vAuj7niHV5cTlbg6tkuzwmJGjMVgg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HLuisueBvb9gJP9sLQ3kzxDje5f2dxk4nzz82OTbgD16VLnMxgclF6rsIpvQnURZP
-         9/Jr1v3RAcHBabJDHrTA7lN86Hu3qcoBOtnvsBvIOxpIZozRMLQpWUje8E0JY1kqUC
-         1KMrc8iRvc1WvSSZM1u1mnTF6mKASAN8mF7tSXX4=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Xie He <xie.he.0141@gmail.com>, Krzysztof Halasa <khc@pm.waw.pl>,
-        Martin Schiller <ms@dev.tdt.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.8 49/53] drivers/net/wan/hdlc: Change the default of hard_header_len to 0
-Date:   Mon,  7 Sep 2020 12:32:15 -0400
-Message-Id: <20200907163220.1280412-49-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200907163220.1280412-1-sashal@kernel.org>
-References: <20200907163220.1280412-1-sashal@kernel.org>
+        id S1729967AbgIGQck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 12:32:40 -0400
+Received: from a27-18.smtp-out.us-west-2.amazonses.com ([54.240.27.18]:33858
+        "EHLO a27-18.smtp-out.us-west-2.amazonses.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729912AbgIGQcX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 12:32:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+        s=zsmsymrwgfyinv5wlfyidntwsjeeldzt; d=codeaurora.org; t=1599496342;
+        h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:MIME-Version:Content-Type;
+        bh=ie/UW1q7qYJ7A4l1wEZedjb4fjgyJgYXxjxBmypAwX8=;
+        b=oWMY50Auq9LvOD4CpwfSjzCuNKaCr+YMQZrnir40m3uVqfq/O004FAQrzUOnztcR
+        2sVdVrja2EkpdesG3/FwPFsi0w9AnStxjbl+aniyT9ZGCaiQBMYOxQoHDsR5PW+U9h6
+        EimUfz7yy55SqW5EqPkC338KJQFE5CFVIx+GZPus=
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+        s=hsbnp7p3ensaochzwyq5wwmceodymuwv; d=amazonses.com; t=1599496342;
+        h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:MIME-Version:Content-Type:Feedback-ID;
+        bh=ie/UW1q7qYJ7A4l1wEZedjb4fjgyJgYXxjxBmypAwX8=;
+        b=UQTtLpmFEEBiai2avOiuWb51RIbjT799Ld09K/lG0gzgSs2bK50b2qceOIB6U4Hc
+        VfjONddx7DT76kkYznZbTy8xkUsDjp9/8Y6110pSQZyB/x0erK429gbPy5hYu7/vSlY
+        gnxcOlrVqtgBT22AV6amiBbekwEC7IFQz6U3Mr74=
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3B4B3C560F9
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Allen Pais <allen.cryptic@gmail.com>
+Cc:     Allen Pais <allen.lkml@gmail.com>, chunkeey@googlemail.com,
+        jirislaby@kernel.org, brcm80211-dev-list@cypress.com,
+        pkshih@realtek.com, b43-dev@lists.infradead.org, dsd@gentoo.org,
+        ath11k@lists.infradead.org, kune@deine-taler.de,
+        mickflemm@gmail.com, Kees Cook <keescook@chromium.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        brcm80211-dev-list.pdl@broadcom.com, yhchuang@realtek.com,
+        netdev@vger.kernel.org, helmut.schaa@googlemail.com,
+        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mcgrof@kernel.org, stas.yakovlev@gmail.com,
+        Romain Perier <romain.perier@gmail.com>,
+        Larry.Finger@lwfinger.net
+Subject: Re: [PATCH 01/16] wireless: ath5k: convert tasklets to use new tasklet_setup() API
+References: <20200817090637.26887-2-allen.cryptic@gmail.com>
+        <20200827101540.6589BC433CB@smtp.codeaurora.org>
+        <CAEogwTB=S6M6Xp4w5dd_W3b6Depmn6Gmu3RmAf96pRankoJQqg@mail.gmail.com>
+Date:   Mon, 7 Sep 2020 16:32:22 +0000
+In-Reply-To: <CAEogwTB=S6M6Xp4w5dd_W3b6Depmn6Gmu3RmAf96pRankoJQqg@mail.gmail.com>
+        (Allen Pais's message of "Thu, 27 Aug 2020 16:14:45 +0530")
+Message-ID: <0101017469694cc1-f6a00b6e-46ef-44be-b476-3aabf0fb4a55-000000@us-west-2.amazonses.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-SES-Outgoing: 2020.09.07-54.240.27.18
+Feedback-ID: 1.us-west-2.CZuq2qbDmUIuT3qdvXlRHZZCpfZqZ4GtG9v3VKgRyF0=:AmazonSES
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xie He <xie.he.0141@gmail.com>
+Allen Pais <allen.cryptic@gmail.com> writes:
 
-[ Upstream commit 2b7bcd967a0f5b7ac9bb0c37b92de36e073dd119 ]
+> Hi,
+>>
+>> Allen Pais <allen.cryptic@gmail.com> wrote:
+>>
+>> > In preparation for unconditionally passing the
+>> > struct tasklet_struct pointer to all tasklet
+>> > callbacks, switch to using the new tasklet_setup()
+>> > and from_tasklet() to pass the tasklet pointer explicitly.
+>> >
+>> > Signed-off-by: Romain Perier <romain.perier@gmail.com>
+>> > Signed-off-by: Allen Pais <allen.lkml@gmail.com>
+>> > Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+>>
+>> Patch applied to ath-next branch of ath.git, thanks.
+>>
+>> c068a9ec3c94 ath5k: convert tasklets to use new tasklet_setup() API
+>>
+>> --
+>> https://patchwork.kernel.org/patch/11717393/
+>>
+>> https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+>
+> Could you please drop these and wait for V2. A change was proposed
+> for from_tasklet() api. The new API should be picked shortly. I will send out
+> the updated version early next week.
 
-Change the default value of hard_header_len in hdlc.c from 16 to 0.
+Too late, I don't normally rebase my trees as it's just too much of a
+hassle. Please don't submit patches which are not ready to be applied!
 
-Currently there are 6 HDLC protocol drivers, among them:
-
-hdlc_raw_eth, hdlc_cisco, hdlc_ppp, hdlc_x25 set hard_header_len when
-attaching the protocol, overriding the default. So this patch does not
-affect them.
-
-hdlc_raw and hdlc_fr don't set hard_header_len when attaching the
-protocol. So this patch will change the hard_header_len of the HDLC
-device for them from 16 to 0.
-
-This is the correct change because both hdlc_raw and hdlc_fr don't have
-header_ops, and the code in net/packet/af_packet.c expects the value of
-hard_header_len to be consistent with header_ops.
-
-In net/packet/af_packet.c, in the packet_snd function,
-for AF_PACKET/DGRAM sockets it would reserve a headroom of
-hard_header_len and call dev_hard_header to fill in that headroom,
-and for AF_PACKET/RAW sockets, it does not reserve the headroom and
-does not call dev_hard_header, but checks if the user has provided a
-header of length hard_header_len (in function dev_validate_header).
-
-Cc: Krzysztof Halasa <khc@pm.waw.pl>
-Cc: Martin Schiller <ms@dev.tdt.de>
-Signed-off-by: Xie He <xie.he.0141@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/net/wan/hdlc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/wan/hdlc.c b/drivers/net/wan/hdlc.c
-index 386ed2aa31fd9..9b00708676cf7 100644
---- a/drivers/net/wan/hdlc.c
-+++ b/drivers/net/wan/hdlc.c
-@@ -229,7 +229,7 @@ static void hdlc_setup_dev(struct net_device *dev)
- 	dev->min_mtu		 = 68;
- 	dev->max_mtu		 = HDLC_MAX_MTU;
- 	dev->type		 = ARPHRD_RAWHDLC;
--	dev->hard_header_len	 = 16;
-+	dev->hard_header_len	 = 0;
- 	dev->needed_headroom	 = 0;
- 	dev->addr_len		 = 0;
- 	dev->header_ops		 = &hdlc_null_ops;
 -- 
-2.25.1
-
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
