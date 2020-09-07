@@ -2,69 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EB0525FA3F
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 14:14:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 191CD25FA2B
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 14:11:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729262AbgIGMMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 08:12:54 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:47633 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729208AbgIGMEo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 08:04:44 -0400
-X-UUID: 211cb11decbd4b71941aff5112ad8cb0-20200907
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=NSF/4NM5uAVLuEnB9EhXhboZR792opTOFNFJm6U+KMM=;
-        b=mQjGozUKt5stGY54anpUlfZbak+fxeTqvVai4MeSjwWUtBqWm9W2RdV2APjE5oWP4M3kfcd1a3TKS0bE4bZYQdGKZ0cvdSQGX/hMkAFZpS4BlN2xsNlFVz9nFXsuV+jttj4LHM6fcDgztk+KhEdW+usF5JYIfmgS/qMTSgdTr1c=;
-X-UUID: 211cb11decbd4b71941aff5112ad8cb0-20200907
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
-        (envelope-from <jianjun.wang@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1145564618; Mon, 07 Sep 2020 20:04:33 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 7 Sep 2020 20:04:30 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 7 Sep 2020 20:04:30 +0800
-From:   Jianjun Wang <jianjun.wang@mediatek.com>
-To:     Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Ryder Lee <ryder.lee@mediatek.com>
-CC:     Philipp Zabel <p.zabel@pengutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        <davem@davemloft.net>, <linux-pci@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Sj Huang <sj.huang@mediatek.com>,
-        Jianjun Wang <jianjun.wang@mediatek.com>
-Subject: [PATCH 3/3] MAINTAINERS: update entry for MediaTek PCIe controller
-Date:   Mon, 7 Sep 2020 20:01:18 +0800
-Message-ID: <20200907120118.11667-3-jianjun.wang@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20200907120118.11667-1-jianjun.wang@mediatek.com>
-References: <20200907120118.11667-1-jianjun.wang@mediatek.com>
+        id S1729212AbgIGMKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 08:10:31 -0400
+Received: from mail.jv-coder.de ([5.9.79.73]:55338 "EHLO mail.jv-coder.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729187AbgIGMEC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 08:04:02 -0400
+Received: from [10.61.40.7] (unknown [37.156.92.209])
+        by mail.jv-coder.de (Postfix) with ESMTPSA id 2595EA3403;
+        Mon,  7 Sep 2020 12:03:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jv-coder.de; s=dkim;
+        t=1599480190; bh=mlFsmUb7LLf8/PbsCfLKGQ+uAfdEnCoK/RJuKas2Gp8=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version;
+        b=qEJ5iZoJTRhjMPu+QVg44SLjHZmgHiuTvorhFEVYUs7O+4ovLjkA6CZefmsj8JDjF
+         Oet+WKkjszU5A6AzBERB1Ez3ikJP9O5Koy6whuBNnyRyXW0vPblt5OoHRQ2fIcRk1X
+         sYc5GLfB95aWxWtLXyOKha4Ds8ad1IxvyDwoe77o=
+Subject: Re: [BUG RT] dump-capture kernel not executed for panic in interrupt
+ context
+To:     peterz@infradead.org
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Huang Ying <ying.huang@intel.com>,
+        linux-kernel@vger.kernel.org,
+        Joerg Vehlow <joerg.vehlow@aox-tech.de>
+References: <2c243f59-6d10-7abb-bab4-e7b1796cd54f@jv-coder.de>
+ <20200528084614.0c949e8d@gandalf.local.home>
+ <cbbf7926-148e-7acb-dc03-3f055d73364b@jv-coder.de>
+ <20200727163655.8c94c8e245637b62311f5053@linux-foundation.org>
+ <c6b095af-fc92-420f-303f-d2efd9f28873@jv-coder.de>
+ <20200821110848.6c3183d1@oasis.local.home>
+ <20200821134753.9547695c9b782275be3c95b5@linux-foundation.org>
+ <20200821170334.73b52fdd@oasis.local.home>
+ <95d7a489-a295-1c11-ac62-83e941ed3a87@jv-coder.de>
+ <20200907114618.GR2674@hirez.programming.kicks-ass.net>
+From:   Joerg Vehlow <lkml@jv-coder.de>
+Message-ID: <5c3a502f-2255-5aae-3599-5220aa4b8328@jv-coder.de>
+Date:   Mon, 7 Sep 2020 14:03:09 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <20200907114618.GR2674@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Spam-Status: No, score=-1.4 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,HELO_MISC_IP,NICE_REPLY_A,RDNS_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on mail.jv-coder.de
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-QWRkIG1haW50YWluZXIgZm9yIE1lZGlhVGVrIFBDSWUgY29udHJvbGxlciBkcml2ZXIuDQoNClNp
-Z25lZC1vZmYtYnk6IEppYW5qdW4gV2FuZyA8amlhbmp1bi53YW5nQG1lZGlhdGVrLmNvbT4NCi0t
-LQ0KIE1BSU5UQUlORVJTIHwgMSArDQogMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspDQoN
-CmRpZmYgLS1naXQgYS9NQUlOVEFJTkVSUyBiL01BSU5UQUlORVJTDQppbmRleCBkZWFhZmI2MTcz
-NjEuLjVjNjExMDQ2ODUyNiAxMDA2NDQNCi0tLSBhL01BSU5UQUlORVJTDQorKysgYi9NQUlOVEFJ
-TkVSUw0KQEAgLTEzNDU5LDYgKzEzNDU5LDcgQEAgRjoJZHJpdmVycy9wY2kvY29udHJvbGxlci9k
-d2MvcGNpZS1oaXN0Yi5jDQogDQogUENJRSBEUklWRVIgRk9SIE1FRElBVEVLDQogTToJUnlkZXIg
-TGVlIDxyeWRlci5sZWVAbWVkaWF0ZWsuY29tPg0KK006CUppYW5qdW4gV2FuZyA8amlhbmp1bi53
-YW5nQG1lZGlhdGVrLmNvbT4NCiBMOglsaW51eC1wY2lAdmdlci5rZXJuZWwub3JnDQogTDoJbGlu
-dXgtbWVkaWF0ZWtAbGlzdHMuaW5mcmFkZWFkLm9yZw0KIFM6CVN1cHBvcnRlZA0KLS0gDQoyLjE4
-LjANCg==
 
+
+On 9/7/2020 1:46 PM, peterz@infradead.org wrote:
+> I think it's too complicated for that is needed, did you see my
+> suggestion from a year ago? Did i miss something obvious?
+>
+This one? 
+https://lore.kernel.org/linux-fsdevel/20191219090535.GV2844@hirez.programming.kicks-ass.net/
+
+I think it may be a bit incorrect?
+According to the original comment in __crash_kexec, the mutex was used to
+prevent a sys_kexec_load, while crash_kexec is executed. Your proposed 
+patch
+does not lock the mutex in crash_kexec. This does not cover the original 
+use
+case anymore. The only thing that is protected now are two panicing cores at
+the same time.
+Actually, this implementation feels even more hacky to me....
+
+Jörg
