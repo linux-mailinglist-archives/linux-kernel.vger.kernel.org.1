@@ -2,109 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75D2C25F8A7
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 12:41:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C270F25F8AF
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 12:44:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728951AbgIGKk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 06:40:58 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:58264 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728685AbgIGKie (ORCPT
+        id S1728706AbgIGKoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 06:44:03 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:42802 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728618AbgIGKn7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 06:38:34 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 087AcTRg055826;
-        Mon, 7 Sep 2020 05:38:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1599475109;
-        bh=2zTPOjt2DxVUHrxW1zXAaSYEgEGwudkN9PPctHgbrFM=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=sSg2vrRFFlRIDnAOi4mSPVvJsQSFX7+4xHpjYXFuZij7qeDj9gMTpwzBXOlxp8qC/
-         JSwypAsQQKjzxX86Lp5tXuUD0P90outdb4HJ+d82Qoc4fllAEWOMCzlLaued2fNBOy
-         VrkEJWO0NjF7ZbOvbDO85rLeUuYI5F07aenwrnd4=
-Received: from DLEE101.ent.ti.com (dlee101.ent.ti.com [157.170.170.31])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 087AcTcK112035
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 7 Sep 2020 05:38:29 -0500
-Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE101.ent.ti.com
- (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 7 Sep
- 2020 05:38:29 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 7 Sep 2020 05:38:29 -0500
-Received: from lta0400828a.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 087AcCOu085251;
-        Mon, 7 Sep 2020 05:38:27 -0500
-From:   Roger Quadros <rogerq@ti.com>
-To:     <t-kristo@ti.com>, <nm@ti.com>
-CC:     <robh+dt@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <nsekhar@ti.com>,
-        <kishon@ti.com>, Roger Quadros <rogerq@ti.com>
-Subject: [PATCH 6/6] arm64: dts: ti: k3-j7200-common-proc-board: Add USB support
-Date:   Mon, 7 Sep 2020 13:38:10 +0300
-Message-ID: <20200907103810.9870-7-rogerq@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200907103810.9870-1-rogerq@ti.com>
-References: <20200907103810.9870-1-rogerq@ti.com>
+        Mon, 7 Sep 2020 06:43:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599475435;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=c1vAH2sOnIecyBuC1bgws2niE0JgFrbZ244nIj8c+DU=;
+        b=ELT9WAfQ9lZ9di6q8gu5ELBsQ3QbQFgQ/sV1dUGT+mdTPKNd0ETpiFQtkFAfDvQGTw0kKm
+        Yynf0darHZYjkXoE2V6UfWGgunRIh21fyqxA/GJioQqyuAKN25yBH3FEJjhKwuhNShzJH5
+        DM1Z97ikZvzO/atuyfF1cuAENuQC+WM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-404-uykzQjHlNiu2lD-lNSLY4w-1; Mon, 07 Sep 2020 06:43:54 -0400
+X-MC-Unique: uykzQjHlNiu2lD-lNSLY4w-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BA64E1084CA6;
+        Mon,  7 Sep 2020 10:43:52 +0000 (UTC)
+Received: from jason-ThinkPad-X1-Carbon-6th.redhat.com (ovpn-12-108.pek2.redhat.com [10.72.12.108])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4BEAA60C0F;
+        Mon,  7 Sep 2020 10:43:45 +0000 (UTC)
+From:   Jason Wang <jasowang@redhat.com>
+To:     mst@redhat.com, jasowang@redhat.com, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     lulu@redhat.com, Eli Cohen <elic@nvidia.com>,
+        Zhu Lingshan <lingshan.zhu@intel.com>
+Subject: [PATCH] vhost-vdpa: fix backend feature ioctls
+Date:   Mon,  7 Sep 2020 18:43:43 +0800
+Message-Id: <20200907104343.31141-1-jasowang@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable USB0 port in high-speed (2.0) mode.
+Commit 653055b9acd4 ("vhost-vdpa: support get/set backend features")
+introduces two malfunction backend features ioctls:
 
-The board uses lane 3 of SERDES for USB. Set the mux
-accordingly.
+1) the ioctls was blindly added to vring ioctl instead of vdpa device
+   ioctl
+2) vhost_set_backend_features() was called when dev mutex has already
+   been held which will lead a deadlock
 
-Signed-off-by: Roger Quadros <rogerq@ti.com>
+This patch fixes the above issues.
+
+Cc: Eli Cohen <elic@nvidia.com>
+Reported-by: Zhu Lingshan <lingshan.zhu@intel.com>
+Fixes: 653055b9acd4 ("vhost-vdpa: support get/set backend features")
+Signed-off-by: Jason Wang <jasowang@redhat.com>
 ---
- .../dts/ti/k3-j7200-common-proc-board.dts     | 22 +++++++++++++++++++
- 1 file changed, 22 insertions(+)
+ drivers/vhost/vdpa.c | 30 ++++++++++++++++--------------
+ 1 file changed, 16 insertions(+), 14 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
-index 0ecaba600704..f4b6a5abb1b5 100644
---- a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
-+++ b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
-@@ -42,6 +42,12 @@
- 			J721E_IOPAD(0xe4, PIN_INPUT, 8) /* (V1) TIMER_IO0.MMC1_SDCD */
- 		>;
- 	};
-+
-+	main_usbss0_pins_default: main_usbss0_pins_default {
-+		pinctrl-single,pins = <
-+			J721E_IOPAD(0x120, PIN_OUTPUT, 0) /* (T4) USB0_DRVVBUS */
-+		>;
-+	};
- };
+diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+index 3fab94f88894..796fe979f997 100644
+--- a/drivers/vhost/vdpa.c
++++ b/drivers/vhost/vdpa.c
+@@ -353,8 +353,6 @@ static long vhost_vdpa_vring_ioctl(struct vhost_vdpa *v, unsigned int cmd,
+ 	struct vdpa_callback cb;
+ 	struct vhost_virtqueue *vq;
+ 	struct vhost_vring_state s;
+-	u64 __user *featurep = argp;
+-	u64 features;
+ 	u32 idx;
+ 	long r;
  
- &wkup_uart0 {
-@@ -145,3 +151,19 @@
- 	idle-states = <SERDES0_LANE0_PCIE1_LANE0>, <SERDES0_LANE1_PCIE1_LANE1>,
- 		      <SERDES0_LANE2_QSGMII_LANE1>, <SERDES0_LANE3_IP4_UNUSED>;
- };
+@@ -381,18 +379,6 @@ static long vhost_vdpa_vring_ioctl(struct vhost_vdpa *v, unsigned int cmd,
+ 
+ 		vq->last_avail_idx = vq_state.avail_index;
+ 		break;
+-	case VHOST_GET_BACKEND_FEATURES:
+-		features = VHOST_VDPA_BACKEND_FEATURES;
+-		if (copy_to_user(featurep, &features, sizeof(features)))
+-			return -EFAULT;
+-		return 0;
+-	case VHOST_SET_BACKEND_FEATURES:
+-		if (copy_from_user(&features, featurep, sizeof(features)))
+-			return -EFAULT;
+-		if (features & ~VHOST_VDPA_BACKEND_FEATURES)
+-			return -EOPNOTSUPP;
+-		vhost_set_backend_features(&v->vdev, features);
+-		return 0;
+ 	}
+ 
+ 	r = vhost_vring_ioctl(&v->vdev, cmd, argp);
+@@ -440,8 +426,20 @@ static long vhost_vdpa_unlocked_ioctl(struct file *filep,
+ 	struct vhost_vdpa *v = filep->private_data;
+ 	struct vhost_dev *d = &v->vdev;
+ 	void __user *argp = (void __user *)arg;
++	u64 __user *featurep = argp;
++	u64 features;
+ 	long r;
+ 
++	if (cmd == VHOST_SET_BACKEND_FEATURES) {
++		r = copy_from_user(&features, featurep, sizeof(features));
++		if (r)
++			return r;
++		if (features & ~VHOST_VDPA_BACKEND_FEATURES)
++			return -EOPNOTSUPP;
++		vhost_set_backend_features(&v->vdev, features);
++		return 0;
++	}
 +
-+&usb_serdes_mux {
-+	idle-states = <1>; /* USB0 to SERDES lane 3 */
-+};
-+
-+&usbss0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&main_usbss0_pins_default>;
-+	ti,vbus-divider;
-+	ti,usb2-only;
-+};
-+
-+&usb0 {
-+	dr_mode = "otg";
-+	maximum-speed = "high-speed";
-+};
+ 	mutex_lock(&d->mutex);
+ 
+ 	switch (cmd) {
+@@ -476,6 +474,10 @@ static long vhost_vdpa_unlocked_ioctl(struct file *filep,
+ 	case VHOST_VDPA_SET_CONFIG_CALL:
+ 		r = vhost_vdpa_set_config_call(v, argp);
+ 		break;
++	case VHOST_GET_BACKEND_FEATURES:
++		features = VHOST_VDPA_BACKEND_FEATURES;
++		r = copy_to_user(featurep, &features, sizeof(features));
++		break;
+ 	default:
+ 		r = vhost_dev_ioctl(&v->vdev, cmd, argp);
+ 		if (r == -ENOIOCTLCMD)
 -- 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+2.20.1
 
