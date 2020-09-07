@@ -2,152 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95E1825FC7D
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 17:00:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9E8B25FC9B
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 17:05:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730125AbgIGPAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 11:00:52 -0400
-Received: from relmlor1.renesas.com ([210.160.252.171]:19735 "EHLO
-        relmlie5.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730058AbgIGOzW (ORCPT
+        id S1730150AbgIGPFT convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 7 Sep 2020 11:05:19 -0400
+Received: from relay3-d.mail.gandi.net ([217.70.183.195]:41665 "EHLO
+        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730068AbgIGO4Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 10:55:22 -0400
-X-IronPort-AV: E=Sophos;i="5.76,402,1592838000"; 
-   d="scan'208";a="56584263"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
-  by relmlie5.idc.renesas.com with ESMTP; 07 Sep 2020 23:55:21 +0900
-Received: from localhost.localdomain (unknown [10.226.36.204])
-        by relmlir5.idc.renesas.com (Postfix) with ESMTP id DA558400068C;
-        Mon,  7 Sep 2020 23:55:19 +0900 (JST)
-From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-renesas-soc@vger.kernel.org
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Subject: [PATCH] pinctrl: sh-pfc: r8a7790: Add VIN pins used by iwg21d-q7-dbcm-ca board
-Date:   Mon,  7 Sep 2020 15:55:16 +0100
-Message-Id: <20200907145516.12803-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 7 Sep 2020 10:56:25 -0400
+X-Originating-IP: 91.224.148.103
+Received: from xps13 (unknown [91.224.148.103])
+        (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 4ED6660006;
+        Mon,  7 Sep 2020 14:56:14 +0000 (UTC)
+Date:   Mon, 7 Sep 2020 16:56:13 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     "Ramuthevar,Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        devicetree@vger.kernel.org, richard@nod.at, vigneshr@ti.com,
+        arnd@arndb.de, brendanhiggins@google.com, tglx@linutronix.de,
+        boris.brezillon@collabora.com, anders.roxell@linaro.org,
+        masonccyang@mxic.com.tw, robh+dt@kernel.org,
+        linux-mips@vger.kernel.org, hauke.mehrtens@intel.com,
+        andriy.shevchenko@intel.com, cheol.yong.kim@intel.com,
+        qi-ming.wu@intel.com
+Subject: Re: [RESEND PATCH v12 2/2] mtd: rawnand: Add NAND controller
+ support on Intel LGM SoC
+Message-ID: <20200907165613.79f44c58@xps13>
+In-Reply-To: <20200907152025.66c18f5e@xps13>
+References: <20200817052709.47035-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+        <20200817052709.47035-3-vadivel.muruganx.ramuthevar@linux.intel.com>
+        <20200907152025.66c18f5e@xps13>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add vin[1,2] data8 and vin1_clk_b pins used by iwg21d-q7-dbcm-ca board
-which is based on R8A7742 SoC.
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
----
- drivers/pinctrl/sh-pfc/pfc-r8a7790.c | 38 +++++++++++++++++++++++++++-
- 1 file changed, 37 insertions(+), 1 deletion(-)
+Miquel Raynal <miquel.raynal@bootlin.com> wrote on Mon, 7 Sep 2020
+15:20:25 +0200:
 
-diff --git a/drivers/pinctrl/sh-pfc/pfc-r8a7790.c b/drivers/pinctrl/sh-pfc/pfc-r8a7790.c
-index 60f973c5dffe..66697ea15a57 100644
---- a/drivers/pinctrl/sh-pfc/pfc-r8a7790.c
-+++ b/drivers/pinctrl/sh-pfc/pfc-r8a7790.c
-@@ -3866,6 +3866,18 @@ static const unsigned int vin1_data18_mux[] = {
- 	VI1_R4_MARK, VI1_R5_MARK,
- 	VI1_R6_MARK, VI1_R7_MARK,
- };
-+static const unsigned int vin1_data8_b_pins[] = {
-+	RCAR_GP_PIN(3, 0), RCAR_GP_PIN(3, 1),
-+	RCAR_GP_PIN(3, 2), RCAR_GP_PIN(3, 3),
-+	RCAR_GP_PIN(3, 4), RCAR_GP_PIN(3, 5),
-+	RCAR_GP_PIN(3, 6), RCAR_GP_PIN(3, 7),
-+};
-+static const unsigned int vin1_data8_b_mux[] = {
-+	VI1_DATA0_VI1_B0_B_MARK, VI1_DATA1_VI1_B1_B_MARK,
-+	VI1_DATA2_VI1_B2_B_MARK, VI1_DATA3_VI1_B3_B_MARK,
-+	VI1_DATA4_VI1_B4_B_MARK, VI1_DATA5_VI1_B5_B_MARK,
-+	VI1_DATA6_VI1_B6_B_MARK, VI1_DATA7_VI1_B7_B_MARK,
-+};
- static const unsigned int vin1_sync_pins[] = {
- 	RCAR_GP_PIN(1, 24), /* HSYNC */
- 	RCAR_GP_PIN(1, 25), /* VSYNC */
-@@ -3886,6 +3898,12 @@ static const unsigned int vin1_clkenb_pins[] = {
- static const unsigned int vin1_clkenb_mux[] = {
- 	VI1_CLKENB_MARK,
- };
-+static const unsigned int vin1_clk_b_pins[] = {
-+	RCAR_GP_PIN(3, 15),
-+};
-+static const unsigned int vin1_clk_b_mux[] = {
-+	VI1_CLK_B_MARK,
-+};
- static const unsigned int vin1_clk_pins[] = {
- 	RCAR_GP_PIN(2, 9),
- };
-@@ -3959,6 +3977,18 @@ static const unsigned int vin2_data18_mux[] = {
- 	VI2_R4_MARK, VI2_R5_MARK,
- 	VI2_R6_MARK, VI2_R7_MARK,
- };
-+static const unsigned int vin2_data8_g_pins[] = {
-+	RCAR_GP_PIN(0, 27), RCAR_GP_PIN(0, 28),
-+	RCAR_GP_PIN(0, 29), RCAR_GP_PIN(1, 10),
-+	RCAR_GP_PIN(1, 4), RCAR_GP_PIN(1, 5),
-+	RCAR_GP_PIN(1, 6), RCAR_GP_PIN(1, 7),
-+};
-+static const unsigned int vin2_data8_g_mux[] = {
-+	VI2_G0_MARK, VI2_G1_MARK,
-+	VI2_G2_MARK, VI2_G3_MARK,
-+	VI2_G4_MARK, VI2_G5_MARK,
-+	VI2_G6_MARK, VI2_G7_MARK,
-+};
- static const unsigned int vin2_sync_pins[] = {
- 	RCAR_GP_PIN(1, 16), /* HSYNC */
- 	RCAR_GP_PIN(1, 21), /* VSYNC */
-@@ -4026,7 +4056,7 @@ static const unsigned int vin3_clk_mux[] = {
- };
- 
- static const struct {
--	struct sh_pfc_pin_group common[298];
-+	struct sh_pfc_pin_group common[301];
- 	struct sh_pfc_pin_group automotive[1];
- } pinmux_groups = {
- 	.common = {
-@@ -4310,15 +4340,18 @@ static const struct {
- 		VIN_DATA_PIN_GROUP(vin1_data, 10),
- 		VIN_DATA_PIN_GROUP(vin1_data, 8),
- 		VIN_DATA_PIN_GROUP(vin1_data, 4),
-+		SH_PFC_PIN_GROUP(vin1_data8_b),
- 		SH_PFC_PIN_GROUP(vin1_sync),
- 		SH_PFC_PIN_GROUP(vin1_field),
- 		SH_PFC_PIN_GROUP(vin1_clkenb),
-+		SH_PFC_PIN_GROUP(vin1_clk_b),
- 		SH_PFC_PIN_GROUP(vin1_clk),
- 		VIN_DATA_PIN_GROUP(vin2_data, 24),
- 		SH_PFC_PIN_GROUP(vin2_data18),
- 		VIN_DATA_PIN_GROUP(vin2_data, 16),
- 		VIN_DATA_PIN_GROUP(vin2_data, 8),
- 		VIN_DATA_PIN_GROUP(vin2_data, 4),
-+		SH_PFC_PIN_GROUP(vin2_data8_g),
- 		SH_PFC_PIN_GROUP(vin2_sync),
- 		SH_PFC_PIN_GROUP(vin2_field),
- 		SH_PFC_PIN_GROUP(vin2_clkenb),
-@@ -4784,9 +4817,11 @@ static const char * const vin1_groups[] = {
- 	"vin1_data10",
- 	"vin1_data8",
- 	"vin1_data4",
-+	"vin1_data8_b",
- 	"vin1_sync",
- 	"vin1_field",
- 	"vin1_clkenb",
-+	"vin1_clk_b",
- 	"vin1_clk",
- };
- 
-@@ -4796,6 +4831,7 @@ static const char * const vin2_groups[] = {
- 	"vin2_data16",
- 	"vin2_data8",
- 	"vin2_data4",
-+	"vin2_data8_g",
- 	"vin2_sync",
- 	"vin2_field",
- 	"vin2_clkenb",
--- 
-2.17.1
+> Hi Murugan,
+> 
+> A few more comments below, but I guess the driver looks better now.
+> 
+> > +struct ebu_nand_controller {
+> > +	struct nand_controller controller;
+> > +	struct nand_chip chip;
+> > +	struct device *dev;
+> > +	void __iomem *ebu;
+> > +	void __iomem *hsnand;
+> > +	struct dma_chan *dma_tx;
+> > +	struct dma_chan *dma_rx;
+> > +	struct completion dma_access_complete;
+> > +	unsigned long clk_rate;
+> > +	struct clk *clk;
+> > +	u32 nd_para0;
+> > +	u8 cs_num;
+> > +	struct ebu_nand_cs cs[MAX_CS];
+> > +};
+> > +
+> > +static inline struct ebu_nand_controller *nand_to_ebu(struct nand_chip *chip)
+> > +{
+> > +	return container_of(chip, struct ebu_nand_controller, chip);
+> > +}
+> > +
+> > +static u8 ebu_nand_readb(struct nand_chip *chip)  
+> 
+> Can't you prefix with intel_ instead of ebu_ ?
 
+Actually not, as the IP is shared with MIPS IIUC, just ignore this
+comment.
+
+Thanks,
+Miquèl
