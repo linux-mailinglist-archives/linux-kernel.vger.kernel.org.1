@@ -2,296 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55D1B25F5C0
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 10:56:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D19225F5C6
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 10:57:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728108AbgIGI4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 04:56:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48012 "EHLO
+        id S1728238AbgIGI5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 04:57:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727954AbgIGI4A (ORCPT
+        with ESMTP id S1728135AbgIGI5L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 04:56:00 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55956C061574
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 01:56:00 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id u4so14290355ljd.10
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 01:56:00 -0700 (PDT)
+        Mon, 7 Sep 2020 04:57:11 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BB6CC061575
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 01:57:11 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id b79so13389795wmb.4
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 01:57:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7qtTkOpU/pJA1K1Rti7fapj7mfwVdYYIwMVOblHQUng=;
-        b=fjk57qKMmmr4skrdLEx3AZ3gEi9aphyyGXUoJWLOUD9IRCpoD7TM50RZbqnCgGutH/
-         ZwsgOiTb6Up4nX6Bt9y8uQ17zOXJyKwbQ7CIpCC/7zGW3CPQKylkbhTIGDUKa0QTFjAG
-         SJdT4TufeBFhvBrezqcXek023VwQZSVH8X6JuXSHcat2jfqEw2/k2y5rvMzVE0I7pjj9
-         kJ7T0U+WiebS+iXpeO+LkvdA+x/jXvIx3c5J0pD4JenxO+w+iF8i4NwUwOWB6/E070n6
-         eFmIbnO82iesj6KsSQ4eMLklJxdxx0kWRn3WGSrcgtrFhl+YYlHvkDi4qIUJ6ClN3QLh
-         I3uw==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=6Yl9hPW8Oci7ALl4vX8u8AUkDDmAA1DXOMq94Yc3e+E=;
+        b=sLjNZsZ9pVZFtfzH9TOmoRPxwqyh0H8Lftc9PoCx20A+dD+EhuV+c81AEkVHI2WeTg
+         NbWu6HW5nwkllDPvUn5cgX/dIjBUyFAKwhwWxEtoAAa2JH+O8DBAtFhxdXiILhWbkbvf
+         M5HqJmebzEehUkk2g8V2tuZ8AoNSgsqeECzXyuFb2+fbSe8ezt9wyO8dpr0RMmOO6mHQ
+         sIAHFBz7k2xvBjqH91w2r16uxZCKQk2wqsowKrIeOUFzzxCr+YHzyj5fJJgvuqXNGOFi
+         BrBEYVbNQ/9G8EvxfO07HFOpSwAfQP2JbsIRRBw59a3abecJmTmbLdsomy8NAHFYN3FW
+         kEjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7qtTkOpU/pJA1K1Rti7fapj7mfwVdYYIwMVOblHQUng=;
-        b=ba2/opvdgyPk/i6ILP18N5NXwyiDdVz5klKczNtz+BQH4Aiypdx2Q4mbqjG1gemRza
-         8MlitZx57ENs8toJMOUTFUJihsQ8VFaEBENVB8FuAP5B4tiVSBgSSj9sa98sOXcP/xAh
-         MgjQ0a2vKNb8y6oYvX4An6Kqsl7JNpAWoy8HljfPtw97TUt2r68xySesgtqN45SOIYZA
-         Zu4P7XZaggpb1YhqftfjDHot6JTs+8gYwlT+9Ken58h2rUl1jf+O2ZHzI2hU8O+DbiQK
-         FOq3E/zX7ygozM1kf1GM50ZL3hkPv2Al3GkZZ00AF9xWEbtOnj7O3zpzxhYW1EHOcnPR
-         aJ7g==
-X-Gm-Message-State: AOAM532y1wHbeR1VDJpE7l5CsS9aWh/6ThFgJ9O7xyVVq2ibOTtSU3Kp
-        eqAbFE5Xt+usrOdM3DPodgbMH+AszRv6lhhceCw0Yw==
-X-Google-Smtp-Source: ABdhPJxv6dxouCRyr/31m9WjNWty3a/jEsviJnnAY7FLV9sE/GS7YMXGrWtZ1/ZoppCQtLZrgsMmg0/yDbvrptmeFm8=
-X-Received: by 2002:a2e:9ccd:: with SMTP id g13mr10059300ljj.29.1599468958630;
- Mon, 07 Sep 2020 01:55:58 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200826163330.16e5b0d4@canb.auug.org.au> <CADYN=9KQcdLH=BfXZ2riuH0icw7d+2HbfPxvww7fiJG2G=8ALQ@mail.gmail.com>
- <20200826193945.GT2855@paulmck-ThinkPad-P72> <CADYN=9+XRhPOkds36JdHU-h2h3va=JJj6aeDHmNUzrpCHWEJ0A@mail.gmail.com>
- <20200828132944.GN2855@paulmck-ThinkPad-P72> <CADYN=9JBB6EntswRtVuUezoOzqCai2PkFP-7FDpYmAUU1+SYJA@mail.gmail.com>
- <20200828225914.GQ2855@paulmck-ThinkPad-P72> <CADYN=9K+g430cJZ_ay4o3ivDKdpTSTSnJMDPsEq0uDTQ7LMvSA@mail.gmail.com>
- <20200903161437.GP29330@paulmck-ThinkPad-P72>
-In-Reply-To: <20200903161437.GP29330@paulmck-ThinkPad-P72>
-From:   Anders Roxell <anders.roxell@linaro.org>
-Date:   Mon, 7 Sep 2020 10:55:47 +0200
-Message-ID: <CADYN=9+BkXePzNr9u_sXtPZcziufb+eYkxVxdqPVLR9czR6Otg@mail.gmail.com>
-Subject: Re: linux-next: Tree for Aug 26
-To:     paulmck@kernel.org
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=6Yl9hPW8Oci7ALl4vX8u8AUkDDmAA1DXOMq94Yc3e+E=;
+        b=Qxm+1WhUcfM64ZQE4puvMT0Kb0zMzEJeYiHAmNeGgaOgVh8a2R0Zq6TGeJ+Ff9cjX0
+         /maUWcE6lOAH9UcYfk4NO2W4FcXLbulhtt1SOeLxrRg3z5umS9sp80T5xUEaExU/TvuV
+         nl/jkkkt8mRifNnZi/tUrpH/0sfFahGLclvEgGfETAnn9AlLtO6qXCXOdTfv/ShKLZE9
+         5dlCiVp88k5MqBHm245ZXUdGc9Ho75MmaDH13ea2HR2XKC3doa+xLsFS0Ip+tAZVN9sR
+         zJMo7cN++Dl2rWuW6G9LXR2kMdCfo0OVUPPj08YzX7SNEPkOqJb+JA7U0fLwyyVQPraQ
+         +YCg==
+X-Gm-Message-State: AOAM5302bkFVr34samCMAB9lwo60u6eVk/7C0aoRVptNyqtzmvBlmA8J
+        UMudzNrco7Udba8hKKNzUQut6A==
+X-Google-Smtp-Source: ABdhPJzIue43NhDfaHuhI9lR8skmhnAYsAZcWz4xpXJkoa8MKLYng2NLBIPgkdkdWvvHbj6LAfOb0Q==
+X-Received: by 2002:a1c:2781:: with SMTP id n123mr19471333wmn.27.1599469029372;
+        Mon, 07 Sep 2020 01:57:09 -0700 (PDT)
+Received: from elver.google.com ([100.105.32.75])
+        by smtp.gmail.com with ESMTPSA id q20sm24926205wmj.5.2020.09.07.01.57.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Sep 2020 01:57:08 -0700 (PDT)
+Date:   Mon, 7 Sep 2020 10:57:03 +0200
+From:   Marco Elver <elver@google.com>
+To:     David Gow <davidgow@google.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Randy Dunlap <rd.dunlab@gmail.com>,
+        Theodore Ts'o <tytso@mit.edu>, Tim Bird <Tim.Bird@sony.com>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH] Documentation: kunit: Add naming guidelines
+Message-ID: <20200907085703.GA1653285@elver.google.com>
+References: <20200702071416.1780522-1-davidgow@google.com>
+ <20200827131438.GA3597431@elver.google.com>
+ <CABVgOSmoiFh5i8Ue14MtCLwq-LbGgQ1hf4MyRYLFWFQrkushjQ@mail.gmail.com>
+ <202008311641.D10607D43@keescook>
+ <CABVgOSmF93YVD=scGL5p0tjnm0XUwC2n8LPT9xFqGje9zXQ96Q@mail.gmail.com>
+ <CANpmjNP9OD0ZULQbZKv2HtVyO4Nho46uu4h9gNO8i-XhOMzHVw@mail.gmail.com>
+ <CABVgOSmvcToydrGzPGdTkRkKq62Gh4vtc+ZazGMfnsXw0FdRWQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CABVgOSmvcToydrGzPGdTkRkKq62Gh4vtc+ZazGMfnsXw0FdRWQ@mail.gmail.com>
+User-Agent: Mutt/1.14.4 (2020-06-18)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 3 Sep 2020 at 18:14, Paul E. McKenney <paulmck@kernel.org> wrote:
->
-> On Thu, Sep 03, 2020 at 10:39:10AM +0200, Anders Roxell wrote:
-> > Hi Paul,
-> >
-> > On Sat, 29 Aug 2020 at 00:59, Paul E. McKenney <paulmck@kernel.org> wrote:
-> > >
-> > > On Fri, Aug 28, 2020 at 09:24:19PM +0200, Anders Roxell wrote:
-> > > > On Fri, 28 Aug 2020 at 15:29, Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > > >
-> > > > > On Fri, Aug 28, 2020 at 09:37:17AM +0200, Anders Roxell wrote:
-> > > > > > On Wed, 26 Aug 2020 at 21:39, Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > > > > >
-> > > > > > > On Wed, Aug 26, 2020 at 08:19:01PM +0200, Anders Roxell wrote:
-> > > > > > > > On Wed, 26 Aug 2020 at 08:33, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> > > > > > >
-> > > > > > > [ . . . ]
-> > > > > > >
-> > > > > > > > I've built and run an arm64 allmodconfig kernel where I use the
-> > > > > > > > defconfig as the base, I do this for testing purposes.
-> > > > > > > > I can see the following call trace [1]:
-> > > > > > > >
-> > > > > > > > [ 2595.811453][    T1] Running tests on all trace events:
-> > > > > > > > [ 2595.860933][    T1] Testing all events:
-> > > > > > > > [ 4316.066072][    T8] kworker/dying (8) used greatest stack depth:
-> > > > > > > > 27056 bytes left
-> > > > > > > > [ 8561.924871][    C0] watchdog: BUG: soft lockup - CPU#0 stuck for
-> > > > > > > > 22s! [migration/0:14]
-> > > > > > > > [ 8561.934498][    C0] Modules linked in:
-> > > > > > > > [ 8561.942303][    C0] irq event stamp: 4044
-> > > > > > > > [ 8561.949044][    C0] hardirqs last  enabled at (4043):
-> > > > > > > > [<ffffa000126b530c>] _raw_spin_unlock_irqrestore+0xac/0x138
-> > > > > > > > [ 8561.960848][    C0] hardirqs last disabled at (4044):
-> > > > > > > > [<ffffa000126a89f8>] __schedule+0xf8/0x7e0
-> > > > > > > > [ 8561.971418][    C0] softirqs last  enabled at (3698):
-> > > > > > > > [<ffffa00010001b04>] __do_softirq+0x524/0x5f8
-> > > > > > > > [ 8561.982191][    C0] softirqs last disabled at (3689):
-> > > > > > > > [<ffffa000101216c8>] __irq_exit_rcu+0x128/0x1a0
-> > > > > > > > [ 8561.993068][    C0] CPU: 0 PID: 14 Comm: migration/0 Tainted: G
-> > > > > > > >    W         5.9.0-rc2-next-20200826-00005-g24628bb4c0bf #1
-> > > > > > > > [ 8562.005684][    C0] Hardware name: linux,dummy-virt (DT)
-> > > > > > > > [ 8562.013247][    C0] pstate: 80400005 (Nzcv daif +PAN -UAO BTYPE=--)
-> > > > > > > > [ 8562.021657][    C0] pc : arch_local_irq_enable+0x58/0x80
-> > > > > > > > [ 8562.029323][    C0] lr : _raw_spin_unlock_irq+0x84/0xc0
-> > > > > > > > [ 8562.036739][    C0] sp : ffff0000698efaa0
-> > > > > > > > [ 8562.042984][    C0] x29: ffff0000698efaa0 x28: ffff00006ad0f270
-> > > > > > > > [ 8562.053814][    C0] x27: ffff00006ad0f248 x26: ffff0000698d4718
-> > > > > > > > [ 8562.064687][    C0] x25: ffff00006ad0e798 x24: ffffa000139e3a40
-> > > > > > > > [ 8562.075506][    C0] x23: 0000000000000001 x22: ffffa000154f5000
-> > > > > > > > [ 8562.086425][    C0] x21: ffff00006ad0e798 x20: ffff00006ad0e780
-> > > > > > > > [ 8562.097255][    C0] x19: ffffa000126a905c x18: 00000000000014c0
-> > > > > > > > [ 8562.108071][    C0] x17: 0000000000001500 x16: 0000000000001440
-> > > > > > > > [ 8562.118918][    C0] x15: 00000000f1f1f1f1 x14: 003d090000000000
-> > > > > > > > [ 8562.129739][    C0] x13: 00003d0900000000 x12: ffff80000d31df41
-> > > > > > > > [ 8562.140544][    C0] x11: 1fffe0000d31df40 x10: ffff80000d31df40
-> > > > > > > > [ 8562.151366][    C0] x9 : dfffa00000000000 x8 : ffff0000698efa07
-> > > > > > > > [ 8562.162247][    C0] x7 : 0000000000000001 x6 : 00007ffff2ce20c0
-> > > > > > > > [ 8562.173072][    C0] x5 : ffff0000698d4040 x4 : dfffa00000000000
-> > > > > > > > [ 8562.183954][    C0] x3 : ffffa0001040f904 x2 : 0000000000000007
-> > > > > > > > [ 8562.194811][    C0] x1 : ffffa00014080000 x0 : 00000000000000e0
-> > > > > > > > [ 8562.205858][    C0] Call trace:
-> > > > > > > > [ 8562.211739][    C0]  arch_local_irq_enable+0x58/0x80
-> > > > > > > > [ 8562.219076][    C0]  _raw_spin_unlock_irq+0x84/0xc0
-> > > > > > > > [ 8562.226394][    C0]  __schedule+0x75c/0x7e0
-> > > > > > > > [ 8562.233074][    C0]  preempt_schedule_notrace+0x64/0xc0
-> > > > > > > > [ 8562.268210][    C0]  ftrace_ops_list_func+0x494/0x4e0
-> > > > > > > > [ 8562.275735][    C0]  ftrace_graph_call+0x0/0x4
-> > > > > > > > [ 8562.282647][    C0]  preempt_count_add+0xc/0x240
-> > > > > > > > [ 8562.289686][    C0]  schedule+0xe4/0x160
-> > > > > > > > [ 8562.296187][    C0]  smpboot_thread_fn+0x47c/0x540
-> > > > > > > > [ 8562.303377][    C0]  kthread+0x23c/0x260
-> > > > > > > > [ 8562.309906][    C0]  ret_from_fork+0x10/0x18
-> > > > > > > > [ 8562.316604][    C0] Kernel panic - not syncing: softlockup: hung tasks
-> > > > > > > > [ 8562.325230][    C0] CPU: 0 PID: 14 Comm: migration/0 Tainted: G
-> > > > > > > >    W    L    5.9.0-rc2-next-20200826-00005-g24628bb4c0bf #1
-> > > > > > > > [ 8562.337861][    C0] Hardware name: linux,dummy-virt (DT)
-> > > > > > > > [ 8562.345374][    C0] Call trace:
-> > > > > > > > [ 8562.351228][    C0]  dump_backtrace+0x0/0x320
-> > > > > > > > [ 8562.358070][    C0]  show_stack+0x38/0x60
-> > > > > > > > [ 8562.364728][    C0]  dump_stack+0x1c0/0x280
-> > > > > > > > [ 8562.371447][    C0]  panic+0x32c/0x614
-> > > > > > > > [ 8562.377868][    C0]  watchdog_timer_fn+0x49c/0x560
-> > > > > > > > [ 8562.385076][    C0]  __run_hrtimer+0x1cc/0x360
-> > > > > > > > [ 8562.392021][    C0]  __hrtimer_run_queues+0x1a0/0x220
-> > > > > > > > [ 8562.399500][    C0]  hrtimer_interrupt+0x1f8/0x440
-> > > > > > > > [ 8562.406807][    C0]  arch_timer_handler_virt+0x68/0xa0
-> > > > > > > > [ 8562.414338][    C0]  handle_percpu_devid_irq+0x118/0x2a0
-> > > > > > > > [ 8562.421992][    C0]  __handle_domain_irq+0x150/0x1c0
-> > > > > > > > [ 8562.429315][    C0]  gic_handle_irq+0x98/0x120
-> > > > > > > > [ 8562.436297][    C0]  el1_irq+0xd4/0x1c0
-> > > > > > >
-> > > > > > > We appear to have taken an interrupt here, just after releasing
-> > > > > > > an irq-disabled lock and enabling interrupts.
-> > > > > > >
-> > > > > > > > [ 8562.442748][    C0]  arch_local_irq_enable+0x58/0x80
-> > > > > > > > [ 8562.450116][    C0]  _raw_spin_unlock_irq+0x84/0xc0
-> > > > > > > > [ 8562.457360][    C0]  __schedule+0x75c/0x7e0
-> > > > > > > > [ 8562.464142][    C0]  preempt_schedule_notrace+0x64/0xc0
-> > > > > > > > [ 8562.471745][    C0]  ftrace_ops_list_func+0x494/0x4e0
-> > > > > > > > [ 8562.479195][    C0]  ftrace_graph_call+0x0/0x4
-> > > > > > > > [ 8562.486159][    C0]  preempt_count_add+0xc/0x240
-> > > > > > > > [ 8562.493210][    C0]  schedule+0xe4/0x160
-> > > > > > >
-> > > > > > > We are trying to sleep, so we took a pass through the scheduler and
-> > > > > > > did some tracing.
-> > > > > > >
-> > > > > > > > [ 8562.499737][    C0]  smpboot_thread_fn+0x47c/0x540
-> > > > > > >
-> > > > > > > Here we might be bringing up a CPU?  Except that according to your
-> > > > > > > dmesg, there is only one CPU.  ("RCU restricting CPUs from NR_CPUS=256
-> > > > > > > to nr_cpu_ids=1").  So this seems unlikely.
-> > > > > > >
-> > > > > > > Huh.  The first dmesg in output-next-20200826.log is instead a
-> > > > > > > DEBUG_LOCKS_WARN_ON() from lockdep.  Might this be related?  Or do you
-> > > > > > > also see this warning when boot happens quickly?
-> > > > > > >
-> > > > > > > (I do see the soft lockup later on.)
-> > > > > > >
-> > > > > > > > [ 8562.506960][    C0]  kthread+0x23c/0x260
-> > > > > > > > [ 8562.513496][    C0]  ret_from_fork+0x10/0x18
-> > > > > > > > [ 8562.521052][    C0] Kernel Offset: disabled
-> > > > > > > > [ 8562.527725][    C0] CPU features: 0x0240002,20002004
-> > > > > > > > [ 8562.534950][    C0] Memory Limit: none
-> > > > > > > > [ 8562.543830][    C0] ---[ end Kernel panic - not syncing:
-> > > > > > > > softlockup: hung tasks ]---
-> > > > > > > >
-> > > > > > > > When I tested to checkout and build e6df9766894d ("Merge remote-tracking branch
-> > > > > > > > 'irqchip/irq/irqchip-next' into master") that was merged into today's
-> > > > > > > > tag I was able to
-> > > > > > > > boot [2]. When I checked out 25e6e115dd1d ("Merge remote-tracking
-> > > > > > > > branch 'rcu/rcu/next' into master") and built and tested that I was
-> > > > > > > > able to boot [3] after a
-> > > > > > > > looong time. To clarify, the rcu merge comes after the irqchip merge.
-> > > > > > > >
-> > > > > > > > I also tried to only revert the rcu tree from todays next tag like this:
-> > > > > > > > "git diff e6df9766894d..25e6e115dd1d | patch -Rp1". When I built that
-> > > > > > > > I was able to
-> > > > > > > > boot [4] too.
-> > > > > > > >
-> > > > > > > > Any idea what's going on here?
-> > > > > > >
-> > > > > > > Could you please try bisecting the RCU commits?
-> > > > > >
-> > > > > > I did a bisect and found:
-> > > > > > 3c8e1e3eca23 ("rcu: Always set .need_qs from __rcu_read_lock() for strict GPs")
-> > > > > >
-> > > > > > When I reverted that on next-20200826 and on next-20200827 the
-> > > > > > allmodconfig kernel boots [1], there's other issues that I can see in
-> > > > > > the log but not this one.
-> > > > >
-> > > > > Thank you for bisecting!
-> > > > >
-> > > > > I take it that you have CONFIG_RCU_STRICT_GRACE_PERIOD=y in your .config?
-> > > >
-> > > > Correct.
-> > > >
-> > > > > Ah, you do, according to this line in your dmesg:
-> > > > >
-> > > > >         rcu:    RCU strict (and thus non-scalable) grace periods enabled.
-> > > >
-> > > > Yup.
-> > > >
-> > > > >
-> > > > > And much else besides, serious debugging enabled!  ;-)
-> > > >
-> > > > as you can see from the time it takes to boot it is alot =)
-> > > >
-> > > > >
-> > > > > Does this reproduce with CONFIG_RCU_STRICT_GRACE_PERIOD=n?
-> > > >
-> > > > I trying that now.
-> > > >
-> > > > > My guess,
-> > > > > given the commit that your bisection converged on, is that it will not
-> > > > > reproduce in that case.
-> > > >
-> > > > Your guess was correct, it worked =)
-> > >
-> > > I cannot reproduce this.  I would suggest enabling KASAN, but you have
-> > > already enabled it.  At this point, I suggest clearing up the other
-> > > issues.  If this issue remains, please let me know and I will see what
-> > > additional diagnostics I can provide.
-> >
-> > On tag next-20200902 I see this workqueue lockup [1], does that give
-> > you any ideas?
-> > when I disable CONFIG_RCU_STRICT_GRACE_PERIOD it works.
->
-> Does exactly the same commit as you bisected to last time determine
-> whether this happens or not?
+On Fri, Sep 04, 2020 at 12:22PM +0800, David Gow wrote:
+[...]
+> 
+> This is a good point -- renaming files is definitely a pain. It's
+> obviously my hope that KUnit sticks around long enough that it's not
+> being added/removed as a dependency too often, particularly for the
+> unit tests, so "_kunit" as a name doesn't worry me that much
+> otherwise.
 
-Yes it's the exact same commit.
+Make sense. And I do also hope that once a test is a KUnit test, there
+is no need to change it. :-)
 
-Cheers,
-Anders
+[...]
+> I'm not personally convinced that "kunit" isn't something people could
+> associate with tests, particularly as it becomes more popular, but if
+> people really dislike it, we could have"_unittest.c" or similar.
+> There's a balancing act between being generic (and not distinguishing
+> between unit/integration/etc tests) and being consistent or avoiding
+> renames. Take the case where there's a set of unit tests in a
+> "-test.c" file, and an integration test is written as well: it
+> probably should go in a speparate file, so now you'd either have a
+> "-test.c" and a separate "-integration-test.c" (or the other way
+> around if the integration test was written first), or the "-test.c"
+> file would be renamed.
 
->
->                                                         Thanx, Paul
->
-> > Cheers,
-> > Anders
-> > [1] http://ix.io/2w0B
+Makes sense, too. Yeah, if we have both we'd need to distinguish one way
+or another. What might be particularly annoying is the case if an
+integration test exists first, and it had been named "_kunit.c",
+followed by addition of a unit test. I think the only sane thing at that
+point would be to do a rename of the integration test; whereas if it had
+been named "_test.c", I could live with there simply being a
+"_unit_test.c" (or similar) file for the new unit test.
+
+[...]
+> > 1. Clear, intuitive, descriptive filenames ("[...] something that says
+> > more strongly that this is a test [...]").
 > >
-> > >
-> > >                                                         Thanx, Paul
-> > >
-> > > > Cheers,
-> > > > Anders
-> > > >
-> > > > >
-> > > > >                                                         Thanx, Paul
-> > > > >
-> > > > > > Cheers,
-> > > > > > Anders
-> > > > > > [1] https://people.linaro.org/~anders.roxell/output-next-20200827-3c8e1e3eca23.log
-> > > > > >
-> > > > > > >  They are linear,
-> > > > > > > extending from 0d23eddbe5d4 ("rcu: Remove KCSAN stubs") to 72cc80705122
-> > > > > > > ("rcu: Remove unused "cpu" parameter from rcu_report_qs_rdp()".
-> > > > > > >
-> > > > > > > I do regularly test single-CPU premptible RCU, but not on ARM.  Nor do
-> > > > > > > I normally enable quite this much debug, so I might have missed something.
-> > > > > > >
-> > > > > > >                                                         Thanx, Paul
-> > > > > > >
-> > > > > > > > Cheers,
-> > > > > > > > Anders
-> > > > > > > > [1] https://people.linaro.org/~anders.roxell/output-next-20200826.log
-> > > > > > > > [2] https://people.linaro.org/~anders.roxell/output-next-20200826-bisect-e6df9766894d.log
-> > > > > > > > [3] https://people.linaro.org/~anders.roxell/output-next-20200826-bisect-25e6e115dd1d.log
-> > > > > > > > [4] https://people.linaro.org/~anders.roxell/output-next-20200826-bisect-revert-e6df9766894d-25e6e115dd1d.log
+> > 2. Avoid renames if any of the following changes: test framework, test
+> > type or scope. I worry the most about this point, because it affects
+> > our workflows. We need to avoid unnecessary patch conflicts, keep
+> > cherry-picks simple, etc.
+> >
+> > 3. Strive for consistently named tests, regardless of type (because
+> > it's hard to get right).
+> >
+> > 4. Want to distinguish KUnit tests from non-KUnit tests. (Also
+> > consider that tooling can assist with this.)
+> >
+> 
+> I think that these are somewhat in conflict with each other, which is
+> what makes this complicated. Particularly, it's going to be difficult
+> to both avoid renames if the test framework changes and to distinguish
+> between KUnit and non-KUnit tests by filename.
+> 
+> I personally think that of these requirements, 2 is probably the one
+> that would cause people the most real-world pain. I'm not sure how
+> often test type or scope changes enough to be worth the rename, and I
+> hope KUnit survives long enough and is useful enough that test
+> framework changes are kept to a minimum, but this has already
+> irritated enough people porting tests to KUnit to be a noticeable
+> issue. One possibility is to focus on module names, which are probably
+> more important and can be renamed without changing the filename,
+> though that's pretty ugly.
+> 
+> I actually think "_kunit.c" probably is descriptive/intuitive enough
+> to meet (1) -- or at least will be once KUnit is more widely used --
+> but it does conflict a bit with 2.
+> 
+> It'd be nice to have consistently named tests, but we're not there at
+> the moment, so fixing it will require a lot of renaming things. It's
+> looking increasingly unlikely that we'll be able to do that for
+> everything, so making this a recommendation for new test suites is
+> probably the best we're likely to get.
+> 
+> > These are the 2 options under closer consideration:
+> >
+> > A. Original choice of "*-test.c": Satisfies 1,2,3. It seems to fail 4,
+> > per Kees's original concern.
+> >
+> 
+> Kees also brings up that using hyphens instead of underscores causes
+> some inconsistency with module names, which is a bit of a pain.
+> 
+> > B. "*_kunit.c": Satisfies 4, maybe 3.
+> >   - Fails 1, because !strstr("_kunit.c", "test") and the resulting
+> > indirection. It hints at "unit test", but this may be a problem for
+> > (2).
+> >   - Fails 2, because if the test for some reason decides to stop using
+> > KUnit (or a unit test morphs into an integration test), the file needs
+> > to be renamed.
+> >
+> > And based on all this, why not:
+> >
+> > C. "*-ktest.c" (or "*_ktest.c"):
+> >   - Satisfies 1, because it's descriptive and clearly says it's a
+> > test; the 'k' can suggest it's an "[in-]kernel test" vs. some other
+> > hybrid test that requires a userspace component.
+> >   - Satisfies 2, because neither test framework or test type need to
+> > be encoded in the filename.
+> >   - Satisfies 3, because every test (that wants to use KUnit) can just
+> > use this without thinking too much about it.
+> >   - Satisfies 4, because "git grep -- '[-_]ktest\.[co]'" returns nothing.
+> >
+> 
+> My concern with this is that we're introducing new jargon either way:
+> does having "test" in the name outweigh the potential confusion from
+> having "ktest" be in the filename only for "KUnit tests". So my
+> feeling is that this would've been really useful if we'd named KUnit
+> KTest (which, ironically, I think Brendan had considered) instead, but
+> as-is is probably more confusing.
+
+Make sense, too.
+
+> At the risk of just chickening out at calling this "too hard", I'm
+> leaning towards a variant of (A) here, and going for _test, but making
+> it a weaker recommendation:
+> - Specifying that the module name should end in _test, rather than the
+> source filename. Module names are easier to change without causing
+> merge conflicts (though they're a pain to change for the user).
+> - Only applies to new test suites, and another suffix may be used if
+> it conflicts with an existing non-kunit test (if it conflicts with a
+> kunit test, they should be disambiguated in the suite name).
+> - Test types (unit, integration, some subsystem-specific thing, etc)
+> may be disambiguated in the suite name, at the discretion of the test
+> author. (e.g., "driver_integration" as a suite name, with
+> "driver_integration_test" as the module name, and either
+> "driver_integration_test.c" or "integration_test.c" as recommended
+> test filenames, depending on if "driver" is in its own directory.)
+> 
+> This should satisfy 1 & 2, and go some way towards satisfying 3. We
+> can try to come up with some other technical solution to 4 if we need
+> to.
+> 
+> Unless the objections are particularly earth-shattering, I'll do a new
+> version of the patch that matches this next week. The other option is
+> to drop the filename stuff from the document altogether, and sort it
+> out in another patch, so we at least get some of the consistency in
+> suite and Kconfig names.
+
+Thanks for the detailed answer. Your plan sounds good to me. I'm fine
+either way, as long as requirement (2) is somehow addressed, and we do
+not end up with unnecessary renames.
+
+Thanks,
+-- Marco
