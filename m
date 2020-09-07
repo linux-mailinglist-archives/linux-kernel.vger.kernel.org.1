@@ -2,120 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 121C025FE1D
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 18:07:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE6CE25FE2E
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 18:09:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730260AbgIGQH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 12:07:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58144 "EHLO
+        id S1730173AbgIGQJG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 12:09:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730347AbgIGQGU (ORCPT
+        with ESMTP id S1730284AbgIGQId (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 12:06:20 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C19FC061573;
-        Mon,  7 Sep 2020 09:06:19 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id z17so7703997lfi.12;
-        Mon, 07 Sep 2020 09:06:19 -0700 (PDT)
+        Mon, 7 Sep 2020 12:08:33 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD5A0C061755
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 09:08:26 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id a8so7176094ilk.1
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 09:08:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=b1+lqTbzXCDJRAp/ruU26MIXNrJc2/BgXo5jum89rCE=;
-        b=NNl46OGl6PhQGGixOp2jOdYPjqCWx88Jp17Da7yw8BOAg2WNsEA+C5V5ETguyN8tyC
-         mo7ynOSA0ucLQKTKtRbrjq1xZ0nqNscY0zSZno8EcIQj8Ve6WMbEw317SIXndNxurxl8
-         QAK6znToaSSQWLk5j98NcRi/g/hi63CCZCryUI2iIZ7RpHZIZjYJrZNY81BiWp5R/Au0
-         VQ2Edk8j+A3PmGtrwGcxZxus/+lTvRLAWDVoE5fbtja1kPzxgbf6u1oFKgA8/LxCueyx
-         bPvnvqAew/5AURTzalY5djAYwmNR43xjIZVUs2sTd8dpquvsV4EsEeI8nApOXFUDkxUW
-         UJyw==
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JqN+Ld3wZPmbVgI62Wk3h0aeRwICf084UpC6lt1ISUQ=;
+        b=t+zrA6Zax5sYBKq6LQ+BBjT0mXvkgqo1EQagCOBiGh7Gw6vDfaDBc1h2BgAQD+5B5Z
+         O4l+DjThBvV07ZhnkrV+Pxdm+gJOJVQTbav12VmkxLaeitbWMcKHcgJ/L263Nz8rCg2P
+         NqYSoiyiMa85MFREwFmfpnKC/0OpLJaP/Ey8Fbd9bB9X2CtM5DjzcJTjUQbmbr01FHEW
+         gAGVicIGl4/5IlJ9zuw5P+XJiOtxfiHinQtO257YEewAFwyVzWUvD96X/KFHHHXscKNv
+         S82b21ElO1RRbvUyYFHUHv/2FKiWT8fwv79tt1LO4pk0JDOGn1lIB6JZaB5ZJTMVBN7P
+         FRGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=b1+lqTbzXCDJRAp/ruU26MIXNrJc2/BgXo5jum89rCE=;
-        b=X3y6pPfQo3mDiLrS/MTKsBiNVMt1eKYj6IRqqobnXxS/NpBKKFnl4Kc6duZm1wPrlF
-         uTjR8GtyjmgLvjhjZ7y0rRQWZgw9l8eCkfhsK4127icl8U5PJZrSefDjUNQsbWEc0XjV
-         4PFsf3BerxlSCKkkhRKzeORk2wFjrxM69/AkIZU7zjcXVt67P81uB6wUimjVIitgDo3g
-         0U2tQrCZRnmCMBJTFVEVdIE6haxtBhSXqokT8h1N8w2lxFWimu4OWzD2FirDM8I95LwJ
-         9R25V1a7U8i+/3d36OreQxMiDbV+RM2+QAGdL/MkLM8k/r5yEKBwQ+eqrXzchm1KomFN
-         Biiw==
-X-Gm-Message-State: AOAM531Lj7ktEyCsRaK1+vS4QooPe5UxVtzpXdgo0OMPLg92RRd4qCEj
-        KeYxgHLBuSYsRRLYVueu3G70xiC7DT8=
-X-Google-Smtp-Source: ABdhPJxDQwSwFIo2VnvbeCGcJmEWfv8Mbl83QhfSqs5L7jjcb+JENRWuM2OM04QUUwEGWc6RH4NRTQ==
-X-Received: by 2002:a05:6512:403:: with SMTP id u3mr10469177lfk.10.1599494776140;
-        Mon, 07 Sep 2020 09:06:16 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
-        by smtp.googlemail.com with ESMTPSA id t4sm7458077ljh.122.2020.09.07.09.06.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Sep 2020 09:06:15 -0700 (PDT)
-Subject: Re: [PATCH v5 06/36] i2c: tegra: Runtime PM always available on Tegra
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        linux-tegra@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20200906185039.22700-1-digetx@gmail.com>
- <20200906185039.22700-7-digetx@gmail.com>
- <CAHp75VevXe3c2LGF3jZyDfvPpRAz+-GQKvXEO4OKvuur=RgXCQ@mail.gmail.com>
- <f9ec5178-e38e-ed9a-25f8-21e53ccd31d1@gmail.com>
- <CAHp75Vdj7HYN0SWt9StqB8K6JrUCk7dtDhAUwYDkkBXc1R8ueg@mail.gmail.com>
- <c76f64c8-bd46-36f0-edb4-3ddca281a72b@gmail.com>
- <CAHp75Vf3BirttCnW5KarsL0_MqofpWnEN5K5z+TY2YZV-R9fhQ@mail.gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <aa58d225-f1f1-2b7e-0c66-c853a8ffd4e0@gmail.com>
-Date:   Mon, 7 Sep 2020 19:06:14 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JqN+Ld3wZPmbVgI62Wk3h0aeRwICf084UpC6lt1ISUQ=;
+        b=ddPLm2kSnTQpOMHhGuUMssmkYOEbbcweBRxolZPvChYANsgm1jeq6eadtfi3ZJxWKw
+         n/jHL3feroNOa0KFR1dLN3M2mYCgFVO+rThFyzzBdhn3PBaLhJpqTDBYvz0YpYz68K5z
+         WI7Pola7quG2gj7cY8sKhI+XzrbSE4J9NYkpvo+DzD8Y5u2bgUBFSXLaHJvMMgJLwKxY
+         PNJVvnAeki8vzV33lq0SMOgrPmsQko1rdlwI33G9Add9WwD2G28wDyE1VjXQXijjLhcC
+         /MlbMMqalh3t+bubDnexYkCDooOFIriko1xjZEFb4o7Ebo56ipOxCpgPLGhCIN94vhgp
+         ET3g==
+X-Gm-Message-State: AOAM532UZAV73JUtlO8KlkynJ0HDhTRs4U/4o0OZNF4iPqeKdkaMIaVv
+        b7o9nzwlQd7WaiifzXROQZsiK8W0SLQUJ9WM4sh+Pw==
+X-Google-Smtp-Source: ABdhPJygbGhzi1UjXL8W5ZYdCpkiPK64via60tqGaifPutE7y9g1OWG5mxVKMiZEo45zI0mgt2/Sl1DPIqvev7fxd84=
+X-Received: by 2002:a92:cb4d:: with SMTP id f13mr16653071ilq.189.1599494905629;
+ Mon, 07 Sep 2020 09:08:25 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAHp75Vf3BirttCnW5KarsL0_MqofpWnEN5K5z+TY2YZV-R9fhQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200904154547.3836-1-brgl@bgdev.pl> <20200904154547.3836-24-brgl@bgdev.pl>
+ <26ea1683-da8f-30e7-f004-3616e96d56b3@infradead.org> <20200907095932.GU1891694@smile.fi.intel.com>
+ <CAMpxmJXvhYOVkZY7LLf=v+o8E2xKTh1RYhLrdVsS9nN1XZ5QJQ@mail.gmail.com>
+ <20200907115310.GA1891694@smile.fi.intel.com> <CAMpxmJUfNkko4Rrb4N5CF_rdwRAWGhVr9DSOHfhYyTxYSH7dsQ@mail.gmail.com>
+ <20200907122238.GA1849893@kroah.com> <CAMpxmJXM=8oGoPSGg8G8XJ4HXJFrAQ2-_EXrz3rf3+ZmCSWB7g@mail.gmail.com>
+ <20200907140829.GL1891694@smile.fi.intel.com> <CAMuHMdV42oUu=af_O=aUVED_Nxce0wnTKTMNNSskaSGT=p5ZMw@mail.gmail.com>
+In-Reply-To: <CAMuHMdV42oUu=af_O=aUVED_Nxce0wnTKTMNNSskaSGT=p5ZMw@mail.gmail.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Mon, 7 Sep 2020 18:08:14 +0200
+Message-ID: <CAMRc=MeBL7opS6wBO1nEesHJg8Yv_GR0xxRae3mtQ2xj=eBOGg@mail.gmail.com>
+Subject: Re: [PATCH 23/23] Documentation: gpio: add documentation for gpio-mockup
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Kent Gibson <warthog618@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        linux-doc <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-07.09.2020 18:34, Andy Shevchenko пишет:
-> On Mon, Sep 7, 2020 at 6:25 PM Dmitry Osipenko <digetx@gmail.com> wrote:
->> 07.09.2020 18:05, Andy Shevchenko пишет:
->>> On Mon, Sep 7, 2020 at 5:32 PM Dmitry Osipenko <digetx@gmail.com> wrote:
->>>> 07.09.2020 11:10, Andy Shevchenko пишет:
-> 
-> ...
-> 
->>>> Would be great if anyone could put effort into changing the default
->>>> get_sync() behaviour and add get_sync_nofail(). Otherwise this will be a
->>>> never ending problem.
->>>
->>> I didn't get this. For time being the API (yes, with its all cons) has
->>> the clear usage:
->>> a) don't check for errors -- you are fine
->>> b) if you start checking errors, keep in mind refcounting.
->>>
->>> So, I don't see how nofail() can fix b) case.
->>>
->>
->> It's a very unintuitive behaviour which none of other APIs have. I would
->> never expect the refcount to be bumped in a case of error, this is a
->> clear drawback of the API, IMO.
-> 
-> I agree.
-> 
->> Perhaps this is not seen as a problem by
->> people who have excellent memory and can easily remember about existence
->> of such non-standard quirks, or by people who're touching the RPM code
->> frequently.
-> 
-> ...or by running coccinelle script.
-> 
+On Mon, Sep 7, 2020 at 5:23 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> Hi Andy,
+>
+> On Mon, Sep 7, 2020 at 4:14 PM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> > On Mon, Sep 07, 2020 at 03:49:23PM +0200, Bartosz Golaszewski wrote:
+> > > On Mon, Sep 7, 2020 at 2:22 PM Greg Kroah-Hartman
+> > > <gregkh@linuxfoundation.org> wrote:
+> > > > On Mon, Sep 07, 2020 at 02:06:15PM +0200, Bartosz Golaszewski wrote:
+> >
+> > ...
+> >
+> > > > Yes it is.  Or at least until you fix all existing users so that if you
+> > > > do change it, no one notices it happening :)
+> > > >
+> > >
+> > > Then another question is: do we really want to commit to a stable ABI
+> > > for a module we only use for testing purposes and which doesn't
+> > > interact with any real hardware.
+> > >
+> > > Rewriting this module without any legacy cruft is tempting though. :)
+> >
+> > Another thought spoken loudly: maybe it can be unified with GPIO aggregator
+> > code? In that case it makes sense.
+>
+> You want to aggregate GPIOs out of thin air?
+>
+> From DT, that would be something like
+>
+>     gpios = <&gpio1 2>, <0>, <0>, <&gpio2, 5>;
+>
+> ?
+>
+> For writing into ".../new_device", we could agree on something like "0"
+> means not backed by an existing GPIO?
+>
 
-Technically it shouldn't be a big problem to change the code, but I
-could imagine the amount of effort it will take to get the changes
-merged. IIRC, there was also a push back to a such change from the RPM
-maintainer, so there could be difficulties beyond the code changes.
+I'm really not sure this makes any sense. Why complicate an otherwise
+elegant module that is gpio-aggregator with functionalities that
+obviously don't belong here? I want to add various parameters that
+would affect the way the simulated chips work - this really doesn't
+need to go into the aggregator.
+
+Bart
