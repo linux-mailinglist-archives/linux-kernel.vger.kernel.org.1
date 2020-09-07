@@ -2,295 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A124125F866
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 12:32:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A88F25F852
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 12:31:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728982AbgIGKcq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 06:32:46 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:59720 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728589AbgIGKQM (ORCPT
+        id S1728916AbgIGKbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 06:31:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34098 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728940AbgIGK2K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 06:16:12 -0400
-Received: from ip5f5af70b.dynamic.kabel-deutschland.de ([95.90.247.11] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1kFEC0-0005Vh-Sr; Mon, 07 Sep 2020 10:16:09 +0000
-Date:   Mon, 7 Sep 2020 12:16:08 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Gabriel Krisman Bertazi <krisman@collabora.com>
-Cc:     luto@kernel.org, tglx@linutronix.de, keescook@chromium.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, willy@infradead.org,
-        linux-kselftest@vger.kernel.org, shuah@kernel.org,
-        kernel@collabora.com
-Subject: Re: [PATCH v6 1/9] kernel: Support TIF_SYSCALL_INTERCEPT flag
-Message-ID: <20200907101608.ldfhhvcy3vmrkg6b@wittgenstein>
-References: <20200904203147.2908430-1-krisman@collabora.com>
- <20200904203147.2908430-2-krisman@collabora.com>
+        Mon, 7 Sep 2020 06:28:10 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86EE8C061574
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 03:28:09 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id i22so17548222eja.5
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 03:28:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zC3AjkfkprEZqAAF7NrLvBA7iHOLdrgU623W0AvOrc8=;
+        b=xev6xkOJ3ERQwgt6zd2d2oVhYHp0aaQN+/YNUtlkUOMGMF2VXFkbu+9pSzDWQi4XwK
+         xiRo7rK9+zdGFIEjrIitRpwib9Tnt8MJ0Muzfjakz/vh5LZmf0a+8xElnG6wmoWUbPrB
+         RLdPZSvIY2uZ9wA3xlid8F/FztYI1KRLTZXxpq3m1XP7w/kyD7Vqa7gbQeHS+Ck4/yp0
+         EpiV2JG3qRp2csIp+UG9r83UYnOZsRvPkqHR9UxSu8YqcBJL8Zn1sokUpOu+7dC1O1rJ
+         zI7RybFJm0F2fz1U/82/DpY4P2SILSRC7nw/nxwnG7BI88LWOWm6y7Icjn+r+1UtW+49
+         A3dA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zC3AjkfkprEZqAAF7NrLvBA7iHOLdrgU623W0AvOrc8=;
+        b=AyZ1H4y4C2jcGI34Ls440k9ipj2nJD8bEaJa/XkrPIKSJeDRormAZ9VywyC1DTw63C
+         ovURQQZ0TgBz63iohQokjt+iYJpfNmYQZo53smUMZI7rz3sKEKYog5l6/qLhb214U3t8
+         8uckDwt7tXQdCVKwJsoVlSIOaUoHMPsqL2hziw8NnC9U69K4qChnuB1lUx37WC7O/QXC
+         g5hq73ZqOQf8OcRwYcLZkglrg+Fw7zZSOBtSBMW2Xv2LzAvrTCH2XZ8sb5OQcW5ByW/e
+         IB6fgSu8lDAkNFxsFcUOomZAtEx/M/ffaBpwpuA09uuN5gHfH/b3ImnUbyeMjNIKPuGF
+         jRug==
+X-Gm-Message-State: AOAM53047zwK2K7qbKipWfF45SLKFAVlFPJ57Zj0hgiIydS+9HazYaGQ
+        ryZ0Jyy2OG9kd83Vevpt9EHj1g==
+X-Google-Smtp-Source: ABdhPJxnWiMooG/MtjMpEbVaVBmU0gLwXtAR25UcFbu/9ktwRSIUjbuBbod67GMd2Ea/Y26JYFdtVA==
+X-Received: by 2002:a17:906:9443:: with SMTP id z3mr21320271ejx.156.1599474488206;
+        Mon, 07 Sep 2020 03:28:08 -0700 (PDT)
+Received: from localhost.localdomain (dh207-98-39.xnet.hr. [88.207.98.39])
+        by smtp.googlemail.com with ESMTPSA id dm22sm14767031edb.49.2020.09.07.03.28.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Sep 2020 03:28:07 -0700 (PDT)
+From:   Robert Marko <robert.marko@sartura.hr>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Robert Marko <robert.marko@sartura.hr>,
+        John Crispin <john@phrozen.org>,
+        Luka Perkov <luka.perkov@sartura.hr>,
+        Vinod Koul <vkoul@kernel.org>
+Subject: [RESEND PATCH v7] ARM: dts: qcom: ipq4019: add USB devicetree nodes
+Date:   Mon,  7 Sep 2020 12:28:02 +0200
+Message-Id: <20200907102802.11276-1-robert.marko@sartura.hr>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200904203147.2908430-2-krisman@collabora.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 04, 2020 at 04:31:39PM -0400, Gabriel Krisman Bertazi wrote:
-> Convert TIF_SECCOMP into a generic TI flag for any syscall interception
-> work being done by the kernel.  The actual type of work is exposed by a
-> new flag field outside of thread_info.  This ensures that the
-> syscall_intercept field is only accessed if struct seccomp has to be
-> accessed already, such that it doesn't incur in a much higher cost to
-> the seccomp path.
-> 
-> In order to avoid modifying every architecture at once, this patch has a
-> transition mechanism, such that architectures that define TIF_SECCOMP
-> continue to work by ignoring the syscall_intercept flag, as long as they
-> don't support other syscall interception mechanisms like the future
-> syscall user dispatch.  When migrating TIF_SECCOMP to
-> TIF_SYSCALL_INTERCEPT, they should adopt the semantics of checking the
-> syscall_intercept flag, like it is done in the common entry syscall
-> code, or even better, migrate to the common syscall entry code.
-> 
-> This was tested by running the selftests for seccomp.  No regressions
-> were observed, and all tests passed (with and without this patch).
-> 
-> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
-> ---
->  include/linux/sched.h             |  6 ++-
->  include/linux/seccomp.h           | 20 ++++++++-
->  include/linux/syscall_intercept.h | 70 +++++++++++++++++++++++++++++++
->  kernel/fork.c                     | 10 ++++-
->  kernel/seccomp.c                  |  7 ++--
->  5 files changed, 106 insertions(+), 7 deletions(-)
->  create mode 100644 include/linux/syscall_intercept.h
-> 
-> diff --git a/include/linux/sched.h b/include/linux/sched.h
-> index afe01e232935..3511c98a7849 100644
-> --- a/include/linux/sched.h
-> +++ b/include/linux/sched.h
-> @@ -959,7 +959,11 @@ struct task_struct {
->  	kuid_t				loginuid;
->  	unsigned int			sessionid;
->  #endif
-> -	struct seccomp			seccomp;
-> +
-> +	struct {
-> +		unsigned int			syscall_intercept;
-> +		struct seccomp			seccomp;
-> +	};
+Since we now have driver for the USB PHY, lets add the necessary nodes to DTSI.
 
-If there's no specific reason to do this I'd not wrap this in an
-anonymous struct. It doesn't really buy anything and there doesn't seem
-to be  precedent in struct task_struct right now. Also, if this somehow
-adds padding it seems you might end up increasing the size of struct
-task_struct more than necessary by accident? (I might be wrong though.)
+Signed-off-by: John Crispin <john@phrozen.org>
+Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+Cc: Luka Perkov <luka.perkov@sartura.hr>
+Reviewed-by: Vinod Koul <vkoul@kernel.org>
+---
+ arch/arm/boot/dts/qcom-ipq4019.dtsi | 74 +++++++++++++++++++++++++++++
+ 1 file changed, 74 insertions(+)
 
->  
->  	/* Thread group tracking: */
->  	u64				parent_exec_id;
-> diff --git a/include/linux/seccomp.h b/include/linux/seccomp.h
-> index 02aef2844c38..027dc462cea9 100644
-> --- a/include/linux/seccomp.h
-> +++ b/include/linux/seccomp.h
-> @@ -20,6 +20,24 @@
->  #include <linux/atomic.h>
->  #include <asm/seccomp.h>
->  
-> +/*
-> + * Some transitional defines to avoid migrating every architecture code
-> + * at once.
-> + */
-> +
-> +#if defined(TIF_SECCOMP) && defined(TIF_SYSCALL_INTERCEPT)
-> +# error "TIF_SYSCALL_INTERCEPT and TIF_SECCOMP can't be defined at the same time"
-> +#endif
-> +
-> +/*
-> + * If the arch has not transitioned to TIF_SYSCALL_INTERCEPT, this let
-> + * seccomp work with these architectures, as long as no other syscall
-> + * intercept features are meant to be supported.
-> + */
-> +#ifdef TIF_SECCOMP
-> +# define TIF_SYSCALL_INTERCEPT TIF_SECCOMP
-> +#endif
-> +
->  struct seccomp_filter;
->  /**
->   * struct seccomp - the state of a seccomp'ed process
-> @@ -42,7 +60,7 @@ struct seccomp {
->  extern int __secure_computing(const struct seccomp_data *sd);
->  static inline int secure_computing(void)
->  {
-> -	if (unlikely(test_thread_flag(TIF_SECCOMP)))
-> +	if (unlikely(test_thread_flag(TIF_SYSCALL_INTERCEPT)))
->  		return  __secure_computing(NULL);
->  	return 0;
->  }
-> diff --git a/include/linux/syscall_intercept.h b/include/linux/syscall_intercept.h
-> new file mode 100644
-> index 000000000000..725d157699da
-> --- /dev/null
-> +++ b/include/linux/syscall_intercept.h
-> @@ -0,0 +1,70 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Copyright (C) 2020 Collabora Ltd.
-> + */
-> +#ifndef _SYSCALL_INTERCEPT_H
-> +#define _SYSCALL_INTERCEPT_H
-> +
-> +#include <linux/sched.h>
-> +#include <linux/sched/signal.h>
-> +#include <linux/thread_info.h>
-> +
-> +#define SYSINT_SECCOMP		0x1
+diff --git a/arch/arm/boot/dts/qcom-ipq4019.dtsi b/arch/arm/boot/dts/qcom-ipq4019.dtsi
+index 74d8e2c8e4b3..8b72a149bc33 100644
+--- a/arch/arm/boot/dts/qcom-ipq4019.dtsi
++++ b/arch/arm/boot/dts/qcom-ipq4019.dtsi
+@@ -605,5 +605,79 @@ ethphy4: ethernet-phy@4 {
+ 				reg = <4>;
+ 			};
+ 		};
++
++		usb3_ss_phy: ssphy@9a000 {
++			compatible = "qcom,usb-ss-ipq4019-phy";
++			#phy-cells = <0>;
++			reg = <0x9a000 0x800>;
++			reg-names = "phy_base";
++			resets = <&gcc USB3_UNIPHY_PHY_ARES>;
++			reset-names = "por_rst";
++			status = "disabled";
++		};
++
++		usb3_hs_phy: hsphy@a6000 {
++			compatible = "qcom,usb-hs-ipq4019-phy";
++			#phy-cells = <0>;
++			reg = <0xa6000 0x40>;
++			reg-names = "phy_base";
++			resets = <&gcc USB3_HSPHY_POR_ARES>, <&gcc USB3_HSPHY_S_ARES>;
++			reset-names = "por_rst", "srif_rst";
++			status = "disabled";
++		};
++
++		usb3@8af8800 {
++			compatible = "qcom,dwc3";
++			reg = <0x8af8800 0x100>;
++			#address-cells = <1>;
++			#size-cells = <1>;
++			clocks = <&gcc GCC_USB3_MASTER_CLK>,
++				 <&gcc GCC_USB3_SLEEP_CLK>,
++				 <&gcc GCC_USB3_MOCK_UTMI_CLK>;
++			clock-names = "master", "sleep", "mock_utmi";
++			ranges;
++			status = "disabled";
++
++			dwc3@8a00000 {
++				compatible = "snps,dwc3";
++				reg = <0x8a00000 0xf8000>;
++				interrupts = <GIC_SPI 132 IRQ_TYPE_LEVEL_HIGH>;
++				phys = <&usb3_hs_phy>, <&usb3_ss_phy>;
++				phy-names = "usb2-phy", "usb3-phy";
++				dr_mode = "host";
++			};
++		};
++
++		usb2_hs_phy: hsphy@a8000 {
++			compatible = "qcom,usb-hs-ipq4019-phy";
++			#phy-cells = <0>;
++			reg = <0xa8000 0x40>;
++			reg-names = "phy_base";
++			resets = <&gcc USB2_HSPHY_POR_ARES>, <&gcc USB2_HSPHY_S_ARES>;
++			reset-names = "por_rst", "srif_rst";
++			status = "disabled";
++		};
++
++		usb2@60f8800 {
++			compatible = "qcom,dwc3";
++			reg = <0x60f8800 0x100>;
++			#address-cells = <1>;
++			#size-cells = <1>;
++			clocks = <&gcc GCC_USB2_MASTER_CLK>,
++				 <&gcc GCC_USB2_SLEEP_CLK>,
++				 <&gcc GCC_USB2_MOCK_UTMI_CLK>;
++			clock-names = "master", "sleep", "mock_utmi";
++			ranges;
++			status = "disabled";
++
++			dwc3@6000000 {
++				compatible = "snps,dwc3";
++				reg = <0x6000000 0xf8000>;
++				interrupts = <GIC_SPI 136 IRQ_TYPE_LEVEL_HIGH>;
++				phys = <&usb2_hs_phy>;
++				phy-names = "usb2-phy";
++				dr_mode = "host";
++			};
++		};
+ 	};
+ };
+-- 
+2.26.2
 
-<bikeshed>
-
-Can we maybe use a better name for this? I noone minds the extra
-characters I'd suggest:
-SYSCALL_INTERCEPT_SECCOMP
-or
-SYS_INTERCEPT_SECCOMP
-
-</bikeshed>
-
-> +
-> +#ifdef TIF_SYSCALL_INTERCEPT
-> +
-> +/* seccomp (at least) can modify TIF_SYSCALL_INTERCEPT from a different
-> + * thread, which means it can race with itself or with
-> + * syscall_user_dispatch. Therefore, TIF_SYSCALL_INTERCEPT and
-> + * syscall_intercept are synchronized by tsk->sighand->siglock.
-> + */
-> +
-> +static inline void __set_tsk_syscall_intercept(struct task_struct *tsk,
-> +					   unsigned int type)
-> +{
-> +	tsk->syscall_intercept |= type;
-> +
-> +	if (tsk->syscall_intercept)
-> +		set_tsk_thread_flag(tsk, TIF_SYSCALL_INTERCEPT);
-> +}
-> +
-> +static inline void __clear_tsk_syscall_intercept(struct task_struct *tsk,
-> +					     unsigned int type)
-> +{
-> +	tsk->syscall_intercept &= ~type;
-> +
-> +	if (tsk->syscall_intercept == 0)
-> +		clear_tsk_thread_flag(tsk, TIF_SYSCALL_INTERCEPT);
-> +}
-> +
-> +static inline void set_tsk_syscall_intercept(struct task_struct *tsk, unsigned int type)
-> +{
-> +	spin_lock_irq(&tsk->sighand->siglock);
-> +	__set_tsk_syscall_intercept(tsk, type);
-> +	spin_unlock_irq(&tsk->sighand->siglock);
-> +}
-> +
-> +static inline void clear_tsk_syscall_intercept(struct task_struct *tsk, unsigned int type)
-> +{
-> +	spin_lock_irq(&tsk->sighand->siglock);
-> +	__clear_tsk_syscall_intercept(tsk, type);
-> +	spin_unlock_irq(&tsk->sighand->siglock);
-> +}
-> +
-> +#else
-> +static inline void __set_tsk_syscall_intercept(struct task_struct *tsk, unsigned int type)
-> +{
-> +}
-> +static inline void set_tsk_syscall_intercept(struct task_struct *tsk, unsigned int type)
-> +{
-> +}
-> +static inline void __clear_tsk_syscall_intercept(struct task_struct *tsk, unsigned int type)
-> +{
-> +}
-> +static inline void clear_tsk_syscall_intercept(struct task_struct *tsk, unsigned int type)
-> +{
-> +}
-> +#endif
-> +
-> +#endif
-> +
-> diff --git a/kernel/fork.c b/kernel/fork.c
-> index 4d32190861bd..a39177bed8ea 100644
-> --- a/kernel/fork.c
-> +++ b/kernel/fork.c
-> @@ -49,7 +49,7 @@
->  #include <linux/cgroup.h>
->  #include <linux/security.h>
->  #include <linux/hugetlb.h>
-> -#include <linux/seccomp.h>
-> +#include <linux/syscall_intercept.h>
->  #include <linux/swap.h>
->  #include <linux/syscalls.h>
->  #include <linux/jiffies.h>
-> @@ -898,6 +898,7 @@ static struct task_struct *dup_task_struct(struct task_struct *orig, int node)
->  	 * the usage counts on the error path calling free_task.
->  	 */
->  	tsk->seccomp.filter = NULL;
-> +	tsk->syscall_intercept = 0;
->  #endif
->  
->  	setup_thread_stack(tsk, orig);
-> @@ -1620,9 +1621,14 @@ static void copy_seccomp(struct task_struct *p)
->  	 * If the parent gained a seccomp mode after copying thread
->  	 * flags and between before we held the sighand lock, we have
->  	 * to manually enable the seccomp thread flag here.
-> +	 *
-> +	 * In addition current sighand lock is asserted, so it is safe
-> +	 * to use the unlocked version of set_tsk_syscall_intercept.
->  	 */
->  	if (p->seccomp.mode != SECCOMP_MODE_DISABLED)
-> -		set_tsk_thread_flag(p, TIF_SECCOMP);
-> +		__set_tsk_syscall_intercept(p, SYSINT_SECCOMP);
-> +	else
-> +		__clear_tsk_syscall_intercept(p, SYSINT_SECCOMP);
->  #endif
->  }
->  
-> diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-> index 3ee59ce0a323..d0643b500f2e 100644
-> --- a/kernel/seccomp.c
-> +++ b/kernel/seccomp.c
-> @@ -28,6 +28,7 @@
->  #include <linux/slab.h>
->  #include <linux/syscalls.h>
->  #include <linux/sysctl.h>
-> +#include <linux/syscall_intercept.h>
->  
->  #ifdef CONFIG_HAVE_ARCH_SECCOMP_FILTER
->  #include <asm/syscall.h>
-> @@ -352,14 +353,14 @@ static inline void seccomp_assign_mode(struct task_struct *task,
->  
->  	task->seccomp.mode = seccomp_mode;
->  	/*
-> -	 * Make sure TIF_SECCOMP cannot be set before the mode (and
-> +	 * Make sure SYSINT_SECCOMP cannot be set before the mode (and
->  	 * filter) is set.
->  	 */
->  	smp_mb__before_atomic();
->  	/* Assume default seccomp processes want spec flaw mitigation. */
->  	if ((flags & SECCOMP_FILTER_FLAG_SPEC_ALLOW) == 0)
->  		arch_seccomp_spec_mitigate(task);
-> -	set_tsk_thread_flag(task, TIF_SECCOMP);
-> +	__set_tsk_syscall_intercept(task, SYSINT_SECCOMP);
->  }
->  
->  #ifdef CONFIG_SECCOMP_FILTER
-> @@ -925,7 +926,7 @@ static int __seccomp_filter(int this_syscall, const struct seccomp_data *sd,
->  
->  	/*
->  	 * Make sure that any changes to mode from another thread have
-> -	 * been seen after TIF_SECCOMP was seen.
-> +	 * been seen after SYSINT_SECCOMP was seen.
->  	 */
->  	rmb();
->  
-> -- 
-> 2.28.0
