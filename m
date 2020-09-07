@@ -2,95 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 845FD25F9E5
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 13:51:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83FA225F9FC
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 13:56:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729171AbgIGLvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 07:51:32 -0400
-Received: from mga12.intel.com ([192.55.52.136]:26050 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729150AbgIGLsr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 07:48:47 -0400
-IronPort-SDR: vLai4c0X6towIrb1+/Iqc+B3EQoxm7tp6BmDhSHWxTPpZC3jFxcxhXvZADHWaE4xJQjBStkF/h
- W5ib7I0KX0bg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9736"; a="137508004"
-X-IronPort-AV: E=Sophos;i="5.76,401,1592895600"; 
-   d="scan'208";a="137508004"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2020 04:48:44 -0700
-IronPort-SDR: 0zBgpsTw0cufd6Q64xwCLhA/+X/Ay4w6reVTb3zoIKdjiO+uU7qDrRNNuoQuaQywEl6rxBH1Bc
- RyWZdz+94YJA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,401,1592895600"; 
-   d="scan'208";a="333141923"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga008.jf.intel.com with ESMTP; 07 Sep 2020 04:48:41 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kFFdW-00EwHp-NR; Mon, 07 Sep 2020 14:48:38 +0300
-Date:   Mon, 7 Sep 2020 14:48:38 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Kent Gibson <warthog618@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-doc <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-acpi@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: Re: [PATCH 13/23] gpio: mockup: pass the chip label as device
- property
-Message-ID: <20200907114838.GX1891694@smile.fi.intel.com>
-References: <20200904154547.3836-1-brgl@bgdev.pl>
- <20200904154547.3836-14-brgl@bgdev.pl>
- <20200904164820.GB1891694@smile.fi.intel.com>
- <CAMRc=Mea4pGbW+fY3mCWfNSSqo9ZwaJxx2C0JmstnQOc8eVrLg@mail.gmail.com>
+        id S1729083AbgIGL4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 07:56:45 -0400
+Received: from mailout3.samsung.com ([203.254.224.33]:48037 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729166AbgIGLt7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 07:49:59 -0400
+Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20200907114934epoutp03e15cb2eb6f937405bb56a7a98b4b1fad~yfgReXRUs0310903109epoutp03w
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 11:49:34 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20200907114934epoutp03e15cb2eb6f937405bb56a7a98b4b1fad~yfgReXRUs0310903109epoutp03w
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1599479374;
+        bh=JuJEikmWQ9aFfoxm8rT1yo9Xqd5OSbSLucviXZCpLU8=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=qHlnUdukYTtW1xw4wQnzSIlKhcAr+z6SAaSBSTAzGzWy58eNkfnuyQQYwEe2W5ohr
+         0Ays4+pi1EBiVVz1XgUc2lVn9F5lzeQ7pwmDmIFmDbLykhEPu3AVwyJGPwF2fVlyja
+         ao1IQ49vUi/f9FQYlqHN7AtRmAS7RhLDdtiI/0sA=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
+        20200907114934epcas1p3ac102e5d964a9b8209008cec692e9914~yfgQ9iuNk2657026570epcas1p3i;
+        Mon,  7 Sep 2020 11:49:34 +0000 (GMT)
+Received: from epsmges1p1.samsung.com (unknown [182.195.40.152]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4BlRQh18YMzMqYkY; Mon,  7 Sep
+        2020 11:49:32 +0000 (GMT)
+Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
+        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        EE.AF.18978.B4E165F5; Mon,  7 Sep 2020 20:49:32 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
+        20200907114930epcas1p4156f15f93e18b0824dc366033f9d82df~yfgN1-Dob1148911489epcas1p4a;
+        Mon,  7 Sep 2020 11:49:30 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200907114930epsmtrp1a1d2cf27cd08ae880c50d6835a3b908d~yfgN1JghN3100631006epsmtrp1c;
+        Mon,  7 Sep 2020 11:49:30 +0000 (GMT)
+X-AuditID: b6c32a35-5edff70000004a22-dc-5f561e4bc92d
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        E1.0B.08382.A4E165F5; Mon,  7 Sep 2020 20:49:30 +0900 (KST)
+Received: from [10.113.111.64] (unknown [10.113.111.64]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20200907114930epsmtip209df81b3885b5496fea475ad45e0b04c~yfgNizmuu1278912789epsmtip2y;
+        Mon,  7 Sep 2020 11:49:30 +0000 (GMT)
+Subject: Re: [PATCH v5 00/80] drm/vc4: Support BCM2711 Display Pipeline
+To:     Maxime Ripard <maxime@cerno.tech>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Eric Anholt <eric@anholt.net>
+Cc:     devicetree@vger.kernel.org, Tim Gover <tim.gover@raspberrypi.com>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Kamal Dasu <kdasu.kdev@gmail.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Rob Herring <robh+dt@kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org,
+        Phil Elwell <phil@raspberrypi.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Hoegeun Kwon <hoegeun.kwon@samsung.com>
+From:   Hoegeun Kwon <hoegeun.kwon@samsung.com>
+Message-ID: <cca5234f-e1e8-b642-048b-b710f402409d@samsung.com>
+Date:   Mon, 7 Sep 2020 20:49:12 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+        Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMRc=Mea4pGbW+fY3mCWfNSSqo9ZwaJxx2C0JmstnQOc8eVrLg@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <cover.dddc064d8bb83e46744336af67dcb13139e5747d.1599120059.git-series.maxime@cerno.tech>
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrAJsWRmVeSWpSXmKPExsWy7bCmnq6PXFi8wfWljBZre4+yWLydu5jF
+        Yv6Rc6wWV76+Z7M40HiZ0eL98i42i51X1rJYbHp8jdXi8q45bBYTb29gt5jx4x+jxbZZy9ks
+        1t16zWbRuvcIu8W/axtZLB5Nvc/oIODR9P4Ym8es+2fZPO6cO8/msXPWXXaPTas62Tzudx9n
+        8ti8pN6j9egvFo++LasYPTafrvb4vEkugDsq2yYjNTEltUghNS85PyUzL91WyTs43jne1MzA
+        UNfQ0sJcSSEvMTfVVsnFJ0DXLTMH6B8lhbLEnFKgUEBicbGSvp1NUX5pSapCRn5xia1SakFK
+        ToFlgV5xYm5xaV66XnJ+rpWhgYGRKVBhQnZG74P1TAVzBCrO/njE2sB4m6eLkZNDQsBE4nn/
+        Q2YQW0hgB6NEe4N5FyMXkP2JUeLKu79MEM43Rolr/7exwXTce7aCBSKxF6jj2gso5y2jxNqV
+        U1m7GDk4hAXcJRo2mYM0iAiUS7R37gdbwSzwnFni2EVOEJtNQFfia891JhCbV8BO4sbRw2A2
+        i4CKxO+Ox+wgtqhApMTOpy/ZIWoEJU7OfMICYnMKpEqsWHYAaqa8xPa3c6BscYlbT+aDXS0h
+        8IND4vP2XVBXu0g8urOPGcIWlnh1fAs7hC0l8bK/Dcoulrgy8xULRHMDo0T/xNlQCWOJ/Usn
+        M4E8xiygKbF+lz5EWFFi5++5jBCL+STefe0B+11CgFeio00IokRN4lnDAVYIW0biVO9yJgjb
+        Q2LVwWfMExgVZyF5bRaSd2YheWcWwuIFjCyrGMVSC4pz01OLDQsMkSN7EyM4qWuZ7mCc+PaD
+        3iFGJg7GQ4wSHMxKIrxdh0LjhXhTEiurUovy44tKc1KLDzGaAgN7IrOUaHI+MK/klcQbmhoZ
+        GxtbmBiamRoaKonzPrylEC8kkJ5YkpqdmlqQWgTTx8TBKdXAFJj3e9I0+d9Ns0Qm6f0y3xbL
+        t2R1x6RFvGonG3O+NTDszHy+baKV3u8Go1Cfe9a5XCf05/UaFG6Tmh/E6tGitXc5+/5SyxgD
+        0ehujobijTUl5l+YuV0npLyq/Fnx6fl1z7XOB7YtXvqt/4urTZpXQWdKlNaGizYMl7v1zmx6
+        +13qqO/BGLn5ou5flv+dIHP5yOJX/4NeNOzxtFiR1Rj6Rts51OHb5M1Pktb2bVl29MVFiXnn
+        zOSuJaz3M516dv0HnmirJ7kZ/qm/Z0VfmaR/dvMBJYk3G+ovhJt+nMQcWqN02DL+zLlJqkX3
+        9JuKTl08NH2G59kkhvnyutyfN8VoHRVRm3f2/nPfqsrwzrgbXEosxRmJhlrMRcWJAJ1RhF1z
+        BAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrPIsWRmVeSWpSXmKPExsWy7bCSvK6XXFi8wa2j5hZre4+yWLydu5jF
+        Yv6Rc6wWV76+Z7M40HiZ0eL98i42i51X1rJYbHp8jdXi8q45bBYTb29gt5jx4x+jxbZZy9ks
+        1t16zWbRuvcIu8W/axtZLB5Nvc/oIODR9P4Ym8es+2fZPO6cO8/msXPWXXaPTas62Tzudx9n
+        8ti8pN6j9egvFo++LasYPTafrvb4vEkugDuKyyYlNSezLLVI3y6BK6P3wXqmgjkCFWd/PGJt
+        YLzN08XIySEhYCJx79kKli5GLg4hgd2MEtuOfWCDSMhIrOrfwtrFyAFkC0scPlwMUfOaUWL+
+        jQPsIHFhAXeJhk3mIOUiApUSn+fsYgapYRZ4zixxYc97JoiGHYwSLw5cZQSpYhPQlfjac50J
+        xOYVsJO4cfQwmM0ioCLxu+Mx2FBRgUiJnTssIUoEJU7OfMICYnMKpEqsWHaAGcRmFjCTmLf5
+        IZQtL7H97RwoW1zi1pP5TBMYhWYhaZ+FpGUWkpZZSFoWMLKsYpRMLSjOTc8tNiwwzEst1ytO
+        zC0uzUvXS87P3cQIjmMtzR2M21d90DvEyMTBeIhRgoNZSYS361BovBBvSmJlVWpRfnxRaU5q
+        8SFGaQ4WJXHeG4UL44QE0hNLUrNTUwtSi2CyTBycUg1M7W6C91iztvVWVeQ8ebDX6T3DFnf2
+        qt5VJgtFJWdstlVkq8tQP7XhgcqdttbqtN/3Jl/Qqf4x8ajLmbeb2w9WpGpudS0PX711MrvS
+        otPOti8+rV/22yTx6FvponJzTz8vtZcm0ao8PpNfqekrzZWb/+mn3PRzHD+Ul1xT51u+mZun
+        ZFPDw2sqf++9m/u07md0LE+yO6N9Vem1enMrjwrNid/2rPu98Jhl/ao5wfN9UlNZKplmqHpL
+        P779PKhuq90l69cXyq5+bd6+lffJb/kpi9ut6/t5H13R/uzAdpfDJ/GgWtihVUUBHBy7ugSb
+        X+ee8jPeeiVZUfm082y2u2ZhZdn1CXMaOjguF16fW3tLiaU4I9FQi7moOBEAIfEHLFIDAAA=
+X-CMS-MailID: 20200907114930epcas1p4156f15f93e18b0824dc366033f9d82df
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20200904071259epcas1p3de4209531c0bc5ed6ea9ef19827b6ed5
+References: <CGME20200904071259epcas1p3de4209531c0bc5ed6ea9ef19827b6ed5@epcas1p3.samsung.com>
+        <cover.dddc064d8bb83e46744336af67dcb13139e5747d.1599120059.git-series.maxime@cerno.tech>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 07, 2020 at 01:01:02PM +0200, Bartosz Golaszewski wrote:
-> On Fri, Sep 4, 2020 at 6:48 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> > On Fri, Sep 04, 2020 at 05:45:37PM +0200, Bartosz Golaszewski wrote:
-> > > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> > >
-> > > While we do check the "chip-name" property in probe(), we never actually
-> > > use it. Let's pass the chip label to the driver using device properties
-> > > as we'll want to allow users to define their own once dynamically
-> > > created chips are supported.
-> > >
-> > > The property is renamed to "chip-label" to not cause any confusion with
-> > > the actual chip name which is of the form: "gpiochipX".
-> > >
-> > > If the "chip-label" property is missing, let's do what most devices in
-> > > drivers/gpio/ do and use dev_name().
-> >
-> > Just wondering if we have a documentation in kernel how this mockup mechanism
-> > works and what kind of properties it uses.
-> >
-> > Side note: moving to software nodes would make some advantages in future such
-> > as visibility properties and their values (not yet implemented, but there is an
-> > idea to move forward).
-> 
-> Seems like we're implicitly using software nodes already:
-> fwnode_create_software_node() is called when adding device properties.
+Hi Maxime,
 
-It's not the same APIs, though the former is called from the latter.
-But maybe for now it's okay.
+On 9/3/20 5:00 PM, Maxime Ripard wrote:
+> Hi everyone,
+>
+> Here's a (pretty long) series to introduce support in the VC4 DRM driver
+> for the display pipeline found in the BCM2711 (and thus the RaspberryPi 4).
+>
+> The main differences are that there's two HDMI controllers and that there's
+> more pixelvalve now. Those pixelvalve come with a mux in the HVS that still
+> have only 3 FIFOs. Both of those differences are breaking a bunch of
+> expectations in the driver, so we first need a good bunch of cleanup and
+> reworks to introduce support for the new controllers.
+>
+> Similarly, the HDMI controller has all its registers shuffled and split in
+> multiple controllers now, so we need a bunch of changes to support this as
+> well.
+>
+> Only the HDMI support is enabled for now (even though the DPI and DSI
+> outputs have been tested too).
+>
+> Let me know if you have any comments
+> Maxime
+>
+> Cc: bcm-kernel-feedback-list@broadcom.com
+> Cc: devicetree@vger.kernel.org
+> Cc: Kamal Dasu <kdasu.kdev@gmail.com>
+> Cc: Philipp Zabel <p.zabel@pengutronix.de>
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Cc: Stephen Boyd <sboyd@kernel.org>
+>
+> Changes from v4:
+>    - Rebased on top of next-20200828
+>    - Collected the various tags
+>    - Fixed some issues with 4k support and dual output (thanks Hoegeun!)
 
--- 
-With Best Regards,
-Andy Shevchenko
+Thanks for your v5 patchset.
 
+I tested all patches based on the next-20200812.
+
+Everything else is fine, but the dual hdmi modetest doesn't work well in my
+environment...
+
+In my environment, dsi is not connected, I have seen your answer[1].
+
+Do you have any other settings? For example in config.txt.
+
+
+[1] https://lkml.org/lkml/2020/9/2/566
+
+>    - Fixed typos in commit logs (thanks Dave!)
+>    - Split the csc setup hook into its own patch again
+>    - Added the CEC clock to the DT binding
+>    - Fixed the DT binding example
+>    - Reduced the number of calls to of_device_is_compatible in vc4_kms_load
+>    - Added back the check for the state commit in our commit hook
+
+Best regards,
+
+Hoegeun
 
