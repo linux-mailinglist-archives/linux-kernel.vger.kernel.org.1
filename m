@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F2372603C6
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:54:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4604D2603D6
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:55:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729496AbgIGRya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 13:54:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42552 "EHLO
+        id S1729527AbgIGRzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 13:55:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728872AbgIGLWb (ORCPT
+        with ESMTP id S1728849AbgIGLWK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 07:22:31 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 875C5C06179A
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 04:04:40 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id q6so12118047ild.12
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 04:04:40 -0700 (PDT)
+        Mon, 7 Sep 2020 07:22:10 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E78F4C0617A3
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 04:05:10 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id r9so13599668ioa.2
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 04:05:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=1B/HAY7CQ2kgdOMuMSUPk6pREpiLHnIcgbAxblH2K1Y=;
-        b=W4qYrlMqsiKUO1IXIqKFB92tdgLj8OvcoC6QiZjOrJumIILg6kwYVZQVhMcjZZme8+
-         uTxaZ4A44RW2FvoscbbPCukSKqOxq4PhOFmeSKlRJA51HjdobE7qutUP6wAhawWJEOaY
-         NPRFM8tEqU1F7a1gwDoCcd+HxlFuRvxhsguq2aBVeoSm8Cz62KuDe09VU44giiaq+mQz
-         217j2HZ87eJjd2a5Cjyq6IOjXBJjAfmfyIao982fWhcLfXj4u7ouDub5WWTQrUPkNmZQ
-         sMkVEIqJp66qcey3Uy6vD5BmwWa2mQpn6BpQaryGEIBdxF2680B8qvfL8SPXXQfj9Ka3
-         r/Eg==
+        bh=D7L/Q4DJFDyy3wME7bzPuJcv0cvFqGwJhESn1U89F5s=;
+        b=nSd/soCN0apStHfecRk/s8TMfk39mqUYPzh0zB/X6CwR4xUJSFFU0FnKp+tCRk7Dxr
+         dxSOcRUml8zVB79Fm2ThAGwZhIwsZ9OPmOav7mp6gqCv2iIgBSeA1XcFFigkWUwrAK5g
+         9ndJPPydL6JRbTIBSOe3jO9NlRlqGqnPBFwmtIdWaVf0VLsqOiLVD+eqxcWPZTRO07W7
+         is0PyDyIhur30ZJJ3E4ZHzRu488xo7wU4cH2gwBwuSF1nT5thgx8mQqsqsWBwrJymYo4
+         fK3WRuZDjVxGovSSlKSdckuotXq/ExsbHzIplL+6mbf3IlXZbkQt1rlDd+5u09yoRPvf
+         zCdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=1B/HAY7CQ2kgdOMuMSUPk6pREpiLHnIcgbAxblH2K1Y=;
-        b=GQ2qxbrRaduYFuE2IMF7UXnzdsd50/wofmgG3NgajE9I/9WmrGkzd5xhvnsXu4PZ+e
-         7CCthyAIMwSvjWYllo/mI7SkJ6l9oOdaun69FKpazdGGgdZmn8qaELTLaA5Tn25bb1UN
-         lA80mH0Kuyb9OkajTkr+bIXp/hDKVE4OpLCsxpV9xqIPz6gafRsWYrI5gwgaiabBnkdl
-         q1tpstfPt9bjhTrtpyZSPbLqej6QXZ8e2uQnRX09mEdbuWhNjJ0jeKIiUSNdsKpXyyZH
-         V8Oc8VC/WOkS2OWjTuLIJ+LwSQUkf93T7gzzSffshwm5egUE+l6U/4H2k6CVcrWU9xSK
-         qzxg==
-X-Gm-Message-State: AOAM532WpkDf4yV8VXD52dT4UArAHlemo6Xt54OigedwOoxqPOJbZVkx
-        KjhaQbcSY5MJrRTEBIs98JA4VBhGVhlYrMxxrvTtAw==
-X-Google-Smtp-Source: ABdhPJxCu1C6pdXbMZCPQ4I9idYD52QAe4Fl37C5i5Jt6npBXcV7EAl+4xXCL5VdCSbk4I7Fs4CQRXJ907+af8oRRr4=
-X-Received: by 2002:a92:cb4d:: with SMTP id f13mr15703244ilq.189.1599476679896;
- Mon, 07 Sep 2020 04:04:39 -0700 (PDT)
+        bh=D7L/Q4DJFDyy3wME7bzPuJcv0cvFqGwJhESn1U89F5s=;
+        b=r5Eyp3/jIonHMq9cadcVe6ByZNqbayJopDtYem6zcBLlaGLQOyLtcQ4SAFyxDdoMVS
+         45xv9bAfsvzbxgYZWVjzIUuQigQJtWF9C67MyCeSznEE/s6zYO5uIbrZPFEo40ElSQC+
+         fUvGnSVBeVAciuEMEi+mMPIVEMR+HlbMxT66VAbGr/N5A9Uwcc0JLIPblh+Yyp9LX7eU
+         b8WJZeLu3EL38tOa8IDv6y1GIdL2O00dSVl+nkY+QX5XBj/VBCIHG/5NuyYdUNCaWIhR
+         wu1OkBl1ZfGqCVrK7FMr+8n/3y9cZ3oS7atHRYynKeNNhKoVWRLtZtR+BVur8Mayc0TQ
+         nBVg==
+X-Gm-Message-State: AOAM532pGYny5fxGEQSy1cMAtTcdbVSg4icJ4CQNA7Bls285rm2qgMDQ
+        IeVjedCy8zmaxn4apgY0eq1abo/wLwcrDOn41MA7Fw==
+X-Google-Smtp-Source: ABdhPJz3NFAUNOM8h+eBu94NlN0+qbyZT3uPxFzJlrWhGBVdmuhRiYP3jSvAoS1qQWhXj2axsT/rlnUltkSo/hZcc5c=
+X-Received: by 2002:a02:7817:: with SMTP id p23mr8145520jac.57.1599476710278;
+ Mon, 07 Sep 2020 04:05:10 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200904154547.3836-1-brgl@bgdev.pl> <20200904154547.3836-16-brgl@bgdev.pl>
- <20200904164917.GC1891694@smile.fi.intel.com>
-In-Reply-To: <20200904164917.GC1891694@smile.fi.intel.com>
+References: <20200904154547.3836-1-brgl@bgdev.pl> <20200904154547.3836-11-brgl@bgdev.pl>
+ <20200904170028.GG1891694@smile.fi.intel.com>
+In-Reply-To: <20200904170028.GG1891694@smile.fi.intel.com>
 From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Mon, 7 Sep 2020 13:04:29 +0200
-Message-ID: <CAMRc=MeG8xuB0GNbMLi6+QZTphSN==77Hsw1fjVNU_+Z=Ky2qQ@mail.gmail.com>
-Subject: Re: [PATCH 15/23] gpio: mockup: use dynamic device IDs
+Date:   Mon, 7 Sep 2020 13:04:59 +0200
+Message-ID: <CAMRc=Mc3V_BJ88CrB_q0uTHjvqVf5XEkm6BJZwrVjnVhPjiYaQ@mail.gmail.com>
+Subject: Re: [PATCH 10/23] gpio: mockup: fix resource leak in error path
 To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Cc:     Linus Walleij <linus.walleij@linaro.org>,
         Jonathan Corbet <corbet@lwn.net>,
@@ -68,26 +68,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 4, 2020 at 6:49 PM Andy Shevchenko
+On Fri, Sep 4, 2020 at 7:00 PM Andy Shevchenko
 <andriy.shevchenko@linux.intel.com> wrote:
 >
-> On Fri, Sep 04, 2020 at 05:45:39PM +0200, Bartosz Golaszewski wrote:
+> On Fri, Sep 04, 2020 at 05:45:34PM +0200, Bartosz Golaszewski wrote:
 > > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 > >
-> > We're currently creating chips at module init time only so using a
-> > static index for dummy devices is fine. We want to support dynamically
-> > created chips however so we need to switch to dynamic device IDs.
+> > If the module init function fails after creating the debugs directory,
+> > it's never removed. Add proper cleanup calls to avoid this resource
+> > leak.
 >
-> It misses ida_destroy().
->
+> Does it fix existing bug?
 
-No, we always call ida_free() for separate IDs when removing devices
-and we remove all devices at module exit so no need to call
-ida_destroy().
-
-> What about XArray API?
->
-
-Answered that somewhere - xarray is already used internally by IDA.
+You mean - should it go into stable? The bug is quite unlikely but
+yeah, probably.
 
 Bart
