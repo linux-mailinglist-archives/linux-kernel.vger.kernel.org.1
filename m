@@ -2,109 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C29A225F9EA
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 13:52:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9503125F9E1
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 13:50:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729152AbgIGLwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 07:52:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46488 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729140AbgIGLrt (ORCPT
+        id S1728937AbgIGLuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 07:50:12 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:24974 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729145AbgIGLrw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 07:47:49 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 472E0C061755
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 04:47:48 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id b12so12465282edz.11
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 04:47:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=395Y0lUxtoxk+N6Xwo36+dBOIhVjSE/2+oZvPClU7KM=;
-        b=cuAJnS9cKwag10JrR5XWKLTSDpsVij2RIxygdpxgcJAAdzqC0pGMP0broEdFrjuV2u
-         YK1YpzjfS7JWBVBZPRmTUcfnAukLTXmsLJ2XSzMOmdbEBvGaIW/6SMoesJ2yxCpA/WG2
-         m8QnLvvHNNu3zgtJUbsMfzQakaNE4sxXw5yG0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=395Y0lUxtoxk+N6Xwo36+dBOIhVjSE/2+oZvPClU7KM=;
-        b=ujya7eG3nTmZ4PPil2AO/7axHunVbZLEcbuMhJ7kjFb1/obdbrSLJrHQBiLmB8A09+
-         tOjXWEPEonXfcO2b2X6SWQHGJ66hDc9vp9Ms2iEFO7fuIoGAt3YBQ0aWOnnK3Wb1m2nd
-         NxmolH/0h2PAdAjw5YoxpyEVb1T35dPowrs1NLZOXynQu0c0VFp74OJZtM54aKJP6RrC
-         c9eISsExVRnY4q27BcKiqUy/C1wP+ARyFWcMfNvRfpWMk3xYpgFs3Gc328eQRQc4pD7G
-         Ft897/8zi4sArmDURWYf6gxlVfGQrakSf3dw9uKTM+QrOhaR4YiK4L/+WoyDl5mEnNrl
-         ZhOQ==
-X-Gm-Message-State: AOAM533DN7ATwZx1/SzS0YjeummVP0uVDx0/zoq0nAU2DbOetjxOjdYO
-        fZwprj/BGDT7uxZqu9XMVG3uFQ==
-X-Google-Smtp-Source: ABdhPJyILtFsw8r3H1RpyzxLgjhS4fpPrmJqOehWQUoj7NYN8ViFHh3BGjy7PTSONASUxNPG0HBqNg==
-X-Received: by 2002:a05:6402:1151:: with SMTP id g17mr21705446edw.227.1599479266759;
-        Mon, 07 Sep 2020 04:47:46 -0700 (PDT)
-Received: from localhost ([2620:10d:c093:400::5:80b])
-        by smtp.gmail.com with ESMTPSA id q14sm14733379edv.54.2020.09.07.04.47.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Sep 2020 04:47:45 -0700 (PDT)
-Date:   Mon, 7 Sep 2020 12:47:45 +0100
-From:   Chris Down <chris@chrisdown.name>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Waiman Long <longman@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [RFC PATCH 0/8] memcg: Enable fine-grained per process memory
- control
-Message-ID: <20200907114745.GA1076657@chrisdown.name>
-References: <20200817140831.30260-1-longman@redhat.com>
- <20200818091453.GL2674@hirez.programming.kicks-ass.net>
- <20200818092617.GN28270@dhcp22.suse.cz>
- <20200818095910.GM2674@hirez.programming.kicks-ass.net>
- <20200818100516.GO28270@dhcp22.suse.cz>
- <20200818101844.GO2674@hirez.programming.kicks-ass.net>
- <20200818134900.GA829964@cmpxchg.org>
- <20200821193716.GU3982@worktop.programming.kicks-ass.net>
- <20200824165850.GA932571@cmpxchg.org>
+        Mon, 7 Sep 2020 07:47:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599479271;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=LJK2rYubePS6o9IGw+xv/Kicmr6oDOLLUaC6aIiTRC8=;
+        b=Tyz+V32HME1J5XS3IrvFlTI00zHH+CAmMnMvhZkrlVPDy/51RgkGhvSypHxft57Zbnv5tl
+        ZCPmCcuzC6/oYlz3Tnx1CZl0e/KupbLZNHFBglTeWNMTqqobOSwJuko7Cwd27fmrao7GEd
+        j2TmWoW2TTvdAknBGk2zH2czQXlhqJ0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-4-PYqdx2vkOBuCVrrp-aWETg-1; Mon, 07 Sep 2020 07:47:48 -0400
+X-MC-Unique: PYqdx2vkOBuCVrrp-aWETg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4B77C100670D;
+        Mon,  7 Sep 2020 11:47:47 +0000 (UTC)
+Received: from colo-mx.corp.redhat.com (colo-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.21])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 448141A3D7;
+        Mon,  7 Sep 2020 11:47:47 +0000 (UTC)
+Received: from zmail21.collab.prod.int.phx2.redhat.com (zmail21.collab.prod.int.phx2.redhat.com [10.5.83.24])
+        by colo-mx.corp.redhat.com (Postfix) with ESMTP id 36C8C79FE6;
+        Mon,  7 Sep 2020 11:47:47 +0000 (UTC)
+Date:   Mon, 7 Sep 2020 07:47:47 -0400 (EDT)
+From:   Vladis Dronov <vdronov@redhat.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-ID: <1180880820.16044889.1599479267134.JavaMail.zimbra@redhat.com>
+In-Reply-To: <20200904161240.GA3730201@kroah.com>
+References: <20200811150129.53343-1-vdronov@redhat.com> <20200904114207.375220-1-vdronov@redhat.com> <20200904161240.GA3730201@kroah.com>
+Subject: Re: [PATCH] debugfs: Fix module state check condition
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20200824165850.GA932571@cmpxchg.org>
-User-Agent: Mutt/1.14.6 (2020-07-11)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.40.208.73, 10.4.195.19]
+Thread-Topic: debugfs: Fix module state check condition
+Thread-Index: Kw0NjrRlcAHw1JiDINDqN4pEdx9zzA==
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Johannes Weiner writes:
->That all being said, the semantics of the new 'high' limit in cgroup2
->have allowed us to move reclaim/limit enforcement out of the
->allocation context and into the userspace return path.
->
->See the call to mem_cgroup_handle_over_high() from
->tracehook_notify_resume(), and the comments in try_charge() around
->set_notify_resume().
->
->This already solves the free->alloc ordering problem by allowing the
->allocation to exceed the limit temporarily until at least all locks
->are dropped, we know we can sleep etc., before performing enforcement.
->
->That means we may not need the timed sleeps anymore for that purpose,
->and could bring back directed waits for freeing-events again.
->
->What do you think? Any hazards around indefinite sleeps in that resume
->path? It's called before __rseq_handle_notify_resume and the
->arch-specific resume callback (which appears to be a no-op currently).
->
->Chris, Michal, what are your thoughts? It would certainly be simpler
->conceptually on the memcg side.
+Hello, Greg,
 
-I'm not against that, although I personally don't feel very strongly about it 
-either way, since the current behaviour clearly works in practice.
+----- Original Message -----
+> From: "Greg KH" <gregkh@linuxfoundation.org>
+> Subject: Re: [PATCH] debugfs: Fix module state check condition
+> 
+...skip...
+> > A customer which has reported this issue replied with a test result:
+> > 
+> > > I ran the same test.
+> > > Started ib_write_bw traffic and started watch command to read RoCE
+> > > stats : watch -d -n 1 "cat /sys/kernel/debug/bnxt_re/bnxt_re0/info".
+> > > While the command is running, unloaded roce driver and I did not
+> > > observe the call trace that was seen earlier.
+> 
+> Having this info, that this was affecting a user, would have been good
+> in the original changelog info, otherwise this just looked like a code
+> cleanup patch to me.
+
+Thank you, Greg. Makes sense indeed, I will pay attention to this next time(s).
+
+<rant>oh so many little but important details to know and follow...</rant>
+
+> I'll go queue this up now, thanks.
+> 
+> greg k-h
+
+Best regards,
+Vladis Dronov | Red Hat, Inc. | The Core Kernel | Senior Software Engineer
+
