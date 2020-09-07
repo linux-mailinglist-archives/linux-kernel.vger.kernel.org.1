@@ -2,180 +2,553 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C28025FD1D
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 17:29:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98B9125FDD5
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 17:59:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730107AbgIGP3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 11:29:05 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:48457 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730067AbgIGP21 (ORCPT
+        id S1729964AbgIGOt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 10:49:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44142 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729890AbgIGOgD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 11:28:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599492505;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8sVz1sXB3S8O+Ei2CKhwWlGsleL+awuWDP8l7TGlMTQ=;
-        b=J+ZJ2KCLBLu9z2ZlcygP6YcNm5GH3S0BSLlkDTGVNg7vSRSMwhlm4WYaViU1iEzvLYoKRI
-        oFP7E5FhpFOmo+3ov+Ho1xMVUo446QNl0XtRy3FPu/APrM93jyEvXSYuEoP/VtNAQdV5ni
-        XQZWBEDOGkAsW7ld9cTnknjYEtdi5rs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-227-lo-bhTY-OiOxxFEK9sC7Kg-1; Mon, 07 Sep 2020 11:28:24 -0400
-X-MC-Unique: lo-bhTY-OiOxxFEK9sC7Kg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1D0DD18B9EC1;
-        Mon,  7 Sep 2020 15:28:22 +0000 (UTC)
-Received: from work-vm (ovpn-114-180.ams2.redhat.com [10.36.114.180])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 742D65D9D2;
-        Mon,  7 Sep 2020 15:28:15 +0000 (UTC)
-Date:   Mon, 7 Sep 2020 16:28:12 +0100
-From:   "Dr. David Alan Gilbert" <dgilbert@redhat.com>
-To:     Steven Price <steven.price@arm.com>, eric.auger@redhat.com
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
-        Juan Quintela <quintela@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Peter Maydell <Peter.Maydell@arm.com>,
-        Haibo Xu <Haibo.Xu@arm.com>
-Subject: Re: [PATCH v2 0/2] MTE support for KVM guest
-Message-ID: <20200907152812.GJ2682@work-vm>
-References: <20200904160018.29481-1-steven.price@arm.com>
+        Mon, 7 Sep 2020 10:36:03 -0400
+Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A8DCC061574;
+        Mon,  7 Sep 2020 07:35:49 -0700 (PDT)
+Received: by mail-yb1-xb41.google.com with SMTP id 189so9482122ybw.3;
+        Mon, 07 Sep 2020 07:35:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fIhQQiZtslyNPYELVVcC02oFefKutsjEPbIfRwrgqkw=;
+        b=frkycR2vuJn+uhM6MSnXrsEGfgnVWRnN9W4cQfI/OO4O3cYFa9sf8+P0SSofYbMs+A
+         eu76qbGPi1pTcvQmG1e1LhHkNeFcW+L11rUdvv/0YR64fQEUtteUopblJJWHkv8ElXkL
+         spG+MpwpK8tvBZVO15IcmamuoP5D4I+W1XodY4HPiacIYNROQRkT32LodiZSMLXJVFkc
+         +aSw8qhZSXAnIoHIpufa0Rap9YoyuR0uExFRT9klQJa7UFS43F5tWzxVXmyBUG97onvg
+         7bGZB+VObMjWS5b3D9wTa/uxi+X+4cHKTHV16zmgb/rhdwDrETsgzLkVMSWlvpVzzLHh
+         8dPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fIhQQiZtslyNPYELVVcC02oFefKutsjEPbIfRwrgqkw=;
+        b=Sy+hWILmoUre6xHyjioNSulxpTFVyTPYeUwi5Jimauy5Q4XSM2DKJy3D2mNYQgcR3g
+         EuAuYAGddn4lgSrUDv4p3iP5dzpwWq5Xg1I64PbXz3Cl2Tdp8QzWQhdq3fFdV/+AhIa5
+         oEjxyW+DUfb1OkUMyCmjSEzDmTMD6notuHO7cZBLzCiNUL4X6/bC4FYszksz7baa/JIW
+         qPR65LsMQonEnzz4RoTOXKb1y1odndjgdj38vJKsFJxpzVXJqlTpg5xxQic/900crVs0
+         e3sRzc+v8hUROcFSx/EcuZitolUpSVrQizhPf8wiiSEAnA5HG6aWMRXlmdPIjD5W7fIO
+         WtOw==
+X-Gm-Message-State: AOAM5300BWu6ZGl6NdmtKQONCHZx9VSuBTHkOyntIhdGokwY3DkKodeb
+        WtNRL/euasEl4N8b2MfIdgJP+yxiYX6c+A9TdB8=
+X-Google-Smtp-Source: ABdhPJwceZYxSYXkMUtkzAeDkXBC5ydcMmpZGOj9r5Pa9j3sABt71hESMnWeoRPO3shf873OvhWYLrnFyPoVs8Sfbt4=
+X-Received: by 2002:a25:ab91:: with SMTP id v17mr27384371ybi.76.1599489348119;
+ Mon, 07 Sep 2020 07:35:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200904160018.29481-1-steven.price@arm.com>
-User-Agent: Mutt/1.14.6 (2020-07-11)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <20200904201835.5958-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20200904201835.5958-4-prabhakar.mahadev-lad.rj@bp.renesas.com> <5fd9865f-4c4d-66c7-1fb4-ec3e65ab0d28@st.com>
+In-Reply-To: <5fd9865f-4c4d-66c7-1fb4-ec3e65ab0d28@st.com>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Mon, 7 Sep 2020 15:35:21 +0100
+Message-ID: <CA+V-a8vjG71PyFx7bF7kamFMcBjbu-t5gZsx=xX9+vcwYGmSkg@mail.gmail.com>
+Subject: Re: [PATCH v4 3/6] media: i2c: ov5640: Enable data pins on poweron
+ for DVP mode
+To:     Hugues FRUCHET <hugues.fruchet@st.com>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Steve Longerbeam <slongerbeam@gmail.com>,
+        Paul <paul.kocialkowski@bootlin.com>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(cc'ing in Eric Auger)
+Hi Hugues,
 
-* Steven Price (steven.price@arm.com) wrote:
-> Arm's Memory Tagging Extension (MTE) adds 4 bits of tag data to every 16
-> bytes of memory in the system. This along with stashing a tag within the
-> high bit of virtual addresses allows runtime checking of memory
-> accesses.
-> 
-> These patches add support to KVM to enable MTE within a guest. They are
-> based on Catalin's v9 MTE user-space support series[1].
-> 
-> I'd welcome feedback on the proposed user-kernel ABI. Specifically this
-> series currently:
-> 
->  1. Requires the VMM to enable MTE per-VCPU.
->  2. Automatically promotes (normal host) memory given to the guest to be
->     tag enabled (sets PG_mte_tagged), if any VCPU has MTE enabled. The
->     tags are cleared if the memory wasn't previously MTE enabled.
->  3. Doesn't provide any new methods for the VMM to access the tags on
->     memory.
-> 
-> (2) and (3) are particularly interesting from the aspect of VM migration.
-> The guest is able to store/retrieve data in the tags (presumably for the
-> purpose of tag checking, but architecturally it could be used as just
-> storage). This means that when migrating a guest the data needs to be
-> transferred (or saved/restored).
-> 
-> MTE tags are controlled by the same permission model as normal pages
-> (i.e. a read-only page has read-only tags), so the normal methods of
-> detecting guest changes to pages can be used. But this would also
-> require the tags within a page to be migrated at the same time as the
-> data (since the access control for tags is the same as the normal data
-> within a page).
+Thank you for the review.
 
-(Without understanding anything about your tag system...)
+On Mon, Sep 7, 2020 at 10:44 AM Hugues FRUCHET <hugues.fruchet@st.com> wrote:
+>
+> Hi Prabhakar,
+>
+> Thanks for your patches, good to see one more OV5640 stakeholder
+> upstreaming some fixes/features.
+>
+> I'm also using a parallel setup with OV5640 connected on STM32 DCMI
+> camera interface.
+> First basic tests have not shown any regressions on my side but I would
+> like to better understand the problem you encountered and the way you
+> solve it, see below my comments.
+>
+>
+Thank you for testing the patches.
 
-Note that during (normal, non-postcopy) migration the consistency can
-be a little loose - until the guest starts running; i.e. you can send
-a page that's in themiddle of being modified as long as you make sure
-you send it again later so that what the guest sees on the destination
-when it runs is consistent; i.e. it would be fine to send your tags
-separately to your data and allow them to get a little out of sync, as
-long as they caught up before the guest ran.
+> On 9/4/20 10:18 PM, Lad Prabhakar wrote:
+> > During testing this sensor on iW-RainboW-G21D-Qseven platform in 8-bit DVP
+> > mode with rcar-vin bridge noticed the capture worked fine for the first run
+> > (with yavta), but for subsequent runs the bridge driver waited for the
+> > frame to be captured. Debugging further noticed the data lines were
+> > enabled/disabled in stream on/off callback and dumping the register
+> > contents 0x3017/0x3018 in ov5640_set_stream_dvp() reported the correct
+> > values, but yet frame capturing failed.
+>
+> Could you show the sequence of V4L2 calls which lead to freeze ?
+>
+> Reading the patch you proposed, my guess is that issue is coming when
+> multiple S_STREAM(on)/S_STREAM(off) are made while power remains, is
+> that true ?
+> I have added some traces in code and tried to reproduce with yavta,
+> v4l2-ctl and GStreamer but I'm not able to generate such sequence, here
+> is what I got everytime:
+>
+> [  809.113790] ov5640 0-003c: ov5640_s_power>
+> [  809.116431] ov5640 0-003c: ov5640_set_power>
+> [  809.120788] ov5640 0-003c: ov5640_set_power_on>
+> [  809.622047] ov5640 0-003c: ov5640_set_power_dvp>
+> [  809.862734] ov5640 0-003c: ov5640_s_stream>
+> [  809.865462] ov5640 0-003c: ov5640_set_stream_dvp on>
+> <capturing here>
+> [  828.549531] ov5640 0-003c: ov5640_s_stream>
+> [  828.552265] ov5640 0-003c: ov5640_set_stream_dvp off>
+> [  828.580970] ov5640 0-003c: ov5640_s_power>
+> [  828.583613] ov5640 0-003c: ov5640_set_power>
+> [  828.587921] ov5640 0-003c: ov5640_set_power_dvp>
+> [  828.620346] ov5640 0-003c: ov5640_set_power_off>
+>
+> Which application/command line are you using to reproduce your problem ?
+>
+yavta.
+>
+> >
+> > To get around this issue data lines are enabled in s_power callback.
+> > (Also the sensor remains in power down mode if not streaming so power
+> > consumption shouldn't be affected)
+>
+> For the time being, I really don't understand why this patch is fixing
+> capture freeze.
+>
 
-> (3) may be problematic and I'd welcome input from those familiar with
-> VMMs. User space cannot access tags unless the memory is mapped with the
-> PROT_MTE flag. However enabling PROT_MTE will also enable tag checking
-> for the user space process (assuming the VMM enables tag checking for
-> the process) and since the tags in memory are controlled by the guest
-> it's unlikely the VMM would have an appropriately tagged pointer for its
-> access. This means the VMM would either need to maintain two mappings of
-> memory (one to access tags, the other to access data) or disable tag
-> checking during the accesses to data.
+Below is the log with this series applied in DVP mode:
 
-Imagine I had a second mapping; what would it look like; how would I get
-and restore the tags?
+root@iwg21m:~#
+root@iwg21m:~# ./yavta /dev/video0 -c1 -n3 -s640x480 -fUYVY -Fov.raw
+[   36.191661] ov5640_s_power>
+[   36.194452] ov5640_set_power>
+[   36.197413] ov5640_set_power_on>
+[   36.200714] ov5640_reset>
+[   36.203328] ov5640_restore_mode>
+[   36.206549] ov5640_load_regs>
+[   36.550255] ov5640_set_timings>
+[   36.554572] ov5640_set_mode>
+[   36.557963] ov5640_calc_pixel_rate>
+[   36.561458] ov5640_set_dvp_pclk>
+[   36.564679] ov5640_calc_pclk>
+[   36.567639] ov5640_calc_sys_clk>
+[   36.572190] ov5640_set_mode_direct>
+[   36.575671] ov5640_load_regs>
+[   36.583205] ov5640_set_timings>
+[   36.591494] ov5640_set_framefmt>
+[   36.595717] ov5640_set_power_dvp>
+[   36.599486] ov5640_s_ctrl>
+[   36.602200] ov5640_set_ctrl_white_balance>
+[   36.606550] ov5640_s_ctrl>
+[   36.609250] ov5640_set_ctrl_exposure>
+[   36.613179] ov5640_s_ctrl>
+[   36.615878] ov5640_set_ctrl_gain>
+[   36.619446] ov5640_s_ctrl>
+[   36.622160] ov5640_set_ctrl_saturation>
+[   36.626476] ov5640_s_ctrl>
+[   36.629177] ov5640_set_ctrl_hue>
+[   36.632670] ov5640_s_ctrl>
+[   36.635370] ov5640_set_ctrl_contrast>
+[   36.639282] ov5640_s_ctrl>
+[   36.642112] ov5640_s_ctrl>
+[   36.644813] ov5640_set_ctrl_hflip>
+[   36.648465] ov5640_s_ctrl>
+[   36.651179] ov5640_set_ctrl_vflip>
+[   36.654833] ov5640_s_ctrl>
+[   36.657533] ov5640_set_ctrl_light_freq>
+Device /dev/video0 opened.
+Device `R_Car_VIN' on `platform:e6ef3[   36.662120] ov5640_set_fmt>
+000.video' (driver 'rcar_vin') supports video, capture, without [
+36.670491] ov5640_try_fmt_internal>
+mplanes.
+[   36.679593] ov5640_find_mode>
+[   36.683428] ov5640_calc_pixel_rate>
+Video format set: UYVY (59565955) 640x480 (stride 1280) field none
+buffer size 614400
+Video format: UYVY (59565955) 640x480 (stride 1280) field none buffer
+siz[   36.696456] ov5640_s_stream>
+e 614400
+4 buffers requested.
+length: 614400 offset: 0 timesta[   36.703716] ov5640_set_stream_dvp>
+mp type/source: mono/EoF
+Buffer 0/0 mapped at address 0xb6b4c000.
+length: 614400 offset: 614400 timestamp type/source: mono/EoF
+Buffer 1/0 mapped at address 0xb6ab6000.
+length: 614400 offset: 1228800 timestamp type/source: mono/EoF
+Buffer 2/0 mapped at address 0xb6a20000.
+length: 614400 offset: 1843200 timestamp type/source: mono/EoF
+Buffer 3/0 mapped at address 0xb698a000.
+0 (0) [-] none 0 614400 B 36.776928 36.776946 15.545 fps ts mono/EoF
+[   36.900255] ov5640_s_stream>
+[   36.903130] ov5640_set_stream_dvp>
+Captured 1 frames in 0.064348 seconds (15.540378 fps, 9548008.11[
+36.907351] ov5640_s_power>
+2077 B/s).
+4 buffers released.
+[   36.915167] ov5640_set_power>
+[   36.920979] ov5640_set_power_dvp>
+[   36.924765] ov5640_set_power_off>
+root@iwg21m:~#
+root@iwg21m:~#
+root@iwg21m:~# dmesg | grep ov5640
+[    2.412247] ov5640_probe>
+[    2.414913] ov5640_get_regulators>
+[    2.418320] ov5640 1-003c: supply DOVDD not found, using dummy regulator
+[    2.425089] ov5640 1-003c: supply AVDD not found, using dummy regulator
+[    2.431758] ov5640 1-003c: supply DVDD not found, using dummy regulator
+[    2.438406] ov5640_check_chip_id>
+[    2.441724] ov5640_set_power_on>
+[    2.444996] ov5640_reset>
+[    2.447664] ov5640 1-003c: ov5640_read_reg: error: reg=300a
+[    2.453241] ov5640 1-003c: ov5640_check_chip_id: failed to read
+chip identifier
+[    2.460548] ov5640_set_power_off>
+[    2.464096] ov5640_probe>
+[    2.466755] ov5640_get_regulators>
+[    2.470159] ov5640 3-003c: supply DOVDD not found, using dummy regulator
+[    2.476917] ov5640 3-003c: supply AVDD not found, using dummy regulator
+[    2.483588] ov5640 3-003c: supply DVDD not found, using dummy regulator
+[    2.490240] ov5640_check_chip_id>
+[    2.493548] ov5640_set_power_on>
+[    2.496805] ov5640_reset>
+[    2.499705] ov5640_set_power_off>
+[    2.503033] ov5640_init_controls>
+[    2.506342] ov5640_calc_pixel_rate>
+[    2.511902] ov5640_enum_mbus_code>
+[    2.515297] ov5640_enum_mbus_code>
+[    2.518826] ov5640_get_fmt>
+[    4.381930] ov5640_s_power>
+[    4.384725] ov5640_set_power>
+[    4.387687] ov5640_set_power_on>
+[    4.391301] ov5640_reset>
+[    4.393920] ov5640_restore_mode>
+[    4.397142] ov5640_load_regs>
+[    4.750263] ov5640_set_timings>
+[    4.754620] ov5640_set_mode>
+[    4.758008] ov5640_calc_pixel_rate>
+[    4.761513] ov5640_set_dvp_pclk>
+[    4.764734] ov5640_calc_pclk>
+[    4.767701] ov5640_calc_sys_clk>
+[    4.772239] ov5640_set_mode_direct>
+[    4.775720] ov5640_load_regs>
+[    4.783195] ov5640_set_timings>
+[    4.791443] ov5640_set_framefmt>
+[    4.795659] ov5640_set_power_dvp>
+[    4.799426] ov5640_s_ctrl>
+[    4.802158] ov5640_set_ctrl_white_balance>
+[    4.806510] ov5640_s_ctrl>
+[    4.809210] ov5640_set_ctrl_exposure>
+[    4.813140] ov5640_s_ctrl>
+[    4.815840] ov5640_set_ctrl_gain>
+[    4.819415] ov5640_s_ctrl>
+[    4.822129] ov5640_set_ctrl_saturation>
+[    4.826449] ov5640_s_ctrl>
+[    4.829149] ov5640_set_ctrl_hue>
+[    4.832646] ov5640_s_ctrl>
+[    4.835352] ov5640_set_ctrl_contrast>
+[    4.839269] ov5640_s_ctrl>
+[    4.842099] ov5640_s_ctrl>
+[    4.844800] ov5640_set_ctrl_hflip>
+[    4.848455] ov5640_s_ctrl>
+[    4.851169] ov5640_set_ctrl_vflip>
+[    4.854831] ov5640_s_ctrl>
+[    4.857531] ov5640_set_ctrl_light_freq>
+[    4.862077] ov5640_s_power>
+[    4.864864] ov5640_set_power>
+[    4.867824] ov5640_set_power_dvp>
+[    4.871625] ov5640_set_power_off>
+[   36.191661] ov5640_s_power>
+[   36.194452] ov5640_set_power>
+[   36.197413] ov5640_set_power_on>
+[   36.200714] ov5640_reset>
+[   36.203328] ov5640_restore_mode>
+[   36.206549] ov5640_load_regs>
+[   36.550255] ov5640_set_timings>
+[   36.554572] ov5640_set_mode>
+[   36.557963] ov5640_calc_pixel_rate>
+[   36.561458] ov5640_set_dvp_pclk>
+[   36.564679] ov5640_calc_pclk>
+[   36.567639] ov5640_calc_sys_clk>
+[   36.572190] ov5640_set_mode_direct>
+[   36.575671] ov5640_load_regs>
+[   36.583205] ov5640_set_timings>
+[   36.591494] ov5640_set_framefmt>
+[   36.595717] ov5640_set_power_dvp>
+[   36.599486] ov5640_s_ctrl>
+[   36.602200] ov5640_set_ctrl_white_balance>
+[   36.606550] ov5640_s_ctrl>
+[   36.609250] ov5640_set_ctrl_exposure>
+[   36.613179] ov5640_s_ctrl>
+[   36.615878] ov5640_set_ctrl_gain>
+[   36.619446] ov5640_s_ctrl>
+[   36.622160] ov5640_set_ctrl_saturation>
+[   36.626476] ov5640_s_ctrl>
+[   36.629177] ov5640_set_ctrl_hue>
+[   36.632670] ov5640_s_ctrl>
+[   36.635370] ov5640_set_ctrl_contrast>
+[   36.639282] ov5640_s_ctrl>
+[   36.642112] ov5640_s_ctrl>
+[   36.644813] ov5640_set_ctrl_hflip>
+[   36.648465] ov5640_s_ctrl>
+[   36.651179] ov5640_set_ctrl_vflip>
+[   36.654833] ov5640_s_ctrl>
+[   36.657533] ov5640_set_ctrl_light_freq>
+[   36.662120] ov5640_set_fmt>
+[   36.670491] ov5640_try_fmt_internal>
+[   36.679593] ov5640_find_mode>
+[   36.683428] ov5640_calc_pixel_rate>
+[   36.696456] ov5640_s_stream>
+[   36.703716] ov5640_set_stream_dvp>
+[   36.900255] ov5640_s_stream>
+[   36.903130] ov5640_set_stream_dvp>
+[   36.907351] ov5640_s_power>
+[   36.915167] ov5640_set_power>
+[   36.920979] ov5640_set_power_dvp>
+[   36.924765] ov5640_set_power_off>
+root@iwg21m:~#
+root@iwg21m:~#
+root@iwg21m:~# dmesg --clear
+root@iwg21m:~#
+root@iwg21m:~# ./yavta /dev/video0 -c1 -n3 -s640x480 -fUYVY -Fov.raw
+[   72.934594] ov5640_s_power>
+[   72.937385] ov5640_set_power>
+[   72.940385] ov5640_set_power_on>
+[   72.943658] ov5640_reset>
+[   72.946273] ov5640_restore_mode>
+[   72.949493] ov5640_load_regs>
+[   73.290250] ov5640_set_timings>
+[   73.294578] ov5640_set_mode>
+[   73.297974] ov5640_calc_pixel_rate>
+[   73.301470] ov5640_set_dvp_pclk>
+[   73.304689] ov5640_calc_pclk>
+[   73.307649] ov5640_calc_sys_clk>
+[   73.312190] ov5640_set_mode_direct>
+[   73.315671] ov5640_load_regs>
+[   73.323202] ov5640_set_timings>
+[   73.331533] ov5640_set_framefmt>
+[   73.335765] ov5640_set_power_dvp>
+[   73.339539] ov5640_s_ctrl>
+[   73.342254] ov5640_set_ctrl_white_balance>
+[   73.346605] ov5640_s_ctrl>
+[   73.349305] ov5640_set_ctrl_exposure>
+[   73.353234] ov5640_s_ctrl>
+[   73.355934] ov5640_set_ctrl_gain>
+[   73.359503] ov5640_s_ctrl>
+[   73.362217] ov5640_set_ctrl_saturation>
+[   73.366537] ov5640_s_ctrl>
+[   73.369237] ov5640_set_ctrl_hue>
+[   73.372733] ov5640_s_ctrl>
+[   73.375434] ov5640_set_ctrl_contrast>
+[   73.379349] ov5640_s_ctrl>
+[   73.382180] ov5640_s_ctrl>
+[   73.384888] ov5640_set_ctrl_hflip>
+[   73.388543] ov5640_s_ctrl>
+[   73.391257] ov5640_set_ctrl_vflip>
+[   73.394914] ov5640_s_ctrl>
+[   73.397615] ov5640_set_ctrl_light_freq>
+Device /dev/video0 opened.
+Device `R_Car_VIN' on `platform:e6ef3[   73.402191] ov5640_set_fmt>
+000.video' (driver 'rcar_vin') supports video, capture, without [
+73.410568] ov5640_try_fmt_internal>
+mplanes.
+[   73.419661] ov5640_find_mode>
+[   73.423489] ov5640_calc_pixel_rate>
+Video format set: UYVY (59565955) 640x480 (stride 1280) field none
+buffer size 614400
+Video for[   73.430741] ov5640_s_stream>
+mat: UYVY (59565955) 640x480 (stride 1280) field none buffer siz[
+73.438227] ov5640_set_stream_dvp>
+e 614400
+4 buffers requested.
+length: 614400 offset: 0 timestamp type/source: mono/EoF
+Buffer 0/0 mapped at address 0xb6b7e000.
+length: 614400 offset: 614400 timestamp type/source: mono/EoF
+Buffer 1/0 mapped at address 0xb6ae8000.
+length: 614400 offset: 1228800 timestamp type/source: mono/EoF
+Buffer 2/0 mapped at address 0xb6a52000.
+length: 614400 offset: 1843200 timestamp type/source: mono/EoF
+Buffer 3/0 mapped at address 0xb69bc000.
+0 (0) [-] none 0 614400 B 73.544608 73.544626 10.257 fps ts mono/EoF
+[   73.670256] ov5640_s_stream>
+[   73.673132] ov5640_set_stream_dvp>
+Captured 1 frames in 0.097510 seconds (10.255285 fps, 6300846.98[
+73.677350] ov5640_s_power>
+3972 B/s).
+4 buffers released.
+[   73.685162] ov5640_set_power>
+[   73.690979] ov5640_set_power_dvp>
+[   73.694757] ov5640_set_power_off>
+root@iwg21m:~#
+root@iwg21m:~#
+root@iwg21m:~#
 
-In terms of migration stream, I guess we have two ways to do this,
-either it rides shotgun on the main RAM section pages, transmitting
-those few extra bytes whenever we transmit a page, or you have a
-separate iteratable device for RAMtags, and it just transmits those.
-How you keep the two together is an interesting question.
-The shotgun method sounds nasty to avoid putting special cases in the,
-already hairy, RAM code.
+Below is the log without the series applied in DVP mode:
 
-> If it's not practical to either disable tag checking in the VMM or
-> maintain multiple mappings then the alternatives I'm aware of are:
-> 
->  * Provide a KVM-specific method to extract the tags from guest memory.
->    This might also have benefits in terms of providing an easy way to
->    read bulk tag data from guest memory (since the LDGM instruction
->    isn't available at EL0).
->  * Provide support for user space setting the TCMA0 or TCMA1 bits in
->    TCR_EL1. These would allow the VMM to generate pointers which are not
->    tag checked.
+root@iwg21m:~# ./yavta /dev/video0 -c1 -n3 -s640x480 -fUYVY -Fov.raw
+[   45.262397] ov5640_s_power>
+[   45.265189] ov5640_set_power>
+[   45.268150] ov5640_set_power_on>
+[   45.271455] ov5640_reset>
+[   45.274071] ov5640_restore_mode>
+[   45.621705] ov5640_set_mode>
+[   45.625104] ov5640_calc_pixel_rate>
+[   45.629916] ov5640_set_mode_direct>
+[   45.640983] ov5640_get_sysclk>
+[   45.646295] ov5640_set_framefmt>
+[   45.650537] ov5640_s_ctrl>
+[   45.653237] ov5640_set_ctrl_white_balance>
+[   45.657588] ov5640_s_ctrl>
+[   45.660289] ov5640_set_ctrl_exposure>
+[   45.664217] ov5640_s_ctrl>
+[   45.666918] ov5640_set_ctrl_gain>
+[   45.670483] ov5640_s_ctrl>
+[   45.673201] ov5640_set_ctrl_saturation>
+[   45.677523] ov5640_s_ctrl>
+[   45.680223] ov5640_set_ctrl_hue>
+[   45.683721] ov5640_s_ctrl>
+[   45.686684] ov5640_s_ctrl>
+[   45.689501] ov5640_s_ctrl>
+[   45.692213] ov5640_set_ctrl_hflip>
+[   45.695870] ov5640_s_ctrl>
+[   45.698570] ov5640_set_ctrl_vflip>
+[   45.702240] ov5640_s_ctrl>
+[   45.704940] ov5640_set_ctrl_light_freq>
+Device /dev/video0 opened.
+Device `R_Car_VIN' on `platform:e6ef1[   45.709474] ov5640_set_fmt>
+000.video' (driver 'rcar_vin') supports video, capture, without [
+45.717852] ov5640_try_fmt_internal>
+mplanes.
+[   45.726964] ov5640_find_mode>
+[   45.730785] ov5640_calc_pixel_rate>
+Video format set: UYVY (59565955) 640x480 (stride 1280) field none
+buffer size 614400
+Video format: UYVY (59565955) 640x480 (stride 1280) field none buffer
+siz[   45.743733] ov5640_s_stream>
+e 614400
+4 buffers requested.
+length: 614400 offset: 0 timesta[   45.751076] ov5640_set_stream_dvp>
+mp type/source: mono/EoF
+Buffer 0/0 mapped at address 0xb6b61000.
+length: 614400 offset: 614400 timestamp type/source: mono/EoF
+Buffer 1/0 mapped at address 0xb6acb000.
+length: 614400 offset: 1228800 timestamp type/source: mono/EoF
+Buffer 2/0 mapped at address 0xb6a35000.
+length: 614400 offset: 1843200 timestamp type/source: mono/EoF
+Buffer 3/0 mapped at address 0xb699f000.
+^C[   57.048902] ov5640_s_stream>
+[   57.051800] ov5640_set_stream_dvp>
+[   57.056180] ov5640_s_power>
+[   57.058967] ov5640_set_power>
+[   57.061943] ov5640_set_power_off>
 
-I guess you want the VMM to do as much tagged checked access as possible
-on it's own data structures?
+root@iwg21m:~#
 
-How do things like virtio work where the qemu or kernel is accessing
-guest memory for IO?
 
-Dave
 
-> Feedback is welcome, and feel free to ask questions if anything in the
-> above doesn't make sense.
-> 
-> Changes since the previous v1 posting[2]:
-> 
->  * Rebasing clean-ups
->  * sysreg visibility is now controlled based on whether the VCPU has MTE
->    enabled or not
-> 
-> [1] https://lore.kernel.org/r/20200904103029.32083-1-catalin.marinas@arm.com
-> [2] https://lore.kernel.org/r/20200713100102.53664-1-steven.price%40arm.com
-> 
-> Steven Price (2):
->   arm64: kvm: Save/restore MTE registers
->   arm64: kvm: Introduce MTE VCPU feature
-> 
->  arch/arm64/include/asm/kvm_emulate.h       |  3 +++
->  arch/arm64/include/asm/kvm_host.h          |  9 ++++++++-
->  arch/arm64/include/asm/sysreg.h            |  3 ++-
->  arch/arm64/include/uapi/asm/kvm.h          |  1 +
->  arch/arm64/kvm/hyp/include/hyp/sysreg-sr.h | 14 ++++++++++++++
->  arch/arm64/kvm/mmu.c                       | 15 +++++++++++++++
->  arch/arm64/kvm/reset.c                     |  8 ++++++++
->  arch/arm64/kvm/sys_regs.c                  | 20 +++++++++++++++-----
->  8 files changed, 66 insertions(+), 7 deletions(-)
-> 
-> -- 
-> 2.20.1
-> 
--- 
-Dr. David Alan Gilbert / dgilbert@redhat.com / Manchester, UK
 
+root@iwg21m:~# dmesg | grep ov564
+[    2.412449] ov5640 1-003c: supply DOVDD not found, using dummy regulator
+[    2.419202] ov5640 1-003c: supply AVDD not found, using dummy regulator
+[    2.425872] ov5640 1-003c: supply DVDD not found, using dummy regulator
+[    2.432527] ov5640_set_power_on>
+[    2.435801] ov5640_reset>
+[    2.438704] ov5640_set_power_off>
+[    2.442037] ov5640_init_controls>
+[    2.445346] ov5640_calc_pixel_rate>
+[    2.450955] ov5640_enum_mbus_code>
+[    2.454350] ov5640_enum_mbus_code>
+[    2.457882] ov5640_get_fmt>
+[    4.222662] ov5640_s_power>
+[    4.225458] ov5640_set_power>
+[    4.228420] ov5640_set_power_on>
+[    4.231737] ov5640_reset>
+[    4.234356] ov5640_restore_mode>
+[    4.591733] ov5640_set_mode>
+[    4.595133] ov5640_calc_pixel_rate>
+[    4.599930] ov5640_set_mode_direct>
+[    4.610913] ov5640_get_sysclk>
+[    4.616195] ov5640_set_framefmt>
+[    4.620424] ov5640_s_ctrl>
+[    4.623136] ov5640_set_ctrl_white_balance>
+[    4.627485] ov5640_s_ctrl>
+[    4.630185] ov5640_set_ctrl_exposure>
+[    4.634115] ov5640_s_ctrl>
+[    4.636815] ov5640_set_ctrl_gain>
+[    4.640382] ov5640_s_ctrl>
+[    4.643095] ov5640_set_ctrl_saturation>
+[    4.647412] ov5640_s_ctrl>
+[    4.650112] ov5640_set_ctrl_hue>
+[    4.653612] ov5640_s_ctrl>
+[    4.656573] ov5640_s_ctrl>
+[    4.659389] ov5640_s_ctrl>
+[    4.662105] ov5640_set_ctrl_hflip>
+[    4.665760] ov5640_s_ctrl>
+[    4.668460] ov5640_set_ctrl_vflip>
+[    4.672126] ov5640_s_ctrl>
+[    4.674826] ov5640_set_ctrl_light_freq>
+[    4.679405] ov5640_s_power>
+[    4.682211] ov5640_set_power>
+[    4.685171] ov5640_set_power_off>
+[   45.262397] ov5640_s_power>
+[   45.265189] ov5640_set_power>
+[   45.268150] ov5640_set_power_on>
+[   45.271455] ov5640_reset>
+[   45.274071] ov5640_restore_mode>
+[   45.621705] ov5640_set_mode>
+[   45.625104] ov5640_calc_pixel_rate>
+[   45.629916] ov5640_set_mode_direct>
+[   45.640983] ov5640_get_sysclk>
+[   45.646295] ov5640_set_framefmt>
+[   45.650537] ov5640_s_ctrl>
+[   45.653237] ov5640_set_ctrl_white_balance>
+[   45.657588] ov5640_s_ctrl>
+[   45.660289] ov5640_set_ctrl_exposure>
+[   45.664217] ov5640_s_ctrl>
+[   45.666918] ov5640_set_ctrl_gain>
+[   45.670483] ov5640_s_ctrl>
+[   45.673201] ov5640_set_ctrl_saturation>
+[   45.677523] ov5640_s_ctrl>
+[   45.680223] ov5640_set_ctrl_hue>
+[   45.683721] ov5640_s_ctrl>
+[   45.686684] ov5640_s_ctrl>
+[   45.689501] ov5640_s_ctrl>
+[   45.692213] ov5640_set_ctrl_hflip>
+[   45.695870] ov5640_s_ctrl>
+[   45.698570] ov5640_set_ctrl_vflip>
+[   45.702240] ov5640_s_ctrl>
+[   45.704940] ov5640_set_ctrl_light_freq>
+[   45.709474] ov5640_set_fmt>
+[   45.717852] ov5640_try_fmt_internal>
+[   45.726964] ov5640_find_mode>
+[   45.730785] ov5640_calc_pixel_rate>
+[   45.743733] ov5640_s_stream>
+[   45.751076] ov5640_set_stream_dvp>
+[   57.048902] ov5640_s_stream>
+[   57.051800] ov5640_set_stream_dvp>
+[   57.056180] ov5640_s_power>
+[   57.058967] ov5640_set_power>
+[   57.061943] ov5640_set_power_off>
+
+Cheers,
+Prabhakar
