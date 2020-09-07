@@ -2,84 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 707722601C0
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:12:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1C4E2601DE
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:14:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730721AbgIGRMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 13:12:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39298 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731183AbgIGRMM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 13:12:12 -0400
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7DA43217A0;
-        Mon,  7 Sep 2020 17:12:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599498731;
-        bh=DPat3ZlRzIlx3pGvdlS9ov4+JwXoTqRT6aH65lpZpUw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=hDIxuj2XhhhEEqVgjAA3HcCmq5ToR/R66AcQtmotmjrIDZak1xnhMwZhFXqG9mJVl
-         7gx4HAq0nxoE/XiAVFScPLr9HnUwWyEzmXGrGcVisKN4f76KZkCiy8vk4j7HSLwCIM
-         zLC88dGIlGzNeTM4sDs8L5lj74Oyn5DD+fXSDc78=
-Received: by mail-ed1-f46.google.com with SMTP id c10so13404467edk.6;
-        Mon, 07 Sep 2020 10:12:11 -0700 (PDT)
-X-Gm-Message-State: AOAM5305R91HP1SniJPOH1bTem9grAExEjciNUjX+7V/6HqighDmuHdT
-        PdUIZMn73wB0QGOc2EIEL6LBB88HMaZwNRGeh9Y=
-X-Google-Smtp-Source: ABdhPJzMyTdkAJy73PxNoZs+gNdlcqSGeh07/2bjshW3rB0M3t0yIQeyrq5QnkZWdasM4Y6BXvKIZqTmLZdf4IZC5FI=
-X-Received: by 2002:aa7:da16:: with SMTP id r22mr23231660eds.132.1599498730074;
- Mon, 07 Sep 2020 10:12:10 -0700 (PDT)
+        id S1730922AbgIGRNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 13:13:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40324 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730498AbgIGRNq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 13:13:46 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29784C061573;
+        Mon,  7 Sep 2020 10:13:44 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id e23so19075511eja.3;
+        Mon, 07 Sep 2020 10:13:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=7TGKe3H6jMAYGiTs6kFoy9n4vW2P17ChzLhdJQLwaF4=;
+        b=m2Bjm85vz8tiN6hI7Hfp3pSDKj0cdm6zU0bwT214EeCHu9+pc4Fb/MNreDSFscptkJ
+         sDS9CMbp/xdxHRgC0OgUaT8WCYnlmRpBfXTS5POVSyubs2PEoNCmReAwxVbI6vUoiZXk
+         YyXlSAIPapLAKC0cQzHmQjEiMdkcJiru18Izcvi4jC6VYngk1/s3r1k7/zMIF8eBXYpT
+         pynzzS5oA0OqmdIN0SSe9qzZ8Lms8tSuQoENXPr1KQLyP8Kpe3QotqR23YkOPYYCgk2B
+         tuaKnqI8GSUvX3zTmnJVlR3nEgfbNG2nHrPv+dVrrvF0tTyXwQOrplVyCJA0+EXyQCa1
+         dPQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=7TGKe3H6jMAYGiTs6kFoy9n4vW2P17ChzLhdJQLwaF4=;
+        b=Wu1HKw/XH4+iVvIKJCrteULyzpDKTadON2doyuiMlP8Nmainpx7gUyJ23QaInJmE29
+         4zFg3VTQNlfwKHrDFr0T8XxEkTiCX0k4wNeDDTGA1zHzkS/r16rKwjnk4eqvBcSnNQPj
+         P76iKnCd7vsXFdetRwcwU5Pfvyb9gSJltmTzmhWgzlSb46LkZIRXGwgsFgxYjGX/dHq9
+         DiEu7/BASzJZd7f6dIKhVGYur/m/6ce5Xh4bD2h6J4AXMPVY59cM5x03s1vYUDQ1lHxZ
+         SHaA0mk4hnJFGooTZmHNs/Pol/uHdpnI6mTkLJpAor/15Wtx8QICADFWNDgpcoLdWuDm
+         dMLw==
+X-Gm-Message-State: AOAM5317/uG+hOBxiw4w4yTRzHn+61lqGYZpMNX9mP0rwaWW//0GfvZ/
+        E1rTt+cXVOl06mson9ObHgTxcAJkucQT/w==
+X-Google-Smtp-Source: ABdhPJzLAwg9pbpp4n8CSNlxU/iw7Vf1bDjKydx21x5FKZjyYqA2Nh5jCk0ow+T7Ne2LPThNafKkvg==
+X-Received: by 2002:a17:906:5902:: with SMTP id h2mr22973494ejq.423.1599498822819;
+        Mon, 07 Sep 2020 10:13:42 -0700 (PDT)
+Received: from mamamia.internal (a89-183-24-75.net-htp.de. [89.183.24.75])
+        by smtp.gmail.com with ESMTPSA id s19sm2290592eja.54.2020.09.07.10.13.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Sep 2020 10:13:42 -0700 (PDT)
+Subject: Re: [PATCH] arm64: dts: marvell: espressobin: Add ethernet switch
+ aliases
+To:     =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Tomasz Maciej Nowak <tmn505@gmail.com>
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200907112718.5994-1-pali@kernel.org>
+From:   Andre Heider <a.heider@gmail.com>
+Message-ID: <3ec54259-4bfe-8462-e8d5-083fc009707a@gmail.com>
+Date:   Mon, 7 Sep 2020 19:13:41 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.1
 MIME-Version: 1.0
-References: <20200907161141.31034-1-krzk@kernel.org> <20200907161141.31034-3-krzk@kernel.org>
- <20200907173819.00005a48@Huawei.com>
-In-Reply-To: <20200907173819.00005a48@Huawei.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Mon, 7 Sep 2020 19:11:57 +0200
-X-Gmail-Original-Message-ID: <CAJKOXPe0W_+hN=pk9F5O61w7riYuBhmK3=JvrYzDY8LU7xvH4A@mail.gmail.com>
-Message-ID: <CAJKOXPe0W_+hN=pk9F5O61w7riYuBhmK3=JvrYzDY8LU7xvH4A@mail.gmail.com>
-Subject: Re: [PATCH 02/25] dt-bindings: iio: adc: exynos-adc: require second
- interrupt with touch screen
-To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc:     Kukjin Kim <kgene@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Jonathan Bakker <xc-racer2@live.ca>,
-        =?UTF-8?Q?Pawe=C5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        "linux-samsung-soc@vger.kernel.org" 
-        <linux-samsung-soc@vger.kernel.org>, devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-iio@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200907112718.5994-1-pali@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 7 Sep 2020 at 18:39, Jonathan Cameron
-<Jonathan.Cameron@huawei.com> wrote:
->
-> On Mon,  7 Sep 2020 18:11:18 +0200
-> Krzysztof Kozlowski <krzk@kernel.org> wrote:
->
-> > The ADC in S3C/S5P/Exynos SoCs can be used also for handling touch
-> > screen.  In such case the second interrupt is required.  This second
-> > interrupt can be anyway provided, even without touch screens.  This
-> > fixes dtbs_check warnings like:
-> >
-> >   arch/arm/boot/dts/s5pv210-aquila.dt.yaml: adc@e1700000: interrupts: [[23], [24]] is too long
-> >
-> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
->
-> Acked-by: Jonathan Cameron <Jonathan.Cameron@huwei.com>
->
-> Or I can pick this up through the IIO tree if that makes sense.
-> I doubt anything else will touch this binding this cycle, so either
-> way works for me.
+Hi Pali,
 
-Let's wait for Rob's review and then if you could, please pick it up.
+On 07/09/2020 13:27, Pali Rohár wrote:
+> Espressobin boards have 3 ethernet ports and some of them got assigned more
+> then one MAC address. MAC addresses are stored in U-Boot environment.
+> 
+> Since commit a2c7023f7075c ("net: dsa: read mac address from DT for slave
+> device") kernel can use MAC addresses from DT for particular DSA port.
+> 
+> Currently Espressobin DTS file contains alias just for ethernet0.
+> 
+> This patch defines additional ethernet aliases in Espressobin DTS files, so
+> bootloader can fill correct MAC address for DSA switch ports if more MAC
+> addresses were specified.
+> 
+> DT alias ethernet1 is used for wan port, DT aliases ethernet2 and ethernet3
+> are used for lan ports for both Espressobin revisions (V5 and V7).
+> 
+> Fixes: 5253cb8c00a6f ("arm64: dts: marvell: espressobin: add ethernet alias")
+> Signed-off-by: Pali Rohár <pali@kernel.org>
+> ---
+>   .../dts/marvell/armada-3720-espressobin-v7-emmc.dts  | 10 ++++++++--
+>   .../boot/dts/marvell/armada-3720-espressobin-v7.dts  | 10 ++++++++--
+>   .../boot/dts/marvell/armada-3720-espressobin.dtsi    | 12 ++++++++----
+>   3 files changed, 24 insertions(+), 8 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts
+> index 03733fd92732..215d2f702623 100644
+> --- a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts
+> +++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts
+> @@ -20,17 +20,23 @@
+>   	compatible = "globalscale,espressobin-v7-emmc", "globalscale,espressobin-v7",
+>   		     "globalscale,espressobin", "marvell,armada3720",
+>   		     "marvell,armada3710";
+> +
+> +	aliases {
+> +		/* ethernet1 is wan port */
+> +		ethernet1 = &switch0port3;
+> +		ethernet3 = &switch0port1;
+> +	};
+>   };
+>   
+>   &switch0 {
+>   	ports {
+> -		port@1 {
+> +		switch0port1: port@1 {
+>   			reg = <1>;
+>   			label = "lan1";
+>   			phy-handle = <&switch0phy0>;
+>   		};
+>   
+> -		port@3 {
+> +		switch0port3: port@3 {
+>   			reg = <3>;
+>   			label = "wan";
+>   			phy-handle = <&switch0phy2>;
 
-Best regards,
-Krzysztof
+My dts-foo is a little rusty, but now that you labeled the ports in the 
+.dtsi, can this whole "switch0" block reduced to something like:
+
+&switch0port1 {
+	label = "lan1";
+};
+
+&switch0port3 {
+	label = "wan";
+};
+
+?
+
+> diff --git a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7.dts b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7.dts
+> index 8570c5f47d7d..b6f4af8ebafb 100644
+> --- a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7.dts
+> +++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7.dts
+> @@ -19,17 +19,23 @@
+>   	model = "Globalscale Marvell ESPRESSOBin Board V7";
+>   	compatible = "globalscale,espressobin-v7", "globalscale,espressobin",
+>   		     "marvell,armada3720", "marvell,armada3710";
+> +
+> +	aliases {
+> +		/* ethernet1 is wan port */
+> +		ethernet1 = &switch0port3;
+> +		ethernet3 = &switch0port1;
+> +	};
+>   };
+>   
+>   &switch0 {
+>   	ports {
+> -		port@1 {
+> +		switch0port1: port@1 {
+>   			reg = <1>;
+>   			label = "lan1";
+>   			phy-handle = <&switch0phy0>;
+>   		};
+>   
+> -		port@3 {
+> +		switch0port3: port@3 {
+>   			reg = <3>;
+>   			label = "wan";
+>   			phy-handle = <&switch0phy2>;
+> diff --git a/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi b/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi
+> index b97218c72727..0775c16e0ec8 100644
+> --- a/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi
+> +++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi
+> @@ -13,6 +13,10 @@
+>   / {
+>   	aliases {
+>   		ethernet0 = &eth0;
+> +		/* for dsa slave device */
+> +		ethernet1 = &switch0port1;
+> +		ethernet2 = &switch0port2;
+> +		ethernet3 = &switch0port3;
+>   		serial0 = &uart0;
+>   		serial1 = &uart1;
+>   	};
+> @@ -120,7 +124,7 @@
+>   			#address-cells = <1>;
+>   			#size-cells = <0>;
+>   
+> -			port@0 {
+> +			switch0port0: port@0 {
+
+This label is unused it seems.
+
+Regards,
+Andre
+
+>   				reg = <0>;
+>   				label = "cpu";
+>   				ethernet = <&eth0>;
+> @@ -131,19 +135,19 @@
+>   				};
+>   			};
+>   
+> -			port@1 {
+> +			switch0port1: port@1 {
+>   				reg = <1>;
+>   				label = "wan";
+>   				phy-handle = <&switch0phy0>;
+>   			};
+>   
+> -			port@2 {
+> +			switch0port2: port@2 {
+>   				reg = <2>;
+>   				label = "lan0";
+>   				phy-handle = <&switch0phy1>;
+>   			};
+>   
+> -			port@3 {
+> +			switch0port3: port@3 {
+>   				reg = <3>;
+>   				label = "lan1";
+>   				phy-handle = <&switch0phy2>;
+> 
+
