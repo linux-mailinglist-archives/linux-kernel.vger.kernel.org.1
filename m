@@ -2,119 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E639225FCA6
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 17:09:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5934025FCDC
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 17:21:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730072AbgIGPJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 11:09:40 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:58485 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1730114AbgIGO7B (ORCPT
+        id S1729966AbgIGPVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 11:21:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50534 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730143AbgIGPRI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 10:59:01 -0400
-Received: (qmail 763064 invoked by uid 1000); 7 Sep 2020 10:59:00 -0400
-Date:   Mon, 7 Sep 2020 10:59:00 -0400
-From:   "stern@rowland.harvard.edu" <stern@rowland.harvard.edu>
-To:     Hamish Martin <Hamish.Martin@alliedtelesis.co.nz>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Subject: Re: [PATCH 1/2] usb: ohci: Add per-port overcurrent quirk
-Message-ID: <20200907145900.GC762136@rowland.harvard.edu>
-References: <20200904032247.11345-1-hamish.martin@alliedtelesis.co.nz>
- <20200904032247.11345-2-hamish.martin@alliedtelesis.co.nz>
- <20200904154517.GB694058@rowland.harvard.edu>
- <9ba7b4dda9ef40e3c4c9b3f1c33075e04601ef61.camel@alliedtelesis.co.nz>
+        Mon, 7 Sep 2020 11:17:08 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A48B5C061573;
+        Mon,  7 Sep 2020 08:05:37 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id f18so8747755pfa.10;
+        Mon, 07 Sep 2020 08:05:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=g55vNSScTrnl+nisc0fzhDkhn78LFpHMxyI7HLx4yqM=;
+        b=OrbjCYeWU0twm1C/qjMLKL7D6tarVOqGoCfT0SpRgISsPGKNNGjHe+Px4V67XU5AqF
+         mZcLDbD81Ei0ZshuZGZXepXnc9fy1HokVN26MQbh1qyK0NpGwYnHu4DgLZYrnXFzZ2pj
+         bD5E1UBkVO+w2bq8WHMSYT0lNgHFGxSq88Mc5MQJnV7g7/eTL2hUGhLGTcwNbDCpwbOi
+         rAnoExVQA5qaYoeWgmsQ1AyILlZAba/mZyLKlV8UAy03JUocnKylC8FsMZpXbZTrzqqV
+         1Vy9ZbUADVrsg7v/R0fom51ZMmYdtFz95B/3O23UtyF+lFF/6A3mCaMA7W3Dt9mksx+G
+         mL5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=g55vNSScTrnl+nisc0fzhDkhn78LFpHMxyI7HLx4yqM=;
+        b=msugEuevyEGAoDWOzkF51GN2uTh/xYMB3DXRpX2b8nsrhBx1/B2YYL59/tJgi+NJls
+         pr7XB4j7abGgoBaNnjClKK3eJonan1eqZ+nIKqLDSfcX/MD4hcJ+STt+c9CHzfPOAG4o
+         GTwd6sHIgqmKdV2FfdvvEvMApUnIQeF96iz+vU7DsGufw8XNoWjO/O2/62+UTGjP7JD+
+         zpSpct/fo0nsrSrfX0ZvBBqwoHwpTKRTxcJUVWUCFr6NqQzPVBll+G/AwcXou//SVku3
+         Xfhq6iHDEL6o/Un/S5Pe0UgN7L1kQfbYkLAYqimV4cQGeNcoWQsAk52jUNFupv6Cw0YP
+         ms6w==
+X-Gm-Message-State: AOAM530AVvK9zWDX3LL8S05izRYfWre/f2XndZiiAIgGK4Be7Vvy+oje
+        G6itDVTg/ExUTacqeAJADIzsBYTw9RDjMuCluGE52AY8HumR0g==
+X-Google-Smtp-Source: ABdhPJxzr2FY7bs9hys6mid148H/qqm5XvQo2/UwhF8Nv355RQMyi/UDgdQM79Sxmv11q0L8exV6O7seZ9b+LZgy7uc=
+X-Received: by 2002:a62:6083:0:b029:13c:1611:66c4 with SMTP id
+ u125-20020a6260830000b029013c161166c4mr19211310pfb.15.1599491137175; Mon, 07
+ Sep 2020 08:05:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9ba7b4dda9ef40e3c4c9b3f1c33075e04601ef61.camel@alliedtelesis.co.nz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200906185039.22700-1-digetx@gmail.com> <20200906185039.22700-7-digetx@gmail.com>
+ <CAHp75VevXe3c2LGF3jZyDfvPpRAz+-GQKvXEO4OKvuur=RgXCQ@mail.gmail.com> <f9ec5178-e38e-ed9a-25f8-21e53ccd31d1@gmail.com>
+In-Reply-To: <f9ec5178-e38e-ed9a-25f8-21e53ccd31d1@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 7 Sep 2020 18:05:19 +0300
+Message-ID: <CAHp75Vdj7HYN0SWt9StqB8K6JrUCk7dtDhAUwYDkkBXc1R8ueg@mail.gmail.com>
+Subject: Re: [PATCH v5 06/36] i2c: tegra: Runtime PM always available on Tegra
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        linux-tegra@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 07, 2020 at 01:50:10AM +0000, Hamish Martin wrote:
-> Hi Alan,
-> 
-> Thanks for your quick feedback. My replies are inline below.
-> 
-> On Fri, 2020-09-04 at 11:45 -0400, Alan Stern wrote:
-> > On Fri, Sep 04, 2020 at 03:22:46PM +1200, Hamish Martin wrote:
-> > > Some integrated OHCI controller hubs do not expose all ports of the
-> > > hub
-> > > to pins on the SoC. In some cases the unconnected ports generate
-> > > spurious overcurrent events. For example the Broadcom 56060/Ranger
-> > > 2 SoC
-> > > contains a nominally 3 port hub but only the first port is wired.
-> > > 
-> > > Default behaviour for ohci-platform driver is to use "ganged"
-> > > overcurrent protection mode. This leads to the spurious overcurrent
-> > > events affecting all ports in the hub.
-> > > 
-> > > Allow this to be rectified by specifying per-port overcurrent
-> > > protection
-> > > mode via the device tree.
-> > > 
-> > > Signed-off-by: Hamish Martin <hamish.martin@alliedtelesis.co.nz>
-> > > ---
-> > >  drivers/usb/host/ohci-hcd.c      | 4 ++++
-> > >  drivers/usb/host/ohci-platform.c | 3 +++
-> > >  drivers/usb/host/ohci.h          | 1 +
-> > >  3 files changed, 8 insertions(+)
-> > > 
-> > > diff --git a/drivers/usb/host/ohci-hcd.c b/drivers/usb/host/ohci-
-> > > hcd.c
-> > > index dd37e77dae00..01e3d75e29d9 100644
-> > > --- a/drivers/usb/host/ohci-hcd.c
-> > > +++ b/drivers/usb/host/ohci-hcd.c
-> > > @@ -687,6 +687,10 @@ static int ohci_run (struct ohci_hcd *ohci)
-> > >  		val |= RH_A_NPS;
-> > >  		ohci_writel (ohci, val, &ohci->regs->roothub.a);
-> > >  	}
-> > > +	if (ohci->flags & OHCI_QUIRK_PER_PORT_OC) {
-> > > +		val |= RH_A_OCPM;
-> > > +		ohci_writel(ohci, val, &ohci->regs->roothub.a);
-> > > +	}
-> > 
-> > I don't think this is right, for two reasons.  First, isn't per-port 
-> > overcurrent protection the default?
-> 
-> Not as far as I understand the current code. Just above where my patch
-> applies, the RH_A_OCPM (and RH_A_PSM) bits are explicitly cleared in
-> 'val' with:
->     val &= ~(RH_A_PSM | RH_A_OCPM);
-> 
-> This, coupled with the OHCI_QUIRK_HUB_POWER being set by virtue of the
-> 'distrust_firmware' module param defaulting true, reads to me like the
-> default is for ganged over-current protection. And that is my
-> experience in this case. 
+On Mon, Sep 7, 2020 at 5:32 PM Dmitry Osipenko <digetx@gmail.com> wrote:
+> 07.09.2020 11:10, Andy Shevchenko =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> > On Sun, Sep 6, 2020 at 9:51 PM Dmitry Osipenko <digetx@gmail.com> wrote=
+:
+> >>
+> >> The runtime PM is guaranteed to be always available on Tegra after com=
+mit
+> >> 40b2bb1b132a ("ARM: tegra: enforce PM requirement"). Hence let's remov=
+e
+> >> all the RPM-availability checking and handling from the code.
+> >
+> >> +       ret =3D pm_runtime_get_sync(i2c_dev->dev);
+> >> +       if (ret < 0) {
+> >> +               dev_err(dev, "runtime resume failed\n");
+> >> +               goto disable_rpm;
+> >
+> > As in the original code here is a refcount leak.
+> > Should call pm_runtime_put_noidle(). (Possible to use goto put_rpm;
+> > but in that case the code a bit confusing to the reader)
+>
+> Good point! I already forgot about this RPM API problem! I'll add a
+> patch to address this.
+>
+> Would be great if anyone could put effort into changing the default
+> get_sync() behaviour and add get_sync_nofail(). Otherwise this will be a
+> never ending problem.
 
-You're right about that.  I hadn't noticed before; it makes little sense 
-to have a quirk that defaults to true.
+I didn't get this. For time being the API (yes, with its all cons) has
+the clear usage:
+a) don't check for errors -- you are fine
+b) if you start checking errors, keep in mind refcounting.
 
-It's not easy to tell the full story from the kernel history; that 
-module parameter predates the Git era.  I did learn that it was modified 
-in 2.6.3-rc3 and goes back even farther: see
+So, I don't see how nofail() can fix b) case.
 
-	https://marc.info/?l=linux-usb-devel&m=110628457424684&w=2
-
-> If none of the quirks are selected then all of the fiddling with 'val'
-> never gets written to 'ohci->regs->roothub.a'
-> 
-> I'd appreciate your reading of that analysis because I'm by no means
-> sure of it.
-> 
-> > 
-> > Second, RH_A_OCPM doesn't do anything unless RH_A_NOCP is clear.
-> 
-> Correct, and that is my mistake. If I progress to a v2 of this patch I
-> will update accordingly.
-
-Shall we try changing the parameter's default value?  The USB subsystem 
-is a lot more mature and reliable now than it was back in 2004.
-
-Alan Stern
+--=20
+With Best Regards,
+Andy Shevchenko
