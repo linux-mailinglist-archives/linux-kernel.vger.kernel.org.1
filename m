@@ -2,77 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97C5225F2C6
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 07:48:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65F0525F2D4
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 07:54:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727058AbgIGFsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 01:48:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43850 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726984AbgIGFsf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 01:48:35 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8C64B20732;
-        Mon,  7 Sep 2020 05:48:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599457713;
-        bh=kydM5vc3pHKLMrAc5q87T/B4UAcHcYV48KRlM3SnTaw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=D1ehEq9CdIVbqmWoEHkUdqqgpOZdOsGk6sVQrIriOlwsHsWUJjXVyryp/ZUtQRFd9
-         NhnMKZK8bCPo07ZJ4OWGs/bAPS0/rDx+F+hdFQEF/edLZwQHLT11hlOx19g5WunOqR
-         OYrY9/w+NhajnG4XRv/89VnuMpCly0RC2oSEPyVU=
-Date:   Mon, 7 Sep 2020 07:48:29 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Joe Perches <joe@perches.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Denis Efremov <efremov@linux.com>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Alex Dewar <alex.dewar90@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2] sysfs: Add sysfs_emit and sysfs_emit_at to format
- sysfs output
-Message-ID: <20200907054829.GB280798@kroah.com>
-References: <a9054fb521e65f2809671fa9c18e2453061e9d91.1598744610.git.joe@perches.com>
- <743a648dc817cddd2e7046283c868f1c08742f29.camel@perches.com>
+        id S1726755AbgIGFyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 01:54:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48442 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726685AbgIGFyn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 01:54:43 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5283FC061573;
+        Sun,  6 Sep 2020 22:54:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=DLtDog/Sr3T09dS0hr8djLFY4+UOXPYwaMXYNsd+eOk=; b=VgLRVDp/TPdIEIEivGZWfrd6v6
+        xkpj/etrmTs2ORqCyJ7aTIlUAEb+G3LIMxYm8FHYkmFXLTYRq96NybCz325oD/vK/SKgfjD3ucV3O
+        0Zs5t9R7ykIOILdYyb7y1M4s28ICWAumOGM70S/a6etH4vxjzQLmlkjYeKzXpSdC1j2ZsoIA8PXfe
+        +RksZJRmB63xOree9TDvIXvCHojkPDLv2GMkJe3dMwP9DTYWQEFmbXKna3fxXFRY3jyGcwEvtUJYw
+        7wENDGpF+vqSCmF5+dlCQS//m8oukAIGtH13Xl0wOKQye2XFpPVzyLgsmvNIPQO2RdEy0ApqwzQga
+        8xXDeCVw==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kFA6u-0003cz-Ar; Mon, 07 Sep 2020 05:54:36 +0000
+Subject: Re: [PATCH v2 2/3] soc: sifive: Add SiFive specific Cadence DDR
+ controller driver
+To:     Yash Shah <yash.shah@sifive.com>, robh+dt@kernel.org,
+        palmer@dabbelt.com, paul.walmsley@sifive.com, bp@alien8.de,
+        mchehab@kernel.org, tony.luck@intel.com
+Cc:     aou@eecs.berkeley.edu, james.morse@arm.com, rrichter@marvell.com,
+        devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-edac@vger.kernel.org,
+        sachin.ghadi@sifive.com
+References: <1599457679-8947-1-git-send-email-yash.shah@sifive.com>
+ <1599457679-8947-3-git-send-email-yash.shah@sifive.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <697413e6-8f44-8db4-6434-0f22984bdc9c@infradead.org>
+Date:   Sun, 6 Sep 2020 22:54:29 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <743a648dc817cddd2e7046283c868f1c08742f29.camel@perches.com>
+In-Reply-To: <1599457679-8947-3-git-send-email-yash.shah@sifive.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 06, 2020 at 10:24:20AM -0700, Joe Perches wrote:
-> On Sat, 2020-08-29 at 16:48 -0700, Joe Perches wrote:
-> > Output defects can exist in sysfs content using sprintf and snprintf.
-> > 
-> > sprintf does not know the PAGE_SIZE maximum of the temporary buffer
-> > used for outputting sysfs content and it's possible to overrun the
-> > PAGE_SIZE buffer length.
-> > 
-> > Add a generic sysfs_emit function that knows that the size of the
-> > temporary buffer and ensures that no overrun is done.
-> > 
-> > Add a generic sysfs_emit_at function that can be used in multiple
-> > call situations that also ensures that no overrun is done.
-> > 
-> > Signed-off-by: Joe Perches <joe@perches.com>
-> > ---
-> > 
-> > V2: Simplify sysfs_emit and add sysfs_emit_at
-> >     Include Documentation change
-> 
-> Greg?  Rafael? Thoughts on this?
+On 9/6/20 10:47 PM, Yash Shah wrote:
+> diff --git a/drivers/soc/sifive/Kconfig b/drivers/soc/sifive/Kconfig
+> index 58cf8c4..f41d8fe 100644
+> --- a/drivers/soc/sifive/Kconfig
+> +++ b/drivers/soc/sifive/Kconfig
+> @@ -7,4 +7,10 @@ config SIFIVE_L2
+>  	help
+>  	  Support for the L2 cache controller on SiFive platforms.
+>  
+> +config SIFIVE_DDR
+> +	bool "Sifive DDR controller driver"
+> +	help
+> +	  Support for the management of cadence DDR controller on SiFive
 
-I like the idea, give me a chance to catch up on patches, it's still in
-my to-review queue...
+	                                Cadence
 
-thanks,
+> +	  platforms.
+> +
+>  endif
 
-greg k-h
+
+-- 
+~Randy
+
