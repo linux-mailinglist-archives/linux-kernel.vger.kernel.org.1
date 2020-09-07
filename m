@@ -2,85 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 775D026035B
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:48:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2A55260359
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:48:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729303AbgIGMsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 08:48:43 -0400
-Received: from outbound-smtp14.blacknight.com ([46.22.139.231]:45739 "EHLO
-        outbound-smtp14.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729247AbgIGMmk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 08:42:40 -0400
-Received: from mail.blacknight.com (pemlinmail02.blacknight.ie [81.17.254.11])
-        by outbound-smtp14.blacknight.com (Postfix) with ESMTPS id A8BCA1C3F14
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 13:42:19 +0100 (IST)
-Received: (qmail 10544 invoked from network); 7 Sep 2020 12:42:19 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.21.127])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 7 Sep 2020 12:42:19 -0000
-Date:   Mon, 7 Sep 2020 13:42:16 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-Cc:     Mel Gorman <mgorman@suse.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
-        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
-        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
-        "bsegall@google.com" <bsegall@google.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Phil Auld <pauld@redhat.com>, Hillf Danton <hdanton@sina.com>,
-        Ingo Molnar <mingo@kernel.org>, Linuxarm <linuxarm@huawei.com>,
-        "Liguozhu (Kenneth)" <liguozhu@hisilicon.com>
-Subject: Re: [RFC] sched/numa: don't move tasks to idle numa nodes while src
- node has very light load?
-Message-ID: <20200907124216.GE3179@techsingularity.net>
-References: <e7b7462375de4175a83ece3b60bab899@hisilicon.com>
+        id S1731246AbgIGRsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 13:48:17 -0400
+Received: from foss.arm.com ([217.140.110.172]:35042 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729029AbgIGMuZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 08:50:25 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7C2651045;
+        Mon,  7 Sep 2020 05:49:59 -0700 (PDT)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2BCD23F66E;
+        Mon,  7 Sep 2020 05:49:58 -0700 (PDT)
+References: <2c243f59-6d10-7abb-bab4-e7b1796cd54f@jv-coder.de> <20200528084614.0c949e8d@gandalf.local.home> <cbbf7926-148e-7acb-dc03-3f055d73364b@jv-coder.de> <20200727163655.8c94c8e245637b62311f5053@linux-foundation.org> <c6b095af-fc92-420f-303f-d2efd9f28873@jv-coder.de> <20200821110848.6c3183d1@oasis.local.home> <20200821134753.9547695c9b782275be3c95b5@linux-foundation.org> <20200821170334.73b52fdd@oasis.local.home> <20200822123252.GQ1362448@hirez.programming.kicks-ass.net> <20200822194928.54ee4cb5@oasis.local.home> <20200907114140.GQ2674@hirez.programming.kicks-ass.net>
+User-agent: mu4e 0.9.17; emacs 26.3
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     peterz@infradead.org
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Joerg Vehlow <lkml@jv-coder.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Huang Ying <ying.huang@intel.com>,
+        linux-kernel@vger.kernel.org,
+        Joerg Vehlow <joerg.vehlow@aox-tech.de>, dave@stgolabs.net
+Subject: Re: [BUG RT] dump-capture kernel not executed for panic in interrupt context
+In-reply-to: <20200907114140.GQ2674@hirez.programming.kicks-ass.net>
+Date:   Mon, 07 Sep 2020 13:49:53 +0100
+Message-ID: <jhj1rjdycni.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <e7b7462375de4175a83ece3b60bab899@hisilicon.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 07, 2020 at 12:00:10PM +0000, Song Bao Hua (Barry Song) wrote:
-> Hi All,
-> In case we have a numa system with 4 nodes and in each node we have 24 cpus, and all of the 96 cores are idle.
-> Then we start a process with 4 threads in this totally idle system. 
-> Actually any one of the four numa nodes should have enough capability to run the 4 threads while they can still have 20 idle CPUS after that.
-> But right now the existing code in CFS load balance will spread the 4 threads to multiple nodes.
-> This results in two negative side effects:
-> 1. more numa nodes are awaken while they can save power in lowest frequency and halt status
-> 2. cache coherency overhead between numa nodes
-> 
-> A proof-of-concept patch I made to "fix" this issue to some extent is like:
-> 
 
-This is similar in concept to a patch that did something similar except
-in adjust_numa_imbalance(). It ended up being great for light loads like
-simple communicating pairs but fell apart for some HPC workloads when
-memory bandwidth requirements increased. Ultimately it was dropped until
-the NUMA/CPU load balancing was reconciled so may be worth a revisit. At
-the time, it was really problematic once a one node was roughly 25% CPU
-utilised on a 2-socket machine with hyper-threading enabled. The patch may
-still work out but it would need wider testing. Within mmtests, the NAS
-workloads for D-class on a 2-socket machine varying the number of parallel
-tasks/processes are used should be enough to determine if the patch is
-free from side-effects for one machine. It gets problematic for different
-machine sizes as the point where memory bandwidth is saturated varies.
-group_weight/4 might be fine on one machine as a cut-off and a problem
-on a larger machine with more cores -- I hit that particular problem
-when one 2 socket machine with 48 logical CPUs was fine but a different
-machine with 80 logical CPUs regressed.
+On 07/09/20 12:41, peterz@infradead.org wrote:
+> So cenceptually there's the problem that idle must always be runnable,
+> and the moment you boost it, it becomes subject to a different
+> scheduling class.
+>
+> Imagine for example what happens when we boost it to RT and then have it
+> be subject to throttling. What are we going to run when the idle task
+> is no longer elegible to run.
+>
+> (it might all work out by accident, but ISTR we had a whole bunch of fun
+> in the earlier days of RT due to things like that)
 
-I'm not saying the patch is wrong, just that patches in general for this
-area (everyone, not just you) need fairly broad testing.
+Doesn't that become a non-problem (conceptually) with proxy exec? In that
+case the idle task remains forever runnable, it just runs with its own
+scheduling context during the throttling window.
 
--- 
-Mel Gorman
-SUSE Labs
+Not trying to sell PE as the Billy Mays-backed solution to all kernel
+issues, but I think it's another thing for me to ponder on & play with.
