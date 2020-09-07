@@ -2,63 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 948AC25FBCF
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 16:07:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9559625FBE9
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 16:16:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729766AbgIGOHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 10:07:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45710 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729686AbgIGOFV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 10:05:21 -0400
-Received: from pobox.suse.cz (nat1.prg.suse.com [195.250.132.148])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4324921775;
-        Mon,  7 Sep 2020 14:05:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599487521;
-        bh=SkYkCjky5bPQ4GQiZR4hOe5NZBf2aRKEeVAAgfB2Foo=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=EvLq49AU2NOISeHmAjD8AS1blfK9dSOES9C5uUKh0gQ2JtIvCUKuCeHX5F2BX7jUP
-         HqpLnxEXQ3doxLAW2Uad5HAheF1I3WnYnjsGMUfwxXTBzEncOQanwhbHoRJNUEJcml
-         P76rrAAyS0tRl4mh8A8c/CxxTaGYqGUIi6JxLSUU=
-Date:   Mon, 7 Sep 2020 16:05:18 +0200 (CEST)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Ian Abbott <abbotti@mev.co.uk>
-cc:     linux-input@vger.kernel.org,
-        David Rheinsberg <david.rheinsberg@gmail.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: {PATCH 0/2] HID: wiimote: Minor change to spinlock usage
-In-Reply-To: <20200904132143.9496-1-abbotti@mev.co.uk>
-Message-ID: <nycvar.YFH.7.76.2009071605080.4671@cbobk.fhfr.pm>
-References: <20200904132143.9496-1-abbotti@mev.co.uk>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S1729787AbgIGOOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 10:14:49 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:10832 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729707AbgIGOJm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 10:09:42 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 47D942B6B023013B0D8C;
+        Mon,  7 Sep 2020 22:09:36 +0800 (CST)
+Received: from huawei.com (10.175.113.133) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Mon, 7 Sep 2020
+ 22:09:32 +0800
+From:   Wang Hai <wanghai38@huawei.com>
+To:     <axboe@kernel.dk>, <rostedt@goodmis.org>, <mingo@redhat.com>
+CC:     <linux-kernel@vger.kernel.org>, <linux-block@vger.kernel.org>
+Subject: [PATCH -next] blktrace: make function blk_trace_bio_get_cgid() static
+Date:   Mon, 7 Sep 2020 22:06:52 +0800
+Message-ID: <20200907140652.9060-1-wanghai38@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain
+X-Originating-IP: [10.175.113.133]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 4 Sep 2020, Ian Abbott wrote:
+The sparse tool complains as follows:
 
-> [I have posted these patches previously, but that was over a year ago.
-> --IA]
-> 
-> A couple of minor changes to the wiimote core module.  They do not
-> change functionality of the driver:
-> 
-> 1) HID: wiimote: make handlers[] const
-> 2) HID: wiimote: narrow spinlock range in wiimote_hid_event()
-> 
->  drivers/hid/hid-wiimote-core.c | 10 ++++------
->  1 file changed, 4 insertions(+), 6 deletions(-)
+kernel/trace/blktrace.c:796:5: warning:
+ symbol 'blk_trace_bio_get_cgid' was not declared. Should it be static?
 
-Applied to for-5.10/wiimote. Thanks,
+This function is not used outside of blktrace.c, so this commit
+marks it static.
 
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+---
+ kernel/trace/blktrace.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
+index 4b3a42fc3b24..c0887f32f647 100644
+--- a/kernel/trace/blktrace.c
++++ b/kernel/trace/blktrace.c
+@@ -793,7 +793,7 @@ static u64 blk_trace_bio_get_cgid(struct request_queue *q, struct bio *bio)
+ 	return cgroup_id(bio_blkcg(bio)->css.cgroup);
+ }
+ #else
+-u64 blk_trace_bio_get_cgid(struct request_queue *q, struct bio *bio)
++static u64 blk_trace_bio_get_cgid(struct request_queue *q, struct bio *bio)
+ {
+ 	return 0;
+ }
 -- 
-Jiri Kosina
-SUSE Labs
+2.17.1
 
