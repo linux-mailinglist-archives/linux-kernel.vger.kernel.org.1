@@ -2,133 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9FE825FEBF
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 18:23:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E91225FEC8
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 18:23:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730555AbgIGQXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 12:23:06 -0400
-Received: from wnew1-smtp.messagingengine.com ([64.147.123.26]:39379 "EHLO
-        wnew1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730505AbgIGQWh (ORCPT
+        id S1730532AbgIGQXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 12:23:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730411AbgIGQXk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 12:22:37 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.west.internal (Postfix) with ESMTP id AB9C1550;
-        Mon,  7 Sep 2020 12:22:35 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Mon, 07 Sep 2020 12:22:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=NMeb/Jt79wlEZMKIN0s9CoeiA/4
-        hpNhEg427QLnnBVc=; b=RiqtibaZQUt4LBxzDScHaMZtZmnVMi/6eAjou8smB7V
-        0TaEgdLpXZZmXvSpqp/oArGeWzeOqA0AU0u6k3kRd6K8Oppcmd9H6+9et4PwGT/i
-        iQRQwDvqmOsfRxS2JNSJowxYT+vzsgPtBQyu9ARPuuwWF0fpN4lmxJnMBTv9A8ml
-        hSTdPdB6nuiQH4uYDon9Ritc4LHvMwT7bzfxKF1sxgokxxMxXBNu6k6Xfj1m5Hrj
-        Ibnbm/K0+GVWkHnhfX/M4ebQa8lFu65dd0dH58erNjsnrZEJ0AwmPOMuAs5N6D3m
-        UDFSdh18HeF40X9e5BGPBymvK7XNZ8nOs50M95cKKnQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=NMeb/J
-        t79wlEZMKIN0s9CoeiA/4hpNhEg427QLnnBVc=; b=jxr7T+r0XsFA+uu8oqRYR3
-        usxutY2BmmlP+dpd9PCKlKoErhBhUq1SV7I68YMgkHvx/tE4P5aWQgEaXrzEIqXj
-        vvY1EZgFsoniB/Fs/kazwB7dqk2c1aTtXrZ1Sx8HV6WosWMrvHaoOzqjV/MwH6ZY
-        dAAChHEU4Y9U9mj82VQ9VASlDk8iJyjjogoC9PWHT6JVOSGG01+KW1PH5XX6rgFz
-        RdCQ7V5IYmAkA0hiNSmEJxH4RtFr4MkeJsezWsPAcBh8nXI1xlkS83qaAtRBsSZw
-        KMN9NNuPCmur8wbSifa+RHqjuN0s1a8CFtqsmjy/AT8maXBdkFK6VB/VdiKkh7AA
-        ==
-X-ME-Sender: <xms:Sl5WXygGMv78je365SmTp5rMGIlK_QsE4Ovw1pXC_Kv7wx_ZlYwupA>
-    <xme:Sl5WXzCrqtFL0A_hiaVjw8JIWPuI_bhDdSYjyTrCSokwyhNUkRprCheu2Z4mMB_9l
-    f4dlCxuRYQpLm810Fc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudehtddguddtudcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihi
-    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
-    htthgvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheei
-    heegudenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtne
-    curfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:Sl5WX6FbGANamhmtY4AVnvkT2Mvk09ZkOI9SWBjZtQH5Y_2pPqsRvw>
-    <xmx:Sl5WX7QVAY_-rFROhDV5m1nfGR4lfXlbHbNdM733gZGwySI9RdD__A>
-    <xmx:Sl5WX_y5KTNGr3mNHhjh2piLg0h9gvZqom0AGoqoF7f0BbJONpmkIg>
-    <xmx:S15WXyq46Vu9p9p794Hh-AbSZMRLcOihg6L1VWwLvlcVUlASXv-qgpBYYSw>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id D2A0B3064683;
-        Mon,  7 Sep 2020 12:22:33 -0400 (EDT)
-Date:   Mon, 7 Sep 2020 18:22:32 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Eric Anholt <eric@anholt.net>
-Cc:     dri-devel@lists.freedesktop.org,
-        linux-rpi-kernel@lists.infradead.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Phil Elwell <phil@raspberrypi.com>, devicetree@vger.kernel.org,
-        Kamal Dasu <kdasu.kdev@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>
-Subject: Re: [PATCH v5 00/80] drm/vc4: Support BCM2711 Display Pipeline
-Message-ID: <20200907162232.kfkskjuytfr7dyef@gilmour.lan>
-References: <cover.dddc064d8bb83e46744336af67dcb13139e5747d.1599120059.git-series.maxime@cerno.tech>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="2giy2b7xu6bt6dgq"
-Content-Disposition: inline
-In-Reply-To: <cover.dddc064d8bb83e46744336af67dcb13139e5747d.1599120059.git-series.maxime@cerno.tech>
+        Mon, 7 Sep 2020 12:23:40 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95A56C061573
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 09:23:39 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id c3so4400925plz.5
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 09:23:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sslab.ics.keio.ac.jp; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=SDxUUQ+8c+YEIDDJur8rYrh3CcLj60cM5IrQcltAbJU=;
+        b=Wy+lY5pi2y0MXKbzHqJ4nxyLK8FkoENJ+OWduamenQCm/MHiU+zeaS9LOSSiSk7TmX
+         OQwBenpNoA2RRwW+bDYWYnuPBVvGkPeIZJXm0ZMBz4gBd2pC5Kw5z5E0N3ZbM34nAw+k
+         OdteM1Ed8drJUGv6ZCa9m6kJPpuG9BZzrYu+w=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=SDxUUQ+8c+YEIDDJur8rYrh3CcLj60cM5IrQcltAbJU=;
+        b=AROd8RDtjE2wbvSdl9L3reFR+b3fngfKYBd/gtW+Q1CBeSsdHCQ7pEJ3rI0ywLU24M
+         Co2N5w6BK6+UHLb17VHaMWIth4AdmmlabkHkYgonpxqauWbUr66gjqoLgVYVK74FloAm
+         Fbp1Axgy+Zx9cTqnlAWhwMZzEUsApyjamHr/MppgJHYdIPIO0ZvsnjFZY/TRL2IOsCSk
+         lztWKrh/dHcyl1eP7zXLST9xGHN643Mt3a6IDvgFeYIy2QQ0B+Cfwu8l5MkHzi8IqFMw
+         iBQD4n2gIORqqP0YBXFWM2C7oMUPdH67MjaS6QmwMX5zGpWFEpOvxFW15eIrdq593H6s
+         pGjw==
+X-Gm-Message-State: AOAM530vWUQDyR3TW/KE4ju3p1Ktq0PZcDY1xcds0TNEx0E4HbHj3B+V
+        3hGscfD/byTTL2USulgG7ly8Dw==
+X-Google-Smtp-Source: ABdhPJyt1f1puArMGZEw7H7IWnsOdW3BtYIeDECpZMGG2uhioAhtb/hu+XxvwnoXRKkOXMIXD2nqUQ==
+X-Received: by 2002:a17:902:d353:: with SMTP id l19mr9227410plk.220.1599495818901;
+        Mon, 07 Sep 2020 09:23:38 -0700 (PDT)
+Received: from brooklyn.i.sslab.ics.keio.ac.jp (sslab-relay.ics.keio.ac.jp. [131.113.126.173])
+        by smtp.googlemail.com with ESMTPSA id v1sm3229622pjn.1.2020.09.07.09.23.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Sep 2020 09:23:38 -0700 (PDT)
+From:   Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
+Cc:     keitasuzuki.park@sslab.ics.keio.ac.jp,
+        takafumi@sslab.ics.keio.ac.jp,
+        Arend van Spriel <arend.vanspriel@broadcom.com>,
+        Franky Lin <franky.lin@broadcom.com>,
+        Hante Meuleman <hante.meuleman@broadcom.com>,
+        Chi-Hsien Lin <chi-hsien.lin@cypress.com>,
+        Wright Feng <wright.feng@cypress.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org (open list:BROADCOM BRCM80211
+        IEEE802.11n WIRELESS DRIVER),
+        brcm80211-dev-list.pdl@broadcom.com (open list:BROADCOM BRCM80211
+        IEEE802.11n WIRELESS DRIVER),
+        brcm80211-dev-list@cypress.com (open list:BROADCOM BRCM80211
+        IEEE802.11n WIRELESS DRIVER),
+        netdev@vger.kernel.org (open list:NETWORKING DRIVERS),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] brcmsmac: fix potential memory leak in wlc_phy_attach_lcnphy
+Date:   Mon,  7 Sep 2020 16:22:43 +0000
+Message-Id: <20200907162245.17997-1-keitasuzuki.park@sslab.ics.keio.ac.jp>
+X-Mailer: git-send-email 2.17.1
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When wlc_phy_txpwr_srom_read_lcnphy fails in wlc_phy_attach_lcnphy,
+the allocated pi->u.pi_lcnphy is leaked, since struct brcms_phy will be
+freed in the caller function.
 
---2giy2b7xu6bt6dgq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Fix this by calling wlc_phy_detach_lcnphy in the error handler of
+wlc_phy_txpwr_srom_read_lcnphy before returning.
 
-Hi,
+Signed-off-by: Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
+---
+ .../net/wireless/broadcom/brcm80211/brcmsmac/phy/phy_lcn.c    | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-On Thu, Sep 03, 2020 at 10:00:32AM +0200, Maxime Ripard wrote:
-> Hi everyone,
->=20
-> Here's a (pretty long) series to introduce support in the VC4 DRM driver
-> for the display pipeline found in the BCM2711 (and thus the RaspberryPi 4=
-).
->=20
-> The main differences are that there's two HDMI controllers and that there=
-'s
-> more pixelvalve now. Those pixelvalve come with a mux in the HVS that sti=
-ll
-> have only 3 FIFOs. Both of those differences are breaking a bunch of
-> expectations in the driver, so we first need a good bunch of cleanup and
-> reworks to introduce support for the new controllers.
->=20
-> Similarly, the HDMI controller has all its registers shuffled and split in
-> multiple controllers now, so we need a bunch of changes to support this as
-> well.
->=20
-> Only the HDMI support is enabled for now (even though the DPI and DSI
-> outputs have been tested too).
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmsmac/phy/phy_lcn.c b/drivers/net/wireless/broadcom/brcm80211/brcmsmac/phy/phy_lcn.c
+index 7ef36234a25d..6d70f51b2ddf 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmsmac/phy/phy_lcn.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmsmac/phy/phy_lcn.c
+@@ -5065,8 +5065,10 @@ bool wlc_phy_attach_lcnphy(struct brcms_phy *pi)
+ 	pi->pi_fptr.radioloftget = wlc_lcnphy_get_radio_loft;
+ 	pi->pi_fptr.detach = wlc_phy_detach_lcnphy;
+ 
+-	if (!wlc_phy_txpwr_srom_read_lcnphy(pi))
++	if (!wlc_phy_txpwr_srom_read_lcnphy(pi)) {
++		wlc_phy_detach_lcnphy(pi);
+ 		return false;
++	}
+ 
+ 	if (LCNREV_IS(pi->pubpi.phy_rev, 1)) {
+ 		if (pi_lcn->lcnphy_tempsense_option == 3) {
+-- 
+2.17.1
 
-I've applied the patches 1-79 to drm-misc. I guess the final DT patch
-should go through the arm-soc tree?
-
-Thanks to everyone involved in the reviews
-
-Maxime
-
---2giy2b7xu6bt6dgq
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX1ZeSAAKCRDj7w1vZxhR
-xcVNAQChBiLkPwY+5QvlL519sqeu9jt01LvwPwyFJrzT0B6+UgEA+CXZjIquRHWW
-4cCAwsWvUKtyLKQesFEIyF2mmlhzzwU=
-=lOLt
------END PGP SIGNATURE-----
-
---2giy2b7xu6bt6dgq--
