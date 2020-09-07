@@ -2,131 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDB2C25F6B2
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 11:39:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 344A325F6BD
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 11:41:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728509AbgIGJjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 05:39:32 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:31396 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728362AbgIGJj3 (ORCPT
+        id S1728550AbgIGJlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 05:41:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54950 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728520AbgIGJlF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 05:39:29 -0400
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0879WOUR162479;
-        Mon, 7 Sep 2020 05:39:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references; s=pp1;
- bh=iEi2PpCpW1XTh73eAFdMmNwr+VxQ34mxDVTwMiiEGSs=;
- b=Wzpn72Fo+3Da0BhEZYl1nHHA+nza3T6p5ZAF1daIwt+dyWY4196FxxOAJN0XbIVb7QAd
- tTTlpAUtzo7vERe55hzAEAFun66OrcW62tQG6lRYpc+7dnWwYfrkt/GCwSFwq1SRu4ow
- 8Joxo2usSQebhK+DJMualzsyr7obdtJjFvQ43cb+DGQ5Ys82qbJOo5ghJTdvEmLO5zst
- BgWPVbscZMrGAeUIj2FlsLWr7jYkVoVgB5gSMUSnxMXScQCLHMm7FuijzOM/vkZKCn4Q
- 1B2erEtEBm6RQhlEnpsIMm1Nt00pq3/ha7J2I0ty6JSviRF7rOKaL22l/3kC/mw17ySN 1w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33dhnrh85w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 07 Sep 2020 05:39:18 -0400
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0879WZ6p163168;
-        Mon, 7 Sep 2020 05:39:17 -0400
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33dhnrh84d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 07 Sep 2020 05:39:17 -0400
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0879cjrJ009706;
-        Mon, 7 Sep 2020 09:39:15 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma04fra.de.ibm.com with ESMTP id 33cm5hgwjj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 07 Sep 2020 09:39:14 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0879dCMt30998946
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 7 Sep 2020 09:39:12 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EC999A4062;
-        Mon,  7 Sep 2020 09:39:11 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2F360A405B;
-        Mon,  7 Sep 2020 09:39:11 +0000 (GMT)
-Received: from oc3016276355.ibm.com (unknown [9.145.86.222])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon,  7 Sep 2020 09:39:11 +0000 (GMT)
-From:   Pierre Morel <pmorel@linux.ibm.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     pasic@linux.ibm.com, borntraeger@de.ibm.com, frankja@linux.ibm.com,
-        mst@redhat.com, jasowang@redhat.com, cohuck@redhat.com,
-        kvm@vger.kernel.org, linux-s390@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, thomas.lendacky@amd.com,
-        david@gibson.dropbear.id.au, linuxram@us.ibm.com,
-        hca@linux.ibm.com, gor@linux.ibm.com
-Subject: [PATCH v11 2/2] s390: virtio: PV needs VIRTIO I/O device protection
-Date:   Mon,  7 Sep 2020 11:39:07 +0200
-Message-Id: <1599471547-28631-3-git-send-email-pmorel@linux.ibm.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1599471547-28631-1-git-send-email-pmorel@linux.ibm.com>
-References: <1599471547-28631-1-git-send-email-pmorel@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-07_04:2020-09-07,2020-09-07 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
- mlxlogscore=999 spamscore=0 lowpriorityscore=0 phishscore=0 malwarescore=0
- adultscore=0 clxscore=1015 mlxscore=0 suspectscore=1 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009070093
+        Mon, 7 Sep 2020 05:41:05 -0400
+Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74627C061573
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 02:41:04 -0700 (PDT)
+Received: by mail-vs1-xe43.google.com with SMTP id q13so7025669vsj.13
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 02:41:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kIca8443CSDJzX13RTZ2oe86ZVBDa2TpFg9gh5GtOMQ=;
+        b=jXYL2Lf+6eb68KLQm+cL4NheEBa+kW2UpNKYu+eQvw+3tni/khjNr1BTmBumm+tYym
+         C7ACwYKo+EcWURxBCrQI12QXdwfLnGbTuZdVhw5FvGfhxHKVQOhrGAb49Kolav/3k/8e
+         gS0IYolGS08Gu8ZRD3MV+T8yyAhjzJWN3XNTiI+v1t8PDMiB65WyCSWCN+nU88v9AAx5
+         nRjlMJfJ3d2EeeIA4mDcf3/Cg4axtshp/nu0iTeTALxRk29wEBVV+5u8VTP2uGc1ev+C
+         85lz8p1UbU3o8o/Rgr4fFyb39x/j4mp9JSo/3Z43NqcOxuCo5Ti8b5Zd2aLERJbwZwTi
+         lBKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kIca8443CSDJzX13RTZ2oe86ZVBDa2TpFg9gh5GtOMQ=;
+        b=d2qeRSVa7j1Ku78PSUQ5xHYUyCArqPZN3EbZVuTtWcFSFs5sgtUj04bUe2p1tPJ45p
+         HObTPz/jTGQfAAGepP0Miyh9hQRrDqSsN7Zt9y8QbHfIcVxCZIwkzLf4RBtmFcgFKWpN
+         PbRNzjL205wZOWge1AJdiEVuspB/DrJSDuWLXdPvYyMwh5Wczx4QMVW2hkzln0ti4fHE
+         /IF37RqNFCrQN5B0OPHMjLG7U3ACpL1sOQ7PRUA+zThEO7l64wzweKuApEdKfTePTG4a
+         GUDGdlUEG5sS1Sbv8k2kX18YV2HgRvZIAritEsl7t1P9TBOxA7klowPO++nzPzszczOD
+         CMhw==
+X-Gm-Message-State: AOAM533k4s/VEN+cLJKP1fMQX0Nk47QoWzjSObvuCdwkC5t0VhUOLz//
+        IW2599Y5eWvwJwNCCCVDHYiJtLswhrxY8g==
+X-Google-Smtp-Source: ABdhPJxfzR1C1mdmwG6YmcvTdUkc3igsS522Us2S3jwHX5+ywMEX9CP737W5Jw70dqVZkBd+oRKRPA==
+X-Received: by 2002:a67:ec7:: with SMTP id 190mr11850549vso.124.1599471662035;
+        Mon, 07 Sep 2020 02:41:02 -0700 (PDT)
+Received: from mail-ua1-f41.google.com (mail-ua1-f41.google.com. [209.85.222.41])
+        by smtp.gmail.com with ESMTPSA id g142sm2399413vkg.36.2020.09.07.02.41.00
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Sep 2020 02:41:01 -0700 (PDT)
+Received: by mail-ua1-f41.google.com with SMTP id i22so3416536uat.8
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 02:41:00 -0700 (PDT)
+X-Received: by 2002:ab0:2404:: with SMTP id f4mr10667066uan.108.1599471660425;
+ Mon, 07 Sep 2020 02:41:00 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200906031827.16819-1-xie.he.0141@gmail.com>
+In-Reply-To: <20200906031827.16819-1-xie.he.0141@gmail.com>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Mon, 7 Sep 2020 11:40:21 +0200
+X-Gmail-Original-Message-ID: <CA+FuTSfOeMB7Wv1t12VCTOqPYcTLq2WKdG4AJUO=gxotVRZiQw@mail.gmail.com>
+Message-ID: <CA+FuTSfOeMB7Wv1t12VCTOqPYcTLq2WKdG4AJUO=gxotVRZiQw@mail.gmail.com>
+Subject: Re: [PATCH net] net/packet: Fix a comment about hard_header_len and
+ headroom allocation
+To:     Xie He <xie.he.0141@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Mao Wenan <maowenan@huawei.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Or Cohen <orcohen@paloaltonetworks.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Brian Norris <briannorris@chromium.org>,
+        Cong Wang <xiyou.wangcong@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If protected virtualization is active on s390, VIRTIO has only retricted
-access to the guest memory.
-Define CONFIG_ARCH_HAS_RESTRICTED_VIRTIO_MEMORY_ACCESS and export
-arch_has_restricted_virtio_memory_access to advertize VIRTIO if that's
-the case, preventing a host error on access attempt.
+On Sun, Sep 6, 2020 at 5:18 AM Xie He <xie.he.0141@gmail.com> wrote:
+>
+> This comment is outdated and no longer reflects the actual implementation
+> of af_packet.c.
 
-Signed-off-by: Pierre Morel <pmorel@linux.ibm.com>
-Reviewed-by: Cornelia Huck <cohuck@redhat.com>
----
- arch/s390/Kconfig   |  1 +
- arch/s390/mm/init.c | 10 ++++++++++
- 2 files changed, 11 insertions(+)
+If it was previously true, can you point to a commit that changes the behavior?
 
-diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
-index b29fcc66ec39..938246200d39 100644
---- a/arch/s390/Kconfig
-+++ b/arch/s390/Kconfig
-@@ -820,6 +820,7 @@ menu "Virtualization"
- config PROTECTED_VIRTUALIZATION_GUEST
- 	def_bool n
- 	prompt "Protected virtualization guest support"
-+	select ARCH_HAS_RESTRICTED_VIRTIO_MEMORY_ACCESS
- 	help
- 	  Select this option, if you want to be able to run this
- 	  kernel as a protected virtualization KVM guest.
-diff --git a/arch/s390/mm/init.c b/arch/s390/mm/init.c
-index 0d282081dc1f..f40b9b63d3d6 100644
---- a/arch/s390/mm/init.c
-+++ b/arch/s390/mm/init.c
-@@ -160,6 +160,16 @@ bool force_dma_unencrypted(struct device *dev)
- 	return is_prot_virt_guest();
- }
- 
-+#ifdef CONFIG_ARCH_HAS_RESTRICTED_VIRTIO_MEMORY_ACCESS
-+
-+int arch_has_restricted_virtio_memory_access(void)
-+{
-+	return is_prot_virt_guest();
-+}
-+EXPORT_SYMBOL(arch_has_restricted_virtio_memory_access);
-+
-+#endif
-+
- /* protected virtualization */
- static void pv_init(void)
- {
--- 
-2.17.1
+>
+> Reasons for the new comment:
+>
+> 1.
+>
+> In this file, the function packet_snd first reserves a headroom of
+> length (dev->hard_header_len + dev->needed_headroom).
+> Then if the socket is a SOCK_DGRAM socket, it calls dev_hard_header,
+> which calls dev->header_ops->create, to create the link layer header.
+> If the socket is a SOCK_RAW socket, it "un-reserves" a headroom of
+> length (dev->hard_header_len), and checks if the user has provided a
+> header of length (dev->hard_header_len) (in dev_validate_header).
 
+Not entirely, a header greater than dev->min_header_len that passes
+dev_validate_header.
+
+> This shows the developers of af_packet.c expect hard_header_len to
+> be consistent with header_ops.
+>
+> 2.
+>
+> In this file, the function packet_sendmsg_spkt has a FIXME comment.
+> That comment states that prepending an LL header internally in a driver
+> is considered a bug. I believe this bug can be fixed by setting
+> hard_header_len to 0, making the internal header completely invisible
+> to af_packet.c (and requesting the headroom in needed_headroom instead).
+
+Ack.
+
+> 3.
+>
+> There is a commit for a WiFi driver:
+> commit 9454f7a895b8 ("mwifiex: set needed_headroom, not hard_header_len")
+> According to the discussion about it at:
+>   https://patchwork.kernel.org/patch/11407493/
+> The author tried to set the WiFi driver's hard_header_len to the Ethernet
+> header length, and request additional header space internally needed by
+> setting needed_headroom. This means this usage is already adopted by
+> driver developers.
+>
+> Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+> Cc: Eric Dumazet <eric.dumazet@gmail.com>
+> Cc: Brian Norris <briannorris@chromium.org>
+> Cc: Cong Wang <xiyou.wangcong@gmail.com>
+> Signed-off-by: Xie He <xie.he.0141@gmail.com>
+> ---
+>  net/packet/af_packet.c | 15 +++++++++------
+>  1 file changed, 9 insertions(+), 6 deletions(-)
+>
+> diff --git a/net/packet/af_packet.c b/net/packet/af_packet.c
+> index 2b33e977a905..c808c76efa71 100644
+> --- a/net/packet/af_packet.c
+> +++ b/net/packet/af_packet.c
+> @@ -93,12 +93,15 @@
+>
+>  /*
+>     Assumptions:
+> -   - if device has no dev->hard_header routine, it adds and removes ll header
+> -     inside itself. In this case ll header is invisible outside of device,
+> -     but higher levels still should reserve dev->hard_header_len.
+> -     Some devices are enough clever to reallocate skb, when header
+> -     will not fit to reserved space (tunnel), another ones are silly
+> -     (PPP).
+> +   - If the device has no dev->header_ops, there is no LL header visible
+> +     outside of the device. In this case, its hard_header_len should be 0.
+
+Such a constraint is more robustly captured with a compile time
+BUILD_BUG_ON check. Please do add a comment that summarizes why the
+invariant holds.
+
+More about the older comment, but if reusing: it's not entirely clear
+to me what "outside of the device" means. The upper layers that
+receive data from the device and send data to it, including
+packet_snd, I suppose? Not the lower layers, clearly. Maybe that can
+be more specific.
+
+> +     The device may prepend its own header internally. In this case, its
+> +     needed_headroom should be set to the space needed for it to add its
+> +     internal header.
+> +     For example, a WiFi driver pretending to be an Ethernet driver should
+> +     set its hard_header_len to be the Ethernet header length, and set its
+> +     needed_headroom to be (the real WiFi header length - the fake Ethernet
+> +     header length).
+>     - packet socket receives packets with pulled ll header,
+>       so that SOCK_RAW should push it back.
+>
+> --
+> 2.25.1
+>
