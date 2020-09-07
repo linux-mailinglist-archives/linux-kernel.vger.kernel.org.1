@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A15E12604BF
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 20:34:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60BD926049E
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 20:33:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730334AbgIGSek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 14:34:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41002 "EHLO mail.kernel.org"
+        id S1729692AbgIGSdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 14:33:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41036 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729242AbgIGSde (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 14:33:34 -0400
+        id S1729268AbgIGSdh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 14:33:37 -0400
 Received: from kozik-lap.mshome.net (unknown [194.230.155.174])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 71B192145D;
-        Mon,  7 Sep 2020 18:33:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 54E3620C09;
+        Mon,  7 Sep 2020 18:33:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599503613;
-        bh=aQvOCcr2/nrUtLFCXsNJLkhtg6Vd8Fnea7yFSAGO7IM=;
+        s=default; t=1599503616;
+        bh=1cKrfS1k/FTqLWxScjIkRzSaVkeywk5f5Ol2DtbQ8gw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=k5E415UM7eUYppcTZ8bFs5wZnmrzcJ8Gup41HWUjmKLSutscnaxmnhW4fvrdfhvHi
-         nrgiFJL5vTLtsgwgoCxGl1jBcLBsb8V5TNemY9SLGt5XjC3HxFTlJ37suecf4nz2dj
-         TZvbYwxaypnnIn9uMO6xz+ckVW0Mysu9vg0rbLBA=
+        b=gpvTj8nMf0zCNXrSA2KRIurA6Nl4Gj0W8iJ6s0uT10tPDyORYTf3e2tlKW7ItfPQO
+         kB3i2jUKzE+jwT6dJbDLnk4yKUgKhTHC6m/1X7L+R7rJm+MvZGdMut5EhnozoM4mS3
+         g/RIOiGunRjxmMqGRcXk7ZWazTxrpCnTlEgtkSh0=
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 To:     Kukjin Kim <kgene@kernel.org>,
         Krzysztof Kozlowski <krzk@kernel.org>,
@@ -35,9 +35,9 @@ Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
         Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
         Sylwester Nawrocki <snawrocki@kernel.org>,
         Tomasz Figa <tomasz.figa@gmail.com>
-Subject: [PATCH 03/11] ARM: dts: s3c6410: move fixed clocks under root node in SMDK6410
-Date:   Mon,  7 Sep 2020 20:33:05 +0200
-Message-Id: <20200907183313.29234-4-krzk@kernel.org>
+Subject: [PATCH 04/11] ARM: dts: s3c6410: align node SROM bus node name with dtschema in Mini6410
+Date:   Mon,  7 Sep 2020 20:33:06 +0200
+Message-Id: <20200907183313.29234-5-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200907183313.29234-1-krzk@kernel.org>
 References: <20200907183313.29234-1-krzk@kernel.org>
@@ -46,63 +46,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The fixed clocks are kept under dedicated 'clocks' node but this causes
-multiple dtschema warnings:
+The SROM controller is modeled with a bus so align the device node name
+with dtschema to fix warning:
 
-  clocks: $nodename:0: 'clocks' does not match '^([a-z][a-z0-9\\-]+-bus|bus|soc|axi|ahb|apb)(@[0-9a-f]+)?$'
-  clocks: #size-cells:0:0: 0 is not one of [1, 2]
-  clocks: oscillator@0:reg:0: [0] is too short
-  clocks: oscillator@1:reg:0: [1] is too short
-  clocks: 'ranges' is a required property
-  oscillator@0: 'reg' does not match any of the regexes: 'pinctrl-[0-9]+'
+  srom-cs1@18000000: $nodename:0: 'srom-cs1@18000000'
+    does not match '^([a-z][a-z0-9\\-]+-bus|bus|soc|axi|ahb|apb)(@[0-9a-f]+)?$'
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- arch/arm/boot/dts/s3c6410-smdk6410.dts | 30 ++++++++++----------------
- 1 file changed, 11 insertions(+), 19 deletions(-)
+ arch/arm/boot/dts/s3c6410-mini6410.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/s3c6410-smdk6410.dts b/arch/arm/boot/dts/s3c6410-smdk6410.dts
-index 96267f5f02a8..74379061a11a 100644
---- a/arch/arm/boot/dts/s3c6410-smdk6410.dts
-+++ b/arch/arm/boot/dts/s3c6410-smdk6410.dts
-@@ -28,26 +28,18 @@
- 		bootargs = "console=ttySAC0,115200n8 earlyprintk rootwait root=/dev/mmcblk0p1";
+diff --git a/arch/arm/boot/dts/s3c6410-mini6410.dts b/arch/arm/boot/dts/s3c6410-mini6410.dts
+index 75067dbcf7e8..285555b9ed94 100644
+--- a/arch/arm/boot/dts/s3c6410-mini6410.dts
++++ b/arch/arm/boot/dts/s3c6410-mini6410.dts
+@@ -42,7 +42,7 @@
+ 		#clock-cells = <0>;
  	};
  
--	clocks {
--		compatible = "simple-bus";
--		#address-cells = <1>;
--		#size-cells = <0>;
--
--		fin_pll: oscillator@0 {
--			compatible = "fixed-clock";
--			reg = <0>;
--			clock-frequency = <12000000>;
--			clock-output-names = "fin_pll";
--			#clock-cells = <0>;
--		};
-+	fin_pll: oscillator-0 {
-+		compatible = "fixed-clock";
-+		clock-frequency = <12000000>;
-+		clock-output-names = "fin_pll";
-+		#clock-cells = <0>;
-+	};
- 
--		xusbxti: oscillator@1 {
--			compatible = "fixed-clock";
--			reg = <1>;
--			clock-output-names = "xusbxti";
--			clock-frequency = <48000000>;
--			#clock-cells = <0>;
--		};
-+	xusbxti: oscillator-1 {
-+		compatible = "fixed-clock";
-+		clock-output-names = "xusbxti";
-+		clock-frequency = <48000000>;
-+		#clock-cells = <0>;
- 	};
- 
- 	srom-cs1@18000000 {
+-	srom-cs1@18000000 {
++	srom-cs1-bus@18000000 {
+ 		compatible = "simple-bus";
+ 		#address-cells = <1>;
+ 		#size-cells = <1>;
 -- 
 2.17.1
 
