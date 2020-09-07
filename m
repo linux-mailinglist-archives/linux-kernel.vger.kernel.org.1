@@ -2,98 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C934325F596
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 10:45:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F62125F599
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 10:48:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728321AbgIGIpq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 04:45:46 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:56906 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728060AbgIGIpp (ORCPT
+        id S1728093AbgIGIsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 04:48:16 -0400
+Received: from mail-oo1-f66.google.com ([209.85.161.66]:34670 "EHLO
+        mail-oo1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726978AbgIGIsO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 04:45:45 -0400
-Received: from ip5f5af70b.dynamic.kabel-deutschland.de ([95.90.247.11] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1kFCmR-00058E-PM; Mon, 07 Sep 2020 08:45:43 +0000
-Date:   Mon, 7 Sep 2020 10:45:38 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     "Isaac J. Manjarres" <isaacm@codeaurora.org>,
-        linux-mm.kvack.org@wittgenstein
-Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        mingo@kernel.org, peterz@infradead.org, ebiederm@xmission.com,
-        esyr@redhat.com, tglx@linutronix.de, christian@kellner.me,
-        areber@redhat.com, shakeelb@google.com, cyphar@cyphar.com,
-        psodagud@codeaurora.org, pratikp@codeaurora.org
-Subject: Re: [RFC PATCH] fork: Free per-cpu cached vmalloc'ed thread stacks
- with
-Message-ID: <20200907084538.qz5g4mikznwxr67g@wittgenstein>
-References: <010101745b9b7825-f4d1db4b-83fb-450e-9391-82aad77a1bd6-000000@us-west-2.amazonses.com>
+        Mon, 7 Sep 2020 04:48:14 -0400
+Received: by mail-oo1-f66.google.com with SMTP id o20so824419ook.1
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 01:48:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AtYD4UoRySoM9KhU37kTz8JxnSV4bSKd+NMUzmY7q1s=;
+        b=UeDd5jbBFfJC4pTiCmd1STNu8nVM3QRRTPqYREUaD47l+z5XLxUtLkBZkhRh+DFuL/
+         d6CToGlyHbrWjR4lPZ2gZ3Rh6h8cIrJ7VryyCDRx5x6Vks9gdGBliAA9LwV72DF6bDcz
+         CeyYqQz0A8AYc5phlCP7pJXNrFBoKwQqSn4x5iwu+yyZb64jFJeDlzHymD/n8yh3PY1L
+         hC3keVFmprv1+M0gJr6cfy+g3M9UeIDsrgkv49oPisLusZvAd5mF2YWmJ1cmgT/TUth3
+         J3NjcXpdC0uKgDe6i8Z99YhlXyFGBMBUCyQ2Uzdt/UI8S++/QBq/BU+EsK2zXCZAnqKh
+         TJ6g==
+X-Gm-Message-State: AOAM533XOLL9RtiNqhzz8oPCceTwdcuqL5957em8mVcTEkAljox4/diX
+        L237BwJdgyMehfrOVJtEZB4Xp8Dt/ARV8e6OywL9eO69
+X-Google-Smtp-Source: ABdhPJyQDtQfupQbcI/xUiI2iCvz/yJNxzV9OYTDWPgXBg8ae531TuVzol8RF7CReqYzvdkhvBjgZoHUGvgbNBM523E=
+X-Received: by 2002:a4a:5403:: with SMTP id t3mr14453719ooa.11.1599468494094;
+ Mon, 07 Sep 2020 01:48:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <010101745b9b7825-f4d1db4b-83fb-450e-9391-82aad77a1bd6-000000@us-west-2.amazonses.com>
+References: <20200826125259.24069-1-geert@linux-m68k.org>
+In-Reply-To: <20200826125259.24069-1-geert@linux-m68k.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 7 Sep 2020 10:48:03 +0200
+Message-ID: <CAMuHMdV7AJ+HX=XhRPhZ8OCDi7BhnTC+YN8wGjGo4hbQDZzteA@mail.gmail.com>
+Subject: Re: [PATCH] m68k: Sort selects in main Kconfig
+To:     linux-m68k <linux-m68k@lists.linux-m68k.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 05, 2020 at 12:12:29AM +0000, Isaac J. Manjarres wrote:
-> The per-cpu cached vmalloc'ed stacks are currently freed in the
-> CPU hotplug teardown path by the free_vm_stack_cache() callback,
-> which invokes vfree(), which may result in purging the list of
-> lazily freed vmap areas.
-> 
-> Purging all of the lazily freed vmap areas can take a long time
-> when the list of vmap areas is large. This is problematic, as
-> free_vm_stack_cache() is invoked prior to the offline CPU's timers
-> being migrated. This is not desirable as it can lead to timer
-> migration delays in the CPU hotplug teardown path, and timer callbacks
-> will be invoked long after the timer has expired.
-> 
-> For example, on a system that has only one online CPU (CPU 1) that is
-> running a heavy workload, and another CPU that is being offlined,
-> the online CPU will invoke free_vm_stack_cache() to free the cached
-> vmalloc'ed stacks for the CPU being offlined. When there are 2702
-> vmap areas that total to 13498 pages, free_vm_stack_cache() takes
-> over 2 seconds to execute:
-> 
-> [001]   399.335808: cpuhp_enter: cpu: 0005 target:   0 step:  67 (free_vm_stack_cache)
-> 
-> /* The first vmap area to be freed */
-> [001]   399.337157: __purge_vmap_area_lazy: [0:2702] 0xffffffc033da8000 - 0xffffffc033dad000 (5 : 13498)
-> 
-> /* After two seconds */
-> [001]   401.528010: __purge_vmap_area_lazy: [1563:2702] 0xffffffc02fe10000 - 0xffffffc02fe15000 (5 : 5765)
-> 
-> Instead of freeing the per-cpu cached vmalloc'ed stacks synchronously
-> with respect to the CPU hotplug teardown state machine, free them
-> asynchronously to help move along the CPU hotplug teardown state machine
-> quickly.
-> 
-> Signed-off-by: Isaac J. Manjarres <isaacm@codeaurora.org>
-> ---
+On Wed, Aug 26, 2020 at 2:53 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> Sort the list of select statements in the main Kconfig file for the m68k
+> architecture, to avoid conflicts when modifying this list.
+>
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-This needs reviews and acks from the good folks over at mm/.
+Thanks, queueing in the m68k for-v5.10 branch.
 
->  kernel/fork.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/fork.c b/kernel/fork.c
-> index 4d32190..68346a0 100644
-> --- a/kernel/fork.c
-> +++ b/kernel/fork.c
-> @@ -202,7 +202,7 @@ static int free_vm_stack_cache(unsigned int cpu)
->  		if (!vm_stack)
->  			continue;
->  
-> -		vfree(vm_stack->addr);
-> +		vfree_atomic(vm_stack->addr);
->  		cached_vm_stacks[i] = NULL;
->  	}
->  
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
