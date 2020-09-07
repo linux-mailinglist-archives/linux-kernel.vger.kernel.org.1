@@ -2,106 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E05C625FACB
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 14:56:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5850525FAC7
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 14:55:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729072AbgIGM4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 08:56:31 -0400
-Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:32077 "EHLO
-        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726515AbgIGMzY (ORCPT
+        id S1729353AbgIGMzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 08:55:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56782 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729241AbgIGMzJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 08:55:24 -0400
+        Mon, 7 Sep 2020 08:55:09 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92D9FC061574
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 05:55:08 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id a8so4463090plm.2
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 05:55:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1599483325; x=1631019325;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=uJrbmK8bXrLFAotyNZ9AuGYGDQNx6Tp+tMA5g8uD3P4=;
-  b=c6QvMc2GRg9WJJkCB0kzPOTQazLfg11l0YoMKEhdO8pUxn0jcan4vV5C
-   aD9LHpkUqfMG/DefihZ2m1jMiSvJfw1V/YeNECrcIn28huxmJfNC42kFE
-   hnrZzL+bAqrU0EP5tGqgYzHgrrS3+TDZP+P0UDdL9Muit2bol/KJJH6dO
-   k=;
-X-IronPort-AV: E=Sophos;i="5.76,401,1592870400"; 
-   d="scan'208";a="52553785"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2b-81e76b79.us-west-2.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 07 Sep 2020 12:55:23 +0000
-Received: from EX13D16EUB001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
-        by email-inbound-relay-2b-81e76b79.us-west-2.amazon.com (Postfix) with ESMTPS id 55A91A2039;
-        Mon,  7 Sep 2020 12:55:21 +0000 (UTC)
-Received: from 38f9d34ed3b1.ant.amazon.com (10.43.160.215) by
- EX13D16EUB001.ant.amazon.com (10.43.166.28) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 7 Sep 2020 12:55:09 +0000
-Subject: Re: [PATCH v8 08/18] nitro_enclaves: Add logic for creating an
- enclave VM
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Anthony Liguori <aliguori@amazon.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Colm MacCarthaigh <colmmacc@amazon.com>,
-        David Duncan <davdunc@amazon.com>,
-        Bjoern Doebel <doebel@amazon.de>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        "Frank van der Linden" <fllinden@amazon.com>,
-        Alexander Graf <graf@amazon.de>,
-        "Karen Noel" <knoel@redhat.com>,
-        Martin Pohlack <mpohlack@amazon.de>,
-        Matt Wilson <msw@amazon.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Balbir Singh <sblbir@amazon.com>,
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=LtZPyi/AukZy15ogdyhyhhfmtD6VdGQ8V+ah+uZ5ZRE=;
+        b=h9KtAmbLvtAS6iQDVPynlTja6eFvARzIIqyZGjsQ20GC/J+Yg5jFY7D2QRZMKrFLiz
+         dkdtie2ACqm1XDPCxL6BuFnkf1P0yhhdZ+z6efRlhKEBnn2tRUzsOrLKAKteYS3VgSbA
+         0IXGpUnL3OAaVlIoFtWisIbQ8UxaacynRRsYiMtJ4VlnpwrfdgrbjBkryuLm+QGNESZq
+         e46wSb/XIxBk5v4sHHKdlvTMkWktAxgO4Oy6ypC1/YgB30YLpnfn0pM1juOdO2m6jJ9B
+         c9oMbJxuGXEz5NKHKA+r923gYTdTjS7/ZFvAEAgeqJ2vdW6GiHkJ+M13nDsh4aa0Ocoz
+         Z6rw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=LtZPyi/AukZy15ogdyhyhhfmtD6VdGQ8V+ah+uZ5ZRE=;
+        b=i68EHtact+JanUT3DC353muu94cqd8iGjNUQf0hSJdJQFXwpO/bDWuJct+iDPjKhfp
+         u1hdTbtV14PIoHkUeEQiNR12T17Wdu/dOkGFmWSN8mxjiZa+S7gyEeyS9c1R20jxf7Pg
+         i5kF8BjtpjbbM1BK0F0OtcqSBo8wNaH7qd2kLeirUZqQyO0vgKoOJj3AT7/ASLp8JLhk
+         e9GMKRnmGGILm9a9j4L6CpPyjpYe8pweiWex8nIIn7StnI2BONcCsaHyujzZ/zA9Ewkq
+         zq4cQ3MDgmUhvVA+9OWgHk0AEX6DnRnjz0FVR8Y2R3Lq2yOcU2LMzcWexZjO2k0V8X57
+         416A==
+X-Gm-Message-State: AOAM530HvWyZfRPhbxGkP+nPlf9/k9JDIYYC9PYLruiL7Lyfv0cUYdZa
+        Y4IOtpUFbuLWpRFVND1AMmCi4g==
+X-Google-Smtp-Source: ABdhPJwSJhwbdTK3aiOECk1N01cYyEhVPN+DwxgBITkWSDuyKHu9bvElYyztoBA6ts42wvdnXIfuaw==
+X-Received: by 2002:a17:902:c692:b029:d0:90a3:24f4 with SMTP id r18-20020a170902c692b02900d090a324f4mr13703671plx.12.1599483307097;
+        Mon, 07 Sep 2020 05:55:07 -0700 (PDT)
+Received: from [192.168.1.182] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id z7sm5473517pfj.75.2020.09.07.05.55.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Sep 2020 05:55:06 -0700 (PDT)
+Subject: Re: [PATCH next] io_uring: fix task hung in io_uring_setup
+To:     Pavel Begunkov <asml.silence@gmail.com>,
+        Hillf Danton <hdanton@sina.com>
+Cc:     io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        viro@zeniv.linux.org.uk,
+        syzbot+107dd59d1efcaf3ffca4@syzkaller.appspotmail.com,
         Stefano Garzarella <sgarzare@redhat.com>,
-        "Stefan Hajnoczi" <stefanha@redhat.com>,
-        Stewart Smith <trawets@amazon.com>,
-        "Uwe Dannowski" <uwed@amazon.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        kvm <kvm@vger.kernel.org>,
-        ne-devel-upstream <ne-devel-upstream@amazon.com>
-References: <20200904173718.64857-1-andraprs@amazon.com>
- <20200904173718.64857-9-andraprs@amazon.com>
- <20200907085721.GA1101646@kroah.com>
-From:   "Paraschiv, Andra-Irina" <andraprs@amazon.com>
-Message-ID: <48e3b34c-eae0-4153-9d64-fcdcc88b4241@amazon.com>
-Date:   Mon, 7 Sep 2020 15:54:59 +0300
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:78.0)
- Gecko/20100101 Thunderbird/78.2.1
+        Kees Cook <keescook@chromium.org>
+References: <20200903132119.14564-1-hdanton@sina.com>
+ <9bef23b1-6791-6601-4368-93de53212b22@kernel.dk>
+ <8031fbe7-9e69-4a79-3b42-55b2a1a690e3@gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <192220ac-fd43-c553-e694-a3e51bcbfa4a@kernel.dk>
+Date:   Mon, 7 Sep 2020 06:55:04 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200907085721.GA1101646@kroah.com>
+In-Reply-To: <8031fbe7-9e69-4a79-3b42-55b2a1a690e3@gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-X-Originating-IP: [10.43.160.215]
-X-ClientProxiedBy: EX13D01UWA004.ant.amazon.com (10.43.160.99) To
- EX13D16EUB001.ant.amazon.com (10.43.166.28)
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CgpPbiAwNy8wOS8yMDIwIDExOjU3LCBHcmVnIEtIIHdyb3RlOgo+Cj4gT24gRnJpLCBTZXAgMDQs
-IDIwMjAgYXQgMDg6Mzc6MDhQTSArMDMwMCwgQW5kcmEgUGFyYXNjaGl2IHdyb3RlOgo+PiArc3Rh
-dGljIGxvbmcgbmVfaW9jdGwoc3RydWN0IGZpbGUgKmZpbGUsIHVuc2lnbmVkIGludCBjbWQsIHVu
-c2lnbmVkIGxvbmcgYXJnKQo+PiArewo+PiArICAgICBzd2l0Y2ggKGNtZCkgewo+PiArICAgICBj
-YXNlIE5FX0NSRUFURV9WTTogewo+PiArICAgICAgICAgICAgIGludCBlbmNsYXZlX2ZkID0gLTE7
-Cj4+ICsgICAgICAgICAgICAgc3RydWN0IGZpbGUgKmVuY2xhdmVfZmlsZSA9IE5VTEw7Cj4+ICsg
-ICAgICAgICAgICAgc3RydWN0IG5lX3BjaV9kZXYgKm5lX3BjaV9kZXYgPSBOVUxMOwo+PiArICAg
-ICAgICAgICAgIHN0cnVjdCBwY2lfZGV2ICpwZGV2ID0gdG9fcGNpX2RldihuZV9taXNjX2Rldi5w
-YXJlbnQpOwo+IFRoYXQgY2FsbCBpcyByZWFsbHkgInJpc2t5Ii4gIFlvdSAia25vdyIgdGhhdCB0
-aGUgbWlzYyBkZXZpY2UncyBwYXJlbnQKPiBpcyBhIHNwZWNpZmljIFBDSSBkZXZpY2UsIHRoYXQg
-anVzdCBoYXBwZW5zIHRvIGJlIHlvdXIgcGNpIGRldmljZSwKPiByaWdodD8KCkNvcnJlY3QsIHRo
-YXQncyBob3cgaXQncyBhc3NpZ25lZCB0aGUgbWlzYyBkZXZpY2UncyBwYXJlbnQsIHRvIHBvaW50
-IHRvIAphIHBhcnRpY3VsYXIgUENJIGRldmljZSB0aGF0J3MgdGhlIE5FIFBDSSBkZXZpY2UuCgo+
-Cj4gQnV0IHdoeSBub3QganVzdCBoYXZlIHlvdXIgbWlzYyBkZXZpY2UgaG9sZCB0aGUgcG9pbnRl
-ciB0byB0aGUgc3RydWN0dXJlCj4geW91IHJlYWxseSB3YW50LCBzbyB5b3UgZG9uJ3QgaGF2ZSB0
-byBtZXNzIHdpdGggdGhlIGRldmljZSB0cmVlIGluIGFueQo+IHdheSwgYW5kIHlvdSBhbHdheXMg
-Imtub3ciIHlvdSBoYXZlIHRoZSBjb3JyZWN0IHBvaW50ZXI/ICBJdCBzaG91bGQgc2F2ZQo+IHlv
-dSB0aGlzIHR3by1zdGVwIGxvb2t1cCBhbGwgdGhlIHRpbWUsIHJpZ2h0Pwo+CgpUaGF0IHdvdWxk
-IGhlbHAsIHllcywgdG8ga2VlcCB0aGUgcG9pbnRlciBkaXJlY3RseSB0byB0aGUgbmVfcGNpX2Rl
-diAKZGF0YSBzdHJ1Y3R1cmUuIEp1c3QgdGhhdCB0aGUgbWlzYyBkZXZpY2UncyBwYXJlbnQgZGF0
-YSBzdHJ1Y3R1cmUgaXMgYSAKc3RydWN0IGRldmljZSBwb2ludGVyLiBJIGNhbiBjcmVhdGUgYSBu
-ZXcgaW50ZXJuYWwgZGF0YSBzdHJ1Y3R1cmUgdG8gCmtlZXAgdGhlIG1pc2NkZXZpY2UgZGF0YSBz
-dHJ1Y3R1cmUgYW5kIGEgcG9pbnRlciB0byB0aGUgbmVfcGNpX2Rldi4KClRoYW5rcywKQW5kcmEK
-CgoKQW1hem9uIERldmVsb3BtZW50IENlbnRlciAoUm9tYW5pYSkgUy5SLkwuIHJlZ2lzdGVyZWQg
-b2ZmaWNlOiAyN0EgU2YuIExhemFyIFN0cmVldCwgVUJDNSwgZmxvb3IgMiwgSWFzaSwgSWFzaSBD
-b3VudHksIDcwMDA0NSwgUm9tYW5pYS4gUmVnaXN0ZXJlZCBpbiBSb21hbmlhLiBSZWdpc3RyYXRp
-b24gbnVtYmVyIEoyMi8yNjIxLzIwMDUuCg==
+On 9/7/20 2:50 AM, Pavel Begunkov wrote:
+> On 03/09/2020 17:04, Jens Axboe wrote:
+>> On 9/3/20 7:21 AM, Hillf Danton wrote:
+>>>
+>>> The smart syzbot found the following issue:
+>>>
+>>> INFO: task syz-executor047:6853 blocked for more than 143 seconds.
+>>>       Not tainted 5.9.0-rc3-next-20200902-syzkaller #0
+>>> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+>>> task:syz-executor047 state:D stack:28104 pid: 6853 ppid:  6847 flags:0x00004000
+>>> Call Trace:
+>>>  context_switch kernel/sched/core.c:3777 [inline]
+>>>  __schedule+0xea9/0x2230 kernel/sched/core.c:4526
+>>>  schedule+0xd0/0x2a0 kernel/sched/core.c:4601
+>>>  schedule_timeout+0x1d8/0x250 kernel/time/timer.c:1855
+>>>  do_wait_for_common kernel/sched/completion.c:85 [inline]
+>>>  __wait_for_common kernel/sched/completion.c:106 [inline]
+>>>  wait_for_common kernel/sched/completion.c:117 [inline]
+>>>  wait_for_completion+0x163/0x260 kernel/sched/completion.c:138
+>>>  io_sq_thread_stop fs/io_uring.c:6906 [inline]
+>>>  io_finish_async fs/io_uring.c:6920 [inline]
+>>>  io_sq_offload_create fs/io_uring.c:7595 [inline]
+>>>  io_uring_create fs/io_uring.c:8671 [inline]
+>>>  io_uring_setup+0x1495/0x29a0 fs/io_uring.c:8744
+>>>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>>>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>>>
+>>> because the sqo_thread kthread is created in io_sq_offload_create() without
+>>> being waked up. Then in the error branch of that function we will wait for
+>>> the sqo kthread that never runs. It's fixed by waking it up before waiting.
+>>
+>> Looks good - applied, thanks.
+> 
+> BTW, I don't see the patch itself, and it's neither in io_uring, block
+> nor fs mailing lists. Hillf, could you please CC proper lists next time?
+
+He did, but I'm guessing that vger didn't like the email for whatever
+reason. Hillf, did you get an error back from vger when sending the patch?
+
+-- 
+Jens Axboe
 
