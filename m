@@ -2,95 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66CD425F7B6
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 12:19:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 200A425F7C9
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 12:20:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728875AbgIGKT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 06:19:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60906 "EHLO
+        id S1728901AbgIGKUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 06:20:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728785AbgIGKTI (ORCPT
+        with ESMTP id S1728840AbgIGKTx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 06:19:08 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77400C061573;
-        Mon,  7 Sep 2020 03:19:08 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id 31so7809308pgy.13;
-        Mon, 07 Sep 2020 03:19:08 -0700 (PDT)
+        Mon, 7 Sep 2020 06:19:53 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 367A0C061575
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 03:19:53 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id p9so17505838ejf.6
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 03:19:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1O4Zn9P7hXV8yBwWw3nrL/yAlWgmCWvaLQgGvTWSTiU=;
-        b=RYaB7CQHhLnCHtIJffl5L81Pte42BfwB7BEbyWq3Zxp50y0qtwg4iD+iFd708zJot+
-         KbvxwnJJYgQWkw4kE+jQPlTUGoNkPq/tTc2ayTXC7ok4Es6v/kYXNRlK2islDzK+TnrR
-         MeiU/4TJjGqeoY8pYLWMnqGemtQ9xOQB61GdgWRO+hucjohRzVTI41obIyg5vvD0011m
-         hSFMWgCgqyacafyxsNcn2GwGSiZT4Y/yE69GTAsDhmVMiWYx8qYnVB53aVfXvJ/VAXSw
-         dzHZJCbyBug2pJa0yQnpmBxztN2qscKjAqr7i9rZ6SAMRa0o9EbJn4iktsr3nDgJKIWt
-         i95Q==
+        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sedeRDWMoezcviADR+g7IKIn4HgyZAL0BcEk2Cj9tZo=;
+        b=cwvYwi93Xujue0A27C22FmNrzTQWwpz6kGMpuy/j7b6GdGIeyuXjDFj4uvrkKbdMY1
+         wbzjtDiqdlQmXOUvl4vMZNCWJr/AQNzh4Zu796aKup9VgeQiLwEoIessiz3aRLIUwBS1
+         9nsjDL1bBTLClspl35thzutNjbZzhMCEMlBqNKATLqC3N432Uvi09vIXMAiBO3sv5rma
+         olhEyAbmkK3XBVmDzm5Hg2wHMk5hJpY308RsaAVmF0Q4qZfb+piv6BiawJB8ErACdDaq
+         b990X8S6pYUZrMF1qTPyawdpeq8c/otVnBPgB8GanDxRpq73TqLDwyedooU3I0JK4GWL
+         fpJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1O4Zn9P7hXV8yBwWw3nrL/yAlWgmCWvaLQgGvTWSTiU=;
-        b=WENYWQ+ewL3CsSDR5SpHF/czAkWKDLPzG9BmdT83gh1v7iG1rufC/EvJGOM6tcYvIz
-         Pc9lS1BlImbB3eGEBtFiiMasp2HKsuJ7QxQoz0EtiAmdsBcMDbgOCPOkAQEfLqVDXpQ0
-         +B7Mp3XucB1WXkSI2pmAqypYr0inKsajmLxPHW6eFEeAV01t3FoUHO2F6u0jxQxTCPRW
-         hUMFPgK7TjtBWSfxVsvGvlR1yQ8XAr1PdVTlJQwN3uYYV5pLX+XLB7RcLIqjohso6faW
-         XKBbiIUEfW++jcwuFmUn4Qy9Q0+kK6IlbGrbZmO49fygsoNwem22GLgH4ivFaeYuE9Kh
-         uWSw==
-X-Gm-Message-State: AOAM530Vb6nml23k73nzWX66xmcMpnOnE1VsXluRDoDkzNssO2dbsaf7
-        36628BSta7OfRkCbBwkpnnaTXd+QTRMWZQRB/ImF85Xw+eUbpU3Q
-X-Google-Smtp-Source: ABdhPJzAqpPT4aPR/aGiIlYWY2t/5OB6tUucV2i9E46bLc3PgE/QvkrTkvFrxNc99FCzS1QlriRnsR+hSVIQXLfM2t8=
-X-Received: by 2002:a63:c543:: with SMTP id g3mr16545032pgd.203.1599473946680;
- Mon, 07 Sep 2020 03:19:06 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sedeRDWMoezcviADR+g7IKIn4HgyZAL0BcEk2Cj9tZo=;
+        b=PI4qlvRoKiSGHK0Xq6oZ8G2K+0RY0goeZh9O5WHu/5+EcjFr0SaqcTC40zsozXwc2g
+         pJ63ql9oxtukkJ9njixPovn6fpMGYjaOs4M63+tsm/3WR9d7p4Qnkwe7+zYrQ8V8+fIQ
+         K50EmAmD8BZ9aV3eh4tjYNPmlLmDb7npQXaw98J5TOCeKo1kVMJuA1X2WiCe+HFtZYGO
+         9CLkrqms4+R9Z+5oMPWdHFzrM9/GY3/7w2pfazG5W+dE5m1lYWnQaRdmoNXs0DoRDhuC
+         KELi/HZ2mr4bAwj3OVjBMZzYtgHyEdDM8f9SJFDV7TskTbGfSyVRdxvFWxD56TWMx6Bk
+         Zlrg==
+X-Gm-Message-State: AOAM532VsyBkJo+7gkVxLaWZxE5bpm1XIS+4vubigZN/zfshS189RPa1
+        fwYzoYDef2Bp9vI4O7jXFPlsog==
+X-Google-Smtp-Source: ABdhPJwOUdKroG6QpMUeWOaEu37lfkcf9Z+8t4vcgTfcefFW6hh8pBRW9lP+6y7DW71SXqzxffL9hA==
+X-Received: by 2002:a17:906:f6c9:: with SMTP id jo9mr20007781ejb.233.1599473991581;
+        Mon, 07 Sep 2020 03:19:51 -0700 (PDT)
+Received: from localhost.localdomain (dh207-98-39.xnet.hr. [88.207.98.39])
+        by smtp.googlemail.com with ESMTPSA id q11sm14423160eds.16.2020.09.07.03.19.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Sep 2020 03:19:50 -0700 (PDT)
+From:   Robert Marko <robert.marko@sartura.hr>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Robert Marko <robert.marko@sartura.hr>,
+        Luka Perkov <luka.perkov@sartura.hr>
+Subject: [PATCH] arm: dts: IPQ4019: add SDHCI VQMMC LDO node
+Date:   Mon,  7 Sep 2020 12:19:37 +0200
+Message-Id: <20200907101937.10155-1-robert.marko@sartura.hr>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20200904154547.3836-1-brgl@bgdev.pl> <20200904154547.3836-4-brgl@bgdev.pl>
- <20200904163517.GW1891694@smile.fi.intel.com> <CAMpxmJWQsgV5WZrdPW3UUOVTEy1L6Y_rb7ThQK1QTRinmHSqWA@mail.gmail.com>
-In-Reply-To: <CAMpxmJWQsgV5WZrdPW3UUOVTEy1L6Y_rb7ThQK1QTRinmHSqWA@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 7 Sep 2020 13:18:49 +0300
-Message-ID: <CAHp75VdOWdwT-e5ufsZ8MEH=YtdBgm1=TDKn3f8fJxXY4YKh9A@mail.gmail.com>
-Subject: Re: [PATCH 03/23] lib: uaccess: provide getline_from_user()
-To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Kent Gibson <warthog618@gmail.com>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        linux-doc <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 7, 2020 at 1:05 PM Bartosz Golaszewski
-<bgolaszewski@baylibre.com> wrote:
-> On Fri, Sep 4, 2020 at 6:35 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> > On Fri, Sep 04, 2020 at 05:45:27PM +0200, Bartosz Golaszewski wrote:
-> > > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Since we now have driver for the SDHCI VQMMC LDO needed
+for I/0 voltage levels lets introduce the necessary node for it.
 
-> > Doesn't mm/util.c provides us something like this?
-> > strndup_user()?
-> >
->
-> Yes, there's both strndup_user() as well as strncpy_from_user(). The
-> problem is that they rely on the strings being NULL-terminated. This
-> is not guaranteed for debugfs file_operations write callbacks. We need
-> some helper that takes the minimum of bytes provided by userspace and
-> the buffer size and figure out how many bytes to actually copy IMO.
+Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+Cc: Luka Perkov <luka.perkov@sartura.hr>
+---
+ arch/arm/boot/dts/qcom-ipq4019.dtsi | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-Wouldn't this [1] approach work?
-
-[1]: https://elixir.bootlin.com/linux/v5.9-rc3/source/arch/x86/kernel/cpu/mtrr/if.c#L93
-
-
+diff --git a/arch/arm/boot/dts/qcom-ipq4019.dtsi b/arch/arm/boot/dts/qcom-ipq4019.dtsi
+index 6741a1972e55..7774dbd3cec7 100644
+--- a/arch/arm/boot/dts/qcom-ipq4019.dtsi
++++ b/arch/arm/boot/dts/qcom-ipq4019.dtsi
+@@ -211,6 +211,16 @@ tlmm: pinctrl@1000000 {
+ 			interrupts = <GIC_SPI 208 IRQ_TYPE_LEVEL_HIGH>;
+ 		};
+ 
++		vqmmc: regulator@1948000 {
++			compatible = "qcom,vqmmc-ipq4019-regulator";
++			reg = <0x01948000 0x4>;
++			regulator-name = "vqmmc";
++			regulator-min-microvolt = <1500000>;
++			regulator-max-microvolt = <3000000>;
++			regulator-always-on;
++			status = "disabled";
++		};
++
+ 		sdhci: sdhci@7824900 {
+ 			compatible = "qcom,sdhci-msm-v4";
+ 			reg = <0x7824900 0x11c>, <0x7824000 0x800>;
 -- 
-With Best Regards,
-Andy Shevchenko
+2.26.2
+
