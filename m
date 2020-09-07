@@ -2,85 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9E8B25FC9B
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 17:05:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7B6225FC9F
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 17:06:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730150AbgIGPFT convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 7 Sep 2020 11:05:19 -0400
-Received: from relay3-d.mail.gandi.net ([217.70.183.195]:41665 "EHLO
-        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730068AbgIGO4Z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 10:56:25 -0400
-X-Originating-IP: 91.224.148.103
-Received: from xps13 (unknown [91.224.148.103])
-        (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 4ED6660006;
-        Mon,  7 Sep 2020 14:56:14 +0000 (UTC)
-Date:   Mon, 7 Sep 2020 16:56:13 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     "Ramuthevar,Vadivel MuruganX" 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-        devicetree@vger.kernel.org, richard@nod.at, vigneshr@ti.com,
-        arnd@arndb.de, brendanhiggins@google.com, tglx@linutronix.de,
-        boris.brezillon@collabora.com, anders.roxell@linaro.org,
-        masonccyang@mxic.com.tw, robh+dt@kernel.org,
-        linux-mips@vger.kernel.org, hauke.mehrtens@intel.com,
-        andriy.shevchenko@intel.com, cheol.yong.kim@intel.com,
-        qi-ming.wu@intel.com
-Subject: Re: [RESEND PATCH v12 2/2] mtd: rawnand: Add NAND controller
- support on Intel LGM SoC
-Message-ID: <20200907165613.79f44c58@xps13>
-In-Reply-To: <20200907152025.66c18f5e@xps13>
-References: <20200817052709.47035-1-vadivel.muruganx.ramuthevar@linux.intel.com>
-        <20200817052709.47035-3-vadivel.muruganx.ramuthevar@linux.intel.com>
-        <20200907152025.66c18f5e@xps13>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1730035AbgIGPGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 11:06:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32888 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730081AbgIGO4a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 10:56:30 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 136EF21532;
+        Mon,  7 Sep 2020 14:56:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599490589;
+        bh=CxyQpGP9n8TbvTWZlcMnPBvQvdoM8Roi6NJr/4wY+3A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lLzcZLnJRYwJRZpj3pSMH+uuomTwjStzPuS6HLjLIR8uWd1c17Y4ebZXRr69gGDbk
+         XzOwh+xBK4S0GODqAZ9+JB/lT9bmvkpwmYARCwsKMtJ5kSbtocsB4b0nmXhOEwQg8b
+         HtSakIDPyMr4ieHYrnhthaO4x/1FviU5JovhMFEA=
+Date:   Mon, 7 Sep 2020 16:56:44 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        himadrispandya@gmail.com, dvyukov@google.com,
+        linux-usb@vger.kernel.org
+Cc:     perex@perex.cz, tiwai@suse.com, stern@rowland.harvard.ed,
+        linux-kernel@vger.kernel.org, marcel@holtmann.org,
+        johan.hedberg@gmail.com, linux-bluetooth@vger.kernel.org,
+        alsa-devel@alsa-project.org,
+        Alan Stern <stern@rowland.harvard.edu>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH v2 03/11] USB: core: message.c: use
+ usb_control_msg_send() in a few places
+Message-ID: <20200907145644.GA3767938@kroah.com>
+References: <20200907145108.3766613-1-gregkh@linuxfoundation.org>
+ <20200907145108.3766613-4-gregkh@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200907145108.3766613-4-gregkh@linuxfoundation.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Miquel Raynal <miquel.raynal@bootlin.com> wrote on Mon, 7 Sep 2020
-15:20:25 +0200:
-
-> Hi Murugan,
+On Mon, Sep 07, 2020 at 04:51:00PM +0200, Greg Kroah-Hartman wrote:
+> There are a few calls to usb_control_msg() that can be converted to use
+> usb_control_msg_send() instead, so do that in order to make the error
+> checking a bit simpler.
 > 
-> A few more comments below, but I guess the driver looks better now.
-> 
-> > +struct ebu_nand_controller {
-> > +	struct nand_controller controller;
-> > +	struct nand_chip chip;
-> > +	struct device *dev;
-> > +	void __iomem *ebu;
-> > +	void __iomem *hsnand;
-> > +	struct dma_chan *dma_tx;
-> > +	struct dma_chan *dma_rx;
-> > +	struct completion dma_access_complete;
-> > +	unsigned long clk_rate;
-> > +	struct clk *clk;
-> > +	u32 nd_para0;
-> > +	u8 cs_num;
-> > +	struct ebu_nand_cs cs[MAX_CS];
-> > +};
-> > +
-> > +static inline struct ebu_nand_controller *nand_to_ebu(struct nand_chip *chip)
-> > +{
-> > +	return container_of(chip, struct ebu_nand_controller, chip);
-> > +}
-> > +
-> > +static u8 ebu_nand_readb(struct nand_chip *chip)  
-> 
-> Can't you prefix with intel_ instead of ebu_ ?
+> Cc: Alan Stern <stern@rowland.harvard.edu>
+> Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Cc: linux-usb@vger.kernel.org
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Actually not, as the IP is shared with MIPS IIUC, just ignore this
-comment.
+Oops, Andy, sorry, you gave me a Reviewed-by: Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> on the previous version of this,
+I'll add it next round, or when it's queued up.
 
-Thanks,
-Miquèl
+thanks,
+
+greg k-h
