@@ -2,2381 +2,1665 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75B5725FACA
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 14:56:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B66BC25FAD5
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 14:58:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729379AbgIGMzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 08:55:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51382 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729306AbgIGMzZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 08:55:25 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3D4CD21481;
-        Mon,  7 Sep 2020 12:55:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599483322;
-        bh=r8XwLOT+Fl8GjUGOIWlzqJipDEUOQcYrqvqD7Z/xYoU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lzEe41B6Cw6b/aVYDrCUxrwIfinEQPc4BIdNz62rXyRyh/rR2VexN2Wb++9KNYnw0
-         1sm7cVt52uySUo+VwqEE3vGKUiMbJfDyX9Qpr6qreBk+R5il8kFAl6TgLTmS4WdZgH
-         uAlFwsE0SWuZmZH6g8H4zHNIbr6YjlutbPerfcbI=
-Date:   Mon, 7 Sep 2020 14:55:30 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Scott Branden <scott.branden@broadcom.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        Desmond Yan <desmond.yan@broadcom.com>,
-        James Hu <james.hu@broadcom.com>
-Subject: Re: [PATCH v3 2/3] misc: bcm-vk: add Broadcom VK driver
-Message-ID: <20200907125530.GC2371705@kroah.com>
-References: <20200825194400.28960-1-scott.branden@broadcom.com>
- <20200825194400.28960-3-scott.branden@broadcom.com>
+        id S1729346AbgIGM54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 08:57:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57130 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728792AbgIGM5T (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 08:57:19 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D790FC061757
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 05:56:56 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id m6so15752340wrn.0
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 05:56:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=DX/wLFYFeVXhzIRT5VsCuGfQwlv71PFbiFWiLX6WKk4=;
+        b=rczgryPo7ktFiBtDutxj6m7tqpkRWT+nRp4ovlGP/6wpDCa4RPDnrsd+QkhLC1iG6f
+         UPikfaRaSa6mBicsnukumsKAxwLWUZYZcRP/s+jxtO1HmokojtaDoxLM/TvM1BQsDKX8
+         He0LhqiWR4f1xAIoFxQpER3PwS5bTTPDNTZ4rO//Z2l6V4ACLVW9boeP2y+30dQO1hfP
+         QixYDwdwE0h+XUcyyC23sL3t9nhV1icVBAiiy0IqFIfzoHLcmMwx+sJm5ydubASrvqNp
+         AGrJUXvm5HiIRSQmR4YfEST+4spnKm7eg9vldGeWZ9XbCo1mw0iDdIuJfOKfVW+sMue4
+         7oxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=DX/wLFYFeVXhzIRT5VsCuGfQwlv71PFbiFWiLX6WKk4=;
+        b=fIXTd3810zIo5uktqL3ng3k8wr/Pi1+EuOmOGDJ/HgCIdz/BZrvb1u2ptCzNUTel9s
+         3AyNXsYY4UY5dHJSPMVQx4VVXrtAyeHDohC1detfwCoWPl9tCf0Gazt203YZzZ0QJxu/
+         1TAaSK6h49d0oFsXywJcGJcqtaXB1R4pxp7X02IwRONmgiHnDP5z8JfBI1esM70ICqjY
+         KtYCpmDY+1qWesFrVbkMPFjNqr5ifDf57UTq8k6k9nNPnbbakGFxM3HbYjHkYbfc/FSN
+         UJcc4dCxkFXHGYBay5xOQozrYlwf8v8yWbGzCQCmDNWQ6hQKgMxTFnDT9yWi76TaOT8P
+         sYvw==
+X-Gm-Message-State: AOAM532ReCG5Pns94gnmA/o4JDbrm0Dlhc4ftOvLfmYqpD1sfpvnysoU
+        P1aDmXpo9GXU4X28lqVYRTbDRQ==
+X-Google-Smtp-Source: ABdhPJxyf75PMwYxjGV8yDnvo3la0XluKkSjNq0SVFW0Q+2020hbC4XgFyVX+8AW78kAfPOzaoUN8Q==
+X-Received: by 2002:a5d:518b:: with SMTP id k11mr20948651wrv.369.1599483412760;
+        Mon, 07 Sep 2020 05:56:52 -0700 (PDT)
+Received: from localhost.localdomain (122.105.23.93.rev.sfr.net. [93.23.105.122])
+        by smtp.gmail.com with ESMTPSA id o4sm24845215wru.55.2020.09.07.05.56.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Sep 2020 05:56:52 -0700 (PDT)
+From:   Fabien Parent <fparent@baylibre.com>
+To:     linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Cc:     enric.balletbo@collabora.com, krzk@kernel.org,
+        masahiroy@kernel.org, ck.hu@mediatek.com, owen.chen@mediatek.com,
+        macpaul.lin@mediatek.com, mars.cheng@mediatek.com,
+        wendell.lin@mediatek.com, matthias.bgg@gmail.com, sboyd@kernel.org,
+        robh+dt@kernel.org, Fabien Parent <fparent@baylibre.com>
+Subject: [PATCH 2/2] clk: mediatek: Add MT8167 clock support
+Date:   Mon,  7 Sep 2020 14:56:46 +0200
+Message-Id: <20200907125646.1946282-2-fparent@baylibre.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200907125646.1946282-1-fparent@baylibre.com>
+References: <20200907125646.1946282-1-fparent@baylibre.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200825194400.28960-3-scott.branden@broadcom.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 25, 2020 at 12:43:59PM -0700, Scott Branden wrote:
-> Add Broadcom VK driver offload engine.
-> This driver interfaces to the VK PCIe offload engine to perform
-> should offload functions as video transcoding on multiple streams
-> in parallel.  VK device is booted from files loaded using
-> request_firmware_into_buf mechanism.  After booted card status is updated
-> and messages can then be sent to the card.
-> Such messages contain scatter gather list of addresses
-> to pull data from the host to perform operations on.
-> 
-> Co-developed-by: Desmond Yan <desmond.yan@broadcom.com>
-> Signed-off-by: Desmond Yan <desmond.yan@broadcom.com>
-> Co-developed-by: James Hu <james.hu@broadcom.com>
-> Signed-off-by: James Hu <james.hu@broadcom.com>
-> Signed-off-by: Scott Branden <scott.branden@broadcom.com>
-> ---
->  drivers/misc/Kconfig             |    1 +
->  drivers/misc/Makefile            |    1 +
->  drivers/misc/bcm-vk/Kconfig      |   29 +
->  drivers/misc/bcm-vk/Makefile     |   11 +
->  drivers/misc/bcm-vk/bcm_vk.h     |  430 +++++++++
->  drivers/misc/bcm-vk/bcm_vk_dev.c | 1475 +++++++++++++++++++++++++++++
->  drivers/misc/bcm-vk/bcm_vk_msg.c | 1523 ++++++++++++++++++++++++++++++
->  drivers/misc/bcm-vk/bcm_vk_msg.h |  211 +++++
->  drivers/misc/bcm-vk/bcm_vk_sg.c  |  275 ++++++
->  drivers/misc/bcm-vk/bcm_vk_sg.h  |   61 ++
->  drivers/misc/bcm-vk/bcm_vk_tty.c |  365 +++++++
->  11 files changed, 4382 insertions(+)
->  create mode 100644 drivers/misc/bcm-vk/Kconfig
->  create mode 100644 drivers/misc/bcm-vk/Makefile
->  create mode 100644 drivers/misc/bcm-vk/bcm_vk.h
->  create mode 100644 drivers/misc/bcm-vk/bcm_vk_dev.c
->  create mode 100644 drivers/misc/bcm-vk/bcm_vk_msg.c
->  create mode 100644 drivers/misc/bcm-vk/bcm_vk_msg.h
->  create mode 100644 drivers/misc/bcm-vk/bcm_vk_sg.c
->  create mode 100644 drivers/misc/bcm-vk/bcm_vk_sg.h
->  create mode 100644 drivers/misc/bcm-vk/bcm_vk_tty.c
-> 
-> diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
-> index ce136d685d14..9d42b5def81b 100644
-> --- a/drivers/misc/Kconfig
-> +++ b/drivers/misc/Kconfig
-> @@ -469,6 +469,7 @@ source "drivers/misc/genwqe/Kconfig"
->  source "drivers/misc/echo/Kconfig"
->  source "drivers/misc/cxl/Kconfig"
->  source "drivers/misc/ocxl/Kconfig"
-> +source "drivers/misc/bcm-vk/Kconfig"
->  source "drivers/misc/cardreader/Kconfig"
->  source "drivers/misc/habanalabs/Kconfig"
->  source "drivers/misc/uacce/Kconfig"
-> diff --git a/drivers/misc/Makefile b/drivers/misc/Makefile
-> index c7bd01ac6291..766837e4b961 100644
-> --- a/drivers/misc/Makefile
-> +++ b/drivers/misc/Makefile
-> @@ -52,6 +52,7 @@ obj-$(CONFIG_ECHO)		+= echo/
->  obj-$(CONFIG_CXL_BASE)		+= cxl/
->  obj-$(CONFIG_PCI_ENDPOINT_TEST)	+= pci_endpoint_test.o
->  obj-$(CONFIG_OCXL)		+= ocxl/
-> +obj-$(CONFIG_BCM_VK)		+= bcm-vk/
->  obj-y				+= cardreader/
->  obj-$(CONFIG_PVPANIC)   	+= pvpanic.o
->  obj-$(CONFIG_HABANA_AI)		+= habanalabs/
-> diff --git a/drivers/misc/bcm-vk/Kconfig b/drivers/misc/bcm-vk/Kconfig
-> new file mode 100644
-> index 000000000000..a3a020b19e3b
-> --- /dev/null
-> +++ b/drivers/misc/bcm-vk/Kconfig
-> @@ -0,0 +1,29 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +#
-> +# Broadcom VK device
-> +#
-> +config BCM_VK
-> +	tristate "Support for Broadcom VK Accelerators"
-> +	depends on PCI_MSI
-> +	help
-> +	  Select this option to enable support for Broadcom
-> +	  VK Accelerators.  VK is used for performing
-> +	  specific offload processing.
-> +	  This driver enables userspace programs to access these
-> +	  accelerators via /dev/bcm-vk.N devices.
-> +
-> +	  If unsure, say N.
-> +
-> +if BCM_VK
-> +
-> +config BCM_VK_QSTATS
-> +	bool "VK Queue Statistics"
-> +	help
-> +	  Turn on to enable Queue Statistics.
-> +	  These are useful for debugging purposes.
-> +	  Some performance loss by enabling this debug config.
-> +	  For properly operating PCIe hardware no need to enable this.
-> +
-> +	  If unsure, say N.
-> +
-> +endif
-> diff --git a/drivers/misc/bcm-vk/Makefile b/drivers/misc/bcm-vk/Makefile
-> new file mode 100644
-> index 000000000000..05cb213ee826
-> --- /dev/null
-> +++ b/drivers/misc/bcm-vk/Makefile
-> @@ -0,0 +1,11 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +#
-> +# Makefile for Broadcom VK driver
-> +#
-> +
-> +obj-$(CONFIG_BCM_VK) += bcm_vk.o
-> +bcm_vk-objs := \
-> +	bcm_vk_dev.o \
-> +	bcm_vk_msg.o \
-> +	bcm_vk_sg.o \
-> +	bcm_vk_tty.o
-> diff --git a/drivers/misc/bcm-vk/bcm_vk.h b/drivers/misc/bcm-vk/bcm_vk.h
-> new file mode 100644
-> index 000000000000..33478ccc1be3
-> --- /dev/null
-> +++ b/drivers/misc/bcm-vk/bcm_vk.h
-> @@ -0,0 +1,430 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Copyright 2018-2020 Broadcom.
-> + */
-> +
-> +#ifndef BCM_VK_H
-> +#define BCM_VK_H
-> +
-> +#include <linux/atomic.h>
-> +#include <linux/firmware.h>
-> +#include <linux/irq.h>
-> +#include <linux/miscdevice.h>
-> +#include <linux/mutex.h>
-> +#include <linux/pci.h>
-> +#include <linux/poll.h>
-> +#include <linux/sched/signal.h>
-> +#include <linux/tty.h>
-> +#include <linux/uaccess.h>
-> +#include <uapi/linux/misc/bcm_vk.h>
-> +
-> +#include "bcm_vk_msg.h"
-> +
-> +#define DRV_MODULE_NAME		"bcm-vk"
-> +
-> +/*
-> + * Load Image is completed in two stages:
-> + *
-> + * 1) When the VK device boot-up, M7 CPU runs and executes the BootROM.
-> + * The Secure Boot Loader (SBL) as part of the BootROM will run
-> + * to open up ITCM for host to push BOOT1 image.
-> + * SBL will authenticate the image before jumping to BOOT1 image.
-> + *
-> + * 2) Because BOOT1 image is a secured image, we also called it the
-> + * Secure Boot Image (SBI). At second stage, SBI will initialize DDR
-> + * and wait for host to push BOOT2 image to DDR.
-> + * SBI will authenticate the image before jumping to BOOT2 image.
-> + *
-> + */
-> +/* Location of registers of interest in BAR0 */
-> +
-> +/* Request register for Secure Boot Loader (SBL) download */
-> +#define BAR_CODEPUSH_SBL		0x400
-> +/* Start of ITCM */
-> +#define CODEPUSH_BOOT1_ENTRY		0x00400000
-> +#define CODEPUSH_MASK		        0xfffff000
-> +#define CODEPUSH_BOOTSTART		BIT(0)
-> +
-> +/* Boot Status register */
-> +#define BAR_BOOT_STATUS			0x404
-> +
-> +#define SRAM_OPEN			BIT(16)
-> +#define DDR_OPEN			BIT(17)
-> +
-> +/* Firmware loader progress status definitions */
-> +#define FW_LOADER_ACK_SEND_MORE_DATA	BIT(18)
-> +#define FW_LOADER_ACK_IN_PROGRESS	BIT(19)
-> +#define FW_LOADER_ACK_RCVD_ALL_DATA	BIT(20)
-> +
-> +/* Boot1/2 is running in standalone mode */
-> +#define BOOT_STDALONE_RUNNING		BIT(21)
-> +
-> +/* definitions for boot status register */
-> +#define BOOT_STATE_MASK			(0xffffffff & \
-> +					 ~(FW_LOADER_ACK_SEND_MORE_DATA | \
-> +					   FW_LOADER_ACK_IN_PROGRESS | \
-> +					   BOOT_STDALONE_RUNNING))
-> +
-> +#define BOOT_ERR_SHIFT			4
-> +#define BOOT_ERR_MASK			(0xf << BOOT_ERR_SHIFT)
-> +#define BOOT_PROG_MASK			0xf
-> +
-> +#define BROM_STATUS_NOT_RUN		0x2
-> +#define BROM_NOT_RUN			(SRAM_OPEN | BROM_STATUS_NOT_RUN)
-> +#define BROM_STATUS_COMPLETE		0x6
-> +#define BROM_RUNNING			(SRAM_OPEN | BROM_STATUS_COMPLETE)
-> +#define BOOT1_STATUS_COMPLETE		0x6
-> +#define BOOT1_RUNNING			(DDR_OPEN | BOOT1_STATUS_COMPLETE)
-> +#define BOOT2_STATUS_COMPLETE		0x6
-> +#define BOOT2_RUNNING			(FW_LOADER_ACK_RCVD_ALL_DATA | \
-> +					 BOOT2_STATUS_COMPLETE)
-> +
-> +/* Boot request for Secure Boot Image (SBI) */
-> +#define BAR_CODEPUSH_SBI		0x408
-> +/* 64M mapped to BAR2 */
-> +#define CODEPUSH_BOOT2_ENTRY		0x60000000
-> +
-> +#define BAR_CARD_STATUS			0x410
-> +/* CARD_STATUS definitions */
-> +#define CARD_STATUS_TTYVK0_READY	BIT(0)
-> +#define CARD_STATUS_TTYVK1_READY	BIT(1)
-> +
-> +#define BAR_BOOT1_STDALONE_PROGRESS	0x420
-> +#define BOOT1_STDALONE_SUCCESS		(BIT(13) | BIT(14))
-> +#define BOOT1_STDALONE_PROGRESS_MASK	BOOT1_STDALONE_SUCCESS
-> +
-> +#define BAR_METADATA_VERSION		0x440
-> +#define BAR_OS_UPTIME			0x444
-> +#define BAR_CHIP_ID			0x448
-> +#define MAJOR_SOC_REV(_chip_id)		(((_chip_id) >> 20) & 0xf)
-> +
-> +#define BAR_CARD_TEMPERATURE		0x45c
-> +/* defines for all temperature sensor */
-> +#define BCM_VK_TEMP_FIELD_MASK		0xff
-> +#define BCM_VK_CPU_TEMP_SHIFT		0
-> +#define BCM_VK_DDR0_TEMP_SHIFT		8
-> +#define BCM_VK_DDR1_TEMP_SHIFT		16
-> +
-> +#define BAR_CARD_VOLTAGE		0x460
-> +/* defines for voltage rail conversion */
-> +#define BCM_VK_VOLT_RAIL_MASK		0xffff
-> +#define BCM_VK_3P3_VOLT_REG_SHIFT	16
-> +
-> +#define BAR_CARD_ERR_LOG		0x464
-> +/* Error log register bit definition - register for error alerts */
-> +#define ERR_LOG_UECC			BIT(0)
-> +#define ERR_LOG_SSIM_BUSY		BIT(1)
-> +#define ERR_LOG_AFBC_BUSY		BIT(2)
-> +#define ERR_LOG_HIGH_TEMP_ERR		BIT(3)
-> +#define ERR_LOG_WDOG_TIMEOUT		BIT(4)
-> +#define ERR_LOG_SYS_FAULT		BIT(5)
-> +#define ERR_LOG_RAMDUMP			BIT(6)
-> +#define ERR_LOG_MEM_ALLOC_FAIL		BIT(8)
-> +#define ERR_LOG_LOW_TEMP_WARN		BIT(9)
-> +#define ERR_LOG_ECC			BIT(10)
-> +/* Alert bit definitions detectd on host */
-> +#define ERR_LOG_HOST_INTF_V_FAIL	BIT(13)
-> +#define ERR_LOG_HOST_HB_FAIL		BIT(14)
-> +#define ERR_LOG_HOST_PCIE_DWN		BIT(15)
-> +
-> +#define BAR_CARD_ERR_MEM		0x468
-> +/* defines for mem err, all fields have same width */
-> +#define BCM_VK_MEM_ERR_FIELD_MASK	0xff
-> +#define BCM_VK_ECC_MEM_ERR_SHIFT	0
-> +#define BCM_VK_UECC_MEM_ERR_SHIFT	8
-> +/* threshold of event occurrence and logs start to come out */
-> +#define BCM_VK_ECC_THRESHOLD		10
-> +#define BCM_VK_UECC_THRESHOLD		1
-> +
-> +#define BAR_CARD_PWR_AND_THRE		0x46c
-> +/* defines for power and temp threshold, all fields have same width */
-> +#define BCM_VK_PWR_AND_THRE_FIELD_MASK	0xff
-> +#define BCM_VK_LOW_TEMP_THRE_SHIFT	0
-> +#define BCM_VK_HIGH_TEMP_THRE_SHIFT	8
-> +#define BCM_VK_PWR_STATE_SHIFT		16
-> +
-> +#define BAR_CARD_STATIC_INFO		0x470
-> +
-> +#define BAR_INTF_VER			0x47c
-> +#define BAR_INTF_VER_MAJOR_SHIFT	16
-> +#define BAR_INTF_VER_MASK		0xffff
-> +/*
-> + * major and minor semantic version numbers supported
-> + * Please update as required on interface changes
-> + */
-> +#define SEMANTIC_MAJOR			1
-> +#define SEMANTIC_MINOR			0
-> +
-> +#define BAR_BOOTSRC_SELECT		0xc78
-> +/* BOOTSRC definitions */
-> +#define BOOTSRC_SOFT_ENABLE		BIT(14)
-> +
-> +/* Card OS Firmware version size */
-> +#define BAR_FIRMWARE_TAG_SIZE		50
-> +#define FIRMWARE_STATUS_PRE_INIT_DONE	0x1f
-> +
-> +/* VK MSG_ID defines */
-> +#define VK_MSG_ID_BITMAP_SIZE		4096
-> +#define VK_MSG_ID_BITMAP_MASK		(VK_MSG_ID_BITMAP_SIZE - 1)
-> +#define VK_MSG_ID_OVERFLOW		0xffff
-> +
-> +/* VK device supports a maximum of 3 bars */
-> +#define MAX_BAR	3
-> +
-> +/* default number of msg blk for inband SGL */
-> +#define BCM_VK_DEF_IB_SGL_BLK_LEN	 16
-> +#define BCM_VK_IB_SGL_BLK_MAX		 24
-> +
-> +enum pci_barno {
-> +	BAR_0 = 0,
-> +	BAR_1,
-> +	BAR_2
-> +};
-> +
-> +#define BCM_VK_NUM_TTY 2
-> +
-> +struct bcm_vk_tty {
-> +	struct tty_port port;
-> +	uint32_t to_offset;	/* bar offset to use */
-> +	uint32_t to_size;	/* to VK buffer size */
-> +	uint32_t wr;		/* write offset shadow */
-> +	uint32_t from_offset;	/* bar offset to use */
-> +	uint32_t from_size;	/* from VK buffer size */
-> +	uint32_t rd;		/* read offset shadow */
+Add the following clock support for MT8167 SoC: topckgen, apmixedsys,
+infracfg, audsys, imgsys, mfgcfg, mmsys, vdecsys.
+
+Signed-off-by: Fabien Parent <fparent@baylibre.com>
+---
+ drivers/clk/mediatek/Kconfig             |   48 +
+ drivers/clk/mediatek/Makefile            |    6 +
+ drivers/clk/mediatek/clk-mt8167-aud.c    |   66 ++
+ drivers/clk/mediatek/clk-mt8167-img.c    |   60 ++
+ drivers/clk/mediatek/clk-mt8167-mfgcfg.c |   58 ++
+ drivers/clk/mediatek/clk-mt8167-mm.c     |  132 +++
+ drivers/clk/mediatek/clk-mt8167-vdec.c   |   73 ++
+ drivers/clk/mediatek/clk-mt8167.c        | 1069 ++++++++++++++++++++++
+ 8 files changed, 1512 insertions(+)
+ create mode 100644 drivers/clk/mediatek/clk-mt8167-aud.c
+ create mode 100644 drivers/clk/mediatek/clk-mt8167-img.c
+ create mode 100644 drivers/clk/mediatek/clk-mt8167-mfgcfg.c
+ create mode 100644 drivers/clk/mediatek/clk-mt8167-mm.c
+ create mode 100644 drivers/clk/mediatek/clk-mt8167-vdec.c
+ create mode 100644 drivers/clk/mediatek/clk-mt8167.c
+
+diff --git a/drivers/clk/mediatek/Kconfig b/drivers/clk/mediatek/Kconfig
+index 89ceb2fbc7c4..ce8475098b31 100644
+--- a/drivers/clk/mediatek/Kconfig
++++ b/drivers/clk/mediatek/Kconfig
+@@ -352,6 +352,54 @@ config COMMON_CLK_MT8135
+ 	help
+ 	  This driver supports MediaTek MT8135 clocks.
+ 
++config COMMON_CLK_MT8167
++	bool "Clock driver for MediaTek MT8167"
++	depends on (ARCH_MEDIATEK && ARM64) || COMPILE_TEST
++	select COMMON_CLK_MEDIATEK
++	default ARCH_MEDIATEK
++	help
++	  This driver supports MediaTek MT8167 basic clocks.
++
++config COMMON_CLK_MT8167_AUDSYS
++	bool "Clock driver for MediaTek MT8167 audsys"
++	depends on (ARCH_MEDIATEK && ARM64) || COMPILE_TEST
++	select COMMON_CLK_MEDIATEK
++	default ARCH_MEDIATEK
++	help
++	  This driver supports MediaTek MT8167 audsys clocks.
++
++config COMMON_CLK_MT8167_IMGSYS
++	bool "Clock driver for MediaTek MT8167 imgsys"
++	depends on (ARCH_MEDIATEK && ARM64) || COMPILE_TEST
++	select COMMON_CLK_MEDIATEK
++	default ARCH_MEDIATEK
++	help
++	  This driver supports MediaTek MT8167 imgsys clocks.
++
++config COMMON_CLK_MT8167_MFGCFG
++	bool "Clock driver for MediaTek MT8167 mfgcfg"
++	depends on (ARCH_MEDIATEK && ARM64) || COMPILE_TEST
++	select COMMON_CLK_MEDIATEK
++	default ARCH_MEDIATEK
++	help
++	  This driver supports MediaTek MT8167 mfgcfg clocks.
++
++config COMMON_CLK_MT8167_MMSYS
++	bool "Clock driver for MediaTek MT8167 mmsys"
++	depends on (ARCH_MEDIATEK && ARM64) || COMPILE_TEST
++	select COMMON_CLK_MEDIATEK
++	default ARCH_MEDIATEK
++	help
++	  This driver supports MediaTek MT8167 mmsys clocks.
++
++config COMMON_CLK_MT8167_VDECSYS
++	bool "Clock driver for MediaTek MT8167 vdecsys"
++	depends on (ARCH_MEDIATEK && ARM64) || COMPILE_TEST
++	select COMMON_CLK_MEDIATEK
++	default ARCH_MEDIATEK
++	help
++	  This driver supports MediaTek MT8167 vdecsys clocks.
++
+ config COMMON_CLK_MT8173
+ 	bool "Clock driver for MediaTek MT8173"
+ 	depends on ARCH_MEDIATEK || COMPILE_TEST
+diff --git a/drivers/clk/mediatek/Makefile b/drivers/clk/mediatek/Makefile
+index 959b556d32ea..3b0c2be73824 100644
+--- a/drivers/clk/mediatek/Makefile
++++ b/drivers/clk/mediatek/Makefile
+@@ -47,6 +47,12 @@ obj-$(CONFIG_COMMON_CLK_MT7629) += clk-mt7629.o
+ obj-$(CONFIG_COMMON_CLK_MT7629_ETHSYS) += clk-mt7629-eth.o
+ obj-$(CONFIG_COMMON_CLK_MT7629_HIFSYS) += clk-mt7629-hif.o
+ obj-$(CONFIG_COMMON_CLK_MT8135) += clk-mt8135.o
++obj-$(CONFIG_COMMON_CLK_MT8167) += clk-mt8167.o
++obj-$(CONFIG_COMMON_CLK_MT8167_AUDSYS) += clk-mt8167-aud.o
++obj-$(CONFIG_COMMON_CLK_MT8167_IMGSYS) += clk-mt8167-img.o
++obj-$(CONFIG_COMMON_CLK_MT8167_MFGCFG) += clk-mt8167-mfgcfg.o
++obj-$(CONFIG_COMMON_CLK_MT8167_MMSYS) += clk-mt8167-mm.o
++obj-$(CONFIG_COMMON_CLK_MT8167_VDECSYS) += clk-mt8167-vdec.o
+ obj-$(CONFIG_COMMON_CLK_MT8173) += clk-mt8173.o
+ obj-$(CONFIG_COMMON_CLK_MT8173_MMSYS) += clk-mt8173-mm.o
+ obj-$(CONFIG_COMMON_CLK_MT8183) += clk-mt8183.o
+diff --git a/drivers/clk/mediatek/clk-mt8167-aud.c b/drivers/clk/mediatek/clk-mt8167-aud.c
+new file mode 100644
+index 000000000000..3f7bf6485792
+--- /dev/null
++++ b/drivers/clk/mediatek/clk-mt8167-aud.c
+@@ -0,0 +1,66 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (c) 2020 MediaTek Inc.
++ * Copyright (c) 2020 BayLibre, SAS
++ * Author: James Liao <jamesjj.liao@mediatek.com>
++ *         Fabien Parent <fparent@baylibre.com>
++ */
++
++#include <linux/clk-provider.h>
++#include <linux/of.h>
++#include <linux/of_address.h>
++#include <linux/of_device.h>
++#include <linux/platform_device.h>
++
++#include "clk-mtk.h"
++#include "clk-gate.h"
++
++#include <dt-bindings/clock/mt8167-clk.h>
++
++static const struct mtk_gate_regs aud_cg_regs = {
++	.set_ofs = 0x0,
++	.clr_ofs = 0x0,
++	.sta_ofs = 0x0,
++};
++
++#define GATE_AUD(_id, _name, _parent, _shift) {	\
++		.id = _id,			\
++		.name = _name,			\
++		.parent_name = _parent,		\
++		.regs = &aud_cg_regs,		\
++		.shift = _shift,		\
++		.ops = &mtk_clk_gate_ops_no_setclr,		\
++	}
++
++static const struct mtk_gate aud_clks[] __initconst = {
++	GATE_AUD(CLK_AUD_AFE, "aud_afe", "clk26m_ck", 2),
++	GATE_AUD(CLK_AUD_I2S, "aud_i2s", "i2s_infra_bck", 6),
++	GATE_AUD(CLK_AUD_22M, "aud_22m", "rg_aud_engen1", 8),
++	GATE_AUD(CLK_AUD_24M, "aud_24m", "rg_aud_engen2", 9),
++	GATE_AUD(CLK_AUD_INTDIR, "aud_intdir", "rg_aud_spdif_in", 15),
++	GATE_AUD(CLK_AUD_APLL2_TUNER, "aud_apll2_tuner", "rg_aud_engen2", 18),
++	GATE_AUD(CLK_AUD_APLL_TUNER, "aud_apll_tuner", "rg_aud_engen1", 19),
++	GATE_AUD(CLK_AUD_HDMI, "aud_hdmi", "apll12_div4", 20),
++	GATE_AUD(CLK_AUD_SPDF, "aud_spdf", "apll12_div6", 21),
++	GATE_AUD(CLK_AUD_ADC, "aud_adc", "aud_afe", 24),
++	GATE_AUD(CLK_AUD_DAC, "aud_dac", "aud_afe", 25),
++	GATE_AUD(CLK_AUD_DAC_PREDIS, "aud_dac_predis", "aud_afe", 26),
++	GATE_AUD(CLK_AUD_TML, "aud_tml", "aud_afe", 27),
++};
++
++static void __init mtk_audsys_init(struct device_node *node)
++{
++	struct clk_onecell_data *clk_data;
++	int r;
++
++	clk_data = mtk_alloc_clk_data(CLK_AUD_NR_CLK);
++
++	mtk_clk_register_gates(node, aud_clks, ARRAY_SIZE(aud_clks), clk_data);
++
++	r = of_clk_add_provider(node, of_clk_src_onecell_get, clk_data);
++	if (r)
++		pr_err("%s(): could not register clock provider: %d\n",
++			__func__, r);
++
++}
++CLK_OF_DECLARE(mtk_audsys, "mediatek,mt8167-audsys", mtk_audsys_init);
+diff --git a/drivers/clk/mediatek/clk-mt8167-img.c b/drivers/clk/mediatek/clk-mt8167-img.c
+new file mode 100644
+index 000000000000..3b4ec9eae432
+--- /dev/null
++++ b/drivers/clk/mediatek/clk-mt8167-img.c
+@@ -0,0 +1,60 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (c) 2020 MediaTek Inc.
++ * Copyright (c) 2020 BayLibre, SAS
++ * Author: James Liao <jamesjj.liao@mediatek.com>
++ *         Fabien Parent <fparent@baylibre.com>
++ */
++
++#include <linux/clk-provider.h>
++#include <linux/of.h>
++#include <linux/of_address.h>
++#include <linux/of_device.h>
++#include <linux/platform_device.h>
++
++#include "clk-mtk.h"
++#include "clk-gate.h"
++
++#include <dt-bindings/clock/mt8167-clk.h>
++
++static const struct mtk_gate_regs img_cg_regs = {
++	.set_ofs = 0x4,
++	.clr_ofs = 0x8,
++	.sta_ofs = 0x0,
++};
++
++#define GATE_IMG(_id, _name, _parent, _shift) {		\
++		.id = _id,				\
++		.name = _name,				\
++		.parent_name = _parent,			\
++		.regs = &img_cg_regs,			\
++		.shift = _shift,			\
++		.ops = &mtk_clk_gate_ops_setclr,	\
++	}
++
++static const struct mtk_gate img_clks[] __initconst = {
++	GATE_IMG(CLK_IMG_LARB1_SMI, "img_larb1_smi", "smi_mm", 0),
++	GATE_IMG(CLK_IMG_CAM_SMI, "img_cam_smi", "smi_mm", 5),
++	GATE_IMG(CLK_IMG_CAM_CAM, "img_cam_cam", "smi_mm", 6),
++	GATE_IMG(CLK_IMG_SEN_TG, "img_sen_tg", "cam_mm", 7),
++	GATE_IMG(CLK_IMG_SEN_CAM, "img_sen_cam", "smi_mm", 8),
++	GATE_IMG(CLK_IMG_VENC, "img_venc", "smi_mm", 9),
++};
++
++static void __init mtk_imgsys_init(struct device_node *node)
++{
++	struct clk_onecell_data *clk_data;
++	int r;
++
++	clk_data = mtk_alloc_clk_data(CLK_IMG_NR_CLK);
++
++	mtk_clk_register_gates(node, img_clks, ARRAY_SIZE(img_clks), clk_data);
++
++	r = of_clk_add_provider(node, of_clk_src_onecell_get, clk_data);
++
++	if (r)
++		pr_err("%s(): could not register clock provider: %d\n",
++			__func__, r);
++
++}
++CLK_OF_DECLARE(mtk_imgsys, "mediatek,mt8167-imgsys", mtk_imgsys_init);
+diff --git a/drivers/clk/mediatek/clk-mt8167-mfgcfg.c b/drivers/clk/mediatek/clk-mt8167-mfgcfg.c
+new file mode 100644
+index 000000000000..90b871730f2d
+--- /dev/null
++++ b/drivers/clk/mediatek/clk-mt8167-mfgcfg.c
+@@ -0,0 +1,58 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (c) 2020 MediaTek Inc.
++ * Copyright (c) 2020 BayLibre, SAS
++ * Author: James Liao <jamesjj.liao@mediatek.com>
++ *         Fabien Parent <fparent@baylibre.com>
++ */
++
++#include <linux/clk-provider.h>
++#include <linux/of.h>
++#include <linux/of_address.h>
++#include <linux/of_device.h>
++#include <linux/platform_device.h>
++
++#include "clk-mtk.h"
++#include "clk-gate.h"
++
++#include <dt-bindings/clock/mt8167-clk.h>
++
++static const struct mtk_gate_regs mfg_cg_regs = {
++	.set_ofs = 0x4,
++	.clr_ofs = 0x8,
++	.sta_ofs = 0x0,
++};
++
++#define GATE_MFG(_id, _name, _parent, _shift) {		\
++		.id = _id,				\
++		.name = _name,				\
++		.parent_name = _parent,			\
++		.regs = &mfg_cg_regs,			\
++		.shift = _shift,			\
++		.ops = &mtk_clk_gate_ops_setclr,	\
++	}
++
++static const struct mtk_gate mfg_clks[] __initconst = {
++	GATE_MFG(CLK_MFG_BAXI, "mfg_baxi", "ahb_infra_sel", 0),
++	GATE_MFG(CLK_MFG_BMEM, "mfg_bmem", "gfmux_emi1x_sel", 1),
++	GATE_MFG(CLK_MFG_BG3D, "mfg_bg3d", "mfg_mm", 2),
++	GATE_MFG(CLK_MFG_B26M, "mfg_b26m", "clk26m_ck", 3),
++};
++
++static void __init mtk_mfgcfg_init(struct device_node *node)
++{
++	struct clk_onecell_data *clk_data;
++	int r;
++
++	clk_data = mtk_alloc_clk_data(CLK_MFG_NR_CLK);
++
++	mtk_clk_register_gates(node, mfg_clks, ARRAY_SIZE(mfg_clks), clk_data);
++
++	r = of_clk_add_provider(node, of_clk_src_onecell_get, clk_data);
++
++	if (r)
++		pr_err("%s(): could not register clock provider: %d\n",
++			__func__, r);
++
++}
++CLK_OF_DECLARE(mtk_mfgcfg, "mediatek,mt8167-mfgcfg", mtk_mfgcfg_init);
+diff --git a/drivers/clk/mediatek/clk-mt8167-mm.c b/drivers/clk/mediatek/clk-mt8167-mm.c
+new file mode 100644
+index 000000000000..963b129aade1
+--- /dev/null
++++ b/drivers/clk/mediatek/clk-mt8167-mm.c
+@@ -0,0 +1,132 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (c) 2020 MediaTek Inc.
++ * Copyright (c) 2020 BayLibre, SAS
++ * Author: James Liao <jamesjj.liao@mediatek.com>
++ *         Fabien Parent <fparent@baylibre.com>
++ */
++
++#include <linux/clk-provider.h>
++#include <linux/of.h>
++#include <linux/of_address.h>
++#include <linux/of_device.h>
++#include <linux/platform_device.h>
++
++#include "clk-mtk.h"
++#include "clk-gate.h"
++
++#include <dt-bindings/clock/mt8167-clk.h>
++
++static const struct mtk_gate_regs mm0_cg_regs = {
++	.set_ofs = 0x104,
++	.clr_ofs = 0x108,
++	.sta_ofs = 0x100,
++};
++
++static const struct mtk_gate_regs mm1_cg_regs = {
++	.set_ofs = 0x114,
++	.clr_ofs = 0x118,
++	.sta_ofs = 0x110,
++};
++
++#define GATE_MM0(_id, _name, _parent, _shift) {		\
++		.id = _id,				\
++		.name = _name,				\
++		.parent_name = _parent,			\
++		.regs = &mm0_cg_regs,			\
++		.shift = _shift,			\
++		.ops = &mtk_clk_gate_ops_setclr,	\
++	}
++
++#define GATE_MM1(_id, _name, _parent, _shift) {		\
++		.id = _id,				\
++		.name = _name,				\
++		.parent_name = _parent,			\
++		.regs = &mm1_cg_regs,			\
++		.shift = _shift,			\
++		.ops = &mtk_clk_gate_ops_setclr,	\
++	}
++
++static const struct mtk_gate mm_clks[] = {
++	/* MM0 */
++	GATE_MM0(CLK_MM_SMI_COMMON, "mm_smi_common", "smi_mm", 0),
++	GATE_MM0(CLK_MM_SMI_LARB0, "mm_smi_larb0", "smi_mm", 1),
++	GATE_MM0(CLK_MM_CAM_MDP, "mm_cam_mdp", "smi_mm", 2),
++	GATE_MM0(CLK_MM_MDP_RDMA, "mm_mdp_rdma", "smi_mm", 3),
++	GATE_MM0(CLK_MM_MDP_RSZ0, "mm_mdp_rsz0", "smi_mm", 4),
++	GATE_MM0(CLK_MM_MDP_RSZ1, "mm_mdp_rsz1", "smi_mm", 5),
++	GATE_MM0(CLK_MM_MDP_TDSHP, "mm_mdp_tdshp", "smi_mm", 6),
++	GATE_MM0(CLK_MM_MDP_WDMA, "mm_mdp_wdma", "smi_mm", 7),
++	GATE_MM0(CLK_MM_MDP_WROT, "mm_mdp_wrot", "smi_mm", 8),
++	GATE_MM0(CLK_MM_FAKE_ENG, "mm_fake_eng", "smi_mm", 9),
++	GATE_MM0(CLK_MM_DISP_OVL0, "mm_disp_ovl0", "smi_mm", 10),
++	GATE_MM0(CLK_MM_DISP_RDMA0, "mm_disp_rdma0", "smi_mm", 11),
++	GATE_MM0(CLK_MM_DISP_RDMA1, "mm_disp_rdma1", "smi_mm", 12),
++	GATE_MM0(CLK_MM_DISP_WDMA, "mm_disp_wdma", "smi_mm", 13),
++	GATE_MM0(CLK_MM_DISP_COLOR, "mm_disp_color", "smi_mm", 14),
++	GATE_MM0(CLK_MM_DISP_CCORR, "mm_disp_ccorr", "smi_mm", 15),
++	GATE_MM0(CLK_MM_DISP_AAL, "mm_disp_aal", "smi_mm", 16),
++	GATE_MM0(CLK_MM_DISP_GAMMA, "mm_disp_gamma", "smi_mm", 17),
++	GATE_MM0(CLK_MM_DISP_DITHER, "mm_disp_dither", "smi_mm", 18),
++	GATE_MM0(CLK_MM_DISP_UFOE, "mm_disp_ufoe", "smi_mm", 19),
++	/* MM1 */
++	GATE_MM1(CLK_MM_DISP_PWM_MM, "mm_disp_pwm_mm", "smi_mm", 0),
++	GATE_MM1(CLK_MM_DISP_PWM_26M, "mm_disp_pwm_26m", "smi_mm", 1),
++	GATE_MM1(CLK_MM_DSI_ENGINE, "mm_dsi_engine", "smi_mm", 2),
++	GATE_MM1(CLK_MM_DSI_DIGITAL, "mm_dsi_digital", "dsi0_lntc_dsick", 3),
++	GATE_MM1(CLK_MM_DPI0_ENGINE, "mm_dpi0_engine", "smi_mm", 4),
++	GATE_MM1(CLK_MM_DPI0_PXL, "mm_dpi0_pxl", "rg_fdpi0", 5),
++	GATE_MM1(CLK_MM_LVDS_PXL, "mm_lvds_pxl", "vpll_dpix", 14),
++	GATE_MM1(CLK_MM_LVDS_CTS, "mm_lvds_cts", "lvdstx_dig_cts", 15),
++	GATE_MM1(CLK_MM_DPI1_ENGINE, "mm_dpi1_engine", "smi_mm", 16),
++	GATE_MM1(CLK_MM_DPI1_PXL, "mm_dpi1_pxl", "rg_fdpi1", 17),
++	GATE_MM1(CLK_MM_HDMI_PXL, "mm_hdmi_pxl", "rg_fdpi1", 18),
++	GATE_MM1(CLK_MM_HDMI_SPDIF, "mm_hdmi_spdif", "apll12_div6", 19),
++	GATE_MM1(CLK_MM_HDMI_ADSP_BCK, "mm_hdmi_adsp_b", "apll12_div4b", 20),
++	GATE_MM1(CLK_MM_HDMI_PLL, "mm_hdmi_pll", "hdmtx_dig_cts", 21),
++};
++
++struct clk_mt8167_mm_driver_data {
++	const struct mtk_gate *gates_clk;
++	int gates_num;
++};
++
++static const struct clk_mt8167_mm_driver_data mt8167_mmsys_driver_data = {
++	.gates_clk = mm_clks,
++	.gates_num = ARRAY_SIZE(mm_clks),
++};
++
++static int clk_mt8167_mm_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct device_node *node = dev->parent->of_node;
++	const struct clk_mt8167_mm_driver_data *data;
++	struct clk_onecell_data *clk_data;
++	int ret;
++
++	clk_data = mtk_alloc_clk_data(CLK_MM_NR_CLK);
++	if (!clk_data)
++		return -ENOMEM;
++
++	data = &mt8167_mmsys_driver_data;
++
++	ret = mtk_clk_register_gates(node, data->gates_clk, data->gates_num,
++				     clk_data);
++	if (ret)
++		return ret;
++
++	ret = of_clk_add_provider(node, of_clk_src_onecell_get, clk_data);
++	if (ret)
++		return ret;
++
++	return 0;
++}
++
++static struct platform_driver clk_mt8173_mm_drv = {
++	.driver = {
++		.name = "clk-mt8167-mm",
++	},
++	.probe = clk_mt8167_mm_probe,
++};
++
++builtin_platform_driver(clk_mt8173_mm_drv);
+diff --git a/drivers/clk/mediatek/clk-mt8167-vdec.c b/drivers/clk/mediatek/clk-mt8167-vdec.c
+new file mode 100644
+index 000000000000..910b28355ec0
+--- /dev/null
++++ b/drivers/clk/mediatek/clk-mt8167-vdec.c
+@@ -0,0 +1,73 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (c) 2020 MediaTek Inc.
++ * Copyright (c) 2020 BayLibre, SAS
++ * Author: James Liao <jamesjj.liao@mediatek.com>
++ *         Fabien Parent <fparent@baylibre.com>
++ */
++
++#include <linux/clk-provider.h>
++#include <linux/of.h>
++#include <linux/of_address.h>
++#include <linux/of_device.h>
++#include <linux/platform_device.h>
++
++#include "clk-mtk.h"
++#include "clk-gate.h"
++
++#include <dt-bindings/clock/mt8167-clk.h>
++
++static const struct mtk_gate_regs vdec0_cg_regs = {
++	.set_ofs = 0x0,
++	.clr_ofs = 0x4,
++	.sta_ofs = 0x0,
++};
++
++static const struct mtk_gate_regs vdec1_cg_regs = {
++	.set_ofs = 0x8,
++	.clr_ofs = 0xc,
++	.sta_ofs = 0x8,
++};
++
++#define GATE_VDEC0_I(_id, _name, _parent, _shift) {	\
++		.id = _id,				\
++		.name = _name,				\
++		.parent_name = _parent,			\
++		.regs = &vdec0_cg_regs,			\
++		.shift = _shift,			\
++		.ops = &mtk_clk_gate_ops_setclr_inv,	\
++	}
++
++#define GATE_VDEC1_I(_id, _name, _parent, _shift) {	\
++		.id = _id,				\
++		.name = _name,				\
++		.parent_name = _parent,			\
++		.regs = &vdec1_cg_regs,			\
++		.shift = _shift,			\
++		.ops = &mtk_clk_gate_ops_setclr_inv,	\
++	}
++
++static const struct mtk_gate vdec_clks[] __initconst = {
++	/* VDEC0 */
++	GATE_VDEC0_I(CLK_VDEC_CKEN, "vdec_cken", "rg_vdec", 0),
++	/* VDEC1 */
++	GATE_VDEC1_I(CLK_VDEC_LARB1_CKEN, "vdec_larb1_cken", "smi_mm", 0),
++};
++
++static void __init mtk_vdecsys_init(struct device_node *node)
++{
++	struct clk_onecell_data *clk_data;
++	int r;
++
++	clk_data = mtk_alloc_clk_data(CLK_VDEC_NR_CLK);
++
++	mtk_clk_register_gates(node, vdec_clks, ARRAY_SIZE(vdec_clks), clk_data);
++
++	r = of_clk_add_provider(node, of_clk_src_onecell_get, clk_data);
++
++	if (r)
++		pr_err("%s(): could not register clock provider: %d\n",
++			__func__, r);
++
++}
++CLK_OF_DECLARE(mtk_vdecsys, "mediatek,mt8167-vdecsys", mtk_vdecsys_init);
+diff --git a/drivers/clk/mediatek/clk-mt8167.c b/drivers/clk/mediatek/clk-mt8167.c
+new file mode 100644
+index 000000000000..24d07bffef77
+--- /dev/null
++++ b/drivers/clk/mediatek/clk-mt8167.c
+@@ -0,0 +1,1069 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (c) 2020 MediaTek Inc.
++ * Copyright (c) 2020 BayLibre, SAS
++ * Author: James Liao <jamesjj.liao@mediatek.com>
++ *         Fabien Parent <fparent@baylibre.com>
++ */
++
++#include <linux/delay.h>
++#include <linux/of.h>
++#include <linux/of_address.h>
++#include <linux/slab.h>
++#include <linux/mfd/syscon.h>
++
++#include "clk-mtk.h"
++#include "clk-gate.h"
++
++#include <dt-bindings/clock/mt8167-clk.h>
++
++static DEFINE_SPINLOCK(mt8167_clk_lock);
++
++static const struct mtk_fixed_clk fixed_clks[] __initconst = {
++	FIXED_CLK(CLK_TOP_CLK_NULL, "clk_null", NULL, 0),
++	FIXED_CLK(CLK_TOP_I2S_INFRA_BCK, "i2s_infra_bck", "clk_null", 26000000),
++	FIXED_CLK(CLK_TOP_MEMPLL, "mempll", "clk26m", 800000000),
++	FIXED_CLK(CLK_TOP_DSI0_LNTC_DSICK, "dsi0_lntc_dsick", "clk26m", 75000000),
++	FIXED_CLK(CLK_TOP_VPLL_DPIX, "vpll_dpix", "clk26m", 75000000),
++	FIXED_CLK(CLK_TOP_LVDSTX_CLKDIG_CTS, "lvdstx_dig_cts", "clk26m", 52500000),
++};
++
++static const struct mtk_fixed_factor top_divs[] __initconst = {
++	FACTOR(CLK_TOP_DMPLL, "dmpll_ck", "mempll", 1, 1),
++	FACTOR(CLK_TOP_MAINPLL_D2, "mainpll_d2", "mainpll", 1, 2),
++	FACTOR(CLK_TOP_MAINPLL_D4, "mainpll_d4", "mainpll", 1, 4),
++	FACTOR(CLK_TOP_MAINPLL_D8, "mainpll_d8", "mainpll", 1, 8),
++	FACTOR(CLK_TOP_MAINPLL_D16, "mainpll_d16", "mainpll", 1, 16),
++	FACTOR(CLK_TOP_MAINPLL_D11, "mainpll_d11", "mainpll", 1, 11),
++	FACTOR(CLK_TOP_MAINPLL_D22, "mainpll_d22", "mainpll", 1, 22),
++	FACTOR(CLK_TOP_MAINPLL_D3, "mainpll_d3", "mainpll", 1, 3),
++	FACTOR(CLK_TOP_MAINPLL_D6, "mainpll_d6", "mainpll", 1, 6),
++	FACTOR(CLK_TOP_MAINPLL_D12, "mainpll_d12", "mainpll", 1, 12),
++	FACTOR(CLK_TOP_MAINPLL_D5, "mainpll_d5", "mainpll", 1, 5),
++	FACTOR(CLK_TOP_MAINPLL_D10, "mainpll_d10", "mainpll", 1, 10),
++	FACTOR(CLK_TOP_MAINPLL_D20, "mainpll_d20", "mainpll", 1, 20),
++	FACTOR(CLK_TOP_MAINPLL_D40, "mainpll_d40", "mainpll", 1, 40),
++	FACTOR(CLK_TOP_MAINPLL_D7, "mainpll_d7", "mainpll", 1, 7),
++	FACTOR(CLK_TOP_MAINPLL_D14, "mainpll_d14", "mainpll", 1, 14),
++	FACTOR(CLK_TOP_UNIVPLL_D2, "univpll_d2", "univpll", 1, 2),
++	FACTOR(CLK_TOP_UNIVPLL_D4, "univpll_d4", "univpll", 1, 4),
++	FACTOR(CLK_TOP_UNIVPLL_D8, "univpll_d8", "univpll", 1, 8),
++	FACTOR(CLK_TOP_UNIVPLL_D16, "univpll_d16", "univpll", 1, 16),
++	FACTOR(CLK_TOP_UNIVPLL_D3, "univpll_d3", "univpll", 1, 3),
++	FACTOR(CLK_TOP_UNIVPLL_D6, "univpll_d6", "univpll", 1, 6),
++	FACTOR(CLK_TOP_UNIVPLL_D12, "univpll_d12", "univpll", 1, 12),
++	FACTOR(CLK_TOP_UNIVPLL_D24, "univpll_d24", "univpll", 1, 24),
++	FACTOR(CLK_TOP_UNIVPLL_D5, "univpll_d5", "univpll", 1, 5),
++	FACTOR(CLK_TOP_UNIVPLL_D20, "univpll_d20", "univpll", 1, 20),
++	FACTOR(CLK_TOP_MMPLL380M, "mmpll380m", "mmpll", 1, 1),
++	FACTOR(CLK_TOP_MMPLL_D2, "mmpll_d2", "mmpll", 1, 2),
++	FACTOR(CLK_TOP_MMPLL_200M, "mmpll_200m", "mmpll", 1, 3),
++	FACTOR(CLK_TOP_LVDSPLL, "lvdspll_ck", "lvdspll", 1, 1),
++	FACTOR(CLK_TOP_LVDSPLL_D2, "lvdspll_d2", "lvdspll", 1, 2),
++	FACTOR(CLK_TOP_LVDSPLL_D4, "lvdspll_d4", "lvdspll", 1, 4),
++	FACTOR(CLK_TOP_LVDSPLL_D8, "lvdspll_d8", "lvdspll", 1, 8),
++	FACTOR(CLK_TOP_USB_PHY48M, "usb_phy48m_ck", "univpll", 1, 26),
++	FACTOR(CLK_TOP_APLL1, "apll1_ck", "apll1", 1, 1),
++	FACTOR(CLK_TOP_APLL1_D2, "apll1_d2", "apll1_ck", 1, 2),
++	FACTOR(CLK_TOP_APLL1_D4, "apll1_d4", "rg_apll1_d2_en", 1, 2),
++	FACTOR(CLK_TOP_APLL1_D8, "apll1_d8", "rg_apll1_d4_en", 1, 2),
++	FACTOR(CLK_TOP_APLL2, "apll2_ck", "apll2", 1, 1),
++	FACTOR(CLK_TOP_APLL2_D2, "apll2_d2", "apll2_ck", 1, 2),
++	FACTOR(CLK_TOP_APLL2_D4, "apll2_d4", "rg_apll2_d2_en", 1, 2),
++	FACTOR(CLK_TOP_APLL2_D8, "apll2_d8", "rg_apll2_d4_en", 1, 2),
++	FACTOR(CLK_TOP_CLK26M, "clk26m_ck", "clk26m", 1, 1),
++	FACTOR(CLK_TOP_CLK26M_D2, "clk26m_d2", "clk26m", 1, 2),
++	FACTOR(CLK_TOP_MIPI_26M, "mipi_26m", "clk26m", 1, 1),
++	FACTOR(CLK_TOP_TVDPLL, "tvdpll_ck", "tvdpll", 1, 1),
++	FACTOR(CLK_TOP_TVDPLL_D2, "tvdpll_d2", "tvdpll_ck", 1, 2),
++	FACTOR(CLK_TOP_TVDPLL_D4, "tvdpll_d4", "tvdpll_ck", 1, 4),
++	FACTOR(CLK_TOP_TVDPLL_D8, "tvdpll_d8", "tvdpll_ck", 1, 8),
++	FACTOR(CLK_TOP_TVDPLL_D16, "tvdpll_d16", "tvdpll_ck", 1, 16),
++	FACTOR(CLK_TOP_AHB_INFRA_D2, "ahb_infra_d2", "ahb_infra_sel", 1, 2),
++	FACTOR(CLK_TOP_NFI1X, "nfi1x_ck", "nfi2x_pad_sel", 1, 2),
++	FACTOR(CLK_TOP_ETH_D2, "eth_d2_ck", "eth_sel", 1, 2),
++};
++
++static const char * const uart0_parents[] __initconst = {
++	"clk26m_ck",
++	"univpll_d24"
++};
++
++static const char * const gfmux_emi1x_parents[] __initconst = {
++	"clk26m_ck",
++	"dmpll_ck"
++};
++
++static const char * const emi_ddrphy_parents[] __initconst = {
++	"gfmux_emi1x_sel",
++	"gfmux_emi1x_sel"
++};
++
++static const char * const ahb_infra_parents[] __initconst = {
++	"clk_null",
++	"clk26m_ck",
++	"mainpll_d11",
++	"clk_null",
++	"mainpll_d12",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"mainpll_d10"
++};
++
++static const char * const csw_mux_mfg_parents[] __initconst = {
++	"clk_null",
++	"clk_null",
++	"univpll_d3",
++	"univpll_d2",
++	"clk26m_ck",
++	"mainpll_d4",
++	"univpll_d24",
++	"mmpll380m"
++};
++
++static const char * const msdc0_parents[] __initconst = {
++	"clk26m_ck",
++	"univpll_d6",
++	"mainpll_d8",
++	"univpll_d8",
++	"mainpll_d16",
++	"mmpll_200m",
++	"mainpll_d12",
++	"mmpll_d2"
++};
++
++static const char * const camtg_mm_parents[] __initconst = {
++	"clk_null",
++	"clk26m_ck",
++	"usb_phy48m_ck",
++	"clk_null",
++	"univpll_d6"
++};
++
++static const char * const pwm_mm_parents[] __initconst = {
++	"clk26m_ck",
++	"univpll_d12"
++};
++
++static const char * const uart1_parents[] __initconst = {
++	"clk26m_ck",
++	"univpll_d24"
++};
++
++static const char * const msdc1_parents[] __initconst = {
++	"clk26m_ck",
++	"univpll_d6",
++	"mainpll_d8",
++	"univpll_d8",
++	"mainpll_d16",
++	"mmpll_200m",
++	"mainpll_d12",
++	"mmpll_d2"
++};
++
++static const char * const spm_52m_parents[] __initconst = {
++	"clk26m_ck",
++	"univpll_d24"
++};
++
++static const char * const pmicspi_parents[] __initconst = {
++	"univpll_d20",
++	"usb_phy48m_ck",
++	"univpll_d16",
++	"clk26m_ck"
++};
++
++static const char * const qaxi_aud26m_parents[] __initconst = {
++	"clk26m_ck",
++	"ahb_infra_sel"
++};
++
++static const char * const aud_intbus_parents[] __initconst = {
++	"clk_null",
++	"clk26m_ck",
++	"mainpll_d22",
++	"clk_null",
++	"mainpll_d11"
++};
++
++static const char * const nfi2x_pad_parents[] __initconst = {
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk26m_ck",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"mainpll_d12",
++	"mainpll_d8",
++	"clk_null",
++	"mainpll_d6",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"mainpll_d4",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"mainpll_d10",
++	"mainpll_d7",
++	"clk_null",
++	"mainpll_d5"
++};
++
++static const char * const nfi1x_pad_parents[] __initconst = {
++	"ahb_infra_sel",
++	"nfi1x_ck"
++};
++
++static const char * const mfg_mm_parents[] __initconst = {
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"csw_mux_mfg_sel",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"mainpll_d3",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"mainpll_d5",
++	"mainpll_d7",
++	"clk_null",
++	"mainpll_d14"
++};
++
++static const char * const ddrphycfg_parents[] __initconst = {
++	"clk26m_ck",
++	"mainpll_d16"
++};
++
++static const char * const smi_mm_parents[] __initconst = {
++	"clk26m_ck",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"clk_null",
++	"univpll_d4",
++	"mainpll_d7",
++	"clk_null",
++	"mainpll_d14"
++};
++
++static const char * const usb_78m_parents[] __initconst = {
++	"clk_null",
++	"clk26m_ck",
++	"univpll_d16",
++	"clk_null",
++	"mainpll_d20"
++};
++
++static const char * const scam_mm_parents[] __initconst = {
++	"clk_null",
++	"clk26m_ck",
++	"mainpll_d14",
++	"clk_null",
++	"mainpll_d12"
++};
++
++static const char * const spinor_parents[] __initconst = {
++	"clk26m_d2",
++	"clk26m_ck",
++	"mainpll_d40",
++	"univpll_d24",
++	"univpll_d20",
++	"mainpll_d20",
++	"mainpll_d16",
++	"univpll_d12"
++};
++
++static const char * const msdc2_parents[] __initconst = {
++	"clk26m_ck",
++	"univpll_d6",
++	"mainpll_d8",
++	"univpll_d8",
++	"mainpll_d16",
++	"mmpll_200m",
++	"mainpll_d12",
++	"mmpll_d2"
++};
++
++static const char * const eth_parents[] __initconst = {
++	"clk26m_ck",
++	"mainpll_d40",
++	"univpll_d24",
++	"univpll_d20",
++	"mainpll_d20"
++};
++
++static const char * const vdec_mm_parents[] __initconst = {
++	"clk26m_ck",
++	"univpll_d4",
++	"mainpll_d4",
++	"univpll_d5",
++	"univpll_d6",
++	"mainpll_d6"
++};
++
++static const char * const dpi0_mm_parents[] __initconst = {
++	"clk26m_ck",
++	"lvdspll_ck",
++	"lvdspll_d2",
++	"lvdspll_d4",
++	"lvdspll_d8"
++};
++
++static const char * const dpi1_mm_parents[] __initconst = {
++	"clk26m_ck",
++	"tvdpll_d2",
++	"tvdpll_d4",
++	"tvdpll_d8",
++	"tvdpll_d16"
++};
++
++static const char * const axi_mfg_in_parents_e1[] __initconst = {
++	"clk26m_ck",
++	"gfmux_emi1x_sel",
++	"univpll_d24",
++	"mmpll380m"
++};
++
++static const char * const axi_mfg_in_parents[] __initconst = {
++	"clk26m_ck",
++	"mainpll_d11",
++	"univpll_d24",
++	"mmpll380m"
++};
++
++static const char * const slow_mfg_parents[] __initconst = {
++	"clk26m_ck",
++	"univpll_d12",
++	"univpll_d24"
++};
++
++static const char * const aud1_parents[] __initconst = {
++	"clk26m_ck",
++	"apll1_ck"
++};
++
++static const char * const aud2_parents[] __initconst = {
++	"clk26m_ck",
++	"apll2_ck"
++};
++
++static const char * const aud_engen1_parents[] __initconst = {
++	"clk26m_ck",
++	"rg_apll1_d2_en",
++	"rg_apll1_d4_en",
++	"rg_apll1_d8_en"
++};
++
++static const char * const aud_engen2_parents[] __initconst = {
++	"clk26m_ck",
++	"rg_apll2_d2_en",
++	"rg_apll2_d4_en",
++	"rg_apll2_d8_en"
++};
++
++static const char * const i2c_parents[] __initconst = {
++	"clk26m_ck",
++	"univpll_d20",
++	"univpll_d16",
++	"univpll_d12"
++};
++
++static const char * const aud_i2s0_m_parents[] __initconst = {
++	"rg_aud1",
++	"rg_aud2"
++};
++
++static const char * const pwm_parents[] __initconst = {
++	"clk26m_ck",
++	"univpll_d12"
++};
++
++static const char * const spi_parents[] __initconst = {
++	"clk26m_ck",
++	"univpll_d12",
++	"univpll_d8",
++	"univpll_d6"
++};
++
++static const char * const aud_spdifin_parents[] __initconst = {
++	"clk26m_ck",
++	"univpll_d2"
++};
++
++static const char * const uart2_parents[] __initconst = {
++	"clk26m_ck",
++	"univpll_d24"
++};
++
++static const char * const bsi_parents[] __initconst = {
++	"clk26m_ck",
++	"mainpll_d10",
++	"mainpll_d12",
++	"mainpll_d20"
++};
++
++static const char * const dbg_atclk_parents[] __initconst = {
++	"clk_null",
++	"clk26m_ck",
++	"mainpll_d5",
++	"clk_null",
++	"univpll_d5"
++};
++
++static const char * const csw_nfiecc_parents[] __initconst = {
++	"clk_null",
++	"mainpll_d7",
++	"mainpll_d6",
++	"clk_null",
++	"mainpll_d5"
++};
++
++static const char * const nfiecc_parents[] __initconst = {
++	"clk_null",
++	"nfi2x_pad_sel",
++	"mainpll_d4",
++	"clk_null",
++	"csw_nfiecc_sel"
++};
++
++static struct mtk_composite top_muxes[] __initdata = {
++	/* CLK_MUX_SEL0 */
++	MUX(CLK_TOP_UART0_SEL, "uart0_sel", uart0_parents,
++		0x000, 0, 1),
++	MUX(CLK_TOP_GFMUX_EMI1X_SEL, "gfmux_emi1x_sel", gfmux_emi1x_parents,
++		0x000, 1, 1),
++	MUX(CLK_TOP_EMI_DDRPHY_SEL, "emi_ddrphy_sel", emi_ddrphy_parents,
++		0x000, 2, 1),
++	MUX(CLK_TOP_AHB_INFRA_SEL, "ahb_infra_sel", ahb_infra_parents,
++		0x000, 4, 4),
++	MUX(CLK_TOP_CSW_MUX_MFG_SEL, "csw_mux_mfg_sel", csw_mux_mfg_parents,
++		0x000, 8, 3),
++	MUX(CLK_TOP_MSDC0_SEL, "msdc0_sel", msdc0_parents,
++		0x000, 11, 3),
++	MUX(CLK_TOP_CAMTG_MM_SEL, "camtg_mm_sel", camtg_mm_parents,
++		0x000, 15, 3),
++	MUX(CLK_TOP_PWM_MM_SEL, "pwm_mm_sel", pwm_mm_parents,
++		0x000, 18, 1),
++	MUX(CLK_TOP_UART1_SEL, "uart1_sel", uart1_parents,
++		0x000, 19, 1),
++	MUX(CLK_TOP_MSDC1_SEL, "msdc1_sel", msdc1_parents,
++		0x000, 20, 3),
++	MUX(CLK_TOP_SPM_52M_SEL, "spm_52m_sel", spm_52m_parents,
++		0x000, 23, 1),
++	MUX(CLK_TOP_PMICSPI_SEL, "pmicspi_sel", pmicspi_parents,
++		0x000, 24, 2),
++	MUX(CLK_TOP_QAXI_AUD26M_SEL, "qaxi_aud26m_sel", qaxi_aud26m_parents,
++		0x000, 26, 1),
++	MUX(CLK_TOP_AUD_INTBUS_SEL, "aud_intbus_sel", aud_intbus_parents,
++		0x000, 27, 3),
++	/* CLK_MUX_SEL1 */
++	MUX(CLK_TOP_NFI2X_PAD_SEL, "nfi2x_pad_sel", nfi2x_pad_parents,
++		0x004, 0, 7),
++	MUX(CLK_TOP_NFI1X_PAD_SEL, "nfi1x_pad_sel", nfi1x_pad_parents,
++		0x004, 7, 1),
++	MUX(CLK_TOP_MFG_MM_SEL, "mfg_mm_sel", mfg_mm_parents,
++		0x004, 8, 6),
++	MUX(CLK_TOP_DDRPHYCFG_SEL, "ddrphycfg_sel", ddrphycfg_parents,
++		0x004, 15, 1),
++	MUX(CLK_TOP_SMI_MM_SEL, "smi_mm_sel", smi_mm_parents,
++		0x004, 16, 4),
++	MUX(CLK_TOP_USB_78M_SEL, "usb_78m_sel", usb_78m_parents,
++		0x004, 20, 3),
++	MUX(CLK_TOP_SCAM_MM_SEL, "scam_mm_sel", scam_mm_parents,
++		0x004, 23, 3),
++	/* CLK_MUX_SEL8 */
++	MUX(CLK_TOP_SPINOR_SEL, "spinor_sel", spinor_parents,
++		0x040, 0, 3),
++	MUX(CLK_TOP_MSDC2_SEL, "msdc2_sel", msdc2_parents,
++		0x040, 3, 3),
++	MUX(CLK_TOP_ETH_SEL, "eth_sel", eth_parents,
++		0x040, 6, 3),
++	MUX(CLK_TOP_VDEC_MM_SEL, "vdec_mm_sel", vdec_mm_parents,
++		0x040, 9, 3),
++	MUX(CLK_TOP_DPI0_MM_SEL, "dpi0_mm_sel", dpi0_mm_parents,
++		0x040, 12, 3),
++	MUX(CLK_TOP_DPI1_MM_SEL, "dpi1_mm_sel", dpi1_mm_parents,
++		0x040, 15, 3),
++	MUX(CLK_TOP_AXI_MFG_IN_SEL, "axi_mfg_in_sel", axi_mfg_in_parents,
++		0x040, 18, 2),
++	MUX(CLK_TOP_SLOW_MFG_SEL, "slow_mfg_sel", slow_mfg_parents,
++		0x040, 20, 2),
++	MUX(CLK_TOP_AUD1_SEL, "aud1_sel", aud1_parents,
++		0x040, 22, 1),
++	MUX(CLK_TOP_AUD2_SEL, "aud2_sel", aud2_parents,
++		0x040, 23, 1),
++	MUX(CLK_TOP_AUD_ENGEN1_SEL, "aud_engen1_sel", aud_engen1_parents,
++		0x040, 24, 2),
++	MUX(CLK_TOP_AUD_ENGEN2_SEL, "aud_engen2_sel", aud_engen2_parents,
++		0x040, 26, 2),
++	MUX(CLK_TOP_I2C_SEL, "i2c_sel", i2c_parents,
++		0x040, 28, 2),
++	/* CLK_SEL_9 */
++	MUX(CLK_TOP_AUD_I2S0_M_SEL, "aud_i2s0_m_sel", aud_i2s0_m_parents,
++		0x044, 12, 1),
++	MUX(CLK_TOP_AUD_I2S1_M_SEL, "aud_i2s1_m_sel", aud_i2s0_m_parents,
++		0x044, 13, 1),
++	MUX(CLK_TOP_AUD_I2S2_M_SEL, "aud_i2s2_m_sel", aud_i2s0_m_parents,
++		0x044, 14, 1),
++	MUX(CLK_TOP_AUD_I2S3_M_SEL, "aud_i2s3_m_sel", aud_i2s0_m_parents,
++		0x044, 15, 1),
++	MUX(CLK_TOP_AUD_I2S4_M_SEL, "aud_i2s4_m_sel", aud_i2s0_m_parents,
++		0x044, 16, 1),
++	MUX(CLK_TOP_AUD_I2S5_M_SEL, "aud_i2s5_m_sel", aud_i2s0_m_parents,
++		0x044, 17, 1),
++	MUX(CLK_TOP_AUD_SPDIF_B_SEL, "aud_spdif_b_sel", aud_i2s0_m_parents,
++		0x044, 18, 1),
++	/* CLK_MUX_SEL13 */
++	MUX(CLK_TOP_PWM_SEL, "pwm_sel", pwm_parents,
++		0x07c, 0, 1),
++	MUX(CLK_TOP_SPI_SEL, "spi_sel", spi_parents,
++		0x07c, 1, 2),
++	MUX(CLK_TOP_AUD_SPDIFIN_SEL, "aud_spdifin_sel", aud_spdifin_parents,
++		0x07c, 3, 1),
++	MUX(CLK_TOP_UART2_SEL, "uart2_sel", uart2_parents,
++		0x07c, 4, 1),
++	MUX(CLK_TOP_BSI_SEL, "bsi_sel", bsi_parents,
++		0x07c, 5, 2),
++	MUX(CLK_TOP_DBG_ATCLK_SEL, "dbg_atclk_sel", dbg_atclk_parents,
++		0x07c, 7, 3),
++	MUX(CLK_TOP_CSW_NFIECC_SEL, "csw_nfiecc_sel", csw_nfiecc_parents,
++		0x07c, 10, 3),
++	MUX(CLK_TOP_NFIECC_SEL, "nfiecc_sel", nfiecc_parents,
++		0x07c, 13, 3),
++};
++
++static const char * const ifr_mux1_parents[] __initconst = {
++	"clk26m_ck",
++	"armpll",
++	"univpll",
++	"mainpll_d2"
++};
++
++static const char * const ifr_eth_25m_parents[] __initconst = {
++	"eth_d2_ck",
++	"rg_eth"
++};
++
++static const char * const ifr_i2c0_parents[] __initconst = {
++	"ahb_infra_d2",
++	"rg_i2c"
++};
++
++static const struct mtk_composite ifr_muxes[] __initconst = {
++	MUX(CLK_IFR_MUX1_SEL, "ifr_mux1_sel", ifr_mux1_parents, 0x000,
++		2, 2),
++	MUX(CLK_IFR_ETH_25M_SEL, "ifr_eth_25m_sel", ifr_eth_25m_parents, 0x080,
++		0, 1),
++	MUX(CLK_IFR_I2C0_SEL, "ifr_i2c0_sel", ifr_i2c0_parents, 0x080,
++		1, 1),
++	MUX(CLK_IFR_I2C1_SEL, "ifr_i2c1_sel", ifr_i2c0_parents, 0x080,
++		2, 1),
++	MUX(CLK_IFR_I2C2_SEL, "ifr_i2c2_sel", ifr_i2c0_parents, 0x080,
++		3, 1),
++};
++
++#define DIV_ADJ(_id, _name, _parent, _reg, _shift, _width) {	\
++		.id = _id,					\
++		.name = _name,					\
++		.parent_name = _parent,				\
++		.div_reg = _reg,				\
++		.div_shift = _shift,				\
++		.div_width = _width,				\
++}
++
++static const struct mtk_clk_divider top_adj_divs[] = {
++	DIV_ADJ(CLK_TOP_APLL12_CK_DIV0, "apll12_ck_div0", "aud_i2s0_m_sel",
++		0x0048, 0, 8),
++	DIV_ADJ(CLK_TOP_APLL12_CK_DIV1, "apll12_ck_div1", "aud_i2s1_m_sel",
++		0x0048, 8, 8),
++	DIV_ADJ(CLK_TOP_APLL12_CK_DIV2, "apll12_ck_div2", "aud_i2s2_m_sel",
++		0x0048, 16, 8),
++	DIV_ADJ(CLK_TOP_APLL12_CK_DIV3, "apll12_ck_div3", "aud_i2s3_m_sel",
++		0x0048, 24, 8),
++	DIV_ADJ(CLK_TOP_APLL12_CK_DIV4, "apll12_ck_div4", "aud_i2s4_m_sel",
++		0x004c, 0, 8),
++	DIV_ADJ(CLK_TOP_APLL12_CK_DIV4B, "apll12_ck_div4b", "apll12_div4",
++		0x004c, 8, 8),
++	DIV_ADJ(CLK_TOP_APLL12_CK_DIV5, "apll12_ck_div5", "aud_i2s5_m_sel",
++		0x004c, 16, 8),
++	DIV_ADJ(CLK_TOP_APLL12_CK_DIV5B, "apll12_ck_div5b", "apll12_div5",
++		0x004c, 24, 8),
++	DIV_ADJ(CLK_TOP_APLL12_CK_DIV6, "apll12_ck_div6", "aud_spdif_b_sel",
++		0x0078, 0, 8),
++};
++
++#define DIV_ADJ_FLAG(_id, _name, _parent, _reg, _shift, _width, _flag) {	\
++		.id = _id,					\
++		.name = _name,					\
++		.parent_name = _parent,				\
++		.div_reg = _reg,				\
++		.div_shift = _shift,				\
++		.div_width = _width,				\
++		.clk_divider_flags = _flag,				\
++}
++
++static const struct mtk_clk_divider apmixed_adj_divs[] = {
++	DIV_ADJ_FLAG(CLK_APMIXED_HDMI_REF, "hdmi_ref", "tvdpll",
++		0x1c4, 24, 3, CLK_DIVIDER_POWER_OF_TWO),
++};
++
++static const struct mtk_gate_regs top0_cg_regs = {
++	.set_ofs = 0x50,
++	.clr_ofs = 0x80,
++	.sta_ofs = 0x20,
++};
++
++static const struct mtk_gate_regs top1_cg_regs = {
++	.set_ofs = 0x54,
++	.clr_ofs = 0x84,
++	.sta_ofs = 0x24,
++};
++
++static const struct mtk_gate_regs top2_cg_regs = {
++	.set_ofs = 0x6c,
++	.clr_ofs = 0x9c,
++	.sta_ofs = 0x3c,
++};
++
++static const struct mtk_gate_regs top3_cg_regs = {
++	.set_ofs = 0xa0,
++	.clr_ofs = 0xb0,
++	.sta_ofs = 0x70,
++};
++
++static const struct mtk_gate_regs top4_cg_regs = {
++	.set_ofs = 0xa4,
++	.clr_ofs = 0xb4,
++	.sta_ofs = 0x74,
++};
++
++static const struct mtk_gate_regs top5_cg_regs = {
++	.set_ofs = 0x44,
++	.clr_ofs = 0x44,
++	.sta_ofs = 0x44,
++};
++
++#define GATE_TOP0(_id, _name, _parent, _shift) {	\
++		.id = _id,				\
++		.name = _name,				\
++		.parent_name = _parent,			\
++		.regs = &top0_cg_regs,			\
++		.shift = _shift,			\
++		.ops = &mtk_clk_gate_ops_setclr,	\
++	}
++
++#define GATE_TOP0_I(_id, _name, _parent, _shift) {	\
++		.id = _id,				\
++		.name = _name,				\
++		.parent_name = _parent,			\
++		.regs = &top0_cg_regs,			\
++		.shift = _shift,			\
++		.ops = &mtk_clk_gate_ops_setclr_inv,	\
++	}
++
++#define GATE_TOP1(_id, _name, _parent, _shift) {	\
++		.id = _id,				\
++		.name = _name,				\
++		.parent_name = _parent,			\
++		.regs = &top1_cg_regs,			\
++		.shift = _shift,			\
++		.ops = &mtk_clk_gate_ops_setclr,	\
++	}
++
++#define GATE_TOP2(_id, _name, _parent, _shift) {	\
++		.id = _id,				\
++		.name = _name,				\
++		.parent_name = _parent,			\
++		.regs = &top2_cg_regs,			\
++		.shift = _shift,			\
++		.ops = &mtk_clk_gate_ops_setclr,	\
++	}
++
++#define GATE_TOP2_I(_id, _name, _parent, _shift) {	\
++		.id = _id,				\
++		.name = _name,				\
++		.parent_name = _parent,			\
++		.regs = &top2_cg_regs,			\
++		.shift = _shift,			\
++		.ops = &mtk_clk_gate_ops_setclr_inv,	\
++	}
++
++#define GATE_TOP3(_id, _name, _parent, _shift) {	\
++		.id = _id,				\
++		.name = _name,				\
++		.parent_name = _parent,			\
++		.regs = &top3_cg_regs,			\
++		.shift = _shift,			\
++		.ops = &mtk_clk_gate_ops_setclr,	\
++	}
++
++#define GATE_TOP4_I(_id, _name, _parent, _shift) {	\
++		.id = _id,				\
++		.name = _name,				\
++		.parent_name = _parent,			\
++		.regs = &top4_cg_regs,			\
++		.shift = _shift,			\
++		.ops = &mtk_clk_gate_ops_setclr_inv,	\
++	}
++
++#define GATE_TOP5(_id, _name, _parent, _shift) {	\
++		.id = _id,				\
++		.name = _name,				\
++		.parent_name = _parent,			\
++		.regs = &top5_cg_regs,			\
++		.shift = _shift,			\
++		.ops = &mtk_clk_gate_ops_no_setclr,	\
++	}
++
++static const struct mtk_gate top_clks[] __initconst = {
++	/* TOP0 */
++	GATE_TOP0(CLK_TOP_PWM_MM, "pwm_mm", "pwm_mm_sel", 0),
++	GATE_TOP0(CLK_TOP_CAM_MM, "cam_mm", "camtg_mm_sel", 1),
++	GATE_TOP0(CLK_TOP_MFG_MM, "mfg_mm", "mfg_mm_sel", 2),
++	GATE_TOP0(CLK_TOP_SPM_52M, "spm_52m", "spm_52m_sel", 3),
++	GATE_TOP0_I(CLK_TOP_MIPI_26M_DBG, "mipi_26m_dbg", "mipi_26m", 4),
++	GATE_TOP0(CLK_TOP_SCAM_MM, "scam_mm", "scam_mm_sel", 5),
++	GATE_TOP0(CLK_TOP_SMI_MM, "smi_mm", "smi_mm_sel", 9),
++	/* TOP1 */
++	GATE_TOP1(CLK_TOP_THEM, "them", "ahb_infra_sel", 1),
++	GATE_TOP1(CLK_TOP_APDMA, "apdma", "ahb_infra_sel", 2),
++	GATE_TOP1(CLK_TOP_I2C0, "i2c0", "ifr_i2c0_sel", 3),
++	GATE_TOP1(CLK_TOP_I2C1, "i2c1", "ifr_i2c1_sel", 4),
++	GATE_TOP1(CLK_TOP_AUXADC1, "auxadc1", "ahb_infra_sel", 5),
++	GATE_TOP1(CLK_TOP_NFI, "nfi", "nfi1x_pad_sel", 6),
++	GATE_TOP1(CLK_TOP_NFIECC, "nfiecc", "rg_nfiecc", 7),
++	GATE_TOP1(CLK_TOP_DEBUGSYS, "debugsys", "rg_dbg_atclk", 8),
++	GATE_TOP1(CLK_TOP_PWM, "pwm", "ahb_infra_sel", 9),
++	GATE_TOP1(CLK_TOP_UART0, "uart0", "uart0_sel", 10),
++	GATE_TOP1(CLK_TOP_UART1, "uart1", "uart1_sel", 11),
++	GATE_TOP1(CLK_TOP_BTIF, "btif", "ahb_infra_sel", 12),
++	GATE_TOP1(CLK_TOP_USB, "usb", "usb_78m", 13),
++	GATE_TOP1(CLK_TOP_FLASHIF_26M, "flashif_26m", "clk26m_ck", 14),
++	GATE_TOP1(CLK_TOP_AUXADC2, "auxadc2", "ahb_infra_sel", 15),
++	GATE_TOP1(CLK_TOP_I2C2, "i2c2", "ifr_i2c2_sel", 16),
++	GATE_TOP1(CLK_TOP_MSDC0, "msdc0", "msdc0_sel", 17),
++	GATE_TOP1(CLK_TOP_MSDC1, "msdc1", "msdc1_sel", 18),
++	GATE_TOP1(CLK_TOP_NFI2X, "nfi2x", "nfi2x_pad_sel", 19),
++	GATE_TOP1(CLK_TOP_PMICWRAP_AP, "pwrap_ap", "clk26m_ck", 20),
++	GATE_TOP1(CLK_TOP_SEJ, "sej", "ahb_infra_sel", 21),
++	GATE_TOP1(CLK_TOP_MEMSLP_DLYER, "memslp_dlyer", "clk26m_ck", 22),
++	GATE_TOP1(CLK_TOP_SPI, "spi", "spi_sel", 23),
++	GATE_TOP1(CLK_TOP_APXGPT, "apxgpt", "clk26m_ck", 24),
++	GATE_TOP1(CLK_TOP_AUDIO, "audio", "clk26m_ck", 25),
++	GATE_TOP1(CLK_TOP_PMICWRAP_MD, "pwrap_md", "clk26m_ck", 27),
++	GATE_TOP1(CLK_TOP_PMICWRAP_CONN, "pwrap_conn", "clk26m_ck", 28),
++	GATE_TOP1(CLK_TOP_PMICWRAP_26M, "pwrap_26m", "clk26m_ck", 29),
++	GATE_TOP1(CLK_TOP_AUX_ADC, "aux_adc", "clk26m_ck", 30),
++	GATE_TOP1(CLK_TOP_AUX_TP, "aux_tp", "clk26m_ck", 31),
++	/* TOP2 */
++	GATE_TOP2(CLK_TOP_MSDC2, "msdc2", "ahb_infra_sel", 0),
++	GATE_TOP2(CLK_TOP_RBIST, "rbist", "univpll_d12", 1),
++	GATE_TOP2(CLK_TOP_NFI_BUS, "nfi_bus", "ahb_infra_sel", 2),
++	GATE_TOP2(CLK_TOP_GCE, "gce", "ahb_infra_sel", 4),
++	GATE_TOP2(CLK_TOP_TRNG, "trng", "ahb_infra_sel", 5),
++	GATE_TOP2(CLK_TOP_SEJ_13M, "sej_13m", "clk26m_ck", 6),
++	GATE_TOP2(CLK_TOP_AES, "aes", "ahb_infra_sel", 7),
++	GATE_TOP2(CLK_TOP_PWM_B, "pwm_b", "rg_pwm_infra", 8),
++	GATE_TOP2(CLK_TOP_PWM1_FB, "pwm1_fb", "rg_pwm_infra", 9),
++	GATE_TOP2(CLK_TOP_PWM2_FB, "pwm2_fb", "rg_pwm_infra", 10),
++	GATE_TOP2(CLK_TOP_PWM3_FB, "pwm3_fb", "rg_pwm_infra", 11),
++	GATE_TOP2(CLK_TOP_PWM4_FB, "pwm4_fb", "rg_pwm_infra", 12),
++	GATE_TOP2(CLK_TOP_PWM5_FB, "pwm5_fb", "rg_pwm_infra", 13),
++	GATE_TOP2(CLK_TOP_USB_1P, "usb_1p", "usb_78m", 14),
++	GATE_TOP2(CLK_TOP_FLASHIF_FREERUN, "flashif_freerun", "ahb_infra_sel",
++		15),
++	GATE_TOP2(CLK_TOP_26M_HDMI_SIFM, "hdmi_sifm_26m", "clk26m_ck", 16),
++	GATE_TOP2(CLK_TOP_26M_CEC, "cec_26m", "clk26m_ck", 17),
++	GATE_TOP2(CLK_TOP_32K_CEC, "cec_32k", "clk32k", 18),
++	GATE_TOP2(CLK_TOP_66M_ETH, "eth_66m", "ahb_infra_d2", 19),
++	GATE_TOP2(CLK_TOP_133M_ETH, "eth_133m", "ahb_infra_sel", 20),
++	GATE_TOP2(CLK_TOP_FETH_25M, "feth_25m", "ifr_eth_25m_sel", 21),
++	GATE_TOP2(CLK_TOP_FETH_50M, "feth_50m", "rg_eth", 22),
++	GATE_TOP2(CLK_TOP_FLASHIF_AXI, "flashif_axi", "ahb_infra_sel", 23),
++	GATE_TOP2(CLK_TOP_USBIF, "usbif", "ahb_infra_sel", 24),
++	GATE_TOP2(CLK_TOP_UART2, "uart2", "rg_uart2", 25),
++	GATE_TOP2(CLK_TOP_BSI, "bsi", "ahb_infra_sel", 26),
++	GATE_TOP2(CLK_TOP_GCPU_B, "gcpu_b", "ahb_infra_sel", 27),
++	GATE_TOP2_I(CLK_TOP_MSDC0_INFRA, "msdc0_infra", "msdc0", 28),
++	GATE_TOP2_I(CLK_TOP_MSDC1_INFRA, "msdc1_infra", "msdc1", 29),
++	GATE_TOP2_I(CLK_TOP_MSDC2_INFRA, "msdc2_infra", "rg_msdc2", 30),
++	GATE_TOP2(CLK_TOP_USB_78M, "usb_78m", "usb_78m_sel", 31),
++	/* TOP3 */
++	GATE_TOP3(CLK_TOP_RG_SPINOR, "rg_spinor", "spinor_sel", 0),
++	GATE_TOP3(CLK_TOP_RG_MSDC2, "rg_msdc2", "msdc2_sel", 1),
++	GATE_TOP3(CLK_TOP_RG_ETH, "rg_eth", "eth_sel", 2),
++	GATE_TOP3(CLK_TOP_RG_VDEC, "rg_vdec", "vdec_mm_sel", 3),
++	GATE_TOP3(CLK_TOP_RG_FDPI0, "rg_fdpi0", "dpi0_mm_sel", 4),
++	GATE_TOP3(CLK_TOP_RG_FDPI1, "rg_fdpi1", "dpi1_mm_sel", 5),
++	GATE_TOP3(CLK_TOP_RG_AXI_MFG, "rg_axi_mfg", "axi_mfg_in_sel", 6),
++	GATE_TOP3(CLK_TOP_RG_SLOW_MFG, "rg_slow_mfg", "slow_mfg_sel", 7),
++	GATE_TOP3(CLK_TOP_RG_AUD1, "rg_aud1", "aud1_sel", 8),
++	GATE_TOP3(CLK_TOP_RG_AUD2, "rg_aud2", "aud2_sel", 9),
++	GATE_TOP3(CLK_TOP_RG_AUD_ENGEN1, "rg_aud_engen1", "aud_engen1_sel", 10),
++	GATE_TOP3(CLK_TOP_RG_AUD_ENGEN2, "rg_aud_engen2", "aud_engen2_sel", 11),
++	GATE_TOP3(CLK_TOP_RG_I2C, "rg_i2c", "i2c_sel", 12),
++	GATE_TOP3(CLK_TOP_RG_PWM_INFRA, "rg_pwm_infra", "pwm_sel", 13),
++	GATE_TOP3(CLK_TOP_RG_AUD_SPDIF_IN, "rg_aud_spdif_in", "aud_spdifin_sel",
++		14),
++	GATE_TOP3(CLK_TOP_RG_UART2, "rg_uart2", "uart2_sel", 15),
++	GATE_TOP3(CLK_TOP_RG_BSI, "rg_bsi", "bsi_sel", 16),
++	GATE_TOP3(CLK_TOP_RG_DBG_ATCLK, "rg_dbg_atclk", "dbg_atclk_sel", 17),
++	GATE_TOP3(CLK_TOP_RG_NFIECC, "rg_nfiecc", "nfiecc_sel", 18),
++	/* TOP4 */
++	GATE_TOP4_I(CLK_TOP_RG_APLL1_D2_EN, "rg_apll1_d2_en", "apll1_d2", 8),
++	GATE_TOP4_I(CLK_TOP_RG_APLL1_D4_EN, "rg_apll1_d4_en", "apll1_d4", 9),
++	GATE_TOP4_I(CLK_TOP_RG_APLL1_D8_EN, "rg_apll1_d8_en", "apll1_d8", 10),
++	GATE_TOP4_I(CLK_TOP_RG_APLL2_D2_EN, "rg_apll2_d2_en", "apll2_d2", 11),
++	GATE_TOP4_I(CLK_TOP_RG_APLL2_D4_EN, "rg_apll2_d4_en", "apll2_d4", 12),
++	GATE_TOP4_I(CLK_TOP_RG_APLL2_D8_EN, "rg_apll2_d8_en", "apll2_d8", 13),
++	/* TOP5 */
++	GATE_TOP5(CLK_TOP_APLL12_DIV0, "apll12_div0", "apll12_ck_div0", 0),
++	GATE_TOP5(CLK_TOP_APLL12_DIV1, "apll12_div1", "apll12_ck_div1", 1),
++	GATE_TOP5(CLK_TOP_APLL12_DIV2, "apll12_div2", "apll12_ck_div2", 2),
++	GATE_TOP5(CLK_TOP_APLL12_DIV3, "apll12_div3", "apll12_ck_div3", 3),
++	GATE_TOP5(CLK_TOP_APLL12_DIV4, "apll12_div4", "apll12_ck_div4", 4),
++	GATE_TOP5(CLK_TOP_APLL12_DIV4B, "apll12_div4b", "apll12_ck_div4b", 5),
++	GATE_TOP5(CLK_TOP_APLL12_DIV5, "apll12_div5", "apll12_ck_div5", 6),
++	GATE_TOP5(CLK_TOP_APLL12_DIV5B, "apll12_div5b", "apll12_ck_div5b", 7),
++	GATE_TOP5(CLK_TOP_APLL12_DIV6, "apll12_div6", "apll12_ck_div6", 8),
++};
++
++static void __init mtk_topckgen_init(struct device_node *node)
++{
++	struct clk_onecell_data *clk_data;
++	int r;
++	void __iomem *base;
++
++	base = of_iomap(node, 0);
++	if (!base) {
++		pr_err("%s(): ioremap failed\n", __func__);
++		return;
++	}
++
++	clk_data = mtk_alloc_clk_data(MT8167_CLK_TOP_NR_CLK);
++
++	mtk_clk_register_fixed_clks(fixed_clks, ARRAY_SIZE(fixed_clks),
++				    clk_data);
++	mtk_clk_register_gates(node, top_clks, ARRAY_SIZE(top_clks), clk_data);
++
++	mtk_clk_register_factors(top_divs, ARRAY_SIZE(top_divs), clk_data);
++	mtk_clk_register_composites(top_muxes, ARRAY_SIZE(top_muxes), base,
++		&mt8167_clk_lock, clk_data);
++	mtk_clk_register_dividers(top_adj_divs, ARRAY_SIZE(top_adj_divs),
++				base, &mt8167_clk_lock, clk_data);
++
++	r = of_clk_add_provider(node, of_clk_src_onecell_get, clk_data);
++	if (r)
++		pr_err("%s(): could not register clock provider: %d\n",
++			__func__, r);
++}
++CLK_OF_DECLARE(mtk_topckgen, "mediatek,mt8167-topckgen", mtk_topckgen_init);
++
++static void __init mtk_infracfg_init(struct device_node *node)
++{
++	struct clk_onecell_data *clk_data;
++	int r;
++	void __iomem *base;
++
++	base = of_iomap(node, 0);
++	if (!base) {
++		pr_err("%s(): ioremap failed\n", __func__);
++		return;
++	}
++
++	clk_data = mtk_alloc_clk_data(CLK_IFR_NR_CLK);
++
++	mtk_clk_register_composites(ifr_muxes, ARRAY_SIZE(ifr_muxes), base,
++		&mt8167_clk_lock, clk_data);
++
++	r = of_clk_add_provider(node, of_clk_src_onecell_get, clk_data);
++	if (r)
++		pr_err("%s(): could not register clock provider: %d\n",
++			__func__, r);
++}
++CLK_OF_DECLARE(mtk_infracfg, "mediatek,mt8167-infracfg", mtk_infracfg_init);
++
++#define MT8167_PLL_FMAX		(2500UL * MHZ)
++
++#define CON0_MT8167_RST_BAR	BIT(27)
++
++#define PLL_B(_id, _name, _reg, _pwr_reg, _en_mask, _flags, _pcwbits,	\
++			_pd_reg, _pd_shift, _tuner_reg, _pcw_reg,	\
++			_pcw_shift, _div_table) {			\
++		.id = _id,						\
++		.name = _name,						\
++		.reg = _reg,						\
++		.pwr_reg = _pwr_reg,					\
++		.en_mask = _en_mask,					\
++		.flags = _flags,					\
++		.rst_bar_mask = CON0_MT8167_RST_BAR,			\
++		.fmax = MT8167_PLL_FMAX,				\
++		.pcwbits = _pcwbits,					\
++		.pd_reg = _pd_reg,					\
++		.pd_shift = _pd_shift,					\
++		.tuner_reg = _tuner_reg,				\
++		.pcw_reg = _pcw_reg,					\
++		.pcw_shift = _pcw_shift,				\
++		.div_table = _div_table,				\
++	}
++
++#define PLL(_id, _name, _reg, _pwr_reg, _en_mask, _flags, _pcwbits,	\
++			_pd_reg, _pd_shift, _tuner_reg, _pcw_reg,	\
++			_pcw_shift)					\
++		PLL_B(_id, _name, _reg, _pwr_reg, _en_mask, _flags, _pcwbits, \
++			_pd_reg, _pd_shift, _tuner_reg, _pcw_reg, _pcw_shift, \
++			NULL)
++
++static const struct mtk_pll_div_table mmpll_div_table[] = {
++	{ .div = 0, .freq = MT8167_PLL_FMAX },
++	{ .div = 1, .freq = 1000000000 },
++	{ .div = 2, .freq = 604500000 },
++	{ .div = 3, .freq = 253500000 },
++	{ .div = 4, .freq = 126750000 },
++	{ } /* sentinel */
++};
++
++static const struct mtk_pll_data plls[] = {
++	PLL(CLK_APMIXED_ARMPLL, "armpll", 0x0100, 0x0110, 0x00000001, 0,
++		21, 0x0104, 24, 0, 0x0104, 0),
++	PLL(CLK_APMIXED_MAINPLL, "mainpll", 0x0120, 0x0130, 0x00000001,
++		HAVE_RST_BAR, 21, 0x0124, 24, 0, 0x0124, 0),
++	PLL(CLK_APMIXED_UNIVPLL, "univpll", 0x0140, 0x0150, 0x30000001,
++		HAVE_RST_BAR, 7, 0x0144, 24, 0, 0x0144, 0),
++	PLL_B(CLK_APMIXED_MMPLL, "mmpll", 0x0160, 0x0170, 0x00000001, 0,
++		21, 0x0164, 24, 0, 0x0164, 0, mmpll_div_table),
++	PLL(CLK_APMIXED_APLL1, "apll1", 0x0180, 0x0190, 0x00000001, 0,
++		31, 0x0180, 1, 0x0194, 0x0184, 0),
++	PLL(CLK_APMIXED_APLL2, "apll2", 0x01A0, 0x01B0, 0x00000001, 0,
++		31, 0x01A0, 1, 0x01B4, 0x01A4, 0),
++	PLL(CLK_APMIXED_TVDPLL, "tvdpll", 0x01C0, 0x01D0, 0x00000001, 0,
++		21, 0x01C4, 24, 0, 0x01C4, 0),
++	PLL(CLK_APMIXED_LVDSPLL, "lvdspll", 0x01E0, 0x01F0, 0x00000001, 0,
++		21, 0x01E4, 24, 0, 0x01E4, 0),
++};
++
++static void __init mtk_apmixedsys_init(struct device_node *node)
++{
++	struct clk_onecell_data *clk_data;
++	void __iomem *base;
++	int r;
++
++	base = of_iomap(node, 0);
++	if (!base) {
++		pr_err("%s(): ioremap failed\n", __func__);
++		return;
++	}
++
++	clk_data = mtk_alloc_clk_data(MT8167_CLK_APMIXED_NR_CLK);
++
++	mtk_clk_register_plls(node, plls, ARRAY_SIZE(plls), clk_data);
++	mtk_clk_register_dividers(apmixed_adj_divs, ARRAY_SIZE(apmixed_adj_divs),
++		base, &mt8167_clk_lock, clk_data);
++
++	r = of_clk_add_provider(node, of_clk_src_onecell_get, clk_data);
++	if (r)
++		pr_err("%s(): could not register clock provider: %d\n",
++			__func__, r);
++
++}
++CLK_OF_DECLARE(mtk_apmixedsys, "mediatek,mt8167-apmixedsys",
++		mtk_apmixedsys_init);
+-- 
+2.28.0
 
-nit, these "unit32_t" stuff really doesn't matter in the kernel, 'u32'
-is a better choice overall.  Same for u8 and others, for this whole
-driver.
-
-> +	pid_t pid;
-> +	bool irq_enabled;
-> +	bool is_opened;		/* tracks tty open/close */
-
-Why do you need to track this?  Doesn't the tty core handle this for
-you?
-
-> +};
-> +
-> +/* VK device max power state, supports 3, full, reduced and low */
-> +#define MAX_OPP 3
-> +#define MAX_CARD_INFO_TAG_SIZE 64
-> +
-> +struct bcm_vk_card_info {
-> +	uint32_t version;
-> +	char os_tag[MAX_CARD_INFO_TAG_SIZE];
-> +	char cmpt_tag[MAX_CARD_INFO_TAG_SIZE];
-> +	uint32_t cpu_freq_mhz;
-> +	uint32_t cpu_scale[MAX_OPP];
-> +	uint32_t ddr_freq_mhz;
-> +	uint32_t ddr_size_MB;
-> +	uint32_t video_core_freq_mhz;
-> +};
-> +
-> +/* DAUTH related info */
-> +struct bcm_vk_dauth_key {
-> +	char store[VK_BAR1_DAUTH_STORE_SIZE];
-> +	char valid[VK_BAR1_DAUTH_VALID_SIZE];
-> +};
-> +
-> +struct bcm_vk_dauth_info {
-> +	struct bcm_vk_dauth_key keys[VK_BAR1_DAUTH_MAX];
-> +};
-> +
-> +/*
-> + * Control structure of logging messages from the card.  This
-> + * buffer is for logmsg that comes from vk
-> + */
-> +struct bcm_vk_peer_log {
-> +	uint32_t rd_idx;
-> +	uint32_t wr_idx;
-> +	uint32_t buf_size;
-> +	uint32_t mask;
-> +	char data[0];
-> +};
-> +
-> +/* max size per line of peer log */
-> +#define BCM_VK_PEER_LOG_LINE_MAX  256
-> +
-> +/*
-> + * single entry for processing type + utilization
-> + */
-> +#define BCM_VK_PROC_TYPE_TAG_LEN 8
-> +struct bcm_vk_proc_mon_entry_t {
-> +	char tag[BCM_VK_PROC_TYPE_TAG_LEN];
-> +	uint32_t used;
-> +	uint32_t max; /**< max capacity */
-> +};
-> +
-> +/**
-> + * Structure for run time utilization
-> + */
-> +#define BCM_VK_PROC_MON_MAX 8 /* max entries supported */
-> +struct bcm_vk_proc_mon_info {
-> +	uint32_t num; /**< no of entries */
-> +	uint32_t entry_size; /**< per entry size */
-> +	struct bcm_vk_proc_mon_entry_t entries[BCM_VK_PROC_MON_MAX];
-> +};
-> +
-> +struct bcm_vk_hb_ctrl {
-> +	struct timer_list timer;
-> +	uint32_t last_uptime;
-> +	uint32_t lost_cnt;
-> +};
-> +
-> +struct bcm_vk_alert {
-> +	uint16_t flags;
-> +	uint16_t notfs;
-> +};
-> +
-> +/* some alert counters that the driver will keep track */
-> +struct bcm_vk_alert_cnts {
-> +	uint16_t ecc;
-> +	uint16_t uecc;
-> +};
-> +
-> +struct bcm_vk {
-> +	struct pci_dev *pdev;
-
-So you have a pointer to your parent pci device, and...
-
-> +	void __iomem *bar[MAX_BAR];
-> +	int num_irqs;
-> +
-> +	struct bcm_vk_card_info card_info;
-> +	struct bcm_vk_proc_mon_info proc_mon_info;
-> +	struct bcm_vk_dauth_info dauth_info;
-> +
-> +#if defined(BCM_VK_LEGACY_API)
-> +	struct msix_entry msix[32];
-> +#endif
-> +	/* mutex to protect the ioctls */
-> +	struct mutex mutex;
-> +	struct miscdevice miscdev;
-> +	int misc_devid; /* dev id allocated */
-
-a misc device, and...
-
-> +
-> +	struct tty_driver *tty_drv;
-> +	struct timer_list serial_timer;
-> +	struct bcm_vk_tty tty[BCM_VK_NUM_TTY];
-
-A number of tty ports?
-
-> +	struct workqueue_struct *tty_wq_thread;
-> +	struct work_struct tty_wq_work;
-> +
-> +	/* Reference-counting to handle file operations */
-> +	struct kref kref;
-
-And a kref?
-
-What is controlling the lifetime rules of your structure?
-
-Why a kref?
-
-Why the tty ports?
-
-Why the misc device?
-
-This feels really crazy to me...
-
-> +
-> +	spinlock_t msg_id_lock; /* Spinlock for msg_id */
-> +	uint16_t msg_id;
-> +	DECLARE_BITMAP(bmap, VK_MSG_ID_BITMAP_SIZE);
-> +	spinlock_t ctx_lock; /* Spinlock for component context */
-> +	struct bcm_vk_ctx ctx[VK_CMPT_CTX_MAX];
-> +	struct bcm_vk_ht_entry pid_ht[VK_PID_HT_SZ];
-> +	pid_t reset_pid; /* process that issue reset */
-> +
-> +	atomic_t msgq_inited; /* indicate if info has been synced with vk */
-> +	struct bcm_vk_msg_chan to_v_msg_chan;
-> +	struct bcm_vk_msg_chan to_h_msg_chan;
-> +
-> +	struct workqueue_struct *wq_thread;
-> +	struct work_struct wq_work; /* work queue for deferred job */
-> +	unsigned long wq_offload[1]; /* various flags on wq requested */
-> +	void *tdma_vaddr; /* test dma segment virtual addr */
-> +	dma_addr_t tdma_addr; /* test dma segment bus addr */
-> +
-> +	struct notifier_block panic_nb;
-> +	uint32_t ib_sgl_size; /* size allocated for inband sgl insertion */
-> +
-> +	/* heart beat mechanism control structure */
-> +	struct bcm_vk_hb_ctrl hb_ctrl;
-> +	/* house-keeping variable of error logs */
-> +	spinlock_t host_alert_lock; /* protection to access host_alert struct */
-> +	struct bcm_vk_alert host_alert;
-> +	struct bcm_vk_alert peer_alert; /* bits set by the card */
-> +	struct bcm_vk_alert_cnts alert_cnts;
-> +
-> +	/* offset of the peer log control in BAR2 */
-> +	uint32_t peerlog_off;
-> +	struct bcm_vk_peer_log peerlog_info; /* record of peer log info */
-> +	/* offset of processing monitoring info in BAR2 */
-> +	uint32_t proc_mon_off;
-> +};
-> +
-> +/* wq offload work items bits definitions */
-> +enum bcm_vk_wq_offload_flags {
-> +	BCM_VK_WQ_DWNLD_PEND = 0,
-> +	BCM_VK_WQ_DWNLD_AUTO = 1,
-> +	BCM_VK_WQ_NOTF_PEND  = 2,
-> +};
-> +
-> +/* a macro to get an individual field with mask and shift */
-> +#define BCM_VK_EXTRACT_FIELD(_field, _reg, _mask, _shift) \
-> +		(_field = (((_reg) >> (_shift)) & (_mask)))
-> +
-> +/* structure that is used to faciliate displaying of register content */
-> +struct bcm_vk_entry {
-> +	const uint32_t mask;
-> +	const uint32_t exp_val;
-> +	const char *str;
-> +};
-> +
-> +/* alerts that could be generated from peer */
-> +#define BCM_VK_PEER_ERR_NUM 10
-> +extern struct bcm_vk_entry const bcm_vk_peer_err[BCM_VK_PEER_ERR_NUM];
-> +/* alerts detected by the host */
-> +#define BCM_VK_HOST_ERR_NUM 3
-> +extern struct bcm_vk_entry const bcm_vk_host_err[BCM_VK_HOST_ERR_NUM];
-> +
-> +/*
-> + * check if PCIe interface is down on read.  Use it when it is
-> + * certain that _val should never be all ones.
-> + */
-> +#define BCM_VK_INTF_IS_DOWN(val) ((val) == 0xffffffff)
-> +
-> +static inline uint32_t vkread32(struct bcm_vk *vk,
-> +				enum pci_barno bar,
-> +				uint64_t offset)
-> +{
-> +	return readl(vk->bar[bar] + offset);
-> +}
-
-
-"vk"?  What is that prefix for?
-
-> +
-> +static inline void vkwrite32(struct bcm_vk *vk,
-> +			     uint32_t value,
-> +			     enum pci_barno bar,
-> +			     uint64_t offset)
-> +{
-> +	writel(value, vk->bar[bar] + offset);
-> +}
-> +
-> +static inline uint8_t vkread8(struct bcm_vk *vk,
-> +			      enum pci_barno bar,
-> +			      uint64_t offset)
-> +{
-> +	return readb(vk->bar[bar] + offset);
-> +}
-> +
-> +static inline void vkwrite8(struct bcm_vk *vk,
-> +			    uint8_t value,
-> +			    enum pci_barno bar,
-> +			    uint64_t offset)
-> +{
-> +	writeb(value, vk->bar[bar] + offset);
-> +}
-> +
-> +int bcm_vk_open(struct inode *inode, struct file *p_file);
-> +ssize_t bcm_vk_read(struct file *p_file, char __user *buf, size_t count,
-> +		    loff_t *f_pos);
-> +ssize_t bcm_vk_write(struct file *p_file, const char __user *buf,
-> +		     size_t count, loff_t *f_pos);
-> +__poll_t bcm_vk_poll(struct file *p_file, struct poll_table_struct *wait);
-> +int bcm_vk_release(struct inode *inode, struct file *p_file);
-> +void bcm_vk_release_data(struct kref *kref);
-> +irqreturn_t bcm_vk_msgq_irqhandler(int irq, void *dev_id);
-> +irqreturn_t bcm_vk_notf_irqhandler(int irq, void *dev_id);
-> +irqreturn_t bcm_vk_tty_irqhandler(int irq, void *dev_id);
-> +int bcm_vk_msg_init(struct bcm_vk *vk);
-> +void bcm_vk_msg_remove(struct bcm_vk *vk);
-> +int bcm_vk_sync_msgq(struct bcm_vk *vk, bool force_sync);
-> +bool bcm_vk_msgq_marker_valid(struct bcm_vk *vk);
-> +void bcm_vk_blk_drv_access(struct bcm_vk *vk);
-> +int bcm_vk_send_shutdown_msg(struct bcm_vk *vk, uint32_t shut_type,
-> +			     const pid_t pid, const uint32_t q_num);
-> +int bcm_vk_trigger_reset(struct bcm_vk *vk);
-> +void bcm_to_v_q_doorbell(struct bcm_vk *vk, uint32_t q_num, uint32_t db_val);
-> +void bcm_to_v_reset_doorbell(struct bcm_vk *vk, uint32_t db_val);
-> +int bcm_vk_auto_load_all_images(struct bcm_vk *vk);
-> +int bcm_vk_tty_init(struct bcm_vk *vk, char *name);
-> +void bcm_vk_tty_exit(struct bcm_vk *vk);
-> +void bcm_vk_tty_terminate_tty_user(struct bcm_vk *vk);
-> +void bcm_vk_hb_init(struct bcm_vk *vk);
-> +void bcm_vk_hb_deinit(struct bcm_vk *vk);
-> +void bcm_vk_handle_notf(struct bcm_vk *vk);
-> +bool bcm_vk_drv_access_ok(struct bcm_vk *vk);
-> +void bcm_vk_set_host_alert(struct bcm_vk *vk, uint32_t bit_mask);
-
-Are all of these prototypes really needed as they are global?
-
-At quick glance, it really looks like most of them, if not all, do not
-need to be here and can be made static to the local .c file.
-
-> +
-> +#endif
-> diff --git a/drivers/misc/bcm-vk/bcm_vk_dev.c b/drivers/misc/bcm-vk/bcm_vk_dev.c
-> new file mode 100644
-> index 000000000000..4ce0dc0263ea
-> --- /dev/null
-> +++ b/drivers/misc/bcm-vk/bcm_vk_dev.c
-> @@ -0,0 +1,1475 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright 2018-2020 Broadcom.
-> + */
-> +
-> +#include <linux/delay.h>
-> +#include <linux/firmware.h>
-> +#include <linux/fs.h>
-> +#include <linux/idr.h>
-> +#include <linux/interrupt.h>
-> +#include <linux/module.h>
-> +#include <linux/pci.h>
-> +#include <linux/pci_regs.h>
-> +#include <linux/poll.h>
-> +#include <uapi/linux/misc/bcm_vk.h>
-> +
-> +#include "bcm_vk.h"
-> +
-> +#define PCI_DEVICE_ID_VALKYRIE	0x5e87
-> +#define PCI_DEVICE_ID_VIPER	0x5e88
-> +
-> +static DEFINE_IDA(bcm_vk_ida);
-> +
-> +enum soc_idx {
-> +	VALKYRIE_A0 = 0,
-> +	VALKYRIE_B0,
-> +	VIPER,
-> +	VK_IDX_INVALID
-> +};
-> +
-> +enum img_idx {
-> +	IMG_PRI = 0,
-> +	IMG_SEC,
-> +	IMG_PER_TYPE_MAX
-> +};
-> +
-> +struct load_image_entry {
-> +	const uint32_t image_type;
-> +	const char *image_name[IMG_PER_TYPE_MAX];
-> +};
-> +
-> +#define NUM_BOOT_STAGES 2
-> +/* default firmware images names */
-> +static const struct load_image_entry image_tab[][NUM_BOOT_STAGES] = {
-> +	[VALKYRIE_A0] = {
-> +		{VK_IMAGE_TYPE_BOOT1, {"vk_a0-boot1.bin", "vk-boot1.bin"}},
-> +		{VK_IMAGE_TYPE_BOOT2, {"vk_a0-boot2.bin", "vk-boot2.bin"}}
-> +	},
-> +	[VALKYRIE_B0] = {
-> +		{VK_IMAGE_TYPE_BOOT1, {"vk_b0-boot1.bin", "vk-boot1.bin"}},
-> +		{VK_IMAGE_TYPE_BOOT2, {"vk_b0-boot2.bin", "vk-boot2.bin"}}
-> +	},
-> +
-> +	[VIPER] = {
-> +		{VK_IMAGE_TYPE_BOOT1, {"vp-boot1.bin", ""}},
-> +		{VK_IMAGE_TYPE_BOOT2, {"vp-boot2.bin", ""}}
-> +	},
-> +};
-> +
-> +/* Location of memory base addresses of interest in BAR1 */
-> +/* Load Boot1 to start of ITCM */
-> +#define BAR1_CODEPUSH_BASE_BOOT1	0x100000
-> +
-> +/* Allow minimum 1s for Load Image timeout responses */
-> +#define LOAD_IMAGE_TIMEOUT_MS		(1 * MSEC_PER_SEC)
-> +
-> +/* Image startup timeouts */
-> +#define BOOT1_STARTUP_TIMEOUT_MS	(5 * MSEC_PER_SEC)
-> +#define BOOT2_STARTUP_TIMEOUT_MS	(10 * MSEC_PER_SEC)
-> +
-> +/* 1ms wait for checking the transfer complete status */
-> +#define TXFR_COMPLETE_TIMEOUT_MS	1
-> +
-> +/* MSIX usages */
-> +#define VK_MSIX_MSGQ_MAX		3
-> +#define VK_MSIX_NOTF_MAX		1
-> +#define VK_MSIX_TTY_MAX			BCM_VK_NUM_TTY
-> +#define VK_MSIX_IRQ_MAX			(VK_MSIX_MSGQ_MAX + VK_MSIX_NOTF_MAX + \
-> +					 VK_MSIX_TTY_MAX)
-> +#define VK_MSIX_IRQ_MIN_REQ             (VK_MSIX_MSGQ_MAX + VK_MSIX_NOTF_MAX)
-> +
-> +/* Number of bits set in DMA mask*/
-> +#define BCM_VK_DMA_BITS			64
-> +
-> +/* Ucode boot wait time */
-> +#define BCM_VK_UCODE_BOOT_US            (100 * USEC_PER_MSEC)
-> +/* 50% margin */
-> +#define BCM_VK_UCODE_BOOT_MAX_US        ((BCM_VK_UCODE_BOOT_US * 3) >> 1)
-> +
-> +/* deinit time for the card os after receiving doorbell */
-> +#define BCM_VK_DEINIT_TIME_MS		(2 * MSEC_PER_SEC)
-> +
-> +/*
-> + * module parameters
-> + */
-> +static bool auto_load = true;
-> +module_param(auto_load, bool, 0444);
-> +MODULE_PARM_DESC(auto_load,
-> +		 "Load images automatically at PCIe probe time.\n");
-> +static uint nr_scratch_pages = VK_BAR1_SCRATCH_DEF_NR_PAGES;
-> +module_param(nr_scratch_pages, uint, 0444);
-> +MODULE_PARM_DESC(nr_scratch_pages,
-> +		 "Number of pre allocated DMAable coherent pages.\n");
-> +static uint nr_ib_sgl_blk = BCM_VK_DEF_IB_SGL_BLK_LEN;
-> +module_param(nr_ib_sgl_blk, uint, 0444);
-> +MODULE_PARM_DESC(nr_ib_sgl_blk,
-> +		 "Number of in-band msg blks for short SGL.\n");
-
-Please do not use module parameters, this isn't the 1990's.  We have
-real ways to configure drivers now that is per-device, which module
-parameters are not at all.
-
-And why are any of these needed at all?  Ideally a driver would "just
-work" and not need to be tuned at all.  Who would ever modify these?
-
-> +
-> +/*
-> + * alerts that could be generated from peer
-> + */
-> +struct bcm_vk_entry const bcm_vk_peer_err[BCM_VK_PEER_ERR_NUM] = {
-> +	{ERR_LOG_UECC, ERR_LOG_UECC, "uecc"},
-> +	{ERR_LOG_SSIM_BUSY, ERR_LOG_SSIM_BUSY, "ssim_busy"},
-> +	{ERR_LOG_AFBC_BUSY, ERR_LOG_AFBC_BUSY, "afbc_busy"},
-> +	{ERR_LOG_HIGH_TEMP_ERR, ERR_LOG_HIGH_TEMP_ERR, "high_temp"},
-> +	{ERR_LOG_WDOG_TIMEOUT, ERR_LOG_WDOG_TIMEOUT, "wdog_timeout"},
-> +	{ERR_LOG_SYS_FAULT, ERR_LOG_SYS_FAULT, "sys_fault"},
-> +	{ERR_LOG_RAMDUMP, ERR_LOG_RAMDUMP, "ramdump"},
-> +	{ERR_LOG_MEM_ALLOC_FAIL, ERR_LOG_MEM_ALLOC_FAIL, "malloc_fail warn"},
-> +	{ERR_LOG_LOW_TEMP_WARN, ERR_LOG_LOW_TEMP_WARN, "low_temp warn"},
-> +	{ERR_LOG_ECC, ERR_LOG_ECC, "ecc"},
-> +};
-> +
-> +/* alerts detected by the host */
-> +struct bcm_vk_entry const bcm_vk_host_err[BCM_VK_HOST_ERR_NUM] = {
-> +	{ERR_LOG_HOST_PCIE_DWN, ERR_LOG_HOST_PCIE_DWN, "PCIe_down"},
-> +	{ERR_LOG_HOST_HB_FAIL, ERR_LOG_HOST_HB_FAIL, "hb_fail"},
-> +	{ERR_LOG_HOST_INTF_V_FAIL, ERR_LOG_HOST_INTF_V_FAIL, "intf_ver_fail"},
-> +};
-> +
-> +irqreturn_t bcm_vk_notf_irqhandler(int irq, void *dev_id)
-
-global function?
-
-> +{
-> +	struct bcm_vk *vk = dev_id;
-> +
-> +	if (!bcm_vk_drv_access_ok(vk)) {
-> +		dev_err(&vk->pdev->dev,
-> +			"Interrupt %d received when msgq not inited\n", irq);
-> +		goto skip_schedule_work;
-> +	}
-> +
-> +	/* if notification is not pending, set bit and schedule work */
-> +	if (test_and_set_bit(BCM_VK_WQ_NOTF_PEND, vk->wq_offload) == 0)
-> +		queue_work(vk->wq_thread, &vk->wq_work);
-> +
-> +skip_schedule_work:
-> +	return IRQ_HANDLED;
-> +}
-> +
-> +static int bcm_vk_intf_ver_chk(struct bcm_vk *vk)
-> +{
-> +	struct device *dev = &vk->pdev->dev;
-> +	uint32_t reg;
-> +	uint16_t major, minor;
-> +	int ret = 0;
-> +
-> +	/* read interface register */
-> +	reg = vkread32(vk, BAR_0, BAR_INTF_VER);
-> +	major = (reg >> BAR_INTF_VER_MAJOR_SHIFT) & BAR_INTF_VER_MASK;
-> +	minor = reg & BAR_INTF_VER_MASK;
-
-You are reading a major/minor device number from the hardware?  Are
-these not the same thing as what we normally call a major/minor device
-node information in Linux?
-
-If not, what are they?
-
-If so, why does the hardware care?
-
-> +
-> +	/*
-> +	 * if major number is 0, it is pre-release and it would be allowed
-> +	 * to continue, else, check versions accordingly
-> +	 */
-> +	if (!major) {
-> +		dev_warn(dev, "Pre-release major.minor=%d.%d - drv %d.%d\n",
-> +			 major, minor, SEMANTIC_MAJOR, SEMANTIC_MINOR);
-> +	} else if ((major != SEMANTIC_MAJOR) || (minor > SEMANTIC_MINOR)) {
-> +		dev_err(dev,
-> +			"Intf major.minor=%d.%d rejected - drv %d.%d\n",
-> +			major, minor, SEMANTIC_MAJOR, SEMANTIC_MINOR);
-> +		bcm_vk_set_host_alert(vk, ERR_LOG_HOST_INTF_V_FAIL);
-> +		ret = -EIO;
-
-An I/O error did not just happen :(
-
-> +	} else {
-> +		dev_dbg(dev,
-> +			"Intf major.minor=%d.%d passed - drv %d.%d\n",
-> +			major, minor, SEMANTIC_MAJOR, SEMANTIC_MINOR);
-> +	}
-> +	return ret;
-> +}
-> +
-> +static void bcm_vk_log_notf(struct bcm_vk *vk,
-> +			    struct bcm_vk_alert *alert,
-> +			    struct bcm_vk_entry const *entry_tab,
-> +			    const uint32_t table_size)
-> +{
-> +	uint32_t i;
-> +	uint32_t masked_val, latched_val;
-> +	struct bcm_vk_entry const *entry;
-> +	uint32_t reg;
-> +	uint16_t ecc_mem_err, uecc_mem_err;
-> +	struct device *dev = &vk->pdev->dev;
-> +
-> +	for (i = 0; i < table_size; i++) {
-> +		entry = &entry_tab[i];
-> +		masked_val = entry->mask & alert->notfs;
-> +		latched_val = entry->mask & alert->flags;
-> +
-> +		if (masked_val == ERR_LOG_UECC) {
-> +			/*
-> +			 * if there is difference between stored cnt and it
-> +			 * is greater than threshold, log it.
-> +			 */
-> +			reg = vkread32(vk, BAR_0, BAR_CARD_ERR_MEM);
-> +			BCM_VK_EXTRACT_FIELD(uecc_mem_err, reg,
-> +					     BCM_VK_MEM_ERR_FIELD_MASK,
-> +					     BCM_VK_UECC_MEM_ERR_SHIFT);
-> +			if ((uecc_mem_err != vk->alert_cnts.uecc) &&
-> +			    (uecc_mem_err >= BCM_VK_UECC_THRESHOLD))
-> +				dev_info(dev,
-> +					 "ALERT! %s.%d uecc RAISED - ErrCnt %d\n",
-> +					 DRV_MODULE_NAME, vk->misc_devid,
-> +					 uecc_mem_err);
-> +			vk->alert_cnts.uecc = uecc_mem_err;
-> +		} else if (masked_val == ERR_LOG_ECC) {
-> +			reg = vkread32(vk, BAR_0, BAR_CARD_ERR_MEM);
-> +			BCM_VK_EXTRACT_FIELD(ecc_mem_err, reg,
-> +					     BCM_VK_MEM_ERR_FIELD_MASK,
-> +					     BCM_VK_ECC_MEM_ERR_SHIFT);
-> +			if ((ecc_mem_err != vk->alert_cnts.ecc) &&
-> +			    (ecc_mem_err >= BCM_VK_ECC_THRESHOLD))
-> +				dev_info(dev, "ALERT! %s.%d ecc RAISED - ErrCnt %d\n",
-> +					 DRV_MODULE_NAME, vk->misc_devid,
-> +					 ecc_mem_err);
-> +			vk->alert_cnts.ecc = ecc_mem_err;
-> +		} else if (masked_val != latched_val) {
-> +			/* print a log as info */
-> +			dev_info(dev, "ALERT! %s.%d %s %s\n",
-> +				 DRV_MODULE_NAME, vk->misc_devid, entry->str,
-> +				 masked_val ? "RAISED" : "CLEARED");
-> +		}
-> +	}
-> +}
-> +
-> +static void bcm_vk_dump_peer_log(struct bcm_vk *vk)
-> +{
-> +	struct bcm_vk_peer_log log;
-> +	struct bcm_vk_peer_log *log_info = &vk->peerlog_info;
-> +	char loc_buf[BCM_VK_PEER_LOG_LINE_MAX];
-> +	int cnt;
-> +	struct device *dev = &vk->pdev->dev;
-> +	uint data_offset;
-> +
-> +	memcpy_fromio(&log, vk->bar[BAR_2] + vk->peerlog_off, sizeof(log));
-> +
-> +	dev_dbg(dev, "Peer PANIC: Size 0x%x(0x%x), [Rd Wr] = [%d %d]\n",
-> +		log.buf_size, log.mask, log.rd_idx, log.wr_idx);
-> +
-> +	/* perform range checking for rd/wr idx */
-> +	if ((log.rd_idx > log_info->mask) ||
-> +	    (log.wr_idx > log_info->mask) ||
-> +	    (log.buf_size != log_info->buf_size) ||
-> +	    (log.mask != log_info->mask)) {
-> +		dev_err(dev,
-> +			"Corrupted Ptrs: Size 0x%x(0x%x) Mask 0x%x(0x%x) [Rd Wr] = [%d %d], skip log dump.\n",
-> +			log_info->buf_size, log.buf_size,
-> +			log_info->mask, log.mask,
-> +			log.rd_idx, log.wr_idx);
-> +		return;
-> +	}
-> +
-> +	cnt = 0;
-> +	data_offset = vk->peerlog_off + sizeof(struct bcm_vk_peer_log);
-> +	loc_buf[BCM_VK_PEER_LOG_LINE_MAX - 1] = '\0';
-> +	while (log.rd_idx != log.wr_idx) {
-> +		loc_buf[cnt] = vkread8(vk, BAR_2, data_offset + log.rd_idx);
-> +
-> +		if ((loc_buf[cnt] == '\0') ||
-> +		    (cnt == (BCM_VK_PEER_LOG_LINE_MAX - 1))) {
-> +			dev_err(dev, "%s", loc_buf);
-> +			cnt = 0;
-> +		} else {
-> +			cnt++;
-> +		}
-> +		log.rd_idx = (log.rd_idx + 1) & log.mask;
-> +	}
-> +	/* update rd idx at the end */
-> +	vkwrite32(vk, log.rd_idx, BAR_2,
-> +		  vk->peerlog_off + offsetof(struct bcm_vk_peer_log, rd_idx));
-> +}
-> +
-> +void bcm_vk_handle_notf(struct bcm_vk *vk)
-> +{
-> +	uint32_t reg;
-> +	struct bcm_vk_alert alert;
-> +	bool intf_down;
-> +	unsigned long flags;
-> +
-> +	/* handle peer alerts and then locally detected ones */
-> +	reg = vkread32(vk, BAR_0, BAR_CARD_ERR_LOG);
-> +	intf_down = BCM_VK_INTF_IS_DOWN(reg);
-> +	if (!intf_down) {
-> +		vk->peer_alert.notfs = reg;
-> +		bcm_vk_log_notf(vk, &vk->peer_alert, bcm_vk_peer_err,
-> +				ARRAY_SIZE(bcm_vk_peer_err));
-> +		vk->peer_alert.flags = vk->peer_alert.notfs;
-> +	} else {
-> +		/* turn off access */
-> +		bcm_vk_blk_drv_access(vk);
-> +	}
-> +
-> +	/* check and make copy of alert with lock and then free lock */
-> +	spin_lock_irqsave(&vk->host_alert_lock, flags);
-> +	if (intf_down)
-> +		vk->host_alert.notfs |= ERR_LOG_HOST_PCIE_DWN;
-> +
-> +	alert = vk->host_alert;
-> +	vk->host_alert.flags = vk->host_alert.notfs;
-> +	spin_unlock_irqrestore(&vk->host_alert_lock, flags);
-> +
-> +	/* call display with copy */
-> +	bcm_vk_log_notf(vk, &alert, bcm_vk_host_err,
-> +			ARRAY_SIZE(bcm_vk_host_err));
-> +
-> +	/*
-> +	 * If it is a sys fault or heartbeat timeout, we would like extract
-> +	 * log msg from the card so that we would know what is the last fault
-> +	 */
-> +	if (!intf_down &&
-> +	    ((vk->host_alert.flags & ERR_LOG_HOST_HB_FAIL) ||
-> +	     (vk->peer_alert.flags & ERR_LOG_SYS_FAULT)))
-> +		bcm_vk_dump_peer_log(vk);
-> +}
-> +
-> +static inline int bcm_vk_wait(struct bcm_vk *vk, enum pci_barno bar,
-> +			      uint64_t offset, uint32_t mask, uint32_t value,
-> +			      unsigned long timeout_ms)
-> +{
-> +	struct device *dev = &vk->pdev->dev;
-> +	unsigned long start_time;
-> +	unsigned long timeout;
-> +	uint32_t rd_val, boot_status;
-> +
-> +	start_time = jiffies;
-> +	timeout = start_time + msecs_to_jiffies(timeout_ms);
-> +
-> +	do {
-> +		rd_val = vkread32(vk, bar, offset);
-> +		dev_dbg(dev, "BAR%d Offset=0x%llx: 0x%x\n",
-> +			bar, offset, rd_val);
-> +
-> +		/* check for any boot err condition */
-> +		boot_status = vkread32(vk, BAR_0, BAR_BOOT_STATUS);
-> +		if (boot_status & BOOT_ERR_MASK) {
-> +			dev_err(dev, "Boot Err 0x%x, progress 0x%x after %d ms\n",
-> +				(boot_status & BOOT_ERR_MASK) >> BOOT_ERR_SHIFT,
-> +				boot_status & BOOT_PROG_MASK,
-> +				jiffies_to_msecs(jiffies - start_time));
-> +			return -EFAULT;
-> +		}
-> +
-> +		if (time_after(jiffies, timeout))
-> +			return -ETIMEDOUT;
-> +
-> +		cpu_relax();
-> +		cond_resched();
-
-Why call both?
-
-And sitting and spinning like this feels odd, but ok...
-
-> +	} while ((rd_val & mask) != value);
-> +
-> +	return 0;
-> +}
-> +
-> +static void bcm_vk_get_card_info(struct bcm_vk *vk)
-> +{
-> +	struct device *dev = &vk->pdev->dev;
-> +	uint32_t offset;
-> +	int i;
-> +	uint8_t *dst;
-> +	struct bcm_vk_card_info *info = &vk->card_info;
-> +
-> +	/* first read the offset from spare register */
-> +	offset = vkread32(vk, BAR_0, BAR_CARD_STATIC_INFO);
-> +	offset &= (pci_resource_len(vk->pdev, BAR_2 * 2) - 1);
-> +
-> +	/* based on the offset, read info to internal card info structure */
-> +	dst = (uint8_t *)info;
-> +	for (i = 0; i < sizeof(*info); i++)
-> +		*dst++ = vkread8(vk, BAR_2, offset++);
-> +
-> +#define CARD_INFO_LOG_FMT "version   : %x\n" \
-> +			  "os_tag    : %s\n" \
-> +			  "cmpt_tag  : %s\n" \
-> +			  "cpu_freq  : %d MHz\n" \
-> +			  "cpu_scale : %d full, %d lowest\n" \
-> +			  "ddr_freq  : %d MHz\n" \
-> +			  "ddr_size  : %d MB\n" \
-> +			  "video_freq: %d MHz\n"
-> +	dev_dbg(dev, CARD_INFO_LOG_FMT, info->version, info->os_tag,
-> +		info->cmpt_tag, info->cpu_freq_mhz, info->cpu_scale[0],
-> +		info->cpu_scale[MAX_OPP - 1], info->ddr_freq_mhz,
-> +		info->ddr_size_MB, info->video_core_freq_mhz);
-> +
-> +	/*
-> +	 * get the peer log pointer, only need the offset, and get record
-> +	 * of the log buffer information which would be used for checking
-> +	 * before dump, in case the BAR2 memory has been corrupted.
-> +	 */
-> +	vk->peerlog_off = offset;
-> +	memcpy_fromio(&vk->peerlog_info, vk->bar[BAR_2] + vk->peerlog_off,
-> +		      sizeof(vk->peerlog_info));
-> +	dev_dbg(dev, "Peer log: Size 0x%x(0x%x), [Rd Wr] = [%d %d]\n",
-> +		vk->peerlog_info.buf_size,
-> +		vk->peerlog_info.mask,
-> +		vk->peerlog_info.rd_idx,
-> +		vk->peerlog_info.wr_idx);
-> +}
-> +
-> +static void bcm_vk_get_proc_mon_info(struct bcm_vk *vk)
-> +{
-> +	struct device *dev = &vk->pdev->dev;
-> +	struct bcm_vk_proc_mon_info *mon = &vk->proc_mon_info;
-> +	uint32_t num, entry_size, offset, buf_size;
-> +	uint8_t *dst;
-> +
-> +	/* calculate offset which is based on peerlog offset */
-> +	buf_size = vkread32(vk, BAR_2,
-> +			    vk->peerlog_off
-> +			    + offsetof(struct bcm_vk_peer_log, buf_size));
-> +	offset = vk->peerlog_off + sizeof(struct bcm_vk_peer_log)
-> +		 + buf_size;
-> +
-> +	/* first read the num and entry size */
-> +	num = vkread32(vk, BAR_2, offset);
-> +	entry_size = vkread32(vk, BAR_2, offset + sizeof(num));
-> +
-> +	/* check for max allowed */
-> +	if (num > BCM_VK_PROC_MON_MAX) {
-> +		dev_err(dev, "Processing monitoring entry %d exceeds max %d\n",
-> +			num, BCM_VK_PROC_MON_MAX);
-> +		return;
-> +	}
-> +	mon->num = num;
-> +	mon->entry_size = entry_size;
-> +
-> +	vk->proc_mon_off = offset;
-> +
-> +	/* read it once that will capture those static info */
-> +	dst = (uint8_t *)&mon->entries[0];
-> +	offset += sizeof(num) + sizeof(entry_size);
-> +	memcpy_fromio(dst, vk->bar[BAR_2] + offset, num * entry_size);
-> +}
-> +
-> +static int bcm_vk_sync_card_info(struct bcm_vk *vk)
-> +{
-> +	uint32_t rdy_marker = vkread32(vk, BAR_1, VK_BAR1_MSGQ_DEF_RDY);
-> +
-> +	/* check for marker, but allow diags mode to skip sync */
-> +	if (!bcm_vk_msgq_marker_valid(vk))
-> +		return (rdy_marker == VK_BAR1_DIAG_RDY_MARKER ? 0 : -EINVAL);
-> +
-> +	/*
-> +	 * Write down scratch addr which is used for DMA. For
-> +	 * signed part, BAR1 is accessible only after boot2 has come
-> +	 * up
-> +	 */
-> +	if (vk->tdma_addr) {
-> +		vkwrite32(vk, (uint64_t)vk->tdma_addr >> 32, BAR_1,
-> +			  VK_BAR1_SCRATCH_OFF_HI);
-> +		vkwrite32(vk, (uint32_t)vk->tdma_addr, BAR_1,
-> +			  VK_BAR1_SCRATCH_OFF_LO);
-> +		vkwrite32(vk, nr_scratch_pages * PAGE_SIZE, BAR_1,
-> +			  VK_BAR1_SCRATCH_SZ_ADDR);
-> +	}
-> +
-> +	/* get static card info, only need to read once */
-> +	bcm_vk_get_card_info(vk);
-> +
-> +	/* get the proc mon info once */
-> +	bcm_vk_get_proc_mon_info(vk);
-> +
-> +	return 0;
-> +}
-> +
-> +void bcm_vk_blk_drv_access(struct bcm_vk *vk)
-> +{
-> +	int i;
-> +
-> +	/*
-> +	 * kill all the apps except for the process that is resetting.
-> +	 * If not called during reset, reset_pid will be 0, and all will be
-> +	 * killed.
-> +	 */
-> +	spin_lock(&vk->ctx_lock);
-> +
-> +	/* set msgq_inited to 0 so that all rd/wr will be blocked */
-> +	atomic_set(&vk->msgq_inited, 0);
-> +
-> +	for (i = 0; i < VK_PID_HT_SZ; i++) {
-> +		struct bcm_vk_ctx *ctx;
-> +
-> +		list_for_each_entry(ctx, &vk->pid_ht[i].head, node) {
-> +			if (ctx->pid != vk->reset_pid) {
-> +				dev_dbg(&vk->pdev->dev,
-> +					"Send kill signal to pid %d\n",
-> +					ctx->pid);
-> +				kill_pid(find_vpid(ctx->pid), SIGKILL, 1);
-> +			}
-> +		}
-> +	}
-> +	bcm_vk_tty_terminate_tty_user(vk);
-> +	spin_unlock(&vk->ctx_lock);
-> +}
-> +
-> +static void bcm_vk_buf_notify(struct bcm_vk *vk, void *bufp,
-> +			      dma_addr_t host_buf_addr, uint32_t buf_size)
-> +{
-> +	/* update the dma address to the card */
-> +	vkwrite32(vk, (uint64_t)host_buf_addr >> 32, BAR_1,
-> +		  VK_BAR1_DMA_BUF_OFF_HI);
-> +	vkwrite32(vk, (uint32_t)host_buf_addr, BAR_1,
-> +		  VK_BAR1_DMA_BUF_OFF_LO);
-> +	vkwrite32(vk, buf_size, BAR_1, VK_BAR1_DMA_BUF_SZ);
-> +}
-> +
-> +static int bcm_vk_load_image_by_type(struct bcm_vk *vk, uint32_t load_type,
-> +				     const char *filename)
-> +{
-> +	struct device *dev = &vk->pdev->dev;
-> +	const struct firmware *fw = NULL;
-> +	void *bufp = NULL;
-> +	size_t max_buf, offset;
-> +	int ret;
-> +	uint64_t offset_codepush;
-> +	uint32_t codepush;
-> +	uint32_t value;
-> +	dma_addr_t boot_dma_addr;
-> +	bool is_stdalone;
-> +
-> +	if (load_type == VK_IMAGE_TYPE_BOOT1) {
-> +		/*
-> +		 * After POR, enable VK soft BOOTSRC so bootrom do not clear
-> +		 * the pushed image (the TCM memories).
-> +		 */
-> +		value = vkread32(vk, BAR_0, BAR_BOOTSRC_SELECT);
-> +		value |= BOOTSRC_SOFT_ENABLE;
-> +		vkwrite32(vk, value, BAR_0, BAR_BOOTSRC_SELECT);
-> +
-> +		codepush = CODEPUSH_BOOTSTART + CODEPUSH_BOOT1_ENTRY;
-> +		offset_codepush = BAR_CODEPUSH_SBL;
-> +
-> +		/* Write a 1 to request SRAM open bit */
-> +		vkwrite32(vk, CODEPUSH_BOOTSTART, BAR_0, offset_codepush);
-> +
-> +		/* Wait for VK to respond */
-> +		ret = bcm_vk_wait(vk, BAR_0, BAR_BOOT_STATUS, SRAM_OPEN,
-> +				  SRAM_OPEN, LOAD_IMAGE_TIMEOUT_MS);
-> +		if (ret < 0) {
-> +			dev_err(dev, "boot1 wait SRAM err - ret(%d)\n", ret);
-> +			goto err_buf_out;
-> +		}
-> +
-> +		max_buf = SZ_256K;
-> +		bufp = dma_alloc_coherent(dev,
-> +					  max_buf,
-> +					  &boot_dma_addr, GFP_KERNEL);
-> +		if (!bufp) {
-> +			dev_err(dev, "Error allocating 0x%zx\n", max_buf);
-> +			ret = -ENOMEM;
-> +			goto err_buf_out;
-> +		}
-> +	} else if (load_type == VK_IMAGE_TYPE_BOOT2) {
-> +		codepush = CODEPUSH_BOOT2_ENTRY;
-> +		offset_codepush = BAR_CODEPUSH_SBI;
-> +
-> +		/* Wait for VK to respond */
-> +		ret = bcm_vk_wait(vk, BAR_0, BAR_BOOT_STATUS, DDR_OPEN,
-> +				  DDR_OPEN, LOAD_IMAGE_TIMEOUT_MS);
-> +		if (ret < 0) {
-> +			dev_err(dev, "boot2 wait DDR open error - ret(%d)\n",
-> +				ret);
-> +			goto err_buf_out;
-> +		}
-> +
-> +		max_buf = SZ_4M;
-> +		bufp = dma_alloc_coherent(dev,
-> +					  max_buf,
-> +					  &boot_dma_addr, GFP_KERNEL);
-> +		if (!bufp) {
-> +			dev_err(dev, "Error allocating 0x%zx\n", max_buf);
-> +			ret = -ENOMEM;
-> +			goto err_buf_out;
-> +		}
-> +
-> +		bcm_vk_buf_notify(vk, bufp, boot_dma_addr, max_buf);
-> +	} else {
-> +		dev_err(dev, "Error invalid image type 0x%x\n", load_type);
-> +		ret = -EINVAL;
-> +		goto err_buf_out;
-> +	}
-> +
-> +	offset = 0;
-> +	ret = request_partial_firmware_into_buf(&fw, filename, dev,
-> +						bufp, max_buf, offset);
-> +	if (ret) {
-> +		dev_err(dev, "Error %d requesting firmware file: %s\n",
-> +			ret, filename);
-> +		goto err_firmware_out;
-> +	}
-> +	dev_dbg(dev, "size=0x%zx\n", fw->size);
-> +	if (load_type == VK_IMAGE_TYPE_BOOT1)
-> +		memcpy_toio(vk->bar[BAR_1] + BAR1_CODEPUSH_BASE_BOOT1,
-> +			    bufp,
-> +			    fw->size);
-> +
-> +	dev_dbg(dev, "Signaling 0x%x to 0x%llx\n", codepush, offset_codepush);
-> +	vkwrite32(vk, codepush, BAR_0, offset_codepush);
-> +
-> +	if (load_type == VK_IMAGE_TYPE_BOOT1) {
-> +		/* wait until done */
-> +		ret = bcm_vk_wait(vk, BAR_0, BAR_BOOT_STATUS,
-> +				  BOOT1_RUNNING,
-> +				  BOOT1_RUNNING,
-> +				  BOOT1_STARTUP_TIMEOUT_MS);
-> +
-> +		is_stdalone = vkread32(vk, BAR_0, BAR_BOOT_STATUS) &
-> +			      BOOT_STDALONE_RUNNING;
-> +		if (ret && !is_stdalone) {
-> +			dev_err(dev,
-> +				"Timeout %ld ms waiting for boot1 to come up - ret(%d)\n",
-> +				BOOT1_STARTUP_TIMEOUT_MS, ret);
-> +			goto err_firmware_out;
-> +		} else if (is_stdalone) {
-> +			uint32_t reg;
-> +
-> +			reg = vkread32(vk, BAR_0, BAR_BOOT1_STDALONE_PROGRESS);
-> +			if ((reg & BOOT1_STDALONE_PROGRESS_MASK) ==
-> +				     BOOT1_STDALONE_SUCCESS) {
-> +				dev_info(dev, "Boot1 standalone success\n");
-> +				ret = 0;
-> +			} else {
-> +				dev_err(dev, "Timeout %ld ms - Boot1 standalone failure\n",
-> +					BOOT1_STARTUP_TIMEOUT_MS);
-> +				ret = -EINVAL;
-> +				goto err_firmware_out;
-> +			}
-> +		}
-> +	} else if (load_type == VK_IMAGE_TYPE_BOOT2) {
-> +		unsigned long timeout;
-> +
-> +		timeout = jiffies + msecs_to_jiffies(LOAD_IMAGE_TIMEOUT_MS);
-> +
-> +		/* To send more data to VK than max_buf allowed at a time */
-> +		do {
-> +			/*
-> +			 * Check for ack from card. when Ack is received,
-> +			 * it means all the data is received by card.
-> +			 * Exit the loop after ack is received.
-> +			 */
-> +			ret = bcm_vk_wait(vk, BAR_0, BAR_BOOT_STATUS,
-> +					  FW_LOADER_ACK_RCVD_ALL_DATA,
-> +					  FW_LOADER_ACK_RCVD_ALL_DATA,
-> +					  TXFR_COMPLETE_TIMEOUT_MS);
-> +			if (ret == 0) {
-> +				dev_info(dev, "Exit boot2 download\n");
-> +				break;
-> +			} else if (ret == -EFAULT) {
-> +				dev_err(dev, "Error detected during ACK waiting");
-> +				goto err_firmware_out;
-> +			}
-> +
-> +			/* exit the loop, if there is no response from card */
-> +			if (time_after(jiffies, timeout)) {
-> +				dev_err(dev, "Error. No reply from card\n");
-> +				ret = -ETIMEDOUT;
-> +				goto err_firmware_out;
-> +			}
-> +
-> +			/* Wait for VK to open BAR space to copy new data */
-> +			ret = bcm_vk_wait(vk, BAR_0, offset_codepush,
-> +					  codepush, 0,
-> +					  TXFR_COMPLETE_TIMEOUT_MS);
-> +			if (ret == 0) {
-> +				offset += max_buf;
-> +				ret = request_partial_firmware_into_buf
-> +						(&fw,
-> +						 filename,
-> +						 dev, bufp,
-> +						 max_buf,
-> +						 offset);
-> +				if (ret) {
-> +					dev_err(dev,
-> +						"Error %d requesting firmware file: %s offset: 0x%zx\n",
-> +						ret, filename, offset);
-> +					goto err_firmware_out;
-> +				}
-> +				dev_dbg(dev, "size=0x%zx\n", fw->size);
-> +				dev_dbg(dev, "Signaling 0x%x to 0x%llx\n",
-> +					codepush, offset_codepush);
-> +				vkwrite32(vk, codepush, BAR_0, offset_codepush);
-> +				/* reload timeout after every codepush */
-> +				timeout = jiffies +
-> +				    msecs_to_jiffies(LOAD_IMAGE_TIMEOUT_MS);
-> +			} else if (ret == -EFAULT) {
-> +				dev_err(dev, "Error detected waiting for transfer\n");
-> +				goto err_firmware_out;
-> +			}
-> +		} while (1);
-> +
-> +		/* wait for fw status bits to indicate app ready */
-> +		ret = bcm_vk_wait(vk, BAR_0, VK_BAR_FWSTS,
-> +				  VK_FWSTS_READY,
-> +				  VK_FWSTS_READY,
-> +				  BOOT2_STARTUP_TIMEOUT_MS);
-> +		if (ret < 0) {
-> +			dev_err(dev, "Boot2 not ready - ret(%d)\n", ret);
-> +			goto err_firmware_out;
-> +		}
-> +
-> +		is_stdalone = vkread32(vk, BAR_0, BAR_BOOT_STATUS) &
-> +			      BOOT_STDALONE_RUNNING;
-> +		if (!is_stdalone) {
-> +			ret = bcm_vk_intf_ver_chk(vk);
-> +			if (ret) {
-> +				dev_err(dev, "failure in intf version check\n");
-> +				goto err_firmware_out;
-> +			}
-> +
-> +			/*
-> +			 * Next, initialize Message Q if we are loading boot2.
-> +			 * Do a force sync
-> +			 */
-> +			ret = bcm_vk_sync_msgq(vk, true);
-> +			if (ret) {
-> +				dev_err(dev, "Boot2 Error reading comm msg Q info\n");
-> +				ret = -EIO;
-> +				goto err_firmware_out;
-> +			}
-> +
-> +			/* sync & channel other info */
-> +			ret = bcm_vk_sync_card_info(vk);
-> +			if (ret) {
-> +				dev_err(dev, "Syncing Card Info failure\n");
-> +				goto err_firmware_out;
-> +			}
-> +		}
-> +	}
-> +
-> +err_firmware_out:
-> +	release_firmware(fw);
-> +
-> +err_buf_out:
-> +	if (bufp)
-> +		dma_free_coherent(dev, max_buf, bufp, boot_dma_addr);
-> +
-> +	return ret;
-> +}
-> +
-> +static uint32_t bcm_vk_next_boot_image(struct bcm_vk *vk)
-> +{
-> +	uint32_t boot_status;
-> +	uint32_t fw_status;
-> +	uint32_t load_type = 0;  /* default for unknown */
-> +
-> +	boot_status = vkread32(vk, BAR_0, BAR_BOOT_STATUS);
-> +	fw_status = vkread32(vk, BAR_0, VK_BAR_FWSTS);
-> +
-> +	if (!BCM_VK_INTF_IS_DOWN(boot_status) && (boot_status & SRAM_OPEN))
-> +		load_type = VK_IMAGE_TYPE_BOOT1;
-> +	else if (boot_status == BOOT1_RUNNING)
-> +		load_type = VK_IMAGE_TYPE_BOOT2;
-> +
-> +	/*
-> +	 * TO_FIX: For now, like to know what value we get everytime
-> +	 *         for debugging.
-> +	 */
-> +	dev_info(&vk->pdev->dev,
-> +		 "boot-status value for next image: 0x%x : fw-status 0x%x\n",
-> +		 boot_status, fw_status);
-> +
-> +	return load_type;
-> +}
-> +
-> +static enum soc_idx get_soc_idx(struct bcm_vk *vk)
-> +{
-> +	struct pci_dev *pdev = vk->pdev;
-> +	enum soc_idx idx = VK_IDX_INVALID;
-> +	uint32_t rev;
-> +	static enum soc_idx const vk_soc_tab[] = { VALKYRIE_A0, VALKYRIE_B0 };
-> +
-> +	switch (pdev->device) {
-> +	case PCI_DEVICE_ID_VALKYRIE:
-> +		/* get the chip id to decide sub-class */
-> +		rev = MAJOR_SOC_REV(vkread32(vk, BAR_0, BAR_CHIP_ID));
-> +		if (rev < ARRAY_SIZE(vk_soc_tab)) {
-> +			idx = vk_soc_tab[rev];
-> +		} else {
-> +			/* Default to A0 firmware for all other chip revs */
-> +			idx = VALKYRIE_A0;
-> +			dev_warn(&pdev->dev,
-> +				 "Rev %d not in image lookup table, default to idx=%d\n",
-> +				 rev, idx);
-> +		}
-> +		break;
-> +
-> +	case PCI_DEVICE_ID_VIPER:
-> +		idx = VIPER;
-> +		break;
-> +
-> +	default:
-> +		dev_err(&pdev->dev, "no images for 0x%x\n", pdev->device);
-> +	}
-> +	return idx;
-> +}
-> +
-> +static const char *get_load_fw_name(struct bcm_vk *vk,
-> +				    const struct load_image_entry *entry)
-> +{
-> +	const struct firmware *fw;
-> +	struct device *dev = &vk->pdev->dev;
-> +	int ret;
-> +	unsigned long dummy;
-> +	int i;
-> +
-> +	for (i = 0; i < IMG_PER_TYPE_MAX; i++) {
-> +		fw = NULL;
-> +		ret = request_partial_firmware_into_buf(&fw,
-> +							entry->image_name[i],
-> +							dev, &dummy,
-> +							sizeof(dummy),
-> +							0);
-> +		release_firmware(fw);
-> +		if (!ret)
-> +			return entry->image_name[i];
-> +	}
-> +	return NULL;
-> +}
-> +
-> +int bcm_vk_auto_load_all_images(struct bcm_vk *vk)
-> +{
-> +	int i, ret = -1;
-> +	enum soc_idx idx;
-> +	struct device *dev = &vk->pdev->dev;
-> +	uint32_t curr_type;
-> +	const char *curr_name;
-> +
-> +	idx = get_soc_idx(vk);
-> +	if (idx == VK_IDX_INVALID)
-> +		goto auto_load_all_exit;
-> +
-> +	/* log a message to know the relative loading order */
-> +	dev_info(dev, "Load All for device %d\n", vk->misc_devid);
-
-No need to be noise if all is going well, a driver should be quiet only
-if something goes wrong, then print out a message.  No one wants to see
-this :)
-
-dev_dbg()?
-
-> +
-> +	for (i = 0; i < NUM_BOOT_STAGES; i++) {
-> +		curr_type = image_tab[idx][i].image_type;
-> +		if (bcm_vk_next_boot_image(vk) == curr_type) {
-> +			curr_name = get_load_fw_name(vk, &image_tab[idx][i]);
-> +			if (!curr_name) {
-> +				dev_err(dev, "No suitable firmware exists for type %d",
-> +					curr_type);
-> +				ret = -ENOENT;
-> +				goto auto_load_all_exit;
-> +			}
-> +			ret = bcm_vk_load_image_by_type(vk, curr_type,
-> +							curr_name);
-> +			dev_info(dev, "Auto load %s, ret %d\n",
-> +				 curr_name, ret);
-
-Same here.
-
-dev_dbg()?
-
-> +
-> +			if (ret) {
-> +				dev_err(dev, "Error loading default %s\n",
-> +					curr_name);
-> +				goto auto_load_all_exit;
-> +			}
-> +		}
-> +	}
-> +
-> +auto_load_all_exit:
-> +	return ret;
-> +}
-> +
-> +static int bcm_vk_trigger_autoload(struct bcm_vk *vk)
-> +{
-> +	if (test_and_set_bit(BCM_VK_WQ_DWNLD_PEND, vk->wq_offload) != 0)
-> +		return -EPERM;
-> +
-> +	set_bit(BCM_VK_WQ_DWNLD_AUTO, vk->wq_offload);
-> +	queue_work(vk->wq_thread, &vk->wq_work);
-> +
-> +	return 0;
-> +}
-> +
-> +static long bcm_vk_load_image(struct bcm_vk *vk,
-> +			      const struct vk_image __user *arg)
-> +{
-> +	struct device *dev = &vk->pdev->dev;
-> +	const char *image_name;
-> +	struct vk_image image;
-> +	uint32_t next_loadable;
-> +	enum soc_idx idx;
-> +	int image_idx;
-> +	int ret = -EPERM;
-> +
-> +	if (copy_from_user(&image, arg, sizeof(image)))
-> +		return -EACCES;
-> +
-> +	if ((image.type != VK_IMAGE_TYPE_BOOT1) &&
-> +	    (image.type != VK_IMAGE_TYPE_BOOT2)) {
-> +		dev_err(dev, "invalid image.type %u\n", image.type);
-> +		return ret;
-> +	}
-> +
-> +	next_loadable = bcm_vk_next_boot_image(vk);
-> +	if (next_loadable != image.type) {
-> +		dev_err(dev, "Next expected image %u, Loading %u\n",
-> +			next_loadable, image.type);
-> +		return ret;
-> +	}
-> +
-> +	/*
-> +	 * if something is pending download already.  This could only happen
-> +	 * for now when the driver is being loaded, or if someone has issued
-> +	 * another download command in another shell.
-> +	 */
-> +	if (test_and_set_bit(BCM_VK_WQ_DWNLD_PEND, vk->wq_offload) != 0) {
-> +		dev_err(dev, "Download operation already pending.\n");
-> +		return ret;
-> +	}
-> +
-> +	image_name = image.filename;
-> +	if (image_name[0] == '\0') {
-> +		/* Use default image name if NULL */
-> +		idx = get_soc_idx(vk);
-> +		if (idx == VK_IDX_INVALID)
-> +			goto err_idx;
-> +
-> +		/* Image idx starts with boot1 */
-> +		image_idx = image.type - VK_IMAGE_TYPE_BOOT1;
-> +		image_name = get_load_fw_name(vk, &image_tab[idx][image_idx]);
-> +		if (!image_name) {
-> +			dev_err(dev, "No suitable image found for type %d",
-> +				image.type);
-> +			ret = -ENOENT;
-> +			goto err_idx;
-> +		}
-> +	} else {
-> +		/* Ensure filename is NULL terminated */
-> +		image.filename[sizeof(image.filename) - 1] = '\0';
-> +	}
-> +	ret = bcm_vk_load_image_by_type(vk, image.type, image_name);
-> +	dev_info(dev, "Load %s, ret %d\n", image_name, ret);
-
-dev_dbg()?
-
-> +err_idx:
-> +	clear_bit(BCM_VK_WQ_DWNLD_PEND, vk->wq_offload);
-> +
-> +	return ret;
-> +}
-> +
-> +static int bcm_vk_reset_successful(struct bcm_vk *vk)
-> +{
-> +	struct device *dev = &vk->pdev->dev;
-> +	uint32_t fw_status, reset_reason;
-> +	int ret = -EAGAIN;
-> +
-> +	/*
-> +	 * Reset could be triggered when the card in several state:
-> +	 *   i)   in bootROM
-> +	 *   ii)  after boot1
-> +	 *   iii) boot2 running
-> +	 *
-> +	 * i) & ii) - no status bits will be updated.  If vkboot1
-> +	 * runs automatically after reset, it  will update the reason
-> +	 * to be unknown reason
-> +	 * iii) - reboot reason match + deinit done.
-> +	 */
-> +	fw_status = vkread32(vk, BAR_0, VK_BAR_FWSTS);
-> +	/* immediate exit if interface goes down */
-> +	if (BCM_VK_INTF_IS_DOWN(fw_status)) {
-> +		dev_err(dev, "PCIe Intf Down!\n");
-> +		goto reset_exit;
-> +	}
-> +
-> +	reset_reason = (fw_status & VK_FWSTS_RESET_REASON_MASK);
-> +	if ((reset_reason == VK_FWSTS_RESET_MBOX_DB) ||
-> +	    (reset_reason == VK_FWSTS_RESET_UNKNOWN))
-> +		ret = 0;
-> +
-> +	/*
-> +	 * if some of the deinit bits are set, but done
-> +	 * bit is not, this is a failure if triggered while boot2 is running
-> +	 */
-> +	if ((fw_status & VK_FWSTS_DEINIT_TRIGGERED) &&
-> +	    !(fw_status & VK_FWSTS_RESET_DONE))
-> +		ret = -EAGAIN;
-> +
-> +reset_exit:
-> +	dev_dbg(dev, "FW status = 0x%x ret %d\n", fw_status, ret);
-> +
-> +	return ret;
-> +}
-> +
-> +static long bcm_vk_reset(struct bcm_vk *vk, struct vk_reset __user *arg)
-> +{
-> +	struct device *dev = &vk->pdev->dev;
-> +	struct vk_reset reset;
-> +	int ret = 0;
-> +	uint32_t ramdump_reset;
-> +	int special_reset;
-> +
-> +	if (copy_from_user(&reset, arg, sizeof(struct vk_reset)))
-> +		return -EFAULT;
-> +
-
-No validation of user data here?  Not nice...
-
-
-> +	/* check if any download is in-progress, if so return error */
-> +	if (test_and_set_bit(BCM_VK_WQ_DWNLD_PEND, vk->wq_offload) != 0) {
-> +		dev_err(dev, "Download operation pending - skip reset.\n");
-> +		return -EPERM;
-> +	}
-> +
-> +	ramdump_reset = vk->peer_alert.flags & ERR_LOG_RAMDUMP;
-> +	dev_info(dev, "Issue Reset %s\n",
-> +		 ramdump_reset ? "in ramdump mode" : "");
-> +
-> +	/*
-> +	 * The following is the sequence of reset:
-> +	 * - send card level graceful shut down
-> +	 * - wait enough time for VK to handle its business, stopping DMA etc
-> +	 * - kill host apps
-> +	 * - Trigger interrupt with DB
-> +	 */
-> +	bcm_vk_send_shutdown_msg(vk, VK_SHUTDOWN_GRACEFUL, 0, 0);
-> +
-> +	spin_lock(&vk->ctx_lock);
-> +	if (!vk->reset_pid) {
-> +		vk->reset_pid = task_pid_nr(current);
-> +	} else {
-> +		dev_err(dev, "Reset already launched by process pid %d\n",
-> +			vk->reset_pid);
-> +		ret = -EACCES;
-> +	}
-> +	spin_unlock(&vk->ctx_lock);
-> +	if (ret)
-> +		goto err_exit;
-> +
-> +	bcm_vk_blk_drv_access(vk);
-> +	special_reset = bcm_vk_trigger_reset(vk);
-> +
-> +	/*
-> +	 * Wait enough time for card os to deinit
-> +	 * and populate the reset reason.
-> +	 */
-> +	msleep(BCM_VK_DEINIT_TIME_MS);
-> +
-> +	if (special_reset) {
-> +		/* if it is special ramdump reset, return the type to user */
-> +		reset.arg2 = special_reset;
-> +		if (copy_to_user(arg, &reset, sizeof(reset)))
-> +			ret = -EFAULT;
-> +	} else {
-> +		ret = bcm_vk_reset_successful(vk);
-> +	}
-> +
-> +err_exit:
-> +	clear_bit(BCM_VK_WQ_DWNLD_PEND, vk->wq_offload);
-> +	return ret;
-> +}
-> +
-> +static int bcm_vk_mmap(struct file *file, struct vm_area_struct *vma)
-> +{
-> +	struct bcm_vk_ctx *ctx = file->private_data;
-> +	struct bcm_vk *vk = container_of(ctx->miscdev, struct bcm_vk, miscdev);
-> +	unsigned long pg_size;
-> +
-> +	/* only BAR2 is mmap possible, which is bar num 4 due to 64bit */
-> +#define VK_MMAPABLE_BAR 4
-> +
-> +	pg_size = ((pci_resource_len(vk->pdev, VK_MMAPABLE_BAR) - 1)
-> +		    >> PAGE_SHIFT) + 1;
-> +	if (vma->vm_pgoff + vma_pages(vma) > pg_size)
-> +		return -EINVAL;
-> +
-> +	vma->vm_pgoff += (pci_resource_start(vk->pdev, VK_MMAPABLE_BAR)
-> +			  >> PAGE_SHIFT);
-> +	vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
-> +
-> +	return io_remap_pfn_range(vma, vma->vm_start, vma->vm_pgoff,
-> +				  vma->vm_end - vma->vm_start,
-> +				  vma->vm_page_prot);
-> +}
-> +
-> +static long bcm_vk_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
-> +{
-> +	long ret = -EINVAL;
-> +	struct bcm_vk_ctx *ctx = file->private_data;
-> +	struct bcm_vk *vk = container_of(ctx->miscdev, struct bcm_vk, miscdev);
-> +	void __user *argp = (void __user *)arg;
-> +
-> +	dev_dbg(&vk->pdev->dev,
-> +		"ioctl, cmd=0x%02x, arg=0x%02lx\n",
-> +		cmd, arg);
-> +
-> +	mutex_lock(&vk->mutex);
-> +
-> +	switch (cmd) {
-> +	case VK_IOCTL_LOAD_IMAGE:
-> +		ret = bcm_vk_load_image(vk, argp);
-> +		break;
-> +
-> +	case VK_IOCTL_RESET:
-> +		ret = bcm_vk_reset(vk, argp);
-> +		break;
-> +
-> +	default:
-> +		break;
-> +	}
-> +
-> +	mutex_unlock(&vk->mutex);
-> +
-> +	return ret;
-> +}
-> +
-> +static const struct file_operations bcm_vk_fops = {
-> +	.owner = THIS_MODULE,
-> +	.open = bcm_vk_open,
-> +	.read = bcm_vk_read,
-> +	.write = bcm_vk_write,
-> +	.poll = bcm_vk_poll,
-> +	.release = bcm_vk_release,
-> +	.mmap = bcm_vk_mmap,
-> +	.unlocked_ioctl = bcm_vk_ioctl,
-> +};
-> +
-> +static int bcm_vk_on_panic(struct notifier_block *nb,
-> +			   unsigned long e, void *p)
-> +{
-> +	struct bcm_vk *vk = container_of(nb, struct bcm_vk, panic_nb);
-> +
-> +	bcm_to_v_reset_doorbell(vk, VK_BAR0_RESET_DB_HARD);
-> +
-> +	return 0;
-> +}
-> +
-> +static int bcm_vk_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
-> +{
-> +	int err;
-> +	int i;
-> +	int id;
-> +	int irq;
-> +	char name[20];
-> +	struct bcm_vk *vk;
-> +	struct device *dev = &pdev->dev;
-> +	struct miscdevice *misc_device;
-> +	uint32_t boot_status;
-> +
-> +	/* allocate vk structure which is tied to kref for freeing */
-> +	vk = kzalloc(sizeof(*vk), GFP_KERNEL);
-> +	if (!vk)
-> +		return -ENOMEM;
-> +
-> +	kref_init(&vk->kref);
-
-What does this kref manage?  You have a char device, and a pci device,
-which one is "controlling the lifespan" of this structure?
-
-> +	if (nr_ib_sgl_blk > BCM_VK_IB_SGL_BLK_MAX) {
-> +		dev_warn(dev, "Inband SGL blk %d limited to max %d\n",
-> +			 nr_ib_sgl_blk, BCM_VK_IB_SGL_BLK_MAX);
-> +		nr_ib_sgl_blk = BCM_VK_IB_SGL_BLK_MAX;
-> +	}
-> +	vk->ib_sgl_size = nr_ib_sgl_blk * VK_MSGQ_BLK_SIZE;
-> +	vk->pdev = pdev;
-
-No reference counting of this?  Brave...
-
-> +	mutex_init(&vk->mutex);
-> +
-> +	err = pci_enable_device(pdev);
-> +	if (err) {
-> +		dev_err(dev, "Cannot enable PCI device\n");
-> +		return err;
-> +	}
-> +
-> +	err = pci_request_regions(pdev, DRV_MODULE_NAME);
-> +	if (err) {
-> +		dev_err(dev, "Cannot obtain PCI resources\n");
-> +		goto err_disable_pdev;
-> +	}
-> +
-> +	/* make sure DMA is good */
-> +	err = dma_set_mask_and_coherent(&pdev->dev,
-> +					DMA_BIT_MASK(BCM_VK_DMA_BITS));
-> +	if (err) {
-> +		dev_err(dev, "failed to set DMA mask\n");
-> +		goto err_disable_pdev;
-> +	}
-> +
-> +	/* The tdma is a scratch area for some DMA testings. */
-> +	if (nr_scratch_pages) {
-> +		vk->tdma_vaddr = dma_alloc_coherent
-> +					(dev,
-> +					 nr_scratch_pages * PAGE_SIZE,
-> +					 &vk->tdma_addr, GFP_KERNEL);
-> +		if (!vk->tdma_vaddr) {
-> +			err = -ENOMEM;
-> +			goto err_disable_pdev;
-> +		}
-> +	}
-> +
-> +	pci_set_master(pdev);
-> +	pci_set_drvdata(pdev, vk);
-> +
-> +	irq = pci_alloc_irq_vectors(pdev,
-> +				    1,
-> +				    VK_MSIX_IRQ_MAX,
-> +				    PCI_IRQ_MSI | PCI_IRQ_MSIX);
-> +
-> +	if (irq < VK_MSIX_IRQ_MIN_REQ) {
-> +		dev_err(dev, "failed to get min %d MSIX interrupts, irq(%d)\n",
-> +			VK_MSIX_IRQ_MIN_REQ, irq);
-> +		err = (irq >= 0) ? -EINVAL : irq;
-> +		goto err_disable_pdev;
-> +	}
-> +
-> +	dev_info(dev, "Number of IRQs %d allocated - requested(%d).\n",
-> +		 irq, VK_MSIX_IRQ_MAX);
-
-Again, please be quiet.  Same for all dev_info() calls...
-
-> +
-> +	for (i = 0; i < MAX_BAR; i++) {
-> +		/* multiple by 2 for 64 bit BAR mapping */
-> +		vk->bar[i] = pci_ioremap_bar(pdev, i * 2);
-> +		if (!vk->bar[i]) {
-> +			dev_err(dev, "failed to remap BAR%d\n", i);
-> +			goto err_iounmap;
-> +		}
-> +	}
-> +
-> +	for (vk->num_irqs = 0;
-> +	     vk->num_irqs < VK_MSIX_MSGQ_MAX;
-> +	     vk->num_irqs++) {
-> +		err = devm_request_irq(dev, pci_irq_vector(pdev, vk->num_irqs),
-> +				       bcm_vk_msgq_irqhandler,
-> +				       IRQF_SHARED, DRV_MODULE_NAME, vk);
-> +		if (err) {
-> +			dev_err(dev, "failed to request msgq IRQ %d for MSIX %d\n",
-> +				pdev->irq + vk->num_irqs, vk->num_irqs + 1);
-> +			goto err_irq;
-> +		}
-> +	}
-> +	/* one irq for notification from VK */
-> +	err = devm_request_irq(dev, pci_irq_vector(pdev, vk->num_irqs),
-> +			       bcm_vk_notf_irqhandler,
-> +			       IRQF_SHARED, DRV_MODULE_NAME, vk);
-> +	if (err) {
-> +		dev_err(dev, "failed to request notf IRQ %d for MSIX %d\n",
-> +			pdev->irq + vk->num_irqs, vk->num_irqs + 1);
-> +		goto err_irq;
-> +	}
-> +	vk->num_irqs++;
-> +
-> +	for (i = 0;
-> +	     (i < VK_MSIX_TTY_MAX) && (vk->num_irqs < irq);
-> +	     i++, vk->num_irqs++) {
-> +		err = devm_request_irq(dev, pci_irq_vector(pdev, vk->num_irqs),
-> +				       bcm_vk_tty_irqhandler,
-> +				       IRQF_SHARED, DRV_MODULE_NAME, vk);
-> +		if (err) {
-> +			dev_err(dev, "failed request tty IRQ %d for MSIX %d\n",
-> +				pdev->irq + vk->num_irqs, vk->num_irqs + 1);
-> +			goto err_irq;
-> +		}
-> +		vk->tty[i].irq_enabled = true;
-> +	}
-> +
-> +	id = ida_simple_get(&bcm_vk_ida, 0, 0, GFP_KERNEL);
-
-No locking needed?  I can't remember, sorry, this might be ok...
-
-> +	if (id < 0) {
-> +		err = id;
-> +		dev_err(dev, "unable to get id\n");
-> +		goto err_irq;
-> +	}
-> +
-> +	vk->misc_devid = id;
-> +	snprintf(name, sizeof(name), DRV_MODULE_NAME ".%d", id);
-> +	misc_device = &vk->miscdev;
-> +	misc_device->minor = MISC_DYNAMIC_MINOR;
-> +	misc_device->name = kstrdup(name, GFP_KERNEL);
-> +	if (!misc_device->name) {
-> +		err = -ENOMEM;
-> +		goto err_ida_remove;
-> +	}
-> +	misc_device->fops = &bcm_vk_fops,
-> +
-> +	err = misc_register(misc_device);
-> +	if (err) {
-> +		dev_err(dev, "failed to register device\n");
-> +		goto err_kfree_name;
-> +	}
-> +
-> +	err = bcm_vk_msg_init(vk);
-> +	if (err) {
-> +		dev_err(dev, "failed to init msg queue info\n");
-> +		goto err_misc_deregister;
-> +	}
-> +
-> +	/* sync other info */
-> +	bcm_vk_sync_card_info(vk);
-> +
-> +	/* register for panic notifier */
-> +	vk->panic_nb.notifier_call = bcm_vk_on_panic;
-> +	atomic_notifier_chain_register(&panic_notifier_list,
-> +				       &vk->panic_nb);
-> +
-> +	snprintf(name, sizeof(name), KBUILD_MODNAME ".%d_ttyVK", id);
-> +	err = bcm_vk_tty_init(vk, name);
-> +	if (err)
-> +		goto err_unregister_panic_notifier;
-> +
-> +	/*
-> +	 * lets trigger an auto download.  We don't want to do it serially here
-> +	 * because at probing time, it is not supposed to block for a long time.
-> +	 */
-> +	boot_status = vkread32(vk, BAR_0, BAR_BOOT_STATUS);
-> +	if (auto_load) {
-> +		if ((boot_status & BOOT_STATE_MASK) == BROM_RUNNING) {
-> +			if (bcm_vk_trigger_autoload(vk))
-> +				goto err_bcm_vk_tty_exit;
-> +		} else {
-> +			dev_info(dev,
-> +				 "Auto-load skipped - BROM not in proper state (0x%x)\n",
-> +				 boot_status);
-
-dev_err()?  What can someone do about this?  If nothing, make it
-dev_dbg() please.
-
-> +		}
-> +	}
-> +
-> +	/* enable hb */
-> +	bcm_vk_hb_init(vk);
-> +
-> +	dev_info(dev, "BCM-VK:%u created, 0x%p\n", id, vk);
-
-Again, {shh}, good code runs quiet...
-
-
-> +
-> +	return 0;
-> +
-> +err_bcm_vk_tty_exit:
-> +	bcm_vk_tty_exit(vk);
-> +
-> +err_unregister_panic_notifier:
-> +	atomic_notifier_chain_unregister(&panic_notifier_list,
-> +					 &vk->panic_nb);
-> +
-> +err_misc_deregister:
-> +	misc_deregister(misc_device);
-> +
-> +err_kfree_name:
-> +	kfree(misc_device->name);
-> +	misc_device->name = NULL;
-> +
-> +err_ida_remove:
-> +	ida_simple_remove(&bcm_vk_ida, id);
-> +
-> +err_irq:
-> +	for (i = 0; i < vk->num_irqs; i++)
-> +		devm_free_irq(dev, pci_irq_vector(pdev, i), vk);
-> +
-> +	pci_disable_msix(pdev);
-> +	pci_disable_msi(pdev);
-> +
-> +err_iounmap:
-> +	for (i = 0; i < MAX_BAR; i++) {
-> +		if (vk->bar[i])
-> +			pci_iounmap(pdev, vk->bar[i]);
-> +	}
-> +	pci_release_regions(pdev);
-> +
-> +err_disable_pdev:
-> +	pci_free_irq_vectors(pdev);
-> +	pci_disable_device(pdev);
-> +
-> +	return err;
-> +}
-> +
-> +void bcm_vk_release_data(struct kref *kref)
-> +{
-> +	struct bcm_vk *vk = container_of(kref, struct bcm_vk, kref);
-> +
-> +	/* use raw print, as dev is gone */
-> +	pr_info("BCM-VK:%d release data 0x%p\n", vk->misc_devid, vk);
-
-Don't be noisy, this is debugging code, right?
-
-> +	kfree(vk);
-> +}
-> +
-> +static void bcm_vk_remove(struct pci_dev *pdev)
-> +{
-> +	int i;
-> +	struct bcm_vk *vk = pci_get_drvdata(pdev);
-> +	struct miscdevice *misc_device = &vk->miscdev;
-> +
-> +	bcm_vk_hb_deinit(vk);
-> +
-> +	/*
-> +	 * Trigger a reset to card and wait enough time for UCODE to rerun,
-> +	 * which re-initialize the card into its default state.
-> +	 * This ensures when driver is re-enumerated it will start from
-> +	 * a completely clean state.
-> +	 */
-> +	bcm_vk_trigger_reset(vk);
-> +	usleep_range(BCM_VK_UCODE_BOOT_US, BCM_VK_UCODE_BOOT_MAX_US);
-> +
-> +	/* unregister panic notifier */
-> +	atomic_notifier_chain_unregister(&panic_notifier_list,
-> +					 &vk->panic_nb);
-> +
-> +	bcm_vk_msg_remove(vk);
-> +	bcm_vk_tty_exit(vk);
-> +
-> +	if (vk->tdma_vaddr)
-> +		dma_free_coherent(&pdev->dev, nr_scratch_pages * PAGE_SIZE,
-> +				  vk->tdma_vaddr, vk->tdma_addr);
-> +
-> +	/* remove if name is set which means misc dev registered */
-> +	if (misc_device->name) {
-> +		misc_deregister(misc_device);
-> +		kfree(misc_device->name);
-> +		ida_simple_remove(&bcm_vk_ida, vk->misc_devid);
-> +	}
-> +	for (i = 0; i < vk->num_irqs; i++)
-> +		devm_free_irq(&pdev->dev, pci_irq_vector(pdev, i), vk);
-> +
-> +	pci_disable_msix(pdev);
-> +	pci_disable_msi(pdev);
-> +
-> +	cancel_work_sync(&vk->wq_work);
-> +	destroy_workqueue(vk->wq_thread);
-> +	cancel_work_sync(&vk->tty_wq_work);
-> +	destroy_workqueue(vk->tty_wq_thread);
-> +
-> +	for (i = 0; i < MAX_BAR; i++) {
-> +		if (vk->bar[i])
-> +			pci_iounmap(pdev, vk->bar[i]);
-> +	}
-> +
-> +	dev_info(&pdev->dev, "BCM-VK:%d released\n", vk->misc_devid);
-> +
-> +	pci_release_regions(pdev);
-> +	pci_free_irq_vectors(pdev);
-> +	pci_disable_device(pdev);
-> +
-> +	kref_put(&vk->kref, bcm_vk_release_data);
-> +}
-> +
-> +static void bcm_vk_shutdown(struct pci_dev *pdev)
-> +{
-> +	struct bcm_vk *vk = pci_get_drvdata(pdev);
-> +	uint32_t reg, boot_stat;
-> +
-> +	reg = vkread32(vk, BAR_0, BAR_BOOT_STATUS);
-> +	boot_stat = reg & BOOT_STATE_MASK;
-> +
-> +	if (boot_stat == BOOT1_RUNNING) {
-> +		/* simply trigger a reset interrupt to park it */
-> +		bcm_vk_trigger_reset(vk);
-> +	} else if (boot_stat == BROM_NOT_RUN) {
-> +		int err;
-> +		uint16_t lnksta;
-> +
-> +		/*
-> +		 * The boot status only reflects boot condition since last reset
-> +		 * As ucode will run only once to configure pcie, if multiple
-> +		 * resets happen, we lost track if ucode has run or not.
-> +		 * Here, read the current link speed and use that to
-> +		 * sync up the bootstatus properly so that on reboot-back-up,
-> +		 * it has the proper state to start with autoload
-> +		 */
-> +		err = pcie_capability_read_word(pdev, PCI_EXP_LNKSTA, &lnksta);
-> +		if (!err &&
-> +		    (lnksta & PCI_EXP_LNKSTA_CLS) != PCI_EXP_LNKSTA_CLS_2_5GB) {
-> +			reg |= BROM_STATUS_COMPLETE;
-> +			vkwrite32(vk, reg, BAR_0, BAR_BOOT_STATUS);
-> +		}
-> +	}
-> +}
-> +
-> +static const struct pci_device_id bcm_vk_ids[] = {
-> +	{ PCI_DEVICE(PCI_VENDOR_ID_BROADCOM, PCI_DEVICE_ID_VALKYRIE), },
-> +	{ PCI_DEVICE(PCI_VENDOR_ID_BROADCOM, PCI_DEVICE_ID_VIPER), },
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(pci, bcm_vk_ids);
-> +
-> +static struct pci_driver pci_driver = {
-> +	.name     = DRV_MODULE_NAME,
-> +	.id_table = bcm_vk_ids,
-> +	.probe    = bcm_vk_probe,
-> +	.remove   = bcm_vk_remove,
-> +	.shutdown = bcm_vk_shutdown,
-> +};
-> +module_pci_driver(pci_driver);
-> +
-> +MODULE_DESCRIPTION("Broadcom VK Host Driver");
-> +MODULE_AUTHOR("Scott Branden <scott.branden@broadcom.com>");
-> +MODULE_LICENSE("GPL v2");
-> +MODULE_VERSION("1.0");
-> diff --git a/drivers/misc/bcm-vk/bcm_vk_msg.c b/drivers/misc/bcm-vk/bcm_vk_msg.c
-> new file mode 100644
-> index 000000000000..02ae35d42653
-> --- /dev/null
-> +++ b/drivers/misc/bcm-vk/bcm_vk_msg.c
-> @@ -0,0 +1,1523 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright 2018-2020 Broadcom.
-> + */
-> +
-> +#include <linux/delay.h>
-> +#include <linux/fs.h>
-> +#include <linux/hash.h>
-> +#include <linux/interrupt.h>
-> +#include <linux/list.h>
-> +#include <linux/module.h>
-> +#include <linux/poll.h>
-> +#include <linux/sizes.h>
-> +#include <linux/spinlock.h>
-> +#include <linux/timer.h>
-> +
-> +#include "bcm_vk.h"
-> +#include "bcm_vk_msg.h"
-> +#include "bcm_vk_sg.h"
-> +
-> +/* functions to manipulate the transport id in msg block */
-> +#define BCM_VK_MSG_Q_SHIFT	 4
-> +#define BCM_VK_MSG_Q_MASK	 0xF
-> +#define BCM_VK_MSG_ID_MASK	 0xFFF
-> +
-> +#define BCM_VK_DMA_DRAIN_MAX_MS	  2000
-> +
-> +/* number x q_size will be the max number of msg processed per loop */
-> +#define BCM_VK_MSG_PROC_MAX_LOOP 2
-> +
-> +/* module parameter */
-> +static bool hb_mon = true;
-> +module_param(hb_mon, bool, 0444);
-> +MODULE_PARM_DESC(hb_mon, "Monitoring heartbeat continuously.\n");
-> +static int batch_log = 1;
-> +module_param(batch_log, int, 0444);
-> +MODULE_PARM_DESC(batch_log, "Max num of logs per batch operation.\n");
-> +
-> +static bool hb_mon_is_on(void)
-> +{
-> +	return hb_mon;
-> +}
-> +
-> +static uint32_t get_q_num(const struct vk_msg_blk *msg)
-> +{
-> +	return (msg->trans_id & BCM_VK_MSG_Q_MASK);
-> +}
-> +
-> +static void set_q_num(struct vk_msg_blk *msg, uint32_t val)
-> +{
-> +	msg->trans_id = (msg->trans_id & ~BCM_VK_MSG_Q_MASK) | val;
-> +}
-> +
-> +static uint32_t get_msg_id(const struct vk_msg_blk *msg)
-> +{
-> +	return ((msg->trans_id >> BCM_VK_MSG_Q_SHIFT) & BCM_VK_MSG_ID_MASK);
-> +}
-> +
-> +static void set_msg_id(struct vk_msg_blk *msg, uint32_t val)
-> +{
-> +	msg->trans_id = (val << BCM_VK_MSG_Q_SHIFT) | get_q_num(msg);
-> +}
-> +
-> +static uint32_t msgq_inc(const struct bcm_vk_sync_qinfo *qinfo,
-> +			 uint32_t idx,
-> +			 uint32_t inc)
-> +{
-> +	return ((idx + inc) & qinfo->q_mask);
-> +}
-> +
-> +static
-> +struct vk_msg_blk __iomem *msgq_blk_addr(const struct bcm_vk_sync_qinfo *qinfo,
-> +					 uint32_t idx)
-> +{
-> +	return qinfo->q_start + (VK_MSGQ_BLK_SIZE * idx);
-> +}
-> +
-> +static uint32_t msgq_occupied(const struct bcm_vk_msgq __iomem *msgq,
-> +			      const struct bcm_vk_sync_qinfo *qinfo)
-> +{
-> +	uint32_t wr_idx, rd_idx;
-> +
-> +	wr_idx = readl_relaxed(&msgq->wr_idx);
-> +	rd_idx = readl_relaxed(&msgq->rd_idx);
-> +
-> +	return ((wr_idx - rd_idx) & qinfo->q_mask);
-> +}
-> +
-> +static
-> +uint32_t msgq_avail_space(const struct bcm_vk_msgq __iomem *msgq,
-> +			  const struct bcm_vk_sync_qinfo *qinfo)
-> +{
-> +	return (qinfo->q_size - msgq_occupied(msgq, qinfo) - 1);
-> +}
-> +
-> +#if defined(CONFIG_BCM_VK_QSTATS)
-> +
-> +/* Use default value of 20000 rd/wr per update */
-> +#if !defined(BCM_VK_QSTATS_ACC_CNT)
-> +#define BCM_VK_QSTATS_ACC_CNT 20000
-> +#endif
-> +
-> +static void bcm_vk_update_qstats(struct bcm_vk *vk,
-> +				 const char *tag,
-> +				 struct bcm_vk_qstats *qstats,
-> +				 uint32_t occupancy)
-> +{
-> +	struct bcm_vk_qs_cnts *qcnts = &qstats->qcnts;
-> +
-> +	if (occupancy > qcnts->max_occ) {
-> +		qcnts->max_occ = occupancy;
-> +		if (occupancy > qcnts->max_abs)
-> +			qcnts->max_abs = occupancy;
-> +	}
-> +
-> +	qcnts->acc_sum += occupancy;
-> +	if (++qcnts->cnt >= BCM_VK_QSTATS_ACC_CNT) {
-> +		/* log average and clear counters */
-> +		dev_info(&vk->pdev->dev,
-> +			 "%s[%d]: Max: [%3d/%3d] Acc %d num %d, Aver %d\n",
-> +			 tag, qstats->q_num,
-> +			 qcnts->max_occ, qcnts->max_abs,
-> +			 qcnts->acc_sum,
-> +			 qcnts->cnt,
-> +			 qcnts->acc_sum / qcnts->cnt);
-
-again, quiet...
-
-> +
-> +		qcnts->cnt = 0;
-> +		qcnts->max_occ = 0;
-> +		qcnts->acc_sum = 0;
-> +	}
-> +}
-> +#endif
-> +
-> +/* number of retries when enqueue message fails before returning EAGAIN */
-> +#define BCM_VK_H2VK_ENQ_RETRY 10
-> +#define BCM_VK_H2VK_ENQ_RETRY_DELAY_MS 50
-> +
-> +bool bcm_vk_drv_access_ok(struct bcm_vk *vk)
-> +{
-> +	return (!!atomic_read(&vk->msgq_inited));
-
-So, what happens _right_ after this call?  Does it become "not ok"?  Are
-you sure you can do this?
-
-And why an atomic variable, why do you need that?
-
-> +}
-> +
-> +void bcm_vk_set_host_alert(struct bcm_vk *vk, uint32_t bit_mask)
-> +{
-> +	struct bcm_vk_alert *alert = &vk->host_alert;
-> +	unsigned long flags;
-> +
-> +	/* use irqsave version as this maybe called inside timer interrupt */
-> +	spin_lock_irqsave(&vk->host_alert_lock, flags);
-> +	alert->notfs |= bit_mask;
-> +	spin_unlock_irqrestore(&vk->host_alert_lock, flags);
-> +
-> +	if (test_and_set_bit(BCM_VK_WQ_NOTF_PEND, vk->wq_offload) == 0)
-> +		queue_work(vk->wq_thread, &vk->wq_work);
-> +}
-> +
-> +#if defined(BCM_VK_LEGACY_API)
-> +/*
-> + * legacy does not support heartbeat mechanism
-> + */
-> +void bcm_vk_hb_init(struct bcm_vk *vk)
-> +{
-> +	dev_info(&vk->pdev->dev, "skipped\n");
-
-I'll just let you fix the rest of these...
-
-I've given up now, this is a huge driver and I haven't even found the
-tty portions, which I have no idea why it is needed.
-
-So can you please split this up into reviewable parts?  Like add the pci
-device handling, then the firmware, then the misc device, and then
-whatever else is remaining (tty?)
-
-It should be easy to review, as it is, this isn't at all...
-
-thanks,
-
-greg k-h
