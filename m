@@ -2,129 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE18C25F439
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 09:45:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E727525F43D
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 09:45:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727067AbgIGHpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 03:45:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54468 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726896AbgIGHpD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 03:45:03 -0400
-Received: from saruman (91-155-214-58.elisa-laajakaista.fi [91.155.214.58])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 40560207C3;
-        Mon,  7 Sep 2020 07:45:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599464702;
-        bh=GvP6mhCj1aRy77o0gWFMzh619d1ltTMeuCvkmXTYlmU=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=Odqr7TZCi5Km3/tYsZ1ZKJkh4HJyBSOCmukqCkAlAW+0gRPwoKKCideVa8E7fYDTA
-         E7bwPnK2RV0VvGi/GwX86dW1w3DOTaQNeJo/6PRf8venAAjueO1+Q+qgmCVFEi8O6s
-         w+VbCBJMKw9NxalfgdyF+vHZnDL8wICHbBGgusRE=
-From:   Felipe Balbi <balbi@kernel.org>
-To:     Mike Looijmans <mike.looijmans@topic.nl>,
-        Mark Brown <broonie@kernel.org>
-Cc:     Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, lgirdwood@gmail.com
-Subject: Re: [PATCH v3] usb: dwc3: Add support for VBUS power control
-In-Reply-To: <be4013b6-01c6-7f67-35ad-5c398b85c066@topic.nl>
-References: <20200619142512.19824-1-mike.looijmans@topic.nl>
- <20200723075612.tn5dbkhes2chohwh@axis.com>
- <20200723110523.GA4759@sirena.org.uk>
- <1b153bce-a66a-45ee-a5c6-963ea6fb1c82.949ef384-8293-46b8-903f-40a477c056ae.2698920d-90ba-4c46-abda-83e18e2093c8@emailsignatures365.codetwo.com>
- <1b153bce-a66a-45ee-a5c6-963ea6fb1c82.0d2bd5fa-15cc-4b27-b94e-83614f9e5b38.ac9c2a67-d7df-4f70-81b3-db983bbfb4db@emailsignatures365.codetwo.com>
- <e63ee918-c9e3-a8ee-e7c5-577b5a3e09be@topic.nl>
- <20200727102317.GA6275@sirena.org.uk>
- <be4013b6-01c6-7f67-35ad-5c398b85c066@topic.nl>
-Date:   Mon, 07 Sep 2020 10:44:55 +0300
-Message-ID: <87a6y21154.fsf@kernel.org>
+        id S1727823AbgIGHpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 03:45:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37184 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726821AbgIGHpp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 03:45:45 -0400
+Received: from canardo.mork.no (canardo.mork.no [IPv6:2001:4641::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3701CC061573;
+        Mon,  7 Sep 2020 00:45:44 -0700 (PDT)
+Received: from miraculix.mork.no (miraculix.mork.no [IPv6:2001:4641:0:2:7627:374e:db74:e353])
+        (authenticated bits=0)
+        by canardo.mork.no (8.15.2/8.15.2) with ESMTPSA id 0877jMO6027725
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
+        Mon, 7 Sep 2020 09:45:23 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mork.no; s=b;
+        t=1599464723; bh=F/cpKEbPOeBiiYDZm58dXUDkbQv3QMMupiIUIMsLI98=;
+        h=From:To:Cc:Subject:References:Date:Message-ID:From;
+        b=IYmxvA7XZxgTNjZdtiqqNQwmZylArahmbbj/z7bCvG82Axg//Sookx8SobMq9UqaI
+         t6dAaNzoTauNcm4HbfjQ+zOFZSWARTUXFxLdiqWSut9ln1Ba7hQKhHX7xNPu8TPKLR
+         RNXHnG56jYmVtDz9vSS6SL8QU5Ik98kxwQJytvQY=
+Received: from bjorn by miraculix.mork.no with local (Exim 4.94)
+        (envelope-from <bjorn@mork.no>)
+        id 1kFBq5-000zls-55; Mon, 07 Sep 2020 09:45:21 +0200
+From:   =?utf-8?Q?Bj=C3=B8rn_Mork?= <bjorn@mork.no>
+To:     Kristian Evensen <kristian.evensen@gmail.com>
+Cc:     Daniele Palmas <dnlplm@gmail.com>,
+        Paul Gildea <paul.gildea@gmail.com>,
+        "davem\@davemloft.net" <davem@davemloft.net>,
+        "netdev\@vger.kernel.org" <netdev@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: usb: qmi_wwan: Fix for packets being rejected in the ring buffer used by the xHCI controller.
+Organization: m
+References: <CA+4pmEueEiz0Act8X6t4y3+4LOaOh_-ZfzScH0CbOKT99x91NA@mail.gmail.com>
+        <87wo7una02.fsf@miraculix.mork.no>
+        <CAGRyCJE-VYRthco5=rZ_PX0hkzhXmQ45yGJe_Gm1UvYJBKYQvQ@mail.gmail.com>
+        <CAKfDRXg2xRbLu=ZcQYdJUuYbfMQbav9pUDwcVMc-S+hwV3Johw@mail.gmail.com>
+Date:   Mon, 07 Sep 2020 09:45:21 +0200
+In-Reply-To: <CAKfDRXg2xRbLu=ZcQYdJUuYbfMQbav9pUDwcVMc-S+hwV3Johw@mail.gmail.com>
+        (Kristian Evensen's message of "Mon, 7 Sep 2020 09:25:16 +0200")
+Message-ID: <87v9gqghda.fsf@miraculix.mork.no>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Virus-Scanned: clamav-milter 0.102.4 at canardo
+X-Virus-Status: Clean
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Kristian Evensen <kristian.evensen@gmail.com> writes:
 
-
-Hi,
-
-Mike Looijmans <mike.looijmans@topic.nl> writes:
-> Met vriendelijke groet / kind regards,
+> Hi all,
 >
-> Mike Looijmans
-> System Expert
+> I was able to trigger the same issue as reported by Paul, and came
+> across this patch (+ Daniele's other patch and thread on the libqmi
+> mailing list). Applying Paul's fix solved the problem for me, changing
+> the MTU of the QMI interface now works fine. Thanks a lot to everyone
+> involved!
 >
->
-> TOPIC Embedded Products B.V.
-> Materiaalweg 4, 5681 RJ Best
-> The Netherlands
->
-> T: +31 (0) 499 33 69 69
-> E: mike.looijmans@topicproducts.com
-> W: www.topicproducts.com
->
-> Please consider the environment before printing this e-mail
-> On 27-07-2020 12:23, Mark Brown wrote:
->> On Sun, Jul 26, 2020 at 09:10:39AM +0200, Mike Looijmans wrote:
->>> On 23-07-2020 13:05, Mark Brown wrote:
->>=20
->>>> Does the device actually support running without power so that's a thi=
-ng
->>>> that can happen?  _get_optional() should only ever be used for supplies
->>>> that may be physically absent.
->>=20
->>> It's the 5V VBUS power for the USB "plug" that's being controlled here.=
- It
->>> must turned on when the controller is in "host" mode. Some boards arran=
-ge
->>> this in hardware through the PHY, and some just don't have any control =
-at
->>> all and have it permanently on or off. On a board where the 5V is contr=
-olled
->>> using a GPIO line or an I2C chip, this patch is required to make it wor=
-k.
->>=20
->> That sounds like the driver should not be using _get_optional() then.
->>=20
->
-> Making it mandatory would break most (read: all except Topic's) existing=
-=20
-> boards as they won't have it in their devicetree. I'm perfectly okay with=
-=20
-> that, but others might disagree.
+> I just have one question, is there a specific reason for the patch not
+> being resubmitted or Daniele's work not resumed? I do not use any of
+> the aggregation-stuff, so I don't know how that is affected by for
+> example Paul's change. If there is anything I can do to help, please
+> let me know.
 
-you're perfectly okay with break all existing users of the driver?
-That's a bit harsh
+Thanks for bringing this back into our collective memory.  The patch
+never made it to patchwork, probably due to the formatting issues, and
+was just forgotten.
 
-=2D-=20
-balbi
+There are no other reasons than Daniele's concerns in the email you are
+replying to, AFAIK.  The issue pointed out by Paull should be fixed, but
+the fix must not break aggregation..
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
+This is a great opportunity for you to play with QMAP aggregation :-)
+Wouldn't it be good to do some measurements to document why it is such a
+bad idea?
 
------BEGIN PGP SIGNATURE-----
 
-iQJFBAEBCAAvFiEElLzh7wn96CXwjh2IzL64meEamQYFAl9V5PcRHGJhbGJpQGtl
-cm5lbC5vcmcACgkQzL64meEamQYGJg//UoDK4AFFB+hwyzIO9lg3Jf/bQb4hjUEs
-i8AxmSTRBajNyw2tkKHYMyLZev3kW7XS5E/LGNHZEoc+BP8qqF9gggIugXKuQJ1Y
-NON5XhiIgyBak2hEqRlzL6KX0QT+UmseJqs6nZctD3STrpT0oNtsh+oehuVTKBmV
-vfj1lZU+gJxfZR8spkjPuiV8OXW7sWT7SIQQeQGJQyF60HfIKnMyIrV4cLG3lS5X
-EniYqukV5ubijrc4eV7+xhLwN8j0QA2JED4ooP/+CBpraEzdNo8dlU20kf9EkJft
-ReL04i3B+zOF7FX16TQ6Kg4tiVDQg3Otzns0o70moYzD7hltrstxlpQD84RF0r2O
-O9QHVEah1FSxcQGy7EiLB35sh6z69TiWFf+K+R8H5Ri/x4YkmYImWA+Eej1dqbq6
-DCzgVYgjLG+3wnNjTOrw0TZctCWLcoceXYAUhOVDxJ3Ds/LJKKFENY/z3S5qXrh8
-4Ds8+7Rt6WXcbd6SmxGWHU02iQMvcWzu3kR/MVtimrdONGg1lE5yhqjkO69/YCTL
-d8n/A6FsR87q5owSXvCBbgf5QM6fJgYg/CjG5pwqxiYERk/D/LBujr6S2KVULmE/
-+HdutgXWcvhp8BJCWRNAnGZb3NrfhlzS4RNteb1HNjy8846J2742BijtjPZFyvu9
-TOu3It4R4rY=
-=CBCD
------END PGP SIGNATURE-----
---=-=-=--
+Bj=C3=B8rn
+
