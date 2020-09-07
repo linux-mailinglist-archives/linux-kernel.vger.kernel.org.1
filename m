@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4604D2603D6
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:55:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECCDC2603C0
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:54:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729527AbgIGRzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 13:55:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42498 "EHLO
+        id S1729562AbgIGRyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 13:54:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728849AbgIGLWK (ORCPT
+        with ESMTP id S1728886AbgIGLWj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 07:22:10 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E78F4C0617A3
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 04:05:10 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id r9so13599668ioa.2
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 04:05:10 -0700 (PDT)
+        Mon, 7 Sep 2020 07:22:39 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BFB4C0617A9
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 04:06:05 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id d18so13500109iop.13
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 04:06:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=D7L/Q4DJFDyy3wME7bzPuJcv0cvFqGwJhESn1U89F5s=;
-        b=nSd/soCN0apStHfecRk/s8TMfk39mqUYPzh0zB/X6CwR4xUJSFFU0FnKp+tCRk7Dxr
-         dxSOcRUml8zVB79Fm2ThAGwZhIwsZ9OPmOav7mp6gqCv2iIgBSeA1XcFFigkWUwrAK5g
-         9ndJPPydL6JRbTIBSOe3jO9NlRlqGqnPBFwmtIdWaVf0VLsqOiLVD+eqxcWPZTRO07W7
-         is0PyDyIhur30ZJJ3E4ZHzRu488xo7wU4cH2gwBwuSF1nT5thgx8mQqsqsWBwrJymYo4
-         fK3WRuZDjVxGovSSlKSdckuotXq/ExsbHzIplL+6mbf3IlXZbkQt1rlDd+5u09yoRPvf
-         zCdQ==
+        bh=og92g0L7hPgsl8mDF4E0oRjHENzkIz2/kCylVnn3aEQ=;
+        b=VSQj3CfqsFG0w0R6IxVFzdq16ii5bv8V7LWtx8mdfazpSH82uYeoie36r4Ix/aZNjm
+         rmVIDi989E2n1MmojSJDRlZiGBvVEppkRQQqi+m2pKrwISBsxj1Lyea4x+266sVik2qY
+         OA2+Cm2PT2j/75XX1RvwMBLLB+a1zyBDo/aP4SupJprcZ0fs8AlJMMAoFxNbUoXlo2Q/
+         cPLuCtWe3tFYJQWyLmkPdYjafhnQ3Ma9gOcMyXCU1Q+FffNcDNQpPq4dyoC3Qf+Glj82
+         PPSJeJjKB5BAqYlhuj7vUVP+okdpZmjCcraoI8gLNg5Ltv/AR8UzUnwVVaXtjr5r889n
+         9JmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=D7L/Q4DJFDyy3wME7bzPuJcv0cvFqGwJhESn1U89F5s=;
-        b=r5Eyp3/jIonHMq9cadcVe6ByZNqbayJopDtYem6zcBLlaGLQOyLtcQ4SAFyxDdoMVS
-         45xv9bAfsvzbxgYZWVjzIUuQigQJtWF9C67MyCeSznEE/s6zYO5uIbrZPFEo40ElSQC+
-         fUvGnSVBeVAciuEMEi+mMPIVEMR+HlbMxT66VAbGr/N5A9Uwcc0JLIPblh+Yyp9LX7eU
-         b8WJZeLu3EL38tOa8IDv6y1GIdL2O00dSVl+nkY+QX5XBj/VBCIHG/5NuyYdUNCaWIhR
-         wu1OkBl1ZfGqCVrK7FMr+8n/3y9cZ3oS7atHRYynKeNNhKoVWRLtZtR+BVur8Mayc0TQ
-         nBVg==
-X-Gm-Message-State: AOAM532pGYny5fxGEQSy1cMAtTcdbVSg4icJ4CQNA7Bls285rm2qgMDQ
-        IeVjedCy8zmaxn4apgY0eq1abo/wLwcrDOn41MA7Fw==
-X-Google-Smtp-Source: ABdhPJz3NFAUNOM8h+eBu94NlN0+qbyZT3uPxFzJlrWhGBVdmuhRiYP3jSvAoS1qQWhXj2axsT/rlnUltkSo/hZcc5c=
-X-Received: by 2002:a02:7817:: with SMTP id p23mr8145520jac.57.1599476710278;
- Mon, 07 Sep 2020 04:05:10 -0700 (PDT)
+        bh=og92g0L7hPgsl8mDF4E0oRjHENzkIz2/kCylVnn3aEQ=;
+        b=GKZ8OlnsQwnNwcfVXYAV9Wlv01FWixAy8M/uavAYrSkOAkVpac0rYhjqdqe+X1Xtm6
+         upH446D+uxlIfcjhPFa+5hjcMH5lu8lWUBxOf5PdALsBtILIs2tEkqioF5KDzGb3BLqX
+         4wUSywJYECvsTSNeyXkqHCV9FkPULNzaUIAGBwOWHydZIaK4A9XN/BafVH/Xlx/1iV3T
+         x8uZlYgrkkZ2PuSQgzJ0qNAtxBEAsFB7angiHz4MN8CbhxD67BIb4CQqHe3ydDPg+u0M
+         zqKs+tCF9yWgEiO/7eezt/oE7b1litcVeh3Jz0TpKUlQOoyNbzyQ3y8G54/4hpWDDavO
+         MLiw==
+X-Gm-Message-State: AOAM533elsy4vEfsc8UXvBwZSqOKdI5aiD4nwwndlpz21zrECFCODam0
+        CzAc/3zPL9CAqB5VkQat2O95m6ENCrGBhKbKao+Vww==
+X-Google-Smtp-Source: ABdhPJyod5VJBi59vRhPy1AeFPICUDWH+c8TTmKc169CEOJtj3iVYBKBHtDG0vSqtP6YjcYurac6iPQb5KedcXxThBY=
+X-Received: by 2002:a5d:8352:: with SMTP id q18mr3579085ior.31.1599476765032;
+ Mon, 07 Sep 2020 04:06:05 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200904154547.3836-1-brgl@bgdev.pl> <20200904154547.3836-11-brgl@bgdev.pl>
- <20200904170028.GG1891694@smile.fi.intel.com>
-In-Reply-To: <20200904170028.GG1891694@smile.fi.intel.com>
+References: <20200904154547.3836-1-brgl@bgdev.pl> <20200904154547.3836-17-brgl@bgdev.pl>
+ <20200904165029.GD1891694@smile.fi.intel.com>
+In-Reply-To: <20200904165029.GD1891694@smile.fi.intel.com>
 From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Mon, 7 Sep 2020 13:04:59 +0200
-Message-ID: <CAMRc=Mc3V_BJ88CrB_q0uTHjvqVf5XEkm6BJZwrVjnVhPjiYaQ@mail.gmail.com>
-Subject: Re: [PATCH 10/23] gpio: mockup: fix resource leak in error path
+Date:   Mon, 7 Sep 2020 13:05:54 +0200
+Message-ID: <CAMRc=MfrYJrkX2RfjXkCLtyzkM8MemTuUgEu_n-E+2mngk9mbA@mail.gmail.com>
+Subject: Re: [PATCH 16/23] gpio: mockup: refactor the module init function
 To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Cc:     Linus Walleij <linus.walleij@linaro.org>,
         Jonathan Corbet <corbet@lwn.net>,
@@ -68,19 +68,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 4, 2020 at 7:00 PM Andy Shevchenko
+On Fri, Sep 4, 2020 at 6:57 PM Andy Shevchenko
 <andriy.shevchenko@linux.intel.com> wrote:
 >
-> On Fri, Sep 04, 2020 at 05:45:34PM +0200, Bartosz Golaszewski wrote:
+> On Fri, Sep 04, 2020 at 05:45:40PM +0200, Bartosz Golaszewski wrote:
 > > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 > >
-> > If the module init function fails after creating the debugs directory,
-> > it's never removed. Add proper cleanup calls to avoid this resource
-> > leak.
+> > This is in preparation for dynamically created chips.
+> >
+> > Let's split out the code that can be reused when creating chips at
+> > run-time. Let's also move the code preparing the device properties into
+> > a separate routine. This has the advantage of simplifying the error
+> > handling.
 >
-> Does it fix existing bug?
+> Almost all contents of this patch should go to proposed helper as I mentioned
+> before. Will make this patch quite small and understandable.
+>
 
-You mean - should it go into stable? The bug is quite unlikely but
-yeah, probably.
+Sorry, I'm not sure what you're referring to.
 
 Bart
