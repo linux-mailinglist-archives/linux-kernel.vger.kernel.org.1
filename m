@@ -2,127 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0EE3260271
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:26:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5851C260264
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:24:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730715AbgIGR0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 13:26:07 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:41587 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729573AbgIGNUu (ORCPT
+        id S1730577AbgIGRYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 13:24:48 -0400
+Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.218]:12951 "EHLO
+        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729577AbgIGNmi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 09:20:50 -0400
-Received: by mail-wr1-f67.google.com with SMTP id w5so15794580wrp.8
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 06:20:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wJh+96DWgK4/OLwhvVspOgZjqQ2tTXtnfvMf9TMtY+0=;
-        b=MIlO9bhzcyjTXqukJdilqyEgzl2Zq/KhbgLyCGs/wrIfFDp7jMXFkVEpSPb01MKaxy
-         IDcgE+XlrZ18Y5ue+5pE7Lg4Gr+REukR1mS56wQIXiF32vqRnRm78RxAjRUoNzrxAFZK
-         bUkMOIVhYHgbAu9YqCuxgriEkWUTAnx7udKQB4FMMZvWHHOPb0qsier3IOZZY+J/5Mnk
-         m3/RnMr9EBUnRIE+mCP/d+iyLtWZ+fL3fO2jcFQ2B96vKo/6gUEFFWqIsKEY40UBYT7/
-         c0rVw/ITGS65GD7ILxJ64WC/jv7ZxLL3DYfVLraR0MnXV6SsWnLhcT3hvlbXuzycBCO8
-         Apew==
-X-Gm-Message-State: AOAM531dOtmEqTZABOGILb/jBMGRiW9tbC3TeW3v91tlebkUSqSugIdK
-        QUcOxp8eE+S4/K257xiKnzZiZDnCCEOiMcBn+Rg=
-X-Google-Smtp-Source: ABdhPJwfdgYm5BkwquVIODnEJccaJug77FwuJ80KdUg1SzNeTy6idbD1HYhmNquByLy+vxk+6mUW/qi/PzCQDGDHnkg=
-X-Received: by 2002:adf:e481:: with SMTP id i1mr21343750wrm.391.1599484846078;
- Mon, 07 Sep 2020 06:20:46 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200907034502.753230-1-namhyung@kernel.org> <20200907034502.753230-9-namhyung@kernel.org>
- <78911dd7-8a93-0f1b-7805-1fad87ad6979@huawei.com>
-In-Reply-To: <78911dd7-8a93-0f1b-7805-1fad87ad6979@huawei.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Mon, 7 Sep 2020 22:20:34 +0900
-Message-ID: <CAM9d7ci=knY_Wu8vbdfOzCtJX_onciz2eri8E=d2KM2qwG6QGQ@mail.gmail.com>
-Subject: Re: [PATCH 8/9] perf test: Free aliases for PMU event map aliases test
-To:     John Garry <john.garry@huawei.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Stephane Eranian <eranian@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <andi@firstfloor.org>,
-        Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 7 Sep 2020 09:42:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1599486102;
+        s=strato-dkim-0002; d=goldelico.com;
+        h=To:Message-Id:Cc:Date:From:Subject:X-RZG-CLASS-ID:X-RZG-AUTH:From:
+        Subject:Sender;
+        bh=MwIdbaPYiuhfuwrYB2GIYx9w+k6GaMOESpdYWjOsjeQ=;
+        b=apwvEkca/96ZGp7QQz5P9scvXKOwzoM0aiKlonrJZ1Ag8/E0Nxuuv2Oo9g4NVFfmit
+        tBlip8fkhLszacPfsLTQpss2f10zGWvXXn/7b6u/RRX6QyafiOwkTWAgqnhlJ1cBOXMs
+        kjqLqyPofZIpDsQPZCrU+qAsztdj1cy9s76TMdzvMntzyloG4vQ3bbxx5+ycWT5l8EQt
+        y3ovn8o2DZdPFqyrYA29kLhWRFogBkL39uOWkBeE7OutQKyEz+6pmcALAk1Ri3rG8rCT
+        wSs8CBiF1YQwLvlAceGiVE9IMpZjsAPb3I/w4rFMPHtPHExn/103iSCziX499mbMrkQg
+        TiKg==
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj4Qpw9iZeHmMiw4/p9Q=="
+X-RZG-CLASS-ID: mo00
+Received: from imac.fritz.box
+        by smtp.strato.de (RZmta 46.10.7 DYNA|AUTH)
+        with ESMTPSA id n03b0dw87DTePNS
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+        Mon, 7 Sep 2020 15:29:40 +0200 (CEST)
+Content-Type: text/plain; charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
+Subject: [BUG]: KVM: arm64: Fix symbol dependency in __hyp_call_panic_nvhe
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+Date:   Mon, 7 Sep 2020 15:29:40 +0200
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Marc Zyngier <maz@kernel.org>, Sasha Levin <sashal@kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <3750C774-62A4-4D02-8C07-6C98304F32F3@goldelico.com>
+To:     David Brazdil <dbrazdil@google.com>
+X-Mailer: Apple Mail (2.3124)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi,
+it seems as if your patch
 
-On Mon, Sep 7, 2020 at 7:31 PM John Garry <john.garry@huawei.com> wrote:
->
-> On 07/09/2020 04:45, Namhyung Kim wrote:
-> > The aliases were never released causing the following leaks:
-> >
-> >    Indirect leak of 1224 byte(s) in 9 object(s) allocated from:
-> >      #0 0x7feefb830628 in malloc (/lib/x86_64-linux-gnu/libasan.so.5+0x107628)
-> >      #1 0x56332c8f1b62 in __perf_pmu__new_alias util/pmu.c:322
-> >      #2 0x56332c8f401f in pmu_add_cpu_aliases_map util/pmu.c:778
-> >      #3 0x56332c792ce9 in __test__pmu_event_aliases tests/pmu-events.c:295
-> >      #4 0x56332c792ce9 in test_aliases tests/pmu-events.c:367
-> >      #5 0x56332c76a09b in run_test tests/builtin-test.c:410
-> >      #6 0x56332c76a09b in test_and_print tests/builtin-test.c:440
-> >      #7 0x56332c76ce69 in __cmd_test tests/builtin-test.c:695
-> >      #8 0x56332c76ce69 in cmd_test tests/builtin-test.c:807
-> >      #9 0x56332c7d2214 in run_builtin /home/namhyung/project/linux/tools/perf/perf.c:312
-> >      #10 0x56332c6701a8 in handle_internal_command /home/namhyung/project/linux/tools/perf/perf.c:364
-> >      #11 0x56332c6701a8 in run_argv /home/namhyung/project/linux/tools/perf/perf.c:408
-> >      #12 0x56332c6701a8 in main /home/namhyung/project/linux/tools/perf/perf.c:538
-> >      #13 0x7feefb359cc9 in __libc_start_main ../csu/libc-start.c:308
-> >
-> > Cc: John Garry <john.garry@huawei.com>
-> > Fixes: 956a78356c24c ("perf test: Test pmu-events aliases")
-> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> > ---
-> >   tools/perf/tests/pmu-events.c | 5 +++++
-> >   tools/perf/util/pmu.c         | 2 +-
-> >   tools/perf/util/pmu.h         | 1 +
-> >   3 files changed, 7 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/tools/perf/tests/pmu-events.c b/tools/perf/tests/pmu-events.c
-> > index eb19f9a0bc15..d3517a74d95e 100644
-> > --- a/tools/perf/tests/pmu-events.c
-> > +++ b/tools/perf/tests/pmu-events.c
-> > @@ -274,6 +274,7 @@ static int __test__pmu_event_aliases(char *pmu_name, int *count)
-> >       int res = 0;
-> >       bool use_uncore_table;
-> >       struct pmu_events_map *map = __test_pmu_get_events_map();
-> > +     struct perf_pmu_alias *a, *tmp;
-> >
-> >       if (!map)
-> >               return -1;
-> > @@ -347,6 +348,10 @@ static int __test__pmu_event_aliases(char *pmu_name, int *count)
-> >                         pmu_name, alias->name);
-> >       }
-> >
-> > +     list_for_each_entry_safe(a, tmp, &aliases, list) {
-> > +             list_del(&a->list);
-> > +             perf_pmu_free_alias(a);
->
-> This looks ok.
+34f379956e9d7 ("KVM: arm64: Fix symbol dependency in =
+__hyp_call_panic_nvhe")
+[ Upstream commit b38b298aa4397e2dc74a89b4dd3eac9e59b64c96 ]
 
-Thanks!
+fails to compile in v5.8.7 for me (using an aarch64 gcc 4.9 =
+cross-toolchain to try
+to build a kernel for the PinePhone):
 
->
-> I also notice that we have other paths like this, where the allocated
-> pmu (and aliases) are not freed for later error paths, it seems:
->
-> parse_events_add_pmu() -> perf_pmu_find() -> pmu_lookup() ->
-> pmu_add_cpu_aliases().
->
-> I had a quick look at the rest of the series, and could not see if we
-> fix up any of this.
+  CC      arch/arm64/kvm/hyp/switch.o - due to target missing
+arch/arm64/kvm/hyp/switch.c: In function 'hyp_panic':
+arch/arm64/kvm/hyp/switch.c:904:2: error: impossible constraint in 'asm'
+  asm volatile("ldr %0, =3D%1" : "=3Dr" (str_va) : "S" =
+(__hyp_panic_string));
+  ^
 
-Right, I also found that and wondered why ASAN didn't report it.
-I think we should free all pmu instances from the pmus list.
-But this can be a later work..
+I can find the commit b38b298aa4397e2dc74a89b4dd3eac9e59b64c96 in =
+upstream
+but not the affected file. There is also "KVM: arm64: Split hyp/switch.c =
+to VHE/nVHE"
+which does a cleanup and rename and v5.9-rc4 compiles fine.
 
-Thanks
-Namhyung
+With a git revert 34f379956e9d7 on v5.8.7 I can compile without =
+problems.
+
+So something seems to be incomplete or premature with the backport.
+
+BR and thanks,
+Nikolaus Schaller
+
+
