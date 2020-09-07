@@ -2,64 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F18326061B
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 23:17:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFC2426061E
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 23:17:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727843AbgIGVRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 17:17:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53914 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726458AbgIGVRO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 17:17:14 -0400
-Received: from localhost.localdomain (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1CF352145D;
-        Mon,  7 Sep 2020 21:17:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599513433;
-        bh=BEe8Hg1nQQakfRqqaWVZYwWtfSMQg1VV24e16mX7NUo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xvxS4z+XU5iApb0nusPKcPwaFNsDlzBs+fbAc8SntCP0X6MEqRqY92xSKoR0ApKIu
-         w8UDaOIVV2z1oU7FqHIKuB2c+wD4LDnnd/Rbv3H6aY4/alij2U55SebZSIViiuMbFq
-         oTcJnDePJIZhLu14ZoT9s2fZ/U7Xlzd6Lk19zKTY=
-From:   Will Deacon <will@kernel.org>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     catalin.marinas@arm.com, kernel-team@android.com,
-        Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ard Biesheuvel <ardb@kernel.org>, linux-kernel@vger.kernel.org,
-        Steven Price <steven.price@arm.com>
-Subject: Re: [PATCH] arm64/mm/ptdump: Add address markers for BPF regions
-Date:   Mon,  7 Sep 2020 22:17:08 +0100
-Message-Id: <159951266812.2988869.10740934941923948664.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <1599208259-11191-1-git-send-email-anshuman.khandual@arm.com>
-References: <1599208259-11191-1-git-send-email-anshuman.khandual@arm.com>
+        id S1727937AbgIGVRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 17:17:24 -0400
+Received: from gate2.alliedtelesis.co.nz ([202.36.163.20]:45233 "EHLO
+        gate2.alliedtelesis.co.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727860AbgIGVRS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 17:17:18 -0400
+Received: from mmarshal3.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 9DAF6806B5;
+        Tue,  8 Sep 2020 09:17:16 +1200 (NZST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1599513436;
+        bh=+FPj6Py6+yK51QkVI24N9KESTL802Kuzy9arE9yuwb4=;
+        h=From:To:Cc:Subject:Date;
+        b=SIr4NBwqbpMZ18MPYNB+ayNhznmbbgO2lsBtVirFnVYd1uAi/Avxku8MeYG7mkZim
+         Rc9MQ3z8PQ+awobR440kRWppwdwMx1YJ+3q1fTDsmpyj6vwKLOPQQpivaHNT3Kd1hJ
+         RftjEHpgciDrAw8MF2ZP40cqdKH/WwLwjylPid5ojxijOy+aIAHETVP0hDjpL3VvGk
+         GYuEbkouo5uePrscbjPfwpYnysFxh8vfUUH6yhciRhyOKXSSjADVyPeYOX3IbbRuGr
+         IFpjvyeygZEDZTz/GszvbV9quabZP0YbjXH1UKmxzty1JPk2P3pKQ62t/vVNJb1gOH
+         /DPR1WCtZ394g==
+Received: from smtp (Not Verified[10.32.16.33]) by mmarshal3.atlnz.lc with Trustwave SEG (v7,5,8,10121)
+        id <B5f56a35c0000>; Tue, 08 Sep 2020 09:17:16 +1200
+Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.20])
+        by smtp (Postfix) with ESMTP id 4460C13EEBA;
+        Tue,  8 Sep 2020 09:17:15 +1200 (NZST)
+Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
+        id E98A5280060; Tue,  8 Sep 2020 09:17:15 +1200 (NZST)
+From:   Chris Packham <chris.packham@alliedtelesis.co.nz>
+To:     jason@lakedaemon.net, andrew@lunn.ch, gregory.clement@bootlin.com,
+        sebastian.hesselbarth@gmail.com, robh+dt@kernel.org,
+        linus.walleij@linaro.org
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>
+Subject: [PATCH v2 0/3] 98dx3236 i2c related fixes
+Date:   Tue,  8 Sep 2020 09:17:09 +1200
+Message-Id: <20200907211712.9697-1-chris.packham@alliedtelesis.co.nz>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+x-atlnz-ls: pat
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 4 Sep 2020 14:00:59 +0530, Anshuman Khandual wrote:
-> Kernel virtual region [BPF_JIT_REGION_START..BPF_JIT_REGION_END] is missing
-> from address_markers[], hence relevant page table entries are not displayed
-> with /sys/kernel/debug/kernel_page_tables. This adds those missing markers.
-> While here, also rename arch/arm64/mm/dump.c which sounds bit ambiguous, as
-> arch/arm64/mm/ptdump.c instead.
+I noticed these while adding support for i2c recovery for a couple of our
+boards. They date back to when I initially added support for the 98dx3236=
+. They
+probably haven't been causing a problem because the HW defaults are corre=
+ct and
+unless you attempt to use the specific pinctrl functions there won't be a
+problem.
 
-Applied to arm64 (for-next/mm), thanks!
+Change in v2:
+- Fix grammo in patch 2/3
+- Add r-by from Andrew
 
-[1/1] arm64/mm/ptdump: Add address markers for BPF regions
-      https://git.kernel.org/arm64/c/c048ddf86cdd
+Chris Packham (3):
+  pinctrl: mvebu: Fix i2c sda definition for 98DX3236
+  ARM: dts: Remove non-existent i2c1 from 98dx3236
+  ARM: dts: Add i2c0 pinctrl information for 98dx3236
 
-Cheers,
--- 
-Will
+ arch/arm/boot/dts/armada-xp-98dx3236.dtsi | 12 +++++++-----
+ drivers/pinctrl/mvebu/pinctrl-armada-xp.c |  2 +-
+ 2 files changed, 8 insertions(+), 6 deletions(-)
 
-https://fixes.arm64.dev
-https://next.arm64.dev
-https://will.arm64.dev
+--=20
+2.28.0
+
