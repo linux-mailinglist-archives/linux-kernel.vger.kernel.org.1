@@ -2,106 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCA0C25F8F5
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 12:58:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFC2C25F8FE
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 13:05:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728944AbgIGK6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 06:58:13 -0400
-Received: from mail-ed1-f68.google.com ([209.85.208.68]:35961 "EHLO
-        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728985AbgIGK5B (ORCPT
+        id S1728880AbgIGLFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 07:05:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38490 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729008AbgIGK4c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 06:57:01 -0400
-Received: by mail-ed1-f68.google.com with SMTP id w1so12363954edr.3;
-        Mon, 07 Sep 2020 03:56:58 -0700 (PDT)
+        Mon, 7 Sep 2020 06:56:32 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B364DC061755
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 03:56:30 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id h11so12107859ilj.11
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 03:56:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5RpqzXli+XwCeMDV3owXAXqs2l8fk/xVY+BAwh0ak7Y=;
+        b=UdJojwKSlBl1Tz+n0b1d7FQshL4EUtEIMahQ4fGtI2Y2E4fryVcKbeE0sXH9qI7yPm
+         ht/QXwE8hxsAbPH1+Lle01u/vcrJm1XxLztsetw7WKfv6RKaZk0+VtY3wrXz/taGbnhi
+         BUpskNdAvj8qCP98GPh4jgZSDszAfYsVkJNZNmuS97HqgwWBDAC9G4xgYiMaE9Ll4IW2
+         dv89Z5sjugBIhI33dMFvXroe7cuI/54CVfFHkOupSnM7ORAguKkXoN2aeXvuRT87mqm4
+         IzSdxnCuu6913KmUrirpZd9GKBd9MuFYho3sTMT3c5mJai5KCZBDm/WE5pzGlS0VsfgI
+         FDSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=PU4a2Iw51Q8DsKvI6VFHu9Hjx5eXu6HfkDcfoQ9YGb4=;
-        b=L2llLIigWNy2D97AlCIML2XZdr1P01SZHT8KO1FrucNClcs5qmCMrscD1rA8OWVDZx
-         KJbapIIHZDTFcbFvSphwCegqHLoFPIpo+M2Ee0nN88+vASiEbO5sw+dNIqfdIN2kO1u4
-         MdsPtmxf+K4F9SRiPnuWoneZb7T5OVvhv7AZmM8Ui+eh2UseH+lM9DPlFokd/n3BYQ9R
-         UhIAQnSqGPp7/Sl/C4AmzzNVaUrdWLSJL7Q22gC3jnEznbIKlrJ3oZZ1o9BXCPSe8SgB
-         DOzQxn7J819NtjcQpP6BD2OvXgwLEojSTBzXh2p1yz4HdC3nLl1dTd7lIcl+OVgaJWCf
-         8Obg==
-X-Gm-Message-State: AOAM5327F4d025PDdmr5S9bYRNJhGDHqiRw4CjcPqebusqUvQCqmSn9y
-        Zt1Wcjbc98Fv0HYWJAuUsvE=
-X-Google-Smtp-Source: ABdhPJw0jw90H6QL7lT1z9qlgXoIspfVloP9ZRO343uzPFU+HTja+C3weJh9+fjqC0/vTxzbABRumQ==
-X-Received: by 2002:a05:6402:12d1:: with SMTP id k17mr20588884edx.323.1599476218174;
-        Mon, 07 Sep 2020 03:56:58 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.174])
-        by smtp.googlemail.com with ESMTPSA id v4sm15052441eje.39.2020.09.07.03.56.55
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 07 Sep 2020 03:56:56 -0700 (PDT)
-Date:   Mon, 7 Sep 2020 12:56:51 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
-        arm@kernel.org, soc@kernel.org
-Cc:     Kukjin Kim <kgene@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>
-Subject: Re: [GIT PULL] ARM: mach: samsung: S3C cleanup for v5.10
-Message-ID: <20200907105622.GA31259@kozik-lap>
-References: <20200831154751.7551-1-krzk@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5RpqzXli+XwCeMDV3owXAXqs2l8fk/xVY+BAwh0ak7Y=;
+        b=BwZAp1XtsaT8c0sUjeMShjxJBKh0lE1+1cfm2LxIi4GtM5rVwZEVQX4akYp+zhKlSI
+         auLzvPrl/uk3i5qGxn/X99aeSfoD+5X0MwOHNJw9T0LmNfvlwhFb+IQDvfO/2TxSti8E
+         iCzyEYzSS0qjtD4TzUFTGQa+cfIFbZo4zNyGbOGhHK9/LyMQhXmHw/luZSrsFeMmrVrG
+         wdwMBdlSmF3ORVcEn06DBsD+aTHrwJLEUNVrFM1yMVM8d1E3fVvnF5yIuNy/5x8shSCv
+         Ag1XgLdE2g+IW43aiRGHC9QzcJey7JT9jYK1YEK8VOYGvxNKqmWOP1Sdrxb+8eH4NXnj
+         bDEQ==
+X-Gm-Message-State: AOAM5313Kj0vOpl9oWvqMZcFzSaLPd+tchGHfp+3eVNGQKK8lOJFycMC
+        FpzAH+XnoUIDfWnYK6RLVVuLx+uh/GFpzLp9h/Tgnw==
+X-Google-Smtp-Source: ABdhPJzrrBWKvS/0CytuqACgZ2NZ/VYj5Aa6yYN+qHpPMg92bY9CYtJjq/jiXt/5mZGa37+9U5ia18jssb2wZ1ZnqRM=
+X-Received: by 2002:a92:1b0b:: with SMTP id b11mr18787396ilb.287.1599476189880;
+ Mon, 07 Sep 2020 03:56:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200831154751.7551-1-krzk@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200904154547.3836-1-brgl@bgdev.pl> <20200904154547.3836-5-brgl@bgdev.pl>
+ <20200904163820.GX1891694@smile.fi.intel.com>
+In-Reply-To: <20200904163820.GX1891694@smile.fi.intel.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Mon, 7 Sep 2020 12:56:19 +0200
+Message-ID: <CAMRc=Mc2mhsNo10RDVLGNPCADivYNco21+QZfehAgMRzZW3Sfg@mail.gmail.com>
+Subject: Re: [PATCH 04/23] gpiolib: generalize devprop_gpiochip_set_names()
+ for device properties
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Kent Gibson <warthog618@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-doc <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-acpi@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 31, 2020 at 05:47:51PM +0200, Krzysztof Kozlowski wrote:
-> Hi,
-> 
-> I applied Arnd's series for Samsung S3C cleanup, plus multiple fixes from me
-> and other developers.  This also pulls branch from Mark Brown.
-> 
-> Best regards,
-> Krzysztof
-> 
-> 
-> The following changes since commit 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5:
-> 
->   Linux 5.9-rc1 (2020-08-16 13:04:57 -0700)
-> 
-> are available in the Git repository at:
-> 
->   https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux.git tags/samsung-soc-s3c-5.10
-> 
-> for you to fetch changes up to a1342f6a9ff88ad88ff7a981c53ae0869c94d243:
-> 
->   ARM: s3c: Avoid naming clash of S3C24xx and S3C64xx timer setup (2020-08-28 16:38:55 +0200)
-> 
-> ----------------------------------------------------------------
-> Samsung S3C24xx and S3C64xx machine code cleanup for v5.10
-> 
-> Big cleanup for the Samsung S3C24xx and S3C64xx platforms, although it
-> also touches files shared with S5Pv210 and Exynos.  This is mostly Arnd
-> Bergmann work which Krzysztof Kozlowski took over, rebased and polished.
-> 
-> The goal is to cleanup, merge and finally make the Samsung S3C24xx and
-> S3C64xx architectures multiplatform.  The multiplatform did not happen
-> yet here - just cleaning up and merging into one arch/arm/mach-s3c
-> directory.  However this is step forward for multiplatform or at least
-> to keep this code still maintainable.
-> 
-> This pulls also branch with changes for Samsung SoC sound drivers from
-> broonie/sound because the cleanups there were part of this series and
-> all further patches depend on them.
+On Fri, Sep 4, 2020 at 6:44 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> On Fri, Sep 04, 2020 at 05:45:28PM +0200, Bartosz Golaszewski wrote:
+> > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> >
+> > devprop_gpiochip_set_names() is overly complicated with taking the
+> > fwnode argument (which requires using dev_fwnode() & of_fwnode_handle()
+> > in ACPI and OF GPIO code respectively). Let's just switch to using the
+> > generic device properties.
+> >
+> > This allows us to pull the code setting line names directly into
+> > gpiochip_add_data_with_key() instead of handling it separately for
+> > ACPI and OF.
+> >
+> > Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> > ---
+> >  drivers/gpio/gpiolib-acpi.c    |  3 ---
+> >  drivers/gpio/gpiolib-devprop.c | 19 ++++++++++---------
+> >  drivers/gpio/gpiolib-of.c      |  5 -----
+> >  drivers/gpio/gpiolib.c         |  8 ++++----
+> >  include/linux/gpio/driver.h    |  3 +--
+> >  5 files changed, 15 insertions(+), 23 deletions(-)
+> >
+> > diff --git a/drivers/gpio/gpiolib-acpi.c b/drivers/gpio/gpiolib-acpi.c
+> > index 54ca3c18b291..834a12f3219e 100644
+> > --- a/drivers/gpio/gpiolib-acpi.c
+> > +++ b/drivers/gpio/gpiolib-acpi.c
+> > @@ -1221,9 +1221,6 @@ void acpi_gpiochip_add(struct gpio_chip *chip)
+> >               return;
+> >       }
+> >
+> > -     if (!chip->names)
+> > -             devprop_gpiochip_set_names(chip, dev_fwnode(chip->parent));
+> > -
+> >       acpi_gpiochip_request_regions(acpi_gpio);
+> >       acpi_gpiochip_scan_gpios(acpi_gpio);
+> >       acpi_walk_dep_device_list(handle);
+> > diff --git a/drivers/gpio/gpiolib-devprop.c b/drivers/gpio/gpiolib-devprop.c
+> > index 26741032fa9e..a28659b4f9c9 100644
+> > --- a/drivers/gpio/gpiolib-devprop.c
+> > +++ b/drivers/gpio/gpiolib-devprop.c
+> > @@ -17,25 +17,24 @@
+> >  /**
+> >   * devprop_gpiochip_set_names - Set GPIO line names using device properties
+> >   * @chip: GPIO chip whose lines should be named, if possible
+> > - * @fwnode: Property Node containing the gpio-line-names property
+> >   *
+> >   * Looks for device property "gpio-line-names" and if it exists assigns
+> >   * GPIO line names for the chip. The memory allocated for the assigned
+> > - * names belong to the underlying firmware node and should not be released
+> > + * names belong to the underlying software node and should not be released
+> >   * by the caller.
+> >   */
+> > -void devprop_gpiochip_set_names(struct gpio_chip *chip,
+> > -                             const struct fwnode_handle *fwnode)
+> > +int devprop_gpiochip_set_names(struct gpio_chip *chip)
+> >  {
+> >       struct gpio_device *gdev = chip->gpiodev;
+> > +     struct device *dev = chip->parent;
+> >       const char **names;
+> >       int ret, i;
+> >       int count;
+> >
+> > -     count = fwnode_property_read_string_array(fwnode, "gpio-line-names",
+> > +     count = device_property_read_string_array(dev, "gpio-line-names",
+> >                                                 NULL, 0);
+> >       if (count < 0)
+> > -             return;
+> > +             return 0;
+>
+> Can we introduce a followup to 33ee09cd59ce ("device property: Add helpers to
+> count items in an array") for strings?
+>
 
-Hi Arnd and Olof,
+Sure, I'll do this in v2.
 
-+Cc Ulf,
-
-This might conflict with Ulf Hansson's mmc tree around MMC_SDHCI_S3C.
-Possible resolution:
--depends on PLAT_SAMSUNG || COMPILE_TEST
-+depends on PLAT_SAMSUNG || ARCH_S5PV210 || ARCH_EXYNOS || COMPILE_TEST
-
-Best regards,
-Krzysztof
+Bart
