@@ -2,83 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93E5B25F29B
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 07:07:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8313225F2AA
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 07:46:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726733AbgIGE7M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 00:59:12 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:50656 "EHLO fornost.hmeau.com"
+        id S1726769AbgIGFqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 01:46:00 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:44056 "EHLO inva020.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726685AbgIGE7L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 00:59:11 -0400
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1kF9F3-0001ZP-Fy; Mon, 07 Sep 2020 14:58:58 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Mon, 07 Sep 2020 14:58:57 +1000
-Date:   Mon, 7 Sep 2020 14:58:57 +1000
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     kernel test robot <lkp@intel.com>
-Cc:     Keerthy <j-keerthy@ti.com>, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org, Tero Kristo <t-kristo@ti.com>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
-Subject: Re: sa2ul.c:undefined reference to `crypto_authenc_extractkeys'
-Message-ID: <20200907045857.GA11307@gondor.apana.org.au>
-References: <202009071150.Sk8aGITA%lkp@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202009071150.Sk8aGITA%lkp@intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1726708AbgIGFqA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 01:46:00 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 5BE101A0FB4;
+        Mon,  7 Sep 2020 07:45:58 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 1DA351A0FCC;
+        Mon,  7 Sep 2020 07:45:53 +0200 (CEST)
+Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 5B770402CA;
+        Mon,  7 Sep 2020 07:45:46 +0200 (CEST)
+From:   Zhiqiang Hou <Zhiqiang.Hou@nxp.com>
+To:     linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bhelgaas@google.com,
+        robh+dt@kernel.org, shawnguo@kernel.org, leoyang.li@nxp.com,
+        lorenzo.pieralisi@arm.com, gustavo.pimentel@synopsys.com
+Cc:     minghuan.Lian@nxp.com, mingkai.hu@nxp.com, roy.zang@nxp.com,
+        Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+Subject: [PATCH 0/7] PCI: layerscape: Add power management support
+Date:   Mon,  7 Sep 2020 13:37:54 +0800
+Message-Id: <20200907053801.22149-1-Zhiqiang.Hou@nxp.com>
+X-Mailer: git-send-email 2.17.1
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 07, 2020 at 11:12:53AM +0800, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   f4d51dffc6c01a9e94650d95ce0104964f8ae822
-> commit: d2c8ac187fc922e73930a1b2f6a211e27f595d01 crypto: sa2ul - Add AEAD algorithm support
-> date:   7 weeks ago
-> config: x86_64-randconfig-s022-20200907 (attached as .config)
-> compiler: gcc-9 (Debian 9.3.0-15) 9.3.0
-> reproduce:
->         # apt-get install sparse
->         # sparse version: v0.6.2-191-g10164920-dirty
->         git checkout d2c8ac187fc922e73930a1b2f6a211e27f595d01
->         # save the attached .config to linux build tree
->         make W=1 C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=x86_64 
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All errors (new ones prefixed by >>):
-> 
->    ld: drivers/crypto/sa2ul.o: in function `sa_aead_setkey.constprop.0':
-> >> sa2ul.c:(.text+0x3466): undefined reference to `crypto_authenc_extractkeys'
+From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
 
-Thanks for the report.  This should fix it:
+This patch series is to add PCIe power management support for NXP
+Layerscape platfroms.
 
----8<---
-The sa2ul driver uses crypto_authenc_extractkeys and therefore
-must select CRYPTO_AUTHENC.
+Hou Zhiqiang (7):
+  PCI: dwc: Fix a bug of the case dw_pci->ops is NULL
+  PCI: layerscape: Change to use the DWC common link-up check function
+  dt-bindings: pci: layerscape-pci: Add a optional property big-endian
+  arm64: dts: layerscape: Add big-endian property for PCIe nodes
+  dt-bindings: pci: layerscape-pci: Update the description of SCFG
+    property
+  dts: arm64: ls1043a: Add SCFG phandle for PCIe nodes
+  PCI: layerscape: Add power management support
 
-Fixes: 7694b6ca649f ("crypto: sa2ul - Add crypto driver")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+ .../bindings/pci/layerscape-pci.txt           |   6 +-
+ .../arm64/boot/dts/freescale/fsl-ls1012a.dtsi |   1 +
+ .../arm64/boot/dts/freescale/fsl-ls1043a.dtsi |   6 +
+ .../arm64/boot/dts/freescale/fsl-ls1046a.dtsi |   3 +
+ drivers/pci/controller/dwc/pci-layerscape.c   | 473 ++++++++++++++----
+ drivers/pci/controller/dwc/pcie-designware.c  |  12 +-
+ drivers/pci/controller/dwc/pcie-designware.h  |   1 +
+ 7 files changed, 388 insertions(+), 114 deletions(-)
 
-diff --git a/drivers/crypto/Kconfig b/drivers/crypto/Kconfig
-index aa3a4ed07a66..c2950127def6 100644
---- a/drivers/crypto/Kconfig
-+++ b/drivers/crypto/Kconfig
-@@ -873,6 +873,7 @@ config CRYPTO_DEV_SA2UL
- 	select CRYPTO_AES
- 	select CRYPTO_AES_ARM64
- 	select CRYPTO_ALGAPI
-+	select CRYPTO_AUTHENC
- 	select HW_RANDOM
- 	select SG_SPLIT
- 	help
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+2.17.1
+
