@@ -2,90 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 273C825F8D4
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 12:50:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCC5C25F8BA
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 12:45:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728892AbgIGKuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 06:50:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37514 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728757AbgIGKuO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 06:50:14 -0400
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7EF2C061575
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 03:50:13 -0700 (PDT)
-Received: by mail-il1-x141.google.com with SMTP id w8so12128318ilj.8
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 03:50:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=y2WbMMlWb+6LVnmTJRKV9M4FUT+m4Yhxko6TEmzZawo=;
-        b=DXXW4y3JIc13ePP4dZs0HPbsWLHy9Mn1p6wfUdlMGf8aqElDxpEmWg3aw+DqpO5ss5
-         foGGRIcNDCa/FPVCbUcEvaCUzHTCxoAMw2WYzPuFIY2s9jAQPmONVbR3BKFfH8sYdnsC
-         dHQf8ZVmgZZ09vKY3G2gGhvUFZaA4X2zKkdKWKuGjV37gNKiWVSYvcoCZ2xcdpqymaI2
-         Ki/4qC6smG9C5a2s0+BXm2TuolTZRs+pubuGVOK46JNqbGNqgWBJVxjQBZuuL0Z2NlQq
-         nl1YC4vskdLtvxYJFDRk+G0y4qVL0DYvBbgeYpKCAWy2NhWNlpqcEhF3cdA1L7D1mzrB
-         Rgqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=y2WbMMlWb+6LVnmTJRKV9M4FUT+m4Yhxko6TEmzZawo=;
-        b=DD10u6xVdq2aYlgrTjPbio9OnCbsh+cikXWKaFo6vPb94s5+vigXHQblTwbmih4hJM
-         wzvlYJS+FY0Nj3c0HTNtJDY0Kz4OprHtQzKE0nKO+p9RTuI1fAFw3SSK4YWfZwjr4ae8
-         +pEFIzCflprMg1IYPS00Hx0m6NDthfRmYO2gvmCgFQ1tAUtLK1WYxewciYpyg0iqlXJS
-         qgxd47A7ktumqdPP9drrockHu2nQS2NQFBgCnjhRRZbDQ0JUn12WPgacAVOzhgdkdJvu
-         65/NpGAnQfZ1UuzfdII8385/PibxUjOj1u2ygxHa93FIJz23pYOsqSqjjqpaf519tvHe
-         ILHw==
-X-Gm-Message-State: AOAM533vusHq494/NL4QfxTaVBegS0C+a5WagxDWc00n7Fy0USesfzbM
-        49PDC1dhB7jVkRYL6Jcl4tHBORuuTws4CxAudXmqUA==
-X-Google-Smtp-Source: ABdhPJynrTfkvCINR4dH6XcXpfLrT9viB5CqRNVONJhEUV5jYmiptH6QUEy6gzaqRlgTPWh+SDbiNtD7xbF8ZAG72hU=
-X-Received: by 2002:a92:189:: with SMTP id 131mr19144027ilb.40.1599475813063;
- Mon, 07 Sep 2020 03:50:13 -0700 (PDT)
+        id S1728812AbgIGKpq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 06:45:46 -0400
+Received: from foss.arm.com ([217.140.110.172]:60658 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728477AbgIGKpb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 06:45:31 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A64D1106F;
+        Mon,  7 Sep 2020 03:45:30 -0700 (PDT)
+Received: from [10.57.6.175] (unknown [10.57.6.175])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D63093F66E;
+        Mon,  7 Sep 2020 03:45:27 -0700 (PDT)
+Subject: Re: [PATCH v6] perf test: Introduce script for Arm CoreSight testing
+To:     leo.yan@linaro.org, acme@kernel.org, mathieu.poirier@linaro.org,
+        mike.leach@linaro.org, peterz@infradead.org, mingo@redhat.com,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, namhyung@kernel.org, linux-kernel@vger.kernel.org
+References: <20200907072902.28068-1-leo.yan@linaro.org>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <c64a489d-b151-b015-5806-a8daec34b429@arm.com>
+Date:   Mon, 7 Sep 2020 11:50:10 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.7.0
 MIME-Version: 1.0
-References: <20200904154547.3836-1-brgl@bgdev.pl> <20200904154547.3836-7-brgl@bgdev.pl>
- <20200904164128.GZ1891694@smile.fi.intel.com>
-In-Reply-To: <20200904164128.GZ1891694@smile.fi.intel.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Mon, 7 Sep 2020 12:50:01 +0200
-Message-ID: <CAMRc=MeYw=tQABZ2ZGbFQC=yc-zzes6ohSzUJLOLBnEGHzeZhg@mail.gmail.com>
-Subject: Re: [PATCH 06/23] gpiolib: switch to simpler IDA interface
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Kent Gibson <warthog618@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-doc <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-acpi@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200907072902.28068-1-leo.yan@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 4, 2020 at 6:41 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Fri, Sep 04, 2020 at 05:45:30PM +0200, Bartosz Golaszewski wrote:
-> > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> >
-> > We don't need to specify any ranges when allocating IDs so we can switch
-> > to ida_alloc() and ida_free() instead of the ida_simple_ counterparts.
-> >
-> > ida_simple_get(ida, 0, 0, gfp) is equivalent to
-> > ida_alloc_range(ida, 0, UINT_MAX, gfp) which is equivalent to
-> > ida_alloc(ida, gfp). Note: IDR will never actually allocate an ID
-> > larger than INT_MAX.
->
-> Have you considered switching to XArray API?
->
+On 09/07/2020 08:29 AM, Leo Yan wrote:
+> We need a simple method to test Perf with Arm CoreSight drivers, this
+> could be used for smoke testing when new patch is coming for perf or
+> CoreSight drivers, and we also can use the test to confirm if the
+> CoreSight has been enabled successfully on new platforms.
+> 
+> This patch introduces the shell script test_arm_coresight.sh which is
+> under the 'pert test' framework.  This script provides three testing
+> scenarios:
+> 
+> Test scenario 1: traverse all possible paths between source and sink
+> 
+> For traversing possible paths, simply to say, the testing rationale
+> is source oriented testing, it traverses every source (now only refers
+> to ETM device) and test its all possible sinks.  To search the complete
+> paths from one specific source to its sinks, this patch relies on the
+> sysfs '/sys/bus/coresight/devices/devX/out:Y' for depth-first search
+> (DFS) for iteration connected device nodes, if the output device is
+> detected as a sink device (the script will exclude TPIU device which can
+> not be supported for perf PMU), then it will test trace data recording
+> and decoding for it.
+> 
+> The script runs three output testings for every trace data:
+> - Test branch samples dumping with 'perf script' command;
+> - Test branch samples reporting with 'perf report' command;
+> - Use option '--itrace=i1000i' to insert synthesized instructions events
+>    and the script will check if perf can output the percentage value
+>    successfully based on the instruction samples.
+> 
+> Test scenario 2: system-wide test
+> 
+> For system-wide testing, it passes option '-a' to perf tool to enable
+> tracing on all CPUs, so it's hard to say which program will be traced.
+> But perf tool itself contributes much overload in this case, so it will
+> parse trace data and check if process 'perf' can be detected or not.
+> 
+> Test scenario 3: snapshot mode test.
+> 
+> For snapshot mode testing, it uses 'dd' command to launch a long running
+> program, so this can give chance to send signal -USR2; it will check the
+> captured trace data contains 'dd' related thread info or not.
+> 
+> If any test fails, it will report failure and directly exit with error.
+> This test will be only applied on a platform with PMU event 'cs_etm//',
+> otherwise will skip the testing.
+> 
+> Below is detailed usage for it:
+> 
+>    # cd $linux/tools/perf  -> This is important so can use shell script
+>    # perf test list
+>      [...]
+>      70: probe libc's inet_pton & backtrace it with ping
+>      71: Check Arm CoreSight trace data recording and synthesized samples
+>      72: Check open filename arg using perf trace + vfs_getname
+>      73: Zstd perf.data compression/decompression
+>      74: Add vfs_getname probe to get syscall args filenames
+>      75: Use vfs_getname probe to get syscall args filenames
+> 
+>    # perf test 71
+>      66: Check Arm CoreSight trace data recording and branch samples: Ok
+> 
+> Signed-off-by: Leo Yan <leo.yan@linaro.org>
+> ---
+> 
+> Changes in v6:
+> - Fixed indentation for arm_cs_iterate_devices() (Mathieu);
+> - Changed to remove ${perfdata} and ${file} for failure cases (Mathieu);
+> - Changed test name from "... branch samples" to "... synthesized samples".
 
-IDA uses an xarray internally but wraps it in a more straightforward
-API. No need to use the low-level API IMO.
+minor nit: Instead of spilling the cleanup of the files allover the
+tests, could we use trap ... exit to cleanup ?
 
-Bart
+i.e,
+
+cleanup_files()
+{
+	# Cleanups here
+	# rm -f ....
+}
+
+trap cleanup_files exit
+
+> +arm_cs_iterate_devices() {
+> +	for dev in $1/connections/out\:*; do
+> +
+> +		# Skip testing if it's not a directory
+> +		! [ -d $dev ] && continue;
+> +
+> +		# Read out its symbol link file name
+> +		path=`readlink -f $dev`
+> +
+> +		# Extract device name from path, e.g.
+> +		#   path = '/sys/devices/platform/20010000.etf/tmc_etf0'
+> +		#     `> device_name = 'tmc_etf0'
+> +		device_name=`echo $path | awk -F/ '{print $(NF)}'`
+
+Couldn't this be :
+		device_name=$(basename $path) ?
+
+
+> +
+> +
+
+  --- Cut here ---
+> +		# If the node of "enable_sink" is existed under the device path, this
+> +		# means the device is a sink device.  Need to exclude 'tpiu' since it
+> +		# cannot support perf PMU.
+> +		echo $device_name | egrep -q -v "tpiu"
+> +		if [ $? -eq 0 -a -e "$path/enable_sink" ]; then
+> +
+> +			pmu_dev="/sys/bus/event_source/devices/cs_etm/sinks/$device_name"
+> +
+> +			# Exit if the sink device is supported by PMU or not
+> +			if ! [ -f $pmu_dev ]; then
+> +				echo "PMU doesn't support $pmu_dev"
+> +				exit 1
+
+This may not be fatal to the testing. Could be a warning and continue on
+to the next device ?
+
+> +			fi
+
+---- Cut end ---
+
+minor nit: Could this be moved into a function ? say, is_device_sink() ?
+
+Rest looks fine to me.
+
+Cheers
+Suzuki
