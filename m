@@ -2,99 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB77125FE6A
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 18:15:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0191525FE76
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 18:17:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730502AbgIGQPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 12:15:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59562 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729996AbgIGQPi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 12:15:38 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6688C061574
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 09:15:37 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kFJno-0001sv-G5; Mon, 07 Sep 2020 18:15:32 +0200
-Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kFJnn-0002et-PM; Mon, 07 Sep 2020 18:15:31 +0200
-Date:   Mon, 7 Sep 2020 18:15:31 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
-Cc:     Thorsten Scherer <t.scherer@eckelmann.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-gpio@vger.kernel.org, tglx@linutronix.de,
+        id S1730290AbgIGQRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 12:17:15 -0400
+Received: from foss.arm.com ([217.140.110.172]:40042 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729973AbgIGQQg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 12:16:36 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2845831B;
+        Mon,  7 Sep 2020 09:16:29 -0700 (PDT)
+Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0DBE93F68F;
+        Mon,  7 Sep 2020 09:16:27 -0700 (PDT)
+Date:   Mon, 7 Sep 2020 17:16:25 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
+Cc:     ray.jui@broadcom.com, helgaas@kernel.org, sbranden@broadcom.com,
+        f.fainelli@gmail.com, robh@kernel.org, linux-pci@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] gpio: siox: explicitly support only threaded irqs
-Message-ID: <20200907161531.x7wdxmb5e3qdbtn7@pengutronix.de>
-References: <20200907153135.3307-1-a.fatoum@pengutronix.de>
+Subject: Re: [PATCH v3 1/2] PCI: iproc: Set affinity mask on MSI interrupts
+Message-ID: <20200907161625.GB10272@e121166-lin.cambridge.arm.com>
+References: <20200803035241.7737-1-mark.tomlinson@alliedtelesis.co.nz>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="cgjxmmqsfjfxvawn"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200907153135.3307-1-a.fatoum@pengutronix.de>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20200803035241.7737-1-mark.tomlinson@alliedtelesis.co.nz>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Aug 03, 2020 at 03:52:40PM +1200, Mark Tomlinson wrote:
+> The core interrupt code expects the irq_set_affinity call to update the
+> effective affinity for the interrupt. This was not being done, so update
+> iproc_msi_irq_set_affinity() to do so.
+> 
+> Fixes: 3bc2b2348835 ("PCI: iproc: Add iProc PCIe MSI support")
+> Signed-off-by: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
+> ---
+> changes in v2:
+>  - Patch 1/2 Added Fixes tag
+>  - Patch 2/2 Replace original change with change suggested by Bjorn
+>    Helgaas.
+> 
+> changes in v3:
+>  - Use bitfield rather than bool to save memory.
+> 
+>  drivers/pci/controller/pcie-iproc-msi.c | 13 +++++++++----
+>  1 file changed, 9 insertions(+), 4 deletions(-)
 
---cgjxmmqsfjfxvawn
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Applied to pci/qcom, thanks.
 
-Hello Ahmad,
+Lorenzo
 
-On Mon, Sep 07, 2020 at 05:31:35PM +0200, Ahmad Fatoum wrote:
-> The gpio-siox driver uses handle_nested_irq() to implement its
-> interrupt support. This is only capable of handling threaded irq
-> actions. For a hardirq action it triggers a NULL pointer oops.
-> (It calls action->thread_fn which is NULL then.)
->=20
-> Prevent registration of a hardirq action by setting
-> gpio_irq_chip::threaded to true.
-
-cool commit log :-)
-
-> Cc: u.kleine-koenig@pengutronix.de
-> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
-
-Acked-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
-
-Thanks for picking this up.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---cgjxmmqsfjfxvawn
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl9WXKAACgkQwfwUeK3K
-7Alg0Qf/VlxWkLp9Bpt+uYNTELqmDL/zHOIn4GQTGgJrM34u8CTDAlLetTFtr9OW
-edbUtd2vWanorXEl3qdPxqi31FmgbQljDmwOu15VQuEsSzb8mNMkSRP2BOuiCRas
-B10LsGriMod8/49H2A5UVhSs/cNVT0JiLgPxQIssWYulH07agqHlSNCeMmgf7GTA
-6JJHYUl/Mld/qnKABxDUIYTTv70U9tXO2KsSkOFs4IF9AZIroQayBiDyDDvxJrPB
-gt0SpzcHMFE7to6edyGIbdxU+ag22FzL/XJnDM2EALjr6c7vAX6n9ui1HpZ7BNsI
-WEA54N3FLA5A1MYwDqwnhKwVVMhGUA==
-=J3Py
------END PGP SIGNATURE-----
-
---cgjxmmqsfjfxvawn--
+> diff --git a/drivers/pci/controller/pcie-iproc-msi.c b/drivers/pci/controller/pcie-iproc-msi.c
+> index 3176ad3ab0e5..908475d27e0e 100644
+> --- a/drivers/pci/controller/pcie-iproc-msi.c
+> +++ b/drivers/pci/controller/pcie-iproc-msi.c
+> @@ -209,15 +209,20 @@ static int iproc_msi_irq_set_affinity(struct irq_data *data,
+>  	struct iproc_msi *msi = irq_data_get_irq_chip_data(data);
+>  	int target_cpu = cpumask_first(mask);
+>  	int curr_cpu;
+> +	int ret;
+>  
+>  	curr_cpu = hwirq_to_cpu(msi, data->hwirq);
+>  	if (curr_cpu == target_cpu)
+> -		return IRQ_SET_MASK_OK_DONE;
+> +		ret = IRQ_SET_MASK_OK_DONE;
+> +	else {
+> +		/* steer MSI to the target CPU */
+> +		data->hwirq = hwirq_to_canonical_hwirq(msi, data->hwirq) + target_cpu;
+> +		ret = IRQ_SET_MASK_OK;
+> +	}
+>  
+> -	/* steer MSI to the target CPU */
+> -	data->hwirq = hwirq_to_canonical_hwirq(msi, data->hwirq) + target_cpu;
+> +	irq_data_update_effective_affinity(data, cpumask_of(target_cpu));
+>  
+> -	return IRQ_SET_MASK_OK;
+> +	return ret;
+>  }
+>  
+>  static void iproc_msi_irq_compose_msi_msg(struct irq_data *data,
+> -- 
+> 2.28.0
+> 
