@@ -2,82 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FAB125F951
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 13:25:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5623225F971
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 13:29:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728990AbgIGLY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 07:24:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47072 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728807AbgIGLV6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 07:21:58 -0400
-Received: from gaia (unknown [46.69.195.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 834A0206D4;
-        Mon,  7 Sep 2020 11:21:21 +0000 (UTC)
-Date:   Mon, 7 Sep 2020 12:21:19 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     George Cherian <gcherian@marvell.com>
-Cc:     Yang Yingliang <yangyingliang@huawei.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "will.deacon@arm.com" <will.deacon@arm.com>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "guohanjun@huawei.com" <guohanjun@huawei.com>,
-        Lorenzo Pieralisi <Lorenzo.Pieralisi@arm.com>
-Subject: Re: [PATCH] arm64: PCI: fix memleak when calling pci_iomap/unmap()
-Message-ID: <20200907112118.GD26513@gaia>
-References: <20200907104546.GC26513@gaia>
- <BYAPR18MB267959E6FE4BEF38D0A4611EC5280@BYAPR18MB2679.namprd18.prod.outlook.com>
+        id S1729045AbgIGL3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 07:29:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42854 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728780AbgIGLYU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 07:24:20 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4351EC061575
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 04:24:16 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id x14so15374742wrl.12
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 04:24:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bNFvxhnA0NnzUC7lrNJrUKsLLmz7/HC2qOyPmU9vUl0=;
+        b=uzUc11E0gok7gl6O5NNy2E0O4w9nQRfSU0c4U5Pb0vlWerd2W52/oGEaCOOf21VZvz
+         qbUWgc2jjvIpozWCfp5pFMHduvVHPw9c48sqGnfyIUUgJG8BtPryhVoO1vbQrZt1/2t5
+         BGv5rA9Q15nMiYW8wLCBNm91gw329WdwEEbDzBSo09EzeCoL4z5eMUY/Mab/sG1oaIfF
+         7eTtOIxJhimNEA8xKA/QRtsNsbmswuWJftIDEE+4nua2bEgR1PPGWBqjJRJd5dr51Jy+
+         m2vaxKwhT9k2SZY3Dh7QIltaGj2udCVRKw+lhS67Vb9tGQFVsD564QdWXYAzA5u+OU1S
+         EBDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bNFvxhnA0NnzUC7lrNJrUKsLLmz7/HC2qOyPmU9vUl0=;
+        b=FzknNLtQXdPBWbMi9oiABKGTy5kgSlh0zzEQDwFIVMpW6lyVrCA5UzbA2eERA10ltc
+         sYp7o46PodIDXwXFKg+r5dLZ4WNvZd067HNL6/yRYbAnb3+VfqJ1ivZYOZ2bgopIOtYz
+         4gC0Yiiu4s3a2W+rHqKcfAM/JwGM1aLaFwVVm8vMoBFvTqpnt3bnzanpvg1i0RToY1ye
+         hbdF0wdkSXqxMxCn+fp/b9IupCKDc5n+jpIeUupbaFMibAOAax+7rP4aewkqMAflFbOf
+         vrfFuniJqnoT80P52gZj6eU6rYsQE/VRf6xToVwOlctGi1/QeikXTXxNtbebMivjVOje
+         So0w==
+X-Gm-Message-State: AOAM530bRpRF1AEEnOKSy7E29rF1EkwD9pq7G1TClZFly28r87+ACJUi
+        P6Q1Mm06Gt3FBb7P/+Sj8alsDO8QSG4Vr38Tp1k=
+X-Google-Smtp-Source: ABdhPJy8sgbC/sJ9Rm/BrKqEAwV59GWXOOZ8VFQbp18vsLtPw1wPlO3O6XyZjZZQOJ5PDx5K8cjviVYWAdsvQNWMSFI=
+X-Received: by 2002:a5d:630a:: with SMTP id i10mr20495093wru.137.1599477853937;
+ Mon, 07 Sep 2020 04:24:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BYAPR18MB267959E6FE4BEF38D0A4611EC5280@BYAPR18MB2679.namprd18.prod.outlook.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200818052936.10995-1-joshi.k@samsung.com> <CGME20200818053252epcas5p4ee61d64bba5f6a131105e40330984f5e@epcas5p4.samsung.com>
+ <20200818052936.10995-2-joshi.k@samsung.com> <20200818071141.GA2544@lst.de>
+ <CA+1E3rJg0QOX4YgwWJf8Sm=6C-un4TsRX00E31fbFFPT9LYhXg@mail.gmail.com>
+ <CY4PR04MB375148979AA403CF47EADE0BE75D0@CY4PR04MB3751.namprd04.prod.outlook.com>
+ <CA+1E3r+C2KQENu=fO_+FZoUEvqZrAQcxziwSGt=FVidv85KQxA@mail.gmail.com>
+ <CY4PR04MB3751B077D152A80B19236C20E75D0@CY4PR04MB3751.namprd04.prod.outlook.com>
+ <CA+1E3r+0+jThD2KEu-d4rB=C4xL3Bb+cD=jUDbsGGBKR_GMpfQ@mail.gmail.com> <CY4PR04MB375151ABDF83FE0A9804C3EDE7280@CY4PR04MB3751.namprd04.prod.outlook.com>
+In-Reply-To: <CY4PR04MB375151ABDF83FE0A9804C3EDE7280@CY4PR04MB3751.namprd04.prod.outlook.com>
+From:   Kanchan Joshi <joshiiitr@gmail.com>
+Date:   Mon, 7 Sep 2020 16:53:47 +0530
+Message-ID: <CA+1E3r+sN8n6-ibJ1v_S5HEdfhbJ8yAYTm5ja=0M8ng2ujLZ4g@mail.gmail.com>
+Subject: Re: [PATCH 1/2] nvme: set io-scheduler requirement for ZNS
+To:     Damien Le Moal <Damien.LeMoal@wdc.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Kanchan Joshi <joshi.k@samsung.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        "sagi@grimberg.me" <sagi@grimberg.me>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        Keith Busch <kbusch@kernel.org>,
+        Selvakumar S <selvakuma.s1@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>,
+        Nitesh Shetty <nj.shetty@samsung.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ Lorenzo
+On Mon, Sep 7, 2020 at 1:52 PM Damien Le Moal <Damien.LeMoal@wdc.com> wrote:
+>
+> On 2020/09/07 16:01, Kanchan Joshi wrote:
+> >> Even for SMR, the user is free to set the elevator to none, which disables zone
+> >> write locking. Issuing writes correctly then becomes the responsibility of the
+> >> application. This can be useful for settings that for instance use NCQ I/O
+> >> priorities, which give better results when "none" is used.
+> >
+> > Was it not a problem that even if the application is sending writes
+> > correctly, scheduler may not preserve the order.
+> > And even when none is being used, re-queue can happen which may lead
+> > to different ordering.
+>
+> "Issuing writes correctly" means doing small writes, one per zone at most. In
+> that case, it does not matter if the block layer reorders writes. Per zone, they
+> will still be sequential.
+>
+> >> As far as I know, zoned drives are always used in tightly controlled
+> >> environments. Problems like "does not know what other applications would be
+> >> doing" are non-existent. Setting up the drive correctly for the use case at hand
+> >> is a sysadmin/server setup problem, based on *the* application (singular)
+> >> requirements.
+> >
+> > Fine.
+> > But what about the null-block-zone which sets MQ-deadline but does not
+> > actually use write-lock to avoid race among multiple appends on a
+> > zone.
+> > Does that deserve a fix?
+>
+> In nullblk, commands are executed under a spinlock. So there is no concurrency
+> problem. The spinlock serializes the execution of all commands. null_blk zone
+> append emulation thus does not need to take the scheduler level zone write lock
+> like scsi does.
 
-On Mon, Sep 07, 2020 at 10:51:21AM +0000, George Cherian wrote:
-> Catalin Marinas <catalin.marinas@arm.com> wrote:
-> > On Sat, Sep 05, 2020 at 10:48:11AM +0800, Yang Yingliang wrote:
-> > > diff --git a/arch/arm64/kernel/pci.c b/arch/arm64/kernel/pci.c index
-> > > 1006ed2d7c604..ddfa1c53def48 100644
-> > > --- a/arch/arm64/kernel/pci.c
-> > > +++ b/arch/arm64/kernel/pci.c
-> > > @@ -217,4 +217,9 @@ void pcibios_remove_bus(struct pci_bus *bus)
-> > >  	acpi_pci_remove_bus(bus);
-> > >  }
-> > >
-> > > +void pci_iounmap(struct pci_dev *dev, void __iomem *addr) {
-> > > +	iounmap(addr);
-> > > +}
-> > > +EXPORT_SYMBOL(pci_iounmap);
-> > 
-> > So, what's wrong with the generic pci_iounmap() implementation?
-> > Shouldn't it call iounmap() already?
-> 
-> Since ARM64 selects CONFIG_GENERIC_PCI_IOMAP and not
-> CONFIG_GENERIC_IOMAP,  the pci_iounmap function is reduced to a NULL
-> function. Due to this, even the managed release variants or even the explicit
-> pci_iounmap calls doesn't really remove the mappings leading to leak.
-
-Ah, I missed the fact that pci_iounmap() depends on a different
-config option.
-
-> https://lkml.org/lkml/2020/8/20/28
-
-So is this going to be fixed in the generic code? That would be my
-preference.
-
-A problem with the iounmap() in the proposed patch is that the region
-may have been an I/O port, so we could end up unmapping the I/O space.
+I do not see spinlock for that. There is one "nullb->lock", but its
+scope is limited to memory-backed handling.
+For concurrent zone-appends on a zone, multiple threads may set the
+"same" write-pointer into incoming request(s).
+Are you referring to any other spinlock that can avoid "same wp being
+returned to multiple threads".
 
 -- 
-Catalin
+Kanchan
