@@ -2,85 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 108FC25F9D6
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 13:49:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E7BA25F9CE
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 13:48:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729043AbgIGLtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 07:49:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46294 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729059AbgIGLqf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 07:46:35 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC171C061573
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 04:46:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=6Meo6VP3IoqacG95rPph6TDsxA/MRSELmhoUGpi7TNA=; b=JGwYkKAGN4NSZcP+XEryM4KmDX
-        IrlEnLSS1+CZgqgZLfmBFySPL5yzkU3ykYwyGFstAn7eRGBJwWI8oubTSdYwBUn1hHxjmI+lkN5C7
-        ET4RXOCcynRA5Dz3Z24iCW1vNaxCLSJfCpr6c+QUeDNbqBxBpyjACYdF3Pb4B9e1EMYisfC9o76h/
-        a3XZxfa0pI8tkS4D4228dR7OSWb8on5QTAWV6YpLKDaRXI9GU7IXcifSBAgFhlIW++xv6lFg/WvM6
-        bXSL3a0N/ZhZO/Jcsl1NLKgOJrcRH7q3wRfdv69HW7CzhFUCZb8pewqt4TsVaSogNlLUsJfTAjf5L
-        CcRMZNdA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kFFbJ-0002NU-3H; Mon, 07 Sep 2020 11:46:21 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1523D300130;
-        Mon,  7 Sep 2020 13:46:19 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id EA024201057EE; Mon,  7 Sep 2020 13:46:18 +0200 (CEST)
-Date:   Mon, 7 Sep 2020 13:46:18 +0200
-From:   peterz@infradead.org
-To:     Joerg Vehlow <lkml@jv-coder.de>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Huang Ying <ying.huang@intel.com>,
-        linux-kernel@vger.kernel.org,
-        Joerg Vehlow <joerg.vehlow@aox-tech.de>
-Subject: Re: [BUG RT] dump-capture kernel not executed for panic in interrupt
- context
-Message-ID: <20200907114618.GR2674@hirez.programming.kicks-ass.net>
-References: <2c243f59-6d10-7abb-bab4-e7b1796cd54f@jv-coder.de>
- <20200528084614.0c949e8d@gandalf.local.home>
- <cbbf7926-148e-7acb-dc03-3f055d73364b@jv-coder.de>
- <20200727163655.8c94c8e245637b62311f5053@linux-foundation.org>
- <c6b095af-fc92-420f-303f-d2efd9f28873@jv-coder.de>
- <20200821110848.6c3183d1@oasis.local.home>
- <20200821134753.9547695c9b782275be3c95b5@linux-foundation.org>
- <20200821170334.73b52fdd@oasis.local.home>
- <95d7a489-a295-1c11-ac62-83e941ed3a87@jv-coder.de>
+        id S1729048AbgIGLrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 07:47:46 -0400
+Received: from mga06.intel.com ([134.134.136.31]:37818 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729126AbgIGLrH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 07:47:07 -0400
+IronPort-SDR: thXuwRKQuFBhGB6UmAIc5/dx/+EcAGntHFTkWaH4NNui3C3BOQuONmj5QGzMSghY4c4tD1GYLG
+ tuMVGPMgKN8w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9736"; a="219548628"
+X-IronPort-AV: E=Sophos;i="5.76,401,1592895600"; 
+   d="scan'208";a="219548628"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2020 04:47:05 -0700
+IronPort-SDR: hZmu1Fenn9gReIus5x9P12yka4olRDezreXmS/q9RHVoAmqu3UqbckOcRdqpiX+tEKdVxcRqbj
+ jSBe8rlIGSvQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,401,1592895600"; 
+   d="scan'208";a="333141567"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga008.jf.intel.com with ESMTP; 07 Sep 2020 04:47:03 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kFFbw-00EwH2-Ad; Mon, 07 Sep 2020 14:47:00 +0300
+Date:   Mon, 7 Sep 2020 14:47:00 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Kent Gibson <warthog618@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-doc <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-acpi@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: Re: [PATCH 10/23] gpio: mockup: fix resource leak in error path
+Message-ID: <20200907114700.GW1891694@smile.fi.intel.com>
+References: <20200904154547.3836-1-brgl@bgdev.pl>
+ <20200904154547.3836-11-brgl@bgdev.pl>
+ <20200904170028.GG1891694@smile.fi.intel.com>
+ <CAMRc=Mc3V_BJ88CrB_q0uTHjvqVf5XEkm6BJZwrVjnVhPjiYaQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <95d7a489-a295-1c11-ac62-83e941ed3a87@jv-coder.de>
+In-Reply-To: <CAMRc=Mc3V_BJ88CrB_q0uTHjvqVf5XEkm6BJZwrVjnVhPjiYaQ@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 07, 2020 at 12:51:37PM +0200, Joerg Vehlow wrote:
-> Hi,
+On Mon, Sep 07, 2020 at 01:04:59PM +0200, Bartosz Golaszewski wrote:
+> On Fri, Sep 4, 2020 at 7:00 PM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> > On Fri, Sep 04, 2020 at 05:45:34PM +0200, Bartosz Golaszewski wrote:
+> > > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> > >
+> > > If the module init function fails after creating the debugs directory,
+> > > it's never removed. Add proper cleanup calls to avoid this resource
+> > > leak.
+> >
+> > Does it fix existing bug?
 > 
-> I guess there is currently no other way than to use something like Steven
-> proposed. I implemented and tested the attached patch with a module,
-> that triggers the soft lockup detection and it works as expected.
-> I did not use inline functions, but normal function implemented in
-> kexec_core,
-> because there is nothing time critical here.
-> I also added the mutex_lock to the trylock variant, because then the unlock
-> function can be the same for both lock functions.
-> 
-> What do you think?
+> You mean - should it go into stable? The bug is quite unlikely but
+> yeah, probably.
 
-I think it's too complicated for that is needed, did you see my
-suggestion from a year ago? Did i miss something obvious?
+Yes. That sounds to me like Fixes: is needed.
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
