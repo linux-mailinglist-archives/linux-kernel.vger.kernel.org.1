@@ -2,85 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19673260124
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:00:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7335D260139
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:01:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731219AbgIGQ7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 12:59:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47748 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729970AbgIGQdx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 12:33:53 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1BD1321927;
-        Mon,  7 Sep 2020 16:33:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599496431;
-        bh=YB6LMn6dVIAQQecjsMuXES5wSTgr8G+mlKOQ3KV/a/8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jrBtNZLbgPDPgOEez+zdRHxQ7E6NjXab+SayYx/ZBK+aSg4JhVnMvfYVDkJCK1osw
-         D6XXJoH9i6uyJE99EIKqkD2CTU1OylkgYYcKzya+/AIRD9KS/L3ygETeOv/HpJOjy/
-         iTEoeMBi7N/N2DX43wbmT7WRHXo7QNyZSTlMBmK4=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Amar Singhal <asinghal@codeaurora.org>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 16/43] cfg80211: Adjust 6 GHz frequency to channel conversion
-Date:   Mon,  7 Sep 2020 12:33:02 -0400
-Message-Id: <20200907163329.1280888-16-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200907163329.1280888-1-sashal@kernel.org>
-References: <20200907163329.1280888-1-sashal@kernel.org>
+        id S1730720AbgIGRBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 13:01:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38464 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730685AbgIGRBq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 13:01:46 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58286C061574
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 10:01:45 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id a17so16454944wrn.6
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 10:01:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=arista.com; s=googlenew;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=MRcq04UOJn8K0NnxNF75RCJpBDeKXA2i3d34tYFG4E8=;
+        b=TgUoCjHN4oaBnmsxs801CkJCQDsWF2s6qajW+F5ShhU8pWxBMI2wWkl+FdZ7cdfbzh
+         +SATGdOFxEMIMX6p02p/h2IPZPqme5O/9RSTKfbRfy0UYoJx23eEX/fK1bjzvZ3/teNW
+         q07YeJKxsAK1ekPlsToVqHtYX33B0q4ZaI5hh6T5kzdH7XkNBa6VQeAonw7mmcUEvLLT
+         Ccc/VS2YRz7dhhK8OQo0vnX49RFPeKEsSFpvSUfzBggkr3483D0w9hPjWUG2WvLEJr2A
+         Aoefr2ZPGX1VZFlVIdwQXjtG+avIoy9lu8347R/B+LjcvnzmKkmkOw2AMUlN+oZD5Spc
+         dFvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=MRcq04UOJn8K0NnxNF75RCJpBDeKXA2i3d34tYFG4E8=;
+        b=W5lOWIjNmq+98TrGiSJO2U8rLO27u6p8Gxq6z2JODb1R8KJHRCXXDROkqaVhqncoXh
+         VR4H4oPRzIqv1V2cGjzsVJRkwZt3qxEOkwBntlP8hwxNbujUlkLDPa++SkGNCmcBtLE9
+         uhq6wr+TSCENGfA6Cf0Lw3yruG2UGvcbFoOFWCjgWwT6i3mtJCXUnC4zhAdesNz2/ACG
+         w/2QskHF6RBxwkQiMpIQgmKJwsCoJ/iSIAEokRbveJM1R6yqPnSDR+8LkGPfS5wbwGRL
+         8z1QLxx0kNNrCxJD/wSKJ7aNdweVsluuNS8G4m5WyYhFKSxq5in9zo/pZODVGgeGgS2P
+         2+7A==
+X-Gm-Message-State: AOAM532GG/z1Bpgi3zJDoJ2Lx6E7nbCBab+XZCsfLetexTs0kcZcMs7S
+        t3fpG5qi6v6RYGxcb9eY+FUvkg==
+X-Google-Smtp-Source: ABdhPJxXhv6ruRhbqy3IpPxbzNKQKsFV0+qsm/yVhoZ/DUmCzf+zTePlfY5dJFLHNAyI5JYQf/5jCg==
+X-Received: by 2002:a05:6000:110b:: with SMTP id z11mr23393083wrw.426.1599498103769;
+        Mon, 07 Sep 2020 10:01:43 -0700 (PDT)
+Received: from ?IPv6:2a02:8084:e84:2480:228:f8ff:fe6f:83a8? ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
+        by smtp.gmail.com with ESMTPSA id x10sm29060894wmi.37.2020.09.07.10.01.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Sep 2020 10:01:42 -0700 (PDT)
+Subject: Re: [PATCH v2 1/6] xfrm/compat: Add 64=>32-bit messages translator
+To:     Steffen Klassert <steffen.klassert@secunet.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Florian Westphal <fw@strlen.de>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stephen Suryaputra <ssuryaextr@gmail.com>,
+        netdev@vger.kernel.org
+References: <20200826014949.644441-1-dima@arista.com>
+ <20200826014949.644441-2-dima@arista.com>
+ <20200907112411.GK20687@gauss3.secunet.de>
+From:   Dmitry Safonov <dima@arista.com>
+Message-ID: <32b89fd5-2809-ba15-9be4-f30e59decba2@arista.com>
+Date:   Mon, 7 Sep 2020 18:01:42 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200907112411.GK20687@gauss3.secunet.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Amar Singhal <asinghal@codeaurora.org>
+On 9/7/20 12:24 PM, Steffen Klassert wrote:
+[..]
+> One comment on this. Looks like the above is the same in all
+> commit messages. Please provide that generic information
+> with the patch 0/n and remove it from the other patches.
 
-[ Upstream commit 2d9b55508556ccee6410310fb9ea2482fd3328eb ]
+Yeah, I think I've used to that from x86/core submissions - they prefer
+having general information copied from cover-letter to every patch, that
+way commits in `git log` or `git show` preserve it.
+Probably, one of small differences in style between contributions to
+different subsystems. Will do, no problem.
 
-Adjust the 6 GHz frequency to channel conversion function,
-the other way around was previously handled.
-
-Signed-off-by: Amar Singhal <asinghal@codeaurora.org>
-Link: https://lore.kernel.org/r/1592599921-10607-1-git-send-email-asinghal@codeaurora.org
-[rewrite commit message, hard-code channel 2]
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- net/wireless/util.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
-
-diff --git a/net/wireless/util.c b/net/wireless/util.c
-index 8481e9ac33da5..9abafd76ec50e 100644
---- a/net/wireless/util.c
-+++ b/net/wireless/util.c
-@@ -116,11 +116,13 @@ int ieee80211_frequency_to_channel(int freq)
- 		return (freq - 2407) / 5;
- 	else if (freq >= 4910 && freq <= 4980)
- 		return (freq - 4000) / 5;
--	else if (freq < 5945)
-+	else if (freq < 5925)
- 		return (freq - 5000) / 5;
-+	else if (freq == 5935)
-+		return 2;
- 	else if (freq <= 45000) /* DMG band lower limit */
--		/* see 802.11ax D4.1 27.3.22.2 */
--		return (freq - 5940) / 5;
-+		/* see 802.11ax D6.1 27.3.22.2 */
-+		return (freq - 5950) / 5;
- 	else if (freq >= 58320 && freq <= 70200)
- 		return (freq - 56160) / 2160;
- 	else
--- 
-2.25.1
-
+Thanks,
+          Dmitry
