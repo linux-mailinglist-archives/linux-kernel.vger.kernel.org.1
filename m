@@ -2,69 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89BA72603F1
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:56:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDEDF2603E7
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:56:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731367AbgIGR44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 13:56:56 -0400
-Received: from foss.arm.com ([217.140.110.172]:33118 "EHLO foss.arm.com"
+        id S1730684AbgIGR4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 13:56:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46832 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728649AbgIGLUG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 07:20:06 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C31B911D4;
-        Mon,  7 Sep 2020 04:02:27 -0700 (PDT)
-Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A9DF33F66E;
-        Mon,  7 Sep 2020 04:02:26 -0700 (PDT)
-Date:   Mon, 7 Sep 2020 12:02:24 +0100
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Phil Auld <pauld@redhat.com>
-Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        vincent.donnefort@arm.com, mingo@redhat.com, peterz@infradead.org,
-        vincent.guittot@linaro.org, linux-kernel@vger.kernel.org,
-        valentin.schneider@arm.com
-Subject: Re: [PATCH v2] sched/debug: Add new tracepoint to track cpu_capacity
-Message-ID: <20200907110223.gtdgqod2iv2w7xmg@e107158-lin.cambridge.arm.com>
-References: <1598605249-72651-1-git-send-email-vincent.donnefort@arm.com>
- <20200828102724.wmng7p6je2pkc33n@e107158-lin.cambridge.arm.com>
- <1e806d48-fd54-fd86-5b3a-372d9876f360@arm.com>
- <20200828172658.dxygk7j672gho4ax@e107158-lin.cambridge.arm.com>
- <58f5d2e8-493b-7ce1-6abd-57705e5ab437@arm.com>
- <20200902135423.GB93959@lorien.usersys.redhat.com>
+        id S1728761AbgIGLUn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 07:20:43 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A825121473;
+        Mon,  7 Sep 2020 11:02:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599476561;
+        bh=5LnHy+uS2JT8LQglM7XzLIkWp4JKXPHRBbX6klDBkg8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WuU9qRi8sYGjNywoL7UYUJslezd7VyaemYbf0n59dKheUMNgiGZcGyL0iIA+ekKMr
+         1n0OxJUCDNmE9jatlVJMFMrPu7ZTVbtmOwlniSc1ceecRfVkZWf2cBfkel6un0Q1Ry
+         fOi6tQehwaxjsT3805WgwTU/n/v0XNj+5Jspsmck=
+Date:   Mon, 7 Sep 2020 12:02:37 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Tuan Phan <tuanphan@os.amperecomputing.com>, suzuki.poulose@arm.com
+Cc:     patches@amperecomputing.com, Mark Rutland <mark.rutland@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] perf: arm_dsu: Support DSU ACPI devices
+Message-ID: <20200907110236.GA12174@willie-the-truck>
+References: <1597451980-11405-1-git-send-email-tuanphan@os.amperecomputing.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200902135423.GB93959@lorien.usersys.redhat.com>
-User-Agent: NeoMutt/20171215
+In-Reply-To: <1597451980-11405-1-git-send-email-tuanphan@os.amperecomputing.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/02/20 09:54, Phil Auld wrote:
-> > 
-> > I think this decoupling is not necessary. The natural place for those
-> > scheduler trace_event based on trace_points extension files is
-> > kernel/sched/ and here the internal sched.h can just be included.
-> > 
-> > If someone really wants to build this as an out-of-tree module there is
-> > an easy way to make kernel/sched/sched.h visible.
-> >
+[+ Suzuki as I'd like his Ack on this]
+
+On Fri, Aug 14, 2020 at 05:39:40PM -0700, Tuan Phan wrote:
+> Add support for probing device from ACPI node.
+> Each DSU ACPI node and its associated cpus are inside a cluster node.
 > 
-> It's not so much that we really _want_ to do this in an external module.
-> But we aren't adding more trace events and my (limited) knowledge of
-> BPF let me to the conclusion that its raw tracepoint functionality
-> requires full events.  I didn't see any other way to do it.
+> Signed-off-by: Tuan Phan <tuanphan@os.amperecomputing.com>
+> ---
+> Changes in v3:
+> - Based on the latest ARM ACPI binding at: https://developer.arm.com/documentation/den0093/c/
+> 
+> Changes in v2:
+> - Removed IRQF_SHARED.
+> - Fixed ACPI runtime detection.
+> 
+>  drivers/perf/arm_dsu_pmu.c | 68 ++++++++++++++++++++++++++++++++++++++++------
+>  1 file changed, 60 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/perf/arm_dsu_pmu.c b/drivers/perf/arm_dsu_pmu.c
+> index 96ed93c..4be355d 100644
+> --- a/drivers/perf/arm_dsu_pmu.c
+> +++ b/drivers/perf/arm_dsu_pmu.c
+> @@ -11,6 +11,7 @@
+>  #define DRVNAME		PMUNAME "_pmu"
+>  #define pr_fmt(fmt)	DRVNAME ": " fmt
+>  
+> +#include <linux/acpi.h>
+>  #include <linux/bitmap.h>
+>  #include <linux/bitops.h>
+>  #include <linux/bug.h>
+> @@ -603,18 +604,21 @@ static struct dsu_pmu *dsu_pmu_alloc(struct platform_device *pdev)
+>  }
+>  
+>  /**
+> - * dsu_pmu_dt_get_cpus: Get the list of CPUs in the cluster.
+> + * dsu_pmu_dt_get_cpus: Get the list of CPUs in the cluster
+> + * from device tree.
+>   */
+> -static int dsu_pmu_dt_get_cpus(struct device_node *dev, cpumask_t *mask)
+> +static int dsu_pmu_dt_get_cpus(struct platform_device *pdev)
+>  {
+>  	int i = 0, n, cpu;
+>  	struct device_node *cpu_node;
+> +	struct dsu_pmu *dsu_pmu =
+> +		(struct dsu_pmu *) platform_get_drvdata(pdev);
+>  
+> -	n = of_count_phandle_with_args(dev, "cpus", NULL);
+> +	n = of_count_phandle_with_args(pdev->dev.of_node, "cpus", NULL);
+>  	if (n <= 0)
+>  		return -ENODEV;
+>  	for (; i < n; i++) {
+> -		cpu_node = of_parse_phandle(dev, "cpus", i);
+> +		cpu_node = of_parse_phandle(pdev->dev.of_node, "cpus", i);
+>  		if (!cpu_node)
+>  			break;
+>  		cpu = of_cpu_node_to_id(cpu_node);
+> @@ -626,11 +630,51 @@ static int dsu_pmu_dt_get_cpus(struct device_node *dev, cpumask_t *mask)
+>  		 */
+>  		if (cpu < 0)
+>  			continue;
+> -		cpumask_set_cpu(cpu, mask);
+> +		cpumask_set_cpu(cpu, &dsu_pmu->associated_cpus);
+>  	}
+>  	return 0;
+>  }
+>  
+> +/**
+> + * dsu_pmu_acpi_get_cpus: Get the list of CPUs in the cluster
+> + * from ACPI.
+> + */
+> +static int dsu_pmu_acpi_get_cpus(struct platform_device *pdev)
+> +{
+> +	int cpu;
+> +	struct dsu_pmu *dsu_pmu = (struct dsu_pmu *) platform_get_drvdata(pdev);
+> +
+> +	/*
+> +	 * A dsu pmu node is inside a cluster parent node along with cpu nodes.
+> +	 * We need to find out all cpus that have the same parent with this pmu.
+> +	 */
+> +	for_each_possible_cpu(cpu) {
+> +		struct acpi_device *acpi_dev = ACPI_COMPANION(get_cpu_device(cpu));
+> +
+> +		if (acpi_dev &&
+> +			acpi_dev->parent == ACPI_COMPANION(&pdev->dev)->parent)
+> +			cpumask_set_cpu(cpu, &dsu_pmu->associated_cpus);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int dsu_pmu_platform_get_cpus(struct platform_device *pdev)
+> +{
+> +	int ret = -ENOENT;
+> +	struct fwnode_handle *fwnode = dev_fwnode(&pdev->dev);
+> +
+> +	if (IS_ERR_OR_NULL(fwnode))
+> +		return ret;
+> +
+> +	if (is_of_node(fwnode))
+> +		ret = dsu_pmu_dt_get_cpus(pdev);
+> +	else if (is_acpi_device_node(fwnode))
+> +		ret = dsu_pmu_acpi_get_cpus(pdev);
+> +
+> +	return ret;
+> +}
+> +
+>  /*
+>   * dsu_pmu_probe_pmu: Probe the PMU details on a CPU in the cluster.
+>   */
+> @@ -683,7 +727,9 @@ static int dsu_pmu_device_probe(struct platform_device *pdev)
+>  	if (IS_ERR(dsu_pmu))
+>  		return PTR_ERR(dsu_pmu);
+>  
+> -	rc = dsu_pmu_dt_get_cpus(pdev->dev.of_node, &dsu_pmu->associated_cpus);
+> +	platform_set_drvdata(pdev, dsu_pmu);
 
-I did have a patch that allowed that. It might be worth trying to upstream it.
-It just required a new macro which could be problematic.
+Hmm, this is a bit nasty because we haven't finished initialising the
+dsu_pmu yet. I think it would actually be cleaner if you kept:
 
-https://github.com/qais-yousef/linux/commit/fb9fea29edb8af327e6b2bf3bc41469a8e66df8b
+	static int dsu_pmu_dt_get_cpus(struct device_node *dev, cpumask_t *mask)
 
-With the above I could attach using bpf::RAW_TRACEPOINT mechanism.
+for the DT case and added:
 
-Cheers
+	static int dsu_pmu_acpi_get_cpus(struct device *dev, cpumask_t *mask)
 
---
-Qais Yousef
+for the ACPI case. I suppose the DT case could take the struct device * too
+if you wanted the prototypes to be the same.
+
+> +	rc = dsu_pmu_platform_get_cpus(pdev);
+>  	if (rc) {
+>  		dev_warn(&pdev->dev, "Failed to parse the CPUs\n");
+>  		return rc;
+> @@ -705,7 +751,6 @@ static int dsu_pmu_device_probe(struct platform_device *pdev)
+>  	}
+>  
+>  	dsu_pmu->irq = irq;
+> -	platform_set_drvdata(pdev, dsu_pmu);
+>  	rc = cpuhp_state_add_instance(dsu_pmu_cpuhp_state,
+>  						&dsu_pmu->cpuhp_node);
+>  	if (rc)
+> @@ -752,11 +797,19 @@ static const struct of_device_id dsu_pmu_of_match[] = {
+>  	{ .compatible = "arm,dsu-pmu", },
+>  	{},
+>  };
+> +MODULE_DEVICE_TABLE(of, dsu_pmu_of_match);
+> +
+> +static const struct acpi_device_id dsu_pmu_acpi_match[] = {
+> +	{ "ARMHD500", 0},
+> +	{},
+> +};
+> +MODULE_DEVICE_TABLE(acpi, dsu_pmu_acpi_match);
+>  
+>  static struct platform_driver dsu_pmu_driver = {
+>  	.driver = {
+>  		.name	= DRVNAME,
+>  		.of_match_table = of_match_ptr(dsu_pmu_of_match),
+> +		.acpi_match_table = ACPI_PTR(dsu_pmu_acpi_match),
+>  		.suppress_bind_attrs = true,
+>  	},
+>  	.probe = dsu_pmu_device_probe,
+> @@ -826,7 +879,6 @@ static void __exit dsu_pmu_exit(void)
+>  module_init(dsu_pmu_init);
+>  module_exit(dsu_pmu_exit);
+>  
+> -MODULE_DEVICE_TABLE(of, dsu_pmu_of_match);
+
+Why have you moved this line?
+
+Will
