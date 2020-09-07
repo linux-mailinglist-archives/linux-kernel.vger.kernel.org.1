@@ -2,58 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0DA626060B
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 23:08:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58F2226060D
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 23:10:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727088AbgIGVIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 17:08:02 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:48432 "EHLO vps0.lunn.ch"
+        id S1727058AbgIGVKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 17:10:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52308 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726458AbgIGVH7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 17:07:59 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1kFOMe-00DgGY-Cs; Mon, 07 Sep 2020 23:07:48 +0200
-Date:   Mon, 7 Sep 2020 23:07:48 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-Cc:     "jason@lakedaemon.net" <jason@lakedaemon.net>,
-        "gregory.clement@bootlin.com" <gregory.clement@bootlin.com>,
-        "sebastian.hesselbarth@gmail.com" <sebastian.hesselbarth@gmail.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/3] ARM: dts: Remove non-existent i2c1 from 98dx3236
-Message-ID: <20200907210748.GF3254313@lunn.ch>
-References: <20200907024149.20001-1-chris.packham@alliedtelesis.co.nz>
- <20200907024149.20001-3-chris.packham@alliedtelesis.co.nz>
- <20200907154532.GY3112546@lunn.ch>
- <36712d90-6bfe-8965-22b1-6b6dd460116d@alliedtelesis.co.nz>
+        id S1726458AbgIGVK3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 17:10:29 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.7])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7D8172137B;
+        Mon,  7 Sep 2020 21:10:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599513028;
+        bh=UumymxLYqQ3OdFcuPJn2ZB1M+tzni4fLO4l47tqH7+k=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ZkHhuiu9ZoRLcegon6Y/AEMkvXigJt6M7xUdk/kLGxrtjXqKhVAlvA6HGeT9FJN6m
+         LULLn7TGxYPs/2221nPMepiYegr0A2034KetdvY09R5iNIVvW4ELk+G0zB334V510e
+         C74SUt/pUql/DMHv9a6kfyCTXaQlR01MAuFm8ShQ=
+Date:   Mon, 7 Sep 2020 14:10:26 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Mingming Cao <mmc@linux.vnet.ibm.com>,
+        Dany Madden <drt@linux.ibm.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 5.8 14/53] ibmvnic fix NULL tx_pools and
+ rx_tools issue at do_reset
+Message-ID: <20200907141026.093fc160@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20200907163220.1280412-14-sashal@kernel.org>
+References: <20200907163220.1280412-1-sashal@kernel.org>
+        <20200907163220.1280412-14-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <36712d90-6bfe-8965-22b1-6b6dd460116d@alliedtelesis.co.nz>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 07, 2020 at 09:04:48PM +0000, Chris Packham wrote:
-> 
-> On 8/09/20 3:45 am, Andrew Lunn wrote:
-> > On Mon, Sep 07, 2020 at 02:41:48PM +1200, Chris Packham wrote:
-> >> The switches with integrated CPUs have only got a single i2c controller.
-> >> The incorrectly gained one when they were split from the Armada-XP.
-> Someone pointed out a small grammo instead of "The incorrectly" it 
-> should be "They incorrectly". Is it worth me sending a v2 just to fix that?
+On Mon,  7 Sep 2020 12:31:40 -0400 Sasha Levin wrote:
+> [ Upstream commit 9f13457377907fa253aef560e1a37e1ca4197f9b ]
 
-You are asking somebody who is dyslexic, and often fails to notice
-things like this, particularly when written by me :-)
+> @@ -2024,10 +2033,14 @@ static int do_reset(struct ibmvnic_adapter *adapter,
+>  		} else {
+>  			rc = reset_tx_pools(adapter);
+>  			if (rc)
+> +				netdev_dbg(adapter->netdev, "reset tx pools failed (%d)\n",
+> +						rc);
+>  				goto out;
+>  
+>  			rc = reset_rx_pools(adapter);
+>  			if (rc)
+> +				netdev_dbg(adapter->netdev, "reset rx pools failed (%d)\n",
+> +						rc);
+>  				goto out;
+>  		}
+>  		ibmvnic_disable_irqs(adapter);
 
-Up to you.
+Hi Sasha!
 
-  Andrew
+I just pushed this to net:
+
+8ae4dff882eb ("ibmvnic: add missing parenthesis in do_reset()")
+
+You definitely want to pull that in if you decide to backport this one.
