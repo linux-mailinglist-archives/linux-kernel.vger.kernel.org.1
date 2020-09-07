@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADA1F25F225
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 05:45:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61D8A25F22F
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 05:46:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726526AbgIGDpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Sep 2020 23:45:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56908 "EHLO
+        id S1726583AbgIGDp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Sep 2020 23:45:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726278AbgIGDpP (ORCPT
+        with ESMTP id S1726278AbgIGDpS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Sep 2020 23:45:15 -0400
+        Sun, 6 Sep 2020 23:45:18 -0400
 Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83955C061573
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Sep 2020 20:45:14 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id o68so7925871pfg.2
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Sep 2020 20:45:14 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C92F5C061573
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Sep 2020 20:45:17 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id o68so7925941pfg.2
+        for <linux-kernel@vger.kernel.org>; Sun, 06 Sep 2020 20:45:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=aMz+YuQ73Vh1ZDuBEz+vPvn5ONCfDFnCqtdgjqi8M0M=;
-        b=XYHihCBaGxZAOrBBSWhkpy+4S9vswK/RThG4BeGSyN4UJwWH5MgKTans5GKUw24MpM
-         CbNrYDRm35Hjp3JVj56Egtq4NDEYJKambyRoJSNfXy6axh6ymdwvmzaMQ7zAEj1jYHqy
-         RQueNkJsvw5jWWjiGrhXki1QYntt6o2h6TxefknP97zD201Xan+p40ap1y3GHXLzzqdk
-         Zp9GX6Jk7LV2bwPvvN1XKhi0vd6FIB7qch2lpXlAPtQLR9CqXvZ4ifB0dC2FbKO0ow4u
-         qCG0XkoJNw+i5Ubcx5iBvavKdlqrMqyds2+OVFa/vJN9bBJ2DU6r+ofGPK3HETZnFVy1
-         AGBw==
+        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=WmsHkuXTfVjdOXmnrSnyMRHJc8MdPEuRY9I0xRhzFJ0=;
+        b=tsIgFhozZuFCIGkh6WxSJFU06AUQm1onnB+5GCl5JaOgQaaekYEWF2aiVT3hNnJRPz
+         SrrSOpEHqFWo6fByj7FwLSsjW9JmTtBk2cn//Cwb5C53iQw5sfSj0FLyAOjBTc+dsdN4
+         FxmRVWhZnbBfPf3mTxoI2I/QZV6P4fKYTsti0ZxytSBEh8lqIc5GA8oQvthi7JIzc42Z
+         kS/gU74ioR1m40mDaLs1ygNmbAlANzm/9aMG11Vzmdm3AnPEFJpfd3dAGkMfLiqx4U7P
+         dV02mC92zRX85zUouK9tDzi0tRyBUJvPSHEu+9v3u0B2VsFgujU4DIYEgEFJ6iux6/bV
+         8cTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=aMz+YuQ73Vh1ZDuBEz+vPvn5ONCfDFnCqtdgjqi8M0M=;
-        b=U3WPBDEZnziqcKTUBta+mSrJoseIPVxWFoVEOm3mx1K+3uverauXTpKT9y/keTxAyT
-         6MOBAOBbReM32qlDuBu9gdeswSYe7LDKg19Pr6hKcInGzjaUQkF/zXqmv1gWgsqB52op
-         BOWwneCqeJAOE1oqGn0oM+W/yM6iRmiVKI5/9PoFntiy7nAbaMngqV6FDUFPjIZMs9pA
-         f9G3t3arnI03V9TTXqOODsWUZ8MMtnQliISKT5MXDZPJTuNWF8aUafFyJojdMvNdTngg
-         0+ZtcgAmH3x7Nf8ueM4s5iaat6xdwXiKV2eVlbfdNjuUhSlvDfHzKT5GAjedHvOAShzp
-         vXPg==
-X-Gm-Message-State: AOAM530zAkdiQZdpRZsbdY7FtJxlEFzq89ezPOp4JqgXIxw+QQsCr6xj
-        v2pkBU+Fxb747HDhOGTr2yM=
-X-Google-Smtp-Source: ABdhPJxrQOUJm+E3o1JD4Q0WgUcDvuHvUckrES8rurIKfRkwtoZTj3s67Cs72f2nlUiv2oR2Ih5GGA==
-X-Received: by 2002:a62:5b47:: with SMTP id p68mr18988654pfb.255.1599450312667;
-        Sun, 06 Sep 2020 20:45:12 -0700 (PDT)
+         :in-reply-to:references:mime-version:content-transfer-encoding;
+        bh=WmsHkuXTfVjdOXmnrSnyMRHJc8MdPEuRY9I0xRhzFJ0=;
+        b=ZZFLOpUaFpjbnQIcOiH+6G8vHRC9hoq2KEX1RxkCACNSgkP2GLqwU7dheI5Hq8hpaN
+         hs0e1Ld4N38ptNyOoHmGe1r3O7DR+iSyXttU8kmY7xnc879SmAyV9Q4qMOGq5G37UOtP
+         t683AUXLrOGYQGJdFK5jrbP1wbNRKiWBK66pab8H4F23vimeFe0lTVXOWSN2CC9jIH1n
+         oBV9WgNPUjjY3hLDtxz3jyqJSRk9pbXsKI1RzWqjYg9mnskD4ZCyaqOKsAmdOJ0zhFGS
+         rN8GO5eHc6urqlTT+jTbbd4uEAC2vM2EmwOfvBIQWb0Az/SbOny+SwKe4ikgpcDElAq9
+         LYgw==
+X-Gm-Message-State: AOAM5336Y0NOvuL2PcaxentrSJjyVDO9bnBvoSfPSi460/utDnNKGyVf
+        thKUTFVA9qc6A4XUWOuKxqM=
+X-Google-Smtp-Source: ABdhPJxzseEAXXnAGmyipobpU8zTPg3icPAbgJI/zKJ4RBp3t8g9rK2pPasAOr5gdQOKg5P4XD7flQ==
+X-Received: by 2002:a65:50c1:: with SMTP id s1mr15052981pgp.341.1599450317357;
+        Sun, 06 Sep 2020 20:45:17 -0700 (PDT)
 Received: from balhae.roam.corp.google.com ([101.235.31.111])
-        by smtp.gmail.com with ESMTPSA id l123sm11099672pgl.24.2020.09.06.20.45.07
+        by smtp.gmail.com with ESMTPSA id l123sm11099672pgl.24.2020.09.06.20.45.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 06 Sep 2020 20:45:11 -0700 (PDT)
+        Sun, 06 Sep 2020 20:45:16 -0700 (PDT)
 From:   Namhyung Kim <namhyung@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Jiri Olsa <jolsa@redhat.com>
@@ -59,10 +59,12 @@ Cc:     Ingo Molnar <mingo@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
         Andi Kleen <andi@firstfloor.org>,
         Ian Rogers <irogers@google.com>
-Subject: [PATCHSET 0/9] perf tools: Fix various memory leaks
-Date:   Mon,  7 Sep 2020 12:44:53 +0900
-Message-Id: <20200907034502.753230-1-namhyung@kernel.org>
+Subject: [PATCH 1/9] perf evlist: Fix cpu/thread map leak
+Date:   Mon,  7 Sep 2020 12:44:54 +0900
+Message-Id: <20200907034502.753230-2-namhyung@kernel.org>
 X-Mailer: git-send-email 2.28.0.526.ge36021eeef-goog
+In-Reply-To: <20200907034502.753230-1-namhyung@kernel.org>
+References: <20200907034502.753230-1-namhyung@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -70,69 +72,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Asan reported leak of cpu and thread maps as they have one more
+refcount than released.  I found that after setting evlist maps it
+should release it's refcount.
 
-I've found and fixed a bunch of memory leaks during perf pmu and
-metric tests with address sanitizer.  Before this, the tests were
-mostly failed due to the leaks since ASAN makes it return non-zero.
+It seems to be broken from the beginning so I chose the original
+commit as the culprit.  But not sure how it's applied to stable trees
+since there are many changes in the code after that.
 
-Now I'm seeing no error with ASAN like below:
+Fixes: 7e2ed097538c5 ("perf evlist: Store pointer to the cpu and thread maps")
+Fixes: 4112eb1899c0e ("perf evlist: Default to syswide target when no thread/cpu maps set")
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+---
+ tools/perf/util/evlist.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-  $ ./perf test pmu metric
-   9: Parse perf pmu format                                 : Ok
-  10: PMU events                                            :
-  10.1: PMU event table sanity                              : Ok
-  10.2: PMU event map aliases                               : Ok
-  10.3: Parsing of PMU event table metrics                  : Skip (some metrics failed)
-  10.4: Parsing of PMU event table metrics with fake PMUs   : Ok
-  67: Parse and process metrics                             : Ok
-
-The failure in 10.3 seems due to parse errors like below:
-
-  Multiple errors dropping message: unknown term 'filter_opc' for pmu 'uncore_cbox_0'
-  (valid terms: event,edge,inv,umask,cmask,config,config1,config2,name,period,freq,
-                branch_type,time,call-graph,stack-size,no-inherit,inherit,max-stack,
-		nr,no-overwrite,overwrite,driver-config,percore,aux-output,aux-sample-size)
-
-
-  Parse event failed metric 'DRAM_Parallel_Reads' id 'arb/event=0x80,umask=0x2,thresh=1/'
-    expr 'arb@event\=0x80\,umask\=0x2@ / arb@event\=0x80\,umask\=0x2\,thresh\=1@'
-  Error string 'unknown term 'thresh' for pmu 'uncore_arb'' help
-    'valid terms: event,edge,inv,umask,cmask,config,config1,config2,name,period,freq,
-                  branch_type,time,call-graph,stack-size,no-inherit,inherit,max-stack,
-		  nr,no-overwrite,overwrite,driver-config,percore,aux-output,aux-sample-size'
-
-
-The patches are also available at 'perf/metric-fix-v1' branch on
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/namhyung/linux-perf.git
-
-Thanks
-Namhyung
-
-
-Namhyung Kim (9):
-  perf evlist: Fix cpu/thread map leak
-  perf parse-event: Fix cpu map leaks
-  perf parse-event: Fix memory leak in evsel->unit
-  perf test: Fix memory leaks in parse-metric test
-  perf metric: Release expr_parse_ctx after testing
-  perf metric: Free metric when it failed to resolve
-  perf metric: Do not free metric when failed to resolve
-  perf test: Free aliases for PMU event map aliases test
-  perf test: Free formats for perf pmu parse test
-
- tools/perf/tests/parse-metric.c | 14 +++++++++-----
- tools/perf/tests/pmu-events.c   |  5 +++++
- tools/perf/tests/pmu.c          |  1 +
- tools/perf/util/evlist.c        | 11 ++++++++---
- tools/perf/util/metricgroup.c   | 26 ++++++++++++++++++--------
- tools/perf/util/parse-events.c  |  9 +++++++--
- tools/perf/util/pmu.c           | 13 ++++++++++++-
- tools/perf/util/pmu.h           |  2 ++
- tools/perf/util/stat-shadow.c   |  8 +++++---
- 9 files changed, 67 insertions(+), 22 deletions(-)
-
+diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
+index e3fa3bf7498a..c0768c61eb43 100644
+--- a/tools/perf/util/evlist.c
++++ b/tools/perf/util/evlist.c
+@@ -946,6 +946,10 @@ int perf_evlist__create_maps(struct evlist *evlist, struct target *target)
+ 
+ 	perf_evlist__set_maps(&evlist->core, cpus, threads);
+ 
++	/* as evlist now has references, put count here */
++	perf_cpu_map__put(cpus);
++	perf_thread_map__put(threads);
++
+ 	return 0;
+ 
+ out_delete_threads:
+@@ -1273,11 +1277,12 @@ static int perf_evlist__create_syswide_maps(struct evlist *evlist)
+ 		goto out_put;
+ 
+ 	perf_evlist__set_maps(&evlist->core, cpus, threads);
+-out:
+-	return err;
++
++	perf_thread_map__put(threads);
+ out_put:
+ 	perf_cpu_map__put(cpus);
+-	goto out;
++out:
++	return err;
+ }
+ 
+ int evlist__open(struct evlist *evlist)
 -- 
 2.28.0.526.ge36021eeef-goog
 
