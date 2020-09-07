@@ -2,214 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB94725FF24
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 18:28:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59FA425FF31
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 18:29:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730611AbgIGQ2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 12:28:44 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:55818 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729898AbgIGObz (ORCPT
+        id S1730507AbgIGQ3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 12:29:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43518 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729895AbgIGObp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 10:31:55 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 087EVnR7113918;
-        Mon, 7 Sep 2020 09:31:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1599489109;
-        bh=EKYl7mQIBm5oIDjkydzatKB4BPZHHjRPDKZKyEOhuak=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=cEwyQuR0WBzO4KwlDHzW8fVlOIig4GgwESQBnjcvqR/GH6MA6xJjGQ9c7lMHBl1ue
-         yNbV/OXCWtXoh78oMOJNAz4goVlONfAhQkFL/Swj184vctBecGzQ4Oh4/f0aFTclaF
-         FyuNPZkcH25HQ7hUk74sah7H0sm9bmjwRnFF+JQU=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 087EVnun001324;
-        Mon, 7 Sep 2020 09:31:49 -0500
-Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 7 Sep
- 2020 09:31:49 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 7 Sep 2020 09:31:49 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 087EVmGF072934;
-        Mon, 7 Sep 2020 09:31:49 -0500
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-To:     "David S. Miller" <davem@davemloft.net>, <netdev@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Murali Karicheri <m-karicheri2@ti.com>
-CC:     Sekhar Nori <nsekhar@ti.com>, <linux-kernel@vger.kernel.org>,
-        <linux-omap@vger.kernel.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>
-Subject: [PATCH net-next v2 2/9] net: ethernet: ti: ale: add static configuration
-Date:   Mon, 7 Sep 2020 17:31:36 +0300
-Message-ID: <20200907143143.13735-3-grygorii.strashko@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200907143143.13735-1-grygorii.strashko@ti.com>
-References: <20200907143143.13735-1-grygorii.strashko@ti.com>
+        Mon, 7 Sep 2020 10:31:45 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 784D5C061573;
+        Mon,  7 Sep 2020 07:31:43 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id a22so9976766ljp.13;
+        Mon, 07 Sep 2020 07:31:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=4HCwT5VeeawjAucidjJ8dUXtWRA7EV8ZxyXVxojBpMQ=;
+        b=FPrb8tOx20gTiMwOa1l+Lg05WnDC1bSkwecWvfGM2y7U2UEE39gQMAsVlny5a5K4hG
+         5pqodWmurJEU2Kk1+TFvJ3B84NyC546CuIWn7Kj7xJMjq06RNfAUdpGb24zhb7sjIvVv
+         Pa+iGVJ3zN02M1fD4hCk/GgfpU6Rjn4aYQEHMNZj0LSG1fZRVmeCdcSv+ndxnSojnkWH
+         ifq4/u6Ev6MD5SJ1KzNrdN5coam3vmE7TyZeB10102yN5e0JcawtuhbEvphkaVlu3kIe
+         xogGUkEGMWXS8MVg9ocUgQ2vHOBcxzmH1TeO7MB+F8k4xYf4QPa2Ugyiuk2+tYzeqMVx
+         Yk7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=4HCwT5VeeawjAucidjJ8dUXtWRA7EV8ZxyXVxojBpMQ=;
+        b=OylSh2jfQ9pByJfHmMz2F//Si2pW6/1KE5jmoQu95ZeSaBV7pYLAq9+imOJCWaog5n
+         ESJ71OgJWhahgjs8o+vqoILvijDLO2EDy+tCxCh1PACjsRcLvkjkztf3oap+JILaZyqC
+         8yS1nCF1nu/A/xUlviBM5JlFPI4aZcDzEen93hqGrGz4g5q5BdSPmDSXSuxZ4ALD70/7
+         zJSdTffLNyM0yEN3kAHLipAmXG34rWH1q7dPY1CC1xOOPFlLNfdtn7ThHJ7nN3teaNZM
+         xdFuCq7ABzXxXL8W6OdMeEthfBDm1KqE8t/KauesIMDd/J5M+8jYPmsGeRA/LW76zsU+
+         21IA==
+X-Gm-Message-State: AOAM532pRPurNOAmGne80b6M1jLwniif1Qnx/dADZ7sitKzttSQR3AoT
+        LbVecfZZn/aXb1hNb+/ngc+JCTjbehI=
+X-Google-Smtp-Source: ABdhPJxsxsJOhrx//7QJF9bND1r8Dv5qiBPxCgjjLtYZSM0x0yLCl9xRNsuextXw/nXKkkx7SakCpA==
+X-Received: by 2002:a2e:92cd:: with SMTP id k13mr10801560ljh.441.1599489098724;
+        Mon, 07 Sep 2020 07:31:38 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
+        by smtp.googlemail.com with ESMTPSA id 30sm7169937ljv.35.2020.09.07.07.31.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Sep 2020 07:31:38 -0700 (PDT)
+Subject: Re: [PATCH v5 01/36] i2c: tegra: Make tegra_i2c_flush_fifos() usable
+ in atomic transfer
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        linux-tegra@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20200906185039.22700-1-digetx@gmail.com>
+ <20200906185039.22700-2-digetx@gmail.com>
+ <CAHp75VfGjk-91P5ENQ4=j0F99o7uVK10NxEqCS3tPEsM1o3NAQ@mail.gmail.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <272065fe-950a-24e9-ba8f-8b1a782c203f@gmail.com>
+Date:   Mon, 7 Sep 2020 17:31:37 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <CAHp75VfGjk-91P5ENQ4=j0F99o7uVK10NxEqCS3tPEsM1o3NAQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As existing, as newly introduced CPSW ALE versions have differences in
-supported features and ALE table formats. Especially it's actual for the
-recent AM65x/J721E/J7200 SoC and feature AM64x, which supports features
-like: auto-aging, classifiers, Link aggregation, additional hw filtering,
-etc.
+07.09.2020 10:56, Andy Shevchenko пишет:
+> On Sun, Sep 6, 2020 at 9:51 PM Dmitry Osipenko <digetx@gmail.com> wrote:
+>>
+>> The tegra_i2c_flush_fifos() shouldn't sleep in atomic transfer and jiffies
+>> are not updating if interrupts are disabled. Let's switch to use iopoll
+>> API helpers for register-polling. The iopoll API provides helpers for both
+>> atomic and non-atomic cases.
+>>
+>> Note that this patch doesn't fix any known problem because normally FIFO
+>> is flushed at the time of starting a new transfer.
+> 
+> ...
+> 
+>> +       if (i2c_dev->is_curr_atomic_xfer)
+>> +               err = readl_relaxed_poll_timeout_atomic(addr, val, !(val & mask),
+>> +                                                       1000, 1000000);
+>> +       else
+>> +               err = readl_relaxed_poll_timeout(addr, val, !(val & mask),
+>> +                                                1000, 1000000);
+>> +
+>> +       if (err) {
+>> +               dev_err(i2c_dev->dev, "failed to flush FIFO\n");
+> 
+>> +               return err;
+>>         }
+>>         return 0;
+> 
+> return err; ?
+> 
 
-Existing ALE configuration interface is not practical in terms of adding
-new features and requires consumers to program a lot static parameters. Any
-attempt to add new options will case endless adding and maintaining
-different combination of flags and options.
-
-Hence CPSW ALE configuration is static and fixed for SoC (or set of SoC) It
-is reasonable to add support for static ALE configurations inside ALE
-module. This patch adds static ALE configuration table for different ALE
-versions and provides option for consumers to select required ALE
-configuration by providing ALE const char *dev_id identifier.
-
-This feature is not enabled by default until existing CPSW drivers will be
-modified by follow up patches.
-
-Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
----
- drivers/net/ethernet/ti/cpsw_ale.c | 84 +++++++++++++++++++++++++++++-
- drivers/net/ethernet/ti/cpsw_ale.h |  1 +
- 2 files changed, 83 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/ethernet/ti/cpsw_ale.c b/drivers/net/ethernet/ti/cpsw_ale.c
-index a94aef3f54a5..766197003971 100644
---- a/drivers/net/ethernet/ti/cpsw_ale.c
-+++ b/drivers/net/ethernet/ti/cpsw_ale.c
-@@ -46,6 +46,29 @@
- 
- #define AM65_CPSW_ALE_THREAD_DEF_REG 0x134
- 
-+enum {
-+	CPSW_ALE_F_STATUS_REG = BIT(0), /* Status register present */
-+	CPSW_ALE_F_HW_AUTOAGING = BIT(1), /* HW auto aging */
-+
-+	CPSW_ALE_F_COUNT
-+};
-+
-+/**
-+ * struct ale_dev_id - The ALE version/SoC specific configuration
-+ * @dev_id: ALE version/SoC id
-+ * @features: features supported by ALE
-+ * @tbl_entries: number of ALE entries
-+ * @major_ver_mask: mask of ALE Major Version Value in ALE_IDVER reg.
-+ * @nu_switch_ale: NU Switch ALE
-+ */
-+struct cpsw_ale_dev_id {
-+	const char *dev_id;
-+	u32 features;
-+	u32 tbl_entries;
-+	u32 major_ver_mask;
-+	bool nu_switch_ale;
-+};
-+
- #define ALE_TABLE_WRITE		BIT(31)
- 
- #define ALE_TYPE_FREE			0
-@@ -979,11 +1002,70 @@ void cpsw_ale_stop(struct cpsw_ale *ale)
- 	cpsw_ale_control_set(ale, 0, ALE_ENABLE, 0);
- }
- 
-+static const struct cpsw_ale_dev_id cpsw_ale_id_match[] = {
-+	{
-+		/* am3/4/5, dra7. dm814x, 66ak2hk-gbe */
-+		.dev_id = "cpsw",
-+		.tbl_entries = 1024,
-+		.major_ver_mask = 0xff,
-+	},
-+	{
-+		/* 66ak2h_xgbe */
-+		.dev_id = "66ak2h-xgbe",
-+		.tbl_entries = 2048,
-+		.major_ver_mask = 0xff,
-+	},
-+	{
-+		.dev_id = "66ak2el",
-+		.features = CPSW_ALE_F_STATUS_REG,
-+		.major_ver_mask = 0x7,
-+		.nu_switch_ale = true,
-+	},
-+	{
-+		.dev_id = "66ak2g",
-+		.features = CPSW_ALE_F_STATUS_REG,
-+		.tbl_entries = 64,
-+		.major_ver_mask = 0x7,
-+		.nu_switch_ale = true,
-+	},
-+	{
-+		.dev_id = "am65x-cpsw2g",
-+		.features = CPSW_ALE_F_STATUS_REG | CPSW_ALE_F_HW_AUTOAGING,
-+		.tbl_entries = 64,
-+		.major_ver_mask = 0x7,
-+		.nu_switch_ale = true,
-+	},
-+	{ },
-+};
-+
-+static const struct
-+cpsw_ale_dev_id *cpsw_ale_match_id(const struct cpsw_ale_dev_id *id,
-+				   const char *dev_id)
-+{
-+	if (!dev_id)
-+		return NULL;
-+
-+	while (id->dev_id) {
-+		if (strcmp(dev_id, id->dev_id) == 0)
-+			return id;
-+		id++;
-+	}
-+	return NULL;
-+}
-+
- struct cpsw_ale *cpsw_ale_create(struct cpsw_ale_params *params)
- {
-+	const struct cpsw_ale_dev_id *ale_dev_id;
- 	struct cpsw_ale *ale;
- 	u32 rev, ale_entries;
- 
-+	ale_dev_id = cpsw_ale_match_id(cpsw_ale_id_match, params->dev_id);
-+	if (ale_dev_id) {
-+		params->ale_entries = ale_dev_id->tbl_entries;
-+		params->major_ver_mask = ale_dev_id->major_ver_mask;
-+		params->nu_switch_ale = ale_dev_id->nu_switch_ale;
-+	}
-+
- 	ale = devm_kzalloc(params->dev, sizeof(*ale), GFP_KERNEL);
- 	if (!ale)
- 		return ERR_PTR(-ENOMEM);
-@@ -999,8 +1081,6 @@ struct cpsw_ale *cpsw_ale_create(struct cpsw_ale_params *params)
- 	ale->ageout = ale->params.ale_ageout * HZ;
- 
- 	rev = readl_relaxed(ale->params.ale_regs + ALE_IDVER);
--	if (!ale->params.major_ver_mask)
--		ale->params.major_ver_mask = 0xff;
- 	ale->version =
- 		(ALE_VERSION_MAJOR(rev, ale->params.major_ver_mask) << 8) |
- 		 ALE_VERSION_MINOR(rev);
-diff --git a/drivers/net/ethernet/ti/cpsw_ale.h b/drivers/net/ethernet/ti/cpsw_ale.h
-index 735692f066bf..53ad4246617e 100644
---- a/drivers/net/ethernet/ti/cpsw_ale.h
-+++ b/drivers/net/ethernet/ti/cpsw_ale.h
-@@ -24,6 +24,7 @@ struct cpsw_ale_params {
- 	 * pass it from caller.
- 	 */
- 	u32			major_ver_mask;
-+	const char		*dev_id;
- };
- 
- struct cpsw_ale {
--- 
-2.17.1
-
+The return 0 is intentional here because returned "err" implies that
+error happened and error code is returned, while 0 explicitly shows the
+success status. Hence it's always cleaner and more expressive to
+directly return 0 on success, IMO. I'd prefer to keep this part as-is.
