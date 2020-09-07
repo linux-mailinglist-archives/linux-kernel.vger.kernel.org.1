@@ -2,184 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92E9125F389
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 09:04:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CA4B25F393
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 09:05:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726278AbgIGHEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 03:04:01 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:37679 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726918AbgIGHCq (ORCPT
+        id S1726780AbgIGHFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 03:05:40 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:47308 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726422AbgIGHFj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 03:02:46 -0400
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200907070236euoutp01cd73acaec4763bf456fac175f85fee73~ybltWsgmT0711607116euoutp01Y
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 07:02:36 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200907070236euoutp01cd73acaec4763bf456fac175f85fee73~ybltWsgmT0711607116euoutp01Y
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1599462156;
-        bh=ZxtWY66LgnHBrNYge2f9PDhTZ3Wz5P0yo+LHPKSot+Q=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=I+h/3I2VjIcxlVZDH/lNlOOjvMOZclTLJ/2t/GoftpsGxg9jk53gZdIy7AEvehtPh
-         W8gtcUN9X/CZqLNWGwHS/yqyTr6bfdI2FE3fery7EjL+uqjNJOnrTpzDb0lu2EC3DE
-         fd2OpcYiVOeJ0iCTvHb5u/KsiZBPrL0CBZMD8Avk=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20200907070236eucas1p29628d0052b264a54f3844c09e8df4730~ybltI412B0068800688eucas1p2Z;
-        Mon,  7 Sep 2020 07:02:36 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id 9B.D3.06456.B0BD55F5; Mon,  7
-        Sep 2020 08:02:35 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20200907070235eucas1p22f87f67c713f5b6adcb494a54c5e75d4~yblst14op2412324123eucas1p2F;
-        Mon,  7 Sep 2020 07:02:35 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200907070235eusmtrp1feae73e9984626b93ea2470d306c898e~yblstILju0412504125eusmtrp1u;
-        Mon,  7 Sep 2020 07:02:35 +0000 (GMT)
-X-AuditID: cbfec7f2-809ff70000001938-c8-5f55db0b287d
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 12.46.06017.B0BD55F5; Mon,  7
-        Sep 2020 08:02:35 +0100 (BST)
-Received: from [106.210.88.143] (unknown [106.210.88.143]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200907070235eusmtip1a5111a2a4d5e325b24b610d4fe22cfd2~yblsNoKBC0360403604eusmtip1F;
-        Mon,  7 Sep 2020 07:02:34 +0000 (GMT)
-Subject: Re: [PATCH] dma-direct: zero out DMA_ATTR_NO_KERNEL_MAPPING buf
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>,
-        Hillf Danton <hdanton@sina.com>
-Cc:     Christoph Hellwig <hch@lst.de>, linux-nvme@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-arch@vger.kernel.org
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-Message-ID: <1eb4a2b0-2fd4-9f3c-e610-c8f856027181@samsung.com>
-Date:   Mon, 7 Sep 2020 09:02:34 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
-        Thunderbird/68.12.0
+        Mon, 7 Sep 2020 03:05:39 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08773Urj011906;
+        Mon, 7 Sep 2020 03:05:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=Llx2jsKGxkqfGTTwKQZgmRtiYpxHLIpBfZGAr2lZ3FU=;
+ b=oAUs9hPgFDtnugMP9PFA5HahASLKDVLrh0Z7E6FXaSqAmhddduVdbzReP2vmGSRnUyUm
+ MaHZpYBwyEWQHvDG5FXN3DKEz0qV/SUr+XfMCAN1EgjPn0u1m6xspmsl+QvxI5+gZslM
+ yO3n6yVoGh4C/05GcUNMCZZrs6Hvvo1Pw1tFU0WP3UCQ8rX+eCuI5cDzVY7cp/mLSjE9
+ EvE64g6lfPgGbt1ZiMG6st9YIhnXXMer58ELs4Pt1cvJUT1qvC9WBL6OVLLVP/mtPyST
+ IfezNxHc6cAtOYc00O37OoxZ32TEhBlm8NEoF7WZzhGpttM9ehp/ij9Rjpqy/Xp6EC9l Yw== 
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 33dd78c9q3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 07 Sep 2020 03:05:18 -0400
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08773h7K013972;
+        Mon, 7 Sep 2020 07:05:16 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma04fra.de.ibm.com with ESMTP id 33cm5hgtc2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 07 Sep 2020 07:05:16 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08775ESV64749856
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 7 Sep 2020 07:05:14 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2952AA4064;
+        Mon,  7 Sep 2020 07:05:14 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0C028A406B;
+        Mon,  7 Sep 2020 07:05:13 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.145.189.59])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Mon,  7 Sep 2020 07:05:12 +0000 (GMT)
+Date:   Mon, 7 Sep 2020 10:05:11 +0300
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Nazarewicz <mina86@mina86.com>,
+        Wen Congyang <wency@cn.fujitsu.com>,
+        Michal Simek <monstr@monstr.eu>,
+        Christoph Hellwig <hch@lst.de>,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH] <linux/page-isolation.h>: provide stubs for
+ MEMORY_ISOLATION not set (for Microblaze)
+Message-ID: <20200907070511.GN424181@linux.ibm.com>
+References: <1f6b42e6-b6b5-40e3-92b4-77bd610d3e49@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <1599321042.11726.6.camel@HansenPartnership.com>
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrCKsWRmVeSWpSXmKPExsWy7djPc7rct0PjDZ6sN7NYufook8WBn89Z
-        LDb2c1ic6c616Nj1lcXi8q45bBbzlz1lt/j9Yw6bA4fH7IaLLB7TJp1i89i8Qstj85J6j903
-        G9g8Jr1w9/i8SS6APYrLJiU1J7MstUjfLoErY98VzoKvEhWNsx4zNTC2iHQxcnJICJhIdM1u
-        Y+ti5OIQEljBKHH8/3UmkISQwBdGiRVNghCJz4wSHxf+Ze5i5ADr+NnDDhFfzigx7+pOVgjn
-        PaPEokUzWUC6hQU8JBbtWQBmiwjESVw9PxlsBbPASUaJi5v+MIMk2AQMJbredrGB2LwCdhKf
-        ZrWxgtgsAioSp7tXMoLYokDNx049YoGoEZQ4OfMJmM0pYCux9e0EdhCbWUBeYvvbOcwQtrjE
-        rSfzmUCWSQjsY5f4+eIpG8SjLhKX2m9B2cISr45vYYewZSROT+5hgWhoZpR4eG4tO4TTwyhx
-        uWkGI0SVtcSdc7/YQAHALKApsX6XPkTYUeL+93tMkHDhk7jxVhDiCD6JSdumQ4OLV6KjTQii
-        Wk1i1vF1cGsPXrjEPIFRaRaS12YheWcWkndmIexdwMiyilE8tbQ4Nz212DAvtVyvODG3uDQv
-        XS85P3cTIzAtnf53/NMOxq+Xkg4xCnAwKvHwvhAPjRdiTSwrrsw9xCjBwawkwut09nScEG9K
-        YmVValF+fFFpTmrxIUZpDhYlcV7jRS9jhQTSE0tSs1NTC1KLYLJMHJxSDYyMlYqff9rJd3Nu
-        t0jJWzS5h8Hlg/SpkBdW9z7W/9fQX/zCTFGO60xjr3LawglmPz9paDNWXwjd/ZL9sv3M44s2
-        TUucOe+MywKthxcOWCY/3uEbMm0x+/Pc2Ev/j2+15z13ojY86j33YmNunS9G5x5xHli/cSX7
-        o6VdzpuDFvPzKS7/8+1vuE6vEktxRqKhFnNRcSIAF/iMU0cDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrGIsWRmVeSWpSXmKPExsVy+t/xu7rct0PjDY68kLFYufook8WBn89Z
-        LDb2c1ic6c616Nj1lcXi8q45bBbzlz1lt/j9Yw6bA4fH7IaLLB7TJp1i89i8Qstj85J6j903
-        G9g8Jr1w9/i8SS6APUrPpii/tCRVISO/uMRWKdrQwkjP0NJCz8jEUs/Q2DzWyshUSd/OJiU1
-        J7MstUjfLkEvY98VzoKvEhWNsx4zNTC2iHQxcnBICJhI/Oxh72Lk4hASWMooseTJdLYuRk6g
-        uIzEyWkNrBC2sMSfa11sEEVvGSXezO0GKxIW8JBYtGcBC4gtIhAnceXYAyYQm1ngJKPEom1R
-        EA3PGSWmLZzDDpJgEzCU6HrbBdbMK2An8WlWG9gGFgEVidPdKxlBbFGgQWd6XkDVCEqcnPkE
-        bAGngK3E1rcT2CEWmEnM2/yQGcKWl9j+dg6ULS5x68l8pgmMQrOQtM9C0jILScssJC0LGFlW
-        MYqklhbnpucWG+kVJ+YWl+al6yXn525iBMbhtmM/t+xg7HoXfIhRgINRiYf3hXhovBBrYllx
-        Ze4hRgkOZiURXqezp+OEeFMSK6tSi/Lji0pzUosPMZoCPTeRWUo0OR+YIvJK4g1NDc0tLA3N
-        jc2NzSyUxHk7BA7GCAmkJ5akZqemFqQWwfQxcXBKNTDm2638/Zc7706cmv6d9swCgZMTTsja
-        NT88E8174e73AGlns4Uyn59eebRipWfhnFtsDRNvh89Q3O1/7/uu3a/7ruiziKgYSRzKjn1y
-        +7VtfvbNmm/FZ/wb8xud5nw+8saNq9HsmqqXwWSrK1tnnT5urCny/RKz700zqwuK16YGn1/S
-        xsj5+qyTEktxRqKhFnNRcSIAItHzPtkCAAA=
-X-CMS-MailID: 20200907070235eucas1p22f87f67c713f5b6adcb494a54c5e75d4
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20200905155056eucas1p2d4a2249f73506a765fce2d2f7089748d
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20200905155056eucas1p2d4a2249f73506a765fce2d2f7089748d
-References: <20200904152550.17964-1-hdanton@sina.com>
-        <20200905073528.9464-1-hdanton@sina.com>
-        <CGME20200905155056eucas1p2d4a2249f73506a765fce2d2f7089748d@eucas1p2.samsung.com>
-        <1599321042.11726.6.camel@HansenPartnership.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1f6b42e6-b6b5-40e3-92b4-77bd610d3e49@infradead.org>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-07_01:2020-09-07,2020-09-07 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=1 bulkscore=0
+ clxscore=1011 lowpriorityscore=0 phishscore=0 priorityscore=1501
+ mlxlogscore=886 adultscore=0 mlxscore=0 impostorscore=0 spamscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009070068
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi James,
+Hi Randy,
 
-On 05.09.2020 17:50, James Bottomley wrote:
-> [resend with correct linux-arch address]
-> On Sat, 2020-09-05 at 15:35 +0800, Hillf Danton wrote:
->> On Fri, 04 Sep 2020 08:34:39 -0700 James Bottomley wrote:
->>> On Fri, 2020-09-04 at 23:25 +0800, Hillf Danton wrote:
->>>> The DMA buffer allocated is always cleared in DMA core and this
->>>> is making DMA_ATTR_NO_KERNEL_MAPPING non-special.
->>>>
->>>> Fixes: d98849aff879 ("dma-direct: handle
->>>> DMA_ATTR_NO_KERNEL_MAPPING
->>>> in common code")
->>>> Cc: Kees Cook <keescook@chromium.org>
->>>> Cc: Matthew Wilcox <willy@infradead.org>
->>>> Cc: Marek Szyprowski <m.szyprowski@samsung.com>
->>>> Cc: James Bottomley <James.Bottomley@HansenPartnership.com>
->>>> Signed-off-by: Hillf Danton <hdanton@sina.com>
->>>> ---
->>>>
->>>> --- a/kernel/dma/direct.c
->>>> +++ b/kernel/dma/direct.c
->>>> @@ -178,9 +178,17 @@ void *dma_direct_alloc_pages(struct devi
->>>>   
->>>>   	if ((attrs & DMA_ATTR_NO_KERNEL_MAPPING) &&
->>>>   	    !force_dma_unencrypted(dev)) {
->>>> +		int i;
->>>> +
->>>>   		/* remove any dirty cache lines on the kernel
->>>> alias
->>>> */
->>>>   		if (!PageHighMem(page))
->>>>   			arch_dma_prep_coherent(page, size);
->>>> +
->>>> +		for (i = 0; i < size/PAGE_SIZE; i++) {
->>>> +			ret = kmap_atomic(page + i);
->>>> +			memset(ret, 0, PAGE_SIZE);
->>>> +			kunmap_atomic(ret);
->> Hi James
->>> This is massively expensive on PARISC and likely other VIPT/VIVT
->>> architectures.
->> Correct.
->>
->>> What's the reason for clearing it?  This could also be
->> 	/* we always manually zero the memory once we are done: */
->> 	gfp &= ~__GFP_ZERO;
->> 	gfp |= dma_direct_optimal_gfp_mask(dev, dev->coherent_dma_mask,
->> 					   &phys_limit);
-> That's not a reason ... that comment was put in for coherent mappings.
-> What is the reason we should incur all this expense for clearing pages
-> which aren't unmapped in the kernel, because we can update the comment?
->   The usual rationale for kernel mapped pages is security, because they
-> may leak information but unmapped pages shouldn't have this problem.
+On Sun, Sep 06, 2020 at 12:33:08PM -0700, Randy Dunlap wrote:
+> From: Randy Dunlap <rdunlap@infradead.org>
+> 
+> Fix build errors in Microblaze when CONFIG_MEMORY_ISOLATION is not
+> set/enabled by adding stubs for 3 missing functions.
 
-Any dma_alloc_attrs() buffer might be mmaped to userspace, so the 
-security reason is still valid. Possible lack if kernel mapping was only 
-a hint that driver doesn't need it, so it might be skipped on some 
-architectures, where creating it requires significant resources (i.e. 
-vmalloc area).
+I've tried to follow Kconfig dependencies to see how could we have both
+CONTIG_ALLOC=y and CONFIG_MEMORY_ISOLATION=n and I could not find how
+was this possible.
 
->>> really inefficient even on PIPT architectures if the memory is
->>> device remote.
->>>
->>> If we really have to do this, it should likely be done in the arch
->>> or driver hooks because there are potentially more efficient ways
->>> we can do this knowing how the architecture behaves.
->> I'm open to any vintage ideas in your mind wrt clearing dma buf e.g
->> on platforms like PARISC. Or feel free to offload me the work if it
->> makes sense to you who are rich of PARISC knowledge.
-> OK, I've cc'd linux-arch because this is a problem for more than just
-> parisc.  However, not having to do it is the best solution ... sort of
-> the doctor, doctor it hurts when I do this answer.
+We have 
 
-Best regards
+config CONTIG_ALLOC
+	def_bool (MEMORY_ISOLATION && COMPACTION) || CMA
+
+and
+
+config CMA
+	bool "Contiguous Memory Allocator"
+	depends on MMU
+	select MIGRATION
+	select MEMORY_ISOLATION
+
+and alloc_contig_range() is hidden behind '#ifdef CONFIG_CONTIG_ALLOC'
+
+In any rate, I think the better fix would be to update Kconfig
+dependencies rather than add stubs for these functions.
+
+> Fixes these build errors:
+> 
+> gcc-9.3.0-nolibc/microblaze-linux/bin/microblaze-linux-ld: mm/page_alloc.o: in function `alloc_contig_range':
+> (.text+0xa0c0): undefined reference to `start_isolate_page_range'
+> gcc-9.3.0-nolibc/microblaze-linux/bin/microblaze-linux-ld: (.text+0xa2bc): undefined reference to `test_pages_isolated'
+> gcc-9.3.0-nolibc/microblaze-linux/bin/microblaze-linux-ld: (.text+0xa378): undefined reference to `undo_isolate_page_range'
+> 
+> Fixes: 0815f3d81d76 ("mm: page_isolation: MIGRATE_CMA isolation functions added") # v3.10
+> Fixes: b023f46813cd ("memory-hotplug: skip HWPoisoned page when offlining pages") # v3.10
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Michal Nazarewicz <mina86@mina86.com>
+> Cc: Wen Congyang <wency@cn.fujitsu.com>
+> Cc: Michal Simek <monstr@monstr.eu>
+> Cc: Christoph Hellwig <hch@lst.de>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Mike Rapoport <rppt@linux.ibm.com>
+> Cc: linux-mm@kvack.org
+> ---
+>  include/linux/page-isolation.h |   16 ++++++++++++++++
+>  1 file changed, 16 insertions(+)
+> 
+> --- linux-next-20200903.orig/include/linux/page-isolation.h
+> +++ linux-next-20200903/include/linux/page-isolation.h
+> @@ -28,6 +28,22 @@ static inline bool is_migrate_isolate(in
+>  {
+>  	return false;
+>  }
+> +static inline int test_pages_isolated(unsigned long start_pfn,
+> +				      unsigned long end_pfn, int isol_flags)
+> +{
+> +	return 0;
+> +}
+> +static inline int
+> +start_isolate_page_range(unsigned long start_pfn, unsigned long end_pfn,
+> +			 unsigned migratetype, int flags)
+> +{
+> +	return 0;
+> +}
+> +static inline void
+> +undo_isolate_page_range(unsigned long start_pfn, unsigned long end_pfn,
+> +			unsigned migratetype)
+> +{
+> +}
+>  #endif
+>  
+>  #define MEMORY_OFFLINE	0x1
+> 
+> 
+
 -- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
-
+Sincerely yours,
+Mike.
