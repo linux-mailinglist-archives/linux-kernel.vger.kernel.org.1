@@ -2,130 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 733FA26021B
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:19:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D96A026020A
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:17:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729775AbgIGRSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 13:18:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38914 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729749AbgIGOC3 (ORCPT
+        id S1726458AbgIGRQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 13:16:18 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:27671 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729758AbgIGODo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 10:02:29 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C95DC061574
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 06:52:05 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id p4so12717242qkf.0
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 06:52:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=marek-ca.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=PTkTouL2czWP8WE5qgUgm7cqaQuyE0I/QNRM6mgOP0c=;
-        b=RkYJt/sowuPk660AeGi8k0TKGfw7R8fezICrpHulamrnjeDus1mMTpxsIWFd8D4dC7
-         7lpGSv7sikZ6Q9BvxsmwJzFL0vuxJhFNqNLJVncpFdsrRYrYwD1hSxKVQYA8DfJOvbSa
-         RwJkUSNO7j4lUTwm76z0W/0OWjMpHbgy/rExIclghVSTBLYxw4R1J27T6uvav7WQXBPT
-         L1G0L0X95cOws5jWWbfsTaaI6m1M6QmGci7OQXviSo4Bj+8P1W35vQs2GohffQ3k9k3F
-         slWb2a47njZDem0eevasth1IaIjJcaHo/5XCxgS68BuXLU3OyxQKzrTTStG59SpxKbNU
-         L3sQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=PTkTouL2czWP8WE5qgUgm7cqaQuyE0I/QNRM6mgOP0c=;
-        b=GD1wnFB3f9I/xS3HT0ymHRsg3m/DkTLVTzjoehTaYqOcZSGt3SUpJZL2QWQWXj5ZJy
-         7sBQHWQE9Gs6QxZPxbzrPf0DCkjjSJF4sWheaBH9qLirYOIkXxLq7qZPA67tqlMuOzfa
-         HjmOyq4+JTr53HNH+ILbsoJwcVctHNDntRdhPb/3otcbWAOlvZA3BWAJj+FdpOQZxSqZ
-         YlfUvl4mjUcj3NrWtI1s/cfZo+7I6DpYrboeelDWccDtUj77uNYwHH1LSzzr1bMYvf3W
-         yzZ/aH/py2oN51Yh8QwHGnfLwrRaWeh4Jx4q3AyDt6MPdPxLJrLgiyj5mpBxvDl8kK1p
-         +MXA==
-X-Gm-Message-State: AOAM530XweFQc2sT2WQZ3x3hJXaXjOVLpoJnfU0ExM8fSV9HM+rTLAb5
-        a+8tIiAZR0qrAaXUcw8LTfdn1zdGgbLvw4AgZhs=
-X-Google-Smtp-Source: ABdhPJwb/Iojc+yPbKGCE2w/zaWNEX18Z9XHEn4djmHHQz8vqGV9Ili06wfYjq3cq27keqH4oiq1LQ==
-X-Received: by 2002:a05:620a:141a:: with SMTP id d26mr18900840qkj.217.1599486721448;
-        Mon, 07 Sep 2020 06:52:01 -0700 (PDT)
-Received: from [192.168.0.189] ([147.253.86.153])
-        by smtp.gmail.com with ESMTPSA id u66sm10541652qka.136.2020.09.07.06.52.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Sep 2020 06:52:01 -0700 (PDT)
-Subject: Re: [PATCH] misc: fastrpc: add ioctl for attaching to sensors pd
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20200901003300.11985-1-jonathan@marek.ca>
- <20200907123344.GA2371705@kroah.com>
-From:   Jonathan Marek <jonathan@marek.ca>
-Message-ID: <a9d142c9-8a61-ee59-d849-393af1b3eaec@marek.ca>
-Date:   Mon, 7 Sep 2020 09:51:13 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        Mon, 7 Sep 2020 10:03:44 -0400
+X-UUID: c0da1ee31c9f4c1899fa454d5d655abc-20200907
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=XMk5hJ81PHI3xSrI0ggTQY8xS0Db8n8wp1TadPvcMYI=;
+        b=WMCTZj4wBj5yOwbjeo7002FeDJ+xsnVVyjiGwbqUy2CoWVGW7vaTviB+DUR3qvFLVZNhZQadGQAUzzFfDS9EgbrJw7Gq2oyPLk0g1X75KJwT8oL99c4CrIluleEQzSZDRxaz2fHKkZxN+XJ50mXQEyzDrg0THtOXYG3ik1Ong5A=;
+X-UUID: c0da1ee31c9f4c1899fa454d5d655abc-20200907
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
+        (envelope-from <frankie.chang@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1785733985; Mon, 07 Sep 2020 21:51:17 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 7 Sep 2020 21:51:13 +0800
+Received: from [172.21.77.33] (172.21.77.33) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 7 Sep 2020 21:51:13 +0800
+Message-ID: <1599486675.16905.34.camel@mtkswgap22>
+Subject: Re: [PATCH v8 3/3] binder: add transaction latency tracer
+From:   Frankie Chang <Frankie.Chang@mediatek.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     Todd Kjos <tkjos@google.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Martijn Coenen <maco@android.com>,
+        Arve =?ISO-8859-1?Q?Hj=F8nnev=E5g?= <arve@android.com>,
+        Christian Brauner <christian@brauner.io>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>,
+        Jian-Min Liu <Jian-Min.Liu@mediatek.com>
+Date:   Mon, 7 Sep 2020 21:51:15 +0800
+In-Reply-To: <20200907122557.GC2029056@kroah.com>
+References: <20200907070045.GA605692@kroah.com>
+         <1599480055-25781-1-git-send-email-Frankie.Chang@mediatek.com>
+         <1599480055-25781-4-git-send-email-Frankie.Chang@mediatek.com>
+         <20200907122557.GC2029056@kroah.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-In-Reply-To: <20200907123344.GA2371705@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-TM-SNTS-SMTP: CA5E52C9A8AB3697DACA4A468846144A584745BA3552FA87A3BED667353550882000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/7/20 8:33 AM, Greg Kroah-Hartman wrote:
-> On Mon, Aug 31, 2020 at 08:32:59PM -0400, Jonathan Marek wrote:
->> Initializing sensors requires attaching to pd 2. Add an ioctl for that.
->>
->> This corresponds to FASTRPC_INIT_ATTACH_SENSORS in the downstream driver.
->>
->> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
->> ---
->>   drivers/misc/fastrpc.c      | 9 ++++++---
->>   include/uapi/misc/fastrpc.h | 5 +++--
->>   2 files changed, 9 insertions(+), 5 deletions(-)
->>
->> diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
->> index 7939c55daceb..ea5e9ca0d705 100644
->> --- a/drivers/misc/fastrpc.c
->> +++ b/drivers/misc/fastrpc.c
->> @@ -1276,7 +1276,7 @@ static int fastrpc_dmabuf_alloc(struct fastrpc_user *fl, char __user *argp)
->>   	return 0;
->>   }
->>   
->> -static int fastrpc_init_attach(struct fastrpc_user *fl)
->> +static int fastrpc_init_attach(struct fastrpc_user *fl, int pd)
->>   {
->>   	struct fastrpc_invoke_args args[1];
->>   	int tgid = fl->tgid;
->> @@ -1287,7 +1287,7 @@ static int fastrpc_init_attach(struct fastrpc_user *fl)
->>   	args[0].fd = -1;
->>   	args[0].reserved = 0;
->>   	sc = FASTRPC_SCALARS(FASTRPC_RMID_INIT_ATTACH, 1, 0);
->> -	fl->pd = 0;
->> +	fl->pd = pd;
->>   
->>   	return fastrpc_internal_invoke(fl, true, FASTRPC_INIT_HANDLE,
->>   				       sc, &args[0]);
->> @@ -1477,7 +1477,10 @@ static long fastrpc_device_ioctl(struct file *file, unsigned int cmd,
->>   		err = fastrpc_invoke(fl, argp);
->>   		break;
->>   	case FASTRPC_IOCTL_INIT_ATTACH:
->> -		err = fastrpc_init_attach(fl);
->> +		err = fastrpc_init_attach(fl, 0);
->> +		break;
->> +	case FASTRPC_IOCTL_INIT_ATTACH_SNS:
->> +		err = fastrpc_init_attach(fl, 2);
-> 
-> Shouldn't you have #defines for those magic numbers somewhere?  What
-> does 0 and 2 mean?
-> 
+T24gTW9uLCAyMDIwLTA5LTA3IGF0IDE0OjI1ICswMjAwLCBHcmVnIEtyb2FoLUhhcnRtYW4gd3Jv
+dGU6DQo+IE9uIE1vbiwgU2VwIDA3LCAyMDIwIGF0IDA4OjAwOjU1UE0gKzA4MDAsIEZyYW5raWUg
+Q2hhbmcgd3JvdGU6DQo+ID4gRnJvbTogIkZyYW5raWUuQ2hhbmciIDxGcmFua2llLkNoYW5nQG1l
+ZGlhdGVrLmNvbT4NCj4gPiANCj4gPiBSZWNvcmQgc3RhcnQvZW5kIHRpbWVzdGFtcCBmb3IgYmlu
+ZGVyIHRyYW5zYWN0aW9uLg0KPiA+IFdoZW4gdHJhbnNhY3Rpb24gaXMgY29tcGxldGVkIG9yIHRy
+YW5zYWN0aW9uIGlzIGZyZWUsDQo+ID4gaXQgd291bGQgYmUgY2hlY2tlZCBpZiB0cmFuc2FjdGlv
+biBsYXRlbmN5IG92ZXIgdGhyZXNob2xkDQo+ID4gKGRlZmF1bHQgMiBzZWMpLCBpZiB5ZXMsIHBy
+aW50aW5nIHJlbGF0ZWQgaW5mb3JtYXRpb24gZm9yIHRyYWNpbmcuDQo+ID4gDQo+ID4gLyogSW1w
+bGVtZW50IGRldGFpbHMgKi8NCj4gPiAtIEFkZCBsYXRlbmN5IHRyYWNlciBtb2R1bGUgdG8gbW9u
+aXRvciB0cmFuc2FjdGlvbg0KPiA+ICAgYnkgYXR0YWNoaW5nIHRvIG5ldyB0cmFjZXBvaW50cyBp
+bnRyb2R1Y2VkDQo+ID4gICB3aGVuIHRyYW5zYWN0aW9ucyBhcmUgYWxsb2NhdGVkIGFuZCBmcmVl
+ZC4NCj4gPiAgIFRoZSB0cmFjZV9iaW5kZXJfdHhuX2xhdGVuY3lfZnJlZSB3b3VsZCBub3QgYmUg
+ZW5hYmxlZA0KPiA+ICAgYnkgZGVmYXVsdC4gTW9uaXRvcmluZyB3aGljaCB0cmFuc2FjdGlvbiBp
+cyB0b28gc2xvdyB0bw0KPiA+ICAgY2F1c2Ugc29tZSBvZiBleGNlcHRpb25zIGlzIGltcG9ydGFu
+dC4gU28gd2UgaG9vayB0aGUNCj4gPiAgIHRyYWNlcG9pbnQgdG8gY2FsbCB0aGUgbW9uaXRvciBm
+dW5jdGlvbi4NCj4gPiANCj4gPiAtIFNpbmNlIHNvbWUgb2YgbW9kdWxlcyB3b3VsZCB0cmlnZ2Vy
+IHRpbWVvdXQgTkUNCj4gPiAgIGlmIHRoZWlyIGJpbmRlciB0cmFuc2FjdGlvbiBkb24ndCBmaW5p
+c2ggaW4gdGltZSwNCj4gPiAgIHN1Y2ggYXMgYXVkaW8gdGltZW91dCAoNSBzZWMpLCBldmVuIEJU
+IGNvbW1hbmQNCj4gPiAgIHRpbWVvdXQgKDIgc2VjKSwgZXRjLg0KPiA+ICAgVGhlcmVmb3JlLCBz
+ZXR0aW5nIHRoZSB0aW1lb3V0IHRocmVzaG9sZCBhcyBkZWZhdWx0DQo+ID4gICAyIHNlY29uZHMg
+Y291bGQgYmUgaGVscGZ1bCB0byBkZWJ1Zy4NCj4gPiAgIEJ1dCB0aGlzIHRpbWVvdXQgdGhyZXNo
+b2xkIGlzIGNvbmZpZ3VyYWJsZSwgdG8gbGV0DQo+ID4gICBhbGwgdXNlcnMgZGV0ZXJtaW5lIHRo
+ZSBtb3JlIHN1aXRhYmxlIHRocmVzaG9sZC4NCj4gPiANCj4gPiAtIFRoZSByZWFzb24gd2h5IHBy
+aW50aW5nIHRoZSByZWxhdGVkIGluZm9ybWF0aW9uIHRvDQo+ID4gICBrZXJuZWwgaW5mb3JtYXRp
+b24gbG9nIGJ1dCBub3QgdHJhY2UgYnVmZmVyIGlzIHRoYXQNCj4gPiAgIHNvbWUgYWJub3JtYWwg
+dHJhbnNhY3Rpb25zIG1heSBiZSBwZW5kaW5nIGZvciBhIGxvbmcNCj4gPiAgIHRpbWUgYWdvLCB0
+aGV5IGNvdWxkIG5vdCBiZSByZWNvcmRlZCBkdWUgdG8gYnVmZmVyDQo+ID4gICBsaW1pdGVkLg0K
+PiA+IA0KPiA+IFNpZ25lZC1vZmYtYnk6IEZyYW5raWUuQ2hhbmcgPEZyYW5raWUuQ2hhbmdAbWVk
+aWF0ZWsuY29tPg0KPiA+IEFja2VkLWJ5OiBUb2RkIEtqb3MgPHRram9zQGdvb2dsZS5jb20+DQo+
+ID4gLS0tDQo+ID4gIGRyaXZlcnMvYW5kcm9pZC9LY29uZmlnICAgICAgICAgICAgICAgICB8ICAg
+IDggKysrDQo+ID4gIGRyaXZlcnMvYW5kcm9pZC9NYWtlZmlsZSAgICAgICAgICAgICAgICB8ICAg
+IDEgKw0KPiA+ICBkcml2ZXJzL2FuZHJvaWQvYmluZGVyLmMgICAgICAgICAgICAgICAgfCAgICA2
+ICsrDQo+ID4gIGRyaXZlcnMvYW5kcm9pZC9iaW5kZXJfaW50ZXJuYWwuaCAgICAgICB8ICAgMTMg
+KysrKw0KPiA+ICBkcml2ZXJzL2FuZHJvaWQvYmluZGVyX2xhdGVuY3lfdHJhY2VyLmMgfCAgMTEy
+ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysNCj4gPiAgZHJpdmVycy9hbmRyb2lkL2Jp
+bmRlcl90cmFjZS5oICAgICAgICAgIHwgICAyNiArKysrKystDQo+ID4gIDYgZmlsZXMgY2hhbmdl
+ZCwgMTYzIGluc2VydGlvbnMoKyksIDMgZGVsZXRpb25zKC0pDQo+ID4gIGNyZWF0ZSBtb2RlIDEw
+MDY0NCBkcml2ZXJzL2FuZHJvaWQvYmluZGVyX2xhdGVuY3lfdHJhY2VyLmMNCj4gPiANCj4gPiBk
+aWZmIC0tZ2l0IGEvZHJpdmVycy9hbmRyb2lkL0tjb25maWcgYi9kcml2ZXJzL2FuZHJvaWQvS2Nv
+bmZpZw0KPiA+IGluZGV4IDUzYjIyZTIuLjhhYWRhZjQgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVy
+cy9hbmRyb2lkL0tjb25maWcNCj4gPiArKysgYi9kcml2ZXJzL2FuZHJvaWQvS2NvbmZpZw0KPiA+
+IEBAIC01NCw2ICs1NCwxNCBAQCBjb25maWcgQU5EUk9JRF9CSU5ERVJfSVBDX1NFTEZURVNUDQo+
+ID4gIAkgIGV4aGF1c3RpdmVseSB3aXRoIGNvbWJpbmF0aW9ucyBvZiB2YXJpb3VzIGJ1ZmZlciBz
+aXplcyBhbmQNCj4gPiAgCSAgYWxpZ25tZW50cy4NCj4gPiAgDQo+ID4gK2NvbmZpZyBCSU5ERVJf
+VFJBTlNBQ1RJT05fTEFURU5DWV9UUkFDS0lORw0KPiA+ICsJdHJpc3RhdGUgIkFuZHJvaWQgQmlu
+ZGVyIHRyYW5zYWN0aW9uIHRyYWNraW5nIg0KPiA+ICsJaGVscA0KPiA+ICsJICBVc2VkIGZvciB0
+cmFjayBhYm5vcm1hbCBiaW5kZXIgdHJhbnNhY3Rpb24gd2hpY2ggaXMgb3ZlciB0aHJlc2hvbGQs
+DQo+ID4gKwkgIHdoZW4gdGhlIHRyYW5zYWN0aW9uIGlzIGRvbmUgb3IgYmUgZnJlZSwgdGhpcyB0
+cmFuc2FjdGlvbiB3b3VsZCBiZQ0KPiA+ICsJICBjaGVja2VkIHdoZXRoZXIgaXQgZXhlY3V0ZWQg
+b3ZlcnRpbWUuDQo+ID4gKwkgIElmIHllcywgcHJpbnRpbmcgb3V0IHRoZSBkZXRhaWxlZCBpbmZv
+Lg0KPiA+ICsNCj4gPiAgZW5kaWYgIyBpZiBBTkRST0lEDQo+ID4gIA0KPiA+ICBlbmRtZW51DQo+
+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvYW5kcm9pZC9NYWtlZmlsZSBiL2RyaXZlcnMvYW5kcm9p
+ZC9NYWtlZmlsZQ0KPiA+IGluZGV4IGM5ZDNkMGM5Li5jMmZmZGI2IDEwMDY0NA0KPiA+IC0tLSBh
+L2RyaXZlcnMvYW5kcm9pZC9NYWtlZmlsZQ0KPiA+ICsrKyBiL2RyaXZlcnMvYW5kcm9pZC9NYWtl
+ZmlsZQ0KPiA+IEBAIC00LDMgKzQsNCBAQCBjY2ZsYWdzLXkgKz0gLUkkKHNyYykJCQkjIG5lZWRl
+ZCBmb3IgdHJhY2UgZXZlbnRzDQo+ID4gIG9iai0kKENPTkZJR19BTkRST0lEX0JJTkRFUkZTKQkJ
+Kz0gYmluZGVyZnMubw0KPiA+ICBvYmotJChDT05GSUdfQU5EUk9JRF9CSU5ERVJfSVBDKQkrPSBi
+aW5kZXIubyBiaW5kZXJfYWxsb2Mubw0KPiA+ICBvYmotJChDT05GSUdfQU5EUk9JRF9CSU5ERVJf
+SVBDX1NFTEZURVNUKSArPSBiaW5kZXJfYWxsb2Nfc2VsZnRlc3Qubw0KPiA+ICtvYmotJChDT05G
+SUdfQklOREVSX1RSQU5TQUNUSU9OX0xBVEVOQ1lfVFJBQ0tJTkcpCSs9IGJpbmRlcl9sYXRlbmN5
+X3RyYWNlci5vDQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvYW5kcm9pZC9iaW5kZXIuYyBiL2Ry
+aXZlcnMvYW5kcm9pZC9iaW5kZXIuYw0KPiA+IGluZGV4IDBjYWI5MDAuLjY1YWQzOGMgMTAwNjQ0
+DQo+ID4gLS0tIGEvZHJpdmVycy9hbmRyb2lkL2JpbmRlci5jDQo+ID4gKysrIGIvZHJpdmVycy9h
+bmRyb2lkL2JpbmRlci5jDQo+ID4gQEAgLTI2NzQsNiArMjY3NCw3IEBAIHN0YXRpYyB2b2lkIGJp
+bmRlcl90cmFuc2FjdGlvbihzdHJ1Y3QgYmluZGVyX3Byb2MgKnByb2MsDQo+ID4gIAkJcmV0dXJu
+X2Vycm9yX2xpbmUgPSBfX0xJTkVfXzsNCj4gPiAgCQlnb3RvIGVycl9hbGxvY190X2ZhaWxlZDsN
+Cj4gPiAgCX0NCj4gPiArCXRyYWNlX2JpbmRlcl90eG5fbGF0ZW5jeV9hbGxvYyh0KTsNCj4gPiAg
+CUlOSVRfTElTVF9IRUFEKCZ0LT5mZF9maXh1cHMpOw0KPiA+ICAJYmluZGVyX3N0YXRzX2NyZWF0
+ZWQoQklOREVSX1NUQVRfVFJBTlNBQ1RJT04pOw0KPiA+ICAJc3Bpbl9sb2NrX2luaXQoJnQtPmxv
+Y2spOw0KPiA+IEBAIC01MTc3LDYgKzUxNzgsNyBAQCBzdGF0aWMgdm9pZCBwcmludF9iaW5kZXJf
+dHJhbnNhY3Rpb25faWxvY2tlZChzdHJ1Y3Qgc2VxX2ZpbGUgKm0sDQo+ID4gIAkJICAgdG9fcHJv
+YyA/IHRvX3Byb2MtPnBpZCA6IDAsDQo+ID4gIAkJICAgdC0+dG9fdGhyZWFkID8gdC0+dG9fdGhy
+ZWFkLT5waWQgOiAwLA0KPiA+ICAJCSAgIHQtPmNvZGUsIHQtPmZsYWdzLCB0LT5wcmlvcml0eSwg
+dC0+bmVlZF9yZXBseSk7DQo+ID4gKwl0cmFjZV9iaW5kZXJfdHhuX2xhdGVuY3lfaW5mbyhtLCB0
+KTsNCj4gPiAgCXNwaW5fdW5sb2NrKCZ0LT5sb2NrKTsNCj4gPiAgDQo+ID4gIAlpZiAocHJvYyAh
+PSB0b19wcm9jKSB7DQo+ID4gQEAgLTU4MTgsNCArNTgyMCw4IEBAIHN0YXRpYyBpbnQgX19pbml0
+IGJpbmRlcl9pbml0KHZvaWQpDQo+ID4gICNkZWZpbmUgQ1JFQVRFX1RSQUNFX1BPSU5UUw0KPiA+
+ICAjaW5jbHVkZSAiYmluZGVyX3RyYWNlLmgiDQo+ID4gIA0KPiA+ICtFWFBPUlRfVFJBQ0VQT0lO
+VF9TWU1CT0woYmluZGVyX3R4bl9sYXRlbmN5X2FsbG9jKTsNCj4gPiArRVhQT1JUX1RSQUNFUE9J
+TlRfU1lNQk9MKGJpbmRlcl90eG5fbGF0ZW5jeV9pbmZvKTsNCj4gPiArRVhQT1JUX1RSQUNFUE9J
+TlRfU1lNQk9MKGJpbmRlcl90eG5fbGF0ZW5jeV9mcmVlKTsNCj4gPiArDQo+ID4gIE1PRFVMRV9M
+SUNFTlNFKCJHUEwgdjIiKTsNCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9hbmRyb2lkL2JpbmRl
+cl9pbnRlcm5hbC5oIGIvZHJpdmVycy9hbmRyb2lkL2JpbmRlcl9pbnRlcm5hbC5oDQo+ID4gaW5k
+ZXggODcyMjMyZi4uMzA5ZDFiMTAgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9hbmRyb2lkL2Jp
+bmRlcl9pbnRlcm5hbC5oDQo+ID4gKysrIGIvZHJpdmVycy9hbmRyb2lkL2JpbmRlcl9pbnRlcm5h
+bC5oDQo+ID4gQEAgLTE1LDYgKzE1LDExIEBADQo+ID4gICNpbmNsdWRlIDx1YXBpL2xpbnV4L2Fu
+ZHJvaWQvYmluZGVyZnMuaD4NCj4gPiAgI2luY2x1ZGUgImJpbmRlcl9hbGxvYy5oIg0KPiA+ICAN
+Cj4gPiArI2lmIElTX0VOQUJMRUQoQ09ORklHX0JJTkRFUl9UUkFOU0FDVElPTl9MQVRFTkNZX1RS
+QUNLSU5HKQ0KPiA+ICsjaW5jbHVkZSA8dWFwaS9saW51eC90aW1lX3R5cGVzLmg+DQo+ID4gKyNp
+bmNsdWRlIDxsaW51eC9ydGMuaD4NCj4gPiArI2VuZGlmDQo+ID4gKw0KPiA+ICBzdHJ1Y3QgYmlu
+ZGVyX2NvbnRleHQgew0KPiA+ICAJc3RydWN0IGJpbmRlcl9ub2RlICpiaW5kZXJfY29udGV4dF9t
+Z3Jfbm9kZTsNCj4gPiAgCXN0cnVjdCBtdXRleCBjb250ZXh0X21ncl9ub2RlX2xvY2s7DQo+ID4g
+QEAgLTUyNCw2ICs1MjksMTQgQEAgc3RydWN0IGJpbmRlcl90cmFuc2FjdGlvbiB7DQo+ID4gIAkg
+KiBkdXJpbmcgdGhyZWFkIHRlYXJkb3duDQo+ID4gIAkgKi8NCj4gPiAgCXNwaW5sb2NrX3QgbG9j
+azsNCj4gPiArCS8qKg0KPiA+ICsJICogQHRpbWVzdGFtcCBhbmQgQHR2IGFyZSB1c2VkIHRvIHJl
+Y29yZCB0aGUgdGltZQ0KPiA+ICsJICogdGhhdCB0aGUgYmluZGVyIHRyYW5zYWN0aW9uIHN0YXJ0
+dXANCj4gPiArCSAqLw0KPiA+ICsjaWYgSVNfRU5BQkxFRChDT05GSUdfQklOREVSX1RSQU5TQUNU
+SU9OX0xBVEVOQ1lfVFJBQ0tJTkcpDQo+ID4gKwlzdHJ1Y3QgdGltZXNwZWM2NCB0aW1lc3RhbXA7
+DQo+ID4gKwlzdHJ1Y3QgX19rZXJuZWxfb2xkX3RpbWV2YWwgdHY7DQo+IA0KPiBBcyBJIHN0YXRl
+ZCBpbiB0aGUgMC8zIGVtYWlsLCBwbGVhc2UgdXNlIHRoZSBjb3JyZWN0IGluLWtlcm5lbCBzdHJ1
+Y3R1cmUNCj4gZm9yIHRoaXMuICBUaGF0IHN0cnVjdHVyZSBpcyBfT05MWV8gZm9yIG9sZCB1c2Vy
+c3BhY2UgYXBpIGNvbXBhdGliaWxpdHkNCj4gaXNzdWVzLiAgV2hpY2ggaXMgbm90IHRoZSBjYXNl
+IGhlcmUgYXQgYWxsLg0KPiANCj4gdGhhbmtzLA0KPiBncmVnIGstaA0KDQpTaW5jZSBpdCdzIG5v
+dCBwcm9wZXIgdG8gdXNlIHRpbWV2YWwgJiBfX2tlcm5lbF9vbGRfdGltZXZhbC4NClRoZSByZW1h
+aW5pbmcgc3RydWN0dXJlIHdpdGggdHZfdXNlYyB0aGF0IEkgZm91bmQgaXMNCl9fa2VybmVsX3Rp
+bWV4X3RpbWV2YWwsIGJ1dCBJJ20gbm90IHN1cmUgaWYgdGhpcyBpcyBwcm9wZXIgb25lIG9yIG5v
+dC4NCkFsbCBJIGNhbiBzZWUgaXMgaW4NCmh0dHBzOi8vbHduLm5ldC9tbC9saW51eC1rZXJuZWwv
+MjAxODA3MDUyMTM2MDQuMTg4ODMtNi1kZWVwYS5rZXJuZWxAZ21haWwuY29tLw0KDQpJJ20gYWZy
+YWlkIG9mIHVzaW5nIHdyb25nIHN0cnVjdHVyZSBhZ2Fpbi4NCkNvdWxkIHlvdSBnaXZlIG1lIHNv
+bWUgYWR2aWNlcyBhYm91dCB0aGlzPw0KDQpPciBpcyB0aGVyZSBhbm90aGVyIHN1aXRhYmxlIHdh
+eSB0byByZXBsYWNlIHRpbWV2YWwNCg0KTWFueSB0aGFua3MsDQpGcmFua2llDQoNCg0KDQo=
 
-This is based off a downstream driver which also uses magic numbers, 
-although I can make an educated guess about the meaning.
-
-Srini do you have any suggestions for how to name these values?
-
-> thanks,
-> 
-> greg k-h
-> 
