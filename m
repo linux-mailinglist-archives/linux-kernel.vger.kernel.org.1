@@ -2,42 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F16625FDFE
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 18:04:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 639FB25FE15
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 18:06:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730316AbgIGQE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 12:04:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57760 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730001AbgIGQDx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 12:03:53 -0400
-Received: from mail.kmu-office.ch (mail.kmu-office.ch [IPv6:2a02:418:6a02::a2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F125C061573
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 09:03:51 -0700 (PDT)
-Received: from trochilidae.toradex.int (31-10-206-124.static.upc.ch [31.10.206.124])
-        by mail.kmu-office.ch (Postfix) with ESMTPSA id 85A7B5C05BC;
-        Mon,  7 Sep 2020 18:03:44 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=agner.ch; s=dkim;
-        t=1599494624;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:
-         content-transfer-encoding:content-transfer-encoding:in-reply-to:
-         references; bh=CpO14UbtP2tQcbPOTl7yEqP11tbFzj3QRmh1sYkSBmQ=;
-        b=kY1bUQBRzxxuDEzULSy5YKhMgXtt+FppllGokTl2wN7Zrr+5S2pndPiuPfCKvOMbOOTUJ6
-        W/LnlT5SqKQsodfi2kerN5OWY2hOdjoaTViz/spqAClFEYcHVfvnSJYzlzza08198AlZ9q
-        xv4SMxvXhHv9zAC0dXdQIF7SfBwQqXE=
-From:   Stefan Agner <stefan@agner.ch>
-To:     marex@denx.de, stefan@agner.ch
-Cc:     laurent.pinchart@ideasonboard.com, airlied@linux.ie,
-        daniel@ffwll.ch, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm: mxsfb: check framebuffer pitch
-Date:   Mon,  7 Sep 2020 18:03:43 +0200
-Message-Id: <20200907160343.124405-1-stefan@agner.ch>
-X-Mailer: git-send-email 2.28.0
+        id S1730339AbgIGQGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 12:06:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58000 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730005AbgIGQFx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 12:05:53 -0400
+Received: from localhost.localdomain (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 32488208C7;
+        Mon,  7 Sep 2020 16:05:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599494753;
+        bh=Ld3Q0P90SqT/fcv53r3iy8A/rntUfRRJtF4KdDBpBWg=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=oPIHeo2fT5hs6wPbs+wpdFd3N+U1GDB1JVqha3q5rL9Hi4OAHIek4a1DqAcc6+Bcz
+         aCsmL5J1DIr5MMFZBnAmexIWYhz38LmksYFK0fnWzL6UxCAslMyufb9yx6KZ7srjXZ
+         jW/LzLS+Q+rIdDU0rz7KRtGYgCGDStQjZNRmb4ZQ=
+From:   Will Deacon <will@kernel.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        John Garry <john.garry@huawei.com>,
+        linux-kernel@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Leo Yan <leo.yan@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     kernel-team@android.com, Will Deacon <will@kernel.org>
+Subject: Re: [PATCH] arm64: perf: Add general hardware LLC events for PMUv3
+Date:   Mon,  7 Sep 2020 17:05:34 +0100
+Message-Id: <159947535838.560920.6785898612227287683.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200811053505.21223-1-leo.yan@linaro.org>
+References: <20200811053505.21223-1-leo.yan@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -45,57 +49,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The lcdif IP does not support a framebuffer pitch (stride) other than
-the CRTC width. Check for equality and reject the state otherwise.
+On Tue, 11 Aug 2020 13:35:05 +0800, Leo Yan wrote:
+> This patch is to add the general hardware last level cache (LLC) events
+> for PMUv3: one event is for LLC access and another is for LLC miss.
+> 
+> With this change, perf tool can support last level cache profiling,
+> below is an example to demonstrate the usage on Arm64:
+> 
+>   $ perf stat -e LLC-load-misses -e LLC-loads -- \
+> 	  perf bench mem memcpy -s 1024MB -l 100 -f default
+> 
+> [...]
 
-This prevents a distorted picture when using 640x800 and running the
-Mesa graphics stack. Mesa tires to use a cache aligned stride, which
-leads at that particular resolution to width != stride. Currently
-Mesa has no fallback behavior, but rejecting this configuration allows
-userspace to handle the issue correctly.
+Applied to will (for-next/perf), thanks!
 
-Signed-off-by: Stefan Agner <stefan@agner.ch>
----
- drivers/gpu/drm/mxsfb/mxsfb_kms.c | 22 ++++++++++++++++++----
- 1 file changed, 18 insertions(+), 4 deletions(-)
+[1/1] arm64: perf: Add general hardware LLC events for PMUv3
+      https://git.kernel.org/will/c/ffdbd3d83553
 
-diff --git a/drivers/gpu/drm/mxsfb/mxsfb_kms.c b/drivers/gpu/drm/mxsfb/mxsfb_kms.c
-index b721b8b262ce..79aa14027f91 100644
---- a/drivers/gpu/drm/mxsfb/mxsfb_kms.c
-+++ b/drivers/gpu/drm/mxsfb/mxsfb_kms.c
-@@ -403,14 +403,28 @@ static int mxsfb_plane_atomic_check(struct drm_plane *plane,
- {
- 	struct mxsfb_drm_private *mxsfb = to_mxsfb_drm_private(plane->dev);
- 	struct drm_crtc_state *crtc_state;
-+	unsigned int pitch;
-+	int ret;
- 
- 	crtc_state = drm_atomic_get_new_crtc_state(plane_state->state,
- 						   &mxsfb->crtc);
- 
--	return drm_atomic_helper_check_plane_state(plane_state, crtc_state,
--						   DRM_PLANE_HELPER_NO_SCALING,
--						   DRM_PLANE_HELPER_NO_SCALING,
--						   false, true);
-+	ret = drm_atomic_helper_check_plane_state(plane_state, crtc_state,
-+						  DRM_PLANE_HELPER_NO_SCALING,
-+						  DRM_PLANE_HELPER_NO_SCALING,
-+						  false, true);
-+	if (ret || !plane_state->visible)
-+		return ret;
-+
-+	pitch = crtc_state->mode.hdisplay *
-+		plane_state->fb->format->cpp[0];
-+	if (plane_state->fb->pitches[0] != pitch) {
-+		dev_err(plane->dev->dev,
-+			"Invalid pitch: fb and crtc widths must be the same");
-+		return -EINVAL;
-+	}
-+
-+	return 0;
- }
- 
- static void mxsfb_plane_primary_atomic_update(struct drm_plane *plane,
+Cheers,
 -- 
-2.28.0
+Will
 
+https://fixes.arm64.dev
+https://next.arm64.dev
+https://will.arm64.dev
