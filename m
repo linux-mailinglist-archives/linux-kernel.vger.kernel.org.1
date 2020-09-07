@@ -2,144 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A8CB2605F1
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 22:48:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB8052605C3
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 22:39:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726927AbgIGUsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 16:48:43 -0400
-Received: from mx2.suse.de ([195.135.220.15]:36380 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726850AbgIGUsk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 16:48:40 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id AAACFAC95;
-        Mon,  7 Sep 2020 20:48:39 +0000 (UTC)
-From:   Davidlohr Bueso <dave@stgolabs.net>
-To:     daniel.thompson@linaro.org
-Cc:     dianders@chromium.org, jason.wessel@windriver.com, oleg@redhat.com,
-        kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Davidlohr Bueso <dbueso@suse.de>
-Subject: [PATCH v2] kdb: Use newer api for tasklist scanning
-Date:   Mon,  7 Sep 2020 13:32:06 -0700
-Message-Id: <20200907203206.21293-1-dave@stgolabs.net>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200907134614.guc4tzj3knnihbe4@holly.lan>
-References: <20200907134614.guc4tzj3knnihbe4@holly.lan>
+        id S1727784AbgIGUjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 16:39:23 -0400
+Received: from ex13-edg-ou-001.vmware.com ([208.91.0.189]:9185 "EHLO
+        EX13-EDG-OU-001.vmware.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726962AbgIGUjW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 16:39:22 -0400
+Received: from sc9-mailhost3.vmware.com (10.113.161.73) by
+ EX13-EDG-OU-001.vmware.com (10.113.208.155) with Microsoft SMTP Server id
+ 15.0.1156.6; Mon, 7 Sep 2020 13:39:20 -0700
+Received: from akaher-virtual-machine.eng.vmware.com (unknown [10.197.103.239])
+        by sc9-mailhost3.vmware.com (Postfix) with ESMTP id 6F07240385;
+        Mon,  7 Sep 2020 13:39:21 -0700 (PDT)
+From:   Ajay Kaher <akaher@vmware.com>
+To:     <gregkh@linuxfoundation.org>, <sashal@kernel.org>
+CC:     <alex.williamson@redhat.com>, <cohuck@redhat.com>,
+        <peterx@redhat.com>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>,
+        <srivatsab@vmware.com>, <srivatsa@csail.mit.edu>,
+        <vsirnapalli@vmware.com>, <akaher@vmware.com>
+Subject: [PATCH v4.9.y 1/3] vfio/type1: Support faulting PFNMAP vmas
+Date:   Tue, 8 Sep 2020 02:05:14 +0530
+Message-ID: <1599510917-23734-1-git-send-email-akaher@vmware.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+Received-SPF: None (EX13-EDG-OU-001.vmware.com: akaher@vmware.com does not
+ designate permitted sender hosts)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This kills using the do_each_thread/while_each_thread combo to
-iterate all threads and uses for_each_process_thread() instead,
-maintaining semantics. while_each_thread() is ultimately racy
-and deprecated;  although in this particular case there is no
-concurrency so it doesn't matter. Still lets trivially get rid
-of two more users.
+From: Alex Williamson <alex.williamson@redhat.com>
 
-Acked-by: Oleg Nesterov <oleg@redhat.com>
-Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
+commit 41311242221e3482b20bfed10fa4d9db98d87016 upstream.
+
+With conversion to follow_pfn(), DMA mapping a PFNMAP range depends on
+the range being faulted into the vma.  Add support to manually provide
+that, in the same way as done on KVM with hva_to_pfn_remapped().
+
+Reviewed-by: Peter Xu <peterx@redhat.com>
+Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+[Ajay: Regenerated the patch for v4.9]
+Signed-off-by: Ajay Kaher <akaher@vmware.com>
 ---
- kernel/debug/gdbstub.c         | 4 ++--
- kernel/debug/kdb/kdb_bt.c      | 4 ++--
- kernel/debug/kdb/kdb_main.c    | 8 ++++----
- kernel/debug/kdb/kdb_private.h | 4 ----
- 4 files changed, 8 insertions(+), 12 deletions(-)
+ drivers/vfio/vfio_iommu_type1.c | 36 +++++++++++++++++++++++++++++++++---
+ 1 file changed, 33 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/debug/gdbstub.c b/kernel/debug/gdbstub.c
-index cc3c43dfec44..b52ebff09ac8 100644
---- a/kernel/debug/gdbstub.c
-+++ b/kernel/debug/gdbstub.c
-@@ -725,7 +725,7 @@ static void gdb_cmd_query(struct kgdb_state *ks)
- 			}
- 		}
- 
--		do_each_thread(g, p) {
-+		for_each_process_thread(g, p) {
- 			if (i >= ks->thr_query && !finished) {
- 				int_to_threadref(thref, p->pid);
- 				ptr = pack_threadid(ptr, thref);
-@@ -735,7 +735,7 @@ static void gdb_cmd_query(struct kgdb_state *ks)
- 					finished = 1;
- 			}
- 			i++;
--		} while_each_thread(g, p);
-+		}
- 
- 		*(--ptr) = '\0';
- 		break;
-diff --git a/kernel/debug/kdb/kdb_bt.c b/kernel/debug/kdb/kdb_bt.c
-index 18e03aba2cfc..1f9f0e47aeda 100644
---- a/kernel/debug/kdb/kdb_bt.c
-+++ b/kernel/debug/kdb/kdb_bt.c
-@@ -149,14 +149,14 @@ kdb_bt(int argc, const char **argv)
- 				return 0;
- 		}
- 		/* Now the inactive tasks */
--		kdb_do_each_thread(g, p) {
-+		for_each_process_thread(g, p) {
- 			if (KDB_FLAG(CMD_INTERRUPT))
- 				return 0;
- 			if (task_curr(p))
- 				continue;
- 			if (kdb_bt1(p, mask, btaprompt))
- 				return 0;
--		} kdb_while_each_thread(g, p);
-+		}
- 	} else if (strcmp(argv[0], "btp") == 0) {
- 		struct task_struct *p;
- 		unsigned long pid;
-diff --git a/kernel/debug/kdb/kdb_main.c b/kernel/debug/kdb/kdb_main.c
-index 5c7949061671..930ac1b25ec7 100644
---- a/kernel/debug/kdb/kdb_main.c
-+++ b/kernel/debug/kdb/kdb_main.c
-@@ -2299,10 +2299,10 @@ void kdb_ps_suppressed(void)
- 		if (kdb_task_state(p, mask_I))
- 			++idle;
- 	}
--	kdb_do_each_thread(g, p) {
-+	for_each_process_thread(g, p) {
- 		if (kdb_task_state(p, mask_M))
- 			++daemon;
--	} kdb_while_each_thread(g, p);
-+	}
- 	if (idle || daemon) {
- 		if (idle)
- 			kdb_printf("%d idle process%s (state I)%s\n",
-@@ -2370,12 +2370,12 @@ static int kdb_ps(int argc, const char **argv)
- 	}
- 	kdb_printf("\n");
- 	/* Now the real tasks */
--	kdb_do_each_thread(g, p) {
-+	for_each_process_thread(g, p) {
- 		if (KDB_FLAG(CMD_INTERRUPT))
- 			return 0;
- 		if (kdb_task_state(p, mask))
- 			kdb_ps1(p);
--	} kdb_while_each_thread(g, p);
-+	}
- 
+diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
+index a9f58f3..ccef02c 100644
+--- a/drivers/vfio/vfio_iommu_type1.c
++++ b/drivers/vfio/vfio_iommu_type1.c
+@@ -213,6 +213,32 @@ static int put_pfn(unsigned long pfn, int prot)
  	return 0;
  }
-diff --git a/kernel/debug/kdb/kdb_private.h b/kernel/debug/kdb/kdb_private.h
-index 2e296e4a234c..a4281fb99299 100644
---- a/kernel/debug/kdb/kdb_private.h
-+++ b/kernel/debug/kdb/kdb_private.h
-@@ -230,10 +230,6 @@ extern struct task_struct *kdb_curr_task(int);
  
- #define kdb_task_has_cpu(p) (task_curr(p))
++static int follow_fault_pfn(struct vm_area_struct *vma, struct mm_struct *mm,
++			    unsigned long vaddr, unsigned long *pfn,
++			    bool write_fault)
++{
++	int ret;
++
++	ret = follow_pfn(vma, vaddr, pfn);
++	if (ret) {
++		bool unlocked = false;
++
++		ret = fixup_user_fault(NULL, mm, vaddr,
++				       FAULT_FLAG_REMOTE |
++				       (write_fault ?  FAULT_FLAG_WRITE : 0),
++				       &unlocked);
++		if (unlocked)
++			return -EAGAIN;
++
++		if (ret)
++			return ret;
++
++		ret = follow_pfn(vma, vaddr, pfn);
++	}
++
++	return ret;
++}
++
+ static int vaddr_get_pfn(unsigned long vaddr, int prot, unsigned long *pfn)
+ {
+ 	struct page *page[1];
+@@ -226,12 +252,16 @@ static int vaddr_get_pfn(unsigned long vaddr, int prot, unsigned long *pfn)
  
--/* Simplify coexistence with NPTL */
--#define	kdb_do_each_thread(g, p) do_each_thread(g, p)
--#define	kdb_while_each_thread(g, p) while_each_thread(g, p)
--
- #define GFP_KDB (in_interrupt() ? GFP_ATOMIC : GFP_KERNEL)
+ 	down_read(&current->mm->mmap_sem);
  
- extern void *debug_kmalloc(size_t size, gfp_t flags);
++retry:
+ 	vma = find_vma_intersection(current->mm, vaddr, vaddr + 1);
+ 
+ 	if (vma && vma->vm_flags & VM_PFNMAP) {
+-		if (!follow_pfn(vma, vaddr, pfn) &&
+-		    is_invalid_reserved_pfn(*pfn))
+-			ret = 0;
++		ret = follow_fault_pfn(vma, current->mm, vaddr, pfn, prot & IOMMU_WRITE);
++		if (ret == -EAGAIN)
++			goto retry;
++
++		if (!ret && !is_invalid_reserved_pfn(*pfn))
++			ret = -EFAULT;
+ 	}
+ 
+ 	up_read(&current->mm->mmap_sem);
 -- 
-2.26.2
+2.7.4
 
