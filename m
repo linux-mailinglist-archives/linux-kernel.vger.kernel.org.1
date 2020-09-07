@@ -2,77 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02BFA25FC69
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 16:58:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 271D525FC66
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 16:57:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730070AbgIGO4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 10:56:24 -0400
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:45997 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729661AbgIGOrs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 10:47:48 -0400
-Received: by mail-oi1-f195.google.com with SMTP id d189so13744969oig.12;
-        Mon, 07 Sep 2020 07:47:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QcjiiAfx+9k9N5nfOR2G/TrS6pvq+Cvo4vzFD0ysl/k=;
-        b=MwaqAuEEw7q/sR6nExBQUc3HwYHaFcnMhsS25KrKyII/cMr7jCU5liMJKQ6/Xg8wFI
-         3/DS7SnwX92vHlNzsft69T27eYmivyjNtiUksW0C/7N3XCjfCOuRpa1g806FMzi+wgvT
-         HQCaV22/q1vKBdNQfZe23a0tGiiTw2YGQ9xrJpydwWgdKc/tlQYsYZxyQBCqPZLQrkss
-         mhc3PA1G4AblJqXuYNQJ0viP7MQtqUsfb5P1DxE7/AuLrfJ59wP+PVpQU9pB2GNm0HmL
-         fijpd6bkB3yHSSfvc7QfhkKzKD/6TGLBRMrCJ8LHgTynmhSbUH3dyFKnmqIta5/x0s2M
-         fr1A==
-X-Gm-Message-State: AOAM531aqJnKRRkNeaHsnZvvW1fIirVRwbb+vwlZyoucNit0QqBJUB2E
-        3tCk1iGewaSPodUmYwDJ667HloQCJDipNSJA2bQ=
-X-Google-Smtp-Source: ABdhPJyY+mdyDZV49zKGIPNu9C6xRs+fpbm9lxoTKNZqCdCFCV/vcvj1uvGnRbxs8d7YoKMermrp1Bu/17LgaaygxOw=
-X-Received: by 2002:aca:52d6:: with SMTP id g205mr12624421oib.54.1599490065211;
- Mon, 07 Sep 2020 07:47:45 -0700 (PDT)
+        id S1729883AbgIGO4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 10:56:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58454 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730019AbgIGOvC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 10:51:02 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BE3772176B;
+        Mon,  7 Sep 2020 14:51:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599490261;
+        bh=7qCTpFFNqVHtpIMDAKfKXUS+bFE7hzcYks7b6ByyYYk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=i7cbHqNM8H80YrBKKrffwXGThOtzzgcasGBvFkRfT7FH9nFjKPReIo6OfblvqC8J8
+         dcFzGdDcEzRsAq9FHSI69+mXJXBePLE+tU9T7CxLvPOaFBeO7Qt7ENNJqN0ouv/WHx
+         p+qTucob7AxMxRRcAJKUFp7Nutzrjr2zfrQTAv1Y=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     himadrispandya@gmail.com, dvyukov@google.com,
+        linux-usb@vger.kernel.org
+Cc:     perex@perex.cz, tiwai@suse.com, stern@rowland.harvard.ed,
+        linux-kernel@vger.kernel.org, marcel@holtmann.org,
+        johan.hedberg@gmail.com, linux-bluetooth@vger.kernel.org,
+        alsa-devel@alsa-project.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH v2 00/11] USB: new USB control message helper functions
+Date:   Mon,  7 Sep 2020 16:50:57 +0200
+Message-Id: <20200907145108.3766613-1-gregkh@linuxfoundation.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20200907144509.8861-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20200907144509.8861-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20200907144509.8861-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 7 Sep 2020 16:47:34 +0200
-Message-ID: <CAMuHMdWGG+7dnrKxeA3S_g01jk3fSO_n2uP1-r0R279VF5TVcQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] dt-bindings: media: renesas,vin: Add device tree
- support for r8a7742
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     =?UTF-8?Q?Niklas_S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 7, 2020 at 4:46 PM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> Add compatible string for r8a7742. No driver change is needed as
-> "renesas,rcar-gen2-vin" will activate the right code.
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+In a recent discussion about a USB networking bug found by syzbot, and
+fixed by Himadri Pandya, the design of the existing usb_control_msg()
+call was brought up as not being the "nicest" thing to use by Dmitry
+Vyukov:
+        https://lore.kernel.org/r/CACT4Y+YbDODLRFn8M5QcY4CazhpeCaunJnP_udXtAs0rYoASSg@mail.gmail.com
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+The function makes it hard to get right, in that it will return the
+number of bytes sent/received, but almost no one checks to see if a
+short read/write happens.  With a malicious, or broken, USB device, this
+can cause drivers to act on data that they did not anticipate, and
+sometimes copy internal kernel data out to userspace.
 
-Gr{oetje,eeting}s,
+So let's fix this up by creating two new functions,
+usb_control_msg_send() and usb_control_msg_recv().  These functions
+either complete the full transation, or they return an error, a short
+send/recv is now an error.
 
-                        Geert
+They also accept data off of the stack, saving individual drivers the
+pain of having to constantly allocate memory on their own for tiny
+messages, thereby saving overall kernel code space.
+
+The api also does not require a raw USB "pipe" to be sent to the
+function, as we know the direction, so just pass in the endpoint number
+instead, again making it easier on the USB driver author to use.
+
+This series first takes a helper function out of the sound core for
+verifying USB endpoints to be able to use internally, and then adds the
+new functions, converts over some internal USB code to use them, and
+then starts to clean up some drivers using these new functions, as an
+example of the savings that can happen by using these functions.
+
+Thanks to Dmitry and Himadri for the idea on how to do all of this.
+
+greg k-h
+
+Changes from v1:
+	- added acks from Takashi Iwai
+	- dropped changes to one function in patch 04 thanks to review
+	  from Alan Stern
+	- typo fix in comment in patch 01
+	- added new patch 11 to remove some unneeded checks in the sound
+	  drivers for endpoint statuses that would always be true.
+
+*** BLURB HERE ***
+
+Greg Kroah-Hartman (11):
+  USB: move snd_usb_pipe_sanity_check into the USB core
+  USB: add usb_control_msg_send() and usb_control_msg_recv()
+  USB: core: message.c: use usb_control_msg_send() in a few places
+  USB: core: hub.c: use usb_control_msg_send() in a few places
+  USB: legousbtower: use usb_control_msg_recv()
+  sound: usx2y: move to use usb_control_msg_send()
+  sound: 6fire: move to use usb_control_msg_send() and
+    usb_control_msg_recv()
+  sound: line6: move to use usb_control_msg_send() and
+    usb_control_msg_recv()
+  sound: hiface: move to use usb_control_msg_send()
+  Bluetooth: ath3k: use usb_control_msg_send() and
+    usb_control_msg_recv()
+  ALSA: remove calls to usb_pipe_type_check for control endpoints
+
+ drivers/bluetooth/ath3k.c       |  90 +++++------------
+ drivers/usb/core/hub.c          |  99 ++++++++----------
+ drivers/usb/core/message.c      | 171 ++++++++++++++++++++++++++++----
+ drivers/usb/core/urb.c          |  31 ++++--
+ drivers/usb/misc/legousbtower.c |  60 ++++-------
+ include/linux/usb.h             |   7 ++
+ sound/usb/6fire/firmware.c      |  38 +++----
+ sound/usb/helper.c              |  16 +--
+ sound/usb/helper.h              |   1 -
+ sound/usb/hiface/pcm.c          |  14 ++-
+ sound/usb/line6/driver.c        |  69 +++++--------
+ sound/usb/line6/podhd.c         |  17 ++--
+ sound/usb/line6/toneport.c      |   8 +-
+ sound/usb/mixer_scarlett_gen2.c |   2 +-
+ sound/usb/quirks.c              |  12 +--
+ sound/usb/usx2y/us122l.c        |  42 ++------
+ 16 files changed, 335 insertions(+), 342 deletions(-)
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.28.0
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
