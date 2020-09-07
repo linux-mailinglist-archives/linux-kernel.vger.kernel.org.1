@@ -2,137 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ECD6260668
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 23:39:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F029B260656
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 23:39:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728238AbgIGVjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 17:39:31 -0400
-Received: from ssl.serverraum.org ([176.9.125.105]:59791 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727962AbgIGVi2 (ORCPT
+        id S1728148AbgIGVis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 17:38:48 -0400
+Received: from mail-il1-f207.google.com ([209.85.166.207]:40251 "EHLO
+        mail-il1-f207.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727877AbgIGViW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 17:38:28 -0400
-Received: from apollo.fritz.box (unknown [IPv6:2a02:810c:c200:2e91:6257:18ff:fec4:ca34])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id BE44723E53;
-        Mon,  7 Sep 2020 23:38:24 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1599514705;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=71mdC86/Fcunign5gPMpdC7J2IQuSCE8Diy5kr7ogGE=;
-        b=rYnYoZs4FiPLygWx98yRbTb6OXx6BEaOjEVKvgyyeHwdt0byEoXV6MFp90dGS/G/ilygSB
-        dnuoviiOyGitlXDyOn0MiMoIVTlMeURqi53GPfyCxphjuzMkhkOSf7YHiMuZ4dDQALzn6q
-        X2n7JTKQV+RsxCODnOCyLxoOQUdYex8=
-From:   Michael Walle <michael@walle.cc>
-To:     linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Lee Jones <lee.jones@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>, Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        Michael Walle <michael@walle.cc>
-Subject: [PATCH v9 13/13] arm64: defconfig: enable the sl28cpld board management controller
-Date:   Mon,  7 Sep 2020 23:38:02 +0200
-Message-Id: <20200907213802.26745-14-michael@walle.cc>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200907213802.26745-1-michael@walle.cc>
-References: <20200907213802.26745-1-michael@walle.cc>
+        Mon, 7 Sep 2020 17:38:22 -0400
+Received: by mail-il1-f207.google.com with SMTP id g188so10608849ilh.7
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 14:38:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=R5dhbd1kdkcgMyAGfhuVfrBhTKEzGI7jgwcgg/qLjgA=;
+        b=FHsaoB/YbCoC5GD8Pe5oLtbfO8uCkztxVdDZ/l5Hi+BwW71coSDMgsGI7Ac7h4u7n7
+         dm+hopbXqG9y5CUSksUC3YTwCFAwl7890KIIKY4RsNxPIp1iqVkLsWx1t+AkoAfgbvs+
+         /ACIkLuSw9L3BPGpM3/Ry+8kye41TYjEvoMcI6FeltCxfJHnmogPb77dlUP4261h4kGO
+         kvdTUZkHh8Gcg/gCbpbi7w46Xeu5AH7Te6oRPyggiDkNZkjmhTS3WMfwECJPaceCFVx3
+         HE0QLPHIiFVOUTLAujPDQ95Pxc8CofNVucSjs5HOR1JKMYo0VDFG/WXQAOFWbf4+PqPX
+         BOBw==
+X-Gm-Message-State: AOAM530Hod0ENZJ78FueCDA1ckAFizmyskxQojd7tGVanTNvUXgzhYtV
+        iIM1gDJJRP87PcN0r4I5WIoT5GEb1AUVsEEIPusrYbMYRi9O
+X-Google-Smtp-Source: ABdhPJzliQi/m7INB68wkxG7vZYa4xsfP2sBRSQm1xAaU6V7FFTld9rlLNyqcKdQLMzpZc4OZP9t+qyugvLiN4+liwCvqhlSpCEh
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam: Yes
+X-Received: by 2002:a05:6e02:4a1:: with SMTP id e1mr21374824ils.113.1599514701522;
+ Mon, 07 Sep 2020 14:38:21 -0700 (PDT)
+Date:   Mon, 07 Sep 2020 14:38:21 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000098ed0505aec00954@google.com>
+Subject: WARNING: refcount bug in qrtr_recvmsg
+From:   syzbot <syzbot+d0f27d9af17914bf253b@syzkaller.appspotmail.com>
+To:     bjorn.andersson@linaro.org, davem@davemloft.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, manivannan.sadhasivam@linaro.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable the kernel modules for the board management controller "sl28cpld"
-which is used on the SMARC-sAL28 board.
+Hello,
 
-Signed-off-by: Michael Walle <michael@walle.cc>
+syzbot found the following issue on:
+
+HEAD commit:    c70672d8 Merge tag 's390-5.9-5' of git://git.kernel.org/pu..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=163f0c31900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=bd46548257448703
+dashboard link: https://syzkaller.appspot.com/bug?extid=d0f27d9af17914bf253b
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=124cc6a5900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11436195900000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+d0f27d9af17914bf253b@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+refcount_t: addition on 0; use-after-free.
+WARNING: CPU: 0 PID: 118 at lib/refcount.c:25 refcount_warn_saturate+0x169/0x1e0 lib/refcount.c:25
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 0 PID: 118 Comm: kworker/u4:3 Not tainted 5.9.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: qrtr_ns_handler qrtr_ns_worker
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x198/0x1fd lib/dump_stack.c:118
+ panic+0x347/0x7c0 kernel/panic.c:231
+ __warn.cold+0x20/0x46 kernel/panic.c:600
+ report_bug+0x1bd/0x210 lib/bug.c:198
+ handle_bug+0x38/0x90 arch/x86/kernel/traps.c:234
+ exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
+ asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
+RIP: 0010:refcount_warn_saturate+0x169/0x1e0 lib/refcount.c:25
+Code: 07 31 ff 89 de e8 e7 df d8 fd 84 db 0f 85 36 ff ff ff e8 9a e3 d8 fd 48 c7 c7 00 dc 93 88 c6 05 67 18 12 07 01 e8 09 e7 a9 fd <0f> 0b e9 17 ff ff ff e8 7b e3 d8 fd 0f b6 1d 4c 18 12 07 31 ff 89
+RSP: 0018:ffffc900013479d8 EFLAGS: 00010086
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: ffff8880a8dd4000 RSI: ffffffff815db9a7 RDI: fffff52000268f2d
+RBP: 0000000000000002 R08: 0000000000000001 R09: ffff8880ae620f8b
+R10: 0000000000000000 R11: 0000000038313154 R12: ffff88821b0f4040
+R13: ffff888095619c00 R14: ffff8880a87eb7f0 R15: ffff8880a87eb7f4
+ refcount_add include/linux/refcount.h:204 [inline]
+ refcount_inc include/linux/refcount.h:241 [inline]
+ kref_get include/linux/kref.h:45 [inline]
+ qrtr_node_acquire net/qrtr/qrtr.c:196 [inline]
+ qrtr_node_lookup net/qrtr/qrtr.c:388 [inline]
+ qrtr_send_resume_tx net/qrtr/qrtr.c:980 [inline]
+ qrtr_recvmsg+0x845/0x970 net/qrtr/qrtr.c:1043
+ sock_recvmsg_nosec net/socket.c:885 [inline]
+ sock_recvmsg net/socket.c:903 [inline]
+ sock_recvmsg net/socket.c:899 [inline]
+ kernel_recvmsg+0x110/0x160 net/socket.c:928
+ qrtr_ns_worker+0x15a/0x14fc net/qrtr/ns.c:624
+ process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
+ kthread+0x3b5/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+Shutting down cpus with NMI
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
+
+
 ---
-Changes since v8:
- - none
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Changes since v7:
- - added new virtual symbol CONFIG_MFD_SL28CPLD
-
-Changes since v6:
- - none
-
-Changes since v5:
- - new patch
-
- arch/arm64/configs/defconfig | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index 39b409eef0b1..c2ae4e8cd7c2 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -507,6 +507,7 @@ CONFIG_GPIO_PCA953X=y
- CONFIG_GPIO_PCA953X_IRQ=y
- CONFIG_GPIO_BD9571MWV=m
- CONFIG_GPIO_MAX77620=y
-+CONFIG_GPIO_SL28CPLD=m
- CONFIG_POWER_AVS=y
- CONFIG_QCOM_CPR=y
- CONFIG_ROCKCHIP_IODOMAIN=y
-@@ -520,6 +521,7 @@ CONFIG_SENSORS_ARM_SCPI=y
- CONFIG_SENSORS_LM90=m
- CONFIG_SENSORS_PWM_FAN=m
- CONFIG_SENSORS_RASPBERRYPI_HWMON=m
-+CONFIG_SENSORS_SL28CPLD=m
- CONFIG_SENSORS_INA2XX=m
- CONFIG_SENSORS_INA3221=m
- CONFIG_THERMAL_GOV_POWER_ALLOCATOR=y
-@@ -542,6 +544,7 @@ CONFIG_QCOM_TSENS=y
- CONFIG_QCOM_SPMI_TEMP_ALARM=m
- CONFIG_UNIPHIER_THERMAL=y
- CONFIG_WATCHDOG=y
-+CONFIG_SL28CPLD_WATCHDOG=m
- CONFIG_ARM_SP805_WATCHDOG=y
- CONFIG_ARM_SBSA_WATCHDOG=y
- CONFIG_ARM_SMC_WATCHDOG=y
-@@ -567,6 +570,7 @@ CONFIG_MFD_MAX77620=y
- CONFIG_MFD_SPMI_PMIC=y
- CONFIG_MFD_RK808=y
- CONFIG_MFD_SEC_CORE=y
-+CONFIG_MFD_SL28CPLD=y
- CONFIG_MFD_ROHM_BD718XX=y
- CONFIG_MFD_WCD934X=m
- CONFIG_REGULATOR_FIXED_VOLTAGE=y
-@@ -966,8 +970,10 @@ CONFIG_PWM_MESON=m
- CONFIG_PWM_RCAR=m
- CONFIG_PWM_ROCKCHIP=y
- CONFIG_PWM_SAMSUNG=y
-+CONFIG_PWM_SL28CPLD=m
- CONFIG_PWM_SUN4I=m
- CONFIG_PWM_TEGRA=m
-+CONFIG_SL28CPLD_INTC=y
- CONFIG_QCOM_PDC=y
- CONFIG_RESET_IMX7=y
- CONFIG_RESET_QCOM_AOSS=y
--- 
-2.20.1
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
