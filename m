@@ -2,155 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E8B125FF58
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 18:30:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01B6625FF63
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 18:31:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730454AbgIGQaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 12:30:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50810 "EHLO mail.kernel.org"
+        id S1729832AbgIGOYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 10:24:18 -0400
+Received: from foss.arm.com ([217.140.110.172]:36936 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729842AbgIGOZ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 10:25:29 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8F2292064B;
-        Mon,  7 Sep 2020 14:16:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599488180;
-        bh=+hBkQu9s4/gMzHCxciSjjnQi2QtLKwBklfRKGdDcWQs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ubElOFB8q/iIS1SIkvwxPAzakDy+zGpi/JPWEGV+l+oSadsydiBT5sTCirXySPLqt
-         uFcwgKNn3JXhKu8BvcomGRstBQE9qN2SN/qJLdtwM9id25z1Lv/0d/Bbt72IA2dTay
-         GkXCdq92evvVCma8kdDninKnSyiW/ZPpouX25gls=
-Date:   Mon, 7 Sep 2020 16:16:34 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     himadrispandya@gmail.com, dvyukov@google.com,
-        linux-usb@vger.kernel.org, perex@perex.cz, tiwai@suse.com,
-        linux-kernel@vger.kernel.org, marcel@holtmann.org,
-        johan.hedberg@gmail.com, linux-bluetooth@vger.kernel.org,
-        alsa-devel@alsa-project.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Eli Billauer <eli.billauer@gmail.com>,
-        Emiliano Ingrassia <ingrassia@epigenesys.com>,
-        Alexander Tsoy <alexander@tsoy.me>,
-        "Geoffrey D. Bennett" <g@b4.vu>, Jussi Laako <jussi@sonarnerd.net>,
-        Nick Kossifidis <mickflemm@gmail.com>,
-        Dmitry Panchenko <dmitry@d-systems.ee>,
-        Chris Wulff <crwulff@gmail.com>,
-        Jesus Ramos <jesus-ramos@live.com>
-Subject: Re: [PATCH 01/10] USB: move snd_usb_pipe_sanity_check into the USB
- core
-Message-ID: <20200907141634.GA3733019@kroah.com>
-References: <20200902110115.1994491-1-gregkh@linuxfoundation.org>
- <20200902110115.1994491-2-gregkh@linuxfoundation.org>
- <20200903004553.GA642955@rowland.harvard.edu>
- <20200903073230.GA162335@kroah.com>
+        id S1729764AbgIGOVX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 10:21:23 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6125C31B;
+        Mon,  7 Sep 2020 07:18:30 -0700 (PDT)
+Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 11A973F73C;
+        Mon,  7 Sep 2020 07:18:28 -0700 (PDT)
+Date:   Mon, 7 Sep 2020 15:18:21 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: Re: [PATCH v2][next] PCI: rcar-gen2: Use fallthrough pseudo-keyword
+Message-ID: <20200907141821.GA9474@e121166-lin.cambridge.arm.com>
+References: <20200722032851.GA4251@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200903073230.GA162335@kroah.com>
+In-Reply-To: <20200722032851.GA4251@embeddedor>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 03, 2020 at 09:32:30AM +0200, Greg Kroah-Hartman wrote:
-> On Wed, Sep 02, 2020 at 08:45:53PM -0400, Alan Stern wrote:
-> > On Wed, Sep 02, 2020 at 01:01:03PM +0200, Greg Kroah-Hartman wrote:
-> > > snd_usb_pipe_sanity_check() is a great function, so let's move it into
-> > > the USB core so that other parts of the kernel, including the USB core,
-> > > can call it.
-> > > 
-> > > Name it usb_pipe_type_check() to match the existing
-> > > usb_urb_ep_type_check() call, which now uses this function.
-> > > 
-> > > Cc: Jaroslav Kysela <perex@perex.cz>
-> > > Cc: Takashi Iwai <tiwai@suse.com>
-> > > Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-> > > Cc: Eli Billauer <eli.billauer@gmail.com>
-> > > Cc: Emiliano Ingrassia <ingrassia@epigenesys.com>
-> > > Cc: Alan Stern <stern@rowland.harvard.edu>
-> > > Cc: Alexander Tsoy <alexander@tsoy.me>
-> > > Cc: "Geoffrey D. Bennett" <g@b4.vu>
-> > > Cc: Jussi Laako <jussi@sonarnerd.net>
-> > > Cc: Nick Kossifidis <mickflemm@gmail.com>
-> > > Cc: Dmitry Panchenko <dmitry@d-systems.ee>
-> > > Cc: Chris Wulff <crwulff@gmail.com>
-> > > Cc: Jesus Ramos <jesus-ramos@live.com>
-> > > Cc: linux-usb@vger.kernel.org
-> > > Cc: linux-kernel@vger.kernel.org
-> > > Cc: alsa-devel@alsa-project.org
-> > > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > ---
-> > 
-> > > diff --git a/drivers/usb/core/urb.c b/drivers/usb/core/urb.c
-> > > index 27e83e55a590..45bc2914c1ba 100644
-> > > --- a/drivers/usb/core/urb.c
-> > > +++ b/drivers/usb/core/urb.c
-> > > @@ -192,24 +192,39 @@ static const int pipetypes[4] = {
-> > >  };
-> > >  
-> > >  /**
-> > > - * usb_urb_ep_type_check - sanity check of endpoint in the given urb
-> > > - * @urb: urb to be checked
-> > > + * usb_pipe_type_check - sanity check of a specific pipe for a usb device
-> > > + * @dev: struct usb_device to be checked
-> > > + * @pipe: pipe to check
-> > >   *
-> > >   * This performs a light-weight sanity check for the endpoint in the
-> > > - * given urb.  It returns 0 if the urb contains a valid endpoint, otherwise
-> > > - * a negative error code.
-> > > + * given usb device.  It returns 0 if the pipe is a valid for the specific usb
-> > -----------------------------------------------------^
-> > Typo.
+On Tue, Jul 21, 2020 at 10:28:51PM -0500, Gustavo A. R. Silva wrote:
+> Replace the existing /* fall through */ comments and its variants with
+> the new pseudo-keyword macro fallthrough[1].
 > 
-> Oops, will fix, thanks.
+> [1] https://www.kernel.org/doc/html/v5.7/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
 > 
+> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> ---
+> Changes in v2:
+>  - Update URL. Use proper URL to Linux v5.7 documentation.
+>  - Add Geert's Reviewed-by tag.
+>  - Update changelog text.
 > 
-> > 
-> > > + * device, otherwise a negative error code.
-> > >   */
-> > > -int usb_urb_ep_type_check(const struct urb *urb)
-> > > +int usb_pipe_type_check(struct usb_device *dev, unsigned int pipe)
-> > >  {
-> > >  	const struct usb_host_endpoint *ep;
-> > >  
-> > > -	ep = usb_pipe_endpoint(urb->dev, urb->pipe);
-> > > +	ep = usb_pipe_endpoint(dev, pipe);
-> > >  	if (!ep)
-> > >  		return -EINVAL;
-> > > -	if (usb_pipetype(urb->pipe) != pipetypes[usb_endpoint_type(&ep->desc)])
-> > > +	if (usb_pipetype(pipe) != pipetypes[usb_endpoint_type(&ep->desc)])
-> > >  		return -EINVAL;
-> > >  	return 0;
-> > >  }
-> > > +EXPORT_SYMBOL_GPL(usb_pipe_type_check);
-> > > +
-> > > +/**
-> > > + * usb_urb_ep_type_check - sanity check of endpoint in the given urb
-> > > + * @urb: urb to be checked
-> > > + *
-> > > + * This performs a light-weight sanity check for the endpoint in the
-> > > + * given urb.  It returns 0 if the urb contains a valid endpoint, otherwise
-> > > + * a negative error code.
-> > > + */
-> > > +int usb_urb_ep_type_check(const struct urb *urb)
-> > > +{
-> > > +	return usb_pipe_type_check(urb->dev, urb->pipe);
-> > > +}
-> > >  EXPORT_SYMBOL_GPL(usb_urb_ep_type_check);
-> > 
-> > Since this routine is used in only one place in the entire kernel, you 
-> > might as well inline the code there and get rid of the function 
-> > entirely.
-> 
-> Good idea, will do.
+>  drivers/pci/controller/pci-rcar-gen2.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-No, wait, the USB sound drivers call it a lot, so it needs to stick
-around for now until we clean that up.
+Applied to pci/rcar, thanks.
 
-thanks,
+Lorenzo
 
-greg k-h
+> diff --git a/drivers/pci/controller/pci-rcar-gen2.c b/drivers/pci/controller/pci-rcar-gen2.c
+> index 326171cb1a97..2ec7093a7588 100644
+> --- a/drivers/pci/controller/pci-rcar-gen2.c
+> +++ b/drivers/pci/controller/pci-rcar-gen2.c
+> @@ -228,7 +228,7 @@ static int rcar_pci_setup(int nr, struct pci_sys_data *sys)
+>  		pr_warn("unknown window size %ld - defaulting to 256M\n",
+>  			priv->window_size);
+>  		priv->window_size = SZ_256M;
+> -		/* fall-through */
+> +		fallthrough;
+>  	case SZ_256M:
+>  		val |= RCAR_USBCTR_PCIAHB_WIN1_256M;
+>  		break;
+> -- 
+> 2.27.0
+> 
