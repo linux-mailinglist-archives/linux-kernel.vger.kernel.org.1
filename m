@@ -2,163 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FA3125FF16
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 18:27:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2309F25FF15
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 18:27:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729917AbgIGQ1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 12:27:33 -0400
-Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:63535 "EHLO
-        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729952AbgIGQ1F (ORCPT
+        id S1730411AbgIGQ1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 12:27:17 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:11311 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729863AbgIGQ1F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 7 Sep 2020 12:27:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1599496025; x=1631032025;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references;
-  bh=gaoG8GkE3nCA4mq3eby4DI5ttGvtMXjTHUELrf0upLM=;
-  b=KuZEr/OKVBYabHBEOvW6/MhQso5OuIgrpTp6HwZbcku4/3dVaWhwwEqP
-   9fPpRB7tsbrC5n+Y4ZNwT7km55Oc2yWqtoLxaF/jm2bVTXpmP60wgGRuL
-   v/wnydL0nVocX+DNXs4h1D7ANWv9NXYUwHEqhKJTSFSlT1ZyNT8lFQaNn
-   I=;
-X-IronPort-AV: E=Sophos;i="5.76,402,1592870400"; 
-   d="scan'208";a="73024410"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1e-97fdccfd.us-east-1.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 07 Sep 2020 16:27:00 +0000
-Received: from uc85b769cb7f9591afac0.ant.amazon.com (iad7-ws-svc-lb50-vlan2.amazon.com [10.0.93.210])
-        by email-inbound-relay-1e-97fdccfd.us-east-1.amazon.com (Postfix) with ESMTPS id BC317A2086;
-        Mon,  7 Sep 2020 16:26:57 +0000 (UTC)
-Received: from uc85b769cb7f9591afac0.ant.amazon.com (uc85b769cb7f9591afac0 [127.0.0.1])
-        by uc85b769cb7f9591afac0.ant.amazon.com (8.15.2/8.15.2/Debian-3) with ESMTP id 087GQr5S011096;
-        Mon, 7 Sep 2020 18:26:53 +0200
-Received: (from markubo@localhost)
-        by uc85b769cb7f9591afac0.ant.amazon.com (8.15.2/8.15.2/Submit) id 087GQqSn011091;
-        Mon, 7 Sep 2020 18:26:52 +0200
-From:   Markus Boehme <markubo@amazon.com>
-To:     Corey Minyard <minyard@acm.org>,
-        openipmi-developer@lists.sourceforge.net
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, Stefan Nuernberger <snu@amazon.com>,
-        SeongJae Park <sjpark@amazon.com>, Amit Shah <aams@amazon.com>,
-        Markus Boehme <markubo@amazon.com>
-Subject: [PATCH 3/3] ipmi: Add timeout waiting for channel information
-Date:   Mon,  7 Sep 2020 18:25:37 +0200
-Message-Id: <1599495937-10654-3-git-send-email-markubo@amazon.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1599495937-10654-1-git-send-email-markubo@amazon.com>
-References: <1599495937-10654-1-git-send-email-markubo@amazon.com>
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f565f450002>; Mon, 07 Sep 2020 09:26:45 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Mon, 07 Sep 2020 09:26:59 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Mon, 07 Sep 2020 09:26:59 -0700
+Received: from [172.27.13.12] (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 7 Sep
+ 2020 16:26:50 +0000
+Subject: Re: [PATCH net-next RFC v1 3/4] devlink: Add hierarchy between traps
+ in device level and port level
+To:     Ido Schimmel <idosch@idosch.org>, Aya Levin <ayal@mellanox.com>
+CC:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jiri Pirko <jiri@mellanox.com>, <netdev@vger.kernel.org>,
+        Moshe Shemesh <moshe@mellanox.com>,
+        Eran Ben Elisha <eranbe@mellanox.com>,
+        Ido Schimmel <idosch@mellanox.com>,
+        <linux-kernel@vger.kernel.org>
+References: <1599060734-26617-1-git-send-email-ayal@mellanox.com>
+ <1599060734-26617-4-git-send-email-ayal@mellanox.com>
+ <20200906155858.GB2431016@shredder>
+From:   Aya Levin <ayal@nvidia.com>
+Message-ID: <a8147d79-fde1-4b31-0f06-fe2e54ee75c7@nvidia.com>
+Date:   Mon, 7 Sep 2020 19:26:48 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
+MIME-Version: 1.0
+In-Reply-To: <20200906155858.GB2431016@shredder>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1599496005; bh=zWN2HLHNzNDC/aRGR6xUqOC8/KSE1ZfTowseUrpuvXE=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=SzMIKPjHuDMvng3v+lrgs1iZyZwrlI9C5LxvELAbZBBD93qzkwtYgIoVM0f0DJ4uU
+         Uwl9YQ3J1+LpDJl4MjqqjQ2pLTvWMmKf0n3N7PTC7VEVT/cVdf6g65UrKZogiILUvh
+         3n6BjCyHWBwi0efHltOGCYj+yppTSvtWYHsHSHqC5Yf0FD5zVv6oO/J9g1RfO17RTn
+         2BuGKt9/NrgBwYPRUN8s3m1HIOuB4bkRh6ShgrSYXKv6IWlzfS8KIhrZPU+vbBs0s4
+         oQvGb66djDNCgXdTAKe9V2hqrg5MgkOdtoR2bNwhq/uF4NYVd8j0gRiYFzm49XNFH1
+         LIbitXgUobRYQ==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We have observed hosts with misbehaving BMCs that receive a Get Channel
-Info command but don't respond. This leads to an indefinite wait in the
-ipmi_msghandler's __scan_channels function, showing up as hung task
-messages for modprobe.
 
-Add a timeout waiting for the channel scan to complete. If the scan
-fails to complete within that time, treat that like IPMI 1.0 and only
-assume the presence of the primary IPMB channel at channel number 0.
 
-Signed-off-by: Stefan Nuernberger <snu@amazon.com>
-Signed-off-by: Markus Boehme <markubo@amazon.com>
----
- drivers/char/ipmi/ipmi_msghandler.c | 72 ++++++++++++++++++++-----------------
- 1 file changed, 39 insertions(+), 33 deletions(-)
+On 9/6/2020 6:58 PM, Ido Schimmel wrote:
+> On Wed, Sep 02, 2020 at 06:32:13PM +0300, Aya Levin wrote:
+>> Managing large scale port's traps may be complicated. This patch
+>> introduces a shortcut: when setting a trap on a device and this trap is
+>> not registered on this device, the action will take place on all related
+>> ports that did register this trap.
+> 
+> I'm not really a fan of this and I'm not sure there is precedent for
+> something similar. Also, it's an optimization, so I wouldn't put it as
+> part of the first submission before you gather some operational
+> experience with the initial interface.
 
-diff --git a/drivers/char/ipmi/ipmi_msghandler.c b/drivers/char/ipmi/ipmi_msghandler.c
-index 2a2e8b2..9de9ba6 100644
---- a/drivers/char/ipmi/ipmi_msghandler.c
-+++ b/drivers/char/ipmi/ipmi_msghandler.c
-@@ -3315,46 +3315,52 @@ channel_handler(struct ipmi_smi *intf, struct ipmi_recv_msg *msg)
-  */
- static int __scan_channels(struct ipmi_smi *intf, struct ipmi_device_id *id)
- {
--	int rv;
-+	long rv;
-+	unsigned int set;
- 
--	if (ipmi_version_major(id) > 1
--			|| (ipmi_version_major(id) == 1
--			    && ipmi_version_minor(id) >= 5)) {
--		unsigned int set;
-+	if (ipmi_version_major(id) == 1 && ipmi_version_minor(id) < 5) {
-+		set = intf->curr_working_cset;
-+		goto single_ipmb_channel;
-+	}
- 
--		/*
--		 * Start scanning the channels to see what is
--		 * available.
--		 */
--		set = !intf->curr_working_cset;
--		intf->curr_working_cset = set;
--		memset(&intf->wchannels[set], 0,
--		       sizeof(struct ipmi_channel_set));
--
--		intf->null_user_handler = channel_handler;
--		intf->curr_channel = 0;
--		rv = send_channel_info_cmd(intf, 0);
--		if (rv) {
--			dev_warn(intf->si_dev,
--				 "Error sending channel information for channel 0, %d\n",
--				 rv);
--			intf->null_user_handler = NULL;
--			return -EIO;
--		}
-+	/*
-+	 * Start scanning the channels to see what is
-+	 * available.
-+	 */
-+	set = !intf->curr_working_cset;
-+	intf->curr_working_cset = set;
-+	memset(&intf->wchannels[set], 0, sizeof(struct ipmi_channel_set));
- 
--		/* Wait for the channel info to be read. */
--		wait_event(intf->waitq, intf->channels_ready);
-+	intf->null_user_handler = channel_handler;
-+	intf->curr_channel = 0;
-+	rv = send_channel_info_cmd(intf, 0);
-+	if (rv) {
-+		dev_warn(intf->si_dev,
-+			 "Error sending channel information for channel 0, %ld\n",
-+			 rv);
- 		intf->null_user_handler = NULL;
--	} else {
--		unsigned int set = intf->curr_working_cset;
-+		return -EIO;
-+	}
- 
--		/* Assume a single IPMB channel at zero. */
--		intf->wchannels[set].c[0].medium = IPMI_CHANNEL_MEDIUM_IPMB;
--		intf->wchannels[set].c[0].protocol = IPMI_CHANNEL_PROTOCOL_IPMB;
--		intf->channel_list = intf->wchannels + set;
--		intf->channels_ready = true;
-+	/* Wait for the channel info to be read. */
-+	rv = wait_event_timeout(intf->waitq, intf->channels_ready, 5 * HZ);
-+	if (rv == 0) {
-+		dev_warn(intf->si_dev,
-+			 "Timed out waiting for channel information. Assuming a single IPMB channel at 0.\n");
-+		goto single_ipmb_channel;
- 	}
- 
-+	goto out;
-+
-+single_ipmb_channel:
-+	/* Assume a single IPMB channel at zero. */
-+	intf->wchannels[set].c[0].medium = IPMI_CHANNEL_MEDIUM_IPMB;
-+	intf->wchannels[set].c[0].protocol = IPMI_CHANNEL_PROTOCOL_IPMB;
-+	intf->channel_list = intf->wchannels + set;
-+	intf->channels_ready = true;
-+
-+out:
-+	intf->null_user_handler = NULL;
- 	return 0;
- }
- 
--- 
-2.7.4
-
+I thought it was a nice idea but I agree that this is an optimization 
+and can be dropped from preliminary submission
+> 
+> In addition, I find it very unintuitive for users. When I do 'devlink
+> trap show' I will not see anything. I will only see the traps when I
+> issue 'devlink port trap show', yet 'devlink trap set ...' is expected
+> to work.
+> 
+> Lets assume that this is a valid change, it would be better implemented
+> with my suggestion from the previous patch: When devlink sees that a
+> trap is registered on all the ports it can auto-register a new
+> per-device trap and user space gets the appropriate notification.
+> 
+>>
+>> Signed-off-by: Aya Levin <ayal@mellanox.com>
+>> ---
+>>   net/core/devlink.c | 43 +++++++++++++++++++++++++++++++++----------
+>>   1 file changed, 33 insertions(+), 10 deletions(-)
+>>
+>> diff --git a/net/core/devlink.c b/net/core/devlink.c
+>> index b13e1b40bf1c..dea5482b2517 100644
+>> --- a/net/core/devlink.c
+>> +++ b/net/core/devlink.c
+>> @@ -6501,23 +6501,46 @@ static int devlink_nl_cmd_trap_set_doit(struct sk_buff *skb,
+>>   	struct devlink *devlink = info->user_ptr[0];
+>>   	struct devlink_trap_mngr *trap_mngr;
+>>   	struct devlink_trap_item *trap_item;
+>> +	struct devlink_port *devlink_port;
+>>   	int err;
+>>   
+>> -	trap_mngr = devlink_trap_get_trap_mngr_from_info(devlink, info);
+>> -	if (list_empty(&trap_mngr->trap_list))
+>> -		return -EOPNOTSUPP;
+>> +	devlink_port = devlink_port_get_from_attrs(devlink, info->attrs);
+>> +	if (IS_ERR(devlink_port)) {
+>> +		trap_mngr =  &devlink->trap_mngr;
+>> +		if (list_empty(&trap_mngr->trap_list))
+>> +			goto loop_over_ports;
+>>   
+>> -	trap_item = devlink_trap_item_get_from_info(trap_mngr, info);
+>> -	if (!trap_item) {
+>> -		NL_SET_ERR_MSG_MOD(extack, "Device did not register this trap");
+>> -		return -ENOENT;
+>> +		trap_item = devlink_trap_item_get_from_info(trap_mngr, info);
+>> +		if (!trap_item)
+>> +			goto loop_over_ports;
+>> +	} else {
+>> +		trap_mngr = &devlink_port->trap_mngr;
+>> +		if (list_empty(&trap_mngr->trap_list))
+>> +			return -EOPNOTSUPP;
+>> +
+>> +		trap_item = devlink_trap_item_get_from_info(trap_mngr, info);
+>> +		if (!trap_item) {
+>> +			NL_SET_ERR_MSG_MOD(extack, "Port did not register this trap");
+>> +			return -ENOENT;
+>> +		}
+>>   	}
+>>   	return devlink_trap_action_set(devlink, trap_mngr, trap_item, info);
+>>   
+>> -	err = devlink_trap_action_set(devlink, trap_mngr, trap_item, info);
+>> -	if (err)
+>> -		return err;
+>> +loop_over_ports:
+>> +	if (list_empty(&devlink->port_list))
+>> +		return -EOPNOTSUPP;
+>> +	list_for_each_entry(devlink_port, &devlink->port_list, list) {
+>> +		trap_mngr = &devlink_port->trap_mngr;
+>> +		if (list_empty(&trap_mngr->trap_list))
+>> +			continue;
+>>   
+>> +		trap_item = devlink_trap_item_get_from_info(trap_mngr, info);
+>> +		if (!trap_item)
+>> +			continue;
+>> +		err = devlink_trap_action_set(devlink, trap_mngr, trap_item, info);
+>> +		if (err)
+>> +			return err;
+>> +	}
+>>   	return 0;
+>>   }
+>>   
+>> -- 
+>> 2.14.1
+>>
