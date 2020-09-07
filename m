@@ -2,148 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF9CF25F230
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 05:46:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3904225F233
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 05:48:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726926AbgIGDqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Sep 2020 23:46:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57018 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726802AbgIGDpv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Sep 2020 23:45:51 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06006C061573
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Sep 2020 20:45:51 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id a8so3865316plm.2
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Sep 2020 20:45:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=27vCMqYtloZ9jlU8gp2knuFpHSbEXU/O9OXX/MacU2c=;
-        b=VhLnqld4jXuMWmCdEDuy1ONq32aCpqXNEMr5ZoJ78Qks81hIDOnWGx4MOBQxra75tN
-         BAYOxCf4m3krvQT1rryugiyi/Nax1ISKFG6z91BEqxz27Wv/y7ncJpTv5jMCQViRqjHD
-         Xl37CCHhhW7dFC7Jxil/VUak3u1gniaHpURKNlAZyKOwdjJrOk5EP2qn9l1JQE5KLpEB
-         xq+nqqzoPJMgHe/SWfVbsbS+kYwU+HPW+sXAPVhJItyziEuhGQYPKWpx6338yz0zfxIi
-         Tc9WPWjtq3wpki8W1M+kq7IQAIqL06P+oVsAu9sotyLvPGNwPufwyMl5veiCwb/8fVA5
-         KohQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=27vCMqYtloZ9jlU8gp2knuFpHSbEXU/O9OXX/MacU2c=;
-        b=UtIXm75WuMt3RY5zCVzZOM2b3Ixm/HmJR65ZJ9xBN104/bSdX19BnSRu/LK5LjyLb1
-         Y0oTR8LxBR36irwHBVDTLwjaSQ83vWDmZcIj5WqLczjSBrLXD3DChOoQfbr75zTUpYbj
-         p/kpqg9jypf0XMfTxuxilOvUWEC1AEac/rW3ef1ER97pWRftDC0meeXpPv01Yd/Oe5NZ
-         GuCfRnICYu7dhBIOrHFxKiczaNUipNqunOmh0oPrifstlaVCr7O7kimKfW3WyOTZ/BLH
-         CAsF09BtpejJJ45Obo+oDHP2RiFRrQIQgw6B6Q+P54IXZOMf6cenmi3odAUM2yaWfjdQ
-         SIWg==
-X-Gm-Message-State: AOAM532UfHHzfBkUOqUqhYQV+bxT9coJOtFYmllqf1aBp0zhBO37iUh+
-        B5wD8+s7SaiXrJ+jb6S7zAqCdMJ8eNN0UA==
-X-Google-Smtp-Source: ABdhPJyPaiDyFU7tG44Um7Jx3ufep8lkSmUZqj9UbbaTR1lXZxfbSmA4WBiG/WkdnfjfujqAQFHHEA==
-X-Received: by 2002:a17:90a:6582:: with SMTP id k2mr9412813pjj.40.1599450350597;
-        Sun, 06 Sep 2020 20:45:50 -0700 (PDT)
-Received: from balhae.roam.corp.google.com ([101.235.31.111])
-        by smtp.gmail.com with ESMTPSA id l123sm11099672pgl.24.2020.09.06.20.45.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 06 Sep 2020 20:45:50 -0700 (PDT)
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Stephane Eranian <eranian@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <andi@firstfloor.org>,
-        Ian Rogers <irogers@google.com>
-Subject: [PATCH 9/9] perf test: Free formats for perf pmu parse test
-Date:   Mon,  7 Sep 2020 12:45:02 +0900
-Message-Id: <20200907034502.753230-10-namhyung@kernel.org>
-X-Mailer: git-send-email 2.28.0.526.ge36021eeef-goog
-In-Reply-To: <20200907034502.753230-1-namhyung@kernel.org>
-References: <20200907034502.753230-1-namhyung@kernel.org>
+        id S1726496AbgIGDsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Sep 2020 23:48:31 -0400
+Received: from mga09.intel.com ([134.134.136.24]:50798 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726318AbgIGDsb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Sep 2020 23:48:31 -0400
+IronPort-SDR: 89/j3eGLihNz5b/dITDGkQrkbhmGTszcQBOniSBYIw0LM5EBqWldQhtd3s0qdCaIlYxJSHwnBL
+ dROukhcPZhNg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9736"; a="158932740"
+X-IronPort-AV: E=Sophos;i="5.76,400,1592895600"; 
+   d="scan'208";a="158932740"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2020 20:48:29 -0700
+IronPort-SDR: 2p1st/nZI1B7u5B+v36cxaiKIgpbX0ySNt4CUN6qG9TZZMMQ4L6Drf2FfAZN6yvpTnirN6RQ0K
+ N+jkVQzaberA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,400,1592895600"; 
+   d="scan'208";a="377086248"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga001.jf.intel.com with ESMTP; 06 Sep 2020 20:48:29 -0700
+Received: from [10.255.167.17] (vramuthx-MOBL1.gar.corp.intel.com [10.255.167.17])
+        by linux.intel.com (Postfix) with ESMTP id 5589E58077A;
+        Sun,  6 Sep 2020 20:48:25 -0700 (PDT)
+Reply-To: vadivel.muruganx.ramuthevar@linux.intel.com
+Subject: Re: [PATCH v9 0/2] phy: Add USB PHY support on Intel LGM SoC
+To:     linux-kernel@vger.kernel.org, kishon@ti.com, vkoul@kernel.org
+Cc:     devicetree@vger.kernel.org, robh+dt@kernel.org,
+        gregkh@linuxfoundation.org, p.zabel@pengutronix.de,
+        balbi@kernel.org, andriy.shevchenko@intel.com,
+        cheol.yong.kim@intel.com, qi-ming.wu@intel.com, yin1.li@intel.com
+References: <20200828022312.52724-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+From:   "Ramuthevar, Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+Message-ID: <e61406f7-8198-29c7-3dd4-c7960d19d3ce@linux.intel.com>
+Date:   Mon, 7 Sep 2020 11:48:23 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200828022312.52724-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following leaks were detected by ASAN:
+Hi Kishon, Vinod,
 
-  Indirect leak of 360 byte(s) in 9 object(s) allocated from:
-    #0 0x7fecc305180e in calloc (/lib/x86_64-linux-gnu/libasan.so.5+0x10780e)
-    #1 0x560578f6dce5 in perf_pmu__new_format util/pmu.c:1333
-    #2 0x560578f752fc in perf_pmu_parse util/pmu.y:59
-    #3 0x560578f6a8b7 in perf_pmu__format_parse util/pmu.c:73
-    #4 0x560578e07045 in test__pmu tests/pmu.c:155
-    #5 0x560578de109b in run_test tests/builtin-test.c:410
-    #6 0x560578de109b in test_and_print tests/builtin-test.c:440
-    #7 0x560578de401a in __cmd_test tests/builtin-test.c:661
-    #8 0x560578de401a in cmd_test tests/builtin-test.c:807
-    #9 0x560578e49354 in run_builtin /home/namhyung/project/linux/tools/perf/perf.c:312
-    #10 0x560578ce71a8 in handle_internal_command /home/namhyung/project/linux/tools/perf/perf.c:364
-    #11 0x560578ce71a8 in run_argv /home/namhyung/project/linux/tools/perf/perf.c:408
-    #12 0x560578ce71a8 in main /home/namhyung/project/linux/tools/perf/perf.c:538
-    #13 0x7fecc2b7acc9 in __libc_start_main ../csu/libc-start.c:308
+   Kindly, can you please merge it if there's no further comments.
+   Rob given Reviewed-by tag to USB-PHY  dt_schema YAML patch.
+   Philipp Zabel given Reviewed-by tag to USB-PHY driver patch.
+   Please consider and do the needful.
 
-Fixes: cff7f956ec4a1 ("perf tests: Move pmu tests into separate object")
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
----
- tools/perf/tests/pmu.c |  1 +
- tools/perf/util/pmu.c  | 11 +++++++++++
- tools/perf/util/pmu.h  |  1 +
- 3 files changed, 13 insertions(+)
+Regards
+Vadivel
 
-diff --git a/tools/perf/tests/pmu.c b/tools/perf/tests/pmu.c
-index 5c11fe2b3040..714e6830a758 100644
---- a/tools/perf/tests/pmu.c
-+++ b/tools/perf/tests/pmu.c
-@@ -173,6 +173,7 @@ int test__pmu(struct test *test __maybe_unused, int subtest __maybe_unused)
- 		ret = 0;
- 	} while (0);
- 
-+	perf_pmu__del_formats(&formats);
- 	test_format_dir_put(format);
- 	return ret;
- }
-diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-index 555cb3524c25..d41caeb35cf6 100644
---- a/tools/perf/util/pmu.c
-+++ b/tools/perf/util/pmu.c
-@@ -1354,6 +1354,17 @@ void perf_pmu__set_format(unsigned long *bits, long from, long to)
- 		set_bit(b, bits);
- }
- 
-+void perf_pmu__del_formats(struct list_head *formats)
-+{
-+	struct perf_pmu_format *fmt, *tmp;
-+
-+	list_for_each_entry_safe(fmt, tmp, formats, list) {
-+		list_del(&fmt->list);
-+		free(fmt->name);
-+		free(fmt);
-+	}
-+}
-+
- static int sub_non_neg(int a, int b)
- {
- 	if (b > a)
-diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
-index b63c4c5e335e..a64e9c9ce731 100644
---- a/tools/perf/util/pmu.h
-+++ b/tools/perf/util/pmu.h
-@@ -94,6 +94,7 @@ int perf_pmu__new_format(struct list_head *list, char *name,
- 			 int config, unsigned long *bits);
- void perf_pmu__set_format(unsigned long *bits, long from, long to);
- int perf_pmu__format_parse(char *dir, struct list_head *head);
-+void perf_pmu__del_formats(struct list_head *formats);
- 
- struct perf_pmu *perf_pmu__scan(struct perf_pmu *pmu);
- 
--- 
-2.28.0.526.ge36021eeef-goog
-
+On 28/8/2020 10:23 am, Ramuthevar,Vadivel MuruganX wrote:
+> The USB PHY provides the optimized for low power dissipation while active, idle, or on standby.
+> Requires minimal external components, a single resistor, for best operation.
+> Supports 10/5-Gbps high-speed data transmission rates through 3-m USB 3.x cable
+> ---
+> v9:
+>    - Vinod review comments update
+>    - remove depends on USB_SUPPORT
+>    - replace ret variable by 0 in return statement
+>    - replace dev_info by dev_dbg
+>    - handle ret and extcon_get_state separately
+> v8-resend:
+>    - Correct the typo error in my previous patch
+> v8:
+>    - Rebase to V5.9-rc1
+> v7:
+>    - No Change
+> v6:
+>    - No Change
+> v5:
+>    - As per Felipe and Greg's suggestion usb phy driver reviewed patches
+>      changed the folder from drivers/usb/phy to drivers/phy
+>    - Reviewed-By tag added in commit message
+> v4:
+>    - Andy's review comments addressed
+>    - drop the excess error debug prints
+>    - error check optimized
+>    - merge the split line to one line
+> v3:
+>    - Andy's review comments update
+>    - hardcode return value changed to actual return value from the callee
+>    - add error check is fixed according to the above
+>    - correct the assignment in redundant
+>    - combine the split line into one line
+> v2:
+>    - Address Phillip's review comments
+>    - replace devm_reset_control_get() by devm_reset_control_get_exclusive()
+>    - re-design the assert and deassert fucntion calls as per review comments
+>    - address kbuild bot warnings
+>    - add the comments
+> v1:
+>    - initial version
+> ---
+> dt-bindings: usb: Add USB PHY support for Intel LGM SoC
+> v9:
+>    - No Change
+> v8-resend:
+>    - No change
+> v8:
+>    - No Change
+> v7:
+>    - Fixed the bot issue: usb-phy@e7e00000: '#phy-cells' is a required property
+> v6:
+>    - Fixed the bot issue.
+>    - replace node-name by usb-phy@ in example
+> v5:
+>    - Reviewed-By tag added
+> v4:
+>    - No Change
+> v3:
+>    - No Change
+> v2:
+>    - No Change
+> v1:
+>    - initial version
+>   
+> Ramuthevar Vadivel Murugan (2):
+>    dt-bindings: phy: Add USB PHY support for Intel LGM SoC
+>    phy: Add USB3 PHY support for Intel LGM SoC
+> 
+>   .../devicetree/bindings/phy/intel,lgm-usb-phy.yaml |  58 +++++
+>   drivers/phy/Kconfig                                |  10 +
+>   drivers/phy/Makefile                               |   1 +
+>   drivers/phy/phy-lgm-usb.c                          | 281 +++++++++++++++++++++
+>   4 files changed, 350 insertions(+)
+>   create mode 100644 Documentation/devicetree/bindings/phy/intel,lgm-usb-phy.yaml
+>   create mode 100644 drivers/phy/phy-lgm-usb.c
+> 
