@@ -2,116 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B02A25F385
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 09:03:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F79C25F37F
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 09:01:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726926AbgIGHCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 03:02:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58736 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726771AbgIGHCJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 03:02:09 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BE63C061574;
-        Mon,  7 Sep 2020 00:02:08 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id g4so14563479wrs.5;
-        Mon, 07 Sep 2020 00:02:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ylv/Ec3IQY/nRnVl7KUf4rlIbzcbzilcAdfCxVxqCdM=;
-        b=eGZAavdZlKtcT3lSWI7KautQwycdwOhhWwW/QEDVhWUcao0t3/TnmTEfUdfslBudpC
-         8nOaO+bFIkEwWAZNjSOuhZ6S26BDST+w8i732lh7nQ3kIYL04wbpYO6FdH0Xvm/2JWaJ
-         ySiPaxUHkEGfTtRKfTj2b7T2yXI56gul9vy5dixsvYnOcR6BLkNU5NcTV5022OWDUrso
-         uPL9AKxRJWrPp+jiZrtrq8sEq5j4iSINePJYRZ86f9QwUqYx7XzAfdVcV+/qz1oqvkxz
-         NHic36LO7xaBXZ7JXPidaQ6oPLkn4BoGtaSdmOAQohYSiqIQdzMaGTWbAUJrsDHKZnGF
-         B4dQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ylv/Ec3IQY/nRnVl7KUf4rlIbzcbzilcAdfCxVxqCdM=;
-        b=kQUDjwR2DxLPzrntfzoR9k/MdjyFt6rlbGZtMCSw5Vt9VpyCtCFFU4semoqizrrweQ
-         VUypzNBmKZDVrMZmd0EGCI9UnRTGogBSVjnBKhcbYs+0xk6B9KoC1fpGQ+xIDTLL8QLR
-         2mmrM506vf4qZylzZJVelTBeQyroR0tfryYQtBu0eDUUtTNLc0DnM+MDLU0kszCDO+l3
-         kZO8cmvGqknukajxJFLlc4u363sH1KpSSVcSnpMwvPVYZ45x9OsHDHJa9qcrTikGFVfE
-         xabPK9yEfFvwddCm3whbjkjFAZiMoCR2g6tohykE9gAsB1qX3q87x8LNADmgFN3d74U0
-         w4yw==
-X-Gm-Message-State: AOAM531PTa1voJrZuf1Y/KWhLy0ldCfaU5mGR2l7OoP42nrrKS+7iTY9
-        oeOhqr243+cKS7HFCjoQZR5E+ochjg20EumOTlU=
-X-Google-Smtp-Source: ABdhPJw8TAjLd5BYGCY0Tr5/xWkqYwtfubZPgWpkYEtQ1vEu4nZ7Ih5my0t7n5KCYlQdFMaMMGHicv8EGLY6kCKlCsI=
-X-Received: by 2002:adf:dd51:: with SMTP id u17mr19759514wrm.355.1599462127129;
- Mon, 07 Sep 2020 00:02:07 -0700 (PDT)
+        id S1726890AbgIGHBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 03:01:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37884 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726490AbgIGHBo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 03:01:44 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3F87320768;
+        Mon,  7 Sep 2020 07:01:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599462102;
+        bh=ZAj/I1uTuH7D1upBhwBN2EIGxNIlWwzeBuzktnN7cPg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dWgnC5aHFdj7QU+pJRFFdwbAPl8QNG56z+agDCDUgDDLL51W/mtGbd38rBklCd2hI
+         YanKJxBRVc59P5+pa2WRqkKH9x+9BIphwalsxUyzEPAHD3wa8TTHkxn0krIjjQlMpJ
+         Z4ei21H7kQR1p4R06BSf2ezf6GzJzfMqeuuOddLo=
+Date:   Mon, 7 Sep 2020 09:01:57 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Naveen Panwar <naveen.panwar27@gmail.com>
+Cc:     devel@driverdev.osuosl.org, mpe@ellerman.id.au,
+        stern@rowland.harvard.edu, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Staging: Ralink: ralink-gdma: Fixed codestyle issue and
+ warnings
+Message-ID: <20200907070157.GA606215@kroah.com>
+References: <20200907065745.21439-1-naveen.panwar27@gmail.com>
 MIME-Version: 1.0
-References: <20200731064526.GA25674@infradead.org> <MWHPR04MB37581344328A42EA7F5ED13EE74E0@MWHPR04MB3758.namprd04.prod.outlook.com>
- <CA+1E3rLM4G4SwzD6RWsK6Ssp7NmhiPedZDjrqN3kORQr9fxCtw@mail.gmail.com>
- <MWHPR04MB375863C20C1EF2CB27E62703E74E0@MWHPR04MB3758.namprd04.prod.outlook.com>
- <20200731091416.GA29634@infradead.org> <MWHPR04MB37586D39CA389296CE0252A4E74E0@MWHPR04MB3758.namprd04.prod.outlook.com>
- <20200731094135.GA4104@infradead.org> <MWHPR04MB3758A4B2967DB1FABAAD9265E74E0@MWHPR04MB3758.namprd04.prod.outlook.com>
- <20200731125110.GA11500@infradead.org> <CY4PR04MB37517D633920E4D31AC6EA0DE74B0@CY4PR04MB3751.namprd04.prod.outlook.com>
- <20200814081411.GA16943@infradead.org>
-In-Reply-To: <20200814081411.GA16943@infradead.org>
-From:   Kanchan Joshi <joshiiitr@gmail.com>
-Date:   Mon, 7 Sep 2020 12:31:42 +0530
-Message-ID: <CA+1E3r+WXC_MK5Zf2OZEv17ddJDjtXbhpRFoeDns4F341xMhow@mail.gmail.com>
-Subject: Re: [PATCH v4 6/6] io_uring: add support for zone-append
-To:     "hch@infradead.org" <hch@infradead.org>
-Cc:     Damien Le Moal <Damien.LeMoal@wdc.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Kanchan Joshi <joshi.k@samsung.com>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "bcrl@kvack.org" <bcrl@kvack.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-aio@kvack.org" <linux-aio@kvack.org>,
-        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        SelvaKumar S <selvakuma.s1@samsung.com>,
-        Nitesh Shetty <nj.shetty@samsung.com>,
-        Javier Gonzalez <javier.gonz@samsung.com>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        Naohiro Aota <Naohiro.Aota@wdc.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200907065745.21439-1-naveen.panwar27@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 14, 2020 at 1:44 PM hch@infradead.org <hch@infradead.org> wrote:
->
-> On Wed, Aug 05, 2020 at 07:35:28AM +0000, Damien Le Moal wrote:
-> > > the write pointer.  The only interesting addition is that we also want
-> > > to report where we wrote.  So I'd rather have RWF_REPORT_OFFSET or so.
-> >
-> > That works for me. But that rules out having the same interface for raw block
-> > devices since O_APPEND has no meaning in that case. So for raw block devices, it
-> > will have to be through zonefs. That works for me, and I think it was your idea
-> > all along. Can you confirm please ?
->
-> Yes.  I don't think think raw syscall level access to the zone append
-> primitive makes sense.  Either use zonefs for a file-like API, or
-> use the NVMe pass through interface for 100% raw access.
+On Mon, Sep 07, 2020 at 12:27:45PM +0530, Naveen Panwar wrote:
+> Fixed checkpatch warnings two warnings still exits about DT
+> compatible strings appers undocumented. Fixed the other codestyle
+> errors, and some warnings about use of volatile and un-necessary
+> out of memory errors.
+> 
+> Signed-off-by: Naveen Panwar <naveen.panwar27@gmail.com>
+> ---
+>  drivers/staging/ralink-gdma/ralink-gdma.c | 29 ++++++++++++-----------
+>  1 file changed, 15 insertions(+), 14 deletions(-)
+> 
+> diff --git a/drivers/staging/ralink-gdma/ralink-gdma.c b/drivers/staging/ralink-gdma/ralink-gdma.c
+> index eabf10933..1c3388b7c 100644
+> --- a/drivers/staging/ralink-gdma/ralink-gdma.c
+> +++ b/drivers/staging/ralink-gdma/ralink-gdma.c
+> @@ -122,7 +122,8 @@ struct gdma_dma_dev {
+>  	struct gdma_data *data;
+>  	void __iomem *base;
+>  	struct tasklet_struct task;
+> -	volatile unsigned long chan_issued;
+> +
+> +	unsigned long chan_issued;
+>  	atomic_t cnt;
+>  
+>  	struct gdma_dmaengine_chan chan[];
+> @@ -135,8 +136,8 @@ struct gdma_data {
+>  	int (*start_transfer)(struct gdma_dmaengine_chan *chan);
+>  };
+>  
+> -static struct gdma_dma_dev *gdma_dma_chan_get_dev(
+> -	struct gdma_dmaengine_chan *chan)
+> +static struct gdma_dma_dev *gdma_dma_chan_get_dev
+> +	(struct gdma_dmaengine_chan *chan)
+>  {
+>  	return container_of(chan->vchan.chan.device, struct gdma_dma_dev,
+>  		ddev);
+> @@ -510,10 +511,10 @@ static void gdma_dma_issue_pending(struct dma_chan *c)
+>  	spin_unlock_irqrestore(&chan->vchan.lock, flags);
+>  }
+>  
+> -static struct dma_async_tx_descriptor *gdma_dma_prep_slave_sg(
+> -		struct dma_chan *c, struct scatterlist *sgl,
+> -		unsigned int sg_len, enum dma_transfer_direction direction,
+> -		unsigned long flags, void *context)
+> +static struct dma_async_tx_descriptor *gdma_dma_prep_slave_sg
+> +	(struct dma_chan *c, struct scatterlist *sgl,
+> +	 unsigned int sg_len, enum dma_transfer_direction direction,
+> +	 unsigned long flags, void *context)
+>  {
+>  	struct gdma_dmaengine_chan *chan = to_gdma_dma_chan(c);
+>  	struct gdma_dma_desc *desc;
+> @@ -522,7 +523,7 @@ static struct dma_async_tx_descriptor *gdma_dma_prep_slave_sg(
+>  
+>  	desc = kzalloc(struct_size(desc, sg, sg_len), GFP_ATOMIC);
+>  	if (!desc) {
+> -		dev_err(c->device->dev, "alloc sg decs error\n");
+> +		goto free_rx_tx;
+>  		return NULL;
+>  	}
+>  	desc->residue = 0;
+> @@ -558,9 +559,9 @@ static struct dma_async_tx_descriptor *gdma_dma_prep_slave_sg(
+>  	return NULL;
+>  }
+>  
+> -static struct dma_async_tx_descriptor *gdma_dma_prep_dma_memcpy(
+> -		struct dma_chan *c, dma_addr_t dest, dma_addr_t src,
+> -		size_t len, unsigned long flags)
+> +static struct dma_async_tx_descriptor *gdma_dma_prep_dma_memcpy
+> +	(struct dma_chan *c, dma_addr_t dest, dma_addr_t src,
+> +	 size_t len, unsigned long flags)
+>  {
+>  	struct gdma_dmaengine_chan *chan = to_gdma_dma_chan(c);
+>  	struct gdma_dma_desc *desc;
+> @@ -577,7 +578,7 @@ static struct dma_async_tx_descriptor *gdma_dma_prep_dma_memcpy(
+>  
+>  	desc = kzalloc(struct_size(desc, sg, num_periods), GFP_ATOMIC);
+>  	if (!desc) {
+> -		dev_err(c->device->dev, "alloc memcpy decs error\n");
+> +		goto free_rx_tx;
+>  		return NULL;
+>  	}
+>  	desc->residue = len;
+> @@ -601,8 +602,8 @@ static struct dma_async_tx_descriptor *gdma_dma_prep_dma_memcpy(
+>  	return vchan_tx_prep(&chan->vchan, &desc->vdesc, flags);
+>  }
+>  
+> -static struct dma_async_tx_descriptor *gdma_dma_prep_dma_cyclic(
+> -	struct dma_chan *c, dma_addr_t buf_addr, size_t buf_len,
+> +static struct dma_async_tx_descriptor *gdma_dma_prep_dma_cyclic
+> +	(struct dma_chan *c, dma_addr_t buf_addr, size_t buf_len,
+>  	size_t period_len, enum dma_transfer_direction direction,
+>  	unsigned long flags)
+>  {
+> -- 
+> 2.17.1
+> 
+> _______________________________________________
+> devel mailing list
+> devel@linuxdriverproject.org
+> http://driverdev.linuxdriverproject.org/mailman/listinfo/driverdev-devel
 
-But there are use-cases which benefit from supporting zone-append on
-raw block-dev path.
-Certain user-space log-structured/cow FS/DB will use the device that
-way. Aerospike is one example.
-Pass-through is synchronous, and we lose the ability to use io-uring.
+Hi,
 
-For async uring/aio to block-dev, file-pointer will not be moved to
-EoF, but that position was not very important anyway- as with this
-interface we expect many async appends outstanding, all with
-zone-start.
-Do you think RWF_APPEND | RWF_REPORT_OFFSET_DIRECT/INDIRECT is too bad
-for direct block-dev. Could you please suggest another way to go about
-it?
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
 
+You are receiving this message because of the following common error(s)
+as indicated below:
 
+- Your patch did many different things all at once, making it difficult
+  to review.  All Linux kernel patches need to only do one thing at a
+  time.  If you need to do multiple things (such as clean up all coding
+  style issues in a file/driver), do it in a sequence of patches, each
+  one doing only one thing.  This will make it easier to review the
+  patches to ensure that they are correct, and to help alleviate any
+  merge issues that larger patches can cause.
 
---
-Kanchan
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
+
+thanks,
+
+greg k-h's patch email bot
