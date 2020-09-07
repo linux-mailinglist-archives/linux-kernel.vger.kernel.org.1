@@ -2,94 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C180D25FAD8
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 14:59:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AE4F25FADD
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 14:59:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729278AbgIGM6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 08:58:19 -0400
-Received: from crapouillou.net ([89.234.176.41]:60784 "EHLO crapouillou.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729388AbgIGM5V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 08:57:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1599483438; h=from:from:sender:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jv34PMyafvqRYOIcsfEyVpPHXi6oXDIBS9cXlCM12DI=;
-        b=dNxrjvgiCGZ2gDpsrGny8IkriyroogU0LN2ugAdia9D6rBT75fSeRrRQ6h8ILkRXy5WZ9L
-        k1TgVslPkWd81T72BVzX8znnxX6jHaNq+HJci+CHW1hpeel+glfSE/SUPR3/NVLZiTwoK2
-        Udm00u02wXwIkL8d/OO+MAbT0oyoI+A=
-Date:   Mon, 07 Sep 2020 14:57:05 +0200
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: =?UTF-8?B?562U5aSNOg==?= [PATCH v2 6/6] drm/panel: Add Ilitek
- ILI9341 DBI panel driver
-To:     Sam Ravnborg <sam@ravnborg.org>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        =?UTF-8?b?5L2V5bCP6b6Z?= <Leon.He@unisoc.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Noralf Tronnes <noralf@tronnes.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        devicetree@vger.kernel.org, od@zcrc.me,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Message-Id: <5BHAGQ.KGFJ0K3OLEAO3@crapouillou.net>
-In-Reply-To: <20200830202822.GA950472@ravnborg.org>
-References: <20200822163250.63664-1-paul@crapouillou.net>
-        <20200822163250.63664-7-paul@crapouillou.net>
-        <edf38d68214247f486db3cc1f81ec404@shmbx04.spreadtrum.com>
-        <COYVFQ.2IA7KFB6BF4C3@crapouillou.net>
-        <20200830191133.GB6043@pendragon.ideasonboard.com>
-        <20200830202822.GA950472@ravnborg.org>
+        id S1729292AbgIGM7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 08:59:46 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:37172 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729344AbgIGM65 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 08:58:57 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 3ACA2A99BE5BDE1BFBE0;
+        Mon,  7 Sep 2020 20:58:26 +0800 (CST)
+Received: from localhost.localdomain (10.175.112.70) by
+ DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server (TLS)
+ id 14.3.487.0; Mon, 7 Sep 2020 20:58:22 +0800
+From:   Zhang Changzhong <zhangchangzhong@huawei.com>
+To:     <peppe.cavallaro@st.com>, <alexandre.torgue@st.com>,
+        <joabreu@synopsys.com>, <davem@davemloft.net>, <kuba@kernel.org>,
+        <mcoquelin.stm32@gmail.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH net-next] net: stmmac: remove redundant null check before clk_disable_unprepare()
+Date:   Mon, 7 Sep 2020 20:57:24 +0800
+Message-ID: <1599483444-43331-1-git-send-email-zhangchangzhong@huawei.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-Originating-IP: [10.175.112.70]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Because clk_prepare_enable() and clk_disable_unprepare() already checked
+NULL clock parameter, so the additional checks are unnecessary, just
+remove them.
 
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+---
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-Le dim. 30 ao=FBt 2020 =E0 22:28, Sam Ravnborg <sam@ravnborg.org> a=20
-=E9crit :
-> Hi Laurent.
->=20
->>  >
->>  > Please read the cover letter, it explains why it's done this way.=20
->> The
->>  > whole point of this patchset is to merge DSI and DBI frameworks=20
->> in a
->>  > way that can be maintained.
->>=20
->>  I think this proves the point that the proposed naming is=20
->> confusing. At
->>  least a rename would be required.
->=20
-> Do you have any inputs on the amount of rename we are looking into.
-> Is this a simple s/struct mipi_dsi_device/struct mipi_dxi_device/
-> or something more?
->=20
-> We should script the rename as it will tocuh a lot of files,
-> and without a script we would chase this. But once it is scripted
-> it would be trivial to perform.
->=20
-> I did not look at this enough, but I had an idea that we
-> would have do to a s/dsi/dxi/ in a lot of places.
->=20
-> (dxi is my best proposal at the moment for something covering both dsi
-> and dbi).
-
-dcs?
-
-Since DBI and DSI panels generally all use DCS commands.
-
--Paul
-
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+index 89b2b34..c553047 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -788,8 +788,7 @@ static int stmmac_init_ptp(struct stmmac_priv *priv)
+ 
+ static void stmmac_release_ptp(struct stmmac_priv *priv)
+ {
+-	if (priv->plat->clk_ptp_ref)
+-		clk_disable_unprepare(priv->plat->clk_ptp_ref);
++	clk_disable_unprepare(priv->plat->clk_ptp_ref);
+ 	stmmac_ptp_unregister(priv);
+ }
+ 
+@@ -5108,8 +5107,7 @@ int stmmac_suspend(struct device *dev)
+ 		stmmac_mac_set(priv, priv->ioaddr, false);
+ 		pinctrl_pm_select_sleep_state(priv->device);
+ 		/* Disable clock in case of PWM is off */
+-		if (priv->plat->clk_ptp_ref)
+-			clk_disable_unprepare(priv->plat->clk_ptp_ref);
++		clk_disable_unprepare(priv->plat->clk_ptp_ref);
+ 		clk_disable_unprepare(priv->plat->pclk);
+ 		clk_disable_unprepare(priv->plat->stmmac_clk);
+ 	}
+-- 
+2.9.5
 
