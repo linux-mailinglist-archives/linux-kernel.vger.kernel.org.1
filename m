@@ -2,103 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07A0F25FBA6
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 15:49:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40FB525FBB6
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 15:55:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729705AbgIGNtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 09:49:09 -0400
-Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:47370 "EHLO
-        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729585AbgIGNnd (ORCPT
+        id S1729719AbgIGNzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 09:55:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36730 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729694AbgIGNsF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 09:43:33 -0400
+        Mon, 7 Sep 2020 09:48:05 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2EA9C061574
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 06:48:04 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id e5so9811656qth.5
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 06:48:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1599486213; x=1631022213;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=tt6wtfdb3398uJssYij92A1z15vJIiwy4hdYo2eToCU=;
-  b=O6LLROK7t/YJ527m/XO++o2zlCwMYScvCM/jTM4VtfGpb9kPO/t7gcS6
-   yA7MiTU2CLJl1egbEiDNa2i2RSzvY9El3FFASaQ82OEMfwBJM08sDxaNz
-   C5hEw189a4YadQAyGk6RdxGA5IHBpWG+jM5Fz39qGho6PG78Bd4yWddr0
-   o=;
-X-IronPort-AV: E=Sophos;i="5.76,401,1592870400"; 
-   d="scan'208";a="66028583"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1d-74cf8b49.us-east-1.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 07 Sep 2020 13:43:30 +0000
-Received: from EX13D16EUB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-1d-74cf8b49.us-east-1.amazon.com (Postfix) with ESMTPS id BDED9C05E1;
-        Mon,  7 Sep 2020 13:43:27 +0000 (UTC)
-Received: from 38f9d34ed3b1.ant.amazon.com (10.43.161.85) by
- EX13D16EUB001.ant.amazon.com (10.43.166.28) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 7 Sep 2020 13:43:17 +0000
-Subject: Re: [PATCH v8 17/18] nitro_enclaves: Add overview documentation
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Anthony Liguori <aliguori@amazon.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Colm MacCarthaigh <colmmacc@amazon.com>,
-        David Duncan <davdunc@amazon.com>,
-        Bjoern Doebel <doebel@amazon.de>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        "Frank van der Linden" <fllinden@amazon.com>,
-        Alexander Graf <graf@amazon.de>,
-        "Karen Noel" <knoel@redhat.com>,
-        Martin Pohlack <mpohlack@amazon.de>,
-        Matt Wilson <msw@amazon.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Balbir Singh <sblbir@amazon.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "Stefan Hajnoczi" <stefanha@redhat.com>,
-        Stewart Smith <trawets@amazon.com>,
-        "Uwe Dannowski" <uwed@amazon.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        kvm <kvm@vger.kernel.org>,
-        ne-devel-upstream <ne-devel-upstream@amazon.com>
-References: <20200904173718.64857-1-andraprs@amazon.com>
- <20200904173718.64857-18-andraprs@amazon.com>
- <20200907090126.GD1101646@kroah.com>
-From:   "Paraschiv, Andra-Irina" <andraprs@amazon.com>
-Message-ID: <44a8a921-1fb4-87ab-b8f2-c168c615dbbd@amazon.com>
-Date:   Mon, 7 Sep 2020 16:43:11 +0300
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:78.0)
- Gecko/20100101 Thunderbird/78.2.1
+        d=marek-ca.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=RpRB6iljb2M31wwzZybgy6AB4+l8J65CnWPoS2cjpPY=;
+        b=Z4pE4+0zsGUqaenaa9Sotx3GjcxpCYEKHj5+k2JcptyuVQQuV4lpcx9TiwEJjrDsuu
+         wFVJKo4XIWj01ZJfOQNxvUYP5rPBkQJZIgIdWkznFKvhYMNihLKn/LHPZ4SgUpAno2fA
+         Uv0HZNF0qpkPRjerw+6nwTPRDLba7k+jViBz+ERSCn5hfvfGMkWsHdmLrEt2nqE+Sb9H
+         vbCHqrrABx3w3RziRDbF2r3dIosDXjRSbR1JdXhb1TOEULn1+kobjk/xXQbYLcyd+yxt
+         3aOjDrbwMv7qkcZEoz8KMnvHyGWS2dVsKwnzAdyoHuZobi0D7ShbOzEyQDI/STgCpSiU
+         yakg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=RpRB6iljb2M31wwzZybgy6AB4+l8J65CnWPoS2cjpPY=;
+        b=TVxui0c5tITI2viP9o/fs3QivXPM0hAsGiRodDsBMhnTfHgOEcOX17dD/vd268qbXo
+         UPi/Ilz7DZ4vb5YbOcLsv5dVPq20PRnAKIX0BhCDhOZLOBApY71XJY4BlPo9/nlNfgef
+         Mtmj51cxfQ6GzZr5Wn0UFA/G2dAyWSfPK7lqQu1+Gf2FyHd3TATu2xJ5R0C+S5pcpZn9
+         KiD4/4ZY6bmjl/8zJlLHyyH5RTonwNlUnl4BTI0A77muOnmiiGUAN2AZWyp7brD2QOA2
+         fJoTT9B1BOa6VGGxM96gw1s5gv2ZTzjJGC/AsX6tGUe7gk2uRp7Thuu1IZR8woDe5RLZ
+         Rr4Q==
+X-Gm-Message-State: AOAM532ziPoQYlFE9om4kUkuqfvnlPlip2yQzyGK6sEiO5la4mXzSBAd
+        4w+364M7mfAaxttYnicjg2EjZNeLOqC5PQVvBNY=
+X-Google-Smtp-Source: ABdhPJyxkTrirT9I13DtZi1g3rHs4BUopE1qzFqaeXf+do879hoQZ6UGYPDN/a/4a8gotkwuRtVB/Q==
+X-Received: by 2002:ac8:1c43:: with SMTP id j3mr20742825qtk.302.1599486481577;
+        Mon, 07 Sep 2020 06:48:01 -0700 (PDT)
+Received: from [192.168.0.189] ([147.253.86.153])
+        by smtp.gmail.com with ESMTPSA id r34sm12164513qtr.18.2020.09.07.06.48.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Sep 2020 06:48:01 -0700 (PDT)
+Subject: Re: [PATCH] misc: fastrpc: add ioctl for attaching to sensors pd
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        linux-arm-msm@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20200901003300.11985-1-jonathan@marek.ca>
+ <fa436d55-b986-944f-e90f-b81cb32eeb0e@linaro.org>
+From:   Jonathan Marek <jonathan@marek.ca>
+Message-ID: <3f1f8ff1-cf23-ae2c-4cff-cdcce0b11e2e@marek.ca>
+Date:   Mon, 7 Sep 2020 09:47:13 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-In-Reply-To: <20200907090126.GD1101646@kroah.com>
+In-Reply-To: <fa436d55-b986-944f-e90f-b81cb32eeb0e@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-X-Originating-IP: [10.43.161.85]
-X-ClientProxiedBy: EX13D36UWA001.ant.amazon.com (10.43.160.71) To
- EX13D16EUB001.ant.amazon.com (10.43.166.28)
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CgpPbiAwNy8wOS8yMDIwIDEyOjAxLCBHcmVnIEtIIHdyb3RlOgo+Cj4gT24gRnJpLCBTZXAgMDQs
-IDIwMjAgYXQgMDg6Mzc6MTdQTSArMDMwMCwgQW5kcmEgUGFyYXNjaGl2IHdyb3RlOgo+PiBTaWdu
-ZWQtb2ZmLWJ5OiBBbmRyYSBQYXJhc2NoaXYgPGFuZHJhcHJzQGFtYXpvbi5jb20+Cj4+IFJldmll
-d2VkLWJ5OiBBbGV4YW5kZXIgR3JhZiA8Z3JhZkBhbWF6b24uY29tPgo+PiAtLS0KPj4gQ2hhbmdl
-bG9nCj4+Cj4+IHY3IC0+IHY4Cj4+Cj4+ICogQWRkIGluZm8gYWJvdXQgdGhlIHByaW1hcnkgLyBw
-YXJlbnQgVk0gQ0lEIHZhbHVlLgo+PiAqIFVwZGF0ZSByZWZlcmVuY2UgbGluayBmb3IgaHVnZSBw
-YWdlcy4KPj4gKiBBZGQgcmVmZXJlbmNlIGxpbmsgZm9yIHRoZSB4ODYgYm9vdCBwcm90b2NvbC4K
-Pj4gKiBBZGQgbGljZW5zZSBtZW50aW9uIGFuZCB1cGRhdGUgZG9jIHRpdGxlIC8gY2hhcHRlciBm
-b3JtYXR0aW5nLgo+Pgo+PiB2NiAtPiB2Nwo+Pgo+PiAqIE5vIGNoYW5nZXMuCj4+Cj4+IHY1IC0+
-IHY2Cj4+Cj4+ICogTm8gY2hhbmdlcy4KPj4KPj4gdjQgLT4gdjUKPj4KPj4gKiBObyBjaGFuZ2Vz
-Lgo+Pgo+PiB2MyAtPiB2NAo+Pgo+PiAqIFVwZGF0ZSBkb2MgdHlwZSBmcm9tIC50eHQgdG8gLnJz
-dC4KPj4gKiBVcGRhdGUgZG9jdW1lbnRhdGlvbiBiYXNlZCBvbiB0aGUgY2hhbmdlcyBmcm9tIHY0
-Lgo+Pgo+PiB2MiAtPiB2Mwo+Pgo+PiAqIE5vIGNoYW5nZXMuCj4+Cj4+IHYxIC0+IHYyCj4+Cj4+
-ICogTmV3IGluIHYyLgo+PiAtLS0KPj4gICBEb2N1bWVudGF0aW9uL25pdHJvX2VuY2xhdmVzL25l
-X292ZXJ2aWV3LnJzdCB8IDk1ICsrKysrKysrKysrKysrKysrKysrCj4+ICAgMSBmaWxlIGNoYW5n
-ZWQsIDk1IGluc2VydGlvbnMoKykKPj4gICBjcmVhdGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlv
-bi9uaXRyb19lbmNsYXZlcy9uZV9vdmVydmlldy5yc3QKPiBBIHdob2xlIG5ldyBzdWJkaXIsIGZv
-ciBhIHNpbmdsZSBkcml2ZXIsIGFuZCBub3QgdGllZCBpbnRvIHRoZSBrZXJuZWwKPiBkb2N1bWVu
-dGF0aW9uIGJ1aWxkIHByb2Nlc3MgYXQgYWxsPyAgTm90IGdvb2QgOigKPgoKV291bGQgdGhlICJ2
-aXJ0IiBkaXJlY3RvcnkgYmUgYSBiZXR0ZXIgb3B0aW9uIGZvciB0aGlzIGRvYyBmaWxlPwoKSSBj
-YW4gdGhlbiBhZGQgdGhlIGRvYyBuYW1lIHRvIHRoZSBjb3JyZXNwb25kaW5nIGluZGV4IGZpbGUg
-YXMgd2VsbC4KClRoYW5rcywKQW5kcmEKCgoKQW1hem9uIERldmVsb3BtZW50IENlbnRlciAoUm9t
-YW5pYSkgUy5SLkwuIHJlZ2lzdGVyZWQgb2ZmaWNlOiAyN0EgU2YuIExhemFyIFN0cmVldCwgVUJD
-NSwgZmxvb3IgMiwgSWFzaSwgSWFzaSBDb3VudHksIDcwMDA0NSwgUm9tYW5pYS4gUmVnaXN0ZXJl
-ZCBpbiBSb21hbmlhLiBSZWdpc3RyYXRpb24gbnVtYmVyIEoyMi8yNjIxLzIwMDUuCg==
+On 9/7/20 8:36 AM, Srinivas Kandagatla wrote:
+> 
+> 
+> On 01/09/2020 01:32, Jonathan Marek wrote:
+>> -#define FASTRPC_IOCTL_MMAP              _IOWR('R', 6, struct 
+>> fastrpc_req_mmap)
+>> -#define FASTRPC_IOCTL_MUNMAP            _IOWR('R', 7, struct 
+>> fastrpc_req_munmap)
+>> +#define FASTRPC_IOCTL_MMAP        _IOWR('R', 6, struct fastrpc_req_mmap)
+>> +#define FASTRPC_IOCTL_MUNMAP        _IOWR('R', 7, struct 
+>> fastrpc_req_munmap)
+> 
+> Looks like changes that do not belong to this patch!
+> 
+> I wanted to try this patch on SM8250.
+> How do you test attaching fastrpc to sensor core?, I mean which 
+> userspace lib/tool do you use?
+> 
+> --srini
+> 
 
+I pushed my sdsprpcd implementation to github, which is responsible for 
+initializing the sensors, and uses this ioctl:
+
+https://github.com/flto/fastrpc
+
+Note: it uses my own WIP fastrpc "library" instead of the one from 
+linaro, I also have other related code, like a sensor client, and 
+cDSP/aDSP compute examples, but need to confirm that I can share them
+
+Also, the corresponding dts patch I sent has a problem, the label = 
+"dsps"; should be label = "sdsp"; (copied the "dsps" from downstream, 
+but upstream expects "sdsp"), will send a v2 later today.
+
+>> +#define FASTRPC_IOCTL_INIT_ATTACH_SNS    _IO('R', 8)
