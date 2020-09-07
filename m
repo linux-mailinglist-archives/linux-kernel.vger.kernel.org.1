@@ -2,97 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE0582603AF
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:53:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01D412603BB
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:54:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729479AbgIGRxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 13:53:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42556 "EHLO
+        id S1729463AbgIGRxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 13:53:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728901AbgIGLW4 (ORCPT
+        with ESMTP id S1728892AbgIGLWj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 07:22:56 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44EA8C061575
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 04:01:14 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id t16so12100277ilf.13
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 04:01:14 -0700 (PDT)
+        Mon, 7 Sep 2020 07:22:39 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD338C061795
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 04:02:27 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id z4so15360973wrr.4
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 04:02:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mM0y+Q0a8sB0DkvdsC2ZAa0jhM0rMUB3DCeyiwaznjU=;
-        b=rKpXyZ2H5uP2/h9Dt5pZ0EPjXGgMA3de0HXUxZtvju1LXugoHzeD4RaryePMRR4utI
-         K1Xpnc7dqWuJ1RRNtAvBK9L4dDhOmI1bjUHQE6oaeroH1bhZD6WHqXQXEatSsX2GFpgq
-         sloN9nsm3Z8VHroFwHEs2MLKdtmiSZCfrSio0VqGihZq5rXGXCGVr5/1Euh+ed6/NGxR
-         +PtyIa/kQzMjz3AGzVI0uXl9wO4mXKNkjoWAYUT0S74QK9gzwlCsvvzKGVr1bhFs4Lp2
-         krBFagjdLqhrymwwVXwl3GsqF95A2B4h0KlX1P6NgCoyedRyf1lcmDqwyoeacDbfAQkR
-         cKRA==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=njSxaAkrShaev6nBmwWk4gz2+gzrgoVD7cG8Ur2KLZY=;
+        b=FSI2tvGbCDcFLdRpiiybbNb4UiGRnVNftq8LrfnfRDbZB0bgyf9asszI7O09fQtHf4
+         9KfwujbHAzz7fG/ok96HkfFth+HZM/ApW1FO6/B9kQbkQkV36nEJusYnj617lJqxXJ7J
+         nuC3hhNe1MSis/mQWPeplAsiol7hpWBbi/PtTWjHqgzMSP5C/ZQLXxBoJDcSAgahQqI7
+         sUb5+pokelyqRhxVA7pNdJ3zigIsU0tv8VOwKEKykD4t0X/cbP19ikXXORFNMyv1QdaZ
+         6tDxptY4GLT04g1szxXUxU+VVoDoh9alnas+CpU1K8xynXhimcfV2PwMiyZPW1QoAve+
+         lgqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mM0y+Q0a8sB0DkvdsC2ZAa0jhM0rMUB3DCeyiwaznjU=;
-        b=j9qdf2aZo8ktRrbf+nvL2QQiXBRcogy7TciSD7zNzNjnLwGXZW/i2sARYa25Ct0yxH
-         Mr9LPXisl3mOqxwb8U5EkBzKSSTZYII+c+Ng2KHSK09FY+ALBzlBdqMnqya7boWTDHWY
-         4KeKwCTlFKXUeGrkRAZd9SkoMn/ptcwfbenKXQUkInWpbbEMUXy5MNvmTIasDRwmIE1o
-         6moLwTI+ekwglymRtnQb4O++qm9sS3Uu5YhFgIatKlrcudmXi+p1rwSOgfd7QOR8XV13
-         Y2/JNob6+FXHjn67anoDhB9lKR1kq7VwtxM1hgPlr0y9qOySzOTrQ85ygSfGcYMlMorl
-         Aj1A==
-X-Gm-Message-State: AOAM531+ny1DQVBilIoLErwxqbu7J/u/40i7klsrm/cqVMzneEtUtAZJ
-        6ZCUhLxLwfKj0aSS16uOSz1qBvld1PShoTqlWbeDTw==
-X-Google-Smtp-Source: ABdhPJzKTB4141AX04DUZCtSVaif2wmDuuNUNco4lagdf94reZmn5rumBiscprbs2LT1YPBLbmGSPn2FRbAHpzNrfok=
-X-Received: by 2002:a92:189:: with SMTP id 131mr19175912ilb.40.1599476473551;
- Mon, 07 Sep 2020 04:01:13 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=njSxaAkrShaev6nBmwWk4gz2+gzrgoVD7cG8Ur2KLZY=;
+        b=rEZ0xmv5Pi2fbsyACChOq7TqZNTmJmhBJph0priEFPRGDl+ZQgLfJUjRGow9MG8zTY
+         5t3gxSpkLb2kXkh4KihNQ+/RPcoJZGezFTPmo76h0gC7KkIOjLNPhIkJxUiRUr4MsouS
+         O6QbqQ4n+9xlyfjJa0kKd1TqaIaOeYAEk7LKn059uiYSc5C1mLUB3IT8DbIhoAgvz5cU
+         QVHiOqJtKB5AV33zs7N9BcJYG2otvzhflOIjRZh0lk6BYWEFPVvhK2rZeNff1hmeDgl4
+         pfgdyjwzrDCWJysWteNL+vsRpRUmX/ObxabRKccCUG+ExOFJM0lmh+Zb9z2Ka7uwSXr/
+         Sq9Q==
+X-Gm-Message-State: AOAM530lWn8DK8YQ4nmwlaBXrkJ6t7c/vBLWPo0U7VcoCoKjCuGZnc01
+        x+6HQLI9q6ce3THUytbluH8VJ/T9ltlykg==
+X-Google-Smtp-Source: ABdhPJzOyuMiOAWKozCxyMN8m5sL4WTHm2Ix5ZGgYp4lsJ5S1lIv8ykGUEEGNH299l5r2VPmDA+mgA==
+X-Received: by 2002:a5d:6912:: with SMTP id t18mr22168295wru.326.1599476546279;
+        Mon, 07 Sep 2020 04:02:26 -0700 (PDT)
+Received: from localhost.localdomain (122.105.23.93.rev.sfr.net. [93.23.105.122])
+        by smtp.gmail.com with ESMTPSA id 2sm28909545wrs.64.2020.09.07.04.02.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Sep 2020 04:02:25 -0700 (PDT)
+From:   Fabien Parent <fparent@baylibre.com>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-mediatek@lists.infradead.org
+Cc:     matthias.bgg@gmail.com, robh+dt@kernel.org,
+        linus.walleij@linaro.org, sean.wang@kernel.org,
+        Fabien Parent <fparent@baylibre.com>
+Subject: [PATCH 1/2] pinctrl: mt65xx: add OF bindings for MT8167
+Date:   Mon,  7 Sep 2020 13:02:20 +0200
+Message-Id: <20200907110221.1691168-1-fparent@baylibre.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20200904154547.3836-1-brgl@bgdev.pl> <20200904154547.3836-14-brgl@bgdev.pl>
- <20200904164820.GB1891694@smile.fi.intel.com>
-In-Reply-To: <20200904164820.GB1891694@smile.fi.intel.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Mon, 7 Sep 2020 13:01:02 +0200
-Message-ID: <CAMRc=Mea4pGbW+fY3mCWfNSSqo9ZwaJxx2C0JmstnQOc8eVrLg@mail.gmail.com>
-Subject: Re: [PATCH 13/23] gpio: mockup: pass the chip label as device property
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Kent Gibson <warthog618@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-doc <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-acpi@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 4, 2020 at 6:48 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Fri, Sep 04, 2020 at 05:45:37PM +0200, Bartosz Golaszewski wrote:
-> > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> >
-> > While we do check the "chip-name" property in probe(), we never actually
-> > use it. Let's pass the chip label to the driver using device properties
-> > as we'll want to allow users to define their own once dynamically
-> > created chips are supported.
-> >
-> > The property is renamed to "chip-label" to not cause any confusion with
-> > the actual chip name which is of the form: "gpiochipX".
-> >
-> > If the "chip-label" property is missing, let's do what most devices in
-> > drivers/gpio/ do and use dev_name().
->
-> Just wondering if we have a documentation in kernel how this mockup mechanism
-> works and what kind of properties it uses.
->
-> Side note: moving to software nodes would make some advantages in future such
-> as visibility properties and their values (not yet implemented, but there is an
-> idea to move forward).
+Add binding documentation of pinctrl-mt65xx for MT8167 SoC.
 
-Seems like we're implicitly using software nodes already:
-fwnode_create_software_node() is called when adding device properties.
+Signed-off-by: Fabien Parent <fparent@baylibre.com>
+---
+ Documentation/devicetree/bindings/pinctrl/pinctrl-mt65xx.txt | 1 +
+ 1 file changed, 1 insertion(+)
 
-Bart
+diff --git a/Documentation/devicetree/bindings/pinctrl/pinctrl-mt65xx.txt b/Documentation/devicetree/bindings/pinctrl/pinctrl-mt65xx.txt
+index 205be98ae078..931a18cd1e23 100644
+--- a/Documentation/devicetree/bindings/pinctrl/pinctrl-mt65xx.txt
++++ b/Documentation/devicetree/bindings/pinctrl/pinctrl-mt65xx.txt
+@@ -10,6 +10,7 @@ Required properties:
+ 	"mediatek,mt7623-pinctrl", compatible with mt7623 pinctrl.
+ 	"mediatek,mt8127-pinctrl", compatible with mt8127 pinctrl.
+ 	"mediatek,mt8135-pinctrl", compatible with mt8135 pinctrl.
++	"mediatek,mt8167-pinctrl", compatible with mt8167 pinctrl.
+ 	"mediatek,mt8173-pinctrl", compatible with mt8173 pinctrl.
+ 	"mediatek,mt8516-pinctrl", compatible with mt8516 pinctrl.
+ - pins-are-numbered: Specify the subnodes are using numbered pinmux to
+-- 
+2.28.0
+
