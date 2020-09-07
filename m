@@ -2,59 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F30A12605AD
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 22:27:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A8CB2605F1
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 22:48:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729344AbgIGU1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 16:27:47 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:37848 "EHLO mail.skyhub.de"
+        id S1726927AbgIGUsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 16:48:43 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36380 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729184AbgIGU1p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 16:27:45 -0400
-Received: from zn.tnic (p200300ec2f0909008054e7a53e29f06e.dip0.t-ipconnect.de [IPv6:2003:ec:2f09:900:8054:e7a5:3e29:f06e])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 368951EC0445;
-        Mon,  7 Sep 2020 22:27:44 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1599510464;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=q9SzNFIgUnMtRWBkXPeQKo69d0fiJd9l6vcPHHJOJUY=;
-        b=D4Uk2Q7sUwFReoDoJhBlUwqWoGqSpat6PsPcL+nv+QhUGfbv4T8wni/a91ufF430mzhrGj
-        AEpBQ5LZHjbJejethBpYD5pX4I++18bDOYtFcO+AosoBr9bvkFyltU5us1k+EWgusSRIMF
-        KkfIN9yNkzeNZUMSBBHPtvQu9YY1+Go=
-Date:   Mon, 7 Sep 2020 22:27:37 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     x86-ml <x86@kernel.org>, Tony Luck <tony.luck@intel.com>,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH] x86/mce: Make mce_rdmsrl() do a plain RDMSR only
-Message-ID: <20200907202737.GF16029@zn.tnic>
-References: <20200906212130.GA28456@zn.tnic>
- <CALCETrV4YN6t3Wqh+u4K=dQkj5RFQ0UbPj3nXXn2iHO+eZm4vA@mail.gmail.com>
+        id S1726850AbgIGUsk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 16:48:40 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id AAACFAC95;
+        Mon,  7 Sep 2020 20:48:39 +0000 (UTC)
+From:   Davidlohr Bueso <dave@stgolabs.net>
+To:     daniel.thompson@linaro.org
+Cc:     dianders@chromium.org, jason.wessel@windriver.com, oleg@redhat.com,
+        kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Davidlohr Bueso <dbueso@suse.de>
+Subject: [PATCH v2] kdb: Use newer api for tasklist scanning
+Date:   Mon,  7 Sep 2020 13:32:06 -0700
+Message-Id: <20200907203206.21293-1-dave@stgolabs.net>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200907134614.guc4tzj3knnihbe4@holly.lan>
+References: <20200907134614.guc4tzj3knnihbe4@holly.lan>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CALCETrV4YN6t3Wqh+u4K=dQkj5RFQ0UbPj3nXXn2iHO+eZm4vA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 07, 2020 at 01:16:43PM -0700, Andy Lutomirski wrote:
-> > +       asm volatile("rdmsr" : EAX_EDX_RET(val, low, high) : "c" (msr));
-> 
-> I don't like this.  Plain rdmsrl() will at least print a nice error if it fails.
+This kills using the do_each_thread/while_each_thread combo to
+iterate all threads and uses for_each_process_thread() instead,
+maintaining semantics. while_each_thread() is ultimately racy
+and deprecated;  although in this particular case there is no
+concurrency so it doesn't matter. Still lets trivially get rid
+of two more users.
 
-I think you read my commit message too quickly :)
+Acked-by: Oleg Nesterov <oleg@redhat.com>
+Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
+---
+ kernel/debug/gdbstub.c         | 4 ++--
+ kernel/debug/kdb/kdb_bt.c      | 4 ++--
+ kernel/debug/kdb/kdb_main.c    | 8 ++++----
+ kernel/debug/kdb/kdb_private.h | 4 ----
+ 4 files changed, 8 insertions(+), 12 deletions(-)
 
-The point is to not print anything and not have *any* exception handling
-or whatever - just plain RDMSR.
-
+diff --git a/kernel/debug/gdbstub.c b/kernel/debug/gdbstub.c
+index cc3c43dfec44..b52ebff09ac8 100644
+--- a/kernel/debug/gdbstub.c
++++ b/kernel/debug/gdbstub.c
+@@ -725,7 +725,7 @@ static void gdb_cmd_query(struct kgdb_state *ks)
+ 			}
+ 		}
+ 
+-		do_each_thread(g, p) {
++		for_each_process_thread(g, p) {
+ 			if (i >= ks->thr_query && !finished) {
+ 				int_to_threadref(thref, p->pid);
+ 				ptr = pack_threadid(ptr, thref);
+@@ -735,7 +735,7 @@ static void gdb_cmd_query(struct kgdb_state *ks)
+ 					finished = 1;
+ 			}
+ 			i++;
+-		} while_each_thread(g, p);
++		}
+ 
+ 		*(--ptr) = '\0';
+ 		break;
+diff --git a/kernel/debug/kdb/kdb_bt.c b/kernel/debug/kdb/kdb_bt.c
+index 18e03aba2cfc..1f9f0e47aeda 100644
+--- a/kernel/debug/kdb/kdb_bt.c
++++ b/kernel/debug/kdb/kdb_bt.c
+@@ -149,14 +149,14 @@ kdb_bt(int argc, const char **argv)
+ 				return 0;
+ 		}
+ 		/* Now the inactive tasks */
+-		kdb_do_each_thread(g, p) {
++		for_each_process_thread(g, p) {
+ 			if (KDB_FLAG(CMD_INTERRUPT))
+ 				return 0;
+ 			if (task_curr(p))
+ 				continue;
+ 			if (kdb_bt1(p, mask, btaprompt))
+ 				return 0;
+-		} kdb_while_each_thread(g, p);
++		}
+ 	} else if (strcmp(argv[0], "btp") == 0) {
+ 		struct task_struct *p;
+ 		unsigned long pid;
+diff --git a/kernel/debug/kdb/kdb_main.c b/kernel/debug/kdb/kdb_main.c
+index 5c7949061671..930ac1b25ec7 100644
+--- a/kernel/debug/kdb/kdb_main.c
++++ b/kernel/debug/kdb/kdb_main.c
+@@ -2299,10 +2299,10 @@ void kdb_ps_suppressed(void)
+ 		if (kdb_task_state(p, mask_I))
+ 			++idle;
+ 	}
+-	kdb_do_each_thread(g, p) {
++	for_each_process_thread(g, p) {
+ 		if (kdb_task_state(p, mask_M))
+ 			++daemon;
+-	} kdb_while_each_thread(g, p);
++	}
+ 	if (idle || daemon) {
+ 		if (idle)
+ 			kdb_printf("%d idle process%s (state I)%s\n",
+@@ -2370,12 +2370,12 @@ static int kdb_ps(int argc, const char **argv)
+ 	}
+ 	kdb_printf("\n");
+ 	/* Now the real tasks */
+-	kdb_do_each_thread(g, p) {
++	for_each_process_thread(g, p) {
+ 		if (KDB_FLAG(CMD_INTERRUPT))
+ 			return 0;
+ 		if (kdb_task_state(p, mask))
+ 			kdb_ps1(p);
+-	} kdb_while_each_thread(g, p);
++	}
+ 
+ 	return 0;
+ }
+diff --git a/kernel/debug/kdb/kdb_private.h b/kernel/debug/kdb/kdb_private.h
+index 2e296e4a234c..a4281fb99299 100644
+--- a/kernel/debug/kdb/kdb_private.h
++++ b/kernel/debug/kdb/kdb_private.h
+@@ -230,10 +230,6 @@ extern struct task_struct *kdb_curr_task(int);
+ 
+ #define kdb_task_has_cpu(p) (task_curr(p))
+ 
+-/* Simplify coexistence with NPTL */
+-#define	kdb_do_each_thread(g, p) do_each_thread(g, p)
+-#define	kdb_while_each_thread(g, p) while_each_thread(g, p)
+-
+ #define GFP_KDB (in_interrupt() ? GFP_ATOMIC : GFP_KERNEL)
+ 
+ extern void *debug_kmalloc(size_t size, gfp_t flags);
 -- 
-Regards/Gruss,
-    Boris.
+2.26.2
 
-https://people.kernel.org/tglx/notes-about-netiquette
