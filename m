@@ -2,67 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D7312601EB
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:14:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F390A2601E4
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:14:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730993AbgIGRO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 13:14:27 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:11249 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729636AbgIGOO4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 10:14:56 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id C94C9136E6560B3A4875;
-        Mon,  7 Sep 2020 22:14:18 +0800 (CST)
-Received: from localhost.localdomain (10.175.118.36) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 7 Sep 2020 22:14:08 +0800
-From:   Luo bin <luobin9@huawei.com>
-To:     <davem@davemloft.net>
-CC:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <luoxianjun@huawei.com>, <yin.yinshi@huawei.com>,
-        <cloud.wangxiaoyun@huawei.com>, <chiqijun@huawei.com>
-Subject: [PATCH net] hinic: fix rewaking txq after netif_tx_disable
-Date:   Mon, 7 Sep 2020 22:15:16 +0800
-Message-ID: <20200907141516.16817-1-luobin9@huawei.com>
-X-Mailer: git-send-email 2.17.1
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.118.36]
-X-CFilter-Loop: Reflected
+        id S1731029AbgIGRON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 13:14:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41036 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729351AbgIGOQb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 10:16:31 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2CB2C061573
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 07:15:55 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id v196so8717539pfc.1
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 07:15:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
+        h=content-transfer-encoding:from:mime-version:subject:date:message-id
+         :references:cc:in-reply-to:to;
+        bh=pMKtnu62KrFlClqQRGBjCSOknfMgdgn3+wr6HnRppNY=;
+        b=D64xvzFLBlnNeTQkT8TNQY9QSEEmAeebO85yfOC8NPD1qtRe6ZhnRviUtvOdxf7zNs
+         K5w9Tc56LdukXCGiVOV0RnjgFVbBUOBeD0YvkNdcyIRUZqHMAGLUalClCgCTARRRghvX
+         0syIVDRXlYXf/9UkCbwkjho2LiGFWDgF0jefQzrfll1AaP8/1iF03O7LOXwtlHzPC5o2
+         I7l8npCZsBDhjEaTB0HUB7llatpo1fnrqibiAczZYpjt9RwxiE1/4IJ0nbgeUY7dfu0K
+         DdpHrv1SwsxdcqShg+ockpxLo9zrZWTK4NGRi2HGlIb9t7VQbc2feZTADbtP9rlW2EI0
+         cR4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=pMKtnu62KrFlClqQRGBjCSOknfMgdgn3+wr6HnRppNY=;
+        b=qOdHTxmlRbTBJdS3uXzQDeqWIJND5JTjS9Il2f3zxehOdXoPoiG/PqWihOT/jVm5Tf
+         qrpXDRbrw6Z2PfqjzQw7VMrFzUXbbbzAAok+CGMzWgyoBVo72yhuOOvZYM2Bc2g2SDCZ
+         02jFfKu361aJXjfaHBKgkt3uScdRnnJKY8/5YKihsrZccyhf1EPA32c/i2ahAaWnwbiG
+         Tfs86LweaUOaN6kAjc4rNR5j209OVU2OpLZCZsCSChpdEUFlcc8Pa+AVS85lFL9kwXu6
+         SyPHplJl2SEonV056RHPINV4K0tzD8+w8qhwUGpFPVKq14keqalvfOiAP2aO6zfX4sAF
+         kBFA==
+X-Gm-Message-State: AOAM532Smx4UdcfCn0ukvia2UYQlXNlMO9TjLz1ekOq0aqtY5ukom2Ka
+        x+4100aby8qTtNoBZOOKzKkLAg==
+X-Google-Smtp-Source: ABdhPJxDzNPgTKU+KaHZmsuByNel5l69rVNLnkpVmRixOH4K76E96CSThsbS7P+Xe0BpNllo+5a76Q==
+X-Received: by 2002:a63:4a19:: with SMTP id x25mr16395793pga.56.1599488154774;
+        Mon, 07 Sep 2020 07:15:54 -0700 (PDT)
+Received: from ?IPv6:2600:1010:b025:3136:b1da:8d24:b138:6fff? ([2600:1010:b025:3136:b1da:8d24:b138:6fff])
+        by smtp.gmail.com with ESMTPSA id m25sm15245324pfa.32.2020.09.07.07.15.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Sep 2020 07:15:53 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Andy Lutomirski <luto@amacapital.net>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH v6 6/9] kernel: entry: Support Syscall User Dispatch for common syscall entry
+Date:   Mon, 7 Sep 2020 07:15:52 -0700
+Message-Id: <0639209E-B6C6-4F86-84F4-04B91E1CC8AA@amacapital.net>
+References: <20200907101522.zo6qzgp4qfzkz7cs@wittgenstein>
+Cc:     Gabriel Krisman Bertazi <krisman@collabora.com>, luto@kernel.org,
+        tglx@linutronix.de, keescook@chromium.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        willy@infradead.org, linux-kselftest@vger.kernel.org,
+        shuah@kernel.org, kernel@collabora.com
+In-Reply-To: <20200907101522.zo6qzgp4qfzkz7cs@wittgenstein>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+X-Mailer: iPhone Mail (17H35)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When calling hinic_close in hinic_set_channels, all queues are
-stopped after netif_tx_disable, but some queue may be rewaken in
-free_tx_poll by mistake while drv is handling tx irq. If one queue
-is rewaken core may call hinic_xmit_frame to send pkt after
-netif_tx_disable within a short time which may results in accessing
-memory that has been already freed in hinic_close. So we judge
-whether the netdev is in down state before waking txq in free_tx_poll
-to fix this bug.
 
-Signed-off-by: Luo bin <luobin9@huawei.com>
----
- drivers/net/ethernet/huawei/hinic/hinic_tx.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_tx.c b/drivers/net/ethernet/huawei/hinic/hinic_tx.c
-index a97498ee6914..6eac6bdf164e 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_tx.c
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_tx.c
-@@ -718,7 +718,8 @@ static int free_tx_poll(struct napi_struct *napi, int budget)
- 
- 		__netif_tx_lock(netdev_txq, smp_processor_id());
- 
--		netif_wake_subqueue(nic_dev->netdev, qp->q_id);
-+		if (nic_dev->flags & HINIC_INTF_UP)
-+			netif_wake_subqueue(nic_dev->netdev, qp->q_id);
- 
- 		__netif_tx_unlock(netdev_txq);
- 
--- 
-2.17.1
+> On Sep 7, 2020, at 3:15 AM, Christian Brauner <christian.brauner@ubuntu.co=
+m> wrote:
+>=20
+> =EF=BB=BFOn Fri, Sep 04, 2020 at 04:31:44PM -0400, Gabriel Krisman Bertazi=
+ wrote:
+>> Syscall User Dispatch (SUD) must take precedence over seccomp, since the
+>> use case is emulation (it can be invoked with a different ABI) such that
+>> seccomp filtering by syscall number doesn't make sense in the first
+>> place.  In addition, either the syscall is dispatched back to userspace,
+>> in which case there is no resource for seccomp to protect, or the
+>=20
+> Tbh, I'm torn here. I'm not a super clever attacker but it feels to me
+> that this is still at least a clever way to circumvent a seccomp
+> sandbox.
+> If I'd be confined by a seccomp profile that would cause me to be
+> SIGKILLed when I try do open() I could prctl() myself to do user
+> dispatch to prevent that from happening, no?
+>=20
+
+Not really, I think. The idea is that you didn=E2=80=99t actually do open().=
+ You did a SYSCALL instruction which meant something else, and the syscall d=
+ispatch correctly prevented the kernel from misinterpreting it as open().
 
