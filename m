@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5585E25FD8B
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 17:52:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CDF825FD9C
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 17:53:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730245AbgIGPwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 11:52:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58642 "EHLO mail.kernel.org"
+        id S1730201AbgIGPxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 11:53:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58686 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730029AbgIGOvu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 10:51:50 -0400
+        id S1730015AbgIGOvt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 10:51:49 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 515BD218AC;
-        Mon,  7 Sep 2020 14:51:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 02F9621924;
+        Mon,  7 Sep 2020 14:51:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599490277;
-        bh=hkO0EMVvCu8X7CeNAbfTmSK1pWFJrTzl3nDdebnZHHI=;
+        s=default; t=1599490279;
+        bh=bOtNvPKd1buomuDeBpZzqGRO3R6GMfbAEg8/sDVnLbg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zgTDrp7IPbcWgWNaaD690SP+mq2VsJpUKvsnVgZIc8ntfUU/bjkTDvxpZQEo2M/mE
-         Ob9YzTDMdNI3mym+y907RGeutk8dZShkABagM/ShmcOwO7IjuexA1gpjfz7EgIxyg+
-         /HsNxeWuxRRH0vGn2j8mY0AVJDBQXDeiW44Ad6zw=
+        b=1MHmCQfOr4X3wWjX6IQ3rwja05HHJTOw+UvuGXj0aN6axRPVil/jBk5r/UJEAR4aO
+         Ssbim/0ObmcFTIK+FT6ffbI0q1Xr0aQYGv6PpRiWAJcwz7wCDbppmvBgjycqVqWR4J
+         V5iFfXj0xM9h7kuUXf4PoM2CFpwjAufNO9gR0z9k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     himadrispandya@gmail.com, dvyukov@google.com,
         linux-usb@vger.kernel.org
@@ -31,10 +31,11 @@ Cc:     perex@perex.cz, tiwai@suse.com, stern@rowland.harvard.ed,
         johan.hedberg@gmail.com, linux-bluetooth@vger.kernel.org,
         alsa-devel@alsa-project.org,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>
-Subject: [PATCH v2 04/11] USB: core: hub.c: use usb_control_msg_send() in a few places
-Date:   Mon,  7 Sep 2020 16:51:01 +0200
-Message-Id: <20200907145108.3766613-5-gregkh@linuxfoundation.org>
+        Juergen Stuber <starblue@users.sourceforge.net>,
+        legousb-devel@lists.sourceforge.net
+Subject: [PATCH v2 05/11] USB: legousbtower: use usb_control_msg_recv()
+Date:   Mon,  7 Sep 2020 16:51:02 +0200
+Message-Id: <20200907145108.3766613-6-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200907145108.3766613-1-gregkh@linuxfoundation.org>
 References: <20200907145108.3766613-1-gregkh@linuxfoundation.org>
@@ -45,211 +46,139 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are a few calls to usb_control_msg() that can be converted to use
-usb_control_msg_send() instead, so do that in order to make the error
-checking a bit simpler and the code smaller.
+The usb_control_msg_recv() function can handle data on the stack, as
+well as properly detecting short reads, so move to use that function
+instead of the older usb_control_msg() call.  This ends up removing a
+lot of extra lines in the driver.
 
-Cc: Alan Stern <stern@rowland.harvard.edu>
+Cc: Juergen Stuber <starblue@users.sourceforge.net>
+Cc: legousb-devel@lists.sourceforge.net
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
 v2:
- - dropped changes to usb_req_set_sel() thanks to review from Alan
+ - no change from v1
 
- drivers/usb/core/hub.c | 99 +++++++++++++++++-------------------------
- 1 file changed, 39 insertions(+), 60 deletions(-)
+ drivers/usb/misc/legousbtower.c | 60 +++++++++++----------------------
+ 1 file changed, 19 insertions(+), 41 deletions(-)
 
-diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
-index 5b768b80d1ee..bbb41993d4ba 100644
---- a/drivers/usb/core/hub.c
-+++ b/drivers/usb/core/hub.c
-@@ -410,8 +410,8 @@ static int get_hub_descriptor(struct usb_device *hdev,
-  */
- static int clear_hub_feature(struct usb_device *hdev, int feature)
- {
--	return usb_control_msg(hdev, usb_sndctrlpipe(hdev, 0),
--		USB_REQ_CLEAR_FEATURE, USB_RT_HUB, feature, 0, NULL, 0, 1000);
-+	return usb_control_msg_send(hdev, 0, USB_REQ_CLEAR_FEATURE, USB_RT_HUB,
-+				    feature, 0, NULL, 0, 1000);
- }
+diff --git a/drivers/usb/misc/legousbtower.c b/drivers/usb/misc/legousbtower.c
+index f922544056de..c3583df4c324 100644
+--- a/drivers/usb/misc/legousbtower.c
++++ b/drivers/usb/misc/legousbtower.c
+@@ -308,15 +308,9 @@ static int tower_open(struct inode *inode, struct file *file)
+ 	int subminor;
+ 	int retval = 0;
+ 	struct usb_interface *interface;
+-	struct tower_reset_reply *reset_reply;
++	struct tower_reset_reply reset_reply;
+ 	int result;
  
- /*
-@@ -419,9 +419,8 @@ static int clear_hub_feature(struct usb_device *hdev, int feature)
-  */
- int usb_clear_port_feature(struct usb_device *hdev, int port1, int feature)
- {
--	return usb_control_msg(hdev, usb_sndctrlpipe(hdev, 0),
--		USB_REQ_CLEAR_FEATURE, USB_RT_PORT, feature, port1,
--		NULL, 0, 1000);
-+	return usb_control_msg_send(hdev, 0, USB_REQ_CLEAR_FEATURE, USB_RT_PORT,
-+				    feature, port1, NULL, 0, 1000);
- }
+-	reset_reply = kmalloc(sizeof(*reset_reply), GFP_KERNEL);
+-	if (!reset_reply) {
+-		retval = -ENOMEM;
+-		goto exit;
+-	}
+-
+ 	nonseekable_open(inode, file);
+ 	subminor = iminor(inode);
  
- /*
-@@ -429,9 +428,8 @@ int usb_clear_port_feature(struct usb_device *hdev, int port1, int feature)
-  */
- static int set_port_feature(struct usb_device *hdev, int port1, int feature)
- {
--	return usb_control_msg(hdev, usb_sndctrlpipe(hdev, 0),
--		USB_REQ_SET_FEATURE, USB_RT_PORT, feature, port1,
--		NULL, 0, 1000);
-+	return usb_control_msg_send(hdev, 0, USB_REQ_SET_FEATURE, USB_RT_PORT,
-+				    feature, port1, NULL, 0, 1000);
- }
- 
- static char *to_led_name(int selector)
-@@ -755,15 +753,14 @@ hub_clear_tt_buffer(struct usb_device *hdev, u16 devinfo, u16 tt)
- 	/* Need to clear both directions for control ep */
- 	if (((devinfo >> 11) & USB_ENDPOINT_XFERTYPE_MASK) ==
- 			USB_ENDPOINT_XFER_CONTROL) {
--		int status = usb_control_msg(hdev, usb_sndctrlpipe(hdev, 0),
--				HUB_CLEAR_TT_BUFFER, USB_RT_PORT,
--				devinfo ^ 0x8000, tt, NULL, 0, 1000);
-+		int status = usb_control_msg_send(hdev, 0, 
-+						  HUB_CLEAR_TT_BUFFER, USB_RT_PORT,
-+						  devinfo ^ 0x8000, tt, NULL, 0, 1000);
- 		if (status)
- 			return status;
+@@ -347,15 +341,11 @@ static int tower_open(struct inode *inode, struct file *file)
  	}
--	return usb_control_msg(hdev, usb_sndctrlpipe(hdev, 0),
--			       HUB_CLEAR_TT_BUFFER, USB_RT_PORT, devinfo,
--			       tt, NULL, 0, 1000);
-+	return usb_control_msg_send(hdev, 0, HUB_CLEAR_TT_BUFFER, USB_RT_PORT,
-+				    devinfo, tt, NULL, 0, 1000);
+ 
+ 	/* reset the tower */
+-	result = usb_control_msg(dev->udev,
+-				 usb_rcvctrlpipe(dev->udev, 0),
+-				 LEGO_USB_TOWER_REQUEST_RESET,
+-				 USB_TYPE_VENDOR | USB_DIR_IN | USB_RECIP_DEVICE,
+-				 0,
+-				 0,
+-				 reset_reply,
+-				 sizeof(*reset_reply),
+-				 1000);
++	result = usb_control_msg_recv(dev->udev, 0,
++				      LEGO_USB_TOWER_REQUEST_RESET,
++				      USB_TYPE_VENDOR | USB_DIR_IN | USB_RECIP_DEVICE,
++				      0, 0,
++				      &reset_reply, sizeof(reset_reply), 1000);
+ 	if (result < 0) {
+ 		dev_err(&dev->udev->dev,
+ 			"LEGO USB Tower reset control request failed\n");
+@@ -394,7 +384,6 @@ static int tower_open(struct inode *inode, struct file *file)
+ 	mutex_unlock(&dev->lock);
+ 
+ exit:
+-	kfree(reset_reply);
+ 	return retval;
  }
  
- /*
-@@ -1049,11 +1046,10 @@ static void hub_activate(struct usb_hub *hub, enum hub_activation_type type)
- 	 */
- 	if (type != HUB_RESUME) {
- 		if (hdev->parent && hub_is_superspeed(hdev)) {
--			ret = usb_control_msg(hdev, usb_sndctrlpipe(hdev, 0),
--					HUB_SET_DEPTH, USB_RT_HUB,
--					hdev->level - 1, 0, NULL, 0,
--					USB_CTRL_SET_TIMEOUT);
--			if (ret < 0)
-+			ret = usb_control_msg_send(hdev, 0, HUB_SET_DEPTH, USB_RT_HUB,
-+						   hdev->level - 1, 0, NULL, 0,
-+						   USB_CTRL_SET_TIMEOUT);
-+			if (ret)
- 				dev_err(hub->intfdev,
- 						"set hub depth failed\n");
- 		}
-@@ -2329,13 +2325,10 @@ static int usb_enumerate_device_otg(struct usb_device *udev)
- 		/* enable HNP before suspend, it's simpler */
- 		if (port1 == bus->otg_port) {
- 			bus->b_hnp_enable = 1;
--			err = usb_control_msg(udev,
--				usb_sndctrlpipe(udev, 0),
--				USB_REQ_SET_FEATURE, 0,
--				USB_DEVICE_B_HNP_ENABLE,
--				0, NULL, 0,
--				USB_CTRL_SET_TIMEOUT);
--			if (err < 0) {
-+			err = usb_control_msg_send(udev, 0, USB_REQ_SET_FEATURE, 0,
-+						   USB_DEVICE_B_HNP_ENABLE, 0,
-+						   NULL, 0, USB_CTRL_SET_TIMEOUT);
-+			if (err) {
- 				/*
- 				 * OTG MESSAGE: report errors here,
- 				 * customize to match your product.
-@@ -2347,13 +2340,10 @@ static int usb_enumerate_device_otg(struct usb_device *udev)
- 		} else if (desc->bLength == sizeof
- 				(struct usb_otg_descriptor)) {
- 			/* Set a_alt_hnp_support for legacy otg device */
--			err = usb_control_msg(udev,
--				usb_sndctrlpipe(udev, 0),
--				USB_REQ_SET_FEATURE, 0,
--				USB_DEVICE_A_ALT_HNP_SUPPORT,
--				0, NULL, 0,
--				USB_CTRL_SET_TIMEOUT);
--			if (err < 0)
-+			err = usb_control_msg_send(udev, 0, USB_REQ_SET_FEATURE, 0,
-+						   USB_DEVICE_A_ALT_HNP_SUPPORT, 0,
-+						   NULL, 0, USB_CTRL_SET_TIMEOUT);
-+			if (err)
- 				dev_err(&udev->dev,
- 					"set a_alt_hnp_support failed: %d\n",
- 					err);
-@@ -3121,10 +3111,8 @@ int usb_disable_ltm(struct usb_device *udev)
- 	if (!udev->actconfig)
- 		return 0;
+@@ -753,7 +742,7 @@ static int tower_probe(struct usb_interface *interface, const struct usb_device_
+ 	struct device *idev = &interface->dev;
+ 	struct usb_device *udev = interface_to_usbdev(interface);
+ 	struct lego_usb_tower *dev;
+-	struct tower_get_version_reply *get_version_reply = NULL;
++	struct tower_get_version_reply get_version_reply;
+ 	int retval = -ENOMEM;
+ 	int result;
  
--	return usb_control_msg(udev, usb_sndctrlpipe(udev, 0),
--			USB_REQ_CLEAR_FEATURE, USB_RECIP_DEVICE,
--			USB_DEVICE_LTM_ENABLE, 0, NULL, 0,
--			USB_CTRL_SET_TIMEOUT);
-+	return usb_control_msg_send(udev, 0, USB_REQ_CLEAR_FEATURE, USB_RECIP_DEVICE,
-+				    USB_DEVICE_LTM_ENABLE, 0, NULL, 0, USB_CTRL_SET_TIMEOUT);
+@@ -798,34 +787,25 @@ static int tower_probe(struct usb_interface *interface, const struct usb_device_
+ 	dev->interrupt_in_interval = interrupt_in_interval ? interrupt_in_interval : dev->interrupt_in_endpoint->bInterval;
+ 	dev->interrupt_out_interval = interrupt_out_interval ? interrupt_out_interval : dev->interrupt_out_endpoint->bInterval;
+ 
+-	get_version_reply = kmalloc(sizeof(*get_version_reply), GFP_KERNEL);
+-	if (!get_version_reply) {
+-		retval = -ENOMEM;
+-		goto error;
+-	}
+-
+ 	/* get the firmware version and log it */
+-	result = usb_control_msg(udev,
+-				 usb_rcvctrlpipe(udev, 0),
+-				 LEGO_USB_TOWER_REQUEST_GET_VERSION,
+-				 USB_TYPE_VENDOR | USB_DIR_IN | USB_RECIP_DEVICE,
+-				 0,
+-				 0,
+-				 get_version_reply,
+-				 sizeof(*get_version_reply),
+-				 1000);
+-	if (result != sizeof(*get_version_reply)) {
+-		if (result >= 0)
+-			result = -EIO;
++	result = usb_control_msg_recv(udev, 0,
++				      LEGO_USB_TOWER_REQUEST_GET_VERSION,
++				      USB_TYPE_VENDOR | USB_DIR_IN | USB_RECIP_DEVICE,
++				      0,
++				      0,
++				      &get_version_reply,
++				      sizeof(get_version_reply),
++				      1000);
++	if (!result) {
+ 		dev_err(idev, "get version request failed: %d\n", result);
+ 		retval = result;
+ 		goto error;
+ 	}
+ 	dev_info(&interface->dev,
+ 		 "LEGO USB Tower firmware version is %d.%d build %d\n",
+-		 get_version_reply->major,
+-		 get_version_reply->minor,
+-		 le16_to_cpu(get_version_reply->build_no));
++		 get_version_reply.major,
++		 get_version_reply.minor,
++		 le16_to_cpu(get_version_reply.build_no));
+ 
+ 	/* we can register the device now, as it is ready */
+ 	usb_set_intfdata(interface, dev);
+@@ -844,11 +824,9 @@ static int tower_probe(struct usb_interface *interface, const struct usb_device_
+ 		 USB_MAJOR, dev->minor);
+ 
+ exit:
+-	kfree(get_version_reply);
+ 	return retval;
+ 
+ error:
+-	kfree(get_version_reply);
+ 	tower_delete(dev);
+ 	return retval;
  }
- EXPORT_SYMBOL_GPL(usb_disable_ltm);
- 
-@@ -3143,10 +3131,8 @@ void usb_enable_ltm(struct usb_device *udev)
- 	if (!udev->actconfig)
- 		return;
- 
--	usb_control_msg(udev, usb_sndctrlpipe(udev, 0),
--			USB_REQ_SET_FEATURE, USB_RECIP_DEVICE,
--			USB_DEVICE_LTM_ENABLE, 0, NULL, 0,
--			USB_CTRL_SET_TIMEOUT);
-+	usb_control_msg_send(udev, 0, USB_REQ_SET_FEATURE, USB_RECIP_DEVICE,
-+			     USB_DEVICE_LTM_ENABLE, 0, NULL, 0, USB_CTRL_SET_TIMEOUT);
- }
- EXPORT_SYMBOL_GPL(usb_enable_ltm);
- 
-@@ -3163,17 +3149,14 @@ EXPORT_SYMBOL_GPL(usb_enable_ltm);
- static int usb_enable_remote_wakeup(struct usb_device *udev)
- {
- 	if (udev->speed < USB_SPEED_SUPER)
--		return usb_control_msg(udev, usb_sndctrlpipe(udev, 0),
--				USB_REQ_SET_FEATURE, USB_RECIP_DEVICE,
--				USB_DEVICE_REMOTE_WAKEUP, 0, NULL, 0,
--				USB_CTRL_SET_TIMEOUT);
-+		return usb_control_msg_send(udev, 0, USB_REQ_SET_FEATURE, USB_RECIP_DEVICE,
-+					    USB_DEVICE_REMOTE_WAKEUP, 0,
-+					    NULL, 0, USB_CTRL_SET_TIMEOUT);
- 	else
--		return usb_control_msg(udev, usb_sndctrlpipe(udev, 0),
--				USB_REQ_SET_FEATURE, USB_RECIP_INTERFACE,
--				USB_INTRF_FUNC_SUSPEND,
--				USB_INTRF_FUNC_SUSPEND_RW |
--					USB_INTRF_FUNC_SUSPEND_LP,
--				NULL, 0, USB_CTRL_SET_TIMEOUT);
-+		return usb_control_msg_send(udev, 0, USB_REQ_SET_FEATURE, USB_RECIP_INTERFACE,
-+					    USB_INTRF_FUNC_SUSPEND,
-+					    USB_INTRF_FUNC_SUSPEND_RW | USB_INTRF_FUNC_SUSPEND_LP,
-+					    NULL, 0, USB_CTRL_SET_TIMEOUT);
- }
- 
- /*
-@@ -3189,15 +3172,11 @@ static int usb_enable_remote_wakeup(struct usb_device *udev)
- static int usb_disable_remote_wakeup(struct usb_device *udev)
- {
- 	if (udev->speed < USB_SPEED_SUPER)
--		return usb_control_msg(udev, usb_sndctrlpipe(udev, 0),
--				USB_REQ_CLEAR_FEATURE, USB_RECIP_DEVICE,
--				USB_DEVICE_REMOTE_WAKEUP, 0, NULL, 0,
--				USB_CTRL_SET_TIMEOUT);
-+		return usb_control_msg_send(udev, 0, USB_REQ_CLEAR_FEATURE, USB_RECIP_DEVICE,
-+					    USB_DEVICE_REMOTE_WAKEUP, 0, NULL, 0, USB_CTRL_SET_TIMEOUT);
- 	else
--		return usb_control_msg(udev, usb_sndctrlpipe(udev, 0),
--				USB_REQ_SET_FEATURE, USB_RECIP_INTERFACE,
--				USB_INTRF_FUNC_SUSPEND,	0, NULL, 0,
--				USB_CTRL_SET_TIMEOUT);
-+		return usb_control_msg_send(udev, 0, USB_REQ_SET_FEATURE, USB_RECIP_INTERFACE,
-+					    USB_INTRF_FUNC_SUSPEND, 0, NULL, 0, USB_CTRL_SET_TIMEOUT);
- }
- 
- /* Count of wakeup-enabled devices at or below udev */
-@@ -4056,7 +4035,7 @@ static void usb_enable_link_state(struct usb_hcd *hcd, struct usb_device *udev,
- 	 * associated with the link state we're about to enable.
- 	 */
- 	ret = usb_req_set_sel(udev, state);
--	if (ret < 0) {
-+	if (ret) {
- 		dev_warn(&udev->dev, "Set SEL for device-initiated %s failed.\n",
- 				usb3_lpm_names[state]);
- 		return;
 -- 
 2.28.0
 
