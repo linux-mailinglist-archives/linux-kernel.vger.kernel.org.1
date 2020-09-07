@@ -2,92 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D76625F8B7
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 12:44:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B31625F8BC
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 12:46:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728801AbgIGKoy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 06:44:54 -0400
-Received: from 8bytes.org ([81.169.241.247]:41444 "EHLO theia.8bytes.org"
+        id S1728846AbgIGKp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 06:45:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38788 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728791AbgIGKog (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 06:44:36 -0400
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id BF8CA34A; Mon,  7 Sep 2020 12:44:33 +0200 (CEST)
-Date:   Mon, 7 Sep 2020 12:44:32 +0200
-From:   Joerg Roedel <joro@8bytes.org>
-To:     "Deucher, Alexander" <Alexander.Deucher@amd.com>
-Cc:     "jroedel@suse.de" <jroedel@suse.de>,
-        "Kuehling, Felix" <Felix.Kuehling@amd.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "Huang, Ray" <Ray.Huang@amd.com>,
-        "Koenig, Christian" <Christian.Koenig@amd.com>,
-        "Lendacky, Thomas" <Thomas.Lendacky@amd.com>,
-        "Suthikulpanit, Suravee" <Suravee.Suthikulpanit@amd.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 0/2] iommu/amd: Fix IOMMUv2 devices when SME is active
-Message-ID: <20200907104431.GH16609@8bytes.org>
-References: <MN2PR12MB4488D6B7BBF98845DF796E0BF7540@MN2PR12MB4488.namprd12.prod.outlook.com>
- <34db343f-cd23-09af-3bc5-29b9d385f85d@amd.com>
- <MN2PR12MB4488BF7DDE700378F7B2776CF7540@MN2PR12MB4488.namprd12.prod.outlook.com>
- <20200828134639.GW3354@suse.de>
- <60067932-dbf4-d67b-cf11-4dd2b016ed63@amd.com>
- <MN2PR12MB448849D3AD019749DB64A146F7520@MN2PR12MB4488.namprd12.prod.outlook.com>
- <20200828152943.GY3354@suse.de>
- <MN2PR12MB4488BE2F12F85BDBC91E2C0CF7520@MN2PR12MB4488.namprd12.prod.outlook.com>
- <20200904100556.GU6714@8bytes.org>
- <MN2PR12MB448843EC6D3D5B71613BEAAFF72B0@MN2PR12MB4488.namprd12.prod.outlook.com>
+        id S1728477AbgIGKpv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 06:45:51 -0400
+Received: from gaia (unknown [46.69.195.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0766520768;
+        Mon,  7 Sep 2020 10:45:49 +0000 (UTC)
+Date:   Mon, 7 Sep 2020 11:45:47 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Yang Yingliang <yangyingliang@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, will.deacon@arm.com,
+        bhelgaas@google.com, gcherian@marvell.com, guohanjun@huawei.com
+Subject: Re: [PATCH] arm64: PCI: fix memleak when calling pci_iomap/unmap()
+Message-ID: <20200907104546.GC26513@gaia>
+References: <20200905024811.74701-1-yangyingliang@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <MN2PR12MB448843EC6D3D5B71613BEAAFF72B0@MN2PR12MB4488.namprd12.prod.outlook.com>
+In-Reply-To: <20200905024811.74701-1-yangyingliang@huawei.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 06, 2020 at 04:08:58PM +0000, Deucher, Alexander wrote:
-> From f479b9da353c2547c26ebac8930a5dcd9a134eb7 Mon Sep 17 00:00:00 2001
-> From: Alex Deucher <alexander.deucher@amd.com>
-> Date: Sun, 6 Sep 2020 12:05:12 -0400
-> Subject: [PATCH] drm/amdgpu: Fail to load on RAVEN if SME is active
-> 
-> Due to hardware bugs, scatter/gather display on raven requires
-> a 1:1 IOMMU mapping, however, SME (System Memory Encryption)
-> requires an indirect IOMMU mapping because the encryption bit
-> is beyond the DMA mask of the chip.  As such, the two are
-> incompatible.
-> 
-> Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-> ---
->  drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
-> index 12e16445df7c..d87d37c25329 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
-> @@ -1102,6 +1102,16 @@ static int amdgpu_pci_probe(struct pci_dev *pdev,
->  		return -ENODEV;
->  	}
+On Sat, Sep 05, 2020 at 10:48:11AM +0800, Yang Yingliang wrote:
+> diff --git a/arch/arm64/kernel/pci.c b/arch/arm64/kernel/pci.c
+> index 1006ed2d7c604..ddfa1c53def48 100644
+> --- a/arch/arm64/kernel/pci.c
+> +++ b/arch/arm64/kernel/pci.c
+> @@ -217,4 +217,9 @@ void pcibios_remove_bus(struct pci_bus *bus)
+>  	acpi_pci_remove_bus(bus);
+>  }
 >  
-> +	/* Due to hardware bugs, S/G Display on raven requires a 1:1 IOMMU mapping,
-> +	 * however, SME requires an indirect IOMMU mapping because the encryption
-> +	 * bit is beyond the DMA mask of the chip.
-> +	 */
-> +	if (mem_encrypt_active() && ((flags & AMD_ASIC_MASK) == CHIP_RAVEN)) {
-> +		dev_info(&pdev->dev,
-> +			 "SME is not compatible with RAVEN\n");
-> +		return -ENOTSUPP;
-> +	}
-> +
->  #ifdef CONFIG_DRM_AMDGPU_SI
->  	if (!amdgpu_si_support) {
->  		switch (flags & AMD_ASIC_MASK) {
-> -- 
-> 2.25.4
->
+> +void pci_iounmap(struct pci_dev *dev, void __iomem *addr)
+> +{
+> +	iounmap(addr);
+> +}
+> +EXPORT_SYMBOL(pci_iounmap);
 
-Looks good to me, thanks.
+So, what's wrong with the generic pci_iounmap() implementation?
+Shouldn't it call iounmap() already?
 
-Acked-by: Joerg Roedel <jroedel@suse.de>
+-- 
+Catalin
