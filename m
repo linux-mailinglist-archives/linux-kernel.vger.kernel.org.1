@@ -2,81 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C58A25F84D
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 12:31:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 211B425F85C
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 12:32:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728733AbgIGKay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 06:30:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34358 "EHLO
+        id S1728459AbgIGKcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 06:32:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728711AbgIGK3q (ORCPT
+        with ESMTP id S1728957AbgIGKcJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 06:29:46 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB39BC061574
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 03:29:45 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f090900d13be81847330e93.dip0.t-ipconnect.de [IPv6:2003:ec:2f09:900:d13b:e818:4733:e93])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id BA6901EC0402;
-        Mon,  7 Sep 2020 12:29:41 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1599474581;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=dt37uUxYROJNlD0vV1uDnGtV0WBbqmUUp/MYg5mNPrM=;
-        b=RijxchlHtwPXQG5o/B1nqXNP79POmS8Cs9dQtO6J44yZMUyQ0Z1pIMsDPL4cAz28pv8itX
-        UukAat4f+0m63he61l1m9zi43Ia+Qd4EpX9+wezuarnfV+Q8giojiAA5yvokMaHi9Q44wj
-        PsDlZv4bF1qtXXCK0DFftA/epddgjyo=
-Date:   Mon, 7 Sep 2020 12:29:35 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Fenghua Yu <fenghua.yu@intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, H Peter Anvin <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Jacob Jun Pan <jacob.jun.pan@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Sohil Mehta <sohil.mehta@intel.com>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        x86 <x86@kernel.org>, iommu@lists.linux-foundation.org
-Subject: Re: [PATCH v7 8/9] x86/cpufeatures: Mark ENQCMD as disabled when
- configured out
-Message-ID: <20200907102935.GA16029@zn.tnic>
-References: <1598540794-132666-1-git-send-email-fenghua.yu@intel.com>
- <1598540794-132666-9-git-send-email-fenghua.yu@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1598540794-132666-9-git-send-email-fenghua.yu@intel.com>
+        Mon, 7 Sep 2020 06:32:09 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33123C061573;
+        Mon,  7 Sep 2020 03:32:09 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id jw11so397194pjb.0;
+        Mon, 07 Sep 2020 03:32:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=Pw4vLVHMwoDygQJlXIN5N68/oqhIVb2RvXzyPohle44=;
+        b=VRCH3XSpQ4u3zMgFGj8rAyOSSpcxroG/aE0ExPffuF8OobI+9Vv/tw5WTx5K9jcVwk
+         PReTQyiwY6bCG+ZXKS0FMlq6CeJ/HcKjKDtvOVszirsFLI5NDOPCG2ikw0uDPYZiviph
+         1fhEVdhrb0g0gEL82T2x3NjqRDS1kk1p3B4khGXVxOGXrXa1vRxaXA2l3wirPmVMvyRI
+         JWn6/joUY0uf382x77OfdkIwZwefIIZh91siMj2zMRwVwLu5ujUMs7+dr2b3lRZ1Vsrg
+         VKwtfuejEIcdpeQFu93VoU3ADC2X6s5HX9hR4zGaaG0EsqSXKZeqF0mIgG0d/UgzdL7x
+         OVRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Pw4vLVHMwoDygQJlXIN5N68/oqhIVb2RvXzyPohle44=;
+        b=SQ48jUqeiI972dtbqVNI/4UbsMkqb2+FSgJj4Ubf7ENt/jQeFSf24bf9RTdKGc/Z6m
+         5KFVpeqzcGjWfSseannJKF1/bza0HwHjXf7a9nWq7A4CTQa0k0z2z+ekoHMBHM5EgoIp
+         ljjqJZuD7DNqOV31/4p7SdDLZAuUeorGZpX8Z1dRvp+Pt398SsAUbVLMiUiJYfzs0Wc2
+         34VDvzz1k2eL+EvxW5HP3VNAz/4b2N9frsEs13VndZTXw69F7+LDHTC7RrTVB4ut0U48
+         FebAn0gUAg1uupYQp/iVg9Yi1IybGLRGU44KrwiYJZ8kTnPxgopT5rKubBfwqfYl9pY/
+         J6oA==
+X-Gm-Message-State: AOAM533ZVY52B1fbKyvp5v6tTP/2b5CqOpLww/cs6yhb0rMS+0Nym8m5
+        1ffbo5SpMh+tICAMQ9DhXfg=
+X-Google-Smtp-Source: ABdhPJwgbmWuoKHYtI1E1MEPW4FTXssqzr5yMPDoSQ/DwmASfRL784uXblIQO/GlF+f/t/9NgW3Uww==
+X-Received: by 2002:a17:90b:138a:: with SMTP id hr10mr20256288pjb.8.1599474728764;
+        Mon, 07 Sep 2020 03:32:08 -0700 (PDT)
+Received: from localhost ([43.224.245.180])
+        by smtp.gmail.com with ESMTPSA id w203sm10524204pff.0.2020.09.07.03.32.07
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 07 Sep 2020 03:32:07 -0700 (PDT)
+From:   Geliang Tang <geliangtang@gmail.com>
+To:     Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Geliang Tang <geliangtang@gmail.com>, netdev@vger.kernel.org,
+        mptcp@lists.01.org, linux-kernel@vger.kernel.org
+Subject: [MPTCP][PATCH net 1/2] mptcp: fix subflow's local_id issues
+Date:   Mon,  7 Sep 2020 18:29:53 +0800
+Message-Id: <f24ee917e4043d2befe2a0f96cd57aa74d2a4b26.1599474422.git.geliangtang@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 08:06:33AM -0700, Fenghua Yu wrote:
-> Currently the ENQCMD feature cannot be used if CONFIG_INTEL_IOMMU_SVM
-> is not set.
+In mptcp_pm_nl_get_local_id, skc_local is the same as msk_local, so it
+always return 0. Thus every subflow's local_id is 0. It's incorrect.
 
-IOW,
+This patch fixed this issue.
 
-"Currently, the ENQCMD feature depends on CONFIG_INTEL_IOMMU_SVM."
+Also, we need to ignore the zero address here, like 0.0.0.0 in IPv4. When
+we use the zero address as a local address, it means that we can use any
+one of the local addresses. The zero address is not a new address, we don't
+need to add it to PM, so this patch added a new function address_zero to
+check whether an address is the zero address, if it is, we ignore this
+address.
 
-?
+Reviewed-by: Paolo Abeni <pabeni@redhat.com>
+Signed-off-by: Geliang Tang <geliangtang@gmail.com>
+---
+ net/mptcp/pm_netlink.c | 18 +++++++++++++++++-
+ 1 file changed, 17 insertions(+), 1 deletion(-)
 
-No need for a "cannot ... if not" formulation.
-
+diff --git a/net/mptcp/pm_netlink.c b/net/mptcp/pm_netlink.c
+index 2c208d2e65cd..dc2c57860d2d 100644
+--- a/net/mptcp/pm_netlink.c
++++ b/net/mptcp/pm_netlink.c
+@@ -66,6 +66,19 @@ static bool addresses_equal(const struct mptcp_addr_info *a,
+ 	return a->port == b->port;
+ }
+ 
++static bool address_zero(const struct mptcp_addr_info *addr)
++{
++	struct mptcp_addr_info zero;
++
++	memset(&zero, 0, sizeof(zero));
++	zero.family = addr->family;
++
++	if (addresses_equal(addr, &zero, false))
++		return true;
++
++	return false;
++}
++
+ static void local_address(const struct sock_common *skc,
+ 			  struct mptcp_addr_info *addr)
+ {
+@@ -323,10 +336,13 @@ int mptcp_pm_nl_get_local_id(struct mptcp_sock *msk, struct sock_common *skc)
+ 	 * addr
+ 	 */
+ 	local_address((struct sock_common *)msk, &msk_local);
+-	local_address((struct sock_common *)msk, &skc_local);
++	local_address((struct sock_common *)skc, &skc_local);
+ 	if (addresses_equal(&msk_local, &skc_local, false))
+ 		return 0;
+ 
++	if (address_zero(&skc_local))
++		return 0;
++
+ 	pernet = net_generic(sock_net((struct sock *)msk), pm_nl_pernet_id);
+ 
+ 	rcu_read_lock();
 -- 
-Regards/Gruss,
-    Boris.
+2.17.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
