@@ -2,54 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7706F25F2EE
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 08:04:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D483C25F2F7
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 08:06:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726422AbgIGGEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 02:04:00 -0400
-Received: from verein.lst.de ([213.95.11.211]:47705 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725803AbgIGGEA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 02:04:00 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 09E1468BFE; Mon,  7 Sep 2020 08:03:57 +0200 (CEST)
-Date:   Mon, 7 Sep 2020 08:03:56 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Russell King <rmk@arm.linux.org.uk>
-Subject: Re: remove set_fs for riscv
-Message-ID: <20200907060356.GA18655@lst.de>
-References: <20200904165216.1799796-1-hch@lst.de> <CAK8P3a3t8a0gD2HsoPsMi7whtNb7BdzPN6-oo6ABnqkbQJoBfA@mail.gmail.com> <20200905071735.GB13228@lst.de> <CAK8P3a3BN-Afy4Gj+mGjxiKODUBZwjh+XRbXqQKV-uEhyhOTfA@mail.gmail.com>
+        id S1726853AbgIGGGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 02:06:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50180 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725823AbgIGGGE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 02:06:04 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05811C061574;
+        Sun,  6 Sep 2020 23:06:03 -0700 (PDT)
+Date:   Mon, 07 Sep 2020 06:05:50 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1599458751;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=yPT9oQPC21g6xntCJxn95T6nJT9qkoIKzRBPckz2sAo=;
+        b=KgUgUtcHunPYvjQC133vlThRdEQ31cM92foL2z0ffrVa7vBZSz9S9lR1GpPop/UbX2+kOw
+        ObLUOq19rEX+Wb04Xngyx6vrRRz6AECFeM5diaoePty+bUzWH8l8XqfwnzM6ZOcvBv3TJw
+        2Wh6LhPqkRggZkxh8FNDUDr3D4SJtwPaEYcNvEynhgTl92wkqQvJtUuZ/jQTlAhuktJNvR
+        ZAKxqMPfL5Zjdh47Bp1UMRbUdABnGAtfrKK5tczCykm9Kx1QZGvQYPLuIKv2XTG7hkU1ax
+        Mau8dW+8ZiBIfWjuOMZtd0ToptXRUr/a28VbQFXPI/KfJ2TYtJHgtBNxpAL1Jw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1599458751;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=yPT9oQPC21g6xntCJxn95T6nJT9qkoIKzRBPckz2sAo=;
+        b=tCcM3bYiSzG4sSOji7VRR/Zjq/LgOY4BpXMfqvT3umyG6BUzfCpNzx8dOpu2mGn7Z69Ws4
+        fFRA+N3R0YiGe4Dg==
+From:   "tip-bot2 for Kees Cook" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: core/build] x86/build: Warn on orphan section placement
+Cc:     Kees Cook <keescook@chromium.org>, Ingo Molnar <mingo@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200902025347.2504702-5-keescook@chromium.org>
+References: <20200902025347.2504702-5-keescook@chromium.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a3BN-Afy4Gj+mGjxiKODUBZwjh+XRbXqQKV-uEhyhOTfA@mail.gmail.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Message-ID: <159945875070.20229.5266595565501285727.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 07, 2020 at 12:14:59AM +0200, Arnd Bergmann wrote:
-> I've had a first pass at this now, see
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/arnd/playground.git/log/?h=arm-kill-set_fs
-> 
-> There are a couple of things in there that ended up uglier than I was
-> hoping for, and it's completely untested beyond compilation. Is this
-> roughly what you had in mind? I can do some testing then and post
-> it to the Arm mailing list.
+The following commit has been merged into the core/build branch of tip:
 
-Looks sensible.  The OABI hacks a are a little ugly, but so would be
-every other alternative.
+Commit-ID:     83109d5d5fba7abf362f5a443c9f4c4ea10bbc8d
+Gitweb:        https://git.kernel.org/tip/83109d5d5fba7abf362f5a443c9f4c4ea10bbc8d
+Author:        Kees Cook <keescook@chromium.org>
+AuthorDate:    Tue, 01 Sep 2020 19:53:46 -07:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Thu, 03 Sep 2020 10:28:36 +02:00
 
-Note that you don't need to add a TASK_SIZE_MAX definition to arm if you
-base it on my series as that provides a default one.  I also think with
-these changes arm/nommu should be able to use UACCESS_MEMCPY.
+x86/build: Warn on orphan section placement
+
+We don't want to depend on the linker's orphan section placement
+heuristics as these can vary between linkers, and may change between
+versions. All sections need to be explicitly handled in the linker script.
+
+Now that all sections are explicitly handled, enable orphan section
+warnings.
+
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Link: https://lore.kernel.org/r/20200902025347.2504702-5-keescook@chromium.org
+---
+ arch/x86/Makefile | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/arch/x86/Makefile b/arch/x86/Makefile
+index 4346ffb..154259f 100644
+--- a/arch/x86/Makefile
++++ b/arch/x86/Makefile
+@@ -209,6 +209,10 @@ ifdef CONFIG_X86_64
+ LDFLAGS_vmlinux += -z max-page-size=0x200000
+ endif
+ 
++# We never want expected sections to be placed heuristically by the
++# linker. All sections should be explicitly named in the linker script.
++LDFLAGS_vmlinux += $(call ld-option, --orphan-handling=warn)
++
+ archscripts: scripts_basic
+ 	$(Q)$(MAKE) $(build)=arch/x86/tools relocs
+ 
