@@ -2,125 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DAAD260256
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:23:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF17426024C
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:22:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731164AbgIGRXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 13:23:22 -0400
-Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:19770 "EHLO
-        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729514AbgIGNnS (ORCPT
+        id S1729742AbgIGRWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 13:22:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36582 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729681AbgIGNrX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 09:43:18 -0400
+        Mon, 7 Sep 2020 09:47:23 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C74A5C061573
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 06:37:24 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id w8so12526710ilj.8
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 06:37:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1599486198; x=1631022198;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=6VQbLOy77M7fAKsGR2G82WO7fDDbNA8p2pbqM8zfSyk=;
-  b=TtAf3lFuBU4twdxeJ4WUdiF5hITcEfoTPjkkl9dXcauTowW9w5iJxNH+
-   qXUOkrY+TRDAZOnSi4L5qZ15LQ7qJuQLzzrHvf8VqmvHHKlWVRer3WdE0
-   AeX5rOtfBkuW3LLYxvvA6fSpkZ/MdmAq5TiSB/BhhtPTzvVyz2QGIF8XK
-   E=;
-X-IronPort-AV: E=Sophos;i="5.76,401,1592870400"; 
-   d="scan'208";a="74201643"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2a-119b4f96.us-west-2.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 07 Sep 2020 13:35:42 +0000
-Received: from EX13D16EUB001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2a-119b4f96.us-west-2.amazon.com (Postfix) with ESMTPS id 8709E1A067C;
-        Mon,  7 Sep 2020 13:35:39 +0000 (UTC)
-Received: from 38f9d34ed3b1.ant.amazon.com (10.43.162.38) by
- EX13D16EUB001.ant.amazon.com (10.43.166.28) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 7 Sep 2020 13:35:28 +0000
-Subject: Re: [PATCH v8 15/18] nitro_enclaves: Add Makefile for the Nitro
- Enclaves driver
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Anthony Liguori <aliguori@amazon.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Colm MacCarthaigh <colmmacc@amazon.com>,
-        David Duncan <davdunc@amazon.com>,
-        Bjoern Doebel <doebel@amazon.de>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        "Frank van der Linden" <fllinden@amazon.com>,
-        Alexander Graf <graf@amazon.de>,
-        "Karen Noel" <knoel@redhat.com>,
-        Martin Pohlack <mpohlack@amazon.de>,
-        Matt Wilson <msw@amazon.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Balbir Singh <sblbir@amazon.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "Stefan Hajnoczi" <stefanha@redhat.com>,
-        Stewart Smith <trawets@amazon.com>,
-        "Uwe Dannowski" <uwed@amazon.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        kvm <kvm@vger.kernel.org>,
-        ne-devel-upstream <ne-devel-upstream@amazon.com>
-References: <20200904173718.64857-1-andraprs@amazon.com>
- <20200904173718.64857-16-andraprs@amazon.com>
- <20200907090011.GC1101646@kroah.com>
-From:   "Paraschiv, Andra-Irina" <andraprs@amazon.com>
-Message-ID: <f5c0f79c-f581-fab5-9a3b-97380ef7fc2a@amazon.com>
-Date:   Mon, 7 Sep 2020 16:35:23 +0300
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:78.0)
- Gecko/20100101 Thunderbird/78.2.1
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PZpEmEr02MkgLosT7vPqFBX5vy+59cEEz8jZk2wlsPE=;
+        b=hEXKQqhJ9NmSx4YCpKMr1NwW45bcnwzOkhMBL8DjeyYLJm78qmx6PfgWclUzVWmb2h
+         fxaV6Sz2P9KxPrZSNITJVINtrvSAgSVSURAAgX1ASuRkdCqb7E91FrXanXeSPkc3ujAX
+         +FFNNl0haD5QGCZw+GF/SsD6+N2HO6LCjCJF+VFuY1mxeUJW36pdkCIztgxwx60mVlQc
+         yje66pdfUrcr4zkkHKkQoPkqLGdiP14j1niS7UWlfzNhCz3KJsftBXf8hOEiYD7uSXY9
+         mrAxej+Mmxa5Rq3IupJGnTLeDACHso2O2gLPL+GCXy5RjeQSrH+CAHW5xCBbD046Gi6G
+         Fe4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PZpEmEr02MkgLosT7vPqFBX5vy+59cEEz8jZk2wlsPE=;
+        b=Uqbrezxc6554nh9TqHtz9+atQ8Be9LxDJ7pucDQPXCa7/iJzye3eCQMbQlwMtr6JJV
+         3ef6UNcEpl8Xn4yZ5dz/WJDRFzzlug/6agl2wDjJgjkIW/OwpoUHajC/QrheHOICh44B
+         URr9qOPM6G8QAMKjbRoXbeQM++ZsntF2hEQ/ekuLTTVUyOcDLjeD3YzluBMIyuBtMfli
+         QDc0zbFpZuOiIc5VkOcxKLMo6Ffah3mES7FI3/uLllp9/ATuA3h514QELAUM3TPOGYun
+         b3YAoZPsgMEf6h5gn7+Te5xqY2bGnqDOodc39/hLKGdjQwQIElwcTAt49zw7GRgbqUrP
+         7C/A==
+X-Gm-Message-State: AOAM533Po9lwqcxmsCqlTWPfChV+sFVAWV4op5mM6wVlioQqYajwf5qB
+        sYdE0FXf5QF3VfW4rKnZZ8BUoMV04xvVI8XNaYeX8g==
+X-Google-Smtp-Source: ABdhPJyBenIIH2d8wv7qBpX9DpeJamhA8s78sQ62WqhL82+W2hjTg5gPuJzXToQlghF4RNr5s/7pUi3tIrgzsCAuZGI=
+X-Received: by 2002:a05:6e02:c26:: with SMTP id q6mr19152124ilg.235.1599485843333;
+ Mon, 07 Sep 2020 06:37:23 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200907090011.GC1101646@kroah.com>
-Content-Language: en-US
-X-Originating-IP: [10.43.162.38]
-X-ClientProxiedBy: EX13D20UWA001.ant.amazon.com (10.43.160.34) To
- EX13D16EUB001.ant.amazon.com (10.43.166.28)
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-Content-Transfer-Encoding: base64
+References: <1597644455-8216-1-git-send-email-jiaxin.yu@mediatek.com>
+ <1597644455-8216-3-git-send-email-jiaxin.yu@mediatek.com> <CA+Px+wXSbGLb+AZnF8ETRycRUVjqk4xacm5DH6MzuMw0vh6Wzg@mail.gmail.com>
+ <CA+Px+wUMXoSL6w0wBduE7obJRWgCteeT8=_=U=8LR34JKTTGZA@mail.gmail.com>
+ <20200819103730.GB5441@sirena.org.uk> <CA+Px+wUV89KO8JJd3+HpOrgFRSc7sdg-DBW44C31262Qx9NzVg@mail.gmail.com>
+ <20200819194005.GC38371@sirena.org.uk>
+In-Reply-To: <20200819194005.GC38371@sirena.org.uk>
+From:   Tzung-Bi Shih <tzungbi@google.com>
+Date:   Mon, 7 Sep 2020 21:37:12 +0800
+Message-ID: <CA+Px+wWMH6iUzFq0g4BFC5qA993r9UBobmNAyS2ie+xDwci-yg@mail.gmail.com>
+Subject: Re: [PATCH v5 2/2] dt-bindings: mediatek: mt6359: add codec document
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Jiaxin Yu <jiaxin.yu@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Takashi Iwai <tiwai@suse.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ALSA development <alsa-devel@alsa-project.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, howie.huang@mediatek.com,
+        eason.yen@mediatek.com, shane.chien@mediatek.com,
+        bicycle.tsai@mediatek.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CgpPbiAwNy8wOS8yMDIwIDEyOjAwLCBHcmVnIEtIIHdyb3RlOgo+Cj4KPiBPbiBGcmksIFNlcCAw
-NCwgMjAyMCBhdCAwODozNzoxNVBNICswMzAwLCBBbmRyYSBQYXJhc2NoaXYgd3JvdGU6Cj4+IFNp
-Z25lZC1vZmYtYnk6IEFuZHJhIFBhcmFzY2hpdiA8YW5kcmFwcnNAYW1hem9uLmNvbT4KPj4gUmV2
-aWV3ZWQtYnk6IEFsZXhhbmRlciBHcmFmIDxncmFmQGFtYXpvbi5jb20+Cj4+IC0tLQo+PiBDaGFu
-Z2Vsb2cKPj4KPj4gdjcgLT4gdjgKPj4KPj4gKiBObyBjaGFuZ2VzLgo+Pgo+PiB2NiAtPiB2Nwo+
-Pgo+PiAqIE5vIGNoYW5nZXMuCj4+Cj4+IHY1IC0+IHY2Cj4+Cj4+ICogTm8gY2hhbmdlcy4KPj4K
-Pj4gdjQgLT4gdjUKPj4KPj4gKiBObyBjaGFuZ2VzLgo+Pgo+PiB2MyAtPiB2NAo+Pgo+PiAqIE5v
-IGNoYW5nZXMuCj4+Cj4+IHYyIC0+IHYzCj4+Cj4+ICogUmVtb3ZlIHRoZSBHUEwgYWRkaXRpb25h
-bCB3b3JkaW5nIGFzIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyIGlzCj4+ICAgIGFscmVhZHkgaW4g
-cGxhY2UuCj4+Cj4+IHYxIC0+IHYyCj4+Cj4+ICogVXBkYXRlIHBhdGggdG8gTWFrZWZpbGUgdG8g
-bWF0Y2ggdGhlIGRyaXZlcnMvdmlydC9uaXRyb19lbmNsYXZlcwo+PiAgICBkaXJlY3RvcnkuCj4+
-IC0tLQo+PiAgIGRyaXZlcnMvdmlydC9NYWtlZmlsZSAgICAgICAgICAgICAgICB8ICAyICsrCj4+
-ICAgZHJpdmVycy92aXJ0L25pdHJvX2VuY2xhdmVzL01ha2VmaWxlIHwgMTEgKysrKysrKysrKysK
-Pj4gICAyIGZpbGVzIGNoYW5nZWQsIDEzIGluc2VydGlvbnMoKykKPj4gICBjcmVhdGUgbW9kZSAx
-MDA2NDQgZHJpdmVycy92aXJ0L25pdHJvX2VuY2xhdmVzL01ha2VmaWxlCj4+Cj4+IGRpZmYgLS1n
-aXQgYS9kcml2ZXJzL3ZpcnQvTWFrZWZpbGUgYi9kcml2ZXJzL3ZpcnQvTWFrZWZpbGUKPj4gaW5k
-ZXggZmQzMzEyNDdjMjdhLi5mMjg0MjVjZTRiMzkgMTAwNjQ0Cj4+IC0tLSBhL2RyaXZlcnMvdmly
-dC9NYWtlZmlsZQo+PiArKysgYi9kcml2ZXJzL3ZpcnQvTWFrZWZpbGUKPj4gQEAgLTUsMyArNSw1
-IEBACj4+Cj4+ICAgb2JqLSQoQ09ORklHX0ZTTF9IVl9NQU5BR0VSKSArPSBmc2xfaHlwZXJ2aXNv
-ci5vCj4+ICAgb2JqLXkgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICs9IHZib3hndWVz
-dC8KPj4gKwo+PiArb2JqLSQoQ09ORklHX05JVFJPX0VOQ0xBVkVTKSArPSBuaXRyb19lbmNsYXZl
-cy8KPj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvdmlydC9uaXRyb19lbmNsYXZlcy9NYWtlZmlsZSBi
-L2RyaXZlcnMvdmlydC9uaXRyb19lbmNsYXZlcy9NYWtlZmlsZQo+PiBuZXcgZmlsZSBtb2RlIDEw
-MDY0NAo+PiBpbmRleCAwMDAwMDAwMDAwMDAuLmU5ZjRmY2QxNTkxZQo+PiAtLS0gL2Rldi9udWxs
-Cj4+ICsrKyBiL2RyaXZlcnMvdmlydC9uaXRyb19lbmNsYXZlcy9NYWtlZmlsZQo+PiBAQCAtMCww
-ICsxLDExIEBACj4+ICsjIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiBHUEwtMi4wCj4+ICsjCj4+
-ICsjIENvcHlyaWdodCAyMDIwIEFtYXpvbi5jb20sIEluYy4gb3IgaXRzIGFmZmlsaWF0ZXMuIEFs
-bCBSaWdodHMgUmVzZXJ2ZWQuCj4+ICsKPj4gKyMgRW5jbGF2ZSBsaWZldGltZSBtYW5hZ2VtZW50
-IHN1cHBvcnQgZm9yIE5pdHJvIEVuY2xhdmVzIChORSkuCj4+ICsKPj4gK29iai0kKENPTkZJR19O
-SVRST19FTkNMQVZFUykgKz0gbml0cm9fZW5jbGF2ZXMubwo+PiArCj4+ICtuaXRyb19lbmNsYXZl
-cy15IDo9IG5lX3BjaV9kZXYubyBuZV9taXNjX2Rldi5vCj4+ICsKPj4gK2NjZmxhZ3MteSArPSAt
-V2FsbAo+IFRoYXQgZmxhZyBpcyBfcmVhbGx5XyByaXNreSBvdmVyIHRpbWUsIGFyZSB5b3UgX1NV
-UkVfIHRoYXQgYWxsIG5ldwo+IHZlcnNpb25zIG9mIGNsYW5nIGFuZCBnY2Mgd2lsbCBuZXZlciBw
-cm9kdWNlIGFueSB3YXJuaW5ncz8gIFBlb3BsZSB3b3JrCj4gdG8gZml4IHVwIGJ1aWxkIHdhcm5p
-bmdzIHF1aXRlIHF1aWNrbHkgZm9yIG5ldyBjb21waWxlcnMsIHlvdSBzaG91bGRuJ3QKPiBwcmV2
-ZW50IHRoZSBjb2RlIGZyb20gYmVpbmcgYnVpbHQgYXQgYWxsIGp1c3QgZm9yIHRoYXQsIHJpZ2h0
-Pwo+CgpUaGF0IHdvdWxkIGFsc28gbmVlZCBXZXJyb3IsIHRvIGhhdmUgd2FybmluZ3MgdHJlYXRl
-ZCBhcyBlcnJvcnMgYW5kIApwcmV2ZW50IGJ1aWxkaW5nIHRoZSBjb2RlYmFzZS4gSWYgaXQncyBh
-Ym91dCBzb21ldGhpbmcgbW9yZSwganVzdCBsZXQgbWUgCmtub3cuCgpXb3VsZCB0aGlzIGFwcGx5
-IHRvIHRoZSBzYW1wbGVzIGRpcmVjdG9yeSBhcyB3ZWxsLCBubz8KCkkgY291bGQgcmVtb3ZlIHRo
-ZSBXYWxsIGZsYWdzIGFuZCBrZWVwIGl0IGZvciBkZXZlbG9wbWVudCB2YWxpZGF0aW9uIApwdXJw
-b3NlcyBvbiBteSBzaWRlIHRvIHNvbHZlIGF0IGxlYXN0IHRoZSB3YXJuaW5ncyB0aGF0IHdvdWxk
-IGZ1cnRoZXIgc2VlLgoKVGhhbmtzLApBbmRyYQoKCgpBbWF6b24gRGV2ZWxvcG1lbnQgQ2VudGVy
-IChSb21hbmlhKSBTLlIuTC4gcmVnaXN0ZXJlZCBvZmZpY2U6IDI3QSBTZi4gTGF6YXIgU3RyZWV0
-LCBVQkM1LCBmbG9vciAyLCBJYXNpLCBJYXNpIENvdW50eSwgNzAwMDQ1LCBSb21hbmlhLiBSZWdp
-c3RlcmVkIGluIFJvbWFuaWEuIFJlZ2lzdHJhdGlvbiBudW1iZXIgSjIyLzI2MjEvMjAwNS4K
+On Thu, Aug 20, 2020 at 3:40 AM Mark Brown <broonie@kernel.org> wrote:
+>
+> On Wed, Aug 19, 2020 at 11:42:27PM +0800, Tzung-Bi Shih wrote:
+>
+> > But I found struct mfd_cell also contains member .of_compatible.  What
+> > is the difference if we use compatible string (as is) for this device
+> > instead of falling back to use device name to match?
+>
+> That's for binding the MFD subdevice to an OF node, you don't need to do
+> that for a device like this - you can just use the of_node of the parent
+> to get at the properties.
 
+There is an issue we overlooked.  In sound/soc/codecs/mt6359.c,
+mt6359_parse_dt() cannot read the DT properties
+(https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git/tree/sound/soc/codecs/mt6359.c?h=for-next#n2640).
+
+The original DTS is as following:
+pmic {
+  compatible = "mediatek,mt6359";
+
+  mt6359codec: mt6359codec {
+    compatible = "mediatek,mt6359-sound";  (1)
+    mediatek,dmic-mode = <1>;
+    mediatek,mic-type-0 = <2>;
+  }
+}
+After removing the line at (1), mt6359_parse_dt() cannot read the DT properties.
+
+The PMIC drivers/mfd/mt6397-core.c:
+- "mediatek,mt6359"
+- has the struct mfd_cell of mt6359-sound
+- adds all mfd_cells via devm_mfd_add_devices().
+
+The audio codec sound/soc/codecs/mt6359.c:
+- "mediatek,mt6359-sound"
+
+
+Here are a few options we can come out with.
+1. adds back the compatible string in the DTS
+2. gets of_node of parent in mt6359.c, and iterates all children nodes
+to get the desired properties
+3. parses all children nodes in the PMIC driver, and put them into
+either platform_data or device properties
+(https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git/tree/include/linux/mfd/core.h?h=for-next#n77)
+- The PMIC is common for several sub-devices.  It makes less sense to
+handle subdevice specific logic in the common code.
+4. others
+
+Could you share with us what would you suggest for fixing the issue?
