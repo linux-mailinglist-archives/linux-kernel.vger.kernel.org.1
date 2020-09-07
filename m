@@ -2,95 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACB9F25FB9C
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 15:46:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC9A525FBA8
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 15:51:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729661AbgIGNp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 09:45:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34324 "EHLO mail.kernel.org"
+        id S1729708AbgIGNum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 09:50:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40572 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729613AbgIGNbr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 09:31:47 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        id S1729604AbgIGNp3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 09:45:29 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6570221481;
-        Mon,  7 Sep 2020 13:30:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 21F7920757;
+        Mon,  7 Sep 2020 13:35:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599485438;
-        bh=5+5cu0m/GDXW1vdvbD9k7dHxXUwtrx3YfHl3e5jZzVw=;
+        s=default; t=1599485750;
+        bh=PWtmn+Z9RrLCbibZwYxdj5VdBnfGeAWKO2SOBBWHdOs=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KRrpWHcLtkZ3gsEWWQEUwiKCvFKuq+nxBQ17eXU7UnEmvJeWgaU3SCkt9a3hJWgsx
-         FLThsuMmNCxz4K2Oz4Z8viDJXy/BmBg7IfsTrbiKWDEihgV76wvP8FTW7mluj45XcF
-         jls9imQ81JnzCuK1kjqMeF696TtfPWoy3cmflzvQ=
-Date:   Mon, 7 Sep 2020 14:30:30 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Jessica Yu <jeyu@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        b=UARSrkQBalFJiyuplZd86WZgcGkPGkHh4W5UB3z6sPDs/iucB9oO+xQADt4eocjHx
+         a/hL0/+MUz5WolqcV42GXojvatVRW78Ddr5uHibtCwV4KY+/0ANcxtSt5i675YoajP
+         kCiipNsHVLex8nVpM+VaHz/nDMFGtmygwkSiWfkA=
+Date:   Mon, 7 Sep 2020 15:36:04 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Joe Perches <joe@perches.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
         Kees Cook <keescook@chromium.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jeff Dike <jdike@addtoit.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Richard Weinberger <richard@nod.at>,
-        Russell King <linux@armlinux.org.uk>,
-        Tony Luck <tony.luck@intel.com>, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-riscv@lists.infradead.org, linux-um@lists.infradead.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH] kbuild: preprocess module linker script
-Message-ID: <20200907133029.GB12551@willie-the-truck>
-References: <20200904133122.133071-1-masahiroy@kernel.org>
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Denis Efremov <efremov@linux.com>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Alex Dewar <alex.dewar90@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2] sysfs: Add sysfs_emit and sysfs_emit_at to format
+ sysfs output
+Message-ID: <20200907133604.GA2779041@kroah.com>
+References: <a9054fb521e65f2809671fa9c18e2453061e9d91.1598744610.git.joe@perches.com>
+ <c22b7006813b1776467a72e716a5970e9277b4b7.camel@perches.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200904133122.133071-1-masahiroy@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <c22b7006813b1776467a72e716a5970e9277b4b7.camel@perches.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 04, 2020 at 10:31:21PM +0900, Masahiro Yamada wrote:
-> There was a request to preprocess the module linker script like we do
-> for the vmlinux one (https://lkml.org/lkml/2020/8/21/512).
+On Sat, Aug 29, 2020 at 05:43:58PM -0700, Joe Perches wrote:
+> On Sat, 2020-08-29 at 16:48 -0700, Joe Perches wrote:
+> > Output defects can exist in sysfs content using sprintf and snprintf.
+> > 
+> > sprintf does not know the PAGE_SIZE maximum of the temporary buffer
+> > used for outputting sysfs content and it's possible to overrun the
+> > PAGE_SIZE buffer length.
+> > 
+> > Add a generic sysfs_emit function that knows that the size of the
+> > temporary buffer and ensures that no overrun is done.
+> > 
+> > Add a generic sysfs_emit_at function that can be used in multiple
+> > call situations that also ensures that no overrun is done.
 > 
-> The difference between vmlinux.lds and module.lds is that the latter
-> is needed for external module builds, thus must be cleaned up by
-> 'make mrproper' instead of 'make clean' (also, it must be created by
-> 'make modules_prepare').
+> This preliminary coccinelle script converts ~5000 instances treewide.
+> There are still many remaining instances that could be converted.
 > 
-> You cannot put it in arch/*/kernel/ because 'make clean' descends into
-> it. I moved arch/*/kernel/module.lds to arch/*/include/asm/module.lds.h,
-> which is included from scripts/module.lds.S.
-> 
-> scripts/module.lds is fine because 'make clean' keeps all the build
-> artifacts under scripts/.
-> 
-> You can add arch-specific sections in <asm/module.lds.h>.
-> 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> Tested-by: Jessica Yu <jeyu@kernel.org>
-> ---
+> $ git grep -w sysfs_emit -- '*.[ch]'|wc -l
+> 4702
+> $ git grep -w sysfs_emit_at -- '*.[ch]'|wc -l
+> 229
 
-For the arm64 bits:
+Can you send a patch that would at least convert the driver core code
+(drivers/base/*) to use these new helpers so we have an in-tree user
+when applying the first patch?
 
-Acked-by: Will Deacon <will@kernel.org>
+thanks,
 
-Thanks,
-
-Will
+greg k-h
