@@ -2,20 +2,20 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A092260279
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:26:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77EA726028B
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:29:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729734AbgIGR0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 13:26:51 -0400
-Received: from 8bytes.org ([81.169.241.247]:43594 "EHLO theia.8bytes.org"
+        id S1731041AbgIGR3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 13:29:09 -0400
+Received: from 8bytes.org ([81.169.241.247]:41692 "EHLO theia.8bytes.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729509AbgIGNTh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1729511AbgIGNTh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 7 Sep 2020 09:19:37 -0400
 Received: from cap.home.8bytes.org (p549add56.dip0.t-ipconnect.de [84.154.221.86])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by theia.8bytes.org (Postfix) with ESMTPSA id 1792E1822;
-        Mon,  7 Sep 2020 15:17:11 +0200 (CEST)
+        by theia.8bytes.org (Postfix) with ESMTPSA id 1F7C22CBB;
+        Mon,  7 Sep 2020 15:17:12 +0200 (CEST)
 From:   Joerg Roedel <joro@8bytes.org>
 To:     x86@kernel.org
 Cc:     Joerg Roedel <joro@8bytes.org>, Joerg Roedel <jroedel@suse.de>,
@@ -36,9 +36,9 @@ Cc:     Joerg Roedel <joro@8bytes.org>, Joerg Roedel <jroedel@suse.de>,
         Martin Radev <martin.b.radev@gmail.com>,
         linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
         virtualization@lists.linux-foundation.org
-Subject: [PATCH v7 56/72] x86/sev-es: Handle INVD Events
-Date:   Mon,  7 Sep 2020 15:15:57 +0200
-Message-Id: <20200907131613.12703-57-joro@8bytes.org>
+Subject: [PATCH v7 58/72] x86/sev-es: Handle MWAIT/MWAITX Events
+Date:   Mon,  7 Sep 2020 15:15:59 +0200
+Message-Id: <20200907131613.12703-59-joro@8bytes.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200907131613.12703-1-joro@8bytes.org>
 References: <20200907131613.12703-1-joro@8bytes.org>
@@ -51,31 +51,44 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Tom Lendacky <thomas.lendacky@amd.com>
 
-Implement a handler for #VC exceptions caused by INVD instructions.
-Since Linux should never use INVD, just mark it as unsupported.
+Implement a handler for #VC exceptions caused by MWAIT and MWAITX
+instructions.
 
 Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
 [ jroedel@suse.de: Adapt to #VC handling infrastructure ]
 Co-developed-by: Joerg Roedel <jroedel@suse.de>
 Signed-off-by: Joerg Roedel <jroedel@suse.de>
 ---
- arch/x86/kernel/sev-es.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ arch/x86/kernel/sev-es.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
 diff --git a/arch/x86/kernel/sev-es.c b/arch/x86/kernel/sev-es.c
-index 2ee600f3184b..7fb17e71ff05 100644
+index 847a578d5158..0d0b6e15f7d9 100644
 --- a/arch/x86/kernel/sev-es.c
 +++ b/arch/x86/kernel/sev-es.c
-@@ -892,6 +892,10 @@ static enum es_result vc_handle_exitcode(struct es_em_ctxt *ctxt,
- 	case SVM_EXIT_RDPMC:
- 		result = vc_handle_rdpmc(ghcb, ctxt);
+@@ -882,6 +882,13 @@ static enum es_result vc_handle_monitor(struct ghcb *ghcb,
+ 	return ES_OK;
+ }
+ 
++static enum es_result vc_handle_mwait(struct ghcb *ghcb,
++				      struct es_em_ctxt *ctxt)
++{
++	/* Treat the same as MONITOR/MONITORX */
++	return ES_OK;
++}
++
+ static enum es_result vc_handle_exitcode(struct es_em_ctxt *ctxt,
+ 					 struct ghcb *ghcb,
+ 					 unsigned long exit_code)
+@@ -921,6 +928,9 @@ static enum es_result vc_handle_exitcode(struct es_em_ctxt *ctxt,
+ 	case SVM_EXIT_MONITOR:
+ 		result = vc_handle_monitor(ghcb, ctxt);
  		break;
-+	case SVM_EXIT_INVD:
-+		pr_err_ratelimited("#VC exception for INVD??? Seriously???\n");
-+		result = ES_UNSUPPORTED;
++	case SVM_EXIT_MWAIT:
++		result = vc_handle_mwait(ghcb, ctxt);
 +		break;
- 	case SVM_EXIT_CPUID:
- 		result = vc_handle_cpuid(ghcb, ctxt);
+ 	case SVM_EXIT_NPF:
+ 		result = vc_handle_mmio(ghcb, ctxt);
  		break;
 -- 
 2.28.0
