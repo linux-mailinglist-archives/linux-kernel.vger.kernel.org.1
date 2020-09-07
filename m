@@ -2,104 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30EE325FFDE
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 18:40:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 641A525FFF4
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 18:42:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731030AbgIGQkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 12:40:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730879AbgIGQiR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 12:38:17 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF85FC061573
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 09:38:16 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id c10so12665332otm.13
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 09:38:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=22rG+o0x5E8fn3lCo9EgmgeQWY6DcyVeCCT/ulJfvbo=;
-        b=bitllW57EJOYHuZ5CUKD/Lb1sFDAtPUOem3ecI2UP5Q0jVAjzxdw9cvG8bOu1yi6S2
-         bvOWP86o1ZNwx9Fkmfi7+tvAVV+vGPobCKiG9y/53o2pVIkHQDx0ZsFka6V4SD3czEE3
-         x+Tl+fP+CGIy2viSi3K8rmPDboV3CnVBOn/Kfri5r96cPfRSz4zqlHRNBSAr3lAOaYqf
-         i9ZVZlwxyHvG/GF2NDA+lzp1mfQI+qImZwMyK9aISDMX7zgmLcCO02j6vi8tyMXcMY++
-         ObuajIiQvYTIYZHSkaTPgwyUzMEl92mdfXHfPW0TV337JP+dOU765tvAW6aj/lyM8YfE
-         1OfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=22rG+o0x5E8fn3lCo9EgmgeQWY6DcyVeCCT/ulJfvbo=;
-        b=GRRUidjbCovrPlXf+4MaJ+hg+bXCpJp4/Destd5ABS7kFZf5rqMKvR2VRpjL9p+D4T
-         f3KjkgyRQ0M8lKEXi5C++PQNOdwi+atEo0wVvCzzxpxdZS3UuvWYdTXCkePaXUqSrOF3
-         F5YwAL94KEw9zajtjRRpQPqiay++KdMS8Xb0hq86TU9P8pn9UFlGgoo1pAwL8Ks+b2D8
-         KT8JjTg8eVkE0MQaJudEFwjB69E+rCw+jFgZEAr/5VsVj/CWccvr3UlK8Tj4cQM9Ra2g
-         oWSXf/YfDVBtUbqwfxFJqTgQ55V+Rphqbz7QYAGnGhCoJqvfAWMcrvZUPgkLTJ90GAn8
-         K7Zg==
-X-Gm-Message-State: AOAM530yC0b7+HQUDM5g9DumLUOl+hg18eUbqQrhznLyZDBYlWfsbpVF
-        wAOMUC+FDhtIelHoVyfLPx+cvWFsm2B7oUyAOs2/mw==
-X-Google-Smtp-Source: ABdhPJzsrwPGCQDoeOK2piqQ7QiJFzBZJjpEU9sPz0Ed1c6gEk6sIyv2+pbiSAvi7iaELl3C5S0YJJO8OglifQ0pITQ=
-X-Received: by 2002:a9d:3da1:: with SMTP id l30mr15600016otc.233.1599496695929;
- Mon, 07 Sep 2020 09:38:15 -0700 (PDT)
+        id S1731004AbgIGQmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 12:42:03 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2778 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730306AbgIGQj4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 12:39:56 -0400
+Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.107])
+        by Forcepoint Email with ESMTP id 5432B9CCF7EE259F5AD4;
+        Mon,  7 Sep 2020 17:39:53 +0100 (IST)
+Received: from localhost (10.52.124.38) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1913.5; Mon, 7 Sep 2020
+ 17:39:52 +0100
+Date:   Mon, 7 Sep 2020 17:38:19 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+CC:     Kukjin Kim <kgene@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Jonathan Bakker <xc-racer2@live.ca>,
+        =?UTF-8?Q?Pawe=C5=82?= Chmiel <pawel.mikolaj.chmiel@gmail.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-samsung-soc@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>
+Subject: Re: [PATCH 02/25] dt-bindings: iio: adc: exynos-adc: require second
+ interrupt with touch screen
+Message-ID: <20200907173819.00005a48@Huawei.com>
+In-Reply-To: <20200907161141.31034-3-krzk@kernel.org>
+References: <20200907161141.31034-1-krzk@kernel.org>
+        <20200907161141.31034-3-krzk@kernel.org>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-References: <20200907134055.2878499-1-elver@google.com> <20200907134055.2878499-2-elver@google.com>
- <20200907164148.00007899@Huawei.com>
-In-Reply-To: <20200907164148.00007899@Huawei.com>
-From:   Marco Elver <elver@google.com>
-Date:   Mon, 7 Sep 2020 18:38:04 +0200
-Message-ID: <CANpmjNNL_hqmKfZAGF5mF-HwVx78tp+j0JNKhK=xPwJLvdWnZg@mail.gmail.com>
-Subject: Re: [PATCH RFC 01/10] mm: add Kernel Electric-Fence infrastructure
-To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc:     Alexander Potapenko <glider@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>, Qian Cai <cai@lca.pw>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.124.38]
+X-ClientProxiedBy: lhreml709-chm.china.huawei.com (10.201.108.58) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 7 Sep 2020 at 17:43, Jonathan Cameron
-<Jonathan.Cameron@huawei.com> wrote:
-...
-> Interesting bit of work. A few trivial things inline I spotted whilst having
-> a first read through.
->
-> Thanks,
->
-> Jonathan
+On Mon,  7 Sep 2020 18:11:18 +0200
+Krzysztof Kozlowski <krzk@kernel.org> wrote:
 
-Thank you for having a look! We'll address these for v2.
+> The ADC in S3C/S5P/Exynos SoCs can be used also for handling touch
+> screen.  In such case the second interrupt is required.  This second
+> interrupt can be anyway provided, even without touch screens.  This
+> fixes dtbs_check warnings like:
+> 
+>   arch/arm/boot/dts/s5pv210-aquila.dt.yaml: adc@e1700000: interrupts: [[23], [24]] is too long
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-Thanks,
--- Marco
+Acked-by: Jonathan Cameron <Jonathan.Cameron@huwei.com>
+
+Or I can pick this up through the IIO tree if that makes sense.
+I doubt anything else will touch this binding this cycle, so either
+way works for me.
+
+Jonathan
+
+> ---
+>  .../bindings/iio/adc/samsung,exynos-adc.yaml      | 15 ++++++++++++++-
+>  1 file changed, 14 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/iio/adc/samsung,exynos-adc.yaml b/Documentation/devicetree/bindings/iio/adc/samsung,exynos-adc.yaml
+> index cc3c8ea6a894..89b4f9c252a6 100644
+> --- a/Documentation/devicetree/bindings/iio/adc/samsung,exynos-adc.yaml
+> +++ b/Documentation/devicetree/bindings/iio/adc/samsung,exynos-adc.yaml
+> @@ -41,7 +41,10 @@ properties:
+>      maxItems: 2
+>  
+>    interrupts:
+> -    maxItems: 1
+> +    description:
+> +      ADC interrupt followed by optional touchscreen interrupt.
+> +    minItems: 1
+> +    maxItems: 2
+>  
+>    "#io-channel-cells":
+>      const: 1
+> @@ -107,6 +110,16 @@ allOf:
+>            items:
+>              - const: adc
+>  
+> +  - if:
+> +      properties:
+> +        has-touchscreen:
+> +          true
+> +    then:
+> +      properties:
+> +        interrupts:
+> +          minItems: 2
+> +          maxItems: 2
+> +
+>  examples:
+>    - |
+>      adc: adc@12d10000 {
+
+
