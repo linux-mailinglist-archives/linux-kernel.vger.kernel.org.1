@@ -2,117 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 985BB25F4CC
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 10:17:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 397F025F4CF
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 10:18:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727826AbgIGIR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 04:17:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42072 "EHLO
+        id S1727954AbgIGISI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 04:18:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727116AbgIGIRZ (ORCPT
+        with ESMTP id S1727884AbgIGISA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 04:17:25 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6BEBC061575
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 01:17:24 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id b79so13272656wmb.4
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 01:17:24 -0700 (PDT)
+        Mon, 7 Sep 2020 04:18:00 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 973F9C061573
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 01:17:59 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id o68so8260540pfg.2
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 01:17:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=e3Ta+K0mK8PpGvlCwRAXKhWKCtC3zo1Ck8yWJNQiAbc=;
-        b=N60YE/qv46tYYNcmpPR8FroUI42HP4mXIwHEKFuWaGPimLjJ9X3TifejU9aqxqqk8B
-         aE2FD/IljOK8O1Py57X18zSa7Q5k211I0qCnq7Urb7sSDcd8kX4aPn6DY1luVHtH4eHD
-         FAw4gW7HXAtpTkTtBGw/V3hgmAypm+uug7M1ttHV6PbBictZ/TGCrnAjHm6QCAKIrnNc
-         YMMVxDv5HKOtnlgM/RUdgkfSEnwOdBR1bOozmHY9Zhu3cpQ+uxZh5/Owv+Im8bBCJs0P
-         CRhUs+rjqD+24Cxv7SEUdOnAcSz9GbvwH0Sz85YrrMl/O21+QjRNM2D9LTm+AfdpDxz/
-         nHxw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=xpbU7xvNSX910XDJmyKFuqPe3lKfo6Zq4NRSI2f54Ac=;
+        b=kPwdRjoWHdEjiToNXIEHWkJaD+jtrlJh4uxqrHxIUX/wi59Sl4xDvQSdwd3OmnbgBF
+         Q/D2UP3vHUrAYNAzcDzGkWOJbjj4s3jTuV/nF4d74s9aux39zGZKaWjewxerIQPfRuo3
+         uOju2PDDRY3+/M/Ogy/JNCi5IcjhUh+ZJrTeKVtVX6FM6RAux8xxCUoXYHRkAy4gF2KK
+         lzKSLGpZTWsji+nIOC+qTwoX3uK2z3U8GuHtK3t2vgCtJPf52RZAnf8uUegEhFZFAkW/
+         Mm+Lf20iJr57fwK7uj6TjObbAThI4UeB9f5wliqzWGCKhhkTReTcUIZkhr/LKAfzEYNl
+         ZHtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=e3Ta+K0mK8PpGvlCwRAXKhWKCtC3zo1Ck8yWJNQiAbc=;
-        b=QwaUTQ2oG3B1elB3euf2s2gxvTA3ES7Wmc2GvbncuegoyYENvPjxg4/0Oquz2Zv4cE
-         ZpBz4ybEjXKg+n8QLXJj2i7Ne6EzPzlXxiEhSdDrixytLvxsxRuqH47CPjy0Av/kO2KA
-         EqRVfazc2bfOFsSgmZsxvueial3OjUC7efTlYA9Pd/uB0j84FMk2zbnOtEe9cgrdBKEu
-         xeKsrdZ7tyhFeIXfPk/LuqtxRHgC7q+/d/jrMmVDs3zRZvLOJpMYtN4YPJtt/MJ2NF9F
-         ko2vVTQ+CekqMthl4DrT2meYd/T+Wt+RIuONdalDq/LYK6/fsj/opWrJc+0MvXqg21cL
-         OyzA==
-X-Gm-Message-State: AOAM533lPoYA1NgNCGfZQSH3oGX908KACr0XYa1Dw3KHA/FgORddqkqS
-        lRggx7HUlMqJvzuOPXiAC/3PhQ==
-X-Google-Smtp-Source: ABdhPJzqlqQ/xXSxZ0lbww5TZ6AZTnF7NA2XnTh1An/jnwbvuMzqoK0s9KMICLsQ2iJA4xPkNvSEbg==
-X-Received: by 2002:a1c:3bd7:: with SMTP id i206mr19701901wma.162.1599466643283;
-        Mon, 07 Sep 2020 01:17:23 -0700 (PDT)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id u17sm25259954wmm.4.2020.09.07.01.17.21
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 07 Sep 2020 01:17:22 -0700 (PDT)
-Subject: Re: [PATCH v2 0/4] soundwire: qcom: add support for mmio soundwire
- master
-To:     Jonathan Marek <jonathan@marek.ca>, linux-arm-msm@vger.kernel.org
-Cc:     "moderated list:SOUNDWIRE SUBSYSTEM" <alsa-devel@alsa-project.org>,
-        Andy Gross <agross@kernel.org>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sanyog Kale <sanyog.r.kale@intel.com>,
-        Vinod Koul <vkoul@kernel.org>
-References: <20200905173905.16541-1-jonathan@marek.ca>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <ec241abf-c1e1-8b2d-a0bb-93a60241330c@linaro.org>
-Date:   Mon, 7 Sep 2020 09:17:21 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=xpbU7xvNSX910XDJmyKFuqPe3lKfo6Zq4NRSI2f54Ac=;
+        b=SDJbRIVRR/ZdYC8GxLJfJ+opSMElPi5wOxzTKG3ZHhVVQcguQr6AzEctP55Ge+LjXS
+         IkmAd/Oq6ex7FFQMS7m0J2t4I9WaqfeM50Wz8zXWXOVOvZCSr3zn4zvjxKmdrWFn6BPw
+         h6yHGC+Kg7Ftb4yB12RRWd7vs20Vm0p+ctXqKKwIIdNOmph3zJdsCELee+MkCC9hu5+T
+         MuojVKpRZLr3MsDGl2G7m9LyFEgY0s75LUsHxc3sn0PB2CD2ayVAKjTuOiwlL7QC5KSt
+         XWwkvlF//VSMs8gXhs5ibGMrCoURSM0HJ+BqTuN9DAcM6dJTXmc4q5kChG/rwMh0+aU+
+         OIVA==
+X-Gm-Message-State: AOAM531tfpNbbF+BAwhV5MhggLqaQXjnDlk6/szTSFG5RO/0nRWsIjmm
+        Q/F/wa615krqju/VeaLyz1nXBg==
+X-Google-Smtp-Source: ABdhPJwdTWTgPv1uouiu2Q5zKA0MSPc2ResUVGw4FmXenrWf8sX25toC7NZqtgBS2EYm4bfifzqaXA==
+X-Received: by 2002:a65:6701:: with SMTP id u1mr5892104pgf.357.1599466679039;
+        Mon, 07 Sep 2020 01:17:59 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s ([2600:3c01::f03c:91ff:fe8a:bb03])
+        by smtp.gmail.com with ESMTPSA id n7sm8588540pfq.114.2020.09.07.01.17.51
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 07 Sep 2020 01:17:58 -0700 (PDT)
+Date:   Mon, 7 Sep 2020 16:17:47 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Kemeng Shi <shikemeng@huawei.com>,
+        James Clark <james.clark@arm.com>,
+        Wei Li <liwei391@huawei.com>, Al Grant <Al.Grant@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 02/14] perf mem: Introduce weak function
+ perf_mem_events__ptr()
+Message-ID: <20200907081747.GC25511@leoy-ThinkPad-X240s>
+References: <20200901083815.13755-1-leo.yan@linaro.org>
+ <20200901083815.13755-3-leo.yan@linaro.org>
+ <20200903135054.GD713364@krava>
+ <20200904003447.GB5979@leoy-ThinkPad-X240s>
+ <20200904155251.GC939481@krava>
 MIME-Version: 1.0
-In-Reply-To: <20200905173905.16541-1-jonathan@marek.ca>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200904155251.GC939481@krava>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 05/09/2020 18:39, Jonathan Marek wrote:
-> This adds initial support for soundwire device on sm8250.
+On Fri, Sep 04, 2020 at 05:52:51PM +0200, Jiri Olsa wrote:
+> On Fri, Sep 04, 2020 at 08:34:47AM +0800, Leo Yan wrote:
+> > Hi Jiri,
+> > 
+> > On Thu, Sep 03, 2020 at 03:50:54PM +0200, Jiri Olsa wrote:
+> > > On Tue, Sep 01, 2020 at 09:38:03AM +0100, Leo Yan wrote:
+> > > 
+> > > SNIP
+> > > 
+> > > > @@ -2941,30 +2942,38 @@ static int perf_c2c__record(int argc, const char **argv)
+> > > >  	rec_argv[i++] = "record";
+> > > >  
+> > > >  	if (!event_set) {
+> > > > -		perf_mem_events[PERF_MEM_EVENTS__LOAD].record  = true;
+> > > > -		perf_mem_events[PERF_MEM_EVENTS__STORE].record = true;
+> > > > +		e = perf_mem_events__ptr(PERF_MEM_EVENTS__LOAD);
+> > > > +		e->record = true;
+> > > > +
+> > > > +		e = perf_mem_events__ptr(PERF_MEM_EVENTS__STORE);
+> > > > +		e->record = true;
+> > > >  	}
+> > > >  
+> > > > -	if (perf_mem_events[PERF_MEM_EVENTS__LOAD].record)
+> > > > +	e = perf_mem_events__ptr(PERF_MEM_EVENTS__LOAD);
+> > > > +	if (e->record)
+> > > >  		rec_argv[i++] = "-W";
+> > > >  
+> > > >  	rec_argv[i++] = "-d";
+> > > >  	rec_argv[i++] = "--phys-data";
+> > > >  	rec_argv[i++] = "--sample-cpu";
+> > > >  
+> > > > -	for (j = 0; j < PERF_MEM_EVENTS__MAX; j++) {
+> > > > -		if (!perf_mem_events[j].record)
+> > > > +	j = 0;
+> > > > +	while ((e = perf_mem_events__ptr(j)) != NULL) {
+> > > > +		if (!e->record) {
+> > > 
+> > > you could keep the above 'for loop' in here, it seems better
+> > > than taking care of j++
+> > 
+> > Actually in patch v1 I did this way :)  I followed James' suggestion to
+> > encapsulate PERF_MEM_EVENTS__MAX into perf_mem_events__ptr(), thus
+> > builtin-mem.c and buildin-c2c.c are not necessary to use
+> > PERF_MEM_EVENTS__MAX in the loop and only needs to detect if the
+> > pointer is NULL or not when return from perf_mem_events__ptr().
 > 
-> Tested with the "wsa" sdw device, which is simpler than the others.
+> ah because u added that load_store event
+
+Yes.
+
+> > 
+> > How about change as below?
+> > 
+> >         for (j = 0; (e = perf_mem_events__ptr(j)) != NULL; j++) {
+> >                 [...]
 > 
-> v2 addresses some feedback, but I kept this series as simple as possible.
-> In particular, I didn't implement CMD_NACKED from FIFO_STATUS, because
-> the downstream driver doesn't define this bit, so I can't implement it.
-> Soundwire works without it and It shouldn't be difficult to implement later.
+> will this work? e will be NULL for first iteration no?
 > 
-> Jonathan Marek (4):
->    soundwire: qcom: fix abh/ahb typo
->    soundwire: qcom: avoid dependency on CONFIG_SLIMBUS
->    soundwire: qcom: add support for mmio soundwire master devices
->    soundwire: qcom: add v1.5.1 compatible
-> 
-Hi Jonathan,
-I have tested these patches on RB5 with WSA8810 and they work fine.
+> there are still other for loops with PERF_MEM_EVENTS__MAX used
+> in the patch.. you overload the perf_mem_events access for arm,
+> and add missing load_store NULL item to generic version, so there's
+> always PERF_MEM_EVENTS__MAX items in the array
 
-I can try to add support to command ignored in future, but for now these 
-look good to me!
+Yes, exactly.
 
+> can we just use the current for loop and check for e->tag != NULL
+> or any other field
 
-Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Tested-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-
+Understood.  This would be directive, will keep current code and will
+check 'e->record' field.
 
 Thanks,
-srini
-
->   .../bindings/soundwire/qcom,sdw.txt           |  1 +
->   drivers/soundwire/Kconfig                     |  2 +-
->   drivers/soundwire/qcom.c                      | 38 +++++++++++++++++--
->   3 files changed, 36 insertions(+), 5 deletions(-)
-> 
+Leo
