@@ -2,85 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F56E25FB7E
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 15:33:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA4CD25FB84
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 15:38:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729549AbgIGNdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 09:33:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59384 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729503AbgIGNTg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 09:19:36 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CE268207C3;
-        Mon,  7 Sep 2020 13:18:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599484717;
-        bh=BKBAEsfKZS4E5QjfPye1MWvCwF5n9qQJ1ssxeiA8wKI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=wdUQiNLvADjY9FuVRehVsImJ44DgtFXxrELd+iJo0A+WUE9LY3OSKo9PUyuzgYe5l
-         iyf3Yf3AnwILWJZ3I7pfv1zo8jcJ8qmJjbvrYAPkjG6IPrUrqviiTlNA6+yTw8nCR8
-         j6/v7RGyYnuG1X7uws+rAW9GQnn2zaeeArc2Lvxs=
-Date:   Mon, 7 Sep 2020 15:18:51 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-spdx@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] LICENSE: add GFDL deprecated licenses
-Message-ID: <20200907131851.GA2608040@kroah.com>
-References: <cover.1598449136.git.mchehab+huawei@kernel.org>
- <a729c45bda6499e07112fc420015838ddd02557a.1598449136.git.mchehab+huawei@kernel.org>
+        id S1729351AbgIGNiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 09:38:21 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:36143 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729401AbgIGNXD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 09:23:03 -0400
+Received: by mail-wr1-f66.google.com with SMTP id z1so15843751wrt.3
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 06:22:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jw3ZabYmqpCSQDTYowWmd33rXHnppYFQbMxFutigDOU=;
+        b=kxsPUFaELtJLHPWAoYt1fnYie4NDdmSyfj2XTuHHRtmyelUxLgrfy+MYiiVluR1YnF
+         ch8+T1egldCGhUF5iq5hw7LlxVJwXufICiA5JmXfsW7kL+QDwJdy4S3rq1FNuXDOFdsl
+         0AZuHXvgTwMsURx8WvZ1enLbMM+F7hgKaJtRUkl9bc/E3qfBOVGLmzjgzfVC0cncj6Io
+         VpHkSdXx75Qlh/HTOmroZnT+Ld+q/K4CERVU7tENr7utne38Tcs2LfevyX9fscFe8YV3
+         u41utouiZv6IpasPplIRQkg1B6QxghVwbUNpNgA87PnXO8yVTbOPxpRGRtfUUpPl/lYr
+         3Akg==
+X-Gm-Message-State: AOAM532pvbK8twtCucbiwnXV2bnLFNkbm1a1yWzA9NtflKBNrwzKjLOY
+        qkr7sypIj4O6B2DA0zjY++ejhTNjjd0H+Lmyazs=
+X-Google-Smtp-Source: ABdhPJy+SlaAJQL068e7tf1CGc3id41YdCtykVF6ENJPsogzaYmryxf4shlGtuSlnL+c2XDjfu8nrWoFf6HdOXbZVKs=
+X-Received: by 2002:adf:82d5:: with SMTP id 79mr17700246wrc.60.1599484956845;
+ Mon, 07 Sep 2020 06:22:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a729c45bda6499e07112fc420015838ddd02557a.1598449136.git.mchehab+huawei@kernel.org>
+References: <20200907034502.753230-1-namhyung@kernel.org> <20200907034502.753230-2-namhyung@kernel.org>
+ <20200907112925.GJ1199773@krava> <20200907113201.GK1199773@krava>
+In-Reply-To: <20200907113201.GK1199773@krava>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Mon, 7 Sep 2020 22:22:25 +0900
+Message-ID: <CAM9d7cisp7QQJF8RT7fPW4rQ4tTrZtK8PM61fKGFKGE-xHqevw@mail.gmail.com>
+Subject: Re: [PATCH 1/9] perf evlist: Fix cpu/thread map leak
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Stephane Eranian <eranian@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <andi@firstfloor.org>,
+        Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 26, 2020 at 03:46:51PM +0200, Mauro Carvalho Chehab wrote:
-> There are some files under Documentation which uses
-> deprecated versions of GNU Free Documentation License, on
-> both versions 1.1 and 1.2.
-> 
-> On all cases, the license is with no Invariant Sections,
-> Front-Cover Texts or Back-Cover Texts.
-> 
-> Add the text file for them, as we'll start using SPDX
-> for those.
-> 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->  LICENSES/deprecated/GFDL-1.1 | 355 +++++++++++++++++++++++++++++++
->  LICENSES/deprecated/GFDL-1.2 | 397 +++++++++++++++++++++++++++++++++++
->  2 files changed, 752 insertions(+)
->  create mode 100644 LICENSES/deprecated/GFDL-1.1
->  create mode 100644 LICENSES/deprecated/GFDL-1.2
-> 
-> diff --git a/LICENSES/deprecated/GFDL-1.1 b/LICENSES/deprecated/GFDL-1.1
-> new file mode 100644
-> index 000000000000..a03f60403947
-> --- /dev/null
-> +++ b/LICENSES/deprecated/GFDL-1.1
-> @@ -0,0 +1,355 @@
-> +                GNU Free Documentation License
-> +                   Version 1.1, March 2000
+Hi Jiri,
 
-<snip>
+On Mon, Sep 7, 2020 at 8:32 PM Jiri Olsa <jolsa@redhat.com> wrote:
+>
+> On Mon, Sep 07, 2020 at 01:29:29PM +0200, Jiri Olsa wrote:
+> > On Mon, Sep 07, 2020 at 12:44:54PM +0900, Namhyung Kim wrote:
+> > > Asan reported leak of cpu and thread maps as they have one more
+> > > refcount than released.  I found that after setting evlist maps it
+> > > should release it's refcount.
+> > >
+> > > It seems to be broken from the beginning so I chose the original
+> > > commit as the culprit.  But not sure how it's applied to stable trees
+> > > since there are many changes in the code after that.
+> > >
+> > > Fixes: 7e2ed097538c5 ("perf evlist: Store pointer to the cpu and thread maps")
+> > > Fixes: 4112eb1899c0e ("perf evlist: Default to syswide target when no thread/cpu maps set")
+> > > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> > > ---
+> > >  tools/perf/util/evlist.c | 11 ++++++++---
+> > >  1 file changed, 8 insertions(+), 3 deletions(-)
+> > >
+> > > diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
+> > > index e3fa3bf7498a..c0768c61eb43 100644
+> > > --- a/tools/perf/util/evlist.c
+> > > +++ b/tools/perf/util/evlist.c
+> > > @@ -946,6 +946,10 @@ int perf_evlist__create_maps(struct evlist *evlist, struct target *target)
+> > >
+> > >     perf_evlist__set_maps(&evlist->core, cpus, threads);
+> > >
+> > > +   /* as evlist now has references, put count here */
+> > > +   perf_cpu_map__put(cpus);
+> > > +   perf_thread_map__put(threads);
+> >
+> > nice catch, I checked perf_evlist__create_syswide_maps is doing this
+>
+> because you fixed that :))) missed the rest of the patch.. sry
 
-Please follow the format of other licenses in the tree and add the
-correct headers to them that include things like:
-	Valid-License-Identifier
-	SPDX_URL
-	Usage-Guide
+No worries and thanks for the review! :)
 
-and other things like that so we can properly track these things.
-
-thanks,
-
-greg k-h
+Namhyung
