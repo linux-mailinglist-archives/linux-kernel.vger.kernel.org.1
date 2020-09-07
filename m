@@ -2,178 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D57C260223
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:19:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BB19260218
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:19:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730493AbgIGRTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 13:19:40 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:17671 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729728AbgIGN42 (ORCPT
+        id S1730760AbgIGRTJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 13:19:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38300 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729732AbgIGN6x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 09:56:28 -0400
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f563bd50000>; Mon, 07 Sep 2020 06:55:33 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Mon, 07 Sep 2020 06:56:22 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Mon, 07 Sep 2020 06:56:22 -0700
-Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 7 Sep
- 2020 13:56:22 +0000
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.176)
- by HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Mon, 7 Sep 2020 13:56:22 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=C99uI33Ejcp5m1W5+ADIBM7M0nN8Mql/kaHfr14HSIJVdM4b0FMUQ93xjCxPaWl+getiCaGLoRCBGFU/jKy5OWdGNYNGv7Bl5AODvtI9JyOboZZ7IhjKqoZf6LCtHyjSAuPmXAmHdVZcbkx1LS0aaC5kBHx/4Y7BNjUbRDQ0VzN1V11goeHiDooslNzRB+pR0heG4H1+xOYNDu065qPIWxRFllGfbSK+TGvlfmNeX7sSy1yefrD8ENq3p2FWoESSg0/GqYFDJQemJyXVQzpGCSvWv8j/K9HQtHpmyQQ+K07MZbANIeUYF4es+bDU4oO+qGUgRH10h44rFuLH7V+ugg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fcdNVEB31jSW8JH9uBQsMpkXEOBy9vl0s3QLbyVTAAs=;
- b=QAP5+9lkl+DA2ou++fFC+0F+uI0L84BNJdvP2bhgzfOdDT7L5JlkGJ2Bhx56+awrckT9nZnjQtZMDEge9adNwJAKK0pj/mW3RLwbNqQCDfzI9dhinLXiHHICA0I9ndeZyBC5OpXJEbdUyedoaLkJw8gur18/B2LyDRxNjUIqhryFzss+ZqSdBW7oyKlv1jB0S/iNlC8SwWkv0Tu5Hps/AYM+7YSoFx0QxH5pGta4MzDEzN/5XdBbpj8asiQGhl1bwWshehNX4mo3+mjI1awFMAQf0BTQRcKwCoZ/hBXtclICvmrrjt16sbBkZ59dclrKFGp7+06RrlaL3mWYGQGOFA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from BYAPR12MB2823.namprd12.prod.outlook.com (2603:10b6:a03:96::33)
- by BY5PR12MB4164.namprd12.prod.outlook.com (2603:10b6:a03:207::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.16; Mon, 7 Sep
- 2020 13:56:20 +0000
-Received: from BYAPR12MB2823.namprd12.prod.outlook.com
- ([fe80::7dd0:ad41:3d71:679b]) by BYAPR12MB2823.namprd12.prod.outlook.com
- ([fe80::7dd0:ad41:3d71:679b%6]) with mapi id 15.20.3348.019; Mon, 7 Sep 2020
- 13:56:20 +0000
-From:   Nikolay Aleksandrov <nikolay@nvidia.com>
-To:     "stephen@networkplumber.org" <stephen@networkplumber.org>,
-        "horatiu.vultur@microchip.com" <horatiu.vultur@microchip.com>
-CC:     "bridge@lists.linux-foundation.org" 
-        <bridge@lists.linux-foundation.org>,
-        "henrik.bjoernlund@microchip.com" <henrik.bjoernlund@microchip.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jiri@mellanox.com" <jiri@mellanox.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Roopa Prabhu <roopa@nvidia.com>,
-        "idosch@mellanox.com" <idosch@mellanox.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>
-Subject: Re: [PATCH RFC 0/7] net: bridge: cfm: Add support for Connectivity
- Fault Management(CFM)
-Thread-Topic: [PATCH RFC 0/7] net: bridge: cfm: Add support for Connectivity
- Fault Management(CFM)
-Thread-Index: AQHWgpxscb2zVIk4hE+OH7ymotxKpKlZFJEAgALbSoCAAUg+gA==
-Date:   Mon, 7 Sep 2020 13:56:20 +0000
-Message-ID: <b36a32dbf3b4b315fc4cbfdf06084b75a7c58729.camel@nvidia.com>
-References: <20200904091527.669109-1-henrik.bjoernlund@microchip.com>
-         <20200904154406.4fe55b9d@hermes.lan>
-         <20200906182129.274fimjyo7l52puj@soft-dev3.localdomain>
-In-Reply-To: <20200906182129.274fimjyo7l52puj@soft-dev3.localdomain>
-Reply-To: Nikolay Aleksandrov <nikolay@nvidia.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.34.4 (3.34.4-1.fc31) 
-authentication-results: networkplumber.org; dkim=none (message not signed)
- header.d=none;networkplumber.org; dmarc=none action=none
- header.from=nvidia.com;
-x-originating-ip: [84.238.136.197]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: ede4199d-2f42-4555-8f59-08d85335cca9
-x-ms-traffictypediagnostic: BY5PR12MB4164:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BY5PR12MB4164E57FC2F4EFE67929B5CADF280@BY5PR12MB4164.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: JKOztMeuwfB/U577iL6q+pPzGfOsfwEB0P3oSpK1iZUnEWmnopyIq2ZLnfVA8+Hm2xM48W7MD47wWb/xw5OJz551W5nP2MIjczCy/irtp4U6e3UywzgZYtv0le23DKQCaqUka65jT4IWoRK7ybnJrKzV8zg+gq+BffsrIh1v0RJPv2l/TIgrgycBYShwtML9KdlRW5UKqyIblNnlxZB/UYCMrNuSHqYdd4/mbce2oSnw68Wra6dRTf4MykmRFYqDEtfNalSCIo/baHsXuaG6KsH64v30b/febPZ2REI54kmFnWhviTJ2rABPbr3leqAWkrvuL26PPEGZGZyIuN1KxcdI8rLMDLRFo+WRPf+s3alpTQriTuGdcDGk7yQJXxzJPsxvFdkilA0MztnEzIhcng==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB2823.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(136003)(376002)(39860400002)(346002)(2616005)(26005)(478600001)(3450700001)(83380400001)(71200400001)(6486002)(36756003)(86362001)(54906003)(4326008)(76116006)(8936002)(64756008)(186003)(2906002)(66476007)(66556008)(66446008)(91956017)(966005)(8676002)(6512007)(66946007)(316002)(110136005)(5660300002)(6506007);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: wJW6J+sLhME3s057mcq94pkWyZbIPrUZLr7fZxjvn+/pynr6h9Wc1D2fOyLjtz+LVR0SW3dFfbX16inUyRaNoz8ygzEEjlf2BXhf9DRrUx8EjifpQiXau/U3hCvsv3ptQlRd2+0P8Qx78DV8KGDzdenTcq0Jy4sbDn8FBL1uwY94pHbC9l9BoAvIQIMOGg9FtNMJ65oWQCHoDBpPJq7AIe/TLriDTcAA/HTIQ3Kfao4wQ2U6Dca97kw/qzCLfzwAMD0v3hhwqeUrbPv6bAIgrxRL6aHKaPa9/J2NIzG3YUB/lgKC0uZZqVBJHfqmDutIsUnSJtEzlC/0Hsb1Gpj9+D53cfKlxnE7qF7DOVVdGpVVeCOJOOGtzLUm0YtvhUUqiPXxj4Nx9RCa2DjxB/GyYswijbulsa+xwnUQ+2Hs7+Yb04ZVlqvU2FxyZmK1Rbttv1ZHEv4ACKm9cjExEV7ypfEyPTeD4ST6VsM7my86WMveiFxCi/iMOf1E5VI1wH7G71aASkIPanfu0QwPkKQ9OjvH21B031N7KyGIUH7VmVKn0238QLxHDtb5O/6QTKoU2pssmk6TD8cO8VhytJgh8k81hnRr3ELRIUzvle6ypmlc5tM28Tt28ccH76Mbgb2C1aAfyxTTEBtULeSaD+fnQg==
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <94F99F6A221CFA4CB7EA968A51B4F31B@namprd12.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Mon, 7 Sep 2020 09:58:53 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04923C061757
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 06:58:06 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id a9so14325744wmm.2
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 06:58:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=KSoj6sKRWwSf9PriSO+wN8e6qNhuzgGj+fP6vt6TsCI=;
+        b=DwP8otAS0fcugQQgYAWDkANCxP0JcAwtKGF2dn0yUwAGnhGaaq3zEs9RzmpIavjPdg
+         HidmYtxqR1IFP/lpxnVQEHEw4kpZYuCqg/xq2Pmozm59zYdHM61GwwW3u3uc5c27oeT+
+         0kOWZOwR7H+ZMJManpi8o/v0Iv3ztE51PH96Nzv3sapCoesJvnfuMVYgCtwT3KFyvuYz
+         tP+NxwzIk+sOO0Wgg+PtCKRHMa96pixRgQDkfapy1hE0rXQGlUSF584of52GSG0s46JX
+         qwnzmeCpxizGyaS+jia1nCnX8GIJg3LBKuQwWLkU9GK6btKvCKUA/Qum8u9vJNsQ1Xri
+         trwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=KSoj6sKRWwSf9PriSO+wN8e6qNhuzgGj+fP6vt6TsCI=;
+        b=RViLF0PpepZozWMpQMXvOGrXRgghfyDH8PFb1ZGu4iAerVvEONnaPNQ10xgWt/cfDN
+         IZauTWzF44M6s9etznxHfHtqqTj0A+H5BiwzDdTOlU/6J1VuL45TDr6cA0mctZNrdWMB
+         qlqMF1BF00F9Ty+ZFCTkSbVDIducFJCYDTz4zwjfqf6GLqq602kMGsJ2mAsjTJ/yOm9K
+         aeO2gidUqGEUVbiQPMGd8IUOh2EgEdChecQ+ODEUumG5oBfpKwdRau4Y2NghY2s7Up8v
+         Z6YOOkKkGsIWGIk393JG8jMNiSZLlS2Yp6mHnlJynuHhikWB78lu2RJjl+FdTs1UN9Xh
+         1qyw==
+X-Gm-Message-State: AOAM533ihJJa/h7G/uIlJXs5noAR4T+ABuyGTrhwGBH7DSUA39r0kPjS
+        cmChngXaeDo0lgdv0eYrSoqzHBKrWG+gQg==
+X-Google-Smtp-Source: ABdhPJy5VU1DOVDqVdHvBGvU+6zu9otJ00OEZVZ67AfNGf7jmEo1JrN3hn4hNW11pU2KZKRJanq3qg==
+X-Received: by 2002:a1c:67d4:: with SMTP id b203mr8910409wmc.120.1599487085253;
+        Mon, 07 Sep 2020 06:58:05 -0700 (PDT)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id 11sm26388804wmi.14.2020.09.07.06.58.04
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 07 Sep 2020 06:58:04 -0700 (PDT)
+Subject: Re: [PATCH] misc: fastrpc: add ioctl for attaching to sensors pd
+To:     Jonathan Marek <jonathan@marek.ca>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-arm-msm@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20200901003300.11985-1-jonathan@marek.ca>
+ <20200907123344.GA2371705@kroah.com>
+ <a9d142c9-8a61-ee59-d849-393af1b3eaec@marek.ca>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <e0db9beb-bbd2-8f20-d7f4-675b62acf782@linaro.org>
+Date:   Mon, 7 Sep 2020 14:58:03 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB2823.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ede4199d-2f42-4555-8f59-08d85335cca9
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Sep 2020 13:56:20.3412
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: fa3Pa3sWSjArxVMQli7eqfZZMKGZzNColt6KRhMH1S9xdLn+JdqXcGZ30JUBy18jkksJeScvnKbKeUPTzvKzDQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4164
-X-OriginatorOrg: Nvidia.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1599486933; bh=fcdNVEB31jSW8JH9uBQsMpkXEOBy9vl0s3QLbyVTAAs=;
-        h=X-PGP-Universal:ARC-Seal:ARC-Message-Signature:
-         ARC-Authentication-Results:From:To:CC:Subject:Thread-Topic:
-         Thread-Index:Date:Message-ID:References:In-Reply-To:Reply-To:
-         Accept-Language:Content-Language:X-MS-Has-Attach:
-         X-MS-TNEF-Correlator:user-agent:authentication-results:
-         x-originating-ip:x-ms-publictraffictype:
-         x-ms-office365-filtering-correlation-id:x-ms-traffictypediagnostic:
-         x-ms-exchange-transport-forked:x-microsoft-antispam-prvs:
-         x-ms-oob-tlc-oobclassifiers:x-ms-exchange-senderadcheck:
-         x-microsoft-antispam:x-microsoft-antispam-message-info:
-         x-forefront-antispam-report:x-ms-exchange-antispam-messagedata:
-         Content-Type:Content-ID:Content-Transfer-Encoding:MIME-Version:
-         X-MS-Exchange-CrossTenant-AuthAs:
-         X-MS-Exchange-CrossTenant-AuthSource:
-         X-MS-Exchange-CrossTenant-Network-Message-Id:
-         X-MS-Exchange-CrossTenant-originalarrivaltime:
-         X-MS-Exchange-CrossTenant-fromentityheader:
-         X-MS-Exchange-CrossTenant-id:X-MS-Exchange-CrossTenant-mailboxtype:
-         X-MS-Exchange-CrossTenant-userprincipalname:
-         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
-        b=heIZT8iBcMGIj/ifRH1l57uqW943Xhgw1awfp5i1zeTOtsfQ4UOSnldmSVdEhRtKW
-         bXsOOw1VmjEiHOpA5C5zojRt8cgDlPJCP0Mkq8a4B4/b8PMAhkj/JLhKkII/ZSbXsc
-         fEqo+yCOMk9PjOXrp0q+XG9r55SFiflMnCf90SNoznrDemjE1rxZ/GMUAxzAWU5ItF
-         0eM9qb9TaK3v0dDm+4EJPl1bCdtlC9TnhFKRE+u10qFX3AE4Of6qF8WqFF8/ofVnWT
-         M2YO+lwU+i4hFy3LwEpj9c6oIoBqvD6LsdcHgEYozRCySt4l2CYoJyzwJqA7sxnqJo
-         rBAk8KVDY7GdA==
+In-Reply-To: <a9d142c9-8a61-ee59-d849-393af1b3eaec@marek.ca>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gU3VuLCAyMDIwLTA5LTA2IGF0IDIwOjIxICswMjAwLCBIb3JhdGl1IFZ1bHR1ciB3cm90ZToN
-Cj4gVGhlIDA5LzA0LzIwMjAgMTU6NDQsIFN0ZXBoZW4gSGVtbWluZ2VyIHdyb3RlOg0KPiA+IE9u
-IEZyaSwgNCBTZXAgMjAyMCAwOToxNToyMCArMDAwMA0KPiA+IEhlbnJpayBCam9lcm5sdW5kIDxo
-ZW5yaWsuYmpvZXJubHVuZEBtaWNyb2NoaXAuY29tPiB3cm90ZToNCj4gPiANCj4gPiA+IENvbm5l
-Y3Rpdml0eSBGYXVsdCBNYW5hZ2VtZW50IChDRk0pIGlzIGRlZmluZWQgaW4gODAyLjFRIHNlY3Rp
-b24gMTIuMTQuDQo+ID4gPiANCj4gPiA+IA0KW3NuaXBdDQo+ID4gPiBDdXJyZW50bHkgdGhpcyAn
-Y2ZtJyBhbmQgJ2NmbV9zZXJ2ZXInIHByb2dyYW1zIGFyZSBzdGFuZGFsb25lIHBsYWNlZCBpbiBh
-DQo+ID4gPiBjZm0gcmVwb3NpdG9yeSBodHRwczovL2dpdGh1Yi5jb20vbWljcm9jaGlwLXVuZy9j
-Zm0gYnV0IGl0IGlzIGNvbnNpZGVyZWQNCj4gPiA+IHRvIGludGVncmF0ZSB0aGlzIGludG8gJ2lw
-cm91dGUyJy4NCj4gPiA+IA0KPiA+ID4gUmV2aWV3ZWQtYnk6IEhvcmF0aXUgVnVsdHVyICA8aG9y
-YXRpdS52dWx0dXJAbWljcm9jaGlwLmNvbT4NCj4gPiA+IFNpZ25lZC1vZmYtYnk6IEhlbnJpayBC
-am9lcm5sdW5kICA8aGVucmlrLmJqb2Vybmx1bmRAbWljcm9jaGlwLmNvbT4NCj4gDQo+IEhpIFN0
-ZXBoZW4sDQo+IA0KPiA+IENvdWxkIHRoaXMgYmUgZG9uZSBpbiB1c2Vyc3BhY2U/IEl0IGlzIGEg
-Y29udHJvbCBwbGFuZSBwcm90b2NvbC4NCj4gPiBDb3VsZCBpdCBiZSBkb25lIGJ5IHVzaW5nIGVC
-UEY/DQo+IA0KPiBJIG1pZ2h0IGJlIGFibGUgdG8gYW5zd2VyIHRoaXMuIFdlIGhhdmUgbm90IGNv
-bnNpZGVyZWQgdGhpcyBhcHByb2FjaCBvZg0KPiB1c2luZyBlQlBGLiBCZWNhdXNlIHdlIHdhbnQg
-YWN0dWFsbHkgdG8gcHVzaCB0aGlzIGluIEhXIGV4dGVuZGluZw0KPiBzd2l0Y2hkZXYgQVBJLiBJ
-IGtub3cgdGhhdCB0aGlzIHNlcmllcyBkb2Vzbid0IGNvdmVyIHRoZSBzd2l0Y2hkZXYgcGFydA0K
-PiBidXQgd2UgcG9zdGVkIGxpa2UgdGhpcyBiZWNhdXNlIHdlIHdhbnRlZCB0byBnZXQgc29tZSBm
-ZWVkYmFjayBmcm9tDQo+IGNvbW11bml0eS4gV2UgaGFkIGEgc2ltaWxhciBhcHByb2FjaCBmb3Ig
-TVJQLCB3aGVyZSB3ZSBleHRlbmRlZCB0aGUNCj4gYnJpZGdlIGFuZCBzd2l0Y2hkZXYgQVBJLCBz
-byB3ZSB0b3VnaHQgdGhhdCBpcyB0aGUgd2F5IHRvIGdvIGZvcndhcmQuDQo+IA0KPiBSZWdhcmRp
-bmcgZUJQRiwgSSBjYW4ndCBzYXkgdGhhdCBpdCB3b3VsZCB3b3JrIG9yIG5vdCBiZWNhdXNlIEkg
-bGFjaw0KPiBrbm93bGVkZ2UgaW4gdGhpcy4NCj4gDQo+ID4gQWRkaW5nIG1vcmUgY29kZSBpbiBi
-cmlkZ2UgaW1wYWN0cyBhIGxhcmdlIG51bWJlciBvZiB1c2VycyBvZiBMaW51eCBkaXN0cm9zLg0K
-PiA+IEl0IGNyZWF0ZXMgYmxvYXQgYW5kIHBvdGVudGlhbCBzZWN1cml0eSB2dWxuZXJhYmlsaXRp
-ZXMuDQoNCkhpLA0KSSBhbHNvIGhhZCB0aGUgc2FtZSBpbml0aWFsIHRob3VnaHQgLSB0aGlzIHJl
-YWxseSBkb2Vzbid0IHNlZW0gdG8gYWZmZWN0IHRoZQ0KYnJpZGdlIGluIGFueSB3YXksIGl0J3Mg
-b25seSBjb2xsZWN0aW5nIGFuZCB0cmFuc21pdHRpbmcgaW5mb3JtYXRpb24uIEkgZ2V0DQp0aGF0
-IHlvdSdkIGxpa2UgdG8gdXNlIHRoZSBicmlkZ2UgYXMgYSBwYXNzdGhyb3VnaCBkZXZpY2UgdG8g
-c3dpdGNoZGV2IHRvDQpwcm9ncmFtIHlvdXIgaHcsIGNvdWxkIHlvdSBzaGFyZSB3aGF0IHdvdWxk
-IGJlIG9mZmxvYWRlZCBtb3JlIHNwZWNpZmljYWxseSA/DQoNCkFsbCB5b3UgZG8gLSBzbm9vcGlu
-ZyBhbmQgYmxvY2tpbmcgdGhlc2UgcGFja2V0cyBjYW4gZWFzaWx5IGJlIGRvbmUgZnJvbSB1c2Vy
-LQ0Kc3BhY2Ugd2l0aCB0aGUgaGVscCBvZiBlYnRhYmxlcywgYnV0IHNpbmNlIHdlIG5lZWQgdG8g
-aGF2ZSBhIHNvZnR3YXJlDQppbXBsZW1lbnRhdGlvbi9mYWxsYmFjayBvZiBhbnl0aGluZyBiZWlu
-ZyBvZmZsb2FkZWQgdmlhIHN3aXRjaGRldiB3ZSBtaWdodCBuZWVkDQp0aGlzIGFmdGVyIGFsbCwg
-SSdkIGp1c3QgcHJlZmVyIHRvIHB1c2ggYXMgbXVjaCBhcyBwb3NzaWJsZSB0byB1c2VyLXNwYWNl
-Lg0KDQpJIHBsYW4gdG8gcmV2aWV3IHRoZSBpbmRpdmlkdWFsIHBhdGNoZXMgdG9tb3Jyb3cuDQoN
-ClRoYW5rcywNCiBOaWsNCg0K
+
+
+On 07/09/2020 14:51, Jonathan Marek wrote:
+>>> @@ -1477,7 +1477,10 @@ static long fastrpc_device_ioctl(struct file 
+>>> *file, unsigned int cmd,
+>>>           err = fastrpc_invoke(fl, argp);
+>>>           break;
+>>>       case FASTRPC_IOCTL_INIT_ATTACH:
+>>> -        err = fastrpc_init_attach(fl);
+>>> +        err = fastrpc_init_attach(fl, 0);
+>>> +        break;
+>>> +    case FASTRPC_IOCTL_INIT_ATTACH_SNS:
+>>> +        err = fastrpc_init_attach(fl, 2);
+>>
+>> Shouldn't you have #defines for those magic numbers somewhere?  What
+>> does 0 and 2 mean?
+>>
+> 
+> This is based off a downstream driver which also uses magic numbers, 
+> although I can make an educated guess about the meaning.
+> 
+> Srini do you have any suggestions for how to name these values?
+
+These are domain id corresponding to each core.
+you can use SDSP_DOMAIN_ID in here!
+these are already defined in the file as:
+
+#define ADSP_DOMAIN_ID (0)
+#define MDSP_DOMAIN_ID (1)
+#define SDSP_DOMAIN_ID (2)
+#define CDSP_DOMAIN_ID (3)
+
+
+--srini
