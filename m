@@ -2,312 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B87B25F499
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 10:10:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAEFD25F49C
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 10:10:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727872AbgIGIKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 04:10:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40836 "EHLO
+        id S1727956AbgIGIK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 04:10:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727089AbgIGIJe (ORCPT
+        with ESMTP id S1727905AbgIGIJl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 04:09:34 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DD84C061573
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 01:09:33 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id w5so14762838wrp.8
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 01:09:33 -0700 (PDT)
+        Mon, 7 Sep 2020 04:09:41 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D4DCC061574
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 01:09:41 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id t76so12863468oif.7
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 01:09:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:autocrypt:organization:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=vISUpoBN1kH4usxTG/CMAMfOFxyeKd1cKFFqqtgy4bk=;
-        b=lJcGOUcOHcK+PvwscgOv8mOjWubWf7aPCn0R/nFJ3UdfU5otHdGYsr4fh96L2epaP3
-         oJPhmAqZEMpDEorQcMgSWWUEi3ep6NK8/u8nauxq/JJmkqB8fbMeVfyDajkzli8GnaXK
-         i2THOayjoaoeREPD7jK0JXwn4Td6qHMQKsxo4idqbZ2MRlFXdPZaGGWRFqWtj+zlg28o
-         O3FD5XFp7CG+X1vU39q6HOUgnnlRrauSJbc6/Edm+uDCPMTro6CqSKOGXpETqf8jmogH
-         yeQfQbHK30lPsShylfmL9Vj6BlVcLqT8NG4dl5Kxmc50pjZM3RgpO7eX3LvVgiVcCtD7
-         fQDw==
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=qoIxBQFyeR/qBRAVRevCbP1/APYnrHwdMygndpbKffI=;
+        b=R7BcvNznBqlV0Z46W9TLrsOIWx3A1fbehBi4PphyM51XuTXTWFGSdNCbmEUD0+WnPA
+         lJMc4FP2cqnSbgCpBFGaW2wnKRKEZ+ji0fGZMH6iAsMerJmQN+JOVP+KoN+5KZyk8UwX
+         JL8TEQlMLUDnJ9KZ/gWXr59lbyMTlyPokxZ1sC5d+ezuEPcxl0Xa7qw24iH6wgZeUtBV
+         g281542OZLW6VVzhOfEVLvtXW1hO07ChzD0AVLwbzpWlGuyFE13qdVHbr2FHr/lBX575
+         KamMDVGrcOsFL1NeyhgJt4TuymbTP60k36yIVFPt/KF7inE8UbqpivtAvZVr4/Cbyovi
+         W7uA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :organization:message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=vISUpoBN1kH4usxTG/CMAMfOFxyeKd1cKFFqqtgy4bk=;
-        b=Yp/da4yrhTC4RAINQCH8toi1Pkenv2cBpK8FAif/9BMPaWK1ZS16xVlizx1OM7zrtk
-         akhqSxWxUPNN3WaIfR2QKwkfLxm9U7M+qntXwxfkuQbXTjnsHPbdjjN8u13aifvGEXvb
-         2bkggHQT2ENH8KqqmYyrnx/hpx9OowNcaC8qE4PvjseZ+Hkc3+EOKRbXnV67wKR25BBo
-         dd1oaL94at2W0l3dBlD3MRmMQcLlMoytEWCKStlnX5xME/i0wUnvkqO9NIm1OQxXsrNm
-         Wju+Ar9qCk11jxkfG3OXkOOYQJExmHr3rUzE5TDAIdQulnza8fuaUmij8lxrtrnMr8QS
-         0/xQ==
-X-Gm-Message-State: AOAM5302XlzhxDbh/KllwpguMt+yvjXBHADwifUuwBCSmQFza41+DK9J
-        YdzJqvgqBGmRmtiV87puto8xDA==
-X-Google-Smtp-Source: ABdhPJwFAZdjB34nPwosr9u5j8SAPdQKnOwIeeN9TWxKUejFCFHDRsCd0X6ECXt09AWpkZe/BUFPkw==
-X-Received: by 2002:adf:e6c2:: with SMTP id y2mr21872961wrm.117.1599466171895;
-        Mon, 07 Sep 2020 01:09:31 -0700 (PDT)
-Received: from ?IPv6:2a01:e35:2ec0:82b0:5405:9623:e2f1:b2ac? ([2a01:e35:2ec0:82b0:5405:9623:e2f1:b2ac])
-        by smtp.gmail.com with ESMTPSA id i1sm31339865wrc.49.2020.09.07.01.09.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Sep 2020 01:09:31 -0700 (PDT)
-Subject: Re: [PATCH v2] drm/bridge: dw-mipi-dsi.c: Add VPG runtime config
- through debugfs
-To:     Angelo Ribeiro <Angelo.Ribeiro@synopsys.com>,
-        yannick.fertre@st.com, philippe.cornu@st.com,
-        benjamin.gaignard@st.com, airlied@linux.ie, daniel@ffwll.ch,
-        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com,
-        dri-devel@lists.freedesktop.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        pop.adrian61@gmail.com
-Cc:     Jose Abreu <Jose.Abreu@synopsys.com>,
-        Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>,
-        Joao Pinto <Joao.Pinto@synopsys.com>
-References: <a809feb7d7153a92e323416f744f1565e995da01.1586180592.git.angelo.ribeiro@synopsys.com>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
- 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
- BSwxi7g3Mu7u5kUByanqHyA=
-Organization: Baylibre
-Message-ID: <5ecbb66f-1f65-d4c4-3593-49c537378efe@baylibre.com>
-Date:   Mon, 7 Sep 2020 10:09:29 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=qoIxBQFyeR/qBRAVRevCbP1/APYnrHwdMygndpbKffI=;
+        b=kntHMrhPMR2RggFLReCQKnKapARSufGNQOHbPHZOB1JZsFtMPkJntyaymkbUUS6Qx7
+         SV97Kw3B95pdyfP+7SGsvyeCBIbXkfXKUT7Kywq4eqw1EC9EJfUnVkJUhMCwPwM8ZWyM
+         swPrDBHY7gnKpLzkc4GH4UVrJvrvb9JD6Ydrb16uhFd6m6g9zNlbBK4mbSfq+I2EmZHK
+         OPjXRZhe4wfHwT3PtbdL4Z0gZCxdX9CVgAktbKMd5Hc7SJIUb9UJDuCFfNc085tPlH7A
+         BZJ8xMYoJtAHHLLt5AgqthCfjugt6x6zOtmBqofjyih0RKbEoDClzAd1kH3ZyRlmSQ+F
+         YXuA==
+X-Gm-Message-State: AOAM531SNda0bKbloJuwv5sVhQzLSiyC8+RdY2B0eIj0TbErvFOmzN/S
+        I7mhvlM9DJIu+Ry+bt7JNiEu4YrDLv8YYL1Lf/Q=
+X-Google-Smtp-Source: ABdhPJz78Y9NB3lzX4eYUbsv2y/5w6Nq4SFfj0ace6mB+rpMNlNuFCaoohKhX7/EXWixNyaeB/OTkJsoIybdLUcVcuw=
+X-Received: by 2002:aca:51cf:: with SMTP id f198mr12143434oib.107.1599466180480;
+ Mon, 07 Sep 2020 01:09:40 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <a809feb7d7153a92e323416f744f1565e995da01.1586180592.git.angelo.ribeiro@synopsys.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Reply-To: hazani222arif@gmail.com
+Received: by 2002:ac9:1de:0:0:0:0:0 with HTTP; Mon, 7 Sep 2020 01:09:39 -0700 (PDT)
+From:   AL ANSARI GLOBAL <hazani2222arif@gmail.com>
+Date:   Mon, 7 Sep 2020 09:09:39 +0100
+X-Google-Sender-Auth: 7phzFu3dQkGGEkXw6zoLjX5Wm1I
+Message-ID: <CAJV3L0X3Ob4kzr0WTrAj_qfngFRLb3XdL20oWj2PB3=62b7+dg@mail.gmail.com>
+Subject: Hello
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hello,
 
-On 06/04/2020 15:49, Angelo Ribeiro wrote:
-> Add support for the video pattern generator (VPG) BER pattern mode and
-> configuration in runtime.
-> 
-> This enables using the debugfs interface to manipulate the VPG after
-> the pipeline is set.
-> Also, enables the usage of the VPG BER pattern.
-> 
-> Changes in v2:
->   - Added VID_MODE_VPG_MODE
->   - Solved incompatible return type on __get and __set
-> 
-> Reported-by: kbuild test robot <lkp@intel.com>
-> Reported-by: Adrian Pop <pop.adrian61@gmail.com>
-> Cc: Gustavo Pimentel <gustavo.pimentel@synopsys.com>
-> Cc: Joao Pinto <jpinto@synopsys.com>
-> Cc: Jose Abreu <jose.abreu@synopsys.com>
-> Signed-off-by: Angelo Ribeiro <angelo.ribeiro@synopsys.com>
-> ---
->  drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c | 98 ++++++++++++++++++++++++---
->  1 file changed, 90 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
-> index b18351b..9de3645 100644
-> --- a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
-> +++ b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
-> @@ -91,6 +91,7 @@
->  #define VID_MODE_TYPE_BURST			0x2
->  #define VID_MODE_TYPE_MASK			0x3
->  #define VID_MODE_VPG_ENABLE		BIT(16)
-> +#define VID_MODE_VPG_MODE		BIT(20)
->  #define VID_MODE_VPG_HORIZONTAL		BIT(24)
->  
->  #define DSI_VID_PKT_SIZE		0x3c
-> @@ -221,6 +222,21 @@
->  #define PHY_STATUS_TIMEOUT_US		10000
->  #define CMD_PKT_STATUS_TIMEOUT_US	20000
->  
-> +#ifdef CONFIG_DEBUG_FS
-> +#define VPG_DEFS(name, dsi) \
-> +	((void __force *)&((*dsi).vpg_defs.name))
-> +
-> +#define REGISTER(name, mask, dsi) \
-> +	{ #name, VPG_DEFS(name, dsi), mask, dsi }
-> +
-> +struct debugfs_entries {
-> +	const char				*name;
-> +	bool					*reg;
-> +	u32					mask;
-> +	struct dw_mipi_dsi			*dsi;
-> +};
-> +#endif /* CONFIG_DEBUG_FS */
-> +
->  struct dw_mipi_dsi {
->  	struct drm_bridge bridge;
->  	struct mipi_dsi_host dsi_host;
-> @@ -238,9 +254,12 @@ struct dw_mipi_dsi {
->  
->  #ifdef CONFIG_DEBUG_FS
->  	struct dentry *debugfs;
-> -
-> -	bool vpg;
-> -	bool vpg_horizontal;
-> +	struct debugfs_entries *debugfs_vpg;
-> +	struct {
-> +		bool vpg;
-> +		bool vpg_horizontal;
-> +		bool vpg_ber_pattern;
-> +	} vpg_defs;
->  #endif /* CONFIG_DEBUG_FS */
->  
->  	struct dw_mipi_dsi *master; /* dual-dsi master ptr */
-> @@ -530,9 +549,11 @@ static void dw_mipi_dsi_video_mode_config(struct dw_mipi_dsi *dsi)
->  		val |= VID_MODE_TYPE_NON_BURST_SYNC_EVENTS;
->  
->  #ifdef CONFIG_DEBUG_FS
-> -	if (dsi->vpg) {
-> +	if (dsi->vpg_defs.vpg) {
->  		val |= VID_MODE_VPG_ENABLE;
-> -		val |= dsi->vpg_horizontal ? VID_MODE_VPG_HORIZONTAL : 0;
-> +		val |= dsi->vpg_defs.vpg_horizontal ?
-> +		       VID_MODE_VPG_HORIZONTAL : 0;
-> +		val |= dsi->vpg_defs.vpg_ber_pattern ? VID_MODE_VPG_MODE : 0;
->  	}
->  #endif /* CONFIG_DEBUG_FS */
->  
-> @@ -961,6 +982,68 @@ static const struct drm_bridge_funcs dw_mipi_dsi_bridge_funcs = {
->  
->  #ifdef CONFIG_DEBUG_FS
->  
-> +int dw_mipi_dsi_debugfs_write(void *data, u64 val)
-> +{
-> +	struct debugfs_entries *vpg = data;
-> +	struct dw_mipi_dsi *dsi;
-> +	u32 mode_cfg;
-> +
-> +	if (!vpg)
-> +		return -ENODEV;
-> +
-> +	dsi = vpg->dsi;
-> +
-> +	*vpg->reg = (bool)val;
-> +
-> +	mode_cfg = dsi_read(dsi, DSI_VID_MODE_CFG);
-> +
-> +	if (*vpg->reg)
-> +		mode_cfg |= vpg->mask;
-> +	else
-> +		mode_cfg &= ~vpg->mask;
-> +
-> +	dsi_write(dsi, DSI_VID_MODE_CFG, mode_cfg);
-> +
-> +	return 0;
-> +}
-> +
-> +int dw_mipi_dsi_debugfs_show(void *data, u64 *val)
-> +{
-> +	struct debugfs_entries *vpg = data;
-> +
-> +	if (!vpg)
-> +		return -ENODEV;
-> +
-> +	*val = *vpg->reg;
-> +
-> +	return 0;
-> +}
-> +
-> +DEFINE_DEBUGFS_ATTRIBUTE(fops_x32, dw_mipi_dsi_debugfs_show,
-> +			 dw_mipi_dsi_debugfs_write, "%llu\n");
-> +
-> +static void debugfs_create_files(void *data)
-> +{
-> +	struct dw_mipi_dsi *dsi = data;
-> +	struct debugfs_entries debugfs[] = {
-> +		REGISTER(vpg, VID_MODE_VPG_ENABLE, dsi),
-> +		REGISTER(vpg_horizontal, VID_MODE_VPG_HORIZONTAL, dsi),
-> +		REGISTER(vpg_ber_pattern, VID_MODE_VPG_MODE, dsi),
-> +	};
-> +	int i;
-> +
-> +	dsi->debugfs_vpg = kmalloc(sizeof(debugfs), GFP_KERNEL);
-> +	if (!dsi->debugfs_vpg)
-> +		return;
-> +
-> +	memcpy(dsi->debugfs_vpg, debugfs, sizeof(debugfs));
-> +
-> +	for (i = 0; i < ARRAY_SIZE(debugfs); i++)
-> +		debugfs_create_file(dsi->debugfs_vpg[i].name, 0644,
-> +				    dsi->debugfs, &dsi->debugfs_vpg[i],
-> +				    &fops_x32);
-> +}
-> +
->  static void dw_mipi_dsi_debugfs_init(struct dw_mipi_dsi *dsi)
->  {
->  	dsi->debugfs = debugfs_create_dir(dev_name(dsi->dev), NULL);
-> @@ -969,14 +1052,13 @@ static void dw_mipi_dsi_debugfs_init(struct dw_mipi_dsi *dsi)
->  		return;
->  	}
->  
-> -	debugfs_create_bool("vpg", 0660, dsi->debugfs, &dsi->vpg);
-> -	debugfs_create_bool("vpg_horizontal", 0660, dsi->debugfs,
-> -			    &dsi->vpg_horizontal);
-> +	debugfs_create_files(dsi);
->  }
->  
->  static void dw_mipi_dsi_debugfs_remove(struct dw_mipi_dsi *dsi)
->  {
->  	debugfs_remove_recursive(dsi->debugfs);
-> +	kfree(dsi->debugfs_vpg);
->  }
->  
->  #else
-> 
+Let us have the details of your available products and your price
+list, delivery and your payment terms for our onward study.
 
-Acked-by: Neil Armstrong <narmstrong@baylibre.com>
+Please quote prices in USD.Please get back to us as soon as possible
+to enable us provide you with our quotations, order and way forward.
 
-Applying to drm-misc-next
 
-Thanks,
-Neil
+AL ANSARI GLOBAL SVCS WLL
+Doha Qatar
+Phone: +974 44366766; 44363310
+Fax: +974 44365366
+Website: www.ansariglobal.com
