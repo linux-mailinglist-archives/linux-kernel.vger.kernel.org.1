@@ -2,136 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E96F260369
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:49:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 775D026035B
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:48:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729259AbgIGRtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 13:49:09 -0400
-Received: from mga05.intel.com ([192.55.52.43]:42086 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729109AbgIGMj1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 08:39:27 -0400
-IronPort-SDR: WBEeyuFP8hGcnGsYKszVJMrEVm9/hhP4MDtGgH+RcJ3+i9c6cGVDKB5VispU5Masx/ZkLI2FqZ
- iizPQrDHofpg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9736"; a="242811803"
-X-IronPort-AV: E=Sophos;i="5.76,401,1592895600"; 
-   d="scan'208";a="242811803"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2020 05:38:43 -0700
-IronPort-SDR: b9BfZlr40QZ2qISx/JXwCtkBAzS5PgLGV5xflcnOM8vMWXear5QSlnH4ccfPIOpexgx7jr18OP
- bYmVrfDS4+yA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,401,1592895600"; 
-   d="scan'208";a="333151425"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga008.jf.intel.com with ESMTP; 07 Sep 2020 05:38:40 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kFGPt-00Ewye-H3; Mon, 07 Sep 2020 15:38:37 +0300
-Date:   Mon, 7 Sep 2020 15:38:37 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Kent Gibson <warthog618@gmail.com>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        linux-doc <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH 23/23] Documentation: gpio: add documentation for
- gpio-mockup
-Message-ID: <20200907123837.GG1891694@smile.fi.intel.com>
-References: <20200904154547.3836-1-brgl@bgdev.pl>
- <20200904154547.3836-24-brgl@bgdev.pl>
- <26ea1683-da8f-30e7-f004-3616e96d56b3@infradead.org>
- <20200907095932.GU1891694@smile.fi.intel.com>
- <CAMpxmJXvhYOVkZY7LLf=v+o8E2xKTh1RYhLrdVsS9nN1XZ5QJQ@mail.gmail.com>
- <20200907115310.GA1891694@smile.fi.intel.com>
- <CAMpxmJUfNkko4Rrb4N5CF_rdwRAWGhVr9DSOHfhYyTxYSH7dsQ@mail.gmail.com>
+        id S1729303AbgIGMsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 08:48:43 -0400
+Received: from outbound-smtp14.blacknight.com ([46.22.139.231]:45739 "EHLO
+        outbound-smtp14.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729247AbgIGMmk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 08:42:40 -0400
+Received: from mail.blacknight.com (pemlinmail02.blacknight.ie [81.17.254.11])
+        by outbound-smtp14.blacknight.com (Postfix) with ESMTPS id A8BCA1C3F14
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 13:42:19 +0100 (IST)
+Received: (qmail 10544 invoked from network); 7 Sep 2020 12:42:19 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.21.127])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 7 Sep 2020 12:42:19 -0000
+Date:   Mon, 7 Sep 2020 13:42:16 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+Cc:     Mel Gorman <mgorman@suse.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
+        "bsegall@google.com" <bsegall@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Phil Auld <pauld@redhat.com>, Hillf Danton <hdanton@sina.com>,
+        Ingo Molnar <mingo@kernel.org>, Linuxarm <linuxarm@huawei.com>,
+        "Liguozhu (Kenneth)" <liguozhu@hisilicon.com>
+Subject: Re: [RFC] sched/numa: don't move tasks to idle numa nodes while src
+ node has very light load?
+Message-ID: <20200907124216.GE3179@techsingularity.net>
+References: <e7b7462375de4175a83ece3b60bab899@hisilicon.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <CAMpxmJUfNkko4Rrb4N5CF_rdwRAWGhVr9DSOHfhYyTxYSH7dsQ@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <e7b7462375de4175a83ece3b60bab899@hisilicon.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 07, 2020 at 02:06:15PM +0200, Bartosz Golaszewski wrote:
-> On Mon, Sep 7, 2020 at 1:53 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> > On Mon, Sep 07, 2020 at 12:26:34PM +0200, Bartosz Golaszewski wrote:
-> > > On Mon, Sep 7, 2020 at 11:59 AM Andy Shevchenko
-> > > <andriy.shevchenko@linux.intel.com> wrote:
-> > > > On Fri, Sep 04, 2020 at 08:15:59PM -0700, Randy Dunlap wrote:
-> > > > > On 9/4/20 8:45 AM, Bartosz Golaszewski wrote:
-
-...
-
-> > > > > > +GPIO Testing Driver
-> > > > > > +===================
-> > > > > > +
-> > > > > > +The GPIO Testing Driver (gpio-mockup) provides a way to create simulated GPIO
-> > > > > > +chips for testing purposes. There are two ways of configuring the chips exposed
-> > > > > > +by the module. The lines can be accessed using the standard GPIO character
-> > > > > > +device interface as well as manipulated using the dedicated debugfs directory
-> > > > > > +structure.
-> > > > >
-> > > > > Could configfs be used for this instead of debugfs?
-> > > > > debugfs is ad hoc.
-> > > >
-> > > > Actually sounds like a good idea.
-> > > >
-> > >
-> > > Well, then we can go on and write an entirely new mockup driver
-> > > (ditching module params and dropping any backwards compatibility)
-> > > because we're already using debugfs for line values.
-> > >
-> > > How would we pass the device properties to configfs created GPIO chips
-> > > anyway? Devices seem to only be created using mkdir. Am I missing
-> > > something?
-> >
-> > Same way how USB composite works, no?
-> >
+On Mon, Sep 07, 2020 at 12:00:10PM +0000, Song Bao Hua (Barry Song) wrote:
+> Hi All,
+> In case we have a numa system with 4 nodes and in each node we have 24 cpus, and all of the 96 cores are idle.
+> Then we start a process with 4 threads in this totally idle system. 
+> Actually any one of the four numa nodes should have enough capability to run the 4 threads while they can still have 20 idle CPUS after that.
+> But right now the existing code in CFS load balance will spread the 4 threads to multiple nodes.
+> This results in two negative side effects:
+> 1. more numa nodes are awaken while they can save power in lowest frequency and halt status
+> 2. cache coherency overhead between numa nodes
 > 
-> OK, so create a new chip directory in configfs, configure it using
-> some defined configfs attributes and then finally instantiate it from
-> sysfs?
+> A proof-of-concept patch I made to "fix" this issue to some extent is like:
 > 
-> Makes sense and is probably the right way to go. Now the question is:
-> is it fine to just entirely remove the previous gpio-mockup?
 
-Since, for example, I never saw device property bindings for that driver I
-assume that it was never considered as an ABI, so feel free to hack it in
-either direction.
+This is similar in concept to a patch that did something similar except
+in adjust_numa_imbalance(). It ended up being great for light loads like
+simple communicating pairs but fell apart for some HPC workloads when
+memory bandwidth requirements increased. Ultimately it was dropped until
+the NUMA/CPU load balancing was reconciled so may be worth a revisit. At
+the time, it was really problematic once a one node was roughly 25% CPU
+utilised on a 2-socket machine with hyper-threading enabled. The patch may
+still work out but it would need wider testing. Within mmtests, the NAS
+workloads for D-class on a 2-socket machine varying the number of parallel
+tasks/processes are used should be enough to determine if the patch is
+free from side-effects for one machine. It gets problematic for different
+machine sizes as the point where memory bandwidth is saturated varies.
+group_weight/4 might be fine on one machine as a cut-off and a problem
+on a larger machine with more cores -- I hit that particular problem
+when one 2 socket machine with 48 logical CPUs was fine but a different
+machine with 80 logical CPUs regressed.
 
-> Should we
-> keep some backwards compatibility?
-
-I wouldn't probably spend time on this.
-
-> Should we introduce an entirely new
-> module and have a transition period before removing previous
-> gpio-mockup?
-
-Neither transition period.
-
-> Also: this is a testing module so to me debugfs is just fine. Is
-> configfs considered stable ABI like sysfs?
-
-But this one is a good question. I think ConfigFS is stricter than DebugFS,
-up to being an ABI. But never did myself such a thing, so would like to hear
-experienced developers.
+I'm not saying the patch is wrong, just that patches in general for this
+area (everyone, not just you) need fairly broad testing.
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+Mel Gorman
+SUSE Labs
