@@ -2,109 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40FB525FBB6
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 15:55:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E230A25FBB1
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 15:54:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729719AbgIGNzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 09:55:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36730 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729694AbgIGNsF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 09:48:05 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2EA9C061574
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 06:48:04 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id e5so9811656qth.5
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 06:48:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=marek-ca.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=RpRB6iljb2M31wwzZybgy6AB4+l8J65CnWPoS2cjpPY=;
-        b=Z4pE4+0zsGUqaenaa9Sotx3GjcxpCYEKHj5+k2JcptyuVQQuV4lpcx9TiwEJjrDsuu
-         wFVJKo4XIWj01ZJfOQNxvUYP5rPBkQJZIgIdWkznFKvhYMNihLKn/LHPZ4SgUpAno2fA
-         Uv0HZNF0qpkPRjerw+6nwTPRDLba7k+jViBz+ERSCn5hfvfGMkWsHdmLrEt2nqE+Sb9H
-         vbCHqrrABx3w3RziRDbF2r3dIosDXjRSbR1JdXhb1TOEULn1+kobjk/xXQbYLcyd+yxt
-         3aOjDrbwMv7qkcZEoz8KMnvHyGWS2dVsKwnzAdyoHuZobi0D7ShbOzEyQDI/STgCpSiU
-         yakg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=RpRB6iljb2M31wwzZybgy6AB4+l8J65CnWPoS2cjpPY=;
-        b=TVxui0c5tITI2viP9o/fs3QivXPM0hAsGiRodDsBMhnTfHgOEcOX17dD/vd268qbXo
-         UPi/Ilz7DZ4vb5YbOcLsv5dVPq20PRnAKIX0BhCDhOZLOBApY71XJY4BlPo9/nlNfgef
-         Mtmj51cxfQ6GzZr5Wn0UFA/G2dAyWSfPK7lqQu1+Gf2FyHd3TATu2xJ5R0C+S5pcpZn9
-         KiD4/4ZY6bmjl/8zJlLHyyH5RTonwNlUnl4BTI0A77muOnmiiGUAN2AZWyp7brD2QOA2
-         fJoTT9B1BOa6VGGxM96gw1s5gv2ZTzjJGC/AsX6tGUe7gk2uRp7Thuu1IZR8woDe5RLZ
-         Rr4Q==
-X-Gm-Message-State: AOAM532ziPoQYlFE9om4kUkuqfvnlPlip2yQzyGK6sEiO5la4mXzSBAd
-        4w+364M7mfAaxttYnicjg2EjZNeLOqC5PQVvBNY=
-X-Google-Smtp-Source: ABdhPJyxkTrirT9I13DtZi1g3rHs4BUopE1qzFqaeXf+do879hoQZ6UGYPDN/a/4a8gotkwuRtVB/Q==
-X-Received: by 2002:ac8:1c43:: with SMTP id j3mr20742825qtk.302.1599486481577;
-        Mon, 07 Sep 2020 06:48:01 -0700 (PDT)
-Received: from [192.168.0.189] ([147.253.86.153])
-        by smtp.gmail.com with ESMTPSA id r34sm12164513qtr.18.2020.09.07.06.48.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Sep 2020 06:48:01 -0700 (PDT)
-Subject: Re: [PATCH] misc: fastrpc: add ioctl for attaching to sensors pd
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        linux-arm-msm@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20200901003300.11985-1-jonathan@marek.ca>
- <fa436d55-b986-944f-e90f-b81cb32eeb0e@linaro.org>
-From:   Jonathan Marek <jonathan@marek.ca>
-Message-ID: <3f1f8ff1-cf23-ae2c-4cff-cdcce0b11e2e@marek.ca>
-Date:   Mon, 7 Sep 2020 09:47:13 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        id S1729543AbgIGNxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 09:53:54 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:53338 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729677AbgIGNri (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 09:47:38 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 2DADF59F934B4E5D052B;
+        Mon,  7 Sep 2020 21:47:04 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 7 Sep 2020 21:46:54 +0800
+From:   Chen Zhou <chenzhou10@huawei.com>
+To:     <catalin.marinas@arm.com>, <will@kernel.org>,
+        <james.morse@arm.com>, <tglx@linutronix.de>, <mingo@redhat.com>,
+        <dyoung@redhat.com>, <bhe@redhat.com>, <corbet@lwn.net>,
+        <John.P.donnelly@oracle.com>, <prabhakar.pkin@gmail.com>,
+        <bhsharma@redhat.com>
+CC:     <horms@verge.net.au>, <robh+dt@kernel.org>, <arnd@arndb.de>,
+        <nsaenzjulienne@suse.de>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <kexec@lists.infradead.org>,
+        <linux-doc@vger.kernel.org>, <guohanjun@huawei.com>,
+        <xiexiuqi@huawei.com>, <huawei.libin@huawei.com>,
+        <wangkefeng.wang@huawei.com>, <chenzhou10@huawei.com>
+Subject: [PATCH v12 8/9] arm64: kdump: add memory for devices by DT property linux,usable-memory-range
+Date:   Mon, 7 Sep 2020 21:47:44 +0800
+Message-ID: <20200907134745.25732-9-chenzhou10@huawei.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200907134745.25732-1-chenzhou10@huawei.com>
+References: <20200907134745.25732-1-chenzhou10@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <fa436d55-b986-944f-e90f-b81cb32eeb0e@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/7/20 8:36 AM, Srinivas Kandagatla wrote:
-> 
-> 
-> On 01/09/2020 01:32, Jonathan Marek wrote:
->> -#define FASTRPC_IOCTL_MMAP              _IOWR('R', 6, struct 
->> fastrpc_req_mmap)
->> -#define FASTRPC_IOCTL_MUNMAP            _IOWR('R', 7, struct 
->> fastrpc_req_munmap)
->> +#define FASTRPC_IOCTL_MMAP        _IOWR('R', 6, struct fastrpc_req_mmap)
->> +#define FASTRPC_IOCTL_MUNMAP        _IOWR('R', 7, struct 
->> fastrpc_req_munmap)
-> 
-> Looks like changes that do not belong to this patch!
-> 
-> I wanted to try this patch on SM8250.
-> How do you test attaching fastrpc to sensor core?, I mean which 
-> userspace lib/tool do you use?
-> 
-> --srini
-> 
+When reserving crashkernel in high memory, some low memory is reserved
+for crash dump kernel devices and never mapped by the first kernel.
+This memory range is advertised to crash dump kernel via DT property
+under /chosen,
+	linux,usable-memory-range = <BASE1 SIZE1 [BASE2 SIZE2]>
 
-I pushed my sdsprpcd implementation to github, which is responsible for 
-initializing the sensors, and uses this ioctl:
+We reused the DT property linux,usable-memory-range and made the low
+memory region as the second range "BASE2 SIZE2", which keeps compatibility
+with existing user-space and older kdump kernels.
 
-https://github.com/flto/fastrpc
+Crash dump kernel reads this property at boot time and call memblock_add()
+to add the low memory region after memblock_cap_memory_range() has been
+called.
 
-Note: it uses my own WIP fastrpc "library" instead of the one from 
-linaro, I also have other related code, like a sensor client, and 
-cDSP/aDSP compute examples, but need to confirm that I can share them
+Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
+---
+ arch/arm64/mm/init.c | 43 +++++++++++++++++++++++++++++++++----------
+ 1 file changed, 33 insertions(+), 10 deletions(-)
 
-Also, the corresponding dts patch I sent has a problem, the label = 
-"dsps"; should be label = "sdsp"; (copied the "dsps" from downstream, 
-but upstream expects "sdsp"), will send a v2 later today.
+diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+index e56a0e5d5b77..2af8c38279d9 100644
+--- a/arch/arm64/mm/init.c
++++ b/arch/arm64/mm/init.c
+@@ -76,6 +76,15 @@ static void __init reserve_crashkernel(void)
+ }
+ #endif
+ 
++/*
++ * The main usage of linux,usable-memory-range is for crash dump kernel.
++ * Originally, the number of usable-memory regions is one. Now there may
++ * be two regions, low region and high region.
++ * To make compatibility with existing user-space and older kdump, the low
++ * region is always the last range of linux,usable-memory-range if exist.
++ */
++#define MAX_USABLE_RANGES	2
++
+ #ifdef CONFIG_CRASH_DUMP
+ static int __init early_init_dt_scan_elfcorehdr(unsigned long node,
+ 		const char *uname, int depth, void *data)
+@@ -191,9 +200,9 @@ early_param("mem", early_mem);
+ static int __init early_init_dt_scan_usablemem(unsigned long node,
+ 		const char *uname, int depth, void *data)
+ {
+-	struct memblock_region *usablemem = data;
+-	const __be32 *reg;
+-	int len;
++	struct memblock_region *usable_rgns = data;
++	const __be32 *reg, *endp;
++	int len, nr = 0;
+ 
+ 	if (depth != 1 || strcmp(uname, "chosen") != 0)
+ 		return 0;
+@@ -202,22 +211,36 @@ static int __init early_init_dt_scan_usablemem(unsigned long node,
+ 	if (!reg || (len < (dt_root_addr_cells + dt_root_size_cells)))
+ 		return 1;
+ 
+-	usablemem->base = dt_mem_next_cell(dt_root_addr_cells, &reg);
+-	usablemem->size = dt_mem_next_cell(dt_root_size_cells, &reg);
++	endp = reg + (len / sizeof(__be32));
++	while ((endp - reg) >= (dt_root_addr_cells + dt_root_size_cells)) {
++		usable_rgns[nr].base = dt_mem_next_cell(dt_root_addr_cells, &reg);
++		usable_rgns[nr].size = dt_mem_next_cell(dt_root_size_cells, &reg);
++
++		if (++nr >= MAX_USABLE_RANGES)
++			break;
++	}
+ 
+ 	return 1;
+ }
+ 
+ static void __init fdt_enforce_memory_region(void)
+ {
+-	struct memblock_region reg = {
+-		.size = 0,
++	struct memblock_region usable_rgns[MAX_USABLE_RANGES] = {
++		{ .size = 0 },
++		{ .size = 0 }
+ 	};
+ 
+-	of_scan_flat_dt(early_init_dt_scan_usablemem, &reg);
++	of_scan_flat_dt(early_init_dt_scan_usablemem, &usable_rgns);
+ 
+-	if (reg.size)
+-		memblock_cap_memory_range(reg.base, reg.size);
++	/*
++	 * The first range of usable-memory regions is for crash dump
++	 * kernel with only one region or for high region with two regions,
++	 * the second range is dedicated for low region if exist.
++	 */
++	if (usable_rgns[0].size)
++		memblock_cap_memory_range(usable_rgns[0].base, usable_rgns[0].size);
++	if (usable_rgns[1].size)
++		memblock_add(usable_rgns[1].base, usable_rgns[1].size);
+ }
+ 
+ void __init arm64_memblock_init(void)
+-- 
+2.20.1
 
->> +#define FASTRPC_IOCTL_INIT_ATTACH_SNS    _IO('R', 8)
