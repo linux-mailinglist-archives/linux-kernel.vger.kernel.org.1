@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B739260186
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:06:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE2AE2601D6
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:13:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729898AbgIGQc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 12:32:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46218 "EHLO mail.kernel.org"
+        id S1730696AbgIGRNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 13:13:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46282 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729797AbgIGQcW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 12:32:22 -0400
+        id S1730498AbgIGQcX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 12:32:23 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6D910207DE;
-        Mon,  7 Sep 2020 16:32:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8E80B21556;
+        Mon,  7 Sep 2020 16:32:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599496342;
-        bh=yMbMn15d5ZsiLdDFzu3UAxbc1BWdVwiu6fvD5PtYG3U=;
-        h=From:To:Cc:Subject:Date:From;
-        b=JOdAGy8l8uUcAxFkfU7N+my5e+yJCJi0F5UWgIe+1YHGwkoenVK4JHXFYuYEnqiFP
-         NvuPhQY97LZSUOKGNgFpaXYxkrE1tkJFCWqvuhZ1K9kEBSe4JPglNrhXHZzoO38Lkk
-         VNAkTdBXpnIIp6pzXTo9mM32L2HCuXijjlwDxyD8=
+        s=default; t=1599496343;
+        bh=nEKjW6rYP6qA3oTip1YczSNAMKPIAvulBqSmtTcH6zg=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Hwk/upZWCtM7jTL/6BRxp4ilaoeth1q+NF4OvH99GpKuisj4GtvG4WuLLMD3h0N2l
+         aTQ8/Ulyctzn77W3srlNhET+OqLAx7jDtJCTdNEtKVFIIxHjVOdgcS7AFfJefSlXnU
+         beojGLk6AB1VDpnh5SqOfziuwSIG4IvCP78Izhvk=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Vineet Gupta <vgupta@synopsys.com>,
-        Sasha Levin <sashal@kernel.org>, devicetree@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.8 01/53] ARC: HSDK: wireup perf irq
-Date:   Mon,  7 Sep 2020 12:31:27 -0400
-Message-Id: <20200907163220.1280412-1-sashal@kernel.org>
+Cc:     Hanjun Guo <guohanjun@huawei.com>, Vinod Koul <vkoul@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, dmaengine@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.8 02/53] dmaengine: acpi: Put the CSRT table after using it
+Date:   Mon,  7 Sep 2020 12:31:28 -0400
+Message-Id: <20200907163220.1280412-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200907163220.1280412-1-sashal@kernel.org>
+References: <20200907163220.1280412-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -41,34 +42,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vineet Gupta <vgupta@synopsys.com>
+From: Hanjun Guo <guohanjun@huawei.com>
 
-[ Upstream commit fe81d927b78c4f0557836661d32e41ebc957b024 ]
+[ Upstream commit 7eb48dd094de5fe0e216b550e73aa85257903973 ]
 
-Newer version of HSDK aka HSDK-4xD (with dual issue HS48x4 CPU) wired up
-the perf interrupt, so enable that in DT.
-This is OK for old HSDK where this irq is ignored because pct irq is not
-wired up in hardware.
+The acpi_get_table() should be coupled with acpi_put_table() if
+the mapped table is not used at runtime to release the table
+mapping, put the CSRT table buf after using it.
 
-Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
+Signed-off-by: Hanjun Guo <guohanjun@huawei.com>
+Link: https://lore.kernel.org/r/1595411661-15936-1-git-send-email-guohanjun@huawei.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arc/boot/dts/hsdk.dts | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/dma/acpi-dma.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arc/boot/dts/hsdk.dts b/arch/arc/boot/dts/hsdk.dts
-index 9acbeba832c0b..5d64a5a940ee6 100644
---- a/arch/arc/boot/dts/hsdk.dts
-+++ b/arch/arc/boot/dts/hsdk.dts
-@@ -88,6 +88,8 @@ idu_intc: idu-interrupt-controller {
+diff --git a/drivers/dma/acpi-dma.c b/drivers/dma/acpi-dma.c
+index 8a05db3343d39..dcbcb712de6e8 100644
+--- a/drivers/dma/acpi-dma.c
++++ b/drivers/dma/acpi-dma.c
+@@ -135,11 +135,13 @@ static void acpi_dma_parse_csrt(struct acpi_device *adev, struct acpi_dma *adma)
+ 		if (ret < 0) {
+ 			dev_warn(&adev->dev,
+ 				 "error in parsing resource group\n");
+-			return;
++			break;
+ 		}
  
- 	arcpct: pct {
- 		compatible = "snps,archs-pct";
-+		interrupt-parent = <&cpu_intc>;
-+		interrupts = <20>;
- 	};
+ 		grp = (struct acpi_csrt_group *)((void *)grp + grp->length);
+ 	}
++
++	acpi_put_table((struct acpi_table_header *)csrt);
+ }
  
- 	/* TIMER0 with interrupt for clockevent */
+ /**
 -- 
 2.25.1
 
