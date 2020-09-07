@@ -2,93 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90F0B25F50A
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 10:25:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D540C25F519
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 10:27:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728199AbgIGIZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 04:25:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43318 "EHLO
+        id S1728160AbgIGI1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 04:27:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728186AbgIGIZe (ORCPT
+        with ESMTP id S1727807AbgIGI1E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 04:25:34 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DAE8C061573;
-        Mon,  7 Sep 2020 01:25:31 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id q4so188222pjh.5;
-        Mon, 07 Sep 2020 01:25:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=huTocH0c6AWuhcspnjbzhvXx5R1T6amyle2EL/NOmAQ=;
-        b=sGdAGvhAl7Jc8x3M8dAN33rd03W5377rpCRW/Xh1B3vFtfK2TCch5jZhAp8mk11viu
-         koFELu5pmeZdYQNrNNPAo2OX9hDsz6boLc9brayMhSTNQbEshuHryVZnPqDK0YC32Hez
-         fAs+/l8IONJU+Uz9Xd++BAxn2I1jqcZjqV6GzlaYyTWzhT2NrAv6a2bzy6Q6w1WENdu/
-         CX0k7bikk2CQbcuwup/08qwgwUhfQ4ht5BDnRFpAnf7nagN4fiPjn46amOLEcTTCqPOp
-         41ErRYMO/DtdoL0fa/Tkn+OFbyceNCVBWDBCNdr4AKRXN8MnxBDq/WrkC2HIgrLiewKz
-         Guag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=huTocH0c6AWuhcspnjbzhvXx5R1T6amyle2EL/NOmAQ=;
-        b=FCG8VRRJJRZN8N5blD1y10Xmm7Lhl8jO99V0y1H8Io8mwjtkLBydfR8Hh+U17hyUtm
-         +YjSy5OYhQm7fgPDQuL7wEyKz5odS9e4rK1vX4y0WqaLkf/9k4ApoJV1ptftfgMt8peh
-         KO205Gf1dA172LFg/zRDFMZZ7ca4OdBOfgVhIQy/gjaax2gY/euWxk6h48rGhzhN1m6k
-         uES4jfF8hcRX3nuVwNk1jz3gmteBHrn0u0n2aN6pqRQxbG6pVV0Syprkki9HpDUzQ3iz
-         05Lnw78pFmTd6S7d0pti188HzTR+SmLpBbnqxMCtO2rLqVWPj7MKJSvmYD74LNQZHJYd
-         aIPw==
-X-Gm-Message-State: AOAM531j2ZbP7GxnEVUzM6uxkiVYzV73qSm9K8DaoseEHS7v1LaB67kI
-        OapNDLVbSvdCUzmmBTyqdwjzUjECYDEHqT2Puak=
-X-Google-Smtp-Source: ABdhPJwx5us1CCOCtYm4MxqdLelLVzzLncyYVT6EDbAd4TmR6r0IebjIOAQviWl9XGOKShK2XZ/6UDR0gw5cI+/yOqg=
-X-Received: by 2002:a17:90a:b387:: with SMTP id e7mr20120964pjr.228.1599467130433;
- Mon, 07 Sep 2020 01:25:30 -0700 (PDT)
+        Mon, 7 Sep 2020 04:27:04 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B8C2C061573
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 01:27:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=qnwYE2OXqJPyGJ1Z6lt7Krlp010h2nSE4niWx+cXvY8=; b=V17bMqD9tDMFdzBW/auH/HdokX
+        rpBj8Bb+K1/gIlR8+SmJgTttJ/k6k+EeynpdvcINSQ/L/aiHxpV4AriI0n/Uzd+weRqdw81HDIWRr
+        6EjElxjLHaK+bZlnOxG3rSx1/XOAjAq35fbTFxGql+TmyPhvnqGCVDcrxTMOcE3yXRGDElWvS6ZDF
+        Ulfpu9EZoTTJcbuH02L9gmmTJH1AmNv3kS9Yfy6yKw+h55ddcmAorxK86yBelyRx8RDA2wBXROr4J
+        jNjP1oJA3OPui9Aehd1Tj5U8a0GHE/X9uO23y8QgpWKNDzTBl+B72Lzsh68sCXUpiblM/j6TrsfOx
+        M8feRwwg==;
+Received: from 213-225-10-73.nat.highway.a1.net ([213.225.10.73] helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kFCUP-0003Zp-Ld; Mon, 07 Sep 2020 08:27:01 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     arnd@arndb.de, gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: [PATCH] /dev/zero: fixups for ->read
+Date:   Mon,  7 Sep 2020 10:27:00 +0200
+Message-Id: <20200907082700.2057137-1-hch@lst.de>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20200906185039.22700-1-digetx@gmail.com> <20200906185039.22700-27-digetx@gmail.com>
-In-Reply-To: <20200906185039.22700-27-digetx@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 7 Sep 2020 11:25:13 +0300
-Message-ID: <CAHp75Vcv=0c_MxTmGLTvShYMz8-JecsMpqHp4mnPWYpPM9MFLw@mail.gmail.com>
-Subject: Re: [PATCH v5 26/36] i2c: tegra: Factor out hardware initialization
- into separate function
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        linux-tegra@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 6, 2020 at 9:52 PM Dmitry Osipenko <digetx@gmail.com> wrote:
->
-> Factor out hardware initialization into a separate function from the probe
-> function. The only place where runtime PM needs to be resumed during probe
-> is the place of hardware initialization, hence it makes sense to factor
-> out it in order to have a bit cleaner error handling in tegra_i2c_probe().
+Reported the cleared bytes in case of a partial clear_user instead
+of -EFAULT, and remove a pointless conditional, as cleared must be
+non-zero by the time we hit the signal_pending check.
 
-...
+Reported-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ drivers/char/mem.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-> +static int tegra_i2c_init_hardware(struct tegra_i2c_dev *i2c_dev)
-> +{
-> +       int ret;
-> +
-> +       ret = pm_runtime_get_sync(i2c_dev->dev);
-> +       if (ret < 0) {
-> +               dev_err(i2c_dev->dev, "runtime resume failed: %d\n", ret);
-
-refcount leak.
-
-> +               return ret;
-> +       }
-
+diff --git a/drivers/char/mem.c b/drivers/char/mem.c
+index 1dc99ab158457a..94c2b556cf9728 100644
+--- a/drivers/char/mem.c
++++ b/drivers/char/mem.c
+@@ -733,14 +733,20 @@ static ssize_t read_zero(struct file *file, char __user *buf,
+ 
+ 	while (count) {
+ 		size_t chunk = min_t(size_t, count, PAGE_SIZE);
++		size_t left;
+ 
+-		if (clear_user(buf + cleared, chunk))
+-			return cleared ? cleared : -EFAULT;
++		left = clear_user(buf + cleared, chunk);
++		if (unlikely(left)) {
++			cleared += (chunk - left);
++			if (!cleared)
++				return -EFAULT;
++			break;
++		}
+ 		cleared += chunk;
+ 		count -= chunk;
+ 
+ 		if (signal_pending(current))
+-			return cleared ? cleared : -ERESTARTSYS;
++			break;
+ 		cond_resched();
+ 	}
+ 
 -- 
-With Best Regards,
-Andy Shevchenko
+2.28.0
+
