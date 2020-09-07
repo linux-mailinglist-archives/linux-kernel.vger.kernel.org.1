@@ -2,71 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69A2026025A
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:24:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE0582603AF
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:53:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731107AbgIGRYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 13:24:00 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:47994 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730878AbgIGRXu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 13:23:50 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1kFKrp-00DegK-TH; Mon, 07 Sep 2020 19:23:45 +0200
-Date:   Mon, 7 Sep 2020 19:23:45 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
-Cc:     Jason Cooper <jason@lakedaemon.net>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Tomasz Maciej Nowak <tmn505@gmail.com>,
-        Andre Heider <a.heider@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: marvell: espressobin: Add ethernet switch
- aliases
-Message-ID: <20200907172345.GB3254313@lunn.ch>
-References: <20200907112718.5994-1-pali@kernel.org>
- <20200907144228.GV3112546@lunn.ch>
- <20200907145213.fwlyz4k6scible7x@pali>
- <20200907154353.GW3112546@lunn.ch>
- <20200907161316.xd5svvahi5xusdlw@pali>
+        id S1729479AbgIGRxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 13:53:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42556 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728901AbgIGLW4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 07:22:56 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44EA8C061575
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 04:01:14 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id t16so12100277ilf.13
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 04:01:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mM0y+Q0a8sB0DkvdsC2ZAa0jhM0rMUB3DCeyiwaznjU=;
+        b=rKpXyZ2H5uP2/h9Dt5pZ0EPjXGgMA3de0HXUxZtvju1LXugoHzeD4RaryePMRR4utI
+         K1Xpnc7dqWuJ1RRNtAvBK9L4dDhOmI1bjUHQE6oaeroH1bhZD6WHqXQXEatSsX2GFpgq
+         sloN9nsm3Z8VHroFwHEs2MLKdtmiSZCfrSio0VqGihZq5rXGXCGVr5/1Euh+ed6/NGxR
+         +PtyIa/kQzMjz3AGzVI0uXl9wO4mXKNkjoWAYUT0S74QK9gzwlCsvvzKGVr1bhFs4Lp2
+         krBFagjdLqhrymwwVXwl3GsqF95A2B4h0KlX1P6NgCoyedRyf1lcmDqwyoeacDbfAQkR
+         cKRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mM0y+Q0a8sB0DkvdsC2ZAa0jhM0rMUB3DCeyiwaznjU=;
+        b=j9qdf2aZo8ktRrbf+nvL2QQiXBRcogy7TciSD7zNzNjnLwGXZW/i2sARYa25Ct0yxH
+         Mr9LPXisl3mOqxwb8U5EkBzKSSTZYII+c+Ng2KHSK09FY+ALBzlBdqMnqya7boWTDHWY
+         4KeKwCTlFKXUeGrkRAZd9SkoMn/ptcwfbenKXQUkInWpbbEMUXy5MNvmTIasDRwmIE1o
+         6moLwTI+ekwglymRtnQb4O++qm9sS3Uu5YhFgIatKlrcudmXi+p1rwSOgfd7QOR8XV13
+         Y2/JNob6+FXHjn67anoDhB9lKR1kq7VwtxM1hgPlr0y9qOySzOTrQ85ygSfGcYMlMorl
+         Aj1A==
+X-Gm-Message-State: AOAM531+ny1DQVBilIoLErwxqbu7J/u/40i7klsrm/cqVMzneEtUtAZJ
+        6ZCUhLxLwfKj0aSS16uOSz1qBvld1PShoTqlWbeDTw==
+X-Google-Smtp-Source: ABdhPJzKTB4141AX04DUZCtSVaif2wmDuuNUNco4lagdf94reZmn5rumBiscprbs2LT1YPBLbmGSPn2FRbAHpzNrfok=
+X-Received: by 2002:a92:189:: with SMTP id 131mr19175912ilb.40.1599476473551;
+ Mon, 07 Sep 2020 04:01:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200907161316.xd5svvahi5xusdlw@pali>
+References: <20200904154547.3836-1-brgl@bgdev.pl> <20200904154547.3836-14-brgl@bgdev.pl>
+ <20200904164820.GB1891694@smile.fi.intel.com>
+In-Reply-To: <20200904164820.GB1891694@smile.fi.intel.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Mon, 7 Sep 2020 13:01:02 +0200
+Message-ID: <CAMRc=Mea4pGbW+fY3mCWfNSSqo9ZwaJxx2C0JmstnQOc8eVrLg@mail.gmail.com>
+Subject: Re: [PATCH 13/23] gpio: mockup: pass the chip label as device property
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Kent Gibson <warthog618@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-doc <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-acpi@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 07, 2020 at 06:13:16PM +0200, Pali Rohár wrote:
-> On Monday 07 September 2020 17:43:53 Andrew Lunn wrote:
-> > > I would not say it is a "new feature". But rather that patch in this
-> > > email fixes issue that Linux kernel did not set correct MAC address for
-> > > DSA slave ports. I think it is something which could be backported also
-> > > to stable releases as "ignoring" vendor/factory MAC address is not
-> > > correct behavior.
-> > 
-> > Hi Pali
-> > 
-> > The rules for stable are here:
-> > 
-> > https://www.kernel.org/doc/html/v5.8/process/stable-kernel-rules.html
-> > 
-> > Do you think it fits?
-> > 
-> >    Andrew
-> 
-> Hello Andrew! I think it fits into those rules. As I wrote it fixes real
-> bug that Linux kernel does not use correct MAC address for particular
-> DSA slaves / ethernet ports.
+On Fri, Sep 4, 2020 at 6:48 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> On Fri, Sep 04, 2020 at 05:45:37PM +0200, Bartosz Golaszewski wrote:
+> > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> >
+> > While we do check the "chip-name" property in probe(), we never actually
+> > use it. Let's pass the chip label to the driver using device properties
+> > as we'll want to allow users to define their own once dynamically
+> > created chips are supported.
+> >
+> > The property is renamed to "chip-label" to not cause any confusion with
+> > the actual chip name which is of the form: "gpiochipX".
+> >
+> > If the "chip-label" property is missing, let's do what most devices in
+> > drivers/gpio/ do and use dev_name().
+>
+> Just wondering if we have a documentation in kernel how this mockup mechanism
+> works and what kind of properties it uses.
+>
+> Side note: moving to software nodes would make some advantages in future such
+> as visibility properties and their values (not yet implemented, but there is an
+> idea to move forward).
 
-O.K, then:
+Seems like we're implicitly using software nodes already:
+fwnode_create_software_node() is called when adding device properties.
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-
-    Andrew
+Bart
