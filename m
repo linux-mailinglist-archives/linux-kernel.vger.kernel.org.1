@@ -2,90 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A60D325F436
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 09:42:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4746925F456
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 09:51:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727116AbgIGHmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 03:42:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53180 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726419AbgIGHmn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 03:42:43 -0400
-Received: from saruman (91-155-214-58.elisa-laajakaista.fi [91.155.214.58])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0ED4F207C3;
-        Mon,  7 Sep 2020 07:42:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599464562;
-        bh=TIs5JwlDQRvebAekInbuV/2Ii2UXnxsq8CLe4ACPU+M=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=ZdAosuz8jovwbxcvibwH+AMwYlv8fVIdxYehYYIMNofF7Hdu8yCh/CLKMCMmpbTgw
-         4wamX9ZzzgWOMEl58JmSh533zvU4viY96+uz2MYAE2tQi9xDLG6ywD80olFAs0Zg7N
-         rFTtOIOwjPflEPKvMzFCPqdDhFOPaMT+g+n/5do8=
-From:   Felipe Balbi <balbi@kernel.org>
-To:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH 1/7] usb: mtu3: convert to
- devm_platform_ioremap_resource_byname
-In-Reply-To: <1595404275-8449-1-git-send-email-chunfeng.yun@mediatek.com>
-References: <1595404275-8449-1-git-send-email-chunfeng.yun@mediatek.com>
-Date:   Mon, 07 Sep 2020 10:42:35 +0300
-Message-ID: <87d02y1190.fsf@kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+        id S1727864AbgIGHvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 03:51:32 -0400
+Received: from mail-m1271.qiye.163.com ([115.236.127.1]:12911 "EHLO
+        mail-m1271.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726771AbgIGHv0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 03:51:26 -0400
+X-Greylist: delayed 439 seconds by postgrey-1.27 at vger.kernel.org; Mon, 07 Sep 2020 03:51:25 EDT
+Received: from ubuntu.localdomain (unknown [157.0.31.124])
+        by mail-m1271.qiye.163.com (Hmail) with ESMTPA id DABC6582250;
+        Mon,  7 Sep 2020 15:44:03 +0800 (CST)
+From:   Yang Yang <yang.yang@vivo.com>
+To:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     onlyfever@icloud.com, yang.yang@vivo.com
+Subject: [PATCH] kyber: Fix crash in kyber_finish_request()
+Date:   Mon,  7 Sep 2020 00:43:46 -0700
+Message-Id: <20200907074346.5383-1-yang.yang@vivo.com>
+X-Mailer: git-send-email 2.17.1
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZSx8dTk8dT09OTk0ZVkpOQkJPTU9NT09LS0lVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKQ1VKS0tZBg++
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Mio6HSo4Fz8qPBhOKQMiPgsZ
+        ECoaCRRVSlVKTkJCT01PTU9PT01IVTMWGhIXVQIaFRxVAhoVHDsNEg0UVRgUFkVZV1kSC1lBWUpO
+        TFVLVUhKVUpJT1lXWQgBWUFJSk9LNwY+
+X-HM-Tid: 0a7467859d8598b6kuuudabc6582250
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Kernel crash when requeue flush request.
+It can be reproduced as below:
 
+[    2.517297] Unable to handle kernel paging request at virtual address ffffffd8071c0b00
+...
+[    2.517468] pc : clear_bit+0x18/0x2c
+[    2.517502] lr : sbitmap_queue_clear+0x40/0x228
+[    2.517503] sp : ffffff800832bc60 pstate : 00c00145
+...
+[    2.517599] Process ksoftirqd/5 (pid: 51, stack limit = 0xffffff8008328000)
+[    2.517602] Call trace:
+[    2.517606]  clear_bit+0x18/0x2c
+[    2.517619]  kyber_finish_request+0x74/0x80
+[    2.517627]  blk_mq_requeue_request+0x3c/0xc0
+[    2.517637]  __scsi_queue_insert+0x11c/0x148
+[    2.517640]  scsi_softirq_done+0x114/0x130
+[    2.517643]  blk_done_softirq+0x7c/0xb0
+[    2.517651]  __do_softirq+0x208/0x3bc
+[    2.517657]  run_ksoftirqd+0x34/0x60
+[    2.517663]  smpboot_thread_fn+0x1c4/0x2c0
+[    2.517667]  kthread+0x110/0x120
+[    2.517669]  ret_from_fork+0x10/0x18
 
-Hi,
+Signed-off-by: Yang Yang <yang.yang@vivo.com>
+---
+ block/kyber-iosched.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Chunfeng Yun <chunfeng.yun@mediatek.com> writes:
-> Use devm_platform_ioremap_resource_byname() to simplify code
->
-> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+diff --git a/block/kyber-iosched.c b/block/kyber-iosched.c
+index a38c5ab103d1..af73afe7a05c 100644
+--- a/block/kyber-iosched.c
++++ b/block/kyber-iosched.c
+@@ -611,6 +611,9 @@ static void kyber_finish_request(struct request *rq)
+ {
+ 	struct kyber_queue_data *kqd = rq->q->elevator->elevator_data;
+ 
++	if (unlikely(!(rq->rq_flags & RQF_ELVPRIV)))
++		return;
++
+ 	rq_clear_domain_token(kqd, rq);
+ }
+ 
+-- 
+2.17.1
 
-why is it so that your patches always come base64 encoded? They look
-fine on the email client, but when I try to pipe the message to git am
-it always gives me a lot of trouble and I have to manually decode the
-body of your messages and recombine with the patch.
-
-Can you try to send your patches as actual plain text without encoding
-the body with base64?
-
-=2D-=20
-balbi
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQJFBAEBCAAvFiEElLzh7wn96CXwjh2IzL64meEamQYFAl9V5GsRHGJhbGJpQGtl
-cm5lbC5vcmcACgkQzL64meEamQbf5A/9GQSFGsCjJVDMN491TnVJU2UcuvE0m1yH
-PuO6qqWoETNQrMIeT0hIx8IED30Szqy7LB/i1VRA/xIaN354CvgWKNyIooryvqXe
-G7E9zb/0BmiTGLoCzt0cKl12pLDz+vGQ4/F4iMm5Aqw+FoaMIPbI+VxWt1TRmdFu
-akic1csqJULetfSI7aqxuMnUJ9FFijZRTFMkLUnxYS1HNH0Ox8rncv1HmRgd+M+E
-Dmpezs3HLQH2bL6vv+k9Cf75JR5agb8fAbxKvsI00uSK6SdNVmNtOaoJCdE3eaj3
-oG5YdX+lvRW3xO+oPyPypxke3FgQdqZwaRBxBduVsVptgZ5zEmEmjKHfqKCv1nvw
-r8aTppriB+8UNkNjnMLmvbkRRaOFtHlxXGM45vNDGrQGFnMgHcsixmfXiy65/AoK
-cNXPN8TTUm0A9CZ6sAe34raZ3H3LPAX1Mg/GuP7Is6Lm7FiiA6X9J0fC46YzK4ZE
-EEhfn9VNYzDbgVpcgPDdMIe+Lvrzm5ATkFvpVrhz/WUcCT0stSPpXZIHjkAyrmUD
-n47a1pTiVpN3ChKyFMH5IlZSihwpMdkG19LRFnryn2NRaiNQEng3qhpJ9YpekN5Z
-cHprLCzqjPM5FzafSiOVLr3mwKhMcQoL7e9M5T1q2OZ26Rharbx2iMHjoDSW8Jbn
-NyfsrIki6cs=
-=vjAN
------END PGP SIGNATURE-----
---=-=-=--
