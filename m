@@ -2,67 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90437260217
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:19:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 733FA26021B
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:19:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730688AbgIGRTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 13:19:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44416 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729703AbgIGOA4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 10:00:56 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EB4412064B;
-        Mon,  7 Sep 2020 13:50:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599486630;
-        bh=J7KhyjwPkOJGOay8k3dotO+k4kIPfPIOXH16l9SfKnk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nqPSx7Yg7Dl3jwKJBWll4TFZ9RfVikUBT1Sx9PemWPtM1NMfcWAh+PXCs2dng91S4
-         EgW1V+1KMTn274zvq7rhmRpyKPTiC/sEHR0/0Hu4m3mKYq/BGFAMUTC7k8YzLL4/Ac
-         5ERBrYKHDKOXeeQbsoQCn7Z0c0st8Adb/JzalYBY=
-Date:   Mon, 7 Sep 2020 14:50:26 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Mark Salter <msalter@redhat.com>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Khuong Dinh <khuong@os.amperecomputing.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drivers/perf: xgene_pmu: Fix uninitialized resource
- struct
-Message-ID: <20200907135026.GC12551@willie-the-truck>
-References: <20200902182729.27415-1-msalter@redhat.com>
+        id S1729775AbgIGRSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 13:18:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38914 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729749AbgIGOC3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 10:02:29 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C95DC061574
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 06:52:05 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id p4so12717242qkf.0
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 06:52:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=marek-ca.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=PTkTouL2czWP8WE5qgUgm7cqaQuyE0I/QNRM6mgOP0c=;
+        b=RkYJt/sowuPk660AeGi8k0TKGfw7R8fezICrpHulamrnjeDus1mMTpxsIWFd8D4dC7
+         7lpGSv7sikZ6Q9BvxsmwJzFL0vuxJhFNqNLJVncpFdsrRYrYwD1hSxKVQYA8DfJOvbSa
+         RwJkUSNO7j4lUTwm76z0W/0OWjMpHbgy/rExIclghVSTBLYxw4R1J27T6uvav7WQXBPT
+         L1G0L0X95cOws5jWWbfsTaaI6m1M6QmGci7OQXviSo4Bj+8P1W35vQs2GohffQ3k9k3F
+         slWb2a47njZDem0eevasth1IaIjJcaHo/5XCxgS68BuXLU3OyxQKzrTTStG59SpxKbNU
+         L3sQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=PTkTouL2czWP8WE5qgUgm7cqaQuyE0I/QNRM6mgOP0c=;
+        b=GD1wnFB3f9I/xS3HT0ymHRsg3m/DkTLVTzjoehTaYqOcZSGt3SUpJZL2QWQWXj5ZJy
+         7sBQHWQE9Gs6QxZPxbzrPf0DCkjjSJF4sWheaBH9qLirYOIkXxLq7qZPA67tqlMuOzfa
+         HjmOyq4+JTr53HNH+ILbsoJwcVctHNDntRdhPb/3otcbWAOlvZA3BWAJj+FdpOQZxSqZ
+         YlfUvl4mjUcj3NrWtI1s/cfZo+7I6DpYrboeelDWccDtUj77uNYwHH1LSzzr1bMYvf3W
+         yzZ/aH/py2oN51Yh8QwHGnfLwrRaWeh4Jx4q3AyDt6MPdPxLJrLgiyj5mpBxvDl8kK1p
+         +MXA==
+X-Gm-Message-State: AOAM530XweFQc2sT2WQZ3x3hJXaXjOVLpoJnfU0ExM8fSV9HM+rTLAb5
+        a+8tIiAZR0qrAaXUcw8LTfdn1zdGgbLvw4AgZhs=
+X-Google-Smtp-Source: ABdhPJwb/Iojc+yPbKGCE2w/zaWNEX18Z9XHEn4djmHHQz8vqGV9Ili06wfYjq3cq27keqH4oiq1LQ==
+X-Received: by 2002:a05:620a:141a:: with SMTP id d26mr18900840qkj.217.1599486721448;
+        Mon, 07 Sep 2020 06:52:01 -0700 (PDT)
+Received: from [192.168.0.189] ([147.253.86.153])
+        by smtp.gmail.com with ESMTPSA id u66sm10541652qka.136.2020.09.07.06.52.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Sep 2020 06:52:01 -0700 (PDT)
+Subject: Re: [PATCH] misc: fastrpc: add ioctl for attaching to sensors pd
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20200901003300.11985-1-jonathan@marek.ca>
+ <20200907123344.GA2371705@kroah.com>
+From:   Jonathan Marek <jonathan@marek.ca>
+Message-ID: <a9d142c9-8a61-ee59-d849-393af1b3eaec@marek.ca>
+Date:   Mon, 7 Sep 2020 09:51:13 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200902182729.27415-1-msalter@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200907123344.GA2371705@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 02, 2020 at 02:27:29PM -0400, Mark Salter wrote:
-> diff --git a/drivers/perf/xgene_pmu.c b/drivers/perf/xgene_pmu.c
-> index edac28cd25dd..fdbbd0804b92 100644
-> --- a/drivers/perf/xgene_pmu.c
-> +++ b/drivers/perf/xgene_pmu.c
-> @@ -1483,6 +1483,7 @@ xgene_pmu_dev_ctx *acpi_get_pmu_hw_inf(struct xgene_pmu *xgene_pmu,
->  		return NULL;
->  
->  	INIT_LIST_HEAD(&resource_list);
-> +	memset(&res, 0, sizeof(res));
->  	rc = acpi_dev_get_resources(adev, &resource_list,
->  				    acpi_pmu_dev_add_resource, &res);
->  	acpi_dev_free_resource_list(&resource_list);
+On 9/7/20 8:33 AM, Greg Kroah-Hartman wrote:
+> On Mon, Aug 31, 2020 at 08:32:59PM -0400, Jonathan Marek wrote:
+>> Initializing sensors requires attaching to pd 2. Add an ioctl for that.
+>>
+>> This corresponds to FASTRPC_INIT_ATTACH_SENSORS in the downstream driver.
+>>
+>> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+>> ---
+>>   drivers/misc/fastrpc.c      | 9 ++++++---
+>>   include/uapi/misc/fastrpc.h | 5 +++--
+>>   2 files changed, 9 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
+>> index 7939c55daceb..ea5e9ca0d705 100644
+>> --- a/drivers/misc/fastrpc.c
+>> +++ b/drivers/misc/fastrpc.c
+>> @@ -1276,7 +1276,7 @@ static int fastrpc_dmabuf_alloc(struct fastrpc_user *fl, char __user *argp)
+>>   	return 0;
+>>   }
+>>   
+>> -static int fastrpc_init_attach(struct fastrpc_user *fl)
+>> +static int fastrpc_init_attach(struct fastrpc_user *fl, int pd)
+>>   {
+>>   	struct fastrpc_invoke_args args[1];
+>>   	int tgid = fl->tgid;
+>> @@ -1287,7 +1287,7 @@ static int fastrpc_init_attach(struct fastrpc_user *fl)
+>>   	args[0].fd = -1;
+>>   	args[0].reserved = 0;
+>>   	sc = FASTRPC_SCALARS(FASTRPC_RMID_INIT_ATTACH, 1, 0);
+>> -	fl->pd = 0;
+>> +	fl->pd = pd;
+>>   
+>>   	return fastrpc_internal_invoke(fl, true, FASTRPC_INIT_HANDLE,
+>>   				       sc, &args[0]);
+>> @@ -1477,7 +1477,10 @@ static long fastrpc_device_ioctl(struct file *file, unsigned int cmd,
+>>   		err = fastrpc_invoke(fl, argp);
+>>   		break;
+>>   	case FASTRPC_IOCTL_INIT_ATTACH:
+>> -		err = fastrpc_init_attach(fl);
+>> +		err = fastrpc_init_attach(fl, 0);
+>> +		break;
+>> +	case FASTRPC_IOCTL_INIT_ATTACH_SNS:
+>> +		err = fastrpc_init_attach(fl, 2);
+> 
+> Shouldn't you have #defines for those magic numbers somewhere?  What
+> does 0 and 2 mean?
+> 
 
-Hmm, to be honest, I'm not sure we should be calling devm_ioremap_resource()
-at all here. The resource is clearly bogus, even with this change: the name
-and the resource hierarchy pointers will all be NULL. I think it would be
-better to follow the TX2 PMU driver (drivers/perf/thunderx2_pmu.c) which
-appears to assign the resource directly in tx2_uncore_pmu_init_dev().
+This is based off a downstream driver which also uses magic numbers, 
+although I can make an educated guess about the meaning.
 
-Is there a reason we can't do that?
+Srini do you have any suggestions for how to name these values?
 
-Will
+> thanks,
+> 
+> greg k-h
+> 
