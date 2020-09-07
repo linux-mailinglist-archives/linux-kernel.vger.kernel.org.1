@@ -2,92 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22A9825FD76
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 17:49:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C69625FD93
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 17:52:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730261AbgIGPts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 11:49:48 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40052 "EHLO mx2.suse.de"
+        id S1730214AbgIGPws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 11:52:48 -0400
+Received: from mga17.intel.com ([192.55.52.151]:25785 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730200AbgIGPrQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 11:47:16 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 1C7F2ACCC;
-        Mon,  7 Sep 2020 15:47:16 +0000 (UTC)
-Date:   Mon, 7 Sep 2020 17:47:14 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Changki Kim <changki.kim@samsung.com>,
-        sergey.senozhatsky@gmail.com, rostedt@goodmis.org,
-        changbin.du@intel.com, masahiroy@kernel.org, rd.dunlap@gmail.com,
-        gregkh@linuxfoundation.org, krzk@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: printk: Add process name information to printk() output.
-Message-ID: <20200907154713.GE8084@alley>
-References: <CGME20200904082449epcas2p4420d5df2083325b328a182c79f5c0948@epcas2p4.samsung.com>
- <20200904082438.20707-1-changki.kim@samsung.com>
- <874kod6fgh.fsf@jogness.linutronix.de>
- <20200904124530.GB20558@alley>
- <87y2lp4r6o.fsf@jogness.linutronix.de>
- <20200904151336.GC20558@alley>
- <87ft7xazsf.fsf@jogness.linutronix.de>
- <20200907095437.GD8084@alley>
- <87d02xj2ui.fsf@jogness.linutronix.de>
+        id S1730221AbgIGPwe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 11:52:34 -0400
+IronPort-SDR: XLendpVzhN8Mt4KG5/sHo+UV+ChOat8WTxaIMm+uZ3LxioFTEqDPeohrIl6Z6l32MRP34fxeXL
+ QiKrR/wwhlxA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9737"; a="138066938"
+X-IronPort-AV: E=Sophos;i="5.76,402,1592895600"; 
+   d="scan'208";a="138066938"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2020 08:52:29 -0700
+IronPort-SDR: OKawkKFMoTnSGMbguXThLtl8NtjcwhxLsewqqLKPYgFmHyfSdylAm5yyICdAjMpdfR2/DEblnQ
+ njoVBfvoFnZg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,402,1592895600"; 
+   d="scan'208";a="333197015"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga008.jf.intel.com with ESMTP; 07 Sep 2020 08:52:26 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kFJNC-00EzvH-KL; Mon, 07 Sep 2020 18:48:02 +0300
+Date:   Mon, 7 Sep 2020 18:48:02 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     himadrispandya@gmail.com, dvyukov@google.com,
+        linux-usb@vger.kernel.org, perex@perex.cz, tiwai@suse.com,
+        stern@rowland.harvard.ed, linux-kernel@vger.kernel.org,
+        marcel@holtmann.org, johan.hedberg@gmail.com,
+        linux-bluetooth@vger.kernel.org, alsa-devel@alsa-project.org,
+        Alan Stern <stern@rowland.harvard.edu>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: Re: [PATCH v2 03/11] USB: core: message.c: use
+ usb_control_msg_send() in a few places
+Message-ID: <20200907154802.GO1891694@smile.fi.intel.com>
+References: <20200907145108.3766613-1-gregkh@linuxfoundation.org>
+ <20200907145108.3766613-4-gregkh@linuxfoundation.org>
+ <20200907145644.GA3767938@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87d02xj2ui.fsf@jogness.linutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200907145644.GA3767938@kroah.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 2020-09-07 12:36:45, John Ogness wrote:
-> On 2020-09-07, Petr Mladek <pmladek@suse.com> wrote:
-> > This extra metadata are not currently read by crashdump tools.
+On Mon, Sep 07, 2020 at 04:56:44PM +0200, Greg Kroah-Hartman wrote:
+> On Mon, Sep 07, 2020 at 04:51:00PM +0200, Greg Kroah-Hartman wrote:
+> > There are a few calls to usb_control_msg() that can be converted to use
+> > usb_control_msg_send() instead, so do that in order to make the error
+> > checking a bit simpler.
+> > 
+> > Cc: Alan Stern <stern@rowland.harvard.edu>
+> > Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+> > Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > Cc: linux-usb@vger.kernel.org
+> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 > 
-> crash [0] prints dictionary data.
-> [0] https://github.com/crash-utility/crash
+> Oops, Andy, sorry, you gave me a Reviewed-by: Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> on the previous version of this,
+> I'll add it next round, or when it's queued up.
 
-Grr, I have missed this. It makes things more complicated.
+NP! Whatever works better for you.
 
-We need to find a way that would allow to add more metadata without
-breaking support for the existing ones.
-
-I know, it works with the current dictionary. "crash" just prints it
-the same way as "cat /dev/kmsg". Dict entries are printed on separate
-lines. It is better than nothing. But it is not much user friendly.
-
-If we add more metadata, people would want to see it some more
-userfriendly way, e.g.:
-
-	[2020-08-20T07:58:48][  T136] random: crng init done
-
-instead of
-
-	[    1.394073] random: crng init done
-	 PID = 136
-	 CPU = 3
-	 IRQ_CONTEXT = 0;
-	 TS_MONO = 234632423
-	 TS_REAL = 1599211091487260162
-	 [...]
-
-For this, "crash" would need to understand the different variables
-stored in dictionary. So, it would become harder to change
-the format as well.
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
-Anyway, "crash" could get the information about struct printk_ext_info
-via VMCOREINFO_STRUCT_SIZE(), VMCOREINFO_OFFSET() macros.
-We could extend the structure if we do not change the format
-of the existing items.
-
-I am not 100% sure that the array of struct printk_ext_info is the
-best solution. But I still somehow like it more than dict ring. IMHO,
-it is more reliable and much easier to work with on the kernel side.
-
-Best Regards,
-Petr
