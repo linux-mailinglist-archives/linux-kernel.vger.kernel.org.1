@@ -2,153 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F86925FDE8
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 18:01:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F401B25FDEF
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 18:02:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730163AbgIGQBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 12:01:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57252 "EHLO
+        id S1730336AbgIGQCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 12:02:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730304AbgIGQAe (ORCPT
+        with ESMTP id S1730175AbgIGQBa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 12:00:34 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90E06C061573;
-        Mon,  7 Sep 2020 09:00:32 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id s13so14782832wmh.4;
-        Mon, 07 Sep 2020 09:00:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Hn3uhyO/mvlvshiIn0lt2/+PxvqSIlZH/wDSRWKnfLw=;
-        b=MZqWmEZSwOn1QtPNMaCQwsp+4GKFQ+218pY/kHay1m+bgEEiX4PTH6qLQ2c+PfM4vp
-         rOBMQw7xntrAyDFKeAvx8odWuBidDJ6IIaXe3gv4qanzAMQCJIswlyJUkIWkoM0HS4CV
-         UDW0OLUDTigf2KarshMcRs/rWuyWbGMCawNN+8VoQa3QsNT+6gFghbUVgqeumqVrhoKU
-         TOQt+OQCQrJTPmgErRR4aTt1lpvseRvZpXxcTrBN6y9TV/S/N4M70jxZA4RYIpnNGv4t
-         ZlCHOUqxbfToMSlMQjj0tTBYzgj15sgz2c3O82v5E7WUZVG1RY2Wu811sqa5oBDdBzaf
-         8u3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Hn3uhyO/mvlvshiIn0lt2/+PxvqSIlZH/wDSRWKnfLw=;
-        b=MhTZ0vyKRBENUAjAAb/qNrUBRjkQ6y+jHbPVKD/VeBbEtjnXZMPH/92MlQLpFEOOId
-         8qnCAp2F6sH9bt5V9hv6XAljUzjPd8kXr2263keQvnz9aDcJH9iHsTwMMCwNlkPcvKZU
-         KMklalz4tgU1olKvxaFcsAPuXJTV96aSW5Qxl7FnjHyGWffURzxhwwNXAERn7jnR3CSo
-         JfcUzDsfPRZMCNOzN4zKM7wyu6YvowfkPNA0GTPp22gjPYVrJyxQccWNaYToNZhFcoP/
-         UYd0mqHFHWlqrTaT1wN3fjHyGBC3RvQK39IjxVZd6L69wCgFiSDxfuuSfzlOO4OOhl09
-         jRFQ==
-X-Gm-Message-State: AOAM531iUpU/QB7s90hV0kVJkN2NfkouXMmXya0f1xjaxolbclnNPx0w
-        FwtGdrfddSOqMrNnadwBWXw=
-X-Google-Smtp-Source: ABdhPJyVv7RLE4gHPfQcWFy7FdMSPgXaXYOThSOaway/2OCfrdLBTFK3XRgmxstCIkRLQspxdQB08A==
-X-Received: by 2002:a7b:c3c8:: with SMTP id t8mr333wmj.101.1599494431299;
-        Mon, 07 Sep 2020 09:00:31 -0700 (PDT)
-Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
-        by smtp.googlemail.com with ESMTPSA id t6sm3343043wre.30.2020.09.07.09.00.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Sep 2020 09:00:30 -0700 (PDT)
-Date:   Mon, 7 Sep 2020 18:00:29 +0200
-From:   Corentin Labbe <clabbe.montjoie@gmail.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
-Subject: Re: [PATCH] crypto: sun4i-ss - Fix SHA1 hash on A33-variant with BE
- CPU
-Message-ID: <20200907160029.GC11894@Red>
-References: <202009061621.J89kO43Q%lkp@intel.com>
- <20200907062400.GA15841@gondor.apana.org.au>
+        Mon, 7 Sep 2020 12:01:30 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91FD1C061573
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 09:01:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=2eIR6kOywvDQ+JkAQrzHBLrjWuZKaxrdLTttVTI6scY=; b=L5Y9wMv0dx1VLchx7fHIQee8gb
+        YgONFyr1QD5UAt9PYYIAm1/ZKnOBoyD+RMrWoQMoX4nWhB7wmBcti8wMha00+ATo9uLotZZ9h3fv0
+        MryhEHFgJE9ilGNz/ACjBJN0W9SZuEpv2IWBT9dOBY84E7RZAxsQHY5W3gZUDhV+EVKo3rG24cBEp
+        46uRqu3lEOtbdbP7un86pWTEcWfqe267vJiBK8xnTMotHuyKwzBqY79Ejy21TazZE2LxtxEwZm1oi
+        /fTUNGfV5j5Y0iRBTMg3mJXsEgFTD57/aJN32Bk6KhmpPbVrUvEuyBwNOTKKLNFUQf1o2jGVO+mf0
+        7L4RSrSQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kFJa0-0006VZ-2J; Mon, 07 Sep 2020 16:01:16 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 79AB4303DA0;
+        Mon,  7 Sep 2020 18:01:15 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 6729D20107B6F; Mon,  7 Sep 2020 18:01:15 +0200 (CEST)
+Date:   Mon, 7 Sep 2020 18:01:15 +0200
+From:   peterz@infradead.org
+To:     kan.liang@linux.intel.com
+Cc:     mingo@redhat.com, acme@kernel.org, linux-kernel@vger.kernel.org,
+        ak@linux.intel.com, mark.rutland@arm.com, luto@amacapital.net
+Subject: Re: [PATCH V2 3/3] perf/x86: Reset the dirty counter to prevent the
+ leak for an RDPMC task
+Message-ID: <20200907160115.GS2674@hirez.programming.kicks-ass.net>
+References: <20200821195754.20159-1-kan.liang@linux.intel.com>
+ <20200821195754.20159-3-kan.liang@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200907062400.GA15841@gondor.apana.org.au>
+In-Reply-To: <20200821195754.20159-3-kan.liang@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 07, 2020 at 04:24:00PM +1000, Herbert Xu wrote:
-> On Sun, Sep 06, 2020 at 04:52:24PM +0800, kernel test robot wrote:
-> >
-> > >> drivers/crypto/allwinner/sun4i-ss/sun4i-ss-hash.c:483:35: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [assigned] [usertype] v @@     got restricted __le32 [usertype] @@
-> >    drivers/crypto/allwinner/sun4i-ss/sun4i-ss-hash.c:483:35: sparse:     expected unsigned int [assigned] [usertype] v
-> >    drivers/crypto/allwinner/sun4i-ss/sun4i-ss-hash.c:483:35: sparse:     got restricted __le32 [usertype]
-> >    drivers/crypto/allwinner/sun4i-ss/sun4i-ss-hash.c:485:35: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [assigned] [usertype] v @@     got restricted __be32 [usertype] @@
-> >    drivers/crypto/allwinner/sun4i-ss/sun4i-ss-hash.c:485:35: sparse:     expected unsigned int [assigned] [usertype] v
-> >    drivers/crypto/allwinner/sun4i-ss/sun4i-ss-hash.c:485:35: sparse:     got restricted __be32 [usertype]
-> >    drivers/crypto/allwinner/sun4i-ss/sun4i-ss-hash.c:490:27: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [addressable] [assigned] [usertype] v @@     got restricted __le32 [usertype] @@
-> >    drivers/crypto/allwinner/sun4i-ss/sun4i-ss-hash.c:490:27: sparse:     expected unsigned int [addressable] [assigned] [usertype] v
-> >    drivers/crypto/allwinner/sun4i-ss/sun4i-ss-hash.c:490:27: sparse:     got restricted __le32 [usertype]
-> 
-> This appears to be a genuine bug, on big-endian CPUs at least.
-> 
-> ---8<---
-> When the hash is written out on the A33 variant, it is incorrectly
-> swabbed on big-endian CPUs, when it should simply be written out as
-> is because it's already in the right format.  This was caught by
-> sparse warnings.
-> 
-> Instead of using cpu_to_Xe32 followed by a memcpy, this patch
-> converts the final hash write to use put_unaligned instead.  This
-> simplifies the code and makes the A33 variant handling a lot clearer.
-> 
-> This patch also fixes the incorrect endianness marking on wb,
-> although this should have no effect in the genereated code.
-> 
-> Fixes: 1e02e6fbdadb ("crypto: sun4i-ss - add the A33 variant of SS")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-> 
-> diff --git a/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-hash.c b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-hash.c
-> index dc35edd90034..84f7921de577 100644
-> --- a/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-hash.c
-> +++ b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-hash.c
-> @@ -9,6 +9,7 @@
->   * You could find the datasheet in Documentation/arm/sunxi.rst
->   */
->  #include "sun4i-ss.h"
-> +#include <asm/unaligned.h>
->  #include <linux/scatterlist.h>
+On Fri, Aug 21, 2020 at 12:57:54PM -0700, kan.liang@linux.intel.com wrote:
+> diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
+> index 0f3d01562ded..fa08d810dcd2 100644
+> --- a/arch/x86/events/core.c
+> +++ b/arch/x86/events/core.c
+> @@ -1440,7 +1440,10 @@ static void x86_pmu_start(struct perf_event *event, int flags)
 >  
->  /* This is a totally arbitrary value */
-> @@ -196,7 +197,7 @@ static int sun4i_hash(struct ahash_request *areq)
->  	struct sg_mapping_iter mi;
->  	int in_r, err = 0;
->  	size_t copied = 0;
-> -	__le32 wb = 0;
-> +	u32 wb = 0;
+>  	cpuc->events[idx] = event;
+>  	__set_bit(idx, cpuc->active_mask);
+> -	__set_bit(idx, cpuc->running);
+> +	/* The cpuc->running is only used by the P4 PMU */
+> +	if (!cpu_has(&boot_cpu_data, X86_FEATURE_ARCH_PERFMON) &&
+> +	    (boot_cpu_data.x86 == 0xf))
+> +		__set_bit(idx, cpuc->running);
+>  	x86_pmu.enable(event);
+>  	perf_event_update_userpage(event);
+>  }
+
+Yuck! Use a static_branch() or something. This is a gnarly nest of code
+that runs 99.9% of the time to conclude a negative. IOW a complete waste
+of cycles for everybody not running a P4 space heater.
+
+> @@ -1544,6 +1547,9 @@ static void x86_pmu_del(struct perf_event *event, int flags)
+>  	if (cpuc->txn_flags & PERF_PMU_TXN_ADD)
+>  		goto do_del;
 >  
->  	dev_dbg(ss->dev, "%s %s bc=%llu len=%u mode=%x wl=%u h0=%0x",
->  		__func__, crypto_tfm_alg_name(areq->base.tfm),
-> @@ -408,7 +409,7 @@ static int sun4i_hash(struct ahash_request *areq)
+> +	if (READ_ONCE(x86_pmu.attr_rdpmc) && x86_pmu.sched_task &&
+> +	    test_bit(event->hw.idx, cpuc->active_mask))
+> +		__set_bit(event->hw.idx, cpuc->dirty);
+
+And that too seems like an overly complicated set of tests and branches.
+This should be effectivly true for the 99% common case.
+
+> @@ -2219,11 +2225,45 @@ static int x86_pmu_event_init(struct perf_event *event)
+>  	return err;
+>  }
 >  
->  		nbw = op->len - 4 * nwait;
->  		if (nbw) {
-> -			wb = cpu_to_le32(*(u32 *)(op->buf + nwait * 4));
-> +			wb = le32_to_cpup((__le32 *)(op->buf + nwait * 4));
->  			wb &= GENMASK((nbw * 8) - 1, 0);
+> +void x86_pmu_clear_dirty_counters(void)
+> +{
+> +	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
+> +	int i;
+> +
+> +	if (bitmap_empty(cpuc->dirty, X86_PMC_IDX_MAX))
+> +		return;
+> +
+> +	 /* Don't need to clear the assigned counter. */
+> +	for (i = 0; i < cpuc->n_events; i++)
+> +		__clear_bit(cpuc->assign[i], cpuc->dirty);
+> +
+> +	for_each_set_bit(i, cpuc->dirty, X86_PMC_IDX_MAX) {
+> +		/* Metrics events don't have corresponding HW counters. */
+> +		if (is_metric_idx(i))
+> +			continue;
+> +		else if (i >= INTEL_PMC_IDX_FIXED)
+> +			wrmsrl(MSR_ARCH_PERFMON_FIXED_CTR0 + (i - INTEL_PMC_IDX_FIXED), 0);
+> +		else
+> +			wrmsrl(x86_pmu_event_addr(i), 0);
+> +	}
+> +
+> +	bitmap_zero(cpuc->dirty, X86_PMC_IDX_MAX);
+> +}
+
+The bitmap_{empty,zero}() do indeed compile into single instructions,
+neat!
+
+>  static void x86_pmu_event_mapped(struct perf_event *event, struct mm_struct *mm)
+>  {
+>  	if (!(event->hw.flags & PERF_X86_EVENT_RDPMC_ALLOWED))
+>  		return;
 >  
->  			op->byte_count += nbw;
-> @@ -417,7 +418,7 @@ static int sun4i_hash(struct ahash_request *areq)
->  
->  	/* write the remaining bytes of the nbw buffer */
->  	wb |= ((1 << 7) << (nbw * 8));
-> -	bf[j++] = le32_to_cpu(wb);
-> +	((__le32 *)bf)[j++] = cpu_to_le32(wb);
->  
+> +	/*
+> +	 * Enable sched_task() for the RDPMC task,
+> +	 * and clear the existing dirty counters.
+> +	 */
+> +	if (x86_pmu.sched_task && event->hw.target && !is_sampling_event(event)) {
+> +		perf_sched_cb_inc(event->ctx->pmu);
+> +		x86_pmu_clear_dirty_counters();
+> +	}
+
+I'm failing to see the correctness of the !is_sampling_event() part
+there.
+
 >  	/*
->  	 * number of space to pad to obtain 64o minus 8(size) minus 4 (final 1)
-> @@ -479,16 +480,16 @@ static int sun4i_hash(struct ahash_request *areq)
->  	/* Get the hash from the device */
->  	if (op->mode == SS_OP_SHA1) {
->  		for (i = 0; i < 5; i++) {
-> +			v = readl(ss->base + SS_MD0 + i * 4);
->  			if (ss->variant->sha1_in_be)
-> -				v = cpu_to_le32(readl(ss->base + SS_MD0 + i * 4));
-> +				put_unaligned(v, areq->result + i * 4);
+>  	 * This function relies on not being called concurrently in two
+>  	 * tasks in the same mm.  Otherwise one task could observe
+> @@ -2246,6 +2286,9 @@ static void x86_pmu_event_unmapped(struct perf_event *event, struct mm_struct *m
+>  	if (!(event->hw.flags & PERF_X86_EVENT_RDPMC_ALLOWED))
+>  		return;
+>  
+> +	if (x86_pmu.sched_task && event->hw.target && !is_sampling_event(event))
+> +		perf_sched_cb_dec(event->ctx->pmu);
+> +
 
-The put_unaligned should be _le32.
+Idem.
 
-This fix the modprobe tcrypt fail.
+>  	if (atomic_dec_and_test(&mm->context.perf_rdpmc_allowed))
+>  		on_each_cpu_mask(mm_cpumask(mm), cr4_update_pce, NULL, 1);
+>  }
+> diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+> index c72e4904e056..e67713bfa33a 100644
+> --- a/arch/x86/events/intel/core.c
+> +++ b/arch/x86/events/intel/core.c
+> @@ -4166,11 +4166,39 @@ static void intel_pmu_cpu_dead(int cpu)
+>  	intel_cpuc_finish(&per_cpu(cpu_hw_events, cpu));
+>  }
+>  
+> +static void intel_pmu_rdpmc_sched_task(struct perf_event_context *ctx)
+> +{
+> +	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
+> +	struct perf_event *event;
+> +
+> +	if (bitmap_empty(cpuc->dirty, X86_PMC_IDX_MAX))
+> +		return;
+> +
+> +	/*
+> +	 * If the new task has the RDPMC enabled, clear the dirty counters to
+> +	 * prevent the potential leak. If the new task doesn't have the RDPMC
+> +	 * enabled, do nothing.
+> +	 */
+> +	list_for_each_entry(event, &ctx->event_list, event_entry) {
+> +		if (event->hw.target &&
+> +		    (event->hw.flags & PERF_X86_EVENT_RDPMC_ALLOWED) &&
+> +		    !is_sampling_event(event) &&
+> +		    atomic_read(&event->mmap_count))
+> +			break;
+> +	}
+> +	if (&event->event_entry == &ctx->event_list)
+> +		return;
 
+That's horrific, what's wrong with something like:
+
+	if (!atomic_read(&current->mm->context.perf_rdpmc_allowed))
+		return;
+
+> +
+> +	x86_pmu_clear_dirty_counters();
+> +}
+
+How is this Intel specific code? IIRC AMD has RDPMC too.
