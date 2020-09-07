@@ -2,166 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B34AD26028A
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:29:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2A74260276
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 19:26:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731288AbgIGR3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 13:29:04 -0400
-Received: from 8bytes.org ([81.169.241.247]:43570 "EHLO theia.8bytes.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729518AbgIGNTh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 09:19:37 -0400
-Received: from cap.home.8bytes.org (p549add56.dip0.t-ipconnect.de [84.154.221.86])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by theia.8bytes.org (Postfix) with ESMTPSA id 793183AB2;
-        Mon,  7 Sep 2020 15:17:20 +0200 (CEST)
-From:   Joerg Roedel <joro@8bytes.org>
-To:     x86@kernel.org
-Cc:     Joerg Roedel <joro@8bytes.org>, Joerg Roedel <jroedel@suse.de>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        Kees Cook <keescook@chromium.org>, hpa@zytor.com,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        David Rientjes <rientjes@google.com>,
-        Cfir Cohen <cfir@google.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mike Stunes <mstunes@vmware.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: [PATCH v7 72/72] x86/sev-es: Check required CPU features for SEV-ES
-Date:   Mon,  7 Sep 2020 15:16:13 +0200
-Message-Id: <20200907131613.12703-73-joro@8bytes.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200907131613.12703-1-joro@8bytes.org>
-References: <20200907131613.12703-1-joro@8bytes.org>
+        id S1729568AbgIGR0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 13:26:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60704 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729561AbgIGNUV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 09:20:21 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2AB1C061575
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 06:20:17 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id c15so15750972wrs.11
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 06:20:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=guestpostingagency-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:from:reply-to:to:subject:content-transfer-encoding
+         :date:message-id;
+        bh=FsQLSqbxO2hcJKgtSJSicQP9qAJejvvjRZLoT/wDhdM=;
+        b=pF5w/jAnG02JCgsrI1KPeaK6loin2vxWi/V12tAOq0cUwF2JlkmdsE80bv1q/jyPQC
+         PCbIq3qf6St4z0Hun4+fIebtTdPNWbl2zPn9a6Eqe++6G6g6eppSwgkA3kQi6qKOfntD
+         j9c8rMYaUNUKcyu9jbM+hB/8UKMcxhkIqD3LmAH72bwZ82VLdfeMR6YVRMrZ9SGd3uHr
+         LpbR7YLHP5SO+hcu64fV9asd9cd+mngRpkoxrsmo5jdIJvjEBUYeoTBaWPDHE8uWymvS
+         1thIqIktVoeoWeJ0DGew5hGt4byKgh8Vz8BR17+5fXUtJD6UKGcBCoadgXrax3c7zy9f
+         mLbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:reply-to:to:subject
+         :content-transfer-encoding:date:message-id;
+        bh=FsQLSqbxO2hcJKgtSJSicQP9qAJejvvjRZLoT/wDhdM=;
+        b=gL3l5CuGaiq/wnHDiTeFsHr2wsOcYJpiwF3VnSf/8JQ5wyNVp5Oj0TuErCxMXDHXvz
+         3GCV9ymyxD+uE37T7+IOExqVG7M+s9OkBMXJlePeynq0GUeivV4se6hNXnc6MCXlXhLW
+         +u08ielaiUXxziyKFS6/9CJfwO5RxqSr2wD8KFSOzayqjClbaNe0z31Tb/yNu3bAWkD1
+         zryeuPuV1NZO5EXUsN+dse+eurT0X28S0KiC3JmkKvhupLIX6vgK3kxDojT/OCCq7Pzw
+         cCWGbMZRvvvAORdvP5jKGrI06uP5eLIQNygb6MF7esgfrNJ96TK+4VOrPsb2VHJuHkiL
+         u62Q==
+X-Gm-Message-State: AOAM530wjoFhWYjtbl2rxXO8sKZwsT6o88SLRaxzEVSX+c2hSag6QBUp
+        ndxmtPOYRaGbGVm40Y9Qzgpc4+AHnnJ3aqYg
+X-Google-Smtp-Source: ABdhPJx8pwuw8BOobEV32kQVAU3XL5hLhVF+nvg2b7NJ/wj1618Oj+LeiLWMiGb58Mi16oLWpz83gg==
+X-Received: by 2002:adf:dd51:: with SMTP id u17mr21307289wrm.355.1599484816050;
+        Mon, 07 Sep 2020 06:20:16 -0700 (PDT)
+Received: from 72.255.36.144 ([72.255.36.144])
+        by smtp.gmail.com with ESMTPSA id d18sm28435392wrm.10.2020.09.07.06.20.14
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1 cipher=AES128-SHA bits=128/128);
+        Mon, 07 Sep 2020 06:20:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From:   "Edward Blackford" <edward@guestpostingagency.com>
+Reply-To: edward@guestpostingagency.com
+To:     linux-kernel@vger.kernel.org
+Subject: Paid Post
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Smart_Send_3_1_6
+Date:   Mon, 7 Sep 2020 18:20:11 +0500
+Message-ID: <12312378262528479214065@DESKTOP-FB7ULH6>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Martin Radev <martin.b.radev@gmail.com>
+Hi!
 
-Make sure the machine supports RDRAND, otherwise there is no trusted
-source of of randomness in the system.
+Hope you are having a great day! I have come across your site, and I strong=
+ly feel that your website is a perfect match for us.
+We are a content marketing agency, and we=92d be thrilled if you=92d allow =
+us to post relevant and non-promotional content on your website. You can he=
+lp us by placing an article with a do-follow link on your site.
+Let us know how much you charge for a do-follow link. We make payments thro=
+ugh PayPal. We look forward to having a long-term relationship with you.
 
-To also check this in the pre-decompression stage, make has_cpuflag
-not depend on CONFIG_RANDOMIZE_BASE anymore.
+We=92ll be happy to hear from you soon.
 
-Signed-off-by: Martin Radev <martin.b.radev@gmail.com>
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
-Reviewed-by: Kees Cook <keescook@chromium.org>
----
- arch/x86/boot/compressed/cpuflags.c |  4 ----
- arch/x86/boot/compressed/misc.h     |  5 +++--
- arch/x86/boot/compressed/sev-es.c   |  3 +++
- arch/x86/kernel/sev-es-shared.c     | 15 +++++++++++++++
- arch/x86/kernel/sev-es.c            |  3 +++
- 5 files changed, 24 insertions(+), 6 deletions(-)
 
-diff --git a/arch/x86/boot/compressed/cpuflags.c b/arch/x86/boot/compressed/cpuflags.c
-index 6448a8196d32..0cc1323896d1 100644
---- a/arch/x86/boot/compressed/cpuflags.c
-+++ b/arch/x86/boot/compressed/cpuflags.c
-@@ -1,6 +1,4 @@
- // SPDX-License-Identifier: GPL-2.0
--#ifdef CONFIG_RANDOMIZE_BASE
--
- #include "../cpuflags.c"
- 
- bool has_cpuflag(int flag)
-@@ -9,5 +7,3 @@ bool has_cpuflag(int flag)
- 
- 	return test_bit(flag, cpu.flags);
- }
--
--#endif
-diff --git a/arch/x86/boot/compressed/misc.h b/arch/x86/boot/compressed/misc.h
-index c0e0ffeee50a..6d31f1b4c4d1 100644
---- a/arch/x86/boot/compressed/misc.h
-+++ b/arch/x86/boot/compressed/misc.h
-@@ -85,8 +85,6 @@ void choose_random_location(unsigned long input,
- 			    unsigned long *output,
- 			    unsigned long output_size,
- 			    unsigned long *virt_addr);
--/* cpuflags.c */
--bool has_cpuflag(int flag);
- #else
- static inline void choose_random_location(unsigned long input,
- 					  unsigned long input_size,
-@@ -97,6 +95,9 @@ static inline void choose_random_location(unsigned long input,
- }
- #endif
- 
-+/* cpuflags.c */
-+bool has_cpuflag(int flag);
-+
- #ifdef CONFIG_X86_64
- extern int set_page_decrypted(unsigned long address);
- extern int set_page_encrypted(unsigned long address);
-diff --git a/arch/x86/boot/compressed/sev-es.c b/arch/x86/boot/compressed/sev-es.c
-index 0a9a248ca33d..3c66dad4e62e 100644
---- a/arch/x86/boot/compressed/sev-es.c
-+++ b/arch/x86/boot/compressed/sev-es.c
-@@ -145,6 +145,9 @@ void sev_es_shutdown_ghcb(void)
- 	if (!boot_ghcb)
- 		return;
- 
-+	if (!sev_es_check_cpu_features())
-+		error("SEV-ES CPU Features missing.");
-+
- 	/*
- 	 * GHCB Page must be flushed from the cache and mapped encrypted again.
- 	 * Otherwise the running kernel will see strange cache effects when
-diff --git a/arch/x86/kernel/sev-es-shared.c b/arch/x86/kernel/sev-es-shared.c
-index 92d77b725ccb..ce86d2c9ca7b 100644
---- a/arch/x86/kernel/sev-es-shared.c
-+++ b/arch/x86/kernel/sev-es-shared.c
-@@ -9,6 +9,21 @@
-  * and is included directly into both code-bases.
-  */
- 
-+#ifndef __BOOT_COMPRESSED
-+#define error(v)	pr_err(v)
-+#define has_cpuflag(f)	boot_cpu_has(f)
-+#endif
-+
-+static bool __init sev_es_check_cpu_features(void)
-+{
-+	if (!has_cpuflag(X86_FEATURE_RDRAND)) {
-+		error("RDRAND instruction not supported - no trusted source of randomness available\n");
-+		return false;
-+	}
-+
-+	return true;
-+}
-+
- static void sev_es_terminate(unsigned int reason)
- {
- 	u64 val = GHCB_SEV_TERMINATE;
-diff --git a/arch/x86/kernel/sev-es.c b/arch/x86/kernel/sev-es.c
-index 4e2b7e4d9b87..70623bbce062 100644
---- a/arch/x86/kernel/sev-es.c
-+++ b/arch/x86/kernel/sev-es.c
-@@ -665,6 +665,9 @@ void __init sev_es_init_vc_handling(void)
- 	if (!sev_es_active())
- 		return;
- 
-+	if (!sev_es_check_cpu_features())
-+		panic("SEV-ES CPU Features missing");
-+
- 	/* Enable SEV-ES special handling */
- 	static_branch_enable(&sev_es_enable_key);
- 
--- 
-2.28.0
 
+Kind Regards
