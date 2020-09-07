@@ -2,82 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB82C25F32E
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 08:33:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B29A25F33A
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 08:34:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726721AbgIGGc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 02:32:59 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:41204 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726278AbgIGGcv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 02:32:51 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 3DCC047700AF50E80729;
-        Mon,  7 Sep 2020 14:32:48 +0800 (CST)
-Received: from localhost.localdomain (10.175.112.70) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server (TLS)
- id 14.3.487.0; Mon, 7 Sep 2020 14:32:43 +0800
-From:   Zhang Changzhong <zhangchangzhong@huawei.com>
-To:     <robin@protonic.nl>, <linux@rempel-privat.de>,
-        <kernel@pengutronix.de>, <socketcan@hartkopp.net>,
-        <mkl@pengutronix.de>, <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <linux-can@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH net] can: j1939: j1939_sk_bind(): return failure if netdev is down
-Date:   Mon, 7 Sep 2020 14:31:48 +0800
-Message-ID: <1599460308-18770-1-git-send-email-zhangchangzhong@huawei.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S1726810AbgIGGeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 02:34:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54428 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726776AbgIGGeB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 02:34:01 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04A0FC061573;
+        Sun,  6 Sep 2020 23:34:01 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id 7so7551993pgm.11;
+        Sun, 06 Sep 2020 23:34:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=m15jCTtsBAUKP+0jfB9in9HIjBdPjBE4Y+TgmZ5/xE0=;
+        b=oKcX83qNAmH/enHKgQVFuUZrgn1v592Ii5llp56wrH1uuq47AuZF7tgvVTEacw8m5X
+         67Ha0oF50dm2WcuelnBDh7hoqksWVFv232g7FbvwYXSjOqnAxRGNrnBqxkuCn41Jk907
+         KGmT2IDHdkSTpTO7vySyW4tq1LLXCMObaVHpaPcUkV95g6ScpC8AuUk3d3DHA0Vfp/nj
+         WfGbFYRiW4klopM/ON/sZuPQKlaNz/uRCshXvOq5aat/oTI4z864Ux2Xa8tGvloE2UiV
+         drbQdLjifGkxsl/NBlYH1b8VSLUrm4bWyRrzVYrr8h0Z2RPhc0Wgw71cWYavkTCCdtzn
+         3BoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=m15jCTtsBAUKP+0jfB9in9HIjBdPjBE4Y+TgmZ5/xE0=;
+        b=HVn78obfIpIYRQsjEAxdRu7dTIYvTu995NHdXq/xVxOl49X9aUUvr4fZyLx+HD7ZUm
+         4K9axayh6a0I54uZnqZS1FUQARZ2QLk/VSee6mdIiAriUX5jz8I90N+1kh04N7TGtkh3
+         Idg57JtfB1YKclXDvcI9Z9VzzZVjhn3lp3n1szr4fwfucVKZDXW33GMI0h8qktpHswkI
+         Nh86bcGPKKyxGxnzn9RubwUpIljpP7t5Yr9gaoT4dK0d5JNMCH7+rjzdJaMgLjheHTaR
+         Y/S2aQlploQLRK5ZOw87h8GoJgoSvefcUWJnGAyBoPww15AvwaQitBIlRVbfp6Zmpguq
+         a/4Q==
+X-Gm-Message-State: AOAM531MWw8ZY2n2h8FqGQZocALg+H/+2/eHASgb4CgirNDvpAekWF9Z
+        uDXOtxLAWeGJkCMHHWLdB5A=
+X-Google-Smtp-Source: ABdhPJw6ZH79o8HU3/QSSp52qMLeXwXaUJN0ob6XhOQCKSaHK7Tzit4rT2kSbg628qUever7ECTm0A==
+X-Received: by 2002:a62:8607:0:b029:13c:1611:6593 with SMTP id x7-20020a6286070000b029013c16116593mr16912878pfd.16.1599460440268;
+        Sun, 06 Sep 2020 23:34:00 -0700 (PDT)
+Received: from gmail.com ([106.201.26.241])
+        by smtp.gmail.com with ESMTPSA id q82sm14767933pfc.139.2020.09.06.23.33.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 06 Sep 2020 23:33:59 -0700 (PDT)
+Date:   Mon, 7 Sep 2020 12:01:53 +0530
+From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bjorn Helgaas <bjorn@helgaas.com>,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Thierry Reding <treding@nvidia.com>
+Cc:     linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: Re: [PATCH v1 0/2] video: fbdev: radeonfb: PCI PM framework upgrade
+ and fix-ups.
+Message-ID: <20200907063153.GA29062@gmail.com>
+References: <20200806072256.585705-1-vaibhavgupta40@gmail.com>
+ <20200806072658.592444-1-vaibhavgupta40@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.112.70]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200806072658.592444-1-vaibhavgupta40@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a netdev down event occurs after a successful call to
-j1939_sk_bind(), j1939_netdev_notify() can handle it correctly.
+Please review this patch-series.
 
-But if the netdev already in down state before calling j1939_sk_bind(),
-j1939_sk_release() will stay in wait_event_interruptible() blocked
-forever. Because in this case, j1939_netdev_notify() won't be called and
-j1939_tp_txtimer() won't call j1939_session_cancel() or other function
-to clear session for ENETDOWN error, this lead to mismatch of
-j1939_session_get/put() and jsk->skb_pending will never decrease to
-zero.
-
-To reproduce it use following commands:
-1. ip link add dev vcan0 type vcan
-2. j1939acd -r 100,80-120 1122334455667788 vcan0
-3. presses ctrl-c and thread will be blocked forever
-
-This patch adds check for ndev->flags in j1939_sk_bind() to avoid this
-kind of situation and return with -ENETDOWN.
-
-Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
----
- net/can/j1939/socket.c | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/net/can/j1939/socket.c b/net/can/j1939/socket.c
-index 1be4c89..f239665 100644
---- a/net/can/j1939/socket.c
-+++ b/net/can/j1939/socket.c
-@@ -475,6 +475,12 @@ static int j1939_sk_bind(struct socket *sock, struct sockaddr *uaddr, int len)
- 			goto out_release_sock;
- 		}
- 
-+		if (!(ndev->flags & IFF_UP)) {
-+			dev_put(ndev);
-+			ret = -ENETDOWN;
-+			goto out_release_sock;
-+		}
-+
- 		priv = j1939_netdev_start(ndev);
- 		dev_put(ndev);
- 		if (IS_ERR(priv)) {
--- 
-2.9.5
-
+Thank you
+Vaibhav Gupta
