@@ -2,82 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90F3625FFEA
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 18:41:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD79725FFE1
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 18:41:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731026AbgIGQl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 12:41:26 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2779 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730672AbgIGQlR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 12:41:17 -0400
-Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.107])
-        by Forcepoint Email with ESMTP id AF5932BF7D43679AE781;
-        Mon,  7 Sep 2020 17:41:15 +0100 (IST)
-Received: from localhost (10.52.124.38) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1913.5; Mon, 7 Sep 2020
- 17:41:15 +0100
-Date:   Mon, 7 Sep 2020 17:39:41 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-CC:     Kukjin Kim <kgene@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Jonathan Bakker <xc-racer2@live.ca>,
-        =?UTF-8?Q?Pawe=C5=82?= Chmiel <pawel.mikolaj.chmiel@gmail.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-samsung-soc@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>
-Subject: Re: [PATCH 03/25] dt-bindings: iio: adc: exynos-adc: do not require
- syscon on S5Pv210
-Message-ID: <20200907173941.000054ed@Huawei.com>
-In-Reply-To: <20200907161141.31034-4-krzk@kernel.org>
-References: <20200907161141.31034-1-krzk@kernel.org>
-        <20200907161141.31034-4-krzk@kernel.org>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        id S1730896AbgIGQk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 12:40:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731034AbgIGQkl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 12:40:41 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81FCFC061574
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 09:40:41 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id j34so2863313pgi.7
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 09:40:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=6vHcZZanU3rAkmAGGDrYACgZASD38A91RFONlbR7rWU=;
+        b=0oIyF9lg3hdey6DU4s6xnkQ66QbEgpXYGczJDsxGnhsac/QQ9G9HKdqxZdB1I6kC7Q
+         P3M5JLFz2UFybQWxDr3EbonIO8i+RpFXmks9Uhd6vBgEfezjLB1oB/TJt9vL6VDSoul8
+         aLG8X9T3080fCaQY3QZ6OSnQDAgT012eyMXBQVSEXMJLtY7Ru5NDq8lJY5juAXx9mxTr
+         7noINJt/NsbaGkuhV5xLpiP86qSdQUhUwc+4UIu27uNdGCL5jQY/Mss9g89iU94lQeXQ
+         m7Sq06oW44KU5vQz67ZRGPAEqZuMFdb7yZRs+xHIEj+xWOGtBteYpvpkzi9lS4acIPqe
+         T2dg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=6vHcZZanU3rAkmAGGDrYACgZASD38A91RFONlbR7rWU=;
+        b=E5noqdVFPNl4yRnub3v/tn+A3t4syguAxTs6sCbek0wBeXkB1CPQICc7+xg5p1yRKe
+         tPPGq4+hBmAnMl7jzxbd+7zdQf0XPk2TVRoHuSGtdyPyaeFYN3/shHIYOIZXWeROlg4A
+         wgSvYS0GN7DCzCDaGthFy1LIc5ORrrSXnkCIAK9Cfsg2bDyALsI9JLpmiW2VVIkQWcNy
+         3lAzDyRHMPd9dflBcUHtDjARnNFnIBvQSQPDPHvLvL0gJbWt9E34E/v1Mcms6xLdnZiP
+         Y1vdQPHBYZcDO8ffZSf5ogYLPdqvDIge75PQACjRRmmm8TUqFretORK4meS5c232eyff
+         7B+g==
+X-Gm-Message-State: AOAM530+Sas+V8YO32CL4e3Qr4hwMrEB0Gh2QJgfnFzQZPnF9LW2Iag7
+        1OY6a2fdlbdB9CEaGv9PGP/vCgNK0dKJvvbC
+X-Google-Smtp-Source: ABdhPJw5h0jlKb7DuDqBJNrm9qpQKwJDEVMdJVF2jgaFvPBoYcM70TZzsoQzznZ3s0d3GUxC/OCzkg==
+X-Received: by 2002:a63:4c11:: with SMTP id z17mr17026781pga.152.1599496840635;
+        Mon, 07 Sep 2020 09:40:40 -0700 (PDT)
+Received: from [192.168.1.182] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id s23sm12706228pjr.7.2020.09.07.09.40.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Sep 2020 09:40:39 -0700 (PDT)
+Subject: Re: [PATCH] block: Remove unused blk_mq_sched_free_hctx_data()
+To:     Baolin Wang <baolin.wang@linux.alibaba.com>
+Cc:     ming.lei@redhat.com, hch@lst.de, baolin.wang7@gmail.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <0b736d64c0546c292ae8f1bcbe9d801c28e12583.1599467604.git.baolin.wang@linux.alibaba.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <7d40447c-f30d-a977-92d8-f82d1789a91a@kernel.dk>
+Date:   Mon, 7 Sep 2020 10:40:38 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+In-Reply-To: <0b736d64c0546c292ae8f1bcbe9d801c28e12583.1599467604.git.baolin.wang@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.124.38]
-X-ClientProxiedBy: lhreml709-chm.china.huawei.com (10.201.108.58) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon,  7 Sep 2020 18:11:19 +0200
-Krzysztof Kozlowski <krzk@kernel.org> wrote:
+On 9/7/20 2:36 AM, Baolin Wang wrote:
+> Now we usually free the hctx->sched_data by e->type->ops.exit_hctx(),
+> and no users will use blk_mq_sched_free_hctx_data() function.
+> Remove it.
 
-> The ADC in S5Pv210 does not have ADC phy registers in separate block for
-> which syscon would be needed.  Remove this requirement to fix dtbs_check
-> warnings like:
-> 
->   arch/arm/boot/dts/s5pv210-fascinate4g.dt.yaml: adc@e1700000: 'samsung,syscon-phandle' is a required property
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Applied, thanks.
 
-Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-
-> ---
->  .../devicetree/bindings/iio/adc/samsung,exynos-adc.yaml          | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/iio/adc/samsung,exynos-adc.yaml b/Documentation/devicetree/bindings/iio/adc/samsung,exynos-adc.yaml
-> index 89b4f9c252a6..75174af72288 100644
-> --- a/Documentation/devicetree/bindings/iio/adc/samsung,exynos-adc.yaml
-> +++ b/Documentation/devicetree/bindings/iio/adc/samsung,exynos-adc.yaml
-> @@ -81,7 +81,6 @@ allOf:
->                - samsung,exynos-adc-v2
->                - samsung,exynos3250-adc
->                - samsung,exynos4212-adc
-> -              - samsung,s5pv210-adc
->      then:
->        required:
->          - samsung,syscon-phandle
-
+-- 
+Jens Axboe
 
