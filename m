@@ -2,152 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E16E25F98F
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 13:35:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A130A25F99B
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 13:36:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729132AbgIGLfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 07:35:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58010 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729078AbgIGLcm (ORCPT
+        id S1729146AbgIGLf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 07:35:56 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:28491 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729078AbgIGLff (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 07:32:42 -0400
+        Mon, 7 Sep 2020 07:35:35 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599478361;
+        s=mimecast20190719; t=1599478515;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=xh0jDnNxVb+gfwupJzhZeFoIO1CEsK8pGfyr2cjqVvU=;
-        b=cX8HogyqdeteAhyamzVoAVnBvn3zFwKRGkdFa153InSndGrMZ4VY6xs4UkXd2axHOq5hWX
-        EHX2dPiDG94mtz0kU/vkluG4vzymbjoq//cNA/vSM1ouZPP+EJBfh7tEY6dfuMgAvxqUiv
-        dtm3YDxPwNf8RwgAQR4LukXu6yGVLZk=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-23-AfCqVRE6PhKiZpFwLUznCA-1; Mon, 07 Sep 2020 07:32:39 -0400
-X-MC-Unique: AfCqVRE6PhKiZpFwLUznCA-1
-Received: by mail-wm1-f69.google.com with SMTP id g79so4852759wmg.0
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 04:32:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xh0jDnNxVb+gfwupJzhZeFoIO1CEsK8pGfyr2cjqVvU=;
-        b=GxlrbR2Lc/41q5AniDjqVHn/ddMWlqafegL55VAji7njhUcoLO6qOJujEQLgIsTlYs
-         rGgPWKEMcfnkYfO506gR2V3hTnYBqKh7NFaeXr9yClU7ZWMmNsJnqU1Z1lu6Yqc6Ro/6
-         oQ9S8Q2W+CxRP0eYUhCVQDkxESib+urq9vQBa04hrhJWvn4/TkbPQ+SKxdrzITCVifsL
-         NJbdyV8t143Tc0/prNWc6GMLUuClbiskbF1IImAUHH39Dvv108nK2XRkLi1oFU6lemJg
-         mWIjpHIEU+TOmHmMJhZSMT74J/pZDm/qRU5WWVqYKhZjOAhMywHl6FkD1UE83ZcwnLHY
-         NKgw==
-X-Gm-Message-State: AOAM531sUC7HH99QMJfpa+dUZg2JKkdY5pXBeMoQeSWQ0JfLPVopE6en
-        ogPbf4/QVnJZyNBLHh5qSsDaa5r7IObpcPRqyfxc/SyZWmGwS76wupfs+T6Z7IKQNRMKFsGTdDf
-        IgB0GTFmtVT3Pl+c2cEJTbbnh
-X-Received: by 2002:a5d:680b:: with SMTP id w11mr22519857wru.73.1599478358045;
-        Mon, 07 Sep 2020 04:32:38 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyl1gZsmRJ09H74DIxRgRGxBon6iiq3rf0F1B1g7lolsEq76lgKe1Sng/BGlf4cPxzJJxlFmQ==
-X-Received: by 2002:a5d:680b:: with SMTP id w11mr22519838wru.73.1599478357797;
-        Mon, 07 Sep 2020 04:32:37 -0700 (PDT)
-Received: from redhat.com ([192.117.173.58])
-        by smtp.gmail.com with ESMTPSA id j14sm28032781wrr.66.2020.09.07.04.32.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Sep 2020 04:32:36 -0700 (PDT)
-Date:   Mon, 7 Sep 2020 07:32:23 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Peter Xu <peterx@redhat.com>, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Julia Suvorova <jsuvorov@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Andrew Jones <drjones@redhat.com>,
-        linux-kernel@vger.kernel.org, Gerd Hoffmann <kraxel@redhat.com>
-Subject: Re: [PATCH v2 0/3] KVM: x86: KVM_MEM_PCI_HOLE memory
-Message-ID: <20200907072829-mutt-send-email-mst@kernel.org>
-References: <20200807141232.402895-1-vkuznets@redhat.com>
- <20200825212526.GC8235@xz-x1>
- <87eenlwoaa.fsf@vitty.brq.redhat.com>
- <20200901200021.GB3053@xz-x1>
- <877dtcpn9z.fsf@vitty.brq.redhat.com>
- <20200904061210.GA22435@sjchrist-ice>
- <20200904072905.vbkiq3h762fyzds6@sirius.home.kraxel.org>
- <20200904160008.GA2206@sjchrist-ice>
- <874koanfsc.fsf@vitty.brq.redhat.com>
+        bh=Bnd7OAaPMlBuHCu6MaFkDr3bmnu/d7VAmZEybBtgTF0=;
+        b=PR7a2SAas8EOhTW0yFLvNbuWf89/CvaCe1XvVwxfQX8jcjBkMUaiigFRNlU53yTt+sOFqC
+        lb0ZLd7JZcpsdWZzxab4B1ZMvLUZ1seVbnqPP/NJ8Ukg8S0/rRDnu90z7/yvK6sZL/pq4v
+        RbG7+koNqP0tegq889eh0/DDMIHQK/0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-300-yfczK89bPhS-eZGFhA7WPw-1; Mon, 07 Sep 2020 07:35:13 -0400
+X-MC-Unique: yfczK89bPhS-eZGFhA7WPw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BD3511074661;
+        Mon,  7 Sep 2020 11:35:11 +0000 (UTC)
+Received: from krava (ovpn-112-180.ams2.redhat.com [10.36.112.180])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 16ECE60C0F;
+        Mon,  7 Sep 2020 11:35:08 +0000 (UTC)
+Date:   Mon, 7 Sep 2020 13:35:08 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Stephane Eranian <eranian@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <andi@firstfloor.org>,
+        Ian Rogers <irogers@google.com>
+Subject: Re: [PATCHSET 0/9] perf tools: Fix various memory leaks
+Message-ID: <20200907113508.GL1199773@krava>
+References: <20200907034502.753230-1-namhyung@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <874koanfsc.fsf@vitty.brq.redhat.com>
+In-Reply-To: <20200907034502.753230-1-namhyung@kernel.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 07, 2020 at 10:37:39AM +0200, Vitaly Kuznetsov wrote:
-> Sean Christopherson <sean.j.christopherson@intel.com> writes:
+On Mon, Sep 07, 2020 at 12:44:53PM +0900, Namhyung Kim wrote:
+> Hello,
 > 
-> > On Fri, Sep 04, 2020 at 09:29:05AM +0200, Gerd Hoffmann wrote:
-> >>   Hi,
-> >> 
-> >> > Unless I'm mistaken, microvm doesn't even support PCI, does it?
-> >> 
-> >> Correct, no pci support right now.
-> >> 
-> >> We could probably wire up ecam (arm/virt style) for pcie support, once
-> >> the acpi support for mictovm finally landed (we need acpi for that
-> >> because otherwise the kernel wouldn't find the pcie bus).
-> >> 
-> >> Question is whenever there is a good reason to do so.  Why would someone
-> >> prefer microvm with pcie support over q35?
-> >> 
-> >> > If all of the above is true, this can be handled by adding "pci=lastbus=0"
-> >> > as a guest kernel param to override its scanning of buses.  And couldn't
-> >> > that be done by QEMU's microvm_fix_kernel_cmdline() to make it transparent
-> >> > to the end user?
-> >> 
-> >> microvm_fix_kernel_cmdline() is a hack, not a solution.
-> >> 
-> >> Beside that I doubt this has much of an effect on microvm because
-> >> it doesn't support pcie in the first place.
-> >
-> > I am so confused.  Vitaly, can you clarify exactly what QEMU VM type this
-> > series is intended to help?  If this is for microvm, then why is the guest
-> > doing PCI scanning in the first place?  If it's for q35, why is the
-> > justification for microvm-like workloads?
+> I've found and fixed a bunch of memory leaks during perf pmu and
+> metric tests with address sanitizer.  Before this, the tests were
+> mostly failed due to the leaks since ASAN makes it return non-zero.
 > 
-> I'm not exactly sure about the plans for particular machine types, the
-> intention was to use this for pcie in QEMU in general so whatever
-> machine type uses pcie will benefit. 
+> Now I'm seeing no error with ASAN like below:
 > 
-> Now, it seems that we have a more sophisticated landscape. The
-> optimization will only make sense to speed up boot so all 'traditional'
-> VM types with 'traditional' firmware are out of
-> question. 'Container-like' VMs seem to avoid PCI for now, I'm not sure
-> if it's because they're in early stages of their development, because
-> they can get away without PCI or, actually, because of slowness at boot
-> (which we're trying to tackle with this feature). I'd definitely like to
-> hear more what people think about this.
-
-I suspect microvms will need pci eventually. I would much rather KVM
-had an exit-less discovery mechanism in place by then because
-learning from history if it doesn't they will do some kind of
-hack on the kernel command line, and everyone will be stuck
-supporting that for years ...
-
-> >
-> > Either way, I think it makes sense explore other options before throwing
-> > something into KVM, e.g. modifying guest command line, adding a KVM hint,
-> > "fixing" QEMU, etc... 
-> >
+>   $ ./perf test pmu metric
+>    9: Parse perf pmu format                                 : Ok
+>   10: PMU events                                            :
+>   10.1: PMU event table sanity                              : Ok
+>   10.2: PMU event map aliases                               : Ok
+>   10.3: Parsing of PMU event table metrics                  : Skip (some metrics failed)
+>   10.4: Parsing of PMU event table metrics with fake PMUs   : Ok
+>   67: Parse and process metrics                             : Ok
 > 
-> Initially, this feature looked like a small and straitforward
-> (micro-)optimization to me: memory regions with 'PCI hole' semantics do
-> exist and we can speed up access to them. Ideally, I'd like to find
-> other 'constant memory' regions requiring fast access and come up with
-> an interface to create them in KVM but so far nothing interesting came
-> up...
+> The failure in 10.3 seems due to parse errors like below:
+> 
+>   Multiple errors dropping message: unknown term 'filter_opc' for pmu 'uncore_cbox_0'
+>   (valid terms: event,edge,inv,umask,cmask,config,config1,config2,name,period,freq,
+>                 branch_type,time,call-graph,stack-size,no-inherit,inherit,max-stack,
+> 		nr,no-overwrite,overwrite,driver-config,percore,aux-output,aux-sample-size)
+> 
+> 
+>   Parse event failed metric 'DRAM_Parallel_Reads' id 'arb/event=0x80,umask=0x2,thresh=1/'
+>     expr 'arb@event\=0x80\,umask\=0x2@ / arb@event\=0x80\,umask\=0x2\,thresh\=1@'
+>   Error string 'unknown term 'thresh' for pmu 'uncore_arb'' help
+>     'valid terms: event,edge,inv,umask,cmask,config,config1,config2,name,period,freq,
+>                   branch_type,time,call-graph,stack-size,no-inherit,inherit,max-stack,
+> 		  nr,no-overwrite,overwrite,driver-config,percore,aux-output,aux-sample-size'
+> 
+> 
+> The patches are also available at 'perf/metric-fix-v1' branch on
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/namhyung/linux-perf.git
+> 
+> Thanks
+> Namhyung
+> 
+> 
+> Namhyung Kim (9):
+>   perf evlist: Fix cpu/thread map leak
+>   perf parse-event: Fix cpu map leaks
+>   perf parse-event: Fix memory leak in evsel->unit
+>   perf test: Fix memory leaks in parse-metric test
+>   perf metric: Release expr_parse_ctx after testing
+>   perf metric: Free metric when it failed to resolve
+>   perf metric: Do not free metric when failed to resolve
+>   perf test: Free aliases for PMU event map aliases test
+>   perf test: Free formats for perf pmu parse test
 
-True, me neither.
+Acked-by: Jiri Olsa <jolsa@redhat.com>
 
-> -- 
-> Vitaly
+thanks,
+jirka
 
