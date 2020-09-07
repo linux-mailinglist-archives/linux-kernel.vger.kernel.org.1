@@ -2,77 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC36125F4ED
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 10:21:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00DF425F4EA
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Sep 2020 10:21:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728048AbgIGIVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 04:21:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42684 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726997AbgIGIVT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 04:21:19 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39261C061573;
-        Mon,  7 Sep 2020 01:21:19 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id u9so300133plk.4;
-        Mon, 07 Sep 2020 01:21:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WnINdwzH4XUyWBDxrvppFurUIcPBawpPrLgxVohQkcs=;
-        b=f+kq2+jmyPZ1rQBWeFGXLXxXUewdkODNiEBNEPVpdPl7ci/cwZGp2BZPC9VdSQKN5Z
-         Ee0Ra69yryupyiGUa93p3UbA9mMq1RHG9aC918wmJNvFdaBTNWmA6E4kRp/dGfFOpBVh
-         vtC61JKQwzaUjvguhBiSqgc7ryfwRB5kcqZsXr3XvofCuDpDo8I5JW5704LbB4z7bWT+
-         Rrcre0SVE8DDaYw6zSxy823meMzcvWKIx/H+9IpOjgC/ZY+hnQIviM6uqBhS0jEMqbWI
-         HSYZ3FeV+RJwaiYeQjtwP4JJ7Ig/mw0QGyiyD1ux44DfBFd5X29I9zAEHFv3k0oxE4yF
-         BrLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WnINdwzH4XUyWBDxrvppFurUIcPBawpPrLgxVohQkcs=;
-        b=VPpHJahedYMAjiRvmEiuH8TI0G2i/9c/qAg3mrvD2wy4/mu1ZI5tD5CEis1NBxZppM
-         l5336rPEyRL4+k2hzX3Fihr1ccEW/zwnlIzs9SyfIWpixEKvT09ugKxVHNg0jGdBK2/t
-         A3TTj2ZCQmrVtaBdKkjzunHLcUFVSX2KuwAHHB7xocH9sUP7LxIXlAgNFAjV1j+a9zeO
-         +F1Md85XKCniguU1sx4/VLWFm9zEzYYUcPzpl3y7rPwNmY5UmI8lnpRBFL+wHvSilCTh
-         mRsg9M8UyVYrgkp+N30EWb9sEZ3GcfraC4AQ6Wq3eEg0vBri08nztB34ext5/0GbDh9e
-         K9DQ==
-X-Gm-Message-State: AOAM530g0q2X66bxSj2HbVTfnieCmaRnVZTT+vyssxkcjMEtdoE+xVqU
-        RleO0YqrslXsiGjqDMhzZtyeRIz4IWMWr6j2g5vuUXhf0lsReQ==
-X-Google-Smtp-Source: ABdhPJyEM5DkqNVfZ9UAM3aRAKO6QNkzmb2KiUjI3nyh7+9hBvEYBZLW1+rq11WWOV/5pGl4t4YY/DxDKPoTKfmc6G4=
-X-Received: by 2002:a17:902:b289:: with SMTP id u9mr18700073plr.226.1599466878796;
- Mon, 07 Sep 2020 01:21:18 -0700 (PDT)
+        id S1727989AbgIGIVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 04:21:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44456 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727826AbgIGIVA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 04:21:00 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0E9CA208C7;
+        Mon,  7 Sep 2020 08:20:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599466859;
+        bh=32I5OIGx9oAoZOUqROJ02VPGvQhe/oRvKZlgkysMhaI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JvZ+bSf1fWZqBsew9aXeAm+300irl3fKKNv7+zIL195QiCUqMQT+Ce/kiW3i/YqGz
+         sibz8gBNasj0qk4Mcz+8Bj450bjnXrpniHK4whXWNvLdJxpiV+ydYiYx282xOj0Gug
+         7roElWOAfbdCkBNigqaQA7bMt64Pg5xUqf8E9A8E=
+Date:   Mon, 7 Sep 2020 10:21:14 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     arnd@arndb.de, linux-kernel@vger.kernel.org,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: Re: [PATCH v2] /dev/zero: also implement ->read
+Message-ID: <20200907082114.GA714195@kroah.com>
+References: <20200907075143.2023440-1-hch@lst.de>
 MIME-Version: 1.0
-References: <20200906185039.22700-1-digetx@gmail.com> <20200906185039.22700-12-digetx@gmail.com>
-In-Reply-To: <20200906185039.22700-12-digetx@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 7 Sep 2020 11:21:01 +0300
-Message-ID: <CAHp75Vfo1L4yi9icV=_NEDVcTqxNbCe0uVPSZUhwKJNj9SYjYg@mail.gmail.com>
-Subject: Re: [PATCH v5 11/36] i2c: tegra: Use clk-bulk helpers
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        linux-tegra@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200907075143.2023440-1-hch@lst.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 6, 2020 at 9:51 PM Dmitry Osipenko <digetx@gmail.com> wrote:
->
-> Use clk-bulk helpers and factor out clocks initialization into separate
-> function in order to make code cleaner.
+On Mon, Sep 07, 2020 at 09:51:43AM +0200, Christoph Hellwig wrote:
+> Christophe reported a major speedup due to avoiding the iov_iter
+> overhead, so just add this trivial function.
+> 
+> Suggested-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Tested-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> ---
+> 
+> Changes since v1:
+>  - fix the Suggested-by: tag
+>  - report the actually read bytes in case of a partial clear_user
+>  - remove an impossible to hit conditional
+> 
+>  drivers/char/mem.c | 28 ++++++++++++++++++++++++++++
+>  1 file changed, 28 insertions(+)
 
-Suggested-by? (If you consider it appropriate)
+I already merged your v1 into my tree, do you want me to revert that and
+then add this, or can you send me the diff to apply instead?  I can't
+rebase my public trees.
 
--- 
-With Best Regards,
-Andy Shevchenko
+thanks,
+
+greg k-h
