@@ -2,143 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA7E62615FE
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:00:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AC6E2616B3
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:17:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731909AbgIHRAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 13:00:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35994 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731855AbgIHRAH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 13:00:07 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D776C061755
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 10:00:07 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id z13so58923iom.8
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 10:00:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language;
-        bh=zjq4DzIinEMqpDJU3zU+23BVrao+KvP+z5FcMsfqmE0=;
-        b=Nb+n3/NHiN9bu4+RIqX6szk1vTvrTcd6sXWpCcI4yqQVb09LahRRNpE/lh2yA6Avel
-         Fgh0/FolUbn8iFrRZpAHdVkidweTg7oSm/86i6DPegl1dutiGqgd2Hd1OrIrMts0N8dI
-         09huBeg5qq6ZXf3vaMLVHJIjvUUBaeyCNd1xI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language;
-        bh=zjq4DzIinEMqpDJU3zU+23BVrao+KvP+z5FcMsfqmE0=;
-        b=udpkB1w/R28gDzmExpmBQq4vzW5NyPfaMQL9sUQnWsWTTIiR8TaMGx1OytVvYn+jRs
-         9I/QkYnHKiqc9nlVAfT0OaOsRDQHmml+SiZMD14epQkUzAzogfbXHxD6k7sLvbiZMKFJ
-         JJFbXzbNIBabbPcrUhZrK+LI5Uqf3BqmMLM5INFMo3UJb0ftxPPQh/V3Ok4/XQAPK5sB
-         XE00aKBTVMYUZGjr96AtWIs7aapPdFwH0Mgi2CJJ2BRUQxzcQncKnYgtsFLvFgGIDpiq
-         VPb0eZLleyrI3CiuVxo56EWt2fp0dv8AYT5NVV21P/EO0Pi7prAWzOJ9Q6icLSotwCj/
-         Db4g==
-X-Gm-Message-State: AOAM531kmOTeNX6oXPUkbi1BeBF1yFPGsyzfsnlcVY/zZTEbNUncBXsB
-        4h198v6ER3ybbib5dLEtOC6diJwtuZ8Wpg==
-X-Google-Smtp-Source: ABdhPJztZWe5lGNDj0ylu2qS3tuULJ0NRrAt+xkkHGboY3AFX7CH+Cf9DEjPH/a+NB5ZHflRxnee1Q==
-X-Received: by 2002:a05:6602:2043:: with SMTP id z3mr20919824iod.93.1599584406537;
-        Tue, 08 Sep 2020 10:00:06 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id o12sm5559429ilq.29.2020.09.08.10.00.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Sep 2020 10:00:05 -0700 (PDT)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Subject: [GIT PULL] Kselftest update for Linux 5.9-rc5
-Message-ID: <12c8266f-de6e-176a-f45b-06b3887f5008@linuxfoundation.org>
-Date:   Tue, 8 Sep 2020 11:00:05 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1732023AbgIHRRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 13:17:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57574 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731760AbgIHQS0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 12:18:26 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A67B72067C;
+        Tue,  8 Sep 2020 11:54:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599566094;
+        bh=MLbB+MGwr/r5a0jx3JnLPatiU4On+aPxTZ/schrAPb8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JAijrfA70TLd2SlHXaPJ7sJAG2b3/itt6wTJkQ9xzFwtj9xstl1hwVKhAvEnYhTXX
+         nT6c2aribxoYEyWLw2ee+agJ+24B1WaYjoa7se3qUTwLH8zr9WxA6oA8Y7Vnmd5KOH
+         IFHKJKT4NpDrV3A4iWY4YidN6r/Se+41BPyNMr84=
+Date:   Tue, 8 Sep 2020 13:55:06 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Huacai Chen <chenhuacai@gmail.com>, Takashi Iwai <tiwai@suse.de>,
+        alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: Re: [PATCH v2] Revert "ALSA: hda: Add support for Loongson 7A1000
+ controller"
+Message-ID: <20200908115506.GA1624115@kroah.com>
+References: <1598348388-2518-1-git-send-email-yangtiezhu@loongson.cn>
+ <s5hsgcb59gw.wl-tiwai@suse.de>
+ <CAAhV-H5V5adhY2OjJLxW7x3zDaHGgBxxy45hjf22+qMSEBQuww@mail.gmail.com>
+ <bf50515b-a018-a66d-188a-4901428e66a6@loongson.cn>
 MIME-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------9D366DBA0A3A14B11E39DC4A"
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bf50515b-a018-a66d-188a-4901428e66a6@loongson.cn>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------9D366DBA0A3A14B11E39DC4A
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+On Tue, Sep 08, 2020 at 11:09:31AM +0800, Tiezhu Yang wrote:
+> On 09/08/2020 08:37 AM, Huacai Chen wrote:
+> > Hi, all
+> > 
+> > This patch should be backported to 5.4.
+> 
+> Hi,
+> 
+> Commit 61eee4a7fc40 ("ALSA: hda: Add support for Loongson
+> 7A1000 controller") has been not yet merged into 5.4, so no
+> need to backport.
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/sound/pci/hda/hda_intel.c?h=v5.4
 
-Hi Linus,
-
-Please pull the following Kselftest update for Linux 5.9-rc5.
-
-This kselftest fixes update for Linux 5.9-rc5 consists of a single
-fix to timers test to disable timeout setting for tests to run and
-report accurate results.
-
-diff is attached.
+It showed up in 5.4.62, so yes, it does need to go there.
 
 thanks,
--- Shuah
 
-
-----------------------------------------------------------------
-The following changes since commit 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5:
-
-   Linux 5.9-rc1 (2020-08-16 13:04:57 -0700)
-
-are available in the Git repository at:
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest 
-tags/linux-kselftest-5.9-rc5
-
-for you to fetch changes up to 5c1e4f7e9e49b6925b1fb5c507d2c614f3edb292:
-
-   selftests/timers: Turn off timeout setting (2020-08-20 15:49:28 -0600)
-
-----------------------------------------------------------------
-linux-kselftest-5.9-rc5
-
-This kselftest fixes update for Linux 5.9-rc5 consists of a single
-fix to timers test to disable timeout setting for tests to run and
-report accurate results.
-
-----------------------------------------------------------------
-Po-Hsu Lin (1):
-       selftests/timers: Turn off timeout setting
-
-  tools/testing/selftests/timers/Makefile | 1 +
-  tools/testing/selftests/timers/settings | 1 +
-  2 files changed, 2 insertions(+)
-  create mode 100644 tools/testing/selftests/timers/settings
-
-----------------------------------------------------------------
-
---------------9D366DBA0A3A14B11E39DC4A
-Content-Type: text/x-patch; charset=UTF-8;
- name="linux-kselftest-5.9-rc5.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="linux-kselftest-5.9-rc5.diff"
-
-diff --git a/tools/testing/selftests/timers/Makefile b/tools/testing/selftests/timers/Makefile
-index 7656c7ce79d9..0e73a16874c4 100644
---- a/tools/testing/selftests/timers/Makefile
-+++ b/tools/testing/selftests/timers/Makefile
-@@ -13,6 +13,7 @@ DESTRUCTIVE_TESTS = alarmtimer-suspend valid-adjtimex adjtick change_skew \
- 
- TEST_GEN_PROGS_EXTENDED = $(DESTRUCTIVE_TESTS)
- 
-+TEST_FILES := settings
- 
- include ../lib.mk
- 
-diff --git a/tools/testing/selftests/timers/settings b/tools/testing/selftests/timers/settings
-new file mode 100644
-index 000000000000..e7b9417537fb
---- /dev/null
-+++ b/tools/testing/selftests/timers/settings
-@@ -0,0 +1 @@
-+timeout=0
-
---------------9D366DBA0A3A14B11E39DC4A--
+greg k-h
