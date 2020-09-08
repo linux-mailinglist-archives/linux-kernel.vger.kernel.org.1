@@ -2,49 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B14B126177B
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:35:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07CF226177A
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:35:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731319AbgIHRfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 13:35:34 -0400
-Received: from mail1.perex.cz ([77.48.224.245]:41554 "EHLO mail1.perex.cz"
+        id S1731592AbgIHRfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 13:35:18 -0400
+Received: from mail1.perex.cz ([77.48.224.245]:41552 "EHLO mail1.perex.cz"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731167AbgIHQOs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:14:48 -0400
+        id S1731356AbgIHQOy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 12:14:54 -0400
 Received: from mail1.perex.cz (localhost [127.0.0.1])
-        by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 897DAA004B;
-        Tue,  8 Sep 2020 14:26:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 897DAA004B
+        by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 0E7ADA0055;
+        Tue,  8 Sep 2020 14:29:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 0E7ADA0055
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
-        t=1599567991; bh=EVRNY2gK6A7LOpNzRvy3Ck7Aj7kox9AUX6fO/yDNTq8=;
+        t=1599568145; bh=kcosKIyrxTELi6uq9lm5YX5Xf7aTeUo9+Do1Y4+8o7A=;
         h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=De7j9nEzdfErbkFza6Sg2BPf8N0KjXLe73YoKCVVI1bq4z89Z7u9anFWzHcenzEM1
-         sgjtsmR9XxNqbJUOPzyTer6ltVhL4jsL2fsNbFVG/Nqz/vUgnT9zWieI7x6zhzsk8w
-         ZLWpe5Qf4DkDJiLoihWjxgciLu7l5Y8JF/PV4YXc=
+        b=Yyq6Ui0q4YG2pmBriEBkRh3OfsWE6UZbY2OMvWhq9BSGI/mDX5tCea3GCTGlkwn/F
+         jFIVqT/doKfy+AXLz2tcg3Ca8tkusRYBr/Hkz9krWuDAgzChdfOYd34kvSzdQpLSXc
+         8fGQBF5obyA01iRD542jYi17r5hbI3WxntPKBUN0=
 Received: from p1gen2.perex-int.cz (unknown [192.168.100.98])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
         (Authenticated sender: perex)
         by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
-        Tue,  8 Sep 2020 14:26:14 +0200 (CEST)
-Subject: Re: [PATCH v3 0/3] ASoC: Add sdw stream operations to dailink ops.
-To:     Bard Liao <yung-chuan.liao@linux.intel.com>,
-        alsa-devel@alsa-project.org, vkoul@kernel.org
-Cc:     pierre-louis.bossart@linux.intel.com, vinod.koul@linaro.org,
+        Tue,  8 Sep 2020 14:28:48 +0200 (CEST)
+Subject: Re: [PATCH 1/7] soundwire: bus: use property to set interrupt masks
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Vinod Koul <vkoul@kernel.org>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
         tiwai@suse.de, gregkh@linuxfoundation.org,
         linux-kernel@vger.kernel.org, ranjani.sridharan@linux.intel.com,
-        hui.wang@canonical.com, broonie@kernel.org,
-        srinivas.kandagatla@linaro.org, jank@cadence.com,
-        mengdong.lin@intel.com, sanyog.r.kale@intel.com,
+        hui.wang@canonical.com, srinivas.kandagatla@linaro.org,
+        jank@cadence.com, mengdong.lin@intel.com, sanyog.r.kale@intel.com,
         rander.wang@linux.intel.com, bard.liao@intel.com
-References: <20200904182854.3944-1-yung-chuan.liao@linux.intel.com>
+References: <20200818140656.29014-1-yung-chuan.liao@linux.intel.com>
+ <20200818140656.29014-2-yung-chuan.liao@linux.intel.com>
+ <20200828065125.GI2639@vkoul-mobl>
+ <ec5fe867-f2e4-4278-0376-e54bcdd7f94d@perex.cz>
+ <20200908121133.GA5551@sirena.org.uk>
 From:   Jaroslav Kysela <perex@perex.cz>
-Message-ID: <46f44acb-7d4b-965c-a6e2-98a4da79e6cc@perex.cz>
-Date:   Tue, 8 Sep 2020 14:26:14 +0200
+Message-ID: <1950b662-ec59-6603-36c7-7a41d9e8460c@perex.cz>
+Date:   Tue, 8 Sep 2020 14:28:48 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200904182854.3944-1-yung-chuan.liao@linux.intel.com>
+In-Reply-To: <20200908121133.GA5551@sirena.org.uk>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -53,37 +57,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne 04. 09. 20 v 20:28 Bard Liao napsal(a):
-> Sdw stream operation APIs can be called once per stream. Move these
-> operations to dailink ops. The linked series is "soundwire: Remove sdw
-> stream operations from Intel soundwire dai".
+Dne 08. 09. 20 v 14:11 Mark Brown napsal(a):
+> On Tue, Sep 08, 2020 at 02:05:11PM +0200, Jaroslav Kysela wrote:
+>> Dne 28. 08. 20 v 8:51 Vinod Koul napsal(a):
 > 
-> Reviewed-by: Vinod Koul <vkoul@kernel.org>
+>>>>  sound/soc/codecs/rt700-sdw.c    |  4 ++++
+>>>>  sound/soc/codecs/rt711-sdw.c    |  4 ++++
+>>>>  sound/soc/codecs/rt715-sdw.c    |  4 ++++
+>>>>  sound/soc/codecs/wsa881x.c      |  1 +
 > 
-> Changes in v3:
->  - s/ASOC/ASoC
+>>> This touches codecs, can you Ack it please
 > 
-> Pierre-Louis Bossart (3):
->   ASoC: soc-dai: clarify return value for get_sdw_stream()
->   ASoC: Intel: sof_sdw: add dailink .trigger callback
->   ASoC: Intel: sof_sdw: add dailink .prepare and .hw_free callback
+>> Mark, could you ack the ASoC change to accept this patch via the soundwire repo?
 > 
->  include/sound/soc-dai.h          |  3 +-
->  sound/soc/intel/boards/sof_sdw.c | 81 ++++++++++++++++++++++++++++++++
->  2 files changed, 83 insertions(+), 1 deletion(-)
+> I don't have this patch and since I seem to get copied on quite a lot of
+> soundwire only serieses I just delete them unread mostly.
 > 
 
-This patchset depends on the SoundWire patchset
-  "[PATCH v2 0/4] soundwire: Remove sdw stream operations from Intel" and
-cannot be used standalone. I believe that one maintainer should accept it or
-there should be a co-ordination between Mark and Vinod to push this in sync.
-We should really settle, how to accept such changes. I believe that Vinod
-should take it with the ack from Mark for this case. Please, don't require to
-split changes which depends on each other.
+It can be fetched from lore (mbox format):
 
-For all above patches (I tested them):
+https://lore.kernel.org/alsa-devel/20200818140656.29014-2-yung-chuan.liao@linux.intel.com/raw
 
-Acked-by: Jaroslav Kysela <perex@perex.cz>
+			Thanks,
+				Jaroslav
 
 -- 
 Jaroslav Kysela <perex@perex.cz>
