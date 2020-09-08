@@ -2,123 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA3EF261D39
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:34:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74BE6261DD3
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:43:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732289AbgIHTdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:33:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54128 "EHLO
+        id S1730878AbgIHTm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 15:42:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730913AbgIHP6F (ORCPT
+        with ESMTP id S1730891AbgIHPwr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:58:05 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B105C061757;
-        Tue,  8 Sep 2020 04:58:19 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id n61so6920097ota.10;
-        Tue, 08 Sep 2020 04:58:19 -0700 (PDT)
+        Tue, 8 Sep 2020 11:52:47 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05BD0C061799
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 05:02:49 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id x14so18777236wrl.12
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 05:02:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=sslab.ics.keio.ac.jp; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RaWHN9Jo7paHemHHjwRTQUV3IWjnykqiJCEfEZHv7v4=;
-        b=XQJxy7+drpA1/z007ulMkN1jJfrJxnTwWTH7zUGrIvWJbJN/3LQI4R21MC1hN4WRp6
-         4kqIdNmyaIJ8lg2NMqPGV95EHEsf7vWCB6IPgQTTdW7payVALTglDWFIuYyCKnJ6StQI
-         PYiEBLEtxx92y+l6XQPXuO1oAM/WKMsCF7R6ovnwoTY14MoJvAMMYLE1Akv7L2YKOJJ4
-         +ybd56OJWwmLmy28WsspezZ/bpMcnR3H8ZPlYFqhhXSipTD+pZ7qDP9vHvFKbTo49SaH
-         cX1TL6uThBQb90O1HCoWkGJYZ2DkTVE9/WL5LveRkbgFocRBpn+hd0x7ycOMyDmaZSk6
-         zZ4g==
+         :cc:content-transfer-encoding;
+        bh=fHKZGBn8DYDZmUzkcQdtFyocASRnUskXF0G0c14zQIY=;
+        b=I49U5h01ldadqbGBSJ+JPwaa/XpVL1RHekltbw+5yb9vJdeb7HlxO2SH/MxU+AXAwy
+         mFX3smUOgYMCiRiMYtlhJgNbB0x45bfB59AcCGTmRd7oJw5HUypGbJ+wDCYeJroaA4or
+         rnyPXVVdanOQ2bOVqv7iQHTy8xceM8lkCF844=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RaWHN9Jo7paHemHHjwRTQUV3IWjnykqiJCEfEZHv7v4=;
-        b=p2xlqr+1WniT2A6WT+yBhElbaO2UFJcerBkdrkgWhG4m8HXleQ3IYb9YMlMuWbROxy
-         9AD99POu9PECdQtZXCl/EcPEt28/86pnDQ0VXr/BvK69eqaTMyMXGeq85ghhyGLsWr/Q
-         53ne5+Ciyw5vd7SNv9M9tqSZkCBXBiNSj5WjSm/JfEoOMVyqkUx1rWt0BKHXH/PEjmzV
-         DQoDNpq0xlZjpTbTRtYnwGbh79cYbAI8QrHPPbFPqgvBsfrG5Nw+ObYDAkYyAXtEw4uE
-         ytmjRs34o9TDnqgsKMA7rgJzxJ8qiMetZZ6GWTbagOw1H48dezVB9dhminMkwb+0wFxP
-         SQDQ==
-X-Gm-Message-State: AOAM533hfWKFe/muPYheZ9u6ktWf/NZX+g8QIelPhUbtxRZJXqXVxBSl
-        f+FH25ZFC1bhjfayZwg6Lf/EwcgY89CAhbHsjkg=
-X-Google-Smtp-Source: ABdhPJy4RDBv/VXPUBpaer4WIVk5Krko0ixIBq7GboCRidoUovp5rSQSrsUWSyZ+VjFWU7QoAysy6HdfwaIl6E+FSAk=
-X-Received: by 2002:a9d:185:: with SMTP id e5mr18127205ote.135.1599566298111;
- Tue, 08 Sep 2020 04:58:18 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=fHKZGBn8DYDZmUzkcQdtFyocASRnUskXF0G0c14zQIY=;
+        b=qxEop9Mctu8BYFqt1QQ8KDo2XTvuts9Mq1gkIVEOOG9A8ansD84hTxgI55nO2Uh/zL
+         rL2/Cyj1fofY/lL69+BCGHA2S4Bkal+am/oeKaDZa9doqZJG9M5wivfyc1hlZPenwc5H
+         RcFJqs9iPZqbjLsetCz7MNJdkHkt+2zEj7kqLFsGGMpgn+rT8SzEoz6wlOoyCr8wwMsc
+         Yb2NVN7AXew6HLmVOtS3Vs5C/Vw5+Cep6DrkDPtVURkmKTpeCKVPO54jZTe66EpD0B/V
+         eSgpP77jo5d9vcTpZRKghR1wmk6xY67rye3pEMSOexYiMSPnMRBhvZhG7pysoul4BsVJ
+         fFzw==
+X-Gm-Message-State: AOAM530n+NfUTqU2ERGAlKrQ3C01QsdN+2/DlGeQEVl6U9G0AUCyHncL
+        Vrl83XOSubtAC9xrgMCfa09jHh5cHf0HBXFcJ3i5lA==
+X-Google-Smtp-Source: ABdhPJxLDgBM+s6ZLA0Xk5AyltkUhSxI4KJM4wlm9qfxvCvlS9XOiwZ2ahmKEQRp2PPZaiGtIw02aY3u8gSTeR+ZTXc=
+X-Received: by 2002:adf:eecb:: with SMTP id a11mr26936125wrp.356.1599566568481;
+ Tue, 08 Sep 2020 05:02:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200907213855.3572-1-nramas@linux.microsoft.com>
- <CAEjxPJ5C64AmmVKuuPmtbfnY06w49ziryRAnARurWxpQumzfow@mail.gmail.com> <7c4e2e9f-54e1-1dee-c33c-64dac0fe9678@linux.microsoft.com>
-In-Reply-To: <7c4e2e9f-54e1-1dee-c33c-64dac0fe9678@linux.microsoft.com>
-From:   Stephen Smalley <stephen.smalley.work@gmail.com>
-Date:   Tue, 8 Sep 2020 07:58:07 -0400
-Message-ID: <CAEjxPJ6eGcmbtGX7Kvn8e=ZxBUQD5G=8D+o9-BsVXyDFcyPYMw@mail.gmail.com>
-Subject: Re: [PATCH] SELinux: Measure state and hash of policy using IMA
-To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Cc:     Mimi Zohar <zohar@linux.ibm.com>, Paul Moore <paul@paul-moore.com>,
-        Ondrej Mosnacek <omosnace@redhat.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        tusharsu@linux.microsoft.com, Sasha Levin <sashal@kernel.org>,
-        James Morris <jmorris@namei.org>,
-        linux-integrity@vger.kernel.org,
-        SElinux list <selinux@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+References: <bad4e33a-af2f-b44f-63e5-56386c312a91@broadcom.com>
+ <20200908001324.8215-1-keitasuzuki.park@sslab.ics.keio.ac.jp> <c13ee142-d69d-6d21-6373-acb56507c9ec@broadcom.com>
+In-Reply-To: <c13ee142-d69d-6d21-6373-acb56507c9ec@broadcom.com>
+From:   Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
+Date:   Tue, 8 Sep 2020 21:02:35 +0900
+Message-ID: <CAEYrHjmG-R4RHn=59AGK8E0jKDXE5sbxQj49VpBvDMvBuBGiig@mail.gmail.com>
+Subject: Re: [PATCH] brcmsmac: fix memory leak in wlc_phy_attach_lcnphy
+To:     Arend Van Spriel <arend.vanspriel@broadcom.com>
+Cc:     Takafumi Kubota <takafumi@sslab.ics.keio.ac.jp>,
+        Franky Lin <franky.lin@broadcom.com>,
+        Hante Meuleman <hante.meuleman@broadcom.com>,
+        Chi-Hsien Lin <chi-hsien.lin@cypress.com>,
+        Wright Feng <wright.feng@cypress.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "open list:BROADCOM BRCM80211 IEEE802.11n WIRELESS DRIVER" 
+        <linux-wireless@vger.kernel.org>,
+        "open list:BROADCOM BRCM80211 IEEE802.11n WIRELESS DRIVER" 
+        <brcm80211-dev-list.pdl@broadcom.com>,
+        "open list:BROADCOM BRCM80211 IEEE802.11n WIRELESS DRIVER" 
+        <brcm80211-dev-list@cypress.com>,
+        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 8, 2020 at 12:44 AM Lakshmi Ramasubramanian
-<nramas@linux.microsoft.com> wrote:
->
-> On 9/7/20 3:32 PM, Stephen Smalley wrote:
->
-> >> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-> >> Suggested-by: Stephen Smalley <stephen.smalley.work@gmail.com>
-> >> Reported-by: kernel test robot <lkp@intel.com> # error: implicit declaration of function 'vfree'
-> >> Reported-by: kernel test robot <lkp@intel.com> # error: implicit declaration of function 'crypto_alloc_shash'
-> >> Reported-by: kernel test robot <lkp@intel.com> # sparse: symbol 'security_read_selinux_policy' was not declared. Should it be static?
-> >
-> > Not sure these Reported-by lines are useful since they were just on
-> > submitted versions of the patch not on an actual merged commit.
->
-> I'll remove them when I update the patch.
->
-> >
-> >> diff --git a/security/selinux/measure.c b/security/selinux/measure.c
-> >> new file mode 100644
-> >> index 000000000000..caf9107937d9
-> >> --- /dev/null
-> >> +++ b/security/selinux/measure.c
-> > <snip>
-> >> +void selinux_measure_state(struct selinux_state *state, bool policy_mutex_held)
-> >> +{
-> > <snip>
-> >> +
-> >> +       if (!policy_mutex_held)
-> >> +               mutex_lock(&state->policy_mutex);
-> >> +
-> >> +       rc = security_read_policy_kernel(state, &policy, &policy_len);
-> >> +
-> >> +       if (!policy_mutex_held)
-> >> +               mutex_unlock(&state->policy_mutex);
-> >
-> > This kind of conditional taking of a mutex is generally frowned upon
-> > in my experience.
-> > You should likely just always take the mutex in the callers of
-> > selinux_measure_state() instead.
-> > In some cases, it may be the caller of the caller.  Arguably selinuxfs
-> > could be taking it around all state modifying operations (e.g.
-> > enforce, checkreqprot) not just policy modifying ones although it
-> > isn't strictly for that purpose.
->
-> Since currently policy_mutex is not used to synchronize access to state
-> variables (enforce, checkreqprot, etc.) I am wondering if
-> selinux_measure_state() should measure only state if policy_mutex is not
-> held by the caller - similar to how we skip measuring policy if
-> initialization is not yet completed.
+Thank you for your comment. I am relatively new to the Linux
+kernel community, so I am more than happy to receive comments.
+Please let me know if I'm violating any other rules.
 
-No, we want to measure policy whenever there is a policy to measure.
-Just move the taking of the mutex to the callers of
-selinux_measure_state() so that it can be unconditional.
+> > Signed-off-by: Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
+> > ---
+> ... changelog here describing difference between previous patch and this
+> version.
+
+I will re-send the patch with the change log.
+
+Thanks,
+Keita
+
+2020=E5=B9=B49=E6=9C=888=E6=97=A5(=E7=81=AB) 20:18 Arend Van Spriel <arend.=
+vanspriel@broadcom.com>:
+>
+> On 9/8/2020 2:13 AM, Keita Suzuki wrote:
+> > When wlc_phy_txpwr_srom_read_lcnphy fails in wlc_phy_attach_lcnphy,
+> > the allocated pi->u.pi_lcnphy is leaked, since struct brcms_phy will be
+> > freed in the caller function.
+> >
+> > Fix this by calling wlc_phy_detach_lcnphy in the error handler of
+> > wlc_phy_txpwr_srom_read_lcnphy before returning.
+>
+> Thanks for resubmitting the patch addressing my comment. For clarity it
+> is recommended to mark the subject with '[PATCH V2]' and add a ...
+>
+> > Signed-off-by: Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
+> > ---
+> ... changelog here describing difference between previous patch and this
+> version.
+>
+> Regards,
+> Arend
+> ---
+> >   .../net/wireless/broadcom/brcm80211/brcmsmac/phy/phy_lcn.c    | 4 +++=
+-
+> >   1 file changed, 3 insertions(+), 1 deletion(-)
