@@ -2,90 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5231E261EA7
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:54:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0919261DF1
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:44:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730644AbgIHTxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:53:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60636 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730461AbgIHPmd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:42:33 -0400
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 33DBE22CA1;
-        Tue,  8 Sep 2020 13:57:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599573425;
-        bh=Nlb6PMQ+/rxBZwsrcxH1F/mJAmYV/dDxE1otVQrU4fY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ysKrBTL0aVtHER0C6nREvCT5i7bCJNKHt5vIDFQa/AXN/GkdMPbQCRt+CQMpGVhy7
-         pcNR/ll6hCNdA+6fIO0QWqFi4PAH7uGFv03RXgTvMBxBHDBb9aONpD0qMZjIqHFnDR
-         U44LpeiJKNPRcjLukNI0vWll/S/plDkC4wuoqVGM=
-Received: by mail-ej1-f42.google.com with SMTP id i22so22665206eja.5;
-        Tue, 08 Sep 2020 06:57:05 -0700 (PDT)
-X-Gm-Message-State: AOAM533nTNSMB3oaPlh9q/j+1ETOTbklqnLStP4EJ0S4uXFs8+ZGxTET
-        PWd8H4NbuK2KWPCwc6+y/nLh+gTlINihhUS55v4=
-X-Google-Smtp-Source: ABdhPJxw+CVnvHvS0mxWVnK6lDtq/Q+r0QWlwGxtDfUXEv06P0SO8wK83EymMr8l5SGfDRCjuUgniQlH27jDHyXS5c4=
-X-Received: by 2002:a17:906:8401:: with SMTP id n1mr25369176ejx.215.1599573423778;
- Tue, 08 Sep 2020 06:57:03 -0700 (PDT)
+        id S1731382AbgIHToF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 15:44:05 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:17947 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730856AbgIHPvt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 11:51:49 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f578f180000>; Tue, 08 Sep 2020 07:03:04 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Tue, 08 Sep 2020 07:05:18 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Tue, 08 Sep 2020 07:05:18 -0700
+Received: from [10.2.173.224] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 8 Sep
+ 2020 14:05:13 +0000
+From:   Zi Yan <ziy@nvidia.com>
+To:     David Hildenbrand <david@redhat.com>
+CC:     Roman Gushchin <guro@fb.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>, <linux-mm@kvack.org>,
+        Rik van Riel <riel@surriel.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        David Nellans <dnellans@nvidia.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH 00/16] 1GB THP support on x86_64
+Date:   Tue, 8 Sep 2020 10:05:11 -0400
+X-Mailer: MailMate (1.13.1r5705)
+Message-ID: <7E20392E-5ED7-4C22-9555-F3BAABF3CBE9@nvidia.com>
+In-Reply-To: <8e677ead-206d-08dd-d73e-569bd3803e3b@redhat.com>
+References: <20200902180628.4052244-1-zi.yan@sent.com>
+ <20200903142300.bjq2um5y5nwocvar@box>
+ <20200903163020.GG60440@carbon.dhcp.thefacebook.com>
+ <8e677ead-206d-08dd-d73e-569bd3803e3b@redhat.com>
 MIME-Version: 1.0
-References: <20200907105254.31097-1-krzk@kernel.org> <CAPDyKFowS-psoJqVUChU35Xp92nrvH5r5eY=_8bMKU0SVBxLcw@mail.gmail.com>
-In-Reply-To: <CAPDyKFowS-psoJqVUChU35Xp92nrvH5r5eY=_8bMKU0SVBxLcw@mail.gmail.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Tue, 8 Sep 2020 15:56:51 +0200
-X-Gmail-Original-Message-ID: <CAJKOXPdX7UOkTNMVS_uLi7sG_h0bHCs_b6R0uL2B241y_+niqg@mail.gmail.com>
-Message-ID: <CAJKOXPdX7UOkTNMVS_uLi7sG_h0bHCs_b6R0uL2B241y_+niqg@mail.gmail.com>
-Subject: Re: [PATCH v3] mmc: host: Enable compile testing of multiple drivers
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: multipart/signed;
+        boundary="=_MailMate_90CC73A7-32C1-445F-AAA5-E7CCB35F7A6C_=";
+        micalg=pgp-sha512; protocol="application/pgp-signature"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1599573784; bh=sW9KId6qYj04nbAWRRDvrHLiEzlbizoIW4qM/PwXqwg=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:X-Mailer:Message-ID:
+         In-Reply-To:References:MIME-Version:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type;
+        b=cz0Ywt8Mwv3cM4M2AvyHpYoNV+DHk7c0S4/gaIXD/jbjNb4yTxJEBxaVRamWmG7UO
+         K3Ad6fiT7syZBbx1qonwx5UZ4kkRUhjDGMl9pKDKnMDWDIqSn0RUkHSVI6Hy/CC3xv
+         639Ol2ZjAoJM8XpPddcpnDF+o0AzL1zVLXesaL5AJrntIMcKgqoPGSKuGJrcDlnEFj
+         8DTi/BuUPdeCoRezYEg1m+6D6GtjJT5t1pue/mD7eu2E8RTXsbQCInapXLklElmMOi
+         L3T2633QNom7mc3rqDm2dCOrjsNGUpERK5isP+WLOMbDyzaILAPBFFlGnqr9xF7SEl
+         Vi0SDpXCEgJ1w==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 8 Sep 2020 at 15:54, Ulf Hansson <ulf.hansson@linaro.org> wrote:
->
-> + Arnd
->
-> On Mon, 7 Sep 2020 at 12:53, Krzysztof Kozlowski <krzk@kernel.org> wrote:
-> >
-> > Multiple MMC host controller driver can be compile tested as they do not
-> > depend on architecture specific headers.
-> >
-> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
->
-> It seems like this is causing build errors for my next branch when
-> running allmod config [1].
->
-> [...]
->
-> >
-> >  config MMC_S3C
-> >         tristate "Samsung S3C SD/MMC Card Interface support"
-> > -       depends on ARCH_S3C24XX
-> > +       depends on ARCH_S3C24XX || COMPILE_TEST
-> >         depends on S3C24XX_DMAC
-> >         help
-> >           This selects a driver for the MCI interface found in
->
-> [...]
->
-> The problem doesn't exist in linux-next, since it has the
-> corresponding cleanup/rework patches for MMC_S3C from Arnd.
->
-> To fix the problem, we should probably remove COMPILE_TEST for
-> MMC_S3C, for now. Then we can add it again and send it as a fix for
-> v5.10-rc1.
->
-> What do you think?
+--=_MailMate_90CC73A7-32C1-445F-AAA5-E7CCB35F7A6C_=
+Content-Type: text/plain; charset="UTF-8"; markup=markdown
+Content-Transfer-Encoding: quoted-printable
 
-Yes, better to remove it otherwise it will pop up when Linus merges
-your tree. Do you want a patch for this or you fix it up by yourself?
+On 8 Sep 2020, at 7:57, David Hildenbrand wrote:
 
-Best regards,
-Krzysztof
+> On 03.09.20 18:30, Roman Gushchin wrote:
+>> On Thu, Sep 03, 2020 at 05:23:00PM +0300, Kirill A. Shutemov wrote:
+>>> On Wed, Sep 02, 2020 at 02:06:12PM -0400, Zi Yan wrote:
+>>>> From: Zi Yan <ziy@nvidia.com>
+>>>>
+>>>> Hi all,
+>>>>
+>>>> This patchset adds support for 1GB THP on x86_64. It is on top of
+>>>> v5.9-rc2-mmots-2020-08-25-21-13.
+>>>>
+>>>> 1GB THP is more flexible for reducing translation overhead and incre=
+asing the
+>>>> performance of applications with large memory footprint without appl=
+ication
+>>>> changes compared to hugetlb.
+>>>
+>>> This statement needs a lot of justification. I don't see 1GB THP as v=
+iable
+>>> for any workload. Opportunistic 1GB allocation is very questionable
+>>> strategy.
+>>
+>> Hello, Kirill!
+>>
+>> I share your skepticism about opportunistic 1 GB allocations, however =
+it might be useful
+>> if backed by an madvise() annotations from userspace application. In t=
+his case,
+>> 1 GB THPs might be an alternative to 1 GB hugetlbfs pages, but with a =
+more convenient
+>> interface.
+>
+> I have concerns if we would silently use 1~GB THPs in most scenarios
+> where be would have used 2~MB THP. I'd appreciate a trigger to
+> explicitly enable that - MADV_HUGEPAGE is not sufficient because some
+> applications relying on that assume that the THP size will be 2~MB
+> (especially, if you want sparse, large VMAs).
+
+This patchset is not intended to silently use 1GB THP in place of 2MB THP=
+=2E
+First of all, there is a knob /sys/kernel/mm/transparent_hugepage/enable_=
+1GB
+to enable 1GB THP explicitly. Also, 1GB THP is allocated from a reserved =
+CMA
+region (although I had alloc_contig_pages as a fallback, which can be rem=
+oved
+in next version), so users need to add hugepage_cma=3DnG kernel parameter=
+ to
+enable 1GB THP allocation. If a finer control is necessary, we can add
+a new MADV_HUGEPAGE_1GB for 1GB THP.
+
+
+=E2=80=94
+Best Regards,
+Yan Zi
+
+--=_MailMate_90CC73A7-32C1-445F-AAA5-E7CCB35F7A6C_=
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJDBAEBCgAtFiEEh7yFAW3gwjwQ4C9anbJR82th+ooFAl9Xj5cPHHppeUBudmlk
+aWEuY29tAAoJEJ2yUfNrYfqKiFgP/2j/lRwfL410/Fcmx92+Cm4VFsGln6IyW0bn
+yBSO/B6CqjIZBcxLkbUHy1mfCAAT+y+p2JLyNyCF7AY00yVTiyQdtPtbuA61vAWB
+SZQkKEA1iOCN758VrDxsjF724WyWvnfPR5eGAAiYKvAaU/j8/nhE/UgRVq8JyCHn
+KtK/1D9V2ud+XnT05HZusqmhG0o/1ejsJjMVoxWOuNfrf4ZjDZC325s/WRBbKhLc
+4lNElDUvOndvG+yy+f0DbNzYFSeU47y4N8y+WIhUyeNUBL3zpPuY74eoZ1awl4mN
+a4DDL8aU1GWgeuNTTQzxzMJd90mvJns2GRf1btNKlzWZYCj8LrZGXZ6aonp14TIh
+3RfkOKkz9k2OQkm7j3HpSg/pp6T+IcEVuid296hQcumaeRCQSCS8IhERve2WxBeB
+tgVMfwXLkaMuENmXLgMTtUjvOJSvJvvZTovc2KJibyOXWTBqCpX5l5p0YElw2ZK3
+GrTZMEaIvtJ3BksM2aLfLygMQfgFUMm+e2qtxRKQFD/TEZI/cwNK6aSL46qey0OU
+VFGXvnRCvzMS9gggT0yTTcVkbfNgRzrk5J3Jj6wPqckpgpHiciZTrs1Z/dj3gn73
+mNpwfpD2qdLiZpLEubiuPX0p/ixSsZzWXA1ByyWyLBNS9bv3bmOt15HarDD9+Pga
+xzn2iS/U
+=5FkR
+-----END PGP SIGNATURE-----
+
+--=_MailMate_90CC73A7-32C1-445F-AAA5-E7CCB35F7A6C_=--
