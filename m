@@ -2,96 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B021261226
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 15:51:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0068026129E
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 16:24:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729843AbgIHNsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 09:48:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60640 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729875AbgIHNmM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 09:42:12 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07603C0619C3
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 06:36:12 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id 34so636033pgo.13
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 06:36:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sslab.ics.keio.ac.jp; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=ehTU8VuqCe4uQqnVpDe9geOxORvh8qag6CqSgGb/x38=;
-        b=XXNR65cRXkVSPXHNMlGccTpQI7cOqRyhk5d8MsIws07AR035m+bxTug70SDBbKciK5
-         2lYRSm8fhoP+SbAUu7pr7CorYMYDf8ArGi3ZDTGpK4TqR6w3vHrr/iW4tbDJwhKJjYVE
-         ryBEybf6RG9DjezNonEi/3yWFDJBF0DAYhs6k=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=ehTU8VuqCe4uQqnVpDe9geOxORvh8qag6CqSgGb/x38=;
-        b=tSJ1TdGmRNGAU2GHXQcyu2xSTwtkXGsBLDgW5gkpdIFlUqY79HR5izjaHx4uk5okIm
-         x9zN7tRHCDxUVq13MFcSOc8P65Y2P3KC9disyQSwWMdLXWfveEyp2IW810qLGngwC0q6
-         6j9tEoAjNWd/wGAB9qZxZ0UBA2wHBGiRjJBtGRS4O2KsNFNQp4j2Un/raFLotyaVLJ/7
-         7vw8DMXTynTmirJqL+vtn50XJq3tITIPocNHg0hvOmVQO2e7OuzrEqAGos7THlQiwXIY
-         zf6RrwZpGKIb+6sWK9NzRd0OUM+pK1uZQf7Iw+nVaylhN+IdIHaMlM7CqPxbuq4tEzua
-         MXcQ==
-X-Gm-Message-State: AOAM533OhPCeNfGHcYKL9+HEf7bznPx7tbqGx11AXWfepb2PuYOrjIF5
-        /+hfZlhsysYc6ClCcDOPdDU3SA==
-X-Google-Smtp-Source: ABdhPJwhXtG+H2LqAISEDK2z1kRlZcOQuBM48N1pdIL7c/KejeE7ihVjm7S4Fd1HckDMPESkOFR8iA==
-X-Received: by 2002:a17:902:c410:: with SMTP id k16mr24241546plk.123.1599572171471;
-        Tue, 08 Sep 2020 06:36:11 -0700 (PDT)
-Received: from brooklyn.i.sslab.ics.keio.ac.jp (sslab-relay.ics.keio.ac.jp. [131.113.126.173])
-        by smtp.googlemail.com with ESMTPSA id b20sm19856758pfb.198.2020.09.08.06.36.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Sep 2020 06:36:10 -0700 (PDT)
-From:   Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
-Cc:     keitasuzuki.park@sslab.ics.keio.ac.jp,
-        takafumi@sslab.ics.keio.ac.jp, Don Brace <don.brace@microsemi.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        esc.storagedev@microsemi.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] scsi: hpsa: fix memory leak in hpsa_init_one
-Date:   Tue,  8 Sep 2020 13:35:32 +0000
-Message-Id: <20200908133533.16744-1-keitasuzuki.park@sslab.ics.keio.ac.jp>
-X-Mailer: git-send-email 2.17.1
-To:     unlisted-recipients:; (no To-header on input)
+        id S1728954AbgIHOX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 10:23:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37212 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729719AbgIHOPu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 10:15:50 -0400
+Received: from mail-ua1-f42.google.com (mail-ua1-f42.google.com [209.85.222.42])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8A2A721D94
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 12:10:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599567012;
+        bh=lq9eTjrWEGZEa2yiJKmSBpUchaqnuHBGfVpng6L9Aqc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=2JBREKU6JRgGxsJ1r8Ce2Iju6vIu8ns/qPUApwNkh+GlxhyVWmZki8K1pkhPaBIMI
+         oIjpxoan1Owvg0lws/TNOUleSTdKu7+AxYmUfIWC1QVQyHVnrSntCmcm31oOP9BeIn
+         XhujwMCmWKaMS2a2Z8abpw9lH+pT866FkY6uho3Y=
+Received: by mail-ua1-f42.google.com with SMTP id z12so4963351uam.12
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 05:10:12 -0700 (PDT)
+X-Gm-Message-State: AOAM532CwOh3a4SHaXB03We7EThoQCrUFIk4pjrUMW+t2UZ/Hd5Q+mnH
+        9MZmPpO5YiLp/AE7SMZGDg9hjeUIFw31aLhM4fgW8g==
+X-Google-Smtp-Source: ABdhPJzVyQm6/6q5OjrV7nqU3MI7oMJGT7K1lFXypEJBdr8i/tOI9S8ZGFWCl5CSa7p27tf/aSMle29PYGnK5195eZQ=
+X-Received: by 2002:ab0:384a:: with SMTP id h10mr5065875uaw.77.1599567011727;
+ Tue, 08 Sep 2020 05:10:11 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200908075716.30357-1-manivannan.sadhasivam@linaro.org> <20200908075716.30357-7-manivannan.sadhasivam@linaro.org>
+In-Reply-To: <20200908075716.30357-7-manivannan.sadhasivam@linaro.org>
+From:   Amit Kucheria <amitk@kernel.org>
+Date:   Tue, 8 Sep 2020 17:40:00 +0530
+X-Gmail-Original-Message-ID: <CAHLCerNaf6hdC5etZoiq2pvvRt85CpD0yEW5_pcfpQKDjHk5Fw@mail.gmail.com>
+Message-ID: <CAHLCerNaf6hdC5etZoiq2pvvRt85CpD0yEW5_pcfpQKDjHk5Fw@mail.gmail.com>
+Subject: Re: [PATCH 6/7] cpufreq: qcom-hw: Add cpufreq support for SM8250 SoC
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Taniya Das <tdas@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When hpsa_scsi_add_host fails, h->lastlogicals is leaked since it lacks
-free in the error handler.
+On Tue, Sep 8, 2020 at 1:27 PM Manivannan Sadhasivam
+<manivannan.sadhasivam@linaro.org> wrote:
+>
+> SM8250 SoC uses EPSS block for carrying out the cpufreq duties. Hence, add
+> support for it in the driver with relevant of_match data.
+>
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
-Fix this by adding free when hpsa_scsi_add_host fails.
+Reviewed-by: Amit Kucheria <amitk@kernel.org>
 
-Signed-off-by: Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
----
- drivers/scsi/hpsa.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/hpsa.c b/drivers/scsi/hpsa.c
-index 48d5da59262b..aed59ec20ad9 100644
---- a/drivers/scsi/hpsa.c
-+++ b/drivers/scsi/hpsa.c
-@@ -8854,7 +8854,7 @@ static int hpsa_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	/* hook into SCSI subsystem */
- 	rc = hpsa_scsi_add_host(h);
- 	if (rc)
--		goto clean7; /* perf, sg, cmd, irq, shost, pci, lu, aer/h */
-+		goto clean8; /* lastlogicals, perf, sg, cmd, irq, shost, pci, lu, aer/h */
- 
- 	/* Monitor the controller for firmware lockups */
- 	h->heartbeat_sample_interval = HEARTBEAT_SAMPLE_INTERVAL;
-@@ -8869,6 +8869,8 @@ static int hpsa_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
- 				HPSA_EVENT_MONITOR_INTERVAL);
- 	return 0;
- 
-+clean8: /* lastlogicals, perf, sg, cmd, irq, shost, pci, lu, aer/h */
-+	kfree(h->lastlogicals);
- clean7: /* perf, sg, cmd, irq, shost, pci, lu, aer/h */
- 	hpsa_free_performant_mode(h);
- 	h->access.set_intr_mask(h, HPSA_INTR_OFF);
--- 
-2.17.1
-
+> ---
+>  drivers/cpufreq/qcom-cpufreq-hw.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+>
+> diff --git a/drivers/cpufreq/qcom-cpufreq-hw.c b/drivers/cpufreq/qcom-cpufreq-hw.c
+> index de816bcafd33..c3c397cc3dc6 100644
+> --- a/drivers/cpufreq/qcom-cpufreq-hw.c
+> +++ b/drivers/cpufreq/qcom-cpufreq-hw.c
+> @@ -285,8 +285,17 @@ static const struct qcom_cpufreq_soc_data qcom_soc_data = {
+>         .lut_row_size = 32,
+>  };
+>
+> +static const struct qcom_cpufreq_soc_data sm8250_soc_data = {
+> +       .reg_enable = 0x0,
+> +       .reg_freq_lut = 0x100,
+> +       .reg_volt_lut = 0x200,
+> +       .reg_perf_state = 0x320,
+> +       .lut_row_size = 4,
+> +};
+> +
+>  static const struct of_device_id qcom_cpufreq_hw_match[] = {
+>         { .compatible = "qcom,cpufreq-hw", .data = &qcom_soc_data },
+> +       { .compatible = "qcom,sm8250-epss", .data = &sm8250_soc_data },
+>         {}
+>  };
+>  MODULE_DEVICE_TABLE(of, qcom_cpufreq_hw_match);
+> --
+> 2.17.1
+>
