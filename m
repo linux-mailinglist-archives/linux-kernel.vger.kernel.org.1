@@ -2,137 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 994EE260F83
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 12:18:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8A43260F86
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 12:19:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729210AbgIHKSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 06:18:44 -0400
-Received: from mail-il1-f208.google.com ([209.85.166.208]:39785 "EHLO
-        mail-il1-f208.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729053AbgIHKSV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 06:18:21 -0400
-Received: by mail-il1-f208.google.com with SMTP id v17so4551860ilg.6
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 03:18:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=0bSWlbsyi2aDsVDomNbcpNgOSd5Rg8Cy9nvCtewW0AM=;
-        b=m2fOgkKPVXU9mh1W3Vyv9jtVd2hZZfWbAIqBqOXqbFoKN5oCUfiHfg8svoCKI0zhmt
-         HagD+5nwH0BLIJWE0uIgWhc13WU27aKSZ80FVsGcz+TA5Sb2RjoAkqEM1u8FMn15rlG1
-         TA9yRJc4wHNP2wKUsYelQIBHDruvoP3NUdSaypZAbVVYDFDlm32BYBjwnANwOefDtFU3
-         cQid92EGRme/u/6v6giHLJ62SUICS2VxQYAh0gTPGFv+0NouFxrO6FcRP/BAkC5W83aw
-         VhELhtalx6jnjJViOruOpkPkQiMLPh1qs3VnnM4pmewk1NuPHCggJhzv5EQM+l1OMo0v
-         RKsA==
-X-Gm-Message-State: AOAM532QmZ3JHehonlJPgqMjOccRBR6hZ/OUmcbE5Vr7mvWnAtPBS8HG
-        SO/T5vE304tZ9ksNjbPQMKYjZ70XXMBlYAIJgn4XLoTjnh0O
-X-Google-Smtp-Source: ABdhPJwMlsgrHN6/6ENIqOM32foFO1wE4CKHB1fozmz5vwpDTJyhuN8bdbNalnHJ5NBHnbPiR38Fu2iWO5mrGH/zjM6RNwyiML7+
+        id S1729197AbgIHKTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 06:19:15 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:47652 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729285AbgIHKTB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 06:19:01 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 8C889201599;
+        Tue,  8 Sep 2020 12:18:59 +0200 (CEST)
+Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 41D7620158D;
+        Tue,  8 Sep 2020 12:18:59 +0200 (CEST)
+Received: from localhost (fsr-ub1664-175.ea.freescale.net [10.171.82.40])
+        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 78C302036D;
+        Tue,  8 Sep 2020 12:18:58 +0200 (CEST)
+Date:   Tue, 8 Sep 2020 13:18:58 +0300
+From:   Abel Vesa <abel.vesa@nxp.com>
+To:     peng.fan@nxp.com
+Cc:     sboyd@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        festevam@gmail.com, kernel@pengutronix.de, linux-imx@nxp.com,
+        Anson.Huang@nxp.com, linux-clk@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        aisheng.dong@nxp.com
+Subject: Re: [PATCH] clk: imx: lpcg-scu: SW workaround for errata (e10858)
+Message-ID: <20200908101858.kiuzcnc6rolbbyma@fsr-ub1664-175>
+References: <1599556487-31364-1-git-send-email-peng.fan@nxp.com>
 MIME-Version: 1.0
-X-Received: by 2002:a02:1142:: with SMTP id 63mr23466142jaf.73.1599560300476;
- Tue, 08 Sep 2020 03:18:20 -0700 (PDT)
-Date:   Tue, 08 Sep 2020 03:18:20 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000081bfe405aecaa78e@google.com>
-Subject: KASAN: unknown-crash Write in do_con_write
-From:   syzbot <syzbot+f182cd6b3b3fa5319c78@syzkaller.appspotmail.com>
-To:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1599556487-31364-1-git-send-email-peng.fan@nxp.com>
+User-Agent: NeoMutt/20180622
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 20-09-08 17:14:47, peng.fan@nxp.com wrote:
+> From: Peng Fan <peng.fan@nxp.com>
+> 
+> Back-to-back LPCG writes can be ignored by the LPCG register due to
+> a HW bug. The writes need to be separated by at least 4 cycles of
+> the gated clock.
+> 
+> The workaround is implemented as follows:
+> 1. For clocks running greater than or equal to 24MHz, a read
+> followed by the write will provide sufficient delay.
+> 2. For clocks running below 24MHz, add a delay of 4 clock cylces
+> after the write to the LPCG register.
+> 
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> ---
+>  drivers/clk/imx/clk-lpcg-scu.c | 31 +++++++++++++++++++++++++++++--
+>  1 file changed, 29 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/clk/imx/clk-lpcg-scu.c b/drivers/clk/imx/clk-lpcg-scu.c
+> index 1f0e44f921ae..6ee9d2caedf2 100644
+> --- a/drivers/clk/imx/clk-lpcg-scu.c
+> +++ b/drivers/clk/imx/clk-lpcg-scu.c
+> @@ -6,6 +6,7 @@
+>  
+>  #include <linux/bits.h>
+>  #include <linux/clk-provider.h>
+> +#include <linux/delay.h>
+>  #include <linux/err.h>
+>  #include <linux/io.h>
+>  #include <linux/slab.h>
+> @@ -38,6 +39,31 @@ struct clk_lpcg_scu {
+>  
+>  #define to_clk_lpcg_scu(_hw) container_of(_hw, struct clk_lpcg_scu, hw)
+>  
+> +/* e10858 -LPCG clock gating register synchronization errata */
+> +static void do_lpcg_workaround(u32 rate, void __iomem *reg, u32 val)
+> +{
+> +	writel(val, reg);
+> +
+> +	if (rate >= 24000000 || rate == 0) {
+> +		u32 reg1;
+> +
+> +		/*
+> +		 * The time taken to access the LPCG registers from the AP core
+> +		 * through the interconnect is longer than the minimum delay
+> +		 * of 4 clock cycles required by the errata.
+> +		 * Adding a readl will provide sufficient delay to prevent
+> +		 * back-to-back writes.
+> +		 */
+> +		reg1 = readl(reg);
+> +	} else {
+> +		/*
+> +		 * For clocks running below 24MHz, wait a minimum of
+> +		 * 4 clock cycles.
+> +		 */
+> +		ndelay(4 * (DIV_ROUND_UP(1000000000, rate)));
+> +	}
 
-syzbot found the following issue on:
+Just to make sure this is totally understood, if the lpcg consumer
+needs to two enables/disables in less than 4 multiplied by the clock
+period, the second enable/disable will be delayed.
 
-HEAD commit:    f4d51dff Linux 5.9-rc4
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1655cb35900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=8f5c353182ed6199
-dashboard link: https://syzkaller.appspot.com/bug?extid=f182cd6b3b3fa5319c78
-compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17d7617d900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=154ebbcd900000
+If we're fine with this, then here is my R-b.
 
-Bisection is inconclusive: the issue happens on the oldest tested release.
+Reviewed-by: Abel Vesa <abel.vesa@nxp.com>
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10891c29900000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=12891c29900000
-console output: https://syzkaller.appspot.com/x/log.txt?x=14891c29900000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+f182cd6b3b3fa5319c78@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: unknown-crash in notify_write drivers/tty/vt/vt.c:263 [inline]
-BUG: KASAN: unknown-crash in cr drivers/tty/vt/vt.c:1517 [inline]
-BUG: KASAN: unknown-crash in vc_con_write_normal drivers/tty/vt/vt.c:2805 [inline]
-BUG: KASAN: unknown-crash in do_con_write+0x1270/0xd580 drivers/tty/vt/vt.c:2910
-Write of size 8 at addr ffffc9000aa1f7a0 by task syz-executor240/10440
-
-CPU: 1 PID: 10440 Comm: syz-executor240 Not tainted 5.9.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x1d6/0x29e lib/dump_stack.c:118
- print_address_description+0x66/0x620 mm/kasan/report.c:383
- __kasan_report mm/kasan/report.c:513 [inline]
- kasan_report+0x132/0x1d0 mm/kasan/report.c:530
- notify_write drivers/tty/vt/vt.c:263 [inline]
- cr drivers/tty/vt/vt.c:1517 [inline]
- vc_con_write_normal drivers/tty/vt/vt.c:2805 [inline]
- do_con_write+0x1270/0xd580 drivers/tty/vt/vt.c:2910
- con_write+0x20/0x40 drivers/tty/vt/vt.c:3250
- process_output_block drivers/tty/n_tty.c:595 [inline]
- n_tty_write+0xcbf/0x1170 drivers/tty/n_tty.c:2333
- do_tty_write drivers/tty/tty_io.c:962 [inline]
- tty_write+0x593/0x940 drivers/tty/tty_io.c:1046
- __kernel_write+0x1ac/0xac0 fs/read_write.c:528
- write_pipe_buf+0xf9/0x150 fs/splice.c:799
- splice_from_pipe_feed fs/splice.c:502 [inline]
- __splice_from_pipe+0x351/0x8b0 fs/splice.c:626
- splice_from_pipe fs/splice.c:661 [inline]
- default_file_splice_write fs/splice.c:811 [inline]
- do_splice_from fs/splice.c:847 [inline]
- direct_splice_actor+0x1eb/0x2a0 fs/splice.c:1016
- splice_direct_to_actor+0x4a2/0xb60 fs/splice.c:971
- do_splice_direct+0x201/0x340 fs/splice.c:1059
- do_sendfile+0x86d/0x1210 fs/read_write.c:1540
- __do_sys_sendfile64 fs/read_write.c:1601 [inline]
- __se_sys_sendfile64 fs/read_write.c:1587 [inline]
- __x64_sys_sendfile64+0x164/0x1a0 fs/read_write.c:1587
- do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x446ac9
-Code: e8 9c b4 02 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 8b 07 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007fb3d5c84d18 EFLAGS: 00000246 ORIG_RAX: 0000000000000028
-RAX: ffffffffffffffda RBX: 00000000006dbc58 RCX: 0000000000446ac9
-RDX: 0000000000000000 RSI: 0000000000000005 RDI: 0000000000000004
-RBP: 00000000006dbc50 R08: 65732f636f72702f R09: 65732f636f72702f
-R10: 0800000080004103 R11: 0000000000000246 R12: 00000000006dbc5c
-R13: 00007fb3d5c84d20 R14: 00007fb3d5c84d20 R15: 20c49ba5e353f7cf
-
-
-Memory state around the buggy address:
- ffffc9000aa1f680: 00 00 00 00 00 77 00 00 00 77 07 00 77 00 70 07
- ffffc9000aa1f700: 00 77 07 00 00 77 00 00 00 77 00 00 00 77 07 00
->ffffc9000aa1f780: 00 77 00 00 77 00 00 00 77 00 77 00 70 07 00 00
-                               ^
- ffffc9000aa1f800: 77 00 70 07 77 00 77 00 70 07 70 07 00 77 00 00
- ffffc9000aa1f880: 00 77 00 00 70 07 00 00 77 00 00 00 77 00 00 00
-==================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+> +}
+> +
+>  static int clk_lpcg_scu_enable(struct clk_hw *hw)
+>  {
+>  	struct clk_lpcg_scu *clk = to_clk_lpcg_scu(hw);
+> @@ -54,7 +80,8 @@ static int clk_lpcg_scu_enable(struct clk_hw *hw)
+>  		val |= CLK_GATE_SCU_LPCG_HW_SEL;
+>  
+>  	reg |= val << clk->bit_idx;
+> -	writel(reg, clk->reg);
+> +
+> +	do_lpcg_workaround(clk_hw_get_rate(hw), clk->reg, reg);
+>  
+>  	spin_unlock_irqrestore(&imx_lpcg_scu_lock, flags);
+>  
+> @@ -71,7 +98,7 @@ static void clk_lpcg_scu_disable(struct clk_hw *hw)
+>  
+>  	reg = readl_relaxed(clk->reg);
+>  	reg &= ~(CLK_GATE_SCU_LPCG_MASK << clk->bit_idx);
+> -	writel(reg, clk->reg);
+> +	do_lpcg_workaround(clk_hw_get_rate(hw), clk->reg, reg);
+>  
+>  	spin_unlock_irqrestore(&imx_lpcg_scu_lock, flags);
+>  }
+> -- 
+> 2.28.0
+> 
