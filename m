@@ -2,116 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44B68261104
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 13:56:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A154261107
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 13:59:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730187AbgIHL4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 07:56:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729894AbgIHLx2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 07:53:28 -0400
-Received: from mail-ua1-x934.google.com (mail-ua1-x934.google.com [IPv6:2607:f8b0:4864:20::934])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28809C061798
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 04:53:21 -0700 (PDT)
-Received: by mail-ua1-x934.google.com with SMTP id g16so4969586uan.5
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 04:53:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iNpJDo+gqE3n8OuKKqMvnJiyfSpkNKq1np+3FoTppfI=;
-        b=NxWHKqeWMlPQoU/mbjiNrhFOjTvZGeHZpM+zLLMFWigZmV0OUhk7dj7b7dt2/8OQsr
-         Lkc6tWXsbifJLb0/5FvBAVKRa/CXeyVCntFwzv8bXuK7VcObRc8gkPv1v7diuZch5Sen
-         rmC4nMZGvN7D5kfdt+2DUH0JgjZNXqrU4R4dAYp6Ghew9RoBazonRUVcBYEmIIccBmWs
-         W9uArxhsCYeG402YhgWQpZxyphNYnFQNDQ1JaO2wqAsvi/ON/OHdB3KqUBlP8r0S7Zaj
-         e5xi7OmoWilMVecuDxGlUIRV8FJez+HD7t2D8VnuKXG1OpYq+tPGLhT2WpSlMLnA9rGZ
-         Bb4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iNpJDo+gqE3n8OuKKqMvnJiyfSpkNKq1np+3FoTppfI=;
-        b=BprtBaj23m5NPEhFPnmmvBUCllola8JJ91a4xNP7r5ZUwJR6cUX8YDpXUDv7wRojWZ
-         m1ouZ2fAdacdnUViXM2n/S+nIqFfE/BJyuHZedgKsG20LopIPnf/+gt1uaeDESYSUcAP
-         4UQGbLtZqbqQUqSilZ1QdYwUz/KDvvlo8b5sBxBZ/c7j3i1Zz0uxZx3kVk+wRb6oKoJo
-         pht+xL0DaA+9DfR3TMPM57/uLeumWuwD+4ykLjygYkdzOji3kpbLjd3VWTpn2ywS5dz8
-         fMcn1R8l2l3B7hJmAwfz2055va0R8RGbQ4T0kSQ206uf2KcxfchmV64GkdlxcRcMT6uk
-         OZIg==
-X-Gm-Message-State: AOAM531Fh1arRf33bLC6ZoMNYQUYwelUAhnnyx3pGNC3WReTztqZiIbn
-        PUqeFK+JlB5JO3jIitI6pJCIbFuLaMVOpw==
-X-Google-Smtp-Source: ABdhPJynrItiWHCFbbW/7VjYIT+hILtcdxL5KAjPFMhSCKg2YOy0audXF20AfNLgA7qDFns0SFUTBw==
-X-Received: by 2002:ab0:24cd:: with SMTP id k13mr12596806uan.92.1599565998493;
-        Tue, 08 Sep 2020 04:53:18 -0700 (PDT)
-Received: from mail-ua1-f43.google.com (mail-ua1-f43.google.com. [209.85.222.43])
-        by smtp.gmail.com with ESMTPSA id s130sm2904271vks.8.2020.09.08.04.53.17
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Sep 2020 04:53:17 -0700 (PDT)
-Received: by mail-ua1-f43.google.com with SMTP id y15so4964280uan.9
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 04:53:17 -0700 (PDT)
-X-Received: by 2002:a9f:2237:: with SMTP id 52mr12620777uad.141.1599565997147;
- Tue, 08 Sep 2020 04:53:17 -0700 (PDT)
+        id S1730205AbgIHL6q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 07:58:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34394 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729305AbgIHLxY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 07:53:24 -0400
+Received: from gaia (unknown [46.69.195.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AB9932067C;
+        Tue,  8 Sep 2020 11:53:19 +0000 (UTC)
+Date:   Tue, 8 Sep 2020 12:53:17 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Marco Elver <elver@google.com>
+Cc:     glider@google.com, akpm@linux-foundation.org, cl@linux.com,
+        rientjes@google.com, iamjoonsoo.kim@lge.com, mark.rutland@arm.com,
+        penberg@kernel.org, hpa@zytor.com, paulmck@kernel.org,
+        andreyknvl@google.com, aryabinin@virtuozzo.com, luto@kernel.org,
+        bp@alien8.de, dave.hansen@linux.intel.com, dvyukov@google.com,
+        edumazet@google.com, gregkh@linuxfoundation.org, mingo@redhat.com,
+        jannh@google.com, corbet@lwn.net, keescook@chromium.org,
+        peterz@infradead.org, cai@lca.pw, tglx@linutronix.de,
+        will@kernel.org, x86@kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org
+Subject: Re: [PATCH RFC 07/10] kfence, kmemleak: make KFENCE compatible with
+ KMEMLEAK
+Message-ID: <20200908115316.GD25591@gaia>
+References: <20200907134055.2878499-1-elver@google.com>
+ <20200907134055.2878499-8-elver@google.com>
 MIME-Version: 1.0
-References: <CAJht_EOu8GKvdTAeF_rHsaKu7iYOmW8C64bQA21bgKuiANE5Zw@mail.gmail.com>
- <CAJht_EP=g02o2ygihNo=EWd1OuL3HSjmhqgGiwUGrMde=urSUA@mail.gmail.com>
- <CA+FuTSdm35x9nA259JgOWcCWJto9MVMHGGgamPPsgnpsTmPO8g@mail.gmail.com>
- <CAJht_EPEqUMXNdQLL9d5OtzbZ92Jms7nSUR8bS+cw2Ah5mv6cQ@mail.gmail.com>
- <CA+FuTSeJS22R2VYSzcEVvXiUhX79RYE0o3G6V3NKGzQ4UGaJQg@mail.gmail.com> <CAJht_EN7SXAex-1W49eY7q5p2UqLYvXA8D6hptJGquXdJULLcA@mail.gmail.com>
-In-Reply-To: <CAJht_EN7SXAex-1W49eY7q5p2UqLYvXA8D6hptJGquXdJULLcA@mail.gmail.com>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Tue, 8 Sep 2020 13:52:38 +0200
-X-Gmail-Original-Message-ID: <CA+FuTSfgxt6uqcxy=wnOXo8HxMJ3J0HAqQNiDJBLCs22Ukb_gQ@mail.gmail.com>
-Message-ID: <CA+FuTSfgxt6uqcxy=wnOXo8HxMJ3J0HAqQNiDJBLCs22Ukb_gQ@mail.gmail.com>
-Subject: Re: Question about dev_validate_header used in af_packet.c
-To:     Xie He <xie.he.0141@gmail.com>
-Cc:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200907134055.2878499-8-elver@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 8, 2020 at 1:04 PM Xie He <xie.he.0141@gmail.com> wrote:
->
-> On Tue, Sep 8, 2020 at 1:41 AM Willem de Bruijn
-> <willemdebruijn.kernel@gmail.com> wrote:
-> >
-> > The intent is to bypass such validation to be able to test device
-> > drivers. Note that removing that may cause someone's test to start
-> > failing.
-> >
-> > >  So there's no point in
-> > > keeping the ability to test this, either.
-> >
-> > I don't disagree in principle, but do note the failing tests. Bar any
-> > strong reasons for change, I'd leave as is.
->
-> OK. I got what you mean. You don't want to make people's test cases fail.
->
-> I was recently looking at some drivers, and I felt that if af_packet.c
-> could help me filter out the invalid RAW frames, I didn't need to
-> check the validity of the frames myself (in the driver when
-> transmitting). But now I guess I still need to check that.
->
-> I feel this makes the dev_validate_header's variable-length header
-> check not very useful, because drivers need to do this check again
-> (when transmitting) anyway.
->
-> I was thinking, after I saw dev_validate_header, that we could
-> eventually make it completely take over the responsibility for a
-> driver to validate the header when transmitting RAW frames. But now it
-> seems we would not be able to do this.
+On Mon, Sep 07, 2020 at 03:40:52PM +0200, Marco Elver wrote:
+> From: Alexander Potapenko <glider@google.com>
+> 
+> Add compatibility with KMEMLEAK, by making KMEMLEAK aware of the KFENCE
+> memory pool. This allows building debug kernels with both enabled, which
+> also helped in debugging KFENCE.
+> 
+> Co-developed-by: Marco Elver <elver@google.com>
+> Signed-off-by: Marco Elver <elver@google.com>
+> Signed-off-by: Alexander Potapenko <glider@google.com>
+> ---
+>  mm/kmemleak.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+> 
+> diff --git a/mm/kmemleak.c b/mm/kmemleak.c
+> index 5e252d91eb14..2809c25c0a88 100644
+> --- a/mm/kmemleak.c
+> +++ b/mm/kmemleak.c
+> @@ -97,6 +97,7 @@
+>  #include <linux/atomic.h>
+>  
+>  #include <linux/kasan.h>
+> +#include <linux/kfence.h>
+>  #include <linux/kmemleak.h>
+>  #include <linux/memory_hotplug.h>
+>  
+> @@ -1946,8 +1947,18 @@ void __init kmemleak_init(void)
+>  	/* register the data/bss sections */
+>  	create_object((unsigned long)_sdata, _edata - _sdata,
+>  		      KMEMLEAK_GREY, GFP_ATOMIC);
+> +#if defined(CONFIG_KFENCE) && defined(CONFIG_HAVE_ARCH_KFENCE_STATIC_POOL)
+> +	/* KFENCE objects are located in .bss, which may confuse kmemleak. Skip them. */
+> +	create_object((unsigned long)__bss_start, __kfence_pool - __bss_start,
+> +		      KMEMLEAK_GREY, GFP_ATOMIC);
+> +	create_object((unsigned long)__kfence_pool + KFENCE_POOL_SIZE,
+> +		      __bss_stop - (__kfence_pool + KFENCE_POOL_SIZE),
+> +		      KMEMLEAK_GREY, GFP_ATOMIC);
+> +#else
+>  	create_object((unsigned long)__bss_start, __bss_stop - __bss_start,
+>  		      KMEMLEAK_GREY, GFP_ATOMIC);
+> +#endif
 
-Agreed. As is, it is mainly useful to block users who are ns_capable,
-but not capable.
+Could you instead do:
 
-A third option is to move it behind a sysctl (with static_branch). Your
-point is valid that there really is no need for testing of drivers against
-bad packets if the data is validated directly on kernel entry.
+#if defined(CONFIG_KFENCE) && defined(CONFIG_HAVE_ARCH_KFENCE_STATIC_POOL)
+	delete_object_part((unsigned long)__kfence_pool, KFENCE_POOL_SIZE);
+#endif
+
+-- 
+Catalin
