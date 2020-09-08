@@ -2,137 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2EE0260AC3
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 08:20:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1818B260AC9
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 08:20:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728952AbgIHGUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 02:20:08 -0400
-Received: from verein.lst.de ([213.95.11.211]:51486 "EHLO verein.lst.de"
+        id S1729028AbgIHGUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 02:20:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53726 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726787AbgIHGUH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 02:20:07 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 15E9468AFE; Tue,  8 Sep 2020 08:20:03 +0200 (CEST)
-Date:   Tue, 8 Sep 2020 08:20:02 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Russell King <rmk@arm.linux.org.uk>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linus.walleij@linaro.org,
-        Russell King <linux@armlinux.org.uk>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 5/9] ARM: oabi-compat: rework epoll_wait/epoll_pwait
- emulation
-Message-ID: <20200908062002.GD13930@lst.de>
-References: <20200907153701.2981205-1-arnd@arndb.de> <20200907153701.2981205-6-arnd@arndb.de>
+        id S1726787AbgIHGUT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 02:20:19 -0400
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1358D218AC;
+        Tue,  8 Sep 2020 06:20:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599546019;
+        bh=b4N0Wzo0LlxmMMNaMUj5p464U5T00RHGDqLtbBe11xc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=x+BES2N4uZlqJfb5/nwqjhUJICLuiQCKQLaY67m+Tz1tFLkZh9B4XO2eOxQOgEls/
+         G74xASvcaa+Hn2fVqe2VcjF9sOcLMuW9bwiIExEwWF605JE0tXJXTSNozHCxTEGta2
+         DI88WbufabDj0YxutyGxzFr7Qeg3SVu8GwxEWtGA=
+Received: by mail-ed1-f54.google.com with SMTP id ay8so14764189edb.8;
+        Mon, 07 Sep 2020 23:20:19 -0700 (PDT)
+X-Gm-Message-State: AOAM530uTZvM3BjwuDvT6tLVGt0tdxTPYLsTu86zGi1TKmnHRdRJApB9
+        W90DvZJiRPomP+GzloXalyacWC9pgV/A538hnfg=
+X-Google-Smtp-Source: ABdhPJxm6MgtUFHojJp4O+2jexj7kbpsA8Qrd0PhJH8gKMswfOGXw5c/YTd1KwZLwV84tza8C5lzYwBWlIheSBozyVI=
+X-Received: by 2002:a50:ab1d:: with SMTP id s29mr26477632edc.246.1599546017743;
+ Mon, 07 Sep 2020 23:20:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200907153701.2981205-6-arnd@arndb.de>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+References: <20200908144622.09385c88@canb.auug.org.au>
+In-Reply-To: <20200908144622.09385c88@canb.auug.org.au>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Tue, 8 Sep 2020 08:20:06 +0200
+X-Gmail-Original-Message-ID: <CAJKOXPeZqmcyDD8KiPQveJEW5DgKvWbcQeTQYG0A6zaHDN=_Qg@mail.gmail.com>
+Message-ID: <CAJKOXPeZqmcyDD8KiPQveJEW5DgKvWbcQeTQYG0A6zaHDN=_Qg@mail.gmail.com>
+Subject: Re: linux-next: manual merge of the mmc tree with the samsung-krzk tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 07, 2020 at 05:36:46PM +0200, Arnd Bergmann wrote:
-> The epoll_wait() system call wrapper is one of the remaining users of
-> the set_fs() infrasturcture for Arm. Changing it to not require set_fs()
-> is rather complex unfortunately.
-> 
-> The approach I'm taking here is to allow architectures to override
-> the code that copies the output to user space, and let the oabi-compat
-> implementation check whether it is getting called from an EABI or OABI
-> system call based on the thread_info->syscall value.
-> 
-> The in_oabi_syscall() check here mirrors the in_compat_syscall() and
-> in_x32_syscall() helpers for 32-bit compat implementations on other
-> architectures.
-> 
-> Overall, the amount of code goes down, at least with the newly added
-> sys_oabi_epoll_pwait() helper getting removed again. The downside
-> is added complexity in the source code for the native implementation.
-> There should be no difference in runtime performance except for Arm
-> kernels with CONFIG_OABI_COMPAT enabled that now have to go through
-> an external function call to check which of the two variants to use.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  arch/arm/include/asm/syscall.h    | 11 +++++
->  arch/arm/kernel/sys_oabi-compat.c | 72 +++++++------------------------
->  arch/arm/tools/syscall.tbl        |  4 +-
->  fs/eventpoll.c                    |  5 +--
->  include/linux/eventpoll.h         | 16 +++++++
->  5 files changed, 46 insertions(+), 62 deletions(-)
-> 
-> diff --git a/arch/arm/include/asm/syscall.h b/arch/arm/include/asm/syscall.h
-> index ff6cc365eaf7..0d8afceeefd9 100644
-> --- a/arch/arm/include/asm/syscall.h
-> +++ b/arch/arm/include/asm/syscall.h
-> @@ -28,6 +28,17 @@ static inline int syscall_get_nr(struct task_struct *task,
->  	return task_thread_info(task)->syscall;
->  }
->  
-> +static inline bool __in_oabi_syscall(struct task_struct *task)
-> +{
-> +	return IS_ENABLED(CONFIG_OABI_COMPAT) &&
-> +		(task_thread_info(task)->syscall & __NR_OABI_SYSCALL_BASE);
-> +}
-> +
-> +static inline bool in_oabi_syscall(void)
-> +{
-> +	return __in_oabi_syscall(current);
-> +}
-> +
->  static inline void syscall_rollback(struct task_struct *task,
->  				    struct pt_regs *regs)
->  {
-> diff --git a/arch/arm/kernel/sys_oabi-compat.c b/arch/arm/kernel/sys_oabi-compat.c
-> index 2ce3e8c6ca91..abf1153c5315 100644
-> --- a/arch/arm/kernel/sys_oabi-compat.c
-> +++ b/arch/arm/kernel/sys_oabi-compat.c
-> @@ -83,6 +83,8 @@
->  #include <linux/uaccess.h>
->  #include <linux/slab.h>
->  
-> +#include <asm/syscall.h>
-> +
->  struct oldabi_stat64 {
->  	unsigned long long st_dev;
->  	unsigned int	__pad1;
-> @@ -264,68 +266,24 @@ asmlinkage long sys_oabi_epoll_ctl(int epfd, int op, int fd,
->  	return do_epoll_ctl(epfd, op, fd, &kernel, false);
->  }
->  
-> -static long do_oabi_epoll_wait(int epfd, struct oabi_epoll_event __user *events,
-> -			       int maxevents, int timeout)
-> +struct epoll_event __user *
-> +epoll_put_uevent(__poll_t revents, __u64 data, struct epoll_event __user *uevent)
->  {
-> +	if (in_oabi_syscall()) {
-> +		struct oabi_epoll_event *oevent = (void __user *)uevent;
->  
-> +		if (__put_user(revents, &oevent->events) ||
-> +		    __put_user(data, &oevent->data))
-> +			return NULL;
->  
-> +		return (void __user *)uevent+1;
-> +	}
+On Tue, 8 Sep 2020 at 06:46, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi all,
+>
+> Today's linux-next merge of the mmc tree got a conflict in:
+>
+>   drivers/mmc/host/Kconfig
+>
+> between commits:
+>
+>   cb6c03019cdd ("ARM: exynos: stop selecting PLAT_SAMSUNG")
+>   db8230d29c3a ("ARM: s5pv210: don't imply CONFIG_PLAT_SAMSUNG")
+>
+> from the samsung-krzk tree and commit:
+>
+>   54d8454436a2 ("mmc: host: Enable compile testing of multiple drivers")
+>
+> from the mmc tree.
+>
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+>
+> --
+> Cheers,
+> Stephen Rothwell
+>
+> diff --cc drivers/mmc/host/Kconfig
+> index 0d7c61d8d1d9,dc646359b4ff..000000000000
+> --- a/drivers/mmc/host/Kconfig
+> +++ b/drivers/mmc/host/Kconfig
+> @@@ -289,7 -301,8 +301,8 @@@ config MMC_SDHCI_TEGR
+>
+>   config MMC_SDHCI_S3C
+>         tristate "SDHCI support on Samsung S3C SoC"
+> -       depends on MMC_SDHCI && (PLAT_SAMSUNG || ARCH_S5PV210 || ARCH_EXYNOS)
+> +       depends on MMC_SDHCI
+>  -      depends on PLAT_SAMSUNG || COMPILE_TEST
+> ++      depends on PLAT_SAMSUNG || ARCH_S5PV210 || ARCH_EXYNOS || COMPILE_TEST
 
-I wonder if we'd be better off doing the in_oabi_syscall() branch in
-the common code.  E.g. rename in_oabi_syscall to in_legacy_syscall and
-stub it out for all other architectures.  Then just do
+Thanks, this is the expected resolution.
 
-	if (in_oabi_syscall()
-		legacy_syscall_foo_bit();
-	else
-		normal_syscall_foo_bit();
-
-in common code, where so far only arm provides
-legacy_syscall_foo_bit().
-
-Tons of long lines again in this patch..
+Best regards,
+Krzysztof
