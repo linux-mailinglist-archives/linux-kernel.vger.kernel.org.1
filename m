@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FE1A26185D
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:53:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA90D261828
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:50:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731583AbgIHQNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 12:13:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53536 "EHLO mail.kernel.org"
+        id S1726694AbgIHRtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 13:49:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56674 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731214AbgIHQFW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:05:22 -0400
+        id S1731612AbgIHQN7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 12:13:59 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 61C2A21D80;
-        Tue,  8 Sep 2020 15:45:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E2036248E5;
+        Tue,  8 Sep 2020 15:52:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599579937;
-        bh=zuZmKb8WP9O1Bn85UWwWrQPriHdYTxy/O7xpjBrkROo=;
+        s=default; t=1599580379;
+        bh=6Fez109ttIMLRmVVxANrHk+iYVZxm0H8XRvVFoMJ/EU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=f9vd4PXsN4Sk+GRABeqtBOr1ySY3ikD02LNMrTLQ0sYfOmUO48arVZWjHxI4pF89X
-         AMXrejJoXNPpJXxlK9Uv0FUNEnR0q0hTmN3CO/rVQjwRb0zBTkjJn8xeitm4c8M4gt
-         krw9qyNTAuT2a7AStfYTRwzeR2Wd3t1j4XVTUvDw=
+        b=Lcm6zXRsbrxA3SoCFjmVGl6UNFw+wMJ9MA6VBZUWXwwBL81cVaaMJr7eQAASEHXUY
+         9Rgyl53O6dtB/SMy4JWFLJ2zti+kmGzT4XeVbiOj2akJi5DYN9nN442O2SU5BodKJo
+         TJVjDhXAYzsi1a4AqhwwQtYpO0r0NF6h399ZHC1w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chris Wilson <chris@chris-wilson.co.uk>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        James Sewart <jamessewart@arista.com>,
-        Joerg Roedel <jroedel@suse.de>
-Subject: [PATCH 5.4 076/129] iommu/vt-d: Handle 36bit addressing for x86-32
-Date:   Tue,  8 Sep 2020 17:25:17 +0200
-Message-Id: <20200908152233.495213316@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Linus=20L=C3=BCssing?= <linus.luessing@c0d3.blue>,
+        Sven Eckelmann <sven@narfation.org>,
+        Simon Wunderlich <sw@simonwunderlich.de>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 13/65] batman-adv: Fix own OGM check in aggregated OGMs
+Date:   Tue,  8 Sep 2020 17:25:58 +0200
+Message-Id: <20200908152217.709656446@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200908152229.689878733@linuxfoundation.org>
-References: <20200908152229.689878733@linuxfoundation.org>
+In-Reply-To: <20200908152217.022816723@linuxfoundation.org>
+References: <20200908152217.022816723@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,74 +46,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Wilson <chris@chris-wilson.co.uk>
+From: Linus Lüssing <linus.luessing@c0d3.blue>
 
-commit 29aaebbca4abc4cceb38738483051abefafb6950 upstream.
+[ Upstream commit d8bf0c01642275c7dca1e5d02c34e4199c200b1f ]
 
-Beware that the address size for x86-32 may exceed unsigned long.
+The own OGM check is currently misplaced and can lead to the following
+issues:
 
-[    0.368971] UBSAN: shift-out-of-bounds in drivers/iommu/intel/iommu.c:128:14
-[    0.369055] shift exponent 36 is too large for 32-bit type 'long unsigned int'
+For one thing we might receive an aggregated OGM from a neighbor node
+which has our own OGM in the first place. We would then not only skip
+our own OGM but erroneously also any other, following OGM in the
+aggregate.
 
-If we don't handle the wide addresses, the pages are mismapped and the
-device read/writes go astray, detected as DMAR faults and leading to
-device failure. The behaviour changed (from working to broken) in commit
-fa954e683178 ("iommu/vt-d: Delegate the dma domain to upper layer"), but
-the error looks older.
+For another, we might receive an OGM aggregate which has our own OGM in
+a place other then the first one. Then we would wrongly not skip this
+OGM, leading to populating the orginator and gateway table with ourself.
 
-Fixes: fa954e683178 ("iommu/vt-d: Delegate the dma domain to upper layer")
-Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
-Acked-by: Lu Baolu <baolu.lu@linux.intel.com>
-Cc: James Sewart <jamessewart@arista.com>
-Cc: Lu Baolu <baolu.lu@linux.intel.com>
-Cc: Joerg Roedel <jroedel@suse.de>
-Cc: <stable@vger.kernel.org> # v5.3+
-Link: https://lore.kernel.org/r/20200822160209.28512-1-chris@chris-wilson.co.uk
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 9323158ef9f4 ("batman-adv: OGMv2 - implement originators logic")
+Signed-off-by: Linus Lüssing <linus.luessing@c0d3.blue>
+Signed-off-by: Sven Eckelmann <sven@narfation.org>
+Signed-off-by: Simon Wunderlich <sw@simonwunderlich.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iommu/intel-iommu.c |   14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ net/batman-adv/bat_v_ogm.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
---- a/drivers/iommu/intel-iommu.c
-+++ b/drivers/iommu/intel-iommu.c
-@@ -123,29 +123,29 @@ static inline unsigned int level_to_offs
- 	return (level - 1) * LEVEL_STRIDE;
- }
+diff --git a/net/batman-adv/bat_v_ogm.c b/net/batman-adv/bat_v_ogm.c
+index f0abbbdafe07f..c49c48866a3fc 100644
+--- a/net/batman-adv/bat_v_ogm.c
++++ b/net/batman-adv/bat_v_ogm.c
+@@ -715,6 +715,12 @@ static void batadv_v_ogm_process(const struct sk_buff *skb, int ogm_offset,
+ 		   ntohl(ogm_packet->seqno), ogm_throughput, ogm_packet->ttl,
+ 		   ogm_packet->version, ntohs(ogm_packet->tvlv_len));
  
--static inline int pfn_level_offset(unsigned long pfn, int level)
-+static inline int pfn_level_offset(u64 pfn, int level)
- {
- 	return (pfn >> level_to_offset_bits(level)) & LEVEL_MASK;
- }
++	if (batadv_is_my_mac(bat_priv, ogm_packet->orig)) {
++		batadv_dbg(BATADV_DBG_BATMAN, bat_priv,
++			   "Drop packet: originator packet from ourself\n");
++		return;
++	}
++
+ 	/* If the throughput metric is 0, immediately drop the packet. No need
+ 	 * to create orig_node / neigh_node for an unusable route.
+ 	 */
+@@ -842,11 +848,6 @@ int batadv_v_ogm_packet_recv(struct sk_buff *skb,
+ 	if (batadv_is_my_mac(bat_priv, ethhdr->h_source))
+ 		goto free_skb;
  
--static inline unsigned long level_mask(int level)
-+static inline u64 level_mask(int level)
- {
--	return -1UL << level_to_offset_bits(level);
-+	return -1ULL << level_to_offset_bits(level);
- }
- 
--static inline unsigned long level_size(int level)
-+static inline u64 level_size(int level)
- {
--	return 1UL << level_to_offset_bits(level);
-+	return 1ULL << level_to_offset_bits(level);
- }
- 
--static inline unsigned long align_to_level(unsigned long pfn, int level)
-+static inline u64 align_to_level(u64 pfn, int level)
- {
- 	return (pfn + level_size(level) - 1) & level_mask(level);
- }
- 
- static inline unsigned long lvl_to_nr_pages(unsigned int lvl)
- {
--	return  1 << min_t(int, (lvl - 1) * LEVEL_STRIDE, MAX_AGAW_PFN_WIDTH);
-+	return 1UL << min_t(int, (lvl - 1) * LEVEL_STRIDE, MAX_AGAW_PFN_WIDTH);
- }
- 
- /* VT-d pages must always be _smaller_ than MM pages. Otherwise things
+-	ogm_packet = (struct batadv_ogm2_packet *)skb->data;
+-
+-	if (batadv_is_my_mac(bat_priv, ogm_packet->orig))
+-		goto free_skb;
+-
+ 	batadv_inc_counter(bat_priv, BATADV_CNT_MGMT_RX);
+ 	batadv_add_counter(bat_priv, BATADV_CNT_MGMT_RX_BYTES,
+ 			   skb->len + ETH_HLEN);
+-- 
+2.25.1
+
 
 
