@@ -2,59 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E26EC261751
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:31:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80AF9261810
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:48:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731736AbgIHRbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 13:31:10 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:57434 "EHLO huawei.com"
+        id S1731707AbgIHRsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 13:48:13 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2797 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1731734AbgIHRam (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 13:30:42 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 771094165174DAF404A8;
-        Tue,  8 Sep 2020 21:35:03 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 8 Sep 2020 21:34:55 +0800
-From:   Chen Zhou <chenzhou10@huawei.com>
-To:     <harry.wentland@amd.com>, <sunpeng.li@amd.com>,
-        <alexander.deucher@amd.com>, <airlied@linux.ie>, <daniel@ffwll.ch>
-CC:     <amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
-        <linux-kernel@vger.kernel.org>, <chenzhou10@huawei.com>
-Subject: [PATCH -next] drm/amd/display: Remove duplicate include
-Date:   Tue, 8 Sep 2020 21:35:52 +0800
-Message-ID: <20200908133552.105282-1-chenzhou10@huawei.com>
-X-Mailer: git-send-email 2.20.1
+        id S1731982AbgIHRsC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 13:48:02 -0400
+Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.107])
+        by Forcepoint Email with ESMTP id C8C77FFD658B0BA32181;
+        Tue,  8 Sep 2020 14:41:22 +0100 (IST)
+Received: from [127.0.0.1] (10.47.6.45) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 8 Sep 2020
+ 14:41:21 +0100
+Subject: Re: [PATCH v8 00/18] blk-mq/scsi: Provide hostwide shared tags for
+ SCSI HBAs
+To:     Hannes Reinecke <hare@suse.de>, <axboe@kernel.dk>,
+        <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
+        <don.brace@microsemi.com>, <kashyap.desai@broadcom.com>,
+        <ming.lei@redhat.com>, <bvanassche@acm.org>,
+        <dgilbert@interlog.com>, <paolo.valente@linaro.org>, <hch@lst.de>
+CC:     <sumit.saxena@broadcom.com>, <linux-block@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
+        <esc.storagedev@microsemi.com>, <megaraidlinux.pdl@broadcom.com>,
+        <chenxiang66@hisilicon.com>, <luojiaxing@huawei.com>
+References: <1597850436-116171-1-git-send-email-john.garry@huawei.com>
+ <cef0e816-1b30-dd62-0f39-2842df766298@suse.de>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <51a599a0-0952-ced1-ad78-89012c46f5eb@huawei.com>
+Date:   Tue, 8 Sep 2020 14:38:43 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
+In-Reply-To: <cef0e816-1b30-dd62-0f39-2842df766298@suse.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.6.45]
+X-ClientProxiedBy: lhreml727-chm.china.huawei.com (10.201.108.78) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
 X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove duplicate header which is included twice.
+On 08/09/2020 13:46, Hannes Reinecke wrote:
+> Now that Jens merged the block bits in his tree, wouldn't it be better
+> to re-send the SCSI bits only, thereby avoiding a potential merge error
+> later on?
+> 
 
-Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
----
- drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c | 1 -
- 1 file changed, 1 deletion(-)
+Anything which I resend would need to be against Jens' tree (and not 
+Martin's), assuming Jens will carry them also. So I am not sure how that 
+will help.
 
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c b/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c
-index a5d750ed569e..65dc5dcd4eb8 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c
-@@ -35,7 +35,6 @@
- #include "dcn30_dpp.h"
- #include "dcn10/dcn10_cm_common.h"
- #include "dcn30_cm_common.h"
--#include "clk_mgr.h"
- #include "reg_helper.h"
- #include "abm.h"
- #include "clk_mgr.h"
--- 
-2.17.1
+JFYI, I just tested against today's linux-next, and the SCSI parts (hpsa 
+and smartpqi omitted) still apply there without conflict.
 
+Thanks,
+John
