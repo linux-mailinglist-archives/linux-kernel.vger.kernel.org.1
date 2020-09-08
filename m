@@ -2,98 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A71F42614F9
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:41:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 057812614D1
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:37:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731917AbgIHQlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 12:41:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60562 "EHLO
+        id S1732085AbgIHQhz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 12:37:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732028AbgIHQhO (ORCPT
+        with ESMTP id S1732048AbgIHQhQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:37:14 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9132DC061A17
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 07:09:31 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id z18so4313391qvp.6
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 07:09:31 -0700 (PDT)
+        Tue, 8 Sep 2020 12:37:16 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0899C0610E6
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 07:13:01 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id w7so11063470pfi.4
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 07:13:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=marek-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=kA7YBuYMq9b3mZzCv9QQfgvbcIlMMupkbIGoGou1wKo=;
-        b=DgR0IsQjxrfz3z5ThPdVC/EGBKu1Cil2pH0g/Pfa0AUeKE5hMigysm6ESL863n4gSW
-         ZFelUzvaCcKKt+R+vd3kVgnbR87hZPYasZ9DG1QkrhGu9kBZy1QhQWT1dbmJhLRleTl6
-         0bqm2gKnliloULfvqnwEcNpa2e8VSxe8qQGwMAz1MDJLWFwu6nLPpEiIFrJJyq7wMvdd
-         CMZy7v1PRgsLtziIdbnzOTSWT9OkvrhZsvc03OxKLr7HCwlv1ZNdBnZh8+oQeT8psZ3E
-         Ki7Yaz6n+VL+ZMiMJDEhBz7VDZ0OFChwHRZPHUb+QJ3GeH0h7aZb4l/g3U3b0Ub3y2QV
-         dq4A==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SMcWrEBFn4y8oWuAmn2eZMWAoBr3QRyf1vevmm6kpYs=;
+        b=Jzzh0sjM+sebliF2+g0oD6UV30lD8Je25a3ORZDUih+SpSCxXDxxYCU+2gGsh9/OkJ
+         70s3sTKNRMsamCYPAapkWhpvADc+OyCyeznmqk45YsWg8gFtDxSYjWXriqEh3urgYvoy
+         tebnU1yTEvrd+phD+7FT8IeEymsitQrYPaUBiKH2kR+9ZsLjwx2c/axjW9Y6HLpLPT55
+         ViDKdLPdp5ygXnpd9fq7J2GGefutFP4GG3PkwixuiI9Pc63x7sraVe8wC3jcawGBX9oP
+         YJGU47XU8QZ1K0ai+PaP/jVxRUABdUb0B1JEBXUt1yo+63SthraFPxk3JDq17Req8iAK
+         Az3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=kA7YBuYMq9b3mZzCv9QQfgvbcIlMMupkbIGoGou1wKo=;
-        b=IPiSHcCGckW7ZhNp8RwqHYmgZal1sW6nKX4bDp9U53TWfb5W65OkNqCx0fXmdln6ii
-         qN8KFDOQfaeKs4XO7NfbR2h2n+ezoseYiC3c/fEi5gorYVXA/92n7LulhkxmCkz4EMYT
-         6dgMeuI0k5Z4WyRdAXEMTrxq69Yps8pnkEZ7Tw9sABwlWAkoRJeSGUTzhgVGq1w1dncZ
-         P3IcXGbJU/WNMmoOclz2eLxQw257GfjeKsjguFrCJf6WgEwQxd/FZU7GVQkX5byfPXIb
-         dMhDg7YhWp0ofdP9Ax3krenSQ0MEouzfP1OHqaw7VrW8op2pl+NqQ0N9JFUq8J8pa/lp
-         0B4A==
-X-Gm-Message-State: AOAM531yWiZfrOS1LXnFFhvNofqFqiaOpyqaVPwio2cQwl6KOUzngcNs
-        0lgNpEVZwU7bIh2GGTKZfoWi1Q==
-X-Google-Smtp-Source: ABdhPJwDTbXK3AYjXreftxuSFRet1m2rtpDGlXYZDBJkXYObWLBHJ8LTS7P+wSPf/tV6q4xpuTYdsA==
-X-Received: by 2002:ad4:534c:: with SMTP id v12mr270078qvs.14.1599574170698;
-        Tue, 08 Sep 2020 07:09:30 -0700 (PDT)
-Received: from localhost.localdomain ([147.253.86.153])
-        by smtp.gmail.com with ESMTPSA id r24sm14447276qtm.70.2020.09.08.07.09.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Sep 2020 07:09:30 -0700 (PDT)
-From:   Jonathan Marek <jonathan@marek.ca>
-To:     linux-arm-msm@vger.kernel.org
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Sanyog Kale <sanyog.r.kale@intel.com>,
-        alsa-devel@alsa-project.org (moderated list:SOUNDWIRE SUBSYSTEM),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] soundwire: qcom: fix SLIBMUS/SLIMBUS typo
-Date:   Tue,  8 Sep 2020 10:08:17 -0400
-Message-Id: <20200908140818.28373-1-jonathan@marek.ca>
-X-Mailer: git-send-email 2.26.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SMcWrEBFn4y8oWuAmn2eZMWAoBr3QRyf1vevmm6kpYs=;
+        b=W/vN4k3BXB/u/znssDVQpBGe7BO1x5uzWBDRog1Fdhqyfm2xDps1mqBZSlT5GvxxuD
+         ennQRBeYvC8vaMMEj0ofsADvmwbNEomPnq+PgHhLPiwNS/oGwZS/J/dPV6/cMR6bqnZs
+         TpMieMmIlI5jv6dcVcPg6+5RYYZeT6qApDr4i+XzuQKb4MKQQ0jrhYgwD9RkoR8rSYAf
+         swV8FuB+eftWwdsCLcqVbeHpUv08IyXQ5W7fmIFZmbAVl6MCMfh7Xfso9qPAY9FwDsuy
+         Bkql4ewxPbHW93VSeh3sH3ttfEnckRomflSQGWNWHf276Uh2wW9RDamw1RfiWWCbalti
+         UvHQ==
+X-Gm-Message-State: AOAM533qRD0sMh4o8twosb+egz+BJdXmjHAj1LwLrifki7aZKjOPXDIE
+        48gV93NL/c8mc9qCD8BKpdv2aVIJYX02GCM7eFCzQg==
+X-Google-Smtp-Source: ABdhPJyefGenq86vwXxC8byR1bbNo446im+Q1wzZOY2tOktJ+HGERi+qxWaH7CgzJBKUU7/QW+Q68vuVcA9ikxvsBxY=
+X-Received: by 2002:a62:c2:: with SMTP id 185mr25215607pfa.11.1599574380885;
+ Tue, 08 Sep 2020 07:13:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1597425745.git.andreyknvl@google.com> <518da1e5169a4e343caa3c37feed5ad551b77a34.1597425745.git.andreyknvl@google.com>
+ <20200827104033.GF29264@gaia> <CAAeHK+x_B+R3VcXndaQ=rwOExyQeFZEKZX-33oStiDFu1qePyg@mail.gmail.com>
+ <20200908140620.GE25591@gaia>
+In-Reply-To: <20200908140620.GE25591@gaia>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Tue, 8 Sep 2020 16:12:49 +0200
+Message-ID: <CAAeHK+zkWojbbq1WgoC2D6JuR=Jy+jSU78PF74qdmD0aTg6cQQ@mail.gmail.com>
+Subject: Re: [PATCH 26/35] kasan, arm64: Enable TBI EL1
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix slimbus case being broken thanks to a typo.
+On Tue, Sep 8, 2020 at 4:06 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
+>
+> On Tue, Sep 08, 2020 at 03:18:04PM +0200, Andrey Konovalov wrote:
+> > On Thu, Aug 27, 2020 at 12:40 PM Catalin Marinas
+> > <catalin.marinas@arm.com> wrote:
+> > >
+> > > On Fri, Aug 14, 2020 at 07:27:08PM +0200, Andrey Konovalov wrote:
+> > > > diff --git a/arch/arm64/mm/proc.S b/arch/arm64/mm/proc.S
+> > > > index 152d74f2cc9c..6880ddaa5144 100644
+> > > > --- a/arch/arm64/mm/proc.S
+> > > > +++ b/arch/arm64/mm/proc.S
+> > > > @@ -38,7 +38,7 @@
+> > > >  /* PTWs cacheable, inner/outer WBWA */
+> > > >  #define TCR_CACHE_FLAGS      TCR_IRGN_WBWA | TCR_ORGN_WBWA
+> > > >
+> > > > -#ifdef CONFIG_KASAN_SW_TAGS
+> > > > +#if defined(CONFIG_KASAN_SW_TAGS) || defined(CONFIG_KASAN_HW_TAGS)
+> > > >  #define TCR_KASAN_FLAGS TCR_TBI1
+> > > >  #else
+> > > >  #define TCR_KASAN_FLAGS 0
+> > >
+> > > I prefer to turn TBI1 on only if MTE is present. So on top of the v8
+> > > user series, just do this in __cpu_setup.
+> >
+> > Started working on this, but realized that I don't understand what
+> > exactly is suggested here. TCR_KASAN_FLAGS are used in __cpu_setup(),
+> > so this already happens in __cpu_setup().
+> >
+> > Do you mean that TBI1 should be enabled when CONFIG_ARM64_MTE is
+> > enabled, but CONFIG_KASAN_HW_TAGS is disabled?
+>
+> What I meant is that we should turn TBI1 only when the MTE is present in
+> hardware (and the ARM64_MTE option is on). But I probably missed the way
+> MTE is used with KASAN.
+>
+> So what happens if CONFIG_KASAN_HW_TAGS and CONFIG_ARM64_MTE are both on
+> but the hardware does not support MTE? Does KASAN still generate tagged
+> pointers? If yes, then the current patch is fine, we should always set
+> TBI1.
 
-Fixes: 5bd773242f75 ("soundwire: qcom: avoid dependency on CONFIG_SLIMBUS")
+No, the tag is always 0xFF when MTE is not supported.
 
-Signed-off-by: Jonathan Marek <jonathan@marek.ca>
----
-This should be squashed into the problematic patch if possible,
-but I'm not sure if that's possible since its already in linux-next?
-
- drivers/soundwire/qcom.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
-index 100af93a5eab..c406a079d237 100644
---- a/drivers/soundwire/qcom.c
-+++ b/drivers/soundwire/qcom.c
-@@ -780,7 +780,7 @@ static int qcom_swrm_probe(struct platform_device *pdev)
- 	if (!ctrl)
- 		return -ENOMEM;
- 
--#if IS_ENABLED(CONFIG_SLIBMUS)
-+#if IS_ENABLED(CONFIG_SLIMBUS)
- 	if (dev->parent->bus == &slimbus_bus) {
- #else
- 	if (false) {
--- 
-2.26.1
-
+Should we then only enable TBI1 if system_supports_mte() or something like that?
