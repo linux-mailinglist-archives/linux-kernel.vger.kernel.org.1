@@ -2,91 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4EF0261398
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 17:35:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72D7F2613F0
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 17:56:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730531AbgIHPfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 11:35:39 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33484 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730393AbgIHPYC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:24:02 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9FC06AD1E;
-        Tue,  8 Sep 2020 11:37:46 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 1018B1E1325; Tue,  8 Sep 2020 13:37:45 +0200 (CEST)
-Date:   Tue, 8 Sep 2020 13:37:45 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Shaokun Zhang <zhangshaokun@hisilicon.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Yuqi Jin <jinyuqi@huawei.com>
-Subject: Re: [PATCH RESEND] fs: Move @f_count to different cacheline with
- @f_mode
-Message-ID: <20200908113745.GA4070@quack2.suse.cz>
-References: <1592987548-8653-1-git-send-email-zhangshaokun@hisilicon.com>
+        id S1730976AbgIHP4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 11:56:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730934AbgIHPyo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 11:54:44 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48A8DC06179B
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 05:05:29 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id z4so18845504wrr.4
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 05:05:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Dzf69p8DNT8Do9xrYpRbV+rMbyUvt/wN7daUUl+w+dg=;
+        b=H9ETdmVI8BId28iTo3Zu6qZv/+rGY229afKm5vV9Z+QenIhPAYxe/hPK1MKwCytWBK
+         j+Swk/rQsA7HSQjpSSmBUAOk40qoVfixEMbApR0gBkPQwERqpE2tmezN0hKDu+49PsEU
+         KuBSdprN9XyHpjMBbsFidVMN6XaS/7sBEiVM6TUZ57yjMeM4M7Gy3J0fNzw9nb0XKZPB
+         r8hAGwUB3HcJMtgMYYziVeThu5YWAmAJkiIk5UoZS97dVAsyN7LkHJBkaJtm9tlRVdbE
+         IsqtUrErv531hDeDmm9Cay2noqilnb/a0iaT99OlepdJBI7V4Zs/pLpPINiYDcy1hLwt
+         8NFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Dzf69p8DNT8Do9xrYpRbV+rMbyUvt/wN7daUUl+w+dg=;
+        b=X1yIIFVNsS6S+IBqhCXG0k+MIjTNwQxRlRbLgj7Ao/nOORuTck8G4mbTh9QNgIsUco
+         sDoPfNQfI1J73FeQFmHBCN2tBnNO1FPLS6ki05igKLVFXuz8lxXkBJrsEvpk1j22w3CX
+         yDV8JJjHNfwDFtAEVLVUkCHF6zATSObQ+ADh0TQF3rJElhTfzw6sdTda1NcBB/RGIzU2
+         rW05uQjh2Nh6iwFVtowNNo+mDb5P1t8tqMqalRwy56mzieL3DhQ1Qt0z8ToSHoBdVjGh
+         nuG07YC/bhblf1QkvrdzHRMaRmLM+YivUBda1dWw/ZqABmodE2b4Tasec+N3uhqEWw7T
+         HTxQ==
+X-Gm-Message-State: AOAM531zMnD262RHHY+VVUjGxLN8cTBxN44HLXR/I8XdQgJvEMaE/bUZ
+        1aH9PKK1ytD427mFue/5XkGK3hvTE8md+g==
+X-Google-Smtp-Source: ABdhPJzzWcd0zTBjjYKwVxdn9+AR5zPayy2PhXx2uYvGZTGzGsGUFprCVJHUkyMp1UqcejiPTa0XgQ==
+X-Received: by 2002:adf:dcd1:: with SMTP id x17mr28367403wrm.150.1599566727894;
+        Tue, 08 Sep 2020 05:05:27 -0700 (PDT)
+Received: from dell ([91.110.221.179])
+        by smtp.gmail.com with ESMTPSA id h5sm33702555wrt.31.2020.09.08.05.05.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Sep 2020 05:05:27 -0700 (PDT)
+Date:   Tue, 8 Sep 2020 13:05:24 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Xu Yilun <yilun.xu@intel.com>
+Cc:     broonie@kernel.org, linux-kernel@vger.kernel.org, trix@redhat.com,
+        matthew.gerlach@linux.intel.com, russell.h.weight@intel.com,
+        lgoncalv@redhat.com, hao.wu@intel.com, mdf@kernel.org
+Subject: Re: [PATCH v5] mfd: intel-m10-bmc: add Intel MAX 10 BMC chip support
+ for Intel FPGA PAC
+Message-ID: <20200908120524.GR4400@dell>
+References: <1599491813-20819-1-git-send-email-yilun.xu@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1592987548-8653-1-git-send-email-zhangshaokun@hisilicon.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1599491813-20819-1-git-send-email-yilun.xu@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 24-06-20 16:32:28, Shaokun Zhang wrote:
-> get_file_rcu_many, which is called by __fget_files, has used
-> atomic_try_cmpxchg now and it can reduce the access number of the global
-> variable to improve the performance of atomic instruction compared with
-> atomic_cmpxchg. 
+On Mon, 07 Sep 2020, Xu Yilun wrote:
+
+> This patch implements the basic functions of the BMC chip for some Intel
+> FPGA PCIe Acceleration Cards (PAC). The BMC is implemented using the
+> Intel MAX 10 CPLD.
 > 
-> __fget_files does check the @f_mode with mask variable and will do some
-> atomic operations on @f_count, but both are on the same cacheline.
-> Many CPU cores do file access and it will cause much conflicts on @f_count. 
-> If we could make the two members into different cachelines, it shall relax
-> the siutations.
-
-<snip nice unixbench results>
-
-Thanks for the patch! The wins for your microbenchmark heavily sharing
-struct file are nice but I'm not sure your change is a universal win. When
-struct file is not shared (which is far more common), hot code paths like
-__fget() or __fget_light() will now need to fetch two cache lines from
-struct file instead of one. So I don't think that for most users the
-tradeoff is really worth it...
-
-								Honza
-
-> diff --git a/include/linux/fs.h b/include/linux/fs.h
-> index 3f881a892ea7..0faeab5622fb 100644
-> --- a/include/linux/fs.h
-> +++ b/include/linux/fs.h
-> @@ -955,7 +955,6 @@ struct file {
->  	 */
->  	spinlock_t		f_lock;
->  	enum rw_hint		f_write_hint;
-> -	atomic_long_t		f_count;
->  	unsigned int 		f_flags;
->  	fmode_t			f_mode;
->  	struct mutex		f_pos_lock;
-> @@ -979,6 +978,7 @@ struct file {
->  	struct address_space	*f_mapping;
->  	errseq_t		f_wb_err;
->  	errseq_t		f_sb_err; /* for syncfs */
-> +	atomic_long_t		f_count;
->  } __randomize_layout
->    __attribute__((aligned(4)));	/* lest something weird decides that 2 is OK */
->  
-> -- 
-> 2.7.4
+> This BMC chip is connected to the FPGA by a SPI bus. To provide direct
+> register access from the FPGA, the "SPI slave to Avalon Master Bridge"
+> (spi-avmm) IP is integrated in the chip. It converts encoded streams of
+> bytes from the host to the internal register read/write on the Avalon
+> bus. So This driver uses the regmap-spi-avmm for register accessing.
 > 
+> Signed-off-by: Xu Yilun <yilun.xu@intel.com>
+> Signed-off-by: Wu Hao <hao.wu@intel.com>
+> Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+> Reviewed-by: Tom Rix <trix@redhat.com>
+> ---
+> v2: Split out the regmap-spi-avmm part.
+>     Rename the file intel-m10-bmc-main.c to intel-m10-bmc.c, cause
+>      there is only one source file left for this module now.
+> v3: Add the sub devices in mfd_cell.
+>     Some minor fixes.
+> v4: No change.
+> v5: Changes the names of mfd_cell.
+>     Use ATTRIBUTE_GROUPS() to simplify the code.
+>     Use the generic 'ddata' for the instance of struct intel_m10bmc.
+>     More comments to clarify the function check_m10bmc_version().
+>     Some minor fixes.
+> ---
+>  .../ABI/testing/sysfs-driver-intel-m10-bmc         |  15 ++
+>  drivers/mfd/Kconfig                                |  13 ++
+>  drivers/mfd/Makefile                               |   2 +
+>  drivers/mfd/intel-m10-bmc.c                        | 162 +++++++++++++++++++++
+>  include/linux/mfd/intel-m10-bmc.h                  |  56 +++++++
+>  5 files changed, 248 insertions(+)
+>  create mode 100644 Documentation/ABI/testing/sysfs-driver-intel-m10-bmc
+>  create mode 100644 drivers/mfd/intel-m10-bmc.c
+>  create mode 100644 include/linux/mfd/intel-m10-bmc.h
+
+Please see my replies for v4.
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
