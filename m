@@ -2,79 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72D4526168D
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:14:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BB2B261642
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:07:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731903AbgIHROC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 13:14:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57642 "EHLO mail.kernel.org"
+        id S1732046AbgIHRHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 13:07:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57572 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731795AbgIHQTT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:19:19 -0400
-Received: from gaia (unknown [46.69.195.48])
+        id S1731808AbgIHQTU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 12:19:20 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 98CA822404;
-        Tue,  8 Sep 2020 15:16:25 +0000 (UTC)
-Date:   Tue, 8 Sep 2020 16:16:23 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Elena Petrova <lenaptr@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 24/35] arm64: mte: Switch GCR_EL1 in kernel entry and exit
-Message-ID: <20200908151622.GJ25591@gaia>
-References: <cover.1597425745.git.andreyknvl@google.com>
- <ec314a9589ef8db18494d533b6eaf1fd678dc010.1597425745.git.andreyknvl@google.com>
- <20200827103819.GE29264@gaia>
- <CAAeHK+wX-8=tCrn_Tx7NAhC4wVSvooB=CUZ9rS22mcGmkLa8cw@mail.gmail.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 931C32245F;
+        Tue,  8 Sep 2020 15:36:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599579370;
+        bh=8CtIqjoJ1SacnqIRXbMc/xIzgI0xr7BYm3qPaqxHkiQ=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=lsb2Cdm5DaGdBQqqEApuMAvQfHQdgc0+OG5XJDw3dlUu+BZTD4HQ9dLqwyGCaR6Ry
+         YcPcm+6iM7T4YUWSxoBdxDL4JNKHh2+nG6k23x7ma+5PkfsWJJHsijz0g7I0Dqex/L
+         rhwu9qevz0A6Chy2P6TLHwtAaDke6SbSnRy+aeRM=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Rob Clark <robdclark@chromium.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 010/186] drm/msm: enable vblank during atomic commits
+Date:   Tue,  8 Sep 2020 17:22:32 +0200
+Message-Id: <20200908152242.151110870@linuxfoundation.org>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200908152241.646390211@linuxfoundation.org>
+References: <20200908152241.646390211@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAAeHK+wX-8=tCrn_Tx7NAhC4wVSvooB=CUZ9rS22mcGmkLa8cw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 08, 2020 at 03:58:07PM +0200, Andrey Konovalov wrote:
-> On Thu, Aug 27, 2020 at 12:38 PM Catalin Marinas
-> <catalin.marinas@arm.com> wrote:
-> >
-> > On Fri, Aug 14, 2020 at 07:27:06PM +0200, Andrey Konovalov wrote:
-> > > @@ -957,6 +984,7 @@ SYM_FUNC_START(cpu_switch_to)
-> > >       mov     sp, x9
-> > >       msr     sp_el0, x1
-> > >       ptrauth_keys_install_kernel x1, x8, x9, x10
-> > > +     mte_restore_gcr 1, x1, x8, x9
-> > >       scs_save x0, x8
-> > >       scs_load x1, x8
-> > >       ret
-> >
-> > Since we set GCR_EL1 on exception entry and return, why is this needed?
-> > We don't have a per-kernel thread GCR_EL1, it's global to all threads,
-> > so I think cpu_switch_to() should not be touched.
-> 
-> Dropping this line from the diff leads to many false-positives... I'll
-> leave this to Vincenzo.
+From: Rob Clark <robdclark@chromium.org>
 
-I wouldn't expect this to have any effect but maybe the
-mte_thread_switch() code still touches GCR_EL1 (it does this in the
-user-space support, Vincenzo's patches should move that to exception
-entry/return).
+[ Upstream commit 43906812eaab06423f56af5cca9a9fcdbb4ac454 ]
 
+This has roughly the same effect as drm_atomic_helper_wait_for_vblanks(),
+basically just ensuring that vblank accounting is enabled so that we get
+valid timestamp/seqn on pageflip events.
+
+Signed-off-by: Rob Clark <robdclark@chromium.org>
+Tested-by: Stephen Boyd <swboyd@chromium.org>
+Signed-off-by: Rob Clark <robdclark@chromium.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/gpu/drm/msm/msm_atomic.c | 36 ++++++++++++++++++++++++++++++++
+ 1 file changed, 36 insertions(+)
+
+diff --git a/drivers/gpu/drm/msm/msm_atomic.c b/drivers/gpu/drm/msm/msm_atomic.c
+index 5ccfad794c6a5..561bfa48841c3 100644
+--- a/drivers/gpu/drm/msm/msm_atomic.c
++++ b/drivers/gpu/drm/msm/msm_atomic.c
+@@ -27,6 +27,34 @@ int msm_atomic_prepare_fb(struct drm_plane *plane,
+ 	return msm_framebuffer_prepare(new_state->fb, kms->aspace);
+ }
+ 
++/*
++ * Helpers to control vblanks while we flush.. basically just to ensure
++ * that vblank accounting is switched on, so we get valid seqn/timestamp
++ * on pageflip events (if requested)
++ */
++
++static void vblank_get(struct msm_kms *kms, unsigned crtc_mask)
++{
++	struct drm_crtc *crtc;
++
++	for_each_crtc_mask(kms->dev, crtc, crtc_mask) {
++		if (!crtc->state->active)
++			continue;
++		drm_crtc_vblank_get(crtc);
++	}
++}
++
++static void vblank_put(struct msm_kms *kms, unsigned crtc_mask)
++{
++	struct drm_crtc *crtc;
++
++	for_each_crtc_mask(kms->dev, crtc, crtc_mask) {
++		if (!crtc->state->active)
++			continue;
++		drm_crtc_vblank_put(crtc);
++	}
++}
++
+ static void msm_atomic_async_commit(struct msm_kms *kms, int crtc_idx)
+ {
+ 	unsigned crtc_mask = BIT(crtc_idx);
+@@ -44,6 +72,8 @@ static void msm_atomic_async_commit(struct msm_kms *kms, int crtc_idx)
+ 
+ 	kms->funcs->enable_commit(kms);
+ 
++	vblank_get(kms, crtc_mask);
++
+ 	/*
+ 	 * Flush hardware updates:
+ 	 */
+@@ -58,6 +88,8 @@ static void msm_atomic_async_commit(struct msm_kms *kms, int crtc_idx)
+ 	kms->funcs->wait_flush(kms, crtc_mask);
+ 	trace_msm_atomic_wait_flush_finish(crtc_mask);
+ 
++	vblank_put(kms, crtc_mask);
++
+ 	mutex_lock(&kms->commit_lock);
+ 	kms->funcs->complete_commit(kms, crtc_mask);
+ 	mutex_unlock(&kms->commit_lock);
+@@ -221,6 +253,8 @@ void msm_atomic_commit_tail(struct drm_atomic_state *state)
+ 	 */
+ 	kms->pending_crtc_mask &= ~crtc_mask;
+ 
++	vblank_get(kms, crtc_mask);
++
+ 	/*
+ 	 * Flush hardware updates:
+ 	 */
+@@ -235,6 +269,8 @@ void msm_atomic_commit_tail(struct drm_atomic_state *state)
+ 	kms->funcs->wait_flush(kms, crtc_mask);
+ 	trace_msm_atomic_wait_flush_finish(crtc_mask);
+ 
++	vblank_put(kms, crtc_mask);
++
+ 	mutex_lock(&kms->commit_lock);
+ 	kms->funcs->complete_commit(kms, crtc_mask);
+ 	mutex_unlock(&kms->commit_lock);
 -- 
-Catalin
+2.25.1
+
+
+
