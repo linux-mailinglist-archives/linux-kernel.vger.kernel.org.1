@@ -2,284 +2,460 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24305261880
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:56:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE98B261896
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:57:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732126AbgIHR4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 13:56:50 -0400
-Received: from mail-dm6nam10on2095.outbound.protection.outlook.com ([40.107.93.95]:41728
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1731222AbgIHR4o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 13:56:44 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mnadtED5b8XcuWqT9tNdTsaUXOiqAQRejG9VXht9RSUtccxY8MgQg7emO307XcwgufP+UahnG2+KaU9enBLEYfO4G11KvfLH3gGgJO6Q3AzCwLCqsHNUszvFkmu9UR8ONWPNqEQ0SoHgFtKQQoNiHlXROBmd0wnOcMnakIM9wz81VwFUqORhT8CYCXYLDCxWR1xYd825Rsae9EzABROjFC/Nx4SIru3eIEnBux2BeukvN3x5wy1PT14OQLgrzoByA55Cj5fK7f8fYrl+kfjsixHEMwb4CGtJacmbb16c7nX7jVcjLU4swCfsGzE1A0QdqGuVDFAuYb+QSmZSoyqVKA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8Qart2nLW3t6vDdv8Aw9m2h5WOxrVj1/Qxyxft69un8=;
- b=bwDFjNerOrpT8stDkrGeXYwTAk87SmyD4azMOYRkdjG2Z0qZ0eo8aCZgFDE2WofAQTXfcHAkFAnQDnzGjfsZEBHdBbTJy2fL9lGuUIZgkXyDc2wY5sgsS/SjiQrtiS+PH7IjgpR/K/aAhEDdlftUS95wT8REERMMMHdvDuscIHRr/uyTuNo+Q14h3UquurzoajVj8d8OZTC/DVmVaxhtT9of+kBKwwK+j6VmxpD2giur/ShHpw5nh3wd+yVk8VNGdSf7nWVq+PdQv5gVS2bNXKFQgB+1eQ4tnCldK0SEVKoZz+u760Fp5/IgxSkYi1XQ9E5yiMQX7dRG9PRrfyGazA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
- header.from=amperemail.onmicrosoft.com; dkim=pass
- header.d=amperemail.onmicrosoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amperemail.onmicrosoft.com; s=selector1-amperemail-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8Qart2nLW3t6vDdv8Aw9m2h5WOxrVj1/Qxyxft69un8=;
- b=SZFEmWIqU8kVcPatXS8pGLxhW6Xwb7n8Py3vR6BnLIOPR/SDVTTi9aRrl4JFe8AqLFfnN8KAXyfxGcLnCeMN/cPxhGsLlZCpOzaAXO7lRYdlGXmZFsckakyPvp9MDTT/gYF3/quDR6pywxlMSgIgEg6DEWOmXeRNMPf+CW6Vtko=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none
- header.from=amperemail.onmicrosoft.com;
-Received: from BYAPR01MB4598.prod.exchangelabs.com (2603:10b6:a03:8a::18) by
- BYAPR01MB4229.prod.exchangelabs.com (2603:10b6:a03:5d::12) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3370.16; Tue, 8 Sep 2020 17:56:38 +0000
-Received: from BYAPR01MB4598.prod.exchangelabs.com
- ([fe80::419e:edaf:d4b1:3b29]) by BYAPR01MB4598.prod.exchangelabs.com
- ([fe80::419e:edaf:d4b1:3b29%4]) with mapi id 15.20.3370.016; Tue, 8 Sep 2020
- 17:56:38 +0000
-Content-Type: text/plain;
-        charset=us-ascii
-Subject: Re: [PATCH v3] perf: arm_dsu: Support DSU ACPI devices
-From:   Tuan Phan <tuanphan@amperemail.onmicrosoft.com>
-In-Reply-To: <20200907110236.GA12174@willie-the-truck>
-Date:   Tue, 8 Sep 2020 10:56:35 -0700
-Cc:     Tuan Phan <tuanphan@os.amperecomputing.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        patches@amperecomputing.com, Mark Rutland <mark.rutland@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <833F5E77-0E1F-44F3-95BA-4A8D72939BFC@amperemail.onmicrosoft.com>
-References: <1597451980-11405-1-git-send-email-tuanphan@os.amperecomputing.com>
- <20200907110236.GA12174@willie-the-truck>
-To:     Will Deacon <will@kernel.org>
-X-Mailer: Apple Mail (2.3654.0.3)
-X-ClientProxiedBy: CY1PR03CA0016.namprd03.prod.outlook.com (2603:10b6:600::26)
- To BYAPR01MB4598.prod.exchangelabs.com (2603:10b6:a03:8a::18)
+        id S1732178AbgIHR5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 13:57:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732161AbgIHR5f (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 13:57:35 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1806DC061573
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 10:57:34 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 72A353B;
+        Tue,  8 Sep 2020 19:57:32 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1599587852;
+        bh=cfvUdMZzACQX1NDPlS0gX0nzqztCbxhhaXeXA296Og0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AqWZAUGoa9Ox7oNIugTwGvgTy2YIJ8LPn5rpTdlnZOOZtlA/GgoxIxZoXiCzehQuH
+         vPYz8wwjIy94vO9q3IoMcskDIoru60Hza9EMiwfnoR2VqSTC/QfRZtEoZGKye09dVw
+         +cOZqgltQI9i5IrRoonrkuVS2EsCLv84lgNpI+jg=
+Date:   Tue, 8 Sep 2020 20:57:07 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Vinay Simha B N <simhavcs@gmail.com>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] drm/bridge/tc358775: Fixes bus formats read
+Message-ID: <20200908175707.GH11405@pendragon.ideasonboard.com>
+References: <1597217150-22911-1-git-send-email-simhavcs@gmail.com>
+ <20200812095418.GG6057@pendragon.ideasonboard.com>
+ <CAGWqDJ4i=t4Noi7wjGDDhUYkB_uuQ6A-WiMrh1ErKRi2HU9t9w@mail.gmail.com>
+ <20200812131818.GI6057@pendragon.ideasonboard.com>
+ <CAGWqDJ6eHCNXb5dMCUJ785iUp7gjdCk0bB=GuZesVesaVACucQ@mail.gmail.com>
+ <CAGWqDJ5QWyvgJWyink1eH2fHhFWEKSei7XPCdtCRaM1BqRs-Tw@mail.gmail.com>
+ <CAGWqDJ7DQbnxBmL9xt3cJoXkcm4aU1Msf-MiJOi12hd61GbJpg@mail.gmail.com>
+ <CAGWqDJ4eqDNZFz+F2ybaCzuZ=bvr_4hFq=GGMmPCK0zY1KcyPw@mail.gmail.com>
+ <CAGWqDJ4zHO4sjXOkG=iSeBhJn4J9+ccr6CKOKcAEBxU31b4VGw@mail.gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (73.151.56.145) by CY1PR03CA0016.namprd03.prod.outlook.com (2603:10b6:600::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.16 via Frontend Transport; Tue, 8 Sep 2020 17:56:37 +0000
-X-Mailer: Apple Mail (2.3654.0.3)
-X-Originating-IP: [73.151.56.145]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 47cc4beb-7f1a-437e-79af-08d854208895
-X-MS-TrafficTypeDiagnostic: BYAPR01MB4229:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR01MB422905F74B257C0F161FF7F9E0290@BYAPR01MB4229.prod.exchangelabs.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 2eSWqJbY+cE4wz2A1GpElmsUxs3zD91kZ2LXz+d9c5hTC+zmstOLGIzFkjkvaij2srS4cNXLc3H8VZ8fZleiLnMB1tRUAKqEFKIdpB9WCdNk9S0+rnhZSQBLAO5puO9tCaSPFLr0Apa5UuzKw3KcTOnKW3sU5O6TRF0pnnZhf6RUAk6x3MjK45Dtd+K9bqk4RixTizvf5wWBAGzymQvxn/MH84+TmbFFyHH7aeAP8bPwK9dHsuf+tXsHdrISVXnlxB7OMk9uAuTOzJsZichJ3Q1kRUlFUyVuH+2esbC9tIuINvYlUmuVA0vtmkC7o4K/yEEwLvdnhLYDiYKeLpgLKlAUNcmRyY4ShwiSOi0f5/k+FaAA737vsYISf61QG7MGYTeg5Y9RcxrejQ9+IqY+rg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR01MB4598.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(39840400004)(136003)(366004)(346002)(376002)(396003)(66476007)(52116002)(478600001)(66556008)(16526019)(83380400001)(42882007)(2906002)(83170400001)(4326008)(186003)(8936002)(6512007)(966005)(26005)(54906003)(8676002)(33656002)(5660300002)(2616005)(956004)(6506007)(66946007)(53546011)(316002)(6486002)(6916009);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: 4zdoosvm2PYOvHpurVDx9hjQGJVYiXU1JqRoEFIbZ1MVWvp6uRFVb4ssu/2ll7/RgJ2CQbxRU9VtJnJ5wncWDvpcLDqVCz4Ni2yxvivoET8FKH/HKKwdpA4U1S3UVJI+QR+hYXz5CQT+nQYpmpvpp3t2D48Fz51VuUD6hqvOpf+sdWk2io+jv2h7RsBSVbbP216a6THF2rbbQFsobtrx88CBbHYy64C7F7teQwJJ0dV7zdOe25lxbItQ9s7WjoVtDLSxlGLNqHFbtGNe2LQhIt+MonAuFh/ycqYFnjigqIaAn9WLitQsNWxnD57zEQAWuLiq76TBg77rWI5q18bYDuFM9t5pKs5vkosoS3qyfwNbtkHFQfmKVMV1joiq2d32EsXTS7plQ9chnmLEBynqr7AXoibAFZWIXhGx1u3XIsW6lNgUQE/OWE2Gq6UEf0Eisyg/RiDbC4J+lgD8jujQPguWgy8NqzcE/y9xES/5v0PFSvxrq0kE3gk82WIssxAw5lJToT/+mspyiv6cWQIA87U98SHBofz4VS+cxnQY4Wg1/pAbBexijpZxm/j4Dnj8kMyQnTrZbwNWbxliJsHh324N/fYhuyBn1nZyoutdcEaHqJBF8qx+9ztkOdRaGL0O2kX2anFmVUFsXnWHza+NIw==
-X-OriginatorOrg: amperemail.onmicrosoft.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 47cc4beb-7f1a-437e-79af-08d854208895
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR01MB4598.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Sep 2020 17:56:38.4566
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Sa7pe/DGXgOXa0vkwex60Hy6kay5m3VCgS7qikdyP/qu3AuodnE+/KYVXQ6tUog+yE0tgpM7WQNKLfHEDWaApuk5HyFZiABnN9swirC+81rWHchHW+892chz8QBjbfBG
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR01MB4229
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAGWqDJ4zHO4sjXOkG=iSeBhJn4J9+ccr6CKOKcAEBxU31b4VGw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Vinay,
 
+On Tue, Sep 08, 2020 at 11:22:48PM +0530, Vinay Simha B N wrote:
+> laurent,
+> 
+> Please review or give some feedback.
 
-> On Sep 7, 2020, at 4:02 AM, Will Deacon <will@kernel.org> wrote:
->=20
-> [+ Suzuki as I'd like his Ack on this]
->=20
-> On Fri, Aug 14, 2020 at 05:39:40PM -0700, Tuan Phan wrote:
->> Add support for probing device from ACPI node.
->> Each DSU ACPI node and its associated cpus are inside a cluster node.
->>=20
->> Signed-off-by: Tuan Phan <tuanphan@os.amperecomputing.com>
->> ---
->> Changes in v3:
->> - Based on the latest ARM ACPI binding at: https://developer.arm.com/doc=
-umentation/den0093/c/
->>=20
->> Changes in v2:
->> - Removed IRQF_SHARED.
->> - Fixed ACPI runtime detection.
->>=20
->> drivers/perf/arm_dsu_pmu.c | 68 ++++++++++++++++++++++++++++++++++++++++=
-------
->> 1 file changed, 60 insertions(+), 8 deletions(-)
->>=20
->> diff --git a/drivers/perf/arm_dsu_pmu.c b/drivers/perf/arm_dsu_pmu.c
->> index 96ed93c..4be355d 100644
->> --- a/drivers/perf/arm_dsu_pmu.c
->> +++ b/drivers/perf/arm_dsu_pmu.c
->> @@ -11,6 +11,7 @@
->> #define DRVNAME		PMUNAME "_pmu"
->> #define pr_fmt(fmt)	DRVNAME ": " fmt
->>=20
->> +#include <linux/acpi.h>
->> #include <linux/bitmap.h>
->> #include <linux/bitops.h>
->> #include <linux/bug.h>
->> @@ -603,18 +604,21 @@ static struct dsu_pmu *dsu_pmu_alloc(struct platfo=
-rm_device *pdev)
->> }
->>=20
->> /**
->> - * dsu_pmu_dt_get_cpus: Get the list of CPUs in the cluster.
->> + * dsu_pmu_dt_get_cpus: Get the list of CPUs in the cluster
->> + * from device tree.
->>  */
->> -static int dsu_pmu_dt_get_cpus(struct device_node *dev, cpumask_t *mask=
-)
->> +static int dsu_pmu_dt_get_cpus(struct platform_device *pdev)
->> {
->> 	int i =3D 0, n, cpu;
->> 	struct device_node *cpu_node;
->> +	struct dsu_pmu *dsu_pmu =3D
->> +		(struct dsu_pmu *) platform_get_drvdata(pdev);
->>=20
->> -	n =3D of_count_phandle_with_args(dev, "cpus", NULL);
->> +	n =3D of_count_phandle_with_args(pdev->dev.of_node, "cpus", NULL);
->> 	if (n <=3D 0)
->> 		return -ENODEV;
->> 	for (; i < n; i++) {
->> -		cpu_node =3D of_parse_phandle(dev, "cpus", i);
->> +		cpu_node =3D of_parse_phandle(pdev->dev.of_node, "cpus", i);
->> 		if (!cpu_node)
->> 			break;
->> 		cpu =3D of_cpu_node_to_id(cpu_node);
->> @@ -626,11 +630,51 @@ static int dsu_pmu_dt_get_cpus(struct device_node =
-*dev, cpumask_t *mask)
->> 		 */
->> 		if (cpu < 0)
->> 			continue;
->> -		cpumask_set_cpu(cpu, mask);
->> +		cpumask_set_cpu(cpu, &dsu_pmu->associated_cpus);
->> 	}
->> 	return 0;
->> }
->>=20
->> +/**
->> + * dsu_pmu_acpi_get_cpus: Get the list of CPUs in the cluster
->> + * from ACPI.
->> + */
->> +static int dsu_pmu_acpi_get_cpus(struct platform_device *pdev)
->> +{
->> +	int cpu;
->> +	struct dsu_pmu *dsu_pmu =3D (struct dsu_pmu *) platform_get_drvdata(pd=
-ev);
->> +
->> +	/*
->> +	 * A dsu pmu node is inside a cluster parent node along with cpu nodes=
-.
->> +	 * We need to find out all cpus that have the same parent with this pm=
-u.
->> +	 */
->> +	for_each_possible_cpu(cpu) {
->> +		struct acpi_device *acpi_dev =3D ACPI_COMPANION(get_cpu_device(cpu));
->> +
->> +		if (acpi_dev &&
->> +			acpi_dev->parent =3D=3D ACPI_COMPANION(&pdev->dev)->parent)
->> +			cpumask_set_cpu(cpu, &dsu_pmu->associated_cpus);
->> +	}
->> +
->> +	return 0;
->> +}
->> +
->> +static int dsu_pmu_platform_get_cpus(struct platform_device *pdev)
->> +{
->> +	int ret =3D -ENOENT;
->> +	struct fwnode_handle *fwnode =3D dev_fwnode(&pdev->dev);
->> +
->> +	if (IS_ERR_OR_NULL(fwnode))
->> +		return ret;
->> +
->> +	if (is_of_node(fwnode))
->> +		ret =3D dsu_pmu_dt_get_cpus(pdev);
->> +	else if (is_acpi_device_node(fwnode))
->> +		ret =3D dsu_pmu_acpi_get_cpus(pdev);
->> +
->> +	return ret;
->> +}
->> +
->> /*
->>  * dsu_pmu_probe_pmu: Probe the PMU details on a CPU in the cluster.
->>  */
->> @@ -683,7 +727,9 @@ static int dsu_pmu_device_probe(struct platform_devi=
-ce *pdev)
->> 	if (IS_ERR(dsu_pmu))
->> 		return PTR_ERR(dsu_pmu);
->>=20
->> -	rc =3D dsu_pmu_dt_get_cpus(pdev->dev.of_node, &dsu_pmu->associated_cpu=
-s);
->> +	platform_set_drvdata(pdev, dsu_pmu);
->=20
-> Hmm, this is a bit nasty because we haven't finished initialising the
-> dsu_pmu yet. I think it would actually be cleaner if you kept:
->=20
-> 	static int dsu_pmu_dt_get_cpus(struct device_node *dev, cpumask_t *mask)
->=20
-> for the DT case and added:
->=20
-> 	static int dsu_pmu_acpi_get_cpus(struct device *dev, cpumask_t *mask)
->=20
-> for the ACPI case. I suppose the DT case could take the struct device * t=
-oo
-> if you wanted the prototypes to be the same.
+I'm sorry, I have very little time these days :-( Maybe Neil can provide
+feedback ?
 
-Sure, I can do that.
->=20
->> +	rc =3D dsu_pmu_platform_get_cpus(pdev);
->> 	if (rc) {
->> 		dev_warn(&pdev->dev, "Failed to parse the CPUs\n");
->> 		return rc;
->> @@ -705,7 +751,6 @@ static int dsu_pmu_device_probe(struct platform_devi=
-ce *pdev)
->> 	}
->>=20
->> 	dsu_pmu->irq =3D irq;
->> -	platform_set_drvdata(pdev, dsu_pmu);
->> 	rc =3D cpuhp_state_add_instance(dsu_pmu_cpuhp_state,
->> 						&dsu_pmu->cpuhp_node);
->> 	if (rc)
->> @@ -752,11 +797,19 @@ static const struct of_device_id dsu_pmu_of_match[=
-] =3D {
->> 	{ .compatible =3D "arm,dsu-pmu", },
->> 	{},
->> };
->> +MODULE_DEVICE_TABLE(of, dsu_pmu_of_match);
->> +
->> +static const struct acpi_device_id dsu_pmu_acpi_match[] =3D {
->> +	{ "ARMHD500", 0},
->> +	{},
->> +};
->> +MODULE_DEVICE_TABLE(acpi, dsu_pmu_acpi_match);
->>=20
->> static struct platform_driver dsu_pmu_driver =3D {
->> 	.driver =3D {
->> 		.name	=3D DRVNAME,
->> 		.of_match_table =3D of_match_ptr(dsu_pmu_of_match),
->> +		.acpi_match_table =3D ACPI_PTR(dsu_pmu_acpi_match),
->> 		.suppress_bind_attrs =3D true,
->> 	},
->> 	.probe =3D dsu_pmu_device_probe,
->> @@ -826,7 +879,6 @@ static void __exit dsu_pmu_exit(void)
->> module_init(dsu_pmu_init);
->> module_exit(dsu_pmu_exit);
->>=20
->> -MODULE_DEVICE_TABLE(of, dsu_pmu_of_match);
->=20
-> Why have you moved this line?
+> On Tue, Aug 25, 2020 at 7:57 PM Vinay Simha B N <simhavcs@gmail.com> wrote:
+> 
+> > laurent,
+> >
+> > Please review or give some feedback.
+> >
+> > On Thu, Aug 13, 2020 at 9:09 PM Vinay Simha B N <simhavcs@gmail.com>
+> > wrote:
+> > >
+> > > laurent,
+> > >
+> > > The code sequence was a problem. *num_inputs_fmts =
+> > > ARRAY_SIZE(tc_lvds_in_bus_fmts); should come first and then allocate
+> > > the kcalloc.
+> > >
+> > > input_fmts = kcalloc(*num_input_fmts, ARRAY_SIZE(tc_lvds_in_bus_fmts),
+> > >                              GFP_KERNEL);
+> > > ..
+> > >         for (i = 0; i < ARRAY_SIZE(tc_lvds_in_bus_fmts); ++i)
+> > >                 input_fmts[i] = tc_lvds_in_bus_fmts[i];
+> > >
+> > >         *num_inputs_fmts = ARRAY_SIZE(tc_lvds_in_bus_fmts);
+> > >
+> > > So, internally in the drm pipeline get set the input format based on
+> > > the output formats?
+> > >
+> > > On Wed, Aug 12, 2020 at 10:45 PM Vinay Simha B N <simhavcs@gmail.com>
+> > wrote:
+> > > >
+> > > > laurent,
+> > > >
+> > > > if i add the .atomic_get_input_bus_fmts =
+> > > > tc_bridge_get_input_bus_fmts, with the implementation suggested,
+> > > > system does not boot fully, the reason is, we capture all the
+> > > > supported input formats, but not sure where to set the final input
+> > > > format. Please suggest.
+> > > >
+> > > > for (i = 0; i < ARRAY_SIZE(tc_lvds_in_bus_fmts); ++i)
+> > > >                 input_fmts[i] = tc_lvds_in_bus_fmts[i];
+> > > >
+> > > >         *num_input_fmts = ARRAY_SIZE(tc_lvds_in_bus_fmts);
+> > > >
+> > > > On Wed, Aug 12, 2020 at 8:25 PM Vinay Simha B N <simhavcs@gmail.com>
+> > wrote:
+> > > > >
+> > > > > laurent,
+> > > > >
+> > > > > Video data input format :  RGB666 loosely packed 24 bits per pixel
+> > > > > Can we use MEDIA_BUS_FMT_RGB666_1X24_CPADHI? There was no information
+> > > > > wrt CPADHI or for loosely packed
+> > > > >
+> > > > > static const u32 tc_lvds_in_bus_fmts[] = {
+> > > > >         MEDIA_BUS_FMT_RGB565_1X16,
+> > > > >         MEDIA_BUS_FMT_RGB666_1X18,
+> > > > >         MEDIA_BUS_FMT_RGB666_1X24_CPADHI,
+> > > > >         MEDIA_BUS_FMT_RBG888_1X24,
+> > > > > };
+> > > > >
+> > > > > for (i = 0; i < ARRAY_SIZE(tc_lvds_in_bus_fmts); ++i)
+> > > > >                 input_fmts[i] = tc_lvds_in_bus_fmts[i];
+> > > > > >> This will have all the available input formats, but finally which
+> > video data input format chosen?
+> > > > > Since dsi->format = MIPI_DSI_FMT_RGB888 is used does it chooses
+> > > > > MEDIA_BUS_FMT_RBG888_1X24 by the drm pipeline
+> > > > >
+> > > > > On Wed, Aug 12, 2020 at 6:48 PM Laurent Pinchart
+> > > > > <laurent.pinchart@ideasonboard.com> wrote:
+> > > > > >
+> > > > > > Hi Vinay,
+> > > > > >
+> > > > > > On Wed, Aug 12, 2020 at 06:07:52PM +0530, Vinay Simha B N wrote:
+> > > > > > > On Wed, Aug 12, 2020 at 3:24 PM Laurent Pinchart wrote:
+> > > > > > > > On Wed, Aug 12, 2020 at 12:55:50PM +0530, Vinay Simha BN wrote:
+> > > > > > > > > - bus formats read from
+> > drm_bridge_state.output_bus_cfg.format
+> > > > > > > > >   and .atomic_get_input_bus_fmts() instead of connector
+> > > > > > > > >
+> > > > > > > > > Signed-off-by: Vinay Simha BN <simhavcs@gmail.com>
+> > > > > > > > >
+> > > > > > > > > ---
+> > > > > > > > >  v1:
+> > > > > > > > >  * Laurent Pinchart review comments incorporated
+> > > > > > > > >    drm_bridge_state.output_bus_cfg.format
+> > > > > > > > >    instead of connector
+> > > > > > > > > ---
+> > > > > > > > >  drivers/gpu/drm/bridge/tc358775.c | 76
+> > ++++++++++++++++++++++++++++++---------
+> > > > > > > > >  1 file changed, 59 insertions(+), 17 deletions(-)
+> > > > > > > > >
+> > > > > > > > > diff --git a/drivers/gpu/drm/bridge/tc358775.c
+> > b/drivers/gpu/drm/bridge/tc358775.c
+> > > > > > > > > index 7da15cd..5d8714a 100644
+> > > > > > > > > --- a/drivers/gpu/drm/bridge/tc358775.c
+> > > > > > > > > +++ b/drivers/gpu/drm/bridge/tc358775.c
+> > > > > > > > > @@ -271,6 +271,13 @@ struct tc_data {
+> > > > > > > > >       struct gpio_desc        *stby_gpio;
+> > > > > > > > >       u8                      lvds_link; /* single-link or
+> > dual-link */
+> > > > > > > > >       u8                      bpc;
+> > > > > > > > > +     u32                     output_bus_fmt;
+> > > > > > > > > +};
+> > > > > > > > > +
+> > > > > > > > > +static const u32 tc_lvds_out_bus_fmts[] = {
+> > > > > > > > > +     MEDIA_BUS_FMT_RGB888_1X7X4_JEIDA,
+> > > > > > > > > +     MEDIA_BUS_FMT_RGB888_1X7X4_SPWG,
+> > > > > > > > > +     MEDIA_BUS_FMT_RGB666_1X7X3_SPWG,
+> > > > > > > > >  };
+> > > > > > > > >
+> > > > > > > > >  static inline struct tc_data *bridge_to_tc(struct
+> > drm_bridge *b)
+> > > > > > > > > @@ -359,19 +366,6 @@ static void d2l_write(struct i2c_client
+> > *i2c, u16 addr, u32 val)
+> > > > > > > > >                       ret, addr);
+> > > > > > > > >  }
+> > > > > > > > >
+> > > > > > > > > -/* helper function to access bus_formats */
+> > > > > > > > > -static struct drm_connector *get_connector(struct
+> > drm_encoder *encoder)
+> > > > > > > > > -{
+> > > > > > > > > -     struct drm_device *dev = encoder->dev;
+> > > > > > > > > -     struct drm_connector *connector;
+> > > > > > > > > -
+> > > > > > > > > -     list_for_each_entry(connector,
+> > &dev->mode_config.connector_list, head)
+> > > > > > > > > -             if (connector->encoder == encoder)
+> > > > > > > > > -                     return connector;
+> > > > > > > > > -
+> > > > > > > > > -     return NULL;
+> > > > > > > > > -}
+> > > > > > > > > -
+> > > > > > > > >  static void tc_bridge_enable(struct drm_bridge *bridge)
+> > > > > > > > >  {
+> > > > > > > > >       struct tc_data *tc = bridge_to_tc(bridge);
+> > > > > > > > > @@ -380,7 +374,6 @@ static void tc_bridge_enable(struct
+> > drm_bridge *bridge)
+> > > > > > > > >       u32 val = 0;
+> > > > > > > > >       u16 dsiclk, clkdiv, byteclk, t1, t2, t3, vsdelay;
+> > > > > > > > >       struct drm_display_mode *mode;
+> > > > > > > > > -     struct drm_connector *connector =
+> > get_connector(bridge->encoder);
+> > > > > > > > >
+> > > > > > > > >       mode = &bridge->encoder->crtc->state->adjusted_mode;
+> > > > > > > > >
+> > > > > > > > > @@ -451,14 +444,13 @@ static void tc_bridge_enable(struct
+> > drm_bridge *bridge)
+> > > > > > > > >       d2l_write(tc->i2c, LVPHY0, LV_PHY0_PRBS_ON(4) |
+> > LV_PHY0_ND(6));
+> > > > > > > > >
+> > > > > > > > >       dev_dbg(tc->dev, "bus_formats %04x bpc %d\n",
+> > > > > > > > > -             connector->display_info.bus_formats[0],
+> > > > > > > > > +             tc->output_bus_fmt,
+> > > > > > > > >               tc->bpc);
+> > > > > > > > >       /*
+> > > > > > > > >        * Default hardware register settings of tc358775
+> > configured
+> > > > > > > > >        * with MEDIA_BUS_FMT_RGB888_1X7X4_JEIDA jeida-24
+> > format
+> > > > > > > > >        */
+> > > > > > > > > -     if (connector->display_info.bus_formats[0] ==
+> > > > > > > > > -             MEDIA_BUS_FMT_RGB888_1X7X4_SPWG) {
+> > > > > > > > > +     if (tc->output_bus_fmt ==
+> > MEDIA_BUS_FMT_RGB888_1X7X4_SPWG) {
+> > > > > > > > >               /* VESA-24 */
+> > > > > > > > >               d2l_write(tc->i2c, LV_MX0003, LV_MX(LVI_R0,
+> > LVI_R1, LVI_R2, LVI_R3));
+> > > > > > > > >               d2l_write(tc->i2c, LV_MX0407, LV_MX(LVI_R4,
+> > LVI_R7, LVI_R5, LVI_G0));
+> > > > > > > > > @@ -590,6 +582,51 @@ static int tc358775_parse_dt(struct
+> > device_node *np, struct tc_data *tc)
+> > > > > > > > >       return 0;
+> > > > > > > > >  }
+> > > > > > > > >
+> > > > > > > > > +static int tc_bridge_atomic_check(struct drm_bridge *bridge,
+> > > > > > > > > +                               struct drm_bridge_state
+> > *bridge_state,
+> > > > > > > > > +                               struct drm_crtc_state
+> > *crtc_state,
+> > > > > > > > > +                               struct drm_connector_state
+> > *conn_state)
+> > > > > > > > > +{
+> > > > > > > > > +     struct tc_data *tc = bridge_to_tc(bridge);
+> > > > > > > > > +
+> > > > > > > > > +     tc->output_bus_fmt =
+> > bridge_state->output_bus_cfg.format;
+> > > > > > > >
+> > > > > > > > .atomic_check() isn't allowed to modify the device state,
+> > neither the
+> > > > > > > > hardware state nor the software state in drm_bridge or
+> > tc_data. You can
+> > > > > > > > instead access the bridge state directly in
+> > tc_bridge_enable(), with
+> > > > > > > >
+> > > > > > > >         struct drm_bridge_state *state =
+> > > > > > > >                 drm_priv_to_bridge_state(bridge->base.state);
+> > > > > > >
+> > > > > > > Currently the driver is picking up from the dts panel
+> > > > > > > (data-mapping = "vesa-24";) or jeida-24 or jeida-18.
+> > > > > > >
+> > > > > > > Does state->output_bus_cfg.format  get set from the data-mapping?
+> > > > > >
+> > > > > > It should. The drm_panel should take care of that. In
+> > > > > > panel_simple_get_non_edid_modes(), it calls
+> > > > > >
+> > > > > >         if (panel->desc->bus_format)
+> > > > > >
+> >  drm_display_info_set_bus_formats(&connector->display_info,
+> > > > > >
+> > &panel->desc->bus_format, 1);
+> > > > > >
+> > > > > > to initialize the bus format in display_info. Then, the DRM bridge
+> > > > > > helper drm_atomic_bridge_chain_select_bus_fmts() retrieves the
+> > output
+> > > > > > format by calling .atomic_get_output_bus_fmts() if implemented by
+> > the
+> > > > > > last bridge in the chain, or directly from the connector
+> > display_info.
+> > > > > > The last bridge in the chain is a DRM panel bridge, and doesn't
+> > > > > > implement .atomic_get_output_bus_fmts(), so the format from
+> > display_info
+> > > > > > is used, and is stored in the output_bus_cfg.format field of this
+> > bridge
+> > > > > > in select_bus_fmt_recursive().
+> > > > > >
+> > > > > > If something doesn't work according to the plan, I can help you
+> > > > > > debugging.
+> > > > > >
+> > > > > > > > > +
+> > > > > > > > > +     dev_dbg(tc->dev, "output_bus_fmt %04x\n",
+> > tc->output_bus_fmt);
+> > > > > > > > > +
+> > > > > > > > > +     return 0;
+> > > > > > > > > +}
+> > > > > > > > > +
+> > > > > > > > > +static u32 *
+> > > > > > > > > +tc_bridge_get_input_bus_fmts(struct drm_bridge *bridge,
+> > > > > > > > > +                          struct drm_bridge_state
+> > *bridge_state,
+> > > > > > > > > +                          struct drm_crtc_state *crtc_state,
+> > > > > > > > > +                          struct drm_connector_state
+> > *conn_state,
+> > > > > > > > > +                          u32 output_fmt,
+> > > > > > > > > +                          unsigned int *num_input_fmts)
+> > > > > > > > > +{
+> > > > > > > > > +     u32 *input_fmts = NULL;
+> > > > > > > > > +     int i;
+> > > > > > > >
+> > > > > > > > i only takes positive values, so it can be an unsigned int.
+> > > > > > > >
+> > > > > > > > > +
+> > > > > > > > > +     *num_input_fmts = 0;
+> > > > > > > > > +
+> > > > > > > > > +     for (i = 0 ; i < ARRAY_SIZE(tc_lvds_out_bus_fmts) ;
+> > ++i) {
+> > > > > > > > > +             if (output_fmt == tc_lvds_out_bus_fmts[i]) {
+> > > > > > > > > +                     *num_input_fmts = 1;
+> > > > > > > > > +                     input_fmts = kcalloc(*num_input_fmts,
+> > > > > > > > > +
+> > sizeof(*input_fmts),
+> > > > > > > > > +                                          GFP_KERNEL);
+> > > > > > > > > +                     if (!input_fmts)
+> > > > > > > > > +                             return NULL;
+> > > > > > > > > +
+> > > > > > > > > +                     input_fmts[0] = output_fmt;
+> > > > > > > >
+> > > > > > > > I don't think this is right, the input of the bridge isn't
+> > LVDS, is it ?
+> > > > > > >
+> > > > > > > Input to the bridge is DSI, format is already set
+> > > > > > >
+> > > > > > > dsi->format = MIPI_DSI_FMT_RGB888;
+> > > > > > >
+> > > > > > > enum mipi_dsi_pixel_format {
+> > > > > > >         MIPI_DSI_FMT_RGB888,
+> > > > > > >         MIPI_DSI_FMT_RGB666,
+> > > > > > >         MIPI_DSI_FMT_RGB666_PACKED,
+> > > > > > >         MIPI_DSI_FMT_RGB565,
+> > > > > > > };
+> > > > > > > include/drm/drm_mipi_dsi.h
+> > > > > > >
+> > > > > > > Why do we require this atomic_get_input_bus_fmts?
+> > > > > > >
+> > > > > > > Do i need to implement both atomic_get_input_bus_fmts and
+> > > > > > > atomic_get_output_bus_fmts?
+> > > > > >
+> > > > > > .atomic_get_output_bus_fmts() is only need for the last bridge in
+> > the
+> > > > > > chain, and is not mandatory when that bridge supports a single
+> > format.
+> > > > > > As this bridge can't be last (if the output is connect to a panel,
+> > there
+> > > > > > will be a drm_bridge wrapping the drm_panel), you don't have to
+> > > > > > implement that operation.
+> > > > > >
+> > > > > > .atomic_get_input_bus_fmts() is used to negotiate formats along the
+> > > > > > pipeline. The helps the DRM bridge helpers figure out what formats
+> > are
+> > > > > > possible, with the help of bridges that must report what input
+> > formats
+> > > > > > are compatible with a given output format. The DRM bridge helpers
+> > will
+> > > > > > take care of the rest.
+> > > > > >
+> > > > > > So, for this bridge, the input and output formats are decoupled.
+> > The
+> > > > > > bridge can output any of the three supported LVDS formats,
+> > regardless of
+> > > > > > what format it gets at its input. You should thus verify that the
+> > output
+> > > > > > format you receive in this function is supported (and return NULL
+> > if it
+> > > > > > isn't), and then return the list of supported input formats. If you
+> > > > > > don't implement .atomic_get_input_bus_fmts(), then the DRM bridge
+> > > > > > helpers will consider that the input and output formats are the
+> > same,
+> > > > > > and will set the output format of the previous bridge to, for
+> > example,
+> > > > > > MEDIA_BUS_FMT_RGB666_1X7X3_SPWG. It may work if the previous bridge
+> > > > > > doesn't care about its output format, but if it does, then it will
+> > be
+> > > > > > puzzled, as the previous bridge outputs DSI, not LVDS.
+> > > > > >
+> > > > > > > > As far as I can tell, the hardware support transcoding any of
+> > the
+> > > > > > > > supported input formats (RGB565, RGB666 or RGB888) to any of
+> > the
+> > > > > > > > supported output formats. How about the following ?
+> > > > > > > >
+> > > > > > > > static const u32 tc_lvds_in_bus_fmts[] = {
+> > > > > > > >         MEDIA_BUS_FMT_RGB565_1X16,
+> > > > > > > >         MEDIA_BUS_FMT_RGB666_1X18,
+> > > > > > > >         MEDIA_BUS_FMT_RBG888_1X24,
+> > > > > > > > };
+> > > > > > > >
+> > > > > > > > ...
+> > > > > > > >
+> > > > > > > >         u32 *input_fmts;
+> > > > > > > >         unsigned int i;
+> > > > > > > >
+> > > > > > > >         *num_input_fmts = 0;
+> > > > > > > >
+> > > > > > > >         for (i = 0 ; i < ARRAY_SIZE(tc_lvds_out_bus_fmts) ;
+> > ++i) {
+> > > > > > > >                 if (output_fmt == tc_lvds_out_bus_fmts[i])
+> > > > > > > >                         break;
+> > > > > > > >         }
+> > > > > > > >
+> > > > > > > >         if (i == ARRAY_SIZE(tc_lvds_out_bus_fmts))
+> > > > > > > >                 return NULL;
+> > > > > > > >
+> > > > > > > >         input_fmts = kcalloc(*num_input_fmts,
+> > ARRAY_SIZE(tc_lvds_in_bus_fmts),
+> > > > > > > >                              GFP_KERNEL);
+> > > > > > > >         if (!input_fmts)
+> > > > > > > >                 return NULL;
+> > > > > > > >
+> > > > > > > >         for (i = 0; i < ARRAY_SIZE(tc_lvds_in_bus_fmts); ++i)
+> > > > > > > >                 input_fmts[i] = tc_lvds_in_bus_fmts[i];
+> > > > > > > >
+> > > > > > > >         *num_inputs_fmts = ARRAY_SIZE(tc_lvds_in_bus_fmts);
+> > > > > > > >         return input_fmts;
+> > > > > > > >
+> > > > > > > > > +
+> > > > > > > > > +                     break;
+> > > > > > > > > +             }
+> > > > > > > > > +     }
+> > > > > > > > > +
+> > > > > > > > > +     return input_fmts;
+> > > > > > > > > +}
+> > > > > > > > > +
+> > > > > > > > >  static int tc_bridge_attach(struct drm_bridge *bridge,
+> > > > > > > > >                           enum drm_bridge_attach_flags flags)
+> > > > > > > > >  {
+> > > > > > > > > @@ -639,6 +676,11 @@ static int tc_bridge_attach(struct
+> > drm_bridge *bridge,
+> > > > > > > > >  }
+> > > > > > > > >
+> > > > > > > > >  static const struct drm_bridge_funcs tc_bridge_funcs = {
+> > > > > > > > > +     .atomic_duplicate_state =
+> > drm_atomic_helper_bridge_duplicate_state,
+> > > > > > > > > +     .atomic_destroy_state =
+> > drm_atomic_helper_bridge_destroy_state,
+> > > > > > > > > +     .atomic_reset = drm_atomic_helper_bridge_reset,
+> > > > > > > > > +     .atomic_get_input_bus_fmts =
+> > tc_bridge_get_input_bus_fmts,
+> > > > > > > > > +     .atomic_check = tc_bridge_atomic_check,
+> > > > > > > > >       .attach = tc_bridge_attach,
+> > > > > > > > >       .pre_enable = tc_bridge_pre_enable,
+> > > > > > > > >       .enable = tc_bridge_enable,
 
-I moved it to just behind the dsu_pmu_of_match definition as we now also ha=
-ve dsu_pmu_acpi_match.
+-- 
+Regards,
 
-Tuan
->=20
-> Will
-
+Laurent Pinchart
