@@ -2,116 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF5BD260DCA
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 10:41:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64E56260DC5
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 10:40:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730132AbgIHIlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 04:41:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43062 "EHLO
+        id S1730109AbgIHIkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 04:40:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729564AbgIHIlM (ORCPT
+        with ESMTP id S1729993AbgIHIks (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 04:41:12 -0400
-Received: from mail-vk1-xa42.google.com (mail-vk1-xa42.google.com [IPv6:2607:f8b0:4864:20::a42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D347CC061573
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 01:41:11 -0700 (PDT)
-Received: by mail-vk1-xa42.google.com with SMTP id s127so3884375vkg.3
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 01:41:11 -0700 (PDT)
+        Tue, 8 Sep 2020 04:40:48 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93754C061573;
+        Tue,  8 Sep 2020 01:40:48 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id u3so4439740pjr.3;
+        Tue, 08 Sep 2020 01:40:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=WRTNSAPWPCI5iQTaMgS28e7ZlEiCgAQz9GOhoqHIZ8c=;
-        b=dEc205CC8/4AIZ8O0GSYBNX7L5fb8sHXU5jEhBMJScwpGfMVei74/KwzvqX0QW349P
-         85kuC0osIJECUKgljnPnnZE1WvIGKtL4W7GLWDPrpsAuYBGgq2FlCI/dXKE93aCZ964w
-         0o6rlIfF/xRlcygOaU6HJtORZ/LZE6mhwADhuasXUBA7Xnyx2QbTrPX8LkgidS500DbM
-         WdP/dSQEtuy/mwGgtiyhhuWrLX6PZ+AOgTTGItFwMsOb7vXbC8Krk5JPQnsX4hMLtmCK
-         0OVobASijrwcRYvu7tik2WhEQRnXeklYoPH0LJ5FDKX0m1WjW0SvXJqT+i3MMVnav8/0
-         FI+g==
+        bh=KC9tYnJwh82RhmK0pmp4QhAwulz+049YrDznSq/rF2A=;
+        b=eER/9ny5yztJ/nnbbZqWoEAZPcpNczvrg8zmaqlohpkWRovwAGkggPpky3we9Sf2Mb
+         F55YJUKlGF+yz/8ZLTajZE6MxIoqViAbCl1969YyFBPAan2JPzGO9RRBPfY1pGUQZqmc
+         +Om38N1bo++C1z5vpu7fB+NqMiqi+egURX3uLh6ng99ZxmY9uhs9Sop6ZyoZPFNHF7qs
+         PghL4+es2WSwc3/zXTi65OWFlq6TBmn5/Ge56HzQsee0Rna9G1G6AD8wcRf2EIG4cVYM
+         zWez2OLHyjc5e0gjypjEzsC5DbbYfppDtA2xt5hg7ooosA4Yqs1uTVvC5H4CbDHcYz+P
+         cLYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=WRTNSAPWPCI5iQTaMgS28e7ZlEiCgAQz9GOhoqHIZ8c=;
-        b=C9NmXfv+plDN2yI468RVCmTjcafYfu+HdKe3GXeKZqenICAl4Si4QhMwKDnBsFObtO
-         xgiHoqblhZWuyD/Gw2Gvr+PmBjqhiz75yThwPHD8yY9zy/adq+BsZ2nuAFNiXKYtsxpA
-         9HRioTQJzqAciokZCfCJ3FGoeHAUcR57/bxIe/u9BG9LrbphWayT7rlm94MVTOfKdH+N
-         JTZGhoTbV6luvvYQhbhlECxer+NuMY/1G0wGQ7B+RlhqHuHG8ceAVaGuUoRrRoZX00pk
-         GnoMvYZ3MHkvGLfXqj+aUnmZLpXTlL1VsPwrPeAKhLxHzIXPM2SMYGOhzxHDEfHssL64
-         2C3A==
-X-Gm-Message-State: AOAM533l7xCUM8OO4AnSNV0rQtizcYxa8w/MnhkFfIkAVVwdBddS61qz
-        +G6HdbQb6YmVl74/c35UluWBYz0ChDRAOA==
-X-Google-Smtp-Source: ABdhPJxSZjDNIgmNCx2bcOb7St5h1g7JtumK+PpttjT9VfiLNtRWmkvXiblqFaqWn1BigJU76Aw0vw==
-X-Received: by 2002:a1f:600d:: with SMTP id u13mr12314394vkb.3.1599554467382;
-        Tue, 08 Sep 2020 01:41:07 -0700 (PDT)
-Received: from mail-vs1-f46.google.com (mail-vs1-f46.google.com. [209.85.217.46])
-        by smtp.gmail.com with ESMTPSA id b62sm20892vkg.29.2020.09.08.01.41.06
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Sep 2020 01:41:06 -0700 (PDT)
-Received: by mail-vs1-f46.google.com with SMTP id c127so2835686vsc.1
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 01:41:06 -0700 (PDT)
-X-Received: by 2002:a05:6102:150:: with SMTP id a16mr12591106vsr.99.1599554465860;
- Tue, 08 Sep 2020 01:41:05 -0700 (PDT)
+        bh=KC9tYnJwh82RhmK0pmp4QhAwulz+049YrDznSq/rF2A=;
+        b=H+9UqpRTaVUQ6KAGb4Vhmzs3OHbBWpUzapt0lD2cFIFKImIIijmbZ70VQRd3ydqZNU
+         oZvF+1BVakWcHYBMZ9mYSIYX0wtcs10ExYIPmtvhMMd8KgNitq0FEuxF8QVJY0c2iMom
+         IWfQSwiHKMhihT7//mrZyh82PU2lvdPdSNwfgaNVokBivAOZ1meMOdwcI24yq1ecjN4b
+         s9hzq4eXRBofpFkh+i20obSzPlz3+jSNNJKvPYHKeABUw1WVd6g7DuecEPUe9VE40uRn
+         OpbAWNPDYSZh/lT+Pq/8lPTGxakzcgMP3yUnrui06grm9/MNrMKO4gAlfE+s8/o9IjHy
+         MDSQ==
+X-Gm-Message-State: AOAM531SEY2sH5ySMYSrMAuzw0hHTW48H0RzTCFGfjzN2zWbSAMxhZhb
+        JsipWKOCA3IL9NBEW6avGTuRmcke8ui6rwcf4Ww=
+X-Google-Smtp-Source: ABdhPJz2NrrFuREYMpIBuEZRgttjzrXONj8B3hw50alF6es+7jbsUgnOot3te+0FHTtczRaEtqQyVzsOa0WDiLrvhew=
+X-Received: by 2002:a17:90b:fc4:: with SMTP id gd4mr3056664pjb.129.1599554447911;
+ Tue, 08 Sep 2020 01:40:47 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAJht_EOu8GKvdTAeF_rHsaKu7iYOmW8C64bQA21bgKuiANE5Zw@mail.gmail.com>
- <CAJht_EP=g02o2ygihNo=EWd1OuL3HSjmhqgGiwUGrMde=urSUA@mail.gmail.com>
- <CA+FuTSdm35x9nA259JgOWcCWJto9MVMHGGgamPPsgnpsTmPO8g@mail.gmail.com> <CAJht_EPEqUMXNdQLL9d5OtzbZ92Jms7nSUR8bS+cw2Ah5mv6cQ@mail.gmail.com>
-In-Reply-To: <CAJht_EPEqUMXNdQLL9d5OtzbZ92Jms7nSUR8bS+cw2Ah5mv6cQ@mail.gmail.com>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Tue, 8 Sep 2020 10:40:28 +0200
-X-Gmail-Original-Message-ID: <CA+FuTSeJS22R2VYSzcEVvXiUhX79RYE0o3G6V3NKGzQ4UGaJQg@mail.gmail.com>
-Message-ID: <CA+FuTSeJS22R2VYSzcEVvXiUhX79RYE0o3G6V3NKGzQ4UGaJQg@mail.gmail.com>
-Subject: Re: Question about dev_validate_header used in af_packet.c
-To:     Xie He <xie.he.0141@gmail.com>
-Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20200908021021.9123-1-digetx@gmail.com> <20200908021021.9123-15-digetx@gmail.com>
+In-Reply-To: <20200908021021.9123-15-digetx@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 8 Sep 2020 11:40:30 +0300
+Message-ID: <CAHp75Vc9srPR1BYes9ZEo46gxV2BAhZ71ov_JZ_sHrmtgdAr-g@mail.gmail.com>
+Subject: Re: [PATCH v6 14/35] i2c: tegra: Clean up probe function
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        linux-tegra@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 7, 2020 at 11:17 PM Xie He <xie.he.0141@gmail.com> wrote:
+On Tue, Sep 8, 2020 at 5:11 AM Dmitry Osipenko <digetx@gmail.com> wrote:
 >
-> On Mon, Sep 7, 2020 at 2:06 AM Willem de Bruijn
-> <willemdebruijn.kernel@gmail.com> wrote:
-> >
-> > The CAP_SYS_RAWIO exception indeed was requested to be able to
-> > purposely test devices against bad inputs. The gmane link
-> > unfortunately no longer works, but this was the discussion thread:
-> > https://www.mail-archive.com/netdev@vger.kernel.org/msg99920.html
-> >
-> > It zeroes the packet up max_header_len to ensure that an unintentional
-> > short packet will at least not result in reading undefined data. Now
-> > that the dust has settled around the min_header_len/max_header_len
-> > changes, maybe now is a good time to revisit removing that
-> > CAP_SYS_RAWIO loophole.
+> The driver's probe function code is a bit difficult to read. This patch
+> reorders code of the probe function, forming groups of code that are easy
+> to work with.
 >
-> Thank you for your explanation! I can now understand the logic of
-> dev_hard_header. Thanks!
->
-> Do you mean we can now consider removing the ability to bypass the
-> header_ops->validate check? That is what I am thinking about, too!
->
-> I looked at the link you gave me. I see that Alan Cox wanted to keep
-> the ability of intentionally feeding corrupt frames to drivers, to
-> test whether drivers are able to handle incomplete headers. However, I
-> think after we added the header validation in af_packet.c, drivers no
-> longer need to ensure they can handle incomplete headers correctly
-> (because this is already handled by us).
+> The probe tear-down order now matches the driver-removal order.
 
-Which header validation are you referring to?
+> All dev/&pdev->dev are replaced with i2c_dev->dev in order to have uniform
+> code style across the driver.
 
-The intent is to bypass such validation to be able to test device
-drivers. Note that removing that may cause someone's test to start
-failing.
+You see, below is my point why leaving a temporary variable can reduce a churn.
 
->  So there's no point in
-> keeping the ability to test this, either.
+> The "ret" variable renamed to "err" since it only carries error code and
+> the new name clearly shows that.
 
-I don't disagree in principle, but do note the failing tests. Bar any
-strong reasons for change, I'd leave as is.
+Overall it sounds like you need to split this into a few patches.
+
+...
+
+> -       struct device *dev = &pdev->dev;
+
+> -       i2c_dev->rst = devm_reset_control_get_exclusive(&pdev->dev, "i2c");
+
+> +       i2c_dev->rst = devm_reset_control_get_exclusive(i2c_dev->dev, "i2c");
+
+You see, if it had been simple 'dev', this line would have not been changed.
+
+And so on.
+
+-- 
+With Best Regards,
+Andy Shevchenko
