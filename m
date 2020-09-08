@@ -2,72 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DDC7261B4E
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:01:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1816C261C2B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:15:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731547AbgIHTBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:01:32 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:54670 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731307AbgIHQIC (ORCPT
+        id S1730140AbgIHTPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 15:15:31 -0400
+Received: from host18.canaca.com ([66.49.204.205]:47170 "EHLO
+        host18.canaca.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731770AbgIHTPM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:08:02 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: dafna)
-        with ESMTPSA id 72A6129912E
-Subject: Re: [PATCH] regmap: debugfs: potentially duplicate the name string of
- the config
-To:     Mark Brown <broonie@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, rafael@kernel.org,
-        gregkh@linuxfoundation.org, enric.balletbo@collabora.com,
-        kernel@collabora.com, dafna3@gmail.com
-References: <20200908152859.26279-1-dafna.hirschfeld@collabora.com>
- <20200908153559.GF5551@sirena.org.uk>
-From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-Message-ID: <455274f0-718c-9247-da29-6122687720eb@collabora.com>
-Date:   Tue, 8 Sep 2020 18:07:56 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 8 Sep 2020 15:15:12 -0400
+X-Greylist: delayed 1798 seconds by postgrey-1.27 at vger.kernel.org; Tue, 08 Sep 2020 15:15:11 EDT
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=mungewell.org; s=default; h=Content-Transfer-Encoding:Content-Type:
+        Message-ID:References:In-Reply-To:Subject:Cc:To:From:Date:MIME-Version:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=0NuhWQcldBTxDdRHEdA5HQdXlMGQ0kB4cg2kzRhE4nU=; b=jcfqXA0g4BE3azXvQ6oOuI1222
+        MKa3Cexlprcf4yPE18W4BWQ0/DM5kytYj2gcp1NAW2c7KVyQZHd1s8YwT/QvoZFV2AWiRLHgteUz0
+        n9M6JxR5SelYuThhbU8G3H54pK9SdogEWfYxdNrWOJotqHpwcu//xjAjMx0LUYy6sIX8tOKlXiZZ1
+        GoZgq59T4eOo5GxSn5ab2xf56vGIlvdIr3EssbIwp7XOOdiwKkw9p2WEdMliUs9wsdae0BrvkkPma
+        qxRWpeGcYTvle+8Io5zd3NGGD2Z/arf+OchTKZeGg7RqUZM2avubca1m1SdGXL2InMctzgvDLTKO+
+        Fw1SStfA==;
+Received: from [::1] (port=54410 helo=host18.canaca.com)
+        by host18.canaca.com with esmtpa (Exim 4.93)
+        (envelope-from <simon@mungewell.org>)
+        id 1kFicC-0005pR-QJ; Tue, 08 Sep 2020 14:45:13 -0400
 MIME-Version: 1.0
-In-Reply-To: <20200908153559.GF5551@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
+Date:   Tue, 08 Sep 2020 12:45:10 -0600
+From:   simon@mungewell.org
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Takashi Sakamoto <o-takashi@sakamocchi.jp>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: Re: [PATCH 4.19 69/88] ALSA: firewire-digi00x: exclude Avid
+ Adrenaline from detection
+In-Reply-To: <20200908152224.621006485@linuxfoundation.org>
+References: <20200908152221.082184905@linuxfoundation.org>
+ <20200908152224.621006485@linuxfoundation.org>
+User-Agent: Roundcube Webmail/1.4.7
+Message-ID: <e214540d9645c4e285ee7f6475476973@mungewell.org>
+X-Sender: simon@mungewell.org
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+X-OutGoing-Spam-Status: No, score=-1.0
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - host18.canaca.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - mungewell.org
+X-Get-Message-Sender-Via: host18.canaca.com: authenticated_id: simon@mungewell.org
+X-Authenticated-Sender: host18.canaca.com: simon@mungewell.org
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-From-Rewrite: unmodified, already matched
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, thank you for the fast review,
-
-Am 08.09.20 um 17:35 schrieb Mark Brown:
-> On Tue, Sep 08, 2020 at 05:28:59PM +0200, Dafna Hirschfeld wrote:
->> In function regmap_debugfs_init the name of the regmap_config is assigned
->> in a node of regmap_debugfs_early_list to be used later after regmap
->> is initialized. It is unknown how and when the name is allocated and freed.
->> Therefore the name should be copied to the node using 'kstrdup_const'.
+On 2020-09-08 09:26, Greg Kroah-Hartman wrote:
+> From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 > 
-> It does not follow that the name should be copied, it equally follows
-> (and is expected by the API given that the common case is that the name
-> is a static string assigned at build time) that the caller should not
-> free the string while the regmap is active.
-
-I see that the same copy is already done in function __regmap_init in drivers/base/regmap/regmap.c
-added in patch 8253bb3f82554 "regmap: potentially duplicate the name string stored in regmap"
-so I thought I'll do the same.
-
+> commit acd46a6b6de88569654567810acad2b0a0a25cea upstream.
 > 
->> This fixes an error
->> "debugfs: Directory 'dummy-' with parent 'regmap' already present!"
->> where the name was freed in function of_syscon_register before
->> it was accessed.
+> Avid Adrenaline is reported that ALSA firewire-digi00x driver is bound 
+> to.
+> However, as long as he investigated, the design of this model is hardly
+> similar to the one of Digi 00x family. It's better to exclude the model
+> from modalias of ALSA firewire-digi00x driver.
 > 
-> Fix the caller.  It is *very* much unclear to me why a syscon would be
-> assigning a name for a regmap it creates in the first place.
-
-I'll have a deeper look.
-
-Thanks,
-Dafna
-
+> This commit changes device entries so that the model is excluded.
 > 
+
+Just to add my 'ACK-BY'. Yes, the Avid Adrenaline seems to be based 
+around a totally different method of control and will likely need a 
+separate driver.
+
+I believe that this includes the following devices: AVID Adrenaline, 
+AVID Mojo, AVID Mojo SDI, AVID AV Option and others... from Windows 
+driver 'FlameThrower' inf.
+--
+[AvidHardware.NTx86]
+%Avid_Gryphon%		= Flamethrower, 1394\Avid_Technology&Gryphon
+%Avid_Raven%		= Flamethrower, 1394\Avid_Technology&Raven
+%Avid_Adrenaline%	= Flamethrower, 1394\Avid_Technology&Adrenaline
+%Avid_FireBobPro%	= Flamethrower, 1394\Avid_Technology&FireBobPro
+%Avid_Mojo%		= Flamethrower, 1394\Avid_Technology&Mojo
+%Avid_FireBoB%		= Flamethrower, 1394\Avid_Technology&FireBoB
+%Avid_FireBoBV2%	= Flamethrower, 1394\Avid_Technology&FireBoBV2
+%Avid_DigiBoB%		= Flamethrower, 1394\Avid_Technology&DigiBoB
+%Avid_AVoptionV10%	= Flamethrower, 1394\Avid_Technology&AVoptionV10
+--
+
+There are some details in this thread, for anyone interested in 
+following up.
+https://sourceforge.net/p/ffado/mailman/message/37078754/
+
+Cheers,
+Simon.
+
+PS. Have a Mojo SDI inbound, will confirm when it arrives.
