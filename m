@@ -2,204 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1401261ECC
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:55:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BF1A261E03
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:45:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730985AbgIHTzm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:55:42 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:2295 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730602AbgIHPhV (ORCPT
+        id S1726490AbgIHTpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 15:45:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53210 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730834AbgIHPvk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:37:21 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f57a4ea0003>; Tue, 08 Sep 2020 08:36:10 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Tue, 08 Sep 2020 08:37:01 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Tue, 08 Sep 2020 08:37:01 -0700
-Received: from [10.2.173.224] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 8 Sep
- 2020 15:36:55 +0000
-From:   Zi Yan <ziy@nvidia.com>
-To:     David Hildenbrand <david@redhat.com>
-CC:     Roman Gushchin <guro@fb.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>, <linux-mm@kvack.org>,
-        Rik van Riel <riel@surriel.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        David Nellans <dnellans@nvidia.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH 00/16] 1GB THP support on x86_64
-Date:   Tue, 8 Sep 2020 11:36:53 -0400
-X-Mailer: MailMate (1.13.1r5705)
-Message-ID: <DD3CCCDB-55CA-4981-AF3D-14853C8855C6@nvidia.com>
-In-Reply-To: <32e979c4-68c0-f309-d9d7-d274724bd23e@redhat.com>
-References: <20200902180628.4052244-1-zi.yan@sent.com>
- <20200903142300.bjq2um5y5nwocvar@box>
- <20200903163020.GG60440@carbon.dhcp.thefacebook.com>
- <8e677ead-206d-08dd-d73e-569bd3803e3b@redhat.com>
- <7E20392E-5ED7-4C22-9555-F3BAABF3CBE9@nvidia.com>
- <32e979c4-68c0-f309-d9d7-d274724bd23e@redhat.com>
+        Tue, 8 Sep 2020 11:51:40 -0400
+Received: from mail-oo1-xc44.google.com (mail-oo1-xc44.google.com [IPv6:2607:f8b0:4864:20::c44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13A77C06136D
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 08:39:15 -0700 (PDT)
+Received: by mail-oo1-xc44.google.com with SMTP id z1so4042361ooj.3
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 08:39:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=vBukYCVJ0dPzfynBSfYWtIL6LfPb6kYIege12EwUKjA=;
+        b=T63IxB0puDzrheBenrRjLNYbacMf7qUkmO6Wfuaj8oGyxkHKI2Ye9T3wzxtikbG/jv
+         bYhDh5/q9/kOp2VwZTF/Fa+HzHT7Hya0h+bcAL5ImpauE2zGkAojSCjj21OJTR//7Q/0
+         j1PWQHX8n8/94B8wnCuCCyvhZ61MLKOU2o37GoeFmaAiH05bqEVTVId5tffG7X1PdkeO
+         YalM3Vy47YGexvYGu2gW0OnbauxBLxm5oIqibh7TeGfsEHtNiO28E3CkvjSARq97Bl8L
+         eOMfiEIa5ndBEAKQoPzqSoCuvvH8Ytm8xjgBVw/2PVE9cwepw3+xua9f4ehIGz5Sj7lq
+         0ukA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vBukYCVJ0dPzfynBSfYWtIL6LfPb6kYIege12EwUKjA=;
+        b=fcaiSZ4euMGV2IG5b7dI7XfD9K+rbS4dsfrEVlhKOimo2pOrKYROdOl/KBEUCKKS78
+         xVI1lVOU3YZ0a0E3z+7m3Q6o8KCi/+nZwLRZbYHFFLi32y6EJf3CyaZauNPGm3T04+BB
+         PzdjB3OFMyK/zWgYTO/scxLzQafabI1eI4wl1nyZSiBqxeIVKZeihRQIH8fxfIkM5xZY
+         DieM7ipB2EVvHk5Fa8BxKtYDNLJkAzM7K4e5cUAxUEwQUAVvCPh0y++e4/mjvO3xM3oB
+         5FPIyoMyD+ab+FYwcwEIkiMhatt6St6PM6GALexvm7a9eCshg9sgIMdeuXH9wSgRMKm2
+         bXTQ==
+X-Gm-Message-State: AOAM531iezV+gh6/Rlh9iWIKnmwefNYjsu8tO5VUFTA6/riwgAvee9C1
+        RFfsroWuTldmFpdY5PqLy5o4Kw==
+X-Google-Smtp-Source: ABdhPJyBfKsVbBZmtm2xq52k9JBNoPkKHfWeqCb/fyPZs+uEZF3BunlkPpOYAXIIG71UjOJYDRIimA==
+X-Received: by 2002:a4a:d8ce:: with SMTP id c14mr18642612oov.90.1599579554861;
+        Tue, 08 Sep 2020 08:39:14 -0700 (PDT)
+Received: from yoga ([2605:6000:e5cb:c100:8898:14ff:fe6d:34e])
+        by smtp.gmail.com with ESMTPSA id 34sm1219242otg.23.2020.09.08.08.39.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Sep 2020 08:39:14 -0700 (PDT)
+Date:   Tue, 8 Sep 2020 10:39:11 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     rjw@rjwysocki.net, viresh.kumar@linaro.org, robh+dt@kernel.org,
+        agross@kernel.org, amitk@kernel.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, dmitry.baryshkov@linaro.org,
+        tdas@codeaurora.org
+Subject: Re: [PATCH 5/7] cpufreq: qcom-hw: Use regmap for accessing hardware
+ registers
+Message-ID: <20200908153911.GR3715@yoga>
+References: <20200908075716.30357-1-manivannan.sadhasivam@linaro.org>
+ <20200908075716.30357-6-manivannan.sadhasivam@linaro.org>
 MIME-Version: 1.0
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: multipart/signed;
-        boundary="=_MailMate_E36C6348-2757-495F-94C9-CA851200B62D_=";
-        micalg=pgp-sha512; protocol="application/pgp-signature"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1599579370; bh=BY2Rg+OBHhwtMI2gUVd2Yb17wcPMtugiz/i1Civ9ofM=;
-        h=X-PGP-Universal:From:To:CC:Subject:Date:X-Mailer:Message-ID:
-         In-Reply-To:References:MIME-Version:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type;
-        b=HKgJp6LGhRt7xFygnKcYbLEYJ7esAW77s9zrEqqsPxVvA5/p49LYYimBpU2aFG7gT
-         qG8U/NiZwZPVkEPA5EWGcUSjmMFIe9gc6tFu8Bgn3Sxe2sQ+w5GGH4baZk+Ueitz4l
-         nkVSA8fAD15v4m6NPf+b/1cn1nf0uQnh1xclPaYD7N4/hMaCfBR9GhD2QVwjb1hXOS
-         U34vE0kgTLi2/hy6SaQRh03HtegYIGIB9NgYZeIv6LZ6NuJQCbyVvL2sZgI9DADuv2
-         DOrNT8iOQvxNYB/HPBId1tJfebPXpYWvIGnuh5zGlb6QO/PhW/njZ7p8bZo7p8JY0r
-         G2ji/zXBkh54Q==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200908075716.30357-6-manivannan.sadhasivam@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=_MailMate_E36C6348-2757-495F-94C9-CA851200B62D_=
-Content-Type: text/plain; charset="UTF-8"; markup=markdown
-Content-Transfer-Encoding: quoted-printable
+On Tue 08 Sep 02:57 CDT 2020, Manivannan Sadhasivam wrote:
 
-On 8 Sep 2020, at 10:22, David Hildenbrand wrote:
+> Use regmap for accessing cpufreq registers in hardware.
+> 
 
-> On 08.09.20 16:05, Zi Yan wrote:
->> On 8 Sep 2020, at 7:57, David Hildenbrand wrote:
->>
->>> On 03.09.20 18:30, Roman Gushchin wrote:
->>>> On Thu, Sep 03, 2020 at 05:23:00PM +0300, Kirill A. Shutemov wrote:
->>>>> On Wed, Sep 02, 2020 at 02:06:12PM -0400, Zi Yan wrote:
->>>>>> From: Zi Yan <ziy@nvidia.com>
->>>>>>
->>>>>> Hi all,
->>>>>>
->>>>>> This patchset adds support for 1GB THP on x86_64. It is on top of
->>>>>> v5.9-rc2-mmots-2020-08-25-21-13.
->>>>>>
->>>>>> 1GB THP is more flexible for reducing translation overhead and inc=
-reasing the
->>>>>> performance of applications with large memory footprint without ap=
-plication
->>>>>> changes compared to hugetlb.
->>>>>
->>>>> This statement needs a lot of justification. I don't see 1GB THP as=
- viable
->>>>> for any workload. Opportunistic 1GB allocation is very questionable=
+The content of the patch looks good, but in itself I don't see the
+reason for migrating to regmap.
 
->>>>> strategy.
->>>>
->>>> Hello, Kirill!
->>>>
->>>> I share your skepticism about opportunistic 1 GB allocations, howeve=
-r it might be useful
->>>> if backed by an madvise() annotations from userspace application. In=
- this case,
->>>> 1 GB THPs might be an alternative to 1 GB hugetlbfs pages, but with =
-a more convenient
->>>> interface.
->>>
->>> I have concerns if we would silently use 1~GB THPs in most scenarios
->>> where be would have used 2~MB THP. I'd appreciate a trigger to
->>> explicitly enable that - MADV_HUGEPAGE is not sufficient because some=
+If you have subsequent patches, that would benefit from describing the
+hardware differences using reg_fields then it might be a good idea, but
+I would suggest that you postpone this patch until there's an actual
+beneficiary.
 
->>> applications relying on that assume that the THP size will be 2~MB
->>> (especially, if you want sparse, large VMAs).
->>
->> This patchset is not intended to silently use 1GB THP in place of 2MB =
-THP.
->> First of all, there is a knob /sys/kernel/mm/transparent_hugepage/enab=
-le_1GB
->> to enable 1GB THP explicitly. Also, 1GB THP is allocated from a reserv=
-ed CMA
->> region (although I had alloc_contig_pages as a fallback, which can be =
-removed
->> in next version), so users need to add hugepage_cma=3DnG kernel parame=
-ter to
->> enable 1GB THP allocation. If a finer control is necessary, we can add=
+Regards,
+Bjorn
 
->> a new MADV_HUGEPAGE_1GB for 1GB THP.
->
-> Thanks for the information - I would have loved to see important
-> information like that (esp. how to use) in the cover letter.
->
-> So what you propose is (excluding alloc_contig_pages()) really just
-> automatically using (previously reserved) 1GB huge pages as 1GB THP
-> instead of explicitly using them in an application using hugetlbfs.
-> Still, not convinced how helpful that actually is - most certainly you
-> really want a mechanism to control this per application (+ maybe make
-> the application indicate actual ranges where it makes sense - but then
-> you can directly modify the application to use hugetlbfs).
->
-> I guess the interesting thing of this approach is that we can
-> mix-and-match THP of differing granularity within a single mapping -
-> whereby a hugetlbfs allocation would fail in case there isn't sufficien=
-t
-> 1GB pages available. However, there are no guarantees for applications
-> anymore (thinking about RT KVM and similar, we really want gigantic
-> pages and cannot tolerate falling back to smaller granularity).
-
-I agree that currently THP allocation does not provide a strong guarantee=
-
-like hugetlbfs, which can pre-allocate pages at boot time. For users like=
-
-RT KVM and such, pre-allocated hugetlb might be the only choice, since
-allocating huge pages from CMA (either hugetlb or 1GB THP) would fail
-if some pages are pinned and scattered in the CMA that could prevent
-huge page allocation.
-
-In other cases, if the user can tolerate fall backs but do not like the
-unpredictable huge page formation outcome, we could add an madvise()
-option like Michal suggested [1], so the user will know whether he gets
-huge pages or not and can act accordingly.
-
-
-> What are intended use cases/applications that could benefit? I doubt
-> databases and virtualization are really a good fit - they know how to
-> handle hugetlbfs just fine.
-
-Romand and Jason have provided some use cases [2,3]
-
-[1]https://lore.kernel.org/linux-mm/20200907072014.GD30144@dhcp22.suse.cz=
-/
-[2]https://lore.kernel.org/linux-mm/20200903162527.GF60440@carbon.dhcp.th=
-efacebook.com/
-[3]https://lore.kernel.org/linux-mm/20200903165051.GN24045@ziepe.ca/
-
-=E2=80=94
-Best Regards,
-Yan Zi
-
---=_MailMate_E36C6348-2757-495F-94C9-CA851200B62D_=
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQJDBAEBCgAtFiEEh7yFAW3gwjwQ4C9anbJR82th+ooFAl9XpRUPHHppeUBudmlk
-aWEuY29tAAoJEJ2yUfNrYfqK1uwQAJVBloJOguYF47OGb8jtp7mlxhCe/MZUQlB+
-Gn+XYlnQyRoKWPROJc+hHShLKPnYQuNhXsGUwNDj98DOS++8soacHvKyz53sA/7T
-0q9F8qlUrRgplmLNZsxJX5mtDikYRt5kZfbCLkVDdNpedO87qk09pGwsR5gi6Z9M
-ujmgnMGcwQpxSR9Y631eBtqZ21QlgjCJH0+t+KELoYep+abuzvQ0baGOPmSU6++a
-acLzrDFNHeTXv1zQ5dW2IVOrO4PPY/A+fHgktyCcS48iv+O6NcoGl8Sh2SfMkkMS
-tzVdzlJFsUHGiLdD2BhexDJtL9qbdXL6jF0H6EjU63wQvEvpxLNio+piYyqJqQC6
-R/QvrN1rAKn0TgdGHx7/q7ffKB3uMTnSTac7nH40MDY86/GpN7Xfdzk9/1bp44rr
-8tqP0uYlDQbrMPplqumhI+lseY+niR6QIeTcUrmSE9xYwBtOMnCAt99CTpyGzRf5
-Yo8N+dmxNv1z9jBSmkFdlXjcYwagkXULtNsLR1WwEu7t7uUMo/gfXEmABPwvrmL0
-QzR3w5sl0upew4/HpKbZetSUWIyD8u96BOZG0Q7/MsP39teu9fMP3W0lbR2bRhNZ
-bTIjf2Z/U+srI90Z9pX5SvCt7dp6SHbG77BVLU74atUIj7Fvjru61fFw0CacpfeE
-mKHjjGVd
-=pOHz
------END PGP SIGNATURE-----
-
---=_MailMate_E36C6348-2757-495F-94C9-CA851200B62D_=--
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> ---
+>  drivers/cpufreq/qcom-cpufreq-hw.c | 55 ++++++++++++++++++++++++++-----
+>  1 file changed, 47 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/cpufreq/qcom-cpufreq-hw.c b/drivers/cpufreq/qcom-cpufreq-hw.c
+> index 41853db7c9b8..de816bcafd33 100644
+> --- a/drivers/cpufreq/qcom-cpufreq-hw.c
+> +++ b/drivers/cpufreq/qcom-cpufreq-hw.c
+> @@ -12,6 +12,7 @@
+>  #include <linux/of_address.h>
+>  #include <linux/of_platform.h>
+>  #include <linux/pm_opp.h>
+> +#include <linux/regmap.h>
+>  #include <linux/slab.h>
+>  
+>  #define LUT_MAX_ENTRIES			40U
+> @@ -32,6 +33,7 @@ struct qcom_cpufreq_soc_data {
+>  
+>  struct qcom_cpufreq_data {
+>  	void __iomem *base;
+> +	struct regmap *regmap;
+>  	const struct qcom_cpufreq_soc_data *soc_data;
+>  };
+>  
+> @@ -85,8 +87,11 @@ static int qcom_cpufreq_hw_target_index(struct cpufreq_policy *policy,
+>  	struct qcom_cpufreq_data *data = policy->driver_data;
+>  	const struct qcom_cpufreq_soc_data *soc_data = data->soc_data;
+>  	unsigned long freq = policy->freq_table[index].frequency;
+> +	int ret;
+>  
+> -	writel_relaxed(index, data->base + soc_data->reg_perf_state);
+> +	ret = regmap_write(data->regmap, soc_data->reg_perf_state, index);
+> +	if (ret)
+> +		return ret;
+>  
+>  	if (icc_scaling_enabled)
+>  		qcom_cpufreq_set_bw(policy, freq);
+> @@ -102,6 +107,7 @@ static unsigned int qcom_cpufreq_hw_get(unsigned int cpu)
+>  	const struct qcom_cpufreq_soc_data *soc_data;
+>  	struct cpufreq_policy *policy;
+>  	unsigned int index;
+> +	int ret;
+>  
+>  	policy = cpufreq_cpu_get_raw(cpu);
+>  	if (!policy)
+> @@ -110,7 +116,10 @@ static unsigned int qcom_cpufreq_hw_get(unsigned int cpu)
+>  	data = policy->driver_data;
+>  	soc_data = data->soc_data;
+>  
+> -	index = readl_relaxed(data->base + soc_data->reg_perf_state);
+> +	ret = regmap_read(data->regmap, soc_data->reg_perf_state, &index);
+> +	if (ret)
+> +		return 0;
+> +
+>  	index = min(index, LUT_MAX_ENTRIES - 1);
+>  
+>  	return policy->freq_table[index].frequency;
+> @@ -123,9 +132,12 @@ static unsigned int qcom_cpufreq_hw_fast_switch(struct cpufreq_policy *policy,
+>  	const struct qcom_cpufreq_soc_data *soc_data = data->soc_data;
+>  	unsigned int index;
+>  	unsigned long freq;
+> +	int ret;
+>  
+>  	index = policy->cached_resolved_idx;
+> -	writel_relaxed(index, data->base + soc_data->reg_perf_state);
+> +	ret = regmap_write(data->regmap, soc_data->reg_perf_state, index);
+> +	if (ret)
+> +		return 0;
+>  
+>  	freq = policy->freq_table[index].frequency;
+>  	arch_set_freq_scale(policy->related_cpus, freq,
+> @@ -171,14 +183,24 @@ static int qcom_cpufreq_hw_read_lut(struct device *cpu_dev,
+>  	}
+>  
+>  	for (i = 0; i < LUT_MAX_ENTRIES; i++) {
+> -		data = readl_relaxed(drv_data->base + soc_data->reg_freq_lut +
+> -				      i * soc_data->lut_row_size);
+> +		ret = regmap_read(drv_data->regmap, soc_data->reg_freq_lut +
+> +				  i * soc_data->lut_row_size, &data);
+> +		if (ret) {
+> +			kfree(table);
+> +			return ret;
+> +		}
+> +
+>  		src = FIELD_GET(LUT_SRC, data);
+>  		lval = FIELD_GET(LUT_L_VAL, data);
+>  		core_count = FIELD_GET(LUT_CORE_COUNT, data);
+>  
+> -		data = readl_relaxed(drv_data->base + soc_data->reg_volt_lut +
+> -				      i * soc_data->lut_row_size);
+> +		ret = regmap_read(drv_data->regmap, soc_data->reg_volt_lut +
+> +				  i * soc_data->lut_row_size, &data);
+> +		if (ret) {
+> +			kfree(table);
+> +			return ret;
+> +		}
+> +
+>  		volt = FIELD_GET(LUT_VOLT, data) * 1000;
+>  
+>  		if (src)
+> @@ -248,6 +270,13 @@ static void qcom_get_related_cpus(int index, struct cpumask *m)
+>  	}
+>  }
+>  
+> +static struct regmap_config qcom_cpufreq_regmap = {
+> +	.reg_bits = 32,
+> +	.reg_stride = 4,
+> +	.val_bits = 32,
+> +	.fast_io = true,
+> +};
+> +
+>  static const struct qcom_cpufreq_soc_data qcom_soc_data = {
+>  	.reg_enable = 0x0,
+>  	.reg_freq_lut = 0x110,
+> @@ -274,6 +303,7 @@ static int qcom_cpufreq_hw_cpu_init(struct cpufreq_policy *policy)
+>  	struct qcom_cpufreq_data *data;
+>  	const struct of_device_id *match;
+>  	int ret, index;
+> +	u32 val;
+>  
+>  	cpu_dev = get_cpu_device(policy->cpu);
+>  	if (!cpu_dev) {
+> @@ -316,9 +346,18 @@ static int qcom_cpufreq_hw_cpu_init(struct cpufreq_policy *policy)
+>  
+>  	data->soc_data = match->data;
+>  	data->base = base;
+> +	data->regmap = devm_regmap_init_mmio(dev, base, &qcom_cpufreq_regmap);
+> +	if (IS_ERR(data->regmap)) {
+> +		ret = PTR_ERR(data->regmap);
+> +		goto error;
+> +	}
+>  
+>  	/* HW should be in enabled state to proceed */
+> -	if (!(readl_relaxed(base + data->soc_data->reg_enable) & 0x1)) {
+> +	ret = regmap_read(data->regmap, data->soc_data->reg_enable, &val);
+> +	if (ret)
+> +		goto error;
+> +
+> +	if (!(val & 0x1)) {
+>  		dev_err(dev, "Domain-%d cpufreq hardware not enabled\n", index);
+>  		ret = -ENODEV;
+>  		goto error;
+> -- 
+> 2.17.1
+> 
