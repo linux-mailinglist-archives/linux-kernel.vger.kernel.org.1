@@ -2,118 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 949602610E0
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 13:39:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15E3B2610B5
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 13:33:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728982AbgIHLit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 07:38:49 -0400
-Received: from mx2.suse.de ([195.135.220.15]:53366 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729922AbgIHL1p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 07:27:45 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id ED701AD7A;
-        Tue,  8 Sep 2020 11:27:43 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id E8CDF1E1325; Tue,  8 Sep 2020 13:27:42 +0200 (CEST)
-Date:   Tue, 8 Sep 2020 13:27:42 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Cc:     milan.opensource@gmail.com, lkml <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        Jeff Layton <jlayton@kernel.org>
-Subject: Re: [PATCH] fsync.2: ERRORS: add EIO and ENOSPC
-Message-ID: <20200908112742.GA2956@quack2.suse.cz>
-References: <1598685186-27499-1-git-send-email-milan.opensource@gmail.com>
- <CAKgNAkiTjtdaQxbCYS67+SdqSPaGzJnfLEEMFgcoXjHLDxgemw@mail.gmail.com>
+        id S1729650AbgIHLda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 07:33:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40594 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730054AbgIHL2i (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 07:28:38 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B04BC061756
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 04:28:38 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id gf14so7874738pjb.5
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 04:28:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=1ePZz+j1mC26EcXRnLkpEleJBzy12DWxPVVwiIwKyc0=;
+        b=XDg4/Uku5/VpdAi0ks3tspgOErVskD47V+JCTvPLbAaCnNjXbzfw0TTt400bpp1D+8
+         y21jfjFYMVXGxhgd7TBioi175NEgOo7AJ6a69HpCzcu76LJIlc1Vsr5hxOSLzn+xy60H
+         iln98V6VsxN2apajg1j4pMGQ/UX2fbhvF4P6L52Ep4ngu5m791p+QVz8EvZJn8W6OoMA
+         DE5FQMkIL/x8oo4+FHaOLz4iBTiyfFBZdXR5lIixDOoWhj6FpDmOsjGmSTL4dmn/2c8d
+         fbrvXY6MH3aljUf/3nVdIYo4q7mRfdoPMEMhVrvAccPp6eNOHBUlPAbwSVK5u3yvjQsN
+         iEFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=1ePZz+j1mC26EcXRnLkpEleJBzy12DWxPVVwiIwKyc0=;
+        b=tOlcQWRnLUZlqlzNxgbbKL2BOhEoy3gg2u+QNLTi8ymW93oJeKeAE58MfUVt4mXSZx
+         vCarC/ZXFU95tUHrgiIzYLjS1b7wb5SDJOiZOiXOIByx+krysyfqkb+M6TAO2e/k1YHP
+         h3GHke/PqFJmL9/qZ1AYKMps7A08W+zsmlIYCnuaP8qfH94741U5rXIJzs7KxONE/h15
+         ak//1QeT1IUOSh82kq/89nB/4JvxOzygzM/PygFx+gXCIUIlQBU+i0iswRNEMH9zwyLn
+         7aa9rSE/IVrmcYJWgXNBWK3V/jdoYdFLREQZin4qDiVXw20mBB2zRhzOefVe0WFDi+2A
+         tTCg==
+X-Gm-Message-State: AOAM53037+M1jLNskkKxLY1eLVNzQCn/bzl0kFai/VoPvKpRvCJq7DWp
+        lgs0YberVTQROPziMBv6io5D
+X-Google-Smtp-Source: ABdhPJyawctA9wghGbFvi/7vBQj9SNLlIjR+KiOXSTuFRKIHUj+7uS8WYHJyd6wazPN1CbuzWd7JvQ==
+X-Received: by 2002:a17:90a:1fcc:: with SMTP id z12mr3490650pjz.106.1599564517585;
+        Tue, 08 Sep 2020 04:28:37 -0700 (PDT)
+Received: from mani ([103.59.133.81])
+        by smtp.gmail.com with ESMTPSA id i8sm10685684pjv.43.2020.09.08.04.28.33
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 08 Sep 2020 04:28:36 -0700 (PDT)
+Date:   Tue, 8 Sep 2020 16:58:28 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     rjw@rjwysocki.net, robh+dt@kernel.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, amitk@kernel.org,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        dmitry.baryshkov@linaro.org, tdas@codeaurora.org
+Subject: Re: [PATCH 5/7] cpufreq: qcom-hw: Use regmap for accessing hardware
+ registers
+Message-ID: <20200908112828.GA23812@mani>
+References: <20200908075716.30357-1-manivannan.sadhasivam@linaro.org>
+ <20200908075716.30357-6-manivannan.sadhasivam@linaro.org>
+ <20200908103444.5e526uawa45om6lt@vireshk-i7>
+ <20200908111141.GB23095@mani>
+ <20200908111813.bbgfxo5v7qt6ujpc@vireshk-i7>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAKgNAkiTjtdaQxbCYS67+SdqSPaGzJnfLEEMFgcoXjHLDxgemw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200908111813.bbgfxo5v7qt6ujpc@vireshk-i7>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Added Jeff to CC since he has written the code...
-
-On Mon 07-09-20 09:11:06, Michael Kerrisk (man-pages) wrote:
-> [Widening the CC to include Andrew and linux-fsdevel@]
-> [Milan: thanks for the patch, but it's unclear to me from your commit
-> message how/if you verified the details.]
+On 0908, Viresh Kumar wrote:
+> On 08-09-20, 16:41, Manivannan Sadhasivam wrote:
+> > On 0908, Viresh Kumar wrote:
+> > > On 08-09-20, 13:27, Manivannan Sadhasivam wrote:
+> > > > Use regmap for accessing cpufreq registers in hardware.
+> > > 
+> > > Why ? Please mention why a change is required in the log.
+> > > 
+> > 
+> > Only because it is recommended to use regmap for abstracting the hw access.
 > 
-> Andrew, maybe you (or someone else) can comment, since long ago your
+> Yes it can be very useful in abstracting the hw access in case of
+> busses like SPI/I2C, others, but in this case there is only one way of
+> doing it with the exact same registers. I am not sure it is worth it
+> here. FWIW, I have never played with regmaps personally, and so every
+> chance I can be wrong here.
 > 
->     commit f79e2abb9bd452d97295f34376dedbec9686b986
->     Author: Andrew Morton <akpm@osdl.org>
->     Date:   Fri Mar 31 02:30:42 2006 -0800
+> > Moreover it handles the proper locking for us in the core (spinlock vs mutex).
 > 
-> included a comment that is referred to in  stackoverflow discussion
-> about this topic (that SO discussion is in turn referred to by
-> https://bugzilla.kernel.org/show_bug.cgi?id=194757).
+> What locking do you need here ?
 > 
-> The essence as I understand it, is this:
-> (1) fsync() (and similar) may fail EIO or ENOSPC, at which point data
-> has not been synced.
-> (2) In this case, the EIO/ENOSPC setting is cleared so that...
-> (3) A subsequent fsync() might return success, but...
-> (4) That doesn't mean that the data in (1) landed on the disk.
 
-Correct.
+I was just referring the case where if we need the locking in future, regmap
+handles it nicely in the core.
 
-> The proposed manual page patch below wants to document this, but I'd
-> be happy to have an FS-knowledgeable person comment before I apply.
+> > I've seen many subsystem maintainers prefer regmap over plain readl/writel
+> > calls. I'll add the reason in commit log.
+> 
+> I am not sure if it is worth it here.
+> 
 
-Just a small comment below:
+Hmm, I thought it is recommended to use regmap for MMIO access as well. I can
+drop the patch if you want but let's wait for Bjorn/Amit to get their views.
 
-> On Sat, 29 Aug 2020 at 09:13, <milan.opensource@gmail.com> wrote:
-> >
-> > From: Milan Shah <milan.opensource@gmail.com>
-> >
-> > This Fix addresses Bug 194757.
-> > Ref: https://bugzilla.kernel.org/show_bug.cgi?id=194757
-> > ---
-> >  man2/fsync.2 | 13 +++++++++++++
-> >  1 file changed, 13 insertions(+)
-> >
-> > diff --git a/man2/fsync.2 b/man2/fsync.2
-> > index 96401cd..f38b3e4 100644
-> > --- a/man2/fsync.2
-> > +++ b/man2/fsync.2
-> > @@ -186,6 +186,19 @@ In these cases disk caches need to be disabled using
-> >  or
-> >  .BR sdparm (8)
-> >  to guarantee safe operation.
-> > +
-> > +When
-> > +.BR fsync ()
-> > +or
-> > +.BR fdatasync ()
-> > +returns
-> > +.B EIO
-> > +or
-> > +.B ENOSPC
-> > +any error flags on pages in the file mapping are cleared, so subsequent synchronisation attempts
-> > +will return without error. It is
-> > +.I not
-> > +safe to retry synchronisation and assume that a non-error return means prior writes are now on disk.
-> >  .SH SEE ALSO
-> >  .BR sync (1),
-> >  .BR bdflush (2),
+Thanks,
+Mani
 
-So the error state isn't really stored "on pages in the file mapping".
-Current implementation (since 4.14) is that error state is stored in struct
-file (I think this tends to be called "file description" in manpages) and
-so EIO / ENOSPC is reported once for each file description of the file that
-was open before the error happened. Not sure if we want to be so precise in
-the manpages or if it just confuses people. Anyway your takeway that no
-error on subsequent fsync() does not mean data was written is correct.
-
-								Honza
-
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> -- 
+> viresh
