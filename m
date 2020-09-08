@@ -2,113 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05206261B85
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:04:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEABC261BA3
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:06:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731744AbgIHTDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:03:55 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:49908 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731693AbgIHTDn (ORCPT
+        id S1731615AbgIHTGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 15:06:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55486 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726353AbgIHTFv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 15:03:43 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 088J1xN1122829;
-        Tue, 8 Sep 2020 15:03:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=daDdFQSQ8/ewgAVsdSWJ/UnpLBSx0HFoixMRKkOERnE=;
- b=Lb6o73OH4N2tzK/ZCJBNoskGrdgjK49+0X/DtRgUpz3mhH8/0LFzQWu8B6PsBh2eWdWs
- 7lcQbrvxSIrdUnstD5MmiTGwYY5AMkwNZG2AHqyhhH5gHEKnIOgXDCZMEpwl/qqCGvEW
- I01yG/lA7PGhcUuyy9KNJpxZ/mvHRDHMqC5LRPO1KcOMymxJDop8a40fkWU3CX6mBjTq
- /32m1IeKzeTm+UicxyVJ5xLnnlmUsqi9qTZJ0W1C4lWTTcDqJyh9mWzkDpbSGZKTOdJl
- 5ZvHIjsAcFc1uclFl4Pa9pAQ1pkHw3oCJCs9hFgRxNqORSuYjiYi4rSEiBMx9WgxxWFU wQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33edwdkvt5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Sep 2020 15:03:30 -0400
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 088J2HE7125254;
-        Tue, 8 Sep 2020 15:03:30 -0400
-Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33edwdkvsf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Sep 2020 15:03:29 -0400
-Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
-        by ppma05wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 088IpV9K023585;
-        Tue, 8 Sep 2020 19:03:28 GMT
-Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
-        by ppma05wdc.us.ibm.com with ESMTP id 33c2a91hvk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Sep 2020 19:03:28 +0000
-Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 088J3RJE12059580
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 8 Sep 2020 19:03:27 GMT
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 07A05B206A;
-        Tue,  8 Sep 2020 19:03:27 +0000 (GMT)
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3FA59B2065;
-        Tue,  8 Sep 2020 19:03:26 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.85.141.115])
-        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Tue,  8 Sep 2020 19:03:26 +0000 (GMT)
-Subject: Re: [PATCH v10 03/16] s390/vfio-ap: manage link between queue struct
- and matrix mdev
-To:     Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     freude@linux.ibm.com, cohuck@redhat.com, mjrosato@linux.ibm.com,
-        pasic@linux.ibm.com, alex.williamson@redhat.com,
-        kwankhede@nvidia.com, fiuczy@linux.ibm.com, frankja@linux.ibm.com,
-        david@redhat.com, imbrenda@linux.ibm.com, hca@linux.ibm.com,
-        gor@linux.ibm.com
-References: <20200821195616.13554-1-akrowiak@linux.ibm.com>
- <20200821195616.13554-4-akrowiak@linux.ibm.com>
- <99581cee-65fd-a622-ddc9-1a30e4638668@de.ibm.com>
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-Message-ID: <64ca7c98-4798-35c4-307e-57c4ca4cfdb2@linux.ibm.com>
-Date:   Tue, 8 Sep 2020 15:03:25 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Tue, 8 Sep 2020 15:05:51 -0400
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0797DC061756
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 12:05:39 -0700 (PDT)
+Received: by mail-vs1-xe41.google.com with SMTP id s62so9609244vsc.7
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 12:05:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=11UezPkShRZ1XbTMFLAIvgFJ6S7F6Qj5hmTERAqAcf0=;
+        b=AEymAD0aEUUcB63HmREI5LL3aPUIdQW8ooUB2Efwl6Hq2GHsbZMN2synFWhVWmMwJa
+         FgxW9xAqeVKYQ8JsT9hPGY3MQQq6G9q6bmsLIpT+YUp2YO5IaRBQT2Q8AeGbQbcoGyir
+         y4VAHqKYOzaA5NnqkCFbAMNU89unydaEBQxRA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=11UezPkShRZ1XbTMFLAIvgFJ6S7F6Qj5hmTERAqAcf0=;
+        b=kT+a383y1Hktn8zG83w29a2B8N5BXpWRSSLiAYYRk0djHScbhLZjRIc6OjCvqKJAiA
+         4IuQ7xwx1WzNnlL9JdrZxg8AhIOaUv5eaxI8bN0rjckf4NzYfmFM6zHtnLOlc9wFIywn
+         3p/3eJ+RGLo9XobkdCwoKJv32Q3VTZv4Crtc+dX6yUIO45f3NdF5za1337oWc03N55Pp
+         4KAhddCX5lECd56mHma/3ADh2PNAd+ucsopanhAgSeVw21R37KV0E+V1afqMATw6gGA+
+         xLES8VMjPLWBIjWhesgSxHeK15Tm5aFKeo350E9vDakCzZbY2swhU3iH70we2mjqaIAf
+         0A9g==
+X-Gm-Message-State: AOAM531gOhSKHp1YnSQoRrXWj+Je06bLiihGZ9pz3iyrLJY6Jzuu1PGv
+        XXyVXG3NyKKc++VFou76yP3aeMOqdCjWVQ==
+X-Google-Smtp-Source: ABdhPJymOfUgVd5Acu+TT4DXWnUP7gfR7RNjydswWXYhYFM9WBRbKO8XD+XrnPp3YM7OGgjHDEOItA==
+X-Received: by 2002:a1f:4357:: with SMTP id q84mr415625vka.4.1599591935851;
+        Tue, 08 Sep 2020 12:05:35 -0700 (PDT)
+Received: from mail-vs1-f47.google.com (mail-vs1-f47.google.com. [209.85.217.47])
+        by smtp.gmail.com with ESMTPSA id b17sm28876vsr.17.2020.09.08.12.05.34
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Sep 2020 12:05:35 -0700 (PDT)
+Received: by mail-vs1-f47.google.com with SMTP id e23so3622570vsk.2
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 12:05:34 -0700 (PDT)
+X-Received: by 2002:a67:d907:: with SMTP id t7mr423806vsj.8.1599591934367;
+ Tue, 08 Sep 2020 12:05:34 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <99581cee-65fd-a622-ddc9-1a30e4638668@de.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-08_09:2020-09-08,2020-09-08 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- impostorscore=0 mlxlogscore=999 lowpriorityscore=0 bulkscore=0
- priorityscore=1501 spamscore=0 adultscore=0 malwarescore=0 mlxscore=0
- clxscore=1015 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009080174
+References: <1598113021-4149-1-git-send-email-mkshah@codeaurora.org>
+ <1598113021-4149-4-git-send-email-mkshah@codeaurora.org> <159835036999.334488.14725849347753031927@swboyd.mtv.corp.google.com>
+ <874koqxv6t.fsf@nanos.tec.linutronix.de> <8763521f-b121-877a-1d59-5f969dd75e51@codeaurora.org>
+ <87y2m1vhkm.fsf@nanos.tec.linutronix.de> <CAD=FV=XXf3_tjqK14WdMuKygJptMTS+bKhH_ceiUE3wyYoCnxg@mail.gmail.com>
+ <877dtdj042.fsf@nanos.tec.linutronix.de> <CAD=FV=Ua7fLGw6JiG1rnCKpAdO1nXX4A4x1Why-LE9L_FBFe8Q@mail.gmail.com>
+ <87zh67uife.fsf@nanos.tec.linutronix.de> <CAD=FV=U8vchyRXOjozYYroq3Mit_gt=XXADLfn0W4N4TyQzyjQ@mail.gmail.com>
+ <87pn7150li.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <87pn7150li.fsf@nanos.tec.linutronix.de>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Tue, 8 Sep 2020 12:05:21 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=X0wjOYC9u1y=fhDTVSW+jd5G8ydSYJEE-a8BTfnhRgTA@mail.gmail.com>
+Message-ID: <CAD=FV=X0wjOYC9u1y=fhDTVSW+jd5G8ydSYJEE-a8BTfnhRgTA@mail.gmail.com>
+Subject: Re: [PATCH v5 3/6] genirq/PM: Introduce IRQCHIP_ENABLE_WAKEUP_ON_SUSPEND
+ flag
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Maulik Shah <mkshah@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Evan Green <evgreen@chromium.org>,
+        LinusW <linus.walleij@linaro.org>, Marc Zyngier <maz@kernel.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Lina Iyer <ilina@codeaurora.org>,
+        Srinivas Rao L <lsrao@codeaurora.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
+
+On Fri, Sep 4, 2020 at 2:54 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+>
+> Doug,
+>
+> On Thu, Sep 03 2020 at 16:19, Doug Anderson wrote:
+> > On Thu, Sep 3, 2020 at 5:57 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+> >>    That pending interrupt will not prevent the machine from going into
+> >>    suspend and if it's an edge interrupt then an unmask in
+> >>    suspend_device_irq() won't help. Edge interrupts are not resent in
+> >>    hardware. They are fire and forget from the POV of the device
+> >>    hardware.
+> >
+> > Ah, interesting.  I didn't think about this case exactly.  I might
+> > have a fix for it anyway.  At some point in time I was thinking that
+> > the world could be solved by relying on lazily-disabled interrupts and
+> > I wrote up a patch to make sure that they woke things up.  If you're
+> > willing to check out our gerrit you can look at:
+> >
+> > https://crrev.com/c/2314693
+> >
+> > ...if not I can post it as a RFC for you.
+>
+> I actually tried despite my usual aversion against web
+> interfaces. Aversion confirmed :)
+>
+> You could have included the 5 lines of patch into your reply to spare me
+> the experience. :)
+
+Sorry!  :(  Inline patches are a bit of a pain for me since I'm
+certifiably insane and use the gmail web interface for kernel mailing
+lists.  Everyone has their pet aversions, I guess.  ;-)
 
 
-On 9/4/20 4:15 AM, Christian Borntraeger wrote:
-> On 21.08.20 21:56, Tony Krowiak wrote:
->> diff --git a/drivers/s390/crypto/vfio_ap_private.h b/drivers/s390/crypto/vfio_ap_private.h
->> index a2aa05bec718..57da703b549a 100644
->> --- a/drivers/s390/crypto/vfio_ap_private.h
->> +++ b/drivers/s390/crypto/vfio_ap_private.h
->> @@ -87,6 +87,7 @@ struct ap_matrix_mdev {
->>   	struct kvm *kvm;
->>   	struct kvm_s390_module_hook pqap_hook;
->>   	struct mdev_device *mdev;
->> +	DECLARE_HASHTABLE(qtable, 8);
->>   };
-> Ah I think the include should go into this patch. But then you should revisit the patch description
-> of 2 as it talks about hashtables (but doesnt do anything about it).
+> > I'm sure I've solved the problem in a completely incorrect and broken
+> > way, but hopefully the idea makes sense.  In discussion we decided not
+> > to go this way because it looked like IRQ clients could request an IRQ
+> > with IRQ_DISABLE_UNLAZY and then that'd break us.  :( ...but even so I
+> > think the patch is roughly right and would address your point #1.
+>
+> Kinda :) But that's still incomplete because it does not handle the case
+> where the interrupt arrives between disable_irq() and enable_irq_wake().
+> See below.
 
-Got it.
+Huh, I thought I'd handled this with the code in irq_set_irq_wake()
+which checked if it was pending and did a wakeup.  In any case, I
+trust your understanding of this code far better than I trust mine.
+How should we proceed then?  Do you want to post up an official patch?
 
->   
+At the moment I don't have any test cases that need your patch since
+the interrupts I'm dealing with are not lazily disabled.  However, I
+still do agree that it's the right thing to do.
 
+
+> >> 2) irq chip has a irq_disable() callback or has IRQ_DISABLE_UNLAZY set
+> >>
+> >>    In that case disable_irq() will mask it at the hardware level and it
+> >>    stays that way until enable_irq() is invoked.
+> >>
+> >> #1 kinda works and the gap is reasonably trivial to fix in
+> >>    suspend_device_irq() by checking the pending state and telling the PM
+> >>    core that there is a wakeup pending.
+> >>
+> >> #2 Needs an indication from the chip flags that an interrupt which is
+> >>    masked has to be unmasked when it is a enabled wakeup source.
+> >>
+> >> I assume your problem is #2, right? If it's #1 then UNMASK_IF_WAKEUP is
+> >> the wrong answer.
+> >
+> > Right, the problem is #2.  We're not in the lazy mode.
+>
+> Right and that's where we want the new chip flag with the unmask if
+> armed.
+
+OK, so we're back in Maulik's court to spin, right?  I think the last
+word before our tangent was at:
+
+http://lore.kernel.org/r/87y2m1vhkm.fsf@nanos.tec.linutronix.de
+
+There you were leaning towards #2 ("a new function
+disable_wakeup_irq_for_suspend()").  Presumably you'd now be
+suggesting #1 ("Do the symmetric thing") since I've pointed out the
+bunch of drivers that would need to change.
+
+
+-Doug
