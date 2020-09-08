@@ -2,75 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1484D2617A7
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:39:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 761CD261889
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:57:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731643AbgIHRjy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 13:39:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57344 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731688AbgIHQOP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:14:15 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C552424902;
-        Tue,  8 Sep 2020 15:53:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599580411;
-        bh=aQgEJmdwFScVGUetRjWzLmFiuGLfik9Jz5FZpWYKO6s=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vHQtLYQ/93QCAcO1UkdNmVarRJEquQMSSEIT+lpSiX/FUPsV9RmwKWjDvb46vZXue
-         2UHnAXwOdmAvdLO/e00w0OTCOUNd/FlnBibD/Yos8NiTZEk22RPyHW8bN3Q7Mcw+Fs
-         V5cIJZj/Lxi1TMB9HPxLwC7Aqyoolj8x91EzLr0Y=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Himadri Pandya <himadrispandya@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 65/65] net: usb: Fix uninit-was-stored issue in asix_read_phy_addr()
-Date:   Tue,  8 Sep 2020 17:26:50 +0200
-Message-Id: <20200908152220.453210212@linuxfoundation.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200908152217.022816723@linuxfoundation.org>
-References: <20200908152217.022816723@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1731590AbgIHR5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 13:57:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56702 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731573AbgIHQMs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 12:12:48 -0400
+Received: from mail-oo1-xc43.google.com (mail-oo1-xc43.google.com [IPv6:2607:f8b0:4864:20::c43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B44A5C061573
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 09:12:12 -0700 (PDT)
+Received: by mail-oo1-xc43.google.com with SMTP id h9so4047128ooo.10
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 09:12:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=f/2x/fmPr0smlalUj9WhY0K+GufBhz4BVPOjlENKkeE=;
+        b=r9zDN/x1VgO7tRlqs8hVGaKVeOFIy0nhvuPHrKzZQZKJJT8b89ViSfMbkDKHjRYYIw
+         hPIw6wEFqmkrxIoNKvcdfUUMdAgkQWVvBWxwzxEgAv656m7oEwL9DSHzlLSbaPjf3Ohx
+         JEMLp0MUckl2NhlA8Fw6JVaHWFrEZxkgJO9Oue+W9dKe27M0hPicZUQhRDFSuV4gxrSw
+         /CwzAjAaArQO+QCxjS+xmKOnWWPrihVvbeYVTgSh0m78/U1jxZgAQY7g9Enf69NfiCZo
+         cMSlamAQ5/SsD6jWZBkvxhNanp/H8WSuXwz11c8B1owRdV+SpGQlwbAuCNNqcefUnujX
+         gxhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mime-version:content-disposition:user-agent;
+        bh=f/2x/fmPr0smlalUj9WhY0K+GufBhz4BVPOjlENKkeE=;
+        b=qhbKRnL4Vg8HWjSDBdgv3rcRvSlZD5eju2JbYrYQ127MUHNRyHjHw4beS40yIEl/US
+         mfj4ugoPX9dfMbVPeMU1BNSEBCYwqK7Zu4C58j1f+ydewPuCXAdPsWYs1uSYO09il9zx
+         2p2rDzGDeefiTh4cwB3+d1T7znDJfPuLv/5BKumxwe7MmvKqRTfbsSDk0n+iY+CQgDPX
+         LaBZq0ihQAKPCgwPtnnIDVsLn5rna7VjpPBxzNnLGznu4uhAoVO3qwfI0y+9UAQ0/4X/
+         mKuJaWH7HvJJ20cPtPhhakXf9MIDoxHjU63Gogf+4uqD8Fjy39Advaly5K6Wvdd0JtxC
+         malA==
+X-Gm-Message-State: AOAM532xOGI6O02wlvfSXgfF8bKCz73VAR1mhD5nJAyF5M2JWk+sjnTR
+        9cY1yFM39b4UgUzoGyAmbZI=
+X-Google-Smtp-Source: ABdhPJxzSmYe1beFIi9sv6U85nczxcVbjcNA6tiUtQUUxSp0dqUSuLx7NHwwOP04JlHABwgjp7oJfw==
+X-Received: by 2002:a4a:b601:: with SMTP id z1mr6288105oon.83.1599581532142;
+        Tue, 08 Sep 2020 09:12:12 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id m1sm3298044oih.3.2020.09.08.09.12.11
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 08 Sep 2020 09:12:11 -0700 (PDT)
+Date:   Tue, 8 Sep 2020 09:12:10 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     peterz@infradead.org
+Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org, will@kernel.org,
+        npiggin@gmail.com, elver@google.com, jgross@suse.com,
+        paulmck@kernel.org, rostedt@goodmis.org, rjw@rjwysocki.net,
+        joel@joelfernandes.org, svens@linux.ibm.com, tglx@linutronix.de,
+        davem@davemloft.net
+Subject: Re: [PATCH] sparc64: Fix irqtrace warnings on Ultra-S
+Message-ID: <20200908161210.GA167915@roeck-us.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Himadri Pandya <himadrispandya@gmail.com>
+On Tue, Sep 08, 2020 at 05:41:57PM +0200, peterz@infradead.org wrote:
+> On Tue, Sep 08, 2020 at 07:40:23AM -0700, Guenter Roeck wrote:
+> > qemu-system-sparc64 -M sun4u -cpu "TI UltraSparc IIi" -m 512 \
+> >     -initrd rootfs.cpio \
+> >     -kernel arch/sparc/boot/image -no-reboot \
+> >     -append "panic=-1 slub_debug=FZPUA rdinit=/sbin/init console=ttyS0" \
+> >     -nographic -monitor none
+> 
+> Thanks I got it. Also enabling DEBUG_LOCKDEP helps (-:
+> 
+> ---
+> Subject: sparc64: Fix irqtrace warnings on Ultra-S
+> 
+> Recent changes in Lockdep's IRQTRACE broke Ultra-S.
+> 
+> In order avoid redundant IRQ state changes, local_irq_restore() lost the
+> ability to trace a disable. Change the code to use local_irq_save() to
+> disable IRQs and then use arch_local_irq_restore() to further disable
+> NMIs.
+> 
+> This result in slightly suboptimal code, but given this code uses a
+> global spinlock, performance cannot be its primary purpose.
+> 
+> Fixes: 044d0d6de9f5 ("lockdep: Only trace IRQ edges")
+> Reported-by: Guenter Roeck <linux@roeck-us.net>
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 
-commit a092b7233f0e000cc6f2c71a49e2ecc6f917a5fc upstream.
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-The buffer size is 2 Bytes and we expect to receive the same amount of
-data. But sometimes we receive less data and run into uninit-was-stored
-issue upon read. Hence modify the error check on the return value to match
-with the buffer size as a prevention.
-
-Reported-and-tested by: syzbot+a7e220df5a81d1ab400e@syzkaller.appspotmail.com
-Signed-off-by: Himadri Pandya <himadrispandya@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
----
- drivers/net/usb/asix_common.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
---- a/drivers/net/usb/asix_common.c
-+++ b/drivers/net/usb/asix_common.c
-@@ -309,7 +309,7 @@ int asix_read_phy_addr(struct usbnet *de
- 
- 	netdev_dbg(dev->net, "asix_get_phy_addr()\n");
- 
--	if (ret < 0) {
-+	if (ret < 2) {
- 		netdev_err(dev->net, "Error reading PHYID register: %02x\n", ret);
- 		goto out;
- 	}
-
-
+> ---
+> A possible alternative would be:
+> 
+> 	local_save_flags(flags);
+> 	arch_local_irq_restore((unsigned long)PIL_NMI);
+> 	if (IS_ENABLED(CONFIG_TRACE_IRQFLAGS))
+> 		trace_hardirqs_off();
+> 
+> which generates optimal code, but is more verbose.
+> 
+>  arch/sparc/prom/p1275.c | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/sparc/prom/p1275.c b/arch/sparc/prom/p1275.c
+> index 889aa602f8d8..e22233fcf741 100644
+> --- a/arch/sparc/prom/p1275.c
+> +++ b/arch/sparc/prom/p1275.c
+> @@ -37,16 +37,15 @@ void p1275_cmd_direct(unsigned long *args)
+>  {
+>  	unsigned long flags;
+>  
+> -	local_save_flags(flags);
+> -	local_irq_restore((unsigned long)PIL_NMI);
+> +	local_irq_save(flags);
+> +	arch_local_irq_restore((unsigned long)PIL_NMI);
+>  	raw_spin_lock(&prom_entry_lock);
+>  
+>  	prom_world(1);
+>  	prom_cif_direct(args);
+>  	prom_world(0);
+>  
+> -	raw_spin_unlock(&prom_entry_lock);
+> -	local_irq_restore(flags);
+> +	raw_spin_unlock_irqrestore(&prom_entry_lock, flags);
+>  }
+>  
+>  void prom_cif_init(void *cif_handler, void *cif_stack)
