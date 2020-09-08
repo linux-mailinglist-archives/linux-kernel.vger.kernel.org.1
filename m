@@ -2,97 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5639D261A97
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 20:37:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D1B0261AB1
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 20:39:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731358AbgIHShe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 14:37:34 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:39126 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728572AbgIHSh2 (ORCPT
+        id S1731471AbgIHSi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 14:38:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51220 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731222AbgIHSiU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 14:37:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599590247;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4hFz93R/epUx5ygJCxi7aKlkiNQm5+bqKazJAau4MUY=;
-        b=QNOSICBKCCkjT3z/L/0rfRzs4Nm+zR79po9yr+CpxkXMRft+y3zO4/fhyFR7dsUjbshS0Y
-        4FQ6wV8eOZTlSrDoA/LhI7QEbOlZI3RbeNvTxJI8gLczau3DYCmKmXFPKH3PYSB4o90rGB
-        6VFM1nO63Jn2DGqQJuETyJX3ClAw7GE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-510-KwvEnB2CMD-KkDvmAjm5DQ-1; Tue, 08 Sep 2020 14:37:25 -0400
-X-MC-Unique: KwvEnB2CMD-KkDvmAjm5DQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 66DC9801AB2;
-        Tue,  8 Sep 2020 18:37:23 +0000 (UTC)
-Received: from ovpn-112-26.rdu2.redhat.com (ovpn-112-26.rdu2.redhat.com [10.10.112.26])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C50EB282F0;
-        Tue,  8 Sep 2020 18:37:22 +0000 (UTC)
-Message-ID: <489a7918b244e83736feff79c59a4b74d4e5cad0.camel@redhat.com>
-Subject: Re: [PATCH] drivers/perf: xgene_pmu: Fix uninitialized resource
- struct
-From:   Mark Salter <msalter@redhat.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Khuong Dinh <khuong@os.amperecomputing.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Date:   Tue, 08 Sep 2020 14:37:22 -0400
-In-Reply-To: <20200907135026.GC12551@willie-the-truck>
-References: <20200902182729.27415-1-msalter@redhat.com>
-         <20200907135026.GC12551@willie-the-truck>
-Organization: Red Hat, Inc
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.3 (3.36.3-1.module_f32+9025+599b805f) 
+        Tue, 8 Sep 2020 14:38:20 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87A86C061756
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 11:38:20 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id n3so138456pjq.1
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 11:38:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=DjkIx1P1Yaxa+Auz4Hv5F6fQbSDCX4zGHI1CORxsnvo=;
+        b=Ch5116YJyepkGpw+1UW17XG01LG/Pm90dnlvn725RqhqaU4K8logIxM79H9+sIUoQ8
+         OiB2hKqFTTb/CrA4MTXj0FA17E0hyz3kemhaxUxNt+kgpXnoSGgFoS2faieUZXeiearM
+         Bq3F/+1d+pj1Mc5PD3zu/eq5qxogXCWs0O71k=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=DjkIx1P1Yaxa+Auz4Hv5F6fQbSDCX4zGHI1CORxsnvo=;
+        b=iOsSxZ21s6j8EpSoZPCDzK0pVqs9ZvpcyUdqkP745u8b8Re4Gc/MzMeadTwRkWeUyK
+         BkOi7apndZQ/2z/A5+Hhf3gGjhUdzhfRxNcjMqmXSvbUZIwzqBdugN9aOwhQoOa1XeqG
+         XgIw+E9d5Rb/aHX3NIXikU1AfgDHWEVaSp1nMpcE+TG8rvEOCPmWBKDItduNlLUVtw4m
+         V58scTg0UGv0NZ6pDkTy6T1R8OT1I1VhYWqtlMxAfof+VAI6zlO+rgT0uJ3V+jvGmE1N
+         orK17w55ITx57qj7wwa++4XusKZxnxTPac0733JRqWuiUJNtg46jVgXiLLCiKKGJpL8D
+         5S5g==
+X-Gm-Message-State: AOAM533Z0GXTOoUmYo46zM5Zon5pMl8bEwI6wrBVeKdG7Ij7v1ngJP7E
+        q6JxIAfpC6zSRYUMgcHL08ZgjFLGen+XRQ==
+X-Google-Smtp-Source: ABdhPJxQU7U8Qy5RDG4z+Rc6wVE9+Uj/BS7LyHlH3lOBzdg4vrt5MnIa+fMmuCRzZtHg0Ko5860+sw==
+X-Received: by 2002:a17:90a:930e:: with SMTP id p14mr171770pjo.49.1599590299498;
+        Tue, 08 Sep 2020 11:38:19 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:1:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id e123sm133688pfh.167.2020.09.08.11.38.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Sep 2020 11:38:19 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1599536678-4666-1-git-send-email-mansur@codeaurora.org>
+References: <1599536678-4666-1-git-send-email-mansur@codeaurora.org>
+Subject: Re: [PATCH 2/2] venus: core: vote for video-mem icc path and change avg, peak bw
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        vgarodia@codeaurora.org,
+        Mansur Alisha Shaik <mansur@codeaurora.org>
+To:     Mansur Alisha Shaik <mansur@codeaurora.org>,
+        linux-media@vger.kernel.org, stanimir.varbanov@linaro.org
+Date:   Tue, 08 Sep 2020 11:38:17 -0700
+Message-ID: <159959029779.454335.10674172341529908104@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-09-07 at 14:50 +0100, Will Deacon wrote:
-> On Wed, Sep 02, 2020 at 02:27:29PM -0400, Mark Salter wrote:
-> > diff --git a/drivers/perf/xgene_pmu.c b/drivers/perf/xgene_pmu.c
-> > index edac28cd25dd..fdbbd0804b92 100644
-> > --- a/drivers/perf/xgene_pmu.c
-> > +++ b/drivers/perf/xgene_pmu.c
-> > @@ -1483,6 +1483,7 @@ xgene_pmu_dev_ctx *acpi_get_pmu_hw_inf(struct xgene_pmu *xgene_pmu,
-> >  		return NULL;
-> >  
-> >  	INIT_LIST_HEAD(&resource_list);
-> > +	memset(&res, 0, sizeof(res));
-> >  	rc = acpi_dev_get_resources(adev, &resource_list,
-> >  				    acpi_pmu_dev_add_resource, &res);
-> >  	acpi_dev_free_resource_list(&resource_list);
-> 
-> Hmm, to be honest, I'm not sure we should be calling devm_ioremap_resource()
-> at all here. The resource is clearly bogus, even with this change: the name
-> and the resource hierarchy pointers will all be NULL. I think it would be
-> better to follow the TX2 PMU driver (drivers/perf/thunderx2_pmu.c) which
-> appears to assign the resource directly in tx2_uncore_pmu_init_dev().
-> 
-> Is there a reason we can't do that?
-> 
-> Will
-> 
+Quoting Mansur Alisha Shaik (2020-09-07 20:44:38)
+> Currently we are voting for venus0-ebi path during buffer processing
+> with an average bandwidth of all the instances and unvoting during
+> session release.
+>=20
+> While video streaming when we try to do XO-SD using the command
+> "echo mem > /sys/power/state command" , device is not entering
+> to suspend state and from interconnect summary seeing votes for venus0-ebi
+>=20
+> Corrected this by voting for venus0-ebi path in venus_runtime_resume
 
-There's no difference between xgene and tx2 wrt resouce name/hierarchy.
-They both call devm_ioresource_remap() which ends up setting the name
-and hierarchy. The difference is that xgene calls acpi_dev_resource_memory()
-directly from the acpi_dev_get_resources() callback. TX2 doesn't use such a
-callback and in that case, acpi_dev_resource_memory() gets called with a
-zeroed struct.
+venus_runtime_resume() please so we know it's a function.
 
-That said, changing xgene to avoid the callback like TX2 does would fix the
-problem as well. If you'd rather go that route, I can send a patch for it.
+> and unvote during venus_runtime_suspend.
 
-Mark
+venus_runtime_suspend().
 
+>=20
+> Signed-off-by: Mansur Alisha Shaik <mansur@codeaurora.org>
+> ---
 
+Any Fixes: tag?
+
+>  drivers/media/platform/qcom/venus/core.c | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/pla=
+tform/qcom/venus/core.c
+> index 4857bbd..79d8600 100644
+> --- a/drivers/media/platform/qcom/venus/core.c
+> +++ b/drivers/media/platform/qcom/venus/core.c
+> @@ -373,6 +373,10 @@ static __maybe_unused int venus_runtime_suspend(stru=
+ct device *dev)
+>         if (ret)
+>                 return ret;
+> =20
+> +       ret =3D icc_set_bw(core->video_path, 0, 0);
+> +       if (ret)
+> +               return ret;
+> +
+>         return ret;
+>  }
+> =20
+> @@ -382,7 +386,11 @@ static __maybe_unused int venus_runtime_resume(struc=
+t device *dev)
+>         const struct venus_pm_ops *pm_ops =3D core->pm_ops;
+>         int ret;
+> =20
+> -       ret =3D icc_set_bw(core->cpucfg_path, 0, kbps_to_icc(1000));
+> +       ret =3D icc_set_bw(core->video_path, kbps_to_icc(20000), 0);
+
+This also shows that the arguments to icc_set_bw() we're backwards? Can
+that be fixed in another patch instead of putting it in this one?
