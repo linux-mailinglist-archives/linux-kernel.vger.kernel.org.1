@@ -2,65 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 398CA2616CB
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:19:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B19EF2616DC
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:21:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728899AbgIHRT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 13:19:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38972 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728633AbgIHRTH (ORCPT
+        id S1731641AbgIHRVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 13:21:07 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:59584 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731504AbgIHRTl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 13:19:07 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E93FDC061573;
-        Tue,  8 Sep 2020 10:19:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=9uZRgbe3Vq6CrxDMqukXR6cWakSDCk1Eri1y4t7+iO0=; b=ppTDKN5CEfSyw823xZjmFI5UQX
-        nWXWzwpGCDWl3B/cfD++bEP3jz1dG1nLramw5tLcjCQU7sIMtkeZbxZsKt4bJLbmR/Bn1qNVtlgNj
-        rmHH6pwtx5WZZGeHtO3V/jQb50SYxi7sLmsHCt8IjNs8I+cDVwIhu8mFtLIG3tVZ11V36IonUCzRr
-        6Ils39+kFrlA7otfC8Vo10jvlh6GBsSSyQx9c2WVvk3LTBXE9eW7ONYoE4HK5m7yXuEaeXNse1vqN
-        XQWE/vzKSjDCWOKn2/v4c4yz71InEnFQx3lhRXp3c+Z3Edd/c22MYsIPwtT9jmLVlhNp/kN9jpgcr
-        9STHyhGQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kFhGl-0003jr-Kn; Tue, 08 Sep 2020 17:18:59 +0000
-Date:   Tue, 8 Sep 2020 18:18:59 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     Xiaoming Ni <nixiaoming@huawei.com>, Jan Kara <jack@suse.cz>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        wangle6@huawei.com
-Subject: Re: Question: Why is there no notification when a file is opened
- using filp_open()?
-Message-ID: <20200908171859.GA29953@casper.infradead.org>
-References: <25817189-49a7-c64f-26ee-78d4a27496b6@huawei.com>
- <CAOQ4uxhejJzjKLZCt=b87KAX0sC3RAZ2FHEZbu4188Ar-bkmOg@mail.gmail.com>
- <e399cd17-e95e-def4-e03b-5cc2ae1f9708@huawei.com>
- <CAOQ4uxgvodepq2ZhmGEpkZYj017tH_pk2AgV=pUhWiONnxOQjw@mail.gmail.com>
+        Tue, 8 Sep 2020 13:19:41 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 088HJQcZ002522;
+        Tue, 8 Sep 2020 17:19:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=2kRbRbAPcu65GdZfJ3P4R9UbW3b90s932qN7mt8dNJk=;
+ b=EFRVWropmMTv7e+hH7AYaeq+75gW3uXiy1/I34rYI3Rh3lsJwZXVbKOPcFVtBWCX+xbq
+ 06vaqz8FnXlxREM+Oa+NXZxfKxaoBBDDmEZ9/2yBsCOj/1XDomkIM0vxy+Xnb73w4msp
+ 3jY/K1CTsqWCj4VysZW4I3nWLVTOsFHfB6SWK8NM4HwdCrByDWmy7QrPXobYcuViS8er
+ O4Jys2UxvJMVBdR7A5VpFSR8cH7jJR5ewxifJbvy1KvGblkmqTsTNmUTCWh4Y2R0xdDK
+ HrRu6Gk6taBY/6yxrslddXCfeziiI/2hBAjdnw/QXgw3hcyzkVWMFhY9aDTTjBVMURZR Xg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 33c23qw1wk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 08 Sep 2020 17:19:37 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 088HGYKU182705;
+        Tue, 8 Sep 2020 17:19:36 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 33cmkw7hwx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 08 Sep 2020 17:19:36 +0000
+Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 088HJY3G021930;
+        Tue, 8 Sep 2020 17:19:36 GMT
+Received: from [10.74.106.12] (/10.74.106.12)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 08 Sep 2020 10:19:34 -0700
+Subject: Re: [PATCH 0/3] clk: keystone: some minor fixes
+To:     Tero Kristo <t-kristo@ti.com>, linux-clk@vger.kernel.org,
+        ssantosh@kernel.org, linux-kernel@vger.kernel.org,
+        sboyd@kernel.org, mturquette@baylibre.com
+References: <20200907085740.1083-1-t-kristo@ti.com>
+From:   santosh.shilimkar@oracle.com
+Organization: Oracle Corporation
+Message-ID: <8a594a9d-8e10-6e01-908c-8e59da1d7fbe@oracle.com>
+Date:   Tue, 8 Sep 2020 10:19:32 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOQ4uxgvodepq2ZhmGEpkZYj017tH_pk2AgV=pUhWiONnxOQjw@mail.gmail.com>
+In-Reply-To: <20200907085740.1083-1-t-kristo@ti.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9737 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishscore=0 suspectscore=0
+ spamscore=0 mlxlogscore=999 adultscore=0 malwarescore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009080163
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9738 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 priorityscore=1501
+ mlxlogscore=999 mlxscore=0 bulkscore=0 suspectscore=0 spamscore=0
+ malwarescore=0 phishscore=0 lowpriorityscore=0 clxscore=1011
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009080163
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 08, 2020 at 04:18:29PM +0300, Amir Goldstein wrote:
-> On Tue, Sep 8, 2020 at 3:53 PM Xiaoming Ni <nixiaoming@huawei.com> wrote:
-> > For example, in fs/coredump.c, do_coredump() calls filp_open() to
-> > generate core files.
-> > In this scenario, the fsnotify_open() notification is missing.
-> 
-> I am not convinced that we should generate an event.
-> You will have to explain in what is the real world use case that requires this
-> event to be generated.
 
-Take the typical usage for fsnotify of a graphical file manager.
-It would be nice if the file manager showed a corefile as soon as it
-appeared in a directory rather than waiting until some other operation
-in that directory caused those directory contents to be refreshed.
+
+On 9/7/20 1:57 AM, Tero Kristo wrote:
+> Hi Santosh,
+> 
+> This series contains a few fixes for the TI SCI clock driver.
+> - Patch #1 is a clear bug fix, where we missed to parse assigned-clock
+>    data properly to detect which clocks are in use on the SoC.
+> - Patch #2 is a performance improvement patch which avoids some
+>    unnecessary round trips to firmware side while setting clock
+>    frequency.
+> - Patch #3 fixes some issues with set_rate passed to firmware, where the
+>    parameters are too strict; namely, firmware fails to handle some cases
+>    properly if min,tgt,max values for a clock rate are exactly the same
+>    value. Yeah, the firmware is quite weird here but nothing much else we
+>    can do from kernel side other than this....
+> 
+Looks fine to me Tero.
+
+Acked-by: Santosh Shilimkar <ssantosh@kernel.org>
+
+
+Hi Stephen, Mike,
+Can you please pick these fixes via clk tree ?
