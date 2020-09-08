@@ -2,116 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59FC926208E
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 22:13:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73851261FD0
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 22:07:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730328AbgIHUNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 16:13:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46876 "EHLO
+        id S1731168AbgIHUG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 16:06:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729422AbgIHPLR (ORCPT
+        with ESMTP id S1730335AbgIHPUz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:11:17 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4BD1C0619ED
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 08:11:08 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id n14so3250990pff.6
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 08:11:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=DqQzdsNyVZxQfTKZQ3YstL3rPQCUat0ck3Wbh+a/dRg=;
-        b=A42L4iBc1CLoIwG4vjkgmHVXssQmnn3pAMqht8EDGn5jdLIp0DEMm5fr4fRpNNZ6GB
-         cYpBWQkG770jRLy7OaKNz1ax7PjmhebIMH94oOt0oJsVF+Dwlh/vxyjmbAEUSlWYeX7j
-         nrYDiolhDL3/k31KAqubdudhePJwyIK4M16TzYv5GMRUnXe56k6P77Mwl6Dvu7VEGcgq
-         bEapsJBiR0hlNw0O9U16OsSNqLJc2hWQmHmQZyXyzvMHCvFZEJxBP9L4835Zv9l944bW
-         h6pGAmzhouGRV/7qtqbJ86YEqHShEZKpc1wDIxcNthdw4Kb+uUMDhUZ4ixEXFRS0sHq7
-         pWog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=DqQzdsNyVZxQfTKZQ3YstL3rPQCUat0ck3Wbh+a/dRg=;
-        b=NuQKajCoIvxeFMq4R50NUAQISaWvcXlc5m7T0dfeYyjf6TscsPHXalCFK2zEeOxois
-         7fgWGyJMOjynd9POYVJJkkUzf9s7ixArRCH+lo5jOoPveqTyfy0H9MIiLWGt7Rct2yuv
-         zPDMq8qctaW1HfQEeSnH5sgB97uT9mYqSzm11eYVUui+LJ8zOkWpJXrQPAzVfyWrRLoz
-         2KmughScJ45cjfP7G/HWy0Hybd7z8uzGO9fmN3QtXPa8sfU6WCQRr4q8atQvEkfim+DJ
-         LLgfcciqqWd2Oz7UFVU7t8ZwoS8POeZPsoV0Lu9rG/9kkrKRb8ARSaAJ5nPgTl72hkDb
-         HEvQ==
-X-Gm-Message-State: AOAM530SEEEHf9kNglGO5e3IARJsuHoMx+Jnys8I2BqhfDfm66RdhM/S
-        wrnNUFvC7OPKMpNri8pNkF4K
-X-Google-Smtp-Source: ABdhPJygg2wc2pJ6EFNe7SN5QXwBrjuD9HtWHBZlXZcCYsz145npyX1ctKgCmabtN4zCr836QQoSxA==
-X-Received: by 2002:aa7:9201:0:b029:13e:d13d:a10c with SMTP id 1-20020aa792010000b029013ed13da10cmr1456521pfo.40.1599577868308;
-        Tue, 08 Sep 2020 08:11:08 -0700 (PDT)
-Received: from mani-NUC7i5DNKE ([2409:4072:6213:6149:cb0:8a44:a6a5:e3bd])
-        by smtp.gmail.com with ESMTPSA id t25sm15461220pgn.13.2020.09.08.08.11.03
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 08 Sep 2020 08:11:07 -0700 (PDT)
-Date:   Tue, 8 Sep 2020 20:40:58 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     rjw@rjwysocki.net, viresh.kumar@linaro.org, robh+dt@kernel.org,
-        agross@kernel.org, amitk@kernel.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, dmitry.baryshkov@linaro.org,
-        tdas@codeaurora.org
-Subject: Re: [PATCH 1/7] dt-bindings: cpufreq: cpufreq-qcom-hw: Document
- SM8250 compatible
-Message-ID: <20200908151050.GC2352@mani-NUC7i5DNKE>
-References: <20200908075716.30357-1-manivannan.sadhasivam@linaro.org>
- <20200908075716.30357-2-manivannan.sadhasivam@linaro.org>
- <20200908145819.GN3715@yoga>
+        Tue, 8 Sep 2020 11:20:55 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B0E2C0619ED;
+        Tue,  8 Sep 2020 08:14:33 -0700 (PDT)
+Date:   Tue, 8 Sep 2020 17:12:29 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1599577950;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lIVgIxTyroQddql8kti9o3VE5bSiFWAwUPsPZehXs9o=;
+        b=sXhlasBHEKGmjbmZDMHbFD7Rsy2wjwblXmS7YU8lQi9EA9XqAewbLsZRFGt8nkjLTQXw8m
+        zvObdrZX72xqJ9q18VgC85vQRLzqaFJWuwz2NhTol9lsNMd5XUs2iHQyUndQPPfwe1ObYU
+        4hS0AhQaQjpwUDgEH4gdT/S5SMvdRK7QZIVkFX+y2/qH6NR7/iikQiqvY4tovuObzBVRfP
+        kU0j8vopuU9FkdMMkglSKe6aGOTRAbB+uqo3DB9QfD3RY04TkasmbP7xnB82T2Y2Fb/3lA
+        gJ5riSIi14Cl5GEhKWbT681B2G48wMlt4t2OKPPt5uXsePgIv+Zsq+1OyjmJjA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1599577950;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lIVgIxTyroQddql8kti9o3VE5bSiFWAwUPsPZehXs9o=;
+        b=kxjaxt2dIjBlb5FiPBRsluID3bgNmV1B32kw3B0tymfXnJyo4JFDg6Dp5xE6ZrD035G1Al
+        trsnmHCEmRg6jCAw==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Mike Galbraith <efault@gmx.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: v5.9-rc3-rt3 boot time networking lockdep splat
+Message-ID: <20200908151229.g24j4n4fderlm2pe@linutronix.de>
+References: <20200902155557.h2wl2qpfn2rwsofw@linutronix.de>
+ <46a2b89ec8d953a4be18c7389c7d8c66310a7ff0.camel@gmx.de>
+ <b989e196a8b9cceda35152de9202d7a67ca32196.camel@gmx.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200908145819.GN3715@yoga>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <b989e196a8b9cceda35152de9202d7a67ca32196.camel@gmx.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 0908, Bjorn Andersson wrote:
-> On Tue 08 Sep 02:57 CDT 2020, Manivannan Sadhasivam wrote:
+On 2020-09-05 07:19:10 [+0200], Mike Galbraith wrote:
+> Lappy, which does not use bridge, boots clean... but lock leakage
+> pretty darn quickly inspires lockdep to craps its drawers.
 > 
-> > Document the SM8250 SoC specific compatible for Qualcomm Cpufreq HW. The
-> > hardware block which carries out CPUFreq operations on SM8250 SoC is
-> > called EPSS.
-> > 
-> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> 
-> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> 
-> Please follow up, after this has been accepted, with a conversion of
-> this binding to yaml.
-> 
+> [  209.001111] BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low!
+> [  209.001113] turning off the locking correctness validator.
+> [  209.001114] CPU: 2 PID: 3773 Comm: Socket Thread Tainted: G S        I E     5.9.0.gc70672d-rt3-rt #8
+> [  209.001117] Hardware name: HP HP Spectre x360 Convertible/804F, BIOS F.47 11/22/2017
+> [  209.001118] Call Trace:
+> [  209.001123]  dump_stack+0x77/0x9b
+> [  209.001129]  validate_chain+0xf60/0x1230
 
-Sure.
+I have no idea how to debug this based on this report. Can you narrow
+it down to something?
 
-Thanks,
-Mani
+Is Lappy new, got a new something or has a new config switch? I'm just
+curious if this something or something that was always there but
+remained undetected.
+(Your other report was about something that was previously always "broken".)
 
-> Regards,
-> Bjorn
-> 
-> > ---
-> >  Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.txt | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.txt b/Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.txt
-> > index 33856947c561..aea4ddb2b9e8 100644
-> > --- a/Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.txt
-> > +++ b/Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.txt
-> > @@ -8,7 +8,7 @@ Properties:
-> >  - compatible
-> >  	Usage:		required
-> >  	Value type:	<string>
-> > -	Definition:	must be "qcom,cpufreq-hw".
-> > +	Definition:	must be "qcom,cpufreq-hw" or "qcom,sm8250-epss".
-> >  
-> >  - clocks
-> >  	Usage:		required
-> > -- 
-> > 2.17.1
-> > 
+Sebastian
