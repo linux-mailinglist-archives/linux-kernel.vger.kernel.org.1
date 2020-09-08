@@ -2,194 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26DF4261F08
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:58:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 634F4261E8B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:52:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732579AbgIHT6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:58:19 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:44510 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730377AbgIHPfq (ORCPT
+        id S1730735AbgIHTwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 15:52:43 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:9486 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730460AbgIHPtG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:35:46 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 088DXjY1185320;
-        Tue, 8 Sep 2020 09:39:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=XDC5FoG+KgqujaeAyg7l2gVOSzxylPnVZ4pvoUk44a4=;
- b=VYO3+yMyhC4rNfbvQWVAf5wbndHjAv0y1eUtuG+dUlXfVqTQtsPZvyeD2EVRCQwQQ0wd
- TutpfKWEHZoLzIbERiftaWVuVc99voCzqPxTVSB9+YrYy6euMilc2SV3S3+AUJEHZzl6
- ihNPJWVkh4bcuARr0D/TtoyzkoaOoqOBTZlZVuvvVdBSZExlgcWLsmWBRCtCcScknnJM
- Ep2A/5wcBkn7cJ6Ezi1btOwR/nf4YJeQRUpzhpfg8FcOd6UTG4U015Ax4tass/gg39oy
- Rm1FvI1JyI2tuzS/qT18SDIuFSSSLeaq3wUR+ugqzw10JLi+rfH7iOYXdexSkPJLZ3eI rw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33e9scu0a2-1
+        Tue, 8 Sep 2020 11:49:06 -0400
+Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 088DqRUJ027924;
+        Tue, 8 Sep 2020 15:53:41 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=STMicroelectronics;
+ bh=6w3g6tB8aZNlO4rCM3lm4/rbYpN+ADaXzbOYDVLkgaI=;
+ b=pWgWvsnMGafLwoGVVukmZPlvMeHb5hGxiAQvNskUz1uGBWJpQNT+u8wuqg3yS+ExTZQj
+ JztgosFabJsoAT5WG53dfkVPTTrH0wpUMSmfsrTd6o82n50vWEHHnN8j1pbQ3cUob20l
+ 4PKYjvtd6nn18oiyAq/YgEHo0Y7ipXmVpR0wBUyreHuAREWapa8O8yGtLOvt4sK7wd0v
+ ZyYSw6o9MQosgbHP11GX7Wy1pIEPns3vxmTgQGFVzrKUBjDa6g+c9jlgks+X33Kn52Tt
+ fkygIqb3XwgmfNhzzl8MAGM8wZ9cQJVmTMgK27KQKHh2IHtcQaS8qD38+598osPus9LK QA== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 33c0euqfqb-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Sep 2020 09:39:07 -0400
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 088DXs8j186234;
-        Tue, 8 Sep 2020 09:39:06 -0400
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33e9scu08p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Sep 2020 09:39:06 -0400
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 088DapAZ028999;
-        Tue, 8 Sep 2020 13:39:03 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma03fra.de.ibm.com with ESMTP id 33c2a8a4s6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Sep 2020 13:39:03 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 088Dd0lD38535586
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 8 Sep 2020 13:39:00 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5967852051;
-        Tue,  8 Sep 2020 13:39:00 +0000 (GMT)
-Received: from thinkpad (unknown [9.171.25.197])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with SMTP id 260485204F;
-        Tue,  8 Sep 2020 13:38:59 +0000 (GMT)
-Date:   Tue, 8 Sep 2020 15:38:57 +0200
-From:   Gerald Schaefer <gerald.schaefer@linux.ibm.com>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Christian Borntraeger <borntraeger@de.ibm.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-mm <linux-mm@kvack.org>, Paul Mackerras <paulus@samba.org>,
-        linux-sparc <sparclinux@vger.kernel.org>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Richard Weinberger <richard@nod.at>,
-        linux-x86 <x86@kernel.org>, Russell King <linux@armlinux.org.uk>,
-        Ingo Molnar <mingo@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Jeff Dike <jdike@addtoit.com>,
-        linux-um <linux-um@lists.infradead.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-arm <linux-arm-kernel@lists.infradead.org>,
-        linux-power <linuxppc-dev@lists.ozlabs.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>
-Subject: Re: [RFC PATCH v2 1/3] mm/gup: fix gup_fast with dynamic page table
- folding
-Message-ID: <20200908153857.08d09581@thinkpad>
-In-Reply-To: <96b80926-cf5b-1afa-9b7a-949a2188e61f@csgroup.eu>
-References: <20200907180058.64880-1-gerald.schaefer@linux.ibm.com>
-        <20200907180058.64880-2-gerald.schaefer@linux.ibm.com>
-        <82fbe8f9-f199-5fc2-4168-eb43ad0b0346@csgroup.eu>
-        <70a3dcb5-5ed1-6efa-6158-d0573d6927da@de.ibm.com>
-        <96b80926-cf5b-1afa-9b7a-949a2188e61f@csgroup.eu>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Tue, 08 Sep 2020 15:53:41 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id F204210002A;
+        Tue,  8 Sep 2020 15:53:35 +0200 (CEST)
+Received: from Webmail-eu.st.com (gpxdag3node5.st.com [10.75.127.72])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id BE56D2BC7B5;
+        Tue,  8 Sep 2020 15:53:35 +0200 (CEST)
+Received: from gnbcxd0016.gnb.st.com (10.75.127.50) by GPXDAG3NODE5.st.com
+ (10.75.127.72) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 8 Sep
+ 2020 15:53:35 +0200
+Date:   Tue, 8 Sep 2020 15:53:33 +0200
+From:   Alain Volmat <alain.volmat@st.com>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+CC:     Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Mark Brown <broonie@kernel.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        "bcm-kernel-feedback-list@broadcom.com" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre TORGUE <alexandre.torgue@st.com>,
+        Masahisa Kojima <masahisa.kojima@linaro.org>,
+        Jassi Brar <jaswinder.singh@linaro.org>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-rpi-kernel@lists.infradead.org" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
+Subject: Re: [PATCH 08/11] spi: stm32: Simplify with dev_err_probe()
+Message-ID: <20200908135333.GE6329@gnbcxd0016.gnb.st.com>
+Mail-Followup-To: Krzysztof Kozlowski <krzk@kernel.org>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Mark Brown <broonie@kernel.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
+        "bcm-kernel-feedback-list@broadcom.com" <bcm-kernel-feedback-list@broadcom.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre TORGUE <alexandre.torgue@st.com>,
+        Masahisa Kojima <masahisa.kojima@linaro.org>,
+        Jassi Brar <jaswinder.singh@linaro.org>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-rpi-kernel@lists.infradead.org" <linux-rpi-kernel@lists.infradead.org>,
+        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
+        "linux-stm32@st-md-mailman.stormreply.com" <linux-stm32@st-md-mailman.stormreply.com>,
+        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
+References: <20200901152713.18629-1-krzk@kernel.org>
+ <20200901152713.18629-8-krzk@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-TM-AS-GCONF: 00
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20200901152713.18629-8-krzk@kernel.org>
+X-Disclaimer: ce message est personnel / this message is private
+X-Originating-IP: [10.75.127.50]
+X-ClientProxiedBy: SFHDAG6NODE1.st.com (10.75.127.16) To GPXDAG3NODE5.st.com
+ (10.75.127.72)
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
  definitions=2020-09-08_07:2020-09-08,2020-09-08 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- mlxlogscore=999 bulkscore=0 suspectscore=0 clxscore=1011 adultscore=0
- malwarescore=0 spamscore=0 mlxscore=0 priorityscore=1501 phishscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009080128
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 8 Sep 2020 14:40:10 +0200
-Christophe Leroy <christophe.leroy@csgroup.eu> wrote:
+On Tue, Sep 01, 2020 at 03:27:10PM +0000, Krzysztof Kozlowski wrote:
+> Common pattern of handling deferred probe can be simplified with
+> dev_err_probe().  Less code and the error value gets printed.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 
->=20
->=20
-> Le 08/09/2020 =C3=A0 14:09, Christian Borntraeger a =C3=A9crit=C2=A0:
-> >=20
-> >=20
-> > On 08.09.20 07:06, Christophe Leroy wrote:
-> >>
-> >>
-> >> Le 07/09/2020 =C3=A0 20:00, Gerald Schaefer a =C3=A9crit=C2=A0:
-> >>> From: Alexander Gordeev <agordeev@linux.ibm.com>
-> >>>
-> >>> Commit 1a42010cdc26 ("s390/mm: convert to the generic get_user_pages_=
-fast
-> >>> code") introduced a subtle but severe bug on s390 with gup_fast, due =
-to
-> >>> dynamic page table folding.
-> >>>
-> >>> The question "What would it require for the generic code to work for =
-s390"
-> >>> has already been discussed here
-> >>> https://lkml.kernel.org/r/20190418100218.0a4afd51@mschwideX1
-> >>> and ended with a promising approach here
-> >>> https://lkml.kernel.org/r/20190419153307.4f2911b5@mschwideX1
-> >>> which in the end unfortunately didn't quite work completely.
-> >>>
-> >>> We tried to mimic static level folding by changing pgd_offset to alwa=
-ys
-> >>> calculate top level page table offset, and do nothing in folded pXd_o=
-ffset.
-> >>> What has been overlooked is that PxD_SIZE/MASK and thus pXd_addr_end =
-do
-> >>> not reflect this dynamic behaviour, and still act like static 5-level
-> >>> page tables.
-> >>>
-> >>
-> >> [...]
-> >>
-> >>>
-> >>> Fix this by introducing new pXd_addr_end_folded helpers, which take an
-> >>> additional pXd entry value parameter, that can be used on s390
-> >>> to determine the correct page table level and return corresponding
-> >>> end / boundary. With that, the pointer iteration will always
-> >>> happen in gup_pgd_range for s390. No change for other architectures
-> >>> introduced.
-> >>
-> >> Not sure pXd_addr_end_folded() is the best understandable name, alltho=
-ugh I don't have any alternative suggestion at the moment.
-> >> Maybe could be something like pXd_addr_end_fixup() as it will disappea=
-r in the next patch, or pXd_addr_end_gup() ?
-> >>
-> >> Also, if it happens to be acceptable to get patch 2 in stable, I think=
- you should switch patch 1 and patch 2 to avoid the step through pXd_addr_e=
-nd_folded()
-> >=20
-> > given that this fixes a data corruption issue, wouldnt it be the best t=
-o go forward
-> > with this patch ASAP and then handle the other patches on top with all =
-the time that
-> > we need?
->=20
-> I have no strong opinion on this, but I feel rather tricky to have to=20
-> change generic part of GUP to use a new fonction then revert that change=
-=20
-> in the following patch, just because you want the first patch in stable=20
-> and not the second one.
->=20
-> Regardless, I was wondering, why do we need a reference to the pXd at=20
-> all when calling pXd_addr_end() ?
->=20
-> Couldn't S390 retrieve the pXd by using the pXd_offset() dance with the=20
-> passed addr ?
+Reviewed-by: Alain Volmat <alain.volmat@st.com>
 
-Apart from performance impact when re-doing that what has already been
-done by the caller, I think we would also break the READ_ONCE semantics.
-After all, the pXd_offset() would also require some pXd pointer input,
-which we don't have. So we would need to start over again from mm->pgd.
-
-Also, it seems to be more in line with other primitives that take
-a pXd value or pointer.
+> ---
+>  drivers/spi/spi-stm32.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/drivers/spi/spi-stm32.c b/drivers/spi/spi-stm32.c
+> index d4b33b358a31..f0e594b2fee4 100644
+> --- a/drivers/spi/spi-stm32.c
+> +++ b/drivers/spi/spi-stm32.c
+> @@ -1857,9 +1857,7 @@ static int stm32_spi_probe(struct platform_device *pdev)
+>  
+>  	spi->irq = platform_get_irq(pdev, 0);
+>  	if (spi->irq <= 0) {
+> -		ret = spi->irq;
+> -		if (ret != -EPROBE_DEFER)
+> -			dev_err(&pdev->dev, "failed to get irq: %d\n", ret);
+> +		ret = dev_err_probe(&pdev->dev, spi->irq, "failed to get irq\n");
+>  		goto err_master_put;
+>  	}
+>  	ret = devm_request_threaded_irq(&pdev->dev, spi->irq,
+> -- 
+> 2.17.1
+> 
