@@ -2,77 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA8762618C5
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 20:02:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA4E32618CC
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 20:03:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732155AbgIHSCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 14:02:37 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:38970 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731663AbgIHSBS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 14:01:18 -0400
-Received: from zn.tnic (p200300ec2f10bf0059bdf9fa8e813382.dip0.t-ipconnect.de [IPv6:2003:ec:2f10:bf00:59bd:f9fa:8e81:3382])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3C9511EC0489;
-        Tue,  8 Sep 2020 20:01:17 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1599588077;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=72WG1McxFqIGqR0+XMVCYnaTg8/Pu4r+S87nI13px98=;
-        b=ls4q+gxq01ufyfWCGaDIr4cX0hDa7QQPPRNqrHWOp9VTyGguOSzHrsGSotlWrzuk+CGZSV
-        jte8+0fkjQm1FsAfuFrt0UUtL9edHhcws3KnwZDKIplufTwJYPvkwwvLyNm59pc4yax0aq
-        O6Ogqmuru1rmAYWqsFZHp9hSMNGeyDQ=
-Date:   Tue, 8 Sep 2020 20:01:12 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        kitsunyan <kitsunyan@airmail.cc>,
-        "Brown, Len" <len.brown@intel.com>, X86 ML <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sultan Alsawaf <sultan@kerneltoast.com>
-Subject: Re: [PATCH] x86/msr: do not warn on writes to OC_MAILBOX
-Message-ID: <20200908180112.GK25236@zn.tnic>
-References: <20200907094843.1949-1-Jason@zx2c4.com>
- <20200907100647.GB10657@zn.tnic>
- <22617e57e541e460fac09db04fdb370f8e96e8ef.camel@linux.intel.com>
- <CAHmME9rh8N-Qui2KVxGP33Aar5tao_obA70XKwR2x5Qp1AytTw@mail.gmail.com>
- <20200908172558.GG25236@zn.tnic>
- <CAHmME9pKfvPGf97BM1=VdUL1uU_8aOoc4+QOu6b51XnPz3SkRA@mail.gmail.com>
- <20200908173656.GI25236@zn.tnic>
- <CAHmME9pVO01mj8vgKPEX7a6pZDRSfX62e2Ow8R=L79hLSJoaMA@mail.gmail.com>
+        id S1728443AbgIHSDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 14:03:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45720 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731548AbgIHSDH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 14:03:07 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AA05C061573;
+        Tue,  8 Sep 2020 11:03:06 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id r8so3388485qtp.13;
+        Tue, 08 Sep 2020 11:03:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=9mmDYx8WrU8rvHetKafuDvQNZNEWur0WVQdCgfEZspw=;
+        b=SPoVuP8Q6WzCw4D9NfkuXnNEptqRql+J4fajBqQc2kYsIhfgOYk0tEnacAbvowX1iH
+         2HgdyOoKtpvck6By0pNhFJcCOunkqWjl1JRzB0GS2+WGlkYvhTBUzobypXqZwLPOYibT
+         xt8Zl3up/YriK4ErSIiCCMeyzZTRfS3d4j3xIaFGJZbVBrYfKR4wOZkZXYMQ1AYpuiU7
+         8b6dAZPZMG5ggCV7UZI9MBPStx8lOwxR0DxqFyfvocgsBQy18+BFgkiSxtRpL4KUFzOM
+         UnZoy5BRkMnhnH5ejxOYYoUIK1COU05dLo0PqODWfSyByRIY7crPD5mm0SSR7OTFb536
+         Vzjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=9mmDYx8WrU8rvHetKafuDvQNZNEWur0WVQdCgfEZspw=;
+        b=YAwCdU41qNSS14LxDKYhMp9OHdRjbLjz+iEOmuQYWmyNkgI0c0BqVLxslf0CLhluTM
+         FuVHV0LOpGgRUmnGMa+5xPRiSAtdepkIHfngGM8R0hKvskjb9TEhtkcVPy7JmRIySx5r
+         Fqz1Wq/BuRtrjeBesIQHBMoaS6XrRKni829dhGlBOwZxi4I6nlaMy2He3+ljHnEWdnAr
+         9FOirRGl2ZsfVOOx5fIy9XfNs4mm/03GQA60fgwvldFMclNBsxARTmpqCBJF/Sz8T5gM
+         tDq8j3ps9la1LX6amJSBn1x9fLQm6keuNZkXuk3anqa1Oaq55Cy0Si3jYl5hjd2D4hwo
+         1WVA==
+X-Gm-Message-State: AOAM532bHMib3VUDjpadu/QHG/oUrqLtOTQlla77LOXzi4nsHxQa5Qmx
+        78az5ZQ//Qv0DmLk8FbSrZY=
+X-Google-Smtp-Source: ABdhPJxZp/BKi4pCSubL4sPpiZCHt5AmUer/L4tlgYku0XHZVMEBaXZZz/rd/r7R8Ru4Z+PNDK1nug==
+X-Received: by 2002:ac8:7388:: with SMTP id t8mr1294476qtp.187.1599588185280;
+        Tue, 08 Sep 2020 11:03:05 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:87d8])
+        by smtp.gmail.com with ESMTPSA id v16sm7627009qkg.37.2020.09.08.11.03.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Sep 2020 11:03:04 -0700 (PDT)
+Date:   Tue, 8 Sep 2020 14:03:02 -0400
+From:   Tejun Heo <tj@kernel.org>
+To:     Tianxianting <tian.xianting@h3c.com>
+Cc:     "axboe@kernel.dk" <axboe@kernel.dk>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] blkcg: add plugging support for punt bio
+Message-ID: <20200908180302.GE4295@mtj.thefacebook.com>
+References: <1596722082-31817-1-git-send-email-xianting_tian@126.com>
+ <8f84e1fe-9fa5-b7e7-1f2f-b0c4a40614e2@kernel.dk>
+ <42b939c2.e08.173c6f79af9.Coremail.xianting_tian@126.com>
+ <1ded6246.2c67.17458ce4300.Coremail.xianting_tian@126.com>
+ <65e1e040da644ed9a05edd166d06b5e3@h3c.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHmME9pVO01mj8vgKPEX7a6pZDRSfX62e2Ow8R=L79hLSJoaMA@mail.gmail.com>
+In-Reply-To: <65e1e040da644ed9a05edd166d06b5e3@h3c.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 08, 2020 at 07:42:12PM +0200, Jason A. Donenfeld wrote:
-> Are you prepared to track down all the MSRs that might maybe do
-> something naughty?
+On Sat, Sep 05, 2020 at 11:25:03AM +0000, Tianxianting wrote:
+> Hi jens,tj
+> Could you share a couple of  minutes to comment it?
+> I really appreciate it
 
-I'm not prepared - that's why this MSR filtering. To block *all* direct
-MSR accesses from userspace in the future.
+The result looks fine to me but can you please summarize that in the commit
+message of the patch?
 
-> Does `dd` warn when you run `dd if=/dev/zero of=/dev/sda`?
-
-Yah, because that's the same as bricking your hardware. Geez.
-
-> Probably not possible. Optimal values are related to the "silicon
-> lottery" that occurs when you buy a new CPU. Different optimal values
-> for different individual chips.
-
-Let's wait for what Srinivas finds out. I'd let Intel decide what they
-wanna do.
+Thanks.
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+tejun
