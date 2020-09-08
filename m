@@ -2,103 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 025EC261F1A
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:59:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 708DF261E66
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:51:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732594AbgIHT7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:59:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58864 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730431AbgIHPfj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:35:39 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F172723BE5;
-        Tue,  8 Sep 2020 13:23:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599571408;
-        bh=pUEfMpq/UYZC7azZMZ5kSA/t1DHYIvIV/tbSmdkMHt8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=F0S8l6qu0IET3EzvZa3BeHFC0eAm7E2aMFtOGtSg4MVL1uz8Bf2WvkYY7OEOJOI+g
-         zeE2vL5jNPiS75krNhH/BAAmujRDEfwUzgv3ohTAR5HKdwMAWJxGwat9vAFf1wxe4X
-         hSjqMSsMuTCoX1v0XkWWt2kLar5QEeFnSbqv1oqs=
-Date:   Tue, 8 Sep 2020 14:22:44 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Masahisa Kojima <masahisa.kojima@linaro.org>,
-        Jassi Brar <jaswinder.singh@linaro.org>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-tegra@vger.kernel.org
-Subject: Re: [PATCH 02/11] spi: sprd: Simplify with dev_err_probe()
-Message-ID: <20200908132244.GA48155@sirena.org.uk>
-References: <20200901152713.18629-1-krzk@kernel.org>
- <20200901152713.18629-2-krzk@kernel.org>
+        id S1732194AbgIHTvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 15:51:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58851 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730750AbgIHPt5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 11:49:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599580165;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TK94hr65Pbv4WiScR8vAMileXVguzlpR5hueFys4tHc=;
+        b=TEO8RRc7GVKLmaJoAfhg1T338E0r7FO4uBIhWGRwr2p2vrxj5t+hKn87wHcKGcY1qcfw1K
+        ksbsN9q8dx7DyefJviDsSgOadzelRuv4kE4dHg37FjC/8Ec6RGAMpPCfKVW+PXRSQezLA4
+        WvYLOcfHs3fMSN6iEvHT/wYdKT5gvSs=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-508-CZ7pTKpoPyuzZLo04vASuQ-1; Tue, 08 Sep 2020 09:24:21 -0400
+X-MC-Unique: CZ7pTKpoPyuzZLo04vASuQ-1
+Received: by mail-wr1-f69.google.com with SMTP id j7so5352277wro.14
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 06:24:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=TK94hr65Pbv4WiScR8vAMileXVguzlpR5hueFys4tHc=;
+        b=MJc6+IUh9EEWm0omkVE2tKEM+Y14amlPpIo/OGLQwl/HPQq71OM0Q7RSrEUCOJJF5k
+         PcKaYv6D/8Q0POQCSNGYGYo3p7e4ylrlX5nFePnnHqTdfnzzbR6Eg/RnvZWFsgoRC75i
+         Piva/Uh403pgvY/MyC8bV+t19Fg1VM8U+lKMUM8J3MNdfxSjwpt+d/sOCDDR8IQlgy28
+         HrMtexEtfi4GOJMnmNpmzihuIGPouU8ir+lHzy3O9c490VxPRQNbFjRnkqBR/K1pFzCM
+         wyr1sYM4u51i8KO/jbpn5+B+PoHDXztykuFfZDzUxLcUE8FrlB6KJy2d5tdYXehVo0r/
+         yxIQ==
+X-Gm-Message-State: AOAM530i1XYAu0pVW9OG7JbH1wdcIW3yNZp/TPpzuS0HSSe+MN7YFH+F
+        Q7fsxdI0k2kydKGc/snouFmBv9SS53+SUpyRIjnhxVaJ/1d/Y2utXkeN6uU8y8KWLgaD5gVwZea
+        q6xCK06hLaRT6PjowuMKOkQ93
+X-Received: by 2002:a7b:cb4d:: with SMTP id v13mr4725441wmj.56.1599571459925;
+        Tue, 08 Sep 2020 06:24:19 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxbG9zYpOvvSdnyHs/XbOTDJjHLbjapXGRQTUuUk/Hgs+HBWnBntmzUuBZteAFqsH8+99po4A==
+X-Received: by 2002:a7b:cb4d:: with SMTP id v13mr4725423wmj.56.1599571459736;
+        Tue, 08 Sep 2020 06:24:19 -0700 (PDT)
+Received: from redfedo.redhat.com ([2a01:cb14:499:3d00:cd47:f651:9d80:157a])
+        by smtp.gmail.com with ESMTPSA id f1sm33267503wrt.20.2020.09.08.06.24.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Sep 2020 06:24:19 -0700 (PDT)
+From:   Julien Thierry <jthierry@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     jpoimboe@redhat.com, peterz@infradead.org, mbenes@suse.cz,
+        raphael.gault@arm.com, Julien Thierry <jthierry@redhat.com>
+Subject: [PATCH] objtool: Fix sync-check.sh bashisms
+Date:   Tue,  8 Sep 2020 14:24:15 +0100
+Message-Id: <20200908132415.27753-1-jthierry@redhat.com>
+X-Mailer: git-send-email 2.21.3
+In-Reply-To: <20200904153028.32676-1-jthierry@redhat.com>
+References: <20200904153028.32676-1-jthierry@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="uAKRQypu60I7Lcqm"
-Content-Disposition: inline
-In-Reply-To: <20200901152713.18629-2-krzk@kernel.org>
-X-Cookie: Remember the... the... uhh.....
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Previous patches introduced some non SUS compliant changes
+to sync-check.sh.
 
---uAKRQypu60I7Lcqm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Replace used bash features for standard shell.
 
-On Tue, Sep 01, 2020 at 05:27:04PM +0200, Krzysztof Kozlowski wrote:
-> Common pattern of handling deferred probe can be simplified with
-> dev_err_probe().  Less code and the error value gets printed.
+Signed-off-by: Julien Thierry <jthierry@redhat.com>
+---
+ tools/objtool/sync-check.sh | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-This doesn't apply against current code, please check and resend.
+Note: This patch applies on Josh P.'s objtool/core.WIP.julien branch
 
-Applying: spi: sprd: Simplify with dev_err_probe()
-Using index info to reconstruct a base tree...
-M	drivers/spi/spi-sprd-adi.c
-Falling back to patching base and 3-way merge...
-Auto-merging drivers/spi/spi-sprd-adi.c
-CONFLICT (content): Merge conflict in drivers/spi/spi-sprd-adi.c
+diff --git a/tools/objtool/sync-check.sh b/tools/objtool/sync-check.sh
+index b81cda59d878..606a4b5e929f 100755
+--- a/tools/objtool/sync-check.sh
++++ b/tools/objtool/sync-check.sh
+@@ -8,7 +8,7 @@ fi
 
---uAKRQypu60I7Lcqm
-Content-Type: application/pgp-signature; name="signature.asc"
+ FILES="include/linux/objtool.h"
 
------BEGIN PGP SIGNATURE-----
+-if [ "$SRCARCH" == "x86" ]; then
++if [ "$SRCARCH" = "x86" ]; then
+ FILES="$FILES
+ arch/x86/include/asm/inat_types.h
+ arch/x86/include/asm/orc_types.h
+@@ -60,4 +60,6 @@ while read -r file_entry; do
+     fi
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9XhaMACgkQJNaLcl1U
-h9BD+Qf/aECmurEbZzuMemn3QkE80q0VxXmiRjrG37cSIuZiDfm3np+BN4O6qef4
-jaozUFazSi1o8PpDSZtZmUuUhXIxs1TnlfIiET/a770NsLAy1CiCZcV7oIY2KWQ8
-5h51M2zOavV16MTiPa3BpaNJig5ZCrrltr+cVzP8GZ8ZlQRQJxS63yHkWPEvJ6jP
-N7nQ1JidLKkucxQveOxuFd8fUEajsGwJboKYBcFWL10Ga6A5aZOwNb8/fsjiu8sx
-KgGKvEZgoTfhhfGX5kg6s7ZWdCRLyyaSekjAXtY6ECQL6j4RHwGcx5sHqRUKR0pS
-TnET69OatkEPU5lbOiMrQS1KC+ycBw==
-=hY0h
------END PGP SIGNATURE-----
+     check $file_entry
+-done <<< "$FILES"
++done <<EOF
++$FILES
++EOF
+--
+2.21.3
 
---uAKRQypu60I7Lcqm--
