@@ -2,314 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA5AF261800
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:46:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D6752617B1
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:41:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731645AbgIHRqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 13:46:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56704 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731654AbgIHQOE (ORCPT
+        id S1731969AbgIHRkF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 13:40:05 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:46338 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731684AbgIHQOM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:14:04 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CB62C0619CD
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 06:53:41 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id q9so17413718wmj.2
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 06:53:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=B+1VfXen+elHkQ0c/cVTagZOsQR6RJZxVQx50u2DiS0=;
-        b=ur7XQ+57izCy8+tIwJLzUvp8sT5FRKPYIoSAvr7zyDHDKAS4EBQOGYTbALgv0X2Zip
-         SP9gkVcEb3AATxK7wVtlXYJVkRKEUSQB46KbPOqPdsxyCIVs3TBreRtUk2Yz1UIv67Qk
-         sOLReEbVaoIfg0YBCK72rFbte1mhED361oZ0UC/dwGXp8oKZD5nzIt8LGcxZnnThquSW
-         8OP75wVIcrfoBMTA87Ox37TQkPM23JcuwAZiNTv5Fli8Qimu+ZRyMOVrRJ0/P3xpf+NB
-         YqBsT/YGYa9ZLW2EPhzOgTteS0NV0vqWtsHS7pJmhhAri5D2nkqFp/No6nXbEwN/B8ep
-         vsvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=B+1VfXen+elHkQ0c/cVTagZOsQR6RJZxVQx50u2DiS0=;
-        b=b4RdIwVwp37oTPjYRvgK8gjpxEvDkGVxbqs5yH4ZgkhBbVn7EcbG9FXhPm6p0XEzR4
-         b5JUp+IkYbQhHxOWDLWx8KUwNClmk6zHSvM92grRyaLZs8qPx7yWQnAMg9pLktkNGbbX
-         oqwezMqO75XwkfR/B04XgUPkb7OBtJgZya1sEzB0s0hIVCRHEAiYebk8wh0Unlsz+Q+2
-         tEu/GjlKAlcn9WtVQuGGIWaKten9p79pDNwYRohXA753mz4AfncUoT7X1FMYZUJ+arB1
-         zueA9OCIfgzb3r5W2I1wwKR8tTF5OXqpdjlwHAwLjZuKcdoHki/OKJxlo/gZmVbjuCQm
-         mLcw==
-X-Gm-Message-State: AOAM530UoLoqNgGrjTtK/Gy6sUQswuBeBaMU24SxWe7CPqhx9/JY3GRk
-        n4BeiBrlj5gkqz//9xhhJe81aw==
-X-Google-Smtp-Source: ABdhPJwDv4u0H+BSdKLM+omVpuUAOz5Yeed32BmPpuyyp4itgV9xiKDoOqTL2i0JUXwLRZlFMkf0mA==
-X-Received: by 2002:a1c:6187:: with SMTP id v129mr4456831wmb.35.1599573219737;
-        Tue, 08 Sep 2020 06:53:39 -0700 (PDT)
-Received: from dell ([91.110.221.179])
-        by smtp.gmail.com with ESMTPSA id z13sm34709161wro.97.2020.09.08.06.53.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Sep 2020 06:53:39 -0700 (PDT)
-Date:   Tue, 8 Sep 2020 14:53:37 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Fabien Parent <fparent@baylibre.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-input@vger.kernel.org, hsin-hsiung.wang@mediatek.com,
-        matthias.bgg@gmail.com, robh+dt@kernel.org,
-        dmitry.torokhov@gmail.com
-Subject: Re: [PATCH v5 3/3] mfd: mt6397: Add support for MT6392 pmic
-Message-ID: <20200908135337.GU4400@dell>
-References: <20200907103311.1601907-1-fparent@baylibre.com>
- <20200907103311.1601907-3-fparent@baylibre.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200907103311.1601907-3-fparent@baylibre.com>
+        Tue, 8 Sep 2020 12:14:12 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 088E2lYR090675;
+        Tue, 8 Sep 2020 10:03:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=qvtY3efdmKTycDkCx+zMSmoSNBQYkw3/GROUiRKGaAk=;
+ b=DtSotS3N2vNLQGr0szPGdp1w7Lox58FSAPolXeZjEjmYTcqAovLvnA8S30qKm7keSVK1
+ 46B1ujBG+IMiBxRqHK7zpVHVQuV4I145HZuuE7qMYWk0VAIH9RCbEn0JrFthAgm6GoAn
+ vkS8wf/uo+FiZEHRWnxl55OMvtYy3Pve/NOybUPYG4IvJS+0vkxkvRGzD0k4iUY8ZWhp
+ aKHIJTVkgQEeHtiFrpUZgEVJ/GsQGYIU+uxiPeiBxSoZXx8P2XFJBdNGMdgB8xrAmDel
+ o51sUJPzhVfrZF8TbsiuAQ5o1yQr8xC3RY3+bqSbcraTV5x1YTGSfm8dzdZUzwHkF2Y5 sw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33eb9886pf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 08 Sep 2020 10:03:35 -0400
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 088E32Y6092121;
+        Tue, 8 Sep 2020 10:03:35 -0400
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33eb9886n6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 08 Sep 2020 10:03:35 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 088E1cVf007112;
+        Tue, 8 Sep 2020 14:03:32 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma05fra.de.ibm.com with ESMTP id 33c2a8a53w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 08 Sep 2020 14:03:32 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 088E3UKl13369646
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 8 Sep 2020 14:03:30 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EF0A9A405C;
+        Tue,  8 Sep 2020 14:03:29 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A4DBCA405F;
+        Tue,  8 Sep 2020 14:03:25 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.24.202])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue,  8 Sep 2020 14:03:25 +0000 (GMT)
+Message-ID: <d405bab0d262b32fd16e85444791b6c49d820aa2.camel@linux.ibm.com>
+Subject: Re: [RFC PATCH 00/30] ima: Introduce IMA namespace
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Luke Hinds <lhinds@redhat.com>, "Dr. Greg" <greg@enjellic.com>
+Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
+        krzysztof.struczynski@huawei.com, linux-integrity@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        containers@lists.linux-foundation.org,
+        linux-security-module@vger.kernel.org, stefanb@linux.vnet.ibm.com,
+        sunyuqiong1988@gmail.com, mkayaalp@cs.binghamton.edu,
+        dmitry.kasatkin@gmail.com, "Serge E. Hallyn" <serge@hallyn.com>,
+        James Morris <jmorris@namei.org>, christian@brauner.io,
+        silviu.vlasceanu@huawei.com, roberto.sassu@huawei.com,
+        ebiederm@xmission.com, viro@zeniv.linux.org.uk,
+        torvalds@linux-foundation.org, luto@amacapital.net,
+        jannh@google.com, nick.dusek@gmail.com
+Date:   Tue, 08 Sep 2020 10:03:24 -0400
+In-Reply-To: <CAKrSGQR3Pw=Rad2RgUuCHqr0r2Nc6x2nLoo2cVAkD+_8Vbmd7A@mail.gmail.com>
+References: <20200818152037.11869-1-krzysztof.struczynski@huawei.com>
+         <20200818164943.va3um7toztazcfud@wittgenstein>
+         <d77a6cd783319702fddd06783cb84fdeb86210a6.camel@linux.ibm.com>
+         <20200906171413.GA8305@wind.enjellic.com>
+         <CAKrSGQR3Pw=Rad2RgUuCHqr0r2Nc6x2nLoo2cVAkD+_8Vbmd7A@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-08_07:2020-09-08,2020-09-08 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 impostorscore=0
+ priorityscore=1501 bulkscore=0 lowpriorityscore=0 clxscore=1011
+ phishscore=0 spamscore=0 suspectscore=0 adultscore=0 mlxlogscore=999
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009080129
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 07 Sep 2020, Fabien Parent wrote:
-
-> Update the MT6397 MFD driver to support the MT6392 PMIC.
+On Mon, 2020-09-07 at 12:50 +0100, Luke Hinds wrote:
+> > Candidly, given the politics of security technology being viewed as
+> > 'constraining' user rights, I think that a lot of forthcoming security
+> > technology may end up being out of tree moving forward.
+> > 
 > 
-> Signed-off-by: Fabien Parent <fparent@baylibre.com>
-> ---
+> I think it's prudent to look forward and plan diligently, but I would
+> not want perfect to be the enemy of good.
+
+Agreed.  This isn't an abstract problem, but one that has already come
+up and, hopefully, has been addressed appropriately.
+
 > 
-> V5:
-> 	* Rebased
-> 	* removed mt6392-regulator compatible. This will be send in another
-> 	  series to make this series easier to merge.
+> I approach this more from a user's perspective. We are using IMA in 
+> https://keylime.dev to measure a host and would like to measure
+> within a container too. It's the most common request we hear from our
+> users.
 > 
-> V4:
-> 	* Use DEFINE_RES_* macro to define RTC ressources.
-> 	* Use PLATFORM_DEVID_NONE instead of -1 value when registering devices.
+> Perhaps we all collaborate on a proposal extending Stefans work here:
+> https://kernsec.org/wiki/index.php/IMA_Namespacing_design_considerati
+> ons
 > 
-> V3:
-> 	* No change
+> I have seen around 3-4 patches now get submitted, so work has been
+> done before, and as above, users are present too. We could then have
+> some consensus on how this should look and later patches might have
+> more success at landing.
 > 
-> V2:
-> 	* Pass IRQ comain to fix invalid MFD devices IRQs.
-> 	* Remove resources and mfd cells for device we don't support.
-> 	* Rename IRQ names to follow what's done for MT6397.
-> 
-> ---
+> Would anyone be interested in this and have recommendations on how we
+> could approach this?
 
-You shouldn't need to add your own '---' marker.
+When Roberto Sassu and Krzysztof Struczynski contacted me about the
+status of Stefan Berger's patch set, based on Yuqiong Sun's work, I was
+under the impression that they would be rebasing it on the latest
+kernel and going forward from there.   Obviously things changed.  I
+pointed out to them resolving the "IMA namespacing" issue would be the
+first thing that needs to be addressed.  So here we are.
 
-Just place the changelog under the existing one.
+Definitely, let's have this discussion.
 
->  drivers/mfd/mt6397-core.c            |  40 +++
->  drivers/mfd/mt6397-irq.c             |   9 +
->  include/linux/mfd/mt6392/core.h      |  42 +++
->  include/linux/mfd/mt6392/registers.h | 487 +++++++++++++++++++++++++++
->  include/linux/mfd/mt6397/core.h      |   1 +
->  5 files changed, 579 insertions(+)
->  create mode 100644 include/linux/mfd/mt6392/core.h
->  create mode 100644 include/linux/mfd/mt6392/registers.h
-> 
-> diff --git a/drivers/mfd/mt6397-core.c b/drivers/mfd/mt6397-core.c
-> index f6cd8a660602..6ba3585b1b36 100644
-> --- a/drivers/mfd/mt6397-core.c
-> +++ b/drivers/mfd/mt6397-core.c
-> @@ -13,9 +13,11 @@
->  #include <linux/mfd/core.h>
->  #include <linux/mfd/mt6323/core.h>
->  #include <linux/mfd/mt6358/core.h>
-> +#include <linux/mfd/mt6392/core.h>
->  #include <linux/mfd/mt6397/core.h>
->  #include <linux/mfd/mt6323/registers.h>
->  #include <linux/mfd/mt6358/registers.h>
-> +#include <linux/mfd/mt6392/registers.h>
->  #include <linux/mfd/mt6397/registers.h>
->  
->  #define MT6323_RTC_BASE		0x8000
-> @@ -27,6 +29,9 @@
->  #define MT6397_RTC_BASE		0xe000
->  #define MT6397_RTC_SIZE		0x3e
->  
-> +#define MT6392_RTC_BASE		0x8000
-> +#define MT6392_RTC_SIZE		0x3e
-> +
+Mimi
 
-Nit: Why aren't these (all) in the header files above?
-
->  #define MT6323_PWRC_BASE	0x8000
->  #define MT6323_PWRC_SIZE	0x40
->  
-> @@ -40,6 +45,11 @@ static const struct resource mt6358_rtc_resources[] = {
->  	DEFINE_RES_IRQ(MT6358_IRQ_RTC),
->  };
->  
-> +static const struct resource mt6392_rtc_resources[] = {
-> +	DEFINE_RES_MEM(MT6392_RTC_BASE, MT6392_RTC_SIZE),
-> +	DEFINE_RES_IRQ(MT6392_IRQ_RTC),
-> +};
-> +
->  static const struct resource mt6397_rtc_resources[] = {
->  	DEFINE_RES_MEM(MT6397_RTC_BASE, MT6397_RTC_SIZE),
->  	DEFINE_RES_IRQ(MT6397_IRQ_RTC),
-> @@ -50,6 +60,11 @@ static const struct resource mt6323_keys_resources[] = {
->  	DEFINE_RES_IRQ(MT6323_IRQ_STATUS_FCHRKEY),
->  };
->  
-> +static const struct resource mt6392_keys_resources[] = {
-> +	DEFINE_RES_IRQ(MT6392_IRQ_PWRKEY),
-> +	DEFINE_RES_IRQ(MT6392_IRQ_FCHRKEY),
-> +};
-> +
->  static const struct resource mt6397_keys_resources[] = {
->  	DEFINE_RES_IRQ(MT6397_IRQ_PWRKEY),
->  	DEFINE_RES_IRQ(MT6397_IRQ_HOMEKEY),
-> @@ -99,6 +114,20 @@ static const struct mfd_cell mt6358_devs[] = {
->  	},
->  };
->  
-> +static const struct mfd_cell mt6392_devs[] = {
-> +	{
-> +		.name = "mt6397-rtc",
-> +		.num_resources = ARRAY_SIZE(mt6392_rtc_resources),
-> +		.resources = mt6392_rtc_resources,
-> +		.of_compatible = "mediatek,mt6392-rtc",
-> +	}, {
-> +		.name = "mtk-pmic-keys",
-> +		.num_resources = ARRAY_SIZE(mt6392_keys_resources),
-> +		.resources = mt6392_keys_resources,
-> +		.of_compatible = "mediatek,mt6392-keys"
-> +	},
-> +};
-> +
->  static const struct mfd_cell mt6397_devs[] = {
->  	{
->  		.name = "mt6397-rtc",
-> @@ -149,6 +178,14 @@ static const struct chip_data mt6358_core = {
->  	.irq_init = mt6358_irq_init,
->  };
->  
-> +static const struct chip_data mt6392_core = {
-> +	.cid_addr = MT6392_CID,
-> +	.cid_shift = 0,
-> +	.cells = mt6392_devs,
-> +	.cell_size = ARRAY_SIZE(mt6392_devs),
-> +	.irq_init = mt6397_irq_init,
-> +};
-> +
->  static const struct chip_data mt6397_core = {
->  	.cid_addr = MT6397_CID,
->  	.cid_shift = 0,
-> @@ -218,6 +255,9 @@ static const struct of_device_id mt6397_of_match[] = {
->  	}, {
->  		.compatible = "mediatek,mt6358",
->  		.data = &mt6358_core,
-> +	}, {
-> +		.compatible = "mediatek,mt6392",
-> +		.data = &mt6392_core,
->  	}, {
->  		.compatible = "mediatek,mt6397",
->  		.data = &mt6397_core,
-> diff --git a/drivers/mfd/mt6397-irq.c b/drivers/mfd/mt6397-irq.c
-> index 2924919da991..9bf95e2ddf02 100644
-> --- a/drivers/mfd/mt6397-irq.c
-> +++ b/drivers/mfd/mt6397-irq.c
-> @@ -12,6 +12,8 @@
->  #include <linux/suspend.h>
->  #include <linux/mfd/mt6323/core.h>
->  #include <linux/mfd/mt6323/registers.h>
-> +#include <linux/mfd/mt6392/core.h>
-> +#include <linux/mfd/mt6392/registers.h>
->  #include <linux/mfd/mt6397/core.h>
->  #include <linux/mfd/mt6397/registers.h>
->  
-> @@ -181,6 +183,13 @@ int mt6397_irq_init(struct mt6397_chip *chip)
->  		chip->int_status[1] = MT6397_INT_STATUS1;
->  		break;
->  
-> +	case MT6392_CHIP_ID:
-> +		chip->int_con[0] = MT6392_INT_CON0;
-> +		chip->int_con[1] = MT6392_INT_CON1;
-> +		chip->int_status[0] = MT6392_INT_STATUS0;
-> +		chip->int_status[1] = MT6392_INT_STATUS1;
-> +		break;
-> +
-
-Nit: These line breaks seem superfluous.
-
->  	default:
->  		dev_err(chip->dev, "unsupported chip: 0x%x\n", chip->chip_id);
->  		return -ENODEV;
-> diff --git a/include/linux/mfd/mt6392/core.h b/include/linux/mfd/mt6392/core.h
-> new file mode 100644
-> index 000000000000..7575a79ea052
-> --- /dev/null
-> +++ b/include/linux/mfd/mt6392/core.h
-> @@ -0,0 +1,42 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Copyright (c) 2019 MediaTek Inc.
-
-This is out of date.
-
-> + * Author: Chen Zhong <chen.zhong@mediatek.com>
-> + */
-> +
-> +#ifndef __MFD_MT6392_CORE_H__
-> +#define __MFD_MT6392_CORE_H__
-> +
-> +enum MT6392_IRQ_numbers {
-> +	MT6392_IRQ_SPKL_AB = 0,
-> +	MT6392_IRQ_SPKL,
-> +	MT6392_IRQ_BAT_L,
-> +	MT6392_IRQ_BAT_H,
-> +	MT6392_IRQ_WATCHDOG,
-> +	MT6392_IRQ_PWRKEY,
-> +	MT6392_IRQ_THR_L,
-> +	MT6392_IRQ_THR_H,
-> +	MT6392_IRQ_VBATON_UNDET,
-> +	MT6392_IRQ_BVALID_DET,
-> +	MT6392_IRQ_CHRDET,
-> +	MT6392_IRQ_OV,
-> +	MT6392_IRQ_LDO = 16,
-> +	MT6392_IRQ_FCHRKEY,
-> +	MT6392_IRQ_RELEASE_PWRKEY,
-> +	MT6392_IRQ_RELEASE_FCHRKEY,
-> +	MT6392_IRQ_RTC,
-> +	MT6392_IRQ_VPROC,
-> +	MT6392_IRQ_VSYS,
-> +	MT6392_IRQ_VCORE,
-> +	MT6392_IRQ_TYPE_C_CC,
-> +	MT6392_IRQ_TYPEC_H_MAX,
-> +	MT6392_IRQ_TYPEC_H_MIN,
-> +	MT6392_IRQ_TYPEC_L_MAX,
-> +	MT6392_IRQ_TYPEC_L_MIN,
-> +	MT6392_IRQ_THR_MAX,
-> +	MT6392_IRQ_THR_MIN,
-> +	MT6392_IRQ_NAG_C_DLTV,
-> +	MT6392_IRQ_NR,
-> +};
-> +
-> +#endif /* __MFD_MT6392_CORE_H__ */
-> diff --git a/include/linux/mfd/mt6392/registers.h b/include/linux/mfd/mt6392/registers.h
-> new file mode 100644
-> index 000000000000..8858b58e3b67
-> --- /dev/null
-> +++ b/include/linux/mfd/mt6392/registers.h
-> @@ -0,0 +1,487 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Copyright (c) 2019 MediaTek Inc.
-
-This is out of date.
-
-> + * Author: Chen Zhong <chen.zhong@mediatek.com>
-> + */
-> +
-> +#ifndef __MFD_MT6392_REGISTERS_H__
-> +#define __MFD_MT6392_REGISTERS_H__
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
