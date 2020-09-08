@@ -2,164 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49DB4262287
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 00:18:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E923262280
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 00:17:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729525AbgIHWRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 18:17:54 -0400
-Received: from conuserg-09.nifty.com ([210.131.2.76]:47291 "EHLO
-        conuserg-09.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726369AbgIHWRx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 18:17:53 -0400
-Received: from oscar.flets-west.jp (softbank126090211135.bbtec.net [126.90.211.135]) (authenticated)
-        by conuserg-09.nifty.com with ESMTP id 088MGrFk012572;
-        Wed, 9 Sep 2020 07:16:54 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-09.nifty.com 088MGrFk012572
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1599603415;
-        bh=ofEPr9hBQLToa0tnpSFXT71R901tENs3+t3picjYQYs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=D7ghS5PkAIHPitB5/n6EHnmjhmm/oinxegLnKiiN3WO3AAJIwD//zOR60ZfxFlwO/
-         47sjqnxrpVsE/w22W0UKc1iszBi2vruwc3f/1t8CPauJ2v0QVOxOtKvOSWSXgDZwjY
-         /ukYHxwsAHb/LMTCiO7x7l73txMM7ArHaJhDXKJKM92Yisgqt6w2FvV9lLZEo6fSfa
-         hZmCtKuvmtpWF+nt71nKbBYMzra13oV84EPpV+UtzeEZzmo8dankKJiGFGWXHRmAvd
-         Us2jF5CHt9pouh6hRQbDEpQTAmJ8DmuFoYcbHxmpHC+mOUo5pqwHzJpFFjg5rR0oAI
-         TZkrEZoH3Jb0A==
-X-Nifty-SrcIP: [126.90.211.135]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] kconfig: fix incomplete type 'struct gstr' warning
-Date:   Wed,  9 Sep 2020 07:16:38 +0900
-Message-Id: <20200908221638.2782778-2-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200908221638.2782778-1-masahiroy@kernel.org>
-References: <20200908221638.2782778-1-masahiroy@kernel.org>
+        id S1728936AbgIHWRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 18:17:13 -0400
+Received: from mga09.intel.com ([134.134.136.24]:19389 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726369AbgIHWRM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 18:17:12 -0400
+IronPort-SDR: RsxxDY7yP9xevANOk+Oy29fu40x1faL6oUVycYSn7rIUXKzrIh9w+ZavmhJZsX7BxiqahD8KNi
+ 1JZ98e3cjKUg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9738"; a="159201886"
+X-IronPort-AV: E=Sophos;i="5.76,407,1592895600"; 
+   d="scan'208";a="159201886"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2020 15:17:11 -0700
+IronPort-SDR: wdfv1J+J+QaysLnpOhCWO81wvxM1SV7iRWPHywKC9WXHRhhsGc5OBo9wVFKCccOp7ltS7qufX/
+ dHiIu5NF2L3w==
+X-IronPort-AV: E=Sophos;i="5.76,407,1592895600"; 
+   d="scan'208";a="304259025"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2020 15:17:11 -0700
+Date:   Tue, 8 Sep 2020 15:19:08 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
+Cc:     Jacob Pan <jacob.pan.linux@gmail.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        iommu@lists.linux-foundation.org, Wu Hao <hao.wu@intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH v2 5/9] iommu/ioasid: Introduce ioasid_set private ID
+Message-ID: <20200908151908.37df01f1@jacob-builder>
+In-Reply-To: <20200825102209.GC3252704@myrica>
+References: <1598070918-21321-1-git-send-email-jacob.jun.pan@linux.intel.com>
+        <1598070918-21321-6-git-send-email-jacob.jun.pan@linux.intel.com>
+        <20200825102209.GC3252704@myrica>
+Organization: OTC
+X-Mailer: Claws Mail 3.13.2 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"make HOSTCXX=clang++ xconfig" reports the following:
+On Tue, 25 Aug 2020 12:22:09 +0200
+Jean-Philippe Brucker <jean-philippe@linaro.org> wrote:
 
-  HOSTCXX scripts/kconfig/qconf.o
-In file included from scripts/kconfig/qconf.cc:23:
-In file included from scripts/kconfig/lkc.h:15:
-scripts/kconfig/lkc_proto.h:26:13: warning: 'get_relations_str' has C-linkage specified, but returns incomplete type 'struct gstr' which could be incompatible with C [-Wreturn-type-c-linkage]
-struct gstr get_relations_str(struct symbol **sym_arr, struct list_head *head);
-            ^
+> On Fri, Aug 21, 2020 at 09:35:14PM -0700, Jacob Pan wrote:
+> > When an IOASID set is used for guest SVA, each VM will acquire its
+> > ioasid_set for IOASID allocations. IOASIDs within the VM must have a
+> > host/physical IOASID backing, mapping between guest and host IOASIDs can
+> > be non-identical. IOASID set private ID (SPID) is introduced in this
+> > patch to be used as guest IOASID. However, the concept of ioasid_set
+> > specific namespace is generic, thus named SPID.
+> > 
+> > As SPID namespace is within the IOASID set, the IOASID core can provide
+> > lookup services at both directions. SPIDs may not be allocated when its
+> > IOASID is allocated, the mapping between SPID and IOASID is usually
+> > established when a guest page table is bound to a host PASID.
+> > 
+> > Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
+> > ---
+> >  drivers/iommu/ioasid.c | 54 ++++++++++++++++++++++++++++++++++++++++++++++++++
+> >  include/linux/ioasid.h | 12 +++++++++++
+> >  2 files changed, 66 insertions(+)
+> > 
+> > diff --git a/drivers/iommu/ioasid.c b/drivers/iommu/ioasid.c
+> > index 5f31d63c75b1..c0aef38a4fde 100644
+> > --- a/drivers/iommu/ioasid.c
+> > +++ b/drivers/iommu/ioasid.c
+> > @@ -21,6 +21,7 @@ enum ioasid_state {
+> >   * struct ioasid_data - Meta data about ioasid
+> >   *
+> >   * @id:		Unique ID
+> > + * @spid:	Private ID unique within a set
+> >   * @users	Number of active users
+> >   * @state	Track state of the IOASID
+> >   * @set		Meta data of the set this IOASID belongs to
+> > @@ -29,6 +30,7 @@ enum ioasid_state {
+> >   */
+> >  struct ioasid_data {
+> >  	ioasid_t id;
+> > +	ioasid_t spid;
+> >  	struct ioasid_set *set;
+> >  	refcount_t users;
+> >  	enum ioasid_state state;
+> > @@ -326,6 +328,58 @@ int ioasid_attach_data(ioasid_t ioasid, void *data)
+> >  EXPORT_SYMBOL_GPL(ioasid_attach_data);
+> >  
+> >  /**
+> > + * ioasid_attach_spid - Attach ioasid_set private ID to an IOASID
+> > + *
+> > + * @ioasid: the ID to attach
+> > + * @spid:   the ioasid_set private ID of @ioasid
+> > + *
+> > + * For IOASID that is already allocated, private ID within the set can be
+> > + * attached via this API. Future lookup can be done via ioasid_find.  
+> 
+> via ioasid_find_by_spid()?
+> 
+yes, will update.
 
-Currently, get_relations_str() is declared before the struct gstr
-definition.
+> > + */
+> > +int ioasid_attach_spid(ioasid_t ioasid, ioasid_t spid)
+> > +{
+> > +	struct ioasid_data *ioasid_data;
+> > +	int ret = 0;
+> > +
+> > +	spin_lock(&ioasid_allocator_lock);
+> > +	ioasid_data = xa_load(&active_allocator->xa, ioasid);
+> > +
+> > +	if (!ioasid_data) {
+> > +		pr_err("No IOASID entry %d to attach SPID %d\n",
+> > +			ioasid, spid);
+> > +		ret = -ENOENT;
+> > +		goto done_unlock;
+> > +	}
+> > +	ioasid_data->spid = spid;
+> > +
+> > +done_unlock:
+> > +	spin_unlock(&ioasid_allocator_lock);
+> > +	return ret;
+> > +}
+> > +EXPORT_SYMBOL_GPL(ioasid_attach_spid);
+> > +
+> > +ioasid_t ioasid_find_by_spid(struct ioasid_set *set, ioasid_t spid)  
+> 
+> Maybe add a bit of documentation as this is public-facing.
+> 
+Good point, I will add
+/**
+ * ioasid_find_by_spid - Find the system-wide IOASID by a set private ID and
+ * its set.
+ *
+ * @set:	the ioasid_set to search within
+ * @spid:	the set private ID
+ *
+ * Given a set private ID and its IOASID set, find the system-wide IOASID. Take
+ * a reference upon finding the matching IOASID. Return INVALID_IOASID if the
+ * IOASID is not found in the set or the set is not valid.
+ */
 
-Move all declarations of menu.c functions below.
+> > +{
+> > +	struct ioasid_data *entry;
+> > +	unsigned long index;
+> > +
+> > +	if (!xa_load(&ioasid_sets, set->sid)) {
+> > +		pr_warn("Invalid set\n");
+> > +		return INVALID_IOASID;
+> > +	}
+> > +
+> > +	xa_for_each(&set->xa, index, entry) {
+> > +		if (spid == entry->spid) {
+> > +			pr_debug("Found ioasid %lu by spid %u\n", index, spid);
+> > +			refcount_inc(&entry->users);  
+> 
+> Nothing prevents ioasid_free() from concurrently dropping the refcount to
+> zero and calling ioasid_do_free(). The caller will later call ioasid_put()
+> on a stale/reallocated index.
+> 
+right, need to add 	spin_lock(&ioasid_allocator_lock);
 
-BTW, some are declared in lkc.h and some in lkc_proto.h, but the
-difference is unclear. I guess some refactoring is needed.
+> > +			return index;
+> > +		}
+> > +	}
+> > +	return INVALID_IOASID;
+> > +}
+> > +EXPORT_SYMBOL_GPL(ioasid_find_by_spid);
+> > +
+> > +/**
+> >   * ioasid_alloc - Allocate an IOASID
+> >   * @set: the IOASID set
+> >   * @min: the minimum ID (inclusive)
+> > diff --git a/include/linux/ioasid.h b/include/linux/ioasid.h
+> > index 310abe4187a3..d4b3e83672f6 100644
+> > --- a/include/linux/ioasid.h
+> > +++ b/include/linux/ioasid.h
+> > @@ -73,6 +73,8 @@ bool ioasid_is_active(ioasid_t ioasid);
+> >  
+> >  void *ioasid_find(struct ioasid_set *set, ioasid_t ioasid, bool (*getter)(void *));
+> >  int ioasid_attach_data(ioasid_t ioasid, void *data);
+> > +int ioasid_attach_spid(ioasid_t ioasid, ioasid_t spid);
+> > +ioasid_t ioasid_find_by_spid(struct ioasid_set *set, ioasid_t spid);
+> >  int ioasid_register_allocator(struct ioasid_allocator_ops *allocator);
+> >  void ioasid_unregister_allocator(struct ioasid_allocator_ops *allocator);
+> >  void ioasid_is_in_set(struct ioasid_set *set, ioasid_t ioasid);
+> > @@ -136,5 +138,15 @@ static inline int ioasid_attach_data(ioasid_t ioasid, void *data)
+> >  	return -ENOTSUPP;
+> >  }
+> >  
+> > +staic inline int ioasid_attach_spid(ioasid_t ioasid, ioasid_t spid)
+> > +{
+> > +	return -ENOTSUPP;
+> > +}
+> > +
+> > +static inline ioasid_t ioasid_find_by_spid(struct ioasid_set *set, ioasid_t spid)
+> > +{
+> > +	return -ENOTSUPP;  
+> 
+> INVALID_IOASID
+> 
+right, will fix.
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
+Thanks!
 
- scripts/kconfig/lkc.h       | 47 +++++++++++++++++++++++--------------
- scripts/kconfig/lkc_proto.h | 14 -----------
- 2 files changed, 30 insertions(+), 31 deletions(-)
+> Thanks,
+> Jean
+> 
+> > +}
+> > +
+> >  #endif /* CONFIG_IOASID */
+> >  #endif /* __LINUX_IOASID_H */
+> > -- 
+> > 2.7.4
+> >   
+> _______________________________________________
+> iommu mailing list
+> iommu@lists.linux-foundation.org
+> https://lists.linuxfoundation.org/mailman/listinfo/iommu
 
-diff --git a/scripts/kconfig/lkc.h b/scripts/kconfig/lkc.h
-index d4ca8297364f..8454649b17bd 100644
---- a/scripts/kconfig/lkc.h
-+++ b/scripts/kconfig/lkc.h
-@@ -66,23 +66,6 @@ static inline void xfwrite(const void *str, size_t len, size_t count, FILE *out)
- 		fprintf(stderr, "Error in writing or end of file.\n");
- }
- 
--/* menu.c */
--void _menu_init(void);
--void menu_warn(struct menu *menu, const char *fmt, ...);
--struct menu *menu_add_menu(void);
--void menu_end_menu(void);
--void menu_add_entry(struct symbol *sym);
--void menu_add_dep(struct expr *dep);
--void menu_add_visibility(struct expr *dep);
--struct property *menu_add_prompt(enum prop_type type, char *prompt, struct expr *dep);
--void menu_add_expr(enum prop_type type, struct expr *expr, struct expr *dep);
--void menu_add_symbol(enum prop_type type, struct symbol *sym, struct expr *dep);
--void menu_add_option_modules(void);
--void menu_add_option_defconfig_list(void);
--void menu_add_option_allnoconfig_y(void);
--void menu_finalize(struct menu *parent);
--void menu_set_type(int type);
--
- /* util.c */
- struct file *file_lookup(const char *name);
- void *xmalloc(size_t size);
-@@ -109,6 +92,36 @@ void str_append(struct gstr *gs, const char *s);
- void str_printf(struct gstr *gs, const char *fmt, ...);
- const char *str_get(struct gstr *gs);
- 
-+/* menu.c */
-+void _menu_init(void);
-+void menu_warn(struct menu *menu, const char *fmt, ...);
-+struct menu *menu_add_menu(void);
-+void menu_end_menu(void);
-+void menu_add_entry(struct symbol *sym);
-+void menu_add_dep(struct expr *dep);
-+void menu_add_visibility(struct expr *dep);
-+struct property *menu_add_prompt(enum prop_type type, char *prompt, struct expr *dep);
-+void menu_add_expr(enum prop_type type, struct expr *expr, struct expr *dep);
-+void menu_add_symbol(enum prop_type type, struct symbol *sym, struct expr *dep);
-+void menu_add_option_modules(void);
-+void menu_add_option_defconfig_list(void);
-+void menu_add_option_allnoconfig_y(void);
-+void menu_finalize(struct menu *parent);
-+void menu_set_type(int type);
-+
-+extern struct menu rootmenu;
-+
-+bool menu_is_empty(struct menu *menu);
-+bool menu_is_visible(struct menu *menu);
-+bool menu_has_prompt(struct menu *menu);
-+const char *menu_get_prompt(struct menu *menu);
-+struct menu *menu_get_root_menu(struct menu *menu);
-+struct menu *menu_get_parent_menu(struct menu *menu);
-+bool menu_has_help(struct menu *menu);
-+const char *menu_get_help(struct menu *menu);
-+struct gstr get_relations_str(struct symbol **sym_arr, struct list_head *head);
-+void menu_get_ext_help(struct menu *menu, struct gstr *help);
-+
- /* symbol.c */
- void sym_clear_all_valid(void);
- struct symbol *sym_choice_default(struct symbol *sym);
-diff --git a/scripts/kconfig/lkc_proto.h b/scripts/kconfig/lkc_proto.h
-index f9ab98238aef..9e81be33c40f 100644
---- a/scripts/kconfig/lkc_proto.h
-+++ b/scripts/kconfig/lkc_proto.h
-@@ -12,20 +12,6 @@ bool conf_get_changed(void);
- void conf_set_changed_callback(void (*fn)(void));
- void conf_set_message_callback(void (*fn)(const char *s));
- 
--/* menu.c */
--extern struct menu rootmenu;
--
--bool menu_is_empty(struct menu *menu);
--bool menu_is_visible(struct menu *menu);
--bool menu_has_prompt(struct menu *menu);
--const char * menu_get_prompt(struct menu *menu);
--struct menu * menu_get_root_menu(struct menu *menu);
--struct menu * menu_get_parent_menu(struct menu *menu);
--bool menu_has_help(struct menu *menu);
--const char * menu_get_help(struct menu *menu);
--struct gstr get_relations_str(struct symbol **sym_arr, struct list_head *head);
--void menu_get_ext_help(struct menu *menu, struct gstr *help);
--
- /* symbol.c */
- extern struct symbol * symbol_hash[SYMBOL_HASHSIZE];
- 
--- 
-2.25.1
-
+[Jacob Pan]
