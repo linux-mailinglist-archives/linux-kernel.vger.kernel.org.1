@@ -2,75 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97D92260F9B
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 12:26:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EA3E260F99
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 12:26:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729437AbgIHKZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 06:25:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59084 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729031AbgIHKZv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 06:25:51 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56BD7C061573;
-        Tue,  8 Sep 2020 03:25:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=3PMzoeG0jLYH6a5jncrRPYuy7xbDoeom4wasamz/iBA=; b=UPjh9SJAsH6DRbPldgyO0bFYbz
-        7KeipEdsRPnr4iZ4TAKWE9HDIB1fr0vp9/zYDYNgB1ZG4onTRSLW0Dnc/JUIUqt/IH2MMwSGbssHX
-        Fniw4/RGfZoJfdM4u4M0xwdH6FdB3DiT/MV8nUSOqmDlYLPvbHLjSkgx7Cb9qwaDryDE70wrPjgap
-        gP+/74T0jJabj4DCVrcFzN0cIbIs4jYL2EBQMMsmHDDzNhsxKM3PEe3X1+vjbG8JWtXUm0THPl/aR
-        sEo2QrKLub+CwnvETCVRJSuvURLxggHJ7WDnCa3sgHlT9hb9AlD1bTx01MyIPy1TGdjnEnh95wzD7
-        315lZ6cg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kFaol-0005ND-2Y; Tue, 08 Sep 2020 10:25:39 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        id S1729478AbgIHKZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 06:25:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35910 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729414AbgIHKZw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 06:25:52 -0400
+Received: from localhost (unknown [122.182.239.242])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 205C8304B92;
-        Tue,  8 Sep 2020 12:25:38 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 018B823D54AB1; Tue,  8 Sep 2020 12:25:37 +0200 (CEST)
-Date:   Tue, 8 Sep 2020 12:25:37 +0200
-From:   peterz@infradead.org
-To:     Christian =?iso-8859-1?Q?G=F6ttsche?= <cgzones@googlemail.com>
-Cc:     linux-kernel@vger.kernel.org, selinux@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>
-Subject: Re: [RFC PATCH] sched: only issue an audit on privileged operation
-Message-ID: <20200908102537.GU2674@hirez.programming.kicks-ass.net>
-References: <20200904160031.6444-1-cgzones@googlemail.com>
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C4E6B20672;
+        Tue,  8 Sep 2020 10:25:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599560752;
+        bh=wWnN8wIGdEYRQeyZKiDo3zvwQLQ/nImIw3EzYlJq4Rc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=W75xSdOthz2YfDEqQ6Y6fTbdMUTwjPxK0P2ioDuwOlLUrb69hyZtEjVEJe5FlKoYZ
+         iBHcF6xvQUmBzXQfFQ6ZQXidFYF0sZBO7q3nOJnCILx3TK8iROksvMSgiVcCpUVVap
+         qBO2ld5YB33YTuIOcp8OqGeAXBCmZVybvxHk6bZA=
+Date:   Tue, 8 Sep 2020 15:55:48 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Roger Quadros <rogerq@ti.com>
+Cc:     kishon@ti.com, nsekhar@ti.com, vigneshr@ti.com,
+        jan.kiszka@siemens.com, linux-kernel@vger.kernel.org,
+        robh+dt@kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v5] dt-binding: phy: convert ti,omap-usb2 to YAML
+Message-ID: <20200908102548.GD77521@vkoul-mobl>
+References: <20200831142130.21836-1-rogerq@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200904160031.6444-1-cgzones@googlemail.com>
+In-Reply-To: <20200831142130.21836-1-rogerq@ti.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 04, 2020 at 06:00:31PM +0200, Christian Göttsche wrote:
-> sched_setattr(2) does via kernel/sched/core.c:__sched_setscheduler()
-> issue a CAP_SYS_NICE audit event unconditionally, even when the requested
-> operation does not require that capability / is un-privileged.
-> 
-> Perform privilged/unprivileged catigorization first and perform a
-> capable test only if needed.
-> 
-> Signed-off-by: Christian Göttsche <cgzones@googlemail.com>
-> ---
->  kernel/sched/core.c | 65 ++++++++++++++++++++++++++++++++-------------
->  1 file changed, 47 insertions(+), 18 deletions(-)
+On 31-08-20, 17:21, Roger Quadros wrote:
+> Move ti,omap-usb2 to its own YAML schema.
 
-So who sodding cares about audit, and why is that a reason to make a
-trainwreck of code?
+Applied, thanks
+
+-- 
+~Vinod
