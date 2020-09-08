@@ -2,130 +2,291 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 556F5260DF0
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 10:48:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C23E6260DFA
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 10:49:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730101AbgIHIsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 04:48:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44156 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729550AbgIHIsM (ORCPT
+        id S1730145AbgIHItX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 04:49:23 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:53288 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729790AbgIHItW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 04:48:12 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E0A0C061573;
-        Tue,  8 Sep 2020 01:48:12 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id n14so2452773pff.6;
-        Tue, 08 Sep 2020 01:48:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=WIilKc8voJhD6HqanhXRrbRJ65/BRRqTx9fPQ2X84aw=;
-        b=DtQB0Zi8VPGsU9ZAdMtlxkJCMDrklHDXIioGjOdUl/k01/kYRbapRmv7/mCfqa5ZHq
-         LVeMjiDoYdZ0dE1D6kXGHDjnoLw08ELYqOKARUTg60IGXSvToqd4oXCirspt2nlbTdHR
-         9sl+fjC/1tFjTgZrumKMTja5vQS1+68FA8OauxUgyi4BSDLct91TGdlUpBd+nYY7STqb
-         TnFPEGLvCFUPEdH6dEwJrbkSdHkJdy61xkL5qc/wJqyh89IcLRFdkuIgu1jLDgUFViu5
-         XCufnUxY0/pMxOOPXa0yKqony8olavXMOYwF5lByif2GrkCu+yQpd/CSotjAY2xrtliX
-         8meQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=WIilKc8voJhD6HqanhXRrbRJ65/BRRqTx9fPQ2X84aw=;
-        b=F4iRLxeEzXyOsNY7GFTD7yU4psZbaHbhrbllZJ8dp6OX5uQaCiRlGqA3lZcViQixkk
-         4kkvs6ctq/28PDCv5FX2bNZZDmXYsV33mvmXx72Qhk3sfT+M2/4rRt6itdrO+ZPiWYQq
-         sn5Y1DbmsTsKFXpBbTmx291+vY2ZMaojuyStabmGLxO3a3fuJQAi6xfK2iRZkqv7tNGi
-         p6W15zo0OdGVXyhiQmwXIwVhlw3Vc0GOegSozU7xYygYsvEgU90DDDRlKA5nfSewHmPq
-         WGigk7K9KzdOe5ZYBsEPURelmV32ayat/aPRg3zR0UB1HL/6TxMWnL4epbzTHMCd644z
-         QV7g==
-X-Gm-Message-State: AOAM530bHUSkQ3GB45eciPFcWG/iLpzsTFSql/U4uOz+lRn3s2eDmzSm
-        chgDP6iHjveXEX571r7/Ma/l6mxGa6a3pXWDP0M=
-X-Google-Smtp-Source: ABdhPJwRuR5MsOCJy67DoZUhY4YMRXetafBxDeFh+WzwRES/sWLA4/43R1Up45IAx7gKq8+np9lhqvh3NtmziG0OdOo=
-X-Received: by 2002:a17:902:28:: with SMTP id 37mr23494899pla.107.1599554892083;
- Tue, 08 Sep 2020 01:48:12 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200905133230.1014581-1-j.neuschaefer@gmx.net>
- <20200905133230.1014581-6-j.neuschaefer@gmx.net> <CAHp75VdUHoOyM3bObzhdfiqpne0AmSK_UakteTZxnjqJVrNV9A@mail.gmail.com>
- <20200908081445.GC4400@dell>
-In-Reply-To: <20200908081445.GC4400@dell>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 8 Sep 2020 11:47:54 +0300
-Message-ID: <CAHp75Veb5nVasy28FSksf06eVVhC8N5hHsEPM-2YcFbMjZ5Rhw@mail.gmail.com>
-Subject: Re: [PATCH v2 05/10] pwm: ntxec: Add driver for PWM function in
- Netronix EC
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     =?UTF-8?Q?Jonathan_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Mark Brown <broonie@kernel.org>, allen <allen.chen@ite.com.tw>,
+        Tue, 8 Sep 2020 04:49:22 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0888mooZ084528;
+        Tue, 8 Sep 2020 03:48:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1599554930;
+        bh=gUGWPLTknhIG/cV6SLv5pqNO3E2DIgRX6hAn1d3Vdq0=;
+        h=Subject:To:References:From:CC:Date:In-Reply-To;
+        b=SoxgOgDrS1JGA/JSvRVQoKg1Pu/mkGYqUYMgh7targDSt5H3KwkSrVmjYZCH2Hl1a
+         VrJVcBdMWaMD4b55qUFmUvj0g3fnmskCYpzyAiDyqIce3LH/q90saau2hx5vWR9ZcO
+         rjW1xZp7f7U6Kw0ZC9jl0+2b/ist2+KIVpvfXSEM=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0888mowc036624;
+        Tue, 8 Sep 2020 03:48:50 -0500
+Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 8 Sep
+ 2020 03:48:50 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 8 Sep 2020 03:48:50 -0500
+Received: from [10.250.235.166] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0888mjbR032303;
+        Tue, 8 Sep 2020 03:48:46 -0500
+Subject: Re: [PATCH] Platform integrity information in sysfs
+To:     Daniel Gutson <daniel.gutson@eclypsium.com>,
+        Derek Kiernan <derek.kiernan@xilinx.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
-        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Josua Mayer <josua.mayer@jm0.eu>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        Arnd Bergmann <arnd@arndb.de>, Daniel Palmer <daniel@0x0f.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        <linux-kernel@vger.kernel.org>,
+        Richard Hughes <hughsient@gmail.com>,
+        Alex Bazhaniuk <alex@eclypsium.com>
+References: <20200903161804.403299-1-daniel.gutson@eclypsium.com>
+From:   Vignesh Raghavendra <vigneshr@ti.com>
+CC:     "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Message-ID: <7885ca85-5982-a0d5-2307-d785d4dc0eea@ti.com>
+Date:   Tue, 8 Sep 2020 14:18:44 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20200903161804.403299-1-daniel.gutson@eclypsium.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 8, 2020 at 11:14 AM Lee Jones <lee.jones@linaro.org> wrote:
-> On Sat, 05 Sep 2020, Andy Shevchenko wrote:
-> > On Saturday, September 5, 2020, Jonathan Neusch=C3=A4fer <j.neuschaefer=
-@gmx.net>
-> > wrote:
+Hi,
 
-...
+On 9/3/20 9:48 PM, Daniel Gutson wrote:
+> This patch exports information about the platform integrity
+> firmware configuration in the sysfs filesystem.
+> In this initial patch, I include some configuration attributes
+> for the system SPI chip.
+> 
 
-> > > +config PWM_NTXEC
-> > > +       tristate "Netronix embedded controller PWM support"
-> >
-> >
-> >
-> >
-> > > +       depends on MFD_NTXEC && OF
-> >
-> >
-> > I don=E2=80=99t see need to reduce test coverage and use of the driver =
-by sticking
-> > with OF. Actually it=E2=80=99s not used.
->
-> If the device is only known to boot with OF, then it's pointless
-> building it when !OF.
+Please avoid first-person singular pronouns instead use imperative mood.
 
-No, it's not. As I pointed out the (compilation) test coverage is better.
+> This initial version exports the BIOS Write Enable (bioswe),
+> BIOS Lock Enable (ble), and the SMM BIOS Write Protect (SMM_BWP)
+> fields of the BIOS Control register. The idea is to keep adding more
+> flags, not only from the BC but also from other registers in following
+> versions.
+> 
+> The goal is that the attributes are avilable to fwupd when SecureBoot
+> is turned on.
+> 
 
-> If you want to increase test coverage enable
-> COMPILE_TEST instead.
+s/avilable/available
 
-It is one way to achieve that, yes;
+> The patch provides a new misc driver, as proposed in the previous patch,
+> that provides a registration function for HW Driver devices to register
+> class_attributes.
+> In this case, the intel SPI flash chip (intel-spi) registers three
 
-       depends on OF || COMPILE_TEST
-       depends on MFD_NTXEC
+s/intel SPI/Intel SPI
 
---=20
-With Best Regards,
-Andy Shevchenko
+> class_attributes corresponding to the fields mentioned above.
+> 
+> This version of the patch provides a new API supporting regular
+> device attributes rather than custom attributes, and also avoids
+> a race condition when exporting the driver sysfs dir and the
+> attributes files inside it.
+> Also, this patch renames 'platform lockdown' by 'platform integrity'.
+
+Changes wrt to previous versions should not be part of commit message
+but instead should be below tearline (b/w "---" and diffstat below)
+
+> 
+> Signed-off-by: Daniel Gutson <daniel.gutson@eclypsium.com>
+> ---
+
+Changes wrt previous versions go here...
+
+>  .../ABI/stable/sysfs-class-platform-integrity | 23 +++++
+>  MAINTAINERS                                   |  7 ++
+>  drivers/misc/Kconfig                          | 11 +++
+>  drivers/misc/Makefile                         |  1 +
+>  drivers/misc/platform-integrity.c             | 61 +++++++++++++
+>  drivers/mtd/spi-nor/controllers/Kconfig       |  1 +
+>  .../mtd/spi-nor/controllers/intel-spi-pci.c   | 64 ++++++++++++-
+>  .../spi-nor/controllers/intel-spi-platform.c  |  2 +-
+>  drivers/mtd/spi-nor/controllers/intel-spi.c   | 89 ++++++++++++++++++-
+>  drivers/mtd/spi-nor/controllers/intel-spi.h   |  5 +-
+>  include/linux/platform-integrity.h            | 20 +++++
+>  11 files changed, 278 insertions(+), 6 deletions(-)
+>  create mode 100644 Documentation/ABI/stable/sysfs-class-platform-integrity
+>  create mode 100644 drivers/misc/platform-integrity.c
+>  create mode 100644 include/linux/platform-integrity.h
+> 
+
+
+You forgot to cc linux-mtd lists and hence patch did not show up in my
+queue.. MTD Patches are managed via patchoworks and if linux-mtd is not
+cc'd then they will most likely be ignored. Please use
+scripts/get_maintainer.pl to get list of maintainters and mailing lists
+to cc.
+
+Also, this patch needs to be split into at least two patches: one
+introducing platform-integrity module and another adding suuport for
+intel-spi driver to use the same.
+
+Also, I see there are multiple iterations of the patch posted but are
+not versioned. Please use appropriate version number in $subject.
+
+Please read Documentation/process/submitting-patches.rst for more details.
+
+
+> diff --git a/Documentation/ABI/stable/sysfs-class-platform-integrity b/Documentation/ABI/stable/sysfs-class-platform-integrity
+> new file mode 100644
+> index 000000000000..b31ec051ca48
+> --- /dev/null
+> +++ b/Documentation/ABI/stable/sysfs-class-platform-integrity
+> @@ -0,0 +1,23 @@
+> +What:		/sys/class/platform-integrity/intel-spi/bioswe
+> +Date:		September 2020
+> +KernelVersion:	5.9.1
+
+5.9 merge window is closed. This won't make it to 5.9... Maybe 5.10
+
+> +Contact:	Daniel Gutson <daniel.gutson@eclypsium.com>
+> +Description:	If the system firmware set BIOS Write Enable.
+> +		0: writes disabled, 1: writes enabled.
+> +Users:		https://github.com/fwupd/fwupd
+> +
+> +What:		/sys/class/platform-integrity/intel-spi/ble
+
+Naming seems inconsistent... Previous entry was bioswe (BIOS write
+enable) but this one is called ble (BIOS latch enable). Maybe rename
+previous one as bwe to be consistent with other entries?
+
+> +Date:		September 2020
+> +KernelVersion:	5.9.1
+> +Contact:	Daniel Gutson <daniel.gutson@eclypsium.com>
+> +Description:	If the system firmware set BIOS Lock Enable.
+> +		0: SMM lock disabled, 1: SMM lock enabled.
+> +Users:		https://github.com/fwupd/fwupd
+> +
+> +What:		/sys/class/platform-integrity/intel-spi/smm_bwp
+> +Date:		September 2020
+> +KernelVersion:	5.9.1
+> +Contact:	Daniel Gutson <daniel.gutson@eclypsium.com>
+> +Description:	If the system firmware set SMM BIOS Write Protect.
+> +		0: writes disabled unless in SMM, 1: writes enabled.
+
+Is SMM a standard abbreviation in  Intel world? If not you may want to
+expand what it means in Description.
+
+> +Users:		https://github.com/fwupd/fwupd
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index e4647c84c987..771eaf715427 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -13744,6 +13744,13 @@ S:	Maintained
+>  F:	Documentation/devicetree/bindings/iio/chemical/plantower,pms7003.yaml
+>  F:	drivers/iio/chemical/pms7003.c
+>  
+> +PLATFORM INTEGRITY DATA MODULE
+> +M:	Daniel Gutson <daniel.gutson@eclypsium.com>
+> +S:	Supported
+> +F:	Documentation/ABI/sysfs-class-platform-integrity
+> +F:	drivers/misc/platform-integrity.c
+> +F:	include/linux/platform-integrity.h
+> +
+>  PLDMFW LIBRARY
+>  M:	Jacob Keller <jacob.e.keller@intel.com>
+>  S:	Maintained
+> diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
+> index ce136d685d14..d5d0de5b5706 100644
+> --- a/drivers/misc/Kconfig
+> +++ b/drivers/misc/Kconfig
+> @@ -456,6 +456,17 @@ config PVPANIC
+>  	  a paravirtualized device provided by QEMU; it lets a virtual machine
+>  	  (guest) communicate panic events to the host.
+>  
+> +config PLATFORM_INTEGRITY_ATTRS
+> +	tristate "Platform integrity information in the sysfs"
+> +	depends on SYSFS
+> +	help
+> +	  This kernel module is a helper driver to provide information about
+> +	  platform integrity settings and configuration.
+> +	  This module is used by other device drivers -such as the intel-spi-
+> +	  to publish the information in /sys/class/platform-integrity which is
+> +	  consumed by software such as fwupd which can verify the platform
+> +	  has been configured in a secure way.
+> +
+
+[...]
+
+> diff --git a/drivers/mtd/spi-nor/controllers/Kconfig b/drivers/mtd/spi-nor/controllers/Kconfig
+> index 5c0e0ec2e6d1..113e349a826b 100644
+> --- a/drivers/mtd/spi-nor/controllers/Kconfig
+> +++ b/drivers/mtd/spi-nor/controllers/Kconfig
+> @@ -29,6 +29,7 @@ config SPI_NXP_SPIFI
+>  
+>  config SPI_INTEL_SPI
+>  	tristate
+> +	select PLATFORM_INTEGRITY_ATTRS
+>  
+
+Not a good idea to use select clause on symbols that have dependencies
+as select will force a symbol to a value without visiting the
+dependencies. Instead use depends on
+
+
+>  config SPI_INTEL_SPI_PCI
+>  	tristate "Intel PCH/PCU SPI flash PCI driver (DANGEROUS)"
+> diff --git a/drivers/mtd/spi-nor/controllers/intel-spi-pci.c b/drivers/mtd/spi-nor/controllers/intel-spi-pci.c
+> index c72aa1ab71ad..e1bca8aedf7c 100644
+> --- a/drivers/mtd/spi-nor/controllers/intel-spi-pci.c
+> +++ b/drivers/mtd/spi-nor/controllers/intel-spi-pci.c
+> @@ -10,11 +10,19 @@
+>  #include <linux/kernel.h>
+>  #include <linux/module.h>
+>  #include <linux/pci.h>
+> +#include <linux/platform-integrity.h>
+>  
+>  #include "intel-spi.h"
+>  
+>  #define BCR		0xdc
+>  #define BCR_WPD		BIT(0)
+> +#define BCR_BLE		BIT(1)
+> +#define BCR_SMM_BWP	BIT(5)
+> +
+> +struct cnl_spi_attr {
+> +	struct device_attribute dev_attr;
+> +	u32 mask;
+> +};
+>  
+>  static const struct intel_spi_boardinfo bxt_info = {
+>  	.type = INTEL_SPI_BXT,
+> @@ -24,6 +32,59 @@ static const struct intel_spi_boardinfo cnl_info = {
+>  	.type = INTEL_SPI_CNL,
+>  };
+>  
+> +static ssize_t cnl_spi_attr_show(struct device *dev,
+> +	struct device_attribute *attr, char *buf, u32 mask)
+> +{
+
+Please be consistent with existing code and use intel_spi_ prefix for
+function names.
+
+Also Alignment should match open parenthesis..
+Please run scripts/checkpatch.pl --strict on patch and fix all issue
+reported.
+
+[...]
+
+Regards
+Vignesh
