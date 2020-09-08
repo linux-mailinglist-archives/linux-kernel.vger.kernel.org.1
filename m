@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BA3B26143C
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:10:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C2BF261430
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:09:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731437AbgIHQKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 12:10:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48748 "EHLO mail.kernel.org"
+        id S1731342AbgIHQI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 12:08:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48732 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730990AbgIHQBa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:01:30 -0400
+        id S1731069AbgIHQAE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 12:00:04 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0D0E422B3F;
-        Tue,  8 Sep 2020 15:35:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 05F3D23C44;
+        Tue,  8 Sep 2020 15:36:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599579353;
-        bh=d1dOWNwTkDijp3GMUZDPpfqytkJ2953rqyrjte5Ltl0=;
+        s=default; t=1599579379;
+        bh=cZTh0F4UwMPZNeIZOrF3D9te8pCo9YKGjBWc/4qcV5s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=djxyW0Kqb9KnRXZcOiqkM+Heqxa9jTN9mrOX8SPC0D5ja5psUi0JBW/9+t4IHrlWJ
-         4kxiG4YHcs0DXGhf5pTOXHGIg5A6OOXpN6iSXuza1kwLkPnQeedx3ruyEJnq/l7QT0
-         40IevtDNahHQr//tr/7FH1YXXgNuAkiyg21U7als=
+        b=tL24LDkBP+86ogxXCNqzBniQdqCtXTnJkQAjp9Uds+Inlzv/6r00PlawTrAMA7XIr
+         PR00PP+qYkHdORIYMvVCon3Mm386yBK+i8HQcWTbpUZUTnDZeEaGzWsO1brMmh5oxK
+         k9V+6MRdPjLjwNqpk/nVDi+XnmZcBJAKtogZTVp8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Linus=20L=C3=BCssing?= <linus.luessing@c0d3.blue>,
-        Sven Eckelmann <sven@narfation.org>,
-        Simon Wunderlich <sw@simonwunderlich.de>,
+        stable@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 041/186] batman-adv: Fix own OGM check in aggregated OGMs
-Date:   Tue,  8 Sep 2020 17:23:03 +0200
-Message-Id: <20200908152243.657501406@linuxfoundation.org>
+Subject: [PATCH 5.8 054/186] netfilter: nf_tables: add NFTA_SET_USERDATA if not null
+Date:   Tue,  8 Sep 2020 17:23:16 +0200
+Message-Id: <20200908152244.291680213@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200908152241.646390211@linuxfoundation.org>
 References: <20200908152241.646390211@linuxfoundation.org>
@@ -46,60 +43,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Lüssing <linus.luessing@c0d3.blue>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 
-[ Upstream commit d8bf0c01642275c7dca1e5d02c34e4199c200b1f ]
+[ Upstream commit 6f03bf43ee05b31d3822def2a80f11b3591c55b3 ]
 
-The own OGM check is currently misplaced and can lead to the following
-issues:
+Kernel sends an empty NFTA_SET_USERDATA attribute with no value if
+userspace adds a set with no NFTA_SET_USERDATA attribute.
 
-For one thing we might receive an aggregated OGM from a neighbor node
-which has our own OGM in the first place. We would then not only skip
-our own OGM but erroneously also any other, following OGM in the
-aggregate.
-
-For another, we might receive an OGM aggregate which has our own OGM in
-a place other then the first one. Then we would wrongly not skip this
-OGM, leading to populating the orginator and gateway table with ourself.
-
-Fixes: 9323158ef9f4 ("batman-adv: OGMv2 - implement originators logic")
-Signed-off-by: Linus Lüssing <linus.luessing@c0d3.blue>
-Signed-off-by: Sven Eckelmann <sven@narfation.org>
-Signed-off-by: Simon Wunderlich <sw@simonwunderlich.de>
+Fixes: e6d8ecac9e68 ("netfilter: nf_tables: Add new attributes into nft_set to store user data.")
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/batman-adv/bat_v_ogm.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ net/netfilter/nf_tables_api.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/net/batman-adv/bat_v_ogm.c b/net/batman-adv/bat_v_ogm.c
-index 18028b9f95f01..65b1280cf2fc1 100644
---- a/net/batman-adv/bat_v_ogm.c
-+++ b/net/batman-adv/bat_v_ogm.c
-@@ -874,6 +874,12 @@ static void batadv_v_ogm_process(const struct sk_buff *skb, int ogm_offset,
- 		   ntohl(ogm_packet->seqno), ogm_throughput, ogm_packet->ttl,
- 		   ogm_packet->version, ntohs(ogm_packet->tvlv_len));
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index d31832d32e028..39be0a3015c63 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -3643,7 +3643,8 @@ static int nf_tables_fill_set(struct sk_buff *skb, const struct nft_ctx *ctx,
+ 			goto nla_put_failure;
+ 	}
  
-+	if (batadv_is_my_mac(bat_priv, ogm_packet->orig)) {
-+		batadv_dbg(BATADV_DBG_BATMAN, bat_priv,
-+			   "Drop packet: originator packet from ourself\n");
-+		return;
-+	}
-+
- 	/* If the throughput metric is 0, immediately drop the packet. No need
- 	 * to create orig_node / neigh_node for an unusable route.
- 	 */
-@@ -1001,11 +1007,6 @@ int batadv_v_ogm_packet_recv(struct sk_buff *skb,
- 	if (batadv_is_my_mac(bat_priv, ethhdr->h_source))
- 		goto free_skb;
+-	if (nla_put(skb, NFTA_SET_USERDATA, set->udlen, set->udata))
++	if (set->udata &&
++	    nla_put(skb, NFTA_SET_USERDATA, set->udlen, set->udata))
+ 		goto nla_put_failure;
  
--	ogm_packet = (struct batadv_ogm2_packet *)skb->data;
--
--	if (batadv_is_my_mac(bat_priv, ogm_packet->orig))
--		goto free_skb;
--
- 	batadv_inc_counter(bat_priv, BATADV_CNT_MGMT_RX);
- 	batadv_add_counter(bat_priv, BATADV_CNT_MGMT_RX_BYTES,
- 			   skb->len + ETH_HLEN);
+ 	nest = nla_nest_start_noflag(skb, NFTA_SET_DESC);
 -- 
 2.25.1
 
