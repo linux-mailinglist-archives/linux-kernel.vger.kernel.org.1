@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 144DA261DB3
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:41:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F11D261D4B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:35:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732080AbgIHTlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:41:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53414 "EHLO
+        id S1732316AbgIHTe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 15:34:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730937AbgIHPyo (ORCPT
+        with ESMTP id S1730901AbgIHP5a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:54:44 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40BC9C0612A8
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 06:08:03 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id a65so17212783wme.5
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 06:08:03 -0700 (PDT)
+        Tue, 8 Sep 2020 11:57:30 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 545DDC0612B0
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 06:11:29 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id f2so15185559qkh.3
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 06:11:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        d=marek-ca.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=YaYfBY/nWyV15237QqlCB6gaunpe9sapW1LpGGaZFmI=;
-        b=PQ9FpH0sWVEYKXkmkpGFj8lM+SXrPTK7FsqwWAXuNeb0DermnRd5fNv24TZMEQMSi5
-         6rnR7/UFQT86UeHCZlIojA8tN/1UK70ZR4CuAm+RhnbYsM3fmVkkmKg1u2K/5DZBeIiT
-         F7psEX9g30KC4el3BNij5xIoWiLfg4iXkT4JOU8Qu4Gb6/j/dbVe7QckB3toI0QD3NSc
-         BUrLpK24R5GNTIAjreSy7244Y94uNWeuiOiXYtS8462EI+6ptbP6VFqS49GWgBIZCar7
-         SVF2YJpMvvBMn7pMCG3KmPKUk7WKH6sU65i03kq4p+nCS+6jt62w+QJOPnm4BG/lqnnZ
-         X24A==
+        bh=D6PZaXfU9lSNNM5STxKLHSbdmpPO4mfVbzPzM2HEmOU=;
+        b=2HYi7leTJH91BZbuOyAcGGekgns8wnQpVx1NmiD8t2s1KvGXkPdU2GaaIyofGc1rFY
+         1HAA71lu4tUzVwKGXzVA8BP3rqDCZa9jJ+zXWeTc+uSdDdhb2xyZl22TPhng6UWSfUCF
+         n+/NB8u/8bpw9L+plqC2Ho7/gCiLgBm28fQjdqo7+ZfKukrrYeUin0giOkSdHOE3vo3J
+         sN8mCXqMRxUY+v5A00+qx3Zyx0vD/ffQY4JWuMVnjqZbjcO1526wjzMNObXMjnTCN0gk
+         /rparC5vd39212atJ4ua76HwUZdqBKv+Z2IoZoIt5hhTOSmfPSWBlxCjvLB93b4yek2h
+         PY0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=YaYfBY/nWyV15237QqlCB6gaunpe9sapW1LpGGaZFmI=;
-        b=po0w+UV/AkurBVNEKnOVIxi6YxTtrtbA3yhxRiQsOHJAyTMDaAO1PimIHNOlivIHJM
-         o8xdWihAeuyU6RL1Ij0nHEUfpjbsivnPN6Ck69NLY8YPWQEEKxRadkHCzkvgPNzvUzcz
-         wyBQChAK8l/CnuePEB+s1g0ABdFFBHDAQg/rze1EcwUf2zW31KydFAfUEGHrPpGrya9x
-         dG9wbga9/G10r6tQbJUrGi4J836IxwbvcQ8JdecfjfdQUteK8ZfDV5t1Xi+LfenmiBAl
-         MUmsH75uaY6mBrQ6JnGTfj3mWHko4YwiQPztejtMK0Zi2k9524xjCIJhr8wjDP6IJiUU
-         3+1w==
-X-Gm-Message-State: AOAM532PHsTddrEJ6rXKOWITzg9jhOF5p2TOGDBMFJaTnkjMTX8eAzsd
-        WGB7C+PsjSslduLXP+k2E+Wpiw==
-X-Google-Smtp-Source: ABdhPJzslhyYw7bWYKOTM5J83rbaOJq0mY3hHSuDFQ686C4hzftuOd+FgwLykWDkYZu4RwLETxv0Sw==
-X-Received: by 2002:a1c:9e0e:: with SMTP id h14mr1690491wme.18.1599570482144;
-        Tue, 08 Sep 2020 06:08:02 -0700 (PDT)
-Received: from debian-brgl.home (lfbn-nic-1-68-20.w2-15.abo.wanadoo.fr. [2.15.159.20])
-        by smtp.gmail.com with ESMTPSA id b2sm32254400wmh.47.2020.09.08.06.08.00
+        bh=D6PZaXfU9lSNNM5STxKLHSbdmpPO4mfVbzPzM2HEmOU=;
+        b=laOfD1F+WPJs8hLr+5tA7+c2uUdlIweia8RlY0kI4SRePGWuZ21Kjdl7RiaN6HGhDa
+         wXwC4ruBauBl/cdbEtnpKxew/KiF0bR0vVWrbPgjGplSO0hKtQisopg1II34hzI50SyI
+         q8uzanPdL7oTPq0PAvg/yNsBjveFhuN+rQkNLiwsyx9zjZM8Q7MvbEz0XAPnZc9qEW5c
+         1nVo05rs3s119aJBjC82l4YhNy3w/xKA+vrFjDCn3wyQtUoBN082IDT4Tw+DbIGT8Ayo
+         egOQb8bHDTXGv02+VHne+/UCxqI6QBqY50QLKXlfagQ//1rgJFBA2CGghPSqt12X71Q9
+         KwIw==
+X-Gm-Message-State: AOAM533TpSmhxO6dVI2kPAdCW7fNsKJu0NFwPsYWWeYCkxtz1eAUV+mB
+        oiyXLCnrvFIOhsIlZaMTs8oBnw==
+X-Google-Smtp-Source: ABdhPJxIqsYRJmgOMoluDb68Y23V5yFz/PWJz14N3xZDX7JJaWWTqdlV3IIK76fYQLTTBEeS2i8B/g==
+X-Received: by 2002:a37:4b84:: with SMTP id y126mr4100qka.148.1599570688312;
+        Tue, 08 Sep 2020 06:11:28 -0700 (PDT)
+Received: from localhost.localdomain ([147.253.86.153])
+        by smtp.gmail.com with ESMTPSA id m196sm13394069qke.87.2020.09.08.06.11.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Sep 2020 06:08:01 -0700 (PDT)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Kent Gibson <warthog618@gmail.com>
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        stable@vger.kernel.org
-Subject: [PATCH] gpio: mockup: fix resource leak in error path
-Date:   Tue,  8 Sep 2020 15:07:49 +0200
-Message-Id: <20200908130749.9948-1-brgl@bgdev.pl>
+        Tue, 08 Sep 2020 06:11:27 -0700 (PDT)
+From:   Jonathan Marek <jonathan@marek.ca>
+To:     linux-arm-msm@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>,
+        linux-kernel@vger.kernel.org (open list),
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH v2 0/3] misc: fastrpc: add ioctl for attaching to sensors pd
+Date:   Tue,  8 Sep 2020 09:10:08 -0400
+Message-Id: <20200908131013.19630-1-jonathan@marek.ca>
 X-Mailer: git-send-email 2.26.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -66,39 +66,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Initializing sensors requires attaching to pd 2. Add an ioctl for that.
 
-If the module init function fails after creating the debugs directory,
-it's never removed. Add proper cleanup calls to avoid this resource
-leak.
+This corresponds to FASTRPC_INIT_ATTACH_SENSORS in the downstream driver.
 
-Fixes: 9202ba2397d1 ("gpio: mockup: implement event injecting over debugfs")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
----
- drivers/gpio/gpio-mockup.c | 2 ++
- 1 file changed, 2 insertions(+)
+v2:
+ - define names of PD values in a separate patch
+ - split out identation fix in a separate patch
 
-diff --git a/drivers/gpio/gpio-mockup.c b/drivers/gpio/gpio-mockup.c
-index bc345185db26..1652897fdf90 100644
---- a/drivers/gpio/gpio-mockup.c
-+++ b/drivers/gpio/gpio-mockup.c
-@@ -552,6 +552,7 @@ static int __init gpio_mockup_init(void)
- 	err = platform_driver_register(&gpio_mockup_driver);
- 	if (err) {
- 		gpio_mockup_err("error registering platform driver\n");
-+		debugfs_remove_recursive(gpio_mockup_dbg_dir);
- 		return err;
- 	}
- 
-@@ -582,6 +583,7 @@ static int __init gpio_mockup_init(void)
- 			gpio_mockup_err("error registering device");
- 			platform_driver_unregister(&gpio_mockup_driver);
- 			gpio_mockup_unregister_pdevs();
-+			debugfs_remove_recursive(gpio_mockup_dbg_dir);
- 			return PTR_ERR(pdev);
- 		}
- 
+Jonathan Marek (3):
+  misc: fastrpc: fix indentation error in uapi header
+  misc: fastrpc: define names for protection domain ids
+  misc: fastrpc: add ioctl for attaching to sensors pd
+
+ drivers/misc/fastrpc.c      | 16 ++++++++++++----
+ include/uapi/misc/fastrpc.h |  5 +++--
+ 2 files changed, 15 insertions(+), 6 deletions(-)
+
 -- 
 2.26.1
 
