@@ -2,64 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4A82261BE2
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:10:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D906E261C09
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:13:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731810AbgIHTKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:10:24 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:11269 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1731209AbgIHQFZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:05:25 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 7A12E37C5177444BBF63;
-        Tue,  8 Sep 2020 22:06:12 +0800 (CST)
-Received: from huawei.com (10.175.113.133) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Tue, 8 Sep 2020
- 22:06:12 +0800
-From:   Wang Hai <wanghai38@huawei.com>
-To:     <inaky.perez-gonzalez@intel.com>, <davem@davemloft.net>,
-        <kuba@kernel.org>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-wimax@intel.com>
-Subject: [PATCH net-next] net: wimax: i2400m: fix 'msg_skb' kernel-doc warning in i2400m_msg_to_dev()
-Date:   Tue, 8 Sep 2020 22:03:33 +0800
-Message-ID: <20200908140333.24434-1-wanghai38@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S1728347AbgIHTNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 15:13:37 -0400
+Received: from foss.arm.com ([217.140.110.172]:56774 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731161AbgIHQFH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 12:05:07 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4CA921682;
+        Tue,  8 Sep 2020 07:09:03 -0700 (PDT)
+Received: from bogus (unknown [10.57.10.112])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4059F3F73C;
+        Tue,  8 Sep 2020 07:09:01 -0700 (PDT)
+Date:   Tue, 8 Sep 2020 15:08:51 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Amit Kucheria <amitk@kernel.org>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Taniya Das <tdas@codeaurora.org>
+Subject: Re: [PATCH 5/7] cpufreq: qcom-hw: Use regmap for accessing hardware
+ registers
+Message-ID: <20200908140842.GA17621@bogus>
+References: <20200908075716.30357-1-manivannan.sadhasivam@linaro.org>
+ <20200908075716.30357-6-manivannan.sadhasivam@linaro.org>
+ <20200908103444.5e526uawa45om6lt@vireshk-i7>
+ <20200908111141.GB23095@mani>
+ <20200908111813.bbgfxo5v7qt6ujpc@vireshk-i7>
+ <CAHLCerMndYeEBOxtj8mV7OdOP9pufx+C7n1F9m+CFAneuh8DnA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.113.133]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHLCerMndYeEBOxtj8mV7OdOP9pufx+C7n1F9m+CFAneuh8DnA@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following W=1 kernel build warning(s):
+On Tue, Sep 08, 2020 at 05:18:35PM +0530, Amit Kucheria wrote:
+> On Tue, Sep 8, 2020 at 4:48 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+> >
+> > On 08-09-20, 16:41, Manivannan Sadhasivam wrote:
+> > > On 0908, Viresh Kumar wrote:
+> > > > On 08-09-20, 13:27, Manivannan Sadhasivam wrote:
+> > > > > Use regmap for accessing cpufreq registers in hardware.
+> > > >
+> > > > Why ? Please mention why a change is required in the log.
+> > > >
+> > >
+> > > Only because it is recommended to use regmap for abstracting the hw access.
+> >
+> > Yes it can be very useful in abstracting the hw access in case of
+> > busses like SPI/I2C, others, but in this case there is only one way of
+> > doing it with the exact same registers. I am not sure it is worth it
+> > here. FWIW, I have never played with regmaps personally, and so every
+> > chance I can be wrong here.
+> 
+> One could handle the reg offsets through a struct initialisation, but
+> then you end up with lots of #defines for bitmasks and bits for each
+> version of the IP. And the core code becomes a bit convoluted IMO,
+> trying to handle the differences.
+> 
+> regmap hides the differences of the bit positions and register offsets
+> between several IP versions.
+> 
+> > > Moreover it handles the proper locking for us in the core (spinlock vs mutex).
+> >
+> > What locking do you need here ?
+> 
+> Right, locking isn't the main reason here.
 
-drivers/net/wimax/i2400m/control.c:709: warning: Excess function parameter 'msg_skb' description in 'i2400m_msg_to_dev'
+If that is the case, IMO it is better to set disable_lock or something
+in config especially as this regmap_write is used in qcom_cpufreq_hw_fast_switch
 
-This parameter is not in use. Remove it.
-
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
----
- drivers/net/wimax/i2400m/control.c | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/drivers/net/wimax/i2400m/control.c b/drivers/net/wimax/i2400m/control.c
-index 9afed3b133d3..8df98757d901 100644
---- a/drivers/net/wimax/i2400m/control.c
-+++ b/drivers/net/wimax/i2400m/control.c
-@@ -656,8 +656,6 @@ void i2400m_msg_to_dev_cancel_wait(struct i2400m *i2400m, int code)
-  *
-  * @i2400m: device descriptor
-  *
-- * @msg_skb: an skb  *
-- *
-  * @buf: pointer to the buffer containing the message to be sent; it
-  *           has to start with a &struct i2400M_l3l4_hdr and then
-  *           followed by the payload. Once this function returns, the
 -- 
-2.17.1
-
+Regards,
+Sudeep
