@@ -2,87 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA56726101C
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 12:41:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A35826102E
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 12:44:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729873AbgIHKk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 06:40:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32916 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729691AbgIHKjK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 06:39:10 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F7F2C061755
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 03:39:10 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id n3so8578730pjq.1
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 03:39:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=HkPB3R9O6sMsMd9dcUXIlXN4Isqu12Nsn8RKRzxq5sA=;
-        b=pmcyoVTKycQfasYTZxfLUtFhSQv0ybyrZCo4IN6u6xwXD4apG3gW8J2XkWC0mHQ9qB
-         RnEZ11gfA33JChSteMjJjrr3wxT3Fj//XADN+6L4gjPeeaUospmPkVOylRHRbXTUZntS
-         4d4esBOxuiEtv1Wj81HZXjKgSsTUgXd7kD8DJxJDPSR+jDzuowQzbGfDrxdZuKQB8hLO
-         0i9cuxYBDRYn4AYg/Kj7/5/INr0JGWTzJfCIjwoH3zQo0zVZ2BDfLYsK5iPJt1t26zGi
-         bSgYct7wQPeC4jB71q2oO2z4K5Y2Y92+5nkMparsFKNsTH3gBqgBWCZED88Ohu0nSJNO
-         QZdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=HkPB3R9O6sMsMd9dcUXIlXN4Isqu12Nsn8RKRzxq5sA=;
-        b=Qqc/sZIa1KB7GtJoBOUKoFWAsD5t4YRdN2XVATn1uAE2OWnLSA390jZjan0yTQ72fg
-         7Y7bRatU5lpJJKtDeUMPHxIGuUIlgwSUUom54sVSFKAbwaYr354eAqthgSuurYQ5HAKR
-         SSS3Na+uwPuN3/YSkat1XNsBLm88GsZFkhV1G+wkDYb4tmo3hGmQGzKhxLyFqOWY1y1z
-         XouJFDldn2xqle2LAZjhEEXOxmfUAWqpwdP8SBZ8p5iGxaL7i3YCUWEE8ZYqazNFaHIA
-         O0n12v4ujgWuM3uXFPpBr94dxMVkmLywCabPwnj3qcZ6Fwt1C/zAIFpiDGOCgh0grnkB
-         hCUA==
-X-Gm-Message-State: AOAM530t+q8w/sWVrjRjNvDa7rbW00uyCriEiiCyi33dncNTdbTU/Ezz
-        zuWlZztulvYiTaGZM87iR2tR3A==
-X-Google-Smtp-Source: ABdhPJzDeWCog+ZMAU2G7JYbGUhamkdwx/s5HwT41dUbTU93nfQWpzRJAEPDazYH7J2RzcfE6n7jvQ==
-X-Received: by 2002:a17:90a:160f:: with SMTP id n15mr3327841pja.75.1599561549629;
-        Tue, 08 Sep 2020 03:39:09 -0700 (PDT)
-Received: from localhost ([122.181.54.133])
-        by smtp.gmail.com with ESMTPSA id y13sm11455913pfr.141.2020.09.08.03.39.08
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 08 Sep 2020 03:39:08 -0700 (PDT)
-Date:   Tue, 8 Sep 2020 16:09:06 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     rjw@rjwysocki.net, robh+dt@kernel.org, agross@kernel.org,
-        bjorn.andersson@linaro.org, amitk@kernel.org,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        dmitry.baryshkov@linaro.org, tdas@codeaurora.org
-Subject: Re: [PATCH 2/7] arm64: dts: qcom: sm8250: Add cpufreq hw node
-Message-ID: <20200908103906.sgbaw3shfdpv5pma@vireshk-i7>
-References: <20200908075716.30357-1-manivannan.sadhasivam@linaro.org>
- <20200908075716.30357-3-manivannan.sadhasivam@linaro.org>
+        id S1729767AbgIHKnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 06:43:10 -0400
+Received: from foss.arm.com ([217.140.110.172]:51840 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728971AbgIHKmi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 06:42:38 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BE88931B;
+        Tue,  8 Sep 2020 03:42:32 -0700 (PDT)
+Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0AEF13F66E;
+        Tue,  8 Sep 2020 03:42:28 -0700 (PDT)
+Date:   Tue, 8 Sep 2020 11:42:26 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Jim Quinlan <james.quinlan@broadcom.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "open list:PCI NATIVE HOST BRIDGE AND ENDPOINT DRIVERS" 
+        <linux-pci@vger.kernel.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Robin Murphy <robin.murphy@arm.com>,
+        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "open list:STAGING SUBSYSTEM" <devel@driverdev.osuosl.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE" 
+        <devicetree@vger.kernel.org>,
+        "open list:DRM DRIVERS FOR ALLWINNER A10" 
+        <dri-devel@lists.freedesktop.org>, Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        Julien Grall <julien.grall@arm.com>,
+        "open list:ACPI FOR ARM64 (ACPI/arm64)" <linux-acpi@vger.kernel.org>,
+        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:ALLWINNER A10 CSI DRIVER" <linux-media@vger.kernel.org>,
+        "open list:REMOTE PROCESSOR (REMOTEPROC) SUBSYSTEM" 
+        <linux-remoteproc@vger.kernel.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "open list:SUPERH" <linux-sh@vger.kernel.org>,
+        "open list:USB SUBSYSTEM" <linux-usb@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        Saravana Kannan <saravanak@google.com>,
+        Stefano Stabellini <sstabellini@kernel.org>
+Subject: Re: [PATCH v11 00/11] PCI: brcmstb: enable PCIe for STB chips
+Message-ID: <20200908104226.GB22909@e121166-lin.cambridge.arm.com>
+References: <20200824193036.6033-1-james.quinlan@broadcom.com>
+ <b19bc982-a0c4-c6ff-d8f5-650f2b3a83c8@gmail.com>
+ <20200827063517.GA4637@lst.de>
+ <CA+-6iNy3U9pO0Bykzgvb9n9fcsBi6FiatLdpA1s0HgQNWZ49mg@mail.gmail.com>
+ <20200907091649.GA6428@e121166-lin.cambridge.arm.com>
+ <CA+-6iNzoz3pM2pJksXogeuou6wB9W-59rN-amCLERFLuY5zLMg@mail.gmail.com>
+ <00e49acb-c659-de10-3e87-76bfd82e4a76@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200908075716.30357-3-manivannan.sadhasivam@linaro.org>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <00e49acb-c659-de10-3e87-76bfd82e4a76@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08-09-20, 13:27, Manivannan Sadhasivam wrote:
-> From: Bjorn Andersson <bjorn.andersson@linaro.org>
+On Mon, Sep 07, 2020 at 11:29:06AM -0700, Florian Fainelli wrote:
 > 
-> Add cpufreq HW device node to scale 4-Silver/3-Gold/1-Gold+ cores
-> on SM8250 SoCs.
 > 
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
->  arch/arm64/boot/dts/qcom/sm8250.dtsi | 22 ++++++++++++++++++++++
->  1 file changed, 22 insertions(+)
+> On 9/7/2020 10:43 AM, Jim Quinlan wrote:
+> > On Mon, Sep 7, 2020 at 5:16 AM Lorenzo Pieralisi
+> > <lorenzo.pieralisi@arm.com> wrote:
+> > > 
+> > > On Thu, Aug 27, 2020 at 09:29:59AM -0400, Jim Quinlan wrote:
+> > > > On Thu, Aug 27, 2020 at 2:35 AM Christoph Hellwig <hch@lst.de> wrote:
+> > > > > 
+> > > > > On Tue, Aug 25, 2020 at 10:40:27AM -0700, Florian Fainelli wrote:
+> > > > > > Hi,
+> > > > > > 
+> > > > > > On 8/24/2020 12:30 PM, Jim Quinlan wrote:
+> > > > > > > 
+> > > > > > > Patchset Summary:
+> > > > > > >     Enhance a PCIe host controller driver.  Because of its unusual design
+> > > > > > >     we are foced to change dev->dma_pfn_offset into a more general role
+> > > > > > >     allowing multiple offsets.  See the 'v1' notes below for more info.
+> > > > > > 
+> > > > > > We are version 11 and counting, and it is not clear to me whether there is
+> > > > > > any chance of getting these patches reviewed and hopefully merged for the
+> > > > > > 5.10 merge window.
+> > > > > > 
+> > > > > > There are a lot of different files being touched, so what would be the
+> > > > > > ideal way of routing those changes towards inclusion?
+> > > > > 
+> > > > > FYI, I offered to take the dma-mapping bits through the dma-mapping tree.
+> > > > > I have a bit of a backlog, but plan to review and if Jim is ok with that
+> > > > > apply the current version.
+> > > > Sounds good to me.
+> > > 
+> > > Hi Jim,
+> > > 
+> > > is the dependency now solved ? Should we review/take this series as
+> > > is for v5.10 through the PCI tree ?
+> > Hello Lorenzo,
+> > 
+> > We are still working out a regression with the DMA offset commit on
+> > the RaspberryPi.  Nicolas has found the root cause and we are now
+> > devising a solution.
+> 
+> Maybe we can parallelize the PCIe driver review while the DMA changes
+> are being worked on in Christoph's branch. Lorenzo, are you fine with
+> the PCIe changes proper?
 
-You want this to go through my tree or ARM Soc ?
+I will have a look - the main contentious point was about the DMA
+changes - if Christoph is happy with them I am OK with them
+too - I hope there is not anything controversial in the host
+bridge driver itself but I will look into it.
 
--- 
-viresh
+Lorenzo
