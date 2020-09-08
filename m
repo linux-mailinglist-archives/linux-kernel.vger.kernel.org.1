@@ -2,111 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09CEA261A65
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 20:35:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5639D261A97
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 20:37:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731680AbgIHSfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 14:35:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50722 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731504AbgIHSfL (ORCPT
+        id S1731358AbgIHShe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 14:37:34 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:39126 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728572AbgIHSh2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 14:35:11 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FF06C061757
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 11:35:11 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id o20so11680660pfp.11
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 11:35:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=E2vQ4j8MCVU3HUG4FesnKAfpUPuoFei5xwviweF/Jkc=;
-        b=A8/Cm5SAiCk+X9euHqXmlnVbhDyvM43YhtgFOH45nnhE128vdpoyhX6fLIWQjxkPPj
-         Ghj5bkGAU3n0c8di9QFlbAuhND9e3zEA8qPROVlslGptxicwtozSNWntZKBoLt9UkxUS
-         6xtyTmw6h1dzYydv9Z1EGSrwJR8kE5ekSrki0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=E2vQ4j8MCVU3HUG4FesnKAfpUPuoFei5xwviweF/Jkc=;
-        b=FqxX3eQdC327AQkoix6UZS1mHiQf5uAURGyXuwDPN8DNzc1idpfTlt7jJobyNrOaoB
-         Csq2CwimJi2VOAJrl2YJMu6db2UyH87prFATl8hlpul/NE1p52EWRo0uLONv6U7/iC5z
-         AGPwRnHo624ncUaFqC3CRDcPq5gLdSmt/3/7ASQSvUZKbbvb5Z7L82IzjZ6LvABiVRsQ
-         5pxalUe07PpP8H3aRKcYfNEysvyIspf+7+uTCiknSj07+3RVmM0CfbtaKgTbaTa7TYe0
-         aLwx1uDfDP18yjDWXokE5Yirj2JpNhE1djH62BKv7pN8cEH036FWuSclzcFQvLCyO1v9
-         dS/g==
-X-Gm-Message-State: AOAM532+IQ7mIcbfybE/YxoYL4INEgw9ehivUgAbTum9yqJ5M3naadqj
-        +ES4Q4XbR83bmC7lZM8034S/zbc1sB0ccA==
-X-Google-Smtp-Source: ABdhPJxagMwsWahh7Pg0UcI3i2Yd33Y3kBmfW2ArSA5YslR0vvVLJV0PZRIvG78rkdJDqbMA1gF6cA==
-X-Received: by 2002:a17:902:6902:b029:d0:cb2d:f26d with SMTP id j2-20020a1709026902b02900d0cb2df26dmr447444plk.6.1599590110647;
-        Tue, 08 Sep 2020 11:35:10 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:1:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id q4sm122755pfs.193.2020.09.08.11.35.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Sep 2020 11:35:10 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        Tue, 8 Sep 2020 14:37:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599590247;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4hFz93R/epUx5ygJCxi7aKlkiNQm5+bqKazJAau4MUY=;
+        b=QNOSICBKCCkjT3z/L/0rfRzs4Nm+zR79po9yr+CpxkXMRft+y3zO4/fhyFR7dsUjbshS0Y
+        4FQ6wV8eOZTlSrDoA/LhI7QEbOlZI3RbeNvTxJI8gLczau3DYCmKmXFPKH3PYSB4o90rGB
+        6VFM1nO63Jn2DGqQJuETyJX3ClAw7GE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-510-KwvEnB2CMD-KkDvmAjm5DQ-1; Tue, 08 Sep 2020 14:37:25 -0400
+X-MC-Unique: KwvEnB2CMD-KkDvmAjm5DQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 66DC9801AB2;
+        Tue,  8 Sep 2020 18:37:23 +0000 (UTC)
+Received: from ovpn-112-26.rdu2.redhat.com (ovpn-112-26.rdu2.redhat.com [10.10.112.26])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C50EB282F0;
+        Tue,  8 Sep 2020 18:37:22 +0000 (UTC)
+Message-ID: <489a7918b244e83736feff79c59a4b74d4e5cad0.camel@redhat.com>
+Subject: Re: [PATCH] drivers/perf: xgene_pmu: Fix uninitialized resource
+ struct
+From:   Mark Salter <msalter@redhat.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Khuong Dinh <khuong@os.amperecomputing.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Date:   Tue, 08 Sep 2020 14:37:22 -0400
+In-Reply-To: <20200907135026.GC12551@willie-the-truck>
+References: <20200902182729.27415-1-msalter@redhat.com>
+         <20200907135026.GC12551@willie-the-truck>
+Organization: Red Hat, Inc
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.3 (3.36.3-1.module_f32+9025+599b805f) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1599536645-4593-1-git-send-email-mansur@codeaurora.org>
-References: <1599536645-4593-1-git-send-email-mansur@codeaurora.org>
-Subject: Re: [PATCH 1/2] venus: core: change clk enable and disable order in resume and suspend
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        vgarodia@codeaurora.org,
-        Mansur Alisha Shaik <mansur@codeaurora.org>
-To:     Mansur Alisha Shaik <mansur@codeaurora.org>,
-        linux-media@vger.kernel.org, stanimir.varbanov@linaro.org
-Date:   Tue, 08 Sep 2020 11:35:08 -0700
-Message-ID: <159959010893.454335.18221321331314189759@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Mansur Alisha Shaik (2020-09-07 20:44:05)
-> Currently video driver is voting after clk enable and un voting
-> before clk disable. Basically we should vote before clk enable
-> and un vote after clk disable.
->=20
-> Corrected this by changing the order of clk enable and clk disable.
->=20
-> Signed-off-by: Mansur Alisha Shaik <mansur@codeaurora.org>
-> ---
+On Mon, 2020-09-07 at 14:50 +0100, Will Deacon wrote:
+> On Wed, Sep 02, 2020 at 02:27:29PM -0400, Mark Salter wrote:
+> > diff --git a/drivers/perf/xgene_pmu.c b/drivers/perf/xgene_pmu.c
+> > index edac28cd25dd..fdbbd0804b92 100644
+> > --- a/drivers/perf/xgene_pmu.c
+> > +++ b/drivers/perf/xgene_pmu.c
+> > @@ -1483,6 +1483,7 @@ xgene_pmu_dev_ctx *acpi_get_pmu_hw_inf(struct xgene_pmu *xgene_pmu,
+> >  		return NULL;
+> >  
+> >  	INIT_LIST_HEAD(&resource_list);
+> > +	memset(&res, 0, sizeof(res));
+> >  	rc = acpi_dev_get_resources(adev, &resource_list,
+> >  				    acpi_pmu_dev_add_resource, &res);
+> >  	acpi_dev_free_resource_list(&resource_list);
+> 
+> Hmm, to be honest, I'm not sure we should be calling devm_ioremap_resource()
+> at all here. The resource is clearly bogus, even with this change: the name
+> and the resource hierarchy pointers will all be NULL. I think it would be
+> better to follow the TX2 PMU driver (drivers/perf/thunderx2_pmu.c) which
+> appears to assign the resource directly in tx2_uncore_pmu_init_dev().
+> 
+> Is there a reason we can't do that?
+> 
+> Will
+> 
 
-Any Fixes: tag?
+There's no difference between xgene and tx2 wrt resouce name/hierarchy.
+They both call devm_ioresource_remap() which ends up setting the name
+and hierarchy. The difference is that xgene calls acpi_dev_resource_memory()
+directly from the acpi_dev_get_resources() callback. TX2 doesn't use such a
+callback and in that case, acpi_dev_resource_memory() gets called with a
+zeroed struct.
 
->  drivers/media/platform/qcom/venus/core.c | 17 ++++++++++-------
->  1 file changed, 10 insertions(+), 7 deletions(-)
->=20
-> diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/pla=
-tform/qcom/venus/core.c
-> index c5af428..4857bbd 100644
-> --- a/drivers/media/platform/qcom/venus/core.c
-> +++ b/drivers/media/platform/qcom/venus/core.c
-> @@ -363,13 +363,16 @@ static __maybe_unused int venus_runtime_suspend(str=
-uct device *dev)
->         if (ret)
->                 return ret;
-> =20
-> +       if (pm_ops->core_power) {
-> +               ret =3D pm_ops->core_power(dev, POWER_OFF);
-> +               if (ret)
-> +                       return ret;
-> +       }
-> +
->         ret =3D icc_set_bw(core->cpucfg_path, 0, 0);
->         if (ret)
->                 return ret;
+That said, changing xgene to avoid the callback like TX2 does would fix the
+problem as well. If you'd rather go that route, I can send a patch for it.
 
-Shouldn't we power it back up if this fails during suspend?
+Mark
 
-> =20
-> -       if (pm_ops->core_power)
-> -               ret =3D pm_ops->core_power(dev, POWER_OFF);
-> -
->         return ret;
->  }
->
+
