@@ -2,94 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA21326140F
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:02:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6351E26144A
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:12:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730595AbgIHQBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 12:01:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53404 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730820AbgIHPzo (ORCPT
+        id S1730981AbgIHQMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 12:12:25 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:56936 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1731204AbgIHQFE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:55:44 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C5FBC0611E9;
-        Tue,  8 Sep 2020 06:33:58 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id a15so20138001ljk.2;
-        Tue, 08 Sep 2020 06:33:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=QZWTB3VoqxONYeg+u/6O0/g9cj96hp9jdyxHkms9hEo=;
-        b=J8NaJgMDwnJ3iwEeoWg6wr/bSGJKwvn5Fzl2g1HdMx97jMD+CXaJd+doxMKq/2xQU/
-         0kIVbHvICiG/YxCdoWxmaiZ/w6gb5YHj21+j5CxudImmkRg5Sau6kVPtFsRULoVtxYLb
-         8mKeIF+fft+ga2We20/0q8K33CathTa+odSpHttuJQwf2N+oMTMOEoO2VQDBHrxKrbY5
-         b9+z8xXICn15ZjGrf/I31gVHqMKPFwsDEHZwBczpRL9jZF1P0pZ7h+6K+q4VBJ8z72Ss
-         kxl7gB2G2YrrOWSu30wdkxHs+bw9ZxXVi+QupPItqFMKwas6jrxsbVnrDODRBcIkIDK3
-         1UOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=QZWTB3VoqxONYeg+u/6O0/g9cj96hp9jdyxHkms9hEo=;
-        b=GaIiffcLi0KE47D1q0mgitGaTS2Se2rU2OJw++7g/PneKRVegK50ALpd1+0VbD3qpL
-         oxztcsHYTtVy/Gc7gwyAv5day/oZtUWND/rjIjvPz30ubjGANzIKjbEn+4vC0O0sKKCY
-         HjhvDuyhOMMMr7hGlzmtWxOn7SfomjHijyAX/uImlC09wugqsdEM8RCGfh6Khwgwx4cp
-         w2Mqwj+Mb00Cy40dWsHtP/cXFvUtpObZEDuMaCPMIemHdU0jZeQMVO7wZHHsCZP7XDGw
-         d071edCRdbBWsxUOUojD+nf25nI//0mn/QxghED2rnyd68W9LqhhoU80qBns1s8ERLDw
-         D+pg==
-X-Gm-Message-State: AOAM531sD5uEe9Xnh9Z8PBqCJv8Wezk8BORcXgT9DKlDME9nla/ZZDoi
-        Dxd38Rt2mA6pgvA52XG+s1r7k1YhOkY=
-X-Google-Smtp-Source: ABdhPJy+Mwl0COSdXYkiXrRrTna4fxanXVeyC3dD9okOxhZk5nXlGIS5LjH+7jAHHExHuSaQmK+a/g==
-X-Received: by 2002:a2e:82c5:: with SMTP id n5mr11905021ljh.195.1599572036669;
-        Tue, 08 Sep 2020 06:33:56 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
-        by smtp.googlemail.com with ESMTPSA id d10sm10063287ljg.87.2020.09.08.06.33.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Sep 2020 06:33:56 -0700 (PDT)
-Subject: Re: [PATCH v6 27/35] i2c: tegra: Factor out register polling into
- separate function
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        linux-tegra@vger.kernel.org,
+        Tue, 8 Sep 2020 12:05:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599581103;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Sn9YyaxDlmem+Af35OWOD/fQH327GLoTO2uCzA73Adk=;
+        b=bGwjW1BPPiw5JflD5MjOQHFFObFNKDLmoJebD10Sy99PzoSyE9SOxLIosl1yFSBMmIeQkj
+        6PU2HcB4Adon+SG1E9/oZ+VlyF/klApjWztQEtitzp9g1reSeFSk9HXxxinOc8sKUFTQ7q
+        n3dOZFx0AaSEtssKDRPe7cGrF5bPLm0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-342-Ic_nwVryMe-TVrW6fRwG2Q-1; Tue, 08 Sep 2020 09:50:56 -0400
+X-MC-Unique: Ic_nwVryMe-TVrW6fRwG2Q-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0B221801AE0;
+        Tue,  8 Sep 2020 13:50:55 +0000 (UTC)
+Received: from horse.redhat.com (ovpn-116-76.rdu2.redhat.com [10.10.116.76])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id EC1C319728;
+        Tue,  8 Sep 2020 13:50:51 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id 1F095223B13; Tue,  8 Sep 2020 09:50:51 -0400 (EDT)
+Date:   Tue, 8 Sep 2020 09:50:51 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Juergen Gross <jgross@suse.com>,
+        Roger Pau Monne <roger.pau@citrix.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Sebastien Boeuf <sebastien.boeuf@intel.com>,
+        Liu Bo <bo.liu@linux.alibaba.com>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20200908021021.9123-1-digetx@gmail.com>
- <20200908021021.9123-28-digetx@gmail.com>
- <CAHp75VeMZhVvysVHZawutvPpO4MPeTit5OqOJQxqRW3RL_iE-Q@mail.gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <8b1db9d5-2b4c-97ae-f7f6-c750e76491d0@gmail.com>
-Date:   Tue, 8 Sep 2020 16:33:55 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+Subject: Re: linux-next: build failure after merge of the akpm-current tree
+Message-ID: <20200908135051.GC69769@redhat.com>
+References: <20200908200950.1368e71b@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VeMZhVvysVHZawutvPpO4MPeTit5OqOJQxqRW3RL_iE-Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200908200950.1368e71b@canb.auug.org.au>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-08.09.2020 11:51, Andy Shevchenko пишет:
-> On Tue, Sep 8, 2020 at 5:12 AM Dmitry Osipenko <digetx@gmail.com> wrote:
->>
->> Factor out register polling into a separate function in order to remove
->> boilerplate code and make code cleaner.
+On Tue, Sep 08, 2020 at 08:09:50PM +1000, Stephen Rothwell wrote:
+
+[..]
+> fs/fuse/virtio_fs.c: In function 'virtio_fs_setup_dax':
+> fs/fuse/virtio_fs.c:838:9: error: 'struct dev_pagemap' has no member named 'res'; did you mean 'ref'?
+>   838 |  pgmap->res = (struct resource){
+>       |         ^~~
+>       |         ref
 > 
-> I'm wondering if you can make it before the patch that touches one of
-> these conditionals.
+> Caused by commit
+> 
+>   b3e022c5a68c ("mm/memremap_pages: convert to 'struct range'")
+> 
+> interacting with commit
+> 
+>   9e2369c06c8a ("xen: add helpers to allocate unpopulated memory")
+> 
+> from Linus' tree (in v5.9-rc4) and commit
+> 
+>   7e833303db20 ("virtiofs: set up virtio_fs dax_device")
+> 
+> from the fuse tree.
+> 
+> I have added the following patch which may require more work but at
+> least makes it all build.
+> 
+> From: Stephen Rothwell <sfr@canb.auug.org.au>
+> Date: Tue, 8 Sep 2020 20:00:20 +1000
+> Subject: [PATCH] merge fix up for "mm/memremap_pages: convert to 'struct
+>  range'"
+> 
+> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> ---
+>  drivers/xen/unpopulated-alloc.c | 15 +++++++++------
+>  fs/fuse/virtio_fs.c             |  3 +--
+>  2 files changed, 10 insertions(+), 8 deletions(-)
 > 
 
-I guess you're meaning the "Improve coding style of
-tegra_i2c_wait_for_config_load()" patch.
+[..]
+> diff --git a/fs/fuse/virtio_fs.c b/fs/fuse/virtio_fs.c
+> index da3ede268604..8f27478497fa 100644
+> --- a/fs/fuse/virtio_fs.c
+> +++ b/fs/fuse/virtio_fs.c
+> @@ -835,8 +835,7 @@ static int virtio_fs_setup_dax(struct virtio_device *vdev, struct virtio_fs *fs)
+>  	 * initialize a struct resource from scratch (only the start
+>  	 * and end fields will be used).
+>  	 */
+> -	pgmap->res = (struct resource){
+> -		.name = "virtio-fs dax window",
+> +	pgmap->range = (struct range){
+>  		.start = (phys_addr_t) cache_reg.addr,
+>  		.end = (phys_addr_t) cache_reg.addr + cache_reg.len - 1,
+>  	};
 
-If yes, then it should be fine to swap the order. Although, I'm not sure
-what's benefit.
+Thanks Stephen. This change looks good to me for virtiofs.
+
+Thanks
+Vivek
+
