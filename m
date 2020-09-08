@@ -2,142 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9F1D261D7A
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:38:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B53E7261DA5
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:40:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731514AbgIHThl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:37:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53406 "EHLO
+        id S1730900AbgIHTkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 15:40:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730972AbgIHP4x (ORCPT
+        with ESMTP id S1730939AbgIHPyo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:56:53 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9CABC06134B
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 05:33:34 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id nw23so22247371ejb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 05:33:34 -0700 (PDT)
+        Tue, 8 Sep 2020 11:54:44 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CE64C06138A
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 05:33:14 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id mm21so8212581pjb.4
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 05:33:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=NcEeOZgUSVybaozrvzLOP4ZsIw0NJzWU1jk5v7jntbE=;
-        b=vBa7YSUiMOArxRr8RYn5eMWXo+v3zACwmzTxGkJE5TSuaR0Pvugz/dUS4+/6GX2aTT
-         u1pNNYLrANE3rkjF7hrp2TSp60/UBruOyThfQKtkN6RrezEOioNm0wsqP3XUXPRb1+nr
-         eSsqXB+AkojP3vY0Ui544eY3EIx27JaQZhbcr1rhWSMxfdxnzw1HN+vrHrjmg98sGffC
-         54p8qXVm/QErO+a9emGrfC0SCcq0mbB5oRJg9OLkW2wgIIzsKAMZ9DW9+TvgmhW3RWzz
-         F6Y82uraV0LRFwBmlLbAV+PHNoFARq4y8oPrFzfjBFqSYBULrP1IKc464lqiGHUdHU+G
-         41Nw==
+        d=endlessm-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=iDh5oerIwDKilwa4JO3Vp5i5/Awtl6AjVqpak4FAWc8=;
+        b=Gbr4FBBBQDv9ZAtzDnFOa+KkTbb0lywtPcVM6jMh7dHNvzODW30O5NBlRmaCwFHKyn
+         1axKQY2tHW6AeOingHWn2FQmItKgZ4NXXQgRucqrgi3lgZJVlW+4QX9TNlECVeYGwizT
+         hmdTDX1yap1u/4k4im5Xpwu7qkVi8ByuDoIFyOV3XWcjKMBHMEb7dRvX+d9pKyujloiL
+         W++OjYGQYtoZxvhTlDxmW7iQmuBwI/KtZ9zgL/YFq30w3BTXLmPotQZ9BEx4wzIiL/G9
+         sU0VqUXAmWPW3cPtyuvGXd1lQDPTQG4qKzsXp2vxhSIhZXyoHMaeC5h08bjdnzpDGJEC
+         MEfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=NcEeOZgUSVybaozrvzLOP4ZsIw0NJzWU1jk5v7jntbE=;
-        b=iGqnDk1PT1dWJmzpgD/RWjfIUQ2A/OzCvAZAZl+4Gnki8v/7UENbwBxd7ehhn7r/0G
-         tgssAzQqrPJLHbz6W+0qD7Ws154Dvae8YDYe0To/ijbs6u0l3Xac2YaIMFuf5Tdb1mvC
-         grj9D8Xc8DKhGzkZRyVRwuWDW9Zx6Fbjo3juovP+lbx0OvE5SL2i7eM2/Gk4y50579dN
-         uYGeSKwGbIHUxV2fBPtre6c0gSfsVrl7Med0zNwoZrBhohEPK7kjm8um4X8/eZF6KrXv
-         M5JxQLrx+Yu76R5LjdAY0qpbQCuP4RbkTdmlC5VSQm6N8AcbaZfwEc60tr42w1e003Fo
-         1pow==
-X-Gm-Message-State: AOAM5324BX/6GpYmyrwtHj4uMismcscYHhW9N3ntrCmTCi6z4aI09ew9
-        fBuEEKrwdUe0UCvDIWYIp5FebQ==
-X-Google-Smtp-Source: ABdhPJz4IJDBT7vUASqEAhfweZQi4at//aV2U5ukkwEvWdJ28fgPl6KV05PWHdqQJOWQOQfX3foC7A==
-X-Received: by 2002:a17:906:2c14:: with SMTP id e20mr26923490ejh.205.1599568413372;
-        Tue, 08 Sep 2020 05:33:33 -0700 (PDT)
-Received: from localhost.localdomain ([195.24.90.54])
-        by smtp.gmail.com with ESMTPSA id y9sm17499744edo.37.2020.09.08.05.33.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Sep 2020 05:33:32 -0700 (PDT)
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-To:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org
-Cc:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        nicolas.dufresne@collabora.com,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Subject: [PATCH v3 4/6] venus: vdec: Set/Get VP9 profile/level
-Date:   Tue,  8 Sep 2020 15:32:19 +0300
-Message-Id: <20200908123221.2793-5-stanimir.varbanov@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200908123221.2793-1-stanimir.varbanov@linaro.org>
-References: <20200908123221.2793-1-stanimir.varbanov@linaro.org>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=iDh5oerIwDKilwa4JO3Vp5i5/Awtl6AjVqpak4FAWc8=;
+        b=EQutY7tYPCdh9VmJk8Yfgrs3Ko4VJV9KCkY52+rR4dvuNeA684i4S8yMZ/KCzIdkTg
+         Bm2y1ou7cP7IZ+hBxGctZ7R1bE8CoqIuDWrjoLXUISmlMzUEqU3I3YlbxY2uhGPT4fFN
+         camXfBftigf75HGmzVTYnCqaJSf98G4KwZ1onwTGP0gAWDjCbQRdHNA88rwhTlHIA27A
+         RY6tPSP8DIYqsusldB+ZYA/9u668cLYhchYSIXrEHjaENKy3Khw4dAfneYx+DJNLLOeR
+         acMCHmjtzimHu9+dNCHQ1SNk8nRN41S6/7Kttc85y2Kn/7GNMGTvoZNx17DJeNpyUa0T
+         Qiwg==
+X-Gm-Message-State: AOAM531SkALw6ow2iBLRze01b5hc+B+DYpgKrDmT+b98ZxwhqLaD0Wgh
+        /yN6CamxVLbzsAaEASBKd8VIbCt9QZHONhmytEh7AA==
+X-Google-Smtp-Source: ABdhPJzisWqjC8V6say/8z120ClJ8mNkK3sLAFliQAtEk7eFToZXeLaQo6/FMzQPo0hM+if6DS5Fyz+HqMD0bqPrlrE=
+X-Received: by 2002:a17:90a:9292:: with SMTP id n18mr3950216pjo.159.1599568393391;
+ Tue, 08 Sep 2020 05:33:13 -0700 (PDT)
+MIME-Version: 1.0
+From:   Chris Chiu <chiu@endlessm.com>
+Date:   Tue, 8 Sep 2020 20:33:02 +0800
+Message-ID: <CAB4CAwfqbaR7_ypZDp=hi_3u_F2E5eYv5ExUoSPK97qcTxiWZQ@mail.gmail.com>
+Subject: mt7615: Fail to load firmware on AZWAVE-CB434NF module
+To:     sean.wang@mediatek.com, ryder.lee@mediatek.com,
+        Kalle Valo <kvalo@codeaurora.org>,
+        David Miller <davem@davemloft.net>, kuba@kernel.org,
+        nbd@nbd.name, lorenzo@kernel.org,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Linux Kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Get and set VP9 codec profile and levels.
+Hi Sean, Ryder,
+    We have an ASUS laptop X532EQ with the wifi module AZWAVE-CB434NF
+which fails to bring up the wifi interface on kernel 5.9.0-rc1. The
+dmesg shows the firmware load error.
 
-Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
----
- .../media/platform/qcom/venus/vdec_ctrls.c    | 20 ++++++++++++++++++-
- 1 file changed, 19 insertions(+), 1 deletion(-)
+[   25.630850] mt7615e 0000:2d:00.0: Message -4294967280 (seq 1) timeout
+[   25.630851] mt7615e 0000:2d:00.0: Failed to get patch semaphore
+[   25.630853] mt7615e 0000:2d:00.0: mediatek/mt7663pr2h.bin not
+found, switching to mediatek/mt7663pr2h_rebb.bin
+[   46.111154] mt7615e 0000:2d:00.0: Message -4294967280 (seq 2) timeout
+[   46.111178] mt7615e 0000:2d:00.0: Failed to get patch semaphore
+[   46.111179] mt7615e 0000:2d:00.0: failed to load mediatek/mt7663pr2h_rebb.bin
 
-diff --git a/drivers/media/platform/qcom/venus/vdec_ctrls.c b/drivers/media/platform/qcom/venus/vdec_ctrls.c
-index 3a963cbd342a..f3f41c1baa6e 100644
---- a/drivers/media/platform/qcom/venus/vdec_ctrls.c
-+++ b/drivers/media/platform/qcom/venus/vdec_ctrls.c
-@@ -22,10 +22,12 @@ static int vdec_op_s_ctrl(struct v4l2_ctrl *ctrl)
- 	case V4L2_CID_MPEG_VIDEO_H264_PROFILE:
- 	case V4L2_CID_MPEG_VIDEO_MPEG4_PROFILE:
- 	case V4L2_CID_MPEG_VIDEO_VP8_PROFILE:
-+	case V4L2_CID_MPEG_VIDEO_VP9_PROFILE:
- 		ctr->profile = ctrl->val;
- 		break;
- 	case V4L2_CID_MPEG_VIDEO_H264_LEVEL:
- 	case V4L2_CID_MPEG_VIDEO_MPEG4_LEVEL:
-+	case V4L2_CID_MPEG_VIDEO_VP9_LEVEL:
- 		ctr->level = ctrl->val;
- 		break;
- 	default:
-@@ -49,6 +51,7 @@ static int vdec_op_g_volatile_ctrl(struct v4l2_ctrl *ctrl)
- 	case V4L2_CID_MPEG_VIDEO_H264_PROFILE:
- 	case V4L2_CID_MPEG_VIDEO_MPEG4_PROFILE:
- 	case V4L2_CID_MPEG_VIDEO_VP8_PROFILE:
-+	case V4L2_CID_MPEG_VIDEO_VP9_PROFILE:
- 		ret = hfi_session_get_property(inst, ptype, &hprop);
- 		if (!ret)
- 			ctr->profile = hprop.profile_level.profile;
-@@ -56,6 +59,7 @@ static int vdec_op_g_volatile_ctrl(struct v4l2_ctrl *ctrl)
- 		break;
- 	case V4L2_CID_MPEG_VIDEO_H264_LEVEL:
- 	case V4L2_CID_MPEG_VIDEO_MPEG4_LEVEL:
-+	case V4L2_CID_MPEG_VIDEO_VP9_LEVEL:
- 		ret = hfi_session_get_property(inst, ptype, &hprop);
- 		if (!ret)
- 			ctr->level = hprop.profile_level.level;
-@@ -86,7 +90,7 @@ int vdec_ctrl_init(struct venus_inst *inst)
- 	struct v4l2_ctrl *ctrl;
- 	int ret;
- 
--	ret = v4l2_ctrl_handler_init(&inst->ctrl_handler, 7);
-+	ret = v4l2_ctrl_handler_init(&inst->ctrl_handler, 9);
- 	if (ret)
- 		return ret;
- 
-@@ -133,6 +137,20 @@ int vdec_ctrl_init(struct venus_inst *inst)
- 	if (ctrl)
- 		ctrl->flags |= V4L2_CTRL_FLAG_VOLATILE;
- 
-+	ctrl = v4l2_ctrl_new_std_menu(&inst->ctrl_handler, &vdec_ctrl_ops,
-+				      V4L2_CID_MPEG_VIDEO_VP9_PROFILE,
-+				      V4L2_MPEG_VIDEO_VP9_PROFILE_3,
-+				      0, V4L2_MPEG_VIDEO_VP9_PROFILE_0);
-+	if (ctrl)
-+		ctrl->flags |= V4L2_CTRL_FLAG_VOLATILE;
-+
-+	ctrl = v4l2_ctrl_new_std_menu(&inst->ctrl_handler, &vdec_ctrl_ops,
-+				      V4L2_CID_MPEG_VIDEO_VP9_LEVEL,
-+				      V4L2_MPEG_VIDEO_VP9_LEVEL_6_2,
-+				      0, V4L2_MPEG_VIDEO_VP9_LEVEL_1_0);
-+	if (ctrl)
-+		ctrl->flags |= V4L2_CTRL_FLAG_VOLATILE;
-+
- 	v4l2_ctrl_new_std(&inst->ctrl_handler, &vdec_ctrl_ops,
- 		V4L2_CID_MPEG_VIDEO_DECODER_MPEG4_DEBLOCK_FILTER, 0, 1, 1, 0);
- 
--- 
-2.17.1
+The lspci information for the device shows as follows
+0000:2d:00.0 Network controller [0280]: MEDIATEK Corp. Device [14c3:7663]
+        Subsystem: AzureWave Device [1a3b:4341]
+        Flags: bus master, fast devsel, latency 0, IRQ 177
+        Memory at 6032100000 (64-bit, prefetchable) [size=1M]
+        Memory at 6032200000 (64-bit, prefetchable) [size=16K]
+        Memory at 6032204000 (64-bit, prefetchable) [size=4K]
+        Capabilities: [80] Express Endpoint, MSI 1f
+        Capabilities: [e0] MSI: Enable+ Count=1/32 Maskable+ 64bit+
+        Capabilities: [f8] Power Management version 3
+        Capabilities: [100] Vendor Specific Information: ID=1556 Rev=1
+Len=008 <?>
+        Capabilities: [108] Latency Tolerance Reporting
+        Capabilities: [110] L1 PM Substates
+        Capabilities: [200] Advanced Error Reporting
+        Kernel driver in use: mt7615e
+        Kernel modules: mt7615e
 
+I also tried the latest linux-firmware with the most up to date
+mediatek firmware
+https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/commit/?id=7a237c6ee2c7af48723c356461ef80270a52d2c6.
+But still get the same error.
+
+Any suggestions on what I can do here?
+
+Chris
