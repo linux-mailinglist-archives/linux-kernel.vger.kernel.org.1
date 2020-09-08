@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7298A261DB1
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:41:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D6F0261D20
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:32:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730950AbgIHPyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 11:54:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52926 "EHLO
+        id S1732248AbgIHTcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 15:32:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730779AbgIHPux (ORCPT
+        with ESMTP id S1730996AbgIHP6F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:50:53 -0400
+        Tue, 8 Sep 2020 11:58:05 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6CF8C0A3BF2;
-        Tue,  8 Sep 2020 07:55:11 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17286C0A3BF6;
+        Tue,  8 Sep 2020 07:55:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
         References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
         Content-Type:Content-ID:Content-Description;
-        bh=+zVHcucQifdjecrPBhxjClZkm2NjkT/RLZsD1fxF4P4=; b=ko5s17TLYKi28rzQRAAoq31zQ/
-        sfC2GOdl69IRxmLKZcQsa/k8a0GXiZ+umVW//0HgO5Fgv7b8S76wsrPhdwLL7Q4R1Xt2g0uB5iddx
-        l8OX+RO3CUFt6vACrGggetnHxpCNWp/RirodlGWGie0rjYr7aThkH4wHBbrXc8w4onm4vTbqciTqe
-        VJVnW+pXbo4wFQHSkUyCHgnbNDUtMRNfDJNinXDaGeW2X5VxRJAeQywpHRa/2Iot7BXopGkS2qY7/
-        AcJtui0CXtCixYCs94tac4VyaoOkq2lZhIP4OMyv9OqI4ny6ad+vb4CrcFqGt15GhiiRsHBuJ+CFU
-        ZGcTfpkw==;
+        bh=ijISDI3+FEAsJRrVv6gnkByyFtP6B2mrzNMrQzqv2GQ=; b=J+m1dnyxZ/PYz+dryLUb8kif20
+        f3x71W6Ej8XzEJbIhNcB1LU+pAraLcrDpiJOM3NnpmYpYXwpbb4jZrKnjGUqtCDjw0l/Gckp5OpHr
+        Uk5Rp2b6SktC1LZfPQicf8DGNlPllrYbKDLXTyGrG29Q2mDpWHLSd3omK0MmWaZR+lBsOaWw+0SVz
+        NPcujQr7rhEe+AaInu3x3iq2l3FxacJkiRd7o0r79Fqsdj4RnuRMukoTInM8ugORJ6teWIt+mwTXr
+        4xwoLOR3XK5qR6atnqMJJlNmizV9bCrJJSgSjhYsxYWzQLDBwuijgB1bNklCB3ytmV7LkYy0UbDNh
+        BTy8u2Rg==;
 Received: from [2001:4bb8:184:af1:3dc3:9c83:fc6c:e0f] (helo=localhost)
         by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kFf1A-0002zJ-TG; Tue, 08 Sep 2020 14:54:45 +0000
+        id 1kFf1E-0002zv-1m; Tue, 08 Sep 2020 14:54:50 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Jens Axboe <axboe@kernel.dk>
 Cc:     Denis Efremov <efremov@linux.com>, Tim Waugh <tim@cyberelk.net>,
@@ -43,9 +43,9 @@ Cc:     Denis Efremov <efremov@linux.com>, Tim Waugh <tim@cyberelk.net>,
         linux-raid@vger.kernel.org, linux-scsi@vger.kernel.org,
         linux-fsdevel@vger.kernel.org,
         Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH 15/19] md: use bdev_check_media_change
-Date:   Tue,  8 Sep 2020 16:53:43 +0200
-Message-Id: <20200908145347.2992670-16-hch@lst.de>
+Subject: [PATCH 17/19] sr: use bdev_check_media_change
+Date:   Tue,  8 Sep 2020 16:53:45 +0200
+Message-Id: <20200908145347.2992670-18-hch@lst.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200908145347.2992670-1-hch@lst.de>
 References: <20200908145347.2992670-1-hch@lst.de>
@@ -57,28 +57,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The md driver does not have a ->revalidate_disk method, so it can just
-use bdev_check_media_change without any additional changes.
+Switch to use bdev_check_media_change instead of check_disk_change and
+call sr_block_revalidate_disk manually.  Also add an explicit call to
+sr_block_revalidate_disk just before disk_add() to ensure we always
+read check for a ready unit and read the TOC and then stop wiring up
+->revalidate_disk.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
- drivers/md/md.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/scsi/sr.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/md/md.c b/drivers/md/md.c
-index 9562ef598ae1f4..27ed61197014ef 100644
---- a/drivers/md/md.c
-+++ b/drivers/md/md.c
-@@ -7848,7 +7848,7 @@ static int md_open(struct block_device *bdev, fmode_t mode)
- 	atomic_inc(&mddev->openers);
- 	mutex_unlock(&mddev->open_mutex);
+diff --git a/drivers/scsi/sr.c b/drivers/scsi/sr.c
+index 3b3a53c6a0de53..34be94b62523fa 100644
+--- a/drivers/scsi/sr.c
++++ b/drivers/scsi/sr.c
+@@ -86,6 +86,7 @@ static int sr_remove(struct device *);
+ static blk_status_t sr_init_command(struct scsi_cmnd *SCpnt);
+ static int sr_done(struct scsi_cmnd *);
+ static int sr_runtime_suspend(struct device *dev);
++static int sr_block_revalidate_disk(struct gendisk *disk);
  
+ static const struct dev_pm_ops sr_pm_ops = {
+ 	.runtime_suspend	= sr_runtime_suspend,
+@@ -529,7 +530,8 @@ static int sr_block_open(struct block_device *bdev, fmode_t mode)
+ 
+ 	sdev = cd->device;
+ 	scsi_autopm_get_device(sdev);
 -	check_disk_change(bdev);
-+	bdev_check_media_change(bdev);
-  out:
- 	if (err)
- 		mddev_put(mddev);
++	if (bdev_check_media_change(bdev))
++		sr_block_revalidate_disk(bdev->bd_disk);
+ 
+ 	mutex_lock(&cd->lock);
+ 	ret = cdrom_open(&cd->cdi, bdev, mode);
+@@ -688,7 +690,6 @@ static const struct block_device_operations sr_bdops =
+ 	.compat_ioctl	= sr_block_compat_ioctl,
+ #endif
+ 	.check_events	= sr_block_check_events,
+-	.revalidate_disk = sr_block_revalidate_disk,
+ };
+ 
+ static int sr_open(struct cdrom_device_info *cdi, int purpose)
+@@ -802,6 +803,7 @@ static int sr_probe(struct device *dev)
+ 
+ 	dev_set_drvdata(dev, cd);
+ 	disk->flags |= GENHD_FL_REMOVABLE;
++	sr_block_revalidate_disk(disk);
+ 	device_add_disk(&sdev->sdev_gendev, disk, NULL);
+ 
+ 	sdev_printk(KERN_DEBUG, sdev,
 -- 
 2.28.0
 
