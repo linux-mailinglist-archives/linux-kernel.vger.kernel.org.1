@@ -2,115 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7CAC261C92
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:22:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30174261C6A
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:20:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732020AbgIHTW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:22:29 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:43752 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730674AbgIHQBd (ORCPT
+        id S1731188AbgIHTUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 15:20:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54220 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730668AbgIHQCS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:01:33 -0400
-Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
-        by linux.microsoft.com (Postfix) with ESMTPSA id CB5FD210673B;
-        Tue,  8 Sep 2020 09:01:31 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com CB5FD210673B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1599580892;
-        bh=61crOJK2+7vw9hc/ODsziF6zsYb82tEg9dWjpx09vvc=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=QWWeBAOxsyPwEyUYV7vVrvR0dUM6QcQSdGsrJtMy5SKKLVFc7rQ0MInMc1xNG4FTv
-         DndDNLh9anNe5VKf/WTCJuToPec8pGSPSfpXT1BzP8Diy8HKWLTkmSUAo0H3rzYjqO
-         tZHvsayiFpwmoA2I+9g6VsmSknteJPGQSZHrQyKQ=
-Subject: Re: [PATCH] SELinux: Measure state and hash of policy using IMA
-To:     Stephen Smalley <stephen.smalley.work@gmail.com>
-Cc:     Mimi Zohar <zohar@linux.ibm.com>, Paul Moore <paul@paul-moore.com>,
-        Ondrej Mosnacek <omosnace@redhat.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        tusharsu@linux.microsoft.com, Sasha Levin <sashal@kernel.org>,
-        James Morris <jmorris@namei.org>,
-        linux-integrity@vger.kernel.org,
-        SElinux list <selinux@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20200907213855.3572-1-nramas@linux.microsoft.com>
- <CAEjxPJ5C64AmmVKuuPmtbfnY06w49ziryRAnARurWxpQumzfow@mail.gmail.com>
- <7c4e2e9f-54e1-1dee-c33c-64dac0fe9678@linux.microsoft.com>
- <CAEjxPJ6eGcmbtGX7Kvn8e=ZxBUQD5G=8D+o9-BsVXyDFcyPYMw@mail.gmail.com>
-From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Message-ID: <995481a9-5418-5705-81c2-ba931488779e@linux.microsoft.com>
-Date:   Tue, 8 Sep 2020 09:01:31 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 8 Sep 2020 12:02:18 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A74D3C061786;
+        Tue,  8 Sep 2020 09:02:17 -0700 (PDT)
+Date:   Tue, 8 Sep 2020 18:02:14 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1599580936;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=97oj1pCtLhc8GEIScXkD+7t3oCOzOaAxQFhhixXPXYs=;
+        b=yeGdGILuNPEXB5/p4qF0cmCVDKze7lv3D+hxUC2BiCT6JPgkPmoSlYin1TMQFR9vUUkQKv
+        4KXemeCiJSkkgTxR6LuobNDDMQdl9bA/Lwn5y5Rb8pwvOTjcXRkbnsbSrQKfGz6Dbvrrdr
+        Ru2alBZYhCt3Q7wNBuMNAICWmDZibBJLKAQw+IqAzVBgFirtAIS3ehO0garsyfPHiX/uzY
+        FN5q68u0L89RM60+CEv2reYlTUHdNept+AebIBJI+1lFRqVWoAXLcaMRCMnYIInZAO4Wrm
+        REhfWQY+Q+jdUnrE9bAVrnGJIz09QDkrJxnN0+DuLTZQ0A175sbazDu/5WoWtw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1599580936;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=97oj1pCtLhc8GEIScXkD+7t3oCOzOaAxQFhhixXPXYs=;
+        b=7LSSF/P8VGb8OFyKhLSf/g7sECVsh9xM22Xon8GdgRlb6KSYTPdHfwFEvQME5g9X3nVfqn
+        qBoLR76pYz7bo9CA==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Mike Galbraith <efault@gmx.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: v5.9-rc3-rt3 boot time networking lockdep splat
+Message-ID: <20200908160214.p3av2uxt7jjj6rx2@linutronix.de>
+References: <20200902155557.h2wl2qpfn2rwsofw@linutronix.de>
+ <46a2b89ec8d953a4be18c7389c7d8c66310a7ff0.camel@gmx.de>
+ <b989e196a8b9cceda35152de9202d7a67ca32196.camel@gmx.de>
+ <20200908151229.g24j4n4fderlm2pe@linutronix.de>
+ <a79815352e2f238b7f108e6e7202f6655f26159d.camel@gmx.de>
 MIME-Version: 1.0
-In-Reply-To: <CAEjxPJ6eGcmbtGX7Kvn8e=ZxBUQD5G=8D+o9-BsVXyDFcyPYMw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <a79815352e2f238b7f108e6e7202f6655f26159d.camel@gmx.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/8/20 4:58 AM, Stephen Smalley wrote:
-> On Tue, Sep 8, 2020 at 12:44 AM Lakshmi Ramasubramanian
-> <nramas@linux.microsoft.com> wrote:
->>
->> On 9/7/20 3:32 PM, Stephen Smalley wrote:
->>
->>>> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
->>>> Suggested-by: Stephen Smalley <stephen.smalley.work@gmail.com>
->>>> Reported-by: kernel test robot <lkp@intel.com> # error: implicit declaration of function 'vfree'
->>>> Reported-by: kernel test robot <lkp@intel.com> # error: implicit declaration of function 'crypto_alloc_shash'
->>>> Reported-by: kernel test robot <lkp@intel.com> # sparse: symbol 'security_read_selinux_policy' was not declared. Should it be static?
->>>
->>> Not sure these Reported-by lines are useful since they were just on
->>> submitted versions of the patch not on an actual merged commit.
->>
->> I'll remove them when I update the patch.
->>
->>>
->>>> diff --git a/security/selinux/measure.c b/security/selinux/measure.c
->>>> new file mode 100644
->>>> index 000000000000..caf9107937d9
->>>> --- /dev/null
->>>> +++ b/security/selinux/measure.c
->>> <snip>
->>>> +void selinux_measure_state(struct selinux_state *state, bool policy_mutex_held)
->>>> +{
->>> <snip>
->>>> +
->>>> +       if (!policy_mutex_held)
->>>> +               mutex_lock(&state->policy_mutex);
->>>> +
->>>> +       rc = security_read_policy_kernel(state, &policy, &policy_len);
->>>> +
->>>> +       if (!policy_mutex_held)
->>>> +               mutex_unlock(&state->policy_mutex);
->>>
->>> This kind of conditional taking of a mutex is generally frowned upon
->>> in my experience.
->>> You should likely just always take the mutex in the callers of
->>> selinux_measure_state() instead.
->>> In some cases, it may be the caller of the caller.  Arguably selinuxfs
->>> could be taking it around all state modifying operations (e.g.
->>> enforce, checkreqprot) not just policy modifying ones although it
->>> isn't strictly for that purpose.
->>
->> Since currently policy_mutex is not used to synchronize access to state
->> variables (enforce, checkreqprot, etc.) I am wondering if
->> selinux_measure_state() should measure only state if policy_mutex is not
->> held by the caller - similar to how we skip measuring policy if
->> initialization is not yet completed.
+On 2020-09-08 17:59:31 [+0200], Mike Galbraith wrote:
+> > I have no idea how to debug this based on this report. Can you narrow
+> > it down to something?
 > 
-> No, we want to measure policy whenever there is a policy to measure.
-> Just move the taking of the mutex to the callers of
-> selinux_measure_state() so that it can be unconditional.
+> I instrumented what I presume is still this problem once upon a time,
+> structures containing locks are allocated/initialized/freed again and
+> again with no cleanup until we increment into the wall.
+
+Any idea what it is?
+
+> > Is Lappy new, got a new something or has a new config switch? I'm just
+> > curious if this something or something that was always there but
+> > remained undetected.
 > 
+> Nah, this is nothing new.  Turn lockdep on in RT, it's just a matter of
+> time before it turns itself off.  It's usually just not _that_ quick.
 
-Will do.
+Okay. So I have few boxes which run over the weekend without this splat.
 
-  -lakshmi
+> 	-Mike
 
+Sebastian
