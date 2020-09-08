@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC65F2618A9
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:59:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9A0E261899
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:58:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732286AbgIHR66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 13:58:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55370 "EHLO mail.kernel.org"
+        id S1732188AbgIHR6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 13:58:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56676 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731562AbgIHQMr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1731566AbgIHQMr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 8 Sep 2020 12:12:47 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9C1DE24866;
-        Tue,  8 Sep 2020 15:51:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4A4ED24870;
+        Tue,  8 Sep 2020 15:52:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599580315;
-        bh=wdS4fBLK+athXA0QhuToTvmSHH48ZTcWyd0d89xX9pM=;
+        s=default; t=1599580321;
+        bh=sWJaq8QYvsce1oJxSLE8SvodMP0gjPjJJzb5HPrDNxE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EHYl+k3XWeDQoXqn5xUXRYPbehZjmPcWlJMX3/Yc7iT64SX6mUUZQA2IIZbQLZ6n2
-         wnLFNkERpRf4dwGSZgFrdmqG311l25fYTCmjGL9OBcR9H4R3f3Wx6JmKmTM0hAb4+t
-         BM9P+JhcIEWIuPfvxMX+miZvqCBt6ceqktKbryPI=
+        b=wAn2EDB3jWGueXSU5dNYIxv/7COG9ceZy6hGbmaK3MHwsWK4qVDkTKmwPnEL6bVka
+         fRVqAhKrWt5qDvF9pH108Ot0sb7ERhz6W0EWgm4m3ufvsRtcGtZszVKIwwWLJinXoe
+         MwZ2+Nr0oKk+qeTMeSCaOAgyZo39BGB/Pas6r8zc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Vasundhara Volam <vasundhara-v.volam@broadcom.com>,
-        Michael Chan <michael.chan@broadcom.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Al Grant <al.grant@arm.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 27/65] bnxt_en: Check for zero dir entries in NVRAM.
-Date:   Tue,  8 Sep 2020 17:26:12 +0200
-Message-Id: <20200908152218.446272147@linuxfoundation.org>
+Subject: [PATCH 4.14 30/65] perf tools: Correct SNOOPX field offset
+Date:   Tue,  8 Sep 2020 17:26:15 +0200
+Message-Id: <20200908152218.580691687@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200908152217.022816723@linuxfoundation.org>
 References: <20200908152217.022816723@linuxfoundation.org>
@@ -46,37 +49,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vasundhara Volam <vasundhara-v.volam@broadcom.com>
+From: Al Grant <al.grant@foss.arm.com>
 
-[ Upstream commit dbbfa96ad920c50d58bcaefa57f5f33ceef9d00e ]
+[ Upstream commit 39c0a53b114d0317e5c4e76b631f41d133af5cb0 ]
 
-If firmware goes into unstable state, HWRM_NVM_GET_DIR_INFO firmware
-command may return zero dir entries. Return error in such case to
-avoid zero length dma buffer request.
+perf_event.h has macros that define the field offsets in the data_src
+bitmask in perf records. The SNOOPX and REMOTE offsets were both 37.
 
-Fixes: c0c050c58d84 ("bnxt_en: New Broadcom ethernet driver.")
-Signed-off-by: Vasundhara Volam <vasundhara-v.volam@broadcom.com>
-Signed-off-by: Michael Chan <michael.chan@broadcom.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+These are distinct fields, and the bitfield layout in perf_mem_data_src
+confirms that SNOOPX should be at offset 38.
+
+Committer notes:
+
+This was extracted from a larger patch that also contained kernel
+changes.
+
+Fixes: 52839e653b5629bd ("perf tools: Add support for printing new mem_info encodings")
+Signed-off-by: Al Grant <al.grant@arm.com>
+Reviewed-by: Andi Kleen <ak@linux.intel.com>
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Ian Rogers <irogers@google.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Link: http://lore.kernel.org/lkml/9974f2d0-bf7f-518e-d9f7-4520e5ff1bb0@foss.arm.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c | 3 +++
- 1 file changed, 3 insertions(+)
+ tools/include/uapi/linux/perf_event.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c b/drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c
-index 6edbbfc1709a2..a38433cb9015d 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c
-@@ -1761,6 +1761,9 @@ static int bnxt_get_nvram_directory(struct net_device *dev, u32 len, u8 *data)
- 	if (rc != 0)
- 		return rc;
+diff --git a/tools/include/uapi/linux/perf_event.h b/tools/include/uapi/linux/perf_event.h
+index 362493a2f950b..3b733511bb2b3 100644
+--- a/tools/include/uapi/linux/perf_event.h
++++ b/tools/include/uapi/linux/perf_event.h
+@@ -1033,7 +1033,7 @@ union perf_mem_data_src {
  
-+	if (!dir_entries || !entry_length)
-+		return -EIO;
-+
- 	/* Insert 2 bytes of directory info (count and size of entries) */
- 	if (len < 2)
- 		return -EINVAL;
+ #define PERF_MEM_SNOOPX_FWD	0x01 /* forward */
+ /* 1 free */
+-#define PERF_MEM_SNOOPX_SHIFT	37
++#define PERF_MEM_SNOOPX_SHIFT	38
+ 
+ /* locked instruction */
+ #define PERF_MEM_LOCK_NA	0x01 /* not available */
 -- 
 2.25.1
 
