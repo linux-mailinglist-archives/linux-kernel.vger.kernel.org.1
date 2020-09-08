@@ -2,34 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93AAC262113
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 22:28:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AD9E26211C
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 22:29:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729622AbgIHU2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 16:28:03 -0400
-Received: from smtp03.smtpout.orange.fr ([80.12.242.125]:60789 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728970AbgIHU2B (ORCPT
+        id S1730309AbgIHU3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 16:29:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41022 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728347AbgIHU3D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 16:28:01 -0400
-Received: from localhost.localdomain ([93.22.150.22])
-        by mwinf5d58 with ME
-        id RYTp230040VEKhH03YTpGu; Tue, 08 Sep 2020 22:27:58 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Tue, 08 Sep 2020 22:27:58 +0200
-X-ME-IP: 93.22.150.22
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     hkallweit1@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        mhabets@solarflare.com, tony.felice@timesys.com, mst@redhat.com,
-        gustavo@embeddedor.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] net: tc35815: switch from 'pci_' to 'dma_' API
-Date:   Tue,  8 Sep 2020 22:27:47 +0200
-Message-Id: <20200908202747.330007-1-christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.25.1
+        Tue, 8 Sep 2020 16:29:03 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DA37C061573
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 13:29:01 -0700 (PDT)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1599596940;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=M5nXFElMjAq6K+M5WKZcB15Sz7rT6r2u9VSa5GOS9lY=;
+        b=RyD6Y0i+W5Gb+dbvwl/r0BxmEnyLL+G2fwVkNVNZoFpMx7J0ky3ITC34c9/uHhAHfXlEdi
+        lMRD9/5JciBHUChlIPnF9q2oNGtbd9ucFrZsBPuejaPFh9Zhmc9lbU8LKxSltyVX6mSKH8
+        x7YALitRoEIDLh4AjMqtnOzZBMGyMibgqcmIW7eEC3TgwZ9jAcwd4tGlr00rU22E9YuGhW
+        Vx7IstVvey5VJwbjxo7wjYLThzcH1hHY9BA+QRXVwaN0kQgk+yJ/lYpN2qdLDxtdRIuu2d
+        NuTG8fxXrPYLX0TEfo0BRGTwetK3WvNf53w54thNDm1uoP7jL4dxAuobJUJ/ew==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1599596940;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=M5nXFElMjAq6K+M5WKZcB15Sz7rT6r2u9VSa5GOS9lY=;
+        b=jDu7Djz1F6mabHMJLULVUOgfIngakre+Nq/Nmv3YargyABLyLuRGFbdb7gZqAc9QXW0M/P
+        K2uTbbKze683FDDw==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Paul McKenney <paulmck@kernel.org>, kexec@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH printk v4 0/6] printk: reimplement LOG_CONT handling
+Date:   Tue,  8 Sep 2020 22:34:53 +0206
+Message-Id: <20200908202859.2736-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -37,268 +56,126 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The wrappers in include/linux/pci-dma-compat.h should go away.
+Hello,
 
-The patch has been generated with the coccinelle script below and has been
-hand modified to replace GFP_ with a correct flag.
-It has been compile tested.
+Here is v4 for the second series to rework the printk subsystem.
+(The v3 is here [0].) This series implements a new ringbuffer
+feature that allows the last record to be extended. Petr Mladek
+provided the initial proof of concept [1] for this.
 
-When memory is allocated in 'tc35815_init_queues()' GFP_ATOMIC must be used
-because it can be called from 'tc35815_restart()' where some spinlock are
-taken.
-The call chain is:
-  tc35815_restart
-    --> tc35815_clear_queues
-      --> tc35815_init_queues
+Using the record extension feature, LOG_CONT is re-implemented
+in a way that exactly preserves its behavior, but avoids the
+need for an extra buffer. In particular, it avoids the need for
+any synchronization that such a buffer requires.
+
+This series deviates from the agreements [2] made at the meeting
+during LPC2019 in Lisbon. The test results of the v1 series,
+which implemented LOG_CONT as agreed upon, showed that the
+effects on existing userspace tools using /dev/kmsg (journalctl,
+dmesg) were not acceptable [3].
+
+Patch 5 introduces *four* new memory barrier pairs. Two of them
+are insignificant additions (data_realloc:A/desc_read:D and
+data_realloc:A/data_push_tail:B) because they are alternate path
+memory barriers that exactly match the purpose and context of
+the two existing memory barrier pairs they provide an alternate
+path for. The other two new memory barrier pairs are significant
+additions:
+
+desc_reopen_last:A / _prb_commit:B - When reopening a descriptor,
+    ensure the state transitions back to desc_reserved before
+    fully trusting the descriptor data.
+
+_prb_commit:B / desc_reserve:D - When committing a descriptor,
+    ensure the state transitions to desc_committed before checking
+    the head ID to see if the descriptor needs to be finalized.
+
+The test module used to test the ringbuffer is available
+here [4].
+
+The series is based on the printk-rework branch of the printk git
+tree:
+e60768311af8 ("scripts/gdb: update for lockless printk ringbuffer")
+
+The list of changes since v3:
+
+printk_ringbuffer
+=================
+
+- move enum desc_state definition to printk_ringbuffer.h
+
+- change enum desc_state to define the exact state values used
+  in the state variable
+
+- add DESC_STATE() macro to retrieve the state from the state
+  variable
+
+- add DESC_SV() macro to build a state variable value given an
+  ID and state
+
+- get_desc_state(): simply return the state value rather than
+  processing state flags
+
+- desc_finalized is now a queried state instead of a state flag
+
+- desc_read(): always return a set @state_var, even if the
+  descriptor is in an inconsistent state (desc_reopen_last()
+  relies on this)
+
+- change state logic that tested for desc_committed to now test
+  for desc_finalized, since this is the new state directly
+  preceding desc_reusable
+
+- data_realloc(): add a check if the data block should shrink
+  (and in that case, do not modify the data block, i.e. data
+  blocks will never shrink)
+
+- prb_reserve_in_last(): add WARN_ON for unexpected @text_len
+  value
+
+- prb_reserve(): save a copy of @seq and use use memset() to
+  clear @info
+
+- desc_read_committed_seq(): rename function to
+  desc_read_finalized_seq() since desc_finalized is the desired
+  state for readers
+
+- documentation: update state and finalization descriptions
+
+printk.c
+========
+
+- use @text_len and @dict_len for memcpy() size
+
+gdb scripts
+===========
+
+- update to use new state representation
+
+John Ogness
+
+[0] https://lkml.kernel.org/r/20200831011058.6286-1-john.ogness@linutronix.de
+[1] https://lkml.kernel.org/r/20200812163908.GH12903@alley
+[2] https://lkml.kernel.org/r/87k1acz5rx.fsf@linutronix.de
+[3] https://lkml.kernel.org/r/20200811160551.GC12903@alley
+[4] https://github.com/Linutronix/prb-test.git
 
 
-@@
-@@
--    PCI_DMA_BIDIRECTIONAL
-+    DMA_BIDIRECTIONAL
+John Ogness (6):
+  printk: ringbuffer: relocate get_data()
+  printk: ringbuffer: add BLK_DATALESS() macro
+  printk: ringbuffer: clear initial reserved fields
+  printk: ringbuffer: change representation of states
+  printk: ringbuffer: add finalization/extension support
+  printk: reimplement log_cont using record extension
 
-@@
-@@
--    PCI_DMA_TODEVICE
-+    DMA_TO_DEVICE
+ Documentation/admin-guide/kdump/gdbmacros.txt |  13 +-
+ kernel/printk/printk.c                        | 110 +--
+ kernel/printk/printk_ringbuffer.c             | 695 ++++++++++++++----
+ kernel/printk/printk_ringbuffer.h             |  35 +-
+ scripts/gdb/linux/dmesg.py                    |  12 +-
+ 5 files changed, 624 insertions(+), 241 deletions(-)
 
-@@
-@@
--    PCI_DMA_FROMDEVICE
-+    DMA_FROM_DEVICE
-
-@@
-@@
--    PCI_DMA_NONE
-+    DMA_NONE
-
-@@
-expression e1, e2, e3;
-@@
--    pci_alloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-
-@@
-expression e1, e2, e3;
-@@
--    pci_zalloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_free_consistent(e1, e2, e3, e4)
-+    dma_free_coherent(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_single(e1, e2, e3, e4)
-+    dma_map_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_single(e1, e2, e3, e4)
-+    dma_unmap_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4, e5;
-@@
--    pci_map_page(e1, e2, e3, e4, e5)
-+    dma_map_page(&e1->dev, e2, e3, e4, e5)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_page(e1, e2, e3, e4)
-+    dma_unmap_page(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_sg(e1, e2, e3, e4)
-+    dma_map_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_sg(e1, e2, e3, e4)
-+    dma_unmap_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
-+    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_device(e1, e2, e3, e4)
-+    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
-+    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
-+    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2;
-@@
--    pci_dma_mapping_error(e1, e2)
-+    dma_mapping_error(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_dma_mask(e1, e2)
-+    dma_set_mask(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_consistent_dma_mask(e1, e2)
-+    dma_set_coherent_mask(&e1->dev, e2)
-
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-If needed, see post from Christoph Hellwig on the kernel-janitors ML:
-   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
----
- drivers/net/ethernet/toshiba/tc35815.c | 48 +++++++++++++++-----------
- 1 file changed, 28 insertions(+), 20 deletions(-)
-
-diff --git a/drivers/net/ethernet/toshiba/tc35815.c b/drivers/net/ethernet/toshiba/tc35815.c
-index 6bcda20ed7e7..eb82f5483023 100644
---- a/drivers/net/ethernet/toshiba/tc35815.c
-+++ b/drivers/net/ethernet/toshiba/tc35815.c
-@@ -454,9 +454,9 @@ static struct sk_buff *alloc_rxbuf_skb(struct net_device *dev,
- 	skb = netdev_alloc_skb(dev, RX_BUF_SIZE);
- 	if (!skb)
- 		return NULL;
--	*dma_handle = pci_map_single(hwdev, skb->data, RX_BUF_SIZE,
--				     PCI_DMA_FROMDEVICE);
--	if (pci_dma_mapping_error(hwdev, *dma_handle)) {
-+	*dma_handle = dma_map_single(&hwdev->dev, skb->data, RX_BUF_SIZE,
-+				     DMA_FROM_DEVICE);
-+	if (dma_mapping_error(&hwdev->dev, *dma_handle)) {
- 		dev_kfree_skb_any(skb);
- 		return NULL;
- 	}
-@@ -466,8 +466,8 @@ static struct sk_buff *alloc_rxbuf_skb(struct net_device *dev,
- 
- static void free_rxbuf_skb(struct pci_dev *hwdev, struct sk_buff *skb, dma_addr_t dma_handle)
- {
--	pci_unmap_single(hwdev, dma_handle, RX_BUF_SIZE,
--			 PCI_DMA_FROMDEVICE);
-+	dma_unmap_single(&hwdev->dev, dma_handle, RX_BUF_SIZE,
-+			 DMA_FROM_DEVICE);
- 	dev_kfree_skb_any(skb);
- }
- 
-@@ -876,9 +876,9 @@ tc35815_init_queues(struct net_device *dev)
- 		       sizeof(struct TxFD) * TX_FD_NUM >
- 		       PAGE_SIZE * FD_PAGE_NUM);
- 
--		lp->fd_buf = pci_alloc_consistent(lp->pci_dev,
--						  PAGE_SIZE * FD_PAGE_NUM,
--						  &lp->fd_buf_dma);
-+		lp->fd_buf = dma_alloc_coherent(&lp->pci_dev->dev,
-+						PAGE_SIZE * FD_PAGE_NUM,
-+						&lp->fd_buf_dma, GFP_ATOMIC);
- 		if (!lp->fd_buf)
- 			return -ENOMEM;
- 		for (i = 0; i < RX_BUF_NUM; i++) {
-@@ -892,10 +892,9 @@ tc35815_init_queues(struct net_device *dev)
- 						       lp->rx_skbs[i].skb_dma);
- 					lp->rx_skbs[i].skb = NULL;
- 				}
--				pci_free_consistent(lp->pci_dev,
--						    PAGE_SIZE * FD_PAGE_NUM,
--						    lp->fd_buf,
--						    lp->fd_buf_dma);
-+				dma_free_coherent(&lp->pci_dev->dev,
-+						  PAGE_SIZE * FD_PAGE_NUM,
-+						  lp->fd_buf, lp->fd_buf_dma);
- 				lp->fd_buf = NULL;
- 				return -ENOMEM;
- 			}
-@@ -990,7 +989,9 @@ tc35815_clear_queues(struct net_device *dev)
- 		BUG_ON(lp->tx_skbs[i].skb != skb);
- #endif
- 		if (skb) {
--			pci_unmap_single(lp->pci_dev, lp->tx_skbs[i].skb_dma, skb->len, PCI_DMA_TODEVICE);
-+			dma_unmap_single(&lp->pci_dev->dev,
-+					 lp->tx_skbs[i].skb_dma, skb->len,
-+					 DMA_TO_DEVICE);
- 			lp->tx_skbs[i].skb = NULL;
- 			lp->tx_skbs[i].skb_dma = 0;
- 			dev_kfree_skb_any(skb);
-@@ -1022,7 +1023,9 @@ tc35815_free_queues(struct net_device *dev)
- 			BUG_ON(lp->tx_skbs[i].skb != skb);
- #endif
- 			if (skb) {
--				pci_unmap_single(lp->pci_dev, lp->tx_skbs[i].skb_dma, skb->len, PCI_DMA_TODEVICE);
-+				dma_unmap_single(&lp->pci_dev->dev,
-+						 lp->tx_skbs[i].skb_dma,
-+						 skb->len, DMA_TO_DEVICE);
- 				dev_kfree_skb(skb);
- 				lp->tx_skbs[i].skb = NULL;
- 				lp->tx_skbs[i].skb_dma = 0;
-@@ -1044,8 +1047,8 @@ tc35815_free_queues(struct net_device *dev)
- 		}
- 	}
- 	if (lp->fd_buf) {
--		pci_free_consistent(lp->pci_dev, PAGE_SIZE * FD_PAGE_NUM,
--				    lp->fd_buf, lp->fd_buf_dma);
-+		dma_free_coherent(&lp->pci_dev->dev, PAGE_SIZE * FD_PAGE_NUM,
-+				  lp->fd_buf, lp->fd_buf_dma);
- 		lp->fd_buf = NULL;
- 	}
- }
-@@ -1292,7 +1295,10 @@ tc35815_send_packet(struct sk_buff *skb, struct net_device *dev)
- 	BUG_ON(lp->tx_skbs[lp->tfd_start].skb);
- #endif
- 	lp->tx_skbs[lp->tfd_start].skb = skb;
--	lp->tx_skbs[lp->tfd_start].skb_dma = pci_map_single(lp->pci_dev, skb->data, skb->len, PCI_DMA_TODEVICE);
-+	lp->tx_skbs[lp->tfd_start].skb_dma = dma_map_single(&lp->pci_dev->dev,
-+							    skb->data,
-+							    skb->len,
-+							    DMA_TO_DEVICE);
- 
- 	/*add to ring */
- 	txfd = &lp->tfd_base[lp->tfd_start];
-@@ -1500,9 +1506,9 @@ tc35815_rx(struct net_device *dev, int limit)
- 			skb = lp->rx_skbs[cur_bd].skb;
- 			prefetch(skb->data);
- 			lp->rx_skbs[cur_bd].skb = NULL;
--			pci_unmap_single(lp->pci_dev,
-+			dma_unmap_single(&lp->pci_dev->dev,
- 					 lp->rx_skbs[cur_bd].skb_dma,
--					 RX_BUF_SIZE, PCI_DMA_FROMDEVICE);
-+					 RX_BUF_SIZE, DMA_FROM_DEVICE);
- 			if (!HAVE_DMA_RXALIGN(lp) && NET_IP_ALIGN != 0)
- 				memmove(skb->data, skb->data - NET_IP_ALIGN,
- 					pkt_len);
-@@ -1756,7 +1762,9 @@ tc35815_txdone(struct net_device *dev)
- #endif
- 		if (skb) {
- 			dev->stats.tx_bytes += skb->len;
--			pci_unmap_single(lp->pci_dev, lp->tx_skbs[lp->tfd_end].skb_dma, skb->len, PCI_DMA_TODEVICE);
-+			dma_unmap_single(&lp->pci_dev->dev,
-+					 lp->tx_skbs[lp->tfd_end].skb_dma,
-+					 skb->len, DMA_TO_DEVICE);
- 			lp->tx_skbs[lp->tfd_end].skb = NULL;
- 			lp->tx_skbs[lp->tfd_end].skb_dma = 0;
- 			dev_kfree_skb_any(skb);
 -- 
-2.25.1
+2.20.1
 
