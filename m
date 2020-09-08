@@ -2,112 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BD6A261D6A
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:37:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 839B8261DBB
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:41:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732051AbgIHTg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:36:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53400 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730896AbgIHP5Q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:57:16 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3405C0610E2
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 08:30:02 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id u27so9384243lfm.13
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 08:30:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ragnatech-se.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Di/sRB46OQMighQk5dHQr7eSM0Xs2HG6mVJOqpHAQVA=;
-        b=wivPxHYd6n7P0VAEx89iYB0CDqiBmKAo8bMzcLJfB2IiCRpxk5jYQTa829s47y/wno
-         40r/qjNvtJXqW07sGgOhSY/HZAjUZxaTZhtMPSqKN9fEpuZ4CSnpLMNQuWlpJzLMM7fs
-         IjlQCq8zRJb/BaBSivOSB4R5Wwu4b1YYCM8rPodch7mYWFCK70cCGVs8t8TZjLu7WN1e
-         SiYzFROl6IUYKLWKvvO61Za6fBzGcFbxWI2+IBQ9rr45F6MlSdVG6CUeyWlEB/Wpi3UY
-         quha/AzAYYYLaGPkTLNp/jY5SKnnT236N0YwjedIYIuNHh+ogwxXas/gPuTCgKN9zRYj
-         CLJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Di/sRB46OQMighQk5dHQr7eSM0Xs2HG6mVJOqpHAQVA=;
-        b=n66aFW55I/yolWk1LycNO9P5i4ria/6Sn2IaPLZ6HS9eq4vAU5solmAcW21WaqugeS
-         U5rZDDPRKsBFAxGdQGKhV8dDu3ml6k1bVKo2/3s6qpPRnPkMC1Rz6fP2bCKa6E5yd5jw
-         x11Ge9Y1BoVXVpixKydpSsk6L8eedMRZmRLbEPjNz15QeChrJTZmFomRZVl1KmnApHtO
-         h9Kp9ZLwo0+4gLGkTzrgU7oWjzkZ5/2UJDsarT55K+IvGjJ6YsX0Iy7S8qdk3w0XutFU
-         FZuZ1mbTHEHnQdxU/APUpZeInrV3ATEMdtiuOYTqHShNuVxJBq6DAiGSaszA+m3ZsPxr
-         WuKQ==
-X-Gm-Message-State: AOAM530c7oTSU4+pC5tN/gNzmzc09ImKlAztjr/kdRiRCWTXprjpjxat
-        gXLbAyEaZKubNyonnym3Mwi8Zw==
-X-Google-Smtp-Source: ABdhPJwjWseqWyMRsUahDpNm7GhAt9M3g9XoH9LfcntDMA996o6s40LVXSJbHhYXWYKWxabeQtFRwg==
-X-Received: by 2002:ac2:5327:: with SMTP id f7mr12488078lfh.8.1599579000908;
-        Tue, 08 Sep 2020 08:30:00 -0700 (PDT)
-Received: from localhost (h-209-203.A463.priv.bahnhof.se. [155.4.209.203])
-        by smtp.gmail.com with ESMTPSA id l4sm10066362ljg.42.2020.09.08.08.30.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Sep 2020 08:30:00 -0700 (PDT)
-Date:   Tue, 8 Sep 2020 17:29:59 +0200
-From:   Niklas =?iso-8859-1?Q?S=F6derlund?= 
-        <niklas.soderlund@ragnatech.se>
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Subject: Re: [PATCH 0/2] Add VIN instances to r8a7742 SoC
-Message-ID: <20200908152959.GC2984648@oden.dyn.berto.se>
-References: <20200907144509.8861-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        id S1730921AbgIHTlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 15:41:25 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47732 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730872AbgIHPxm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 11:53:42 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B9501AC6E;
+        Tue,  8 Sep 2020 15:31:24 +0000 (UTC)
+Subject: Re: [PATCH] mm/mmap: leave adjust_next as virtual address instead of
+ page frame number
+To:     Wei Yang <richard.weiyang@linux.alibaba.com>,
+        akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20200828081031.11306-1-richard.weiyang@linux.alibaba.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <85daf46b-0d85-588a-2d6f-883afa6076dc@suse.cz>
+Date:   Tue, 8 Sep 2020 17:31:22 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200907144509.8861-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20200828081031.11306-1-richard.weiyang@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lad,
+On 8/28/20 10:10 AM, Wei Yang wrote:
+> Instead of convert adjust_next between virtual address and page frame
+> number, let's just store the virtual address into adjust_next.
 
-Thanks for your work.
+IMHO more precisely/less confusing it's "bytes" and "pages" instead of "virtual
+address" (which is absolute address, but this variable holds a difference) and
+"page frame number" (which is related to absolute physical address, but what we
+have is difference in pages in virtual address space).
 
-On 2020-09-07 15:45:07 +0100, Lad Prabhakar wrote:
-> Hi All,
+> Also, this patch fixes one typo in the comment of
+> vma_adjust_trans_huge().
 > 
-> This patch series adds support for VIN to r8a7742 (RZ/G1H) SoC.
-> 
-> Patches apply on top of [1].
-> 
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/geert/
->     renesas-devel.git/log/?h=renesas-arm-dt-for-v5.10
+> Signed-off-by: Wei Yang <richard.weiyang@linux.alibaba.com>
 
-For the whole series,
+Other than that, seems like it leads to less shifting, so
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
 
-Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
+> ---
+>  mm/huge_memory.c | 4 ++--
+>  mm/mmap.c        | 8 ++++----
+>  2 files changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> index 78c84bee7e29..2c633ba14440 100644
+> --- a/mm/huge_memory.c
+> +++ b/mm/huge_memory.c
+> @@ -2300,13 +2300,13 @@ void vma_adjust_trans_huge(struct vm_area_struct *vma,
+>  
+>  	/*
+>  	 * If we're also updating the vma->vm_next->vm_start, if the new
+> -	 * vm_next->vm_start isn't page aligned and it could previously
+> +	 * vm_next->vm_start isn't hpage aligned and it could previously
+>  	 * contain an hugepage: check if we need to split an huge pmd.
+>  	 */
+>  	if (adjust_next > 0) {
+>  		struct vm_area_struct *next = vma->vm_next;
+>  		unsigned long nstart = next->vm_start;
+> -		nstart += adjust_next << PAGE_SHIFT;
+> +		nstart += adjust_next;
+>  		if (nstart & ~HPAGE_PMD_MASK &&
+>  		    (nstart & HPAGE_PMD_MASK) >= next->vm_start &&
+>  		    (nstart & HPAGE_PMD_MASK) + HPAGE_PMD_SIZE <= next->vm_end)
+> diff --git a/mm/mmap.c b/mm/mmap.c
+> index 90b1298d4222..e4c9bbfd4103 100644
+> --- a/mm/mmap.c
+> +++ b/mm/mmap.c
+> @@ -758,7 +758,7 @@ int __vma_adjust(struct vm_area_struct *vma, unsigned long start,
+>  			 * vma expands, overlapping part of the next:
+>  			 * mprotect case 5 shifting the boundary up.
+>  			 */
+> -			adjust_next = (end - next->vm_start) >> PAGE_SHIFT;
+> +			adjust_next = (end - next->vm_start);
+>  			exporter = next;
+>  			importer = vma;
+>  			VM_WARN_ON(expand != importer);
+> @@ -768,7 +768,7 @@ int __vma_adjust(struct vm_area_struct *vma, unsigned long start,
+>  			 * split_vma inserting another: so it must be
+>  			 * mprotect case 4 shifting the boundary down.
+>  			 */
+> -			adjust_next = -((vma->vm_end - end) >> PAGE_SHIFT);
+> +			adjust_next = -(vma->vm_end - end);
+>  			exporter = vma;
+>  			importer = next;
+>  			VM_WARN_ON(expand != importer);
+> @@ -840,8 +840,8 @@ int __vma_adjust(struct vm_area_struct *vma, unsigned long start,
+>  	}
+>  	vma->vm_pgoff = pgoff;
+>  	if (adjust_next) {
+> -		next->vm_start += adjust_next << PAGE_SHIFT;
+> -		next->vm_pgoff += adjust_next;
+> +		next->vm_start += adjust_next;
+> +		next->vm_pgoff += adjust_next >> PAGE_SHIFT;
+>  	}
+>  
+>  	if (root) {
+> 
 
-> 
-> Cheers,
-> Prabhakar
-> 
-> Lad Prabhakar (2):
->   dt-bindings: media: renesas,vin: Add device tree support for r8a7742
->   ARM: dts: r8a7742: Add VIN DT nodes
-> 
->  .../bindings/media/renesas,vin.yaml           |  1 +
->  arch/arm/boot/dts/r8a7742.dtsi                | 44 +++++++++++++++++++
->  2 files changed, 45 insertions(+)
-> 
-> -- 
-> 2.17.1
-> 
-
--- 
-Regards,
-Niklas Söderlund
