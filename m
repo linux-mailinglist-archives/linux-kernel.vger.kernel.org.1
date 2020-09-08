@@ -2,107 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1816C261C2B
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:15:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2020C261B42
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:00:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730140AbgIHTPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:15:31 -0400
-Received: from host18.canaca.com ([66.49.204.205]:47170 "EHLO
-        host18.canaca.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731770AbgIHTPM (ORCPT
+        id S1731463AbgIHTAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 15:00:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54644 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731235AbgIHTAN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 15:15:12 -0400
-X-Greylist: delayed 1798 seconds by postgrey-1.27 at vger.kernel.org; Tue, 08 Sep 2020 15:15:11 EDT
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=mungewell.org; s=default; h=Content-Transfer-Encoding:Content-Type:
-        Message-ID:References:In-Reply-To:Subject:Cc:To:From:Date:MIME-Version:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=0NuhWQcldBTxDdRHEdA5HQdXlMGQ0kB4cg2kzRhE4nU=; b=jcfqXA0g4BE3azXvQ6oOuI1222
-        MKa3Cexlprcf4yPE18W4BWQ0/DM5kytYj2gcp1NAW2c7KVyQZHd1s8YwT/QvoZFV2AWiRLHgteUz0
-        n9M6JxR5SelYuThhbU8G3H54pK9SdogEWfYxdNrWOJotqHpwcu//xjAjMx0LUYy6sIX8tOKlXiZZ1
-        GoZgq59T4eOo5GxSn5ab2xf56vGIlvdIr3EssbIwp7XOOdiwKkw9p2WEdMliUs9wsdae0BrvkkPma
-        qxRWpeGcYTvle+8Io5zd3NGGD2Z/arf+OchTKZeGg7RqUZM2avubca1m1SdGXL2InMctzgvDLTKO+
-        Fw1SStfA==;
-Received: from [::1] (port=54410 helo=host18.canaca.com)
-        by host18.canaca.com with esmtpa (Exim 4.93)
-        (envelope-from <simon@mungewell.org>)
-        id 1kFicC-0005pR-QJ; Tue, 08 Sep 2020 14:45:13 -0400
+        Tue, 8 Sep 2020 15:00:13 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D23AEC061573
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 12:00:12 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id t7so75050pjd.3
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 12:00:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=osandov-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=GV/iqESZ2B/JWCPhKBYdc1HMXEWUP6X/GFX7ukcYRCc=;
+        b=AKeahh29FRXDGBXnQjzSIcarVKtmq38CxwAoB6TIwDU1z5eEMqESkkM6AOI3qcWUXI
+         QXybrGeceZuWdooQd6Ahhr7FZanmq04jcIgL/NxxY16dTqLalRglfGD5RSGwXJlgHohK
+         lQi+Xam2gpoIu02XBhynueixypqoi1xRQaah1Du8lrzaymU1uXk0uO2EXr/QnAYJNtGE
+         RIjrrhv2zVCxniSFcfmbBvcG3BYOSnEHVDzLJ2liwgfW3aukQQ6apEaTOcX2iWGqAWCw
+         7LuXe2v/HVoJdiX92R3JHlHIatuZJC6rx47wnHvXOTWIRv7mOliX/C2jGR7BNmW0KFwV
+         MFaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GV/iqESZ2B/JWCPhKBYdc1HMXEWUP6X/GFX7ukcYRCc=;
+        b=S5gBxY6xtpzQ95EetQG9NEEYG7TVFZfZho+hdJj9vU6fW8y0erOaPCsgMa8+CQSI8h
+         1MF8/uOkm9jikwmvuLm6Kx15GDDWLo4CKsoZLSbym5fHUwO/geOg68CXO+Ngl6LDLon4
+         g/NzVHH7FYg2dFSMjI9IUb0nXs8LNC4Ga4BZJ8zh6q+4RXgWLahg6sGnPbDvx23YzeAu
+         uNunaB9ACh2zovmTMHu3Nxn2qcApsdhiJbqiTfVfrZFOqTaZILz4WuCfM8rzgdDIrt/Q
+         p2epQrtleknUCYKp7e1ZNsxGFxgv9lZVZtxed50W4SO0Xl2fbQ3bjveNrefoKMOiU+90
+         vQig==
+X-Gm-Message-State: AOAM531VDWtZz/Ba9f57vCT8NxfrKNtLLCaMALj+/T9axFmRny1TTOLv
+        J9YNDJw2M1sHP6S8Au1/9zjzsw==
+X-Google-Smtp-Source: ABdhPJx5rumcfM7Ht6IyzlNP3RKqgmYM/0YyydX7QIAP1xK9uKQOzi1qgTWBBWjVdlyxgacb07hiEA==
+X-Received: by 2002:a17:90a:b292:: with SMTP id c18mr212478pjr.207.1599591612227;
+        Tue, 08 Sep 2020 12:00:12 -0700 (PDT)
+Received: from relinquished.localdomain ([2620:10d:c090:400::5:ec83])
+        by smtp.gmail.com with ESMTPSA id e125sm159782pfe.154.2020.09.08.12.00.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Sep 2020 12:00:11 -0700 (PDT)
+Date:   Tue, 8 Sep 2020 12:00:09 -0700
+From:   Omar Sandoval <osandov@osandov.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Yang Yang <yang.yang@vivo.com>, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, onlyfever@icloud.com
+Subject: Re: [PATCH] kyber: Fix crash in kyber_finish_request()
+Message-ID: <20200908190009.GA142421@relinquished.localdomain>
+References: <20200907074346.5383-1-yang.yang@vivo.com>
+ <8b714da7-97b2-f8d2-4be7-c192130c33af@kernel.dk>
 MIME-Version: 1.0
-Date:   Tue, 08 Sep 2020 12:45:10 -0600
-From:   simon@mungewell.org
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Takashi Sakamoto <o-takashi@sakamocchi.jp>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: Re: [PATCH 4.19 69/88] ALSA: firewire-digi00x: exclude Avid
- Adrenaline from detection
-In-Reply-To: <20200908152224.621006485@linuxfoundation.org>
-References: <20200908152221.082184905@linuxfoundation.org>
- <20200908152224.621006485@linuxfoundation.org>
-User-Agent: Roundcube Webmail/1.4.7
-Message-ID: <e214540d9645c4e285ee7f6475476973@mungewell.org>
-X-Sender: simon@mungewell.org
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-OutGoing-Spam-Status: No, score=-1.0
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - host18.canaca.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - mungewell.org
-X-Get-Message-Sender-Via: host18.canaca.com: authenticated_id: simon@mungewell.org
-X-Authenticated-Sender: host18.canaca.com: simon@mungewell.org
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-From-Rewrite: unmodified, already matched
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8b714da7-97b2-f8d2-4be7-c192130c33af@kernel.dk>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-08 09:26, Greg Kroah-Hartman wrote:
-> From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+On Mon, Sep 07, 2020 at 10:41:16AM -0600, Jens Axboe wrote:
+> CC Omar
 > 
-> commit acd46a6b6de88569654567810acad2b0a0a25cea upstream.
-> 
-> Avid Adrenaline is reported that ALSA firewire-digi00x driver is bound 
-> to.
-> However, as long as he investigated, the design of this model is hardly
-> similar to the one of Digi 00x family. It's better to exclude the model
-> from modalias of ALSA firewire-digi00x driver.
-> 
-> This commit changes device entries so that the model is excluded.
-> 
+> On 9/7/20 1:43 AM, Yang Yang wrote:
+> > Kernel crash when requeue flush request.
+> > It can be reproduced as below:
+> > 
+> > [    2.517297] Unable to handle kernel paging request at virtual address ffffffd8071c0b00
+> > ...
+> > [    2.517468] pc : clear_bit+0x18/0x2c
+> > [    2.517502] lr : sbitmap_queue_clear+0x40/0x228
+> > [    2.517503] sp : ffffff800832bc60 pstate : 00c00145
+> > ...
+> > [    2.517599] Process ksoftirqd/5 (pid: 51, stack limit = 0xffffff8008328000)
+> > [    2.517602] Call trace:
+> > [    2.517606]  clear_bit+0x18/0x2c
+> > [    2.517619]  kyber_finish_request+0x74/0x80
+> > [    2.517627]  blk_mq_requeue_request+0x3c/0xc0
+> > [    2.517637]  __scsi_queue_insert+0x11c/0x148
+> > [    2.517640]  scsi_softirq_done+0x114/0x130
+> > [    2.517643]  blk_done_softirq+0x7c/0xb0
+> > [    2.517651]  __do_softirq+0x208/0x3bc
+> > [    2.517657]  run_ksoftirqd+0x34/0x60
+> > [    2.517663]  smpboot_thread_fn+0x1c4/0x2c0
+> > [    2.517667]  kthread+0x110/0x120
+> > [    2.517669]  ret_from_fork+0x10/0x18
+> > 
+> > Signed-off-by: Yang Yang <yang.yang@vivo.com>
+> > ---
+> >  block/kyber-iosched.c | 3 +++
+> >  1 file changed, 3 insertions(+)
+> > 
+> > diff --git a/block/kyber-iosched.c b/block/kyber-iosched.c
+> > index a38c5ab103d1..af73afe7a05c 100644
+> > --- a/block/kyber-iosched.c
+> > +++ b/block/kyber-iosched.c
+> > @@ -611,6 +611,9 @@ static void kyber_finish_request(struct request *rq)
+> >  {
+> >  	struct kyber_queue_data *kqd = rq->q->elevator->elevator_data;
+> >  
+> > +	if (unlikely(!(rq->rq_flags & RQF_ELVPRIV)))
+> > +		return;
+> > +
+> >  	rq_clear_domain_token(kqd, rq);
+> >  }
+> >  
+> > 
 
-Just to add my 'ACK-BY'. Yes, the Avid Adrenaline seems to be based 
-around a totally different method of control and will likely need a 
-separate driver.
+It looks like BFQ also has this check. Wouldn't it make more sense to
+check it in blk-mq, like we do for .finish_request() in
+blk_mq_free_request()? Something along these lines:
 
-I believe that this includes the following devices: AVID Adrenaline, 
-AVID Mojo, AVID Mojo SDI, AVID AV Option and others... from Windows 
-driver 'FlameThrower' inf.
---
-[AvidHardware.NTx86]
-%Avid_Gryphon%		= Flamethrower, 1394\Avid_Technology&Gryphon
-%Avid_Raven%		= Flamethrower, 1394\Avid_Technology&Raven
-%Avid_Adrenaline%	= Flamethrower, 1394\Avid_Technology&Adrenaline
-%Avid_FireBobPro%	= Flamethrower, 1394\Avid_Technology&FireBobPro
-%Avid_Mojo%		= Flamethrower, 1394\Avid_Technology&Mojo
-%Avid_FireBoB%		= Flamethrower, 1394\Avid_Technology&FireBoB
-%Avid_FireBoBV2%	= Flamethrower, 1394\Avid_Technology&FireBoBV2
-%Avid_DigiBoB%		= Flamethrower, 1394\Avid_Technology&DigiBoB
-%Avid_AVoptionV10%	= Flamethrower, 1394\Avid_Technology&AVoptionV10
---
-
-There are some details in this thread, for anyone interested in 
-following up.
-https://sourceforge.net/p/ffado/mailman/message/37078754/
-
-Cheers,
-Simon.
-
-PS. Have a Mojo SDI inbound, will confirm when it arrives.
+diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
+index c34b090178a9..fa98470df3f0 100644
+--- a/block/bfq-iosched.c
++++ b/block/bfq-iosched.c
+@@ -5895,18 +5895,6 @@ static void bfq_finish_requeue_request(struct request *rq)
+ 	struct bfq_queue *bfqq = RQ_BFQQ(rq);
+ 	struct bfq_data *bfqd;
+ 
+-	/*
+-	 * Requeue and finish hooks are invoked in blk-mq without
+-	 * checking whether the involved request is actually still
+-	 * referenced in the scheduler. To handle this fact, the
+-	 * following two checks make this function exit in case of
+-	 * spurious invocations, for which there is nothing to do.
+-	 *
+-	 * First, check whether rq has nothing to do with an elevator.
+-	 */
+-	if (unlikely(!(rq->rq_flags & RQF_ELVPRIV)))
+-		return;
+-
+ 	/*
+ 	 * rq either is not associated with any icq, or is an already
+ 	 * requeued request that has not (yet) been re-inserted into
+diff --git a/block/blk-mq-sched.h b/block/blk-mq-sched.h
+index 126021fc3a11..e81ca1bf6e10 100644
+--- a/block/blk-mq-sched.h
++++ b/block/blk-mq-sched.h
+@@ -66,7 +66,7 @@ static inline void blk_mq_sched_requeue_request(struct request *rq)
+ 	struct request_queue *q = rq->q;
+ 	struct elevator_queue *e = q->elevator;
+ 
+-	if (e && e->type->ops.requeue_request)
++	if ((rq->rq_flags & RQF_ELVPRIV) && e && e->type->ops.requeue_request)
+ 		e->type->ops.requeue_request(rq);
+ }
+ 
