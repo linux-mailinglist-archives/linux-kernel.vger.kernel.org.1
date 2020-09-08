@@ -2,101 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D97A6261662
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:10:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16575261672
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:11:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731938AbgIHRKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 13:10:31 -0400
-Received: from mga01.intel.com ([192.55.52.88]:11104 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731825AbgIHRKT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 13:10:19 -0400
-IronPort-SDR: 6JxiHnR5zvlemI1pTtekuGiEdiFvhzZhCWIMebUUI0rxXkg3lgk5I3o3xAkqjTS9o1mwRht+Lg
- 5JlverwLfLRg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9738"; a="176239158"
-X-IronPort-AV: E=Sophos;i="5.76,406,1592895600"; 
-   d="scan'208";a="176239158"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2020 10:10:18 -0700
-IronPort-SDR: xb3TOCto97k46V4T6BNX6Fv450dNj7J2LPuzAxhub5KUBHXPOeDrrOFcNHqXJE7f888KT2MY6I
- 0KrDL5DOuj0w==
-X-IronPort-AV: E=Sophos;i="5.76,406,1592895600"; 
-   d="scan'208";a="480110130"
-Received: from spandruv-mobl.amr.corp.intel.com ([10.254.127.119])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2020 10:10:17 -0700
-Message-ID: <22617e57e541e460fac09db04fdb370f8e96e8ef.camel@linux.intel.com>
-Subject: Re: [PATCH] x86/msr: do not warn on writes to OC_MAILBOX
-From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-To:     Borislav Petkov <bp@suse.de>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        kitsunyan <kitsunyan@airmail.cc>,
-        "Brown, Len" <len.brown@intel.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 08 Sep 2020 10:10:17 -0700
-In-Reply-To: <20200907100647.GB10657@zn.tnic>
-References: <20200907094843.1949-1-Jason@zx2c4.com>
-         <20200907100647.GB10657@zn.tnic>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+        id S1731845AbgIHRLF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 13:11:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37716 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731643AbgIHRK7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 13:10:59 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 733FAC061755
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 10:10:59 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id d9so5207712pfd.3
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 10:10:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=+LDeT2lt9SUcFTCT7BGDtz2er/OFG3MBH42fF3G6h68=;
+        b=EDOnxu3/tWXDEbO6aDonCpKCXjFECgrh/c5YRnWtoQ+SHvbswr+J9cGbiv4XUvNfrd
+         Em65A52BYE3J8f195qPDI06udLHV8qdKzyftN/XsuICT3JOpkkrJjXA8SwRBW6SJFwIJ
+         EzxA2KlhnfS8sc+kRLjxSmT8aJqg9Kgl+vhsMjNmF1fUU2hFGI+XhHju5+YlFt8CwMyV
+         icqzwB0Hg81zggur22jiAbr8aGH6mP0aCauFgvoMG6dJURct0IpkkJdXcpVm7v0ecqQb
+         mRk0w7ZSMxbIICPrnpndkBSn/Os7FI8G732QR5xMmeo6/XrIMdRBOK6LfscZl2uqp309
+         p9Ng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+LDeT2lt9SUcFTCT7BGDtz2er/OFG3MBH42fF3G6h68=;
+        b=jTrNcSnvznCefNznsHb3qXauzENHm80mjn9KXEEfpDz/52iClrOSYxn5RCDQalo/at
+         sbaQihbezNJepOBYIcceYGb8kJBatEpiJkFaDD+bJHEMT3DGJcJTJq8ykwpLocYKF8Ze
+         Mmu7UA9OGsoNRNmeuiJg81blmUIW9S8d87UVL44oUotn4+cLYf4fAAbVx6IAcj2s4TC3
+         M1YG2gdCIsv38Izjzg5BsLJoltKuaSPVdAC8LipYK9EOWeQfhL4aji/uPshg3b5ZeSau
+         pCS8PeS6IObLc946GCbouMX0LlCkAp95NNfnduXAXn6h/bZqg1Vsy41Kxlt4fy4yTZPK
+         obbg==
+X-Gm-Message-State: AOAM533Qt2RIy0nknzrs6Xwi6iAE2+BiC/aD+ox5VkUtqKeCKiqOpnaj
+        fOVJ0vjKEDF/y1A1ErX1JynpYg==
+X-Google-Smtp-Source: ABdhPJzypUk2kaMSsozZWu2eOHXNN4ZkXvherqbpQHodcqeZRg4Fd5ulTMlytF6eoxCVBPUWtIX41g==
+X-Received: by 2002:a62:3812:0:b029:13e:d13d:a062 with SMTP id f18-20020a6238120000b029013ed13da062mr30916pfa.40.1599585058742;
+        Tue, 08 Sep 2020 10:10:58 -0700 (PDT)
+Received: from google.com ([2620:15c:201:2:f693:9fff:fef4:1b6d])
+        by smtp.gmail.com with ESMTPSA id l141sm25676pfd.47.2020.09.08.10.10.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Sep 2020 10:10:57 -0700 (PDT)
+Date:   Tue, 8 Sep 2020 10:10:52 -0700
+From:   Sami Tolvanen <samitolvanen@google.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-pci@vger.kernel.org, X86 ML <x86@kernel.org>
+Subject: Re: [PATCH v2 09/28] kbuild: add support for Clang LTO
+Message-ID: <20200908171052.GB2743468@google.com>
+References: <20200624203200.78870-1-samitolvanen@google.com>
+ <20200903203053.3411268-1-samitolvanen@google.com>
+ <20200903203053.3411268-10-samitolvanen@google.com>
+ <CAK7LNAQ40LGvfjca9DASXjyUgRbjFNDWZXgFtMXJ54Xmi6vwkg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK7LNAQ40LGvfjca9DASXjyUgRbjFNDWZXgFtMXJ54Xmi6vwkg@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-09-07 at 12:06 +0200, Borislav Petkov wrote:
-> + Srinivas.
-> + kitsunyan.
+On Sun, Sep 06, 2020 at 04:36:32AM +0900, Masahiro Yamada wrote:
+> On Fri, Sep 4, 2020 at 5:31 AM Sami Tolvanen <samitolvanen@google.com> wrote:
+> >
+> > This change adds build system support for Clang's Link Time
+> > Optimization (LTO). With -flto, instead of ELF object files, Clang
+> > produces LLVM bitcode, which is compiled into native code at link
+> > time, allowing the final binary to be optimized globally. For more
+> > details, see:
+> >
+> >   https://llvm.org/docs/LinkTimeOptimization.html
+> >
+> > The Kconfig option CONFIG_LTO_CLANG is implemented as a choice,
+> > which defaults to LTO being disabled.
 > 
-> On Mon, Sep 07, 2020 at 11:48:43AM +0200, Jason A. Donenfeld wrote:
-> > Popular tools, like intel-undervolt, use MSR 0x150 to control the
-> > CPU
-> > voltage offset. In fact, evidently the intel_turbo_max_3 driver in-
-> > tree
-> > also uses this MSR. So, teach the kernel's MSR list about this, so
-> > that
-> > intel-undervolt and other such tools don't spew warnings to dmesg,
-> > while
-> > unifying the constant used throughout the kernel.
-> > 
-
-[...]
-
-> > -	if (reg == MSR_IA32_ENERGY_PERF_BIAS)
-> > +	switch (reg) {
-> > +	case MSR_IA32_ENERGY_PERF_BIAS:
-There is already sysfs interface for it.
-
-> > +	case MSR_IA32_OC_MAILBOX:
-> >  		return 0;
-> > +	}
-> > 
-
-[...]
-
-> Actually, we added the filtering to catch exactly such misuses and,
-> lemme check what is the proper word now... /me checks, aha, adding
-> new
-> MSRs to the "passlist" is the wrong thing to do.
+> What is the reason for doing this in a choice?
+> To turn off LTO_CLANG for compile-testing?
 > 
-> Srinivas, can you pls convert this in-tree driver to use a proper
-> sysfs
-> interface for that mailbox MSR and also work with the intel-undervolt
-> author - I hope I have the right person CCed from the git repo on
-> github
-> - to come up with a proper interface so that we can drop this MSR use
-> too.
+> I would rather want to give LTO_CLANG more chances
+> to be enabled/tested.
 
-Overclocking is not architectural I/F and is supported by some special
-CPU skews. I can't find any public document to specify the commands
-which can be used via this OC mailbox. I have to check internally to
-see if there is any. To add a proper sysfs interface we have to make
-sure that we are not allowing some random commands to hardware and
-crash the system.
+It's a choice to prevent LTO from being enabled by default with
+allyesconfig and allmodconfig. It would take hours to build these even on a
+fast computer, and probably days on older hardware.
 
-Thanks,
-Srinivas
+> > +ifdef CONFIG_LTO_CLANG
+> > +ifdef CONFIG_THINLTO
+> > +CC_FLAGS_LTO_CLANG := -flto=thin -fsplit-lto-unit
+> > +KBUILD_LDFLAGS += --thinlto-cache-dir=.thinlto-cache
+> 
+> 
+> I think this would break external module builds
+> because it would create cache files in the
+> kernel source tree.
+> 
+> External module builds should never ever touch
+> the kernel tree, which is usually located under
+> the read-only /usr/src/ in distros.
+> 
+> 
+> .thinlto-cache should be created in the module tree
+> when it is built with M=.
 
+Thanks for pointing this out, I'll fix the path in v3.
+
+> >  # Directories & files removed with 'make distclean'
+> > -DISTCLEAN_FILES += tags TAGS cscope* GPATH GTAGS GRTAGS GSYMS
+> > +DISTCLEAN_FILES += tags TAGS cscope* GPATH GTAGS GRTAGS GSYMS .thinlto-cache
+> 
+> 
+> 
+> This was suggested in v1, but I could not understand
+> why doing this in distclean was appropriate.
+> 
+> Is keeping cache files of kernel objects
+> useful for external module builds?
+
+No, the cache only speeds up incremental kernel builds.
+
+> Also, please clean up .thinlto-cache for external module builds.
+
+Ack.
+
+Sami
