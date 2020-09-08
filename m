@@ -2,92 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B96E1260BBB
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 09:18:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 397EB260BCD
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 09:19:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729407AbgIHHSi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 03:18:38 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:51482 "EHLO inva021.nxp.com"
+        id S1729265AbgIHHSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 03:18:03 -0400
+Received: from mga09.intel.com ([134.134.136.24]:30573 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729386AbgIHHSe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 03:18:34 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 21B0F200217;
-        Tue,  8 Sep 2020 09:18:32 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 9DC7420022A;
-        Tue,  8 Sep 2020 09:18:27 +0200 (CEST)
-Received: from 10.192.242.69 (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id C30B4402DF;
-        Tue,  8 Sep 2020 09:18:21 +0200 (CEST)
-From:   Anson Huang <Anson.Huang@nxp.com>
-To:     aisheng.dong@nxp.com, festevam@gmail.com, shawnguo@kernel.org,
-        stefan@agner.ch, kernel@pengutronix.de, linus.walleij@linaro.org,
-        s.hauer@pengutronix.de, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     Linux-imx@nxp.com
-Subject: [PATCH V3 3/3] pinctrl: imx: Support building i.MX pinctrl core driver as module
-Date:   Tue,  8 Sep 2020 15:12:06 +0800
-Message-Id: <1599549126-17413-3-git-send-email-Anson.Huang@nxp.com>
+        id S1728625AbgIHHR6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 03:17:58 -0400
+IronPort-SDR: Xk8CKzGo3Fs2RKo8r4urjeB0fVtMMi+aKgo1BSkcfOgYvGT1OB0YoaxAkXaCTMD52G1Jlrxvw7
+ cexzOBhQadKQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9737"; a="159058709"
+X-IronPort-AV: E=Sophos;i="5.76,404,1592895600"; 
+   d="scan'208";a="159058709"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2020 00:17:57 -0700
+IronPort-SDR: k3dJR9sgxjeecLR+PyXWZPw2gWEd7XZnay9oDGqJ3JtZaj6AGpt3+5/pg0/IsDNr1vZ9ER/Wj0
+ v3HV15uxN4Gw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,404,1592895600"; 
+   d="scan'208";a="448677676"
+Received: from yilunxu-optiplex-7050.sh.intel.com ([10.239.159.141])
+  by orsmga004.jf.intel.com with ESMTP; 08 Sep 2020 00:17:55 -0700
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     mdf@kernel.org, alex.williamson@redhat.com, kwankhede@nvidia.com,
+        linux-fpga@vger.kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     trix@redhat.com, lgoncalv@redhat.com, yilun.xu@intel.com
+Subject: [PATCH 0/3] add VFIO mdev support for DFL devices
+Date:   Tue,  8 Sep 2020 15:13:29 +0800
+Message-Id: <1599549212-24253-1-git-send-email-yilun.xu@intel.com>
 X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1599549126-17413-1-git-send-email-Anson.Huang@nxp.com>
-References: <1599549126-17413-1-git-send-email-Anson.Huang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change PINCTRL_IMX to tristate to support loadable module build.
+These patches depend on the patchset: "Modularization of DFL private
+feature drivers" & "add dfl bus support to MODULE_DEVICE_TABLE()"
 
-And i.MX common pinctrl driver should depend on CONFIG_OF to make sure
-no build error when i.MX common pinctrl driver is enabled for different
-architectures without CONFIG_OF.
+https://lore.kernel.org/linux-fpga/1599488581-16386-1-git-send-email-yilun.xu@intel.com/
 
-Also add module author, description and license.
+This patchset provides an VFIO Mdev driver for dfl devices. It makes
+possible for dfl devices be direct accessed from userspace.
 
-Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
-Reviewed-by: Dong Aisheng <aisheng.dong@nxp.com>
----
-no change.
----
- drivers/pinctrl/freescale/Kconfig       | 3 ++-
- drivers/pinctrl/freescale/pinctrl-imx.c | 5 +++++
- 2 files changed, 7 insertions(+), 1 deletion(-)
+Xu Yilun (3):
+  fpga: dfl: add driver_override support
+  fpga: dfl: VFIO mdev support for DFL devices
+  Documentation: fpga: dfl: Add description for VFIO Mdev support
 
-diff --git a/drivers/pinctrl/freescale/Kconfig b/drivers/pinctrl/freescale/Kconfig
-index 452c499..0058d3a 100644
---- a/drivers/pinctrl/freescale/Kconfig
-+++ b/drivers/pinctrl/freescale/Kconfig
-@@ -1,6 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0-only
- config PINCTRL_IMX
--	bool
-+	tristate "IMX pinctrl core driver"
-+	depends on OF
- 	select GENERIC_PINCTRL_GROUPS
- 	select GENERIC_PINMUX_FUNCTIONS
- 	select GENERIC_PINCONF
-diff --git a/drivers/pinctrl/freescale/pinctrl-imx.c b/drivers/pinctrl/freescale/pinctrl-imx.c
-index b80c450..daf28bc 100644
---- a/drivers/pinctrl/freescale/pinctrl-imx.c
-+++ b/drivers/pinctrl/freescale/pinctrl-imx.c
-@@ -11,6 +11,7 @@
- #include <linux/init.h>
- #include <linux/io.h>
- #include <linux/mfd/syscon.h>
-+#include <linux/module.h>
- #include <linux/of.h>
- #include <linux/of_device.h>
- #include <linux/of_address.h>
-@@ -898,3 +899,7 @@ const struct dev_pm_ops imx_pinctrl_pm_ops = {
- 					imx_pinctrl_resume)
- };
- EXPORT_SYMBOL_GPL(imx_pinctrl_pm_ops);
-+
-+MODULE_AUTHOR("Dong Aisheng <aisheng.dong@nxp.com>");
-+MODULE_DESCRIPTION("NXP i.MX common pinctrl driver");
-+MODULE_LICENSE("GPL v2");
+ Documentation/ABI/testing/sysfs-bus-dfl |  20 ++
+ Documentation/fpga/dfl.rst              |  20 ++
+ drivers/fpga/Kconfig                    |   9 +
+ drivers/fpga/Makefile                   |   1 +
+ drivers/fpga/dfl.c                      |  54 ++++-
+ drivers/fpga/vfio-mdev-dfl.c            | 391 ++++++++++++++++++++++++++++++++
+ include/linux/fpga/dfl-bus.h            |   2 +
+ 7 files changed, 496 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/fpga/vfio-mdev-dfl.c
+
 -- 
 2.7.4
 
