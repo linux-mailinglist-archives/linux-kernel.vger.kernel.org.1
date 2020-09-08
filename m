@@ -2,204 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8861B261627
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:04:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCEC3261625
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:04:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731680AbgIHREi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 13:04:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36664 "EHLO
+        id S1732053AbgIHRDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 13:03:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731859AbgIHRES (ORCPT
+        with ESMTP id S1732038AbgIHRCv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 13:04:18 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5423C061573;
-        Tue,  8 Sep 2020 10:04:17 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id b16so47176pjp.0;
-        Tue, 08 Sep 2020 10:04:17 -0700 (PDT)
+        Tue, 8 Sep 2020 13:02:51 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A0C9C061756
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 10:02:50 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id z25so55980iol.10
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 10:02:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Z5QdpVcmIOCKIvjQyJ2FDGf+30SJdqdaAWTB4XO5kus=;
-        b=Oo63FLR//+v/71O0Qc0R0LvWXd7hHS0z0G4yNbov4ZQ2LDQcZzYZSNwtx++ONgepje
-         Qd2fbmkyVCxLolyJ8qXVO32/P9GgM82uWujp5uExG7vZ4UJKXbWoGuOHHIkQ9zgOkVXM
-         s1Pp1xBsFdcrEF3np0vSZTSXkB4EiPvUI9J7h+AsLhYewsh/wAeJQFt8e1VjW+TMSaoy
-         W6ExGd8sMvgSsHDS1+IIcueeywOLjfUrclr2CgKRnFsUedh5xqNe66lwUUFLa3I4eTNg
-         f3ITdHxjDmB26IfkdWTtZu0mcaVKDOLzlMcjrplTxDISxLKpVj+BMD8vBFVtSUKDbVXH
-         LYXQ==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=6r8oY7P5aaaNjTS2Z3JuHAo/BodSW0G0Qz3+9SCpdcA=;
+        b=Fc5KlT/QgmDUw9wewiSXZGEfR0knpYXatiwTcFvCBfuTglDqwe97Xqfk0+3x8rqwqz
+         +7tuFM8H7/+AmHKFAaAgiLJ6SRjQRhYk33odBKaz/HYiH3Ner4l978qk7J5fVRCppZat
+         NzbCVkM8xF0xtOByqvqkwhwdQxGZyDDDgP822eVuJM4gG0Hcg8eiv1RslZap/Bek1+wl
+         Zo6pLSrd6Y9goqQPOoDIZfkmRDiwu8LSP2FkQezPzvHh4k3BUYgvl+MCayPCGDN/ggRH
+         EbcMddlY2Qg8dVmq7IG0F2iCUIwDUoScipcAw4Y7Ul6q0kcLqRY/IS7Ixd4PLxrKKOK1
+         TsFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Z5QdpVcmIOCKIvjQyJ2FDGf+30SJdqdaAWTB4XO5kus=;
-        b=DIOzzILgy8I0Bfu1zG0aAfbI31bfFL2DYLvbHB0H+FF5IG4FFiP0jt6bNsOpAaHqfK
-         c42dH6P1/k4w7sKoKL0NzG44/dFeCNNjFUeDd7L6dv0dI2Hy0DZu3UNwYQqaxxHFAFKI
-         2mmCUNr06577D44GsnfxS9bWqWr1hCtPEfP9kSPIZIYrEeutqUiQF1TbAekrErIQoYcK
-         SNKRBQSQItaYoINUbS0/QC3u0aysjTkOCgsMDKjiFsle76Rpu4191OVAsSYP/r/kY7wc
-         RvGCMGFtfoVmxHVzGnE6lCEruAgVGXuFJhB1lSNT5KKpM321iRU5Za50qDDB/mOjSn7c
-         5giA==
-X-Gm-Message-State: AOAM531n2jowCiIsnxb/EUuqsIYijQXcQO9ZZxBA3uZkbuTL6u4N3SGG
-        PyicP7+cLJBJJsnLmcTjMjQ=
-X-Google-Smtp-Source: ABdhPJz0e8P/21+6stvBWY+17vhC6Q8qKEq+3oDWZ4WokU+qfQgx82L4fEFGq5UaxujYEo5Z1tQzew==
-X-Received: by 2002:a17:90a:29a3:: with SMTP id h32mr65787pjd.135.1599584657379;
-        Tue, 08 Sep 2020 10:04:17 -0700 (PDT)
-Received: from gmail.com ([106.201.26.241])
-        by smtp.gmail.com with ESMTPSA id f5sm7958809pfj.212.2020.09.08.10.04.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Sep 2020 10:04:16 -0700 (PDT)
-Date:   Tue, 8 Sep 2020 22:32:23 +0530
-From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Bjorn Helgaas <bjorn@helgaas.com>,
-        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
-        Adam Radford <aradford@gmail.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Adaptec OEM Raid Solutions <aacraid@microsemi.com>,
-        Hannes Reinecke <hare@suse.com>,
-        Bradley Grove <linuxdrivers@attotech.com>,
-        John Garry <john.garry@huawei.com>,
-        Don Brace <don.brace@microsemi.com>,
-        James Smart <james.smart@broadcom.com>,
-        Dick Kennedy <dick.kennedy@broadcom.com>,
-        Kashyap Desai <kashyap.desai@broadcom.com>,
-        Sumit Saxena <sumit.saxena@broadcom.com>,
-        Shivasharan S <shivasharan.srikanteshwara@broadcom.com>,
-        Sathya Prakash <sathya.prakash@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
-        Jack Wang <jinpu.wang@cloud.ionos.com>
-Cc:     Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-scsi@vger.kernel.org, esc.storagedev@microsemi.com,
-        megaraidlinux.pdl@broadcom.com, MPT-FusionLinux.pdl@broadcom.com
-Subject: Re: [PATCH v2 07/15] scsi: hisi_sas_v3_hw: use generic power
- management
-Message-ID: <20200908170223.GH9948@gmail.com>
-References: <20200720133427.454400-1-vaibhavgupta40@gmail.com>
- <20200720133427.454400-8-vaibhavgupta40@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=6r8oY7P5aaaNjTS2Z3JuHAo/BodSW0G0Qz3+9SCpdcA=;
+        b=e9Uvpk2W9vkCLz3AlQXCXnbtVZLGKOrlN5P+dXlg126jUfO5244YkgV5/1wAntYXVG
+         ksITGZ5q1UxL6wXpdezhuW2RNoFOoiteX2nEO8w1qaEdIQ+9skkXxg9lOS6u7GlIOYCi
+         HEYE0b9761WvuvlVHGPznVUJ10pJSWkfwUgNZ3IdHVSizY0IhF0nluMp9LAImPm9/UYG
+         LsOlph5bYjvn974JX0m5naO8DX6hIMdMUGfGbil6MbOjDl5yAGTckstWS2FiATEGt2kX
+         IQ0fexbelbm1kN/SWvgJRl0ttUp8pnwKK0CcB+nK9bKiXyV1DFHa/2LjpDtJ1FcQdAO9
+         phkA==
+X-Gm-Message-State: AOAM532fPaKQhvhg6u0gETxkJoh538R9iBif7oAIRQ0h031/y6HVhvJR
+        U2dHZ0GX/drGgstQ0x2OK8VTiNARFDk6PmVd
+X-Google-Smtp-Source: ABdhPJwKYohUKj3l/8T5Uy0NjpVMb531t2l/rRzat+mZoQM4CjOho16dsxnLDc/YijlCusjH4qO8bQ==
+X-Received: by 2002:a02:9986:: with SMTP id a6mr23301374jal.28.1599584569815;
+        Tue, 08 Sep 2020 10:02:49 -0700 (PDT)
+Received: from [192.168.1.10] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id i14sm10669430ilb.28.2020.09.08.10.02.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Sep 2020 10:02:49 -0700 (PDT)
+Subject: Re: [PATCH for-next] io_uring: return EBADFD when ring isn't in the
+ right state
+To:     Stefano Garzarella <sgarzare@redhat.com>
+Cc:     io-uring@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200908165242.124957-1-sgarzare@redhat.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <6e119be3-d9a3-06ea-1c76-4201816dde46@kernel.dk>
+Date:   Tue, 8 Sep 2020 11:02:48 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20200908165242.124957-1-sgarzare@redhat.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200720133427.454400-8-vaibhavgupta40@gmail.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 20, 2020 at 07:04:20PM +0530, Vaibhav Gupta wrote:
-> With legacy PM, drivers themselves were responsible for managing the
-> device's power states and takes care of register states.
+On 9/8/20 10:52 AM, Stefano Garzarella wrote:
+> This patch uniforms the returned error (EBADFD) when the ring state
+> (enabled/disabled) is not the expected one.
 > 
-> After upgrading to the generic structure, PCI core will take care of
-> required tasks and drivers should do only device-specific operations.
-> 
-> The driver was calling pci_save/restore_state(), pci_choose_state(),
-> pci_enable/disable_device() and pci_set_power_state() which is no more
-> needed.
-> 
-> Compile-tested only.
-> 
-> Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
-> ---
->  drivers/scsi/hisi_sas/hisi_sas_v3_hw.c | 32 +++++++++-----------------
->  1 file changed, 11 insertions(+), 21 deletions(-)
-> 
-> diff --git a/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c b/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
-> index 55e2321a65bc..824bfbe1abbb 100644
-> --- a/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
-> +++ b/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
-> @@ -3374,13 +3374,13 @@ enum {
->  	hip08,
->  };
->  
-> -static int hisi_sas_v3_suspend(struct pci_dev *pdev, pm_message_t state)
-> +static int __maybe_unused hisi_sas_v3_suspend(struct device *dev_d)
->  {
-> +	struct pci_dev *pdev = to_pci_dev(dev_d);
->  	struct sas_ha_struct *sha = pci_get_drvdata(pdev);
->  	struct hisi_hba *hisi_hba = sha->lldd_ha;
->  	struct device *dev = hisi_hba->dev;
->  	struct Scsi_Host *shost = hisi_hba->shost;
-> -	pci_power_t device_state;
->  	int rc;
->  
->  	if (!pdev->pm_cap) {
-> @@ -3406,12 +3406,7 @@ static int hisi_sas_v3_suspend(struct pci_dev *pdev, pm_message_t state)
->  
->  	hisi_sas_init_mem(hisi_hba);
->  
-> -	device_state = pci_choose_state(pdev, state);
-> -	dev_warn(dev, "entering operating state [D%d]\n",
-> -			device_state);
-> -	pci_save_state(pdev);
-> -	pci_disable_device(pdev);
-> -	pci_set_power_state(pdev, device_state);
-> +	dev_warn(dev, "entering suspend state\n");
->  
->  	hisi_sas_release_tasks(hisi_hba);
->  
-> @@ -3419,8 +3414,9 @@ static int hisi_sas_v3_suspend(struct pci_dev *pdev, pm_message_t state)
->  	return 0;
->  }
->  
-> -static int hisi_sas_v3_resume(struct pci_dev *pdev)
-> +static int __maybe_unused hisi_sas_v3_resume(struct device *dev_d)
->  {
-> +	struct pci_dev *pdev = to_pci_dev(dev_d);
->  	struct sas_ha_struct *sha = pci_get_drvdata(pdev);
->  	struct hisi_hba *hisi_hba = sha->lldd_ha;
->  	struct Scsi_Host *shost = hisi_hba->shost;
-> @@ -3430,16 +3426,8 @@ static int hisi_sas_v3_resume(struct pci_dev *pdev)
->  
->  	dev_warn(dev, "resuming from operating state [D%d]\n",
->  		 device_state);
-> -	pci_set_power_state(pdev, PCI_D0);
-> -	pci_enable_wake(pdev, PCI_D0, 0);
-> -	pci_restore_state(pdev);
-> -	rc = pci_enable_device(pdev);
-> -	if (rc) {
-> -		dev_err(dev, "enable device failed during resume (%d)\n", rc);
-> -		return rc;
-> -	}
-> +	device_wakeup_disable(dev_d);
->  
-> -	pci_set_master(pdev);
->  	scsi_unblock_requests(shost);
->  	clear_bit(HISI_SAS_REJECT_CMD_BIT, &hisi_hba->flags);
->  
-> @@ -3447,7 +3435,6 @@ static int hisi_sas_v3_resume(struct pci_dev *pdev)
->  	rc = hw_init_v3_hw(hisi_hba);
->  	if (rc) {
->  		scsi_remove_host(shost);
-> -		pci_disable_device(pdev);
->  		return rc;
->  	}
->  	hisi_hba->hw->phys_init(hisi_hba);
-> @@ -3468,13 +3455,16 @@ static const struct pci_error_handlers hisi_sas_err_handler = {
->  	.reset_done	= hisi_sas_reset_done_v3_hw,
->  };
->  
-> +static SIMPLE_DEV_PM_OPS(hisi_sas_v3_pm_ops,
-> +			 hisi_sas_v3_suspend,
-> +			 hisi_sas_v3_resume);
-> +
->  static struct pci_driver sas_v3_pci_driver = {
->  	.name		= DRV_NAME,
->  	.id_table	= sas_v3_pci_table,
->  	.probe		= hisi_sas_v3_probe,
->  	.remove		= hisi_sas_v3_remove,
-> -	.suspend	= hisi_sas_v3_suspend,
-> -	.resume		= hisi_sas_v3_resume,
-> +	.driver.pm	= &hisi_sas_v3_pm_ops,
->  	.err_handler	= &hisi_sas_err_handler,
->  };
->  
-> -- 
-> 2.27.0
-> 
-.
+> The changes affect io_uring_enter() and io_uring_register() syscalls.
+
+I added a Fixes line:
+
+Fixes: 7ec3d1dd9378 ("io_uring: allow disabling rings during the creation")
+
+and applied it, thanks!
+
+> https://github.com/stefano-garzarella/liburing (branch: fix-disabled-ring-error)
+
+I'll check and pull that one too.
+
+-- 
+Jens Axboe
+
