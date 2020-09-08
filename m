@@ -2,130 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 317DB261F87
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 22:04:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2210D261F9A
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 22:05:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730157AbgIHUE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 16:04:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48182 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730408AbgIHPXv (ORCPT
+        id S1732189AbgIHUFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 16:05:16 -0400
+Received: from mail-pj1-f79.google.com ([209.85.216.79]:40894 "EHLO
+        mail-pj1-f79.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730273AbgIHPWE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:23:51 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17E0BC061264
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 06:23:32 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id k15so10921515pfc.12
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 06:23:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7QJMDMbNmolR6AioGkNQtnG3AJr/WPDscGoTEPtadkI=;
-        b=BNRMmLHzf/L4KStfbtlT5lPRA5uRA3qlVF6BjWYdYtCPGPu3N3+sbNok5GP3FxCwHL
-         soiZ47Ocytr8BONR/bXPxZBKU5qe1b5sdBjcMsVPJCiVTXFRm6NUZJDRKzzClKLSw/QN
-         2wNVwSS02//ZFGqO65wr6un2nUE8+2KjhPTL1vTihJSfmbfgzLckLmX4b906cLYM4hFb
-         oAuG36s0RK2K+ru1b7aC6/VS9VISv0oNkeKDBNBveMvW531wlGGT/w2Cy40YZ1OXXOxE
-         uMWKyxxqhR/pmjOxr8OmlKgWU4u5smzwhNM1w8QHoyxnAUVew0eCn8w135HTYTsfWoh/
-         V+fQ==
+        Tue, 8 Sep 2020 11:22:04 -0400
+Received: by mail-pj1-f79.google.com with SMTP id a8so2765257pjk.5
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 08:21:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7QJMDMbNmolR6AioGkNQtnG3AJr/WPDscGoTEPtadkI=;
-        b=O82oofIGlV1jBlMTBrm/qoka4WoBzIxzlp/y+Q4OzDX/JmB0iw5XocLRoH+puW8Eqj
-         9n8aqrtrxxEShYG4lRZ4UM2sQlxFUfjcLf+MCjcFPFZXI3zywfX/j6wYHtZGELmehkRs
-         7wnRv1yqMPVsWPjv7I+LKgotPU4/foK/IqeJD9hm3scX3ma2R77appD7QmBwEEvImBbf
-         zpd9Nkgo6p0dFFRybIhFxX5ZcqZzW402ZxDDMGwcfvhcrXVxEXZp+mXRdVbGpjBWtUzW
-         B0NhvuNzKaRBikCLuhE82j2MJWSMCxPwHdBbJ+9l5/tQIO0ZoRNpL2SX2B9EyJ6i+0y5
-         SsQg==
-X-Gm-Message-State: AOAM5304oA6Ob/xO3vGgKFDkDZRuVi7R/64/tHZjQMyMH9JlwSlyfXQI
-        Bcd0WNkJ5sx9Opdrr6JoGt/jthLG5y01DIUrJBuZIA==
-X-Google-Smtp-Source: ABdhPJzTowZLkPaF7Ke2jVTQZa2hLHDoHcJM3WSVrcD+SKJADteSyd8EQhhclsk7eUVN/PuMj+uUge3z+0tBAd+51d8=
-X-Received: by 2002:a17:902:b94c:b029:d0:cbe1:e737 with SMTP id
- h12-20020a170902b94cb02900d0cbe1e737mr790548pls.18.1599571411337; Tue, 08 Sep
- 2020 06:23:31 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=EenMjJDQD4l521BSE22aNFMR8cwBrKLtkVf6ykDlNRE=;
+        b=Hg3LevgYpCzuA2mXYvmuZEZfdWgr+dPKsIQcNDJKj3XdOw9kNAlbZkW43lUHVK6ois
+         CLhSJQ91eQ9Sx91LassQ0dnw+AJNQpbaUc4U8SCdY0jBw2jfMwkzIbtmecOoXw5JrgJd
+         +l1Md+lsj9XgOsr22o3QURbjfNY1Pdq+kQ/a9QoswNDw3S9C+s3CycpU56oeo1B4wck4
+         UhSfk4sIIDdt3BErRRCp48+LtJwBD19bpdn/lGxj1la6zvb/+RlwG4b0OwlKSjlliMXU
+         2C5BXol9brZxvfQH1NG5i+m9cy/YFgMsoDBhHzrHJQefP4f2gqNkmlQUo6OY7BOUThdo
+         FRbg==
+X-Gm-Message-State: AOAM530/u/PCoXdODUbWuiM0Gogzozx8XpGxh9XbKgoQzRtJqzLgy8IX
+        L2DL7HSBAp0RfcX1pcFK1kBdyhAfo3uAEr62uZQCKJLAPJDZ
+X-Google-Smtp-Source: ABdhPJyf2KV/84UB4xhbQpYyo8oE42Hq7mhrdDmRkbRD1GE42RXW2mA/+3uu+7/RemX/IgzU6FCLCzkrR9bLx6pvtccOxQ7ODCJH
 MIME-Version: 1.0
-References: <cover.1597425745.git.andreyknvl@google.com> <2cf260bdc20793419e32240d2a3e692b0adf1f80.1597425745.git.andreyknvl@google.com>
- <20200827093808.GB29264@gaia>
-In-Reply-To: <20200827093808.GB29264@gaia>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Tue, 8 Sep 2020 15:23:20 +0200
-Message-ID: <CAAeHK+w-NLfCXFxJNEQ2pLpS6P3KCtAWJrxAFog9=BNiZ58wAQ@mail.gmail.com>
-Subject: Re: [PATCH 20/35] arm64: mte: Add in-kernel MTE helpers
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Elena Petrova <lenaptr@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
+X-Received: by 2002:a05:6602:1602:: with SMTP id x2mr6329273iow.22.1599571764913;
+ Tue, 08 Sep 2020 06:29:24 -0700 (PDT)
+Date:   Tue, 08 Sep 2020 06:29:24 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000d7327005aecd52f4@google.com>
+Subject: kernel BUG at mm/huge_memory.c:LINE! (2)
+From:   syzbot <syzbot+2200e21ff920b6b08faa@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 11:38 AM Catalin Marinas
-<catalin.marinas@arm.com> wrote:
->
-> On Fri, Aug 14, 2020 at 07:27:02PM +0200, Andrey Konovalov wrote:
-> > diff --git a/arch/arm64/include/asm/mte.h b/arch/arm64/include/asm/mte.h
-> > index 1c99fcadb58c..733be1cb5c95 100644
-> > --- a/arch/arm64/include/asm/mte.h
-> > +++ b/arch/arm64/include/asm/mte.h
-> > @@ -5,14 +5,19 @@
-> >  #ifndef __ASM_MTE_H
-> >  #define __ASM_MTE_H
-> >
-> > -#define MTE_GRANULE_SIZE     UL(16)
-> > +#include <asm/mte_asm.h>
->
-> So the reason for this move is to include it in asm/cache.h. Fine by
-> me but...
->
-> >  #define MTE_GRANULE_MASK     (~(MTE_GRANULE_SIZE - 1))
-> >  #define MTE_TAG_SHIFT                56
-> >  #define MTE_TAG_SIZE         4
-> > +#define MTE_TAG_MASK         GENMASK((MTE_TAG_SHIFT + (MTE_TAG_SIZE - 1)), MTE_TAG_SHIFT)
-> > +#define MTE_TAG_MAX          (MTE_TAG_MASK >> MTE_TAG_SHIFT)
->
-> ... I'd rather move all these definitions in a file with a more
-> meaningful name like mte-def.h. The _asm implies being meant for .S
-> files inclusion which isn't the case.
->
-> > diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
-> > index eb39504e390a..e2d708b4583d 100644
-> > --- a/arch/arm64/kernel/mte.c
-> > +++ b/arch/arm64/kernel/mte.c
-> > @@ -72,6 +74,47 @@ int memcmp_pages(struct page *page1, struct page *page2)
-> >       return ret;
-> >  }
-> >
-> > +u8 mte_get_mem_tag(void *addr)
-> > +{
-> > +     if (system_supports_mte())
-> > +             addr = mte_assign_valid_ptr_tag(addr);
->
-> The mte_assign_valid_ptr_tag() is slightly misleading. All it does is
-> read the allocation tag from memory.
->
-> I also think this should be inline asm, possibly using alternatives.
-> It's just an LDG instruction (and it saves us from having to invent a
-> better function name).
+Hello,
 
-Could you point me to an example of inline asm with alternatives if
-there's any? I see alternative_if and other similar macros used in
-arch/arm64/ code, is that what you mean? Those seem to always use
-static conditions, like config values, but here we have a dynamic
-system_supports_mte(). Could you elaborate on how I should implement
-this?
+syzbot found the following issue on:
+
+HEAD commit:    e28f0104 Merge tag 'fixes-2020-09-03' of git://git.kernel...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1252b7fe900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3c5f6ce8d5b68299
+dashboard link: https://syzkaller.appspot.com/bug?extid=2200e21ff920b6b08faa
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+2200e21ff920b6b08faa@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+kernel BUG at mm/huge_memory.c:1654!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 0 PID: 25918 Comm: syz-executor.5 Not tainted 5.9.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:zap_huge_pmd+0x8cb/0xfa0 mm/huge_memory.c:1654
+Code: 24 1c 0f 84 c9 03 00 00 e8 42 2a bd ff 8b 34 24 bf 1d 00 00 00 e8 b5 26 bd ff 48 83 3c 24 1d 0f 84 ac 03 00 00 e8 25 2a bd ff <0f> 0b e8 1e 2a bd ff 48 89 ea 48 b8 00 00 00 00 00 fc ff df 48 c1
+RSP: 0018:ffffc90004ac7730 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0770000000000000 RCX: ffffffff81b720cb
+RDX: ffff8880985c0200 RSI: ffffffff81b720db RDI: 0000000000000005
+RBP: ffffc90004ac7a50 R08: 0000000000000001 R09: ffff888000183827
+R10: 000000000000001d R11: 0000000000000000 R12: ffff888000183820
+R13: ffff88804d29b900 R14: ffffffff89b63d70 R15: 0000000000000000
+FS:  0000000000000000(0000) GS:ffff8880ae600000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000016a3b73 CR3: 000000009b476000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ zap_pmd_range mm/memory.c:1182 [inline]
+ zap_pud_range mm/memory.c:1224 [inline]
+ zap_p4d_range mm/memory.c:1245 [inline]
+ unmap_page_range+0x107b/0x2b20 mm/memory.c:1266
+ unmap_single_vma+0x198/0x300 mm/memory.c:1311
+ unmap_vmas+0x168/0x2e0 mm/memory.c:1343
+ exit_mmap+0x2b1/0x530 mm/mmap.c:3183
+ __mmput+0x122/0x470 kernel/fork.c:1076
+ mmput+0x53/0x60 kernel/fork.c:1097
+ exit_mm kernel/exit.c:483 [inline]
+ do_exit+0xa8b/0x29f0 kernel/exit.c:793
+ do_group_exit+0x125/0x310 kernel/exit.c:903
+ get_signal+0x428/0x1f00 kernel/signal.c:2757
+ arch_do_signal+0x82/0x2520 arch/x86/kernel/signal.c:811
+ exit_to_user_mode_loop kernel/entry/common.c:136 [inline]
+ exit_to_user_mode_prepare+0x1ae/0x200 kernel/entry/common.c:167
+ syscall_exit_to_user_mode+0x7e/0x2e0 kernel/entry/common.c:242
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45d5b9
+Code: Bad RIP value.
+RSP: 002b:00007f290f37fcf8 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
+RAX: 0000000000000001 RBX: 000000000118cfe8 RCX: 000000000045d5b9
+RDX: 00000000000f4240 RSI: 0000000000000081 RDI: 000000000118cfec
+RBP: 000000000118cfe0 R08: 000000000000000e R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118cfec
+R13: 00007ffc935c909f R14: 00007f290f3809c0 R15: 000000000118cfec
+Modules linked in:
+---[ end trace 9c85984f4836a6e7 ]---
+RIP: 0010:zap_huge_pmd+0x8cb/0xfa0 mm/huge_memory.c:1654
+Code: 24 1c 0f 84 c9 03 00 00 e8 42 2a bd ff 8b 34 24 bf 1d 00 00 00 e8 b5 26 bd ff 48 83 3c 24 1d 0f 84 ac 03 00 00 e8 25 2a bd ff <0f> 0b e8 1e 2a bd ff 48 89 ea 48 b8 00 00 00 00 00 fc ff df 48 c1
+RSP: 0018:ffffc90004ac7730 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0770000000000000 RCX: ffffffff81b720cb
+RDX: ffff8880985c0200 RSI: ffffffff81b720db RDI: 0000000000000005
+RBP: ffffc90004ac7a50 R08: 0000000000000001 R09: ffff888000183827
+R10: 000000000000001d R11: 0000000000000000 R12: ffff888000183820
+R13: ffff88804d29b900 R14: ffffffff89b63d70 R15: 0000000000000000
+FS:  0000000000000000(0000) GS:ffff8880ae600000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000016a3b73 CR3: 000000009b476000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
