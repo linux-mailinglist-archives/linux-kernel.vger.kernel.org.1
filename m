@@ -2,217 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C6A6261D7F
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:38:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7160C261D28
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:33:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731657AbgIHTh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:37:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53400 "EHLO
+        id S1732104AbgIHTdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 15:33:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730865AbgIHPzo (ORCPT
+        with ESMTP id S1730959AbgIHP6F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:55:44 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FEC6C061360;
-        Tue,  8 Sep 2020 05:35:28 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id lo4so22255990ejb.8;
-        Tue, 08 Sep 2020 05:35:28 -0700 (PDT)
+        Tue, 8 Sep 2020 11:58:05 -0400
+Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12FD8C06135B;
+        Tue,  8 Sep 2020 05:35:15 -0700 (PDT)
+Received: by mail-oo1-xc41.google.com with SMTP id o20so1610753ook.1;
+        Tue, 08 Sep 2020 05:35:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=MEwhElLwva4aOBYmOf3kKKArhiciy+PPTlQ3gWLCNXI=;
-        b=nM5g2y0L5ufQzmEoJIi/gApeb09uu8iLUlcuACqTFv0e1u6jGb3Nn4WGKh+6V1ncro
-         UW86ZXQmGWk0ZkMvzOAZ0h7EQcs2aizEY+VFlAeGIWzC60KNkw6hCnFa4JrVdFV84ldG
-         jnN/CIR8ir2qBjYPdWk2uKesxYoIlPWAt3hBUVyv0OiyjDdyXIXBXTbsrQoWqAQ8HiBC
-         8zyPVsF3lPGmE6cRq7rVjXArvBJCx/Z0pLBll6PCfRrReHuVv4CcltCogFO8XuSavTxY
-         JPQlrOJhZ5+nMcn2jCCJnjiGKJcgy5e0AM1dpcNMVTkWg/VdeG6T8RjWwI0J8aXFr0EH
-         zFyA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=B8krLLGJl/FrBTPsIPEOiXMh9NVPKW4gVDQh9+/ltKg=;
+        b=Bci32BjkSFTIodqWnoNug5Kd9qPwvhpLOs1moRMHzwnDX9h4pJFZI8rXwjwA+NaUVJ
+         ismAInSMCoJbONjUWn4EYQvneQsthRXE0mrj2MHLP6TcwtjhO2/wW9F1PE330GJ/GTfV
+         bgI2ouQKhpLuoNTqlWuEGrVYPKJ7OH/RYEJKVH8EGt++3CwVVDIXGslZ4Yo5HTWb3/yB
+         qE9j6TGRVGP0Cyk/NANnj3tczK+UJRkpxaGvDfdkwskNXCyWUMlkc+wZbAf+a9iS1vyH
+         Vc4LOQeMVv3ZEq4qN3qqc/ntRjRyfXrY4ox6Rg4ooiMgH/TmjP40yJf84jzjc4l7N9dr
+         BcRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=MEwhElLwva4aOBYmOf3kKKArhiciy+PPTlQ3gWLCNXI=;
-        b=avsWIc4iqQ4yWzvuJxfEo8BZcjlxQE2F3MPvl6SHr82NQfe8B5Q+SC0OLS5YizxsoC
-         aeJuSMXqloJ3WgsCuiS+MPdEOYTYyBH1YRak/iPSULGgq5gfqI+/8mg9BXuOb5+u2uFZ
-         J81qpPH2ACNVayuugvJEEE4w8r9/70IuC8enF5/ImYqPrh486uDqC3MpbfS5qO8y/HbQ
-         PmtK5benqm/DbD2VDYxA1epACYTn5GkNnWDNAP6FHh1NTaZNz5LwzVFnJyzjfskmLLZ7
-         za6sV5PXFDAIW0p+7KTrOCnp3wd9U2VAg2Iw0vMpc4vIo56LhDw+/TDN6g/I5t3MS2N8
-         p0HA==
-X-Gm-Message-State: AOAM5335AGdSosxkIO/E/PwfwIsluL313ZcGIRP54haTHKy8H4hM1kdl
-        k2itOQxvD8uY/JH+w+FP5kA=
-X-Google-Smtp-Source: ABdhPJxlDVnQHP6V7S47v/si7qa/ANtphTNXDOm2Z/jI1W62qZvQo3UqiVG7lc/XrY6kmEtep6ksEg==
-X-Received: by 2002:a17:906:a24f:: with SMTP id bi15mr26418103ejb.379.1599568526869;
-        Tue, 08 Sep 2020 05:35:26 -0700 (PDT)
-Received: from felia.fritz.box ([2001:16b8:2d8b:1700:7cee:a9ea:bd04:6924])
-        by smtp.gmail.com with ESMTPSA id x6sm9399939ejf.59.2020.09.08.05.35.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Sep 2020 05:35:26 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Igor Russkikh <irusskikh@marvell.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-spdx@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH 5/5] net/qla3xxx: Convert to SPDX license identifiers
-Date:   Tue,  8 Sep 2020 14:34:51 +0200
-Message-Id: <20200908123451.7215-6-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200908123451.7215-1-lukas.bulwahn@gmail.com>
-References: <20200908123451.7215-1-lukas.bulwahn@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=B8krLLGJl/FrBTPsIPEOiXMh9NVPKW4gVDQh9+/ltKg=;
+        b=emidhKUWsD6yvNKMYwiSTcB9jue9cxzh2mD3ewYFtVGzXSxix9oQxVWPo+JSPGFP1j
+         dfy3497tpzVWBQcLBXUFdVDUQ6C8CZvz5+lNXkkAaNBfcNUlxC/OtSy/uBrUicyzmyd/
+         bCeVqG9OzPfXl3i0gcvY8K8Hxdc8OIVwhJDSmfFNwn0O6FT3MOT9Zw+FMI928KRvFfk3
+         kWntwGHzN4c08K2xg5HuK17Qu7PRe4YSXYHNrfVdP6Nvfz/AcVQ8G5AK6t3nq9xIxYRN
+         C5Ix7wW+VMR2M3PCKtYLuTLNRgK69+o+XRXESXhrbo/h5yg9+UEZzfr0vbXAToMEm3iC
+         eDqA==
+X-Gm-Message-State: AOAM533nX1LxUk6XpuLd9noVheL7BjKghfLeVdfrBXjX0DlAAmUod/Iq
+        kuDtdcRNS3x/l++h81tCI6M8CxvzNaYJqxeaPKg=
+X-Google-Smtp-Source: ABdhPJzkgeDiRZ+a0yn/5ylF8CMXw37unFL76QeFV7KTsMQYy0lZCnLhLMPLYDdGGHuy6EZoeuE/xZIUjsBbXbq/99Q=
+X-Received: by 2002:a4a:d0ad:: with SMTP id t13mr18503020oor.58.1599568513251;
+ Tue, 08 Sep 2020 05:35:13 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200907213855.3572-1-nramas@linux.microsoft.com> <CAEjxPJ4Swgi2Jewzja8MRiVdYn8H1-OkDy5BR7Vv4A4LaLWZ+Q@mail.gmail.com>
+In-Reply-To: <CAEjxPJ4Swgi2Jewzja8MRiVdYn8H1-OkDy5BR7Vv4A4LaLWZ+Q@mail.gmail.com>
+From:   Stephen Smalley <stephen.smalley.work@gmail.com>
+Date:   Tue, 8 Sep 2020 08:35:02 -0400
+Message-ID: <CAEjxPJ4woNFU+FvmP72sjcfxotrjS4VFWL5ECS9ensKYUpF84Q@mail.gmail.com>
+Subject: Re: [PATCH] SELinux: Measure state and hash of policy using IMA
+To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Cc:     Mimi Zohar <zohar@linux.ibm.com>, Paul Moore <paul@paul-moore.com>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        tusharsu@linux.microsoft.com, Sasha Levin <sashal@kernel.org>,
+        James Morris <jmorris@namei.org>,
+        linux-integrity@vger.kernel.org,
+        SElinux list <selinux@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+On Tue, Sep 8, 2020 at 8:28 AM Stephen Smalley
+<stephen.smalley.work@gmail.com> wrote:
+>
+> On Mon, Sep 7, 2020 at 5:39 PM Lakshmi Ramasubramanian
+> <nramas@linux.microsoft.com> wrote:
+> >
+> > Critical data structures of security modules are currently not measured=
+.
+> > Therefore an attestation service, for instance, would not be able to
+> > attest whether the security modules are always operating with the polic=
+ies
+> > and configuration that the system administrator had setup. The policies
+> > and configuration for the security modules could be tampered with by
+> > rogue user mode agents or modified through some inadvertent actions on
+> > the system. Measuring such critical data would enable an attestation
+> > service to reliably assess the security configuration of the system.
+> >
+> > SELinux configuration and policy are some of the critical data for this
+> > security module that needs to be measured. This measurement can be used
+> > by an attestation service, for instance, to verify if the configuration
+> > and policies have been setup correctly and that they haven't been tampe=
+red
+> > with at runtime.
+> >
+> > Measure SELinux configuration, policy capabilities settings, and the ha=
+sh
+> > of the loaded policy by calling the IMA hook ima_measure_critical_data(=
+).
+> > Since the size of the loaded policy can be quite large, hash of the pol=
+icy
+> > is measured instead of the entire policy to avoid bloating the IMA log.
+> >
+> > Enable early boot measurement for SELinux in IMA since SELinux
+> > initializes its state and policy before custom IMA policy is loaded.
+> >
+> > Sample measurement of SELinux state and hash of the policy:
+> >
+> > 10 e32e...5ac3 ima-buf sha256:86e8...4594 selinux-state-1595389364:2878=
+99386 696e697469616c697a65643d313b656e61626c65643d313b656e666f7263696e673d3=
+03b636865636b72657170726f743d313b6e6574776f726b5f706565725f636f6e74726f6c73=
+3d313b6f70656e5f7065726d733d313b657874656e6465645f736f636b65745f636c6173733=
+d313b616c776179735f636865636b5f6e6574776f726b3d303b6367726f75705f7365636c61=
+62656c3d313b6e6e705f6e6f737569645f7472616e736974696f6e3d313b67656e66735f736=
+5636c6162656c5f73796d6c696e6b733d303
+> > 10 9e81...0857 ima-buf sha256:4941...68fc selinux-policy-hash-159733566=
+7:462051628 8d1d...1834
+> >
+> > To verify the measurement check the following:
+> >
+> > Execute the following command to extract the measured data
+> > from the IMA log for SELinux configuration (selinux-state).
+> >
+> >   grep -m 1 "selinux-state" /sys/kernel/security/integrity/ima/ascii_ru=
+ntime_measurements | cut -d' ' -f 6 | xxd -r -p
+> >
+> > The output should be the list of key-value pairs. For example,
+> >  initialized=3D1;enabled=3D1;enforcing=3D0;checkreqprot=3D1;network_pee=
+r_controls=3D1;open_perms=3D1;extended_socket_class=3D1;always_check_networ=
+k=3D0;cgroup_seclabel=3D1;nnp_nosuid_transition=3D1;genfs_seclabel_symlinks=
+=3D0;
+> >
+> > To verify the measured data with the current SELinux state:
+> >
+> >  =3D> enabled should be set to 1 if /sys/fs/selinux folder exists,
+> >     0 otherwise
+> >
+> > For other entries, compare the integer value in the files
+> >  =3D> /sys/fs/selinux/enforce
+> >  =3D> /sys/fs/selinux/checkreqprot
+> > And, each of the policy capabilities files under
+> >  =3D> /sys/fs/selinux/policy_capabilities
+> >
+> > For selinux-policy-hash, the hash of SELinux policy is included
+> > in the IMA log entry.
+> >
+> > To verify the measured data with the current SELinux policy run
+> > the following commands and verify the output hash values match.
+> >
+> >   sha256sum /sys/fs/selinux/policy | cut -d' ' -f 1
+> >
+> >   grep -m 1 "selinux-policy-hash" /sys/kernel/security/integrity/ima/as=
+cii_runtime_measurements | cut -d' ' -f 6
+> >
+> > This patch is based on commit 66ccd2560aff ("selinux: simplify away sec=
+urity_policydb_len()")
+> > in "next" branch in https://git.kernel.org/pub/scm/linux/kernel/git/pcm=
+oore/selinux.git
+> >
+> > This patch is dependent on the following patch series and must be
+> > applied in the given order:
+> >         https://patchwork.kernel.org/patch/11709527/
+> >         https://patchwork.kernel.org/patch/11730193/
+> >         https://patchwork.kernel.org/patch/11730757/
+> >
+> > Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+> > Suggested-by: Stephen Smalley <stephen.smalley.work@gmail.com>
+> > ---
+> >
+> > diff --git a/security/integrity/ima/Kconfig b/security/integrity/ima/Kc=
+onfig
+> > index 953314d145bb..9bf0f65d720b 100644
+> > --- a/security/integrity/ima/Kconfig
+> > +++ b/security/integrity/ima/Kconfig
+> > @@ -324,8 +324,7 @@ config IMA_MEASURE_ASYMMETRIC_KEYS
+> >
+> >  config IMA_QUEUE_EARLY_BOOT_DATA
+> >         bool
+> > -       depends on IMA_MEASURE_ASYMMETRIC_KEYS
+> > -       depends on SYSTEM_TRUSTED_KEYRING
+> > +       depends on (IMA_MEASURE_ASYMMETRIC_KEYS && SYSTEM_TRUSTED_KEYRI=
+NG) || SECURITY_SELINUX
+> >         default y
+>
+> I don't see why this is necessary or desirable.  We should avoid
+> leaking dependencies on a single security module into other
+> subsystems.
+> It might not yet fully support other security modules but we shouldn't
+> preclude adding that in the future.
+> Up to the IMA maintainer but I would recommend dropping this part.
 
-All files related to this driver contain the following notice:
-
-  See LICENSE.qla3xxx for copyright and licensing details.
-
-LICENSE.qla3xxx can be found in
-Documentation/networking/device_drivers/qlogic/. The file contains:
-
-  - A copyright notice
-
-    This copyright notice is redundant as all files contain the same
-    copyright notice already
-
-  - A license notice
-
-    You may modify and redistribute the device driver code under the GNU
-    General Public License (a copy of which is attached hereto as Exhibit
-    A) published by the Free Software Foundation (version 2 or a later
-    version).
-
-    This can be replaced with the corresponding SPDX license identifier
-    (GPL-2.0-or-later) in the source files which reference this license
-    file.
-
-  - A license for the device firmware
-
-    This license is pointless in the context of the kernel as the firmware
-    is not distributed as part of the kernel.
-
-    LICENSE.qla2xxx contained exactly the same firmware license which was
-    removed with commit bc3f957c069f ("[SCSI] qla2xxx: Update
-    LICENSE.qla2xxx.").
-
-    The firmware license is there due to the fact that the out of tree
-    driver tarball which was available from the qlogic website contained
-    the firmware binary. The firmware license in the qla3xxx license file
-    got probably forgotten when the other qlogic license files were
-    updated.
-
-Remove the notices and add the SPDX license identifier GPL-2.0-or-later to
-the source files.
-
-Finally remove the now redundant LICENSE.qla3xxx file.
-
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Richard Fontana <rfontana@redhat.com>
-Reviewed-by: Alexios Zavras <alexios.zavras@intel.com>
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
- .../device_drivers/qlogic/LICENSE.qla3xxx     | 46 -------------------
- MAINTAINERS                                   |  1 -
- drivers/net/ethernet/qlogic/qla3xxx.c         |  3 +-
- drivers/net/ethernet/qlogic/qla3xxx.h         |  3 +-
- 4 files changed, 2 insertions(+), 51 deletions(-)
- delete mode 100644 Documentation/networking/device_drivers/qlogic/LICENSE.qla3xxx
-
-diff --git a/Documentation/networking/device_drivers/qlogic/LICENSE.qla3xxx b/Documentation/networking/device_drivers/qlogic/LICENSE.qla3xxx
-deleted file mode 100644
-index 2f2077e34d81..000000000000
---- a/Documentation/networking/device_drivers/qlogic/LICENSE.qla3xxx
-+++ /dev/null
-@@ -1,46 +0,0 @@
--Copyright (c)  2003-2006 QLogic Corporation
--QLogic Linux Networking HBA Driver
--
--This program includes a device driver for Linux 2.6 that may be
--distributed with QLogic hardware specific firmware binary file.
--You may modify and redistribute the device driver code under the
--GNU General Public License as published by the Free Software
--Foundation (version 2 or a later version).
--
--You may redistribute the hardware specific firmware binary file
--under the following terms:
--
--	1. Redistribution of source code (only if applicable),
--	   must retain the above copyright notice, this list of
--	   conditions and the following disclaimer.
--
--	2. Redistribution in binary form must reproduce the above
--	   copyright notice, this list of conditions and the
--	   following disclaimer in the documentation and/or other
--	   materials provided with the distribution.
--
--	3. The name of QLogic Corporation may not be used to
--	   endorse or promote products derived from this software
--	   without specific prior written permission
--
--REGARDLESS OF WHAT LICENSING MECHANISM IS USED OR APPLICABLE,
--THIS PROGRAM IS PROVIDED BY QLOGIC CORPORATION "AS IS'' AND ANY
--EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
--IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
--PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHOR
--BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
--EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
--TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
--DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
--ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
--OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
--OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
--POSSIBILITY OF SUCH DAMAGE.
--
--USER ACKNOWLEDGES AND AGREES THAT USE OF THIS PROGRAM WILL NOT
--CREATE OR GIVE GROUNDS FOR A LICENSE BY IMPLICATION, ESTOPPEL, OR
--OTHERWISE IN ANY INTELLECTUAL PROPERTY RIGHTS (PATENT, COPYRIGHT,
--TRADE SECRET, MASK WORK, OR OTHER PROPRIETARY RIGHT) EMBODIED IN
--ANY OTHER QLOGIC HARDWARE OR SOFTWARE EITHER SOLELY OR IN
--COMBINATION WITH THIS PROGRAM.
--
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 25bb79c28de0..434274804028 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -14229,7 +14229,6 @@ QLOGIC QLA3XXX NETWORK DRIVER
- M:	GR-Linux-NIC-Dev@marvell.com
- L:	netdev@vger.kernel.org
- S:	Supported
--F:	Documentation/networking/device_drivers/ethernet/qlogic/LICENSE.qla3xxx
- F:	drivers/net/ethernet/qlogic/qla3xxx.*
- 
- QLOGIC QLA4XXX iSCSI DRIVER
-diff --git a/drivers/net/ethernet/qlogic/qla3xxx.c b/drivers/net/ethernet/qlogic/qla3xxx.c
-index 569e2a7a64e5..27740c027681 100644
---- a/drivers/net/ethernet/qlogic/qla3xxx.c
-+++ b/drivers/net/ethernet/qlogic/qla3xxx.c
-@@ -1,8 +1,7 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  * QLogic QLA3xxx NIC HBA Driver
-  * Copyright (c)  2003-2006 QLogic Corporation
-- *
-- * See LICENSE.qla3xxx for copyright and licensing details.
-  */
- 
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-diff --git a/drivers/net/ethernet/qlogic/qla3xxx.h b/drivers/net/ethernet/qlogic/qla3xxx.h
-index 73e234366a82..fb4398303ae1 100644
---- a/drivers/net/ethernet/qlogic/qla3xxx.h
-+++ b/drivers/net/ethernet/qlogic/qla3xxx.h
-@@ -1,8 +1,7 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later */
- /*
-  * QLogic QLA3xxx NIC HBA Driver
-  * Copyright (c)  2003-2006 QLogic Corporation
-- *
-- * See LICENSE.qla3xxx for copyright and licensing details.
-  */
- #ifndef _QLA3XXX_H_
- #define _QLA3XXX_H_
--- 
-2.17.1
-
+Sorry, I misread this part; it doesn't make IMA depend on SELinux it
+just allows enabling this early boot data feature if SELinux is
+enabled since SELinux is a user of it.  Still, it seems unfortunate to
+have to explicitly enumerate each consumer of this facility here
+whenever a new one is introduced.  Is there a reason for doing so and
+not just allowing it to be enabled as long as the things on which it
+depends are enabled (i.e. not based on its consumers)?
