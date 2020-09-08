@@ -2,170 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35C6F2615CA
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:56:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63AB72614C1
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:36:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731976AbgIHQ42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 12:56:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58242 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731890AbgIHQWu (ORCPT
+        id S1731923AbgIHQgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 12:36:07 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:51706 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732026AbgIHQcF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:22:50 -0400
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA86AC09B044
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 07:40:34 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id x69so13690128oia.8
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 07:40:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gPcieJcPktL1nGtQ3CPYTKBD+Ta7XljCQbXl/MbV5To=;
-        b=JixNYbDmOvp2/Vgm8rdPkpElXATAbUeixoOvrkRTSwCOE607vlcS1SOqEVXv5WI7dP
-         EdJwGSsxWOj0EFurjaxlWrqa8RAGCNQc3Fhrf6wA38N6nKteuVuLkICNNiWJn1VNAxFA
-         xM3WNXezc3a8efPrz9VV+jbriI+FyvLxYjGVBfvYVqMIrAb0KhAefvVyKParNgGbch3w
-         AJqEtn0ig+RiMpls+0t3z+AbjLJkrhgNG1RXIY/BaQ0DgXNMEgbEdKTcH0T/ziCKzcke
-         XzmMbfbe+evCDZd0KXn++tA01B+c9/k6/Fd0OVeuxI3mz/3DnleGbdxuSDdeE7dE+xk+
-         zX5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gPcieJcPktL1nGtQ3CPYTKBD+Ta7XljCQbXl/MbV5To=;
-        b=B1FswEnUs4FX/9lWgYfVxAqZ7BHXuqBXCd1C1ToOMULkbJwTbafshxK07Pz0jLvTc+
-         3eFY/6LCSJ5iIIddlnEBQJg5OmuzNlW81fmEawbCORzhdqN4v6RrUi8KV1pEhWbNS2g+
-         QkzyHzplPWYrhJwNgoZMnfzSwvxa1ZsAYWIUpLF0atsqDHGcURiYHB52gDGnwul8iJGT
-         L9R9p3OrSYE+IcCCskYwYZxIV/UqzSBEKlUc7zMipSB2h/l5BH/q3T+KpKKA6DpY5ZHW
-         XNYLOBrDXLripBhdtPqV4R8ZhldtA23VsRca3FGwNNW/q9K7jXkTMxfQjZz4/QiAo8qN
-         o7KA==
-X-Gm-Message-State: AOAM532E1auDjN0ekd1LuhERLmkGJN2cYCE4vJK3ViP01KREj495y5Np
-        pTPgfeAIsQpzax4k89riCWqbiw==
-X-Google-Smtp-Source: ABdhPJwYAeXrfUaRThbJxg8f1ht0zPXpOv6/A90yB5RmZ7nAvvTYVm3A4VMv9KuNRHEZPSmyrLx5Sw==
-X-Received: by 2002:a05:6808:8e5:: with SMTP id d5mr2937201oic.33.1599576034193;
-        Tue, 08 Sep 2020 07:40:34 -0700 (PDT)
-Received: from yoga ([2605:6000:e5cb:c100:8898:14ff:fe6d:34e])
-        by smtp.gmail.com with ESMTPSA id t10sm3422202ooh.4.2020.09.08.07.40.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Sep 2020 07:40:33 -0700 (PDT)
-Date:   Tue, 8 Sep 2020 09:40:31 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org,
-        Elliot Berman <eberman@codeaurora.org>,
-        Andy Gross <agross@kernel.org>
-Subject: Re: [PATCH v2 1/2] firmware: qcom_scm: Add memory protect virtual
- address ranges
-Message-ID: <20200908144031.GL3715@yoga>
-References: <20200817082723.17458-1-stanimir.varbanov@linaro.org>
- <20200817082723.17458-2-stanimir.varbanov@linaro.org>
+        Tue, 8 Sep 2020 12:32:05 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 088Ewtci011590;
+        Tue, 8 Sep 2020 09:58:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1599577135;
+        bh=fKarsEyMOJcKTwtf5n0tGq73QBl/jjsYYqxZnKWLtfU=;
+        h=Subject:From:To:CC:References:Date:In-Reply-To;
+        b=u5cgThpU3AlHzuETTDonZHqMfFUtNgZRBjQwQyWHhuJeOoNft0cOIeqIVbic0RiB7
+         JvMJ80lOItnioC30vw/zZJU6VnY303X8j/ZkIqIZ0T2otDT/oYoekdZHQJC3wYPGEa
+         UqbCO2fBUSWG8TEtgpZNpcBy843k6qnVy/gatlt8=
+Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 088EwtaO121227
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 8 Sep 2020 09:58:55 -0500
+Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 8 Sep
+ 2020 09:58:55 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 8 Sep 2020 09:58:55 -0500
+Received: from [10.250.38.37] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 088EwtuK053861;
+        Tue, 8 Sep 2020 09:58:55 -0500
+Subject: Re: [PATCH 2/2] ASoC: tlv320adcx140: Wake up codec before accessing
+ register
+From:   Dan Murphy <dmurphy@ti.com>
+To:     Camel Guo <camel.guo@axis.com>, <lgirdwood@gmail.com>,
+        <broonie@kernel.org>, <tiwai@suse.com>
+CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <kernel@axis.com>, Camel Guo <camelg@axis.com>
+References: <20200908083521.14105-1-camel.guo@axis.com>
+ <20200908083521.14105-2-camel.guo@axis.com>
+ <89f8cce0-2407-15f5-a8e5-0aa17a2eb2c4@ti.com>
+Message-ID: <8160bf81-a72d-2db0-0767-79b0509ff143@ti.com>
+Date:   Tue, 8 Sep 2020 09:58:55 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200817082723.17458-2-stanimir.varbanov@linaro.org>
+In-Reply-To: <89f8cce0-2407-15f5-a8e5-0aa17a2eb2c4@ti.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 17 Aug 03:27 CDT 2020, Stanimir Varbanov wrote:
+Camel
 
-> This adds a new SCM memprotect command to set virtual address ranges.
-> 
+On 9/8/20 6:49 AM, Dan Murphy wrote:
+> Camel
+>
+> On 9/8/20 3:35 AM, Camel Guo wrote:
+>> From: Camel Guo <camelg@axis.com>
+>>
+>> According to its datasheet, after reset this codec goes into sleep
+>> mode. In this mode, any register accessing should be avoided except for
+>> exiting sleep mode. Hence this commit moves SLEEP_CFG access before any
+>> register accessing.
+>
+> This is interesting because our HW team suggested putting the device 
+> into sleep mode when doing register writes/reads because they were 
+> finding abnormalities in the register settings when the device is active.
+>
+> I have a local patch that changes this as well that the HW team 
+> requested.
 
-Acked-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+
+OK I have clarification on this now.  Their original request was 
+incorrect they indicate the BIAS, ADC and PLLs be powered down during 
+writes and reads.
 
 
-Please feel free to pick this through linux-media.
+>
+> Mark
+>
+> Let me run this by the HW team first before applying this patch.
 
-Regards,
-Bjorn
+Mark
 
-> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
-> ---
->  drivers/firmware/qcom_scm.c | 24 ++++++++++++++++++++++++
->  drivers/firmware/qcom_scm.h |  1 +
->  include/linux/qcom_scm.h    |  8 +++++++-
->  3 files changed, 32 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/firmware/qcom_scm.c b/drivers/firmware/qcom_scm.c
-> index 0e7233a20f34..dec8dc42a6bc 100644
-> --- a/drivers/firmware/qcom_scm.c
-> +++ b/drivers/firmware/qcom_scm.c
-> @@ -757,6 +757,30 @@ int qcom_scm_iommu_secure_ptbl_init(u64 addr, u32 size, u32 spare)
->  }
->  EXPORT_SYMBOL(qcom_scm_iommu_secure_ptbl_init);
->  
-> +int qcom_scm_mem_protect_video_var(u32 cp_start, u32 cp_size,
-> +				   u32 cp_nonpixel_start,
-> +				   u32 cp_nonpixel_size)
-> +{
-> +	int ret;
-> +	struct qcom_scm_desc desc = {
-> +		.svc = QCOM_SCM_SVC_MP,
-> +		.cmd = QCOM_SCM_MP_VIDEO_VAR,
-> +		.arginfo = QCOM_SCM_ARGS(4, QCOM_SCM_VAL, QCOM_SCM_VAL,
-> +					 QCOM_SCM_VAL, QCOM_SCM_VAL),
-> +		.args[0] = cp_start,
-> +		.args[1] = cp_size,
-> +		.args[2] = cp_nonpixel_start,
-> +		.args[3] = cp_nonpixel_size,
-> +		.owner = ARM_SMCCC_OWNER_SIP,
-> +	};
-> +	struct qcom_scm_res res;
-> +
-> +	ret = qcom_scm_call(__scm->dev, &desc, &res);
-> +
-> +	return ret ? : res.result[0];
-> +}
-> +EXPORT_SYMBOL(qcom_scm_mem_protect_video_var);
-> +
->  static int __qcom_scm_assign_mem(struct device *dev, phys_addr_t mem_region,
->  				 size_t mem_sz, phys_addr_t src, size_t src_sz,
->  				 phys_addr_t dest, size_t dest_sz)
-> diff --git a/drivers/firmware/qcom_scm.h b/drivers/firmware/qcom_scm.h
-> index d9ed670da222..14da834ac593 100644
-> --- a/drivers/firmware/qcom_scm.h
-> +++ b/drivers/firmware/qcom_scm.h
-> @@ -97,6 +97,7 @@ extern int scm_legacy_call(struct device *dev, const struct qcom_scm_desc *desc,
->  #define QCOM_SCM_MP_RESTORE_SEC_CFG		0x02
->  #define QCOM_SCM_MP_IOMMU_SECURE_PTBL_SIZE	0x03
->  #define QCOM_SCM_MP_IOMMU_SECURE_PTBL_INIT	0x04
-> +#define QCOM_SCM_MP_VIDEO_VAR			0x08
->  #define QCOM_SCM_MP_ASSIGN			0x16
->  
->  #define QCOM_SCM_SVC_OCMEM		0x0f
-> diff --git a/include/linux/qcom_scm.h b/include/linux/qcom_scm.h
-> index 3d6a24697761..ba45537f688b 100644
-> --- a/include/linux/qcom_scm.h
-> +++ b/include/linux/qcom_scm.h
-> @@ -77,11 +77,13 @@ extern bool qcom_scm_restore_sec_cfg_available(void);
->  extern int qcom_scm_restore_sec_cfg(u32 device_id, u32 spare);
->  extern int qcom_scm_iommu_secure_ptbl_size(u32 spare, size_t *size);
->  extern int qcom_scm_iommu_secure_ptbl_init(u64 addr, u32 size, u32 spare);
-> +extern int qcom_scm_mem_protect_video_var(u32 cp_start, u32 cp_size,
-> +					  u32 cp_nonpixel_start,
-> +					  u32 cp_nonpixel_size);
->  extern int qcom_scm_assign_mem(phys_addr_t mem_addr, size_t mem_sz,
->  			       unsigned int *src,
->  			       const struct qcom_scm_vmperm *newvm,
->  			       unsigned int dest_cnt);
-> -
->  extern bool qcom_scm_ocmem_lock_available(void);
->  extern int qcom_scm_ocmem_lock(enum qcom_scm_ocmem_client id, u32 offset,
->  			       u32 size, u32 mode);
-> @@ -128,6 +130,10 @@ static inline int qcom_scm_iommu_secure_ptbl_size(u32 spare, size_t *size)
->  		{ return -ENODEV; }
->  static inline int qcom_scm_iommu_secure_ptbl_init(u64 addr, u32 size, u32 spare)
->  		{ return -ENODEV; }
-> +extern inline int qcom_scm_mem_protect_video_var(u32 cp_start, u32 cp_size,
-> +						 u32 cp_nonpixel_start,
-> +						 u32 cp_nonpixel_size)
-> +		{ return -ENODEV; }
->  static inline int qcom_scm_assign_mem(phys_addr_t mem_addr, size_t mem_sz,
->  		unsigned int *src, const struct qcom_scm_vmperm *newvm,
->  		unsigned int dest_cnt) { return -ENODEV; }
-> -- 
-> 2.17.1
-> 
+Acked-by: Dan Murphy <dmurphy@ti.com>
+
+
+>
+> Dan
+>
