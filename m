@@ -2,97 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 179A726153C
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:46:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33CAB2615C9
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:56:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731891AbgIHQqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 12:46:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59016 "EHLO
+        id S1731818AbgIHQ4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 12:56:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731949AbgIHQ1O (ORCPT
+        with ESMTP id S1731835AbgIHQWu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:27:14 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D52DC08EC65;
-        Tue,  8 Sep 2020 07:39:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=y4d0IpUN2yx9YRU65V5SiTPs5ZTZxBRK5kB3YxXQmEM=; b=pRRFZdvzJdD3AVoWZ9jUzrp/Q0
-        HKk1CID4JuLaYa0Mrj5PUoI6oQA5ciqJLBt5n5ag5rsIR1An2Ka5mAEm2114XrYmUFMhl45Xo5Tgw
-        1f/vNIsf9lGV3nxP8kEE6lE06fxMwHrKgMQu0pm3I0x/IyhLrqz+KKXAANGDWrG7AVVjPFzF5xi3j
-        b+2cyyoXEAUSsyUS34TeeH0WHmQnA7c49k8282aVWJL0Rr7DiG9/VGMMMa2l+P0T1l1zriMKbxZya
-        xNWqdb2Fviuue9DuvWQYMq8RKd6rulRyNI2IoQ+PtU88jlKEYqHk3sh4DyJcAunFrK+qy1HINMR77
-        ZUuxAv5A==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kFeld-00026L-QW; Tue, 08 Sep 2020 14:39:04 +0000
-Subject: Re: linux-next: Tree for Sep 2 (lib/ubsan.c)
-To:     Brendan Higgins <brendanhiggins@google.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>
-References: <20200902180950.4bc7c4de@canb.auug.org.au>
- <3abfa193-a56e-66ba-1080-885906fa0196@infradead.org>
- <fdf322d4-cc01-2c85-67cd-86b2d6f4ebff@infradead.org>
- <CAFd5g44g6OrL3fxQNRZ1rR0PruAty8tBZr8JDzM-oonZJRDZyw@mail.gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <84531c68-2ac8-924b-5e71-077f9abb2503@infradead.org>
-Date:   Tue, 8 Sep 2020 07:38:31 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Tue, 8 Sep 2020 12:22:50 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D941BC08EAD4
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 07:39:46 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id kk9so5763669pjb.2
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 07:39:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=u6IZBEYdJUicGrUE54qThuMWVgXq8hL/oKiMR3tNmWw=;
+        b=cv+LslJ4V6jfBHxvBBCk7QV/70j9a6RdII0YFlSLFtzmyWQa8pV+VXOTMXbYoLw3gJ
+         7DIJkOIRBeK9eyC075KhNoNS5tWP+NhRGWamXmd9VcbEgexsPRuHqUxTUvwMVVwGIrQF
+         jwja0RSSmK4sJz0xpuPKd0pIbeb4yMAcw3vrt3c8itGysNVbPAyttMGQV8BzfMCWY7yw
+         10eknqk7kUIcYYTpqo6phYE6GX1SOCg8dLd0QXO77rBoW3FuzgGfCkkGE3/GOXACuBrL
+         ygzDP55kRb9Cjp7f8QCSbAxJ5uTK/SVSXSDPlNwqOZyT/AGeeGHpjt+Z2NExWvZqpMZX
+         PPYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=u6IZBEYdJUicGrUE54qThuMWVgXq8hL/oKiMR3tNmWw=;
+        b=Tyk8+9lJb/4BY03UaA2p2MImv88LanBHkjCBk4SczXp0bSrkupmzWzPfkQDdVOinfo
+         jLWqH4SCt3coM5RjjMpbSa8v0vl9hQN4iXft+zArwo8bI33Lbwj23cu4zXsdSGnqQai7
+         BmJs4ToB7EI6sJ46o0XXtdU/KXnfjf3F8X9+FF56suKugq1glSC2tBgNUYgvplbT07Fi
+         87+9DBHA/kkrbSfUb9CTE1PvBmoeIrNH5+J8bYD2xm3FcGahP9dBV5XRC2URafbS/Tyu
+         4cwUMKt5Vg6G91Bs9+NagcgzwffikCettVa0F+5RCxjj4+tLgHoTeHWcDznb37IX7x0i
+         bAKg==
+X-Gm-Message-State: AOAM5305HEn6gLkMon+tpxvLzRcwVTMevbJV4RC1L7Ke96prTJ+jr/Ig
+        AayN5E+BCYeOejUGKGrqnl7CbZTq/x7ZuhVZPqcLlw==
+X-Google-Smtp-Source: ABdhPJws7YHVVJhG8H6UoWmd1N6htiZqw6o05TjLx9l7lnPD7Lq3S75jkqpmEFtYhNZsF2F4rx0yGYcdoIIg1vb7fUk=
+X-Received: by 2002:a17:90b:140c:: with SMTP id jo12mr4229667pjb.41.1599575986171;
+ Tue, 08 Sep 2020 07:39:46 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAFd5g44g6OrL3fxQNRZ1rR0PruAty8tBZr8JDzM-oonZJRDZyw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <cover.1597425745.git.andreyknvl@google.com> <6a83a47d9954935d37a654978e96c951cc56a2f6.1597425745.git.andreyknvl@google.com>
+In-Reply-To: <6a83a47d9954935d37a654978e96c951cc56a2f6.1597425745.git.andreyknvl@google.com>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Tue, 8 Sep 2020 16:39:35 +0200
+Message-ID: <CAAeHK+y-gJ5JKcGZYfZutKtb=BoM3qfkOyoTi7CtW6apHUcCAw@mail.gmail.com>
+Subject: Re: [PATCH 22/35] arm64: mte: Enable in-kernel MTE
+To:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        kasan-dev <kasan-dev@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/4/20 12:59 AM, Brendan Higgins wrote:
-> On Thu, Sep 3, 2020 at 11:12 PM Randy Dunlap <rdunlap@infradead.org> wrote:
->>
->> On 9/2/20 8:44 AM, Randy Dunlap wrote:
->>> On 9/2/20 1:09 AM, Stephen Rothwell wrote:
->>>> Hi all,
->>>>
->>>> Changes since 20200828:
->>>>
->>>
->>>
->>> on i386:
->>>
->>> ../lib/ubsan.c: In function ‘ubsan_prologue’:
->>> ../lib/ubsan.c:141:2: error: implicit declaration of function ‘kunit_fail_current_test’; did you mean ‘kunit_init_test’? [-Werror=implicit-function-declaration]
->>>   kunit_fail_current_test();
->>>
->>>
->>> Full randconfig file is attached.
->>>
->>
->> Hi Brendan,
->>
->> Do you know anything about this build error?
->>
->> I can't find kunit_fail_current_test() anywhere.
-> 
-> Yeah, this got applied for some reason without the prerequisite
-> patches. It is from a two patch series, the other being here:
-> 
-> https://lore.kernel.org/linux-kselftest/20200813205722.1384108-1-urielguajardojr@gmail.com/
-> 
-> which in turn depends on another patchset which didn't make it into 5.9.
-> 
-> Again, I don't know why this was applied without it's prereqs. Sorry about that.
-> 
+On Fri, Aug 14, 2020 at 7:28 PM Andrey Konovalov <andreyknvl@google.com> wrote:
+>
+> From: Vincenzo Frascino <vincenzo.frascino@arm.com>
+>
+> The Tag Checking operation causes a synchronous data abort as
+> a consequence of a tag check fault when MTE is configured in
+> synchronous mode.
+>
+> Enable MTE in Synchronous mode in EL1 to provide a more immediate
+> way of tag check failure detection in the kernel.
+>
+> As part of this change enable match-all tag for EL1 to allow the
+> kernel to access user pages without faulting. This is required because
+> the kernel does not have knowledge of the tags set by the user in a
+> page.
+>
+> Note: For MTE, the TCF bit field in SCTLR_EL1 affects only EL1 in a
+> similar way as TCF0 affects EL0.
+>
+> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+> ---
+>  arch/arm64/kernel/cpufeature.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+>
+> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+> index 4d3abb51f7d4..4d94af19d8f6 100644
+> --- a/arch/arm64/kernel/cpufeature.c
+> +++ b/arch/arm64/kernel/cpufeature.c
+> @@ -1670,6 +1670,9 @@ static void cpu_enable_mte(struct arm64_cpu_capabilities const *cap)
+>         write_sysreg_s(0, SYS_TFSR_EL1);
+>         write_sysreg_s(0, SYS_TFSRE0_EL1);
+>
+> +       /* Enable Match-All at EL1 */
+> +       sysreg_clear_set(tcr_el1, 0, SYS_TCR_EL1_TCMA1);
+> +
+>         /*
+>          * CnP must be enabled only after the MAIR_EL1 register has been set
+>          * up. Inconsistent MAIR_EL1 between CPUs sharing the same TLB may
+> @@ -1687,6 +1690,9 @@ static void cpu_enable_mte(struct arm64_cpu_capabilities const *cap)
+>         mair &= ~MAIR_ATTRIDX(MAIR_ATTR_MASK, MT_NORMAL_TAGGED);
+>         mair |= MAIR_ATTRIDX(MAIR_ATTR_NORMAL_TAGGED, MT_NORMAL_TAGGED);
+>         write_sysreg_s(mair, SYS_MAIR_EL1);
+> +
+> +       /* Enable MTE Sync Mode for EL1 */
+> +       sysreg_clear_set(sctlr_el1, SCTLR_ELx_TCF_MASK, SCTLR_ELx_TCF_SYNC);
+>         isb();
+>
+>         local_flush_tlb_all();
+> --
+> 2.28.0.220.ged08abb693-goog
+>
 
-Well.  Who is responsible for this small mess?
-It is still killing linux-next builds for me (2020-0908).
-
--- 
-~Randy
-
+Should we change this commit to enable in-kernel MTE only if
+KASAN_HW_TAGS is enabled?
