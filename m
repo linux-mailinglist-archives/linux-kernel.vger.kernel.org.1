@@ -2,98 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4554260944
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 06:17:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2565B26094F
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 06:21:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726279AbgIHERq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 00:17:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59234 "EHLO
+        id S1726588AbgIHEVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 00:21:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725806AbgIHERo (ORCPT
+        with ESMTP id S1725806AbgIHEVR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 00:17:44 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9630EC061575
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 21:17:43 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id i22so20527809eja.5
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 21:17:42 -0700 (PDT)
+        Tue, 8 Sep 2020 00:21:17 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B26C7C061573;
+        Mon,  7 Sep 2020 21:21:16 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id v54so11045607qtj.7;
+        Mon, 07 Sep 2020 21:21:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=zdxUWMWXTEs/zs0LJh1bxLoOHpDg1k5nkLimqXptzik=;
-        b=K9XHuuLGTzNyJ6c0RJn8++O/WFnL1UNjFWG4473ctJ/uzgosuXp1oQcnmv3ycgEYT8
-         s4zB4suhYQ2eYl4iEnFSj1NCWQmP/QanAucgF4hOmAATkA8W6aFCm+CE1jJAP0w16N8R
-         rlkWYshr0JoImGQnLNwVMHj37r+ilVvu25BNI50P51MHRU56k266+5iQfobYYv4JWG7J
-         mfEOtUnbkR3ywMnlX62FfcJ8s3izvqDuNdD3pY71lD4BQMBgmaNPWtLFRyC1ZK7srkHJ
-         SLm7adEHVkOWJF95DTxJ+vjD9+TE7nsjMNAY0miP14POvo/GUDOztRNoWK2JolHJ/aLz
-         lMjQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=PRjmqyIAVtcu5hkVXVaG9tIjoQpLXmHVLf5oTMSHjVM=;
+        b=Fzx0I67Sk7GzG3zMnQO/Ka9BChFZfHgeCA6tP6EipLiqFg/TAB0sSLCyLjBcmC5vat
+         xzpbMxX5TusqVDSv/bafIDKQvIAVB7PmQzNXc5fjAH0iQRlJ7nZLdoHvLYMK1vXdY6tx
+         m5crrVb3CHatA56ow4Ai1eqgFJLbDQazct5MUHNBbq6bzLgifQw+/TcbiA4rIeaUy91c
+         vP4ICg63nEKL2AdVWeFkHf2WAmYsPqIciUndY5LN4JPyiy1Wu8HYSEvaAqfy3nDzOnVu
+         Tt0rTIcQjZUBgueNvhOCW93CzjpjIpsZAezwKaL0ctP47JXyx+rizMUjXKOgkpxsnR8E
+         lvYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=zdxUWMWXTEs/zs0LJh1bxLoOHpDg1k5nkLimqXptzik=;
-        b=YafvY1p7gRXWnhnEpul4pHGtLswvfYmNduwuAclzjcIrYWzy3kdgc9Vr8j0DfdijPp
-         dn1xiUhr1zBQSAdaXQOAFZnc62H39+FkEytNWC2lkJgb3zYPvKa44SaBuMv2ktqRjv6m
-         poyZbYkglEdNV10Wn66i2Hl9hfkKUB1/KmSP1eYKRUSo+j3RsoeZ5QuKyM6RhcLUufee
-         Od5zZMm/p4q1GqGyFj1MQltI2HLKT733eq3OKXZd8KDWzOdI0O+FpPQQfoovIuBECxbu
-         m58cUrq0CmBPyKpnF2M5Iqq2ylIuRNadTCgLelbx+yAqhqDnFX+zCbH4FpiIFNjejF48
-         CD8w==
-X-Gm-Message-State: AOAM533xbmWZlaKTJLXmo0vIH0nidGbBC1bsEqGfYaxI791HSgR/D6C8
-        AhqhMGBVpQ6ZNKxy0LQlnSl8kwsuEc1lFFAwd2k=
-X-Google-Smtp-Source: ABdhPJxo5tZSkrOiusaKAmI1W5fNgw6E+OMCZvTk9tRx9VaE5gATrysMtmVXjRds1YFVeeDQ33umbI7+Yop/BJkxdfc=
-X-Received: by 2002:a17:906:2f17:: with SMTP id v23mr23454441eji.343.1599538660476;
- Mon, 07 Sep 2020 21:17:40 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=PRjmqyIAVtcu5hkVXVaG9tIjoQpLXmHVLf5oTMSHjVM=;
+        b=e+ROVSNA295LX6kOBrVSD5G44i8WjAQ51s2HX9ksjrbgMX1uE0ox72xCksdqd7TCkz
+         frf5IjjX5HuD+S6k+SzKiB5nZzmGSXIWz8XmDFvMitWny2ylUWY+N8YgY10hc3UTz4FT
+         OAMMJOwqpYPblk9IWb56x+sXpCaHeuYDBIWUL0TnWLNAhFFG2Zxsi4SPCb+OZRcD6+/b
+         zAsQb1hYmO2tqH8his3UoPLjZL++DYQ2uTvu8JNika/EaoC3BR6trVeS4oeMfHJDDJqK
+         6EQy607s49aJ3OYNpUxhiDSkDBUu/x88NWsDxMcSBGeW29e4xGr1GorZ0xLgTHyKRBwK
+         +EHg==
+X-Gm-Message-State: AOAM531Ly0seTbiBqNFSrRer9UV12OHAzN/45ipDsyWrrlYHiZeydo9u
+        bRQNShKJ4dhrqXF0m+nQwqk=
+X-Google-Smtp-Source: ABdhPJyJwmmPpz3QNBZFdyqDo/55XppPuPA7155t5Xx1SxK9l7aHNruT0BuOV/Y2p8M0Cp0si+AHYw==
+X-Received: by 2002:ac8:5317:: with SMTP id t23mr24045948qtn.354.1599538875607;
+        Mon, 07 Sep 2020 21:21:15 -0700 (PDT)
+Received: from ubuntu-n2-xlarge-x86 ([2604:1380:45d1:2600::1])
+        by smtp.gmail.com with ESMTPSA id s20sm12829672qkg.65.2020.09.07.21.21.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Sep 2020 21:21:14 -0700 (PDT)
+Date:   Mon, 7 Sep 2020 21:21:12 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     trix@redhat.com
+Cc:     amitkarwar@gmail.com, ganapathi.bhat@nxp.com,
+        huxinming820@gmail.com, kvalo@codeaurora.org, davem@davemloft.net,
+        kuba@kernel.org, ndesaulniers@google.com, bzhao@marvell.com,
+        dkiran@marvell.com, frankh@marvell.com, linville@tuxdriver.com,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] mwifiex: remove function pointer check
+Message-ID: <20200908042112.GA111690@ubuntu-n2-xlarge-x86>
+References: <20200906200548.18053-1-trix@redhat.com>
 MIME-Version: 1.0
-Received: by 2002:a54:34cd:0:0:0:0:0 with HTTP; Mon, 7 Sep 2020 21:17:39 -0700 (PDT)
-Reply-To: ayishagddafio@mail.ru
-From:   AISHA GADDAFI <floradarpin.d@gmail.com>
-Date:   Mon, 7 Sep 2020 21:17:39 -0700
-Message-ID: <CAPX4zWwsWwRLg8mUHT5J0x3CWchpzHTaCStHV1Cpd5OMw2YrNg@mail.gmail.com>
-Subject: Lieber Freund (Assalamu Alaikum),?
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200906200548.18053-1-trix@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=20
-Lieber Freund (Assalamu Alaikum),
+On Sun, Sep 06, 2020 at 01:05:48PM -0700, trix@redhat.com wrote:
+> From: Tom Rix <trix@redhat.com>
+> 
+> clang static analyzer reports this problem
+> 
+> init.c:739:8: warning: Called function pointer
+>   is null (null dereference)
+>         ret = adapter->if_ops.check_fw_status( ...
+>               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> 
+> In mwifiex_dnld_fw, there is an earlier check for check_fw_status(),
+> The check was introduced for usb support at the same time this
+> check in _mwifiex_fw_dpc() was made
+> 
+> 	if (adapter->if_ops.dnld_fw) {
+> 		ret = adapter->if_ops.dnld_fw(adapter, &fw);
+> 	} else {
+> 		ret = mwifiex_dnld_fw(adapter, &fw);
+> 	}
+> 
+> And a dnld_fw function initialized as part the usb's
+> mwifiex_if_ops.
+> 
+> The other instances of mwifiex_if_ops for pci and sdio
+> both set check_fw_status.
+> 
+> So the first check is not needed and can be removed.
+> 
+> Fixes: 4daffe354366 ("mwifiex: add support for Marvell USB8797 chipset")
+> Signed-off-by: Tom Rix <trix@redhat.com>
 
-Ich bin vor einer privaten Suche auf Ihren E-Mail-Kontakt gesto=C3=9Fen
-Ihre Hilfe. Mein Name ist Aisha Al-Qaddafi, eine alleinerziehende
-Mutter und eine Witwe
-mit drei Kindern. Ich bin die einzige leibliche Tochter des Sp=C3=A4tlibysc=
-hen
-Pr=C3=A4sident (verstorbener Oberst Muammar Gaddafi).
+Indeed, on the surface, mwifiex_dnld_fw assumes that check_fw_status()
+cannot be NULL because it will always be called at the end of the
+function even if the first check is skipped.
 
-Ich habe Investmentfonds im Wert von siebenundzwanzig Millionen
-f=C3=BCnfhunderttausend
-United State Dollar ($ 27.500.000.00) und ich brauche eine
-vertrauensw=C3=BCrdige Investition
-Manager / Partner aufgrund meines aktuellen Fl=C3=BCchtlingsstatus bin ich =
-jedoch
-M=C3=B6glicherweise interessieren Sie sich f=C3=BCr die Unterst=C3=BCtzung =
-von
-Investitionsprojekten in Ihrem Land
-Von dort aus k=C3=B6nnen wir in naher Zukunft Gesch=C3=A4ftsbeziehungen auf=
-bauen.
+Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
 
-Ich bin bereit, mit Ihnen =C3=BCber das Verh=C3=A4ltnis zwischen Investitio=
-n und
-Unternehmensgewinn zu verhandeln
-Basis f=C3=BCr die zuk=C3=BCnftige Investition Gewinne zu erzielen.
-
-Wenn Sie bereit sind, dieses Projekt in meinem Namen zu bearbeiten,
-antworten Sie bitte dringend
-Damit ich Ihnen mehr Informationen =C3=BCber die Investmentfonds geben kann=
-.
-
-Ihre dringende Antwort wird gesch=C3=A4tzt. schreibe mir an diese email adr=
-esse (
-ayishagddafio@mail.ru ) zur weiteren Diskussion.
-
-Freundliche Gr=C3=BC=C3=9Fe
-Frau Aisha Al-Qaddafi
+> ---
+>  drivers/net/wireless/marvell/mwifiex/init.c | 14 ++++++--------
+>  1 file changed, 6 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/net/wireless/marvell/mwifiex/init.c b/drivers/net/wireless/marvell/mwifiex/init.c
+> index 82d69bc3aaaf..f006a3d72b40 100644
+> --- a/drivers/net/wireless/marvell/mwifiex/init.c
+> +++ b/drivers/net/wireless/marvell/mwifiex/init.c
+> @@ -695,14 +695,12 @@ int mwifiex_dnld_fw(struct mwifiex_adapter *adapter,
+>  	int ret;
+>  	u32 poll_num = 1;
+>  
+> -	if (adapter->if_ops.check_fw_status) {
+> -		/* check if firmware is already running */
+> -		ret = adapter->if_ops.check_fw_status(adapter, poll_num);
+> -		if (!ret) {
+> -			mwifiex_dbg(adapter, MSG,
+> -				    "WLAN FW already running! Skip FW dnld\n");
+> -			return 0;
+> -		}
+> +	/* check if firmware is already running */
+> +	ret = adapter->if_ops.check_fw_status(adapter, poll_num);
+> +	if (!ret) {
+> +		mwifiex_dbg(adapter, MSG,
+> +			    "WLAN FW already running! Skip FW dnld\n");
+> +		return 0;
+>  	}
+>  
+>  	/* check if we are the winner for downloading FW */
+> -- 
+> 2.18.1
+> 
+> -- 
+> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20200906200548.18053-1-trix%40redhat.com.
