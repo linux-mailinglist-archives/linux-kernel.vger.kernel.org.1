@@ -2,223 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A15C32614A3
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:30:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA21326140F
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:02:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731916AbgIHQ36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 12:29:58 -0400
-Received: from foss.arm.com ([217.140.110.172]:57366 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731892AbgIHQZH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:25:07 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5AD1315EC;
-        Tue,  8 Sep 2020 06:33:02 -0700 (PDT)
-Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AB4823F73C;
-        Tue,  8 Sep 2020 06:33:00 -0700 (PDT)
-Date:   Tue, 8 Sep 2020 14:32:58 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Jim Quinlan <james.quinlan@broadcom.com>
-Cc:     linux-pci@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Christoph Hellwig <hch@lst.de>,
-        Robin Murphy <robin.murphy@arm.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v11 06/11] PCI: brcmstb: Add control of rescal reset
-Message-ID: <20200908133258.GC22909@e121166-lin.cambridge.arm.com>
-References: <20200824193036.6033-1-james.quinlan@broadcom.com>
- <20200824193036.6033-7-james.quinlan@broadcom.com>
+        id S1730595AbgIHQBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 12:01:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53404 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730820AbgIHPzo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 11:55:44 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C5FBC0611E9;
+        Tue,  8 Sep 2020 06:33:58 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id a15so20138001ljk.2;
+        Tue, 08 Sep 2020 06:33:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=QZWTB3VoqxONYeg+u/6O0/g9cj96hp9jdyxHkms9hEo=;
+        b=J8NaJgMDwnJ3iwEeoWg6wr/bSGJKwvn5Fzl2g1HdMx97jMD+CXaJd+doxMKq/2xQU/
+         0kIVbHvICiG/YxCdoWxmaiZ/w6gb5YHj21+j5CxudImmkRg5Sau6kVPtFsRULoVtxYLb
+         8mKeIF+fft+ga2We20/0q8K33CathTa+odSpHttuJQwf2N+oMTMOEoO2VQDBHrxKrbY5
+         b9+z8xXICn15ZjGrf/I31gVHqMKPFwsDEHZwBczpRL9jZF1P0pZ7h+6K+q4VBJ8z72Ss
+         kxl7gB2G2YrrOWSu30wdkxHs+bw9ZxXVi+QupPItqFMKwas6jrxsbVnrDODRBcIkIDK3
+         1UOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=QZWTB3VoqxONYeg+u/6O0/g9cj96hp9jdyxHkms9hEo=;
+        b=GaIiffcLi0KE47D1q0mgitGaTS2Se2rU2OJw++7g/PneKRVegK50ALpd1+0VbD3qpL
+         oxztcsHYTtVy/Gc7gwyAv5day/oZtUWND/rjIjvPz30ubjGANzIKjbEn+4vC0O0sKKCY
+         HjhvDuyhOMMMr7hGlzmtWxOn7SfomjHijyAX/uImlC09wugqsdEM8RCGfh6Khwgwx4cp
+         w2Mqwj+Mb00Cy40dWsHtP/cXFvUtpObZEDuMaCPMIemHdU0jZeQMVO7wZHHsCZP7XDGw
+         d071edCRdbBWsxUOUojD+nf25nI//0mn/QxghED2rnyd68W9LqhhoU80qBns1s8ERLDw
+         D+pg==
+X-Gm-Message-State: AOAM531sD5uEe9Xnh9Z8PBqCJv8Wezk8BORcXgT9DKlDME9nla/ZZDoi
+        Dxd38Rt2mA6pgvA52XG+s1r7k1YhOkY=
+X-Google-Smtp-Source: ABdhPJy+Mwl0COSdXYkiXrRrTna4fxanXVeyC3dD9okOxhZk5nXlGIS5LjH+7jAHHExHuSaQmK+a/g==
+X-Received: by 2002:a2e:82c5:: with SMTP id n5mr11905021ljh.195.1599572036669;
+        Tue, 08 Sep 2020 06:33:56 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
+        by smtp.googlemail.com with ESMTPSA id d10sm10063287ljg.87.2020.09.08.06.33.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Sep 2020 06:33:56 -0700 (PDT)
+Subject: Re: [PATCH v6 27/35] i2c: tegra: Factor out register polling into
+ separate function
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        linux-tegra@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20200908021021.9123-1-digetx@gmail.com>
+ <20200908021021.9123-28-digetx@gmail.com>
+ <CAHp75VeMZhVvysVHZawutvPpO4MPeTit5OqOJQxqRW3RL_iE-Q@mail.gmail.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <8b1db9d5-2b4c-97ae-f7f6-c750e76491d0@gmail.com>
+Date:   Tue, 8 Sep 2020 16:33:55 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200824193036.6033-7-james.quinlan@broadcom.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CAHp75VeMZhVvysVHZawutvPpO4MPeTit5OqOJQxqRW3RL_iE-Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 24, 2020 at 03:30:19PM -0400, Jim Quinlan wrote:
-> From: Jim Quinlan <jquinlan@broadcom.com>
+08.09.2020 11:51, Andy Shevchenko пишет:
+> On Tue, Sep 8, 2020 at 5:12 AM Dmitry Osipenko <digetx@gmail.com> wrote:
+>>
+>> Factor out register polling into a separate function in order to remove
+>> boilerplate code and make code cleaner.
 > 
-> Some STB chips have a special purpose reset controller named RESCAL (reset
-> calibration).  The PCIe HW can now control RESCAL to start and stop its
-> operation.  On probe(), the RESCAL is deasserted and the driver goes
-> through the sequence of setting registers and reading status in order to
-> start the internal PHY that is required for the PCIe.
+> I'm wondering if you can make it before the patch that touches one of
+> these conditionals.
 > 
-> Signed-off-by: Jim Quinlan <jquinlan@broadcom.com>
-> Acked-by: Florian Fainelli <f.fainelli@gmail.com>
-> ---
->  drivers/pci/controller/pcie-brcmstb.c | 82 ++++++++++++++++++++++++++-
->  1 file changed, 81 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
-> index acf2239b0251..041b8d109563 100644
-> --- a/drivers/pci/controller/pcie-brcmstb.c
-> +++ b/drivers/pci/controller/pcie-brcmstb.c
-> @@ -23,6 +23,7 @@
->  #include <linux/of_platform.h>
->  #include <linux/pci.h>
->  #include <linux/printk.h>
-> +#include <linux/reset.h>
->  #include <linux/sizes.h>
->  #include <linux/slab.h>
->  #include <linux/string.h>
-> @@ -158,6 +159,16 @@
->  #define DATA_ADDR(pcie)			(pcie->reg_offsets[EXT_CFG_DATA])
->  #define PCIE_RGR1_SW_INIT_1(pcie)	(pcie->reg_offsets[RGR1_SW_INIT_1])
->  
-> +/* Rescal registers */
-> +#define PCIE_DVT_PMU_PCIE_PHY_CTRL				0xc700
-> +#define  PCIE_DVT_PMU_PCIE_PHY_CTRL_DAST_NFLDS			0x3
-> +#define  PCIE_DVT_PMU_PCIE_PHY_CTRL_DAST_DIG_RESET_MASK		0x4
-> +#define  PCIE_DVT_PMU_PCIE_PHY_CTRL_DAST_DIG_RESET_SHIFT	0x2
-> +#define  PCIE_DVT_PMU_PCIE_PHY_CTRL_DAST_RESET_MASK		0x2
-> +#define  PCIE_DVT_PMU_PCIE_PHY_CTRL_DAST_RESET_SHIFT		0x1
-> +#define  PCIE_DVT_PMU_PCIE_PHY_CTRL_DAST_PWRDN_MASK		0x1
-> +#define  PCIE_DVT_PMU_PCIE_PHY_CTRL_DAST_PWRDN_SHIFT		0x0
-> +
->  enum {
->  	RGR1_SW_INIT_1,
->  	EXT_CFG_INDEX,
-> @@ -247,6 +258,7 @@ struct brcm_pcie {
->  	const int		*reg_offsets;
->  	const int		*reg_field_info;
->  	enum pcie_type		type;
-> +	struct reset_control	*rescal;
->  };
->  
->  /*
-> @@ -965,6 +977,47 @@ static void brcm_pcie_enter_l23(struct brcm_pcie *pcie)
->  		dev_err(pcie->dev, "failed to enter low-power link state\n");
->  }
->  
-> +static int brcm_phy_cntl(struct brcm_pcie *pcie, const int start)
-> +{
-> +	static const u32 shifts[PCIE_DVT_PMU_PCIE_PHY_CTRL_DAST_NFLDS] = {
-> +		PCIE_DVT_PMU_PCIE_PHY_CTRL_DAST_PWRDN_SHIFT,
-> +		PCIE_DVT_PMU_PCIE_PHY_CTRL_DAST_RESET_SHIFT,
-> +		PCIE_DVT_PMU_PCIE_PHY_CTRL_DAST_DIG_RESET_SHIFT,};
-> +	static const u32 masks[PCIE_DVT_PMU_PCIE_PHY_CTRL_DAST_NFLDS] = {
-> +		PCIE_DVT_PMU_PCIE_PHY_CTRL_DAST_PWRDN_MASK,
-> +		PCIE_DVT_PMU_PCIE_PHY_CTRL_DAST_RESET_MASK,
-> +		PCIE_DVT_PMU_PCIE_PHY_CTRL_DAST_DIG_RESET_MASK,};
-> +	const int beg = start ? 0 : PCIE_DVT_PMU_PCIE_PHY_CTRL_DAST_NFLDS - 1;
-> +	const int end = start ? PCIE_DVT_PMU_PCIE_PHY_CTRL_DAST_NFLDS : -1;
-> +	u32 tmp, combined_mask = 0;
-> +	u32 val = !!start;
 
-Quick note: I think it would be nicer to init val within the loop
-below (IIUC how this works):
+I guess you're meaning the "Improve coding style of
+tegra_i2c_wait_for_config_load()" patch.
 
-val = start ? BIT_MASK(shifts[i]) : 0;
-
-and then use it in the tmp computation but I leave it up to you.
-
-Lorenzo
-
-> +	void __iomem *base = pcie->base;
-> +	int i;
-> +
-> +	for (i = beg; i != end; start ? i++ : i--) {
-> +		tmp = readl(base + PCIE_DVT_PMU_PCIE_PHY_CTRL);
-> +		tmp = (tmp & ~masks[i]) | ((val << shifts[i]) & masks[i]);
-> +		writel(tmp, base + PCIE_DVT_PMU_PCIE_PHY_CTRL);
-> +		usleep_range(50, 200);
-> +		combined_mask |= masks[i];
-> +	}
-> +
-> +	tmp = readl(base + PCIE_DVT_PMU_PCIE_PHY_CTRL);
-> +	val = start ? combined_mask : 0;
-> +
-> +	return (tmp & combined_mask) == val ? 0 : -EIO;
-> +}
-> +
-> +static inline int brcm_phy_start(struct brcm_pcie *pcie)
-> +{
-> +	return pcie->rescal ? brcm_phy_cntl(pcie, 1) : 0;
-> +}
-> +
-> +static inline int brcm_phy_stop(struct brcm_pcie *pcie)
-> +{
-> +	return pcie->rescal ? brcm_phy_cntl(pcie, 0) : 0;
-> +}
-> +
->  static void brcm_pcie_turn_off(struct brcm_pcie *pcie)
->  {
->  	void __iomem *base = pcie->base;
-> @@ -992,11 +1045,15 @@ static void brcm_pcie_turn_off(struct brcm_pcie *pcie)
->  static int brcm_pcie_suspend(struct device *dev)
->  {
->  	struct brcm_pcie *pcie = dev_get_drvdata(dev);
-> +	int ret;
->  
->  	brcm_pcie_turn_off(pcie);
-> +	ret = brcm_phy_stop(pcie);
-> +	if (ret)
-> +		dev_err(pcie->dev, "failed to stop phy\n");
->  	clk_disable_unprepare(pcie->clk);
->  
-> -	return 0;
-> +	return ret;
->  }
->  
->  static int brcm_pcie_resume(struct device *dev)
-> @@ -1009,6 +1066,12 @@ static int brcm_pcie_resume(struct device *dev)
->  	base = pcie->base;
->  	clk_prepare_enable(pcie->clk);
->  
-> +	ret = brcm_phy_start(pcie);
-> +	if (ret) {
-> +		dev_err(pcie->dev, "failed to start phy\n");
-> +		return ret;
-> +	}
-> +
->  	/* Take bridge out of reset so we can access the SERDES reg */
->  	brcm_pcie_bridge_sw_init_set(pcie, 0);
->  
-> @@ -1034,6 +1097,9 @@ static void __brcm_pcie_remove(struct brcm_pcie *pcie)
->  {
->  	brcm_msi_remove(pcie);
->  	brcm_pcie_turn_off(pcie);
-> +	if (brcm_phy_stop(pcie))
-> +		dev_err(pcie->dev, "failed to stop phy\n");
-> +	reset_control_assert(pcie->rescal);
->  	clk_disable_unprepare(pcie->clk);
->  }
->  
-> @@ -1112,6 +1178,20 @@ static int brcm_pcie_probe(struct platform_device *pdev)
->  		dev_err(&pdev->dev, "could not enable clock\n");
->  		return ret;
->  	}
-> +	pcie->rescal = devm_reset_control_get_optional_shared(&pdev->dev, "rescal");
-> +	if (IS_ERR(pcie->rescal))
-> +		return PTR_ERR(pcie->rescal);
-> +
-> +	ret = reset_control_deassert(pcie->rescal);
-> +	if (ret)
-> +		dev_err(&pdev->dev, "failed to deassert 'rescal'\n");
-> +
-> +	ret = brcm_phy_start(pcie);
-> +	if (ret) {
-> +		dev_err(pcie->dev, "failed to start phy\n");
-> +		reset_control_assert(pcie->rescal);
-> +		return ret;
-> +	}
->  
->  	ret = brcm_pcie_setup(pcie);
->  	if (ret)
-> -- 
-> 2.17.1
-> 
+If yes, then it should be fine to swap the order. Although, I'm not sure
+what's benefit.
