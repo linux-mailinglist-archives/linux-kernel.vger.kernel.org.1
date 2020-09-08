@@ -2,119 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5614A260AF4
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 08:28:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB92E260B06
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 08:35:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729005AbgIHG2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 02:28:01 -0400
-Received: from mail.windriver.com ([147.11.1.11]:40652 "EHLO
-        mail.windriver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728115AbgIHG2B (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 02:28:01 -0400
-Received: from ALA-HCB.corp.ad.wrs.com (ala-hcb.corp.ad.wrs.com [147.11.189.41])
-        by mail.windriver.com (8.15.2/8.15.2) with ESMTPS id 0886ROT5009147
-        (version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL);
-        Mon, 7 Sep 2020 23:27:25 -0700 (PDT)
-Received: from pek-qzhang2-d1.wrs.com (128.224.162.183) by
- ALA-HCB.corp.ad.wrs.com (147.11.189.41) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 7 Sep 2020 23:27:11 -0700
-From:   <qiang.zhang@windriver.com>
-To:     <tglx@linutronix.de>, <longman@redhat.com>, <mingo@kernel.org>,
-        <elver@google.com>
-CC:     <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3] debugobjects: install CPU hotplug callback
-Date:   Tue, 8 Sep 2020 14:27:09 +0800
-Message-ID: <20200908062709.11441-1-qiang.zhang@windriver.com>
-X-Mailer: git-send-email 2.17.1
+        id S1728881AbgIHGfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 02:35:36 -0400
+Received: from mga05.intel.com ([192.55.52.43]:17470 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728501AbgIHGff (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 02:35:35 -0400
+IronPort-SDR: f2pUWdu8IlQQNG4E833Qzfi5KlPYf+c72EtfaQxYIt3m6Ic76xr/IyWeekRFyA++sn4a0VYqTY
+ 7gEQ/NlhH1ag==
+X-IronPort-AV: E=McAfee;i="6000,8403,9737"; a="242896564"
+X-IronPort-AV: E=Sophos;i="5.76,404,1592895600"; 
+   d="scan'208";a="242896564"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2020 23:35:35 -0700
+IronPort-SDR: 2tklKCq80yWYYcZRQVGfrPHW3ZIYTzXBpEWakjj88WThKyQckhPXbkSJVRJh9vrhxpzJWWLGvK
+ jrKRu/xsKSHg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,404,1592895600"; 
+   d="scan'208";a="333369975"
+Received: from yhuang-mobile.sh.intel.com ([10.238.4.22])
+  by orsmga008.jf.intel.com with ESMTP; 07 Sep 2020 23:35:31 -0700
+From:   Huang Ying <ying.huang@intel.com>
+To:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>
+Cc:     x86@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Huang Ying <ying.huang@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dave Jiang <dave.jiang@intel.com>
+Subject: [PATCH] x86, fakenuma: Avoid too large emulated node
+Date:   Tue,  8 Sep 2020 14:09:12 +0800
+Message-Id: <20200908060912.12200-1-ying.huang@intel.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zqiang <qiang.zhang@windriver.com>
+On a testing system with 2 physical NUMA node, 8GB memory, a small
+memory hole from 640KB to 1MB, and a large memory hole from 3GB to
+4GB.  If "numa=fake=1G" is used in kernel command line, the resulting
+fake NUMA nodes are as follows,
 
-Due to CPU hotplug, it may never be online after it's offline,
-some objects in percpu pool is never free. in order to avoid
-this happening, install CPU hotplug callback, call this callback
-func to free objects in percpu pool when CPU going offline.
+    NUMA: Node 0 [mem 0x00000000-0x0009ffff] + [mem 0x00100000-0xbfffffff] -> [mem 0x00000000-0xbfffffff]
+    NUMA: Node 0 [mem 0x00000000-0xbfffffff] + [mem 0x100000000-0x13fffffff] -> [mem 0x00000000-0x13fffffff]
+    Faking node 0 at [mem 0x0000000000000000-0x0000000041ffffff] (1056MB)
+    Faking node 1 at [mem 0x0000000140000000-0x000000017fffffff] (1024MB)
+    Faking node 2 at [mem 0x0000000042000000-0x0000000081ffffff] (1024MB)
+    Faking node 3 at [mem 0x0000000180000000-0x00000001bfffffff] (1024MB)
+    Faking node 4 at [mem 0x0000000082000000-0x000000013fffffff] (3040MB)
+    Faking node 5 at [mem 0x00000001c0000000-0x00000001ffffffff] (1024MB)
+    Faking node 6 at [mem 0x0000000200000000-0x000000023fffffff] (1024MB)
 
-Signed-off-by: Zqiang <qiang.zhang@windriver.com>
+Where, 7 fake NUMA nodes are emulated, the size of fake node 4 is 3040
+- 1024 = 2016MB.  This is nearly 2 times of the size of the other fake
+nodes (about 1024MB).  This isn't a reasonable splitting.  The better
+way is to make the fake node size not too large or small.  So in this
+patch, the splitting algorithm is changed to make the fake node size
+between 1/2 to 3/2 of the specified node size.  After applying this
+patch, the resulting fake NUMA nodes become,
+
+    Faking node 0 at [mem 0x0000000000000000-0x0000000041ffffff] (1056MB)
+    Faking node 1 at [mem 0x0000000140000000-0x000000017fffffff] (1024MB)
+    Faking node 2 at [mem 0x0000000042000000-0x0000000081ffffff] (1024MB)
+    Faking node 3 at [mem 0x0000000180000000-0x00000001bfffffff] (1024MB)
+    Faking node 4 at [mem 0x0000000082000000-0x0000000103ffffff] (2080MB)
+    Faking node 5 at [mem 0x00000001c0000000-0x00000001ffffffff] (1024MB)
+    Faking node 6 at [mem 0x0000000104000000-0x000000013fffffff] (960MB)
+    Faking node 7 at [mem 0x0000000200000000-0x000000023fffffff] (1024MB)
+
+The newly added node 6 is a little smaller than the specified node
+size (960MB vs. 1024MB).  But the overall results look more
+reasonable.
+
+Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Dave Jiang <dave.jiang@intel.com>
 ---
- v1->v2:
- Modify submission information.
+ arch/x86/mm/numa_emulation.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
- v2->v3:
- In CPU hotplug callback func, add clear percpu pool "obj_free" operation.
- capitalize 'CPU', and use shorter preprocessor sequence.
-
- include/linux/cpuhotplug.h |  1 +
- lib/debugobjects.c         | 24 ++++++++++++++++++++++++
- 2 files changed, 25 insertions(+)
-
-diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
-index 3215023d4852..0c39d57e5342 100644
---- a/include/linux/cpuhotplug.h
-+++ b/include/linux/cpuhotplug.h
-@@ -36,6 +36,7 @@ enum cpuhp_state {
- 	CPUHP_X86_MCE_DEAD,
- 	CPUHP_VIRT_NET_DEAD,
- 	CPUHP_SLUB_DEAD,
-+	CPUHP_DEBUG_OBJ_DEAD,
- 	CPUHP_MM_WRITEBACK_DEAD,
- 	CPUHP_MM_VMSTAT_DEAD,
- 	CPUHP_SOFTIRQ_DEAD,
-diff --git a/lib/debugobjects.c b/lib/debugobjects.c
-index fe4557955d97..bb69a02c3e7b 100644
---- a/lib/debugobjects.c
-+++ b/lib/debugobjects.c
-@@ -19,6 +19,7 @@
- #include <linux/slab.h>
- #include <linux/hash.h>
- #include <linux/kmemleak.h>
-+#include <linux/cpu.h>
+diff --git a/arch/x86/mm/numa_emulation.c b/arch/x86/mm/numa_emulation.c
+index 683cd12f4793..231469e1de6a 100644
+--- a/arch/x86/mm/numa_emulation.c
++++ b/arch/x86/mm/numa_emulation.c
+@@ -300,9 +300,10 @@ static int __init split_nodes_size_interleave_uniform(struct numa_meminfo *ei,
+ 			/*
+ 			 * If there won't be enough non-reserved memory for the
+ 			 * next node, this one must extend to the end of the
+-			 * physical node.
++			 * physical node.  The size of the emulated node should
++			 * be between size/2 and size*3/2.
+ 			 */
+-			if ((limit - end - mem_hole_size(end, limit) < size)
++			if ((limit - end - mem_hole_size(end, limit) < size / 2)
+ 					&& !uniform)
+ 				end = limit;
  
- #define ODEBUG_HASH_BITS	14
- #define ODEBUG_HASH_SIZE	(1 << ODEBUG_HASH_BITS)
-@@ -433,6 +434,24 @@ static void free_object(struct debug_obj *obj)
- 	}
- }
- 
-+#ifdef CONFIG_HOTPLUG_CPU
-+static int object_cpu_offline(unsigned int cpu)
-+{
-+	struct debug_percpu_free *percpu_pool;
-+	struct hlist_node *tmp;
-+	struct debug_obj *obj;
-+
-+	percpu_pool = per_cpu_ptr(&percpu_obj_pool, cpu);
-+	hlist_for_each_entry_safe(obj, tmp, &percpu_pool->free_objs, node) {
-+		hlist_del(&obj->node);
-+		kmem_cache_free(obj_cache, obj);
-+	}
-+	percpu_pool->obj_free = 0;
-+
-+	return 0;
-+}
-+#endif
-+
- /*
-  * We run out of memory. That means we probably have tons of objects
-  * allocated.
-@@ -1367,6 +1386,11 @@ void __init debug_objects_mem_init(void)
- 	} else
- 		debug_objects_selftest();
- 
-+#ifdef CONFIG_HOTPLUG_CPU
-+	cpuhp_setup_state_nocalls(CPUHP_DEBUG_OBJ_DEAD, "object:offline", NULL,
-+					object_cpu_offline);
-+#endif
-+
- 	/*
- 	 * Increase the thresholds for allocating and freeing objects
- 	 * according to the number of possible CPUs available in the system.
 -- 
-2.17.1
+2.28.0
 
