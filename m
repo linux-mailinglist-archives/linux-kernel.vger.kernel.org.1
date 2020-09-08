@@ -2,95 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5252261C28
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:15:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 935B6261BBE
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:08:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731890AbgIHTPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:15:20 -0400
-Received: from mail1.perex.cz ([77.48.224.245]:41538 "EHLO mail1.perex.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731184AbgIHQEu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:04:50 -0400
-Received: from mail1.perex.cz (localhost [127.0.0.1])
-        by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id BDCF7A0040;
-        Tue,  8 Sep 2020 13:58:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz BDCF7A0040
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
-        t=1599566329; bh=Nbb52axGQkpd+7mzAiOkmvpMt9BrP1xSBJs/FBqExE8=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=mYG4ef51jfoK/iiwUwq6QRywvsF1C7gp+QbmGLJ7QY/1S7VFLREYoupbZ538Y2YDO
-         EfOuQq0alwf2EMcD4NdgbdNM1MTm0R4tL9heDz0ONA1OGf9frBAO0HATCOCSIKVHhA
-         fw9OFxfkGqWnLogJ8mTm0Kp/w9DEtP8kl5ouInKQ=
-Received: from p1gen2.perex-int.cz (unknown [192.168.100.98])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: perex)
-        by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
-        Tue,  8 Sep 2020 13:58:33 +0200 (CEST)
-Subject: Re: [PATCH] soundwire: cadence: fix race condition between suspend
- and Slave device alerts
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Vinod Koul <vkoul@kernel.org>
-Cc:     alsa-devel@alsa-project.org, tiwai@suse.de,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
-        broonie@kernel.org, srinivas.kandagatla@linaro.org,
-        jank@cadence.com, mengdong.lin@intel.com, sanyog.r.kale@intel.com,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        rander.wang@linux.intel.com, bard.liao@intel.com
-References: <20200817222340.18042-1-yung-chuan.liao@linux.intel.com>
- <20200819090637.GE2639@vkoul-mobl>
- <8d60fa6f-bb7f-daa8-5ae2-51386b87ccad@linux.intel.com>
- <20200821050758.GI2639@vkoul-mobl>
- <29ea5a44-b971-770a-519c-ae879557b63f@linux.intel.com>
- <20200828080024.GP2639@vkoul-mobl>
- <77ecb4bc-10d6-8fbd-e97f-923d01a5e555@linux.intel.com>
-From:   Jaroslav Kysela <perex@perex.cz>
-Message-ID: <3e4dee4b-1309-2d3e-ae20-e2dcbadb2f40@perex.cz>
-Date:   Tue, 8 Sep 2020 13:58:33 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1731347AbgIHTIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 15:08:41 -0400
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:49939 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730734AbgIHQGs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 12:06:48 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 4E264580441;
+        Tue,  8 Sep 2020 08:00:23 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Tue, 08 Sep 2020 08:00:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:content-transfer-encoding:in-reply-to; s=fm3; bh=A
+        t0ECiv86wOydFiONx1rKX74GnbiUZGiVwaMOztKjuk=; b=A28HdI8alVUfO+NGz
+        jhOSfc5vwRPeVN7GA2rcjgFsQTj4DmJjpoyrEQkyjXPCh3ig+997suzCFj225jSs
+        LIeEQWtGZev9qkXT288I3DiK25ASbo1vLbs+21RikvLtgfYvZJcLqnuWwVkkKZjV
+        kBIuYuOqUKkofKQ7/5qvIgUXphgJKKsh1GC2K8wV7VANnkV90ZCfKsQJ+WyggWSj
+        bEk/rdkOr5PrzRiAHdmPd7EAd6kV/ATbM9lgGss/QODATDhCzzsGwxQHTGHinFeB
+        p6GuTicJXU0TkVP+vI13kbKL8Tpa2zf47B+QJMZmUCXLsHqrJ7qSvWf4dgsSX40w
+        h1GYA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=At0ECiv86wOydFiONx1rKX74GnbiUZGiVwaMOztKj
+        uk=; b=dhghoUJmS7jVoxYnaqVEzRC1l/H3fLlqWDpRqZ+MysnqvW7+KIG3BEF2L
+        79nCo2PnEFKJCFGixMT6iyQYtYfujiYACHcKSVRWmyKRSVtSSOD9spYoMkQCxAjI
+        fuu32uUrij8KOA92gAPsDg4uMz+iTnJR3Qx/sOUG3/9dWaYbO4nnkRhYd8Sd/ebv
+        mehj32n2xTqDORYsIBS3q58wEnFCg2ScmAVMLzoILwbZ8wlhpTrg1VnRTInQT7ms
+        AcI8M8/qs+KBhM2uRhcIqMmfzlhP1uGMY7aozWmPavKmnHP/zIYDxP5LD5dNMHJ2
+        GX7R7lhLgdUgZdYHI7gKYEl+H+G3Q==
+X-ME-Sender: <xms:VnJXX9Snuh4Cse39j9YfRGTXSrPqxCxPAeYkDMDL2TQWOY0JWoHOQw>
+    <xme:VnJXX2wJqJ89WKHQlrOSPRKliK6E18tW7Ny8iUSWdNx0Nhkl1-rliKRfrvys2OLmR
+    6EDFwifw5WC5x7lNok>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudehfedgfedtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtugfgjgesthhqredttddtvdenucfhrhhomhepofgrgihi
+    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
+    htthgvrhhnpefgjeettdejgffgffdvteeutdehtdehgeehueetkeefgefhtdetjeekledu
+    gedvudenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtne
+    curfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:VnJXXy1j80EPqHy8o0z4n9Uud9Z1vczcgHt2eYwuUIsMgOlvFJZGXA>
+    <xmx:VnJXX1AUG3iZSUaVW69wOb0p4qmgeWVSwqTlOqtDSaVdwzDYZ9-f-w>
+    <xmx:VnJXX2hKy80dBWfVA0hBxnuXwHSqNVFVeMUADbN8CKENBj6PIFT4YA>
+    <xmx:V3JXX3bXx01SDa8CprDSFTPaGFIoJl2eQ0TFaUDkdyDdzLnkqJS8lw>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id BE0F33280060;
+        Tue,  8 Sep 2020 08:00:21 -0400 (EDT)
+Date:   Tue, 8 Sep 2020 14:00:19 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Hoegeun Kwon <hoegeun.kwon@samsung.com>
+Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Eric Anholt <eric@anholt.net>, devicetree@vger.kernel.org,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Kamal Dasu <kdasu.kdev@gmail.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Rob Herring <robh+dt@kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org,
+        Phil Elwell <phil@raspberrypi.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v5 00/80] drm/vc4: Support BCM2711 Display Pipeline
+Message-ID: <20200908120019.3rmhzoijoijrbb7d@gilmour.lan>
+References: <CGME20200904071259epcas1p3de4209531c0bc5ed6ea9ef19827b6ed5@epcas1p3.samsung.com>
+ <cover.dddc064d8bb83e46744336af67dcb13139e5747d.1599120059.git-series.maxime@cerno.tech>
+ <cca5234f-e1e8-b642-048b-b710f402409d@samsung.com>
 MIME-Version: 1.0
-In-Reply-To: <77ecb4bc-10d6-8fbd-e97f-923d01a5e555@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <cca5234f-e1e8-b642-048b-b710f402409d@samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne 28. 08. 20 v 17:14 Pierre-Louis Bossart napsal(a):
-> 
-> 
-> 
->> Is this timeout for suspend or resume? Somehow I was under the
->> assumption that it is former? Or is the result seen on resume?
->>
->> Rereading the race describe above in steps, I think this should be
->> handled in step c above. Btw is that suspend or runtime suspend which
->> causes this? Former would be bigger issue as we should not have work
->> running when we return from suspend call. Latter should be dealt with
->> anyway as device might be off after suspend.
-> 
-> This happens with a system suspend. Because we disable the interrupts, 
-> the workqueue never completes, and we have a timeout on system resume.
-> 
-> That's why we want to prevent the workqueue from starting, or let it 
-> complete, but not have this zombie state where we suspend but there's 
-> still a wait for completion that times out later. The point here is 
-> really  making sure the workqueue is not used before suspend.
-> 
+Hi Hoegeun,
 
-Vinod, there is no acceptance progress on this. The patch is really straight
-and for the Intel controller. They know what they're doing. I would apply
-this. The code can be refined at anytime. It's a fix. I tested it and I can
-confirm, that it fixes the issue. It's a vital patch for 5.10 to enable
-finally SoundWire drivers for the Intel hardware.
+On Mon, Sep 07, 2020 at 08:49:12PM +0900, Hoegeun Kwon wrote:
+> On 9/3/20 5:00 PM, Maxime Ripard wrote:
+> > Hi everyone,
+> >
+> > Here's a (pretty long) series to introduce support in the VC4 DRM driver
+> > for the display pipeline found in the BCM2711 (and thus the RaspberryPi=
+ 4).
+> >
+> > The main differences are that there's two HDMI controllers and that the=
+re's
+> > more pixelvalve now. Those pixelvalve come with a mux in the HVS that s=
+till
+> > have only 3 FIFOs. Both of those differences are breaking a bunch of
+> > expectations in the driver, so we first need a good bunch of cleanup and
+> > reworks to introduce support for the new controllers.
+> >
+> > Similarly, the HDMI controller has all its registers shuffled and split=
+ in
+> > multiple controllers now, so we need a bunch of changes to support this=
+ as
+> > well.
+> >
+> > Only the HDMI support is enabled for now (even though the DPI and DSI
+> > outputs have been tested too).
+> >
+> > Let me know if you have any comments
+> > Maxime
+> >
+> > Cc: bcm-kernel-feedback-list@broadcom.com
+> > Cc: devicetree@vger.kernel.org
+> > Cc: Kamal Dasu <kdasu.kdev@gmail.com>
+> > Cc: Philipp Zabel <p.zabel@pengutronix.de>
+> > Cc: Rob Herring <robh+dt@kernel.org>
+> > Cc: Stephen Boyd <sboyd@kernel.org>
+> >
+> > Changes from v4:
+> >    - Rebased on top of next-20200828
+> >    - Collected the various tags
+> >    - Fixed some issues with 4k support and dual output (thanks Hoegeun!)
+>=20
+> Thanks for your v5 patchset.
+>=20
+> I tested all patches based on the next-20200812.
 
-Acked-by: Jaroslav Kysela <perex@perex.cz>
+Thanks again for testing all the patches
 
+> Everything else is fine, but the dual hdmi modetest doesn't work well in =
+my
+> environment...
+>=20
+> In my environment, dsi is not connected, I have seen your answer[1].
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+Can you share a bit more your setup? What monitors are being connected
+to each HDMI port? Do you hotplug any?
+
+Maxime
