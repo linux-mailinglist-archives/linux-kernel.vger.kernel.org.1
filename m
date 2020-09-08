@@ -2,178 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ACCC261918
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 20:07:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6CA1261939
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 20:11:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732278AbgIHSHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 14:07:11 -0400
-Received: from mga06.intel.com ([134.134.136.31]:41276 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731503AbgIHSGx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 14:06:53 -0400
-IronPort-SDR: x7RsxPmeG5o2j4oFSk9KjHIbilmK8xv0+/nFKkWxbXq7Q3YSWOlkU4fcg+GW3sSE8Oub5hGEpU
- VMe7cZRxT8zQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9738"; a="219755489"
-X-IronPort-AV: E=Sophos;i="5.76,406,1592895600"; 
-   d="scan'208";a="219755489"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2020 11:06:52 -0700
-IronPort-SDR: D7lRjq0KnUeXpg79c/qKhFkGQnu4BR8K3/rz8BD9r9u56NUWaK9fhKhKDjKq1GB86GOcKRfwTs
- XPwilyYLhDsQ==
-X-IronPort-AV: E=Sophos;i="5.76,406,1592895600"; 
-   d="scan'208";a="328583674"
-Received: from mschen-mobl2.amr.corp.intel.com (HELO [10.213.174.122]) ([10.213.174.122])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2020 11:06:50 -0700
-Subject: Re: [PATCH V2] ASoC: Intel: boards: Use FS as nau8825 sysclk in
- nau88125_* machine
-To:     =?UTF-8?Q?Rados=c5=82aw_Biernacki?= <rad@semihalf.com>
-Cc:     Lech Betlej <Lech.Betlej@intel.com>, alsa-devel@alsa-project.org,
-        Todd Broch <tbroch@google.com>,
-        Harshapriya <harshapriya.n@intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        John Hsu <KCHSU0@nuvoton.com>, Takashi Iwai <tiwai@suse.com>,
-        "Sienkiewicz, Michal" <michal.sienkiewicz@intel.com>,
-        linux-kernel@vger.kernel.org,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Ben Zhang <benzh@chromium.org>,
-        Mac Chiang <mac.chiang@intel.com>,
-        Yong Zhi <yong.zhi@intel.com>, Marcin Wojtas <mw@semihalf.com>,
-        Vamshi Krishna <vamshi.krishna.gopal@intel.com>,
-        Alex Levin <levinale@google.com>
-References: <20200501193141.30293-1-rad@semihalf.com>
- <3ad44b75-387f-da75-d7b2-3a16ed00550c@linux.intel.com>
- <CAOs-w0LPeKgooa_98x_Jkzus-Y5Kad7pDby0CriDGb6nTp_6sA@mail.gmail.com>
- <8b97bf43-ddd8-df81-90e7-9e87c19af1ab@linux.intel.com>
- <CAOs-w0KvKcRnDkMtdAV2n_3XLfwk9KgM65QEO=6+qNshobJx3g@mail.gmail.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <2a88f81f-c7a3-f9fc-06a3-c39496b57d0c@linux.intel.com>
-Date:   Tue, 8 Sep 2020 13:06:49 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1731621AbgIHSLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 14:11:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46736 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731558AbgIHSJw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 14:09:52 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A783CC061573;
+        Tue,  8 Sep 2020 11:09:45 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id x14so144895wrl.12;
+        Tue, 08 Sep 2020 11:09:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=6JZbDRelE0owW3x0j2stbMNrtJi1xeSDNJV+jIvcxok=;
+        b=gHO+xrMHUUdsCeckLxc7OvhA19uO0YUuTyw14LQYZAw/Mok/Go5mPTZnGc0CmXEh/3
+         LnXzLzY7AoE0qeBn3fuNt3eL0OkYisum5yLi37LrRewcoem9q1TePg13gK85R/LiyP2j
+         KFGY1sjkJ1f8BpKj92K6nHz/xsMFUl3X6GWYs81X3XvdLyWFmXAi279Pesty+FDWEI+7
+         sz0coyljwaKkOU3Ad0eBMOwaKXvkVEp97iUTZK3fTJ3TC3MT5ADLr/nzLqYzq5CrJU8f
+         HRpLJ5jfYu4F7FgwThKMs318mWjTqnSJkmB82svhz6tNXKbdpiNwl8/h0RhD/qayKfkA
+         z+1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=6JZbDRelE0owW3x0j2stbMNrtJi1xeSDNJV+jIvcxok=;
+        b=MqSeRxhdAswLsBiIuMWunWvvlseTD5XNPI6RUnCL7ia7Jl67HsxVgz/jjjEzysiJCK
+         hlyIAm2cJm3FDe32GbOPgfsq/5fxek4L/XmySvB/9I3961R6rlkHxYmwiNiUOp+8b50R
+         geNZR8QZqY2z4Qjojte8uAfNa9OzyMoVvRcN6WbVV2kN68VYxatAS75yi+CghZ5ZiRyJ
+         lqkEiyBbY7/gZkoiyZCYVAdoU7zV7wm3wXsL7R8AuormYorWGsaDnzqbl/4BlnCwCP62
+         l1IIqjWlDLtiQ+H4tYg63xG6FYjXo+9cQXRg/t/N8z62HVDyg6xhjuLiBhJChASxt4E/
+         t74Q==
+X-Gm-Message-State: AOAM530srLg9xZ19ByRhfk40jwdfBD3WpC/ZWXRpByu0gD9426JG+KRV
+        xyheWBfMmMql5879sNzqSEA=
+X-Google-Smtp-Source: ABdhPJyLCwvd4PQUlYNiGnEtDob4p7ltJumxZc9gJTkfDrpGEziRnHnF5z4CtY63hBWnE0JkGbGzZA==
+X-Received: by 2002:a05:6000:151:: with SMTP id r17mr798967wrx.311.1599588581741;
+        Tue, 08 Sep 2020 11:09:41 -0700 (PDT)
+Received: from gmail.com (54007801.dsl.pool.telekom.hu. [84.0.120.1])
+        by smtp.gmail.com with ESMTPSA id f19sm196652wmh.44.2020.09.08.11.09.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Sep 2020 11:09:41 -0700 (PDT)
+Date:   Tue, 8 Sep 2020 20:09:39 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, Will Deacon <will@kernel.org>
+Subject: Re: [GIT PULL] First batch of KVM changes for Linux 5.9
+Message-ID: <20200908180939.GA2378263@gmail.com>
+References: <20200805182606.12621-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <CAOs-w0KvKcRnDkMtdAV2n_3XLfwk9KgM65QEO=6+qNshobJx3g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200805182606.12621-1-pbonzini@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+hi,
 
-On 9/8/20 12:42 PM, Radosław Biernacki wrote:
-> Sorry for missing the response for so long.
-> Somehow lost this thread in my mailbox.
+* Paolo Bonzini <pbonzini@redhat.com> wrote:
 
-That happens to all of us!
+> Paolo Bonzini (11):
+>       Merge branch 'kvm-async-pf-int' into HEAD
 
-> śr., 6 maj 2020 o 00:04 Pierre-Louis Bossart
-> <pierre-louis.bossart@linux.intel.com> napisał(a):
->>
->>
->>>>> This single fix address two issues on machines with nau88125:
->>>>> 1) Audio distortion, due to lack of required clock rate on MCLK line
->>>>> 2) Loud audible "pops" on headphones if there is no sysclk during nau8825
->>>>>       playback power up sequence
->>>>>
->>>>> Explanation for:
->>>>> 1) Due to Skylake HW limitation, MCLK pin can only output 24MHz clk
->>>>>       rate (it can be only connected to XTAL parent clk). The BCLK pin
->>>>>       can be driven by dividers and therefore FW is able to set it to rate
->>>>>       required by chosen audio format. According to nau8825 datasheet, 256*FS
->>>>>       sysclk gives the best audio quality and the only way to achieve this
->>>>>       (taking into account the above limitations) its to regenerate the MCLK
->>>>>       from BCLK on nau8825 side by FFL. Without required clk rate, audio is
->>>>>       distorted by added harmonics.
->>>>
->>>> The BCLK is going to be a multiple of 50 * Fs due to clocking
->>>> restrictions. Can the codec regenerate a good-enough sysclk from this?
->>>
->>> According to Intel, silicon has a limitation, on SKL/KBL only clk_id =
->>> SKL_XTAL, .name = "xtal" is available for IO domain.
->>> As mentioned in the commit:
->>> MCLK is generated by using 24MHz Xtal directly or applying a divider
->>> (so no way of achieving the rate required by audio format).
->>> BCLK/FS is generated from 24MHz and uses dividers and additional
->>> padding bits are used to match the clock source.
->>> Next gen silicon has the possibility of using additional clock sources.
->>>
->>> Summing up, using MCLK from SKL to NAU88L25 is not an option.
->>> The only option we found is to use BCLK and regen the required clock
->>> rate by FLL on the NAU88l25 side.
->>
->> Right, this 24 MHz is a recurring problem.
->> But what I was asking was if the NAU8825 is fine working with e.g. a
->> 2.4MHz bit clock. i.e. with 25 bit slots or padding at the end of the frame?
-> 
->  From our tests NAU8825 is working fine with these parameters.
-> Also the output audio signal looks fine on the scope and FFT and there
-> are no audible glitches.
-> 
->>
->>>
->>>>>
->>>>> 2) Currently Skylake does not output MCLK/FS when the back-end DAI op
->>>>>       hw_param is called, so we cannot switch to MCLK/FS in hw_param.  This
->>>>>       patch reduces pop by letting nau8825 keep using its internal VCO clock
->>>>>       during widget power up sequence, until SNDRV_PCM_TRIGGER_START when
->>>>>       MCLK/FS is available. Once device resumes, the system will only enable
->>>>>       power sequence for playback without doing hardware parameter, audio
->>>>>       format, and PLL configure. In the mean time, the jack detecion sequence
->>>>>       has changed PLL parameters and switched to internal clock. Thus, the
->>>>>       playback signal distorted without correct PLL parameters.  That is why
->>>>>       we need to configure the PLL again in SNDRV_PCM_TRIGGER_RESUME case.
->>>>
->>>> IIRC the FS can be controlled with the clk_ api with the Skylake driver,
->>>> as done for some KBL platforms. Or is this not supported by the firmware
->>>> used by this machine?
->>>
->>> According to Ben, SKL had limitations in FW for managing the clk's
->>> back in the days.
->>> Can you point to the other driver you mention so we can cross check?
->>
->> There are two KBL drivers that control the SSP clocks from the machine
->> driver, but indeed I don't know if this would work on Firmware, it'd be
->> a question for Lech/Cezary.
->>
->> kbl_rt5663_max98927.c:          ret = clk_prepare_enable(priv->mclk);
->> kbl_rt5663_max98927.c:          ret = clk_prepare_enable(priv->sclk);
->> kbl_rt5663_rt5514_max98927.c:           ret =
->> clk_prepare_enable(priv->mclk);
->> kbl_rt5663_rt5514_max98927.c:           ret =
->> clk_prepare_enable(priv->sclk);
->> kbl_rt5663_rt5514_max98927.c:                   ret =
->> clk_prepare_enable(priv->mclk);
->>
-> 
-> Czarek answered this and we got the same response from other Intel
-> devs while consulting this change:
-> FW cannot request a chosen rate (48k) for MCLK pin as it does not
-> "align with what's present on SKL hw".
-> 
-> The only way we found out for NAU8825 to cooperate at chosen rate with
-> SKL HW is to regen the MCLK from BCLK by FLL as mentioned above.
-> NHTL is used to set SSP0 (48k, 24/25 bit on 24MHz crystal).
-> If I get all of this right, use of NHTL and HW "abilities" would
-> explain why there is no call to change SSP from a machine driver.
-> 
-> 
-> If all of this is ok I will send V3 with msleep() removed.
+kvmtool broke in this merge window, hanging during bootup right after CPU bringup:
 
-Sounds good.
+ [    1.289404]  #63
+ [    0.012468] kvm-clock: cpu 63, msr 6ff69fc1, secondary cpu clock
+ [    0.012468] [Firmware Bug]: CPU63: APIC id mismatch. Firmware: 3f APIC: 14
+ [    1.302320] kvm-guest: KVM setup async PF for cpu 63
+ [    1.302320] kvm-guest: stealtime: cpu 63, msr 1379d7600
 
-You may want to simplify your commit message and just state what you 
-described, e.g.
+Eventually trigger an RCU stall warning:
 
-"Since 64xfs clocks cannot be generated, the NAU8825 is configured to 
-re-generate its system clock from the BCLK using the FLL. The link is 
-configured to use a 48kHz frame rate, and 24 bits in 25-bit slot. The 
-SSP configuration is extracted from NHLT settings and not dynamically 
-changed. Listening tests and measurements do not show any distortion or 
-issues".
+ [   22.302392] rcu: INFO: rcu_sched detected stalls on CPUs/tasks:
+ [   22.302392] rcu: 	1-...!: (68 GPs behind) idle=00c/0/0x0 softirq=0/0 fqs=0  (false positive?)
 
+I've bisected this down to the above merge commit. The individual commit:
 
+   b1d405751cd5: ("KVM: x86: Switch KVM guest to using interrupts for page ready APF delivery")
 
+appears to be working fine standalone.
+
+I'm using x86-64 defconfig+kvmconfig on SVM. Can send more info on request.
+
+The kvmtool.git commit I've tested is 90b2d3adadf2.
+
+Thanks,
+
+	Ingo
