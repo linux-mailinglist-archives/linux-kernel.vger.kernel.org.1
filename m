@@ -2,164 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5EB52615D8
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:57:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F31D42615B9
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:55:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731823AbgIHQ5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 12:57:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35508 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731432AbgIHQ5B (ORCPT
+        id S1732017AbgIHQz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 12:55:29 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:58930 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731816AbgIHQzM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:57:01 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0501C061573;
-        Tue,  8 Sep 2020 09:57:01 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id w7so11464622pfi.4;
-        Tue, 08 Sep 2020 09:57:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=kBD1EJXPjVAPBpvdc8wf1ILIVz5P8vX0mxtXEPwALzw=;
-        b=Ele0Rrax+SxCArR7vCT+Ep4XzRpupXA++JWD3kHsYCsN5NDhZAVsIEGGQQ88ehNC5R
-         46X0/j2chtpx+hmu9XItNJmS3if7iMfnXSYDV1uEJMrQHQDW22kF9ka/I3di4/dJSFYF
-         4mtMnPvRlqjWvbhmtg21sQpyMB8u4w4i21teNB+X3EFAJhMHaLCu5aKE2z+IrKZzcuRB
-         8LmD1TVvq7PW+2h4Y8+DchxExEX+odbLBhJV+TqhWyBPLlyj/IFZkOOwXg5f6T1hM9cn
-         I1yEt6NQJu3QdvQoIL6YzFaipMpF4S26ypm5drRygYvWFfuiOGAdfr8wrkQXzy2hLNNH
-         xKCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kBD1EJXPjVAPBpvdc8wf1ILIVz5P8vX0mxtXEPwALzw=;
-        b=ixkI/jGdZJVTUcZNk2LluRjrMzZAUr8tN10xq39LAgE2+PMkJBWfYgTUYSDHf4x5M7
-         qfJv8mz5yVUeLJgxRnAdYy2Rg5dHyOA6NIiiKxVOS0zP1/hpUPTgBDJokrQMU+yIM/J0
-         8TKnxXMRpuirmFfytgFIn/kn5pghLEr3LAxmM28QTG7ZwhhRc41sL1df8b/ydAvZzPpZ
-         pEKE42QFA3McF7EjW1vTOMFc0QGOJqsf4dFUTH1JHo7FRbsLj7Aqw/B17vDtauae895c
-         n4Ja4C8FCnWvgY5d4zI8bW7HBVR1XnZJZbC1SU8fVdZLjcGcrCqeX07gXU0tiFmMmc7H
-         EL7g==
-X-Gm-Message-State: AOAM532m5CC7SJB4bfTPY0ocr/WWt6HyYdUv/P9JRusBiWdw5Pxo/sFT
-        +2VdxOsiBWDvBCJs/y7X5z4=
-X-Google-Smtp-Source: ABdhPJwZxemNY6Dve6ZxiSwz4vCGjA5iIlNIPUHL3l9AnM4JkFzTMbYq7IAQKVpAR9CjNuYYwMBgSQ==
-X-Received: by 2002:a05:6a00:8c5:b029:13e:ce2c:88bd with SMTP id s5-20020a056a0008c5b029013ece2c88bdmr96593pfu.0.1599584221085;
-        Tue, 08 Sep 2020 09:57:01 -0700 (PDT)
-Received: from gmail.com ([106.201.26.241])
-        by smtp.gmail.com with ESMTPSA id h15sm4467pfo.23.2020.09.08.09.56.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Sep 2020 09:57:00 -0700 (PDT)
-Date:   Tue, 8 Sep 2020 22:24:58 +0530
-From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Bjorn Helgaas <bjorn@helgaas.com>,
-        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
-        Adam Radford <aradford@gmail.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Adaptec OEM Raid Solutions <aacraid@microsemi.com>,
-        Hannes Reinecke <hare@suse.com>,
-        Bradley Grove <linuxdrivers@attotech.com>,
-        John Garry <john.garry@huawei.com>,
-        Don Brace <don.brace@microsemi.com>,
-        James Smart <james.smart@broadcom.com>,
-        Dick Kennedy <dick.kennedy@broadcom.com>,
-        Kashyap Desai <kashyap.desai@broadcom.com>,
-        Sumit Saxena <sumit.saxena@broadcom.com>,
-        Shivasharan S <shivasharan.srikanteshwara@broadcom.com>,
-        Sathya Prakash <sathya.prakash@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
-        Jack Wang <jinpu.wang@cloud.ionos.com>
-Cc:     Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-scsi@vger.kernel.org, esc.storagedev@microsemi.com,
-        megaraidlinux.pdl@broadcom.com, MPT-FusionLinux.pdl@broadcom.com
-Subject: Re: [PATCH v2 00/15] scsi: use generic power management
-Message-ID: <20200908165458.GA9948@gmail.com>
-References: <20200720133427.454400-1-vaibhavgupta40@gmail.com>
+        Tue, 8 Sep 2020 12:55:12 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 088Gt7MS086519;
+        Tue, 8 Sep 2020 11:55:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1599584107;
+        bh=nlL2npsKlyOY3ft+6UJrgJZRAj6uLlrQ2DMNVsNBne0=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=K2KpKLMn/djBX+ja+slW0iNsT4quD82h6ynB8M9SLsahqXM1ZGHh6Go8RA/eXWUUU
+         q2c1JcVFReazFZWWyMvEu6lE4zAR3JeXayEzExR98sE5X3Hx27c/jKvYvjLIlpHMM4
+         Hy5KD70FjlcUCJwIV3FjobtV9oUgYDSPzIDlrIZ0=
+Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 088Gt7WW022793
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 8 Sep 2020 11:55:07 -0500
+Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 8 Sep
+ 2020 11:55:07 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 8 Sep 2020 11:55:07 -0500
+Received: from [10.250.53.226] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 088Gt7qp024121;
+        Tue, 8 Sep 2020 11:55:07 -0500
+Subject: Re: [PATCH net-next 0/1] Support for VLAN interface over HSR/PRP
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+CC:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>, <nsekhar@ti.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>
+References: <20200901195415.4840-1-m-karicheri2@ti.com>
+ <d93fbc54-1721-ebec-39ca-dc8b45e6e534@ti.com>
+ <15bbf7d2-627b-1d52-f130-5bae7b7889de@ti.com>
+ <CA+FuTSeri93irC9eaQqrFrY2++d0zJ4-F0YAfCXfX6XVVqU6Pw@mail.gmail.com>
+From:   Murali Karicheri <m-karicheri2@ti.com>
+Message-ID: <bf8a22c2-0ebe-7a52-2e79-7dde72d444ba@ti.com>
+Date:   Tue, 8 Sep 2020 12:55:01 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200720133427.454400-1-vaibhavgupta40@gmail.com>
+In-Reply-To: <CA+FuTSeri93irC9eaQqrFrY2++d0zJ4-F0YAfCXfX6XVVqU6Pw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 20, 2020 at 07:04:13PM +0530, Vaibhav Gupta wrote:
-> Linux Kernel Mentee: Remove Legacy Power Management.
+Hi Willem,
+
+On 9/4/20 11:52 AM, Willem de Bruijn wrote:
+> On Thu, Sep 3, 2020 at 12:30 AM Murali Karicheri <m-karicheri2@ti.com> wrote:
+>>
+>> All,
+>>
+>> On 9/2/20 12:14 PM, Murali Karicheri wrote:
+>>> All,
+>>>
+>>> On 9/1/20 3:54 PM, Murali Karicheri wrote:
+>>>> This series add support for creating VLAN interface over HSR or
+>>>> PRP interface. Typically industrial networks uses VLAN in
+>>>> deployment and this capability is needed to support these
+>>>> networks.
+>>>>
+>>>> This is tested using two TI AM572x IDK boards connected back
+>>>> to back over CPSW  ports (eth0 and eth1).
+>>>>
+>>>> Following is the setup
+>>>>
+>>>>                   Physical Setup
+>>>>                   ++++++++++++++
+>>>>    _______________    (CPSW)     _______________
+>>>>    |              |----eth0-----|               |
+>>>>    |TI AM572x IDK1|             | TI AM572x IDK2|
+>>>>    |______________|----eth1-----|_______________|
+>>>>
+>>>>
+>>>>                   Network Topolgy
+>>>>                   +++++++++++++++
+>>>>
+>>>>                          TI AM571x IDK  TI AM572x IDK
+>>>>
+>>>> 192.168.100.10                 CPSW ports                 192.168.100.20
+>>>>                IDK-1                                        IDK-2
+>>>> hsr0/prp0.100--| 192.168.2.10  |--eth0--| 192.168.2.20 |--hsr0/prp0.100
+>>>>                  |----hsr0/prp0--|        |---hsr0/prp0--|
+>>>> hsr0/prp0.101--|               |--eth1--|              |--hsr0/prp0/101
+>>>>
+>>>> 192.168.101.10                                            192.168.101.20
+>>>>
+>>>> Following tests:-
+>>>>    - create hsr or prp interface and ping the interface IP address
+>>>>      and verify ping is successful.
+>>>>    - Create 2 VLANs over hsr or prp interface on both IDKs (VID 100 and
+>>>>      101). Ping between the IP address of the VLAN interfaces
+>>>>    - Do iperf UDP traffic test with server on one IDK and client on the
+>>>>      other. Do this using 100 and 101 subnet IP addresses
+>>>>    - Dump /proc/net/vlan/{hsr|prp}0.100 and verify frames are transmitted
+>>>>      and received at these interfaces.
+>>>>    - Delete the vlan and hsr/prp interface and verify interfaces are
+>>>>      removed cleanly.
+>>>>
+>>>> Logs for IDK-1 at https://pastebin.ubuntu.com/p/NxF83yZFDX/
+>>>> Logs for IDK-2 at https://pastebin.ubuntu.com/p/YBXBcsPgVK/
+>>>>
+>>>> Murali Karicheri (1):
+>>>>     net: hsr/prp: add vlan support
+>>>>
+>>>>    net/hsr/hsr_device.c  |  4 ----
+>>>>    net/hsr/hsr_forward.c | 16 +++++++++++++---
+>>>>    2 files changed, 13 insertions(+), 7 deletions(-)
+>>>>
+>>> I am not sure if the packet flow is right for this?
+>>>
+>>> VLAN over HSR frame format is like this.
+>>>
+>>> <Start of Frame><VLAN tag><HSR Tag><IP><CRC>
+>>>
+>>> My ifconfig stats shows both hsr and hsr0.100 interfaces receiving
+>>> frames.
+>>>
+>>> So I did a WARN_ON() in HSR driver before frame is forwarded to upper
+>>> layer.
+>>>
+>>> a0868495local@uda0868495:~/Projects/upstream-kernel$ git diff
+>>> diff --git a/net/hsr/hsr_forward.c b/net/hsr/hsr_forward.c
+>>> index de21df30b0d9..545a3cd8c71b 100644
+>>> --- a/net/hsr/hsr_forward.c
+>>> +++ b/net/hsr/hsr_forward.c
+>>> @@ -415,9 +415,11 @@ static void hsr_forward_do(struct hsr_frame_info
+>>> *frame)
+>>>                   }
+>>>
+>>>                   skb->dev = port->dev;
+>>> -               if (port->type == HSR_PT_MASTER)
+>>> +               if (port->type == HSR_PT_MASTER) {
+>>> +                       if (skb_vlan_tag_present(skb))
+>>> +                               WARN_ON(1);
+>>>                           hsr_deliver_master(skb, port->dev,
+>>> frame->node_src);
+>>> -               else
+>>> +               } else
+>>>                           hsr_xmit(skb, port, frame);
+>>>           }
+>>>    }
+>>>
+>>> And I get the trace shown below.
+>>>
+>>> [  275.125431] WARNING: CPU: 0 PID: 0 at net/hsr/hsr_forward.c:420
+>>> hsr_forward_skb+0x460/0x564
+>>> [  275.133822] Modules linked in: snd_soc_omap_hdmi snd_soc_ti_sdma
+>>> snd_soc_core snd_pcm_dmaengine snd_pcm snd_time4
+>>> [  275.199705] CPU: 0 PID: 0 Comm: swapper/0 Tainted: G        W
+>>> 5.9.0-rc1-00658-g473e463812c2-dirty #8
+>>> [  275.209573] Hardware name: Generic DRA74X (Flattened Device Tree)
+>>> [  275.215703] [<c011177c>] (unwind_backtrace) from [<c010b6f0>]
+>>> (show_stack+0x10/0x14)
+>>> [  275.223487] [<c010b6f0>] (show_stack) from [<c055690c>]
+>>> (dump_stack+0xc4/0xe4)
+>>> [  275.230747] [<c055690c>] (dump_stack) from [<c01386ac>]
+>>> (__warn+0xc0/0xf4)
+>>> [  275.237656] [<c01386ac>] (__warn) from [<c0138a3c>]
+>>> (warn_slowpath_fmt+0x58/0xb8)
+>>> [  275.245177] [<c0138a3c>] (warn_slowpath_fmt) from [<c09564bc>]
+>>> (hsr_forward_skb+0x460/0x564)
+>>> [  275.253657] [<c09564bc>] (hsr_forward_skb) from [<c0955534>]
+>>> (hsr_handle_frame+0x15c/0x190)
+>>> [  275.262047] [<c0955534>] (hsr_handle_frame) from [<c07c6704>]
+>>> (__netif_receive_skb_core+0x23c/0xc88)
+>>> [  275.271223] [<c07c6704>] (__netif_receive_skb_core) from [<c07c7180>]
+>>> (__netif_receive_skb_one_core+0x30/0x74)
+>>> [  275.281266] [<c07c7180>] (__netif_receive_skb_one_core) from
+>>> [<c07c72a4>] (netif_receive_skb+0x50/0x1c4)
+>>> [  275.290793] [<c07c72a4>] (netif_receive_skb) from [<c071a55c>]
+>>> (cpsw_rx_handler+0x230/0x308)
+>>> [  275.299272] [<c071a55c>] (cpsw_rx_handler) from [<c0715ee8>]
+>>> (__cpdma_chan_process+0xf4/0x188)
+>>> [  275.307925] [<c0715ee8>] (__cpdma_chan_process) from [<c0717294>]
+>>> (cpdma_chan_process+0x3c/0x5c)
+>>> [  275.316754] [<c0717294>] (cpdma_chan_process) from [<c071dd14>]
+>>> (cpsw_rx_mq_poll+0x44/0x98)
+>>> [  275.325145] [<c071dd14>] (cpsw_rx_mq_poll) from [<c07c8ae0>]
+>>> (net_rx_action+0xf0/0x400)
+>>> [  275.333185] [<c07c8ae0>] (net_rx_action) from [<c0101370>]
+>>> (__do_softirq+0xf0/0x3ac)
+>>> [  275.340965] [<c0101370>] (__do_softirq) from [<c013f5ec>]
+>>> (irq_exit+0xa8/0xe4)
+>>> [  275.348224] [<c013f5ec>] (irq_exit) from [<c0199344>]
+>>> (__handle_domain_irq+0x6c/0xe0)
+>>> [  275.356093] [<c0199344>] (__handle_domain_irq) from [<c056f8fc>]
+>>> (gic_handle_irq+0x4c/0xa8)
+>>> [  275.364481] [<c056f8fc>] (gic_handle_irq) from [<c0100b6c>]
+>>> (__irq_svc+0x6c/0x90)
+>>> [  275.371996] Exception stack(0xc0e01f18 to 0xc0e01f60)
+>>>
+>>> Shouldn't it show vlan_do_receive() ?
+>>>
+>>>       if (skb_vlan_tag_present(skb)) {
+>>>           if (pt_prev) {
+>>>               ret = deliver_skb(skb, pt_prev, orig_dev);
+>>>               pt_prev = NULL;
+>>>           }
+>>>           if (vlan_do_receive(&skb))
+>>>               goto another_round;
+>>>           else if (unlikely(!skb))
+>>>               goto out;
+>>>       }
+>>>
+>>> Thanks
+>>>
+>>
+>> I did an ftrace today and I find vlan_do_receive() is called for the
+>> incoming frames before passing SKB to hsr_handle_frame(). If someone
+>> can review this, it will help. Thanks.
+>>
+>> https://pastebin.ubuntu.com/p/CbRzXjwjR5/
 > 
-> The purpose of this patch series is to upgrade power management in scsi
-> drivers. This has been done by upgrading .suspend() and .resume() callbacks.
-> 
-> The upgrade makes sure that the involvement of PCI Core does not change the
-> order of operations executed in a driver. Thus, does not change its behavior.
-> 
-> In general, drivers with legacy PM, .suspend() and .resume() make use of PCI
-> helper functions like pci_request/release_regions(), pci_set_power_state(),
-> pci_save/restore_state(), pci_enable/disable_device(), etc. to complete
-> their job.
-> 
-> The conversion requires the removal of those function calls, change the
-> callbacks' definition accordingly and make use of dev_pm_ops structure.
-> 
-> v2: kbuild error in v1.
-> 
-> All patches are compile-tested only.
-> 
-> Test tools:
->     - Compiler: gcc (GCC) 10.1.0
->     - allmodconfig build: make -j$(nproc) W=1 all
-> 
-> Vaibhav Gupta (15):
->   scsi: megaraid_sas: use generic power management
->   scsi: aacraid: use generic power management
->   scsi: aic7xxx: use generic power management
->   scsi: aic79xx: use generic power management
->   scsi: arcmsr: use generic power management
->   scsi: esas2r: use generic power management
->   scsi: hisi_sas_v3_hw: use generic power management
->   scsi: mpt3sas_scsih: use generic power management
->   scsi: lpfc: use generic power management
->   scsi: pm_8001: use generic power management
->   scsi: hpsa: use generic power management
->   scsi: 3w-9xxx: use generic power management
->   scsi: 3w-sas: use generic power management
->   scsi: mvumi: use generic power management
->   scsi: pmcraid: use generic power management
-> 
->  drivers/scsi/3w-9xxx.c                    |  30 ++-----
->  drivers/scsi/3w-sas.c                     |  31 ++-----
->  drivers/scsi/aacraid/linit.c              |  34 ++------
->  drivers/scsi/aic7xxx/aic79xx.h            |  12 +--
->  drivers/scsi/aic7xxx/aic79xx_core.c       |   8 +-
->  drivers/scsi/aic7xxx/aic79xx_osm_pci.c    |  43 +++-------
->  drivers/scsi/aic7xxx/aic79xx_pci.c        |   6 +-
->  drivers/scsi/aic7xxx/aic7xxx.h            |  10 +--
->  drivers/scsi/aic7xxx/aic7xxx_core.c       |   6 +-
->  drivers/scsi/aic7xxx/aic7xxx_osm_pci.c    |  46 +++-------
->  drivers/scsi/aic7xxx/aic7xxx_pci.c        |   4 +-
->  drivers/scsi/arcmsr/arcmsr_hba.c          |  35 +++-----
->  drivers/scsi/esas2r/esas2r.h              |   5 +-
->  drivers/scsi/esas2r/esas2r_init.c         |  48 +++--------
->  drivers/scsi/esas2r/esas2r_main.c         |   3 +-
->  drivers/scsi/hisi_sas/hisi_sas_v3_hw.c    |  32 +++----
->  drivers/scsi/hpsa.c                       |  12 +--
->  drivers/scsi/lpfc/lpfc_init.c             | 100 +++++++---------------
->  drivers/scsi/megaraid/megaraid_sas_base.c |  61 ++++---------
->  drivers/scsi/mpt3sas/mpt3sas_scsih.c      |  36 +++-----
->  drivers/scsi/mvumi.c                      |  49 +++--------
->  drivers/scsi/pm8001/pm8001_init.c         |  46 ++++------
->  drivers/scsi/pmcraid.c                    |  44 +++-------
->  23 files changed, 212 insertions(+), 489 deletions(-)
-> 
-> -- 
-> 2.27.0
-> 
-Please review the patch-series.
+> hsr_handle_frame is an rx_handler called after
+> __netif_receive_skb_core called vlan_do_receive and jumped back to
+> another_round.
+
+Yes. hsr_handle_frame() is a rx_handler() after the above code that
+does vlan_do_receive(). The ftrace shows vlan_do_receive() is called
+followed by call to hsr_handle_frame(). From ifconfig I can see both
+hsr and vlan interface stats increments by same count. So I assume,
+vlan_do_receive() is called initially and it removes the tag, update
+stats and then return true and go for another round. Do you think that
+is the case?
+
+vlan_do_receive() calls vlan_find_dev(skb->dev, vlan_proto, vlan_id)
+to retrieve the real netdevice (real device). However VLAN device is
+attached to hsr device (real device), but SKB will have HSR slave 
+Ethernet netdevice (in our case it is cpsw device) and vlan_find_dev()
+would have failed since there is no vlan_info in cpsw netdev struct. So
+below code  in vlan_do_receive() should have failed and return false.
+
+	vlan_dev = vlan_find_dev(skb->dev, vlan_proto, vlan_id);
+	if (!vlan_dev)
+		return false;
+
+So how does it goes for another_round ? May be vlan_find_dev is
+finding the hsr netdevice?
+
+I am not an expert and so the question. Probably I can put a
+traceprintk() to confirm this, but if someone can clarify this
+it will be great. But for that, I will spin v2 with the above comments
+addressed as in my reply and post.
 
 Thanks
-Vaibhav Gupta
+> 
+> That's how it should work right?
+> 
+
+-- 
+Murali Karicheri
+Texas Instruments
