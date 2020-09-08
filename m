@@ -2,341 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3A4326141C
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:05:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 549D1261427
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:07:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731226AbgIHQFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 12:05:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53404 "EHLO
+        id S1731260AbgIHQHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 12:07:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730934AbgIHP5a (ORCPT
+        with ESMTP id S1730979AbgIHP5X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:57:30 -0400
+        Tue, 8 Sep 2020 11:57:23 -0400
 Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BE55C061357
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 05:33:40 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id q21so15832091edv.1
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 05:33:40 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4B48C06135A;
+        Tue,  8 Sep 2020 05:35:08 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id a12so15758670eds.13;
+        Tue, 08 Sep 2020 05:35:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=07BSV6FZ4poiSm+/jd7LwQlNgIEpEAXaLzeC1JvctXE=;
-        b=SMnPVAVq+CNLCQ0T1LSMvvpTkQRhfvdC957DRxw55JGRxDy5/pS2LaaThhquaUeRgM
-         WT0sbDcx7fSYus/UO1AvvQosPZ0EcmhZuOnInyVngJ/1/+16lk5G/xTyvSpGmuyFw0kP
-         z0wvXwOtokUqe+li/riRJvOUQ1GkXVF7mJShxVUPHps33vmyLliIi341pj2pw7U/1U08
-         eVWq/GTiJFsUVybw3vTBvXwyNE3w9pNuqW94qCtkFUZDG8an5lFUTOuwoB/3LqE+LbYF
-         LXJmvjlJXYSq+12BX2+o0TnlANatNc0GXbdeF8ZLxNTDlfSetrbq11lKZH/PbAclQhli
-         ouKA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=7ODE/jSoFoT1RI4D1U/3TkgwGZ8r03CJLgahQ6P96U4=;
+        b=CS2hv5JAC4mpz/2lV43ML1i02t81QdOqDFvelJkUXjnVLSJPUHyQaLEcJWPTgvCSfk
+         mbPH8SttCaBK30PHUvaRM4UdUgm45nO0UqolJUHsaIiCUPAqW78HBxlzDFQO+UVVzEfM
+         Bn3zuXTchdcW6ei46BAgGWuKQi9nYAxzmXSUKXUvFXtiU5E9XipilzjT46ZnW4+ctiZM
+         FtvjPNRQsJJ0ucvT+3LzFwwB03erUWVIsfG3nGO3JU3X2y2+Uy7WmBOzlSaPWfxhz6VM
+         APCMWvt2OmHngHAQ2wesYCg7E0PtZI5+JexgWa95yDr6WzHv6zHCkRHl4f25qfVVHMZF
+         XqgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=07BSV6FZ4poiSm+/jd7LwQlNgIEpEAXaLzeC1JvctXE=;
-        b=MeVknDmbSKm60UgE7OaJGeCBjuYg11j+XJhRl7DDM0bclkSHSERiKj/r1fqfgeKWUy
-         NE0x3mJk7X84PDiZO1FtNajc0u2eaem0DMcPh1V7cssyecWSKyYT3hK318x7SZkdW+Ez
-         YviG5jHJk7t8TCnq5XMTfdr3c33OC7WfaEdShvNlNxYquv0KhtCFJojKk2sH8HjoN2Y/
-         qVFdff5VMCh5dMr08c5qzneBB3j0LoIBJ+vgjyDHdem+HaPUOKFTJTAWiBx8hrx6H/Dj
-         iG3eIj0CSiFbb5pbKvjBTrH6HZfnGInoxOCERYHeUoiNsm2LP5NJqfw1sZfz6m2bLTZl
-         5Bqg==
-X-Gm-Message-State: AOAM532gNuRirsTSINHPiqdHJKE96G7hlG4lYk4vQNUchHNapEeQmO4i
-        XCHc8RFxzHKaq2wzJi5ypM2uF22MyGohsCPr
-X-Google-Smtp-Source: ABdhPJylpKUjFNTj+4ln7S/mA8s9ebnd7qm/7712WoMGQt+HTyZC3PQpWuLcRKlwleHYGksF7zruIw==
-X-Received: by 2002:a50:ee14:: with SMTP id g20mr15064878eds.32.1599568419058;
-        Tue, 08 Sep 2020 05:33:39 -0700 (PDT)
-Received: from localhost.localdomain ([195.24.90.54])
-        by smtp.gmail.com with ESMTPSA id y9sm17499744edo.37.2020.09.08.05.33.37
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=7ODE/jSoFoT1RI4D1U/3TkgwGZ8r03CJLgahQ6P96U4=;
+        b=f49Jer/5k7izE0WTmqTiQg0+MzithQbP1BD1pZR33oJIOjYWQQK9mRmOp7rdhUoPLj
+         whmtZF22rXGcCQbj+AP0WLOw1rMaK9kiMbcjsJdB7bIhUYx07Bbvm2jXGgDFVOAbE343
+         8kVA1EdN06Bzik1xOhqG1pLGWJ7yDpbyEy1iWF/CojO6H7FUs5UHe4k4YmHgz7oISDnZ
+         2YWM4Tl3H/4/bcZ05uDnzE4cftAjsAc1kI+sDAco3kLFzk7WDdH6kk6H0CjPGNhDE3bD
+         utkDHKTApcTy3f8X7+JLfEBrw+qZdduLTcBrrJi7nqDjrbQ2Yeys4cxllOaCDuOBbVNb
+         Oiiw==
+X-Gm-Message-State: AOAM5315rAiZiGg5XMq0aUVobhz8CJ1VbhCOoKIVKtQiXYHsfKQlFAUO
+        ae30aOQM6pYfBYSy7JfBZw0+Gfw/yMa+4w==
+X-Google-Smtp-Source: ABdhPJwMiNn1XGUvLXepu/tpSDLMSP9mR3gMF74QnCG8MATQcekKKPhXTyWT/Rko/faqKJfFztxzdQ==
+X-Received: by 2002:a05:6402:b1a:: with SMTP id bm26mr26953000edb.209.1599568507189;
+        Tue, 08 Sep 2020 05:35:07 -0700 (PDT)
+Received: from felia.fritz.box ([2001:16b8:2d8b:1700:7cee:a9ea:bd04:6924])
+        by smtp.gmail.com with ESMTPSA id x6sm9399939ejf.59.2020.09.08.05.35.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Sep 2020 05:33:38 -0700 (PDT)
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-To:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org
-Cc:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        nicolas.dufresne@collabora.com,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Subject: [PATCH v3 6/6] venus: venc: Use helper to set profile and level
-Date:   Tue,  8 Sep 2020 15:32:21 +0300
-Message-Id: <20200908123221.2793-7-stanimir.varbanov@linaro.org>
+        Tue, 08 Sep 2020 05:35:06 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Igor Russkikh <irusskikh@marvell.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-spdx@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH 0/5 REBASED to v5.9-rc4] Qlogic drivers: Convert to SPDX license identifiers
+Date:   Tue,  8 Sep 2020 14:34:46 +0200
+Message-Id: <20200908123451.7215-1-lukas.bulwahn@gmail.com>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200908123221.2793-1-stanimir.varbanov@linaro.org>
-References: <20200908123221.2793-1-stanimir.varbanov@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We have a new helper to set profile and level use it
-instead.
+Dear Igor, dear Thomas, dear Greg,
 
-Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
----
- drivers/media/platform/qcom/venus/core.h      |  13 +-
- drivers/media/platform/qcom/venus/venc.c      | 159 +-----------------
- .../media/platform/qcom/venus/venc_ctrls.c    |  14 +-
- 3 files changed, 6 insertions(+), 180 deletions(-)
+this is the patchset:
 
-diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
-index 1a7aee7ee628..2e70004ef195 100644
---- a/drivers/media/platform/qcom/venus/core.h
-+++ b/drivers/media/platform/qcom/venus/core.h
-@@ -239,17 +239,8 @@ struct venc_controls {
- 
- 	u32 header_mode;
- 
--	struct {
--		u32 mpeg4;
--		u32 h264;
--		u32 vpx;
--		u32 hevc;
--	} profile;
--	struct {
--		u32 mpeg4;
--		u32 h264;
--		u32 hevc;
--	} level;
-+	u32 profile;
-+	u32 level;
- };
- 
- struct venus_buffer {
-diff --git a/drivers/media/platform/qcom/venus/venc.c b/drivers/media/platform/qcom/venus/venc.c
-index 6b758a33397e..f8b1484e7dcd 100644
---- a/drivers/media/platform/qcom/venus/venc.c
-+++ b/drivers/media/platform/qcom/venus/venc.c
-@@ -113,80 +113,6 @@ find_format_by_index(struct venus_inst *inst, unsigned int index, u32 type)
- static int venc_v4l2_to_hfi(int id, int value)
- {
- 	switch (id) {
--	case V4L2_CID_MPEG_VIDEO_MPEG4_LEVEL:
--		switch (value) {
--		case V4L2_MPEG_VIDEO_MPEG4_LEVEL_0:
--		default:
--			return HFI_MPEG4_LEVEL_0;
--		case V4L2_MPEG_VIDEO_MPEG4_LEVEL_0B:
--			return HFI_MPEG4_LEVEL_0b;
--		case V4L2_MPEG_VIDEO_MPEG4_LEVEL_1:
--			return HFI_MPEG4_LEVEL_1;
--		case V4L2_MPEG_VIDEO_MPEG4_LEVEL_2:
--			return HFI_MPEG4_LEVEL_2;
--		case V4L2_MPEG_VIDEO_MPEG4_LEVEL_3:
--			return HFI_MPEG4_LEVEL_3;
--		case V4L2_MPEG_VIDEO_MPEG4_LEVEL_4:
--			return HFI_MPEG4_LEVEL_4;
--		case V4L2_MPEG_VIDEO_MPEG4_LEVEL_5:
--			return HFI_MPEG4_LEVEL_5;
--		}
--	case V4L2_CID_MPEG_VIDEO_MPEG4_PROFILE:
--		switch (value) {
--		case V4L2_MPEG_VIDEO_MPEG4_PROFILE_SIMPLE:
--		default:
--			return HFI_MPEG4_PROFILE_SIMPLE;
--		case V4L2_MPEG_VIDEO_MPEG4_PROFILE_ADVANCED_SIMPLE:
--			return HFI_MPEG4_PROFILE_ADVANCEDSIMPLE;
--		}
--	case V4L2_CID_MPEG_VIDEO_H264_PROFILE:
--		switch (value) {
--		case V4L2_MPEG_VIDEO_H264_PROFILE_BASELINE:
--			return HFI_H264_PROFILE_BASELINE;
--		case V4L2_MPEG_VIDEO_H264_PROFILE_CONSTRAINED_BASELINE:
--			return HFI_H264_PROFILE_CONSTRAINED_BASE;
--		case V4L2_MPEG_VIDEO_H264_PROFILE_MAIN:
--			return HFI_H264_PROFILE_MAIN;
--		case V4L2_MPEG_VIDEO_H264_PROFILE_HIGH:
--		default:
--			return HFI_H264_PROFILE_HIGH;
--		}
--	case V4L2_CID_MPEG_VIDEO_H264_LEVEL:
--		switch (value) {
--		case V4L2_MPEG_VIDEO_H264_LEVEL_1_0:
--			return HFI_H264_LEVEL_1;
--		case V4L2_MPEG_VIDEO_H264_LEVEL_1B:
--			return HFI_H264_LEVEL_1b;
--		case V4L2_MPEG_VIDEO_H264_LEVEL_1_1:
--			return HFI_H264_LEVEL_11;
--		case V4L2_MPEG_VIDEO_H264_LEVEL_1_2:
--			return HFI_H264_LEVEL_12;
--		case V4L2_MPEG_VIDEO_H264_LEVEL_1_3:
--			return HFI_H264_LEVEL_13;
--		case V4L2_MPEG_VIDEO_H264_LEVEL_2_0:
--			return HFI_H264_LEVEL_2;
--		case V4L2_MPEG_VIDEO_H264_LEVEL_2_1:
--			return HFI_H264_LEVEL_21;
--		case V4L2_MPEG_VIDEO_H264_LEVEL_2_2:
--			return HFI_H264_LEVEL_22;
--		case V4L2_MPEG_VIDEO_H264_LEVEL_3_0:
--			return HFI_H264_LEVEL_3;
--		case V4L2_MPEG_VIDEO_H264_LEVEL_3_1:
--			return HFI_H264_LEVEL_31;
--		case V4L2_MPEG_VIDEO_H264_LEVEL_3_2:
--			return HFI_H264_LEVEL_32;
--		case V4L2_MPEG_VIDEO_H264_LEVEL_4_0:
--			return HFI_H264_LEVEL_4;
--		case V4L2_MPEG_VIDEO_H264_LEVEL_4_1:
--			return HFI_H264_LEVEL_41;
--		case V4L2_MPEG_VIDEO_H264_LEVEL_4_2:
--			return HFI_H264_LEVEL_42;
--		case V4L2_MPEG_VIDEO_H264_LEVEL_5_0:
--		default:
--			return HFI_H264_LEVEL_5;
--		case V4L2_MPEG_VIDEO_H264_LEVEL_5_1:
--			return HFI_H264_LEVEL_51;
--		}
- 	case V4L2_CID_MPEG_VIDEO_H264_ENTROPY_MODE:
- 		switch (value) {
- 		case V4L2_MPEG_VIDEO_H264_ENTROPY_MODE_CAVLC:
-@@ -195,18 +121,6 @@ static int venc_v4l2_to_hfi(int id, int value)
- 		case V4L2_MPEG_VIDEO_H264_ENTROPY_MODE_CABAC:
- 			return HFI_H264_ENTROPY_CABAC;
- 		}
--	case V4L2_CID_MPEG_VIDEO_VP8_PROFILE:
--		switch (value) {
--		case 0:
--		default:
--			return HFI_VPX_PROFILE_VERSION_0;
--		case 1:
--			return HFI_VPX_PROFILE_VERSION_1;
--		case 2:
--			return HFI_VPX_PROFILE_VERSION_2;
--		case 3:
--			return HFI_VPX_PROFILE_VERSION_3;
--		}
- 	case V4L2_CID_MPEG_VIDEO_H264_LOOP_FILTER_MODE:
- 		switch (value) {
- 		case V4L2_MPEG_VIDEO_H264_LOOP_FILTER_MODE_ENABLED:
-@@ -217,46 +131,6 @@ static int venc_v4l2_to_hfi(int id, int value)
- 		case V4L2_MPEG_VIDEO_H264_LOOP_FILTER_MODE_DISABLED_AT_SLICE_BOUNDARY:
- 			return HFI_H264_DB_MODE_SKIP_SLICE_BOUNDARY;
- 		}
--	case V4L2_CID_MPEG_VIDEO_HEVC_PROFILE:
--		switch (value) {
--		case V4L2_MPEG_VIDEO_HEVC_PROFILE_MAIN:
--		default:
--			return HFI_HEVC_PROFILE_MAIN;
--		case V4L2_MPEG_VIDEO_HEVC_PROFILE_MAIN_STILL_PICTURE:
--			return HFI_HEVC_PROFILE_MAIN_STILL_PIC;
--		case V4L2_MPEG_VIDEO_HEVC_PROFILE_MAIN_10:
--			return HFI_HEVC_PROFILE_MAIN10;
--		}
--	case V4L2_CID_MPEG_VIDEO_HEVC_LEVEL:
--		switch (value) {
--		case V4L2_MPEG_VIDEO_HEVC_LEVEL_1:
--		default:
--			return HFI_HEVC_LEVEL_1;
--		case V4L2_MPEG_VIDEO_HEVC_LEVEL_2:
--			return HFI_HEVC_LEVEL_2;
--		case V4L2_MPEG_VIDEO_HEVC_LEVEL_2_1:
--			return HFI_HEVC_LEVEL_21;
--		case V4L2_MPEG_VIDEO_HEVC_LEVEL_3:
--			return HFI_HEVC_LEVEL_3;
--		case V4L2_MPEG_VIDEO_HEVC_LEVEL_3_1:
--			return HFI_HEVC_LEVEL_31;
--		case V4L2_MPEG_VIDEO_HEVC_LEVEL_4:
--			return HFI_HEVC_LEVEL_4;
--		case V4L2_MPEG_VIDEO_HEVC_LEVEL_4_1:
--			return HFI_HEVC_LEVEL_41;
--		case V4L2_MPEG_VIDEO_HEVC_LEVEL_5:
--			return HFI_HEVC_LEVEL_5;
--		case V4L2_MPEG_VIDEO_HEVC_LEVEL_5_1:
--			return HFI_HEVC_LEVEL_51;
--		case V4L2_MPEG_VIDEO_HEVC_LEVEL_5_2:
--			return HFI_HEVC_LEVEL_52;
--		case V4L2_MPEG_VIDEO_HEVC_LEVEL_6:
--			return HFI_HEVC_LEVEL_6;
--		case V4L2_MPEG_VIDEO_HEVC_LEVEL_6_1:
--			return HFI_HEVC_LEVEL_61;
--		case V4L2_MPEG_VIDEO_HEVC_LEVEL_6_2:
--			return HFI_HEVC_LEVEL_62;
--		}
- 	}
- 
- 	return 0;
-@@ -657,13 +531,12 @@ static int venc_set_properties(struct venus_inst *inst)
- {
- 	struct venc_controls *ctr = &inst->controls.enc;
- 	struct hfi_intra_period intra_period;
--	struct hfi_profile_level pl;
- 	struct hfi_framerate frate;
- 	struct hfi_bitrate brate;
- 	struct hfi_idr_period idrp;
- 	struct hfi_quantization quant;
- 	struct hfi_quantization_range quant_range;
--	u32 ptype, rate_control, bitrate, profile = 0, level = 0;
-+	u32 ptype, rate_control, bitrate;
- 	int ret;
- 
- 	ret = venus_helper_set_work_mode(inst, VIDC_WORK_MODE_2);
-@@ -811,35 +684,7 @@ static int venc_set_properties(struct venus_inst *inst)
- 	if (ret)
- 		return ret;
- 
--	if (inst->fmt_cap->pixfmt == V4L2_PIX_FMT_H264) {
--		profile = venc_v4l2_to_hfi(V4L2_CID_MPEG_VIDEO_H264_PROFILE,
--					   ctr->profile.h264);
--		level = venc_v4l2_to_hfi(V4L2_CID_MPEG_VIDEO_H264_LEVEL,
--					 ctr->level.h264);
--	} else if (inst->fmt_cap->pixfmt == V4L2_PIX_FMT_VP8) {
--		profile = venc_v4l2_to_hfi(V4L2_CID_MPEG_VIDEO_VP8_PROFILE,
--					   ctr->profile.vpx);
--		level = 0;
--	} else if (inst->fmt_cap->pixfmt == V4L2_PIX_FMT_MPEG4) {
--		profile = venc_v4l2_to_hfi(V4L2_CID_MPEG_VIDEO_MPEG4_PROFILE,
--					   ctr->profile.mpeg4);
--		level = venc_v4l2_to_hfi(V4L2_CID_MPEG_VIDEO_MPEG4_LEVEL,
--					 ctr->level.mpeg4);
--	} else if (inst->fmt_cap->pixfmt == V4L2_PIX_FMT_H263) {
--		profile = 0;
--		level = 0;
--	} else if (inst->fmt_cap->pixfmt == V4L2_PIX_FMT_HEVC) {
--		profile = venc_v4l2_to_hfi(V4L2_CID_MPEG_VIDEO_HEVC_PROFILE,
--					   ctr->profile.hevc);
--		level = venc_v4l2_to_hfi(V4L2_CID_MPEG_VIDEO_HEVC_LEVEL,
--					 ctr->level.hevc);
--	}
--
--	ptype = HFI_PROPERTY_PARAM_PROFILE_LEVEL_CURRENT;
--	pl.profile = profile;
--	pl.level = level;
--
--	ret = hfi_session_set_property(inst, ptype, &pl);
-+	ret = venus_helper_set_profile_level(inst, ctr->profile, ctr->level);
- 	if (ret)
- 		return ret;
- 
-diff --git a/drivers/media/platform/qcom/venus/venc_ctrls.c b/drivers/media/platform/qcom/venus/venc_ctrls.c
-index 22a7c045c6a9..0708b3b89d0c 100644
---- a/drivers/media/platform/qcom/venus/venc_ctrls.c
-+++ b/drivers/media/platform/qcom/venus/venc_ctrls.c
-@@ -103,25 +103,15 @@ static int venc_op_s_ctrl(struct v4l2_ctrl *ctrl)
- 		ctr->h264_entropy_mode = ctrl->val;
- 		break;
- 	case V4L2_CID_MPEG_VIDEO_MPEG4_PROFILE:
--		ctr->profile.mpeg4 = ctrl->val;
--		break;
- 	case V4L2_CID_MPEG_VIDEO_H264_PROFILE:
--		ctr->profile.h264 = ctrl->val;
--		break;
- 	case V4L2_CID_MPEG_VIDEO_HEVC_PROFILE:
--		ctr->profile.hevc = ctrl->val;
--		break;
- 	case V4L2_CID_MPEG_VIDEO_VP8_PROFILE:
--		ctr->profile.vpx = ctrl->val;
-+		ctr->profile = ctrl->val;
- 		break;
- 	case V4L2_CID_MPEG_VIDEO_MPEG4_LEVEL:
--		ctr->level.mpeg4 = ctrl->val;
--		break;
- 	case V4L2_CID_MPEG_VIDEO_H264_LEVEL:
--		ctr->level.h264 = ctrl->val;
--		break;
- 	case V4L2_CID_MPEG_VIDEO_HEVC_LEVEL:
--		ctr->level.hevc = ctrl->val;
-+		ctr->level = ctrl->val;
- 		break;
- 	case V4L2_CID_MPEG_VIDEO_H264_I_FRAME_QP:
- 		ctr->h264_i_qp = ctrl->val;
+  https://lore.kernel.org/linux-spdx/20190606205526.447558989@linutronix.de/
+
+rebased to v5.9-rc4, hopefully ready to apply to the current spdx-tree.
+
+The rebase required manual work for adjusting the diff for MAINTAINERS on
+PATCH 2/5 and 5/5, and PATCH 4/5 was adjusted to the file moving in commit
+955315b0dc8c ("qlge: Move drivers/net/ethernet/qlogic/qlge/ to
+drivers/staging/qlge/").
+
+The rest was rebased automatically and I compared the patches afterwards
+against the original patchset to make sure nothing disturbing slipped in.
+
+As I did not make any changes in my rebase other than adjusting the
+location the diffs apply to, I also added the Reviewed-by tags from Richard
+Fontana, Jilayne Lovejoy and Alexios Zavras from the original patchset,
+and finally added my Sign-off to those patches.
+
+Igor, can you please ack these patches?
+
+Igor, please also let us know:
+  A. if you will pick them up and let them travel through your tree, or
+  B. if the spdx maintainers shall pick them up and they shall route them
+     directly to Linus.
+
+Thomas, I hope it is fine for you to pick up your commits, rebase them
+and add the according tags from the previous patchset.
+
+For reference, in his original cover letter, Thomas Gleixner wrote:
+
+In our effort to clean up the license situation of the Linux kernel [1]
+we've identified five Qlogic specific license files which reside in the
+Documentation directory. Four of them contain a full copy of the GPLv2
+license text and one (LICENSE.qla3xxx) contains a proprietary license for a
+firmware binary which is not distributed with the Linux kernel. The latter
+is a leftover from the old out of tree tarball which contained the firmware
+binary along with the driver source. The same notice was in the qla2/4xxx
+license files, but got cleaned up quite some time ago. Seems the qla3xxx
+one was missed.
+
+The following patch series replaces the license files with a proper SPDX
+license identifier in the source files which today reference the license
+files. There is no information lost because the copyright notices are in
+the source files already and the GPLv2 license text is in the kernels
+LICENSES directory. The qla3xxx cleanup removes the firmware license notice
+as well because it is pointless in context of the kernel. See the
+individual changelogs for detailed information about each driver/license
+file.
+
+Please support our efforts to make the Linux kernels licensing clean and
+compliance friendly. If you have questions feel free to ask or contact your
+legal departement. In case your legal departement has questions or issues,
+please direct them to the linux-spdx mailing list where these issues are
+discussed.
+
+If you (and/or your legal departement) agree with these changes, then
+please either reply with a Reviewed-by and we route them directly to Linus
+or pick them up individually through your trees and let as know that they
+are en route.
+
+
+For your conveniance the patches are also available from git:
+
+   git.kernel.org/pub/scm/linux/kernel/git/tglx/linux-spdx.git qlogic
+
+Thanks,
+
+	tglx
+
+[1] https://lkml.kernel.org/r/alpine.DEB.2.21.1905062040530.3334@nanos.tec.linutronix.de
+
+
+Thomas Gleixner (5):
+  scsi/qla4xxx: Convert to SPDX license identifiers
+  scsi/qla2xxx: Convert to SPDX license identifiers
+  net/qlcnic: Convert to SPDX license identifiers
+  net/qlge: Convert to SPDX license identifiers
+  net/qla3xxx: Convert to SPDX license identifiers
+
+ .../device_drivers/qlogic/LICENSE.qla3xxx     |  46 ---
+ .../device_drivers/qlogic/LICENSE.qlcnic      | 288 -----------------
+ .../device_drivers/qlogic/LICENSE.qlge        | 288 -----------------
+ Documentation/scsi/LICENSE.qla2xxx            | 290 ------------------
+ Documentation/scsi/LICENSE.qla4xxx            | 289 -----------------
+ MAINTAINERS                                   |   3 -
+ drivers/net/ethernet/qlogic/qla3xxx.c         |   3 +-
+ drivers/net/ethernet/qlogic/qla3xxx.h         |   3 +-
+ drivers/net/ethernet/qlogic/qlcnic/qlcnic.h   |   3 +-
+ .../ethernet/qlogic/qlcnic/qlcnic_83xx_hw.c   |   3 +-
+ .../ethernet/qlogic/qlcnic/qlcnic_83xx_hw.h   |   3 +-
+ .../ethernet/qlogic/qlcnic/qlcnic_83xx_init.c |   3 +-
+ .../ethernet/qlogic/qlcnic/qlcnic_83xx_vnic.c |   3 +-
+ .../net/ethernet/qlogic/qlcnic/qlcnic_ctx.c   |   3 +-
+ .../net/ethernet/qlogic/qlcnic/qlcnic_dcb.c   |   3 +-
+ .../net/ethernet/qlogic/qlcnic/qlcnic_dcb.h   |   3 +-
+ .../ethernet/qlogic/qlcnic/qlcnic_ethtool.c   |   3 +-
+ .../net/ethernet/qlogic/qlcnic/qlcnic_hdr.h   |   3 +-
+ .../net/ethernet/qlogic/qlcnic/qlcnic_hw.c    |   3 +-
+ .../net/ethernet/qlogic/qlcnic/qlcnic_hw.h    |   3 +-
+ .../net/ethernet/qlogic/qlcnic/qlcnic_init.c  |   3 +-
+ .../net/ethernet/qlogic/qlcnic/qlcnic_io.c    |   3 +-
+ .../net/ethernet/qlogic/qlcnic/qlcnic_main.c  |   3 +-
+ .../ethernet/qlogic/qlcnic/qlcnic_minidump.c  |   3 +-
+ .../net/ethernet/qlogic/qlcnic/qlcnic_sriov.h |   3 +-
+ .../qlogic/qlcnic/qlcnic_sriov_common.c       |   3 +-
+ .../ethernet/qlogic/qlcnic/qlcnic_sriov_pf.c  |   3 +-
+ .../net/ethernet/qlogic/qlcnic/qlcnic_sysfs.c |   3 +-
+ drivers/scsi/qla2xxx/qla_attr.c               |   3 +-
+ drivers/scsi/qla2xxx/qla_bsg.c                |   3 +-
+ drivers/scsi/qla2xxx/qla_bsg.h                |   3 +-
+ drivers/scsi/qla2xxx/qla_dbg.c                |   3 +-
+ drivers/scsi/qla2xxx/qla_dbg.h                |   3 +-
+ drivers/scsi/qla2xxx/qla_def.h                |   3 +-
+ drivers/scsi/qla2xxx/qla_dfs.c                |   3 +-
+ drivers/scsi/qla2xxx/qla_fw.h                 |   3 +-
+ drivers/scsi/qla2xxx/qla_gbl.h                |   3 +-
+ drivers/scsi/qla2xxx/qla_gs.c                 |   3 +-
+ drivers/scsi/qla2xxx/qla_init.c               |   3 +-
+ drivers/scsi/qla2xxx/qla_inline.h             |   3 +-
+ drivers/scsi/qla2xxx/qla_iocb.c               |   3 +-
+ drivers/scsi/qla2xxx/qla_isr.c                |   3 +-
+ drivers/scsi/qla2xxx/qla_mbx.c                |   3 +-
+ drivers/scsi/qla2xxx/qla_mid.c                |   3 +-
+ drivers/scsi/qla2xxx/qla_mr.c                 |   3 +-
+ drivers/scsi/qla2xxx/qla_mr.h                 |   3 +-
+ drivers/scsi/qla2xxx/qla_nvme.c               |   3 +-
+ drivers/scsi/qla2xxx/qla_nvme.h               |   3 +-
+ drivers/scsi/qla2xxx/qla_nx.c                 |   3 +-
+ drivers/scsi/qla2xxx/qla_nx.h                 |   3 +-
+ drivers/scsi/qla2xxx/qla_nx2.c                |   3 +-
+ drivers/scsi/qla2xxx/qla_nx2.h                |   3 +-
+ drivers/scsi/qla2xxx/qla_os.c                 |   3 +-
+ drivers/scsi/qla2xxx/qla_settings.h           |   3 +-
+ drivers/scsi/qla2xxx/qla_sup.c                |   3 +-
+ drivers/scsi/qla2xxx/qla_tmpl.c               |   3 +-
+ drivers/scsi/qla2xxx/qla_tmpl.h               |   3 +-
+ drivers/scsi/qla2xxx/qla_version.h            |   3 +-
+ drivers/scsi/qla4xxx/ql4_83xx.c               |   3 +-
+ drivers/scsi/qla4xxx/ql4_83xx.h               |   3 +-
+ drivers/scsi/qla4xxx/ql4_attr.c               |   3 +-
+ drivers/scsi/qla4xxx/ql4_bsg.c                |   3 +-
+ drivers/scsi/qla4xxx/ql4_bsg.h                |   3 +-
+ drivers/scsi/qla4xxx/ql4_dbg.c                |   3 +-
+ drivers/scsi/qla4xxx/ql4_dbg.h                |   3 +-
+ drivers/scsi/qla4xxx/ql4_def.h                |   3 +-
+ drivers/scsi/qla4xxx/ql4_fw.h                 |   3 +-
+ drivers/scsi/qla4xxx/ql4_glbl.h               |   3 +-
+ drivers/scsi/qla4xxx/ql4_init.c               |   3 +-
+ drivers/scsi/qla4xxx/ql4_inline.h             |   3 +-
+ drivers/scsi/qla4xxx/ql4_iocb.c               |   3 +-
+ drivers/scsi/qla4xxx/ql4_isr.c                |   3 +-
+ drivers/scsi/qla4xxx/ql4_mbx.c                |   3 +-
+ drivers/scsi/qla4xxx/ql4_nvram.c              |   3 +-
+ drivers/scsi/qla4xxx/ql4_nvram.h              |   3 +-
+ drivers/scsi/qla4xxx/ql4_nx.c                 |   3 +-
+ drivers/scsi/qla4xxx/ql4_nx.h                 |   3 +-
+ drivers/scsi/qla4xxx/ql4_os.c                 |   3 +-
+ drivers/scsi/qla4xxx/ql4_version.h            |   3 +-
+ drivers/staging/qlge/qlge.h                   |   3 +-
+ drivers/staging/qlge/qlge_main.c              |   2 +-
+ 81 files changed, 75 insertions(+), 1353 deletions(-)
+ delete mode 100644 Documentation/networking/device_drivers/qlogic/LICENSE.qla3xxx
+ delete mode 100644 Documentation/networking/device_drivers/qlogic/LICENSE.qlcnic
+ delete mode 100644 Documentation/networking/device_drivers/qlogic/LICENSE.qlge
+ delete mode 100644 Documentation/scsi/LICENSE.qla2xxx
+ delete mode 100644 Documentation/scsi/LICENSE.qla4xxx
+
 -- 
 2.17.1
 
