@@ -2,233 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BF1A261E03
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:45:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 332D0261D2C
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:33:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726490AbgIHTpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:45:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53210 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730834AbgIHPvk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:51:40 -0400
-Received: from mail-oo1-xc44.google.com (mail-oo1-xc44.google.com [IPv6:2607:f8b0:4864:20::c44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13A77C06136D
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 08:39:15 -0700 (PDT)
-Received: by mail-oo1-xc44.google.com with SMTP id z1so4042361ooj.3
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 08:39:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vBukYCVJ0dPzfynBSfYWtIL6LfPb6kYIege12EwUKjA=;
-        b=T63IxB0puDzrheBenrRjLNYbacMf7qUkmO6Wfuaj8oGyxkHKI2Ye9T3wzxtikbG/jv
-         bYhDh5/q9/kOp2VwZTF/Fa+HzHT7Hya0h+bcAL5ImpauE2zGkAojSCjj21OJTR//7Q/0
-         j1PWQHX8n8/94B8wnCuCCyvhZ61MLKOU2o37GoeFmaAiH05bqEVTVId5tffG7X1PdkeO
-         YalM3Vy47YGexvYGu2gW0OnbauxBLxm5oIqibh7TeGfsEHtNiO28E3CkvjSARq97Bl8L
-         eOMfiEIa5ndBEAKQoPzqSoCuvvH8Ytm8xjgBVw/2PVE9cwepw3+xua9f4ehIGz5Sj7lq
-         0ukA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vBukYCVJ0dPzfynBSfYWtIL6LfPb6kYIege12EwUKjA=;
-        b=fcaiSZ4euMGV2IG5b7dI7XfD9K+rbS4dsfrEVlhKOimo2pOrKYROdOl/KBEUCKKS78
-         xVI1lVOU3YZ0a0E3z+7m3Q6o8KCi/+nZwLRZbYHFFLi32y6EJf3CyaZauNPGm3T04+BB
-         PzdjB3OFMyK/zWgYTO/scxLzQafabI1eI4wl1nyZSiBqxeIVKZeihRQIH8fxfIkM5xZY
-         DieM7ipB2EVvHk5Fa8BxKtYDNLJkAzM7K4e5cUAxUEwQUAVvCPh0y++e4/mjvO3xM3oB
-         5FPIyoMyD+ab+FYwcwEIkiMhatt6St6PM6GALexvm7a9eCshg9sgIMdeuXH9wSgRMKm2
-         bXTQ==
-X-Gm-Message-State: AOAM531iezV+gh6/Rlh9iWIKnmwefNYjsu8tO5VUFTA6/riwgAvee9C1
-        RFfsroWuTldmFpdY5PqLy5o4Kw==
-X-Google-Smtp-Source: ABdhPJyBfKsVbBZmtm2xq52k9JBNoPkKHfWeqCb/fyPZs+uEZF3BunlkPpOYAXIIG71UjOJYDRIimA==
-X-Received: by 2002:a4a:d8ce:: with SMTP id c14mr18642612oov.90.1599579554861;
-        Tue, 08 Sep 2020 08:39:14 -0700 (PDT)
-Received: from yoga ([2605:6000:e5cb:c100:8898:14ff:fe6d:34e])
-        by smtp.gmail.com with ESMTPSA id 34sm1219242otg.23.2020.09.08.08.39.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Sep 2020 08:39:14 -0700 (PDT)
-Date:   Tue, 8 Sep 2020 10:39:11 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     rjw@rjwysocki.net, viresh.kumar@linaro.org, robh+dt@kernel.org,
-        agross@kernel.org, amitk@kernel.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, dmitry.baryshkov@linaro.org,
-        tdas@codeaurora.org
-Subject: Re: [PATCH 5/7] cpufreq: qcom-hw: Use regmap for accessing hardware
- registers
-Message-ID: <20200908153911.GR3715@yoga>
-References: <20200908075716.30357-1-manivannan.sadhasivam@linaro.org>
- <20200908075716.30357-6-manivannan.sadhasivam@linaro.org>
+        id S1732230AbgIHTdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 15:33:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47724 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731014AbgIHP6F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 11:58:05 -0400
+Received: from gaia (unknown [46.69.195.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D6EA92463B;
+        Tue,  8 Sep 2020 15:39:13 +0000 (UTC)
+Date:   Tue, 8 Sep 2020 16:39:11 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 24/35] arm64: mte: Switch GCR_EL1 in kernel entry and exit
+Message-ID: <20200908153910.GK25591@gaia>
+References: <cover.1597425745.git.andreyknvl@google.com>
+ <ec314a9589ef8db18494d533b6eaf1fd678dc010.1597425745.git.andreyknvl@google.com>
+ <20200827103819.GE29264@gaia>
+ <8affcfbe-b8b4-0914-1651-368f669ddf85@arm.com>
+ <20200827121604.GL29264@gaia>
+ <CAAeHK+yYEFHAQMxhL=uwfgaejo3Ld0gp5=ss38CjW6wyYCaZFw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200908075716.30357-6-manivannan.sadhasivam@linaro.org>
+In-Reply-To: <CAAeHK+yYEFHAQMxhL=uwfgaejo3Ld0gp5=ss38CjW6wyYCaZFw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 08 Sep 02:57 CDT 2020, Manivannan Sadhasivam wrote:
-
-> Use regmap for accessing cpufreq registers in hardware.
+On Tue, Sep 08, 2020 at 04:02:06PM +0200, Andrey Konovalov wrote:
+> On Thu, Aug 27, 2020 at 2:16 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
+> > On Thu, Aug 27, 2020 at 11:56:49AM +0100, Vincenzo Frascino wrote:
+> > > On 8/27/20 11:38 AM, Catalin Marinas wrote:
+> > > > On Fri, Aug 14, 2020 at 07:27:06PM +0200, Andrey Konovalov wrote:
+> > > >> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
+> > > >> index 7717ea9bc2a7..cfac7d02f032 100644
+> > > >> --- a/arch/arm64/kernel/mte.c
+> > > >> +++ b/arch/arm64/kernel/mte.c
+> > > >> @@ -18,10 +18,14 @@
+> > > >>
+> > > >>  #include <asm/barrier.h>
+> > > >>  #include <asm/cpufeature.h>
+> > > >> +#include <asm/kasan.h>
+> > > >> +#include <asm/kprobes.h>
+> > > >>  #include <asm/mte.h>
+> > > >>  #include <asm/ptrace.h>
+> > > >>  #include <asm/sysreg.h>
+> > > >>
+> > > >> +u64 gcr_kernel_excl __read_mostly;
+> > > >
+> > > > Could we make this __ro_after_init?
+> > >
+> > > Yes, it makes sense, it should be updated only once through mte_init_tags().
+> > >
+> > > Something to consider though here is that this might not be the right approach
+> > > if in future we want to add stack tagging. In such a case we need to know the
+> > > kernel exclude mask before any C code is executed. Initializing the mask via
+> > > mte_init_tags() it is too late.
+> >
+> > It depends on how stack tagging ends up in the kernel, whether it uses
+> > ADDG/SUBG or not. If it's only IRG, I think it can cope with changing
+> > the GCR_EL1.Excl in the middle of a function.
+> >
+> > > I was thinking to add a compilation define instead of having gcr_kernel_excl in
+> > > place. This might not work if the kernel excl mask is meant to change during the
+> > > execution.
+> >
+> > A macro with the default value works for me. That's what it basically is
+> > currently, only that it ends up in a variable.
 > 
+> Some thoughts on the topic: gcr_kernel_excl is currently initialized
+> in mte_init_tags() and depends on the max_tag value dynamically
+> provided to it, so it's not something that can be expressed with a
+> define. In the case of KASAN the max_tag value is static, but if we
+> rely on that we make core MTE code depend on KASAN, which doesn't seem
+> right from the design perspective.
 
-The content of the patch looks good, but in itself I don't see the
-reason for migrating to regmap.
+The design is debatable. If we want MTE to run on production devices, we
+either (1) optimise out some bits of KASAN (configurable) or (2) we
+decouple MTE and KASAN completely and add new callbacks in the core code
+(slab allocator etc.) specific to MTE.
 
-If you have subsequent patches, that would benefit from describing the
-hardware differences using reg_fields then it might be a good idea, but
-I would suggest that you postpone this patch until there's an actual
-beneficiary.
+My first choice is (1), unless there is a strong technical argument why
+it is not possible.
 
-Regards,
-Bjorn
-
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
->  drivers/cpufreq/qcom-cpufreq-hw.c | 55 ++++++++++++++++++++++++++-----
->  1 file changed, 47 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/cpufreq/qcom-cpufreq-hw.c b/drivers/cpufreq/qcom-cpufreq-hw.c
-> index 41853db7c9b8..de816bcafd33 100644
-> --- a/drivers/cpufreq/qcom-cpufreq-hw.c
-> +++ b/drivers/cpufreq/qcom-cpufreq-hw.c
-> @@ -12,6 +12,7 @@
->  #include <linux/of_address.h>
->  #include <linux/of_platform.h>
->  #include <linux/pm_opp.h>
-> +#include <linux/regmap.h>
->  #include <linux/slab.h>
->  
->  #define LUT_MAX_ENTRIES			40U
-> @@ -32,6 +33,7 @@ struct qcom_cpufreq_soc_data {
->  
->  struct qcom_cpufreq_data {
->  	void __iomem *base;
-> +	struct regmap *regmap;
->  	const struct qcom_cpufreq_soc_data *soc_data;
->  };
->  
-> @@ -85,8 +87,11 @@ static int qcom_cpufreq_hw_target_index(struct cpufreq_policy *policy,
->  	struct qcom_cpufreq_data *data = policy->driver_data;
->  	const struct qcom_cpufreq_soc_data *soc_data = data->soc_data;
->  	unsigned long freq = policy->freq_table[index].frequency;
-> +	int ret;
->  
-> -	writel_relaxed(index, data->base + soc_data->reg_perf_state);
-> +	ret = regmap_write(data->regmap, soc_data->reg_perf_state, index);
-> +	if (ret)
-> +		return ret;
->  
->  	if (icc_scaling_enabled)
->  		qcom_cpufreq_set_bw(policy, freq);
-> @@ -102,6 +107,7 @@ static unsigned int qcom_cpufreq_hw_get(unsigned int cpu)
->  	const struct qcom_cpufreq_soc_data *soc_data;
->  	struct cpufreq_policy *policy;
->  	unsigned int index;
-> +	int ret;
->  
->  	policy = cpufreq_cpu_get_raw(cpu);
->  	if (!policy)
-> @@ -110,7 +116,10 @@ static unsigned int qcom_cpufreq_hw_get(unsigned int cpu)
->  	data = policy->driver_data;
->  	soc_data = data->soc_data;
->  
-> -	index = readl_relaxed(data->base + soc_data->reg_perf_state);
-> +	ret = regmap_read(data->regmap, soc_data->reg_perf_state, &index);
-> +	if (ret)
-> +		return 0;
-> +
->  	index = min(index, LUT_MAX_ENTRIES - 1);
->  
->  	return policy->freq_table[index].frequency;
-> @@ -123,9 +132,12 @@ static unsigned int qcom_cpufreq_hw_fast_switch(struct cpufreq_policy *policy,
->  	const struct qcom_cpufreq_soc_data *soc_data = data->soc_data;
->  	unsigned int index;
->  	unsigned long freq;
-> +	int ret;
->  
->  	index = policy->cached_resolved_idx;
-> -	writel_relaxed(index, data->base + soc_data->reg_perf_state);
-> +	ret = regmap_write(data->regmap, soc_data->reg_perf_state, index);
-> +	if (ret)
-> +		return 0;
->  
->  	freq = policy->freq_table[index].frequency;
->  	arch_set_freq_scale(policy->related_cpus, freq,
-> @@ -171,14 +183,24 @@ static int qcom_cpufreq_hw_read_lut(struct device *cpu_dev,
->  	}
->  
->  	for (i = 0; i < LUT_MAX_ENTRIES; i++) {
-> -		data = readl_relaxed(drv_data->base + soc_data->reg_freq_lut +
-> -				      i * soc_data->lut_row_size);
-> +		ret = regmap_read(drv_data->regmap, soc_data->reg_freq_lut +
-> +				  i * soc_data->lut_row_size, &data);
-> +		if (ret) {
-> +			kfree(table);
-> +			return ret;
-> +		}
-> +
->  		src = FIELD_GET(LUT_SRC, data);
->  		lval = FIELD_GET(LUT_L_VAL, data);
->  		core_count = FIELD_GET(LUT_CORE_COUNT, data);
->  
-> -		data = readl_relaxed(drv_data->base + soc_data->reg_volt_lut +
-> -				      i * soc_data->lut_row_size);
-> +		ret = regmap_read(drv_data->regmap, soc_data->reg_volt_lut +
-> +				  i * soc_data->lut_row_size, &data);
-> +		if (ret) {
-> +			kfree(table);
-> +			return ret;
-> +		}
-> +
->  		volt = FIELD_GET(LUT_VOLT, data) * 1000;
->  
->  		if (src)
-> @@ -248,6 +270,13 @@ static void qcom_get_related_cpus(int index, struct cpumask *m)
->  	}
->  }
->  
-> +static struct regmap_config qcom_cpufreq_regmap = {
-> +	.reg_bits = 32,
-> +	.reg_stride = 4,
-> +	.val_bits = 32,
-> +	.fast_io = true,
-> +};
-> +
->  static const struct qcom_cpufreq_soc_data qcom_soc_data = {
->  	.reg_enable = 0x0,
->  	.reg_freq_lut = 0x110,
-> @@ -274,6 +303,7 @@ static int qcom_cpufreq_hw_cpu_init(struct cpufreq_policy *policy)
->  	struct qcom_cpufreq_data *data;
->  	const struct of_device_id *match;
->  	int ret, index;
-> +	u32 val;
->  
->  	cpu_dev = get_cpu_device(policy->cpu);
->  	if (!cpu_dev) {
-> @@ -316,9 +346,18 @@ static int qcom_cpufreq_hw_cpu_init(struct cpufreq_policy *policy)
->  
->  	data->soc_data = match->data;
->  	data->base = base;
-> +	data->regmap = devm_regmap_init_mmio(dev, base, &qcom_cpufreq_regmap);
-> +	if (IS_ERR(data->regmap)) {
-> +		ret = PTR_ERR(data->regmap);
-> +		goto error;
-> +	}
->  
->  	/* HW should be in enabled state to proceed */
-> -	if (!(readl_relaxed(base + data->soc_data->reg_enable) & 0x1)) {
-> +	ret = regmap_read(data->regmap, data->soc_data->reg_enable, &val);
-> +	if (ret)
-> +		goto error;
-> +
-> +	if (!(val & 0x1)) {
->  		dev_err(dev, "Domain-%d cpufreq hardware not enabled\n", index);
->  		ret = -ENODEV;
->  		goto error;
-> -- 
-> 2.17.1
-> 
+-- 
+Catalin
