@@ -2,232 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31CE026178C
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:37:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46B23261784
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:36:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727935AbgIHRhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 13:37:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731436AbgIHRfi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 13:35:38 -0400
-Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC13FC061573
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 10:35:37 -0700 (PDT)
-Received: by mail-vs1-xe44.google.com with SMTP id a16so9426814vsp.12
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 10:35:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jGxIFib/r1AIVUzF+ck89MPfdIoxyJ1DlRxuo3IZNeQ=;
-        b=NFJ5yExL7/3iQk83uUdYEh0bCvRb1MSngEDrzPI56Q9R9TU5wB44JoXh0X93C/OBPF
-         +G6RTxSI6s4NdshRb0TQfbOnAMNtqbyhgCkNMtPY81TUvxP380mkbh7S3EcM44rzP+LC
-         Oli4l27QuVi0RBnEg5H9F1NXjfK4SlQvmPzLKbYHwbnnHsaTl96d4q+7rg1HT2jLpKgL
-         ZVeNNk5uron6dcUdmrg5YPJxIiuZz/6yba0xlDbdEJMlJJjonQsvlvkgUOoKAfajpOHU
-         HMiH/IgF1BUM0h9bVsnKOdhtA5DiA+ivfpABT6AnhNgD8E9qEs+Iu4Mx0cIUDpEq6gT2
-         cmug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jGxIFib/r1AIVUzF+ck89MPfdIoxyJ1DlRxuo3IZNeQ=;
-        b=a5a7ODvoSK2EBRKWsAxybIhiULlQKBTU9aCMqeywbnVgXju4k9BJ2QvRayT3g7Atsx
-         lJcENmh78nUwVUKkpcGatmZ4rFnWbC/M2SkMNcjFy01O84oUl31LQXM+rsspCw8OmYHO
-         VwDGbE+pMdEWtcii/a4NQkTaHgNYylk0JioMf/vSg3+TYwQgrGlg+0N1fhUJqHAyfCHG
-         ELqA8q9wFEuj8OIMsxzEt3BSHp1uqzSZ9ZOIUhR+WtAA1xJZLeaz/CS846xLHh8NLWSX
-         rYjjtvEySaSwsfnf9IqRtRDWoVcjfHOVWS4eEuBBgR/qdjuAn0SZgifOqG6+KQskn97s
-         PlJA==
-X-Gm-Message-State: AOAM531I3cxMXO5rEGgaXUno+216IKMua/EILO/4PC2MJAcWAgbny5Lw
-        3XIU838OQci2V2Gh2mwbIpCHo0P4wnR8Tw==
-X-Google-Smtp-Source: ABdhPJyuIUl0/SPxVjgT+DGKmQonld71g0/PJibRYYf4mmHP6ackrP4d770L8tO9a30IA3OMHGjlCw==
-X-Received: by 2002:a67:ef52:: with SMTP id k18mr151169vsr.25.1599586536398;
-        Tue, 08 Sep 2020 10:35:36 -0700 (PDT)
-Received: from mail-vs1-f50.google.com (mail-vs1-f50.google.com. [209.85.217.50])
-        by smtp.gmail.com with ESMTPSA id s3sm1190001vkd.49.2020.09.08.10.35.35
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Sep 2020 10:35:35 -0700 (PDT)
-Received: by mail-vs1-f50.google.com with SMTP id q67so9478703vsd.5
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 10:35:35 -0700 (PDT)
-X-Received: by 2002:a67:f5d4:: with SMTP id t20mr176891vso.1.1599586534810;
- Tue, 08 Sep 2020 10:35:34 -0700 (PDT)
+        id S1731815AbgIHRgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 13:36:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36176 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731714AbgIHRfe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 13:35:34 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3168E205CB;
+        Tue,  8 Sep 2020 17:35:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599586530;
+        bh=nS0DnW4s01jgNMRrlByGFOMTsm9v8EwcKUyTzX+ckU0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=wb/rQpwrpp7DxJ1XepaUvRZ8Bn2q5gRTrnoD6mhshK7gbr8hLKzPsYnAXnzyqZaq1
+         0033ZXzHEVjCwhR6N2CxNCq1TSxO97tmariUaB+zbEL6Rldna4qkQ7eYqyz61dI+ez
+         3EbJ3aaJPUNdcc4vS/ojSabLkNbK3u/njhap4ov4=
+Date:   Tue, 8 Sep 2020 19:35:42 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Raul Rangel <rrangel@chromium.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        stable@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.4 031/129] mmc: sdhci-acpi: Fix HS400 tuning for
+ AMDI0040
+Message-ID: <20200908173542.GA220950@kroah.com>
+References: <20200908152229.689878733@linuxfoundation.org>
+ <20200908152231.250461330@linuxfoundation.org>
+ <CAHQZ30B5JzOwUhiyLsbbYpFJdWQeH6vR3Ze-Gtr5-BCnw1AVBw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20200901195415.4840-1-m-karicheri2@ti.com> <20200901195415.4840-2-m-karicheri2@ti.com>
- <CA+FuTScPZ5sfHBwbFKQza6w4G1UcO8DaqrcpFuSvr9svgMEepw@mail.gmail.com> <581a90d0-243e-f62e-1c2e-a9683807805c@ti.com>
-In-Reply-To: <581a90d0-243e-f62e-1c2e-a9683807805c@ti.com>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Tue, 8 Sep 2020 19:34:56 +0200
-X-Gmail-Original-Message-ID: <CA+FuTSdDqx8ZwmvLceygpxTDC9=S8=jqFRCTWFoW-6YwihXTUQ@mail.gmail.com>
-Message-ID: <CA+FuTSdDqx8ZwmvLceygpxTDC9=S8=jqFRCTWFoW-6YwihXTUQ@mail.gmail.com>
-Subject: Re: [PATCH net-next 1/1] net: hsr/prp: add vlan support
-To:     Murali Karicheri <m-karicheri2@ti.com>
-Cc:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>, nsekhar@ti.com,
-        Grygorii Strashko <grygorii.strashko@ti.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHQZ30B5JzOwUhiyLsbbYpFJdWQeH6vR3Ze-Gtr5-BCnw1AVBw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 8, 2020 at 6:39 PM Murali Karicheri <m-karicheri2@ti.com> wrote:
->
-> Hi Willem,
->
-> Thanks for the response!
-> On 9/4/20 11:45 AM, Willem de Bruijn wrote:
-> > On Tue, Sep 1, 2020 at 9:54 PM Murali Karicheri <m-karicheri2@ti.com> wrote:
-> >>
-> >> This patch add support for creating vlan interfaces
-> >> over hsr/prp interface.
-> >>
-> >> Signed-off-by: Murali Karicheri <m-karicheri2@ti.com>
-> >> ---
-> >>   net/hsr/hsr_device.c  |  4 ----
-> >>   net/hsr/hsr_forward.c | 16 +++++++++++++---
-> >>   2 files changed, 13 insertions(+), 7 deletions(-)
-> >>
-> >> diff --git a/net/hsr/hsr_device.c b/net/hsr/hsr_device.c
-> >> index ab953a1a0d6c..e1951579a3ad 100644
-> >> --- a/net/hsr/hsr_device.c
-> >> +++ b/net/hsr/hsr_device.c
-> >> @@ -477,10 +477,6 @@ void hsr_dev_setup(struct net_device *dev)
-> >>
-> >>          /* Prevent recursive tx locking */
-> >>          dev->features |= NETIF_F_LLTX;
-> >> -       /* VLAN on top of HSR needs testing and probably some work on
-> >> -        * hsr_header_create() etc.
-> >> -        */
-> >> -       dev->features |= NETIF_F_VLAN_CHALLENGED;
-> >>          /* Not sure about this. Taken from bridge code. netdev_features.h says
-> >>           * it means "Does not change network namespaces".
-> >>           */
-> >> diff --git a/net/hsr/hsr_forward.c b/net/hsr/hsr_forward.c
-> >> index cadfccd7876e..de21df30b0d9 100644
-> >> --- a/net/hsr/hsr_forward.c
-> >> +++ b/net/hsr/hsr_forward.c
-> >> @@ -208,6 +208,7 @@ static struct sk_buff *hsr_fill_tag(struct sk_buff *skb,
-> >>                                      struct hsr_port *port, u8 proto_version)
-> >>   {
-> >>          struct hsr_ethhdr *hsr_ethhdr;
-> >> +       unsigned char *pc;
-> >>          int lsdu_size;
-> >>
-> >>          /* pad to minimum packet size which is 60 + 6 (HSR tag) */
-> >> @@ -218,7 +219,18 @@ static struct sk_buff *hsr_fill_tag(struct sk_buff *skb,
-> >>          if (frame->is_vlan)
-> >>                  lsdu_size -= 4;
-> >>
-> >> -       hsr_ethhdr = (struct hsr_ethhdr *)skb_mac_header(skb);
-> >> +       pc = skb_mac_header(skb);
-> >> +       if (frame->is_vlan)
-> >> +               /* This 4-byte shift (size of a vlan tag) does not
-> >> +                * mean that the ethhdr starts there. But rather it
-> >> +                * provides the proper environment for accessing
-> >> +                * the fields, such as hsr_tag etc., just like
-> >> +                * when the vlan tag is not there. This is because
-> >> +                * the hsr tag is after the vlan tag.
-> >> +                */
-> >> +               hsr_ethhdr = (struct hsr_ethhdr *)(pc + VLAN_HLEN);
-> >> +       else
-> >> +               hsr_ethhdr = (struct hsr_ethhdr *)pc;
-> >
-> > Instead, I would pass the header from the caller, which knows the
-> > offset because it moves the previous headers to make space.
-> >
-> So if I understood you correctly a diff for the above would like this
-> where pass dst + movelen as  struct hsr_ethhdr *hsr_ethhdr
-> pointer to hsr_fill_tag(), right?
->
-> a0868495local@uda0868495:~/Projects/upstream-kernel$ git diff
-> diff --git a/net/hsr/hsr_forward.c b/net/hsr/hsr_forward.c
-> index de21df30b0d9..4d9192c8bcf8 100644
-> --- a/net/hsr/hsr_forward.c
-> +++ b/net/hsr/hsr_forward.c
-> @@ -204,11 +204,10 @@ static void hsr_set_path_id(struct hsr_ethhdr
-> *hsr_ethhdr,
->   }
->
->   static struct sk_buff *hsr_fill_tag(struct sk_buff *skb,
-> +                                   struct hsr_ethhdr *hsr_ethhdr,
->                                      struct hsr_frame_info *frame,
->                                      struct hsr_port *port, u8
-> proto_version)
->   {
-> -       struct hsr_ethhdr *hsr_ethhdr;
-> -       unsigned char *pc;
->          int lsdu_size;
->
->          /* pad to minimum packet size which is 60 + 6 (HSR tag) */
-> @@ -219,19 +218,6 @@ static struct sk_buff *hsr_fill_tag(struct sk_buff
-> *skb,
->          if (frame->is_vlan)
->                  lsdu_size -= 4;
->
-> -       pc = skb_mac_header(skb);
-> -       if (frame->is_vlan)
-> -               /* This 4-byte shift (size of a vlan tag) does not
-> -                * mean that the ethhdr starts there. But rather it
-> -                * provides the proper environment for accessing
-> -                * the fields, such as hsr_tag etc., just like
-> -                * when the vlan tag is not there. This is because
-> -                * the hsr tag is after the vlan tag.
-> -                */
-> -               hsr_ethhdr = (struct hsr_ethhdr *)(pc + VLAN_HLEN);
-> -       else
-> -               hsr_ethhdr = (struct hsr_ethhdr *)pc;
-> -
->          hsr_set_path_id(hsr_ethhdr, port);
->          set_hsr_tag_LSDU_size(&hsr_ethhdr->hsr_tag, lsdu_size);
->          hsr_ethhdr->hsr_tag.sequence_nr = htons(frame->sequence_nr);
-> @@ -280,10 +266,12 @@ struct sk_buff *hsr_create_tagged_frame(struct
-> hsr_frame_info *frame,
->          memmove(dst, src, movelen);
->          skb_reset_mac_header(skb);
->
-> -       /* skb_put_padto free skb on error and hsr_fill_tag returns NULL in
-> -        * that case
-> +       /* dst point to the start of hsr tag. So pass it to fill the
-> +        * hsr info. Also skb_put_padto free skb on error and hsr_fill_tag
-> +        * returns NULL in that case.
->           */
-> -       return hsr_fill_tag(skb, frame, port, port->hsr->prot_version);
-> +       return hsr_fill_tag(skb, (struct hsr_ethhdr *)(dst + movelen),
-> +                           frame, port, port->hsr->prot_version);
+On Tue, Sep 08, 2020 at 09:56:43AM -0600, Raul Rangel wrote:
+> So this patch had a bug in it. It was fixed with
+> https://patchwork.kernel.org/patch/11747031/
+> Commit d9fcc7130245d79a75e3f0348d3ef7297055cfd4 from
+> https://git.kernel.org/pub/scm/linux/kernel/git/ulfh/mmc.git
+> 
+> Should we pull that in too, or is it fine to wait for the next merge?
 
-It's a bit hard to see, since this is a draft patch on top of the
-existing patch. But I think so.
+It depends on wha tyou want to do.  I can drop this now and add both
+later, or just be "bug compatible" with Linus's tree until this patch
+gets merged into it, and then I can take it.
 
-Only, instead of dst + movelen, you can use src.
+Your call...
 
->   }
->
->
-> > Also, supporting VLAN probably also requires supporting 802.1ad QinQ,
-> > which means code should parse the headers instead of hardcoding
-> > VLAN_HLEN.
-> >
->
-> iec-62439-3 standard only talks about VLAN (TPID 0x8100), not about
-> QinQ. So what I could do is to check and bail out if 802.1ad frame is
-> received at the interface from upper layer. Something like below and
-> frame will get dropped.
->
-> @@ -519,6 +507,8 @@ static int fill_frame_info(struct hsr_frame_info *frame,
->
->          if (proto == htons(ETH_P_8021Q))
->                  frame->is_vlan = true;
-> +       else if (proto == htons(ETH_P_8021AD))
-> +               return -1; /* Don't support 802.1ad */
->
->          if (frame->is_vlan) {
->                  vlan_hdr = (struct hsr_vlan_ethhdr *)ethhdr;
->
-> What do you think?
+thanks,
 
-It's good to err on the safe side. That should probably be a separate patch.
+greg k-h
