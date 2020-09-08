@@ -2,215 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F8732619AA
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 20:25:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3498E2619AC
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 20:25:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732319AbgIHSWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 14:22:52 -0400
-Received: from nat-hk.nvidia.com ([203.18.50.4]:15656 "EHLO nat-hk.nvidia.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732292AbgIHSWn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 14:22:43 -0400
-Received: from hkpgpgate102.nvidia.com (Not Verified[10.18.92.9]) by nat-hk.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f57cbef0000>; Wed, 09 Sep 2020 02:22:39 +0800
-Received: from HKMAIL103.nvidia.com ([10.18.16.12])
-  by hkpgpgate102.nvidia.com (PGP Universal service);
-  Tue, 08 Sep 2020 11:22:39 -0700
-X-PGP-Universal: processed;
-        by hkpgpgate102.nvidia.com on Tue, 08 Sep 2020 11:22:39 -0700
-Received: from HKMAIL101.nvidia.com (10.18.16.10) by HKMAIL103.nvidia.com
- (10.18.16.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 8 Sep
- 2020 18:22:36 +0000
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.175)
- by HKMAIL101.nvidia.com (10.18.16.10) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Tue, 8 Sep 2020 18:22:36 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fQVHsMKUqPMTZ6PepGmxpcKUv7dYCMsx5vEaDc9f+Rn2dAdVBSYrrMWS7NGu/AS50HAoOFN8AY0yWdYmY41KWYOn2FqGemTufquk3NBCu7o2pGCZ0koq4fFEE1Dw+KJ1Y+sbiosLBYtUuVgRp3LR6brYBBGPizit8M7eiGHJOetkyHavXSu/yLYKvbPbaikTeWV/bxt+o9HVy7zM3Q0AXg0iDdoBI5P3u6G+NRy/RDwlJ27iWpTsvjDrHnwp9e6hI8ZB7e5TIbwd+lCxTc9R/SfoMztYuASyVYE1M5BJrx0s2ZSYH+OrrdyPeM+Wav+FIyv+D1JvgbYDfLPer7qABA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DrNqa2tfpqI0xmVcbkSOzziJOYMY7RmZ+mD5/66IPj4=;
- b=ilqcm0ztprLng6cTMd8B+4Qkdx+yHC/SQsnNei9tiPQltmbRYLLEuDfesfS1eDJ0j0sotvZ6GpEySulO3o8XqrKZqGW8ZOdltrIjascH2/n+TudUm23sWoyFlyFQwpIBnfVkaMM6p1sAjltpwR+MA8mqtWZDaLFrqqq0TxU/ZT7FXysVvUwQPG8f4aJpV8NNCXmQaOLANSJpV5yQ4AhEcoOOeQG4j6aqiiZ98bkuEo5V5eODPYk94KNRtfzUTacRhuIUJ1JJqZX589LpwBRK2/l0TdG1E5p4wSlftO4d1+L43MV3manOrwgNT55LZKi1GrKov09woOXrW2QayxM8mg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Authentication-Results: acm.org; dkim=none (message not signed)
- header.d=none;acm.org; dmarc=none action=none header.from=nvidia.com;
-Received: from BY5PR12MB3827.namprd12.prod.outlook.com (2603:10b6:a03:1ab::16)
- by BYAPR12MB2631.namprd12.prod.outlook.com (2603:10b6:a03:6b::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Tue, 8 Sep
- 2020 18:22:34 +0000
-Received: from BY5PR12MB3827.namprd12.prod.outlook.com
- ([fe80::445b:111e:a091:66f9]) by BY5PR12MB3827.namprd12.prod.outlook.com
- ([fe80::445b:111e:a091:66f9%6]) with mapi id 15.20.3348.019; Tue, 8 Sep 2020
- 18:22:33 +0000
-Date:   Tue, 8 Sep 2020 15:22:32 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Bart Van Assche <bvanassche@acm.org>
-CC:     Sagi Grimberg <sagi@grimberg.me>,
-        Yamin Friedman <yaminf@mellanox.com>,
-        kernel test robot <rong.a.chen@intel.com>,
-        Max Gurtovoy <maxg@mellanox.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg+lists@ziepe.ca>,
-        <linux-rdma@vger.kernel.org>, <lkp@lists.01.org>
-Subject: Re: [IB/srpt] c804af2c1d: last_state.test.blktests.exit_code.143
-Message-ID: <20200908182232.GP9166@nvidia.com>
-References: <20200802060925.GW23458@shao2-debian>
- <f8ef3284-4646-94d9-7eea-14ac0873b03b@acm.org>
- <ed6002b6-cd0c-55c5-c5a5-9c974a476a95@mellanox.com>
- <0c42aeb4-23a5-b9d5-bc17-ef58a04db8e8@grimberg.me>
- <128192ad-05ff-fa8e-14fc-479a115311e0@acm.org>
- <20200824133019.GH1152540@nvidia.com>
- <2a2ff3a5-f58e-8246-fd09-87029b562347@acm.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <2a2ff3a5-f58e-8246-fd09-87029b562347@acm.org>
-X-ClientProxiedBy: MN2PR12CA0010.namprd12.prod.outlook.com
- (2603:10b6:208:a8::23) To BY5PR12MB3827.namprd12.prod.outlook.com
- (2603:10b6:a03:1ab::16)
+        id S1731509AbgIHSZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 14:25:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23311 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726660AbgIHSZD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 14:25:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599589502;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=c4gcp/bZU9lgZw1R6KxJ0Pc2FZGgn2nf/f7K9pgTFxk=;
+        b=e9tOmp79VNZYasogx0gTaeVP1fnyO8K0hUA6absDu1o//DmzC5fRsPgFR6NxQGDFR+ixYN
+        iOQ+wywUndXQ/lssdiwUh6jbelfulkjxgAtkr82+KUgJAhpVIx5vdZpsC7w+o2xowYMVfb
+        yVgej6LY6w1ArKqH3hBoKA5VC/8vuFY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-143-9H-jqZILNf6yTEMqn5ySgw-1; Tue, 08 Sep 2020 14:23:36 -0400
+X-MC-Unique: 9H-jqZILNf6yTEMqn5ySgw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C191718B9EC4;
+        Tue,  8 Sep 2020 18:23:34 +0000 (UTC)
+Received: from llong.remote.csb (ovpn-118-102.rdu2.redhat.com [10.10.118.102])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 252CD83560;
+        Tue,  8 Sep 2020 18:23:34 +0000 (UTC)
+Subject: Re: [PATCH v3] debugobjects: install CPU hotplug callback
+To:     qiang.zhang@windriver.com, tglx@linutronix.de, mingo@kernel.org,
+        elver@google.com
+Cc:     linux-kernel@vger.kernel.org
+References: <20200908062709.11441-1-qiang.zhang@windriver.com>
+From:   Waiman Long <longman@redhat.com>
+Organization: Red Hat
+Message-ID: <3bcdacd0-10c4-78c0-6e63-a73811a0ced6@redhat.com>
+Date:   Tue, 8 Sep 2020 14:23:33 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR12CA0010.namprd12.prod.outlook.com (2603:10b6:208:a8::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.16 via Frontend Transport; Tue, 8 Sep 2020 18:22:33 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kFiGG-0034RU-1w; Tue, 08 Sep 2020 15:22:32 -0300
-X-Originating-IP: [156.34.48.30]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: cdf295b5-d919-4996-be48-08d8542427bd
-X-MS-TrafficTypeDiagnostic: BYAPR12MB2631:
-X-Microsoft-Antispam-PRVS: <BYAPR12MB263196681196454DF88120F6C2290@BYAPR12MB2631.namprd12.prod.outlook.com>
-X-MS-Exchange-Transport-Forked: True
-X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 3mi0gn1+u0BsiJfXkFdQGuJoTzEaZIZPCnK0DNvCzdY1U1IjMlGZNT9ywgVEs0m0YCla3PWb9PPXT+jUDTwhDwLBtN6BkhDz0s0EanPcGuUCgQFgRAFPeET7LgRY3cmYdSFAZIsl2ILaVlkQjWqIs9FqVj9xQWmIY5XcNm/thmUP9uDHGsZWkN4UpvZQG9NEpYbW7eV/fDy0M2MsGPIz5ZNHZg4MFY8Ss6UVnJfA1ETx3XJTdYHTbW/Me7pg1jJhkrisIu9bYB8jy1xfX4X+b7KLgB/SJU73BwP1agb28C6kPuXocCXr0uXB23Fcm4I0LZG89g0MfVoMtwX8VAthNA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB3827.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(396003)(346002)(39860400002)(136003)(1076003)(66946007)(8676002)(5660300002)(66476007)(66556008)(2906002)(36756003)(54906003)(186003)(6916009)(2616005)(8936002)(86362001)(426003)(478600001)(316002)(26005)(83380400001)(9746002)(33656002)(9786002)(4326008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: uvwcwRcHpyZuia+J5Cl1cPw/6JfzkbLVoFByM8zoW2YeDX+yfH/X0v3w0yChcbb815045KKT+LLOCL+vaT/zFgxY5Jk+1D+MREmFgien34XoSpV96RcwNVr4toR/O4GG+O4ix7xUuYl861DAuLBfxYUITAniS6G25I5Zjt5IDlDuK0Xi6+3ZOZ+nxkKrmS9qXd0RcBl+YUjf+9An5oDgKLs7FIZWLpE3eOo5qIBUbihO/MyhewdMlN11sVxVppQEkaRboI/ruIeppggxCHYtzvt2GxkYvLSt0pXAP+JAOkIEGSU6cwRN8O5K2+SHF4QaCkMeDrcY0ve55BSuawFNFBVZLpfQLQAzlJ9KJCBLWs4xA8j1QotWfpOg2qQPJAjW+K57sfz1NbfbLNJShaVlnKGFcFPerktAuWYUqfcW1H+B1u36vxdSGTJ2wB0i09EqzzJOi4IfOKR+wAiGY3+ZEI96ow0uVZmJG6l/9M7TN8vbAKefwWXxJ3wCRJO83dOGMLGrcq/iN86YqiGHzs32DMX8XY1zEf0NSodRKiucm0Gg8deq8/NaoZGj3kFfUDZLilSq8I9sVsZOd2S31y1LndygZfS4IRWnBrRF+CWDZX0t4dADiHOnCU39VhBRhSqjHa0/n6ZrNDeRULa5a9+MHw==
-X-MS-Exchange-CrossTenant-Network-Message-Id: cdf295b5-d919-4996-be48-08d8542427bd
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB3827.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Sep 2020 18:22:33.7905
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 0aMgjKbtHYUWBgwQdTg0YhjJxTppAn7FJZxemfNKGuahmv08W1YDxCZELd32OQsb
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB2631
-X-OriginatorOrg: Nvidia.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1599589359; bh=DrNqa2tfpqI0xmVcbkSOzziJOYMY7RmZ+mD5/66IPj4=;
-        h=X-PGP-Universal:ARC-Seal:ARC-Message-Signature:
-         ARC-Authentication-Results:Authentication-Results:Date:From:To:CC:
-         Subject:Message-ID:References:Content-Type:Content-Disposition:
-         In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType:X-Originating-IP:
-         X-MS-PublicTrafficType:X-MS-Office365-Filtering-Correlation-Id:
-         X-MS-TrafficTypeDiagnostic:X-Microsoft-Antispam-PRVS:
-         X-MS-Exchange-Transport-Forked:X-MS-Oob-TLC-OOBClassifiers:
-         X-MS-Exchange-SenderADCheck:X-Microsoft-Antispam:
-         X-Microsoft-Antispam-Message-Info:X-Forefront-Antispam-Report:
-         X-MS-Exchange-AntiSpam-MessageData:
-         X-MS-Exchange-CrossTenant-Network-Message-Id:
-         X-MS-Exchange-CrossTenant-AuthSource:
-         X-MS-Exchange-CrossTenant-AuthAs:
-         X-MS-Exchange-CrossTenant-OriginalArrivalTime:
-         X-MS-Exchange-CrossTenant-FromEntityHeader:
-         X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
-         X-MS-Exchange-CrossTenant-UserPrincipalName:
-         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
-        b=h5ETJitSxWq0Jrac/Z0e0pf3gIKYHCNZBvycwFaPjzq77jbJjlWIwrRHZoMirvB6f
-         nI27pe/jCy6hQyIL22w6hHVfTQhxKo4QY+XgD7Jx1U5eloYs+Vq5yiF+K/om7/ryTJ
-         nvfAV1uKAlynoukIVMQSoqBblEkNMjlfPh39OzX30PDSxb20FYNm0YMJqnMAzG7n/l
-         /LxpWPcCFRBGKzqmRJreolmkwt/ptHMSxzFU2Jy0PV9La29gLbNfhTTdlRQRBYDBzD
-         l1eUCFnS6nlM8n/nGRgBybH6G/PZzzKZTkYq5KAPDYYdztDhMRN2I048NKgpeLieky
-         JLbS9QcUw3DGQ==
+In-Reply-To: <20200908062709.11441-1-qiang.zhang@windriver.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 06, 2020 at 07:58:12PM -0700, Bart Van Assche wrote:
+On 9/8/20 2:27 AM, qiang.zhang@windriver.com wrote:
+> From: Zqiang <qiang.zhang@windriver.com>
+>
+> Due to CPU hotplug, it may never be online after it's offline,
+> some objects in percpu pool is never free. in order to avoid
+> this happening, install CPU hotplug callback, call this callback
+> func to free objects in percpu pool when CPU going offline.
+>
+> Signed-off-by: Zqiang <qiang.zhang@windriver.com>
+> ---
+>   v1->v2:
+>   Modify submission information.
+>
+>   v2->v3:
+>   In CPU hotplug callback func, add clear percpu pool "obj_free" operation.
+>   capitalize 'CPU', and use shorter preprocessor sequence.
+>
+>   include/linux/cpuhotplug.h |  1 +
+>   lib/debugobjects.c         | 24 ++++++++++++++++++++++++
+>   2 files changed, 25 insertions(+)
+>
+> diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
+> index 3215023d4852..0c39d57e5342 100644
+> --- a/include/linux/cpuhotplug.h
+> +++ b/include/linux/cpuhotplug.h
+> @@ -36,6 +36,7 @@ enum cpuhp_state {
+>   	CPUHP_X86_MCE_DEAD,
+>   	CPUHP_VIRT_NET_DEAD,
+>   	CPUHP_SLUB_DEAD,
+> +	CPUHP_DEBUG_OBJ_DEAD,
+>   	CPUHP_MM_WRITEBACK_DEAD,
+>   	CPUHP_MM_VMSTAT_DEAD,
+>   	CPUHP_SOFTIRQ_DEAD,
+> diff --git a/lib/debugobjects.c b/lib/debugobjects.c
+> index fe4557955d97..bb69a02c3e7b 100644
+> --- a/lib/debugobjects.c
+> +++ b/lib/debugobjects.c
+> @@ -19,6 +19,7 @@
+>   #include <linux/slab.h>
+>   #include <linux/hash.h>
+>   #include <linux/kmemleak.h>
+> +#include <linux/cpu.h>
+>   
+>   #define ODEBUG_HASH_BITS	14
+>   #define ODEBUG_HASH_SIZE	(1 << ODEBUG_HASH_BITS)
+> @@ -433,6 +434,24 @@ static void free_object(struct debug_obj *obj)
+>   	}
+>   }
+>   
+> +#ifdef CONFIG_HOTPLUG_CPU
+> +static int object_cpu_offline(unsigned int cpu)
+> +{
+> +	struct debug_percpu_free *percpu_pool;
+> +	struct hlist_node *tmp;
+> +	struct debug_obj *obj;
+> +
+> +	percpu_pool = per_cpu_ptr(&percpu_obj_pool, cpu);
+> +	hlist_for_each_entry_safe(obj, tmp, &percpu_pool->free_objs, node) {
+> +		hlist_del(&obj->node);
+> +		kmem_cache_free(obj_cache, obj);
+> +	}
+> +	percpu_pool->obj_free = 0;
 
-> The following appeared:
-> 
-> WARNING: CPU: 5 PID: 1760 at drivers/infiniband/core/device.c:335 ib_device_put+0xf2/0x100 [ib_core]
-> 
-> Call Trace:
->  rxe_elem_release+0x76/0x90 [rdma_rxe]
->  rxe_destroy_cq+0x4f/0x70 [rdma_rxe]
->  ib_free_cq_user+0x12b/0x2b0 [ib_core]
->  ib_cq_pool_destroy+0xa8/0x140 [ib_core]
->  __ib_unregister_device+0x9c/0x1c0 [ib_core]
->  ib_unregister_driver+0x181/0x1a0 [ib_core]
->  rxe_module_exit+0x31/0x50 [rdma_rxe]
->  __x64_sys_delete_module+0x22a/0x310
->  do_syscall_64+0x36/0x80
->  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+For pointer, it is better to use NULL for clarity.
 
-Oh interesting..
+Cheers,
+Longman
 
-> Do you agree that the above proves that the hang-on-unload is a
-> regression that has been introduced by the cq-pool patches? Is the patch
-> below a good way to fix this?
+> +
+> +	return 0;
+> +}
+> +#endif
+> +
+>   /*
+>    * We run out of memory. That means we probably have tons of objects
+>    * allocated.
+> @@ -1367,6 +1386,11 @@ void __init debug_objects_mem_init(void)
+>   	} else
+>   		debug_objects_selftest();
+>   
+> +#ifdef CONFIG_HOTPLUG_CPU
+> +	cpuhp_setup_state_nocalls(CPUHP_DEBUG_OBJ_DEAD, "object:offline", NULL,
+> +					object_cpu_offline);
+> +#endif
+> +
+>   	/*
+>   	 * Increase the thresholds for allocating and freeing objects
+>   	 * according to the number of possible CPUs available in the system.
 
-> +++ b/drivers/infiniband/core/device.c
-> @@ -1454,8 +1454,8 @@ static void __ib_unregister_device(struct ib_device *ib_dev)
->  	if (!refcount_read(&ib_dev->refcount))
->  		goto out;
-> 
-> -	disable_device(ib_dev);
->  	ib_cq_pool_destroy(ib_dev);
-> +	disable_device(ib_dev);
-> 
->  	/* Expedite removing unregistered pointers from the hash table */
->  	free_netdevs(ib_dev);
 
-Hum. Not quite..
-
-disable_device() ensures that all ib_clients have disconnected from
-the device, up until the clients have disconnected the cq_pool must
-remain operational.
-
-It is reasonable to consider the cq_pool as a built-in client, so I
-would suggest moving it to right around the time the dynamic clients
-are handled. Something like this:
-
-diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
-index c36b4d2b61e0c0..e3651dacad1da6 100644
---- a/drivers/infiniband/core/device.c
-+++ b/drivers/infiniband/core/device.c
-@@ -1285,6 +1285,8 @@ static void disable_device(struct ib_device *device)
- 		remove_client_context(device, cid);
- 	}
- 
-+	ib_cq_pool_destroy(ib_dev);
-+
- 	/* Pairs with refcount_set in enable_device */
- 	ib_device_put(device);
- 	wait_for_completion(&device->unreg_completion);
-@@ -1328,6 +1330,8 @@ static int enable_device_and_get(struct ib_device *device)
- 			goto out;
- 	}
- 
-+	ib_cq_pool_init(device);
-+
- 	down_read(&clients_rwsem);
- 	xa_for_each_marked (&clients, index, client, CLIENT_REGISTERED) {
- 		ret = add_client_context(device, client);
-@@ -1400,7 +1404,6 @@ int ib_register_device(struct ib_device *device, const char *name)
- 		goto dev_cleanup;
- 	}
- 
--	ib_cq_pool_init(device);
- 	ret = enable_device_and_get(device);
- 	dev_set_uevent_suppress(&device->dev, false);
- 	/* Mark for userspace that device is ready */
-@@ -1455,7 +1458,6 @@ static void __ib_unregister_device(struct ib_device *ib_dev)
- 		goto out;
- 
- 	disable_device(ib_dev);
--	ib_cq_pool_destroy(ib_dev);
- 
- 	/* Expedite removing unregistered pointers from the hash table */
- 	free_netdevs(ib_dev);
