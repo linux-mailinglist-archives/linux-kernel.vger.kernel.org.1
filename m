@@ -2,59 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0274261F84
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 22:04:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01E36261FD9
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 22:07:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732619AbgIHUEO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 16:04:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56068 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731189AbgIHUEL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 16:04:11 -0400
-Received: from localhost (35.sub-72-107-115.myvzw.com [72.107.115.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2EA1E2137B;
-        Tue,  8 Sep 2020 20:04:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599595449;
-        bh=gjCn8tZYO8EZEJxb6zWUNu7X0UN5/LfWTmKa1w9g2Vc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=ZsYb8GNf7AjNpQRxFz6SmTqBwka+1YvZm+hYRECMKuMbcynUOTDS8nDFcSqBwyfzY
-         5ufyoFCYUo/oNuTvQVY2ai6HleZ/LLOLme6ar1ouh9PoSalYQ7mDm6YU9NbxFEcmSh
-         gp4XRibiRPjXh1B6k1ZSyYuok22LvRfoGPO0jU+E=
-Date:   Tue, 8 Sep 2020 15:04:07 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Jianjun Wang <jianjun.wang@mediatek.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        davem@davemloft.net, linux-pci@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Sj Huang <sj.huang@mediatek.com>
-Subject: Re: [v1,1/3] dt-bindings: Add YAML schemas for Gen3 PCIe controller
-Message-ID: <20200908200407.GA628520@bjorn-Precision-5520>
+        id S1730720AbgIHUHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 16:07:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37690 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730240AbgIHUHP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 16:07:15 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B33C1C061573;
+        Tue,  8 Sep 2020 13:07:14 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id f18so61712pfa.10;
+        Tue, 08 Sep 2020 13:07:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=J2k9xpa9l+tbRJ/+vvItQDXmC64/jEuH8zJsr0tf6oA=;
+        b=CrmexfeQlkBwXK5cG+ePO2sdpsUPZnONXxWr/hg8KJjUjcaV7j/aXOa2NIQiuCONLC
+         90PGOGuGJhs+tn/dOaOybPQI3hkDS9/DYthQ4whqkws8ZDBOxHCqgZ9XQE/r1QO1SGHt
+         X3nIm8ttt4u91GG04u4UY4Bz9DZFr8zMg4JqV2Hd+WSMRI7t2FqSQW3pqmmHs0NvrUia
+         zwRwSHSpIbU9SQm2gT3tA6M+scVRa1erkkve0Ylf9GJqUJJOxh5ecCoK+RqswTulVpFI
+         bKRF/HqLkmb2i/japcvxpqX7E6ulyFgq1VRhJcXTzZ77FJH0PuByZFK1tQlTpc1PoKty
+         IXFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=J2k9xpa9l+tbRJ/+vvItQDXmC64/jEuH8zJsr0tf6oA=;
+        b=efQAlW8HF63VCa6F4rU2vQT476JUqY63uTwkyTbsEnNT+TolPp3D8nblkpKEnokPcF
+         E0HspIzVt4Dkbv8nbpLfTrB/4eOu78G+T/urfDKbmICNMMtYOfDg9fHiOiTDkYA0pikf
+         jKEGFDmc3ViXgIFCzC1ksE/ztBqSAsDlNJFiwIqq/x9nWkdCsZKFo3jv3hcgT9vbcAi6
+         VJdRAwuuv5sBR3j5h1ZlPCG8L1MmmhTWxZTZt3/pir9DgM0HnbLi61ElDCEO1Lk3RKNF
+         XlZc3964Kec3swq6rwerFXFMGNP3E69OLpdqzUtguVgKRIYaZuhz3AkFkQyPEuUTt/Xr
+         dDdg==
+X-Gm-Message-State: AOAM530Xo81Rne4sQfcR2XX3hUHEu1Uiha+hY/76F2YZhXpJwDs1rOR8
+        7YXWTioBLgPLQ9tdLBrp4g==
+X-Google-Smtp-Source: ABdhPJxwCwMDHBJXt83pjdnBKyh00EzfcLx4+iauDRFDYP1OihfBxFjkVtwmkrQFVz2ZgIbAEjY48w==
+X-Received: by 2002:a63:fd01:: with SMTP id d1mr319176pgh.350.1599595634182;
+        Tue, 08 Sep 2020 13:07:14 -0700 (PDT)
+Received: from localhost.localdomain (n11212042027.netvigator.com. [112.120.42.27])
+        by smtp.gmail.com with ESMTPSA id y24sm237023pfn.161.2020.09.08.13.07.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Sep 2020 13:07:13 -0700 (PDT)
+From:   Peilin Ye <yepeilin.cs@gmail.com>
+To:     Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>
+Cc:     Peilin Ye <yepeilin.cs@gmail.com>,
+        Miao-chen Chou <mcchou@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzkaller-bugs@googlegroups.com
+Subject: [Linux-kernel-mentees] [PATCH] Bluetooth: Fix memory leak in read_adv_mon_features()
+Date:   Tue,  8 Sep 2020 16:06:35 -0400
+Message-Id: <20200908200635.1099360-1-yepeilin.cs@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <00000000000033913705acedbd6b@google.com>
+References: <00000000000033913705acedbd6b@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200907120852.12090-2-jianjun.wang@mediatek.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 07, 2020 at 08:08:50PM +0800, Jianjun Wang wrote:
-> Add YAML schemas documentation for Gen3 PCIe controller on
-> MediaTek SoCs.
+read_adv_mon_features() is leaking memory. Free `rp` before returning.
 
-Please mention "mediatek" in the subject line so "git log --oneline"
-is more useful.
+Fixes: e5e1e7fd470c ("Bluetooth: Add handler of MGMT_OP_READ_ADV_MONITOR_FEATURES")
+Reported-and-tested-by: syzbot+f7f6e564f4202d8601c6@syzkaller.appspotmail.com
+Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
+---
+ net/bluetooth/mgmt.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-The convention (not universally observed) seems to be something like:
+diff --git a/net/bluetooth/mgmt.c b/net/bluetooth/mgmt.c
+index 5bbe71002fb9..f96251f818fc 100644
+--- a/net/bluetooth/mgmt.c
++++ b/net/bluetooth/mgmt.c
+@@ -4157,7 +4157,7 @@ static int read_adv_mon_features(struct sock *sk, struct hci_dev *hdev,
+ {
+ 	struct adv_monitor *monitor = NULL;
+ 	struct mgmt_rp_read_adv_monitor_features *rp = NULL;
+-	int handle;
++	int handle, err;
+ 	size_t rp_size = 0;
+ 	__u32 supported = 0;
+ 	__u16 num_handles = 0;
+@@ -4192,9 +4192,13 @@ static int read_adv_mon_features(struct sock *sk, struct hci_dev *hdev,
+ 	if (num_handles)
+ 		memcpy(&rp->handles, &handles, (num_handles * sizeof(u16)));
+ 
+-	return mgmt_cmd_complete(sk, hdev->id,
+-				 MGMT_OP_READ_ADV_MONITOR_FEATURES,
+-				 MGMT_STATUS_SUCCESS, rp, rp_size);
++	err = mgmt_cmd_complete(sk, hdev->id,
++				MGMT_OP_READ_ADV_MONITOR_FEATURES,
++				MGMT_STATUS_SUCCESS, rp, rp_size);
++
++	kfree(rp);
++
++	return err;
+ }
+ 
+ static int add_adv_patterns_monitor(struct sock *sk, struct hci_dev *hdev,
+-- 
+2.25.1
 
-  dt-bindings: PCI: <driver-name>: Add YAML schema
