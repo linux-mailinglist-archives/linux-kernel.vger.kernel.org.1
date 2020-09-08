@@ -2,185 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7F4926208F
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 22:13:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB8CA2620DC
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 22:16:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730810AbgIHUNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 16:13:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46396 "EHLO
+        id S1729960AbgIHUQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 16:16:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729990AbgIHPLM (ORCPT
+        with ESMTP id S1729940AbgIHPKB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:11:12 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD28DC0619EC
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 06:57:14 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id h4so17169243ioe.5
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 06:57:14 -0700 (PDT)
+        Tue, 8 Sep 2020 11:10:01 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 680CBC0619ED
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 06:58:19 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id jw11so2175289pjb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 06:58:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=lLPV/2TbMLCWwjxZmMjGQAv9RQQ5QdmKtS2Q2m060x4=;
-        b=uJazPLWezWgC/PxcgavzXTzULVjK+HH/0rnfAycuhBQCpgkDFk/fvQpqKS7RzEpiXG
-         ERAROiLm7VLunZJpzttkIeY7b1VyZ7vdAdTmly29bZuLWeEEHdxvjUkOpVL/XgnAQLYP
-         U563XLl1LCPU1Vs+xCapjB1tF5YvK5Li0o6rXx6tkcIIdFWG/q5TU59d1Vbfyhey0Iqk
-         FjDr8t0q6o0KqVSUzgviXQkWRhNR4U26NzOXYB0n6lNBNEhD4nJZeQCKGy7YfpsuHGrd
-         n/zLgKw2/0PIclu34Gpdgs81l5h979bDDAONUe9gK227ECpK+s8PjAKkmwpLLY/KXPFR
-         17Mg==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xfiGgLfl6xBSxCvQGQIeZLhg6EqD8qTgC7ENKGicg+c=;
+        b=LDlIF57Z6gkV3MrqfZIfCLnhf8F5yjfc1yJBhx2bdIN5a5XgB/V7XTL+ga5NXCd/qZ
+         2VGOlNA45XJrJMyum81fLgD4T1RTIx79vn8NhzsHCEDllluRnwA9PC9nn6P1ksavwRCB
+         IgA6kLxgf2XJsn+yAjnBbjp8qn27H9sdXsQewnZw8m1CTaPRSPFp0Y2tZpbSgLQn4pyh
+         1NHmJmv9zLqnontXUFeV+QLXvWDIRv7MHOq/GTF2hAwjyG20EaYI+SCDfqNBH7cddnBm
+         K4dkupJQ3dIXhNKwAwdAS7qabyhepDoofVJnhkpiF+heUMmOPJt2cQHbacS+py52G6Tv
+         BNww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=lLPV/2TbMLCWwjxZmMjGQAv9RQQ5QdmKtS2Q2m060x4=;
-        b=YFMCQzl9vfK27MG9rsHJD9t650DpdRaZ3ZOc3hAuJV2HvbOApfz645XXoeZUgwnnOZ
-         Puo5frVbiOHsq+YeFOALxUa4ULPBw1/IqS+15K5Ory0dvwm6ij43WOYjKRAtRQe5Z6qp
-         JcjAWUk88xiq3gTFBb5xMDgCX2H8JjagSYiaEq61hCYONw7bKT2W+fus+aYQyWkMzfA1
-         NCWVQm+dmMaEb83EXhk3qeSzqAugNzfSW7VuB6b450nxXsNRm5KIRA90g8i0sVky2Joj
-         JGiOhJaw2TYl+d7qhKU45oVOF2z3wt2OsaRwWRD9GelHbj2Y3yAS6Z6lh4ZkAjBKz6F/
-         lIIg==
-X-Gm-Message-State: AOAM532xtG8Vvy0fitN/Ph2j+Hv84/xC5zy2ZoVLUTHddZM5bnjp6Cru
-        S38w1opIkGgXevaLgixqrDlMmw==
-X-Google-Smtp-Source: ABdhPJxhox+LWrxM6t17Fh8h96lJUzdn1I3RGOvUMfkfWJnmtrv7CdbTJs/zo6NSzHwk+R3I3Syr5A==
-X-Received: by 2002:a6b:c8d6:: with SMTP id y205mr527426iof.177.1599573430313;
-        Tue, 08 Sep 2020 06:57:10 -0700 (PDT)
-Received: from [192.168.1.10] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id e28sm10512528ill.79.2020.09.08.06.57.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Sep 2020 06:57:09 -0700 (PDT)
-Subject: Re: [PATCH v6 3/3] io_uring: allow disabling rings during the
- creation
-To:     Stefano Garzarella <sgarzare@redhat.com>
-Cc:     Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        linux-fsdevel@vger.kernel.org, io-uring@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Jann Horn <jannh@google.com>, Jeff Moyer <jmoyer@redhat.com>,
-        Aleksa Sarai <asarai@suse.de>,
-        Sargun Dhillon <sargun@sargun.me>,
-        linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>
-References: <20200827145831.95189-1-sgarzare@redhat.com>
- <20200827145831.95189-4-sgarzare@redhat.com>
- <20200908134448.sg7evdrfn6xa67sn@steredhat>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <045e0907-4771-0b7f-d52a-4af8197e6954@kernel.dk>
-Date:   Tue, 8 Sep 2020 07:57:08 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xfiGgLfl6xBSxCvQGQIeZLhg6EqD8qTgC7ENKGicg+c=;
+        b=fWJO/7bTLkiHx5l1RY3nNm4XyB3FA48oq7X6H9kk1GYLWPuw93Nsp3KHpg8skGFnc9
+         fLf4YehkUYoSa0btwDjl1931y0+vMSYrhr1e9GyVvIV6N2x8Ez02UatxcmcKmwhO2V2O
+         qMOjKiP/vsciOBIZeG6VSDxDPDVzRMrXcCYvX8O55Cn9LZuY6sRY3nYh+rDgL7AD5b0l
+         AZ5J62kDQsbrU5MEqsbsu0mxNFn8OfyEQL6VC73tPZmyunVBi7OwgLydqsE0MofWrlNQ
+         t6YUfnsw3hvo9+lSrNGYsVZ3X/5D1s1xwrlwtep/0wKT+J8mArM1Com46ui5REXjHDsS
+         INPQ==
+X-Gm-Message-State: AOAM5304lUFgkPQfct2QqbTpEm3pCY8GxEVvBR5TxzDgaVLpuTCebxwh
+        UDfX55SkMbiMTLlxzYJ20FFgNC4LrLr0/M52pROhAw==
+X-Google-Smtp-Source: ABdhPJw07BDHsbBTDLIPmsUv1zZtOHUHA9N56e0pfTrdGItIGZC4D81LXYIMuWA4y2byBNnUAzkvFqrm6CoRO/YjQwI=
+X-Received: by 2002:a17:90a:81:: with SMTP id a1mr3972154pja.136.1599573498717;
+ Tue, 08 Sep 2020 06:58:18 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200908134448.sg7evdrfn6xa67sn@steredhat>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <cover.1597425745.git.andreyknvl@google.com> <ec314a9589ef8db18494d533b6eaf1fd678dc010.1597425745.git.andreyknvl@google.com>
+ <20200827103819.GE29264@gaia>
+In-Reply-To: <20200827103819.GE29264@gaia>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Tue, 8 Sep 2020 15:58:07 +0200
+Message-ID: <CAAeHK+wX-8=tCrn_Tx7NAhC4wVSvooB=CUZ9rS22mcGmkLa8cw@mail.gmail.com>
+Subject: Re: [PATCH 24/35] arm64: mte: Switch GCR_EL1 in kernel entry and exit
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/8/20 7:44 AM, Stefano Garzarella wrote:
-> Hi Jens,
-> 
-> On Thu, Aug 27, 2020 at 04:58:31PM +0200, Stefano Garzarella wrote:
->> This patch adds a new IORING_SETUP_R_DISABLED flag to start the
->> rings disabled, allowing the user to register restrictions,
->> buffers, files, before to start processing SQEs.
->>
->> When IORING_SETUP_R_DISABLED is set, SQE are not processed and
->> SQPOLL kthread is not started.
->>
->> The restrictions registration are allowed only when the rings
->> are disable to prevent concurrency issue while processing SQEs.
->>
->> The rings can be enabled using IORING_REGISTER_ENABLE_RINGS
->> opcode with io_uring_register(2).
->>
->> Suggested-by: Jens Axboe <axboe@kernel.dk>
->> Reviewed-by: Kees Cook <keescook@chromium.org>
->> Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
->> ---
->> v4:
->>  - fixed io_uring_enter() exit path when ring is disabled
->>
->> v3:
->>  - enabled restrictions only when the rings start
->>
->> RFC v2:
->>  - removed return value of io_sq_offload_start()
->> ---
->>  fs/io_uring.c                 | 52 ++++++++++++++++++++++++++++++-----
->>  include/uapi/linux/io_uring.h |  2 ++
->>  2 files changed, 47 insertions(+), 7 deletions(-)
->>
->> diff --git a/fs/io_uring.c b/fs/io_uring.c
->> index 5f62997c147b..b036f3373fbe 100644
->> --- a/fs/io_uring.c
->> +++ b/fs/io_uring.c
->> @@ -226,6 +226,7 @@ struct io_restriction {
->>  	DECLARE_BITMAP(sqe_op, IORING_OP_LAST);
->>  	u8 sqe_flags_allowed;
->>  	u8 sqe_flags_required;
->> +	bool registered;
->>  };
->>  
->>  struct io_ring_ctx {
->> @@ -7497,8 +7498,8 @@ static int io_init_wq_offload(struct io_ring_ctx *ctx,
->>  	return ret;
->>  }
->>  
->> -static int io_sq_offload_start(struct io_ring_ctx *ctx,
->> -			       struct io_uring_params *p)
->> +static int io_sq_offload_create(struct io_ring_ctx *ctx,
->> +				struct io_uring_params *p)
->>  {
->>  	int ret;
->>  
->> @@ -7532,7 +7533,6 @@ static int io_sq_offload_start(struct io_ring_ctx *ctx,
->>  			ctx->sqo_thread = NULL;
->>  			goto err;
->>  		}
->> -		wake_up_process(ctx->sqo_thread);
->>  	} else if (p->flags & IORING_SETUP_SQ_AFF) {
->>  		/* Can't have SQ_AFF without SQPOLL */
->>  		ret = -EINVAL;
->> @@ -7549,6 +7549,12 @@ static int io_sq_offload_start(struct io_ring_ctx *ctx,
->>  	return ret;
->>  }
->>  
->> +static void io_sq_offload_start(struct io_ring_ctx *ctx)
->> +{
->> +	if ((ctx->flags & IORING_SETUP_SQPOLL) && ctx->sqo_thread)
->> +		wake_up_process(ctx->sqo_thread);
->> +}
->> +
->>  static inline void __io_unaccount_mem(struct user_struct *user,
->>  				      unsigned long nr_pages)
->>  {
->> @@ -8295,6 +8301,9 @@ SYSCALL_DEFINE6(io_uring_enter, unsigned int, fd, u32, to_submit,
->>  	if (!percpu_ref_tryget(&ctx->refs))
->>  		goto out_fput;
->>  
->> +	if (ctx->flags & IORING_SETUP_R_DISABLED)
->> +		goto out_fput;
->> +
-> 
-> While writing the man page paragraph, I discovered that if the rings are
-> disabled I returned ENXIO error in io_uring_enter(), coming from the previous
-> check.
-> 
-> I'm not sure it is the best one, maybe I can return EBADFD or another
-> error.
-> 
-> What do you suggest?
+On Thu, Aug 27, 2020 at 12:38 PM Catalin Marinas
+<catalin.marinas@arm.com> wrote:
+>
+> On Fri, Aug 14, 2020 at 07:27:06PM +0200, Andrey Konovalov wrote:
+> > @@ -957,6 +984,7 @@ SYM_FUNC_START(cpu_switch_to)
+> >       mov     sp, x9
+> >       msr     sp_el0, x1
+> >       ptrauth_keys_install_kernel x1, x8, x9, x10
+> > +     mte_restore_gcr 1, x1, x8, x9
+> >       scs_save x0, x8
+> >       scs_load x1, x8
+> >       ret
+>
+> Since we set GCR_EL1 on exception entry and return, why is this needed?
+> We don't have a per-kernel thread GCR_EL1, it's global to all threads,
+> so I think cpu_switch_to() should not be touched.
 
-EBADFD seems indeed the most appropriate - the fd is valid, but not in the
-right state to do this.
-
-> I'll add a test for this case.
-
-Thanks!
-
--- 
-Jens Axboe
-
+Dropping this line from the diff leads to many false-positives... I'll
+leave this to Vincenzo.
