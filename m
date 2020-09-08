@@ -2,104 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4D14261970
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 20:14:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21DA0261994
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 20:21:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732294AbgIHSOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 14:14:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47440 "EHLO
+        id S1732099AbgIHSVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 14:21:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731854AbgIHSOS (ORCPT
+        with ESMTP id S1731513AbgIHSQO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 14:14:18 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F6B4C061755
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 11:14:17 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id y17so153481lfa.8
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 11:14:17 -0700 (PDT)
+        Tue, 8 Sep 2020 14:16:14 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78858C061756
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 11:16:03 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id z1so215781wrt.3
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 11:16:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kJ3ljRP1PgRw54jIC5gTvGtyMc45VqFJMstrdbMtx+8=;
-        b=T3guH4044UWDX5KPSunMEQmHeqrSj26rDjWAj/+rJoe1eDKvJU3Ic5nCrQ96J5+i+t
-         TZ5UQyD1VBTE66WnopwwccZGtD7nym6+GYbaxp2OB+C0cA/LP6AYd7h6ese5jpHgtpUQ
-         A1mvhQk+ngGAheHTyaJCRFXabP8OkkaeacE5w=
+        d=cumulusnetworks.com; s=google;
+        h=date:in-reply-to:references:mime-version:content-transfer-encoding
+         :subject:to:cc:from:message-id;
+        bh=N8TtjF7op38Ipqdy8ruAYnD1+q0nv/cwpgUpeRIlsl4=;
+        b=CHlchrubAIs2/TXBCYJlGSccVe9N3WapZsFSCeBRMAT5eqVJ1Sto6lGc1Qm4aHLvKZ
+         77fyP2eOqYSrVurkxn6cJ1AGLN6eCJ8cSO+zNkLYiiUhwyHLQZHhgEVOMvYdGm8G0ZMC
+         BI4fdF9wJLg03IznD6Fq0zC8BqWjXhU8LP+yk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kJ3ljRP1PgRw54jIC5gTvGtyMc45VqFJMstrdbMtx+8=;
-        b=PY9J0ZS0KfSea3llRLWUigMm8KiQhsdFZZlWBHzHJzUEdpLxz45D7mzMO9uDyjdhn5
-         speiLu+tNQNqnEmlMWSCHSHG9UVZnmzFkM6Ty8svILofb7Ozp2xmlWlLj6Nhy/YVRosn
-         sj+LVloOfE5iOVfKFGSDblhQehP0uyl8fqBsbz8E4PPf/gVH4iXTnPK9s/jF2bq9cNgR
-         79vMDAXt1r5E3mpzZvk+MWWIbjwRb0UpAxbTfpMlhcCtJIJAnqv5VZBOr/coM2FNfASl
-         e5S7x7/BhaoX3dlEgMOr1zAkLpYWi0LBzYGapW/VJZdO911VZk1HFSMoW+9JKwW/Zvv6
-         uNOg==
-X-Gm-Message-State: AOAM530R5SX97iLeAyOp2ztv3gOt7uOy8DTKscCFXyKtDEED/NNkJreC
-        xvssiAq9LegGobFT63Z8MjHCNkEGJVRz+w==
-X-Google-Smtp-Source: ABdhPJw2V1rzm52Ss3yMYnEgYuuhdDCrpcAS+gvV4s4L/ASieekOXav+Cspivufsxg12mfxwJsbG+A==
-X-Received: by 2002:ac2:5399:: with SMTP id g25mr114187lfh.137.1599588855262;
-        Tue, 08 Sep 2020 11:14:15 -0700 (PDT)
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
-        by smtp.gmail.com with ESMTPSA id g6sm70695lfh.18.2020.09.08.11.14.14
-        for <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:date:in-reply-to:references:mime-version
+         :content-transfer-encoding:subject:to:cc:from:message-id;
+        bh=N8TtjF7op38Ipqdy8ruAYnD1+q0nv/cwpgUpeRIlsl4=;
+        b=qQhfnUiFKedRx7mfAbJMV+PktilpgJ/ZY8dR/wDQCQ9+lg8tMCrvAaHe5hRAOq8eig
+         wpXXrYWfwACFKA6xCPD3gb3n+w5BaOL+6Gruu/XzVKcTjIhEwbZlR3BMmz9D7PnPJAz5
+         zW3elJRvBPulvQ1JeK3rYOMVSfh2zn9d8jkV4jTTe4ScSiGDqfKWqGGaVf/NXM//yDCS
+         PAcsIxCkPvwecAPuoTmMLzYb6JatDJ/UjpCOP+naAmvWNGNbDJruX5AWF0OgMndw1nyS
+         vAZwPYwV1GoPnZVmY8IfpW05Ta3/61nl9npJisMHlf77OtJ1rSqVd2J3BiDgTENqwEXL
+         737g==
+X-Gm-Message-State: AOAM530jmFM7NZuJY8gu9D1ycP8b2fEhe9TbcUetqZPU2DN2IbyhYA95
+        O8idL05Eg2Q5KmPCNcuhClzh/w==
+X-Google-Smtp-Source: ABdhPJzbN47yDdBOPE080tCOdGXZ05JHWTv5GvJlEr+LWJF2CDWB4rLzZDRfY9ynGEmyFVzR+kbsNQ==
+X-Received: by 2002:adf:f3cd:: with SMTP id g13mr877997wrp.298.1599588960755;
+        Tue, 08 Sep 2020 11:16:00 -0700 (PDT)
+Received: from localhost ([149.62.205.110])
+        by smtp.gmail.com with ESMTPSA id p11sm262199wma.11.2020.09.08.11.15.59
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Sep 2020 11:14:14 -0700 (PDT)
-Received: by mail-lf1-f49.google.com with SMTP id z19so164414lfr.4
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 11:14:14 -0700 (PDT)
-X-Received: by 2002:a19:745:: with SMTP id 66mr135177lfh.142.1599588854033;
- Tue, 08 Sep 2020 11:14:14 -0700 (PDT)
+        Tue, 08 Sep 2020 11:16:00 -0700 (PDT)
+Date:   Tue, 08 Sep 2020 21:15:56 +0300
+In-Reply-To: <20200908173624.160024-1-kuba@kernel.org>
+References: <20200908090049.7e528e7f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com> <20200908173624.160024-1-kuba@kernel.org>
 MIME-Version: 1.0
-References: <20200907082036.GC8084@alley>
-In-Reply-To: <20200907082036.GC8084@alley>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 8 Sep 2020 11:13:58 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiZUYjmPLiEaN5uHM4mGyYq8RBFvk=iZKkm9=8NxvcoZQ@mail.gmail.com>
-Message-ID: <CAHk-=wiZUYjmPLiEaN5uHM4mGyYq8RBFvk=iZKkm9=8NxvcoZQ@mail.gmail.com>
-Subject: Re: [GIT PULL] livepatching for 5.9-rc5
-To:     Petr Mladek <pmladek@suse.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        live-patching@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH net-next] rcu: prevent RCU_LOCKDEP_WARN() from swallowing the condition
+To:     Jakub Kicinski <kuba@kernel.org>, davem@davemloft.net
+CC:     netdev@vger.kernel.org, paulmck@kernel.org, joel@joelfernandes.org,
+        josh@joshtriplett.org, peterz@infradead.org,
+        christian.brauner@ubuntu.com, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sfr@canb.auug.org.au,
+        roopa@nvidia.com
+From:   nikolay@cumulusnetworks.com
+Message-ID: <5ABC15D5-3709-4CA4-A747-6A7812BB12DD@cumulusnetworks.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Josh,
-
-On Mon, Sep 7, 2020 at 1:20 AM Petr Mladek <pmladek@suse.com> wrote:
+On 8 September 2020 20:36:24 EEST, Jakub Kicinski <kuba@kernel=2Eorg> wrote=
+:
+>We run into a unused variable warning in bridge code when
+>variable is only used inside the condition of
+>rcu_dereference_protected()=2E
 >
-> - Workaround "unreachable instruction" objtool warnings that happen
->   with some compiler versions.
+> #define mlock_dereference(X, br) \
+>	rcu_dereference_protected(X, lockdep_is_held(&br->multicast_lock))
+>
+>Since on builds with CONFIG_PROVE_RCU=3Dn rcu_dereference_protected()
+>compiles to nothing the compiler doesn't see the variable use=2E
+>
+>Prevent the warning by adding the condition as dead code=2E
+>We need to un-hide the declaration of lockdep_tasklist_lock_is_held()
+>and fix a bug the crept into a net/sched header=2E
+>
+>Signed-off-by: Jakub Kicinski <kuba@kernel=2Eorg>
+>---
+> include/linux/rcupdate=2Eh   | 2 +-
+> include/linux/sched/task=2Eh | 2 --
+> include/net/sch_generic=2Eh  | 2 +-
+> 3 files changed, 2 insertions(+), 4 deletions(-)
+>
+>diff --git a/include/linux/rcupdate=2Eh b/include/linux/rcupdate=2Eh
+>index d15d46db61f7=2E=2Ecf3d3ba3f3e4 100644
+>--- a/include/linux/rcupdate=2Eh
+>+++ b/include/linux/rcupdate=2Eh
+>@@ -320,7 +320,7 @@ static inline void rcu_preempt_sleep_check(void) {
+>}
+>=20
+> #else /* #ifdef CONFIG_PROVE_RCU */
+>=20
+>-#define RCU_LOCKDEP_WARN(c, s) do { } while (0)
+>+#define RCU_LOCKDEP_WARN(c, s) do { } while (0 && (c))
+> #define rcu_sleep_check() do { } while (0)
+>=20
+> #endif /* #else #ifdef CONFIG_PROVE_RCU */
+>diff --git a/include/linux/sched/task=2Eh b/include/linux/sched/task=2Eh
+>index a98965007eef=2E=2E9f943c391df9 100644
+>--- a/include/linux/sched/task=2Eh
+>+++ b/include/linux/sched/task=2Eh
+>@@ -47,9 +47,7 @@ extern spinlock_t mmlist_lock;
+> extern union thread_union init_thread_union;
+> extern struct task_struct init_task;
+>=20
+>-#ifdef CONFIG_PROVE_RCU
+> extern int lockdep_tasklist_lock_is_held(void);
+>-#endif /* #ifdef CONFIG_PROVE_RCU */
+>=20
+> extern asmlinkage void schedule_tail(struct task_struct *prev);
+> extern void init_idle(struct task_struct *idle, int cpu);
+>diff --git a/include/net/sch_generic=2Eh b/include/net/sch_generic=2Eh
+>index d60e7c39d60c=2E=2Eeb68cc6e4e79 100644
+>--- a/include/net/sch_generic=2Eh
+>+++ b/include/net/sch_generic=2Eh
+>@@ -443,7 +443,7 @@ static inline bool
+>lockdep_tcf_proto_is_locked(struct tcf_proto *tp)
+> 	return lockdep_is_held(&tp->lock);
+> }
+> #else
+>-static inline bool lockdep_tcf_chain_is_locked(struct tcf_block
+>*chain)
+>+static inline bool lockdep_tcf_chain_is_locked(struct tcf_chain
+>*chain)
+> {
+> 	return true;
+> }
 
-I know I said this fixes things for me, but I just realized it doesn't entirely.
+Ah, you want to solve it for all=2E :)=20
+Looks and sounds good to me,=20
+Reviewed-by: Nikolay Aleksandrov <nikolay@cumulusnetworks=2Ecom>
 
-I wonder how I missed the remaining one:
-
-   arch/x86/kvm/vmx/vmx.o: warning: objtool:
-vmx_handle_exit_irqoff()+0x142: unreachable instruction
-
-so apparently gcc and objtool can still disagree even without that
-'-flive-patching'.
-
-The unreachable code in question is after the call to
-handle_external_interrupt_irqoff(), and while that function is a bit
-odd, in this case I think it's objtool that is wrong.
-
-I think that what happens is that the function doesn't have a 'ret'
-instruction, and instead returns by doing a tail-call to
-__sanitizer_cov_trace_pc with my config. And maybe that is what
-confuses objtool.
-
-This is current tip-of-git of my tree, with a allmodconfig build (but
-the actual config will then depend on things like the gcc plugins
-being there too, so you may not get exactly the same thing as I do)
-
-Josh? Am I missing something, and the objtool warning is valid? But
-yes, that code is doing some very very special stuff with that thunk
-call asm, so it's hard to read the asm.
-
-                  Linus
