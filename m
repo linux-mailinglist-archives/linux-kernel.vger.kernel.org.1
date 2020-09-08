@@ -2,122 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08A25260E7F
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 11:17:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80AB8260E86
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 11:18:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728889AbgIHJQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 05:16:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48530 "EHLO
+        id S1729023AbgIHJSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 05:18:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728676AbgIHJQt (ORCPT
+        with ESMTP id S1727995AbgIHJSC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 05:16:49 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD250C061573
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 02:16:48 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id c15so18247687wrs.11
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 02:16:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=ud5eXq/f7ttiKCnOrCMmEKLBqeYjRnDX92wx0r+MsTE=;
-        b=NL8BwwnZ1WalmVarCNmHCHmi2Z2GxeNt502RD2Grxx5Q8hCZYqpCkDDGZRhPCvBLcQ
-         alyouZXhFLTlyB45gRH5ouzXxEy4siKvIzUdYc4wxigA+G7X9jDQyB+QoPzJvfSvPgeH
-         mUjkfKiGBxhdxtcm4yeH7vxaxB7POtkObrcenqu0Yl/DfIfkFDWmTRNTApASEjzfAEF+
-         miXaAmeRuwJQTC440wW3f5z3WfdDDXhYtnKWGFqV0Jw06RZsM2JNSkXgKS9pCs/Ic/xi
-         6WPqlsmrDm2s9T9jkIr0bb724V36LfawAluCJ1hhXUAlbRMNbf5rTcwfNMLaMyWV0TPp
-         bIQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=ud5eXq/f7ttiKCnOrCMmEKLBqeYjRnDX92wx0r+MsTE=;
-        b=aO/xS8OLBapIjlVRsL8DKE1jtW6/eUKhZeV/Ktdo5zaUfAeRYNfC9F3R3C/FLbUDOu
-         ORsZXXbcn9oF8OnmrkG5EJsnfrEuV8mqlgYAiqVmV1ZD+tvw2TiQdo173KI6b1vsrMVS
-         0ht5KtZao3QjJjETntzkdHGt/ABA7IGm9olzhTMVO1Wg34cMh5K3ksVcN3S5U6413PVO
-         bwyA/KLVY8aOFjJyVrZJkYQCZzL9PZ+en7Q1J3We30+Ccdvvl3ghkXBZfds2P6/n64fM
-         2IYnilYoKk5uAne2opBhtvc8LTJtrD8A5gnndXcNA8NvAV5b0tCMv+lpdPgyLYCv6c6a
-         cTLw==
-X-Gm-Message-State: AOAM530KDidvKBa/M2B+EtwGk3Ztf0uupm3wBe/LFHBWFZdMcz1m2LGZ
-        HIsH8mQxbldlQrYUBUd6xl/W+w==
-X-Google-Smtp-Source: ABdhPJz4hMxCQOLcaNeIRFj4Tclw30RvSRCtXms6QHrOZSDB7iZvBDH454Qu/p0DHakAosfVDNEPow==
-X-Received: by 2002:a05:6000:12c3:: with SMTP id l3mr27312113wrx.164.1599556607196;
-        Tue, 08 Sep 2020 02:16:47 -0700 (PDT)
-Received: from dell ([91.110.221.204])
-        by smtp.gmail.com with ESMTPSA id h6sm30427645wmb.22.2020.09.08.02.16.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Sep 2020 02:16:46 -0700 (PDT)
-Date:   Tue, 8 Sep 2020 10:16:44 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Alain Volmat <avolmat@me.com>
-Cc:     Jassi Brar <jaswinder.singh@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Patrice Chotard <patrice.chotard@st.com>
-Subject: Re: [PATCH] mailbox: sti: fix struct description warnings
-Message-ID: <20200908091644.GK4400@dell>
-References: <20200831165201.23832-1-avolmat@me.com>
+        Tue, 8 Sep 2020 05:18:02 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ECF6C061573;
+        Tue,  8 Sep 2020 02:18:02 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Bm01K6s9tz9sSJ;
+        Tue,  8 Sep 2020 19:17:57 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1599556678;
+        bh=AGqEGVdDSR1eqYULm9R1gdR20ZUjvSYppBbyTkjhNuQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=UAB5Nn6ZKRMMT/n2ydNQyNCrC093HVGctdYGM0sf2FIl90qVSjopjx2Udls3bbuES
+         dMo+xlN7jhLrWI7kAgjIp83gL5kBcp20GqrNx4bU0oppTra/cQUnnBQdphqiBa5epk
+         Mzl6Q4ZnZpyRXaa3Bc0nmWBP3U20J1+1Ozaizxd0eGm3WOmyxNczrleWcfIk8Go9hL
+         deSdsO5hhI/AyZnMp128M8fhRfoazAk84KZOocxaFNwiUeaM4f6JttwTVLbUmNoVnc
+         rXd+UGwri/p1BDdrfPyIMAAiyGy0neHNQNhvZ323T9oNvVWpomUN0Wn54oqTrLfqJ5
+         zlVC66dADcDzw==
+Date:   Tue, 8 Sep 2020 19:17:57 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: linux-next: manual merge of the akpm-current tree with Linus' tree
+Message-ID: <20200908191757.3ff97cc4@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200831165201.23832-1-avolmat@me.com>
+Content-Type: multipart/signed; boundary="Sig_/G.7l04rUbkLX=soO+HJtrp_";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 31 Aug 2020, Alain Volmat wrote:
+--Sig_/G.7l04rUbkLX=soO+HJtrp_
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> Fix formating of struct description to avoid warning highlighted
-> by W=1 compilation.
-> 
-> Fixes: 9ef4546cbd7e ("mailbox: Add support for ST's Mailbox IP")
+Hi all,
 
-Please remove this tag.
+Today's linux-next merge of the akpm-current tree got a conflict in:
 
-This patch is not a Stable candidate.
+  .clang-format
 
-> Signed-off-by: Alain Volmat <avolmat@me.com>
-> ---
->  drivers/mailbox/mailbox-sti.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/mailbox/mailbox-sti.c b/drivers/mailbox/mailbox-sti.c
-> index 2baf69a0b81c..0f2bc09c364d 100644
-> --- a/drivers/mailbox/mailbox-sti.c
-> +++ b/drivers/mailbox/mailbox-sti.c
-> @@ -36,7 +36,7 @@
->  #define MBOX_BASE(mdev, inst)   ((mdev)->base + ((inst) * 4))
->  
->  /**
-> - * STi Mailbox device data
-> + * struct sti_mbox_device - STi Mailbox device data
->   *
->   * An IP Mailbox is currently composed of 4 instances
->   * Each instance is currently composed of 32 channels
-> @@ -60,7 +60,7 @@ struct sti_mbox_device {
->  };
->  
->  /**
-> - * STi Mailbox platform specific configuration
-> + * struct sti_mbox_pdata - STi Mailbox platform specific configuration
->   *
->   * @num_inst:	Maximum number of instances in one HW Mailbox
->   * @num_chan:	Maximum number of channel per instance
-> @@ -71,7 +71,7 @@ struct sti_mbox_pdata {
->  };
->  
->  /**
-> - * STi Mailbox allocated channel information
-> + * struct sti_channel - STi Mailbox allocated channel information
->   *
->   * @mdev:	Pointer to parent Mailbox device
->   * @instance:	Instance number channel resides in
+between commit:
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+  4e4bb894467c ("clang-format: Update with the latest for_each macro list")
+
+from Linus' tree and commits:
+
+  7008a2f408a3 ("memblock: implement for_each_reserved_mem_region() using _=
+_next_mem_region()")
+  203287621da3 ("memblock: use separate iterators for memory and reserved r=
+egions")
+
+from the akpm-current tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc .clang-format
+index badfc1ba440a,a118fdde25c1..000000000000
+--- a/.clang-format
++++ b/.clang-format
+@@@ -269,8 -267,7 +271,9 @@@ ForEachMacros
+    - 'for_each_process_thread'
+    - 'for_each_property_of_node'
+    - 'for_each_registered_fb'
+ +  - 'for_each_requested_gpio'
+ +  - 'for_each_requested_gpio_in_range'
++   - 'for_each_reserved_mem_range'
+    - 'for_each_reserved_mem_region'
+    - 'for_each_rtd_codec_dais'
+    - 'for_each_rtd_codec_dais_rollback'
+
+--Sig_/G.7l04rUbkLX=soO+HJtrp_
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9XTEUACgkQAVBC80lX
+0GzHKwf/SuC435HV4tJqICQxuHms12++D0vU4hzcc8tNzYT58BP4bNI97a3gnEjh
+XW+z6RMGEkmgURJmPo0XHmXIajuRCGyVagZlZ1Y4csT7oQvTWvvabDBnZGVpHDIl
+a9qpaMUA4AEOgrUqJjPJTDsnIyHipx8WmoKftL9xYsfls3IHmZvB/d46UmcP2eq+
+8q9aNNLtl958L3D3N2pdSo1SWu1x0yNyb4yN7uIMDrVuuCinYiNOt475Qyo0WQgN
+YRsHPiZTUESVcu50u6J6EPSq5oM5rFoxI+4oDkxqPxa6ui259X+Pt5vfAl2nuqV6
+DeXjlJWF0WybzhHrUvn+jYTHycSZSg==
+=zZ9E
+-----END PGP SIGNATURE-----
+
+--Sig_/G.7l04rUbkLX=soO+HJtrp_--
