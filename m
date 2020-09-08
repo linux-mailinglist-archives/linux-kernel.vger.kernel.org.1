@@ -2,101 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E985926159D
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:53:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5EB52615D8
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:57:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732113AbgIHQxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 12:53:49 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:50086 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1732103AbgIHQwv (ORCPT
+        id S1731823AbgIHQ5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 12:57:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35508 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731432AbgIHQ5B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:52:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599583969;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=x9IxqrF0vyUOtjvBry7cfcM/diY+UKBt1XA6JqwfYSo=;
-        b=QFniC5E5mJEAJPULqEfmSh2CTyjfTdMP3rLoFG+qswrohq79XA60HpXYYwKVB+6VaEetCw
-        ZlB2XBpImhAEQegzLm+Pv719KD5gP9ZND2i8LB0KgC6Ko7EV4Gtyw6K2M5xEMWgkqPenV+
-        iDgkicFGxXxJcnjdt5NEt0T7IZPycWY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-484-YZ65STXjPaa0J3He7po5SQ-1; Tue, 08 Sep 2020 12:52:46 -0400
-X-MC-Unique: YZ65STXjPaa0J3He7po5SQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C565618BE163;
-        Tue,  8 Sep 2020 16:52:44 +0000 (UTC)
-Received: from steredhat.redhat.com (ovpn-112-55.ams2.redhat.com [10.36.112.55])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8568761176;
-        Tue,  8 Sep 2020 16:52:43 +0000 (UTC)
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     io-uring@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH for-next] io_uring: return EBADFD when ring isn't in the right state
-Date:   Tue,  8 Sep 2020 18:52:42 +0200
-Message-Id: <20200908165242.124957-1-sgarzare@redhat.com>
+        Tue, 8 Sep 2020 12:57:01 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0501C061573;
+        Tue,  8 Sep 2020 09:57:01 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id w7so11464622pfi.4;
+        Tue, 08 Sep 2020 09:57:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kBD1EJXPjVAPBpvdc8wf1ILIVz5P8vX0mxtXEPwALzw=;
+        b=Ele0Rrax+SxCArR7vCT+Ep4XzRpupXA++JWD3kHsYCsN5NDhZAVsIEGGQQ88ehNC5R
+         46X0/j2chtpx+hmu9XItNJmS3if7iMfnXSYDV1uEJMrQHQDW22kF9ka/I3di4/dJSFYF
+         4mtMnPvRlqjWvbhmtg21sQpyMB8u4w4i21teNB+X3EFAJhMHaLCu5aKE2z+IrKZzcuRB
+         8LmD1TVvq7PW+2h4Y8+DchxExEX+odbLBhJV+TqhWyBPLlyj/IFZkOOwXg5f6T1hM9cn
+         I1yEt6NQJu3QdvQoIL6YzFaipMpF4S26ypm5drRygYvWFfuiOGAdfr8wrkQXzy2hLNNH
+         xKCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kBD1EJXPjVAPBpvdc8wf1ILIVz5P8vX0mxtXEPwALzw=;
+        b=ixkI/jGdZJVTUcZNk2LluRjrMzZAUr8tN10xq39LAgE2+PMkJBWfYgTUYSDHf4x5M7
+         qfJv8mz5yVUeLJgxRnAdYy2Rg5dHyOA6NIiiKxVOS0zP1/hpUPTgBDJokrQMU+yIM/J0
+         8TKnxXMRpuirmFfytgFIn/kn5pghLEr3LAxmM28QTG7ZwhhRc41sL1df8b/ydAvZzPpZ
+         pEKE42QFA3McF7EjW1vTOMFc0QGOJqsf4dFUTH1JHo7FRbsLj7Aqw/B17vDtauae895c
+         n4Ja4C8FCnWvgY5d4zI8bW7HBVR1XnZJZbC1SU8fVdZLjcGcrCqeX07gXU0tiFmMmc7H
+         EL7g==
+X-Gm-Message-State: AOAM532m5CC7SJB4bfTPY0ocr/WWt6HyYdUv/P9JRusBiWdw5Pxo/sFT
+        +2VdxOsiBWDvBCJs/y7X5z4=
+X-Google-Smtp-Source: ABdhPJwZxemNY6Dve6ZxiSwz4vCGjA5iIlNIPUHL3l9AnM4JkFzTMbYq7IAQKVpAR9CjNuYYwMBgSQ==
+X-Received: by 2002:a05:6a00:8c5:b029:13e:ce2c:88bd with SMTP id s5-20020a056a0008c5b029013ece2c88bdmr96593pfu.0.1599584221085;
+        Tue, 08 Sep 2020 09:57:01 -0700 (PDT)
+Received: from gmail.com ([106.201.26.241])
+        by smtp.gmail.com with ESMTPSA id h15sm4467pfo.23.2020.09.08.09.56.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Sep 2020 09:57:00 -0700 (PDT)
+Date:   Tue, 8 Sep 2020 22:24:58 +0530
+From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bjorn Helgaas <bjorn@helgaas.com>,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
+        Adam Radford <aradford@gmail.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Adaptec OEM Raid Solutions <aacraid@microsemi.com>,
+        Hannes Reinecke <hare@suse.com>,
+        Bradley Grove <linuxdrivers@attotech.com>,
+        John Garry <john.garry@huawei.com>,
+        Don Brace <don.brace@microsemi.com>,
+        James Smart <james.smart@broadcom.com>,
+        Dick Kennedy <dick.kennedy@broadcom.com>,
+        Kashyap Desai <kashyap.desai@broadcom.com>,
+        Sumit Saxena <sumit.saxena@broadcom.com>,
+        Shivasharan S <shivasharan.srikanteshwara@broadcom.com>,
+        Sathya Prakash <sathya.prakash@broadcom.com>,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+        Suganath Prabu Subramani 
+        <suganath-prabu.subramani@broadcom.com>,
+        Jack Wang <jinpu.wang@cloud.ionos.com>
+Cc:     Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-scsi@vger.kernel.org, esc.storagedev@microsemi.com,
+        megaraidlinux.pdl@broadcom.com, MPT-FusionLinux.pdl@broadcom.com
+Subject: Re: [PATCH v2 00/15] scsi: use generic power management
+Message-ID: <20200908165458.GA9948@gmail.com>
+References: <20200720133427.454400-1-vaibhavgupta40@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200720133427.454400-1-vaibhavgupta40@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch uniforms the returned error (EBADFD) when the ring state
-(enabled/disabled) is not the expected one.
+On Mon, Jul 20, 2020 at 07:04:13PM +0530, Vaibhav Gupta wrote:
+> Linux Kernel Mentee: Remove Legacy Power Management.
+> 
+> The purpose of this patch series is to upgrade power management in scsi
+> drivers. This has been done by upgrading .suspend() and .resume() callbacks.
+> 
+> The upgrade makes sure that the involvement of PCI Core does not change the
+> order of operations executed in a driver. Thus, does not change its behavior.
+> 
+> In general, drivers with legacy PM, .suspend() and .resume() make use of PCI
+> helper functions like pci_request/release_regions(), pci_set_power_state(),
+> pci_save/restore_state(), pci_enable/disable_device(), etc. to complete
+> their job.
+> 
+> The conversion requires the removal of those function calls, change the
+> callbacks' definition accordingly and make use of dev_pm_ops structure.
+> 
+> v2: kbuild error in v1.
+> 
+> All patches are compile-tested only.
+> 
+> Test tools:
+>     - Compiler: gcc (GCC) 10.1.0
+>     - allmodconfig build: make -j$(nproc) W=1 all
+> 
+> Vaibhav Gupta (15):
+>   scsi: megaraid_sas: use generic power management
+>   scsi: aacraid: use generic power management
+>   scsi: aic7xxx: use generic power management
+>   scsi: aic79xx: use generic power management
+>   scsi: arcmsr: use generic power management
+>   scsi: esas2r: use generic power management
+>   scsi: hisi_sas_v3_hw: use generic power management
+>   scsi: mpt3sas_scsih: use generic power management
+>   scsi: lpfc: use generic power management
+>   scsi: pm_8001: use generic power management
+>   scsi: hpsa: use generic power management
+>   scsi: 3w-9xxx: use generic power management
+>   scsi: 3w-sas: use generic power management
+>   scsi: mvumi: use generic power management
+>   scsi: pmcraid: use generic power management
+> 
+>  drivers/scsi/3w-9xxx.c                    |  30 ++-----
+>  drivers/scsi/3w-sas.c                     |  31 ++-----
+>  drivers/scsi/aacraid/linit.c              |  34 ++------
+>  drivers/scsi/aic7xxx/aic79xx.h            |  12 +--
+>  drivers/scsi/aic7xxx/aic79xx_core.c       |   8 +-
+>  drivers/scsi/aic7xxx/aic79xx_osm_pci.c    |  43 +++-------
+>  drivers/scsi/aic7xxx/aic79xx_pci.c        |   6 +-
+>  drivers/scsi/aic7xxx/aic7xxx.h            |  10 +--
+>  drivers/scsi/aic7xxx/aic7xxx_core.c       |   6 +-
+>  drivers/scsi/aic7xxx/aic7xxx_osm_pci.c    |  46 +++-------
+>  drivers/scsi/aic7xxx/aic7xxx_pci.c        |   4 +-
+>  drivers/scsi/arcmsr/arcmsr_hba.c          |  35 +++-----
+>  drivers/scsi/esas2r/esas2r.h              |   5 +-
+>  drivers/scsi/esas2r/esas2r_init.c         |  48 +++--------
+>  drivers/scsi/esas2r/esas2r_main.c         |   3 +-
+>  drivers/scsi/hisi_sas/hisi_sas_v3_hw.c    |  32 +++----
+>  drivers/scsi/hpsa.c                       |  12 +--
+>  drivers/scsi/lpfc/lpfc_init.c             | 100 +++++++---------------
+>  drivers/scsi/megaraid/megaraid_sas_base.c |  61 ++++---------
+>  drivers/scsi/mpt3sas/mpt3sas_scsih.c      |  36 +++-----
+>  drivers/scsi/mvumi.c                      |  49 +++--------
+>  drivers/scsi/pm8001/pm8001_init.c         |  46 ++++------
+>  drivers/scsi/pmcraid.c                    |  44 +++-------
+>  23 files changed, 212 insertions(+), 489 deletions(-)
+> 
+> -- 
+> 2.27.0
+> 
+Please review the patch-series.
 
-The changes affect io_uring_enter() and io_uring_register() syscalls.
-
-Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
----
-
-Hi Jens,
-I also updated the test/register-restrictions in liburing here:
-
-https://github.com/stefano-garzarella/liburing (branch: fix-disabled-ring-error)
-
-Thanks,
-Stefano
----
- fs/io_uring.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index 0490edfcdd88..cf5992e79d88 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -8642,6 +8642,7 @@ SYSCALL_DEFINE6(io_uring_enter, unsigned int, fd, u32, to_submit,
- 	if (!percpu_ref_tryget(&ctx->refs))
- 		goto out_fput;
- 
-+	ret = -EBADFD;
- 	if (ctx->flags & IORING_SETUP_R_DISABLED)
- 		goto out_fput;
- 
-@@ -9137,7 +9138,7 @@ static int io_register_restrictions(struct io_ring_ctx *ctx, void __user *arg,
- 
- 	/* Restrictions allowed only if rings started disabled */
- 	if (!(ctx->flags & IORING_SETUP_R_DISABLED))
--		return -EINVAL;
-+		return -EBADFD;
- 
- 	/* We allow only a single restrictions registration */
- 	if (ctx->restrictions.registered)
-@@ -9201,7 +9202,7 @@ static int io_register_restrictions(struct io_ring_ctx *ctx, void __user *arg,
- static int io_register_enable_rings(struct io_ring_ctx *ctx)
- {
- 	if (!(ctx->flags & IORING_SETUP_R_DISABLED))
--		return -EINVAL;
-+		return -EBADFD;
- 
- 	if (ctx->restrictions.registered)
- 		ctx->restricted = 1;
--- 
-2.26.2
-
+Thanks
+Vaibhav Gupta
