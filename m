@@ -2,716 +2,374 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE0D1261FAD
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 22:05:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8480D262078
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 22:12:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732628AbgIHUFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 16:05:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48184 "EHLO
+        id S1732142AbgIHUMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 16:12:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730339AbgIHPV5 (ORCPT
+        with ESMTP id S1730085AbgIHPLR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:21:57 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2F5FC0610E7;
-        Tue,  8 Sep 2020 07:13:57 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id g10so14937418otq.9;
-        Tue, 08 Sep 2020 07:13:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=QuCdJp7fuF3IlctDr5pW61taqFMBuAP7yj9Twes+C6k=;
-        b=QilGWhhIew5U04Xe/0pm3ijt99NemNcN+h0pefsfay4n1+9VtHRTQ97DyX5Xh8UkfF
-         ti6DohhsDrjY2432MnuxffSJLPdMqo9SnxPA+sZ5NZnDmeJZBfGhv4FZRoH9Zc0qHm1l
-         ogVj5F1i/XDO57JvJBKV1vuDIcf+QWV5Qr8MtwElj3BXzDCWbJoPUpHtVxdjk02k2Mya
-         zxkrWjAifTSPQHnmIIqyAq/rapLD7WUNB+57x/q383im9BY+BHdsgP+1TPJn6BEiucop
-         xVD+plSmhYpSb12yOdAgfoqkbSZupu8AH0bDjTr5UTJpvD9XcU9ZHh+iOHXClQfshWwO
-         rliw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=QuCdJp7fuF3IlctDr5pW61taqFMBuAP7yj9Twes+C6k=;
-        b=czpEQdBerKxpAf8hibPNBhpZzMLSFMA035g1M9mT5vuswfG+oQ6QAz7KOulyuV2d0+
-         ZJR1WK/3lC/DP0DI/dNbFf1Aava01RzOsroXS3O0bvDACEraNx0wnJFupTzjBvab3G8y
-         0f/3NV27UiGk9Y9pY2KNMG/D47VsFW1m+Rm19qtNWsKccUCXqgdyEp0Rt5bkgwYLHVHP
-         Yb1Ie9KODW/E7GGM6+IuMlfy5YMW+e/r6smQELy56CsJYN9VJyjKYSI6fQkbdRMXAU34
-         ZfQtEPO1lq8XyoVihm+ft3CjHMeP86D8WUWQVNIZbgXnvqxArk+S0U6cBISJfLQy0haV
-         ooqA==
-X-Gm-Message-State: AOAM5305UG17wuPQKomgwgCZifW7I1qrQjGH1S8UrprlEzmft3r4uhnJ
-        cWH70knZypvC+wXync135Rc=
-X-Google-Smtp-Source: ABdhPJxTffbm+3bmB4JlBUS+4TXHg8MjK/Ckajkr3dOD5bb9YaMCgbIqMOQYUzVQeEdfU/yLLtR69A==
-X-Received: by 2002:a05:6830:1e39:: with SMTP id t25mr13760996otr.8.1599574437095;
-        Tue, 08 Sep 2020 07:13:57 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id f94sm3468570otb.29.2020.09.08.07.13.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Sep 2020 07:13:56 -0700 (PDT)
-Subject: Re: [PATCH] hwmon: intel-m10-bmc-hwmon: add hwmon support for Intel
- MAX 10 BMC
-To:     Xu Yilun <yilun.xu@intel.com>, jdelvare@suse.com,
-        lee.jones@linaro.org, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     trix@redhat.com, matthew.gerlach@linux.intel.com,
-        russell.h.weight@intel.com, lgoncalv@redhat.com, hao.wu@intel.com,
-        mdf@kernel.org
-References: <1599546140-18804-1-git-send-email-yilun.xu@intel.com>
- <1599546140-18804-2-git-send-email-yilun.xu@intel.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <7db3f229-e39e-50fa-1647-1da09471d785@roeck-us.net>
-Date:   Tue, 8 Sep 2020 07:13:54 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 8 Sep 2020 11:11:17 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D146C08C5EC;
+        Tue,  8 Sep 2020 07:21:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=MPwAIvnP40BQ87EjqZR+JTSVrA6ypmXnTLqQLqznNVs=; b=tO/onPvc8bfM24T/VKAXSEcpeX
+        1XQVoYcwieAKL9wiX7084FOfl2fcmh0JTqxOM+bYbbPciFDsvcExuDE+yaoZKr9ruZbezgzKGfXCM
+        OFwjcq1xvJmhlcr0H8b8nkNdFNK2ZXS5KSCvbUpTcpKWseGC3Vyu80iKxadc7q7P6PyHeLowuxNNO
+        ixrHAWonqTBlddycvk6XR9T+LgQgoMVorlwRHsYqKIGv2lB1Q9vgiivoAQhZyyiue8s6yTrJ0emO9
+        f1xdNC1autNRkagwkbdwbzn4fdy+8yYFBhmKe8O5NGVHd+9/8JaGdPW74/gmLCEtaOMvneGjFsBYr
+        3JuvedCQ==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kFeUy-0001HL-DW; Tue, 08 Sep 2020 14:21:28 +0000
+Date:   Tue, 8 Sep 2020 15:21:28 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Ethan Zhao <haifeng.zhao@intel.com>
+Cc:     axboe@kernel.dk, bhelgaas@google.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        mcgrof@kernel.org, ShanshanX.Zhang@intel.com, pei.p.jia@intel.com,
+        Ming Lei <ming.lei@redhat.com>
+Subject: Re: [PATCH] Revert "block: revert back to synchronous request_queue
+ removal"
+Message-ID: <20200908142128.GA3463@infradead.org>
+References: <20200908075047.5140-1-haifeng.zhao@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <1599546140-18804-2-git-send-email-yilun.xu@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200908075047.5140-1-haifeng.zhao@intel.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/7/20 11:22 PM, Xu Yilun wrote:
-> This patch adds hwmon functionality for Intel MAX 10 BMC chip. This BMC
-> chip connects to a set of sensor chips to monitor current, voltage,
-> thermal and power of different components on board. The BMC firmware is
-> responsible for sensor data sampling and recording in shared registers.
-> Host driver reads the sensor data from these shared registers and
-> exposes them to users as hwmon interfaces.
+On Tue, Sep 08, 2020 at 03:50:48AM -0400, Ethan Zhao wrote:
+> From: Ethan Zhao <Haifeng.Zhao@intel.com>
 > 
-> Signed-off-by: Xu Yilun <yilun.xu@intel.com>
-> Signed-off-by: Wu Hao <hao.wu@intel.com>
-> Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
-> Signed-off-by: Tom Rix <trix@redhat.com>
+> 'commit e8c7d14ac6c3 ("block: revert back to synchronous request_queue
+> removal")' introduced panic issue to NVMe hotplug as following(hit
+> after just 2 times NVMe SSD hotplug under stable 5.9-RC2):
+
+I'm pretty sure Ming has already fixed this by not calling put_device
+from the rcu callbackm which is the real issue here.
+
+And even if that wasn't the case we generally try to fix bugs instead of
+going to a blind revert without much analysis.
+
+> 
+> BUG: sleeping function called from invalid context at block/genhd.c:1563
+> in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 0, name: swapper/30
+> INFO: lockdep is turned off.
+> CPU: 30 PID: 0 Comm: swapper/30 Tainted: G S      W         5.9.0-RC2 #3
+> Hardware name: Intel Corporation xxxxxxxx
+> Call Trace:
+> <IRQ>
+> dump_stack+0x9d/0xe0
+> ___might_sleep.cold.79+0x17f/0x1af
+> disk_release+0x26/0x200
+> device_release+0x6d/0x1c0
+> kobject_put+0x14d/0x430
+> hd_struct_free+0xfb/0x260
+> percpu_ref_switch_to_atomic_rcu+0x3d1/0x580
+> ? rcu_nocb_unlock_irqrestore+0xb6/0xf0
+> ? trace_hardirqs_on+0x20/0x1b5
+> ? rcu_do_batch+0x3ff/0xb50
+> rcu_do_batch+0x47c/0xb50
+> ? rcu_accelerate_cbs+0xa9/0x740
+> ? rcu_spawn_one_nocb_kthread+0x3d0/0x3d0
+> rcu_core+0x945/0xd90
+> ? __do_softirq+0x182/0xac0
+> __do_softirq+0x1ca/0xac0
+> asm_call_on_stack+0xf/0x20
+> </IRQ>
+> do_softirq_own_stack+0x7f/0x90
+> irq_exit_rcu+0x1e3/0x230
+> sysvec_apic_timer_interrupt+0x48/0xb0
+> asm_sysvec_apic_timer_interrupt+0x12/0x20
+> RIP: 0010:cpuidle_enter_state+0x116/0xe90
+> Code: 00 31 ff e8 ac c8 a4 fe 80 7c 24 10 00 74 12 9c 58 f6 c4 02
+>  0f 85 7e 08 00 00 31 ff e8 43 ca be fe e8 ae a3 d5 fe fb 45 85 ed
+>  <0f> 88 4e 05 00 00 4d 63 f5 49 83 fe 09 0f 87 29 0b 00 00 4b 8d 04
+> RSP: 0018:ff110001040dfd78 EFLAGS: 00000206
+> RAX: 0000000000000007 RBX: ffd1fff7b1a01e00 RCX: 000000000000001f
+> RDX: 0000000000000000 RSI: 0000000040000000 RDI: ffffffffb7c5c0f2
+> RBP: ffffffffb9a416a0 R08: 0000000000000000 R09: 0000000000000000
+> R10: ff110001040d0007 R11: ffe21c002081a000 R12: 0000000000000003
+> R13: 0000000000000003 R14: 0000000000000138
+> ... ...
+> BUG: kernel NULL pointer dereference, address: 0000000000000000
+> PGD 0
+> Oops: 0010 [#1] SMP KASAN NOPTI
+> CPU: 30 PID: 500 Comm: irq/124-pciehp Tainted: G S  W  5.9.0-RC2 #3
+> Hardware name: Intel Corporation xxxxxxxx
+> RIP: 0010:0x0
+> Code: Bad RIP value.
+> RSP: 0018:ff110007d5ba75e8 EFLAGS: 00010096
+> RAX: 0000000000000000 RBX: ff110001040d0000 RCX: ff110007d5ba7668
+> RDX: 0000000000000009 RSI: ff110001040d0000 RDI: ff110008119f59c0
+> RBP: ff110008119f59c0 R08: fffffbfff73f7b4d R09: fffffbfff73f7b4d
+> R10: ffffffffb9fbda67 R11: fffffbfff73f7b4c R12: 0000000000000000
+> R13: ff110007d5ba7668 R14: ff110001040d0000 R15: ff110008119f59c0
+> FS:  0000000000000000(0000) GS:ff11000811800000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: ffffffffffffffd6 CR3: 00000007cea16002 CR4: 0000000000771ee0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> PKRU: 55555554
+> Call Trace:
+> ttwu_do_activate+0xd3/0x160
+> try_to_wake_up+0x652/0x1850
+> ? migrate_swap_stop+0xad0/0xad0
+> ? lock_contended+0xd70/0xd70
+> ? rcu_read_unlock+0x50/0x50
+> ? rcu_do_batch+0x3ff/0xb50
+> swake_up_locked+0x85/0x1c0
+> complete+0x4d/0x70
+> rcu_do_batch+0x47c/0xb50
+> ? rcu_spawn_one_nocb_kthread+0x3d0/0x3d0
+> rcu_core+0x945/0xd90
+> ? __do_softirq+0x182/0xac0
+> __do_softirq+0x1ca/0xac0
+> irq_exit_rcu+0x1e3/0x230
+> sysvec_apic_timer_interrupt+0x48/0xb0
+> asm_sysvec_apic_timer_interrupt+0x12/0x20
+> RIP: 0010:_raw_spin_unlock_irqrestore+0x40/0x50
+> Code: e8 35 ad 36 fe 48 89 ef e8 cd ce 37 fe f6 c7 02 75 11 53 9d
+>  e8 91 1f 5c fe 65 ff 0d ba af c2 47 5b 5d c3 e8 d2 22 5c fe 53 9d
+>  <eb> ed 0f 1f 40 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 53
+> RSP: 0018:ff110007d5ba79d0 EFLAGS: 00000293
+> RAX: 0000000000000007 RBX: 0000000000000293 RCX: ffffffffb67710d4
+> RDX: 0000000000000000 RSI: 0000000000000004 RDI: ffffffffb83f41ce
+> RBP: ffffffffbb77e740 R08: 0000000000000000 R09: 0000000000000000
+> R10: ffffffffbb77e743 R11: fffffbfff76efce8 R12: 000000000000198e
+> R13: ff11001031d7a0b0 R14: ffffffffbb77e740 R15: ffffffffbb77e788
+> ? do_raw_spin_unlock+0x54/0x230
+> ? _raw_spin_unlock_irqrestore+0x3e/0x50
+> dma_debug_device_change+0x150/0x5e0
+> notifier_call_chain+0x90/0x160
+> __blocking_notifier_call_chain+0x6d/0xa0
+> device_release_driver_internal+0x37d/0x490
+> pci_stop_bus_device+0x123/0x190
+> pci_stop_and_remove_bus_device+0xe/0x20
+> pciehp_unconfigure_device+0x17e/0x330
+> ? pciehp_configure_device+0x3e0/0x3e0
+> ? trace_hardirqs_on+0x20/0x1b5
+> pciehp_disable_slot+0x101/0x360
+> ? pme_is_native.cold.2+0x29/0x29
+> pciehp_handle_presence_or_link_change+0x1ac/0xee0
+> ? pciehp_handle_disable_request+0x110/0x110
+> pciehp_ist.cold.11+0x39/0x54
+> ? pciehp_set_indicators+0x190/0x190
+> ? alloc_desc+0x510/0xa30
+> ? irq_set_affinity_notifier+0x380/0x380
+> ? pciehp_set_indicators+0x190/0x190
+> ? irq_thread+0x137/0x420
+> irq_thread_fn+0x86/0x150
+> irq_thread+0x21f/0x420
+> ? irq_forced_thread_fn+0x170/0x170
+> ? irq_thread_check_affinity+0x210/0x210
+> ? __kthread_parkme+0x52/0x1a0
+> ? lockdep_hardirqs_on_prepare+0x33e/0x4e0
+> ? _raw_spin_unlock_irqrestore+0x3e/0x50
+> ? trace_hardirqs_on+0x20/0x1b5
+> ? wake_threads_waitq+0x40/0x40
+> ? __kthread_parkme+0xd1/0x1a0
+> ? irq_thread_check_affinity+0x210/0x210
+> kthread+0x36a/0x430
+> ? kthread_create_worker_on_cpu+0xc0/0xc0
+> ret_from_fork+0x1f/0x30
+> ... ...
+> CR2: 0000000000000000
+> ---[ end trace cedc4047ef91d2ec ]---
+> 
+> Seems scheduling happened within hardware interrupt context, after
+> reverted this patch, stable 5.9-RC4 build was tested with more than 20
+> times NVMe SSD hotplug, no panic found.
+> 
+> This reverts commit e8c7d14ac6c37c173ec606907d38802b00302988.
+> 
+> Tested-by: Shanshan Zhang <ShanshanX.Zhang@intel.com>
+> Signed-off-by: Ethan Zhao <Haifeng.Zhao@intel.com>
 > ---
->  drivers/hwmon/Kconfig               |  11 +
->  drivers/hwmon/Makefile              |   1 +
->  drivers/hwmon/intel-m10-bmc-hwmon.c | 516 ++++++++++++++++++++++++++++++++++++
-
-Documentation/hwmon/intel-m10-bmc-hwmon is missing
-
->  3 files changed, 528 insertions(+)
->  create mode 100644 drivers/hwmon/intel-m10-bmc-hwmon.c
+>  block/blk-core.c       |  8 --------
+>  block/blk-sysfs.c      | 43 +++++++++++++++++++++---------------------
+>  block/genhd.c          | 17 -----------------
+>  include/linux/blkdev.h |  2 ++
+>  4 files changed, 23 insertions(+), 47 deletions(-)
 > 
-> diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
-> index 8dc28b2..53af15c 100644
-> --- a/drivers/hwmon/Kconfig
-> +++ b/drivers/hwmon/Kconfig
-> @@ -2064,6 +2064,17 @@ config SENSORS_XGENE
->  	  If you say yes here you get support for the temperature
->  	  and power sensors for APM X-Gene SoC.
+> diff --git a/block/blk-core.c b/block/blk-core.c
+> index 10c08ac50697..1b18a0ef5db1 100644
+> --- a/block/blk-core.c
+> +++ b/block/blk-core.c
+> @@ -325,9 +325,6 @@ EXPORT_SYMBOL_GPL(blk_clear_pm_only);
+>   *
+>   * Decrements the refcount of the request_queue kobject. When this reaches 0
+>   * we'll have blk_release_queue() called.
+> - *
+> - * Context: Any context, but the last reference must not be dropped from
+> - *          atomic context.
+>   */
+>  void blk_put_queue(struct request_queue *q)
+>  {
+> @@ -360,14 +357,9 @@ EXPORT_SYMBOL_GPL(blk_set_queue_dying);
+>   *
+>   * Mark @q DYING, drain all pending requests, mark @q DEAD, destroy and
+>   * put it.  All future requests will be failed immediately with -ENODEV.
+> - *
+> - * Context: can sleep
+>   */
+>  void blk_cleanup_queue(struct request_queue *q)
+>  {
+> -	/* cannot be called from atomic context */
+> -	might_sleep();
+> -
+>  	WARN_ON_ONCE(blk_queue_registered(q));
 >  
-> +config SENSORS_INTEL_M10_BMC_HWMON
-> +	tristate "Intel MAX10 BMC Hardware Monitoring"
-> +	depends on MFD_INTEL_M10_BMC
-> +	help
-> +	  This driver provides support for the hardware monitoring functionality
-> +	  on Intel MAX10 BMC chip.
-> +
-> +	  This BMC Chip is used on Intel FPGA PCIe Acceleration Cards (PAC). Its
-> +	  sensors monitor various telemetry data of different components on the
-> +	  card, e.g. board temperature, FPGA core temperature/voltage/current.
-> +
->  if ACPI
+>  	/* mark @q DYING, no new request or merges will be allowed afterwards */
+> diff --git a/block/blk-sysfs.c b/block/blk-sysfs.c
+> index 7dda709f3ccb..eb347cbe0f93 100644
+> --- a/block/blk-sysfs.c
+> +++ b/block/blk-sysfs.c
+> @@ -901,32 +901,22 @@ static void blk_exit_queue(struct request_queue *q)
+>  	bdi_put(q->backing_dev_info);
+>  }
 >  
->  comment "ACPI drivers"
-> diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
-> index a8f4b35..ba5a25a 100644
-> --- a/drivers/hwmon/Makefile
-> +++ b/drivers/hwmon/Makefile
-> @@ -90,6 +90,7 @@ obj-$(CONFIG_SENSORS_IIO_HWMON) += iio_hwmon.o
->  obj-$(CONFIG_SENSORS_INA209)	+= ina209.o
->  obj-$(CONFIG_SENSORS_INA2XX)	+= ina2xx.o
->  obj-$(CONFIG_SENSORS_INA3221)	+= ina3221.o
-> +obj-$(CONFIG_SENSORS_INTEL_M10_BMC_HWMON) += intel-m10-bmc-hwmon.o
->  obj-$(CONFIG_SENSORS_IT87)	+= it87.o
->  obj-$(CONFIG_SENSORS_JC42)	+= jc42.o
->  obj-$(CONFIG_SENSORS_K8TEMP)	+= k8temp.o
-> diff --git a/drivers/hwmon/intel-m10-bmc-hwmon.c b/drivers/hwmon/intel-m10-bmc-hwmon.c
-> new file mode 100644
-> index 0000000..43e55e7
-> --- /dev/null
-> +++ b/drivers/hwmon/intel-m10-bmc-hwmon.c
-> @@ -0,0 +1,516 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Intel MAX 10 BMC HWMON Driver
-> + *
-> + * Copyright (C) 2018-2020 Intel Corporation. All rights reserved.
-> + *
-> + */
-> +#include <linux/device.h>
-> +#include <linux/hwmon.h>
-> +#include <linux/hwmon-sysfs.h>
-
-Unnecessary include file.
-
-> +#include <linux/mfd/intel-m10-bmc.h>
-> +#include <linux/module.h>
-> +#include <linux/mod_devicetable.h>
-> +#include <linux/platform_device.h>
 > +
-> +enum m10bmc_channel_type {
-> +	M10BMC_CHT_TEMP,
-> +	M10BMC_CHT_IN,
-> +	M10BMC_CHT_CURR,
-> +	M10BMC_CHT_POWER,
-> +	M10BMC_CHT_MAX,
-> +};
-> +
-> +struct m10bmc_sdata {
-> +	unsigned int type;
-> +	unsigned int reg_input;
-> +	unsigned int reg_max;
-> +	unsigned int reg_crit;
-> +	unsigned int reg_hyst;
-> +	unsigned int reg_min;
-> +	unsigned int multiplier;
-> +	const char *label;
-> +};
-> +
-> +static struct m10bmc_sdata n3000bmc_sensor_tbl[] = {
-
-Can be const
-
-> +	{ M10BMC_CHT_TEMP, 0x100, 0x104, 0x108, 0x10c, 0x0, 500,
-> +	 "Board Temperature" },
-> +	{ M10BMC_CHT_TEMP, 0x110, 0x114, 0x118, 0x0, 0x0, 500,
-> +	 "FPGA Die Temperature" },
-> +	{ M10BMC_CHT_TEMP, 0x11c, 0x120, 0x124, 0x0, 0x0, 500,
-> +	 "QSFP0 Temperature" },
-> +	{ M10BMC_CHT_IN, 0x128, 0x0, 0x0, 0x0, 0x0, 1,
-> +	 "QSFP0 Supply Voltage" },
-> +	{ M10BMC_CHT_TEMP, 0x12c, 0x130, 0x134, 0x0, 0x0, 500,
-> +	 "QSFP1 Temperature" },
-> +	{ M10BMC_CHT_IN, 0x138, 0x0, 0x0, 0x0, 0x0, 1,
-> +	 "QSFP1 Supply Voltage" },
-> +	{ M10BMC_CHT_IN, 0x13c, 0x0, 0x0, 0x0, 0x0, 1,
-> +	 "FPGA Core Voltage" },
-> +	{ M10BMC_CHT_CURR, 0x140, 0x0, 0x0, 0x0, 0x0, 1,
-> +	 "FPGA Core Current" },
-> +	{ M10BMC_CHT_IN, 0x144, 0x0, 0x0, 0x0, 0x0, 1,
-> +	 "12V Backplane Voltage" },
-> +	{ M10BMC_CHT_CURR, 0x148, 0x0, 0x0, 0x0, 0x0, 1,
-> +	 "12V Backplane Current" },
-> +	{ M10BMC_CHT_IN, 0x14c, 0x0, 0x0, 0x0, 0x0, 1,
-> +	 "1.2V Voltage" },
-> +	{M10BMC_CHT_IN, 0x150, 0x0, 0x0, 0x0, 0x0, 1,
-> +	 "12V AUX Voltage" },
-> +	{ M10BMC_CHT_CURR, 0x154, 0x0, 0x0, 0x0, 0x0, 1,
-> +	 "12V AUX Current" },
-> +	{ M10BMC_CHT_IN, 0x158, 0x0, 0x0, 0x0, 0x0, 1,
-> +	 "1.8V Voltage" },
-> +	{ M10BMC_CHT_IN, 0x15c, 0x0, 0x0, 0x0, 0x0, 1,
-> +	 "3.3V Voltage" },
-> +	{ M10BMC_CHT_POWER, 0x160, 0x0, 0x0, 0x0, 0x0, 1000,
-> +	 "Board Power" },
-> +	{ M10BMC_CHT_TEMP, 0x168, 0x0, 0x0, 0x0, 0x0, 500,
-> +	 "Retimer A Temperature" },
-> +	{ M10BMC_CHT_TEMP, 0x16c, 0x0, 0x0, 0x0, 0x0, 500,
-> +	 "Retimer A SerDes Temperature" },
-> +	{ M10BMC_CHT_TEMP, 0x170, 0x0, 0x0, 0x0, 0x0, 500,
-> +	 "Retimer B Temperature" },
-> +	{ M10BMC_CHT_TEMP, 0x174, 0x0, 0x0, 0x0, 0x0, 500,
-> +	 "Retimer B SerDes Temperature" },
-> +	{ M10BMC_CHT_MAX } /* sentinel */
-> +};
-> +
-> +struct m10bmc_ch_group {
-> +	int num_channels;
-> +	struct m10bmc_sdata **data_list;
-> +	u32 *config;
-> +	struct hwmon_channel_info info;
-> +};
-> +
-> +struct m10bmc_hwmon {
-> +	struct device *dev;
-> +	struct m10bmc_ch_group chgs[M10BMC_CHT_MAX];
-> +	/* This is a NULL terminated array required by the HWMON interface */
-> +	const struct hwmon_channel_info *info[M10BMC_CHT_MAX + 1];
-> +	struct hwmon_chip_info chip;
-> +	char *hw_name;
-> +	struct intel_m10bmc *m10bmc;
-> +	struct m10bmc_sdata *data_tbl;
-> +};
-> +
-> +static enum m10bmc_channel_type
-> +htype_to_ctype(enum hwmon_sensor_types htype)
+>  /**
+> - * blk_release_queue - releases all allocated resources of the request_queue
+> - * @kobj: pointer to a kobject, whose container is a request_queue
+> - *
+> - * This function releases all allocated resources of the request queue.
+> - *
+> - * The struct request_queue refcount is incremented with blk_get_queue() and
+> - * decremented with blk_put_queue(). Once the refcount reaches 0 this function
+> - * is called.
+> - *
+> - * For drivers that have a request_queue on a gendisk and added with
+> - * __device_add_disk() the refcount to request_queue will reach 0 with
+> - * the last put_disk() called by the driver. For drivers which don't use
+> - * __device_add_disk() this happens with blk_cleanup_queue().
+> + * __blk_release_queue - release a request queue
+> + * @work: pointer to the release_work member of the request queue to be released
+>   *
+> - * Drivers exist which depend on the release of the request_queue to be
+> - * synchronous, it should not be deferred.
+> - *
+> - * Context: can sleep
+> + * Description:
+> + *     This function is called when a block device is being unregistered. The
+> + *     process of releasing a request queue starts with blk_cleanup_queue, which
+> + *     set the appropriate flags and then calls blk_put_queue, that decrements
+> + *     the reference counter of the request queue. Once the reference counter
+> + *     of the request queue reaches zero, blk_release_queue is called to release
+> + *     all allocated resources of the request queue.
+>   */
+> -static void blk_release_queue(struct kobject *kobj)
+> +static void __blk_release_queue(struct work_struct *work)
+>  {
+> -	struct request_queue *q =
+> -		container_of(kobj, struct request_queue, kobj);
+> -
+> -	might_sleep();
+> +	struct request_queue *q = container_of(work, typeof(*q), release_work);
+>  
+>  	if (test_bit(QUEUE_FLAG_POLL_STATS, &q->queue_flags))
+>  		blk_stat_remove_callback(q, q->poll_cb);
+> @@ -958,6 +948,15 @@ static void blk_release_queue(struct kobject *kobj)
+>  	call_rcu(&q->rcu_head, blk_free_queue_rcu);
+>  }
+>  
+> +static void blk_release_queue(struct kobject *kobj)
 > +{
-> +	switch (htype) {
-> +	case hwmon_temp:
-> +		return M10BMC_CHT_TEMP;
-> +	case hwmon_in:
-> +		return M10BMC_CHT_IN;
-> +	case hwmon_curr:
-> +		return M10BMC_CHT_CURR;
-> +	case hwmon_power:
-> +		return M10BMC_CHT_POWER;
-> +	default:
-> +		return M10BMC_CHT_MAX;
-> +	}
+> +	struct request_queue *q =
+> +		container_of(kobj, struct request_queue, kobj);
+> +
+> +	INIT_WORK(&q->release_work, __blk_release_queue);
+> +	schedule_work(&q->release_work);
 > +}
 > +
-> +static enum hwmon_sensor_types
-> +ctype_to_htype(enum m10bmc_channel_type ctype)
-> +{
-> +	switch (ctype) {
-> +	case M10BMC_CHT_TEMP:
-> +		return hwmon_temp;
-> +	case M10BMC_CHT_IN:
-> +		return hwmon_in;
-> +	case M10BMC_CHT_CURR:
-> +		return hwmon_curr;
-> +	case M10BMC_CHT_POWER:
-> +		return hwmon_power;
-> +	default:
-> +		return hwmon_max;
-> +	}
-> +}
-> +
-> +static umode_t
-> +m10bmc_hwmon_is_visible(const void *data, enum hwmon_sensor_types type,
-> +			u32 attr, int channel)
-> +{
-> +	return 0444;
-
-It is quite unusual that limit attributes are read-only, but I guess
-that is your call.
-
-> +}
-> +
-> +static struct m10bmc_sdata *
-> +find_sensor_data(struct m10bmc_hwmon *hw, enum hwmon_sensor_types htype,
-> +		 int channel)
-> +{
-> +	enum m10bmc_channel_type ctype = htype_to_ctype(htype);
-> +	struct m10bmc_ch_group *ch_group;
-> +
-> +	if (ctype >= M10BMC_CHT_MAX)
-> +		return ERR_PTR(-EOPNOTSUPP);
-> +
-> +	ch_group = &hw->chgs[ctype];
-> +
-> +	if (channel >= ch_group->num_channels)
-> +		return ERR_PTR(-EOPNOTSUPP);
-> +
-> +	return ch_group->data_list[channel];
-> +}
-> +
-> +static int do_sensor_read(struct m10bmc_hwmon *hw, struct m10bmc_sdata *data,
-> +			  unsigned int regoff, long *val)
-> +{
-> +	unsigned int regval;
-> +	int ret;
-> +
-> +	ret = m10bmc_sys_read(hw->m10bmc, regoff, &regval);
-> +	if (ret)
-> +		return ret;
-> +
-> +	/*
-> +	 * BMC Firmware will return 0xdeadbeef if the sensor value is invalid
-> +	 * at that time. This usually happens on sensor channels which connect
-> +	 * to external pluggable modules, e.g. QSFP temperature and voltage.
-> +	 * When the QSFP is unplugged from cage, driver will get 0xdeadbeef
-> +	 * from their registers.
-> +	 */
-> +	if (regval == 0xdeadbeef)
-> +		return -EBUSY;
-> +
-> +	*val = regval * data->multiplier;
-> +
-> +	return 0;
-> +}
-> +
-> +static int m10bmc_hwmon_read(struct device *dev, enum hwmon_sensor_types type,
-> +			     u32 attr, int channel, long *val)
-> +{
-> +	struct m10bmc_hwmon *hw = dev_get_drvdata(dev);
-> +	unsigned int reg, reg_hyst = 0;
-> +	struct m10bmc_sdata *data;
-> +	long hyst, value;
-> +	int ret;
-> +
-> +	data = find_sensor_data(hw, type, channel);
-> +	if (IS_ERR(data))
-> +		return PTR_ERR(data);
-> +
-> +	switch (type) {
-> +	case hwmon_temp:
-> +		switch (attr) {
-> +		case hwmon_temp_input:
-> +			reg = data->reg_input;
-> +			break;
-> +		case hwmon_temp_max_hyst:
-> +			reg_hyst = data->reg_hyst;
-> +			fallthrough;
-> +		case hwmon_temp_max:
-> +			reg = data->reg_max;
-> +			break;
-> +		case hwmon_temp_crit_hyst:
-> +			reg_hyst = data->reg_hyst;
-> +			fallthrough;
-> +		case hwmon_temp_crit:
-> +			reg = data->reg_crit;
-> +			break;
-> +		default:
-> +			return -EOPNOTSUPP;
-> +		}
-> +		break;
-> +	case hwmon_in:
-> +		switch (attr) {
-> +		case hwmon_in_input:
-> +			reg = data->reg_input;
-> +			break;
-> +		case hwmon_in_max:
-> +			reg = data->reg_max;
-> +			break;
-> +		case hwmon_in_crit:
-> +			reg = data->reg_crit;
-> +			break;
-> +		case hwmon_in_min:
-> +			reg = data->reg_min;
-> +			break;
-> +		default:
-> +			return -EOPNOTSUPP;
-> +		}
-> +		break;
-> +	case hwmon_curr:
-> +		switch (attr) {
-> +		case hwmon_curr_input:
-> +			reg = data->reg_input;
-> +			break;
-> +		case hwmon_curr_max:
-> +			reg = data->reg_max;
-> +			break;
-> +		case hwmon_curr_crit:
-> +			reg = data->reg_crit;
-> +			break;
-> +		default:
-> +			return -EOPNOTSUPP;
-> +		}
-> +		break;
-> +	case hwmon_power:
-> +		switch (attr) {
-> +		case hwmon_power_input:
-> +			reg = data->reg_input;
-> +			break;
-> +		default:
-> +			return -EOPNOTSUPP;
-> +		}
-> +		break;
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	}
-> +
-> +	ret = do_sensor_read(hw, data, reg, &value);
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (reg_hyst) {
-> +		ret = do_sensor_read(hw, data, reg_hyst, &hyst);
-> +		if (ret)
-> +			return ret;
-> +
-> +		value -= hyst;
-> +	}
-> +
-> +	*val = value;
-> +
-> +	return ret;
-> +}
-> +
-> +static int m10bmc_hwmon_read_string(struct device *dev,
-> +				    enum hwmon_sensor_types type,
-> +				    u32 attr, int channel, const char **str)
-> +{
-> +	struct m10bmc_hwmon *hw = dev_get_drvdata(dev);
-> +	struct m10bmc_sdata *data;
-> +
-> +	data = find_sensor_data(hw, type, channel);
-> +	if (!data)
-> +		return -EOPNOTSUPP;
-> +
-> +	*str = data->label;
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct hwmon_ops m10bmc_hwmon_ops = {
-> +	.is_visible = m10bmc_hwmon_is_visible,
-> +	.read = m10bmc_hwmon_read,
-> +	.read_string = m10bmc_hwmon_read_string,
-> +};
-> +
-> +static int m10bmc_malloc_channels(struct device *dev,
-> +				  struct m10bmc_ch_group *chg, int num_ch)
-> +{
-> +	chg->config = devm_kcalloc(dev, num_ch + 1,
-> +				   sizeof(*chg->config), GFP_KERNEL);
-> +	if (!chg->config)
-> +		return -ENOMEM;
-> +
-> +	chg->data_list = devm_kcalloc(dev, num_ch, sizeof(*chg->data_list),
-> +				      GFP_KERNEL);
-> +	if (!chg->data_list)
-> +		return -ENOMEM;
-> +
-> +	chg->info.config = chg->config;
-> +	chg->num_channels = num_ch;
-> +
-> +	return 0;
-> +}
-> +
-> +static void m10bmc_fill_temp_channel(struct m10bmc_hwmon *hwmon, int ch_idx,
-> +				     struct m10bmc_sdata *data)
-> +{
-> +	struct m10bmc_ch_group *chg = &hwmon->chgs[M10BMC_CHT_TEMP];
-> +
-> +	if (data->reg_input)
-> +		chg->config[ch_idx] |= HWMON_T_INPUT;
-> +
-> +	if (data->reg_max) {
-> +		chg->config[ch_idx] |= HWMON_T_MAX;
-> +		if (data->reg_hyst)
-> +			chg->config[ch_idx] |= HWMON_T_MAX_HYST;
-> +	}
-> +
-> +	if (data->reg_crit) {
-> +		chg->config[ch_idx] |= HWMON_T_CRIT;
-> +		if (data->reg_hyst)
-> +			chg->config[ch_idx] |= HWMON_T_CRIT_HYST;
-> +	}
-> +
-> +	if (data->label)
-> +		chg->config[ch_idx] |= HWMON_T_LABEL;
-> +
-> +	chg->data_list[ch_idx] = data;
-> +}
-> +
-> +static void m10bmc_fill_in_channel(struct m10bmc_hwmon *hwmon, int ch_idx,
-> +				   struct m10bmc_sdata *data)
-> +{
-> +	struct m10bmc_ch_group *chg = &hwmon->chgs[M10BMC_CHT_IN];
-> +
-> +	if (data->reg_input)
-> +		chg->config[ch_idx] |= HWMON_I_INPUT;
-> +
-> +	if (data->reg_max)
-> +		chg->config[ch_idx] |= HWMON_I_MAX;
-> +
-> +	if (data->reg_crit)
-> +		chg->config[ch_idx] |= HWMON_I_CRIT;
-> +
-> +	if (data->reg_min)
-> +		chg->config[ch_idx] |= HWMON_I_MIN;
-> +
-> +	if (data->label)
-> +		chg->config[ch_idx] |= HWMON_I_LABEL;
-> +
-> +	chg->data_list[ch_idx] = data;
-> +}
-> +
-> +static void m10bmc_fill_curr_channel(struct m10bmc_hwmon *hwmon, int ch_idx,
-> +				     struct m10bmc_sdata *data)
-> +{
-> +	struct m10bmc_ch_group *chg = &hwmon->chgs[M10BMC_CHT_CURR];
-> +
-> +	if (data->reg_input)
-> +		chg->config[ch_idx] |= HWMON_C_INPUT;
-> +
-> +	if (data->reg_max)
-> +		chg->config[ch_idx] |= HWMON_C_MAX;
-> +
-> +	if (data->reg_crit)
-> +		chg->config[ch_idx] |= HWMON_C_CRIT;
-> +
-> +	if (data->label)
-> +		chg->config[ch_idx] |= HWMON_C_LABEL;
-> +
-> +	chg->data_list[ch_idx] = data;
-> +}
-> +
-> +static void m10bmc_fill_power_channel(struct m10bmc_hwmon *hwmon, int ch_idx,
-> +				      struct m10bmc_sdata *data)
-> +{
-> +	struct m10bmc_ch_group *chg = &hwmon->chgs[M10BMC_CHT_POWER];
-> +
-> +	if (data->reg_input)
-> +		chg->config[ch_idx] |= HWMON_P_INPUT;
-> +
-> +	if (data->label)
-> +		chg->config[ch_idx] |= HWMON_P_LABEL;
-> +
-> +	chg->data_list[ch_idx] = data;
-> +}
-
-A substantial amount of code in this driver busies itself to convert
-n3000bmc_sensor_tbl[] into the hwmon_channel_info data. What is the point
-of doing that instead of providing struct hwmon_channel_info statically ?
-One could write a little helper program to convert one into the other,
-and avoid all this unnecessary code.
-
-> +
-> +static int m10bmc_hwmon_init(struct device *dev, struct intel_m10bmc *m10bmc,
-> +			     const char *dev_name,
-> +			     struct m10bmc_sdata *data_tbl)
-> +{
-> +	int num_ch[M10BMC_CHT_MAX] = { 0 }, ret, i, j;
-> +	struct m10bmc_sdata *data = data_tbl;
-> +	struct device *hwmon_dev;
-> +	struct m10bmc_hwmon *hw;
-> +
-> +	hw = devm_kzalloc(dev, sizeof(*hw), GFP_KERNEL);
-> +	if (!hw)
-> +		return -ENOMEM;
-> +
-> +	hw->dev = dev;
-> +	hw->m10bmc = m10bmc;
-> +	hw->data_tbl = data_tbl;
-> +
-> +	while (data->type != M10BMC_CHT_MAX) {
-> +		if (data->type > M10BMC_CHT_MAX)
-> +			return -EINVAL;
-> +
-> +		++num_ch[data->type];
-> +		++data;
-> +	}
-> +
-> +	for (i = 0; i < M10BMC_CHT_MAX; i++) {
-> +		if (!num_ch[i])
-> +			continue;
-> +
-> +		ret = m10bmc_malloc_channels(dev, &hw->chgs[i],
-> +					     num_ch[i]);
-> +		if (ret)
-> +			return ret;
-> +
-> +		hw->chgs[i].info.type = ctype_to_htype(i);
-> +	}
-> +
-> +	data = data_tbl;
-> +	memset(&num_ch, 0, sizeof(num_ch));
-> +	while (data->type != M10BMC_CHT_MAX) {
-> +		switch (data->type) {
-> +		case M10BMC_CHT_TEMP:
-> +			m10bmc_fill_temp_channel(hw, num_ch[data->type],
-> +						 data);
-> +			break;
-> +		case M10BMC_CHT_IN:
-> +			m10bmc_fill_in_channel(hw, num_ch[data->type],
-> +					       data);
-> +			break;
-> +		case M10BMC_CHT_CURR:
-> +			m10bmc_fill_curr_channel(hw, num_ch[data->type],
-> +						 data);
-> +			break;
-> +		case M10BMC_CHT_POWER:
-> +			m10bmc_fill_power_channel(hw, num_ch[data->type],
-> +						  data);
-> +			break;
-> +		}
-> +
-> +		++num_ch[data->type];
-> +		++data;
-> +	}
-> +
-> +	for (i = 0, j = 0; i < M10BMC_CHT_MAX; i++) {
-> +		if (num_ch[i])
-> +			hw->info[j++] = &hw->chgs[i].info;
-> +	}
-> +
-> +	hw->chip.info = hw->info;
-> +	hw->chip.ops = &m10bmc_hwmon_ops;
-> +
-> +	hw->hw_name = devm_kstrdup(dev, dev_name, GFP_KERNEL);
-> +	if (!hw->hw_name)
-> +		return -ENOMEM;
-> +
-> +	for (i = 0; hw->hw_name[i]; i++)
-> +		if (hwmon_is_bad_char(hw->hw_name[i]))
-> +			hw->hw_name[i] = '_';
-> +
-> +	hwmon_dev = devm_hwmon_device_register_with_info(dev, hw->hw_name,
-> +							 hw, &hw->chip, NULL);
-> +	return PTR_ERR_OR_ZERO(hwmon_dev);
-> +}
-> +
-> +static int m10bmc_hwmon_probe(struct platform_device *pdev)
-> +{
-> +	const struct platform_device_id *id = platform_get_device_id(pdev);
-> +	struct intel_m10bmc *m10bmc = dev_get_drvdata(pdev->dev.parent);
-> +
-> +	return m10bmc_hwmon_init(&pdev->dev, m10bmc, id->name,
-> +				 (struct m10bmc_sdata *)id->driver_data);
-> +}
-> +
-> +static const struct platform_device_id intel_m10bmc_hwmon_ids[] = {
-> +	{
-> +		.name = "n3000bmc-hwmon",
-> +		.driver_data = (unsigned long)&n3000bmc_sensor_tbl,
-> +	},
-> +	{ }
-> +};
-> +
-> +static struct platform_driver intel_m10bmc_hwmon_driver = {
-> +	.probe = m10bmc_hwmon_probe,
-> +	.driver = {
-> +		.name = "intel-m10-bmc-hwmon",
-> +	},
-> +	.id_table = intel_m10bmc_hwmon_ids,
-> +};
-> +module_platform_driver(intel_m10bmc_hwmon_driver);
-> +
-> +MODULE_DEVICE_TABLE(platform, intel_m10bmc_hwmon_ids);
-> +MODULE_AUTHOR("Intel Corporation");
-> +MODULE_DESCRIPTION("Intel MAX 10 BMC hardware monitor");
-> +MODULE_LICENSE("GPL");
+>  static const struct sysfs_ops queue_sysfs_ops = {
+>  	.show	= queue_attr_show,
+>  	.store	= queue_attr_store,
+> diff --git a/block/genhd.c b/block/genhd.c
+> index 99c64641c314..7e2edf388c8a 100644
+> --- a/block/genhd.c
+> +++ b/block/genhd.c
+> @@ -887,19 +887,12 @@ static void invalidate_partition(struct gendisk *disk, int partno)
+>   * The final removal of the struct gendisk happens when its refcount reaches 0
+>   * with put_disk(), which should be called after del_gendisk(), if
+>   * __device_add_disk() was used.
+> - *
+> - * Drivers exist which depend on the release of the gendisk to be synchronous,
+> - * it should not be deferred.
+> - *
+> - * Context: can sleep
+>   */
+>  void del_gendisk(struct gendisk *disk)
+>  {
+>  	struct disk_part_iter piter;
+>  	struct hd_struct *part;
+>  
+> -	might_sleep();
+> -
+>  	blk_integrity_del(disk);
+>  	disk_del_events(disk);
+>  
+> @@ -1553,15 +1546,11 @@ int disk_expand_part_tbl(struct gendisk *disk, int partno)
+>   * drivers we also call blk_put_queue() for them, and we expect the
+>   * request_queue refcount to reach 0 at this point, and so the request_queue
+>   * will also be freed prior to the disk.
+> - *
+> - * Context: can sleep
+>   */
+>  static void disk_release(struct device *dev)
+>  {
+>  	struct gendisk *disk = dev_to_disk(dev);
+>  
+> -	might_sleep();
+> -
+>  	blk_free_devt(dev->devt);
+>  	disk_release_events(disk);
+>  	kfree(disk->random);
+> @@ -1806,9 +1795,6 @@ EXPORT_SYMBOL(get_disk_and_module);
+>   *
+>   * This decrements the refcount for the struct gendisk. When this reaches 0
+>   * we'll have disk_release() called.
+> - *
+> - * Context: Any context, but the last reference must not be dropped from
+> - *          atomic context.
+>   */
+>  void put_disk(struct gendisk *disk)
+>  {
+> @@ -1823,9 +1809,6 @@ EXPORT_SYMBOL(put_disk);
+>   *
+>   * This is a counterpart of get_disk_and_module() and thus also of
+>   * get_gendisk().
+> - *
+> - * Context: Any context, but the last reference must not be dropped from
+> - *          atomic context.
+>   */
+>  void put_disk_and_module(struct gendisk *disk)
+>  {
+> diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+> index bb5636cc17b9..59fe9de342e0 100644
+> --- a/include/linux/blkdev.h
+> +++ b/include/linux/blkdev.h
+> @@ -583,6 +583,8 @@ struct request_queue {
+>  
+>  	size_t			cmd_size;
+>  
+> +	struct work_struct	release_work;
+> +
+>  #define BLK_MAX_WRITE_HINTS	5
+>  	u64			write_hints[BLK_MAX_WRITE_HINTS];
+>  };
+> -- 
+> 2.18.4
 > 
-
+---end quoted text---
