@@ -2,190 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F290261096
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 13:21:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ACFF26109A
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 13:24:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729275AbgIHLV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 07:21:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50228 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729794AbgIHLPI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 07:15:08 -0400
-Received: from gaia (unknown [46.69.195.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D1BE8208DB;
-        Tue,  8 Sep 2020 11:14:56 +0000 (UTC)
-Date:   Tue, 8 Sep 2020 12:14:54 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     linux-kernel@vger.kernel.org, f.fainelli@gmail.com, hch@lst.de,
-        linux-rpi-kernel@lists.infradead.org,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, robh@kernel.org,
-        Robin Murphy <robin.murphy@arm.com>
-Subject: Re: [RFC] arm64: mm: Do not use both DMA zones when 30-bit address
- space unavailable
-Message-ID: <20200908111454.GB25591@gaia>
-References: <20200819182434.28196-1-nsaenzjulienne@suse.de>
- <20200828174338.GK3169@gaia>
- <1ae30b3bfd97aba56323422baeb5b48b787c7561.camel@suse.de>
+        id S1729954AbgIHLX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 07:23:57 -0400
+Received: from sjdcvmout02.udc.trendmicro.com ([66.180.82.11]:54546 "EHLO
+        sjdcvmout02.udc.trendmicro.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729538AbgIHLPd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 07:15:33 -0400
+Received: from sjdcvmout02.udc.trendmicro.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 87A2364061;
+        Tue,  8 Sep 2020 04:15:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=trendmicro.com;
+        s=tmoutbound; t=1599563730;
+        bh=++mVKGI+xYg8x1TKt6F/Pb/EdbEZ8O0gXXZ5vJmBZu0=; h=From:To:Date;
+        b=ScwUXwqBSco0tRkelinqY4GPtVg+rsX8oV31jwrgdjPB2S2UlVi3RZJY6LIEi79GN
+         CF/OTrdcG3jUlDg9D7KfDHbl9bOVUOhza/5Fj0rMeDVgDn3eG7RVnilZsZj5yLP4GT
+         W1WGIZxw064mATbyVIUq3iW+OKv1mEZi3otGXSvQ=
+Received: from sjdcvmout02.udc.trendmicro.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7462864089;
+        Tue,  8 Sep 2020 04:15:19 -0700 (PDT)
+Received: from SJDC-EXNABU01.us.trendnet.org (unknown [10.45.175.97])
+        by sjdcvmout02.udc.trendmicro.com (Postfix) with ESMTPS;
+        Tue,  8 Sep 2020 04:15:19 -0700 (PDT)
+Received: from ADC-EXAPAC12.tw.trendnet.org (10.28.2.229) by
+ SJDC-EXNABU01.us.trendnet.org (10.45.175.97) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1979.3; Tue, 8 Sep 2020 04:15:18 -0700
+Received: from ADC-EXAPAC11.tw.trendnet.org (10.28.2.228) by
+ ADC-EXAPAC12.tw.trendnet.org (10.28.2.229) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1979.3; Tue, 8 Sep 2020 11:15:14 +0000
+Received: from ADC-EXAPAC11.tw.trendnet.org ([fe80::35d2:8fa6:df0c:6aae]) by
+ ADC-EXAPAC11.tw.trendnet.org ([fe80::35d2:8fa6:df0c:6aae%18]) with mapi id
+ 15.01.1979.003; Tue, 8 Sep 2020 11:15:14 +0000
+From:   "Eddy_Wu@trendmicro.com" <Eddy_Wu@trendmicro.com>
+To:     "peterz@infradead.org" <peterz@infradead.org>
+CC:     Ingo Molnar <mingo@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "naveen.n.rao@linux.ibm.com" <naveen.n.rao@linux.ibm.com>,
+        "anil.s.keshavamurthy@intel.com" <anil.s.keshavamurthy@intel.com>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "cameron@moodycamel.com" <cameron@moodycamel.com>,
+        "oleg@redhat.com" <oleg@redhat.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "paulmck@kernel.org" <paulmck@kernel.org>,
+        "systemtap@sourceware.org" <systemtap@sourceware.org>
+Subject: RE: [PATCH v5 00/21] kprobes: Unify kretprobe trampoline handlers and
+ make kretprobe lockless
+Thread-Topic: [PATCH v5 00/21] kprobes: Unify kretprobe trampoline handlers
+ and make kretprobe lockless
+Thread-Index: AQHWfgRSCESp9PK2qEmaIhlcIgCeUqlUKmsAgABcEYCAAGuCAIAAFReAgAAV4YCAAD5dAIAABowAgADIVwCACHHjAIAACFxw
+Date:   Tue, 8 Sep 2020 11:15:14 +0000
+Message-ID: <dd1b7b1fdbd84d20ad06abf0c06b4747@trendmicro.com>
+References: <159870598914.1229682.15230803449082078353.stgit@devnote2>
+ <20200901190808.GK29142@worktop.programming.kicks-ass.net>
+ <20200902093739.8bd13603380951eaddbcd8a5@kernel.org>
+ <20200902070226.GG2674@hirez.programming.kicks-ass.net>
+ <20200902171755.b126672093a3c5d1b3a62a4f@kernel.org>
+ <20200902093613.GY1362448@hirez.programming.kicks-ass.net>
+ <20200902221926.f5cae5b4ad00b8d8f9ad99c7@kernel.org>
+ <20200902134252.GH1362448@hirez.programming.kicks-ass.net>
+ <20200903103954.68f0c97da57b3679169ce3a7@kernel.org>
+ <20200908103736.GP1362448@hirez.programming.kicks-ass.net>
+In-Reply-To: <20200908103736.GP1362448@hirez.programming.kicks-ass.net>
+Accept-Language: zh-TW, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.28.4.6]
+X-TM-AS-Product-Ver: IMSVA-9.1.0.1960-8.6.0.1013-25652.006
+X-TM-AS-Result: No--13.579-5.0-31-10
+X-TMASE-MatchedRID: fisHOP3cX1jUL3YCMmnG4vHkpkyUphL9+IfriO3cV8QviP3/DuH032lF
+        7OhYLlct0Rucqr17Y/YsrJ6YgF1+HBZRzAmpIJedwS8qUbQKOMihlQaHv8lv4KosuYcc0VWUa3A
+        6hcNu8nADh7qzot0BF+xeaIGweo11L3vAnkncsWmtBybNxXyi/BmyTBaqiJvc7649n0TgA4k7yU
+        iWtMo7o0SE6cDIXfLWysK+7TtkkV25UpxrNQf5nQD9gX5aXd4fQABNUkvqrhfLmsnRFz6pJtEYh
+        xNoldm1jqkhdl7xWKbGYTYwx24fmXj7PwsdQyXdiPIR0a1i6hdXgkPfc7vKCTUQfiU3MhlIJ+BT
+        0Y87Csa57ZGjIWPrVAd2m1cUUwTvx5913wav7nCeAiCmPx4NwMidYBYDjITpiaHgegYo0SFQSFb
+        L1bvQASAHAopEd76v+1E8TAkVzxP6hSgEB93zX1y02L/cQu0IFfJSa/VY7qoYCl8nGW1v6w==
+X-TM-AS-User-Approved-Sender: No
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--13.578500-10.000000
+X-TMASE-Version: IMSVA-9.1.0.1960-8.6.1013-25652.006
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1ae30b3bfd97aba56323422baeb5b48b787c7561.camel@suse.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-TM-SNTS-SMTP: AC371C619D3FD3B46CDA1403A38D828A0D8DCA31EB0E32DE45CA391C53DF4B872000:8
+X-TM-AS-GCONF: 00
+X-imss-scan-details: No--13.579-5.0-31-10
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-12:0,22:0,33:0,34:0-0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nicolas,
+> From: peterz@infradead.org <peterz@infradead.org>
+>
+> I'm now trying and failing to reproduce.... I can't seem to make it use
+> int3 today. It seems to want to use ftrace or refuses everything. I'm
+> probably doing it wrong.
+>
 
-On Mon, Sep 07, 2020 at 07:50:43PM +0200, Nicolas Saenz Julienne wrote:
-> On Fri, 2020-08-28 at 18:43 +0100, Catalin Marinas wrote:
-> > On Wed, Aug 19, 2020 at 08:24:33PM +0200, Nicolas Saenz Julienne wrote:
-> > > There is no benefit in splitting the 32-bit address space into two
-> > > distinct DMA zones when the 30-bit address space isn't even available on
-> > > a device. If that is the case, default to one big ZONE_DMA spanning the
-> > > whole 32-bit address space.
-> > > 
-> > > This will help reduce some of the issues we've seen with big crash
-> > > kernel allocations.
-> > > 
-> > > Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-> > > ---
-> > > 
-> > > Whith this patch, on a 8GB RPi4 the setup looks like this:
-> > > 
-> > > 	DMA      [mem 0x0000000000000000-0x000000003fffffff]
-> > > 	DMA32    [mem 0x0000000040000000-0x00000000ffffffff]
-> > > 	Normal   [mem 0x0000000100000000-0x00000001ffffffff]
-> > > 
-> > > And stock 8GB virtme/qemu:
-> > > 
-> > > 	DMA      [mem 0x0000000040000000-0x00000000ffffffff]
-> > > 	DMA32    empty
-> > > 	Normal   [mem 0x0000000100000000-0x000000023fffffff]
-> > > 
-> > >  arch/arm64/mm/init.c | 29 +++++++++++++++++++++++++----
-> > >  1 file changed, 25 insertions(+), 4 deletions(-)
-> > > 
-> > > diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-> > > index b6881d61b818..857a62611d7a 100644
-> > > --- a/arch/arm64/mm/init.c
-> > > +++ b/arch/arm64/mm/init.c
-> > > @@ -183,13 +183,20 @@ static void __init reserve_elfcorehdr(void)
-> > >  
-> > >  /*
-> > >   * Return the maximum physical address for a zone with a given address size
-> > > - * limit. It currently assumes that for memory starting above 4G, 32-bit
-> > > - * devices will use a DMA offset.
-> > > + * limit or zero if memory starts from an address higher than the zone targeted.
-> > > + * It currently assumes that for memory starting above 4G, 32-bit devices will
-> > > + * use a DMA offset.
-> > >   */
-> > >  static phys_addr_t __init max_zone_phys(unsigned int zone_bits)
-> > >  {
-> > > -	phys_addr_t offset = memblock_start_of_DRAM() & GENMASK_ULL(63, zone_bits);
-> > > -	return min(offset + (1ULL << zone_bits), memblock_end_of_DRAM());
-> > > +	phys_addr_t base = memblock_start_of_DRAM();
-> > > +	phys_addr_t offset = base & GENMASK_ULL(63, 32);
-> > > +	s64 zone_size = (1ULL << zone_bits) - (base & DMA_BIT_MASK(32));
-> > > +
-> > > +	if (zone_size <= 0)
-> > > +		return 0;
-> > > +
-> > > +	return min(base + zone_size + offset, memblock_end_of_DRAM());
-> > >  }
-> > 
-> > OK, so we can still get some ZONE_DMA if DRAM starts in the first GB.
-> > 
-> > I don't think it entirely solves the problem.
-> 
-> Agree. Didn't mean to imply it.
+You can turn off CONFIG_KPROBES_ON_FTRACE (and also sysctl debug.kprobes-op=
+timization) to make it use int3 handler
 
-What I meant is that if we have a SoC with RAM starting at 0, it hits
-the same issue with ZONE_DMA even if it doesn't have any 30-bit devices.
-This patch assumes that RPi4 is the only device with RAM starting at 0.
 
-> > It just happens that the
-> > other affected SoCs don't have memory in the first GB. With this patch,
-> > we go by the assumption that ZONE_DMA/DMA32 split is only needed if
-> > there is memory in the low 1GB and such <32-bit devices don't have a DMA
-> > offset.
-> 
-> The way I understand it is: "we may have 30 bit DMA limited devices, the rest
-> can deal with 32 bit."
-> 
-> On top of that, I believe it makes little sense to use an offset in the
-> physical address space below the 32bit mark. You'd be limiting the amount of
-> memory available to the system. So, if you're going support DMA limited devices
-> on your otherwise RAM hungry SoC, you'll have to have that physical address
-> space directly available, or at least part of it.
-> 
-> All in all, I believe that assuming no 30 bit DMA limited devices exist in the
-> system if the physical addresses don't exist is a fairly safe.
+TREND MICRO EMAIL NOTICE
 
-One could design a SoC with RAM starting at 2GB. A 30-bit device may
-have bits 31 and 30 tied to 0b10 so that the access is offset into the
-1st GB of RAM.
+The information contained in this email and any attachments is confidential=
+ and may be subject to copyright or other intellectual property protection.=
+ If you are not the intended recipient, you are not authorized to use or di=
+sclose this information, and we request that you notify us by reply mail or=
+ telephone and delete the original message from your mail system.
 
-So while it's possible theoretically, I guess it's safe to assume it
-won't happen soon.
-
-> Also note the usage of 'zone_dma_bits' in the DMA code, which assumes that
-> ZONE_DMA's physical address space is always smaller than (1 << zone_dma_bits) -
-> 1.
-
-I think part of those uses are broken. dma_direct_supported() does the
-right thing and uses the DMA address instead of the physical one. Here
-__phys_to_dma() subtracts the dma_pfn_offset, which in my above example
-would be (0b10 << (30 - PAGE_SHIFT)).
-
-dma_direct_optimal_gfp_mask(), OTOH, seems to start ok with a
-__dma_to_phys() on the dma_limit but it ends up comparing the physical
-address with the DMA mask. This gives the wrong result on arm64
-platforms where RAM starts above 4GB and still expect a ZONE_DMA32. It
-should compare *phys_limit with __dma_to_phys(DMA_BIT_MASK(...)). I
-guess it ends up bouncing via swiotlb more often.
-
-We assumed such offsets on arm64 since commit d50314a6b070 ("arm64:
-Create non-empty ZONE_DMA when DRAM starts above 4GB").
-
-> > An alternative (and I think we had a patch at some point) is to make it
-> > generic and parse the dma-range in the DT to identify the minimum mask
-> > and set ZONE_DMA accordingly. But this doesn't solve ACPI, so if Linux
-> > can boot with ACPI on RPi4 it would still be broken.
-> 
-> ACPI is being worked on by, among others, Jeremy Linton (one of your colleagues
-> I believe).
-> 
-> We could always use sane defaults for ACPI and be smarter with DT. Yet,
-> implementing this entails translating nested dma-ranges with the only help of
-> libfdt, which isn't trivial (see devices/of/address.c). IIRC RobH said that it
-> wasn't worth the effort just for a board.
-
-That would have been the ideal, more generic solution. But I agree that
-it's not worth the effort if the only SoC affected is RPi4.
-
-To summarise, I'd like ZONE_DMA to overlap with ZONE_DMA32 (i.e. expand
-zone_dma_bits to 32 and drop ZONE_DMA32) for all SoCs other than RPi4.
-The solutions so far:
-
-1. Assume that, if RAM starts at 0, we need a zone_dma_bits == 30. This
-   also assumes that it's only RPi4 in this category or that any such
-   future SoC has a need for 30-bit DMA.
-
-2. Adjust zone_dma_bits at boot-time only if the SoC is RPi4.
-
-3. Use the more complex dma-ranges approach to calculate the correct
-   zone_dma_bits as a minimum of all dma masks in the DT.
-
-We can discount (3) as not worth the effort. I'd go with (1) (this
-patch) if we can guarantee that no current or future SoC has RAM
-starting at 0 while not needing 30-bit DMA masks. If not, we can go with
-(2) unless others have a better suggestion.
-
--- 
-Catalin
+For details about what personal information we collect and why, please see =
+our Privacy Notice on our website at: Read privacy policy<http://www.trendm=
+icro.com/privacy>
