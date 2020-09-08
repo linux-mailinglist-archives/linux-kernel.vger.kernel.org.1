@@ -2,109 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0E3E261A75
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 20:36:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 704EC261AE6
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 20:45:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731483AbgIHSgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 14:36:18 -0400
-Received: from mout.gmx.net ([212.227.15.18]:57571 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731043AbgIHQJ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:09:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1599581361;
-        bh=7BNPl463okJLMgp5n/LV2nUSf308S0c4MPGl3nc4znE=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=HLH41+Tp2P3WoBA61SfRYfHNNqgXNa5kEM2q3LeieG/ywrHgzKsUffZaxqYE3AjKu
-         qcaufv2cDt9sNesldK3YEp232Os2b/K/ln+VtMastWLHUYE8VbZraaOoj7nGuHBD/d
-         qMSA3HbW0MKKeijd4AE7+rpg54z0OtiWp4ALtgfc=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from ts7.local ([84.179.245.142]) by mail.gmx.com (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MmUHj-1kxRXf1UTh-00iUIx; Tue, 08
- Sep 2020 14:02:34 +0200
-From:   Thomas Schmitt <scdbackup@gmx.net>
-To:     linux-scsi@vger.kernel.org
-Cc:     axboe@kernel.dk, linux-kernel@vger.kernel.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, Thomas Schmitt <scdbackup@gmx.net>
-Subject: [PATCH 2/2] sr: fix automatic tray loading for data reading
-Date:   Tue,  8 Sep 2020 14:02:07 +0200
-Message-Id: <20200908120207.5014-3-scdbackup@gmx.net>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200908120207.5014-1-scdbackup@gmx.net>
-References: <20200908120207.5014-1-scdbackup@gmx.net>
+        id S1731211AbgIHSpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 14:45:22 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:44342 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728899AbgIHSnp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 14:43:45 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 088C3VsW004198;
+        Tue, 8 Sep 2020 07:03:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1599566611;
+        bh=nsqPY6o4grvE2pz2lannxuY5WsjPIahg4+RoCYp/mc4=;
+        h=Subject:From:To:CC:References:Date:In-Reply-To;
+        b=ia2HCvqTdT2aSCL0/porgUy55z/i+UNq4fGm51IBwnjCi49OkizTxLE8QrQf5pLhG
+         tNYc8imMXyJknGPW8h8Bjtcf/u01AeRfbs9KUtXdyT/+siXEYWnKXnxY9GGFMd0Cgj
+         bZSQ1blN0Ra3RX6g1cY8xR/cDa84TcLT/G/RdfnA=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 088C3V75118701
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 8 Sep 2020 07:03:31 -0500
+Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 8 Sep
+ 2020 07:03:31 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 8 Sep 2020 07:03:31 -0500
+Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 088C3SxG114548;
+        Tue, 8 Sep 2020 07:03:29 -0500
+Subject: Re: [PATCH 1/2] ASoC: tlv320adcx140: Avoid accessing invalid
+ gpio_reset
+From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
+To:     Camel Guo <camel.guo@axis.com>, <lgirdwood@gmail.com>,
+        <broonie@kernel.org>, <tiwai@suse.com>, <dmurphy@ti.com>
+CC:     <alsa-devel@alsa-project.org>, <kernel@axis.com>,
+        <linux-kernel@vger.kernel.org>, Camel Guo <camelg@axis.com>
+References: <20200908083521.14105-1-camel.guo@axis.com>
+ <7bb93489-dbd5-d1a5-5df6-e62470bd2252@ti.com>
+X-Pep-Version: 2.0
+Message-ID: <e791162b-1292-e1c4-3fca-b8936beeeb45@ti.com>
+Date:   Tue, 8 Sep 2020 15:03:28 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
+In-Reply-To: <7bb93489-dbd5-d1a5-5df6-e62470bd2252@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:DUrGlOOQJ0WDkC+hhzia2noiehs81VZ2RLQwIvPHP1p7zeqXJEO
- J84Z6cr1Ws8rInk2wb7ZVtCmnuF8dtBCCXI2TNFxo2TzFdjM04fuMKEkUV3e004E+u808if
- DkkTnD3CTzLNkpY8yk1IdVQuIvfM7RmW7GWTN4/c+PNlWgPpHncf9xkzn3bHRFOcqPHYjlK
- 3upcnhRJSGat6b0bOQtgw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:2N7cV38ZpDg=:J2wTam/oBpAuELyooOZhTD
- 7uLsnckfkXfOHPovPcTU4VmX7OXatMAP2hRKVOfumkkQ1pm5e7yGo+tOewHfTmCTs2q1smlzs
- JIJNmV4Bwr/rSVipfafZwvLYW546FVUBOiPz8z8y1TeMaLOxpcV+EPYA2vTgYl/TJrfJ5qfPa
- ORoS4MxkNvur6qYtaUr6fTztN8DEtO6c0ORnU/qKZ2NIQgDn4djwV2z+9LzsOOxedpd3FcIgL
- GjulE3n9o5QrxAWNSSlRHjmLFlGocfaN6k9KUfxinIcl846Kq8o6CT2nJTJKL66LJ1csHOr/o
- h00DoZGC0IcjIi65n46IVupfFS++HJWw2weI4gShJ9pvk5JWEeE0Bf2ofK0iuAiwSOqCZtacM
- 2RwThTMV/c2NZasafe+tIsrMCQXGjoCGXkjsn9+i+2PhGAx9Fsmm3awcs9/fp6FB0hU5YaNo9
- ssyzb6b5Kk4Scm9IK6UA3BFb9+FgLU07R/j174NLF9SzEv06dIfnTGKo8TLw20w22laXHmsYg
- v2j9+zOPSxdHRnWMjFsN8NW3gPpBScC6LGHlDEmO25RVFpUyOYYIYF6IlqLGT6OmNlUvgg4cG
- hG0kKSy+6A0IYnOakQS8EBiTQs1KG945kkXUNpNAUNGwFnD0k1+nDnKG2ZU7YMaOgIvIViphD
- 0b1HLkZ7ArYeYKdp2YoIF01yIrbLyEUQxYZeHQli88wKCu3kKllw7CYXFJ7FdYYqpZifJPlaY
- 0+YCDhAakxPGeueyN6R4KGxCiMV5KPgGygXN7VVvFa4Wghq8oZCEwaM3r5FQ3hWaEWpuMsdKu
- ne9Q0V++M64fCL52YCIbLBE1Jder4fx+wKP1He6gtDXDHg8c5LgB55WYe7Etq4Y7A2BVsXXDR
- jgap1q41hrfbzMHGsKHw62S25KSJBAdeo8gcKnP0c4wjzcmc9TYBqEf9SeSJRsW60BaXBkpc7
- TrvwAuGpxbse5+QbO61kbC0GwYmDqaulORL28zqWANOS4eG2br4iOQHSiAnrMWr/Z7SSz8rfe
- xsnvPBmhD4nkfA/j+SD5CAPdpSL0xrMBwD/MG3/wEdyofBZDmCoC8TUmvEJRfGQ8kf/8Xdhgd
- SC7qG9xbjoWAgAgmkSexhi4fKxfltwcaud4WvLZyqZA84ruC+mRpFy/VJcc5XMR/a2iqu8WdY
- S1+bD8x/gdnWbKj/783hlJLrc8qiiQnU51+qg9wDaQlyW8FF8nSxwZr37LmgQmKVxy/SOiitm
- X9OBdfZQ/yKBxfPoKx6VTN3Cp4iStdFQwjcOOTw==
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If
-  open("/dev/sr0", O_RDONLY);
-pulls in the tray of an optical drive, it immediately returns -1 with
-errno ENOMEDIUM or the first read(2) fails with EIO. Later, when the drive
-has stopped blinking, another open() yields success and read() works.
-This affects not only userland reading of the device file but also
-mounting the device.
-The reason is that medium assessment happens before automatic tray
-loading.
+Hi,
 
-Use the new function cdrom_handle_open_tray() for deciding and performing
-tray loading before doing medium assessment.
+On 08/09/2020 14.59, Peter Ujfalusi wrote:
+>=20
+>=20
+> On 08/09/2020 11.35, Camel Guo wrote:
+>> From: Camel Guo <camelg@axis.com>
+>>
+>> When gpio_reset is not well defined in devicetree, the
+>> adcx140->gpio_reset is an error code instead of NULL. In this case,
+>> adcx140->gpio_reset should not be used by adcx140_reset. This commit
+>> sets it NULL to avoid accessing an invalid variable.
+>>
+>> Signed-off-by: Camel Guo <camelg@axis.com>
+>> ---
+>>  sound/soc/codecs/tlv320adcx140.c | 4 +++-
+>>  1 file changed, 3 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/sound/soc/codecs/tlv320adcx140.c b/sound/soc/codecs/tlv32=
+0adcx140.c
+>> index 7ae6ec374be3..597dd1062943 100644
+>> --- a/sound/soc/codecs/tlv320adcx140.c
+>> +++ b/sound/soc/codecs/tlv320adcx140.c
+>> @@ -984,8 +984,10 @@ static int adcx140_i2c_probe(struct i2c_client *i=
+2c,
+>> =20
+>>  	adcx140->gpio_reset =3D devm_gpiod_get_optional(adcx140->dev,
+>>  						      "reset", GPIOD_OUT_LOW);
+>> -	if (IS_ERR(adcx140->gpio_reset))
+>> +	if (IS_ERR(adcx140->gpio_reset) || adcx140->gpio_reset =3D=3D NULL) =
+{
+>>  		dev_info(&i2c->dev, "Reset GPIO not defined\n");
+>> +		adcx140->gpio_reset =3D NULL;
+>=20
+> the correct fix is to:
+> 	dev_err(&i2c->dev, "Reset GPIO not defined\n");
 
-Signed-off-by: Thomas Schmitt <scdbackup@gmx.net>
-=2D--
- drivers/scsi/sr.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+no need to print, I think gpio core will do that.
 
-diff --git a/drivers/scsi/sr.c b/drivers/scsi/sr.c
-index 3b3a53c6a0de..cf06afffcb56 100644
-=2D-- a/drivers/scsi/sr.c
-+++ b/drivers/scsi/sr.c
-@@ -529,11 +529,16 @@ static int sr_block_open(struct block_device *bdev, =
-fmode_t mode)
+> 	return PTR_ERR(adcx140->gpio_reset);
+>=20
+> If the reset GPIO is specified and you get error when requesting it as
+> optional, there is a reason for that.
+> For example deferred probing.
+>=20
+>> +	}
+>> =20
+>>  	adcx140->supply_areg =3D devm_regulator_get_optional(adcx140->dev,
+>>  							   "areg");
+>>
+>=20
+> - P=C3=A9ter
+>=20
+> Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+> Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+>=20
 
- 	sdev =3D cd->device;
- 	scsi_autopm_get_device(sdev);
--	check_disk_change(bdev);
+- P=C3=A9ter
 
- 	mutex_lock(&cd->lock);
--	ret =3D cdrom_open(&cd->cdi, bdev, mode);
-+	ret =3D cdrom_handle_open_tray(&cd->cdi, mode, 0);
- 	mutex_unlock(&cd->lock);
-+	if (!ret) {
-+		check_disk_change(bdev);
-+		mutex_lock(&cd->lock);
-+		ret =3D cdrom_open(&cd->cdi, bdev, mode);
-+		mutex_unlock(&cd->lock);
-+	}
-
- 	scsi_autopm_put_device(sdev);
- 	if (ret)
-=2D-
-2.20.1
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
 
