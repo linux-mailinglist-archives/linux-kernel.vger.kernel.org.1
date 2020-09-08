@@ -2,95 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE5752622A8
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 00:32:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03C892622B8
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 00:38:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729753AbgIHWcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 18:32:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60028 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726708AbgIHWck (ORCPT
+        id S1729037AbgIHWi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 18:38:56 -0400
+Received: from mail-io1-f68.google.com ([209.85.166.68]:46708 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726434AbgIHWiy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 18:32:40 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D910FC061573
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 15:32:39 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id b6so1106083iof.6
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 15:32:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=vxLgXb6vL5kj6dYd9RuDEdt2qHv+p3bKsh1PxXIHTu8=;
-        b=RU5Ds98tnYCCF2BftQjKNrxq6J6LAYqx8D/xDiaURHvnqB7/Xo997ECiVy7hZcAqdD
-         A4iP+YUB3M2DC0xzgwi640cmWmJyxlyIjjKiuUh0Cqr/NTzxgRUXVV02YTZhsY0P72H7
-         Al3sFD5a8a3OEyKei6CHibeJQutYRZzNtWSaOKa+K9QAwjyZwEhZyJ5iILNIdILsgRm/
-         PfJI9vRZ51eXnEU9AQv43n1knNrOfBcgawX5mn29k2+owwDyFpmSHYIQnELkS016qXPd
-         /vmuztQa1PFeBnkwDnq2JiPyNTvaqiQ0Nn6jCojNV1bYwWnD1jVeDPnLn8NIk4PEcRxQ
-         sj2A==
+        Tue, 8 Sep 2020 18:38:54 -0400
+Received: by mail-io1-f68.google.com with SMTP id d18so1078397iop.13;
+        Tue, 08 Sep 2020 15:38:53 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=vxLgXb6vL5kj6dYd9RuDEdt2qHv+p3bKsh1PxXIHTu8=;
-        b=BTks7KI66LOzM9RF720gtxgDUoM155eEK69J+M7YDJ/mjjoAi7aC6QVmRhzn2KRtIW
-         L+qeRKhXhDZ9Es8gHhCk6OPWi1/vHuRYbhFzYxHvcCrFnlpkMhJw+1QlvB+Du1oZVyvD
-         1vdmDlq1eyB6melalohvoXYeYF4njO1nxlyWpJ7hhlBIXPS+a+c42bOcyRk1PdmA6uZO
-         ps1FBZs28o8VPCg5dhcNnCeF5xgKYHQiANjE4KweHi1EAsaNuz3KkwNoeZXJ0ougOQvW
-         1oDBoqV4MNlOEBuWbU2vXQjCo6/sS45sqlaM4xAj9/omFVG4BK1Ewchp0zsgRjnVJJDU
-         1cDg==
-X-Gm-Message-State: AOAM531neBg0TSewVwFlo71PLq3WS0dNBJnCNOM/9HKD0AMHefuqeeF7
-        YG3UQc9nEmrvsUHrQ1NJhGjkdVykivueBAUUYV4gww==
-X-Google-Smtp-Source: ABdhPJwPAjxIJr+9IfvrvghxlUbrfXD5G7B10FXZiq3Asoi2FJxeIBImFeLirgmT3TzxwkIdXwzHnghmw6Dh7KtrH1A=
-X-Received: by 2002:a5d:8352:: with SMTP id q18mr1051783ior.31.1599604358848;
- Tue, 08 Sep 2020 15:32:38 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=p/1hHUSbtL14Ax0at2DUeNcr9Ny+Csoyhco21r35crE=;
+        b=cX9WwNRZsr5luGMsQG022wzXhNe0wv90a/nTbkgq2zxifC4HdfOxCbuy8lALVy1B8G
+         IM8irwkLf8EysjKOrpPGqsREoR6U3/LEN3SmgV06kYM0eohvaHM1HXI4ocRuye3/NVdP
+         OOboCnQbsy92B4jqu94PzbuFmbmzX/rvleEYVWTwn3+6qgnakBvq5bvlcLhosprm0nMU
+         q/ZGm+vSfBvxtKDqh0GCJb25MtCqmZlhqqLN51A6IOVr7x6n29x9tN2JWZd5cYUtPtbL
+         Ee6rhFnprkXwr6vCZIhiQg6NBq6Z3u8UVxCJQs+ypdvVXSdcDIrQBwOOm8cExODcLFkc
+         C4nw==
+X-Gm-Message-State: AOAM530swKCR+ZBLRNX5jvSACVROQbJnLxnIQGRvIUbPfVcK1xCXdMD+
+        FDhKMatJfcqpcvkdJN5P5A==
+X-Google-Smtp-Source: ABdhPJwocbAoceUdBVjvP517IFwXFz5vHn3glVCmHqzqVj0ZPDFrK4R2n3DaoP4Yy/j/0jNShnsB/g==
+X-Received: by 2002:a6b:3e06:: with SMTP id l6mr1023062ioa.160.1599604733487;
+        Tue, 08 Sep 2020 15:38:53 -0700 (PDT)
+Received: from xps15 ([64.188.179.251])
+        by smtp.gmail.com with ESMTPSA id a21sm337527ioh.12.2020.09.08.15.38.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Sep 2020 15:38:52 -0700 (PDT)
+Received: (nullmailer pid 1066114 invoked by uid 1000);
+        Tue, 08 Sep 2020 22:38:46 -0000
+Date:   Tue, 8 Sep 2020 16:38:46 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        linux-renesas-soc@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        linux-kernel@vger.kernel.org,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        linux-pwm@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
+        Magnus Damm <magnus.damm@gmail.com>, devicetree@vger.kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings: pwm: renesas,pwm-rcar: Add r8a774e1
+ support
+Message-ID: <20200908223846.GA1066007@bogus>
+References: <20200825104455.18000-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20200825104455.18000-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
 MIME-Version: 1.0
-References: <20200908193029.GM25236@zn.tnic> <025308CD-6E1A-41E1-8B3D-E9842CE00794@amacapital.net>
-In-Reply-To: <025308CD-6E1A-41E1-8B3D-E9842CE00794@amacapital.net>
-From:   Matthew Garrett <mjg59@google.com>
-Date:   Tue, 8 Sep 2020 15:32:28 -0700
-Message-ID: <CACdnJusOJVb0xpecFgPQB4N2WhUORikv_1eXAcGfJ3xwBVTo9Q@mail.gmail.com>
-Subject: Re: [PATCH] x86/msr: do not warn on writes to OC_MAILBOX
-To:     Andy Lutomirski <luto@amacapital.net>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Sultan Alsawaf <sultan@kerneltoast.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        kitsunyan <kitsunyan@airmail.cc>,
-        "Brown, Len" <len.brown@intel.com>, X86 ML <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200825104455.18000-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 8, 2020 at 1:35 PM Andy Lutomirski <luto@amacapital.net> wrote:
+On Tue, 25 Aug 2020 11:44:54 +0100, Lad Prabhakar wrote:
+> From: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
+> 
+> Document RZ/G2H (R8A774E1) SoC bindings.
+> 
+> No driver change is needed due to the fallback compatible value
+> "renesas,pwm-rcar".
+> 
+> Signed-off-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> ---
+>  Documentation/devicetree/bindings/pwm/renesas,pwm-rcar.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+> 
 
-> Undervolting is a bit different. It=E2=80=99s a genuinely useful configur=
-ation that can affect system stability.  In general, I think it should be a=
-llowed, and it should have a real driver in tree.
-
-Agree that this should be a proper driver rather than permitting
-arbitrary poking (especially if this isn't an architecturally defined
-MSR - there's no guarantee that it'll have the same functionality
-everywhere).
-
-> But this has a tricky interaction with lockdown.  An interface that allow=
-s root to destabilize a system may well allow root to escalate privileges. =
- But I think that making lockdown=3Dintegrity prevent tuning voltages and s=
-uch would be quite obnoxious.
-
-Indeed - plundervolt.com is a demonstration of this. Any realistic
-attack involves being able to drop the voltage enough to interfere
-with a calculation and then raise it again before everything else
-falls over, so simply applying some rate limiting seems like it would
-be sufficient.
-
-> Should there perhaps be a separate lockdown bit for stability?
-
-If it's a sysfs interface then I think it'd be easy enough for people
-who care to just add an SELinux or Apparmor rule, tbh.
+Acked-by: Rob Herring <robh@kernel.org>
