@@ -2,253 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2623526175D
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:32:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31CE026178C
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:37:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731638AbgIHRcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 13:32:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35402 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731740AbgIHRcL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 13:32:11 -0400
-Received: from localhost (35.sub-72-107-115.myvzw.com [72.107.115.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 821D220738;
-        Tue,  8 Sep 2020 17:32:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599586330;
-        bh=kUTqcdvvfzcSjWaK0H6A5NdpMrZNrv0SGFczPrxzh2I=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=w443FAgsCnle6zPIMQhAt3jMhssw9u1Htr1KiAP6iOc1pzVVGk6sw4JNj43q7EOZJ
-         SZnAMZ6lwcAJ1LPoz4m/tiVshXlhrheQfSg08J1HyqKYAjyIHowjC+NRJfM1bJsxfM
-         Q0IFMBC3s4GtTf+rIMpFH2mcfYxWqayRcp7xnn8U=
-Date:   Tue, 8 Sep 2020 12:32:09 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Vaibhav Gupta <vaibhavgupta40@gmail.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Bjorn Helgaas <bjorn@helgaas.com>,
-        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
-        Adam Radford <aradford@gmail.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Adaptec OEM Raid Solutions <aacraid@microsemi.com>,
-        Hannes Reinecke <hare@suse.com>,
-        Bradley Grove <linuxdrivers@attotech.com>,
-        John Garry <john.garry@huawei.com>,
-        Don Brace <don.brace@microsemi.com>,
-        James Smart <james.smart@broadcom.com>,
-        Dick Kennedy <dick.kennedy@broadcom.com>,
-        Kashyap Desai <kashyap.desai@broadcom.com>,
-        Sumit Saxena <sumit.saxena@broadcom.com>,
-        Shivasharan S <shivasharan.srikanteshwara@broadcom.com>,
-        Sathya Prakash <sathya.prakash@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
-        Jack Wang <jinpu.wang@cloud.ionos.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-scsi@vger.kernel.org, esc.storagedev@microsemi.com,
-        megaraidlinux.pdl@broadcom.com, MPT-FusionLinux.pdl@broadcom.com
-Subject: Re: [PATCH v2 01/15] scsi: megaraid_sas: use generic power management
-Message-ID: <20200908173209.GA607806@bjorn-Precision-5520>
+        id S1727935AbgIHRhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 13:37:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41498 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731436AbgIHRfi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 13:35:38 -0400
+Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC13FC061573
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 10:35:37 -0700 (PDT)
+Received: by mail-vs1-xe44.google.com with SMTP id a16so9426814vsp.12
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 10:35:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jGxIFib/r1AIVUzF+ck89MPfdIoxyJ1DlRxuo3IZNeQ=;
+        b=NFJ5yExL7/3iQk83uUdYEh0bCvRb1MSngEDrzPI56Q9R9TU5wB44JoXh0X93C/OBPF
+         +G6RTxSI6s4NdshRb0TQfbOnAMNtqbyhgCkNMtPY81TUvxP380mkbh7S3EcM44rzP+LC
+         Oli4l27QuVi0RBnEg5H9F1NXjfK4SlQvmPzLKbYHwbnnHsaTl96d4q+7rg1HT2jLpKgL
+         ZVeNNk5uron6dcUdmrg5YPJxIiuZz/6yba0xlDbdEJMlJJjonQsvlvkgUOoKAfajpOHU
+         HMiH/IgF1BUM0h9bVsnKOdhtA5DiA+ivfpABT6AnhNgD8E9qEs+Iu4Mx0cIUDpEq6gT2
+         cmug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jGxIFib/r1AIVUzF+ck89MPfdIoxyJ1DlRxuo3IZNeQ=;
+        b=a5a7ODvoSK2EBRKWsAxybIhiULlQKBTU9aCMqeywbnVgXju4k9BJ2QvRayT3g7Atsx
+         lJcENmh78nUwVUKkpcGatmZ4rFnWbC/M2SkMNcjFy01O84oUl31LQXM+rsspCw8OmYHO
+         VwDGbE+pMdEWtcii/a4NQkTaHgNYylk0JioMf/vSg3+TYwQgrGlg+0N1fhUJqHAyfCHG
+         ELqA8q9wFEuj8OIMsxzEt3BSHp1uqzSZ9ZOIUhR+WtAA1xJZLeaz/CS846xLHh8NLWSX
+         rYjjtvEySaSwsfnf9IqRtRDWoVcjfHOVWS4eEuBBgR/qdjuAn0SZgifOqG6+KQskn97s
+         PlJA==
+X-Gm-Message-State: AOAM531I3cxMXO5rEGgaXUno+216IKMua/EILO/4PC2MJAcWAgbny5Lw
+        3XIU838OQci2V2Gh2mwbIpCHo0P4wnR8Tw==
+X-Google-Smtp-Source: ABdhPJyuIUl0/SPxVjgT+DGKmQonld71g0/PJibRYYf4mmHP6ackrP4d770L8tO9a30IA3OMHGjlCw==
+X-Received: by 2002:a67:ef52:: with SMTP id k18mr151169vsr.25.1599586536398;
+        Tue, 08 Sep 2020 10:35:36 -0700 (PDT)
+Received: from mail-vs1-f50.google.com (mail-vs1-f50.google.com. [209.85.217.50])
+        by smtp.gmail.com with ESMTPSA id s3sm1190001vkd.49.2020.09.08.10.35.35
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Sep 2020 10:35:35 -0700 (PDT)
+Received: by mail-vs1-f50.google.com with SMTP id q67so9478703vsd.5
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 10:35:35 -0700 (PDT)
+X-Received: by 2002:a67:f5d4:: with SMTP id t20mr176891vso.1.1599586534810;
+ Tue, 08 Sep 2020 10:35:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200720133427.454400-2-vaibhavgupta40@gmail.com>
+References: <20200901195415.4840-1-m-karicheri2@ti.com> <20200901195415.4840-2-m-karicheri2@ti.com>
+ <CA+FuTScPZ5sfHBwbFKQza6w4G1UcO8DaqrcpFuSvr9svgMEepw@mail.gmail.com> <581a90d0-243e-f62e-1c2e-a9683807805c@ti.com>
+In-Reply-To: <581a90d0-243e-f62e-1c2e-a9683807805c@ti.com>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Tue, 8 Sep 2020 19:34:56 +0200
+X-Gmail-Original-Message-ID: <CA+FuTSdDqx8ZwmvLceygpxTDC9=S8=jqFRCTWFoW-6YwihXTUQ@mail.gmail.com>
+Message-ID: <CA+FuTSdDqx8ZwmvLceygpxTDC9=S8=jqFRCTWFoW-6YwihXTUQ@mail.gmail.com>
+Subject: Re: [PATCH net-next 1/1] net: hsr/prp: add vlan support
+To:     Murali Karicheri <m-karicheri2@ti.com>
+Cc:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>, nsekhar@ti.com,
+        Grygorii Strashko <grygorii.strashko@ti.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 20, 2020 at 07:04:14PM +0530, Vaibhav Gupta wrote:
-> With legacy PM hooks, it was the responsibility of a driver to manage PCI
-> states and also the device's power state. The generic approach is to let
-> the PCI core handle the work.
-> 
-> PCI core passes "struct device*" as an argument to the .suspend() and
-> .resume() callbacks. As the .suspend() work with "struct instance*",
-> extract it from "struct device*" using dev_get_drv_data().
-> 
-> Driver was also using PCI helper functions like pci_save/restore_state(),
-> pci_disable/enable_device(), pci_set_power_state() and pci_enable_wake().
-> They should not be invoked by the driver.
-> 
-> Compile-tested only.
-> 
-> Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
-> ---
->  drivers/scsi/megaraid/megaraid_sas_base.c | 61 ++++++-----------------
->  1 file changed, 16 insertions(+), 45 deletions(-)
-> 
-> diff --git a/drivers/scsi/megaraid/megaraid_sas_base.c b/drivers/scsi/megaraid/megaraid_sas_base.c
-> index 00668335c2af..4a6ee7778977 100644
-> --- a/drivers/scsi/megaraid/megaraid_sas_base.c
-> +++ b/drivers/scsi/megaraid/megaraid_sas_base.c
-> @@ -7539,25 +7539,21 @@ static void megasas_shutdown_controller(struct megasas_instance *instance,
->  	megasas_return_cmd(instance, cmd);
->  }
->  
-> -#ifdef CONFIG_PM
->  /**
->   * megasas_suspend -	driver suspend entry point
-> - * @pdev:		PCI device structure
-> - * @state:		PCI power state to suspend routine
-> + * @dev:		Device structure
->   */
-> -static int
-> -megasas_suspend(struct pci_dev *pdev, pm_message_t state)
-> +static int __maybe_unused
-> +megasas_suspend(struct device *dev)
->  {
-> -	struct megasas_instance *instance;
+On Tue, Sep 8, 2020 at 6:39 PM Murali Karicheri <m-karicheri2@ti.com> wrote:
+>
+> Hi Willem,
+>
+> Thanks for the response!
+> On 9/4/20 11:45 AM, Willem de Bruijn wrote:
+> > On Tue, Sep 1, 2020 at 9:54 PM Murali Karicheri <m-karicheri2@ti.com> wrote:
+> >>
+> >> This patch add support for creating vlan interfaces
+> >> over hsr/prp interface.
+> >>
+> >> Signed-off-by: Murali Karicheri <m-karicheri2@ti.com>
+> >> ---
+> >>   net/hsr/hsr_device.c  |  4 ----
+> >>   net/hsr/hsr_forward.c | 16 +++++++++++++---
+> >>   2 files changed, 13 insertions(+), 7 deletions(-)
+> >>
+> >> diff --git a/net/hsr/hsr_device.c b/net/hsr/hsr_device.c
+> >> index ab953a1a0d6c..e1951579a3ad 100644
+> >> --- a/net/hsr/hsr_device.c
+> >> +++ b/net/hsr/hsr_device.c
+> >> @@ -477,10 +477,6 @@ void hsr_dev_setup(struct net_device *dev)
+> >>
+> >>          /* Prevent recursive tx locking */
+> >>          dev->features |= NETIF_F_LLTX;
+> >> -       /* VLAN on top of HSR needs testing and probably some work on
+> >> -        * hsr_header_create() etc.
+> >> -        */
+> >> -       dev->features |= NETIF_F_VLAN_CHALLENGED;
+> >>          /* Not sure about this. Taken from bridge code. netdev_features.h says
+> >>           * it means "Does not change network namespaces".
+> >>           */
+> >> diff --git a/net/hsr/hsr_forward.c b/net/hsr/hsr_forward.c
+> >> index cadfccd7876e..de21df30b0d9 100644
+> >> --- a/net/hsr/hsr_forward.c
+> >> +++ b/net/hsr/hsr_forward.c
+> >> @@ -208,6 +208,7 @@ static struct sk_buff *hsr_fill_tag(struct sk_buff *skb,
+> >>                                      struct hsr_port *port, u8 proto_version)
+> >>   {
+> >>          struct hsr_ethhdr *hsr_ethhdr;
+> >> +       unsigned char *pc;
+> >>          int lsdu_size;
+> >>
+> >>          /* pad to minimum packet size which is 60 + 6 (HSR tag) */
+> >> @@ -218,7 +219,18 @@ static struct sk_buff *hsr_fill_tag(struct sk_buff *skb,
+> >>          if (frame->is_vlan)
+> >>                  lsdu_size -= 4;
+> >>
+> >> -       hsr_ethhdr = (struct hsr_ethhdr *)skb_mac_header(skb);
+> >> +       pc = skb_mac_header(skb);
+> >> +       if (frame->is_vlan)
+> >> +               /* This 4-byte shift (size of a vlan tag) does not
+> >> +                * mean that the ethhdr starts there. But rather it
+> >> +                * provides the proper environment for accessing
+> >> +                * the fields, such as hsr_tag etc., just like
+> >> +                * when the vlan tag is not there. This is because
+> >> +                * the hsr tag is after the vlan tag.
+> >> +                */
+> >> +               hsr_ethhdr = (struct hsr_ethhdr *)(pc + VLAN_HLEN);
+> >> +       else
+> >> +               hsr_ethhdr = (struct hsr_ethhdr *)pc;
+> >
+> > Instead, I would pass the header from the caller, which knows the
+> > offset because it moves the previous headers to make space.
+> >
+> So if I understood you correctly a diff for the above would like this
+> where pass dst + movelen as  struct hsr_ethhdr *hsr_ethhdr
+> pointer to hsr_fill_tag(), right?
+>
+> a0868495local@uda0868495:~/Projects/upstream-kernel$ git diff
+> diff --git a/net/hsr/hsr_forward.c b/net/hsr/hsr_forward.c
+> index de21df30b0d9..4d9192c8bcf8 100644
+> --- a/net/hsr/hsr_forward.c
+> +++ b/net/hsr/hsr_forward.c
+> @@ -204,11 +204,10 @@ static void hsr_set_path_id(struct hsr_ethhdr
+> *hsr_ethhdr,
+>   }
+>
+>   static struct sk_buff *hsr_fill_tag(struct sk_buff *skb,
+> +                                   struct hsr_ethhdr *hsr_ethhdr,
+>                                      struct hsr_frame_info *frame,
+>                                      struct hsr_port *port, u8
+> proto_version)
+>   {
+> -       struct hsr_ethhdr *hsr_ethhdr;
+> -       unsigned char *pc;
+>          int lsdu_size;
+>
+>          /* pad to minimum packet size which is 60 + 6 (HSR tag) */
+> @@ -219,19 +218,6 @@ static struct sk_buff *hsr_fill_tag(struct sk_buff
+> *skb,
+>          if (frame->is_vlan)
+>                  lsdu_size -= 4;
+>
+> -       pc = skb_mac_header(skb);
+> -       if (frame->is_vlan)
+> -               /* This 4-byte shift (size of a vlan tag) does not
+> -                * mean that the ethhdr starts there. But rather it
+> -                * provides the proper environment for accessing
+> -                * the fields, such as hsr_tag etc., just like
+> -                * when the vlan tag is not there. This is because
+> -                * the hsr tag is after the vlan tag.
+> -                */
+> -               hsr_ethhdr = (struct hsr_ethhdr *)(pc + VLAN_HLEN);
+> -       else
+> -               hsr_ethhdr = (struct hsr_ethhdr *)pc;
 > -
-> -	instance = pci_get_drvdata(pdev);
-> +	struct megasas_instance *instance = dev_get_drvdata(dev);
->  
->  	if (!instance)
->  		return 0;
->  
->  	instance->unload = 1;
->  
-> -	dev_info(&pdev->dev, "%s is called\n", __func__);
-> +	dev_info(dev, "%s is called\n", __func__);
->  
->  	/* Shutdown SR-IOV heartbeat timer */
->  	if (instance->requestorId && !instance->skip_heartbeat_timer_del)
-> @@ -7579,7 +7575,7 @@ megasas_suspend(struct pci_dev *pdev, pm_message_t state)
->  
->  	tasklet_kill(&instance->isr_tasklet);
->  
-> -	pci_set_drvdata(instance->pdev, instance);
-> +	dev_set_drvdata(dev, instance);
+>          hsr_set_path_id(hsr_ethhdr, port);
+>          set_hsr_tag_LSDU_size(&hsr_ethhdr->hsr_tag, lsdu_size);
+>          hsr_ethhdr->hsr_tag.sequence_nr = htons(frame->sequence_nr);
+> @@ -280,10 +266,12 @@ struct sk_buff *hsr_create_tagged_frame(struct
+> hsr_frame_info *frame,
+>          memmove(dst, src, movelen);
+>          skb_reset_mac_header(skb);
+>
+> -       /* skb_put_padto free skb on error and hsr_fill_tag returns NULL in
+> -        * that case
+> +       /* dst point to the start of hsr tag. So pass it to fill the
+> +        * hsr info. Also skb_put_padto free skb on error and hsr_fill_tag
+> +        * returns NULL in that case.
+>           */
+> -       return hsr_fill_tag(skb, frame, port, port->hsr->prot_version);
+> +       return hsr_fill_tag(skb, (struct hsr_ethhdr *)(dst + movelen),
+> +                           frame, port, port->hsr->prot_version);
 
-It *might* be correct to replace "instance->pdev" with "dev", but it's
-not obvious and deserves some explanation.  It's true that you can
-replace &pdev->dev with dev, but I don't know anything about
-instance->dev.
+It's a bit hard to see, since this is a draft patch on top of the
+existing patch. But I think so.
 
-I don't think this change is actually necessary, is it?
-"instance->pdev" is still a pci_dev pointer, so pci_set_drvdata()
-should work fine.
+Only, instead of dst + movelen, you can use src.
 
-It looks goofy to use pci_set_drvdata() or dev_set_drvdata() in a
-suspend routine, but I didn't bother trying to figure out what's going
-on here.
+>   }
+>
+>
+> > Also, supporting VLAN probably also requires supporting 802.1ad QinQ,
+> > which means code should parse the headers instead of hardcoding
+> > VLAN_HLEN.
+> >
+>
+> iec-62439-3 standard only talks about VLAN (TPID 0x8100), not about
+> QinQ. So what I could do is to check and bail out if 802.1ad frame is
+> received at the interface from upper layer. Something like below and
+> frame will get dropped.
+>
+> @@ -519,6 +507,8 @@ static int fill_frame_info(struct hsr_frame_info *frame,
+>
+>          if (proto == htons(ETH_P_8021Q))
+>                  frame->is_vlan = true;
+> +       else if (proto == htons(ETH_P_8021AD))
+> +               return -1; /* Don't support 802.1ad */
+>
+>          if (frame->is_vlan) {
+>                  vlan_hdr = (struct hsr_vlan_ethhdr *)ethhdr;
+>
+> What do you think?
 
->  	instance->instancet->disable_intr(instance);
->  
->  	megasas_destroy_irqs(instance);
-> @@ -7587,48 +7583,28 @@ megasas_suspend(struct pci_dev *pdev, pm_message_t state)
->  	if (instance->msix_vectors)
->  		pci_free_irq_vectors(instance->pdev);
->  
-> -	pci_save_state(pdev);
-> -	pci_disable_device(pdev);
-> -
-> -	pci_set_power_state(pdev, pci_choose_state(pdev, state));
-> -
->  	return 0;
->  }
->  
->  /**
->   * megasas_resume-      driver resume entry point
-> - * @pdev:               PCI device structure
-> + * @dev:              Device structure
->   */
-> -static int
-> -megasas_resume(struct pci_dev *pdev)
-> +static int __maybe_unused
-> +megasas_resume(struct device *dev)
->  {
->  	int rval;
->  	struct Scsi_Host *host;
-> -	struct megasas_instance *instance;
-> +	struct megasas_instance *instance = dev_get_drvdata(dev);
->  	u32 status_reg;
->  
-> -	instance = pci_get_drvdata(pdev);
-> -
->  	if (!instance)
->  		return 0;
->  
->  	host = instance->host;
-> -	pci_set_power_state(pdev, PCI_D0);
-> -	pci_enable_wake(pdev, PCI_D0, 0);
-> -	pci_restore_state(pdev);
-> +	device_wakeup_disable(dev);
-
-Shouldn't there be a corresponding device_wakeup_enable() or similar
-elsewhere?
-
-Maybe the fact that megasas disables wakeup but never enables it is a
-latent bug?
-
-> -	dev_info(&pdev->dev, "%s is called\n", __func__);
-> -	/*
-> -	 * PCI prepping: enable device set bus mastering and dma mask
-> -	 */
-> -	rval = pci_enable_device_mem(pdev);
-> -
-> -	if (rval) {
-> -		dev_err(&pdev->dev, "Enable device failed\n");
-> -		return rval;
-> -	}
-> -
-> -	pci_set_master(pdev);
-> +	dev_info(dev, "%s is called\n", __func__);
->  
->  	/*
->  	 * We expect the FW state to be READY
-> @@ -7754,14 +7730,8 @@ megasas_resume(struct pci_dev *pdev)
->  fail_set_dma_mask:
->  fail_ready_state:
->  
-> -	pci_disable_device(pdev);
-> -
->  	return -ENODEV;
->  }
-> -#else
-> -#define megasas_suspend	NULL
-> -#define megasas_resume	NULL
-> -#endif
->  
->  static inline int
->  megasas_wait_for_adapter_operational(struct megasas_instance *instance)
-> @@ -7931,7 +7901,7 @@ static void megasas_detach_one(struct pci_dev *pdev)
->  
->  /**
->   * megasas_shutdown -	Shutdown entry point
-> - * @device:		Generic device structure
-> + * @pdev:		PCI device structure
-
-Looks like an unrelated typo fix?  I would put this in a separate
-patch.
-
->   */
->  static void megasas_shutdown(struct pci_dev *pdev)
->  {
-> @@ -8508,6 +8478,8 @@ static const struct file_operations megasas_mgmt_fops = {
->  	.llseek = noop_llseek,
->  };
->  
-> +static SIMPLE_DEV_PM_OPS(megasas_pm_ops, megasas_suspend, megasas_resume);
-> +
->  /*
->   * PCI hotplug support registration structure
->   */
-> @@ -8517,8 +8489,7 @@ static struct pci_driver megasas_pci_driver = {
->  	.id_table = megasas_pci_table,
->  	.probe = megasas_probe_one,
->  	.remove = megasas_detach_one,
-> -	.suspend = megasas_suspend,
-> -	.resume = megasas_resume,
-> +	.driver.pm = &megasas_pm_ops,
->  	.shutdown = megasas_shutdown,
->  };
->  
-> -- 
-> 2.27.0
-> 
+It's good to err on the safe side. That should probably be a separate patch.
