@@ -2,173 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37BD9261018
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 12:40:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA56726101C
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 12:41:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729717AbgIHKj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 06:39:57 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37308 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729775AbgIHKir (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 06:38:47 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id CB8FDAF3F;
-        Tue,  8 Sep 2020 10:38:16 +0000 (UTC)
-Date:   Tue, 8 Sep 2020 12:38:15 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        cgroups@vger.kernel.org
-Subject: Re: [PATCH] mm/memcg: rename watermark as max_usage
-Message-ID: <20200908103815.GC26850@dhcp22.suse.cz>
-References: <1599560721-68915-1-git-send-email-alex.shi@linux.alibaba.com>
+        id S1729873AbgIHKk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 06:40:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32916 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729691AbgIHKjK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 06:39:10 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F7F2C061755
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 03:39:10 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id n3so8578730pjq.1
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 03:39:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=HkPB3R9O6sMsMd9dcUXIlXN4Isqu12Nsn8RKRzxq5sA=;
+        b=pmcyoVTKycQfasYTZxfLUtFhSQv0ybyrZCo4IN6u6xwXD4apG3gW8J2XkWC0mHQ9qB
+         RnEZ11gfA33JChSteMjJjrr3wxT3Fj//XADN+6L4gjPeeaUospmPkVOylRHRbXTUZntS
+         4d4esBOxuiEtv1Wj81HZXjKgSsTUgXd7kD8DJxJDPSR+jDzuowQzbGfDrxdZuKQB8hLO
+         0i9cuxYBDRYn4AYg/Kj7/5/INr0JGWTzJfCIjwoH3zQo0zVZ2BDfLYsK5iPJt1t26zGi
+         bSgYct7wQPeC4jB71q2oO2z4K5Y2Y92+5nkMparsFKNsTH3gBqgBWCZED88Ohu0nSJNO
+         QZdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=HkPB3R9O6sMsMd9dcUXIlXN4Isqu12Nsn8RKRzxq5sA=;
+        b=Qqc/sZIa1KB7GtJoBOUKoFWAsD5t4YRdN2XVATn1uAE2OWnLSA390jZjan0yTQ72fg
+         7Y7bRatU5lpJJKtDeUMPHxIGuUIlgwSUUom54sVSFKAbwaYr354eAqthgSuurYQ5HAKR
+         SSS3Na+uwPuN3/YSkat1XNsBLm88GsZFkhV1G+wkDYb4tmo3hGmQGzKhxLyFqOWY1y1z
+         XouJFDldn2xqle2LAZjhEEXOxmfUAWqpwdP8SBZ8p5iGxaL7i3YCUWEE8ZYqazNFaHIA
+         O0n12v4ujgWuM3uXFPpBr94dxMVkmLywCabPwnj3qcZ6Fwt1C/zAIFpiDGOCgh0grnkB
+         hCUA==
+X-Gm-Message-State: AOAM530t+q8w/sWVrjRjNvDa7rbW00uyCriEiiCyi33dncNTdbTU/Ezz
+        zuWlZztulvYiTaGZM87iR2tR3A==
+X-Google-Smtp-Source: ABdhPJzDeWCog+ZMAU2G7JYbGUhamkdwx/s5HwT41dUbTU93nfQWpzRJAEPDazYH7J2RzcfE6n7jvQ==
+X-Received: by 2002:a17:90a:160f:: with SMTP id n15mr3327841pja.75.1599561549629;
+        Tue, 08 Sep 2020 03:39:09 -0700 (PDT)
+Received: from localhost ([122.181.54.133])
+        by smtp.gmail.com with ESMTPSA id y13sm11455913pfr.141.2020.09.08.03.39.08
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 08 Sep 2020 03:39:08 -0700 (PDT)
+Date:   Tue, 8 Sep 2020 16:09:06 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     rjw@rjwysocki.net, robh+dt@kernel.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, amitk@kernel.org,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        dmitry.baryshkov@linaro.org, tdas@codeaurora.org
+Subject: Re: [PATCH 2/7] arm64: dts: qcom: sm8250: Add cpufreq hw node
+Message-ID: <20200908103906.sgbaw3shfdpv5pma@vireshk-i7>
+References: <20200908075716.30357-1-manivannan.sadhasivam@linaro.org>
+ <20200908075716.30357-3-manivannan.sadhasivam@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1599560721-68915-1-git-send-email-alex.shi@linux.alibaba.com>
+In-Reply-To: <20200908075716.30357-3-manivannan.sadhasivam@linaro.org>
+User-Agent: NeoMutt/20180716-391-311a52
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 08-09-20 18:25:21, Alex Shi wrote:
-> The page_counter's watermark used to show as max_usage_in_bytes in memory
-> cgroup. named as watermark is a kind of misleadking. So, let's rename it
-> as it usage.
-
-Is this really necessary? This just adds a code churn for something that
-is highly subjective.
-
-> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org> 
-> Cc: Johannes Weiner <hannes@cmpxchg.org> 
-> Cc: Michal Hocko <mhocko@kernel.org> 
-> Cc: Vladimir Davydov <vdavydov.dev@gmail.com> 
-> Cc: linux-kernel@vger.kernel.org 
-> Cc: linux-mm@kvack.org 
-> Cc: cgroups@vger.kernel.org 
-> ---
->  include/linux/page_counter.h |  6 +++---
->  mm/hugetlb_cgroup.c          |  8 ++++----
->  mm/memcontrol.c              |  4 ++--
->  mm/page_counter.c            | 12 ++++++------
->  4 files changed, 15 insertions(+), 15 deletions(-)
+On 08-09-20, 13:27, Manivannan Sadhasivam wrote:
+> From: Bjorn Andersson <bjorn.andersson@linaro.org>
 > 
-> diff --git a/include/linux/page_counter.h b/include/linux/page_counter.h
-> index 85bd413e784e..813f2da26c36 100644
-> --- a/include/linux/page_counter.h
-> +++ b/include/linux/page_counter.h
-> @@ -25,7 +25,7 @@ struct page_counter {
->  	atomic_long_t children_low_usage;
->  
->  	/* legacy */
-> -	unsigned long watermark;
-> +	unsigned long max_usage;	/* max_usage_in_bytes */
->  	unsigned long failcnt;
->  };
->  
-> @@ -67,9 +67,9 @@ static inline void page_counter_set_high(struct page_counter *counter,
->  int page_counter_memparse(const char *buf, const char *max,
->  			  unsigned long *nr_pages);
->  
-> -static inline void page_counter_reset_watermark(struct page_counter *counter)
-> +static inline void page_counter_reset_max_usage(struct page_counter *counter)
->  {
-> -	counter->watermark = page_counter_read(counter);
-> +	counter->max_usage = page_counter_read(counter);
->  }
->  
->  #endif /* _LINUX_PAGE_COUNTER_H */
-> diff --git a/mm/hugetlb_cgroup.c b/mm/hugetlb_cgroup.c
-> index 1f87aec9ab5c..c7484f5eb8ef 100644
-> --- a/mm/hugetlb_cgroup.c
-> +++ b/mm/hugetlb_cgroup.c
-> @@ -437,9 +437,9 @@ static u64 hugetlb_cgroup_read_u64(struct cgroup_subsys_state *css,
->  	case RES_RSVD_LIMIT:
->  		return (u64)rsvd_counter->max * PAGE_SIZE;
->  	case RES_MAX_USAGE:
-> -		return (u64)counter->watermark * PAGE_SIZE;
-> +		return (u64)counter->max_usage * PAGE_SIZE;
->  	case RES_RSVD_MAX_USAGE:
-> -		return (u64)rsvd_counter->watermark * PAGE_SIZE;
-> +		return (u64)rsvd_counter->max_usage * PAGE_SIZE;
->  	case RES_FAILCNT:
->  		return counter->failcnt;
->  	case RES_RSVD_FAILCNT:
-> @@ -553,10 +553,10 @@ static ssize_t hugetlb_cgroup_reset(struct kernfs_open_file *of,
->  
->  	switch (MEMFILE_ATTR(of_cft(of)->private)) {
->  	case RES_MAX_USAGE:
-> -		page_counter_reset_watermark(counter);
-> +		page_counter_reset_max_usage(counter);
->  		break;
->  	case RES_RSVD_MAX_USAGE:
-> -		page_counter_reset_watermark(rsvd_counter);
-> +		page_counter_reset_max_usage(rsvd_counter);
->  		break;
->  	case RES_FAILCNT:
->  		counter->failcnt = 0;
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 8c74f1200261..21b73de53073 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -3559,7 +3559,7 @@ static u64 mem_cgroup_read_u64(struct cgroup_subsys_state *css,
->  	case RES_LIMIT:
->  		return (u64)counter->max * PAGE_SIZE;
->  	case RES_MAX_USAGE:
-> -		return (u64)counter->watermark * PAGE_SIZE;
-> +		return (u64)counter->max_usage * PAGE_SIZE;
->  	case RES_FAILCNT:
->  		return counter->failcnt;
->  	case RES_SOFT_LIMIT:
-> @@ -3839,7 +3839,7 @@ static ssize_t mem_cgroup_reset(struct kernfs_open_file *of, char *buf,
->  
->  	switch (MEMFILE_ATTR(of_cft(of)->private)) {
->  	case RES_MAX_USAGE:
-> -		page_counter_reset_watermark(counter);
-> +		page_counter_reset_max_usage(counter);
->  		break;
->  	case RES_FAILCNT:
->  		counter->failcnt = 0;
-> diff --git a/mm/page_counter.c b/mm/page_counter.c
-> index afe22ad335cc..d88ee074f4a6 100644
-> --- a/mm/page_counter.c
-> +++ b/mm/page_counter.c
-> @@ -75,10 +75,10 @@ void page_counter_charge(struct page_counter *counter, unsigned long nr_pages)
->  		propagate_protected_usage(c, new);
->  		/*
->  		 * This is indeed racy, but we can live with some
-> -		 * inaccuracy in the watermark.
-> +		 * inaccuracy in the max_usage.
->  		 */
-> -		if (new > READ_ONCE(c->watermark))
-> -			WRITE_ONCE(c->watermark, new);
-> +		if (new > READ_ONCE(c->max_usage))
-> +			WRITE_ONCE(c->max_usage, new);
->  	}
->  }
->  
-> @@ -129,10 +129,10 @@ bool page_counter_try_charge(struct page_counter *counter,
->  		propagate_protected_usage(c, new);
->  		/*
->  		 * Just like with failcnt, we can live with some
-> -		 * inaccuracy in the watermark.
-> +		 * inaccuracy in the max_usage.
->  		 */
-> -		if (new > READ_ONCE(c->watermark))
-> -			WRITE_ONCE(c->watermark, new);
-> +		if (new > READ_ONCE(c->max_usage))
-> +			WRITE_ONCE(c->max_usage, new);
->  	}
->  	return true;
->  
-> -- 
-> 1.8.3.1
+> Add cpufreq HW device node to scale 4-Silver/3-Gold/1-Gold+ cores
+> on SM8250 SoCs.
+> 
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> ---
+>  arch/arm64/boot/dts/qcom/sm8250.dtsi | 22 ++++++++++++++++++++++
+>  1 file changed, 22 insertions(+)
+
+You want this to go through my tree or ARM Soc ?
 
 -- 
-Michal Hocko
-SUSE Labs
+viresh
