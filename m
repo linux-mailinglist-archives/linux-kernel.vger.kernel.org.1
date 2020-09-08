@@ -2,114 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D87BB2616F5
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:23:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 414C5261709
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:24:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731679AbgIHRXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 13:23:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57162 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726694AbgIHRV5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 13:21:57 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8321E206B5;
-        Tue,  8 Sep 2020 17:21:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599585717;
-        bh=Gzymf03QZheR0rew1DGzIq4ZxNN09MkNkW/PUkupiCs=;
-        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=hBlFCGvWNlYoIili+fAT+BAHvvkNeiySEFqKt+wzNdniqoH7NDLQp1Lzk62eO6cNt
-         yVQGQj6zdyDJq1KsECcf8mPUwo0WiXO2hT2iQgatu/PhxqBwELKJVlAc3QWfAcl9bB
-         HFKGE1nxCrPMAqCH6vN+fBomMO37QMGbUrR3+a0o=
-Date:   Tue, 08 Sep 2020 18:21:13 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     linux-arm-kernel@lists.infradead.org,
-        Masahisa Kojima <masahisa.kojima@linaro.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        linux-rpi-kernel@lists.infradead.org,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-kernel@vger.kernel.org,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        linux-tegra@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Scott Branden <sbranden@broadcom.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        linux-spi@vger.kernel.org, Orson Zhai <orsonzhai@gmail.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jassi Brar <jaswinder.singh@linaro.org>,
-        linux-arm-msm@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com, Ray Jui <rjui@broadcom.com>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     stable@vger.kernel.org
-In-Reply-To: <20200901152713.18629-1-krzk@kernel.org>
-References: <20200901152713.18629-1-krzk@kernel.org>
-Subject: Re: [PATCH 01/11] spi: sprd: Release DMA channel also on probe deferral
-Message-Id: <159958565716.16771.12447755739031265902.b4-ty@kernel.org>
+        id S1731998AbgIHRYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 13:24:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39350 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731778AbgIHRVf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 13:21:35 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A86C7C061573
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 10:21:34 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id b17so67819pji.1
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 10:21:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=6Hzyipkee9UZGhxSyMM2F47dHct0fHx90e1igtsMR4E=;
+        b=ICQDvF+rwQXw9SGy3OdF3Xe7X+JJXBClYZolg9y7azAxjM9u12FMxe1tgzwLDBGXra
+         RcnF7npll1c3cLCooYxBYa2hGL9tW7D0T9RWJ6sVWa4vP6UMRy+BxSaH/PSGDQeebuN7
+         ctcRWFqccr4xPAMN0LHP8f07qDFD+6RScmbbo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6Hzyipkee9UZGhxSyMM2F47dHct0fHx90e1igtsMR4E=;
+        b=FknVlkuJO6W5qOsn4K8KGqCgKu9XyGtPPyXWjbz1AoBRN+sIevYwReYvBxhyRJpMSw
+         w5ZKP2lDmOXgHjkoQDky/JwMsBtznEcngLzI3/RCgSCrT1IJYkIwhS3IJs0Ip6NG/IxI
+         sdfF+iSsz3CP53vIBx9OEOTpx6F6JM99nu7kyHHZUuB4TXist1g7BdFdnr8FsJVNsxos
+         WckuiIdWmAg+f+DozNw+eeGG6PC9wJLMVe7oNQUSKUAIPpc8eLmgJ0HeOM7CWwaPQZkB
+         l/NwSkntER9rsPqhgglTMVlnhafKIMK95Q5pqPUvp91sU13NFaK3JMMLhVAJxlhOxJPL
+         pNaQ==
+X-Gm-Message-State: AOAM531LbNwQjLFDcv0wB8bG0ztTaHUILc7e/CXEMld5f+T8jNsFaumD
+        uEcNIjAH9o6Cx8UwxmlPTgA3tQ==
+X-Google-Smtp-Source: ABdhPJwSh8nnIY0DMAgQFgjrXSr6HtOzK23wIPkfujtWaueHiCI0KrW9jJaoGTUWHiEyVtRDHNt0hQ==
+X-Received: by 2002:a17:90b:1216:: with SMTP id gl22mr120500pjb.121.1599585694210;
+        Tue, 08 Sep 2020 10:21:34 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id c1sm26685pfi.136.2020.09.08.10.21.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Sep 2020 10:21:33 -0700 (PDT)
+Date:   Tue, 8 Sep 2020 10:21:32 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Marco Elver <elver@google.com>
+Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>
+Subject: Re: [RFC PATCH 1/2] lib/string: Disable instrumentation
+Message-ID: <202009081021.8E5957A1F@keescook>
+References: <20200905222323.1408968-1-nivedita@alum.mit.edu>
+ <20200905222323.1408968-2-nivedita@alum.mit.edu>
+ <CANpmjNMnU03M0UJiLaHPkRipDuOZht0c9S3d40ZupQVNZLR+RA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANpmjNMnU03M0UJiLaHPkRipDuOZht0c9S3d40ZupQVNZLR+RA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 1 Sep 2020 17:27:03 +0200, Krzysztof Kozlowski wrote:
-> If dma_request_chan() for TX channel fails with EPROBE_DEFER, the RX
-> channel would not be released and on next re-probe it would be requested
-> second time.
+On Tue, Sep 08, 2020 at 11:39:11AM +0200, Marco Elver wrote:
+> On Sun, 6 Sep 2020 at 00:23, Arvind Sankar <nivedita@alum.mit.edu> wrote:
+> >
+> > String functions can be useful in early boot, but using instrumented
+> > versions can be problematic: eg on x86, some of the early boot code is
+> > executing out of an identity mapping rather than the kernel virtual
+> > addresses. Accessing any global variables at this point will lead to a
+> > crash.
+> >
+> > Tracing and KCOV are already disabled, and CONFIG_AMD_MEM_ENCRYPT will
+> > additionally disable KASAN and stack protector.
+> >
+> > Additionally disable GCOV, UBSAN, KCSAN, STACKLEAK_PLUGIN and branch
+> > profiling, and make it unconditional to allow safe use of string
+> > functions.
+> >
+> > Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+> > ---
+> >  lib/Makefile | 11 +++++++----
+> >  1 file changed, 7 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/lib/Makefile b/lib/Makefile
+> > index a4a4c6864f51..5e421769bbc6 100644
+> > --- a/lib/Makefile
+> > +++ b/lib/Makefile
+> > @@ -8,7 +8,6 @@ ccflags-remove-$(CONFIG_FUNCTION_TRACER) += $(CC_FLAGS_FTRACE)
+> >  # These files are disabled because they produce lots of non-interesting and/or
+> >  # flaky coverage that is not a function of syscall inputs. For example,
+> >  # rbtree can be global and individual rotations don't correlate with inputs.
+> > -KCOV_INSTRUMENT_string.o := n
+> >  KCOV_INSTRUMENT_rbtree.o := n
+> >  KCOV_INSTRUMENT_list_debug.o := n
+> >  KCOV_INSTRUMENT_debugobjects.o := n
+> > @@ -20,12 +19,16 @@ KCOV_INSTRUMENT_fault-inject.o := n
+> >  # them into calls to themselves.
+> >  CFLAGS_string.o := -ffreestanding
+> >
+> > -# Early boot use of cmdline, don't instrument it
+> > -ifdef CONFIG_AMD_MEM_ENCRYPT
+> > +# Early boot use of string functions, disable instrumentation
+> > +GCOV_PROFILE_string.o := n
+> > +KCOV_INSTRUMENT_string.o := n
+> >  KASAN_SANITIZE_string.o := n
+> > +UBSAN_SANITIZE_string.o := n
+> > +KCSAN_SANITIZE_string.o := n
+> 
+> Ouch.
+> 
+> We have found manifestations of bugs in lib/string.c functions, e.g.:
+>   https://groups.google.com/forum/#!msg/syzkaller-bugs/atbKWcFqE9s/x7AtoVoBAgAJ
+>   https://groups.google.com/forum/#!msg/syzkaller-bugs/iGBUm-FDhkM/chl05uEgBAAJ
+> 
+> Is there any way this can be avoided?
 
-Applied to
+Agreed: I would like to keep this instrumentation; it's a common place
+to find bugs, security issues, etc.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
-
-Thanks!
-
-[01/11] spi: sprd: Release DMA channel also on probe deferral
-        commit: 687a2e76186dcfa42f22c14b655c3fb159839e79
-[02/11] spi: sprd: Simplify with dev_err_probe()
-        (no commit info)
-[03/11] spi: atmel: Simplify with dev_err_probe()
-        commit: 96189475820835d7176171492640a58c600aca42
-[04/11] spi: bcm2835: Simplify with dev_err_probe()
-        commit: 65acd82c4eb7f08747922ed3afb2d099a1b25d3f
-[05/11] spi: cadence-quadspi: Simplify with dev_err_probe()
-        commit: 436a5c208037a71f64f35312969e27a05d6d7c53
-[06/11] spi: spi-mux: Simplify with dev_err_probe()
-        commit: 2d9bdf645584d15ed1d4aae6204cb6ea8b673d48
-[07/11] spi: qcom-qspi: Simplify with dev_err_probe()
-        commit: 034532681c56cfffaea169a59155fe11e9172d9c
-[08/11] spi: stm32: Simplify with dev_err_probe()
-        commit: a05cec2dc2df1e5d25addb7aba398f3eb451e163
-[09/11] spi: synquacer: Simplify with dev_err_probe()
-        commit: 74ee6dc1257edf5fcfba67fd8075b766d11c42a0
-[10/11] spi: tegra114: Simplify with dev_err_probe()
-        commit: 68fffc191ed19ea5618285b128e6048d1536e680
-[11/11] spi: tegra20: Simplify with dev_err_probe()
-        commit: 7708aff1e2ebc8fdccdd61cf9ab8576a66989166
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+-- 
+Kees Cook
