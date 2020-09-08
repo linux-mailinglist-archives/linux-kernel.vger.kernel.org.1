@@ -2,145 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0E452614F7
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:41:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68B622614F0
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:41:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732097AbgIHQlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 12:41:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60580 "EHLO
+        id S1732027AbgIHQlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 12:41:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732042AbgIHQhP (ORCPT
+        with ESMTP id S1732052AbgIHQhR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:37:15 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02372C061A0E
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 07:04:14 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id t16so11314375edw.7
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 07:04:13 -0700 (PDT)
+        Tue, 8 Sep 2020 12:37:17 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5406C061A12
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 07:04:19 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id s12so867986wrw.11
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 07:04:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=pFSueD/PsgBNg5dRi4zohukePJNmnDKu8o6l7DjyJKo=;
-        b=NDNqSTa7fZTWmXjbEiT8n88ebqol0L6AQtiZu/8Oqe+mwkyHcxNQJF45p8QJ0vEHmj
-         7vURBe4Ohu2fjAEu7i/ry1GBIIfFl5TaPBxPz79QVbYcSu/nefGedb+ubeX8CBrtqttl
-         vRGrgNRtPpVQZ+TMKn4V+lOBfVl8T3XmT0sIYxxoJEu8HiVHdWijgtU1BxjViT0f9tcH
-         voD1jgHdPNU8GQLdGstctvcCBJ8Zt6MVhQfE/PW9Z+rDarmVbuJR0lGYHgfbnujN7om3
-         y37QDLUOfw5y6g0/x4GMg5xEeVirg0uNqjcdA2LuSj5fJgji6JndSYaglSRH3naDUxq7
-         R8/g==
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=8M8FQZb2HgpFZLZz+2kHkv7PQ6hJJGgLuAcXeYJHXoc=;
+        b=AUJqw5Q5yIKjjHv+TlphEapfGqGOE84LTkY2zdyRmrMCZc4UN5YC2gkzDw8k0vGBgc
+         Cs7Qk83LMgV1TESF82VJ5kAJMn0dMUMkUDY+W7j02XikANSGY+Q5vMIg1bXFdpVU702p
+         JpMtWNealLQk01KqN+ZWJF9EN7XmeVpCS4XuBlniZDTYtXI3FFvIfpE7OunsxJOYAvkj
+         OKfewt829N5WohHh7McC0bRqVQDay13XKTzmxsGafZIAawYUqLmaZ0ivQKWBlUoAMXEo
+         4D0NcBfydlPrudfK8LsP0K4eh5sKjdtBeSEV/jsf0BCwLordxeK93nP6TJ6FV7R5+i8w
+         tvVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=pFSueD/PsgBNg5dRi4zohukePJNmnDKu8o6l7DjyJKo=;
-        b=JJCgCG5XR+x2Qasdzm1tAvGGvP7apT4KclppTUL/85VuzBZWRdAJhLTHaQzIsqdeKj
-         UXpxVptG+54YU5ijLuuK5LpI7HeNyfpaBFIOt+GCbtF8J7ZQvLywcQpUmoP/7VyU8Dfz
-         tlA1vvh7vKA9A6DJuPoCDM6wV1Y0CjpJsLK4w/XFtSEGWZDM2kiH90uIk/VLB8BaMGRb
-         XPJQ4QrRD6lRbqL1ZbTFDB5KRux9DqkRv5Irpxa25flMR6YYCn0mwbM5LNRN8ZHENyMS
-         BXA26wFdLEGb++S7Ff97NgKmqGo8picCjnJD8A03tqVpOC9QiiPQni8YrFEuZTtxTm3q
-         yg9g==
-X-Gm-Message-State: AOAM533siiGgx2fn95nv/AHbvv7gvv3eKdVLayfdIvpEnJzmOfvO6wz6
-        6uOYOSQMeMaP8UHWIZIFr0HgrQ==
-X-Google-Smtp-Source: ABdhPJyJCTFd0pn3p9yrebWEYoQaThaFvclLZLNU4bDenEbLK2WJOX0hyPvDit0IltNHfqOzyUsBQQ==
-X-Received: by 2002:a50:8e17:: with SMTP id 23mr26671696edw.42.1599573851439;
-        Tue, 08 Sep 2020 07:04:11 -0700 (PDT)
-Received: from localhost ([86.61.181.4])
-        by smtp.gmail.com with ESMTPSA id v4sm17839598eje.39.2020.09.08.07.04.10
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=8M8FQZb2HgpFZLZz+2kHkv7PQ6hJJGgLuAcXeYJHXoc=;
+        b=ssYlj6hz13l6HtrgdAL3IkaWPIGcpM+KGnJb474hxuUgVYf7+U9sVFIKb1FbdV00QR
+         BUPkazMT3pEd7JWW+kypO0lSqNOZg9uJnf4Pw4iMwoo1o9C+aOeZ4n3W9QdsAuqPrU9z
+         WTo4trlERz9TBQcWo3Fp5XuVOZKmMs1M7ZIPV8cLf37v3i8d894SzKbXC8kowjksG5q2
+         5c090IRUi8XFq8DMpaZ2w/ajfXGkpxxRsRNomNwM2MFEvQhHhhBYT3Kf0yUhbmcpj7QB
+         3qhmzF21Mbn+T78Q10ghMiH+WHOQoIbcu6ejtMMDoFlN/0cpBCQqTCGuHnAwYPocNpfv
+         3Pcg==
+X-Gm-Message-State: AOAM5326chP3HDfw9HC0EeL3blj/zdVyPZoMBF9LLJ5x3k+8r5h4OG4B
+        HoISqOLCJ62bUHUOxK0VgPKCTw==
+X-Google-Smtp-Source: ABdhPJzm2yDttST5j8TaF3B2Cm917dhqrg3b0B96Ye1IYiXRwc7ozDdXKCLbFqn5vdgCfieZFk4ipw==
+X-Received: by 2002:adf:e8ce:: with SMTP id k14mr28758614wrn.394.1599573858090;
+        Tue, 08 Sep 2020 07:04:18 -0700 (PDT)
+Received: from dell ([91.110.221.179])
+        by smtp.gmail.com with ESMTPSA id i11sm11288646wre.32.2020.09.08.07.04.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Sep 2020 07:04:10 -0700 (PDT)
-Date:   Tue, 8 Sep 2020 16:04:09 +0200
-From:   Jiri Pirko <jiri@resnulli.us>
-To:     Ido Schimmel <idosch@idosch.org>
-Cc:     Aya Levin <ayal@mellanox.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jiri Pirko <jiri@mellanox.com>, netdev@vger.kernel.org,
-        Moshe Shemesh <moshe@mellanox.com>,
-        Eran Ben Elisha <eranbe@mellanox.com>,
-        Ido Schimmel <idosch@mellanox.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next RFC v1 2/4] devlink: Add devlink traps under
- devlink_ports context
-Message-ID: <20200908140409.GN2997@nanopsycho.orion>
-References: <1599060734-26617-1-git-send-email-ayal@mellanox.com>
- <1599060734-26617-3-git-send-email-ayal@mellanox.com>
- <20200906154428.GA2431016@shredder>
+        Tue, 08 Sep 2020 07:04:17 -0700 (PDT)
+Date:   Tue, 8 Sep 2020 15:04:15 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     dillon.minfei@gmail.com
+Cc:     linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH: V2  2/2] gpio: tc35894: Disable Direct KBD interrupts to
+ enable gpio irq
+Message-ID: <20200908140415.GW4400@dell>
+References: <1599118222-18990-1-git-send-email-dillon.minfei@gmail.com>
+ <1599118222-18990-3-git-send-email-dillon.minfei@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200906154428.GA2431016@shredder>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1599118222-18990-3-git-send-email-dillon.minfei@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sun, Sep 06, 2020 at 05:44:28PM CEST, idosch@idosch.org wrote:
->On Wed, Sep 02, 2020 at 06:32:12PM +0300, Aya Levin wrote:
+On Thu, 03 Sep 2020, dillon.minfei@gmail.com wrote:
 
-[...]
+> From: dillon min <dillon.minfei@gmail.com>
+> 
+> On tc35894, have to disable direct keypad interrupts to make
+> it as general purpose interrupts functionality work.
+> if not, after chip reset, IRQST(0x91) will always 0x20,
+> IRQN always low level, can't be clear.
+> 
+> Configure DIRECTx to enable general purpose gpio mode,
+> else read GPIOMISx register always zero in irq routine.
+> 
+> verified on tc35894, need more test on other tc3589x.
+> 
+> Signed-off-by: dillon min <dillon.minfei@gmail.com>
+> ---
+>  
+> V1 -> V2:
+> Add DIRECTx register configuration to active general purpose gpio mode.
+> 
+>  drivers/gpio/gpio-tc3589x.c | 18 ++++++++++++++++--
 
->
->I understand how this struct allows you to re-use a lot of code between
->per-device and per-port traps, but it's mainly enabled by the fact that
->you use the same netlink commands for both per-device and per-port
->traps. Is this OK?
->
->I see this is already done for health reporters, but it's inconsistent
->with the devlink-param API:
->
->DEVLINK_CMD_PARAM_GET
->DEVLINK_CMD_PARAM_SET
->DEVLINK_CMD_PARAM_NEW
->DEVLINK_CMD_PARAM_DEL
->
->DEVLINK_CMD_PORT_PARAM_GET
->DEVLINK_CMD_PORT_PARAM_SET
->DEVLINK_CMD_PORT_PARAM_NEW
->DEVLINK_CMD_PORT_PARAM_DEL
->
->And also with the general device/port commands:
->
->DEVLINK_CMD_GET
->DEVLINK_CMD_SET
->DEVLINK_CMD_NEW
->DEVLINK_CMD_DEL
->
->DEVLINK_CMD_PORT_GET
->DEVLINK_CMD_PORT_SET
->DEVLINK_CMD_PORT_NEW
->DEVLINK_CMD_PORT_DEL
->
->Wouldn't it be cleaner to add new commands?
->
->DEVLINK_CMD_PORT_TRAP_GET
->DEVLINK_CMD_PORT_TRAP_SET
->DEVLINK_CMD_PORT_TRAP_NEW
->DEVLINK_CMD_PORT_TRAP_DEL
->
->I think the health API is the exception in this case and therefore might
->not be the best thing to mimic. IIUC, existing per-port health reporters
->were exposed as per-device and later moved to be exposed as per-port
->[1]:
->
->"This patchset comes to fix a design issue as some health reporters
->report on errors and run recovery on device level while the actual
->functionality is on port level. As for the current implemented devlink
->health reporters it is relevant only to Tx and Rx reporters of mlx5,
->which has only one port, so no real effect on functionality, but this
->should be fixed before more drivers will use devlink health reporters."
+>  include/linux/mfd/tc3589x.h |  6 ++++++
 
-Yeah, this slipped trough my fingers unfortunatelly :/ But with
-introduction of per-port health reporters, we could introduce new
-commands, that would be no problem. Pity :/
+Acked-by: Lee Jones <lee.jones@linaro.org>
 
-
->
->[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=ac4cd4781eacd1fd185c85522e869bd5d3254b96
->
->Since we still don't have per-port traps, we can design it better from
->the start.
-
-I agree. Let's have a separate commands for per-port.
-
-
-[...]
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
