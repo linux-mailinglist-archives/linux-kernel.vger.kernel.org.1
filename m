@@ -2,130 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34BDE261499
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:28:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D765126149E
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:29:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731404AbgIHQ20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 12:28:26 -0400
-Received: from mx0b-002e3701.pphosted.com ([148.163.143.35]:16156 "EHLO
-        mx0b-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731134AbgIHQUd (ORCPT
+        id S1731978AbgIHQ3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 12:29:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58452 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731643AbgIHQXt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:20:33 -0400
-Received: from pps.filterd (m0134425.ppops.net [127.0.0.1])
-        by mx0b-002e3701.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 088GG5mh022056;
-        Tue, 8 Sep 2020 16:20:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pps0720;
- bh=tMzsGA8Qsfilm7iuAmNGJ37dDR1+5ZAtErbHf/+z2bI=;
- b=kTOMUG7W1W0Af0WlSM5Pmh3zNT5sbdo7XdT/c1L3nW8eJyPY958dn+JwgnGdPE0vonbD
- 6xpg76ZFZXqZlJ5SgXk63K7toFLoPYzE6+/kNao55uUkBSKb5VGEJcQ6Q8f/McPHCe9Z
- Lkn0CYgLISahyfSGzjiL3XEOvWdJZW4GZRaTsFAAayH87hVmpn/X49uPCSvNxTXYfUrj
- o8RArwgiITu5WjorijdGvkfv5wNRdhL2rSU3fgQ49eU7uZQEwW74yBbZ8sDRCCgfOpgp
- veHXu6RMElKSoPsb9z9cbqPJBI2dwTmmDINvJtyXve/UYEpMxqvd2oAjo4Bu9KTAp6Lx Zw== 
-Received: from g4t3426.houston.hpe.com (g4t3426.houston.hpe.com [15.241.140.75])
-        by mx0b-002e3701.pphosted.com with ESMTP id 33c3yqss2t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Sep 2020 16:20:19 +0000
-Received: from g4t3433.houston.hpecorp.net (g4t3433.houston.hpecorp.net [16.208.49.245])
-        by g4t3426.houston.hpe.com (Postfix) with ESMTP id D3E0A4F;
-        Tue,  8 Sep 2020 16:20:17 +0000 (UTC)
-Received: from [16.99.146.51] (unknown [16.99.146.51])
-        by g4t3433.houston.hpecorp.net (Postfix) with ESMTP id 89AAD48;
-        Tue,  8 Sep 2020 16:20:14 +0000 (UTC)
-Subject: Re: [PATCH 04/12] x86/platform/uv: Update UV MMRs for UV5
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Steve Wahl <steve.wahl@hpe.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Russ Anderson <russ.anderson@hpe.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Jian Cai <caij2003@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
-References: <20200907185430.363197758@hpe.com>
- <20200907185430.782245884@hpe.com> <20200908152314.GD4114051@kroah.com>
- <3e93b858-f74d-8e93-e444-fd85fc5856e4@hpe.com>
- <20200908154430.GA4171853@kroah.com>
-From:   Mike Travis <mike.travis@hpe.com>
-Message-ID: <35d4ce27-7a93-c3d5-3c0d-99fff06229c2@hpe.com>
-Date:   Tue, 8 Sep 2020 09:20:14 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.1
+        Tue, 8 Sep 2020 12:23:49 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3D6FC061573;
+        Tue,  8 Sep 2020 09:23:47 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id v123so4397715qkd.9;
+        Tue, 08 Sep 2020 09:23:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fG9sh+VJ6ct/M0MnobHjuUiWeXeXy8C/WxdALo1qBnU=;
+        b=cE8tyE/9HSYIG8dk3jsI1IxOkrH/eptnzh4Gvmdc/AbZVFA6bAqu5dG7OZZmqU6x+s
+         uhEaBckRV9fI7izootzbkWI0/Gu7bWIsC6MqvRZE5TaNFrX5VjIbTHQC+QtCS+9bnfgH
+         mWDRlS1vbqKv33sfcSbLJZVY52ns82Zb4XwWKLKm78ai0sTE3lRnZFLYEriGvssZvDOm
+         HbcmgN+ualzlwRwasHwef0u4ab5YywzT8VwK/+uwiTnAH7YuKkJu7060G2eX6yNDF/3e
+         HlPXnSqpoOLlI1BCJ172oG2mcfpscGHHCp8YE53Jxjh+ZfdxNN4mtPvU9HsdBuULEHLt
+         uO3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fG9sh+VJ6ct/M0MnobHjuUiWeXeXy8C/WxdALo1qBnU=;
+        b=GKyOqpWpTfUJiWV50KYDSOy0sUhZrEamDxqDQbBZH53hrcQkQZ1KjopVrsOC6NstVY
+         pNuKDyRmW1u1+LO3HyljxBFSGBXiJxGjXW0EMwPEM3YT11N+oazyoQtXxPa2zl8oGO7C
+         S4/yADN6zRRrcQnCqOiNy2NmyAcKMmOzFKxCG1noWR2Ywu3LgHjlEbBtwXRchonqh+3x
+         6jhVP5NdiqdoQ5ja5sDiQS2qehwua0/zdt1Jd0z+lb6MFfJ/sBHL4NAKF3rsbps35cUo
+         j+qOECTTeSJSQKS1UgXu5pVsJaRB+iryF9zqsfrxohJ7QFF46YjKq6wbO7SG36CH+QDZ
+         srKQ==
+X-Gm-Message-State: AOAM532ktdjSI475jyld5JsMR+H2Btf2XwEsoeaT9ei/lj+y3icwf4wg
+        N1DOkzwuRQHq4evIaiwqjGI=
+X-Google-Smtp-Source: ABdhPJxpfm3QpXHAuIeFeYJLCfoUzaXZ4W3uRDAZdu3BeDGMwUmXEx9JOTLuway4RWSv8KI1muehmw==
+X-Received: by 2002:a37:62c3:: with SMTP id w186mr803137qkb.227.1599582227058;
+        Tue, 08 Sep 2020 09:23:47 -0700 (PDT)
+Received: from tong-desktop.local ([2601:5c0:c100:b9d:393c:836a:3c13:11a6])
+        by smtp.googlemail.com with ESMTPSA id z3sm6186348qkf.92.2020.09.08.09.23.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Sep 2020 09:23:46 -0700 (PDT)
+From:   Tong Zhang <ztong0001@gmail.com>
+To:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     ztong0001@gmail.com
+Subject: [PATCH] e1000e: do not panic on malformed rx_desc
+Date:   Tue,  8 Sep 2020 12:23:30 -0400
+Message-Id: <20200908162330.4681-1-ztong0001@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20200908154430.GA4171853@kroah.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-08_08:2020-09-08,2020-09-08 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 adultscore=0
- spamscore=0 suspectscore=0 lowpriorityscore=0 impostorscore=0
- mlxlogscore=999 clxscore=1015 mlxscore=0 malwarescore=0 phishscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009080155
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+length may be corrupted in rx_desc and lead to panic, so check the
+sanity before passing it to skb_put
 
+[  103.840572] skbuff: skb_over_panic: text:ffffffff8f432cc1 len:61585 put:61585 head:ffff88805642b800 data:ffff88805642b840 tail:0xf0d1 end:0x6c0 dev:e
+th0
+[  103.841283] ------------[ cut here ]------------
+[  103.841515] kernel BUG at net/core/skbuff.c:109!
+[  103.841749] invalid opcode: 0000 [#1] SMP DEBUG_PAGEALLOC KASAN PTI
+[  103.842063] CPU: 1 PID: 276 Comm: ping Tainted: G        W         5.8.0+ #4
+[  103.842857] RIP: 0010:skb_panic+0xc4/0xc6
+[  103.843022] Code: 89 f0 48 c7 c7 60 f2 3e 90 55 48 8b 74 24 18 4d 89 f9 56 48 8b 54 24 18 4c 89 e6 52 48 8b 44 24 18 4c 89 ea 50 e8 01 c5 2a ff <0f>
+0b 4c 8b 64 24 18 e8 c1 b4 48 ff 48 c7 c1 e0 fc 3e 90 44 89 ee
+[  103.843766] RSP: 0018:ffff88806d109c58 EFLAGS: 00010282
+[  103.843976] RAX: 000000000000008c RBX: ffff8880683407c0 RCX: 0000000000000000
+[  103.844262] RDX: 1ffff1100da24c91 RSI: 0000000000000008 RDI: ffffed100da2137e
+[  103.844548] RBP: ffff88806bdcc000 R08: 000000000000008c R09: ffffed100da25cfb
+[  103.844834] R10: ffff88806d12e7d7 R11: ffffed100da25cfa R12: ffffffff903efd20
+[  103.845123] R13: ffffffff8f432cc1 R14: 000000000000f091 R15: ffff88805642b800
+[  103.845410] FS:  00007efcd06852c0(0000) GS:ffff88806d100000(0000) knlGS:0000000000000000
+[  103.845734] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  103.845966] CR2: 00007efccf94f8dc CR3: 0000000064810000 CR4: 00000000000006e0
+[  103.846254] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[  103.846539] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[  103.846823] Call Trace:
+[  103.846925]  <IRQ>
+[  103.847013]  ? e1000_clean_rx_irq+0x311/0x630
+[  103.847190]  skb_put.cold+0x2b/0x4d
+[  103.847334]  e1000_clean_rx_irq+0x311/0x630
 
-On 9/8/2020 8:44 AM, Greg KH wrote:
-> On Tue, Sep 08, 2020 at 08:35:37AM -0700, Mike Travis wrote:
->>
->>
->> On 9/8/2020 8:23 AM, Greg KH wrote:
->>> On Mon, Sep 07, 2020 at 01:54:34PM -0500, Mike Travis wrote:
->>>> --- linux.orig/drivers/misc/sgi-gru/grufile.c
->>>> +++ linux/drivers/misc/sgi-gru/grufile.c
->>>> @@ -7,7 +7,8 @@
->>>>     * This file supports the user system call for file open, close, mmap, etc.
->>>>     * This also incudes the driver initialization code.
->>>>     *
->>>> - *  Copyright (c) 2008-2014 Silicon Graphics, Inc.  All Rights Reserved.
->>>> + * Copyright (c) 2018-2020 Hewlett Packard Enterprise Development LP
->>>> + * Copyright (c) 2008-2017 Silicon Graphics, Inc.  All Rights Reserved.
->>>
->>> Please drop all copyright changes from this series, as these do not look
->>> correct at all, sorry.
->>>
->>> You can send an add-on patch for all of that if it's really necessary,
->>> and you get legal approval for it :)
->>
->> I can move them all to a single patch.  The HPE one is straight from their
->> guidance on Copyrights.  The older SGI one is also from SGI's guidance
->> though I'm not sure if I can find it anymore.  I also wasn't sure if it
->> should be retained since the HPE one didn't take effect until SGI was
->> legally part of HPE (circa 2018).  2017/18 was also the last time we did
->> this big a change (for the UV4A).
-> 
-> If you haven't touched a file in a year, you don't get to claim
-> copyright on that year.  If you wish to disagree on this, great, I'll
-> gladly take a patch that modifies the lines that has a signed-off-by
-> from one of your lawyers for it :)
+Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+---
+ drivers/net/ethernet/intel/e1000e/netdev.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-I skipped over that part.  But I'm moving all changes to a single patch 
-and I will look more closely at HPE's documents.  Heaven knows they have 
-plenty of lawyers, so many it's hard to ask a simple question... like 
-when does a copyright take effect.  When you change it internally, or 
-when it gets published?  Sounds like you lean towards the second?
+diff --git a/drivers/net/ethernet/intel/e1000e/netdev.c b/drivers/net/ethernet/intel/e1000e/netdev.c
+index 664e8ccc88d2..f12bd00b2dbf 100644
+--- a/drivers/net/ethernet/intel/e1000e/netdev.c
++++ b/drivers/net/ethernet/intel/e1000e/netdev.c
+@@ -1047,6 +1047,10 @@ static bool e1000_clean_rx_irq(struct e1000_ring *rx_ring, int *work_done,
+ 			}
+ 			/* else just continue with the old one */
+ 		}
++		/* check length sanity */
++		if (skb->tail + length > skb->end) {
++			length = skb->end - skb->tail;
++		}
+ 		/* end copybreak code */
+ 		skb_put(skb, length);
+ 
+-- 
+2.25.1
 
-Thanks,
-Mike
-
-> 
-> thanks,
-> 
-> greg k-h
-> 
