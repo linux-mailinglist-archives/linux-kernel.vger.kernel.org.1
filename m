@@ -2,80 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30174261C6A
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:20:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3593261C44
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:17:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731188AbgIHTUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:20:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54220 "EHLO
+        id S1730963AbgIHTQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 15:16:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730668AbgIHQCS (ORCPT
+        with ESMTP id S1731168AbgIHQE0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:02:18 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A74D3C061786;
-        Tue,  8 Sep 2020 09:02:17 -0700 (PDT)
-Date:   Tue, 8 Sep 2020 18:02:14 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1599580936;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=97oj1pCtLhc8GEIScXkD+7t3oCOzOaAxQFhhixXPXYs=;
-        b=yeGdGILuNPEXB5/p4qF0cmCVDKze7lv3D+hxUC2BiCT6JPgkPmoSlYin1TMQFR9vUUkQKv
-        4KXemeCiJSkkgTxR6LuobNDDMQdl9bA/Lwn5y5Rb8pwvOTjcXRkbnsbSrQKfGz6Dbvrrdr
-        Ru2alBZYhCt3Q7wNBuMNAICWmDZibBJLKAQw+IqAzVBgFirtAIS3ehO0garsyfPHiX/uzY
-        FN5q68u0L89RM60+CEv2reYlTUHdNept+AebIBJI+1lFRqVWoAXLcaMRCMnYIInZAO4Wrm
-        REhfWQY+Q+jdUnrE9bAVrnGJIz09QDkrJxnN0+DuLTZQ0A175sbazDu/5WoWtw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1599580936;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=97oj1pCtLhc8GEIScXkD+7t3oCOzOaAxQFhhixXPXYs=;
-        b=7LSSF/P8VGb8OFyKhLSf/g7sECVsh9xM22Xon8GdgRlb6KSYTPdHfwFEvQME5g9X3nVfqn
-        qBoLR76pYz7bo9CA==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Mike Galbraith <efault@gmx.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Tue, 8 Sep 2020 12:04:26 -0400
+Received: from mail-oo1-xc44.google.com (mail-oo1-xc44.google.com [IPv6:2607:f8b0:4864:20::c44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A389EC061797
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 09:04:08 -0700 (PDT)
+Received: by mail-oo1-xc44.google.com with SMTP id g26so1033196ooa.9
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 09:04:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=BZuX6Zr0Ruzj2IpP6siPkinTPpHdzjgZJEkArUG6Cps=;
+        b=Dwl/bLzhFroBhODvJaJewz5RbJ8YaafGEwoRzzlmDdYEO1waAVgM4CoFUpE4JzK6eZ
+         5kMpsTnbBLKPNbUhbRmN6ww0GkRIYiUhE/l5UohvZ6ujarpUdiKVNBnTOSZLTqRTKD3p
+         yj6s/nzEz+iIEEhz/1q/fj9QrE/vd9SQNNIUk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=BZuX6Zr0Ruzj2IpP6siPkinTPpHdzjgZJEkArUG6Cps=;
+        b=ozWRxSmCMRISEQhHOeZb6fYXJ1f94XRVCNWJHtzDKabk/JDkBoaYfN6YBENiZ+S4pm
+         guNjqa/hdz99A26CYlB/8Bm9yvHtDb2m2KGFgrOr0t0KLYewCVuL1QjfZqp9EqwPE7bq
+         XabKGbKVrnv0fnPcUqZgUHoYiWwdtFNMRkvVW8L+smpcsh+GTMDm/S4qx4FyXTbA2q9t
+         pDBcBTpz+9UG5NOkQCJ/nxkQDzmwfodK0WlInI5icF7JC7ebSKRgw9myPLloIYfUPMJ7
+         4TF0zA0WjdulFJMW3jSCaXnhvhfp9So0jSGsqcWTdroLMz+NHee/LPtfzPGf15vQC4o0
+         RXsQ==
+X-Gm-Message-State: AOAM5327byj2rapfL0UnvzC3rmi6WU93ZDYrJw9mgN5Cp1uKLCzwBPNm
+        g4CBlVmjdsE3M8NdQg1Rit5lyw==
+X-Google-Smtp-Source: ABdhPJyIgHFZMBHFDcZphH1OayicbYYSRhwgBJATp49Ys9y0t0uwRCtQ0UYHSB3NKnDjzdK2JcwS9g==
+X-Received: by 2002:a4a:a385:: with SMTP id s5mr19119405ool.8.1599581047972;
+        Tue, 08 Sep 2020 09:04:07 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id w1sm3558618oop.16.2020.09.08.09.04.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Sep 2020 09:04:06 -0700 (PDT)
+Subject: Re: [PATCH v6 00/20] gpio: cdev: add uAPI v2
+To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc:     Bamvor Jian Zhang <bamv2005@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: v5.9-rc3-rt3 boot time networking lockdep splat
-Message-ID: <20200908160214.p3av2uxt7jjj6rx2@linutronix.de>
-References: <20200902155557.h2wl2qpfn2rwsofw@linutronix.de>
- <46a2b89ec8d953a4be18c7389c7d8c66310a7ff0.camel@gmx.de>
- <b989e196a8b9cceda35152de9202d7a67ca32196.camel@gmx.de>
- <20200908151229.g24j4n4fderlm2pe@linutronix.de>
- <a79815352e2f238b7f108e6e7202f6655f26159d.camel@gmx.de>
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Kent Gibson <warthog618@gmail.com>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20200831032006.1019978-1-warthog618@gmail.com>
+ <CAMpxmJUETJgmxzWzHumOVr+vWFQ27P71MtcdSdf_=jvtrSfRPg@mail.gmail.com>
+ <20200903083750.GA17445@sol> <20200904125250.GA323947@sol>
+ <CAMpxmJWVZ8Bf1gPibvbk=E5XNvQ_i76E430MMhUWwE1ACoPTQg@mail.gmail.com>
+ <9db62b42-9a1e-0264-e88c-e636004cb629@linuxfoundation.org>
+ <CAMpxmJVbujnp+Z0b3utDsGmhUgCbhydorOo-9e-=gVctT55NAg@mail.gmail.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <af4036b7-72b7-16f3-92de-4976b49d857e@linuxfoundation.org>
+Date:   Tue, 8 Sep 2020 10:04:05 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <a79815352e2f238b7f108e6e7202f6655f26159d.camel@gmx.de>
+In-Reply-To: <CAMpxmJVbujnp+Z0b3utDsGmhUgCbhydorOo-9e-=gVctT55NAg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-08 17:59:31 [+0200], Mike Galbraith wrote:
-> > I have no idea how to debug this based on this report. Can you narrow
-> > it down to something?
+On 9/8/20 9:54 AM, Bartosz Golaszewski wrote:
+> On Tue, Sep 8, 2020 at 5:24 PM Shuah Khan <skhan@linuxfoundation.org> wrote:
+>>
+>> On 9/4/20 7:02 AM, Bartosz Golaszewski wrote:
+>>> On Fri, Sep 4, 2020 at 2:52 PM Kent Gibson <warthog618@gmail.com> wrote:
+>>>>
+>>>> On Thu, Sep 03, 2020 at 04:37:50PM +0800, Kent Gibson wrote:
+>>>>> On Thu, Sep 03, 2020 at 10:02:04AM +0200, Bartosz Golaszewski wrote:
+>>>>>> On Mon, Aug 31, 2020 at 5:21 AM Kent Gibson <warthog618@gmail.com> wrote:
+>>>>>>>
+>>>> [snip]
+>>>>>>
+>>>>>> To me it looks good, just a couple nits here and there and some questions.
+>>>>>>
+>>>>>> I think it's worth deciding whether we want to keep the selftests in
+>>>>>> tools/testing/selftests/gpio/ and then maybe consider porting
+>>>>>> gpio-mockup-chardev.c to V2 or simply outsource it entirely to
+>>>>>> libgpiod.
+>>>>>>
+>>>>>
+>>>>> Ooops - I wasn't even aware they existed - though it had crossed my mind
+>>>>> that the kernel should have some selftests somewhere - I use the libgpiod
+>>>>> tests, from my libgpiod port, and my own Go based test suite for my testing,
+>>>>> as well as some smoke tests with the tools/gpio.
+>>>>>
+>>>>> The libgpiod tests only cover v1 equivalent functionality, while my Go
+>>>>> tests cover the complete uAPI, and both v1 and v2.
+>>>>>
+>>>>> It would be good for the kernel to at least have some smoke tests to
+>>>>> confirm basic functionality, even thorough testing is left to a
+>>>>> userspace library.  So the existing tests should be ported to v2, though
+>>>>> should also retain the v1 tests if v1 is still compiled in.
+>>>>>
+>>>>
+>>>> I've got a v7 ready to submit that includes a couple of patches for the
+>>>> gpio-mockup selftests (their primary purpose appears to be testing the
+>>>> mockup module, rather than the GPIO ABI), but I now notice that the
+>>>> selftests/gpio section of the tree has a different maintainer:
+>>>>
+>>>> scripts/get_maintainer.pl 0021-selftests-gpio-port-to-GPIO-uAPI-v2.patch
+>>>> Bamvor Jian Zhang <bamv2005@gmail.com> (maintainer:GPIO MOCKUP DRIVER)
+>>>> Shuah Khan <shuah@kernel.org> (maintainer:KERNEL SELFTEST FRAMEWORK)
+>>>> linux-gpio@vger.kernel.org (open list:GPIO MOCKUP DRIVER)
+>>>> linux-kselftest@vger.kernel.org (open list:KERNEL SELFTEST FRAMEWORK)
+>>>> linux-kernel@vger.kernel.org (open list)
+>>>
+>>> Bamvor, Shuah: do you still have interest in maintaining these, or can
+>>> we update MAINTAINERS?
+>>>
+>>
+>> I maintain kselftests and gpio selftest falls under that. Please send
+>> selftest patches to me so I can review them.
+>>
+>> As for the gpio mock driver and test itself, you will have to wait for
+>> Bamvor to respond.
+>>
 > 
-> I instrumented what I presume is still this problem once upon a time,
-> structures containing locks are allocated/initialized/freed again and
-> again with no cleanup until we increment into the wall.
-
-Any idea what it is?
-
-> > Is Lappy new, got a new something or has a new config switch? I'm just
-> > curious if this something or something that was always there but
-> > remained undetected.
+> Hi Shuah,
 > 
-> Nah, this is nothing new.  Turn lockdep on in RT, it's just a matter of
-> time before it turns itself off.  It's usually just not _that_ quick.
+> I've been de facto maintaining gpio-mockup for a couple years now.
+> Bamvor has been quite inactive as far as gpio testing goes. I think
+> it's fine if you ack the selftests changes.
+> 
 
-Okay. So I have few boxes which run over the weekend without this splat.
+That is fine. I can do quick review and Ack so you can take them
+through gpio tree.
 
-> 	-Mike
+> In fact: I don't want selftests to block getting V2 uAPI upstream so
+> if that'll look like it's going to take more time then I'm for merging
+> V2 without any changes to selftests - in the end we have tests in
+> user-space already.
+> 
 
-Sebastian
+Tests and features go through subsystem trees to avoid delays. Please
+make sure the test doesn't break the default kselftest build/run.
+
+In the future it would help if you include all the maintainers on the
+patch series, so I can review the tests from the framework angle to
+see if they build/run correctly.
+
+thanks,
+-- Shuah
