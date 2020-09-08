@@ -2,67 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 621B02614DA
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:39:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30BE826154A
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:47:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731913AbgIHQjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 12:39:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60634 "EHLO
+        id S1732000AbgIHQrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 12:47:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732074AbgIHQh1 (ORCPT
+        with ESMTP id S1731970AbgIHQrQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:37:27 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13083C0612FE
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 05:58:32 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id k15so18966468wrn.10
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 05:58:32 -0700 (PDT)
+        Tue, 8 Sep 2020 12:47:16 -0400
+Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EDC5C06124F
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 06:16:07 -0700 (PDT)
+Received: by mail-qv1-xf2d.google.com with SMTP id cr8so7729645qvb.10
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 06:16:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=rWwIjxnFTzbkw/BaFxCLOnaCoWy8p8lKDcXzU2XY9Ow=;
-        b=0Mh/WjQW7cqk7vvIT6ANfMSVJkivRyR0vHLEVsdr4dQX1OjZzRdtoApwZqXslIjZiP
-         kSZOOLWhDdsQhdveRqN2HDp+l1m4GDuFBCtEWiCxsbFzs3ur0KxcpCzb6c8q8K1eMfHb
-         WJyVFrutCBoOHu92bew55PlZ7yTm06sJc9i8roPiLYbIczeSsyP/PEr+Os3UB91wFSgs
-         wjmAvSeT25kS/NqvOh0sZOSZWVE/OzMwqKgrcmh6hMvUmzGAnKNCQBUX7BcTkcm5x6pk
-         5zkAr2JrAuvIFfnGvLpiFHfVMmQL0uNF5z5eds0QYZIkSxxH6ubB3r+8FQmICgldecH7
-         HbRA==
+        d=marek-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=K6nXsix6OgnB440V2dVZFg3CDm1Av9Lyz63Xse3HaT8=;
+        b=X2h00nEKklHqm/sfVWNm2gHs6SXZJ3uPJgyn4w5AOnAxneEAq69OtrJMDl/ALcM4V7
+         bchFGlvBV9xW8617ZkfFmWS5X7XUNEf3YhX7bSh/rzBt06aOXVseXlXftRytg1ROhzg6
+         0O/fMdn7kySDxRvkcu1m1C9AWgICEGu8/9NdmiAO14CDJRrxD9mGxkjO0qrrr/hVppNH
+         8zEYavt7YJGqwPtP+GYYM+1/cwXph77Dw+PdkA6u8Yt52LyQdnknfx2Zq7gD5f1LZmKv
+         lgxFRYDlBsm5rYpdb8UZMtZjyFdluwhsGB1XEl2oHuz940/DsFdRWkCkdZPjZeuYHGyv
+         xsnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=rWwIjxnFTzbkw/BaFxCLOnaCoWy8p8lKDcXzU2XY9Ow=;
-        b=cIb14K60Qaw9gSAczb6Uqj2vSh1fVApEfKDEpgg0QGumJvnlYrqJMqULuC0WmUxrW0
-         AYGJH29s+2QkGaivaapPNTVBBBLx3gtQVsZRgSsf9lS+5LJxDhEh+y4cjVMI07sW3OTB
-         S0mGLQc41WT34RA0ftajXUgeDhxisR54qxAOpdk9BTe3iYvVSgyfQ81JqpKauHYpyxpa
-         /WETT9aPQVzHyvLW+5dBHZsOE2QdgkB8/i7/VySXziq2MUXkQneZtLF1G9P7hTuSZSOb
-         cpGgZ3z290RvBkx0QIgD4cedPfr5COOuUMwrgeroEHdsa8mj90FAks1dTQTVmhGVt1gH
-         /+rw==
-X-Gm-Message-State: AOAM531o3K/MuAA4646jmt9c1qXCjE4yxF6RQHao4AvqwUmpeNc8I2kO
-        JBR/idPpCwHxU35D1W53XiogIw==
-X-Google-Smtp-Source: ABdhPJx0tjO6B48c1MN/4xfKk3sKOEne5d+CNPDJ1Yw4DodcBAvPnRi/imY5s2CtNkv8XAEb4aSFng==
-X-Received: by 2002:adf:84c3:: with SMTP id 61mr26170029wrg.131.1599569909956;
-        Tue, 08 Sep 2020 05:58:29 -0700 (PDT)
-Received: from debian-brgl.home (lfbn-nic-1-68-20.w2-15.abo.wanadoo.fr. [2.15.159.20])
-        by smtp.gmail.com with ESMTPSA id y207sm34817875wmc.17.2020.09.08.05.58.28
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=K6nXsix6OgnB440V2dVZFg3CDm1Av9Lyz63Xse3HaT8=;
+        b=ZH5HW8e99LC3jCv2xuZH8+AUcoTvdhfXyF0C9fW0ZueogMZZBZPWpLwgwSsui41fVN
+         9lVVh3fdGQp8FGbpOMLrnqHDIIGhQzW7noaB8eORC/N3I8Og64TS8m5NajP4ln1uXwLd
+         xgfkvHVB/kW2pOzPCJ2LbU/OzfttfLzEoipGit89IgLmMwSAE/biOA/l66NtQfXg8rqr
+         WLR1wL5G+L2GLhlklEODh5BSYAW0FwNGnfh7c4MnFjlvbotIdzPlTauDeYTrw3UCNklC
+         Cel+gd0otk0kVULQQ1443QBd/7h/eVeELPfxLAgqNSAR1R5nR45Wp6Q+x0uKREX+fWDm
+         KBoA==
+X-Gm-Message-State: AOAM533fFyXQUb43rqICHAGifNv71vEcAiSy/Fw7gyuCep/BeinkHfHF
+        yxHU77tQvU/4M7vbHGxw0Eo7SWQx0dpTzskMzRk=
+X-Google-Smtp-Source: ABdhPJz2YoVk7KQVpRhnJ1zexjKzF7PA0rYZEGBr5ECURFh5Vu41aroQ01kJnVB98FRfsvp1eyAP4w==
+X-Received: by 2002:ad4:4594:: with SMTP id x20mr49890qvu.4.1599570966352;
+        Tue, 08 Sep 2020 06:16:06 -0700 (PDT)
+Received: from localhost.localdomain ([147.253.86.153])
+        by smtp.gmail.com with ESMTPSA id i66sm14392017qkc.63.2020.09.08.06.16.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Sep 2020 05:58:29 -0700 (PDT)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Kent Gibson <warthog618@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH 3/3] gpiolib: unexport devprop_gpiochip_set_names()
-Date:   Tue,  8 Sep 2020 14:58:13 +0200
-Message-Id: <20200908125813.8809-4-brgl@bgdev.pl>
+        Tue, 08 Sep 2020 06:16:05 -0700 (PDT)
+From:   Jonathan Marek <jonathan@marek.ca>
+To:     linux-arm-msm@vger.kernel.org
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
+        DEVICE TREE BINDINGS), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2] arm64: dts: qcom: add sm8250 fastrpc nodes
+Date:   Tue,  8 Sep 2020 09:15:00 -0400
+Message-Id: <20200908131500.19891-1-jonathan@marek.ca>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200908125813.8809-1-brgl@bgdev.pl>
-References: <20200908125813.8809-1-brgl@bgdev.pl>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -70,103 +66,157 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Add fastrpc nodes for sDSP, cDSP, and aDSP.
 
-Now that devprop_gpiochip_set_names() is only used in a single place
-inside drivers/gpio/gpiolib.c, there's no need anymore for it to be
-exported or to even live in its own source file. Pull this function into
-the core source file for gpiolib.
-
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Signed-off-by: Jonathan Marek <jonathan@marek.ca>
 ---
- drivers/gpio/Makefile       |  1 -
- drivers/gpio/gpiolib.c      | 47 +++++++++++++++++++++++++++++++++++++
- include/linux/gpio/driver.h |  2 --
- 3 files changed, 47 insertions(+), 3 deletions(-)
+v2: rebase without audio dts nodes, changed "dsps" to "sdsp"
 
-diff --git a/drivers/gpio/Makefile b/drivers/gpio/Makefile
-index 4f9abff4f2dc..639275eb4e4d 100644
---- a/drivers/gpio/Makefile
-+++ b/drivers/gpio/Makefile
-@@ -6,7 +6,6 @@ ccflags-$(CONFIG_DEBUG_GPIO)	+= -DDEBUG
- obj-$(CONFIG_GPIOLIB)		+= gpiolib.o
- obj-$(CONFIG_GPIOLIB)		+= gpiolib-devres.o
- obj-$(CONFIG_GPIOLIB)		+= gpiolib-legacy.o
--obj-$(CONFIG_GPIOLIB)		+= gpiolib-devprop.o
- obj-$(CONFIG_GPIOLIB)		+= gpiolib-cdev.o
- obj-$(CONFIG_OF_GPIO)		+= gpiolib-of.o
- obj-$(CONFIG_GPIO_SYSFS)	+= gpiolib-sysfs.o
-diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-index 0d390f0ec32c..2b2526c5de51 100644
---- a/drivers/gpio/gpiolib.c
-+++ b/drivers/gpio/gpiolib.c
-@@ -358,6 +358,53 @@ static int gpiochip_set_desc_names(struct gpio_chip *gc)
- 	return 0;
- }
+ arch/arm64/boot/dts/qcom/sm8250.dtsi | 115 ++++++++++++++++++++++++++-
+ 1 file changed, 113 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi b/arch/arm64/boot/dts/qcom/sm8250.dtsi
+index d223a2a14f2d..8ca544b47190 100644
+--- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
++++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
+@@ -1282,8 +1282,35 @@ IPCC_MPROC_SIGNAL_GLINK_QMP
+ 				mboxes = <&ipcc IPCC_CLIENT_SLPI
+ 						IPCC_MPROC_SIGNAL_GLINK_QMP>;
  
-+/*
-+ * devprop_gpiochip_set_names - Set GPIO line names using device properties
-+ * @chip: GPIO chip whose lines should be named, if possible
-+ *
-+ * Looks for device property "gpio-line-names" and if it exists assigns
-+ * GPIO line names for the chip. The memory allocated for the assigned
-+ * names belong to the underlying software node and should not be released
-+ * by the caller.
-+ */
-+static int devprop_gpiochip_set_names(struct gpio_chip *chip)
-+{
-+	struct gpio_device *gdev = chip->gpiodev;
-+	struct device *dev = chip->parent;
-+	const char **names;
-+	int ret, i;
-+	int count;
+-				label = "lpass";
++				label = "slpi";
+ 				qcom,remote-pid = <3>;
 +
-+	count = device_property_count_strings(dev, "gpio-line-names");
-+	if (count < 0)
-+		return 0;
++				fastrpc {
++					compatible = "qcom,fastrpc";
++					qcom,glink-channels = "fastrpcglink-apps-dsp";
++					label = "sdsp";
++					#address-cells = <1>;
++					#size-cells = <0>;
 +
-+	if (count > gdev->ngpio) {
-+		dev_warn(&gdev->dev, "gpio-line-names is length %d but should be at most length %d",
-+			 count, gdev->ngpio);
-+		count = gdev->ngpio;
-+	}
++					compute-cb@1 {
++						compatible = "qcom,fastrpc-compute-cb";
++						reg = <1>;
++						iommus = <&apps_smmu 0x0541 0x0>;
++					};
 +
-+	names = kcalloc(count, sizeof(*names), GFP_KERNEL);
-+	if (!names)
-+		return -ENOMEM;
++					compute-cb@2 {
++						compatible = "qcom,fastrpc-compute-cb";
++						reg = <2>;
++						iommus = <&apps_smmu 0x0542 0x0>;
++					};
 +
-+	ret = device_property_read_string_array(dev, "gpio-line-names",
-+						names, count);
-+	if (ret < 0) {
-+		dev_warn(&gdev->dev, "failed to read GPIO line names\n");
-+		kfree(names);
-+		return ret;
-+	}
-+
-+	for (i = 0; i < count; i++)
-+		gdev->descs[i].name = names[i];
-+
-+	kfree(names);
-+
-+	return 0;
-+}
-+
- static unsigned long *gpiochip_allocate_mask(struct gpio_chip *gc)
- {
- 	unsigned long *p;
-diff --git a/include/linux/gpio/driver.h b/include/linux/gpio/driver.h
-index 56485a040b82..4a7e295c3640 100644
---- a/include/linux/gpio/driver.h
-+++ b/include/linux/gpio/driver.h
-@@ -756,8 +756,6 @@ struct gpio_desc *gpiochip_request_own_desc(struct gpio_chip *gc,
- 					    enum gpiod_flags dflags);
- void gpiochip_free_own_desc(struct gpio_desc *desc);
++					compute-cb@3 {
++						compatible = "qcom,fastrpc-compute-cb";
++						reg = <3>;
++						iommus = <&apps_smmu 0x0543 0x0>;
++						/* note: shared-cb = <4> in downstream */
++					};
++				};
+ 			};
+ 		};
  
--int devprop_gpiochip_set_names(struct gpio_chip *gc);
--
- #ifdef CONFIG_GPIOLIB
+@@ -1320,8 +1347,66 @@ IPCC_MPROC_SIGNAL_GLINK_QMP
+ 				mboxes = <&ipcc IPCC_CLIENT_CDSP
+ 						IPCC_MPROC_SIGNAL_GLINK_QMP>;
  
- /* lock/unlock as IRQ */
+-				label = "lpass";
++				label = "cdsp";
+ 				qcom,remote-pid = <5>;
++
++				fastrpc {
++					compatible = "qcom,fastrpc";
++					qcom,glink-channels = "fastrpcglink-apps-dsp";
++					label = "cdsp";
++					#address-cells = <1>;
++					#size-cells = <0>;
++
++					compute-cb@1 {
++						compatible = "qcom,fastrpc-compute-cb";
++						reg = <1>;
++						iommus = <&apps_smmu 0x1001 0x0460>;
++					};
++
++					compute-cb@2 {
++						compatible = "qcom,fastrpc-compute-cb";
++						reg = <2>;
++						iommus = <&apps_smmu 0x1002 0x0460>;
++					};
++
++					compute-cb@3 {
++						compatible = "qcom,fastrpc-compute-cb";
++						reg = <3>;
++						iommus = <&apps_smmu 0x1003 0x0460>;
++					};
++
++					compute-cb@4 {
++						compatible = "qcom,fastrpc-compute-cb";
++						reg = <4>;
++						iommus = <&apps_smmu 0x1004 0x0460>;
++					};
++
++					compute-cb@5 {
++						compatible = "qcom,fastrpc-compute-cb";
++						reg = <5>;
++						iommus = <&apps_smmu 0x1005 0x0460>;
++					};
++
++					compute-cb@6 {
++						compatible = "qcom,fastrpc-compute-cb";
++						reg = <6>;
++						iommus = <&apps_smmu 0x1006 0x0460>;
++					};
++
++					compute-cb@7 {
++						compatible = "qcom,fastrpc-compute-cb";
++						reg = <7>;
++						iommus = <&apps_smmu 0x1007 0x0460>;
++					};
++
++					compute-cb@8 {
++						compatible = "qcom,fastrpc-compute-cb";
++						reg = <8>;
++						iommus = <&apps_smmu 0x1008 0x0460>;
++					};
++
++					/* note: secure cb9 in downstream */
++				};
+ 			};
+ 		};
+ 
+@@ -2178,6 +2263,32 @@ IPCC_MPROC_SIGNAL_GLINK_QMP
+ 
+ 				label = "lpass";
+ 				qcom,remote-pid = <2>;
++
++				fastrpc {
++					compatible = "qcom,fastrpc";
++					qcom,glink-channels = "fastrpcglink-apps-dsp";
++					label = "adsp";
++					#address-cells = <1>;
++					#size-cells = <0>;
++
++					compute-cb@3 {
++						compatible = "qcom,fastrpc-compute-cb";
++						reg = <3>;
++						iommus = <&apps_smmu 0x1803 0x0>;
++					};
++
++					compute-cb@4 {
++						compatible = "qcom,fastrpc-compute-cb";
++						reg = <4>;
++						iommus = <&apps_smmu 0x1804 0x0>;
++					};
++
++					compute-cb@5 {
++						compatible = "qcom,fastrpc-compute-cb";
++						reg = <5>;
++						iommus = <&apps_smmu 0x1805 0x0>;
++					};
++				};
+ 			};
+ 		};
+ 
 -- 
 2.26.1
 
