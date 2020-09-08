@@ -2,171 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FA89261DDD
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:43:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3DC8261E79
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:52:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732384AbgIHTnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:43:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730866AbgIHPwh (ORCPT
+        id S1732405AbgIHTwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 15:52:05 -0400
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:8215 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730736AbgIHPth (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:52:37 -0400
-Received: from mail.kmu-office.ch (mail.kmu-office.ch [IPv6:2a02:418:6a02::a2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE3B3C06179F
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 05:07:32 -0700 (PDT)
-Received: from webmail.kmu-office.ch (unknown [IPv6:2a02:418:6a02::a3])
-        by mail.kmu-office.ch (Postfix) with ESMTPSA id B45EE5C4CAB;
-        Tue,  8 Sep 2020 14:07:19 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=agner.ch; s=dkim;
-        t=1599566839;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9/iGAOA8cGPooGWY1bJsYTg01+jVFtO35sVIw145pes=;
-        b=GY7avC89iAWwVC2ntJkGy9B4XIrrInU5rnAqJX2IcIa1H0DBshBq+BWnQ0X3DHK1EY1el9
-        HZXQHNp4dzu2FT5vC3yksXHKYfQEFJaNR2CxVZo0cPVJdkMUQblLdbVDXKWiN64VtIsnjG
-        M05Ummpf4PiVLVIVBqstvK1YLaDAtiM=
+        Tue, 8 Sep 2020 11:49:37 -0400
+X-IronPort-AV: E=Sophos;i="5.76,359,1592863200"; 
+   d="scan'208";a="466596022"
+Received: from abo-173-121-68.mrs.modulonet.fr (HELO hadrien) ([85.68.121.173])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 08 Sep 2020 14:08:43 +0200
+Date:   Tue, 8 Sep 2020 14:08:43 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+cc:     kernel test robot <lkp@intel.com>,
+        Denis Efremov <efremov@linux.com>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Qiujun Huang <hqjagain@gmail.com>,
+        Peter Rosin <peda@axentia.se>, dri-devel@lists.freedesktop.org
+Subject: Re: [kbuild-all] Re: [PATCH] coccinelle: api: fix device_attr_show.cocci
+ warnings
+In-Reply-To: <3c266a0e-a2b9-ffde-0768-3b4fa89b0bfe@samsung.com>
+Message-ID: <alpine.DEB.2.22.394.2009081408160.2478@hadrien>
+References: <202008101736.EtK0s7BQ%lkp@intel.com> <CGME20200810092148eucas1p117cc6af85f23fb6e457fddb913d2b41a@eucas1p1.samsung.com> <20200810092100.GA42813@2f5448a72a42> <3c266a0e-a2b9-ffde-0768-3b4fa89b0bfe@samsung.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 08 Sep 2020 14:07:19 +0200
-From:   Stefan Agner <stefan@agner.ch>
-To:     Tomi Valkeinen <tomi.valkeinen@ti.com>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        jsarha@ti.com, marex@denx.de, airlied@linux.ie, daniel@ffwll.ch,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm: mxsfb: check framebuffer pitch
-In-Reply-To: <20200908084855.GH2352366@phenom.ffwll.local>
-References: <20200907160343.124405-1-stefan@agner.ch>
- <20200907161712.GF6047@pendragon.ideasonboard.com>
- <20200907181855.GE2352366@phenom.ffwll.local>
- <86615b4b1551d4a6f1cfcc13b38e616c@agner.ch>
- <dc5a16d0-4d2a-366a-7716-29dd8db1a12a@ti.com>
- <20200908084855.GH2352366@phenom.ffwll.local>
-User-Agent: Roundcube Webmail/1.4.1
-Message-ID: <bed1ef4f988626962317519cb7d8928e@agner.ch>
-X-Sender: stefan@agner.ch
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-08 10:48, Daniel Vetter wrote:
-> On Tue, Sep 08, 2020 at 11:18:25AM +0300, Tomi Valkeinen wrote:
->> Hi,
->>
->> On 08/09/2020 10:55, Stefan Agner wrote:
->> > On 2020-09-07 20:18, Daniel Vetter wrote:
->> >> On Mon, Sep 07, 2020 at 07:17:12PM +0300, Laurent Pinchart wrote:
->> >>> Hi Stefan,
->> >>>
->> >>> Thank you for the patch.
->> >>>
->> >>> On Mon, Sep 07, 2020 at 06:03:43PM +0200, Stefan Agner wrote:
->> >>>> The lcdif IP does not support a framebuffer pitch (stride) other than
->> >>>> the CRTC width. Check for equality and reject the state otherwise.
->> >>>>
->> >>>> This prevents a distorted picture when using 640x800 and running the
->> >>>> Mesa graphics stack. Mesa tires to use a cache aligned stride, which
->> >>>
->> >>> s/tires/tries/
->> >>>
->> >>>> leads at that particular resolution to width != stride. Currently
->> >>>> Mesa has no fallback behavior, but rejecting this configuration allows
->> >>>> userspace to handle the issue correctly.
->> >>>
->> >>> I'm increasingly impressed by how featureful this IP core is :-)
->> >>>
->> >>>> Signed-off-by: Stefan Agner <stefan@agner.ch>
->> >>>> ---
->> >>>>  drivers/gpu/drm/mxsfb/mxsfb_kms.c | 22 ++++++++++++++++++----
->> >>>>  1 file changed, 18 insertions(+), 4 deletions(-)
->> >>>>
->> >>>> diff --git a/drivers/gpu/drm/mxsfb/mxsfb_kms.c b/drivers/gpu/drm/mxsfb/mxsfb_kms.c
->> >>>> index b721b8b262ce..79aa14027f91 100644
->> >>>> --- a/drivers/gpu/drm/mxsfb/mxsfb_kms.c
->> >>>> +++ b/drivers/gpu/drm/mxsfb/mxsfb_kms.c
->> >>>> @@ -403,14 +403,28 @@ static int mxsfb_plane_atomic_check(struct drm_plane *plane,
->> >>>>  {
->> >>>>  	struct mxsfb_drm_private *mxsfb = to_mxsfb_drm_private(plane->dev);
->> >>>>  	struct drm_crtc_state *crtc_state;
->> >>>> +	unsigned int pitch;
->> >>>> +	int ret;
->> >>>>
->> >>>>  	crtc_state = drm_atomic_get_new_crtc_state(plane_state->state,
->> >>>>  						   &mxsfb->crtc);
->> >>>>
->> >>>> -	return drm_atomic_helper_check_plane_state(plane_state, crtc_state,
->> >>>> -						   DRM_PLANE_HELPER_NO_SCALING,
->> >>>> -						   DRM_PLANE_HELPER_NO_SCALING,
->> >>>> -						   false, true);
->> >>>> +	ret = drm_atomic_helper_check_plane_state(plane_state, crtc_state,
->> >>>> +						  DRM_PLANE_HELPER_NO_SCALING,
->> >>>> +						  DRM_PLANE_HELPER_NO_SCALING,
->> >>>> +						  false, true);
->> >>>> +	if (ret || !plane_state->visible)
->> >>>
->> >>> Would it be more explict to check for !plane_state->fb ? Otherwise I'll
->> >>> have to verify that !fb always implies !visible :-)
->> >>>
->> >>>> +		return ret;
->> >>>> +
->> >>>> +	pitch = crtc_state->mode.hdisplay *
->> >>>> +		plane_state->fb->format->cpp[0];
->> >>>
->> >>> This holds on a single line.
->> >>>
->> >>>> +	if (plane_state->fb->pitches[0] != pitch) {
->> >>>> +		dev_err(plane->dev->dev,
->> >>>> +			"Invalid pitch: fb and crtc widths must be the same");
->> >>>
->> >>> I'd turn this into a dev_dbg(), printing error messages to the kernel
->> >>> log in response to user-triggered conditions is a bit too verbose and
->> >>> could flood the log.
->> >>>
->> >>> Wouldn't it be best to catch this issue when creating the framebuffer ?
->> >>
->> >> Yeah this should be verified at addfb time. We try to validate as early as
->> >> possible.
->> >> -Daniel
->> >>
->> >
->> > Sounds sensible. From what I can tell fb_create is the proper callback
->> > to implement this at addfb time. Will give this a try.
->> >
->> > FWIW, I got the idea from drivers/gpu/drm/tilcdc/tilcdc_plane.c. Maybe
->> > should be moved to addfb there too?
->>
->> But you don't know the crtc width when creating the framebuffer.
-> 
-> Hm right this is a different check. What we could check in fb_create for
-> both is that the logical fb size matches exactly the pitch. That's not
-> sufficient criteria, but it will at least catch some of them already.
-> 
-> But yeah we'd need both here.
-
-After validating width of framebuffer against pitch, the only thing we
-need to check here is that the width matches. From what I can tell,
-least for mxsfb, this should be covered by
-drm_atomic_helper_check_plane_state's can_position parameter set to
-false.
-
-So I think in my case I can get away by only checking the framebuffer.
-
---
-Stefan
 
 
-> -Daniel
-> 
->>
->>  Tomi
->>
->> --
->> Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
->> Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+On Tue, 8 Sep 2020, Bartlomiej Zolnierkiewicz wrote:
+
+>
+> Hi,
+>
+> On 8/10/20 11:21 AM, kernel test robot wrote:
+> > From: kernel test robot <lkp@intel.com>
+> >
+> > drivers/video/fbdev/core/fbcon.c:3509:8-16: WARNING: use scnprintf or sprintf
+> > drivers/video/fbdev/core/fbcon.c:3484:8-16: WARNING: use scnprintf or sprintf
+> >
+> >
+> >  From Documentation/filesystems/sysfs.txt:
+> >   show() must not use snprintf() when formatting the value to be
+> >   returned to user space. If you can guarantee that an overflow
+> >   will never happen you can use sprintf() otherwise you must use
+> >   scnprintf().
+> >
+> > Generated by: scripts/coccinelle/api/device_attr_show.cocci
+> >
+> > Fixes: abfc19ff202d ("coccinelle: api: add device_attr_show script")
+> > CC: Denis Efremov <efremov@linux.com>
+> > Signed-off-by: kernel test robot <lkp@intel.com>
+> > ---
+> >
+> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> > head:   fc80c51fd4b23ec007e88d4c688f2cac1b8648e7
+> > commit: abfc19ff202d287742483e15fd478ddd6ada2187 coccinelle: api: add device_attr_show script
+> >
+> > Please take the patch only if it's a positive warning. Thanks!
+> >
+> >  fbcon.c |    4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > --- a/drivers/video/fbdev/core/fbcon.c
+> > +++ b/drivers/video/fbdev/core/fbcon.c
+> > @@ -3481,7 +3481,7 @@ static ssize_t show_rotate(struct device
+> >  	rotate = fbcon_get_rotate(info);
+> >  err:
+> >  	console_unlock();
+> > -	return snprintf(buf, PAGE_SIZE, "%d\n", rotate);
+> > +	return scnprintf(buf, PAGE_SIZE, "%d\n", rotate);
+>
+> buf length is at least PAGE_SIZE and rotate val is an int so
+> shouldn't this be converted to use sprintf() instead?
+
+The rule is evolving in this direction.  Thanks for the feedback.
+
+julia
+
+>
+> >  }
+> >
+> >  static ssize_t show_cursor_blink(struct device *device,
+> > @@ -3506,7 +3506,7 @@ static ssize_t show_cursor_blink(struct
+> >  	blink = (ops->flags & FBCON_FLAGS_CURSOR_TIMER) ? 1 : 0;
+> >  err:
+> >  	console_unlock();
+> > -	return snprintf(buf, PAGE_SIZE, "%d\n", blink);
+> > +	return scnprintf(buf, PAGE_SIZE, "%d\n", blink);
+>
+> ditto for blink val
+>
+> >  }
+> >
+> >  static ssize_t store_cursor_blink(struct device *device,
+> >
+>
+> Best regards,
+> --
+> Bartlomiej Zolnierkiewicz
+> Samsung R&D Institute Poland
+> Samsung Electronics
+> _______________________________________________
+> kbuild-all mailing list -- kbuild-all@lists.01.org
+> To unsubscribe send an email to kbuild-all-leave@lists.01.org
+>
