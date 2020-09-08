@@ -2,149 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02543260EC8
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 11:38:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4914260EDB
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 11:39:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728873AbgIHJi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 05:38:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727995AbgIHJi0 (ORCPT
+        id S1729031AbgIHJjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 05:39:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55404 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728925AbgIHJjU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 05:38:26 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02874C061573;
-        Tue,  8 Sep 2020 02:38:23 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id u3so4513709pjr.3;
-        Tue, 08 Sep 2020 02:38:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jApnbaGdNy0XZvmrHRfVLH08NM0ISkHskFMyba/3Dz8=;
-        b=MJgUDYj8lMeog10h/pcRqjqbqd4X6zcLeZsrh/MY0BGBr/BLaGO/3pkJz37iAaPw7O
-         OKhZsUpuQ2bIXXpe9BNkGpRexLHz10IX4Pa1nflggIzhohPRQmZzpDSo0CSz+x/ap6D8
-         2y8YaVq1RHfwDSZ3pYjVMWqanp5hDxiIRqmXANxRiAaeSoxxHpCFxIxXistH/ZCdro4L
-         JJ20dsUOKC3/2LZjn2zl6a3T9LEZmIIEX35TFizLxw1yTErjuHlmGmEKMVQXGbfA3vZZ
-         6D3AucxfnJP7UApg9bsullWCQBoQGs2Fi8iq8w5RRA9jkDeeMTonTWpEjbf6Q6THXiK6
-         s9Sg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jApnbaGdNy0XZvmrHRfVLH08NM0ISkHskFMyba/3Dz8=;
-        b=r152M3A7NeNPMJvwp8R0RUSdQWTtdrgJntrgUt2wEbBgEwpsf6tJGsrgFoLtsWUcXV
-         b9m+68WRQkIy7VWu+PWv4j2a2KI0l/q7d1Ly4S/M9TdKf3gyOemTowqYCs9EF/TeUHol
-         9zXwNXN2hKigwQZKjAgDY5k7LwS4f3c91/ASWgfvqU7NffU9iVe0uofDdQTKPgS1UiVZ
-         vKtAsg4gtXM1XA0+TpwsYxOKzk93O94hC5VLB8SyDcyOmGD08c+3Kkv8QPd7YZxf2A4S
-         pVI3TLWIaj5krdA74tYNI7yBtUkRuA5stv+D1lYW2kuqMINWtGZvhkye4bmnX5I8/9n/
-         aQyg==
-X-Gm-Message-State: AOAM531O6QZOPEx/fO86+lwHtBjPbZU9B6GuP7vAh+20lW5Z6bI7vfRB
-        +0JpnDI2YyiIW3MMoVCxc816B8jvdf+7JacDkpY=
-X-Google-Smtp-Source: ABdhPJyxAbCwnDQR7EXhbAKVRK/L1mgougVfa4ksNuqH1dcnUnGkAUwBxsj7BOSjmWVm1lw4MgxRSvmwQq4xy2GW4u4=
-X-Received: by 2002:a17:90a:fd98:: with SMTP id cx24mr3015644pjb.181.1599557902306;
- Tue, 08 Sep 2020 02:38:22 -0700 (PDT)
+        Tue, 8 Sep 2020 05:39:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599557959;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7ctRHl4aTOwSZ2a6/9fruNAVYsNTURKB5JwaBFn5RLs=;
+        b=jQXrAnUaTMmk8dFsEdtsRa/Vr3f6PHnhAGFoT8AzZ8MaJjHNqCne9eILmWbtDSsi7uWP37
+        wk52eNFOGcSFKSUunMHDVN//RTCFpzuobWRXfQjtTeqI2ZnEILuowdDPr+AbTDWGN4HfdU
+        Et/Niqw8Sk/coOclvl64rH9K8XvgQYE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-486-QnoSP66aOxmn1KZwsSd8uA-1; Tue, 08 Sep 2020 05:39:17 -0400
+X-MC-Unique: QnoSP66aOxmn1KZwsSd8uA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7D0F71DDF7;
+        Tue,  8 Sep 2020 09:39:16 +0000 (UTC)
+Received: from sirius.home.kraxel.org (ovpn-112-56.ams2.redhat.com [10.36.112.56])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 27D361002388;
+        Tue,  8 Sep 2020 09:39:13 +0000 (UTC)
+Received: by sirius.home.kraxel.org (Postfix, from userid 1000)
+        id 62378204A1; Tue,  8 Sep 2020 11:39:12 +0200 (CEST)
+From:   Gerd Hoffmann <kraxel@redhat.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     Gerd Hoffmann <kraxel@redhat.com>,
+        Dave Airlie <airlied@redhat.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        virtualization@lists.linux-foundation.org (open list:DRM DRIVER FOR QXL
+        VIRTUAL GPU),
+        spice-devel@lists.freedesktop.org (open list:DRM DRIVER FOR QXL VIRTUAL
+        GPU), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH 1/3] drm/qxl: use drmm_mode_config_init
+Date:   Tue,  8 Sep 2020 11:39:10 +0200
+Message-Id: <20200908093912.26792-2-kraxel@redhat.com>
+In-Reply-To: <20200908093912.26792-1-kraxel@redhat.com>
+References: <20200908093912.26792-1-kraxel@redhat.com>
 MIME-Version: 1.0
-References: <20200904165222.18444-1-vadym.kochan@plvision.eu>
- <20200904165222.18444-2-vadym.kochan@plvision.eu> <CAHp75Vc_MN-tD+iQNbUcB6fbYizyfKJSJnm1W7uXCT6JAvPauA@mail.gmail.com>
- <20200908083514.GB3562@plvision.eu>
-In-Reply-To: <20200908083514.GB3562@plvision.eu>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 8 Sep 2020 12:38:04 +0300
-Message-ID: <CAHp75VdyahsNyOK9_7mFGHFg_O47jVQWro-mhU0n=1K17Eeg8Q@mail.gmail.com>
-Subject: Re: [PATCH net-next v7 1/6] net: marvell: prestera: Add driver for
- Prestera family ASIC devices
-To:     Vadym Kochan <vadym.kochan@plvision.eu>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jiri Pirko <jiri@mellanox.com>,
-        Ido Schimmel <idosch@mellanox.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Oleksandr Mazur <oleksandr.mazur@plvision.eu>,
-        Serhiy Boiko <serhiy.boiko@plvision.eu>,
-        Serhiy Pshyk <serhiy.pshyk@plvision.eu>,
-        Volodymyr Mytnyk <volodymyr.mytnyk@plvision.eu>,
-        Taras Chornyi <taras.chornyi@plvision.eu>,
-        Andrii Savka <andrii.savka@plvision.eu>,
-        netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mickey Rachamim <mickeyr@marvell.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 8, 2020 at 11:35 AM Vadym Kochan <vadym.kochan@plvision.eu> wrote:
-> On Fri, Sep 04, 2020 at 10:12:07PM +0300, Andy Shevchenko wrote:
-> > On Fri, Sep 4, 2020 at 7:52 PM Vadym Kochan <vadym.kochan@plvision.eu> wrote:
+Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
+---
+ drivers/gpu/drm/qxl/qxl_display.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-...
-
-> > > +       words[3] |= FIELD_PREP(PRESTERA_W3_HW_DEV_NUM, (dsa->hw_dev_num >> 5));
-> >
-> > Ditto.
-> >
-> I am not sure 5 needs to be defined as macro as it just moves
-> hw_dev_num's higher bits into the last word.
-
-And why 5? I want 6, for example!
-
-...
-
-> > > +       err = prestera_switch_init(sw);
-> > > +       if (err) {
-> > > +               kfree(sw);
-> >
-> > > +               return err;
-> > > +       }
-> > > +
-> > > +       return 0;
-> >
-> > return err;
-> >
-> why not keep 'return 0' as indication of success point ?
-
-Simple longer, but I'm not insisting. Your choice.
-
-...
-
-> > > +                       if (b == 0)
-> > > +                               continue;
-> > > +
-> > > +                       prestera_sdma_rx_desc_set_next(sdma,
-> > > +                                                      ring->bufs[b - 1].desc,
-> > > +                                                      buf->desc_dma);
-> > > +
-> > > +                       if (b == PRESTERA_SDMA_RX_DESC_PER_Q - 1)
-> > > +                               prestera_sdma_rx_desc_set_next(sdma, buf->desc,
-> > > +                                                              head->desc_dma);
-> >
-> > I guess knowing what the allowed range of bnum the above can be optimized.
-> >
-> You mean to replace PRESTERA_SDMA_RX_DESC_PER_Q by bnum ?
-
-I don't know what you meant in above. It might be a bug, it might be
-that bnum is redundant and this definition may be used everywhere...
-But I believe there is room for improvement when I see pattern like
-
-  for (i < X) {
-    ...
-    if (i == 0) {
-      ...
-    } else if (i == X - 1) {
-      ...
-    }
-  }
-
-Either it can be while-loop (or do-while) with better semantics for
-the first and last item to handle or something else.
-Example from another review [1] in case you wonder how changes can be
-made. Just think about it.
-
-[1]: https://www.spinics.net/lists/linux-pci/msg60826.html (before)
-https://www.spinics.net/lists/linux-pci/msg62043.html (after)
-
+diff --git a/drivers/gpu/drm/qxl/qxl_display.c b/drivers/gpu/drm/qxl/qxl_display.c
+index fa79688013b7..4be04eaf7f37 100644
+--- a/drivers/gpu/drm/qxl/qxl_display.c
++++ b/drivers/gpu/drm/qxl/qxl_display.c
+@@ -1190,7 +1190,9 @@ int qxl_modeset_init(struct qxl_device *qdev)
+ 	int i;
+ 	int ret;
+ 
+-	drm_mode_config_init(&qdev->ddev);
++	ret = drmm_mode_config_init(&qdev->ddev);
++	if (ret)
++		return ret;
+ 
+ 	ret = qxl_create_monitors_object(qdev);
+ 	if (ret)
+@@ -1223,5 +1225,4 @@ int qxl_modeset_init(struct qxl_device *qdev)
+ void qxl_modeset_fini(struct qxl_device *qdev)
+ {
+ 	qxl_destroy_monitors_object(qdev);
+-	drm_mode_config_cleanup(&qdev->ddev);
+ }
 -- 
-With Best Regards,
-Andy Shevchenko
+2.27.0
+
