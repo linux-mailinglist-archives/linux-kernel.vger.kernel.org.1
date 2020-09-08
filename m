@@ -2,109 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 860B8260C92
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 09:54:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4858A260C98
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 09:55:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729752AbgIHHyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 03:54:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35798 "EHLO
+        id S1729799AbgIHHzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 03:55:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729295AbgIHHy2 (ORCPT
+        with ESMTP id S1729447AbgIHHya (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 03:54:28 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AB36C061573
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 00:54:28 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id b79so16145958wmb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 00:54:28 -0700 (PDT)
+        Tue, 8 Sep 2020 03:54:30 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6435C061573
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 00:54:29 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id z9so16161509wmk.1
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 00:54:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mXyuP55k/txQU8Qavag22Z7+e0rUydKfwB7MhziBkWA=;
-        b=IlKLM/V4WVAAF5C6UBwIZKBIE1WSziNp6P465eu0YCqj+PNnmuZbxxVhsmyBd6cNUj
-         59ZYQBae1qOET3I8/xl5AGZZfHhN2Ej3aRPCrK4Yx8hvozgLjAfKMOpm6sDYPkx390zA
-         fIw0Qco5ymgedDcLO2EXv7D5DI6mkaucPTDs2/EBwprlcv5SieAKUg/MKBnCwIILiz5P
-         DejpAcCYm3bCdcqLqz9+gJ+WZUGigRshU/TchCBG2i7ZBQZke93uo/ECMY8bPaqYNZDZ
-         p5hXe8xG/2dj6g99vR8C3pphhOUjcA8MsJc2SQ3GYSUYYdwAN3mFNqvBCqe76a8lPEGN
-         z0Vg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=AaJv1mu5ukB/CIcMyJjiUkroua19/SVkAvuVAHfagew=;
+        b=yj9Ik1ndq3jW04GwKrFOI8D/lPSZVkGcU3uzyMVspnynRbQKdFBJN4BFNiIapGRwnR
+         vZYjfZ0jXsdmJWS2xNWLvFAWOvA/GkMFUOAaaTEjv4YuNA7igfTuaSL5w/Sx2MUcPs1w
+         9pykHkjdFNrAQGds+Fr60lNduf7ESa5KsiloGG7zLHXEXWpDE2FP7wi44xCKbV+GuJhI
+         Haax/tWmOAxnKiL294A24g/1CrLCj+/h9S9lPochIfNWS6onPfaA+hmH/Ua5nIQz7BG3
+         mCQZSq/T9x96bj+Wrq7sDzE8UmwxlOhooZ9aKAii8BJ36d4YcmdyiDE/E869lL1S5Vt7
+         txiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mXyuP55k/txQU8Qavag22Z7+e0rUydKfwB7MhziBkWA=;
-        b=TtLK6+BdIHbZdqQbvOon7quz48wGlAZGS1a3391UZLZHE4ux6Ojj5Biy6klWQyRSzh
-         H6AbilqdPxNV8GQ0NHTQjlg6C41LL0iQ5mrgHVEJAGwM/DY0nL1xqR+3xYshk1BatZi+
-         UQhAal9PydDbBDDkZAKDBkM9n7rw2XUAox9Zni/S7KTzjJa4GKwb00na8CDDauJiKYce
-         qLB9L9dwQlhLWKIYRe+iR5s3f5J0PwqYTaa7tzWtasC1t85JYvr2b7UDqCLlRMMKoA67
-         uq0Saz6aE1QkVZpxDMA9SFVes+Vn6QVzhvRuVx3w7Z6938acPMimso0F3Q7KeKPhe93a
-         5QuA==
-X-Gm-Message-State: AOAM532fzxdkWtLzGovUYsi3sQrxSto+MbYDnKzzCw0zUZxVw5dkiCE/
-        yKb02wC9jQ15bhT8KK9KxrGYZQ==
-X-Google-Smtp-Source: ABdhPJwDh1eoKWZjAIC9Lu2S/bF0Q1t8OpRqNst9tAsHP3ivthW9uML4FgowbJDYclYeWq08p24mYA==
-X-Received: by 2002:a7b:cb47:: with SMTP id v7mr3009443wmj.36.1599551666927;
-        Tue, 08 Sep 2020 00:54:26 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=AaJv1mu5ukB/CIcMyJjiUkroua19/SVkAvuVAHfagew=;
+        b=ZKvcWRtiIiTBi3YBOGnjm0UpQrrm4gcAueNAtRj5qqJ6TgWB25GzUjHO2Y8Hwy0D83
+         uisbDYL5/YbgdPUypc7dt2j5EEocEsV0mNiadlcMqjnGSMPIvxk7hPdGGeBWw0Q+zOxv
+         rSmGmMxQBreAxrRdNqjvqkt2YPu7uqx+Pq8hiYMIfKcDJp8KF4r3PfM7ami+jGcoXwgY
+         n3JcFjdq2mQ39j7Er4jmSO1I42LDozwtutqRYe8HZjp80wxuD4vKOu43bu0iTvUGAdJV
+         4iHwczq2w4jAGNrywYspNma5G38aqubkoCX1zjJlKKJpaeUCZsHST05DRmb8E0OJO4Sr
+         HmZw==
+X-Gm-Message-State: AOAM5301fyFJwxXBAsUbTHEE/oW0WS04+tGy9vW6snMxeGOUFOeJaHTA
+        M8zcr20Mf6gWLCOVPCafbq+2pg==
+X-Google-Smtp-Source: ABdhPJzELndZXOBjcc+iB86Na+d7gpW0eUl7Xb0Mcmpwvh1mxirZqv7irrBgH24N13Nm09Gk9voTNQ==
+X-Received: by 2002:a1c:7215:: with SMTP id n21mr3241141wmc.154.1599551668340;
+        Tue, 08 Sep 2020 00:54:28 -0700 (PDT)
 Received: from bender.baylibre.local ([2a01:e35:2ec0:82b0:5405:9623:e2f1:b2ac])
-        by smtp.gmail.com with ESMTPSA id f14sm33788291wrv.72.2020.09.08.00.54.25
+        by smtp.gmail.com with ESMTPSA id f14sm33788291wrv.72.2020.09.08.00.54.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Sep 2020 00:54:26 -0700 (PDT)
+        Tue, 08 Sep 2020 00:54:27 -0700 (PDT)
 From:   Neil Armstrong <narmstrong@baylibre.com>
-To:     thierry.reding@gmail.com, sam@ravnborg.org
+To:     thierry.reding@gmail.com, sam@ravnborg.org,
+        devicetree@vger.kernel.org
 Cc:     dri-devel@lists.freedesktop.org, linux-amlogic@lists.infradead.org,
         linux-kernel@vger.kernel.org,
         Neil Armstrong <narmstrong@baylibre.com>
-Subject: [PATCH v3 0/4] drm: panel: add support for TDO tl070wsh30 panel
-Date:   Tue,  8 Sep 2020 09:54:17 +0200
-Message-Id: <20200908075421.17344-1-narmstrong@baylibre.com>
+Subject: [PATCH v3 1/4] dt-bindings: vendor-prefixes: Add Shanghai Top Display Optolelectronics vendor prefix
+Date:   Tue,  8 Sep 2020 09:54:18 +0200
+Message-Id: <20200908075421.17344-2-narmstrong@baylibre.com>
 X-Mailer: git-send-email 2.22.0
+In-Reply-To: <20200908075421.17344-1-narmstrong@baylibre.com>
+References: <20200908075421.17344-1-narmstrong@baylibre.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds support bindings and support for the TDO TL070WSH30 TFT-LCD panel
-module shipped with the Amlogic S400 Development Kit.
-The panel has a 1024×600 resolution and uses 24 bit RGB per pixel.
-It provides a MIPI DSI interface to the host, a built-in LED backlight
-and touch controller.
+Shanghai Top Display Optolelectronics Co., Ltd  is a display manufacturer
+from Shanghai.
+Web site of the company: http://www.shtdo.com/
 
-Changes since v2 at [2]:
-- added reset gpio to panel-simple-dsi bindings
-- moved bindings to panel-simple
-- re-ordered prepare/unprepare
-- added back refresh print
-- moved regulator/reset handling in prepare/unprepare
-- aligned remove/shutdown with panel-simple
-- added sentinel comment into dt match table
+Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+---
+ Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Changes since v1 at [1]:
-- added missing vendor-prefixes patch
-- removed vrefresh
-- fixed warning on add_panel return
-- removed DRM logging
-
-[1] https://patchwork.freedesktop.org/series/81376/#rev1
-[2] https://patchwork.freedesktop.org/series/81376/#rev2
-
-Neil Armstrong (4):
-  dt-bindings: vendor-prefixes: Add Shanghai Top Display
-    Optolelectronics vendor prefix
-  dt-bindings: display: panel-simple-dsi: add optional reset gpio
-  dt-bindings: display: panel-simple-dsi: add TDO TL070WSH30 DSI panel
-    bindings
-  drm: panel: add TDO tl070wsh30 panel driver
-
- .../display/panel/panel-simple-dsi.yaml       |   3 +
- .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
- drivers/gpu/drm/panel/Kconfig                 |  11 +
- drivers/gpu/drm/panel/Makefile                |   1 +
- drivers/gpu/drm/panel/panel-tdo-tl070wsh30.c  | 250 ++++++++++++++++++
- 5 files changed, 267 insertions(+)
- create mode 100644 drivers/gpu/drm/panel/panel-tdo-tl070wsh30.c
-
+diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+index a1e4356cf522..4e9dfb352c68 100644
+--- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
++++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+@@ -1078,6 +1078,8 @@ patternProperties:
+     description: TPK U.S.A. LLC
+   "^tplink,.*":
+     description: TP-LINK Technologies Co., Ltd.
++  "^tdo,.*":
++    description: Shangai Top Display Optoelectronics Co., Ltd
+   "^tpo,.*":
+     description: TPO
+   "^tq,.*":
 -- 
 2.22.0
 
