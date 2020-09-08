@@ -2,120 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 969FF261657
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:09:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5674261658
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:10:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731499AbgIHRJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 13:09:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37408 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731833AbgIHRJC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 13:09:02 -0400
-Received: from mail-vs1-xe36.google.com (mail-vs1-xe36.google.com [IPv6:2607:f8b0:4864:20::e36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B97FAC061755
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 10:09:01 -0700 (PDT)
-Received: by mail-vs1-xe36.google.com with SMTP id x203so9404539vsc.11
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 10:09:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uxqwH7GZBnEMFxjmA1dYQN29QuSs6NC/OtdCV0Jyouk=;
-        b=dqmW3Vd3XOIXohmkuHyoBu+pD6bpqoalFXzjFXRuZxBqw4z3PXroPnxf6am6dhBWvo
-         qJQGL6tmjieqKDd+3plyj037k/DsTzb+MpCTCRUYC128bEsa1SY0bfoFYEtjCV/qRKba
-         p+sQMxE2dYUwnfD+1E958TNquOG573qSX6pAMpTBv6KAFeTC3lfZz4mlxijLrWdEU1gs
-         IlF4u4G4+Ln8wacwDtx44YT7RyK/lLSlacUSb9TxzQ7QjJcjxrHKbq4zMlmiQP9QS9r2
-         UwJDsfhG4kNpOTcKgYyVfx9d3SRuIz+utNrv1Amz5NvOgKVB3vHAql0wEnsNcpQh7ZiA
-         mGxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uxqwH7GZBnEMFxjmA1dYQN29QuSs6NC/OtdCV0Jyouk=;
-        b=Fs5jIwx4hXGCkwbduMpHn8KPt1X8tBJAy0W7XVBbwyt4heLZhnJFUfuC4JvtahbS/M
-         zqXvrVLzNt5NLpuZgS3CpKPTXnuInHqEaBy9ldvCc14oyfeMhXYzUASLB/XX5WVVnBha
-         4/4or8NowdhI/QjjoFb9GA1akwUas19SaJ5UwSKWVhWjw0I6Oa3QU/cF22g8J+AokAhJ
-         UJoInJvEyPRdAzDfgbHydPUVaZNZJUGmUno62JuysNOh72Jaf6UzBJmwb1nhZH2lu748
-         h8T91cs1IJ/F+LnyJB/zkos2XlPVXPR/QvsU2cHQXZU3H8P0Tk2K3GJmYGWE2QVNzPZH
-         Q94A==
-X-Gm-Message-State: AOAM532D0s5Mjl8rETcUB4KXlKeRMTVsYapNsKlHGoU4e5zwb10laTmB
-        6KK4UqgcmMVbGxRcDndZZezRqoaQw7WTfA==
-X-Google-Smtp-Source: ABdhPJyRW8QuY5SRifUqLhi7CTrTR8PlwI/+raYS/uy4c9tSvFOnjOolupFNKITILlccknVZUy95bg==
-X-Received: by 2002:a67:e2c3:: with SMTP id i3mr1607606vsm.13.1599584937795;
-        Tue, 08 Sep 2020 10:08:57 -0700 (PDT)
-Received: from mail-ua1-f45.google.com (mail-ua1-f45.google.com. [209.85.222.45])
-        by smtp.gmail.com with ESMTPSA id h10sm3034521vke.46.2020.09.08.10.08.56
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Sep 2020 10:08:56 -0700 (PDT)
-Received: by mail-ua1-f45.google.com with SMTP id v5so5066232uau.10
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 10:08:56 -0700 (PDT)
-X-Received: by 2002:ab0:60d7:: with SMTP id g23mr92852uam.122.1599584935769;
- Tue, 08 Sep 2020 10:08:55 -0700 (PDT)
+        id S1731820AbgIHRJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 13:09:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50860 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731812AbgIHRJo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 13:09:44 -0400
+Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 75B6421924;
+        Tue,  8 Sep 2020 17:09:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599584983;
+        bh=6NFe0ymOhoqmib9dZ3TJK/YVGzpwyBIPD6QNXwYX8UY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=mEOZY60QPhE7P0G9fDleoicJlosE0kdMqazDE59cEpI3AaF6rOo+YSIy/7T94gwnn
+         ivR9jr/Ak+vHTJ5zLH7ZzWDIrqU30dceu/CPIMczpsa19WzNYdlxNgFDhPIBZ9qp6n
+         x2t59Sv1jfj1flMANuF+WxRHwsDvoi3XRzbx8fW4=
+Received: by mail-ot1-f46.google.com with SMTP id a65so15477445otc.8;
+        Tue, 08 Sep 2020 10:09:43 -0700 (PDT)
+X-Gm-Message-State: AOAM530iJ/UlHgWO6be21zDy72njzyuihZGKsSti0OHrB1BGXmw0Ttkr
+        CFDfkPSiTPfMkHIgM0JDy34OzLYvmN+eoKkVlw==
+X-Google-Smtp-Source: ABdhPJwHvRobpy4sNP5E9Yg1dDeCFskCK1HpqEtpykR12ltq7YM6SYurKbQYjTYNf+T1ZSWapNAMuvoOnGPsoD0q7yw=
+X-Received: by 2002:a9d:411:: with SMTP id 17mr45450otc.192.1599584982696;
+ Tue, 08 Sep 2020 10:09:42 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAJht_EOu8GKvdTAeF_rHsaKu7iYOmW8C64bQA21bgKuiANE5Zw@mail.gmail.com>
- <CAJht_EP=g02o2ygihNo=EWd1OuL3HSjmhqgGiwUGrMde=urSUA@mail.gmail.com>
- <CA+FuTSdm35x9nA259JgOWcCWJto9MVMHGGgamPPsgnpsTmPO8g@mail.gmail.com>
- <CAJht_EPEqUMXNdQLL9d5OtzbZ92Jms7nSUR8bS+cw2Ah5mv6cQ@mail.gmail.com>
- <CA+FuTSeJS22R2VYSzcEVvXiUhX79RYE0o3G6V3NKGzQ4UGaJQg@mail.gmail.com>
- <CAJht_EN7SXAex-1W49eY7q5p2UqLYvXA8D6hptJGquXdJULLcA@mail.gmail.com>
- <CA+FuTSfgxt6uqcxy=wnOXo8HxMJ3J0HAqQNiDJBLCs22Ukb_gQ@mail.gmail.com> <CAJht_EN-aBo8rfHAxYxwW2Jb38S2PW3WtxhWuHn5HS1fAWeA1w@mail.gmail.com>
-In-Reply-To: <CAJht_EN-aBo8rfHAxYxwW2Jb38S2PW3WtxhWuHn5HS1fAWeA1w@mail.gmail.com>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Tue, 8 Sep 2020 19:08:17 +0200
-X-Gmail-Original-Message-ID: <CA+FuTScyyE_s8PodEQhj3=s2wO3kGnWP3nL9SESJddf=U6DEfQ@mail.gmail.com>
-Message-ID: <CA+FuTScyyE_s8PodEQhj3=s2wO3kGnWP3nL9SESJddf=U6DEfQ@mail.gmail.com>
-Subject: Re: Question about dev_validate_header used in af_packet.c
-To:     Xie He <xie.he.0141@gmail.com>
-Cc:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20200830185356.5365-1-digetx@gmail.com> <20200830185356.5365-2-digetx@gmail.com>
+ <20200903161022.GA2707794@bogus> <790dbb23-7422-887a-3f11-5ae55bb916fa@gmail.com>
+ <CAL_Jsq+Ue72jJ9gurcG0f_R+gGVC77dErhgbKpB_p40buUewLg@mail.gmail.com> <40e34696-5af8-a3da-35f2-483a0dacd835@gmail.com>
+In-Reply-To: <40e34696-5af8-a3da-35f2-483a0dacd835@gmail.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 8 Sep 2020 11:09:31 -0600
+X-Gmail-Original-Message-ID: <CAL_Jsq+mE5gv6srBQgoNFehMx2RdxTpxeE9+y2uhfNGZAT_yFw@mail.gmail.com>
+Message-ID: <CAL_Jsq+mE5gv6srBQgoNFehMx2RdxTpxeE9+y2uhfNGZAT_yFw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/6] dt-bindings: mfd: Add ENE KB930 Embedded
+ Controller binding
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Pavel Machek <pavel@ucw.cz>, Lubomir Rintel <lkundrak@v3.sk>,
+        Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Dan Murphy <dmurphy@ti.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 8, 2020 at 6:23 PM Xie He <xie.he.0141@gmail.com> wrote:
+On Fri, Sep 4, 2020 at 9:54 AM Dmitry Osipenko <digetx@gmail.com> wrote:
 >
-> On Tue, Sep 8, 2020 at 4:53 AM Willem de Bruijn
-> <willemdebruijn.kernel@gmail.com> wrote:
+> 04.09.2020 18:40, Rob Herring =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> > On Fri, Sep 4, 2020 at 6:07 AM Dmitry Osipenko <digetx@gmail.com> wrote=
+:
+> >>
+> >> 03.09.2020 19:10, Rob Herring =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> >>> On Sun, 30 Aug 2020 21:53:51 +0300, Dmitry Osipenko wrote:
+> >>>> Add binding document for the ENE KB930 Embedded Controller.
+> >>>>
+> >>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> >>>> ---
+> >>>>  .../devicetree/bindings/mfd/ene-kb930.yaml    | 66 ++++++++++++++++=
++++
+> >>>>  1 file changed, 66 insertions(+)
+> >>>>  create mode 100644 Documentation/devicetree/bindings/mfd/ene-kb930.=
+yaml
+> >>>>
+> >>>
+> >>>
+> >>> My bot found errors running 'make dt_binding_check' on your patch:
+> >>>
+> >>> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/=
+mfd/ene-kb930.example.dt.yaml: battery-cell: 'operating-range-celsius' does=
+ not match any of the regexes: '^ocv-capacity-table-[0-9]+$', 'pinctrl-[0-9=
+]+'
+> >>>       From schema: /builds/robherring/linux-dt-review/Documentation/d=
+evicetree/bindings/power/supply/battery.yaml
+> >>>
+> >>>
+> >>> See https://patchwork.ozlabs.org/patch/1354004
+> >>>
+> >>> If you already ran 'make dt_binding_check' and didn't see the above
+> >>> error(s), then make sure dt-schema is up to date:
+> >>>
+> >>> pip3 install git+https://github.com/devicetree-org/dt-schema.git@mast=
+er --upgrade
+> >>>
+> >>> Please check and re-submit.
+> >>>
+> >>
+> >> Apparently bot uses outdated kernel.
 > >
-> > On Tue, Sep 8, 2020 at 1:04 PM Xie He <xie.he.0141@gmail.com> wrote:
-> > >
-> > > I was recently looking at some drivers, and I felt that if af_packet.c
-> > > could help me filter out the invalid RAW frames, I didn't need to
-> > > check the validity of the frames myself (in the driver when
-> > > transmitting). But now I guess I still need to check that.
-> > >
-> > > I feel this makes the dev_validate_header's variable-length header
-> > > check not very useful, because drivers need to do this check again
-> > > (when transmitting) anyway.
-> > >
-> > > I was thinking, after I saw dev_validate_header, that we could
-> > > eventually make it completely take over the responsibility for a
-> > > driver to validate the header when transmitting RAW frames. But now it
-> > > seems we would not be able to do this.
-> >
-> > Agreed. As is, it is mainly useful to block users who are ns_capable,
-> > but not capable.
-> >
-> > A third option is to move it behind a sysctl (with static_branch). Your
-> > point is valid that there really is no need for testing of drivers against
-> > bad packets if the data is validated directly on kernel entry.
+> > It's on v5.9-rc2. The scripts don't know your base/dependencies and
+> > neither did I because you didn't mention anything here. I do review
+> > the errors before spamming people.
 >
-> I was thinking about this again and it came to me that maybe sometimes
-> people actually wanted to send invalid frames on wire (for testing the
-> network device on the other end of the wire)? Having thought about
-> this possibility I think it might be good to keep the ability for
-> people to have 2 choices (either having their RAW frames validated, or
-> not validated) through "capability" or through "sysctl" as you
-> mentioned. We can keep the default to be not validating the RAW frames
-> because RAW sockets are already intended for very special use and are
-> not for normal use.
+> The patches are based on the linux-next, hence nothing special here. My
+> expectation is that the bot should use the linux-next as well in order
+> to prevent such warnings. Is there any reason to why bot not using
+> linux-next?
 
-That offers some configurability. But really, I would just leave it as is.
+What the bot uses is not the issue. The issue is not stating what your
+dependencies are. linux-next is not a stable base. No patches to be
+applied should be based on linux-next because there's no maintainer
+that can take them if you consider anything in linux-next could be a
+dependency. Of course, you're probably just dependent on one
+maintainer's tree usually, but whose tree? Am I supposed to figure
+that out?
+
+linux-next is frequently broken with respect to binding checks, so it
+really doesn't work for the bot. I need a known good base.
+
+Rob
