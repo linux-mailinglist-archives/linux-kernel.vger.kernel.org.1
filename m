@@ -2,93 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E1E226219A
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 22:59:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EA482621A7
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 23:05:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730054AbgIHU75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 16:59:57 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:34004 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725997AbgIHU74 (ORCPT
+        id S1729692AbgIHVFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 17:05:06 -0400
+Received: from alln-iport-5.cisco.com ([173.37.142.92]:33321 "EHLO
+        alln-iport-5.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728197AbgIHVFE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 16:59:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599598795;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QDxqJJtxikAk+TP8erWdser2zhhtAWwdtKyMtfuzbSY=;
-        b=eAxiKa4wGXd1aN0BYtBDeGjs6cgu+oli/ieZKp+sk4TbZ5WvIaGqlnOH2ZlPz0cSFOJK/p
-        Pfsqg3s6K1AL+LMso/vbPpxxvoiJZDQkopF1xdwnQlGP6S5aiPDuwqk3uKVxIkAP2t2d9f
-        eSnZHJaS6JpwKg0H5zHPBwKMdhig9qA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-203-cNX-G96bOXm-dG0MkvF8ZA-1; Tue, 08 Sep 2020 16:59:51 -0400
-X-MC-Unique: cNX-G96bOXm-dG0MkvF8ZA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D320A8018A1;
-        Tue,  8 Sep 2020 20:59:49 +0000 (UTC)
-Received: from treble (ovpn-117-163.rdu2.redhat.com [10.10.117.163])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 561CE7EEAC;
-        Tue,  8 Sep 2020 20:59:49 +0000 (UTC)
-Date:   Tue, 8 Sep 2020 15:59:47 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        live-patching@vger.kernel.org
-Subject: Re: [GIT PULL] livepatching for 5.9-rc5
-Message-ID: <20200908205947.arryy75c5cvldps7@treble>
-References: <20200907082036.GC8084@alley>
- <CAHk-=wiZUYjmPLiEaN5uHM4mGyYq8RBFvk=iZKkm9=8NxvcoZQ@mail.gmail.com>
- <20200908183239.vhy2txzcmlliul7d@treble>
- <CAHk-=wi==UJf0fWUGn6RhQ2hvLW7PA9Yj4GWaTJxa3roENAHDg@mail.gmail.com>
+        Tue, 8 Sep 2020 17:05:04 -0400
+X-Greylist: delayed 428 seconds by postgrey-1.27 at vger.kernel.org; Tue, 08 Sep 2020 17:05:02 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=cisco.com; i=@cisco.com; l=3438; q=dns/txt; s=iport;
+  t=1599599102; x=1600808702;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=hyYeOhUcYtCiC0YLjSnXva8LgNxVVh+qih8vdIF8Na8=;
+  b=nGTeU8vUhSqpvIdF+KuoPcuzLpzHpeYhjGNzU3kHgtsYG8DnNAa0LbvH
+   fpsKLBJKjNCzmVlK5G/TXBXxvJswOVFjHkZyUPWzmwgYATVD95dlI8NIC
+   ZwGUyQozqblY7/QyI/bvS7PhuAdsgsJtwqD+RN+0Ykoo0wHf1RCuVcxi3
+   4=;
+IronPort-PHdr: =?us-ascii?q?9a23=3AC58PYBYJuasymgfXSLZUAHv/LSx94ef9IxIV55?=
+ =?us-ascii?q?w7irlHbqWk+dH4MVfC4el21QaVD4re4vNAzeHRtvOoVW8B5MOHt3YPONxJWg?=
+ =?us-ascii?q?QegMob1wonHIaeCEL9IfKrCk5yHMlLWFJ/uX3uN09TFZXxYlTTpju56jtBUh?=
+ =?us-ascii?q?n6PBB+c+LyHIOahs+r1ue0rpvUZQgAhDe0bb5oahusqgCEvcgNiowkIaE0mR?=
+ =?us-ascii?q?Y=3D?=
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-Anti-Spam-Result: =?us-ascii?q?A0DPBQD77ldf/4wNJK1fHAEBAQEBAQc?=
+ =?us-ascii?q?BARIBAQQEAQFAgU+BUlEHgUkvLIQ4g0YDjXGYcYJTA1ULAQEBDAEBLQIEAQG?=
+ =?us-ascii?q?ESwIXgXoCJDgTAgMBAQsBAQUBAQECAQYEbYVcAQuFcwEBAQMSEREMAQE3AQ8?=
+ =?us-ascii?q?CAQgYAgImAgICMBUQAgQOBSKFUAMuAad3AoE5iGF2gTKDAQEBBYUNGIIQCRR?=
+ =?us-ascii?q?6KoJxg2iGURuBQT+EIT6EPBiDAIJgj3OCawE8igyZRwqCZZoyIaBWklGfVwI?=
+ =?us-ascii?q?EAgQFAg4BAQWBayOBV3AVgyRQFwINV41ICRqDTopWdDcCBgoBAQMJfI1wAQE?=
+X-IronPort-AV: E=Sophos;i="5.76,407,1592870400"; 
+   d="scan'208";a="551317579"
+Received: from alln-core-7.cisco.com ([173.36.13.140])
+  by alln-iport-5.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 08 Sep 2020 20:57:53 +0000
+Received: from XCH-RCD-004.cisco.com (xch-rcd-004.cisco.com [173.37.102.14])
+        by alln-core-7.cisco.com (8.15.2/8.15.2) with ESMTPS id 088Kvr8n031641
+        (version=TLSv1.2 cipher=AES256-SHA bits=256 verify=FAIL);
+        Tue, 8 Sep 2020 20:57:53 GMT
+Received: from xhs-rcd-003.cisco.com (173.37.227.248) by XCH-RCD-004.cisco.com
+ (173.37.102.14) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 8 Sep
+ 2020 15:57:53 -0500
+Received: from xhs-aln-002.cisco.com (173.37.135.119) by xhs-rcd-003.cisco.com
+ (173.37.227.248) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 8 Sep
+ 2020 15:57:52 -0500
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (173.37.151.57)
+ by xhs-aln-002.cisco.com (173.37.135.119) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2 via Frontend Transport; Tue, 8 Sep 2020 15:57:52 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IcyrJztjv5jry4eSWFESTKqjkq+mhUuTIAOxPNrnoCHjCHxceMJtUZVPb3i8BVJaqStdtO7CvN+3lCfyeFaHD5FUGPTNV/dxB3JrRrlSxCu7IWZINClKhgIwtmHW27rTI0taByjsIY5Cq5SVtmctio18FIferZZlZYnN6E839tCDfbXARxyxAU0SNp90GKLO0WhoYB1G47oDT4b/MeEH1GdOjkp3nt6UKudl7v/lUldtDl5qU9UrczwGCMi+aBGLVZvJw+V5jzb3jDSgbX5i5LXfX/Ji0RSqAEJ1sriNSD/Jx6BPqkmd86jGeQkWLYLISaInpHBQeyVmdnKFZeazQg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hyYeOhUcYtCiC0YLjSnXva8LgNxVVh+qih8vdIF8Na8=;
+ b=d6jNzoUH1zGpLjovsVXpD5oH+EUtJhu9mELwIpbRgGbwJ0gJDj12aKJqECLyTbmaGz0qc05XukcunWuc2otCGWdkVXGpJYuDW3i8FT/OMtXgECIYcMH39RiSlx1wxZ0McmAERMtBmbhbt1bPII7IuCfMiu+Z8rM98OnDWNuc4fnNBXYjphdEeNw1ojdcWKtCHjmIKGvEgg4Gmv1F56bRf/1Uth6pImkn9QoRCS6eClscAVmygFR/d95OCnc9OMWM6ETN9xypbGvnyi6JvSSq2V8udX+TgSaUHtXnDC+1nGG0w+5b9XmZrPBq3POyOnhBcW9VyKHZ+/7/L9wn9oeXbw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=cisco.com; dmarc=pass action=none header.from=cisco.com;
+ dkim=pass header.d=cisco.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cisco.onmicrosoft.com;
+ s=selector2-cisco-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hyYeOhUcYtCiC0YLjSnXva8LgNxVVh+qih8vdIF8Na8=;
+ b=s0b2I4dvYk227heMeEt4h7Zo/uL1uo3qSHJSeM1dExOB/Y8f8d0auSBlw5vhIIssbQE3QaeTMllez6ziPw1iUu3HHZugo0zswqT2Ryw3+McG+q9QtEXAJHu2ZZQryOSZnfVFBnAQDAosx6Ffc/uZQ8eQXU6H/7euXojEQjdpQ6k=
+Received: from BY5PR11MB4182.namprd11.prod.outlook.com (2603:10b6:a03:183::10)
+ by BYAPR11MB3622.namprd11.prod.outlook.com (2603:10b6:a03:fe::30) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Tue, 8 Sep
+ 2020 20:57:50 +0000
+Received: from BY5PR11MB4182.namprd11.prod.outlook.com
+ ([fe80::1d4e:2269:63d7:f2d6]) by BY5PR11MB4182.namprd11.prod.outlook.com
+ ([fe80::1d4e:2269:63d7:f2d6%6]) with mapi id 15.20.3348.019; Tue, 8 Sep 2020
+ 20:57:50 +0000
+From:   "Julius Hemanth Pitti (jpitti)" <jpitti@cisco.com>
+To:     "shy828301@gmail.com" <shy828301@gmail.com>
+CC:     "vdavydov.dev@gmail.com" <vdavydov.dev@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "xe-linux-external(mailer list)" <xe-linux-external@cisco.com>,
+        "mhocko@kernel.org" <mhocko@kernel.org>,
+        "guro@fb.com" <guro@fb.com>
+Subject: Re: [PATCH v2] mm: memcg: yield cpu when we fail to charge pages
+Thread-Topic: [PATCH v2] mm: memcg: yield cpu when we fail to charge pages
+Thread-Index: AQHWhhywUt5QbtgHCkqfPwmM+yALvalfMfCAgAAHQoA=
+Date:   Tue, 8 Sep 2020 20:57:50 +0000
+Message-ID: <fb708efd83bb77fd80bc34bb29b6a886f1ed63a5.camel@cisco.com>
+References: <20200908201426.14837-1-jpitti@cisco.com>
+         <CAHbLzkqYrkA6=RSBpwEQJ5WaLUWwdP=05BPE2F4pRgk98NuVTg@mail.gmail.com>
+In-Reply-To: <CAHbLzkqYrkA6=RSBpwEQJ5WaLUWwdP=05BPE2F4pRgk98NuVTg@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-Auto-Response-Suppress: DR, OOF, AutoReply
+X-MS-TNEF-Correlator: 
+x-mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=cisco.com;
+x-originating-ip: [2001:420:c0c8:1005::83d]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 8debd1fb-f100-4d2f-eed7-08d85439d907
+x-ms-traffictypediagnostic: BYAPR11MB3622:
+x-ld-processed: 5ae1af62-9505-4097-a69a-c1553ef7840e,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR11MB36221E71A0500BB3A188F32ADA290@BYAPR11MB3622.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7219;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: vh3b2rU1zz/c9P/eIDefMJDOw8GZl1+vWRF77aeDK5OLK63h1+zz4TBn9A7Miuhzgw3d5jwTczWM8PhUyRcT+cTLJvx4oH9kWISdG6PfHy+AYty+yzp1YiqinMzMnNUFnYaAGAKDis0Cdl3D0MDWNfSaCPjzLNkpJNHxnuJmSg/CNJXJ5SVQ1GSR7bpJaCw12K9X3L1B9A+iZkZId60Y73x0fHz01NGdQqVtFobRtTu537XJ8tYmGhEofScDwDJjtO3aH0TZJrWxpJ1d8fbzuEkTsDDHFr9gjTyIhdwUcXYVuCxG/h8ceclxUj/SBkNrnRmFH2d4K8TyPKtfscY6dqnmnjIlmtdtrKQLIdgN8K4vrRYYn/NudQOb71XrKD5Y
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR11MB4182.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(376002)(39860400002)(396003)(136003)(366004)(6512007)(316002)(8676002)(54906003)(6916009)(71200400001)(5660300002)(36756003)(76116006)(2616005)(86362001)(83380400001)(53546011)(6486002)(6506007)(4326008)(8936002)(2906002)(478600001)(64756008)(66446008)(186003)(66946007)(66476007)(66556008)(99106002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: ykq3RJ3NB9Y7IZpRNtQfabc251Fopjnq+6HfDnaWqapVKOnVINMVhD0sNsd+wEK1VS/HDT/XAizG88OgpZmVoMrrK5uZiy6lFRAJDxEl+f6ZGF29GGwJcx412XIvd51K/EF/TjdaQlatN26MNwkwjZGL7/CWiocL6YN/HIBwrB0HhUZMyO2JzEvADpIgGJDwGvtYYWa1f8JYlSUlF7CLTxqrRuK+40hk8eUGtktqG0c1W6jHwM+iX2ZmqPXvvV7krmWpjv2GzPAsux2kehsvt5c1uOqtl6Ko+naDv72b6Fncp+vQjH9TyIf2FSH/nvYiJ4/OO29RyjTh4bLARpCz87ayfYaSaVzSlkwbIbq0eBgOoGkKAwq8ShzsLGZI69MennRGrcy8JvWE4yp7RDZ4TnPngaSJOLD/T9u26uOkrz8AIwj4VFrj4TsoAlFytxAgfBD+5jJJaxHJNJjP3asz5Nv7TVnkzJPEj3183FGZIvF6bpIw11F5CiDz+9oEOEvzYscgkdPXwBFquIliKTpF/e1wpYqBXI72Dka/GzzsScQ0bJobgeXJpS2gwwCd6ThOLuhwxZMG8p0KFlwDw/GT5xijLE8oxNPAeVRR12+TK05KucQzGG9HIDVuEzUhxP7Qw1OtrU6O97orJM39xSPy5SdBvx5EsGPzzKkxiTugDbo=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <750A9BAED03FFF41B0A5F03DD198FCD6@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wi==UJf0fWUGn6RhQ2hvLW7PA9Yj4GWaTJxa3roENAHDg@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR11MB4182.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8debd1fb-f100-4d2f-eed7-08d85439d907
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Sep 2020 20:57:50.2370
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 5ae1af62-9505-4097-a69a-c1553ef7840e
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: uU3cHb8L/wyuMTl8mPNLGPC6SVK3bjJpIw+jLySLxmG6NUPBqtXqfvHep9DNVomlojQ8Z+DiIgGEadARC35uJg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB3622
+X-OriginatorOrg: cisco.com
+X-Outbound-SMTP-Client: 173.37.102.14, xch-rcd-004.cisco.com
+X-Outbound-Node: alln-core-7.cisco.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 08, 2020 at 11:42:00AM -0700, Linus Torvalds wrote:
-> On Tue, Sep 8, 2020 at 11:32 AM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
-> >
-> > Can you share the .o file?  At least I can't recreate with GCC 9.3.1,
-> > which is all I have at the moment.
-> 
-> Done off-list in private, because I don't think anybody else wants
-> object files flying around on the mailing lists..
-
-The problem is that objtool ignores handle_external_interrupt_irqoff()
-(because it has the STACK_FRAME_NON_STANDARD annotation), and the
-'ignore' logic is a bit crude.
-
-Because that function is ignored, the tail call isn't detected (as you
-pointed out).  Which confuses the static noreturn detection logic.
-
-The proper fix would be to move that thunk call code to proper asm,
-where we can add some unwind hints, and then get rid of the
-STACK_FRAME_NON_STANDARD.
-
-But, in the interest of being lazy, here's the easiest fix for now.
-I'll need to run some builds to make sure it doesn't break anything.
-
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index e034a8f24f46..90a66891441a 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -619,7 +619,7 @@ static int add_jump_destinations(struct objtool_file *file)
- 		if (!is_static_jump(insn))
- 			continue;
- 
--		if (insn->ignore || insn->offset == FAKE_JUMP_OFFSET)
-+		if (insn->offset == FAKE_JUMP_OFFSET)
- 			continue;
- 
- 		reloc = find_reloc_by_dest_range(file->elf, insn->sec,
-
+T24gVHVlLCAyMDIwLTA5LTA4IGF0IDEzOjMxIC0wNzAwLCBZYW5nIFNoaSB3cm90ZToNCj4gT24g
+VHVlLCBTZXAgOCwgMjAyMCBhdCAxOjE0IFBNIEp1bGl1cyBIZW1hbnRoIFBpdHRpIDxqcGl0dGlA
+Y2lzY28uY29tDQo+ID4gd3JvdGU6DQo+ID4gDQo+ID4gRm9yIG5vbiByb290IENHLCBpbiB0cnlf
+Y2hhcmdlKCksIHdlIGtlZXAgdHJ5aW5nDQo+ID4gdG8gY2hhcmdlIHVudGlsIHdlIHN1Y2NlZWQu
+IE9uIG5vbi1wcmVlbXB0aXZlDQo+ID4ga2VybmVsLCB3aGVuIHdlIGFyZSBPT00sIHRoaXMgcmVz
+dWx0cyBpbiBob2xkaW5nDQo+ID4gQ1BVIGZvcmV2ZXIuDQo+ID4gDQo+ID4gT24gU01QIHN5c3Rl
+bXMsIHRoaXMgZG9lc24ndCBjcmVhdGUgYSBiaWcgcHJvYmxlbQ0KPiA+IGJlY2F1c2Ugb29tX3Jl
+YXBlciBnZXQgYSBjaGFuZ2UgdG8ga2lsbCB2aWN0aW0NCj4gPiBhbmQgbWFrZSBzb21lIGZyZWUg
+cGFnZXMuIEhvd2V2ZXIgb24gYSBzaW5nbGUtY29yZQ0KPiA+IENQVSAob3IgY2FzZXMgd2hlcmUg
+b29tX3JlYXBlciBwaW5uZWQgdG8gc2FtZSBDUFUNCj4gPiB3aGVyZSB0cnlfY2hhcmdlIGlzIGV4
+ZWN1dGluZyksIG9vbV9yZWFwZXIgc2hhbGwNCj4gPiBuZXZlciBnZXQgc2NoZWR1bGVkIGFuZCB3
+ZSBzdGF5IGluIHRyeV9jaGFyZ2UgZm9yZXZlci4NCj4gPiANCj4gPiBTdGVwcyB0byByZXBvIHRo
+aXMgb24gbm9uLXNtcDoNCj4gPiAxLiBtb3VudCAtdCB0bXBmcyBub25lIC9zeXMvZnMvY2dyb3Vw
+DQo+ID4gMi4gbWtkaXIgL3N5cy9mcy9jZ3JvdXAvbWVtb3J5DQo+ID4gMy4gbW91bnQgLXQgY2dy
+b3VwIG5vbmUgL3N5cy9mcy9jZ3JvdXAvbWVtb3J5IC1vIG1lbW9yeQ0KPiA+IDQuIG1rZGlyIC9z
+eXMvZnMvY2dyb3VwL21lbW9yeS8wDQo+ID4gNS4gZWNobyA0ME0gPiAvc3lzL2ZzL2Nncm91cC9t
+ZW1vcnkvMC9tZW1vcnkubGltaXRfaW5fYnl0ZXMNCj4gPiA2LiBlY2hvICQkID4gL3N5cy9mcy9j
+Z3JvdXAvbWVtb3J5LzAvdGFza3MNCj4gPiA3LiBzdHJlc3MgLW0gNSAtLXZtLWJ5dGVzIDEwTSAt
+LXZtLWhhbmcgMA0KPiANCj4gSXNuJ3QgaXQgdGhlIHNhbWUgcHJvYmxlbSBzb2x2ZWQgYnkgZTMz
+MzZjYWIyNTc5ICgibW06IG1lbWNnOiBmaXgNCj4gbWVtY2cgcmVjbGFpbSBzb2Z0IGxvY2t1cCIp
+PyBJdCBoYXMgYmVlbiBpbiBMaW51cydzIHRyZWUuDQoNClllcywgaW5kZWVkLg0KSSBqdXN0IHRl
+c3RlZCB3aXRoIGUzMzM2Y2FiMjU3OSwgYW5kIGl0IHNvbHZlZCB0aGlzIHByb2JsZW0uDQpUaGFu
+a3MgZm9yIHBvaW50aW5nIGl0IG91dC4NCg0KPiANCj4gPiANCj4gPiBTaWduZWQtb2ZmLWJ5OiBK
+dWxpdXMgSGVtYW50aCBQaXR0aSA8anBpdHRpQGNpc2NvLmNvbT4NCj4gPiBBY2tlZC1ieTogUm9t
+YW4gR3VzaGNoaW4gPGd1cm9AZmIuY29tPg0KPiA+IC0tLQ0KPiA+IA0KPiA+IENoYW5nZXMgaW4g
+djI6DQo+ID4gIC0gQWRkZWQgY29tbWVudHMuDQo+ID4gIC0gQWRkZWQgIkFja2VkLWJ5OiBSb21h
+biBHdXNoY2hpbiA8Z3Vyb0BmYi5jb20+Ii4NCj4gPiAtLS0NCj4gPiAgbW0vbWVtY29udHJvbC5j
+IHwgOSArKysrKysrKysNCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDkgaW5zZXJ0aW9ucygrKQ0KPiA+
+IA0KPiA+IGRpZmYgLS1naXQgYS9tbS9tZW1jb250cm9sLmMgYi9tbS9tZW1jb250cm9sLmMNCj4g
+PiBpbmRleCBjZmE2Y2JhZDIxZDUuLjRmMjkzYmY4YzdlZCAxMDA2NDQNCj4gPiAtLS0gYS9tbS9t
+ZW1jb250cm9sLmMNCj4gPiArKysgYi9tbS9tZW1jb250cm9sLmMNCj4gPiBAQCAtMjc0NSw2ICsy
+NzQ1LDE1IEBAIHN0YXRpYyBpbnQgdHJ5X2NoYXJnZShzdHJ1Y3QgbWVtX2Nncm91cA0KPiA+ICpt
+ZW1jZywgZ2ZwX3QgZ2ZwX21hc2ssDQo+ID4gICAgICAgICBpZiAoZmF0YWxfc2lnbmFsX3BlbmRp
+bmcoY3VycmVudCkpDQo+ID4gICAgICAgICAgICAgICAgIGdvdG8gZm9yY2U7DQo+ID4gDQo+ID4g
+KyAgICAgICAvKg0KPiA+ICsgICAgICAgICogV2UgZmFpbGVkIHRvIGNoYXJnZSBldmVuIGFmdGVy
+IHJldHJpZXMsIGdpdmUgb29tX3JlYXBlcg0KPiA+IG9yDQo+ID4gKyAgICAgICAgKiBvdGhlciBw
+cm9jZXNzIGEgY2hhbmdlIHRvIG1ha2Ugc29tZSBmcmVlIHBhZ2VzLg0KPiA+ICsgICAgICAgICoN
+Cj4gPiArICAgICAgICAqIE9uIG5vbi1wcmVlbXB0aXZlLCBOb24tU01QIHN5c3RlbSwgdGhpcyBp
+cyBjcml0aWNhbCwNCj4gPiBlbHNlDQo+ID4gKyAgICAgICAgKiB3ZSBrZWVwIHJldHJ5aW5nIHdp
+dGggbm8gc3VjY2VzcywgZm9yZXZlci4NCj4gPiArICAgICAgICAqLw0KPiA+ICsgICAgICAgY29u
+ZF9yZXNjaGVkKCk7DQo+ID4gKw0KPiA+ICAgICAgICAgLyoNCj4gPiAgICAgICAgICAqIGtlZXAg
+cmV0cnlpbmcgYXMgbG9uZyBhcyB0aGUgbWVtY2cgb29tIGtpbGxlciBpcyBhYmxlIHRvDQo+ID4g
+bWFrZQ0KPiA+ICAgICAgICAgICogYSBmb3J3YXJkIHByb2dyZXNzIG9yIGJ5cGFzcyB0aGUgY2hh
+cmdlIGlmIHRoZSBvb20NCj4gPiBraWxsZXINCj4gPiAtLQ0KPiA+IDIuMTcuMQ0KPiA+IA0KPiA+
+IA0K
