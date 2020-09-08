@@ -2,105 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EF38261778
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:35:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B14B126177B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:35:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729097AbgIHRfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 13:35:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56688 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731592AbgIHQPM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:15:12 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10F3FC0617BD
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 05:18:04 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id m8so4625675pgi.3
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 05:18:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sslab.ics.keio.ac.jp; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=I6s+zS63VgYflu2ysM9jwbSThCH0cW5s0L4jq3r9DZY=;
-        b=Txqe4FtqMIs8NZBjP01sirvZGuIa1rODpnwJ4t+6Jvxs8S+QJiOYxFcFDD2chZ9RGX
-         z2KVXcdeiq7bHPzvvR/0bhlfIXFOT4F7DgjtFmjCYOwIewId04lQtA770Naj9UdbrFdO
-         1hcxMQxKIxz4M/HGN0dBfBezknP7m7wfI/NO4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=I6s+zS63VgYflu2ysM9jwbSThCH0cW5s0L4jq3r9DZY=;
-        b=ZSPexkOMaVmF5ddkRk3vyibf+wDi97xBYXOX+MrgF5TKqoKLs0mpZ088+7IJhMeCzL
-         VEEQObwEAymcm1SIxCkclDOEhMuKGwA26zNUfVqtR9h6j3L6o7kmmwRHTJfLkrK3G3DE
-         CTw+3uIM28g1mtdVnqKx1TsxABFqt+nzUevesI2HTAr92XbvUiFNb1O59q4ZVmrqNOUQ
-         PbD7D85JWVYdcQCiWDZ0qLFoK5u6S1C+mcIjs/AI5bBRf/RE6wWTt9h9TUlU1ZohmTBU
-         /bBric91X+rGAEbtZtYe+po24HL8Sa/+zPypVBbML5rtY11a3D1XnNil7LwZr/su0HGE
-         hk4A==
-X-Gm-Message-State: AOAM531HCCx4jgjMlKWEH7nA/QhQ3+wTGXG+rnHozb5ohhaz9HIIl67W
-        rQvyTI0Gfqp1Hb0LMDrDeuZ827XKEit5MYSenao=
-X-Google-Smtp-Source: ABdhPJwqcY4s0ngn/4xvoWW8TRtIFUj78DiGmg9n3J0eITWmhZYcAu1ac5FpbNUjo94SZis9zTr01g==
-X-Received: by 2002:a17:902:d714:b029:d0:cbe1:e7a2 with SMTP id w20-20020a170902d714b02900d0cbe1e7a2mr941003ply.19.1599567483478;
-        Tue, 08 Sep 2020 05:18:03 -0700 (PDT)
-Received: from brooklyn.i.sslab.ics.keio.ac.jp (sslab-relay.ics.keio.ac.jp. [131.113.126.173])
-        by smtp.googlemail.com with ESMTPSA id a138sm19084597pfd.19.2020.09.08.05.18.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Sep 2020 05:18:02 -0700 (PDT)
-From:   Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
-Cc:     keitasuzuki.park@sslab.ics.keio.ac.jp,
-        takafumi@sslab.ics.keio.ac.jp,
-        Arend van Spriel <arend.vanspriel@broadcom.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Chi-Hsien Lin <chi-hsien.lin@cypress.com>,
-        Wright Feng <wright.feng@cypress.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org,
-        brcm80211-dev-list.pdl@broadcom.com,
-        brcm80211-dev-list@cypress.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] brcmsmac: fix memory leak in wlc_phy_attach_lcnphy
-Date:   Tue,  8 Sep 2020 12:17:41 +0000
-Message-Id: <20200908121743.23108-1-keitasuzuki.park@sslab.ics.keio.ac.jp>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <2a11074f-e155-0af1-aa37-108c8cd120e7@broadcom.com>
-References: <2a11074f-e155-0af1-aa37-108c8cd120e7@broadcom.com>
-To:     unlisted-recipients:; (no To-header on input)
+        id S1731319AbgIHRfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 13:35:34 -0400
+Received: from mail1.perex.cz ([77.48.224.245]:41554 "EHLO mail1.perex.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731167AbgIHQOs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 12:14:48 -0400
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+        by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 897DAA004B;
+        Tue,  8 Sep 2020 14:26:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 897DAA004B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+        t=1599567991; bh=EVRNY2gK6A7LOpNzRvy3Ck7Aj7kox9AUX6fO/yDNTq8=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=De7j9nEzdfErbkFza6Sg2BPf8N0KjXLe73YoKCVVI1bq4z89Z7u9anFWzHcenzEM1
+         sgjtsmR9XxNqbJUOPzyTer6ltVhL4jsL2fsNbFVG/Nqz/vUgnT9zWieI7x6zhzsk8w
+         ZLWpe5Qf4DkDJiLoihWjxgciLu7l5Y8JF/PV4YXc=
+Received: from p1gen2.perex-int.cz (unknown [192.168.100.98])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: perex)
+        by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+        Tue,  8 Sep 2020 14:26:14 +0200 (CEST)
+Subject: Re: [PATCH v3 0/3] ASoC: Add sdw stream operations to dailink ops.
+To:     Bard Liao <yung-chuan.liao@linux.intel.com>,
+        alsa-devel@alsa-project.org, vkoul@kernel.org
+Cc:     pierre-louis.bossart@linux.intel.com, vinod.koul@linaro.org,
+        tiwai@suse.de, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, ranjani.sridharan@linux.intel.com,
+        hui.wang@canonical.com, broonie@kernel.org,
+        srinivas.kandagatla@linaro.org, jank@cadence.com,
+        mengdong.lin@intel.com, sanyog.r.kale@intel.com,
+        rander.wang@linux.intel.com, bard.liao@intel.com
+References: <20200904182854.3944-1-yung-chuan.liao@linux.intel.com>
+From:   Jaroslav Kysela <perex@perex.cz>
+Message-ID: <46f44acb-7d4b-965c-a6e2-98a4da79e6cc@perex.cz>
+Date:   Tue, 8 Sep 2020 14:26:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20200904182854.3944-1-yung-chuan.liao@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When wlc_phy_txpwr_srom_read_lcnphy fails in wlc_phy_attach_lcnphy,
-the allocated pi->u.pi_lcnphy is leaked, since struct brcms_phy will be
-freed in the caller function.
+Dne 04. 09. 20 v 20:28 Bard Liao napsal(a):
+> Sdw stream operation APIs can be called once per stream. Move these
+> operations to dailink ops. The linked series is "soundwire: Remove sdw
+> stream operations from Intel soundwire dai".
+> 
+> Reviewed-by: Vinod Koul <vkoul@kernel.org>
+> 
+> Changes in v3:
+>  - s/ASOC/ASoC
+> 
+> Pierre-Louis Bossart (3):
+>   ASoC: soc-dai: clarify return value for get_sdw_stream()
+>   ASoC: Intel: sof_sdw: add dailink .trigger callback
+>   ASoC: Intel: sof_sdw: add dailink .prepare and .hw_free callback
+> 
+>  include/sound/soc-dai.h          |  3 +-
+>  sound/soc/intel/boards/sof_sdw.c | 81 ++++++++++++++++++++++++++++++++
+>  2 files changed, 83 insertions(+), 1 deletion(-)
+> 
 
-Fix this by calling wlc_phy_detach_lcnphy in the error handler of
-wlc_phy_txpwr_srom_read_lcnphy before returning.
+This patchset depends on the SoundWire patchset
+  "[PATCH v2 0/4] soundwire: Remove sdw stream operations from Intel" and
+cannot be used standalone. I believe that one maintainer should accept it or
+there should be a co-ordination between Mark and Vinod to push this in sync.
+We should really settle, how to accept such changes. I believe that Vinod
+should take it with the ack from Mark for this case. Please, don't require to
+split changes which depends on each other.
 
-Signed-off-by: Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
----
-changelog(v2): change call from wlc_phy_detach_lcnphy() to kfree()
+For all above patches (I tested them):
 
- .../net/wireless/broadcom/brcm80211/brcmsmac/phy/phy_lcn.c    | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Acked-by: Jaroslav Kysela <perex@perex.cz>
 
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmsmac/phy/phy_lcn.c b/drivers/net/wireless/broadcom/brcm80211/brcmsmac/phy/phy_lcn.c
-index 7ef36234a25d..66797dc5e90d 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmsmac/phy/phy_lcn.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmsmac/phy/phy_lcn.c
-@@ -5065,8 +5065,10 @@ bool wlc_phy_attach_lcnphy(struct brcms_phy *pi)
- 	pi->pi_fptr.radioloftget = wlc_lcnphy_get_radio_loft;
- 	pi->pi_fptr.detach = wlc_phy_detach_lcnphy;
- 
--	if (!wlc_phy_txpwr_srom_read_lcnphy(pi))
-+	if (!wlc_phy_txpwr_srom_read_lcnphy(pi)) {
-+		kfree(pi->u.pi_lcnphy);
- 		return false;
-+	}
- 
- 	if (LCNREV_IS(pi->pubpi.phy_rev, 1)) {
- 		if (pi_lcn->lcnphy_tempsense_option == 3) {
 -- 
-2.17.1
-
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
