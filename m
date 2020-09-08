@@ -2,73 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C210260AF0
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 08:27:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5614A260AF4
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 08:28:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729094AbgIHG05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 02:26:57 -0400
-Received: from sauhun.de ([88.99.104.3]:33256 "EHLO pokefinder.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728917AbgIHG04 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 02:26:56 -0400
-Received: from localhost (p5486cc72.dip0.t-ipconnect.de [84.134.204.114])
-        by pokefinder.org (Postfix) with ESMTPSA id 2D4CF2C0356;
-        Tue,  8 Sep 2020 08:26:54 +0200 (CEST)
-Date:   Tue, 8 Sep 2020 08:26:51 +0200
-From:   Wolfram Sang <wsa@the-dreams.de>
-To:     Tali Perry <tali.perry1@gmail.com>
-Cc:     kunyi@google.com, xqiu@google.com, benjaminfair@google.com,
-        avifishman70@gmail.com, joel@jms.id.au, tmaimon77@gmail.com,
-        linux-i2c@vger.kernel.org, openbmc@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] i2c: npcm7xx: Fix timeout calculation
-Message-ID: <20200908062651.GA1019@ninjato>
-References: <20200830213121.239533-1-tali.perry1@gmail.com>
+        id S1729005AbgIHG2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 02:28:01 -0400
+Received: from mail.windriver.com ([147.11.1.11]:40652 "EHLO
+        mail.windriver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728115AbgIHG2B (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 02:28:01 -0400
+Received: from ALA-HCB.corp.ad.wrs.com (ala-hcb.corp.ad.wrs.com [147.11.189.41])
+        by mail.windriver.com (8.15.2/8.15.2) with ESMTPS id 0886ROT5009147
+        (version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL);
+        Mon, 7 Sep 2020 23:27:25 -0700 (PDT)
+Received: from pek-qzhang2-d1.wrs.com (128.224.162.183) by
+ ALA-HCB.corp.ad.wrs.com (147.11.189.41) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 7 Sep 2020 23:27:11 -0700
+From:   <qiang.zhang@windriver.com>
+To:     <tglx@linutronix.de>, <longman@redhat.com>, <mingo@kernel.org>,
+        <elver@google.com>
+CC:     <linux-kernel@vger.kernel.org>
+Subject: [PATCH v3] debugobjects: install CPU hotplug callback
+Date:   Tue, 8 Sep 2020 14:27:09 +0800
+Message-ID: <20200908062709.11441-1-qiang.zhang@windriver.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="bg08WKrSYDhXBjb5"
-Content-Disposition: inline
-In-Reply-To: <20200830213121.239533-1-tali.perry1@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Zqiang <qiang.zhang@windriver.com>
 
---bg08WKrSYDhXBjb5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Due to CPU hotplug, it may never be online after it's offline,
+some objects in percpu pool is never free. in order to avoid
+this happening, install CPU hotplug callback, call this callback
+func to free objects in percpu pool when CPU going offline.
 
-On Mon, Aug 31, 2020 at 12:31:21AM +0300, Tali Perry wrote:
-> timeout_usec value calculation was wrong, the calculated value
-> was in msec instead of usec.
->=20
-> Signed-off-by: Tali Perry <tali.perry1@gmail.com>
-> Reviewed-by: Avi Fishman <avifishman70@gmail.com>
+Signed-off-by: Zqiang <qiang.zhang@windriver.com>
+---
+ v1->v2:
+ Modify submission information.
 
-Applied to for-current, thanks! And thanks for the Fixes-tag, Joel.
+ v2->v3:
+ In CPU hotplug callback func, add clear percpu pool "obj_free" operation.
+ capitalize 'CPU', and use shorter preprocessor sequence.
 
+ include/linux/cpuhotplug.h |  1 +
+ lib/debugobjects.c         | 24 ++++++++++++++++++++++++
+ 2 files changed, 25 insertions(+)
 
---bg08WKrSYDhXBjb5
-Content-Type: application/pgp-signature; name="signature.asc"
+diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
+index 3215023d4852..0c39d57e5342 100644
+--- a/include/linux/cpuhotplug.h
++++ b/include/linux/cpuhotplug.h
+@@ -36,6 +36,7 @@ enum cpuhp_state {
+ 	CPUHP_X86_MCE_DEAD,
+ 	CPUHP_VIRT_NET_DEAD,
+ 	CPUHP_SLUB_DEAD,
++	CPUHP_DEBUG_OBJ_DEAD,
+ 	CPUHP_MM_WRITEBACK_DEAD,
+ 	CPUHP_MM_VMSTAT_DEAD,
+ 	CPUHP_SOFTIRQ_DEAD,
+diff --git a/lib/debugobjects.c b/lib/debugobjects.c
+index fe4557955d97..bb69a02c3e7b 100644
+--- a/lib/debugobjects.c
++++ b/lib/debugobjects.c
+@@ -19,6 +19,7 @@
+ #include <linux/slab.h>
+ #include <linux/hash.h>
+ #include <linux/kmemleak.h>
++#include <linux/cpu.h>
+ 
+ #define ODEBUG_HASH_BITS	14
+ #define ODEBUG_HASH_SIZE	(1 << ODEBUG_HASH_BITS)
+@@ -433,6 +434,24 @@ static void free_object(struct debug_obj *obj)
+ 	}
+ }
+ 
++#ifdef CONFIG_HOTPLUG_CPU
++static int object_cpu_offline(unsigned int cpu)
++{
++	struct debug_percpu_free *percpu_pool;
++	struct hlist_node *tmp;
++	struct debug_obj *obj;
++
++	percpu_pool = per_cpu_ptr(&percpu_obj_pool, cpu);
++	hlist_for_each_entry_safe(obj, tmp, &percpu_pool->free_objs, node) {
++		hlist_del(&obj->node);
++		kmem_cache_free(obj_cache, obj);
++	}
++	percpu_pool->obj_free = 0;
++
++	return 0;
++}
++#endif
++
+ /*
+  * We run out of memory. That means we probably have tons of objects
+  * allocated.
+@@ -1367,6 +1386,11 @@ void __init debug_objects_mem_init(void)
+ 	} else
+ 		debug_objects_selftest();
+ 
++#ifdef CONFIG_HOTPLUG_CPU
++	cpuhp_setup_state_nocalls(CPUHP_DEBUG_OBJ_DEAD, "object:offline", NULL,
++					object_cpu_offline);
++#endif
++
+ 	/*
+ 	 * Increase the thresholds for allocating and freeing objects
+ 	 * according to the number of possible CPUs available in the system.
+-- 
+2.17.1
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl9XJCcACgkQFA3kzBSg
-KbZzcg//RR/qIunHGIrcDr5aZXfWTjr8u0f3ccyaBELUPk6kSzUqBufOcKoeRk19
-dN74rzsCQr5egfumVCZCl1JP+269Hjtf7ISd4jBU5pJ5R/QovlN6zofK0EZsZJDs
-6RA/wNM4KdzvqDi7IS9FhSL50pQ3M0Bl0o/R42m54qDc75JDXDO3qIRaABAU25Xd
-V6nX2eUK6WLSsz63cM1ndM0VHxrupzj6w90EFTfSNqwx4ft1+tTDG7Z3kdGMcFd4
-F5S0VtPCHMT1Uh+9HR/sk3wUKJHcv6VeU7f/bzus5pGksvX7sRzRq/nXsIVeCZuA
-iAzHBOGSdlv/6UR6WKjPzOW8IDOqxctR7MqjiqzuFXUYo8RHK0WXMs+g4bAXZph1
-i29CJm+il2t+KnUMje9w/S7bPDTPpU949vvYA5tPbTLYjrEhfLL+oAr7szDDbPvT
-tsepc8J5K+rP8GkBGRCfvj4angCuJ6RSihQofwBRHgNh93MVZjQVH9o32Kzn8X9+
-nwYl3DNvmC1Nzhnf01Bfa7dyWzeeLlU8ZBYXLx/yqGIRd7W/61KDVDN7Zcz+yGQ6
-EkBy1Uxabx7JSDsbCC7lqR4JhPyEbaCwWiUs1amEubZc8VDibrtp1EN2QeHSopbz
-BD3pfGjkLmr8rFKfea/ea+wmmI/gW8fQGfcVZfl4kpZReRRsYDE=
-=ahmh
------END PGP SIGNATURE-----
-
---bg08WKrSYDhXBjb5--
