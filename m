@@ -2,95 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE7472614DC
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:39:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F1852615D4
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:57:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732037AbgIHQis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 12:38:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60650 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732077AbgIHQhb (ORCPT
+        id S1731885AbgIHQUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 12:20:51 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:17062 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730607AbgIHQJr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:37:31 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12151C06123C;
-        Tue,  8 Sep 2020 06:29:43 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id a15so20117945ljk.2;
-        Tue, 08 Sep 2020 06:29:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Cq1prsdRfOht5c05daVafBXnW9LTyhWABmk1e7DFMIM=;
-        b=Oqb+Elphm0C2XxnZ9roaes0ld62J43TA45pqI7VsaHTAJ+AQ56X1jVAcE4hejh+V7D
-         x/pabrk7aD2myGe7XhaiRF6lRUpol3RpZlWzio7FPgLTWGphNd+nmHihC5FjM/HwcUmz
-         9xIWUMJ0FHG6lc/clAQa1WH8XXXjb/+QElA2InDqxdy9E4XNWuHLSnatBA7x3GFCsw4R
-         lZqH14bh83SeEVAQ4GpOZscGxrjOb9CPbPCtuUHQJ2WFum9WprPa/yFxCXQzR+IKavX/
-         K+1TojMS1JgGhD8QC7y0GZAaGjhyGtIyUKu4El9vUIDNo1yNnB57LlJlJkfveif+sDZ9
-         IoMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Cq1prsdRfOht5c05daVafBXnW9LTyhWABmk1e7DFMIM=;
-        b=Q8rxzUWnNslIZd8RRvfmiJQtAfb2P4aNhB5sBW+TOGOaKA2B+1V9IS3eacZKG8hoK5
-         kRfg0ET1irvLuFnoNrqCdSQgZU28KZuEhSfRoEAGyby6XNgIRfA2GdY0RvxqN5Ll569J
-         l8yWPKQaujf3YMecTbaD5M7fVOZOrGAirP/I4c2ExAJByYtv9pYI8WsYuCDKwHUxusbP
-         dD512BB2Fc68xnEsk8Br1uKQb7Jz+zGHgjfLF0YR5PMhlM/1dqE3sVkGgzFdsAvVhM6L
-         ut/kRaiTk768BaHHVl3ZWEiTiygKRLzv/18JSaxCxhzvCWJ7KFUzmDOHKidptuKoSAL4
-         mhlA==
-X-Gm-Message-State: AOAM531Zm3vCnwpTSCEFr0TVAyw8rTfkwJn0JXlfK1YzPB8mCe9VtsNA
-        uDK7mEf7VwoJEuG1LkwtYG4cN3UIopk=
-X-Google-Smtp-Source: ABdhPJy4vXFbbvEAcQndwdyrgn+ypU1IspP4I4QXUV1yNMXljRxJ+3oDr7pn8zcrYWvgXKdn7tlNzw==
-X-Received: by 2002:a2e:9b02:: with SMTP id u2mr4559039lji.303.1599571781360;
-        Tue, 08 Sep 2020 06:29:41 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
-        by smtp.googlemail.com with ESMTPSA id w4sm10392751lfq.75.2020.09.08.06.29.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Sep 2020 06:29:40 -0700 (PDT)
-Subject: Re: [PATCH v6 25/35] i2c: tegra: Factor out error recovery from
- tegra_i2c_xfer_msg()
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        linux-tegra@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20200908021021.9123-1-digetx@gmail.com>
- <20200908021021.9123-26-digetx@gmail.com>
- <CAHp75Vehn_19KA3DyshXd8ASWZN2CbyFdDiUHLMnB=qd7YpTaA@mail.gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <7aba3e7c-e641-acbd-07e9-e4d02c7ecf8b@gmail.com>
-Date:   Tue, 8 Sep 2020 16:29:40 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 8 Sep 2020 12:09:47 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 088DVXE9184251;
+        Tue, 8 Sep 2020 09:41:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=b3/S8z+XcaaneUPd0EkP9D6v+v/IBiNDUrZwO6+VVqU=;
+ b=PxQ3DtuIBtdFPySbUQO+rKJRdIUg9KQ8b2RVHhIxmeJ3XpQYz57ze6WAW7AHBAD2EqMU
+ ho5QC+zU9Q6L54085XtrhluZ6ynYToJU0MIf9HoQ9t9OlVx3ZnJ+3LIdd9dytpAplxnc
+ 4zfD+xMMhALdVm0RE0z78h25N7F8JGBLBtjgaaeBDN0cXkdwJKU/r8Zx/+W1ZlnRDwal
+ EvAZPmsmCfEKf9QOt6zOlkXdduHB6AUiL8JaN0iBHdO5zDxxO+DQqkN/Uj9qrliDY8G7
+ THM84qhlk79sI4/1wqYkLV+wigcbB5XEIiH/IECfucDCbA0A0f3yyLenDhYOo2jSzxgp zQ== 
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 33eat2gk3x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 08 Sep 2020 09:41:50 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 088DcMhS019719;
+        Tue, 8 Sep 2020 13:41:48 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma04ams.nl.ibm.com with ESMTP id 33c2a8bgev-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 08 Sep 2020 13:41:48 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 088Dfkjf36897102
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 8 Sep 2020 13:41:46 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1D4CC4C059;
+        Tue,  8 Sep 2020 13:41:46 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D07984C040;
+        Tue,  8 Sep 2020 13:41:45 +0000 (GMT)
+Received: from osiris (unknown [9.171.47.162])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Tue,  8 Sep 2020 13:41:45 +0000 (GMT)
+Date:   Tue, 8 Sep 2020 15:41:44 +0200
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     peterz@infradead.org
+Cc:     linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        rafael.j.wysocki@intel.com, svens@linux.ibm.com
+Subject: Re: [PATCH] s390/idle: Fix suspicious RCU usage
+Message-ID: <20200908134144.GH14136@osiris>
+References: <20200908133031.GT1362448@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <CAHp75Vehn_19KA3DyshXd8ASWZN2CbyFdDiUHLMnB=qd7YpTaA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200908133031.GT1362448@hirez.programming.kicks-ass.net>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-08_06:2020-09-08,2020-09-08 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
+ adultscore=0 mlxlogscore=863 priorityscore=1501 impostorscore=0
+ lowpriorityscore=0 suspectscore=3 mlxscore=0 bulkscore=0 spamscore=0
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009080124
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-08.09.2020 11:49, Andy Shevchenko пишет:
-> On Tue, Sep 8, 2020 at 5:11 AM Dmitry Osipenko <digetx@gmail.com> wrote:
->>
->> Factor out error recovery code from tegra_i2c_xfer_msg() in order to
->> make this function easier to read and follow.
+On Tue, Sep 08, 2020 at 03:30:31PM +0200, peterz@infradead.org wrote:
 > 
-> Ordering issue.
-> You have a patch that replaces int -> unsigned int or so, which
-> obviously has less impact (severity) than this one.
-
-I guess you meant s/less/more/.
-
-> Can you revisit the entire series and rethink ordering one more time?
+> After commit eb1f00237aca ("lockdep,trace: Expose tracepoints") the
+> lock tracepoints are visible to lockdep and RCU-lockdep is finding a
+> bunch more RCU violations that were previously hidden.
 > 
+> Switch the idle->seqcount over to using raw_write_*() to avoid the
+> lockdep annotation and thus the lock tracepoints.
+> 
+> Reported-by: Guenter Roeck <linux@roeck-us.net>
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> ---
+>  arch/s390/kernel/idle.c |    5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
 
-I'll try to improve the ordering a bit more, thanks.
+Applied, thank you!
