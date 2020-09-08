@@ -2,235 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 549D1261427
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:07:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 306E726140B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:01:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731260AbgIHQHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 12:07:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53828 "EHLO
+        id S1731100AbgIHQBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 12:01:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730979AbgIHP5X (ORCPT
+        with ESMTP id S1730940AbgIHPyo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:57:23 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4B48C06135A;
-        Tue,  8 Sep 2020 05:35:08 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id a12so15758670eds.13;
-        Tue, 08 Sep 2020 05:35:08 -0700 (PDT)
+        Tue, 8 Sep 2020 11:54:44 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4752CC061244
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 06:11:34 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id k25so10836066qtu.4
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 06:11:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=7ODE/jSoFoT1RI4D1U/3TkgwGZ8r03CJLgahQ6P96U4=;
-        b=CS2hv5JAC4mpz/2lV43ML1i02t81QdOqDFvelJkUXjnVLSJPUHyQaLEcJWPTgvCSfk
-         mbPH8SttCaBK30PHUvaRM4UdUgm45nO0UqolJUHsaIiCUPAqW78HBxlzDFQO+UVVzEfM
-         Bn3zuXTchdcW6ei46BAgGWuKQi9nYAxzmXSUKXUvFXtiU5E9XipilzjT46ZnW4+ctiZM
-         FtvjPNRQsJJ0ucvT+3LzFwwB03erUWVIsfG3nGO3JU3X2y2+Uy7WmBOzlSaPWfxhz6VM
-         APCMWvt2OmHngHAQ2wesYCg7E0PtZI5+JexgWa95yDr6WzHv6zHCkRHl4f25qfVVHMZF
-         XqgQ==
+        d=marek-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=lTBu5eojvtH3Cg+6qbTtorcKtib9FdmKFYP+6u1ZlTM=;
+        b=AvXioZY1lrRFV29Rd2bQ+oc4u+i4TYWLNkpUwEfCglPKplw2Peh96WxLh8HLEfOPwl
+         3eKVoXUefH+2pse10GxAwhD8vKo1iM5YDgnqKsOJnVJ511Hs6Ka4cd6ckiexxEbOmz7+
+         EJVN/uvWsKXCp3mcPPOQFFQFc/aIYAj8sV/0u/XW9oCCRuJ02rcWOuLm4KCY/UorBWxV
+         ii+HldpZFmE1g9k5anDMfc/Xn5Rfb30DchkgRbcEHLcj+JJllzamtml4CtPTYV07O0W4
+         sDSCvDlJXmQtA8HEbcn9CkRhgVPrWwIfoeQ4GQBFejCbKgm9VagHSYYaOTzfC9mTRr9U
+         G3Zg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=7ODE/jSoFoT1RI4D1U/3TkgwGZ8r03CJLgahQ6P96U4=;
-        b=f49Jer/5k7izE0WTmqTiQg0+MzithQbP1BD1pZR33oJIOjYWQQK9mRmOp7rdhUoPLj
-         whmtZF22rXGcCQbj+AP0WLOw1rMaK9kiMbcjsJdB7bIhUYx07Bbvm2jXGgDFVOAbE343
-         8kVA1EdN06Bzik1xOhqG1pLGWJ7yDpbyEy1iWF/CojO6H7FUs5UHe4k4YmHgz7oISDnZ
-         2YWM4Tl3H/4/bcZ05uDnzE4cftAjsAc1kI+sDAco3kLFzk7WDdH6kk6H0CjPGNhDE3bD
-         utkDHKTApcTy3f8X7+JLfEBrw+qZdduLTcBrrJi7nqDjrbQ2Yeys4cxllOaCDuOBbVNb
-         Oiiw==
-X-Gm-Message-State: AOAM5315rAiZiGg5XMq0aUVobhz8CJ1VbhCOoKIVKtQiXYHsfKQlFAUO
-        ae30aOQM6pYfBYSy7JfBZw0+Gfw/yMa+4w==
-X-Google-Smtp-Source: ABdhPJwMiNn1XGUvLXepu/tpSDLMSP9mR3gMF74QnCG8MATQcekKKPhXTyWT/Rko/faqKJfFztxzdQ==
-X-Received: by 2002:a05:6402:b1a:: with SMTP id bm26mr26953000edb.209.1599568507189;
-        Tue, 08 Sep 2020 05:35:07 -0700 (PDT)
-Received: from felia.fritz.box ([2001:16b8:2d8b:1700:7cee:a9ea:bd04:6924])
-        by smtp.gmail.com with ESMTPSA id x6sm9399939ejf.59.2020.09.08.05.35.06
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=lTBu5eojvtH3Cg+6qbTtorcKtib9FdmKFYP+6u1ZlTM=;
+        b=R46RTw2axgXx6c7GNg4OZwliaxidXGhAMpZ5Xg0PFtkNIixATAtjvgbq+KOxv1yNGv
+         7fvRsOAkUPIoNMjUgGt+8deSykZKIKN0yrCYbobeGFgJbpHykGc4LJY4H7TYVVePiT50
+         cYqlRtjUM6thh2E128mWudpxVOF5aRjx2RcjBDGsp5IGFmPSp7kvgUS/dQwWTaDq1RtI
+         xW1jIZ+smd6aHWCJtHtFHlxcWAyHYqXS427X3dcOasCxVC2/9GbYHIR4oZ4ynN2Srp37
+         Vkfp5pmdYrCURIXfT8DtAUoK/2+1uZxMI+lhQ2UK3hRzOoIUatpNenW8bARhwHEncvYC
+         zneg==
+X-Gm-Message-State: AOAM531Gqc133EI8QFoLAtF4aV4cO5kGBO7rVXHIKUlKvKKtBEJyUxwB
+        wrm3YnYisKUcjMTIGgT41Dujhg==
+X-Google-Smtp-Source: ABdhPJwWqntjWp9qEhGaNDY0DcpRw1SyTeDt4rha85EL0qldShYjZZny052WkxQuiCgVT8FP4un+Vg==
+X-Received: by 2002:ac8:4d05:: with SMTP id w5mr16846175qtv.339.1599570693504;
+        Tue, 08 Sep 2020 06:11:33 -0700 (PDT)
+Received: from localhost.localdomain ([147.253.86.153])
+        by smtp.gmail.com with ESMTPSA id m196sm13394069qke.87.2020.09.08.06.11.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Sep 2020 05:35:06 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Igor Russkikh <irusskikh@marvell.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-spdx@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH 0/5 REBASED to v5.9-rc4] Qlogic drivers: Convert to SPDX license identifiers
-Date:   Tue,  8 Sep 2020 14:34:46 +0200
-Message-Id: <20200908123451.7215-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 08 Sep 2020 06:11:32 -0700 (PDT)
+From:   Jonathan Marek <jonathan@marek.ca>
+To:     linux-arm-msm@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2 3/3] misc: fastrpc: add ioctl for attaching to sensors pd
+Date:   Tue,  8 Sep 2020 09:10:11 -0400
+Message-Id: <20200908131013.19630-4-jonathan@marek.ca>
+X-Mailer: git-send-email 2.26.1
+In-Reply-To: <20200908131013.19630-1-jonathan@marek.ca>
+References: <20200908131013.19630-1-jonathan@marek.ca>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Igor, dear Thomas, dear Greg,
+Initializing sensors requires attaching to pd 2. Add an ioctl for that.
 
-this is the patchset:
+This corresponds to FASTRPC_INIT_ATTACH_SENSORS in the downstream driver.
 
-  https://lore.kernel.org/linux-spdx/20190606205526.447558989@linutronix.de/
+Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+---
+ drivers/misc/fastrpc.c      | 9 ++++++---
+ include/uapi/misc/fastrpc.h | 1 +
+ 2 files changed, 7 insertions(+), 3 deletions(-)
 
-rebased to v5.9-rc4, hopefully ready to apply to the current spdx-tree.
-
-The rebase required manual work for adjusting the diff for MAINTAINERS on
-PATCH 2/5 and 5/5, and PATCH 4/5 was adjusted to the file moving in commit
-955315b0dc8c ("qlge: Move drivers/net/ethernet/qlogic/qlge/ to
-drivers/staging/qlge/").
-
-The rest was rebased automatically and I compared the patches afterwards
-against the original patchset to make sure nothing disturbing slipped in.
-
-As I did not make any changes in my rebase other than adjusting the
-location the diffs apply to, I also added the Reviewed-by tags from Richard
-Fontana, Jilayne Lovejoy and Alexios Zavras from the original patchset,
-and finally added my Sign-off to those patches.
-
-Igor, can you please ack these patches?
-
-Igor, please also let us know:
-  A. if you will pick them up and let them travel through your tree, or
-  B. if the spdx maintainers shall pick them up and they shall route them
-     directly to Linus.
-
-Thomas, I hope it is fine for you to pick up your commits, rebase them
-and add the according tags from the previous patchset.
-
-For reference, in his original cover letter, Thomas Gleixner wrote:
-
-In our effort to clean up the license situation of the Linux kernel [1]
-we've identified five Qlogic specific license files which reside in the
-Documentation directory. Four of them contain a full copy of the GPLv2
-license text and one (LICENSE.qla3xxx) contains a proprietary license for a
-firmware binary which is not distributed with the Linux kernel. The latter
-is a leftover from the old out of tree tarball which contained the firmware
-binary along with the driver source. The same notice was in the qla2/4xxx
-license files, but got cleaned up quite some time ago. Seems the qla3xxx
-one was missed.
-
-The following patch series replaces the license files with a proper SPDX
-license identifier in the source files which today reference the license
-files. There is no information lost because the copyright notices are in
-the source files already and the GPLv2 license text is in the kernels
-LICENSES directory. The qla3xxx cleanup removes the firmware license notice
-as well because it is pointless in context of the kernel. See the
-individual changelogs for detailed information about each driver/license
-file.
-
-Please support our efforts to make the Linux kernels licensing clean and
-compliance friendly. If you have questions feel free to ask or contact your
-legal departement. In case your legal departement has questions or issues,
-please direct them to the linux-spdx mailing list where these issues are
-discussed.
-
-If you (and/or your legal departement) agree with these changes, then
-please either reply with a Reviewed-by and we route them directly to Linus
-or pick them up individually through your trees and let as know that they
-are en route.
-
-
-For your conveniance the patches are also available from git:
-
-   git.kernel.org/pub/scm/linux/kernel/git/tglx/linux-spdx.git qlogic
-
-Thanks,
-
-	tglx
-
-[1] https://lkml.kernel.org/r/alpine.DEB.2.21.1905062040530.3334@nanos.tec.linutronix.de
-
-
-Thomas Gleixner (5):
-  scsi/qla4xxx: Convert to SPDX license identifiers
-  scsi/qla2xxx: Convert to SPDX license identifiers
-  net/qlcnic: Convert to SPDX license identifiers
-  net/qlge: Convert to SPDX license identifiers
-  net/qla3xxx: Convert to SPDX license identifiers
-
- .../device_drivers/qlogic/LICENSE.qla3xxx     |  46 ---
- .../device_drivers/qlogic/LICENSE.qlcnic      | 288 -----------------
- .../device_drivers/qlogic/LICENSE.qlge        | 288 -----------------
- Documentation/scsi/LICENSE.qla2xxx            | 290 ------------------
- Documentation/scsi/LICENSE.qla4xxx            | 289 -----------------
- MAINTAINERS                                   |   3 -
- drivers/net/ethernet/qlogic/qla3xxx.c         |   3 +-
- drivers/net/ethernet/qlogic/qla3xxx.h         |   3 +-
- drivers/net/ethernet/qlogic/qlcnic/qlcnic.h   |   3 +-
- .../ethernet/qlogic/qlcnic/qlcnic_83xx_hw.c   |   3 +-
- .../ethernet/qlogic/qlcnic/qlcnic_83xx_hw.h   |   3 +-
- .../ethernet/qlogic/qlcnic/qlcnic_83xx_init.c |   3 +-
- .../ethernet/qlogic/qlcnic/qlcnic_83xx_vnic.c |   3 +-
- .../net/ethernet/qlogic/qlcnic/qlcnic_ctx.c   |   3 +-
- .../net/ethernet/qlogic/qlcnic/qlcnic_dcb.c   |   3 +-
- .../net/ethernet/qlogic/qlcnic/qlcnic_dcb.h   |   3 +-
- .../ethernet/qlogic/qlcnic/qlcnic_ethtool.c   |   3 +-
- .../net/ethernet/qlogic/qlcnic/qlcnic_hdr.h   |   3 +-
- .../net/ethernet/qlogic/qlcnic/qlcnic_hw.c    |   3 +-
- .../net/ethernet/qlogic/qlcnic/qlcnic_hw.h    |   3 +-
- .../net/ethernet/qlogic/qlcnic/qlcnic_init.c  |   3 +-
- .../net/ethernet/qlogic/qlcnic/qlcnic_io.c    |   3 +-
- .../net/ethernet/qlogic/qlcnic/qlcnic_main.c  |   3 +-
- .../ethernet/qlogic/qlcnic/qlcnic_minidump.c  |   3 +-
- .../net/ethernet/qlogic/qlcnic/qlcnic_sriov.h |   3 +-
- .../qlogic/qlcnic/qlcnic_sriov_common.c       |   3 +-
- .../ethernet/qlogic/qlcnic/qlcnic_sriov_pf.c  |   3 +-
- .../net/ethernet/qlogic/qlcnic/qlcnic_sysfs.c |   3 +-
- drivers/scsi/qla2xxx/qla_attr.c               |   3 +-
- drivers/scsi/qla2xxx/qla_bsg.c                |   3 +-
- drivers/scsi/qla2xxx/qla_bsg.h                |   3 +-
- drivers/scsi/qla2xxx/qla_dbg.c                |   3 +-
- drivers/scsi/qla2xxx/qla_dbg.h                |   3 +-
- drivers/scsi/qla2xxx/qla_def.h                |   3 +-
- drivers/scsi/qla2xxx/qla_dfs.c                |   3 +-
- drivers/scsi/qla2xxx/qla_fw.h                 |   3 +-
- drivers/scsi/qla2xxx/qla_gbl.h                |   3 +-
- drivers/scsi/qla2xxx/qla_gs.c                 |   3 +-
- drivers/scsi/qla2xxx/qla_init.c               |   3 +-
- drivers/scsi/qla2xxx/qla_inline.h             |   3 +-
- drivers/scsi/qla2xxx/qla_iocb.c               |   3 +-
- drivers/scsi/qla2xxx/qla_isr.c                |   3 +-
- drivers/scsi/qla2xxx/qla_mbx.c                |   3 +-
- drivers/scsi/qla2xxx/qla_mid.c                |   3 +-
- drivers/scsi/qla2xxx/qla_mr.c                 |   3 +-
- drivers/scsi/qla2xxx/qla_mr.h                 |   3 +-
- drivers/scsi/qla2xxx/qla_nvme.c               |   3 +-
- drivers/scsi/qla2xxx/qla_nvme.h               |   3 +-
- drivers/scsi/qla2xxx/qla_nx.c                 |   3 +-
- drivers/scsi/qla2xxx/qla_nx.h                 |   3 +-
- drivers/scsi/qla2xxx/qla_nx2.c                |   3 +-
- drivers/scsi/qla2xxx/qla_nx2.h                |   3 +-
- drivers/scsi/qla2xxx/qla_os.c                 |   3 +-
- drivers/scsi/qla2xxx/qla_settings.h           |   3 +-
- drivers/scsi/qla2xxx/qla_sup.c                |   3 +-
- drivers/scsi/qla2xxx/qla_tmpl.c               |   3 +-
- drivers/scsi/qla2xxx/qla_tmpl.h               |   3 +-
- drivers/scsi/qla2xxx/qla_version.h            |   3 +-
- drivers/scsi/qla4xxx/ql4_83xx.c               |   3 +-
- drivers/scsi/qla4xxx/ql4_83xx.h               |   3 +-
- drivers/scsi/qla4xxx/ql4_attr.c               |   3 +-
- drivers/scsi/qla4xxx/ql4_bsg.c                |   3 +-
- drivers/scsi/qla4xxx/ql4_bsg.h                |   3 +-
- drivers/scsi/qla4xxx/ql4_dbg.c                |   3 +-
- drivers/scsi/qla4xxx/ql4_dbg.h                |   3 +-
- drivers/scsi/qla4xxx/ql4_def.h                |   3 +-
- drivers/scsi/qla4xxx/ql4_fw.h                 |   3 +-
- drivers/scsi/qla4xxx/ql4_glbl.h               |   3 +-
- drivers/scsi/qla4xxx/ql4_init.c               |   3 +-
- drivers/scsi/qla4xxx/ql4_inline.h             |   3 +-
- drivers/scsi/qla4xxx/ql4_iocb.c               |   3 +-
- drivers/scsi/qla4xxx/ql4_isr.c                |   3 +-
- drivers/scsi/qla4xxx/ql4_mbx.c                |   3 +-
- drivers/scsi/qla4xxx/ql4_nvram.c              |   3 +-
- drivers/scsi/qla4xxx/ql4_nvram.h              |   3 +-
- drivers/scsi/qla4xxx/ql4_nx.c                 |   3 +-
- drivers/scsi/qla4xxx/ql4_nx.h                 |   3 +-
- drivers/scsi/qla4xxx/ql4_os.c                 |   3 +-
- drivers/scsi/qla4xxx/ql4_version.h            |   3 +-
- drivers/staging/qlge/qlge.h                   |   3 +-
- drivers/staging/qlge/qlge_main.c              |   2 +-
- 81 files changed, 75 insertions(+), 1353 deletions(-)
- delete mode 100644 Documentation/networking/device_drivers/qlogic/LICENSE.qla3xxx
- delete mode 100644 Documentation/networking/device_drivers/qlogic/LICENSE.qlcnic
- delete mode 100644 Documentation/networking/device_drivers/qlogic/LICENSE.qlge
- delete mode 100644 Documentation/scsi/LICENSE.qla2xxx
- delete mode 100644 Documentation/scsi/LICENSE.qla4xxx
-
+diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
+index 07b381c042cd..f05f4b5934bd 100644
+--- a/drivers/misc/fastrpc.c
++++ b/drivers/misc/fastrpc.c
+@@ -1281,7 +1281,7 @@ static int fastrpc_dmabuf_alloc(struct fastrpc_user *fl, char __user *argp)
+ 	return 0;
+ }
+ 
+-static int fastrpc_init_attach(struct fastrpc_user *fl)
++static int fastrpc_init_attach(struct fastrpc_user *fl, int pd)
+ {
+ 	struct fastrpc_invoke_args args[1];
+ 	int tgid = fl->tgid;
+@@ -1292,7 +1292,7 @@ static int fastrpc_init_attach(struct fastrpc_user *fl)
+ 	args[0].fd = -1;
+ 	args[0].reserved = 0;
+ 	sc = FASTRPC_SCALARS(FASTRPC_RMID_INIT_ATTACH, 1, 0);
+-	fl->pd = AUDIO_PD;
++	fl->pd = pd;
+ 
+ 	return fastrpc_internal_invoke(fl, true, FASTRPC_INIT_HANDLE,
+ 				       sc, &args[0]);
+@@ -1482,7 +1482,10 @@ static long fastrpc_device_ioctl(struct file *file, unsigned int cmd,
+ 		err = fastrpc_invoke(fl, argp);
+ 		break;
+ 	case FASTRPC_IOCTL_INIT_ATTACH:
+-		err = fastrpc_init_attach(fl);
++		err = fastrpc_init_attach(fl, AUDIO_PD);
++		break;
++	case FASTRPC_IOCTL_INIT_ATTACH_SNS:
++		err = fastrpc_init_attach(fl, SENSORS_PD);
+ 		break;
+ 	case FASTRPC_IOCTL_INIT_CREATE:
+ 		err = fastrpc_init_create_process(fl, argp);
+diff --git a/include/uapi/misc/fastrpc.h b/include/uapi/misc/fastrpc.h
+index de31f0bd4779..0a89f95463f6 100644
+--- a/include/uapi/misc/fastrpc.h
++++ b/include/uapi/misc/fastrpc.h
+@@ -12,6 +12,7 @@
+ #define FASTRPC_IOCTL_INIT_CREATE	_IOWR('R', 5, struct fastrpc_init_create)
+ #define FASTRPC_IOCTL_MMAP		_IOWR('R', 6, struct fastrpc_req_mmap)
+ #define FASTRPC_IOCTL_MUNMAP		_IOWR('R', 7, struct fastrpc_req_munmap)
++#define FASTRPC_IOCTL_INIT_ATTACH_SNS	_IO('R', 8)
+ 
+ struct fastrpc_invoke_args {
+ 	__u64 ptr;
 -- 
-2.17.1
+2.26.1
 
