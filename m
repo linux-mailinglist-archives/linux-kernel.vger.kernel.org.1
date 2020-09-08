@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C96D261460
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:18:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81751261461
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:18:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731708AbgIHQSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 12:18:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55374 "EHLO mail.kernel.org"
+        id S1731596AbgIHQSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 12:18:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53448 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731297AbgIHQIC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:08:02 -0400
+        id S1731308AbgIHQIV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 12:08:21 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BE6FD23F33;
-        Tue,  8 Sep 2020 15:48:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F33C623F5A;
+        Tue,  8 Sep 2020 15:48:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599580084;
-        bh=/d6blObAe5VISG8pssX/+RsbDXxLlxLYTvkMDNsadpg=;
+        s=default; t=1599580091;
+        bh=yVzu16jkR+ZSizyDraX6CgN0pG7oqdVsMdzwGZ9bSn4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NOB1+bv7G+HazhV6YzW9JGAEkPMEVmm9N5xSacf0gSsOL/YMwe+5vIaJrs6ph5Oz1
-         maCzXvg5V8T6l2fx6LqzBCtI5VwOGDs4UL4WBk5FjFj5h8SYuyminiQ7x+5oPXqmWE
-         rLtI6vtEYB8TyshXda5FGiBJkLZ9N9K7iwWkjUS8=
+        b=GP+uUCeMj2WlYBLZIZasSF8/mrnrarFPM5FMiI93qIhOYa1skOIimp70yn8Gi+3Yg
+         SJk4ir0k3PEkjoNa+2NTPPFeDJ3JnYd+QG10JSxdng3H+HEgFAn5tsO8b8QzSzV3m8
+         6yw5ZjaG5Xcbf/BWlT7H7cv3fDNeJJYs2L6+lqAo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        Andrew Lunn <andrew@lunn.ch>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 25/88] net: hns: Fix memleak in hns_nic_dev_probe
-Date:   Tue,  8 Sep 2020 17:25:26 +0200
-Message-Id: <20200908152222.324764551@linuxfoundation.org>
+Subject: [PATCH 4.19 28/88] net: arc_emac: Fix memleak in arc_mdio_probe
+Date:   Tue,  8 Sep 2020 17:25:29 +0200
+Message-Id: <20200908152222.486034130@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200908152221.082184905@linuxfoundation.org>
 References: <20200908152221.082184905@linuxfoundation.org>
@@ -46,46 +47,32 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-[ Upstream commit 100e3345c6e719d2291e1efd5de311cc24bb9c0b ]
+[ Upstream commit e2d79cd8875fa8c3cc7defa98a8cc99a1ed0c62f ]
 
-hns_nic_dev_probe allocates ndev, but not free it on
-two error handling paths, which may lead to memleak.
+When devm_gpiod_get_optional() fails, bus should be
+freed just like when of_mdiobus_register() fails.
 
-Fixes: 63434888aaf1b ("net: hns: net: hns: enet adds support of acpi")
+Fixes: 1bddd96cba03d ("net: arc_emac: support the phy reset for emac driver")
 Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/hisilicon/hns/hns_enet.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ drivers/net/ethernet/arc/emac_mdio.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/hisilicon/hns/hns_enet.c b/drivers/net/ethernet/hisilicon/hns/hns_enet.c
-index 024b08fafd3b2..4de65a9de0a63 100644
---- a/drivers/net/ethernet/hisilicon/hns/hns_enet.c
-+++ b/drivers/net/ethernet/hisilicon/hns/hns_enet.c
-@@ -2297,8 +2297,10 @@ static int hns_nic_dev_probe(struct platform_device *pdev)
- 			priv->enet_ver = AE_VERSION_1;
- 		else if (acpi_dev_found(hns_enet_acpi_match[1].id))
- 			priv->enet_ver = AE_VERSION_2;
--		else
--			return -ENXIO;
-+		else {
-+			ret = -ENXIO;
-+			goto out_read_prop_fail;
-+		}
- 
- 		/* try to find port-idx-in-ae first */
- 		ret = acpi_node_get_property_reference(dev->fwnode,
-@@ -2314,7 +2316,8 @@ static int hns_nic_dev_probe(struct platform_device *pdev)
- 		priv->fwnode = args.fwnode;
- 	} else {
- 		dev_err(dev, "cannot read cfg data from OF or acpi\n");
--		return -ENXIO;
-+		ret = -ENXIO;
-+		goto out_read_prop_fail;
+diff --git a/drivers/net/ethernet/arc/emac_mdio.c b/drivers/net/ethernet/arc/emac_mdio.c
+index 0187dbf3b87df..54cdafdd067db 100644
+--- a/drivers/net/ethernet/arc/emac_mdio.c
++++ b/drivers/net/ethernet/arc/emac_mdio.c
+@@ -153,6 +153,7 @@ int arc_mdio_probe(struct arc_emac_priv *priv)
+ 	if (IS_ERR(data->reset_gpio)) {
+ 		error = PTR_ERR(data->reset_gpio);
+ 		dev_err(priv->dev, "Failed to request gpio: %d\n", error);
++		mdiobus_free(bus);
+ 		return error;
  	}
  
- 	ret = device_property_read_u32(dev, "port-idx-in-ae", &port_id);
 -- 
 2.25.1
 
