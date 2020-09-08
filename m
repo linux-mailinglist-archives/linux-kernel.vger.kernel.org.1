@@ -2,61 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F03B9261DBC
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:41:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32391261DEA
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:44:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732375AbgIHTlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:41:31 -0400
-Received: from mx2.suse.de ([195.135.220.15]:47734 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730912AbgIHPxl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:53:41 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2D8E6AC26;
-        Tue,  8 Sep 2020 15:42:07 +0000 (UTC)
-Subject: Re: [PATCH] mm/vmscan: fix infinite loop in drop_slab_node
-To:     Chris Down <chris@chrisdown.name>, zangchunxin@bytedance.com
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>
-References: <20200908142456.89626-1-zangchunxin@bytedance.com>
- <20200908150945.GA1301981@chrisdown.name>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <07c6ebf1-e2b3-11a2-538f-4ac542a4373b@suse.cz>
-Date:   Tue, 8 Sep 2020 17:42:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1731093AbgIHTnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 15:43:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53216 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730841AbgIHPvt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 11:51:49 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ED74C0619E8;
+        Tue,  8 Sep 2020 08:47:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=8CxL1yeXWkk0rJ/neykBAt+9c9WgMzIqkK/An8RJ5lA=; b=li4blghHjMxWMgVzZNqgXG914L
+        MyFahmcEppP6LPBtn66ptnT4bLkkI4icTyuqWnur1tnQuBl2TVaYuRgxC6pXiSLHyu0gs3fhxk9GG
+        mgzy/iuio9zJIxvxMs6RWxFos6oQ+lzcZDfatO1g8/2SV6MJzeG0tig0BIh6+A5yFUTGcRQ83UuT9
+        eAuF6uFmO8hUgJQXTNBY0kVXzI5e3H7w2B7eLtS9j8I0/as+8FPvIDBALMetRTHTefmXfhFXX9d1D
+        Ri9fGIx0sF2GBeT+0bU71CzlWiKmof+uZ5gk9+hxuvbPnoi22bFwZ6oNgywLTIVd4gDTyHdF2A0Ts
+        SZcTckdg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kFfpm-0007r4-Rn; Tue, 08 Sep 2020 15:47:03 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5C470305C16;
+        Tue,  8 Sep 2020 17:47:00 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4757F2BE37566; Tue,  8 Sep 2020 17:47:00 +0200 (CEST)
+Date:   Tue, 8 Sep 2020 17:47:00 +0200
+From:   peterz@infradead.org
+To:     Mike Travis <mike.travis@hpe.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Steve Wahl <steve.wahl@hpe.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@suse.de>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Russ Anderson <russ.anderson@hpe.com>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Jian Cai <caij2003@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
+Subject: Re: [PATCH 00/12] x86/platform/uv: Updates for UV5
+Message-ID: <20200908154700.GW1362448@hirez.programming.kicks-ass.net>
+References: <20200907185430.363197758@hpe.com>
+ <20200908152014.GB4114051@kroah.com>
+ <03de6a71-5fc1-98f5-3886-536c72b2761d@hpe.com>
 MIME-Version: 1.0
-In-Reply-To: <20200908150945.GA1301981@chrisdown.name>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <03de6a71-5fc1-98f5-3886-536c72b2761d@hpe.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/8/20 5:09 PM, Chris Down wrote:
-> drop_caches by its very nature can be extremely performance intensive -- if 
-> someone wants to abort after trying too long, they can just send a 
-> TASK_KILLABLE signal, no? If exiting the loop and returning to usermode doesn't 
-> reliably work when doing that, then _that's_ something to improve, but this 
-> looks premature to me until that's demonstrated not to work.
+On Tue, Sep 08, 2020 at 08:28:16AM -0700, Mike Travis wrote:
+> I didn't.  If I could figure out how to convert quilt patches into git
+> commits I might be able to do that?  (And I didn't know that diffstats were
+> needed on the into?)
 
-Hm there might be existings scripts (even though I dislike those) running
-drop_caches periodically, and they are currently not set up to be killed, so one
-day it might surprise someone. Dropping should be a one-time event, not a
-continual reclaim.
+$ git quiltimport
 
-Maybe we could be a bit smarter and e.g. double the threshold currently
-hardcoded as "10" with each iteration?
+Or, for the more enterprising person:
 
-> zangchunxin@bytedance.com writes:
->>In one drop caches action, only traverse memcg once maybe is better.
->>If user need more memory, they can do drop caches again.
-> 
-> Can you please provide some measurements of the difference in reclamation in 
-> practice?
-> 
+$ quilt series | while read file; do git am $file; done
 
+Generating a diffstat from a quilt series (when applied):
+
+$ quilt diff --combine - | diffstat
