@@ -2,94 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3166F261C47
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:17:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 153B8261C55
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:18:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731724AbgIHTRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:17:16 -0400
-Received: from mx2.suse.de ([195.135.220.15]:52934 "EHLO mx2.suse.de"
+        id S1732008AbgIHTS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 15:18:29 -0400
+Received: from mga02.intel.com ([134.134.136.20]:59407 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731165AbgIHQDm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:03:42 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 779DCB6AC;
-        Tue,  8 Sep 2020 14:35:06 +0000 (UTC)
-Date:   Tue, 8 Sep 2020 16:35:03 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Zi Yan <ziy@nvidia.com>
-Cc:     David Hildenbrand <david@redhat.com>, Roman Gushchin <guro@fb.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>, linux-mm@kvack.org,
-        Rik van Riel <riel@surriel.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        David Nellans <dnellans@nvidia.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 00/16] 1GB THP support on x86_64
-Message-ID: <20200908143503.GE26850@dhcp22.suse.cz>
-References: <20200902180628.4052244-1-zi.yan@sent.com>
- <20200903142300.bjq2um5y5nwocvar@box>
- <20200903163020.GG60440@carbon.dhcp.thefacebook.com>
- <8e677ead-206d-08dd-d73e-569bd3803e3b@redhat.com>
- <7E20392E-5ED7-4C22-9555-F3BAABF3CBE9@nvidia.com>
+        id S1731142AbgIHQCw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 12:02:52 -0400
+IronPort-SDR: po/k/mVz/rKQaNpunDFGyqwHb7oftmN3x2KIS4nbF4kaHt0gr1UPXQFvpe6SXoijBbRbG+rTUl
+ bDB2wMf4hAtQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9738"; a="145860470"
+X-IronPort-AV: E=Sophos;i="5.76,406,1592895600"; 
+   d="scan'208";a="145860470"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2020 07:41:11 -0700
+IronPort-SDR: GwGJVhQl5LsZCtYfS7A9iPjpGOoLjIqPKg8jU0lNh+QzaUUg/j/tOkU/84RoXAzvNqvUBXGq2n
+ hbejdvwrRCjQ==
+X-IronPort-AV: E=Sophos;i="5.76,406,1592895600"; 
+   d="scan'208";a="480050658"
+Received: from dpdesmon-mobl1.amr.corp.intel.com (HELO [10.212.58.192]) ([10.212.58.192])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2020 07:41:03 -0700
+Subject: Re: [PATCH] tracing: fix double free
+To:     trix@redhat.com, rostedt@goodmis.org, mingo@redhat.com,
+        natechancellor@gmail.com, ndesaulniers@google.com,
+        baohong.liu@intel.com
+Cc:     linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+References: <20200907135845.15804-1-trix@redhat.com>
+From:   "Zanussi, Tom" <tom.zanussi@linux.intel.com>
+Message-ID: <84df7ef3-0a36-0929-3fa9-74ab773ca12e@linux.intel.com>
+Date:   Tue, 8 Sep 2020 09:41:01 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7E20392E-5ED7-4C22-9555-F3BAABF3CBE9@nvidia.com>
+In-Reply-To: <20200907135845.15804-1-trix@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 08-09-20 10:05:11, Zi Yan wrote:
-> On 8 Sep 2020, at 7:57, David Hildenbrand wrote:
-> 
-> > On 03.09.20 18:30, Roman Gushchin wrote:
-> >> On Thu, Sep 03, 2020 at 05:23:00PM +0300, Kirill A. Shutemov wrote:
-> >>> On Wed, Sep 02, 2020 at 02:06:12PM -0400, Zi Yan wrote:
-> >>>> From: Zi Yan <ziy@nvidia.com>
-> >>>>
-> >>>> Hi all,
-> >>>>
-> >>>> This patchset adds support for 1GB THP on x86_64. It is on top of
-> >>>> v5.9-rc2-mmots-2020-08-25-21-13.
-> >>>>
-> >>>> 1GB THP is more flexible for reducing translation overhead and increasing the
-> >>>> performance of applications with large memory footprint without application
-> >>>> changes compared to hugetlb.
-> >>>
-> >>> This statement needs a lot of justification. I don't see 1GB THP as viable
-> >>> for any workload. Opportunistic 1GB allocation is very questionable
-> >>> strategy.
-> >>
-> >> Hello, Kirill!
-> >>
-> >> I share your skepticism about opportunistic 1 GB allocations, however it might be useful
-> >> if backed by an madvise() annotations from userspace application. In this case,
-> >> 1 GB THPs might be an alternative to 1 GB hugetlbfs pages, but with a more convenient
-> >> interface.
-> >
-> > I have concerns if we would silently use 1~GB THPs in most scenarios
-> > where be would have used 2~MB THP. I'd appreciate a trigger to
-> > explicitly enable that - MADV_HUGEPAGE is not sufficient because some
-> > applications relying on that assume that the THP size will be 2~MB
-> > (especially, if you want sparse, large VMAs).
-> 
-> This patchset is not intended to silently use 1GB THP in place of 2MB THP.
-> First of all, there is a knob /sys/kernel/mm/transparent_hugepage/enable_1GB
-> to enable 1GB THP explicitly. Also, 1GB THP is allocated from a reserved CMA
-> region (although I had alloc_contig_pages as a fallback, which can be removed
-> in next version), so users need to add hugepage_cma=nG kernel parameter to
-> enable 1GB THP allocation. If a finer control is necessary, we can add
-> a new MADV_HUGEPAGE_1GB for 1GB THP.
+Hi Tom,
 
-A global knob is insufficient. 1G pages will become a very precious
-resource as it requires a pre-allocation (reservation). So it really has
-to be an opt-in and the question is whether there is also some sort of
-access control needed.
+On 9/7/2020 8:58 AM, trix@redhat.com wrote:
+> From: Tom Rix <trix@redhat.com>
+> 
+> clang static analyzer reports this problem
+> 
+> trace_events_hist.c:3824:3: warning: Attempt to free
+>    released memory
+>      kfree(hist_data->attrs->var_defs.name[i]);
+> 
+> In parse_var_defs() if there is a problem allocating
+> var_defs.expr, the earlier var_defs.name is freed.
+> This free is duplicated by free_var_defs() which frees
+> the rest of the list.
+> 
+> Because free_var_defs() has to run anyway, remove the
+> second free fom parse_var_defs().
+> 
+> Fixes: 30350d65ac56 ("tracing: Add variable support to hist triggers")
+> Signed-off-by: Tom Rix <trix@redhat.com>
 
--- 
-Michal Hocko
-SUSE Labs
+Good catch, thanks for fixing this!
+
+Reviewed-by: Tom Zanussi <tom.zanussi@linux.intel.com>
+
+> ---
+>   kernel/trace/trace_events_hist.c | 1 -
+>   1 file changed, 1 deletion(-)
+> 
+> diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
+> index 0b933546142e..1b2ef6490229 100644
+> --- a/kernel/trace/trace_events_hist.c
+> +++ b/kernel/trace/trace_events_hist.c
+> @@ -3865,7 +3865,6 @@ static int parse_var_defs(struct hist_trigger_data *hist_data)
+>   
+>   			s = kstrdup(field_str, GFP_KERNEL);
+>   			if (!s) {
+> -				kfree(hist_data->attrs->var_defs.name[n_vars]);
+>   				ret = -ENOMEM;
+>   				goto free;
+>   			}
+> 
