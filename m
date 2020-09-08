@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCCB626147E
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:24:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82BBA26146F
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:21:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731825AbgIHQYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 12:24:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56658 "EHLO mail.kernel.org"
+        id S1731770AbgIHQVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 12:21:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55070 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731506AbgIHQLz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:11:55 -0400
+        id S1731404AbgIHQKZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 12:10:25 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E7C57247A7;
-        Tue,  8 Sep 2020 15:42:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 94064247F3;
+        Tue,  8 Sep 2020 15:42:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599579741;
-        bh=6ABlp9+wcVdx81zzzjvzeQsU7AAr4YpLoxK1KXLo8P0=;
+        s=default; t=1599579767;
+        bh=bW1+2zZIvWQxURE22rAzvlWE41uFtJmY9vyudATADtU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=X0XGVNHcUW357EaTdA/mPJCMPWZGRpkwoPvI7m5K00iNk86u/FzFzDRGkV2w1CaT6
-         rkTBoPVsxd5nKC0tpv3NaM4662PX6b92dwQ/CWEWg+gZhgtBNarjoT09lGXbabu8fj
-         KkVJZetZxccFmOyz4MmJIfOdctFuOl3HElaxgiRY=
+        b=0H/KxwNI9AXnmbZrf/d5Ae5qmLNZEhh8IOqk2MWS/bYWVlvh1vZ2nAGxesn87p1JX
+         sGfD60TBVFpfBOMAYBO0SgwjJSq8njBG59z9smRG6u9vCKYg7vwCPMnfEuVwdr8PGa
+         KJPi4ZQAuwZqGsR4ucXGqTxZE0qRYCrr1wIn9LmI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ofir Bitton <obitton@habana.ai>,
-        Oded Gabbay <oded.gabbay@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 008/129] habanalabs: validate FW file size
-Date:   Tue,  8 Sep 2020 17:24:09 +0200
-Message-Id: <20200908152230.106783696@linuxfoundation.org>
+        stable@vger.kernel.org, Yu Kuai <yukuai3@huawei.com>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 026/129] dmaengine: at_hdmac: check return value of of_find_device_by_node() in at_dma_xlate()
+Date:   Tue,  8 Sep 2020 17:24:27 +0200
+Message-Id: <20200908152230.998470857@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200908152229.689878733@linuxfoundation.org>
 References: <20200908152229.689878733@linuxfoundation.org>
@@ -44,47 +43,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ofir Bitton <obitton@habana.ai>
+From: Yu Kuai <yukuai3@huawei.com>
 
-[ Upstream commit bce382a8bb080ed5f2f3a06754526dc58b91cca2 ]
+[ Upstream commit 0cef8e2c5a07d482ec907249dbd6687e8697677f ]
 
-We must validate FW size in order not to corrupt memory in case
-a malicious FW file will be present in system.
+The reurn value of of_find_device_by_node() is not checked, thus null
+pointer dereference will be triggered if of_find_device_by_node()
+failed.
 
-Signed-off-by: Ofir Bitton <obitton@habana.ai>
-Signed-off-by: Oded Gabbay <oded.gabbay@gmail.com>
+Fixes: bbe89c8e3d59 ("at_hdmac: move to generic DMA binding")
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+Link: https://lore.kernel.org/r/20200817115728.1706719-2-yukuai3@huawei.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/misc/habanalabs/firmware_if.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/dma/at_hdmac.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/misc/habanalabs/firmware_if.c b/drivers/misc/habanalabs/firmware_if.c
-index ea2ca67fbfbfa..153858475abc1 100644
---- a/drivers/misc/habanalabs/firmware_if.c
-+++ b/drivers/misc/habanalabs/firmware_if.c
-@@ -11,6 +11,7 @@
- #include <linux/genalloc.h>
- #include <linux/io-64-nonatomic-lo-hi.h>
+diff --git a/drivers/dma/at_hdmac.c b/drivers/dma/at_hdmac.c
+index 672c73b4a2d4f..ff366c2f58c18 100644
+--- a/drivers/dma/at_hdmac.c
++++ b/drivers/dma/at_hdmac.c
+@@ -1667,6 +1667,8 @@ static struct dma_chan *at_dma_xlate(struct of_phandle_args *dma_spec,
+ 		return NULL;
  
-+#define FW_FILE_MAX_SIZE	0x1400000 /* maximum size of 20MB */
- /**
-  * hl_fw_push_fw_to_device() - Push FW code to device.
-  * @hdev: pointer to hl_device structure.
-@@ -43,6 +44,14 @@ int hl_fw_push_fw_to_device(struct hl_device *hdev, const char *fw_name,
+ 	dmac_pdev = of_find_device_by_node(dma_spec->np);
++	if (!dmac_pdev)
++		return NULL;
  
- 	dev_dbg(hdev->dev, "%s firmware size == %zu\n", fw_name, fw_size);
- 
-+	if (fw_size > FW_FILE_MAX_SIZE) {
-+		dev_err(hdev->dev,
-+			"FW file size %zu exceeds maximum of %u bytes\n",
-+			fw_size, FW_FILE_MAX_SIZE);
-+		rc = -EINVAL;
-+		goto out;
-+	}
-+
- 	fw_data = (const u64 *) fw->data;
- 
- 	memcpy_toio(dst, fw_data, fw_size);
+ 	dma_cap_zero(mask);
+ 	dma_cap_set(DMA_SLAVE, mask);
 -- 
 2.25.1
 
