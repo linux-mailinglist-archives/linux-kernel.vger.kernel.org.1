@@ -2,223 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EBE6260E75
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 11:13:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83D2D260E90
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 11:21:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729037AbgIHJNr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 05:13:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48062 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727995AbgIHJNo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 05:13:44 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFF94C061573
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 02:13:44 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id w186so9594807pgb.8
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 02:13:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=w+fgoFgrvub+PVRBQAqPAVJ0vJ5KWjyrTSwEc7m3Tac=;
-        b=VGlRdYkT+u84u3Y6Kjvu8qHXN3TW1XyiJ+KOLZEjSJ5tEz1ZmoqFnTL7tM859f6NfT
-         BdSeby2ktDOTnLqHtsjBLtOtDf7DBioZPYsJYDACD0+jKLWjnLDLqD6OeITQ9gl9K4WT
-         j9II5uAli4pvZKiluAWuUKzG2ECNFoJ6Mv83A01XZhJk9FKWdpkG8ekvXBfPUZ51Zt2e
-         G9u1lgB5oXrcz9v7Ltcd3aN3QqumGn5P8ONfN9SYqi2QLMQ5ZlCA+pQWmZFQdAMMDtxI
-         ERSsOQ4uuml18R8UR1VgtJg98TEJFsPfgwbLjxZYTaAQ5GuZQPPsNGS8xU1HwgA/bLen
-         OiSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=w+fgoFgrvub+PVRBQAqPAVJ0vJ5KWjyrTSwEc7m3Tac=;
-        b=Dbk/n5tJ2ef8khhKaoGMQv8torun+WJZTL+P85qm1PaUeAQf5Vw7dJJzDB/RjPCywU
-         OD8i0OHnZp/5jcbzKNMBxDFQZXw/74lg4jyb0SCB5K1XWVtOtWgeu6zh8XrUvVNltv3V
-         9lZlGNoD0CFI9XRtFmBZpH0S7Tvx2D2rWOHRk+S+wQZPjjivjAsToyeyikiIfiMRABng
-         r/LvGMwsCxKN3wvBwg5cukQ0VQ68MAgptD11dsing7fXUpKtCxVEnRvQvpsOhC4Z+MA9
-         zY9fSqsE1I2kW4weR13D6wexg+jf56F0aU90YgbgEeLdn/UKUYDTtFXBKXJ0TGpK6PV2
-         KbxA==
-X-Gm-Message-State: AOAM531RHjafE90kA/Lknkp7yFNJzweq6Erm67E4DTUFGNv/LsRFhPKA
-        urz/Bhs+lgVyt2dhZpv+A2g=
-X-Google-Smtp-Source: ABdhPJwd4muQSZj47jYzjoWHw0sLP9vUqRC+sbt0sjdS5yOxhOJAjexMEe+LdHqfY09BJ08YufwJXQ==
-X-Received: by 2002:a62:7c82:0:b029:13c:1611:6532 with SMTP id x124-20020a627c820000b029013c16116532mr22326829pfc.4.1599556424068;
-        Tue, 08 Sep 2020 02:13:44 -0700 (PDT)
-Received: from localhost ([203.185.249.227])
-        by smtp.gmail.com with ESMTPSA id f12sm3178494pjm.5.2020.09.08.02.13.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Sep 2020 02:13:43 -0700 (PDT)
-Date:   Tue, 08 Sep 2020 19:13:37 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH v1 5/5] powerpc/fault: Perform exception fixup in
- do_page_fault()
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Mackerras <paulus@samba.org>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-References: <7baae4086cbb9ffb08c933b065ff7d29dbc03dd6.1596734104.git.christophe.leroy@csgroup.eu>
-        <5748c8f5cf0a9b3686169e2c7709107e6aaec408.1596734105.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <5748c8f5cf0a9b3686169e2c7709107e6aaec408.1596734105.git.christophe.leroy@csgroup.eu>
+        id S1728810AbgIHJVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 05:21:25 -0400
+Received: from mail-eopbgr130044.outbound.protection.outlook.com ([40.107.13.44]:46734
+        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728556AbgIHJVU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 05:21:20 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=li4o5Tof4axTSqe4YWwxob7A4IWIFvrAnzn4ouMqdMP+KX0ya1uvSBq15itxSYYc6qpuICMROYSFI6NHVwiYSEwpuD30tqFGEiNWTFlhDC78AkgwpCz3Acpe6dc35Uxy3CBy47Vn52Xz/DDWt6swhn3Ml1LBtGQp8NM6L/u4gixRMFv3ntXlHV2QBB5fIh02k9+x6K0KeJOqRiUB1ksJwA1ZLZOtAs65QVRsAVVeL9CPpJBfI/jI5IAabmieFyaySu4JOvsUqaCBO0vowaj6YQ6d0JMpLbQ6JwOfiInHGNpnYXaE6FGP7bkpNnnkovtxhjA8CBTu+VVak7TIpS9g2Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EwC+CLnLZujvR+x644yqOwTf8zKz86MxU3oi5BhmBfg=;
+ b=IkFN0BckljdauLp3P3APka5CBrhDOWZLxxL2MiQrYhd/ACkkqhjfxVkoG09hrGVWqYm6PwQUfNiaowca+hRH1/MKqMYjc37vaIelesSHL5WI27r2Rz4DPZkV8JFj7JbUthe2Agf31gelAu1tr7Xmr35tBkx8lbsVY/evy7ABensbMLP26LPBEEcHA6fCDuEYAWabdcd9bUwVBG5NJlLoFifK26WH8GgaTiPuvhrpxJnXmTPm5jGRvhomLxfGOPJghjBbrFB3VJsTWDvk0f9lhWw08qVrzYvwcL7HCOuLaQ367SJsZ5xFrnzSgSHbLZ4Kt82QIhcKyx5kjKqXPzOv0w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EwC+CLnLZujvR+x644yqOwTf8zKz86MxU3oi5BhmBfg=;
+ b=QGTi26q9CL6YLdxt2raigSb0sZ1/FTo0LCDqoUw2Iw8VrJxIM92KJkzwiMz+JqKUHryEtPnGhZOEMI+YQpnnSL9NuooCAFQKmQu6J0fLLgIJ3Q8hByMRy8S4MPo1tLDhPM1LSBBqQktzXyaF7erkKo46XGqQ0WZ2gbXGDbj3sw0=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
+ by DB7PR04MB4937.eurprd04.prod.outlook.com (2603:10a6:10:18::32) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.15; Tue, 8 Sep
+ 2020 09:21:16 +0000
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::24d0:f783:3c7d:e232]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::24d0:f783:3c7d:e232%12]) with mapi id 15.20.3348.019; Tue, 8 Sep 2020
+ 09:21:16 +0000
+From:   peng.fan@nxp.com
+To:     sboyd@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        festevam@gmail.com, abel.vesa@nxp.com
+Cc:     kernel@pengutronix.de, linux-imx@nxp.com, Anson.Huang@nxp.com,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, aisheng.dong@nxp.com,
+        Peng Fan <peng.fan@nxp.com>
+Subject: [PATCH] clk: imx: lpcg-scu: SW workaround for errata (e10858)
+Date:   Tue,  8 Sep 2020 17:14:47 +0800
+Message-Id: <1599556487-31364-1-git-send-email-peng.fan@nxp.com>
+X-Mailer: git-send-email 2.7.4
+Content-Type: text/plain
+X-ClientProxiedBy: SG2PR02CA0003.apcprd02.prod.outlook.com
+ (2603:1096:3:17::15) To DB6PR0402MB2760.eurprd04.prod.outlook.com
+ (2603:10a6:4:a1::14)
 MIME-Version: 1.0
-Message-Id: <1599555291.xys33gyt02.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from 10.192.242.69 (119.31.174.66) by SG2PR02CA0003.apcprd02.prod.outlook.com (2603:1096:3:17::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3348.15 via Frontend Transport; Tue, 8 Sep 2020 09:21:12 +0000
+X-Mailer: git-send-email 2.7.4
+X-Originating-IP: [119.31.174.66]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: fe998cae-0d69-49f9-a8ac-08d853d88967
+X-MS-TrafficTypeDiagnostic: DB7PR04MB4937:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DB7PR04MB4937F4D53A56D1DBEB3C6AEC88290@DB7PR04MB4937.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2803;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: QGM7MJ5Fn8qh97WIYvIeId0dnNQH3O3ycA06OWblaO9Sk8Wy25t4PGVYnVXxxtk9POylBZ2KeWcldSUAQ9knP6AbJQaDzy1O7B+mfIjuoXGbEp/lA3gPqrWnaADjXxT3cDALcgb62qxPtXc1qLgomn0gZy0l9bqB/MA7hSyRRokAWAXGd/+yNKadcNXKjXXruP4UZlvhPcPbfmHOT6Md3eykSX7OaocR2N/OUGy8Y/hZOIzTOcI/iP6QzGokd6biyS0rZ/wtkfH+ajCFMcKr/rdoWrZhH+FCwcauzmIn4etXXrVNLaMK4W8KLaD/ZcxIE7cdPklP9FjUZlNuOt5lzQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(39860400002)(136003)(376002)(396003)(956004)(52116002)(16526019)(4326008)(5660300002)(66946007)(2906002)(6486002)(16576012)(8936002)(36756003)(478600001)(26005)(6666004)(66476007)(86362001)(2616005)(186003)(9686003)(316002)(66556008)(8676002)(83380400001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: p7jEZWPUxybH5aOvBeLrIQD4rjLQ4qUAoazdRy81D7EGOiaLuDToFt90DTuit4eACs49nAvC9xGa7qBbaENVVtgKUZWX/VOBFKptGz02S26L4Kq4eKH4V2dQ01bUU1U7xCB4qMcntsn+i1gAKW5Qi1at5snOxAdl8hVseTUK8z+GICvDZlTKmfuJ+3QsAEyi6VVjnE4V/a0Ts3v3UNT1tgLeVYYcb3KHHo+8LRjWAmuGyX0NSDBui0uIM8XUilUNcCKr/8ltKR3P8OT54VCTzUGDZrpQTbAAL0ptYSxqOlcqWwG3vF9OgSGlhPxXTV89RHNYv+Xc5agK++qHl2QzrTHbrrjxmJC8mviFg07JDrlSYrcsFUYVlKlE762gKSA1eB0EssGsNAWf0Wl8U5MhapIxzYmnrO5xVAjHSx/BWHGFaPR0lYwwpXCziLqcitPrxFJOhGXcyt1teT3dESyrAQoOdxohw5y3qs3/YIK0boUC6YmPk5BeJU5hJFBYN9jv+Lk5FFKHFe46hAXPjlgSAkXkB6ce5j+ULG5SVM2Kp2sURjUThlhPvOVGLFZMsSmKgO6D6PN3oUuxTmSGeo5qjs7oh8PaboaoVxv3jiMDjJyn0gzLZ+veQeCUyISZCaL37pcSzWsRThOoU8pxNpvhbw==
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fe998cae-0d69-49f9-a8ac-08d853d88967
+X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Sep 2020 09:21:15.9726
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Hd+NMvzmdMmk1TR48p2GhGIsrGuyGK9yQWbskAq+W86OeaaaY4Z93tmT9EfRTmpwXWgustiJt2USu2Pm3T66Vg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR04MB4937
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Christophe Leroy's message of August 7, 2020 3:15 am:
-> Exception fixup doesn't require the heady full regs saving,
-                                      heavy
+From: Peng Fan <peng.fan@nxp.com>
 
-> do it from do_page_fault() directly.
->=20
-> For that, split bad_page_fault() in two parts.
->=20
-> As bad_page_fault() can also be called from other places than
-> handle_page_fault(), it will still perform exception fixup and
-> fallback on __bad_page_fault().
->=20
-> handle_page_fault() directly calls __bad_page_fault() as the
-> exception fixup will now be done by do_page_fault()
+Back-to-back LPCG writes can be ignored by the LPCG register due to
+a HW bug. The writes need to be separated by at least 4 cycles of
+the gated clock.
 
-Looks good. We can probably get rid of bad_page_fault completely after=20
-this too.
+The workaround is implemented as follows:
+1. For clocks running greater than or equal to 24MHz, a read
+followed by the write will provide sufficient delay.
+2. For clocks running below 24MHz, add a delay of 4 clock cylces
+after the write to the LPCG register.
 
-Hmm, the alignment exception might(?) hit user copies if the user points=20
-it to CI memory. Then you could race and the memory gets unmapped. In=20
-that case the exception table check might be better to be explicit there
-with comments.
+Signed-off-by: Peng Fan <peng.fan@nxp.com>
+---
+ drivers/clk/imx/clk-lpcg-scu.c | 31 +++++++++++++++++++++++++++++--
+ 1 file changed, 29 insertions(+), 2 deletions(-)
 
-The first call in do_hash_fault is not required (copy user will never
-be in nmi context). The second one and the one in slb_fault could be
-made explicit too. Anyway for now this is fine.
+diff --git a/drivers/clk/imx/clk-lpcg-scu.c b/drivers/clk/imx/clk-lpcg-scu.c
+index 1f0e44f921ae..6ee9d2caedf2 100644
+--- a/drivers/clk/imx/clk-lpcg-scu.c
++++ b/drivers/clk/imx/clk-lpcg-scu.c
+@@ -6,6 +6,7 @@
+ 
+ #include <linux/bits.h>
+ #include <linux/clk-provider.h>
++#include <linux/delay.h>
+ #include <linux/err.h>
+ #include <linux/io.h>
+ #include <linux/slab.h>
+@@ -38,6 +39,31 @@ struct clk_lpcg_scu {
+ 
+ #define to_clk_lpcg_scu(_hw) container_of(_hw, struct clk_lpcg_scu, hw)
+ 
++/* e10858 -LPCG clock gating register synchronization errata */
++static void do_lpcg_workaround(u32 rate, void __iomem *reg, u32 val)
++{
++	writel(val, reg);
++
++	if (rate >= 24000000 || rate == 0) {
++		u32 reg1;
++
++		/*
++		 * The time taken to access the LPCG registers from the AP core
++		 * through the interconnect is longer than the minimum delay
++		 * of 4 clock cycles required by the errata.
++		 * Adding a readl will provide sufficient delay to prevent
++		 * back-to-back writes.
++		 */
++		reg1 = readl(reg);
++	} else {
++		/*
++		 * For clocks running below 24MHz, wait a minimum of
++		 * 4 clock cycles.
++		 */
++		ndelay(4 * (DIV_ROUND_UP(1000000000, rate)));
++	}
++}
++
+ static int clk_lpcg_scu_enable(struct clk_hw *hw)
+ {
+ 	struct clk_lpcg_scu *clk = to_clk_lpcg_scu(hw);
+@@ -54,7 +80,8 @@ static int clk_lpcg_scu_enable(struct clk_hw *hw)
+ 		val |= CLK_GATE_SCU_LPCG_HW_SEL;
+ 
+ 	reg |= val << clk->bit_idx;
+-	writel(reg, clk->reg);
++
++	do_lpcg_workaround(clk_hw_get_rate(hw), clk->reg, reg);
+ 
+ 	spin_unlock_irqrestore(&imx_lpcg_scu_lock, flags);
+ 
+@@ -71,7 +98,7 @@ static void clk_lpcg_scu_disable(struct clk_hw *hw)
+ 
+ 	reg = readl_relaxed(clk->reg);
+ 	reg &= ~(CLK_GATE_SCU_LPCG_MASK << clk->bit_idx);
+-	writel(reg, clk->reg);
++	do_lpcg_workaround(clk_hw_get_rate(hw), clk->reg, reg);
+ 
+ 	spin_unlock_irqrestore(&imx_lpcg_scu_lock, flags);
+ }
+-- 
+2.28.0
 
-Thanks,
-Nick
-
-Reviewed-by: Nicholas Piggin <npiggin@gmail.com>
-
-
->=20
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> ---
->  arch/powerpc/kernel/entry_32.S       |  2 +-
->  arch/powerpc/kernel/exceptions-64e.S |  2 +-
->  arch/powerpc/kernel/exceptions-64s.S |  2 +-
->  arch/powerpc/mm/fault.c              | 33 ++++++++++++++++++++--------
->  4 files changed, 27 insertions(+), 12 deletions(-)
->=20
-> diff --git a/arch/powerpc/kernel/entry_32.S b/arch/powerpc/kernel/entry_3=
-2.S
-> index f4d0af8e1136..c198786591f9 100644
-> --- a/arch/powerpc/kernel/entry_32.S
-> +++ b/arch/powerpc/kernel/entry_32.S
-> @@ -678,7 +678,7 @@ handle_page_fault:
->  	mr	r5,r3
->  	addi	r3,r1,STACK_FRAME_OVERHEAD
->  	lwz	r4,_DAR(r1)
-> -	bl	bad_page_fault
-> +	bl	__bad_page_fault
->  	b	ret_from_except_full
-> =20
->  #ifdef CONFIG_PPC_BOOK3S_32
-> diff --git a/arch/powerpc/kernel/exceptions-64e.S b/arch/powerpc/kernel/e=
-xceptions-64e.S
-> index d9ed79415100..dd9161ea5da8 100644
-> --- a/arch/powerpc/kernel/exceptions-64e.S
-> +++ b/arch/powerpc/kernel/exceptions-64e.S
-> @@ -1024,7 +1024,7 @@ storage_fault_common:
->  	mr	r5,r3
->  	addi	r3,r1,STACK_FRAME_OVERHEAD
->  	ld	r4,_DAR(r1)
-> -	bl	bad_page_fault
-> +	bl	__bad_page_fault
->  	b	ret_from_except
-> =20
->  /*
-> diff --git a/arch/powerpc/kernel/exceptions-64s.S b/arch/powerpc/kernel/e=
-xceptions-64s.S
-> index f7d748b88705..2cb3bcfb896d 100644
-> --- a/arch/powerpc/kernel/exceptions-64s.S
-> +++ b/arch/powerpc/kernel/exceptions-64s.S
-> @@ -3254,7 +3254,7 @@ handle_page_fault:
->  	mr	r5,r3
->  	addi	r3,r1,STACK_FRAME_OVERHEAD
->  	ld	r4,_DAR(r1)
-> -	bl	bad_page_fault
-> +	bl	__bad_page_fault
->  	b	interrupt_return
-> =20
->  /* We have a data breakpoint exception - handle it */
-> diff --git a/arch/powerpc/mm/fault.c b/arch/powerpc/mm/fault.c
-> index edde169ba3a6..bd6e397eb84a 100644
-> --- a/arch/powerpc/mm/fault.c
-> +++ b/arch/powerpc/mm/fault.c
-> @@ -542,10 +542,20 @@ NOKPROBE_SYMBOL(__do_page_fault);
->  int do_page_fault(struct pt_regs *regs, unsigned long address,
->  		  unsigned long error_code)
->  {
-> +	const struct exception_table_entry *entry;
->  	enum ctx_state prev_state =3D exception_enter();
->  	int rc =3D __do_page_fault(regs, address, error_code);
->  	exception_exit(prev_state);
-> -	return rc;
-> +	if (likely(!rc))
-> +		return 0;
-> +
-> +	entry =3D search_exception_tables(regs->nip);
-> +	if (unlikely(!entry))
-> +		return rc;
-> +
-> +	instruction_pointer_set(regs, extable_fixup(entry));
-> +
-> +	return 0;
->  }
->  NOKPROBE_SYMBOL(do_page_fault);
-> =20
-> @@ -554,17 +564,10 @@ NOKPROBE_SYMBOL(do_page_fault);
->   * It is called from the DSI and ISI handlers in head.S and from some
->   * of the procedures in traps.c.
->   */
-> -void bad_page_fault(struct pt_regs *regs, unsigned long address, int sig=
-)
-> +void __bad_page_fault(struct pt_regs *regs, unsigned long address, int s=
-ig)
->  {
-> -	const struct exception_table_entry *entry;
->  	int is_write =3D page_fault_is_write(regs->dsisr);
-> =20
-> -	/* Are we prepared to handle this fault?  */
-> -	if ((entry =3D search_exception_tables(regs->nip)) !=3D NULL) {
-> -		regs->nip =3D extable_fixup(entry);
-> -		return;
-> -	}
-> -
->  	/* kernel has accessed a bad area */
-> =20
->  	switch (TRAP(regs)) {
-> @@ -598,3 +601,15 @@ void bad_page_fault(struct pt_regs *regs, unsigned l=
-ong address, int sig)
-> =20
->  	die("Kernel access of bad area", regs, sig);
->  }
-> +
-> +void bad_page_fault(struct pt_regs *regs, unsigned long address, int sig=
-)
-> +{
-> +	const struct exception_table_entry *entry;
-> +
-> +	/* Are we prepared to handle this fault?  */
-> +	entry =3D search_exception_tables(instruction_pointer(regs));
-> +	if (entry)
-> +		instruction_pointer_set(regs, extable_fixup(entry));
-> +	else
-> +		__bad_page_fault(regs, address, sig);
-> +}
-> --=20
-> 2.25.0
->=20
->=20
