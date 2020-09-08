@@ -2,144 +2,298 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E046261606
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:01:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC3DE26160E
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:02:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731940AbgIHRBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 13:01:21 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:54954 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731640AbgIHRAW (ORCPT
+        id S1732018AbgIHRCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 13:02:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36268 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731816AbgIHRBx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 13:00:22 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 088H0Jwn045048;
-        Tue, 8 Sep 2020 12:00:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1599584419;
-        bh=FmjuH099uiCn3rXvAwwFQmzrrjb4VVYs4/lLE60Nv/I=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=wLd1vsznDaoSAfqoAKw5uf4m8BsVf2wTtxENbY85IvdHhy9iJwcg3Hv6Bepb7NXjl
-         /uq8HIrmP1KPzWtr40fG/QeXFsDjLr5mZRkRAeBElplLmVZSlSTC95fq+qlZW54PGW
-         OlLSd2PGepNC5PzLf0uOjXSNbszcjJBgo/qngars=
-Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 088H0J4g082815
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 8 Sep 2020 12:00:19 -0500
-Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 8 Sep
- 2020 12:00:19 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 8 Sep 2020 12:00:19 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 088H0Iwq112786;
-        Tue, 8 Sep 2020 12:00:18 -0500
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-To:     Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        Tero Kristo <t-kristo@ti.com>,
-        Rob Herring <robh+dt@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>
-CC:     Sekhar Nori <nsekhar@ti.com>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Suman Anna <s-anna@ti.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>
-Subject: [PATCH v2 4/4] arm64: dts: ti: k3-j7200-common-proc-board: add mcu cpsw nuss pinmux and phy defs
-Date:   Tue, 8 Sep 2020 19:59:42 +0300
-Message-ID: <20200908165942.32368-5-grygorii.strashko@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200908165942.32368-1-grygorii.strashko@ti.com>
-References: <20200908165942.32368-1-grygorii.strashko@ti.com>
+        Tue, 8 Sep 2020 13:01:53 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 640E1C061573;
+        Tue,  8 Sep 2020 10:01:53 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id d6so4410381pfn.9;
+        Tue, 08 Sep 2020 10:01:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=vzAjbkXx9hrfKPFCUT3q6o3FbYgiDnBxRlYM5oOC7UM=;
+        b=lPE/zjb/wZpMT9ZM/91DXgkkwUjSR1p5O/C6Wh3hWxgKaxXMtyHHlmQu+sEPmSYu+K
+         4lS6PAOSy8MQP5BCThO9ts92ESFHzgOFfCbKttsKHsrQaJglGBOdp+28eFRi9pdLDP6+
+         GrEJitfWcDgwQ5d5GvDDPQz9Np712hXZvCWO6PpgqEYtQFGcmIlJbWuyB9TUp57c6ngN
+         3kqzIeJgQevapLW2+gWFUh9z8e1Q/WvTlG14MN2bTEOsvsrWuWcrmzdImWP1kDiS7K5W
+         PGRUkP/2jdkuewe153SElWVkqkB1RXMwcnaP1YGHd4KJNMwYOsEwDuSBDfn3/SMQYEzX
+         yp7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vzAjbkXx9hrfKPFCUT3q6o3FbYgiDnBxRlYM5oOC7UM=;
+        b=R5SexEUaxd/SIhGgnh8LiRCAQNPbQe9DN6SbWOy6xpCVkfYNQpl6uf4l3+f9CfkIIw
+         q5qnUOw3IIReFecWGr0k/7Myvao4x1NTvRKVUmwykpEGF4L2q3MNzaBmGUzTnkvdEWZX
+         LrbLz+mGNBlPOqzLM7jpcxWkkUIxk7rK0P2kUdpPdlEbfaVAOSCGTVM81RpkggzXey/c
+         KVuXINa1Qe1VLnVEIB68naZxYV9mvoTXKPu4oTUFt5wW7ZGDryQT2lpWjgX84NUg3Otu
+         OlSYsJ1Qc7GHY4kt5IDblVGdxHoSUOW40wzsTtu7KF/IzHKoC3Z3BT4HuolBotNq+PRr
+         P6KQ==
+X-Gm-Message-State: AOAM533JvbTHFswwtUxyU/2oKLtXdxnFogy+Cy1UoPYSPp8BipsLVZbf
+        WAE34dAtWhVLijQu/GuMlXg=
+X-Google-Smtp-Source: ABdhPJyFGTMRyuLCFx1jU570pVgnMhQDPgZIIhFIS8orI9niXe0EGK1uaRhOnqmQXLdaqfgr5ODw9w==
+X-Received: by 2002:a17:902:fe15:: with SMTP id g21mr24955756plj.22.1599584512862;
+        Tue, 08 Sep 2020 10:01:52 -0700 (PDT)
+Received: from gmail.com ([106.201.26.241])
+        by smtp.gmail.com with ESMTPSA id n2sm18860051pfa.182.2020.09.08.10.01.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Sep 2020 10:01:52 -0700 (PDT)
+Date:   Tue, 8 Sep 2020 22:29:58 +0530
+From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bjorn Helgaas <bjorn@helgaas.com>,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
+        Adam Radford <aradford@gmail.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Adaptec OEM Raid Solutions <aacraid@microsemi.com>,
+        Hannes Reinecke <hare@suse.com>,
+        Bradley Grove <linuxdrivers@attotech.com>,
+        John Garry <john.garry@huawei.com>,
+        Don Brace <don.brace@microsemi.com>,
+        James Smart <james.smart@broadcom.com>,
+        Dick Kennedy <dick.kennedy@broadcom.com>,
+        Kashyap Desai <kashyap.desai@broadcom.com>,
+        Sumit Saxena <sumit.saxena@broadcom.com>,
+        Shivasharan S <shivasharan.srikanteshwara@broadcom.com>,
+        Sathya Prakash <sathya.prakash@broadcom.com>,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+        Suganath Prabu Subramani 
+        <suganath-prabu.subramani@broadcom.com>,
+        Jack Wang <jinpu.wang@cloud.ionos.com>
+Cc:     Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-scsi@vger.kernel.org, esc.storagedev@microsemi.com,
+        megaraidlinux.pdl@broadcom.com, MPT-FusionLinux.pdl@broadcom.com
+Subject: Re: [PATCH v2 04/15] scsi: aic79xx: use generic power management
+Message-ID: <20200908165958.GE9948@gmail.com>
+References: <20200720133427.454400-1-vaibhavgupta40@gmail.com>
+ <20200720133427.454400-5-vaibhavgupta40@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200720133427.454400-5-vaibhavgupta40@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The TI j7200 EVM base board has TI DP83867 PHY connected to external CPSW
-NUSS Port 1 in rgmii-rxid mode.
-
-Hence, add pinmux and Ethernet PHY configuration for TI j7200 SoC MCU
-Gigabit Ethernet two ports Switch subsystem (CPSW NUSS).
-
-Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
----
- .../dts/ti/k3-j7200-common-proc-board.dts     | 45 +++++++++++++++++++
- 1 file changed, 45 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
-index e27069317c4e..f7e6b9b5ef5f 100644
---- a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
-+++ b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
-@@ -6,6 +6,7 @@
- /dts-v1/;
- 
- #include "k3-j7200-som-p0.dtsi"
-+#include <dt-bindings/net/ti-dp83867.h>
- 
- / {
- 	chosen {
-@@ -14,6 +15,32 @@
- 	};
- };
- 
-+&wkup_pmx0 {
-+	mcu_cpsw_pins_default: mcu-cpsw-pins-default {
-+		pinctrl-single,pins = <
-+			J721E_WKUP_IOPAD(0x0068, PIN_OUTPUT, 0) /* MCU_RGMII1_TX_CTL */
-+			J721E_WKUP_IOPAD(0x006c, PIN_INPUT, 0) /* MCU_RGMII1_RX_CTL */
-+			J721E_WKUP_IOPAD(0x0070, PIN_OUTPUT, 0) /* MCU_RGMII1_TD3 */
-+			J721E_WKUP_IOPAD(0x0074, PIN_OUTPUT, 0) /* MCU_RGMII1_TD2 */
-+			J721E_WKUP_IOPAD(0x0078, PIN_OUTPUT, 0) /* MCU_RGMII1_TD1 */
-+			J721E_WKUP_IOPAD(0x007c, PIN_OUTPUT, 0) /* MCU_RGMII1_TD0 */
-+			J721E_WKUP_IOPAD(0x0088, PIN_INPUT, 0) /* MCU_RGMII1_RD3 */
-+			J721E_WKUP_IOPAD(0x008c, PIN_INPUT, 0) /* MCU_RGMII1_RD2 */
-+			J721E_WKUP_IOPAD(0x0090, PIN_INPUT, 0) /* MCU_RGMII1_RD1 */
-+			J721E_WKUP_IOPAD(0x0094, PIN_INPUT, 0) /* MCU_RGMII1_RD0 */
-+			J721E_WKUP_IOPAD(0x0080, PIN_INPUT, 0) /* MCU_RGMII1_TXC */
-+			J721E_WKUP_IOPAD(0x0084, PIN_INPUT, 0) /* MCU_RGMII1_RXC */
-+		>;
-+	};
-+
-+	mcu_mdio_pins_default: mcu-mdio1-pins-default {
-+		pinctrl-single,pins = <
-+			J721E_WKUP_IOPAD(0x009c, PIN_OUTPUT, 0) /* (L1) MCU_MDIO0_MDC */
-+			J721E_WKUP_IOPAD(0x0098, PIN_INPUT, 0) /* (L4) MCU_MDIO0_MDIO */
-+		>;
-+	};
-+};
-+
- &wkup_uart0 {
- 	/* Wakeup UART is used by System firmware */
- 	status = "disabled";
-@@ -62,3 +89,21 @@
- 	/* UART not brought out */
- 	status = "disabled";
- };
-+
-+&mcu_cpsw {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&mcu_cpsw_pins_default &mcu_mdio_pins_default>;
-+};
-+
-+&davinci_mdio {
-+	phy0: ethernet-phy@0 {
-+		reg = <0>;
-+		ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_00_NS>;
-+		ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
-+	};
-+};
-+
-+&cpsw_port1 {
-+	phy-mode = "rgmii-rxid";
-+	phy-handle = <&phy0>;
-+};
--- 
-2.17.1
-
+On Mon, Jul 20, 2020 at 07:04:17PM +0530, Vaibhav Gupta wrote:
+> With legacy PM hooks, it was the responsibility of a driver to manage PCI
+> states and also the device's power state. The generic approach is to let
+> the PCI core handle the work.
+> 
+> PCI core passes "struct device*" as an argument to the .suspend() and
+> .resume() callbacks.
+> 
+> Driver was using PCI helper functions like pci_save/restore_state(),
+> pci_disable/enable_device(), pci_set_power_state() and pci_enable_wake().
+> They should not be invoked by the driver.
+> 
+> Also, .suspend() and .resume() were invoking other functions for PM, which
+> were againg bounded by "#ifdef CONFIG_PM" directive. Remove them and mark
+> them as "__maybe_unused".
+> 
+> Compile-tested only.
+> 
+> Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
+> ---
+>  drivers/scsi/aic7xxx/aic79xx.h         | 12 +++----
+>  drivers/scsi/aic7xxx/aic79xx_core.c    |  8 ++---
+>  drivers/scsi/aic7xxx/aic79xx_osm_pci.c | 43 +++++++-------------------
+>  drivers/scsi/aic7xxx/aic79xx_pci.c     |  6 ++--
+>  4 files changed, 20 insertions(+), 49 deletions(-)
+> 
+> diff --git a/drivers/scsi/aic7xxx/aic79xx.h b/drivers/scsi/aic7xxx/aic79xx.h
+> index 9a515551641c..dd5dfd4f30a5 100644
+> --- a/drivers/scsi/aic7xxx/aic79xx.h
+> +++ b/drivers/scsi/aic7xxx/aic79xx.h
+> @@ -1330,10 +1330,8 @@ const struct	ahd_pci_identity *ahd_find_pci_device(ahd_dev_softc_t);
+>  int			  ahd_pci_config(struct ahd_softc *,
+>  					 const struct ahd_pci_identity *);
+>  int	ahd_pci_test_register_access(struct ahd_softc *);
+> -#ifdef CONFIG_PM
+> -void	ahd_pci_suspend(struct ahd_softc *);
+> -void	ahd_pci_resume(struct ahd_softc *);
+> -#endif
+> +void __maybe_unused	ahd_pci_suspend(struct ahd_softc *);
+> +void __maybe_unused	ahd_pci_resume(struct ahd_softc *);
+>  
+>  /************************** SCB and SCB queue management **********************/
+>  void		ahd_qinfifo_requeue_tail(struct ahd_softc *ahd,
+> @@ -1344,10 +1342,8 @@ struct ahd_softc	*ahd_alloc(void *platform_arg, char *name);
+>  int			 ahd_softc_init(struct ahd_softc *);
+>  void			 ahd_controller_info(struct ahd_softc *ahd, char *buf);
+>  int			 ahd_init(struct ahd_softc *ahd);
+> -#ifdef CONFIG_PM
+> -int			 ahd_suspend(struct ahd_softc *ahd);
+> -void			 ahd_resume(struct ahd_softc *ahd);
+> -#endif
+> +int __maybe_unused	 ahd_suspend(struct ahd_softc *ahd);
+> +void __maybe_unused	 ahd_resume(struct ahd_softc *ahd);
+>  int			 ahd_default_config(struct ahd_softc *ahd);
+>  int			 ahd_parse_vpddata(struct ahd_softc *ahd,
+>  					   struct vpd_config *vpd);
+> diff --git a/drivers/scsi/aic7xxx/aic79xx_core.c b/drivers/scsi/aic7xxx/aic79xx_core.c
+> index e4a09b93d00c..06ee7abd0f8f 100644
+> --- a/drivers/scsi/aic7xxx/aic79xx_core.c
+> +++ b/drivers/scsi/aic7xxx/aic79xx_core.c
+> @@ -7880,11 +7880,9 @@ ahd_pause_and_flushwork(struct ahd_softc *ahd)
+>  	ahd->flags &= ~AHD_ALL_INTERRUPTS;
+>  }
+>  
+> -#ifdef CONFIG_PM
+> -int
+> +int __maybe_unused
+>  ahd_suspend(struct ahd_softc *ahd)
+>  {
+> -
+>  	ahd_pause_and_flushwork(ahd);
+>  
+>  	if (LIST_FIRST(&ahd->pending_scbs) != NULL) {
+> @@ -7895,15 +7893,13 @@ ahd_suspend(struct ahd_softc *ahd)
+>  	return (0);
+>  }
+>  
+> -void
+> +void __maybe_unused
+>  ahd_resume(struct ahd_softc *ahd)
+>  {
+> -
+>  	ahd_reset(ahd, /*reinit*/TRUE);
+>  	ahd_intr_enable(ahd, TRUE); 
+>  	ahd_restart(ahd);
+>  }
+> -#endif
+>  
+>  /************************** Busy Target Table *********************************/
+>  /*
+> diff --git a/drivers/scsi/aic7xxx/aic79xx_osm_pci.c b/drivers/scsi/aic7xxx/aic79xx_osm_pci.c
+> index 8b891a05d9e7..07b670b80f1b 100644
+> --- a/drivers/scsi/aic7xxx/aic79xx_osm_pci.c
+> +++ b/drivers/scsi/aic7xxx/aic79xx_osm_pci.c
+> @@ -74,11 +74,10 @@ static const struct pci_device_id ahd_linux_pci_id_table[] = {
+>  
+>  MODULE_DEVICE_TABLE(pci, ahd_linux_pci_id_table);
+>  
+> -#ifdef CONFIG_PM
+> -static int
+> -ahd_linux_pci_dev_suspend(struct pci_dev *pdev, pm_message_t mesg)
+> +static int __maybe_unused
+> +ahd_linux_pci_dev_suspend(struct device *dev)
+>  {
+> -	struct ahd_softc *ahd = pci_get_drvdata(pdev);
+> +	struct ahd_softc *ahd = dev_get_drvdata(dev);
+>  	int rc;
+>  
+>  	if ((rc = ahd_suspend(ahd)))
+> @@ -86,39 +85,20 @@ ahd_linux_pci_dev_suspend(struct pci_dev *pdev, pm_message_t mesg)
+>  
+>  	ahd_pci_suspend(ahd);
+>  
+> -	pci_save_state(pdev);
+> -	pci_disable_device(pdev);
+> -
+> -	if (mesg.event & PM_EVENT_SLEEP)
+> -		pci_set_power_state(pdev, PCI_D3hot);
+> -
+>  	return rc;
+>  }
+>  
+> -static int
+> -ahd_linux_pci_dev_resume(struct pci_dev *pdev)
+> +static int __maybe_unused
+> +ahd_linux_pci_dev_resume(struct device *dev)
+>  {
+> -	struct ahd_softc *ahd = pci_get_drvdata(pdev);
+> -	int rc;
+> -
+> -	pci_set_power_state(pdev, PCI_D0);
+> -	pci_restore_state(pdev);
+> -
+> -	if ((rc = pci_enable_device(pdev))) {
+> -		dev_printk(KERN_ERR, &pdev->dev,
+> -			   "failed to enable device after resume (%d)\n", rc);
+> -		return rc;
+> -	}
+> -
+> -	pci_set_master(pdev);
+> +	struct ahd_softc *ahd = dev_get_drvdata(dev);
+>  
+>  	ahd_pci_resume(ahd);
+>  
+>  	ahd_resume(ahd);
+>  
+> -	return rc;
+> +	return 0;
+>  }
+> -#endif
+>  
+>  static void
+>  ahd_linux_pci_dev_remove(struct pci_dev *pdev)
+> @@ -224,13 +204,14 @@ ahd_linux_pci_dev_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+>  	return (0);
+>  }
+>  
+> +static SIMPLE_DEV_PM_OPS(ahd_linux_pci_dev_pm_ops,
+> +			 ahd_linux_pci_dev_suspend,
+> +			 ahd_linux_pci_dev_resume);
+> +
+>  static struct pci_driver aic79xx_pci_driver = {
+>  	.name		= "aic79xx",
+>  	.probe		= ahd_linux_pci_dev_probe,
+> -#ifdef CONFIG_PM
+> -	.suspend	= ahd_linux_pci_dev_suspend,
+> -	.resume		= ahd_linux_pci_dev_resume,
+> -#endif
+> +	.driver.pm	= &ahd_linux_pci_dev_pm_ops,
+>  	.remove		= ahd_linux_pci_dev_remove,
+>  	.id_table	= ahd_linux_pci_id_table
+>  };
+> diff --git a/drivers/scsi/aic7xxx/aic79xx_pci.c b/drivers/scsi/aic7xxx/aic79xx_pci.c
+> index 8397ae93f7dd..2f0bdb9225a4 100644
+> --- a/drivers/scsi/aic7xxx/aic79xx_pci.c
+> +++ b/drivers/scsi/aic7xxx/aic79xx_pci.c
+> @@ -377,8 +377,7 @@ ahd_pci_config(struct ahd_softc *ahd, const struct ahd_pci_identity *entry)
+>  	return ahd_pci_map_int(ahd);
+>  }
+>  
+> -#ifdef CONFIG_PM
+> -void
+> +void __maybe_unused
+>  ahd_pci_suspend(struct ahd_softc *ahd)
+>  {
+>  	/*
+> @@ -394,7 +393,7 @@ ahd_pci_suspend(struct ahd_softc *ahd)
+>  
+>  }
+>  
+> -void
+> +void __maybe_unused
+>  ahd_pci_resume(struct ahd_softc *ahd)
+>  {
+>  	ahd_pci_write_config(ahd->dev_softc, DEVCONFIG,
+> @@ -404,7 +403,6 @@ ahd_pci_resume(struct ahd_softc *ahd)
+>  	ahd_pci_write_config(ahd->dev_softc, CSIZE_LATTIME,
+>  			     ahd->suspend_state.pci_state.csize_lattime, /*bytes*/1);
+>  }
+> -#endif
+>  
+>  /*
+>   * Perform some simple tests that should catch situations where
+> -- 
+> 2.27.0
+> 
+.
