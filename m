@@ -2,117 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40E4F261184
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 14:42:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 070FE261176
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 14:37:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730067AbgIHMlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 08:41:51 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:50431 "EHLO
+        id S1730067AbgIHMgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 08:36:53 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:50433 "EHLO
         mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730165AbgIHLu7 (ORCPT
+        with ESMTP id S1730159AbgIHLu7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 8 Sep 2020 07:50:59 -0400
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200908113750euoutp018ba50d627cd5a2fc8af8cb2752e6f8fe~yy-T8zf-z0806108061euoutp01X
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 11:37:50 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200908113750euoutp018ba50d627cd5a2fc8af8cb2752e6f8fe~yy-T8zf-z0806108061euoutp01X
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200908113759euoutp0182f60918801de51e947179797cba1d46~yy-cCbkcL0806108061euoutp01c
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 11:37:59 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200908113759euoutp0182f60918801de51e947179797cba1d46~yy-cCbkcL0806108061euoutp01c
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1599565070;
-        bh=/288GAGi7cofFncgRR5tyjVBqWIquj4HXLwBEHYf7Qw=;
+        s=mail20170921; t=1599565079;
+        bh=0s4Ik3+RTnNQIV6PDJ+CNOxzRLFQDzKVLXECY7JWkyM=;
         h=From:Subject:To:Cc:Date:In-Reply-To:References:From;
-        b=mPS7zcZ8sMF2zK0COeYjxEeIVew5V2dxiYFqId4ADmAZ3vbKhRsuOXnHlOv9Nd8vQ
-         KOl3yjoEiYhA+Ef0obleWD/0B7q2tcLnNxwlGeN04pJv+AZgVfi4pHP7/CJrqhGHEM
-         u6v5NE5KnA9NFd1Y02HmgMbHZf+UCqMZWgNbjeU8=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+        b=Ci26dG2obB34PGBbpcoK3/8aXkWZccE2Q/NYKd9rxM/dP88l4hcJtM2441U11gcG+
+         T4Gn8XsB0ZutjBOOcG1QFvWK+iQ86H08q5XaGMNJQdoJaiaOSVq0ul5/+zr9qNmKC0
+         zZkubkZUIZJ14tCxrhmI3RprBLZ1cFyyFXcVN/4Q=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
         eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20200908113750eucas1p17567859f704041cc33b779bee75e67d2~yy-T28SBo1307213072eucas1p1-;
-        Tue,  8 Sep 2020 11:37:50 +0000 (GMT)
+        20200908113758eucas1p1f922c5bbb2463f540d70f4e219a8362c~yy-bULu0c1732217322eucas1p1K;
+        Tue,  8 Sep 2020 11:37:58 +0000 (GMT)
 Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id C0.C5.06318.E0D675F5; Tue,  8
-        Sep 2020 12:37:50 +0100 (BST)
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id D5.6E.06456.61D675F5; Tue,  8
+        Sep 2020 12:37:58 +0100 (BST)
 Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20200908113750eucas1p198b2d514a44cb9604a09a18f4e94554e~yy-TjJ7-t1307213072eucas1p1_;
-        Tue,  8 Sep 2020 11:37:50 +0000 (GMT)
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20200908113758eucas1p29aad7c57574221fd154e74662a3bc75d~yy-a6Ng_02679626796eucas1p23;
+        Tue,  8 Sep 2020 11:37:58 +0000 (GMT)
 Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
         eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200908113750eusmtrp1294688d346151b316eece8072df90765~yy-Tii8pG2045820458eusmtrp1k;
-        Tue,  8 Sep 2020 11:37:50 +0000 (GMT)
-X-AuditID: cbfec7f5-38bff700000018ae-d2-5f576d0e44a3
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id 05.E1.06314.E0D675F5; Tue,  8
-        Sep 2020 12:37:50 +0100 (BST)
+        20200908113758eusmtrp11702a45991d6c386cce0918636f8b8e4~yy-a5eimt2072320723eusmtrp1K;
+        Tue,  8 Sep 2020 11:37:58 +0000 (GMT)
+X-AuditID: cbfec7f2-809ff70000001938-43-5f576d16396f
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id 27.E1.06314.61D675F5; Tue,  8
+        Sep 2020 12:37:58 +0100 (BST)
 Received: from [106.120.51.71] (unknown [106.120.51.71]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200908113749eusmtip1a1eb2d3f40ced70f90732a09ffbc7e33~yy-TPFKRh0553105531eusmtip1L;
-        Tue,  8 Sep 2020 11:37:49 +0000 (GMT)
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20200908113757eusmtip2ecc970bf5132f075feb3c4300f5e357e~yy-aUvAui1663016630eusmtip2e;
+        Tue,  8 Sep 2020 11:37:57 +0000 (GMT)
 From:   Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Subject: Re: [PATCH] video: fbdev: remove set but not used 'ulCoreClock'
-To:     Jason Yan <yanaijie@huawei.com>
-Cc:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Hulk Robot <hulkci@huawei.com>
-Message-ID: <7d8571f5-7f26-2507-291c-8a66ac3744bd@samsung.com>
-Date:   Tue, 8 Sep 2020 13:37:49 +0200
+Subject: Re: [PATCH v1 0/2] video: fbdev: radeonfb: PCI PM framework upgrade
+ and fix-ups.
+To:     Vaibhav Gupta <vaibhavgupta40@gmail.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bjorn Helgaas <bjorn@helgaas.com>,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Thierry Reding <treding@nvidia.com>,
+        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <9798158d-ef29-e5a4-c792-fd51ba64b91b@samsung.com>
+Date:   Tue, 8 Sep 2020 13:37:57 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
         Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20200827130028.428893-1-yanaijie@huawei.com>
+In-Reply-To: <20200907070221.29938-1-vaibhavgupta40@gmail.com>
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprKKsWRmVeSWpSXmKPExsWy7djPc7p8ueHxBr0LVSyufH3PZvF/+RVG
-        ixN9H1gtLu+aw2axaE8nswOrR8uRt6we97uPM3l83iQXwBzFZZOSmpNZllqkb5fAldHQe5e9
-        YD9PxfyXOg2Mc7i6GDk5JARMJO5vW8HexcjFISSwglHiw5LvzBDOF0aJhndvoJzPjBKv9z9n
-        gmnpevmfDSKxnFHi/7TVUM5bRokFUzYyg1SxCVhJTGxfxQhiCwt4SEyft4kFxBYRUJZovD+d
-        FaSBWaCBUeLe4cPsIAleATuJxd87wWwWARWJI48OgNmiAhESnx4cZoWoEZQ4OfMJ0CAODk6g
-        Be/eV4OEmQXEJW49mc8EYctLNG+dzQxx6WR2iWN77EDKJQRcJC70OkGEhSVeHd/CDmHLSJye
-        3MMCco6EwDpGib8dL5ghnO2MEssn/2ODqLKWuHPuFxvIIGYBTYn1u/Qhwo4SD9tOM0PM55O4
-        8VYQ4gQ+iUnbpkOFeSU62oQgqtUkNizbwAaztmvnSuYJjEqzkPw1C8kzs5A8Mwth7wJGllWM
-        4qmlxbnpqcXGeanlesWJucWleel6yfm5mxiBieX0v+NfdzDu+5N0iFGAg1GJh9fDNyxeiDWx
-        rLgy9xCjBAezkgiv09nTcUK8KYmVValF+fFFpTmpxYcYpTlYlMR5jRe9jBUSSE8sSc1OTS1I
-        LYLJMnFwSjUwtjxw/V9QZ3J1UZGSQnXGv8xFnWEaazheLc+umfaNWTa86skt6RV9ApGRza58
-        KgHhgXarZXMLOdqrJ+2y4b6gsf9cttXUK1ydO5ZaMsam3v++NvJi+6m9547s3Zl7q49/pePa
-        X3lR6y6xc7esU2tP0FzG6VXaerp3a05W/Yy6zVv550qY5TgosRRnJBpqMRcVJwIAHfYGeCgD
-        AAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrBIsWRmVeSWpSXmKPExsVy+t/xu7p8ueHxBs+mCFhc+fqezeL/8iuM
-        Fif6PrBaXN41h81i0Z5OZgdWj5Yjb1k97ncfZ/L4vEkugDlKz6Yov7QkVSEjv7jEVina0MJI
-        z9DSQs/IxFLP0Ng81srIVEnfziYlNSezLLVI3y5BL6Oh9y57wX6eivkvdRoY53B1MXJySAiY
-        SHS9/M/WxcjFISSwlFHixP5nQA4HUEJG4vj6MogaYYk/17qgal4zSny6vZQZJMEmYCUxsX0V
-        I4gtLOAhMX3eJhYQW0RAWaLx/nRWkAZmgQZGiZNf2xghunsZJWZPuQvWzStgJ7H4eyc7iM0i
-        oCJx5NEBMFtUIELi8I5ZjBA1ghInZz5hAbmIE2jbu/fVIGFmAXWJP/MuMUPY4hK3nsxngrDl
-        JZq3zmaewCg0C0n3LCQts5C0zELSsoCRZRWjSGppcW56brGhXnFibnFpXrpecn7uJkZgLG07
-        9nPzDsZLG4MPMQpwMCrx8H7wCosXYk0sK67MPcQowcGsJMLrdPZ0nBBvSmJlVWpRfnxRaU5q
-        8SFGU6DfJjJLiSbnA+M8ryTe0NTQ3MLS0NzY3NjMQkmct0PgYIyQQHpiSWp2ampBahFMHxMH
-        p1QDo15lyveLd6ynP7kfJfjgtErl8wcrvE6ruxQukjzwzy5abH2UotCm3380XeYqWAjftJDp
-        2fLtt0fIJA+Lqcm5368mrXt6ieXC5VTmdWKaz9fxtDxXuv7mBs8vy3d3FSX3xFotTFnx8dOE
-        pWJ/Isv8J/vmLg+tFo09WxcT2jP57bVmjzxd++kWYUosxRmJhlrMRcWJAHvS3ka7AgAA
-X-CMS-MailID: 20200908113750eucas1p198b2d514a44cb9604a09a18f4e94554e
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA01Sa0hTYRjm2zk7O44mn2ttL7MSRhRJWVLRqcTK+nGQqP6YXShbdZiiW7I5
+        SxHUylK7YKlJa6aJmVo5MfFaBCvTsK20K2lO0pWZy7GKtEjzdJT893zP5X3fBz6akPeJ1XSc
+        IYkzGrQJGkpKNjwedy5X6qNjVrY6NIz3RBbBlJ+IZTJdXYh5+WOUYoaf3qGYjgteMZM7MEQy
+        L1qsFHO/qELMjLdcI5me3/5MU2+OiCm/NyreJGObLe8lbGmdmW2wvybZcyOnxGxddQ7FPii+
+        LWFdZ9tF7O+xfMSeP/mVYr/VLdwp3SsNO8IlxCVzxhXhB6WxnoEPosSRwOMFdhuZgcoUuciP
+        Brwa2u67UC6S0nJcieCn1UsJj+8IPr90TD++IfDmjUtmIv23aiSCcBNBz6lCES/IsQdBTU8A
+        jym8Hi6eqZ6aS9Nz8T4o7FLztAIvg+42i4jPEriPgKL+ZwQvyHA4vOooo3hM4kUw9thK8nge
+        3g2+/odiwRMAT64MkvxMvym/79ICniawCt4NlogEHASNHivBzwecQ0NWhw0JR2+Fy1cd0wXm
+        wnB7/TSeD53550ghUIPgT/bQdLoRwc38CUpwbYBe5y+K30zgpWBrWSHQm6HyyY1/JQH7w1tP
+        gHCEP1xqKCIEWgbZp+WCezHUVtRSM2tzm6uIPKSxzGpmmVXHMquO5f/eUkRWIxVnNul1nCnU
+        wB0LMWn1JrNBF3L4qL4OTf26zol2XxP60X3IjjCNNHNk3shdMXKxNtmUorcjoAmNQhbh6Dwg
+        lx3RpqRyxqMxRnMCZ7KjQJrUqGSryj7vl2OdNomL57hEzjijimg/dQZaU79tY9BYnmvgj84d
+        /FEd5yqJvtt3YOFklM2xhxt2BkWnOzIfnYyMf7NamZzlS6rIq5ImNp13y9MG20LtT8O/VJX0
+        hj5PmySXdDW2Br/J7vbumCweK98y/1Mrjq9kAwqDwraoIppfX1+nWevcHpXq3r1HYX6gLIAR
+        pTvsco4rXUOaYrWhwYTRpP0LxD5Yr3EDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrAIsWRmVeSWpSXmKPExsVy+t/xe7piueHxBjuOsVl8aGpltljSlGHR
+        eP8io8WVr+/ZLF6dWctmcaLvA6tF1+MXLBaXd81hs9g7fRmrxc9d81gsbv/ms9hxp5PJYsme
+        96wOvB47Z91l91iwqdRj26FrLB49b1pYPTat6mTz2D93DbvH/e7jTB6/f0xm9Ohtfsfm8XmT
+        XABXlJ5NUX5pSapCRn5xia1StKGFkZ6hpYWekYmlnqGxeayVkamSvp1NSmpOZllqkb5dgl7G
+        28ePmAreSFdMObSepYFxkUgXIyeHhICJxIPV69i7GLk4hASWMkqsubqQtYuRAyghI3F8fRlE
+        jbDEn2tdbBA1rxklGo5NZQRJsAlYSUxsX8UIUi8sEC0x9aIUSFhEQEfi0tFZTCD1zAIPmCUO
+        vHjFDNE8kVFi34SNLCBVvAJ2EldPLGIDsVkEVCR+HJsDFhcViJA4vGMWI0SNoMTJmU9YQBZw
+        AtV/miQLEmYWUJf4M+8SM4QtLnHryXwmCFteYvvbOcwTGIVmIemehaRlFpKWWUhaFjCyrGIU
+        SS0tzk3PLTbUK07MLS7NS9dLzs/dxAiM7W3Hfm7ewXhpY/AhRgEORiUe3g9eYfFCrIllxZW5
+        hxglOJiVRHidzp6OE+JNSaysSi3Kjy8qzUktPsRoCvTbRGYp0eR8YNrJK4k3NDU0t7A0NDc2
+        NzazUBLn7RA4GCMkkJ5YkpqdmlqQWgTTx8TBKdXAGDfn++vtAsv3ZUzZ3DNtjUqo0xeBBVWz
+        lT1srvYnZ0TfmTrvxKqZBuHpDHrfzLKE9996d6puAqc0e+G/j7t+9Tm/0b3/0/j9tjMi5uLm
+        U06/4f+pHxwx7X6nou0DPYYp/D8uLpLWu7yNU/J/29U5irO49suyL1/KHP/k57Elz9qznt9d
+        Pf2B13olluKMREMt5qLiRAClTHXlAwMAAA==
+X-CMS-MailID: 20200908113758eucas1p29aad7c57574221fd154e74662a3bc75d
 X-Msg-Generator: CA
 Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20200827130059eucas1p21c6e4789266a0db0890e20ebdca8c530
+X-RootMTR: 20200907070432eucas1p27ce44eec5f3eaf3644c868c7a965ee74
 X-EPHeader: CA
 CMS-TYPE: 201P
-X-CMS-RootMailID: 20200827130059eucas1p21c6e4789266a0db0890e20ebdca8c530
-References: <CGME20200827130059eucas1p21c6e4789266a0db0890e20ebdca8c530@eucas1p2.samsung.com>
-        <20200827130028.428893-1-yanaijie@huawei.com>
+X-CMS-RootMailID: 20200907070432eucas1p27ce44eec5f3eaf3644c868c7a965ee74
+References: <CGME20200907070432eucas1p27ce44eec5f3eaf3644c868c7a965ee74@eucas1p2.samsung.com>
+        <20200907070221.29938-1-vaibhavgupta40@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 8/27/20 3:00 PM, Jason Yan wrote:
-> This addresses the following gcc warning with "make W=1":
+On 9/7/20 9:02 AM, Vaibhav Gupta wrote:
+> Linux Kernel Mentee: Remove Legacy Power Management. 
 > 
-> drivers/video/fbdev/kyro/STG4000InitDevice.c: In function
-> ‘SetCoreClockPLL’:
-> drivers/video/fbdev/kyro/STG4000InitDevice.c:247:6: warning: variable
-> ‘ulCoreClock’ set but not used [-Wunused-but-set-variable] // yanaijie
-> fixed
->   247 |  u32 ulCoreClock;
->       |      ^~~~~~~~~~~
+> The original goal of the patch series is to upgrade the power management
+> framework of radeonfb fbdev driver. This has been done by upgrading .suspend()
+> and .resume() callbacks.
 > 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Jason Yan <yanaijie@huawei.com>
+> The upgrade makes sure that the involvement of PCI Core does not change the
+> order of operations executed in a driver. Thus, does not change its behavior.
+> 
+> During this process, it was found that "#if defined(CONFIG_PM)" at line 1434 is
+> redundant. This was introduced in the commit
+> 42ddb453a0cd ("radeon: Conditionally compile PM code").
+> 
+> ------------
+> 
+> Before 42ddb453a0cd:
+> $ git show 65122f7e80b5:drivers/video/aty/radeon_pm.c | grep -n "#ifdef\|#if\|#else\|#endif\|#elif\|#ifndef"
+> 
+> Based on output in terminal:
+> 
+> 547:#ifdef CONFIG_PM
+>        |-- 959:#ifdef CONFIG_PPC_PMAC
+>        |-- 972:#endif
+>        |-- 1291:#ifdef CONFIG_PPC_OF
+>        |-- 1301:#endif /* CONFIG_PPC_OF */
+>        |-- 1943:#ifdef CONFIG_PPC_OF
+>                    |-- 2206:#if 0 /* Not ready yet */
+>                    |-- 2508:#endif /* 0 */
+>        |-- 2510:#endif /* CONFIG_PPC_OF */
+>        |-- 2648:#ifdef CONFIG_PPC_PMAC
+>        |-- 2654:#endif /* CONFIG_PPC_PMAC */
+>        |-- 2768:#ifdef CONFIG_PPC_PMAC
+>        |-- 2774:#endif /* CONFIG_PPC_PMAC */
+>        |-- 2791:#ifdef CONFIG_PPC_OF__disabled
+>        |-- 2801:#endif /* CONFIG_PPC_OF */
+> 2803:#endif /* CONFIG_PM */
+> 
+> ------------
+> 
+> After 42ddb453a0cd:
+> $ git show 42ddb453a0cd:drivers/video/aty/radeon_pm.c | grep -n "#ifdef\|#if\|#else\|#endif\|#elif\|#ifndef"
+> 
+> Based on output in terminal:
+> 
+> 547:#ifdef CONFIG_PM
+>        |-- 959:#ifdef CONFIG_PPC_PMAC
+>        |-- 972:#endif
+>        |-- 1291:#ifdef CONFIG_PPC_OF
+>        |-- 1301:#endif /* CONFIG_PPC_OF */
+>        |-- 1430:#if defined(CONFIG_PM)
+>                    |-- 1431:#if defined(CONFIG_X86) || defined(CONFIG_PPC_PMAC)
+>                    |-- 1944:#endif
+>                    |-- 1946:#ifdef CONFIG_PPC_OF
+>                                |-- 1947:#ifdef CONFIG_PPC_PMAC
+>                                |-- 2208:#endif
+>                    |-- 2209:#endif
+>                    |-- 2211:#if 0 /* Not ready yet */
+>                    |-- 2513:#endif /* 0 */
+>        |-- 2515:#endif /* CONFIG_PPC_OF */
+>        |-- 2653:#ifdef CONFIG_PPC_PMAC
+>        |-- 2659:#endif /* CONFIG_PPC_PMAC */
+>        |-- 2773:#ifdef CONFIG_PPC_PMAC
+>        |-- 2779:#endif /* CONFIG_PPC_PMAC */
+>        |-- 2796:#ifdef CONFIG_PPC_OF__disabled
+>        |-- 2806:#endif /* CONFIG_PPC_OF */
+> 2808:#endif /* CONFIG_PM */
+> 
+> ------------
+> 
+> This also affected the CONFIG_PPC_OF container (line 1943 at commit 65122f7e80b5)
+> 
+> The patch-series fixes it along with PM upgrade.
+> 
+> All patches are compile-tested only.
+> 
+> Test tools:
+>     - Compiler: gcc (GCC) 10.1.0
+>     - allmodconfig build: make -j$(nproc) W=1 all
+> 
+> Vaibhav Gupta (2):
+>   video: fbdev: aty: radeon_pm: remove redundant CONFIG_PM container
+>   fbdev: radeonfb:use generic power management
+> 
+>  drivers/video/fbdev/aty/radeon_base.c | 10 ++++---
+>  drivers/video/fbdev/aty/radeon_pm.c   | 38 ++++++++++++++++++++-------
+>  drivers/video/fbdev/aty/radeonfb.h    |  3 +--
+>  3 files changed, 35 insertions(+), 16 deletions(-)
 
 Applied to drm-misc-next tree, thanks.
 
@@ -121,29 +209,3 @@ Best regards,
 Bartlomiej Zolnierkiewicz
 Samsung R&D Institute Poland
 Samsung Electronics
-
-> ---
->  drivers/video/fbdev/kyro/STG4000InitDevice.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/video/fbdev/kyro/STG4000InitDevice.c b/drivers/video/fbdev/kyro/STG4000InitDevice.c
-> index 1d3f2080aa6f..edaeec2d9590 100644
-> --- a/drivers/video/fbdev/kyro/STG4000InitDevice.c
-> +++ b/drivers/video/fbdev/kyro/STG4000InitDevice.c
-> @@ -244,7 +244,6 @@ int SetCoreClockPLL(volatile STG4000REG __iomem *pSTGReg, struct pci_dev *pDev)
->  {
->  	u32 F, R, P;
->  	u16 core_pll = 0, sub;
-> -	u32 ulCoreClock;
->  	u32 tmp;
->  	u32 ulChipSpeed;
->  
-> @@ -282,7 +281,7 @@ int SetCoreClockPLL(volatile STG4000REG __iomem *pSTGReg, struct pci_dev *pDev)
->  	if (ulChipSpeed == 0)
->  		return -EINVAL;
->  
-> -	ulCoreClock = ProgramClock(REF_FREQ, CORE_PLL_FREQ, &F, &R, &P);
-> +	ProgramClock(REF_FREQ, CORE_PLL_FREQ, &F, &R, &P);
->  
->  	core_pll |= ((P) | ((F - 2) << 2) | ((R - 2) << 11));
->  
