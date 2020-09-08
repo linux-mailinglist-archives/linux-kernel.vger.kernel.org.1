@@ -2,97 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A35B32621A2
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 23:01:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDD002621AA
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 23:05:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730161AbgIHVBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 17:01:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45938 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728390AbgIHVBJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 17:01:09 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B92AFC061573;
-        Tue,  8 Sep 2020 14:01:08 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id gr14so429862ejb.1;
-        Tue, 08 Sep 2020 14:01:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=yuZq5gRtjnAOy/yKCa2afgQGQUjqZmPhiIecQIYO4eA=;
-        b=qZsEpHsLLfxCed5410SrA8rAmZ525i2i7c4wbc8OXp8N6SlmVDp7h0875MI+d+P1AS
-         yxU3wkXW4yiC+OW0P3j5dz9gOgAbwa1iNrlGZoAtC7msxKu+2dvktj66eIX2ytjX1E/9
-         tlhUG1EWTLUt2uNd2eqM3WIyc/KT3lRvmJawNkK1qRtTlpUbJx333MGi2U++GtNkJzUy
-         sGoKssErH5fzsyim9s8uSE9ZKabk2XzzJd8SS7nR+YI01aoe2wNNm2CZdHxQ0uf/2J8q
-         p2iYtl/pXLibEbGb1vYO+scourbh+gHjRlX1qwaizNbyoVtz1VHcqi9rEv24HjIgIIwE
-         yciw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=yuZq5gRtjnAOy/yKCa2afgQGQUjqZmPhiIecQIYO4eA=;
-        b=Cb6vozJOaeXOdLgj6vwxPZeXjPElhw0QIsjCWog3519ITh13njLSUkgdB/qI0z7rL1
-         A/Jbu1H4Ev+5nOR2R4fzjkQYuhN28ZlXdFJuHXX9mj0yc/6Kus2CK917QKf26ydC2ZKG
-         8zWX9a1/EgiChRAsY7Ob9caX03FNcfwVeH8HVuBLPKXEhDHGgMTU/UFYoiS+yp88+nsy
-         /WuW0hLwvcRsGRxx6SHopYIaExkbsZMbhCjGxlxshObkfh+ulLxbw2L13q8Ko+e0a4S/
-         3IsLABTo9VI1k7234VlewlRSp+gd2rOvR+KLy/AA6hnKis/MoOKE7Fua2CeBVRHBaCl8
-         zDeg==
-X-Gm-Message-State: AOAM530LwXPg6u43RY6wi0YjZZPoKWrwk+tIT5/f1wEKg3DQydm6fT4N
-        5+r71flYmFbov45gyt9vf7s=
-X-Google-Smtp-Source: ABdhPJxd/YVT4oASVxc+tdLEjp4ZtwajtJ+9bkMQrQ6WgK3fNzWkGQeJPkcAanshpa+NFiZECBmYgg==
-X-Received: by 2002:a17:906:fcc7:: with SMTP id qx7mr377519ejb.254.1599598864615;
-        Tue, 08 Sep 2020 14:01:04 -0700 (PDT)
-Received: from [192.168.43.239] ([5.100.193.184])
-        by smtp.gmail.com with ESMTPSA id bx24sm257157ejb.51.2020.09.08.14.01.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Sep 2020 14:01:03 -0700 (PDT)
-Subject: Re: [PATCH next] io_uring: fix task hung in io_uring_setup
-To:     Hillf Danton <hdanton@sina.com>, Jens Axboe <axboe@kernel.dk>
-Cc:     io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        viro@zeniv.linux.org.uk,
-        syzbot+107dd59d1efcaf3ffca4@syzkaller.appspotmail.com,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Kees Cook <keescook@chromium.org>
-References: <20200903132119.14564-1-hdanton@sina.com>
- <9bef23b1-6791-6601-4368-93de53212b22@kernel.dk>
- <8031fbe7-9e69-4a79-3b42-55b2a1a690e3@gmail.com>
- <20200908000339.2260-1-hdanton@sina.com>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Message-ID: <778a8166-e031-e691-a44b-1199c68d6a29@gmail.com>
-Date:   Tue, 8 Sep 2020 23:58:39 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
-MIME-Version: 1.0
-In-Reply-To: <20200908000339.2260-1-hdanton@sina.com>
-Content-Type: text/plain; charset=utf-8
+        id S1730054AbgIHVFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 17:05:38 -0400
+Received: from mail-dm6nam11on2114.outbound.protection.outlook.com ([40.107.223.114]:42753
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728197AbgIHVFh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 17:05:37 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=P19edhO0OuW8noVX1tud91X8O32ePvWBs/RSBV7k8yt636AsHCDXr21udTRzlTOgUDAgiHmJgMeLYOp/wx99x+QaP+POdoWXus3pPUzk34qV7/n/WhXnt4oeg1Q5KL3S0Czpw2zzKCI7wZV7OwhkmJ1ysUo0rFqw3bBym1x+E9rLHxje6lXhAqDoW/vJcNT4DUDaPXU2UKuCUWpRxyCcRNwkZsFKlsKeVTVxmnoYbcIwfIUh6K0DUHk/bWrcR0KbDaC549MpY9lQr7dXCYjeeT7kpJbsF08ke4BELc/nSYs6yLDm5851TD+U8GvtAcEoLNCFxcCHGjezGSFx4ko2cA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jWHlhjH6w/iTHJiVheEJwP1KwHrUuTVphtqBigu/f1g=;
+ b=mzSIAt3ZjUqYk8TNhdt3eBI+Yzd2PH9+270LzerDl4nzX0dg80vCQRp0MpxBrSCySu8DKerQZOa+A4gVbwmWb6DNfKNcHyj7ZlvGtrZWq192CPQ1EWZ9mrujei6oMyW+HSg3MAGvSxTzdkgRnGJEJog+Nq5nfxuJ3jOy0xeG4ULSPCx9SdcLNQnTEuY1eXLVtR75h0uu7stXaoRoreo/nrKI6S2khMg+kosAeMEfsP0c2NpTqWMi573vPQ79exyeRmdEnwKieY+X8VL2Un2Haw0Uht/4AN4KhUUmzQNaS0P5b33s1VWtqp2rOMPfYUiB+nvEuS45oyxqzYLhvl/s1g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jWHlhjH6w/iTHJiVheEJwP1KwHrUuTVphtqBigu/f1g=;
+ b=VtO680JKADHkZgdn2MkjWKUoU7/ginLqNMOE7cFpO40Kfe3N7O/v7MckJSqUDKoR70APeKxMGQcRxySM0x1jz6UU5pUE8MHcngV8e0cLqYljVMX3RDHcaFTqLpdpjJ8RUkKE4l6b5Ob8sXHCtFpiVSvm3ZKalHkOceIkY8Vy6p0=
+Received: from MW2PR2101MB1052.namprd21.prod.outlook.com (2603:10b6:302:a::16)
+ by MW2PR2101MB1801.namprd21.prod.outlook.com (2603:10b6:302:5::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.4; Tue, 8 Sep
+ 2020 21:05:34 +0000
+Received: from MW2PR2101MB1052.namprd21.prod.outlook.com
+ ([fe80::d00b:3909:23b:83f1]) by MW2PR2101MB1052.namprd21.prod.outlook.com
+ ([fe80::d00b:3909:23b:83f1%5]) with mapi id 15.20.3391.004; Tue, 8 Sep 2020
+ 21:05:34 +0000
+From:   Michael Kelley <mikelley@microsoft.com>
+To:     Dexuan Cui <decui@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        vkuznets <vkuznets@redhat.com>
+Subject: RE: [PATCH] Drivers: hv: vmbus: hibernation: do not hang forever in
+ vmbus_bus_resume()
+Thread-Topic: [PATCH] Drivers: hv: vmbus: hibernation: do not hang forever in
+ vmbus_bus_resume()
+Thread-Index: AQHWgzAke73uaFTcbE6462qO1rlMYalfQJjw
+Date:   Tue, 8 Sep 2020 21:05:34 +0000
+Message-ID: <MW2PR2101MB1052BE3C25E87FE1CA5BA0F8D7290@MW2PR2101MB1052.namprd21.prod.outlook.com>
+References: <20200905025555.45614-1-decui@microsoft.com>
+In-Reply-To: <20200905025555.45614-1-decui@microsoft.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2020-09-08T21:05:32Z;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=fc517d48-880d-4b5b-af8b-944f44fef7cb;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0
+authentication-results: microsoft.com; dkim=none (message not signed)
+ header.d=none;microsoft.com; dmarc=none action=none
+ header.from=microsoft.com;
+x-originating-ip: [24.22.167.197]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 9aec682e-cce4-4491-8e3b-08d8543aed86
+x-ms-traffictypediagnostic: MW2PR2101MB1801:
+x-ms-exchange-transport-forked: True
+x-ld-processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
+x-microsoft-antispam-prvs: <MW2PR2101MB1801E4A8DC9B594576F83850D7290@MW2PR2101MB1801.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: bHkRdDl5RSxt5YTsWHVNpoUS7mbcLQVmYtQP82n80/gTCPyD3m5QNtH3Ux5lmUrNmPSLsVsSgpl1xNjbWCtHgPq9wLaT3y6kUANlPr9W5TvL/9oXu0MwXu/LGsJdXSI9XG/N3yNceUtW/Vg80gfAB6Sm2/J7y8Neyab6U9Yq8iWKcguPbeK2QJsJKyL9S+pNR2VTPkKrLQSNXgEpVZwjJBVfk/iHjhqt27+rCy5dC8b68ma+/cdMO7tPe3029Y2RhNJIraX/fOg4K7+p0ZaTtZXZngFTX144SPnULAvX/n4790gd3X94jbOs36G3MlrhaSLmdP0OtR1ZYjlUgxOdSrnCr2TzRmdmsm1N1xxoaYn5AbN+11bbAiiFkTvRZwE6
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR2101MB1052.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(376002)(346002)(39860400002)(136003)(26005)(9686003)(82950400001)(82960400001)(55016002)(52536014)(8990500004)(10290500003)(5660300002)(110136005)(8936002)(83380400001)(8676002)(64756008)(2906002)(66556008)(66446008)(76116006)(71200400001)(66946007)(66476007)(33656002)(478600001)(6506007)(86362001)(186003)(316002)(7696005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: 9vkB4J+YufrZwHPiXy/83ocvGFJGcupA4tyKT9KtVuLOJViyDEh9qyH47KHxBN/v5TiQxzME8SXu5nFuaAc3Tpxq4RtCJwxTYfy0Tt9byG0T/dk7GVXXPgFht2jneO6raHFPcv/MANIhSUsRs6utA7ImNJiw7eCFw8ay9qhh2M8S1t/sbRb5u2ZT3947yEjbxY3XJE7HytaG5pz4TszqaHP0+F6M5Nn8/AJcPZZJAVVqE59QDzA1H0U4cKWBRhi5/yDpgEEyrOqKms0uTVvajeIkbNLS7Q4TLpmfEF+MCyt/zTHeh28cFJe23PsM3LDfLqMfFTsjPZ+kJ9l7IAzdcQQZpqXim4Oo5Fdze/g4iltT21HR2g6MkmRUlAVv31gkNwIJGvxmrczsf/K3vHMEYXp1btNDE4SG3R0j/yoCD84AMFqbSJThQxtHjQiIQAhMQ1km+Mx5JwdjvlTR362lCd59EdiS3aKTisLMw/Qgld2WooKPkoIrGyoIcDsPwFyhVrxCM7Q/2fb5kBlv1VhiV4GwBrSOwzPRiJZhrDiyQSKzRYuoTXOV5dEh2EH38SFOVB5Az6DPJsrCL2ThkxT7RwJAsEFNS5+D2l4ER4NVirxcaYYKCOWz0Fe8uhzXvv7lg6KTr7aUlCItBYKPm+hx0Q==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MW2PR2101MB1052.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9aec682e-cce4-4491-8e3b-08d8543aed86
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Sep 2020 21:05:34.1020
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 4ZML0/b2IFVxsRA5qO/JxEhJ80m7sfGtNg5xeRYqQJbWOW1OIhCEDEQhRqjpKGHjFE6+oEMkWQs21oM9W0bUbRCBsoGoe+nt49iBsI/IhDM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR2101MB1801
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/09/2020 03:03, Hillf Danton wrote:
-> 
-> On Mon, 7 Sep 2020 06:55:04 Jens Axboe wrote:
->> On 9/7/20 2:50 AM, Pavel Begunkov wrote:
->>>
->>> BTW, I don't see the patch itself, and it's neither in io_uring, block
->>> nor fs mailing lists. Hillf, could you please CC proper lists next time?
-> 
-> Yes, I can. So will I send io_uring patches with Pavel Cced.
+From: Dexuan Cui <decui@microsoft.com> Sent: Friday, September 4, 2020 7:56=
+ PM
+>=20
+> After we Stop and later Start a VM that uses Accelerated Networking (NIC
+> SR-IOV), currently the VF vmbus device's Instance GUID can change, so aft=
+er
+> vmbus_bus_resume() -> vmbus_request_offers(), vmbus_onoffer() can not fin=
+d
+> the original vmbus channel of the VF, and hence we can't complete()
+> vmbus_connection.ready_for_resume_event in check_ready_for_resume_event()=
+,
+> and the VM hangs in vmbus_bus_resume() forever.
+>=20
+> Fix the issue by adding a timeout, so the resuming can still succeed, and
+> the saved state is not lost, and according to my test, the user can disab=
+le
+> Accelerated Networking and then will be able to SSH into the VM for
+> further recovery. Also prevent the VM in question from suspending again.
+>=20
+> The host will be fixed so in future the Instance GUID will stay the same
+> across hibernation.
+>=20
+> Fixes: d8bd2d442bb2 ("Drivers: hv: vmbus: Resume after fixing up old prim=
+ary channels")
+> Signed-off-by: Dexuan Cui <decui@microsoft.com>
+> ---
+>  drivers/hv/vmbus_drv.c | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
 
-Thanks
+Reviewed-by: Michael Kelley <mikelley@microsoft.com>
 
->>
->> He did, but I'm guessing that vger didn't like the email for whatever
->> reason. Hillf, did you get an error back from vger when sending the pat	
-> 
-> My inbox, a simple free mail, is perhaps blocked as spam at the vger end.
+>=20
+> diff --git a/drivers/hv/vmbus_drv.c b/drivers/hv/vmbus_drv.c
+> index 910b6e90866c..946d0aba101f 100644
+> --- a/drivers/hv/vmbus_drv.c
+> +++ b/drivers/hv/vmbus_drv.c
+> @@ -2382,7 +2382,10 @@ static int vmbus_bus_suspend(struct device *dev)
+>  	if (atomic_read(&vmbus_connection.nr_chan_close_on_suspend) > 0)
+>  		wait_for_completion(&vmbus_connection.ready_for_suspend_event);
+>=20
+> -	WARN_ON(atomic_read(&vmbus_connection.nr_chan_fixup_on_resume) !=3D 0);
+> +	if (atomic_read(&vmbus_connection.nr_chan_fixup_on_resume) !=3D 0) {
+> +		pr_err("Can not suspend due to a previous failed resuming\n");
+> +		return -EBUSY;
+> +	}
+>=20
+>  	mutex_lock(&vmbus_connection.channel_mutex);
+>=20
+> @@ -2456,7 +2459,9 @@ static int vmbus_bus_resume(struct device *dev)
+>=20
+>  	vmbus_request_offers();
+>=20
+> -	wait_for_completion(&vmbus_connection.ready_for_resume_event);
+> +	if (wait_for_completion_timeout(
+> +		&vmbus_connection.ready_for_resume_event, 10 * HZ) =3D=3D 0)
+> +		pr_err("Some vmbus device is missing after suspending?\n");
+>=20
+>  	/* Reset the event for the next suspend. */
+>  	reinit_completion(&vmbus_connection.ready_for_suspend_event);
+> --
+> 2.19.1
 
--- 
-Pavel Begunkov
