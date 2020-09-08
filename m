@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 361C926099F
+	by mail.lfdr.de (Postfix) with ESMTP id C7AE82609A0
 	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 06:43:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728317AbgIHEmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 00:42:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34786 "EHLO
+        id S1728565AbgIHEnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 00:43:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726815AbgIHEmm (ORCPT
+        with ESMTP id S1728212AbgIHEmq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 00:42:42 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A304FC061573
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 21:42:41 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id c196so4442957pfc.0
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 21:42:41 -0700 (PDT)
+        Tue, 8 Sep 2020 00:42:46 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54EF6C061573
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 21:42:46 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id np15so8171781pjb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 21:42:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=JWwRaOcpZiRwzBRh+MpTLPCX3xdF/W5yfKxu51dW7t0=;
-        b=jJCAQFf0i6/XhYQzb4Y5pyzc0bST3YZDy1pOeI7fY/rb3TvOoUWAgFzTvpsEbHIU5n
-         Nu6mzJdiRpqWdPhsfBv+nOyFv2KexJBF+1tdeIMEUiuL/aw/6sGMBBtIf6HQ2UrbeBRZ
-         XPdyFq1bP1xuEwGdaSt/YFuFk/fmbAQjtjkj+GH0sMmjMUgTiJPKcTei5ViY5ohQ9tc5
-         VmSeZG+m6h6sXqFmUklIsmBUM/ALFNTfnkkonj27HNv8iNrTcszufM9MUwBCNEvPD9e1
-         S0geZCO1bvWqaaiDwBm/uv/x9nVpqRtVCfIWwPQnUrSIll8iviCT0WlFVcRf9N0M69ZU
-         bQ8Q==
+        bh=A/XAWbIK9os72LtbRqYGmKkcxvmOHy9/rCa4psvarhU=;
+        b=QjyxjFBiOWqfZt1hgSeRzOYn5F/F6GVjGX4qi+I2yJH1sHw+v8xnE+bnutSnTv8d0a
+         OK3Yb7olbMQm6QesiQdRXlaujhG7KEtMZaePs1t2lyLzR8w9eCc3Q5dQh5puf5xOI7Hu
+         D28z47Zj8A7x++BGkeyhWkXhDbmJAWvyY/qJHzHkoEFpD4iyh/CflzJjv8iX9S0N77ey
+         jlEEERZM2aEqQJfsToygKC2TNzBObLH1Jday13v0QegGpTWkL8ANptZVzIegDw9g7A2a
+         6FQAsE141+CnCv9sdYKIswDAyrbSN+GnpOHvbD8EgrG9Mw+kDb1gjSCwqjHsm6yBRmSd
+         cUHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
          :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=JWwRaOcpZiRwzBRh+MpTLPCX3xdF/W5yfKxu51dW7t0=;
-        b=ip9mFiOLaap3claG+XYH0nh72w3gVkU+deQX3arR9fIh2Yt9G2PgjCH/ERkTK8VYmS
-         keJ0tdlz7upjweXd+/vdpGxqO2hKS1VbbqKmyErR7XLInFwOA1kHBWMPFMUMIQS7DzqL
-         L+y/M9JmhEfbbGol3L+nbbl2q2n1PGV180dtW/bHZfi+nYsVXqRUFIANuntaIiszzWWc
-         nEjWo8f/2AkZkbYMPsVEfQXLMF9E+lWju18yflXzTAp3Irft4aKZCFprdq6HkWiCZf7t
-         g4Lz0LaEPIkDVZgtjsnTP4ZjPapdJL3ihSqB617d32k7Tknq6GwkVkA42AQDkgHAR0RF
-         7gBw==
-X-Gm-Message-State: AOAM532m2i4RzEOjerfB7boXNUSAHDDbyBsxnFkLdXUKgjiHxpHH/EiS
-        L2SFI1X3YZtPDL6HUicrZSU=
-X-Google-Smtp-Source: ABdhPJwIHTZ5NloFDuQnPDMFVzqUxVWssA9lm8UK4cYHFsteOJMNCHOWfP9kLPpjKc+XA8jsDDBYnA==
-X-Received: by 2002:a17:902:8a85:: with SMTP id p5mr21964814plo.193.1599540161201;
-        Mon, 07 Sep 2020 21:42:41 -0700 (PDT)
+        bh=A/XAWbIK9os72LtbRqYGmKkcxvmOHy9/rCa4psvarhU=;
+        b=K+FrUs36l3lt8fUwZTdKRGAsLeZmwiw4+xN0pRotQ3zsiT2o8ySJA7vtvGTXGf1tpJ
+         /6DeGVrd/Olsaui1kfh/vjaWSkh5ZZYNvlJNNjgCdPPQLpvb5eQfYEZpgLzGq4AWNy6H
+         RZt9sz58gHXQ+nosUiriOjjo4SkPhXmwow7Xwmp+663urLzrlGVvI7FbpdBEmVAOu0PO
+         II63I6Bh6yiztjbzl1zuATCX/LXuc7ZpoZiq21IPOI1Sepi8pSQvDTRmHLBnAjQBRvuI
+         fQ4EKWiDzVIFy97j8nYkO/CaWtV904uK93c/534qYhQoqiuCZJPEOTxRWgAORAooh02M
+         uzNA==
+X-Gm-Message-State: AOAM531QIktOvMGYLxzE7GQMrD0FvWc/3hjzoN75URHue9+5PnzgC4Bq
+        LpwC6sT33SI7Odnp4nvusMc=
+X-Google-Smtp-Source: ABdhPJwynT1cqh+E67Tca2DOAEKZrvhzZaDlZ0NOlh8AoGpO/9TgAzhMQMBt8GH9cotk0KrTsF4QsQ==
+X-Received: by 2002:a17:90a:e981:: with SMTP id v1mr2263174pjy.177.1599540165851;
+        Mon, 07 Sep 2020 21:42:45 -0700 (PDT)
 Received: from balhae.roam.corp.google.com ([101.235.31.111])
-        by smtp.gmail.com with ESMTPSA id q5sm16777625pfn.109.2020.09.07.21.42.38
+        by smtp.gmail.com with ESMTPSA id q5sm16777625pfn.109.2020.09.07.21.42.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Sep 2020 21:42:40 -0700 (PDT)
+        Mon, 07 Sep 2020 21:42:45 -0700 (PDT)
 From:   Namhyung Kim <namhyung@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Jiri Olsa <jolsa@redhat.com>
@@ -58,10 +58,12 @@ Cc:     Ingo Molnar <mingo@kernel.org>,
         Stephane Eranian <eranian@google.com>,
         LKML <linux-kernel@vger.kernel.org>,
         Andi Kleen <andi@firstfloor.org>,
-        Ian Rogers <irogers@google.com>
-Subject: [PATCH 2/4] perf stat: Add --multiply-cgroup option
-Date:   Tue,  8 Sep 2020 13:42:26 +0900
-Message-Id: <20200908044228.61197-3-namhyung@kernel.org>
+        Ian Rogers <irogers@google.com>,
+        John Garry <john.garry@huawei.com>,
+        Kajol Jain <kjain@linux.ibm.com>
+Subject: [PATCH 3/4] perf tools: Copy metric events properly when multiply cgroups
+Date:   Tue,  8 Sep 2020 13:42:27 +0900
+Message-Id: <20200908044228.61197-4-namhyung@kernel.org>
 X-Mailer: git-send-email 2.28.0.526.ge36021eeef-goog
 In-Reply-To: <20200908044228.61197-1-namhyung@kernel.org>
 References: <20200908044228.61197-1-namhyung@kernel.org>
@@ -72,229 +74,267 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The --multiply-cgroup option is a syntax sugar to monitor large number
-of cgroups easily.  Current command line requires to list all the
-events and cgroups even if users want to monitor same events for each
-cgroup.  This patch addresses that usage by copying given events for
-each cgroup on user's behalf.
+The metricgroup__copy_metric_events() is to handle metrics events when
+multiplying event for cgroups.  As the metric events keep pointers to
+evsel, it should be refreshed when events are cloned during the
+operation.
 
-For instance, if they want to monitor 6 events for 200 cgroups each
-they should write 1200 event names (with -e) AND 1200 cgroup names
-(with -G) on the command line.  But with this change, they can just
-specify 6 events and 200 cgroups plus one more option.
+The perf_stat__collect_metric_expr() is also called in case an event
+has a metric directly.
 
-A simpler example below: It wants to measure 3 events for 2 cgroups
-('a' and 'b').  The result is that total 6 events are counted like
-below.
+During the copy, it references evsel by index as the evlist now has
+cloned evsels for the given cgroup.
 
-  $ ./perf stat -a -e cpu-clock,cycles,instructions --multiply-cgroup -G a,b sleep 1
-
-   Performance counter stats for 'system wide':
-
-              988.18 msec cpu-clock                 a #    0.987 CPUs utilized
-       3,153,761,702      cycles                    a #    3.200 GHz                      (100.00%)
-       8,067,769,847      instructions              a #    2.57  insn per cycle           (100.00%)
-              982.71 msec cpu-clock                 b #    0.982 CPUs utilized
-       3,136,093,298      cycles                    b #    3.182 GHz                      (99.99%)
-       8,109,619,327      instructions              b #    2.58  insn per cycle           (99.99%)
-
-         1.001228054 seconds time elapsed
-
+Cc: John Garry <john.garry@huawei.com>
+Cc: Kajol Jain <kjain@linux.ibm.com>
+Cc: Ian Rogers <irogers@google.com>
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/perf/builtin-stat.c | 20 +++++++++-
- tools/perf/util/cgroup.c  | 78 +++++++++++++++++++++++++++++++++++++++
- tools/perf/util/cgroup.h  |  2 +
- tools/perf/util/stat.h    |  1 +
- 4 files changed, 100 insertions(+), 1 deletion(-)
+ tools/perf/builtin-stat.c     |  3 +-
+ tools/perf/util/cgroup.c      | 15 ++++++-
+ tools/perf/util/cgroup.h      |  4 +-
+ tools/perf/util/evlist.c      | 11 +++++
+ tools/perf/util/evlist.h      |  1 +
+ tools/perf/util/metricgroup.c | 77 +++++++++++++++++++++++++++++++++++
+ tools/perf/util/metricgroup.h |  6 +++
+ 7 files changed, 114 insertions(+), 3 deletions(-)
 
 diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-index 483a28ef4ec4..6724d23ce2e7 100644
+index 6724d23ce2e7..55a7dc175cdf 100644
 --- a/tools/perf/builtin-stat.c
 +++ b/tools/perf/builtin-stat.c
-@@ -1068,6 +1068,16 @@ static int parse_control_option(const struct option *opt,
- 	return 0;
- }
- 
-+static int parse_stat_cgroups(const struct option *opt,
-+			      const char *str, int unset)
-+{
-+	stat_config.cgroups = strdup(str);
-+	if (!stat_config.cgroups)
-+		return -1;
-+
-+	return parse_cgroups(opt, str, unset);
-+}
-+
- static struct option stat_options[] = {
- 	OPT_BOOLEAN('T', "transaction", &transaction_run,
- 		    "hardware transaction statistics"),
-@@ -1111,7 +1121,9 @@ static struct option stat_options[] = {
- 	OPT_STRING('x', "field-separator", &stat_config.csv_sep, "separator",
- 		   "print counts with custom separator"),
- 	OPT_CALLBACK('G', "cgroup", &evsel_list, "name",
--		     "monitor event in cgroup name only", parse_cgroups),
-+		     "monitor event in cgroup name only", parse_stat_cgroups),
-+	OPT_BOOLEAN(0, "multiply-cgroup", &multiply_cgroup,
-+		    "multiply the event list by cgroups"),
- 	OPT_STRING('o', "output", &output_name, "file", "output file name"),
- 	OPT_BOOLEAN(0, "append", &append_file, "append to the output file"),
- 	OPT_INTEGER(0, "log-fd", &output_fd,
-@@ -2248,6 +2260,11 @@ int cmd_stat(int argc, const char **argv)
- 	if (add_default_attributes())
+@@ -2261,7 +2261,8 @@ int cmd_stat(int argc, const char **argv)
  		goto out;
  
-+	if (multiply_cgroup && stat_config.cgroups) {
-+		if (evlist__multiply_cgroup(evsel_list, stat_config.cgroups) < 0)
-+			goto out;
-+	}
-+
- 	target__validate(&target);
- 
- 	if ((stat_config.aggr_mode == AGGR_THREAD) && (target.system_wide))
-@@ -2412,6 +2429,7 @@ int cmd_stat(int argc, const char **argv)
- 
- 	evlist__delete(evsel_list);
- 
-+	free(stat_config.cgroups);
- 	metricgroup__rblist_exit(&stat_config.metric_events);
- 	runtime_stat_delete(&stat_config);
- 
-diff --git a/tools/perf/util/cgroup.c b/tools/perf/util/cgroup.c
-index 050dea9f1e88..4892f9496bc2 100644
---- a/tools/perf/util/cgroup.c
-+++ b/tools/perf/util/cgroup.c
-@@ -12,6 +12,7 @@
- #include <api/fs/fs.h>
- 
- int nr_cgroups;
-+bool multiply_cgroup;
- 
- static int open_cgroup(const char *name)
- {
-@@ -156,6 +157,10 @@ int parse_cgroups(const struct option *opt, const char *str,
- 		return -1;
+ 	if (multiply_cgroup && stat_config.cgroups) {
+-		if (evlist__multiply_cgroup(evsel_list, stat_config.cgroups) < 0)
++		if (evlist__multiply_cgroup(evsel_list, stat_config.cgroups,
++					    &stat_config.metric_events) < 0)
+ 			goto out;
  	}
  
-+	/* delay processing cgroups after it sees all events */
-+	if (multiply_cgroup)
-+		return 0;
-+
- 	for (;;) {
- 		p = strchr(str, ',');
- 		e = p ? p : eos;
-@@ -193,6 +198,79 @@ int parse_cgroups(const struct option *opt, const char *str,
+diff --git a/tools/perf/util/cgroup.c b/tools/perf/util/cgroup.c
+index 4892f9496bc2..1ba61b5d66b4 100644
+--- a/tools/perf/util/cgroup.c
++++ b/tools/perf/util/cgroup.c
+@@ -3,6 +3,9 @@
+ #include "evsel.h"
+ #include "cgroup.h"
+ #include "evlist.h"
++#include "rblist.h"
++#include "metricgroup.h"
++#include "stat.h"
+ #include <linux/zalloc.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+@@ -198,10 +201,12 @@ int parse_cgroups(const struct option *opt, const char *str,
  	return 0;
  }
  
-+int evlist__multiply_cgroup(struct evlist *evlist, const char *str)
-+{
-+	struct evlist *orig_list, *tmp_list;
-+	struct evsel *pos, *evsel, *leader;
-+	struct cgroup *cgrp = NULL;
-+	const char *p, *e, *eos = str + strlen(str);
-+	int ret = -1;
-+
-+	if (evlist->core.nr_entries == 0) {
-+		fprintf(stderr, "must define events before cgroups\n");
-+		return -EINVAL;
-+	}
-+
-+	orig_list = evlist__new();
-+	tmp_list = evlist__new();
-+	if (orig_list == NULL || tmp_list == NULL) {
-+		fprintf(stderr, "memory allocation failed\n");
-+		return -ENOMEM;
-+	}
-+
-+	/* save original events and init evlist */
-+	perf_evlist__splice_list_tail(orig_list, &evlist->core.entries);
-+	evlist->core.nr_entries = 0;
-+
-+	for (;;) {
-+		p = strchr(str, ',');
-+		e = p ? p : eos;
-+
-+		/* allow empty cgroups, i.e., skip */
-+		if (e - str) {
-+			/* termination added */
-+			char *name = strndup(str, e - str);
-+			if (!name)
-+				break;
-+
-+			cgrp = cgroup__new(name);
-+			free(name);
-+			if (cgrp == NULL)
-+				break;
-+		} else {
-+			cgrp = NULL;
-+		}
-+
-+		leader = NULL;
-+		evlist__for_each_entry(orig_list, pos) {
-+			evsel = evsel__clone(pos);
-+			evsel->cgrp = cgroup__get(cgrp);
-+
-+			if (evsel__is_group_leader(pos))
-+				leader = evsel;
-+			evsel->leader = leader;
-+
-+			evlist__add(tmp_list, evsel);
-+		}
-+		/* cgroup__new() has a refcount, release it here */
-+		cgroup__put(cgrp);
-+		nr_cgroups++;
-+
-+		perf_evlist__splice_list_tail(evlist, &tmp_list->core.entries);
-+		tmp_list->core.nr_entries = 0;
-+
-+		if (!p) {
-+			ret = 0;
-+			break;
-+		}
-+		str = p+1;
-+	}
-+	evlist__delete(orig_list);
-+	evlist__delete(tmp_list);
-+
-+	return ret;
-+}
-+
- static struct cgroup *__cgroup__findnew(struct rb_root *root, uint64_t id,
- 					bool create, const char *path)
+-int evlist__multiply_cgroup(struct evlist *evlist, const char *str)
++int evlist__multiply_cgroup(struct evlist *evlist, const char *str,
++			    struct rblist *metric_events)
  {
+ 	struct evlist *orig_list, *tmp_list;
+ 	struct evsel *pos, *evsel, *leader;
++	struct rblist orig_metric_events;
+ 	struct cgroup *cgrp = NULL;
+ 	const char *p, *e, *eos = str + strlen(str);
+ 	int ret = -1;
+@@ -221,6 +226,8 @@ int evlist__multiply_cgroup(struct evlist *evlist, const char *str)
+ 	/* save original events and init evlist */
+ 	perf_evlist__splice_list_tail(orig_list, &evlist->core.entries);
+ 	evlist->core.nr_entries = 0;
++	orig_metric_events = *metric_events;
++	rblist__init(metric_events);
+ 
+ 	for (;;) {
+ 		p = strchr(str, ',');
+@@ -256,6 +263,11 @@ int evlist__multiply_cgroup(struct evlist *evlist, const char *str)
+ 		cgroup__put(cgrp);
+ 		nr_cgroups++;
+ 
++		perf_stat__collect_metric_expr(tmp_list);
++		if (metricgroup__copy_metric_events(tmp_list, cgrp, metric_events,
++						    &orig_metric_events) < 0)
++			break;
++
+ 		perf_evlist__splice_list_tail(evlist, &tmp_list->core.entries);
+ 		tmp_list->core.nr_entries = 0;
+ 
+@@ -267,6 +279,7 @@ int evlist__multiply_cgroup(struct evlist *evlist, const char *str)
+ 	}
+ 	evlist__delete(orig_list);
+ 	evlist__delete(tmp_list);
++	rblist__exit(&orig_metric_events);
+ 
+ 	return ret;
+ }
 diff --git a/tools/perf/util/cgroup.h b/tools/perf/util/cgroup.h
-index e98d5975fe55..9a842f243dfb 100644
+index 9a842f243dfb..87dde992a172 100644
 --- a/tools/perf/util/cgroup.h
 +++ b/tools/perf/util/cgroup.h
-@@ -17,6 +17,7 @@ struct cgroup {
- };
- 
- extern int nr_cgroups; /* number of explicit cgroups defined */
-+extern bool multiply_cgroup;  /* create events for each cgroup */
- 
- struct cgroup *cgroup__get(struct cgroup *cgroup);
+@@ -23,9 +23,11 @@ struct cgroup *cgroup__get(struct cgroup *cgroup);
  void cgroup__put(struct cgroup *cgroup);
-@@ -24,6 +25,7 @@ void cgroup__put(struct cgroup *cgroup);
+ 
  struct evlist;
++struct rblist;
  
  struct cgroup *evlist__findnew_cgroup(struct evlist *evlist, const char *name);
-+int evlist__multiply_cgroup(struct evlist *evlist, const char *cgroups);
+-int evlist__multiply_cgroup(struct evlist *evlist, const char *cgroups);
++int evlist__multiply_cgroup(struct evlist *evlist, const char *cgroups,
++			    struct rblist *metric_events);
  
  void evlist__set_default_cgroup(struct evlist *evlist, struct cgroup *cgroup);
  
-diff --git a/tools/perf/util/stat.h b/tools/perf/util/stat.h
-index f8778cffd941..22f381fe93de 100644
---- a/tools/perf/util/stat.h
-+++ b/tools/perf/util/stat.h
-@@ -135,6 +135,7 @@ struct perf_stat_config {
- 	struct rblist		 metric_events;
- 	int			 ctl_fd;
- 	int			 ctl_fd_ack;
-+	char			*cgroups;
- };
+diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
+index e3fa3bf7498a..457df8ce1fd9 100644
+--- a/tools/perf/util/evlist.c
++++ b/tools/perf/util/evlist.c
+@@ -1866,3 +1866,14 @@ int evlist__ctlfd_process(struct evlist *evlist, enum evlist_ctl_cmd *cmd)
  
- void perf_stat__set_big_num(int set);
+ 	return err;
+ }
++
++struct evsel *evlist__get_evsel(struct evlist *evlist, int idx)
++{
++	struct evsel *evsel;
++
++	evlist__for_each_entry(evlist, evsel) {
++		if (evsel->idx == idx)
++			return evsel;
++	}
++	return NULL;
++}
+diff --git a/tools/perf/util/evlist.h b/tools/perf/util/evlist.h
+index c73f7f7f120b..57f5fd5e6290 100644
+--- a/tools/perf/util/evlist.h
++++ b/tools/perf/util/evlist.h
+@@ -381,4 +381,5 @@ int evlist__ctlfd_process(struct evlist *evlist, enum evlist_ctl_cmd *cmd);
+ #define EVLIST_ENABLED_MSG "Events enabled\n"
+ #define EVLIST_DISABLED_MSG "Events disabled\n"
+ 
++struct evsel *evlist__get_evsel(struct evlist *evlist, int idx);
+ #endif /* __PERF_EVLIST_H */
+diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
+index 8831b964288f..f4a67bf85a7c 100644
+--- a/tools/perf/util/metricgroup.c
++++ b/tools/perf/util/metricgroup.c
+@@ -25,6 +25,7 @@
+ #include <api/fs/fs.h>
+ #include "util.h"
+ #include <asm/bug.h>
++#include "cgroup.h"
+ 
+ struct metric_event *metricgroup__lookup(struct rblist *metric_events,
+ 					 struct evsel *evsel,
+@@ -1104,3 +1105,79 @@ bool metricgroup__has_metric(const char *metric)
+ 	}
+ 	return false;
+ }
++
++int metricgroup__copy_metric_events(struct evlist *evlist, struct cgroup *cgrp,
++				    struct rblist *new_metric_events,
++				    struct rblist *old_metric_events)
++{
++	unsigned i;
++
++	for (i = 0; i < rblist__nr_entries(old_metric_events); i++) {
++		struct rb_node *nd;
++		struct metric_event *old_me, *new_me;
++		struct metric_expr *old_expr, *new_expr;
++		struct evsel *evsel;
++		size_t alloc_size;
++		int idx, nr;
++
++		nd = rblist__entry(old_metric_events, i);
++		old_me = container_of(nd, struct metric_event, nd);
++
++		evsel = evlist__get_evsel(evlist, old_me->evsel->idx);
++		new_me = metricgroup__lookup(new_metric_events, evsel, true);
++		if (!new_me)
++			return -ENOMEM;
++
++		pr_debug("copying metric event for cgroup '%s': %s (idx=%d)\n",
++			 cgrp ? cgrp->name : "root", evsel->name, evsel->idx);
++
++		list_for_each_entry(old_expr, &old_me->head, nd) {
++			new_expr = malloc(sizeof(*new_expr));
++			if (!new_expr)
++				return -ENOMEM;
++
++			new_expr->metric_expr = old_expr->metric_expr;
++			new_expr->metric_name = old_expr->metric_name;
++			new_expr->metric_unit = old_expr->metric_unit;
++			new_expr->runtime = old_expr->runtime;
++
++			if (old_expr->metric_refs) {
++				/* calculate number of metric_events */
++				for (nr = 0; old_expr->metric_refs[nr].metric_name; nr++)
++					continue;
++				alloc_size = sizeof(*new_expr->metric_refs);
++				new_expr->metric_refs = calloc(nr + 1, alloc_size);
++				if (!new_expr->metric_refs) {
++					free(new_expr);
++					return -ENOMEM;
++				}
++
++				memcpy(new_expr->metric_refs, old_expr->metric_refs,
++				       nr * alloc_size);
++			} else {
++				new_expr->metric_refs = NULL;
++			}
++
++			/* calculate number of metric_events */
++			for (nr = 0; old_expr->metric_events[nr]; nr++)
++				continue;
++			alloc_size = sizeof(*new_expr->metric_events);
++			new_expr->metric_events = calloc(nr + 1, alloc_size);
++			if (!new_expr->metric_events) {
++				free(new_expr->metric_refs);
++				free(new_expr);
++				return -ENOMEM;
++			}
++
++			/* copy evsel in the same position */
++			for (idx = 0; idx < nr; idx++) {
++				evsel = old_expr->metric_events[idx];
++				evsel = evlist__get_evsel(evlist, evsel->idx);
++				new_expr->metric_events[idx] = evsel;
++			}
++
++			list_add(&new_expr->nd, &new_me->head);
++		}
++	}
++	return 0;
++}
+diff --git a/tools/perf/util/metricgroup.h b/tools/perf/util/metricgroup.h
+index 62623a39cbec..bb9ea9e1ea9a 100644
+--- a/tools/perf/util/metricgroup.h
++++ b/tools/perf/util/metricgroup.h
+@@ -6,11 +6,13 @@
+ #include <linux/rbtree.h>
+ #include <stdbool.h>
+ 
++struct evlist;
+ struct evsel;
+ struct evlist;
+ struct option;
+ struct rblist;
+ struct pmu_events_map;
++struct cgroup;
+ 
+ struct metric_event {
+ 	struct rb_node nd;
+@@ -54,4 +56,8 @@ void metricgroup__print(bool metrics, bool groups, char *filter,
+ bool metricgroup__has_metric(const char *metric);
+ int arch_get_runtimeparam(void);
+ void metricgroup__rblist_exit(struct rblist *metric_events);
++
++int metricgroup__copy_metric_events(struct evlist *evlist, struct cgroup *cgrp,
++				    struct rblist *new_metric_events,
++				    struct rblist *old_metric_events);
+ #endif
 -- 
 2.28.0.526.ge36021eeef-goog
 
