@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 975452618C0
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 20:01:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4620F261917
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 20:07:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731807AbgIHSBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 14:01:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56076 "EHLO mail.kernel.org"
+        id S1732276AbgIHSHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 14:07:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56676 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731342AbgIHQMK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:12:10 -0400
+        id S1731507AbgIHQLz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 12:11:55 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 855C024786;
-        Tue,  8 Sep 2020 15:51:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 15CBC2470E;
+        Tue,  8 Sep 2020 15:50:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599580270;
-        bh=OYOtgndWecoxZwngBj2b+iEf7X5sIueE3Anj06XmutE=;
+        s=default; t=1599580233;
+        bh=NP2yY3AUn0T++OVlmkGsswcYDbLSAlAf9pmk4epeYVA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VMfLFyUcNw5Zt0lhkDT6yBD0xi/ewm+LlpHUU3oGe3fThvHmqLXkZamd3oPkNbYFZ
-         +CQJ2Bd2K4HxpZpsRsg9XdCg+4/CjZjm3E646z8QlyHvk3/w458NqR5eHmt0Kszj1i
-         RKhQSLHT86o3DAjcs7at2lhxdgXcpYaMBptMtEk8=
+        b=UqNFZEIaa1zZDrtIZXH+5HOatxUmE6mzeHQRh3uWUyCwZMTQQEPsvO3W3TUgPNvmc
+         190rAaJTMKveQm2luWeJ4R/tdtvUN50uu1VjsVkZMvq1u5HLpDCQirEZXIuQCJzsJL
+         PcRVWoAR7+e2zYzQ7qLXgumWa2oEeGA7gUl49i8Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tejun Heo <tj@kernel.org>,
-        Karthik Shivaram <karthikgs@fb.com>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 4.19 75/88] libata: implement ATA_HORKAGE_MAX_TRIM_128M and apply to Sandisks
-Date:   Tue,  8 Sep 2020 17:26:16 +0200
-Message-Id: <20200908152224.923995652@linuxfoundation.org>
+        stable@vger.kernel.org, Mikulas Patocka <mpatocka@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>
+Subject: [PATCH 4.19 76/88] dm writecache: handle DAX to partitions on persistent memory correctly
+Date:   Tue,  8 Sep 2020 17:26:17 +0200
+Message-Id: <20200908152224.973045928@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200908152221.082184905@linuxfoundation.org>
 References: <20200908152221.082184905@linuxfoundation.org>
@@ -44,79 +43,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tejun Heo <tj@kernel.org>
+From: Mikulas Patocka <mpatocka@redhat.com>
 
-commit 3b5455636fe26ea21b4189d135a424a6da016418 upstream.
+commit f9e040efcc28309e5c592f7e79085a9a52e31f58 upstream.
 
-All three generations of Sandisk SSDs lock up hard intermittently.
-Experiments showed that disabling NCQ lowered the failure rate significantly
-and the kernel has been disabling NCQ for some models of SD7's and 8's,
-which is obviously undesirable.
+The function dax_direct_access doesn't take partitions into account,
+it always maps pages from the beginning of the device. Therefore,
+persistent_memory_claim() must get the partition offset using
+get_start_sect() and add it to the page offsets passed to
+dax_direct_access().
 
-Karthik worked with Sandisk to root cause the hard lockups to trim commands
-larger than 128M. This patch implements ATA_HORKAGE_MAX_TRIM_128M which
-limits max trim size to 128M and applies it to all three generations of
-Sandisk SSDs.
-
-Signed-off-by: Tejun Heo <tj@kernel.org>
-Cc: Karthik Shivaram <karthikgs@fb.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
+Fixes: 48debafe4f2f ("dm: add writecache target")
+Cc: stable@vger.kernel.org # 4.18+
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/ata/libata-core.c |    5 ++---
- drivers/ata/libata-scsi.c |    8 +++++++-
- include/linux/libata.h    |    1 +
- 3 files changed, 10 insertions(+), 4 deletions(-)
+ drivers/md/dm-writecache.c |   12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
---- a/drivers/ata/libata-core.c
-+++ b/drivers/ata/libata-core.c
-@@ -4492,9 +4492,8 @@ static const struct ata_blacklist_entry
- 	/* https://bugzilla.kernel.org/show_bug.cgi?id=15573 */
- 	{ "C300-CTFDDAC128MAG",	"0001",		ATA_HORKAGE_NONCQ, },
+--- a/drivers/md/dm-writecache.c
++++ b/drivers/md/dm-writecache.c
+@@ -226,6 +226,7 @@ static int persistent_memory_claim(struc
+ 	pfn_t pfn;
+ 	int id;
+ 	struct page **pages;
++	sector_t offset;
  
--	/* Some Sandisk SSDs lock up hard with NCQ enabled.  Reported on
--	   SD7SN6S256G and SD8SN8U256G */
--	{ "SanDisk SD[78]SN*G",	NULL,		ATA_HORKAGE_NONCQ, },
-+	/* Sandisk SD7/8/9s lock up hard on large trims */
-+	{ "SanDisk SD[789]*",	NULL,		ATA_HORKAGE_MAX_TRIM_128M, },
+ 	wc->memory_vmapped = false;
  
- 	/* devices which puke on READ_NATIVE_MAX */
- 	{ "HDS724040KLSA80",	"KFAOA20N",	ATA_HORKAGE_BROKEN_HPA, },
---- a/drivers/ata/libata-scsi.c
-+++ b/drivers/ata/libata-scsi.c
-@@ -2391,6 +2391,7 @@ static unsigned int ata_scsiop_inq_89(st
- 
- static unsigned int ata_scsiop_inq_b0(struct ata_scsi_args *args, u8 *rbuf)
- {
-+	struct ata_device *dev = args->dev;
- 	u16 min_io_sectors;
- 
- 	rbuf[1] = 0xb0;
-@@ -2416,7 +2417,12 @@ static unsigned int ata_scsiop_inq_b0(st
- 	 * with the unmap bit set.
- 	 */
- 	if (ata_id_has_trim(args->id)) {
--		put_unaligned_be64(65535 * ATA_MAX_TRIM_RNUM, &rbuf[36]);
-+		u64 max_blocks = 65535 * ATA_MAX_TRIM_RNUM;
-+
-+		if (dev->horkage & ATA_HORKAGE_MAX_TRIM_128M)
-+			max_blocks = 128 << (20 - SECTOR_SHIFT);
-+
-+		put_unaligned_be64(max_blocks, &rbuf[36]);
- 		put_unaligned_be32(1, &rbuf[28]);
+@@ -244,9 +245,16 @@ static int persistent_memory_claim(struc
+ 		goto err1;
  	}
  
---- a/include/linux/libata.h
-+++ b/include/linux/libata.h
-@@ -439,6 +439,7 @@ enum {
- 	ATA_HORKAGE_NO_DMA_LOG	= (1 << 23),	/* don't use DMA for log read */
- 	ATA_HORKAGE_NOTRIM	= (1 << 24),	/* don't use TRIM */
- 	ATA_HORKAGE_MAX_SEC_1024 = (1 << 25),	/* Limit max sects to 1024 */
-+	ATA_HORKAGE_MAX_TRIM_128M = (1 << 26),	/* Limit max trim size to 128M */
++	offset = get_start_sect(wc->ssd_dev->bdev);
++	if (offset & (PAGE_SIZE / 512 - 1)) {
++		r = -EINVAL;
++		goto err1;
++	}
++	offset >>= PAGE_SHIFT - 9;
++
+ 	id = dax_read_lock();
  
- 	 /* DMA mask for user DMA control: User visible values; DO NOT
- 	    renumber */
+-	da = dax_direct_access(wc->ssd_dev->dax_dev, 0, p, &wc->memory_map, &pfn);
++	da = dax_direct_access(wc->ssd_dev->dax_dev, offset, p, &wc->memory_map, &pfn);
+ 	if (da < 0) {
+ 		wc->memory_map = NULL;
+ 		r = da;
+@@ -268,7 +276,7 @@ static int persistent_memory_claim(struc
+ 		i = 0;
+ 		do {
+ 			long daa;
+-			daa = dax_direct_access(wc->ssd_dev->dax_dev, i, p - i,
++			daa = dax_direct_access(wc->ssd_dev->dax_dev, offset + i, p - i,
+ 						NULL, &pfn);
+ 			if (daa <= 0) {
+ 				r = daa ? daa : -EINVAL;
 
 
