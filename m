@@ -2,105 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71D3B260AC6
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 08:20:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80C9A260AEE
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 08:26:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729003AbgIHGUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 02:20:17 -0400
-Received: from wout1-smtp.messagingengine.com ([64.147.123.24]:44301 "EHLO
-        wout1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726787AbgIHGUO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 02:20:14 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id DEF1ED60;
-        Tue,  8 Sep 2020 02:20:12 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Tue, 08 Sep 2020 02:20:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=cA+1FFkzRN/i815ushS2Yuoq14C
-        CTHDuKJOCWTVbj6g=; b=OLhvtTqz7N/y+06PZChc7Om8Yeqr6zXeenyhdVKBVj3
-        u38WNrGXfdtrid9HSnA2dobRf8cbw2xNm4s3sivfRfo1q/GVIih+joDWgvI3P6mj
-        3Dy1po5/Mhdvd9MMvJdNaiz9DhYzoKmfwAJMnEIzPkLG/BvxR7r37plOgM5Lve/d
-        1CFfXRtxxR27hSHLScf7DXLAqTSvRhpPfmO++Hn1JO55JnUQP8K73FJwbx9D/N34
-        9LA8pou+kRt9vc6pCAVK4xq3Zi4Tj9eAj7kVBtt/7eDRI7SaY7djoxQOxQN7n6F3
-        H2EEBhZOmDzOFHZZP1yqT3MQFK7VHt0YQPVXNLzX2sQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=cA+1FF
-        kzRN/i815ushS2Yuoq14CCTHDuKJOCWTVbj6g=; b=igXWE9laB1QOzhOZHUpbU9
-        x4hovbxY+ke58l4usd/5kxkMDMzTzYMDN+G+pH7daPHlkhUcHlzrqyj9Ah67Q0Yg
-        uqhEL5pquXohfTl/Ab5K9lcEAsnHXT8nPKI7oZG7QpFr/HVhSLcvYKuGmQ8aH375
-        /M+dUzW4DBfaXE/ubxPxz9TdP211fe4ICsJw6H85i5/DjvZIAxJmap3vD/vtF5PK
-        iWFK51L/PPda7cWRM3JDY84SBGqRnvzrTHXdOLycAxRrYRxKeqzSxm0k4+I5SYxI
-        ggxB0CGZ8clDUPCpy5Fk9f0Q9hgdpDlGvxRKbhK0fnMAfA60eTTYtA3fYiiCsNbw
-        ==
-X-ME-Sender: <xms:nCJXX6qVYNJwycDIDgnMbRbwoyB2rZyOZ9i9anMh_AogTdCS6R8tVA>
-    <xme:nCJXX4qRRAYyV9-CBzZ2sLhEHQuu3eJFWS-1ePfywZLy1ZX2uynGlz94rRIPm4y0H
-    s7Rl-b8PuqlYmEgBYw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudehuddguddthecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihi
-    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
-    htthgvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheei
-    heegudenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedune
-    curfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:nCJXX_NLjBTGU8VBMDcLMrnUHs1BQkVVR79WdMe28TIMu--Ecp_FhA>
-    <xmx:nCJXX54U4M6OYn3p0p6Xj6rjefSma5rgEotF9KFouvk3d36jD0XnzQ>
-    <xmx:nCJXX55_2qm965HsROD-BuHtWPzqDi6H4fqBxhBnEUkLPTvM61ht9g>
-    <xmx:nCJXX3TDy7UrTez7lK9aI1QC6LgvlaF709_bwmbR3QDIKZnrq7y5fw>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 2BC30328005D;
-        Tue,  8 Sep 2020 02:20:12 -0400 (EDT)
-Date:   Tue, 8 Sep 2020 08:20:11 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Martin Cerveny <m.cerveny@computer.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v3 0/2] ARM: dts: sun8i: v3s: Enable crypto engine
-Message-ID: <20200908062011.srcgzg6q4t6up4na@gilmour.lan>
-References: <20200907162458.23730-1-m.cerveny@computer.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="snpgtitq7enspzex"
-Content-Disposition: inline
-In-Reply-To: <20200907162458.23730-1-m.cerveny@computer.org>
+        id S1728886AbgIHG0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 02:26:50 -0400
+Received: from mga09.intel.com ([134.134.136.24]:26026 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728101AbgIHG0u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 02:26:50 -0400
+IronPort-SDR: eCDVWCL9kDvUFHjlPhiKJhMvZR125qpSx0tK4zStkCJH+jvJJMTySUOs/FeY0coRZxvwEGgGoP
+ GlntqM9NK4QQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9737"; a="159053539"
+X-IronPort-AV: E=Sophos;i="5.76,404,1592895600"; 
+   d="scan'208";a="159053539"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2020 23:26:48 -0700
+IronPort-SDR: fc74VQJEc3y6muJp54WxDSpLpx9WSNv932o3ClKvgBDSvBaU1B18kJ1s/998YT0r5R3D0Rr5gL
+ r3gSiUAXqmow==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,404,1592895600"; 
+   d="scan'208";a="317081205"
+Received: from yilunxu-optiplex-7050.sh.intel.com ([10.239.159.141])
+  by orsmga002.jf.intel.com with ESMTP; 07 Sep 2020 23:26:45 -0700
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     linux@roeck-us.net, jdelvare@suse.com, lee.jones@linaro.org,
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     trix@redhat.com, yilun.xu@intel.com,
+        matthew.gerlach@linux.intel.com, russell.h.weight@intel.com,
+        lgoncalv@redhat.com, hao.wu@intel.com, mdf@kernel.org
+Subject: [PATCH] add hwmon support for Intel MAX 10 BMC
+Date:   Tue,  8 Sep 2020 14:22:19 +0800
+Message-Id: <1599546140-18804-1-git-send-email-yilun.xu@intel.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch depends on the patch "add Intel MAX 10 BMC chip support for
+Intel FPGA PAC".
 
---snpgtitq7enspzex
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+https://lore.kernel.org/lkml/1599491813-20819-1-git-send-email-yilun.xu@intel.com/
 
-On Mon, Sep 07, 2020 at 06:24:56PM +0200, Martin Cerveny wrote:
-> Add support for crypto engine (sun4i-ss) for Allwinner V3s.
-> Functionality like A33 so add only compatible and enable
-> in device tree.
->=20
-> Regards.
+This patch adds support for the hwmon sub device in Intel MAX 10 BMC
 
-Applied, thanks
-Maxime
+Xu Yilun (1):
+  hwmon: intel-m10-bmc-hwmon: add hwmon support for Intel MAX 10 BMC
 
---snpgtitq7enspzex
-Content-Type: application/pgp-signature; name="signature.asc"
+ drivers/hwmon/Kconfig               |  11 +
+ drivers/hwmon/Makefile              |   1 +
+ drivers/hwmon/intel-m10-bmc-hwmon.c | 516 ++++++++++++++++++++++++++++++++++++
+ 3 files changed, 528 insertions(+)
+ create mode 100644 drivers/hwmon/intel-m10-bmc-hwmon.c
 
------BEGIN PGP SIGNATURE-----
+-- 
+2.7.4
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX1cimwAKCRDj7w1vZxhR
-xR+EAP41cPkvcWKRNEhE+APLq613AP29gYkthszjAn4FjVddMgEAxbtS3EOJF7/I
-MP+hzIEbCVi6XA1iQuBNAihkYJHpAws=
-=OS+M
------END PGP SIGNATURE-----
-
---snpgtitq7enspzex--
