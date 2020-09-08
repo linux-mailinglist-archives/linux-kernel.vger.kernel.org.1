@@ -2,154 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57E9626074D
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 01:58:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD38B26075D
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 02:03:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728113AbgIGX6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 19:58:11 -0400
-Received: from mail-bn7nam10olkn2023.outbound.protection.outlook.com ([40.92.40.23]:2528
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727058AbgIGX6A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 19:58:00 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nmgeMEy12WdIKnwMDH+F+R+TuQhNhaaxHGjaW66tKbvICCofJAjJnu+Y7O9q8+vxYJobSUC3EvY4ZwRT4TIAlyuXmWTSB7Qlw/8ZYBO6cz638z2yPehUyuRvdfkacwoDlNCZx6hbwDrLWvPMl3rvYJ+bZi/aLBItLnIGZnsuycTZ3NsUTx6h9er5bR+CIXyHC3QU9AQq6OaqyT6MMDCOeJIwKTmSlEOoXdLr4EYwsYlel9vb2F/yZHTivoyIA4ur46laxhK33gbrKbVFK3kaaSK8n2c5NyVrc6DBrSQFINblHeGY7Mhtrvs3J2wJR8ZdB/HbblJaOK9ob5BGTN/RJQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HntvSMKcMp6nPWAeky7lX80zSyFz7+LuGIVDu9CmML0=;
- b=db251tpKrkv5do8WMNP5JS2zg8otRMQxsFR1bIiZgcRADPYF8eJTfa7Q0IN1U4UVKtlXKuvuqr3y4E9jG4rWVobRjQ2/d7EGGw6h0Y/GUVJBXLPzONxG+YEZI9HG+PBPKX4mHesIPU6vlC/4/W9SM7ZmvtpI+KsKO8rKZkMvUVYdVra6wIy7fYwQsbyyojhGvh4NN3rPPzxa+hgnjoHCJd1tkDNZN4CP5vzoIRjyH+yLYKFTXrQ+IlgNu83rBrf+1YuAG/aYdbNlPeTNmZIFBSOgQjtrMO5oGBn7A+VsKQ1qWx9Ba/WEfPLNraa8QiderfR7DGf2aQtPnzttl2Shaw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-Received: from BN7NAM10FT047.eop-nam10.prod.protection.outlook.com
- (2a01:111:e400:7e8f::4f) by
- BN7NAM10HT056.eop-nam10.prod.protection.outlook.com (2a01:111:e400:7e8f::64)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.16; Mon, 7 Sep
- 2020 23:57:58 +0000
-Received: from BN6PR04MB0660.namprd04.prod.outlook.com
- (2a01:111:e400:7e8f::50) by BN7NAM10FT047.mail.protection.outlook.com
- (2a01:111:e400:7e8f::126) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.24 via Frontend
- Transport; Mon, 7 Sep 2020 23:57:58 +0000
-X-IncomingTopHeaderMarker: OriginalChecksum:8CF1001AE62D46DB815F46CE29B099155776B1E4525096109C9E4E312E0C574A;UpperCasedChecksum:DCF91870F4ED01B99357943FC49B92E139A22B7654A195535A21E478F9D2CA5A;SizeAsReceived:9289;Count:48
-Received: from BN6PR04MB0660.namprd04.prod.outlook.com
- ([fe80::303b:a75b:d03e:bd04]) by BN6PR04MB0660.namprd04.prod.outlook.com
- ([fe80::303b:a75b:d03e:bd04%3]) with mapi id 15.20.3348.019; Mon, 7 Sep 2020
- 23:57:58 +0000
-Subject: Re: [PATCH 11/25] ARM: dts: s5pv210: add RTC 32 KHz clock in Aries
- family
-To:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Kukjin Kim <kgene@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        =?UTF-8?Q?Pawe=c5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org
-References: <20200907161141.31034-1-krzk@kernel.org>
- <20200907161141.31034-12-krzk@kernel.org>
-From:   Jonathan Bakker <xc-racer2@live.ca>
-Message-ID: <BN6PR04MB0660939E010C3175CD0DF9D6CB280@BN6PR04MB0660.namprd04.prod.outlook.com>
-Date:   Mon, 7 Sep 2020 16:57:53 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <20200907161141.31034-12-krzk@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW2PR16CA0001.namprd16.prod.outlook.com (2603:10b6:907::14)
- To BN6PR04MB0660.namprd04.prod.outlook.com (2603:10b6:404:d9::21)
-X-Microsoft-Original-Message-ID: <c46752bf-7a1a-2a42-9f15-a504e5f9b7a2@live.ca>
+        id S1728213AbgIHADQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 20:03:16 -0400
+Received: from lists.nic.cz ([217.31.204.67]:51548 "EHLO mail.nic.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727058AbgIHADE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 20:03:04 -0400
+Received: from dellmb.labs.office.nic.cz (unknown [IPv6:2001:1488:fffe:6:8982:ed8c:62b1:c0c8])
+        by mail.nic.cz (Postfix) with ESMTP id 14FA413FE1D;
+        Tue,  8 Sep 2020 02:03:01 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nic.cz; s=default;
+        t=1599523381; bh=5uc6QNheLhW6rBuFDbnXLsqtJ1gV72KMTLNYptWDCq0=;
+        h=From:To:Date;
+        b=At+7dKwR0KZj9znd1QgFPjoaPTcq4G5psHRbgfDBvsbePOPWLnFFGbr4EVwEv39pZ
+         lOz0w95BpvY73W1dfWOtUd1SbCnjiX5CDldN5RGSGDEjKJp539o0FyHLPLooLa4UOY
+         dNFzJdcbg8+blHwfl9kSQjliVGYV90lYYHTeJJZQ=
+From:   =?UTF-8?q?Marek=20Beh=C3=BAn?= <marek.behun@nic.cz>
+To:     netdev@vger.kernel.org
+Cc:     linux-leds@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
+        Dan Murphy <dmurphy@ti.com>,
+        =?UTF-8?q?Ond=C5=99ej=20Jirman?= <megous@megous.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Andrew Lunn <andrew@lunn.ch>, linux-kernel@vger.kernel.org,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        =?UTF-8?q?Marek=20Beh=C3=BAn?= <marek.behun@nic.cz>
+Subject: [PATCH net-next v1 0/3] Add support for LEDs on Marvell PHYs
+Date:   Tue,  8 Sep 2020 02:02:57 +0200
+Message-Id: <20200908000300.6982-1-marek.behun@nic.cz>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2001:569:fb68:9c00:8067:f823:1e15:7520] (2001:569:fb68:9c00:8067:f823:1e15:7520) by MW2PR16CA0001.namprd16.prod.outlook.com (2603:10b6:907::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.15 via Frontend Transport; Mon, 7 Sep 2020 23:57:55 +0000
-X-Microsoft-Original-Message-ID: <c46752bf-7a1a-2a42-9f15-a504e5f9b7a2@live.ca>
-X-TMN:  [k4tqjJgX5hGeluGZs9Q46AzGeJY0KK2EcLeTWBJjIjKPtuRSEtQPsVVoUj+QDr9L]
-X-MS-PublicTrafficType: Email
-X-IncomingHeaderCount: 48
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-Correlation-Id: 2c6f8427-16bd-4d0a-94f9-08d85389d84b
-X-MS-TrafficTypeDiagnostic: BN7NAM10HT056:
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: aOmx1GuBX1LZwHQvBC4zaq+3nyAjmyWo+Clo/SAOAUedOdOOrLkCDL0HpFzFdTD53u+ZggMwrgXd5rekTGpNzcePHGhqKtTf/2BGLH73Bvn3Q5Hh+Py2oDzXhkdYTUJ/tREYGmAYaqFHLAN1pBfULtR4MWyQyVDkGBxjz9PDUdwbcBKL1eZ0xoTHygedrxrtWKjIFYJhLrKQRZBPt1DH3A==
-X-MS-Exchange-AntiSpam-MessageData: bEqoz062S9Zc1hB3Nwy2d/bMOhJE0AbRQJRtKCeonzebnhH7v/9hXoNSdj7zQvmfR0swX24z7WJoGOLjzrEcGYK9LtqBhLYcPwU7u7LuiM57E4Gc+wId3w/N5ZeigP3g4N0Mwp/u4A3Oc/yqHrfRSkjizVKhQ1VObzVvIUqnrpJ1LAacQ9SNdtHscDolUIzxBKet96sMxuh3y5yAavF41w==
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2c6f8427-16bd-4d0a-94f9-08d85389d84b
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Sep 2020 23:57:58.0260
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-AuthSource: BN7NAM10FT047.eop-nam10.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: Internet
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7NAM10HT056
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.nic.cz
+X-Spam-Status: No, score=0.00
+X-Spamd-Bar: /
+X-Virus-Scanned: clamav-milter 0.102.2 at mail
+X-Virus-Status: Clean
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
+Hi,
 
-On 2020-09-07 9:11 a.m., Krzysztof Kozlowski wrote:
-> The S3C RTC requires 32768 Hz clock as input which is provided by PMIC.
-> However there is no such clock provider but rather a regulator driver
-> which registers the clock as a regulator.  This is an old driver which
-> will not be updated so add a workaround - a fixed-clock to fill missing
-> clock phandle reference in S3C RTC.
-> 
-> This fixes dtbs_check warnings:
-> 
->   rtc@e2800000: clocks: [[2, 145]] is too short
->   rtc@e2800000: clock-names: ['rtc'] is too short
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> ---
->  arch/arm/boot/dts/s5pv210-aries.dtsi | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
-> 
-> diff --git a/arch/arm/boot/dts/s5pv210-aries.dtsi b/arch/arm/boot/dts/s5pv210-aries.dtsi
-> index 6ba23562da46..86c3b26fd21e 100644
-> --- a/arch/arm/boot/dts/s5pv210-aries.dtsi
-> +++ b/arch/arm/boot/dts/s5pv210-aries.dtsi
-> @@ -47,6 +47,13 @@
->  		};
->  	};
->  
-> +	pmic_ap_clk: clock-0 {
-> +		/* Workaround for missing clock on PMIC */
-> +		compatible = "fixed-clock";
-> +		#clock-cells = <0>;
-> +		clock-frequency = <32768>;
-> +	};
-> +
->  	bt_codec: bt_sco {
->  		compatible = "linux,bt-sco";
->  		#sound-dai-cells = <0>;
-> @@ -825,6 +832,11 @@
->  	samsung,pwm-outputs = <1>;
->  };
->  
-> +&rtc {
-> +	clocks = <&clocks CLK_RTC>, <&pmic_ap_clk>;
-> +	clock-names = "rtc", "rtc_src";
+after 4 RFC versions I am now sending these patches for real.
 
-Missing a
+The code applies on net-next.
 
-status = "okay";
+Changes since RFC v4:
+- added device-tree binding documentation 
+- the OF code now checks for linux,default-hw-mode property so that
+  default HW mode can be set in device tree (like linux,default-trigger)
+  (this was suggested by Andrew)
+- the OF code also checks for enable-active-high and led-open-drain
+  properties, and the marvell PHY driver now understands uses these
+  settings when initializing the LEDs
+- the LED operations were moved to their own struct phy_device_led_ops
+- a new member was added into struct phy_device: phyindex. This is an
+  incrementing integer, new for each registered phy_device. This is used
+  for a simple naming scheme for the devicename part of a LED, as was
+  suggested in a discussion by Andrew and Pavel. A PHY controlled LED
+  now has a name in form:
+    phy%i:color:function
+  When a PHY is attached to a netdevice, userspace can control available
+  PHY controlled LEDs via /sys/class/net/<ifname>/phydev/leds/
+- legacy LED configuration in Marvell PHY driver (in function
+  marvell_config_led) now writes only to registers which do not
+  correspond to any registered LED
 
-here, but with that it works fine for me.  Looks like it's also
-missing in the patches for the other devices as well.
+Changes since RFC v3:
+- addressed some of Andrew's suggestions
+- phy_hw_led_mode.c renamed to phy_led.c
+- the DT reading code is now also generic, moved to phy_led.c and called
+  from phy_probe
+- the function registering the phydev-hw-mode trigger is now called from
+  phy_device.c function phy_init before registering genphy drivers
+- PHY LED functionality now depends on CONFIG_LEDS_TRIGGERS
 
-Thanks for the series of cleanups,
-Jonathan
+Changes since RFC v2:
+- to share code with other drivers which may want to also offer PHY HW
+  control of LEDs some of the code was refactored and now resides in
+  phy_hw_led_mode.c. This code is compiled in when config option
+  LED_TRIGGER_PHY_HW is enabled. Drivers wanting to offer PHY HW control
+  of LEDs should depend on this option.
+- the "hw-control" trigger is renamed to "phydev-hw-mode" and is
+  registered by the code in phy_hw_led_mode.c
+- the "hw_control" sysfs file is renamed to "hw_mode"
+- struct phy_driver is extended by three methods to support PHY HW LED
+  control
+- I renamed the various HW control modes offeret by Marvell PHYs to
+  conform to other Linux mode names, for example the "1000/100/10/else"
+  mode was renamed to "1Gbps/100Mbps/10Mbps", or "recv/else" was renamed
+  to "rx" (this is the name of the mode in netdev trigger).
 
-> +};
-> +
->  &sdhci1 {
->  	#address-cells = <1>;
->  	#size-cells = <0>;
-> 
+Marek Behún (3):
+  dt-bindings: net: ethernet-phy: add description for PHY LEDs
+  net: phy: add API for LEDs controlled by ethernet PHY chips
+  net: phy: marvell: add support for LEDs controlled by Marvell PHYs
+
+ .../devicetree/bindings/net/ethernet-phy.yaml |  31 ++
+ drivers/net/phy/Kconfig                       |   4 +
+ drivers/net/phy/Makefile                      |   1 +
+ drivers/net/phy/marvell.c                     | 309 +++++++++++++++++-
+ drivers/net/phy/phy_device.c                  |  28 +-
+ drivers/net/phy/phy_led.c                     | 224 +++++++++++++
+ include/linux/phy.h                           |  91 ++++++
+ 7 files changed, 679 insertions(+), 9 deletions(-)
+ create mode 100644 drivers/net/phy/phy_led.c
+
+-- 
+2.26.2
+
