@@ -2,137 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20B0F261D4A
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:35:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5451261F14
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:59:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732320AbgIHTfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:35:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54232 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730898AbgIHP5a (ORCPT
+        id S1732584AbgIHT6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 15:58:47 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:47486 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730176AbgIHPfm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:57:30 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DA59C0610E4
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 07:12:46 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id z23so22701851ejr.13
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 07:12:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3sHaSQTtEpVgxZUhYIXCbmOjlv1gJeOQFw7S/Ryj3Pc=;
-        b=N+McjpguiDc1n2EPL915Ma7152SAViSTeH5vg+8E2QpOulQuWlPUZ3LyTfQVBU+7m6
-         +M9vLe8Pja0QusLmo+vTDbDgyyLzhiOiEypL8xPNu6N3QXXgG3MrnudvKDgVjprnS0Hm
-         QCzY2WSk02O3OpNLKbcRu6PBeXb1bqiUtfIPErkmpkBjggnmbeJCXAwk/9J8LEGHiZ0o
-         QfRVvy6MUF4lPe/vMD8uXnFrvsoq+0iADzFL+EOuwtcNnRrwblYGBN2ZDZUda4lWArS7
-         +4e+KhcoqGkTtd6H3/OcOsFq7Ahnhb0q1JCtMoBoQ4E31Yirm4gnEqXYhX4EyIPuIGOB
-         FHmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3sHaSQTtEpVgxZUhYIXCbmOjlv1gJeOQFw7S/Ryj3Pc=;
-        b=VQXWL3h+zTeChTSEhnKkzDAwAGNfrPzelcihCZhT58+h0uXUGoU+aeNGuP6iW3iy6l
-         g5ALsg03ZDRS9Wn6AR7ZM+23j/TR8gVTsLEO512RXRTQcVY4bt5JnMTbovbMolhhHBgX
-         rMvE+xom0B7ibf20TLZf9m8rZbTqctGyIZDDwkH1dVL6P44S0i1OWrVgRefqK+X46drR
-         wGcttDb8zQj4AntGnBHjLjQIIReoitpvAkCVxLFPRcTq87Z3AVMAN9kKAJnwCGQ2YVjk
-         ZQ8N1p9Zz6poMXz8ZNFPq0iTHTt8zgXiMA5IYA3DW5w2LRy/sKJl4aTpONECTuTxHuoT
-         H4Vw==
-X-Gm-Message-State: AOAM532cn7obhTB7dEOeGqz8nnuP3gMINTm54wstYl3wE74gY1/9lEw+
-        os8NF+bmgp8FYX7VVCXhe2bBtQpm0GMUY5P3
-X-Google-Smtp-Source: ABdhPJz+/Ym87EdWBFw9jeyyDYLiDue8fyg2iZF9/6qckGGEuWKGDmW4AoA72uFBjuToGO5yEP8i5Q==
-X-Received: by 2002:a17:906:2b06:: with SMTP id a6mr25615230ejg.209.1599574365078;
-        Tue, 08 Sep 2020 07:12:45 -0700 (PDT)
-Received: from localhost ([86.61.181.4])
-        by smtp.gmail.com with ESMTPSA id w14sm17826958ejn.36.2020.09.08.07.12.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Sep 2020 07:12:44 -0700 (PDT)
-Date:   Tue, 8 Sep 2020 16:12:43 +0200
-From:   Jiri Pirko <jiri@resnulli.us>
-To:     Aya Levin <ayal@mellanox.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jiri Pirko <jiri@mellanox.com>, netdev@vger.kernel.org,
-        Moshe Shemesh <moshe@mellanox.com>,
-        Eran Ben Elisha <eranbe@mellanox.com>,
-        Ido Schimmel <idosch@mellanox.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next RFC v1 1/4] devlink: Wrap trap related lists and
- ops in trap_mngr
-Message-ID: <20200908141243.GO2997@nanopsycho.orion>
-References: <1599060734-26617-1-git-send-email-ayal@mellanox.com>
- <1599060734-26617-2-git-send-email-ayal@mellanox.com>
+        Tue, 8 Sep 2020 11:35:42 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 088EEO62040774;
+        Tue, 8 Sep 2020 09:14:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1599574464;
+        bh=362EVhcP1ExwtmVZiQkIb5x6Yg4rPvLgH1gDwH3m8P4=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=kIRfaUoIMVEntv78JAUsTIXtMMJEhxv7cGcQV8JdKjfYyvxEslm6+klfuWWV8PCji
+         zXvd7SD3ie+BbiWV0LoSzILEcIvwQ7D/nhiJMtSZDoxYy7eL5A09dUrxLA0zSTK9Yx
+         71o1uqiBsnwjDYle0QVuf2+aBoI6F3mZmWhdjAOs=
+Received: from DLEE101.ent.ti.com (dlee101.ent.ti.com [157.170.170.31])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 088EEOLZ045543
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 8 Sep 2020 09:14:24 -0500
+Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 8 Sep
+ 2020 09:14:24 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 8 Sep 2020 09:14:24 -0500
+Received: from [10.250.38.37] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 088EEOFG106227;
+        Tue, 8 Sep 2020 09:14:24 -0500
+Subject: Re: [PATCH v3 0/2] leds: mt6360: Add LED driver for MT6360
+To:     Gene Chen <gene.chen.richtek@gmail.com>,
+        <jacek.anaszewski@gmail.com>, <pavel@ucw.cz>, <robh+dt@kernel.org>,
+        <matthias.bgg@gmail.com>
+CC:     <linux-leds@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <gene_chen@richtek.com>,
+        <Wilma.Wu@mediatek.com>, <shufan_lee@richtek.com>,
+        <cy_huang@richtek.com>, <benjamin.chao@mediatek.com>
+References: <1599474459-20853-1-git-send-email-gene.chen.richtek@gmail.com>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <b8d090b7-ef47-d434-1af1-2afbc2ad30ae@ti.com>
+Date:   Tue, 8 Sep 2020 09:14:24 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1599060734-26617-2-git-send-email-ayal@mellanox.com>
+In-Reply-To: <1599474459-20853-1-git-send-email-gene.chen.richtek@gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Wed, Sep 02, 2020 at 05:32:11PM CEST, ayal@mellanox.com wrote:
->Bundle the trap related lists: trap_list, trap_group_list and
->trap_policer_list and trap ops like: trap_init, trap_fini,
->trap_action_set... together in trap_mngr. This will be handy in the
->coming patches in the set introducing traps in devlink port context.
->With trap_mngr, code reuse is much simpler.
+Gene
+
+On 9/7/20 5:27 AM, Gene Chen wrote:
+> In-Reply-To:
 >
->Signed-off-by: Aya Levin <ayal@mellanox.com>
->---
-> drivers/net/ethernet/mellanox/mlxsw/core.c |   4 +
-> include/net/devlink.h                      |  59 ++++---
-> net/core/devlink.c                         | 255 +++++++++++++++++------------
+> This patch series add MT6360 LED support contains driver and binding document
 
-You need to split this. You do at least 2 separate things in one patch.
-Please check it.
+I cannot find the v2 patch series for this.
 
-
-> 3 files changed, 188 insertions(+), 130 deletions(-)
->
->diff --git a/drivers/net/ethernet/mellanox/mlxsw/core.c b/drivers/net/ethernet/mellanox/mlxsw/core.c
->index 08d101138fbe..97460f47e537 100644
->--- a/drivers/net/ethernet/mellanox/mlxsw/core.c
->+++ b/drivers/net/ethernet/mellanox/mlxsw/core.c
->@@ -1285,6 +1285,9 @@ static const struct devlink_ops mlxsw_devlink_ops = {
-> 	.sb_occ_tc_port_bind_get	= mlxsw_devlink_sb_occ_tc_port_bind_get,
-> 	.info_get			= mlxsw_devlink_info_get,
-> 	.flash_update			= mlxsw_devlink_flash_update,
->+};
->+
->+static const struct devlink_trap_ops mlxsw_devlink_traps_ops = {
-> 	.trap_init			= mlxsw_devlink_trap_init,
-> 	.trap_fini			= mlxsw_devlink_trap_fini,
-> 	.trap_action_set		= mlxsw_devlink_trap_action_set,
->@@ -1321,6 +1324,7 @@ __mlxsw_core_bus_device_register(const struct mlxsw_bus_info *mlxsw_bus_info,
-> 			err = -ENOMEM;
-> 			goto err_devlink_alloc;
-> 		}
->+		devlink_traps_ops(devlink, &mlxsw_devlink_traps_ops);
-> 	}
-> 
-> 	mlxsw_core = devlink_priv(devlink);
->diff --git a/include/net/devlink.h b/include/net/devlink.h
->index 8f3c8a443238..d387ea5518c3 100644
->--- a/include/net/devlink.h
->+++ b/include/net/devlink.h
->@@ -21,6 +21,13 @@
-> #include <linux/xarray.h>
-> 
-> struct devlink_ops;
->+struct devlink_trap_ops;
->+struct devlink_trap_mngr {
-
-"Mngr" is odd. This is not a manager. Just a common place to store
-trap-related things. Perhaps just "devlink_traps"?
-
-
->+	struct list_head trap_list;
->+	struct list_head trap_group_list;
->+	struct list_head trap_policer_list;
->+	const struct devlink_trap_ops *trap_ops;
->+};
-
-[...]
+Dan
 
