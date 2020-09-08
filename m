@@ -2,86 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DA4B260FDD
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 12:31:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 075D0260FF1
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 12:32:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729292AbgIHKbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 06:31:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59894 "EHLO
+        id S1729337AbgIHKcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 06:32:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729285AbgIHKbQ (ORCPT
+        with ESMTP id S1729434AbgIHKcm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 06:31:16 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85157C061756
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 03:31:06 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id kk9so5439674pjb.2
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 03:31:06 -0700 (PDT)
+        Tue, 8 Sep 2020 06:32:42 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7566DC061573
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 03:32:41 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id c8so15458776edv.5
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 03:32:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=hDRXaJuAS9TrZFMby+Qmnh+jZXgmePanO+HwLWR2Ouc=;
-        b=JUNp1uaI61meRUQXI/pPS8i8XWPkyXDB/8gSgV8A6qz47wi+XYpf3wBpin+bMYWZ+t
-         cXCoI7gS85mL2iuWpMmMF+lFwrFGoW0hbe4YosLpaeVuXE2RLuugSLCIA7tPVorN27BI
-         EYViljfOFlpod2U5565AODj6f6FTpOjnyHYqSeXmWyWWWJpMB6kevRVVYFy12WT7Rmgx
-         /v95pXPu7P0MldjXLXVywF7HMTqTu7WZHLvivAE6CLJU0OL0Khx930DKTDhi2Lj6LYF6
-         L56r7Y6k+Set2fHI9vZ0VYUomxZqN4ldYmxifMT9Glxh2RFoDy1WmOQ/LBxWQAjR09Fg
-         Ci/g==
+        d=sior-be.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MmrpT2iDfcYtx9VDEEtRqqNAR2mycMe15/tVKCQ8MG8=;
+        b=YprpFTHDhaFJkK9f7pzFydwp9te82djacbA8HsrEjou8mk/fBmT1bvs+JV2SJeabVS
+         tJUfWRGJIb9jdBS1fdy8gYELiWbTNweOBSy0jE+Xwch3YplVvSsVrHAmW3t59+0uVLp8
+         7kIdyod3dn/JF1NTJAellP5qa7EpRyNbAll8NAI6vPYX7Da/yM7sNS+4kJT+jS1OWs7a
+         c0tYZrgODcyLtPZeGFrlumXWiOazks2s8p7cEOfRdq1UXLlzrcX5fqapCxstZjK8LctE
+         pMX7jwwl175NCouTZJ7U4ZGsCvHwEkv6rgZA33DY8vvrFAaV7rLkBH6Z+XXkxuENlnVj
+         T8ZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=hDRXaJuAS9TrZFMby+Qmnh+jZXgmePanO+HwLWR2Ouc=;
-        b=YIcqzmLI67W55nE+vJYGXVt/rO1BfbEZflPqAR3Q4hozTvlYkFsI4+/VBPh7/DXhjG
-         JlXQNx/cuj/U7+ZFgxGenWgB7N+5RJk3HG3Sn0Caqr3d3+pxdThQaOXkpeadVlYQzmPS
-         uS6dTk6p78uK/LbBqzCZfMkn77IHz+GAL95FJpcN6PjcImIx83egoa+qB0DObNOy3LgN
-         Xj1+D3eY2PHkngH1++YN4J/xPDA8fvtMV9pSVPS5ZgVK2S+jK1+fjh12xrIqndD+Vr9e
-         OGk5z85xBmoiaOgM2Jk9oRdfgVLtTCwItc+0V1iw97NyluxrTDwc9EcSObTDZcksO/dB
-         mWzQ==
-X-Gm-Message-State: AOAM5336jSEeFTcbbnJyy81Al7m5gBbWYrRXC+hTktc2W4/e5+3Uty2C
-        sUJiYnMu4bei4ElpU+4G5byLsQ==
-X-Google-Smtp-Source: ABdhPJzNSCfBkbg+11agkjtxy3qwtXxyhK1sMEZKc5BFdUxTxh6wxYIwtLvqzDkOUFK7HlxQ+qQTKw==
-X-Received: by 2002:a17:90a:db05:: with SMTP id g5mr3543257pjv.22.1599561065932;
-        Tue, 08 Sep 2020 03:31:05 -0700 (PDT)
-Received: from localhost ([122.181.54.133])
-        by smtp.gmail.com with ESMTPSA id x3sm18002984pfo.95.2020.09.08.03.31.04
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 08 Sep 2020 03:31:05 -0700 (PDT)
-Date:   Tue, 8 Sep 2020 16:01:03 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     rjw@rjwysocki.net, robh+dt@kernel.org, agross@kernel.org,
-        bjorn.andersson@linaro.org, amitk@kernel.org,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        dmitry.baryshkov@linaro.org, tdas@codeaurora.org
-Subject: Re: [PATCH 3/7] cpufreq: qcom-hw: Make use of cpufreq driver_data
- for passing pdev
-Message-ID: <20200908103103.4mfewgmn5xl7mou6@vireshk-i7>
-References: <20200908075716.30357-1-manivannan.sadhasivam@linaro.org>
- <20200908075716.30357-4-manivannan.sadhasivam@linaro.org>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MmrpT2iDfcYtx9VDEEtRqqNAR2mycMe15/tVKCQ8MG8=;
+        b=HoFSv72VZfB8jzX/ecKznI30fPV+0WygKiGFl46DC+S9A6Q1Te7pkN4ai9IrQbuJMN
+         fCsqKb1B306sCJyXbQAaibDQViXh7OlmHQOjnlv65989ZdugraXMV4L0d9tqtFo0kdmP
+         ri6xG86kmsa4+0emYWeCeucdAsE2jUyKOX4uz5pS4451qPppwjt/TROX5C/pFhonKUCP
+         3a3pXf1ixNIx7qa+4TPZreopPy1gJTg5DHdSZ3rfablwj04DFjK1el0yFNfUDmvv5Opj
+         r5UV+iQA7SBAmOWw80HyAAJpbjBu0yfruRQo1CDqBWbHE3AOIkKl+IbuUgrgHZxa1Qt6
+         +1RA==
+X-Gm-Message-State: AOAM530khVdWdkOR7QpvHpfmSyvLKieNronMDxjBOe6aboYmb/bSWRw8
+        G/l7DaJaAqxr+p6dMG1pimDTgg==
+X-Google-Smtp-Source: ABdhPJy1342pFfoFTIRUwWKdwb/ygHnwZo9GAVPV1Q2EnNid3WdNBcuTVxSomezSuPgbneDfModeZQ==
+X-Received: by 2002:a50:aa94:: with SMTP id q20mr25548359edc.119.1599561160112;
+        Tue, 08 Sep 2020 03:32:40 -0700 (PDT)
+Received: from aws.localdomain ([94.107.139.190])
+        by smtp.gmail.com with ESMTPSA id j10sm17302091ejf.116.2020.09.08.03.32.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Sep 2020 03:32:39 -0700 (PDT)
+From:   Alejandro Sior <aho@sior.be>
+Cc:     Alejandro Sior <aho@sior.be>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        intel-gvt-dev@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] Fixed NULL pointer dereference in handle_edid functions for GPUs that do not support EDID
+Date:   Tue,  8 Sep 2020 12:32:25 +0200
+Message-Id: <20200908103226.27616-1-aho@sior.be>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200908075716.30357-4-manivannan.sadhasivam@linaro.org>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08-09-20, 13:27, Manivannan Sadhasivam wrote:
-> Get rid of global_pdev pointer and make use of cpufreq driver_data for
-> passing the reference of pdev. This aligns with what other cpufreq drivers
-> are doing.
-> 
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
->  drivers/cpufreq/qcom-cpufreq-hw.c | 11 ++++++-----
->  1 file changed, 6 insertions(+), 5 deletions(-)
+In the function intel_vgpu_reg_rw_edid of gvt/kvmgt.c, pos can get equal to NULL for GPUs that do not
+properly support EDID. In those cases, when pos gets passed to the handle_edid functions, it
+gets added a short offset then it's dereferenced in memcpy's, leading to a kernel
+oops: null pointer dereference.
 
-Applied. Thanks.
+More concretely, that kernel oops renders Broadwell GPUs users
+completely unable to set up virtual machines with virtual GPU passthrough (virtual machines
+hang indefinitely when trying to make use of the virtual GPU), and make
+them have huge problems when trying to remove the virtual GPUs once the
+kernel oops has happened (writing 1 in the vGPU remove file just makes
+the operation hang undefinitely, again, and the kernel is unable to shutdown
+since the vGPU removing hangs indefinitely). More information on the
+issues that this causes are described in details in this github issue post: https://github.com/intel/gvt-linux/issues/170#issuecomment-685806160
 
+This patch solves this problem by checking is pos is equal to NULL, and
+if it is, it sets ret to a nagative value, making the module simply indicate that the access to EDID region has failed, without any fatal repercussion.
+
+When this patch is applied, Broadwell GPU users do not suffer from that
+kernel oops anymore, and thus do not encounter any of
+the described problems and get able to set up virtual machines
+with GPU passthrough without problems.
+Users of GPUs with proper EDID support, are of course, still able to
+benefit from the EDID features.
+
+Signed-off-by: Alejandro W. Sior <aho@sior.be>
+
+---
+ drivers/gpu/drm/i915/gvt/kvmgt.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/i915/gvt/kvmgt.c b/drivers/gpu/drm/i915/gvt/kvmgt.c
+index ad8a9df49f29..49163363ba4a 100644
+--- a/drivers/gpu/drm/i915/gvt/kvmgt.c
++++ b/drivers/gpu/drm/i915/gvt/kvmgt.c
+@@ -557,7 +557,9 @@ static size_t intel_vgpu_reg_rw_edid(struct intel_vgpu *vgpu, char *buf,
+ 		(struct vfio_edid_region *)kvmgt_vdev(vgpu)->region[i].data;
+ 	loff_t pos = *ppos & VFIO_PCI_OFFSET_MASK;
+ 
+-	if (pos < region->vfio_edid_regs.edid_offset) {
++	if (pos == NULL) {
++		ret = -EINVAL;
++	} else if (pos < region->vfio_edid_regs.edid_offset) {
+ 		ret = handle_edid_regs(vgpu, region, buf, count, pos, iswrite);
+ 	} else {
+ 		pos -= EDID_BLOB_OFFSET;
 -- 
-viresh
+2.28.0
+
