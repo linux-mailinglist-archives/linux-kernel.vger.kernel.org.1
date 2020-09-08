@@ -2,109 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6794261ECA
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:55:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5231E261EA7
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:54:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731418AbgIHTzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:55:37 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:47486 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730591AbgIHPhM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:37:12 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 088DtRWe035750;
-        Tue, 8 Sep 2020 08:55:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1599573327;
-        bh=WH8rBcZDG+qiXS6giP11GremPXxA0Xt/2RHYWB7S/GA=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=NTWdq1JaDDimXcMCV9Ki565pQkwum8+bXe25HrW03Peqn1A2j69gRH+F9Z3TaXT/n
-         hLX9R7ZihR4qDLzM2p2EVE2r9dsBZM1nMMFYOoPu89MAV4Cf2CAiOAECGxPRsxWMPy
-         pqGGt0GQnZfWMe3SwKGp+RXY5lVZPq3cIEd0y6yk=
-Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 088DtRe9091229;
-        Tue, 8 Sep 2020 08:55:27 -0500
-Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 8 Sep
- 2020 08:55:26 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 8 Sep 2020 08:55:26 -0500
-Received: from [10.250.38.37] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 088DtQJ6068912;
-        Tue, 8 Sep 2020 08:55:26 -0500
-Subject: Re: [PATCH v3 2/2] dt-bindings: leds: Add bindings for MT6360 LED
-To:     Gene Chen <gene.chen.richtek@gmail.com>,
-        <jacek.anaszewski@gmail.com>, <pavel@ucw.cz>, <robh+dt@kernel.org>,
-        <matthias.bgg@gmail.com>
-CC:     <linux-leds@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <gene_chen@richtek.com>,
-        <Wilma.Wu@mediatek.com>, <shufan_lee@richtek.com>,
-        <cy_huang@richtek.com>, <benjamin.chao@mediatek.com>
-References: <1599474459-20853-1-git-send-email-gene.chen.richtek@gmail.com>
- <1599474459-20853-3-git-send-email-gene.chen.richtek@gmail.com>
-From:   Dan Murphy <dmurphy@ti.com>
-Message-ID: <35d5b52c-36ff-d636-7838-be46e43b0387@ti.com>
-Date:   Tue, 8 Sep 2020 08:55:26 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1730644AbgIHTxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 15:53:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60636 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730461AbgIHPmd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 11:42:33 -0400
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 33DBE22CA1;
+        Tue,  8 Sep 2020 13:57:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599573425;
+        bh=Nlb6PMQ+/rxBZwsrcxH1F/mJAmYV/dDxE1otVQrU4fY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ysKrBTL0aVtHER0C6nREvCT5i7bCJNKHt5vIDFQa/AXN/GkdMPbQCRt+CQMpGVhy7
+         pcNR/ll6hCNdA+6fIO0QWqFi4PAH7uGFv03RXgTvMBxBHDBb9aONpD0qMZjIqHFnDR
+         U44LpeiJKNPRcjLukNI0vWll/S/plDkC4wuoqVGM=
+Received: by mail-ej1-f42.google.com with SMTP id i22so22665206eja.5;
+        Tue, 08 Sep 2020 06:57:05 -0700 (PDT)
+X-Gm-Message-State: AOAM533nTNSMB3oaPlh9q/j+1ETOTbklqnLStP4EJ0S4uXFs8+ZGxTET
+        PWd8H4NbuK2KWPCwc6+y/nLh+gTlINihhUS55v4=
+X-Google-Smtp-Source: ABdhPJxw+CVnvHvS0mxWVnK6lDtq/Q+r0QWlwGxtDfUXEv06P0SO8wK83EymMr8l5SGfDRCjuUgniQlH27jDHyXS5c4=
+X-Received: by 2002:a17:906:8401:: with SMTP id n1mr25369176ejx.215.1599573423778;
+ Tue, 08 Sep 2020 06:57:03 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1599474459-20853-3-git-send-email-gene.chen.richtek@gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20200907105254.31097-1-krzk@kernel.org> <CAPDyKFowS-psoJqVUChU35Xp92nrvH5r5eY=_8bMKU0SVBxLcw@mail.gmail.com>
+In-Reply-To: <CAPDyKFowS-psoJqVUChU35Xp92nrvH5r5eY=_8bMKU0SVBxLcw@mail.gmail.com>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Tue, 8 Sep 2020 15:56:51 +0200
+X-Gmail-Original-Message-ID: <CAJKOXPdX7UOkTNMVS_uLi7sG_h0bHCs_b6R0uL2B241y_+niqg@mail.gmail.com>
+Message-ID: <CAJKOXPdX7UOkTNMVS_uLi7sG_h0bHCs_b6R0uL2B241y_+niqg@mail.gmail.com>
+Subject: Re: [PATCH v3] mmc: host: Enable compile testing of multiple drivers
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Gene
-
-On 9/7/20 5:27 AM, Gene Chen wrote:
-> From: Gene Chen <gene_chen@richtek.com>
+On Tue, 8 Sep 2020 at 15:54, Ulf Hansson <ulf.hansson@linaro.org> wrote:
 >
-> Add bindings document for LED support on MT6360 PMIC
+> + Arnd
 >
-> Signed-off-by: Gene Chen <gene_chen@richtek.com>
-> ---
->   .../devicetree/bindings/leds/leds-mt6360.yaml      | 105 +++++++++++++++++++++
->   1 file changed, 105 insertions(+)
->   create mode 100644 Documentation/devicetree/bindings/leds/leds-mt6360.yaml
+> On Mon, 7 Sep 2020 at 12:53, Krzysztof Kozlowski <krzk@kernel.org> wrote:
+> >
+> > Multiple MMC host controller driver can be compile tested as they do not
+> > depend on architecture specific headers.
+> >
+> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 >
-> diff --git a/Documentation/devicetree/bindings/leds/leds-mt6360.yaml b/Documentation/devicetree/bindings/leds/leds-mt6360.yaml
-> new file mode 100644
-> index 0000000..72914c6
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/leds/leds-mt6360.yaml
-> @@ -0,0 +1,105 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/leds/leds-mt6360.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: LED driver for MT6360 PMIC from MediaTek Integrated.
-> +
-> +maintainers:
-> +  - Gene Chen <gene_chen@richtek.com>
-> +
-> +description: |
-> +  This module is part of the MT6360 MFD device.
-> +  The LED controller is represented as a sub-node of the PMIC node on
-> +  the device tree.
-> +  This device has six current sinks.
-> +
+> It seems like this is causing build errors for my next branch when
+> running allmod config [1].
+>
+> [...]
+>
+> >
+> >  config MMC_S3C
+> >         tristate "Samsung S3C SD/MMC Card Interface support"
+> > -       depends on ARCH_S3C24XX
+> > +       depends on ARCH_S3C24XX || COMPILE_TEST
+> >         depends on S3C24XX_DMAC
+> >         help
+> >           This selects a driver for the MCI interface found in
+>
+> [...]
+>
+> The problem doesn't exist in linux-next, since it has the
+> corresponding cleanup/rework patches for MMC_S3C from Arnd.
+>
+> To fix the problem, we should probably remove COMPILE_TEST for
+> MMC_S3C, for now. Then we can add it again and send it as a fix for
+> v5.10-rc1.
+>
+> What do you think?
 
-A bit of a nitpick but wouldn't the commit message in patch 1/2 be a 
-better description of the hardware then this?
+Yes, better to remove it otherwise it will pop up when Linus merges
+your tree. Do you want a patch for this or you fix it up by yourself?
 
-Other wise
-
-Reviewed-by: Dan Murphy <dmurphy@ti.com>
-
+Best regards,
+Krzysztof
