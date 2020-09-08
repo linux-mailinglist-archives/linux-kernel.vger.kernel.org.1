@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E722A261D48
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:35:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57863261DCB
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:42:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732171AbgIHTeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:34:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54332 "EHLO
+        id S1731871AbgIHTma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 15:42:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730997AbgIHP6F (ORCPT
+        with ESMTP id S1730873AbgIHPwt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:58:05 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15CE3C06135C;
-        Tue,  8 Sep 2020 05:35:18 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id c10so15799298edk.6;
-        Tue, 08 Sep 2020 05:35:18 -0700 (PDT)
+        Tue, 8 Sep 2020 11:52:49 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FCC4C06135D;
+        Tue,  8 Sep 2020 05:35:21 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id q13so22226058ejo.9;
+        Tue, 08 Sep 2020 05:35:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=p/Nfj7ACLzQzeTXMcR9CfM54OsifE9xJrIVoCFhWznc=;
-        b=WXDHoHjsoG+fJxb79HOJ1tpvH76HhMX/AR0/LF11Z6Pz7cG7O6BYieRPkHU3Q9Af3C
-         nlixl/zkKMxhUxaVkAsMxs5iS2d2OmGS0QJr+gZizjVwOQAVKYxvKmgSdYX7rtLR6kOO
-         9QPWVuy37/+c6pCmBe1rzhNvT7I17XKcLINKNpHqeFz4OA8MrpwpTAKa0iNqpHfDVx71
-         a5HiqyVFCbl7nB8Mx1gAArHBUxk44PsTz9Tjj6OyNCQtzSKCtWyiiNGE/Axgy1/GrRhV
-         xTVk8/yhIMBUU91RDcHIwpoVea7KU/0Mp/JYkgv2qt465PWnZhOvtM/9Jv03pN3fzDQl
-         LHSA==
+        bh=2qfq+72yB6R4V2Ta6DJIMSw5cF2WyPtLSpzTzIPnBF8=;
+        b=JfBN7lc5rinP/bH1ffAJOmiWgIVIJ5exAoZpTSC5D6b7rqu6CDhufwCXE39HamQGaA
+         b7fpHdjyGbFvh+WdEtpBnoP2M3LGFPEImM44jb/BTW3v3kkzmaY5BIMSVgDa0BN9NynV
+         G3uYsY6y6obh6tMj6OmbWVfb6f78amZJacCymkfbZGvnrsW1IGaxo8ZRM7uKtYCgtPJL
+         8agmVACEwW5YMjuhJ9csH34SUxVbusLwiDT8f3yi3dnEdrEPbkp3DoUZpP0h32sm+7Za
+         VUzb+ox/3m79biEYcCo8ZQUvE8IdgtZNWtNwFKHFq/SxcReYEdNWRuA2Z2F2iQZuGt9V
+         5WVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=p/Nfj7ACLzQzeTXMcR9CfM54OsifE9xJrIVoCFhWznc=;
-        b=Dz81idEp6KlMwkcKl6XgJ+fIKY+0azQEQ8lMIzVMR/1bUGJ6QljSOgzDg7ACXH9URT
-         leujJbaK+GjROGerESOMKu6X3ZSxmyAOUZz2cdJNfPOdi6WwVnip/WtWr8xTXUGIhS8k
-         fgfGUCB4SSn4cTdIwbXaZvaLcbwIRyfXy1AVivH/tUbPvNvCcZG7I8a5XWeZpeLZyL4H
-         qDOM4UkAkPfQARX2al/p2lrT5+b6JjPx/1xnB7Ppy60hqyeDnZ3NZH2mEUXUOacwEdUm
-         Zjto7QU7GI6a3nbCRQSghCJ5JbNZTwyPmBufrnnkrJrFpHjcatpGEoed9af4vfrAigjw
-         cmCg==
-X-Gm-Message-State: AOAM530zCD8yZ74UWIoZPjV1HbMbmiYKfV4qiRfVOCIrU18jghreAahB
-        3DgqXvfhRiJUDzMUX85HI+A=
-X-Google-Smtp-Source: ABdhPJzBJrnLD2w9Oln9SVK+nN1qvhZwS6LluGf0nmMm48637c26eySF4TwqO8wjOI6n0FybP0wNqg==
-X-Received: by 2002:aa7:d88a:: with SMTP id u10mr15985398edq.217.1599568515763;
-        Tue, 08 Sep 2020 05:35:15 -0700 (PDT)
+        bh=2qfq+72yB6R4V2Ta6DJIMSw5cF2WyPtLSpzTzIPnBF8=;
+        b=hyOr8IuTPsK5DvmAGSikTRVq/BvXfN5tA0iCxrUWMi+0PjfrRxSJCyMuN19wBNTSij
+         ejt0iZXRrpyzRVl1RvbodlbU4rX9YGGgi6Smw7FNZPvAfU5Z7HeF6wiglwlnI1iJ87GS
+         XBevVvyP54V4FQqBbnt8Vrk2J1oSULz6r4JYr9dztesxBOblFauWFs5pKTfM6daDq7hZ
+         rKt64fP6pi8+WbwJSsMfkckadxHm+CRdwAairHFlh6AQaDE2tXp8uWxcjw5QyjiGWCDm
+         kW35xMptGk09p+O7y59YnISfdg294ZUFyNdqEoYiDRQZta5vUw5mgXSLqG83soVpDA12
+         eSdg==
+X-Gm-Message-State: AOAM533nZ99Fki+vMqnsB1P3HcP5eJvIf/h2ZxkxIziJrLgGh60HHDvT
+        tap8wmgcBVpxTXdLvdru+Cg=
+X-Google-Smtp-Source: ABdhPJwe7vX7VXHWIjhkEeusgP/ad9+U88AXFx5s8GF9338+2FqJj49dybNVqswB1oETBJWO8+lKEA==
+X-Received: by 2002:a17:906:c55:: with SMTP id t21mr26676972ejf.276.1599568519707;
+        Tue, 08 Sep 2020 05:35:19 -0700 (PDT)
 Received: from felia.fritz.box ([2001:16b8:2d8b:1700:7cee:a9ea:bd04:6924])
-        by smtp.gmail.com with ESMTPSA id x6sm9399939ejf.59.2020.09.08.05.35.14
+        by smtp.gmail.com with ESMTPSA id x6sm9399939ejf.59.2020.09.08.05.35.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Sep 2020 05:35:15 -0700 (PDT)
+        Tue, 08 Sep 2020 05:35:19 -0700 (PDT)
 From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
 To:     Igor Russkikh <irusskikh@marvell.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         linux-spdx@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org,
         Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH 1/5] scsi/qla4xxx: Convert to SPDX license identifiers
-Date:   Tue,  8 Sep 2020 14:34:47 +0200
-Message-Id: <20200908123451.7215-2-lukas.bulwahn@gmail.com>
+Subject: [PATCH 2/5] scsi/qla2xxx: Convert to SPDX license identifiers
+Date:   Tue,  8 Sep 2020 14:34:48 +0200
+Message-Id: <20200908123451.7215-3-lukas.bulwahn@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200908123451.7215-1-lukas.bulwahn@gmail.com>
 References: <20200908123451.7215-1-lukas.bulwahn@gmail.com>
@@ -68,9 +68,9 @@ From: Thomas Gleixner <tglx@linutronix.de>
 
 All files in this driver directory contain the following notice:
 
-  See LICENSE.qla4xxx for copyright and licensing details.
+  See LICENSE.qla2xxx for copyright and licensing details.
 
-LICENSE.qla4xxx can be found in Documentation/scsi/. The file contains:
+LICENSE.qla2xxx can be found in Documentation/scsi/. The file contains:
 
   - A copyright notice
 
@@ -83,8 +83,6 @@ LICENSE.qla4xxx can be found in Documentation/scsi/. The file contains:
     GNU General Public License (a copy of which is attached hereto as
     Exhibit A) published by the Free Software Foundation (version 2).
 
-  - The full GPLv2 license text
-
     This can be replaced with the corresponding SPDX license identifier
     (GPL-2.0-only) in the source files which reference this license
     file.
@@ -96,7 +94,7 @@ LICENSE.qla4xxx can be found in Documentation/scsi/. The file contains:
 Remove the notices and add the SPDX license identifier GPL-2.0-only to the
 source files.
 
-Finally remove the now redundant LICENSE.qla4xxx file.
+Finally remove the now redundant LICENSE.qla2xxx file.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Reviewed-by: Richard Fontana <rfontana@redhat.com>
@@ -104,45 +102,55 @@ Reviewed-by: Jilayne Lovejoy <opensource@jilayne.com>
 Reviewed-by: Alexios Zavras <alexios.zavras@intel.com>
 Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 ---
- Documentation/scsi/LICENSE.qla4xxx | 289 -----------------------------
- MAINTAINERS                        |   1 -
- drivers/scsi/qla4xxx/ql4_83xx.c    |   3 +-
- drivers/scsi/qla4xxx/ql4_83xx.h    |   3 +-
- drivers/scsi/qla4xxx/ql4_attr.c    |   3 +-
- drivers/scsi/qla4xxx/ql4_bsg.c     |   3 +-
- drivers/scsi/qla4xxx/ql4_bsg.h     |   3 +-
- drivers/scsi/qla4xxx/ql4_dbg.c     |   3 +-
- drivers/scsi/qla4xxx/ql4_dbg.h     |   3 +-
- drivers/scsi/qla4xxx/ql4_def.h     |   3 +-
- drivers/scsi/qla4xxx/ql4_fw.h      |   3 +-
- drivers/scsi/qla4xxx/ql4_glbl.h    |   3 +-
- drivers/scsi/qla4xxx/ql4_init.c    |   3 +-
- drivers/scsi/qla4xxx/ql4_inline.h  |   3 +-
- drivers/scsi/qla4xxx/ql4_iocb.c    |   3 +-
- drivers/scsi/qla4xxx/ql4_isr.c     |   3 +-
- drivers/scsi/qla4xxx/ql4_mbx.c     |   3 +-
- drivers/scsi/qla4xxx/ql4_nvram.c   |   3 +-
- drivers/scsi/qla4xxx/ql4_nvram.h   |   3 +-
- drivers/scsi/qla4xxx/ql4_nx.c      |   3 +-
- drivers/scsi/qla4xxx/ql4_nx.h      |   3 +-
- drivers/scsi/qla4xxx/ql4_os.c      |   3 +-
- drivers/scsi/qla4xxx/ql4_version.h |   3 +-
- 23 files changed, 21 insertions(+), 332 deletions(-)
- delete mode 100644 Documentation/scsi/LICENSE.qla4xxx
+ Documentation/scsi/LICENSE.qla2xxx  | 290 ----------------------------
+ MAINTAINERS                         |   1 -
+ drivers/scsi/qla2xxx/qla_attr.c     |   3 +-
+ drivers/scsi/qla2xxx/qla_bsg.c      |   3 +-
+ drivers/scsi/qla2xxx/qla_bsg.h      |   3 +-
+ drivers/scsi/qla2xxx/qla_dbg.c      |   3 +-
+ drivers/scsi/qla2xxx/qla_dbg.h      |   3 +-
+ drivers/scsi/qla2xxx/qla_def.h      |   3 +-
+ drivers/scsi/qla2xxx/qla_dfs.c      |   3 +-
+ drivers/scsi/qla2xxx/qla_fw.h       |   3 +-
+ drivers/scsi/qla2xxx/qla_gbl.h      |   3 +-
+ drivers/scsi/qla2xxx/qla_gs.c       |   3 +-
+ drivers/scsi/qla2xxx/qla_init.c     |   3 +-
+ drivers/scsi/qla2xxx/qla_inline.h   |   3 +-
+ drivers/scsi/qla2xxx/qla_iocb.c     |   3 +-
+ drivers/scsi/qla2xxx/qla_isr.c      |   3 +-
+ drivers/scsi/qla2xxx/qla_mbx.c      |   3 +-
+ drivers/scsi/qla2xxx/qla_mid.c      |   3 +-
+ drivers/scsi/qla2xxx/qla_mr.c       |   3 +-
+ drivers/scsi/qla2xxx/qla_mr.h       |   3 +-
+ drivers/scsi/qla2xxx/qla_nvme.c     |   3 +-
+ drivers/scsi/qla2xxx/qla_nvme.h     |   3 +-
+ drivers/scsi/qla2xxx/qla_nx.c       |   3 +-
+ drivers/scsi/qla2xxx/qla_nx.h       |   3 +-
+ drivers/scsi/qla2xxx/qla_nx2.c      |   3 +-
+ drivers/scsi/qla2xxx/qla_nx2.h      |   3 +-
+ drivers/scsi/qla2xxx/qla_os.c       |   3 +-
+ drivers/scsi/qla2xxx/qla_settings.h |   3 +-
+ drivers/scsi/qla2xxx/qla_sup.c      |   3 +-
+ drivers/scsi/qla2xxx/qla_tmpl.c     |   3 +-
+ drivers/scsi/qla2xxx/qla_tmpl.h     |   3 +-
+ drivers/scsi/qla2xxx/qla_version.h  |   3 +-
+ 32 files changed, 30 insertions(+), 351 deletions(-)
+ delete mode 100644 Documentation/scsi/LICENSE.qla2xxx
 
-diff --git a/Documentation/scsi/LICENSE.qla4xxx b/Documentation/scsi/LICENSE.qla4xxx
+diff --git a/Documentation/scsi/LICENSE.qla2xxx b/Documentation/scsi/LICENSE.qla2xxx
 deleted file mode 100644
-index fcc27ad27d74..000000000000
---- a/Documentation/scsi/LICENSE.qla4xxx
+index 52f0b4359234..000000000000
+--- a/Documentation/scsi/LICENSE.qla2xxx
 +++ /dev/null
-@@ -1,289 +0,0 @@
--Copyright (c) 2003-2013 QLogic Corporation
--QLogic Linux iSCSI Driver
+@@ -1,290 +0,0 @@
+-Copyright (c) 2003-2014 QLogic Corporation
+-QLogic Linux FC-FCoE Driver
 -
 -This program includes a device driver for Linux 3.x.
 -You may modify and redistribute the device driver code under the
 -GNU General Public License (a copy of which is attached hereto as
 -Exhibit A) published by the Free Software Foundation (version 2).
+-
 -
 -
 -EXHIBIT A
@@ -426,311 +434,437 @@ index fcc27ad27d74..000000000000
 -PROGRAMS), EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE
 -POSSIBILITY OF SUCH DAMAGES.
 diff --git a/MAINTAINERS b/MAINTAINERS
-index b5cfab015bd6..0f72d0aa2dd6 100644
+index 0f72d0aa2dd6..25bb79c28de0 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -14237,7 +14237,6 @@ QLOGIC QLA4XXX iSCSI DRIVER
- M:	QLogic-Storage-Upstream@qlogic.com
+@@ -14223,7 +14223,6 @@ M:	Nilesh Javali <njavali@marvell.com>
+ M:	GR-QLogic-Storage-Upstream@marvell.com
  L:	linux-scsi@vger.kernel.org
  S:	Supported
--F:	Documentation/scsi/LICENSE.qla4xxx
- F:	drivers/scsi/qla4xxx/
+-F:	Documentation/scsi/LICENSE.qla2xxx
+ F:	drivers/scsi/qla2xxx/
  
- QLOGIC QLCNIC (1/10)Gb ETHERNET DRIVER
-diff --git a/drivers/scsi/qla4xxx/ql4_83xx.c b/drivers/scsi/qla4xxx/ql4_83xx.c
-index de10e67de8c0..5f56122f6664 100644
---- a/drivers/scsi/qla4xxx/ql4_83xx.c
-+++ b/drivers/scsi/qla4xxx/ql4_83xx.c
+ QLOGIC QLA3XXX NETWORK DRIVER
+diff --git a/drivers/scsi/qla2xxx/qla_attr.c b/drivers/scsi/qla2xxx/qla_attr.c
+index 5d93ccc73153..69ae215a3160 100644
+--- a/drivers/scsi/qla2xxx/qla_attr.c
++++ b/drivers/scsi/qla2xxx/qla_attr.c
 @@ -1,8 +1,7 @@
 +// SPDX-License-Identifier: GPL-2.0-only
  /*
-  * QLogic iSCSI HBA Driver
-  * Copyright (c)   2003-2013 QLogic Corporation
+  * QLogic Fibre Channel HBA Driver
+  * Copyright (c)  2003-2014 QLogic Corporation
 - *
-- * See LICENSE.qla4xxx for copyright and licensing details.
+- * See LICENSE.qla2xxx for copyright and licensing details.
   */
+ #include "qla_def.h"
+ #include "qla_target.h"
+diff --git a/drivers/scsi/qla2xxx/qla_bsg.c b/drivers/scsi/qla2xxx/qla_bsg.c
+index 67efde1d4b8e..23b604832a54 100644
+--- a/drivers/scsi/qla2xxx/qla_bsg.c
++++ b/drivers/scsi/qla2xxx/qla_bsg.c
+@@ -1,8 +1,7 @@
++// SPDX-License-Identifier: GPL-2.0-only
+ /*
+  * QLogic Fibre Channel HBA Driver
+  * Copyright (c)  2003-2014 QLogic Corporation
+- *
+- * See LICENSE.qla2xxx for copyright and licensing details.
+  */
+ #include "qla_def.h"
  
- #include <linux/ratelimit.h>
-diff --git a/drivers/scsi/qla4xxx/ql4_83xx.h b/drivers/scsi/qla4xxx/ql4_83xx.h
-index f34583e5f8de..f10167c71dd3 100644
---- a/drivers/scsi/qla4xxx/ql4_83xx.h
-+++ b/drivers/scsi/qla4xxx/ql4_83xx.h
+diff --git a/drivers/scsi/qla2xxx/qla_bsg.h b/drivers/scsi/qla2xxx/qla_bsg.h
+index 7594fad7b5b5..1a09b5512267 100644
+--- a/drivers/scsi/qla2xxx/qla_bsg.h
++++ b/drivers/scsi/qla2xxx/qla_bsg.h
 @@ -1,8 +1,7 @@
 +/* SPDX-License-Identifier: GPL-2.0-only */
  /*
-  * QLogic iSCSI HBA Driver
-  * Copyright (c)  2003-2013 QLogic Corporation
+  * QLogic Fibre Channel HBA Driver
+  * Copyright (c)  2003-2014 QLogic Corporation
 - *
-- * See LICENSE.qla4xxx for copyright and licensing details.
+- * See LICENSE.qla2xxx for copyright and licensing details.
   */
- 
- #ifndef __QL483XX_H
-diff --git a/drivers/scsi/qla4xxx/ql4_attr.c b/drivers/scsi/qla4xxx/ql4_attr.c
-index 463239c972b0..ec4352818fbf 100644
---- a/drivers/scsi/qla4xxx/ql4_attr.c
-+++ b/drivers/scsi/qla4xxx/ql4_attr.c
+ #ifndef __QLA_BSG_H
+ #define __QLA_BSG_H
+diff --git a/drivers/scsi/qla2xxx/qla_dbg.c b/drivers/scsi/qla2xxx/qla_dbg.c
+index 1be811a5d69d..75a008512d4c 100644
+--- a/drivers/scsi/qla2xxx/qla_dbg.c
++++ b/drivers/scsi/qla2xxx/qla_dbg.c
 @@ -1,8 +1,7 @@
 +// SPDX-License-Identifier: GPL-2.0-only
  /*
-  * QLogic iSCSI HBA Driver
-  * Copyright (c)  2003-2013 QLogic Corporation
+  * QLogic Fibre Channel HBA Driver
+  * Copyright (c)  2003-2014 QLogic Corporation
 - *
-- * See LICENSE.qla4xxx for copyright and licensing details.
+- * See LICENSE.qla2xxx for copyright and licensing details.
   */
  
- #include "ql4_def.h"
-diff --git a/drivers/scsi/qla4xxx/ql4_bsg.c b/drivers/scsi/qla4xxx/ql4_bsg.c
-index 9231917066d3..c447a9d598a1 100644
---- a/drivers/scsi/qla4xxx/ql4_bsg.c
-+++ b/drivers/scsi/qla4xxx/ql4_bsg.c
-@@ -1,8 +1,7 @@
-+// SPDX-License-Identifier: GPL-2.0-only
  /*
-  * QLogic iSCSI HBA Driver
-  * Copyright (c) 2011-2013 QLogic Corporation
-- *
-- * See LICENSE.qla4xxx for copyright and licensing details.
-  */
- 
- #include "ql4_def.h"
-diff --git a/drivers/scsi/qla4xxx/ql4_bsg.h b/drivers/scsi/qla4xxx/ql4_bsg.h
-index 88c2401910c0..06db38561566 100644
---- a/drivers/scsi/qla4xxx/ql4_bsg.h
-+++ b/drivers/scsi/qla4xxx/ql4_bsg.h
+diff --git a/drivers/scsi/qla2xxx/qla_dbg.h b/drivers/scsi/qla2xxx/qla_dbg.h
+index e1d7de63e8f8..2e59e75c62b5 100644
+--- a/drivers/scsi/qla2xxx/qla_dbg.h
++++ b/drivers/scsi/qla2xxx/qla_dbg.h
 @@ -1,8 +1,7 @@
 +/* SPDX-License-Identifier: GPL-2.0-only */
  /*
-  * QLogic iSCSI HBA Driver
-  * Copyright (c) 2011 QLogic Corporation
+  * QLogic Fibre Channel HBA Driver
+  * Copyright (c)  2003-2014 QLogic Corporation
 - *
-- * See LICENSE.qla4xxx for copyright and licensing details.
-  */
- #ifndef __QL4_BSG_H
- #define __QL4_BSG_H
-diff --git a/drivers/scsi/qla4xxx/ql4_dbg.c b/drivers/scsi/qla4xxx/ql4_dbg.c
-index 5649e9ef59a8..f43e675c5693 100644
---- a/drivers/scsi/qla4xxx/ql4_dbg.c
-+++ b/drivers/scsi/qla4xxx/ql4_dbg.c
-@@ -1,8 +1,7 @@
-+// SPDX-License-Identifier: GPL-2.0-only
- /*
-  * QLogic iSCSI HBA Driver
-  * Copyright (c)  2003-2012 QLogic Corporation
-- *
-- * See LICENSE.qla4xxx for copyright and licensing details.
+- * See LICENSE.qla2xxx for copyright and licensing details.
   */
  
- #include "ql4_def.h"
-diff --git a/drivers/scsi/qla4xxx/ql4_dbg.h b/drivers/scsi/qla4xxx/ql4_dbg.h
-index 51c365bcf912..171c89165009 100644
---- a/drivers/scsi/qla4xxx/ql4_dbg.h
-+++ b/drivers/scsi/qla4xxx/ql4_dbg.h
+ #include "qla_def.h"
+diff --git a/drivers/scsi/qla2xxx/qla_def.h b/drivers/scsi/qla2xxx/qla_def.h
+index 1bc090d8a71b..aa2a6e83a5e7 100644
+--- a/drivers/scsi/qla2xxx/qla_def.h
++++ b/drivers/scsi/qla2xxx/qla_def.h
 @@ -1,8 +1,7 @@
 +/* SPDX-License-Identifier: GPL-2.0-only */
  /*
-  * QLogic iSCSI HBA Driver
-  * Copyright (c)  2003-2012 QLogic Corporation
+  * QLogic Fibre Channel HBA Driver
+  * Copyright (c)  2003-2014 QLogic Corporation
 - *
-- * See LICENSE.qla4xxx for copyright and licensing details.
+- * See LICENSE.qla2xxx for copyright and licensing details.
   */
- 
+ #ifndef __QLA_DEF_H
+ #define __QLA_DEF_H
+diff --git a/drivers/scsi/qla2xxx/qla_dfs.c b/drivers/scsi/qla2xxx/qla_dfs.c
+index e62b2115235e..1db2eded569c 100644
+--- a/drivers/scsi/qla2xxx/qla_dfs.c
++++ b/drivers/scsi/qla2xxx/qla_dfs.c
+@@ -1,8 +1,7 @@
++// SPDX-License-Identifier: GPL-2.0-only
  /*
-diff --git a/drivers/scsi/qla4xxx/ql4_def.h b/drivers/scsi/qla4xxx/ql4_def.h
-index 817f312023a9..f5b382ed0a1b 100644
---- a/drivers/scsi/qla4xxx/ql4_def.h
-+++ b/drivers/scsi/qla4xxx/ql4_def.h
+  * QLogic Fibre Channel HBA Driver
+  * Copyright (c)  2003-2014 QLogic Corporation
+- *
+- * See LICENSE.qla2xxx for copyright and licensing details.
+  */
+ #include "qla_def.h"
+ 
+diff --git a/drivers/scsi/qla2xxx/qla_fw.h b/drivers/scsi/qla2xxx/qla_fw.h
+index bba1b77fba7e..bcb5eac7daa4 100644
+--- a/drivers/scsi/qla2xxx/qla_fw.h
++++ b/drivers/scsi/qla2xxx/qla_fw.h
 @@ -1,8 +1,7 @@
 +/* SPDX-License-Identifier: GPL-2.0-only */
  /*
-  * QLogic iSCSI HBA Driver
-  * Copyright (c)  2003-2013 QLogic Corporation
+  * QLogic Fibre Channel HBA Driver
+  * Copyright (c)  2003-2014 QLogic Corporation
 - *
-- * See LICENSE.qla4xxx for copyright and licensing details.
+- * See LICENSE.qla2xxx for copyright and licensing details.
   */
- 
- #ifndef __QL4_DEF_H
-diff --git a/drivers/scsi/qla4xxx/ql4_fw.h b/drivers/scsi/qla4xxx/ql4_fw.h
-index 699575efc9ba..b9142464d3f0 100644
---- a/drivers/scsi/qla4xxx/ql4_fw.h
-+++ b/drivers/scsi/qla4xxx/ql4_fw.h
+ #ifndef __QLA_FW_H
+ #define __QLA_FW_H
+diff --git a/drivers/scsi/qla2xxx/qla_gbl.h b/drivers/scsi/qla2xxx/qla_gbl.h
+index 0ced18f3104e..2e0060a59353 100644
+--- a/drivers/scsi/qla2xxx/qla_gbl.h
++++ b/drivers/scsi/qla2xxx/qla_gbl.h
 @@ -1,8 +1,7 @@
 +/* SPDX-License-Identifier: GPL-2.0-only */
  /*
-  * QLogic iSCSI HBA Driver
-  * Copyright (c)  2003-2013 QLogic Corporation
+  * QLogic Fibre Channel HBA Driver
+  * Copyright (c)  2003-2014 QLogic Corporation
 - *
-- * See LICENSE.qla4xxx for copyright and licensing details.
+- * See LICENSE.qla2xxx for copyright and licensing details.
   */
- 
- #ifndef _QLA4X_FW_H
-diff --git a/drivers/scsi/qla4xxx/ql4_glbl.h b/drivers/scsi/qla4xxx/ql4_glbl.h
-index bce96a58f14e..b8f02210aeb0 100644
---- a/drivers/scsi/qla4xxx/ql4_glbl.h
-+++ b/drivers/scsi/qla4xxx/ql4_glbl.h
+ #ifndef __QLA_GBL_H
+ #define	__QLA_GBL_H
+diff --git a/drivers/scsi/qla2xxx/qla_gs.c b/drivers/scsi/qla2xxx/qla_gs.c
+index b569fd6e96d6..30fae605bacb 100644
+--- a/drivers/scsi/qla2xxx/qla_gs.c
++++ b/drivers/scsi/qla2xxx/qla_gs.c
+@@ -1,8 +1,7 @@
++// SPDX-License-Identifier: GPL-2.0-only
+ /*
+  * QLogic Fibre Channel HBA Driver
+  * Copyright (c)  2003-2014 QLogic Corporation
+- *
+- * See LICENSE.qla2xxx for copyright and licensing details.
+  */
+ #include "qla_def.h"
+ #include "qla_target.h"
+diff --git a/drivers/scsi/qla2xxx/qla_init.c b/drivers/scsi/qla2xxx/qla_init.c
+index 507919d4ab36..13cf54733eac 100644
+--- a/drivers/scsi/qla2xxx/qla_init.c
++++ b/drivers/scsi/qla2xxx/qla_init.c
+@@ -1,8 +1,7 @@
++// SPDX-License-Identifier: GPL-2.0-only
+ /*
+  * QLogic Fibre Channel HBA Driver
+  * Copyright (c)  2003-2014 QLogic Corporation
+- *
+- * See LICENSE.qla2xxx for copyright and licensing details.
+  */
+ #include "qla_def.h"
+ #include "qla_gbl.h"
+diff --git a/drivers/scsi/qla2xxx/qla_inline.h b/drivers/scsi/qla2xxx/qla_inline.h
+index 861dc522723c..41e607d7211b 100644
+--- a/drivers/scsi/qla2xxx/qla_inline.h
++++ b/drivers/scsi/qla2xxx/qla_inline.h
 @@ -1,8 +1,7 @@
 +/* SPDX-License-Identifier: GPL-2.0-only */
  /*
-  * QLogic iSCSI HBA Driver
-  * Copyright (c)  2003-2013 QLogic Corporation
+  * QLogic Fibre Channel HBA Driver
+  * Copyright (c)  2003-2014 QLogic Corporation
 - *
-- * See LICENSE.qla4xxx for copyright and licensing details.
+- * See LICENSE.qla2xxx for copyright and licensing details.
   */
  
- #ifndef __QLA4x_GBL_H
-diff --git a/drivers/scsi/qla4xxx/ql4_init.c b/drivers/scsi/qla4xxx/ql4_init.c
-index 4a7ef971a387..92d9868757af 100644
---- a/drivers/scsi/qla4xxx/ql4_init.c
-+++ b/drivers/scsi/qla4xxx/ql4_init.c
+ #include "qla_target.h"
+diff --git a/drivers/scsi/qla2xxx/qla_iocb.c b/drivers/scsi/qla2xxx/qla_iocb.c
+index 0954fa41911c..146bed76bc44 100644
+--- a/drivers/scsi/qla2xxx/qla_iocb.c
++++ b/drivers/scsi/qla2xxx/qla_iocb.c
 @@ -1,8 +1,7 @@
 +// SPDX-License-Identifier: GPL-2.0-only
  /*
-  * QLogic iSCSI HBA Driver
-  * Copyright (c)  2003-2013 QLogic Corporation
+  * QLogic Fibre Channel HBA Driver
+  * Copyright (c)  2003-2014 QLogic Corporation
 - *
-- * See LICENSE.qla4xxx for copyright and licensing details.
+- * See LICENSE.qla2xxx for copyright and licensing details.
   */
- 
- #include <scsi/iscsi_if.h>
-diff --git a/drivers/scsi/qla4xxx/ql4_inline.h b/drivers/scsi/qla4xxx/ql4_inline.h
-index 655b7bb644d9..9ced6b325cb3 100644
---- a/drivers/scsi/qla4xxx/ql4_inline.h
-+++ b/drivers/scsi/qla4xxx/ql4_inline.h
-@@ -1,8 +1,7 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
- /*
-  * QLogic iSCSI HBA Driver
-  * Copyright (c)  2003-2013 QLogic Corporation
-- *
-- * See LICENSE.qla4xxx for copyright and licensing details.
-  */
- 
- /*
-diff --git a/drivers/scsi/qla4xxx/ql4_iocb.c b/drivers/scsi/qla4xxx/ql4_iocb.c
-index a8df2d7eb069..cbd1e6ffcd67 100644
---- a/drivers/scsi/qla4xxx/ql4_iocb.c
-+++ b/drivers/scsi/qla4xxx/ql4_iocb.c
+ #include "qla_def.h"
+ #include "qla_target.h"
+diff --git a/drivers/scsi/qla2xxx/qla_isr.c b/drivers/scsi/qla2xxx/qla_isr.c
+index 25e0a1684763..ab16dcacf705 100644
+--- a/drivers/scsi/qla2xxx/qla_isr.c
++++ b/drivers/scsi/qla2xxx/qla_isr.c
 @@ -1,8 +1,7 @@
 +// SPDX-License-Identifier: GPL-2.0-only
  /*
-  * QLogic iSCSI HBA Driver
-  * Copyright (c)  2003-2013 QLogic Corporation
+  * QLogic Fibre Channel HBA Driver
+  * Copyright (c)  2003-2014 QLogic Corporation
 - *
-- * See LICENSE.qla4xxx for copyright and licensing details.
+- * See LICENSE.qla2xxx for copyright and licensing details.
   */
- 
- #include "ql4_def.h"
-diff --git a/drivers/scsi/qla4xxx/ql4_isr.c b/drivers/scsi/qla4xxx/ql4_isr.c
-index ade5eafdf81e..a51910ae9525 100644
---- a/drivers/scsi/qla4xxx/ql4_isr.c
-+++ b/drivers/scsi/qla4xxx/ql4_isr.c
+ #include "qla_def.h"
+ #include "qla_target.h"
+diff --git a/drivers/scsi/qla2xxx/qla_mbx.c b/drivers/scsi/qla2xxx/qla_mbx.c
+index 226f1428d3e5..e2b5408bd270 100644
+--- a/drivers/scsi/qla2xxx/qla_mbx.c
++++ b/drivers/scsi/qla2xxx/qla_mbx.c
 @@ -1,8 +1,7 @@
 +// SPDX-License-Identifier: GPL-2.0-only
  /*
-  * QLogic iSCSI HBA Driver
-  * Copyright (c)  2003-2013 QLogic Corporation
+  * QLogic Fibre Channel HBA Driver
+  * Copyright (c)  2003-2014 QLogic Corporation
 - *
-- * See LICENSE.qla4xxx for copyright and licensing details.
+- * See LICENSE.qla2xxx for copyright and licensing details.
   */
- 
- #include "ql4_def.h"
-diff --git a/drivers/scsi/qla4xxx/ql4_mbx.c b/drivers/scsi/qla4xxx/ql4_mbx.c
-index bc8de7d402d5..17b719a8b6fb 100644
---- a/drivers/scsi/qla4xxx/ql4_mbx.c
-+++ b/drivers/scsi/qla4xxx/ql4_mbx.c
+ #include "qla_def.h"
+ #include "qla_target.h"
+diff --git a/drivers/scsi/qla2xxx/qla_mid.c b/drivers/scsi/qla2xxx/qla_mid.c
+index 15efe2f04b86..afa59b485a4b 100644
+--- a/drivers/scsi/qla2xxx/qla_mid.c
++++ b/drivers/scsi/qla2xxx/qla_mid.c
 @@ -1,8 +1,7 @@
 +// SPDX-License-Identifier: GPL-2.0-only
  /*
-  * QLogic iSCSI HBA Driver
-  * Copyright (c)  2003-2013 QLogic Corporation
+  * QLogic Fibre Channel HBA Driver
+  * Copyright (c)  2003-2014 QLogic Corporation
 - *
-- * See LICENSE.qla4xxx for copyright and licensing details.
+- * See LICENSE.qla2xxx for copyright and licensing details.
   */
- 
- #include <linux/ctype.h>
-diff --git a/drivers/scsi/qla4xxx/ql4_nvram.c b/drivers/scsi/qla4xxx/ql4_nvram.c
-index 3bf418fbd432..f08a5abcb31a 100644
---- a/drivers/scsi/qla4xxx/ql4_nvram.c
-+++ b/drivers/scsi/qla4xxx/ql4_nvram.c
+ #include "qla_def.h"
+ #include "qla_gbl.h"
+diff --git a/drivers/scsi/qla2xxx/qla_mr.c b/drivers/scsi/qla2xxx/qla_mr.c
+index a8fe4f725fa0..ca7306685325 100644
+--- a/drivers/scsi/qla2xxx/qla_mr.c
++++ b/drivers/scsi/qla2xxx/qla_mr.c
 @@ -1,8 +1,7 @@
 +// SPDX-License-Identifier: GPL-2.0-only
  /*
-  * QLogic iSCSI HBA Driver
-  * Copyright (c)  2003-2013 QLogic Corporation
+  * QLogic Fibre Channel HBA Driver
+  * Copyright (c)  2003-2014 QLogic Corporation
 - *
-- * See LICENSE.qla4xxx for copyright and licensing details.
+- * See LICENSE.qla2xxx for copyright and licensing details.
   */
- 
- #include "ql4_def.h"
-diff --git a/drivers/scsi/qla4xxx/ql4_nvram.h b/drivers/scsi/qla4xxx/ql4_nvram.h
-index e97d79ff16f7..b96c06f50402 100644
---- a/drivers/scsi/qla4xxx/ql4_nvram.h
-+++ b/drivers/scsi/qla4xxx/ql4_nvram.h
-@@ -1,8 +1,7 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
- /*
-  * QLogic iSCSI HBA Driver
-  * Copyright (c)  2003-2013 QLogic Corporation
-- *
-- * See LICENSE.qla4xxx for copyright and licensing details.
-  */
- 
- #ifndef _QL4XNVRM_H_
-diff --git a/drivers/scsi/qla4xxx/ql4_nx.c b/drivers/scsi/qla4xxx/ql4_nx.c
-index 038e19b1e3c2..fd3aabb6a190 100644
---- a/drivers/scsi/qla4xxx/ql4_nx.c
-+++ b/drivers/scsi/qla4xxx/ql4_nx.c
-@@ -1,8 +1,7 @@
-+// SPDX-License-Identifier: GPL-2.0-only
- /*
-  * QLogic iSCSI HBA Driver
-  * Copyright (c)  2003-2013 QLogic Corporation
-- *
-- * See LICENSE.qla4xxx for copyright and licensing details.
-  */
+ #include "qla_def.h"
  #include <linux/delay.h>
- #include <linux/io.h>
-diff --git a/drivers/scsi/qla4xxx/ql4_nx.h b/drivers/scsi/qla4xxx/ql4_nx.h
-index b7a6e7f169ca..52a5209ae42a 100644
---- a/drivers/scsi/qla4xxx/ql4_nx.h
-+++ b/drivers/scsi/qla4xxx/ql4_nx.h
+diff --git a/drivers/scsi/qla2xxx/qla_mr.h b/drivers/scsi/qla2xxx/qla_mr.h
+index 762250891a8f..73be8348402a 100644
+--- a/drivers/scsi/qla2xxx/qla_mr.h
++++ b/drivers/scsi/qla2xxx/qla_mr.h
 @@ -1,8 +1,7 @@
 +/* SPDX-License-Identifier: GPL-2.0-only */
  /*
-  * QLogic iSCSI HBA Driver
-  * Copyright (c)  2003-2013 QLogic Corporation
+  * QLogic Fibre Channel HBA Driver
+  * Copyright (c)  2003-2014 QLogic Corporation
 - *
-- * See LICENSE.qla4xxx for copyright and licensing details.
+- * See LICENSE.qla2xxx for copyright and licensing details.
+  */
+ #ifndef __QLA_MR_H
+ #define __QLA_MR_H
+diff --git a/drivers/scsi/qla2xxx/qla_nvme.c b/drivers/scsi/qla2xxx/qla_nvme.c
+index 90bbc61f361b..18c7d4b9c705 100644
+--- a/drivers/scsi/qla2xxx/qla_nvme.c
++++ b/drivers/scsi/qla2xxx/qla_nvme.c
+@@ -1,8 +1,7 @@
++// SPDX-License-Identifier: GPL-2.0-only
+ /*
+  * QLogic Fibre Channel HBA Driver
+  * Copyright (c)  2003-2017 QLogic Corporation
+- *
+- * See LICENSE.qla2xxx for copyright and licensing details.
+  */
+ #include "qla_nvme.h"
+ #include <linux/scatterlist.h>
+diff --git a/drivers/scsi/qla2xxx/qla_nvme.h b/drivers/scsi/qla2xxx/qla_nvme.h
+index fbb844226630..67206bb13b80 100644
+--- a/drivers/scsi/qla2xxx/qla_nvme.h
++++ b/drivers/scsi/qla2xxx/qla_nvme.h
+@@ -1,8 +1,7 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
+ /*
+  * QLogic Fibre Channel HBA Driver
+  * Copyright (c)  2003-2017 QLogic Corporation
+- *
+- * See LICENSE.qla2xxx for copyright and licensing details.
+  */
+ #ifndef __QLA_NVME_H
+ #define __QLA_NVME_H
+diff --git a/drivers/scsi/qla2xxx/qla_nx.c b/drivers/scsi/qla2xxx/qla_nx.c
+index 71273eb634d3..b3ba0de5d4fb 100644
+--- a/drivers/scsi/qla2xxx/qla_nx.c
++++ b/drivers/scsi/qla2xxx/qla_nx.c
+@@ -1,8 +1,7 @@
++// SPDX-License-Identifier: GPL-2.0-only
+ /*
+  * QLogic Fibre Channel HBA Driver
+  * Copyright (c)  2003-2014 QLogic Corporation
+- *
+- * See LICENSE.qla2xxx for copyright and licensing details.
+  */
+ #include "qla_def.h"
+ #include <linux/delay.h>
+diff --git a/drivers/scsi/qla2xxx/qla_nx.h b/drivers/scsi/qla2xxx/qla_nx.h
+index 93344a05910a..8567eaf1bddd 100644
+--- a/drivers/scsi/qla2xxx/qla_nx.h
++++ b/drivers/scsi/qla2xxx/qla_nx.h
+@@ -1,8 +1,7 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
+ /*
+  * QLogic Fibre Channel HBA Driver
+  * Copyright (c)  2003-2014 QLogic Corporation
+- *
+- * See LICENSE.qla2xxx for copyright and licensing details.
   */
  #ifndef __QLA_NX_H
  #define __QLA_NX_H
-diff --git a/drivers/scsi/qla4xxx/ql4_os.c b/drivers/scsi/qla4xxx/ql4_os.c
-index 676778cbc550..99ce284f53f2 100644
---- a/drivers/scsi/qla4xxx/ql4_os.c
-+++ b/drivers/scsi/qla4xxx/ql4_os.c
+diff --git a/drivers/scsi/qla2xxx/qla_nx2.c b/drivers/scsi/qla2xxx/qla_nx2.c
+index 50e57603ce3d..3a415b12dcec 100644
+--- a/drivers/scsi/qla2xxx/qla_nx2.c
++++ b/drivers/scsi/qla2xxx/qla_nx2.c
 @@ -1,8 +1,7 @@
 +// SPDX-License-Identifier: GPL-2.0-only
  /*
-  * QLogic iSCSI HBA Driver
-  * Copyright (c)  2003-2013 QLogic Corporation
+  * QLogic Fibre Channel HBA Driver
+  * Copyright (c)  2003-2014 QLogic Corporation
 - *
-- * See LICENSE.qla4xxx for copyright and licensing details.
+- * See LICENSE.qla2xxx for copyright and licensing details.
   */
- #include <linux/moduleparam.h>
- #include <linux/slab.h>
-diff --git a/drivers/scsi/qla4xxx/ql4_version.h b/drivers/scsi/qla4xxx/ql4_version.h
-index f11eaa773339..fb1c14269f00 100644
---- a/drivers/scsi/qla4xxx/ql4_version.h
-+++ b/drivers/scsi/qla4xxx/ql4_version.h
+ 
+ #include <linux/vmalloc.h>
+diff --git a/drivers/scsi/qla2xxx/qla_nx2.h b/drivers/scsi/qla2xxx/qla_nx2.h
+index 8ba7c1db07c3..2fc902a9fade 100644
+--- a/drivers/scsi/qla2xxx/qla_nx2.h
++++ b/drivers/scsi/qla2xxx/qla_nx2.h
 @@ -1,8 +1,7 @@
 +/* SPDX-License-Identifier: GPL-2.0-only */
  /*
-  * QLogic iSCSI HBA Driver
-  * Copyright (c)  2003-2013 QLogic Corporation
+  * QLogic Fibre Channel HBA Driver
+  * Copyright (c)  2003-2014 QLogic Corporation
 - *
-- * See LICENSE.qla4xxx for copyright and licensing details.
+- * See LICENSE.qla2xxx for copyright and licensing details.
   */
  
- #define QLA4XXX_DRIVER_VERSION	"5.04.00-k6"
+ #ifndef __QLA_NX2_H
+diff --git a/drivers/scsi/qla2xxx/qla_os.c b/drivers/scsi/qla2xxx/qla_os.c
+index 8da00ba54aec..c8a4f83074ad 100644
+--- a/drivers/scsi/qla2xxx/qla_os.c
++++ b/drivers/scsi/qla2xxx/qla_os.c
+@@ -1,8 +1,7 @@
++// SPDX-License-Identifier: GPL-2.0-only
+ /*
+  * QLogic Fibre Channel HBA Driver
+  * Copyright (c)  2003-2014 QLogic Corporation
+- *
+- * See LICENSE.qla2xxx for copyright and licensing details.
+  */
+ #include "qla_def.h"
+ 
+diff --git a/drivers/scsi/qla2xxx/qla_settings.h b/drivers/scsi/qla2xxx/qla_settings.h
+index 2fb7ebfbbc38..a5f3000ae53b 100644
+--- a/drivers/scsi/qla2xxx/qla_settings.h
++++ b/drivers/scsi/qla2xxx/qla_settings.h
+@@ -1,8 +1,7 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
+ /*
+  * QLogic Fibre Channel HBA Driver
+  * Copyright (c)  2003-2014 QLogic Corporation
+- *
+- * See LICENSE.qla2xxx for copyright and licensing details.
+  */
+ #define MAX_RETRIES_OF_ISP_ABORT	5
+ 
+diff --git a/drivers/scsi/qla2xxx/qla_sup.c b/drivers/scsi/qla2xxx/qla_sup.c
+index 411b8a9ff393..0f92e9a044dc 100644
+--- a/drivers/scsi/qla2xxx/qla_sup.c
++++ b/drivers/scsi/qla2xxx/qla_sup.c
+@@ -1,8 +1,7 @@
++// SPDX-License-Identifier: GPL-2.0-only
+ /*
+  * QLogic Fibre Channel HBA Driver
+  * Copyright (c)  2003-2014 QLogic Corporation
+- *
+- * See LICENSE.qla2xxx for copyright and licensing details.
+  */
+ #include "qla_def.h"
+ 
+diff --git a/drivers/scsi/qla2xxx/qla_tmpl.c b/drivers/scsi/qla2xxx/qla_tmpl.c
+index 8dc82cfd38b2..03fff32b59cd 100644
+--- a/drivers/scsi/qla2xxx/qla_tmpl.c
++++ b/drivers/scsi/qla2xxx/qla_tmpl.c
+@@ -1,8 +1,7 @@
++// SPDX-License-Identifier: GPL-2.0-only
+ /*
+  * QLogic Fibre Channel HBA Driver
+  * Copyright (c)  2003-2014 QLogic Corporation
+- *
+- * See LICENSE.qla2xxx for copyright and licensing details.
+  */
+ #include "qla_def.h"
+ #include "qla_tmpl.h"
+diff --git a/drivers/scsi/qla2xxx/qla_tmpl.h b/drivers/scsi/qla2xxx/qla_tmpl.h
+index 89280b3477aa..c47184db5081 100644
+--- a/drivers/scsi/qla2xxx/qla_tmpl.h
++++ b/drivers/scsi/qla2xxx/qla_tmpl.h
+@@ -1,8 +1,7 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
+ /*
+  * QLogic Fibre Channel HBA Driver
+  * Copyright (c)  2003-2014 QLogic Corporation
+- *
+- * See LICENSE.qla2xxx for copyright and licensing details.
+  */
+ 
+ #ifndef __QLA_DMP27_H__
+diff --git a/drivers/scsi/qla2xxx/qla_version.h b/drivers/scsi/qla2xxx/qla_version.h
+index 8ccd9ba1ddef..3ca1fb96812a 100644
+--- a/drivers/scsi/qla2xxx/qla_version.h
++++ b/drivers/scsi/qla2xxx/qla_version.h
+@@ -1,8 +1,7 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
+ /*
+  * QLogic Fibre Channel HBA Driver
+  * Copyright (c)  2003-2014 QLogic Corporation
+- *
+- * See LICENSE.qla2xxx for copyright and licensing details.
+  */
+ /*
+  * Driver version
 -- 
 2.17.1
 
