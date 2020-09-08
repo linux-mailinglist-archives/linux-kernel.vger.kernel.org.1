@@ -2,215 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F0BF260CF8
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 10:05:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6086F260CE0
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 10:01:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729831AbgIHIE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 04:04:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36356 "EHLO
+        id S1729773AbgIHIA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 04:00:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729941AbgIHH5v (ORCPT
+        with ESMTP id S1729629AbgIHIAm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 03:57:51 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44D9FC061755
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 00:57:51 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id o20so10283815pfp.11
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 00:57:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=cDupOEGD43zOafkeHwpXvRZFRBLRl6C9wgjA2f07/F0=;
-        b=QQYLtPYQds66Aq5sAInDKeb1drvHJt9XVWKwoRjvuCeNkRGx5+rFQiX+dSbfnvmPUQ
-         +EdJT883lIKsSbWKYABvFjZ5eK7DhOsF540AZTY3Lh/sCCiSuQ5sE9f71hfSjND1BrYb
-         /fRUds+4A7kgOKaPGN6xeDdnBeDpzTIyfwwEuN19BFcyhxX492wBYzXnibWeszqb+k/M
-         xNi0n0FYMAm/2j9zF4nudmkX9Ae3RxGQgX62hcWZScGUwk3kY39muYL1NykdmwhEU0cM
-         gPvxnLyYSeo9NrzD5eMpuSoYDDRkruY7GDkUxtEyfX7IthGRRkpmCCbiufQhWithfewm
-         briw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=cDupOEGD43zOafkeHwpXvRZFRBLRl6C9wgjA2f07/F0=;
-        b=biYvsBVUWxt7YZFdzuWXhh0/FLfnF/aIPm6hxDQiieBK57JgfFKby3JA/lQ8nlDloA
-         uzWwUr0wbFp0CgdfABWm0mfEW86+PastvXQgjVFZ2mE7uunvzkY374Pi1rlj4Jw7kuXs
-         qCGlJ4qaWNab2hm6vu0t9CuxYbp8gosbh7T5exk/JC06l7CopE18ve5DJ4LUDhvlJdA5
-         rgEkMht3AfwZ/Pn53rcOpFmZM4Z0qtyK4GST0mkSlcExSAV3B66E6URYqT7NBPnRHWiS
-         gBtf3f5dtD0TyKErqhsOI+5edoHbyFUnNaY3nkAom4nWzymrVqtFBaNvH01s+FyJ1Gg3
-         wXUQ==
-X-Gm-Message-State: AOAM532ytRUJwn4XfOn6ejY0IeYp5VBhyggqinPVkjJl3QRg1FS5P0GG
-        V0W+7xJBPdy4hiNRPpgznWay
-X-Google-Smtp-Source: ABdhPJxpx0HbYrcj8hGngV6Luqv87IDIEB9wAwcFjrONlar2oFhO8UsTm9X+3KW73Kg2fmgjpV0GGg==
-X-Received: by 2002:a63:9d82:: with SMTP id i124mr19186323pgd.336.1599551870736;
-        Tue, 08 Sep 2020 00:57:50 -0700 (PDT)
-Received: from localhost.localdomain ([103.59.133.81])
-        by smtp.googlemail.com with ESMTPSA id m21sm7560154pfo.13.2020.09.08.00.57.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Sep 2020 00:57:50 -0700 (PDT)
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     rjw@rjwysocki.net, viresh.kumar@linaro.org, robh+dt@kernel.org,
-        agross@kernel.org, bjorn.andersson@linaro.org
-Cc:     amitk@kernel.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, dmitry.baryshkov@linaro.org,
-        tdas@codeaurora.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH 5/7] cpufreq: qcom-hw: Use regmap for accessing hardware registers
-Date:   Tue,  8 Sep 2020 13:27:14 +0530
-Message-Id: <20200908075716.30357-6-manivannan.sadhasivam@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200908075716.30357-1-manivannan.sadhasivam@linaro.org>
-References: <20200908075716.30357-1-manivannan.sadhasivam@linaro.org>
+        Tue, 8 Sep 2020 04:00:42 -0400
+Received: from smtp-8fab.mail.infomaniak.ch (smtp-8fab.mail.infomaniak.ch [IPv6:2001:1600:3:17::8fab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB39CC061755
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 01:00:27 -0700 (PDT)
+Received: from smtp-3-0000.mail.infomaniak.ch (unknown [10.4.36.107])
+        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4BlyHN0cCBzlhR8K;
+        Tue,  8 Sep 2020 10:00:00 +0200 (CEST)
+Received: from localhost (unknown [94.23.54.103])
+        by smtp-3-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4BlyHK4Ph5zlh8T9;
+        Tue,  8 Sep 2020 09:59:57 +0200 (CEST)
+From:   =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
+To:     linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Christian Heimes <christian@python.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Deven Bowers <deven.desai@linux.microsoft.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Eric Chiang <ericchiang@google.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        James Morris <jmorris@namei.org>, Jan Kara <jack@suse.cz>,
+        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        Matthew Garrett <mjg59@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        =?UTF-8?q?Philippe=20Tr=C3=A9buchet?= 
+        <philippe.trebuchet@ssi.gouv.fr>,
+        Scott Shell <scottsh@microsoft.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Steve Dower <steve.dower@python.org>,
+        Steve Grubb <sgrubb@redhat.com>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        Thibaut Sautereau <thibaut.sautereau@clip-os.org>,
+        Vincent Strubel <vincent.strubel@ssi.gouv.fr>,
+        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: [RFC PATCH v8 0/3] Add support for AT_INTERPRETED (was O_MAYEXEC)
+Date:   Tue,  8 Sep 2020 09:59:53 +0200
+Message-Id: <20200908075956.1069018-1-mic@digikod.net>
+X-Mailer: git-send-email 2.28.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use regmap for accessing cpufreq registers in hardware.
+Hi,
 
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
- drivers/cpufreq/qcom-cpufreq-hw.c | 55 ++++++++++++++++++++++++++-----
- 1 file changed, 47 insertions(+), 8 deletions(-)
+This height patch series rework the previous O_MAYEXEC series by not
+adding a new flag to openat2(2) but to faccessat2(2) instead.  As
+suggested, this enables to perform the access check on a file descriptor
+instead of on a file path (while opening it).  This may require two
+checks (one on open and then with faccessat2) but it is a more generic
+approach [8].
 
-diff --git a/drivers/cpufreq/qcom-cpufreq-hw.c b/drivers/cpufreq/qcom-cpufreq-hw.c
-index 41853db7c9b8..de816bcafd33 100644
---- a/drivers/cpufreq/qcom-cpufreq-hw.c
-+++ b/drivers/cpufreq/qcom-cpufreq-hw.c
-@@ -12,6 +12,7 @@
- #include <linux/of_address.h>
- #include <linux/of_platform.h>
- #include <linux/pm_opp.h>
-+#include <linux/regmap.h>
- #include <linux/slab.h>
- 
- #define LUT_MAX_ENTRIES			40U
-@@ -32,6 +33,7 @@ struct qcom_cpufreq_soc_data {
- 
- struct qcom_cpufreq_data {
- 	void __iomem *base;
-+	struct regmap *regmap;
- 	const struct qcom_cpufreq_soc_data *soc_data;
- };
- 
-@@ -85,8 +87,11 @@ static int qcom_cpufreq_hw_target_index(struct cpufreq_policy *policy,
- 	struct qcom_cpufreq_data *data = policy->driver_data;
- 	const struct qcom_cpufreq_soc_data *soc_data = data->soc_data;
- 	unsigned long freq = policy->freq_table[index].frequency;
-+	int ret;
- 
--	writel_relaxed(index, data->base + soc_data->reg_perf_state);
-+	ret = regmap_write(data->regmap, soc_data->reg_perf_state, index);
-+	if (ret)
-+		return ret;
- 
- 	if (icc_scaling_enabled)
- 		qcom_cpufreq_set_bw(policy, freq);
-@@ -102,6 +107,7 @@ static unsigned int qcom_cpufreq_hw_get(unsigned int cpu)
- 	const struct qcom_cpufreq_soc_data *soc_data;
- 	struct cpufreq_policy *policy;
- 	unsigned int index;
-+	int ret;
- 
- 	policy = cpufreq_cpu_get_raw(cpu);
- 	if (!policy)
-@@ -110,7 +116,10 @@ static unsigned int qcom_cpufreq_hw_get(unsigned int cpu)
- 	data = policy->driver_data;
- 	soc_data = data->soc_data;
- 
--	index = readl_relaxed(data->base + soc_data->reg_perf_state);
-+	ret = regmap_read(data->regmap, soc_data->reg_perf_state, &index);
-+	if (ret)
-+		return 0;
-+
- 	index = min(index, LUT_MAX_ENTRIES - 1);
- 
- 	return policy->freq_table[index].frequency;
-@@ -123,9 +132,12 @@ static unsigned int qcom_cpufreq_hw_fast_switch(struct cpufreq_policy *policy,
- 	const struct qcom_cpufreq_soc_data *soc_data = data->soc_data;
- 	unsigned int index;
- 	unsigned long freq;
-+	int ret;
- 
- 	index = policy->cached_resolved_idx;
--	writel_relaxed(index, data->base + soc_data->reg_perf_state);
-+	ret = regmap_write(data->regmap, soc_data->reg_perf_state, index);
-+	if (ret)
-+		return 0;
- 
- 	freq = policy->freq_table[index].frequency;
- 	arch_set_freq_scale(policy->related_cpus, freq,
-@@ -171,14 +183,24 @@ static int qcom_cpufreq_hw_read_lut(struct device *cpu_dev,
- 	}
- 
- 	for (i = 0; i < LUT_MAX_ENTRIES; i++) {
--		data = readl_relaxed(drv_data->base + soc_data->reg_freq_lut +
--				      i * soc_data->lut_row_size);
-+		ret = regmap_read(drv_data->regmap, soc_data->reg_freq_lut +
-+				  i * soc_data->lut_row_size, &data);
-+		if (ret) {
-+			kfree(table);
-+			return ret;
-+		}
-+
- 		src = FIELD_GET(LUT_SRC, data);
- 		lval = FIELD_GET(LUT_L_VAL, data);
- 		core_count = FIELD_GET(LUT_CORE_COUNT, data);
- 
--		data = readl_relaxed(drv_data->base + soc_data->reg_volt_lut +
--				      i * soc_data->lut_row_size);
-+		ret = regmap_read(drv_data->regmap, soc_data->reg_volt_lut +
-+				  i * soc_data->lut_row_size, &data);
-+		if (ret) {
-+			kfree(table);
-+			return ret;
-+		}
-+
- 		volt = FIELD_GET(LUT_VOLT, data) * 1000;
- 
- 		if (src)
-@@ -248,6 +270,13 @@ static void qcom_get_related_cpus(int index, struct cpumask *m)
- 	}
- }
- 
-+static struct regmap_config qcom_cpufreq_regmap = {
-+	.reg_bits = 32,
-+	.reg_stride = 4,
-+	.val_bits = 32,
-+	.fast_io = true,
-+};
-+
- static const struct qcom_cpufreq_soc_data qcom_soc_data = {
- 	.reg_enable = 0x0,
- 	.reg_freq_lut = 0x110,
-@@ -274,6 +303,7 @@ static int qcom_cpufreq_hw_cpu_init(struct cpufreq_policy *policy)
- 	struct qcom_cpufreq_data *data;
- 	const struct of_device_id *match;
- 	int ret, index;
-+	u32 val;
- 
- 	cpu_dev = get_cpu_device(policy->cpu);
- 	if (!cpu_dev) {
-@@ -316,9 +346,18 @@ static int qcom_cpufreq_hw_cpu_init(struct cpufreq_policy *policy)
- 
- 	data->soc_data = match->data;
- 	data->base = base;
-+	data->regmap = devm_regmap_init_mmio(dev, base, &qcom_cpufreq_regmap);
-+	if (IS_ERR(data->regmap)) {
-+		ret = PTR_ERR(data->regmap);
-+		goto error;
-+	}
- 
- 	/* HW should be in enabled state to proceed */
--	if (!(readl_relaxed(base + data->soc_data->reg_enable) & 0x1)) {
-+	ret = regmap_read(data->regmap, data->soc_data->reg_enable, &val);
-+	if (ret)
-+		goto error;
-+
-+	if (!(val & 0x1)) {
- 		dev_err(dev, "Domain-%d cpufreq hardware not enabled\n", index);
- 		ret = -ENODEV;
- 		goto error;
+The IMA patch is removed for now because the only LSM hook triggered by
+faccessat2(2) is inode_permission() which takes a struct inode as
+argument.  However, struct path and then struct file are still available
+in this syscall, which enables to add a new hook to fit the needs of IMA
+and other path-based LSMs.
+
+We also removed the three patches from Kees Cook which are no longer
+required for this new implementation.
+
+Goal of AT_INTERPRETED
+======================
+
+The goal of this patch series is to enable to control script execution
+with interpreters help.  A new AT_INTERPRETED flag, usable through
+faccessat2(2), is added to enable userspace script interpreters to
+delegate to the kernel (and thus the system security policy) the
+permission to interpret/execute scripts or other files containing what
+can be seen as commands.
+
+A simple system-wide security policy can be enforced by the system
+administrator through a sysctl configuration consistent with the mount
+points or the file access rights.  The documentation patch explains the
+prerequisites.
+
+Furthermore, the security policy can also be delegated to an LSM, either
+a MAC system or an integrity system.  For instance, the new kernel
+MAY_INTERPRETED_EXEC flag is required to close a major IMA
+measurement/appraisal interpreter integrity gap by bringing the ability
+to check the use of scripts [1].  Other uses are expected, such as for
+magic-links [2], SGX integration [3], bpffs [4] or IPE [5].
+
+Possible extended usage
+=======================
+
+For now, only the X_OK mode is compatible with the AT_INTERPRETED flag.
+This enables to restrict the addition of new control flows in a process.
+Using R_OK or W_OK with AT_INTERPRETED returns -EINVAL.
+
+Possible future use-cases for R_OK with AT_INTERPRETED may be to check
+configuration files that may impact the behavior of applications (i.e.
+influence critical part of the current control flow).  Those should then
+be trusted as well.  The W_OK with AT_INTERPRETED could be used to check
+that a file descriptor is allowed to receive sensitive data such as
+debug logs.
+
+Prerequisite of its use
+=======================
+
+Userspace needs to adapt to take advantage of this new feature.  For
+example, the PEP 578 [6] (Runtime Audit Hooks) enables Python 3.8 to be
+extended with policy enforcement points related to code interpretation,
+which can be used to align with the PowerShell audit features.
+Additional Python security improvements (e.g. a limited interpreter
+without -c, stdin piping of code) are on their way [7].
+
+Examples
+========
+
+The initial idea comes from CLIP OS 4 and the original implementation
+has been used for more than 12 years:
+https://github.com/clipos-archive/clipos4_doc
+Chrome OS has a similar approach:
+https://chromium.googlesource.com/chromiumos/docs/+/master/security/noexec_shell_scripts.md
+
+Userland patches can be found here:
+https://github.com/clipos-archive/clipos4_portage-overlay/search?q=O_MAYEXEC
+Actually, there is more than the O_MAYEXEC changes (which matches this search)
+e.g., to prevent Python interactive execution. There are patches for
+Bash, Wine, Java (Icedtea), Busybox's ash, Perl and Python. There are
+also some related patches which do not directly rely on O_MAYEXEC but
+which restrict the use of browser plugins and extensions, which may be
+seen as scripts too:
+https://github.com/clipos-archive/clipos4_portage-overlay/tree/master/www-client
+
+An introduction to O_MAYEXEC was given at the Linux Security Summit
+Europe 2018 - Linux Kernel Security Contributions by ANSSI:
+https://www.youtube.com/watch?v=chNjCRtPKQY&t=17m15s
+The "write xor execute" principle was explained at Kernel Recipes 2018 -
+CLIP OS: a defense-in-depth OS:
+https://www.youtube.com/watch?v=PjRE0uBtkHU&t=11m14s
+See also an overview article: https://lwn.net/Articles/820000/
+
+This patch series can be applied on top of v5.9-rc4 .  This can be tested
+with CONFIG_SYSCTL.  I would really appreciate constructive comments on
+this patch series.
+
+Previous version:
+https://lore.kernel.org/lkml/20200723171227.446711-1-mic@digikod.net/
+
+[1] https://lore.kernel.org/lkml/1544647356.4028.105.camel@linux.ibm.com/
+[2] https://lore.kernel.org/lkml/20190904201933.10736-6-cyphar@cyphar.com/
+[3] https://lore.kernel.org/lkml/CALCETrVovr8XNZSroey7pHF46O=kj_c5D9K8h=z2T_cNrpvMig@mail.gmail.com/
+[4] https://lore.kernel.org/lkml/CALCETrVeZ0eufFXwfhtaG_j+AdvbzEWE0M3wjXMWVEO7pj+xkw@mail.gmail.com/
+[5] https://lore.kernel.org/lkml/20200406221439.1469862-12-deven.desai@linux.microsoft.com/
+[6] https://www.python.org/dev/peps/pep-0578/
+[7] https://lore.kernel.org/lkml/0c70debd-e79e-d514-06c6-4cd1e021fa8b@python.org/
+[8] https://lore.kernel.org/lkml/e7c1f99d7cdf706ca0867e5fb76ae4cb38bc83f5.camel@linux.ibm.com/
+
+Regards,
+
+Mickaël Salaün (3):
+  fs: Introduce AT_INTERPRETED flag for faccessat2(2)
+  fs,doc: Enable to configure exec checks for AT_INTERPRETED
+  selftest/interpreter: Add tests for AT_INTERPRETED enforcing
+
+ Documentation/admin-guide/sysctl/fs.rst       |  54 +++
+ fs/open.c                                     |  67 ++-
+ include/linux/fs.h                            |   3 +
+ include/uapi/linux/fcntl.h                    |  12 +-
+ kernel/sysctl.c                               |  12 +-
+ .../testing/selftests/interpreter/.gitignore  |   2 +
+ tools/testing/selftests/interpreter/Makefile  |  18 +
+ tools/testing/selftests/interpreter/config    |   1 +
+ .../interpreter/interpreted_access_test.c     | 384 ++++++++++++++++++
+ 9 files changed, 548 insertions(+), 5 deletions(-)
+ create mode 100644 tools/testing/selftests/interpreter/.gitignore
+ create mode 100644 tools/testing/selftests/interpreter/Makefile
+ create mode 100644 tools/testing/selftests/interpreter/config
+ create mode 100644 tools/testing/selftests/interpreter/interpreted_access_test.c
+
 -- 
-2.17.1
+2.28.0
 
