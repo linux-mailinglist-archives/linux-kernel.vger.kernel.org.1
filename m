@@ -2,216 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15D7C261AD6
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 20:41:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AB20261B1C
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 20:56:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729404AbgIHSlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 14:41:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51606 "EHLO
+        id S1731923AbgIHSls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 14:41:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731545AbgIHSkq (ORCPT
+        with ESMTP id S1731672AbgIHSlX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 14:40:46 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FEC1C061573;
-        Tue,  8 Sep 2020 11:40:46 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id j34so170803pgi.7;
-        Tue, 08 Sep 2020 11:40:46 -0700 (PDT)
+        Tue, 8 Sep 2020 14:41:23 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8262C061573
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 11:41:22 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id k15so11680234pfc.12
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 11:41:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ncubfhN3Rgh8bRdqASDrtWtN1Ij2GRQGx0YQSulIwdg=;
-        b=u6QZQvi0lnx12bnpjbpbuCLvlmoAabUDpBpjlFY8mgWEy/EtCrDG52lGX5V+CGcoWq
-         wP5kZaMcdxLmTuL3hyxKhgRP/QH2i8ozfRJHD27QUCIfOEGF9/Y0XG/7uVfXzna8q96C
-         dv+Vd7GzgKpyCtJlkp0/qAV9XzgAbtaySfHpdsWdD0mMPvlbY6Dgx/m/I9ZNEn40yRe8
-         n4bHkeWIHH3J+hrHct3ddar7m7Q+xOfrF5eTqkUEK/zqFLbmDaFlUQf8lzcopSWZTtxn
-         O1MYQHDVjO/1Ey+p7dhRBFH3tQrtLj+9/+O0evhvP/D1FkT35wtY2MNi4oSj2Q+0//x7
-         ZyIg==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=4D/aBydAA1LQTR6RAnjefSXva1fBhHAgDj3nNAcVY8w=;
+        b=I4oOZtQZOez0KddVN7dcksQoTwbdyJ4OxlmiCG5XMety1n6ClKEETrC0Mu6j69oojo
+         stSVa0WCmNiybsE3lhIPzIe140XnltOX87QuxwhmqeK31Rlj3Lr3L15m3ZaIeYN3+rGx
+         4vRD+i8ONfe9NUCmyF0fFWG/+x1lIQnTMI57s=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ncubfhN3Rgh8bRdqASDrtWtN1Ij2GRQGx0YQSulIwdg=;
-        b=pD8HL5R75NEJien2m3n2eUECMEgaSsgb7VokM7UO8nCEjftnZGJEJxm/hCS+dNrh74
-         cYSsvCju5DNsEZUjPOhb+KuMgJ57UUPwHwvbR9Se1IVefqtCekR8SK3Ij2wfd+2k+T0N
-         iZVgkqrnNXH/siaGm0RRN3cBMmKeNmyb13Q+7Syukctr/0vD06DIoO0kYROAgONDwE98
-         Qda4yQxy+bU5hYmLJIghTX1i7od9J9Fj9JT7dIYkLB4t6KTTbSUZOEa/93SR0WwwEIgO
-         E2igjHpBnPPikETRSsfH3O7p55+SY8eUg/drU1jNqmoVQnD/1yj7NAct8CI12UmDFIU9
-         P/KQ==
-X-Gm-Message-State: AOAM530Fdnfnj+3PI0VdIOq4OfmNoc7gFiEwa8FuIuyoRxoMr/8C+JR8
-        tEVSduF90uH5RxgSa633f5HWyBKC47H6a7n5MRo=
-X-Google-Smtp-Source: ABdhPJzY65qjbadQFRobtds2jaaACl/9kmkC9wPQqUtQ2kQgshvPRbqr6vV6keiz30dJy2nV9wgnZOMWApPPJtXzMEA=
-X-Received: by 2002:a05:6a00:22c5:: with SMTP id f5mr83596pfj.163.1599590445545;
- Tue, 08 Sep 2020 11:40:45 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=4D/aBydAA1LQTR6RAnjefSXva1fBhHAgDj3nNAcVY8w=;
+        b=KLzfP1PxPTJatg2k5B2EJEz3Iys6QeNUIziKYHN2WptWjGYSc1wz4GcwaMivLg+hNi
+         VsItEE4+QadsP/YDrDccVzCSs7JQjlZURGce3Gtt2WIFfX2gcPzlNWSeg7cO4Kg02tuu
+         ghU0iO6uGQV9tmjFUKsOATRtLV6LVZSuGo6jFlfvm9YDDvJMCiCMpZx3XpO4MtQ0HN8t
+         AEmG74lCstDop0j/YHjgzW9ztYIQh+bxMNGJblc15JCJvShelT8BhLgEUk2QCqFWUcFI
+         Yo1VzY+fRM5XfVZrzociRuFxOjY5E0VYpLG7yI/FfgkzdIf+TWLUNDRu8IknPHkQr66P
+         UBgQ==
+X-Gm-Message-State: AOAM530K/WKrhRMeBGmu1Tzt7uI4tt5bX5MZpatDh5oRqHSiOg9tW0Ks
+        dtjXmQAnmvNEF1b4gEj6egF00w==
+X-Google-Smtp-Source: ABdhPJzBKbpQeJoUh8RreO5Yj8Dbux3oRM8iP1DbIG8FXrvBlSwVaq6nVzmBWzDYPKBUbXgVFwrAjg==
+X-Received: by 2002:a63:a55e:: with SMTP id r30mr88910pgu.61.1599590482423;
+        Tue, 08 Sep 2020 11:41:22 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id s68sm148767pfb.91.2020.09.08.11.41.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Sep 2020 11:41:21 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Tycho Andersen <tycho@tycho.pizza>
+Cc:     Kees Cook <keescook@chromium.org>,
+        syzbot+3ad9614a12f80994c32e@syzkaller.appspotmail.com,
+        "Tobin C . Harding" <me@tobin.cc>,
+        Christian Brauner <christian@brauner.io>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] seccomp: don't leak memory when filter install races
+Date:   Tue,  8 Sep 2020 11:40:57 -0700
+Message-Id: <159959037666.1186953.15847741084926154331.b4-ty@chromium.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200902014017.934315-1-tycho@tycho.pizza>
+References: <20200902014017.934315-1-tycho@tycho.pizza>
 MIME-Version: 1.0
-References: <20200908171934.1661509-1-luzmaximilian@gmail.com>
-In-Reply-To: <20200908171934.1661509-1-luzmaximilian@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 8 Sep 2020 21:40:28 +0300
-Message-ID: <CAHp75VevrwKaba_FsZj-nPqJGR9fkmFPzvdCew0wCqF_L6QLbA@mail.gmail.com>
-Subject: Re: [PATCH] platform/x86: Add Driver to set up lid GPEs on MS Surface device
-To:     Maximilian Luz <luzmaximilian@gmail.com>
-Cc:     Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Gayatri Kammela <gayatri.kammela@intel.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 8, 2020 at 8:20 PM Maximilian Luz <luzmaximilian@gmail.com> wrote:
->
-> Conventionally, wake-up events for a specific device, in our case the
-> lid device, are managed via the ACPI _PRW field. While this does not
-> seem strictly necessary based on ACPI spec, the kernel disables GPE
-> wakeups to avoid non-wakeup interrupts preventing suspend by default and
-> only enables GPEs associated via the _PRW field with a wake-up capable
-> device. This behavior has been introduced in commit f941d3e41da7 ("ACPI:
-> EC / PM: Disable non-wakeup GPEs for suspend-to-idle") and is described
-> in more detail in its commit message.
->
-> Unfortunately, on MS Surface devices, there is no _PRW field present on
-> the lid device, thus no GPE is associated with it, and therefore the GPE
-> responsible for sending the status-change notification to the lid gets
-> disabled during suspend, making it impossible to wake the device via the
-> lid.
->
-> This patch introduces a pseudo-device and respective driver which, based
-> on some DMI matching, marks the corresponding GPE of the lid device for
-> wake and enables it during suspend. The behavior of this driver models
-> the behavior of the ACPI/PM core for normal wakeup GPEs, properly
-> declared via the _PRW field.
+On Tue, 1 Sep 2020 19:40:16 -0600, Tycho Andersen wrote:
+> In seccomp_set_mode_filter() with TSYNC | NEW_LISTENER, we first initialize
+> the listener fd, then check to see if we can actually use it later in
+> seccomp_may_assign_mode(), which can fail if anyone else in our thread
+> group has installed a filter and caused some divergence. If we can't, we
+> partially clean up the newly allocated file: we put the fd, put the file,
+> but don't actually clean up the *memory* that was allocated at
+> filter->notif. Let's clean that up too.
+> 
+> [...]
 
-...
+Applied, thanks!
 
-> +#include <linux/platform_device.h>
-> +
-> +
+[1/2] seccomp: don't leak memory when filter install races
+      https://git.kernel.org/kees/c/a566a9012acd
+[2/2] mailmap, MAINTAINERS: move to tycho.pizza
+      https://git.kernel.org/kees/c/19d1d49f2a8c
 
-One blank line is enough.
-
-...
-
-> +       .gpe_number = 0x17,
-> +       .gpe_number = 0x4D,
-> +       .gpe_number = 0x4F,
-> +       .gpe_number = 0x57,
-
-From where these numbers come from? Can we get them from firmware (ACPI)?
-
-...
-
-> +       { }
-> +};
-> +
-> +
-
-One is enough. Same for other places.
-
-...
-
-> +static int surface_gpe_suspend(struct device *dev)
-> +{
-> +       const struct surface_lid_device *lid;
-> +
-> +       lid = dev_get_platdata(dev);
-
-There is enough room to put this assignment directly into definition.
-
-> +       return surface_lid_enable_wakeup(dev, lid, true);
-> +}
-> +
-> +static int surface_gpe_resume(struct device *dev)
-> +{
-> +       const struct surface_lid_device *lid;
-> +
-> +       lid = dev_get_platdata(dev);
-
-Ditto.
-
-> +       return surface_lid_enable_wakeup(dev, lid, false);
-> +}
-
-...
-
-> +static int surface_gpe_probe(struct platform_device *pdev)
-> +{
-> +       const struct surface_lid_device *lid;
-> +       int status;
-> +
-
-> +       lid = dev_get_platdata(&pdev->dev);
-> +       if (!lid)
-> +               return -ENODEV;
-
-Can we use software nodes?
-
-> +       status = acpi_mark_gpe_for_wake(NULL, lid->gpe_number);
-> +       if (status) {
-> +               dev_err(&pdev->dev, "failed to mark GPE for wake: %d\n", status);
-> +               return -EINVAL;
-> +       }
-> +
-
-> +       status = acpi_enable_gpe(NULL, lid->gpe_number);
-
-Did I miss anything or all calls of enable / disable GPE are using
-NULL as a first parameter? What the point in such case?
-
-> +       if (status) {
-> +               dev_err(&pdev->dev, "failed to enable GPE: %d\n", status);
-> +               return -EINVAL;
-> +       }
-> +
-> +       status = surface_lid_enable_wakeup(&pdev->dev, lid, false);
-> +       if (status) {
-> +               acpi_disable_gpe(NULL, lid->gpe_number);
-> +               return status;
-> +       }
-> +
-> +       return 0;
-> +}
-
-...
-
-> +static void __exit surface_gpe_exit(void)
-> +{
-
-> +       if (!surface_gpe_device)
-> +               return;
-
-This is redundant check.
-
-> +       platform_device_unregister(surface_gpe_device);
-> +       platform_driver_unregister(&surface_gpe_driver);
-> +}
-> +
-
-> +module_init(surface_gpe_init);
-> +module_exit(surface_gpe_exit);
-
-Attach each to the corresponding method w/o blank line in between.
-
-...
-
-> +MODULE_ALIAS("dmi:*:svnMicrosoftCorporation:pnSurfacePro:*");
-> +MODULE_ALIAS("dmi:*:svnMicrosoftCorporation:pnSurfacePro4:*");
-
-Can simply
-
-MODULE_ALIAS("dmi:*:svnMicrosoftCorporation:pnSurface*:*");
-
-work?
-
+Best regards,
 -- 
-With Best Regards,
-Andy Shevchenko
+Kees Cook
+
