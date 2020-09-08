@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58921261F9E
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 22:05:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3ABC26201A
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 22:09:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730475AbgIHUF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 16:05:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47738 "EHLO
+        id S1730984AbgIHUJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 16:09:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730188AbgIHPWE (ORCPT
+        with ESMTP id S1730244AbgIHPSl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:22:04 -0400
+        Tue, 8 Sep 2020 11:18:41 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD68DC0A3BF4;
-        Tue,  8 Sep 2020 07:55:13 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93E79C0A3BF9;
+        Tue,  8 Sep 2020 07:56:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
         References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
         Content-Type:Content-ID:Content-Description;
-        bh=XebGuej3xK5XjUIiTqbUvyFcyDyWl1r5Hy6xhDXcn70=; b=Jo4ghawcy8JBg+Rvq73LY38/vm
-        H0E/3JTxgUCzhUOeO6oPYKDq7jMdH0z8pdJiLjtntbizJIeFY7HTlaT+xFliSk4fvXVQUDomQKfPA
-        xJbsw3eb0QZfnCk+QgyEv3caVYnmiw7OGLSn+hJs0xwGElk8VP+tw0kxmVPowxAtzAU1Bgy1JQHmc
-        Hd8BwUSmYB9t/lgMcdPlNhwsynwcum09GA/F41DqA2uku86jqdlDH5sIRTro5NJnEBpBaTJwjbm4R
-        508Zzt5cVLp/Xz02AavSx98OqojF975Rx0eHcnral1/R//khH3OwdlGiu2pymRQTNhe3RCXnbpUVZ
-        IvG6zcGg==;
+        bh=qhhv9Hm93hbrEWUTmerzcHfYJ5eCRp8QXVw+0H+lRDo=; b=georDWjwq0N5HilZmlDSCDWJeZ
+        f8oJjOYDfJUCfRFx5Z3VmT+Tlcdr6V8JfV/pMKw9EmaZ5huEBNXFbahQXQvMIbjPhEcMP8y+TcPt0
+        M/rYM8SI7fm/88ci7wbJMgZSasAoiMbM45H8jf2XImil3qlEHlK2UPgwxyr/WGWZT0Jpn96MTcHit
+        ePM6bzVpuje/sMhrk6ZMN8IWgjqYDJB12fDjKAoitSvlVk1R74pfQHirCs4B2wFPop2jiUUJtrHxp
+        Mp+8BmLcmIlGy34HnXzw00JG+emkTXiqd6ripTWqqFlPmj704iX0t4bdzllFnZ3aSVoRY+JDkk0nB
+        uEHP9pqA==;
 Received: from [2001:4bb8:184:af1:3dc3:9c83:fc6c:e0f] (helo=localhost)
         by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kFf1C-0002zh-Fx; Tue, 08 Sep 2020 14:54:46 +0000
+        id 1kFf1Q-00031Z-Bh; Tue, 08 Sep 2020 14:55:01 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Jens Axboe <axboe@kernel.dk>
 Cc:     Denis Efremov <efremov@linux.com>, Tim Waugh <tim@cyberelk.net>,
@@ -43,9 +43,9 @@ Cc:     Denis Efremov <efremov@linux.com>, Tim Waugh <tim@cyberelk.net>,
         linux-raid@vger.kernel.org, linux-scsi@vger.kernel.org,
         linux-fsdevel@vger.kernel.org,
         Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH 16/19] sd: use bdev_check_media_change
-Date:   Tue,  8 Sep 2020 16:53:44 +0200
-Message-Id: <20200908145347.2992670-17-hch@lst.de>
+Subject: [PATCH 19/19] block: remove check_disk_change
+Date:   Tue,  8 Sep 2020 16:53:47 +0200
+Message-Id: <20200908145347.2992670-20-hch@lst.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200908145347.2992670-1-hch@lst.de>
 References: <20200908145347.2992670-1-hch@lst.de>
@@ -57,43 +57,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Switch to use bdev_check_media_change instead of check_disk_change and
-call sd_revalidate_disk manually.  As sd also calls sd_revalidate_disk
-manually during probe and open, , the extra call into ->revalidate_disk
-from bdev_disk_changed is not required either, so stop wiring up the
-method.
+Remove the now unused check_disk_change helper.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
- drivers/scsi/sd.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ fs/block_dev.c        | 20 --------------------
+ include/linux/genhd.h |  1 -
+ 2 files changed, 21 deletions(-)
 
-diff --git a/drivers/scsi/sd.c b/drivers/scsi/sd.c
-index 2bec8cd526164d..d020639c28c6ca 100644
---- a/drivers/scsi/sd.c
-+++ b/drivers/scsi/sd.c
-@@ -1381,8 +1381,10 @@ static int sd_open(struct block_device *bdev, fmode_t mode)
- 	if (!scsi_block_when_processing_errors(sdev))
- 		goto error_out;
+diff --git a/fs/block_dev.c b/fs/block_dev.c
+index c6ac0bd22eca70..0b34955b9e360f 100644
+--- a/fs/block_dev.c
++++ b/fs/block_dev.c
+@@ -1368,26 +1368,6 @@ void revalidate_disk_size(struct gendisk *disk, bool verbose)
+ }
+ EXPORT_SYMBOL(revalidate_disk_size);
  
--	if (sdev->removable || sdkp->write_prot)
--		check_disk_change(bdev);
-+	if (sdev->removable || sdkp->write_prot) {
-+		if (bdev_check_media_change(bdev))
-+			sd_revalidate_disk(bdev->bd_disk);
-+	}
+-/*
+- * This routine checks whether a removable media has been changed,
+- * and invalidates all buffer-cache-entries in that case. This
+- * is a relatively slow routine, so we have to try to minimize using
+- * it. Thus it is called only upon a 'mount' or 'open'. This
+- * is the best way of combining speed and utility, I think.
+- * People changing diskettes in the middle of an operation deserve
+- * to lose :-)
+- */
+-int check_disk_change(struct block_device *bdev)
+-{
+-	if (!bdev_check_media_change(bdev))
+-		return 0;
+-	if (bdev->bd_disk->fops->revalidate_disk)
+-		bdev->bd_disk->fops->revalidate_disk(bdev->bd_disk);
+-	return 1;
+-}
+-
+-EXPORT_SYMBOL(check_disk_change);
+-
+ void bd_set_nr_sectors(struct block_device *bdev, sector_t sectors)
+ {
+ 	spin_lock(&bdev->bd_size_lock);
+diff --git a/include/linux/genhd.h b/include/linux/genhd.h
+index 322d48a207728a..1c97cf84f011a7 100644
+--- a/include/linux/genhd.h
++++ b/include/linux/genhd.h
+@@ -370,7 +370,6 @@ int register_blkdev(unsigned int major, const char *name);
+ void unregister_blkdev(unsigned int major, const char *name);
  
- 	/*
- 	 * If the drive is empty, just let the open fail.
-@@ -1843,7 +1845,6 @@ static const struct block_device_operations sd_fops = {
- 	.compat_ioctl		= sd_compat_ioctl,
- #endif
- 	.check_events		= sd_check_events,
--	.revalidate_disk	= sd_revalidate_disk,
- 	.unlock_native_capacity	= sd_unlock_native_capacity,
- 	.report_zones		= sd_zbc_report_zones,
- 	.pr_ops			= &sd_pr_ops,
+ void revalidate_disk_size(struct gendisk *disk, bool verbose);
+-int check_disk_change(struct block_device *bdev);
+ bool bdev_check_media_change(struct block_device *bdev);
+ int __invalidate_device(struct block_device *bdev, bool kill_dirty);
+ void bd_set_nr_sectors(struct block_device *bdev, sector_t sectors);
 -- 
 2.28.0
 
