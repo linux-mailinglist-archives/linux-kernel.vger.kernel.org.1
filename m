@@ -2,80 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 721D22620BB
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 22:15:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDB012620E3
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 22:17:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730968AbgIHUOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 16:14:50 -0400
-Received: from mout.gmx.net ([212.227.17.22]:45743 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730082AbgIHPLD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:11:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1599577786;
-        bh=8DuJAfVQSI5mi44z7RncHDbEJKd6gWOvbmvHlAkeqYs=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=ewY5sQDeH5NP2Kb6Z+dNppd51WawKmbMzqeAqLCA91ab0Wc5akfRnqVlDmU0FDFXL
-         APINUpF50Mn2n0VUha3wu0LObhMhjJWHmgkam+jPL7dLHJaeSaIfSYpnr0b4h4xKiA
-         oBHZox7xlv/hu4jxmQVoAhzuKMT1frYGla9V75XI=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.simpson.net ([185.191.217.72]) by mail.gmx.com (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1M1Ygt-1kH1Yc0IeJ-0034pj; Tue, 08
- Sep 2020 16:56:21 +0200
-Message-ID: <3471761a379062a474ba32f9d0157eb3020244cf.camel@gmx.de>
-Subject: Re: v5.9-rc3-rt3 boot time networking lockdep splat
-From:   Mike Galbraith <efault@gmx.de>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Date:   Tue, 08 Sep 2020 16:56:20 +0200
-In-Reply-To: <20200908121902.zlfd3balosnu7ies@linutronix.de>
-References: <20200902155557.h2wl2qpfn2rwsofw@linutronix.de>
-         <46a2b89ec8d953a4be18c7389c7d8c66310a7ff0.camel@gmx.de>
-         <20200908121902.zlfd3balosnu7ies@linutronix.de>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.34.4 
+        id S1732231AbgIHURD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 16:17:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46406 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729413AbgIHPKB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 11:10:01 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CD75C0A88B5
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 07:58:24 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id 37so15104931oto.4
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 07:58:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=9gggthlY+o0JLKVW4bDabhGMPHFWypt8dqyEIpp5HBQ=;
+        b=YB1FIRYyzS+ivsL/x+45ExVO0WH4Is9QWS50BvdosbbeX3Gi9nCtUp3J82nNmljBY6
+         2JWQ8OutTr8NVlmEj5knAEd5QvGTHBgwJGuOKKBrxGLIqUrSTCfdGuVlSplWSBuVYG50
+         1gRt3j7MlGKO3Vgm/lbDnz/Rr6omJsM1OVD/v0oDJTX71dK7psTcnMmqtUpToxc8zybt
+         4ejNbNqpq110GFV6L5J6HSaFqA/UgkLEzxllqqnoKmQ4UbGu6gRzTXzpmg+clp3rTrUT
+         SlGD+3IhJ/dsetPuwDX0gLdqgHqVCPqxO1fgcGCW6gJcc09yKjpzpaQTKnrRam+Iva7t
+         vlcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9gggthlY+o0JLKVW4bDabhGMPHFWypt8dqyEIpp5HBQ=;
+        b=Kk3u3zbqA/lTb7UYMotaSB1w/Jzm8wqlCMUx6HIsqRnm8OsMsNpCK90+bTYMAHmDdA
+         S9PIzA/iviGdMjVxW/QPi4X5aGIRlzc2IGfVpN9D/hzfAFBBifnc2rTt3d3Ui5wNvSWM
+         5xCw2aE7rqj8HG1tYOH0Ej76hsjii3cNnYk7p5W7gadJLfJPB+OcGH6zJpggDP2JBQ0Q
+         +Un98uxHjYXhI0/kAJTQ9EBm+WWfKqW99fc/uHvkHUoKESKklhVJvgBLeYJhwgnaWcYY
+         ZImUc6uNlmIHf+6xfY+uKqytzksnnkS2qJMrMn6q4Y5BNVO84E1JTX2yPzjj+PpqYB3U
+         dA5A==
+X-Gm-Message-State: AOAM533mDtThxWmkI2p5NhyAOcJ3C/xm1mfYi8prnJnOk2yxXMJdE27P
+        x8fTqU7i8hyHvrpvyZV4i+WstQ==
+X-Google-Smtp-Source: ABdhPJwzWVepX/rnpXMX9hm2hay4q1Tqm8YqYT8JJBjjmrghpuG4jHcnsb8c87sfS0CmGWklIjZJNw==
+X-Received: by 2002:a9d:7590:: with SMTP id s16mr1860963otk.23.1599577104131;
+        Tue, 08 Sep 2020 07:58:24 -0700 (PDT)
+Received: from yoga ([2605:6000:e5cb:c100:8898:14ff:fe6d:34e])
+        by smtp.gmail.com with ESMTPSA id y24sm3515779ooq.38.2020.09.08.07.58.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Sep 2020 07:58:23 -0700 (PDT)
+Date:   Tue, 8 Sep 2020 09:58:19 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     rjw@rjwysocki.net, viresh.kumar@linaro.org, robh+dt@kernel.org,
+        agross@kernel.org, amitk@kernel.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, dmitry.baryshkov@linaro.org,
+        tdas@codeaurora.org
+Subject: Re: [PATCH 1/7] dt-bindings: cpufreq: cpufreq-qcom-hw: Document
+ SM8250 compatible
+Message-ID: <20200908145819.GN3715@yoga>
+References: <20200908075716.30357-1-manivannan.sadhasivam@linaro.org>
+ <20200908075716.30357-2-manivannan.sadhasivam@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:M5FgYO2QJDW20nMv2t3ujKxQ22Mo1eRsB9uGCSrp6bT05KUNWqQ
- azozruWZ/7L98+6Rzkm0wb6thLQOgqZTIU1vyqLhMVhbyrdAwwf4RqvILSAd8RH/m/B+a6x
- 4HdMXpZACnGm6sel6EYk8yFGjUDyHs3kbh38nHev9UVQLZJyh7Svui44XND6pSYuUbVYd/O
- p2Txib4+PDP1lVKScYedA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:f4YHUmgAPCQ=:1tXqXP0A0FJr80IyDLmYMN
- HKn7gtNtIljtNzkT00RGYtqzUd7Hk0qRTjcmdf2S2L0D02d2HUfL9ptnLKVNve2GrJiAHXyit
- 8FTcrw/FKgaKH8qN9KbOM4HoYdj7rsubcq8Nu+PgE9jw9PtzBXlXqrvya8arH7wJqpfxoEii6
- KC5Ao/1JTU4IDBVRqf9DOMjoREz3trgrMWXj5CwAOT546iSsuEmgpJ2LUf3MbF6ofegxAxJz8
- dyx5RuZkWxttp3AVtns5OyiTsovva/9KyUZz/NnYlaTC4a1qxZI+kIgIlIDHZCN6xzzzRzwWA
- O42yh4PCKIKUNOXZF9C9NqD9albXLl2lnNjVy/j7AYbzNy3yfXCNOjRhox79gB72AcFWFkoAN
- xP9Oq4c0Mq5yiZUGmxPToVnjBakh8XMJGKJZuNEuX0jyIVG5XoPqQzVdl1curzslgW7CXP/Qw
- 1wZBNXCP3TPnfSkt5dZCXVoSvlaNV0IWoRBygNFy4KEP3pov9dIFp17rPckTazCs1c3qDJTjE
- OgV/qFFBCWjh+Iy8dwCYWkzEyPGl1/NLUF0rXdnDHIfK62RJwoRLo7RV10dlwyozQu/qdls9s
- 7WRkMGzLKXdBv4pjHJzZxgpIbnWcZWnNk2yR5Z8PbLRpsk/vw6Y18uWjifZxc5AHdTtAa10dD
- wEgDdyVvdkjDWjLzrInM7QcTb3S5siGJY4dNXrYc0YPy21ep8+BnwmtHG+hdWs2ObE90I2xM1
- 6P/wtrfRnlUx0xMI2GskMyo5iKTJVYT3THgmsITIENWuJkUazPowzAymQ3inlM3/9XJAa3flj
- chf4igdljJ5uSodsObNqWIIl68+IGYIexETpXSzOQ3WgVQfFPJdh+PXqHSmy3tJ3Kt8kIJMrf
- F1Qs3gaKFTYtfwIGIsuqzU4s9Ce3zbLpvQm2iKKK/HTkUPCF8PAeJk0MMlA3uxM2ryf0ZDwaw
- m3oBvlZ2u1UQ0pWm41ao+T2cPnJPEZwrUnFFYMvxSCHsdOLXhxSNOhVz1m3b0WQLiDF6x9Gpw
- dLLTbWWc73IK5hI8aduQPZyXAiQx86xdg1nL0cXdmSc/R8jTQWWDFmXzrQEr7COpv0k9f8txP
- fzar3byLonBxIZLZPpxFtsXD9CeniLKzX408/CYpR4HcCMyMHSZTmRHyqXe/qBN/UcYGn4QY8
- 3uqLrGUqKxl9JpeWrcqs0HWsdAOgofkWYJJgqY67/swwtDhTc1jEOeLxiT9D3l3OvlGs6bodN
- OZe6tVtp4TzSKXHcP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200908075716.30357-2-manivannan.sadhasivam@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-09-08 at 14:19 +0200, Sebastian Andrzej Siewior wrote:
->
-> This has nothing to do with the bridge but with the fact that you use a
-> non standard queue class (something else than pfifo_fast).
+On Tue 08 Sep 02:57 CDT 2020, Manivannan Sadhasivam wrote:
 
-That must be SUSE, I don't muck about in network land.  I downloaded a
-whole library of RFCs decades ago, but turns out that one of those is
-all the bedtime story you'll ever need.  Huge waste of bandwidth :)
+> Document the SM8250 SoC specific compatible for Qualcomm Cpufreq HW. The
+> hardware block which carries out CPUFreq operations on SM8250 SoC is
+> called EPSS.
+> 
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
-	-Mike
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
+Please follow up, after this has been accepted, with a conversion of
+this binding to yaml.
+
+Regards,
+Bjorn
+
+> ---
+>  Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.txt | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.txt b/Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.txt
+> index 33856947c561..aea4ddb2b9e8 100644
+> --- a/Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.txt
+> +++ b/Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.txt
+> @@ -8,7 +8,7 @@ Properties:
+>  - compatible
+>  	Usage:		required
+>  	Value type:	<string>
+> -	Definition:	must be "qcom,cpufreq-hw".
+> +	Definition:	must be "qcom,cpufreq-hw" or "qcom,sm8250-epss".
+>  
+>  - clocks
+>  	Usage:		required
+> -- 
+> 2.17.1
+> 
