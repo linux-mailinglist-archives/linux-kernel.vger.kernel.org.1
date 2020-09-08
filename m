@@ -2,86 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B2D1262182
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 22:54:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E128262191
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 22:56:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730054AbgIHUy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 16:54:28 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:55778 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726642AbgIHUy2 (ORCPT
+        id S1730190AbgIHU4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 16:56:42 -0400
+Received: from conuserg-07.nifty.com ([210.131.2.74]:32333 "EHLO
+        conuserg-07.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729941AbgIHU4i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 16:54:28 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 088KsQs8107270;
-        Tue, 8 Sep 2020 15:54:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1599598466;
-        bh=E+9QQ1DscF13tPkWOq65brrJgmxAQwKmqNygQNuWZ/c=;
-        h=Subject:To:References:From:Date:In-Reply-To;
-        b=QhUQEaQePJl8Cw2nDK49nFeiH2sQmJRJL4lMhm/bobWMHZin3GbNtTSNn3UCTr2gf
-         oliyLXD0KvuR/ezNitAOkL3A3rCcirmlDvTSm8N774Kj86AnkREdYs7Lc+dowb7ttp
-         T+G24QFvgx+npn0ViuUI6PB0ThbsRHQpn7GUB3cY=
-Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 088KsQND031826
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 8 Sep 2020 15:54:26 -0500
-Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 8 Sep
- 2020 15:54:26 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 8 Sep 2020 15:54:26 -0500
-Received: from [10.250.38.37] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 088KsQmm046976;
-        Tue, 8 Sep 2020 15:54:26 -0500
-Subject: Re: [PATCH 2/7] power: supply: bq27xxx: report "not charging" on all
- types
-To:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>,
-        <linux-pm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20200908201319.3567-1-krzk@kernel.org>
- <20200908201319.3567-2-krzk@kernel.org>
-From:   Dan Murphy <dmurphy@ti.com>
-Message-ID: <33361ba9-51df-3b09-6744-9806cdf166db@ti.com>
-Date:   Tue, 8 Sep 2020 15:54:26 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 8 Sep 2020 16:56:38 -0400
+Received: from oscar.flets-west.jp (softbank126090211135.bbtec.net [126.90.211.135]) (authenticated)
+        by conuserg-07.nifty.com with ESMTP id 088Ku0N4015321;
+        Wed, 9 Sep 2020 05:56:00 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-07.nifty.com 088Ku0N4015321
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1599598561;
+        bh=LX+XJs0yGQNfGdRdOODWn2d8GyxE3kmbFFKuth+1obY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=c13f+fwghiGlkOh/iS+d87XXylCY1v40ms1Bi3rnW2Y42HlCZQbVDcZ2lYSmCS9/3
+         E9k8Jum3BUAqWqYh/EymQCGWPXbtobclHxwLqdGIDOJ/RM654+nmCEvinbKDtG+miv
+         LhGMzA39jvrOEj2ceix01rJB+djf9mNBa2ReO6UNjJJ/iE2bHybGgADZn2+zxbFEm7
+         2F/3mEQq7JxDvBO8RudfxYdFaIOYOsL4f0/j8C290DCjDX33Hwjk8A0fk09/Ynwhy9
+         OoatrKPPo7wZQ3WJH4oM3uTwwRoDVfwvSk6udWwlBVHQgiwdnq0ja3T7xFHvLxhaCy
+         HnZ1QKWhlZkRw==
+X-Nifty-SrcIP: [126.90.211.135]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] kbuild: do not create built-in objects for external module builds
+Date:   Wed,  9 Sep 2020 05:55:57 +0900
+Message-Id: <20200908205557.2746352-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20200908201319.3567-2-krzk@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Krzysztof
+'make M=/path/to/your/external/module' creates a pointless built-in.a
+in the top of the external module directory because KBUILD_BUILTIN is
+set to 1.
 
-On 9/8/20 3:13 PM, Krzysztof Kozlowski wrote:
-> Commit 6f24ff97e323 ("power: supply: bq27xxx_battery: Add the
-> BQ27Z561 Battery monitor") and commit d74534c27775 ("power:
-> bq27xxx_battery: Add support for additional bq27xxx family devices")
-> added support for new device types by copying most of the code and
-> adding necessary quirks.
->
-> However they did not copy the code in bq27xxx_battery_status()
-> responsible for returning POWER_SUPPLY_STATUS_NOT_CHARGING.
->
-> Unify the bq27xxx_battery_status() so for all types when charger is
-> supplied, it will return "not charging" status.
+Clear KBUILD_BUILTIN when we are building external modules so that
+'make M=...' and 'make M=... modules' work equivalently.
 
-If this is a fix then please populate the Fixes tag.
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
 
-But not sure how both commits are tied here
+ Makefile | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Dan
-
+diff --git a/Makefile b/Makefile
+index ec2330ce0fc5..29878033f9d6 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1692,7 +1692,8 @@ else # KBUILD_EXTMOD
+ #                      Install the modules built in the module directory
+ #                      Assumes install directory is already created
+ 
+-# We are always building modules
++# We are always building only modules.
++KBUILD_BUILTIN :=
+ KBUILD_MODULES := 1
+ 
+ build-dirs := $(KBUILD_EXTMOD)
+-- 
+2.25.1
 
