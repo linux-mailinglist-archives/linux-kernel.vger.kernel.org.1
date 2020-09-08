@@ -2,238 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73C06261EE2
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:56:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D324E261F20
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 22:00:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732406AbgIHT4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:56:40 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:60750 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730560AbgIHPgp (ORCPT
+        id S1732600AbgIHT7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 15:59:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50218 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730486AbgIHPfh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:36:45 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 088FYRJn136537;
-        Tue, 8 Sep 2020 15:35:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=15pWPW/Ca41cmRWLeuMPyWbmipPwtweDunpubNIoPPI=;
- b=SVXTsDpSFwpPl2YQu4pQGURdmipzP4knX+vFsNr4Xf+nYLSlX4XYR3f5uayYcU6bwbQh
- rcWTxvH+qvnR5sfSliFIEg2QsTwDOZNTnXCp34PVu8bDs8lF5qFuQHDBAgxTtE3hUiFm
- EWHwEyXn4VAidUm5YyZA6h8Lnix8nXCgpJXSLuEMSUsz36PEPYCLv3TjVZDvzUt+/v8R
- uK1J8X+kMM8nCHSLIkuXWdDSsCkesnZ0a3wwnjae04wdh9PSq3WECNNilly14CPKB0pA
- zasqVOZyIhdi6ZesycNYUEZ7FmfAFl+ZwoK+c/Cv7TIn9f9n0wpdei+xbWpluqBLeeDC Mw== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 33c2mkvaj2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 08 Sep 2020 15:35:32 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 088FTXks100262;
-        Tue, 8 Sep 2020 15:33:32 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3030.oracle.com with ESMTP id 33dacj1nk1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 08 Sep 2020 15:33:32 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 088FXTdr008498;
-        Tue, 8 Sep 2020 15:33:30 GMT
-Received: from [10.175.177.246] (/10.175.177.246)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 08 Sep 2020 08:33:29 -0700
-Subject: Re: [PATCH v4 11/23] device-dax: Kill dax_kmem_res
-To:     David Hildenbrand <david@redhat.com>,
-        Dan Williams <dan.j.williams@intel.com>
-Cc:     akpm@linux-foundation.org, Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        peterz@infradead.org, ard.biesheuvel@linaro.org,
-        linux-mm@kvack.org, linux-nvdimm@lists.01.org,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-References: <159643094279.4062302.17779410714418721328.stgit@dwillia2-desk3.amr.corp.intel.com>
- <159643100485.4062302.976628339798536960.stgit@dwillia2-desk3.amr.corp.intel.com>
- <a3ad70a2-77a8-d50e-f372-731a8e27c03b@redhat.com>
-From:   Joao Martins <joao.m.martins@oracle.com>
-Message-ID: <17686fcc-202e-0982-d0de-54d5349cfb5d@oracle.com>
-Date:   Tue, 8 Sep 2020 16:33:25 +0100
+        Tue, 8 Sep 2020 11:35:37 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFAC2C09B04B
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 08:35:06 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id k25so20579978ljg.9
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 08:35:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ragnatech-se.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=tGrF/vntbxcaJrg5poH7gCu+VWyo9L1BGQaIoIoS0bQ=;
+        b=n5qGCXo1v/X8PSEimLNceYfoLFK43B7g0eyI3jYR3uW14XAA4IE07X48ZKE7YJ70UB
+         JEcRKUHQT4cygg8gCURGdeBaerT9Borb6Apcl4jO+AitKEYcyKR+v/V0SsZeW1b9KTKZ
+         T4u/4yQeetA+aH1V5kXiKSA9NeqInShUo9Jj/fF24oDmWL98A/DUSelSqCmPdxjADtXt
+         5egM5+0P5ils3V8bietOEkG7u8rodrCT2oQDTRr94vaFewKmE9Oka8lHZDq/Jryg7P64
+         fBY0QMSrFBHO0ym10Uy5IR1zGhIxxftr1aETdSpB11o9cbC3wy6bK/RXkPmDvIKhlbcJ
+         cRqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=tGrF/vntbxcaJrg5poH7gCu+VWyo9L1BGQaIoIoS0bQ=;
+        b=X4+rGx8JomYr593q4uh4QlRyR2z0HvcwX3rlnZlwiy+ythK4DNR/zO2N4hIis+++Sv
+         1CA7KxkdllfGBlKfKnnnZjYaiATOodUUdhe2cdl5FJBNfoMGCKCJ7if6sVNPLstUTVen
+         ph13Etkl7sIWFFjwJgKK0SknWwURARvGYLCvezgTuZeQ2sQS/dxVOEWTY+8S5jCr/vER
+         23/4Dn9tVxQaivQwtKTZa7gfQZZ5fcIiQRSs9RCbyIWdI3XOcrclkuKyfZIzLyMnuFSA
+         qesq09Kk/4SjnPV+8R3RfcRrzH4g9EXV595lT+Gsm3CUlKoX7Q6u9b3D6bvhEH9CZWC0
+         f6/g==
+X-Gm-Message-State: AOAM533B6/PbGgZfzMsm2KMNiCNVYKsX2R0HuskJZgNEcJL99/fJayGl
+        xkG5ACj1YwhKPqsTu6L7am4pRw==
+X-Google-Smtp-Source: ABdhPJy1r23FBDpD0AieNv6pKwgAOMIvS4RqWasIIr61zMeo/9UcX+kJabzQIpPXrPEHYKTDEOtgpA==
+X-Received: by 2002:a2e:9110:: with SMTP id m16mr13370093ljg.173.1599579304860;
+        Tue, 08 Sep 2020 08:35:04 -0700 (PDT)
+Received: from localhost (h-209-203.A463.priv.bahnhof.se. [155.4.209.203])
+        by smtp.gmail.com with ESMTPSA id y4sm10537582ljk.61.2020.09.08.08.35.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Sep 2020 08:35:04 -0700 (PDT)
+Date:   Tue, 8 Sep 2020 17:35:03 +0200
+From:   Niklas <niklas.soderlund@ragnatech.se>
+To:     "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Subject: Re: [PATCH] media: rcar-vin: Update crop and compose settings for
+ every s_fmt call
+Message-ID: <20200908153503.GA3399240@oden.dyn.berto.se>
+References: <1596187745-31596-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20200801090456.GB1379367@oden.dyn.berto.se>
+ <CA+V-a8sOHct_JetCsug8Z2BQpMLH2p39hj2XNw_1N5gkBQp1Gg@mail.gmail.com>
+ <20200803192108.GB2297236@oden.dyn.berto.se>
+ <6d659e56-1e1f-c9c7-2e66-4ddc4e7fad15@xs4all.nl>
+ <CA+V-a8uzznUvzGgZ5A4B8ASEDbmMCrQPSAcEjO7v45zmAkdGDQ@mail.gmail.com>
+ <20200904022522.GD9369@pendragon.ideasonboard.com>
+ <CA+V-a8tTKu5FeEs+Hi2AwXy-i5OFufeyhTKGC6D4C5fK81895g@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <a3ad70a2-77a8-d50e-f372-731a8e27c03b@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9738 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 malwarescore=0
- bulkscore=0 phishscore=0 adultscore=0 suspectscore=1 spamscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009080148
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9738 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 priorityscore=1501
- phishscore=0 adultscore=0 bulkscore=0 clxscore=1011 mlxlogscore=999
- malwarescore=0 suspectscore=1 lowpriorityscore=0 spamscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009080148
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CA+V-a8tTKu5FeEs+Hi2AwXy-i5OFufeyhTKGC6D4C5fK81895g@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[Sorry for the late response]
+Hi Lad,
 
-On 8/21/20 11:06 AM, David Hildenbrand wrote:
-> On 03.08.20 07:03, Dan Williams wrote:
->> @@ -37,109 +45,94 @@ int dev_dax_kmem_probe(struct device *dev)
->>  	 * could be mixed in a node with faster memory, causing
->>  	 * unavoidable performance issues.
->>  	 */
->> -	numa_node = dev_dax->target_node;
->>  	if (numa_node < 0) {
->>  		dev_warn(dev, "rejecting DAX region with invalid node: %d\n",
->>  				numa_node);
->>  		return -EINVAL;
->>  	}
->>  
->> -	/* Hotplug starting at the beginning of the next block: */
->> -	kmem_start = ALIGN(range->start, memory_block_size_bytes());
->> -
->> -	kmem_size = range_len(range);
->> -	/* Adjust the size down to compensate for moving up kmem_start: */
->> -	kmem_size -= kmem_start - range->start;
->> -	/* Align the size down to cover only complete blocks: */
->> -	kmem_size &= ~(memory_block_size_bytes() - 1);
->> -	kmem_end = kmem_start + kmem_size;
->> -
->> -	new_res_name = kstrdup(dev_name(dev), GFP_KERNEL);
->> -	if (!new_res_name)
->> +	res_name = kstrdup(dev_name(dev), GFP_KERNEL);
->> +	if (!res_name)
->>  		return -ENOMEM;
->>  
->> -	/* Region is permanently reserved if hotremove fails. */
->> -	new_res = request_mem_region(kmem_start, kmem_size, new_res_name);
->> -	if (!new_res) {
->> -		dev_warn(dev, "could not reserve region [%pa-%pa]\n",
->> -			 &kmem_start, &kmem_end);
->> -		kfree(new_res_name);
->> +	res = request_mem_region(range.start, range_len(&range), res_name);
+On 2020-09-06 20:12:35 +0100, Lad, Prabhakar wrote:
+> Hi Laurent,
 > 
-> I think our range could be empty after aligning. I assume
-> request_mem_region() would check that, but maybe we could report a
-> better error/warning in that case.
+> On Fri, Sep 4, 2020 at 3:25 AM Laurent Pinchart
+> <laurent.pinchart@ideasonboard.com> wrote:
+> >
+> > Hi Prabhakar,
+> >
+> > On Thu, Sep 03, 2020 at 03:53:18PM +0100, Lad, Prabhakar wrote:
+> > > On Wed, Aug 19, 2020 at 3:08 PM Hans Verkuil wrote:
+> > > > On 03/08/2020 21:21, Niklas wrote:
+> > > > > On 2020-08-03 19:11:32 +0100, Lad, Prabhakar wrote:
+> > > > >> On Sat, Aug 1, 2020 at 10:04 AM Niklas wrote:
+> > > > >>> On 2020-07-31 10:29:05 +0100, Lad Prabhakar wrote:
+> > > > >>>> The crop and compose settings for VIN in non mc mode werent updated
+> > > > >>>> in s_fmt call this resulted in captured images being clipped.
+> > > > >>>>
+> > > > >>>> With the below sequence on the third capture where size is set to
+> > > > >>>> 640x480 resulted in clipped image of size 320x240.
+> > > > >>>>
+> > > > >>>> high(640x480) -> low (320x240) -> high (640x480)
+> > > > >>>>
+> > > > >>>> This patch makes sure the VIN crop and compose settings are updated.
+> > > > >>>
+> > > > >>> This is clearly an inconsistency in the VIN driver that should be fixed.
+> > > > >>> But I think the none-mc mode implements the correct behavior. That is
+> > > > >>> that S_FMT should not modify the crop/compose rectangles other then make
+> > > > >>> sure they don't go out of bounds. This is an area we tried to clarify in
+> > > > >>> the past but I'm still not sure what the correct answer to.
+> > > > >>>
+> > > > >> What should be the exact behaviour of the bridge driver  for s_fmt
+> > > > >> call. Should the crop/compose settings be updated for every s_fmt
+> > > > >> callback or should they be only updated on s_selection callback.
+> > > > >> Currently the non-mc rcar-vin doesnt update the crop/compose setting
+> > > > >> in s_fmt callback due to which I see the above issue as mentioned.
+> > > > >
+> > > > > This is not entirely correct. It does update the crop and compose
+> > > > > rectangles on s_fmt, it makes sure they are not out-of-bounds for the
+> > > > > new format if it's accepted by s_fmt. See v4l2_rect_map_inside() calls
+> > > > > in the snippet bellow.
+> > > >
+> > > > For non-mc mode s_fmt must update any crop/compose rectangles to ensure that
+> > > > they are not out-of-bounds. But for mc mode the validation is done when you
+> > > > start streaming, so I think s_fmt won't make any changes in that mode.
+> > >
+> > > Thank you Hans.
+> > >
+> > > > Double-check that with Laurent, though...
+> > >
+> > > Niklas/Laurent - How do we proceed on this ?
+> >
+> > MC devices rely on userspace to propagate formats between entities, and
+> > on kernelspace to propagate formats within entities. This is documented
+> > in https://linuxtv.org/downloads/v4l-dvb-apis/userspace-api/v4l/dev-subdev.html.
+> > The configuration of an entity (formats and selection rectangles) must
+> > be valid at all times. Subdev drivers should thus either adjust or reset
+> > the crop and selection rectangles. The specification isn't clear on
+> > which behaviour should be implemented, the only related text is
+> >
+> > "Sub-devices that scale frames using variable scaling factors should
+> > reset the scale factors to default values when sink pads formats are
+> > modified. If the 1:1 scaling ratio is supported, this means that source
+> > pads formats should be reset to the sink pads formats."
+> >
+> > I would recommend resetting as the default behaviour. In any case,
+> > adjustements are needed to ensure that the configuration remains valid.
+> >
+> In that case can I have your Ack to the patch please.
+
+If this is the approach we wish to take here you should remove the code 
+above and bellow the added block as it becomes redundant whit this 
+change.
+
 > 
-dax_kmem_range() already returns a memory-block-aligned @range but
-IIUC request_mem_region() isn't checking for that. Having said that
-the returned @res wouldn't be different from the passed range.start.
+> Cheers,
+> Prabhakar
 
->>  	/*
->>  	 * Ensure that future kexec'd kernels will not treat this as RAM
->>  	 * automatically.
->>  	 */
->> -	rc = add_memory_driver_managed(numa_node, new_res->start,
->> -				       resource_size(new_res), kmem_name);
->> +	rc = add_memory_driver_managed(numa_node, res->start,
->> +				       resource_size(res), kmem_name);
->> +
->> +	res->flags |= IORESOURCE_BUSY;
-> 
-> Hm, I don't think that's correct. Any specific reason why to mark the
-> not-added, unaligned parts BUSY? E.g., walk_system_ram_range() could
-> suddenly stumble over it - and e.g., similarly kexec code when trying to
-> find memory for placing kexec images. I think we should leave this
-> !BUSY, just as it is right now.
-> 
-Agreed.
-
->>  	if (rc) {
->> -		release_resource(new_res);
->> -		kfree(new_res);
->> -		kfree(new_res_name);
->> +		release_mem_region(range.start, range_len(&range));
->> +		kfree(res_name);
->>  		return rc;
->>  	}
->> -	dev_dax->dax_kmem_res = new_res;
->> +
->> +	dev_set_drvdata(dev, res_name);
->>  
->>  	return 0;
->>  }
->>  
->>  #ifdef CONFIG_MEMORY_HOTREMOVE
->> -static int dev_dax_kmem_remove(struct device *dev)
->> +static void dax_kmem_release(struct dev_dax *dev_dax)
->>  {
->> -	struct dev_dax *dev_dax = to_dev_dax(dev);
->> -	struct resource *res = dev_dax->dax_kmem_res;
->> -	resource_size_t kmem_start = res->start;
->> -	resource_size_t kmem_size = resource_size(res);
->> -	const char *res_name = res->name;
->>  	int rc;
->> +	struct device *dev = &dev_dax->dev;
->> +	const char *res_name = dev_get_drvdata(dev);
->> +	struct range range = dax_kmem_range(dev_dax);
->>  
->>  	/*
->>  	 * We have one shot for removing memory, if some memory blocks were not
->>  	 * offline prior to calling this function remove_memory() will fail, and
->>  	 * there is no way to hotremove this memory until reboot because device
->> -	 * unbind will succeed even if we return failure.
->> +	 * unbind will proceed regardless of the remove_memory result.
->>  	 */
->> -	rc = remove_memory(dev_dax->target_node, kmem_start, kmem_size);
->> -	if (rc) {
->> -		any_hotremove_failed = true;
->> -		dev_err(dev,
->> -			"DAX region %pR cannot be hotremoved until the next reboot\n",
->> -			res);
->> -		return rc;
->> +	rc = remove_memory(dev_dax->target_node, range.start, range_len(&range));
->> +	if (rc == 0) {
-> 
-> if (!rc) ?
-> 
-Better off would be to keep the old order:
-
-	if (rc) {
-		any_hotremove_failed = true;
-		dev_err(dev, "%#llx-%#llx cannot be hotremoved until the next reboot\n",
-				range.start, range.end);
-	        return;
-	}
-
-	release_mem_region(range.start, range_len(&range));
-	dev_set_drvdata(dev, NULL);
-	kfree(res_name);
-	return;
-
-
->> +		release_mem_region(range.start, range_len(&range));
-> 
-> remove_memory() does a release_mem_region_adjustable(). Don't you
-> actually want to release the *unaligned* region you requested?
-> 
-Isn't it what we're doing here?
-(The release_mem_region_adjustable() is using the same
-dax_kmem-aligned range and there's no split/adjust)
-
-Meaning right now (+ parent marked as !BUSY), and if I am understanding
-this correctly:
-
-request_mem_region(range.start, range_len)
-   __request_region(iomem_res, range.start, range_len) -> alloc @parent
-add_memory_driver_managed(parent.start, resource_size(parent))
-   __request_region(parent.start, resource_size(parent)) -> alloc @child
-
-[...]
-
-remove_memory(range.start, range_len)
- request_mem_region_adjustable(range.start, range_len)
-  __release_region(range.start, range_len) -> remove @child
-
-release_mem_region(range.start, range_len)
-  __release_region(range.start, range_len) -> doesn't remove @parent because !BUSY?
-
-The add/removal of this relies on !BUSY. But now I am wondering if the parent remaining
-unreleased is deliberate even on CONFIG_MEMORY_HOTREMOVE=y.
-
-	Joao
+-- 
+Regards,
+Niklas Söderlund
