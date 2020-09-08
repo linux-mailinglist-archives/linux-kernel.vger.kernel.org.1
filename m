@@ -2,105 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 708DF261E66
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:51:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98497261D94
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:39:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732194AbgIHTvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:51:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58851 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730750AbgIHPt5 (ORCPT
+        id S1731917AbgIHTjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 15:39:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53178 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730187AbgIHPzg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:49:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599580165;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TK94hr65Pbv4WiScR8vAMileXVguzlpR5hueFys4tHc=;
-        b=TEO8RRc7GVKLmaJoAfhg1T338E0r7FO4uBIhWGRwr2p2vrxj5t+hKn87wHcKGcY1qcfw1K
-        ksbsN9q8dx7DyefJviDsSgOadzelRuv4kE4dHg37FjC/8Ec6RGAMpPCfKVW+PXRSQezLA4
-        WvYLOcfHs3fMSN6iEvHT/wYdKT5gvSs=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-508-CZ7pTKpoPyuzZLo04vASuQ-1; Tue, 08 Sep 2020 09:24:21 -0400
-X-MC-Unique: CZ7pTKpoPyuzZLo04vASuQ-1
-Received: by mail-wr1-f69.google.com with SMTP id j7so5352277wro.14
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 06:24:21 -0700 (PDT)
+        Tue, 8 Sep 2020 11:55:36 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A499C061231
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 06:26:12 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id q5so13009895qkc.2
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 06:26:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=0Bd9eUG3DnE6D+neFj9R3QfT/oWxBp+wzdY7i+GsBSw=;
+        b=Lf6G5poVVU9DTO5y/Kk8H2Ke1/yuvwq44QRfLlgtzVksH3W4CflZYO6N1CS6Gkgf+O
+         36N3+8wD9pObYI1CMdwZYMYRu7HbXVUKEFPJ2AjNcK9X3BID5PsppQaFjSnqxa7JtCNT
+         aY2EX4mu669m3AJgX7WT/I/zIn+qpP2LPn3ueNiUgo8NZRJ/0OvY6GqXffz02hp9ASt6
+         Kw7kagCQ12/ztkbDpZvauMGFhf/ti5rup7TXyfyR2MZlnoY6C7+c78nhZr2bXok7Z+TB
+         z94051jMYxpI6fAzrkfx1CYHrWeWBF5AFFZLbShjEyTsCM8ydvp1pulj0ri7yDSPS5ma
+         HXGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=TK94hr65Pbv4WiScR8vAMileXVguzlpR5hueFys4tHc=;
-        b=MJc6+IUh9EEWm0omkVE2tKEM+Y14amlPpIo/OGLQwl/HPQq71OM0Q7RSrEUCOJJF5k
-         PcKaYv6D/8Q0POQCSNGYGYo3p7e4ylrlX5nFePnnHqTdfnzzbR6Eg/RnvZWFsgoRC75i
-         Piva/Uh403pgvY/MyC8bV+t19Fg1VM8U+lKMUM8J3MNdfxSjwpt+d/sOCDDR8IQlgy28
-         HrMtexEtfi4GOJMnmNpmzihuIGPouU8ir+lHzy3O9c490VxPRQNbFjRnkqBR/K1pFzCM
-         wyr1sYM4u51i8KO/jbpn5+B+PoHDXztykuFfZDzUxLcUE8FrlB6KJy2d5tdYXehVo0r/
-         yxIQ==
-X-Gm-Message-State: AOAM530i1XYAu0pVW9OG7JbH1wdcIW3yNZp/TPpzuS0HSSe+MN7YFH+F
-        Q7fsxdI0k2kydKGc/snouFmBv9SS53+SUpyRIjnhxVaJ/1d/Y2utXkeN6uU8y8KWLgaD5gVwZea
-        q6xCK06hLaRT6PjowuMKOkQ93
-X-Received: by 2002:a7b:cb4d:: with SMTP id v13mr4725441wmj.56.1599571459925;
-        Tue, 08 Sep 2020 06:24:19 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxbG9zYpOvvSdnyHs/XbOTDJjHLbjapXGRQTUuUk/Hgs+HBWnBntmzUuBZteAFqsH8+99po4A==
-X-Received: by 2002:a7b:cb4d:: with SMTP id v13mr4725423wmj.56.1599571459736;
-        Tue, 08 Sep 2020 06:24:19 -0700 (PDT)
-Received: from redfedo.redhat.com ([2a01:cb14:499:3d00:cd47:f651:9d80:157a])
-        by smtp.gmail.com with ESMTPSA id f1sm33267503wrt.20.2020.09.08.06.24.18
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0Bd9eUG3DnE6D+neFj9R3QfT/oWxBp+wzdY7i+GsBSw=;
+        b=jPAgKV9ruffeTfdAxG6OebWSrmV6IDhP0X2UIfrDPuHAiaQw/p3EragU/C7hDoHC0Q
+         hHli3pEdcGmiFFeYuqlqhSDNzKWvnx1AfMHm9YO23ig7+RSdEhmROUeQW1iRHWtClli2
+         cAWEKbwtogtLs6FKUv3So583dWmZ1bzmSGRjKYTlMEx1zV5CmUSAxbXXFzaZTDR8bVt5
+         OKEdp2wQowvxxIRToZvQ3HyJZVTZBAgjHUQ4iC8R6u3JZYDxL/9CUt4Sk2SdAftQf78d
+         B6AjZbT52fRilaWgazhTAjqeMdzrf2DbtCgAjYAKuAQXZyCElFxaznonG4L/eiZIH4Nl
+         apjw==
+X-Gm-Message-State: AOAM531b4fMZU2si5Su5Fd8WOBsVZ8l++rlf9IjDNTqLW6obnZQMDLxU
+        +WW5OwfmnaKJMbBISNVn6irxeg==
+X-Google-Smtp-Source: ABdhPJytassnqIHgDUzIEWSN+bwEo6szoZotvnjMoppJpA+RAkN2BANjzTq153kTDs5DZf5N4KZr1w==
+X-Received: by 2002:a05:620a:6d9:: with SMTP id 25mr18567qky.269.1599571572011;
+        Tue, 08 Sep 2020 06:26:12 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id j8sm14658360qth.90.2020.09.08.06.26.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Sep 2020 06:24:19 -0700 (PDT)
-From:   Julien Thierry <jthierry@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     jpoimboe@redhat.com, peterz@infradead.org, mbenes@suse.cz,
-        raphael.gault@arm.com, Julien Thierry <jthierry@redhat.com>
-Subject: [PATCH] objtool: Fix sync-check.sh bashisms
-Date:   Tue,  8 Sep 2020 14:24:15 +0100
-Message-Id: <20200908132415.27753-1-jthierry@redhat.com>
-X-Mailer: git-send-email 2.21.3
-In-Reply-To: <20200904153028.32676-1-jthierry@redhat.com>
-References: <20200904153028.32676-1-jthierry@redhat.com>
+        Tue, 08 Sep 2020 06:26:11 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kFddS-002zaX-9j; Tue, 08 Sep 2020 10:26:10 -0300
+Date:   Tue, 8 Sep 2020 10:26:10 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+Cc:     John Hubbard <jhubbard@nvidia.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Mike Rapoport <rppt@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        linux-x86 <x86@kernel.org>,
+        linux-arm <linux-arm-kernel@lists.infradead.org>,
+        linux-power <linuxppc-dev@lists.ozlabs.org>,
+        linux-sparc <sparclinux@vger.kernel.org>,
+        linux-um <linux-um@lists.infradead.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>
+Subject: Re: [RFC PATCH v2 2/3] mm: make pXd_addr_end() functions page-table
+ entry aware
+Message-ID: <20200908132610.GB87483@ziepe.ca>
+References: <20200907180058.64880-1-gerald.schaefer@linux.ibm.com>
+ <20200907180058.64880-3-gerald.schaefer@linux.ibm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200907180058.64880-3-gerald.schaefer@linux.ibm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Previous patches introduced some non SUS compliant changes
-to sync-check.sh.
+On Mon, Sep 07, 2020 at 08:00:57PM +0200, Gerald Schaefer wrote:
+> From: Alexander Gordeev <agordeev@linux.ibm.com>
+> 
+> Unlike all other page-table abstractions pXd_addr_end() do not take
+> into account a particular table entry in which context the functions
+> are called. On architectures with dynamic page-tables folding that
+> might lead to lack of necessary information that is difficult to
+> obtain other than from the table entry itself. That already led to
+> a subtle memory corruption issue on s390.
+> 
+> By letting pXd_addr_end() functions know about the page-table entry
+> we allow archs not only make extra checks, but also optimizations.
+> 
+> As result of this change the pXd_addr_end_folded() functions used
+> in gup_fast traversal code become unnecessary and get replaced with
+> universal pXd_addr_end() variants.
+> 
+> The arch-specific updates not only add dereferencing of page-table
+> entry pointers, but also small changes to the code flow to make those
+> dereferences possible, at least for x86 and powerpc. Also for arm64,
+> but in way that should not have any impact.
+> 
+> So, even though the dereferenced page-table entries are not used on
+> archs other than s390, and are optimized out by the compiler, there
+> is a small change in kernel size and this is what bloat-o-meter reports:
 
-Replace used bash features for standard shell.
+This looks pretty clean and straightfoward, only
+__munlock_pagevec_fill() had any real increased complexity.
 
-Signed-off-by: Julien Thierry <jthierry@redhat.com>
----
- tools/objtool/sync-check.sh | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-Note: This patch applies on Josh P.'s objtool/core.WIP.julien branch
-
-diff --git a/tools/objtool/sync-check.sh b/tools/objtool/sync-check.sh
-index b81cda59d878..606a4b5e929f 100755
---- a/tools/objtool/sync-check.sh
-+++ b/tools/objtool/sync-check.sh
-@@ -8,7 +8,7 @@ fi
-
- FILES="include/linux/objtool.h"
-
--if [ "$SRCARCH" == "x86" ]; then
-+if [ "$SRCARCH" = "x86" ]; then
- FILES="$FILES
- arch/x86/include/asm/inat_types.h
- arch/x86/include/asm/orc_types.h
-@@ -60,4 +60,6 @@ while read -r file_entry; do
-     fi
-
-     check $file_entry
--done <<< "$FILES"
-+done <<EOF
-+$FILES
-+EOF
---
-2.21.3
-
+Thanks,
+Jason
