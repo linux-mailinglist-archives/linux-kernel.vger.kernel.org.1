@@ -2,53 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 349BE260F81
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 12:17:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC781260F84
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 12:19:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729125AbgIHKR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 06:17:28 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56218 "EHLO mx2.suse.de"
+        id S1729337AbgIHKS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 06:18:59 -0400
+Received: from foss.arm.com ([217.140.110.172]:51340 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729341AbgIHKRW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 06:17:22 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id F011BB6B7;
-        Tue,  8 Sep 2020 10:17:11 +0000 (UTC)
-From:   Takashi Iwai <tiwai@suse.de>
-To:     linux-firmware@kernel.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH linux-firmware] brcm: Fix a stale symlink for RPi3 model b+
-Date:   Tue,  8 Sep 2020 12:16:56 +0200
-Message-Id: <20200908101656.27835-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.16.4
+        id S1729094AbgIHKSo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 06:18:44 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B616631B;
+        Tue,  8 Sep 2020 03:18:43 -0700 (PDT)
+Received: from [10.163.71.211] (unknown [10.163.71.211])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 80B453F66E;
+        Tue,  8 Sep 2020 03:18:40 -0700 (PDT)
+Subject: Re: [PATCH 1/2] arm64/mm: Change THP helpers to comply with generic
+ MM semantics
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
+        will@kernel.org, akpm@linux-foundation.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Suzuki Poulose <suzuki.poulose@arm.com>,
+        linux-kernel@vger.kernel.org
+References: <1597655984-15428-1-git-send-email-anshuman.khandual@arm.com>
+ <1597655984-15428-2-git-send-email-anshuman.khandual@arm.com>
+ <20200903165631.GC31409@gaia>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <b29e2bda-3299-e69f-90cf-1c9bd59a219d@arm.com>
+Date:   Tue, 8 Sep 2020 15:48:08 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
+MIME-Version: 1.0
+In-Reply-To: <20200903165631.GC31409@gaia>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The symlink for brcmfmac43455-sdio.raspberrypi,3-model-b-plus.txt
-was wrongly listed with the same subdirectory brcm, and this resulted
-in a stale symlink.  Fix it.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- WHENCE | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/WHENCE b/WHENCE
-index 4adac39e28eb..f4af5d01e2c8 100644
---- a/WHENCE
-+++ b/WHENCE
-@@ -2639,7 +2639,7 @@ File: "brcm/brcmfmac43430-sdio.Hampoo-D2D3_Vi8A1.txt"
- File: "brcm/brcmfmac43430-sdio.MUR1DX.txt"
- File: "brcm/brcmfmac43430-sdio.raspberrypi,3-model-b.txt"
- File: "brcm/brcmfmac43455-sdio.raspberrypi,3-model-b-plus.txt"
--Link: brcm/brcmfmac43455-sdio.raspberrypi,3-model-a-plus.txt -> brcm/brcmfmac43455-sdio.raspberrypi,3-model-b-plus.txt
-+Link: brcm/brcmfmac43455-sdio.raspberrypi,3-model-a-plus.txt -> brcmfmac43455-sdio.raspberrypi,3-model-b-plus.txt
- File: "brcm/brcmfmac43455-sdio.raspberrypi,4-model-b.txt"
- File: "brcm/brcmfmac43455-sdio.MINIX-NEO Z83-4.txt"
- File: "brcm/brcmfmac4356-pcie.gpd-win-pocket.txt"
--- 
-2.16.4
+On 09/03/2020 10:26 PM, Catalin Marinas wrote:
+> On Mon, Aug 17, 2020 at 02:49:43PM +0530, Anshuman Khandual wrote:
+>> pmd_present() and pmd_trans_huge() are expected to behave in the following
+>> manner during various phases of a given PMD. It is derived from a previous
+>> detailed discussion on this topic [1] and present THP documentation [2].
+>>
+>> pmd_present(pmd):
+>>
+>> - Returns true if pmd refers to system RAM with a valid pmd_page(pmd)
+>> - Returns false if pmd does not refer to system RAM - Invalid pmd_page(pmd)
+> 
+> The second bullet doesn't make much sense. If you have a pmd mapping of
+> some I/O memory, pmd_present() still returns true (as does
+> pte_present()).
 
+Derived this from an earlier discussion (https://lkml.org/lkml/2018/10/17/231)
+but current representation here might not be accurate.
+
+Would this be any better ?
+
+pmd_present(pmd):
+
+- Returns true if pmd refers to system RAM with a valid pmd_page(pmd)
+- Returns false if pmd refers to a migration or swap entry
+
+> 
+>> diff --git a/arch/arm64/include/asm/pgtable-prot.h b/arch/arm64/include/asm/pgtable-prot.h
+>> index 4d867c6446c4..28792fdd9627 100644
+>> --- a/arch/arm64/include/asm/pgtable-prot.h
+>> +++ b/arch/arm64/include/asm/pgtable-prot.h
+>> @@ -19,6 +19,13 @@
+>>  #define PTE_DEVMAP		(_AT(pteval_t, 1) << 57)
+>>  #define PTE_PROT_NONE		(_AT(pteval_t, 1) << 58) /* only when !PTE_VALID */
+>>  
+>> +/*
+>> + * This help indicate that the entry is present i.e pmd_page()
+> 
+> Nit: add another . after i.e
+
+Will fix.
+
+> 
+>> + * still points to a valid huge page in memory even if the pmd
+>> + * has been invalidated.
+>> + */
+>> +#define PMD_PRESENT_INVALID	(_AT(pteval_t, 1) << 59) /* only when !PMD_SECT_VALID */
+>> +
+>>  #ifndef __ASSEMBLY__
+>>  
+>>  #include <asm/cpufeature.h>
+>> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
+>> index d5d3fbe73953..7aa69cace784 100644
+>> --- a/arch/arm64/include/asm/pgtable.h
+>> +++ b/arch/arm64/include/asm/pgtable.h
+>> @@ -145,6 +145,18 @@ static inline pte_t set_pte_bit(pte_t pte, pgprot_t prot)
+>>  	return pte;
+>>  }
+>>  
+>> +static inline pmd_t clr_pmd_bit(pmd_t pmd, pgprot_t prot)
+>> +{
+>> +	pmd_val(pmd) &= ~pgprot_val(prot);
+>> +	return pmd;
+>> +}
+> 
+> Could you use clear_pmd_bit (instead of clr) for consistency with
+> clear_pte_bit()?
+
+Sure, will do.
+
+> 
+> It would be good if the mm folk can do a sanity check on the assumptions
+> about pmd_present/pmdp_invalidate/pmd_trans_huge.
+> 
+> The patch looks fine to me otherwise, feel free to add:
+> 
+> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+>
