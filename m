@@ -2,80 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF1FF261390
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 17:33:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25F372613AB
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 17:40:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730514AbgIHPdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 11:33:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730283AbgIHPYH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:24:07 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83CC5C08C5ED;
-        Tue,  8 Sep 2020 08:18:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=hyoD9QmcI5oiNUeN3ikrG7yLEGezAUx3TNWi/z6zbWI=; b=pgKsLb/aVboApOOdFqn5zDVWgG
-        Snx9karx64Rd7CkJliDojwf8qA6Vh8rEzXBdRiZ8IQONB/Feeejk7hc6VphgfXzIdXRcmZqmEQSAj
-        5+cj7IfmEd2fNt84yK5+jgEZ9BGWTAAdzs+64KItaB1DXE5Kc0WjadecA0kyx3wIm0Py7BPINIWFK
-        K6h868Fkl8wsC8soHGKMlfCMsIA1vDWjYdnTq579hK/y7Muua+Oimtkv6XxgFIkUy04p3qROWpPGg
-        BhIPKafV1qYxUpaG3uBP5qGUxTfc4x7kGtPFdj3u0f6h5QbDHQSj5enIFCSO0WKCv3+p/khC8QmVr
-        ujFJjjAA==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kFfNh-0004N6-CU; Tue, 08 Sep 2020 15:18:01 +0000
-Date:   Tue, 8 Sep 2020 16:18:01 +0100
-From:   "hch@infradead.org" <hch@infradead.org>
-To:     Kanchan Joshi <joshiiitr@gmail.com>
-Cc:     "hch@infradead.org" <hch@infradead.org>,
-        Damien Le Moal <Damien.LeMoal@wdc.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Kanchan Joshi <joshi.k@samsung.com>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "bcrl@kvack.org" <bcrl@kvack.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-aio@kvack.org" <linux-aio@kvack.org>,
-        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        SelvaKumar S <selvakuma.s1@samsung.com>,
-        Nitesh Shetty <nj.shetty@samsung.com>,
-        Javier Gonzalez <javier.gonz@samsung.com>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        Naohiro Aota <Naohiro.Aota@wdc.com>
-Subject: Re: [PATCH v4 6/6] io_uring: add support for zone-append
-Message-ID: <20200908151801.GA16742@infradead.org>
-References: <CA+1E3rLM4G4SwzD6RWsK6Ssp7NmhiPedZDjrqN3kORQr9fxCtw@mail.gmail.com>
- <MWHPR04MB375863C20C1EF2CB27E62703E74E0@MWHPR04MB3758.namprd04.prod.outlook.com>
- <20200731091416.GA29634@infradead.org>
- <MWHPR04MB37586D39CA389296CE0252A4E74E0@MWHPR04MB3758.namprd04.prod.outlook.com>
- <20200731094135.GA4104@infradead.org>
- <MWHPR04MB3758A4B2967DB1FABAAD9265E74E0@MWHPR04MB3758.namprd04.prod.outlook.com>
- <20200731125110.GA11500@infradead.org>
- <CY4PR04MB37517D633920E4D31AC6EA0DE74B0@CY4PR04MB3751.namprd04.prod.outlook.com>
- <20200814081411.GA16943@infradead.org>
- <CA+1E3r+WXC_MK5Zf2OZEv17ddJDjtXbhpRFoeDns4F341xMhow@mail.gmail.com>
+        id S1730521AbgIHPjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 11:39:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59664 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730133AbgIHPfj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 11:35:39 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5A0B52246B;
+        Tue,  8 Sep 2020 15:34:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599579272;
+        bh=YMyeZdu9AK2XDZlChIpD6tD+lXjuHM/nRNxJfMP4bXk=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=apWKfGHEAJjM8qQCRghVTU41PcE6ZDbStpwes073x1t6B1sDdfR1nwll9Byge3UNw
+         nU37gSMJCCMnIYbiNHDX7udpK9EvT1Fzss0sbZ7ch3ErqCXOsDVeEsyRzw/QKj2Upd
+         xgP7s7AOVMhlOkZakY1W5TGApzQuFMXmx/TQMYIE=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Grant Peltier <grantpeltier93@gmail.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 001/186] hwmon: (pmbus/isl68137) remove READ_TEMPERATURE_1 telemetry for RAA228228
+Date:   Tue,  8 Sep 2020 17:22:23 +0200
+Message-Id: <20200908152241.723270140@linuxfoundation.org>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200908152241.646390211@linuxfoundation.org>
+References: <20200908152241.646390211@linuxfoundation.org>
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+1E3r+WXC_MK5Zf2OZEv17ddJDjtXbhpRFoeDns4F341xMhow@mail.gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 07, 2020 at 12:31:42PM +0530, Kanchan Joshi wrote:
-> But there are use-cases which benefit from supporting zone-append on
-> raw block-dev path.
-> Certain user-space log-structured/cow FS/DB will use the device that
-> way. Aerospike is one example.
-> Pass-through is synchronous, and we lose the ability to use io-uring.
+From: Grant Peltier <grantpeltier93@gmail.com>
 
-So use zonefs, which is designed exactly for that use case.
+[ Upstream commit 51fb91ed5a6fa855a74731610cd5435d83d6e17f ]
+
+Per the RAA228228 datasheet, READ_TEMPERATURE_1 is not a supported PMBus
+command.
+
+Signed-off-by: Grant Peltier <grantpeltier93@gmail.com>
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/hwmon/pmbus/isl68137.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/hwmon/pmbus/isl68137.c b/drivers/hwmon/pmbus/isl68137.c
+index 0c622711ef7e0..58aa95a3c010c 100644
+--- a/drivers/hwmon/pmbus/isl68137.c
++++ b/drivers/hwmon/pmbus/isl68137.c
+@@ -67,6 +67,7 @@ enum variants {
+ 	raa_dmpvr1_2rail,
+ 	raa_dmpvr2_1rail,
+ 	raa_dmpvr2_2rail,
++	raa_dmpvr2_2rail_nontc,
+ 	raa_dmpvr2_3rail,
+ 	raa_dmpvr2_hv,
+ };
+@@ -241,6 +242,10 @@ static int isl68137_probe(struct i2c_client *client,
+ 		info->pages = 1;
+ 		info->read_word_data = raa_dmpvr2_read_word_data;
+ 		break;
++	case raa_dmpvr2_2rail_nontc:
++		info->func[0] &= ~PMBUS_HAVE_TEMP;
++		info->func[1] &= ~PMBUS_HAVE_TEMP;
++		fallthrough;
+ 	case raa_dmpvr2_2rail:
+ 		info->pages = 2;
+ 		info->read_word_data = raa_dmpvr2_read_word_data;
+@@ -304,7 +309,7 @@ static const struct i2c_device_id raa_dmpvr_id[] = {
+ 	{"raa228000", raa_dmpvr2_hv},
+ 	{"raa228004", raa_dmpvr2_hv},
+ 	{"raa228006", raa_dmpvr2_hv},
+-	{"raa228228", raa_dmpvr2_2rail},
++	{"raa228228", raa_dmpvr2_2rail_nontc},
+ 	{"raa229001", raa_dmpvr2_2rail},
+ 	{"raa229004", raa_dmpvr2_2rail},
+ 	{}
+-- 
+2.25.1
+
+
+
