@@ -2,145 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2677260BFC
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 09:31:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4FAC260C05
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 09:31:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729206AbgIHHa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 03:30:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60426 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728601AbgIHHaz (ORCPT
+        id S1729344AbgIHHbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 03:31:37 -0400
+Received: from mout.kundenserver.de ([217.72.192.74]:60583 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729252AbgIHHbb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 03:30:55 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B23F9C061573;
-        Tue,  8 Sep 2020 00:30:53 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id w2so16229306wmi.1;
-        Tue, 08 Sep 2020 00:30:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=AmA2lH7gtqxoy4mDbQrWCRwHZAf3YyIuPWiZh8AnqYQ=;
-        b=Xl35qbKVmDEE2krWlxOS4SSQHfc1+nT1fS34f3N8NHld+TH6w8YRP7rMSbMyxOkOY/
-         o6EQr1iRJ5fjKT938/V5rxpyD0OQOmE+57w8nAJb900n2KTKeZfYnJOYGiEGpcf6lArT
-         88GZZZQLKpwHYJNPrdM616uzoTPqNlgnWKswwSs1Cimi7zgFmvJCV/4WFT9pcxBhXXNY
-         fpnlEd1Bil24AMUUMBQxfwgwi5l6ADc8elexQRZjYI4Jj5+HJE1Oc3ON+R3EDjQXhsNp
-         qwZpfzJfpBJVaYB3rHNodTLWHB/GaIP9tp0sHRmLC2k7HI0hzM4ZjCIjFj3yg7etzu4f
-         qswg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=AmA2lH7gtqxoy4mDbQrWCRwHZAf3YyIuPWiZh8AnqYQ=;
-        b=GsGp6PGTETBdoZJh+tR+mcrDK+i8hKDI8KfYTzTBn7VuB24Xrq3bcscCqTv2ZENDNe
-         s884fHtDGQH5rXCI1RBMPl18TJjvzklKio6TUNq3fzj/LbkrlGXRVrRA8wpamKx5y+Or
-         PQ5fI2shl3qtySnx2C2iVaB6ZO+Vt4p1mthBBgBTc7S3AxWJ6SdL5FsL6HXKXLYMAaxC
-         vLakOhbEoQ6bwFryfFFHLtLVvCgR99bqlGbid1LVvLABRtagk8QeiNHibSoLCbo+AX2Y
-         xIbNiGRsmgXcoN2WorxjlHYskJwKggNNIaKsRfXQI6z6sJ0eXbf+tFfxK+36m1Hs57iY
-         x8hQ==
-X-Gm-Message-State: AOAM532YLeApv0YKMch3gYPt5/fysdurT/RVx27ED/eOvdcoyEFISf9Z
-        7Lbq/MUSP+1wiLw0hbHAILw=
-X-Google-Smtp-Source: ABdhPJzh2uEi1a9lEH05SEcFEEKjR5cujH7Cqau95bPA8Are5JFA2A660SUhx29/ShVmCPTgP40F7Q==
-X-Received: by 2002:a05:600c:230f:: with SMTP id 15mr2962523wmo.186.1599550252445;
-        Tue, 08 Sep 2020 00:30:52 -0700 (PDT)
-Received: from mamamia.internal (a89-183-54-2.net-htp.de. [89.183.54.2])
-        by smtp.gmail.com with ESMTPSA id u66sm30949377wmg.44.2020.09.08.00.30.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Sep 2020 00:30:51 -0700 (PDT)
-From:   Andre Heider <a.heider@gmail.com>
-To:     Jason Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Tomasz Maciej Nowak <tmn505@gmail.com>,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: dts: marvell: espressobin: Simplify v7 ethernet port labeling
-Date:   Tue,  8 Sep 2020 09:30:50 +0200
-Message-Id: <20200908073050.535919-1-a.heider@gmail.com>
-X-Mailer: git-send-email 2.28.0
+        Tue, 8 Sep 2020 03:31:31 -0400
+Received: from mail-qk1-f174.google.com ([209.85.222.174]) by
+ mrelayeu.kundenserver.de (mreue109 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1MzQc2-1kSwBj0wrI-00vMjO; Tue, 08 Sep 2020 09:31:27 +0200
+Received: by mail-qk1-f174.google.com with SMTP id w186so14486210qkd.1;
+        Tue, 08 Sep 2020 00:31:26 -0700 (PDT)
+X-Gm-Message-State: AOAM532Z5f4RIG6NU9P+NnAg45A83raBHCQbHgpr0CHzR+FwcD8MDj2i
+        4di64qU1BHSKMOE6cEAg8f6ssmG6AhdPXiuoxhA=
+X-Google-Smtp-Source: ABdhPJzVrV5pr+fBm34K9U0IIQyH+DEtl58pzPVS1R/9WsIYAhtAAKh5aJh9FxNNMGbiGLMExWvt7mx3apT5LWd53WI=
+X-Received: by 2002:a37:a04b:: with SMTP id j72mr23336718qke.352.1599550285996;
+ Tue, 08 Sep 2020 00:31:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1599549126-17413-1-git-send-email-Anson.Huang@nxp.com> <1599549126-17413-3-git-send-email-Anson.Huang@nxp.com>
+In-Reply-To: <1599549126-17413-3-git-send-email-Anson.Huang@nxp.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Tue, 8 Sep 2020 09:31:09 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1NY07QmD+vzD3+5DsY69XYcwEz3vuwXUcsVG6jxwtTow@mail.gmail.com>
+Message-ID: <CAK8P3a1NY07QmD+vzD3+5DsY69XYcwEz3vuwXUcsVG6jxwtTow@mail.gmail.com>
+Subject: Re: [PATCH V3 3/3] pinctrl: imx: Support building i.MX pinctrl core
+ driver as module
+To:     Anson Huang <Anson.Huang@nxp.com>
+Cc:     Dong Aisheng <aisheng.dong@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Stefan Agner <stefan@agner.ch>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        NXP Linux Team <Linux-imx@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:2zyq8Wycbwc5PM/Vv2JQw0fwxXHDr4zKCsBQfvtI4tXJlbs5S80
+ o0oCVtjvo9rq8cGtf6gquwAmJyFt12rQ/PEfJZpWd0W911SBD1IgsP3k8YeMw6X1g5DWVD3
+ K292KoBniWq/4R0TahbJI8k2EgFImfG8mbCqYc6b1vGWdqkO3lXbBk8kiUQRFlzQf1no77l
+ kMjnPhi8rD7tKGgxtVV8Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:xCCp4AjAeKc=:H31grS9MPIv9d8KrhyNWmI
+ HeFqqDb0m3Zedew3I1nyrBFK+dPjyEltIvcTtQBc2AcR9fegsngXMCvXioFYxB1XHejyxCWWc
+ BJg3rN7soBLpPAbcCOk833AiyFIp1lG8k9ig6UUD5WxR9diiCV/P9HWWEuQmL2D+u/yI9x5ZG
+ 7GfA6F73Sa1uoz23rf5iu6XYdVh2F82jynmg9zNe2ypLNvYr3QiEOI+TbDA1qDMTJVmcP9cGu
+ Ob/ocSIo9ULr3yaxR9OyXxz3tn5EOfeAcIAPE1iJ8KVlW0LEO+8MKwsBmdyUIVukDJoK9v9g+
+ fxqhrVq0d5o58G3RbuxTchzwJD+nNMa2GUyY/QPV+hEDzyl4mtGgManCdiiR5cn3mzXEg9x2r
+ b628x1rkdCKzx45xokJjgY2lQng0YTuX7s3WAyH9MfQC+E8qmRCOEZDeCE0c4AjZbgkP7P/9v
+ O4cKelcG4OIc04IvmJt0dIQMpYedSvwdy2NEnkxJiQjbiJx1v3P9hRzHL/8E8sCtYfTtUymPl
+ aL2ShPDU0D2pDLJ9YeIxbDJQ0Icui+tCdwoUbbNXEVfFZboqFjrHpUaCgMR5YO+e6MFEXtkyJ
+ siEMnAGDA8Mm+kl5X87wu29fVv3vVWVbenSiq3qpeipeQqrUma4xkPq35LnMe8tIK9Iaae+s4
+ OliFsCYFExdAFGWqoINk1E2dD52o+xlj7U+4ur371gM/W0EAVqhE6jZ3xlCeMyfaCe54vZyYe
+ 6sFoGw6mm5EaVGA1lpSNs9+pWV1HRXoCRvRGOA9EtegFb2QNWYisShbD7L4qtQ9nEWGFY/SvV
+ OHK8Q2Lfm1r3LCqMPPTvZ72c3hxU4zwALIH7h/FerxbHg5nHB03vBxBvBApBBab5kr2QNse
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that the switch ports have a label in the .dtsi, simplify the whole
-"switch0" block for the v7 dts files.
+On Tue, Sep 8, 2020 at 9:20 AM Anson Huang <Anson.Huang@nxp.com> wrote:
 
-Signed-off-by: Andre Heider <a.heider@gmail.com>
----
+>  # SPDX-License-Identifier: GPL-2.0-only
+>  config PINCTRL_IMX
+> -       bool
+> +       tristate "IMX pinctrl core driver"
+> +       depends on OF
+>         select GENERIC_PINCTRL_GROUPS
+>         select GENERIC_PINMUX_FUNCTIONS
+>         select GENERIC_PINCONF
 
-This goes on top of Pali's patch:
-"arm64: dts: marvell: espressobin: Add ethernet switch aliases"
+I don't see why you need to make this option user-visible when it is already
+selected by the drivers that need it. Wouldn't it be enough to change
+the 'bool' to 'tristate' without adding a prompt?
 
-The resulting .dtb files are the same.
-
- .../armada-3720-espressobin-v7-emmc.dts        | 18 +++++-------------
- .../dts/marvell/armada-3720-espressobin-v7.dts | 18 +++++-------------
- 2 files changed, 10 insertions(+), 26 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts
-index 215d2f702623..61d49d6a2a2a 100644
---- a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts
-+++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts
-@@ -28,20 +28,12 @@ aliases {
- 	};
- };
- 
--&switch0 {
--	ports {
--		switch0port1: port@1 {
--			reg = <1>;
--			label = "lan1";
--			phy-handle = <&switch0phy0>;
--		};
-+&switch0port1 {
-+	label = "lan1";
-+};
- 
--		switch0port3: port@3 {
--			reg = <3>;
--			label = "wan";
--			phy-handle = <&switch0phy2>;
--		};
--	};
-+&switch0port3 {
-+	label = "wan";
- };
- 
- /* U11 */
-diff --git a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7.dts b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7.dts
-index b6f4af8ebafb..44dbe9a21cc7 100644
---- a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7.dts
-+++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7.dts
-@@ -27,18 +27,10 @@ aliases {
- 	};
- };
- 
--&switch0 {
--	ports {
--		switch0port1: port@1 {
--			reg = <1>;
--			label = "lan1";
--			phy-handle = <&switch0phy0>;
--		};
-+&switch0port1 {
-+	label = "lan1";
-+};
- 
--		switch0port3: port@3 {
--			reg = <3>;
--			label = "wan";
--			phy-handle = <&switch0phy2>;
--		};
--	};
-+&switch0port3 {
-+	label = "wan";
- };
--- 
-2.28.0
-
+       Arnd
