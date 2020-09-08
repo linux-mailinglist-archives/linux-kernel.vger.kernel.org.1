@@ -2,107 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDB012620E3
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 22:17:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CFB6262079
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 22:12:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732231AbgIHURD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 16:17:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46406 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729413AbgIHPKB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:10:01 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CD75C0A88B5
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 07:58:24 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id 37so15104931oto.4
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 07:58:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9gggthlY+o0JLKVW4bDabhGMPHFWypt8dqyEIpp5HBQ=;
-        b=YB1FIRYyzS+ivsL/x+45ExVO0WH4Is9QWS50BvdosbbeX3Gi9nCtUp3J82nNmljBY6
-         2JWQ8OutTr8NVlmEj5knAEd5QvGTHBgwJGuOKKBrxGLIqUrSTCfdGuVlSplWSBuVYG50
-         1gRt3j7MlGKO3Vgm/lbDnz/Rr6omJsM1OVD/v0oDJTX71dK7psTcnMmqtUpToxc8zybt
-         4ejNbNqpq110GFV6L5J6HSaFqA/UgkLEzxllqqnoKmQ4UbGu6gRzTXzpmg+clp3rTrUT
-         SlGD+3IhJ/dsetPuwDX0gLdqgHqVCPqxO1fgcGCW6gJcc09yKjpzpaQTKnrRam+Iva7t
-         vlcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9gggthlY+o0JLKVW4bDabhGMPHFWypt8dqyEIpp5HBQ=;
-        b=Kk3u3zbqA/lTb7UYMotaSB1w/Jzm8wqlCMUx6HIsqRnm8OsMsNpCK90+bTYMAHmDdA
-         S9PIzA/iviGdMjVxW/QPi4X5aGIRlzc2IGfVpN9D/hzfAFBBifnc2rTt3d3Ui5wNvSWM
-         5xCw2aE7rqj8HG1tYOH0Ej76hsjii3cNnYk7p5W7gadJLfJPB+OcGH6zJpggDP2JBQ0Q
-         +Un98uxHjYXhI0/kAJTQ9EBm+WWfKqW99fc/uHvkHUoKESKklhVJvgBLeYJhwgnaWcYY
-         ZImUc6uNlmIHf+6xfY+uKqytzksnnkS2qJMrMn6q4Y5BNVO84E1JTX2yPzjj+PpqYB3U
-         dA5A==
-X-Gm-Message-State: AOAM533mDtThxWmkI2p5NhyAOcJ3C/xm1mfYi8prnJnOk2yxXMJdE27P
-        x8fTqU7i8hyHvrpvyZV4i+WstQ==
-X-Google-Smtp-Source: ABdhPJwzWVepX/rnpXMX9hm2hay4q1Tqm8YqYT8JJBjjmrghpuG4jHcnsb8c87sfS0CmGWklIjZJNw==
-X-Received: by 2002:a9d:7590:: with SMTP id s16mr1860963otk.23.1599577104131;
-        Tue, 08 Sep 2020 07:58:24 -0700 (PDT)
-Received: from yoga ([2605:6000:e5cb:c100:8898:14ff:fe6d:34e])
-        by smtp.gmail.com with ESMTPSA id y24sm3515779ooq.38.2020.09.08.07.58.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Sep 2020 07:58:23 -0700 (PDT)
-Date:   Tue, 8 Sep 2020 09:58:19 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     rjw@rjwysocki.net, viresh.kumar@linaro.org, robh+dt@kernel.org,
-        agross@kernel.org, amitk@kernel.org, linux-pm@vger.kernel.org,
+        id S1732223AbgIHUMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 16:12:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51642 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729781AbgIHPLR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 11:11:17 -0400
+Received: from localhost.localdomain (unknown [194.230.155.174])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1FFED229C5;
+        Tue,  8 Sep 2020 14:59:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599577147;
+        bh=T8bAQkHiIv+es4Wmgoj2fBeh0pHTyLqga1QKjLojgXs=;
+        h=From:To:Cc:Subject:Date:From;
+        b=TYyUoFNJp3sdQ5gGtcONTKVHKVQlzI1beFyBdXyPqKw/BUC1hdiKG+9kMCSYrfkou
+         zXilq2DNWZK80k5A1lbuzIweWnlEhFB2gHlE5Kn1l2iF5sjfLZH3fZv/dK1wdMZ89b
+         yk5s7Cfmd9en79mT3fmflqvtDJ5OMxPX8GV01bc8=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Tim Harvey <tharvey@gateworks.com>,
+        Robert Jones <rjones@gateworks.com>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, dmitry.baryshkov@linaro.org,
-        tdas@codeaurora.org
-Subject: Re: [PATCH 1/7] dt-bindings: cpufreq: cpufreq-qcom-hw: Document
- SM8250 compatible
-Message-ID: <20200908145819.GN3715@yoga>
-References: <20200908075716.30357-1-manivannan.sadhasivam@linaro.org>
- <20200908075716.30357-2-manivannan.sadhasivam@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200908075716.30357-2-manivannan.sadhasivam@linaro.org>
+        linux-power@fi.rohmeurope.com
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH] dt-bindings: mfd: Correct interrupt flags in examples
+Date:   Tue,  8 Sep 2020 16:59:00 +0200
+Message-Id: <20200908145900.4423-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 08 Sep 02:57 CDT 2020, Manivannan Sadhasivam wrote:
+GPIO_ACTIVE_x flags are not correct in the context of interrupt flags.
+These are simple defines so they could be used in DTS but they will not
+have the same meaning:
+1. GPIO_ACTIVE_HIGH = 0 = IRQ_TYPE_NONE
+2. GPIO_ACTIVE_LOW  = 1 = IRQ_TYPE_EDGE_RISING
 
-> Document the SM8250 SoC specific compatible for Qualcomm Cpufreq HW. The
-> hardware block which carries out CPUFreq operations on SM8250 SoC is
-> called EPSS.
-> 
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Correct the interrupt flags, assuming the author of the code wanted some
+logical behavior behind the name "ACTIVE_xxx", this is:
+  ACTIVE_LOW => IRQ_TYPE_LEVEL_LOW
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+---
+ Documentation/devicetree/bindings/mfd/act8945a.txt          | 2 +-
+ Documentation/devicetree/bindings/mfd/gateworks-gsc.yaml    | 3 ++-
+ Documentation/devicetree/bindings/mfd/rohm,bd70528-pmic.txt | 2 +-
+ 3 files changed, 4 insertions(+), 3 deletions(-)
 
-Please follow up, after this has been accepted, with a conversion of
-this binding to yaml.
+diff --git a/Documentation/devicetree/bindings/mfd/act8945a.txt b/Documentation/devicetree/bindings/mfd/act8945a.txt
+index e6f168db6c72..5ca75d888b4a 100644
+--- a/Documentation/devicetree/bindings/mfd/act8945a.txt
++++ b/Documentation/devicetree/bindings/mfd/act8945a.txt
+@@ -71,7 +71,7 @@ Example:
+ 			pinctrl-names = "default";
+ 			pinctrl-0 = <&pinctrl_charger_chglev &pinctrl_charger_lbo &pinctrl_charger_irq>;
+ 			interrupt-parent = <&pioA>;
+-			interrupts = <45 GPIO_ACTIVE_LOW>;
++			interrupts = <45 IRQ_TYPE_LEVEL_LOW>;
+ 
+ 			active-semi,chglev-gpios = <&pioA 12 GPIO_ACTIVE_HIGH>;
+ 			active-semi,lbo-gpios = <&pioA 72 GPIO_ACTIVE_LOW>;
+diff --git a/Documentation/devicetree/bindings/mfd/gateworks-gsc.yaml b/Documentation/devicetree/bindings/mfd/gateworks-gsc.yaml
+index 9b6eb50606e8..e541eb0d02ed 100644
+--- a/Documentation/devicetree/bindings/mfd/gateworks-gsc.yaml
++++ b/Documentation/devicetree/bindings/mfd/gateworks-gsc.yaml
+@@ -147,6 +147,7 @@ required:
+ examples:
+   - |
+     #include <dt-bindings/gpio/gpio.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
+     i2c {
+         #address-cells = <1>;
+         #size-cells = <0>;
+@@ -155,7 +156,7 @@ examples:
+             compatible = "gw,gsc";
+             reg = <0x20>;
+             interrupt-parent = <&gpio1>;
+-            interrupts = <4 GPIO_ACTIVE_LOW>;
++            interrupts = <4 IRQ_TYPE_LEVEL_LOW>;
+             interrupt-controller;
+             #interrupt-cells = <1>;
+             #address-cells = <1>;
+diff --git a/Documentation/devicetree/bindings/mfd/rohm,bd70528-pmic.txt b/Documentation/devicetree/bindings/mfd/rohm,bd70528-pmic.txt
+index c3c02ce73cde..386eec06cf08 100644
+--- a/Documentation/devicetree/bindings/mfd/rohm,bd70528-pmic.txt
++++ b/Documentation/devicetree/bindings/mfd/rohm,bd70528-pmic.txt
+@@ -39,7 +39,7 @@ pmic: pmic@4b {
+ 	compatible = "rohm,bd70528";
+ 	reg = <0x4b>;
+ 	interrupt-parent = <&gpio1>;
+-	interrupts = <29 GPIO_ACTIVE_LOW>;
++	interrupts = <29 IRQ_TYPE_LEVEL_LOW>;
+ 	clocks = <&osc 0>;
+ 	#clock-cells = <0>;
+ 	clock-output-names = "bd70528-32k-out";
+-- 
+2.17.1
 
-Regards,
-Bjorn
-
-> ---
->  Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.txt | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.txt b/Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.txt
-> index 33856947c561..aea4ddb2b9e8 100644
-> --- a/Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.txt
-> +++ b/Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.txt
-> @@ -8,7 +8,7 @@ Properties:
->  - compatible
->  	Usage:		required
->  	Value type:	<string>
-> -	Definition:	must be "qcom,cpufreq-hw".
-> +	Definition:	must be "qcom,cpufreq-hw" or "qcom,sm8250-epss".
->  
->  - clocks
->  	Usage:		required
-> -- 
-> 2.17.1
-> 
