@@ -2,37 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2067261D69
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:37:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F751261D1F
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:32:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731919AbgIHTgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:36:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47746 "EHLO mail.kernel.org"
+        id S1732192AbgIHTcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 15:32:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47734 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730909AbgIHP5Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:57:16 -0400
+        id S1731012AbgIHP6F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 11:58:05 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 61EA92419A;
-        Tue,  8 Sep 2020 15:38:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D0B27241A7;
+        Tue,  8 Sep 2020 15:39:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599579531;
-        bh=g3vQ2oDJKgDlhB3cbf7hrGx14UNunJnM8n2Tk8ZCffc=;
+        s=default; t=1599579546;
+        bh=/CmNhgqxZ+7MyzWgmRTnoJ1IsBiQQimdXO1C8uYuIbo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zLofb3tJ/lKUId033ZNptgACsJzsixybS1Ye8Zi2pflOw/cuZ+chjWAMt6diKctMg
-         PGlP3c/TTe8IggKuBwqH89y507VLqsmFW+fdMS1ef0NWl4o8b42pc7jRCD7WEL6qvZ
-         wBfnCr6j810+6YcYEIXosWRt8kArZ3blrBfyq8AU=
+        b=rHEf+EnRp5wwbO0V361Hjc3RDvIznJLQMLKuHBW+0x6n5iwEoD23RMLY8vmAxGNWr
+         y81ZM3dznFuZoXI2v0cAKRo50v1E3IPZtj5MluTkbNUdo8abievTq4npmfDDB47NLa
+         jhZOUimSzRJMlvoCDh2+CiP0CD54Po7QoQ+71Nvw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chris Wilson <chris@chris-wilson.co.uk>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        James Sewart <jamessewart@arista.com>,
-        Joerg Roedel <jroedel@suse.de>
-Subject: [PATCH 5.8 117/186] iommu/vt-d: Handle 36bit addressing for x86-32
-Date:   Tue,  8 Sep 2020 17:24:19 +0200
-Message-Id: <20200908152247.308207572@linuxfoundation.org>
+        stable@vger.kernel.org, Vineet Gupta <vgupta@synopsys.com>
+Subject: [PATCH 5.8 123/186] ARC: perf: dont bail setup if pct irq missing in device-tree
+Date:   Tue,  8 Sep 2020 17:24:25 +0200
+Message-Id: <20200908152247.597184161@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200908152241.646390211@linuxfoundation.org>
 References: <20200908152241.646390211@linuxfoundation.org>
@@ -45,74 +42,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Wilson <chris@chris-wilson.co.uk>
+From: Vineet Gupta <vgupta@synopsys.com>
 
-commit 29aaebbca4abc4cceb38738483051abefafb6950 upstream.
+commit feb92d7d3813456c11dce215b3421801a78a8986 upstream.
 
-Beware that the address size for x86-32 may exceed unsigned long.
+Current code inadventely bails if hardware supports sampling/overflow
+interrupts, but the irq is missing from device tree.
 
-[    0.368971] UBSAN: shift-out-of-bounds in drivers/iommu/intel/iommu.c:128:14
-[    0.369055] shift exponent 36 is too large for 32-bit type 'long unsigned int'
+|
+| # perf stat -e cycles,instructions,major-faults,minor-faults ../hackbench
+| Running with 10 groups 400 process
+| Time: 0.921
+|
+| Performance counter stats for '../hackbench':
+|
+|   <not supported>      cycles
+|   <not supported>      instructions
+|                 0      major-faults
+|              8679      minor-faults
 
-If we don't handle the wide addresses, the pages are mismapped and the
-device read/writes go astray, detected as DMAR faults and leading to
-device failure. The behaviour changed (from working to broken) in commit
-fa954e683178 ("iommu/vt-d: Delegate the dma domain to upper layer"), but
-the error looks older.
+This need not be as we can still do simple counting based perf stat.
+This unborks perf on HSDK-4xD
 
-Fixes: fa954e683178 ("iommu/vt-d: Delegate the dma domain to upper layer")
-Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
-Acked-by: Lu Baolu <baolu.lu@linux.intel.com>
-Cc: James Sewart <jamessewart@arista.com>
-Cc: Lu Baolu <baolu.lu@linux.intel.com>
-Cc: Joerg Roedel <jroedel@suse.de>
-Cc: <stable@vger.kernel.org> # v5.3+
-Link: https://lore.kernel.org/r/20200822160209.28512-1-chris@chris-wilson.co.uk
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/iommu/intel/iommu.c |   14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ arch/arc/kernel/perf_event.c |   14 ++++----------
+ 1 file changed, 4 insertions(+), 10 deletions(-)
 
---- a/drivers/iommu/intel/iommu.c
-+++ b/drivers/iommu/intel/iommu.c
-@@ -123,29 +123,29 @@ static inline unsigned int level_to_offs
- 	return (level - 1) * LEVEL_STRIDE;
- }
- 
--static inline int pfn_level_offset(unsigned long pfn, int level)
-+static inline int pfn_level_offset(u64 pfn, int level)
+--- a/arch/arc/kernel/perf_event.c
++++ b/arch/arc/kernel/perf_event.c
+@@ -562,7 +562,7 @@ static int arc_pmu_device_probe(struct p
  {
- 	return (pfn >> level_to_offset_bits(level)) & LEVEL_MASK;
- }
+ 	struct arc_reg_pct_build pct_bcr;
+ 	struct arc_reg_cc_build cc_bcr;
+-	int i, has_interrupts;
++	int i, has_interrupts, irq;
+ 	int counter_size;	/* in bits */
  
--static inline unsigned long level_mask(int level)
-+static inline u64 level_mask(int level)
- {
--	return -1UL << level_to_offset_bits(level);
-+	return -1ULL << level_to_offset_bits(level);
- }
+ 	union cc_name {
+@@ -637,13 +637,7 @@ static int arc_pmu_device_probe(struct p
+ 		.attr_groups	= arc_pmu->attr_groups,
+ 	};
  
--static inline unsigned long level_size(int level)
-+static inline u64 level_size(int level)
- {
--	return 1UL << level_to_offset_bits(level);
-+	return 1ULL << level_to_offset_bits(level);
- }
+-	if (has_interrupts) {
+-		int irq = platform_get_irq(pdev, 0);
+-
+-		if (irq < 0) {
+-			pr_err("Cannot get IRQ number for the platform\n");
+-			return -ENODEV;
+-		}
++	if (has_interrupts && (irq = platform_get_irq(pdev, 0) >= 0)) {
  
--static inline unsigned long align_to_level(unsigned long pfn, int level)
-+static inline u64 align_to_level(u64 pfn, int level)
- {
- 	return (pfn + level_size(level) - 1) & level_mask(level);
- }
+ 		arc_pmu->irq = irq;
  
- static inline unsigned long lvl_to_nr_pages(unsigned int lvl)
- {
--	return  1 << min_t(int, (lvl - 1) * LEVEL_STRIDE, MAX_AGAW_PFN_WIDTH);
-+	return 1UL << min_t(int, (lvl - 1) * LEVEL_STRIDE, MAX_AGAW_PFN_WIDTH);
- }
+@@ -652,9 +646,9 @@ static int arc_pmu_device_probe(struct p
+ 				   this_cpu_ptr(&arc_pmu_cpu));
  
- /* VT-d pages must always be _smaller_ than MM pages. Otherwise things
+ 		on_each_cpu(arc_cpu_pmu_irq_init, &irq, 1);
+-
+-	} else
++	} else {
+ 		arc_pmu->pmu.capabilities |= PERF_PMU_CAP_NO_INTERRUPT;
++	}
+ 
+ 	/*
+ 	 * perf parser doesn't really like '-' symbol in events name, so let's
 
 
