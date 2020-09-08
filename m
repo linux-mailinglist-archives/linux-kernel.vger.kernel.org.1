@@ -2,92 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EFA026134A
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 17:16:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34E8F26133B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 17:12:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730304AbgIHPQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 11:16:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47040 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730199AbgIHPOM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:14:12 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C75FBC004597
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 08:03:50 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id d15so8467626lfq.11
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 08:03:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=35ffxxsxZE/p6QPZ+y6QCPHa8SJQuBpKbrJ3nN8f7Do=;
-        b=SfZeBpwGk5EdXuctT8Rfu5FaUAR8dmQYobfsnrAQ0U51z5DyNExlZifizNW/Z+KpE6
-         Y5xfsLpgTAbhABsXDfSIw+0PUmYj4zBbosX2YpIguoq23vV+/t8rVH8zf8QhZwwBB4fZ
-         ykv4ddJ9jzXCMoA+119I7ywtCr4Wc5U16/6e44YOhqIcmQYaiHIvPZHd6ILKLyyCOj0+
-         5e8GJdKA+qeEBL1qIbYiz+Kt8DvQcDvpS653F35kl/ec94nvVv6BONeQGYiZhMcozk3y
-         NiPDI+XUgag9CcRj2z6ntZVpum8MWu5cfG37rKhQN0T/FQ7RYinWD2pGlsMnw709qSoG
-         3RVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=35ffxxsxZE/p6QPZ+y6QCPHa8SJQuBpKbrJ3nN8f7Do=;
-        b=BPw0RetnmwjjnXs97VeFGkvvcycGoOiyqfnvG4mB+Iwn7rXwsXX0x3RURuYWyhrpJL
-         ymlhoF71DUvQBc8c6LB+7hlqABIig0PHwJZ8sI3sNpfJJtWyV6FeiuwvdJ5KhH8OI3SF
-         h9HYCesw+L2gP1a821coQ3u6SknrXYiHtfK3BFMvl2LiM2XK9yLG/nRAAJvFC6F39ubL
-         /AokCzCr1mZDuVkOWTfRKdkLSaY/yEe2qfkCZtFwKxuNPBSIA3hKoCJVZIIF1SmVi+m2
-         umw73JCwS2oF6pwqfPc+IM0Tif7BvRjfp9oCBZLp5IhkOHjtAH7d/65ktz6JACUCh8mU
-         Ty1g==
-X-Gm-Message-State: AOAM5316GCD/0YRNEzYvG8rFlwn2AoQaz+PwI+LR6yyPK+g4ShfaoJyg
-        pox/mmuJ1CMnZl5udvQJVMMtJ0RTcL0yt9H34/ZIcQ==
-X-Google-Smtp-Source: ABdhPJyloY+0ffwnRt4valQxwgqq+18FVfS+W8CEn6xuoIUFjrD4ZGBo6n6WZ3bGrhD9AIi2w/koBpPRBihOXvRliFk=
-X-Received: by 2002:a19:6b17:: with SMTP id d23mr1392055lfa.190.1599577429182;
- Tue, 08 Sep 2020 08:03:49 -0700 (PDT)
+        id S1729784AbgIHPLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 11:11:31 -0400
+Received: from mga03.intel.com ([134.134.136.65]:58732 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729808AbgIHPKA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 11:10:00 -0400
+IronPort-SDR: WQH9BmJzFhS9qW0rnAl/oPAPWZAZ/7L+eurf4onopKeBD3S5Yjc7a7XTPq1fx7wdX0l7zMG5k6
+ Zqd1dgLIb/pA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9738"; a="158171222"
+X-IronPort-AV: E=Sophos;i="5.76,406,1592895600"; 
+   d="scan'208";a="158171222"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2020 08:07:06 -0700
+IronPort-SDR: AfqRmojd3nb36t5hFsXIz7KBVGkKhWqlZaMS5OkoroCrTyLhrwgsOAy0BAWDB81S4P6lejvlSl
+ 2fEGD38B2nDQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,406,1592895600"; 
+   d="scan'208";a="304121518"
+Received: from fmsmsx606.amr.corp.intel.com ([10.18.126.86])
+  by orsmga006.jf.intel.com with ESMTP; 08 Sep 2020 08:07:06 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 8 Sep 2020 08:07:05 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 8 Sep 2020 08:07:05 -0700
+Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
+ fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.1713.004;
+ Tue, 8 Sep 2020 08:07:05 -0700
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+CC:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+Subject: RE: [RFC PATCH] x86/mce: Make mce_rdmsrl() do a plain RDMSR only
+Thread-Topic: [RFC PATCH] x86/mce: Make mce_rdmsrl() do a plain RDMSR only
+Thread-Index: AQHWhJO//P+iwgKS2UiBIpgzPJKyq6ldm5KAgAFakgCAAAYWgP//3EBA
+Date:   Tue, 8 Sep 2020 15:07:05 +0000
+Message-ID: <c845adaad2414e5ba0bc74a51a1d0134@intel.com>
+References: <20200906212130.GA28456@zn.tnic>
+ <20200907200622.GA28517@agluck-desk2.amr.corp.intel.com>
+ <20200908094650.GA25236@zn.tnic> <20200908100837.GC25236@zn.tnic>
+In-Reply-To: <20200908100837.GC25236@zn.tnic>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.1.200.100]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20200908205659.361b0a1b@canb.auug.org.au> <ddc76403-4b00-66ba-43ea-7889b9a32bb5@infradead.org>
-In-Reply-To: <ddc76403-4b00-66ba-43ea-7889b9a32bb5@infradead.org>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Tue, 8 Sep 2020 17:03:37 +0200
-Message-ID: <CAKfTPtB-br6iKAMnofbPEmPVF-fpQpjkbXtfTcNkNzbc1Kdtug@mail.gmail.com>
-Subject: Re: linux-next: Tree for Sep 8 (sched/topology.c)
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Valentin Schneider <Valentin.Schneider@arm.com>
-Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding Valentin as this seems related to the patch "sched/topology:
-Move sd_flag_debug out of linux/sched/topology.h"
-
-
-On Tue, 8 Sep 2020 at 16:48, Randy Dunlap <rdunlap@infradead.org> wrote:
->
-> On 9/8/20 3:56 AM, Stephen Rothwell wrote:
-> > Hi all,
-> >
-> > Changes since 20200903:
-> >
->
-> on i386:
->
-> ld: kernel/sched/topology.o: in function `cpu_attach_domain':
-> topology.c:(.text+0xf03): undefined reference to `sd_flag_debug'
-> ld: topology.c:(.text+0xf4f): undefined reference to `sd_flag_debug'
-> ld: topology.c:(.text+0xfc2): undefined reference to `sd_flag_debug'
->
->
-> Full randconfig file is attached.
->
->
-> --
-> ~Randy
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+PiBPaywgc28gSSB0aGluayB0aGlzIGlzIHdoYXQgQW5keSBtZWFudCBsYXN0IG5pZ2h0IGFuZCBQ
+ZXRlcloganVzdA0KPiBzdWdnZXN0ZWQgaXQgdG9vOg0KPg0KPiBXZSBkbyBhOg0KPg0KPgkgX0FT
+TV9FWFRBQkxFX0hBTkRMRSgxYiwgMmIsIGV4X2hhbmRsZXJfcGFuaWMpDQo+DQo+IHdoaWNoIHBh
+bmljcyBzdHJhaWdodCBpbiB0aGUgI0dQIGhhbmRsZXIgYW5kIGF2b2lkcyB0aGUgSVJFVC4NCg0K
+V2UgY2FuIGV2ZW4gZ2V0IGEgbmljZSBkaWFnbm9zdGljIG1lc3NhZ2Ugc2luY2UgdGhlIGhhbmRs
+ZXINCmhhcyBhY2Nlc3MgdG8gInJlZ3MiLiBJdCBjYW4gcHJpbnQgd2hpY2ggTVNSIChyZWdzLT5j
+eCkgYW5kDQp3aGVyZSBpdCBoYXBwZW5lZCAocmVncy0+aXApLg0KDQpXaGljaCBzb3VuZHMgbGlr
+ZSB5b3UgbWlnaHQgd2FudCBhIHNwZWNpZmljIGV4X2hhbmRsZXJfcmRtc3INCmZ1bmN0aW9uIHJh
+dGhlciB0aGFuIGEgZ2VuZXJpYyBleF9oYW5kbGVyX3BhbmljLg0KDQpNYXliZSBzYW1lIGRlYWwg
+Zm9yIHdybXNyKCkgdG9vPyBUaGF0IHdvdWxkIGFsc28gcHJpbnQgZWR4OmVheA0Kc28geW91IGNv
+dWxkIHNlZSB3aGF0IHdhcyBiZWluZyB3cml0dGVuLg0KDQotVG9ueQ0K
