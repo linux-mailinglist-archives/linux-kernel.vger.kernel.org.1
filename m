@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC3C326248D
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 03:39:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A46ED26249C
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 03:44:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729296AbgIIBj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 21:39:29 -0400
-Received: from mga12.intel.com ([192.55.52.136]:57650 "EHLO mga12.intel.com"
+        id S1728584AbgIIBoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 21:44:17 -0400
+Received: from mga12.intel.com ([192.55.52.136]:58009 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728954AbgIIBjV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 21:39:21 -0400
-IronPort-SDR: NM7sbK7Qf/hItOfNgWUKUc4Oo5ckzI7dZ/pazCwk4j4VtnC2FwCqk2h9FAhxaNOdlHbynU9T2K
- bxIEvWPAO7tg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9738"; a="137770897"
+        id S1726657AbgIIBoR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 21:44:17 -0400
+IronPort-SDR: xQ8/oXrNexe6NGKHzCgOeNBWRufhpoDjoirvnVfWtE8hAVjz++KEKyoRdbrFbdcNQ1sKXLszjd
+ M4Pmp2KNQP0g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9738"; a="137770916"
 X-IronPort-AV: E=Sophos;i="5.76,407,1592895600"; 
-   d="scan'208";a="137770897"
+   d="scan'208";a="137770916"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2020 18:39:20 -0700
-IronPort-SDR: 2Cjzn6LLgBB1at3OexRotIdOKNihHUHrIkcNjzsIWQ3ZxUl7HrdH7Abad1U+Hq+elZ5BrW1BOf
- rNlGltVS5uEw==
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2020 18:39:32 -0700
+IronPort-SDR: CNCav0sdvqVkacXFuqBMStN+WsSy4EYJ5LFzl93VlMdpGzzrVqSKrh6PNysfeV06e/inIGw5nE
+ yDvjlm+zA+dA==
 X-IronPort-AV: E=Sophos;i="5.76,407,1592895600"; 
-   d="scan'208";a="449018106"
+   d="scan'208";a="449018134"
 Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2020 18:39:17 -0700
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2020 18:39:28 -0700
 From:   Bard Liao <yung-chuan.liao@linux.intel.com>
 To:     alsa-devel@alsa-project.org, vkoul@kernel.org
 Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org, tiwai@suse.de,
@@ -34,9 +34,9 @@ Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org, tiwai@suse.de,
         ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
         pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
         mengdong.lin@intel.com, bard.liao@intel.com
-Subject: [PATCH v2 4/7] soundwire: bus: use quirk to filter out invalid parity errors
-Date:   Tue,  8 Sep 2020 21:45:18 +0800
-Message-Id: <20200908134521.6781-5-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH v2 7/7] soundwire: cadence: add parity error injection through debugfs
+Date:   Tue,  8 Sep 2020 21:45:21 +0800
+Message-Id: <20200908134521.6781-8-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200908134521.6781-1-yung-chuan.liao@linux.intel.com>
 References: <20200908134521.6781-1-yung-chuan.liao@linux.intel.com>
@@ -47,69 +47,151 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-If a Slave device reports with a quirk that its initial parity check
-may be incorrect, filter it but keep the parity checks active in
-steady state.
+The Cadence IP can inject errors, let's make use of this capability to
+test Slave parity error checks.
+
+See e.g. example log where both the master and slave detect the parity
+error injected on a dummy read command.
+
+cd /sys/kernel/debug/soundwire/master-1/intel-sdw/
+echo 1 > cdns-parity-error-injection
+
+[   44.756249] intel-master sdw-master-1: Parity error
+[   44.756313] intel-master sdw-master-1: Msg NACK received
+[   44.756366] intel-master sdw-master-1: Msg NACKed for Slave 15
+[   44.756375] intel-master sdw-master-1: trf on Slave 15 failed:-5
+[   44.756382] intel-master sdw-master-1: parity error injection, read: -5
+[   44.756649] rt1308 sdw:1:25d:1308:0: Parity error detected
+
+The code makes sure the Master device is resumed, hence the clock
+restarted, before sending a parity error.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- drivers/soundwire/bus.c       | 8 +++++++-
- include/linux/soundwire/sdw.h | 4 ++++
- 2 files changed, 11 insertions(+), 1 deletion(-)
+ drivers/soundwire/cadence_master.c | 86 ++++++++++++++++++++++++++++++
+ 1 file changed, 86 insertions(+)
 
-diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-index 30b0bed16630..09185e5cfd70 100644
---- a/drivers/soundwire/bus.c
-+++ b/drivers/soundwire/bus.c
-@@ -1362,6 +1362,8 @@ static int sdw_handle_slave_alerts(struct sdw_slave *slave)
- 	unsigned long port;
- 	bool slave_notify = false;
- 	u8 buf, buf2[2], _buf, _buf2[2];
-+	bool parity_check;
-+	bool parity_quirk;
+diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
+index ecf503fb23e1..13e565f93166 100644
+--- a/drivers/soundwire/cadence_master.c
++++ b/drivers/soundwire/cadence_master.c
+@@ -13,6 +13,7 @@
+ #include <linux/io.h>
+ #include <linux/module.h>
+ #include <linux/mod_devicetable.h>
++#include <linux/pm_runtime.h>
+ #include <linux/soundwire/sdw_registers.h>
+ #include <linux/soundwire/sdw.h>
+ #include <sound/pcm_params.h>
+@@ -50,6 +51,9 @@ MODULE_PARM_DESC(cdns_mcp_int_mask, "Cadence MCP IntMask");
+ #define CDNS_MCP_CONTROL_BLOCK_WAKEUP		BIT(0)
  
- 	sdw_modify_slave_status(slave, SDW_SLAVE_ALERT);
- 
-@@ -1394,7 +1396,11 @@ static int sdw_handle_slave_alerts(struct sdw_slave *slave)
- 		 * interrupt
- 		 */
- 		if (buf & SDW_SCP_INT1_PARITY) {
--			if (slave->prop.scp_int1_mask & SDW_SCP_INT1_PARITY)
-+			parity_check = slave->prop.scp_int1_mask & SDW_SCP_INT1_PARITY;
-+			parity_quirk = !slave->first_interrupt_done &&
-+				(slave->prop.quirks & SDW_SLAVE_QUIRKS_INVALID_INITIAL_PARITY);
+ #define CDNS_MCP_CMDCTRL			0x8
 +
-+			if (parity_check && !parity_quirk)
- 				dev_err(&slave->dev, "Parity error detected\n");
- 			clear |= SDW_SCP_INT1_PARITY;
- 		}
-diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
-index 2b93a8ef7fad..790823d2d33b 100644
---- a/include/linux/soundwire/sdw.h
-+++ b/include/linux/soundwire/sdw.h
-@@ -358,6 +358,7 @@ struct sdw_dpn_prop {
-  * @src_dpn_prop: Source Data Port N properties
-  * @sink_dpn_prop: Sink Data Port N properties
-  * @scp_int1_mask: SCP_INT1_MASK desired settings
-+ * @quirks: bitmask identifying deltas from the MIPI specification
-  */
- struct sdw_slave_prop {
- 	u32 mipi_revision;
-@@ -380,8 +381,11 @@ struct sdw_slave_prop {
- 	struct sdw_dpn_prop *src_dpn_prop;
- 	struct sdw_dpn_prop *sink_dpn_prop;
- 	u8 scp_int1_mask;
-+	u32 quirks;
- };
++#define CDNS_MCP_CMDCTRL_INSERT_PARITY_ERR	BIT(2)
++
+ #define CDNS_MCP_SSPSTAT			0xC
+ #define CDNS_MCP_FRAME_SHAPE			0x10
+ #define CDNS_MCP_FRAME_SHAPE_INIT		0x14
+@@ -366,6 +370,85 @@ static int cdns_hw_reset(void *data, u64 value)
  
-+#define SDW_SLAVE_QUIRKS_INVALID_INITIAL_PARITY	BIT(0)
+ DEFINE_DEBUGFS_ATTRIBUTE(cdns_hw_reset_fops, NULL, cdns_hw_reset, "%llu\n");
+ 
++static int cdns_parity_error_injection(void *data, u64 value)
++{
++	struct sdw_cdns *cdns = data;
++	struct sdw_bus *bus;
++	int ret;
++
++	if (value != 1)
++		return -EINVAL;
++
++	bus = &cdns->bus;
++
++	/*
++	 * Resume Master device. If this results in a bus reset, the
++	 * Slave devices will re-attach and be re-enumerated.
++	 */
++	ret = pm_runtime_get_sync(bus->dev);
++	if (ret < 0 && ret != -EACCES) {
++		dev_err_ratelimited(cdns->dev,
++				    "pm_runtime_get_sync failed in %s, ret %d\n",
++				    __func__, ret);
++		pm_runtime_put_noidle(bus->dev);
++		return ret;
++	}
++
++	/*
++	 * wait long enough for Slave(s) to be in steady state. This
++	 * does not need to be super precise.
++	 */
++	msleep(200);
++
++	/*
++	 * Take the bus lock here to make sure that any bus transactions
++	 * will be queued while we inject a parity error on a dummy read
++	 */
++	mutex_lock(&bus->bus_lock);
++
++	/* program hardware to inject parity error */
++	cdns_updatel(cdns, CDNS_MCP_CMDCTRL,
++		     CDNS_MCP_CMDCTRL_INSERT_PARITY_ERR,
++		     CDNS_MCP_CMDCTRL_INSERT_PARITY_ERR);
++
++	/* commit changes */
++	cdns_updatel(cdns, CDNS_MCP_CONFIG_UPDATE,
++		     CDNS_MCP_CONFIG_UPDATE_BIT,
++		     CDNS_MCP_CONFIG_UPDATE_BIT);
++
++	/* do a broadcast dummy read to avoid bus clashes */
++	ret = sdw_bread_no_pm_unlocked(&cdns->bus, 0xf, SDW_SCP_DEVID_0);
++	dev_info(cdns->dev, "parity error injection, read: %d\n", ret);
++
++	/* program hardware to disable parity error */
++	cdns_updatel(cdns, CDNS_MCP_CMDCTRL,
++		     CDNS_MCP_CMDCTRL_INSERT_PARITY_ERR,
++		     0);
++
++	/* commit changes */
++	cdns_updatel(cdns, CDNS_MCP_CONFIG_UPDATE,
++		     CDNS_MCP_CONFIG_UPDATE_BIT,
++		     CDNS_MCP_CONFIG_UPDATE_BIT);
++
++	/* Continue bus operation with parity error injection disabled */
++	mutex_unlock(&bus->bus_lock);
++
++	/* Userspace changed the hardware state behind the kernel's back */
++	add_taint(TAINT_USER, LOCKDEP_STILL_OK);
++
++	/*
++	 * allow Master device to enter pm_runtime suspend. This may
++	 * also result in Slave devices suspending.
++	 */
++	pm_runtime_mark_last_busy(bus->dev);
++	pm_runtime_put_autosuspend(bus->dev);
++
++	return 0;
++}
++
++DEFINE_DEBUGFS_ATTRIBUTE(cdns_parity_error_fops, NULL,
++			 cdns_parity_error_injection, "%llu\n");
 +
  /**
-  * struct sdw_master_prop - Master properties
-  * @revision: MIPI spec version of the implementation
+  * sdw_cdns_debugfs_init() - Cadence debugfs init
+  * @cdns: Cadence instance
+@@ -377,6 +460,9 @@ void sdw_cdns_debugfs_init(struct sdw_cdns *cdns, struct dentry *root)
+ 
+ 	debugfs_create_file("cdns-hw-reset", 0200, root, cdns,
+ 			    &cdns_hw_reset_fops);
++
++	debugfs_create_file("cdns-parity-error-injection", 0200, root, cdns,
++			    &cdns_parity_error_fops);
+ }
+ EXPORT_SYMBOL_GPL(sdw_cdns_debugfs_init);
+ 
 -- 
 2.17.1
 
