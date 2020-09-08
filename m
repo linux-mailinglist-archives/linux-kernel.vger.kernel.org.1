@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AD50261FF7
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 22:08:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A6D326207B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 22:12:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730108AbgIHPTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 11:19:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52588 "EHLO mail.kernel.org"
+        id S1730381AbgIHUM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 16:12:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51646 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730260AbgIHPRR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:17:17 -0400
+        id S1729789AbgIHPLR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 11:11:17 -0400
 Received: from localhost.localdomain (unknown [194.230.155.174])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 92A0323C83;
-        Tue,  8 Sep 2020 15:03:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 175F823D99;
+        Tue,  8 Sep 2020 15:04:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599577426;
-        bh=dF9JbGnyyk7xqZjhxCmQG69CTL0Od4Gh5eFNR9iVXO0=;
+        s=default; t=1599577464;
+        bh=YKA5ZQ6xQuK7/axErohadLOOxrTTzusock+I6lSVols=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mrd6MXiQPlUWRKz7PGyUl2YdUhvffv/wQCkxVE1PeBZy36/PObpjCWUnn7RmzwjjQ
-         lCkcldVVu4haNcLHn8EVqrQzKNcAUr4bz37hZYenhKE5a6bieNAkTRdR8ZT6J4rod2
-         1YFt5nXwhBBi9FgSV8ITB7QtuptxffZUGFqI5Wa8=
+        b=gsYDhSvt5XQoUSq0sd5XwiHacUheT0WHPxvKefh917Asncn0qCMXgo2WpxOewfDjz
+         Kyu5lWSGvvVTxaFceSLEA6eDfpEp1OxHdDD8VI/QIYPzTeeKKCYhi6LEBUFepnA1zx
+         r3Ta+kp0THQPcnZjE3RrWs4vPERyWSJzqaP3GwgA=
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
         Sascha Hauer <s.hauer@pengutronix.de>,
@@ -45,9 +45,9 @@ To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
         devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org
 Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH 6/8] arm64: dts: rk3399: Correct interrupt flags in examples
-Date:   Tue,  8 Sep 2020 17:02:39 +0200
-Message-Id: <20200908150241.5771-6-krzk@kernel.org>
+Subject: [PATCH 8/8] arm64: dts: imx8mm-var-som-symphony: Drop unused gpioledgrp
+Date:   Tue,  8 Sep 2020 17:02:41 +0200
+Message-Id: <20200908150241.5771-8-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200908150241.5771-1-krzk@kernel.org>
 References: <20200908150241.5771-1-krzk@kernel.org>
@@ -56,184 +56,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-GPIO_ACTIVE_x flags are not correct in the context of interrupt flags.
-These are simple defines so they could be used in DTS but they will not
-have the same meaning:
-1. GPIO_ACTIVE_HIGH = 0 = IRQ_TYPE_NONE
-2. GPIO_ACTIVE_LOW  = 1 = IRQ_TYPE_EDGE_RISING
-
-Correct the interrupt flags, assuming the author of the code wanted some
-logical behavior behind the name "ACTIVE_xxx", this is:
-  ACTIVE_HIGH => IRQ_TYPE_LEVEL_HIGH
+The gpioledgrp in iomux is not used, so it can be dropped.
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-
 ---
+ arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dts | 6 ------
+ 1 file changed, 6 deletions(-)
 
-Not tested on HW.
----
- arch/arm64/boot/dts/rockchip/rk3399-firefly.dts      | 3 ++-
- arch/arm64/boot/dts/rockchip/rk3399-hugsun-x99.dts   | 3 ++-
- arch/arm64/boot/dts/rockchip/rk3399-khadas-edge.dtsi | 3 ++-
- arch/arm64/boot/dts/rockchip/rk3399-leez-p710.dts    | 3 ++-
- arch/arm64/boot/dts/rockchip/rk3399-orangepi.dts     | 3 ++-
- arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4b.dts   | 2 +-
- arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4c.dts   | 2 +-
- arch/arm64/boot/dts/rockchip/rk3399-rock960.dtsi     | 3 ++-
- 8 files changed, 14 insertions(+), 8 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-firefly.dts b/arch/arm64/boot/dts/rockchip/rk3399-firefly.dts
-index 6db18808b9c5..095d615950ca 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-firefly.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-firefly.dts
-@@ -5,6 +5,7 @@
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dts b/arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dts
+index b84d94e10c26..fbf321cdcf16 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dts
+@@ -193,12 +193,6 @@
+ 		>;
+ 	};
  
- /dts-v1/;
- #include <dt-bindings/input/linux-event-codes.h>
-+#include <dt-bindings/interrupt-controller/irq.h>
- #include <dt-bindings/pwm/pwm.h>
- #include "rk3399.dtsi"
- #include "rk3399-opp.dtsi"
-@@ -676,7 +677,7 @@
- 		reg = <1>;
- 		compatible = "brcm,bcm4329-fmac";
- 		interrupt-parent = <&gpio0>;
--		interrupts = <RK_PA3 GPIO_ACTIVE_HIGH>;
-+		interrupts = <RK_PA3 IRQ_TYPE_LEVEL_HIGH>;
- 		interrupt-names = "host-wake";
- 		brcm,drive-strength = <5>;
- 		pinctrl-names = "default";
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-hugsun-x99.dts b/arch/arm64/boot/dts/rockchip/rk3399-hugsun-x99.dts
-index 341d074ed996..25cb807bcfa6 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-hugsun-x99.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-hugsun-x99.dts
-@@ -2,6 +2,7 @@
- /dts-v1/;
- #include <dt-bindings/pwm/pwm.h>
- #include <dt-bindings/input/input.h>
-+#include <dt-bindings/interrupt-controller/irq.h>
- #include "rk3399.dtsi"
- #include "rk3399-opp.dtsi"
- 
-@@ -623,7 +624,7 @@
- 		compatible = "brcm,bcm4329-fmac";
- 		reg = <1>;
- 		interrupt-parent = <&gpio0>;
--		interrupts = <RK_PA3 GPIO_ACTIVE_HIGH>;
-+		interrupts = <RK_PA3 IRQ_TYPE_LEVEL_HIGH>;
- 		interrupt-names = "host-wake";
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&wifi_host_wake_l>;
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-khadas-edge.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-khadas-edge.dtsi
-index e36837c04dc7..89dae74989bb 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-khadas-edge.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-khadas-edge.dtsi
-@@ -6,6 +6,7 @@
- 
- /dts-v1/;
- #include <dt-bindings/input/linux-event-codes.h>
-+#include <dt-bindings/interrupt-controller/irq.h>
- #include <dt-bindings/pwm/pwm.h>
- #include "rk3399.dtsi"
- #include "rk3399-opp.dtsi"
-@@ -662,7 +663,7 @@
- 		reg = <1>;
- 		compatible = "brcm,bcm4329-fmac";
- 		interrupt-parent = <&gpio0>;
--		interrupts = <RK_PA3 GPIO_ACTIVE_HIGH>;
-+		interrupts = <RK_PA3 IRQ_TYPE_LEVEL_HIGH>;
- 		interrupt-names = "host-wake";
- 		brcm,drive-strength = <5>;
- 		pinctrl-names = "default";
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-leez-p710.dts b/arch/arm64/boot/dts/rockchip/rk3399-leez-p710.dts
-index 1fa80ac15464..113a71256171 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-leez-p710.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-leez-p710.dts
-@@ -5,6 +5,7 @@
- 
- /dts-v1/;
- #include <dt-bindings/input/linux-event-codes.h>
-+#include <dt-bindings/interrupt-controller/irq.h>
- #include <dt-bindings/pwm/pwm.h>
- #include "rk3399.dtsi"
- #include "rk3399-opp.dtsi"
-@@ -503,7 +504,7 @@
- 		compatible = "brcm,bcm4329-fmac";
- 		reg = <1>;
- 		interrupt-parent = <&gpio0>;
--		interrupts = <RK_PA3 GPIO_ACTIVE_HIGH>;
-+		interrupts = <RK_PA3 IRQ_TYPE_LEVEL_HIGH>;
- 		interrupt-names = "host-wake";
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&wifi_host_wake_l>;
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-orangepi.dts b/arch/arm64/boot/dts/rockchip/rk3399-orangepi.dts
-index 6163ae8063a7..ae81fb9d363c 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-orangepi.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-orangepi.dts
-@@ -7,6 +7,7 @@
- 
- #include "dt-bindings/pwm/pwm.h"
- #include "dt-bindings/input/input.h"
-+#include <dt-bindings/interrupt-controller/irq.h>
- #include "rk3399.dtsi"
- #include "rk3399-opp.dtsi"
- 
-@@ -691,7 +692,7 @@
- 		reg = <1>;
- 		compatible = "brcm,bcm4329-fmac";
- 		interrupt-parent = <&gpio0>;
--		interrupts = <RK_PA3 GPIO_ACTIVE_HIGH>;
-+		interrupts = <RK_PA3 IRQ_TYPE_LEVEL_HIGH>;
- 		interrupt-names = "host-wake";
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&wifi_host_wake_l>;
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4b.dts b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4b.dts
-index f0055ce2fda0..7df4e698b1c0 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4b.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4b.dts
-@@ -19,7 +19,7 @@
- 		compatible = "brcm,bcm4329-fmac";
- 		reg = <1>;
- 		interrupt-parent = <&gpio0>;
--		interrupts = <RK_PA3 GPIO_ACTIVE_HIGH>;
-+		interrupts = <RK_PA3 IRQ_TYPE_LEVEL_HIGH>;
- 		interrupt-names = "host-wake";
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&wifi_host_wake_l>;
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4c.dts b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4c.dts
-index 4c7ebb1c5d2d..887a29898617 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4c.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4c.dts
-@@ -20,7 +20,7 @@
- 		compatible = "brcm,bcm4329-fmac";
- 		reg = <1>;
- 		interrupt-parent = <&gpio0>;
--		interrupts = <RK_PA3 GPIO_ACTIVE_HIGH>;
-+		interrupts = <RK_PA3 IRQ_TYPE_LEVEL_HIGH>;
- 		interrupt-names = "host-wake";
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&wifi_host_wake_l>;
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rock960.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-rock960.dtsi
-index 5e3ac589bc54..9a4cd799edde 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-rock960.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-rock960.dtsi
-@@ -7,6 +7,7 @@
- 
- #include "rk3399.dtsi"
- #include "rk3399-opp.dtsi"
-+#include <dt-bindings/interrupt-controller/irq.h>
- 
- / {
- 	sdio_pwrseq: sdio-pwrseq {
-@@ -522,7 +523,7 @@
- 		compatible = "brcm,bcm4329-fmac";
- 		reg = <1>;
- 		interrupt-parent = <&gpio0>;
--		interrupts = <RK_PA3 GPIO_ACTIVE_HIGH>;
-+		interrupts = <RK_PA3 IRQ_TYPE_LEVEL_HIGH>;
- 		interrupt-names = "host-wake";
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&wifi_host_wake_l>;
+-	pinctrl_gpio_led: gpioledgrp {
+-		fsl,pins = <
+-			MX8MM_IOMUXC_NAND_READY_B_GPIO3_IO16	0x19
+-		>;
+-	};
+-
+ 	pinctrl_i2c2: i2c2grp {
+ 		fsl,pins = <
+ 			MX8MM_IOMUXC_I2C2_SCL_I2C2_SCL		0x400001c3
 -- 
 2.17.1
 
