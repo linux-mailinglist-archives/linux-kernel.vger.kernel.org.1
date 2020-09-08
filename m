@@ -2,80 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB8C3261CB3
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:25:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D544261CB8
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:25:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732015AbgIHTZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:25:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54344 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731082AbgIHQAn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1731074AbgIHTZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 15:25:45 -0400
+Received: from mout.gmx.net ([212.227.15.15]:57997 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731022AbgIHQAn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 8 Sep 2020 12:00:43 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 369DDC061386
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 08:58:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=b0t5z+qQG1ZBS7H6b7JrMNbuOF10sV7lq6zuv68QoOk=; b=WE7GI1FmhLy4VJa7HinxaNTyg5
-        W2oX8Pvudh0bQzETvhChmPYJAaJ6CSFSPOYS0EUPPayPY76pi2t4mAOohC+I0Mw5D4fsO6TiVz3c+
-        P24ohSbPjOeVDXAfQi4gRX5KBkFDF9210T+DXrMxQ8IaVBP5FFXOUdagoySMcG7MPpZ6I0rK/Dylm
-        qCqDis0r68MLYTMkfIG1je1XRoXC7/FjW6XPOI1m3Y4R2z9puhNJuxXya0+oZ9AgRN0nzCKd6cU5G
-        dCdd1VE7III74de9bgKLHHeBP63kc15CZteugiBgHOWznNHY9/e6zKFMeRYHSw/iTZcFBcH6BcJe5
-        ZtDIQxOg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kFg14-0006h8-Ku; Tue, 08 Sep 2020 15:58:42 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4E3CA3010D2;
-        Tue,  8 Sep 2020 17:58:40 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 283302C099E17; Tue,  8 Sep 2020 17:58:40 +0200 (CEST)
-Date:   Tue, 8 Sep 2020 17:58:40 +0200
-From:   peterz@infradead.org
-To:     kan.liang@linux.intel.com
-Cc:     mingo@redhat.com, acme@kernel.org, linux-kernel@vger.kernel.org,
-        ak@linux.intel.com, mark.rutland@arm.com, luto@amacapital.net
-Subject: Re: [PATCH V2 3/3] perf/x86: Reset the dirty counter to prevent the
- leak for an RDPMC task
-Message-ID: <20200908155840.GC35926@hirez.programming.kicks-ass.net>
-References: <20200821195754.20159-1-kan.liang@linux.intel.com>
- <20200821195754.20159-3-kan.liang@linux.intel.com>
- <20200907160115.GS2674@hirez.programming.kicks-ass.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1599580772;
+        bh=oKw/yzYD6eOW39I8U2TosMiSpWSrS9JUrnApsFbd3ks=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=Hb83dQ9YTcTOvkLigukuawO5OCt08jdArJZ08Sq7E+LBXEmeiaBr05ZcKv/ndZQOB
+         Pb7bbyA3xu/1NpUvJZnMh8bLOgqQeyXeRSyvRtPzuPTIPlDL31IXuBQPgKa90gfLRu
+         KPWFiD1P+eiQq6rRQwNSUR4nkKo6A2n1+RoXnFyg=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.simpson.net ([185.191.217.72]) by mail.gmx.com (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MPXhA-1jtDCY0Kri-00MbOz; Tue, 08
+ Sep 2020 17:59:32 +0200
+Message-ID: <a79815352e2f238b7f108e6e7202f6655f26159d.camel@gmx.de>
+Subject: Re: v5.9-rc3-rt3 boot time networking lockdep splat
+From:   Mike Galbraith <efault@gmx.de>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Date:   Tue, 08 Sep 2020 17:59:31 +0200
+In-Reply-To: <20200908151229.g24j4n4fderlm2pe@linutronix.de>
+References: <20200902155557.h2wl2qpfn2rwsofw@linutronix.de>
+         <46a2b89ec8d953a4be18c7389c7d8c66310a7ff0.camel@gmx.de>
+         <b989e196a8b9cceda35152de9202d7a67ca32196.camel@gmx.de>
+         <20200908151229.g24j4n4fderlm2pe@linutronix.de>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200907160115.GS2674@hirez.programming.kicks-ass.net>
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:dpbJGdyniN1L8GgtVO9C42d9xu0vTjB2nNyE9vu9ukXbtho5I7V
+ 3g3nNwehyDv1LlKRhz2iBO+CoPaS2JC+NQEjExZ8lAR/BgwIs2qGR0ouuiijgb4r3GBmPl/
+ HVNLR8CGpRGT0HihPMrs9G/J+bxbrUbAk62tZEUY0oUlOuCiCHCoHHDDTmoTE43eR7xcx/+
+ m6rLsKSq6JKLRw6GGAegg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:bBQiVy6+LQg=:yQDEL/dplQfSmsutFc7m8V
+ OXvgj0VTwHR0PVbycsGQQtwxJZaYYeNup5Xa4TFu+Lb4Kr3/ZK4bwKYd8wDBg6yAqlREHg/5f
+ J/V+aNnxANtj8yYGgCTPjXz4CxvXKU2gIlTlqE4HHbAIOk/kL5C9TxW7VDqtSooFPdAiVG5jc
+ fTwOVU28LVzFlc55iG+85DAiGd6UWSUP0lpCQzVBQAu7n83Fv5QgQNQmcnvLmSa7VhOyvmvNb
+ 5UDkpj9VjEM0ydQOVxf52U25ApynjvjPVVcJ56/atAbgr8sV3p4yWk8TfOBylBnrWaNY2+uPA
+ InhMEomAG43bQjyGlPf2hcopVN3SqrqsGqcqytWp+nxoLr8PR2A7YOoySzal1VQ7YRIDQA4Xj
+ DVuK5rn19tiy9ccFuCRT4jNad3RwYPFc2UBBPV/fa8/ga8MKcPX3AjWxDRuxv+4LrR435dmmZ
+ 6IaQjG8q0btTXq5aV7SU9ZeK/CEJuFZvlMxX99M2sD7neLLbVfdJDyz5f2HNJR98IA2K6vU83
+ nAll1UgzuH3vASsMNeAvKU2D+OxKx4nXGMjMgTMwHRss4+r6W/CEFbJvlB8N80v8EsWTywgHu
+ AZ4pY4dX9yD8702AmcfKanHOyX1MTx4LLyTpTJAEQC3jB7XbneqdZ2oINzCfzjuCCiYNNVc3/
+ bnJHhplbIYWyJ3ityd/cOvLuUT8MTn6KqJXMh+EQPyowey0NzvuUk+rvovPrZRw481YC2ViPU
+ VlcHnP7cOaAQFT3C1XOZRRRC3+7SFaSA9i6t5T6pEKtUlJBg13jKSvsQMJh+kYQR3YJ9bDrei
+ 92F2qGB6lh0IxixrEknzaCb1qa7SoLWPk8ty+VaEnZ0ylOQJOxr5fGcpypNYZMB6x3QCsaA7L
+ t79lXMdlXiDxewO2aVor2fN4JcKnbqbAYuZuQBK32t/sL0Qtr9L/eljc/mWsI+NWvZJuqQrDq
+ 11+Qe/173cI+WgS4oaFJzik0bbVMTUKPlBjnD9L3TnwFBp8eYZsVi+PEHrRjI10h6g6p3EtzH
+ JMemM5B1n5K4VgDaMomabAiLLK4Fl4/BTVHqvP6FIGd3DPqhntmIbesrG6bK909axlWO14L/i
+ XqyryG9+EVza5H9VhPYXl/AGnIX438JVNxEp7YKp6zGNiwunj+Rvi7ws23DrvKScm280vCfo1
+ 3euTjN6pyCsSQrMPO49WRagdRf+xZmgTWmHsomNxzLMlYiogod+sGaW5/lTrEufSAb8Coi3qt
+ /hFlu/JxuXRM8Fpbm
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 07, 2020 at 06:01:15PM +0200, peterz@infradead.org wrote:
-> On Fri, Aug 21, 2020 at 12:57:54PM -0700, kan.liang@linux.intel.com wrote:
-> > diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
-> > index 0f3d01562ded..fa08d810dcd2 100644
-> > --- a/arch/x86/events/core.c
-> > +++ b/arch/x86/events/core.c
-> > @@ -1440,7 +1440,10 @@ static void x86_pmu_start(struct perf_event *event, int flags)
-> >  
-> >  	cpuc->events[idx] = event;
-> >  	__set_bit(idx, cpuc->active_mask);
-> > -	__set_bit(idx, cpuc->running);
-> > +	/* The cpuc->running is only used by the P4 PMU */
-> > +	if (!cpu_has(&boot_cpu_data, X86_FEATURE_ARCH_PERFMON) &&
-> > +	    (boot_cpu_data.x86 == 0xf))
-> > +		__set_bit(idx, cpuc->running);
-> >  	x86_pmu.enable(event);
-> >  	perf_event_update_userpage(event);
-> >  }
-> 
-> Yuck! Use a static_branch() or something. This is a gnarly nest of code
-> that runs 99.9% of the time to conclude a negative. IOW a complete waste
-> of cycles for everybody not running a P4 space heater.
+On Tue, 2020-09-08 at 17:12 +0200, Sebastian Andrzej Siewior wrote:
+> On 2020-09-05 07:19:10 [+0200], Mike Galbraith wrote:
+> > Lappy, which does not use bridge, boots clean... but lock leakage
+> > pretty darn quickly inspires lockdep to craps its drawers.
+> >
+> > [  209.001111] BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low!
+> > [  209.001113] turning off the locking correctness validator.
+> > [  209.001114] CPU: 2 PID: 3773 Comm: Socket Thread Tainted: G S      =
+  I E     5.9.0.gc70672d-rt3-rt #8
+> > [  209.001117] Hardware name: HP HP Spectre x360 Convertible/804F, BIO=
+S F.47 11/22/2017
+> > [  209.001118] Call Trace:
+> > [  209.001123]  dump_stack+0x77/0x9b
+> > [  209.001129]  validate_chain+0xf60/0x1230
+>
+> I have no idea how to debug this based on this report. Can you narrow
+> it down to something?
 
-Better still, move it into p4_pmu_enable_event().
+I instrumented what I presume is still this problem once upon a time,
+structures containing locks are allocated/initialized/freed again and
+again with no cleanup until we increment into the wall.
+
+> Is Lappy new, got a new something or has a new config switch? I'm just
+> curious if this something or something that was always there but
+> remained undetected.
+
+Nah, this is nothing new.  Turn lockdep on in RT, it's just a matter of
+time before it turns itself off.  It's usually just not _that_ quick.
+
+	-Mike
+
