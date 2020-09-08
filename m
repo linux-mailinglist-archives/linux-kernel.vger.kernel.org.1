@@ -2,44 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7118261856
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:52:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21E3226185B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:53:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731920AbgIHRws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 13:52:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56836 "EHLO
+        id S1731676AbgIHRxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 13:53:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731624AbgIHQNo (ORCPT
+        with ESMTP id S1731600AbgIHQNo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 8 Sep 2020 12:13:44 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C208CC0612A3
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 06:04:36 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 919001234;
-        Tue,  8 Sep 2020 14:59:20 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1599569961;
-        bh=GDMaaknSuM/l5R2bNi1lvtcCye+AKH88XR9vhap1/7A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RER59LuXTiblOv2vSyDxvZpT+Ed7gQ+POuX8WyqY88MvZXDj3Y50WMKCNegqg5to5
-         K0fGTPm/wCJATwzOQEk2vCENEnxIF4UkJNBzKwxKuy+KFqt99DQEKAb/CxaK4reQ4D
-         pGJqx5590eRkfuBSB+fie6ZxVTRbPj7s2eGEE6zk=
-Date:   Tue, 8 Sep 2020 15:58:55 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Stefan Agner <stefan@agner.ch>
-Cc:     marex@denx.de, airlied@linux.ie, daniel@ffwll.ch,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, tomi.valkeinen@ti.com, linux-imx@nxp.com,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] drm: mxsfb: check framebuffer pitch
-Message-ID: <20200908125855.GL6047@pendragon.ideasonboard.com>
-References: <20200908125558.256843-1-stefan@agner.ch>
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D1C4C061290
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 06:01:33 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id a15so19988558ljk.2
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 06:01:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9ROFMex6SmeQcgvgfjI5Vchgvc+G2tj/iCxGO6nsxuo=;
+        b=gck+FqS4TFd5ioreMir7T2hmA8fOv7VmNt+UEdcoNlHpyopB61mqzfwAgUgzpnzI1M
+         awXeDvbGswaVG9tiaeMeWaU39z+IibLEQ+XqA6dnfa0fojUufDKdMMk1Cf3PgB6k6MD8
+         jr/nL7gXzFGPBVryCkZTzvftcp8o6uyy5VwP3T5/xlmEVZ0ICQT66jYZJ2dm0Qsu+KO4
+         OZANzsYGJ2FdjcMvOaH17vORAB6hK/dCqCiIA2790Wa7sTbCy6mb16uHiI7SK3HbLHxU
+         gGT61gn0NiPQwyQewP2S+WzKFszo3IFb/LbbilVCN7YK4fhSGXVMm1FM4hBkhd3sDSGz
+         OjZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9ROFMex6SmeQcgvgfjI5Vchgvc+G2tj/iCxGO6nsxuo=;
+        b=Ma6rvF8h2N2mLG9xSRek3Lr/xljgBJR/WyDitv5BZapVKuwK7zvRqA9tI/NXivvmtn
+         uz0d1EbkY88MsETKOAw7Va1XqHXgpHz91SYm0DUl4dHCuovQyaC4nsT/WkYmvuO7H6mq
+         UF2NIlYB/dVP5yBq3O8FvxfgCADJXbMeHCBbp/H5gbAcxs+9O1QrTZazPNrz0fGhenll
+         Jptvyi8qiWIgefP/DSpRwrbNatoQ/9yPrCUoxl48xOpPHwVoE1gxdCW6eeC46XwA2CCL
+         qtZ07B575Clz4G7G1BDGJ/kUsNKkk1VZaBl/sNK1gX81Tei8QwrkHC6VjEpLRsmF0dMS
+         3+tA==
+X-Gm-Message-State: AOAM531XHBnCnm8kRWU9MIFwyBJznQi/5QzksCdSYL8IMC3wNer5Szmu
+        93sMTJa7NzUL7CZp58qXeqnAhratogeW8W/UDGQ=
+X-Google-Smtp-Source: ABdhPJzNCPOWmmxsXcRfVxojDQus+EStgmwv1gk8/iTKXOq4a7uo6VFLWq6gOeHI82RqCdy4Fdrc7ekP8uPBAtxxulA=
+X-Received: by 2002:a2e:9899:: with SMTP id b25mr11694176ljj.178.1599570091951;
+ Tue, 08 Sep 2020 06:01:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+References: <20200908125558.256843-1-stefan@agner.ch>
 In-Reply-To: <20200908125558.256843-1-stefan@agner.ch>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Tue, 8 Sep 2020 10:01:20 -0300
+Message-ID: <CAOMZO5Amaxi-rU44b_q4+6k4vtOoCOmbKgiDJ0r3tEi4zkZB=w@mail.gmail.com>
+Subject: Re: [PATCH v2] drm: mxsfb: check framebuffer pitch
+To:     Stefan Agner <stefan@agner.ch>
+Cc:     Marek Vasut <marex@denx.de>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        DRI mailing list <dri-devel@lists.freedesktop.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -47,72 +73,19 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi Stefan,
 
-Thank you for the patch.
-
-On Tue, Sep 08, 2020 at 02:55:58PM +0200, Stefan Agner wrote:
+On Tue, Sep 8, 2020 at 9:56 AM Stefan Agner <stefan@agner.ch> wrote:
+>
 > The lcdif IP does not support a framebuffer pitch (stride) other than
 > framebuffer width. Check for equality and reject the framebuffer
 > otherwise.
-> 
+>
 > This prevents a distorted picture when using 640x800 and running the
 > Mesa graphics stack. Mesa tires to use a cache aligned stride, which
-
-Still s/tires/tries/ :-)
-
 > leads at that particular resolution to width != stride. Currently
 > Mesa has no fallback behavior, but rejecting this configuration allows
 > userspace to handle the issue correctly.
-> 
-> Signed-off-by: Stefan Agner <stefan@agner.ch>
 
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+What about adding a Fixes tag so that it can be backported to old
+stable kernels?
 
-> ---
->  drivers/gpu/drm/mxsfb/mxsfb_drv.c | 21 ++++++++++++++++++++-
->  1 file changed, 20 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/mxsfb/mxsfb_drv.c b/drivers/gpu/drm/mxsfb/mxsfb_drv.c
-> index 8c549c3931af..fa6798d21029 100644
-> --- a/drivers/gpu/drm/mxsfb/mxsfb_drv.c
-> +++ b/drivers/gpu/drm/mxsfb/mxsfb_drv.c
-> @@ -21,6 +21,7 @@
->  #include <drm/drm_connector.h>
->  #include <drm/drm_drv.h>
->  #include <drm/drm_fb_helper.h>
-> +#include <drm/drm_fourcc.h>
->  #include <drm/drm_gem_cma_helper.h>
->  #include <drm/drm_gem_framebuffer_helper.h>
->  #include <drm/drm_irq.h>
-> @@ -81,8 +82,26 @@ void mxsfb_disable_axi_clk(struct mxsfb_drm_private *mxsfb)
->  		clk_disable_unprepare(mxsfb->clk_axi);
->  }
->  
-> +static struct drm_framebuffer *
-> +mxsfb_fb_create(struct drm_device *dev, struct drm_file *file_priv,
-> +		  const struct drm_mode_fb_cmd2 *mode_cmd)
-> +{
-> +	const struct drm_format_info *info;
-> +
-> +	info = drm_get_format_info(dev, mode_cmd);
-> +	if (!info)
-> +		return ERR_PTR(-EINVAL);
-> +
-> +	if (mode_cmd->width * info->cpp[0] != mode_cmd->pitches[0]) {
-> +		dev_dbg(dev->dev, "Invalid pitch: fb width must match pitch\n");
-> +		return ERR_PTR(-EINVAL);
-> +	}
-> +
-> +	return drm_gem_fb_create(dev, file_priv, mode_cmd);
-> +}
-> +
->  static const struct drm_mode_config_funcs mxsfb_mode_config_funcs = {
-> -	.fb_create		= drm_gem_fb_create,
-> +	.fb_create		= mxsfb_fb_create,
->  	.atomic_check		= drm_atomic_helper_check,
->  	.atomic_commit		= drm_atomic_helper_commit,
->  };
-
--- 
-Regards,
-
-Laurent Pinchart
+Thanks
