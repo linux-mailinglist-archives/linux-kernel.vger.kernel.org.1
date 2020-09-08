@@ -2,155 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2020C261B42
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:00:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05206261B85
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:04:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731463AbgIHTAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:00:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54644 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731235AbgIHTAN (ORCPT
+        id S1731744AbgIHTDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 15:03:55 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:49908 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731693AbgIHTDn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 15:00:13 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D23AEC061573
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 12:00:12 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id t7so75050pjd.3
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 12:00:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=osandov-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=GV/iqESZ2B/JWCPhKBYdc1HMXEWUP6X/GFX7ukcYRCc=;
-        b=AKeahh29FRXDGBXnQjzSIcarVKtmq38CxwAoB6TIwDU1z5eEMqESkkM6AOI3qcWUXI
-         QXybrGeceZuWdooQd6Ahhr7FZanmq04jcIgL/NxxY16dTqLalRglfGD5RSGwXJlgHohK
-         lQi+Xam2gpoIu02XBhynueixypqoi1xRQaah1Du8lrzaymU1uXk0uO2EXr/QnAYJNtGE
-         RIjrrhv2zVCxniSFcfmbBvcG3BYOSnEHVDzLJ2liwgfW3aukQQ6apEaTOcX2iWGqAWCw
-         7LuXe2v/HVoJdiX92R3JHlHIatuZJC6rx47wnHvXOTWIRv7mOliX/C2jGR7BNmW0KFwV
-         MFaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=GV/iqESZ2B/JWCPhKBYdc1HMXEWUP6X/GFX7ukcYRCc=;
-        b=S5gBxY6xtpzQ95EetQG9NEEYG7TVFZfZho+hdJj9vU6fW8y0erOaPCsgMa8+CQSI8h
-         1MF8/uOkm9jikwmvuLm6Kx15GDDWLo4CKsoZLSbym5fHUwO/geOg68CXO+Ngl6LDLon4
-         g/NzVHH7FYg2dFSMjI9IUb0nXs8LNC4Ga4BZJ8zh6q+4RXgWLahg6sGnPbDvx23YzeAu
-         uNunaB9ACh2zovmTMHu3Nxn2qcApsdhiJbqiTfVfrZFOqTaZILz4WuCfM8rzgdDIrt/Q
-         p2epQrtleknUCYKp7e1ZNsxGFxgv9lZVZtxed50W4SO0Xl2fbQ3bjveNrefoKMOiU+90
-         vQig==
-X-Gm-Message-State: AOAM531VDWtZz/Ba9f57vCT8NxfrKNtLLCaMALj+/T9axFmRny1TTOLv
-        J9YNDJw2M1sHP6S8Au1/9zjzsw==
-X-Google-Smtp-Source: ABdhPJx5rumcfM7Ht6IyzlNP3RKqgmYM/0YyydX7QIAP1xK9uKQOzi1qgTWBBWjVdlyxgacb07hiEA==
-X-Received: by 2002:a17:90a:b292:: with SMTP id c18mr212478pjr.207.1599591612227;
-        Tue, 08 Sep 2020 12:00:12 -0700 (PDT)
-Received: from relinquished.localdomain ([2620:10d:c090:400::5:ec83])
-        by smtp.gmail.com with ESMTPSA id e125sm159782pfe.154.2020.09.08.12.00.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Sep 2020 12:00:11 -0700 (PDT)
-Date:   Tue, 8 Sep 2020 12:00:09 -0700
-From:   Omar Sandoval <osandov@osandov.com>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Yang Yang <yang.yang@vivo.com>, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, onlyfever@icloud.com
-Subject: Re: [PATCH] kyber: Fix crash in kyber_finish_request()
-Message-ID: <20200908190009.GA142421@relinquished.localdomain>
-References: <20200907074346.5383-1-yang.yang@vivo.com>
- <8b714da7-97b2-f8d2-4be7-c192130c33af@kernel.dk>
+        Tue, 8 Sep 2020 15:03:43 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 088J1xN1122829;
+        Tue, 8 Sep 2020 15:03:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=daDdFQSQ8/ewgAVsdSWJ/UnpLBSx0HFoixMRKkOERnE=;
+ b=Lb6o73OH4N2tzK/ZCJBNoskGrdgjK49+0X/DtRgUpz3mhH8/0LFzQWu8B6PsBh2eWdWs
+ 7lcQbrvxSIrdUnstD5MmiTGwYY5AMkwNZG2AHqyhhH5gHEKnIOgXDCZMEpwl/qqCGvEW
+ I01yG/lA7PGhcUuyy9KNJpxZ/mvHRDHMqC5LRPO1KcOMymxJDop8a40fkWU3CX6mBjTq
+ /32m1IeKzeTm+UicxyVJ5xLnnlmUsqi9qTZJ0W1C4lWTTcDqJyh9mWzkDpbSGZKTOdJl
+ 5ZvHIjsAcFc1uclFl4Pa9pAQ1pkHw3oCJCs9hFgRxNqORSuYjiYi4rSEiBMx9WgxxWFU wQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33edwdkvt5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 08 Sep 2020 15:03:30 -0400
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 088J2HE7125254;
+        Tue, 8 Sep 2020 15:03:30 -0400
+Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33edwdkvsf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 08 Sep 2020 15:03:29 -0400
+Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
+        by ppma05wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 088IpV9K023585;
+        Tue, 8 Sep 2020 19:03:28 GMT
+Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
+        by ppma05wdc.us.ibm.com with ESMTP id 33c2a91hvk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 08 Sep 2020 19:03:28 +0000
+Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
+        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 088J3RJE12059580
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 8 Sep 2020 19:03:27 GMT
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 07A05B206A;
+        Tue,  8 Sep 2020 19:03:27 +0000 (GMT)
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3FA59B2065;
+        Tue,  8 Sep 2020 19:03:26 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.85.141.115])
+        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
+        Tue,  8 Sep 2020 19:03:26 +0000 (GMT)
+Subject: Re: [PATCH v10 03/16] s390/vfio-ap: manage link between queue struct
+ and matrix mdev
+To:     Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     freude@linux.ibm.com, cohuck@redhat.com, mjrosato@linux.ibm.com,
+        pasic@linux.ibm.com, alex.williamson@redhat.com,
+        kwankhede@nvidia.com, fiuczy@linux.ibm.com, frankja@linux.ibm.com,
+        david@redhat.com, imbrenda@linux.ibm.com, hca@linux.ibm.com,
+        gor@linux.ibm.com
+References: <20200821195616.13554-1-akrowiak@linux.ibm.com>
+ <20200821195616.13554-4-akrowiak@linux.ibm.com>
+ <99581cee-65fd-a622-ddc9-1a30e4638668@de.ibm.com>
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+Message-ID: <64ca7c98-4798-35c4-307e-57c4ca4cfdb2@linux.ibm.com>
+Date:   Tue, 8 Sep 2020 15:03:25 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8b714da7-97b2-f8d2-4be7-c192130c33af@kernel.dk>
+In-Reply-To: <99581cee-65fd-a622-ddc9-1a30e4638668@de.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-08_09:2020-09-08,2020-09-08 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ impostorscore=0 mlxlogscore=999 lowpriorityscore=0 bulkscore=0
+ priorityscore=1501 spamscore=0 adultscore=0 malwarescore=0 mlxscore=0
+ clxscore=1015 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009080174
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 07, 2020 at 10:41:16AM -0600, Jens Axboe wrote:
-> CC Omar
-> 
-> On 9/7/20 1:43 AM, Yang Yang wrote:
-> > Kernel crash when requeue flush request.
-> > It can be reproduced as below:
-> > 
-> > [    2.517297] Unable to handle kernel paging request at virtual address ffffffd8071c0b00
-> > ...
-> > [    2.517468] pc : clear_bit+0x18/0x2c
-> > [    2.517502] lr : sbitmap_queue_clear+0x40/0x228
-> > [    2.517503] sp : ffffff800832bc60 pstate : 00c00145
-> > ...
-> > [    2.517599] Process ksoftirqd/5 (pid: 51, stack limit = 0xffffff8008328000)
-> > [    2.517602] Call trace:
-> > [    2.517606]  clear_bit+0x18/0x2c
-> > [    2.517619]  kyber_finish_request+0x74/0x80
-> > [    2.517627]  blk_mq_requeue_request+0x3c/0xc0
-> > [    2.517637]  __scsi_queue_insert+0x11c/0x148
-> > [    2.517640]  scsi_softirq_done+0x114/0x130
-> > [    2.517643]  blk_done_softirq+0x7c/0xb0
-> > [    2.517651]  __do_softirq+0x208/0x3bc
-> > [    2.517657]  run_ksoftirqd+0x34/0x60
-> > [    2.517663]  smpboot_thread_fn+0x1c4/0x2c0
-> > [    2.517667]  kthread+0x110/0x120
-> > [    2.517669]  ret_from_fork+0x10/0x18
-> > 
-> > Signed-off-by: Yang Yang <yang.yang@vivo.com>
-> > ---
-> >  block/kyber-iosched.c | 3 +++
-> >  1 file changed, 3 insertions(+)
-> > 
-> > diff --git a/block/kyber-iosched.c b/block/kyber-iosched.c
-> > index a38c5ab103d1..af73afe7a05c 100644
-> > --- a/block/kyber-iosched.c
-> > +++ b/block/kyber-iosched.c
-> > @@ -611,6 +611,9 @@ static void kyber_finish_request(struct request *rq)
-> >  {
-> >  	struct kyber_queue_data *kqd = rq->q->elevator->elevator_data;
-> >  
-> > +	if (unlikely(!(rq->rq_flags & RQF_ELVPRIV)))
-> > +		return;
-> > +
-> >  	rq_clear_domain_token(kqd, rq);
-> >  }
-> >  
-> > 
 
-It looks like BFQ also has this check. Wouldn't it make more sense to
-check it in blk-mq, like we do for .finish_request() in
-blk_mq_free_request()? Something along these lines:
 
-diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
-index c34b090178a9..fa98470df3f0 100644
---- a/block/bfq-iosched.c
-+++ b/block/bfq-iosched.c
-@@ -5895,18 +5895,6 @@ static void bfq_finish_requeue_request(struct request *rq)
- 	struct bfq_queue *bfqq = RQ_BFQQ(rq);
- 	struct bfq_data *bfqd;
- 
--	/*
--	 * Requeue and finish hooks are invoked in blk-mq without
--	 * checking whether the involved request is actually still
--	 * referenced in the scheduler. To handle this fact, the
--	 * following two checks make this function exit in case of
--	 * spurious invocations, for which there is nothing to do.
--	 *
--	 * First, check whether rq has nothing to do with an elevator.
--	 */
--	if (unlikely(!(rq->rq_flags & RQF_ELVPRIV)))
--		return;
--
- 	/*
- 	 * rq either is not associated with any icq, or is an already
- 	 * requeued request that has not (yet) been re-inserted into
-diff --git a/block/blk-mq-sched.h b/block/blk-mq-sched.h
-index 126021fc3a11..e81ca1bf6e10 100644
---- a/block/blk-mq-sched.h
-+++ b/block/blk-mq-sched.h
-@@ -66,7 +66,7 @@ static inline void blk_mq_sched_requeue_request(struct request *rq)
- 	struct request_queue *q = rq->q;
- 	struct elevator_queue *e = q->elevator;
- 
--	if (e && e->type->ops.requeue_request)
-+	if ((rq->rq_flags & RQF_ELVPRIV) && e && e->type->ops.requeue_request)
- 		e->type->ops.requeue_request(rq);
- }
- 
+On 9/4/20 4:15 AM, Christian Borntraeger wrote:
+> On 21.08.20 21:56, Tony Krowiak wrote:
+>> diff --git a/drivers/s390/crypto/vfio_ap_private.h b/drivers/s390/crypto/vfio_ap_private.h
+>> index a2aa05bec718..57da703b549a 100644
+>> --- a/drivers/s390/crypto/vfio_ap_private.h
+>> +++ b/drivers/s390/crypto/vfio_ap_private.h
+>> @@ -87,6 +87,7 @@ struct ap_matrix_mdev {
+>>   	struct kvm *kvm;
+>>   	struct kvm_s390_module_hook pqap_hook;
+>>   	struct mdev_device *mdev;
+>> +	DECLARE_HASHTABLE(qtable, 8);
+>>   };
+> Ah I think the include should go into this patch. But then you should revisit the patch description
+> of 2 as it talks about hashtables (but doesnt do anything about it).
+
+Got it.
+
+>   
+
