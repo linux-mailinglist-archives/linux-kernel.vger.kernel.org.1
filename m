@@ -2,78 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6810B261D38
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:34:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0575261EA8
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:54:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732284AbgIHTdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:33:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48750 "EHLO mail.kernel.org"
+        id S1732451AbgIHTxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 15:53:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58874 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731017AbgIHP6F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:58:05 -0400
+        id S1730604AbgIHPme (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 11:42:34 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 784FA22574;
-        Tue,  8 Sep 2020 15:37:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 771D2221EB;
+        Tue,  8 Sep 2020 15:23:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599579425;
-        bh=8oOtyPkdf47pnN5G7/BrbY1fcYbqtcbHjJaAtLsYWFw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QDiCfrPAIY2P8K5MmCe6iewLX79+L3PuXeCtC28XZWIfVSQx2gWgBs1zwVJvOHrT/
-         SfXljKcjGOOHxWlw6j5borOxU/vKZkU25fENBqmIIfHWV9dcsCqA4m+I6oxjzHR9zc
-         2BZisAz2/JTP8gzGx/50G/pwwiSN7m/L2JOMqzfE=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yu Kuai <yukuai3@huawei.com>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 045/186] dmaengine: at_hdmac: add missing kfree() call in at_dma_xlate()
-Date:   Tue,  8 Sep 2020 17:23:07 +0200
-Message-Id: <20200908152243.844522114@linuxfoundation.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200908152241.646390211@linuxfoundation.org>
-References: <20200908152241.646390211@linuxfoundation.org>
-User-Agent: quilt/0.66
+        s=default; t=1599578582;
+        bh=/d50LFwjiLHA4Aqpr8JwcrmMS8zjjCTo0VyxGdT+oNQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Nbz4R8lbUZEHvU1gtNbMwTjBjyqKKWd1+eR+DjVSHyIHiz8IJEaGCht9DglAzqR3o
+         E6anWYGrSOMLWD9BEP9a9aBgCfyNPkAbZDKZb2bUWOJWVpLMoK07D362zJMcJIPNfJ
+         jyNRBh1DYhJWHiOKTomjphlyaUo/7henJOk23A0U=
+Date:   Tue, 8 Sep 2020 17:23:14 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Mike Travis <mike.travis@hpe.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Steve Wahl <steve.wahl@hpe.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@suse.de>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Russ Anderson <russ.anderson@hpe.com>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Jian Cai <caij2003@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
+Subject: Re: [PATCH 04/12] x86/platform/uv: Update UV MMRs for UV5
+Message-ID: <20200908152314.GD4114051@kroah.com>
+References: <20200907185430.363197758@hpe.com>
+ <20200907185430.782245884@hpe.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200907185430.782245884@hpe.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yu Kuai <yukuai3@huawei.com>
+On Mon, Sep 07, 2020 at 01:54:34PM -0500, Mike Travis wrote:
+> --- linux.orig/drivers/misc/sgi-gru/grufile.c
+> +++ linux/drivers/misc/sgi-gru/grufile.c
+> @@ -7,7 +7,8 @@
+>   * This file supports the user system call for file open, close, mmap, etc.
+>   * This also incudes the driver initialization code.
+>   *
+> - *  Copyright (c) 2008-2014 Silicon Graphics, Inc.  All Rights Reserved.
+> + * Copyright (c) 2018-2020 Hewlett Packard Enterprise Development LP
+> + * Copyright (c) 2008-2017 Silicon Graphics, Inc.  All Rights Reserved.
 
-[ Upstream commit e097eb7473d9e70da9e03276f61cd392ccb9d79f ]
+Please drop all copyright changes from this series, as these do not look
+correct at all, sorry.
 
-If memory allocation for 'atslave' succeed, at_dma_xlate() doesn't have a
-corresponding kfree() in exception handling. Thus add kfree() for this
-function implementation.
+You can send an add-on patch for all of that if it's really necessary,
+and you get legal approval for it :)
 
-Fixes: bbe89c8e3d59 ("at_hdmac: move to generic DMA binding")
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-Link: https://lore.kernel.org/r/20200817115728.1706719-4-yukuai3@huawei.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/dma/at_hdmac.c | 1 +
- 1 file changed, 1 insertion(+)
+thanks,
 
-diff --git a/drivers/dma/at_hdmac.c b/drivers/dma/at_hdmac.c
-index c91642b5f1037..626819b33a325 100644
---- a/drivers/dma/at_hdmac.c
-+++ b/drivers/dma/at_hdmac.c
-@@ -1691,6 +1691,7 @@ static struct dma_chan *at_dma_xlate(struct of_phandle_args *dma_spec,
- 	chan = dma_request_channel(mask, at_dma_filter, atslave);
- 	if (!chan) {
- 		put_device(&dmac_pdev->dev);
-+		kfree(atslave);
- 		return NULL;
- 	}
- 
--- 
-2.25.1
-
-
-
+greg k-h
