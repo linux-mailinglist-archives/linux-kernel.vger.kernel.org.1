@@ -2,100 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F38AC260B2F
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 08:46:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E5A6260B37
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 08:48:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729154AbgIHGqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 02:46:36 -0400
-Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:55658 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727898AbgIHGqf (ORCPT
+        id S1729123AbgIHGsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 02:48:04 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:35233 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728998AbgIHGsC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 02:46:35 -0400
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0886f5q0009652;
-        Mon, 7 Sep 2020 23:46:29 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=date : from : to :
- cc : subject : in-reply-to : message-id : references : mime-version :
- content-type; s=pfpt0220; bh=aiBLXAOJu8QoseT7V/7qoKu8aO/6blc54o+Ujz+gE7A=;
- b=J7ZoHHh1aZkPbkh4HDHz00gN/SEa2qjAjWwP+oalS5LgEjzQbV7bj8TWSnAu/8Q6Jqhv
- ZJzjStNQaBHPc6OoI80N7Rw/COFu/vq/bu9u9Zb6hFrQ2+UnY9EgsxMKRQgW7iN9OPxL
- pGIA67o+JcEC/ogmRpskzMQptPXdt+7kmh3n1mfyU08zaczTDdqPG3yx/G2ygSarMekx
- poyn6mt4Zc0kvH45BN7LwkGnjU39z/G4aYsD+QeYuv6rjnkQu5uPMhnJAHV5smR/SDdG
- Li/UYmJAk7TzBEgL3Yw1OIa08ikPASMNSOBAdRZMQP2QT4G+sdN1Wcfh7Pn/kfGMkN60 fg== 
-Received: from sc-exch03.marvell.com ([199.233.58.183])
-        by mx0a-0016f401.pphosted.com with ESMTP id 33c81ptg73-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Mon, 07 Sep 2020 23:46:29 -0700
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH03.marvell.com
- (10.93.176.83) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 7 Sep
- 2020 23:46:28 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 7 Sep 2020 23:46:29 -0700
-Received: from irv1user01.caveonetworks.com (unknown [10.104.116.179])
-        by maili.marvell.com (Postfix) with ESMTP id A97363F703F;
-        Mon,  7 Sep 2020 23:46:28 -0700 (PDT)
-Received: from localhost (aeasi@localhost)
-        by irv1user01.caveonetworks.com (8.14.4/8.14.4/Submit) with ESMTP id 0886kSY3024215;
-        Mon, 7 Sep 2020 23:46:28 -0700
-X-Authentication-Warning: irv1user01.caveonetworks.com: aeasi owned process doing -bs
-Date:   Mon, 7 Sep 2020 23:46:27 -0700
-From:   Arun Easi <aeasi@marvell.com>
-X-X-Sender: aeasi@irv1user01.caveonetworks.com
-To:     Daniel Wagner <dwagner@suse.de>
-CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "Nilesh Javali" <njavali@marvell.com>,
-        Martin Wilck <mwilck@suse.com>
-Subject: Re: [PATCH v2 3/4] qla2xxx: Drop unused function argument from
- qla2x00_get_sp_from_handle()
-In-Reply-To: <20200831161854.70879-4-dwagner@suse.de>
-Message-ID: <alpine.LRH.2.21.9999.2009072343130.28578@irv1user01.caveonetworks.com>
-References: <20200831161854.70879-1-dwagner@suse.de>
- <20200831161854.70879-4-dwagner@suse.de>
-User-Agent: Alpine 2.21.9999 (LRH 334 2019-03-29)
+        Tue, 8 Sep 2020 02:48:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599547677;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Ckw515ta8REsEdxquaA8IU0vybCs7EFBcYj3MOI/Ego=;
+        b=X1NxVGllFYDfOVGn6tLuon1i0uaGRN1BwKaWIP0xnNdCs1fqdZhIK6mrWGw7ay8vVs3lpE
+        ZXy6ZnF3//QoQbFNUMXFHIsBAJi9WSqLoBhbPDxBt+78m3rxIuKAYXu0l5buxnQ2h6xh/M
+        r2N9TmISvsbZGZgLfqxHlLkqeJuwJGU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-346-d1ZJMMipORavez-AKH4mzQ-1; Tue, 08 Sep 2020 02:47:53 -0400
+X-MC-Unique: d1ZJMMipORavez-AKH4mzQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7355418BE160;
+        Tue,  8 Sep 2020 06:47:52 +0000 (UTC)
+Received: from sirius.home.kraxel.org (ovpn-112-56.ams2.redhat.com [10.36.112.56])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A36B727BD8;
+        Tue,  8 Sep 2020 06:47:48 +0000 (UTC)
+Received: by sirius.home.kraxel.org (Postfix, from userid 1000)
+        id B0F2C9D78; Tue,  8 Sep 2020 08:47:47 +0200 (CEST)
+From:   Gerd Hoffmann <kraxel@redhat.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     Gerd Hoffmann <kraxel@redhat.com>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        virtualization@lists.linux-foundation.org (open list:VIRTIO GPU DRIVER),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] drm/virtio: drop quirks handling
+Date:   Tue,  8 Sep 2020 08:47:41 +0200
+Message-Id: <20200908064741.1010-1-kraxel@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-08_02:2020-09-08,2020-09-08 signatures=0
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 31 Aug 2020, 9:18am, Daniel Wagner wrote:
-> 
-> Commit 7c3df1320e5e ("[SCSI] qla2xxx: Code changes to support new
-> dynamic logging infrastructure.") removed the use of the func
-> argument.
-> 
-> Signed-off-by: Daniel Wagner <dwagner@suse.de>
-> ---
->  drivers/scsi/qla2xxx/qla_gbl.h |  3 +--
->  drivers/scsi/qla2xxx/qla_isr.c | 36 ++++++++++++------------------------
->  drivers/scsi/qla2xxx/qla_mr.c  |  9 +++------
->  3 files changed, 16 insertions(+), 32 deletions(-)
-> 
---8<--
-> diff --git a/drivers/scsi/qla2xxx/qla_isr.c b/drivers/scsi/qla2xxx/qla_isr.c
-> index 5d278155e4e7..b787643f5031 100644
-> --- a/drivers/scsi/qla2xxx/qla_isr.c
-> +++ b/drivers/scsi/qla2xxx/qla_isr.c
-> @@ -1711,8 +1711,7 @@ qla2x00_process_completed_request(struct scsi_qla_host *vha,
->  }
->  
->  srb_t *
-> -qla2x00_get_sp_from_handle(scsi_qla_host_t *vha, const char *func,
-> -    struct req_que *req, void *iocb)
-> +qla2x00_get_sp_from_handle(scsi_qla_host_t *vha, struct req_que *req, void *iocb)
->  {
->  	struct qla_hw_data *ha = vha->hw;
->  	sts_entry_t *pkt = iocb;
+These days dma ops can be overridden per device, and the virtio core
+uses that to handle the dma quirks transparently for the rest of the
+kernel.  So we can drop the virtio_has_dma_quirk() checks, just use
+the dma api unconditionally and depend on the virtio core having setup
+dma_ops as needed.
 
-How about printing the "func", which gives an indication of the caller 
-function, in the ql_log-s, rather than removing it? At least in the cases 
-like you describe, it'd give an indication which handler the path was 
-taken.
+Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
+---
+ drivers/gpu/drm/virtio/virtgpu_object.c | 19 ++++++-------------
+ drivers/gpu/drm/virtio/virtgpu_vq.c     | 16 ++++++----------
+ 2 files changed, 12 insertions(+), 23 deletions(-)
 
-Regards,
--Arun
+diff --git a/drivers/gpu/drm/virtio/virtgpu_object.c b/drivers/gpu/drm/virtio/virtgpu_object.c
+index 729f98ad7c02..9c35ce64ff9e 100644
+--- a/drivers/gpu/drm/virtio/virtgpu_object.c
++++ b/drivers/gpu/drm/virtio/virtgpu_object.c
+@@ -141,7 +141,6 @@ static int virtio_gpu_object_shmem_init(struct virtio_gpu_device *vgdev,
+ 					struct virtio_gpu_mem_entry **ents,
+ 					unsigned int *nents)
+ {
+-	bool use_dma_api = !virtio_has_dma_quirk(vgdev->vdev);
+ 	struct virtio_gpu_object_shmem *shmem = to_virtio_gpu_shmem(bo);
+ 	struct scatterlist *sg;
+ 	int si, ret;
+@@ -162,15 +161,11 @@ static int virtio_gpu_object_shmem_init(struct virtio_gpu_device *vgdev,
+ 		return -EINVAL;
+ 	}
+ 
+-	if (use_dma_api) {
+-		shmem->mapped = dma_map_sg(vgdev->vdev->dev.parent,
+-					   shmem->pages->sgl,
+-					   shmem->pages->nents,
+-					   DMA_TO_DEVICE);
+-		*nents = shmem->mapped;
+-	} else {
+-		*nents = shmem->pages->nents;
+-	}
++	shmem->mapped = dma_map_sg(vgdev->vdev->dev.parent,
++				   shmem->pages->sgl,
++				   shmem->pages->nents,
++				   DMA_TO_DEVICE);
++	*nents = shmem->mapped;
+ 
+ 	*ents = kmalloc_array(*nents, sizeof(struct virtio_gpu_mem_entry),
+ 			      GFP_KERNEL);
+@@ -180,9 +175,7 @@ static int virtio_gpu_object_shmem_init(struct virtio_gpu_device *vgdev,
+ 	}
+ 
+ 	for_each_sg(shmem->pages->sgl, sg, *nents, si) {
+-		(*ents)[si].addr = cpu_to_le64(use_dma_api
+-					       ? sg_dma_address(sg)
+-					       : sg_phys(sg));
++		(*ents)[si].addr = cpu_to_le64(sg_dma_address(sg));
+ 		(*ents)[si].length = cpu_to_le32(sg->length);
+ 		(*ents)[si].padding = 0;
+ 	}
+diff --git a/drivers/gpu/drm/virtio/virtgpu_vq.c b/drivers/gpu/drm/virtio/virtgpu_vq.c
+index c93c2db35aaf..1c1d2834547d 100644
+--- a/drivers/gpu/drm/virtio/virtgpu_vq.c
++++ b/drivers/gpu/drm/virtio/virtgpu_vq.c
+@@ -599,13 +599,11 @@ void virtio_gpu_cmd_transfer_to_host_2d(struct virtio_gpu_device *vgdev,
+ 	struct virtio_gpu_object *bo = gem_to_virtio_gpu_obj(objs->objs[0]);
+ 	struct virtio_gpu_transfer_to_host_2d *cmd_p;
+ 	struct virtio_gpu_vbuffer *vbuf;
+-	bool use_dma_api = !virtio_has_dma_quirk(vgdev->vdev);
+ 	struct virtio_gpu_object_shmem *shmem = to_virtio_gpu_shmem(bo);
+ 
+-	if (use_dma_api)
+-		dma_sync_sg_for_device(vgdev->vdev->dev.parent,
+-				       shmem->pages->sgl, shmem->pages->nents,
+-				       DMA_TO_DEVICE);
++	dma_sync_sg_for_device(vgdev->vdev->dev.parent,
++			       shmem->pages->sgl, shmem->pages->nents,
++			       DMA_TO_DEVICE);
+ 
+ 	cmd_p = virtio_gpu_alloc_cmd(vgdev, &vbuf, sizeof(*cmd_p));
+ 	memset(cmd_p, 0, sizeof(*cmd_p));
+@@ -1015,13 +1013,11 @@ void virtio_gpu_cmd_transfer_to_host_3d(struct virtio_gpu_device *vgdev,
+ 	struct virtio_gpu_object *bo = gem_to_virtio_gpu_obj(objs->objs[0]);
+ 	struct virtio_gpu_transfer_host_3d *cmd_p;
+ 	struct virtio_gpu_vbuffer *vbuf;
+-	bool use_dma_api = !virtio_has_dma_quirk(vgdev->vdev);
+ 	struct virtio_gpu_object_shmem *shmem = to_virtio_gpu_shmem(bo);
+ 
+-	if (use_dma_api)
+-		dma_sync_sg_for_device(vgdev->vdev->dev.parent,
+-				       shmem->pages->sgl, shmem->pages->nents,
+-				       DMA_TO_DEVICE);
++	dma_sync_sg_for_device(vgdev->vdev->dev.parent,
++			       shmem->pages->sgl, shmem->pages->nents,
++			       DMA_TO_DEVICE);
+ 
+ 	cmd_p = virtio_gpu_alloc_cmd(vgdev, &vbuf, sizeof(*cmd_p));
+ 	memset(cmd_p, 0, sizeof(*cmd_p));
+-- 
+2.27.0
+
