@@ -2,112 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14478261DD0
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:42:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 025EC261F1A
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:59:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732358AbgIHTmo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:42:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53422 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730878AbgIHPws (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:52:48 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23EECC06125C;
-        Tue,  8 Sep 2020 06:16:29 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id r24so1067221ljm.3;
-        Tue, 08 Sep 2020 06:16:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=2ob3Uu2PIV7nT5SLsDGzmqre4E7eymr6wADbftdvJ7s=;
-        b=sHBZfPNkDu7qQ/ABlj/tJmyO+hyuIaD0i7Otp2n/gRkNQXppwriHIudfwvuTMV/eU8
-         Reh+27n+d9CkUCqKE+iTP24S5cZ8Jodfl7NrIDEOE6mnSrxsb8emFOicItGzrxJIeHEO
-         WzP9rNy+KrTZp2z0UYcfKlD+Km8COYz58aY1v1W4anzE4R1DqRcAZ/d5VqM/jGXujFSW
-         yl2B+8AB55zFoHuI0nvit09zP6ula0J2xQ1Pr2qgeE10wU0YrqYUY4cS9jL99NTrLUkX
-         UxkL54VXWhJVcNkkD+kH2WEJBeK4dZkl8tblMgYgzCjVQ8iZU1yfOJAojwxQxFsdI9Bg
-         uoxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2ob3Uu2PIV7nT5SLsDGzmqre4E7eymr6wADbftdvJ7s=;
-        b=MvpCaly9u0GWd0UaI/uGvZtpHm1VN+S+u5iz3Mg8ocPjgQ7mmfT/RbiMEJawoWSiN6
-         N+TNV9NSFAvhaSv6dC1GZkiAJdsISlr+SmmolC9fDP3ZPHa+Z/nl1VYTmlHt9w0D5YNE
-         nyUx+dwD96Dg+6AGBakqXDatEtPqCmWjCuL8vaAXpeoUsDsEeaIljICY8uW+eVm+Aw8G
-         oQr/Jnfk/zclxEEdudvDAsZDpSokEYEPSLVGbm3BBSfasFOAsgd3lEHW242ZsDF/n5Aq
-         b1fdX/tW19ztlr8FB30fiEhxPjRyiuHcPyOBoolmc6bbZwoaDsPB345XSsJkBp+/eMaO
-         DhXg==
-X-Gm-Message-State: AOAM533ymPDVLNr+3H5V1WtjN4bLGLjInamfL/oAr8bXxzlz06U6maRv
-        q280J6Ml2uNhCnLjJ9sR4ng3NP6wNNk=
-X-Google-Smtp-Source: ABdhPJzdTI4rNxCjoKspr+yIbdJopN0tD13+QHFV+10jpjX4FDTBXbZoVi61q9LPhPcSEiMzvq9XTQ==
-X-Received: by 2002:a2e:8782:: with SMTP id n2mr10169705lji.262.1599570987442;
-        Tue, 08 Sep 2020 06:16:27 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
-        by smtp.googlemail.com with ESMTPSA id 25sm10448215lji.130.2020.09.08.06.16.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Sep 2020 06:16:26 -0700 (PDT)
-Subject: Re: [PATCH v6 14/35] i2c: tegra: Clean up probe function
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
+        id S1732594AbgIHT7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 15:59:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58864 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730431AbgIHPfj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 11:35:39 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F172723BE5;
+        Tue,  8 Sep 2020 13:23:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599571408;
+        bh=pUEfMpq/UYZC7azZMZ5kSA/t1DHYIvIV/tbSmdkMHt8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=F0S8l6qu0IET3EzvZa3BeHFC0eAm7E2aMFtOGtSg4MVL1uz8Bf2WvkYY7OEOJOI+g
+         zeE2vL5jNPiS75krNhH/BAAmujRDEfwUzgv3ohTAR5HKdwMAWJxGwat9vAFf1wxe4X
+         hSjqMSsMuTCoX1v0XkWWt2kLar5QEeFnSbqv1oqs=
+Date:   Tue, 8 Sep 2020 14:22:44 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Masahisa Kojima <masahisa.kojima@linaro.org>,
+        Jassi Brar <jaswinder.singh@linaro.org>,
         Laxman Dewangan <ldewangan@nvidia.com>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        linux-tegra@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20200908021021.9123-1-digetx@gmail.com>
- <20200908021021.9123-15-digetx@gmail.com>
- <CAHp75Vc9srPR1BYes9ZEo46gxV2BAhZ71ov_JZ_sHrmtgdAr-g@mail.gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <dd51a8eb-5b8d-0b63-3130-428980cfe7ff@gmail.com>
-Date:   Tue, 8 Sep 2020 16:16:26 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-tegra@vger.kernel.org
+Subject: Re: [PATCH 02/11] spi: sprd: Simplify with dev_err_probe()
+Message-ID: <20200908132244.GA48155@sirena.org.uk>
+References: <20200901152713.18629-1-krzk@kernel.org>
+ <20200901152713.18629-2-krzk@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAHp75Vc9srPR1BYes9ZEo46gxV2BAhZ71ov_JZ_sHrmtgdAr-g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="uAKRQypu60I7Lcqm"
+Content-Disposition: inline
+In-Reply-To: <20200901152713.18629-2-krzk@kernel.org>
+X-Cookie: Remember the... the... uhh.....
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-08.09.2020 11:40, Andy Shevchenko пишет:
-> On Tue, Sep 8, 2020 at 5:11 AM Dmitry Osipenko <digetx@gmail.com> wrote:
->>
->> The driver's probe function code is a bit difficult to read. This patch
->> reorders code of the probe function, forming groups of code that are easy
->> to work with.
->>
->> The probe tear-down order now matches the driver-removal order.
-> 
->> All dev/&pdev->dev are replaced with i2c_dev->dev in order to have uniform
->> code style across the driver.
-> 
-> You see, below is my point why leaving a temporary variable can reduce a churn.
-> 
->> The "ret" variable renamed to "err" since it only carries error code and
->> the new name clearly shows that.
-> 
-> Overall it sounds like you need to split this into a few patches.
-> 
-> ...
-> 
->> -       struct device *dev = &pdev->dev;
-> 
->> -       i2c_dev->rst = devm_reset_control_get_exclusive(&pdev->dev, "i2c");
-> 
->> +       i2c_dev->rst = devm_reset_control_get_exclusive(i2c_dev->dev, "i2c");
-> 
-> You see, if it had been simple 'dev', this line would have not been changed.
-> 
-> And so on.
-> 
 
-Alright, I'll move all the renamings into the "Clean up variable names"
-patch, thanks.
+--uAKRQypu60I7Lcqm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Sep 01, 2020 at 05:27:04PM +0200, Krzysztof Kozlowski wrote:
+> Common pattern of handling deferred probe can be simplified with
+> dev_err_probe().  Less code and the error value gets printed.
+
+This doesn't apply against current code, please check and resend.
+
+Applying: spi: sprd: Simplify with dev_err_probe()
+Using index info to reconstruct a base tree...
+M	drivers/spi/spi-sprd-adi.c
+Falling back to patching base and 3-way merge...
+Auto-merging drivers/spi/spi-sprd-adi.c
+CONFLICT (content): Merge conflict in drivers/spi/spi-sprd-adi.c
+
+--uAKRQypu60I7Lcqm
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9XhaMACgkQJNaLcl1U
+h9BD+Qf/aECmurEbZzuMemn3QkE80q0VxXmiRjrG37cSIuZiDfm3np+BN4O6qef4
+jaozUFazSi1o8PpDSZtZmUuUhXIxs1TnlfIiET/a770NsLAy1CiCZcV7oIY2KWQ8
+5h51M2zOavV16MTiPa3BpaNJig5ZCrrltr+cVzP8GZ8ZlQRQJxS63yHkWPEvJ6jP
+N7nQ1JidLKkucxQveOxuFd8fUEajsGwJboKYBcFWL10Ga6A5aZOwNb8/fsjiu8sx
+KgGKvEZgoTfhhfGX5kg6s7ZWdCRLyyaSekjAXtY6ECQL6j4RHwGcx5sHqRUKR0pS
+TnET69OatkEPU5lbOiMrQS1KC+ycBw==
+=hY0h
+-----END PGP SIGNATURE-----
+
+--uAKRQypu60I7Lcqm--
