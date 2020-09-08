@@ -2,81 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 614EF261ADA
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 20:41:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BBE4261A0F
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 20:30:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731537AbgIHSlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 14:41:21 -0400
-Received: from mga18.intel.com ([134.134.136.126]:44110 "EHLO mga18.intel.com"
+        id S1731784AbgIHS3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 14:29:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56078 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731305AbgIHQIC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:08:02 -0400
-IronPort-SDR: uLxPuV8d9XkW6JGSbKn9vizfXWT1McBTUjcaMaRCXJm0ufVZv7vWcqy5QTq2UpPc9Ly0A27bjb
- jNozPR3zfH7Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9737"; a="145840204"
-X-IronPort-AV: E=Sophos;i="5.76,405,1592895600"; 
-   d="scan'208";a="145840204"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2020 06:50:28 -0700
-IronPort-SDR: pq8KqwTDLKt08i4BP3htSDweMGmnV1y1djrner8hpQN/ww/skM9AC3AdwSijS44hBYu4ALm5Jr
- +wiqc8WsZV7A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,405,1592895600"; 
-   d="scan'208";a="333478908"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga008.jf.intel.com with ESMTP; 08 Sep 2020 06:50:25 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kFduY-00FDX6-P7; Tue, 08 Sep 2020 16:43:50 +0300
-Date:   Tue, 8 Sep 2020 16:43:50 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Tony Luck <tony.luck@intel.com>
-Subject: Re: [PATCH v1] x86/defconfigs: Unbreak 32-bit defconfig builds
-Message-ID: <20200908134350.GX1891694@smile.fi.intel.com>
-References: <20200908100018.50188-1-andriy.shevchenko@linux.intel.com>
- <20200908121354.GA3848343@gmail.com>
+        id S1731409AbgIHQKZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 12:10:25 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1277424806;
+        Tue,  8 Sep 2020 15:43:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599579799;
+        bh=yVzu16jkR+ZSizyDraX6CgN0pG7oqdVsMdzwGZ9bSn4=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Gqpp2pvCKDpLa1Hac3KUTeDfadwHIgNa3wFim4k1Z66aXhcorGMUvqM0UD9THtjPp
+         4Klk6UbZGtRZ+gh+ra8JGWxIMFnpdKfsK9mEOac2X+9p2vVbVRJonYVRE5SpWNaEEs
+         jP/W+XEHV30tqQkAyYQZP83+BPDGh9aLl63JMUY8=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        Andrew Lunn <andrew@lunn.ch>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 038/129] net: arc_emac: Fix memleak in arc_mdio_probe
+Date:   Tue,  8 Sep 2020 17:24:39 +0200
+Message-Id: <20200908152231.581109549@linuxfoundation.org>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200908152229.689878733@linuxfoundation.org>
+References: <20200908152229.689878733@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200908121354.GA3848343@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 08, 2020 at 02:13:54PM +0200, Ingo Molnar wrote:
-> 
-> * Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
-> 
-> > After the commit 1d0e12fd3a84 ("x86/defconfigs: Refresh defconfig files")
-> > 32-bit builds using defconfig become broken because on x86_64 build host
-> > with no ARCH provided the default behaviour is to assume 64-bit independently
-> > on the configuration file name. The crucial part is CONFIG_64BIT option
-> > that used to be explicit. Let restore the latter option in order to unbreak
-> > 32-bit builds.
-> 
-> So exactly which build method broke due to this? The typical way to do a defconfig build is:
-> 
->   make ARCH=i386 defconfig
-> 
-> which still works fine AFAICS.
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-uname => x86_64
-make i386_defconfig
+[ Upstream commit e2d79cd8875fa8c3cc7defa98a8cc99a1ed0c62f ]
 
-It was very convenient to not supply ARCH when build on multi-arch host.
+When devm_gpiod_get_optional() fails, bus should be
+freed just like when of_mdiobus_register() fails.
 
+Fixes: 1bddd96cba03d ("net: arc_emac: support the phy reset for emac driver")
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/net/ethernet/arc/emac_mdio.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/net/ethernet/arc/emac_mdio.c b/drivers/net/ethernet/arc/emac_mdio.c
+index 0187dbf3b87df..54cdafdd067db 100644
+--- a/drivers/net/ethernet/arc/emac_mdio.c
++++ b/drivers/net/ethernet/arc/emac_mdio.c
+@@ -153,6 +153,7 @@ int arc_mdio_probe(struct arc_emac_priv *priv)
+ 	if (IS_ERR(data->reset_gpio)) {
+ 		error = PTR_ERR(data->reset_gpio);
+ 		dev_err(priv->dev, "Failed to request gpio: %d\n", error);
++		mdiobus_free(bus);
+ 		return error;
+ 	}
+ 
 -- 
-With Best Regards,
-Andy Shevchenko
+2.25.1
+
 
 
