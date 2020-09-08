@@ -2,102 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8D832614E8
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:40:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FC282614EC
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:40:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731939AbgIHQka (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 12:40:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60588 "EHLO
+        id S1732043AbgIHQkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 12:40:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732071AbgIHQh0 (ORCPT
+        with ESMTP id S1732065AbgIHQhZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:37:26 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71910C06125E
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 06:18:16 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id d6so3873946pfn.9
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 06:18:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0vIgYTSyDPV3iR6+cw+LdVUS1ZrYeuTmFBotSM5CblM=;
-        b=ov/ZXMw/AKOs8jo09rA2hYZSxInsT3OMFVq89whQo7cYYu2SCkDSKDxy0gcKVbVn7t
-         hFYOgCbfDVCtB1NDLGjAf471ThUkNGJM9gXwPedc1dFFgCJ+KLGWLjhlmFiCTwlIJbic
-         wc9pyM7t6SceOLnil91wfK2poKJPGBRPN3XmiaGTw7yGS8phORQ95GUv2UtX4oEXZMPc
-         nHgtFAQlkf5qKrRYD4x75Qn3bMbrk0QI0czVR1MYPLmaKef/ZY+yhb1u2qQk4nAFniiY
-         qAaMXOv8TQY4xmSAcOzvdKoT2YVDknIApH8CKySjRjGDfQmhwfxU+gvw2bwl+D6+dMED
-         igpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0vIgYTSyDPV3iR6+cw+LdVUS1ZrYeuTmFBotSM5CblM=;
-        b=BhGJ6hs7a7+gW/2yBeVN33FzxviEaHSeBOnDtVHAxgNbbbPMlrtRUwBBOL2RVL5i8Z
-         A8ArQcQFbIoa6yU9T66L5R8ydzAnPK8JUYv9y1IJRMDgMDvTc6JzMdkNrs8NTKQ/VLti
-         jmfOqDbmvrhj+A9krjJBXqddCyt/l0o1pUVbBk9Jg/AXPYSaSvMQ3yF/f39veZAQdR5l
-         OKKAdDLCQFENGte22X8deSE8uz7Rc9bdhklQnC9pdsUUgtvzeVQOA1uE4kMbCJNNuFEe
-         rfhnPOqYps0q99i1ObL7MG/WamDM/GOx5FcpgrA69NFYK289brvA2waPLoIWIvvaEpfy
-         E6HA==
-X-Gm-Message-State: AOAM531W7huFEqKyitGX0Apw5QBIABZzVjxKof+sTn8ZTBIbLdvUPcwq
-        hgy4aY/zae4/NxVByblXtFGRdMY1IxqKA/5Du54xgw==
-X-Google-Smtp-Source: ABdhPJzxi6yQj0Q2YVkwR7BwzG5jGX9Kv30i0fI1k3zMgffaPeCcvt33Dkc1PTDpk7PvaFohhQSk8DzIdn8G1e0e6HU=
-X-Received: by 2002:a17:902:988f:: with SMTP id s15mr23932254plp.26.1599571095681;
- Tue, 08 Sep 2020 06:18:15 -0700 (PDT)
+        Tue, 8 Sep 2020 12:37:25 -0400
+Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [IPv6:2001:67c:2050::465:202])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D8E8C06125F
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 06:18:32 -0700 (PDT)
+Received: from smtp2.mailbox.org (smtp2.mailbox.org [80.241.60.241])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4Bm5Lk486wzQlQN;
+        Tue,  8 Sep 2020 15:18:22 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mailbox.org; h=
+        content-disposition:content-type:content-type:mime-version
+        :message-id:subject:subject:from:from:date:date:received; s=
+        mail20150812; t=1599571097; bh=ubvOJcIFKGPENL3Obyw3VCwL5f9wX0uXs
+        ncDj/8C6DY=; b=YC5Px98tIOe3edNX/+M8QphLzqvgNrPgyt4UBsWIINeGWY2dj
+        Z/qv+KLEhdv2oNWdFXDTNCEoqhp0Qa3RShwqAJwYFQT67B3apuB+bihcAQ/TrSJf
+        OdlV8EV6kFEBPhYkD4Z0hN5mMddSPULv9Zk1KJib1urUB9s+W06ccr2o3Xs4eXvh
+        +xzCVrdnw7CNvd32xdiDyI3k0WT5JynUBbVuY6bXRmSyzzeRDsqPC80a2vDeVZjV
+        QHG8qR0jxMZRqWaIQtSSqla+2zjGIsMOx8jizpxtWMhwiX8O7pQXaferH0knboTR
+        +APSLJzly9xJ3JOd673g5OgR7tQmPgMki/Ugg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
+        t=1599571100;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=SKp5ZDHQ9MIbdi3QU3eOPS0Z+8Dc9dwteGuJYkPA53k=;
+        b=gWQcRQfwZNxKlejbS0JekUOiTjLnHV5z7ZGv9HjIw3Xm8T+l45s9BPW+qLSLDstXqc5BLJ
+        L+2hqPncY7po/zgNbXs5HNXGCMh/mAesFvE2pxUN8au50lKanTGTw+2+Y/rJ0sChsyMl7R
+        Rg5Kd+8jjRqcZ0HZUMmmL0H0RkuQD4HZe7+5qIU7JWBBSh7VxOg4a2fdRwZsVuz3ReU1T1
+        e1Og2mj68qXSlrAghH8dfJYNpadnPTZUYHKi1TGod99Q1R0BTl0SBPAkrD+up5PHJYsMbC
+        kUoOtAVu3C6Im0AcmQ5L1DWtwh5KWfzTuMk3kD8+vlzubt1XVuVGgiAAJvxCHg==
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+Received: from smtp2.mailbox.org ([80.241.60.241])
+        by hefe.heinlein-support.de (hefe.heinlein-support.de [91.198.250.172]) (amavisd-new, port 10030)
+        with ESMTP id PDb37bZMjMCv; Tue,  8 Sep 2020 15:18:17 +0200 (CEST)
+Date:   Tue, 8 Sep 2020 15:18:08 +0200
+From:   Wilken Gottwalt <wilken.gottwalt@mailbox.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>
+Subject: [PATCH] documentation: arm: sunxi: Allwinner H2+/H3 update
+Message-ID: <20200908131808.GA65247@monster.powergraphx.local>
 MIME-Version: 1.0
-References: <cover.1597425745.git.andreyknvl@google.com> <518da1e5169a4e343caa3c37feed5ad551b77a34.1597425745.git.andreyknvl@google.com>
- <20200827104033.GF29264@gaia>
-In-Reply-To: <20200827104033.GF29264@gaia>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Tue, 8 Sep 2020 15:18:04 +0200
-Message-ID: <CAAeHK+x_B+R3VcXndaQ=rwOExyQeFZEKZX-33oStiDFu1qePyg@mail.gmail.com>
-Subject: Re: [PATCH 26/35] kasan, arm64: Enable TBI EL1
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Elena Petrova <lenaptr@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-MBO-SPAM-Probability: 
+X-Rspamd-Score: -4.85 / 15.00 / 15.00
+X-Rspamd-Queue-Id: 2FCD3274
+X-Rspamd-UID: 3fa5e3
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 12:40 PM Catalin Marinas
-<catalin.marinas@arm.com> wrote:
->
-> On Fri, Aug 14, 2020 at 07:27:08PM +0200, Andrey Konovalov wrote:
-> > diff --git a/arch/arm64/mm/proc.S b/arch/arm64/mm/proc.S
-> > index 152d74f2cc9c..6880ddaa5144 100644
-> > --- a/arch/arm64/mm/proc.S
-> > +++ b/arch/arm64/mm/proc.S
-> > @@ -38,7 +38,7 @@
-> >  /* PTWs cacheable, inner/outer WBWA */
-> >  #define TCR_CACHE_FLAGS      TCR_IRGN_WBWA | TCR_ORGN_WBWA
-> >
-> > -#ifdef CONFIG_KASAN_SW_TAGS
-> > +#if defined(CONFIG_KASAN_SW_TAGS) || defined(CONFIG_KASAN_HW_TAGS)
-> >  #define TCR_KASAN_FLAGS TCR_TBI1
-> >  #else
-> >  #define TCR_KASAN_FLAGS 0
->
-> I prefer to turn TBI1 on only if MTE is present. So on top of the v8
-> user series, just do this in __cpu_setup.
+Updated information about H2+ and H3 difference and added a link to a
+slightly newer datasheet.
 
-Started working on this, but realized that I don't understand what
-exactly is suggested here. TCR_KASAN_FLAGS are used in __cpu_setup(),
-so this already happens in __cpu_setup().
+Signed-off-by: Wilken Gottwalt <wilken.gottwalt@mailbox.org>
+---
+ Documentation/arm/sunxi.rst | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Do you mean that TBI1 should be enabled when CONFIG_ARM64_MTE is
-enabled, but CONFIG_KASAN_HW_TAGS is disabled?
+diff --git a/Documentation/arm/sunxi.rst b/Documentation/arm/sunxi.rst
+index b037428aee98..50b9199d929d 100644
+--- a/Documentation/arm/sunxi.rst
++++ b/Documentation/arm/sunxi.rst
+@@ -103,12 +103,15 @@ SunXi family
+ 
+         * No document available now, but is known to be working properly with
+           H3 drivers and memory map.
++        * It is basically a H3 where the GMAC block was replaced by a 100 MBit only MAC block.
+ 
+       - Allwinner H3 (sun8i)
+ 
+         * Datasheet
+ 
+           http://dl.linux-sunxi.org/H3/Allwinner_H3_Datasheet_V1.0.pdf
++          or a slightly more up to date version
++          https://linux-sunxi.org/images/4/4b/Allwinner_H3_Datasheet_V1.2.pdf
+ 
+       - Allwinner R40 (sun8i)
+ 
+-- 
+2.28.0
+
