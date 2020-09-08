@@ -2,135 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F786261B1E
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 20:56:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0792C261B40
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:00:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731315AbgIHSzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 14:55:31 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:20110 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728350AbgIHSyu (ORCPT
+        id S1728347AbgIHS60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 14:58:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54186 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726229AbgIHS5W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 14:54:50 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 088IXZZd060588;
-        Tue, 8 Sep 2020 14:54:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=YPY+Z8lLZHccuoXJgk288xOmQXMV5vbQugXDWW9wyfA=;
- b=MKo8FGI8UaVB8fVz8LVcnNXD1HBUwimVgyVP22Yp9/7MyX1skYNyAHZRGRzDh0cf4bFT
- igBOGrtVs43YfSjlIJbl7qqdUZjTXQoxo6thNdkC0B66vK1vLpb2tF2yvdd6N5vwdq9U
- ZWuvzYs2wP38AklKx6N7LOLWUqRnWy7XBfugB6FdA40/QbPnpoCu2ppwASHXipIIki+I
- rTy8HsKIpytCHpIbWqyUmI60DtNoLIk3I8L6+6zFDDROaItKGl6Et3T33dy6nvj6puE+
- 0AHFBC9CUQyTxDupoTkeueOuMGucINf4/yT/N98Jgq6kjVp0jYD+ZA0vsQyFixgkc4rz UA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33edfjcqr0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Sep 2020 14:54:46 -0400
-Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 088IY337063620;
-        Tue, 8 Sep 2020 14:54:46 -0400
-Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33edfjcqqb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Sep 2020 14:54:46 -0400
-Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
-        by ppma03dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 088IqGOZ028541;
-        Tue, 8 Sep 2020 18:54:45 GMT
-Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
-        by ppma03dal.us.ibm.com with ESMTP id 33c2a8ywgq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Sep 2020 18:54:45 +0000
-Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 088Ish9e53870928
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 8 Sep 2020 18:54:43 GMT
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 60D7FB205F;
-        Tue,  8 Sep 2020 18:54:43 +0000 (GMT)
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 917EEB2064;
-        Tue,  8 Sep 2020 18:54:42 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.85.141.115])
-        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Tue,  8 Sep 2020 18:54:42 +0000 (GMT)
-Subject: Re: [PATCH v10 02/16] s390/vfio-ap: use new AP bus interface to
- search for queue devices
-To:     Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     freude@linux.ibm.com, cohuck@redhat.com, mjrosato@linux.ibm.com,
-        pasic@linux.ibm.com, alex.williamson@redhat.com,
-        kwankhede@nvidia.com, fiuczy@linux.ibm.com, frankja@linux.ibm.com,
-        david@redhat.com, imbrenda@linux.ibm.com, hca@linux.ibm.com,
-        gor@linux.ibm.com, kernel test robot <lkp@intel.com>
-References: <20200821195616.13554-1-akrowiak@linux.ibm.com>
- <20200821195616.13554-3-akrowiak@linux.ibm.com>
- <37cd9b7e-a619-6603-7e47-f5e85814d673@de.ibm.com>
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-Message-ID: <34c10327-8640-24e8-b882-96962cae5050@linux.ibm.com>
-Date:   Tue, 8 Sep 2020 14:54:42 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Tue, 8 Sep 2020 14:57:22 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB3BFC061573
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 11:57:21 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id o68so56302pfg.2
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 11:57:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=bZ0hdB3aDnQdw+HPiv6w6/rS4ctBv4+DDy7Q7mzZQJA=;
+        b=kQSLq1W11bCof3VZGivNs9jhTs6eQXMNg151pVMeum5ivTvrGyNKTmBC8o3aAVTMCD
+         fWHq03en9zOkEUNKYb6mITKGyBNqVTB2ceHUt93ApjVkk5vDvZP7SZyD5G3hpSk3mpff
+         TpEU3uBAzAcI94SB+dVKpTJKqYy/8/3vpSWho=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=bZ0hdB3aDnQdw+HPiv6w6/rS4ctBv4+DDy7Q7mzZQJA=;
+        b=SwFfZcnQLt4XKeJz7nsT37Q1ter+l3gS9o/06VXiF7eJnchMgHHM2pGZD+c/Kc4NTu
+         B/7ORp22ds48/Qv420N+j4Mj330L8xOp3J7QmlRULSOntpe8++UXttnv7Q3C/KjrY1NU
+         gcqnBhF1diZWDCNtjWiUncciHpNFYvbLl81XhsauKFljuSKwmffkiFVSD3+3qJCZOzaO
+         0OZ0UyOlu8hykLwgn0ejsWHYnzKutKyEH1Ct4FyDD9UiVtmQsr0KhxNcfkGDkrZbTtMc
+         OmmrYg4m7pCckw5mUJuDYHoIFibntRZwR/aCge/FHllR7tnkXo7f25PjEXGfHrf72Shk
+         2G2g==
+X-Gm-Message-State: AOAM531vU9Y82WTgqXNGR6sKz4JpOi+RTamqqtQc6yzR+kozUFjZ6NcZ
+        HOSjx/rrI4wlqIJx/KiMmMEHAQ==
+X-Google-Smtp-Source: ABdhPJwf6IhPcHFN4xXP49f62bCdnIGRRPklRPb2u3kzC8iwzMNMbimK4omnPZ6atruNND3LgaRG1g==
+X-Received: by 2002:a63:b202:: with SMTP id x2mr126839pge.432.1599591441474;
+        Tue, 08 Sep 2020 11:57:21 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:1:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id o6sm44291pju.25.2020.09.08.11.57.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Sep 2020 11:57:20 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <37cd9b7e-a619-6603-7e47-f5e85814d673@de.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-08_09:2020-09-08,2020-09-08 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0 mlxscore=0
- suspectscore=0 clxscore=1015 impostorscore=0 adultscore=0
- priorityscore=1501 malwarescore=0 bulkscore=0 spamscore=0 mlxlogscore=999
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009080171
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <010101745aaf685e-49eb2897-ee17-40bf-89e8-2adebe8d022f-000000@us-west-2.amazonses.com>
+References: <010101745aaf685e-49eb2897-ee17-40bf-89e8-2adebe8d022f-000000@us-west-2.amazonses.com>
+Subject: Re: [PATCH v5] drm/msm/dp: Add DP compliance tests on Snapdragon Chipsets
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     tanmay@codeaurora.org, abhinavk@codeaurora.org,
+        aravindh@codeaurora.org, khsieh@codeaurora.org, airlied@linux.ie,
+        daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+To:     Kuogee Hsieh <khsieh@codeaurora.org>, robdclark@gmail.com,
+        sean@poorly.run
+Date:   Tue, 08 Sep 2020 11:57:19 -0700
+Message-ID: <159959143931.454335.4137726843867018185@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Quoting Kuogee Hsieh (2020-09-04 12:54:39)
+> add event thread to execute events serially from event queue. Also
+> timeout mode is supported  which allow an event be deferred to be
+> executed at later time. Both link and phy compliant tests had been
+> done successfully.
+>=20
+> Changes in v2:
+> - Fix potential deadlock by removing redundant connect_mutex
+> - Check and enable link clock during modeset
+> - Drop unused code and fix function prototypes.
+> - set sink power to normal operation state (D0) before DPCD read
+>=20
+> Changes in v3:
+> - push idle pattern at main link before timing generator off
+> - add timeout handles for both connect and disconnect
+>=20
+> Changes in v4:
+> - add ST_SUSPEND_PENDING to handles suspend/modeset test operations
+> - clear dp phy aux interrupt status when ERR_DPPHY_AUX error
+> - send segment addr during edid read
+> - clear bpp depth before MISC register write
+>=20
+> Changes in v5:
+> - add ST_SUSPENDED to fix crash at resume
+>=20
+> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+>=20
+> This patch depends-on following series:
+> https://lore.kernel.org/dri-devel/20200818051137.21478-1-tanmay@codeauror=
+a.org/
 
+Can this be based on v12 of the patch series? v4 of this patch was based
+on v12, but this has regressed and gone back to v11.
 
-On 9/4/20 4:11 AM, Christian Borntraeger wrote:
->
-> On 21.08.20 21:56, Tony Krowiak wrote:
->> This patch refactor's the vfio_ap device driver to use the AP bus's
->> ap_get_qdev() function to retrieve the vfio_ap_queue struct containing
->> information about a queue that is bound to the vfio_ap device driver.
->> The bus's ap_get_qdev() function retrieves the queue device from a
->> hashtable keyed by APQN. This is much more efficient than looping over
->> the list of devices attached to the AP bus by several orders of
->> magnitude.
->>
->> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
->> Reported-by: kernel test robot <lkp@intel.com>
-> I think this can go. No need to mark that an earlier version of this patch had an issue.
-
-I was just following the instructions in the robot comments. I'll get 
-rid of it.
-
->
->
-> [...]
->
->> diff --git a/drivers/s390/crypto/vfio_ap_private.h b/drivers/s390/crypto/vfio_ap_private.h
->> index f46dde56b464..a2aa05bec718 100644
->> --- a/drivers/s390/crypto/vfio_ap_private.h
->> +++ b/drivers/s390/crypto/vfio_ap_private.h
->> @@ -18,6 +18,7 @@
->>   #include <linux/delay.h>
->>   #include <linux/mutex.h>
->>   #include <linux/kvm_host.h>
->> +#include <linux/hashtable.h>
-> I dont think that this header file needs it. Any user of it will now include this.
-> Can you move this include into the respective C file when the hash stuff is
-> used?
-
-I can.
-
->
->
-> Other than that this looks good.
-
+v12 is https://lkml.kernel.org/lkml/20200827211658.27479-1-tanmay@codeauror=
+a.org/
