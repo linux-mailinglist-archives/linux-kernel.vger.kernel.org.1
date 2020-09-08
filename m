@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98081261738
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:28:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D00326169E
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:15:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732033AbgIHR2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 13:28:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57572 "EHLO mail.kernel.org"
+        id S1731957AbgIHRPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 13:15:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57642 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731725AbgIHQQb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:16:31 -0400
+        id S1731784AbgIHQS6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 12:18:58 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 632C22483B;
-        Tue,  8 Sep 2020 15:44:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EA5862483E;
+        Tue,  8 Sep 2020 15:44:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599579894;
-        bh=mECtXbiRFJUbuleY1pmT6Ktiv9PX7GzbC8Bl9dfQ3N8=;
+        s=default; t=1599579900;
+        bh=fy6yFgsQnKEq5JeOEazG6HyDQXit/TLSbvWOcO0SZDg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qyuxbq7o6EpMboBHKmVD9k4u8EmSKyjOyz7Rkshj7bTaH4afpc2LviZmCbIKccRTm
-         qhXCdbG/fQMJ9O+xy+1ngMvxVbY5hmUBo2Xc4SP4+DW0fX5j5y/IGW3+8+RKab9Ywe
-         FcayABey6Q7MuyWfhpach+F1tCzPwBFo436q8TBI=
+        b=dGvdkBtPLLyRyzMrpTM9MgE2TC2/c3EU2KCC0BcJ3xGw73P4sRviY9mubu/o/+SKL
+         jr+BW1ik3Jjr2t/tN+PK7waqVrpvoxutwAF32xPlt8/hOXZVRev0Mf8cOKCHMhoFvm
+         WSXvF0h54IGAiBU72MxRkoEzcDup4BxWDAhAoWZg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Sandeen <sandeen@redhat.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 047/129] xfs: fix boundary test in xfs_attr_shortform_verify
-Date:   Tue,  8 Sep 2020 17:24:48 +0200
-Message-Id: <20200908152232.053568703@linuxfoundation.org>
+        stable@vger.kernel.org, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 049/129] media: vicodec: add missing v4l2_ctrl_request_hdl_put()
+Date:   Tue,  8 Sep 2020 17:24:50 +0200
+Message-Id: <20200908152232.163255138@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200908152229.689878733@linuxfoundation.org>
 References: <20200908152229.689878733@linuxfoundation.org>
@@ -44,52 +45,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Sandeen <sandeen@redhat.com>
+From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 
-[ Upstream commit f4020438fab05364018c91f7e02ebdd192085933 ]
+[ Upstream commit 2e7c8fb8942773f412fe12f3b63e8bb92c18ab3f ]
 
-The boundary test for the fixed-offset parts of xfs_attr_sf_entry in
-xfs_attr_shortform_verify is off by one, because the variable array
-at the end is defined as nameval[1] not nameval[].
-Hence we need to subtract 1 from the calculation.
+The check for a required control in the request was missing a call to
+v4l2_ctrl_request_hdl_put(), so the control request object was never
+released.
 
-This can be shown by:
-
-# touch file
-# setfattr -n root.a file
-
-and verifications will fail when it's written to disk.
-
-This only matters for a last attribute which has a single-byte name
-and no value, otherwise the combination of namelen & valuelen will
-push endp further out and this test won't fail.
-
-Fixes: 1e1bbd8e7ee06 ("xfs: create structure verifier function for shortform xattrs")
-Signed-off-by: Eric Sandeen <sandeen@redhat.com>
-Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
-Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Fixes: 997deb811bf5 ("media: vicodec: Add support for stateless decoder.")
+Reviewed-by: Ezequiel Garcia <ezequiel@collabora.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/xfs/libxfs/xfs_attr_leaf.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/media/platform/vicodec/vicodec-core.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/xfs/libxfs/xfs_attr_leaf.c b/fs/xfs/libxfs/xfs_attr_leaf.c
-index f0089e862216c..fe277ee5ec7c4 100644
---- a/fs/xfs/libxfs/xfs_attr_leaf.c
-+++ b/fs/xfs/libxfs/xfs_attr_leaf.c
-@@ -946,8 +946,10 @@ xfs_attr_shortform_verify(
- 		 * struct xfs_attr_sf_entry has a variable length.
- 		 * Check the fixed-offset parts of the structure are
- 		 * within the data buffer.
-+		 * xfs_attr_sf_entry is defined with a 1-byte variable
-+		 * array at the end, so we must subtract that off.
- 		 */
--		if (((char *)sfep + sizeof(*sfep)) >= endp)
-+		if (((char *)sfep + sizeof(*sfep) - 1) >= endp)
- 			return __this_address;
- 
- 		/* Don't allow names with known bad length. */
+diff --git a/drivers/media/platform/vicodec/vicodec-core.c b/drivers/media/platform/vicodec/vicodec-core.c
+index 84ec36156f73f..c77281d43f892 100644
+--- a/drivers/media/platform/vicodec/vicodec-core.c
++++ b/drivers/media/platform/vicodec/vicodec-core.c
+@@ -2052,6 +2052,7 @@ static int vicodec_request_validate(struct media_request *req)
+ 	}
+ 	ctrl = v4l2_ctrl_request_hdl_ctrl_find(hdl,
+ 					       vicodec_ctrl_stateless_state.id);
++	v4l2_ctrl_request_hdl_put(hdl);
+ 	if (!ctrl) {
+ 		v4l2_info(&ctx->dev->v4l2_dev,
+ 			  "Missing required codec control\n");
 -- 
 2.25.1
 
