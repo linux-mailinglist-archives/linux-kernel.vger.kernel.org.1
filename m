@@ -2,112 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C0132614C5
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:36:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 179A726153C
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:46:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731930AbgIHQg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 12:36:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34080 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731825AbgIHQcD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:32:03 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EA85B22228;
-        Tue,  8 Sep 2020 14:33:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599575593;
-        bh=+OrY6yic2b8j2M0/KDTR0UkjhKoGy5DZysMSvf4PNF8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YvT2gzuABobpfos/MY8/9MeUgl//rcFFIyJeM4wXqGoQbeswBnGzyCA6KjFlzB2DG
-         enukFSp6c9IAHivmEzHvglfK3yhERXFTnxfz/Q8XwhgtvdpK45iqPERkw8cvRZn/00
-         B0OMiWVQRB7OqLEMt6H38J4xs86RzFS4Vcmm3iH8=
-Date:   Tue, 8 Sep 2020 16:33:26 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     Ajay Kaher <akaher@vmware.com>, sashal@kernel.org,
-        cohuck@redhat.com, peterx@redhat.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        srivatsab@vmware.com, srivatsa@csail.mit.edu,
-        vsirnapalli@vmware.com
-Subject: Re: [PATCH v4.14.y 0/3] vfio: Fix for CVE-2020-12888
-Message-ID: <20200908143326.GA3451422@kroah.com>
-References: <1599509828-23596-1-git-send-email-akaher@vmware.com>
- <1599509828-23596-4-git-send-email-akaher@vmware.com>
- <20200908082904.045ff744@w520.home>
+        id S1731891AbgIHQqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 12:46:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59016 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731949AbgIHQ1O (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 12:27:14 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D52DC08EC65;
+        Tue,  8 Sep 2020 07:39:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=y4d0IpUN2yx9YRU65V5SiTPs5ZTZxBRK5kB3YxXQmEM=; b=pRRFZdvzJdD3AVoWZ9jUzrp/Q0
+        HKk1CID4JuLaYa0Mrj5PUoI6oQA5ciqJLBt5n5ag5rsIR1An2Ka5mAEm2114XrYmUFMhl45Xo5Tgw
+        1f/vNIsf9lGV3nxP8kEE6lE06fxMwHrKgMQu0pm3I0x/IyhLrqz+KKXAANGDWrG7AVVjPFzF5xi3j
+        b+2cyyoXEAUSsyUS34TeeH0WHmQnA7c49k8282aVWJL0Rr7DiG9/VGMMMa2l+P0T1l1zriMKbxZya
+        xNWqdb2Fviuue9DuvWQYMq8RKd6rulRyNI2IoQ+PtU88jlKEYqHk3sh4DyJcAunFrK+qy1HINMR77
+        ZUuxAv5A==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kFeld-00026L-QW; Tue, 08 Sep 2020 14:39:04 +0000
+Subject: Re: linux-next: Tree for Sep 2 (lib/ubsan.c)
+To:     Brendan Higgins <brendanhiggins@google.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>
+References: <20200902180950.4bc7c4de@canb.auug.org.au>
+ <3abfa193-a56e-66ba-1080-885906fa0196@infradead.org>
+ <fdf322d4-cc01-2c85-67cd-86b2d6f4ebff@infradead.org>
+ <CAFd5g44g6OrL3fxQNRZ1rR0PruAty8tBZr8JDzM-oonZJRDZyw@mail.gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <84531c68-2ac8-924b-5e71-077f9abb2503@infradead.org>
+Date:   Tue, 8 Sep 2020 07:38:31 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200908082904.045ff744@w520.home>
+In-Reply-To: <CAFd5g44g6OrL3fxQNRZ1rR0PruAty8tBZr8JDzM-oonZJRDZyw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 08, 2020 at 08:29:04AM -0600, Alex Williamson wrote:
-> On Tue, 8 Sep 2020 01:47:08 +0530
-> Ajay Kaher <akaher@vmware.com> wrote:
+On 9/4/20 12:59 AM, Brendan Higgins wrote:
+> On Thu, Sep 3, 2020 at 11:12 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+>>
+>> On 9/2/20 8:44 AM, Randy Dunlap wrote:
+>>> On 9/2/20 1:09 AM, Stephen Rothwell wrote:
+>>>> Hi all,
+>>>>
+>>>> Changes since 20200828:
+>>>>
+>>>
+>>>
+>>> on i386:
+>>>
+>>> ../lib/ubsan.c: In function ‘ubsan_prologue’:
+>>> ../lib/ubsan.c:141:2: error: implicit declaration of function ‘kunit_fail_current_test’; did you mean ‘kunit_init_test’? [-Werror=implicit-function-declaration]
+>>>   kunit_fail_current_test();
+>>>
+>>>
+>>> Full randconfig file is attached.
+>>>
+>>
+>> Hi Brendan,
+>>
+>> Do you know anything about this build error?
+>>
+>> I can't find kunit_fail_current_test() anywhere.
 > 
-> > CVE-2020-12888 Kernel: vfio: access to disabled MMIO space of some
-> > devices may lead to DoS scenario
-> >     
-> > The VFIO modules allow users (guest VMs) to enable or disable access to the
-> > devices' MMIO memory address spaces. If a user attempts to access (read/write)
-> > the devices' MMIO address space when it is disabled, some h/w devices issue an
-> > interrupt to the CPU to indicate a fatal error condition, crashing the system.
-> > This flaw allows a guest user or process to crash the host system resulting in
-> > a denial of service.
-> >     
-> > Patch 1/ is to force the user fault if PFNMAP vma might be DMA mapped
-> > before user access.
-> >     
-> > Patch 2/ setup a vm_ops handler to support dynamic faulting instead of calling
-> > remap_pfn_range(). Also provides a list of vmas actively mapping the area which
-> > can later use to invalidate those mappings.
-> >     
-> > Patch 3/ block the user from accessing memory spaces which is disabled by using
-> > new vma list support to zap, or invalidate, those memory mappings in order to
-> > force them to be faulted back in on access.
-> >     
-> > Upstreamed patches link:
-> > https://lore.kernel.org/kvm/158871401328.15589.17598154478222071285.stgit@gimli.home
-> >         
-> > [PATCH v4.14.y 1/3]:
-> > Backporting of upsream commit 41311242221e:
-> > vfio/type1: Support faulting PFNMAP vmas
-> >         
-> > [PATCH v4.14.y 2/3]:
-> > Backporting of upsream commit 11c4cd07ba11:
-> > vfio-pci: Fault mmaps to enable vma tracking
-> >         
-> > [PATCH v4.14.y 3/3]:
-> > Backporting of upsream commit abafbc551fdd:
-> > vfio-pci: Invalidate mmaps and block MMIO access on disabled memory
-> > 
+> Yeah, this got applied for some reason without the prerequisite
+> patches. It is from a two patch series, the other being here:
 > 
-> I'd recommend also including the following or else SR-IOV VFs will be
-> broken for DPDK:
+> https://lore.kernel.org/linux-kselftest/20200813205722.1384108-1-urielguajardojr@gmail.com/
 > 
-> commit ebfa440ce38b7e2e04c3124aa89c8a9f4094cf21
-> Author: Alex Williamson <alex.williamson@redhat.com>
-> Date:   Thu Jun 25 11:04:23 2020 -0600
+> which in turn depends on another patchset which didn't make it into 5.9.
 > 
->     vfio/pci: Fix SR-IOV VF handling with MMIO blocking
->     
->     SR-IOV VFs do not implement the memory enable bit of the command
->     register, therefore this bit is not set in config space after
->     pci_enable_device().  This leads to an unintended difference
->     between PF and VF in hand-off state to the user.  We can correct
->     this by setting the initial value of the memory enable bit in our
->     virtualized config space.  There's really no need however to
->     ever fault a user on a VF though as this would only indicate an
->     error in the user's management of the enable bit, versus a PF
->     where the same access could trigger hardware faults.
->     
->     Fixes: abafbc551fdd ("vfio-pci: Invalidate mmaps and block MMIO access on disabled memory")
->     Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+> Again, I don't know why this was applied without it's prereqs. Sorry about that.
+> 
 
-Good catch, now queued up, thanks.
+Well.  Who is responsible for this small mess?
+It is still killing linux-next builds for me (2020-0908).
 
-greg k-h
+-- 
+~Randy
+
