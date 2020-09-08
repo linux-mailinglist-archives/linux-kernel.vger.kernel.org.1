@@ -2,162 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A39F726132E
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 17:07:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD1E8261371
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 17:24:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729455AbgIHPHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 11:07:05 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:51959 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1730177AbgIHPEU (ORCPT
+        id S1730479AbgIHPX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 11:23:58 -0400
+Received: from mslow2.mail.gandi.net ([217.70.178.242]:51082 "EHLO
+        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730287AbgIHPTS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:04:20 -0400
-Received: (qmail 790483 invoked by uid 1000); 8 Sep 2020 10:32:03 -0400
-Date:   Tue, 8 Sep 2020 10:32:03 -0400
-From:   "stern@rowland.harvard.edu" <stern@rowland.harvard.edu>
-To:     Hamish Martin <Hamish.Martin@alliedtelesis.co.nz>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Subject: Re: [PATCH 1/2] usb: ohci: Add per-port overcurrent quirk
-Message-ID: <20200908143203.GA789878@rowland.harvard.edu>
-References: <20200904032247.11345-1-hamish.martin@alliedtelesis.co.nz>
- <20200904032247.11345-2-hamish.martin@alliedtelesis.co.nz>
- <20200904154517.GB694058@rowland.harvard.edu>
- <9ba7b4dda9ef40e3c4c9b3f1c33075e04601ef61.camel@alliedtelesis.co.nz>
- <20200907145900.GC762136@rowland.harvard.edu>
- <d4523ef1d68202f492fc646455d67e0d4dee4898.camel@alliedtelesis.co.nz>
+        Tue, 8 Sep 2020 11:19:18 -0400
+Received: from relay6-d.mail.gandi.net (unknown [217.70.183.198])
+        by mslow2.mail.gandi.net (Postfix) with ESMTP id 961383B1372;
+        Tue,  8 Sep 2020 14:39:05 +0000 (UTC)
+X-Originating-IP: 2.224.242.101
+Received: from uno.localdomain (2-224-242-101.ip172.fastwebnet.it [2.224.242.101])
+        (Authenticated sender: jacopo@jmondi.org)
+        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 28C8EC0002;
+        Tue,  8 Sep 2020 14:31:09 +0000 (UTC)
+Date:   Tue, 8 Sep 2020 16:34:59 +0200
+From:   Jacopo Mondi <jacopo@jmondi.org>
+To:     Sakari Ailus <sakari.ailus@iki.fi>
+Cc:     Sowjanya Komatineni <skomatineni@nvidia.com>,
+        thierry.reding@gmail.com, jonathanh@nvidia.com, hverkuil@xs4all.nl,
+        jacopo+renesas@jmondi.org, luca@lucaceresoli.net,
+        leonl@leopardimaging.com, robh+dt@kernel.org, lgirdwood@gmail.com,
+        broonie@kernel.org, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 2/3] dt-bindings: media: imx274: Add optional input
+ clock and supplies
+Message-ID: <20200908143459.cn7luzj27nhjzymt@uno.localdomain>
+References: <1599012278-10203-1-git-send-email-skomatineni@nvidia.com>
+ <1599012278-10203-3-git-send-email-skomatineni@nvidia.com>
+ <20200903125542.nxiafnysatoexken@uno.localdomain>
+ <d3a1843c-5d73-cfa6-9611-405b905ddcd1@nvidia.com>
+ <20200903163525.p5z2adhp4wq453bs@uno.localdomain>
+ <f38bb328-b282-783b-3ac5-5441001d10b6@nvidia.com>
+ <20200908093341.GB834@valkosipuli.retiisi.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <d4523ef1d68202f492fc646455d67e0d4dee4898.camel@alliedtelesis.co.nz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200908093341.GB834@valkosipuli.retiisi.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 07, 2020 at 10:28:26PM +0000, Hamish Martin wrote:
-> On Mon, 2020-09-07 at 10:59 -0400, stern@rowland.harvard.edu wrote:
-> > On Mon, Sep 07, 2020 at 01:50:10AM +0000, Hamish Martin wrote:
-> > > Hi Alan,
-> > > 
-> > > Thanks for your quick feedback. My replies are inline below.
-> > > 
-> > > On Fri, 2020-09-04 at 11:45 -0400, Alan Stern wrote:
-> > > > On Fri, Sep 04, 2020 at 03:22:46PM +1200, Hamish Martin wrote:
-> > > > > Some integrated OHCI controller hubs do not expose all ports of
-> > > > > the
-> > > > > hub
-> > > > > to pins on the SoC. In some cases the unconnected ports
-> > > > > generate
-> > > > > spurious overcurrent events. For example the Broadcom
-> > > > > 56060/Ranger
-> > > > > 2 SoC
-> > > > > contains a nominally 3 port hub but only the first port is
-> > > > > wired.
-> > > > > 
-> > > > > Default behaviour for ohci-platform driver is to use "ganged"
-> > > > > overcurrent protection mode. This leads to the spurious
-> > > > > overcurrent
-> > > > > events affecting all ports in the hub.
-> > > > > 
-> > > > > Allow this to be rectified by specifying per-port overcurrent
-> > > > > protection
-> > > > > mode via the device tree.
-> > > > > 
-> > > > > Signed-off-by: Hamish Martin <hamish.martin@alliedtelesis.co.nz
+Hi Sakari, Sowjanya,
+
+On Tue, Sep 08, 2020 at 12:33:41PM +0300, Sakari Ailus wrote:
+> On Thu, Sep 03, 2020 at 09:40:57AM -0700, Sowjanya Komatineni wrote:
+> >
+> > On 9/3/20 9:35 AM, Jacopo Mondi wrote:
+> > > Hi Sowjanya,
+> > >
+> > > On Thu, Sep 03, 2020 at 09:05:27AM -0700, Sowjanya Komatineni wrote:
+> > > > On 9/3/20 5:55 AM, Jacopo Mondi wrote:
+> > > > > Hello Sowjanya,
+> > > > >
+> > > > > On Tue, Sep 01, 2020 at 07:04:37PM -0700, Sowjanya Komatineni wrote:
+> > > > > > This patch adds IMX274 optional external clock input and voltage
+> > > > > > supplies to device tree bindings.
 > > > > > >
-> > > > > ---
-> > > > >  drivers/usb/host/ohci-hcd.c      | 4 ++++
-> > > > >  drivers/usb/host/ohci-platform.c | 3 +++
-> > > > >  drivers/usb/host/ohci.h          | 1 +
-> > > > >  3 files changed, 8 insertions(+)
-> > > > > 
-> > > > > diff --git a/drivers/usb/host/ohci-hcd.c
-> > > > > b/drivers/usb/host/ohci-
-> > > > > hcd.c
-> > > > > index dd37e77dae00..01e3d75e29d9 100644
-> > > > > --- a/drivers/usb/host/ohci-hcd.c
-> > > > > +++ b/drivers/usb/host/ohci-hcd.c
-> > > > > @@ -687,6 +687,10 @@ static int ohci_run (struct ohci_hcd
-> > > > > *ohci)
-> > > > >  		val |= RH_A_NPS;
-> > > > >  		ohci_writel (ohci, val, &ohci->regs-
-> > > > > >roothub.a);
-> > > > >  	}
-> > > > > +	if (ohci->flags & OHCI_QUIRK_PER_PORT_OC) {
-> > > > > +		val |= RH_A_OCPM;
-> > > > > +		ohci_writel(ohci, val, &ohci->regs->roothub.a);
-> > > > > +	}
-> > > > 
-> > > > I don't think this is right, for two reasons.  First, isn't per-
-> > > > port 
-> > > > overcurrent protection the default?
-> > > 
-> > > Not as far as I understand the current code. Just above where my
-> > > patch
-> > > applies, the RH_A_OCPM (and RH_A_PSM) bits are explicitly cleared
-> > > in
-> > > 'val' with:
-> > >     val &= ~(RH_A_PSM | RH_A_OCPM);
-> > > 
-> > > This, coupled with the OHCI_QUIRK_HUB_POWER being set by virtue of
-> > > the
-> > > 'distrust_firmware' module param defaulting true, reads to me like
-> > > the
-> > > default is for ganged over-current protection. And that is my
-> > > experience in this case. 
-> > 
-> > You're right about that.  I hadn't noticed before; it makes little
-> > sense 
-> > to have a quirk that defaults to true.
-> > 
-> > It's not easy to tell the full story from the kernel history; that 
-> > module parameter predates the Git era.  I did learn that it was
-> > modified 
-> > in 2.6.3-rc3 and goes back even farther: see
-> > 
-> > 	https://marc.info/?l=linux-usb-devel&m=110628457424684&w=2
-> > 
-> > > If none of the quirks are selected then all of the fiddling with
-> > > 'val'
-> > > never gets written to 'ohci->regs->roothub.a'
-> > > 
-> > > I'd appreciate your reading of that analysis because I'm by no
-> > > means
-> > > sure of it.
-> > > 
-> > > > 
-> > > > Second, RH_A_OCPM doesn't do anything unless RH_A_NOCP is clear.
-> > > 
-> > > Correct, and that is my mistake. If I progress to a v2 of this
-> > > patch I
-> > > will update accordingly.
-> > 
-> > Shall we try changing the parameter's default value?  The USB
-> > subsystem 
-> > is a lot more mature and reliable now than it was back in 2004.
-> 
-> That doesn't really help me in my particular case. I tried turning the
-> param off and that just leads to the roothub.a reg not being modified
-> at all (and ganged over-current protection being left in place).
-> 
-> So, I guess I'm still back to my original idea of adding a new quirk
-> (perhaps quirk is not the best name for it in this case) that allows
-> the per-port over-current to be selected.
-> If you would rather that this not be a quirk and I rework the code such
-> that if no other quirks are selected then we configure for per-port
-> over-current as the default then I can do that too. If you expect per-
-> port over-current to be the default then explicit code that enforces
-> that might be best.
-> 
-> What's the best approach?
+> > > > > > Reviewed-by: Luca Ceresoli <luca@lucaceresoli.net>
+> > > > > > Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
+> > > > > > ---
+> > > > > >    .../devicetree/bindings/media/i2c/sony,imx274.yaml  | 21 +++++++++++++++++++++
+> > > > > >    1 file changed, 21 insertions(+)
+> > > > > >
+> > > > > > diff --git a/Documentation/devicetree/bindings/media/i2c/sony,imx274.yaml b/Documentation/devicetree/bindings/media/i2c/sony,imx274.yaml
+> > > > > > index 7ae47a6..57e7176 100644
+> > > > > > --- a/Documentation/devicetree/bindings/media/i2c/sony,imx274.yaml
+> > > > > > +++ b/Documentation/devicetree/bindings/media/i2c/sony,imx274.yaml
+> > > > > > @@ -25,6 +25,27 @@ properties:
+> > > > > >      reset-gpios:
+> > > > > >        maxItems: 1
+> > > > > >
+> > > > > I just sent an update to my json-schema conversion of this bindings
+> > > > > document (not yet on patchwork, sorry) and Sakari pointed me to the
+> > > > > fact in between my v2 and my v4 this patch from you went in:
+> > > > > 4ea3273d24b ("dt-bindings: media: imx274: Add optional input clock and supplies")
+> > > > >
+> > > > > I should probably now update my bindings conversion patch, basically
+> > > > > taking in what you've done here, but I would have one question.
+> > > > >
+> > > > > > +  clocks:
+> > > > > > +    maxItems: 1
+> > > > > > +    description: Reference to the sensor input clock
+> > > > > > +
+> > > > > > +  clock-names:
+> > > > > > +    maxItems: 1
+> > > > > > +    items:
+> > > > > > +      - const: inck
+> > > > > > +
+> > > > > > +  vana-supply:
+> > > > > > +    description:
+> > > > > > +      Analog voltage supply, 2.8 volts
+> > > > > > +
+> > > > > > +  vdig-supply:
+> > > > > > +    description:
+> > > > > > +      Digital IO voltage supply, 1.8 volts
+> > > > > > +
+> > > > > > +  vddl-supply:
+> > > > > > +    description:
+> > > > > > +      Digital core voltage supply, 1.2 volts
+> > > > > 4ea3273d24b introduced these regulators as VANA-supply, VDIG-supply
+> > > > > and VDDL-supply (please note the upper-case names). This version uses
+> > > > > lower-case ones instead. Is this intentional ? The driver currently
+> > > > > does not parse any of these if I'm not mistaken, but as the bindings
+> > > > > in textual form defines an ABI which should be preserved during the
+> > > > > conversion to json-schema, should these be kept in upper-case ?
+> > > > >
+> > > > > Thanks
+> > > > >      j
+> > > > Yes, based on feedback lower case was recommended. So, changed to use
+> > > > lower-case names.
+> > > >
+> > > > These properties were not used by driver currently and from my prior series
+> > > > only dt-binding got merged as  no feedback was received on it for all prior
+> > > > versions.
+> > > >
+> > > > So, should be ok to change to lower-case as there properties are introduced
+> > > > now and driver update using these properties is under review
+> > > >
+> > > Well, I see that patch went in v5.9-rc1, so it will be part of v5.9.
+> > >
+> > > If the bindings update goes in in v5.10 (or whatever comes after v5.9)
+> > > then we have a problem, as the DTB created for v5.9 won't work anymore
+> > > on any later version, and that should not happen. Alternatively, a fix
+> > > for the next -rc release could be fast-tracked, but you would
+> > > need to synchronize with the dt maintainers for that and make a patch
+> > > for the existing .txt bindings file.
+> > >
+> > > If the name change happens in the yaml file and one release is made
+> > > with the old names, then we're stuck with those forever and ever, if I
+> > > got the situation right.
+> > >
+> > > Please check with the dt and media maintainers, or they can comment
+> > > here if they glance through these lines.
+> > >
+> > > Thanks
+> > >    j
+> >
+> > Hi Leon Luo,
+> >
+> > I used upper case for regulator supply names in all prior 4 versions of
+> > IMX274 patch series as I see some other media i2c drivers doing it and
+> > dt-binding patch from v3 got merged in 5.9-rc1 which was using upper-case.
+> >
+> > Later received feedback from Sakari requesting to use lower-case names so
+> > updated to use lower case name now in v5.
+> >
+> > Not sure if we have timeline to squeeze in patch to change names to
+> > lower-case before they get into 5.10.
+> >
+> > Can you please comment?
+>
+> We can merge patches through the fixes branch if needed. That is not an
+> issue.
+>
 
-In the absence of any evidence to the contrary, I think we should make 
-per-port overcurrent handling be the default.  So yes, add code which 
-does that.
+Good! So I'll make a v5 of the json-schema bindings soon that includes
+the lower-case supplies and clock names and let's merge it as a fix in
+this release cycle.
 
-Alan Stern
+Sowjanya is this ok with you ?
+Sakari, I'll then trust you to fast-track the patch if no other
+issues!
+
+Thanks
+  j
+
+> >
+> > Sakari,
+> >
+> > Can you also help understand why can't we keep upper case for regulator
+> > supplies?
+> >
+> > I see some other media i2c drivers using upper case as well.
+>
+> The vast majority of bindings use lower case, that's it, simply.
+>
+> --
+> Regards,
+>
+> Sakari Ailus
