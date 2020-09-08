@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC54E262119
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 22:29:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9771226211E
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 22:29:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730140AbgIHU3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 16:29:10 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:56846 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728184AbgIHU3E (ORCPT
+        id S1730263AbgIHU3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 16:29:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41026 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729670AbgIHU3E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 8 Sep 2020 16:29:04 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCFCDC061756
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 13:29:03 -0700 (PDT)
 From:   John Ogness <john.ogness@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1599596941;
+        s=2020; t=1599596942;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=OmfOJhJGeZam4W8hd+NxCaKhrjMMSs2RZWBSk5gH5+I=;
-        b=YLy1dUAjrkO7qcxtibLWTsQn0THy1435mJlqzfhtCgUj94GiRS0q0rcUwsrBPJgZKXdgux
-        F6Qzc+1Dy8Ke7faRlBFUGi4A1A9I3j8wUdMj0GIwcQIHmVd+AceEdnLgjdkOV8cODxmeVR
-        +U//YQAgsYK2s3vVP4EInRgsZkp+NyGz2jDNFoen4PYpv5dwdCQSTIKBnyTQzR2UtNC4KB
-        EyDlT9p0/G7BR76KFj3kI2JkTjKjArquH3C80jkShInVbyEkluwhqhnGlYe9hHJDKt2T1B
-        Di82LPIe4gRP9fFACmOcm92DruKt+w/GYRVVanGNQJGNzK+6YPFQA238tot8yg==
+        bh=9eH+JYde9zpX06tIDLSAmyFfU5Jfnagpj3Shueijavc=;
+        b=vodQIQAKiZhdgt453F7C5py7aFqeXAy7oy8ay76FAZ+ZPCbChG0nrn84IRZ22LqbC6Na05
+        e8k7GmxdKRrJMxjTV2BbJO+/X0T8ndZbTTmevi8sje5Aw40MPJSeEjMScpduT/CWoVOR9f
+        s3gf8rLrdB8r+0wcCFp9vHiv06tBAGab38fUE7RffJuzUFZ2IN8kANYEmF9JeH4Ffry5nB
+        h3jSBDL9iqRcLgXAqeUGq3b3e/fk8cQjzuTCJiQUZ+vG7ym2wAn3RI5FYEcvQUUtgh5poR
+        Kk1xRQgLaG93FwPFBcl0VdfssHNzTLBx6+SJ0Ckg5Hhd2sLaY9hDekiTgaT38A==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1599596941;
+        s=2020e; t=1599596942;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=OmfOJhJGeZam4W8hd+NxCaKhrjMMSs2RZWBSk5gH5+I=;
-        b=Sf6t5Ggw80z8llsGefDmljc5f0W/4ewUz4qTH4Z/qdzy+WryDwpmBI92vcPcqX70qlsULk
-        S6l4hiOjJmP6e9AA==
+        bh=9eH+JYde9zpX06tIDLSAmyFfU5Jfnagpj3Shueijavc=;
+        b=F8sNOyr1mPXuRkzg0hNIwyppp2YCpCMPj3qW4Q1ZRxaiSXD+gmDNlgTvz5DauSlQRtZ7eh
+        Qj1656ttiMq111BQ==
 To:     Petr Mladek <pmladek@suse.com>
 Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
         Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
@@ -45,9 +48,9 @@ Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
         Andrea Parri <parri.andrea@gmail.com>,
         Paul McKenney <paulmck@kernel.org>, kexec@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH printk v4 3/6] printk: ringbuffer: clear initial reserved fields
-Date:   Tue,  8 Sep 2020 22:34:56 +0206
-Message-Id: <20200908202859.2736-4-john.ogness@linutronix.de>
+Subject: [PATCH printk v4 4/6] printk: ringbuffer: change representation of states
+Date:   Tue,  8 Sep 2020 22:34:57 +0206
+Message-Id: <20200908202859.2736-5-john.ogness@linutronix.de>
 In-Reply-To: <20200908202859.2736-1-john.ogness@linutronix.de>
 References: <20200908202859.2736-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
@@ -57,137 +60,212 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-prb_reserve() will set some meta data values and leave others
-uninitialized (or rather, containing the values of the previous
-wrap). Simplify the API by always clearing out all the fields.
-Only the sequence number is filled in. The caller is now
-responsible for filling in the rest of the meta data fields.
-In particular, for correctly filling in text and dict lengths.
+Rather than deriving the state by evaluating bits within the flags
+area of the state variable, assign the states explicit values and
+set those values in the flags area. Introduce macros to make it
+simple to read and write state values for the state variable.
+
+Although the functionality is preserved, the binary representation
+for the states is changed.
 
 Signed-off-by: John Ogness <john.ogness@linutronix.de>
 ---
- kernel/printk/printk.c            | 12 ++++++++----
- kernel/printk/printk_ringbuffer.c | 30 ++++++++++++++++++------------
- 2 files changed, 26 insertions(+), 16 deletions(-)
+ Documentation/admin-guide/kdump/gdbmacros.txt | 12 ++++---
+ kernel/printk/printk_ringbuffer.c             | 28 +++++------------
+ kernel/printk/printk_ringbuffer.h             | 31 ++++++++++++-------
+ scripts/gdb/linux/dmesg.py                    | 11 ++++---
+ 4 files changed, 41 insertions(+), 41 deletions(-)
 
-diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index fec71229169e..964b5701688f 100644
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -520,8 +520,11 @@ static int log_store(u32 caller_id, int facility, int level,
- 	memcpy(&r.text_buf[0], text, text_len);
- 	if (trunc_msg_len)
- 		memcpy(&r.text_buf[text_len], trunc_msg, trunc_msg_len);
--	if (r.dict_buf)
-+	r.info->text_len = text_len + trunc_msg_len;
-+	if (r.dict_buf) {
- 		memcpy(&r.dict_buf[0], dict, dict_len);
-+		r.info->dict_len = dict_len;
-+	}
- 	r.info->facility = facility;
- 	r.info->level = level & 7;
- 	r.info->flags = flags & 0x1f;
-@@ -1069,10 +1072,11 @@ static unsigned int __init add_to_rb(struct printk_ringbuffer *rb,
- 	if (!prb_reserve(&e, rb, &dest_r))
- 		return 0;
+diff --git a/Documentation/admin-guide/kdump/gdbmacros.txt b/Documentation/admin-guide/kdump/gdbmacros.txt
+index 7adece30237e..8f533b751c46 100644
+--- a/Documentation/admin-guide/kdump/gdbmacros.txt
++++ b/Documentation/admin-guide/kdump/gdbmacros.txt
+@@ -295,9 +295,12 @@ document dump_record
+ end
  
--	memcpy(&dest_r.text_buf[0], &r->text_buf[0], dest_r.text_buf_size);
-+	memcpy(&dest_r.text_buf[0], &r->text_buf[0], r->info->text_len);
-+	dest_r.info->text_len = r->info->text_len;
- 	if (dest_r.dict_buf) {
--		memcpy(&dest_r.dict_buf[0], &r->dict_buf[0],
--		       dest_r.dict_buf_size);
-+		memcpy(&dest_r.dict_buf[0], &r->dict_buf[0], r->info->dict_len);
-+		dest_r.info->dict_len = r->info->dict_len;
- 	}
- 	dest_r.info->facility = r->info->facility;
- 	dest_r.info->level = r->info->level;
+ define dmesg
+-	set var $desc_committed = 1UL << ((sizeof(long) * 8) - 1)
+-	set var $flags_mask = 3UL << ((sizeof(long) * 8) - 2)
+-	set var $id_mask = ~$flags_mask
++	# definitions from kernel/printk/printk_ringbuffer.h
++	set var $desc_committed = 1
++	set var $desc_sv_bits = sizeof(long) * 8
++	set var $desc_flags_shift = $desc_sv_bits - 2
++	set var $desc_flags_mask = 3 << $desc_flags_shift
++	set var $id_mask = ~$desc_flags_mask
+ 
+ 	set var $desc_count = 1U << prb->desc_ring.count_bits
+ 	set var $prev_flags = 0
+@@ -309,7 +312,8 @@ define dmesg
+ 		set var $desc = &prb->desc_ring.descs[$id % $desc_count]
+ 
+ 		# skip non-committed record
+-		if (($desc->state_var.counter & $flags_mask) == $desc_committed)
++		set var $state = 3 & ($desc->state_var.counter >> $desc_flags_shift)
++		if ($state == $desc_committed)
+ 			dump_record $desc $prev_flags
+ 			set var $prev_flags = $desc->info.flags
+ 		end
 diff --git a/kernel/printk/printk_ringbuffer.c b/kernel/printk/printk_ringbuffer.c
-index 6ee5ebce1450..82347abb22a5 100644
+index 82347abb22a5..911fbe150e9a 100644
 --- a/kernel/printk/printk_ringbuffer.c
 +++ b/kernel/printk/printk_ringbuffer.c
-@@ -146,10 +146,13 @@
-  *
-  *	if (prb_reserve(&e, &test_rb, &r)) {
-  *		snprintf(r.text_buf, r.text_buf_size, "%s", textstr);
-+ *		r.info->text_len = strlen(textstr);
-  *
-  *		// dictionary allocation may have failed
-- *		if (r.dict_buf)
-+ *		if (r.dict_buf) {
-  *			snprintf(r.dict_buf, r.dict_buf_size, "%s", dictstr);
-+ *			r.info->dict_len = strlen(dictstr);
-+ *		}
-  *
-  *		r.info->ts_nsec = local_clock();
-  *
-@@ -1125,9 +1128,9 @@ static const char *get_data(struct prb_data_ring *data_ring,
-  * @dict_buf_size is set to 0. Writers must check this before writing to
-  * dictionary space.
-  *
-- * @info->text_len and @info->dict_len will already be set to @text_buf_size
-- * and @dict_buf_size, respectively. If dictionary space reservation fails,
-- * @info->dict_len is set to 0.
-+ * Important: @info->text_len and @info->dict_len need to be set correctly by
-+ *            the writer in order for data to be readable and/or extended.
-+ *            Their values are initialized to 0.
-  */
- bool prb_reserve(struct prb_reserved_entry *e, struct printk_ringbuffer *rb,
- 		 struct printk_record *r)
-@@ -1135,6 +1138,7 @@ bool prb_reserve(struct prb_reserved_entry *e, struct printk_ringbuffer *rb,
- 	struct prb_desc_ring *desc_ring = &rb->desc_ring;
- 	struct prb_desc *d;
- 	unsigned long id;
-+	u64 seq;
+@@ -348,14 +348,6 @@ static bool data_check_size(struct prb_data_ring *data_ring, unsigned int size)
+ 	return true;
+ }
  
- 	if (!data_check_size(&rb->text_data_ring, r->text_buf_size))
- 		goto fail;
-@@ -1159,6 +1163,14 @@ bool prb_reserve(struct prb_reserved_entry *e, struct printk_ringbuffer *rb,
- 
- 	d = to_desc(desc_ring, id);
- 
-+	/*
-+	 * All @info fields (except @seq) are cleared and must be filled in
-+	 * by the writer. Save @seq before clearing because it is used to
-+	 * determine the new sequence number.
-+	 */
-+	seq = d->info.seq;
-+	memset(&d->info, 0, sizeof(d->info));
-+
- 	/*
- 	 * Set the @e fields here so that prb_commit() can be used if
- 	 * text data allocation fails.
-@@ -1177,17 +1189,15 @@ bool prb_reserve(struct prb_reserved_entry *e, struct printk_ringbuffer *rb,
- 	 * See the "Bootstrap" comment block in printk_ringbuffer.h for
- 	 * details about how the initializer bootstraps the descriptors.
- 	 */
--	if (d->info.seq == 0 && DESC_INDEX(desc_ring, id) != 0)
-+	if (seq == 0 && DESC_INDEX(desc_ring, id) != 0)
- 		d->info.seq = DESC_INDEX(desc_ring, id);
- 	else
--		d->info.seq += DESCS_COUNT(desc_ring);
-+		d->info.seq = seq + DESCS_COUNT(desc_ring);
- 
- 	r->text_buf = data_alloc(rb, &rb->text_data_ring, r->text_buf_size,
- 				 &d->text_blk_lpos, id);
- 	/* If text data allocation fails, a data-less record is committed. */
- 	if (r->text_buf_size && !r->text_buf) {
--		d->info.text_len = 0;
--		d->info.dict_len = 0;
- 		prb_commit(e);
- 		/* prb_commit() re-enabled interrupts. */
- 		goto fail;
-@@ -1204,10 +1214,6 @@ bool prb_reserve(struct prb_reserved_entry *e, struct printk_ringbuffer *rb,
- 
- 	r->info = &d->info;
- 
--	/* Set default values for the sizes. */
--	d->info.text_len = r->text_buf_size;
--	d->info.dict_len = r->dict_buf_size;
+-/* The possible responses of a descriptor state-query. */
+-enum desc_state {
+-	desc_miss,	/* ID mismatch */
+-	desc_reserved,	/* reserved, in use by writer */
+-	desc_committed, /* committed, writer is done */
+-	desc_reusable,	/* free, not yet used by any writer */
+-};
 -
- 	/* Record full text space used by record. */
- 	e->text_space = space_used(&rb->text_data_ring, &d->text_blk_lpos);
+ /* Query the state of a descriptor. */
+ static enum desc_state get_desc_state(unsigned long id,
+ 				      unsigned long state_val)
+@@ -363,13 +355,7 @@ static enum desc_state get_desc_state(unsigned long id,
+ 	if (id != DESC_ID(state_val))
+ 		return desc_miss;
  
+-	if (state_val & DESC_REUSE_MASK)
+-		return desc_reusable;
+-
+-	if (state_val & DESC_COMMITTED_MASK)
+-		return desc_committed;
+-
+-	return desc_reserved;
++	return DESC_STATE(state_val);
+ }
+ 
+ /*
+@@ -467,8 +453,8 @@ static enum desc_state desc_read(struct prb_desc_ring *desc_ring,
+ static void desc_make_reusable(struct prb_desc_ring *desc_ring,
+ 			       unsigned long id)
+ {
+-	unsigned long val_committed = id | DESC_COMMITTED_MASK;
+-	unsigned long val_reusable = val_committed | DESC_REUSE_MASK;
++	unsigned long val_committed = DESC_SV(id, desc_committed);
++	unsigned long val_reusable = DESC_SV(id, desc_reusable);
+ 	struct prb_desc *desc = to_desc(desc_ring, id);
+ 	atomic_long_t *state_var = &desc->state_var;
+ 
+@@ -904,7 +890,7 @@ static bool desc_reserve(struct printk_ringbuffer *rb, unsigned long *id_out)
+ 	 */
+ 	prev_state_val = atomic_long_read(&desc->state_var); /* LMM(desc_reserve:E) */
+ 	if (prev_state_val &&
+-	    prev_state_val != (id_prev_wrap | DESC_COMMITTED_MASK | DESC_REUSE_MASK)) {
++	    get_desc_state(id_prev_wrap, prev_state_val) != desc_reusable) {
+ 		WARN_ON_ONCE(1);
+ 		return false;
+ 	}
+@@ -918,7 +904,7 @@ static bool desc_reserve(struct printk_ringbuffer *rb, unsigned long *id_out)
+ 	 * This pairs with desc_read:D.
+ 	 */
+ 	if (!atomic_long_try_cmpxchg(&desc->state_var, &prev_state_val,
+-				     id | 0)) { /* LMM(desc_reserve:F) */
++			DESC_SV(id, desc_reserved))) { /* LMM(desc_reserve:F) */
+ 		WARN_ON_ONCE(1);
+ 		return false;
+ 	}
+@@ -1237,7 +1223,7 @@ void prb_commit(struct prb_reserved_entry *e)
+ {
+ 	struct prb_desc_ring *desc_ring = &e->rb->desc_ring;
+ 	struct prb_desc *d = to_desc(desc_ring, e->id);
+-	unsigned long prev_state_val = e->id | 0;
++	unsigned long prev_state_val = DESC_SV(e->id, desc_reserved);
+ 
+ 	/* Now the writer has finished all writing: LMM(prb_commit:A) */
+ 
+@@ -1250,7 +1236,7 @@ void prb_commit(struct prb_reserved_entry *e)
+ 	 * this. This pairs with desc_read:B.
+ 	 */
+ 	if (!atomic_long_try_cmpxchg(&d->state_var, &prev_state_val,
+-				     e->id | DESC_COMMITTED_MASK)) { /* LMM(prb_commit:B) */
++			DESC_SV(e->id, desc_committed))) { /* LMM(prb_commit:B) */
+ 		WARN_ON_ONCE(1);
+ 	}
+ 
+diff --git a/kernel/printk/printk_ringbuffer.h b/kernel/printk/printk_ringbuffer.h
+index e6302da041f9..a9d85a6727b1 100644
+--- a/kernel/printk/printk_ringbuffer.h
++++ b/kernel/printk/printk_ringbuffer.h
+@@ -112,16 +112,25 @@ struct prb_reserved_entry {
+ 	unsigned int			text_space;
+ };
+ 
+-#define _DATA_SIZE(sz_bits)		(1UL << (sz_bits))
+-#define _DESCS_COUNT(ct_bits)		(1U << (ct_bits))
+-#define DESC_SV_BITS			(sizeof(unsigned long) * 8)
+-#define DESC_COMMITTED_MASK		(1UL << (DESC_SV_BITS - 1))
+-#define DESC_REUSE_MASK			(1UL << (DESC_SV_BITS - 2))
+-#define DESC_FLAGS_MASK			(DESC_COMMITTED_MASK | DESC_REUSE_MASK)
+-#define DESC_ID_MASK			(~DESC_FLAGS_MASK)
+-#define DESC_ID(sv)			((sv) & DESC_ID_MASK)
+-#define FAILED_LPOS			0x1
+-#define NO_LPOS				0x3
++/* The possible responses of a descriptor state-query. */
++enum desc_state {
++	desc_miss	=  -1,	/* ID mismatch (pseudo state) */
++	desc_reserved	= 0x0,	/* reserved, in use by writer */
++	desc_committed	= 0x1,	/* committed by writer */
++	desc_reusable	= 0x3,	/* free, not yet used by any writer */
++};
++
++#define _DATA_SIZE(sz_bits)	(1UL << (sz_bits))
++#define _DESCS_COUNT(ct_bits)	(1U << (ct_bits))
++#define DESC_SV_BITS		(sizeof(unsigned long) * 8)
++#define DESC_FLAGS_SHIFT	(DESC_SV_BITS - 2)
++#define DESC_FLAGS_MASK		(3UL << DESC_FLAGS_SHIFT)
++#define DESC_STATE(sv)		(3UL & (sv >> DESC_FLAGS_SHIFT))
++#define DESC_SV(id, state)	(((unsigned long)state << DESC_FLAGS_SHIFT) | id)
++#define DESC_ID_MASK		(~DESC_FLAGS_MASK)
++#define DESC_ID(sv)		((sv) & DESC_ID_MASK)
++#define FAILED_LPOS		0x1
++#define NO_LPOS			0x3
+ 
+ #define FAILED_BLK_LPOS	\
+ {				\
+@@ -213,7 +222,7 @@ struct prb_reserved_entry {
+  */
+ #define BLK0_LPOS(sz_bits)	(-(_DATA_SIZE(sz_bits)))
+ #define DESC0_ID(ct_bits)	DESC_ID(-(_DESCS_COUNT(ct_bits) + 1))
+-#define DESC0_SV(ct_bits)	(DESC_COMMITTED_MASK | DESC_REUSE_MASK | DESC0_ID(ct_bits))
++#define DESC0_SV(ct_bits)	DESC_SV(DESC0_ID(ct_bits), desc_reusable)
+ 
+ /*
+  * Define a ringbuffer with an external text data buffer. The same as
+diff --git a/scripts/gdb/linux/dmesg.py b/scripts/gdb/linux/dmesg.py
+index 6c6022012ea8..dd8c0b95063a 100644
+--- a/scripts/gdb/linux/dmesg.py
++++ b/scripts/gdb/linux/dmesg.py
+@@ -78,10 +78,10 @@ class LxDmesg(gdb.Command):
+         len_off = off + printk_info_type.get_type()['text_len'].bitpos // 8
+ 
+         # definitions from kernel/printk/printk_ringbuffer.h
++        desc_committed = 1
+         desc_sv_bits = utils.get_long_type().sizeof * 8
+-        desc_committed_mask = 1 << (desc_sv_bits - 1)
+-        desc_reuse_mask = 1 << (desc_sv_bits - 2)
+-        desc_flags_mask = desc_committed_mask | desc_reuse_mask
++        desc_flags_shift = desc_sv_bits - 2
++        desc_flags_mask = 3 << desc_flags_shift
+         desc_id_mask = ~desc_flags_mask
+ 
+         # read in tail and head descriptor ids
+@@ -96,8 +96,9 @@ class LxDmesg(gdb.Command):
+             desc_off = desc_sz * ind
+ 
+             # skip non-committed record
+-            state = utils.read_u64(descs, desc_off + sv_off + counter_off) & desc_flags_mask
+-            if state != desc_committed_mask:
++            state = 3 & (utils.read_u64(descs, desc_off + sv_off +
++                                        counter_off) >> desc_flags_shift)
++            if state != desc_committed:
+                 if did == head_id:
+                     break
+                 did = (did + 1) & desc_id_mask
 -- 
 2.20.1
 
