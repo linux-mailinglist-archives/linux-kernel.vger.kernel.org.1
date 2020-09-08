@@ -2,42 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28A9B260C14
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 09:33:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84443260C1A
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 09:33:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729548AbgIHHd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 03:33:29 -0400
-Received: from mail-il1-f206.google.com ([209.85.166.206]:51673 "EHLO
-        mail-il1-f206.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729499AbgIHHdU (ORCPT
+        id S1729598AbgIHHdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 03:33:44 -0400
+Received: from mail-il1-f208.google.com ([209.85.166.208]:51675 "EHLO
+        mail-il1-f208.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729490AbgIHHdV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 03:33:20 -0400
-Received: by mail-il1-f206.google.com with SMTP id i80so487866ild.18
+        Tue, 8 Sep 2020 03:33:21 -0400
+Received: by mail-il1-f208.google.com with SMTP id i80so487875ild.18
         for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 00:33:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=Qdoy1fNxR3DbTJRTFFfZS+5ZeYZDGPLwqlgNTZKWLDU=;
-        b=R+U3Dl2jro8DBzboTEdG/IHlua+7hz/unXV1quFEafATRc9ccYlScM1h6qxONLqYIn
-         h3kkdYfLjy+GlZQ7bCCi4C7h3plsnFjBIzqvJflnKqmwLJy4jHQwWX0RdKm0MGXIeX4x
-         97BatmX7Fd4jxzV95VbyKSEJEaYopp/IcumReW8L36LKrrg6PrRcsl5DJESlnqmHTmgH
-         UZig8L8iQCv+++MxmOX++3+GT5rEVVOkZHMBx104sp6EFsR7YGjCS7kxKBiMHvBunvF2
-         KKyLN6f4+96UG1mZaXkqYESkN7dE3nsg7aI94y50IkrbA4inhoU66N8SbbDmS/MY6eqq
-         gbUg==
-X-Gm-Message-State: AOAM530FqWUVIpH0K7qXNaX+BgTsu0ku6c+rKDO3FDzWk/w/H2gZ4i2Z
-        LUUSILZS0qMG+oSVwOZs+OqcwV0BDkQH9HdvBIA9KynHaaZW
-X-Google-Smtp-Source: ABdhPJzNnCpdH5w3DalyoAVHVYiUvdBRPjrYY6mrYRfFNWcBJhzvqUZZ8/+vQ61IuBKCzHHHj+BeITDmjqvKk0tmzVW3q0rM4zcb
+        bh=DrM2WCpXJni+pWF+DYDXi6ZPwROH9NKgPGVrwdvcC8Y=;
+        b=Ih4V8EzZHKA0BKJcdOeqZ3qR+xG3jZJ12NjCIQ5t/ePMCmSNDC++EDRJszUqmEvBi2
+         Mm00htAgljutrel4l4/IC5GR2ixmjWjNcLD9Qk/jW2tUAX3C48MOQqmb16FkLBjwP2Si
+         UpKcTfgqEByhLlP3qOhGH3jzLRjRO5kEwRtj0XSfhUKMJZ86BDvZKJJPuYTeYPnRlLGy
+         NFxBBZElxW7bV0BzXn9KwmB9VIpcDRvhFu8fg3T3sVS8dh1im0IL51vWTaV5E9+8d08j
+         /f5V8glIndjlTIUEx0IFcRtrdKnmfaradWY9CqZ3s37YxTC4JsG6p87h2Xc3zMzGoqdY
+         0CBA==
+X-Gm-Message-State: AOAM530oxLVjJjd0A4Hu3gq1qeXnNCCVcMdq5lJQfpvXYOriH0E9UWjJ
+        EoeOnlD/sVj1PB5jTEqjFXkBAT1Mq6SGwRmLvnZTugIJsnTU
+X-Google-Smtp-Source: ABdhPJxwxola6tjl5Xs6+98Cwd4t1PyoPXL1Rdc31C+ffEV6FNz4YYMQcG8FHq4dtiLGPk6Dfu1FjSLLkOH+GfEAiInawEhOqtpv
 MIME-Version: 1.0
-X-Received: by 2002:a92:2905:: with SMTP id l5mr21982823ilg.80.1599550399534;
+X-Received: by 2002:a6b:e718:: with SMTP id b24mr20719449ioh.9.1599550399960;
  Tue, 08 Sep 2020 00:33:19 -0700 (PDT)
 Date:   Tue, 08 Sep 2020 00:33:19 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000005d5b5905aec85912@google.com>
-Subject: BUG: unable to handle kernel NULL pointer dereference in kvm_vm_worker_thread
-From:   syzbot <syzbot+e4a6c438918d1db4e4fc@syzkaller.appspotmail.com>
-To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pbonzini@redhat.com, syzkaller-bugs@googlegroups.com
+Message-ID: <00000000000063dca305aec85988@google.com>
+Subject: BUG: spinlock bad magic in lock_sock_nested
+From:   syzbot <syzbot+eb47d1a545390e9fd5bf@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, johan.hedberg@gmail.com, kuba@kernel.org,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        marcel@holtmann.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
@@ -48,55 +50,84 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    15bc20c6 Merge tag 'tty-5.9-rc3' of git://git.kernel.org/p..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=15d432fe900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=978db74cb30aa994
-dashboard link: https://syzkaller.appspot.com/bug?extid=e4a6c438918d1db4e4fc
+HEAD commit:    0f091e43 netlabel: remove unused param from audit_log_form..
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=1171cbb6900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=61025c6fd3261bb1
+dashboard link: https://syzkaller.appspot.com/bug?extid=eb47d1a545390e9fd5bf
 compiler:       gcc (GCC) 10.1.0-syz 20200507
 
 Unfortunately, I don't have any reproducer for this issue yet.
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+e4a6c438918d1db4e4fc@syzkaller.appspotmail.com
+Reported-by: syzbot+eb47d1a545390e9fd5bf@syzkaller.appspotmail.com
 
-BUG: kernel NULL pointer dereference, address: 0000000000000000
-#PF: supervisor write access in kernel mode
-#PF: error_code(0x0002) - not-present page
-PGD 5d428067 P4D 5d428067 PUD 5d429067 PMD 0 
-Oops: 0002 [#1] PREEMPT SMP KASAN
-CPU: 0 PID: 7418 Comm: kvm-nx-lpage-re Not tainted 5.9.0-rc2-syzkaller #0
+BUG: spinlock bad magic on CPU#0, kworker/0:2/2721
+ lock: 0xffff88809395b088, .magic: ffff8880, .owner: <none>/-1, .owner_cpu: 4
+CPU: 0 PID: 2721 Comm: kworker/0:2 Not tainted 5.9.0-rc1-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:kvm_vm_worker_thread+0xe9/0x270 arch/x86/kvm/../../../virt/kvm/kvm_main.c:4912
-Code: 00 fc ff df 48 c1 ea 03 80 3c 02 00 0f 85 37 01 00 00 48 8b 7b 08 4c 89 ee e8 23 99 67 00 31 ff 41 89 c4 89 c6 e8 a7 4b 6d 00 <00> 00 00 0f 85 97 31 02 00 e8 19 4f 6d 00 48 8b 54 24 08 48 b8 00
-RSP: 0018:ffffc90012097ed0 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffffc90011e87cf8 RCX: ffffffff8106efe9
-RDX: 0000000000000000 RSI: ffff88804c02e040 RDI: 0000000000000005
-RBP: ffffc90011e87d08 R08: 0000000000000001 R09: ffffffff89bfd407
-R10: 0000000000000000 R11: 0000000000000160 R12: 0000000000000000
-R13: ffff88804c02e040 R14: ffffc90012081000 R15: 0000000000000000
+Workqueue: events l2cap_chan_timeout
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x18f/0x20d lib/dump_stack.c:118
+ debug_spin_lock_before kernel/locking/spinlock_debug.c:83 [inline]
+ do_raw_spin_lock+0x216/0x2b0 kernel/locking/spinlock_debug.c:112
+ spin_lock_bh include/linux/spinlock.h:359 [inline]
+ lock_sock_nested+0x3b/0x110 net/core/sock.c:3034
+ l2cap_sock_teardown_cb+0x88/0x400 net/bluetooth/l2cap_sock.c:1520
+ l2cap_chan_del+0xad/0x1300 net/bluetooth/l2cap_core.c:618
+ l2cap_chan_close+0x118/0xb10 net/bluetooth/l2cap_core.c:823
+ l2cap_chan_timeout+0x173/0x450 net/bluetooth/l2cap_core.c:436
+ process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
+ kthread+0x3b5/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+general protection fault, probably for non-canonical address 0xff16fb65bf176ca9: 0000 [#1] PREEMPT SMP KASAN
+KASAN: maybe wild-memory-access in range [0xf8b7fb2df8bb6548-0xf8b7fb2df8bb654f]
+CPU: 0 PID: 2721 Comm: kworker/0:2 Not tainted 5.9.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: events l2cap_chan_timeout
+RIP: 0010:__pv_queued_spin_lock_slowpath+0x538/0xaf0 kernel/locking/qspinlock.c:471
+Code: 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 50 05 00 00 4a 03 1c e5 00 59 84 89 48 b8 00 00 00 00 00 fc ff df 48 89 da 48 c1 ea 03 <80> 3c 02 00 0f 85 20 05 00 00 4c 8d 6b 14 48 89 6c 24 08 48 8b 2c
+RSP: 0018:ffffc9000947f9c8 EFLAGS: 00010a07
+RAX: dffffc0000000000 RBX: f8b7fb2df8bb654f RCX: ffffffff815b03df
+RDX: 1f16ff65bf176ca9 RSI: 0000000000000002 RDI: ffffffff8984fd38
+RBP: ffff88809395b088 R08: 0000000000000001 R09: ffff88809395b08b
+R10: ffffed101272b611 R11: 0000000000000160 R12: 0000000000001487
+R13: 0000000000000001 R14: 0000000000040000 R15: ffff8880ae636b80
 FS:  0000000000000000(0000) GS:ffff8880ae600000(0000) knlGS:0000000000000000
 CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000000000 CR3: 000000005d427000 CR4: 00000000001526f0
+CR2: 00007fb5e095ddb8 CR3: 000000005badb000 CR4: 00000000001506f0
 DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
 DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
+ pv_queued_spin_lock_slowpath arch/x86/include/asm/paravirt.h:656 [inline]
+ queued_spin_lock_slowpath arch/x86/include/asm/qspinlock.h:51 [inline]
+ queued_spin_lock include/asm-generic/qspinlock.h:85 [inline]
+ do_raw_spin_lock+0x200/0x2b0 kernel/locking/spinlock_debug.c:113
+ spin_lock_bh include/linux/spinlock.h:359 [inline]
+ lock_sock_nested+0x3b/0x110 net/core/sock.c:3034
+ l2cap_sock_teardown_cb+0x88/0x400 net/bluetooth/l2cap_sock.c:1520
+ l2cap_chan_del+0xad/0x1300 net/bluetooth/l2cap_core.c:618
+ l2cap_chan_close+0x118/0xb10 net/bluetooth/l2cap_core.c:823
+ l2cap_chan_timeout+0x173/0x450 net/bluetooth/l2cap_core.c:436
+ process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
  kthread+0x3b5/0x4a0 kernel/kthread.c:292
  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
 Modules linked in:
-CR2: 0000000000000000
----[ end trace 7a7affa1f4a7d557 ]---
-RIP: 0010:kvm_vm_worker_thread+0xe9/0x270 arch/x86/kvm/../../../virt/kvm/kvm_main.c:4912
-Code: 00 fc ff df 48 c1 ea 03 80 3c 02 00 0f 85 37 01 00 00 48 8b 7b 08 4c 89 ee e8 23 99 67 00 31 ff 41 89 c4 89 c6 e8 a7 4b 6d 00 <00> 00 00 0f 85 97 31 02 00 e8 19 4f 6d 00 48 8b 54 24 08 48 b8 00
-RSP: 0018:ffffc90012097ed0 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffffc90011e87cf8 RCX: ffffffff8106efe9
-RDX: 0000000000000000 RSI: ffff88804c02e040 RDI: 0000000000000005
-RBP: ffffc90011e87d08 R08: 0000000000000001 R09: ffffffff89bfd407
-R10: 0000000000000000 R11: 0000000000000160 R12: 0000000000000000
-R13: ffff88804c02e040 R14: ffffc90012081000 R15: 0000000000000000
+---[ end trace cdfef0620d680c8c ]---
+RIP: 0010:__pv_queued_spin_lock_slowpath+0x538/0xaf0 kernel/locking/qspinlock.c:471
+Code: 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 50 05 00 00 4a 03 1c e5 00 59 84 89 48 b8 00 00 00 00 00 fc ff df 48 89 da 48 c1 ea 03 <80> 3c 02 00 0f 85 20 05 00 00 4c 8d 6b 14 48 89 6c 24 08 48 8b 2c
+RSP: 0018:ffffc9000947f9c8 EFLAGS: 00010a07
+RAX: dffffc0000000000 RBX: f8b7fb2df8bb654f RCX: ffffffff815b03df
+RDX: 1f16ff65bf176ca9 RSI: 0000000000000002 RDI: ffffffff8984fd38
+RBP: ffff88809395b088 R08: 0000000000000001 R09: ffff88809395b08b
+R10: ffffed101272b611 R11: 0000000000000160 R12: 0000000000001487
+R13: 0000000000000001 R14: 0000000000040000 R15: ffff8880ae636b80
 FS:  0000000000000000(0000) GS:ffff8880ae600000(0000) knlGS:0000000000000000
 CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000000000 CR3: 000000005d427000 CR4: 00000000001526f0
+CR2: 00007fb5e095ddb8 CR3: 000000005badb000 CR4: 00000000001506f0
 DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
 DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
