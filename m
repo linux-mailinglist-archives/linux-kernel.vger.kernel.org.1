@@ -2,113 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59B09261F77
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 22:03:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52E64261FD6
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 22:07:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732011AbgIHUDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 16:03:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56616 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730447AbgIHPXy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:23:54 -0400
-Received: from gaia (unknown [46.69.195.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3E3942074D;
-        Tue,  8 Sep 2020 14:52:40 +0000 (UTC)
-Date:   Tue, 8 Sep 2020 15:52:37 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Elena Petrova <lenaptr@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        kasan-dev <kasan-dev@googlegroups.com>
-Subject: Re: [PATCH 22/35] arm64: mte: Enable in-kernel MTE
-Message-ID: <20200908145237.GI25591@gaia>
-References: <cover.1597425745.git.andreyknvl@google.com>
- <6a83a47d9954935d37a654978e96c951cc56a2f6.1597425745.git.andreyknvl@google.com>
- <CAAeHK+y-gJ5JKcGZYfZutKtb=BoM3qfkOyoTi7CtW6apHUcCAw@mail.gmail.com>
+        id S1731194AbgIHUHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 16:07:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47038 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730285AbgIHPUw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 11:20:52 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57790C0A3BEB;
+        Tue,  8 Sep 2020 07:55:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-Type:Content-ID:Content-Description;
+        bh=0u/YkNfz2765ChTMinGG6JPDmCovYyDZgG3vdcYFHY8=; b=TDmZ2xXcoGXTNzeEqQje2OrEN0
+        tJUThZVnfY/+jhjr38EK96Z6+YKRTzvma5UyzgPRh7rBnLiAu6smazcTVNJL2GUjYgU7SSuo5FIw6
+        ERtmOFoZpr7EQQI3bN2vMCSGQGLPSa+ULL/d8fd1NvqvHE3KiRksaH+l+G4xV02UIbqrEUT0c6KfV
+        /DcNDGhvUUpyOAbq99PireHT06M1bGrqd1ltn3XFKabhDWF5aF5O+rBgoyOMniVhgb5m91e+98+5x
+        R2Uz/l6Kpebqi65qaI5JfVFusWp6YoZ0lNkou9FjXFNtR3vHrdDKCJXc/offPT0YF6vZp3YRLxPD9
+        8qka3LmA==;
+Received: from [2001:4bb8:184:af1:3dc3:9c83:fc6c:e0f] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kFf0L-0002um-9p; Tue, 08 Sep 2020 14:53:54 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Denis Efremov <efremov@linux.com>, Tim Waugh <tim@cyberelk.net>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Borislav Petkov <bp@alien8.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Song Liu <song@kernel.org>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Finn Thain <fthain@telegraphics.com.au>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        linux-m68k@lists.linux-m68k.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-ide@vger.kernel.org,
+        linux-raid@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH 01/19] block: add a bdev_check_media_change helper
+Date:   Tue,  8 Sep 2020 16:53:29 +0200
+Message-Id: <20200908145347.2992670-2-hch@lst.de>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200908145347.2992670-1-hch@lst.de>
+References: <20200908145347.2992670-1-hch@lst.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAAeHK+y-gJ5JKcGZYfZutKtb=BoM3qfkOyoTi7CtW6apHUcCAw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 08, 2020 at 04:39:35PM +0200, Andrey Konovalov wrote:
-> On Fri, Aug 14, 2020 at 7:28 PM Andrey Konovalov <andreyknvl@google.com> wrote:
-> > From: Vincenzo Frascino <vincenzo.frascino@arm.com>
-> >
-> > The Tag Checking operation causes a synchronous data abort as
-> > a consequence of a tag check fault when MTE is configured in
-> > synchronous mode.
-> >
-> > Enable MTE in Synchronous mode in EL1 to provide a more immediate
-> > way of tag check failure detection in the kernel.
-> >
-> > As part of this change enable match-all tag for EL1 to allow the
-> > kernel to access user pages without faulting. This is required because
-> > the kernel does not have knowledge of the tags set by the user in a
-> > page.
-> >
-> > Note: For MTE, the TCF bit field in SCTLR_EL1 affects only EL1 in a
-> > similar way as TCF0 affects EL0.
-> >
-> > Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-> > ---
-> >  arch/arm64/kernel/cpufeature.c | 6 ++++++
-> >  1 file changed, 6 insertions(+)
-> >
-> > diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-> > index 4d3abb51f7d4..4d94af19d8f6 100644
-> > --- a/arch/arm64/kernel/cpufeature.c
-> > +++ b/arch/arm64/kernel/cpufeature.c
-> > @@ -1670,6 +1670,9 @@ static void cpu_enable_mte(struct arm64_cpu_capabilities const *cap)
-> >         write_sysreg_s(0, SYS_TFSR_EL1);
-> >         write_sysreg_s(0, SYS_TFSRE0_EL1);
-> >
-> > +       /* Enable Match-All at EL1 */
-> > +       sysreg_clear_set(tcr_el1, 0, SYS_TCR_EL1_TCMA1);
-> > +
-> >         /*
-> >          * CnP must be enabled only after the MAIR_EL1 register has been set
-> >          * up. Inconsistent MAIR_EL1 between CPUs sharing the same TLB may
-> > @@ -1687,6 +1690,9 @@ static void cpu_enable_mte(struct arm64_cpu_capabilities const *cap)
-> >         mair &= ~MAIR_ATTRIDX(MAIR_ATTR_MASK, MT_NORMAL_TAGGED);
-> >         mair |= MAIR_ATTRIDX(MAIR_ATTR_NORMAL_TAGGED, MT_NORMAL_TAGGED);
-> >         write_sysreg_s(mair, SYS_MAIR_EL1);
-> > +
-> > +       /* Enable MTE Sync Mode for EL1 */
-> > +       sysreg_clear_set(sctlr_el1, SCTLR_ELx_TCF_MASK, SCTLR_ELx_TCF_SYNC);
-> >         isb();
-> >
-> >         local_flush_tlb_all();
-> > --
-> > 2.28.0.220.ged08abb693-goog
-> >
-> 
-> Should we change this commit to enable in-kernel MTE only if
-> KASAN_HW_TAGS is enabled?
+Like check_disk_changed, except that it does not call ->revalidate_disk
+but leaves that to the caller.
 
-I think so. We don't currently have any patchset decoupling MTE from
-KASAN.
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+---
+ block/genhd.c         | 29 ++++++++++++++++++++++++++++-
+ fs/block_dev.c        | 17 +++--------------
+ include/linux/genhd.h |  2 +-
+ 3 files changed, 32 insertions(+), 16 deletions(-)
 
-See my other comment on TCR_EL1.TBI1, you'd need to set TCMA1 as well in
-the same proc.S file.
-
+diff --git a/block/genhd.c b/block/genhd.c
+index 081f1039d9367f..9d060e79eb31d8 100644
+--- a/block/genhd.c
++++ b/block/genhd.c
+@@ -2052,7 +2052,7 @@ void disk_flush_events(struct gendisk *disk, unsigned int mask)
+  * CONTEXT:
+  * Might sleep.
+  */
+-unsigned int disk_clear_events(struct gendisk *disk, unsigned int mask)
++static unsigned int disk_clear_events(struct gendisk *disk, unsigned int mask)
+ {
+ 	struct disk_events *ev = disk->ev;
+ 	unsigned int pending;
+@@ -2090,6 +2090,33 @@ unsigned int disk_clear_events(struct gendisk *disk, unsigned int mask)
+ 	return pending;
+ }
+ 
++/**
++ * bdev_check_media_change - check if a removable media has been changed
++ * @bdev: block device to check
++ *
++ * Check whether a removable media has been changed, and attempt to free all
++ * dentries and inodes and invalidates all block device page cache entries in
++ * that case.
++ *
++ * Returns %true if the block device changed, or %false if not.
++ */
++bool bdev_check_media_change(struct block_device *bdev)
++{
++	unsigned int events;
++
++	events = disk_clear_events(bdev->bd_disk, DISK_EVENT_MEDIA_CHANGE |
++				   DISK_EVENT_EJECT_REQUEST);
++	if (!(events & DISK_EVENT_MEDIA_CHANGE))
++		return false;
++
++	if (__invalidate_device(bdev, true))
++		pr_warn("VFS: busy inodes on changed media %s\n",
++			bdev->bd_disk->disk_name);
++	set_bit(BDEV_NEED_PART_SCAN, &bdev->bd_flags);
++	return true;
++}
++EXPORT_SYMBOL(bdev_check_media_change);
++
+ /*
+  * Separate this part out so that a different pointer for clearing_ptr can be
+  * passed in for disk_clear_events.
+diff --git a/fs/block_dev.c b/fs/block_dev.c
+index c70c41ecba4872..c6ac0bd22eca70 100644
+--- a/fs/block_dev.c
++++ b/fs/block_dev.c
+@@ -1379,21 +1379,10 @@ EXPORT_SYMBOL(revalidate_disk_size);
+  */
+ int check_disk_change(struct block_device *bdev)
+ {
+-	struct gendisk *disk = bdev->bd_disk;
+-	const struct block_device_operations *bdops = disk->fops;
+-	unsigned int events;
+-
+-	events = disk_clear_events(disk, DISK_EVENT_MEDIA_CHANGE |
+-				   DISK_EVENT_EJECT_REQUEST);
+-	if (!(events & DISK_EVENT_MEDIA_CHANGE))
++	if (!bdev_check_media_change(bdev))
+ 		return 0;
+-
+-	if (__invalidate_device(bdev, true))
+-		pr_warn("VFS: busy inodes on changed media %s\n",
+-			disk->disk_name);
+-	set_bit(BDEV_NEED_PART_SCAN, &bdev->bd_flags);
+-	if (bdops->revalidate_disk)
+-		bdops->revalidate_disk(bdev->bd_disk);
++	if (bdev->bd_disk->fops->revalidate_disk)
++		bdev->bd_disk->fops->revalidate_disk(bdev->bd_disk);
+ 	return 1;
+ }
+ 
+diff --git a/include/linux/genhd.h b/include/linux/genhd.h
+index c618b27292fcc8..322d48a207728a 100644
+--- a/include/linux/genhd.h
++++ b/include/linux/genhd.h
+@@ -315,7 +315,6 @@ extern void disk_unblock_events(struct gendisk *disk);
+ extern void disk_flush_events(struct gendisk *disk, unsigned int mask);
+ void set_capacity_revalidate_and_notify(struct gendisk *disk, sector_t size,
+ 		bool update_bdev);
+-extern unsigned int disk_clear_events(struct gendisk *disk, unsigned int mask);
+ 
+ /* drivers/char/random.c */
+ extern void add_disk_randomness(struct gendisk *disk) __latent_entropy;
+@@ -372,6 +371,7 @@ void unregister_blkdev(unsigned int major, const char *name);
+ 
+ void revalidate_disk_size(struct gendisk *disk, bool verbose);
+ int check_disk_change(struct block_device *bdev);
++bool bdev_check_media_change(struct block_device *bdev);
+ int __invalidate_device(struct block_device *bdev, bool kill_dirty);
+ void bd_set_nr_sectors(struct block_device *bdev, sector_t sectors);
+ 
 -- 
-Catalin
+2.28.0
+
