@@ -2,141 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC9E7261DE9
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:43:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45C6A261E48
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:50:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730854AbgIHTnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:43:43 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:49038 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730833AbgIHPvu (ORCPT
+        id S1732365AbgIHTu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 15:50:27 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:17744 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730811AbgIHPur (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:51:50 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 088FmxJI086290;
-        Tue, 8 Sep 2020 11:49:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=x24BGm+Fgj3ZmsKuCsewlqbYqVJ7sKXiAIAB+WpCSQQ=;
- b=o9fodx6aD+G5ovOeGdx+fReCygo8F9juW4hJnKEQD/cPODCcYnB/bESRUSSg0txDwJ3T
- s3+8p48PIEQWOvgrXNsEgEOlEzy9WhCb+NqT4vAKVPisD+cU5b/bX7skoEK8XLbP+Y2/
- z4thcEr1pcmoVBsucNvfM7/C+irxyK4o0Mp5+etHK2oTpTvs2PA5zNNYd/qI0Cb/fq4r
- 9yKNDycsJ40VLR6idpwh8cvjjexSVGQm/V5bFxNG58QYlfmrKN9+JGS+EOXURr3eSM2O
- 1S2JxrYWDL29kHIrcM4vKfxAe9F4fONUsRq7PHz468Oh8/bKKjjJy4VhxIp+qO9wdxci Nw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 33earbnp3s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Sep 2020 11:49:09 -0400
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 088Fn8gU087247;
-        Tue, 8 Sep 2020 11:49:08 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 33earbnp29-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Sep 2020 11:49:08 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 088FlvUq015855;
-        Tue, 8 Sep 2020 15:49:05 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma06ams.nl.ibm.com with ESMTP id 33dxdr0ryw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Sep 2020 15:49:05 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 088Fn2TJ55312698
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 8 Sep 2020 15:49:02 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B866C52050;
-        Tue,  8 Sep 2020 15:49:02 +0000 (GMT)
-Received: from oc3871087118.ibm.com (unknown [9.145.58.21])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTPS id 3B0BF52054;
-        Tue,  8 Sep 2020 15:49:01 +0000 (GMT)
-Date:   Tue, 8 Sep 2020 17:48:59 +0200
-From:   Alexander Gordeev <agordeev@linux.ibm.com>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-mm <linux-mm@kvack.org>, Paul Mackerras <paulus@samba.org>,
-        linux-sparc <sparclinux@vger.kernel.org>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Richard Weinberger <richard@nod.at>,
-        linux-x86 <x86@kernel.org>, Russell King <linux@armlinux.org.uk>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Jeff Dike <jdike@addtoit.com>,
-        linux-um <linux-um@lists.infradead.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-arm <linux-arm-kernel@lists.infradead.org>,
-        linux-power <linuxppc-dev@lists.ozlabs.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>
-Subject: Re: [RFC PATCH v2 3/3] mm: make generic pXd_addr_end() macros inline
- functions
-Message-ID: <20200908154859.GA11583@oc3871087118.ibm.com>
-References: <20200907180058.64880-1-gerald.schaefer@linux.ibm.com>
- <20200907180058.64880-4-gerald.schaefer@linux.ibm.com>
- <4c101685-5b29-dace-9dd2-b6f0ae193a9c@csgroup.eu>
+        Tue, 8 Sep 2020 11:50:47 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f57a7ad0000>; Tue, 08 Sep 2020 08:47:57 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Tue, 08 Sep 2020 08:50:11 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Tue, 08 Sep 2020 08:50:11 -0700
+Received: from [10.2.173.224] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 8 Sep
+ 2020 15:50:05 +0000
+From:   Zi Yan <ziy@nvidia.com>
+To:     Matthew Wilcox <willy@infradead.org>
+CC:     David Hildenbrand <david@redhat.com>, Roman Gushchin <guro@fb.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>, <linux-mm@kvack.org>,
+        "Rik van Riel" <riel@surriel.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        "Yang Shi" <yang.shi@linux.alibaba.com>,
+        David Nellans <dnellans@nvidia.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH 00/16] 1GB THP support on x86_64
+Date:   Tue, 8 Sep 2020 11:50:03 -0400
+X-Mailer: MailMate (1.13.1r5705)
+Message-ID: <ED165EDF-0B06-4857-B92A-A9AD8B7B5603@nvidia.com>
+In-Reply-To: <20200908142758.GF27537@casper.infradead.org>
+References: <20200902180628.4052244-1-zi.yan@sent.com>
+ <20200903142300.bjq2um5y5nwocvar@box>
+ <20200903163020.GG60440@carbon.dhcp.thefacebook.com>
+ <8e677ead-206d-08dd-d73e-569bd3803e3b@redhat.com>
+ <7E20392E-5ED7-4C22-9555-F3BAABF3CBE9@nvidia.com>
+ <20200908142758.GF27537@casper.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4c101685-5b29-dace-9dd2-b6f0ae193a9c@csgroup.eu>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-08_08:2020-09-08,2020-09-08 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 clxscore=1015
- adultscore=0 mlxscore=0 spamscore=0 mlxlogscore=999 impostorscore=0
- phishscore=0 bulkscore=0 priorityscore=1501 malwarescore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009080143
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: multipart/signed;
+        boundary="=_MailMate_E353A99C-21B4-44AC-A534-76899F22AA9E_=";
+        micalg=pgp-sha512; protocol="application/pgp-signature"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1599580077; bh=5Y3AtZ5y0BxzRZh9nWpGpshKd2sNX9a56t17hma0SLg=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:X-Mailer:Message-ID:
+         In-Reply-To:References:MIME-Version:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type;
+        b=IVSzWb0NwL9gV7u2Tmo0EYDh3vHPACAUsUeewRr3ApO22XiMMP6gTVsBFCbDGqe8f
+         aeNYDRnY1ZGzpa9BA6HCVX+5jMTwjo3NWy0WGYVRHbLmWXGZcR4tPjvwnuHyRyu+Ee
+         6by+7ENoXf2LrwsqtJnisW7eI9Ls0lI3spkby2EhyThQx4kfsXl5JKxluGgM3Y19I0
+         UaXm1d61PPkQ8GygM9KD5sSiUDeHJVihT06wn3GyccafJM2y0o/58ZguEDitexQHrP
+         4bWjAvP+a7Jw7WpPjPXmzzC/C0ADtwi6eEncbZ+vd4v/uRoUCEt4oWgdXBhbHBFeKH
+         gAVopH2kxSOTA==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 08, 2020 at 07:19:38AM +0200, Christophe Leroy wrote:
+--=_MailMate_E353A99C-21B4-44AC-A534-76899F22AA9E_=
+Content-Type: text/plain; charset="UTF-8"; markup=markdown
+Content-Transfer-Encoding: quoted-printable
 
-[...]
+On 8 Sep 2020, at 10:27, Matthew Wilcox wrote:
 
-> >diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
-> >index 67ebc22cf83d..d9e7d16c2263 100644
-> >--- a/include/linux/pgtable.h
-> >+++ b/include/linux/pgtable.h
-> >@@ -656,31 +656,35 @@ static inline int arch_unmap_one(struct mm_struct *mm,
-> >   */
-> >  #ifndef pgd_addr_end
-> >-#define pgd_addr_end(pgd, addr, end)					\
-> >-({	unsigned long __boundary = ((addr) + PGDIR_SIZE) & PGDIR_MASK;	\
-> >-	(__boundary - 1 < (end) - 1)? __boundary: (end);		\
-> >-})
-> >+#define pgd_addr_end pgd_addr_end
-> 
-> I think that #define is pointless, usually there is no such #define
-> for the default case.
+> On Tue, Sep 08, 2020 at 10:05:11AM -0400, Zi Yan wrote:
+>> On 8 Sep 2020, at 7:57, David Hildenbrand wrote:
+>>> I have concerns if we would silently use 1~GB THPs in most scenarios
+>>> where be would have used 2~MB THP. I'd appreciate a trigger to
+>>> explicitly enable that - MADV_HUGEPAGE is not sufficient because some=
 
-Default pgd_addr_end() gets overriden on s390 (arch/s390/include/asm/pgtable.h):
+>>> applications relying on that assume that the THP size will be 2~MB
+>>> (especially, if you want sparse, large VMAs).
+>>
+>> This patchset is not intended to silently use 1GB THP in place of 2MB =
+THP.
+>> First of all, there is a knob /sys/kernel/mm/transparent_hugepage/enab=
+le_1GB
+>> to enable 1GB THP explicitly. Also, 1GB THP is allocated from a reserv=
+ed CMA
+>> region (although I had alloc_contig_pages as a fallback, which can be =
+removed
+>> in next version), so users need to add hugepage_cma=3DnG kernel parame=
+ter to
+>> enable 1GB THP allocation. If a finer control is necessary, we can add=
 
-#define pgd_addr_end pgd_addr_end
-static inline unsigned long pgd_addr_end(pgd_t pgd, unsigned long addr, unsigned long end)
-{
-	return rste_addr_end_folded(pgd_val(pgd), addr, end);
-}
+>> a new MADV_HUGEPAGE_1GB for 1GB THP.
+>
+> I think we do need that flag.  Machines don't run a single workload
+> (arguably with VMs, we're getting closer to going back to the single
+> workload per machine, but that's a different matter).  So if there's
+> one app that wants 2MB pages and one that wants 1GB pages, we need to
+> be able to distinguish them.
+>
+> I could also see there being an app which benefits from 1GB for
+> one mapping and prefers 2GB for a different mapping, so I think the
+> per-mapping madvise flag is best.
+>
+> I'm a little wary of encoding the size of an x86 PUD in the Linux API
+> though.  Probably best to follow the example set in
+> include/uapi/asm-generic/hugetlb_encode.h, but I don't love it.  I
+> don't have a better suggestion though.
 
-> >+static inline unsigned long pgd_addr_end(pgd_t pgd, unsigned long addr, unsigned long end)
-> >+{	unsigned long __boundary = (addr + PGDIR_SIZE) & PGDIR_MASK;
-> >+	return (__boundary - 1 < end - 1) ? __boundary : end;
-> >+}
+Using hugeltb_encode.h makes sense to me. I will add it in the next versi=
+on.
+
+Thanks for the suggestion.
+
+
+=E2=80=94
+Best Regards,
+Yan Zi
+
+--=_MailMate_E353A99C-21B4-44AC-A534-76899F22AA9E_=
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJDBAEBCgAtFiEEh7yFAW3gwjwQ4C9anbJR82th+ooFAl9XqCsPHHppeUBudmlk
+aWEuY29tAAoJEJ2yUfNrYfqK7ZgP/2b6pm1R2b/HxqJJOJrbv3Z/ALVfMhcIFUNb
+kQZsSGuKjbg4UeJ9pcGdBl/3OwP7Dq7+o9WvvGmJZsRRLcu5Ha8tMzO8oLqC653z
+PC+x+bj1S/ppbhbASW/qFfiqhOd53bCpwJPHFNq3DRtHtThPnVbWDKsD6KpD0tkb
+qDQrX0clkqwaj/NpkKhyG+1wLV4Ak3jDKMjdnbBIySY66x3JlVdcYic+IB/UE5fz
++OvpdkSJ6pCU3VLc/ExQKwjfxALmPfe1ZpadHqyXKt6fXjWhL1Z7pGrv7+kLlrt9
+XnCIZXKKOnhVz+5kIfqH+/KXDS3pdJuxUXg3F9um4p1JA1td7gsV0nKW2uP8ItB+
+hwP1/GfoZDaS4dGfpI+nW75I6KmA2X19evmQXD26WEAweoMfa7E+jWgasyMgI5EK
+wyLzD9FUXO5yWe5UMG6dK7VW0LuglxZe/14HD3Jlq6P113dJGTLKbfaqklj6OOca
+WewVnIpSws9VODfQoykO30TdUvCkKzeFTZqHXFq4VRv4yr/M/T2opT4fUNwUdkSI
+mzjEr8f7LSuyZXKYLVkIUoIz5SBfUdTO76LJGQLvBE+0ZZoF2LbwIhdtAEy+43tq
+ABpvIqEIc0nX+7mRTZI4HN/qYFoBI+FMoe/uWmXFMc1Eq9rouODB+PpahTPYvJmm
+MUFEYKGA
+=MdJ0
+-----END PGP SIGNATURE-----
+
+--=_MailMate_E353A99C-21B4-44AC-A534-76899F22AA9E_=--
