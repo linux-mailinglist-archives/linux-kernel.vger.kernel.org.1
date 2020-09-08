@@ -2,65 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5B12261513
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:43:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4268E2615B4
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:55:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731983AbgIHQnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 12:43:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34080 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732018AbgIHQbi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:31:38 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2A26823BCF;
-        Tue,  8 Sep 2020 13:19:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599571196;
-        bh=rAhOf0mRJyskwrDl5gDj7QgaO0r1xaO5XluFHRKoSoY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=t7gRwRrIsULY6aGaJXEZAMxnc9Tm2SfQJv7VhAnCVCgwT7wZka5S1dPv3WVG0wN0i
-         9aWAhEmn4WX5tcU+RBo3+0COQDnZviRPL72xBpidcTip1EEsszQvxYZ0ddcNXS3buR
-         7vF79m1SX7U/JEq/ohB/eY8v8IeUiZtqQ4PCYp/0=
-Date:   Tue, 8 Sep 2020 15:20:08 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Tim Froidcoeur <tim.froidcoeur@tessares.net>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        matthieu.baerts@tessares.net, davem@davemloft.net
-Subject: Re: [PATCH 4.4 0/2] net: initialize fastreuse on inet_inherit_port
-Message-ID: <20200908132008.GD3173498@kroah.com>
-References: <20200902140513.866712-1-tim.froidcoeur@tessares.net>
+        id S1732095AbgIHQzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 12:55:04 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:23205 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1731968AbgIHQsG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 12:48:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599583682;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kk/MzQpl2YW+BRjUs+jKB6CtH3juIQy3EW0uS3+0BVs=;
+        b=FaiKCfdB8+U66neeWsffP/LUV0GoQtx+Cy1IXNrbabf5j2Ukf6E+ySYzCTCgbItvaCgN+7
+        T8BEIHHxpjZDN/IVIejmPgJSLMH2fSCnk9XL6QqStg05DQQTcALlN0y3ipFKHy/FKYvqVo
+        l8y8MA2HTwN/4Uv+VVYEh5yHNXm5VU8=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-372-XRUQI1pMNHuYOvpsHNAFYQ-1; Tue, 08 Sep 2020 09:20:27 -0400
+X-MC-Unique: XRUQI1pMNHuYOvpsHNAFYQ-1
+Received: by mail-ej1-f72.google.com with SMTP id gt18so6654466ejb.16
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 06:20:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=kk/MzQpl2YW+BRjUs+jKB6CtH3juIQy3EW0uS3+0BVs=;
+        b=CFtshIBx7OlaLgWfa+KTC9t1a1xZbwIYF2VdwYt53sgBMw0+A24LRHfYODryzZdJ1J
+         4JkyivphuW5tnav7Mo2/+ZQLfOfROEC71W33iysIFHTTLb95V99CmpzhnYrsjGPYnwtn
+         0cQnUN5x63iDEoYhWY6pNPp4Z1mPRuTaWffeG5tM2bO+WwktqLDw7pE3SFa1ZXotDp6B
+         Q8h4mejz1HwZgYFf6vfNEn8tEwwrN4LuHxrSgM2F6Zk/v1XMD70DE4qkpdbA+WIN9UWN
+         Wghv3KpHaaSCO+5EG88wtYRn/tr6MGKJ0spd7bCkuF+qXoyX1jWmaYZA8oyo1mS5ckJ8
+         eUTw==
+X-Gm-Message-State: AOAM530a6KpPVaexSdIrWzc7di/0M/kHEA+6aKas4PDIBDGLGFjIPOwM
+        OF+WywL2UEqBWluuDw2RuH8CsQ3XoPnsCJiiUKShZXa1OvpPc2QbymHg+s0c2s/uoJqdT0csQMc
+        Kvd30Y9K05mN4/rl7dYaGf2p6
+X-Received: by 2002:aa7:d697:: with SMTP id d23mr27729557edr.13.1599571225564;
+        Tue, 08 Sep 2020 06:20:25 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyJSCXKpUVVYMUY6y6pGIlWBQF6oylam73BShkdtH0Ngf5e1fkNihiTDrhP7Zi2Gs3qSlHKgQ==
+X-Received: by 2002:aa7:d697:: with SMTP id d23mr27729530edr.13.1599571225337;
+        Tue, 08 Sep 2020 06:20:25 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id n11sm14190638ejs.38.2020.09.08.06.20.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Sep 2020 06:20:24 -0700 (PDT)
+Subject: Re: linux-next: manual merge of the drm-intel tree with Linus' tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Guru Das Srinagesh <gurus@codeaurora.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20200908140022.67dd3801@canb.auug.org.au>
+ <db369f50-a3a0-2504-0628-ce5e6780d31b@redhat.com>
+ <20200908210449.1a4f8e52@canb.auug.org.au>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <d5c2cb83-8fc0-069e-7d4b-64a8ecf9a6b4@redhat.com>
+Date:   Tue, 8 Sep 2020 15:20:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200902140513.866712-1-tim.froidcoeur@tessares.net>
+In-Reply-To: <20200908210449.1a4f8e52@canb.auug.org.au>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 02, 2020 at 04:05:11PM +0200, Tim Froidcoeur wrote:
-> Fix for TPROXY initialization of fastreuse flag.
-> upstream patch was backported by Greg K-H to 4.14 and higher stable version.
-> 
-> see also https://lore.kernel.org/stable/20200818072007.GA9254@kroah.com
-> 
-> code in inet_csk_get_port for 4.4 (and 4.9) is different from
-> the upstream version, so these backports had to be adapted (a bit)
-> 
-> Tim Froidcoeur (2):
->   net: refactor bind_bucket fastreuse into helper
->   net: initialize fastreuse on inet_inherit_port
-> 
->  include/net/inet_connection_sock.h |  4 +++
->  net/ipv4/inet_connection_sock.c    | 46 ++++++++++++++++++------------
->  net/ipv4/inet_hashtables.c         |  1 +
->  3 files changed, 33 insertions(+), 18 deletions(-)
-> 
-> --
-> 2.25.1
+Hi,
 
-Now queued up, thanks.
+On 9/8/20 1:04 PM, Stephen Rothwell wrote:
+> Hi Hans,
+> 
+> On Tue, 8 Sep 2020 10:22:06 +0200 Hans de Goede <hdegoede@redhat.com> wrote:
+>>
+>> On 9/8/20 6:00 AM, Stephen Rothwell wrote:
+>>>
+>>> Today's linux-next merge of the drm-intel tree got a conflict in:
+>>>
+>>>     drivers/gpu/drm/i915/display/intel_panel.c
+>>>
+>>> between commit:
+>>>
+>>>     f8bd54d21904 ("drm/i915: panel: Use atomic PWM API for devs with an external PWM controller")
+> 
+> This should have been
+> 
+>    899c537c25f9 ("drm/i915: Use 64-bit division macro")
 
-greg k-h
+Yes that makes more sense.
+
+>>> from Linus' tree and commit:
+>>>
+>>>     6b51e7d23aa8 ("drm/i915: panel: Honor the VBT PWM frequency for devs with an external PWM controller")
+>>
+>> That doesn't sound correct, those are both commits from the drm-intel tree.
+>>
+>>> from the drm-intel tree.
+>>>
+>>> I fixed it up (I just used the latter)
+>>
+>> Just taking the drivers/gpu/drm/i915/display/intel_panel.c contents of:
+>>
+>> f8bd54d21904 ("drm/i915: panel: Use atomic PWM API for devs with an external PWM controller")
+>>
+>> Is the right thing to do, the problem is a difference in a line which gets
+>> removed in that commit.
+> 
+> Which is what I actually did, I guess :-)
+
+Yes, looks good.
+
+> Sorry about that.
+
+No problem and thank you for all the work you do on -next.
+
+Regards,
+
+Hans
+
