@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20506261E0F
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:46:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6703C261DF5
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:44:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732427AbgIHTqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:46:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52924 "EHLO
+        id S1730953AbgIHTob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 15:44:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730723AbgIHPuw (ORCPT
+        with ESMTP id S1730760AbgIHPvm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:50:52 -0400
+        Tue, 8 Sep 2020 11:51:42 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25992C0A3BE9;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 304B6C0A3BEA;
         Tue,  8 Sep 2020 07:55:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
         References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
         Content-Type:Content-ID:Content-Description;
-        bh=ZZPptDJA7zo1pAmFtcEHIHPbV2EOsr7b1cFpG8AIcSg=; b=LPHktdA1gD7zeQQmz1PPQ3v5qm
-        h/lMeXNocn437rcYbMj7jTZxiaHU9pV8FjH0aOTRVZNq+ApSVFhaLpL3XwoG1LVgIRy53Kvwob7XJ
-        UVvpLK5x7kC/XQZMOuvLuOUKMfdPXLRK1kO1mk+fwOCgBM1B+y2gqXiP+J4WtUb2bdDFsD0F0WFZ+
-        5JBzNyJnUQgdTBLrXVWuAMM02tA/zbsqD+3rgsJ752DILPi4zZoVJpMQAptJqjEMh8gLv2H2VUyO+
-        tzZ7u+gpJaZWNg9UW1SYEV4hSRQwzDPaAOWnmV5ynT1ATDJ7C61oaqwpLcto/+1Keo1msuFgsrlbp
-        K+aZB7fA==;
+        bh=AIbdaWqDOZXyI97EfNIUO6cOxzS/iRi/fiJ/sz/ZAL8=; b=GIpniUBInLXgvz98qrm3XEFBUU
+        jI7kZn/WrtbX4474Skgn5Iwip5HLeqPsKx5DEn4psj2SQF9WbRQFr6hKKl3VF9Ii5a+mcgkre1Sza
+        LvVllN82PZVtFinvq56fIrZ+RrfX3jfJo2TnUV32FrYcLzR4jFJCrT6NEMboJtHMh3kzEw0gcMwMo
+        kjJpuGwfTeKms3eK/8v1oiodNb55XfT3nmCYDptXrSPYQqqabbpKVI0KcHMhN7OEQmG5UydppiZWH
+        7B0QIIZZTgk9Gy3y1V11t3QVuwPYZecByMco+KFniEh8KoEeAjHYCnn8GTwF55IekYLSdRaFbpzFI
+        XKaiiNDg==;
 Received: from [2001:4bb8:184:af1:3dc3:9c83:fc6c:e0f] (helo=localhost)
         by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kFf0X-0002w7-Sk; Tue, 08 Sep 2020 14:54:08 +0000
+        id 1kFf0u-0002xt-QY; Tue, 08 Sep 2020 14:54:30 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Jens Axboe <axboe@kernel.dk>
 Cc:     Denis Efremov <efremov@linux.com>, Tim Waugh <tim@cyberelk.net>,
@@ -43,9 +43,9 @@ Cc:     Denis Efremov <efremov@linux.com>, Tim Waugh <tim@cyberelk.net>,
         linux-raid@vger.kernel.org, linux-scsi@vger.kernel.org,
         linux-fsdevel@vger.kernel.org,
         Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH 03/19] ataflop: use bdev_check_media_change
-Date:   Tue,  8 Sep 2020 16:53:31 +0200
-Message-Id: <20200908145347.2992670-4-hch@lst.de>
+Subject: [PATCH 08/19] xsysace: use bdev_check_media_change
+Date:   Tue,  8 Sep 2020 16:53:36 +0200
+Message-Id: <20200908145347.2992670-9-hch@lst.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200908145347.2992670-1-hch@lst.de>
 References: <20200908145347.2992670-1-hch@lst.de>
@@ -58,7 +58,7 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Switch to use bdev_check_media_change instead of check_disk_change and
-call floppy_revalidate manually.  Given that floppy_revalidate only
+call ace_revalidate_disk manually.  Given that ace_revalidate_disk only
 deals with media change events, the extra call into ->revalidate_disk
 from bdev_disk_changed is not required either, so stop wiring up the
 method.
@@ -66,41 +66,31 @@ method.
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
- drivers/block/ataflop.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/block/xsysace.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/block/ataflop.c b/drivers/block/ataflop.c
-index a50e13af030526..3e881fdb06e0ad 100644
---- a/drivers/block/ataflop.c
-+++ b/drivers/block/ataflop.c
-@@ -1732,7 +1732,8 @@ static int fd_locked_ioctl(struct block_device *bdev, fmode_t mode,
- 		/* invalidate the buffer track to force a reread */
- 		BufferDrive = -1;
- 		set_bit(drive, &fake_change);
--		check_disk_change(bdev);
-+		if (bdev_check_media_change(bdev))
-+			floppy_revalidate(bdev->bd_disk);
- 		return 0;
- 	default:
- 		return -EINVAL;
-@@ -1909,7 +1910,8 @@ static int floppy_open(struct block_device *bdev, fmode_t mode)
- 		return 0;
+diff --git a/drivers/block/xsysace.c b/drivers/block/xsysace.c
+index 5d8e0ab3f054f5..eefe542f2d9fff 100644
+--- a/drivers/block/xsysace.c
++++ b/drivers/block/xsysace.c
+@@ -922,7 +922,8 @@ static int ace_open(struct block_device *bdev, fmode_t mode)
+ 	ace->users++;
+ 	spin_unlock_irqrestore(&ace->lock, flags);
  
- 	if (mode & (FMODE_READ|FMODE_WRITE)) {
--		check_disk_change(bdev);
-+		if (bdev_check_media_change(bdev))
-+			floppy_revalidate(bdev->bd_disk);
- 		if (mode & FMODE_WRITE) {
- 			if (p->wpstat) {
- 				if (p->ref < 0)
-@@ -1953,7 +1955,6 @@ static const struct block_device_operations floppy_fops = {
- 	.release	= floppy_release,
- 	.ioctl		= fd_ioctl,
- 	.check_events	= floppy_check_events,
--	.revalidate_disk= floppy_revalidate,
+-	check_disk_change(bdev);
++	if (bdev_check_media_change(bdev))
++		ace_revalidate_disk(bdev->bd_disk);
+ 	mutex_unlock(&xsysace_mutex);
+ 
+ 	return 0;
+@@ -966,7 +967,6 @@ static const struct block_device_operations ace_fops = {
+ 	.open = ace_open,
+ 	.release = ace_release,
+ 	.check_events = ace_check_events,
+-	.revalidate_disk = ace_revalidate_disk,
+ 	.getgeo = ace_getgeo,
  };
  
- static const struct blk_mq_ops ataflop_mq_ops = {
 -- 
 2.28.0
 
