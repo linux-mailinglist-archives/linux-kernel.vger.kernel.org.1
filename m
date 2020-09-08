@@ -2,128 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47F2B261D4D
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:35:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 144DA261DB3
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:41:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732328AbgIHTfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:35:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53398 "EHLO
+        id S1732080AbgIHTlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 15:41:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730900AbgIHP5a (ORCPT
+        with ESMTP id S1730937AbgIHPyo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:57:30 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9412C0612A5;
-        Tue,  8 Sep 2020 06:06:59 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id mm21so8257754pjb.4;
-        Tue, 08 Sep 2020 06:06:59 -0700 (PDT)
+        Tue, 8 Sep 2020 11:54:44 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40BC9C0612A8
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 06:08:03 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id a65so17212783wme.5
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 06:08:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=HhJcpAM1sVTshyBaZ8DqM82F52ye06r+Vvl0X2hVcWg=;
-        b=XuW99k4dYGsFdgmEUUEsLFwx1KigPLt2dJlA7ZkVksTOQQy22ILceeLCzANYHRnNIU
-         7leZtuDfb1Ts3bg0g2Df1SQw2lLMQvu0mIy84RxNiRGYVStyZiv+KiQKTp+AoUOPOZQU
-         lfuEL8MyBMJCUO2rIluMXL8lWslBK2HnPxQD4v9sxuia0/xXiYcKa/3K78xmzxn6h2dp
-         QAyMt5JR0Vs1VUf5S6nSoFo0uCah2siU9L0RG63uURRc2XyL/I0DIOWn+I8Ki5OiAt/1
-         Ybzc4/rm8+T77s9rLeIQHUhVe9peVJrPvkEtyo2BSX26WVEOpdcpfucvbiv/LPE0EU7D
-         IdQQ==
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YaYfBY/nWyV15237QqlCB6gaunpe9sapW1LpGGaZFmI=;
+        b=PQ9FpH0sWVEYKXkmkpGFj8lM+SXrPTK7FsqwWAXuNeb0DermnRd5fNv24TZMEQMSi5
+         6rnR7/UFQT86UeHCZlIojA8tN/1UK70ZR4CuAm+RhnbYsM3fmVkkmKg1u2K/5DZBeIiT
+         F7psEX9g30KC4el3BNij5xIoWiLfg4iXkT4JOU8Qu4Gb6/j/dbVe7QckB3toI0QD3NSc
+         BUrLpK24R5GNTIAjreSy7244Y94uNWeuiOiXYtS8462EI+6ptbP6VFqS49GWgBIZCar7
+         SVF2YJpMvvBMn7pMCG3KmPKUk7WKH6sU65i03kq4p+nCS+6jt62w+QJOPnm4BG/lqnnZ
+         X24A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=HhJcpAM1sVTshyBaZ8DqM82F52ye06r+Vvl0X2hVcWg=;
-        b=NH2ZmAzkYzh2gRegwVfNlZ02D/jsJ8LHjJkXF+SDlCee/7p3u7itVavFwfG6TC/JtO
-         k0xYFyqDlDEKuu/3Ijx5JcJg/4hLFC4jKAk/Za5FckKf1uZIAxykAinU0UxZn+Pi7s0R
-         WvymA2yyATyEHUvN0SB5kmOJmC81JiztxOalVNah6cH3UV5XNhKSgOeRjF0kFGZazn5I
-         AVqjomb1Knuf39g4XcuJObEhfotx5HgwROsDxy0gj2fYN0rdc52DmFFTtjeLkMhjTv5q
-         pVkxhkzjh43rh3xRsg43va1Klq6rv29oxGXV1jc1fGjo9f75N/sK6GAkepW+d9CEi1zJ
-         F/Sw==
-X-Gm-Message-State: AOAM532lUYzCKqwYV/TZcq0ANGqwFDXNSwcrngQO3jS0JSMGbEOv3nwR
-        QiO422eGPE3tAbI+Gk49KggFLwnKAu0OFG8R
-X-Google-Smtp-Source: ABdhPJzvwq5L6QdMnyzEAjubzxihNYyRFloIuvT+kbZTTjPyszhhTLEBecg0Q+TjP/DLjV1G3oemFw==
-X-Received: by 2002:a17:90b:208:: with SMTP id fy8mr3958774pjb.153.1599570418913;
-        Tue, 08 Sep 2020 06:06:58 -0700 (PDT)
-Received: from haolee.github.io ([2600:3c01::f03c:91ff:fe02:b162])
-        by smtp.gmail.com with ESMTPSA id 13sm18498146pfp.3.2020.09.08.06.06.58
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YaYfBY/nWyV15237QqlCB6gaunpe9sapW1LpGGaZFmI=;
+        b=po0w+UV/AkurBVNEKnOVIxi6YxTtrtbA3yhxRiQsOHJAyTMDaAO1PimIHNOlivIHJM
+         o8xdWihAeuyU6RL1Ij0nHEUfpjbsivnPN6Ck69NLY8YPWQEEKxRadkHCzkvgPNzvUzcz
+         wyBQChAK8l/CnuePEB+s1g0ABdFFBHDAQg/rze1EcwUf2zW31KydFAfUEGHrPpGrya9x
+         dG9wbga9/G10r6tQbJUrGi4J836IxwbvcQ8JdecfjfdQUteK8ZfDV5t1Xi+LfenmiBAl
+         MUmsH75uaY6mBrQ6JnGTfj3mWHko4YwiQPztejtMK0Zi2k9524xjCIJhr8wjDP6IJiUU
+         3+1w==
+X-Gm-Message-State: AOAM532PHsTddrEJ6rXKOWITzg9jhOF5p2TOGDBMFJaTnkjMTX8eAzsd
+        WGB7C+PsjSslduLXP+k2E+Wpiw==
+X-Google-Smtp-Source: ABdhPJzslhyYw7bWYKOTM5J83rbaOJq0mY3hHSuDFQ686C4hzftuOd+FgwLykWDkYZu4RwLETxv0Sw==
+X-Received: by 2002:a1c:9e0e:: with SMTP id h14mr1690491wme.18.1599570482144;
+        Tue, 08 Sep 2020 06:08:02 -0700 (PDT)
+Received: from debian-brgl.home (lfbn-nic-1-68-20.w2-15.abo.wanadoo.fr. [2.15.159.20])
+        by smtp.gmail.com with ESMTPSA id b2sm32254400wmh.47.2020.09.08.06.08.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Sep 2020 06:06:58 -0700 (PDT)
-Date:   Tue, 8 Sep 2020 13:06:56 +0000
-From:   Hao Lee <haolee.swjtu@gmail.com>
-To:     viro@zeniv.linux.org.uk
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] fs: Eliminate a local variable to make the code more
- clear
-Message-ID: <20200908130656.GC22780@haolee.github.io>
-References: <20200729151740.GA3430@haolee.github.io>
+        Tue, 08 Sep 2020 06:08:01 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kent Gibson <warthog618@gmail.com>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        stable@vger.kernel.org
+Subject: [PATCH] gpio: mockup: fix resource leak in error path
+Date:   Tue,  8 Sep 2020 15:07:49 +0200
+Message-Id: <20200908130749.9948-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.26.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200729151740.GA3430@haolee.github.io>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ping
+From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-On Wed, Jul 29, 2020 at 03:21:28PM +0000, Hao Lee wrote:
-> The dentry local variable is introduced in 'commit 84d17192d2afd ("get
-> rid of full-hash scan on detaching vfsmounts")' to reduce the length of
-> some long statements for example
-> mutex_lock(&path->dentry->d_inode->i_mutex). We have already used
-> inode_lock(dentry->d_inode) to do the same thing now, and its length is
-> acceptable. Furthermore, it seems not concise that assign path->dentry
-> to local variable dentry in the statement before goto. So, this function
-> would be more clear if we eliminate the local variable dentry.
-> 
-> The function logic is not changed.
-> 
-> Signed-off-by: Hao Lee <haolee.swjtu@gmail.com>
-> ---
->  fs/namespace.c | 13 ++++++-------
->  1 file changed, 6 insertions(+), 7 deletions(-)
-> 
-> diff --git a/fs/namespace.c b/fs/namespace.c
-> index 4a0f600a3328..fcb93586fcc9 100644
-> --- a/fs/namespace.c
-> +++ b/fs/namespace.c
-> @@ -2187,20 +2187,19 @@ static int attach_recursive_mnt(struct mount *source_mnt,
->  static struct mountpoint *lock_mount(struct path *path)
->  {
->  	struct vfsmount *mnt;
-> -	struct dentry *dentry = path->dentry;
->  retry:
-> -	inode_lock(dentry->d_inode);
-> -	if (unlikely(cant_mount(dentry))) {
-> -		inode_unlock(dentry->d_inode);
-> +	inode_lock(path->dentry->d_inode);
-> +	if (unlikely(cant_mount(path->dentry))) {
-> +		inode_unlock(path->dentry->d_inode);
->  		return ERR_PTR(-ENOENT);
->  	}
->  	namespace_lock();
->  	mnt = lookup_mnt(path);
->  	if (likely(!mnt)) {
-> -		struct mountpoint *mp = get_mountpoint(dentry);
-> +		struct mountpoint *mp = get_mountpoint(path->dentry);
->  		if (IS_ERR(mp)) {
->  			namespace_unlock();
-> -			inode_unlock(dentry->d_inode);
-> +			inode_unlock(path->dentry->d_inode);
->  			return mp;
->  		}
->  		return mp;
-> @@ -2209,7 +2208,7 @@ static struct mountpoint *lock_mount(struct path *path)
->  	inode_unlock(path->dentry->d_inode);
->  	path_put(path);
->  	path->mnt = mnt;
-> -	dentry = path->dentry = dget(mnt->mnt_root);
-> +	path->dentry = dget(mnt->mnt_root);
->  	goto retry;
->  }
->  
-> -- 
-> 2.24.1
-> 
+If the module init function fails after creating the debugs directory,
+it's never removed. Add proper cleanup calls to avoid this resource
+leak.
+
+Fixes: 9202ba2397d1 ("gpio: mockup: implement event injecting over debugfs")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+---
+ drivers/gpio/gpio-mockup.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/gpio/gpio-mockup.c b/drivers/gpio/gpio-mockup.c
+index bc345185db26..1652897fdf90 100644
+--- a/drivers/gpio/gpio-mockup.c
++++ b/drivers/gpio/gpio-mockup.c
+@@ -552,6 +552,7 @@ static int __init gpio_mockup_init(void)
+ 	err = platform_driver_register(&gpio_mockup_driver);
+ 	if (err) {
+ 		gpio_mockup_err("error registering platform driver\n");
++		debugfs_remove_recursive(gpio_mockup_dbg_dir);
+ 		return err;
+ 	}
+ 
+@@ -582,6 +583,7 @@ static int __init gpio_mockup_init(void)
+ 			gpio_mockup_err("error registering device");
+ 			platform_driver_unregister(&gpio_mockup_driver);
+ 			gpio_mockup_unregister_pdevs();
++			debugfs_remove_recursive(gpio_mockup_dbg_dir);
+ 			return PTR_ERR(pdev);
+ 		}
+ 
+-- 
+2.26.1
+
