@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC17E261F39
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 22:01:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35D4C261F33
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 22:00:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732432AbgIHUBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 16:01:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58858 "EHLO mail.kernel.org"
+        id S1732555AbgIHUAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 16:00:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58868 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730276AbgIHPf0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1730466AbgIHPf0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 8 Sep 2020 11:35:26 -0400
 Received: from localhost.localdomain (unknown [194.230.155.174])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 79B4C23BCB;
-        Tue,  8 Sep 2020 15:03:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BB95C23BF0;
+        Tue,  8 Sep 2020 15:03:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599577408;
-        bh=9cGXF9Fk6znkJkyV+iG7yCQKESCYuPnVIiLeDN/ljmU=;
+        s=default; t=1599577415;
+        bh=CC7L87p3n6aStqWRlNrcH5ZsoqrdQ1XiSgGvIlyXZe8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=b9lcnyM56dzOhaimYePf+ldrd+LHVkjEdSsthK76VoETI4VdbnzILvXgSutduMP4b
-         pw5Y67zLDmQ5lMMVjxYca78nNTdrxw2J/2HSMVG29n6h8jL+Ujh1vA5KRwoK00cJPQ
-         cS03pRejgmbye9lXjiwVMUnO9k6zHcAjupjsXUvs=
+        b=0lrqHIXm4g/8GS5r4BM/6+eSqNBWrT34cKgW9tm6doThu89L85L5egs6V4vxs1yWB
+         lNmVKBN0+bt5fldqyY5R2Ty0wpOsF9EMrXZBe0EMZ58WONgZCDwDh4QhDVHH+sJdLY
+         Rf+aV2D1Ss3XYkAdH9zRVN3qz/dgWrn28TByR55E=
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
         Sascha Hauer <s.hauer@pengutronix.de>,
@@ -45,9 +45,9 @@ To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
         devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org
 Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH 3/8] arm64: dts: imx8mm: Correct interrupt flags in examples
-Date:   Tue,  8 Sep 2020 17:02:36 +0200
-Message-Id: <20200908150241.5771-3-krzk@kernel.org>
+Subject: [PATCH 4/8] arm64: dts: imx8mn: Correct interrupt flags in examples
+Date:   Tue,  8 Sep 2020 17:02:37 +0200
+Message-Id: <20200908150241.5771-4-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200908150241.5771-1-krzk@kernel.org>
 References: <20200908150241.5771-1-krzk@kernel.org>
@@ -65,21 +65,22 @@ have the same meaning:
 Correct the interrupt flags, assuming the author of the code wanted some
 logical behavior behind the name "ACTIVE_xxx", this is:
   ACTIVE_LOW  => IRQ_TYPE_LEVEL_LOW
-  ACTIVE_HIGH => IRQ_TYPE_LEVEL_HIGH
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi      | 2 +-
- arch/arm64/boot/dts/freescale/imx8mm-evk.dts              | 2 +-
- arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dts | 2 +-
- arch/arm64/boot/dts/freescale/imx8mm-var-som.dtsi         | 2 +-
- 4 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi
-index 620a124dfb5f..fdce665d7ac4 100644
---- a/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi
-@@ -74,7 +74,7 @@
+---
+
+Not tested on HW.
+---
+ arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dts | 2 +-
+ arch/arm64/boot/dts/freescale/imx8mn-evk.dts      | 3 ++-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dts b/arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dts
+index a1e5483dbbbe..9e12b5234692 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dts
+@@ -55,7 +55,7 @@
  		reg = <0x4b>;
  		pinctrl-0 = <&pinctrl_pmic>;
  		interrupt-parent = <&gpio1>;
@@ -88,45 +89,27 @@ index 620a124dfb5f..fdce665d7ac4 100644
  		rohm,reset-snvs-powered;
  
  		regulators {
-diff --git a/arch/arm64/boot/dts/freescale/imx8mm-evk.dts b/arch/arm64/boot/dts/freescale/imx8mm-evk.dts
-index 38134d201eef..609d73e19fee 100644
---- a/arch/arm64/boot/dts/freescale/imx8mm-evk.dts
-+++ b/arch/arm64/boot/dts/freescale/imx8mm-evk.dts
-@@ -166,7 +166,7 @@
- 		reg = <0x4b>;
+diff --git a/arch/arm64/boot/dts/freescale/imx8mn-evk.dts b/arch/arm64/boot/dts/freescale/imx8mn-evk.dts
+index b846526a8d8b..707d8486b4d8 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mn-evk.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mn-evk.dts
+@@ -7,6 +7,7 @@
+ 
+ #include "imx8mn.dtsi"
+ #include "imx8mn-evk.dtsi"
++#include <dt-bindings/interrupt-controller/irq.h>
+ 
+ / {
+ 	model = "NXP i.MX8MNano EVK board";
+@@ -19,7 +20,7 @@
+ 		reg = <0x25>;
  		pinctrl-0 = <&pinctrl_pmic>;
  		interrupt-parent = <&gpio1>;
 -		interrupts = <3 GPIO_ACTIVE_LOW>;
 +		interrupts = <3 IRQ_TYPE_LEVEL_LOW>;
- 		rohm,reset-snvs-powered;
  
  		regulators {
-diff --git a/arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dts b/arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dts
-index 0bca737964d5..b84d94e10c26 100644
---- a/arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dts
-+++ b/arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dts
-@@ -133,7 +133,7 @@
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&pinctrl_captouch>;
- 		interrupt-parent = <&gpio5>;
--		interrupts = <4 GPIO_ACTIVE_HIGH>;
-+		interrupts = <4 IRQ_TYPE_LEVEL_HIGH>;
- 
- 		touchscreen-size-x = <800>;
- 		touchscreen-size-y = <480>;
-diff --git a/arch/arm64/boot/dts/freescale/imx8mm-var-som.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-var-som.dtsi
-index c371cb34b3f7..49743d2f60c1 100644
---- a/arch/arm64/boot/dts/freescale/imx8mm-var-som.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mm-var-som.dtsi
-@@ -137,7 +137,7 @@
- 		reg = <0x4b>;
- 		pinctrl-0 = <&pinctrl_pmic>;
- 		interrupt-parent = <&gpio2>;
--		interrupts = <8 GPIO_ACTIVE_LOW>;
-+		interrupts = <8 IRQ_TYPE_LEVEL_LOW>;
- 		rohm,reset-snvs-powered;
- 
- 		regulators {
+ 			buck1: BUCK1{
 -- 
 2.17.1
 
