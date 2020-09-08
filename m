@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10A002618D1
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 20:03:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8B7C2618C3
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 20:02:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731543AbgIHSAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 14:00:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56672 "EHLO mail.kernel.org"
+        id S1731887AbgIHSCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 14:02:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56084 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731552AbgIHQMq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1731560AbgIHQMq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 8 Sep 2020 12:12:46 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DCF732485A;
-        Tue,  8 Sep 2020 15:51:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CC32D24869;
+        Tue,  8 Sep 2020 15:51:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599580308;
-        bh=yVzu16jkR+ZSizyDraX6CgN0pG7oqdVsMdzwGZ9bSn4=;
+        s=default; t=1599580317;
+        bh=fDqoV5fVIw6t9pvVgOsGrg3g0OZCcVnoJBrIK2iPz5E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yF1d5xfpYoR1mAPIC+JJKxDkCfY3LdlUpeTLaTEozFTCzUtq8Jf13E3pWtJMp5r0J
-         s0WLuOTEcSopcEYvzlxFkT4KT7XGn9W+vsjHgN1KjCVrDfxeQWEO+r2cX1IlJ7TTqV
-         7fABYri7UHSvoxcDnrqCNUVroUUlnPCwltyU4+LU=
+        b=O/QxIcSKfcDT2SF364HACPU6MeMlZhWz3rw9Aypaxux44o01/tS9F9qFeXwfT9ax1
+         K/OEslPtxpO5RncF3CXDYKFCSQNU96V89hQI4EkkhUmFZEAzUG5FqCQH31wCa7Tswv
+         WbAa8B37+yF6pKK9yMObrbqX5GzpydFCv/h6JDPQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Andrew Lunn <andrew@lunn.ch>,
+        stable@vger.kernel.org,
+        Vasundhara Volam <vasundhara-v.volam@broadcom.com>,
+        Michael Chan <michael.chan@broadcom.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 24/65] net: arc_emac: Fix memleak in arc_mdio_probe
-Date:   Tue,  8 Sep 2020 17:26:09 +0200
-Message-Id: <20200908152218.277207996@linuxfoundation.org>
+Subject: [PATCH 4.14 28/65] bnxt_en: Fix PCI AER error recovery flow
+Date:   Tue,  8 Sep 2020 17:26:13 +0200
+Message-Id: <20200908152218.488197386@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200908152217.022816723@linuxfoundation.org>
 References: <20200908152217.022816723@linuxfoundation.org>
@@ -45,34 +46,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+From: Vasundhara Volam <vasundhara-v.volam@broadcom.com>
 
-[ Upstream commit e2d79cd8875fa8c3cc7defa98a8cc99a1ed0c62f ]
+[ Upstream commit df3875ec550396974b1d8a518bd120d034738236 ]
 
-When devm_gpiod_get_optional() fails, bus should be
-freed just like when of_mdiobus_register() fails.
+When a PCI error is detected the PCI state could be corrupt, save
+the PCI state after initialization and restore it after the slot
+reset.
 
-Fixes: 1bddd96cba03d ("net: arc_emac: support the phy reset for emac driver")
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Fixes: 6316ea6db93d ("bnxt_en: Enable AER support.")
+Signed-off-by: Vasundhara Volam <vasundhara-v.volam@broadcom.com>
+Signed-off-by: Michael Chan <michael.chan@broadcom.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/arc/emac_mdio.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/net/ethernet/arc/emac_mdio.c b/drivers/net/ethernet/arc/emac_mdio.c
-index 0187dbf3b87df..54cdafdd067db 100644
---- a/drivers/net/ethernet/arc/emac_mdio.c
-+++ b/drivers/net/ethernet/arc/emac_mdio.c
-@@ -153,6 +153,7 @@ int arc_mdio_probe(struct arc_emac_priv *priv)
- 	if (IS_ERR(data->reset_gpio)) {
- 		error = PTR_ERR(data->reset_gpio);
- 		dev_err(priv->dev, "Failed to request gpio: %d\n", error);
-+		mdiobus_free(bus);
- 		return error;
- 	}
+diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+index a189061d8f97e..7de38ae5c18f2 100644
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+@@ -8251,6 +8251,7 @@ static int bnxt_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
  
+ 	bnxt_parse_log_pcie_link(bp);
+ 
++	pci_save_state(pdev);
+ 	return 0;
+ 
+ init_err_cleanup_tc:
+@@ -8412,6 +8413,8 @@ static pci_ers_result_t bnxt_io_slot_reset(struct pci_dev *pdev)
+ 			"Cannot re-enable PCI device after reset.\n");
+ 	} else {
+ 		pci_set_master(pdev);
++		pci_restore_state(pdev);
++		pci_save_state(pdev);
+ 
+ 		err = bnxt_hwrm_func_reset(bp);
+ 		if (!err && netif_running(netdev))
 -- 
 2.25.1
 
