@@ -2,197 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FA432615DF
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:57:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 848ED261587
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:52:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731716AbgIHQ5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 12:57:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58438 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731847AbgIHQUW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:20:22 -0400
-Received: from kernel.org (unknown [87.71.73.56])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E9CE821D93;
-        Tue,  8 Sep 2020 12:31:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599568323;
-        bh=E4o1TDNMgXR3ltqTwm9aXT1R3QWQWrh1SreqKE+iRdk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SyEwTcWeWaj5fnJOWcZkA4g1K/6G3dZ9eGWpWoOs8wFLveiNeFY/HN9Ys3hddw4Ix
-         Hda12jT7gq0vHLbLYRlYfMUWaeSI3gTzRMim2LXupXZs1Vve7Fui8jwLq6j5cAimFf
-         5f9ZDd5aFctsg+vQXtTjJfOj10UunsKMmHI5oNQc=
-Date:   Tue, 8 Sep 2020 15:31:50 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Idan Yaniv <idan.yaniv@ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-riscv@lists.infradead.org, x86@kernel.org
-Subject: Re: [PATCH v4 6/6] mm: secretmem: add ability to reserve memory at
- boot
-Message-ID: <20200908123150.GF1976319@kernel.org>
-References: <20200818141554.13945-1-rppt@kernel.org>
- <20200818141554.13945-7-rppt@kernel.org>
- <03ec586d-c00c-c57e-3118-7186acb7b823@redhat.com>
- <20200819115335.GU752365@kernel.org>
- <10bf57a9-c3c2-e13c-ca50-e872b7a2db0c@redhat.com>
- <20200819173347.GW752365@kernel.org>
- <6c8b30fb-1b6c-d446-0b09-255b79468f7c@redhat.com>
- <20200820155228.GZ752365@kernel.org>
- <fdda6ba7-9418-2b52-eee8-ce5e9bfdb6ad@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fdda6ba7-9418-2b52-eee8-ce5e9bfdb6ad@redhat.com>
+        id S1732101AbgIHQwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 12:52:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34746 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732089AbgIHQwM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 12:52:12 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E937DC06134F
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 05:33:37 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id e23so22260867eja.3
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 05:33:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=sN4+mZ5uhIAG0/WLkYctbIQcbAJtPn6Wi3GZq31qSIg=;
+        b=ugYmjN2xSHhF+21F3d6hVWxMmiUDsryJHIXuwRUHRfhQ4TYfF/9IpxodOQvAjPwnrN
+         KYGdkGCLqQgm9tAA6RaKgQALDbF1Y+Cn+PsB/1XAaBeUMoTNKilxf92q7/WiZxmXyO3n
+         yR9eS3xfO/9Pg8zEzTGnoj59wcp+w/zE4FztcOxZhmW6/74rwJ4GapCfZ2wzJnSLmPFP
+         StSHAYcGuP0QuR96/3HVpfU1mGfHnbHCXPHLCXN/Mrdf/g+22eWx5vM0gfLgQme42lB+
+         BgXWfzPbr0Ip5OzxRgOsw6ywurxu4bv2EyqV3k6B5UiNvbYCYsW7TNOwS+WH7skgLnrZ
+         4t4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=sN4+mZ5uhIAG0/WLkYctbIQcbAJtPn6Wi3GZq31qSIg=;
+        b=T0HxawWjRs09UJEFrE5mC4sIRlkP4M9JvKYRO0H8qjps0P7eZF8svrgw8Cgpw8HUEg
+         C6LdNHkHDFzPxa+0rFsekLrPc/nW9T9T1na4MSFcnYc+e9AAEwQYqbOhqKN7vNS2rExj
+         T9MSvLvsBxRrOibVCLIOWsrm+Tbz68Xrs36+UjYtoAMZAyGP015BQ5NarrgW0WqkPZZ2
+         Hq39eTTsStPZSwcXEwQZMhz0uEL2k2BfOOMXef8n68q9l1Ilp79WxykLt+O0ulwrXY9U
+         gJv4ps822VqJGj59rQaCs2r5DNbcSGO9FBOg6Bish+DQ4D9vxoINoSTSFOoXwsG1xHhh
+         3HTQ==
+X-Gm-Message-State: AOAM533wa1eiwMwJWq2qoLf2fCk2JOsDB6SyBbIoDo1JP8xeTWphFDyh
+        pPDCJ1L2WvDA5eWXKoFGgW7mpQ==
+X-Google-Smtp-Source: ABdhPJxHtd4i992YKOwmkNVnGZRsMiLfUfV15eGwYacP2ySW3da2CW4AtHELAQrxAQUN07P6vV4aUA==
+X-Received: by 2002:a17:906:e103:: with SMTP id gj3mr25132826ejb.153.1599568416595;
+        Tue, 08 Sep 2020 05:33:36 -0700 (PDT)
+Received: from localhost.localdomain ([195.24.90.54])
+        by smtp.gmail.com with ESMTPSA id y9sm17499744edo.37.2020.09.08.05.33.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Sep 2020 05:33:35 -0700 (PDT)
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+To:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org
+Cc:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        nicolas.dufresne@collabora.com,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Subject: [PATCH v3 5/6] venus: vdec: Use helper to get profile and level
+Date:   Tue,  8 Sep 2020 15:32:20 +0300
+Message-Id: <20200908123221.2793-6-stanimir.varbanov@linaro.org>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200908123221.2793-1-stanimir.varbanov@linaro.org>
+References: <20200908123221.2793-1-stanimir.varbanov@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David,
+Currently the returned profile and level is not aligned with
+v4l2 ctrl id. Correct that by use the helpers which translate
+the v4l2 <-> hfi mapping internally.
 
-On Tue, Sep 08, 2020 at 11:09:19AM +0200, David Hildenbrand wrote:
-> On 20.08.20 17:52, Mike Rapoport wrote:
-> > On Wed, Aug 19, 2020 at 07:45:29PM +0200, David Hildenbrand wrote:
-> >> On 19.08.20 19:33, Mike Rapoport wrote:
-> >>> On Wed, Aug 19, 2020 at 02:10:43PM +0200, David Hildenbrand wrote:
-> >>>> On 19.08.20 13:53, Mike Rapoport wrote:
-> >>>>> On Wed, Aug 19, 2020 at 12:49:05PM +0200, David Hildenbrand wrote:
-> >>>>>> On 18.08.20 16:15, Mike Rapoport wrote:
-> >>>>>>> From: Mike Rapoport <rppt@linux.ibm.com>
-> >>>>>>>
-> >>>>>>> Taking pages out from the direct map and bringing them back may create
-> >>>>>>> undesired fragmentation and usage of the smaller pages in the direct
-> >>>>>>> mapping of the physical memory.
-> >>>>>>>
-> >>>>>>> This can be avoided if a significantly large area of the physical memory
-> >>>>>>> would be reserved for secretmem purposes at boot time.
-> >>>>>>>
-> >>>>>>> Add ability to reserve physical memory for secretmem at boot time using
-> >>>>>>> "secretmem" kernel parameter and then use that reserved memory as a global
-> >>>>>>> pool for secret memory needs.
-> >>>>>>
-> >>>>>> Wouldn't something like CMA be the better fit? Just wondering. Then, the
-> >>>>>> memory can actually be reused for something else while not needed.
-> >>>>>
-> >>>>> The memory allocated as secret is removed from the direct map and the
-> >>>>> boot time reservation is intended to reduce direct map fragmentatioan
-> >>>>> and to avoid splitting 1G pages there. So with CMA I'd still need to
-> >>>>> allocate 1G chunks for this and once 1G page is dropped from the direct
-> >>>>> map it still cannot be reused for anything else until it is freed.
-> >>>>>
-> >>>>> I could use CMA to do the boot time reservation, but doing the
-> >>>>> reservesion directly seemed simpler and more explicit to me.
-> >>>>
-> >>>> Well, using CMA would give you the possibility to let the memory be used
-> >>>> for other purposes until you decide it's the right time to take it +
-> >>>> remove the direct mapping etc.
-> >>>
-> >>> I still can't say I follow you here. If I reseve a CMA area as a pool
-> >>> for secret memory 1G pages, it is still reserved and it still cannot be
-> >>> used for other purposes, right?
-> >>
-> >> So, AFAIK, if you create a CMA pool it can be used for any MOVABLE
-> >> allocations (similar to ZONE_MOVABLE) until you actually allocate CMA
-> >> memory from that region. Other allocations on that are will then be
-> >> migrated away (using alloc_contig_range()).
-> >>
-> >> For example, if you have a 1~GiB CMA area, you could allocate 4~MB pages
-> >> from that CMA area on demand (removing the direct mapping, etc ..), and
-> >> free when no longer needed (instantiating the direct mapping). The free
-> >> memory in that area could used for MOVABLE allocations.
-> > 
-> > The boot time resrvation is intended to avoid splitting 1G pages in the
-> > direct map. Without the boot time reservation, we maintain a pool of 2M
-> > pages so the 1G pages are split and 2M pages remain unsplit.
-> > 
-> > If I scale your example to match the requirement to avoid splitting 1G
-> > pages in the direct map, that would mean creating a CMA area of several
-> > tens of gigabytes and then doing cma_alloc() of 1G each time we need to
-> > refill the secretmem pool. 
-> > 
-> > It is quite probable that we won't be able to get 1G from CMA after the
-> > system worked for some time.
-> 
-> Why? It should only contain movable pages, and if that is not the case,
-> it's a bug we have to fix. It should behave just as ZONE_MOVABLE.
-> (although I agree that in corner cases, alloc_contig_pages() might
-> temporarily fail on some chunks - e.g., with long/short-term page
-> pinnings - in contrast to memory offlining, it won't retry forever)
+Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+---
+ drivers/media/platform/qcom/venus/vdec_ctrls.c | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/media/platform/qcom/venus/vdec_ctrls.c b/drivers/media/platform/qcom/venus/vdec_ctrls.c
+index f3f41c1baa6e..974110b75b93 100644
+--- a/drivers/media/platform/qcom/venus/vdec_ctrls.c
++++ b/drivers/media/platform/qcom/venus/vdec_ctrls.c
+@@ -42,9 +42,8 @@ static int vdec_op_g_volatile_ctrl(struct v4l2_ctrl *ctrl)
+ 	struct venus_inst *inst = ctrl_to_inst(ctrl);
+ 	struct vdec_controls *ctr = &inst->controls.dec;
+ 	struct hfi_buffer_requirements bufreq;
+-	union hfi_get_property hprop;
+ 	enum hfi_version ver = inst->core->res->hfi_version;
+-	u32 ptype = HFI_PROPERTY_PARAM_PROFILE_LEVEL_CURRENT;
++	u32 profile, level;
+ 	int ret;
  
-The use-case I had in mind for the boot time reservation in secretmem is
-a machine that runs VMs and there is a desire to have the VM memory
-protected from the host. In a way this should be similar to booting a
-host with mem=X where most of the machine memory never gets to be used
-by the host kernel.
-
-For such use case, boot time reservation controlled by the command
-line parameter seems to me simpler than using CMA. I agree that there is
-no way to use the reserved memory for other purpose, but then we won't
-need to create physically contiguous chunk of several gigs every time a
-VM is created.
-
-> > With boot time reservation we won't need physcally contiguous 1G to
-> > satisfy smaller allocation requests for secretmem because we don't need
-> > to maintain 1G mappings in the secretmem pool.
-> 
-> You can allocate within your CMA area however you want - doesn't need to
-> be whole gigabytes in case there is no need for it.
-
-The whole point of boot time reservation is to prevent splitting 1G
-pages in the direct map. Allocating smaller chunks will still cause
-fragmentation of the direct map.
-
-> Again, the big benefit of CMA is that the reserved memory can be reused
-> for other purpose while nobody is actually making use of it.
-
-Right, but I think if a user explicitly asked to use X gigabytes for the
-secretmem we can allow that.
-
-> > 
-> > That said, I believe the addition of the boot time reservation, either
-> > direct or with CMA, can be added as an incrememntal patch after the
-> > "core" functionality is merged.
-> 
-> I am not convinced that we want to let random processes to do
-> alloc_pages() in the range of tens of gigabytes. It's not just mlocked
-> memory. I prefer either using CMA or relying on the boot time
-> reservations. But let's see if there are other opinions and people just
-> don't care.
-> 
-> Having that said, I have no further comments.
-> 
-> -- 
-> Thanks,
-> 
-> David / dhildenb
-> 
-
+ 	switch (ctrl->id) {
+@@ -52,17 +51,17 @@ static int vdec_op_g_volatile_ctrl(struct v4l2_ctrl *ctrl)
+ 	case V4L2_CID_MPEG_VIDEO_MPEG4_PROFILE:
+ 	case V4L2_CID_MPEG_VIDEO_VP8_PROFILE:
+ 	case V4L2_CID_MPEG_VIDEO_VP9_PROFILE:
+-		ret = hfi_session_get_property(inst, ptype, &hprop);
++		ret = venus_helper_get_profile_level(inst, &profile, &level);
+ 		if (!ret)
+-			ctr->profile = hprop.profile_level.profile;
++			ctr->profile = profile;
+ 		ctrl->val = ctr->profile;
+ 		break;
+ 	case V4L2_CID_MPEG_VIDEO_H264_LEVEL:
+ 	case V4L2_CID_MPEG_VIDEO_MPEG4_LEVEL:
+ 	case V4L2_CID_MPEG_VIDEO_VP9_LEVEL:
+-		ret = hfi_session_get_property(inst, ptype, &hprop);
++		ret = venus_helper_get_profile_level(inst, &profile, &level);
+ 		if (!ret)
+-			ctr->level = hprop.profile_level.level;
++			ctr->level = level;
+ 		ctrl->val = ctr->level;
+ 		break;
+ 	case V4L2_CID_MPEG_VIDEO_DECODER_MPEG4_DEBLOCK_FILTER:
 -- 
-Sincerely yours,
-Mike.
+2.17.1
+
