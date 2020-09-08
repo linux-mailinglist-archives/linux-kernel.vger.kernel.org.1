@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF132260CBD
+	by mail.lfdr.de (Postfix) with ESMTP id 625E2260CBC
 	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 09:58:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729966AbgIHH6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 03:58:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36374 "EHLO
+        id S1729992AbgIHH6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 03:58:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729964AbgIHH54 (ORCPT
+        with ESMTP id S1729966AbgIHH57 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 03:57:56 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34661C061798
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 00:57:55 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id x123so161096pfc.7
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 00:57:55 -0700 (PDT)
+        Tue, 8 Sep 2020 03:57:59 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37472C06179A
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 00:57:59 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id 7so9467966pgm.11
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 00:57:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=YZg1jgAyMAGcUdolyBPogn5Fs274mLtu0TxITODgyQk=;
-        b=X0sh0hRgOfNg6g6Xs/xBHAHfJOKoFUGTKrA8N/PRUCbDA5OGQYT9QFu9MczM7BHeYW
-         dKetHdiNtPV55KRI7+iG12BJLSvyS77vmoF/tlfBjw65+nRwP97HVgffaKfv5pdr3PoP
-         YzRxeqAD20aA0ip3uUtYxRamNQmTgTw6oCl3DEDb/1qT/MA3dpoysDDlRnj8zOUzETbt
-         Ihn2+zKFhOlK6RGx48GQuqZXXkaq8lT/Sqws01yFY/f8tMxUy+FFCub+ryjdOR39P0oQ
-         jhqfDbeM9ob1v9CBWfDSQ6K1HvZoINDQd24uvOzGtS0naRDkEnPFuUw2frp4VncmuA0F
-         /4yA==
+        bh=p4U6DywWAGG7hqWgno8xA4KNHg7T7GRWqkUHfcQvB3k=;
+        b=YQou9t73q5qKqw0WsgZMOwsCEXbHt8zLCXbEiq5x9ImKUtCw6ZGOQasYp8i6qPO6q8
+         MoY4rFNcbXHaH/VVnkF+I/EV8/Xefc6LmJetEQ7Jo+jQhbpad5ca92o+uQTmT+QmPRfB
+         miD/PCeXTgw9JjnidrITEqCFnTmMiqveWEvcLy8gFl4sbyW2dWZv9e+ntbOTPEDKyg7O
+         jYBlXLUjy4xJ9qRsnzG/BrB89taE/tVr8drt9rN35c2EsGVXFRfs4D1HkNmKNuVrdtgG
+         yLlfHFsXKBsPF0n5CbmAHxcfw405bEE7X84CBsTR5maDfD3GJs1CXAb1wJh1Ao7HWp2b
+         98Jw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=YZg1jgAyMAGcUdolyBPogn5Fs274mLtu0TxITODgyQk=;
-        b=rjBWnDajdt4inWlXhjIoLv+umG4QOYMMO/XzQ5UOjY5bVdCnVQ9ZSnZOhJP2YR/73E
-         0oP9rrLWlGsLj4NnBLkGYMogwzOfXd4pifgj7nqO9nffx8F9sm7/E1PDA2r+P9KXrGl+
-         oJShdEwBxvjCvhgYmUroBiCWJ0O6si+RQ3xkIQF0pTEqDC6cPwrrvxTCy07jP9/zqUdh
-         Zlcqqnsm5w7I7e2okGSWH56s64pOtfsJDp34RnyoMVBLTklOpVCqptkR2ryV3egYhszm
-         1wsLyZgshEvDosu1pMaAsvgW2oBMWGdYoJZksyhNgwtPhvXQAO9nd/LFctE+YhqsyfWL
-         +6+A==
-X-Gm-Message-State: AOAM533anDuleeAHdz6BsM0EG8ASP05U8aaDfIPI+E2yVfUkC8bFzaaq
-        BzpewKny8Fb81dilXwwQDi1M
-X-Google-Smtp-Source: ABdhPJzDpHdcubpXgfdewiKO7WW8WbmfYSSgPQIYuc63xX5GYQC3Nvkd146IpnByx3u5Kopy5Tgpog==
-X-Received: by 2002:aa7:9ab0:0:b029:13c:1611:66bb with SMTP id x16-20020aa79ab00000b029013c161166bbmr21708900pfi.6.1599551874706;
-        Tue, 08 Sep 2020 00:57:54 -0700 (PDT)
+        bh=p4U6DywWAGG7hqWgno8xA4KNHg7T7GRWqkUHfcQvB3k=;
+        b=IAapbCQAi3OxI5boecw/3l3NUod8MzJYFEC6ckzorMXz2JT5LajaHoBpYmy1k4LWNC
+         6N4//lq8Ez9iSONSheXrcN0Lxy/Y21fk6/tpqWpUqm3zocauRFQDEIXjGmJzn7pQDpuQ
+         530WSW+3D6zPBYNzL2/snzAeY5xBXCc6aSaqB8BV+qTIhcCmJo9LPVz7t6N6j2vnanMh
+         E7MZCYTP8HatUD42EoW6OWkDDtmS03m8knMGMRSzTYTCiPXq2IqfyQRwhe+QGauEzgUH
+         Tmqtl+fFc6m8X3ykfFVKYypBN0d3gGaW/lP5wtCmKVs95tDzV9JnhLP/SxPy1C+c3hZJ
+         iTbg==
+X-Gm-Message-State: AOAM531F8nLxnWrbhShJaT+7IKVDmrpalAOBg5vWOShVyYjnOIAbUFW5
+        oOvuzOR4RtL0C4Y/RxmjKptB
+X-Google-Smtp-Source: ABdhPJwRUgI36ssfNhxpK77UGbBRO6qF4+xSHVU9GHpnJGzrN/z7Eow2VJb49MTdxfIMJK78Zg4mjw==
+X-Received: by 2002:a17:902:8f8a:b029:d0:cc02:8541 with SMTP id z10-20020a1709028f8ab02900d0cc028541mr29499plo.32.1599551878673;
+        Tue, 08 Sep 2020 00:57:58 -0700 (PDT)
 Received: from localhost.localdomain ([103.59.133.81])
-        by smtp.googlemail.com with ESMTPSA id m21sm7560154pfo.13.2020.09.08.00.57.51
+        by smtp.googlemail.com with ESMTPSA id m21sm7560154pfo.13.2020.09.08.00.57.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Sep 2020 00:57:54 -0700 (PDT)
+        Tue, 08 Sep 2020 00:57:58 -0700 (PDT)
 From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 To:     rjw@rjwysocki.net, viresh.kumar@linaro.org, robh+dt@kernel.org,
         agross@kernel.org, bjorn.andersson@linaro.org
@@ -55,9 +55,9 @@ Cc:     amitk@kernel.org, linux-pm@vger.kernel.org,
         linux-arm-msm@vger.kernel.org, dmitry.baryshkov@linaro.org,
         tdas@codeaurora.org,
         Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH 6/7] cpufreq: qcom-hw: Add cpufreq support for SM8250 SoC
-Date:   Tue,  8 Sep 2020 13:27:15 +0530
-Message-Id: <20200908075716.30357-7-manivannan.sadhasivam@linaro.org>
+Subject: [PATCH 7/7] cpufreq: qcom-hw: Use devm_platform_ioremap_resource() to simplify code
+Date:   Tue,  8 Sep 2020 13:27:16 +0530
+Message-Id: <20200908075716.30357-8-manivannan.sadhasivam@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200908075716.30357-1-manivannan.sadhasivam@linaro.org>
 References: <20200908075716.30357-1-manivannan.sadhasivam@linaro.org>
@@ -66,36 +66,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SM8250 SoC uses EPSS block for carrying out the cpufreq duties. Hence, add
-support for it in the driver with relevant of_match data.
+devm_platform_ioremap_resource() is the combination of
+platform_get_resource() and devm_ioremap_resource(). Hence, use it to
+simplify the code a bit.
 
 Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 ---
- drivers/cpufreq/qcom-cpufreq-hw.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/cpufreq/qcom-cpufreq-hw.c | 11 +++--------
+ 1 file changed, 3 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/cpufreq/qcom-cpufreq-hw.c b/drivers/cpufreq/qcom-cpufreq-hw.c
-index de816bcafd33..c3c397cc3dc6 100644
+index c3c397cc3dc6..6eeeb2bd4dfa 100644
 --- a/drivers/cpufreq/qcom-cpufreq-hw.c
 +++ b/drivers/cpufreq/qcom-cpufreq-hw.c
-@@ -285,8 +285,17 @@ static const struct qcom_cpufreq_soc_data qcom_soc_data = {
- 	.lut_row_size = 32,
- };
+@@ -307,7 +307,6 @@ static int qcom_cpufreq_hw_cpu_init(struct cpufreq_policy *policy)
+ 	struct of_phandle_args args;
+ 	struct device_node *cpu_np;
+ 	struct device *cpu_dev;
+-	struct resource *res;
+ 	void __iomem *base;
+ 	struct qcom_cpufreq_data *data;
+ 	const struct of_device_id *match;
+@@ -333,13 +332,9 @@ static int qcom_cpufreq_hw_cpu_init(struct cpufreq_policy *policy)
  
-+static const struct qcom_cpufreq_soc_data sm8250_soc_data = {
-+	.reg_enable = 0x0,
-+	.reg_freq_lut = 0x100,
-+	.reg_volt_lut = 0x200,
-+	.reg_perf_state = 0x320,
-+	.lut_row_size = 4,
-+};
-+
- static const struct of_device_id qcom_cpufreq_hw_match[] = {
- 	{ .compatible = "qcom,cpufreq-hw", .data = &qcom_soc_data },
-+	{ .compatible = "qcom,sm8250-epss", .data = &sm8250_soc_data },
- 	{}
- };
- MODULE_DEVICE_TABLE(of, qcom_cpufreq_hw_match);
+ 	index = args.args[0];
+ 
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, index);
+-	if (!res)
+-		return -ENODEV;
+-
+-	base = devm_ioremap(dev, res->start, resource_size(res));
+-	if (!base)
+-		return -ENOMEM;
++	base = devm_platform_ioremap_resource(pdev, index);
++	if (IS_ERR(base))
++		return PTR_ERR(base);
+ 
+ 	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
+ 	if (!data) {
 -- 
 2.17.1
 
