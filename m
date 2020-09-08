@@ -2,104 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41FB0261BB2
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:07:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EC21261BBA
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:08:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731637AbgIHTHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:07:25 -0400
-Received: from a27-11.smtp-out.us-west-2.amazonses.com ([54.240.27.11]:45196
-        "EHLO a27-11.smtp-out.us-west-2.amazonses.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731676AbgIHTG4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 15:06:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=zsmsymrwgfyinv5wlfyidntwsjeeldzt; d=codeaurora.org; t=1599592015;
-        h=MIME-Version:Content-Type:Content-Transfer-Encoding:Date:From:To:Cc:Subject:In-Reply-To:References:Message-ID;
-        bh=lWsMChywupzdHzp7I9YzcKd0Y+ARnhQXfU8/OA9aDl4=;
-        b=bun7s7XHXTFbXJ0s25yJSwDDBqtqeEAQEO7ORPqELvQrtNKTRSHqgzyvIo9T/90M
-        dYyB1gonJMSVirDBgo4QFVSu7VffhZAKMJVwEk4TDGFEx97fuZEZXKQc7KNown28JxG
-        31m3b45MQHWtpC6JQeVOldzJAilRpxqjA+L8jGME=
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=hsbnp7p3ensaochzwyq5wwmceodymuwv; d=amazonses.com; t=1599592015;
-        h=MIME-Version:Content-Type:Content-Transfer-Encoding:Date:From:To:Cc:Subject:In-Reply-To:References:Message-ID:Feedback-ID;
-        bh=lWsMChywupzdHzp7I9YzcKd0Y+ARnhQXfU8/OA9aDl4=;
-        b=ASXpXfyYPuEX7KzVTeQlzNrPjG1Z499KXtA7pWdQH0vChrBex7uZcLZKV8vPa3Mf
-        Bt0UTYHvT2iqXwEGN+QjK/nJjb3tNaL9AdBbztUJQml6uF/fWtn82PU2UAdhkfIWwD/
-        q8MnvDFS39H0cTohS2+zGd0G/LxemiZDFm95XM2I=
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+        id S1731531AbgIHTIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 15:08:04 -0400
+Received: from mail.zx2c4.com ([192.95.5.64]:52273 "EHLO mail.zx2c4.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731444AbgIHTHf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 15:07:35 -0400
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTP id 087a7bc0
+        for <linux-kernel@vger.kernel.org>;
+        Tue, 8 Sep 2020 18:38:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=zx2c4.com; h=mime-version
+        :references:in-reply-to:from:date:message-id:subject:to:cc
+        :content-type; s=mail; bh=v+IaKqTzajthwRuBeL8SUc47y/0=; b=osadIc
+        sxEsxJYoLQkcN8ueOwsO2hJkvpqCKOEKAetdJO2vr8+7hIO81q1YJelVd6yrdZbh
+        F2oyKFJcfsL4tkB7sJYYbIL4pkfW5gVPJ/iWoI3L27IS6RHJD7WrJhuSpf0gh2zs
+        wucK7kLHGhK2zfOiA7x4YcQ5CoDk0Tdbd9QkyIoyDKMJRpsxWK5MBSRONoTuXydg
+        0kz438jbR0QrrsM9kuB1Ixy5IgwCiA+UjSW/4+D1+nnBIcdIpAu9gei253gy75Lk
+        9gvGw6SO0YcgsMxbl5hYviBpX+gTkYMMt07/6Tp0r3lHFXEOLRCUg3esykz+o0Xb
+        /Q1iQR0hvs6+3jwg==
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 21954bbc (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO)
+        for <linux-kernel@vger.kernel.org>;
+        Tue, 8 Sep 2020 18:38:37 +0000 (UTC)
+Received: by mail-il1-f177.google.com with SMTP id y2so16470169ilp.7
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 12:07:32 -0700 (PDT)
+X-Gm-Message-State: AOAM533hJYeVwg71o1R1f8uQFbzUQS6qp9FsEkfcnhjmXq4yHCIpb3IX
+        sQl7eOZ0vM1v3rpqGGSbMZe/ZFKJpmMQvk3TFAA=
+X-Google-Smtp-Source: ABdhPJyoPSCQWdVbTbi2jdo1d14h4gnPzGryAJ/aLbRzniVKIRbBl7Okl4RY5iR6bRxaG0EmnhV1ziz/3OTjzv0lGNI=
+X-Received: by 2002:a92:58cd:: with SMTP id z74mr226562ilf.224.1599592051270;
+ Tue, 08 Sep 2020 12:07:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 8 Sep 2020 19:06:55 +0000
-From:   abhinavk@codeaurora.org
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org,
-        Rob Clark <robdclark@chromium.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Drew Davenport <ddavenport@chromium.org>,
-        Kalyan Thota <kalyan_t@codeaurora.org>,
-        Hongbo Yao <yaohongbo@huawei.com>, Bernard <bernard@vivo.com>,
-        linux-kernel@vger.kernel.org, linux-arm-msm-owner@vger.kernel.org
-Subject: Re: [PATCH 1/2] drm/msm/dpu: move vblank events to complete_commit()
-In-Reply-To: <20200907170450.370122-1-robdclark@gmail.com>
-References: <20200907170450.370122-1-robdclark@gmail.com>
-Message-ID: <010101746f1d268a-8a3ad278-cd47-4688-af9d-531567f0307c-000000@us-west-2.amazonses.com>
-X-Sender: abhinavk@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
-X-SES-Outgoing: 2020.09.08-54.240.27.11
-Feedback-ID: 1.us-west-2.CZuq2qbDmUIuT3qdvXlRHZZCpfZqZ4GtG9v3VKgRyF0=:AmazonSES
+References: <20200907094843.1949-1-Jason@zx2c4.com> <20200907100647.GB10657@zn.tnic>
+ <22617e57e541e460fac09db04fdb370f8e96e8ef.camel@linux.intel.com>
+ <CAHmME9rh8N-Qui2KVxGP33Aar5tao_obA70XKwR2x5Qp1AytTw@mail.gmail.com>
+ <20200908172558.GG25236@zn.tnic> <CAHmME9pKfvPGf97BM1=VdUL1uU_8aOoc4+QOu6b51XnPz3SkRA@mail.gmail.com>
+ <20200908173656.GI25236@zn.tnic> <CAHmME9pVO01mj8vgKPEX7a6pZDRSfX62e2Ow8R=L79hLSJoaMA@mail.gmail.com>
+ <20200908180112.GK25236@zn.tnic>
+In-Reply-To: <20200908180112.GK25236@zn.tnic>
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+Date:   Tue, 8 Sep 2020 21:07:20 +0200
+X-Gmail-Original-Message-ID: <CAHmME9rMbuXfR+eNhopX8FyeXerUrPo4vaWpF6Dx-u3NnTmrVg@mail.gmail.com>
+Message-ID: <CAHmME9rMbuXfR+eNhopX8FyeXerUrPo4vaWpF6Dx-u3NnTmrVg@mail.gmail.com>
+Subject: Re: [PATCH] x86/msr: do not warn on writes to OC_MAILBOX
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        kitsunyan <kitsunyan@airmail.cc>,
+        "Brown, Len" <len.brown@intel.com>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sultan Alsawaf <sultan@kerneltoast.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-07 10:04, Rob Clark wrote:
-> From: Rob Clark <robdclark@chromium.org>
-> 
-> We could get a vblank event racing with the current atomic commit,
-> resulting in sending the pageflip event to userspace early, causing
-> tearing.  On the other hand, complete_commit() ensures that the
-> pending flush is complete.
-> 
-> Signed-off-by: Rob Clark <robdclark@chromium.org>
+On Tue, Sep 8, 2020 at 8:01 PM Borislav Petkov <bp@alien8.de> wrote:
+>
+> On Tue, Sep 08, 2020 at 07:42:12PM +0200, Jason A. Donenfeld wrote:
+> > Are you prepared to track down all the MSRs that might maybe do
+> > something naughty?
+>
+> I'm not prepared - that's why this MSR filtering. To block *all* direct
+> MSR accesses from userspace in the future.
+>
+> > Does `dd` warn when you run `dd if=/dev/zero of=/dev/sda`?
+>
+> Yah, because that's the same as bricking your hardware. Geez.
 
-I checked our downstream code as well and yes we are not signaling
-page flips inside the vblank_cb and are doing it after 
-wait_for_commit_done
-This aligns with that.
-Hence,
-Reviewed-by: Abhinav Kumar <abhinavk@codeaurora.org>
-> ---
->  drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
-> b/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
-> index c2729f71e2fa..89c0245b5de5 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
-> @@ -297,7 +297,6 @@ void dpu_crtc_vblank_callback(struct drm_crtc 
-> *crtc)
->  		dpu_crtc->vblank_cb_time = ktime_get();
->  	else
->  		dpu_crtc->vblank_cb_count++;
-> -	_dpu_crtc_complete_flip(crtc);
->  	drm_crtc_handle_vblank(crtc);
->  	trace_dpu_crtc_vblank_cb(DRMID(crtc));
->  }
-> @@ -402,6 +401,7 @@ static void dpu_crtc_frame_event_cb(void *data, u32 
-> event)
->  void dpu_crtc_complete_commit(struct drm_crtc *crtc)
->  {
->  	trace_dpu_crtc_complete_commit(DRMID(crtc));
-> +	_dpu_crtc_complete_flip(crtc);
->  }
-> 
->  static void _dpu_crtc_setup_lm_bounds(struct drm_crtc *crtc,
+Nobody is talking about bricking any hardware. Sorry if I seemed to
+imply that before. In my experience, undervolting improperly results
+in the CPU calculating things wrong and eventually crashing, and
+overclocking usually will trip some thermal limits where the CPU
+powers down. I've never experienced bricked hardware as a result of
+this.
+
+Jason
