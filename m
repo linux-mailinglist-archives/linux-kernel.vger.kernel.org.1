@@ -2,122 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9B80261488
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:25:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20C742614A6
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:30:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731514AbgIHQZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 12:25:31 -0400
-Received: from mail-am6eur05on2093.outbound.protection.outlook.com ([40.107.22.93]:26176
-        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1731648AbgIHQOG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:14:06 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PDbzLiA3SXwkN751gofiozbyl1MAycSbDXQGrpTOGAr6kZ/m5LMHEjAIQc/Q9QRYQT7YG//eZOstbl0X0gvArCnz2lNkqMGJyF4bbHrA2rlLOVpb3HKfizpeYWP9/foxR4l5IN7rM1Bk0LKvqE10UlxdhATq91tA1BwXZobkjmNf4L5HujsEdJKgrGOPvRh7qrKWOInf5mi8jrEhTGjaMRyr5+K/5fmab0oAKOKFbTfeKkENSLy51WCSVrfDvrU2oYxYi9p5HADWhpOxreOTF1S5bxLE7F7cf/vn9b+hqNXQRDsa3pt7xHFXs3GHhds9wfGfRcryceicAA3DOK+4TA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=m5v5AH4lazorxXbFyR4vBK2N58jkKw5xELdwp3OICEc=;
- b=BNeVjpl0TBTkbnjtAoquG/bx+GSYWLoJhQB0DbTU5k11ES4PStQoexBp6MTrkCT5T4o82ZPVc1iSUnr1FhIsPJurxJfVBkkLgiopLiLuqWEieu1I1XyZtO1aWTUHpno6enl8xlBCM6s7woys96Hht+RVP8vy8ZKLVUR0mgk6IcjLqSLZ2BwU/k0RIsaEkZ2VdQrGsRT2ExHipklRcnDdnM+t7dQP9xNQsIBT92mec8Pbndr+zRMt2bXHuCzh+Tx+h3Pb9S5R2DpJ2HC1nmhjee/qYLeXbsJrA/MOoYKI8ZQpA/fv+FBVLAxihYOmJ80bbWZ20YwQmihTvC+b7fcGeg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=plvision.eu; dmarc=pass action=none header.from=plvision.eu;
- dkim=pass header.d=plvision.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plvision.eu;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=m5v5AH4lazorxXbFyR4vBK2N58jkKw5xELdwp3OICEc=;
- b=HCRBs251X0rXiE5W2OiB1xBPnVPi+pAXbnTTzf5ero3RcuspRWxaRd4alVMaLvr1EWuyMmN+BVJAsY3ZPfLBcm4THlRSHN8zTngC8c/6D4/1tqG3px1pftXJQ6n/U46220VTdoV3bQf1baMhPyVVGykw/vLLQ99Q/XfRAYgmoUY=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=plvision.eu;
-Received: from HE1P190MB0539.EURP190.PROD.OUTLOOK.COM (2603:10a6:7:56::28) by
- HE1P190MB0490.EURP190.PROD.OUTLOOK.COM (2603:10a6:7:61::31) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3370.16; Tue, 8 Sep 2020 14:33:01 +0000
-Received: from HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
- ([fe80::c1ab:71de:6bc2:89fe]) by HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
- ([fe80::c1ab:71de:6bc2:89fe%6]) with mapi id 15.20.3348.019; Tue, 8 Sep 2020
- 14:33:01 +0000
-From:   Vadym Kochan <vadym.kochan@plvision.eu>
-To:     Alex Elder <elder@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Vadym Kochan <vadym.kochan@plvision.eu>
-Subject: [RFT net] net: ipa: fix u32_replace_bits by u32p_xxx version
-Date:   Tue,  8 Sep 2020 17:32:37 +0300
-Message-Id: <20200908143237.8816-1-vadym.kochan@plvision.eu>
-X-Mailer: git-send-email 2.17.1
-Content-Type: text/plain
-X-ClientProxiedBy: AM7PR04CA0018.eurprd04.prod.outlook.com
- (2603:10a6:20b:110::28) To HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
- (2603:10a6:7:56::28)
+        id S1731918AbgIHQaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 12:30:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59040 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731963AbgIHQ1c (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 12:27:32 -0400
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 767F8C0A3BE2
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 07:54:55 -0700 (PDT)
+Received: by mail-oi1-x243.google.com with SMTP id t76so16682101oif.7
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 07:54:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=w5WD7mYu1UZ17o5IwyM77lKheQXm/FoO3alEWArs8d8=;
+        b=gEjB2PVRSfcdabC2to0ytgzJqyIE1We/Z9N99i/QXWyfZI29q9ILSekgH2UoRUTGo1
+         mTSM6e38qq85pZ/1eQaDy5C9Ri71lBuFgqahCU3dDMEpfMcdod4JVa9HEaInoH/SEQwl
+         Vh+EggBAgwVJ02di4FQXo38idBxXJArYd4VMOiIOZLi0ViL4a5UwDGnd0P5ZZiwoK6Ce
+         IVuzaRE6dO5Er+fpuifC/1vBBr848mgts7QN0VCcqSs/Uf8+mrE8pvTPpMphF6Y6rwxu
+         Ld+/jSsFye84Q/SxKreWOUnNkIEfxQWleKPBpMSNTFUHQVum/1MC+NmkLK4MmJsI7COx
+         fgWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=w5WD7mYu1UZ17o5IwyM77lKheQXm/FoO3alEWArs8d8=;
+        b=tBocdiL9EC+bIKz9INx2f5rFUhsbamYdW7LyLjfwrzXzzB5ksTwFD1e0sSv6HexReK
+         QmT2v2/s9k2lcmkrGEShoFMJ2lpX4wHvzW370efQ3mprXC6k+tjDYFctGCoFFslzEFr5
+         2hwWwKSN3kIjrSJGlCmyj1wThWkwlRcnTGKO/FGJoeXXB1nxGPv8R2gf1T5TJnWLG2Sa
+         z02hhJhOXrOyx+HxhK3uqqCZB0tvCq2h2pJRC9/tXNq5b63X84mTx6Y9mOSxBkZqM/Rd
+         DHkzR2pN8Vq+//K5CUiINyZkiYO5UA0qxOak519SzLZkcMbsk+8HuHHLcFJF8f3NOkLL
+         lRMQ==
+X-Gm-Message-State: AOAM530JR2ozl3xIYi8x4wBDH6Kbr6JV6rdsc9t4tlnunTPTT0ydybZV
+        SxMKs+2g3FChJVQmx1/qZxinjg==
+X-Google-Smtp-Source: ABdhPJwfgX5hiHCKByDlCicvW5Vmn/1mu2VuOJ8ql9YPirRsdRzLX51mj7XJnCv+3+D49GSpE6m/uA==
+X-Received: by 2002:aca:df84:: with SMTP id w126mr1740500oig.103.1599576894821;
+        Tue, 08 Sep 2020 07:54:54 -0700 (PDT)
+Received: from yoga ([2605:6000:e5cb:c100:8898:14ff:fe6d:34e])
+        by smtp.gmail.com with ESMTPSA id l5sm3498342otj.40.2020.09.08.07.54.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Sep 2020 07:54:54 -0700 (PDT)
+Date:   Tue, 8 Sep 2020 09:54:50 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Jonathan Marek <jonathan@marek.ca>
+Cc:     linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Sanyog Kale <sanyog.r.kale@intel.com>,
+        "moderated list:SOUNDWIRE SUBSYSTEM" <alsa-devel@alsa-project.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] soundwire: qcom: fix SLIBMUS/SLIMBUS typo
+Message-ID: <20200908145450.GM3715@yoga>
+References: <20200908140818.28373-1-jonathan@marek.ca>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from pc60716vkochan.x.ow.s (217.20.186.93) by AM7PR04CA0018.eurprd04.prod.outlook.com (2603:10a6:20b:110::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.16 via Frontend Transport; Tue, 8 Sep 2020 14:33:00 +0000
-X-Mailer: git-send-email 2.17.1
-X-Originating-IP: [217.20.186.93]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b06db470-e672-4728-9794-08d8540416f8
-X-MS-TrafficTypeDiagnostic: HE1P190MB0490:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <HE1P190MB0490AC4EBF4FDA77824502EE95290@HE1P190MB0490.EURP190.PROD.OUTLOOK.COM>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2582;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: NmFZZmqFYqR5E7sp75t3yz66tWUPlqO2jk9U+Z2R/PZj4oJb+58YemlabVU6aCF8NZAKnA398wsxgzjV589cCoR46kqhgkJbwMt5dLJeweUoochfxsT72ShcS+bjsIKUT7YUy7N6ILaTsu5xsGbmxlQW2aAnOyNgL6pWiO9O95rYGNpLlPSUqgB4v6YBmjnMMpxQakbfFa69+8MVoxUmZQFylThNVI00geqTuF/W3NM6BDsG8RCBpXi6foZhPgJdpetBdiwmtMI1+/yEoaZ+f0tuHwZTK3i46zf0aqwJgScbKfBV7dIdJNj/9t5IoiqMUmF+WlH5EatP92Da8X6ESQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1P190MB0539.EURP190.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(346002)(376002)(136003)(366004)(39830400003)(396003)(66476007)(8936002)(66946007)(66556008)(956004)(2616005)(83380400001)(44832011)(5660300002)(66574015)(52116002)(316002)(6506007)(186003)(36756003)(6666004)(26005)(16526019)(2906002)(6512007)(6486002)(8676002)(107886003)(110136005)(4326008)(86362001)(478600001)(1076003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: Se/lq69Jml72dIuzaR3b4NKIHfHiS0uANZvNVti/71/mNj35b5UxNm6dj9EiDZ3QWZkBZ88XJtnR93Ah3lG07fJZmPzGMaPltVePoBfvEqzaYUUItOYgzZRF6S3SSo5Y7hogDL4CvZWFEjdCGh2xJEMZgBwL/bMPM6AovewH07+hhLcIocc71hHx1MgVJgKouwqDFJ+vIvawjASHoowkJZaiiEjyQJDCvO+mYwFfaj3XtgYvEHy2L//no5+AASMEl4Ev3dq2LqWz1+76oyqb7bn1tsXG8uinCi69U5eI1B2Ds+o1kpFpfhhZGTZO2U7MQvmxKBUZHXVPjlSdB6a4RcH3tMZ9n76TpYA7NjHRwdJ+Je7yxXUvSHtGX+i94o6Nhq2sdUlmiRlesPYWqtPEtouQS3ULzu5Xi7CLvmrN6bJVHJa6J60o2Mr1DhP6cWSyTEVpUb04Cq95jC/D4IvbaFtlul7Cs3cT0SCqULj18eDYhUZP/vByNwtwQx3kQ39c0BNOU+b9uq8jq7vd1+Yj2UFTTU3C093VT1jh84PM5r9CVSVmoIxkCzIJOUBNfNQ7pd6BhqoKQQw9JP6ojnJlVB4g+i4eIA9OFN2BMxPdw5By7YuS8hpZ5CjPRXwo+pnapT9fUwqvr709fCm+MHTkgg==
-X-OriginatorOrg: plvision.eu
-X-MS-Exchange-CrossTenant-Network-Message-Id: b06db470-e672-4728-9794-08d8540416f8
-X-MS-Exchange-CrossTenant-AuthSource: HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Sep 2020 14:33:01.8605
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 03707b74-30f3-46b6-a0e0-ff0a7438c9c4
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Ue/TruGcqnnS+UCsZ6Z8nJyKFLxKff/xiMVvERdZ7X43jO1IZNbvDg9eYI+HvlbujQSvg8nLvdqgeTA+Y+UlvIaKbbkMZTMe3La2TJAWJXo=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1P190MB0490
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200908140818.28373-1-jonathan@marek.ca>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Looks like u32p_replace_bits() should be used instead of
-u32_replace_bits() which does not modifies the value but returns the
-modified version.
+On Tue 08 Sep 09:08 CDT 2020, Jonathan Marek wrote:
 
-Fixes: 2b9feef2b6c2 ("soc: qcom: ipa: filter and routing tables")
-Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
----
-Found it while grepping of u32_replace_bits() usage and
-replaced it w/o testing.
+> Fix slimbus case being broken thanks to a typo.
+> 
+> Fixes: 5bd773242f75 ("soundwire: qcom: avoid dependency on CONFIG_SLIMBUS")
+> 
 
- drivers/net/ipa/ipa_table.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-diff --git a/drivers/net/ipa/ipa_table.c b/drivers/net/ipa/ipa_table.c
-index 2098ca2f2c90..b3790aa952a1 100644
---- a/drivers/net/ipa/ipa_table.c
-+++ b/drivers/net/ipa/ipa_table.c
-@@ -521,7 +521,7 @@ static void ipa_filter_tuple_zero(struct ipa_endpoint *endpoint)
- 	val = ioread32(endpoint->ipa->reg_virt + offset);
- 
- 	/* Zero all filter-related fields, preserving the rest */
--	u32_replace_bits(val, 0, IPA_REG_ENDP_FILTER_HASH_MSK_ALL);
-+	u32p_replace_bits(&val, 0, IPA_REG_ENDP_FILTER_HASH_MSK_ALL);
- 
- 	iowrite32(val, endpoint->ipa->reg_virt + offset);
- }
-@@ -573,7 +573,7 @@ static void ipa_route_tuple_zero(struct ipa *ipa, u32 route_id)
- 	val = ioread32(ipa->reg_virt + offset);
- 
- 	/* Zero all route-related fields, preserving the rest */
--	u32_replace_bits(val, 0, IPA_REG_ENDP_ROUTER_HASH_MSK_ALL);
-+	u32p_replace_bits(&val, 0, IPA_REG_ENDP_ROUTER_HASH_MSK_ALL);
- 
- 	iowrite32(val, ipa->reg_virt + offset);
- }
--- 
-2.17.1
-
+> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+> ---
+> This should be squashed into the problematic patch if possible,
+> but I'm not sure if that's possible since its already in linux-next?
+> 
+>  drivers/soundwire/qcom.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
+> index 100af93a5eab..c406a079d237 100644
+> --- a/drivers/soundwire/qcom.c
+> +++ b/drivers/soundwire/qcom.c
+> @@ -780,7 +780,7 @@ static int qcom_swrm_probe(struct platform_device *pdev)
+>  	if (!ctrl)
+>  		return -ENOMEM;
+>  
+> -#if IS_ENABLED(CONFIG_SLIBMUS)
+> +#if IS_ENABLED(CONFIG_SLIMBUS)
+>  	if (dev->parent->bus == &slimbus_bus) {
+>  #else
+>  	if (false) {
+> -- 
+> 2.26.1
+> 
