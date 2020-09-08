@@ -2,94 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06478260D5F
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 10:18:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24F40260D21
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 10:12:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730040AbgIHISj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 04:18:39 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:32886 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729554AbgIHIS3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 04:18:29 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 79E061A0FBA;
-        Tue,  8 Sep 2020 10:18:27 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 9E0211A0252;
-        Tue,  8 Sep 2020 10:18:22 +0200 (CEST)
-Received: from 10.192.242.69 (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 5A286402CA;
-        Tue,  8 Sep 2020 10:18:16 +0200 (CEST)
-From:   Anson Huang <Anson.Huang@nxp.com>
-To:     aisheng.dong@nxp.com, festevam@gmail.com, shawnguo@kernel.org,
-        stefan@agner.ch, kernel@pengutronix.de, linus.walleij@linaro.org,
-        s.hauer@pengutronix.de, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        arnd@arndb.de
-Cc:     Linux-imx@nxp.com
-Subject: [PATCH V4 3/3] pinctrl: imx: Support building i.MX pinctrl core driver as module
-Date:   Tue,  8 Sep 2020 16:12:01 +0800
-Message-Id: <1599552721-24872-3-git-send-email-Anson.Huang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1599552721-24872-1-git-send-email-Anson.Huang@nxp.com>
-References: <1599552721-24872-1-git-send-email-Anson.Huang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1729747AbgIHIMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 04:12:39 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:45341 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729257AbgIHIMZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 04:12:25 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R691e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0U8ISuh._1599552733;
+Received: from aliy80.localdomain(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U8ISuh._1599552733)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 08 Sep 2020 16:12:13 +0800
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] mm/memcg: no one use charge_type
+Date:   Tue,  8 Sep 2020 16:12:07 +0800
+Message-Id: <1599552727-60003-1-git-send-email-alex.shi@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change PINCTRL_IMX to tristate to support loadable module build.
+After commit 0a31bc97c80c3f mm: memcontrol: rewrite uncharge API, no one
+using MEM_CGROUP_CHARGE_TYPE_xxx, let's remove them.
 
-And i.MX common pinctrl driver should depend on CONFIG_OF to make sure
-no build error when i.MX common pinctrl driver is enabled for different
-architectures without CONFIG_OF.
-
-Also add module author, description and license.
-
-Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
-Reviewed-by: Dong Aisheng <aisheng.dong@nxp.com>
+Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org> 
+Cc: Michal Hocko <mhocko@kernel.org> 
+Cc: Vladimir Davydov <vdavydov.dev@gmail.com> 
+Cc: Andrew Morton <akpm@linux-foundation.org> 
+Cc: cgroups@vger.kernel.org 
+Cc: linux-mm@kvack.org 
+Cc: linux-kernel@vger.kernel.org 
 ---
-changes since V3:
-	- remove the prompt for PINCTRL_IMX.
----
- drivers/pinctrl/freescale/Kconfig       | 3 ++-
- drivers/pinctrl/freescale/pinctrl-imx.c | 5 +++++
- 2 files changed, 7 insertions(+), 1 deletion(-)
+ mm/memcontrol.c | 8 --------
+ 1 file changed, 8 deletions(-)
 
-diff --git a/drivers/pinctrl/freescale/Kconfig b/drivers/pinctrl/freescale/Kconfig
-index 7198916..a1fbb3b 100644
---- a/drivers/pinctrl/freescale/Kconfig
-+++ b/drivers/pinctrl/freescale/Kconfig
-@@ -1,6 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0-only
- config PINCTRL_IMX
--	bool
-+	tristate
-+	depends on OF
- 	select GENERIC_PINCTRL_GROUPS
- 	select GENERIC_PINMUX_FUNCTIONS
- 	select GENERIC_PINCONF
-diff --git a/drivers/pinctrl/freescale/pinctrl-imx.c b/drivers/pinctrl/freescale/pinctrl-imx.c
-index b80c450..daf28bc 100644
---- a/drivers/pinctrl/freescale/pinctrl-imx.c
-+++ b/drivers/pinctrl/freescale/pinctrl-imx.c
-@@ -11,6 +11,7 @@
- #include <linux/init.h>
- #include <linux/io.h>
- #include <linux/mfd/syscon.h>
-+#include <linux/module.h>
- #include <linux/of.h>
- #include <linux/of_device.h>
- #include <linux/of_address.h>
-@@ -898,3 +899,7 @@ const struct dev_pm_ops imx_pinctrl_pm_ops = {
- 					imx_pinctrl_resume)
- };
- EXPORT_SYMBOL_GPL(imx_pinctrl_pm_ops);
-+
-+MODULE_AUTHOR("Dong Aisheng <aisheng.dong@nxp.com>");
-+MODULE_DESCRIPTION("NXP i.MX common pinctrl driver");
-+MODULE_LICENSE("GPL v2");
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 5d52b8a88bea..d925905920bf 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -199,14 +199,6 @@ struct mem_cgroup_event {
+ #define	MEM_CGROUP_MAX_RECLAIM_LOOPS		100
+ #define	MEM_CGROUP_MAX_SOFT_LIMIT_RECLAIM_LOOPS	2
+ 
+-enum charge_type {
+-	MEM_CGROUP_CHARGE_TYPE_CACHE = 0,
+-	MEM_CGROUP_CHARGE_TYPE_ANON,
+-	MEM_CGROUP_CHARGE_TYPE_SWAPOUT,	/* for accounting swapcache */
+-	MEM_CGROUP_CHARGE_TYPE_DROP,	/* a page was unused swap cache */
+-	NR_CHARGE_TYPE,
+-};
+-
+ /* for encoding cft->private value on file */
+ enum res_type {
+ 	_MEM,
 -- 
-2.7.4
+1.8.3.1
 
