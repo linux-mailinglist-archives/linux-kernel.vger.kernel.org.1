@@ -2,97 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EEA026108D
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 13:19:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F290261096
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 13:21:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729824AbgIHLRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 07:17:04 -0400
-Received: from sonic310-13.consmr.mail.bf2.yahoo.com ([74.6.135.123]:45650
-        "EHLO sonic310-13.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729729AbgIHLNx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 07:13:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1599563586; bh=DPYuw2gUpgtMJzJhlH/AVmRGu2wSKCY1C+f8nOCoxu0=; h=Date:From:Reply-To:Subject:References:From:Subject; b=le/xon49wr8SXRbH81T9NKanZMoj/MiPlvxxzDVY8PUc4sOYPDnPlZw71fa/pCWhq4Lla9hQaZMjaDq0GTnV6IpvHU3+mDQUnwrWDmLNSI/yIDiIf7ua4H1l8AWigKnJT+O4qGM3qjvT39K7KklBvwSLFr+lKBz2rS+09QDHARS2SXt+gU7fvXjlE6XtAyzLQib7JqP+9MWuepVaqkm+1TrD0g/lv/htTkwMu83LyKdFXlIry/MauVS0Xjst4AwcJ+eROGhZP17sXGvZHaALt5iCVwiklecbP2G648hx/N9suPIQs+vL+zd0UeDRrKJSqnadLjgtxJW0INTcv8EZyw==
-X-YMail-OSG: qTJRIqUVM1kQdwlsweRg_NBGJx2mkI7Hruq0C8sELMQJ90FhEY54gku2cHJtlA5
- Ps_seEEzg.EOkt4.YSRscGW3ImLLzGRjdGs1sA3RuHWH4mNm12Fm1DjUKmvTGbHv7YITmWwCxqiw
- pcaTUdHDORFzjLXLzo0ma4JfkiSS7ZP5eUrvwWqyRcweWB5_RbY0oHpu2l5JrVzMRIRU_uTYih3o
- 9IB.Uw.cCNfQsP8rVR2MLjYR_VaXkdX0A5ePK8RyfcNZ.10RCZBYMcFhAaV8zxsDJz370jKjHFlk
- aLHkT2wTrNynrPe6ridkeuYNoOWOAUoTVImnGMFtzTsXf3tELLw6ng66bFfg6JPmY5q7LLUvNd4g
- rTzlxjKLFA.CrcwJfrvL9mf0no0oPLlPY8RJEO4QXOIk_7BhLKFxjNlddFJqzXSTPm0Q5OpdY8Z9
- sb8rfQGhcghg9KRiqym_7af9rseQuq9.auFugyr8E1XfY20cV6G.WSrS7bQpak.wntLU0UhMUC5c
- juuow2ceNfqz4qj7vtAodziu9VhEwuwI_37ZQL.PbjbIL1fJ1S43IRyk2hUfwJ36F.r.vAiT8W1V
- Q4qAoG8n1CWI09hjUJVeHTqjwjJX94K_x4UDQx3ud3AIPM_PRONBGKC4Pns5WsNIazPyaLbCNcdf
- nX3n4le9lA0qrN3Cdei8GUTiAjMJy_1vX6j4kgkD_EOEEA0rAyfVeLjlQ0D2kWBBIoAQkbXDlqIT
- yDzkK5dVAIU7N7QxSBW20KDEofkGFwpR2Cy25ieiYzvcDEqt2RCCLq9p2Qhy7VuJqrfFglpb23g5
- 6F.cYvROe2y6mtFutletC85AYpVx9eDVUVSQr3ER50fQYsPYjblz3GvOopKARn1AEUlKSDdYkdnu
- rTkLbSVow1puqT.Qo0bhq8hKrzR7wS4a5Xcxu2eUocKz.tMwNihVx_NWzl7KZVWrSWUljhPgO.Y3
- PKSmT.wFXaW.rpQ3eZU3hjXCT_8D1cwTsetQvf3tBnNW2nq9LW9MGGCkc3zPvUtQPkVOdsUzQk8u
- rX2aC3egzpD3HtIdXdXBXpC6VKVZVf9Kw4IPqf6IjRC2yBCZt2GZLlQXwGH8i_YTA1ftXmbsSJoj
- IqJixVX2lz3yGUpCzQRvlulRx3jQc76Cc4xXcU_YjuDqrqyVpWoeEXe8lbcrfJq8lcYl6qvj_nfh
- VwJ6BHno6Wfu2WuNWbkf.7p5vrN4ByB91NddJzz7xMplhhETXqz7m.cBEm_57i2amOOgSN1SjeRs
- kahRwGpdVDuWw1Zy57S3GOUzyapxShC8idXor8dj8NiwjiVwhYmisI3OBf6rmfmjafitW4nJ0NeI
- 9jNCLPg1Zzl83X_SejIGSfhcYf3Gof8wE7WeyBeTHUV.c4CkyuhTmGrcEht6v0RX66ynhzJwUwRH
- vh.08Q90xYOWLBion0EVi2CyFq3eUK6q.AxSLHSbHovM2WL6J
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic310.consmr.mail.bf2.yahoo.com with HTTP; Tue, 8 Sep 2020 11:13:06 +0000
-Date:   Tue, 8 Sep 2020 11:13:03 +0000 (UTC)
-From:   "Mrs. Mina A, Brunel " <mrs.minaaaliyahbrunel216@gmail.com>
-Reply-To: mrs.minaaaliyahbrunel31@gmail.com
-Message-ID: <617829211.3354373.1599563583015@mail.yahoo.com>
-Subject: My Dear in the lord
+        id S1729275AbgIHLV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 07:21:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50228 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729794AbgIHLPI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 07:15:08 -0400
+Received: from gaia (unknown [46.69.195.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D1BE8208DB;
+        Tue,  8 Sep 2020 11:14:56 +0000 (UTC)
+Date:   Tue, 8 Sep 2020 12:14:54 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Cc:     linux-kernel@vger.kernel.org, f.fainelli@gmail.com, hch@lst.de,
+        linux-rpi-kernel@lists.infradead.org,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, robh@kernel.org,
+        Robin Murphy <robin.murphy@arm.com>
+Subject: Re: [RFC] arm64: mm: Do not use both DMA zones when 30-bit address
+ space unavailable
+Message-ID: <20200908111454.GB25591@gaia>
+References: <20200819182434.28196-1-nsaenzjulienne@suse.de>
+ <20200828174338.GK3169@gaia>
+ <1ae30b3bfd97aba56323422baeb5b48b787c7561.camel@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-References: <617829211.3354373.1599563583015.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16565 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:80.0) Gecko/20100101 Firefox/80.0
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1ae30b3bfd97aba56323422baeb5b48b787c7561.camel@suse.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Nicolas,
 
+On Mon, Sep 07, 2020 at 07:50:43PM +0200, Nicolas Saenz Julienne wrote:
+> On Fri, 2020-08-28 at 18:43 +0100, Catalin Marinas wrote:
+> > On Wed, Aug 19, 2020 at 08:24:33PM +0200, Nicolas Saenz Julienne wrote:
+> > > There is no benefit in splitting the 32-bit address space into two
+> > > distinct DMA zones when the 30-bit address space isn't even available on
+> > > a device. If that is the case, default to one big ZONE_DMA spanning the
+> > > whole 32-bit address space.
+> > > 
+> > > This will help reduce some of the issues we've seen with big crash
+> > > kernel allocations.
+> > > 
+> > > Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+> > > ---
+> > > 
+> > > Whith this patch, on a 8GB RPi4 the setup looks like this:
+> > > 
+> > > 	DMA      [mem 0x0000000000000000-0x000000003fffffff]
+> > > 	DMA32    [mem 0x0000000040000000-0x00000000ffffffff]
+> > > 	Normal   [mem 0x0000000100000000-0x00000001ffffffff]
+> > > 
+> > > And stock 8GB virtme/qemu:
+> > > 
+> > > 	DMA      [mem 0x0000000040000000-0x00000000ffffffff]
+> > > 	DMA32    empty
+> > > 	Normal   [mem 0x0000000100000000-0x000000023fffffff]
+> > > 
+> > >  arch/arm64/mm/init.c | 29 +++++++++++++++++++++++++----
+> > >  1 file changed, 25 insertions(+), 4 deletions(-)
+> > > 
+> > > diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+> > > index b6881d61b818..857a62611d7a 100644
+> > > --- a/arch/arm64/mm/init.c
+> > > +++ b/arch/arm64/mm/init.c
+> > > @@ -183,13 +183,20 @@ static void __init reserve_elfcorehdr(void)
+> > >  
+> > >  /*
+> > >   * Return the maximum physical address for a zone with a given address size
+> > > - * limit. It currently assumes that for memory starting above 4G, 32-bit
+> > > - * devices will use a DMA offset.
+> > > + * limit or zero if memory starts from an address higher than the zone targeted.
+> > > + * It currently assumes that for memory starting above 4G, 32-bit devices will
+> > > + * use a DMA offset.
+> > >   */
+> > >  static phys_addr_t __init max_zone_phys(unsigned int zone_bits)
+> > >  {
+> > > -	phys_addr_t offset = memblock_start_of_DRAM() & GENMASK_ULL(63, zone_bits);
+> > > -	return min(offset + (1ULL << zone_bits), memblock_end_of_DRAM());
+> > > +	phys_addr_t base = memblock_start_of_DRAM();
+> > > +	phys_addr_t offset = base & GENMASK_ULL(63, 32);
+> > > +	s64 zone_size = (1ULL << zone_bits) - (base & DMA_BIT_MASK(32));
+> > > +
+> > > +	if (zone_size <= 0)
+> > > +		return 0;
+> > > +
+> > > +	return min(base + zone_size + offset, memblock_end_of_DRAM());
+> > >  }
+> > 
+> > OK, so we can still get some ZONE_DMA if DRAM starts in the first GB.
+> > 
+> > I don't think it entirely solves the problem.
+> 
+> Agree. Didn't mean to imply it.
 
-My Dear in the lord
+What I meant is that if we have a SoC with RAM starting at 0, it hits
+the same issue with ZONE_DMA even if it doesn't have any 30-bit devices.
+This patch assumes that RPi4 is the only device with RAM starting at 0.
 
+> > It just happens that the
+> > other affected SoCs don't have memory in the first GB. With this patch,
+> > we go by the assumption that ZONE_DMA/DMA32 split is only needed if
+> > there is memory in the low 1GB and such <32-bit devices don't have a DMA
+> > offset.
+> 
+> The way I understand it is: "we may have 30 bit DMA limited devices, the rest
+> can deal with 32 bit."
+> 
+> On top of that, I believe it makes little sense to use an offset in the
+> physical address space below the 32bit mark. You'd be limiting the amount of
+> memory available to the system. So, if you're going support DMA limited devices
+> on your otherwise RAM hungry SoC, you'll have to have that physical address
+> space directly available, or at least part of it.
+> 
+> All in all, I believe that assuming no 30 bit DMA limited devices exist in the
+> system if the physical addresses don't exist is a fairly safe.
 
-My name is Mrs. Mina A. Brunel I am a Norway Citizen who is living in Burki=
-na Faso, I am married to Mr. Brunel Patrice, a politicians who owns a small=
- gold company in Burkina Faso; He died of Leprosy and Radesyge, in year Feb=
-ruary 2010, During his lifetime he deposited the sum of =E2=82=AC 8.5 Milli=
-on Euro) Eight million, Five hundred thousand Euros in a bank in Ouagadougo=
-u the capital city of of Burkina in West Africa. The money was from the sal=
-e of his company and death benefits payment and entitlements of my deceased=
- husband by his company.
+One could design a SoC with RAM starting at 2GB. A 30-bit device may
+have bits 31 and 30 tied to 0b10 so that the access is offset into the
+1st GB of RAM.
 
-I am sending you this message with heavy tears in my eyes and great sorrow =
-in my heart, and also praying that it will reach you in good health because=
- I am not in good health, I sleep every night without knowing if I may be a=
-live to see the next day. I am suffering from long time cancer and presentl=
-y I am partially suffering from Leprosy, which has become difficult for me =
-to move around. I was married to my late husband for more than 6 years with=
-out having a child and my doctor confided that I have less chance to live, =
-having to know when the cup of death will come, I decided to contact you to=
- claim the fund since I don't have any relation I grew up from an orphanage=
- home.
+So while it's possible theoretically, I guess it's safe to assume it
+won't happen soon.
 
-I have decided to donate this money for the support of helping Motherless b=
-abies/Less privileged/Widows and churches also to build the house of God be=
-cause I am dying and diagnosed with cancer for about 3 years ago. I have de=
-cided to donate from what I have inherited from my late husband to you for =
-the good work of Almighty God; I will be going in for an operation surgery =
-soon.
+> Also note the usage of 'zone_dma_bits' in the DMA code, which assumes that
+> ZONE_DMA's physical address space is always smaller than (1 << zone_dma_bits) -
+> 1.
 
-Now I want you to stand as my next of kin to claim the funds for charity pu=
-rposes. Because of this money remains unclaimed after my death, the bank ex=
-ecutives or the government will take the money as unclaimed fund and maybe =
-use it for selfishness and worthless ventures, I need a very honest person =
-who can claim this money and use it for Charity works, for orphanages, wido=
-ws and also build schools and churches for less privilege that will be name=
-d after my late husband and my name.
+I think part of those uses are broken. dma_direct_supported() does the
+right thing and uses the DMA address instead of the physical one. Here
+__phys_to_dma() subtracts the dma_pfn_offset, which in my above example
+would be (0b10 << (30 - PAGE_SHIFT)).
 
-I need your urgent answer to know if you will be able to execute this proje=
-ct, and I will give you more information on how the fund will be transferre=
-d to your bank account or online banking.
+dma_direct_optimal_gfp_mask(), OTOH, seems to start ok with a
+__dma_to_phys() on the dma_limit but it ends up comparing the physical
+address with the DMA mask. This gives the wrong result on arm64
+platforms where RAM starts above 4GB and still expect a ZONE_DMA32. It
+should compare *phys_limit with __dma_to_phys(DMA_BIT_MASK(...)). I
+guess it ends up bouncing via swiotlb more often.
 
-Thanks
-Mrs. Mina A. Brunel
+We assumed such offsets on arm64 since commit d50314a6b070 ("arm64:
+Create non-empty ZONE_DMA when DRAM starts above 4GB").
+
+> > An alternative (and I think we had a patch at some point) is to make it
+> > generic and parse the dma-range in the DT to identify the minimum mask
+> > and set ZONE_DMA accordingly. But this doesn't solve ACPI, so if Linux
+> > can boot with ACPI on RPi4 it would still be broken.
+> 
+> ACPI is being worked on by, among others, Jeremy Linton (one of your colleagues
+> I believe).
+> 
+> We could always use sane defaults for ACPI and be smarter with DT. Yet,
+> implementing this entails translating nested dma-ranges with the only help of
+> libfdt, which isn't trivial (see devices/of/address.c). IIRC RobH said that it
+> wasn't worth the effort just for a board.
+
+That would have been the ideal, more generic solution. But I agree that
+it's not worth the effort if the only SoC affected is RPi4.
+
+To summarise, I'd like ZONE_DMA to overlap with ZONE_DMA32 (i.e. expand
+zone_dma_bits to 32 and drop ZONE_DMA32) for all SoCs other than RPi4.
+The solutions so far:
+
+1. Assume that, if RAM starts at 0, we need a zone_dma_bits == 30. This
+   also assumes that it's only RPi4 in this category or that any such
+   future SoC has a need for 30-bit DMA.
+
+2. Adjust zone_dma_bits at boot-time only if the SoC is RPi4.
+
+3. Use the more complex dma-ranges approach to calculate the correct
+   zone_dma_bits as a minimum of all dma masks in the DT.
+
+We can discount (3) as not worth the effort. I'd go with (1) (this
+patch) if we can guarantee that no current or future SoC has RAM
+starting at 0 while not needing 30-bit DMA masks. If not, we can go with
+(2) unless others have a better suggestion.
+
+-- 
+Catalin
