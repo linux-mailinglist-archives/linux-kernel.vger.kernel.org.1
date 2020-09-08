@@ -2,149 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5EDB2612BF
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 16:32:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07786261346
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 17:15:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729026AbgIHOc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 10:32:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39728 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729719AbgIHO0E (ORCPT
+        id S1729251AbgIHPPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 11:15:17 -0400
+Received: from mailgw02.mediatek.com ([1.203.163.81]:3261 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730189AbgIHPOV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 10:26:04 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22BA0C08E818
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 07:25:10 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id j34so4760616pgi.7
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 07:25:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qbyfb7IENIIZnzycuSlXwlchWqptmqZvtFIJsiTST2Q=;
-        b=TcMeF22UNZIEg9d0gzz98TwFeIxyqfPvLagxomEInN8Jz1RMp7VDdtXA6EehKzjSG8
-         /5SlRkTXBSFEzI7pP7AjUsnj7qEH/1FwaqMYorliQ5tbjGHarxMvO8K2yyl3kx+Odxn2
-         3p+pVF9186L5mOvCvvk4+cuQxqF1uHjnnMNSMl/4X7ONNFqdgPB5cc4Rdoy/RJMqBX7L
-         bEIWU1IN9uRC1oJ6e3XY9xep4JvDEaHn65KJdAK/LLiIaIQAFmKTXm5LoKEfec4Q8zPo
-         Af1hYqV97gBqQ2vTs0XQpUYzWpFqhNlJegb6cSioxGUw8S/cvolkKosVgz5eZAOnnSmN
-         NcTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qbyfb7IENIIZnzycuSlXwlchWqptmqZvtFIJsiTST2Q=;
-        b=VhKgYKcrWlRgwFv7THtlgALXJHdamqslide4B7eVDKyzPpi88cPYg0308F7zIzjJSN
-         FqM2XJ29IKD8WRYRdTj9jV5WZUr7tE2BtJaF5lJihUaMohmhP0jR2faJzXgvgSVYPRYN
-         zyI8H1awCwD6jlYtayNWhBHvTM3XSo6yOTECmZt6y4Jxdnmk3zb3u5alFh6fMSt4jRaI
-         bnaKT0Det1E4BSLg+ymcSLvi+pbRPZnZR5KCCkHuQWBQzXwGHlNd5Ic5uQXWG8hJI4vd
-         mg22laKx2LXIdy4N2Wg8SBfjvJ2PJVtUPW6RmyHiQj5LgJPER2u2KUreIn6/9zXsXRhQ
-         hCYA==
-X-Gm-Message-State: AOAM531RYn9caQfqIAh9t+ukWnJ5hz+4foxwRz1OR9IaxekpfJXv/ZWi
-        xyMg/k2hAf6uzkJBkx3YD4oROmnzLvagf9HH
-X-Google-Smtp-Source: ABdhPJxgxtlU8ucp+kFiZL0rAJPS9+qutAhqRqo5Pl2vMcjnCNUKCP13XLhDLlCxt6b4VxJLHDqNIQ==
-X-Received: by 2002:aa7:8e85:: with SMTP id a5mr23961248pfr.96.1599575109593;
-        Tue, 08 Sep 2020 07:25:09 -0700 (PDT)
-Received: from localhost.localdomain ([103.136.220.67])
-        by smtp.gmail.com with ESMTPSA id v26sm6120436pgo.83.2020.09.08.07.25.06
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 08 Sep 2020 07:25:08 -0700 (PDT)
-From:   zangchunxin@bytedance.com
-To:     akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Chunxin Zang <zangchunxin@bytedance.com>,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH] mm/vmscan: fix infinite loop in drop_slab_node
-Date:   Tue,  8 Sep 2020 22:24:56 +0800
-Message-Id: <20200908142456.89626-1-zangchunxin@bytedance.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
+        Tue, 8 Sep 2020 11:14:21 -0400
+X-UUID: 6177d6bd5e6a4603a7295c234df2c931-20200908
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=oQzZwJh3y7+kGJk/4w1rH1iequi645UjG2KFNV11C7k=;
+        b=uvFZrsevXgDGmwNjyt6oi0NaK0IJUJ/hmfn2VflP7ZXeZ4eOMGUMM9A5a2yk6fl00pS0o18v75RSOUk17I5B0kfy9Q/4oBcC360CvxIlhClbwFLgZW9c3/OS4DIhWJf9WhvvUXCSsfuKDD/DeUNbfI8WUylMtz/rGnMUDYOiUl0=;
+X-UUID: 6177d6bd5e6a4603a7295c234df2c931-20200908
+Received: from mtkcas32.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <crystal.guo@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1413091755; Tue, 08 Sep 2020 21:28:50 +0800
+Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS31N1.mediatek.inc
+ (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 8 Sep
+ 2020 21:28:48 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 8 Sep 2020 21:28:48 +0800
+Message-ID: <1599571618.14806.7.camel@mhfsdcap03>
+Subject: Re: [v4,4/4] arm64: dts: mt8192: add infracfg_rst node
+From:   Crystal Guo <crystal.guo@mediatek.com>
+To:     Suman Anna <s-anna@ti.com>
+CC:     "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        Seiya Wang =?UTF-8?Q?=28=E7=8E=8B=E8=BF=BA=E5=90=9B=29?= 
+        <seiya.wang@mediatek.com>,
+        Stanley Chu =?UTF-8?Q?=28=E6=9C=B1=E5=8E=9F=E9=99=9E=29?= 
+        <stanley.chu@mediatek.com>,
+        Yingjoe Chen =?UTF-8?Q?=28=E9=99=B3=E8=8B=B1=E6=B4=B2=29?= 
+        <Yingjoe.Chen@mediatek.com>,
+        Fan Chen =?UTF-8?Q?=28=E9=99=B3=E5=87=A1=29?= 
+        <fan.chen@mediatek.com>,
+        "Yong Liang =?UTF-8?Q?=28=E6=A2=81=E5=8B=87=29?=" 
+        <Yong.Liang@mediatek.com>
+Date:   Tue, 8 Sep 2020 21:26:58 +0800
+In-Reply-To: <211bd78f-3b70-1e65-eea9-75cc73a3dfdd@ti.com>
+References: <20200817030324.5690-1-crystal.guo@mediatek.com>
+         <20200817030324.5690-5-crystal.guo@mediatek.com>
+         <211bd78f-3b70-1e65-eea9-75cc73a3dfdd@ti.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-TM-SNTS-SMTP: E2B71D7CF58B128302A1F43348A6FECCA6782FE097627415268B005A7ADAC0792000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chunxin Zang <zangchunxin@bytedance.com>
-
-On our server, there are about 10k memcg in one machine. They use memory
-very frequently. When I tigger drop caches，the process will infinite loop
-in drop_slab_node.
-There are two reasons:
-1.We have too many memcgs, even though one object freed in one memcg, the
-  sum of object is bigger than 10.
-2.We spend a lot of time in traverse memcg once. So, the memcg who
-  traversed at the first have been freed many objects. Traverse memcg next
-  time, the freed count bigger than 10 again.
-
-We can get the following info through 'ps':
-
-  root:~# ps -aux | grep drop
-  root  357956 ... R    Aug25 21119854:55 echo 3 > /proc/sys/vm/drop_caches
-  root 1771385 ... R    Aug16 21146421:17 echo 3 > /proc/sys/vm/drop_caches
-  root 1986319 ... R    18:56 117:27 echo 3 > /proc/sys/vm/drop_caches
-  root 2002148 ... R    Aug24 5720:39 echo 3 > /proc/sys/vm/drop_caches
-  root 2564666 ... R    18:59 113:58 echo 3 > /proc/sys/vm/drop_caches
-  root 2639347 ... R    Sep03 2383:39 echo 3 > /proc/sys/vm/drop_caches
-  root 3904747 ... R    03:35 993:31 echo 3 > /proc/sys/vm/drop_caches
-  root 4016780 ... R    Aug21 7882:18 echo 3 > /proc/sys/vm/drop_caches
-
-Use bpftrace follow 'freed' value in drop_slab_node:
-
-  root:~# bpftrace -e 'kprobe:drop_slab_node+70 {@ret=hist(reg("bp")); }'
-  Attaching 1 probe...
-  ^B^C
-
-  @ret:
-  [64, 128)        1 |                                                    |
-  [128, 256)      28 |                                                    |
-  [256, 512)     107 |@                                                   |
-  [512, 1K)      298 |@@@                                                 |
-  [1K, 2K)       613 |@@@@@@@                                             |
-  [2K, 4K)      4435 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
-  [4K, 8K)       442 |@@@@@                                               |
-  [8K, 16K)      299 |@@@                                                 |
-  [16K, 32K)     100 |@                                                   |
-  [32K, 64K)     139 |@                                                   |
-  [64K, 128K)     56 |                                                    |
-  [128K, 256K)    26 |                                                    |
-  [256K, 512K)     2 |                                                    |
-
-In one drop caches action, only traverse memcg once maybe is better.
-If user need more memory, they can do drop caches again.
-
-Signed-off-by: Chunxin Zang <zangchunxin@bytedance.com>
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
----
- mm/vmscan.c | 13 ++++---------
- 1 file changed, 4 insertions(+), 9 deletions(-)
-
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index b6d84326bdf2..9d8ee2ae5824 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -699,17 +699,12 @@ static unsigned long shrink_slab(gfp_t gfp_mask, int nid,
- 
- void drop_slab_node(int nid)
- {
--	unsigned long freed;
-+	struct mem_cgroup *memcg = NULL;
- 
-+	memcg = mem_cgroup_iter(NULL, NULL, NULL);
- 	do {
--		struct mem_cgroup *memcg = NULL;
--
--		freed = 0;
--		memcg = mem_cgroup_iter(NULL, NULL, NULL);
--		do {
--			freed += shrink_slab(GFP_KERNEL, nid, memcg, 0);
--		} while ((memcg = mem_cgroup_iter(NULL, memcg, NULL)) != NULL);
--	} while (freed > 10);
-+		shrink_slab(GFP_KERNEL, nid, memcg, 0);
-+	} while ((memcg = mem_cgroup_iter(NULL, memcg, NULL)) != NULL);
- }
- 
- void drop_slab(void)
--- 
-2.11.0
+T24gVGh1LCAyMDIwLTA5LTAzIGF0IDA3OjI5ICswODAwLCBTdW1hbiBBbm5hIHdyb3RlOg0KPiBI
+aSBDcnlzdGFsLA0KPiANCj4gT24gOC8xNi8yMCAxMDowMyBQTSwgQ3J5c3RhbCBHdW8gd3JvdGU6
+DQo+ID4gYWRkIGluZnJhY2ZnX3JzdCBub2RlIHdoaWNoIGlzIGZvciBNVDgxOTIgcGxhdGZvcm0N
+Cj4gPiANCj4gPiBTaWduZWQtb2ZmLWJ5OiBDcnlzdGFsIEd1byA8Y3J5c3RhbC5ndW9AbWVkaWF0
+ZWsuY29tPg0KPiANCj4gSSB1bmRlcnN0YW5kIHlvdSBhcmUgcG9zdGluZyB0aGVzZSB0b2dldGhl
+ciBmb3IgY29tcGxldGUgcmVmZXJlbmNlLCBidXQgZHJpdmVyDQo+IHN1YnN5c3RlbSBtYWludGFp
+bmVycyB0eXBpY2FsbHkgZG9uJ3QgcGljayBkdHMgcGF0Y2hlcy4gSW4gYW55Y2FzZSwgY2FuIHlv
+dQ0KPiBjbGFyaWZ5IGlmIHlvdXIgcmVnaXN0ZXJzIGFyZSBzZWxmLWNsZWFyaW5nIHJlZ2lzdGVy
+cz8NCj4gDQo+IHJlZ2FyZHMNCj4gU3VtYW4NCj4gDQpIaSBTdW1hbiwNCg0KVGhhbmtzIGZvciB5
+b3VyIHJlcGx5Lg0KT3VyIHJlc2V0IHJlZ2lzdGVycyBhcmUgbm90IHNlbGYtY2xlYXJpbmcsIGl0
+IG5lZWRzIHRvIHNldCB0aGUgY2xlYXIgYml0DQp0byAxIHRvIGNsZWFyIHRoZSByZWxhdGVkIGJp
+dC4NCkFuZCBzaG91bGQgSSBzZXBhcmF0ZSB0aGlzIGR0cyBwYXRjaCBmcm9tIHRoZSBwYXRjaCBz
+ZXRzPw0KDQpyZWdhcmRzDQpDcnlzdGFsDQo+ID4gLS0tDQo+ID4gIGFyY2gvYXJtNjQvYm9vdC9k
+dHMvbWVkaWF0ZWsvbXQ4MTkyLmR0c2kgfCAxMSArKysrKysrKysrLQ0KPiA+ICAxIGZpbGUgY2hh
+bmdlZCwgMTAgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQ0KPiA+IA0KPiA+IGRpZmYgLS1n
+aXQgYS9hcmNoL2FybTY0L2Jvb3QvZHRzL21lZGlhdGVrL210ODE5Mi5kdHNpIGIvYXJjaC9hcm02
+NC9ib290L2R0cy9tZWRpYXRlay9tdDgxOTIuZHRzaQ0KPiA+IGluZGV4IDkzMWUxY2ExNzIyMC4u
+YTBjYjk5MDQ3MDZiIDEwMDY0NA0KPiA+IC0tLSBhL2FyY2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0
+ZWsvbXQ4MTkyLmR0c2kNCj4gPiArKysgYi9hcmNoL2FybTY0L2Jvb3QvZHRzL21lZGlhdGVrL210
+ODE5Mi5kdHNpDQo+ID4gQEAgLTEwLDYgKzEwLDcgQEANCj4gPiAgI2luY2x1ZGUgPGR0LWJpbmRp
+bmdzL2ludGVycnVwdC1jb250cm9sbGVyL2lycS5oPg0KPiA+ICAjaW5jbHVkZSA8ZHQtYmluZGlu
+Z3MvcGluY3RybC9tdDgxOTItcGluZnVuYy5oPg0KPiA+ICAjaW5jbHVkZSA8ZHQtYmluZGluZ3Mv
+cG93ZXIvbXQ4MTkyLXBvd2VyLmg+DQo+ID4gKyNpbmNsdWRlIDxkdC1iaW5kaW5ncy9yZXNldC90
+aS1zeXNjb24uaD4NCj4gPiAgDQo+ID4gIC8gew0KPiA+ICAJY29tcGF0aWJsZSA9ICJtZWRpYXRl
+ayxtdDgxOTIiOw0KPiA+IEBAIC0yMTksOSArMjIwLDE3IEBADQo+ID4gIAkJfTsNCj4gPiAgDQo+
+ID4gIAkJaW5mcmFjZmc6IGluZnJhY2ZnQDEwMDAxMDAwIHsNCj4gPiAtCQkJY29tcGF0aWJsZSA9
+ICJtZWRpYXRlayxtdDgxOTItaW5mcmFjZmciLCAic3lzY29uIjsNCj4gPiArCQkJY29tcGF0aWJs
+ZSA9ICJtZWRpYXRlayxtdDgxOTItaW5mcmFjZmciLCAic3lzY29uIiwgInNpbXBsZS1tZmQiOw0K
+PiA+ICAJCQlyZWcgPSA8MCAweDEwMDAxMDAwIDAgMHgxMDAwPjsNCj4gPiAgCQkJI2Nsb2NrLWNl
+bGxzID0gPDE+Ow0KPiA+ICsNCj4gPiArCQkJaW5mcmFjZmdfcnN0OiByZXNldC1jb250cm9sbGVy
+IHsNCj4gPiArCQkJCWNvbXBhdGlibGUgPSAibWVkaWF0ZWssaW5mcmEtcmVzZXQiLCAidGksc3lz
+Y29uLXJlc2V0IjsNCj4gPiArCQkJCSNyZXNldC1jZWxscyA9IDwxPjsNCj4gPiArCQkJCXRpLHJl
+c2V0LWJpdHMgPSA8DQo+ID4gKwkJCQkJMHgxNDAgMTUgMHgxNDQgMTUgMCAwIChBU1NFUlRfU0VU
+IHwgREVBU1NFUlRfU0VUIHwgU1RBVFVTX05PTkUpIC8qIDA6IHBjaWUgKi8NCj4gPiArCQkJCT47
+DQo+ID4gKwkJCX07DQo+ID4gIAkJfTsNCj4gPiAgDQo+ID4gIAkJcGVyaWNmZzogcGVyaWNmZ0Ax
+MDAwMzAwMCB7DQo+ID4gDQo+IA0KDQo=
 
