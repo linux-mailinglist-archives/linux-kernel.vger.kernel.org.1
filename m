@@ -2,99 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7536C260B9E
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 09:12:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3269C260BBC
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 09:18:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729257AbgIHHMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 03:12:48 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:57894 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729028AbgIHHMk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 03:12:40 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 69EFF89B22D7942ADF0F;
-        Tue,  8 Sep 2020 15:12:36 +0800 (CST)
-Received: from thunder-town.china.huawei.com (10.174.177.253) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 8 Sep 2020 15:12:29 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Haoyu Lv <lvhaoyu@huawei.com>, Libin <huawei.libin@huawei.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: [PATCH v2 3/3] dt-bindings: dw-apb-ictl: support hierarchy irq domain
-Date:   Tue, 8 Sep 2020 15:11:34 +0800
-Message-ID: <20200908071134.2578-4-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
-In-Reply-To: <20200908071134.2578-1-thunder.leizhen@huawei.com>
-References: <20200908071134.2578-1-thunder.leizhen@huawei.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.177.253]
-X-CFilter-Loop: Reflected
+        id S1729432AbgIHHSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 03:18:39 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:51678 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729393AbgIHHSd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 03:18:33 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 22C2B1A103C;
+        Tue,  8 Sep 2020 09:18:30 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 7896E1A02A9;
+        Tue,  8 Sep 2020 09:18:25 +0200 (CEST)
+Received: from 10.192.242.69 (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 999B8402D9;
+        Tue,  8 Sep 2020 09:18:19 +0200 (CEST)
+From:   Anson Huang <Anson.Huang@nxp.com>
+To:     aisheng.dong@nxp.com, festevam@gmail.com, shawnguo@kernel.org,
+        stefan@agner.ch, kernel@pengutronix.de, linus.walleij@linaro.org,
+        s.hauer@pengutronix.de, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     Linux-imx@nxp.com
+Subject: [PATCH V3 1/3] pinctrl: imx: Use function callbacks for SCU related functions
+Date:   Tue,  8 Sep 2020 15:12:04 +0800
+Message-Id: <1599549126-17413-1-git-send-email-Anson.Huang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support to use dw-apb-ictl as primary interrupt controller.
+Use function callbacks for SCU related functions in pinctrl-imx.c
+in order to support the scenario of PINCTRL_IMX is built in while
+PINCTRL_IMX_SCU is built as module, all drivers using SCU pinctrl
+driver need to initialize the SCU related function callback, and
+no need to check CONFIG_PINCTRL_IMX_SCU anymore, hence stub functions
+also can be removed.
 
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
 ---
- .../interrupt-controller/snps,dw-apb-ictl.txt      | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+Changes since V2:
+	- move the removal of #ifdef CONFIG_PINCTRL_IMX_SCU and #else block from
+	  patch #2 to this patch.
+---
+ drivers/pinctrl/freescale/pinctrl-imx.c     |  8 ++--
+ drivers/pinctrl/freescale/pinctrl-imx.h     | 57 +++++++++++------------------
+ drivers/pinctrl/freescale/pinctrl-imx8dxl.c |  3 ++
+ drivers/pinctrl/freescale/pinctrl-imx8qm.c  |  3 ++
+ drivers/pinctrl/freescale/pinctrl-imx8qxp.c |  3 ++
+ 5 files changed, 35 insertions(+), 39 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/interrupt-controller/snps,dw-apb-ictl.txt b/Documentation/devicetree/bindings/interrupt-controller/snps,dw-apb-ictl.txt
-index 086ff08322db..2db59df9408f 100644
---- a/Documentation/devicetree/bindings/interrupt-controller/snps,dw-apb-ictl.txt
-+++ b/Documentation/devicetree/bindings/interrupt-controller/snps,dw-apb-ictl.txt
-@@ -2,7 +2,8 @@ Synopsys DesignWare APB interrupt controller (dw_apb_ictl)
+diff --git a/drivers/pinctrl/freescale/pinctrl-imx.c b/drivers/pinctrl/freescale/pinctrl-imx.c
+index 507e4af..b80c450 100644
+--- a/drivers/pinctrl/freescale/pinctrl-imx.c
++++ b/drivers/pinctrl/freescale/pinctrl-imx.c
+@@ -373,7 +373,7 @@ static int imx_pinconf_get(struct pinctrl_dev *pctldev,
+ 	const struct imx_pinctrl_soc_info *info = ipctl->info;
  
- Synopsys DesignWare provides interrupt controller IP for APB known as
- dw_apb_ictl. The IP is used as secondary interrupt controller in some SoCs with
--APB bus, e.g. Marvell Armada 1500.
-+APB bus, e.g. Marvell Armada 1500. It can also be used as primary interrupt
-+controller in some SoCs, e.g. Hisilicon SD5203.
+ 	if (info->flags & IMX_USE_SCU)
+-		return imx_pinconf_get_scu(pctldev, pin_id, config);
++		return info->imx_pinconf_get(pctldev, pin_id, config);
+ 	else
+ 		return imx_pinconf_get_mmio(pctldev, pin_id, config);
+ }
+@@ -423,7 +423,7 @@ static int imx_pinconf_set(struct pinctrl_dev *pctldev,
+ 	const struct imx_pinctrl_soc_info *info = ipctl->info;
  
- Required properties:
- - compatible: shall be "snps,dw-apb-ictl"
-@@ -10,6 +11,8 @@ Required properties:
-   region starting with ENABLE_LOW register
- - interrupt-controller: identifies the node as an interrupt controller
- - #interrupt-cells: number of cells to encode an interrupt-specifier, shall be 1
+ 	if (info->flags & IMX_USE_SCU)
+-		return imx_pinconf_set_scu(pctldev, pin_id,
++		return info->imx_pinconf_set(pctldev, pin_id,
+ 					   configs, num_configs);
+ 	else
+ 		return imx_pinconf_set_mmio(pctldev, pin_id,
+@@ -440,7 +440,7 @@ static void imx_pinconf_dbg_show(struct pinctrl_dev *pctldev,
+ 	int ret;
+ 
+ 	if (info->flags & IMX_USE_SCU) {
+-		ret = imx_pinconf_get_scu(pctldev, pin_id, &config);
++		ret = info->imx_pinconf_get(pctldev, pin_id, &config);
+ 		if (ret) {
+ 			dev_err(ipctl->dev, "failed to get %s pinconf\n",
+ 				pin_get_name(pctldev, pin_id));
+@@ -629,7 +629,7 @@ static int imx_pinctrl_parse_groups(struct device_node *np,
+ 	for (i = 0; i < grp->num_pins; i++) {
+ 		pin = &((struct imx_pin *)(grp->data))[i];
+ 		if (info->flags & IMX_USE_SCU)
+-			imx_pinctrl_parse_pin_scu(ipctl, &grp->pins[i],
++			info->imx_pinctrl_parse_pin(ipctl, &grp->pins[i],
+ 						  pin, &list);
+ 		else
+ 			imx_pinctrl_parse_pin_mmio(ipctl, &grp->pins[i],
+diff --git a/drivers/pinctrl/freescale/pinctrl-imx.h b/drivers/pinctrl/freescale/pinctrl-imx.h
+index 333d32b..fd8c4b6 100644
+--- a/drivers/pinctrl/freescale/pinctrl-imx.h
++++ b/drivers/pinctrl/freescale/pinctrl-imx.h
+@@ -75,6 +75,21 @@ struct imx_cfg_params_decode {
+ 	bool invert;
+ };
+ 
++/**
++ * @dev: a pointer back to containing device
++ * @base: the offset to the controller in virtual memory
++ */
++struct imx_pinctrl {
++	struct device *dev;
++	struct pinctrl_dev *pctl;
++	void __iomem *base;
++	void __iomem *input_sel_base;
++	const struct imx_pinctrl_soc_info *info;
++	struct imx_pin_reg *pin_regs;
++	unsigned int group_index;
++	struct mutex mutex;
++};
 +
-+Additional required property when it's used as secondary interrupt controller:
- - interrupts: interrupt reference to primary interrupt controller
+ struct imx_pinctrl_soc_info {
+ 	const struct pinctrl_pin_desc *pins;
+ 	unsigned int npins;
+@@ -98,21 +113,13 @@ struct imx_pinctrl_soc_info {
+ 				  struct pinctrl_gpio_range *range,
+ 				  unsigned offset,
+ 				  bool input);
+-};
+-
+-/**
+- * @dev: a pointer back to containing device
+- * @base: the offset to the controller in virtual memory
+- */
+-struct imx_pinctrl {
+-	struct device *dev;
+-	struct pinctrl_dev *pctl;
+-	void __iomem *base;
+-	void __iomem *input_sel_base;
+-	const struct imx_pinctrl_soc_info *info;
+-	struct imx_pin_reg *pin_regs;
+-	unsigned int group_index;
+-	struct mutex mutex;
++	int (*imx_pinconf_get)(struct pinctrl_dev *pctldev, unsigned int pin_id,
++			       unsigned long *config);
++	int (*imx_pinconf_set)(struct pinctrl_dev *pctldev, unsigned int pin_id,
++			       unsigned long *configs, unsigned int num_configs);
++	void (*imx_pinctrl_parse_pin)(struct imx_pinctrl *ipctl,
++				      unsigned int *pin_id, struct imx_pin *pin,
++				      const __be32 **list_p);
+ };
  
- The interrupt sources map to the corresponding bits in the interrupt
-@@ -21,6 +24,7 @@ registers, i.e.
- - (optional) fast interrupts start at 64.
+ #define IMX_CFG_PARAMS_DECODE(p, m, o) \
+@@ -137,7 +144,6 @@ struct imx_pinctrl {
+ int imx_pinctrl_probe(struct platform_device *pdev,
+ 			const struct imx_pinctrl_soc_info *info);
  
- Example:
-+	/* dw_apb_ictl is used as secondary interrupt controller */
- 	aic: interrupt-controller@3000 {
- 		compatible = "snps,dw-apb-ictl";
- 		reg = <0x3000 0xc00>;
-@@ -29,3 +33,11 @@ Example:
- 		interrupt-parent = <&gic>;
- 		interrupts = <GIC_SPI 3 IRQ_TYPE_LEVEL_HIGH>;
- 	};
-+
-+	/* dw_apb_ictl is used as primary interrupt controller */
-+	vic: interrupt-controller@10130000 {
-+		compatible = "snps,dw-apb-ictl";
-+		reg = <0x10130000 0x1000>;
-+		interrupt-controller;
-+		#interrupt-cells = <1>;
-+	};
+-#ifdef CONFIG_PINCTRL_IMX_SCU
+ #define BM_PAD_CTL_GP_ENABLE		BIT(30)
+ #define BM_PAD_CTL_IFMUX_ENABLE		BIT(31)
+ #define BP_PAD_CTL_IFMUX		27
+@@ -150,23 +156,4 @@ int imx_pinconf_set_scu(struct pinctrl_dev *pctldev, unsigned pin_id,
+ void imx_pinctrl_parse_pin_scu(struct imx_pinctrl *ipctl,
+ 			       unsigned int *pin_id, struct imx_pin *pin,
+ 			       const __be32 **list_p);
+-#else
+-static inline int imx_pinconf_get_scu(struct pinctrl_dev *pctldev,
+-				      unsigned pin_id, unsigned long *config)
+-{
+-	return -EINVAL;
+-}
+-static inline int imx_pinconf_set_scu(struct pinctrl_dev *pctldev,
+-				      unsigned pin_id, unsigned long *configs,
+-				      unsigned num_configs)
+-{
+-	return -EINVAL;
+-}
+-static inline void imx_pinctrl_parse_pin_scu(struct imx_pinctrl *ipctl,
+-					    unsigned int *pin_id,
+-					    struct imx_pin *pin,
+-					    const __be32 **list_p)
+-{
+-}
+-#endif
+ #endif /* __DRIVERS_PINCTRL_IMX_H */
+diff --git a/drivers/pinctrl/freescale/pinctrl-imx8dxl.c b/drivers/pinctrl/freescale/pinctrl-imx8dxl.c
+index 12b97da..d3020c0 100644
+--- a/drivers/pinctrl/freescale/pinctrl-imx8dxl.c
++++ b/drivers/pinctrl/freescale/pinctrl-imx8dxl.c
+@@ -159,6 +159,9 @@ static struct imx_pinctrl_soc_info imx8dxl_pinctrl_info = {
+ 	.pins = imx8dxl_pinctrl_pads,
+ 	.npins = ARRAY_SIZE(imx8dxl_pinctrl_pads),
+ 	.flags = IMX_USE_SCU,
++	.imx_pinconf_get = imx_pinconf_get_scu,
++	.imx_pinconf_set = imx_pinconf_set_scu,
++	.imx_pinctrl_parse_pin = imx_pinctrl_parse_pin_scu,
+ };
+ 
+ static const struct of_device_id imx8dxl_pinctrl_of_match[] = {
+diff --git a/drivers/pinctrl/freescale/pinctrl-imx8qm.c b/drivers/pinctrl/freescale/pinctrl-imx8qm.c
+index 095acf4..8f46b940 100644
+--- a/drivers/pinctrl/freescale/pinctrl-imx8qm.c
++++ b/drivers/pinctrl/freescale/pinctrl-imx8qm.c
+@@ -292,6 +292,9 @@ static const struct imx_pinctrl_soc_info imx8qm_pinctrl_info = {
+ 	.pins = imx8qm_pinctrl_pads,
+ 	.npins = ARRAY_SIZE(imx8qm_pinctrl_pads),
+ 	.flags = IMX_USE_SCU,
++	.imx_pinconf_get = imx_pinconf_get_scu,
++	.imx_pinconf_set = imx_pinconf_set_scu,
++	.imx_pinctrl_parse_pin = imx_pinctrl_parse_pin_scu,
+ };
+ 
+ static const struct of_device_id imx8qm_pinctrl_of_match[] = {
+diff --git a/drivers/pinctrl/freescale/pinctrl-imx8qxp.c b/drivers/pinctrl/freescale/pinctrl-imx8qxp.c
+index 81ebd4c..6776ad6 100644
+--- a/drivers/pinctrl/freescale/pinctrl-imx8qxp.c
++++ b/drivers/pinctrl/freescale/pinctrl-imx8qxp.c
+@@ -198,6 +198,9 @@ static struct imx_pinctrl_soc_info imx8qxp_pinctrl_info = {
+ 	.pins = imx8qxp_pinctrl_pads,
+ 	.npins = ARRAY_SIZE(imx8qxp_pinctrl_pads),
+ 	.flags = IMX_USE_SCU,
++	.imx_pinconf_get = imx_pinconf_get_scu,
++	.imx_pinconf_set = imx_pinconf_set_scu,
++	.imx_pinctrl_parse_pin = imx_pinctrl_parse_pin_scu,
+ };
+ 
+ static const struct of_device_id imx8qxp_pinctrl_of_match[] = {
 -- 
-2.26.0.106.g9fadedd
-
+2.7.4
 
