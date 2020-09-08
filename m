@@ -2,82 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80EAD2608CA
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 04:55:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E8532608CF
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 05:00:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728472AbgIHCzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 22:55:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60652 "EHLO mail.kernel.org"
+        id S1728396AbgIHDAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 23:00:08 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:37173 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728241AbgIHCze (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 22:55:34 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728188AbgIHDAF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 23:00:05 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 03B3720678;
-        Tue,  8 Sep 2020 02:55:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599533733;
-        bh=JWnIjcnJzQwoUBMp2JNF74qQ2x9XJSOCWBezRJosGWI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=WhluC8MTcrpRscv8gged+7zO2Rg9TnVnAx+EKYOvnIwvst97Z3S3dJ5yQ9AYOVgHA
-         g03qgZB4pYRQMHQjCuWox3tm/xc+6dqf4/7NxiHCYPzseFP9wn1PqiTEBYusxt3ljx
-         jYhwvHLdNQXbPo4eCXjHbOPMVW2sDqed4oYno6hc=
-Date:   Tue, 8 Sep 2020 11:55:27 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     fche@redhat.com (Frank Ch. Eigler)
-Cc:     peterz@infradead.org, Ingo Molnar <mingo@kernel.org>,
-        linux-kernel@vger.kernel.org, Eddy_Wu@trendmicro.com,
-        x86@kernel.org, davem@davemloft.net, rostedt@goodmis.org,
-        naveen.n.rao@linux.ibm.com, anil.s.keshavamurthy@intel.com,
-        linux-arch@vger.kernel.org, cameron@moodycamel.com,
-        oleg@redhat.com, will@kernel.org, paulmck@kernel.org,
-        systemtap@sourceware.org
-Subject: Re: [PATCH v5 00/21] kprobes: Unify kretprobe trampoline handlers
- and make kretprobe lockless
-Message-Id: <20200908115527.cf8d2b106bf1a9c4416bbc89@kernel.org>
-In-Reply-To: <87eendo51o.fsf@redhat.com>
-References: <159870598914.1229682.15230803449082078353.stgit@devnote2>
-        <20200901190808.GK29142@worktop.programming.kicks-ass.net>
-        <20200902093739.8bd13603380951eaddbcd8a5@kernel.org>
-        <20200902070226.GG2674@hirez.programming.kicks-ass.net>
-        <20200902171755.b126672093a3c5d1b3a62a4f@kernel.org>
-        <20200902093613.GY1362448@hirez.programming.kicks-ass.net>
-        <20200902221926.f5cae5b4ad00b8d8f9ad99c7@kernel.org>
-        <20200902134252.GH1362448@hirez.programming.kicks-ass.net>
-        <20200903103954.68f0c97da57b3679169ce3a7@kernel.org>
-        <20200903110226.8963179e6a7c978e2d56c595@kernel.org>
-        <87eendo51o.fsf@redhat.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BlqdH1TH1z9sT6;
+        Tue,  8 Sep 2020 13:00:02 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1599534003;
+        bh=CQHN0e/Qn6UFNS+n67zmmyp7Fusk1jwKZkCaWPvtNf8=;
+        h=Date:From:To:Cc:Subject:From;
+        b=ERXWzrnPfFSmoVIRraPjIQ/onRfVmc884U8Na7Ku1MMhzJWd/gVKA2GRSPcQ06BIa
+         4F/SHqr5XHnFn8WwRm6XxyOO4mljeQE9BTt/nudmEAEAkGRLVWPHlvlv0E2EqWXeDP
+         4LtYWHhru9MK9M1vB53TIvaVs3MOY4ayr2qTuaXMgP3E3x0Ry1YJdDB9Gq1x0FyLcX
+         if3U+lxaoJlM/CPwKPvOm8+H0fR3ogNlZHWMP9qDtKXH90PWIIKONQGQuxZzt6V3e/
+         RJUy4N5eBlwvhRitYCIvhbF3dQ0l1qaReGh2zkFHwDWPiXnsUYm5zGpaFaOKl0FWDl
+         eNOibKiTUGIJQ==
+Date:   Tue, 8 Sep 2020 13:00:00 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Nikolay Aleksandrov <nikolay@cumulusnetworks.com>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: linux-next: build warning after merge of the net-next tree
+Message-ID: <20200908130000.7d33d787@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/0QZPUHBHJ9Zkw26n/AB6g6B";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 07 Sep 2020 13:44:19 -0400
-fche@redhat.com (Frank Ch. Eigler) wrote:
+--Sig_/0QZPUHBHJ9Zkw26n/AB6g6B
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> Masami Hiramatsu <mhiramat@kernel.org> writes:
-> 
-> > Sorry, for noticing this point, I Cc'd to systemtap. Is systemtap taking
-> > care of spinlock too?
-> 
-> On PRREMPT_RT configurations, systemtap uses the raw_spinlock_t
-> types/functions, to keep its probe handlers as atomic as we can make them.
+Hi all,
 
-OK, if the lock is only used in the probe handlers, there should be
-no problem. Even if a probe hits in the NMI which happens in another
-kprobe handler, the probe does not call its handler (because we don't
-support nested kprobes* yet).
-But maybe you'll get warnings if you enable the lockdep.
+After merging the net-next tree, today's linux-next build (powerpc
+ppc64_defconfig) produced this warning:
 
-* https://lkml.kernel.org/r/158894789510.14896.13461271606820304664.stgit@devnote2
-It seems that we need more work for the nested kprobes.
+net/bridge/br_multicast.c: In function 'br_multicast_find_port':
+net/bridge/br_multicast.c:1818:21: warning: unused variable 'br' [-Wunused-=
+variable]
+ 1818 |  struct net_bridge *br =3D mp->br;
+      |                     ^~
 
-Thank you,
+Introduced by commit
 
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+  0436862e417e ("net: bridge: mcast: support for IGMPv3/MLDv2 ALLOW_NEW_SOU=
+RCES report")
+
+Maybe turning mlock_dereference into a static inline function would help.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/0QZPUHBHJ9Zkw26n/AB6g6B
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9W87AACgkQAVBC80lX
+0Gwztgf9Hh2jrtu1RZqYuFJwNmxvdAOWUVelOVXq0kiT/OO7wuFzMD4wNcojcwyj
+HJDJsmFHrEaLh5clmSNYFK9LE/h1pmOCQYQmhDGUjOs9CnqrvlWrpBxsz60+8EtL
+556vbIvsZRImj/43lwpKbiTevG+J/JfjYw7vlkEMIzv9bFl1SlcFgmwFyziSxSWW
+vbQ9BfdO3qNWpi5cn5UvCFqyoUzyPElQNxrP3JLIKGOt+a4oloMjMWwmIdysShcA
+CVOengcuKzNIO2eRnVjBKMCyP+N2lc6ual2yKqVSpzmEbF7pbZogu3dYYxe7clbo
+IGELVZvZHG8SbxGTCV4WnxEsIYn+IA==
+=xjf+
+-----END PGP SIGNATURE-----
+
+--Sig_/0QZPUHBHJ9Zkw26n/AB6g6B--
