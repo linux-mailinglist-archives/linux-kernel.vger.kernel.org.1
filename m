@@ -2,99 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E7D3260828
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 04:11:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 638CD26083D
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 04:13:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728238AbgIHCLi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 22:11:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40012 "EHLO
+        id S1728651AbgIHCNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 22:13:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728210AbgIHCLh (ORCPT
+        with ESMTP id S1728302AbgIHCMm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 22:11:37 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B835EC061573;
-        Mon,  7 Sep 2020 19:11:36 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BlpYL2qfRz9sR4;
-        Tue,  8 Sep 2020 12:11:34 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1599531094;
-        bh=HLnxUEsN4jtlio8BiweoeszpyAofnT5Xx6AYfXs5j6I=;
-        h=Date:From:To:Cc:Subject:From;
-        b=s8WJM4Fxu8qTZzZ8n5kKqgUmea0HlzaTpMNuLAdIyjtt5LeWi5fwfvYapfZw/LQdS
-         LpQeiBvh5dezC3Hqg6ipYqvvpXD3jX056SMcM6evJ4SsW87THmCvaS90V5aDXuMzMd
-         +HzWtaImRkb5Gr2UAFJ/eHP4/OnJgZlWfy/V5iPWl9Ellfl7sKqDDkb8pfK7/c3/MJ
-         2ERPFF/TE25rlt7N9+L9+sDkxtcknlileU9wIoRsP5movIvrRO4tZc/kkzCpCjuMG3
-         /jk7odE4vdDTtkiXpRpihxulp9sGUEfuzUITPnMJwQNkVVBDVKbp/kr8QZ4741nLC9
-         PjWwrC3zZf4Hw==
-Date:   Tue, 8 Sep 2020 12:11:33 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: linux-next: build failure after merge of the v4l-dvb tree
-Message-ID: <20200908121133.7cf400d8@canb.auug.org.au>
+        Mon, 7 Sep 2020 22:12:42 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3887C0617AB
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 19:12:09 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id b16so7471480pjp.0
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 19:12:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=VT+c1JX9b+efMdSYA4R6Y766uhFYT3cDPfGCzggz0J8=;
+        b=g6YsK0WuK+oZ171JtlQZqlwFQAhZoJC0HW48UE510AZdST5F4peoTOGXed0o+Burl3
+         9STQLZVO3BedcZJUzISApfSSEVyBP/0eQIW5wP/ij9T/3bVl3LbucjP2XUoWVCGq35YY
+         80iPsyEuKLycdv9lWudeizI+mMAATqdTXnkSKH3SICwcCKr7tAdKRohJrGwzAVCbClP6
+         BiC7ysJ1qJn02fTYqy9A/QTt7RdcwrOyzba3Kc6rNLr5YcWoBY7AEzUucecKmv+c767n
+         2Vx6K3LK9eWnblqe+6zHLR6jeCSMDw0Z4rIZgLPLvwtJWrRn3X4tICcmVky/yImpWIeZ
+         kKXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=VT+c1JX9b+efMdSYA4R6Y766uhFYT3cDPfGCzggz0J8=;
+        b=swxTciRs+54hOMymuK30waqLTEaOTqt0zIj0Z1u+8spiCVYjAFizPl9hqPBjRyADJx
+         1tWIR0stjTyxxp7PSeCuKXLzI5r654NONfsob0MfAutOWys4QbgAr+iJIWmiIFveo2ZV
+         i4wLXI4fRBKDIHkvCk8Ww/XgiRcOm/AOsZ8HoyUjw+yEqaPjlIkkYeftkZmsRCtesGNc
+         NittOl+K/TDvCe9aAWKVlmwLxCQJmmJkfUF/BtJ4NJ9OnI/lPJsGVVcDOW8Mibw3pLm6
+         CmmHhOK46C7yBiH+cN1YgVHu6EqR0/EqUofx6tQHVIq44WPpETh7nQ0OmbUGrmPs+tbk
+         NXpg==
+X-Gm-Message-State: AOAM531bNTAzR0TNWbiHkRKCnieF2lwIT9fer2Bk0LP1b5RsoEj1e3H8
+        AJeO/JaR54PaxK+hyOMhn1tCfA==
+X-Google-Smtp-Source: ABdhPJxftDEYLTH/L4dCqlWpSz4vVGfCxRtfkMsrTeiQkJC5wwxXMBVd1dpWj7/e6UWZZG+13+k8Yg==
+X-Received: by 2002:a17:90a:19dc:: with SMTP id 28mr1806828pjj.103.1599531129539;
+        Mon, 07 Sep 2020 19:12:09 -0700 (PDT)
+Received: from [192.168.1.182] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id y16sm13527221pjr.40.2020.09.07.19.12.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Sep 2020 19:12:08 -0700 (PDT)
+Subject: Re: [PATCH] fs: align IOCB_* flags with RWF_* flags
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jann Horn <jannh@google.com>
+References: <95de7ce4-9254-39f1-304f-4455f66bf0f4@kernel.dk>
+ <20200907201516.GC27537@casper.infradead.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <33762071-da92-9e63-639d-8afc0e65dcc7@kernel.dk>
+Date:   Mon, 7 Sep 2020 20:12:07 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/HB_4KZ/yH6E1RbsTGB=pUa_";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <20200907201516.GC27537@casper.infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/HB_4KZ/yH6E1RbsTGB=pUa_
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 9/7/20 2:15 PM, Matthew Wilcox wrote:
+> On Mon, Aug 31, 2020 at 12:08:10PM -0600, Jens Axboe wrote:
+>> We have a set of flags that are shared between the two and inherired
+>> in kiocb_set_rw_flags(), but we check and set these individually.
+>> Reorder the IOCB flags so that the bottom part of the space is synced
+>> with the RWF flag space, and then we can do them all in one mask and
+>> set operation.
+>>
+>> The only exception is RWF_SYNC, which needs to mark IOCB_SYNC and
+>> IOCB_DSYNC. Do that one separately.
+>>
+>> This shaves 15 bytes of text from kiocb_set_rw_flags() for me.
+>>
+>> Signed-off-by: Jens Axboe <axboe@kernel.dk>
+> 
+> Suggested-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-Hi all,
+Added
 
-After merging the v4l-dvb tree, today's linux-next build (arm
-multi_v7_defconfig) failed like this:
+-- 
+Jens Axboe
 
-drivers/media/test-drivers/vivid/vivid-core.c: In function 'vivid_create_de=
-vnodes':
-drivers/media/test-drivers/vivid/vivid-core.c:1318:11: warning: unused vari=
-able 'i' [-Wunused-variable]
- 1318 |  int ret, i;
-      |           ^
-drivers/media/test-drivers/vivid/vivid-core.c: In function 'vivid_create_in=
-stance':
-drivers/media/test-drivers/vivid/vivid-core.c:1885:47: error: 'cec_tx_bus_c=
-nt' undeclared (first use in this function)
- 1885 |  ret =3D vivid_create_devnodes(pdev, dev, inst, cec_tx_bus_cnt,
-      |                                               ^~~~~~~~~~~~~~
-drivers/media/test-drivers/vivid/vivid-core.c:1885:47: note: each undeclare=
-d identifier is reported only once for each function it appears in
-
-Caused by commit
-
-  62c6b4c9e3c8 ("media: vivid: move the devnode creation logic to a separat=
-e function")
-
-I have used the v4l-dvb tree from next-20200903 for today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/HB_4KZ/yH6E1RbsTGB=pUa_
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9W6FUACgkQAVBC80lX
-0GxPqgf+MsVF/aNFfC/xK9PFDhAcgSwjLuBkfrqMit+Tw7zA93EKbFSlt28ZMB1a
-rkIN0l2kJSZ8HWEb6TChhk/hk9rJ4f52X1xsGryBLA/6PCHXRJ7e3244E+WZCjp8
-U7QbkyAyLriOmrqyCiDrn4/QqHlpt/51q4pNmA4ILgRULJOT6N1NADQ0wU/nfRIY
-RIRT+6ZIymSDQBMvBX7VO9h2k2WvNcNAE1+i0SDJbjzQRZtlIqBb+1WQjtvNZ8Vw
-H1W1+95dEqLAvQ3hWUHR1Kjdlb+8VR0qTFIrskuA8i9q+m2Yj8ZY4HshlhA0AExT
-MF8ZdisnOeHbZdcoytAaScAOkykDhw==
-=yP0M
------END PGP SIGNATURE-----
-
---Sig_/HB_4KZ/yH6E1RbsTGB=pUa_--
