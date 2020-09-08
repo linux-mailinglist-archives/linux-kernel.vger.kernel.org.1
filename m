@@ -2,83 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6809261D11
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:31:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2485261D1E
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:32:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731025AbgIHTb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:31:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59314 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731130AbgIHTae (ORCPT
+        id S1731443AbgIHTcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 15:32:42 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:44768 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731012AbgIHTcR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 15:30:34 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E892C0613ED
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 12:30:32 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f10bf0059bdf9fa8e813382.dip0.t-ipconnect.de [IPv6:2003:ec:2f10:bf00:59bd:f9fa:8e81:3382])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id CCA7C1EC02B9;
-        Tue,  8 Sep 2020 21:30:29 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1599593429;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=4Z3SaY9hLpwpb++kP8jU/6wRFeEbV6IvS5RvGnja5vE=;
-        b=fJqbIq7w2ddlu/9gyzcdM/lrAC98pbJDH8w43vlzuiRzeH8tDGn+iS/Wwhpuem/QKtktet
-        Lcp4IKgOPSiwcOymgS4CF5fkP1iz3n8CG25n1wPaW36aRz1xDTSneNF/+bMJk5GTjWYxlB
-        3+zMUho5DQXOn61YCkaVmRyYCemlHiQ=
-Date:   Tue, 8 Sep 2020 21:30:29 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Sultan Alsawaf <sultan@kerneltoast.com>
-Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        kitsunyan <kitsunyan@airmail.cc>,
-        "Brown, Len" <len.brown@intel.com>, X86 ML <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH] x86/msr: do not warn on writes to OC_MAILBOX
-Message-ID: <20200908193029.GM25236@zn.tnic>
-References: <20200907094843.1949-1-Jason@zx2c4.com>
- <20200907100647.GB10657@zn.tnic>
- <22617e57e541e460fac09db04fdb370f8e96e8ef.camel@linux.intel.com>
- <CAHmME9rh8N-Qui2KVxGP33Aar5tao_obA70XKwR2x5Qp1AytTw@mail.gmail.com>
- <20200908172558.GG25236@zn.tnic>
- <CAHmME9pKfvPGf97BM1=VdUL1uU_8aOoc4+QOu6b51XnPz3SkRA@mail.gmail.com>
- <20200908173656.GI25236@zn.tnic>
- <CAHmME9pVO01mj8vgKPEX7a6pZDRSfX62e2Ow8R=L79hLSJoaMA@mail.gmail.com>
- <20200908180112.GK25236@zn.tnic>
- <20200908191838.GA2014@sultan-box.localdomain>
+        Tue, 8 Sep 2020 15:32:17 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 00C0F1C0B7F; Tue,  8 Sep 2020 21:32:14 +0200 (CEST)
+Date:   Tue, 8 Sep 2020 21:32:14 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Al Grant <al.grant@arm.com>, Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 4.19 40/88] perf tools: Correct SNOOPX field offset
+Message-ID: <20200908193214.GA6758@duo.ucw.cz>
+References: <20200908152221.082184905@linuxfoundation.org>
+ <20200908152223.128046647@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="GvXjxJ+pjyke8COw"
 Content-Disposition: inline
-In-Reply-To: <20200908191838.GA2014@sultan-box.localdomain>
+In-Reply-To: <20200908152223.128046647@linuxfoundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 08, 2020 at 12:18:38PM -0700, Sultan Alsawaf wrote:
-> I'd like to point out that on Intel's recent 14nm parts, undervolting
-> is not so much for squeezing every last drop of performance out of the
-> SoC as it is for necessity.
 
-<snip interesting examples>
+--GvXjxJ+pjyke8COw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Sounds to me that this undervolting functionality should be part of
-the kernel and happen automatically. I have no clue, though, whether
-people who do it, just get lucky and undervolting doesn't cause any
-other hardware issues, or there's a real reason for this power madness
-and if not done, power-related failures happen only on some boxes so
-they decided to do them on all.
+Hi!
 
-Or maybe BIOS is nuts, which is not a stretch.
+> From: Al Grant <al.grant@foss.arm.com>
+>=20
+> [ Upstream commit 39c0a53b114d0317e5c4e76b631f41d133af5cb0 ]
+>=20
+> perf_event.h has macros that define the field offsets in the data_src
+> bitmask in perf records. The SNOOPX and REMOTE offsets were both 37.
+>=20
+> These are distinct fields, and the bitfield layout in perf_mem_data_src
+> confirms that SNOOPX should be at offset 38.
+>=20
+> Committer notes:
+>=20
+> This was extracted from a larger patch that also contained kernel
+> changes.
+>=20
+> Fixes: 52839e653b5629bd ("perf tools: Add support for printing new
+> mem_info encodings")
 
-Srinivas, what's the story here?
+> +++ b/tools/include/uapi/linux/perf_event.h
+> @@ -1079,7 +1079,7 @@ union perf_mem_data_src {
+> =20
+>  #define PERF_MEM_SNOOPX_FWD	0x01 /* forward */
+>  /* 1 free */
+> -#define PERF_MEM_SNOOPX_SHIFT	37
+> +#define PERF_MEM_SNOOPX_SHIFT	38
+> =20
 
--- 
-Regards/Gruss,
-    Boris.
+We still have:
 
-https://people.kernel.org/tglx/notes-about-netiquette
+=2E/include/uapi/linux/perf_event.h:#define PERF_MEM_SNOOPX_SHIFT	37
+
+(note tools/include vs. include).
+
+Should those be in sync before merging this to stable?
+
+Best regards,
+									Pavel
+
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--GvXjxJ+pjyke8COw
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX1fcPgAKCRAw5/Bqldv6
+8janAJ0SZLRix7HkKpoh8hwE2zOl5qd5qwCffo1hrLj9rLNHSbavYFi1ysLKXOk=
+=wnJl
+-----END PGP SIGNATURE-----
+
+--GvXjxJ+pjyke8COw--
