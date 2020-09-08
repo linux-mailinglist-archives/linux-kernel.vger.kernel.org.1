@@ -2,135 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ACB9261B6B
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:03:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68363261C1B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:14:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730093AbgIHTDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:03:02 -0400
-Received: from a27-187.smtp-out.us-west-2.amazonses.com ([54.240.27.187]:35394
-        "EHLO a27-187.smtp-out.us-west-2.amazonses.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731646AbgIHTCx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 15:02:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=zsmsymrwgfyinv5wlfyidntwsjeeldzt; d=codeaurora.org; t=1599566566;
-        h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=A0Pg1JJyx96lY6kzESsukz/fsFFg2QJ+mjpfboIMRWc=;
-        b=CasPNC+KAQLq7fbQs/ZX016E5VPiGOgnU5TVmOk/j+oOml3iVfZzlrrRGQNCL5s6
-        Zt56vN2zlw9t3LNw+4h9zWKeNgznCXpYEEb4Y18bGnI7I7HUFZE9g/fNHKOEvMsq5+p
-        LA9GVvP7LhuxaGQrvBo6wCCfCA9EStK1YF3KzOB8=
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=hsbnp7p3ensaochzwyq5wwmceodymuwv; d=amazonses.com; t=1599566566;
-        h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding:Feedback-ID;
-        bh=A0Pg1JJyx96lY6kzESsukz/fsFFg2QJ+mjpfboIMRWc=;
-        b=YYzpdjFd4DrmPd7BeZp/TFeYAFS64CzYDs38adPNVsTPlEJoF1WGt/twkFHnsUpW
-        KzOAMQX2IPMZM+HFFzNjdSK1hw2DfdbXaqiRv0MdpJcSsaIDkCxIx9FL4DWZttXwmwW
-        08METUWReBt9Dt3nxeDNIhXDmKAGTfxTLJgYE/Ks=
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8FD10C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
-        Xinming Hu <huxinming820@gmail.com>
-Subject: Re: [PATCH 16/28] wireless: marvell: mwifiex: init: Move 'tos_to_tid_inv' to where it's used
-References: <20200819072402.3085022-17-lee.jones@linaro.org>
-        <20200831155151.0DCB5C4339C@smtp.codeaurora.org>
-        <20200908084953.GJ4400@dell>
-Date:   Tue, 8 Sep 2020 12:02:46 +0000
-In-Reply-To: <20200908084953.GJ4400@dell> (Lee Jones's message of "Tue, 8 Sep
-        2020 09:49:53 +0100")
-Message-ID: <010101746d98d281-78bf23c9-db60-486f-ada9-fec0467131a4-000000@us-west-2.amazonses.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        id S1731719AbgIHTOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 15:14:44 -0400
+Received: from mail1.perex.cz ([77.48.224.245]:41536 "EHLO mail1.perex.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731185AbgIHQEv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 12:04:51 -0400
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+        by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 3D3EEA0049;
+        Tue,  8 Sep 2020 14:07:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 3D3EEA0049
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+        t=1599566846; bh=LS1tspQNZeiW+c3AFuszS5oyvdkH2Pdm62xxJvtgfU8=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=m4s2/YDCaBYRi7bdk4G/s4abyTWt71ZOimdap2NfUJM3cTnYebFwqkHczXwhd52HH
+         hdQBhlBjz+P2HiK/G+lndxxyd520lIn6CgI/9XsC2tL10IKKBbV9WxEXK0CaXrJLu4
+         VUkmvgt3TlNPG55e8nilhNqZ0x+m0oUb6rayGxpU=
+Received: from p1gen2.perex-int.cz (unknown [192.168.100.98])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: perex)
+        by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+        Tue,  8 Sep 2020 14:07:09 +0200 (CEST)
+Subject: Re: [PATCH 0/7] soundwire: filter out invalid PARITY errors
+To:     Bard Liao <yung-chuan.liao@linux.intel.com>,
+        alsa-devel@alsa-project.org, vkoul@kernel.org
+Cc:     pierre-louis.bossart@linux.intel.com, vinod.koul@linaro.org,
+        tiwai@suse.de, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, ranjani.sridharan@linux.intel.com,
+        hui.wang@canonical.com, broonie@kernel.org,
+        srinivas.kandagatla@linaro.org, jank@cadence.com,
+        mengdong.lin@intel.com, sanyog.r.kale@intel.com,
+        rander.wang@linux.intel.com, bard.liao@intel.com
+References: <20200818140656.29014-1-yung-chuan.liao@linux.intel.com>
+From:   Jaroslav Kysela <perex@perex.cz>
+Message-ID: <e63f8306-ed00-3f53-cc72-abb9e6f0e5cc@perex.cz>
+Date:   Tue, 8 Sep 2020 14:07:09 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20200818140656.29014-1-yung-chuan.liao@linux.intel.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-SES-Outgoing: 2020.09.08-54.240.27.187
-Feedback-ID: 1.us-west-2.CZuq2qbDmUIuT3qdvXlRHZZCpfZqZ4GtG9v3VKgRyF0=:AmazonSES
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lee Jones <lee.jones@linaro.org> writes:
+Dne 18. 08. 20 v 16:06 Bard Liao napsal(a):
+> Some codecs may report fake PARITY errors in the initial state. This
+> series will filter them out.
+> 
+> Pierre-Louis Bossart (7):
+>   soundwire: bus: use property to set interrupt masks
+>   soundwire: bus: filter-out unwanted interrupt reports
+>   soundwire: slave: add first_interrupt_done status
+>   soundwire: bus: use quirk to filter out invalid parity errors
+>   ASoC: codecs: realtek-soundwire: ignore initial PARITY errors
+>   soundwire: bus: export broadcast read/write capability for tests
+>   soundwire: cadence: add parity error injection through debugfs
+> 
+>  drivers/soundwire/bus.c            | 93 ++++++++++++++++++++++++------
+>  drivers/soundwire/bus.h            |  4 ++
+>  drivers/soundwire/cadence_master.c | 86 +++++++++++++++++++++++++++
+>  drivers/soundwire/slave.c          |  1 +
+>  include/linux/soundwire/sdw.h      |  9 +++
+>  sound/soc/codecs/max98373-sdw.c    |  3 +
+>  sound/soc/codecs/rt1308-sdw.c      |  3 +
+>  sound/soc/codecs/rt5682-sdw.c      |  5 ++
+>  sound/soc/codecs/rt700-sdw.c       |  5 ++
+>  sound/soc/codecs/rt711-sdw.c       |  5 ++
+>  sound/soc/codecs/rt715-sdw.c       |  5 ++
+>  sound/soc/codecs/wsa881x.c         |  1 +
+>  12 files changed, 202 insertions(+), 18 deletions(-)
+> 
 
-> On Mon, 31 Aug 2020, Kalle Valo wrote:
->
->> Lee Jones <lee.jones@linaro.org> wrote:
->>=20
->> > 'tos_to_tid_inv' is only used in 2 of 17 files it's current being
->> > included into.
->> >=20
->> > Fixes the following W=3D1 kernel build warning(s):
->> >=20
->> >  In file included from drivers/net/wireless/marvell/mwifiex/main.c:23:
->> >  In file included from drivers/net/wireless/marvell/mwifiex/cmdevt.c:2=
-6:
->> >  In file included from drivers/net/wireless/marvell/mwifiex/util.c:25:
->> >  In file included from drivers/net/wireless/marvell/mwifiex/txrx.c:25:
->> >  In file included from drivers/net/wireless/marvell/mwifiex/11n.c:25:
->> >  In file included from drivers/net/wireless/marvell/mwifiex/wmm.c:25:
->> >  In file included from drivers/net/wireless/marvell/mwifiex/11n_aggr.c=
-:25:
->> >  In file included from drivers/net/wireless/marvell/mwifiex/11n_rxreor=
-der.c:25:
->> >  In file included from drivers/net/wireless/marvell/mwifiex/join.c:25:
->> >  In file included from drivers/net/wireless/marvell/mwifiex/sta_cmd.c:=
-25:
->> >  In file included from drivers/net/wireless/marvell/mwifiex/sta_ioctl.=
-c:25:
->> >  In file included from drivers/net/wireless/marvell/mwifiex/sta_event.=
-c:25:
->> >  In file included from drivers/net/wireless/marvell/mwifiex/uap_txrx.c=
-:23:
->> >  In file included from drivers/net/wireless/marvell/mwifiex/sdio.c:27:
->> >  In file included from drivers/net/wireless/marvell/mwifiex/sta_tx.c:2=
-5:
->> >  drivers/net/wireless/marvell/mwifiex/wmm.h:41:17: warning:
->> > =E2=80=98tos_to_tid_inv=E2=80=99 defined but not used [-Wunused-const-=
-variable=3D]
->> >  41 | static const u8 tos_to_tid_inv[] =3D {
->> >=20
->> >  NB: Snipped for brevity
->> >=20
->> > Cc: Amitkumar Karwar <amitkarwar@gmail.com>
->> > Cc: Ganapathi Bhat <ganapathi.bhat@nxp.com>
->> > Cc: Xinming Hu <huxinming820@gmail.com>
->> > Cc: Kalle Valo <kvalo@codeaurora.org>
->> > Cc: "David S. Miller" <davem@davemloft.net>
->> > Cc: Jakub Kicinski <kuba@kernel.org>
->> > Cc: linux-wireless@vger.kernel.org
->> > Cc: netdev@vger.kernel.org
->> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
->>=20
->> The patch creates two duplicate arrays, this makes it worse than it was
->> before.
->
-> We have a choice (and you don't like either of them). :)
->
-> Either add the variable into the file(s) they are used or tell the
-> compiler that it's okay for other files to declare but not used them
-> (mark as __maybe_unused).
->
-> What is your preferred solution?
+I tested the changes and it works on my test system. The changes are straight.
+For all:
 
-Yue already sent a patch for this (at least I think so, not 100% sure if
-this is the same case):
+Acked-by: Jaroslav Kysela <perex@perex.cz>
 
-https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/wireless-drivers-next=
-.git/commit/?id=3Dd56ee19a148edaa9972ca12f817e395ba436078b
-
-But that's the solution I like :) There's only one array and it's shared
-by all the users.
-
---=20
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
-hes
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
