@@ -2,101 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0154261D92
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:39:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FA89261DDD
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:43:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732364AbgIHTjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:39:07 -0400
-Received: from mail1.perex.cz ([77.48.224.245]:41508 "EHLO mail1.perex.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730951AbgIHPzg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:55:36 -0400
-Received: from mail1.perex.cz (localhost [127.0.0.1])
-        by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 74EBDA003F;
-        Tue,  8 Sep 2020 14:05:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 74EBDA003F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
-        t=1599566727; bh=9b5Fqq5fU5wOYJ08GzQClBq0X5a2Ysj/PnRr3hJV/Bc=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=nCSLpNb+FHy8GvG62T86k1W+ona5zG0+IxqnC3fhMaBBcNgEzZcEH/DgVCNc7N0Y9
-         a7Wq5U1Gbje/+2hPO1vHYBMustZQq8fhy00UaKVidmRWis5Q/4QiEkkwZsuVVxMB+f
-         ZlkzkKw6BnpkO79CL00Q0fyMshTh0oz9kaHov2Io=
-Received: from p1gen2.perex-int.cz (unknown [192.168.100.98])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: perex)
-        by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
-        Tue,  8 Sep 2020 14:05:11 +0200 (CEST)
-Subject: Re: [PATCH 1/7] soundwire: bus: use property to set interrupt masks
-To:     Vinod Koul <vkoul@kernel.org>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>, broonie@kernel.org
-Cc:     pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
-        tiwai@suse.de, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, ranjani.sridharan@linux.intel.com,
-        hui.wang@canonical.com, srinivas.kandagatla@linaro.org,
-        jank@cadence.com, mengdong.lin@intel.com, sanyog.r.kale@intel.com,
-        rander.wang@linux.intel.com, bard.liao@intel.com
-References: <20200818140656.29014-1-yung-chuan.liao@linux.intel.com>
- <20200818140656.29014-2-yung-chuan.liao@linux.intel.com>
- <20200828065125.GI2639@vkoul-mobl>
-From:   Jaroslav Kysela <perex@perex.cz>
-Message-ID: <ec5fe867-f2e4-4278-0376-e54bcdd7f94d@perex.cz>
-Date:   Tue, 8 Sep 2020 14:05:11 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1732384AbgIHTnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 15:43:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53398 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730866AbgIHPwh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 11:52:37 -0400
+Received: from mail.kmu-office.ch (mail.kmu-office.ch [IPv6:2a02:418:6a02::a2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE3B3C06179F
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 05:07:32 -0700 (PDT)
+Received: from webmail.kmu-office.ch (unknown [IPv6:2a02:418:6a02::a3])
+        by mail.kmu-office.ch (Postfix) with ESMTPSA id B45EE5C4CAB;
+        Tue,  8 Sep 2020 14:07:19 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=agner.ch; s=dkim;
+        t=1599566839;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9/iGAOA8cGPooGWY1bJsYTg01+jVFtO35sVIw145pes=;
+        b=GY7avC89iAWwVC2ntJkGy9B4XIrrInU5rnAqJX2IcIa1H0DBshBq+BWnQ0X3DHK1EY1el9
+        HZXQHNp4dzu2FT5vC3yksXHKYfQEFJaNR2CxVZo0cPVJdkMUQblLdbVDXKWiN64VtIsnjG
+        M05Ummpf4PiVLVIVBqstvK1YLaDAtiM=
 MIME-Version: 1.0
-In-Reply-To: <20200828065125.GI2639@vkoul-mobl>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+Date:   Tue, 08 Sep 2020 14:07:19 +0200
+From:   Stefan Agner <stefan@agner.ch>
+To:     Tomi Valkeinen <tomi.valkeinen@ti.com>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        jsarha@ti.com, marex@denx.de, airlied@linux.ie, daniel@ffwll.ch,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm: mxsfb: check framebuffer pitch
+In-Reply-To: <20200908084855.GH2352366@phenom.ffwll.local>
+References: <20200907160343.124405-1-stefan@agner.ch>
+ <20200907161712.GF6047@pendragon.ideasonboard.com>
+ <20200907181855.GE2352366@phenom.ffwll.local>
+ <86615b4b1551d4a6f1cfcc13b38e616c@agner.ch>
+ <dc5a16d0-4d2a-366a-7716-29dd8db1a12a@ti.com>
+ <20200908084855.GH2352366@phenom.ffwll.local>
+User-Agent: Roundcube Webmail/1.4.1
+Message-ID: <bed1ef4f988626962317519cb7d8928e@agner.ch>
+X-Sender: stefan@agner.ch
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne 28. 08. 20 v 8:51 Vinod Koul napsal(a):
-> Hi Mark,
-> 
-> On 18-08-20, 22:06, Bard Liao wrote:
->> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+On 2020-09-08 10:48, Daniel Vetter wrote:
+> On Tue, Sep 08, 2020 at 11:18:25AM +0300, Tomi Valkeinen wrote:
+>> Hi,
 >>
->> Add a slave-level property and program the SCP_INT1_MASK as desired by
->> the codec driver. Since there is no DisCo property this has to be an
->> implementation-specific firmware property or hard-coded in the driver.
+>> On 08/09/2020 10:55, Stefan Agner wrote:
+>> > On 2020-09-07 20:18, Daniel Vetter wrote:
+>> >> On Mon, Sep 07, 2020 at 07:17:12PM +0300, Laurent Pinchart wrote:
+>> >>> Hi Stefan,
+>> >>>
+>> >>> Thank you for the patch.
+>> >>>
+>> >>> On Mon, Sep 07, 2020 at 06:03:43PM +0200, Stefan Agner wrote:
+>> >>>> The lcdif IP does not support a framebuffer pitch (stride) other than
+>> >>>> the CRTC width. Check for equality and reject the state otherwise.
+>> >>>>
+>> >>>> This prevents a distorted picture when using 640x800 and running the
+>> >>>> Mesa graphics stack. Mesa tires to use a cache aligned stride, which
+>> >>>
+>> >>> s/tires/tries/
+>> >>>
+>> >>>> leads at that particular resolution to width != stride. Currently
+>> >>>> Mesa has no fallback behavior, but rejecting this configuration allows
+>> >>>> userspace to handle the issue correctly.
+>> >>>
+>> >>> I'm increasingly impressed by how featureful this IP core is :-)
+>> >>>
+>> >>>> Signed-off-by: Stefan Agner <stefan@agner.ch>
+>> >>>> ---
+>> >>>>  drivers/gpu/drm/mxsfb/mxsfb_kms.c | 22 ++++++++++++++++++----
+>> >>>>  1 file changed, 18 insertions(+), 4 deletions(-)
+>> >>>>
+>> >>>> diff --git a/drivers/gpu/drm/mxsfb/mxsfb_kms.c b/drivers/gpu/drm/mxsfb/mxsfb_kms.c
+>> >>>> index b721b8b262ce..79aa14027f91 100644
+>> >>>> --- a/drivers/gpu/drm/mxsfb/mxsfb_kms.c
+>> >>>> +++ b/drivers/gpu/drm/mxsfb/mxsfb_kms.c
+>> >>>> @@ -403,14 +403,28 @@ static int mxsfb_plane_atomic_check(struct drm_plane *plane,
+>> >>>>  {
+>> >>>>  	struct mxsfb_drm_private *mxsfb = to_mxsfb_drm_private(plane->dev);
+>> >>>>  	struct drm_crtc_state *crtc_state;
+>> >>>> +	unsigned int pitch;
+>> >>>> +	int ret;
+>> >>>>
+>> >>>>  	crtc_state = drm_atomic_get_new_crtc_state(plane_state->state,
+>> >>>>  						   &mxsfb->crtc);
+>> >>>>
+>> >>>> -	return drm_atomic_helper_check_plane_state(plane_state, crtc_state,
+>> >>>> -						   DRM_PLANE_HELPER_NO_SCALING,
+>> >>>> -						   DRM_PLANE_HELPER_NO_SCALING,
+>> >>>> -						   false, true);
+>> >>>> +	ret = drm_atomic_helper_check_plane_state(plane_state, crtc_state,
+>> >>>> +						  DRM_PLANE_HELPER_NO_SCALING,
+>> >>>> +						  DRM_PLANE_HELPER_NO_SCALING,
+>> >>>> +						  false, true);
+>> >>>> +	if (ret || !plane_state->visible)
+>> >>>
+>> >>> Would it be more explict to check for !plane_state->fb ? Otherwise I'll
+>> >>> have to verify that !fb always implies !visible :-)
+>> >>>
+>> >>>> +		return ret;
+>> >>>> +
+>> >>>> +	pitch = crtc_state->mode.hdisplay *
+>> >>>> +		plane_state->fb->format->cpp[0];
+>> >>>
+>> >>> This holds on a single line.
+>> >>>
+>> >>>> +	if (plane_state->fb->pitches[0] != pitch) {
+>> >>>> +		dev_err(plane->dev->dev,
+>> >>>> +			"Invalid pitch: fb and crtc widths must be the same");
+>> >>>
+>> >>> I'd turn this into a dev_dbg(), printing error messages to the kernel
+>> >>> log in response to user-triggered conditions is a bit too verbose and
+>> >>> could flood the log.
+>> >>>
+>> >>> Wouldn't it be best to catch this issue when creating the framebuffer ?
+>> >>
+>> >> Yeah this should be verified at addfb time. We try to validate as early as
+>> >> possible.
+>> >> -Daniel
+>> >>
+>> >
+>> > Sounds sensible. From what I can tell fb_create is the proper callback
+>> > to implement this at addfb time. Will give this a try.
+>> >
+>> > FWIW, I got the idea from drivers/gpu/drm/tilcdc/tilcdc_plane.c. Maybe
+>> > should be moved to addfb there too?
 >>
->> The only functionality change is that implementation-defined
->> interrupts are no longer set for amplifiers - those interrupts are
->> typically for jack detection or acoustic event detection/hotwording.
+>> But you don't know the crtc width when creating the framebuffer.
+> 
+> Hm right this is a different check. What we could check in fb_create for
+> both is that the logical fb size matches exactly the pitch. That's not
+> sufficient criteria, but it will at least catch some of them already.
+> 
+> But yeah we'd need both here.
+
+After validating width of framebuffer against pitch, the only thing we
+need to check here is that the width matches. From what I can tell,
+least for mxsfb, this should be covered by
+drm_atomic_helper_check_plane_state's can_position parameter set to
+false.
+
+So I think in my case I can get away by only checking the framebuffer.
+
+--
+Stefan
+
+
+> -Daniel
+> 
 >>
->> Tested-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
->> Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
->> Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
->> Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
->> ---
->>  drivers/soundwire/bus.c         | 12 ++++++------
->>  include/linux/soundwire/sdw.h   |  2 ++
->>  sound/soc/codecs/max98373-sdw.c |  3 +++
->>  sound/soc/codecs/rt1308-sdw.c   |  2 ++
->>  sound/soc/codecs/rt5682-sdw.c   |  4 ++++
->>  sound/soc/codecs/rt700-sdw.c    |  4 ++++
->>  sound/soc/codecs/rt711-sdw.c    |  4 ++++
->>  sound/soc/codecs/rt715-sdw.c    |  4 ++++
->>  sound/soc/codecs/wsa881x.c      |  1 +
-> 
-> This touches codecs, can you Ack it please
-
-Mark, could you ack the ASoC change to accept this patch via the soundwire repo?
-
-> 
-> Ideally this should have been split up to header, the codec updates and
-> finally the bus change!
-
-I don't think that the split is ideal in this case. I tested the code and it
-looks straight enough.
-
-Acked-by: Jaroslav Kysela <perex@perex.cz>
-
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+>>  Tomi
+>>
+>> --
+>> Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+>> Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
