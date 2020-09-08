@@ -2,93 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1127261021
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 12:42:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 748DE260FF3
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 12:33:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729539AbgIHKly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 06:41:54 -0400
-Received: from foss.arm.com ([217.140.110.172]:51428 "EHLO foss.arm.com"
+        id S1729896AbgIHKdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 06:33:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38448 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729509AbgIHK0J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 06:26:09 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 49C7531B;
-        Tue,  8 Sep 2020 03:26:08 -0700 (PDT)
-Received: from [10.163.71.211] (unknown [10.163.71.211])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DB8153F66E;
-        Tue,  8 Sep 2020 03:26:04 -0700 (PDT)
-Subject: Re: [PATCH 1/2] arm64/mm: Change THP helpers to comply with generic
- MM semantics
-To:     Ralph Campbell <rcampbell@nvidia.com>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Cc:     linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
-        will@kernel.org, akpm@linux-foundation.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Suzuki Poulose <suzuki.poulose@arm.com>,
-        linux-kernel@vger.kernel.org
-References: <1597655984-15428-1-git-send-email-anshuman.khandual@arm.com>
- <1597655984-15428-2-git-send-email-anshuman.khandual@arm.com>
- <20200903165631.GC31409@gaia>
- <5e148194-58c2-89c2-2cd8-9f2086f1e090@nvidia.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <93ef8d6a-c86a-956b-5f06-5f2e67b6fd04@arm.com>
-Date:   Tue, 8 Sep 2020 15:55:32 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S1729935AbgIHK3B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 06:29:01 -0400
+Received: from mail.kernel.org (ip5f5ad5ce.dynamic.kabel-deutschland.de [95.90.213.206])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2A51421556;
+        Tue,  8 Sep 2020 10:29:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599560940;
+        bh=IAB2OfIUn/8K8Wy7aR20s3fCv1Xzvg8uXkO3xarIgmc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=X0ZlHXUKM6AI/YSj2aXD1caXyfv3PBwkDkxvZVx9TyCFX+I8K5itKKDtYScVEGpoI
+         OYa5jLnt+73Ie2CgOh1OemrRozBTP8TkSripMGOm7Zn7YscOeeRuw2FW/BHOG84mYH
+         8kNInTsZUyarKkItX6o1GU5hry6cKHVUKpjWht5A=
+Received: from mchehab by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1kFarx-00B3yB-WB; Tue, 08 Sep 2020 12:28:58 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Derek Kiernan <derek.kiernan@xilinx.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Vinod Koul <vkoul@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Dragan Cvetic <dragan.cvetic@xilinx.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Yu Chen <chenyu56@huawei.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
+        Wei Xu <xuwei5@hisilicon.com>
+Subject: [PATCH 00/10] Add USB support for Hikey 970
+Date:   Tue,  8 Sep 2020 12:28:34 +0200
+Message-Id: <cover.1599559318.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <5e148194-58c2-89c2-2cd8-9f2086f1e090@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This series adds the phy layer needed by Kirin 970 SoC.
+
+It also adds a GPIO USB3 HUB driver, that is meant to support
+the HUB which comes inside with HiKey 960 and 970 designs.
+
+The hub used on Hikey 970 is this one:
+	Bus 002 Device 002: ID 0451:8140 Texas Instruments, Inc. TUSB8041 4-Port Hub
+
+While it supports I2C, the driver for it just enables it, depending
+on the OTG mode.
+
+v3:
+- fixes a problem on the past series, where some changes went
+  to the wrong patch;
+- adds DTS and dt-bindinds required for Hikey 970 USB to work.
+
+For the dt-bindings to work properly, two patches already sent
+are required:
+   - a patch adding Hikey 970 to dwg3-of-simple driver;
+   - a quirks patch for dwc3, which is required for usbhid to work.
+    funny enough, such patch is not required by USB sticks.
+    I suspect that it affects only INT URB packets, but didn't
+    made any tests.
+
+Mauro Carvalho Chehab (7):
+  phy: hisilicon: phy-hi3670-usb3: use a consistent namespace
+  phy: hisilicon: phy-hi3670-usb3: fix coding style
+  phy: hisilicon: phy-hi3670-usb3: change some DT properties
+  dt-bindings: phy: convert phy-kirin970-usb3.txt to yaml
+  MAINTAINERS: add myself as maintainer for Kirin 970 USB PHY
+  misc: hisi_hikey_usb: add support for Hikey 970
+  dts: hisilicon: add support for USB3 on Hikey 970
+
+Yu Chen (3):
+  phy: hisilicon: add USB physical layer for Kirin 3670
+  phy: hisilicon: phy-hi3670-usb3: fix some issues at the init code
+  misc: hisi_hikey_usb: Driver to support onboard USB gpio hub on
+    Hikey960
+
+ .../bindings/phy/hisilicon,hi3670-usb3.yaml   |  72 ++
+ MAINTAINERS                                   |  16 +-
+ .../boot/dts/hisilicon/hi3670-hikey970.dts    | 102 +++
+ arch/arm64/boot/dts/hisilicon/hi3670.dtsi     |  58 ++
+ drivers/misc/Kconfig                          |   9 +
+ drivers/misc/Makefile                         |   1 +
+ drivers/misc/hisi_hikey_usb.c                 | 274 +++++++
+ drivers/phy/hisilicon/Kconfig                 |  10 +
+ drivers/phy/hisilicon/Makefile                |   1 +
+ drivers/phy/hisilicon/phy-hi3670-usb3.c       | 671 ++++++++++++++++++
+ 10 files changed, 1213 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/phy/hisilicon,hi3670-usb3.yaml
+ create mode 100644 drivers/misc/hisi_hikey_usb.c
+ create mode 100644 drivers/phy/hisilicon/phy-hi3670-usb3.c
+
+-- 
+2.26.2
 
 
-On 09/03/2020 11:01 PM, Ralph Campbell wrote:
-> 
-> On 9/3/20 9:56 AM, Catalin Marinas wrote:
->> On Mon, Aug 17, 2020 at 02:49:43PM +0530, Anshuman Khandual wrote:
->>> pmd_present() and pmd_trans_huge() are expected to behave in the following
->>> manner during various phases of a given PMD. It is derived from a previous
->>> detailed discussion on this topic [1] and present THP documentation [2].
->>>
->>> pmd_present(pmd):
->>>
->>> - Returns true if pmd refers to system RAM with a valid pmd_page(pmd)
->>> - Returns false if pmd does not refer to system RAM - Invalid pmd_page(pmd)
->>
->> The second bullet doesn't make much sense. If you have a pmd mapping of
->> some I/O memory, pmd_present() still returns true (as does
->> pte_present()).
->>
->>> diff --git a/arch/arm64/include/asm/pgtable-prot.h b/arch/arm64/include/asm/pgtable-prot.h
->>> index 4d867c6446c4..28792fdd9627 100644
->>> --- a/arch/arm64/include/asm/pgtable-prot.h
->>> +++ b/arch/arm64/include/asm/pgtable-prot.h
->>> @@ -19,6 +19,13 @@
->>>   #define PTE_DEVMAP        (_AT(pteval_t, 1) << 57)
->>>   #define PTE_PROT_NONE        (_AT(pteval_t, 1) << 58) /* only when !PTE_VALID */
->>>   +/*
->>> + * This help indicate that the entry is present i.e pmd_page()
->>
->> Nit: add another . after i.e
-> 
-> Another nit: "This help indicate" => "This helper indicates"
-> 
-> Maybe I should look at the series more. :-)
-
-It is talking about the new PTE bit being used here not any
-helper. Though the following replacement might be better.
-
-s/This help indicate/This bit indicates/
-
-/*
- * This help indicate that the entry is present i.e pmd_page()
- * still points to a valid huge page in memory even if the pmd
- * has been invalidated.
- */
-#define PMD_PRESENT_INVALID	(_AT(pteval_t, 1) << 59) /* only when !PMD_SECT_VALID */
