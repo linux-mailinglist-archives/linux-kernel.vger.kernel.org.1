@@ -2,136 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C95A326236A
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 01:09:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EC43262378
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 01:12:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729457AbgIHXJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 19:09:21 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:43182 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729822AbgIHXJK (ORCPT
+        id S1729992AbgIHXME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 19:12:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728297AbgIHXL7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 19:09:10 -0400
-Received: from localhost.localdomain (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 893C52094292;
-        Tue,  8 Sep 2020 16:09:08 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 893C52094292
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1599606549;
-        bh=h0p/Pe6T5RijAwX+MubdkPc7tl+B2kSftqVVR/lVkOI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cksjazWbG25ZSNlMCcOZzXX6h/1b/rRdEEqr6hPTjCgBB/pNWAWNEOQb/0fq8rSJR
-         c9E91t/Auds9VT9wLva7GRBs9SmGlj5TTGN5g38CwWU7EemT5ZSDS+ZM3UrM6TEXZa
-         /llvFzX0gDVvZx3QzYsfj/2xlm2p5JnjpuEmAngA=
-From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-To:     zohar@linux.ibm.com, bauerman@linux.ibm.com, robh@kernel.org,
-        gregkh@linuxfoundation.org, james.morse@arm.com,
-        catalin.marinas@arm.com, sashal@kernel.org, will@kernel.org,
-        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        robh+dt@kernel.org, frowand.list@gmail.com,
-        vincenzo.frascino@arm.com, mark.rutland@arm.com,
-        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
-        pasha.tatashin@soleen.com, allison@lohutok.net,
-        kstewart@linuxfoundation.org, takahiro.akashi@linaro.org,
-        tglx@linutronix.de, masahiroy@kernel.org, bhsharma@redhat.com,
-        mbrugger@suse.com, hsinyi@chromium.org, tao.li@vivo.com,
-        christophe.leroy@c-s.fr
-Cc:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, prsriva@linux.microsoft.com,
-        balajib@linux.microsoft.com
-Subject: [PATCH v6 3/3] arm64: Add IMA kexec buffer to DTB
-Date:   Tue,  8 Sep 2020 16:08:56 -0700
-Message-Id: <20200908230856.9799-4-nramas@linux.microsoft.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200908230856.9799-1-nramas@linux.microsoft.com>
-References: <20200908230856.9799-1-nramas@linux.microsoft.com>
+        Tue, 8 Sep 2020 19:11:59 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BCF6C061573;
+        Tue,  8 Sep 2020 16:11:59 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id gf14so360438pjb.5;
+        Tue, 08 Sep 2020 16:11:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=d2eXmnCqu0SOOWoMlCLyygGtYkUiwKo4dKRW0ixC3Qc=;
+        b=F83+yibeQuEhJKMBgMMEZWgtOX/N47s7/FjWmpncrajXpMzj3DycInSP57lZ9TFWvA
+         WD2/GU2ySfG155GFM68+rkB+PiulBHhHFFmSA48T8p7AB7bJPqR/7tJGXqafOknQfUjz
+         fdzr1AutBPLDKqqsuJ3SXGVQzE0lgR9HDYKeOclqPfBlgv9cxHi8XnC7o37LoWc71CGi
+         Ev1/f8oylIXxSK64AcOJvZXFfXcYoTHL7XVF892uqeDO/vNm2MUJdcUS03wtB8ors6JX
+         yHojeq1iu/DcEOVWL0dftXD4XIZW3VcfZPQDDXV/a1alUDa/BGneHydY7Y0BDQMV4d92
+         y0JQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=d2eXmnCqu0SOOWoMlCLyygGtYkUiwKo4dKRW0ixC3Qc=;
+        b=f/9vxT2NAK5RzpnzwRGm0xYbw5fOuYvdiE0kUj7128T1MpIC0bXMP5AmvecZgjQggq
+         BrEeevOyCNHeP+Aig8/di4H2QERnBtGSkKLI9QwQub0bDTV2ckuxRZWzpBk312ob376o
+         mUzaqz4x0GPCbfAaCpz6W+BSjRVHfTmKX9I48qDi3xNKY0YH4RRMNojEaHJ4T0N3544o
+         8pPbcp/qJE0JCUmJxixnueMAFWERjccWBwnv4uJaG/LXAw9rOgPqmGyV5x2ZkTU7jWbh
+         /tJGy3h9deTnrsQtgqnZwNK10DDNAh+JC5y1UhsiEV6nNqiYu6nj72cwjroRBe741O+D
+         xXKw==
+X-Gm-Message-State: AOAM533qoZopHE0DCOtxAzLT6M7pBpEBsFOCfpuXNaIBNK+I9VJk4LTI
+        Lxs6KWQI/uTMbi2mssiiDhNFf4TMVMMKc8Zk
+X-Google-Smtp-Source: ABdhPJzPpNPLNQ3z9wRKwxsyFYUr3HWELu38gHveaOKPMujSahmpKQbLkQeNvGxoSNM0c6C7Y0QDJA==
+X-Received: by 2002:a17:90a:b387:: with SMTP id e7mr1031212pjr.228.1599606719169;
+        Tue, 08 Sep 2020 16:11:59 -0700 (PDT)
+Received: from haolee.github.io ([2600:3c01::f03c:91ff:fe02:b162])
+        by smtp.gmail.com with ESMTPSA id 82sm313998pgd.6.2020.09.08.16.11.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Sep 2020 16:11:58 -0700 (PDT)
+Date:   Tue, 8 Sep 2020 23:11:56 +0000
+From:   Hao Lee <haolee.swjtu@gmail.com>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] fs: Eliminate a local variable to make the code more
+ clear
+Message-ID: <20200908231156.GA23779@haolee.github.io>
+References: <20200729151740.GA3430@haolee.github.io>
+ <20200908130656.GC22780@haolee.github.io>
+ <20200908184857.GT1236603@ZenIV.linux.org.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200908184857.GT1236603@ZenIV.linux.org.uk>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Any existing FDT_PROP_IMA_KEXEC_BUFFER property in the device tree
-needs to be removed and its corresponding memory reservation in
-the currently running kernel needs to be freed.
+On Tue, Sep 08, 2020 at 07:48:57PM +0100, Al Viro wrote:
+> On Tue, Sep 08, 2020 at 01:06:56PM +0000, Hao Lee wrote:
+> > ping
+> > 
+> > On Wed, Jul 29, 2020 at 03:21:28PM +0000, Hao Lee wrote:
+> > > The dentry local variable is introduced in 'commit 84d17192d2afd ("get
+> > > rid of full-hash scan on detaching vfsmounts")' to reduce the length of
+> > > some long statements for example
+> > > mutex_lock(&path->dentry->d_inode->i_mutex). We have already used
+> > > inode_lock(dentry->d_inode) to do the same thing now, and its length is
+> > > acceptable. Furthermore, it seems not concise that assign path->dentry
+> > > to local variable dentry in the statement before goto. So, this function
+> > > would be more clear if we eliminate the local variable dentry.
+> 
+> How does it make the function more clear?  More specifically, what
+> analysis of behaviour is simplified by that?
 
-The address and size of the current kernel's IMA measurement log need
-to be added to the device tree's IMA kexec buffer node and memory for
-the buffer needs to be reserved for the log to be carried over to
-the next kernel on the kexec call.
+When I first read this function, it takes me a few seconds to think
+about if the local variable dentry is always equal to path->dentry and
+want to know if it has special purpose. This local variable may confuse
+other people too, so I think it would be better to eliminate it.
 
-Remove any existing FDT_PROP_IMA_KEXEC_BUFFER property in the device
-tree and free the corresponding memory reservation in the currently
-running kernel. Add FDT_PROP_IMA_KEXEC_BUFFER property to the device
-tree and reserve the memory for storing the IMA log.
-Update CONFIG_KEXEC_FILE to select CONFIG_HAVE_IMA_KEXEC to indicate
-that the IMA measurement log information is present in the device tree
-for ARM64.
-
-Co-developed-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
-Signed-off-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
-Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
----
- arch/arm64/Kconfig                     |  1 +
- arch/arm64/kernel/machine_kexec_file.c | 18 ++++++++++++++++++
- 2 files changed, 19 insertions(+)
-
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index 6d232837cbee..9f03c8245e5b 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -1077,6 +1077,7 @@ config KEXEC
- config KEXEC_FILE
- 	bool "kexec file based system call"
- 	select KEXEC_CORE
-+	select HAVE_IMA_KEXEC
- 	help
- 	  This is new version of kexec system call. This system call is
- 	  file based and takes file descriptors as system call argument
-diff --git a/arch/arm64/kernel/machine_kexec_file.c b/arch/arm64/kernel/machine_kexec_file.c
-index 361a1143e09e..66909505d959 100644
---- a/arch/arm64/kernel/machine_kexec_file.c
-+++ b/arch/arm64/kernel/machine_kexec_file.c
-@@ -21,6 +21,7 @@
- #include <linux/string.h>
- #include <linux/types.h>
- #include <linux/vmalloc.h>
-+#include <linux/ima.h>
- #include <asm/byteorder.h>
- 
- /* relevant device tree properties */
-@@ -62,6 +63,8 @@ static int setup_dtb(struct kimage *image,
- 
- 	off = ret;
- 
-+	ima_remove_kexec_buffer(dtb, ret);
-+
- 	ret = fdt_delprop(dtb, off, FDT_PROP_KEXEC_ELFHDR);
- 	if (ret && ret != -FDT_ERR_NOTFOUND)
- 		goto out;
-@@ -136,6 +139,21 @@ static int setup_dtb(struct kimage *image,
- 				FDT_PROP_KASLR_SEED);
- 	}
- 
-+	/* add ima-kexec-buffer */
-+	if (image->arch.ima_buffer_size > 0) {
-+		ret = fdt_appendprop_addrrange(dtb, 0, off,
-+				FDT_PROP_IMA_KEXEC_BUFFER,
-+				image->arch.ima_buffer_addr,
-+				image->arch.ima_buffer_size);
-+		if (ret)
-+			return (ret == -FDT_ERR_NOSPACE ? -ENOMEM : -EINVAL);
-+
-+		ret = fdt_add_mem_rsv(dtb, image->arch.ima_buffer_addr,
-+				      image->arch.ima_buffer_size);
-+		if (ret)
-+			goto out;
-+	}
-+
- 	/* add rng-seed */
- 	if (rng_is_initialized()) {
- 		void *rng_seed;
--- 
-2.28.0
-
+Thanks,
+Hao Lee
