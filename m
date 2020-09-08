@@ -2,77 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73851261FD0
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 22:07:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D512326202E
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 22:10:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731168AbgIHUG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 16:06:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48182 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730335AbgIHPUz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:20:55 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B0E2C0619ED;
-        Tue,  8 Sep 2020 08:14:33 -0700 (PDT)
-Date:   Tue, 8 Sep 2020 17:12:29 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1599577950;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lIVgIxTyroQddql8kti9o3VE5bSiFWAwUPsPZehXs9o=;
-        b=sXhlasBHEKGmjbmZDMHbFD7Rsy2wjwblXmS7YU8lQi9EA9XqAewbLsZRFGt8nkjLTQXw8m
-        zvObdrZX72xqJ9q18VgC85vQRLzqaFJWuwz2NhTol9lsNMd5XUs2iHQyUndQPPfwe1ObYU
-        4hS0AhQaQjpwUDgEH4gdT/S5SMvdRK7QZIVkFX+y2/qH6NR7/iikQiqvY4tovuObzBVRfP
-        kU0j8vopuU9FkdMMkglSKe6aGOTRAbB+uqo3DB9QfD3RY04TkasmbP7xnB82T2Y2Fb/3lA
-        gJ5riSIi14Cl5GEhKWbT681B2G48wMlt4t2OKPPt5uXsePgIv+Zsq+1OyjmJjA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1599577950;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lIVgIxTyroQddql8kti9o3VE5bSiFWAwUPsPZehXs9o=;
-        b=kxjaxt2dIjBlb5FiPBRsluID3bgNmV1B32kw3B0tymfXnJyo4JFDg6Dp5xE6ZrD035G1Al
-        trsnmHCEmRg6jCAw==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Mike Galbraith <efault@gmx.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: v5.9-rc3-rt3 boot time networking lockdep splat
-Message-ID: <20200908151229.g24j4n4fderlm2pe@linutronix.de>
-References: <20200902155557.h2wl2qpfn2rwsofw@linutronix.de>
- <46a2b89ec8d953a4be18c7389c7d8c66310a7ff0.camel@gmx.de>
- <b989e196a8b9cceda35152de9202d7a67ca32196.camel@gmx.de>
+        id S1730684AbgIHUK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 16:10:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52590 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730251AbgIHPQT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 11:16:19 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DB5F922283;
+        Tue,  8 Sep 2020 15:14:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599578097;
+        bh=tJsIwenxLQUdiskJ5RPhYYEEkBlmKh/SwM1IpIoH9Rw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GCAc21pvEnm1zOz0iewDMkO+bBetG4dCzIos6oEczR8k7J6FkTt1P7c29Rt382CDj
+         0zggzJktRU/QgFKmSdQWSDqj/1qfKzh1LYeYfjnFRuv4Guoq4A/5MEJG4mfR7kZpw6
+         OxiaFvMnWuue0njCUYTx26Dd/9chG0gDOQTFqfwY=
+Date:   Tue, 8 Sep 2020 16:14:13 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc:     Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org,
+        tiwai@suse.de, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, hui.wang@canonical.com,
+        Vinod Koul <vkoul@kernel.org>, srinivas.kandagatla@linaro.org,
+        ranjani.sridharan@linux.intel.com, jank@cadence.com,
+        mengdong.lin@intel.com, sanyog.r.kale@intel.com,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        rander.wang@linux.intel.com, bard.liao@intel.com
+Subject: Re: [PATCH 1/7] soundwire: bus: use property to set interrupt masks
+Message-ID: <20200908151412.GE5551@sirena.org.uk>
+References: <20200818140656.29014-1-yung-chuan.liao@linux.intel.com>
+ <20200818140656.29014-2-yung-chuan.liao@linux.intel.com>
+ <20200828065125.GI2639@vkoul-mobl>
+ <ec5fe867-f2e4-4278-0376-e54bcdd7f94d@perex.cz>
+ <20200908121133.GA5551@sirena.org.uk>
+ <1950b662-ec59-6603-36c7-7a41d9e8460c@perex.cz>
+ <20200908143312.GC5551@sirena.org.uk>
+ <ce68a159-de6d-2d8a-c8a2-3e527cb1239e@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="qOrJKOH36bD5yhNe"
 Content-Disposition: inline
-In-Reply-To: <b989e196a8b9cceda35152de9202d7a67ca32196.camel@gmx.de>
+In-Reply-To: <ce68a159-de6d-2d8a-c8a2-3e527cb1239e@linux.intel.com>
+X-Cookie: Vini, vidi, Linux!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-05 07:19:10 [+0200], Mike Galbraith wrote:
-> Lappy, which does not use bridge, boots clean... but lock leakage
-> pretty darn quickly inspires lockdep to craps its drawers.
-> 
-> [  209.001111] BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low!
-> [  209.001113] turning off the locking correctness validator.
-> [  209.001114] CPU: 2 PID: 3773 Comm: Socket Thread Tainted: G S        I E     5.9.0.gc70672d-rt3-rt #8
-> [  209.001117] Hardware name: HP HP Spectre x360 Convertible/804F, BIOS F.47 11/22/2017
-> [  209.001118] Call Trace:
-> [  209.001123]  dump_stack+0x77/0x9b
-> [  209.001129]  validate_chain+0xf60/0x1230
 
-I have no idea how to debug this based on this report. Can you narrow
-it down to something?
+--qOrJKOH36bD5yhNe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Is Lappy new, got a new something or has a new config switch? I'm just
-curious if this something or something that was always there but
-remained undetected.
-(Your other report was about something that was previously always "broken".)
+On Tue, Sep 08, 2020 at 09:47:13AM -0500, Pierre-Louis Bossart wrote:
+> On 9/8/20 9:33 AM, Mark Brown wrote:
+> > On Tue, Sep 08, 2020 at 02:28:48PM +0200, Jaroslav Kysela wrote:
+> > > Dne 08. 09. 20 v 14:11 Mark Brown napsal(a):
 
-Sebastian
+> > > > I don't have this patch and since I seem to get copied on quite a lot of
+> > > > soundwire only serieses I just delete them unread mostly.
+
+> We now try to use the ASoC/SoundWire prefix for cover letters to highlight
+> that a patchset changes things across two trees, does this help or do we
+> need a different way of flagging these patches?
+
+I think the issue is mainly where the patch itself touches both, if some
+of the patches mention ASoC I'll generally notice them but Soundwire is
+one of these things I get so many random CCs for I just zone it out so
+highlighting the individual patches would help.
+
+--qOrJKOH36bD5yhNe
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9Xn8MACgkQJNaLcl1U
+h9CUUAf+K13VelraWrtnNDSK36472Led55+P+yEMDNm8qcIyEGWD5AbiP5aY2ZSz
+S+nwGtGVoamZZpea1eV0bT6KA8iDP0iaQzwd8TiuYYrQs5jcgvs8/HaNKcpr/QcU
+mGstshh8rzw7j7aVLJiYULVfljZH7EGZvLubAWhYsTPfFkOBx5uVv3UttaMYdDOv
+y4vF26WCaA1lQ7Cf0Uhnqvmm9EGBRShE90plEabxVHA2ny7D6r+n6BZLJYeMojJi
+EWJTVtV9Te0dcb5duOSRMOWTEpv1Lj06qU7TrJ9LvKRIbbO64kcY3/h2Rkh4VIH2
+buWiqehTcS/h6UufwJb6pHLVAtNdcA==
+=FI6R
+-----END PGP SIGNATURE-----
+
+--qOrJKOH36bD5yhNe--
