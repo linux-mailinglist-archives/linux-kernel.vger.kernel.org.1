@@ -2,170 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C255261500
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:42:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17C232614C9
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:36:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732125AbgIHQm1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 12:42:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731514AbgIHQmS (ORCPT
+        id S1732005AbgIHQgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 12:36:46 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:51706 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732027AbgIHQbi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:42:18 -0400
-Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77677C061371;
-        Tue,  8 Sep 2020 05:44:39 -0700 (PDT)
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id 86023344; Tue,  8 Sep 2020 14:35:18 +0200 (CEST)
-Date:   Tue, 8 Sep 2020 14:35:17 +0200
-From:   Joerg Roedel <joro@8bytes.org>
-To:     x86@kernel.org
-Cc:     Joerg Roedel <jroedel@suse.de>, hpa@zytor.com,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Rientjes <rientjes@google.com>,
-        Cfir Cohen <cfir@google.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mike Stunes <mstunes@vmware.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: [PATCH v7.2 39/74] x86/sev-es: Setup early #VC handler
-Message-ID: <20200908123517.GA3764@8bytes.org>
-References: <20200907131613.12703-1-joro@8bytes.org>
- <20200907131613.12703-40-joro@8bytes.org>
+        Tue, 8 Sep 2020 12:31:38 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 088Caq2l101881;
+        Tue, 8 Sep 2020 07:36:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1599568612;
+        bh=yE6h/TCCI1nr5Hwk2p595EtwXTIH9VDdBsXkMKKTFWA=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=dJmrpRIv/Jw2G79AVUgGNzWeslazPxYqLvhWM6FOoBSjTVLxI4e7DjvFMhHGSteIZ
+         bdut1T98FntyvxALagJ6MPiDXjpHufpg8kvWYKM9dupO3UC8BUzsIpShwb5xtg/Tso
+         5Bp6hu0U+YNXMl8SNckYFa/VnfmKYWuvDKPfWCI8=
+Received: from DFLE107.ent.ti.com (dfle107.ent.ti.com [10.64.6.28])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 088Caqj9102372;
+        Tue, 8 Sep 2020 07:36:52 -0500
+Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 8 Sep
+ 2020 07:36:52 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 8 Sep 2020 07:36:52 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 088Caq0J126769;
+        Tue, 8 Sep 2020 07:36:52 -0500
+Date:   Tue, 8 Sep 2020 07:36:51 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Roger Quadros <rogerq@ti.com>
+CC:     <t-kristo@ti.com>, <robh+dt@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <nsekhar@ti.com>,
+        <kishon@ti.com>
+Subject: Re: [PATCH v2 6/6] arm64: dts: ti: k3-j7200-common-proc-board: Add
+ USB support
+Message-ID: <20200908123651.yg54ht2z2esqdg4e@akan>
+References: <20200907145213.30788-1-rogerq@ti.com>
+ <20200907145213.30788-7-rogerq@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20200907131613.12703-40-joro@8bytes.org>
+In-Reply-To: <20200907145213.30788-7-rogerq@ti.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joerg Roedel <jroedel@suse.de>
+On 17:52-20200907, Roger Quadros wrote:
+> Enable USB0 port in high-speed (2.0) mode.
 
-Setup an early handler for #VC exceptions. There is no GHCB mapped
-yet, so just re-use the vc_no_ghcb_handler. It can only handle CPUID
-exit-codes, but that should be enough to get the kernel through
-verify_cpu() and __startup_64() until it runs on virtual addresses.
 
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
----
- arch/x86/include/asm/sev-es.h |  3 +++
- arch/x86/kernel/head64.c      | 25 ++++++++++++++++++++++++-
- arch/x86/kernel/head_64.S     | 30 ++++++++++++++++++++++++++++++
- 3 files changed, 57 insertions(+), 1 deletion(-)
+Am I right that this is a choice forced by serdes mux configuration
+selection? Might be good to document it (default speed is super-speed).
 
-diff --git a/arch/x86/include/asm/sev-es.h b/arch/x86/include/asm/sev-es.h
-index 6dc52440c4b4..7175d432ebfe 100644
---- a/arch/x86/include/asm/sev-es.h
-+++ b/arch/x86/include/asm/sev-es.h
-@@ -73,4 +73,7 @@ static inline u64 lower_bits(u64 val, unsigned int bits)
- 	return (val & mask);
- }
- 
-+/* Early IDT entry points for #VC handler */
-+extern void vc_no_ghcb(void);
-+
- #endif
-diff --git a/arch/x86/kernel/head64.c b/arch/x86/kernel/head64.c
-index 4282dac694c3..fc55cc9ccb0f 100644
---- a/arch/x86/kernel/head64.c
-+++ b/arch/x86/kernel/head64.c
-@@ -40,6 +40,7 @@
- #include <asm/desc.h>
- #include <asm/extable.h>
- #include <asm/trapnr.h>
-+#include <asm/sev-es.h>
- 
- /*
-  * Manage page tables very early on.
-@@ -540,12 +541,34 @@ static struct desc_ptr bringup_idt_descr = {
- 	.address	= 0, /* Set at runtime */
- };
- 
-+static void set_bringup_idt_handler(gate_desc *idt, int n, void *handler)
-+{
-+#ifdef CONFIG_AMD_MEM_ENCRYPT
-+	struct idt_data data;
-+	gate_desc desc;
-+
-+	init_idt_data(&data, n, handler);
-+	idt_init_desc(&desc, &data);
-+	native_write_idt_entry(idt, n, &desc);
-+#endif
-+}
-+
- /* This runs while still in the direct mapping */
- static void startup_64_load_idt(unsigned long physbase)
- {
- 	struct desc_ptr *desc = fixup_pointer(&bringup_idt_descr, physbase);
-+	gate_desc *idt = fixup_pointer(bringup_idt_table, physbase);
-+
-+
-+	if (IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT)) {
-+		void *handler;
-+
-+		/* VMM Communication Exception */
-+		handler = fixup_pointer(vc_no_ghcb, physbase);
-+		set_bringup_idt_handler(idt, X86_TRAP_VC, handler);
-+	}
- 
--	desc->address = (unsigned long)fixup_pointer(bringup_idt_table, physbase);
-+	desc->address = (unsigned long)idt;
- 	native_load_idt(desc);
- }
- 
-diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
-index 3b40ec44a67d..6e68bca64ae4 100644
---- a/arch/x86/kernel/head_64.S
-+++ b/arch/x86/kernel/head_64.S
-@@ -348,6 +348,36 @@ SYM_CODE_START_LOCAL(early_idt_handler_common)
- 	jmp restore_regs_and_return_to_kernel
- SYM_CODE_END(early_idt_handler_common)
- 
-+#ifdef CONFIG_AMD_MEM_ENCRYPT
-+/*
-+ * VC Exception handler used during very early boot. The
-+ * early_idt_handler_array can't be used because it returns via the
-+ * paravirtualized INTERRUPT_RETURN and pv-ops don't work that early.
-+ *
-+ * This handler will end up in the .init.text section and not be
-+ * available to boot secondary CPUs.
-+ */
-+SYM_CODE_START_NOALIGN(vc_no_ghcb)
-+	UNWIND_HINT_IRET_REGS offset=8
-+
-+	/* Build pt_regs */
-+	PUSH_AND_CLEAR_REGS
-+
-+	/* Call C handler */
-+	movq    %rsp, %rdi
-+	movq	ORIG_RAX(%rsp), %rsi
-+	call    do_vc_no_ghcb
-+
-+	/* Unwind pt_regs */
-+	POP_REGS
-+
-+	/* Remove Error Code */
-+	addq    $8, %rsp
-+
-+	/* Pure iret required here - don't use INTERRUPT_RETURN */
-+	iretq
-+SYM_CODE_END(vc_no_ghcb)
-+#endif
- 
- #define SYM_DATA_START_PAGE_ALIGNED(name)			\
- 	SYM_START(name, SYM_L_GLOBAL, .balign PAGE_SIZE)
+> 
+> The board uses lane 3 of SERDES for USB. Set the mux
+> accordingly.
+> 
+> Signed-off-by: Roger Quadros <rogerq@ti.com>
+> ---
+>  .../dts/ti/k3-j7200-common-proc-board.dts     | 22 +++++++++++++++++++
+>  1 file changed, 22 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
+> index 0ecaba600704..5ce3fddbd617 100644
+> --- a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
+> +++ b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
+> @@ -42,6 +42,12 @@
+>  			J721E_IOPAD(0xe4, PIN_INPUT, 8) /* (V1) TIMER_IO0.MMC1_SDCD */
+>  		>;
+>  	};
+> +
+> +	main_usbss0_pins_default: main-usbss0-pins-default {
+> +		pinctrl-single,pins = <
+> +			J721E_IOPAD(0x120, PIN_OUTPUT, 0) /* (T4) USB0_DRVVBUS */
+> +		>;
+> +	};
+>  };
+>  
+>  &wkup_uart0 {
+> @@ -145,3 +151,19 @@
+>  	idle-states = <SERDES0_LANE0_PCIE1_LANE0>, <SERDES0_LANE1_PCIE1_LANE1>,
+>  		      <SERDES0_LANE2_QSGMII_LANE1>, <SERDES0_LANE3_IP4_UNUSED>;
+>  };
+> +
+> +&usb_serdes_mux {
+> +	idle-states = <1>; /* USB0 to SERDES lane 3 */
+> +};
+> +
+> +&usbss0 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&main_usbss0_pins_default>;
+> +	ti,vbus-divider;
+> +	ti,usb2-only;
+> +};
+> +
+> +&usb0 {
+> +	dr_mode = "otg";
+> +	maximum-speed = "high-speed";
+> +};
+> -- 
+> Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+> Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+> 
+
 -- 
-2.28.0
-
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
