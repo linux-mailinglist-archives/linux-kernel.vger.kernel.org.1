@@ -2,78 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65F722616C2
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:18:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6114A2616A3
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:16:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726642AbgIHRSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 13:18:11 -0400
-Received: from foss.arm.com ([217.140.110.172]:57126 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731547AbgIHQSP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:18:15 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5ABF01045;
-        Tue,  8 Sep 2020 09:18:08 -0700 (PDT)
-Received: from [192.168.178.2] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2683E3F66E;
-        Tue,  8 Sep 2020 09:18:07 -0700 (PDT)
-Subject: Re: [PATCH v2] sched/debug: Add new tracepoint to track cpu_capacity
-To:     Qais Yousef <qais.yousef@arm.com>
-Cc:     peterz@infradead.org, vincent.donnefort@arm.com, mingo@redhat.com,
-        vincent.guittot@linaro.org, linux-kernel@vger.kernel.org,
-        valentin.schneider@arm.com, Phil Auld <pauld@redhat.com>
-References: <1598605249-72651-1-git-send-email-vincent.donnefort@arm.com>
- <20200828102724.wmng7p6je2pkc33n@e107158-lin.cambridge.arm.com>
- <1e806d48-fd54-fd86-5b3a-372d9876f360@arm.com>
- <20200828172658.dxygk7j672gho4ax@e107158-lin.cambridge.arm.com>
- <58f5d2e8-493b-7ce1-6abd-57705e5ab437@arm.com>
- <20200907104845.6rust2lf2o3d5gmq@e107158-lin.cambridge.arm.com>
- <20200907111320.GP2674@hirez.programming.kicks-ass.net>
- <20200907145155.fsmeygi4fiypikzk@e107158-lin.cambridge.arm.com>
- <cbad58a5-758b-ded9-ed41-1be74e8663a6@arm.com>
- <20200908151722.b7ai2bpgvixlimz3@e107158-lin.cambridge.arm.com>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <d3fd557f-e38d-c4b4-1137-fcf0b06d3ba2@arm.com>
-Date:   Tue, 8 Sep 2020 18:17:54 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20200908151722.b7ai2bpgvixlimz3@e107158-lin.cambridge.arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1730093AbgIHRPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 13:15:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57668 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731778AbgIHQSx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 12:18:53 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53400C061755
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 09:18:52 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 125so7062731ybg.12
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 09:18:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=x95DT5jtosgYGGefTlj6NP8d+p2HyfRsrJ4ad9R8zWg=;
+        b=vEAvtJV1mZC5g6CtNtuc1RMBhTCoauFGpyTyKhAUJ/l8U7+S+jFND8ivZyM0HZUL9G
+         /K9GAkbQLWDrN9HBiVaizvVbEzzg8FhH/GvHRzPAXOT+ZgfwOsr2nHH/ogS+8LoaNkQ7
+         hjEISner+UeNA1r568bv4fUydN5RrUGAQ4NwK1YlfwF4LRI1HpywGTt/FQ7HsOnBloI/
+         mv26PTYzLSGrfOBj32MRiM6h/m+UutV/K+Ozm70tXcvvC1ZgGRBUWSS4csaJY1IWW12W
+         modcc45TYxK1F54JrtcofO+RXmszyvRGpkgJ0NHsU/ge2bFKPE+N2ZX9vbpaeM7qMWDI
+         1GuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=x95DT5jtosgYGGefTlj6NP8d+p2HyfRsrJ4ad9R8zWg=;
+        b=Mg1IATS1Rh75kP4TddJ8y91vkMUmMaP3Rngut5x2OMAsv4GhSgps8PC8OhnWxqWx6t
+         gupdb9+X6cVB8Ij7lZESE+qaMJolGF1HUvnnlW/SjDcygrIMsnxy+hdGVGojHXbd2yo1
+         sSFcv59FdvqmO8HwzJc9TuOKPL92vu48zDEV/8qmyyB02u+2P0LngQtJ8XgJq9P0yiwm
+         yT8QomFBJt62O75IsLbuJy4mIjGYNyyrWRMqTwpkCZ19YY2F8vh3BndpHa4tF1BaJpli
+         py/oCvlHtrXQ8JM21xtDfGIz/7M3JZ9RJ32deXtwAcNq3uIxgUh3PgZweVrtGkd7gxwt
+         QLwA==
+X-Gm-Message-State: AOAM533441vAECggFDR+nUE4UZaFQe2aDkvzAmU/kI7hMRHSID9tHmA1
+        lK05hfu5vh34ygwDhk4wNhaBW/Hg1eip
+X-Google-Smtp-Source: ABdhPJySE73XVegcNqbVF+9mab6MmrRL1nEIcLINZ2tVaa7rCwF8UXgmoVqBCwlx6WA3rld8VdOhhWvOkzMl
+X-Received: from brianvv.svl.corp.google.com ([2620:15c:2c4:201:a28c:fdff:fee1:c370])
+ (user=brianvv job=sendgmr) by 2002:a25:e0d5:: with SMTP id
+ x204mr554925ybg.57.1599581931886; Tue, 08 Sep 2020 09:18:51 -0700 (PDT)
+Date:   Tue,  8 Sep 2020 09:18:12 -0700
+Message-Id: <20200908161812.723044-1-brianvv@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.526.ge36021eeef-goog
+Subject: [PATCH] fib: fix fib_rule_ops indirect call wrappers when CONFIG_IPV6=m
+From:   Brian Vazquez <brianvv@google.com>
+To:     Brian Vazquez <brianvv.kernel@gmail.com>,
+        Brian Vazquez <brianvv@google.com>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S . Miller" <davem@davemloft.net>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Sven Joachim <svenjoac@gmx.de>,
+        Randy Dunlap <rdunlap@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/09/2020 17:17, Qais Yousef wrote:
-> On 09/08/20 13:17, Dietmar Eggemann wrote:
->> On 07/09/2020 16:51, Qais Yousef wrote:
->>> On 09/07/20 13:13, peterz@infradead.org wrote:
->>>> On Mon, Sep 07, 2020 at 11:48:45AM +0100, Qais Yousef wrote:
->>>>> IMHO the above is a hack. Out-of-tree modules should rely on public headers and
->>>>> exported functions only. What you propose means that people who want to use
->>>>> these tracepoints in meaningful way must have a prebuilt kernel handy. Which is
->>>>> maybe true for us who work in the embedded world. But users who run normal
->>>>> distro kernels (desktop/servers) will fail to build against
->>>>
->>>> But this isn't really aimed at regular users. We're aiming this at
->>>> developers (IIUC) so I dont really see this as a problem.
->>
->> This is what I thought as well. All these helpers can be coded directly
->> in these tracepoint-2-traceevent (tp-2-te) converters. As long as they
->> are build from within kernel/sched/ there is no issue with the export
->> via kernel/sched/sched.h. Otherwise this little trick would be necessary.
->> But since it is a tool for developers I guess we can assume that they
->> can build it from within kernel/sched/.
-> 
-> I think this will reduce the usefulness of these tracepoints. But if you really
-> want to remove them, I am certainly not strongly attached to them and they were
-> meant to be removable anyway. So fine by me :-)
+If CONFIG_IPV6=m, the IPV6 functions won't be found by the linker:
 
-I would like to see them go. Less stuff to maintain. And as we see with
-the new cpu_capacity tp there are always more helper functions coming.
+ld: net/core/fib_rules.o: in function `fib_rules_lookup':
+fib_rules.c:(.text+0x606): undefined reference to `fib6_rule_match'
+ld: fib_rules.c:(.text+0x611): undefined reference to `fib6_rule_match'
+ld: fib_rules.c:(.text+0x68c): undefined reference to `fib6_rule_action'
+ld: fib_rules.c:(.text+0x693): undefined reference to `fib6_rule_action'
+ld: fib_rules.c:(.text+0x6aa): undefined reference to `fib6_rule_suppress'
+ld: fib_rules.c:(.text+0x6bc): undefined reference to `fib6_rule_suppress'
+make: *** [Makefile:1166: vmlinux] Error 1
 
-IMHO, the ability to build those modules via public headers is less
-important since they are meant for developers.
+Reported-by: Sven Joachim <svenjoac@gmx.de>
+Fixes: b9aaec8f0be5 ("fib: use indirect call wrappers in the most common fib_rules_ops")
+Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+Signed-off-by: Brian Vazquez <brianvv@google.com>
+---
+ net/core/fib_rules.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/net/core/fib_rules.c b/net/core/fib_rules.c
+index 51678a528f85..7bcfb16854cb 100644
+--- a/net/core/fib_rules.c
++++ b/net/core/fib_rules.c
+@@ -16,7 +16,7 @@
+ #include <net/ip_tunnels.h>
+ #include <linux/indirect_call_wrapper.h>
+ 
+-#ifdef CONFIG_IPV6_MULTIPLE_TABLES
++#if defined(CONFIG_IPV6) && defined(CONFIG_IPV6_MULTIPLE_TABLES)
+ #ifdef CONFIG_IP_MULTIPLE_TABLES
+ #define INDIRECT_CALL_MT(f, f2, f1, ...) \
+ 	INDIRECT_CALL_INET(f, f2, f1, __VA_ARGS__)
+-- 
+2.28.0.526.ge36021eeef-goog
+
