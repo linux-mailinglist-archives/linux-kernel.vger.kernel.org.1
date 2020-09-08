@@ -2,200 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA90A261F07
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:58:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 604AE261F1F
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 22:00:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732569AbgIHT6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:58:11 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:55496 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730355AbgIHPfq (ORCPT
+        id S1732411AbgIHT71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 15:59:27 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:43110 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730456AbgIHPfi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:35:46 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 088E5HaY155667;
-        Tue, 8 Sep 2020 10:16:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=JMbH8samJLb5sy2XzpgZzo3gwfoR4Or5sHtVMIqHhLs=;
- b=NJ3URzpdswVooPaI2LHOaXu6ju+Ngmf2INx7IYktjmTAF583iqpKuti7BeOKDXf5dvjb
- DFU6oNAIttt5W97m8sP5q85mhtK8i+n1ItawNxhKl5O2wjjq4k9mXoPw5SqlXxavUX61
- DbY/EivnZmwZCJBJpbRxTSf59ig7WVFjsDjsZEQGKPiRyE8MJKsL2Z3Am3we93opJ+Lg
- jn3JNhFff4CDPtZ//sFEUOiYHH8m3x+zIMXGVLVBJKTIpwCGjvScInnPzqoa6ADDieUI
- XzPpVgnJ/wbqjo+1fcfB9iO+uJ5ZVGEMnbTIksPgteUtaZ/IE90vq4p07FXbR5xH1s/v Vg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33eb5wh4vq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Sep 2020 10:16:06 -0400
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 088E5rqF157526;
-        Tue, 8 Sep 2020 10:16:06 -0400
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33eb5wh4sn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Sep 2020 10:16:06 -0400
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 088EDg8b007449;
-        Tue, 8 Sep 2020 14:16:01 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma04fra.de.ibm.com with ESMTP id 33cm5hhqvk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Sep 2020 14:16:01 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 088EFwKF37814660
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 8 Sep 2020 14:15:58 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1FB7CA4069;
-        Tue,  8 Sep 2020 14:15:58 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7DB9EA406D;
-        Tue,  8 Sep 2020 14:15:56 +0000 (GMT)
-Received: from oc3871087118.ibm.com (unknown [9.145.58.21])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Tue,  8 Sep 2020 14:15:56 +0000 (GMT)
-Date:   Tue, 8 Sep 2020 16:15:55 +0200
-From:   Alexander Gordeev <agordeev@linux.ibm.com>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-mm <linux-mm@kvack.org>, Paul Mackerras <paulus@samba.org>,
-        linux-sparc <sparclinux@vger.kernel.org>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Richard Weinberger <richard@nod.at>,
-        linux-x86 <x86@kernel.org>, Russell King <linux@armlinux.org.uk>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Jeff Dike <jdike@addtoit.com>,
-        linux-um <linux-um@lists.infradead.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-arm <linux-arm-kernel@lists.infradead.org>,
-        linux-power <linuxppc-dev@lists.ozlabs.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>
-Subject: Re: [RFC PATCH v2 2/3] mm: make pXd_addr_end() functions page-table
- entry aware
-Message-ID: <20200908141554.GA20558@oc3871087118.ibm.com>
-References: <20200907180058.64880-1-gerald.schaefer@linux.ibm.com>
- <20200907180058.64880-3-gerald.schaefer@linux.ibm.com>
- <31dfb3ed-a0cc-3024-d389-ab9bd19e881f@csgroup.eu>
- <20200908074638.GA19099@oc3871087118.ibm.com>
- <5d4f5546-afd0-0b8f-664d-700ae346b9ec@csgroup.eu>
+        Tue, 8 Sep 2020 11:35:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599579302;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=4kpP9XU0+UuUolyV891ejphwy2iWWA+w3mapvFltoqQ=;
+        b=M4/dhoVwiFPAC9o5sjMN/6iemYg0PzrppMy0JwjxQ3Iw75jvaWTTKMB92Ko/bRzKQQrOdc
+        Vgl1LEEvBKsIS1t4TuqNnzR9Yo7cwXcCeGVOLhsQPBTmeYwgsBSDs85ZstGzEuu0C98yMe
+        gB5l3P0PrZxVrTlhdUgKVKQTlKwkGy0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-537-cDJyKfWiMiKkwKb5iKQU2Q-1; Tue, 08 Sep 2020 10:22:16 -0400
+X-MC-Unique: cDJyKfWiMiKkwKb5iKQU2Q-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5DF0B10ABDA1;
+        Tue,  8 Sep 2020 14:22:14 +0000 (UTC)
+Received: from [10.36.115.46] (ovpn-115-46.ams2.redhat.com [10.36.115.46])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E9A917ED84;
+        Tue,  8 Sep 2020 14:22:11 +0000 (UTC)
+Subject: Re: [RFC PATCH 00/16] 1GB THP support on x86_64
+To:     Zi Yan <ziy@nvidia.com>
+Cc:     Roman Gushchin <guro@fb.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>, linux-mm@kvack.org,
+        Rik van Riel <riel@surriel.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        David Nellans <dnellans@nvidia.com>,
+        linux-kernel@vger.kernel.org
+References: <20200902180628.4052244-1-zi.yan@sent.com>
+ <20200903142300.bjq2um5y5nwocvar@box>
+ <20200903163020.GG60440@carbon.dhcp.thefacebook.com>
+ <8e677ead-206d-08dd-d73e-569bd3803e3b@redhat.com>
+ <7E20392E-5ED7-4C22-9555-F3BAABF3CBE9@nvidia.com>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
+ mQINBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
+ dBrn+lhhOYjjNefFQou6478faXE6o2AhmebqT4KiQoUQFV4R7y1KMEKoSyy8hQaK1umALTdL
+ QZLQMzNE74ap+GDK0wnacPQFpcG1AE9RMq3aeErY5tujekBS32jfC/7AnH7I0v1v1TbbK3Gp
+ XNeiN4QroO+5qaSr0ID2sz5jtBLRb15RMre27E1ImpaIv2Jw8NJgW0k/D1RyKCwaTsgRdwuK
+ Kx/Y91XuSBdz0uOyU/S8kM1+ag0wvsGlpBVxRR/xw/E8M7TEwuCZQArqqTCmkG6HGcXFT0V9
+ PXFNNgV5jXMQRwU0O/ztJIQqsE5LsUomE//bLwzj9IVsaQpKDqW6TAPjcdBDPLHvriq7kGjt
+ WhVhdl0qEYB8lkBEU7V2Yb+SYhmhpDrti9Fq1EsmhiHSkxJcGREoMK/63r9WLZYI3+4W2rAc
+ UucZa4OT27U5ZISjNg3Ev0rxU5UH2/pT4wJCfxwocmqaRr6UYmrtZmND89X0KigoFD/XSeVv
+ jwBRNjPAubK9/k5NoRrYqztM9W6sJqrH8+UWZ1Idd/DdmogJh0gNC0+N42Za9yBRURfIdKSb
+ B3JfpUqcWwE7vUaYrHG1nw54pLUoPG6sAA7Mehl3nd4pZUALHwARAQABtCREYXZpZCBIaWxk
+ ZW5icmFuZCA8ZGF2aWRAcmVkaGF0LmNvbT6JAlgEEwEIAEICGwMGCwkIBwMCBhUIAgkKCwQW
+ AgMBAh4BAheAAhkBFiEEG9nKrXNcTDpGDfzKTd4Q9wD/g1oFAl8Ox4kFCRKpKXgACgkQTd4Q
+ 9wD/g1oHcA//a6Tj7SBNjFNM1iNhWUo1lxAja0lpSodSnB2g4FCZ4R61SBR4l/psBL73xktp
+ rDHrx4aSpwkRP6Epu6mLvhlfjmkRG4OynJ5HG1gfv7RJJfnUdUM1z5kdS8JBrOhMJS2c/gPf
+ wv1TGRq2XdMPnfY2o0CxRqpcLkx4vBODvJGl2mQyJF/gPepdDfcT8/PY9BJ7FL6Hrq1gnAo4
+ 3Iv9qV0JiT2wmZciNyYQhmA1V6dyTRiQ4YAc31zOo2IM+xisPzeSHgw3ONY/XhYvfZ9r7W1l
+ pNQdc2G+o4Di9NPFHQQhDw3YTRR1opJaTlRDzxYxzU6ZnUUBghxt9cwUWTpfCktkMZiPSDGd
+ KgQBjnweV2jw9UOTxjb4LXqDjmSNkjDdQUOU69jGMUXgihvo4zhYcMX8F5gWdRtMR7DzW/YE
+ BgVcyxNkMIXoY1aYj6npHYiNQesQlqjU6azjbH70/SXKM5tNRplgW8TNprMDuntdvV9wNkFs
+ 9TyM02V5aWxFfI42+aivc4KEw69SE9KXwC7FSf5wXzuTot97N9Phj/Z3+jx443jo2NR34XgF
+ 89cct7wJMjOF7bBefo0fPPZQuIma0Zym71cP61OP/i11ahNye6HGKfxGCOcs5wW9kRQEk8P9
+ M/k2wt3mt/fCQnuP/mWutNPt95w9wSsUyATLmtNrwccz63W5Ag0EVcufkQEQAOfX3n0g0fZz
+ Bgm/S2zF/kxQKCEKP8ID+Vz8sy2GpDvveBq4H2Y34XWsT1zLJdvqPI4af4ZSMxuerWjXbVWb
+ T6d4odQIG0fKx4F8NccDqbgHeZRNajXeeJ3R7gAzvWvQNLz4piHrO/B4tf8svmRBL0ZB5P5A
+ 2uhdwLU3NZuK22zpNn4is87BPWF8HhY0L5fafgDMOqnf4guJVJPYNPhUFzXUbPqOKOkL8ojk
+ CXxkOFHAbjstSK5Ca3fKquY3rdX3DNo+EL7FvAiw1mUtS+5GeYE+RMnDCsVFm/C7kY8c2d0G
+ NWkB9pJM5+mnIoFNxy7YBcldYATVeOHoY4LyaUWNnAvFYWp08dHWfZo9WCiJMuTfgtH9tc75
+ 7QanMVdPt6fDK8UUXIBLQ2TWr/sQKE9xtFuEmoQGlE1l6bGaDnnMLcYu+Asp3kDT0w4zYGsx
+ 5r6XQVRH4+5N6eHZiaeYtFOujp5n+pjBaQK7wUUjDilPQ5QMzIuCL4YjVoylWiBNknvQWBXS
+ lQCWmavOT9sttGQXdPCC5ynI+1ymZC1ORZKANLnRAb0NH/UCzcsstw2TAkFnMEbo9Zu9w7Kv
+ AxBQXWeXhJI9XQssfrf4Gusdqx8nPEpfOqCtbbwJMATbHyqLt7/oz/5deGuwxgb65pWIzufa
+ N7eop7uh+6bezi+rugUI+w6DABEBAAGJAjwEGAEIACYCGwwWIQQb2cqtc1xMOkYN/MpN3hD3
+ AP+DWgUCXw7HsgUJEqkpoQAKCRBN3hD3AP+DWrrpD/4qS3dyVRxDcDHIlmguXjC1Q5tZTwNB
+ boaBTPHSy/Nksu0eY7x6HfQJ3xajVH32Ms6t1trDQmPx2iP5+7iDsb7OKAb5eOS8h+BEBDeq
+ 3ecsQDv0fFJOA9ag5O3LLNk+3x3q7e0uo06XMaY7UHS341ozXUUI7wC7iKfoUTv03iO9El5f
+ XpNMx/YrIMduZ2+nd9Di7o5+KIwlb2mAB9sTNHdMrXesX8eBL6T9b+MZJk+mZuPxKNVfEQMQ
+ a5SxUEADIPQTPNvBewdeI80yeOCrN+Zzwy/Mrx9EPeu59Y5vSJOx/z6OUImD/GhX7Xvkt3kq
+ Er5KTrJz3++B6SH9pum9PuoE/k+nntJkNMmQpR4MCBaV/J9gIOPGodDKnjdng+mXliF3Ptu6
+ 3oxc2RCyGzTlxyMwuc2U5Q7KtUNTdDe8T0uE+9b8BLMVQDDfJjqY0VVqSUwImzTDLX9S4g/8
+ kC4HRcclk8hpyhY2jKGluZO0awwTIMgVEzmTyBphDg/Gx7dZU1Xf8HFuE+UZ5UDHDTnwgv7E
+ th6RC9+WrhDNspZ9fJjKWRbveQgUFCpe1sa77LAw+XFrKmBHXp9ZVIe90RMe2tRL06BGiRZr
+ jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
+ WNyWQQ==
+Organization: Red Hat GmbH
+Message-ID: <32e979c4-68c0-f309-d9d7-d274724bd23e@redhat.com>
+Date:   Tue, 8 Sep 2020 16:22:11 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5d4f5546-afd0-0b8f-664d-700ae346b9ec@csgroup.eu>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-08_07:2020-09-08,2020-09-08 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxscore=0
- suspectscore=0 bulkscore=0 phishscore=0 mlxlogscore=999 clxscore=1015
- priorityscore=1501 impostorscore=0 lowpriorityscore=0 malwarescore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009080133
+In-Reply-To: <7E20392E-5ED7-4C22-9555-F3BAABF3CBE9@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 08, 2020 at 10:16:49AM +0200, Christophe Leroy wrote:
-> >Yes, and also two more sources :/
-> >	arch/powerpc/mm/kasan/8xx.c
-> >	arch/powerpc/mm/kasan/kasan_init_32.c
-> >
-> >But these two are not quite obvious wrt pgd_addr_end() used
-> >while traversing pmds. Could you please clarify a bit?
-> >
-> >
-> >diff --git a/arch/powerpc/mm/kasan/8xx.c b/arch/powerpc/mm/kasan/8xx.c
-> >index 2784224..89c5053 100644
-> >--- a/arch/powerpc/mm/kasan/8xx.c
-> >+++ b/arch/powerpc/mm/kasan/8xx.c
-> >@@ -15,8 +15,8 @@
-> >  	for (k_cur = k_start; k_cur != k_end; k_cur = k_next, pmd += 2, block += SZ_8M) {
-> >  		pte_basic_t *new;
-> >-		k_next = pgd_addr_end(k_cur, k_end);
-> >-		k_next = pgd_addr_end(k_next, k_end);
-> >+		k_next = pmd_addr_end(k_cur, k_end);
-> >+		k_next = pmd_addr_end(k_next, k_end);
+On 08.09.20 16:05, Zi Yan wrote:
+> On 8 Sep 2020, at 7:57, David Hildenbrand wrote:
 > 
-> No, I don't think so.
-> On powerpc32 we have only two levels, so pgd and pmd are more or
-> less the same.
-> But pmd_addr_end() as defined in include/asm-generic/pgtable-nopmd.h
-> is a no-op, so I don't think it will work.
+>> On 03.09.20 18:30, Roman Gushchin wrote:
+>>> On Thu, Sep 03, 2020 at 05:23:00PM +0300, Kirill A. Shutemov wrote:
+>>>> On Wed, Sep 02, 2020 at 02:06:12PM -0400, Zi Yan wrote:
+>>>>> From: Zi Yan <ziy@nvidia.com>
+>>>>>
+>>>>> Hi all,
+>>>>>
+>>>>> This patchset adds support for 1GB THP on x86_64. It is on top of
+>>>>> v5.9-rc2-mmots-2020-08-25-21-13.
+>>>>>
+>>>>> 1GB THP is more flexible for reducing translation overhead and increasing the
+>>>>> performance of applications with large memory footprint without application
+>>>>> changes compared to hugetlb.
+>>>>
+>>>> This statement needs a lot of justification. I don't see 1GB THP as viable
+>>>> for any workload. Opportunistic 1GB allocation is very questionable
+>>>> strategy.
+>>>
+>>> Hello, Kirill!
+>>>
+>>> I share your skepticism about opportunistic 1 GB allocations, however it might be useful
+>>> if backed by an madvise() annotations from userspace application. In this case,
+>>> 1 GB THPs might be an alternative to 1 GB hugetlbfs pages, but with a more convenient
+>>> interface.
+>>
+>> I have concerns if we would silently use 1~GB THPs in most scenarios
+>> where be would have used 2~MB THP. I'd appreciate a trigger to
+>> explicitly enable that - MADV_HUGEPAGE is not sufficient because some
+>> applications relying on that assume that the THP size will be 2~MB
+>> (especially, if you want sparse, large VMAs).
 > 
-> It is likely that this function should iterate on pgd, then you get
-> pmd = pmd_offset(pud_offset(p4d_offset(pgd)));
+> This patchset is not intended to silently use 1GB THP in place of 2MB THP.
+> First of all, there is a knob /sys/kernel/mm/transparent_hugepage/enable_1GB
+> to enable 1GB THP explicitly. Also, 1GB THP is allocated from a reserved CMA
+> region (although I had alloc_contig_pages as a fallback, which can be removed
+> in next version), so users need to add hugepage_cma=nG kernel parameter to
+> enable 1GB THP allocation. If a finer control is necessary, we can add
+> a new MADV_HUGEPAGE_1GB for 1GB THP.
 
-It looks like the code iterates over single pmd table while using
-pgd_addr_end() only to skip all the middle levels and bail out
-from the loop.
+Thanks for the information - I would have loved to see important
+information like that (esp. how to use) in the cover letter.
 
-I would be wary for switching from pmds to pgds, since we are
-trying to minimize impact (especially functional) and the
-rework does not seem that obvious.
+So what you propose is (excluding alloc_contig_pages()) really just
+automatically using (previously reserved) 1GB huge pages as 1GB THP
+instead of explicitly using them in an application using hugetlbfs.
+Still, not convinced how helpful that actually is - most certainly you
+really want a mechanism to control this per application (+ maybe make
+the application indicate actual ranges where it makes sense - but then
+you can directly modify the application to use hugetlbfs).
 
-Assuming pmd and pgd are the same would actually such approach
-work for now?
+I guess the interesting thing of this approach is that we can
+mix-and-match THP of differing granularity within a single mapping -
+whereby a hugetlbfs allocation would fail in case there isn't sufficient
+1GB pages available. However, there are no guarantees for applications
+anymore (thinking about RT KVM and similar, we really want gigantic
+pages and cannot tolerate falling back to smaller granularity).
 
-diff --git a/arch/powerpc/mm/kasan/8xx.c b/arch/powerpc/mm/kasan/8xx.c
-index 2784224..94466cc 100644
---- a/arch/powerpc/mm/kasan/8xx.c
-+++ b/arch/powerpc/mm/kasan/8xx.c
-@@ -15,8 +15,8 @@
- 	for (k_cur = k_start; k_cur != k_end; k_cur = k_next, pmd += 2, block += SZ_8M) {
- 		pte_basic_t *new;
- 
--		k_next = pgd_addr_end(k_cur, k_end);
--		k_next = pgd_addr_end(k_next, k_end);
-+		k_next = pgd_addr_end(__pgd(pmd_val(*pmd)), k_cur, k_end);
-+		k_next = pgd_addr_end(__pgd(pmd_val(*(pmd + 1))), k_next, k_end);
- 		if ((void *)pmd_page_vaddr(*pmd) != kasan_early_shadow_pte)
- 			continue;
- 
-diff --git a/arch/powerpc/mm/kasan/kasan_init_32.c b/arch/powerpc/mm/kasan/kasan_init_32.c
-index fb29404..c0bcd64 100644
---- a/arch/powerpc/mm/kasan/kasan_init_32.c
-+++ b/arch/powerpc/mm/kasan/kasan_init_32.c
-@@ -38,7 +38,7 @@ int __init kasan_init_shadow_page_tables(unsigned long k_start, unsigned long k_
- 	for (k_cur = k_start; k_cur != k_end; k_cur = k_next, pmd++) {
- 		pte_t *new;
- 
--		k_next = pgd_addr_end(k_cur, k_end);
-+		k_next = pgd_addr_end(__pgd(pmd_val(*pmd)), k_cur, k_end);
- 		if ((void *)pmd_page_vaddr(*pmd) != kasan_early_shadow_pte)
- 			continue;
- 
-@@ -196,7 +196,7 @@ void __init kasan_early_init(void)
- 	kasan_populate_pte(kasan_early_shadow_pte, PAGE_KERNEL);
- 
- 	do {
--		next = pgd_addr_end(addr, end);
-+		next = pgd_addr_end(__pgd(pmd_val(*pmd)), addr, end);
- 		pmd_populate_kernel(&init_mm, pmd, kasan_early_shadow_pte);
- 	} while (pmd++, addr = next, addr != end);
- 
+What are intended use cases/applications that could benefit? I doubt
+databases and virtualization are really a good fit - they know how to
+handle hugetlbfs just fine.
 
-Alternatively we could pass invalid pgd to keep the code structure
-intact, but that of course is less nice.
+-- 
+Thanks,
 
-Thanks!
+David / dhildenb
 
-> Christophe
