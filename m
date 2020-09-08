@@ -2,70 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED944261CB9
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:25:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 738F3261C05
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:13:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732153AbgIHTZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:25:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54602 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731078AbgIHQAj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:00:39 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B79EDC06123D
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 08:26:49 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f10bf00716ea70263de84d4.dip0.t-ipconnect.de [IPv6:2003:ec:2f10:bf00:716e:a702:63de:84d4])
+        id S1731537AbgIHTNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 15:13:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52184 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731216AbgIHQFW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 12:05:22 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 6BF651EC0284;
-        Tue,  8 Sep 2020 17:25:45 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1599578745;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=Tnjt7ngho1DKnqWxjc7ecHrXFfdKVeNz1CnHxEHCMvM=;
-        b=d5Ro0OR8lEypRyNqOEG+7RqAkGUIpkToBaG9EcdUKiOm13l5E+i8kwKPebPqGcV/FWy7zR
-        V9jaIgvktD5RJPSU9uPiSkdOLmdWBctfYF9CKhVB/uH/38SfNFRJ9XTk4tnYCKdaLIjcY3
-        PBwOnUOvN8Vt8gO7Y4CzFMRPclXBDs4=
-Date:   Tue, 8 Sep 2020 17:25:39 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Luck, Tony" <tony.luck@intel.com>
-Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH] x86/mce: Make mce_rdmsrl() do a plain RDMSR only
-Message-ID: <20200908152539.GE25236@zn.tnic>
-References: <20200906212130.GA28456@zn.tnic>
- <20200907200622.GA28517@agluck-desk2.amr.corp.intel.com>
- <20200908094650.GA25236@zn.tnic>
- <20200908100837.GC25236@zn.tnic>
- <c845adaad2414e5ba0bc74a51a1d0134@intel.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 783ED223FB;
+        Tue,  8 Sep 2020 15:45:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599579952;
+        bh=FylbTEiD/DWhvOUoe0WCFuShSIlax8Y8+fievbYrx4M=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=sY4H5PXP63ku9hSmDKToYKpgEDyVn1zby9PuV67dxmMniat1Aqb1BQ+ykYs5s06tF
+         UGtxVVhCrbV3zzaPQ37B98T4f4OMKzdhBB8XRcPGnmMoxnRNIO2qh+R1Qn9xuD2+Ys
+         jY3BuDKAkQhJ7X3NMKVGM30vR89MO+GJog3rKAwU=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Wenbin Mei <wenbin.mei@mediatek.com>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH 5.4 099/129] arm64: dts: mt7622: add reset node for mmc device
+Date:   Tue,  8 Sep 2020 17:25:40 +0200
+Message-Id: <20200908152234.752514916@linuxfoundation.org>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200908152229.689878733@linuxfoundation.org>
+References: <20200908152229.689878733@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <c845adaad2414e5ba0bc74a51a1d0134@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 08, 2020 at 03:07:05PM +0000, Luck, Tony wrote:
-> We can even get a nice diagnostic message since the handler
-> has access to "regs". It can print which MSR (regs->cx) and
-> where it happened (regs->ip).
-> 
-> Which sounds like you might want a specific ex_handler_rdmsr
-> function rather than a generic ex_handler_panic.
-> 
-> Maybe same deal for wrmsr() too? That would also print edx:eax
-> so you could see what was being written.
+From: Wenbin Mei <wenbin.mei@mediatek.com>
 
-Sounds good. Lemme try to come up with something these days.
+commit d6f6cbeee4e5ee6976792851e0461c19f1ede864 upstream.
 
-Thx.
+This commit adds reset node for mmc device.
 
--- 
-Regards/Gruss,
-    Boris.
+Cc: <stable@vger.kernel.org> # v5.4+
+Fixes: 966580ad236e ("mmc: mediatek: add support for MT7622 SoC")
+Signed-off-by: Wenbin Mei <wenbin.mei@mediatek.com>
+Tested-by: Frank Wunderlich <frank-w@public-files.de>
+Acked-by: Matthias Brugger <matthias.bgg@gmail.com>
+Link: https://lore.kernel.org/r/20200814014346.6496-3-wenbin.mei@mediatek.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-https://people.kernel.org/tglx/notes-about-netiquette
+---
+ arch/arm64/boot/dts/mediatek/mt7622.dtsi |    2 ++
+ 1 file changed, 2 insertions(+)
+
+--- a/arch/arm64/boot/dts/mediatek/mt7622.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt7622.dtsi
+@@ -686,6 +686,8 @@
+ 		clocks = <&pericfg CLK_PERI_MSDC30_0_PD>,
+ 			 <&topckgen CLK_TOP_MSDC50_0_SEL>;
+ 		clock-names = "source", "hclk";
++		resets = <&pericfg MT7622_PERI_MSDC0_SW_RST>;
++		reset-names = "hrst";
+ 		status = "disabled";
+ 	};
+ 
+
+
