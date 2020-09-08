@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 142C626170F
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:24:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 369892616B8
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:17:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729296AbgIHRYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 13:24:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58192 "EHLO mail.kernel.org"
+        id S1732028AbgIHRRW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 13:17:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58440 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731740AbgIHQSC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:18:02 -0400
+        id S1731763AbgIHQS0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 12:18:26 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0DDCE247FE;
-        Tue,  8 Sep 2020 15:43:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A3F4F24817;
+        Tue,  8 Sep 2020 15:43:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599579822;
-        bh=yQDsG4Dukt9Zl7PbICuxCz2UQrfZce1uCsChE6idIWQ=;
+        s=default; t=1599579825;
+        bh=5ePKBMfeaj0yn28QZxRNSBjZOD5l6c9FmLawo2B3Y3Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WghZCykpfBygmcevXnNI5n+paTBdt9qd3roSQIJtbsGHUM7KHc75qN95QOfwHNkFx
-         YBSbtvXSd3KgFox2J6+mRTr7P8AZGaUITAf0uEFplUJc/3+KMly25JWLXvP32hUYVp
-         TCiLWsy1SPkpYZy5UBhBwwgOrEdQaFXAZvhuAmf8=
+        b=y5O/PebHiH3mN0kmHPHZRNdhdaZ6LqOigNKXDJvo/xAJJeJCnZf6YUn9leyJCAHnD
+         3N88fYuPZn1qJXJXWJxA1p03/TwyNayVFzsPKAynqdwVmqanhEyz+ejqtzsOcDN+R1
+         qPQjvkxRqzdKM+SWp2MPbp1i5S739Ibb4hei+GFM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wayne Lin <Wayne.Lin@amd.com>,
-        Hersen Wu <hersenxs.wu@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
         Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 018/129] drm/amd/display: Retry AUX write when fail occurs
-Date:   Tue,  8 Sep 2020 17:24:19 +0200
-Message-Id: <20200908152230.613105567@linuxfoundation.org>
+Subject: [PATCH 5.4 019/129] drm/amd/display: Fix memleak in amdgpu_dm_mode_config_init
+Date:   Tue,  8 Sep 2020 17:24:20 +0200
+Message-Id: <20200908152230.665995175@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200908152229.689878733@linuxfoundation.org>
 References: <20200908152229.689878733@linuxfoundation.org>
@@ -46,40 +44,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wayne Lin <Wayne.Lin@amd.com>
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-[ Upstream commit ef67d792a2fc578319399f605fbec2f99ecc06ea ]
+[ Upstream commit b67a468a4ccef593cd8df6a02ba3d167b77f0c81 ]
 
-[Why]
-In dm_dp_aux_transfer() now, we forget to handle AUX_WR fail cases. We
-suppose every write wil get done successfully and hence some AUX
-commands might not sent out indeed.
+When amdgpu_display_modeset_create_props() fails, state and
+state->context should be freed to prevent memleak. It's the
+same when amdgpu_dm_audio_init() fails.
 
-[How]
-Check if AUX_WR success. If not, retry it.
-
-Signed-off-by: Wayne Lin <Wayne.Lin@amd.com>
-Reviewed-by: Hersen Wu <hersenxs.wu@amd.com>
-Acked-by: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c
-index 28a6c7b2ef4bb..2f858507ca702 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c
-@@ -101,7 +101,7 @@ static ssize_t dm_dp_aux_transfer(struct drm_dp_aux *aux,
- 	result = dc_link_aux_transfer_raw(TO_DM_AUX(aux)->ddc_service, &payload,
- 				      &operation_result);
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+index 3d131f21e5ab2..60e50181f6d39 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+@@ -2043,12 +2043,18 @@ static int amdgpu_dm_mode_config_init(struct amdgpu_device *adev)
+ 				    &dm_atomic_state_funcs);
  
--	if (payload.write)
-+	if (payload.write && result >= 0)
- 		result = msg->size;
+ 	r = amdgpu_display_modeset_create_props(adev);
+-	if (r)
++	if (r) {
++		dc_release_state(state->context);
++		kfree(state);
+ 		return r;
++	}
  
- 	if (result < 0)
+ 	r = amdgpu_dm_audio_init(adev);
+-	if (r)
++	if (r) {
++		dc_release_state(state->context);
++		kfree(state);
+ 		return r;
++	}
+ 
+ 	return 0;
+ }
 -- 
 2.25.1
 
