@@ -2,65 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B823261310
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 16:57:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2993261312
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 16:58:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730085AbgIHOzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 10:55:48 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:56758 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729027AbgIHOYw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1729670AbgIHO6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 10:58:25 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:31254 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728709AbgIHOYw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 8 Sep 2020 10:24:52 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 973783CAAE98B997207F;
-        Tue,  8 Sep 2020 22:04:42 +0800 (CST)
-Received: from huawei.com (10.175.113.133) by DGGEMS404-HUB.china.huawei.com
- (10.3.19.204) with Microsoft SMTP Server id 14.3.487.0; Tue, 8 Sep 2020
- 22:04:36 +0800
-From:   Wang Hai <wanghai38@huawei.com>
-To:     <aelior@marvell.com>, <skalluru@marvell.com>,
-        <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <GR-everest-linux-l2@marvell.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH net-next] bnx2x: Fix some kernel-doc warnings
-Date:   Tue, 8 Sep 2020 22:01:58 +0800
-Message-ID: <20200908140158.23540-1-wanghai38@huawei.com>
-X-Mailer: git-send-email 2.17.1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599575059;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cIq/H7MU4yjMR3Dxb1c5M85cjyHgWOfijzmJ6gh8S4M=;
+        b=fo+A47xPhiW96JZbwqFxp/Yo4Q4qOQH9ya8gox+KLB8eW0c61QRitn+kP4UAOZxNE+NICz
+        jHUwj+FCNAyrZPxYer+VPiVb+Fglw7tCKGDD310ze/PnjINQ2FTo5jZkFYo34az9Zc7hm9
+        v3raxZJwkk0El2F3RpIJWU2ik6WLP20=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-194-6pVjX6CxMjKXGpBjd2Lk0w-1; Tue, 08 Sep 2020 10:21:59 -0400
+X-MC-Unique: 6pVjX6CxMjKXGpBjd2Lk0w-1
+Received: by mail-ed1-f71.google.com with SMTP id z11so6285999edj.3
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 07:21:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=cIq/H7MU4yjMR3Dxb1c5M85cjyHgWOfijzmJ6gh8S4M=;
+        b=DSE9Va6jJ4whXRxnP2PkLDN962WQDdbdqSpo1NjvkbwTMWNObhBY96viJaXOjsoVe/
+         4RyB8PglTwDQUe0kKVZD0lB9AjbD8Hx8pUTw2pXQOZ9yjOX7LkCW+ndFGGbVCVWhv1xM
+         WeX2HPdt6Y2L6fhr09MGoNx055Lf6O6kRzfS/BZyNob4YfyAsXXkkoOJZIagDB+sxCP0
+         JI5o1sqnVYUIMgN69hG6kLG6uRl+mK4NG9zfKerwrmAAri/JQ0cQoLYoi9o2KBledrCm
+         bYqCpUK9K1WIBEJOUeh+0gdftpvI3aCseD0El5SjwTg+K++sFpfubv64y6NNwnA6SgMU
+         xxeQ==
+X-Gm-Message-State: AOAM531H6ajTCh23ABlIqzlJQLd4CWOeXugddstZdxfJLOIg7JrflW+2
+        gqs2qGofxJ2Ox8TGT7V6XZwOzCO1Tf4HNtTC9etngsDQGkdtLrPUFNo2ygNFbz9nO4+RsN0LYdc
+        NAv7qDlvCAB9u4579qP9dQTos
+X-Received: by 2002:a17:906:facb:: with SMTP id lu11mr27438266ejb.249.1599574918086;
+        Tue, 08 Sep 2020 07:21:58 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwcrrxhjakvShyUktbSgcQRcpXgRjHqw8S3hbu9iZfrSPWQtWOzrRv0FR0qtNZ9apnBfLejsA==
+X-Received: by 2002:a17:906:facb:: with SMTP id lu11mr27438244ejb.249.1599574917844;
+        Tue, 08 Sep 2020 07:21:57 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:5f70:b94c:ca5f:28f2? ([2001:b07:6468:f312:5f70:b94c:ca5f:28f2])
+        by smtp.gmail.com with ESMTPSA id i15sm10063285edf.82.2020.09.08.07.21.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Sep 2020 07:21:57 -0700 (PDT)
+Subject: Re: [PATCH] Rescan the entire target on transport reset when LUN is 0
+To:     Matej Genci <matej.genci@nutanix.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc:     "mst@redhat.com" <mst@redhat.com>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "stefanha@redhat.com" <stefanha@redhat.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        Felipe Franciosi <felipe@nutanix.com>
+References: <CY4PR02MB33354370E0A81E75DD9DFE74FB520@CY4PR02MB3335.namprd02.prod.outlook.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <200ad446-1242-9555-96b6-4fa94ee27ec7@redhat.com>
+Date:   Tue, 8 Sep 2020 16:22:00 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.113.133]
-X-CFilter-Loop: Reflected
+In-Reply-To: <CY4PR02MB33354370E0A81E75DD9DFE74FB520@CY4PR02MB3335.namprd02.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following W=1 kernel build warning(s):
+On 28/08/20 14:21, Matej Genci wrote:
+> VirtIO 1.0 spec says
+>     The removed and rescan events ... when sent for LUN 0, they MAY
+>     apply to the entire target so the driver can ask the initiator
+>     to rescan the target to detect this.
+> 
+> This change introduces the behaviour described above by scanning the
+> entire scsi target when LUN is set to 0. This is both a functional and a
+> performance fix. It aligns the driver with the spec and allows control
+> planes to hotplug targets with large numbers of LUNs without having to
+> request a RESCAN for each one of them.
+> 
+> Signed-off-by: Matej Genci <matej@nutanix.com>
+> Suggested-by: Felipe Franciosi <felipe@nutanix.com>
+> ---
+>  drivers/scsi/virtio_scsi.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/scsi/virtio_scsi.c b/drivers/scsi/virtio_scsi.c
+> index bfec84aacd90..a4b9bc7b4b4a 100644
+> --- a/drivers/scsi/virtio_scsi.c
+> +++ b/drivers/scsi/virtio_scsi.c
+> @@ -284,7 +284,12 @@ static void virtscsi_handle_transport_reset(struct virtio_scsi *vscsi,
+>  
+>  	switch (virtio32_to_cpu(vscsi->vdev, event->reason)) {
+>  	case VIRTIO_SCSI_EVT_RESET_RESCAN:
+> -		scsi_add_device(shost, 0, target, lun);
+> +		if (lun == 0) {
+> +			scsi_scan_target(&shost->shost_gendev, 0, target,
+> +					 SCAN_WILD_CARD, SCSI_SCAN_INITIAL);
+> +		} else {
+> +			scsi_add_device(shost, 0, target, lun);
+> +		}
+>  		break;
+>  	case VIRTIO_SCSI_EVT_RESET_REMOVED:
+>  		sdev = scsi_device_lookup(shost, 0, target, lun);
+> 
 
-drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.c:4238: warning: Excess function parameter 'netdev' description in 'bnx2x_setup_tc'
-drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.c:4238: warning: Excess function parameter 'tc' description in 'bnx2x_setup_tc'
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
----
- drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.c b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.c
-index e3d92e4f2193..2c0ccd4fba9b 100644
---- a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.c
-+++ b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.c
-@@ -4229,8 +4229,8 @@ void bnx2x_get_c2s_mapping(struct bnx2x *bp, u8 *c2s_map, u8 *c2s_default)
- /**
-  * bnx2x_setup_tc - routine to configure net_device for multi tc
-  *
-- * @netdev: net device to configure
-- * @tc: number of traffic classes to enable
-+ * @dev: net device to configure
-+ * @num_tc: number of traffic classes to enable
-  *
-  * callback connected to the ndo_setup_tc function pointer
-  */
--- 
-2.17.1
+Acked-by: Paolo Bonzini <pbonzini@redhat.com>
 
