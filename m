@@ -2,478 +2,325 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58D63261D79
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:38:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67F15261F2E
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 22:00:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730827AbgIHThf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:37:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730971AbgIHP4x (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:56:53 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 714D0C06123A
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 06:29:39 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id b79so17178081wmb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 06:29:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=GJ8f45V/YQ+Eng4fxZFpuD78DaTJ/jouOJPgvPqWatM=;
-        b=f0ukX8fwPzIqcAj9jAjsHyPPhe4xG58+3ZKxfhlG9kjhYN5vVOOSEWSeeGc0rcC+bb
-         s0k5bpWJACmfUERh+ptbvJAbSZoMxC/pzxVM7tWH10OeavQ3p93BRNV+J/0pzKu4jVcL
-         Qu99W9zF6DDZIVCMOTOQ03CCW6Xy9ioATE4SzAx+sEUSKRouw4Ytsup8RrzjQgSGw5Vh
-         j73PawIRIfN1Q08LH9ZLGu6ODpqWqGUVNxoVMxO9UJ5j6w0wncEDmNfAJnZcJYpC8Zwm
-         FMCrdZwmt+RA5+bk0/lopZLWMrYcea575WC1KQ9XvtHILF1DTXAOnhWiHu6PSC845fm2
-         5JEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=GJ8f45V/YQ+Eng4fxZFpuD78DaTJ/jouOJPgvPqWatM=;
-        b=h/JxfQkW/Fdl6Hh8IbeaH8ueSLYQOuD8Le2OYJQg2OMWmJuFRE31sYkalHS539D+xu
-         svcfpi2vEQzdq+8nxHBrUAZ9NK9J/CsBWy8d5MET75yEmtcrZNfW1/KPpiz35Qb914cs
-         QfgPbqLAIiu2N4gfapCU3gJYheW+/yV2lGujsjvr0iGma0sDOqNX6GTBzk4MR3PzMqiE
-         sVluvlKrwNKEw2ax1d3xGlKvmMkda+u3FRlR5ugVqiB3UEnZgdRq1+W7q3KKjS/4Nw7R
-         uRQqI7dDuwKzHjAeQ1CR2WvC7qqdv5skUHcLVRAaq9vW6YjdDvEOeXeoU7WHZqEe5ViA
-         hsow==
-X-Gm-Message-State: AOAM532bHnuRezer53kWfGQiGG2uh/tYBiCVuRS2Jz4bQSh/GdxWtWnO
-        +if0FZfjAY2xgfhTynJ+9oC4xg==
-X-Google-Smtp-Source: ABdhPJypEa53OzaHDX/+LCTq6rRzpTOD+oW/vOD+O8phED5GyB/dsYhfp3BKrZbR5mOjmBP6f20jsg==
-X-Received: by 2002:a1c:4d12:: with SMTP id o18mr4787212wmh.177.1599571777534;
-        Tue, 08 Sep 2020 06:29:37 -0700 (PDT)
-Received: from dell ([91.110.221.179])
-        by smtp.gmail.com with ESMTPSA id t16sm34490237wrm.57.2020.09.08.06.29.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Sep 2020 06:29:36 -0700 (PDT)
-Date:   Tue, 8 Sep 2020 14:29:34 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>
-Cc:     linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Mark Brown <broonie@kernel.org>, allen <allen.chen@ite.com.tw>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org, linux-pwm@vger.kernel.org,
-        linux-rtc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Heiko Stuebner <heiko@sntech.de>,
-        Josua Mayer <josua.mayer@jm0.eu>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        Arnd Bergmann <arnd@arndb.de>, Daniel Palmer <daniel@0x0f.com>
-Subject: Re: [PATCH v2 03/10] mfd: Add base driver for Netronix embedded
- controller
-Message-ID: <20200908132934.GT4400@dell>
-References: <20200905133230.1014581-1-j.neuschaefer@gmx.net>
- <20200905133230.1014581-4-j.neuschaefer@gmx.net>
+        id S1732437AbgIHUAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 16:00:21 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:53276 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730207AbgIHPf1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 11:35:27 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id D444FBCC89A828FA0E43;
+        Tue,  8 Sep 2020 21:32:26 +0800 (CST)
+Received: from localhost (10.174.151.129) by DGGEMS408-HUB.china.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Tue, 8 Sep 2020
+ 21:32:16 +0800
+From:   Ming Mao <maoming.maoming@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <kvm@vger.kernel.org>,
+        <linux-mm@kvack.org>, <alex.williamson@redhat.com>,
+        <akpm@linux-foundation.org>
+CC:     <cohuck@redhat.com>, <jianjay.zhou@huawei.com>,
+        <weidong.huang@huawei.com>, <peterx@redhat.com>,
+        <aarcange@redhat.com>, <wangyunjian@huawei.com>,
+        Ming Mao <maoming.maoming@huawei.com>
+Subject: [PATCH V4 2/2] vfio: optimized for unpinning pages
+Date:   Tue, 8 Sep 2020 21:32:04 +0800
+Message-ID: <20200908133204.1338-3-maoming.maoming@huawei.com>
+X-Mailer: git-send-email 2.26.2.windows.1
+In-Reply-To: <20200908133204.1338-1-maoming.maoming@huawei.com>
+References: <20200908133204.1338-1-maoming.maoming@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200905133230.1014581-4-j.neuschaefer@gmx.net>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.151.129]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 05 Sep 2020, Jonathan Neuschäfer wrote:
+The pages are unpinned one by one in unpin_user_pages_dirty_lock().
+We add a new API unpin_user_hugetlb_pages_dirty_lock() which deletes
+the for loop to optimize this.
+If we want to unpin the hugetlb pages, all work can be done by a single
+operation to the head page in this API.
 
-> The Netronix embedded controller is a microcontroller found in some
-> e-book readers designed by the ODM Netronix, Inc. It contains RTC,
-> battery monitoring, system power management, and PWM functionality.
-> 
-> This driver implements register access and version detection.
-> 
-> Third-party hardware documentation is available at:
-> 
->   https://github.com/neuschaefer/linux/wiki/Netronix-MSP430-embedded-controller
-> 
-> The EC supports interrupts, but the driver doesn't make use of them so
-> far.
-> 
-> Signed-off-by: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
-> ---
-> 
-> v2:
-> - Add a description of the device to the patch text
-> - Unify spelling as 'Netronix embedded controller'.
->   'Netronix' is the proper name of the manufacturer, but 'embedded controller'
->   is just a label that I have assigned to the device.
-> - Switch to regmap, avoid regmap use in poweroff and reboot handlers.
->   Inspired by cf84dc0bb40f4 ("mfd: rn5t618: Make restart handler atomic safe")
-> - Use a list of known-working firmware versions instead of checking for a
->   known-incompatible version
-> - Prefix registers with NTXEC_REG_
-> - Define register values as constants
-> - Various style cleanups as suggested by Lee Jones
-> - Don't align = signs in struct initializers [Uwe Kleine-König]
-> - Don't use dev_dbg for an error message
-> - Explain sleep in poweroff handler
-> - Remove (struct ntxec).client
-> - Switch to .probe_new in i2c driver
-> - Add .remove callback
-> - Make CONFIG_MFD_NTXEC a tristate option
-> ---
->  drivers/mfd/Kconfig       |   7 ++
->  drivers/mfd/Makefile      |   1 +
->  drivers/mfd/ntxec.c       | 217 ++++++++++++++++++++++++++++++++++++++
->  include/linux/mfd/ntxec.h |  24 +++++
->  4 files changed, 249 insertions(+)
->  create mode 100644 drivers/mfd/ntxec.c
->  create mode 100644 include/linux/mfd/ntxec.h
-> 
-> diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-> index 33df0837ab415..bab999081f32d 100644
-> --- a/drivers/mfd/Kconfig
-> +++ b/drivers/mfd/Kconfig
-> @@ -978,6 +978,13 @@ config MFD_VIPERBOARD
->  	  You need to select the mfd cell drivers separately.
->  	  The drivers do not support all features the board exposes.
-> 
-> +config MFD_NTXEC
-> +	tristate "Netronix embedded controller"
+Signed-off-by: Ming Mao <maoming.maoming@huawei.com>
+---
+ drivers/vfio/vfio_iommu_type1.c | 90 +++++++++++++++++++++++++++-----
+ include/linux/mm.h              |  3 ++
+ mm/gup.c                        | 91 +++++++++++++++++++++++++++++++++
+ 3 files changed, 172 insertions(+), 12 deletions(-)
 
-Nit: "Embedded Controller (EC)"
-
-> +	depends on I2C && OF
-
-	depends on (I2C && OF) || COMPILE_TEST
-
-> +	help
-> +	  Say yes here if you want to support the embedded controller found in
-> +	  certain e-book readers designed by the ODM Netronix.
-> +
->  config MFD_RETU
->  	tristate "Nokia Retu and Tahvo multi-function device"
->  	select MFD_CORE
-> diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
-> index a60e5f835283e..236a8acd917a0 100644
-> --- a/drivers/mfd/Makefile
-> +++ b/drivers/mfd/Makefile
-> @@ -217,6 +217,7 @@ obj-$(CONFIG_MFD_INTEL_MSIC)	+= intel_msic.o
->  obj-$(CONFIG_MFD_INTEL_PMC_BXT)	+= intel_pmc_bxt.o
->  obj-$(CONFIG_MFD_PALMAS)	+= palmas.o
->  obj-$(CONFIG_MFD_VIPERBOARD)    += viperboard.o
-> +obj-$(CONFIG_MFD_NTXEC)		+= ntxec.o
->  obj-$(CONFIG_MFD_RC5T583)	+= rc5t583.o rc5t583-irq.o
->  obj-$(CONFIG_MFD_RK808)		+= rk808.o
->  obj-$(CONFIG_MFD_RN5T618)	+= rn5t618.o
-> diff --git a/drivers/mfd/ntxec.c b/drivers/mfd/ntxec.c
-> new file mode 100644
-> index 0000000000000..49cc4fa35b9fe
-> --- /dev/null
-> +++ b/drivers/mfd/ntxec.c
-> @@ -0,0 +1,217 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-
-Why 2 only?
-
-> +/*
-> + * The Netronix embedded controller is a microcontroller found in some
-> + * e-book readers designed by the ODM Netronix, Inc. It contains RTC,
-> + * battery monitoring, system power management, and PWM functionality.
-> + *
-> + * This driver implements register access, version detection, and system
-> + * power-off/reset.
-> + *
-> + * Copyright 2020 Jonathan Neuschäfer
-
-Email?
-
-> + */
-> +
-> +#include <asm/unaligned.h>
-> +#include <linux/delay.h>
-> +#include <linux/errno.h>
-> +#include <linux/i2c.h>
-> +#include <linux/mfd/ntxec.h>
-> +#include <linux/module.h>
-> +#include <linux/of_platform.h>
-> +#include <linux/pm.h>
-> +#include <linux/reboot.h>
-> +#include <linux/regmap.h>
-> +#include <linux/types.h>
-> +
-> +#define NTXEC_REG_VERSION	0x00
-> +#define NTXEC_REG_POWEROFF	0x50
-> +#define NTXEC_REG_POWERKEEP	0x70
-> +#define NTXEC_REG_RESET		0x90
-> +
-> +#define NTXEC_POWEROFF_VALUE	0x0100
-> +#define NTXEC_POWERKEEP_VALUE	0x0800
-> +#define NTXEC_RESET_VALUE	0xff00
-> +
-> +static struct i2c_client *poweroff_restart_client;
-> +
-> +static void ntxec_poweroff(void)
-> +{
-> +	int res;
-> +
-
-Remove this line please.
-
-> +	u8 buf[] = {
-> +		NTXEC_REG_POWEROFF,
-> +		(NTXEC_POWEROFF_VALUE >> 8) & 0xff,
-> +		NTXEC_POWEROFF_VALUE & 0xff,
-> +	};
-> +
-
-And this one.
-
-> +	struct i2c_msg msgs[] = {
-> +		{
-> +			.addr = poweroff_restart_client->addr,
-> +			.flags = 0,
-> +			.len = sizeof(buf),
-> +			.buf = buf
-> +		}
-> +	};
-> +
-> +	res = i2c_transfer(poweroff_restart_client->adapter, msgs, ARRAY_SIZE(msgs));
-> +
-
-And this one.
-
-> +	if (res < 0)
-> +		dev_alert(&poweroff_restart_client->dev, "Failed to power off (err = %d)\n", res);
-
-This looks way over 80 chars.
-
-Did you run checkpatch.pl?
-
-> +	/*
-> +	 * The time from the register write until the host CPU is powered off
-> +	 * has been observed to be about 2.5 to 3 seconds. Sleep long enough to
-> +	 * safely avoid returning from the poweroff handler.
-> +	 */
-> +	msleep(5000);
-> +}
-> +
-> +static int ntxec_restart(struct notifier_block *nb,
-> +			 unsigned long action, void *data)
-> +{
-> +	int res;
-> +
-> +	/*
-> +	 * NOTE: The lower half of the reset value is not sent, because sending
-> +	 * it causes an error
-> +	 */
-> +	u8 buf[] = {
-> +		NTXEC_REG_RESET,
-> +		(NTXEC_RESET_VALUE >> 8) & 0xff,
-> +	};
-> +
-> +	struct i2c_msg msgs[] = {
-> +		{
-> +			.addr = poweroff_restart_client->addr,
-> +			.flags = 0,
-> +			.len = sizeof(buf),
-> +			.buf = buf
-> +		}
-> +	};
-> +
-> +	res = i2c_transfer(poweroff_restart_client->adapter, msgs, ARRAY_SIZE(msgs));
-> +
-> +	if (res < 0)
-> +		dev_alert(&poweroff_restart_client->dev, "Failed to restart (err = %d)\n", res);
-> +
-> +	return NOTIFY_DONE;
-> +}
-
-All as above for this function.
-
-> +static struct notifier_block ntxec_restart_handler = {
-> +	.notifier_call = ntxec_restart,
-> +	.priority = 128
-> +};
-> +
-> +static const struct regmap_config regmap_config = {
-> +	.name = "ntxec",
-> +	.reg_bits = 8,
-> +	.val_bits = 16,
-> +	.cache_type = REGCACHE_NONE,
-> +	.val_format_endian = REGMAP_ENDIAN_BIG,
-> +};
-> +
-> +static const struct ntxec_info ntxec_known_versions[] = {
-> +	{ 0xd726 }, /* found in Kobo Aura */
-> +};
-> +
-> +static const struct ntxec_info *ntxec_lookup_info(u16 version)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(ntxec_known_versions); i++) {
-> +		const struct ntxec_info *info = &ntxec_known_versions[i];
-> +
-> +		if (info->version == version)
-> +			return info;
-> +	}
-> +
-> +	return NULL;
-> +}
-
-Wait, what?  This is over-engineered.
-
-Just have a look-up table (switch) of supported devices.
-
-> +static int ntxec_probe(struct i2c_client *client)
-> +{
-> +	struct ntxec *ec;
-> +	unsigned int version;
-> +	int res;
-> +
-> +	ec = devm_kmalloc(&client->dev, sizeof(*ec), GFP_KERNEL);
-> +	if (!ec)
-> +		return -ENOMEM;
-> +
-> +	ec->dev = &client->dev;
-> +
-> +	ec->regmap = devm_regmap_init_i2c(client, &regmap_config);
-> +	if (IS_ERR(ec->regmap)) {
-> +		dev_err(ec->dev, "Failed to set up regmap for device\n");
-> +		return res;
-> +	}
-> +
-> +	/* Determine the firmware version */
-> +	res = regmap_read(ec->regmap, NTXEC_REG_VERSION, &version);
-> +	if (res < 0) {
-> +		dev_err(ec->dev, "Failed to read firmware version number\n");
-> +		return res;
-> +	}
-> +	dev_info(ec->dev,
-> +		 "Netronix embedded controller version %04x detected.\n",
-> +		 version);
-> +
-> +	/* Bail out if we encounter an unknown firmware version */
-> +	ec->info = ntxec_lookup_info(version);
-> +	if (!ec->info)
-> +		return -EOPNOTSUPP;
-
-#define EOPNOTSUPP      95      /* Operation not supported on transport endpoint */
-
-I think you want:
-
-#define ENODEV          19      /* No such device */
-
-> +	if (of_device_is_system_power_controller(ec->dev->of_node)) {
-> +		/*
-> +		 * Set the 'powerkeep' bit. This is necessary on some boards
-> +		 * in order to keep the system running.
-> +		 */
-> +		res = regmap_write(ec->regmap, NTXEC_REG_POWERKEEP,
-> +				   NTXEC_POWERKEEP_VALUE);
-> +		if (res < 0)
-> +			return res;
-> +
-> +		/* Install poweroff handler */
-
-Don't think this comment is required.
-
-> +		WARN_ON(poweroff_restart_client);
-> +		poweroff_restart_client = client;
-> +		if (pm_power_off)
-> +			dev_err(ec->dev, "pm_power_off already assigned\n");
-> +		else
-> +			pm_power_off = ntxec_poweroff;
-> +
-> +		/* Install board reset handler */
-
-Nor this.
-
-> +		res = register_restart_handler(&ntxec_restart_handler);
-> +		if (res)
-> +			dev_err(ec->dev,
-> +				"Failed to register restart handler: %d\n", res);
-> +	}
-> +
-> +	i2c_set_clientdata(client, ec);
-> +
-> +	return devm_of_platform_populate(ec->dev);
-> +}
-> +
-> +static int ntxec_remove(struct i2c_client *i2c)
-
-Why do you call it 'client' in .probe, but 'i2c' in .remove?
-
-> +{
-> +	if (i2c == poweroff_restart_client) {
-> +		poweroff_restart_client = NULL;
-> +		pm_power_off = NULL;
-> +		unregister_restart_handler(&ntxec_restart_handler);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct of_device_id of_ntxec_match_table[] = {
-> +	{ .compatible = "netronix,ntxec", },
-> +	{}
-> +};
-> +
-> +static struct i2c_driver ntxec_driver = {
-> +	.driver = {
-> +		.name = "ntxec",
-> +		.of_match_table = of_ntxec_match_table,
-> +	},
-> +	.probe_new = ntxec_probe,
-> +	.remove = ntxec_remove,
-> +};
-> +module_i2c_driver(ntxec_driver);
-> diff --git a/include/linux/mfd/ntxec.h b/include/linux/mfd/ntxec.h
-> new file mode 100644
-> index 0000000000000..65e389af79da6
-> --- /dev/null
-> +++ b/include/linux/mfd/ntxec.h
-> @@ -0,0 +1,24 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/*
-> + * Copyright 2020 Jonathan Neuschäfer
-> + *
-> + * Register access and version information for the Netronix embedded
-> + * controller.
-> + */
-> +
-> +#ifndef NTXEC_H
-> +#define NTXEC_H
-> +
-> +#include <linux/types.h>
-> +
-> +struct ntxec_info {
-> +	u16 version;
-> +};
-> +
-> +struct ntxec {
-> +	struct device *dev;
-> +	struct regmap *regmap;
-
-> +	const struct ntxec_info *info;
-
-What is this used for?
-
-> +};
-> +
-> +#endif
-
+diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
+index 8c1dc5136..44fc5f16c 100644
+--- a/drivers/vfio/vfio_iommu_type1.c
++++ b/drivers/vfio/vfio_iommu_type1.c
+@@ -609,6 +609,26 @@ static long hugetlb_page_vaddr_get_pfn(struct mm_struct *mm, unsigned long vaddr
+ 	return ret;
+ }
+ 
++/*
++ * put pfns for a hugetlb page
++ * @start: the PAGE_SIZE-page we start to put,can be any page in this hugetlb page
++ * @npages: the number of PAGE_SIZE-pages to put
++ * @prot: IOMMU_READ/WRITE
++ */
++static int hugetlb_put_pfn(unsigned long start, unsigned long npages, int prot)
++{
++	struct page *page;
++
++	if (!pfn_valid(start))
++		return -EFAULT;
++
++	page = pfn_to_page(start);
++	if (!page || !PageHuge(page))
++		return -EINVAL;
++
++	return unpin_user_hugetlb_pages_dirty_lock(page, npages, prot & IOMMU_WRITE);
++}
++
+ static long vfio_pin_hugetlb_pages_remote(struct vfio_dma *dma, unsigned long vaddr,
+ 				  long npage, unsigned long *pfn_base,
+ 				  unsigned long limit)
+@@ -616,7 +636,7 @@ static long vfio_pin_hugetlb_pages_remote(struct vfio_dma *dma, unsigned long va
+ 	unsigned long pfn = 0;
+ 	long ret, pinned = 0, lock_acct = 0;
+ 	dma_addr_t iova = vaddr - dma->vaddr + dma->iova;
+-	long pinned_loop, i;
++	long pinned_loop;
+ 
+ 	/* This code path is only user initiated */
+ 	if (!current->mm)
+@@ -674,8 +694,7 @@ static long vfio_pin_hugetlb_pages_remote(struct vfio_dma *dma, unsigned long va
+ 
+ 		if (!dma->lock_cap &&
+ 		    current->mm->locked_vm + lock_acct > limit) {
+-			for (i = 0; i < pinned_loop; i++)
+-				put_pfn(pfn++, dma->prot);
++			hugetlb_put_pfn(pfn, pinned_loop, dma->prot);
+ 			pr_warn("%s: RLIMIT_MEMLOCK (%ld) exceeded\n",
+ 				__func__, limit << PAGE_SHIFT);
+ 			ret = -ENOMEM;
+@@ -695,6 +714,40 @@ static long vfio_pin_hugetlb_pages_remote(struct vfio_dma *dma, unsigned long va
+ 	return pinned;
+ }
+ 
++static long vfio_unpin_hugetlb_pages_remote(struct vfio_dma *dma, dma_addr_t iova,
++					    unsigned long pfn, long npage,
++					    bool do_accounting)
++{
++	long unlocked = 0, locked = 0;
++	long i, unpinned;
++
++	for (i = 0; i < npage; i += unpinned, iova += unpinned * PAGE_SIZE) {
++		if (!is_hugetlb_page(pfn))
++			goto slow_path;
++
++		unpinned = hugetlb_put_pfn(pfn, npage - i, dma->prot);
++		if (unpinned > 0) {
++			pfn += unpinned;
++			unlocked += unpinned;
++			locked += hugetlb_page_get_externally_pinned_num(dma, pfn, unpinned);
++		} else
++			goto slow_path;
++	}
++slow_path:
++	for (; i < npage; i++, iova += PAGE_SIZE) {
++		if (put_pfn(pfn++, dma->prot)) {
++			unlocked++;
++			if (vfio_find_vpfn(dma, iova))
++				locked++;
++		}
++	}
++
++	if (do_accounting)
++		vfio_lock_acct(dma, locked - unlocked, true);
++
++	return unlocked;
++}
++
+ /*
+  * Attempt to pin pages.  We really don't want to track all the pfns and
+  * the iommu can only map chunks of consecutive pfns anyway, so get the
+@@ -993,11 +1046,18 @@ static long vfio_sync_unpin(struct vfio_dma *dma, struct vfio_domain *domain,
+ 	iommu_tlb_sync(domain->domain, iotlb_gather);
+ 
+ 	list_for_each_entry_safe(entry, next, regions, list) {
+-		unlocked += vfio_unpin_pages_remote(dma,
+-						    entry->iova,
+-						    entry->phys >> PAGE_SHIFT,
+-						    entry->len >> PAGE_SHIFT,
+-						    false);
++		if (is_hugetlb_page(entry->phys >> PAGE_SHIFT))
++			unlocked += vfio_unpin_hugetlb_pages_remote(dma,
++								    entry->iova,
++								    entry->phys >> PAGE_SHIFT,
++								    entry->len >> PAGE_SHIFT,
++								    false);
++		else
++			unlocked += vfio_unpin_pages_remote(dma,
++							    entry->iova,
++							    entry->phys >> PAGE_SHIFT,
++							    entry->len >> PAGE_SHIFT,
++							    false);
+ 		list_del(&entry->list);
+ 		kfree(entry);
+ 	}
+@@ -1064,10 +1124,16 @@ static size_t unmap_unpin_slow(struct vfio_domain *domain,
+ 	size_t unmapped = iommu_unmap(domain->domain, *iova, len);
+ 
+ 	if (unmapped) {
+-		*unlocked += vfio_unpin_pages_remote(dma, *iova,
+-						     phys >> PAGE_SHIFT,
+-						     unmapped >> PAGE_SHIFT,
+-						     false);
++		if (is_hugetlb_page(phys >> PAGE_SHIFT))
++			*unlocked += vfio_unpin_hugetlb_pages_remote(dma, *iova,
++								     phys >> PAGE_SHIFT,
++								     unmapped >> PAGE_SHIFT,
++								     false);
++		else
++			*unlocked += vfio_unpin_pages_remote(dma, *iova,
++							     phys >> PAGE_SHIFT,
++							     unmapped >> PAGE_SHIFT,
++							     false);
+ 		*iova += unmapped;
+ 		cond_resched();
+ 	}
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index dc7b87310..a425135d0 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -1202,8 +1202,11 @@ static inline void put_page(struct page *page)
+ #define GUP_PIN_COUNTING_BIAS (1U << 10)
+ 
+ void unpin_user_page(struct page *page);
++int unpin_user_hugetlb_page(struct page *page, unsigned long npages);
+ void unpin_user_pages_dirty_lock(struct page **pages, unsigned long npages,
+ 				 bool make_dirty);
++int unpin_user_hugetlb_pages_dirty_lock(struct page *pages, unsigned long npages,
++					bool make_dirty);
+ void unpin_user_pages(struct page **pages, unsigned long npages);
+ 
+ /**
+diff --git a/mm/gup.c b/mm/gup.c
+index 6f47697f8..14ee321eb 100644
+--- a/mm/gup.c
++++ b/mm/gup.c
+@@ -205,11 +205,42 @@ static bool __unpin_devmap_managed_user_page(struct page *page)
+ 
+ 	return true;
+ }
++
++static bool __unpin_devmap_managed_user_hugetlb_page(struct page *page, unsigned long npages)
++{
++	int count;
++	struct page *head = compound_head(page);
++
++	if (!page_is_devmap_managed(head))
++		return false;
++
++	hpage_pincount_sub(head, npages);
++
++	count = page_ref_sub_return(head, npages);
++
++	mod_node_page_state(page_pgdat(head), NR_FOLL_PIN_RELEASED, npages);
++	/*
++	 * devmap page refcounts are 1-based, rather than 0-based: if
++	 * refcount is 1, then the page is free and the refcount is
++	 * stable because nobody holds a reference on the page.
++	 */
++	if (count == 1)
++		free_devmap_managed_page(head);
++	else if (!count)
++		__put_page(head);
++
++	return true;
++}
+ #else
+ static bool __unpin_devmap_managed_user_page(struct page *page)
+ {
+ 	return false;
+ }
++
++static bool __unpin_devmap_managed_user_hugetlb_page(struct page *page, unsigned long npages)
++{
++	return false;
++}
+ #endif /* CONFIG_DEV_PAGEMAP_OPS */
+ 
+ /**
+@@ -248,6 +279,66 @@ void unpin_user_page(struct page *page)
+ }
+ EXPORT_SYMBOL(unpin_user_page);
+ 
++int unpin_user_hugetlb_page(struct page *page, unsigned long npages)
++{
++	struct page *head;
++	long page_offset, unpinned, hugetlb_npages;
++
++	if (!page || !PageHuge(page))
++		return -EINVAL;
++
++	if (!npages)
++		return 0;
++
++	head = compound_head(page);
++	hugetlb_npages = 1UL << compound_order(head);
++	/* the offset of this subpage in the hugetlb page */
++	page_offset = page_to_pfn(page) & (hugetlb_npages - 1);
++	/* unpinned > 0, because page_offset is always less than hugetlb_npages */
++	unpinned = min_t(long, npages, (hugetlb_npages - page_offset));
++
++	if (__unpin_devmap_managed_user_hugetlb_page(page, unpinned))
++		return unpinned;
++
++	hpage_pincount_sub(head, unpinned);
++
++	if (page_ref_sub_and_test(head, unpinned))
++		__put_page(head);
++	mod_node_page_state(page_pgdat(head), NR_FOLL_PIN_RELEASED, unpinned);
++
++	return unpinned;
++}
++EXPORT_SYMBOL(unpin_user_hugetlb_page);
++
++/*
++ * @page:the first subpage to unpin in a hugetlb page
++ * @npages: number of pages to unpin
++ * @make_dirty: whether to mark the pages dirty
++ *
++ * Nearly the same as unpin_user_pages_dirty_lock
++ * If npages is 0, returns 0.
++ * If npages is >0, returns the number of
++ * pages unpinned. And this may be less than npages.
++ */
++int unpin_user_hugetlb_pages_dirty_lock(struct page *page, unsigned long npages,
++					bool make_dirty)
++{
++	struct page *head;
++
++	if (!page || !PageHuge(page))
++		return -EINVAL;
++
++	if (!npages)
++		return 0;
++
++	head = compound_head(page);
++	if (make_dirty && !PageDirty(head))
++		set_page_dirty_lock(head);
++
++	return unpin_user_hugetlb_page(page, npages);
++}
++EXPORT_SYMBOL(unpin_user_hugetlb_pages_dirty_lock);
++
+ /**
+  * unpin_user_pages_dirty_lock() - release and optionally dirty gup-pinned pages
+  * @pages:  array of pages to be maybe marked dirty, and definitely released.
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.23.0
+
+
