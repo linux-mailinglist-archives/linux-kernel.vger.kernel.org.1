@@ -2,434 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81645262015
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 22:09:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3982A26206D
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 22:12:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730637AbgIHUJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 16:09:09 -0400
-Received: from smtp03.smtpout.orange.fr ([80.12.242.125]:53564 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730413AbgIHUIv (ORCPT
+        id S1730450AbgIHUMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 16:12:05 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:53219 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730353AbgIHUKq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 16:08:51 -0400
-Received: from localhost.localdomain ([93.22.150.22])
-        by mwinf5d58 with ME
-        id RY8h2300w0VEKhH03Y8hPA; Tue, 08 Sep 2020 22:08:46 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Tue, 08 Sep 2020 22:08:46 +0200
-X-ME-IP: 93.22.150.22
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     jes@trained-monkey.org, davem@davemloft.net, kuba@kernel.org
-Cc:     linux-hippi@sunsite.dk, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] hippi: switch from 'pci_' to 'dma_' API
-Date:   Tue,  8 Sep 2020 22:08:39 +0200
-Message-Id: <20200908200839.323530-1-christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.25.1
+        Tue, 8 Sep 2020 16:10:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599595839;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0L/VNlFzuDB/95oeV+NVSs6BIkKkE+sXG0xqekszlyk=;
+        b=Ya3IKFBp6jBXrCzk0IjdHX+5msWtqI0/qpZadidgVoM1auwkK+0FqitIbRQhAxoB1z7zhF
+        amdxkTOUDxHo/RDUi+MHmDfPBcz4iQNkrFuW+Lr8Wsgt27KH/5Merq4/5GkoFHP9VjF/gZ
+        fKhpIUVJlkjwaUP8erA0IPMP0KC6qZU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-16-yZ_soSYAPYGW_0mzx33S1Q-1; Tue, 08 Sep 2020 16:10:37 -0400
+X-MC-Unique: yZ_soSYAPYGW_0mzx33S1Q-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0FBF01007465;
+        Tue,  8 Sep 2020 20:10:35 +0000 (UTC)
+Received: from t480s.redhat.com (ovpn-115-46.ams2.redhat.com [10.36.115.46])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4E53D5D9EF;
+        Tue,  8 Sep 2020 20:10:29 +0000 (UTC)
+From:   David Hildenbrand <david@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
+        linux-hyperv@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-acpi@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-s390@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Kees Cook <keescook@chromium.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Baoquan He <bhe@redhat.com>,
+        Wei Yang <richardw.yang@linux.intel.com>
+Subject: [PATCH v2 1/7] kernel/resource: make release_mem_region_adjustable() never fail
+Date:   Tue,  8 Sep 2020 22:10:06 +0200
+Message-Id: <20200908201012.44168-2-david@redhat.com>
+In-Reply-To: <20200908201012.44168-1-david@redhat.com>
+References: <20200908201012.44168-1-david@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The wrappers in include/linux/pci-dma-compat.h should go away.
+Let's make sure splitting a resource on memory hotunplug will never fail.
+This will become more relevant once we merge selected System RAM
+resources - then, we'll trigger that case more often on memory hotunplug.
 
-The patch has been generated with the coccinelle script below and has been
-hand modified to replace GFP_ with a correct flag.
-It has been compile tested.
+In general, this function is already unlikely to fail. When we remove
+memory, we free up quite a lot of metadata (memmap, page tables, memory
+block device, etc.). The only reason it could really fail would be when
+injecting allocation errors.
 
-When memory is allocated in 'rr_init_one()' GFP_KERNEL can be used because
-it is a probe function and no spinlock is taken in the between.
+All other error cases inside release_mem_region_adjustable() seem to be
+sanity checks if the function would be abused in different context -
+let's add WARN_ON_ONCE() in these cases so we can catch them.
 
-When memory is allocated in 'rr_open()' GFP_KERNEL can be used because
-it is a '.ndo_open' function (see struct net_device_ops) and no spinlock is
-taken in the between.
-'.ndo_open' functions are synchronized using the rtnl_lock() semaphore.
-
-
-@@
-@@
--    PCI_DMA_BIDIRECTIONAL
-+    DMA_BIDIRECTIONAL
-
-@@
-@@
--    PCI_DMA_TODEVICE
-+    DMA_TO_DEVICE
-
-@@
-@@
--    PCI_DMA_FROMDEVICE
-+    DMA_FROM_DEVICE
-
-@@
-@@
--    PCI_DMA_NONE
-+    DMA_NONE
-
-@@
-expression e1, e2, e3;
-@@
--    pci_alloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-
-@@
-expression e1, e2, e3;
-@@
--    pci_zalloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_free_consistent(e1, e2, e3, e4)
-+    dma_free_coherent(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_single(e1, e2, e3, e4)
-+    dma_map_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_single(e1, e2, e3, e4)
-+    dma_unmap_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4, e5;
-@@
--    pci_map_page(e1, e2, e3, e4, e5)
-+    dma_map_page(&e1->dev, e2, e3, e4, e5)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_page(e1, e2, e3, e4)
-+    dma_unmap_page(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_sg(e1, e2, e3, e4)
-+    dma_map_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_sg(e1, e2, e3, e4)
-+    dma_unmap_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
-+    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_device(e1, e2, e3, e4)
-+    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
-+    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
-+    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2;
-@@
--    pci_dma_mapping_error(e1, e2)
-+    dma_mapping_error(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_dma_mask(e1, e2)
-+    dma_set_mask(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_consistent_dma_mask(e1, e2)
-+    dma_set_coherent_mask(&e1->dev, e2)
-
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Ard Biesheuvel <ardb@kernel.org>
+Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+Cc: Baoquan He <bhe@redhat.com>
+Cc: Wei Yang <richardw.yang@linux.intel.com>
+Signed-off-by: David Hildenbrand <david@redhat.com>
 ---
-If needed, see post from Christoph Hellwig on the kernel-janitors ML:
-   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
----
- drivers/net/hippi/rrunner.c | 117 +++++++++++++++++++-----------------
- 1 file changed, 62 insertions(+), 55 deletions(-)
+ include/linux/ioport.h |  4 ++--
+ kernel/resource.c      | 49 ++++++++++++++++++++++++------------------
+ mm/memory_hotplug.c    | 22 +------------------
+ 3 files changed, 31 insertions(+), 44 deletions(-)
 
-diff --git a/drivers/net/hippi/rrunner.c b/drivers/net/hippi/rrunner.c
-index a4b3fce69ecd..df0f125fbb33 100644
---- a/drivers/net/hippi/rrunner.c
-+++ b/drivers/net/hippi/rrunner.c
-@@ -151,7 +151,8 @@ static int rr_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
- 		goto out;
- 	}
+diff --git a/include/linux/ioport.h b/include/linux/ioport.h
+index 6c2b06fe8beb7..52a91f5fa1a36 100644
+--- a/include/linux/ioport.h
++++ b/include/linux/ioport.h
+@@ -248,8 +248,8 @@ extern struct resource * __request_region(struct resource *,
+ extern void __release_region(struct resource *, resource_size_t,
+ 				resource_size_t);
+ #ifdef CONFIG_MEMORY_HOTREMOVE
+-extern int release_mem_region_adjustable(struct resource *, resource_size_t,
+-				resource_size_t);
++extern void release_mem_region_adjustable(struct resource *, resource_size_t,
++					  resource_size_t);
+ #endif
  
--	tmpptr = pci_alloc_consistent(pdev, TX_TOTAL_SIZE, &ring_dma);
-+	tmpptr = dma_alloc_coherent(&pdev->dev, TX_TOTAL_SIZE, &ring_dma,
-+				    GFP_KERNEL);
- 	rrpriv->tx_ring = tmpptr;
- 	rrpriv->tx_ring_dma = ring_dma;
+ /* Wrappers for managed devices */
+diff --git a/kernel/resource.c b/kernel/resource.c
+index f1175ce93a1d5..36b3552210120 100644
+--- a/kernel/resource.c
++++ b/kernel/resource.c
+@@ -1258,21 +1258,28 @@ EXPORT_SYMBOL(__release_region);
+  *   assumes that all children remain in the lower address entry for
+  *   simplicity.  Enhance this logic when necessary.
+  */
+-int release_mem_region_adjustable(struct resource *parent,
+-				  resource_size_t start, resource_size_t size)
++void release_mem_region_adjustable(struct resource *parent,
++				   resource_size_t start, resource_size_t size)
+ {
++	struct resource *new_res = NULL;
++	bool alloc_nofail = false;
+ 	struct resource **p;
+ 	struct resource *res;
+-	struct resource *new_res;
+ 	resource_size_t end;
+-	int ret = -EINVAL;
  
-@@ -160,7 +161,8 @@ static int rr_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
- 		goto out;
- 	}
+ 	end = start + size - 1;
+-	if ((start < parent->start) || (end > parent->end))
+-		return ret;
++	if (WARN_ON_ONCE((start < parent->start) || (end > parent->end)))
++		return;
  
--	tmpptr = pci_alloc_consistent(pdev, RX_TOTAL_SIZE, &ring_dma);
-+	tmpptr = dma_alloc_coherent(&pdev->dev, RX_TOTAL_SIZE, &ring_dma,
-+				    GFP_KERNEL);
- 	rrpriv->rx_ring = tmpptr;
- 	rrpriv->rx_ring_dma = ring_dma;
+-	/* The alloc_resource() result gets checked later */
+-	new_res = alloc_resource(GFP_KERNEL);
++	/*
++	 * We free up quite a lot of memory on memory hotunplug (esp., memap),
++	 * just before releasing the region. This is highly unlikely to
++	 * fail - let's play save and make it never fail as the caller cannot
++	 * perform any error handling (e.g., trying to re-add memory will fail
++	 * similarly).
++	 */
++retry:
++	new_res = alloc_resource(GFP_KERNEL | alloc_nofail ? __GFP_NOFAIL : 0);
  
-@@ -169,7 +171,8 @@ static int rr_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
- 		goto out;
- 	}
- 
--	tmpptr = pci_alloc_consistent(pdev, EVT_RING_SIZE, &ring_dma);
-+	tmpptr = dma_alloc_coherent(&pdev->dev, EVT_RING_SIZE, &ring_dma,
-+				    GFP_KERNEL);
- 	rrpriv->evt_ring = tmpptr;
- 	rrpriv->evt_ring_dma = ring_dma;
- 
-@@ -198,14 +201,14 @@ static int rr_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
- 
-  out:
- 	if (rrpriv->evt_ring)
--		pci_free_consistent(pdev, EVT_RING_SIZE, rrpriv->evt_ring,
--				    rrpriv->evt_ring_dma);
-+		dma_free_coherent(&pdev->dev, EVT_RING_SIZE, rrpriv->evt_ring,
-+				  rrpriv->evt_ring_dma);
- 	if (rrpriv->rx_ring)
--		pci_free_consistent(pdev, RX_TOTAL_SIZE, rrpriv->rx_ring,
--				    rrpriv->rx_ring_dma);
-+		dma_free_coherent(&pdev->dev, RX_TOTAL_SIZE, rrpriv->rx_ring,
-+				  rrpriv->rx_ring_dma);
- 	if (rrpriv->tx_ring)
--		pci_free_consistent(pdev, TX_TOTAL_SIZE, rrpriv->tx_ring,
--				    rrpriv->tx_ring_dma);
-+		dma_free_coherent(&pdev->dev, TX_TOTAL_SIZE, rrpriv->tx_ring,
-+				  rrpriv->tx_ring_dma);
- 	if (rrpriv->regs)
- 		pci_iounmap(pdev, rrpriv->regs);
- 	if (pdev)
-@@ -228,12 +231,12 @@ static void rr_remove_one(struct pci_dev *pdev)
- 	}
- 
- 	unregister_netdev(dev);
--	pci_free_consistent(pdev, EVT_RING_SIZE, rr->evt_ring,
--			    rr->evt_ring_dma);
--	pci_free_consistent(pdev, RX_TOTAL_SIZE, rr->rx_ring,
--			    rr->rx_ring_dma);
--	pci_free_consistent(pdev, TX_TOTAL_SIZE, rr->tx_ring,
--			    rr->tx_ring_dma);
-+	dma_free_coherent(&pdev->dev, EVT_RING_SIZE, rr->evt_ring,
-+			  rr->evt_ring_dma);
-+	dma_free_coherent(&pdev->dev, RX_TOTAL_SIZE, rr->rx_ring,
-+			  rr->rx_ring_dma);
-+	dma_free_coherent(&pdev->dev, TX_TOTAL_SIZE, rr->tx_ring,
-+			  rr->tx_ring_dma);
- 	pci_iounmap(pdev, rr->regs);
- 	pci_release_regions(pdev);
- 	pci_disable_device(pdev);
-@@ -648,8 +651,8 @@ static int rr_init1(struct net_device *dev)
- 			goto error;
+ 	p = &parent->child;
+ 	write_lock(&resource_lock);
+@@ -1298,7 +1305,6 @@ int release_mem_region_adjustable(struct resource *parent,
+ 		 * so if we are dealing with them, let us just back off here.
+ 		 */
+ 		if (!(res->flags & IORESOURCE_SYSRAM)) {
+-			ret = 0;
+ 			break;
  		}
- 		rrpriv->rx_skbuff[i] = skb;
--	        addr = pci_map_single(rrpriv->pci_dev, skb->data,
--			dev->mtu + HIPPI_HLEN, PCI_DMA_FROMDEVICE);
-+		addr = dma_map_single(&rrpriv->pci_dev->dev, skb->data,
-+				      dev->mtu + HIPPI_HLEN, DMA_FROM_DEVICE);
- 		/*
- 		 * Sanity test to see if we conflict with the DMA
- 		 * limitations of the Roadrunner.
-@@ -699,10 +702,10 @@ static int rr_init1(struct net_device *dev)
- 		struct sk_buff *skb = rrpriv->rx_skbuff[i];
  
- 		if (skb) {
--	        	pci_unmap_single(rrpriv->pci_dev,
-+			dma_unmap_single(&rrpriv->pci_dev->dev,
- 					 rrpriv->rx_ring[i].addr.addrlo,
- 					 dev->mtu + HIPPI_HLEN,
--					 PCI_DMA_FROMDEVICE);
-+					 DMA_FROM_DEVICE);
- 			rrpriv->rx_ring[i].size = 0;
- 			set_rraddr(&rrpriv->rx_ring[i].addr, 0);
- 			dev_kfree_skb(skb);
-@@ -953,18 +956,18 @@ static void rx_int(struct net_device *dev, u32 rxlimit, u32 index)
- 					dev->stats.rx_dropped++;
- 					goto defer;
- 				} else {
--					pci_dma_sync_single_for_cpu(rrpriv->pci_dev,
--								    desc->addr.addrlo,
--								    pkt_len,
--								    PCI_DMA_FROMDEVICE);
-+					dma_sync_single_for_cpu(&rrpriv->pci_dev->dev,
-+								desc->addr.addrlo,
-+								pkt_len,
-+								DMA_FROM_DEVICE);
+@@ -1315,20 +1321,23 @@ int release_mem_region_adjustable(struct resource *parent,
+ 			/* free the whole entry */
+ 			*p = res->sibling;
+ 			free_resource(res);
+-			ret = 0;
+ 		} else if (res->start == start && res->end != end) {
+ 			/* adjust the start */
+-			ret = __adjust_resource(res, end + 1,
+-						res->end - end);
++			WARN_ON_ONCE(__adjust_resource(res, end + 1,
++						       res->end - end));
+ 		} else if (res->start != start && res->end == end) {
+ 			/* adjust the end */
+-			ret = __adjust_resource(res, res->start,
+-						start - res->start);
++			WARN_ON_ONCE(__adjust_resource(res, res->start,
++						       start - res->start));
+ 		} else {
+-			/* split into two entries */
++			/* split into two entries - we need a new resource */
+ 			if (!new_res) {
+-				ret = -ENOMEM;
+-				break;
++				new_res = alloc_resource(GFP_ATOMIC);
++				if (!new_res) {
++					alloc_nofail = true;
++					write_unlock(&resource_lock);
++					goto retry;
++				}
+ 			}
+ 			new_res->name = res->name;
+ 			new_res->start = end + 1;
+@@ -1339,9 +1348,8 @@ int release_mem_region_adjustable(struct resource *parent,
+ 			new_res->sibling = res->sibling;
+ 			new_res->child = NULL;
  
- 					skb_put_data(skb, rx_skb->data,
- 						     pkt_len);
+-			ret = __adjust_resource(res, res->start,
+-						start - res->start);
+-			if (ret)
++			if (WARN_ON_ONCE(__adjust_resource(res, res->start,
++							   start - res->start)))
+ 				break;
+ 			res->sibling = new_res;
+ 			new_res = NULL;
+@@ -1352,7 +1360,6 @@ int release_mem_region_adjustable(struct resource *parent,
  
--					pci_dma_sync_single_for_device(rrpriv->pci_dev,
--								       desc->addr.addrlo,
--								       pkt_len,
--								       PCI_DMA_FROMDEVICE);
-+					dma_sync_single_for_device(&rrpriv->pci_dev->dev,
-+								   desc->addr.addrlo,
-+								   pkt_len,
-+								   DMA_FROM_DEVICE);
- 				}
- 			}else{
- 				struct sk_buff *newskb;
-@@ -974,16 +977,17 @@ static void rx_int(struct net_device *dev, u32 rxlimit, u32 index)
- 				if (newskb){
- 					dma_addr_t addr;
+ 	write_unlock(&resource_lock);
+ 	free_resource(new_res);
+-	return ret;
+ }
+ #endif	/* CONFIG_MEMORY_HOTREMOVE */
  
--	        			pci_unmap_single(rrpriv->pci_dev,
--						desc->addr.addrlo, dev->mtu +
--						HIPPI_HLEN, PCI_DMA_FROMDEVICE);
-+					dma_unmap_single(&rrpriv->pci_dev->dev,
-+							 desc->addr.addrlo,
-+							 dev->mtu + HIPPI_HLEN,
-+							 DMA_FROM_DEVICE);
- 					skb = rx_skb;
- 					skb_put(skb, pkt_len);
- 					rrpriv->rx_skbuff[index] = newskb;
--	        			addr = pci_map_single(rrpriv->pci_dev,
--						newskb->data,
--						dev->mtu + HIPPI_HLEN,
--						PCI_DMA_FROMDEVICE);
-+					addr = dma_map_single(&rrpriv->pci_dev->dev,
-+							      newskb->data,
-+							      dev->mtu + HIPPI_HLEN,
-+							      DMA_FROM_DEVICE);
- 					set_rraddr(&desc->addr, addr);
- 				} else {
- 					printk("%s: Out of memory, deferring "
-@@ -1068,9 +1072,9 @@ static irqreturn_t rr_interrupt(int irq, void *dev_id)
- 				dev->stats.tx_packets++;
- 				dev->stats.tx_bytes += skb->len;
+diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+index baded53b9ff92..4c47b68a9f4b5 100644
+--- a/mm/memory_hotplug.c
++++ b/mm/memory_hotplug.c
+@@ -1724,26 +1724,6 @@ void try_offline_node(int nid)
+ }
+ EXPORT_SYMBOL(try_offline_node);
  
--				pci_unmap_single(rrpriv->pci_dev,
-+				dma_unmap_single(&rrpriv->pci_dev->dev,
- 						 desc->addr.addrlo, skb->len,
--						 PCI_DMA_TODEVICE);
-+						 DMA_TO_DEVICE);
- 				dev_kfree_skb_irq(skb);
- 
- 				rrpriv->tx_skbuff[txcon] = NULL;
-@@ -1110,8 +1114,9 @@ static inline void rr_raz_tx(struct rr_private *rrpriv,
- 		if (skb) {
- 			struct tx_desc *desc = &(rrpriv->tx_ring[i]);
- 
--	        	pci_unmap_single(rrpriv->pci_dev, desc->addr.addrlo,
--				skb->len, PCI_DMA_TODEVICE);
-+			dma_unmap_single(&rrpriv->pci_dev->dev,
-+					 desc->addr.addrlo, skb->len,
-+					 DMA_TO_DEVICE);
- 			desc->size = 0;
- 			set_rraddr(&desc->addr, 0);
- 			dev_kfree_skb(skb);
-@@ -1132,8 +1137,10 @@ static inline void rr_raz_rx(struct rr_private *rrpriv,
- 		if (skb) {
- 			struct rx_desc *desc = &(rrpriv->rx_ring[i]);
- 
--	        	pci_unmap_single(rrpriv->pci_dev, desc->addr.addrlo,
--				dev->mtu + HIPPI_HLEN, PCI_DMA_FROMDEVICE);
-+			dma_unmap_single(&rrpriv->pci_dev->dev,
-+					 desc->addr.addrlo,
-+					 dev->mtu + HIPPI_HLEN,
-+					 DMA_FROM_DEVICE);
- 			desc->size = 0;
- 			set_rraddr(&desc->addr, 0);
- 			dev_kfree_skb(skb);
-@@ -1188,17 +1195,17 @@ static int rr_open(struct net_device *dev)
- 		goto error;
+-static void __release_memory_resource(resource_size_t start,
+-				      resource_size_t size)
+-{
+-	int ret;
+-
+-	/*
+-	 * When removing memory in the same granularity as it was added,
+-	 * this function never fails. It might only fail if resources
+-	 * have to be adjusted or split. We'll ignore the error, as
+-	 * removing of memory cannot fail.
+-	 */
+-	ret = release_mem_region_adjustable(&iomem_resource, start, size);
+-	if (ret) {
+-		resource_size_t endres = start + size - 1;
+-
+-		pr_warn("Unable to release resource <%pa-%pa> (%d)\n",
+-			&start, &endres, ret);
+-	}
+-}
+-
+ static int __ref try_remove_memory(int nid, u64 start, u64 size)
+ {
+ 	int rc = 0;
+@@ -1777,7 +1757,7 @@ static int __ref try_remove_memory(int nid, u64 start, u64 size)
+ 		memblock_remove(start, size);
  	}
  
--	rrpriv->rx_ctrl = pci_alloc_consistent(pdev,
--					       256 * sizeof(struct ring_ctrl),
--					       &dma_addr);
-+	rrpriv->rx_ctrl = dma_alloc_coherent(&pdev->dev,
-+					     256 * sizeof(struct ring_ctrl),
-+					     &dma_addr, GFP_KERNEL);
- 	if (!rrpriv->rx_ctrl) {
- 		ecode = -ENOMEM;
- 		goto error;
- 	}
- 	rrpriv->rx_ctrl_dma = dma_addr;
+-	__release_memory_resource(start, size);
++	release_mem_region_adjustable(&iomem_resource, start, size);
  
--	rrpriv->info = pci_alloc_consistent(pdev, sizeof(struct rr_info),
--					    &dma_addr);
-+	rrpriv->info = dma_alloc_coherent(&pdev->dev, sizeof(struct rr_info),
-+					  &dma_addr, GFP_KERNEL);
- 	if (!rrpriv->info) {
- 		ecode = -ENOMEM;
- 		goto error;
-@@ -1237,13 +1244,13 @@ static int rr_open(struct net_device *dev)
- 	spin_unlock_irqrestore(&rrpriv->lock, flags);
+ 	try_offline_node(nid);
  
- 	if (rrpriv->info) {
--		pci_free_consistent(pdev, sizeof(struct rr_info), rrpriv->info,
--				    rrpriv->info_dma);
-+		dma_free_coherent(&pdev->dev, sizeof(struct rr_info),
-+				  rrpriv->info, rrpriv->info_dma);
- 		rrpriv->info = NULL;
- 	}
- 	if (rrpriv->rx_ctrl) {
--		pci_free_consistent(pdev, 256 * sizeof(struct ring_ctrl),
--				    rrpriv->rx_ctrl, rrpriv->rx_ctrl_dma);
-+		dma_free_coherent(&pdev->dev, 256 * sizeof(struct ring_ctrl),
-+				  rrpriv->rx_ctrl, rrpriv->rx_ctrl_dma);
- 		rrpriv->rx_ctrl = NULL;
- 	}
- 
-@@ -1365,12 +1372,12 @@ static int rr_close(struct net_device *dev)
- 	rr_raz_tx(rrpriv, dev);
- 	rr_raz_rx(rrpriv, dev);
- 
--	pci_free_consistent(pdev, 256 * sizeof(struct ring_ctrl),
--			    rrpriv->rx_ctrl, rrpriv->rx_ctrl_dma);
-+	dma_free_coherent(&pdev->dev, 256 * sizeof(struct ring_ctrl),
-+			  rrpriv->rx_ctrl, rrpriv->rx_ctrl_dma);
- 	rrpriv->rx_ctrl = NULL;
- 
--	pci_free_consistent(pdev, sizeof(struct rr_info), rrpriv->info,
--			    rrpriv->info_dma);
-+	dma_free_coherent(&pdev->dev, sizeof(struct rr_info), rrpriv->info,
-+			  rrpriv->info_dma);
- 	rrpriv->info = NULL;
- 
- 	spin_unlock_irqrestore(&rrpriv->lock, flags);
-@@ -1430,8 +1437,8 @@ static netdev_tx_t rr_start_xmit(struct sk_buff *skb,
- 	index = txctrl->pi;
- 
- 	rrpriv->tx_skbuff[index] = skb;
--	set_rraddr(&rrpriv->tx_ring[index].addr, pci_map_single(
--		rrpriv->pci_dev, skb->data, len + 8, PCI_DMA_TODEVICE));
-+	set_rraddr(&rrpriv->tx_ring[index].addr,
-+		   dma_map_single(&rrpriv->pci_dev->dev, skb->data, len + 8, DMA_TO_DEVICE));
- 	rrpriv->tx_ring[index].size = len + 8; /* include IFIELD */
- 	rrpriv->tx_ring[index].mode = PACKET_START | PACKET_END;
- 	txctrl->pi = (index + 1) % TX_RING_ENTRIES;
 -- 
-2.25.1
+2.26.2
 
