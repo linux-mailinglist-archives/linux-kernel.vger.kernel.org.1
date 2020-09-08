@@ -2,125 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 704EC261AE6
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 20:45:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 614EF261ADA
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 20:41:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731211AbgIHSpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 14:45:22 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:44342 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728899AbgIHSnp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 14:43:45 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 088C3VsW004198;
-        Tue, 8 Sep 2020 07:03:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1599566611;
-        bh=nsqPY6o4grvE2pz2lannxuY5WsjPIahg4+RoCYp/mc4=;
-        h=Subject:From:To:CC:References:Date:In-Reply-To;
-        b=ia2HCvqTdT2aSCL0/porgUy55z/i+UNq4fGm51IBwnjCi49OkizTxLE8QrQf5pLhG
-         tNYc8imMXyJknGPW8h8Bjtcf/u01AeRfbs9KUtXdyT/+siXEYWnKXnxY9GGFMd0Cgj
-         bZSQ1blN0Ra3RX6g1cY8xR/cDa84TcLT/G/RdfnA=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 088C3V75118701
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 8 Sep 2020 07:03:31 -0500
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 8 Sep
- 2020 07:03:31 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 8 Sep 2020 07:03:31 -0500
-Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 088C3SxG114548;
-        Tue, 8 Sep 2020 07:03:29 -0500
-Subject: Re: [PATCH 1/2] ASoC: tlv320adcx140: Avoid accessing invalid
- gpio_reset
-From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
-To:     Camel Guo <camel.guo@axis.com>, <lgirdwood@gmail.com>,
-        <broonie@kernel.org>, <tiwai@suse.com>, <dmurphy@ti.com>
-CC:     <alsa-devel@alsa-project.org>, <kernel@axis.com>,
-        <linux-kernel@vger.kernel.org>, Camel Guo <camelg@axis.com>
-References: <20200908083521.14105-1-camel.guo@axis.com>
- <7bb93489-dbd5-d1a5-5df6-e62470bd2252@ti.com>
-X-Pep-Version: 2.0
-Message-ID: <e791162b-1292-e1c4-3fca-b8936beeeb45@ti.com>
-Date:   Tue, 8 Sep 2020 15:03:28 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1731537AbgIHSlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 14:41:21 -0400
+Received: from mga18.intel.com ([134.134.136.126]:44110 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731305AbgIHQIC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 12:08:02 -0400
+IronPort-SDR: uLxPuV8d9XkW6JGSbKn9vizfXWT1McBTUjcaMaRCXJm0ufVZv7vWcqy5QTq2UpPc9Ly0A27bjb
+ jNozPR3zfH7Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9737"; a="145840204"
+X-IronPort-AV: E=Sophos;i="5.76,405,1592895600"; 
+   d="scan'208";a="145840204"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2020 06:50:28 -0700
+IronPort-SDR: pq8KqwTDLKt08i4BP3htSDweMGmnV1y1djrner8hpQN/ww/skM9AC3AdwSijS44hBYu4ALm5Jr
+ +wiqc8WsZV7A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,405,1592895600"; 
+   d="scan'208";a="333478908"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga008.jf.intel.com with ESMTP; 08 Sep 2020 06:50:25 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kFduY-00FDX6-P7; Tue, 08 Sep 2020 16:43:50 +0300
+Date:   Tue, 8 Sep 2020 16:43:50 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-kernel@vger.kernel.org,
+        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Tony Luck <tony.luck@intel.com>
+Subject: Re: [PATCH v1] x86/defconfigs: Unbreak 32-bit defconfig builds
+Message-ID: <20200908134350.GX1891694@smile.fi.intel.com>
+References: <20200908100018.50188-1-andriy.shevchenko@linux.intel.com>
+ <20200908121354.GA3848343@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <7bb93489-dbd5-d1a5-5df6-e62470bd2252@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200908121354.GA3848343@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, Sep 08, 2020 at 02:13:54PM +0200, Ingo Molnar wrote:
+> 
+> * Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+> 
+> > After the commit 1d0e12fd3a84 ("x86/defconfigs: Refresh defconfig files")
+> > 32-bit builds using defconfig become broken because on x86_64 build host
+> > with no ARCH provided the default behaviour is to assume 64-bit independently
+> > on the configuration file name. The crucial part is CONFIG_64BIT option
+> > that used to be explicit. Let restore the latter option in order to unbreak
+> > 32-bit builds.
+> 
+> So exactly which build method broke due to this? The typical way to do a defconfig build is:
+> 
+>   make ARCH=i386 defconfig
+> 
+> which still works fine AFAICS.
 
-On 08/09/2020 14.59, Peter Ujfalusi wrote:
->=20
->=20
-> On 08/09/2020 11.35, Camel Guo wrote:
->> From: Camel Guo <camelg@axis.com>
->>
->> When gpio_reset is not well defined in devicetree, the
->> adcx140->gpio_reset is an error code instead of NULL. In this case,
->> adcx140->gpio_reset should not be used by adcx140_reset. This commit
->> sets it NULL to avoid accessing an invalid variable.
->>
->> Signed-off-by: Camel Guo <camelg@axis.com>
->> ---
->>  sound/soc/codecs/tlv320adcx140.c | 4 +++-
->>  1 file changed, 3 insertions(+), 1 deletion(-)
->>
->> diff --git a/sound/soc/codecs/tlv320adcx140.c b/sound/soc/codecs/tlv32=
-0adcx140.c
->> index 7ae6ec374be3..597dd1062943 100644
->> --- a/sound/soc/codecs/tlv320adcx140.c
->> +++ b/sound/soc/codecs/tlv320adcx140.c
->> @@ -984,8 +984,10 @@ static int adcx140_i2c_probe(struct i2c_client *i=
-2c,
->> =20
->>  	adcx140->gpio_reset =3D devm_gpiod_get_optional(adcx140->dev,
->>  						      "reset", GPIOD_OUT_LOW);
->> -	if (IS_ERR(adcx140->gpio_reset))
->> +	if (IS_ERR(adcx140->gpio_reset) || adcx140->gpio_reset =3D=3D NULL) =
-{
->>  		dev_info(&i2c->dev, "Reset GPIO not defined\n");
->> +		adcx140->gpio_reset =3D NULL;
->=20
-> the correct fix is to:
-> 	dev_err(&i2c->dev, "Reset GPIO not defined\n");
+uname => x86_64
+make i386_defconfig
 
-no need to print, I think gpio core will do that.
+It was very convenient to not supply ARCH when build on multi-arch host.
 
-> 	return PTR_ERR(adcx140->gpio_reset);
->=20
-> If the reset GPIO is specified and you get error when requesting it as
-> optional, there is a reason for that.
-> For example deferred probing.
->=20
->> +	}
->> =20
->>  	adcx140->supply_areg =3D devm_regulator_get_optional(adcx140->dev,
->>  							   "areg");
->>
->=20
-> - P=C3=A9ter
->=20
-> Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-> Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
->=20
+-- 
+With Best Regards,
+Andy Shevchenko
 
-- P=C3=A9ter
-
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
 
