@@ -2,113 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79026260D66
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 10:20:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CD15260D71
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 10:21:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729869AbgIHIT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 04:19:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39804 "EHLO
+        id S1730064AbgIHIVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 04:21:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729627AbgIHITz (ORCPT
+        with ESMTP id S1729968AbgIHIVB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 04:19:55 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5AFAC061755
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 01:19:54 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id c18so18078904wrm.9
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 01:19:54 -0700 (PDT)
+        Tue, 8 Sep 2020 04:21:01 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4C72C061756;
+        Tue,  8 Sep 2020 01:20:59 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id q21so15125672edv.1;
+        Tue, 08 Sep 2020 01:20:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=onJm5JoeC8wX6+ligEVQFIaG2k7uPzPHxbYAuHbpW6s=;
-        b=dzitBvmxxPd0DOKY9vCthE+mkoJQdvLGSUrs45nVY4M2qJIhMIdhBpg+WPNIEgAjwp
-         5UWlLrxf7Ppw74nA3bkqczIe988DdwWh1PM+3HL101h8pJB9EtURdgqnb7ni48A4zE5T
-         UUxGfMrgNOVAtzRNhGwxcue4hF8QcriQCL26kKOANnOTW21JuHdjbn9Q4IQlGBMMu5TY
-         jJkmwnqSskLaP3dH4lSMdhEetwX5bQVtQlMHWU0KFDaax4lvrE4F0OdR1Ofj3KgmC3BN
-         7GHontSjT9d2tK8/GyDr5/MIWOQvrYqBJb2IrFXXIZ+b0P2zbDeYwDIIQcmP7CRAQkh4
-         HCwA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=63STSyHRLazmb7nSKR8rGI5k4M8WJtXmYGJdf9TDYBs=;
+        b=aVUgIyhAUnxSTk/UkOHy70pKspSNsP/kxLtvkI+yxJaokuR5x8I+MaN9uUZFSp0y2a
+         7P3rtQI1cTRnJ5X/u/Y81bLWpBFEr2EK9pttyGdLgsORjwv3RfirJb/Cop7jjHpQsY1v
+         LgFKUVqy2K0gKEY9hgW4SYLeKmebb6F1/XUozoPvXZEN+BtdDadcPTqAhqV0Fn/Ca3wk
+         TYUFsqRmRkGpgGaWOqHDkVmNHc9srWqRUvSFv2o7uhn0WmuSLvniwH8kg4bFDpk6C0Wt
+         d+tFB/nURlYwOFMEIYYrdw9i+sAnP54LQ5TtyHcZ6ZLQD/2MetkzY3FAvXwgVm2zeAW/
+         s6hA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=onJm5JoeC8wX6+ligEVQFIaG2k7uPzPHxbYAuHbpW6s=;
-        b=ffhmY6kXsjK4MPI3MdWHcGpWplzrkILns3e57giQuHX//rSkGJBaJofM3qxiY2///6
-         gCelL9RG4Nqihq/ZLHS5Nq9fQn7oAANZlnLsd8CuTYhBGNaPRywBxKtpqSuds4h8Atlx
-         cJi7Td6LSsP8Ro7iwUNpvn9Gh/1iu2dYVpcETIyAQxYgwIpVvt1SVMNHqsc0iyo1j8uh
-         WKNJdPKNmgh8qozZD8aZD5FoUlOH7g4u+QLPXBmYVOaqcWuOWuS839g5v8OJKitUaWoO
-         SkMAVEIg1nCKdLxF0OkAeLAVF+L6dV0Gj2RmwCOHMNfAmaQMw4MfL4mzRPX4rQEleeit
-         NgAA==
-X-Gm-Message-State: AOAM531Tnev4NuC1PdoBc6ebgUSJU8wLZIEk4xi0CuBoKXF8DZbeiSl4
-        t+Zm+9BRIxEAjQ6B0BsOIc1p13M2d+79WQ==
-X-Google-Smtp-Source: ABdhPJxj2bfSNW8Ovib+gu1LoHpS3QT4XJEReAaEIVQ3y4/K/GkrM+u+4MSvbj4y4JreCiUH4teq/Q==
-X-Received: by 2002:adf:ab5a:: with SMTP id r26mr24977054wrc.194.1599553192356;
-        Tue, 08 Sep 2020 01:19:52 -0700 (PDT)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id c205sm31146488wmd.33.2020.09.08.01.19.51
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 08 Sep 2020 01:19:51 -0700 (PDT)
-Subject: Re: [PATCH] misc: fastrpc: add ioctl for attaching to sensors pd
-To:     Jonathan Marek <jonathan@marek.ca>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-arm-msm@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20200901003300.11985-1-jonathan@marek.ca>
- <20200907123344.GA2371705@kroah.com>
- <a9d142c9-8a61-ee59-d849-393af1b3eaec@marek.ca>
- <e0db9beb-bbd2-8f20-d7f4-675b62acf782@linaro.org>
- <4b617c4c-f0f8-3d6b-c726-9dd4bf705fbc@marek.ca>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <ba161732-038e-de38-e357-a36494ad92ab@linaro.org>
-Date:   Tue, 8 Sep 2020 09:19:50 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        bh=63STSyHRLazmb7nSKR8rGI5k4M8WJtXmYGJdf9TDYBs=;
+        b=RkiVcTmB01o/MyuxMjxPx4TrGyU6EwoqQSul3mbsEZUEDkv0sYaT1XkdHGUN25eRu0
+         HHke41b/Ib9oKbvZps3zAd0PZzacoWj4MTZlCFdfiLrJ0KeAYfTrj8gJQzwD8bp7OsXU
+         i+3/8veNdmr0O22LMLmWFGNzri3pTNYVY6Sr72N8j4ODyLNVYvnCL0SBkHntoYlFpeW3
+         QgSNmU83QsalEAw2Ki0hOMMDtpIK5nUM6N4hD/pQhA50F8dvpxj/Sx2iWFkowup/twNz
+         trD1Pl45GbtM8AV8nqjzycsgHz/pXVMVxP53b8h+r02+uFRKeivI5HLv4ICOGSLYeR0C
+         iSsw==
+X-Gm-Message-State: AOAM533aH4TyljsQpgLayCUUz0XoTOrGxkpBIIiYG35cHgC+772Nk16U
+        cu5tNFOaHic8CK+Xj2be8eA=
+X-Google-Smtp-Source: ABdhPJw1KTXm9rLt7JG8xTpbt4XCQYBwwTuJs1QMGPu103vrbGICvY6QbNyT8rr3CfqsY+Z57kS59Q==
+X-Received: by 2002:aa7:c693:: with SMTP id n19mr26634894edq.101.1599553253064;
+        Tue, 08 Sep 2020 01:20:53 -0700 (PDT)
+Received: from localhost.localdomain ([188.24.159.61])
+        by smtp.gmail.com with ESMTPSA id g24sm13172326edy.51.2020.09.08.01.20.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Sep 2020 01:20:52 -0700 (PDT)
+From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+To:     Marc Zyngier <maz@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>
+Cc:     parthiban@linumiz.com, Saravanan Sekar <sravanhome@gmail.com>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-actions@lists.infradead.org
+Subject: [PATCH v6 0/3] Add Actions Semi Owl family sirq support
+Date:   Tue,  8 Sep 2020 11:20:47 +0300
+Message-Id: <cover.1599552438.git.cristian.ciocaltea@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <4b617c4c-f0f8-3d6b-c726-9dd4bf705fbc@marek.ca>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch series adds support for the external interrupt controller
+(SIRQ) found in the Actions Semi Owl family of SoC's (S500, S700 and
+S900). The controller handles up to 3 external interrupt lines through
+dedicated SIRQ pins.
 
+This is a rework of the patch series submitted some time ago by 
+Parthiban Nallathambi: 
+https://lore.kernel.org/lkml/20181126100356.2840578-1-pn@denx.de/
 
-On 07/09/2020 15:02, Jonathan Marek wrote:
->>>
->>> Srini do you have any suggestions for how to name these values?
->>
->> These are domain id corresponding to each core.
->> you can use SDSP_DOMAIN_ID in here!
->> these are already defined in the file as:
->>
->> #define ADSP_DOMAIN_ID (0)
->> #define MDSP_DOMAIN_ID (1)
->> #define SDSP_DOMAIN_ID (2)
->> #define CDSP_DOMAIN_ID (3)
->>
-> 
-> I don't think this is right:
-> 
-> FASTRPC_IOCTL_INIT_ATTACH uses pd = 0
-> FASTRPC_IOCTL_INIT_CREATE uses pd = 1
-> 
-> And these two ioctl are used with all DSP cores. So it wouldn't make 
-> sense for the pd value to correspond to the domain id.
-> 
-You are right, values are pretty much similar to domain ids but not 
-exactly the same as Protection Domain(PD) ids.
+Please note I have dropped, for the moment, the S700 related patches 
+since I do not own a compatible hardware for testing. I'm using instead
+an S500 SoC based board for which I have already provided the initial
+support:
+https://lore.kernel.org/lkml/cover.1598621459.git.cristian.ciocaltea@gmail.com/
 
-I spoke to qcom guys about this, and this is what I have.
+Additionally, I have taken the authorship for the driver patch,
+considering the original code has been already modified to a great
+extent and I'm firmly committed to maintaining it in the long run.
 
-0 is Audio Process PD
-1 is Dynamic User PD, cases like SNPE or CV
-2 is Sensor Process PD.
+The SIRQ controller support is a prerequisite of the upcoming MFD
+driver for the Actions Semi ATC260x PMICs.
 
+Thanks and regards,
+Cristi
 
-Hope this helps!
+Changes in v6:
+- Integrated binding doc related feedback from Rob and Marc
+- Updated cover letter to handle the authorship issue indicated by Mani
+- Rebased patch series on v5.9-rc4
 
---srini
+Changes in v5:
+- Integrated Marc's review (more details in the driver patch changelog)
+- Rebased patch series on v5.9-rc1
+
+Changes in v4:
+- Simplified the DTS structure:
+  * dropped 'actions,sirq-shared-reg' node, now the differentiation
+    between SoC variants is handled via the compatible property
+  * dropped 'actions,sirq-reg-offset', now controller base address in
+    DTS points to SIRQ0 register, so no additional information is
+    required for S500 and S700, while for S900 SoC the offsets of SIRQ1
+    and SIRQ2 regs are provided by the driver
+  * 'actions,ext-irq-range' was replaced with 'actions,ext-interrupts',
+    an array of the GIC interrupts triggered by the controller
+- Fixed wrong INTC_EXTCTL_TYPE_MASK definition
+- Removed redundant irq_fwspec checks in owl_sirq_domain_alloc()
+- Improved error handling in owl_sirq_of_init()
+- Added yaml binding document
+- Dropped S700 related DTS patches for lack of testing hardware:
+  * arm64: dts: actions: Add sirq node for Actions Semi S700
+  * arm64: dts: actions: s700-cubieboard7: Enable SIRQ
+- Updated MAINTAINERS
+- Rebased patchset on kernel v5.8
+- Cosmetic changes
+ * Ordered include statements alphabetically
+ * Added comment to owl_sirq_set_type() describing conversion of falling
+   edge or active low signals
+ * Replaced IRQF_TRIGGER_* with corresponding IRQ_TYPE_* variants
+ * Ensured data types and function naming are consistent regarding the
+   'owl_sirq' prefix
+
+Changes in v3 (Parthiban Nallathambi):
+- Set default operating frequency to 24MHz
+- Falling edge and Low Level interrupts translated to rising edge and high level
+- Introduced common function with lock handling for register read and write
+- Used direct GIC interrupt number for interrupt local hwirq and finding offset
+using DT entry (range) when registers are shared 
+- Changed irq_ack to irq_eoi
+- Added translation method for irq_domain_ops
+- Clearing interrupt pending based on bitmask for edge triggered
+- Added pinctrl definition for sirq for cubieboard7. This depends on,
+https://lore.kernel.org/patchwork/patch/1012859/
+
+Changes in v2 (Parthiban Nallathambi):
+- Added SIRQ as hierarchical chip
+        GIC <----> SIRQ <----> External interrupt controller/Child devices
+- Device binding updates with vendor prefix
+- Register sharing handled globally and common init sequence/data for all
+actions SoC family
+
+Cristian Ciocaltea (3):
+  dt-bindings: interrupt-controller: Add Actions SIRQ controller binding
+  irqchip: Add Actions Semi Owl SIRQ controller
+  MAINTAINERS: Add entries for Actions Semi Owl SIRQ controller
+
+ .../actions,owl-sirq.yaml                     |  65 ++++
+ MAINTAINERS                                   |   2 +
+ drivers/irqchip/Makefile                      |   1 +
+ drivers/irqchip/irq-owl-sirq.c                | 359 ++++++++++++++++++
+ 4 files changed, 427 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/interrupt-controller/actions,owl-sirq.yaml
+ create mode 100644 drivers/irqchip/irq-owl-sirq.c
+
+-- 
+2.28.0
+
