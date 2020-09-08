@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 817EF2613BC
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 17:47:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 990B52613B2
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 17:43:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730379AbgIHPpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 11:45:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58868 "EHLO mail.kernel.org"
+        id S1730306AbgIHPmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 11:42:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58858 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730534AbgIHPfu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1730542AbgIHPfu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 8 Sep 2020 11:35:50 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3B07722482;
-        Tue,  8 Sep 2020 15:34:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 092E5224D3;
+        Tue,  8 Sep 2020 15:34:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599579289;
-        bh=p/VXYwFUJB/kg5jcz4g7W6vjlMbDu0lvknVGLt7O638=;
+        s=default; t=1599579299;
+        bh=hJ4CKVWnrnDzcY+E+SwF6btxG/3tO217+leRyRg10yA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hBWpiEuYPgjYQMzIsqPjuAwTV6VhT9/LIg6N/EkKWikg41N2Hvrb3ug34PI9rchXC
-         vQYMMCCucJKERhJ1u01qdbZ+M6JwtgSLfTMuBcTDU2HDfg0LcT6MUk6CvlZL9VEf7y
-         +PbfrkMZeE1U0rgQ8XIM/vx9Tm8Pzf5HKy9oWZJY=
+        b=E+jlx5tP/tF0YDuM3apBu5VqUBedzjHbOC2zvMzDPzrBBNEeANugV/S1OwGRbXjSV
+         vm+zm1rdvgGXlPPPJxRjUOkdx69xB3U1f5yWnLVzXQqNb17ecnp3eT3kVMnxvMjZmA
+         4CLvtZ8tCPQlMhD/Qu3ofdsr81eRh239h2JIqkic=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
-        Henrik Rydberg <rydberg@bitmath.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 008/186] hwmon: (applesmc) check status earlier.
-Date:   Tue,  8 Sep 2020 17:22:30 +0200
-Message-Id: <20200908152242.056051891@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 020/186] hv_utils: return error if host timesysnc update is stale
+Date:   Tue,  8 Sep 2020 17:22:42 +0200
+Message-Id: <20200908152242.638237609@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200908152241.646390211@linuxfoundation.org>
 References: <20200908152241.646390211@linuxfoundation.org>
@@ -45,121 +45,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+From: Vineeth Pillai <viremana@linux.microsoft.com>
 
-[ Upstream commit cecf7560f00a8419396a2ed0f6e5d245ccb4feac ]
+[ Upstream commit 90b125f4cd2697f949f5877df723a0b710693dd0 ]
 
-clang static analysis reports this representative problem
+If for any reason, host timesync messages were not processed by
+the guest, hv_ptp_gettime() returns a stale value and the
+caller (clock_gettime, PTP ioctl etc) has no means to know this
+now. Return an error so that the caller knows about this.
 
-applesmc.c:758:10: warning: 1st function call argument is an
-  uninitialized value
-        left = be16_to_cpu(*(__be16 *)(buffer + 6)) >> 2;
-               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-buffer is filled by the earlier call
-
-	ret = applesmc_read_key(LIGHT_SENSOR_LEFT_KEY, ...
-
-This problem is reported because a goto skips the status check.
-Other similar problems use data from applesmc_read_key before checking
-the status.  So move the checks to before the use.
-
-Signed-off-by: Tom Rix <trix@redhat.com>
-Reviewed-by: Henrik Rydberg <rydberg@bitmath.org>
-Link: https://lore.kernel.org/r/20200820131932.10590-1-trix@redhat.com
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Vineeth Pillai <viremana@linux.microsoft.com>
+Reviewed-by: Michael Kelley <mikelley@microsoft.com>
+Link: https://lore.kernel.org/r/20200821152523.99364-1-viremana@linux.microsoft.com
+Signed-off-by: Wei Liu <wei.liu@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hwmon/applesmc.c | 31 ++++++++++++++++---------------
- 1 file changed, 16 insertions(+), 15 deletions(-)
+ drivers/hv/hv_util.c | 46 +++++++++++++++++++++++++++++++++-----------
+ 1 file changed, 35 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/hwmon/applesmc.c b/drivers/hwmon/applesmc.c
-index 3166184093157..a18887990f4a2 100644
---- a/drivers/hwmon/applesmc.c
-+++ b/drivers/hwmon/applesmc.c
-@@ -753,15 +753,18 @@ static ssize_t applesmc_light_show(struct device *dev,
- 	}
+diff --git a/drivers/hv/hv_util.c b/drivers/hv/hv_util.c
+index 92ee0fe4c919e..1f86e8d9b018d 100644
+--- a/drivers/hv/hv_util.c
++++ b/drivers/hv/hv_util.c
+@@ -282,26 +282,52 @@ static struct {
+ 	spinlock_t			lock;
+ } host_ts;
  
- 	ret = applesmc_read_key(LIGHT_SENSOR_LEFT_KEY, buffer, data_length);
-+	if (ret)
-+		goto out;
- 	/* newer macbooks report a single 10-bit bigendian value */
- 	if (data_length == 10) {
- 		left = be16_to_cpu(*(__be16 *)(buffer + 6)) >> 2;
- 		goto out;
- 	}
- 	left = buffer[2];
+-static struct timespec64 hv_get_adj_host_time(void)
++static inline u64 reftime_to_ns(u64 reftime)
+ {
+-	struct timespec64 ts;
+-	u64 newtime, reftime;
++	return (reftime - WLTIMEDELTA) * 100;
++}
 +
-+	ret = applesmc_read_key(LIGHT_SENSOR_RIGHT_KEY, buffer, data_length);
- 	if (ret)
- 		goto out;
--	ret = applesmc_read_key(LIGHT_SENSOR_RIGHT_KEY, buffer, data_length);
- 	right = buffer[2];
- 
- out:
-@@ -810,12 +813,11 @@ static ssize_t applesmc_show_fan_speed(struct device *dev,
- 		  to_index(attr));
- 
- 	ret = applesmc_read_key(newkey, buffer, 2);
--	speed = ((buffer[0] << 8 | buffer[1]) >> 2);
--
- 	if (ret)
- 		return ret;
--	else
--		return snprintf(sysfsbuf, PAGE_SIZE, "%u\n", speed);
++/*
++ * Hard coded threshold for host timesync delay: 600 seconds
++ */
++static const u64 HOST_TIMESYNC_DELAY_THRESH = 600 * (u64)NSEC_PER_SEC;
 +
-+	speed = ((buffer[0] << 8 | buffer[1]) >> 2);
-+	return snprintf(sysfsbuf, PAGE_SIZE, "%u\n", speed);
++static int hv_get_adj_host_time(struct timespec64 *ts)
++{
++	u64 newtime, reftime, timediff_adj;
+ 	unsigned long flags;
++	int ret = 0;
+ 
+ 	spin_lock_irqsave(&host_ts.lock, flags);
+ 	reftime = hv_read_reference_counter();
+-	newtime = host_ts.host_time + (reftime - host_ts.ref_time);
+-	ts = ns_to_timespec64((newtime - WLTIMEDELTA) * 100);
++
++	/*
++	 * We need to let the caller know that last update from host
++	 * is older than the max allowable threshold. clock_gettime()
++	 * and PTP ioctl do not have a documented error that we could
++	 * return for this specific case. Use ESTALE to report this.
++	 */
++	timediff_adj = reftime - host_ts.ref_time;
++	if (timediff_adj * 100 > HOST_TIMESYNC_DELAY_THRESH) {
++		pr_warn_once("TIMESYNC IC: Stale time stamp, %llu nsecs old\n",
++			     (timediff_adj * 100));
++		ret = -ESTALE;
++	}
++
++	newtime = host_ts.host_time + timediff_adj;
++	*ts = ns_to_timespec64(reftime_to_ns(newtime));
+ 	spin_unlock_irqrestore(&host_ts.lock, flags);
+ 
+-	return ts;
++	return ret;
  }
  
- static ssize_t applesmc_store_fan_speed(struct device *dev,
-@@ -851,12 +853,11 @@ static ssize_t applesmc_show_fan_manual(struct device *dev,
- 	u8 buffer[2];
+ static void hv_set_host_time(struct work_struct *work)
+ {
+-	struct timespec64 ts = hv_get_adj_host_time();
  
- 	ret = applesmc_read_key(FANS_MANUAL, buffer, 2);
--	manual = ((buffer[0] << 8 | buffer[1]) >> to_index(attr)) & 0x01;
--
- 	if (ret)
- 		return ret;
--	else
--		return snprintf(sysfsbuf, PAGE_SIZE, "%d\n", manual);
+-	do_settimeofday64(&ts);
++	struct timespec64 ts;
 +
-+	manual = ((buffer[0] << 8 | buffer[1]) >> to_index(attr)) & 0x01;
-+	return snprintf(sysfsbuf, PAGE_SIZE, "%d\n", manual);
++	if (!hv_get_adj_host_time(&ts))
++		do_settimeofday64(&ts);
  }
  
- static ssize_t applesmc_store_fan_manual(struct device *dev,
-@@ -872,10 +873,11 @@ static ssize_t applesmc_store_fan_manual(struct device *dev,
- 		return -EINVAL;
+ /*
+@@ -622,9 +648,7 @@ static int hv_ptp_adjtime(struct ptp_clock_info *ptp, s64 delta)
  
- 	ret = applesmc_read_key(FANS_MANUAL, buffer, 2);
--	val = (buffer[0] << 8 | buffer[1]);
- 	if (ret)
- 		goto out;
- 
-+	val = (buffer[0] << 8 | buffer[1]);
-+
- 	if (input)
- 		val = val | (0x01 << to_index(attr));
- 	else
-@@ -951,13 +953,12 @@ static ssize_t applesmc_key_count_show(struct device *dev,
- 	u32 count;
- 
- 	ret = applesmc_read_key(KEY_COUNT_KEY, buffer, 4);
--	count = ((u32)buffer[0]<<24) + ((u32)buffer[1]<<16) +
--						((u32)buffer[2]<<8) + buffer[3];
+ static int hv_ptp_gettime(struct ptp_clock_info *info, struct timespec64 *ts)
+ {
+-	*ts = hv_get_adj_host_time();
 -
- 	if (ret)
- 		return ret;
--	else
--		return snprintf(sysfsbuf, PAGE_SIZE, "%d\n", count);
-+
-+	count = ((u32)buffer[0]<<24) + ((u32)buffer[1]<<16) +
-+						((u32)buffer[2]<<8) + buffer[3];
-+	return snprintf(sysfsbuf, PAGE_SIZE, "%d\n", count);
+-	return 0;
++	return hv_get_adj_host_time(ts);
  }
  
- static ssize_t applesmc_key_at_index_read_show(struct device *dev,
+ static struct ptp_clock_info ptp_hyperv_info = {
 -- 
 2.25.1
 
