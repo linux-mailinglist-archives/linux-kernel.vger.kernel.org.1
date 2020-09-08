@@ -2,89 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F7622617BF
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:42:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 227932617D6
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:44:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731701AbgIHRlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 13:41:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56828 "EHLO
+        id S1731693AbgIHRn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 13:43:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731662AbgIHQOE (ORCPT
+        with ESMTP id S1731664AbgIHQOE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 8 Sep 2020 12:14:04 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F8DAC0617A5
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 05:13:58 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id gr14so21046276ejb.1
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 05:13:58 -0700 (PDT)
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70E2EC0617B9
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 05:16:22 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id q9so17091120wmj.2
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 05:16:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=qrnyg2Jm0ZMDLhfMDLTPa3q/hqhgWjGbjcB9r/1C63U=;
-        b=U3SDmAze50USY6EovyILAG+puSbqW7D7ip6u6MXQ/FbqvLAPHNn30z1mlZCWf9PgAg
-         kkNHd4g+BQhNUO0oNqBxtzmPfO9RSFtCLyAOGoGxU3CTKU8MlgrNPbVYx3ZPTs61WQNz
-         vUWVaTiypQvTyLaxrbqzhN+WJHVFXskWi+pG1TwPJPx6nNeIga/i9/SvjwqLeyLkU9h2
-         mRB0hvr1a/7qEik/7UT5Fl5VlgcQiogu2cidPZ04KU5xjQr/osjHnDx2SEB4VJEX/Xu1
-         NmIT1Va3IQ7R4Y7bQu+RfbRcoZk9C2HRc9AL/9bi/Su6TAwiAqjdGeNdS74tm9iI/P4m
-         jSPQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=25SuQDI0eyCRm9y5WDHzplEK9oGtQL3VKe10BEOjmTA=;
+        b=QPX3it+b0HCvDkvbnLXnuah4CoH16gftRJ7806vrwP3qNieZtYGGzWOWb5H6s2Ymo6
+         tFciYxxHwZ+bLk25IzxWbtHz0zL7hPxojHfBsUJqxOPoVKqSYMw4s5Jhs4CWSe+lLKvZ
+         c5AwWr450MpqcX6CXpFhLMMNrVYkQ9Fjd8nqLWMfFi9LnzsfdtWd0LpKQYtzz+NCxHB3
+         J637fA5b93NLgh+gh4KvKv3RMjqzd73wNSnuCBKM/un+6MXqTcJ0HEPCNbet4mb1L5NA
+         cKFb0yVJxMPcpuUS6t+uXVXwP2CwZFGY4q8U86OqXN4i0oaciML3l3t5SgA2Rsr+bZIa
+         dFfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=qrnyg2Jm0ZMDLhfMDLTPa3q/hqhgWjGbjcB9r/1C63U=;
-        b=eWpEeo3M40MKtsZkqvIvT+r3bNw5ZL/ve5eWtnvu8sMda60qRqm72L3wFIYB85Zpix
-         N9HLTFbVLOOTfnuIuEatIHgCjQCVlGzXkiNmzecTOlJ8muDp/16LZCd3AOxs+Cn0OoRL
-         jnf8p/jQWNOMgLxV+Ri2ehAtvi5/j6YK/7h5bAzgnDqmoFnMTN4XmmnXYwz5XDViMRnE
-         Ok2AUVaJLVud7+p165lWSXR5g3+5O7jW8z47G5td2hECrgOd2YNxedXj7Qn21WAyDEiB
-         R4plM/O6flMleqcU1uLjE2PC4zRgGPFA5sRnADC8vrfsEu0lqIRJPnauFs3H/tl5CJfy
-         dk5Q==
-X-Gm-Message-State: AOAM533+8vKo0Z7cUXqDnWdeik0o3UyzvVA3rVOizykGHo6+z2nD6w4x
-        ekmoIFh7d9sctnNBVrRKAAFuHp2g/yg=
-X-Google-Smtp-Source: ABdhPJz4O+W2UMQDvNCEIHRBYt3Ewv2ciklxjXsveuRs/pJ7sj0BnUZDveM8j9RTN3Pv4eYDPTc8NQ==
-X-Received: by 2002:a17:906:f43:: with SMTP id h3mr25099270ejj.338.1599567237152;
-        Tue, 08 Sep 2020 05:13:57 -0700 (PDT)
-Received: from gmail.com (54007801.dsl.pool.telekom.hu. [84.0.120.1])
-        by smtp.gmail.com with ESMTPSA id z23sm17481645eja.29.2020.09.08.05.13.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Sep 2020 05:13:56 -0700 (PDT)
-Date:   Tue, 8 Sep 2020 14:13:54 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Tony Luck <tony.luck@intel.com>
-Subject: Re: [PATCH v1] x86/defconfigs: Unbreak 32-bit defconfig builds
-Message-ID: <20200908121354.GA3848343@gmail.com>
-References: <20200908100018.50188-1-andriy.shevchenko@linux.intel.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=25SuQDI0eyCRm9y5WDHzplEK9oGtQL3VKe10BEOjmTA=;
+        b=boefQ8avXQ0E42bqc2BFMAzZoV8ybYrVJvNGYhi189YPd5vouqN9MmBrP0Tha5RFo1
+         bVKZnvQcjJ1IbdQiAvrqAvQXSC7KO9m8rZRIUtXyvecCkZcDl3xIOhqCKiddiGIyfWA4
+         4PdUwPr4kn51e34P2gpHdKAIZ00Pqzu10qSQpGepPXGI7PetV+l4rSharXpPaAu/93/R
+         fcB1+SsIHKovrAqELN1M3DMpPn1uRfj7r+JLH53ClGQCAS4tQQjPF9ElQeS1FrA+lig+
+         FL/31kYRTVIM2nDEp9mRDxiK8CYafuIhanksD2JRduy38/qntsscabjixCvwBauTcCss
+         dKpA==
+X-Gm-Message-State: AOAM533GZAKh1VDluVY3uG07/aHmOgQtgQ9JXW+NM5LwEG0huFdyJiO2
+        pduAP81gJPGjEtFa0ZMWWGhShXZDv/lbhRTm2fkThw==
+X-Google-Smtp-Source: ABdhPJzNFarnK0nYdbKJBLU0NMJuC6Hpm534oaFYqrVkXTx051ncwUm57xW2hX6Fd0DEO38hfYKPpM9pZm6/JEEqxdA=
+X-Received: by 2002:a1c:105:: with SMTP id 5mr4078883wmb.175.1599567380842;
+ Tue, 08 Sep 2020 05:16:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200908100018.50188-1-andriy.shevchenko@linux.intel.com>
+References: <20200907134055.2878499-1-elver@google.com> <4dc8852a-120d-0835-1dc4-1a91f8391c8a@suse.cz>
+In-Reply-To: <4dc8852a-120d-0835-1dc4-1a91f8391c8a@suse.cz>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Tue, 8 Sep 2020 14:16:09 +0200
+Message-ID: <CAG_fn=UdnN4EL6OtAV8RY7kuqO+VXqSsf+grx2Le64UQJOUMvQ@mail.gmail.com>
+Subject: Re: [PATCH RFC 00/10] KFENCE: A low-overhead sampling-based memory
+ safety error detector
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Marco Elver <elver@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Lameter <cl@linux.com>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, paulmck@kernel.org,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>, dave.hansen@linux.intel.com,
+        Dmitriy Vyukov <dvyukov@google.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>, Qian Cai <cai@lca.pw>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Linux Memory Management List <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> Toggling a static branch is AFAIK quite disruptive (PeterZ will probably =
+tell
+> you better), and with the default 100ms sample interval, I'd think it's n=
+ot good
+> to toggle it so often? Did you measure what performance would you get, if=
+ the
+> static key was only for long-term toggling the whole feature on and off (=
+boot
+> time or even runtime), but the decisions "am I in a sample interval right=
+ now?"
+> would be normal tests behind this static key? Thanks.
 
-* Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+100ms is the default that we use for testing, but for production it
+should be fine to pick a longer interval (e.g. 1 second or more).
+We haven't noticed any performance impact with neither 100ms nor bigger val=
+ues.
 
-> After the commit 1d0e12fd3a84 ("x86/defconfigs: Refresh defconfig files")
-> 32-bit builds using defconfig become broken because on x86_64 build host
-> with no ARCH provided the default behaviour is to assume 64-bit independently
-> on the configuration file name. The crucial part is CONFIG_64BIT option
-> that used to be explicit. Let restore the latter option in order to unbreak
-> 32-bit builds.
+Regarding using normal branches, they are quite expensive.
+E.g. at some point we used to have a branch in slab_free() to check
+whether the freed object belonged to KFENCE pool.
+When the pool address was taken from memory, this resulted in some
+non-zero performance penalty.
 
-So exactly which build method broke due to this? The typical way to do a defconfig build is:
+As for enabling the whole feature at runtime, our intention is to let
+the users have it enabled by default, otherwise someone will need to
+tell every machine in the fleet when the feature is to be enabled.
+>
+> > We have verified by running synthetic benchmarks (sysbench I/O,
+> > hackbench) that a kernel with KFENCE is performance-neutral compared to
+> > a non-KFENCE baseline kernel.
+> >
+> > KFENCE is inspired by GWP-ASan [1], a userspace tool with similar
+> > properties. The name "KFENCE" is a homage to the Electric Fence Malloc
+> > Debugger [2].
+> >
+> > For more details, see Documentation/dev-tools/kfence.rst added in the
+> > series -- also viewable here:
+> >
+> >       https://raw.githubusercontent.com/google/kasan/kfence/Documentati=
+on/dev-tools/kfence.rst
+> >
+> > [1] http://llvm.org/docs/GwpAsan.html
+> > [2] https://linux.die.net/man/3/efence
+> >
+> > Alexander Potapenko (6):
+> >   mm: add Kernel Electric-Fence infrastructure
+> >   x86, kfence: enable KFENCE for x86
+> >   mm, kfence: insert KFENCE hooks for SLAB
+> >   mm, kfence: insert KFENCE hooks for SLUB
+> >   kfence, kasan: make KFENCE compatible with KASAN
+> >   kfence, kmemleak: make KFENCE compatible with KMEMLEAK
+> >
+> > Marco Elver (4):
+> >   arm64, kfence: enable KFENCE for ARM64
+> >   kfence, lockdep: make KFENCE compatible with lockdep
+> >   kfence, Documentation: add KFENCE documentation
+> >   kfence: add test suite
+> >
+> >  Documentation/dev-tools/index.rst  |   1 +
+> >  Documentation/dev-tools/kfence.rst | 285 +++++++++++
+> >  MAINTAINERS                        |  11 +
+> >  arch/arm64/Kconfig                 |   1 +
+> >  arch/arm64/include/asm/kfence.h    |  39 ++
+> >  arch/arm64/mm/fault.c              |   4 +
+> >  arch/x86/Kconfig                   |   2 +
+> >  arch/x86/include/asm/kfence.h      |  60 +++
+> >  arch/x86/mm/fault.c                |   4 +
+> >  include/linux/kfence.h             | 174 +++++++
+> >  init/main.c                        |   2 +
+> >  kernel/locking/lockdep.c           |   8 +
+> >  lib/Kconfig.debug                  |   1 +
+> >  lib/Kconfig.kfence                 |  70 +++
+> >  mm/Makefile                        |   1 +
+> >  mm/kasan/common.c                  |   7 +
+> >  mm/kfence/Makefile                 |   6 +
+> >  mm/kfence/core.c                   | 730 +++++++++++++++++++++++++++
+> >  mm/kfence/kfence-test.c            | 777 +++++++++++++++++++++++++++++
+> >  mm/kfence/kfence.h                 | 104 ++++
+> >  mm/kfence/report.c                 | 201 ++++++++
+> >  mm/kmemleak.c                      |  11 +
+> >  mm/slab.c                          |  46 +-
+> >  mm/slab_common.c                   |   6 +-
+> >  mm/slub.c                          |  72 ++-
+> >  25 files changed, 2591 insertions(+), 32 deletions(-)
+> >  create mode 100644 Documentation/dev-tools/kfence.rst
+> >  create mode 100644 arch/arm64/include/asm/kfence.h
+> >  create mode 100644 arch/x86/include/asm/kfence.h
+> >  create mode 100644 include/linux/kfence.h
+> >  create mode 100644 lib/Kconfig.kfence
+> >  create mode 100644 mm/kfence/Makefile
+> >  create mode 100644 mm/kfence/core.c
+> >  create mode 100644 mm/kfence/kfence-test.c
+> >  create mode 100644 mm/kfence/kfence.h
+> >  create mode 100644 mm/kfence/report.c
+> >
+>
 
-  make ARCH=i386 defconfig
 
-which still works fine AFAICS.
+--=20
+Alexander Potapenko
+Software Engineer
 
-Thanks,
+Google Germany GmbH
+Erika-Mann-Stra=C3=9Fe, 33
+80636 M=C3=BCnchen
 
-	Ingo
+Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Halimah DeLaine Prado
+Registergericht und -nummer: Hamburg, HRB 86891
+Sitz der Gesellschaft: Hamburg
