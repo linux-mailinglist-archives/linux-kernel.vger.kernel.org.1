@@ -2,106 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F196261354
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 17:18:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04520261322
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 17:01:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730300AbgIHPSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 11:18:34 -0400
-Received: from mga01.intel.com ([192.55.52.88]:60752 "EHLO mga01.intel.com"
+        id S1729808AbgIHPBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 11:01:48 -0400
+Received: from mga18.intel.com ([134.134.136.126]:30542 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730188AbgIHPQT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:16:19 -0400
-IronPort-SDR: TxPoHQfAnCF44btYfNAdQr+nDHxb8GZxdL1bMW3UyVEyrxW+mRkY6gMD4jzkDad6wI/cgWQ8sj
- nip2iAAflY9Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9737"; a="176183609"
+        id S1728936AbgIHOYv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 10:24:51 -0400
+IronPort-SDR: j1rb+VyL4y6f9UVj4mzg5ieTuTtPzROest3KgFNZSFux095SBr6BEXGOIPEg9KFNhGVUbe+Y7D
+ P8KPn1uyEqgg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9737"; a="145840389"
 X-IronPort-AV: E=Sophos;i="5.76,405,1592895600"; 
-   d="scan'208";a="176183609"
+   d="scan'208";a="145840389"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2020 06:49:48 -0700
-IronPort-SDR: EE1FhTZi6ME/V9j17PG5lGjFOgXCqdwuuvE4gN5Bd70E2i+arsePUQFkObp4QM5EI0+fNbFIt9
- rgnFi1Ov6STQ==
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2020 06:52:12 -0700
+IronPort-SDR: GtH7tHAz0ahq8zXLnnABf2GLWZGgYtsMnXaHdd82W1KnqJvzH5xd7xWYoriyVZbzqg4zqFYEF+
+ X3UqcHJehHYQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.76,405,1592895600"; 
-   d="scan'208";a="333478724"
+   d="scan'208";a="333479206"
 Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga008.jf.intel.com with ESMTP; 08 Sep 2020 06:49:46 -0700
+  by orsmga008.jf.intel.com with ESMTP; 08 Sep 2020 06:52:10 -0700
 Received: from andy by smile with local (Exim 4.94)
         (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kFdy9-00FDZZ-Ef; Tue, 08 Sep 2020 16:47:33 +0300
-Date:   Tue, 8 Sep 2020 16:47:33 +0300
+        id 1kFe0T-00FDbA-Gr; Tue, 08 Sep 2020 16:49:57 +0300
+Date:   Tue, 8 Sep 2020 16:49:57 +0300
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     Bartosz Golaszewski <brgl@bgdev.pl>
 Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Kent Gibson <warthog618@gmail.com>, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Kent Gibson <warthog618@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org,
         Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: Re: [PATCH] gpiolib: switch to simpler IDA interface
-Message-ID: <20200908134733.GA1891694@smile.fi.intel.com>
-References: <20200908131225.10870-1-brgl@bgdev.pl>
+Subject: Re: [PATCH 3/3] gpiolib: unexport devprop_gpiochip_set_names()
+Message-ID: <20200908134957.GB1891694@smile.fi.intel.com>
+References: <20200908125813.8809-1-brgl@bgdev.pl>
+ <20200908125813.8809-4-brgl@bgdev.pl>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200908131225.10870-1-brgl@bgdev.pl>
+In-Reply-To: <20200908125813.8809-4-brgl@bgdev.pl>
 Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 08, 2020 at 03:12:25PM +0200, Bartosz Golaszewski wrote:
+On Tue, Sep 08, 2020 at 02:58:13PM +0200, Bartosz Golaszewski wrote:
 > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 > 
-> We don't need to specify any ranges when allocating IDs so we can switch
-> to ida_alloc() and ida_free() instead of the ida_simple_ counterparts.
-> 
-> ida_simple_get(ida, 0, 0, gfp) is equivalent to
-> ida_alloc_range(ida, 0, UINT_MAX, gfp) which is equivalent to
-> ida_alloc(ida, gfp). Note: IDR will never actually allocate an ID
-> larger than INT_MAX.
+> Now that devprop_gpiochip_set_names() is only used in a single place
+> inside drivers/gpio/gpiolib.c, there's no need anymore for it to be
+> exported or to even live in its own source file. Pull this function into
+> the core source file for gpiolib.
 
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Did you miss to remove old file?
 
-> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> ---
->  drivers/gpio/gpiolib.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-> index 80137c1b3cdc..97f76334ec7e 100644
-> --- a/drivers/gpio/gpiolib.c
-> +++ b/drivers/gpio/gpiolib.c
-> @@ -426,7 +426,7 @@ static void gpiodevice_release(struct device *dev)
->  	struct gpio_device *gdev = dev_get_drvdata(dev);
->  
->  	list_del(&gdev->list);
-> -	ida_simple_remove(&gpio_ida, gdev->id);
-> +	ida_free(&gpio_ida, gdev->id);
->  	kfree_const(gdev->label);
->  	kfree(gdev->descs);
->  	kfree(gdev);
-> @@ -537,7 +537,7 @@ int gpiochip_add_data_with_key(struct gpio_chip *gc, void *data,
->  		gc->of_node = gdev->dev.of_node;
->  #endif
->  
-> -	gdev->id = ida_simple_get(&gpio_ida, 0, 0, GFP_KERNEL);
-> +	gdev->id = ida_alloc(&gpio_ida, GFP_KERNEL);
->  	if (gdev->id < 0) {
->  		ret = gdev->id;
->  		goto err_free_gdev;
-> @@ -705,7 +705,7 @@ int gpiochip_add_data_with_key(struct gpio_chip *gc, void *data,
->  err_free_descs:
->  	kfree(gdev->descs);
->  err_free_ida:
-> -	ida_simple_remove(&gpio_ida, gdev->id);
-> +	ida_free(&gpio_ida, gdev->id);
->  err_free_gdev:
->  	/* failures here can mean systems won't boot... */
->  	pr_err("%s: GPIOs %d..%d (%s) failed to register, %d\n", __func__,
-> -- 
-> 2.26.1
-> 
+>  drivers/gpio/Makefile       |  1 -
+>  drivers/gpio/gpiolib.c      | 47 +++++++++++++++++++++++++++++++++++++
+>  include/linux/gpio/driver.h |  2 --
 
 -- 
 With Best Regards,
