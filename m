@@ -2,97 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0068026129E
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 16:24:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE24826124D
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 16:04:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728954AbgIHOX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 10:23:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37212 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729719AbgIHOPu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 10:15:50 -0400
-Received: from mail-ua1-f42.google.com (mail-ua1-f42.google.com [209.85.222.42])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8A2A721D94
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 12:10:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599567012;
-        bh=lq9eTjrWEGZEa2yiJKmSBpUchaqnuHBGfVpng6L9Aqc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=2JBREKU6JRgGxsJ1r8Ce2Iju6vIu8ns/qPUApwNkh+GlxhyVWmZki8K1pkhPaBIMI
-         oIjpxoan1Owvg0lws/TNOUleSTdKu7+AxYmUfIWC1QVQyHVnrSntCmcm31oOP9BeIn
-         XhujwMCmWKaMS2a2Z8abpw9lH+pT866FkY6uho3Y=
-Received: by mail-ua1-f42.google.com with SMTP id z12so4963351uam.12
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 05:10:12 -0700 (PDT)
-X-Gm-Message-State: AOAM532CwOh3a4SHaXB03We7EThoQCrUFIk4pjrUMW+t2UZ/Hd5Q+mnH
-        9MZmPpO5YiLp/AE7SMZGDg9hjeUIFw31aLhM4fgW8g==
-X-Google-Smtp-Source: ABdhPJzVyQm6/6q5OjrV7nqU3MI7oMJGT7K1lFXypEJBdr8i/tOI9S8ZGFWCl5CSa7p27tf/aSMle29PYGnK5195eZQ=
-X-Received: by 2002:ab0:384a:: with SMTP id h10mr5065875uaw.77.1599567011727;
- Tue, 08 Sep 2020 05:10:11 -0700 (PDT)
+        id S1729390AbgIHOCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 10:02:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35262 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729913AbgIHN7d (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 09:59:33 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC261C061374;
+        Tue,  8 Sep 2020 05:45:38 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id b16so8234990pjp.0;
+        Tue, 08 Sep 2020 05:45:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jhHypeLTRA4WXxhhuo6Z6j83RXXSW7eZ7o0xAUpwRko=;
+        b=WYKxTMjhCEq3m5vySflh4N7bV6WzAwoHVDwnzWmDuvMlUJQQTYUjRRQrQ1HRFyImD6
+         ARHK1Gga6jFz0A0tT9XZCQOyxKpp2fSboNAWVfGB7Fc9x5CDDDVQTESefH43SmG5Ubag
+         0O7upG16zrl5k74HF5oKkZlLqAYvSAv9dK2XPLZSOC6w1xowlI4LXHsW1Z7CqsmB03Vh
+         +3OTgSWBIMK36QOK71xW0sjXtkESECjQEqIycmMsrjdzZc/+KT54hSVfaOj0R6Aro5Mb
+         2ZXppdSSRwH+2qL2ZJqr6KHK4j8mLTt5Dh19wFsqNl5SjHS542eBkah5tHd30rej+n+7
+         uwHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jhHypeLTRA4WXxhhuo6Z6j83RXXSW7eZ7o0xAUpwRko=;
+        b=r+4yPV9ulkUASdNbZ3E6zAO5hYQ6kobKbCu6LKqhgAiZc+tnCm+3GxZNs7EkPjLTsJ
+         4heTHCTF97pUsCZfdjKo9TJFMnlcYw+GLI4IbIukRAvPimrWT9n4698Rb3XIkIjjm2WU
+         Nstaqd/qUV7+MK4IOHDWHHTYOLSEk4is8U4X8RgcmedKZF4ceIvzjaRHjV6UbJJ8zBhZ
+         ukPRjJPpCoY4AmsR57L613auaQDKqmccStMP7jhsJvWHrCfs1uHcD+DbjLr8NJTYjfop
+         NP5n1iQPRgRVnntY9ZkdwXtmnIQ975Ooj3lJyZlSg7orjwSNyRlxvDNf2xB35X1GwTa9
+         Fq3Q==
+X-Gm-Message-State: AOAM533UOHS4nPtWAp7ePBuOz8Zx9YTMgoUYFCf+OYu30lDW3uDF7q4r
+        7STX9k/9fw8vi8zkozGbj9iezMbJbej068VC21Y=
+X-Google-Smtp-Source: ABdhPJw8LTt+XXaAgFIKLhZcvCAflJODmJdMFXBFRgAFnhCwPcvxTBBWUsyrjeSl3fonexRUaflNzJYkjYk5w6tS5WE=
+X-Received: by 2002:a17:90a:bd02:: with SMTP id y2mr3900886pjr.66.1599569138277;
+ Tue, 08 Sep 2020 05:45:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200908075716.30357-1-manivannan.sadhasivam@linaro.org> <20200908075716.30357-7-manivannan.sadhasivam@linaro.org>
-In-Reply-To: <20200908075716.30357-7-manivannan.sadhasivam@linaro.org>
-From:   Amit Kucheria <amitk@kernel.org>
-Date:   Tue, 8 Sep 2020 17:40:00 +0530
-X-Gmail-Original-Message-ID: <CAHLCerNaf6hdC5etZoiq2pvvRt85CpD0yEW5_pcfpQKDjHk5Fw@mail.gmail.com>
-Message-ID: <CAHLCerNaf6hdC5etZoiq2pvvRt85CpD0yEW5_pcfpQKDjHk5Fw@mail.gmail.com>
-Subject: Re: [PATCH 6/7] cpufreq: qcom-hw: Add cpufreq support for SM8250 SoC
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Taniya Das <tdas@codeaurora.org>
+References: <CAJht_EOu8GKvdTAeF_rHsaKu7iYOmW8C64bQA21bgKuiANE5Zw@mail.gmail.com>
+ <CAJht_EP=g02o2ygihNo=EWd1OuL3HSjmhqgGiwUGrMde=urSUA@mail.gmail.com>
+ <CA+FuTSdm35x9nA259JgOWcCWJto9MVMHGGgamPPsgnpsTmPO8g@mail.gmail.com>
+ <CAJht_EPEqUMXNdQLL9d5OtzbZ92Jms7nSUR8bS+cw2Ah5mv6cQ@mail.gmail.com>
+ <CA+FuTSeJS22R2VYSzcEVvXiUhX79RYE0o3G6V3NKGzQ4UGaJQg@mail.gmail.com>
+ <CAJht_EN7SXAex-1W49eY7q5p2UqLYvXA8D6hptJGquXdJULLcA@mail.gmail.com> <CA+FuTSfgxt6uqcxy=wnOXo8HxMJ3J0HAqQNiDJBLCs22Ukb_gQ@mail.gmail.com>
+In-Reply-To: <CA+FuTSfgxt6uqcxy=wnOXo8HxMJ3J0HAqQNiDJBLCs22Ukb_gQ@mail.gmail.com>
+From:   Xie He <xie.he.0141@gmail.com>
+Date:   Tue, 8 Sep 2020 05:45:27 -0700
+Message-ID: <CAJht_EN-aBo8rfHAxYxwW2Jb38S2PW3WtxhWuHn5HS1fAWeA1w@mail.gmail.com>
+Subject: Re: Question about dev_validate_header used in af_packet.c
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 8, 2020 at 1:27 PM Manivannan Sadhasivam
-<manivannan.sadhasivam@linaro.org> wrote:
+On Tue, Sep 8, 2020 at 4:53 AM Willem de Bruijn
+<willemdebruijn.kernel@gmail.com> wrote:
 >
-> SM8250 SoC uses EPSS block for carrying out the cpufreq duties. Hence, add
-> support for it in the driver with relevant of_match data.
+> On Tue, Sep 8, 2020 at 1:04 PM Xie He <xie.he.0141@gmail.com> wrote:
+> >
+> > I was recently looking at some drivers, and I felt that if af_packet.c
+> > could help me filter out the invalid RAW frames, I didn't need to
+> > check the validity of the frames myself (in the driver when
+> > transmitting). But now I guess I still need to check that.
+> >
+> > I feel this makes the dev_validate_header's variable-length header
+> > check not very useful, because drivers need to do this check again
+> > (when transmitting) anyway.
+> >
+> > I was thinking, after I saw dev_validate_header, that we could
+> > eventually make it completely take over the responsibility for a
+> > driver to validate the header when transmitting RAW frames. But now it
+> > seems we would not be able to do this.
 >
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> Agreed. As is, it is mainly useful to block users who are ns_capable,
+> but not capable.
+>
+> A third option is to move it behind a sysctl (with static_branch). Your
+> point is valid that there really is no need for testing of drivers against
+> bad packets if the data is validated directly on kernel entry.
 
-Reviewed-by: Amit Kucheria <amitk@kernel.org>
-
-
-> ---
->  drivers/cpufreq/qcom-cpufreq-hw.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
->
-> diff --git a/drivers/cpufreq/qcom-cpufreq-hw.c b/drivers/cpufreq/qcom-cpufreq-hw.c
-> index de816bcafd33..c3c397cc3dc6 100644
-> --- a/drivers/cpufreq/qcom-cpufreq-hw.c
-> +++ b/drivers/cpufreq/qcom-cpufreq-hw.c
-> @@ -285,8 +285,17 @@ static const struct qcom_cpufreq_soc_data qcom_soc_data = {
->         .lut_row_size = 32,
->  };
->
-> +static const struct qcom_cpufreq_soc_data sm8250_soc_data = {
-> +       .reg_enable = 0x0,
-> +       .reg_freq_lut = 0x100,
-> +       .reg_volt_lut = 0x200,
-> +       .reg_perf_state = 0x320,
-> +       .lut_row_size = 4,
-> +};
-> +
->  static const struct of_device_id qcom_cpufreq_hw_match[] = {
->         { .compatible = "qcom,cpufreq-hw", .data = &qcom_soc_data },
-> +       { .compatible = "qcom,sm8250-epss", .data = &sm8250_soc_data },
->         {}
->  };
->  MODULE_DEVICE_TABLE(of, qcom_cpufreq_hw_match);
-> --
-> 2.17.1
->
+I was thinking about this again and it came to me that maybe sometimes
+people actually wanted to send invalid frames on wire (for testing the
+network device on the other end of the wire)? Having thought about
+this possibility I think it might be good to keep the ability for
+people to have 2 choices (either having their RAW frames validated, or
+not validated) through "capability" or through "sysctl" as you
+mentioned. We can keep the default to be not validating the RAW frames
+because RAW sockets are already intended for very special use and are
+not for normal use.
