@@ -2,100 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D46002620E6
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 22:17:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62207261FC1
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 22:06:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731222AbgIHURU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 16:17:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46400 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729057AbgIHPKB (ORCPT
+        id S1730181AbgIHUGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 16:06:19 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:28832 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730302AbgIHPVk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:10:01 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D60BBC061A1C
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 07:22:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=yLRn39Afrdj+Ne8GAyMtKL8Y0JA13SEQt+AfAa1rXaw=; b=nDBz80KvfiVjxRsEPIF7SX1Frj
-        ZFbTcxq30u1Z8LaFy58OseFcRMBFhPFGCOpYrPlro9QCccDQ7WMJszzfA+KUmqojvyIu4yqeWfZKq
-        mbRMkfCKYucXiiZOSq3s3yC4kcVKVEAb2BeOtuTuRlTe9W2sJfqj/rblA6OUdroJClEv7/ySYqf3p
-        xYsKXHp2VVdVVnDHTIeC2fixoCHwQ10XI4NSbDcMvurlUVy0YaSWyNfr6WaGLQsPWA6iacim41Rgy
-        hSPbqjnjShB+eG8wb8mNouFVVwVsS2MJhj26YtZfFUspzh8rm/jfpWPAH3usZy/Rz4f+NAo+JFYu0
-        O7N6VAVQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kFeVm-0001Kt-PN; Tue, 08 Sep 2020 14:22:18 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3B2F2301A27;
-        Tue,  8 Sep 2020 16:22:16 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id E3BA72B5FC944; Tue,  8 Sep 2020 16:22:15 +0200 (CEST)
-Date:   Tue, 8 Sep 2020 16:22:15 +0200
-From:   peterz@infradead.org
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org, will@kernel.org,
-        npiggin@gmail.com, elver@google.com, jgross@suse.com,
-        paulmck@kernel.org, rostedt@goodmis.org, rjw@rjwysocki.net,
-        joel@joelfernandes.org, svens@linux.ibm.com, tglx@linutronix.de,
-        davem@davemloft.net
-Subject: Re: [PATCH v2 10/11] lockdep: Only trace IRQ edges
-Message-ID: <20200908142215.GU1362448@hirez.programming.kicks-ass.net>
-References: <20200821084738.508092956@infradead.org>
- <20200821085348.723775490@infradead.org>
- <20200902042137.GA163925@roeck-us.net>
- <20200902090935.GW1362448@hirez.programming.kicks-ass.net>
- <20200902091247.GX35926@hirez.programming.kicks-ass.net>
- <559ff09a-275b-21bf-15f1-daa0d02d1c76@roeck-us.net>
+        Tue, 8 Sep 2020 11:21:40 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 088E2kAB193410;
+        Tue, 8 Sep 2020 10:25:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=x4Jffv0uhOxMnzQ2dJkXMe8lryLf2Vv6NR5aexBXTbM=;
+ b=J7C9HIbsK9YGAOgACeooFH+UVe1aBgntuVegvy+W6cSnCeKK40/okhY6953A0WKMa2sZ
+ lt2aIcurXIbtf3oxmKVDAZ/vBtwjjFE17E/v+fhZ+kStYXO6uAMz3hfkRsvq2JyaD+6a
+ ONkP2+eK2PEba3urt5mzNWHUjT93A/EVyypf96uH5RPbJjWGKUFif5DuAG0YW/efMYVt
+ apTJRC8h5k/l64tiI8OmZ/zVnwkdYwAwfqfOSsDXkOG7nMOQq8XV5KlZu5pgRNYiM/TH
+ gTfjiwpdez5W24QPH3SvVYU2DPKK/n8Q9COlkZMKkt0UkKnbADxbJxmmUs3DxUD/wFJU 6Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33e9ma4fff-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 08 Sep 2020 10:25:41 -0400
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 088E3g1E196268;
+        Tue, 8 Sep 2020 10:25:40 -0400
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33e9ma4fbx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 08 Sep 2020 10:25:40 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 088EPaNB024340;
+        Tue, 8 Sep 2020 14:25:36 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma06fra.de.ibm.com with ESMTP id 33e5gmr7g6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 08 Sep 2020 14:25:36 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 088EO0HG21889504
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 8 Sep 2020 14:24:00 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 69ADBAE053;
+        Tue,  8 Sep 2020 14:25:33 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CC167AE04D;
+        Tue,  8 Sep 2020 14:25:31 +0000 (GMT)
+Received: from oc3871087118.ibm.com (unknown [9.145.58.21])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Tue,  8 Sep 2020 14:25:31 +0000 (GMT)
+Date:   Tue, 8 Sep 2020 16:25:30 +0200
+From:   Alexander Gordeev <agordeev@linux.ibm.com>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-mm <linux-mm@kvack.org>, Paul Mackerras <paulus@samba.org>,
+        linux-sparc <sparclinux@vger.kernel.org>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Richard Weinberger <richard@nod.at>,
+        linux-x86 <x86@kernel.org>, Russell King <linux@armlinux.org.uk>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Arnd Bergmann <arnd@arndb.de>, Jeff Dike <jdike@addtoit.com>,
+        linux-um <linux-um@lists.infradead.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-arm <linux-arm-kernel@lists.infradead.org>,
+        linux-power <linuxppc-dev@lists.ozlabs.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>
+Subject: Re: [RFC PATCH v2 2/3] mm: make pXd_addr_end() functions page-table
+ entry aware
+Message-ID: <20200908142529.GB20558@oc3871087118.ibm.com>
+References: <20200907180058.64880-1-gerald.schaefer@linux.ibm.com>
+ <20200907180058.64880-3-gerald.schaefer@linux.ibm.com>
+ <31dfb3ed-a0cc-3024-d389-ab9bd19e881f@csgroup.eu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <559ff09a-275b-21bf-15f1-daa0d02d1c76@roeck-us.net>
+In-Reply-To: <31dfb3ed-a0cc-3024-d389-ab9bd19e881f@csgroup.eu>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-08_07:2020-09-08,2020-09-08 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ suspectscore=0 lowpriorityscore=0 bulkscore=0 mlxscore=0 spamscore=0
+ mlxlogscore=999 impostorscore=0 clxscore=1015 phishscore=0 adultscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009080133
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 02, 2020 at 06:48:30AM -0700, Guenter Roeck wrote:
-> On 9/2/20 2:12 AM, peterz@infradead.org wrote:
-> > On Wed, Sep 02, 2020 at 11:09:35AM +0200, peterz@infradead.org wrote:
-> >> On Tue, Sep 01, 2020 at 09:21:37PM -0700, Guenter Roeck wrote:
-> >>> [    0.000000] WARNING: CPU: 0 PID: 0 at kernel/locking/lockdep.c:4875 check_flags.part.39+0x280/0x2a0
-> >>> [    0.000000] DEBUG_LOCKS_WARN_ON(lockdep_hardirqs_enabled())
-> >>
-> >>> [    0.000000] [<00000000004cff18>] lock_acquire+0x218/0x4e0
-> >>> [    0.000000] [<0000000000d740c8>] _raw_spin_lock+0x28/0x40
-> >>> [    0.000000] [<00000000009870f4>] p1275_cmd_direct+0x14/0x60
-> >>
-> >> Lol! yes, I can see that going side-ways... let me poke at that.
-> > 
-> > I suspect this will do.
-> > 
-> > diff --git a/arch/sparc/prom/p1275.c b/arch/sparc/prom/p1275.c
-> > index 889aa602f8d8..7cfe88e30b52 100644
-> > --- a/arch/sparc/prom/p1275.c
-> > +++ b/arch/sparc/prom/p1275.c
-> > @@ -38,7 +38,7 @@ void p1275_cmd_direct(unsigned long *args)
-> >  	unsigned long flags;
-> > 
-> >  	local_save_flags(flags);
-> > -	local_irq_restore((unsigned long)PIL_NMI);
-> > +	arch_local_irq_restore((unsigned long)PIL_NMI);
-> >  	raw_spin_lock(&prom_entry_lock);
-> > 
-> >  	prom_world(1);
-> > 
-> No, that doesn't help. Even removing that line entirely doesn't help.
-> The problem seems to be that interrupts are not enabled in the first
-> place. But why wasn't this a problem before ?
+On Tue, Sep 08, 2020 at 07:14:38AM +0200, Christophe Leroy wrote:
+[...]
+> You forgot arch/powerpc/mm/book3s64/subpage_prot.c it seems.
 
-Previously every interrupt opt would disable/enable things, now we only
-update state when something actually changes.
+If this one would be okay?
 
-Anyway, I'm struggling with qemu-system-sparc64, I've got a sparc64
-cross booting to mount, but I'm not seeing this, could you get me your
-specific qemu cmdline please?
+diff --git a/arch/powerpc/mm/book3s64/subpage_prot.c b/arch/powerpc/mm/book3s64/subpage_prot.c
+index 60c6ea16..3690d22 100644
+--- a/arch/powerpc/mm/book3s64/subpage_prot.c
++++ b/arch/powerpc/mm/book3s64/subpage_prot.c
+@@ -88,6 +88,7 @@ static void hpte_flush_range(struct mm_struct *mm, unsigned long addr,
+ static void subpage_prot_clear(unsigned long addr, unsigned long len)
+ {
+ 	struct mm_struct *mm = current->mm;
++	pmd_t *pmd = pmd_off(mm, addr);
+ 	struct subpage_prot_table *spt;
+ 	u32 **spm, *spp;
+ 	unsigned long i;
+@@ -103,8 +104,8 @@ static void subpage_prot_clear(unsigned long addr, unsigned long len)
+ 	limit = addr + len;
+ 	if (limit > spt->maxaddr)
+ 		limit = spt->maxaddr;
+-	for (; addr < limit; addr = next) {
+-		next = pmd_addr_end(addr, limit);
++	for (; addr < limit; addr = next, pmd++) {
++		next = pmd_addr_end(*pmd, addr, limit);
+ 		if (addr < 0x100000000UL) {
+ 			spm = spt->low_prot;
+ 		} else {
+@@ -191,6 +192,7 @@ static void subpage_mark_vma_nohuge(struct mm_struct *mm, unsigned long addr,
+ 		unsigned long, len, u32 __user *, map)
+ {
+ 	struct mm_struct *mm = current->mm;
++	pmd_t *pmd = pmd_off(mm, addr);
+ 	struct subpage_prot_table *spt;
+ 	u32 **spm, *spp;
+ 	unsigned long i;
+@@ -236,8 +238,8 @@ static void subpage_mark_vma_nohuge(struct mm_struct *mm, unsigned long addr,
+ 	}
+ 
+ 	subpage_mark_vma_nohuge(mm, addr, len);
+-	for (limit = addr + len; addr < limit; addr = next) {
+-		next = pmd_addr_end(addr, limit);
++	for (limit = addr + len; addr < limit; addr = next, pmd++) {
++		next = pmd_addr_end(*pmd, addr, limit);
+ 		err = -ENOMEM;
+ 		if (addr < 0x100000000UL) {
+ 			spm = spt->low_prot;
+
+Thanks!
+
+> Christophe
