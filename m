@@ -2,50 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DD8A2618F2
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 20:04:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35ED6261A0E
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 20:30:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731646AbgIHSEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 14:04:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55394 "EHLO mail.kernel.org"
+        id S1731605AbgIHSab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 14:30:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53658 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731525AbgIHQMK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:12:10 -0400
+        id S1731373AbgIHQJm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 12:09:42 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A39A2247BD;
-        Tue,  8 Sep 2020 15:51:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CC7D12467F;
+        Tue,  8 Sep 2020 15:50:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599580284;
-        bh=Qoayjoiq0uSKgxLGXmLIhulkMjEAiiCj6O1lrgz1Tlc=;
+        s=default; t=1599580218;
+        bh=2P2BZZfNXyPtf+p4CljuT/G1wY2tFHlLAPot6gRYIXc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vHczBkCd87lGh72ECWimUP+jO0BpRQL7NKLePr0ZdKGmZ7BOpHP0Pb8kmXnvI3ogb
-         yMESldtRKXZhViwMskFO40FR618A4TIZxS8EhfYaQHOaYnFMl26bTAV5VtyGR1pBhU
-         9GWD58rEL7Jz1z64GRx+IX2gFAnVD+31GW5Tuohk=
+        b=WzNVQldi3ePhx3cZPtjkNwHqmqUzO0RRpIuR7TayqjR6WsEu66Enl8easCQB4wyTN
+         EjZjIxbkO1CBNIkZVOZ15M4F18/tBCTRk+3cLclinYMnIDKAQnSmA/1PQlkMjiUIGF
+         GTxIrGqvp/TFCsC57AgiawTuE3uFT6UxRWZN6n9E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kim Phillips <kim.phillips@amd.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Paul Clarke <pc@us.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Stephane Eranian <eranian@google.com>,
-        Tony Jones <tonyj@suse.de>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 4.14 03/65] perf record/stat: Explicitly call out event modifiers in the documentation
-Date:   Tue,  8 Sep 2020 17:25:48 +0200
-Message-Id: <20200908152217.194473530@linuxfoundation.org>
+        stable@vger.kernel.org, "Huang, Ying" <ying.huang@intel.com>,
+        Ingo Molnar <mingo@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 48/88] x86, fakenuma: Fix invalid starting node ID
+Date:   Tue,  8 Sep 2020 17:25:49 +0200
+Message-Id: <20200908152223.532659859@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200908152217.022816723@linuxfoundation.org>
-References: <20200908152217.022816723@linuxfoundation.org>
+In-Reply-To: <20200908152221.082184905@linuxfoundation.org>
+References: <20200908152221.082184905@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -55,63 +43,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kim Phillips <kim.phillips@amd.com>
+From: Huang Ying <ying.huang@intel.com>
 
-commit e48a73a312ebf19cc3d72aa74985db25c30757c1 upstream.
+[ Upstream commit ccae0f36d500aef727f98acd8d0601e6b262a513 ]
 
-Event modifiers are not mentioned in the perf record or perf stat
-manpages.  Add them to orient new users more effectively by pointing
-them to the perf list manpage for details.
+Commit:
 
-Fixes: 2055fdaf8703 ("perf list: Document precise event sampling for AMD IBS")
-Signed-off-by: Kim Phillips <kim.phillips@amd.com>
-Cc: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Alexey Budankov <alexey.budankov@linux.intel.com>
-Cc: Ian Rogers <irogers@google.com>
-Cc: Jin Yao <yao.jin@linux.intel.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Paul Clarke <pc@us.ibm.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Stephane Eranian <eranian@google.com>
-Cc: Tony Jones <tonyj@suse.de>
-Cc: stable@vger.kernel.org
-Link: http://lore.kernel.org/lkml/20200901215853.276234-1-kim.phillips@amd.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+  cc9aec03e58f ("x86/numa_emulation: Introduce uniform split capability")
 
+uses "-1" as the starting node ID, which causes the strange kernel log as
+follows, when "numa=fake=32G" is added to the kernel command line:
+
+    Faking node -1 at [mem 0x0000000000000000-0x0000000893ffffff] (35136MB)
+    Faking node 0 at [mem 0x0000001840000000-0x000000203fffffff] (32768MB)
+    Faking node 1 at [mem 0x0000000894000000-0x000000183fffffff] (64192MB)
+    Faking node 2 at [mem 0x0000002040000000-0x000000283fffffff] (32768MB)
+    Faking node 3 at [mem 0x0000002840000000-0x000000303fffffff] (32768MB)
+
+And finally the kernel crashes:
+
+    BUG: Bad page state in process swapper  pfn:00011
+    page:(____ptrval____) refcount:0 mapcount:1 mapping:(____ptrval____) index:0x55cd7e44b270 pfn:0x11
+    failed to read mapping contents, not a valid kernel address?
+    flags: 0x5(locked|uptodate)
+    raw: 0000000000000005 000055cd7e44af30 000055cd7e44af50 0000000100000006
+    raw: 000055cd7e44b270 000055cd7e44b290 0000000000000000 000055cd7e44b510
+    page dumped because: page still charged to cgroup
+    page->mem_cgroup:000055cd7e44b510
+    Modules linked in:
+    CPU: 0 PID: 0 Comm: swapper Not tainted 5.9.0-rc2 #1
+    Hardware name: Intel Corporation S2600WFT/S2600WFT, BIOS SE5C620.86B.02.01.0008.031920191559 03/19/2019
+    Call Trace:
+     dump_stack+0x57/0x80
+     bad_page.cold+0x63/0x94
+     __free_pages_ok+0x33f/0x360
+     memblock_free_all+0x127/0x195
+     mem_init+0x23/0x1f5
+     start_kernel+0x219/0x4f5
+     secondary_startup_64+0xb6/0xc0
+
+Fix this bug via using 0 as the starting node ID.  This restores the
+original behavior before cc9aec03e58f.
+
+[ mingo: Massaged the changelog. ]
+
+Fixes: cc9aec03e58f ("x86/numa_emulation: Introduce uniform split capability")
+Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lore.kernel.org/r/20200904061047.612950-1-ying.huang@intel.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/Documentation/perf-record.txt |    4 ++++
- tools/perf/Documentation/perf-stat.txt   |    4 ++++
- 2 files changed, 8 insertions(+)
+ arch/x86/mm/numa_emulation.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/tools/perf/Documentation/perf-record.txt
-+++ b/tools/perf/Documentation/perf-record.txt
-@@ -33,6 +33,10 @@ OPTIONS
-         - a raw PMU event (eventsel+umask) in the form of rNNN where NNN is a
- 	  hexadecimal event descriptor.
+diff --git a/arch/x86/mm/numa_emulation.c b/arch/x86/mm/numa_emulation.c
+index d71d72cf6c666..4686757a74d75 100644
+--- a/arch/x86/mm/numa_emulation.c
++++ b/arch/x86/mm/numa_emulation.c
+@@ -322,7 +322,7 @@ static int __init split_nodes_size_interleave(struct numa_meminfo *ei,
+ 					      u64 addr, u64 max_addr, u64 size)
+ {
+ 	return split_nodes_size_interleave_uniform(ei, pi, addr, max_addr, size,
+-			0, NULL, NUMA_NO_NODE);
++			0, NULL, 0);
+ }
  
-+        - a symbolic or raw PMU event followed by an optional colon
-+	  and a list of event modifiers, e.g., cpu-cycles:p.  See the
-+	  linkperf:perf-list[1] man page for details on event modifiers.
-+
- 	- a symbolically formed PMU event like 'pmu/param1=0x3,param2/' where
- 	  'param1', 'param2', etc are defined as formats for the PMU in
- 	  /sys/bus/event_source/devices/<pmu>/format/*.
---- a/tools/perf/Documentation/perf-stat.txt
-+++ b/tools/perf/Documentation/perf-stat.txt
-@@ -39,6 +39,10 @@ report::
- 	- a raw PMU event (eventsel+umask) in the form of rNNN where NNN is a
- 	  hexadecimal event descriptor.
- 
-+        - a symbolic or raw PMU event followed by an optional colon
-+	  and a list of event modifiers, e.g., cpu-cycles:p.  See the
-+	  linkperf:perf-list[1] man page for details on event modifiers.
-+
- 	- a symbolically formed event like 'pmu/param1=0x3,param2/' where
- 	  param1 and param2 are defined as formats for the PMU in
- 	  /sys/bus/event_source/devices/<pmu>/format/*
+ int __init setup_emu2phys_nid(int *dfl_phys_nid)
+-- 
+2.25.1
+
 
 
