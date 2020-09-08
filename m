@@ -2,454 +2,827 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5405260FBE
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 12:28:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA844260FD9
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 12:30:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729898AbgIHK2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 06:28:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59414 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729851AbgIHK2A (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 06:28:00 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 738BCC061755
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 03:27:59 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id m5so9727935pgj.9
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 03:27:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=+gAskG72/avqJ1yxIp8aoIKzGzAKF3CxoapI4iul8TM=;
-        b=HnBXwtxLkAIQ18DrlheRotwL+JrpR4ECbj3sLxvP/FCBkGwWe4BZhe+UQk9+TsX2Fd
-         9zYO2+VbgCwH0gYHwFeqOAEqCKunkowzYcbg7H2MqzWmJJ+b3NjzawHwbfZZRg6jvjXH
-         g0dgmqkjaX7/k3BPJ26MX54ZNLBbfnqZCSlw8xdnyXylBS2hYJOKEOmrOKdTmFv4bqzo
-         GcvAMhW4MOZLQSp8+PrcJASXLOM+h36YfbxQbB0baCnond6Uca7mhZO2BoN/V1/oLP4n
-         cegFNl/+ioiWtNP1Tr6okwQ90LMZSxo8C6P7vGhIRlwZewIMYv+K8mr0+guSbcpGpNSJ
-         AqsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=+gAskG72/avqJ1yxIp8aoIKzGzAKF3CxoapI4iul8TM=;
-        b=nnSRRP+r7rbWPlOihQ19pvFv5S/4GXAz2ZrefPQZak5FqqSjMHBow70GYORs912HT8
-         cF6JZXiPL8z29mYHqcWM1ZZ1fcpG1tiWDlyW692160FkXlq5pPDjmEhNoMqSmHT6wCpC
-         FfN4chB7ZI5QTNw/1zHZXxyIvpoBQeexdcKn2kn8mcU54F/p0diB6YWGuYgVfPa6P4Zg
-         ydCntnia6nCcZW6LC8LQLtEo2PM1hNWrGHX7HlORdpZp8ZG5CqtmAnIGtpsz7DpUnpBv
-         AkatcbOvO/NDTuXLUwTPUSrTv8TJaTmeaq6+wo505jv8kUf6AOJ6NVPlfXply5nvS9Og
-         bj0Q==
-X-Gm-Message-State: AOAM532TerxXkSwVIqR7P0kIiV2niqjbxbWW8AKR+8qJDNE5eUIYCzHl
-        rMA3muGZTUjj2O88gsYKD5dECg==
-X-Google-Smtp-Source: ABdhPJxe7b5v4o/jeeYbIMz5EpsffrmanBmr44LfNSgD7ZqL4oG7D2i9bAAqvSOUpPNMFrsnIp4F9Q==
-X-Received: by 2002:a17:902:7844:b029:d0:cbe1:e704 with SMTP id e4-20020a1709027844b02900d0cbe1e704mr567397pln.18.1599560878657;
-        Tue, 08 Sep 2020 03:27:58 -0700 (PDT)
-Received: from localhost ([122.181.54.133])
-        by smtp.gmail.com with ESMTPSA id l21sm14432485pgb.35.2020.09.08.03.27.57
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 08 Sep 2020 03:27:57 -0700 (PDT)
-Date:   Tue, 8 Sep 2020 15:57:52 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Hector Yuan <hector.yuan@mediatek.com>
-Cc:     linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        wsd_upstream@mediatek.com
-Subject: Re: [PATCH v4 1/2] cpufreq: mediatek-hw: Add support for Mediatek
- cpufreq HW driver
-Message-ID: <20200908102752.r2n6xvghl4fcdrcv@vireshk-i7>
-References: <1599550547-27767-1-git-send-email-hector.yuan@mediatek.com>
- <1599550547-27767-2-git-send-email-hector.yuan@mediatek.com>
+        id S1729478AbgIHKaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 06:30:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38680 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729986AbgIHK3L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 06:29:11 -0400
+Received: from mail.kernel.org (ip5f5ad5ce.dynamic.kabel-deutschland.de [95.90.213.206])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 330EB216C4;
+        Tue,  8 Sep 2020 10:29:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599560940;
+        bh=iRif6tYG9lH6sF2BTiVslYkjGOYZ9PuRMGMucrM+87g=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=YyXX0CRqp2cXk/Lxt1AEJlwoNOwYi1r4vE1glvDPI+z9E0MoiStrQA1f7WXXt+wfX
+         MB38z6NKemVLHERP7ETg0SzLvP/EgdP35kE49rmmqxU0+pUevY8AzjSh9kvHBMQY9m
+         yWl956ljAFqfQ+Cq99aoFnogbYgNho4JRWcKi0dQ=
+Received: from mchehab by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1kFary-00B3yD-1j; Tue, 08 Sep 2020 12:28:58 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Yu Chen <chenyu56@huawei.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: [PATCH 01/10] phy: hisilicon: add USB physical layer for Kirin 3670
+Date:   Tue,  8 Sep 2020 12:28:35 +0200
+Message-Id: <2bcc14afcbd1cc8972ab8f1a561a13aae04b881a.1599559318.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <cover.1599559318.git.mchehab+huawei@kernel.org>
+References: <cover.1599559318.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1599550547-27767-2-git-send-email-hector.yuan@mediatek.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08-09-20, 15:35, Hector Yuan wrote:
-> From: "Hector.Yuan" <hector.yuan@mediatek.com>
-> 
-> Add MT6779 cpufreq HW support.
-> 
-> Signed-off-by: Hector.Yuan <hector.yuan@mediatek.com>
-> ---
->  drivers/cpufreq/Kconfig.arm           |   12 ++
->  drivers/cpufreq/Makefile              |    1 +
->  drivers/cpufreq/mediatek-cpufreq-hw.c |  294 +++++++++++++++++++++++++++++++++
->  3 files changed, 307 insertions(+)
->  create mode 100644 drivers/cpufreq/mediatek-cpufreq-hw.c
-> 
-> diff --git a/drivers/cpufreq/Kconfig.arm b/drivers/cpufreq/Kconfig.arm
-> index c6cbfc8..8e58c12 100644
-> --- a/drivers/cpufreq/Kconfig.arm
-> +++ b/drivers/cpufreq/Kconfig.arm
-> @@ -121,6 +121,18 @@ config ARM_MEDIATEK_CPUFREQ
->  	help
->  	  This adds the CPUFreq driver support for MediaTek SoCs.
->  
-> +config ARM_MEDIATEK_CPUFREQ_HW
-> +	tristate "MediaTek CPUFreq HW driver"
-> +	depends on ARCH_MEDIATEK || COMPILE_TEST
-> +	default m
-> +	help
-> +	  Support for the CPUFreq HW driver.
-> +	  Some MediaTek chipsets have a HW engine to offload the steps
-> +	  necessary for changing the frequency of the CPUs. Firmware loaded
-> +	  in this engine exposes a programming interface to the OS.
-> +	  The driver implements the cpufreq interface for this HW engine.
-> +	  Say Y if you want to support CPUFreq HW.
-> +
->  config ARM_OMAP2PLUS_CPUFREQ
->  	bool "TI OMAP2+"
->  	depends on ARCH_OMAP2PLUS
-> diff --git a/drivers/cpufreq/Makefile b/drivers/cpufreq/Makefile
-> index f6670c4..dc1f371 100644
-> --- a/drivers/cpufreq/Makefile
-> +++ b/drivers/cpufreq/Makefile
-> @@ -57,6 +57,7 @@ obj-$(CONFIG_ARM_IMX6Q_CPUFREQ)		+= imx6q-cpufreq.o
->  obj-$(CONFIG_ARM_IMX_CPUFREQ_DT)	+= imx-cpufreq-dt.o
->  obj-$(CONFIG_ARM_KIRKWOOD_CPUFREQ)	+= kirkwood-cpufreq.o
->  obj-$(CONFIG_ARM_MEDIATEK_CPUFREQ)	+= mediatek-cpufreq.o
-> +obj-$(CONFIG_ARM_MEDIATEK_CPUFREQ_HW)	+= mediatek-cpufreq-hw.o
->  obj-$(CONFIG_MACH_MVEBU_V7)		+= mvebu-cpufreq.o
->  obj-$(CONFIG_ARM_OMAP2PLUS_CPUFREQ)	+= omap-cpufreq.o
->  obj-$(CONFIG_ARM_PXA2xx_CPUFREQ)	+= pxa2xx-cpufreq.o
-> diff --git a/drivers/cpufreq/mediatek-cpufreq-hw.c b/drivers/cpufreq/mediatek-cpufreq-hw.c
-> new file mode 100644
-> index 0000000..61040b8
-> --- /dev/null
-> +++ b/drivers/cpufreq/mediatek-cpufreq-hw.c
-> @@ -0,0 +1,294 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (c) 2020 MediaTek Inc.
-> + */
-> +
-> +#include <linux/bitfield.h>
-> +#include <linux/cpufreq.h>
-> +#include <linux/init.h>
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/of_address.h>
-> +#include <linux/of_platform.h>
-> +#include <linux/slab.h>
-> +
-> +#define LUT_MAX_ENTRIES			32U
-> +#define LUT_FREQ			GENMASK(11, 0)
-> +#define LUT_ROW_SIZE			0x4
-> +
-> +enum {
-> +	REG_LUT_TABLE,
-> +	REG_ENABLE,
-> +	REG_PERF_STATE,
-> +
-> +	REG_ARRAY_SIZE,
-> +};
-> +
-> +struct cpufreq_mtk {
-> +	struct cpufreq_frequency_table *table;
-> +	void __iomem *reg_bases[REG_ARRAY_SIZE];
-> +	cpumask_t related_cpus;
-> +};
-> +
-> +static const u16 cpufreq_mtk_offsets[REG_ARRAY_SIZE] = {
-> +	[REG_LUT_TABLE]		= 0x0,
-> +	[REG_ENABLE]	= 0x84,
-> +	[REG_PERF_STATE]	= 0x88,
-> +};
-> +
-> +static struct cpufreq_mtk *mtk_freq_domain_map[NR_CPUS];
-> +
-> +static int mtk_cpufreq_hw_target_index(struct cpufreq_policy *policy,
-> +				       unsigned int index)
-> +{
-> +	struct cpufreq_mtk *c = policy->driver_data;
-> +
-> +	writel_relaxed(index, c->reg_bases[REG_PERF_STATE]);
-> +	arch_set_freq_scale(policy->related_cpus,
-> +			    policy->freq_table[index].frequency,
-> +			    policy->cpuinfo.max_freq);
-> +
-> +	return 0;
-> +}
-> +
-> +static unsigned int mtk_cpufreq_hw_get(unsigned int cpu)
-> +{
-> +	struct cpufreq_mtk *c;
-> +	struct cpufreq_policy *policy;
-> +	unsigned int index;
-> +
-> +	policy = cpufreq_cpu_get_raw(cpu);
-> +	if (!policy)
-> +		return 0;
-> +
-> +	c = policy->driver_data;
-> +
-> +	index = readl_relaxed(c->reg_bases[REG_PERF_STATE]);
-> +	index = min(index, LUT_MAX_ENTRIES - 1);
-> +
-> +	return policy->freq_table[index].frequency;
-> +}
-> +
-> +static int mtk_cpufreq_hw_cpu_init(struct cpufreq_policy *policy)
-> +{
-> +	struct cpufreq_mtk *c;
-> +	struct device *cpu_dev;
-> +
-> +	cpu_dev = get_cpu_device(policy->cpu);
-> +	if (!cpu_dev) {
-> +		pr_err("%s: failed to get cpu%d device\n", __func__,
-> +		       policy->cpu);
-> +		return -ENODEV;
-> +	}
-> +
-> +	c = mtk_freq_domain_map[policy->cpu];
-> +	if (!c) {
-> +		pr_err("No scaling support for CPU%d\n", policy->cpu);
-> +		return -ENODEV;
-> +	}
-> +
-> +	cpumask_copy(policy->cpus, &c->related_cpus);
-> +
-> +	policy->freq_table = c->table;
-> +	policy->driver_data = c;
-> +
-> +	/* HW should be in enabled state to proceed now */
-> +	writel_relaxed(0x1, c->reg_bases[REG_ENABLE]);
-> +
-> +	return 0;
-> +}
-> +
-> +static struct freq_attr *mtk_cpufreq_hw_attr[] = {
-> +	&cpufreq_freq_attr_scaling_available_freqs,
-> +	NULL
-> +};
-> +
-> +static struct cpufreq_driver cpufreq_mtk_hw_driver = {
-> +	.flags		= CPUFREQ_STICKY | CPUFREQ_NEED_INITIAL_FREQ_CHECK |
-> +			  CPUFREQ_HAVE_GOVERNOR_PER_POLICY,
-> +	.verify		= cpufreq_generic_frequency_table_verify,
-> +	.target_index	= mtk_cpufreq_hw_target_index,
-> +	.get		= mtk_cpufreq_hw_get,
-> +	.init		= mtk_cpufreq_hw_cpu_init,
-> +	.name		= "mtk-cpufreq-hw",
-> +	.attr		= mtk_cpufreq_hw_attr,
+From: Yu Chen <chenyu56@huawei.com>
 
-You can use cpufreq_generic_attr instead.
+Add the Hisilicon Kirin 3670 USB phy driver just after the
+hi3660, using the same namespace.
 
-> +};
-> +
-> +static int mtk_cpufreq_hw_opp_create(struct platform_device *pdev,
-> +				     struct cpufreq_mtk *c)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	void __iomem *base_table;
-> +	u32 data, i, freq, prev_freq = 0;
-> +
-> +	c->table = devm_kcalloc(dev, LUT_MAX_ENTRIES + 1,
-> +				sizeof(*c->table), GFP_KERNEL);
-> +	if (!c->table)
-> +		return -ENOMEM;
-> +
-> +	base_table = c->reg_bases[REG_LUT_TABLE];
-> +
-> +	for (i = 0; i < LUT_MAX_ENTRIES; i++) {
-> +		data = readl_relaxed(base_table + (i * LUT_ROW_SIZE));
-> +		freq = FIELD_GET(LUT_FREQ, data) * 1000;
-> +
-> +		if (freq == prev_freq)
-> +			break;
-> +
-> +		c->table[i].frequency = freq;
-> +
-> +		dev_dbg(dev, "index=%d freq=%d\n",
-> +			i, c->table[i].frequency);
-> +
-> +		prev_freq = freq;
-> +	}
-> +
-> +	c->table[i].frequency = CPUFREQ_TABLE_END;
-> +
-> +	return 0;
-> +}
-> +
-> +static int mtk_get_related_cpus(int index, struct cpumask *m)
-> +{
-> +	struct device_node *cpu_np;
-> +	struct of_phandle_args args;
-> +	int cpu, ret;
-> +
-> +	for_each_possible_cpu(cpu) {
-> +		cpu_np = of_cpu_device_node_get(cpu);
-> +		if (!cpu_np)
-> +			continue;
-> +
-> +		ret = of_parse_phandle_with_args(cpu_np, "mtk-freq-domain",
-> +						 "#freq-domain-cells", 0,
-> +						 &args);
-> +		of_node_put(cpu_np);
-> +		if (ret < 0)
-> +			continue;
-> +
-> +		if (index == args.args[0])
-> +			cpumask_set_cpu(cpu, m);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int mtk_cpu_resources_init(struct platform_device *pdev,
-> +				  unsigned int cpu, int index)
-> +{
-> +	struct cpufreq_mtk *c;
-> +	struct resource *res;
-> +	struct device *dev = &pdev->dev;
-> +	const u16 *offsets;
-> +	int ret, i, cpu_r;
-> +	void __iomem *base;
-> +
-> +	if (mtk_freq_domain_map[cpu])
-> +		return 0;
-> +
-> +	c = devm_kzalloc(dev, sizeof(*c), GFP_KERNEL);
-> +	if (!c)
-> +		return -ENOMEM;
-> +
-> +	offsets = of_device_get_match_data(&pdev->dev);
-> +	if (!offsets)
-> +		return -EINVAL;
+This driver was imported from Linaro's official Hikey 970
+tree, from the original patch, removing the addition of
+the dwg3-specific parts.
 
-Just do this once in probe and pass it to this routine. You don't need
-to do this again and again.
+Signed-off-by: Yu Chen <chenyu56@huawei.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+---
+ .../bindings/phy/phy-hi3670-usb3.txt          |  25 +
+ drivers/phy/hisilicon/Kconfig                 |  10 +
+ drivers/phy/hisilicon/Makefile                |   1 +
+ drivers/phy/hisilicon/phy-hi3670-usb3.c       | 682 ++++++++++++++++++
+ 4 files changed, 718 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/phy/phy-hi3670-usb3.txt
+ create mode 100644 drivers/phy/hisilicon/phy-hi3670-usb3.c
 
-> +
-> +	res = platform_get_resource(pdev, IORESOURCE_MEM, index);
-> +	base = devm_ioremap_resource(dev, res);
-> +	if (IS_ERR(base))
-> +		return PTR_ERR(base);
-> +
-> +	for (i = REG_LUT_TABLE; i < REG_ARRAY_SIZE; i++)
-> +		c->reg_bases[i] = base + offsets[i];
-> +
-> +	ret = mtk_get_related_cpus(index, &c->related_cpus);
-> +	if (ret) {
-> +		dev_err(dev, "Domain-%d failed to get related CPUs\n", index);
-> +		return ret;
-> +	}
-> +
-> +	ret = mtk_cpufreq_hw_opp_create(pdev, c);
-
-This isn't creating an OPP table anymore but just a frequency table.
-Name it mtk_cpu_create_freq_table() rather.
-
-> +	if (ret) {
-> +		dev_err(dev, "Domain-%d failed to create OPP\n", index);
-> +		return ret;
-> +	}
-> +
-> +	for_each_cpu(cpu_r, &c->related_cpus)
-> +		mtk_freq_domain_map[cpu_r] = c;
-> +
-> +	return 0;
-> +}
-> +
-> +static int mtk_resources_init(struct platform_device *pdev)
-> +{
-> +	struct device_node *cpu_np;
-> +	struct of_phandle_args args;
-> +	unsigned int cpu;
-> +	int ret;
-> +
-> +	for_each_possible_cpu(cpu) {
-> +		cpu_np = of_cpu_device_node_get(cpu);
-> +		if (!cpu_np) {
-> +			dev_dbg(&pdev->dev, "Failed to get cpu %d device\n",
-> +				cpu);
-> +			continue;
-> +		}
-> +
-> +		ret = of_parse_phandle_with_args(cpu_np, "mtk-freq-domain",
-> +						 "#freq-domain-cells", 0, &args);
-> +		if (ret < 0)
-> +			return ret;
-> +
-> +		ret = mtk_cpu_resources_init(pdev, cpu, args.args[0]);
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int mtk_cpufreq_hw_driver_probe(struct platform_device *pdev)
-> +{
-> +	int ret;
-> +
-> +	/* Get the bases of cpufreq for domains */
-> +	ret = mtk_resources_init(pdev);
-
-Just open-code this here. No need of a separate routine really, there
-is not much there.
-
-> +	if (ret) {
-> +		dev_err(&pdev->dev, "CPUFreq resource init failed\n");
-> +		return ret;
-> +	}
-> +
-> +	ret = cpufreq_register_driver(&cpufreq_mtk_hw_driver);
-> +	if (ret) {
-> +		dev_err(&pdev->dev, "CPUFreq HW driver failed to register\n");
-> +		return ret;
-> +	}
-> +
-> +	dev_dbg(&pdev->dev, "Mediatek CPUFreq HW driver initialized\n");
-
-Just drop this, this isn't really required. The cpufreq core also
-print some messages for this.
-
-> +	of_platform_populate(pdev->dev.of_node, NULL, NULL, &pdev->dev);
-
-Why do you need to do this ? This should happen automatically.
-
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct of_device_id mtk_cpufreq_hw_match[] = {
-> +	{ .compatible = "mediatek,cpufreq-hw", .data = &cpufreq_mtk_offsets },
-> +	{}
-> +};
-> +
-> +static struct platform_driver mtk_cpufreq_hw_driver = {
-> +	.probe = mtk_cpufreq_hw_driver_probe,
-> +	.driver = {
-> +		.name = "mtk-cpufreq-hw",
-> +		.of_match_table = mtk_cpufreq_hw_match,
-> +	},
-> +};
-> +
-> +static int __init mtk_cpufreq_hw_init(void)
-> +{
-> +	return platform_driver_register(&mtk_cpufreq_hw_driver);
-> +}
-> +subsys_initcall(mtk_cpufreq_hw_init);
-
-subsys_init ? Why this ?
-
-You made your driver as a "tristate" driver, and you don't have any
-exit/remove level stuff ?
-
-> +
-> +MODULE_DESCRIPTION("mtk CPUFREQ HW Driver");
-> +MODULE_LICENSE("GPL v2");
-> -- 
-> 1.7.9.5
-
+diff --git a/Documentation/devicetree/bindings/phy/phy-hi3670-usb3.txt b/Documentation/devicetree/bindings/phy/phy-hi3670-usb3.txt
+new file mode 100644
+index 000000000000..4cb02612ff23
+--- /dev/null
++++ b/Documentation/devicetree/bindings/phy/phy-hi3670-usb3.txt
+@@ -0,0 +1,25 @@
++Hisilicon Kirin970 usb PHY
++-----------------------
++
++Required properties:
++- compatible: should be "hisilicon,kirin970-usb-phy"
++- #phy-cells: must be 0
++- hisilicon,pericrg-syscon: phandle of syscon used to control phy.
++- hisilicon,pctrl-syscon: phandle of syscon used to control phy.
++- hisilicon,sctrl-syscon: phandle of syscon used to control phy.
++- hisilicon,usb31-misc-syscon: phandle of syscon used to control phy.
++- eye-diagram-param: parameter set for phy
++- usb3-phy-tx-vboost-lvl: parameter set for phy
++Refer to phy/phy-bindings.txt for the generic PHY binding properties
++
++Example:
++	usb_phy: usbphy {
++		compatible = "hisilicon,kirin970-usb-phy";
++		#phy-cells = <0>;
++		hisilicon,pericrg-syscon = <&crg_ctrl>;
++		hisilicon,pctrl-syscon = <&pctrl>;
++		hisilicon,sctrl-syscon = <&sctrl>;
++		hisilicon,usb31-misc-syscon = <&usb31_misc>;
++		eye-diagram-param = <0xFDFEE4>;
++		usb3-phy-tx-vboost-lvl = <0x5>;
++	};
+diff --git a/drivers/phy/hisilicon/Kconfig b/drivers/phy/hisilicon/Kconfig
+index 1c73053bcc98..4d008cfc279c 100644
+--- a/drivers/phy/hisilicon/Kconfig
++++ b/drivers/phy/hisilicon/Kconfig
+@@ -23,6 +23,16 @@ config PHY_HI3660_USB
+ 
+ 	  To compile this driver as a module, choose M here.
+ 
++config PHY_HI3670_USB
++	tristate "hi3670 USB PHY support"
++	depends on (ARCH_HISI && ARM64) || COMPILE_TEST
++	select GENERIC_PHY
++	select MFD_SYSCON
++	help
++	  Enable this to support the HISILICON HI3670 USB PHY.
++
++	  To compile this driver as a module, choose M here.
++
+ config PHY_HISTB_COMBPHY
+ 	tristate "HiSilicon STB SoCs COMBPHY support"
+ 	depends on (ARCH_HISI && ARM64) || COMPILE_TEST
+diff --git a/drivers/phy/hisilicon/Makefile b/drivers/phy/hisilicon/Makefile
+index 92e874ae9c74..51729868145b 100644
+--- a/drivers/phy/hisilicon/Makefile
++++ b/drivers/phy/hisilicon/Makefile
+@@ -1,6 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ obj-$(CONFIG_PHY_HI6220_USB)		+= phy-hi6220-usb.o
+ obj-$(CONFIG_PHY_HI3660_USB)		+= phy-hi3660-usb3.o
++obj-$(CONFIG_PHY_HI3670_USB)		+= phy-hi3670-usb3.o
+ obj-$(CONFIG_PHY_HISTB_COMBPHY)		+= phy-histb-combphy.o
+ obj-$(CONFIG_PHY_HISI_INNO_USB2)	+= phy-hisi-inno-usb2.o
+ obj-$(CONFIG_PHY_HIX5HD2_SATA)		+= phy-hix5hd2-sata.o
+diff --git a/drivers/phy/hisilicon/phy-hi3670-usb3.c b/drivers/phy/hisilicon/phy-hi3670-usb3.c
+new file mode 100644
+index 000000000000..4e04ac97728d
+--- /dev/null
++++ b/drivers/phy/hisilicon/phy-hi3670-usb3.c
+@@ -0,0 +1,682 @@
++/*
++ * Phy provider for USB 3.1 controller on HiSilicon Kirin970 platform
++ *
++ * Copyright (C) 2017-2018 Hilisicon Electronics Co., Ltd.
++ *		http://www.huawei.com
++ *
++ * Authors: Yu Chen <chenyu56@huawei.com>
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2  of
++ * the License as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ */
++
++#include <linux/kernel.h>
++#include <linux/mfd/syscon.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/phy/phy.h>
++#include <linux/regmap.h>
++#include <linux/clk.h>
++
++#define SCTRL_SCDEEPSLEEPED		(0x0)
++#define USB_CLK_SELECTED		BIT(20)
++
++#define PERI_CRG_PEREN0			(0x00)
++#define PERI_CRG_PERDIS0		(0x04)
++#define PERI_CRG_PEREN4			(0x40)
++#define PERI_CRG_PERDIS4		(0x44)
++#define PERI_CRG_PERRSTEN4		(0x90)
++#define PERI_CRG_PERRSTDIS4		(0x94)
++#define PERI_CRG_ISODIS			(0x148)
++#define PERI_CRG_PEREN6			(0x410)
++#define PERI_CRG_PERDIS6		(0x414)
++
++#define USB_REFCLK_ISO_EN		BIT(25)
++
++#define GT_CLK_USB2PHY_REF		BIT(19)
++
++#define PCTRL_PERI_CTRL3		(0x10)
++#define PCTRL_PERI_CTRL3_MSK_START	(16)
++#define USB_TCXO_EN			BIT(1)
++
++#define PCTRL_PERI_CTRL24		(0x64)
++#define SC_CLK_USB3PHY_3MUX1_SEL	BIT(25)
++
++#define USB3OTG_CTRL0			(0x00)
++#define USB3OTG_CTRL3			(0x0C)
++#define USB3OTG_CTRL4			(0x10)
++#define USB3OTG_CTRL5			(0x14)
++#define USB3OTG_CTRL7			(0x1C)
++#define USB_MISC_CFG50			(0x50)
++#define USB_MISC_CFG54			(0x54)
++#define USB_MISC_CFG58			(0x58)
++#define USB_MISC_CFG5C			(0x5C)
++#define USB_MISC_CFGA0			(0xA0)
++#define TCA_CLK_RST			(0x200)
++#define TCA_INTR_EN			(0x204)
++#define TCA_INTR_STS			(0x208)
++#define TCA_GCFG			(0x210)
++#define TCA_TCPC			(0x214)
++#define TCA_VBUS_CTRL			(0x240)
++
++#define CTRL0_USB3_VBUSVLD		BIT(7)
++#define CTRL0_USB3_VBUSVLD_SEL		BIT(6)
++
++#define CTRL3_USB2_VBUSVLDEXT0		BIT(6)
++#define CTRL3_USB2_VBUSVLDEXTSEL0	BIT(5)
++
++#define CTRL5_USB2_SIDDQ		BIT(0)
++
++#define CTRL7_USB2_REFCLKSEL_MASK	(3 << 3)
++#define CTRL7_USB2_REFCLKSEL_ABB	(3 << 3)
++#define CTRL7_USB2_REFCLKSEL_PAD	(2 << 3)
++
++#define CFG50_USB3_PHY_TEST_POWERDOWN	BIT(23)
++
++#define CFG54_USB31PHY_CR_ADDR_MASK	(0xFFFF)
++#define CFG54_USB31PHY_CR_ADDR_SHIFT	(16)
++#define CFG54_USB3PHY_REF_USE_PAD	BIT(12)
++#define CFG54_PHY0_PMA_PWR_STABLE	BIT(11)
++#define CFG54_PHY0_PCS_PWR_STABLE	BIT(9)
++#define CFG54_USB31PHY_CR_ACK		BIT(7)
++#define CFG54_USB31PHY_CR_WR_EN		BIT(5)
++#define CFG54_USB31PHY_CR_SEL		BIT(4)
++#define CFG54_USB31PHY_CR_RD_EN		BIT(3)
++#define CFG54_USB31PHY_CR_CLK		BIT(2)
++#define CFG54_USB3_PHY0_ANA_PWR_EN	BIT(1)
++
++#define CFG58_USB31PHY_CR_DATA_MASK     (0xFFFF)
++#define CFG58_USB31PHY_CR_DATA_RD_START (16)
++
++#define CFG5C_USB3_PHY0_SS_MPLLA_SSC_EN	BIT(1)
++
++#define CFGA0_VAUX_RESET		BIT(9)
++#define CFGA0_USB31C_RESET		BIT(8)
++#define CFGA0_USB2PHY_REFCLK_SELECT	BIT(4)
++#define CFGA0_USB3PHY_RESET		BIT(1)
++#define CFGA0_USB2PHY_POR		BIT(0)
++
++#define INTR_EN_XA_TIMEOUT_EVT_EN	BIT(1)
++#define INTR_EN_XA_ACK_EVT_EN		BIT(0)
++
++#define CLK_RST_TCA_REF_CLK_EN		BIT(1)
++#define CLK_RST_SUSPEND_CLK_EN		BIT(0)
++
++#define GCFG_ROLE_HSTDEV		BIT(4)
++
++#define TCPC_VALID			BIT(4)
++#define TCPC_LOW_POWER_EN		BIT(3)
++#define TCPC_MUX_CONTROL_MASK		(3 << 0)
++#define TCPC_MUX_CONTROL_USB31		(1 << 0)
++
++#define VBUS_CTRL_POWERPRESENT_OVERRD	(3 << 2)
++#define VBUS_CTRL_VBUSVALID_OVERRD	(3 << 0)
++
++#define KIRIN970_USB_DEFAULT_PHY_PARAM	(0xFDFEE4)
++#define KIRIN970_USB_DEFAULT_PHY_VBOOST	(0x5)
++
++#define TX_VBOOST_LVL_REG		(0xf)
++#define TX_VBOOST_LVL_START		(6)
++#define TX_VBOOST_LVL_ENABLE		BIT(9)
++
++struct kirin970_priv {
++	struct device *dev;
++	struct regmap *peri_crg;
++	struct regmap *pctrl;
++	struct regmap *sctrl;
++	struct regmap *usb31misc;
++
++	u32 eye_diagram_param;
++	u32 tx_vboost_lvl;
++
++	u32 peri_crg_offset;
++	u32 pctrl_offset;
++	u32 usb31misc_offset;
++};
++
++static int kirin970_phy_cr_clk(struct regmap *usb31misc)
++{
++	int ret;
++
++	/* Clock up */
++	ret = regmap_update_bits(usb31misc, USB_MISC_CFG54,
++			CFG54_USB31PHY_CR_CLK, CFG54_USB31PHY_CR_CLK);
++	if (ret)
++		return ret;
++
++	/* Clock down */
++	ret = regmap_update_bits(usb31misc, USB_MISC_CFG54,
++			CFG54_USB31PHY_CR_CLK, 0);
++
++	return ret;
++}
++
++static int kirin970_phy_cr_set_sel(struct regmap *usb31misc)
++{
++	return regmap_update_bits(usb31misc, USB_MISC_CFG54,
++			CFG54_USB31PHY_CR_SEL, CFG54_USB31PHY_CR_SEL);
++}
++
++static int kirin970_phy_cr_start(struct regmap *usb31misc, int direction)
++{
++	int ret;
++
++	if (direction)
++		ret = regmap_update_bits(usb31misc, USB_MISC_CFG54,
++			CFG54_USB31PHY_CR_WR_EN, CFG54_USB31PHY_CR_WR_EN);
++	else
++		ret = regmap_update_bits(usb31misc, USB_MISC_CFG54,
++			CFG54_USB31PHY_CR_RD_EN, CFG54_USB31PHY_CR_RD_EN);
++
++	if (ret)
++		return ret;
++
++	ret = kirin970_phy_cr_clk(usb31misc);
++	if (ret)
++		return ret;
++
++	ret = regmap_update_bits(usb31misc, USB_MISC_CFG54,
++			CFG54_USB31PHY_CR_RD_EN | CFG54_USB31PHY_CR_WR_EN, 0);
++
++	return ret;
++}
++
++static int kirin970_phy_cr_wait_ack(struct regmap *usb31misc)
++{
++	u32 reg;
++	int retry = 100000;
++	int ret;
++
++	while (retry-- > 0) {
++		ret = regmap_read(usb31misc, USB_MISC_CFG54, &reg);
++		if (ret)
++			return ret;
++		if ((reg & CFG54_USB31PHY_CR_ACK) == CFG54_USB31PHY_CR_ACK)
++			return 0;
++
++		ret = kirin970_phy_cr_clk(usb31misc);
++		if (ret)
++			return ret;
++	}
++
++	return -ETIMEDOUT;
++}
++
++static int kirin970_phy_cr_set_addr(struct regmap *usb31misc, u32 addr)
++{
++	u32 reg;
++	int ret;
++
++	ret = regmap_read(usb31misc, USB_MISC_CFG54, &reg);
++	if (ret)
++		return ret;
++
++	reg &= ~(CFG54_USB31PHY_CR_ADDR_MASK << CFG54_USB31PHY_CR_ADDR_SHIFT);
++	reg |= ((addr & CFG54_USB31PHY_CR_ADDR_MASK) <<
++			CFG54_USB31PHY_CR_ADDR_SHIFT);
++	ret = regmap_write(usb31misc, USB_MISC_CFG54, reg);
++
++	return ret;
++}
++
++static int kirin970_phy_cr_read(struct regmap *usb31misc, u32 addr, u32 *val)
++{
++	int reg;
++	int i;
++	int ret;
++
++	for (i = 0; i < 100; i++) {
++		ret = kirin970_phy_cr_clk(usb31misc);
++		if (ret)
++			return ret;
++	}
++
++	ret = kirin970_phy_cr_set_sel(usb31misc);
++	if (ret)
++		return ret;
++
++	ret = kirin970_phy_cr_set_addr(usb31misc, addr);
++	if (ret)
++		return ret;
++
++	ret = kirin970_phy_cr_start(usb31misc, 0);
++	if (ret)
++		return ret;
++
++	ret = kirin970_phy_cr_wait_ack(usb31misc);
++	if (ret)
++		return ret;
++
++	ret = regmap_read(usb31misc, USB_MISC_CFG58, &reg);
++	if (ret)
++		return ret;
++
++	*val = (reg >> CFG58_USB31PHY_CR_DATA_RD_START) &
++		CFG58_USB31PHY_CR_DATA_MASK;
++
++	return 0;
++}
++
++static int kirin970_phy_cr_write(struct regmap *usb31misc, u32 addr, u32 val)
++{
++	int i;
++	int ret;
++
++	for (i = 0; i < 100; i++) {
++		ret = kirin970_phy_cr_clk(usb31misc);
++		if (ret)
++			return ret;
++	}
++
++	ret = kirin970_phy_cr_set_sel(usb31misc);
++	if (ret)
++		return ret;
++
++	ret = kirin970_phy_cr_set_addr(usb31misc, addr);
++	if (ret)
++		return ret;
++
++	ret = regmap_write(usb31misc, USB_MISC_CFG58,
++			val & CFG58_USB31PHY_CR_DATA_MASK);
++	if (ret)
++		return ret;
++
++	ret = kirin970_phy_cr_start(usb31misc, 1);
++	if (ret)
++		return ret;
++
++	ret = kirin970_phy_cr_wait_ack(usb31misc);
++
++	return ret;
++}
++
++static int kirin970_phy_set_params(struct kirin970_priv *priv)
++{
++	u32 reg;
++	int ret;
++	int retry = 3;
++
++	ret = regmap_write(priv->usb31misc, USB3OTG_CTRL4,
++			priv->eye_diagram_param);
++	if (ret) {
++		dev_err(priv->dev, "set USB3OTG_CTRL4 failed\n");
++		return ret;
++	}
++
++	while (retry-- > 0) {
++		ret = kirin970_phy_cr_read(priv->usb31misc,
++				TX_VBOOST_LVL_REG, &reg);
++		if (!ret)
++			break;
++		else if (ret != -ETIMEDOUT) {
++			dev_err(priv->dev, "read TX_VBOOST_LVL_REG failed\n");
++			return ret;
++		}
++	}
++	if (ret)
++		return ret;
++
++	reg |= (TX_VBOOST_LVL_ENABLE |
++			(priv->tx_vboost_lvl << TX_VBOOST_LVL_START));
++	ret = kirin970_phy_cr_write(priv->usb31misc, TX_VBOOST_LVL_REG, reg);
++	if (ret)
++		dev_err(priv->dev, "write TX_VBOOST_LVL_REG failed\n");
++
++	return ret;
++}
++
++static int kirin970_is_abbclk_seleted(struct kirin970_priv *priv)
++{
++	u32 reg;
++
++	if (!priv->sctrl) {
++		dev_err(priv->dev, "priv->sctrl is null!\n");
++		return 1;
++	}
++
++	if (regmap_read(priv->sctrl, SCTRL_SCDEEPSLEEPED, &reg)) {
++		dev_err(priv->dev, "SCTRL_SCDEEPSLEEPED read failed!\n");
++		return 1;
++	}
++
++	if ((reg & USB_CLK_SELECTED) == 0)
++		return 1;
++
++	return 0;
++}
++
++static int kirin970_config_phy_clock(struct kirin970_priv *priv)
++{
++	u32 val, mask;
++	int ret;
++
++	if (kirin970_is_abbclk_seleted(priv)) {
++		/* usb refclk iso disable */
++		ret = regmap_write(priv->peri_crg, PERI_CRG_ISODIS,
++				USB_REFCLK_ISO_EN);
++		if (ret)
++			goto out;
++
++		/* select usbphy clk from abb */
++		mask = SC_CLK_USB3PHY_3MUX1_SEL;
++		ret = regmap_update_bits(priv->pctrl,
++				PCTRL_PERI_CTRL24, mask, 0);
++		if (ret)
++			goto out;
++
++		ret = regmap_update_bits(priv->usb31misc, USB_MISC_CFGA0,
++				CFGA0_USB2PHY_REFCLK_SELECT, 0);
++		if (ret)
++			goto out;
++
++		ret = regmap_read(priv->usb31misc, USB3OTG_CTRL7, &val);
++		if (ret)
++			goto out;
++		val &= ~CTRL7_USB2_REFCLKSEL_MASK;
++		val |= CTRL7_USB2_REFCLKSEL_ABB;
++		ret = regmap_write(priv->usb31misc, USB3OTG_CTRL7, val);
++		if (ret)
++			goto out;
++	} else {
++		ret = regmap_update_bits(priv->usb31misc, USB_MISC_CFG54,
++				CFG54_USB3PHY_REF_USE_PAD,
++				CFG54_USB3PHY_REF_USE_PAD);
++		if (ret)
++			goto out;
++
++		ret = regmap_update_bits(priv->usb31misc, USB_MISC_CFGA0,
++				CFGA0_USB2PHY_REFCLK_SELECT,
++				CFGA0_USB2PHY_REFCLK_SELECT);
++		if (ret)
++			goto out;
++
++		ret = regmap_read(priv->usb31misc, USB3OTG_CTRL7, &val);
++		if (ret)
++			goto out;
++		val &= ~CTRL7_USB2_REFCLKSEL_MASK;
++		val |= CTRL7_USB2_REFCLKSEL_PAD;
++		ret = regmap_write(priv->usb31misc, USB3OTG_CTRL7, val);
++		if (ret)
++			goto out;
++
++		ret = regmap_write(priv->peri_crg,
++				PERI_CRG_PEREN6, GT_CLK_USB2PHY_REF);
++		if (ret)
++			goto out;
++	}
++
++	return 0;
++out:
++	dev_err(priv->dev, "failed to config phy clock ret: %d\n", ret);
++	return ret;
++}
++
++static int kirin970_config_tca(struct kirin970_priv *priv)
++{
++	u32 val, mask;
++	int ret;
++
++	ret = regmap_write(priv->usb31misc, TCA_INTR_STS, 0xffff);
++	if (ret)
++		goto out;
++
++	ret = regmap_write(priv->usb31misc, TCA_INTR_EN,
++			INTR_EN_XA_TIMEOUT_EVT_EN | INTR_EN_XA_ACK_EVT_EN);
++	if (ret)
++		goto out;
++
++	mask = CLK_RST_TCA_REF_CLK_EN | CLK_RST_SUSPEND_CLK_EN;
++	ret = regmap_update_bits(priv->usb31misc, TCA_CLK_RST, mask, 0);
++	if (ret)
++		goto out;
++
++	ret = regmap_update_bits(priv->usb31misc, TCA_GCFG,
++			GCFG_ROLE_HSTDEV, GCFG_ROLE_HSTDEV);
++	if (ret)
++		goto out;
++
++	ret = regmap_read(priv->usb31misc, TCA_TCPC, &val);
++	if (ret)
++		goto out;
++	val &= ~(TCPC_VALID | TCPC_LOW_POWER_EN | TCPC_MUX_CONTROL_MASK);
++	val |= (TCPC_VALID | TCPC_MUX_CONTROL_USB31);
++	ret = regmap_write(priv->usb31misc, TCA_TCPC, val);
++	if (ret)
++		goto out;
++
++	ret = regmap_write(priv->usb31misc, TCA_VBUS_CTRL,
++		VBUS_CTRL_POWERPRESENT_OVERRD | VBUS_CTRL_VBUSVALID_OVERRD);
++	if (ret)
++		goto out;
++
++	return 0;
++out:
++	dev_err(priv->dev, "failed to config phy clock ret: %d\n", ret);
++	return ret;
++}
++
++static int kirin970_phy_exit(struct phy *phy);
++
++static int kirin970_phy_init(struct phy *phy)
++{
++	struct kirin970_priv *priv = phy_get_drvdata(phy);
++	u32 val;
++	int ret;
++
++	kirin970_phy_exit(phy);
++	dev_info(priv->dev, "%s in\n", __func__);
++	/* assert controller */
++	val = CFGA0_VAUX_RESET | CFGA0_USB31C_RESET;
++	ret = regmap_update_bits(priv->usb31misc, USB_MISC_CFGA0, val, 0);
++	if (ret)
++		goto out;
++
++	ret = kirin970_config_phy_clock(priv);
++	if (ret)
++		goto out;
++
++	/* Exit from IDDQ mode */
++	ret = regmap_update_bits(priv->usb31misc, USB3OTG_CTRL5,
++			CTRL5_USB2_SIDDQ, 0);
++	if (ret)
++		goto out;
++
++	/* Release USB31 PHY out of TestPowerDown mode */
++	ret = regmap_update_bits(priv->usb31misc, USB_MISC_CFG50,
++			CFG50_USB3_PHY_TEST_POWERDOWN, 0);
++	if (ret)
++		goto out;
++
++	/* Tell the PHY power is stable */
++	val = CFG54_USB3_PHY0_ANA_PWR_EN | CFG54_PHY0_PCS_PWR_STABLE |
++		CFG54_PHY0_PMA_PWR_STABLE;
++	ret = regmap_update_bits(priv->usb31misc, USB_MISC_CFG54,
++			val, val);
++	if (ret)
++		goto out;
++
++	ret = kirin970_config_tca(priv);
++	if (ret)
++		goto out;
++
++	/* Enable SSC */
++	ret = regmap_update_bits(priv->usb31misc, USB_MISC_CFG5C,
++			CFG5C_USB3_PHY0_SS_MPLLA_SSC_EN,
++			CFG5C_USB3_PHY0_SS_MPLLA_SSC_EN);
++	if (ret)
++		goto out;
++
++	/* Deassert phy */
++	val = CFGA0_USB3PHY_RESET | CFGA0_USB2PHY_POR;
++	ret = regmap_update_bits(priv->usb31misc, USB_MISC_CFGA0, val, val);
++	if (ret)
++		goto out;
++
++	udelay(100);
++
++	/* Deassert controller */
++	val = CFGA0_VAUX_RESET | CFGA0_USB31C_RESET;
++	ret = regmap_update_bits(priv->usb31misc, USB_MISC_CFGA0, val, val);
++	if (ret)
++		goto out;
++
++	udelay(100);
++
++	/* Set fake vbus valid signal */
++	val = CTRL0_USB3_VBUSVLD | CTRL0_USB3_VBUSVLD_SEL;
++	ret = regmap_update_bits(priv->usb31misc, USB3OTG_CTRL0, val, val);
++	if (ret)
++		goto out;
++
++	val = CTRL3_USB2_VBUSVLDEXT0 | CTRL3_USB2_VBUSVLDEXTSEL0;
++	ret = regmap_update_bits(priv->usb31misc, USB3OTG_CTRL3, val, val);
++	if (ret)
++		goto out;
++
++	udelay(100);
++
++	ret = kirin970_phy_set_params(priv);
++	if (ret)
++		goto out;
++
++	{
++		ret = regmap_read(priv->peri_crg, 0x4c,
++				&val);
++		if (!ret)
++			dev_info(priv->dev, "peri_crg 0x4c %x\n", val);
++		ret = regmap_read(priv->peri_crg, 0x404,
++				&val);
++		if (!ret)
++			dev_info(priv->dev, "peri_crg 0x404 %x\n", val);
++		ret = regmap_read(priv->peri_crg, 0xc,
++				&val);
++		if (!ret)
++			dev_info(priv->dev, "peri_crg 0xc %x\n", val);
++		ret = regmap_read(priv->peri_crg, 0xac,
++				&val);
++		if (!ret)
++			dev_info(priv->dev, "peri_crg 0xac %x\n", val);
++		ret = regmap_read(priv->pctrl, 0x10,
++				&val);
++		if (!ret)
++			dev_info(priv->dev, "pctrl 0x10 %x\n", val);
++	}
++
++	return 0;
++out:
++	dev_err(priv->dev, "failed to init phy ret: %d\n", ret);
++	return ret;
++}
++
++static int kirin970_phy_exit(struct phy *phy)
++{
++	struct kirin970_priv *priv = phy_get_drvdata(phy);
++	u32 mask;
++	int ret;
++
++	/* Assert phy */
++	mask = CFGA0_USB3PHY_RESET | CFGA0_USB2PHY_POR;
++	ret = regmap_update_bits(priv->usb31misc, USB_MISC_CFGA0, mask, 0);
++	if (ret)
++		goto out;
++
++	if (!kirin970_is_abbclk_seleted(priv)) {
++		ret = regmap_write(priv->peri_crg, PERI_CRG_PERDIS6,
++				GT_CLK_USB2PHY_REF);
++		if (ret)
++			goto out;
++	}
++
++	return 0;
++out:
++	dev_err(priv->dev, "failed to exit phy ret: %d\n", ret);
++	return ret;
++}
++
++static struct phy_ops kirin970_phy_ops = {
++	.init		= kirin970_phy_init,
++	.exit		= kirin970_phy_exit,
++	.owner		= THIS_MODULE,
++};
++
++static int kirin970_phy_probe(struct platform_device *pdev)
++{
++	struct phy_provider *phy_provider;
++	struct device *dev = &pdev->dev;
++	struct phy *phy;
++	struct kirin970_priv *priv;
++
++	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
++	if (!priv)
++		return -ENOMEM;
++
++	priv->dev = dev;
++	priv->peri_crg = syscon_regmap_lookup_by_phandle(dev->of_node,
++					"hisilicon,pericrg-syscon");
++	if (IS_ERR(priv->peri_crg)) {
++		dev_err(dev, "no hisilicon,pericrg-syscon\n");
++		return PTR_ERR(priv->peri_crg);
++	}
++
++	priv->pctrl = syscon_regmap_lookup_by_phandle(dev->of_node,
++					"hisilicon,pctrl-syscon");
++	if (IS_ERR(priv->pctrl)) {
++		dev_err(dev, "no hisilicon,pctrl-syscon\n");
++		return PTR_ERR(priv->pctrl);
++	}
++
++	priv->sctrl = syscon_regmap_lookup_by_phandle(dev->of_node,
++					"hisilicon,sctrl-syscon");
++	if (IS_ERR(priv->sctrl)) {
++		dev_err(dev, "no hisilicon,sctrl-syscon\n");
++		return PTR_ERR(priv->sctrl);
++	}
++
++	priv->usb31misc = syscon_regmap_lookup_by_phandle(dev->of_node,
++					"hisilicon,usb31-misc-syscon");
++	if (IS_ERR(priv->usb31misc)) {
++		dev_err(dev, "no hisilicon,usb31-misc-syscon\n");
++		return PTR_ERR(priv->usb31misc);
++	}
++
++	if (of_property_read_u32(dev->of_node, "eye-diagram-param",
++				&(priv->eye_diagram_param)))
++		priv->eye_diagram_param = KIRIN970_USB_DEFAULT_PHY_PARAM;
++
++	if (of_property_read_u32(dev->of_node, "usb3-phy-tx-vboost-lvl",
++				&(priv->tx_vboost_lvl)))
++		priv->eye_diagram_param = KIRIN970_USB_DEFAULT_PHY_VBOOST;
++
++	phy = devm_phy_create(dev, NULL, &kirin970_phy_ops);
++	if (IS_ERR(phy))
++		return PTR_ERR(phy);
++
++	phy_set_drvdata(phy, priv);
++	phy_provider = devm_of_phy_provider_register(dev, of_phy_simple_xlate);
++	return PTR_ERR_OR_ZERO(phy_provider);
++}
++
++static const struct of_device_id kirin970_phy_of_match[] = {
++	{.compatible = "hisilicon,kirin970-usb-phy",},
++	{ },
++};
++MODULE_DEVICE_TABLE(of, kirin970_phy_of_match);
++
++static struct platform_driver kirin970_phy_driver = {
++	.probe	= kirin970_phy_probe,
++	.driver = {
++		.name	= "kirin970-usb-phy",
++		.of_match_table	= kirin970_phy_of_match,
++	}
++};
++module_platform_driver(kirin970_phy_driver);
++
++MODULE_AUTHOR("Yu Chen <chenyu56@huawei.com>");
++MODULE_LICENSE("GPL v2");
++MODULE_DESCRIPTION("Hilisicon Kirin970 USB31 PHY Driver");
 -- 
-viresh
+2.26.2
+
