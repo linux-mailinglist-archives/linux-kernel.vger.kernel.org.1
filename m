@@ -2,73 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFBF1261F2C
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 22:00:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A57E261EA9
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:54:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731236AbgIHUAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 16:00:09 -0400
-Received: from foss.arm.com ([217.140.110.172]:55912 "EHLO foss.arm.com"
+        id S1731460AbgIHTyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 15:54:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60620 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730484AbgIHPfg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:35:36 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 59AD8169E;
-        Tue,  8 Sep 2020 08:17:26 -0700 (PDT)
-Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3ED443F73C;
-        Tue,  8 Sep 2020 08:17:25 -0700 (PDT)
-Date:   Tue, 8 Sep 2020 16:17:22 +0100
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc:     peterz@infradead.org, vincent.donnefort@arm.com, mingo@redhat.com,
-        vincent.guittot@linaro.org, linux-kernel@vger.kernel.org,
-        valentin.schneider@arm.com, Phil Auld <pauld@redhat.com>
-Subject: Re: [PATCH v2] sched/debug: Add new tracepoint to track cpu_capacity
-Message-ID: <20200908151722.b7ai2bpgvixlimz3@e107158-lin.cambridge.arm.com>
-References: <1598605249-72651-1-git-send-email-vincent.donnefort@arm.com>
- <20200828102724.wmng7p6je2pkc33n@e107158-lin.cambridge.arm.com>
- <1e806d48-fd54-fd86-5b3a-372d9876f360@arm.com>
- <20200828172658.dxygk7j672gho4ax@e107158-lin.cambridge.arm.com>
- <58f5d2e8-493b-7ce1-6abd-57705e5ab437@arm.com>
- <20200907104845.6rust2lf2o3d5gmq@e107158-lin.cambridge.arm.com>
- <20200907111320.GP2674@hirez.programming.kicks-ass.net>
- <20200907145155.fsmeygi4fiypikzk@e107158-lin.cambridge.arm.com>
- <cbad58a5-758b-ded9-ed41-1be74e8663a6@arm.com>
+        id S1729026AbgIHPmc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 11:42:32 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 855BA20936;
+        Tue,  8 Sep 2020 15:21:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599578516;
+        bh=Kz+MsIx+k0H0Jyjr25FoFiXZUgZRjJfbjCM/BqH9qMI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KmfyECmelqzQhvE3og7RX1xbYVDY8b1ej613t07oSH4GQEQQ1cvKbuxDoQbtxCGYj
+         mW1IILvjiaCd2v8ko8zi27vBMSd8xrLOqppC2lFtuwCEC0LkilFcSVvj76leMu2OW/
+         LmXxYGP8UIWfpiTbcAR60Xb+HsaihKhoPRBC8gHI=
+Date:   Tue, 8 Sep 2020 17:22:07 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Mike Travis <mike.travis@hpe.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Steve Wahl <steve.wahl@hpe.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@suse.de>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Russ Anderson <russ.anderson@hpe.com>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Jian Cai <caij2003@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
+Subject: Re: [PATCH 03/12] x86/platform/uv: Adjust references in UV kernel
+ modules
+Message-ID: <20200908152207.GC4114051@kroah.com>
+References: <20200907185430.363197758@hpe.com>
+ <20200907185430.685975987@hpe.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cbad58a5-758b-ded9-ed41-1be74e8663a6@arm.com>
-User-Agent: NeoMutt/20171215
+In-Reply-To: <20200907185430.685975987@hpe.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/08/20 13:17, Dietmar Eggemann wrote:
-> On 07/09/2020 16:51, Qais Yousef wrote:
-> > On 09/07/20 13:13, peterz@infradead.org wrote:
-> >> On Mon, Sep 07, 2020 at 11:48:45AM +0100, Qais Yousef wrote:
-> >>> IMHO the above is a hack. Out-of-tree modules should rely on public headers and
-> >>> exported functions only. What you propose means that people who want to use
-> >>> these tracepoints in meaningful way must have a prebuilt kernel handy. Which is
-> >>> maybe true for us who work in the embedded world. But users who run normal
-> >>> distro kernels (desktop/servers) will fail to build against
-> >>
-> >> But this isn't really aimed at regular users. We're aiming this at
-> >> developers (IIUC) so I dont really see this as a problem.
+On Mon, Sep 07, 2020 at 01:54:33PM -0500, Mike Travis wrote:
+> There is a symbol clash from the auto-generated uv_mmrs.h file that
+> clashes with code in the UV kernel modules (is_uv() is the symbol).
+> Change those prior to the symbol clash so as to not cause a compile error.
 > 
-> This is what I thought as well. All these helpers can be coded directly
-> in these tracepoint-2-traceevent (tp-2-te) converters. As long as they
-> are build from within kernel/sched/ there is no issue with the export
-> via kernel/sched/sched.h. Otherwise this little trick would be necessary.
-> But since it is a tool for developers I guess we can assume that they
-> can build it from within kernel/sched/.
+> Signed-off-by: Mike Travis <mike.travis@hpe.com>
+> Reviewed-by: Dimitri Sivanich <dimitri.sivanich@hpe.com>
+> Reviewed-by: Steve Wahl <steve.wahl@hpe.com>
+> ---
+>  drivers/misc/sgi-xp/xp.h            |   11 ++++++-----
+>  drivers/misc/sgi-xp/xp_main.c       |    7 ++++---
+>  drivers/misc/sgi-xp/xp_uv.c         |    9 ++++++---
+>  drivers/misc/sgi-xp/xpc_main.c      |    9 +++++----
+>  drivers/misc/sgi-xp/xpc_partition.c |    5 +++--
+>  drivers/misc/sgi-xp/xpnet.c         |    5 +++--
+>  6 files changed, 27 insertions(+), 19 deletions(-)
+> 
+> --- linux.orig/drivers/misc/sgi-xp/xp.h
+> +++ linux/drivers/misc/sgi-xp/xp.h
+> @@ -3,7 +3,8 @@
+>   * License.  See the file "COPYING" in the main directory of this archive
+>   * for more details.
+>   *
+> - * Copyright (C) 2004-2008 Silicon Graphics, Inc. All rights reserved.
+> + * Copyright (c) 2018-2020 Hewlett Packard Enterprise Development LP
+> + * Copyright (c) 2008-2017 Silicon Graphics, Inc.  All Rights Reserved.
 
-I think this will reduce the usefulness of these tracepoints. But if you really
-want to remove them, I am certainly not strongly attached to them and they were
-meant to be removable anyway. So fine by me :-)
+This change does not make sense.  If you want to make it, please make it
+in a separate patch that justifies the dates being added here please.
 
-Cheers
+thanks,
 
---
-Qais Yousef
+greg k-h
