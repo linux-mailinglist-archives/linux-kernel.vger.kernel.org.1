@@ -2,76 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08EBE261F5C
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 22:02:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5E32261F40
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 22:01:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732649AbgIHUC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 16:02:26 -0400
-Received: from mga06.intel.com ([134.134.136.31]:24821 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730520AbgIHPen (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:34:43 -0400
-IronPort-SDR: SOclNfhovdKfRml0GdC1VV/iFCTmI+GUDyIAScNmmJdUuQBHxtneW+4Hj7af5gqb45Uk4Mq+P7
- uWVSbK2m39qg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9738"; a="219715477"
-X-IronPort-AV: E=Sophos;i="5.76,406,1592895600"; 
-   d="scan'208";a="219715477"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2020 08:33:23 -0700
-IronPort-SDR: vw0zCnDsR3rSALWyjSRKlBGHJJL1ap4kPMjhz/Azq2iirmf8bzzpQaFK6CAeQrc5BskNEvTCo8
- y98Oog5bQdZg==
-X-IronPort-AV: E=Sophos;i="5.76,406,1592895600"; 
-   d="scan'208";a="448829315"
-Received: from mgarber-mobl1.amr.corp.intel.com (HELO [10.212.179.134]) ([10.212.179.134])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2020 08:33:20 -0700
-Subject: Re: [PATCH 1/7] soundwire: bus: use property to set interrupt masks
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org,
-        tiwai@suse.de, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, hui.wang@canonical.com,
-        Vinod Koul <vkoul@kernel.org>, srinivas.kandagatla@linaro.org,
-        ranjani.sridharan@linux.intel.com, jank@cadence.com,
-        mengdong.lin@intel.com, sanyog.r.kale@intel.com,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        rander.wang@linux.intel.com, bard.liao@intel.com
-References: <20200818140656.29014-1-yung-chuan.liao@linux.intel.com>
- <20200818140656.29014-2-yung-chuan.liao@linux.intel.com>
- <20200828065125.GI2639@vkoul-mobl>
- <ec5fe867-f2e4-4278-0376-e54bcdd7f94d@perex.cz>
- <20200908121133.GA5551@sirena.org.uk>
- <1950b662-ec59-6603-36c7-7a41d9e8460c@perex.cz>
- <20200908143312.GC5551@sirena.org.uk>
- <ce68a159-de6d-2d8a-c8a2-3e527cb1239e@linux.intel.com>
- <20200908151412.GE5551@sirena.org.uk>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <973b1a09-40a9-1d10-4975-3f6d5a9340b1@linux.intel.com>
-Date:   Tue, 8 Sep 2020 10:33:19 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1732559AbgIHUBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 16:01:39 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:27316 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1731677AbgIHUBZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 16:01:25 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 088JopEo010906;
+        Tue, 8 Sep 2020 16:01:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=xn6nJGYqn/typqBsa9jcxXMbsjRVqECLKkhpsnYOQRU=;
+ b=JXEjim+dFUxGFgaqD5ICzxeME9JGXWTwsI5IsNZxvcGCJvKUiQW/+ee/UUt8caNsuqKg
+ PfTne/4oIgP77mHLbgN38GXu/TjzK075bDWJLLDM1Q+XXE73GBsq0kZAnnUEnTKEByI7
+ Sr+P3VcB8EnVCbnydUbpqFVX+zgoLs4A1xCAvCxKgRaanjOUsoPPj6wMFi5F3lA2Zv9u
+ B0GkR3y9A8iGUxoR2jYmbnrZMLDWi4fE6ILb0VDKGpk39Gekhd1oFtYWC2Z/sOT4SfdE
+ 8C5R2K8R+Y5Cy9QZAkJL9L/cC43NGWDbaCLLT/wkPsd1XxFpGIkZC+EZ6gM8i2xRy38E AQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 33egfm06ye-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 08 Sep 2020 16:01:05 -0400
+Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 088JpLC6012539;
+        Tue, 8 Sep 2020 16:01:04 -0400
+Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 33egfm06y1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 08 Sep 2020 16:01:04 -0400
+Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
+        by ppma01wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 088Jvbgb002969;
+        Tue, 8 Sep 2020 20:01:04 GMT
+Received: from b03cxnp08025.gho.boulder.ibm.com (b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
+        by ppma01wdc.us.ibm.com with ESMTP id 33c2a8svvr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 08 Sep 2020 20:01:04 +0000
+Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
+        by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 088K0x3C49480070
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 8 Sep 2020 20:00:59 GMT
+Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1A3C16A05D;
+        Tue,  8 Sep 2020 20:01:03 +0000 (GMT)
+Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 67E936A047;
+        Tue,  8 Sep 2020 20:01:02 +0000 (GMT)
+Received: from SHADE6A.ibmuc.com (unknown [9.163.24.203])
+        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Tue,  8 Sep 2020 20:01:02 +0000 (GMT)
+From:   Eddie James <eajames@linux.ibm.com>
+To:     linux-input@vger.kernel.org
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-aspeed@lists.ozlabs.org, linux-i2c@vger.kernel.org,
+        joel@jms.id.au, andrew@aj.id.au, benh@kernel.crashing.org,
+        brendanhiggins@google.com, dmitry.torokhov@gmail.com,
+        robh+dt@kernel.org, wsa@kernel.org, rentao.bupt@gmail.com,
+        ryan_chen@aspeedtech.com
+Subject: [PATCH v2 0/5] input: misc: Add IBM Operation Panel driver
+Date:   Tue,  8 Sep 2020 15:00:56 -0500
+Message-Id: <20200908200101.64974-1-eajames@linux.ibm.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20200908151412.GE5551@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-08_09:2020-09-08,2020-09-08 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ phishscore=0 adultscore=0 spamscore=0 impostorscore=0 bulkscore=0
+ priorityscore=1501 mlxscore=0 suspectscore=1 clxscore=1011 mlxlogscore=999
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009080179
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This series adds support for input from the IBM Operation Panel, which is
+a simple controller with three buttons and an LCD display meant for
+interacting with a server. It's connected over I2C, typically to a service
+processor. This series only supports the input from the panel, in which the
+panel masters the I2C bus and sends data to the host system when someone
+presses a button on the controller.
 
+Changes since v1:
+ - Redo DTS documentation example to use I2C_OWN_SLAVE_ADDRESS
+ - Reject commands received in the input driver that are too long
+ - Add a definition for the interrupt status mask in the Aspeed I2C driver
+ - Use I2C_OWN_SLAVE_ADDRESS for both dts additions
 
->>>>> I don't have this patch and since I seem to get copied on quite a lot of
->>>>> soundwire only serieses I just delete them unread mostly.
-> 
->> We now try to use the ASoC/SoundWire prefix for cover letters to highlight
->> that a patchset changes things across two trees, does this help or do we
->> need a different way of flagging these patches?
-> 
-> I think the issue is mainly where the patch itself touches both, if some
-> of the patches mention ASoC I'll generally notice them but Soundwire is
-> one of these things I get so many random CCs for I just zone it out so
-> highlighting the individual patches would help.
+Eddie James (5):
+  dt-bindings: input: Add documentation for IBM Operation Panel
+  input: misc: Add IBM Operation Panel driver
+  i2c: aspeed: Mask IRQ status to relevant bits
+  ARM: dts: Aspeed: Tacoma: Add IBM Operation Panel I2C device
+  ARM: dts: Aspeed: Rainier: Add IBM Operation Panel I2C device
 
-ok, we'll highlight individual patches then and better explain dependencies.
+ .../bindings/input/ibm,op-panel.yaml          |  39 ++++
+ MAINTAINERS                                   |   7 +
+ arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts  |   7 +
+ arch/arm/boot/dts/aspeed-bmc-opp-tacoma.dts   |   7 +
+ drivers/i2c/busses/i2c-aspeed.c               |   2 +
+ drivers/input/misc/Kconfig                    |  18 ++
+ drivers/input/misc/Makefile                   |   1 +
+ drivers/input/misc/ibm-panel.c                | 192 ++++++++++++++++++
+ 8 files changed, 273 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/input/ibm,op-panel.yaml
+ create mode 100644 drivers/input/misc/ibm-panel.c
+
+-- 
+2.26.2
+
