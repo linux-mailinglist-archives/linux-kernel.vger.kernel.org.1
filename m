@@ -2,105 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07786261346
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 17:15:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F395261351
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 17:17:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729251AbgIHPPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 11:15:17 -0400
-Received: from mailgw02.mediatek.com ([1.203.163.81]:3261 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1730189AbgIHPOV (ORCPT
+        id S1730133AbgIHPR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 11:17:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730205AbgIHPOM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:14:21 -0400
-X-UUID: 6177d6bd5e6a4603a7295c234df2c931-20200908
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=oQzZwJh3y7+kGJk/4w1rH1iequi645UjG2KFNV11C7k=;
-        b=uvFZrsevXgDGmwNjyt6oi0NaK0IJUJ/hmfn2VflP7ZXeZ4eOMGUMM9A5a2yk6fl00pS0o18v75RSOUk17I5B0kfy9Q/4oBcC360CvxIlhClbwFLgZW9c3/OS4DIhWJf9WhvvUXCSsfuKDD/DeUNbfI8WUylMtz/rGnMUDYOiUl0=;
-X-UUID: 6177d6bd5e6a4603a7295c234df2c931-20200908
-Received: from mtkcas32.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <crystal.guo@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1413091755; Tue, 08 Sep 2020 21:28:50 +0800
-Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS31N1.mediatek.inc
- (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 8 Sep
- 2020 21:28:48 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 8 Sep 2020 21:28:48 +0800
-Message-ID: <1599571618.14806.7.camel@mhfsdcap03>
-Subject: Re: [v4,4/4] arm64: dts: mt8192: add infracfg_rst node
-From:   Crystal Guo <crystal.guo@mediatek.com>
-To:     Suman Anna <s-anna@ti.com>
-CC:     "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        Seiya Wang =?UTF-8?Q?=28=E7=8E=8B=E8=BF=BA=E5=90=9B=29?= 
-        <seiya.wang@mediatek.com>,
-        Stanley Chu =?UTF-8?Q?=28=E6=9C=B1=E5=8E=9F=E9=99=9E=29?= 
-        <stanley.chu@mediatek.com>,
-        Yingjoe Chen =?UTF-8?Q?=28=E9=99=B3=E8=8B=B1=E6=B4=B2=29?= 
-        <Yingjoe.Chen@mediatek.com>,
-        Fan Chen =?UTF-8?Q?=28=E9=99=B3=E5=87=A1=29?= 
-        <fan.chen@mediatek.com>,
-        "Yong Liang =?UTF-8?Q?=28=E6=A2=81=E5=8B=87=29?=" 
-        <Yong.Liang@mediatek.com>
-Date:   Tue, 8 Sep 2020 21:26:58 +0800
-In-Reply-To: <211bd78f-3b70-1e65-eea9-75cc73a3dfdd@ti.com>
-References: <20200817030324.5690-1-crystal.guo@mediatek.com>
-         <20200817030324.5690-5-crystal.guo@mediatek.com>
-         <211bd78f-3b70-1e65-eea9-75cc73a3dfdd@ti.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Tue, 8 Sep 2020 11:14:12 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84D0EC0611E2;
+        Tue,  8 Sep 2020 06:33:52 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id a9so5094701pjg.1;
+        Tue, 08 Sep 2020 06:33:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=+6DdVEAHk114MPmsPvfVgelrnLIdaVwBYKUdcVJCimM=;
+        b=HPLtU7p7+fZmlpVKGRJgNBrW9pG+Pguf8LaEfIFwclcfVemFqf6hA9KIkFKJbdA5N+
+         cnvbL6ax5PILNSwlu6yYTmSXX5MHWydlptjrYmj/nhqNmMKdFK/XDIWD84yQU6bZ2HTr
+         eeKLOni7tBf/Id+S5ooNK1z4U4n2Yo+xgTwDf3V9nWDGICmjNZ1NLZFDkBwp/CxKv5Zi
+         rSQcp/aQ5m+S0CC2TOjS+6R6cV3WDdHohNaNexMB3SpT84nHcJr9iNKMl3mKOGh4xKw0
+         tIR6Fmh3AuWLgCnVNoWVlMLZEbGh06xkPT66Bm9MQUVqOQdYTtql2qSEu593Nvq335Db
+         avBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=+6DdVEAHk114MPmsPvfVgelrnLIdaVwBYKUdcVJCimM=;
+        b=c2qXAb3vUROEAKed+gCjgIRuhZ0Hclur9JOM/y9cgd16qZixIKof66VlZQNjIQdGhX
+         151rWneR+2FnHSNMi3/icC5ronPHKYuIS5lTYS/6Fwv/suK67PtWrI7C222nANjpMURz
+         8kihN8yLbXgI0H6GaGjyYL0SG8RFZVN1lAKVuxiD2y6FEyfCCprzIEDhOubcbER/oYrX
+         35+tgNiryqFJih/1kuHwf6H0xcqn+BPcaJO023y2MIWdTfmbF/nO7HyEdN53s2zp/TBw
+         MI35CFznZ1W1SJYDex8qR76bs17h99C3yS8gmp5s1EdG7BuaReGEWoFrL7qD49hc1rqy
+         hZ2g==
+X-Gm-Message-State: AOAM533YoKWXUqf9f2LhZR9sVN+MDXE/MwEd6wgiwSkHXReze6qrpq8H
+        Yjgd3G5Qc4DfQPraaAnN2t4=
+X-Google-Smtp-Source: ABdhPJwTXYa4lO4knRCcBa5iPixZ88RGvHy6LjK6qutEkRkK3Nn8SIimQXDpp101uHSY9lceL/4/nQ==
+X-Received: by 2002:a17:90a:5216:: with SMTP id v22mr3918168pjh.97.1599572032159;
+        Tue, 08 Sep 2020 06:33:52 -0700 (PDT)
+Received: from haolee.github.io ([2600:3c01::f03c:91ff:fe02:b162])
+        by smtp.gmail.com with ESMTPSA id mt8sm1324037pjb.17.2020.09.08.06.33.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Sep 2020 06:33:51 -0700 (PDT)
+Date:   Tue, 8 Sep 2020 13:33:50 +0000
+From:   Hao Lee <haolee.swjtu@gmail.com>
+To:     tj@kernel.org
+Cc:     lizefan@huawei.com, hannes@cmpxchg.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, haolee.swjtu@gmail.com
+Subject: [PATCH] cgroup: Remove unnecessary call to strstrip()
+Message-ID: <20200908133350.GA22979@haolee.github.io>
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: E2B71D7CF58B128302A1F43348A6FECCA6782FE097627415268B005A7ADAC0792000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCAyMDIwLTA5LTAzIGF0IDA3OjI5ICswODAwLCBTdW1hbiBBbm5hIHdyb3RlOg0KPiBI
-aSBDcnlzdGFsLA0KPiANCj4gT24gOC8xNi8yMCAxMDowMyBQTSwgQ3J5c3RhbCBHdW8gd3JvdGU6
-DQo+ID4gYWRkIGluZnJhY2ZnX3JzdCBub2RlIHdoaWNoIGlzIGZvciBNVDgxOTIgcGxhdGZvcm0N
-Cj4gPiANCj4gPiBTaWduZWQtb2ZmLWJ5OiBDcnlzdGFsIEd1byA8Y3J5c3RhbC5ndW9AbWVkaWF0
-ZWsuY29tPg0KPiANCj4gSSB1bmRlcnN0YW5kIHlvdSBhcmUgcG9zdGluZyB0aGVzZSB0b2dldGhl
-ciBmb3IgY29tcGxldGUgcmVmZXJlbmNlLCBidXQgZHJpdmVyDQo+IHN1YnN5c3RlbSBtYWludGFp
-bmVycyB0eXBpY2FsbHkgZG9uJ3QgcGljayBkdHMgcGF0Y2hlcy4gSW4gYW55Y2FzZSwgY2FuIHlv
-dQ0KPiBjbGFyaWZ5IGlmIHlvdXIgcmVnaXN0ZXJzIGFyZSBzZWxmLWNsZWFyaW5nIHJlZ2lzdGVy
-cz8NCj4gDQo+IHJlZ2FyZHMNCj4gU3VtYW4NCj4gDQpIaSBTdW1hbiwNCg0KVGhhbmtzIGZvciB5
-b3VyIHJlcGx5Lg0KT3VyIHJlc2V0IHJlZ2lzdGVycyBhcmUgbm90IHNlbGYtY2xlYXJpbmcsIGl0
-IG5lZWRzIHRvIHNldCB0aGUgY2xlYXIgYml0DQp0byAxIHRvIGNsZWFyIHRoZSByZWxhdGVkIGJp
-dC4NCkFuZCBzaG91bGQgSSBzZXBhcmF0ZSB0aGlzIGR0cyBwYXRjaCBmcm9tIHRoZSBwYXRjaCBz
-ZXRzPw0KDQpyZWdhcmRzDQpDcnlzdGFsDQo+ID4gLS0tDQo+ID4gIGFyY2gvYXJtNjQvYm9vdC9k
-dHMvbWVkaWF0ZWsvbXQ4MTkyLmR0c2kgfCAxMSArKysrKysrKysrLQ0KPiA+ICAxIGZpbGUgY2hh
-bmdlZCwgMTAgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQ0KPiA+IA0KPiA+IGRpZmYgLS1n
-aXQgYS9hcmNoL2FybTY0L2Jvb3QvZHRzL21lZGlhdGVrL210ODE5Mi5kdHNpIGIvYXJjaC9hcm02
-NC9ib290L2R0cy9tZWRpYXRlay9tdDgxOTIuZHRzaQ0KPiA+IGluZGV4IDkzMWUxY2ExNzIyMC4u
-YTBjYjk5MDQ3MDZiIDEwMDY0NA0KPiA+IC0tLSBhL2FyY2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0
-ZWsvbXQ4MTkyLmR0c2kNCj4gPiArKysgYi9hcmNoL2FybTY0L2Jvb3QvZHRzL21lZGlhdGVrL210
-ODE5Mi5kdHNpDQo+ID4gQEAgLTEwLDYgKzEwLDcgQEANCj4gPiAgI2luY2x1ZGUgPGR0LWJpbmRp
-bmdzL2ludGVycnVwdC1jb250cm9sbGVyL2lycS5oPg0KPiA+ICAjaW5jbHVkZSA8ZHQtYmluZGlu
-Z3MvcGluY3RybC9tdDgxOTItcGluZnVuYy5oPg0KPiA+ICAjaW5jbHVkZSA8ZHQtYmluZGluZ3Mv
-cG93ZXIvbXQ4MTkyLXBvd2VyLmg+DQo+ID4gKyNpbmNsdWRlIDxkdC1iaW5kaW5ncy9yZXNldC90
-aS1zeXNjb24uaD4NCj4gPiAgDQo+ID4gIC8gew0KPiA+ICAJY29tcGF0aWJsZSA9ICJtZWRpYXRl
-ayxtdDgxOTIiOw0KPiA+IEBAIC0yMTksOSArMjIwLDE3IEBADQo+ID4gIAkJfTsNCj4gPiAgDQo+
-ID4gIAkJaW5mcmFjZmc6IGluZnJhY2ZnQDEwMDAxMDAwIHsNCj4gPiAtCQkJY29tcGF0aWJsZSA9
-ICJtZWRpYXRlayxtdDgxOTItaW5mcmFjZmciLCAic3lzY29uIjsNCj4gPiArCQkJY29tcGF0aWJs
-ZSA9ICJtZWRpYXRlayxtdDgxOTItaW5mcmFjZmciLCAic3lzY29uIiwgInNpbXBsZS1tZmQiOw0K
-PiA+ICAJCQlyZWcgPSA8MCAweDEwMDAxMDAwIDAgMHgxMDAwPjsNCj4gPiAgCQkJI2Nsb2NrLWNl
-bGxzID0gPDE+Ow0KPiA+ICsNCj4gPiArCQkJaW5mcmFjZmdfcnN0OiByZXNldC1jb250cm9sbGVy
-IHsNCj4gPiArCQkJCWNvbXBhdGlibGUgPSAibWVkaWF0ZWssaW5mcmEtcmVzZXQiLCAidGksc3lz
-Y29uLXJlc2V0IjsNCj4gPiArCQkJCSNyZXNldC1jZWxscyA9IDwxPjsNCj4gPiArCQkJCXRpLHJl
-c2V0LWJpdHMgPSA8DQo+ID4gKwkJCQkJMHgxNDAgMTUgMHgxNDQgMTUgMCAwIChBU1NFUlRfU0VU
-IHwgREVBU1NFUlRfU0VUIHwgU1RBVFVTX05PTkUpIC8qIDA6IHBjaWUgKi8NCj4gPiArCQkJCT47
-DQo+ID4gKwkJCX07DQo+ID4gIAkJfTsNCj4gPiAgDQo+ID4gIAkJcGVyaWNmZzogcGVyaWNmZ0Ax
-MDAwMzAwMCB7DQo+ID4gDQo+IA0KDQo=
+The string buf will be stripped in cgroup_procs_write_start() before it
+is converted to int, so remove this unnecessary call to strstrip().
+
+Signed-off-by: Hao Lee <haolee.swjtu@gmail.com>
+---
+ kernel/cgroup/cgroup.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index b6714166106d..90ee7e73eb2e 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -4772,14 +4772,12 @@ static ssize_t cgroup_threads_write(struct kernfs_open_file *of,
+ {
+ 	struct cgroup *src_cgrp, *dst_cgrp;
+ 	struct task_struct *task;
+ 	ssize_t ret;
+ 	bool locked;
+ 
+-	buf = strstrip(buf);
+-
+ 	dst_cgrp = cgroup_kn_lock_live(of->kn, false);
+ 	if (!dst_cgrp)
+ 		return -ENODEV;
+ 
+ 	task = cgroup_procs_write_start(buf, false, &locked);
+ 	ret = PTR_ERR_OR_ZERO(task);
+-- 
+2.24.1
 
