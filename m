@@ -2,151 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64F39261098
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 13:22:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EEA026108D
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 13:19:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729657AbgIHLWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 07:22:22 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:39747 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729721AbgIHLOh (ORCPT
+        id S1729824AbgIHLRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 07:17:04 -0400
+Received: from sonic310-13.consmr.mail.bf2.yahoo.com ([74.6.135.123]:45650
+        "EHLO sonic310-13.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729729AbgIHLNx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 07:14:37 -0400
-X-UUID: 4e42e08c115d41d2874bf3c108eb1143-20200908
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=ztKPvKAMVkhiTfL7QF2uQAL3r+CYGYFg1GUnCHV48sk=;
-        b=fLsNaXltmAtUNqAVwUHk+txboogcoMPuZyCSqzDoIhfw458cFfN9C6L0YvbGTNIprLFugOLcU7skLMQjqazX3/ZB7d1IAJlNQ4aWfeC5bpWoBZqhAgfmLOiU09MhRVl451DgtVanSU2YizJOaY4XZVxf2RCgr27Tap5EzOKfyo0=;
-X-UUID: 4e42e08c115d41d2874bf3c108eb1143-20200908
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
-        (envelope-from <hector.yuan@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1187452921; Tue, 08 Sep 2020 19:12:53 +0800
-Received: from mtkcas08.mediatek.inc (172.21.101.126) by
- mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 8 Sep 2020 19:12:51 +0800
-Received: from [172.21.77.33] (172.21.77.33) by mtkcas08.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 8 Sep 2020 19:12:52 +0800
-Message-ID: <1599563572.2621.7.camel@mtkswgap22>
-Subject: Re: [PATCH v4 2/2] dt-bindings: cpufreq: add bindings for MediaTek
- cpufreq HW
-From:   Hector Yuan <hector.yuan@mediatek.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-CC:     <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-pm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        "Rob Herring" <robh+dt@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <wsd_upstream@mediatek.com>
-Date:   Tue, 8 Sep 2020 19:12:52 +0800
-In-Reply-To: <20200908100733.pbizjorq3lmn7bew@vireshk-i7>
-References: <1599550547-27767-1-git-send-email-hector.yuan@mediatek.com>
-         <1599550547-27767-3-git-send-email-hector.yuan@mediatek.com>
-         <20200908100733.pbizjorq3lmn7bew@vireshk-i7>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        Tue, 8 Sep 2020 07:13:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1599563586; bh=DPYuw2gUpgtMJzJhlH/AVmRGu2wSKCY1C+f8nOCoxu0=; h=Date:From:Reply-To:Subject:References:From:Subject; b=le/xon49wr8SXRbH81T9NKanZMoj/MiPlvxxzDVY8PUc4sOYPDnPlZw71fa/pCWhq4Lla9hQaZMjaDq0GTnV6IpvHU3+mDQUnwrWDmLNSI/yIDiIf7ua4H1l8AWigKnJT+O4qGM3qjvT39K7KklBvwSLFr+lKBz2rS+09QDHARS2SXt+gU7fvXjlE6XtAyzLQib7JqP+9MWuepVaqkm+1TrD0g/lv/htTkwMu83LyKdFXlIry/MauVS0Xjst4AwcJ+eROGhZP17sXGvZHaALt5iCVwiklecbP2G648hx/N9suPIQs+vL+zd0UeDRrKJSqnadLjgtxJW0INTcv8EZyw==
+X-YMail-OSG: qTJRIqUVM1kQdwlsweRg_NBGJx2mkI7Hruq0C8sELMQJ90FhEY54gku2cHJtlA5
+ Ps_seEEzg.EOkt4.YSRscGW3ImLLzGRjdGs1sA3RuHWH4mNm12Fm1DjUKmvTGbHv7YITmWwCxqiw
+ pcaTUdHDORFzjLXLzo0ma4JfkiSS7ZP5eUrvwWqyRcweWB5_RbY0oHpu2l5JrVzMRIRU_uTYih3o
+ 9IB.Uw.cCNfQsP8rVR2MLjYR_VaXkdX0A5ePK8RyfcNZ.10RCZBYMcFhAaV8zxsDJz370jKjHFlk
+ aLHkT2wTrNynrPe6ridkeuYNoOWOAUoTVImnGMFtzTsXf3tELLw6ng66bFfg6JPmY5q7LLUvNd4g
+ rTzlxjKLFA.CrcwJfrvL9mf0no0oPLlPY8RJEO4QXOIk_7BhLKFxjNlddFJqzXSTPm0Q5OpdY8Z9
+ sb8rfQGhcghg9KRiqym_7af9rseQuq9.auFugyr8E1XfY20cV6G.WSrS7bQpak.wntLU0UhMUC5c
+ juuow2ceNfqz4qj7vtAodziu9VhEwuwI_37ZQL.PbjbIL1fJ1S43IRyk2hUfwJ36F.r.vAiT8W1V
+ Q4qAoG8n1CWI09hjUJVeHTqjwjJX94K_x4UDQx3ud3AIPM_PRONBGKC4Pns5WsNIazPyaLbCNcdf
+ nX3n4le9lA0qrN3Cdei8GUTiAjMJy_1vX6j4kgkD_EOEEA0rAyfVeLjlQ0D2kWBBIoAQkbXDlqIT
+ yDzkK5dVAIU7N7QxSBW20KDEofkGFwpR2Cy25ieiYzvcDEqt2RCCLq9p2Qhy7VuJqrfFglpb23g5
+ 6F.cYvROe2y6mtFutletC85AYpVx9eDVUVSQr3ER50fQYsPYjblz3GvOopKARn1AEUlKSDdYkdnu
+ rTkLbSVow1puqT.Qo0bhq8hKrzR7wS4a5Xcxu2eUocKz.tMwNihVx_NWzl7KZVWrSWUljhPgO.Y3
+ PKSmT.wFXaW.rpQ3eZU3hjXCT_8D1cwTsetQvf3tBnNW2nq9LW9MGGCkc3zPvUtQPkVOdsUzQk8u
+ rX2aC3egzpD3HtIdXdXBXpC6VKVZVf9Kw4IPqf6IjRC2yBCZt2GZLlQXwGH8i_YTA1ftXmbsSJoj
+ IqJixVX2lz3yGUpCzQRvlulRx3jQc76Cc4xXcU_YjuDqrqyVpWoeEXe8lbcrfJq8lcYl6qvj_nfh
+ VwJ6BHno6Wfu2WuNWbkf.7p5vrN4ByB91NddJzz7xMplhhETXqz7m.cBEm_57i2amOOgSN1SjeRs
+ kahRwGpdVDuWw1Zy57S3GOUzyapxShC8idXor8dj8NiwjiVwhYmisI3OBf6rmfmjafitW4nJ0NeI
+ 9jNCLPg1Zzl83X_SejIGSfhcYf3Gof8wE7WeyBeTHUV.c4CkyuhTmGrcEht6v0RX66ynhzJwUwRH
+ vh.08Q90xYOWLBion0EVi2CyFq3eUK6q.AxSLHSbHovM2WL6J
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic310.consmr.mail.bf2.yahoo.com with HTTP; Tue, 8 Sep 2020 11:13:06 +0000
+Date:   Tue, 8 Sep 2020 11:13:03 +0000 (UTC)
+From:   "Mrs. Mina A, Brunel " <mrs.minaaaliyahbrunel216@gmail.com>
+Reply-To: mrs.minaaaliyahbrunel31@gmail.com
+Message-ID: <617829211.3354373.1599563583015@mail.yahoo.com>
+Subject: My Dear in the lord
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+References: <617829211.3354373.1599563583015.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.16565 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:80.0) Gecko/20100101 Firefox/80.0
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIwLTA5LTA4IGF0IDE1OjM3ICswNTMwLCBWaXJlc2ggS3VtYXIgd3JvdGU6DQo+
-IE9uIDA4LTA5LTIwLCAxNTozNSwgSGVjdG9yIFl1YW4gd3JvdGU6DQo+ID4gRnJvbTogIkhlY3Rv
-ci5ZdWFuIiA8aGVjdG9yLnl1YW5AbWVkaWF0ZWsuY29tPg0KPiA+IA0KPiA+IEFkZCBkZXZpY2V0
-cmVlIGJpbmRpbmdzIGZvciBNZWRpYVRlayBIVyBkcml2ZXIuDQo+ID4gDQo+ID4gU2lnbmVkLW9m
-Zi1ieTogSGVjdG9yLll1YW4gPGhlY3Rvci55dWFuQG1lZGlhdGVrLmNvbT4NCj4gPiAtLS0NCj4g
-PiAgLi4uL2JpbmRpbmdzL2NwdWZyZXEvY3B1ZnJlcS1tZWRpYXRlay1ody55YW1sICAgICAgfCAg
-MTQxICsrKysrKysrKysrKysrKysrKysrDQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCAxNDEgaW5zZXJ0
-aW9ucygrKQ0KPiA+ICBjcmVhdGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVl
-L2JpbmRpbmdzL2NwdWZyZXEvY3B1ZnJlcS1tZWRpYXRlay1ody55YW1sDQo+ID4gDQo+ID4gZGlm
-ZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9jcHVmcmVxL2NwdWZy
-ZXEtbWVkaWF0ZWstaHcueWFtbCBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9j
-cHVmcmVxL2NwdWZyZXEtbWVkaWF0ZWstaHcueWFtbA0KPiA+IG5ldyBmaWxlIG1vZGUgMTAwNjQ0
-DQo+ID4gaW5kZXggMDAwMDAwMC4uNWJlNTg2Nw0KPiA+IC0tLSAvZGV2L251bGwNCj4gPiArKysg
-Yi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvY3B1ZnJlcS9jcHVmcmVxLW1lZGlh
-dGVrLWh3LnlhbWwNCj4gPiBAQCAtMCwwICsxLDE0MSBAQA0KPiA+ICsjIFNQRFgtTGljZW5zZS1J
-ZGVudGlmaWVyOiAoR1BMLTIuMC1vbmx5IE9SIEJTRC0yLUNsYXVzZSkNCj4gPiArJVlBTUwgMS4y
-DQo+ID4gKy0tLQ0KPiA+ICskaWQ6IGh0dHA6Ly9kZXZpY2V0cmVlLm9yZy9zY2hlbWFzL2NwdWZy
-ZXEvY3B1ZnJlcS1tZWRpYXRlay1ody55YW1sIw0KPiA+ICskc2NoZW1hOiBodHRwOi8vZGV2aWNl
-dHJlZS5vcmcvbWV0YS1zY2hlbWFzL2NvcmUueWFtbCMNCj4gPiArDQo+ID4gK3RpdGxlOiBNZWRp
-YVRlaydzIENQVUZSRVEgQmluZGluZ3MNCj4gPiArDQo+ID4gK21haW50YWluZXJzOg0KPiA+ICsg
-IC0gSGVjdG9yIFl1YW4gPGhlY3Rvci55dWFuQG1lZGlhdGVrLmNvbT4NCj4gPiArDQo+ID4gK2Rl
-c2NyaXB0aW9uOg0KPiA+ICsgIENQVUZSRVEgSFcgaXMgYSBoYXJkd2FyZSBlbmdpbmUgdXNlZCBi
-eSBNZWRpYVRlaw0KPiA+ICsgIFNvQ3MgdG8gbWFuYWdlIGZyZXF1ZW5jeSBpbiBoYXJkd2FyZS4g
-SXQgaXMgY2FwYWJsZSBvZiBjb250cm9sbGluZyBmcmVxdWVuY3kNCj4gPiArICBmb3IgbXVsdGlw
-bGUgY2x1c3RlcnMuDQo+ID4gKw0KPiA+ICtwcm9wZXJ0aWVzOg0KPiA+ICsgIGNvbXBhdGlibGU6
-DQo+ID4gKyAgICBjb25zdDogbWVkaWF0ZWssY3B1ZnJlcS1odw0KPiANCj4gTWlzc2luZyAiIiBo
-ZXJlID8NCj4gDQpPSywgd2lsbCBhZGQgaXQgaW4gdjUuDQo+ID4gKw0KPiA+ICsgIHJlZzoNCj4g
-PiArICAgIG1pbkl0ZW1zOiAxDQo+ID4gKyAgICBtYXhJdGVtczogMg0KPiA+ICsgICAgZGVzY3Jp
-cHRpb246IHwNCj4gPiArICAgICAgQWRkcmVzc2VzIGFuZCBzaXplcyBmb3IgdGhlIG1lbW9yeSBv
-ZiB0aGUgSFcgYmFzZXMgaW4gZWFjaCBmcmVxdWVuY3kgZG9tYWluLg0KPiA+ICsNCj4gPiArICBy
-ZWctbmFtZXM6DQo+ID4gKyAgICBpdGVtczoNCj4gPiArICAgICAgLSBjb25zdDogImZyZXEtZG9t
-YWluMCINCj4gPiArICAgICAgLSBjb25zdDogImZyZXEtZG9tYWluMSINCj4gPiArICAgIGRlc2Ny
-aXB0aW9uOiB8DQo+ID4gKyAgICAgIEZyZXF1ZW5jeSBkb21haW4gbmFtZS4gaS5lLg0KPiA+ICsg
-ICAgICAiZnJlcS1kb21haW4wIiwgImZyZXEtZG9tYWluMSIuDQo+ID4gKw0KPiA+ICsgICIjZnJl
-cS1kb21haW4tY2VsbHMiOg0KPiA+ICsgICAgY29uc3Q6IDENCj4gPiArICAgIGRlc2NyaXB0aW9u
-OiB8DQo+ID4gKyAgICAgIE51bWJlciBvZiBjZWxscyBpbiBhIGZyZXFlbmN5IGRvbWFpbiBzcGVj
-aWZpZXIuDQo+ID4gKw0KPiA+ICsgIG10ay1mcmVxLWRvbWFpbjoNCj4gPiArICAgIG1heEl0ZW1z
-OiAxDQo+ID4gKyAgICBkZXNjcmlwdGlvbjogfA0KPiA+ICsgICAgICBEZWZpbmUgdGhpcyBjcHUg
-YmVsb25ncyB0byB3aGljaCBmcmVxdWVuY3kgZG9tYWluLiBpLmUuDQo+ID4gKyAgICAgIGNwdTAt
-MyBiZWxvbmcgdG8gZnJlcXVlbmN5IGRvbWFpbjAsDQo+ID4gKyAgICAgIGNwdTQtNiBiZWxvbmcg
-dG8gZnJlcXVlbmN5IGRvbWFpbjEuDQo+ID4gKw0KPiA+ICtyZXF1aXJlZDoNCj4gPiArICAtIGNv
-bXBhdGlibGUNCj4gPiArICAtIHJlZw0KPiA+ICsgIC0gcmVnLW5hbWVzDQo+ID4gKyAgLSAiI2Zy
-ZXEtZG9tYWluLWNlbGxzIg0KPiA+ICsNCj4gPiArZXhhbXBsZXM6DQo+ID4gKyAgLSB8DQo+ID4g
-KyAgICBjcHVzIHsNCj4gPiArICAgICAgICAgICAgI2FkZHJlc3MtY2VsbHMgPSA8MT47DQo+ID4g
-KyAgICAgICAgICAgICNzaXplLWNlbGxzID0gPDA+Ow0KPiA+ICsNCj4gPiArICAgICAgICAgICAg
-Y3B1MDogY3B1QDAgew0KPiA+ICsgICAgICAgICAgICAgICAgZGV2aWNlX3R5cGUgPSAiY3B1IjsN
-Cj4gPiArICAgICAgICAgICAgICAgIGNvbXBhdGlibGUgPSAiYXJtLGNvcnRleC1hNTUiOw0KPiA+
-ICsgICAgICAgICAgICAgICAgZW5hYmxlLW1ldGhvZCA9ICJwc2NpIjsNCj4gPiArICAgICAgICAg
-ICAgICAgIG10ay1mcmVxLWRvbWFpbiA9IDwmY3B1ZnJlcV9odyAwPjsNCj4gPiArICAgICAgICAg
-ICAgICAgIHJlZyA9IDwweDAwMD47DQo+ID4gKyAgICAgICAgICAgIH07DQo+ID4gKw0KPiA+ICsg
-ICAgICAgICAgICBjcHUxOiBjcHVAMSB7DQo+ID4gKyAgICAgICAgICAgICAgICBkZXZpY2VfdHlw
-ZSA9ICJjcHUiOw0KPiA+ICsgICAgICAgICAgICAgICAgY29tcGF0aWJsZSA9ICJhcm0sY29ydGV4
-LWE1NSI7DQo+ID4gKyAgICAgICAgICAgICAgICBlbmFibGUtbWV0aG9kID0gInBzY2kiOw0KPiA+
-ICsgICAgICAgICAgICAgICAgbXRrLWZyZXEtZG9tYWluID0gPCZjcHVmcmVxX2h3IDA+Ow0KPiA+
-ICsgICAgICAgICAgICAgICAgcmVnID0gPDB4MTAwPjsNCj4gPiArICAgICAgICAgICAgfTsNCj4g
-PiArDQo+ID4gKyAgICAgICAgICAgIGNwdTI6IGNwdUAyIHsNCj4gPiArICAgICAgICAgICAgICAg
-IGRldmljZV90eXBlID0gImNwdSI7DQo+ID4gKyAgICAgICAgICAgICAgICBjb21wYXRpYmxlID0g
-ImFybSxjb3J0ZXgtYTU1IjsNCj4gPiArICAgICAgICAgICAgICAgIGVuYWJsZS1tZXRob2QgPSAi
-cHNjaSI7DQo+ID4gKyAgICAgICAgICAgICAgICBtdGstZnJlcS1kb21haW4gPSA8JmNwdWZyZXFf
-aHcgMD47DQo+ID4gKyAgICAgICAgICAgICAgICByZWcgPSA8MHgyMDA+Ow0KPiA+ICsgICAgICAg
-ICAgICB9Ow0KPiA+ICsNCj4gPiArICAgICAgICAgICAgY3B1MzogY3B1QDMgew0KPiA+ICsgICAg
-ICAgICAgICAgICAgZGV2aWNlX3R5cGUgPSAiY3B1IjsNCj4gPiArICAgICAgICAgICAgICAgIGNv
-bXBhdGlibGUgPSAiYXJtLGNvcnRleC1hNTUiOw0KPiA+ICsgICAgICAgICAgICAgICAgZW5hYmxl
-LW1ldGhvZCA9ICJwc2NpIjsNCj4gPiArICAgICAgICAgICAgICAgIG10ay1mcmVxLWRvbWFpbiA9
-IDwmY3B1ZnJlcV9odyAwPjsNCj4gPiArICAgICAgICAgICAgICAgIHJlZyA9IDwweDMwMD47DQo+
-ID4gKyAgICAgICAgICAgIH07DQo+ID4gKw0KPiA+ICsgICAgICAgICAgICBjcHU0OiBjcHVANCB7
-DQo+ID4gKyAgICAgICAgICAgICAgICBkZXZpY2VfdHlwZSA9ICJjcHUiOw0KPiA+ICsgICAgICAg
-ICAgICAgICAgY29tcGF0aWJsZSA9ICJhcm0sY29ydGV4LWE1NSI7DQo+ID4gKyAgICAgICAgICAg
-ICAgICBlbmFibGUtbWV0aG9kID0gInBzY2kiOw0KPiA+ICsgICAgICAgICAgICAgICAgbXRrLWZy
-ZXEtZG9tYWluID0gPCZjcHVmcmVxX2h3IDE+Ow0KPiA+ICsgICAgICAgICAgICAgICAgcmVnID0g
-PDB4NDAwPjsNCj4gPiArICAgICAgICAgICAgfTsNCj4gPiArDQo+ID4gKyAgICAgICAgICAgIGNw
-dTU6IGNwdUA1IHsNCj4gPiArICAgICAgICAgICAgICAgIGRldmljZV90eXBlID0gImNwdSI7DQo+
-ID4gKyAgICAgICAgICAgICAgICBjb21wYXRpYmxlID0gImFybSxjb3J0ZXgtYTU1IjsNCj4gPiAr
-ICAgICAgICAgICAgICAgIGVuYWJsZS1tZXRob2QgPSAicHNjaSI7DQo+ID4gKyAgICAgICAgICAg
-ICAgICBtdGstZnJlcS1kb21haW4gPSA8JmNwdWZyZXFfaHcgMT47DQo+ID4gKyAgICAgICAgICAg
-ICAgICByZWcgPSA8MHg1MDA+Ow0KPiA+ICsgICAgICAgICAgICB9Ow0KPiA+ICsNCj4gPiArICAg
-ICAgICAgICAgY3B1NjogY3B1QDYgew0KPiA+ICsgICAgICAgICAgICAgICAgZGV2aWNlX3R5cGUg
-PSAiY3B1IjsNCj4gPiArICAgICAgICAgICAgICAgIGNvbXBhdGlibGUgPSAiYXJtLGNvcnRleC1h
-NzUiOw0KPiA+ICsgICAgICAgICAgICAgICAgZW5hYmxlLW1ldGhvZCA9ICJwc2NpIjsNCj4gPiAr
-ICAgICAgICAgICAgICAgIG10ay1mcmVxLWRvbWFpbiA9IDwmY3B1ZnJlcV9odyAxPjsNCj4gPiAr
-ICAgICAgICAgICAgICAgIHJlZyA9IDwweDYwMD47DQo+ID4gKyAgICAgICAgICAgIH07DQo+ID4g
-Kw0KPiA+ICsgICAgICAgICAgICBjcHU3OiBjcHVANyB7DQo+ID4gKyAgICAgICAgICAgICAgICBk
-ZXZpY2VfdHlwZSA9ICJjcHUiOw0KPiA+ICsgICAgICAgICAgICAgICAgY29tcGF0aWJsZSA9ICJh
-cm0sY29ydGV4LWE3NSI7DQo+ID4gKyAgICAgICAgICAgICAgICBlbmFibGUtbWV0aG9kID0gInBz
-Y2kiOw0KPiA+ICsgICAgICAgICAgICAgICAgbXRrLWZyZXEtZG9tYWluID0gPCZjcHVmcmVxX2h3
-IDE+Ow0KPiA+ICsgICAgICAgICAgICAgICAgcmVnID0gPDB4NzAwPjsNCj4gPiArICAgICAgICAg
-ICAgfTsNCj4gPiArICAgIH07DQo+ID4gKw0KPiA+ICsgICAgLyogLi4uICovDQo+ID4gKw0KPiA+
-ICsgICAgc29jIHsNCj4gPiArICAgICAgICAjYWRkcmVzcy1jZWxscyA9IDwyPjsNCj4gPiArICAg
-ICAgICAjc2l6ZS1jZWxscyA9IDwyPjsNCj4gPiArDQo+ID4gKyAgICAgICAgY3B1ZnJlcV9odzog
-Y3B1ZnJlcUAxMWJjMDAgew0KPiA+ICsgICAgICAgICAgICBjb21wYXRpYmxlID0gIm1lZGlhdGVr
-LGNwdWZyZXEtaHciOw0KPiA+ICsgICAgICAgICAgICByZWcgPSA8MCAweDExYmMxMCAwIDB4OGM+
-LA0KPiA+ICsgICAgICAgICAgICAgICA8MCAweDExYmNhMCAwIDB4OGM+Ow0KPiA+ICsgICAgICAg
-ICAgICByZWctbmFtZXMgPSAiZnJlcS1kb21haW4wIiwgImZyZXEtZG9tYWluMSI7DQo+ID4gKyAg
-ICAgICAgICAgICNmcmVxLWRvbWFpbi1jZWxscyA9IDwxPjsNCj4gPiArICAgICAgICB9Ow0KPiA+
-ICsgICAgfTsNCj4gPiArDQo+ID4gKw0KPiA+ICsNCj4gPiArDQo+IA0KPiBJIHdvdWxkIG5lZWQg
-QWNrIGZyb20gUm9iIGZvciB0aGlzLg0KPiANCk9LLCB0aGFua3MuDQoNCg==
 
+
+My Dear in the lord
+
+
+My name is Mrs. Mina A. Brunel I am a Norway Citizen who is living in Burki=
+na Faso, I am married to Mr. Brunel Patrice, a politicians who owns a small=
+ gold company in Burkina Faso; He died of Leprosy and Radesyge, in year Feb=
+ruary 2010, During his lifetime he deposited the sum of =E2=82=AC 8.5 Milli=
+on Euro) Eight million, Five hundred thousand Euros in a bank in Ouagadougo=
+u the capital city of of Burkina in West Africa. The money was from the sal=
+e of his company and death benefits payment and entitlements of my deceased=
+ husband by his company.
+
+I am sending you this message with heavy tears in my eyes and great sorrow =
+in my heart, and also praying that it will reach you in good health because=
+ I am not in good health, I sleep every night without knowing if I may be a=
+live to see the next day. I am suffering from long time cancer and presentl=
+y I am partially suffering from Leprosy, which has become difficult for me =
+to move around. I was married to my late husband for more than 6 years with=
+out having a child and my doctor confided that I have less chance to live, =
+having to know when the cup of death will come, I decided to contact you to=
+ claim the fund since I don't have any relation I grew up from an orphanage=
+ home.
+
+I have decided to donate this money for the support of helping Motherless b=
+abies/Less privileged/Widows and churches also to build the house of God be=
+cause I am dying and diagnosed with cancer for about 3 years ago. I have de=
+cided to donate from what I have inherited from my late husband to you for =
+the good work of Almighty God; I will be going in for an operation surgery =
+soon.
+
+Now I want you to stand as my next of kin to claim the funds for charity pu=
+rposes. Because of this money remains unclaimed after my death, the bank ex=
+ecutives or the government will take the money as unclaimed fund and maybe =
+use it for selfishness and worthless ventures, I need a very honest person =
+who can claim this money and use it for Charity works, for orphanages, wido=
+ws and also build schools and churches for less privilege that will be name=
+d after my late husband and my name.
+
+I need your urgent answer to know if you will be able to execute this proje=
+ct, and I will give you more information on how the fund will be transferre=
+d to your bank account or online banking.
+
+Thanks
+Mrs. Mina A. Brunel
