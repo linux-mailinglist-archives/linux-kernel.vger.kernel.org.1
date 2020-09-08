@@ -2,81 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01A77261770
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:34:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C56A2617D9
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:44:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731763AbgIHReR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 13:34:17 -0400
-Received: from mail1.perex.cz ([77.48.224.245]:41556 "EHLO mail1.perex.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731358AbgIHQPN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:15:13 -0400
-Received: from mail1.perex.cz (localhost [127.0.0.1])
-        by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 8487BA0056;
-        Tue,  8 Sep 2020 14:45:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 8487BA0056
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
-        t=1599569114; bh=b/A9QPQeR8HGF5I3TJZV1+lxFGDVaYfuxBJZUNhPV+o=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=TzCYYeaw9POFp0HwiKuqLbC3IcaDqlMpRHYzm/XbsldHvouu0SEZJhX6Ub7jMNWdf
-         I66kqeB2khEsI0RfRKMXYFHI5weYKuCtayS9Y7w8mV5+g5C85XYbsJbojkWNINaJ1/
-         zVrCmcYNFrCWVdl6WuDkvyjneHofjrywzjHWsXpI=
-Received: from p1gen2.perex-int.cz (unknown [192.168.100.98])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: perex)
-        by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
-        Tue,  8 Sep 2020 14:44:57 +0200 (CEST)
-Subject: Re: [PATCH v2 0/4] soundwire: Remove sdw stream operations from Intel
-To:     Bard Liao <yung-chuan.liao@linux.intel.com>,
-        alsa-devel@alsa-project.org, vkoul@kernel.org
-Cc:     pierre-louis.bossart@linux.intel.com, vinod.koul@linaro.org,
-        tiwai@suse.de, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, ranjani.sridharan@linux.intel.com,
-        hui.wang@canonical.com, broonie@kernel.org,
-        srinivas.kandagatla@linaro.org, jank@cadence.com,
-        mengdong.lin@intel.com, sanyog.r.kale@intel.com,
-        rander.wang@linux.intel.com, bard.liao@intel.com
-References: <20200903204739.31206-1-yung-chuan.liao@linux.intel.com>
-From:   Jaroslav Kysela <perex@perex.cz>
-Message-ID: <28bd0f89-3dc5-0bf4-bf2a-dca62fddc507@perex.cz>
-Date:   Tue, 8 Sep 2020 14:44:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1731730AbgIHRoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 13:44:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56710 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731659AbgIHQOE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 12:14:04 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6168FC061375
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 05:48:25 -0700 (PDT)
+Date:   Tue, 8 Sep 2020 14:48:50 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1599569303;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6fAFubHHqBfV7rm22ZeRY7ZslhBGVZwuDRVSmUBXy2E=;
+        b=qBMMBzJJPqmVdjdvsckWg2x6CAY94WEen2gUNszKp9zlye67Jgrpr1YZdp7OwIso24T715
+        IW8nCStN1L/QIqNTOewYPJxQFaTg+fab5NhXs8QR1HZCgI0GOohuXwZYSwT4ajwMJOhUbG
+        F5u++3oekU8ixEpXV39zAlOqZRbNjpqVEwimcni11H/wahju6v+3F8OyhAf8xI7oa3fbAJ
+        kpqcWtwZC/CY4ouNoMMrbxDQeFee5oT4jKpCwxySZ7YjHIovtNG5+d9gz6D8aEiHf06qV2
+        ZA+lcRTjS6A6LdSBOde4NjqASAjAfvUFYz7qT9VcLJCnLCWzWBEx8Rpj7UyhkQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1599569303;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6fAFubHHqBfV7rm22ZeRY7ZslhBGVZwuDRVSmUBXy2E=;
+        b=sSmH5JrCzDTThVEx11l5gdKGySWNkg5t9mCiPqK+191e/J9iOpiD4nLQ5j+7/frijEZX5u
+        CBvcG75OkebzF3CQ==
+From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
+To:     peterz@infradead.org
+Cc:     Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Sebastian A. Siewior" <bigeasy@linutronix.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 4/5] seqlock: seqcount_LOCKNAME_t: Introduce
+ PREEMPT_RT support
+Message-ID: <20200908124850.GA487635@lx-t490>
+References: <20200904153231.11994-1-a.darwish@linutronix.de>
+ <20200904153231.11994-5-a.darwish@linutronix.de>
+ <20200908114520.GS1362448@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <20200903204739.31206-1-yung-chuan.liao@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200908114520.GS1362448@hirez.programming.kicks-ass.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne 03. 09. 20 v 22:47 Bard Liao napsal(a):
-> Sdw stream operation APIs can be called once per stream. Move these
-> operations to dailink ops. The linked series is "ASoC: Add sdw stream
-> operations to dailink ops".
-> 
-> Pierre-Louis Bossart (4):
->   soundwire: stream: fix NULL/IS_ERR confusion
->   soundwire: intel: fix NULL/ERR_PTR confusion
->   soundwire: intel: remove .trigger operation
->   soundwire: intel: remove stream handling from .prepare and .hw_free
-> 
->  drivers/soundwire/intel.c  | 60 +++++---------------------------------
->  drivers/soundwire/stream.c |  2 +-
->  2 files changed, 9 insertions(+), 53 deletions(-)
-> 
+On Tue, Sep 08, 2020 at 01:45:20PM +0200, peterz@infradead.org wrote:
+> On Fri, Sep 04, 2020 at 05:32:30PM +0200, Ahmed S. Darwish wrote:
+> > @@ -406,13 +443,20 @@ static inline int read_seqcount_t_retry(const seqcount_t *s, unsigned start)
+> >  	return __read_seqcount_t_retry(s, start);
+> >  }
+> >
+> > +/*
+> > + * Enforce non-preemptibility for all seqcount_LOCKNAME_t writers. Don't
+> > + * do it for PREEMPT_RT, for the reasons outlined at __SEQ_LOCK().
+> > + */
+> > +#define __seq_enforce_writer_non_preemptibility(s)			\
+> > +	(!IS_ENABLED(CONFIG_PREEMPT_RT) && __seqcount_lock_preemptible(s))
+> > +
+> >  /**
+> >   * raw_write_seqcount_begin() - start a seqcount_t write section w/o lockdep
+> >   * @s: Pointer to seqcount_t or any of the seqcount_LOCKNAME_t variants
+> >   */
+> >  #define raw_write_seqcount_begin(s)					\
+> >  do {									\
+> > -	if (__seqcount_lock_preemptible(s))				\
+> > +	if (__seq_enforce_writer_non_preemptibility(s))			\
+> >  		preempt_disable();					\
+> >  									\
+> >  	raw_write_seqcount_t_begin(__seqcount_ptr(s));			\
+> > @@ -433,7 +477,7 @@ static inline void raw_write_seqcount_t_begin(seqcount_t *s)
+> >  do {									\
+> >  	raw_write_seqcount_t_end(__seqcount_ptr(s));			\
+> >  									\
+> > -	if (__seqcount_lock_preemptible(s))				\
+> > +	if (__seq_enforce_writer_non_preemptibility(s))			\
+> >  		preempt_enable();					\
+> >  } while (0)
+> >
+> > @@ -456,7 +500,7 @@ static inline void raw_write_seqcount_t_end(seqcount_t *s)
+> >  do {									\
+> >  	__seqcount_assert_lock_held(s);					\
+> >  									\
+> > -	if (__seqcount_lock_preemptible(s))				\
+> > +	if (__seq_enforce_writer_non_preemptibility(s))			\
+> >  		preempt_disable();					\
+> >  									\
+> >  	write_seqcount_t_begin_nested(__seqcount_ptr(s), subclass);	\
+> > @@ -483,7 +527,7 @@ static inline void write_seqcount_t_begin_nested(seqcount_t *s, int subclass)
+> >  do {									\
+> >  	__seqcount_assert_lock_held(s);					\
+> >  									\
+> > -	if (__seqcount_lock_preemptible(s))				\
+> > +	if (__seq_enforce_writer_non_preemptibility(s))			\
+> >  		preempt_disable();					\
+> >  									\
+> >  	write_seqcount_t_begin(__seqcount_ptr(s));			\
+> > @@ -504,7 +548,7 @@ static inline void write_seqcount_t_begin(seqcount_t *s)
+> >  do {									\
+> >  	write_seqcount_t_end(__seqcount_ptr(s));			\
+> >  									\
+> > -	if (__seqcount_lock_preemptible(s))				\
+> > +	if (__seq_enforce_writer_non_preemptibility(s))			\
+> >  		preempt_enable();					\
+> >  } while (0)
+>
+> I've replaced the above with the below, afaict there were no users of
+> __seqcount_lock_preemptible() left.
+>
+> --- a/include/linux/seqlock.h
+> +++ b/include/linux/seqlock.h
+> @@ -228,7 +228,11 @@ __seqprop_##lockname##_sequence(const se
+>  static __always_inline bool						\
+>  __seqprop_##lockname##_preemptible(const seqcount_##lockname##_t *s)	\
+>  {									\
+> -	return preemptible;						\
+> +	if (!IS_ENABLED(CONFIG_PREEMPT_RT))				\
+> +		return preemptible;					\
+> +									\
+> +	/* PREEMPT_RT relies on the above LOCK+UNLOCK */		\
+> +	return false;							\
+>  }									\
+>  									\
 
-Straight patches. I tested them. For all:
-
-Acked-by: Jaroslav Kysela <perex@perex.cz>
-
-Note: The ASoC part must be merged in sync -
-  "[PATCH v3 0/3] ASoC: Add sdw stream operations to dailink ops."
-
-						Jaroslav
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+Sounds good.
