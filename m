@@ -2,144 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68B202612BA
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 16:30:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AE522612C7
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 16:35:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730099AbgIHO3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 10:29:47 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:35692 "EHLO pegase1.c-s.fr"
+        id S1730161AbgIHOeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 10:34:14 -0400
+Received: from foss.arm.com ([217.140.110.172]:54244 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729725AbgIHOY4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 10:24:56 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4Bm4Vr1mvXz9tysg;
-        Tue,  8 Sep 2020 14:40:20 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id cIMhaNVcmlrN; Tue,  8 Sep 2020 14:40:20 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4Bm4Vr0fBLz9tysZ;
-        Tue,  8 Sep 2020 14:40:20 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5BBAE8B7C1;
-        Tue,  8 Sep 2020 14:40:21 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id xwRqAZ7QC05H; Tue,  8 Sep 2020 14:40:21 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id B7AA88B7BE;
-        Tue,  8 Sep 2020 14:40:18 +0200 (CEST)
-Subject: Re: [RFC PATCH v2 1/3] mm/gup: fix gup_fast with dynamic page table
- folding
-To:     Christian Borntraeger <borntraeger@de.ibm.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        John Hubbard <jhubbard@nvidia.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-mm <linux-mm@kvack.org>, Paul Mackerras <paulus@samba.org>,
-        linux-sparc <sparclinux@vger.kernel.org>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Richard Weinberger <richard@nod.at>,
-        linux-x86 <x86@kernel.org>, Russell King <linux@armlinux.org.uk>,
-        Ingo Molnar <mingo@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Jeff Dike <jdike@addtoit.com>,
-        linux-um <linux-um@lists.infradead.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-arm <linux-arm-kernel@lists.infradead.org>,
-        linux-power <linuxppc-dev@lists.ozlabs.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>
-References: <20200907180058.64880-1-gerald.schaefer@linux.ibm.com>
- <20200907180058.64880-2-gerald.schaefer@linux.ibm.com>
- <82fbe8f9-f199-5fc2-4168-eb43ad0b0346@csgroup.eu>
- <70a3dcb5-5ed1-6efa-6158-d0573d6927da@de.ibm.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <96b80926-cf5b-1afa-9b7a-949a2188e61f@csgroup.eu>
-Date:   Tue, 8 Sep 2020 14:40:10 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-MIME-Version: 1.0
-In-Reply-To: <70a3dcb5-5ed1-6efa-6158-d0573d6927da@de.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+        id S1729691AbgIHO1J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 10:27:09 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 64D1D106F;
+        Tue,  8 Sep 2020 05:48:37 -0700 (PDT)
+Received: from usa.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id E995F3F73C;
+        Tue,  8 Sep 2020 05:48:34 -0700 (PDT)
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     devicetree@vger.kernel.org,
+        Andre Przywara <andre.przywara@arm.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Sudeep Holla <sudeep.holla@arm.com>,
+        linux-watchdog@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Ray Jui <rjui@broadcom.com>, Wei Xu <xuwei5@hisilicon.com>,
+        Li Yang <leoyang.li@nxp.com>, linux-kernel@vger.kernel.org,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Chanho Min <chanho.min@lge.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Liviu Dudau <liviu.dudau@arm.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Viresh Kumar <vireshk@kernel.org>
+Subject: Re: [PATCH 00/10] dt-bindings: Convert SP805 to Json-schema (and fix users)
+Date:   Tue,  8 Sep 2020 13:48:33 +0100
+Message-Id: <159956909739.1981.1445009961790432291.b4-ty@arm.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200828130602.42203-1-andre.przywara@arm.com>
+References: <20200828130602.42203-1-andre.przywara@arm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Le 08/09/2020 à 14:09, Christian Borntraeger a écrit :
+On Fri, 28 Aug 2020 14:05:52 +0100, Andre Przywara wrote:
+> This is an attempt to convert the SP805 watchdog DT binding to yaml.
+> This is done in the first patch, the remaining nine fix some DT users.
 > 
+> I couldn't test any of those DT files on actual machines, but tried
+> to make the changes in a way that would be transparent to at least the
+> Linux driver. The only other SP805 DT user I could find is U-Boot, which
+> seems to only use a very minimal subset of the binding (just the first
+> clock).
+> I only tried to fix those DTs that were easily and reliably fixable.
+> AFAICT, a missing primecell compatible string, for instance, would
+> prevent the Linux driver from probing the device at all, so I didn't
+> dare to touch those DTs at all. Missing clocks are equally fatal.
 > 
-> On 08.09.20 07:06, Christophe Leroy wrote:
->>
->>
->> Le 07/09/2020 à 20:00, Gerald Schaefer a écrit :
->>> From: Alexander Gordeev <agordeev@linux.ibm.com>
->>>
->>> Commit 1a42010cdc26 ("s390/mm: convert to the generic get_user_pages_fast
->>> code") introduced a subtle but severe bug on s390 with gup_fast, due to
->>> dynamic page table folding.
->>>
->>> The question "What would it require for the generic code to work for s390"
->>> has already been discussed here
->>> https://lkml.kernel.org/r/20190418100218.0a4afd51@mschwideX1
->>> and ended with a promising approach here
->>> https://lkml.kernel.org/r/20190419153307.4f2911b5@mschwideX1
->>> which in the end unfortunately didn't quite work completely.
->>>
->>> We tried to mimic static level folding by changing pgd_offset to always
->>> calculate top level page table offset, and do nothing in folded pXd_offset.
->>> What has been overlooked is that PxD_SIZE/MASK and thus pXd_addr_end do
->>> not reflect this dynamic behaviour, and still act like static 5-level
->>> page tables.
->>>
->>
->> [...]
->>
->>>
->>> Fix this by introducing new pXd_addr_end_folded helpers, which take an
->>> additional pXd entry value parameter, that can be used on s390
->>> to determine the correct page table level and return corresponding
->>> end / boundary. With that, the pointer iteration will always
->>> happen in gup_pgd_range for s390. No change for other architectures
->>> introduced.
->>
->> Not sure pXd_addr_end_folded() is the best understandable name, allthough I don't have any alternative suggestion at the moment.
->> Maybe could be something like pXd_addr_end_fixup() as it will disappear in the next patch, or pXd_addr_end_gup() ?
->>
->> Also, if it happens to be acceptable to get patch 2 in stable, I think you should switch patch 1 and patch 2 to avoid the step through pXd_addr_end_folded()
-> 
-> given that this fixes a data corruption issue, wouldnt it be the best to go forward
-> with this patch ASAP and then handle the other patches on top with all the time that
-> we need?
+> [...]
 
-I have no strong opinion on this, but I feel rather tricky to have to 
-change generic part of GUP to use a new fonction then revert that change 
-in the following patch, just because you want the first patch in stable 
-and not the second one.
+I have picked 2 patches for Arm Ltd boards/models.
 
-Regardless, I was wondering, why do we need a reference to the pXd at 
-all when calling pXd_addr_end() ?
+Applied to sudeep.holla/linux (for-next/juno), thanks!
 
-Couldn't S390 retrieve the pXd by using the pXd_offset() dance with the 
-passed addr ?
+[1/2] (korg_sudeep/for-next/juno, for-next/juno) arm64: dts: arm: Fix SP805 clock-names
+      https://git.kernel.org/sudeep.holla/c/b83ded8a31
+[2/2] ARM: dts: arm: Fix SP805 clocks
+      https://git.kernel.org/sudeep.holla/c/a894c6dd56
 
-Christophe
+--
+
+Regards,
+Sudeep
+
