@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC4142618DE
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 20:04:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10A002618D1
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 20:03:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732252AbgIHR6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 13:58:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56658 "EHLO mail.kernel.org"
+        id S1731543AbgIHSAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 14:00:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56672 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731559AbgIHQMr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:12:47 -0400
+        id S1731552AbgIHQMq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 12:12:46 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5A56324884;
-        Tue,  8 Sep 2020 15:52:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DCF732485A;
+        Tue,  8 Sep 2020 15:51:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599580330;
-        bh=94jbiT/iviL3xFKjxO4CaHmUaM3rOn+3FKbtH+tRnok=;
+        s=default; t=1599580308;
+        bh=yVzu16jkR+ZSizyDraX6CgN0pG7oqdVsMdzwGZ9bSn4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jKyo+qWswoKU1zUNRESYhgSwiTcHUV1UcIyjguj8KJrk+iUc70agjsP12hCsIU8Wd
-         1C8ifipvzNINsqQsPWQ6EBY9rMf2eqWP30wxOU2p0fNyCKfDkt4mlNc01rEddXOO3c
-         QdS/4vFT4qjnMPlT+YZVkVOYh272muMb3F5nkkRs=
+        b=yF1d5xfpYoR1mAPIC+JJKxDkCfY3LdlUpeTLaTEozFTCzUtq8Jf13E3pWtJMp5r0J
+         s0WLuOTEcSopcEYvzlxFkT4KT7XGn9W+vsjHgN1KjCVrDfxeQWEO+r2cX1IlJ7TTqV
+         7fABYri7UHSvoxcDnrqCNUVroUUlnPCwltyU4+LU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yu Kuai <yukuai3@huawei.com>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 15/65] dmaengine: at_hdmac: check return value of of_find_device_by_node() in at_dma_xlate()
-Date:   Tue,  8 Sep 2020 17:26:00 +0200
-Message-Id: <20200908152217.822263235@linuxfoundation.org>
+        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        Andrew Lunn <andrew@lunn.ch>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 24/65] net: arc_emac: Fix memleak in arc_mdio_probe
+Date:   Tue,  8 Sep 2020 17:26:09 +0200
+Message-Id: <20200908152218.277207996@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200908152217.022816723@linuxfoundation.org>
 References: <20200908152217.022816723@linuxfoundation.org>
@@ -43,36 +45,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yu Kuai <yukuai3@huawei.com>
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-[ Upstream commit 0cef8e2c5a07d482ec907249dbd6687e8697677f ]
+[ Upstream commit e2d79cd8875fa8c3cc7defa98a8cc99a1ed0c62f ]
 
-The reurn value of of_find_device_by_node() is not checked, thus null
-pointer dereference will be triggered if of_find_device_by_node()
-failed.
+When devm_gpiod_get_optional() fails, bus should be
+freed just like when of_mdiobus_register() fails.
 
-Fixes: bbe89c8e3d59 ("at_hdmac: move to generic DMA binding")
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-Link: https://lore.kernel.org/r/20200817115728.1706719-2-yukuai3@huawei.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Fixes: 1bddd96cba03d ("net: arc_emac: support the phy reset for emac driver")
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/dma/at_hdmac.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/ethernet/arc/emac_mdio.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/dma/at_hdmac.c b/drivers/dma/at_hdmac.c
-index 21ed0e20c5d91..cf3225a229890 100644
---- a/drivers/dma/at_hdmac.c
-+++ b/drivers/dma/at_hdmac.c
-@@ -1677,6 +1677,8 @@ static struct dma_chan *at_dma_xlate(struct of_phandle_args *dma_spec,
- 		return NULL;
+diff --git a/drivers/net/ethernet/arc/emac_mdio.c b/drivers/net/ethernet/arc/emac_mdio.c
+index 0187dbf3b87df..54cdafdd067db 100644
+--- a/drivers/net/ethernet/arc/emac_mdio.c
++++ b/drivers/net/ethernet/arc/emac_mdio.c
+@@ -153,6 +153,7 @@ int arc_mdio_probe(struct arc_emac_priv *priv)
+ 	if (IS_ERR(data->reset_gpio)) {
+ 		error = PTR_ERR(data->reset_gpio);
+ 		dev_err(priv->dev, "Failed to request gpio: %d\n", error);
++		mdiobus_free(bus);
+ 		return error;
+ 	}
  
- 	dmac_pdev = of_find_device_by_node(dma_spec->np);
-+	if (!dmac_pdev)
-+		return NULL;
- 
- 	dma_cap_zero(mask);
- 	dma_cap_set(DMA_SLAVE, mask);
 -- 
 2.25.1
 
