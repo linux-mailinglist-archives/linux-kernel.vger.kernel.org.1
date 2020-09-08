@@ -2,146 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E24002620DD
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 22:16:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 312D326209E
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 22:14:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730719AbgIHUQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 16:16:52 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:15900 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729993AbgIHPKB (ORCPT
+        id S1729655AbgIHUNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 16:13:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46798 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730097AbgIHPLM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:10:01 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f579e780000>; Tue, 08 Sep 2020 08:08:40 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Tue, 08 Sep 2020 08:09:30 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Tue, 08 Sep 2020 08:09:30 -0700
-Received: from [10.2.173.224] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 8 Sep
- 2020 15:09:27 +0000
-From:   Zi Yan <ziy@nvidia.com>
-To:     Michal Hocko <mhocko@suse.com>
-CC:     Roman Gushchin <guro@fb.com>, <linux-mm@kvack.org>,
-        Rik van Riel <riel@surriel.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        David Nellans <dnellans@nvidia.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH 00/16] 1GB THP support on x86_64
-Date:   Tue, 8 Sep 2020 11:09:25 -0400
-X-Mailer: MailMate (1.13.1r5705)
-Message-ID: <3CDAD67E-23A1-4D84-BF19-FFE1CF956779@nvidia.com>
-In-Reply-To: <20200907072014.GD30144@dhcp22.suse.cz>
-References: <20200902180628.4052244-1-zi.yan@sent.com>
- <20200903073254.GP4617@dhcp22.suse.cz>
- <20200903162527.GF60440@carbon.dhcp.thefacebook.com>
- <20200904074207.GC15277@dhcp22.suse.cz>
- <20200904211045.GA567128@carbon.DHCP.thefacebook.com>
- <20200907072014.GD30144@dhcp22.suse.cz>
+        Tue, 8 Sep 2020 11:11:12 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13416C00459C
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 08:09:49 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id l63so16337729edl.9
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 08:09:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chrisdown.name; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=qeNAwf96U+vrersmX6/zX5LAcMEPOlKjRQFFX9HVgVo=;
+        b=d04XD4wuGYZKDFoeUGggqqzXwzd0VsEDo6lGpROBTOkED3kJI1+94j6ITiYOUVrlW7
+         un4Fs5b6mF3ge0DnXus6rBSJM+U7qyxKRB+WD9TCYpPVeq9KHU6VzdHDzX6axffUg1Ze
+         tNgxHZmOUVWjGOubJIYSMS3BHyReZG57/KUfM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=qeNAwf96U+vrersmX6/zX5LAcMEPOlKjRQFFX9HVgVo=;
+        b=Y8y4v959CqqzxXF1zix5kzcRbBmzbwptWb3oJBGtqaCie3iUG0wKlcXl7HsdYuGjz0
+         EjzipahzJ9wecMj1AG/ItFsXwK9bXYbM+ZI6YQDZ5CrSrZATeeX70bdhfoQgh0ZiUv2q
+         AZwPvcL8WeB+YdArcAS1NAYa5mzfI5Z9XrdlJgOStZYmQtB35dnHCMrfmvYlD4AweiCG
+         Ip22WaV7d9Cl8AbrBi7h4es+rg7+QS2OguU75zxCdavp/QqX3cNjfowaHxH3sAau7joz
+         gzfgSaPtyYuyKggwrrrDfDIeXfsYWq6vF2+DDR8ievmGjYZzIQatgadPl6Z8kLGJIyeH
+         rb0Q==
+X-Gm-Message-State: AOAM531JEQpAglYBoPHs0VD3KkMPtgcThw+i4iHtHfrR2fWJnrMtcLZB
+        dgpQQ7/RfcuQn4LeHIz047FQrw==
+X-Google-Smtp-Source: ABdhPJxDBr5+O5eYvDzGM29LFm9OajpzqSaZp8GDx0Q2+MDUSqtVvvBDLIIVW9I+DX7jhLkjasC/qQ==
+X-Received: by 2002:a05:6402:615:: with SMTP id n21mr26220771edv.59.1599577786255;
+        Tue, 08 Sep 2020 08:09:46 -0700 (PDT)
+Received: from localhost ([2620:10d:c093:400::5:4614])
+        by smtp.gmail.com with ESMTPSA id y21sm6926839eju.46.2020.09.08.08.09.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Sep 2020 08:09:45 -0700 (PDT)
+Date:   Tue, 8 Sep 2020 16:09:45 +0100
+From:   Chris Down <chris@chrisdown.name>
+To:     zangchunxin@bytedance.com
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Muchun Song <songmuchun@bytedance.com>
+Subject: Re: [PATCH] mm/vmscan: fix infinite loop in drop_slab_node
+Message-ID: <20200908150945.GA1301981@chrisdown.name>
+References: <20200908142456.89626-1-zangchunxin@bytedance.com>
 MIME-Version: 1.0
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: multipart/signed;
-        boundary="=_MailMate_7EDFBC1A-C6C8-4AEF-8110-676C99F27B91_=";
-        micalg=pgp-sha512; protocol="application/pgp-signature"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1599577720; bh=jnz+dCZGTh2wGzZqbGtsnPy5hFqZLkUbDaA96gFT3Ps=;
-        h=X-PGP-Universal:From:To:CC:Subject:Date:X-Mailer:Message-ID:
-         In-Reply-To:References:MIME-Version:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type;
-        b=ZkNFv3uOrVPsbPahKFLZbOUwHLsE3AqdbHeu6IFT7rCjitH2P3xGmUtwrapYanNkX
-         yRipfqYYrsNMMFT52oZetbPHqSQAXD0uGgme+pNWNRgP9sOe0QS7vg84l3uVYAnj2x
-         ntHbQmstRnCVe1ZlMbDk10FURBOa9efBKDw3DaNOhPMRxR6dFfOMSv/uoTl3BhIa+I
-         znRhBw6KmNE782Nu8+a/cq8cdET2c0erj0OS69iw3PCQEiglhyJ0cut+/7xcuJ3btK
-         kRBKi+8tVBku5WjYslW93gJAuT15/YSTdoxQBi//zsY5DgVmCpc7a3oYZG2mm5rFk5
-         eywxRP8FYMZ7g==
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20200908142456.89626-1-zangchunxin@bytedance.com>
+User-Agent: Mutt/1.14.6 (2020-07-11)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=_MailMate_7EDFBC1A-C6C8-4AEF-8110-676C99F27B91_=
-Content-Type: text/plain; charset="UTF-8"; markup=markdown
-Content-Transfer-Encoding: quoted-printable
+drop_caches by its very nature can be extremely performance intensive -- if 
+someone wants to abort after trying too long, they can just send a 
+TASK_KILLABLE signal, no? If exiting the loop and returning to usermode doesn't 
+reliably work when doing that, then _that's_ something to improve, but this 
+looks premature to me until that's demonstrated not to work.
 
-On 7 Sep 2020, at 3:20, Michal Hocko wrote:
+zangchunxin@bytedance.com writes:
+>In one drop caches action, only traverse memcg once maybe is better.
+>If user need more memory, they can do drop caches again.
 
-> On Fri 04-09-20 14:10:45, Roman Gushchin wrote:
->> On Fri, Sep 04, 2020 at 09:42:07AM +0200, Michal Hocko wrote:
-> [...]
->>> An explicit opt-in sounds much more appropriate to me as well. If we =
-go
->>> with a specific API then I would not make it 1GB pages specific. Why
->>> cannot we have an explicit interface to "defragment" address space
->>> range into large pages and the kernel would use large pages where
->>> appropriate? Or is the additional copying prohibitively expensive?
->>
->> Can you, please, elaborate a bit more here? It seems like madvise(MADV=
-_HUGEPAGE)
->> provides something similar to what you're describing, but there are lo=
-t
->> of details here, so I'm probably missing something.
->
-> MADV_HUGEPAGE is controlling a preference for THP to be used for a
-> particular address range. So it looks similar but the historical
-> behavior is to control page faults as well and the behavior depends on
-> the global setup.
->
-> I've had in mind something much simpler. Effectively an API to invoke
-> khugepaged (like) functionality synchronously from the calling context
-> on the specific address range. It could be more aggressive than the
-> regular khugepaged and create even 1G pages (or as large THPs as page
-> tables can handle on the particular arch for that matter).
->
-> As this would be an explicit call we do not have to be worried about
-> the resulting latency because it would be an explicit call by the
-> userspace.  The default khugepaged has a harder position there because
-> has no understanding of the target address space and cannot make any
-> cost/benefit evaluation so it has to be more conservative.
-
-Something like MADV_HUGEPAGE_SYNC? It would be useful, since users have
-better and clearer control of getting huge pages from the kernel and
-know when they will pay the cost of getting the huge pages.
-
-I would think the suggestion is more about the huge page control options
-currently provided by the kernel do not have predictable performance
-outcome, since MADV_HUGEPAGE is a best-effort option and does not tell
-users whether the marked virtual address range is backed by huge pages
-or not when the madvise returns. MADV_HUGEPAGE_SYNC would provide a
-deterministic result to users on whether the huge page(s) are formed
-or not.
-
-=E2=80=94
-Best Regards,
-Yan Zi
-
---=_MailMate_7EDFBC1A-C6C8-4AEF-8110-676C99F27B91_=
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQJDBAEBCgAtFiEEh7yFAW3gwjwQ4C9anbJR82th+ooFAl9XnqUPHHppeUBudmlk
-aWEuY29tAAoJEJ2yUfNrYfqKS+oQAJojTqyoQvL31XcZ+NFpnvN4yzKKUCnvHJXH
-z7mb9aqUbdDJ3sABiHPa8jyjZoyxbSh8khEyUtfuLgqQ3V8/rFNDcXbTgjKgu7dg
-PUS9EdMATXRPkfRHe/X+3gXfmbsm1zD3qU84qQLPcenu3RAbWziXlC3+grWBqaVV
-ktZ8NGtpLkzkx2Fk3s/ZBSe9HgCE8CJHBZtxGT6XXxMxaHbGNCu9jmtaRNVG1Fcu
-QTMWe5eYbkR4g1hPmaPD9W5cjgEeno77VhdGH7RTCiOO18Yh5/4PUybz13qjztbY
-1tCOfaZpYI1w9fVtlY8d0oPLytZ/A9YoCEz4NGhM6YmsHDR15Mjf8p7xPmfSK7cM
-kRcIGabPHa6UDrzBgCjjnJHm3DIgO+56ZtS4smFbKG0+2nk5g43MSTrN07MrsAi7
-d9GBp/qct3LCHWejJyxGKAJ9hPTVILJlIrp8pCajwPRvxXz/Kx0g61/nx571kr9H
-VqV4UiF6xZGSYAiAsL66DqerxaIYn/y1wMyS/4GcCr37hb94T+KWh6DyV0oczQsb
-NKbo4Kx+4LSpFgs4j7/h6ZEVu83u5uaFLuW832WDgi0KfZf/tGFzyjt1S0IXxzrA
-wyP3WsaMRtOWl+66+nE7sEwY7fReeRY5fQnQ8KBtAsm/8v0hXMk5gmKQlLwbAK+n
-LKsetGJu
-=NLLe
------END PGP SIGNATURE-----
-
---=_MailMate_7EDFBC1A-C6C8-4AEF-8110-676C99F27B91_=--
+Can you please provide some measurements of the difference in reclamation in 
+practice?
