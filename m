@@ -2,214 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A9AD26186E
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:55:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C982E261869
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:54:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731714AbgIHRzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 13:55:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44334 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732180AbgIHRyH (ORCPT
+        id S1731579AbgIHRyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 13:54:50 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:47214 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732142AbgIHRyk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 13:54:07 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22978C061573
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 10:54:03 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id y13so278905iow.4
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 10:54:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BNthzVzIYmOCtfH4z/pcKeF29sydM0wgwPFHhuTXXMk=;
-        b=bSZftN7p6bmjiLd8ObGYCQG9JPQ8oFsjuGwE1HXkLTzIqLH4SYu+PdtJqi9DX+IH23
-         T1AAtV4UNMRiQrm57b4AModkmKUxqSxE1ILRpC7KPbvXkBsAJhfSqL6v0aOJjnLS1WS1
-         czdrC9sokYVbKjHFOew2VECePyAIJkJ/06FteWe6k03cQaVtrH0QwI0dJghxsgICcLvD
-         XDUqs6nVNHdPzvj80HO+YWQ1MKxjPVQWdrvC9ZzczjRNnhrqDsfuvzZJL2exXi3279cz
-         r79EIghTG0E/fS3FdDzWYEOXD2f95ron5mskBILKdg2cQXYXfISdmyDUnmaAgJKIAece
-         zR3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BNthzVzIYmOCtfH4z/pcKeF29sydM0wgwPFHhuTXXMk=;
-        b=nkFflRSlnui2fcyxgr0KPukQ6KoTHQczjb5Z9jyChuxaQHfh56/R49RK3KdKhryBfS
-         QPb2IdDkioLOCAobwcMZmNq0jI+kfDSEq6XOxAzFscG64ItPKlqqm/W451xumd6jMAXA
-         SKQxC51pr/dfWiDZhpznJc0L5r0oqYOc4vJ2/z5cm1gQCNXjW68klfwRYUEN2F75dKAm
-         PJ8PRzOfzdLa8L+KLoxV9InFcsUkB4PQVOkX3kkf6bqutTBmv/1kpTPVX8s35AiA2o3X
-         ULu80NnbK4VnxzgQUWPAth6QgDnk9iscR5m32koU1fnM35dBgXysoJh8AHtGJKl0aOcz
-         JwQA==
-X-Gm-Message-State: AOAM530j5K5Bk6AXoj8vO5JF+TmRhR1U3dkHNOe7AkSJcsqhNly6BMjf
-        RPR2FvzjW6RSIi47QC61+T/Cvv50vWDeO+VZYQRtlg==
-X-Google-Smtp-Source: ABdhPJxmqm53V46wAgLNnPDatkKyz0eWBKvKAUPzuIsiHXK3CqvHH48lmAKntfKsj3Hzg1iFDzHUJeiY3/C3Yl+CGMg=
-X-Received: by 2002:a02:8805:: with SMTP id r5mr137519jai.52.1599587642348;
- Tue, 08 Sep 2020 10:54:02 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200820054718.20115-1-tingwei@codeaurora.org>
-In-Reply-To: <20200820054718.20115-1-tingwei@codeaurora.org>
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-Date:   Tue, 8 Sep 2020 11:53:51 -0600
-Message-ID: <CANLsYkwhypfEkmhg=wK+_F6TxxGiuoSqpgGR0REqsOqC-X-3mg@mail.gmail.com>
-Subject: Re: [PATCH v9 00/24] coresight: allow to build coresight as modules
-To:     Tingwei Zhang <tingwei@codeaurora.org>
-Cc:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Kim Phillips <kim.phillips@arm.com>,
-        Mian Yousaf Kaukab <ykaukab@suse.de>,
-        tsoni <tsoni@codeaurora.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Mao Jinlong <jinlmao@codeaurora.org>,
-        Coresight ML <coresight@lists.linaro.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Tue, 8 Sep 2020 13:54:40 -0400
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 088HpVFR011342;
+        Tue, 8 Sep 2020 10:54:18 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=T7vNS1ufIbjEQw6tFpcDSA8AyTeAF2JNbnupEtab4sY=;
+ b=Y2yxUqSAb8SubsXYbe9On5UNjLbuErFBV9wxBNxTSLJSOctHMt6pD7Z4ShQ+0gtYghcu
+ gD1D4zHDRX0JUhmccJT88zicGgjTYRKDmQFKorFh7ifmv6+P4W0nnKoYSEVPmHY3ZnET
+ cIQzVsXBhn1krGW7m5ddvFhCuPtioJmlAUA= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 33ct69jrkm-5
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 08 Sep 2020 10:54:17 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 8 Sep 2020 10:54:15 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=izVHDn69NsFEp3jzQK4tSbK6KEYyRJz1ROIzImEiAwle/pIAK0CUSBS6ooGdnQV0huJjusLBd5tX1tV46x93xxOXzyktvquM98rnUGwt4ncaKlb1kcqxrTAI7RVSoqKf3j2U8CTQFro30rrV48W2aOMilwj6dr7HlZLh/j1Cfou8xVlVwSMbyHimmTrO8c47+S5/6iKezu3m9eICuOC48L0Ewvzketx3P9qVYp+8nF9o17jdXLoZcqOZ4RUqXT5yEbKP45xrLH4rApogdwF/Pb7eSCjPhYMd4diJ37r9VU0LcY/JnkiH/e0r2DGEzZY6qCqkNOX0WsAxjgpXtKCAlg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=T7vNS1ufIbjEQw6tFpcDSA8AyTeAF2JNbnupEtab4sY=;
+ b=mmS2NVBr4oucQ+veqA5it300O8cIKHjs3AfuP3LbZakqXsbck0JwMh3FVj94wft8OWpktfSa7DtlCuA4hGvoLiQGWcdj9scZNpoSM5bz8OiEMOg3GaUf1oZ87ERYulfN+V2AGlbTM6pRZjfij9xnJXoaGHEW/bc9q/NcU598ljtlet2Rg1qQCqhfp9WOh4RNg8azNGPHXqB2BaeFTGJ5OjBttJ8aZe4O5EsndnTvs/7Jr0SAyHGI8RrOAXEbJnm68XLN5VkyY69scCg8vCy6CZjmC9uoqvbIGyHewkhwSbIOY8o5hdnsQDQ1AP76QrMwX0OB4FffNNuCcuQjXw70JA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=T7vNS1ufIbjEQw6tFpcDSA8AyTeAF2JNbnupEtab4sY=;
+ b=M41iVLeuwpzDNO3cqGuEuPCUWuwNVwrXQC6SccmwW2a03Y4SxyERdFjAsx/csvwzakFLFsTlc2UhCyqFN39G/R641+g9X6xpgxBAFCS9ls18lcWtU1YIRk6blwnRDHA2qm/nVXsvBNBiw1DTzL2YyYKmJxVYDz1aUrlpfTMyRgI=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=fb.com;
+Received: from MW3PR15MB3980.namprd15.prod.outlook.com (2603:10b6:303:48::23)
+ by MW3PR15MB3865.namprd15.prod.outlook.com (2603:10b6:303:42::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Tue, 8 Sep
+ 2020 17:54:14 +0000
+Received: from MW3PR15MB3980.namprd15.prod.outlook.com
+ ([fe80::50ac:a9fb:9a0f:126f]) by MW3PR15MB3980.namprd15.prod.outlook.com
+ ([fe80::50ac:a9fb:9a0f:126f%6]) with mapi id 15.20.3348.019; Tue, 8 Sep 2020
+ 17:54:14 +0000
+Subject: Re: linux-next: build failure after merge of the bpf-next tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Networking <netdev@vger.kernel.org>
+CC:     Linux Next Mailing List <linux-next@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+References: <20200908130841.21980cd9@canb.auug.org.au>
+From:   Andrii Nakryiko <andriin@fb.com>
+Message-ID: <e03e59ab-7bf7-3a69-77e8-35ffff6bb3bf@fb.com>
+Date:   Tue, 8 Sep 2020 10:54:12 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.11.0
+In-Reply-To: <20200908130841.21980cd9@canb.auug.org.au>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BY5PR17CA0059.namprd17.prod.outlook.com
+ (2603:10b6:a03:167::36) To MW3PR15MB3980.namprd15.prod.outlook.com
+ (2603:10b6:303:48::23)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:2103:51:fde8:f2bb:1332] (2620:10d:c090:400::5:7730) by BY5PR17CA0059.namprd17.prod.outlook.com (2603:10b6:a03:167::36) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16 via Frontend Transport; Tue, 8 Sep 2020 17:54:13 +0000
+X-Originating-IP: [2620:10d:c090:400::5:7730]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 4d8d6a87-9e95-4bcb-ace8-08d8542032e6
+X-MS-TrafficTypeDiagnostic: MW3PR15MB3865:
+X-Microsoft-Antispam-PRVS: <MW3PR15MB386501FFFA10C399A3CAB2C2C6290@MW3PR15MB3865.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: HbhybVbDwSOQkBDPFgpvo1CrahyO4WmwmCroaCO+fUkYrOpFmYD3ObN4/FSURY4y92wU66lk2nf2Ev7PeSN3Ekv5qFGnbE6+pMX1S+hBt5x2O3uViUtca2gbheqE7sfWb4ZkuluRXnxgK2EBmSsxFgZwn/D7aB3srvo4XVGx3emCf+8jjZLsDDN4egpsAqVBIkYPa507t52X1C40mUW/eJMY7+h8969qlNzzzPT4z6FtbqpBEJhxEznx6bTsHA9aSB2fd0pYgCB5j9kWzG4R7yQ1e3ugf2nEBt4NPc8IRT25wLn2u+VO/gDd8O/cLAY7xSGi+hOxfvbftL/P9njyewLSfTptgHrh5FX+mHZ3MnJ/3F32gpYNGkfacaCE5OYn
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR15MB3980.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(376002)(136003)(39860400002)(396003)(366004)(8936002)(66556008)(66946007)(66476007)(83380400001)(2616005)(5660300002)(52116002)(316002)(53546011)(36756003)(186003)(16526019)(2906002)(6486002)(8676002)(31696002)(110136005)(4326008)(86362001)(31686004)(478600001)(54906003)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: pFeqYtOlbvbcAX/mc3Bofkd2NZoUDmNClJcVuYbOsw8OX4EyopKIi5LavqNjcOJT2hK0jpBSDCksw6Y3tibUxhMVtR4kDmXL5/ViobVJCNVmcuN6T/ZAQ5PEgxMaR9bZxiXIo58w70tyfWXOXguEVJIHXFeR2dWSIR44/dSVE+Mijlw90RZy5L/blyrXcuDDh7bJzhqFK3WzICGLvmZp5vmJXjX8+lj1qMb4TeA02klhqm0WDIjPDu/6mYAeB6HbGi0YXjZDJxV35r8rdoCP52+/faWtZzlAtCul2TqEQsVJAQnN8rUAe1r/xXtpCcTFKzhZoD57qv7NqTXwQSVwTiWdnnY7aNOUxJgwU+4SiAd9QxSPl4T/9MtVO2HxpvlfcDIB3AAmJ0aV6L4j0ea3vTsRf97UzS/1z0Jw12PZgmkA6RJmtjexJ3DwnoJVRW+Ag4HO/ED6r2+PoBt94qBmh2VWPXbCKDSRKJcvlBRYePxb7DkyDie2AqHs1xUxRADAtnD4acyxs0++5qZ91W7WXJf/nI9+vHsLyD86Th7SGoh/FUOeHIz3zOgdP/eq/+QJ7Ylm+RMIKA2/sLnoeWekqtHUDnPGtnXSkHHma2sGzjAQPdvIMBR5jQTCCTXaTsIQwOiTmfmMTPmaQ032+0Z09ucxdVnr63REnVHFmwh4ar8=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4d8d6a87-9e95-4bcb-ace8-08d8542032e6
+X-MS-Exchange-CrossTenant-AuthSource: MW3PR15MB3980.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Sep 2020 17:54:14.4232
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: MNJRrUXn8dx9Qnu1SD6Rj25BUOLamtF0ghYZXaNCozT+usAsAap+b/qecjIDQR/t
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR15MB3865
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-08_09:2020-09-08,2020-09-08 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ priorityscore=1501 mlxscore=0 spamscore=0 phishscore=0 clxscore=1011
+ mlxlogscore=999 impostorscore=0 bulkscore=0 malwarescore=0 adultscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009080169
+X-FB-Internal: deliver
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tingwei,
+On 9/7/20 8:08 PM, Stephen Rothwell wrote:
+> Hi all,
+> 
+> After merging the bpf-next tree, today's linux-next build (powerpcle perf)
+> failed like this:
+> 
+> util/bpf-loader.c: In function 'config_bpf_program':
+> util/bpf-loader.c:331:2: error: 'bpf_program__title' is deprecated: BPF program title is confusing term; please use bpf_program__section_name() instead [-Werror=deprecated-declarations]
+>    331 |  config_str = bpf_program__title(prog, false);
+>        |  ^~~~~~~~~~
+> In file included from util/bpf-loader.c:10:
+> tools/lib/bpf/libbpf.h:203:13: note: declared here
+>    203 | const char *bpf_program__title(const struct bpf_program *prog, bool needs_copy);
+>        |             ^~~~~~~~~~~~~~~~~~
+> util/bpf-loader.c: In function 'preproc_gen_prologue':
+> util/bpf-loader.c:457:3: error: 'bpf_program__title' is deprecated: BPF program title is confusing term; please use bpf_program__section_name() instead [-Werror=deprecated-declarations]
+>    457 |   title = bpf_program__title(prog, false);
+>        |   ^~~~~
+> In file included from util/bpf-loader.c:10:
+> tools/lib/bpf/libbpf.h:203:13: note: declared here
+>    203 | const char *bpf_program__title(const struct bpf_program *prog, bool needs_copy);
+>        |             ^~~~~~~~~~~~~~~~~~
+> cc1: all warnings being treated as errors
+> 
+> Caused or exposed by commit
+> 
+>    521095842027 ("libbpf: Deprecate notion of BPF program "title" in favor of "section name"")
+> 
+> I have used the bpf-next tree from next-20200903 for today.
+> 
 
-Apologies for the untimely response to this set, I am hoping to get to
-it in the next two weeks.
-
-Thanks,
-Mathieu
-
-On Wed, 19 Aug 2020 at 23:47, Tingwei Zhang <tingwei@codeaurora.org> wrote:
->
-> Allow to build coresight as modules. This gives developers the feasibility to
-> test their code without reboot.
->
-> This series is based on below two series.
->
->  - "coresight: allow to build components as modules"
->    https://lkml.org/lkml/2018/6/5/989
->  - "coresight: make drivers modular"
->    https://lkml.org/lkml/2020/1/17/468
->
-> Change from v8:
-> Protect etmdrvdata[] by modifying it on relevant CPU  (Mathieu and Suzuki)
-> Grab the device before allocating memory for the node (Mathieu)
-> Add author of coresight core driver (Mathieu)
->
-> Change from v7:
-> Depends on below change for ETM hotplug (Sai)
-> https://lore.kernel.org/linux-arm-kernel/20200729051310.18436-1-saiprakash.ranjan@codeaurora.org/
-> Add mutex lock to protect etmdrvdata[] (Suzuki)
-> Add helper function coresight_get_ref() (Suzuki)
-> Reorg replicator and funnel change. Use two patches to support these
-> two drivers. (Suzuki)
-> Add fix tag to "coresight: etm: perf: Fix warning caused by etm_setup_aux
-> failure" (Suzuki)
-> Update author of "coresight: cti: Fix bug clearing sysfs links on callback"
->
-> Change from v6:
-> Correct module description for CATU (Mike)
-> Check ect_ret equals 0 and set ect_enabled flag (Mike)
-> Add Tested-by and Reviewed-by from Mike
->
-> Change from v5:
-> Add below CTI clean up change from Mike into series
->  -https://lists.linaro.org/pipermail/coresight/2020-July/004349.html
-> Increase module reference count when enabling CTI device (Mike)
->
-> Change from v4:
-> Fix error handling in coresight_grab_devicei() (Greg)
-> Add coresight: cti: Fix remove sysfs link error from Mike
->  -https://lists.linaro.org/pipermail/coresight/2020-July/004275.html
-> Move cti_remove_conn_xrefs() into cti_remove() (Mike)
-> Align patch subject to coresight: <component>: <description> (Mike)
->
-> Change from v3:
-> Rebase to coresight-next (Mike and Mathieu)
-> Reorder try_get_module() (Suzuki)
-> Clean up etmdrvdata[] in device remote path (Mike)
-> Move cti_remove_conn_xrefs to cti_remove (Mike)
->
-> Change from v2:
-> Rebase to 5.8-rc5. Export coresight_add_sysfs_link and
-> coresight_remove_sysfs_link
-> Fix one cut and paste error on MODULE_DESCRIPTION of CTI
->
-> Change from v1:
-> Use try_module_get() to avoid module to be unloaded when device is used
-> in active trace session. (Mathieu P)
->
-> Change from above two series.
-> This series adds the support to dynamically remove module when the device in
-> that module is enabled and used by some trace path. It disables all trace
-> paths with that device and release the trace path.
->
-> Kim Phillips (8):
->   coresight: use IS_ENABLED for CONFIGs that may be modules
->   coresight: etm3x: allow etm3x to be built as a module
->   coresight: etm4x: allow etm4x to be built as a module
->   coresight: etb: allow etb to be built as a module
->   coresight: tpiu: allow tpiu to be built as a module
->   coresight: tmc: allow tmc to be built as a module
->   coresight: allow funnel driver to be built as module
->   coresight: allow replicator driver to be built as module
->
-> Mian Yousaf Kaukab (2):
->   coresight: export global symbols
->   coresight: tmc-etr: add function to register catu ops
->
-> Mike Leach (2):
->   coresight: cti: Fix remove sysfs link error
->   coresight: cti: Fix bug clearing sysfs links on callback
->
-> Tingwei Zhang (12):
->   coresight: cpu_debug: add module name in Kconfig
->   coresight: cpu_debug: define MODULE_DEVICE_TABLE
->   coresight: add coresight prefix to barrier_pkt
->   coresight: add try_get_module() in coresight_grab_device()
->   coresight: stm: allow to build coresight-stm as a module
->   coresight: etm: perf: Fix warning caused by etm_setup_aux failure
->   coresight: cti: add function to register cti associate ops
->   coresight: cti: don't disable ect device if it's not enabled
->   coresight: cti: increase reference count when enabling cti
->   coresight: cti: allow cti to be built as a module
->   coresight: catu: allow catu drivers to be built as modules
->   coresight: allow the coresight core driver to be built as a module
->
->  drivers/hwtracing/coresight/Kconfig           |  54 ++++--
->  drivers/hwtracing/coresight/Makefile          |  22 +--
->  drivers/hwtracing/coresight/coresight-catu.c  |  37 ++++-
->  drivers/hwtracing/coresight/coresight-catu.h  |   2 -
->  .../{coresight.c => coresight-core.c}         | 154 +++++++++++++++---
->  .../hwtracing/coresight/coresight-cpu-debug.c |   2 +
->  .../{coresight-cti.c => coresight-cti-core.c} |  63 ++++++-
->  drivers/hwtracing/coresight/coresight-etb10.c |  28 +++-
->  .../hwtracing/coresight/coresight-etm-perf.c  |  13 +-
->  .../hwtracing/coresight/coresight-etm-perf.h  |   5 +-
->  ...resight-etm3x.c => coresight-etm3x-core.c} |  28 +++-
->  ...resight-etm4x.c => coresight-etm4x-core.c} |  84 +++++++---
->  .../hwtracing/coresight/coresight-funnel.c    |  64 +++++++-
->  .../hwtracing/coresight/coresight-platform.c  |   1 +
->  drivers/hwtracing/coresight/coresight-priv.h  |  24 ++-
->  .../coresight/coresight-replicator.c          |  65 +++++++-
->  drivers/hwtracing/coresight/coresight-stm.c   |  20 ++-
->  drivers/hwtracing/coresight/coresight-sysfs.c |   2 +
->  .../{coresight-tmc.c => coresight-tmc-core.c} |  25 ++-
->  .../hwtracing/coresight/coresight-tmc-etf.c   |   2 +-
->  .../hwtracing/coresight/coresight-tmc-etr.c   |  21 ++-
->  drivers/hwtracing/coresight/coresight-tmc.h   |   3 +
->  drivers/hwtracing/coresight/coresight-tpiu.c  |  20 ++-
->  include/linux/coresight.h                     |   3 +-
->  24 files changed, 634 insertions(+), 108 deletions(-)
->  rename drivers/hwtracing/coresight/{coresight.c => coresight-core.c} (92%)
->  rename drivers/hwtracing/coresight/{coresight-cti.c => coresight-cti-core.c} (94%)
->  rename drivers/hwtracing/coresight/{coresight-etm3x.c => coresight-etm3x-core.c} (97%)
->  rename drivers/hwtracing/coresight/{coresight-etm4x.c => coresight-etm4x-core.c} (96%)
->  rename drivers/hwtracing/coresight/{coresight-tmc.c => coresight-tmc-core.c} (95%)
->
-> --
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
->
+perf code is using deprecated bpf_program__title() API. I'll send a 
+patch for bpf-next to replace it with bpf_program__section_name(). 
+Thanks for letting me know about build warning!
