@@ -2,93 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3024D2614AE
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:32:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7F4B2614C0
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:36:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732034AbgIHQcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 12:32:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59042 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731961AbgIHQ1c (ORCPT
+        id S1732025AbgIHQcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 12:32:05 -0400
+Received: from mail-ej1-f67.google.com ([209.85.218.67]:40968 "EHLO
+        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731677AbgIHQ1i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:27:32 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D432C061573
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 09:27:18 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id g10so15343526otq.9
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 09:27:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=qe8786Kv2/Cdda8ENAC5J9OvVx6/GLW0ZvDTGCUEWHI=;
-        b=pEBwEHKEb1Dk4iDE+bs0N/QmZmfmRHAdNjZfAPX4VRrtoLeqOs0RvZiP3PyjyhGTyR
-         7314mZnv/TVtui8z8++jmRdhor2lXGLxeiyDlFvN52zTnMO4zevmY2agOGtGDjhJRe9n
-         2GVBGNe42bsAb3MLIRBr1nS7CgafY02zu/kzxWNZFIGhyzvePv5Lh1hkSSz6pkuNALvK
-         nmDT5DrQ+MFgy0hqKBAdlvg5eChxI61+3JKMJvrEHHRPAQus7XNObK8IsKB+rhuGI49C
-         rmXQSScHmMbvAQuES7ldtKynOvtJzb/pf2YPUWMIDgdE6eg9xRq5jSsrbraprvmo+4rl
-         QlVQ==
+        Tue, 8 Sep 2020 12:27:38 -0400
+Received: by mail-ej1-f67.google.com with SMTP id lo4so23433764ejb.8;
+        Tue, 08 Sep 2020 09:27:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=qe8786Kv2/Cdda8ENAC5J9OvVx6/GLW0ZvDTGCUEWHI=;
-        b=IkJyBHShwad6VpKQsGq8uPegM2t68kLF4Qzg6pNbq2EXVUgGUE8qsNSNIPKRMaEpaL
-         qm8i7YCm0niH+C3bhgsdGjoSsaZsXHKTlel/tMNpFCdFzTZV3QzDAnHnC++OZjZWMmY0
-         8NX15dOUc+u4TIR3oveW0XkMqPo5TNwB/ZUzuZmpma8uH+o9Uc+TgMn/ouor8PLmadtx
-         hqHJemhHP9civCiez65C09Op7Nj3+zi2Q3ieUTqhYtgFzEi7SR6fvCfj6l0lKxfj5SGd
-         JEF1e8j9Jpm/8HhXSfFZLwskqyFFz4N8dmyCWn/JVToPOJLFjJzGQRzRX5+e5Wem6SDK
-         iM4A==
-X-Gm-Message-State: AOAM532+XLcLxiBZ45tuvUVXCjnjnWn80I/PVcRj5U3/17N1zeRjOY0q
-        fU2JZWICisxt+VIxWPhnyp9f860OxiUJ3V3q4CAXH22n0SR8Rg==
-X-Google-Smtp-Source: ABdhPJwF/dno6+Gp7uQwcYtb25LqX/clnTegre5FuzZSMtCcMNYZYLn4O1EQY/jnjgJOWLOT5h/Ux9vDuj/4wGpzMl4=
-X-Received: by 2002:a9d:345:: with SMTP id 63mr18625809otv.370.1599582436249;
- Tue, 08 Sep 2020 09:27:16 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gY7Q3pRnf8yKWrwhsguEVhiFV56SISncaL/KGXTFU2c=;
+        b=EeLjgINSE7wJIUZaXwUjo8TH0FhnpAFktsXkUl1pu+t/+9fjSIZDvEh1YMkm99OZuy
+         aiUj4BVWKfBkRGxuWp85Ssc+USMkU+jpvqL4CDoDPEb8V4eh7YOOMDC1BdCSw+fnYRvl
+         yUBBh3izI2rTdL4DQSOqQpq9ZSkyr2raS/sfv6LVg+9wO4z9jPZF2iDe2r+LLWk/5jP1
+         ss3OfXzBZ0y2hhIj3NtMXaCygkiFwI3os1DOzTwAyGJLyw1jazSungvdq6rAQyDI04nW
+         Bp3sjB8pIAYeU7oDpuntnRRL9ob9H+7QCeVeuL8e2hPQzu3/a4/YE2rdWJZ7DWdH91RP
+         NC9g==
+X-Gm-Message-State: AOAM533Xh0Q6hvorMS36J/2GUuISC3vQ/+imnzUD7L2TMLzfZJv3hdlm
+        EwPm5z7j05yjRWG0Sg9CEaOVJlk6PVb6DdU4GDU=
+X-Google-Smtp-Source: ABdhPJyPV79BQ2uCKj76HlR0TVeqnv1xQY7tTPobo4YQa4vlL0N9qfMSsm12mGPd5V4mCSTtJXDyex63ftbLsCRq/2E=
+X-Received: by 2002:a17:906:cb94:: with SMTP id mf20mr27925380ejb.8.1599582456391;
+ Tue, 08 Sep 2020 09:27:36 -0700 (PDT)
 MIME-Version: 1.0
-From:   Mikael Pettersson <mikpelinux@gmail.com>
-Date:   Tue, 8 Sep 2020 18:27:05 +0200
-Message-ID: <CAM43=SOCs699z9E1EK3EG8BCJFw_9veWa7xWOEokvwj01NVS6Q@mail.gmail.com>
-Subject: [REGRESSION][BISECTED] 5.9-rc4 disables console on radeon
-To:     Linux Kernel list <linux-kernel@vger.kernel.org>,
-        amd-gfx@lists.freedesktop.org,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>
+References: <20200906192935.107086-1-paul@crapouillou.net> <20200906192935.107086-7-paul@crapouillou.net>
+In-Reply-To: <20200906192935.107086-7-paul@crapouillou.net>
+From:   =?UTF-8?Q?Philippe_Mathieu=2DDaud=C3=A9?= <f4bug@amsat.org>
+Date:   Tue, 8 Sep 2020 18:27:25 +0200
+Message-ID: <CAAdtpL4TLbjtMZojKhQ3mkYHusdnp_05fLhm44bGuEv0icP+Nw@mail.gmail.com>
+Subject: Re: [PATCH v3 06/15] MIPS: generic: Allow boards to set system type
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "Maciej W . Rozycki" <macro@linux-mips.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Zhou Yanjie <zhouyanjie@wanyeetech.com>, od@zcrc.me,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Starting with linux-5.9-rc4, the Dell monitor on my desktop PC goes
-black during boot
-when the kernel activates the framebuffer console, except for this
-error message shown
-in the center of the screen:
+On Sun, Sep 6, 2020 at 9:31 PM Paul Cercueil <paul@crapouillou.net> wrote:
+>
+> Check for the (already existing) "system_type" variable in the
+> get_system_type() function. If non-NULL, return it as the system type.
 
-"Dell U2412M
- The current input timing is not supported by the monitor display. Please
- change your input timing to 1920x1200@60Hz or any other monitor
- listed timing as per the monitor specifications.
- <DVI symbol>"
+Nitpick: It is not already "existing", simply declared in asm/bootinfo.h.
 
-The monitor remains black until I reboot.
-
-All kernels up to and including 5.9-rc3 were Ok.  A git bisect identified
-
-# first bad commit: [fc8c70526bd30733ea8667adb8b8ffebea30a8ed]
-drm/radeon: Prefer lower feedback dividers
-
-as the culprit, and reverting that from -rc4 makes the console work again.
-
-Adding a bit of debugging code to that function shows:
-
-avivo_get_fb_ref_div: fb_div_new 136 fb_div_old 137
-avivo_get_fb_ref_div: fb_div_new 142 fb_div_old 143
-avivo_get_fb_ref_div: fb_div_new 136 fb_div_old 137
-avivo_get_fb_ref_div: fb_div_new 119 fb_div_old 120
-avivo_get_fb_ref_div: fb_div_new 136 fb_div_old 137
-
-during boot, where "new" is what the commit above changed the code to compute,
-and "old" is the value computed by the working code from rc3.
-
-The graphics card is a Radeon HD6450 silent model:
-01:00.0 VGA compatible controller: Advanced Micro Devices, Inc.
-[AMD/ATI] Caicos [Radeon HD 6450/7450/8450 / R5 230 OEM] (prog-if 00
-[VGA controller])
+>
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> ---
+>
+> Notes:
+>     v2: Instead of adding a .get_system_type callback to the mips_machine
+>         struct, the boards now simply override the "system_type" variable
+>         when they want to set a custom one.
+>
+>     v3: No change
+>
+>  arch/mips/generic/proc.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+>
+> diff --git a/arch/mips/generic/proc.c b/arch/mips/generic/proc.c
+> index 4c992809cc3f..cce2fde219a3 100644
+> --- a/arch/mips/generic/proc.c
+> +++ b/arch/mips/generic/proc.c
+> @@ -8,11 +8,16 @@
+>
+>  #include <asm/bootinfo.h>
+>
+> +char *system_type;
+> +
+>  const char *get_system_type(void)
+>  {
+>         const char *str;
+>         int err;
+>
+> +       if (system_type)
+> +               return system_type;
+> +
+>         err = of_property_read_string(of_root, "model", &str);
+>         if (!err)
+>                 return str;
+> --
+> 2.28.0
+>
