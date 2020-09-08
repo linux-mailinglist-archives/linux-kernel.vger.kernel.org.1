@@ -2,122 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 533572614D2
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:38:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0E452614F7
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:41:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732087AbgIHQiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 12:38:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60574 "EHLO
+        id S1732097AbgIHQlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 12:41:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731673AbgIHQhS (ORCPT
+        with ESMTP id S1732042AbgIHQhP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:37:18 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D72E8C061A01
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 07:02:18 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id kk9so5710802pjb.2
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 07:02:18 -0700 (PDT)
+        Tue, 8 Sep 2020 12:37:15 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02372C061A0E
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 07:04:14 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id t16so11314375edw.7
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 07:04:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tB5vJBBCtNhXMgKB2GrADyceasBad1luqBoSGuNUjz8=;
-        b=p9feilB1M35mHPB65haOwv2e+Ui0Qw1FZR6nJHx+HtJ5jdCWL+Vw+aGtIfvQo1r1OJ
-         0aHmvXgoDtAt/sBoiUVFV59gpc7u5lw8lcsFx+Yj3j79cT4WAP1MKg/yMvt1A90Qnr8V
-         sD47h4UkaS+Ytrx40Sw8u+S7bIUHR3X0fSnVhGHgJLbbSyVQN6TnKb/P8CQmNn6TI69v
-         Vd+X3f7izf2lMBoCiIHx2Z3/Mn4O07a+wOiNjeYSiSi6/azINfDQiyib/FAzB+3VwhQU
-         +MAAJBmSsxhesuQWvcBOlU6uNChiTz9g7zt9S1akiMJl+zb91tDeOjIiaIywtwJRjiVo
-         LiZw==
+        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=pFSueD/PsgBNg5dRi4zohukePJNmnDKu8o6l7DjyJKo=;
+        b=NDNqSTa7fZTWmXjbEiT8n88ebqol0L6AQtiZu/8Oqe+mwkyHcxNQJF45p8QJ0vEHmj
+         7vURBe4Ohu2fjAEu7i/ry1GBIIfFl5TaPBxPz79QVbYcSu/nefGedb+ubeX8CBrtqttl
+         vRGrgNRtPpVQZ+TMKn4V+lOBfVl8T3XmT0sIYxxoJEu8HiVHdWijgtU1BxjViT0f9tcH
+         voD1jgHdPNU8GQLdGstctvcCBJ8Zt6MVhQfE/PW9Z+rDarmVbuJR0lGYHgfbnujN7om3
+         y37QDLUOfw5y6g0/x4GMg5xEeVirg0uNqjcdA2LuSj5fJgji6JndSYaglSRH3naDUxq7
+         R8/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tB5vJBBCtNhXMgKB2GrADyceasBad1luqBoSGuNUjz8=;
-        b=hrwJnAdf9QagmWrdrGwhuVAdCjcyqF+kBHrTzMzqNJhcUUxYZz+97NwwZMwSTCq86T
-         t3hZFfMleci5LGO/JkG7La09feXDRyW3pRqF4Nwm0do81KgkXwuIDi4LszU2LYGSG36z
-         wuxz9L36n+QiKkMd0pn3DxIv+Hep5qlt3trJvUVCJlmDfu+iA2gC7dC/Qno9KEfvDQH5
-         +zUn3ZHvF3VTFzv5bsZg5qYWvpZBSo11bV3HGFHD+RauhsH4E/di/5Z0bRwzsCYMqlFC
-         ILAEx8UtAv9TA8p/A5aNF59b9eWp86hA9izyuhTM2lznRRkBys1GN1vTWCtsfAdtp8b1
-         hHCw==
-X-Gm-Message-State: AOAM530qyi0GzWPTnMnnBmxwOYyftgu30bKtBU4ZnLg787wDH5+pw2f1
-        E0Ae5JJRqXz1z14vpc3wPeOwyjRhNmIJs/EkDoDEfw==
-X-Google-Smtp-Source: ABdhPJwVsPMlGPGLSvUSlwAf67m6wSrtn8ecy42/I0lrRYwzO3XiWHqxki87TpJgnhSMr6md8e+Pc2LRgwAFcX0H4MU=
-X-Received: by 2002:a17:90a:81:: with SMTP id a1mr3986021pja.136.1599573737858;
- Tue, 08 Sep 2020 07:02:17 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pFSueD/PsgBNg5dRi4zohukePJNmnDKu8o6l7DjyJKo=;
+        b=JJCgCG5XR+x2Qasdzm1tAvGGvP7apT4KclppTUL/85VuzBZWRdAJhLTHaQzIsqdeKj
+         UXpxVptG+54YU5ijLuuK5LpI7HeNyfpaBFIOt+GCbtF8J7ZQvLywcQpUmoP/7VyU8Dfz
+         tlA1vvh7vKA9A6DJuPoCDM6wV1Y0CjpJsLK4w/XFtSEGWZDM2kiH90uIk/VLB8BaMGRb
+         XPJQ4QrRD6lRbqL1ZbTFDB5KRux9DqkRv5Irpxa25flMR6YYCn0mwbM5LNRN8ZHENyMS
+         BXA26wFdLEGb++S7Ff97NgKmqGo8picCjnJD8A03tqVpOC9QiiPQni8YrFEuZTtxTm3q
+         yg9g==
+X-Gm-Message-State: AOAM533siiGgx2fn95nv/AHbvv7gvv3eKdVLayfdIvpEnJzmOfvO6wz6
+        6uOYOSQMeMaP8UHWIZIFr0HgrQ==
+X-Google-Smtp-Source: ABdhPJyJCTFd0pn3p9yrebWEYoQaThaFvclLZLNU4bDenEbLK2WJOX0hyPvDit0IltNHfqOzyUsBQQ==
+X-Received: by 2002:a50:8e17:: with SMTP id 23mr26671696edw.42.1599573851439;
+        Tue, 08 Sep 2020 07:04:11 -0700 (PDT)
+Received: from localhost ([86.61.181.4])
+        by smtp.gmail.com with ESMTPSA id v4sm17839598eje.39.2020.09.08.07.04.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Sep 2020 07:04:10 -0700 (PDT)
+Date:   Tue, 8 Sep 2020 16:04:09 +0200
+From:   Jiri Pirko <jiri@resnulli.us>
+To:     Ido Schimmel <idosch@idosch.org>
+Cc:     Aya Levin <ayal@mellanox.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jiri Pirko <jiri@mellanox.com>, netdev@vger.kernel.org,
+        Moshe Shemesh <moshe@mellanox.com>,
+        Eran Ben Elisha <eranbe@mellanox.com>,
+        Ido Schimmel <idosch@mellanox.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next RFC v1 2/4] devlink: Add devlink traps under
+ devlink_ports context
+Message-ID: <20200908140409.GN2997@nanopsycho.orion>
+References: <1599060734-26617-1-git-send-email-ayal@mellanox.com>
+ <1599060734-26617-3-git-send-email-ayal@mellanox.com>
+ <20200906154428.GA2431016@shredder>
 MIME-Version: 1.0
-References: <cover.1597425745.git.andreyknvl@google.com> <ec314a9589ef8db18494d533b6eaf1fd678dc010.1597425745.git.andreyknvl@google.com>
- <20200827103819.GE29264@gaia> <8affcfbe-b8b4-0914-1651-368f669ddf85@arm.com> <20200827121604.GL29264@gaia>
-In-Reply-To: <20200827121604.GL29264@gaia>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Tue, 8 Sep 2020 16:02:06 +0200
-Message-ID: <CAAeHK+yYEFHAQMxhL=uwfgaejo3Ld0gp5=ss38CjW6wyYCaZFw@mail.gmail.com>
-Subject: Re: [PATCH 24/35] arm64: mte: Switch GCR_EL1 in kernel entry and exit
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Elena Petrova <lenaptr@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200906154428.GA2431016@shredder>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 2:16 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
->
-> On Thu, Aug 27, 2020 at 11:56:49AM +0100, Vincenzo Frascino wrote:
-> > On 8/27/20 11:38 AM, Catalin Marinas wrote:
-> > > On Fri, Aug 14, 2020 at 07:27:06PM +0200, Andrey Konovalov wrote:
-> > >> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
-> > >> index 7717ea9bc2a7..cfac7d02f032 100644
-> > >> --- a/arch/arm64/kernel/mte.c
-> > >> +++ b/arch/arm64/kernel/mte.c
-> > >> @@ -18,10 +18,14 @@
-> > >>
-> > >>  #include <asm/barrier.h>
-> > >>  #include <asm/cpufeature.h>
-> > >> +#include <asm/kasan.h>
-> > >> +#include <asm/kprobes.h>
-> > >>  #include <asm/mte.h>
-> > >>  #include <asm/ptrace.h>
-> > >>  #include <asm/sysreg.h>
-> > >>
-> > >> +u64 gcr_kernel_excl __read_mostly;
-> > >
-> > > Could we make this __ro_after_init?
-> >
-> > Yes, it makes sense, it should be updated only once through mte_init_tags().
-> >
-> > Something to consider though here is that this might not be the right approach
-> > if in future we want to add stack tagging. In such a case we need to know the
-> > kernel exclude mask before any C code is executed. Initializing the mask via
-> > mte_init_tags() it is too late.
->
-> It depends on how stack tagging ends up in the kernel, whether it uses
-> ADDG/SUBG or not. If it's only IRG, I think it can cope with changing
-> the GCR_EL1.Excl in the middle of a function.
->
-> > I was thinking to add a compilation define instead of having gcr_kernel_excl in
-> > place. This might not work if the kernel excl mask is meant to change during the
-> > execution.
->
-> A macro with the default value works for me. That's what it basically is
-> currently, only that it ends up in a variable.
+Sun, Sep 06, 2020 at 05:44:28PM CEST, idosch@idosch.org wrote:
+>On Wed, Sep 02, 2020 at 06:32:12PM +0300, Aya Levin wrote:
 
-Some thoughts on the topic: gcr_kernel_excl is currently initialized
-in mte_init_tags() and depends on the max_tag value dynamically
-provided to it, so it's not something that can be expressed with a
-define. In the case of KASAN the max_tag value is static, but if we
-rely on that we make core MTE code depend on KASAN, which doesn't seem
-right from the design perspective.
+[...]
+
+>
+>I understand how this struct allows you to re-use a lot of code between
+>per-device and per-port traps, but it's mainly enabled by the fact that
+>you use the same netlink commands for both per-device and per-port
+>traps. Is this OK?
+>
+>I see this is already done for health reporters, but it's inconsistent
+>with the devlink-param API:
+>
+>DEVLINK_CMD_PARAM_GET
+>DEVLINK_CMD_PARAM_SET
+>DEVLINK_CMD_PARAM_NEW
+>DEVLINK_CMD_PARAM_DEL
+>
+>DEVLINK_CMD_PORT_PARAM_GET
+>DEVLINK_CMD_PORT_PARAM_SET
+>DEVLINK_CMD_PORT_PARAM_NEW
+>DEVLINK_CMD_PORT_PARAM_DEL
+>
+>And also with the general device/port commands:
+>
+>DEVLINK_CMD_GET
+>DEVLINK_CMD_SET
+>DEVLINK_CMD_NEW
+>DEVLINK_CMD_DEL
+>
+>DEVLINK_CMD_PORT_GET
+>DEVLINK_CMD_PORT_SET
+>DEVLINK_CMD_PORT_NEW
+>DEVLINK_CMD_PORT_DEL
+>
+>Wouldn't it be cleaner to add new commands?
+>
+>DEVLINK_CMD_PORT_TRAP_GET
+>DEVLINK_CMD_PORT_TRAP_SET
+>DEVLINK_CMD_PORT_TRAP_NEW
+>DEVLINK_CMD_PORT_TRAP_DEL
+>
+>I think the health API is the exception in this case and therefore might
+>not be the best thing to mimic. IIUC, existing per-port health reporters
+>were exposed as per-device and later moved to be exposed as per-port
+>[1]:
+>
+>"This patchset comes to fix a design issue as some health reporters
+>report on errors and run recovery on device level while the actual
+>functionality is on port level. As for the current implemented devlink
+>health reporters it is relevant only to Tx and Rx reporters of mlx5,
+>which has only one port, so no real effect on functionality, but this
+>should be fixed before more drivers will use devlink health reporters."
+
+Yeah, this slipped trough my fingers unfortunatelly :/ But with
+introduction of per-port health reporters, we could introduce new
+commands, that would be no problem. Pity :/
+
+
+>
+>[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=ac4cd4781eacd1fd185c85522e869bd5d3254b96
+>
+>Since we still don't have per-port traps, we can design it better from
+>the start.
+
+I agree. Let's have a separate commands for per-port.
+
+
+[...]
