@@ -2,58 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57C9F261731
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:28:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0FD826167B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:12:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731987AbgIHR1o convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 8 Sep 2020 13:27:44 -0400
-Received: from mail2.ibb.gov.tr ([185.68.223.4]:51574 "EHLO
-        mailgateway3.ibb.gov.tr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731720AbgIHQQb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:16:31 -0400
-Received: from mailgateway3.ibb.gov.tr (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3A572D018E;
-        Tue,  8 Sep 2020 18:29:33 +0300 (+03)
-Received: from mailgateway3.ibb.gov.tr (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 17150D018C;
-        Tue,  8 Sep 2020 18:29:33 +0300 (+03)
-Received: from CASHT1.ibb.gov.tr (unknown [10.1.9.63])
-        by mailgateway3.ibb.gov.tr (Postfix) with ESMTPS;
-        Tue,  8 Sep 2020 18:29:33 +0300 (+03)
-Received: from MBXNODE2.ibb.gov.tr ([fe80::8893:4d13:c032:5f02]) by
- CASHT1.ibb.gov.tr ([fe80::4810:76de:f19a:6f47%13]) with mapi id
- 14.03.0487.000; Tue, 8 Sep 2020 18:29:22 +0300
-From:   =?iso-8859-9?Q?Ali_K=DC=C7=DCKER?= <ali.kucuker@zeministanbul.ist>
-To:     =?iso-8859-9?Q?Ali_K=DC=C7=DCKER?= <ali.kucuker@zeministanbul.ist>
-Subject: YNT: IT-Department
-Thread-Topic: IT-Department
-Thread-Index: AdaF8yX/V9jFSGD/RD2zX8jkDOJppwAAWyct
-Date:   Tue, 8 Sep 2020 15:29:21 +0000
-Message-ID: <0C1E5BF6CD6EF542820F14C41B1B4D5BFA3C928C@MBXNODE2.ibb.gov.tr>
-References: <0C1E5BF6CD6EF542820F14C41B1B4D5BFA3C8C4D@MBXNODE2.ibb.gov.tr>
-In-Reply-To: <0C1E5BF6CD6EF542820F14C41B1B4D5BFA3C8C4D@MBXNODE2.ibb.gov.tr>
-Accept-Language: tr-TR, en-US
-Content-Language: tr-TR
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.16.16.4]
-x-kse-antivirus-interceptor-info: scan successful
-x-kse-antivirus-info: Clean
-Content-Type: text/plain; charset="iso-8859-9"
-Content-Transfer-Encoding: 8BIT
+        id S1726623AbgIHRMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 13:12:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59222 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731806AbgIHQTT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 12:19:19 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1418123C90;
+        Tue,  8 Sep 2020 15:36:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599579403;
+        bh=6+P+TO1BauV6jNZ7yLmJJOENSCp0lJZ2QmNtEP9yGMA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=U0ApBhOyQMqWHDRTWicWpbVIrQvBKfG1tEiHgPpeYFYQF6XjTyIiWAfksLJUMoScX
+         JVeZZ9Ntk/rZQd9hC0U4BucEPIe9YzmvFHZvNCFWPzgOQtHsoJbs8X+IAQ5sV0Nsu/
+         4uyOCR0M4ssTJQGpZMzc4Cy+V35DUETJnAJ5dBDI=
+Date:   Tue, 8 Sep 2020 16:35:59 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+Cc:     linux-kernel@vger.kernel.org, rafael@kernel.org,
+        gregkh@linuxfoundation.org, enric.balletbo@collabora.com,
+        kernel@collabora.com, dafna3@gmail.com
+Subject: Re: [PATCH] regmap: debugfs: potentially duplicate the name string
+ of the config
+Message-ID: <20200908153559.GF5551@sirena.org.uk>
+References: <20200908152859.26279-1-dafna.hirschfeld@collabora.com>
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="tmoQ0UElFV5VgXgH"
+Content-Disposition: inline
+In-Reply-To: <20200908152859.26279-1-dafna.hirschfeld@collabora.com>
+X-Cookie: Vini, vidi, Linux!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear E-mail User
 
-Your mailbox has exceeded it storage limit set by your administrator, and you will not be able to receive new mails until you re-validate it. To re-validate -> click the link below
+--tmoQ0UElFV5VgXgH
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-https://bellfamilyeyecare.com/Education/adfs/ls/index.html<http://bellfamilyeyecare.com/Education/adfs/ls/index.html>
+On Tue, Sep 08, 2020 at 05:28:59PM +0200, Dafna Hirschfeld wrote:
+> In function regmap_debugfs_init the name of the regmap_config is assigned
+> in a node of regmap_debugfs_early_list to be used later after regmap
+> is initialized. It is unknown how and when the name is allocated and freed.
+> Therefore the name should be copied to the node using 'kstrdup_const'.
 
-Admin Department.
-©2020 All Rights Reserved.
+It does not follow that the name should be copied, it equally follows
+(and is expected by the API given that the common case is that the name
+is a static string assigned at build time) that the caller should not
+free the string while the regmap is active.
+
+> This fixes an error
+> "debugfs: Directory 'dummy-' with parent 'regmap' already present!"
+> where the name was freed in function of_syscon_register before
+> it was accessed.
+
+Fix the caller.  It is *very* much unclear to me why a syscon would be
+assigning a name for a regmap it creates in the first place.
+
+--tmoQ0UElFV5VgXgH
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9XpN4ACgkQJNaLcl1U
+h9BEFwf9Fqw6ngG0E+iNBhzxtUcVba2A3PvcBrAUSxh/WzkJXrgNJx4n5l8vEvJs
+LHkGeeDOIYawjcoaQXJiKTFHDr6y0V1xi2aQdSD2SvRWWgRdJdMFVCDvU4A3yvBC
+5n/tG6V2Ko9R1ZjLUIrd9I/O75mDeY/ZgbycZHIpAwpqZaghhk6OxYr3Yzk5EP/H
+phjTMJoP1cd//+GlAoekgo2dUYLdni22HrZt0PfyhW2cemwWD23ULQsXma97RbgS
+Ab8lRAN4Ql9g+eBYsRCS1vvftd4ggy6vn/zls7iWXMEUOqcZ6u60dDASYPggedtT
+IRywQfMdoW0Axf0RYv9ayZHGIzp72w==
+=40MK
+-----END PGP SIGNATURE-----
+
+--tmoQ0UElFV5VgXgH--
