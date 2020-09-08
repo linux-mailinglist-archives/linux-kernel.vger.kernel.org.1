@@ -2,101 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D67D92614A1
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:29:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF40A2615D3
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:57:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731857AbgIHQ3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 12:29:36 -0400
-Received: from mx0b-002e3701.pphosted.com ([148.163.143.35]:9328 "EHLO
-        mx0b-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731400AbgIHQX6 (ORCPT
+        id S1732029AbgIHQ44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 12:56:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58192 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731817AbgIHQWM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:23:58 -0400
-Received: from pps.filterd (m0134424.ppops.net [127.0.0.1])
-        by mx0b-002e3701.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 088GHDht029520;
-        Tue, 8 Sep 2020 16:23:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pps0720;
- bh=zVoU7ZsW2BmeyEMF9O139z2LNkJfxiCWxikqKicR6wA=;
- b=b2C//Off5OJSLlbWx61JTGg4U0gQ+0NyNJr9n8jOinl01JCQZg5XbTo0EkIQSQIyPsCf
- AVNXmay4P5hOX4FeS+8m4tlfdxG/5+nP96iKYTOkLn/ai4uejlMsX94/RyD+eeMkfWlJ
- xd4g3ivcZaLpKZPpNUzhdC1HtBFYsqvEqFNKFDpfWuwiBGCxbHuTP2nd7ppNPJ3nKIhm
- ZMecYpcxS9qrt52UPKavJ44T+aEb3t3dOJ0CxVhj0j7gCtyU97zktGDHb1AK9VgjL1n+
- BLDLuUBGm6nq0ja+au/LPgv387v25VRZaO67ktGz4/pAQTkjgV4LT8hjnnYqmxZHQvp3 pw== 
-Received: from g4t3425.houston.hpe.com (g4t3425.houston.hpe.com [15.241.140.78])
-        by mx0b-002e3701.pphosted.com with ESMTP id 33c1nntahy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Sep 2020 16:23:46 +0000
-Received: from g9t2301.houston.hpecorp.net (g9t2301.houston.hpecorp.net [16.220.97.129])
-        by g4t3425.houston.hpe.com (Postfix) with ESMTP id BFFC69D;
-        Tue,  8 Sep 2020 16:23:45 +0000 (UTC)
-Received: from [16.99.146.51] (unknown [16.99.146.51])
-        by g9t2301.houston.hpecorp.net (Postfix) with ESMTP id 576054F;
-        Tue,  8 Sep 2020 16:23:43 +0000 (UTC)
-Subject: Re: [PATCH 00/12] x86/platform/uv: Updates for UV5
-To:     peterz@infradead.org
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Steve Wahl <steve.wahl@hpe.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Russ Anderson <russ.anderson@hpe.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Jian Cai <caij2003@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
-References: <20200907185430.363197758@hpe.com>
- <20200908152014.GB4114051@kroah.com>
- <03de6a71-5fc1-98f5-3886-536c72b2761d@hpe.com>
- <20200908154700.GW1362448@hirez.programming.kicks-ass.net>
-From:   Mike Travis <mike.travis@hpe.com>
-Message-ID: <a29405b1-abfc-b7ef-23fb-b29b3dc07255@hpe.com>
-Date:   Tue, 8 Sep 2020 09:23:42 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.1
+        Tue, 8 Sep 2020 12:22:12 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2113AC061756
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 04:56:29 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id c18so18768039wrm.9
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 04:56:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Tp70PkVNXkSrNE2j0x4hwAD20KzB67jv0ioCblAxIfE=;
+        b=HnwOR0/hgZ+Lk2Ef1r50CTfWhlvEWHToNkXE65iDT3clvw0a8Go+T4AbKoW15rXUbi
+         gGkTvB1bmDZN8E7oHAlh9ewgXEXVU2K3uXg3/eDktJTlRUbEjEAXBn9jPvqHeFs5zAeK
+         HnkZeFBMdbHwJJhN1a9nM8+3t4We1WH2Yei8R3/+MN94v4dk/n2RUIyzRV+fCobrtr/h
+         9zGhfhYUUrGdNgxHEqUWkpmrpUPZZbPvdx1IGz40eCoZFv10ogBtjvTdCI4XkawmDiE8
+         6iTKPLI/MFrnaBiFNX3Aao2tL7p7Rp1/0joq3/AXU01u6NB6THr6IkTvYA54sC9faqds
+         pnZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Tp70PkVNXkSrNE2j0x4hwAD20KzB67jv0ioCblAxIfE=;
+        b=TV+PcQ1gCeMzXvWyINuLufNwEZOhBQXPmRTzstjK4Ja1C7JLjGN1HCFVoSdJ7ppIFs
+         QGlixIzUMV+/mxJ4GGGas2B/S/CCZvKxq6jR6bQ1gwAwHVX0Us2/R8X67YVLsc3Ttp86
+         7PQJ81nObGIF12sUVPkqM8IEKbcJDdduusEE8vC1AhA53d9+qjE1Z4mEpZ1kXzJiGe1e
+         okfyftm+JYYjFyCQXUQm6ZH+RBDFdDdCuvlnYUK6LjQsGUOOgNWfx+JQZWjiKEQYkJ07
+         Z2bvFbKw8CsIkS64AgnawkyPgwp3sd6zaQsl2RyPNnDbf46Yx0w2G31aqVquAHWHvLhZ
+         Y4Ug==
+X-Gm-Message-State: AOAM5307dtmXHhIc2VmU3bCY8JMSVpFQ/efeJ7PjdKzc6wGSvhHzu+gC
+        vbcvLH7d+xpRHTjrec8XAxzW2g==
+X-Google-Smtp-Source: ABdhPJzaY79n3svROxhhavD7molBVjp0Fw3QrK2h3PmIxnn1uL3sT3TfTjMuqb3dOVp64JTckRQigQ==
+X-Received: by 2002:adf:9d44:: with SMTP id o4mr26752210wre.361.1599566187763;
+        Tue, 08 Sep 2020 04:56:27 -0700 (PDT)
+Received: from dell ([91.110.221.179])
+        by smtp.gmail.com with ESMTPSA id 71sm34589177wrm.23.2020.09.08.04.56.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Sep 2020 04:56:27 -0700 (PDT)
+Date:   Tue, 8 Sep 2020 12:56:25 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Tom Rix <trix@redhat.com>
+Cc:     Xu Yilun <yilun.xu@intel.com>, broonie@kernel.org,
+        linux-kernel@vger.kernel.org, matthew.gerlach@linux.intel.com,
+        russell.h.weight@intel.com, lgoncalv@redhat.com, hao.wu@intel.com
+Subject: Re: [PATCH v4 2/2] mfd: intel-m10-bmc: add Max10 BMC chip support
+ for Intel FPGA PAC
+Message-ID: <20200908115625.GP4400@dell>
+References: <1597822497-25107-1-git-send-email-yilun.xu@intel.com>
+ <1597822497-25107-3-git-send-email-yilun.xu@intel.com>
+ <20200828100236.GF1826686@dell>
+ <de14ce03-2d42-74d1-3801-2dd2b09a448e@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20200908154700.GW1362448@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-08_08:2020-09-08,2020-09-08 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
- mlxlogscore=596 priorityscore=1501 phishscore=0 spamscore=0 bulkscore=0
- adultscore=0 malwarescore=0 suspectscore=1 mlxscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009080155
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <de14ce03-2d42-74d1-3801-2dd2b09a448e@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 28 Aug 2020, Tom Rix wrote:
 
+> 
+> >> +
+> >> +static int check_m10bmc_version(struct intel_m10bmc *m10bmc)
+> >> +{
+> >> +	unsigned int v;
+> >> +
+> >> +	if (m10bmc_raw_read(m10bmc, M10BMC_LEGACY_SYS_BASE + M10BMC_BUILD_VER,
+> >> +			    &v))
+> >> +		return -ENODEV;
+> > Please break functions out of if statements.
+> >
+> > Does m10bmc_raw_read() return 0 on success?
+> >
+> > Seems odd for a read function.
+> >
+> >> +	if (v != 0xffffffff) {
+> >> +		dev_err(m10bmc->dev, "bad version M10BMC detected\n");
+> >> +		return -ENODEV;
+> >> +	}
+> > The only acceptable version is -1?
+> 
+> I ran into this in testing.  This is a check if the board is using a
+> very old legacy bmc version. The M10BMC_LEGACY_SYS_BASE is the
+> offset to this old block of mmio regs.  On the old boards, v would
+> have not been f's, on the current boards it is f's. The check is
+> necessary because future calls use the M10BMC_SYS_BASE offset which
+> was not valid on the old boards.
 
-On 9/8/2020 8:47 AM, peterz@infradead.org wrote:
-> On Tue, Sep 08, 2020 at 08:28:16AM -0700, Mike Travis wrote:
->> I didn't.  If I could figure out how to convert quilt patches into git
->> commits I might be able to do that?  (And I didn't know that diffstats were
->> needed on the into?)
-> 
-> $ git quiltimport
-> 
-> Or, for the more enterprising person:
-> 
-> $ quilt series | while read file; do git am $file; done
-> 
-> Generating a diffstat from a quilt series (when applied):
-> 
-> $ quilt diff --combine - | diffstat
-> 
+This should be made more clear.  Either as a comment or as a define.
 
-Cool, thanks.  I am doing this for the V2 version of the patches.  Most 
-will get touched anyways because of the Copyright thing.
+Preferably both!
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
