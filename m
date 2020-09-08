@@ -2,86 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D9B2261BE3
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:10:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A677261BF8
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:12:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731599AbgIHTKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:10:37 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:56356 "EHLO
+        id S1731834AbgIHTL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 15:11:58 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:56400 "EHLO
         bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731421AbgIHTKY (ORCPT
+        with ESMTP id S1726675AbgIHTL3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 15:10:24 -0400
+        Tue, 8 Sep 2020 15:11:29 -0400
 Received: from kevin (unknown [IPv6:2607:fea8:55f:a950::68f4])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
         (Authenticated sender: alyssa)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 93A0B295E47;
-        Tue,  8 Sep 2020 20:10:18 +0100 (BST)
-Date:   Tue, 8 Sep 2020 15:10:10 -0400
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id AD43F295E47;
+        Tue,  8 Sep 2020 20:11:26 +0100 (BST)
+Date:   Tue, 8 Sep 2020 15:11:19 -0400
 From:   Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
 To:     Neil Armstrong <narmstrong@baylibre.com>
 Cc:     robh@kernel.org, tomeu.vizoso@collabora.com, steven.price@arm.com,
         dri-devel@lists.freedesktop.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-amlogic@lists.infradead.org
-Subject: Re: [PATCH 4/5] drm/panfrost: add amlogic reset quirk callback
-Message-ID: <20200908191010.GB10568@kevin>
+Subject: Re: [PATCH 5/5] drm/panfrost: add Amlogic GPU integration quirks
+Message-ID: <20200908191119.GC10568@kevin>
 References: <20200908151853.4837-1-narmstrong@baylibre.com>
- <20200908151853.4837-5-narmstrong@baylibre.com>
+ <20200908151853.4837-6-narmstrong@baylibre.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="G4iJoqBmSsgzjUCe"
+        protocol="application/pgp-signature"; boundary="b5gNqxB1S1yM7hjW"
 Content-Disposition: inline
-In-Reply-To: <20200908151853.4837-5-narmstrong@baylibre.com>
+In-Reply-To: <20200908151853.4837-6-narmstrong@baylibre.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---G4iJoqBmSsgzjUCe
+--b5gNqxB1S1yM7hjW
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> Since the documentation of the GPU cores are not public, we do not know what does these
-> values, but they permit having a fully functional GPU running with Panfrost.
+Reviewed-by: Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
+> This adds the required GPU quirks, including the quirk in the PWR registe=
+rs at the GPU
+> reset time and the IOMMU quirk for shareability issues observed on G52 in=
+ Amlogic G12B SoCs.
+>=20
+> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+> ---
+>  drivers/gpu/drm/panfrost/panfrost_drv.c | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
+>=20
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_drv.c b/drivers/gpu/drm/pa=
+nfrost/panfrost_drv.c
+> index 36463c89e966..efde5e2acc35 100644
+> --- a/drivers/gpu/drm/panfrost/panfrost_drv.c
+> +++ b/drivers/gpu/drm/panfrost/panfrost_drv.c
+> @@ -656,7 +656,25 @@ static const struct panfrost_compatible default_data=
+ =3D {
+>  	.pm_domain_names =3D NULL,
+>  };
+> =20
+> +static const struct panfrost_compatible amlogic_gxm_data =3D {
+> +	.num_supplies =3D ARRAY_SIZE(default_supplies),
+> +	.supply_names =3D default_supplies,
+> +	.vendor_reset_quirk =3D panfrost_gpu_amlogic_reset_quirk,
+> +};
+> +
+> +static const struct panfrost_compatible amlogic_g12a_data =3D {
+> +	.num_supplies =3D ARRAY_SIZE(default_supplies),
+> +	.supply_names =3D default_supplies,
+> +	.vendor_reset_quirk =3D panfrost_gpu_amlogic_reset_quirk,
+> +	.pgtbl_quirks =3D IO_PGTABLE_QUIRK_ARM_BROKEN_SH,
+> +};
+> +
+>  static const struct of_device_id dt_match[] =3D {
+> +	/* Set first to probe before the generic compatibles */
+> +	{ .compatible =3D "amlogic,meson-gxm-mali",
+> +	  .data =3D &amlogic_gxm_data, },
+> +	{ .compatible =3D "amlogic,meson-g12a-mali",
+> +	  .data =3D &amlogic_g12a_data, },
+>  	{ .compatible =3D "arm,mali-t604", .data =3D &default_data, },
+>  	{ .compatible =3D "arm,mali-t624", .data =3D &default_data, },
+>  	{ .compatible =3D "arm,mali-t628", .data =3D &default_data, },
+> --=20
+> 2.22.0
+>=20
 
-Since this is Amlogic magic, not specifically GPU, I'd rephrase this as
-"Since the Amlogic's integration of the GPU cores with the SoC is not
-publicly documented..."
-
-> +	/*
-> +	 * The Amlogic integrated Mali-T820, Mali-G31 & Mali-G52 needs
-> +	 * these undocumented bits to be set in order to operate
-> +	 * correctly.
-> +	 * These GPU_PWR registers contains:
-> +	 * "device-specific power control value"
-> +	 */
-
-PWR_OVERRIDE1 is the Amlogic specific value.
-
-Per the name, for PWR_KEY, I'd do add "#define GPU_PWR_KEY_UNLOCK
-0x2968A819" in panfrost-gpu.h so it's clear which value is which.
-
---G4iJoqBmSsgzjUCe
+--b5gNqxB1S1yM7hjW
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCgAdFiEEQ17gm7CvANAdqvY4/v5QWgr1WA0FAl9X1woACgkQ/v5QWgr1
-WA0XAg//c9nGGJntvueFe8c6qd2IaRIMN3EM6NDls15z8sc2USz064lxnb0x5o15
-futnTLgG+9RPsMRDl3GmLwHyffyRWWIupoVPgMEu/RdWUai8d4yKyF76xVDpUOAD
-RnPBzvstwXzN3Wggj47fB6ajEZFFOI2erWqEgAY8UZARPkw3jP+lUbHpagmKdMVF
-SYrAuYXOZmOjdlHXeTM4jxAW1I76imu2iEnvm+/2bpgRUumypy3/K33/wICFL9W3
-RVC1/2Gw6zRrhT9Je9eVBLID7xoeJk5jFHAFss9xd+OtshquOBlapVXwJVcfEm+p
-gDFNrxG/pXgrJvkI6a8anp0cqyaixvIONfMt2fJwfTbqP5+K0QigQFVclGa6eXM3
-iLkfjlbgrCn8iiywRBx7BunsMqMWgHEt5K78PGczw2JmU+Ahp1O1vq9Az0s2yYIt
-X5nlp/iwUHRtPEnoNwqPFfasUnO3UAkObmax9oZVG3iBede/wMMWDOvm/J0Q8pEq
-jI/liFrKDPa7Qnkwara3B1hxAeMedig7Qi+RAFuRTUFlNCoBuD4TfCcvBGqH1cDX
-aupOBHrxmstHtZH5lnCcy7cXepJuCOmati2khQRvoOJolnRYI1HFyt2poZT3HQ+w
-K8zkmWUzKZZk/QwJn31i7zX7emvAvma0aO3dGzdT4+F3OMeJRf0=
-=eeWO
+iQIzBAABCgAdFiEEQ17gm7CvANAdqvY4/v5QWgr1WA0FAl9X11YACgkQ/v5QWgr1
+WA1SyhAAgVduu4bMRXVDtE5vLGTa6kOSM3YzDXPkd5eadv5cvcsZCPjzItTlpbV0
+TdS7/SVgZZyDkGGCI2YzL5j7cNkso6ffe6y6LrUPkttYFfmsib3VuEUxLZG+evUD
+rgq3BlmPI/4++/hmzaBRE8lD3TjhcY7cki3cpoz696GxstugGb2XkXuUpnUwS5f0
+J4ZHmc5foIP3BtUUo2WVE2J4Ey0ljCM4pBjFtT72h1PMZDiTPo0nnNzZWbmu7ScM
+eNQvFReKPVK9WTLYjpDzB1Da5jDB7ULPCLdQ2Dihb/QdPhjN7Ik47H+p82CxZ+2/
+tMvJaPDEH8IzwkJTQojv148r+uWuUQV2Lqllkn4WTLvNwdWeIb8r/rr0ygiDqg9y
+/poPMKnL+OIyvL4nBQMc+W1BWB4CPPjBYHEfKA95c2bb1djdsAYyF+uVhsbMbTPQ
+q3YlWlJLadtYpSiHIVtVE9ISzE8+c9XnfruhZfniTTGHAI5bsagvYTh3ONdhI/I2
+W2zNBiF0mqNBxoyAc14KURy0PMCNfgsvFiS/n+E4uB72NDdHhu7S7CbG96tsUQPX
+zf2PrPHCarpFSK1mCr9OCdHWeJ1iWR7gNqrMYgZAzXNKtrqrFjle7KHnxIVU09l3
+BxpldnOaHPD32usBXkAmlOWlSGv2qs3AEt5kpOCs8AM6LBZOCLk=
+=14Ih
 -----END PGP SIGNATURE-----
 
---G4iJoqBmSsgzjUCe--
+--b5gNqxB1S1yM7hjW--
