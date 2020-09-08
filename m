@@ -2,174 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC4AE260E2A
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 10:55:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E33A4260E33
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 10:56:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729427AbgIHIz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 04:55:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45334 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728948AbgIHIzu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 04:55:50 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A141C061756
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 01:55:49 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id a65so16439929wme.5
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 01:55:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lPf7+5yaWPR4Bsu29CBYqFns/59BDsvYdpze1XOObUQ=;
-        b=PGlAHISsJbb/iYgixfJKVAK0d3OOuP3SlP2TjTpoK/oyd/DkyWjQ7j9CtU74WPEw0A
-         NkxDuWQKM4W+M6eiE0fRmROTwl4OHi/jQ6z3R8Ikhb+ljBKxuSnOMNBFuSVwV7AkQa34
-         kBB3vAMyk0pYZpn9c7JUOZ/xI0bfjYSUvtffY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=lPf7+5yaWPR4Bsu29CBYqFns/59BDsvYdpze1XOObUQ=;
-        b=O7DVOI/7QkG0mCdhBcie3FOMZ0SmphX8Ah4KAfYidc7SjVMIjcdrklM3ZvpUQCo2ke
-         IHf2LsRqv7UAC8qU5jPeD1Za4HpEwe5cFaZqkv+Vqo84iRo9uOA7YHcAFp1Y0P/+cx1a
-         YruUKKJIvATCf0FH6nV2vEpCHA+NVHlNKAlkrkdBCcrw/F/aqFbTtUgpYmJbdI2d5vm8
-         M0Ag5kU02Nn/s2hdUHlQk5jCkCvQ+0uL1/FJXdPCMT7zI+72nECMiNRiKkU5N28/7Vpt
-         Jw53rzi6yYZl+SEzfD7/ZZ/nPqBYgTP+y1j6KrkjdXz5F6o1UQECVrxvpLQSuCyQPWaV
-         tj5g==
-X-Gm-Message-State: AOAM5326rheC13QuPS478VP5Dv7y9stSGEVcITdmzF99KN2qA8LCeTR4
-        ZDDTMVaPmf7MQnAa3X8GFEJvow==
-X-Google-Smtp-Source: ABdhPJzRIgnrsr1zISzj3JMMO+qHmnUUaLRMb8phFavthqU3M8id+c7krZN538k/E4IFJZLkveZLYQ==
-X-Received: by 2002:a1c:e256:: with SMTP id z83mr3369682wmg.33.1599555347784;
-        Tue, 08 Sep 2020 01:55:47 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id l10sm30834268wru.59.2020.09.08.01.55.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Sep 2020 01:55:47 -0700 (PDT)
-Date:   Tue, 8 Sep 2020 10:55:44 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Gerd Hoffmann <kraxel@redhat.com>
-Cc:     Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Russell King <linux+etnaviv@armlinux.org.uk>,
-        Christian Gmeiner <christian.gmeiner@gmail.com>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Sandy Huang <hjc@rock-chips.com>,
-        Heiko =?iso-8859-1?Q?St=FCbner?= <heiko@sntech.de>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
-        "open list:RADEON and AMDGPU DRM DRIVERS" 
-        <amd-gfx@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:DRM DRIVERS FOR VIVANTE GPU IP" 
-        <etnaviv@lists.freedesktop.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <freedreno@lists.freedesktop.org>,
-        "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS" 
-        <nouveau@lists.freedesktop.org>,
-        "moderated list:ARM/Rockchip SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Rockchip SoC support" 
-        <linux-rockchip@lists.infradead.org>,
-        "open list:DRM DRIVERS FOR NVIDIA TEGRA" 
-        <linux-tegra@vger.kernel.org>,
-        "moderated list:DRM DRIVERS FOR XEN" <xen-devel@lists.xenproject.org>
-Subject: Re: [PATCH v4 1/1] drm: allow limiting the scatter list size.
-Message-ID: <20200908085544.GI2352366@phenom.ffwll.local>
-Mail-Followup-To: Gerd Hoffmann <kraxel@redhat.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Russell King <linux+etnaviv@armlinux.org.uk>,
-        Christian Gmeiner <christian.gmeiner@gmail.com>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        Ben Skeggs <bskeggs@redhat.com>, Sandy Huang <hjc@rock-chips.com>,
-        Heiko =?iso-8859-1?Q?St=FCbner?= <heiko@sntech.de>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
-        "open list:RADEON and AMDGPU DRM DRIVERS" <amd-gfx@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:DRM DRIVERS FOR VIVANTE GPU IP" <etnaviv@lists.freedesktop.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" <freedreno@lists.freedesktop.org>,
-        "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS" <nouveau@lists.freedesktop.org>,
-        "moderated list:ARM/Rockchip SoC support" <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Rockchip SoC support" <linux-rockchip@lists.infradead.org>,
-        "open list:DRM DRIVERS FOR NVIDIA TEGRA" <linux-tegra@vger.kernel.org>,
-        "moderated list:DRM DRIVERS FOR XEN" <xen-devel@lists.xenproject.org>
-References: <20200907112425.15610-1-kraxel@redhat.com>
- <20200907112425.15610-2-kraxel@redhat.com>
- <CAKMK7uGjT73rh=9iuCKAXvC_CaOuygm8PgOQgofkTgH7wRysFw@mail.gmail.com>
- <20200908054858.um34wojjv6uhi7d3@sirius.home.kraxel.org>
+        id S1729103AbgIHI4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 04:56:38 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:52306 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727867AbgIHI4i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 04:56:38 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4BlzXf0t6Nz9v06V;
+        Tue,  8 Sep 2020 10:56:34 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id F3nHJ8RTcc_q; Tue,  8 Sep 2020 10:56:34 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4BlzXf060rz9v06Q;
+        Tue,  8 Sep 2020 10:56:34 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 1AD2F8B7A1;
+        Tue,  8 Sep 2020 10:56:35 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id ZCgTkuGxxvKw; Tue,  8 Sep 2020 10:56:35 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 93F4D8B768;
+        Tue,  8 Sep 2020 10:56:34 +0200 (CEST)
+Subject: Re: [PATCH v1 1/5] powerpc/mm: sanity_check_fault() should work for
+ all, not only BOOK3S
+To:     Nicholas Piggin <npiggin@gmail.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <7baae4086cbb9ffb08c933b065ff7d29dbc03dd6.1596734104.git.christophe.leroy@csgroup.eu>
+ <1599554359.m174sr2fhg.astroid@bobo.none>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <b5a84cb6-2f54-6c4d-6326-2cc21074490b@csgroup.eu>
+Date:   Tue, 8 Sep 2020 10:56:29 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200908054858.um34wojjv6uhi7d3@sirius.home.kraxel.org>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+In-Reply-To: <1599554359.m174sr2fhg.astroid@bobo.none>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 08, 2020 at 07:48:58AM +0200, Gerd Hoffmann wrote:
-> On Mon, Sep 07, 2020 at 03:53:02PM +0200, Daniel Vetter wrote:
-> > On Mon, Sep 7, 2020 at 1:24 PM Gerd Hoffmann <kraxel@redhat.com> wrote:
-> > >
-> > > Add drm_device argument to drm_prime_pages_to_sg(), so we can
-> > > call dma_max_mapping_size() to figure the segment size limit
-> > > and call into __sg_alloc_table_from_pages() with the correct
-> > > limit.
-> > >
-> > > This fixes virtio-gpu with sev.  Possibly it'll fix other bugs
-> > > too given that drm seems to totaly ignore segment size limits
-> > > so far ...
-> > >
-> > > v2: place max_segment in drm driver not gem object.
-> > > v3: move max_segment next to the other gem fields.
-> > > v4: just use dma_max_mapping_size().
-> > >
-> > > Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
-> > 
-> > Uh, are you sure this works in all cases for virtio?
-> 
-> Sure, I've tested it ;)
-> 
-> > The comments I've found suggest very much not ... Or is that all very
-> > old stuff only that no one cares about anymore?
-> 
-> I think these days it is possible to override dma_ops per device, which
-> in turn allows virtio to deal with the quirks without the rest of the
-> kernel knowing about these details.
-> 
-> I also think virtio-gpu can drop the virtio_has_dma_quirk() checks, just
-> use the dma api path unconditionally and depend on virtio core having
-> setup dma_ops in a way that it JustWorks[tm].  I'll look into that next.
 
-The comment above vring_use_dma_api() suggests that this has not yet
-happened, that's why I'm asking. If this has happened then I think it'd be
-best if you remove that todo entry and update it, as part of the overall
-series to add dma_max_mapping_size and remove the quirks.
 
-Otherwise this all is a bit wtf material :-)
--Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Le 08/09/2020 à 10:43, Nicholas Piggin a écrit :
+> Excerpts from Christophe Leroy's message of August 7, 2020 3:15 am:
+>> The verification and message introduced by commit 374f3f5979f9
+>> ("powerpc/mm/hash: Handle user access of kernel address gracefully")
+>> applies to all platforms, it should not be limited to BOOK3S.
+>>
+>> Make the BOOK3S version of sanity_check_fault() the one for all,
+>> and bail out earlier if not BOOK3S.
+>>
+>> Fixes: 374f3f5979f9 ("powerpc/mm/hash: Handle user access of kernel address gracefully")
+>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+>> ---
+>>   arch/powerpc/mm/fault.c | 8 +++-----
+>>   1 file changed, 3 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/arch/powerpc/mm/fault.c b/arch/powerpc/mm/fault.c
+>> index 925a7231abb3..2efa34d7e644 100644
+>> --- a/arch/powerpc/mm/fault.c
+>> +++ b/arch/powerpc/mm/fault.c
+>> @@ -303,7 +303,6 @@ static inline void cmo_account_page_fault(void)
+>>   static inline void cmo_account_page_fault(void) { }
+>>   #endif /* CONFIG_PPC_SMLPAR */
+>>   
+>> -#ifdef CONFIG_PPC_BOOK3S
+>>   static void sanity_check_fault(bool is_write, bool is_user,
+>>   			       unsigned long error_code, unsigned long address)
+>>   {
+>> @@ -320,6 +319,9 @@ static void sanity_check_fault(bool is_write, bool is_user,
+>>   		return;
+>>   	}
+>>   
+>> +	if (!IS_ENABLED(CONFIG_PPC_BOOK3S))
+>> +		return;
+> 
+> Seems okay. Why is address == -1 special though? I guess it's because
+> it may not be an exploit kernel reference but a buggy pointer underflow?
+> In that case -1 doesn't seem like it would catch very much. Would it be
+> better to test for high bit set for example ((long)address < 0) ?
+
+See 
+https://github.com/linuxppc/linux/commit/0f9aee0cb9da7db7d96f63cfa2dc5e4f1bffeb87#diff-f9658f412252f3bb3093e0a95b37f3ac
+
+-1 is what mmap() returns on error, if the app uses that as a pointer 
+that's a programming error not an exploit.
+
+Euh .. If you test (long)address < 0, then the entire kernel falls into 
+that range as usually it goes from 0xc0000000 to 0xffffffff
+
+But we could skip the top page entirely, anyway it is never mapped.
+
+> 
+> Anyway for your patch
+> 
+> Reviewed-by: Nicholas Piggin <npiggin@gmail.com>
+
+Thanks
+Christophe
+
