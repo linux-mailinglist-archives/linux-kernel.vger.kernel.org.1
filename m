@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCDBF261D8A
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:38:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCA1D261D59
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:36:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732270AbgIHTif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:38:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53216 "EHLO
+        id S1732202AbgIHTfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 15:35:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730810AbgIHPzo (ORCPT
+        with ESMTP id S1730985AbgIHP5a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:55:44 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 306C1C06135E;
-        Tue,  8 Sep 2020 05:35:24 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id j11so22340171ejk.0;
-        Tue, 08 Sep 2020 05:35:24 -0700 (PDT)
+        Tue, 8 Sep 2020 11:57:30 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59F1FC06135F;
+        Tue,  8 Sep 2020 05:35:27 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id g4so15837829edk.0;
+        Tue, 08 Sep 2020 05:35:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=PVZMf0LnId0mz9qew33GP/RywglXKfjeoxkjql7zjcw=;
-        b=rJEdsx4Px8aRXIz+YwFdyXQwUijcU5o+QCBV1bOiac75T27z783fThZ+iTz6VLAywA
-         Hlcha5CtV0uoad/7msL3R0TxMg1+VtK+B2ppuNWtzipD35x0WScJazSxE5BgYkwRl0lj
-         seT9uJQ8xkjYrdX6YnCaFqwsZaNqP98DYSOdQ6KmzqTlReBYT4Mn8faABiJaC1WIGWOO
-         S2NkINrSsqIqSK7LqyW2JM3v1dhBiQJ/kIx5QOqqGM92iP1cpbXTAmjMv2/VL4rbg4I4
-         WsDQ59LIBDvFmJeAGAHbSrEWIhzKRUvR/IAfOdulGfJu0e0IAbzgMewZ+6kkJRieoFsx
-         3h+w==
+        bh=EQPdedJf1NWpPEjd6TxXxEBM0ZrTqNT+MPony2Utr30=;
+        b=tlEn5MzoNxaJ9xxX6VtcbPq0RRfNhX9T2bLG8+Arex6Rbloa7l/cHdky3jC3LveZds
+         ybwJUjCsCGghSHWd1FHsCCtjgtKTbiWNrrxak3xqP+MRZ03Q5e2M/ki7AH2TRfYNCrHF
+         n90ncJvTSixtp0+Ed4W1yqQEwyqXvedw23ALiMH3Ej65isIKHd7DwdAZF+vZjoyKA+Zo
+         E9Omrh1tbhydjtuCbE90roFdCdp39aaSVw3rtCN8qpgRqudnw6k0sojKZ6oTNqhGJHIV
+         7S3vXQ/RK/CdRljmIFMPL2t3QLiGuLQmCNRCAXqhxrmG3vCN4qQU/it2+ds9A6ppw9EW
+         6jbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=PVZMf0LnId0mz9qew33GP/RywglXKfjeoxkjql7zjcw=;
-        b=cZ+4di+VQYzMFStt5f4TqeBrlDDQG6nsFS9t5Ij/7nAReN+A9BxN+N0b4tqdPvd/WF
-         e4fmhXkqwGKaKtGg8sFK51UX8K/WCvs8ugBzjzL0xFBsArmsH9ttUIGfJ40HZqueAUeS
-         KvJzFXUskcq/3lQDlxdGlXBp4BZZrul/dz+tx2eGHFapRk+7bk/Vy9RFM9ZWQYWEak4a
-         GPC3ojnypY1L0pW75zbrTC1lRj28KuhDdtChjpyly5ZxmEAwUunRgnU0H/xCPytq+WyO
-         cz4risie4HFtXi5VnGFy3MWed3arOAkd3lktj/+vTR6D4vrpsG+nObGWdnrP3gtYSL0u
-         oZmw==
-X-Gm-Message-State: AOAM530dVFeC/kjixQW3IwwO7RiOzbhQRHxIe1lktuhb8VX3E0EiBrwO
-        N0OnsopdjVAM3FPXBC1E92Re3gk1Itf1wQ==
-X-Google-Smtp-Source: ABdhPJzzsZxk6siGfyixOXYCYuXW6iYVafm9c8ZJAZtC/wDiNl+OVWHWQkuI5/EIeNp3VaYjU7bBAQ==
-X-Received: by 2002:a17:906:819:: with SMTP id e25mr11320254ejd.211.1599568522163;
-        Tue, 08 Sep 2020 05:35:22 -0700 (PDT)
+        bh=EQPdedJf1NWpPEjd6TxXxEBM0ZrTqNT+MPony2Utr30=;
+        b=Ark5fDSPQ6NbRl/xsp9TH4xgvVwp+b6Ww6Er854tVK72905HH1+fKZgQu4vNMHMOpK
+         OK9KwZ+G7TUQUPGiT5FUqJuCSBSQB8s0fsgr8LSjGO8kHhpt8LpiNtvJdxzjT1JaO59V
+         QHOD7DaWC34CqtlMmfeQ6XvpRExQT0RG2IsexwYL59ym9TEij2C/cXEymHrdZ7ChlcJx
+         svsYdAeZSywRxaPZogXerLE+GoSRaKe1BcFDTT8iJ4fIeK5zQTpfC9/vEims61FjG593
+         w1MNf5tmzSFPwgVPuaUGnuCBkOutTFTcBuwO/r5Rn5udxt3rtIQ+T2QcleanGf0H6eUp
+         M3wg==
+X-Gm-Message-State: AOAM5324uCKLe6iDcbkbyTPIbUTG7Iu6TGyOA2vIN9QWijQNyaCKf2UC
+        KigItUT36yHhZVEyeDoiGag=
+X-Google-Smtp-Source: ABdhPJx/Ax6B0Fqa8mJMVVBn143rrHRU4uyKY/5gBBOF6RbSGIh42xfMCMTG+XLuaoVwpLOZ7pZThg==
+X-Received: by 2002:a50:fe07:: with SMTP id f7mr27762125edt.173.1599568523936;
+        Tue, 08 Sep 2020 05:35:23 -0700 (PDT)
 Received: from felia.fritz.box ([2001:16b8:2d8b:1700:7cee:a9ea:bd04:6924])
-        by smtp.gmail.com with ESMTPSA id x6sm9399939ejf.59.2020.09.08.05.35.21
+        by smtp.gmail.com with ESMTPSA id x6sm9399939ejf.59.2020.09.08.05.35.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Sep 2020 05:35:21 -0700 (PDT)
+        Tue, 08 Sep 2020 05:35:23 -0700 (PDT)
 From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
 To:     Igor Russkikh <irusskikh@marvell.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         linux-spdx@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org,
         Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH 3/5] net/qlcnic: Convert to SPDX license identifiers
-Date:   Tue,  8 Sep 2020 14:34:49 +0200
-Message-Id: <20200908123451.7215-4-lukas.bulwahn@gmail.com>
+Subject: [PATCH 4/5] net/qlge: Convert to SPDX license identifiers
+Date:   Tue,  8 Sep 2020 14:34:50 +0200
+Message-Id: <20200908123451.7215-5-lukas.bulwahn@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200908123451.7215-1-lukas.bulwahn@gmail.com>
 References: <20200908123451.7215-1-lukas.bulwahn@gmail.com>
@@ -66,11 +66,11 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Thomas Gleixner <tglx@linutronix.de>
 
-All files in this driver directory contain the following notice:
+All files related to this driver contain the following notice:
 
-  See LICENSE.qlcnic for copyright and licensing details.
+  See LICENSE.qlge for copyright and licensing details.
 
-LICENSE.qlacnic can be found in
+LICENSE.qlge can be found in
 Documentation/networking/device_drivers/qlogic/. The file contains:
 
   - A copyright notice
@@ -95,7 +95,7 @@ Documentation/networking/device_drivers/qlogic/. The file contains:
 Remove the notices and add the SPDX license identifier GPL-2.0-only to the
 source files.
 
-Finally remove the now redundant LICENSE.qlcnic file.
+Finally remove the now redundant LICENSE.qlge file.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Reviewed-by: Richard Fontana <rfontana@redhat.com>
@@ -103,38 +103,20 @@ Reviewed-by: Jilayne Lovejoy <opensource@jilayne.com>
 Reviewed-by: Alexios Zavras <alexios.zavras@intel.com>
 Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 ---
- .../device_drivers/qlogic/LICENSE.qlcnic      | 288 ------------------
- drivers/net/ethernet/qlogic/qlcnic/qlcnic.h   |   3 +-
- .../ethernet/qlogic/qlcnic/qlcnic_83xx_hw.c   |   3 +-
- .../ethernet/qlogic/qlcnic/qlcnic_83xx_hw.h   |   3 +-
- .../ethernet/qlogic/qlcnic/qlcnic_83xx_init.c |   3 +-
- .../ethernet/qlogic/qlcnic/qlcnic_83xx_vnic.c |   3 +-
- .../net/ethernet/qlogic/qlcnic/qlcnic_ctx.c   |   3 +-
- .../net/ethernet/qlogic/qlcnic/qlcnic_dcb.c   |   3 +-
- .../net/ethernet/qlogic/qlcnic/qlcnic_dcb.h   |   3 +-
- .../ethernet/qlogic/qlcnic/qlcnic_ethtool.c   |   3 +-
- .../net/ethernet/qlogic/qlcnic/qlcnic_hdr.h   |   3 +-
- .../net/ethernet/qlogic/qlcnic/qlcnic_hw.c    |   3 +-
- .../net/ethernet/qlogic/qlcnic/qlcnic_hw.h    |   3 +-
- .../net/ethernet/qlogic/qlcnic/qlcnic_init.c  |   3 +-
- .../net/ethernet/qlogic/qlcnic/qlcnic_io.c    |   3 +-
- .../net/ethernet/qlogic/qlcnic/qlcnic_main.c  |   3 +-
- .../ethernet/qlogic/qlcnic/qlcnic_minidump.c  |   3 +-
- .../net/ethernet/qlogic/qlcnic/qlcnic_sriov.h |   3 +-
- .../qlogic/qlcnic/qlcnic_sriov_common.c       |   3 +-
- .../ethernet/qlogic/qlcnic/qlcnic_sriov_pf.c  |   3 +-
- .../net/ethernet/qlogic/qlcnic/qlcnic_sysfs.c |   3 +-
- 21 files changed, 20 insertions(+), 328 deletions(-)
- delete mode 100644 Documentation/networking/device_drivers/qlogic/LICENSE.qlcnic
+ .../device_drivers/qlogic/LICENSE.qlge        | 288 ------------------
+ drivers/staging/qlge/qlge.h                   |   3 +-
+ drivers/staging/qlge/qlge_main.c              |   2 +-
+ 3 files changed, 2 insertions(+), 291 deletions(-)
+ delete mode 100644 Documentation/networking/device_drivers/qlogic/LICENSE.qlge
 
-diff --git a/Documentation/networking/device_drivers/qlogic/LICENSE.qlcnic b/Documentation/networking/device_drivers/qlogic/LICENSE.qlcnic
+diff --git a/Documentation/networking/device_drivers/qlogic/LICENSE.qlge b/Documentation/networking/device_drivers/qlogic/LICENSE.qlge
 deleted file mode 100644
-index 2ae3b64983ab..000000000000
---- a/Documentation/networking/device_drivers/qlogic/LICENSE.qlcnic
+index ce64e4d15b21..000000000000
+--- a/Documentation/networking/device_drivers/qlogic/LICENSE.qlge
 +++ /dev/null
 @@ -1,288 +0,0 @@
--Copyright (c) 2009-2013 QLogic Corporation
--QLogic Linux qlcnic NIC Driver
+-Copyright (c) 2003-2011 QLogic Corporation
+-QLogic Linux qlge NIC Driver
 -
 -You may modify and redistribute the device driver code under the
 -GNU General Public License (a copy of which is attached hereto as
@@ -421,286 +403,33 @@ index 2ae3b64983ab..000000000000
 -YOU OR THIRD PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER
 -PROGRAMS), EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE
 -POSSIBILITY OF SUCH DAMAGES.
-diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic.h b/drivers/net/ethernet/qlogic/qlcnic/qlcnic.h
-index d67f8265724a..be7abee160e7 100644
---- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic.h
-+++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic.h
+diff --git a/drivers/staging/qlge/qlge.h b/drivers/staging/qlge/qlge.h
+index 483ce04789ed..48f346503979 100644
+--- a/drivers/staging/qlge/qlge.h
++++ b/drivers/staging/qlge/qlge.h
 @@ -1,8 +1,7 @@
 +/* SPDX-License-Identifier: GPL-2.0-only */
  /*
-  * QLogic qlcnic NIC Driver
-  * Copyright (c) 2009-2013 QLogic Corporation
+  * QLogic QLA41xx NIC HBA Driver
+  * Copyright (c)  2003-2006 QLogic Corporation
 - *
-- * See LICENSE.qlcnic for copyright and licensing details.
+- * See LICENSE.qlge for copyright and licensing details.
   */
- 
- #ifndef _QLCNIC_H_
-diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_83xx_hw.c b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_83xx_hw.c
-index 29b9c728a65e..31ad3a5cd128 100644
---- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_83xx_hw.c
-+++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_83xx_hw.c
-@@ -1,8 +1,7 @@
+ #ifndef _QLGE_H_
+ #define _QLGE_H_
+diff --git a/drivers/staging/qlge/qlge_main.c b/drivers/staging/qlge/qlge_main.c
+index 2028458bea6f..96f8356c4c1a 100644
+--- a/drivers/staging/qlge/qlge_main.c
++++ b/drivers/staging/qlge/qlge_main.c
+@@ -1,7 +1,7 @@
 +// SPDX-License-Identifier: GPL-2.0-only
  /*
-  * QLogic qlcnic NIC Driver
-  * Copyright (c) 2009-2013 QLogic Corporation
-- *
-- * See LICENSE.qlcnic for copyright and licensing details.
+  * QLogic qlge NIC HBA Driver
+  * Copyright (c)  2003-2008 QLogic Corporation
+- * See LICENSE.qlge for copyright and licensing details.
+  * Author:     Linux qlge network device driver by
+  *                      Ron Mercer <ron.mercer@qlogic.com>
   */
- 
- #include <linux/if_vlan.h>
-diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_83xx_hw.h b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_83xx_hw.h
-index 73fe2f64491d..6f1d9c1fd1b0 100644
---- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_83xx_hw.h
-+++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_83xx_hw.h
-@@ -1,8 +1,7 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
- /*
-  * QLogic qlcnic NIC Driver
-  * Copyright (c) 2009-2013 QLogic Corporation
-- *
-- * See LICENSE.qlcnic for copyright and licensing details.
-  */
- 
- #ifndef __QLCNIC_83XX_HW_H
-diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_83xx_init.c b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_83xx_init.c
-index 0e2f2fb6c3a9..b8af59fc1aa4 100644
---- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_83xx_init.c
-+++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_83xx_init.c
-@@ -1,8 +1,7 @@
-+// SPDX-License-Identifier: GPL-2.0-only
- /*
-  * QLogic qlcnic NIC Driver
-  * Copyright (c) 2009-2013 QLogic Corporation
-- *
-- * See LICENSE.qlcnic for copyright and licensing details.
-  */
- 
- #include "qlcnic_sriov.h"
-diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_83xx_vnic.c b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_83xx_vnic.c
-index 34906750b7e7..c4297aea7d15 100644
---- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_83xx_vnic.c
-+++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_83xx_vnic.c
-@@ -1,8 +1,7 @@
-+// SPDX-License-Identifier: GPL-2.0-only
- /*
-  * QLogic qlcnic NIC Driver
-  * Copyright (c) 2009-2013 QLogic Corporation
-- *
-- * See LICENSE.qlcnic for copyright and licensing details.
-  */
- 
- #include "qlcnic.h"
-diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_ctx.c b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_ctx.c
-index af38d3d73291..87f76bac2e46 100644
---- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_ctx.c
-+++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_ctx.c
-@@ -1,8 +1,7 @@
-+// SPDX-License-Identifier: GPL-2.0-only
- /*
-  * QLogic qlcnic NIC Driver
-  * Copyright (c) 2009-2013 QLogic Corporation
-- *
-- * See LICENSE.qlcnic for copyright and licensing details.
-  */
- 
- #include "qlcnic.h"
-diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_dcb.c b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_dcb.c
-index 834208e55f7b..4d638f60f237 100644
---- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_dcb.c
-+++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_dcb.c
-@@ -1,8 +1,7 @@
-+// SPDX-License-Identifier: GPL-2.0-only
- /*
-  * QLogic qlcnic NIC Driver
-  * Copyright (c)  2009-2013 QLogic Corporation
-- *
-- * See LICENSE.qlcnic for copyright and licensing details.
-  */
- 
- #include <linux/types.h>
-diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_dcb.h b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_dcb.h
-index f4aa6331b367..5d79ee4370bc 100644
---- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_dcb.h
-+++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_dcb.h
-@@ -1,8 +1,7 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
- /*
-  * QLogic qlcnic NIC Driver
-  * Copyright (c)  2009-2013 QLogic Corporation
-- *
-- * See LICENSE.qlcnic for copyright and licensing details.
-  */
- 
- #ifndef __QLCNIC_DCBX_H
-diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_ethtool.c b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_ethtool.c
-index b9894d54469c..d8a3ecaed3fc 100644
---- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_ethtool.c
-+++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_ethtool.c
-@@ -1,8 +1,7 @@
-+// SPDX-License-Identifier: GPL-2.0-only
- /*
-  * QLogic qlcnic NIC Driver
-  * Copyright (c) 2009-2013 QLogic Corporation
-- *
-- * See LICENSE.qlcnic for copyright and licensing details.
-  */
- 
- #include <linux/types.h>
-diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_hdr.h b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_hdr.h
-index 34e467b239a1..83a586d6fe43 100644
---- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_hdr.h
-+++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_hdr.h
-@@ -1,8 +1,7 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
- /*
-  * QLogic qlcnic NIC Driver
-  * Copyright (c) 2009-2013 QLogic Corporation
-- *
-- * See LICENSE.qlcnic for copyright and licensing details.
-  */
- 
- #ifndef __QLCNIC_HDR_H_
-diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_hw.c b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_hw.c
-index 35d891f4655a..e1b8490bed0a 100644
---- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_hw.c
-+++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_hw.c
-@@ -1,8 +1,7 @@
-+// SPDX-License-Identifier: GPL-2.0-only
- /*
-  * QLogic qlcnic NIC Driver
-  * Copyright (c) 2009-2013 QLogic Corporation
-- *
-- * See LICENSE.qlcnic for copyright and licensing details.
-  */
- 
- #include <linux/slab.h>
-diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_hw.h b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_hw.h
-index 56a3bd9e37dc..601d22495a88 100644
---- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_hw.h
-+++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_hw.h
-@@ -1,8 +1,7 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
- /*
-  * QLogic qlcnic NIC Driver
-  * Copyright (c) 2009-2013 QLogic Corporation
-- *
-- * See LICENSE.qlcnic for copyright and licensing details.
-  */
- 
- #ifndef __QLCNIC_HW_H
-diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_init.c b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_init.c
-index c48a0e2d4d7e..e6784023bce4 100644
---- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_init.c
-+++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_init.c
-@@ -1,8 +1,7 @@
-+// SPDX-License-Identifier: GPL-2.0-only
- /*
-  * QLogic qlcnic NIC Driver
-  * Copyright (c) 2009-2013 QLogic Corporation
-- *
-- * See LICENSE.qlcnic for copyright and licensing details.
-  */
- 
- #include "qlcnic.h"
-diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_io.c b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_io.c
-index ac61f614de37..bdf15d2a6431 100644
---- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_io.c
-+++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_io.c
-@@ -1,8 +1,7 @@
-+// SPDX-License-Identifier: GPL-2.0-only
- /*
-  * QLogic qlcnic NIC Driver
-  * Copyright (c) 2009-2013 QLogic Corporation
-- *
-- * See LICENSE.qlcnic for copyright and licensing details.
-  */
- 
- #include <linux/netdevice.h>
-diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c
-index 173c7300cdf7..5a7e240fd469 100644
---- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c
-+++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c
-@@ -1,8 +1,7 @@
-+// SPDX-License-Identifier: GPL-2.0-only
- /*
-  * QLogic qlcnic NIC Driver
-  * Copyright (c) 2009-2013 QLogic Corporation
-- *
-- * See LICENSE.qlcnic for copyright and licensing details.
-  */
- 
- #include <linux/vmalloc.h>
-diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_minidump.c b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_minidump.c
-index f34ae8c75bc5..7760a3394e93 100644
---- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_minidump.c
-+++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_minidump.c
-@@ -1,8 +1,7 @@
-+// SPDX-License-Identifier: GPL-2.0-only
- /*
-  * QLogic qlcnic NIC Driver
-  * Copyright (c) 2009-2013 QLogic Corporation
-- *
-- * See LICENSE.qlcnic for copyright and licensing details.
-  */
- 
- #include <net/ip.h>
-diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_sriov.h b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_sriov.h
-index 5f327659efa7..7160b42f51dd 100644
---- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_sriov.h
-+++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_sriov.h
-@@ -1,8 +1,7 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
- /*
-  * QLogic qlcnic NIC Driver
-  * Copyright (c) 2009-2013 QLogic Corporation
-- *
-- * See LICENSE.qlcnic for copyright and licensing details.
-  */
- 
- #ifndef _QLCNIC_83XX_SRIOV_H_
-diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_sriov_common.c b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_sriov_common.c
-index 7adbb03cb931..30e52f969759 100644
---- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_sriov_common.c
-+++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_sriov_common.c
-@@ -1,8 +1,7 @@
-+// SPDX-License-Identifier: GPL-2.0-only
- /*
-  * QLogic qlcnic NIC Driver
-  * Copyright (c) 2009-2013 QLogic Corporation
-- *
-- * See LICENSE.qlcnic for copyright and licensing details.
-  */
- 
- #include <linux/types.h>
-diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_sriov_pf.c b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_sriov_pf.c
-index 5632da05145a..447720b93e5a 100644
---- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_sriov_pf.c
-+++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_sriov_pf.c
-@@ -1,8 +1,7 @@
-+// SPDX-License-Identifier: GPL-2.0-only
- /*
-  * QLogic qlcnic NIC Driver
-  * Copyright (c) 2009-2013 QLogic Corporation
-- *
-- * See LICENSE.qlcnic for copyright and licensing details.
-  */
- 
- #include <linux/types.h>
-diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_sysfs.c b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_sysfs.c
-index 10037639ac2c..5c2edb715d3e 100644
---- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_sysfs.c
-+++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_sysfs.c
-@@ -1,8 +1,7 @@
-+// SPDX-License-Identifier: GPL-2.0-only
- /*
-  * QLogic qlcnic NIC Driver
-  * Copyright (c) 2009-2013 QLogic Corporation
-- *
-- * See LICENSE.qlcnic for copyright and licensing details.
-  */
- 
- #include <linux/slab.h>
 -- 
 2.17.1
 
