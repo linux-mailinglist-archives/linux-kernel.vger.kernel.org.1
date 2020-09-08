@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57863261DCB
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:42:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCDBF261D8A
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:38:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731871AbgIHTma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:42:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53412 "EHLO
+        id S1732270AbgIHTif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 15:38:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730873AbgIHPwt (ORCPT
+        with ESMTP id S1730810AbgIHPzo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:52:49 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FCC4C06135D;
-        Tue,  8 Sep 2020 05:35:21 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id q13so22226058ejo.9;
-        Tue, 08 Sep 2020 05:35:21 -0700 (PDT)
+        Tue, 8 Sep 2020 11:55:44 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 306C1C06135E;
+        Tue,  8 Sep 2020 05:35:24 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id j11so22340171ejk.0;
+        Tue, 08 Sep 2020 05:35:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=2qfq+72yB6R4V2Ta6DJIMSw5cF2WyPtLSpzTzIPnBF8=;
-        b=JfBN7lc5rinP/bH1ffAJOmiWgIVIJ5exAoZpTSC5D6b7rqu6CDhufwCXE39HamQGaA
-         b7fpHdjyGbFvh+WdEtpBnoP2M3LGFPEImM44jb/BTW3v3kkzmaY5BIMSVgDa0BN9NynV
-         G3uYsY6y6obh6tMj6OmbWVfb6f78amZJacCymkfbZGvnrsW1IGaxo8ZRM7uKtYCgtPJL
-         8agmVACEwW5YMjuhJ9csH34SUxVbusLwiDT8f3yi3dnEdrEPbkp3DoUZpP0h32sm+7Za
-         VUzb+ox/3m79biEYcCo8ZQUvE8IdgtZNWtNwFKHFq/SxcReYEdNWRuA2Z2F2iQZuGt9V
-         5WVg==
+        bh=PVZMf0LnId0mz9qew33GP/RywglXKfjeoxkjql7zjcw=;
+        b=rJEdsx4Px8aRXIz+YwFdyXQwUijcU5o+QCBV1bOiac75T27z783fThZ+iTz6VLAywA
+         Hlcha5CtV0uoad/7msL3R0TxMg1+VtK+B2ppuNWtzipD35x0WScJazSxE5BgYkwRl0lj
+         seT9uJQ8xkjYrdX6YnCaFqwsZaNqP98DYSOdQ6KmzqTlReBYT4Mn8faABiJaC1WIGWOO
+         S2NkINrSsqIqSK7LqyW2JM3v1dhBiQJ/kIx5QOqqGM92iP1cpbXTAmjMv2/VL4rbg4I4
+         WsDQ59LIBDvFmJeAGAHbSrEWIhzKRUvR/IAfOdulGfJu0e0IAbzgMewZ+6kkJRieoFsx
+         3h+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=2qfq+72yB6R4V2Ta6DJIMSw5cF2WyPtLSpzTzIPnBF8=;
-        b=hyOr8IuTPsK5DvmAGSikTRVq/BvXfN5tA0iCxrUWMi+0PjfrRxSJCyMuN19wBNTSij
-         ejt0iZXRrpyzRVl1RvbodlbU4rX9YGGgi6Smw7FNZPvAfU5Z7HeF6wiglwlnI1iJ87GS
-         XBevVvyP54V4FQqBbnt8Vrk2J1oSULz6r4JYr9dztesxBOblFauWFs5pKTfM6daDq7hZ
-         rKt64fP6pi8+WbwJSsMfkckadxHm+CRdwAairHFlh6AQaDE2tXp8uWxcjw5QyjiGWCDm
-         kW35xMptGk09p+O7y59YnISfdg294ZUFyNdqEoYiDRQZta5vUw5mgXSLqG83soVpDA12
-         eSdg==
-X-Gm-Message-State: AOAM533nZ99Fki+vMqnsB1P3HcP5eJvIf/h2ZxkxIziJrLgGh60HHDvT
-        tap8wmgcBVpxTXdLvdru+Cg=
-X-Google-Smtp-Source: ABdhPJwe7vX7VXHWIjhkEeusgP/ad9+U88AXFx5s8GF9338+2FqJj49dybNVqswB1oETBJWO8+lKEA==
-X-Received: by 2002:a17:906:c55:: with SMTP id t21mr26676972ejf.276.1599568519707;
-        Tue, 08 Sep 2020 05:35:19 -0700 (PDT)
+        bh=PVZMf0LnId0mz9qew33GP/RywglXKfjeoxkjql7zjcw=;
+        b=cZ+4di+VQYzMFStt5f4TqeBrlDDQG6nsFS9t5Ij/7nAReN+A9BxN+N0b4tqdPvd/WF
+         e4fmhXkqwGKaKtGg8sFK51UX8K/WCvs8ugBzjzL0xFBsArmsH9ttUIGfJ40HZqueAUeS
+         KvJzFXUskcq/3lQDlxdGlXBp4BZZrul/dz+tx2eGHFapRk+7bk/Vy9RFM9ZWQYWEak4a
+         GPC3ojnypY1L0pW75zbrTC1lRj28KuhDdtChjpyly5ZxmEAwUunRgnU0H/xCPytq+WyO
+         cz4risie4HFtXi5VnGFy3MWed3arOAkd3lktj/+vTR6D4vrpsG+nObGWdnrP3gtYSL0u
+         oZmw==
+X-Gm-Message-State: AOAM530dVFeC/kjixQW3IwwO7RiOzbhQRHxIe1lktuhb8VX3E0EiBrwO
+        N0OnsopdjVAM3FPXBC1E92Re3gk1Itf1wQ==
+X-Google-Smtp-Source: ABdhPJzzsZxk6siGfyixOXYCYuXW6iYVafm9c8ZJAZtC/wDiNl+OVWHWQkuI5/EIeNp3VaYjU7bBAQ==
+X-Received: by 2002:a17:906:819:: with SMTP id e25mr11320254ejd.211.1599568522163;
+        Tue, 08 Sep 2020 05:35:22 -0700 (PDT)
 Received: from felia.fritz.box ([2001:16b8:2d8b:1700:7cee:a9ea:bd04:6924])
-        by smtp.gmail.com with ESMTPSA id x6sm9399939ejf.59.2020.09.08.05.35.18
+        by smtp.gmail.com with ESMTPSA id x6sm9399939ejf.59.2020.09.08.05.35.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Sep 2020 05:35:19 -0700 (PDT)
+        Tue, 08 Sep 2020 05:35:21 -0700 (PDT)
 From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
 To:     Igor Russkikh <irusskikh@marvell.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         linux-spdx@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org,
         Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH 2/5] scsi/qla2xxx: Convert to SPDX license identifiers
-Date:   Tue,  8 Sep 2020 14:34:48 +0200
-Message-Id: <20200908123451.7215-3-lukas.bulwahn@gmail.com>
+Subject: [PATCH 3/5] net/qlcnic: Convert to SPDX license identifiers
+Date:   Tue,  8 Sep 2020 14:34:49 +0200
+Message-Id: <20200908123451.7215-4-lukas.bulwahn@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200908123451.7215-1-lukas.bulwahn@gmail.com>
 References: <20200908123451.7215-1-lukas.bulwahn@gmail.com>
@@ -68,9 +68,10 @@ From: Thomas Gleixner <tglx@linutronix.de>
 
 All files in this driver directory contain the following notice:
 
-  See LICENSE.qla2xxx for copyright and licensing details.
+  See LICENSE.qlcnic for copyright and licensing details.
 
-LICENSE.qla2xxx can be found in Documentation/scsi/. The file contains:
+LICENSE.qlacnic can be found in
+Documentation/networking/device_drivers/qlogic/. The file contains:
 
   - A copyright notice
 
@@ -94,7 +95,7 @@ LICENSE.qla2xxx can be found in Documentation/scsi/. The file contains:
 Remove the notices and add the SPDX license identifier GPL-2.0-only to the
 source files.
 
-Finally remove the now redundant LICENSE.qla2xxx file.
+Finally remove the now redundant LICENSE.qlcnic file.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Reviewed-by: Richard Fontana <rfontana@redhat.com>
@@ -102,55 +103,42 @@ Reviewed-by: Jilayne Lovejoy <opensource@jilayne.com>
 Reviewed-by: Alexios Zavras <alexios.zavras@intel.com>
 Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 ---
- Documentation/scsi/LICENSE.qla2xxx  | 290 ----------------------------
- MAINTAINERS                         |   1 -
- drivers/scsi/qla2xxx/qla_attr.c     |   3 +-
- drivers/scsi/qla2xxx/qla_bsg.c      |   3 +-
- drivers/scsi/qla2xxx/qla_bsg.h      |   3 +-
- drivers/scsi/qla2xxx/qla_dbg.c      |   3 +-
- drivers/scsi/qla2xxx/qla_dbg.h      |   3 +-
- drivers/scsi/qla2xxx/qla_def.h      |   3 +-
- drivers/scsi/qla2xxx/qla_dfs.c      |   3 +-
- drivers/scsi/qla2xxx/qla_fw.h       |   3 +-
- drivers/scsi/qla2xxx/qla_gbl.h      |   3 +-
- drivers/scsi/qla2xxx/qla_gs.c       |   3 +-
- drivers/scsi/qla2xxx/qla_init.c     |   3 +-
- drivers/scsi/qla2xxx/qla_inline.h   |   3 +-
- drivers/scsi/qla2xxx/qla_iocb.c     |   3 +-
- drivers/scsi/qla2xxx/qla_isr.c      |   3 +-
- drivers/scsi/qla2xxx/qla_mbx.c      |   3 +-
- drivers/scsi/qla2xxx/qla_mid.c      |   3 +-
- drivers/scsi/qla2xxx/qla_mr.c       |   3 +-
- drivers/scsi/qla2xxx/qla_mr.h       |   3 +-
- drivers/scsi/qla2xxx/qla_nvme.c     |   3 +-
- drivers/scsi/qla2xxx/qla_nvme.h     |   3 +-
- drivers/scsi/qla2xxx/qla_nx.c       |   3 +-
- drivers/scsi/qla2xxx/qla_nx.h       |   3 +-
- drivers/scsi/qla2xxx/qla_nx2.c      |   3 +-
- drivers/scsi/qla2xxx/qla_nx2.h      |   3 +-
- drivers/scsi/qla2xxx/qla_os.c       |   3 +-
- drivers/scsi/qla2xxx/qla_settings.h |   3 +-
- drivers/scsi/qla2xxx/qla_sup.c      |   3 +-
- drivers/scsi/qla2xxx/qla_tmpl.c     |   3 +-
- drivers/scsi/qla2xxx/qla_tmpl.h     |   3 +-
- drivers/scsi/qla2xxx/qla_version.h  |   3 +-
- 32 files changed, 30 insertions(+), 351 deletions(-)
- delete mode 100644 Documentation/scsi/LICENSE.qla2xxx
+ .../device_drivers/qlogic/LICENSE.qlcnic      | 288 ------------------
+ drivers/net/ethernet/qlogic/qlcnic/qlcnic.h   |   3 +-
+ .../ethernet/qlogic/qlcnic/qlcnic_83xx_hw.c   |   3 +-
+ .../ethernet/qlogic/qlcnic/qlcnic_83xx_hw.h   |   3 +-
+ .../ethernet/qlogic/qlcnic/qlcnic_83xx_init.c |   3 +-
+ .../ethernet/qlogic/qlcnic/qlcnic_83xx_vnic.c |   3 +-
+ .../net/ethernet/qlogic/qlcnic/qlcnic_ctx.c   |   3 +-
+ .../net/ethernet/qlogic/qlcnic/qlcnic_dcb.c   |   3 +-
+ .../net/ethernet/qlogic/qlcnic/qlcnic_dcb.h   |   3 +-
+ .../ethernet/qlogic/qlcnic/qlcnic_ethtool.c   |   3 +-
+ .../net/ethernet/qlogic/qlcnic/qlcnic_hdr.h   |   3 +-
+ .../net/ethernet/qlogic/qlcnic/qlcnic_hw.c    |   3 +-
+ .../net/ethernet/qlogic/qlcnic/qlcnic_hw.h    |   3 +-
+ .../net/ethernet/qlogic/qlcnic/qlcnic_init.c  |   3 +-
+ .../net/ethernet/qlogic/qlcnic/qlcnic_io.c    |   3 +-
+ .../net/ethernet/qlogic/qlcnic/qlcnic_main.c  |   3 +-
+ .../ethernet/qlogic/qlcnic/qlcnic_minidump.c  |   3 +-
+ .../net/ethernet/qlogic/qlcnic/qlcnic_sriov.h |   3 +-
+ .../qlogic/qlcnic/qlcnic_sriov_common.c       |   3 +-
+ .../ethernet/qlogic/qlcnic/qlcnic_sriov_pf.c  |   3 +-
+ .../net/ethernet/qlogic/qlcnic/qlcnic_sysfs.c |   3 +-
+ 21 files changed, 20 insertions(+), 328 deletions(-)
+ delete mode 100644 Documentation/networking/device_drivers/qlogic/LICENSE.qlcnic
 
-diff --git a/Documentation/scsi/LICENSE.qla2xxx b/Documentation/scsi/LICENSE.qla2xxx
+diff --git a/Documentation/networking/device_drivers/qlogic/LICENSE.qlcnic b/Documentation/networking/device_drivers/qlogic/LICENSE.qlcnic
 deleted file mode 100644
-index 52f0b4359234..000000000000
---- a/Documentation/scsi/LICENSE.qla2xxx
+index 2ae3b64983ab..000000000000
+--- a/Documentation/networking/device_drivers/qlogic/LICENSE.qlcnic
 +++ /dev/null
-@@ -1,290 +0,0 @@
--Copyright (c) 2003-2014 QLogic Corporation
--QLogic Linux FC-FCoE Driver
+@@ -1,288 +0,0 @@
+-Copyright (c) 2009-2013 QLogic Corporation
+-QLogic Linux qlcnic NIC Driver
 -
--This program includes a device driver for Linux 3.x.
 -You may modify and redistribute the device driver code under the
 -GNU General Public License (a copy of which is attached hereto as
 -Exhibit A) published by the Free Software Foundation (version 2).
--
 -
 -
 -EXHIBIT A
@@ -433,438 +421,286 @@ index 52f0b4359234..000000000000
 -YOU OR THIRD PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER
 -PROGRAMS), EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE
 -POSSIBILITY OF SUCH DAMAGES.
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 0f72d0aa2dd6..25bb79c28de0 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -14223,7 +14223,6 @@ M:	Nilesh Javali <njavali@marvell.com>
- M:	GR-QLogic-Storage-Upstream@marvell.com
- L:	linux-scsi@vger.kernel.org
- S:	Supported
--F:	Documentation/scsi/LICENSE.qla2xxx
- F:	drivers/scsi/qla2xxx/
- 
- QLOGIC QLA3XXX NETWORK DRIVER
-diff --git a/drivers/scsi/qla2xxx/qla_attr.c b/drivers/scsi/qla2xxx/qla_attr.c
-index 5d93ccc73153..69ae215a3160 100644
---- a/drivers/scsi/qla2xxx/qla_attr.c
-+++ b/drivers/scsi/qla2xxx/qla_attr.c
-@@ -1,8 +1,7 @@
-+// SPDX-License-Identifier: GPL-2.0-only
- /*
-  * QLogic Fibre Channel HBA Driver
-  * Copyright (c)  2003-2014 QLogic Corporation
-- *
-- * See LICENSE.qla2xxx for copyright and licensing details.
-  */
- #include "qla_def.h"
- #include "qla_target.h"
-diff --git a/drivers/scsi/qla2xxx/qla_bsg.c b/drivers/scsi/qla2xxx/qla_bsg.c
-index 67efde1d4b8e..23b604832a54 100644
---- a/drivers/scsi/qla2xxx/qla_bsg.c
-+++ b/drivers/scsi/qla2xxx/qla_bsg.c
-@@ -1,8 +1,7 @@
-+// SPDX-License-Identifier: GPL-2.0-only
- /*
-  * QLogic Fibre Channel HBA Driver
-  * Copyright (c)  2003-2014 QLogic Corporation
-- *
-- * See LICENSE.qla2xxx for copyright and licensing details.
-  */
- #include "qla_def.h"
- 
-diff --git a/drivers/scsi/qla2xxx/qla_bsg.h b/drivers/scsi/qla2xxx/qla_bsg.h
-index 7594fad7b5b5..1a09b5512267 100644
---- a/drivers/scsi/qla2xxx/qla_bsg.h
-+++ b/drivers/scsi/qla2xxx/qla_bsg.h
+diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic.h b/drivers/net/ethernet/qlogic/qlcnic/qlcnic.h
+index d67f8265724a..be7abee160e7 100644
+--- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic.h
++++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic.h
 @@ -1,8 +1,7 @@
 +/* SPDX-License-Identifier: GPL-2.0-only */
  /*
-  * QLogic Fibre Channel HBA Driver
-  * Copyright (c)  2003-2014 QLogic Corporation
+  * QLogic qlcnic NIC Driver
+  * Copyright (c) 2009-2013 QLogic Corporation
 - *
-- * See LICENSE.qla2xxx for copyright and licensing details.
-  */
- #ifndef __QLA_BSG_H
- #define __QLA_BSG_H
-diff --git a/drivers/scsi/qla2xxx/qla_dbg.c b/drivers/scsi/qla2xxx/qla_dbg.c
-index 1be811a5d69d..75a008512d4c 100644
---- a/drivers/scsi/qla2xxx/qla_dbg.c
-+++ b/drivers/scsi/qla2xxx/qla_dbg.c
-@@ -1,8 +1,7 @@
-+// SPDX-License-Identifier: GPL-2.0-only
- /*
-  * QLogic Fibre Channel HBA Driver
-  * Copyright (c)  2003-2014 QLogic Corporation
-- *
-- * See LICENSE.qla2xxx for copyright and licensing details.
+- * See LICENSE.qlcnic for copyright and licensing details.
   */
  
- /*
-diff --git a/drivers/scsi/qla2xxx/qla_dbg.h b/drivers/scsi/qla2xxx/qla_dbg.h
-index e1d7de63e8f8..2e59e75c62b5 100644
---- a/drivers/scsi/qla2xxx/qla_dbg.h
-+++ b/drivers/scsi/qla2xxx/qla_dbg.h
+ #ifndef _QLCNIC_H_
+diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_83xx_hw.c b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_83xx_hw.c
+index 29b9c728a65e..31ad3a5cd128 100644
+--- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_83xx_hw.c
++++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_83xx_hw.c
 @@ -1,8 +1,7 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
++// SPDX-License-Identifier: GPL-2.0-only
  /*
-  * QLogic Fibre Channel HBA Driver
-  * Copyright (c)  2003-2014 QLogic Corporation
+  * QLogic qlcnic NIC Driver
+  * Copyright (c) 2009-2013 QLogic Corporation
 - *
-- * See LICENSE.qla2xxx for copyright and licensing details.
+- * See LICENSE.qlcnic for copyright and licensing details.
   */
  
- #include "qla_def.h"
-diff --git a/drivers/scsi/qla2xxx/qla_def.h b/drivers/scsi/qla2xxx/qla_def.h
-index 1bc090d8a71b..aa2a6e83a5e7 100644
---- a/drivers/scsi/qla2xxx/qla_def.h
-+++ b/drivers/scsi/qla2xxx/qla_def.h
+ #include <linux/if_vlan.h>
+diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_83xx_hw.h b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_83xx_hw.h
+index 73fe2f64491d..6f1d9c1fd1b0 100644
+--- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_83xx_hw.h
++++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_83xx_hw.h
 @@ -1,8 +1,7 @@
 +/* SPDX-License-Identifier: GPL-2.0-only */
  /*
-  * QLogic Fibre Channel HBA Driver
-  * Copyright (c)  2003-2014 QLogic Corporation
+  * QLogic qlcnic NIC Driver
+  * Copyright (c) 2009-2013 QLogic Corporation
 - *
-- * See LICENSE.qla2xxx for copyright and licensing details.
-  */
- #ifndef __QLA_DEF_H
- #define __QLA_DEF_H
-diff --git a/drivers/scsi/qla2xxx/qla_dfs.c b/drivers/scsi/qla2xxx/qla_dfs.c
-index e62b2115235e..1db2eded569c 100644
---- a/drivers/scsi/qla2xxx/qla_dfs.c
-+++ b/drivers/scsi/qla2xxx/qla_dfs.c
-@@ -1,8 +1,7 @@
-+// SPDX-License-Identifier: GPL-2.0-only
- /*
-  * QLogic Fibre Channel HBA Driver
-  * Copyright (c)  2003-2014 QLogic Corporation
-- *
-- * See LICENSE.qla2xxx for copyright and licensing details.
-  */
- #include "qla_def.h"
- 
-diff --git a/drivers/scsi/qla2xxx/qla_fw.h b/drivers/scsi/qla2xxx/qla_fw.h
-index bba1b77fba7e..bcb5eac7daa4 100644
---- a/drivers/scsi/qla2xxx/qla_fw.h
-+++ b/drivers/scsi/qla2xxx/qla_fw.h
-@@ -1,8 +1,7 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
- /*
-  * QLogic Fibre Channel HBA Driver
-  * Copyright (c)  2003-2014 QLogic Corporation
-- *
-- * See LICENSE.qla2xxx for copyright and licensing details.
-  */
- #ifndef __QLA_FW_H
- #define __QLA_FW_H
-diff --git a/drivers/scsi/qla2xxx/qla_gbl.h b/drivers/scsi/qla2xxx/qla_gbl.h
-index 0ced18f3104e..2e0060a59353 100644
---- a/drivers/scsi/qla2xxx/qla_gbl.h
-+++ b/drivers/scsi/qla2xxx/qla_gbl.h
-@@ -1,8 +1,7 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
- /*
-  * QLogic Fibre Channel HBA Driver
-  * Copyright (c)  2003-2014 QLogic Corporation
-- *
-- * See LICENSE.qla2xxx for copyright and licensing details.
-  */
- #ifndef __QLA_GBL_H
- #define	__QLA_GBL_H
-diff --git a/drivers/scsi/qla2xxx/qla_gs.c b/drivers/scsi/qla2xxx/qla_gs.c
-index b569fd6e96d6..30fae605bacb 100644
---- a/drivers/scsi/qla2xxx/qla_gs.c
-+++ b/drivers/scsi/qla2xxx/qla_gs.c
-@@ -1,8 +1,7 @@
-+// SPDX-License-Identifier: GPL-2.0-only
- /*
-  * QLogic Fibre Channel HBA Driver
-  * Copyright (c)  2003-2014 QLogic Corporation
-- *
-- * See LICENSE.qla2xxx for copyright and licensing details.
-  */
- #include "qla_def.h"
- #include "qla_target.h"
-diff --git a/drivers/scsi/qla2xxx/qla_init.c b/drivers/scsi/qla2xxx/qla_init.c
-index 507919d4ab36..13cf54733eac 100644
---- a/drivers/scsi/qla2xxx/qla_init.c
-+++ b/drivers/scsi/qla2xxx/qla_init.c
-@@ -1,8 +1,7 @@
-+// SPDX-License-Identifier: GPL-2.0-only
- /*
-  * QLogic Fibre Channel HBA Driver
-  * Copyright (c)  2003-2014 QLogic Corporation
-- *
-- * See LICENSE.qla2xxx for copyright and licensing details.
-  */
- #include "qla_def.h"
- #include "qla_gbl.h"
-diff --git a/drivers/scsi/qla2xxx/qla_inline.h b/drivers/scsi/qla2xxx/qla_inline.h
-index 861dc522723c..41e607d7211b 100644
---- a/drivers/scsi/qla2xxx/qla_inline.h
-+++ b/drivers/scsi/qla2xxx/qla_inline.h
-@@ -1,8 +1,7 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
- /*
-  * QLogic Fibre Channel HBA Driver
-  * Copyright (c)  2003-2014 QLogic Corporation
-- *
-- * See LICENSE.qla2xxx for copyright and licensing details.
+- * See LICENSE.qlcnic for copyright and licensing details.
   */
  
- #include "qla_target.h"
-diff --git a/drivers/scsi/qla2xxx/qla_iocb.c b/drivers/scsi/qla2xxx/qla_iocb.c
-index 0954fa41911c..146bed76bc44 100644
---- a/drivers/scsi/qla2xxx/qla_iocb.c
-+++ b/drivers/scsi/qla2xxx/qla_iocb.c
+ #ifndef __QLCNIC_83XX_HW_H
+diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_83xx_init.c b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_83xx_init.c
+index 0e2f2fb6c3a9..b8af59fc1aa4 100644
+--- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_83xx_init.c
++++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_83xx_init.c
 @@ -1,8 +1,7 @@
 +// SPDX-License-Identifier: GPL-2.0-only
  /*
-  * QLogic Fibre Channel HBA Driver
-  * Copyright (c)  2003-2014 QLogic Corporation
+  * QLogic qlcnic NIC Driver
+  * Copyright (c) 2009-2013 QLogic Corporation
 - *
-- * See LICENSE.qla2xxx for copyright and licensing details.
+- * See LICENSE.qlcnic for copyright and licensing details.
   */
- #include "qla_def.h"
- #include "qla_target.h"
-diff --git a/drivers/scsi/qla2xxx/qla_isr.c b/drivers/scsi/qla2xxx/qla_isr.c
-index 25e0a1684763..ab16dcacf705 100644
---- a/drivers/scsi/qla2xxx/qla_isr.c
-+++ b/drivers/scsi/qla2xxx/qla_isr.c
+ 
+ #include "qlcnic_sriov.h"
+diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_83xx_vnic.c b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_83xx_vnic.c
+index 34906750b7e7..c4297aea7d15 100644
+--- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_83xx_vnic.c
++++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_83xx_vnic.c
 @@ -1,8 +1,7 @@
 +// SPDX-License-Identifier: GPL-2.0-only
  /*
-  * QLogic Fibre Channel HBA Driver
-  * Copyright (c)  2003-2014 QLogic Corporation
+  * QLogic qlcnic NIC Driver
+  * Copyright (c) 2009-2013 QLogic Corporation
 - *
-- * See LICENSE.qla2xxx for copyright and licensing details.
+- * See LICENSE.qlcnic for copyright and licensing details.
   */
- #include "qla_def.h"
- #include "qla_target.h"
-diff --git a/drivers/scsi/qla2xxx/qla_mbx.c b/drivers/scsi/qla2xxx/qla_mbx.c
-index 226f1428d3e5..e2b5408bd270 100644
---- a/drivers/scsi/qla2xxx/qla_mbx.c
-+++ b/drivers/scsi/qla2xxx/qla_mbx.c
+ 
+ #include "qlcnic.h"
+diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_ctx.c b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_ctx.c
+index af38d3d73291..87f76bac2e46 100644
+--- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_ctx.c
++++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_ctx.c
 @@ -1,8 +1,7 @@
 +// SPDX-License-Identifier: GPL-2.0-only
  /*
-  * QLogic Fibre Channel HBA Driver
-  * Copyright (c)  2003-2014 QLogic Corporation
+  * QLogic qlcnic NIC Driver
+  * Copyright (c) 2009-2013 QLogic Corporation
 - *
-- * See LICENSE.qla2xxx for copyright and licensing details.
+- * See LICENSE.qlcnic for copyright and licensing details.
   */
- #include "qla_def.h"
- #include "qla_target.h"
-diff --git a/drivers/scsi/qla2xxx/qla_mid.c b/drivers/scsi/qla2xxx/qla_mid.c
-index 15efe2f04b86..afa59b485a4b 100644
---- a/drivers/scsi/qla2xxx/qla_mid.c
-+++ b/drivers/scsi/qla2xxx/qla_mid.c
+ 
+ #include "qlcnic.h"
+diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_dcb.c b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_dcb.c
+index 834208e55f7b..4d638f60f237 100644
+--- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_dcb.c
++++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_dcb.c
 @@ -1,8 +1,7 @@
 +// SPDX-License-Identifier: GPL-2.0-only
  /*
-  * QLogic Fibre Channel HBA Driver
-  * Copyright (c)  2003-2014 QLogic Corporation
+  * QLogic qlcnic NIC Driver
+  * Copyright (c)  2009-2013 QLogic Corporation
 - *
-- * See LICENSE.qla2xxx for copyright and licensing details.
+- * See LICENSE.qlcnic for copyright and licensing details.
   */
- #include "qla_def.h"
- #include "qla_gbl.h"
-diff --git a/drivers/scsi/qla2xxx/qla_mr.c b/drivers/scsi/qla2xxx/qla_mr.c
-index a8fe4f725fa0..ca7306685325 100644
---- a/drivers/scsi/qla2xxx/qla_mr.c
-+++ b/drivers/scsi/qla2xxx/qla_mr.c
-@@ -1,8 +1,7 @@
-+// SPDX-License-Identifier: GPL-2.0-only
- /*
-  * QLogic Fibre Channel HBA Driver
-  * Copyright (c)  2003-2014 QLogic Corporation
-- *
-- * See LICENSE.qla2xxx for copyright and licensing details.
-  */
- #include "qla_def.h"
- #include <linux/delay.h>
-diff --git a/drivers/scsi/qla2xxx/qla_mr.h b/drivers/scsi/qla2xxx/qla_mr.h
-index 762250891a8f..73be8348402a 100644
---- a/drivers/scsi/qla2xxx/qla_mr.h
-+++ b/drivers/scsi/qla2xxx/qla_mr.h
+ 
+ #include <linux/types.h>
+diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_dcb.h b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_dcb.h
+index f4aa6331b367..5d79ee4370bc 100644
+--- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_dcb.h
++++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_dcb.h
 @@ -1,8 +1,7 @@
 +/* SPDX-License-Identifier: GPL-2.0-only */
  /*
-  * QLogic Fibre Channel HBA Driver
-  * Copyright (c)  2003-2014 QLogic Corporation
+  * QLogic qlcnic NIC Driver
+  * Copyright (c)  2009-2013 QLogic Corporation
 - *
-- * See LICENSE.qla2xxx for copyright and licensing details.
+- * See LICENSE.qlcnic for copyright and licensing details.
   */
- #ifndef __QLA_MR_H
- #define __QLA_MR_H
-diff --git a/drivers/scsi/qla2xxx/qla_nvme.c b/drivers/scsi/qla2xxx/qla_nvme.c
-index 90bbc61f361b..18c7d4b9c705 100644
---- a/drivers/scsi/qla2xxx/qla_nvme.c
-+++ b/drivers/scsi/qla2xxx/qla_nvme.c
+ 
+ #ifndef __QLCNIC_DCBX_H
+diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_ethtool.c b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_ethtool.c
+index b9894d54469c..d8a3ecaed3fc 100644
+--- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_ethtool.c
++++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_ethtool.c
 @@ -1,8 +1,7 @@
 +// SPDX-License-Identifier: GPL-2.0-only
  /*
-  * QLogic Fibre Channel HBA Driver
-  * Copyright (c)  2003-2017 QLogic Corporation
+  * QLogic qlcnic NIC Driver
+  * Copyright (c) 2009-2013 QLogic Corporation
 - *
-- * See LICENSE.qla2xxx for copyright and licensing details.
+- * See LICENSE.qlcnic for copyright and licensing details.
   */
- #include "qla_nvme.h"
- #include <linux/scatterlist.h>
-diff --git a/drivers/scsi/qla2xxx/qla_nvme.h b/drivers/scsi/qla2xxx/qla_nvme.h
-index fbb844226630..67206bb13b80 100644
---- a/drivers/scsi/qla2xxx/qla_nvme.h
-+++ b/drivers/scsi/qla2xxx/qla_nvme.h
+ 
+ #include <linux/types.h>
+diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_hdr.h b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_hdr.h
+index 34e467b239a1..83a586d6fe43 100644
+--- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_hdr.h
++++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_hdr.h
 @@ -1,8 +1,7 @@
 +/* SPDX-License-Identifier: GPL-2.0-only */
  /*
-  * QLogic Fibre Channel HBA Driver
-  * Copyright (c)  2003-2017 QLogic Corporation
+  * QLogic qlcnic NIC Driver
+  * Copyright (c) 2009-2013 QLogic Corporation
 - *
-- * See LICENSE.qla2xxx for copyright and licensing details.
+- * See LICENSE.qlcnic for copyright and licensing details.
   */
- #ifndef __QLA_NVME_H
- #define __QLA_NVME_H
-diff --git a/drivers/scsi/qla2xxx/qla_nx.c b/drivers/scsi/qla2xxx/qla_nx.c
-index 71273eb634d3..b3ba0de5d4fb 100644
---- a/drivers/scsi/qla2xxx/qla_nx.c
-+++ b/drivers/scsi/qla2xxx/qla_nx.c
+ 
+ #ifndef __QLCNIC_HDR_H_
+diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_hw.c b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_hw.c
+index 35d891f4655a..e1b8490bed0a 100644
+--- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_hw.c
++++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_hw.c
 @@ -1,8 +1,7 @@
 +// SPDX-License-Identifier: GPL-2.0-only
  /*
-  * QLogic Fibre Channel HBA Driver
-  * Copyright (c)  2003-2014 QLogic Corporation
+  * QLogic qlcnic NIC Driver
+  * Copyright (c) 2009-2013 QLogic Corporation
 - *
-- * See LICENSE.qla2xxx for copyright and licensing details.
+- * See LICENSE.qlcnic for copyright and licensing details.
   */
- #include "qla_def.h"
- #include <linux/delay.h>
-diff --git a/drivers/scsi/qla2xxx/qla_nx.h b/drivers/scsi/qla2xxx/qla_nx.h
-index 93344a05910a..8567eaf1bddd 100644
---- a/drivers/scsi/qla2xxx/qla_nx.h
-+++ b/drivers/scsi/qla2xxx/qla_nx.h
+ 
+ #include <linux/slab.h>
+diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_hw.h b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_hw.h
+index 56a3bd9e37dc..601d22495a88 100644
+--- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_hw.h
++++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_hw.h
 @@ -1,8 +1,7 @@
 +/* SPDX-License-Identifier: GPL-2.0-only */
  /*
-  * QLogic Fibre Channel HBA Driver
-  * Copyright (c)  2003-2014 QLogic Corporation
+  * QLogic qlcnic NIC Driver
+  * Copyright (c) 2009-2013 QLogic Corporation
 - *
-- * See LICENSE.qla2xxx for copyright and licensing details.
+- * See LICENSE.qlcnic for copyright and licensing details.
   */
- #ifndef __QLA_NX_H
- #define __QLA_NX_H
-diff --git a/drivers/scsi/qla2xxx/qla_nx2.c b/drivers/scsi/qla2xxx/qla_nx2.c
-index 50e57603ce3d..3a415b12dcec 100644
---- a/drivers/scsi/qla2xxx/qla_nx2.c
-+++ b/drivers/scsi/qla2xxx/qla_nx2.c
+ 
+ #ifndef __QLCNIC_HW_H
+diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_init.c b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_init.c
+index c48a0e2d4d7e..e6784023bce4 100644
+--- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_init.c
++++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_init.c
 @@ -1,8 +1,7 @@
 +// SPDX-License-Identifier: GPL-2.0-only
  /*
-  * QLogic Fibre Channel HBA Driver
-  * Copyright (c)  2003-2014 QLogic Corporation
+  * QLogic qlcnic NIC Driver
+  * Copyright (c) 2009-2013 QLogic Corporation
 - *
-- * See LICENSE.qla2xxx for copyright and licensing details.
+- * See LICENSE.qlcnic for copyright and licensing details.
+  */
+ 
+ #include "qlcnic.h"
+diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_io.c b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_io.c
+index ac61f614de37..bdf15d2a6431 100644
+--- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_io.c
++++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_io.c
+@@ -1,8 +1,7 @@
++// SPDX-License-Identifier: GPL-2.0-only
+ /*
+  * QLogic qlcnic NIC Driver
+  * Copyright (c) 2009-2013 QLogic Corporation
+- *
+- * See LICENSE.qlcnic for copyright and licensing details.
+  */
+ 
+ #include <linux/netdevice.h>
+diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c
+index 173c7300cdf7..5a7e240fd469 100644
+--- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c
++++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c
+@@ -1,8 +1,7 @@
++// SPDX-License-Identifier: GPL-2.0-only
+ /*
+  * QLogic qlcnic NIC Driver
+  * Copyright (c) 2009-2013 QLogic Corporation
+- *
+- * See LICENSE.qlcnic for copyright and licensing details.
   */
  
  #include <linux/vmalloc.h>
-diff --git a/drivers/scsi/qla2xxx/qla_nx2.h b/drivers/scsi/qla2xxx/qla_nx2.h
-index 8ba7c1db07c3..2fc902a9fade 100644
---- a/drivers/scsi/qla2xxx/qla_nx2.h
-+++ b/drivers/scsi/qla2xxx/qla_nx2.h
-@@ -1,8 +1,7 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
- /*
-  * QLogic Fibre Channel HBA Driver
-  * Copyright (c)  2003-2014 QLogic Corporation
-- *
-- * See LICENSE.qla2xxx for copyright and licensing details.
-  */
- 
- #ifndef __QLA_NX2_H
-diff --git a/drivers/scsi/qla2xxx/qla_os.c b/drivers/scsi/qla2xxx/qla_os.c
-index 8da00ba54aec..c8a4f83074ad 100644
---- a/drivers/scsi/qla2xxx/qla_os.c
-+++ b/drivers/scsi/qla2xxx/qla_os.c
+diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_minidump.c b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_minidump.c
+index f34ae8c75bc5..7760a3394e93 100644
+--- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_minidump.c
++++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_minidump.c
 @@ -1,8 +1,7 @@
 +// SPDX-License-Identifier: GPL-2.0-only
  /*
-  * QLogic Fibre Channel HBA Driver
-  * Copyright (c)  2003-2014 QLogic Corporation
+  * QLogic qlcnic NIC Driver
+  * Copyright (c) 2009-2013 QLogic Corporation
 - *
-- * See LICENSE.qla2xxx for copyright and licensing details.
+- * See LICENSE.qlcnic for copyright and licensing details.
   */
- #include "qla_def.h"
  
-diff --git a/drivers/scsi/qla2xxx/qla_settings.h b/drivers/scsi/qla2xxx/qla_settings.h
-index 2fb7ebfbbc38..a5f3000ae53b 100644
---- a/drivers/scsi/qla2xxx/qla_settings.h
-+++ b/drivers/scsi/qla2xxx/qla_settings.h
+ #include <net/ip.h>
+diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_sriov.h b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_sriov.h
+index 5f327659efa7..7160b42f51dd 100644
+--- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_sriov.h
++++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_sriov.h
 @@ -1,8 +1,7 @@
 +/* SPDX-License-Identifier: GPL-2.0-only */
  /*
-  * QLogic Fibre Channel HBA Driver
-  * Copyright (c)  2003-2014 QLogic Corporation
+  * QLogic qlcnic NIC Driver
+  * Copyright (c) 2009-2013 QLogic Corporation
 - *
-- * See LICENSE.qla2xxx for copyright and licensing details.
+- * See LICENSE.qlcnic for copyright and licensing details.
   */
- #define MAX_RETRIES_OF_ISP_ABORT	5
  
-diff --git a/drivers/scsi/qla2xxx/qla_sup.c b/drivers/scsi/qla2xxx/qla_sup.c
-index 411b8a9ff393..0f92e9a044dc 100644
---- a/drivers/scsi/qla2xxx/qla_sup.c
-+++ b/drivers/scsi/qla2xxx/qla_sup.c
+ #ifndef _QLCNIC_83XX_SRIOV_H_
+diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_sriov_common.c b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_sriov_common.c
+index 7adbb03cb931..30e52f969759 100644
+--- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_sriov_common.c
++++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_sriov_common.c
 @@ -1,8 +1,7 @@
 +// SPDX-License-Identifier: GPL-2.0-only
  /*
-  * QLogic Fibre Channel HBA Driver
-  * Copyright (c)  2003-2014 QLogic Corporation
+  * QLogic qlcnic NIC Driver
+  * Copyright (c) 2009-2013 QLogic Corporation
 - *
-- * See LICENSE.qla2xxx for copyright and licensing details.
+- * See LICENSE.qlcnic for copyright and licensing details.
   */
- #include "qla_def.h"
  
-diff --git a/drivers/scsi/qla2xxx/qla_tmpl.c b/drivers/scsi/qla2xxx/qla_tmpl.c
-index 8dc82cfd38b2..03fff32b59cd 100644
---- a/drivers/scsi/qla2xxx/qla_tmpl.c
-+++ b/drivers/scsi/qla2xxx/qla_tmpl.c
+ #include <linux/types.h>
+diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_sriov_pf.c b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_sriov_pf.c
+index 5632da05145a..447720b93e5a 100644
+--- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_sriov_pf.c
++++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_sriov_pf.c
 @@ -1,8 +1,7 @@
 +// SPDX-License-Identifier: GPL-2.0-only
  /*
-  * QLogic Fibre Channel HBA Driver
-  * Copyright (c)  2003-2014 QLogic Corporation
+  * QLogic qlcnic NIC Driver
+  * Copyright (c) 2009-2013 QLogic Corporation
 - *
-- * See LICENSE.qla2xxx for copyright and licensing details.
-  */
- #include "qla_def.h"
- #include "qla_tmpl.h"
-diff --git a/drivers/scsi/qla2xxx/qla_tmpl.h b/drivers/scsi/qla2xxx/qla_tmpl.h
-index 89280b3477aa..c47184db5081 100644
---- a/drivers/scsi/qla2xxx/qla_tmpl.h
-+++ b/drivers/scsi/qla2xxx/qla_tmpl.h
-@@ -1,8 +1,7 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
- /*
-  * QLogic Fibre Channel HBA Driver
-  * Copyright (c)  2003-2014 QLogic Corporation
-- *
-- * See LICENSE.qla2xxx for copyright and licensing details.
+- * See LICENSE.qlcnic for copyright and licensing details.
   */
  
- #ifndef __QLA_DMP27_H__
-diff --git a/drivers/scsi/qla2xxx/qla_version.h b/drivers/scsi/qla2xxx/qla_version.h
-index 8ccd9ba1ddef..3ca1fb96812a 100644
---- a/drivers/scsi/qla2xxx/qla_version.h
-+++ b/drivers/scsi/qla2xxx/qla_version.h
+ #include <linux/types.h>
+diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_sysfs.c b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_sysfs.c
+index 10037639ac2c..5c2edb715d3e 100644
+--- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_sysfs.c
++++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_sysfs.c
 @@ -1,8 +1,7 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
++// SPDX-License-Identifier: GPL-2.0-only
  /*
-  * QLogic Fibre Channel HBA Driver
-  * Copyright (c)  2003-2014 QLogic Corporation
+  * QLogic qlcnic NIC Driver
+  * Copyright (c) 2009-2013 QLogic Corporation
 - *
-- * See LICENSE.qla2xxx for copyright and licensing details.
+- * See LICENSE.qlcnic for copyright and licensing details.
   */
- /*
-  * Driver version
+ 
+ #include <linux/slab.h>
 -- 
 2.17.1
 
