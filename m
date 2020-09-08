@@ -2,162 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5738261256
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 16:08:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EE5F261284
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 16:19:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730022AbgIHOFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 10:05:35 -0400
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:42124 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729622AbgIHN6f (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 09:58:35 -0400
-Received: by mail-lj1-f194.google.com with SMTP id k25so20123765ljg.9
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 06:57:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DRy3SRSuusmtp8hsLZEtIL6pPGQ6A3wyEibwbW07K/I=;
-        b=eLniuopSwS2QSW49fS4p20Kk/0QbAWns/5Lffj7yf4148IcE7VKwZAsL8lWbkG/KYn
-         xb5Db6KN5/yHNKtojo83jNWUtvvGCVL5lkZas++BBMaLNeuZe66Ffq/Y+WpM/CvwUKua
-         qIC4zsKUHP906W7H3bV6xFqDKnTlrRx31Y4lVZXQMUlyKm28OHxRDJvq1iVY4YLcwFIL
-         iQ0AGgPKR1n3B2kBNR5ffDhfv35y3p6uh6BkYtK2/0NACH02e5STcofaKWhBUXLBe7pq
-         CVD5umK3TjS8fmAHQRQids1+uZ23ZqIAlhN3po5ObFd09gaHPqTScNUXOF+KSBEdAAEb
-         tH5A==
-X-Gm-Message-State: AOAM530CD+71O2KprEJZ375+RoioLM5QHdnGoAtTPsHsGLH350oVzdOe
-        B3S0c3PAxofb01uXJoiCVQDkUTFz104+Tcx7Qlb8MXPoaHw=
-X-Google-Smtp-Source: ABdhPJyIWW+D5eWfj47c1+pq5A02Y/jUZ0zoKOIBtqsfqrJ+9jCo9ypO3LZcu/nZO+l+BbJvNtjU2PvQjzJKoJjr+aU=
-X-Received: by 2002:adf:8b48:: with SMTP id v8mr26923909wra.21.1599572669813;
- Tue, 08 Sep 2020 06:44:29 -0700 (PDT)
+        id S1730115AbgIHOSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 10:18:36 -0400
+Received: from mga03.intel.com ([134.134.136.65]:52435 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730051AbgIHOQX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 10:16:23 -0400
+IronPort-SDR: 4m6ZvNCocenMRoQp8WfOK+J3M4llfpkdJcHUXw+YUzwdQasusrZ2QhaaXCXYNVhbPTyphi1E5p
+ 8cq5DADRY8XQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9737"; a="158154397"
+X-IronPort-AV: E=Sophos;i="5.76,405,1592895600"; 
+   d="scan'208";a="158154397"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2020 06:49:22 -0700
+IronPort-SDR: UVk6x/m63mBVyH71vbfcR5hvGtRm5fgnJc1bMd5sc6UCHlpDtyq2FjtjkWzPPhIvrQE0/YKY7m
+ RrfJ1UHBvFgw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,405,1592895600"; 
+   d="scan'208";a="333478612"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga008.jf.intel.com with ESMTP; 08 Sep 2020 06:49:20 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kFdxi-00FDZG-RE; Tue, 08 Sep 2020 16:47:06 +0300
+Date:   Tue, 8 Sep 2020 16:47:06 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Kent Gibson <warthog618@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: Re: [PATCH 1/3] device: property: add helpers to count items in
+ string arrays
+Message-ID: <20200908134706.GZ1891694@smile.fi.intel.com>
+References: <20200908125813.8809-1-brgl@bgdev.pl>
+ <20200908125813.8809-2-brgl@bgdev.pl>
 MIME-Version: 1.0
-References: <1599563792-20711-1-git-send-email-tangzejiang@loongson.cn>
-In-Reply-To: <1599563792-20711-1-git-send-email-tangzejiang@loongson.cn>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Tue, 8 Sep 2020 22:44:18 +0900
-Message-ID: <CAM9d7ch+AvG=NetiEjT6qmewhCy6+QEBS4sr1J7qikYnmQPDZg@mail.gmail.com>
-Subject: Re: [PATCH v2] Improve perf option help information in perf.txt
-To:     Zejiang Tang <tangzejiang@loongson.cn>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200908125813.8809-2-brgl@bgdev.pl>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 8, 2020 at 8:16 PM Zejiang Tang <tangzejiang@loongson.cn> wrote:
->
-> Perf could use many options, such as:-vv, --exec-path,
-> --html-path, -p, --paginate,--no-pager, --debugfs-dir,
-> --buildid-dir, --list-cmds, --list-opts. Add these options
-> in perf.txt.
->
-> Signed-off-by: Zejiang Tang <tangzejiang@loongson.cn>
+On Tue, Sep 08, 2020 at 02:58:11PM +0200, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> 
+> Instead of doing the following:
+> 
+>     count = device_property_read_string_array(dev, propname, NULL, 0);
+> 
+> Let's provide inline helpers with hardcoded arguments for counting
+> strings in property arrays.
+
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+
+Thanks!
+
+> Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 > ---
->  tools/perf/Documentation/perf.txt | 69 ++++++++++++++++++++++++++-------------
->  1 file changed, 47 insertions(+), 22 deletions(-)
->
-> diff --git a/tools/perf/Documentation/perf.txt b/tools/perf/Documentation/perf.txt
-> index 3f37ded..5edb854 100644
-> --- a/tools/perf/Documentation/perf.txt
-> +++ b/tools/perf/Documentation/perf.txt
-> @@ -12,32 +12,57 @@ SYNOPSIS
->
->  OPTIONS
->  -------
-> ---debug::
-> -       Setup debug variable (see list below) in value
-> -       range (0, 10). Use like:
-> -         --debug verbose   # sets verbose = 1
-> -         --debug verbose=2 # sets verbose = 2
-> -
-> -       List of debug variables allowed to set:
-> -         verbose          - general debug messages
-> -         ordered-events   - ordered events object debug messages
-> -         data-convert     - data convert command debug messages
-> -         stderr           - write debug output (option -v) to stderr
-> -                            in browser mode
-> -         perf-event-open  - Print perf_event_open() arguments and
-> -                            return value
-> -
-> ---buildid-dir::
-> -       Setup buildid cache directory. It has higher priority than
-> -       buildid.dir config file option.
-> +-h::
-> +--help::
-> +        Run perf help command.
->
->  -v::
->  --version::
-> -  Display perf version.
-> +        Display perf version.
->
-> --h::
-> ---help::
-> -  Run perf help command.
-> +-vv::
-> +        Print the compiled-in status of libraries.
+>  include/linux/property.h | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
+> 
+> diff --git a/include/linux/property.h b/include/linux/property.h
+> index 9f805c442819..1fa5e250a8ea 100644
+> --- a/include/linux/property.h
+> +++ b/include/linux/property.h
+> @@ -170,6 +170,12 @@ static inline int device_property_count_u64(struct device *dev, const char *prop
+>  	return device_property_read_u64_array(dev, propname, NULL, 0);
+>  }
+>  
+> +static inline int device_property_count_strings(struct device *dev,
+> +						const char *propname)
+> +{
+> +	return device_property_read_string_array(dev, propname, NULL, 0);
+> +}
 > +
-> +--exec-path::
-> +        Display or set exec path.
+>  static inline bool fwnode_property_read_bool(const struct fwnode_handle *fwnode,
+>  					     const char *propname)
+>  {
+> @@ -224,6 +230,13 @@ static inline int fwnode_property_count_u64(const struct fwnode_handle *fwnode,
+>  	return fwnode_property_read_u64_array(fwnode, propname, NULL, 0);
+>  }
+>  
+> +static inline int
+> +fwnode_property_count_strings(const struct fwnode_handle *fwnode,
+> +			      const char *propname)
+> +{
+> +	return fwnode_property_read_string_array(fwnode, propname, NULL, 0);
+> +}
 > +
-> +--html-path::
-> +        Display absolute html path.
+>  struct software_node;
+>  
+>  /**
+> -- 
+> 2.26.1
+> 
 
-I doubt if we ever used this html man pages.
-
-> +
-> +-p::
-> +--paginate::
-> +        Set up pager.
-> +
-> +--no-pager::
-> +        Add or change the content of environment variables.
-
-It's too vague and incorrect.  Maybe just "Do not set up pager" ?
-
-Thanks
-Namhyung
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
-> +
-> +--buildid-dir::
-> +        Setup buildid cache directory. It has higher priority
-> +        than buildid.dir config file option.
-> +
-> +--list-cmds::
-> +        List the most commonly used perf commands.
-> +
-> +--list-opts::
-> +        List available perf options.
-> +
-> +--debugfs-dir::
-> +        Set debugfs directory or set environment variable PERF_DEBUGFS_DIR.
-> +
-> +--debug::
-> +        Setup debug variable (see list below) in value
-> +        range (0, 10). Use like:
-> +          --debug verbose   # sets verbose = 1
-> +          --debug verbose=2 # sets verbose = 2
-> +
-> +        List of debug variables allowed to set:
-> +          verbose          - general debug messages
-> +          ordered-events   - ordered events object debug messages
-> +          data-convert     - data convert command debug messages
-> +          stderr           - write debug output (option -v) to stderr
-> +                             in browser mode
-> +          perf-event-open  - Print perf_event_open() arguments and
-> +                             return value
->
->  DESCRIPTION
->  -----------
-> --
-> 2.1.0
->
