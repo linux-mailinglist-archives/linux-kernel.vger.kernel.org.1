@@ -2,188 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAA8926105C
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 12:58:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F31A626106B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 13:05:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729344AbgIHK6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 06:58:43 -0400
-Received: from mailout2.samsung.com ([203.254.224.25]:45417 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729775AbgIHK4p (ORCPT
+        id S1729344AbgIHLDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 07:03:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35798 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729125AbgIHK6F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 06:56:45 -0400
-Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20200908105641epoutp0221a2699ae8554fbe968f36bedb40028c~yybX2hbzZ0043400434epoutp02i
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 10:56:41 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20200908105641epoutp0221a2699ae8554fbe968f36bedb40028c~yybX2hbzZ0043400434epoutp02i
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1599562601;
-        bh=3/h1YDWT+UWJPk7OaSWuXk2IGkUwoSByybC/0XHT/QY=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=AeCD6m0ixd7qwniH9ZlN1fzeHgY5KuefS4cWEZ4t8R/B0znb8WLM3RfC6zHgip0aS
-         PuyvPUnnp0LnqIEFAQQ3U5UI4jM4DW7VnKtmCWG6ScQ9rklzrStoWzQs20HNJ2QBOo
-         0IM2Ewsv0jEZohnSOEeVICk5JISTKmAQy/Kxbbuc=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
-        20200908105639epcas1p382906c54403b6bd067828554f72077da~yybWirfBK0798407984epcas1p3O;
-        Tue,  8 Sep 2020 10:56:39 +0000 (GMT)
-Received: from epsmges1p2.samsung.com (unknown [182.195.40.154]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4Bm2C914dRzMqYkh; Tue,  8 Sep
-        2020 10:56:37 +0000 (GMT)
-Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
-        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        40.56.19033.463675F5; Tue,  8 Sep 2020 19:56:37 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20200908105636epcas1p20ca5e07616e942c3b2a47fc5716c14ed~yybTaKJHK1369413694epcas1p24;
-        Tue,  8 Sep 2020 10:56:36 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20200908105636epsmtrp2dd7ac7fecf6b62f7c8ee35efa1358afe~yybTYZi0D1605716057epsmtrp2D;
-        Tue,  8 Sep 2020 10:56:36 +0000 (GMT)
-X-AuditID: b6c32a36-16fff70000004a59-ad-5f576364bcaf
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        4C.2D.08382.463675F5; Tue,  8 Sep 2020 19:56:36 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.113.221.102]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200908105636epsmtip133af2e0b174532f445c758111ce861e4~yybTONK-33025030250epsmtip1S;
-        Tue,  8 Sep 2020 10:56:36 +0000 (GMT)
-From:   Chanwoo Choi <cw00.choi@samsung.com>
-To:     myungjoo.ham@samsung.com, kyungmin.park@samsung.com,
-        cw00.choi@samsung.com, lukasz.luba@arm.com,
-        b.zolnierkie@samsung.com
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] PM / devfreq: Add timer type to devfreq_summary debugfs
-Date:   Tue,  8 Sep 2020 20:08:53 +0900
-Message-Id: <20200908110853.19277-1-cw00.choi@samsung.com>
-X-Mailer: git-send-email 2.17.1
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrGKsWRmVeSWpSXmKPExsWy7bCmrm5qcni8wftDzBYbZ6xntbj+5Tmr
-        xdmmN+wWl3fNYbP43HuE0WJhUwu7xe3GFWwO7B5r5q1h9OjbsorR4/MmuQDmqGybjNTElNQi
-        hdS85PyUzLx0WyXv4HjneFMzA0NdQ0sLcyWFvMTcVFslF58AXbfMHKDlSgpliTmlQKGAxOJi
-        JX07m6L80pJUhYz84hJbpdSClJwCywK94sTc4tK8dL3k/FwrQwMDI1OgwoTsjJcfVrAXPFKr
-        6N14mb2BsVGyi5GTQ0LAROJc21O2LkYuDiGBHYwSH6YfYIZwPjFKLD43iQnC+cYocf33SmaY
-        limzrkAl9jJKnPwG43xhlPix7CMjSBWbgJbE/hc32EBsEYF6iSndX8FsZgEridcfu9lBbGEB
-        D4lPc6aB2SwCqhKzXvaxgti8QDVPt+5nhNgmL7F6A8RNEgLL2CVa1x2EOsNF4vnKQ6wQtrDE
-        q+Nb2CFsKYnP7/ayQdjVEitPHmGDaO5glNiy/wJUg7HE/qWTgc7mALpIU2L9Ln2IsKLEzt9z
-        GSEO5ZN497WHFaREQoBXoqNNCKJEWeLyg7tMELakxOL2TqhVHhLNj46wgJQLCcRKrLujOoFR
-        dhbC/AWMjKsYxVILinPTU4sNC4yQY2kTIzhBaZntYJz09oPeIUYmDsZDjBIczEoivF2HQuOF
-        eFMSK6tSi/Lji0pzUosPMZoCw2sis5Rocj4wReaVxBuaGhkbG1uYGJqZGhoqifM+vKUQLySQ
-        nliSmp2aWpBaBNPHxMEp1cC0tK94kti1D8vry/ZN/j35Rsl76TdRJfwH3E8zHRDQLCs47VYq
-        7PtnRb2AZUY8K9fp6ut/eyKK60onb1MX7JDd+aRtHU+O2KMDedMqencImJQUyF84c59/FatV
-        Y7znOlnR/JOM03g2qJaU7m49kLz15aID/iUiYV4hXQUrfx7XO2WqtFw8tLf4o/p6T+uEo5Oq
-        KnZdrDyVyaf1vn7hdpF7ttWT7ugsWNucdPhrx+JYZpFNU+xnfTXLeX3hbkeR6jSX+V856563
-        JGtfMf4ZlKRXHrlpmsDXzylfX91ZKeZ4IUXuQF7S/sW5M+ylulLkpxbN7Gg//uV1n2mt+45w
-        6ZZJK9L6vRxezQlxnX9PW1GJpTgj0VCLuag4EQACROv+2QMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrKJMWRmVeSWpSXmKPExsWy7bCSnG5Kcni8wZlbXBYbZ6xntbj+5Tmr
-        xdmmN+wWl3fNYbP43HuE0WJhUwu7xe3GFWwO7B5r5q1h9OjbsorR4/MmuQDmKC6blNSczLLU
-        In27BK6Mlx9WsBc8Uqvo3XiZvYGxUbKLkZNDQsBEYsqsK0xdjFwcQgK7GSU277vLBpGQlJh2
-        8ShzFyMHkC0scfhwMUTNJ0aJZ2t3MIPUsAloSex/cYMNJCEi0MooMf/cAbBmZgEbiQdznrCA
-        2MICHhKf5kxjB7FZBFQlZr3sYwWxeQWsJJ5u3c8IsUxeYvWGA8wTGHkWMDKsYpRMLSjOTc8t
-        NiwwzEst1ytOzC0uzUvXS87P3cQIDhktzR2M21d90DvEyMTBeIhRgoNZSYS361BovBBvSmJl
-        VWpRfnxRaU5q8SFGaQ4WJXHeG4UL44QE0hNLUrNTUwtSi2CyTBycUg1MhaoTFy7+v7RMvyi/
-        fcLbu9Ws8dmTnyRV2F0uTIn4xS55a8LrGY3rK3Q/6utr38lODyyQ25G9w8Ipp/RJZFt/Y+/5
-        gq+d6dJKk9eIWXx8+m6tNXNf58e47u/Oc168D/0U1fVb/2bZKekV53L21XXFJJ/Yvjr1g94N
-        d4vITRf1ns1zf8HxSn6StnL10xt1NabiF2+6/Ts9LefQO4cErcAP3i788UvaiozLHDvykrKN
-        LG9mTrfPmpv41NU2LnrH2q95bf+SFqeyf+D3Xb5RzbaD71mpadqdgDWf9uw8nh/Tcn3Sue0s
-        ++NMzsxyDrsuP6dk54v4lzYHrrx+axuqtP1hxuYp32Vee86WEL4wMWCOEktxRqKhFnNRcSIA
-        8i14JIgCAAA=
-X-CMS-MailID: 20200908105636epcas1p20ca5e07616e942c3b2a47fc5716c14ed
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20200908105636epcas1p20ca5e07616e942c3b2a47fc5716c14ed
-References: <CGME20200908105636epcas1p20ca5e07616e942c3b2a47fc5716c14ed@epcas1p2.samsung.com>
+        Tue, 8 Sep 2020 06:58:05 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72D27C061573;
+        Tue,  8 Sep 2020 03:58:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=h0VvsYSE+w3nFKH9YA+g18tRVTSKMLX/aErXMNaKl3o=; b=cVBATJMnNT7ngYwKMX50JOE42s
+        w38L4tGQY28hDLRNIXlIkkftUq/sBQfzuP7UOR07E+tF8u1i5SeGvsBqoWNn/oLBddhUImsB3w2KP
+        233TSw6q9lHcauEnzc4OAQNMIb6VNP0fwm0midNEEVVEKaCSzgitu/m7UPQZtwCjrIOn9bcUbjLW3
+        4k1UwS/1hED6NWgpN0lk2j/zMJPXANny1rIHdViofPpZ/uKMb8gO7OkGsWkS5zAJ4plzNDON1dYQw
+        rVMvE8xaAjGijkNJ1OR3XVbjTQlw37Fxir17521GQRZCG8VZqoVrO4QbmW9SqkZ/P7RTFP8sxEMNe
+        AU6F1ORw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kFbJq-0008Mk-3L; Tue, 08 Sep 2020 10:57:48 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 82AEC3010D2;
+        Tue,  8 Sep 2020 12:57:43 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 2AF8A23D54AA4; Tue,  8 Sep 2020 12:57:43 +0200 (CEST)
+Date:   Tue, 8 Sep 2020 12:57:43 +0200
+From:   peterz@infradead.org
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the tip tree
+Message-ID: <20200908105743.GW2674@hirez.programming.kicks-ass.net>
+References: <20200908191223.0e7a9640@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200908191223.0e7a9640@canb.auug.org.au>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The commit 4dc3bab8687f ("PM / devfreq: Add support delayed timer for
-polling mode") supports the delayed timer but this commit missed
-the adding the timer type to devfreq_summary debugfs node.
-Add the timer type to devfreq_summary debugfs.
+On Tue, Sep 08, 2020 at 07:12:23PM +1000, Stephen Rothwell wrote:
+> Hi all,
+>=20
+> After merging the tip tree, today's linux-next build (powerpc
+> allyesconfig) failed like this:
+>=20
+> ERROR: modpost: too long symbol ".__tracepoint_iter_pnfs_mds_fallback_pg_=
+get_mirror_count" [fs/nfs/flexfilelayout/nfs_layout_flexfiles.ko]
+>=20
+> Caused by commit
+>=20
+>   d25e37d89dd2 ("tracepoint: Optimize using static_call()")
+>=20
+> Exported symbols need to be <=3D (64 - sizeof(Elf_Addr)) long.  This is
+> presumably 56 on 64 bit arches and the above symbol (including the '.')
+> is 56 characters long.
 
-Fixes: 4dc3bab8687f ("PM / devfreq: Add support delayed timer for polling mode")
-Signed-off-by: Chanwoo Choi <cw00.choi@samsung.com>
+I suppose something like the below ought to cure that. Still, stupid
+long tracename that.
+
 ---
- drivers/devfreq/devfreq.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
 
-Example after adding 'timer' information to debugfs_summary debugfs node
-on Odroid-XU3 board as following:
-root@localhost:~# cat /sys/kernel/debug/devfreq/devfreq_summary
-dev                            parent_dev                     governor        timer      polling_ms  cur_freq_Hz  min_freq_Hz  max_freq_Hz
------------------------------- ------------------------------ --------------- ---------- ---------- ------------ ------------ ------------
-10c20000.memory-controller     null                           simple_ondemand delayed           100    825000000    165000000    825000000
-11800000.gpu                   null                           simple_ondemand deferrable         50    420000000    177000000    600000000
-soc:bus_wcore                  null                           simple_ondemand deferrable         50    532000000     88700000    532000000
-soc:bus_noc                    soc:bus_wcore                  passive         null                0    111000000     66600000    111000000
-soc:bus_fsys_apb               soc:bus_wcore                  passive         null                0    222000000    111000000    222000000
-soc:bus_fsys2                  soc:bus_wcore                  passive         null                0    200000000     75000000    200000000
-soc:bus_mfc                    soc:bus_wcore                  passive         null                0    333000000     83250000    333000000
-soc:bus_gen                    soc:bus_wcore                  passive         null                0    266000000     88700000    266000000
-soc:bus_peri                   soc:bus_wcore                  passive         null                0     66600000     66600000     66600000
-soc:bus_g2d                    soc:bus_wcore                  passive         null                0    333000000     83250000    333000000
-soc:bus_g2d_acp                soc:bus_wcore                  passive         null                0    266000000     66500000    266000000
-soc:bus_jpeg                   soc:bus_wcore                  passive         null                0    300000000     75000000    300000000
-soc:bus_jpeg_apb               soc:bus_wcore                  passive         null                0    166500000     83250000    166500000
-soc:bus_disp1_fimd             soc:bus_wcore                  passive         null                0    200000000    120000000    200000000
-soc:bus_disp1                  soc:bus_wcore                  passive         null                0    300000000    120000000    300000000
-soc:bus_gscl_scaler            soc:bus_wcore                  passive         null                0    300000000    150000000    300000000
-soc:bus_mscl                   soc:bus_wcore                  passive         null                0    666000000     84000000    666000000
- 
-
-diff --git a/drivers/devfreq/devfreq.c b/drivers/devfreq/devfreq.c
-index b9b27fb3291e..d4424b5d8306 100644
---- a/drivers/devfreq/devfreq.c
-+++ b/drivers/devfreq/devfreq.c
-@@ -1790,20 +1790,23 @@ static int devfreq_summary_show(struct seq_file *s, void *data)
- 	struct devfreq *p_devfreq = NULL;
- 	unsigned long cur_freq, min_freq, max_freq;
- 	unsigned int polling_ms;
-+	unsigned int timer;
- 
--	seq_printf(s, "%-30s %-30s %-15s %10s %12s %12s %12s\n",
-+	seq_printf(s, "%-30s %-30s %-15s %-10s %10s %12s %12s %12s\n",
- 			"dev",
- 			"parent_dev",
- 			"governor",
-+			"timer",
- 			"polling_ms",
- 			"cur_freq_Hz",
- 			"min_freq_Hz",
- 			"max_freq_Hz");
--	seq_printf(s, "%30s %30s %15s %10s %12s %12s %12s\n",
-+	seq_printf(s, "%30s %30s %15s %10s %10s %12s %12s %12s\n",
- 			"------------------------------",
- 			"------------------------------",
- 			"---------------",
- 			"----------",
-+			"----------",
- 			"------------",
- 			"------------",
- 			"------------");
-@@ -1827,13 +1830,15 @@ static int devfreq_summary_show(struct seq_file *s, void *data)
- 		cur_freq = devfreq->previous_freq;
- 		get_freq_range(devfreq, &min_freq, &max_freq);
- 		polling_ms = devfreq->profile->polling_ms;
-+		timer = devfreq->profile->timer;
- 		mutex_unlock(&devfreq->lock);
- 
- 		seq_printf(s,
--			"%-30s %-30s %-15s %10d %12ld %12ld %12ld\n",
-+			"%-30s %-30s %-15s %-10s %10d %12ld %12ld %12ld\n",
- 			dev_name(&devfreq->dev),
- 			p_devfreq ? dev_name(&p_devfreq->dev) : "null",
- 			devfreq->governor_name,
-+			polling_ms ? timer_name[timer] : "null",
- 			polling_ms,
- 			cur_freq,
- 			min_freq,
--- 
-2.17.1
-
+diff --git a/include/linux/tracepoint.h b/include/linux/tracepoint.h
+index 3722a10fc46d..81fa0b2f271e 100644
+--- a/include/linux/tracepoint.h
++++ b/include/linux/tracepoint.h
+@@ -154,7 +154,7 @@ static inline struct tracepoint *tracepoint_ptr_deref(t=
+racepoint_ptr_t *p)
+ #ifdef CONFIG_HAVE_STATIC_CALL
+ #define __DO_TRACE_CALL(name)	static_call(tp_func_##name)
+ #else
+-#define __DO_TRACE_CALL(name)	__tracepoint_iter_##name
++#define __DO_TRACE_CALL(name)	__traceiter_##name
+ #endif /* CONFIG_HAVE_STATIC_CALL */
+=20
+ /*
+@@ -232,8 +232,8 @@ static inline struct tracepoint *tracepoint_ptr_deref(t=
+racepoint_ptr_t *p)
+  * poking RCU a bit.
+  */
+ #define __DECLARE_TRACE(name, proto, args, cond, data_proto, data_args) \
+-	extern int __tracepoint_iter_##name(data_proto);		\
+-	DECLARE_STATIC_CALL(tp_func_##name, __tracepoint_iter_##name); \
++	extern int __traceiter_##name(data_proto);			\
++	DECLARE_STATIC_CALL(tp_func_##name, __traceiter_##name);	\
+ 	extern struct tracepoint __tracepoint_##name;			\
+ 	static inline void trace_##name(proto)				\
+ 	{								\
+@@ -288,19 +288,19 @@ static inline struct tracepoint *tracepoint_ptr_deref=
+(tracepoint_ptr_t *p)
+ 	static const char __tpstrtab_##_name[]				\
+ 	__section(__tracepoints_strings) =3D #_name;			\
+ 	extern struct static_call_key STATIC_CALL_KEY(tp_func_##_name);	\
+-	int __tracepoint_iter_##_name(void *__data, proto);		\
++	int __traceiter_##_name(void *__data, proto);			\
+ 	struct tracepoint __tracepoint_##_name	__used			\
+ 	__section(__tracepoints) =3D {					\
+ 		.name =3D __tpstrtab_##_name,				\
+ 		.key =3D STATIC_KEY_INIT_FALSE,				\
+ 		.static_call_key =3D &STATIC_CALL_KEY(tp_func_##_name),	\
+ 		.static_call_tramp =3D STATIC_CALL_TRAMP_ADDR(tp_func_##_name), \
+-		.iterator =3D &__tracepoint_iter_##_name,			\
++		.iterator =3D &__traceiter_##_name,			\
+ 		.regfunc =3D _reg,					\
+ 		.unregfunc =3D _unreg,					\
+ 		.funcs =3D NULL };					\
+ 	__TRACEPOINT_ENTRY(_name);					\
+-	int __tracepoint_iter_##_name(void *__data, proto)		\
++	int __traceiter_##_name(void *__data, proto)			\
+ 	{								\
+ 		struct tracepoint_func *it_func_ptr;			\
+ 		void *it_func;						\
+@@ -314,18 +314,18 @@ static inline struct tracepoint *tracepoint_ptr_deref=
+(tracepoint_ptr_t *p)
+ 		} while ((++it_func_ptr)->func);			\
+ 		return 0;						\
+ 	}								\
+-	DEFINE_STATIC_CALL(tp_func_##_name, __tracepoint_iter_##_name);
++	DEFINE_STATIC_CALL(tp_func_##_name, __traceiter_##_name);
+=20
+ #define DEFINE_TRACE(name, proto, args)		\
+ 	DEFINE_TRACE_FN(name, NULL, NULL, PARAMS(proto), PARAMS(args));
+=20
+ #define EXPORT_TRACEPOINT_SYMBOL_GPL(name)				\
+ 	EXPORT_SYMBOL_GPL(__tracepoint_##name);				\
+-	EXPORT_SYMBOL_GPL(__tracepoint_iter_##name);			\
++	EXPORT_SYMBOL_GPL(__traceiter_##name);				\
+ 	EXPORT_STATIC_CALL_GPL(tp_func_##name)
+ #define EXPORT_TRACEPOINT_SYMBOL(name)					\
+ 	EXPORT_SYMBOL(__tracepoint_##name);				\
+-	EXPORT_SYMBOL(__tracepoint_iter_##name);			\
++	EXPORT_SYMBOL(__traceiter_##name);				\
+ 	EXPORT_STATIC_CALL(tp_func_##name)
+=20
+=20
