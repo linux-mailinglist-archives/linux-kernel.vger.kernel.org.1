@@ -2,54 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7EEB2620C8
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 22:15:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85AFD2620D6
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 22:16:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730928AbgIHUPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 16:15:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35412 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730256AbgIHUPL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 16:15:11 -0400
-Subject: Re: [GIT PULL] SCSI fixes for 5.9-rc4
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599596109;
-        bh=pzpmfcP0WfpSeeqBxDIuxb7oi6sZpztmQu4jSUpE2DQ=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=vDXiV84VqxhpFQERoPntlTd8jJ03idntbLRy7RqtN9mzVYQgE34ZguzSrf1ZvglMH
-         vPrD0n593H8gOBNpJjIBB17xAzVj8JSpPARB4Ug0uYqKmYK7u7MoTvFw1QkJhMzqGf
-         DJXDkdapFKvctuimhxpnb/6xthGepyYf5jgSGjl0=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <1599578324.10803.12.camel@HansenPartnership.com>
-References: <1599578324.10803.12.camel@HansenPartnership.com>
-X-PR-Tracked-List-Id: <linux-scsi.vger.kernel.org>
-X-PR-Tracked-Message-Id: <1599578324.10803.12.camel@HansenPartnership.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
-X-PR-Tracked-Commit-Id: b614d55b970d08bcac5b0bc15a5526181b3e4459
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: d6dc7e06826bd7bbb654b7a730db99e7020abbf6
-Message-Id: <159959610973.11661.4957951772872875984.pr-tracker-bot@kernel.org>
-Date:   Tue, 08 Sep 2020 20:15:09 +0000
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+        id S1730592AbgIHUQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 16:16:27 -0400
+Received: from mail-il1-f207.google.com ([209.85.166.207]:39850 "EHLO
+        mail-il1-f207.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729457AbgIHUQV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 16:16:21 -0400
+Received: by mail-il1-f207.google.com with SMTP id v17so223363ilg.6
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 13:16:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=s/bYKv6LX1PcO06y6Bm21nR/bMn54CugKCYgQJuiP/s=;
+        b=WQnuty4thzY5GAnZXegJyLVKdmEtRMzojg9/sMb8xLizeOkGEfLvIjhKX795atn6kK
+         715lY8HaXbhn05EY+hW/O9eBkq86gvIAW5H9eulH6xNizDeHzykg5C6/MOoO+uqmwQJy
+         eiqU0daHLxl2zDB/Esb9bbMBtdrrq5Zsx+VctplwwWwuX8WTIwQTAhfEIReYR+7gkqAL
+         zQgLtTXeKcsChz96yuKLdE7UHgtAPFOjAWofmuG1ezpQwKqRmqXMz0JDX3L1Wq8Rud1j
+         mpM2B89dJN3X96U1ThTFnGOqfYy0GsXABA9rvXno5nz8y+RMSDY2zRDVl/z1CPObyg7b
+         34CA==
+X-Gm-Message-State: AOAM5332VXnSGfM6/jMiMSzm+U4IP0BglQz4zo+SSzf5pIPVpGB3v3i9
+        +3IGb0Jq9Log6CRfhes4InNuWHult4FEZBrSxdu/mlBzhtnu
+X-Google-Smtp-Source: ABdhPJymQNFXVDQXU5MMAZ2HQLXS0S2RD9e+55WIo8flYkvmlkfHdxfYJ6z0Uozh6UVmQj5xp//ka1jwQrZK4fhYLaXIrZILdJ5I
+MIME-Version: 1.0
+X-Received: by 2002:a02:240d:: with SMTP id f13mr669276jaa.33.1599596181256;
+ Tue, 08 Sep 2020 13:16:21 -0700 (PDT)
+Date:   Tue, 08 Sep 2020 13:16:21 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000002b02cf05aed302f3@google.com>
+Subject: WARNING: can't access registers at asm_sysvec_call_function_single
+From:   syzbot <syzbot+bc9dbf05dcc151e9b972@syzkaller.appspotmail.com>
+To:     alexandre.chartre@oracle.com, bp@alien8.de, hpa@zytor.com,
+        linux-kernel@vger.kernel.org, luto@kernel.org, mingo@redhat.com,
+        peterz@infradead.org, syzkaller-bugs@googlegroups.com,
+        tglx@linutronix.de, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 08 Sep 2020 08:18:44 -0700:
+Hello,
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
+syzbot found the following issue on:
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/d6dc7e06826bd7bbb654b7a730db99e7020abbf6
+HEAD commit:    f4d51dff Linux 5.9-rc4
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1455d4f9900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a9075b36a6ae26c9
+dashboard link: https://syzkaller.appspot.com/bug?extid=bc9dbf05dcc151e9b972
+compiler:       gcc (GCC) 10.1.0-syz 20200507
 
-Thank you!
+Unfortunately, I don't have any reproducer for this issue yet.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+bc9dbf05dcc151e9b972@syzkaller.appspotmail.com
+
+WARNING: can't access registers at asm_sysvec_call_function_single+0x12/0x20 arch/x86/include/asm/idtentry.h:589
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
