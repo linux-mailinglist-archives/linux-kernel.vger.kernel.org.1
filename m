@@ -2,91 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85A79260CB6
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 09:58:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8942260CBB
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 09:58:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729970AbgIHH6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 03:58:15 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:37955 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729915AbgIHH5t (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 03:57:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599551860;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hjajqtvEuISTBRgRpPMUCH8ji6lbeHsCmX5hSQj+D2Q=;
-        b=HVFVXNTCn0P8hxdzDQkceEZE95e+2L8CyHiJGAdMFWyTELNh0rCS64n0hyDoSvB+uoXlC2
-        as/CK00hPloi+JHHZowUZJFtc47cjpZlZoTF/Q3Touz780mZnTcffk1thObxcy6ig6S2fb
-        O4I/8if0CXHx/UFEovyQOwhgHLa9o+Q=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-198-7Xnsz1lqMomrMpHZXNA5Tw-1; Tue, 08 Sep 2020 03:57:39 -0400
-X-MC-Unique: 7Xnsz1lqMomrMpHZXNA5Tw-1
-Received: by mail-ed1-f72.google.com with SMTP id l2so5838113ede.19
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 00:57:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hjajqtvEuISTBRgRpPMUCH8ji6lbeHsCmX5hSQj+D2Q=;
-        b=cQqy4lzol9nC4uKfWcOFGnLpn29/DfELVcYBjzgc603IsCWcsHleoEmP2+kn4PpUVv
-         BZlU4JYr8umgB/eBEHv0KL5FnubLgKQ1GkF8EywEKCZNWF0VtxLoKOouQK/ndVtihHpQ
-         ygbjP4fIMDWo+gkmlRsWirKawAjR5ZEKfUNCjqeL9EFSGCOr+l4lmz1r5hDHuqN6Krty
-         Rofey4IsrPy5y1Vwr6ujoXz+Y0R8VMkidh2hn6+ciogF3aWzhsNI9slQV/SJ9dkJH3Zg
-         Y7yzmNfz/cJc2eRAEG887/vEAY97uN2QFbIRSCwF1CaQA6RkjCKIjz7AM8wMAeLhtChu
-         N9Xw==
-X-Gm-Message-State: AOAM530Vxe3joNiTR3PLM1r3SRVDxqZro+6dqPemSRZJCPIt2Rr4e6va
-        fjAcSThm9OZEsvHeEVk0GBY2KPbvokBzMnZbCxPU/lHlQTl5zKXXV//bUhoSi90AHzB6EdQ7PN1
-        UwmkCVP5UsLhOtjuGHDt7M9L5
-X-Received: by 2002:a17:906:4cc6:: with SMTP id q6mr17306533ejt.201.1599551857520;
-        Tue, 08 Sep 2020 00:57:37 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxpDLRo1CVGFPV8s2mB7FGn6jr+cgUVgJN/ozC0WS4OAeawUnu+/98JbXILSr3J/Bhzu7egLw==
-X-Received: by 2002:a17:906:4cc6:: with SMTP id q6mr17306516ejt.201.1599551857341;
-        Tue, 08 Sep 2020 00:57:37 -0700 (PDT)
-Received: from redhat.com ([147.161.9.118])
-        by smtp.gmail.com with ESMTPSA id e4sm16024501edk.38.2020.09.08.00.57.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Sep 2020 00:57:36 -0700 (PDT)
-Date:   Tue, 8 Sep 2020 03:57:30 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Halil Pasic <pasic@linux.ibm.com>
-Cc:     Pierre Morel <pmorel@linux.ibm.com>, linux-kernel@vger.kernel.org,
-        borntraeger@de.ibm.com, frankja@linux.ibm.com, jasowang@redhat.com,
-        cohuck@redhat.com, kvm@vger.kernel.org, linux-s390@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, thomas.lendacky@amd.com,
-        david@gibson.dropbear.id.au, linuxram@us.ibm.com,
-        hca@linux.ibm.com, gor@linux.ibm.com
-Subject: Re: [PATCH v11 0/2] s390: virtio: let arch validate VIRTIO features
-Message-ID: <20200908035506-mutt-send-email-mst@kernel.org>
-References: <1599471547-28631-1-git-send-email-pmorel@linux.ibm.com>
- <20200908003951.233e47f3.pasic@linux.ibm.com>
+        id S1730040AbgIHH6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 03:58:40 -0400
+Received: from mx2.suse.de ([195.135.220.15]:54036 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729956AbgIHH54 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 03:57:56 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 41CD8B6CD;
+        Tue,  8 Sep 2020 07:57:55 +0000 (UTC)
+Date:   Tue, 8 Sep 2020 09:57:53 +0200
+From:   Daniel Wagner <dwagner@suse.de>
+To:     Arun Easi <aeasi@marvell.com>
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Nilesh Javali <njavali@marvell.com>,
+        Martin Wilck <mwilck@suse.com>
+Subject: Re: [PATCH v2 4/4] qla2xxx: Handle incorrect entry_type entries
+Message-ID: <20200908075753.ov64u2rmhet3jmlu@beryllium.lan>
+References: <20200831161854.70879-1-dwagner@suse.de>
+ <20200831161854.70879-5-dwagner@suse.de>
+ <alpine.LRH.2.21.9999.2009072346360.28578@irv1user01.caveonetworks.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200908003951.233e47f3.pasic@linux.ibm.com>
+In-Reply-To: <alpine.LRH.2.21.9999.2009072346360.28578@irv1user01.caveonetworks.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 08, 2020 at 12:39:51AM +0200, Halil Pasic wrote:
-> On Mon,  7 Sep 2020 11:39:05 +0200
-> Pierre Morel <pmorel@linux.ibm.com> wrote:
-> 
-> > Hi all,
-> > 
-> > The goal of the series is to give a chance to the architecture
-> > to validate VIRTIO device features.
-> 
-> Michael, is this going in via your tree?
+Hi Arun,
 
-I guess so. Still not really happy about second-guessing
-the hypervisor, but this got acks from others
-so maybe I'm wrong in this instance. Won't be the first time.
+On Mon, Sep 07, 2020 at 11:47:48PM -0700, Arun Easi wrote:
+> Could you drop the above comment about firmware, as it is speculation at
+> this point?
 
--- 
-MST
+Sure, no problem.
 
+> It'd be best to take a chip reset path, rather than assuming the
+> packet is good and having the appropriate handler called (hacky).
+> An approach similar to the one done at the beginning of
+> qla2x00_get_sp_from_handle() is what I had in mind.
+
+Ok, agreed a reset is probably the safest choice.
+
+> I'd have preferred a common approach across the different IOCB types
+> as an attempt to harden the code, but that will be a little more
+> involved work. This looks ok.
+
+Yes, I was pondering on it but I don't know enough to really come up
+with something reasonable. Currently our customers report only this
+hickup. So this is really only a partial workaround.
+
+Thanks,
+Daniel
