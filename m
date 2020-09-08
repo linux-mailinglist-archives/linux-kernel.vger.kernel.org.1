@@ -2,146 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BB90260B33
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 08:48:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3975A260B3A
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 08:48:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729005AbgIHGr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 02:47:56 -0400
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:16584 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727898AbgIHGrz (ORCPT
+        id S1729181AbgIHGsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 02:48:32 -0400
+Received: from mail-ej1-f65.google.com ([209.85.218.65]:44654 "EHLO
+        mail-ej1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728759AbgIHGsR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 02:47:55 -0400
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0886euY1002070;
-        Mon, 7 Sep 2020 23:47:50 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=date : from : to :
- cc : subject : in-reply-to : message-id : references : mime-version :
- content-type; s=pfpt0220; bh=eOJboNLK/sEyISHuh+3TUISkvbBw5hy/wrZiXLFigo0=;
- b=lFHs5NRf3JTaFp3FH5bzDcdw2Qlm0AYgFFQuNVLOoXY3DIHIIS3So5ktjK/+4VBIJgwl
- 1b3uufLvRK5lFdutoh2e10M1E5iB3tuf76VsfVTmKB7l6VxyRQ6qKIvX21SUZOWFd2Ea
- /y8ywCH6aEgaxipEhVpgIrMH3/Z0QuSDGw/Y1N/QP8zHAN6x+794K2zS/HLx4zHNqrUr
- zHnWMG4EEakkYj5x+WiUkSGVMAjiBB+OKGo4xs9bLu12086IkIeeMv0DzGZIzFSTHtqO
- uIMH4mUNTvi4Tb5q4vvHTZw0WX7vsh4hLf6fRyC3qhZI/xXM0z3bK8jrPR0R7vhxQvsz ww== 
-Received: from sc-exch02.marvell.com ([199.233.58.182])
-        by mx0b-0016f401.pphosted.com with ESMTP id 33ccvr19hg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Mon, 07 Sep 2020 23:47:50 -0700
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH02.marvell.com
- (10.93.176.82) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 7 Sep
- 2020 23:47:48 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 7 Sep 2020 23:47:49 -0700
-Received: from irv1user01.caveonetworks.com (unknown [10.104.116.179])
-        by maili.marvell.com (Postfix) with ESMTP id AEA313F703F;
-        Mon,  7 Sep 2020 23:47:48 -0700 (PDT)
-Received: from localhost (aeasi@localhost)
-        by irv1user01.caveonetworks.com (8.14.4/8.14.4/Submit) with ESMTP id 0886lm8r024498;
-        Mon, 7 Sep 2020 23:47:48 -0700
-X-Authentication-Warning: irv1user01.caveonetworks.com: aeasi owned process doing -bs
-Date:   Mon, 7 Sep 2020 23:47:48 -0700
-From:   Arun Easi <aeasi@marvell.com>
-X-X-Sender: aeasi@irv1user01.caveonetworks.com
-To:     Daniel Wagner <dwagner@suse.de>
-CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "Nilesh Javali" <njavali@marvell.com>,
-        Martin Wilck <mwilck@suse.com>
-Subject: Re: [PATCH v2 4/4] qla2xxx: Handle incorrect entry_type entries
-In-Reply-To: <20200831161854.70879-5-dwagner@suse.de>
-Message-ID: <alpine.LRH.2.21.9999.2009072346360.28578@irv1user01.caveonetworks.com>
-References: <20200831161854.70879-1-dwagner@suse.de>
- <20200831161854.70879-5-dwagner@suse.de>
-User-Agent: Alpine 2.21.9999 (LRH 334 2019-03-29)
+        Tue, 8 Sep 2020 02:48:17 -0400
+Received: by mail-ej1-f65.google.com with SMTP id r7so7546601ejs.11;
+        Mon, 07 Sep 2020 23:48:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=VyiVf+Mq59UC5ZzKMYrAjFhEEKe4orUQbv2Dw6ICisQ=;
+        b=Qt2OvcNIVdt78UW4jLDz6nktC9mUQL/abkGCyd41iCFp1dO1iDhVQgQ9KQRsFJIqP/
+         +cAXGjR8GXm/R8n8bNtHgtid78nlHpKhGzuVnXWukF1nyeyh+YVqzUegEZsPibxnna8y
+         xW4SDv7DnqzXfBVK1RDpg19qGRllqHBskRWEmUsYZNbsFmSLjRqDtNw2IyDhbFw/6vGT
+         roUdrWvMHfSgUc4Jv9/LEie8dJt8SPHrDQJ8bo6ZszAysLFS0cL/2qPDDv7BQRHCKSRc
+         p8U0APQR6BqN0cqC1jphrNDbPejCgFwzVXKk29H97WHEJSEQ0jm9xFwT9ANcaKCMnBtT
+         OCpg==
+X-Gm-Message-State: AOAM531vjY+lOC8/Xan29LgR+bvW9Qr6t7j52kfPWy/zg9i5PKIygj1X
+        Qg8hInokSXw5h9zxQWLtLDA=
+X-Google-Smtp-Source: ABdhPJy61y/aCX2qNyKljrz5UJOWH8ADbK1AwDDzicWB2lQYIWTkbWIYURrKncOKjTAbVcUMp5Tlaw==
+X-Received: by 2002:a17:906:455:: with SMTP id e21mr25591439eja.170.1599547694870;
+        Mon, 07 Sep 2020 23:48:14 -0700 (PDT)
+Received: from pi3 ([194.230.155.174])
+        by smtp.googlemail.com with ESMTPSA id j8sm16697525edp.58.2020.09.07.23.48.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Sep 2020 23:48:13 -0700 (PDT)
+Date:   Tue, 8 Sep 2020 08:48:11 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Jonathan Bakker <xc-racer2@live.ca>
+Cc:     Kukjin Kim <kgene@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        =?utf-8?B?UGF3ZcWC?= Chmiel <pawel.mikolaj.chmiel@gmail.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org
+Subject: Re: [PATCH 03/25] dt-bindings: iio: adc: exynos-adc: do not require
+ syscon on S5Pv210
+Message-ID: <20200908064811.GA24227@pi3>
+References: <20200907161141.31034-1-krzk@kernel.org>
+ <20200907161141.31034-4-krzk@kernel.org>
+ <BN6PR04MB06601B8D0B7F1E51953024E6CB280@BN6PR04MB0660.namprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-08_02:2020-09-08,2020-09-08 signatures=0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <BN6PR04MB06601B8D0B7F1E51953024E6CB280@BN6PR04MB0660.namprd04.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 31 Aug 2020, 9:18am, Daniel Wagner wrote:
->
-> It was observed on an ISP8324 16Gb HBA with fw=8.08.203 (d0d5) that
-> pkt->entry_type was MBX_IOCB_TYPE/0x39 with an sp->type SRB_SCSI_CMD
-> which is invalid and should not be possible.
+On Mon, Sep 07, 2020 at 02:49:49PM -0700, Jonathan Bakker wrote:
+> Looking at this again, it appears that there is actually control for
+> it at offset 0x6818 of pmu_syscon (0xe0108000) [1].  However, it defaults to
+> enabled so it's not required for proper use of the block.  Whether it should
+> be present in the schema/DTS is up to you.
+
+Indeed the driver could turn off the ADC phy via syscon however bindings
+(before YAML conversion) explicitly were saying that it is not needed. I
+am not going to add it as I am not able to test the change and also
+adding such requirement would be a break of ABI (described by first TXT
+bindings).
+
+Best regards,
+Krzysztof
+
+
 > 
-> A careful code review of the crash dump didn't reveal any short
-> comings. Reading the entry_type from the crash dump shows the expected
-> value of STATUS_TYPE/0x03 but the call trace shows that
-> qla24xx_mbx_iocb_entry() is used.
+> Thanks,
+> Jonathan
 > 
-> One possible explanation is when pkt->entry_type is read it doesn't
-> contain the correct information. That means the driver observes an data
-> race by the firmware.
+> [1] https://android.googlesource.com/kernel/samsung/+/refs/heads/android-samsung-3.0-jb-mr0/arch/arm/mach-s5pv210/include/mach/regs-clock.h#325
 > 
-> Signed-off-by: Daniel Wagner <dwagner@suse.de>
-> ---
->  drivers/scsi/qla2xxx/qla_isr.c | 30 ++++++++++++++++++++++++++++--
->  1 file changed, 28 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/scsi/qla2xxx/qla_isr.c b/drivers/scsi/qla2xxx/qla_isr.c
-> index b787643f5031..22aa4c0b901d 100644
-> --- a/drivers/scsi/qla2xxx/qla_isr.c
-> +++ b/drivers/scsi/qla2xxx/qla_isr.c
-> @@ -3392,6 +3392,33 @@ void qla24xx_nvme_ls4_iocb(struct scsi_qla_host *vha,
->  	sp->done(sp, comp_status);
->  }
->  
-> +static void qla24xx_process_mbx_iocb_response(struct scsi_qla_host *vha,
-> +	struct rsp_que *rsp, struct sts_entry_24xx *pkt)
-> +{
-> +	srb_t *sp;
-> +
-> +	sp = qla2x00_get_sp_from_handle(vha, rsp->req, pkt);
-> +	if (!sp)
-> +		return;
-> +
-> +	if (sp->type == SRB_SCSI_CMD ||
-> +	    sp->type == SRB_NVME_CMD ||
-> +	    sp->type == SRB_TM_CMD) {
-> +		/* Some firmware version don't update the entry_type
-> +		 * correctly.  It was observed entry_type contained
-> +		 * MBCX_IOCB_TYPE instead of the expected STATUS_TYPE
-> +		 * for sp->type SRB_SCSI_CMD, SRB_NVME_CMD or
-> +		 * SRB_TM_CMD.
-> +		 */
-
-Could you drop the above comment about firmware, as it is speculation at
-this point?
-
-
-> +		ql_log(ql_log_warn, vha, 0x509d,
-> +		       "Firmware didn't update entry_type correctly\n");
-> +		qla2x00_status_entry(vha, rsp, pkt);
-> +		return;
-
-It'd be best to take a chip reset path, rather than assuming the
-packet is good and having the appropriate handler called (hacky).
-An approach similar to the one done at the beginning of
-qla2x00_get_sp_from_handle() is what I had in mind.
-
-> +	}
-> +
-> +	qla24xx_mbx_iocb_entry(vha, rsp->req, (struct mbx_24xx_entry *)pkt);
-> +}
-> +
->  /**
->   * qla24xx_process_response_queue() - Process response queue entries.
->   * @vha: SCSI driver HA context
-> @@ -3499,8 +3526,7 @@ void qla24xx_process_response_queue(struct scsi_qla_host *vha,
->  			    (struct abort_entry_24xx *)pkt);
->  			break;
->  		case MBX_IOCB_TYPE:
-> -			qla24xx_mbx_iocb_entry(vha, rsp->req,
-> -			    (struct mbx_24xx_entry *)pkt);
-> +			qla24xx_process_mbx_iocb_response(vha, rsp, pkt);
-
-I'd have preferred a common approach across the different IOCB types
-as an attempt to harden the code, but that will be a little more
-involved work. This looks ok.
-
-Regards,
--Arun
+> On 2020-09-07 9:11 a.m., Krzysztof Kozlowski wrote:
+> > The ADC in S5Pv210 does not have ADC phy registers in separate block for
+> > which syscon would be needed.  Remove this requirement to fix dtbs_check
+> > warnings like:
+> > 
+> >   arch/arm/boot/dts/s5pv210-fascinate4g.dt.yaml: adc@e1700000: 'samsung,syscon-phandle' is a required property
+> > 
+> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> > ---
+> >  .../devicetree/bindings/iio/adc/samsung,exynos-adc.yaml          | 1 -
+> >  1 file changed, 1 deletion(-)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/iio/adc/samsung,exynos-adc.yaml b/Documentation/devicetree/bindings/iio/adc/samsung,exynos-adc.yaml
+> > index 89b4f9c252a6..75174af72288 100644
+> > --- a/Documentation/devicetree/bindings/iio/adc/samsung,exynos-adc.yaml
+> > +++ b/Documentation/devicetree/bindings/iio/adc/samsung,exynos-adc.yaml
+> > @@ -81,7 +81,6 @@ allOf:
+> >                - samsung,exynos-adc-v2
+> >                - samsung,exynos3250-adc
+> >                - samsung,exynos4212-adc
+> > -              - samsung,s5pv210-adc
+> >      then:
+> >        required:
+> >          - samsung,syscon-phandle
+> > 
