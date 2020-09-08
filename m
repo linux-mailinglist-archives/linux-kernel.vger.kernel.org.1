@@ -2,103 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24A0D261DE3
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:43:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFBF1261F2C
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 22:00:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731065AbgIHTnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:43:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53406 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730869AbgIHPwh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:52:37 -0400
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84A43C0068C2
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 08:00:17 -0700 (PDT)
-Received: by mail-vs1-xe41.google.com with SMTP id j185so9170388vsc.3
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 08:00:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tJRPLo+J0AriJzHTz4tB+cqM6v8af2cuqs5qOTFB1iE=;
-        b=XIEgSW1KV88kuUzhoRuadz6lGFrG4VliZ7auCmMMAlPJEGo9Fv+rD3RcpZVWzKa/jC
-         Hc4MsaNyKgjUL9Gn6+/+FjrCQay1ygjM05S2Fmb4xe4LHoXfPt9CFBa2hoBZZIA4/sCO
-         Um5z7+bxy8muKu9ywGVyDQe/KVjKJh+B916q0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tJRPLo+J0AriJzHTz4tB+cqM6v8af2cuqs5qOTFB1iE=;
-        b=q44yuGLyG3ZrlSDxkequCwDxJKNrCSA/yj/DLectMdsumxcP2zjkCwlo1PhcoOItWm
-         F4KVM0yjuh8J/ayW4k6l2k4tSAYmt9kd6siQpYfER9h5U6QL28USxPfHHWL4gI4JcM71
-         8O0b5S0m0W9Zq8BiDYpSwiee0Y+A8tXgSlkAWWpF530QM9tK+yKUG23b/3kZnHO3d8Re
-         G/QOiUF4W8u1gpGI9EyLkUpud2Rggfth6mss8m08ro8eqPHyqu1VcfVsK7tooboCbd14
-         GRaZlCxWpsX4hy2qnzTxgcjrv2UayR0u4OA4XABwzr6RiLPJM5NqUR7ZTNiKT6b5Xijm
-         nMTg==
-X-Gm-Message-State: AOAM5307wjpaM91JjzxWglIjp0U8n8lRwp5sQLivXSZrbfT7VZLoIVBO
-        QppUtZOtIQW09x2XapjH8QkpZC+9GIx4yQ==
-X-Google-Smtp-Source: ABdhPJwvWr0WDk/zj0fcTKzKuPp9Ru9uhS9Evxup349l28qUEnip/DFRvOQNc1Q2E9oU1/nTwY+jEA==
-X-Received: by 2002:a05:6102:40e:: with SMTP id d14mr1107778vsq.30.1599577216241;
-        Tue, 08 Sep 2020 08:00:16 -0700 (PDT)
-Received: from mail-vk1-f179.google.com (mail-vk1-f179.google.com. [209.85.221.179])
-        by smtp.gmail.com with ESMTPSA id f190sm1528698vka.1.2020.09.08.08.00.15
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Sep 2020 08:00:15 -0700 (PDT)
-Received: by mail-vk1-f179.google.com with SMTP id s127so4144745vkg.3
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 08:00:15 -0700 (PDT)
-X-Received: by 2002:a1f:e641:: with SMTP id d62mr15027301vkh.30.1599577214628;
- Tue, 08 Sep 2020 08:00:14 -0700 (PDT)
+        id S1731236AbgIHUAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 16:00:09 -0400
+Received: from foss.arm.com ([217.140.110.172]:55912 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730484AbgIHPfg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 11:35:36 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 59AD8169E;
+        Tue,  8 Sep 2020 08:17:26 -0700 (PDT)
+Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3ED443F73C;
+        Tue,  8 Sep 2020 08:17:25 -0700 (PDT)
+Date:   Tue, 8 Sep 2020 16:17:22 +0100
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     peterz@infradead.org, vincent.donnefort@arm.com, mingo@redhat.com,
+        vincent.guittot@linaro.org, linux-kernel@vger.kernel.org,
+        valentin.schneider@arm.com, Phil Auld <pauld@redhat.com>
+Subject: Re: [PATCH v2] sched/debug: Add new tracepoint to track cpu_capacity
+Message-ID: <20200908151722.b7ai2bpgvixlimz3@e107158-lin.cambridge.arm.com>
+References: <1598605249-72651-1-git-send-email-vincent.donnefort@arm.com>
+ <20200828102724.wmng7p6je2pkc33n@e107158-lin.cambridge.arm.com>
+ <1e806d48-fd54-fd86-5b3a-372d9876f360@arm.com>
+ <20200828172658.dxygk7j672gho4ax@e107158-lin.cambridge.arm.com>
+ <58f5d2e8-493b-7ce1-6abd-57705e5ab437@arm.com>
+ <20200907104845.6rust2lf2o3d5gmq@e107158-lin.cambridge.arm.com>
+ <20200907111320.GP2674@hirez.programming.kicks-ass.net>
+ <20200907145155.fsmeygi4fiypikzk@e107158-lin.cambridge.arm.com>
+ <cbad58a5-758b-ded9-ed41-1be74e8663a6@arm.com>
 MIME-Version: 1.0
-References: <010101746c377537-ce93e925-598b-4dce-bb16-4cda020f4d6f-000000@us-west-2.amazonses.com>
-In-Reply-To: <010101746c377537-ce93e925-598b-4dce-bb16-4cda020f4d6f-000000@us-west-2.amazonses.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Tue, 8 Sep 2020 08:00:02 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=WsUopZPHJzHe1+pa=pzKQda0yQKUCtnPrni3Dmx7aV3g@mail.gmail.com>
-Message-ID: <CAD=FV=WsUopZPHJzHe1+pa=pzKQda0yQKUCtnPrni3Dmx7aV3g@mail.gmail.com>
-Subject: Re: [PATCHv3] soc: qcom: llcc: Support chipsets that can write to
- llcc registers
-To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "Isaac J. Manjarres" <isaacm@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <cbad58a5-758b-ded9-ed41-1be74e8663a6@arm.com>
+User-Agent: NeoMutt/20171215
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 09/08/20 13:17, Dietmar Eggemann wrote:
+> On 07/09/2020 16:51, Qais Yousef wrote:
+> > On 09/07/20 13:13, peterz@infradead.org wrote:
+> >> On Mon, Sep 07, 2020 at 11:48:45AM +0100, Qais Yousef wrote:
+> >>> IMHO the above is a hack. Out-of-tree modules should rely on public headers and
+> >>> exported functions only. What you propose means that people who want to use
+> >>> these tracepoints in meaningful way must have a prebuilt kernel handy. Which is
+> >>> maybe true for us who work in the embedded world. But users who run normal
+> >>> distro kernels (desktop/servers) will fail to build against
+> >>
+> >> But this isn't really aimed at regular users. We're aiming this at
+> >> developers (IIUC) so I dont really see this as a problem.
+> 
+> This is what I thought as well. All these helpers can be coded directly
+> in these tracepoint-2-traceevent (tp-2-te) converters. As long as they
+> are build from within kernel/sched/ there is no issue with the export
+> via kernel/sched/sched.h. Otherwise this little trick would be necessary.
+> But since it is a tool for developers I guess we can assume that they
+> can build it from within kernel/sched/.
 
-On Mon, Sep 7, 2020 at 10:36 PM Sai Prakash Ranjan
-<saiprakash.ranjan@codeaurora.org> wrote:
->
-> --- a/include/linux/soc/qcom/llcc-qcom.h
-> +++ b/include/linux/soc/qcom/llcc-qcom.h
-> @@ -73,6 +73,7 @@ struct llcc_edac_reg_data {
->   * @bitmap: Bit map to track the active slice ids
->   * @offsets: Pointer to the bank offsets array
->   * @ecc_irq: interrupt for llcc cache error detection and reporting
-> + * @need_llcc_config: check if llcc configuration is required
->   */
->  struct llcc_drv_data {
->         struct regmap *regmap;
-> @@ -85,6 +86,7 @@ struct llcc_drv_data {
->         unsigned long *bitmap;
->         u32 *offsets;
->         int ecc_irq;
-> +       bool need_llcc_config;
+I think this will reduce the usefulness of these tracepoints. But if you really
+want to remove them, I am certainly not strongly attached to them and they were
+meant to be removable anyway. So fine by me :-)
 
-Do you really need to add this into "struct llcc_drv_data"?  You use
-it once at probe time and you could just pass it in to
-qcom_llcc_cfg_program(), or just pass the "struct qcom_llcc_config" to
-qcom_llcc_cfg_program()?  It's not a huge deal, but it would make your
-patch simpler and keep an extra element out of the include file.
+Cheers
 
-In any case:
-
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
+--
+Qais Yousef
