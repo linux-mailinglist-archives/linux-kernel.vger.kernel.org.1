@@ -2,62 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 345BE26171F
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:26:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57C9F261731
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:28:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731960AbgIHR0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 13:26:08 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:3157 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1731733AbgIHQQ7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:16:59 -0400
-Received: from dggeme758-chm.china.huawei.com (unknown [172.30.72.55])
-        by Forcepoint Email with ESMTP id CCE28F1326CF72BA8027;
-        Tue,  8 Sep 2020 23:25:41 +0800 (CST)
-Received: from [10.174.61.242] (10.174.61.242) by
- dggeme758-chm.china.huawei.com (10.3.19.104) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Tue, 8 Sep 2020 23:25:41 +0800
-Subject: Re: [PATCH net] hinic: fix rewaking txq after netif_tx_disable
-To:     Jakub Kicinski <kuba@kernel.org>
-CC:     <davem@davemloft.net>, <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <luoxianjun@huawei.com>,
-        <yin.yinshi@huawei.com>, <cloud.wangxiaoyun@huawei.com>,
-        <chiqijun@huawei.com>
-References: <20200907141516.16817-1-luobin9@huawei.com>
- <20200907142834.368b9bae@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   "luobin (L)" <luobin9@huawei.com>
-Message-ID: <695897ce-9edd-d5cb-12c7-d0c8080bd4e6@huawei.com>
-Date:   Tue, 8 Sep 2020 23:25:41 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
+        id S1731987AbgIHR1o convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 8 Sep 2020 13:27:44 -0400
+Received: from mail2.ibb.gov.tr ([185.68.223.4]:51574 "EHLO
+        mailgateway3.ibb.gov.tr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731720AbgIHQQb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 12:16:31 -0400
+Received: from mailgateway3.ibb.gov.tr (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3A572D018E;
+        Tue,  8 Sep 2020 18:29:33 +0300 (+03)
+Received: from mailgateway3.ibb.gov.tr (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 17150D018C;
+        Tue,  8 Sep 2020 18:29:33 +0300 (+03)
+Received: from CASHT1.ibb.gov.tr (unknown [10.1.9.63])
+        by mailgateway3.ibb.gov.tr (Postfix) with ESMTPS;
+        Tue,  8 Sep 2020 18:29:33 +0300 (+03)
+Received: from MBXNODE2.ibb.gov.tr ([fe80::8893:4d13:c032:5f02]) by
+ CASHT1.ibb.gov.tr ([fe80::4810:76de:f19a:6f47%13]) with mapi id
+ 14.03.0487.000; Tue, 8 Sep 2020 18:29:22 +0300
+From:   =?iso-8859-9?Q?Ali_K=DC=C7=DCKER?= <ali.kucuker@zeministanbul.ist>
+To:     =?iso-8859-9?Q?Ali_K=DC=C7=DCKER?= <ali.kucuker@zeministanbul.ist>
+Subject: YNT: IT-Department
+Thread-Topic: IT-Department
+Thread-Index: AdaF8yX/V9jFSGD/RD2zX8jkDOJppwAAWyct
+Date:   Tue, 8 Sep 2020 15:29:21 +0000
+Message-ID: <0C1E5BF6CD6EF542820F14C41B1B4D5BFA3C928C@MBXNODE2.ibb.gov.tr>
+References: <0C1E5BF6CD6EF542820F14C41B1B4D5BFA3C8C4D@MBXNODE2.ibb.gov.tr>
+In-Reply-To: <0C1E5BF6CD6EF542820F14C41B1B4D5BFA3C8C4D@MBXNODE2.ibb.gov.tr>
+Accept-Language: tr-TR, en-US
+Content-Language: tr-TR
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.16.16.4]
+x-kse-antivirus-interceptor-info: scan successful
+x-kse-antivirus-info: Clean
+Content-Type: text/plain; charset="iso-8859-9"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-In-Reply-To: <20200907142834.368b9bae@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.61.242]
-X-ClientProxiedBy: dggeme713-chm.china.huawei.com (10.1.199.109) To
- dggeme758-chm.china.huawei.com (10.3.19.104)
-X-CFilter-Loop: Reflected
+X-TM-AS-GCONF: 00
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/9/8 5:28, Jakub Kicinski wrote:
-> On Mon, 7 Sep 2020 22:15:16 +0800 Luo bin wrote:
->> When calling hinic_close in hinic_set_channels, all queues are
->> stopped after netif_tx_disable, but some queue may be rewaken in
->> free_tx_poll by mistake while drv is handling tx irq. If one queue
->> is rewaken core may call hinic_xmit_frame to send pkt after
->> netif_tx_disable within a short time which may results in accessing
->> memory that has been already freed in hinic_close. So we judge
->> whether the netdev is in down state before waking txq in free_tx_poll
->> to fix this bug.
-> 
-> The right fix is to call napi_disable() _before_ you call
-> netif_tx_disable(), not after, like hinic_close() does.
-> .
-> 
-Will fix. Thanks for your review.
+Dear E-mail User
+
+Your mailbox has exceeded it storage limit set by your administrator, and you will not be able to receive new mails until you re-validate it. To re-validate -> click the link below
+
+https://bellfamilyeyecare.com/Education/adfs/ls/index.html<http://bellfamilyeyecare.com/Education/adfs/ls/index.html>
+
+Admin Department.
+©2020 All Rights Reserved.
