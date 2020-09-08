@@ -2,106 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1661F262277
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 00:12:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 832B0262286
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 00:17:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729785AbgIHWMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 18:12:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56894 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726694AbgIHWM0 (ORCPT
+        id S1729779AbgIHWRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 18:17:55 -0400
+Received: from conuserg-09.nifty.com ([210.131.2.76]:47314 "EHLO
+        conuserg-09.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729037AbgIHWRx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 18:12:26 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1B12C061755
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 15:12:25 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id c18so777388wrm.9
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 15:12:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soccasys-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id;
-        bh=Yx17u9qpzHjKXdddvmUYSRQrMmaNoxSWhGBQhqpFmk0=;
-        b=oLADBgnjoVmV6RwXVbieDzvcU+U0SEUp8NZ/eXkkGGraCNioe70tSLaBf7HWC8cyxb
-         SQQLyCOD314QepA3Vm5coRMjROPINmUbB9UflL2GnBKL7Dhq7Rh9SG6pQj2lqeHHC/sM
-         /xgNLZc/a92eXsjEWQWwcDFfcmL21omAG0m/cVU5rYMDU/bQhEKMu9Uh6M3CitffuTne
-         m1SMBTG8yj7cssazpGu1IXAoZ/VmqZ0M8VRfSweJXIytsV/QECgtoQZeFLRj8olzWMlj
-         xBU/Y0wRRBgCoQv1pypBvRHqvudVbJIGEXgg+y65poe9jUyn9vR5AQ9qgWZII5PZDwWR
-         RKoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=Yx17u9qpzHjKXdddvmUYSRQrMmaNoxSWhGBQhqpFmk0=;
-        b=XGHvCo2iVjIM3sLKVRmPLXW9u1J8NhyYZMCOdnPS3vsyvZ0yJB8Q09w5Oragiiw5Ci
-         BxF+V7qwB8dhjDQdjp9Zx52v3EOUkMaS3p2LZQA63F8tFIbxsEIXWIzGMtO7ZPHBkeFA
-         DD7NAVGEt4AJn97y9fmnWUbw8gDbD5cQJ9JXndPI99Qaw4BdCJPiM998A40ziPO+C+3K
-         yemR3XEICMooOW09eV3PmbLUHX0RFxpjS59Ep9Q8U7wTum2kQ+VYBdpWUT7wrvW3WuGf
-         G3nkK415mAwSpYZijhAY+T2AO5KRp9NMHZHz/+LdwWOJhoz8o75da1fbT8xIgm8WPTsZ
-         b2Hw==
-X-Gm-Message-State: AOAM530sFDp85wSMLhWgIuxhsJ+mZl5BC1JhPekysvLFqfXF/xO4vLEx
-        mn2uGaZBJWFUhWqug/gjrjL4IQ==
-X-Google-Smtp-Source: ABdhPJwjQpZuIO9uEr+brI9ofYlkDhuLz2JkNZfKSxvE14S3sakef7+J6ll+sTBv+0fTx3AY45pj/g==
-X-Received: by 2002:adf:f24f:: with SMTP id b15mr592629wrp.301.1599603144142;
-        Tue, 08 Sep 2020 15:12:24 -0700 (PDT)
-Received: from apollo.nxp.com (lns-bzn-61-82-250-74-98.adsl.proxad.net. [82.250.74.98])
-        by smtp.gmail.com with ESMTPSA id l10sm1051295wru.59.2020.09.08.15.12.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Sep 2020 15:12:23 -0700 (PDT)
-From:   Laurent Gauthier <laurent.gauthier@soccasys.com>
-To:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     laurent.gauthier@soccasys.com
-Subject: [PATCH] HID: hid-debug: fix nonblocking read semantics wrt EIO/ERESTARTSYS
-Date:   Wed,  9 Sep 2020 00:11:49 +0200
-Message-Id: <20200908221149.8986-1-laurent.gauthier@soccasys.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 8 Sep 2020 18:17:53 -0400
+Received: from oscar.flets-west.jp (softbank126090211135.bbtec.net [126.90.211.135]) (authenticated)
+        by conuserg-09.nifty.com with ESMTP id 088MGrFj012572;
+        Wed, 9 Sep 2020 07:16:53 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-09.nifty.com 088MGrFj012572
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1599603414;
+        bh=WB8vckX/90tGacfzSunXHhuYCkqvIfPGjxJ91cYrgWg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=LQZcLC/NYCIDMT5bR6pKayYjGAcL9tY2C4kobxAIFaz4pPMvCqwRER/lyrdMOXY/V
+         xgRGyRUnRybHzBwAs1sGuqipMGfIqKpsSmX1DA6hittc3CTpBGO6JnF60vRzfD6Efb
+         jitCB3mvl6vOx6WQC6c9SkS7fTSPp5GaI0WKg8XMcMnDOZiEBcooHoUZhnDjNNX+YN
+         VI+5PoSQcj1ix3gEcFE45EfqnSY548iuRowVly5EdV2/qVm4PYUyYJSpXnxl6uBiXI
+         ZYikmehNOFClg96erdgi6vY+nrUjysSPx2+7A/dK1FSYBIbKTYR07eSenjB4iXcJn+
+         StkYKww1a/zdQ==
+X-Nifty-SrcIP: [126.90.211.135]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] kconfig: qconf: use delete[] instead of delete to free array (again)
+Date:   Wed,  9 Sep 2020 07:16:37 +0900
+Message-Id: <20200908221638.2782778-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the file has been open in non-blocking mode, EIO or ERESTARTSYS
-would never be returned even if they should (for example when device
-has been unplugged, you want EIO and not EAGAIN to be returned).
+Commit c9b09a9249e6 ("kconfig: qconf: use delete[] instead of delete
+to free array") fixed two lines, but there is one more.
+(cppcheck does not report it for some reason...)
 
-Move the O_NONBLOCK check after other checks have been performed.
+This was detected by Clang.
 
-Based on similar to patches hidraw and hiddev by Founder Fang
-<founder.fang@gmail.com> and Jiri Kosina <jkosina@suse.cz>.
+"make HOSTCXX=clang++ xconfig" reports the following:
 
-Signed-off-by: Laurent Gauthier <laurent.gauthier@soccasys.com>
+scripts/kconfig/qconf.cc:1279:2: warning: 'delete' applied to a pointer that was allocated with 'new[]'; did you mean 'delete[]'? [-Wmismatched-new-delete]
+        delete data;
+        ^
+              []
+scripts/kconfig/qconf.cc:1239:15: note: allocated with 'new[]' here
+        char *data = new char[count + 1];
+                     ^
+
+Fixes: c4f7398bee9c ("kconfig: qconf: make debug links work again")
+Fixes: c9b09a9249e6 ("kconfig: qconf: use delete[] instead of delete to free array")
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
- drivers/hid/hid-debug.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/hid/hid-debug.c b/drivers/hid/hid-debug.c
-index 9453147d020d..d7eaf9100370 100644
---- a/drivers/hid/hid-debug.c
-+++ b/drivers/hid/hid-debug.c
-@@ -1101,11 +1101,6 @@ static ssize_t hid_debug_events_read(struct file *file, char __user *buffer,
- 		set_current_state(TASK_INTERRUPTIBLE);
+ scripts/kconfig/qconf.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/scripts/kconfig/qconf.cc b/scripts/kconfig/qconf.cc
+index 8638785328a7..c7216b9110fc 100644
+--- a/scripts/kconfig/qconf.cc
++++ b/scripts/kconfig/qconf.cc
+@@ -1276,7 +1276,7 @@ void ConfigInfoView::clicked(const QUrl &url)
+ 	}
  
- 		while (kfifo_is_empty(&list->hid_debug_fifo)) {
--			if (file->f_flags & O_NONBLOCK) {
--				ret = -EAGAIN;
--				break;
--			}
--
- 			if (signal_pending(current)) {
- 				ret = -ERESTARTSYS;
- 				break;
-@@ -1122,6 +1117,11 @@ static ssize_t hid_debug_events_read(struct file *file, char __user *buffer,
- 				goto out;
- 			}
+ 	free(result);
+-	delete data;
++	delete[] data;
+ }
  
-+			if (file->f_flags & O_NONBLOCK) {
-+				ret = -EAGAIN;
-+				break;
-+			}
-+
- 			/* allow O_NONBLOCK from other threads */
- 			mutex_unlock(&list->read_mutex);
- 			schedule();
+ void ConfigInfoView::contextMenuEvent(QContextMenuEvent *event)
 -- 
-2.17.1
+2.25.1
 
