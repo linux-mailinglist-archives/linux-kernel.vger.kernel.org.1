@@ -2,325 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67F15261F2E
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 22:00:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9BA4261ED4
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:56:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732437AbgIHUAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 16:00:21 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:53276 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730207AbgIHPf1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:35:27 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id D444FBCC89A828FA0E43;
-        Tue,  8 Sep 2020 21:32:26 +0800 (CST)
-Received: from localhost (10.174.151.129) by DGGEMS408-HUB.china.huawei.com
- (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Tue, 8 Sep 2020
- 21:32:16 +0800
-From:   Ming Mao <maoming.maoming@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <kvm@vger.kernel.org>,
-        <linux-mm@kvack.org>, <alex.williamson@redhat.com>,
-        <akpm@linux-foundation.org>
-CC:     <cohuck@redhat.com>, <jianjay.zhou@huawei.com>,
-        <weidong.huang@huawei.com>, <peterx@redhat.com>,
-        <aarcange@redhat.com>, <wangyunjian@huawei.com>,
-        Ming Mao <maoming.maoming@huawei.com>
-Subject: [PATCH V4 2/2] vfio: optimized for unpinning pages
-Date:   Tue, 8 Sep 2020 21:32:04 +0800
-Message-ID: <20200908133204.1338-3-maoming.maoming@huawei.com>
-X-Mailer: git-send-email 2.26.2.windows.1
-In-Reply-To: <20200908133204.1338-1-maoming.maoming@huawei.com>
-References: <20200908133204.1338-1-maoming.maoming@huawei.com>
+        id S1731199AbgIHTz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 15:55:58 -0400
+Received: from mga03.intel.com ([134.134.136.65]:62851 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730514AbgIHPgu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 11:36:50 -0400
+IronPort-SDR: qGsZvNmhK/P07z8Qepcy3UyVgL6yrvHChDJdFvGyEwh/wSD8x48WMss9ofrvM7VCvbKwpjmafq
+ xllwt4YsZ7nA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9737"; a="158159919"
+X-IronPort-AV: E=Sophos;i="5.76,405,1592895600"; 
+   d="scan'208";a="158159919"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2020 07:21:33 -0700
+IronPort-SDR: dun0+JlDEOAUH4fU6c+UUidwT3ben5QpCr8Dy5TTXNwHsxPxc5wQgdEhyKGLF6GBS0K1ukaqMF
+ ZhDFW/lBiIXA==
+X-IronPort-AV: E=Sophos;i="5.76,406,1592895600"; 
+   d="scan'208";a="448802350"
+Received: from mgarber-mobl1.amr.corp.intel.com (HELO [10.212.179.134]) ([10.212.179.134])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2020 07:21:32 -0700
+Subject: Re: [PATCH v2 2/3] soundwire: SDCA: add helper macro to access
+ controls
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     alsa-devel@alsa-project.org, tiwai@suse.de, broonie@kernel.org,
+        gregkh@linuxfoundation.org,
+        Bard liao <yung-chuan.liao@linux.intel.com>,
+        Rander Wang <rander.wang@linux.intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Sanyog Kale <sanyog.r.kale@intel.com>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20200901162225.33343-1-pierre-louis.bossart@linux.intel.com>
+ <20200901162225.33343-3-pierre-louis.bossart@linux.intel.com>
+ <20200904050244.GT2639@vkoul-mobl>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <f35a0ae7-2779-0c69-9ef3-0d0e298888ac@linux.intel.com>
+Date:   Tue, 8 Sep 2020 08:33:11 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.151.129]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20200904050244.GT2639@vkoul-mobl>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pages are unpinned one by one in unpin_user_pages_dirty_lock().
-We add a new API unpin_user_hugetlb_pages_dirty_lock() which deletes
-the for loop to optimize this.
-If we want to unpin the hugetlb pages, all work can be done by a single
-operation to the head page in this API.
+Thanks for the review Vinod,
 
-Signed-off-by: Ming Mao <maoming.maoming@huawei.com>
----
- drivers/vfio/vfio_iommu_type1.c | 90 +++++++++++++++++++++++++++-----
- include/linux/mm.h              |  3 ++
- mm/gup.c                        | 91 +++++++++++++++++++++++++++++++++
- 3 files changed, 172 insertions(+), 12 deletions(-)
+> This is good, thanks for adding it in changelog. Can you also add this
+> description to Documentation (that can come as an individual patch),
 
-diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
-index 8c1dc5136..44fc5f16c 100644
---- a/drivers/vfio/vfio_iommu_type1.c
-+++ b/drivers/vfio/vfio_iommu_type1.c
-@@ -609,6 +609,26 @@ static long hugetlb_page_vaddr_get_pfn(struct mm_struct *mm, unsigned long vaddr
- 	return ret;
- }
- 
-+/*
-+ * put pfns for a hugetlb page
-+ * @start: the PAGE_SIZE-page we start to put,can be any page in this hugetlb page
-+ * @npages: the number of PAGE_SIZE-pages to put
-+ * @prot: IOMMU_READ/WRITE
-+ */
-+static int hugetlb_put_pfn(unsigned long start, unsigned long npages, int prot)
-+{
-+	struct page *page;
-+
-+	if (!pfn_valid(start))
-+		return -EFAULT;
-+
-+	page = pfn_to_page(start);
-+	if (!page || !PageHuge(page))
-+		return -EINVAL;
-+
-+	return unpin_user_hugetlb_pages_dirty_lock(page, npages, prot & IOMMU_WRITE);
-+}
-+
- static long vfio_pin_hugetlb_pages_remote(struct vfio_dma *dma, unsigned long vaddr,
- 				  long npage, unsigned long *pfn_base,
- 				  unsigned long limit)
-@@ -616,7 +636,7 @@ static long vfio_pin_hugetlb_pages_remote(struct vfio_dma *dma, unsigned long va
- 	unsigned long pfn = 0;
- 	long ret, pinned = 0, lock_acct = 0;
- 	dma_addr_t iova = vaddr - dma->vaddr + dma->iova;
--	long pinned_loop, i;
-+	long pinned_loop;
- 
- 	/* This code path is only user initiated */
- 	if (!current->mm)
-@@ -674,8 +694,7 @@ static long vfio_pin_hugetlb_pages_remote(struct vfio_dma *dma, unsigned long va
- 
- 		if (!dma->lock_cap &&
- 		    current->mm->locked_vm + lock_acct > limit) {
--			for (i = 0; i < pinned_loop; i++)
--				put_pfn(pfn++, dma->prot);
-+			hugetlb_put_pfn(pfn, pinned_loop, dma->prot);
- 			pr_warn("%s: RLIMIT_MEMLOCK (%ld) exceeded\n",
- 				__func__, limit << PAGE_SHIFT);
- 			ret = -ENOMEM;
-@@ -695,6 +714,40 @@ static long vfio_pin_hugetlb_pages_remote(struct vfio_dma *dma, unsigned long va
- 	return pinned;
- }
- 
-+static long vfio_unpin_hugetlb_pages_remote(struct vfio_dma *dma, dma_addr_t iova,
-+					    unsigned long pfn, long npage,
-+					    bool do_accounting)
-+{
-+	long unlocked = 0, locked = 0;
-+	long i, unpinned;
-+
-+	for (i = 0; i < npage; i += unpinned, iova += unpinned * PAGE_SIZE) {
-+		if (!is_hugetlb_page(pfn))
-+			goto slow_path;
-+
-+		unpinned = hugetlb_put_pfn(pfn, npage - i, dma->prot);
-+		if (unpinned > 0) {
-+			pfn += unpinned;
-+			unlocked += unpinned;
-+			locked += hugetlb_page_get_externally_pinned_num(dma, pfn, unpinned);
-+		} else
-+			goto slow_path;
-+	}
-+slow_path:
-+	for (; i < npage; i++, iova += PAGE_SIZE) {
-+		if (put_pfn(pfn++, dma->prot)) {
-+			unlocked++;
-+			if (vfio_find_vpfn(dma, iova))
-+				locked++;
-+		}
-+	}
-+
-+	if (do_accounting)
-+		vfio_lock_acct(dma, locked - unlocked, true);
-+
-+	return unlocked;
-+}
-+
- /*
-  * Attempt to pin pages.  We really don't want to track all the pfns and
-  * the iommu can only map chunks of consecutive pfns anyway, so get the
-@@ -993,11 +1046,18 @@ static long vfio_sync_unpin(struct vfio_dma *dma, struct vfio_domain *domain,
- 	iommu_tlb_sync(domain->domain, iotlb_gather);
- 
- 	list_for_each_entry_safe(entry, next, regions, list) {
--		unlocked += vfio_unpin_pages_remote(dma,
--						    entry->iova,
--						    entry->phys >> PAGE_SHIFT,
--						    entry->len >> PAGE_SHIFT,
--						    false);
-+		if (is_hugetlb_page(entry->phys >> PAGE_SHIFT))
-+			unlocked += vfio_unpin_hugetlb_pages_remote(dma,
-+								    entry->iova,
-+								    entry->phys >> PAGE_SHIFT,
-+								    entry->len >> PAGE_SHIFT,
-+								    false);
-+		else
-+			unlocked += vfio_unpin_pages_remote(dma,
-+							    entry->iova,
-+							    entry->phys >> PAGE_SHIFT,
-+							    entry->len >> PAGE_SHIFT,
-+							    false);
- 		list_del(&entry->list);
- 		kfree(entry);
- 	}
-@@ -1064,10 +1124,16 @@ static size_t unmap_unpin_slow(struct vfio_domain *domain,
- 	size_t unmapped = iommu_unmap(domain->domain, *iova, len);
- 
- 	if (unmapped) {
--		*unlocked += vfio_unpin_pages_remote(dma, *iova,
--						     phys >> PAGE_SHIFT,
--						     unmapped >> PAGE_SHIFT,
--						     false);
-+		if (is_hugetlb_page(phys >> PAGE_SHIFT))
-+			*unlocked += vfio_unpin_hugetlb_pages_remote(dma, *iova,
-+								     phys >> PAGE_SHIFT,
-+								     unmapped >> PAGE_SHIFT,
-+								     false);
-+		else
-+			*unlocked += vfio_unpin_pages_remote(dma, *iova,
-+							     phys >> PAGE_SHIFT,
-+							     unmapped >> PAGE_SHIFT,
-+							     false);
- 		*iova += unmapped;
- 		cond_resched();
- 	}
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index dc7b87310..a425135d0 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -1202,8 +1202,11 @@ static inline void put_page(struct page *page)
- #define GUP_PIN_COUNTING_BIAS (1U << 10)
- 
- void unpin_user_page(struct page *page);
-+int unpin_user_hugetlb_page(struct page *page, unsigned long npages);
- void unpin_user_pages_dirty_lock(struct page **pages, unsigned long npages,
- 				 bool make_dirty);
-+int unpin_user_hugetlb_pages_dirty_lock(struct page *pages, unsigned long npages,
-+					bool make_dirty);
- void unpin_user_pages(struct page **pages, unsigned long npages);
- 
- /**
-diff --git a/mm/gup.c b/mm/gup.c
-index 6f47697f8..14ee321eb 100644
---- a/mm/gup.c
-+++ b/mm/gup.c
-@@ -205,11 +205,42 @@ static bool __unpin_devmap_managed_user_page(struct page *page)
- 
- 	return true;
- }
-+
-+static bool __unpin_devmap_managed_user_hugetlb_page(struct page *page, unsigned long npages)
-+{
-+	int count;
-+	struct page *head = compound_head(page);
-+
-+	if (!page_is_devmap_managed(head))
-+		return false;
-+
-+	hpage_pincount_sub(head, npages);
-+
-+	count = page_ref_sub_return(head, npages);
-+
-+	mod_node_page_state(page_pgdat(head), NR_FOLL_PIN_RELEASED, npages);
-+	/*
-+	 * devmap page refcounts are 1-based, rather than 0-based: if
-+	 * refcount is 1, then the page is free and the refcount is
-+	 * stable because nobody holds a reference on the page.
-+	 */
-+	if (count == 1)
-+		free_devmap_managed_page(head);
-+	else if (!count)
-+		__put_page(head);
-+
-+	return true;
-+}
- #else
- static bool __unpin_devmap_managed_user_page(struct page *page)
- {
- 	return false;
- }
-+
-+static bool __unpin_devmap_managed_user_hugetlb_page(struct page *page, unsigned long npages)
-+{
-+	return false;
-+}
- #endif /* CONFIG_DEV_PAGEMAP_OPS */
- 
- /**
-@@ -248,6 +279,66 @@ void unpin_user_page(struct page *page)
- }
- EXPORT_SYMBOL(unpin_user_page);
- 
-+int unpin_user_hugetlb_page(struct page *page, unsigned long npages)
-+{
-+	struct page *head;
-+	long page_offset, unpinned, hugetlb_npages;
-+
-+	if (!page || !PageHuge(page))
-+		return -EINVAL;
-+
-+	if (!npages)
-+		return 0;
-+
-+	head = compound_head(page);
-+	hugetlb_npages = 1UL << compound_order(head);
-+	/* the offset of this subpage in the hugetlb page */
-+	page_offset = page_to_pfn(page) & (hugetlb_npages - 1);
-+	/* unpinned > 0, because page_offset is always less than hugetlb_npages */
-+	unpinned = min_t(long, npages, (hugetlb_npages - page_offset));
-+
-+	if (__unpin_devmap_managed_user_hugetlb_page(page, unpinned))
-+		return unpinned;
-+
-+	hpage_pincount_sub(head, unpinned);
-+
-+	if (page_ref_sub_and_test(head, unpinned))
-+		__put_page(head);
-+	mod_node_page_state(page_pgdat(head), NR_FOLL_PIN_RELEASED, unpinned);
-+
-+	return unpinned;
-+}
-+EXPORT_SYMBOL(unpin_user_hugetlb_page);
-+
-+/*
-+ * @page:the first subpage to unpin in a hugetlb page
-+ * @npages: number of pages to unpin
-+ * @make_dirty: whether to mark the pages dirty
-+ *
-+ * Nearly the same as unpin_user_pages_dirty_lock
-+ * If npages is 0, returns 0.
-+ * If npages is >0, returns the number of
-+ * pages unpinned. And this may be less than npages.
-+ */
-+int unpin_user_hugetlb_pages_dirty_lock(struct page *page, unsigned long npages,
-+					bool make_dirty)
-+{
-+	struct page *head;
-+
-+	if (!page || !PageHuge(page))
-+		return -EINVAL;
-+
-+	if (!npages)
-+		return 0;
-+
-+	head = compound_head(page);
-+	if (make_dirty && !PageDirty(head))
-+		set_page_dirty_lock(head);
-+
-+	return unpin_user_hugetlb_page(page, npages);
-+}
-+EXPORT_SYMBOL(unpin_user_hugetlb_pages_dirty_lock);
-+
- /**
-  * unpin_user_pages_dirty_lock() - release and optionally dirty gup-pinned pages
-  * @pages:  array of pages to be maybe marked dirty, and definitely released.
--- 
-2.23.0
+ok
 
+>> +/*
+>> + * v1.2 device - SDCA address mapping
+>> + *
+>> + * Spec definition
+>> + *	Bits		Contents
+>> + *	31		0 (required by addressing range)
+>> + *	30:26		0b10000 (Control Prefix)
+> 
+> So this is for 30:26
+
+I don't get the comment, sorry.
+
+> 
+>> + *	25		0 (Reserved)
+>> + *	24:22		Function Number [2:0]
+>> + *	21		Entity[6]
+>> + *	20:19		Control Selector[5:4]
+>> + *	18		0 (Reserved)
+>> + *	17:15		Control Number[5:3]
+>> + *	14		Next
+>> + *	13		MBQ
+>> + *	12:7		Entity[5:0]
+>> + *	6:3		Control Selector[3:0]
+>> + *	2:0		Control Number[2:0]
+>> + */
+>> +
+>> +#define SDW_SDCA_CTL(fun, ent, ctl, ch)						\
+>> +	(BIT(30)							|	\
+> 
+> Programmatically this is fine, but then since we are defining for the
+> description above, IMO it would actually make sense for this to be defined
+> as FIELD_PREP:
+> 
+>          FIELD_PREP(GENMASK(30, 26), 1)
+> 
+> or better
+> 
+>          u32_encode_bits(GENMASK(30, 26), 1)
+> 
+>> +	FIELD_PREP(GENMASK(24, 22), FIELD_GET(GENMASK(2, 0), (fun)))	|	\
+> 
+> Why not use u32_encode_bits(GENMASK(24, 22), (fun)) instead for this and
+> below?
+
+Because your comment for the v1 review was to use FIELD_PREP/FIELD_GET, 
+and your other patches for bitfield access only use FIELD_PREP/FIELD_GET.
+
+I really don't care about which macro is used but it wouldn't hurt to 
+have some level of consistency between different parts of the code? Why 
+not use FIELD_PREP/GET everywhere?
+
+>> +	FIELD_PREP(BIT(21), FIELD_GET(BIT(6), (ent)))			|	\
+>> +	FIELD_PREP(GENMASK(20, 19), FIELD_GET(GENMASK(5, 4), (ctl)))	|	\
+>> +	FIELD_PREP(GENMASK(17, 15), FIELD_GET(GENMASK(5, 3), (ch)))	|	\
+>> +	FIELD_PREP(GENMASK(12, 7), FIELD_GET(GENMASK(5, 0), (ent)))	|	\
+>> +	FIELD_PREP(GENMASK(6, 3), FIELD_GET(GENMASK(3, 0), (ctl)))	|	\
+>> +	FIELD_PREP(GENMASK(2, 0), FIELD_GET(GENMASK(2, 0), (ch))))
+> 
+> Also, can we rather have a nice function for this, that would look much
+> cleaner
+
+I am not sure what would be cleaner but fine.
+
+> And while at it, consider defining masks for various fields rather than
+> using numbers in GENMASK() above, that would look better, be more
+> readable and people can reuse it.
+
+Actually on this one I disagree. These fields are not intended to be 
+used by anyone, the goal is precisely to hide them behind regmap, and 
+the use of raw numbers makes it easier to cross-check the documentation 
+and the code. Adding a separate set of definitions would not increase 
+readability.
 
