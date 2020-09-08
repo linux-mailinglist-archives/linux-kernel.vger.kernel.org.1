@@ -2,333 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38E82260D12
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 10:08:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6554D260D1F
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 10:12:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729662AbgIHIIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 04:08:32 -0400
-Received: from lb2-smtp-cloud7.xs4all.net ([194.109.24.28]:43907 "EHLO
-        lb2-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729257AbgIHII1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 04:08:27 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud7.xs4all.net with ESMTPA
-        id FYftkWAFhMeQuFYfukf7Yu; Tue, 08 Sep 2020 10:08:23 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
-        t=1599552503; bh=fDB/eNTH61vE0ae4/CUPq1sZuNBF3gCVAocH+ZB19ao=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=CKkc/0zCo9p9bpnWYyfKcYbISisfuBDsukeBSF8Iqy8ha5pYuhhvS/oC8edngR8C2
-         zkYR2F1472xvH24gfTPgTW91XhY1EDgXIsX1Pfb+IMDTWHkpUSfXq9ZRWxy3F9iTc6
-         Ua8TsIfGzqDwZboq7JRUEZ+ndhtKY8U2mWQZgjAdqpL7dv9eilbxWqGzWLNKVI4G32
-         lx8zluEB5enPQDO3WrCAqdPHjP0IFQ+2TdHqMx1XRJVY0dMPwxUND+MWSMsGk96sQY
-         M+eEobDz3Q4mczLpPimDxw7vLczqUN7X0uuuXB2ytueo7rj+dTKOehUExc5qSTFRQS
-         LYa3O6UAK4e5g==
-Subject: Re: [PATCH 5/5] drm_dp_cec: add the implementation of MST support
-To:     Sam McNally <sammc@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        dri-devel@lists.freedesktop.org
-References: <20200901162133.1.I8693156f555875e5c8342e86ab37ce968dfdd277@changeid>
- <20200901162133.5.I900b1b80709b7632a47d0ddb4cd375b4a3616c9e@changeid>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <bb5a9165-4605-f9da-81df-92278b393a30@xs4all.nl>
-Date:   Tue, 8 Sep 2020 10:08:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1729691AbgIHIMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 04:12:31 -0400
+Received: from foss.arm.com ([217.140.110.172]:49900 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728479AbgIHIMW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 04:12:22 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A0ED41045;
+        Tue,  8 Sep 2020 01:12:21 -0700 (PDT)
+Received: from [10.163.71.211] (unknown [10.163.71.211])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C8B523F66E;
+        Tue,  8 Sep 2020 01:12:18 -0700 (PDT)
+Subject: Re: [PATCH V3] arm64/cpuinfo: Define HWCAP name arrays per their
+ actual bit definitions
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, catalin.marinas@arm.com,
+        Mark Brown <broonie@kernel.org>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-kernel@vger.kernel.org
+References: <1597665863-564-1-git-send-email-anshuman.khandual@arm.com>
+ <20200907121611.GA12237@willie-the-truck>
+ <ae17dbf4-c3e2-c853-13e3-ab38332a7beb@arm.com>
+ <20200908074059.GA14790@willie-the-truck>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <2daa3ea9-b9f0-3549-6458-158410576dff@arm.com>
+Date:   Tue, 8 Sep 2020 13:41:46 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-In-Reply-To: <20200901162133.5.I900b1b80709b7632a47d0ddb4cd375b4a3616c9e@changeid>
+In-Reply-To: <20200908074059.GA14790@willie-the-truck>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4wfDl+SV8qZIVr8lk2wCn5KDMq1HnX+sjVNoLSeFz/CRmaiqOFE5CLsUP0XlXnm//7d1aQREYp61ghVLMghC1BSkit4EV1SyngXgNwRbtHQatlQMO7jKLg
- n5DLrpC82x64AiqiOeKjdle2OKdQae+tDnqCqy6SyD00CpIFPEgK/s6J5SJf8cebm8hIuuJLF9dgLYkOj8yMLHepAbNLkoU79TY1XsBHEqekhxJQIWJyN8KX
- EzrDwJTR7oMhtagyf4ClVRG958XR3w4z9NhJvXaBxwmHt9JQjVW5L/3xJ08wXjSUs3IqVNHNxpq0LicFReP1TEy+up2fXh9cmEHD7S6tJtZUSnZkmOEEPCDF
- G6aAgsiSigAKt6jVQhbOkyO195Fw7IYVgnC/7XgvUhh8Ej/0al0NbGIfEcZaTDesXeOzIgB3jshwDwinamsGHGd6FjYbAg==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sam,
 
-On 01/09/2020 08:22, Sam McNally wrote:
-> With DP v2.0 errata E5, CEC tunneling can be supported through an MST
-> topology.
 
-Oh wow, this is finally supported in the spec. Very nice to see this.
-Also very nice to see that my old experimental patches attempting to
-support CEC on MST didn't go to waste!
+On 09/08/2020 01:11 PM, Will Deacon wrote:
+> On Tue, Sep 08, 2020 at 10:43:12AM +0530, Anshuman Khandual wrote:
+>>
+>>
+>> On 09/07/2020 05:46 PM, Will Deacon wrote:
+>>> On Mon, Aug 17, 2020 at 05:34:23PM +0530, Anshuman Khandual wrote:
+>>>> HWCAP name arrays (hwcap_str, compat_hwcap_str, compat_hwcap2_str) that are
+>>>> scanned for /proc/cpuinfo are detached from their bit definitions making it
+>>>> vulnerable and difficult to correlate. It is also bit problematic because
+>>>> during /proc/cpuinfo dump these arrays get traversed sequentially assuming
+>>>> they reflect and match actual HWCAP bit sequence, to test various features
+>>>> for a given CPU. This redefines name arrays per their HWCAP bit definitions
+>>>> . It also warns after detecting any feature which is not expected on arm64.
+>>>>
+>>>> Cc: Catalin Marinas <catalin.marinas@arm.com>
+>>>> Cc: Will Deacon <will@kernel.org>
+>>>> Cc: Mark Brown <broonie@kernel.org>
+>>>> Cc: Dave Martin <Dave.Martin@arm.com>
+>>>> Cc: Ard Biesheuvel <ardb@kernel.org>
+>>>> Cc: Mark Rutland <mark.rutland@arm.com>
+>>>> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+>>>> Cc: linux-arm-kernel@lists.infradead.org
+>>>> Cc: linux-kernel@vger.kernel.org
+>>>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>>>> ---
+>>>> This applies on 5.9-rc1
+>>>>
+>>>> Mark, since the patch has changed I have dropped your Acked-by: tag. Are you
+>>>> happy to give a new one ?
+>>>>
+>>>> Changes in V3:
+>>>>
+>>>> - Moved name arrays to (arch/arm64/kernel/cpuinfo.c) to prevent a build warning
+>>>> - Replaced string values with NULL for all compat features not possible on arm64
+>>>> - Changed compat_hwcap_str[] iteration on size as some NULL values are expected
+>>>> - Warn once after detecting any feature on arm64 that is not expected
+>>>>
+>>>> Changes in V2: (https://patchwork.kernel.org/patch/11533755/)
+>>>>
+>>>> - Defined COMPAT_KERNEL_HWCAP[2] and updated the name arrays per Mark
+>>>> - Updated the commit message as required
+>>>>
+>>>> Changes in V1: (https://patchwork.kernel.org/patch/11532945/)
+>>>>
+>>>>  arch/arm64/include/asm/hwcap.h |   9 +++
+>>>>  arch/arm64/kernel/cpuinfo.c    | 172 ++++++++++++++++++++++-------------------
+>>>>  2 files changed, 100 insertions(+), 81 deletions(-)
+>>>
+>>> [...]
+>>>
+>>>> +	[KERNEL_HWCAP_FP]		= "fp",
+>>>> +	[KERNEL_HWCAP_ASIMD]		= "asimd",
+>>>> +	[KERNEL_HWCAP_EVTSTRM]		= "evtstrm",
+>>>> +	[KERNEL_HWCAP_AES]		= "aes",
+>>>
+>>> It would be nice if the cap and the string were generated by the same
+>>> macro, along the lines of:
+>>>
+>>> #define KERNEL_HWCAP(c)	[KERNEL_HWCAP_##c] = #c,
+>>>
+>>> Does making the constants mixed case break anything, or is it just really
+>>> churny to do?
+>>
+>> Currently all existing HWCAP feature strings are lower case, above change
+>> will make them into upper case instead. I could not find a method to force
+>> convert #c into lower case constant strings in the macro definition. Would
+>> not changing the HWCAP string case here, break user interface ?
+> 
+> Yes, we can't change the user-visible strings, but what's wrong with
+> having e.g. KERNEL_HWCAP_fp instead of KERNEL_HWCAP_FP?
 
-Do you know of any MST HW that supports this? I'd love to experiment
-with this.
-
-Regards,
-
-	Hans
-
-> 
-> There are some minor differences for CEC tunneling through an MST
-> topology compared to CEC tunneling to an SST port:
-> - CEC IRQs are delivered via a sink event notify message
-> - CEC-related DPCD registers are accessed via remote DPCD reads and
->   writes.
-> 
-> This results in the MST implementation diverging from the existing SST
-> implementation:
-> - sink event notify messages with CEC_IRQ ID set indicate CEC IRQ rather
->   than ESI1
-> - setting edid and handling CEC IRQs, which can be triggered from
->   contexts where locks held preclude HPD handling, are deferred to avoid
->   remote DPCD access which would block until HPD handling is performed
->   or a timeout
-> 
-> Register and unregister for all MST connectors, ensuring their
-> drm_dp_aux_cec struct won't be accessed uninitialized.
-> 
-> Signed-off-by: Sam McNally <sammc@chromium.org>
-> ---
-> 
->  drivers/gpu/drm/drm_dp_cec.c          | 67 +++++++++++++++++++++++++--
->  drivers/gpu/drm/drm_dp_mst_topology.c | 24 ++++++++++
->  include/drm/drm_dp_helper.h           |  4 ++
->  3 files changed, 90 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/drm_dp_cec.c b/drivers/gpu/drm/drm_dp_cec.c
-> index 04ab7b88055c..9f6aeaa27f00 100644
-> --- a/drivers/gpu/drm/drm_dp_cec.c
-> +++ b/drivers/gpu/drm/drm_dp_cec.c
-> @@ -249,6 +249,10 @@ void drm_dp_cec_irq(struct drm_dp_aux *aux)
->  	if (!aux->transfer)
->  		return;
->  
-> +	if (aux->cec.is_mst) {
-> +		schedule_work(&aux->cec.mst_irq_work);
-> +		return;
-> +	}
->  	mutex_lock(&aux->cec.lock);
->  	if (!aux->cec.adap)
->  		goto unlock;
-> @@ -277,6 +281,24 @@ static bool drm_dp_cec_cap(struct drm_dp_aux *aux, u8 *cec_cap)
->  	return true;
->  }
->  
-> +static void drm_dp_cec_mst_irq_work(struct work_struct *work)
-> +{
-> +	struct drm_dp_aux *aux = container_of(work, struct drm_dp_aux,
-> +					      cec.mst_irq_work);
-> +	struct drm_dp_mst_port *port =
-> +		container_of(aux, struct drm_dp_mst_port, aux);
-> +
-> +	port = drm_dp_mst_topology_get_port_validated(port->mgr, port);
-> +	if (!port)
-> +		return;
-> +	mutex_lock(&aux->cec.lock);
-> +	if (aux->cec.adap)
-> +		drm_dp_cec_handle_irq(aux);
-> +
-> +	mutex_unlock(&aux->cec.lock);
-> +	drm_dp_mst_topology_put_port(port);
-> +}
-> +
->  /*
->   * Called if the HPD was low for more than drm_dp_cec_unregister_delay
->   * seconds. This unregisters the CEC adapter.
-> @@ -298,7 +320,8 @@ static void drm_dp_cec_unregister_work(struct work_struct *work)
->   * were unchanged and just update the CEC physical address. Otherwise
->   * unregister the old CEC adapter and create a new one.
->   */
-> -void drm_dp_cec_set_edid(struct drm_dp_aux *aux, const struct edid *edid)
-> +static void drm_dp_cec_handle_set_edid(struct drm_dp_aux *aux,
-> +				       const struct edid *edid)
->  {
->  	struct drm_connector *connector = aux->cec.connector;
->  	u32 cec_caps = CEC_CAP_DEFAULTS | CEC_CAP_NEEDS_HPD |
-> @@ -307,10 +330,6 @@ void drm_dp_cec_set_edid(struct drm_dp_aux *aux, const struct edid *edid)
->  	unsigned int num_las = 1;
->  	u8 cap;
->  
-> -	/* No transfer function was set, so not a DP connector */
-> -	if (!aux->transfer)
-> -		return;
-> -
->  #ifndef CONFIG_MEDIA_CEC_RC
->  	/*
->  	 * CEC_CAP_RC is part of CEC_CAP_DEFAULTS, but it is stripped by
-> @@ -321,6 +340,7 @@ void drm_dp_cec_set_edid(struct drm_dp_aux *aux, const struct edid *edid)
->  	 */
->  	cec_caps &= ~CEC_CAP_RC;
->  #endif
-> +	cancel_work_sync(&aux->cec.mst_irq_work);
->  	cancel_delayed_work_sync(&aux->cec.unregister_work);
->  
->  	mutex_lock(&aux->cec.lock);
-> @@ -375,6 +395,18 @@ void drm_dp_cec_set_edid(struct drm_dp_aux *aux, const struct edid *edid)
->  	}
->  	mutex_unlock(&aux->cec.lock);
->  }
-> +
-> +void drm_dp_cec_set_edid(struct drm_dp_aux *aux, const struct edid *edid)
-> +{
-> +	/* No transfer function was set, so not a DP connector */
-> +	if (!aux->transfer)
-> +		return;
-> +
-> +	if (aux->cec.is_mst)
-> +		schedule_work(&aux->cec.mst_set_edid_work);
-> +	else
-> +		drm_dp_cec_handle_set_edid(aux, edid);
-> +}
->  EXPORT_SYMBOL(drm_dp_cec_set_edid);
->  
->  /*
-> @@ -393,6 +425,8 @@ void drm_dp_cec_unset_edid(struct drm_dp_aux *aux)
->  		goto unlock;
->  
->  	cec_phys_addr_invalidate(aux->cec.adap);
-> +	cancel_work_sync(&aux->cec.mst_irq_work);
-> +
->  	/*
->  	 * We're done if we want to keep the CEC device
->  	 * (drm_dp_cec_unregister_delay is >= NEVER_UNREG_DELAY) or if the
-> @@ -414,6 +448,25 @@ void drm_dp_cec_unset_edid(struct drm_dp_aux *aux)
->  }
->  EXPORT_SYMBOL(drm_dp_cec_unset_edid);
->  
-> +static void drm_dp_cec_mst_set_edid_work(struct work_struct *work)
-> +{
-> +	struct drm_dp_aux *aux =
-> +		container_of(work, struct drm_dp_aux, cec.mst_set_edid_work);
-> +	struct drm_dp_mst_port *port =
-> +		container_of(aux, struct drm_dp_mst_port, aux);
-> +	struct edid *edid = NULL;
-> +
-> +	port = drm_dp_mst_topology_get_port_validated(port->mgr, port);
-> +	if (!port)
-> +		return;
-> +
-> +	edid = drm_get_edid(port->connector, &port->aux.ddc);
-> +
-> +	drm_dp_cec_handle_set_edid(aux, edid);
-> +
-> +	drm_dp_mst_topology_put_port(port);
-> +}
-> +
->  /**
->   * drm_dp_cec_register_connector() - register a new connector
->   * @aux: DisplayPort AUX channel
-> @@ -435,6 +488,8 @@ void drm_dp_cec_register_connector(struct drm_dp_aux *aux,
->  	aux->cec.is_mst = is_mst;
->  	INIT_DELAYED_WORK(&aux->cec.unregister_work,
->  			  drm_dp_cec_unregister_work);
-> +	INIT_WORK(&aux->cec.mst_irq_work, drm_dp_cec_mst_irq_work);
-> +	INIT_WORK(&aux->cec.mst_set_edid_work, drm_dp_cec_mst_set_edid_work);
->  }
->  EXPORT_SYMBOL(drm_dp_cec_register_connector);
->  
-> @@ -444,6 +499,8 @@ EXPORT_SYMBOL(drm_dp_cec_register_connector);
->   */
->  void drm_dp_cec_unregister_connector(struct drm_dp_aux *aux)
->  {
-> +	cancel_work_sync(&aux->cec.mst_irq_work);
-> +	cancel_work_sync(&aux->cec.mst_set_edid_work);
->  	if (!aux->cec.adap)
->  		return;
->  	cancel_delayed_work_sync(&aux->cec.unregister_work);
-> diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c b/drivers/gpu/drm/drm_dp_mst_topology.c
-> index c783a2a1c114..fd9430d88fd6 100644
-> --- a/drivers/gpu/drm/drm_dp_mst_topology.c
-> +++ b/drivers/gpu/drm/drm_dp_mst_topology.c
-> @@ -2183,6 +2183,8 @@ static void build_mst_prop_path(const struct drm_dp_mst_branch *mstb,
->  int drm_dp_mst_connector_late_register(struct drm_connector *connector,
->  				       struct drm_dp_mst_port *port)
->  {
-> +	drm_dp_cec_register_connector(&port->aux, connector, true);
-> +
->  	DRM_DEBUG_KMS("registering %s remote bus for %s\n",
->  		      port->aux.name, connector->kdev->kobj.name);
->  
-> @@ -2206,6 +2208,8 @@ void drm_dp_mst_connector_early_unregister(struct drm_connector *connector,
->  	DRM_DEBUG_KMS("unregistering %s remote bus for %s\n",
->  		      port->aux.name, connector->kdev->kobj.name);
->  	drm_dp_aux_unregister_devnode(&port->aux);
-> +
-> +	drm_dp_cec_unregister_connector(&port->aux);
->  }
->  EXPORT_SYMBOL(drm_dp_mst_connector_early_unregister);
->  
-> @@ -2515,6 +2519,21 @@ drm_dp_mst_handle_conn_stat(struct drm_dp_mst_branch *mstb,
->  		queue_work(system_long_wq, &mstb->mgr->work);
->  }
->  
-> +static void
-> +drm_dp_mst_handle_sink_event(struct drm_dp_mst_branch *mstb,
-> +			    struct drm_dp_sink_event_notify *sink_event)
-> +{
-> +	struct drm_dp_mst_port *port;
-> +
-> +	if (sink_event->event_id & DP_SINK_EVENT_CEC_IRQ_EVENT) {
-> +		port = drm_dp_get_port(mstb, sink_event->port_number);
-> +		if (port) {
-> +			drm_dp_cec_irq(&port->aux);
-> +			drm_dp_mst_topology_put_port(port);
-> +		}
-> +	}
-> +}
-> +
->  static struct drm_dp_mst_branch *drm_dp_get_mst_branch_device(struct drm_dp_mst_topology_mgr *mgr,
->  							       u8 lct, u8 *rad)
->  {
-> @@ -3954,6 +3973,8 @@ drm_dp_mst_process_up_req(struct drm_dp_mst_topology_mgr *mgr,
->  	if (msg->req_type == DP_CONNECTION_STATUS_NOTIFY) {
->  		drm_dp_mst_handle_conn_stat(mstb, &msg->u.conn_stat);
->  		hotplug = true;
-> +	} else if (msg->req_type == DP_SINK_EVENT_NOTIFY) {
-> +		drm_dp_mst_handle_sink_event(mstb, &msg->u.sink_event);
->  	}
->  
->  	drm_dp_mst_topology_put_mstb(mstb);
-> @@ -4147,6 +4168,8 @@ drm_dp_mst_detect_port(struct drm_connector *connector,
->  		break;
->  	}
->  out:
-> +	if (ret != connector_status_connected)
-> +		drm_dp_cec_unset_edid(&port->aux);
->  	drm_dp_mst_topology_put_port(port);
->  	return ret;
->  }
-> @@ -4177,6 +4200,7 @@ struct edid *drm_dp_mst_get_edid(struct drm_connector *connector, struct drm_dp_
->  		edid = drm_get_edid(connector, &port->aux.ddc);
->  	}
->  	port->has_audio = drm_detect_monitor_audio(edid);
-> +	drm_dp_cec_set_edid(&port->aux, edid);
->  	drm_dp_mst_topology_put_port(port);
->  	return edid;
->  }
-> diff --git a/include/drm/drm_dp_helper.h b/include/drm/drm_dp_helper.h
-> index 12bca1b9512b..e973eba06875 100644
-> --- a/include/drm/drm_dp_helper.h
-> +++ b/include/drm/drm_dp_helper.h
-> @@ -1497,6 +1497,8 @@ struct drm_connector;
->   * @connector: the connector this CEC adapter is associated with
->   * @is_mst: this is an MST branch
->   * @unregister_work: unregister the CEC adapter
-> + * @mst_irq_work: IRQ for CEC events on an MST branch
-> + * @mst_set_edid_work: set the EDID for an MST branch
->   */
->  struct drm_dp_aux_cec {
->  	struct mutex lock;
-> @@ -1504,6 +1506,8 @@ struct drm_dp_aux_cec {
->  	struct drm_connector *connector;
->  	bool is_mst;
->  	struct delayed_work unregister_work;
-> +	struct work_struct mst_irq_work;
-> +	struct work_struct mst_set_edid_work;
->  };
->  
->  /**
-> 
-
+Unlike the new compat macros i.e COMPAT_KERNEL_HWCAP[2] in this patch,
+KERNEL_HWCAP_XXX macros are already defined and are getting used else
+where (arch/arm64/kernel/cpufeature.c) as well. [KERNEL_HWCAP_##c] can
+only be used here, if the input string is in upper case. Otherwise all
+these existing macros need to be changed first, which will result in
+too much code churn.
