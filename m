@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E991B261714
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:25:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADA672616DF
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:21:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731936AbgIHRYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 13:24:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58450 "EHLO mail.kernel.org"
+        id S1731773AbgIHRVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 13:21:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58974 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731699AbgIHQSC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:18:02 -0400
+        id S1731749AbgIHQSD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 12:18:03 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 50C1C24843;
-        Tue,  8 Sep 2020 15:45:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 899F024816;
+        Tue,  8 Sep 2020 15:43:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599579907;
-        bh=7c1BGpJQSitJm8WZfS40hY8FLPji/njUbJyQSgZSof4=;
+        s=default; t=1599579830;
+        bh=8rZ08HburNd4t19qWY2jSL42tAVbf1sq2C5q0vdp868=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OP9wROykNmTwsuuRpM20ymg/XBh6Tsw7ZW3c0CcfH5mIwC/nfeFqBr1qhbhR5WpCf
-         HOt3rQv0dTm5Eu6lCERJhzpOmqYJquuSMQDLUmgXgyNlnstSipUPrZT8WxoqukBMaJ
-         Bmx/CSwUsDCr1jdU445KFhPiSNGKd2PNhhLpBDwE=
+        b=P4lkCpLWqiQIa12r87PVKmTPmudrbU5SDqRi8jJRz/iOtHilr9pJKrVrgoyzKIIG3
+         6r9kLgGh1vBHkUesmrEzc8Gr/cPjaU3HnJ+94WpEy8skY0FEvI8YJDQtCI60CJj1He
+         MPlCz3VYk5oK2OQuQFHyB6mV9W10PBEse/rGZFW8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavan Chebbi <pavan.chebbi@broadcom.com>,
+        stable@vger.kernel.org,
+        Vasundhara Volam <vasundhara-v.volam@broadcom.com>,
         Michael Chan <michael.chan@broadcom.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 042/129] bnxt_en: Dont query FW when netif_running() is false.
-Date:   Tue,  8 Sep 2020 17:24:43 +0200
-Message-Id: <20200908152231.779287458@linuxfoundation.org>
+Subject: [PATCH 5.4 043/129] bnxt_en: Check for zero dir entries in NVRAM.
+Date:   Tue,  8 Sep 2020 17:24:44 +0200
+Message-Id: <20200908152231.831201640@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200908152229.689878733@linuxfoundation.org>
 References: <20200908152229.689878733@linuxfoundation.org>
@@ -45,38 +46,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavan Chebbi <pavan.chebbi@broadcom.com>
+From: Vasundhara Volam <vasundhara-v.volam@broadcom.com>
 
-[ Upstream commit c1c2d77408022a398a1a7c51cf20488c922629de ]
+[ Upstream commit dbbfa96ad920c50d58bcaefa57f5f33ceef9d00e ]
 
-In rare conditions like two stage OS installation, the
-ethtool's get_channels function may be called when the
-device is in D3 state, leading to uncorrectable PCI error.
-Check netif_running() first before making any query to FW
-which involves writing to BAR.
+If firmware goes into unstable state, HWRM_NVM_GET_DIR_INFO firmware
+command may return zero dir entries. Return error in such case to
+avoid zero length dma buffer request.
 
-Fixes: db4723b3cd2d ("bnxt_en: Check max_tx_scheduler_inputs value from firmware.")
-Signed-off-by: Pavan Chebbi <pavan.chebbi@broadcom.com>
+Fixes: c0c050c58d84 ("bnxt_en: New Broadcom ethernet driver.")
+Signed-off-by: Vasundhara Volam <vasundhara-v.volam@broadcom.com>
 Signed-off-by: Michael Chan <michael.chan@broadcom.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c b/drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c
-index 1f512e7c3d434..de9b34a255cf1 100644
+index de9b34a255cf1..fd01bcc8e28d4 100644
 --- a/drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c
 +++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c
-@@ -769,7 +769,7 @@ static void bnxt_get_channels(struct net_device *dev,
- 	int max_tx_sch_inputs;
+@@ -2161,6 +2161,9 @@ static int bnxt_get_nvram_directory(struct net_device *dev, u32 len, u8 *data)
+ 	if (rc != 0)
+ 		return rc;
  
- 	/* Get the most up-to-date max_tx_sch_inputs. */
--	if (BNXT_NEW_RM(bp))
-+	if (netif_running(dev) && BNXT_NEW_RM(bp))
- 		bnxt_hwrm_func_resc_qcaps(bp, false);
- 	max_tx_sch_inputs = hw_resc->max_tx_sch_inputs;
- 
++	if (!dir_entries || !entry_length)
++		return -EIO;
++
+ 	/* Insert 2 bytes of directory info (count and size of entries) */
+ 	if (len < 2)
+ 		return -EINVAL;
 -- 
 2.25.1
 
