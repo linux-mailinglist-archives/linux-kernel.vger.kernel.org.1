@@ -2,212 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD65E261D3D
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:34:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A365A261EC3
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:55:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732293AbgIHTeT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:34:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48732 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731008AbgIHP6F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:58:05 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D209F246E5;
-        Tue,  8 Sep 2020 15:40:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599579613;
-        bh=1N9jtClMjK3hPv7nNn/h5WjCJxPqjL1H9RBmw7JY+bw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iIFbsidYLrS3mVTtN/3HRROVjnSDJbGcXPjC6brDkN4ysPBipXgzrIK7gap4gzFFt
-         Z+8BQYjb+Haj3ULw+WCAqC7fUDWyCEIJNT2secxxzbRhu8FRlSuUySLjJkHqZBQec1
-         b+0x5jhtPscofEyo3VJo4Cfyy81zENTgg+clthwo=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Max Staudt <max@enpas.org>,
-        David Sterba <dsterba@suse.com>
-Subject: [PATCH 5.8 151/186] affs: fix basic permission bits to actually work
-Date:   Tue,  8 Sep 2020 17:24:53 +0200
-Message-Id: <20200908152248.974034323@linuxfoundation.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200908152241.646390211@linuxfoundation.org>
-References: <20200908152241.646390211@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1732390AbgIHTzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 15:55:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51014 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730627AbgIHPhg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 11:37:36 -0400
+Received: from mail-oo1-xc42.google.com (mail-oo1-xc42.google.com [IPv6:2607:f8b0:4864:20::c42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 284ECC0612FB
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 08:24:58 -0700 (PDT)
+Received: by mail-oo1-xc42.google.com with SMTP id m25so4030983oou.0
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 08:24:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=G6ViLODgIVrthYfKcZQ7FI0bgtyUL4tDP++rqJGkVeI=;
+        b=iarUR/yb8+vhpB9MCNX6sNi5tVLKL2hEF2c1YCH4ZGlP4A40m00LY0Zan7YWLCbFRG
+         iWHZSUVOrXv0/h/LB4Su9Vv8y7LSofbP/248L+GszV9UVPREAJfzDqoWiASfyTqkZGBL
+         KtfIvLB+ozrc3BjhRT6aaqpOKhEpTc5jQbkB8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=G6ViLODgIVrthYfKcZQ7FI0bgtyUL4tDP++rqJGkVeI=;
+        b=JTQrm6Tsnrnt4EWKPJg3HtKYjlYAAImM+zujF0Dz7Fce9+7Rw897etCMcqdEeScJy3
+         e44u/ne3hdoK9e9BWJb/spMbF6lfJFdLwpJ8HCGg9DM93T/5CBWdtOea2NI1xdvVjnQY
+         kwCiuE2ZujksombqvsDVL91QGCNs2mnGx/sH4ZSLagznT+WNlivY6MRmXqJnUfAxTK5+
+         Vk8D9Lu4hGlKu15Euh80ogjtDNBHJ4VqNn5P+tZAi4UUWhrf2CvTKAHgPhyzPmitSMq1
+         iQDHLIisMfIVvHy7shgSgTIA7d32Mo4d17AU0BAzMVCjINfwk656Nb2G/n48tNgWZpTu
+         CpAA==
+X-Gm-Message-State: AOAM532XVg0YkSnzK/gJAb+AwOirbi+E4u/LWfvGDpzvGA/iNUkc47F7
+        +Wdt6lVqXNxrJSJWGlvoxmnVxw==
+X-Google-Smtp-Source: ABdhPJz0UryFsak7mYC/o6Xu1t/X6pyxx8YadpYswTqzZPW/lHGfpm0d5irxqSu6eKaOpBwWpU7mpg==
+X-Received: by 2002:a4a:81:: with SMTP id 123mr18910109ooh.80.1599578697111;
+        Tue, 08 Sep 2020 08:24:57 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id q14sm162188ota.41.2020.09.08.08.24.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Sep 2020 08:24:56 -0700 (PDT)
+Subject: Re: [PATCH v6 00/20] gpio: cdev: add uAPI v2
+To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Bamvor Jian Zhang <bamv2005@gmail.com>,
+        Shuah Khan <shuah@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Kent Gibson <warthog618@gmail.com>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20200831032006.1019978-1-warthog618@gmail.com>
+ <CAMpxmJUETJgmxzWzHumOVr+vWFQ27P71MtcdSdf_=jvtrSfRPg@mail.gmail.com>
+ <20200903083750.GA17445@sol> <20200904125250.GA323947@sol>
+ <CAMpxmJWVZ8Bf1gPibvbk=E5XNvQ_i76E430MMhUWwE1ACoPTQg@mail.gmail.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <9db62b42-9a1e-0264-e88c-e636004cb629@linuxfoundation.org>
+Date:   Tue, 8 Sep 2020 09:24:55 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMpxmJWVZ8Bf1gPibvbk=E5XNvQ_i76E430MMhUWwE1ACoPTQg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Max Staudt <max@enpas.org>
+On 9/4/20 7:02 AM, Bartosz Golaszewski wrote:
+> On Fri, Sep 4, 2020 at 2:52 PM Kent Gibson <warthog618@gmail.com> wrote:
+>>
+>> On Thu, Sep 03, 2020 at 04:37:50PM +0800, Kent Gibson wrote:
+>>> On Thu, Sep 03, 2020 at 10:02:04AM +0200, Bartosz Golaszewski wrote:
+>>>> On Mon, Aug 31, 2020 at 5:21 AM Kent Gibson <warthog618@gmail.com> wrote:
+>>>>>
+>> [snip]
+>>>>
+>>>> To me it looks good, just a couple nits here and there and some questions.
+>>>>
+>>>> I think it's worth deciding whether we want to keep the selftests in
+>>>> tools/testing/selftests/gpio/ and then maybe consider porting
+>>>> gpio-mockup-chardev.c to V2 or simply outsource it entirely to
+>>>> libgpiod.
+>>>>
+>>>
+>>> Ooops - I wasn't even aware they existed - though it had crossed my mind
+>>> that the kernel should have some selftests somewhere - I use the libgpiod
+>>> tests, from my libgpiod port, and my own Go based test suite for my testing,
+>>> as well as some smoke tests with the tools/gpio.
+>>>
+>>> The libgpiod tests only cover v1 equivalent functionality, while my Go
+>>> tests cover the complete uAPI, and both v1 and v2.
+>>>
+>>> It would be good for the kernel to at least have some smoke tests to
+>>> confirm basic functionality, even thorough testing is left to a
+>>> userspace library.  So the existing tests should be ported to v2, though
+>>> should also retain the v1 tests if v1 is still compiled in.
+>>>
+>>
+>> I've got a v7 ready to submit that includes a couple of patches for the
+>> gpio-mockup selftests (their primary purpose appears to be testing the
+>> mockup module, rather than the GPIO ABI), but I now notice that the
+>> selftests/gpio section of the tree has a different maintainer:
+>>
+>> scripts/get_maintainer.pl 0021-selftests-gpio-port-to-GPIO-uAPI-v2.patch
+>> Bamvor Jian Zhang <bamv2005@gmail.com> (maintainer:GPIO MOCKUP DRIVER)
+>> Shuah Khan <shuah@kernel.org> (maintainer:KERNEL SELFTEST FRAMEWORK)
+>> linux-gpio@vger.kernel.org (open list:GPIO MOCKUP DRIVER)
+>> linux-kselftest@vger.kernel.org (open list:KERNEL SELFTEST FRAMEWORK)
+>> linux-kernel@vger.kernel.org (open list)
+> 
+> Bamvor, Shuah: do you still have interest in maintaining these, or can
+> we update MAINTAINERS?
+> 
 
-commit d3a84a8d0dde4e26bc084b36ffcbdc5932ac85e2 upstream.
+I maintain kselftests and gpio selftest falls under that. Please send
+selftest patches to me so I can review them.
 
-The basic permission bits (protection bits in AmigaOS) have been broken
-in Linux' AFFS - it would only set bits, but never delete them.
-Also, contrary to the documentation, the Archived bit was not handled.
+As for the gpio mock driver and test itself, you will have to wait for
+Bamvor to respond.
 
-Let's fix this for good, and set the bits such that Linux and classic
-AmigaOS can coexist in the most peaceful manner.
+>>
+>> The v7 patch up to that point restores the functions that the selftests
+>> are using so that they build and run again.
 
-Also, update the documentation to represent the current state of things.
+This test has been problematic because of its dependency on tools/gpio.
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Cc: stable@vger.kernel.org
-Signed-off-by: Max Staudt <max@enpas.org>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>> So I should hold off on the selftest patches and submit them separately
+>> after the GPIO changes are in?
+>>
 
----
- Documentation/filesystems/affs.rst |   16 ++++++++++------
- fs/affs/amigaffs.c                 |   27 +++++++++++++++++++++++++++
- fs/affs/file.c                     |   26 +++++++++++++++++++++++++-
- 3 files changed, 62 insertions(+), 7 deletions(-)
+Please send me the selftest patches. Also see the comments in
+selftests/Makefile about excluding the gpio test from default run.
 
---- a/Documentation/filesystems/affs.rst
-+++ b/Documentation/filesystems/affs.rst
-@@ -110,13 +110,15 @@ The Amiga protection flags RWEDRWEDHSPAR
- 
-   - R maps to r for user, group and others. On directories, R implies x.
- 
--  - If both W and D are allowed, w will be set.
-+  - W maps to w.
- 
-   - E maps to x.
- 
--  - H and P are always retained and ignored under Linux.
-+  - D is ignored.
- 
--  - A is always reset when a file is written to.
-+  - H, S and P are always retained and ignored under Linux.
-+
-+  - A is cleared when a file is written to.
- 
- User id and group id will be used unless set[gu]id are given as mount
- options. Since most of the Amiga file systems are single user systems
-@@ -128,11 +130,13 @@ Linux -> Amiga:
- 
- The Linux rwxrwxrwx file mode is handled as follows:
- 
--  - r permission will set R for user, group and others.
-+  - r permission will allow R for user, group and others.
-+
-+  - w permission will allow W for user, group and others.
- 
--  - w permission will set W and D for user, group and others.
-+  - x permission of the user will allow E for plain files.
- 
--  - x permission of the user will set E for plain files.
-+  - D will be allowed for user, group and others.
- 
-   - All other flags (suid, sgid, ...) are ignored and will
-     not be retained.
---- a/fs/affs/amigaffs.c
-+++ b/fs/affs/amigaffs.c
-@@ -420,24 +420,51 @@ affs_mode_to_prot(struct inode *inode)
- 	u32 prot = AFFS_I(inode)->i_protect;
- 	umode_t mode = inode->i_mode;
- 
-+	/*
-+	 * First, clear all RWED bits for owner, group, other.
-+	 * Then, recalculate them afresh.
-+	 *
-+	 * We'll always clear the delete-inhibit bit for the owner, as that is
-+	 * the classic single-user mode AmigaOS protection bit and we need to
-+	 * stay compatible with all scenarios.
-+	 *
-+	 * Since multi-user AmigaOS is an extension, we'll only set the
-+	 * delete-allow bit if any of the other bits in the same user class
-+	 * (group/other) are used.
-+	 */
-+	prot &= ~(FIBF_NOEXECUTE | FIBF_NOREAD
-+		  | FIBF_NOWRITE | FIBF_NODELETE
-+		  | FIBF_GRP_EXECUTE | FIBF_GRP_READ
-+		  | FIBF_GRP_WRITE   | FIBF_GRP_DELETE
-+		  | FIBF_OTR_EXECUTE | FIBF_OTR_READ
-+		  | FIBF_OTR_WRITE   | FIBF_OTR_DELETE);
-+
-+	/* Classic single-user AmigaOS flags. These are inverted. */
- 	if (!(mode & 0100))
- 		prot |= FIBF_NOEXECUTE;
- 	if (!(mode & 0400))
- 		prot |= FIBF_NOREAD;
- 	if (!(mode & 0200))
- 		prot |= FIBF_NOWRITE;
-+
-+	/* Multi-user extended flags. Not inverted. */
- 	if (mode & 0010)
- 		prot |= FIBF_GRP_EXECUTE;
- 	if (mode & 0040)
- 		prot |= FIBF_GRP_READ;
- 	if (mode & 0020)
- 		prot |= FIBF_GRP_WRITE;
-+	if (mode & 0070)
-+		prot |= FIBF_GRP_DELETE;
-+
- 	if (mode & 0001)
- 		prot |= FIBF_OTR_EXECUTE;
- 	if (mode & 0004)
- 		prot |= FIBF_OTR_READ;
- 	if (mode & 0002)
- 		prot |= FIBF_OTR_WRITE;
-+	if (mode & 0007)
-+		prot |= FIBF_OTR_DELETE;
- 
- 	AFFS_I(inode)->i_protect = prot;
- }
---- a/fs/affs/file.c
-+++ b/fs/affs/file.c
-@@ -428,6 +428,24 @@ static int affs_write_begin(struct file
- 	return ret;
- }
- 
-+static int affs_write_end(struct file *file, struct address_space *mapping,
-+			  loff_t pos, unsigned int len, unsigned int copied,
-+			  struct page *page, void *fsdata)
-+{
-+	struct inode *inode = mapping->host;
-+	int ret;
-+
-+	ret = generic_write_end(file, mapping, pos, len, copied, page, fsdata);
-+
-+	/* Clear Archived bit on file writes, as AmigaOS would do */
-+	if (AFFS_I(inode)->i_protect & FIBF_ARCHIVED) {
-+		AFFS_I(inode)->i_protect &= ~FIBF_ARCHIVED;
-+		mark_inode_dirty(inode);
-+	}
-+
-+	return ret;
-+}
-+
- static sector_t _affs_bmap(struct address_space *mapping, sector_t block)
- {
- 	return generic_block_bmap(mapping,block,affs_get_block);
-@@ -437,7 +455,7 @@ const struct address_space_operations af
- 	.readpage = affs_readpage,
- 	.writepage = affs_writepage,
- 	.write_begin = affs_write_begin,
--	.write_end = generic_write_end,
-+	.write_end = affs_write_end,
- 	.direct_IO = affs_direct_IO,
- 	.bmap = _affs_bmap
- };
-@@ -794,6 +812,12 @@ done:
- 	if (tmp > inode->i_size)
- 		inode->i_size = AFFS_I(inode)->mmu_private = tmp;
- 
-+	/* Clear Archived bit on file writes, as AmigaOS would do */
-+	if (AFFS_I(inode)->i_protect & FIBF_ARCHIVED) {
-+		AFFS_I(inode)->i_protect &= ~FIBF_ARCHIVED;
-+		mark_inode_dirty(inode);
-+	}
-+
- err_first_bh:
- 	unlock_page(page);
- 	put_page(page);
+thanks,
+-- Shuah
 
 
