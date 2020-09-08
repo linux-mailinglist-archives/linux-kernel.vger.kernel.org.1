@@ -2,88 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04CBC2614C7
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:36:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E74BD2614B3
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:33:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731959AbgIHQgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 12:36:37 -0400
-Received: from mx2.suse.de ([195.135.220.15]:48044 "EHLO mx2.suse.de"
+        id S1732049AbgIHQdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 12:33:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34678 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731934AbgIHQbq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:31:46 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2F7A0B7D1;
-        Tue,  8 Sep 2020 16:31:46 +0000 (UTC)
-Message-ID: <df34d0ab703600822a7bf1978ecafb01ba1013e8.camel@suse.de>
-Subject: Re: [PATCH v5 80/80] ARM: dts: bcm2711: Enable the display pipeline
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Maxime Ripard <maxime@cerno.tech>, Eric Anholt <eric@anholt.net>
-Cc:     dri-devel@lists.freedesktop.org,
-        linux-rpi-kernel@lists.infradead.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Phil Elwell <phil@raspberrypi.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Hoegeun Kwon <hoegeun.kwon@samsung.com>,
-        Stefan Wahren <stefan.wahren@i2se.com>
-Date:   Tue, 08 Sep 2020 18:31:42 +0200
-In-Reply-To: <cfce2276d172d3d9c4d34d966b58fd47f77c4e46.1599120059.git-series.maxime@cerno.tech>
-References: <cover.dddc064d8bb83e46744336af67dcb13139e5747d.1599120059.git-series.maxime@cerno.tech>
-         <cfce2276d172d3d9c4d34d966b58fd47f77c4e46.1599120059.git-series.maxime@cerno.tech>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-AwMin9yk1eCNmWRMdPWo"
-User-Agent: Evolution 3.36.5 
+        id S1732031AbgIHQcQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 12:32:16 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DA597206DB;
+        Tue,  8 Sep 2020 16:32:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599582733;
+        bh=Kpj2oGs3oTNKIeLuZX3DLWaFOXvp+PS3iXMHVDL5oCI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Fhqz/EASt4/Hy/v6q6/hMpIECz0p9PaKHTrr/60CIbY9ruzS7EnRx/epzmpzJIP63
+         CSu8n/bGCI1sECr4fTbibUE+U3OW8bbFqztVeSgTpBc66xoxhofDU2u77oW7SSkBuz
+         iYWc1bh1nE044je8e10+i+ucnQiHnoCyaUaLMy4E=
+Date:   Tue, 8 Sep 2020 18:32:25 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Mike Travis <mike.travis@hpe.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Steve Wahl <steve.wahl@hpe.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Russ Anderson <russ.anderson@hpe.com>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Jian Cai <caij2003@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
+Subject: Re: [PATCH 04/12] x86/platform/uv: Update UV MMRs for UV5
+Message-ID: <20200908163225.GD10640@kroah.com>
+References: <20200907185430.363197758@hpe.com>
+ <20200907185430.782245884@hpe.com>
+ <20200908152314.GD4114051@kroah.com>
+ <3e93b858-f74d-8e93-e444-fd85fc5856e4@hpe.com>
+ <20200908154430.GA4171853@kroah.com>
+ <35d4ce27-7a93-c3d5-3c0d-99fff06229c2@hpe.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <35d4ce27-7a93-c3d5-3c0d-99fff06229c2@hpe.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Sep 08, 2020 at 09:20:14AM -0700, Mike Travis wrote:
+> 
+> 
+> On 9/8/2020 8:44 AM, Greg KH wrote:
+> > On Tue, Sep 08, 2020 at 08:35:37AM -0700, Mike Travis wrote:
+> > > 
+> > > 
+> > > On 9/8/2020 8:23 AM, Greg KH wrote:
+> > > > On Mon, Sep 07, 2020 at 01:54:34PM -0500, Mike Travis wrote:
+> > > > > --- linux.orig/drivers/misc/sgi-gru/grufile.c
+> > > > > +++ linux/drivers/misc/sgi-gru/grufile.c
+> > > > > @@ -7,7 +7,8 @@
+> > > > >     * This file supports the user system call for file open, close, mmap, etc.
+> > > > >     * This also incudes the driver initialization code.
+> > > > >     *
+> > > > > - *  Copyright (c) 2008-2014 Silicon Graphics, Inc.  All Rights Reserved.
+> > > > > + * Copyright (c) 2018-2020 Hewlett Packard Enterprise Development LP
+> > > > > + * Copyright (c) 2008-2017 Silicon Graphics, Inc.  All Rights Reserved.
+> > > > 
+> > > > Please drop all copyright changes from this series, as these do not look
+> > > > correct at all, sorry.
+> > > > 
+> > > > You can send an add-on patch for all of that if it's really necessary,
+> > > > and you get legal approval for it :)
+> > > 
+> > > I can move them all to a single patch.  The HPE one is straight from their
+> > > guidance on Copyrights.  The older SGI one is also from SGI's guidance
+> > > though I'm not sure if I can find it anymore.  I also wasn't sure if it
+> > > should be retained since the HPE one didn't take effect until SGI was
+> > > legally part of HPE (circa 2018).  2017/18 was also the last time we did
+> > > this big a change (for the UV4A).
+> > 
+> > If you haven't touched a file in a year, you don't get to claim
+> > copyright on that year.  If you wish to disagree on this, great, I'll
+> > gladly take a patch that modifies the lines that has a signed-off-by
+> > from one of your lawyers for it :)
+> 
+> I skipped over that part.  But I'm moving all changes to a single patch and
+> I will look more closely at HPE's documents.  Heaven knows they have plenty
+> of lawyers, so many it's hard to ask a simple question... like when does a
+> copyright take effect.  When you change it internally, or when it gets
+> published?  Sounds like you lean towards the second?
 
---=-AwMin9yk1eCNmWRMdPWo
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+There are established rules for this type of thing, I'm not going to
+tell you what HP's rules are, but this patch really looks wrong from
+what I understand about what the rules are...
 
-On Thu, 2020-09-03 at 10:01 +0200, Maxime Ripard wrote:
-> Now that all the drivers have been adjusted for it, let's bring in the
-> necessary device tree changes.
->=20
-> The VEC and PV3 are left out for now, since it will require a more specif=
-ic
-> clock setup.
->=20
-> Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
-> Tested-by: Chanwoo Choi <cw00.choi@samsung.com>
-> Tested-by: Hoegeun Kwon <hoegeun.kwon@samsung.com>
-> Tested-by: Stefan Wahren <stefan.wahren@i2se.com>
-> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-> ---
+thanks,
 
-Applied for-next.
-
-Thanks!
-Nicolas
-
-
---=-AwMin9yk1eCNmWRMdPWo
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl9Xse4ACgkQlfZmHno8
-x/7r7wf/c9LMy3CL6TDMF3nNWJaJPclZUgPWhuKeAd5RIOMbjR+REcXp0GtBl288
-tA3a2Le4uwgSyLL+slJrXrnIZncbFwXa87NVC/N92yYzXAUqfocCkxRqpXE8trKq
-vBJz3fWh9AqDjZEQCcayZvXFFYbZ97fqJXJErPJOX5lHDMd2/LUAcpNN3b7aEGeP
-OqRno1Yl5v/GtNzGtx4rLbd+qUT/2TZalSxhUzlzpkFLaLZCuHLVkJfzgdwPkGbl
-cnj3wPBiJ6rnDS3N7RAdoxTj08ZdJOng1+5M7RdjwFrewwDtS24sfTTCBAQYSRzK
-eoii/d6dArfaYhhBOM7uTXBRhD80Dw==
-=vUSx
------END PGP SIGNATURE-----
-
---=-AwMin9yk1eCNmWRMdPWo--
-
+greg k-h
