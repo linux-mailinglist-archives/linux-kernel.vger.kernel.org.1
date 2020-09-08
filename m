@@ -2,115 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32317261D83
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:38:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14478261DD0
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:42:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731020AbgIHTiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:38:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53398 "EHLO
+        id S1732358AbgIHTmo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 15:42:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730481AbgIHPzo (ORCPT
+        with ESMTP id S1730878AbgIHPws (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:55:44 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62F1BC061246
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 06:12:31 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id a65so17227269wme.5
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 06:12:31 -0700 (PDT)
+        Tue, 8 Sep 2020 11:52:48 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23EECC06125C;
+        Tue,  8 Sep 2020 06:16:29 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id r24so1067221ljm.3;
+        Tue, 08 Sep 2020 06:16:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hrkUEQnkIGFGoNQEVpiI9JVsWjIbZBqpkD8BbZf2zOQ=;
-        b=PW143ymqvvugN4bi5TTzJs8LeNJbs5u16TQjl6/VN2bg4e6a5jWm/MbcxnMxZVwgwX
-         HavELQkYGfFuXp29hqY2myCHP/ErTH2k4PLhAEnfJabgYzTA7SOtzKTZMNVL/hjOjd5M
-         5ZwRUchgYXdbR83oKIjrTaRd72ZFyyJX20InDm3G3rZ42nPgSdXHXB7OdEx/oLa0pjJF
-         +UdRV++7E2c02jJ5uhDQpQeXb4lJUJ5JwQfyOJOqKu9mqq0jakcFM2xYC9PP+iMfWq9z
-         t7p/gfiCT957lE1TPQUcGKQlhd50/KloYi+X4MidwOQB7OKXefPHVRjEEppTAUyRU/Ik
-         zPBw==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=2ob3Uu2PIV7nT5SLsDGzmqre4E7eymr6wADbftdvJ7s=;
+        b=sHBZfPNkDu7qQ/ABlj/tJmyO+hyuIaD0i7Otp2n/gRkNQXppwriHIudfwvuTMV/eU8
+         Reh+27n+d9CkUCqKE+iTP24S5cZ8Jodfl7NrIDEOE6mnSrxsb8emFOicItGzrxJIeHEO
+         WzP9rNy+KrTZp2z0UYcfKlD+Km8COYz58aY1v1W4anzE4R1DqRcAZ/d5VqM/jGXujFSW
+         yl2B+8AB55zFoHuI0nvit09zP6ula0J2xQ1Pr2qgeE10wU0YrqYUY4cS9jL99NTrLUkX
+         UxkL54VXWhJVcNkkD+kH2WEJBeK4dZkl8tblMgYgzCjVQ8iZU1yfOJAojwxQxFsdI9Bg
+         uoxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=hrkUEQnkIGFGoNQEVpiI9JVsWjIbZBqpkD8BbZf2zOQ=;
-        b=Fx4pY7CnPinHZ++FW1xBuV0LGi3zuc03aecBC/g0CPY0J3pTgkgn0fZPgQhycEkXl0
-         Xf1t0Jt0xU37cvUNJH6wAFQmW5cynKQkY6zrI9p2Id7XKSlKq8lnuhbxZvwJA1+dFhee
-         hpTEdE8e27j4rmSaS1LVuxe5DQDTr2dCbqdllbfc+RrNo398Gexdro5NFVhmvdzBYXOd
-         W4erA4lAg1szTNDoKyIjmV7HGjuJFFxpdODURQVAmDfAdqJ+5tCXn+Ipvzs8QcJ0tkoT
-         RIWNSiqGlaICv5QuL+nJBiHgIBDFlXPrxhMa6oK1yue0+t2zdqKxJZVtrM58QFSUyBOI
-         9E3w==
-X-Gm-Message-State: AOAM532Fks2ycNDCDSGpdmTI3eQQVJ1TAh4CItOfanUF3+qgprw5fbc0
-        k40nK0gnz4FoOJRySFyy4b7nuw==
-X-Google-Smtp-Source: ABdhPJxX6aEKKbfcibSkGUiwzn+QESAx0tzCBJXX709sOGdeRCmDm2UPrnZVVvx7qrBO+uolnZj/LQ==
-X-Received: by 2002:a05:600c:2215:: with SMTP id z21mr4338869wml.176.1599570750028;
-        Tue, 08 Sep 2020 06:12:30 -0700 (PDT)
-Received: from debian-brgl.home (lfbn-nic-1-68-20.w2-15.abo.wanadoo.fr. [2.15.159.20])
-        by smtp.gmail.com with ESMTPSA id m4sm17596893wro.18.2020.09.08.06.12.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Sep 2020 06:12:29 -0700 (PDT)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Kent Gibson <warthog618@gmail.com>
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH] gpiolib: switch to simpler IDA interface
-Date:   Tue,  8 Sep 2020 15:12:25 +0200
-Message-Id: <20200908131225.10870-1-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.26.1
+        bh=2ob3Uu2PIV7nT5SLsDGzmqre4E7eymr6wADbftdvJ7s=;
+        b=MvpCaly9u0GWd0UaI/uGvZtpHm1VN+S+u5iz3Mg8ocPjgQ7mmfT/RbiMEJawoWSiN6
+         N+TNV9NSFAvhaSv6dC1GZkiAJdsISlr+SmmolC9fDP3ZPHa+Z/nl1VYTmlHt9w0D5YNE
+         nyUx+dwD96Dg+6AGBakqXDatEtPqCmWjCuL8vaAXpeoUsDsEeaIljICY8uW+eVm+Aw8G
+         oQr/Jnfk/zclxEEdudvDAsZDpSokEYEPSLVGbm3BBSfasFOAsgd3lEHW242ZsDF/n5Aq
+         b1fdX/tW19ztlr8FB30fiEhxPjRyiuHcPyOBoolmc6bbZwoaDsPB345XSsJkBp+/eMaO
+         DhXg==
+X-Gm-Message-State: AOAM533ymPDVLNr+3H5V1WtjN4bLGLjInamfL/oAr8bXxzlz06U6maRv
+        q280J6Ml2uNhCnLjJ9sR4ng3NP6wNNk=
+X-Google-Smtp-Source: ABdhPJzdTI4rNxCjoKspr+yIbdJopN0tD13+QHFV+10jpjX4FDTBXbZoVi61q9LPhPcSEiMzvq9XTQ==
+X-Received: by 2002:a2e:8782:: with SMTP id n2mr10169705lji.262.1599570987442;
+        Tue, 08 Sep 2020 06:16:27 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
+        by smtp.googlemail.com with ESMTPSA id 25sm10448215lji.130.2020.09.08.06.16.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Sep 2020 06:16:26 -0700 (PDT)
+Subject: Re: [PATCH v6 14/35] i2c: tegra: Clean up probe function
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        linux-tegra@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20200908021021.9123-1-digetx@gmail.com>
+ <20200908021021.9123-15-digetx@gmail.com>
+ <CAHp75Vc9srPR1BYes9ZEo46gxV2BAhZ71ov_JZ_sHrmtgdAr-g@mail.gmail.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <dd51a8eb-5b8d-0b63-3130-428980cfe7ff@gmail.com>
+Date:   Tue, 8 Sep 2020 16:16:26 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <CAHp75Vc9srPR1BYes9ZEo46gxV2BAhZ71ov_JZ_sHrmtgdAr-g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+08.09.2020 11:40, Andy Shevchenko пишет:
+> On Tue, Sep 8, 2020 at 5:11 AM Dmitry Osipenko <digetx@gmail.com> wrote:
+>>
+>> The driver's probe function code is a bit difficult to read. This patch
+>> reorders code of the probe function, forming groups of code that are easy
+>> to work with.
+>>
+>> The probe tear-down order now matches the driver-removal order.
+> 
+>> All dev/&pdev->dev are replaced with i2c_dev->dev in order to have uniform
+>> code style across the driver.
+> 
+> You see, below is my point why leaving a temporary variable can reduce a churn.
+> 
+>> The "ret" variable renamed to "err" since it only carries error code and
+>> the new name clearly shows that.
+> 
+> Overall it sounds like you need to split this into a few patches.
+> 
+> ...
+> 
+>> -       struct device *dev = &pdev->dev;
+> 
+>> -       i2c_dev->rst = devm_reset_control_get_exclusive(&pdev->dev, "i2c");
+> 
+>> +       i2c_dev->rst = devm_reset_control_get_exclusive(i2c_dev->dev, "i2c");
+> 
+> You see, if it had been simple 'dev', this line would have not been changed.
+> 
+> And so on.
+> 
 
-We don't need to specify any ranges when allocating IDs so we can switch
-to ida_alloc() and ida_free() instead of the ida_simple_ counterparts.
-
-ida_simple_get(ida, 0, 0, gfp) is equivalent to
-ida_alloc_range(ida, 0, UINT_MAX, gfp) which is equivalent to
-ida_alloc(ida, gfp). Note: IDR will never actually allocate an ID
-larger than INT_MAX.
-
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
----
- drivers/gpio/gpiolib.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-index 80137c1b3cdc..97f76334ec7e 100644
---- a/drivers/gpio/gpiolib.c
-+++ b/drivers/gpio/gpiolib.c
-@@ -426,7 +426,7 @@ static void gpiodevice_release(struct device *dev)
- 	struct gpio_device *gdev = dev_get_drvdata(dev);
- 
- 	list_del(&gdev->list);
--	ida_simple_remove(&gpio_ida, gdev->id);
-+	ida_free(&gpio_ida, gdev->id);
- 	kfree_const(gdev->label);
- 	kfree(gdev->descs);
- 	kfree(gdev);
-@@ -537,7 +537,7 @@ int gpiochip_add_data_with_key(struct gpio_chip *gc, void *data,
- 		gc->of_node = gdev->dev.of_node;
- #endif
- 
--	gdev->id = ida_simple_get(&gpio_ida, 0, 0, GFP_KERNEL);
-+	gdev->id = ida_alloc(&gpio_ida, GFP_KERNEL);
- 	if (gdev->id < 0) {
- 		ret = gdev->id;
- 		goto err_free_gdev;
-@@ -705,7 +705,7 @@ int gpiochip_add_data_with_key(struct gpio_chip *gc, void *data,
- err_free_descs:
- 	kfree(gdev->descs);
- err_free_ida:
--	ida_simple_remove(&gpio_ida, gdev->id);
-+	ida_free(&gpio_ida, gdev->id);
- err_free_gdev:
- 	/* failures here can mean systems won't boot... */
- 	pr_err("%s: GPIOs %d..%d (%s) failed to register, %d\n", __func__,
--- 
-2.26.1
-
+Alright, I'll move all the renamings into the "Clean up variable names"
+patch, thanks.
