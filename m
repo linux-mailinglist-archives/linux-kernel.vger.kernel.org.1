@@ -2,204 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C3D6261656
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:09:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B08C261652
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:09:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731786AbgIHRJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 13:09:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37332 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732127AbgIHRId (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 13:08:33 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7A33C061573;
-        Tue,  8 Sep 2020 10:08:32 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id z19so9326021pfn.8;
-        Tue, 08 Sep 2020 10:08:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=FPMDkvAk1iaVD1/CfgpOrTqFeHdT/s4HmA4Aa+dW56w=;
-        b=VUz6BhKLCRVxV/oCUBanPke25beWlVy7T7usC0n/+MpiMz0voCKBzSAQbTfe9i4eCN
-         kRwwhyTS22N/OIP+IxnPFhoRkMTxr2GRhmP7NtcJzFQcj/S3F3gOasmwroELnJrC7/tU
-         tzDD7YmHbUxPFktmb54YDPxolANYAYVOY3LyMy5thI5hMhyA6B17XIEXirqOS8FNkisN
-         +5YktBbjakzbf5y2e4s6NFrvlVF1L0tRsKKPOdNlcNNUzSZDZjwiWv9OCsJqXP80jf1W
-         2alUmUeCttsN3v7RrCNNQyZdg7h+8g1XZ9sZj26I86n7De6sBShliPC474maQWWscEP5
-         BU2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FPMDkvAk1iaVD1/CfgpOrTqFeHdT/s4HmA4Aa+dW56w=;
-        b=J1i0KmRPIyXbDnQPYUNiCUIk9SgwTOGyAYbJI2tajymurXX902cK2THbrjAzqD/jxy
-         0XyWg0BX6uwzk/zW2GEfEfhNFSDWdw1376GYIaXPIkSlu1LfMsqehyZj7bdcpxjrctpO
-         UO6HuwSTxfr987JXly+cmJ6nPRCOERIfAxa2gEuVwlv1DXEebNVHTSTdqa98P8I+Buzl
-         QOMUj8Im9cnbZZUt95TLS5Ec4xAzghOSt6dy8YbtrBPCuj7o+e7rlxo0HITt0MWA25gs
-         9kQ+rdcfz2ndwtRWb/mQQfEkzHihZYSR1Xu3NkzvqdjLTBT0TtYrmRjGZyzMMiqKaESP
-         ZyPA==
-X-Gm-Message-State: AOAM53322r2SPG+mzg7uf+ZEg8hpwinHN7/mLITlFBjsUp/1iVD1Eo1V
-        kYPJmEdyk+GGfUAzUjDim9Y=
-X-Google-Smtp-Source: ABdhPJyuwDZJQpN1wt5oGKzDbNipkknmAC/uQO+n7ifbMCvdDWvDU7Ep9Ne2YkU8Hf9GOpMdeFhUQw==
-X-Received: by 2002:a62:55c5:: with SMTP id j188mr12901555pfb.103.1599584912263;
-        Tue, 08 Sep 2020 10:08:32 -0700 (PDT)
-Received: from gmail.com ([106.201.26.241])
-        by smtp.gmail.com with ESMTPSA id f3sm15412564pgf.32.2020.09.08.10.08.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Sep 2020 10:08:31 -0700 (PDT)
-Date:   Tue, 8 Sep 2020 22:36:38 +0530
-From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Bjorn Helgaas <bjorn@helgaas.com>,
-        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
-        Adam Radford <aradford@gmail.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Adaptec OEM Raid Solutions <aacraid@microsemi.com>,
-        Hannes Reinecke <hare@suse.com>,
-        Bradley Grove <linuxdrivers@attotech.com>,
-        John Garry <john.garry@huawei.com>,
-        Don Brace <don.brace@microsemi.com>,
-        James Smart <james.smart@broadcom.com>,
-        Dick Kennedy <dick.kennedy@broadcom.com>,
-        Kashyap Desai <kashyap.desai@broadcom.com>,
-        Sumit Saxena <sumit.saxena@broadcom.com>,
-        Shivasharan S <shivasharan.srikanteshwara@broadcom.com>,
-        Sathya Prakash <sathya.prakash@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
-        Jack Wang <jinpu.wang@cloud.ionos.com>
-Cc:     Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-scsi@vger.kernel.org, esc.storagedev@microsemi.com,
-        megaraidlinux.pdl@broadcom.com, MPT-FusionLinux.pdl@broadcom.com
-Subject: Re: [PATCH v2 13/15] scsi: 3w-sas: use generic power management
-Message-ID: <20200908170626.GN9948@gmail.com>
-References: <20200720133427.454400-1-vaibhavgupta40@gmail.com>
- <20200720133427.454400-14-vaibhavgupta40@gmail.com>
+        id S1732149AbgIHRIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 13:08:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49698 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732065AbgIHRHH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 13:07:07 -0400
+Received: from mail-vs1-f53.google.com (mail-vs1-f53.google.com [209.85.217.53])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7ACE72192A
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 17:07:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599584825;
+        bh=YnJRsJUG1pSW75HhPkDqFEpQnLbYGnKtTbKpi28dmLo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=WlhLwMSx0iwCqa8K3DJcD/KhLX8X+kUPN0Q76NNXA4e9e0P2AQk6NfTsRdyYZYYw7
+         bIJRCogunOkjudd91T3Ji1HMrpxMrzItxVIf/qrLN40efCcjJI8IeOoZtwEYb7QxL1
+         IuaDXCzPyBTRTvH8Y4YFWGqnt3e1tjDnrV4vOLdU=
+Received: by mail-vs1-f53.google.com with SMTP id y194so9430669vsc.4
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 10:07:05 -0700 (PDT)
+X-Gm-Message-State: AOAM532bWTprAe8eIljAO4MKHRZm8I7yNdKije4dmVwoms8SuY0k+yls
+        v5XfRXESvX4esGiBKK2zCAbIEpqX8/JPhmhNSq7xBw==
+X-Google-Smtp-Source: ABdhPJzDh4z5smAq+NO3nlyaPUB6zWghkiwltuG1BO8M1na3KvNjpxAboIuZLLXfHc5OZyl+pxScVD25k1EO2UK82qc=
+X-Received: by 2002:a67:7fd0:: with SMTP id a199mr90272vsd.98.1599584824457;
+ Tue, 08 Sep 2020 10:07:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200720133427.454400-14-vaibhavgupta40@gmail.com>
+References: <20200908075716.30357-1-manivannan.sadhasivam@linaro.org>
+ <20200908075716.30357-5-manivannan.sadhasivam@linaro.org> <CAHLCerP7frrGyUBKbcurKhpkuGtJZjB+D82smnJ5U5CeL2bQgA@mail.gmail.com>
+ <20200908150945.GB2352@mani-NUC7i5DNKE>
+In-Reply-To: <20200908150945.GB2352@mani-NUC7i5DNKE>
+From:   Amit Kucheria <amitk@kernel.org>
+Date:   Tue, 8 Sep 2020 22:36:53 +0530
+X-Gmail-Original-Message-ID: <CAHLCerN+sfk5bOg6-Exgdy+fWJO4e29qRYkaycjWbG3MoZFikg@mail.gmail.com>
+Message-ID: <CAHLCerN+sfk5bOg6-Exgdy+fWJO4e29qRYkaycjWbG3MoZFikg@mail.gmail.com>
+Subject: Re: [PATCH 4/7] cpufreq: qcom-hw: Make use of of_match data for
+ offsets and row size
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Taniya Das <tdas@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 20, 2020 at 07:04:26PM +0530, Vaibhav Gupta wrote:
-> Drivers using legacy PM have to manage PCI states and device's PM states
-> themselves. They also need to take care of configuration registers.
-> 
-> With improved and powerful support of generic PM, PCI Core takes care of
-> above mentioned, device-independent, jobs.
-> 
-> This driver makes use of PCI helper functions like
-> pci_save/restore_state(), pci_enable/disable_device(),
-> pci_set_power_state() and pci_set_master() to do required operations. In
-> generic mode, they are no longer needed.
-> 
-> Change function parameter in both .suspend() and .resume() to
-> "struct device*" type. Use to_pci_dev() and dev_get_drvdata() to get
-> "struct pci_dev*" variable and drv data.
-> 
-> Compile-tested only.
-> 
-> Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
-> ---
->  drivers/scsi/3w-sas.c | 31 ++++++++-----------------------
->  1 file changed, 8 insertions(+), 23 deletions(-)
-> 
-> diff --git a/drivers/scsi/3w-sas.c b/drivers/scsi/3w-sas.c
-> index dda6fa857709..efaba30b0ca8 100644
-> --- a/drivers/scsi/3w-sas.c
-> +++ b/drivers/scsi/3w-sas.c
-> @@ -1756,11 +1756,10 @@ static void twl_remove(struct pci_dev *pdev)
->  	twl_device_extension_count--;
->  } /* End twl_remove() */
->  
-> -#ifdef CONFIG_PM
->  /* This function is called on PCI suspend */
-> -static int twl_suspend(struct pci_dev *pdev, pm_message_t state)
-> +static int __maybe_unused twl_suspend(struct device *dev)
->  {
-> -	struct Scsi_Host *host = pci_get_drvdata(pdev);
-> +	struct Scsi_Host *host = dev_get_drvdata(dev);
->  	TW_Device_Extension *tw_dev = (TW_Device_Extension *)host->hostdata;
->  
->  	printk(KERN_WARNING "3w-sas: Suspending host %d.\n", tw_dev->host->host_no);
-> @@ -1779,32 +1778,21 @@ static int twl_suspend(struct pci_dev *pdev, pm_message_t state)
->  	/* Clear doorbell interrupt */
->  	TWL_CLEAR_DB_INTERRUPT(tw_dev);
->  
-> -	pci_save_state(pdev);
-> -	pci_disable_device(pdev);
-> -	pci_set_power_state(pdev, pci_choose_state(pdev, state));
-> -
->  	return 0;
->  } /* End twl_suspend() */
->  
->  /* This function is called on PCI resume */
-> -static int twl_resume(struct pci_dev *pdev)
-> +static int __maybe_unused twl_resume(struct device *dev)
->  {
->  	int retval = 0;
-> +	struct pci_dev *pdev = to_pci_dev(dev);
->  	struct Scsi_Host *host = pci_get_drvdata(pdev);
->  	TW_Device_Extension *tw_dev = (TW_Device_Extension *)host->hostdata;
->  
->  	printk(KERN_WARNING "3w-sas: Resuming host %d.\n", tw_dev->host->host_no);
-> -	pci_set_power_state(pdev, PCI_D0);
-> -	pci_enable_wake(pdev, PCI_D0, 0);
-> -	pci_restore_state(pdev);
->  
-> -	retval = pci_enable_device(pdev);
-> -	if (retval) {
-> -		TW_PRINTK(tw_dev->host, TW_DRIVER, 0x24, "Enable device failed during resume");
-> -		return retval;
-> -	}
-> +	device_wakeup_disable(dev);
->  
-> -	pci_set_master(pdev);
->  	pci_try_set_mwi(pdev);
->  
->  	retval = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64));
-> @@ -1842,11 +1830,9 @@ static int twl_resume(struct pci_dev *pdev)
->  
->  out_disable_device:
->  	scsi_remove_host(host);
-> -	pci_disable_device(pdev);
->  
->  	return retval;
->  } /* End twl_resume() */
-> -#endif
->  
->  /* PCI Devices supported by this driver */
->  static struct pci_device_id twl_pci_tbl[] = {
-> @@ -1855,16 +1841,15 @@ static struct pci_device_id twl_pci_tbl[] = {
->  };
->  MODULE_DEVICE_TABLE(pci, twl_pci_tbl);
->  
-> +static SIMPLE_DEV_PM_OPS(twl_pm_ops, twl_suspend, twl_resume);
-> +
->  /* pci_driver initializer */
->  static struct pci_driver twl_driver = {
->  	.name		= "3w-sas",
->  	.id_table	= twl_pci_tbl,
->  	.probe		= twl_probe,
->  	.remove		= twl_remove,
-> -#ifdef CONFIG_PM
-> -	.suspend	= twl_suspend,
-> -	.resume		= twl_resume,
-> -#endif
-> +	.driver.pm	= &twl_pm_ops,
->  	.shutdown	= twl_shutdown
->  };
->  
-> -- 
-> 2.27.0
-> 
-.
+On Tue, Sep 8, 2020 at 8:40 PM Manivannan Sadhasivam
+<manivannan.sadhasivam@linaro.org> wrote:
+>
+> On 0908, Amit Kucheria wrote:
+> > On Tue, Sep 8, 2020 at 1:27 PM Manivannan Sadhasivam
+> > <manivannan.sadhasivam@linaro.org> wrote:
+> > >
+> > > For preparing the driver to handle further SoC revisions, let's use the
+> > > of_match data for getting the device specific offsets and row size instead
+> > > of defining them globally.
+> > >
+> > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> >
+> >
+> >
+> > > ---
+> > >  drivers/cpufreq/qcom-cpufreq-hw.c | 96 +++++++++++++++++++++----------
+> > >  1 file changed, 66 insertions(+), 30 deletions(-)
+> > >
+> > > diff --git a/drivers/cpufreq/qcom-cpufreq-hw.c b/drivers/cpufreq/qcom-cpufreq-hw.c
+> > > index ccea34f61152..41853db7c9b8 100644
+> > > --- a/drivers/cpufreq/qcom-cpufreq-hw.c
+> > > +++ b/drivers/cpufreq/qcom-cpufreq-hw.c
+> > > @@ -19,15 +19,21 @@
+> > >  #define LUT_L_VAL                      GENMASK(7, 0)
+> > >  #define LUT_CORE_COUNT                 GENMASK(18, 16)
+> > >  #define LUT_VOLT                       GENMASK(11, 0)
+> > > -#define LUT_ROW_SIZE                   32
+> > >  #define CLK_HW_DIV                     2
+> > >  #define LUT_TURBO_IND                  1
+> > >
+> > > -/* Register offsets */
+> > > -#define REG_ENABLE                     0x0
+> > > -#define REG_FREQ_LUT                   0x110
+> > > -#define REG_VOLT_LUT                   0x114
+> > > -#define REG_PERF_STATE                 0x920
+> > > +struct qcom_cpufreq_soc_data {
+> > > +       u32 reg_enable;
+> > > +       u32 reg_freq_lut;
+> > > +       u32 reg_volt_lut;
+> > > +       u32 reg_perf_state;
+> > > +       u8 lut_row_size;
+> > > +};
+> > > +
+> > > +struct qcom_cpufreq_data {
+> > > +       void __iomem *base;
+> > > +       const struct qcom_cpufreq_soc_data *soc_data;
+> > > +};
+> > >
+> > >  static unsigned long cpu_hw_rate, xo_rate;
+> > >  static bool icc_scaling_enabled;
+> > > @@ -76,10 +82,11 @@ static int qcom_cpufreq_update_opp(struct device *cpu_dev,
+> > >  static int qcom_cpufreq_hw_target_index(struct cpufreq_policy *policy,
+> > >                                         unsigned int index)
+> > >  {
+> > > -       void __iomem *perf_state_reg = policy->driver_data;
+> > > +       struct qcom_cpufreq_data *data = policy->driver_data;
+> > > +       const struct qcom_cpufreq_soc_data *soc_data = data->soc_data;
+> > >         unsigned long freq = policy->freq_table[index].frequency;
+> > >
+> > > -       writel_relaxed(index, perf_state_reg);
+> > > +       writel_relaxed(index, data->base + soc_data->reg_perf_state);
+> > >
+> > >         if (icc_scaling_enabled)
+> > >                 qcom_cpufreq_set_bw(policy, freq);
+> > > @@ -91,7 +98,8 @@ static int qcom_cpufreq_hw_target_index(struct cpufreq_policy *policy,
+> > >
+> > >  static unsigned int qcom_cpufreq_hw_get(unsigned int cpu)
+> > >  {
+> > > -       void __iomem *perf_state_reg;
+> > > +       struct qcom_cpufreq_data *data;
+> > > +       const struct qcom_cpufreq_soc_data *soc_data;
+> > >         struct cpufreq_policy *policy;
+> > >         unsigned int index;
+> > >
+> > > @@ -99,9 +107,10 @@ static unsigned int qcom_cpufreq_hw_get(unsigned int cpu)
+> > >         if (!policy)
+> > >                 return 0;
+> > >
+> > > -       perf_state_reg = policy->driver_data;
+> > > +       data = policy->driver_data;
+> > > +       soc_data = data->soc_data;
+> > >
+> > > -       index = readl_relaxed(perf_state_reg);
+> > > +       index = readl_relaxed(data->base + soc_data->reg_perf_state);
+> > >         index = min(index, LUT_MAX_ENTRIES - 1);
+> > >
+> > >         return policy->freq_table[index].frequency;
+> > > @@ -110,12 +119,13 @@ static unsigned int qcom_cpufreq_hw_get(unsigned int cpu)
+> > >  static unsigned int qcom_cpufreq_hw_fast_switch(struct cpufreq_policy *policy,
+> > >                                                 unsigned int target_freq)
+> > >  {
+> > > -       void __iomem *perf_state_reg = policy->driver_data;
+> > > +       struct qcom_cpufreq_data *data = policy->driver_data;
+> > > +       const struct qcom_cpufreq_soc_data *soc_data = data->soc_data;
+> > >         unsigned int index;
+> > >         unsigned long freq;
+> > >
+> > >         index = policy->cached_resolved_idx;
+> > > -       writel_relaxed(index, perf_state_reg);
+> > > +       writel_relaxed(index, data->base + soc_data->reg_perf_state);
+> > >
+> > >         freq = policy->freq_table[index].frequency;
+> > >         arch_set_freq_scale(policy->related_cpus, freq,
+> > > @@ -125,8 +135,7 @@ static unsigned int qcom_cpufreq_hw_fast_switch(struct cpufreq_policy *policy,
+> > >  }
+> > >
+> > >  static int qcom_cpufreq_hw_read_lut(struct device *cpu_dev,
+> > > -                                   struct cpufreq_policy *policy,
+> > > -                                   void __iomem *base)
+> > > +                                   struct cpufreq_policy *policy)
+> > >  {
+> > >         u32 data, src, lval, i, core_count, prev_freq = 0, freq;
+> > >         u32 volt;
+> > > @@ -134,6 +143,8 @@ static int qcom_cpufreq_hw_read_lut(struct device *cpu_dev,
+> > >         struct dev_pm_opp *opp;
+> > >         unsigned long rate;
+> > >         int ret;
+> > > +       struct qcom_cpufreq_data *drv_data = policy->driver_data;
+> > > +       const struct qcom_cpufreq_soc_data *soc_data = drv_data->soc_data;
+> > >
+> > >         table = kcalloc(LUT_MAX_ENTRIES + 1, sizeof(*table), GFP_KERNEL);
+> > >         if (!table)
+> > > @@ -160,14 +171,14 @@ static int qcom_cpufreq_hw_read_lut(struct device *cpu_dev,
+> > >         }
+> > >
+> > >         for (i = 0; i < LUT_MAX_ENTRIES; i++) {
+> > > -               data = readl_relaxed(base + REG_FREQ_LUT +
+> > > -                                     i * LUT_ROW_SIZE);
+> > > +               data = readl_relaxed(drv_data->base + soc_data->reg_freq_lut +
+> > > +                                     i * soc_data->lut_row_size);
+> > >                 src = FIELD_GET(LUT_SRC, data);
+> > >                 lval = FIELD_GET(LUT_L_VAL, data);
+> > >                 core_count = FIELD_GET(LUT_CORE_COUNT, data);
+> > >
+> > > -               data = readl_relaxed(base + REG_VOLT_LUT +
+> > > -                                     i * LUT_ROW_SIZE);
+> > > +               data = readl_relaxed(drv_data->base + soc_data->reg_volt_lut +
+> > > +                                     i * soc_data->lut_row_size);
+> > >                 volt = FIELD_GET(LUT_VOLT, data) * 1000;
+> > >
+> > >                 if (src)
+> > > @@ -237,6 +248,20 @@ static void qcom_get_related_cpus(int index, struct cpumask *m)
+> > >         }
+> > >  }
+> > >
+> > > +static const struct qcom_cpufreq_soc_data qcom_soc_data = {
+> >
+> > rename this to sdm845_soc_data?
+> >
+>
+> Nah, this is not specific to SDM845. Atleast in mainline, there are 3 SoCs
+> using this compatible.
+>
+> > Or even better, maybe just use the IP version number for this IP block
+> > so that all SoCs using that IP version can use this struct?
+> >
+>
+> Since the SoCs are using the same compatible it makes sense to use the same
+> name for the of_data. I don't think it is a good idea to use different name
+> for the of_data since the differentiation has to happen at compatible level.
+
+You are using the name sm8250_soc_data in a subsequent patch, though ;-)
+
+So I think it would make sense for compatible "qcom,cpufreq-hw" to use
+data "osm_soc_data" and compatible "qcom,sm8250-epss" to use data
+"epss_soc_data" as suggested by Bjorn.
+
+Regards,
+Amit
+
+
+>
+> > > +       .reg_enable = 0x0,
+> > > +       .reg_freq_lut = 0x110,
+> > > +       .reg_volt_lut = 0x114,
+> > > +       .reg_perf_state = 0x920,
+> > > +       .lut_row_size = 32,
+> > > +};
+> > > +
+> > > +static const struct of_device_id qcom_cpufreq_hw_match[] = {
+> > > +       { .compatible = "qcom,cpufreq-hw", .data = &qcom_soc_data },
+> > > +       {}
+> > > +};
