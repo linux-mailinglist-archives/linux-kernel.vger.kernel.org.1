@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 807F126169D
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:15:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68E7F261734
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:28:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731830AbgIHRPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 13:15:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57890 "EHLO mail.kernel.org"
+        id S1732050AbgIHR2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 13:28:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57568 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731787AbgIHQS6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:18:58 -0400
+        id S1731723AbgIHQQb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 12:16:31 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EE17C2483F;
-        Tue,  8 Sep 2020 15:45:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6FF092481B;
+        Tue,  8 Sep 2020 15:43:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599579905;
-        bh=qHeCeREw8luRvssVaXq9yusH73MMUoN9KoeWxWLV7R0=;
+        s=default; t=1599579837;
+        bh=Hqrjbc6boyisskgOrWsePN/GEu+kQdQBb4I5dQN/XoU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=g02QSsOxuWV9fDNA68KenXLnMomX30M9HRI0oyyGNR4ABwPQAycrNLAXabxx9CmzX
-         w7iMEMws5NeEpdZxhU9VamTEK1kiGtCU6VXXZqIMGV9ul8I7db3hwx0XrAXvGeRTHZ
-         MnyzPmeHmq2BHbiohliQB50krkXMZe0aDfdnzXJY=
+        b=iITTj7PFlugrKLE7rUjGgqNfwM4N3P130+5U8EloNALskuswOkcyS82EfwvCcSYQu
+         LvPs8ZNMdwSXWhV/YIF8xfIWavZwx7PxaN3x3WBYAa75VwgvHPz12HPVKYEux7g9uk
+         qgv6mHE2S5SgPH1slchEt7quyn2ZAwsEfXS0JhbA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jesper Dangaard Brouer <brouer@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 051/129] selftests/bpf: Fix massive output from test_maps
-Date:   Tue,  8 Sep 2020 17:24:52 +0200
-Message-Id: <20200908152232.260940342@linuxfoundation.org>
+Subject: [PATCH 5.4 054/129] nvmet-fc: Fix a missed _irqsave version of spin_lock in nvmet_fc_fod_op_done()
+Date:   Tue,  8 Sep 2020 17:24:55 +0200
+Message-Id: <20200908152232.409084961@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200908152229.689878733@linuxfoundation.org>
 References: <20200908152229.689878733@linuxfoundation.org>
@@ -44,40 +46,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jesper Dangaard Brouer <brouer@redhat.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit fa4505675e093e895b7ec49a76d44f6b5ad9602e ]
+[ Upstream commit 70e37988db94aba607d5491a94f80ba08e399b6b ]
 
-When stdout output from the selftests tool 'test_maps' gets redirected
-into e.g file or pipe, then the output lines increase a lot (from 21
-to 33949 lines).  This is caused by the printf that happens before the
-fork() call, and there are user-space buffered printf data that seems
-to be duplicated into the forked process.
+The way 'spin_lock()' and 'spin_lock_irqsave()' are used is not consistent
+in this function.
 
-To fix this fflush() stdout before the fork loop in __run_parallel().
+Use 'spin_lock_irqsave()' also here, as there is no guarantee that
+interruptions are disabled at that point, according to surrounding code.
 
-Fixes: 1a97cf1fe503 ("selftests/bpf: speedup test_maps")
-Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Link: https://lore.kernel.org/bpf/159842985651.1050885.2154399297503372406.stgit@firesoul
+Fixes: a97ec51b37ef ("nvmet_fc: Rework target side abort handling")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Sagi Grimberg <sagi@grimberg.me>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/bpf/test_maps.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/nvme/target/fc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/test_maps.c b/tools/testing/selftests/bpf/test_maps.c
-index c812f0178b643..1c4219ceced2f 100644
---- a/tools/testing/selftests/bpf/test_maps.c
-+++ b/tools/testing/selftests/bpf/test_maps.c
-@@ -1282,6 +1282,8 @@ static void __run_parallel(unsigned int tasks,
- 	pid_t pid[tasks];
- 	int i;
+diff --git a/drivers/nvme/target/fc.c b/drivers/nvme/target/fc.c
+index ce8d819f86ccc..fc35f7ae67b0a 100644
+--- a/drivers/nvme/target/fc.c
++++ b/drivers/nvme/target/fc.c
+@@ -1994,9 +1994,9 @@ nvmet_fc_fod_op_done(struct nvmet_fc_fcp_iod *fod)
+ 			return;
+ 		if (fcpreq->fcp_error ||
+ 		    fcpreq->transferred_length != fcpreq->transfer_length) {
+-			spin_lock(&fod->flock);
++			spin_lock_irqsave(&fod->flock, flags);
+ 			fod->abort = true;
+-			spin_unlock(&fod->flock);
++			spin_unlock_irqrestore(&fod->flock, flags);
  
-+	fflush(stdout);
-+
- 	for (i = 0; i < tasks; i++) {
- 		pid[i] = fork();
- 		if (pid[i] == 0) {
+ 			nvmet_req_complete(&fod->req, NVME_SC_INTERNAL);
+ 			return;
 -- 
 2.25.1
 
