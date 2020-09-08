@@ -2,139 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6001261AFC
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 20:51:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3F62261B2E
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 20:59:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731124AbgIHSvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 14:51:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53220 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730168AbgIHSvJ (ORCPT
+        id S1731423AbgIHS7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 14:59:00 -0400
+Received: from rcdn-iport-9.cisco.com ([173.37.86.80]:22168 "EHLO
+        rcdn-iport-9.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730572AbgIHS6w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 14:51:09 -0400
-Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C6ADC061573
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 11:51:08 -0700 (PDT)
-Received: by mail-vs1-xe44.google.com with SMTP id e14so9574717vsa.9
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 11:51:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zOlhJ759ELcXKOOqGfeV77lWnqUEXIcww3cWbaCaKkc=;
-        b=asMCyCblUJ33Hh1IyVh0VZu7tMxhHYb406jcoN65/Ckc5Cy3HmZxaGc0l3YM2bM6ZS
-         7vuWk/QUhenCg2yMvFRCoESv3ihcogVS4LwbQZeaUpckhZQmDueM/rWLsXoGdHU4bDTH
-         bQfqdBpWSrdeiCNhpGCiHj/vNPk/xDZ4QGTXiRLdR618sMBpoS7HEFfmgqZmGsMLDK48
-         S8Hb29RJnLYz1jUUekIIgDiQufX1Gqo3nz73aWI7EkBdhySBUP17SoGbxQdhX1PNhtyH
-         137QcCqMVVx92Ej8bRIugQs6Bv5StdTuPOajKPLbZNwHIfFyh9386HCNfNYLOCtUenIA
-         L2YA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zOlhJ759ELcXKOOqGfeV77lWnqUEXIcww3cWbaCaKkc=;
-        b=LfLqZ329HeeHuEikxAu1MgYIlGe21rN82Z7DSDI0FdNE5HJGfi2oGkxOXSupvkTw45
-         jedPE0lb9y/od4CFeK5wQzBJMsuPc9avW4SWakT6sbT6e+DadzhN3El2yb2cmNikxLC4
-         pcxZb0hSdJrFLGtrunHUG0tZPGvzANDwL4etaRBbswO6IN6JQGNobPTnH4/bcYRyHzIL
-         34CRlayvWAedPTcjahhBuba5DQEvisAZCF44gYRKHGLEPnXBSOs0fPL1XrLab0RD15Py
-         c/C0mQC54jrN6aqkM4/67S9ncNYEUJYzLsDc1rtjB1SFUMlF8sH0IQ1qunoHxm2WJiUf
-         H29A==
-X-Gm-Message-State: AOAM531xS5816QctRyjSuy3PZHqO85u83urM58iWlmxSjwA0urpVnyG9
-        Fi4lggvKXHgzIC9vDqrfEocWokYLoPfqeA==
-X-Google-Smtp-Source: ABdhPJw98GBSMOkYPltUs3srQGr5Eumbm4ddvK+9PfDnfNephM6uYqG+zAlHSbQLUG/Gj7fnEHvfaw==
-X-Received: by 2002:a67:7fd6:: with SMTP id a205mr402989vsd.8.1599591066880;
-        Tue, 08 Sep 2020 11:51:06 -0700 (PDT)
-Received: from mail-ua1-f48.google.com (mail-ua1-f48.google.com. [209.85.222.48])
-        by smtp.gmail.com with ESMTPSA id 67sm7767vkr.24.2020.09.08.11.51.05
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Sep 2020 11:51:05 -0700 (PDT)
-Received: by mail-ua1-f48.google.com with SMTP id g16so68703uan.5
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 11:51:05 -0700 (PDT)
-X-Received: by 2002:ab0:24cd:: with SMTP id k13mr348997uan.92.1599591064900;
- Tue, 08 Sep 2020 11:51:04 -0700 (PDT)
+        Tue, 8 Sep 2020 14:58:52 -0400
+X-Greylist: delayed 428 seconds by postgrey-1.27 at vger.kernel.org; Tue, 08 Sep 2020 14:58:51 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=cisco.com; i=@cisco.com; l=1391; q=dns/txt; s=iport;
+  t=1599591531; x=1600801131;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=m2WVpZpXrtQFXh3Ql4JrliPwX+fM66/2SHqLhNxgwkY=;
+  b=KnYh3lHP4/Pu4OSlhFDHLVbfoxOVsRcMaYRNRv459un7R/dOKJu/TVfZ
+   knVJe3j1CGYS+0nTi6yI2AAbBjKCaDRKp537mXeHkDVYbh9mHX4Esi4E0
+   spzQSsk0yz4pU8CBK7o05+KtEyqKAqKdiHtDVeOhk+uBaODMXfKpMSj26
+   Y=;
+X-IronPort-AV: E=Sophos;i="5.76,406,1592870400"; 
+   d="scan'208";a="732158731"
+Received: from rcdn-core-1.cisco.com ([173.37.93.152])
+  by rcdn-iport-9.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 08 Sep 2020 18:51:43 +0000
+Received: from sjc-ads-9087.cisco.com (sjc-ads-9087.cisco.com [10.30.208.97])
+        by rcdn-core-1.cisco.com (8.15.2/8.15.2) with ESMTP id 088IphYE005304;
+        Tue, 8 Sep 2020 18:51:43 GMT
+Received: by sjc-ads-9087.cisco.com (Postfix, from userid 396877)
+        id D89BFBFD; Tue,  8 Sep 2020 11:51:42 -0700 (PDT)
+From:   Julius Hemanth Pitti <jpitti@cisco.com>
+To:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
+        akpm@linux-foundation.org
+Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, xe-linux-external@cisco.com,
+        Julius Hemanth Pitti <jpitti@cisco.com>
+Subject: [PATCH] mm: memcg: yield cpu when we fail to charge pages
+Date:   Tue,  8 Sep 2020 11:50:51 -0700
+Message-Id: <20200908185051.62420-1-jpitti@cisco.com>
+X-Mailer: git-send-email 2.19.1
 MIME-Version: 1.0
-References: <20200901195415.4840-1-m-karicheri2@ti.com> <d93fbc54-1721-ebec-39ca-dc8b45e6e534@ti.com>
- <15bbf7d2-627b-1d52-f130-5bae7b7889de@ti.com> <CA+FuTSeri93irC9eaQqrFrY2++d0zJ4-F0YAfCXfX6XVVqU6Pw@mail.gmail.com>
- <bf8a22c2-0ebe-7a52-2e79-7dde72d444ba@ti.com> <CA+FuTSeE_O_XozfnzDED_S4of-NwtRCN+oWr=O3JPpByfCz3Vg@mail.gmail.com>
-In-Reply-To: <CA+FuTSeE_O_XozfnzDED_S4of-NwtRCN+oWr=O3JPpByfCz3Vg@mail.gmail.com>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Tue, 8 Sep 2020 20:50:26 +0200
-X-Gmail-Original-Message-ID: <CA+FuTSde4fAiy6t-Q4o1C8wdU4ZYqNt0Qd2F8PsrnXvA8q03=A@mail.gmail.com>
-Message-ID: <CA+FuTSde4fAiy6t-Q4o1C8wdU4ZYqNt0Qd2F8PsrnXvA8q03=A@mail.gmail.com>
-Subject: Re: [PATCH net-next 0/1] Support for VLAN interface over HSR/PRP
-To:     Murali Karicheri <m-karicheri2@ti.com>
-Cc:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>, nsekhar@ti.com,
-        Grygorii Strashko <grygorii.strashko@ti.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Auto-Response-Suppress: DR, OOF, AutoReply
+X-Outbound-SMTP-Client: 10.30.208.97, sjc-ads-9087.cisco.com
+X-Outbound-Node: rcdn-core-1.cisco.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > >>>
-> > >>> Shouldn't it show vlan_do_receive() ?
-> > >>>
-> > >>>       if (skb_vlan_tag_present(skb)) {
-> > >>>           if (pt_prev) {
-> > >>>               ret = deliver_skb(skb, pt_prev, orig_dev);
-> > >>>               pt_prev = NULL;
-> > >>>           }
-> > >>>           if (vlan_do_receive(&skb))
-> > >>>               goto another_round;
-> > >>>           else if (unlikely(!skb))
-> > >>>               goto out;
-> > >>>       }
-> > >>>
-> > >>> Thanks
-> > >>>
-> > >>
-> > >> I did an ftrace today and I find vlan_do_receive() is called for the
-> > >> incoming frames before passing SKB to hsr_handle_frame(). If someone
-> > >> can review this, it will help. Thanks.
-> > >>
-> > >> https://pastebin.ubuntu.com/p/CbRzXjwjR5/
-> > >
-> > > hsr_handle_frame is an rx_handler called after
-> > > __netif_receive_skb_core called vlan_do_receive and jumped back to
-> > > another_round.
-> >
-> > Yes. hsr_handle_frame() is a rx_handler() after the above code that
-> > does vlan_do_receive(). The ftrace shows vlan_do_receive() is called
-> > followed by call to hsr_handle_frame(). From ifconfig I can see both
-> > hsr and vlan interface stats increments by same count. So I assume,
-> > vlan_do_receive() is called initially and it removes the tag, update
-> > stats and then return true and go for another round. Do you think that
-> > is the case?
->
-> That was my understanding.
->
-> > vlan_do_receive() calls vlan_find_dev(skb->dev, vlan_proto, vlan_id)
-> > to retrieve the real netdevice (real device). However VLAN device is
-> > attached to hsr device (real device), but SKB will have HSR slave
-> > Ethernet netdevice (in our case it is cpsw device) and vlan_find_dev()
-> > would have failed since there is no vlan_info in cpsw netdev struct. So
-> > below code  in vlan_do_receive() should have failed and return false.
-> >
-> >         vlan_dev = vlan_find_dev(skb->dev, vlan_proto, vlan_id);
-> >         if (!vlan_dev)
-> >                 return false;
-> >
-> > So how does it goes for another_round ? May be vlan_find_dev is
-> > finding the hsr netdevice?
->
-> It's good to answer this through code inspection and/or
-> instrumentation. I do not have the answer immediately either.
+For non root CG, in try_charge(), we keep trying
+to charge until we succeed. On non-preemptive
+kernel, when we are OOM, this results in holding
+CPU forever.
 
-Agreed that from reading the code I would vlan_do_receive to not find
-a vlan dev associated with the physical nic, then passes the packet
-unmodified to hsr_handle_frame.
+On SMP systems, this doesn't create a big problem
+because oom_reaper get a change to kill victim
+and make some free pages. However on a single-core
+CPU (or cases where oom_reaper pinned to same CPU
+where try_charge is executing), oom_reaper shall
+never get scheduled and we stay in try_charge forever.
 
-Perhaps this seems to work because skb_vlan_untag has already
-pulled the tag out of the packet?
+Steps to repo this on non-smp:
+1. mount -t tmpfs none /sys/fs/cgroup
+2. mkdir /sys/fs/cgroup/memory
+3. mount -t cgroup none /sys/fs/cgroup/memory -o memory
+4. mkdir /sys/fs/cgroup/memory/0
+5. echo 40M > /sys/fs/cgroup/memory/0/memory.limit_in_bytes
+6. echo $$ > /sys/fs/cgroup/memory/0/tasks
+7. stress -m 5 --vm-bytes 10M --vm-hang 0
 
-But then you should not see counters increased on the vlan dev.
+Signed-off-by: Julius Hemanth Pitti <jpitti@cisco.com>
+---
+ mm/memcontrol.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 0d6f3ea86738..4620d70267cb 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -2652,6 +2652,8 @@ static int try_charge(struct mem_cgroup *memcg, gfp_t gfp_mask,
+ 	if (fatal_signal_pending(current))
+ 		goto force;
+ 
++	cond_resched();
++
+ 	/*
+ 	 * keep retrying as long as the memcg oom killer is able to make
+ 	 * a forward progress or bypass the charge if the oom killer
+-- 
+2.17.1
+
