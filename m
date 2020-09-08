@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 373032618C9
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 20:03:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC4142618DE
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 20:04:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732124AbgIHSCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 14:02:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56078 "EHLO mail.kernel.org"
+        id S1732252AbgIHR6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 13:58:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56658 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731545AbgIHQMa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:12:30 -0400
+        id S1731559AbgIHQMr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 12:12:47 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 14434247FA;
-        Tue,  8 Sep 2020 15:51:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5A56324884;
+        Tue,  8 Sep 2020 15:52:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599580303;
-        bh=IBX1WGPmxvS3xq3KJipHAvSCKXBKoVkgP2Ym2HNLzUA=;
+        s=default; t=1599580330;
+        bh=94jbiT/iviL3xFKjxO4CaHmUaM3rOn+3FKbtH+tRnok=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aKY2puzXgGhjLVHSphR4cwLcWVYNvYIF2/hTh4SOTVZ1tcD9kOihQvHBWQuyxzpDK
-         WNRTJKCO2SgE6SaCSbVjVSFtkSMK9STvnjApzznOlWWjRPK+ovBLSpcmXvDvs+ZKlq
-         V3K4xX2caUlX2QOXc7C3f0A6crV50Cwv7sf9osJY=
+        b=jKyo+qWswoKU1zUNRESYhgSwiTcHUV1UcIyjguj8KJrk+iUc70agjsP12hCsIU8Wd
+         1C8ifipvzNINsqQsPWQ6EBY9rMf2eqWP30wxOU2p0fNyCKfDkt4mlNc01rEddXOO3c
+         QdS/4vFT4qjnMPlT+YZVkVOYh272muMb3F5nkkRs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Jussi Kivilinna <jussi.kivilinna@haltian.com>,
-        Sven Eckelmann <sven@narfation.org>,
-        Simon Wunderlich <sw@simonwunderlich.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 14/65] batman-adv: bla: use netif_rx_ni when not in interrupt context
-Date:   Tue,  8 Sep 2020 17:25:59 +0200
-Message-Id: <20200908152217.766744882@linuxfoundation.org>
+        stable@vger.kernel.org, Yu Kuai <yukuai3@huawei.com>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 15/65] dmaengine: at_hdmac: check return value of of_find_device_by_node() in at_dma_xlate()
+Date:   Tue,  8 Sep 2020 17:26:00 +0200
+Message-Id: <20200908152217.822263235@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200908152217.022816723@linuxfoundation.org>
 References: <20200908152217.022816723@linuxfoundation.org>
@@ -46,40 +43,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jussi Kivilinna <jussi.kivilinna@haltian.com>
+From: Yu Kuai <yukuai3@huawei.com>
 
-[ Upstream commit 279e89b2281af3b1a9f04906e157992c19c9f163 ]
+[ Upstream commit 0cef8e2c5a07d482ec907249dbd6687e8697677f ]
 
-batadv_bla_send_claim() gets called from worker thread context through
-batadv_bla_periodic_work(), thus netif_rx_ni needs to be used in that
-case. This fixes "NOHZ: local_softirq_pending 08" log messages seen
-when batman-adv is enabled.
+The reurn value of of_find_device_by_node() is not checked, thus null
+pointer dereference will be triggered if of_find_device_by_node()
+failed.
 
-Fixes: 23721387c409 ("batman-adv: add basic bridge loop avoidance code")
-Signed-off-by: Jussi Kivilinna <jussi.kivilinna@haltian.com>
-Signed-off-by: Sven Eckelmann <sven@narfation.org>
-Signed-off-by: Simon Wunderlich <sw@simonwunderlich.de>
+Fixes: bbe89c8e3d59 ("at_hdmac: move to generic DMA binding")
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+Link: https://lore.kernel.org/r/20200817115728.1706719-2-yukuai3@huawei.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/batman-adv/bridge_loop_avoidance.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/dma/at_hdmac.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/net/batman-adv/bridge_loop_avoidance.c b/net/batman-adv/bridge_loop_avoidance.c
-index c761c0c233e4b..ae647fa69ce85 100644
---- a/net/batman-adv/bridge_loop_avoidance.c
-+++ b/net/batman-adv/bridge_loop_avoidance.c
-@@ -450,7 +450,10 @@ static void batadv_bla_send_claim(struct batadv_priv *bat_priv, u8 *mac,
- 	batadv_add_counter(bat_priv, BATADV_CNT_RX_BYTES,
- 			   skb->len + ETH_HLEN);
+diff --git a/drivers/dma/at_hdmac.c b/drivers/dma/at_hdmac.c
+index 21ed0e20c5d91..cf3225a229890 100644
+--- a/drivers/dma/at_hdmac.c
++++ b/drivers/dma/at_hdmac.c
+@@ -1677,6 +1677,8 @@ static struct dma_chan *at_dma_xlate(struct of_phandle_args *dma_spec,
+ 		return NULL;
  
--	netif_rx(skb);
-+	if (in_interrupt())
-+		netif_rx(skb);
-+	else
-+		netif_rx_ni(skb);
- out:
- 	if (primary_if)
- 		batadv_hardif_put(primary_if);
+ 	dmac_pdev = of_find_device_by_node(dma_spec->np);
++	if (!dmac_pdev)
++		return NULL;
+ 
+ 	dma_cap_zero(mask);
+ 	dma_cap_set(DMA_SLAVE, mask);
 -- 
 2.25.1
 
