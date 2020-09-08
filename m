@@ -2,83 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B62DB2619C5
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 20:26:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CF912619AB
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 20:25:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729048AbgIHS0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 14:26:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48300 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731222AbgIHST4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 14:19:56 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05097C061573
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 11:19:50 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id v23so176815ljd.1
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 11:19:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=j4ZG7pHNKJrTC8ewi1bAxI1rmelsYImAuRVz1o61Rvw=;
-        b=AdYfsYsp+iKIH8WN3gypyY9mlMeSR1eCJHUXHjzjx3BSS0OC/iBPzRzVULBH6L6iSh
-         RrevIvrJ7CAbiyPP2mSYuwOxD6YFOdh7Dttw3IwSvOtDRS9R9zLc5hV/T6Nqo8pMez0S
-         6dW9/gN7Ikd2Mi/GEilIJvAWLv+OpE8VCFjqY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=j4ZG7pHNKJrTC8ewi1bAxI1rmelsYImAuRVz1o61Rvw=;
-        b=QNA7y6yTz3KxRJsjyYrsHLEIs9lnDT6pl+MPUAX6eNpbmHveG/VgWfYbwBi1+EOn+u
-         MQfbvfdhbUolth4J2ZG2Isa9CLiqlKk2ag9cBeJQthqwYEJkMpRDfY3w2X4P0nPwxlfk
-         TesSUGb4hKOtgMM1dYNBrnEEkzCqreC73U/db6aD2Gcbpdxj35NW/In7AL5Iqd38O3T/
-         BtG9N1AGFsa4uoBjsigVNsPfFET8leSFkpGPOvb7v4OdXDCYMzTauBCrRBqnHhTu/y/+
-         PPP+uXGfwB+gDVjYzPrCAR7bxB9ErHEFZVuRf+4QLe2z63nN0IXFOMazqQZ8vnToB40G
-         9ANA==
-X-Gm-Message-State: AOAM531dvyJfhlq+JgvkZ9BEF920jmtFeiw9k8i7tKUd4mnTLlwnUck8
-        z3s7P8/LSiHjXZGuGGYBiWfTMMUFCuvw9g==
-X-Google-Smtp-Source: ABdhPJznSSKGREpzspZ8IjUsV5VBmvo8xYVqyiv0JUcTGuBJqvXwpuBLgYgBzbv7iLM12HKAjS7sFA==
-X-Received: by 2002:a2e:97d0:: with SMTP id m16mr14022783ljj.277.1599589186684;
-        Tue, 08 Sep 2020 11:19:46 -0700 (PDT)
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com. [209.85.167.46])
-        by smtp.gmail.com with ESMTPSA id 190sm69147lfa.81.2020.09.08.11.19.45
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Sep 2020 11:19:45 -0700 (PDT)
-Received: by mail-lf1-f46.google.com with SMTP id u27so147582lfm.13
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 11:19:45 -0700 (PDT)
-X-Received: by 2002:a19:4a88:: with SMTP id x130mr133090lfa.31.1599589185184;
- Tue, 08 Sep 2020 11:19:45 -0700 (PDT)
+        id S1731754AbgIHSZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 14:25:03 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:50582 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730748AbgIHSWZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 14:22:25 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kFiG4-00Dp7f-7W; Tue, 08 Sep 2020 20:22:20 +0200
+Date:   Tue, 8 Sep 2020 20:22:20 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Lukasz Stelmach <l.stelmach@samsung.com>
+Cc:     devicetree@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        b.zolnierkie@samsung.com, netdev@vger.kernel.org,
+        Russell King <linux@armlinux.org.uk>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Kukjin Kim <kgene@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-arm-kernel@lists.infradead.org, m.szyprowski@samsung.com
+Subject: Re: [PATCH 1/3] net: ax88796c: ASIX AX88796C SPI Ethernet Adapter
+ Driver
+Message-ID: <20200908182220.GA3290129@lunn.ch>
+References: <20200907181854.GD3254313@lunn.ch>
+ <CGME20200908174935eucas1p2f24d79b234152148b060c45863e3efeb@eucas1p2.samsung.com>
+ <dleftj8sdkqhun.fsf%l.stelmach@samsung.com>
 MIME-Version: 1.0
-References: <CAPM=9tz0whDeamM+k_8Wu8TVzz0TDr+qMNMXo8rKeeNRKxBuiQ@mail.gmail.com>
- <CAHk-=wh2EH9DKRpJQ7+X+NWjjduLPy_Ncv1GzxnXBg-3mTn0Fw@mail.gmail.com> <cfcea1be-e02f-b391-ab1f-780888da138d@skogtun.org>
-In-Reply-To: <cfcea1be-e02f-b391-ab1f-780888da138d@skogtun.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 8 Sep 2020 11:19:29 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjRLmayxnChONeb24pFPv=o733ptzpAyuAebrxWzhPYtw@mail.gmail.com>
-Message-ID: <CAHk-=wjRLmayxnChONeb24pFPv=o733ptzpAyuAebrxWzhPYtw@mail.gmail.com>
-Subject: Re: [git pull] drm fixes for 5.9-rc4
-To:     Harald Arnesen <harald@skogtun.org>
-Cc:     Dave Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <dleftj8sdkqhun.fsf%l.stelmach@samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 4, 2020 at 2:51 PM Harald Arnesen <harald@skogtun.org> wrote:
->
-> Still doesn't work without the three reverts
-> (763fedd6a216, 9e0f9464e2ab, 7ac2d2536dfa)...
+On Tue, Sep 08, 2020 at 07:49:20PM +0200, Lukasz Stelmach wrote:
+> It was <2020-09-07 pon 20:18>, when Andrew Lunn wrote:
+> >> > On Tue, Aug 25, 2020 at 07:03:09PM +0200, Łukasz Stelmach wrote:
+> >> >> +++ b/drivers/net/ethernet/asix/ax88796c_ioctl.c
+> >> >
+> >> > This is an odd filename. The ioctl code is wrong anyway, but there is
+> >> > a lot more than ioctl in here. I suggest you give it a new name.
+> >> >
+> >> 
+> >> Sure, any suggestions?
+> >
+> > Sorry, i have forgotten what is actually contained. 
+> 
+> IOCTL handler (.ndo_do_ioctl), ethtool ops, and a bunch of hw control
+> functions.
+> 
+> > Does it even need to be a separate file?
+> 
+> It doesn't need, but I think it makes sense to keep ioctl and ethtool
+> stuff in a separate file. Some of the hw control function look like they
+> might change after using phylib.
 
-So this didn't make rc4, but it's in my tree now.
+<driver>_ethtool.c is a common file name.
 
-Harald, I'm assuming things work for you again now with the current
-git tree, but it is always good to double-check in case something else
-interacted with the reverts...
+> Good point. I need to figure out how to do it. Can you point (from the
+> top fou your head) a driver which does it for a simmilarly integrated
+> device?
 
-                      Linus
+Being integrated or not makes no difference. The API usage is the
+same. drivers/net/usb/smsc95xx.c has an integrated PHY i think.
+
+> I am not arguing to keep the parameter at any cost, but I would really
+> like to know if there is a viable alternative for DT and ACPI. This chip
+> is for smaller systems which not necessarily implement advanced
+> bootloaders (and DT).
+
+What bootload is being used, if not uboot or bearbox?
+
+> According to module.h
+> 
+> /*
+>  * Author(s), use "Name <email>" or just "Name", for multiple
+>  * authors use multiple MODULE_AUTHOR() statements/lines.
+>  */
+
+Thanks, did not know that.
+> >> >> +	struct net_device *ndev = ax_local->ndev;
+> >> >> +	int status;
+> >> >> +
+> >> >> +	do {
+> >> >> +		if (!(ax_local->checksum & AX_RX_CHECKSUM))
+> >> >> +			break;
+> >> >> +
+> >> >> +		/* checksum error bit is set */
+> >> >> +		if ((rxhdr->flags & RX_HDR3_L3_ERR) ||
+> >> >> +		    (rxhdr->flags & RX_HDR3_L4_ERR))
+> >> >> +			break;
+> >> >> +
+> >> >> +		if ((rxhdr->flags & RX_HDR3_L4_TYPE_TCP) ||
+> >> >> +		    (rxhdr->flags & RX_HDR3_L4_TYPE_UDP)) {
+> >> >> +			skb->ip_summed = CHECKSUM_UNNECESSARY;
+> >> >> +		}
+> >> >> +	} while (0);
+> >> >
+> >> >
+> >> > ??
+> >> >
+> >> 
+> >> if() break; Should I use goto?
+> >
+> > Sorry, i was too ambiguous. Why:
+> >
+> > do {
+> > } while (0);
+> >
+> > It is an odd construct.
+> 
+> As to "why" — you have correctly spotted, this is a vendor driver I am
+> porting. Although it's not like I am trying to avoid any changes, but
+> because this driver worked for us on older kernels (v3.10.9) I am trying
+> not to touch pieces which IMHO are good enough.
+
+My experience with vendor drivers is you nearly end up rewriting it to
+bring it up to mainline standards. I would suggest first setting up
+some automated tests, and then make lots of small changes, committed
+to git. You can then go backwards and find where regressions have been
+introduced and found by the automated tests. And then every so often
+squash it all together, ready for submission.
+
+> To avoid using do{}while(0) it requires either goto (instead of breaks),
+> nesting those if()s in one another or a humongous single if(). Neither
+> looks pretty and the last one is even less readable than
+> do()while.
+
+I removed too much context. Does anything useful happen afterwards?
+Maybe you can just use return? Or put that code into a helper which
+can use return rather than break?
+
+      Andrew
