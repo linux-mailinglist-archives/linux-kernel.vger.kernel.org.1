@@ -2,80 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1D2D261F63
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 22:02:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99F3D261F57
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 22:02:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731605AbgIHUCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 16:02:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36964 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730493AbgIHUCb (ORCPT
+        id S1730263AbgIHUCH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 16:02:07 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:48198 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731056AbgIHUBY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 16:02:31 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEA19C061573
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 13:02:30 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id v196so199422pfc.1
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 13:02:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=x+Aniqm426lptxXBdTzT7j62mGC/+JOEvzDp+hYSZVE=;
-        b=Q+Q2YAWKZWzPyO2iLJ6cCUDcS76R8NyoRA/UeDzkGVM8aeee0koguncinCMH0wyH/m
-         e7/X+wiDsS2IXv+P4RvgdRcnrfuQ9ScLSwWyYC+LdQ3Yd3fqbP2WaokF07yqvmuIe0R+
-         0oSdXCiGrNzQwKyxEmage7UCpoRwQHF5c35ng=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=x+Aniqm426lptxXBdTzT7j62mGC/+JOEvzDp+hYSZVE=;
-        b=bpkk/SOLRYfo3jUn19ImkZc9tc4pZKyI3sFKGsbn6gjfZ+e2qyK8l7LbmBLPOYPZVF
-         PltbKjjSOT7W++aN3B/9b/FP6M5+waSQngo5qgav8hV5KTqwar9PnEZx9GpvU+Fu2dkb
-         nBAg/TCGkGzrJL8gi6uEGXLaLXj3ZqLNli5mxFpD2XPsxWlpbuNF223jB1p7+syRzulv
-         sciLpdmPYXOu++OjsbAupBQs1XAse4i7ooLxWi51H65Npk4yTH8d3ZIWXJaGdyQgOTe+
-         GZcCQ/KZB1Y6hlfIeZIlXqJB0cqzu2+MnCRu//l1l1TkE1hl8xbgaKqJGUiK+rFaiO0m
-         c/Rg==
-X-Gm-Message-State: AOAM5333edw7sHCMV2jVftLopS5KdKi82NyDmmw2AjYVCFBhEmzqr/6S
-        st7HMKyemxRfx5rHwtqSsSjh3OnJmKh+dQ==
-X-Google-Smtp-Source: ABdhPJz1I8wNlxKiQFz0VaDXKp+YILhPFrtyD7bamTcFRsHJyBCdLG0VhnerUTLpnN3/fQZBOmGY1A==
-X-Received: by 2002:a63:4f66:: with SMTP id p38mr304001pgl.284.1599595350176;
-        Tue, 08 Sep 2020 13:02:30 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id z9sm240221pfk.118.2020.09.08.13.02.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Sep 2020 13:02:28 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Denis Efremov <efremov@linux.com>
-Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>
-Subject: Re: [PATCH] seccomp: Use current_pt_regs()
-Date:   Tue,  8 Sep 2020 13:01:00 -0700
-Message-Id: <159959525269.1676241.9638891402851121567.b4-ty@chromium.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200824125921.488311-1-efremov@linux.com>
-References: <20200824125921.488311-1-efremov@linux.com>
+        Tue, 8 Sep 2020 16:01:24 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 088JX43j163467;
+        Tue, 8 Sep 2020 16:01:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=pp1;
+ bh=d9Z1A13gqnSeYufwW0KlPFsz/dAJdIaf05kQSmmHkvM=;
+ b=Yo78C4zudiuhvxoUXGy9UdPzzfIm6j0hOwPb9PzahM/kFLBuEur4BdepaObbe0snT5jS
+ lky05g/flN4kpfIBqTDfYkuwUs7pLohXUP6GPda6sqKRQBtInfmbRELPZediGu47A9LB
+ i9oDC31h/G5DwzPks52LwEem+8xkWC2Cc8IVS18eUheYEu/5GueIVJgYLvqqK+YLv+h7
+ SyM6Bl26L6xXNLUS1UGC4WyZU0Kuj4KpdRrNHG3QUXeJ+qgQ0VIl9NJ/yoBCBjKlJ8Wq
+ dZdGDpMgm4ClNSgs9gpfGGsX0J4q/X5/UfdMM+hiiCk068a+CIqB6AnbxJ0l+xe4FuvE ag== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33efqwsjr4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 08 Sep 2020 16:01:09 -0400
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 088JXlHc168428;
+        Tue, 8 Sep 2020 16:01:09 -0400
+Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33efqwsjqg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 08 Sep 2020 16:01:09 -0400
+Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
+        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 088JwWYF009338;
+        Tue, 8 Sep 2020 20:01:08 GMT
+Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
+        by ppma02dal.us.ibm.com with ESMTP id 33c2a989qx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 08 Sep 2020 20:01:08 +0000
+Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
+        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 088K17su63242502
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 8 Sep 2020 20:01:07 GMT
+Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 020496A04F;
+        Tue,  8 Sep 2020 20:01:07 +0000 (GMT)
+Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 47ACE6A047;
+        Tue,  8 Sep 2020 20:01:06 +0000 (GMT)
+Received: from SHADE6A.ibmuc.com (unknown [9.163.24.203])
+        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Tue,  8 Sep 2020 20:01:06 +0000 (GMT)
+From:   Eddie James <eajames@linux.ibm.com>
+To:     linux-input@vger.kernel.org
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-aspeed@lists.ozlabs.org, linux-i2c@vger.kernel.org,
+        joel@jms.id.au, andrew@aj.id.au, benh@kernel.crashing.org,
+        brendanhiggins@google.com, dmitry.torokhov@gmail.com,
+        robh+dt@kernel.org, wsa@kernel.org, rentao.bupt@gmail.com,
+        ryan_chen@aspeedtech.com
+Subject: [PATCH v2 5/5] ARM: dts: Aspeed: Rainier: Add IBM Operation Panel I2C device
+Date:   Tue,  8 Sep 2020 15:01:01 -0500
+Message-Id: <20200908200101.64974-6-eajames@linux.ibm.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200908200101.64974-1-eajames@linux.ibm.com>
+References: <20200908200101.64974-1-eajames@linux.ibm.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-08_09:2020-09-08,2020-09-08 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=1 malwarescore=0
+ spamscore=0 clxscore=1015 impostorscore=0 mlxlogscore=999 adultscore=0
+ lowpriorityscore=0 phishscore=0 mlxscore=0 priorityscore=1501 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009080179
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 24 Aug 2020 15:59:21 +0300, Denis Efremov wrote:
-> Modify seccomp_do_user_notification(), __seccomp_filter(),
-> __secure_computing() to use current_pt_regs().
+Set I2C bus 7 to multi-master mode and add the panel device that will
+register as a slave.
 
-Applied, thanks!
+Signed-off-by: Eddie James <eajames@linux.ibm.com>
+Reviewed-by: Joel Stanley <joel@jms.id.au>
+---
+ arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-[1/1] seccomp: Use current_pt_regs() instead of task_pt_regs(current)
-      https://git.kernel.org/kees/c/4484dbacd7b6
-
-I reworded your commit based on the thread and added one comment for
-a weird case where task == current, hopefully that looks correct:
-https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git/commit/?h=for-next/seccomp&id=4484dbacd7b61eaa4e21332c0a044dedce732ebb
-
+diff --git a/arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts b/arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts
+index b94421f6cbd5..50d528444f5d 100644
+--- a/arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts
++++ b/arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts
+@@ -4,6 +4,7 @@
+ 
+ #include "aspeed-g6.dtsi"
+ #include <dt-bindings/gpio/aspeed-gpio.h>
++#include <dt-bindings/i2c/i2c.h>
+ #include <dt-bindings/leds/leds-pca955x.h>
+ 
+ / {
+@@ -698,6 +699,7 @@ eeprom@53 {
+ };
+ 
+ &i2c7 {
++	multi-master;
+ 	status = "okay";
+ 
+ 	si7021-a20@20 {
+@@ -831,6 +833,11 @@ gpio@15 {
+ 		};
+ 	};
+ 
++	ibm-panel@62 {
++		compatible = "ibm,op-panel";
++		reg = <(0x62 | I2C_OWN_SLAVE_ADDRESS)>;
++	};
++
+ 	dps: dps310@76 {
+ 		compatible = "infineon,dps310";
+ 		reg = <0x76>;
 -- 
-Kees Cook
+2.26.2
 
