@@ -2,183 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2C5C261A03
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 20:29:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 152DC2619FC
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 20:29:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731824AbgIHS3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 14:29:49 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:38584 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726660AbgIHS3m (ORCPT
+        id S1731498AbgIHS3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 14:29:32 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:47134 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1731416AbgIHS33 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 14:29:42 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 088IOSNn069846;
-        Tue, 8 Sep 2020 18:29:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=ohq2ao/eaVnIH4UHr6dDfMQ4sB6oBXKsUC8ttv8M1Fc=;
- b=vicZtndQBnYa5kXKqC/l7R2Y8l1E6jOqxrXwDwytZ07G5SEUwOU8OmNcXs6vlktnxOBr
- uHdv/7VjMxCc/LDRyXua+Gv6LnlQOdUzJ1DeKlQ64E+jFi26B7WkOKJvh4jGWkldEDFA
- jqkxrmRreRUZ4cIoGC0B2fiZ5UGVoEj1McT+9GFy3lWLuDU2ObwhX9cGBfWG31Vh1yUd
- S508D2GtUfUZzavzMHx9n/UFnohPKFXbeNZ8euKUwtrXwsOo50jbeMUqyPJ67Cfmmm8s
- S2UJ06LPc0jyU6hx7OLXdEogVtQYz3Yl9Dzy93rG5qTw362KpOnrjFaJTFwzF6Xi3+0S FA== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 33c2mkwava-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 08 Sep 2020 18:29:21 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 088IPQYD029944;
-        Tue, 8 Sep 2020 18:29:20 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 33cmeravtn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 08 Sep 2020 18:29:20 +0000
-Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 088ITHgh027728;
-        Tue, 8 Sep 2020 18:29:17 GMT
-Received: from [192.168.2.112] (/50.38.35.18)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 08 Sep 2020 11:29:17 -0700
-Subject: Re: [RFC PATCH] cma: make number of CMA areas dynamic, remove
- CONFIG_CMA_AREAS
-To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>
-Cc:     Roman Gushchin <guro@fb.com>, Joonsoo Kim <js1304@gmail.com>,
-        Rik van Riel <riel@surriel.com>,
-        Aslan Bakirov <aslan@fb.com>, Michal Hocko <mhocko@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20200903030204.253433-1-mike.kravetz@oracle.com>
- <6b4f0324c6db41a7975267f2ec42e577@hisilicon.com>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <b2f18f10-5ccc-d3ea-c60b-5fd230a2b20a@oracle.com>
-Date:   Tue, 8 Sep 2020 11:29:15 -0700
+        Tue, 8 Sep 2020 14:29:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599589767;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=wqBqvfUxLMhJhpLjqBJKf+PYibTw+qYrNU13Cg3HqH0=;
+        b=gYoigPA3JjluATDYjgLjkt+3kygOjVfZ24EuXuVXXx87FO1FcK5UTRJJ7fqKrQX5bXqevf
+        1c6Hx6YYDls+CWZtjkoVymP3FPvMORxNU+kk3v6MPnGkXqN8ByUJE26UyYEkB85tpwXlil
+        0NQeso6NB26H58/eoBOhcnbtpZDulQU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-413-a3JGCr7bNZG7yGXEBP9I3Q-1; Tue, 08 Sep 2020 14:29:23 -0400
+X-MC-Unique: a3JGCr7bNZG7yGXEBP9I3Q-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DBD2218B9ECB;
+        Tue,  8 Sep 2020 18:29:21 +0000 (UTC)
+Received: from [10.36.115.46] (ovpn-115-46.ams2.redhat.com [10.36.115.46])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id BBBFC1002D57;
+        Tue,  8 Sep 2020 18:29:18 +0000 (UTC)
+Subject: Re: [RFC 0/5] disable pcplists during page isolation
+To:     Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, Michal Hocko <mhocko@kernel.org>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
+References: <20200907163628.26495-1-vbabka@suse.cz>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat GmbH
+Message-ID: <0ffb1c2d-1b28-23f7-53e1-63e6f0f4cd41@redhat.com>
+Date:   Tue, 8 Sep 2020 20:29:18 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <6b4f0324c6db41a7975267f2ec42e577@hisilicon.com>
+In-Reply-To: <20200907163628.26495-1-vbabka@suse.cz>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9738 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0 adultscore=0
- bulkscore=0 phishscore=0 malwarescore=0 mlxlogscore=999 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009080173
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9738 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 priorityscore=1501
- phishscore=0 adultscore=0 bulkscore=0 clxscore=1015 mlxlogscore=999
- malwarescore=0 suspectscore=0 lowpriorityscore=0 spamscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009080173
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/3/20 6:58 PM, Song Bao Hua (Barry Song) wrote:
+On 07.09.20 18:36, Vlastimil Babka wrote:
+> As per the discussions [1] [2] this is an attempt to implement David's
+> suggestion that page isolation should disable pcplists to avoid races. This is
+> done without extra checks in fast paths, as I mentioned should be possible in
+> the discussion, and explained in patch 5. Patches 1-4 are preparatory cleanups.
 > 
->> -----Original Message-----
->> From: Mike Kravetz [mailto:mike.kravetz@oracle.com]
->> Sent: Thursday, September 3, 2020 3:02 PM
->> To: linux-mm@kvack.org; linux-kernel@vger.kernel.org;
->> linux-arm-kernel@lists.infradead.org; linux-mips@vger.kernel.org
->> Cc: Roman Gushchin <guro@fb.com>; Song Bao Hua (Barry Song)
->> <song.bao.hua@hisilicon.com>; Joonsoo Kim <js1304@gmail.com>; Rik van
->> Riel <riel@surriel.com>; Aslan Bakirov <aslan@fb.com>; Michal Hocko
->> <mhocko@kernel.org>; Andrew Morton <akpm@linux-foundation.org>; Mike
->> Kravetz <mike.kravetz@oracle.com>
->> Subject: [RFC PATCH] cma: make number of CMA areas dynamic, remove
->> CONFIG_CMA_AREAS
->>
->> The number of distinct CMA areas is limited by the constant
->> CONFIG_CMA_AREAS.  In most environments, this was set to a default
->> value of 7.  Not too long ago, support was added to allocate hugetlb
->> gigantic pages from CMA.  More recent changes to make dma_alloc_coherent
->> NUMA-aware on arm64 added more potential users of CMA areas.  Along
->> with the dma_alloc_coherent changes, the default value of CMA_AREAS
->> was bumped up to 19 if NUMA is enabled.
->>
->> It seems that the number of CMA users is likely to grow.  Instead of
->> using a static array for cma areas, use a simple linked list.  These
->> areas are used before normal memory allocators, so use the memblock
->> allocator.
+> Note this is untested RFC for now. Based on v5.9-rc4 plus Pavel's patch [2]
+> (slated as a quick fix for mainline+stable).
 > 
-> Hello Mike, It seems it is a good idea. Thanks for addressing this.
+> [1] https://lore.kernel.org/linux-mm/20200901124615.137200-1-pasha.tatashin@soleen.com/
+> [2] https://lore.kernel.org/linux-mm/20200903140032.380431-1-pasha.tatashin@soleen.com/
 > 
-> I was focusing on per-numa cma feature in my patchset and I didn't take care of this
-> while I thought we should do something for the number of cma areas.
+> Vlastimil Babka (5):
+>   mm, page_alloc: clean up pageset high and batch update
+>   mm, page_alloc: calculate pageset high and batch once per zone
+>   mm, page_alloc(): remove setup_pageset()
+>   mm, page_alloc: cache pageset high and batch in struct zone
+>   mm, page_alloc: disable pcplists during page isolation
+> 
+>  include/linux/gfp.h    |   1 +
+>  include/linux/mmzone.h |   2 +
+>  mm/internal.h          |   4 ++
+>  mm/memory_hotplug.c    |  24 +++----
+>  mm/page_alloc.c        | 138 ++++++++++++++++++++++-------------------
+>  mm/page_isolation.c    |  45 +++++++++++---
+>  6 files changed, 127 insertions(+), 87 deletions(-)
 > 
 
-Thanks for taking a look.
+Thanks for looking into this! Just a heads-up that -mm and -next contain
+some changes to memory hotplug code, whereby new pageblocks start out in
+MIGRATE_ISOLATE when onlining, until we're done with the heavy lifting.
+Might require some tweaks, similar to when isolating pageblocks.
 
-One area where I could use some help is testing/verifying on arm.  See the
-changes to arch/arm/mm/dma-mapping.c.  I have tested the generic changes on
-my x86 platform, but do not have an arm platform for easy testing.
+Will dive into this in the following days. What's you're general
+perception of performance aspects?
 
->>  void __init dma_contiguous_early_fixup(phys_addr_t base, unsigned long
->> size)
->>  {
->> -	dma_mmu_remap[dma_mmu_remap_num].base = base;
->> -	dma_mmu_remap[dma_mmu_remap_num].size = size;
->> -	dma_mmu_remap_num++;
->> +	struct dma_contig_early_reserve *d;
->> +
->> +	d = memblock_alloc(sizeof(struct dma_contig_early_reserve),
-> 
-> sizeof(*d)?
-
-Yes.  thanks.
-
->> @@ -172,15 +173,14 @@ int __init cma_init_reserved_mem(phys_addr_t
->> base, phys_addr_t size,
->>  	struct cma *cma;
->>  	phys_addr_t alignment;
->>
->> -	/* Sanity checks */
->> -	if (cma_area_count == ARRAY_SIZE(cma_areas)) {
->> -		pr_err("Not enough slots for CMA reserved regions!\n");
->> -		return -ENOSPC;
->> -	}
->> +	/* Do not attempt allocations after memblock allocator is torn down */
->> +	if (slab_is_available())
->> +		return -EINVAL;
->>
->>  	if (!size || !memblock_is_region_reserved(base, size))
->>  		return -EINVAL;
->>
->> +
-> 
-> Is this empty line relevant?
-
-No, added by mistake.
-
->> @@ -192,12 +192,17 @@ int __init cma_init_reserved_mem(phys_addr_t
->> base, phys_addr_t size,
->>  	if (ALIGN(base, alignment) != base || ALIGN(size, alignment) != size)
->>  		return -EINVAL;
->>
->> +	cma = memblock_alloc(sizeof(struct cma), sizeof(long));
-> 
-> sizeof(*cma)?
-
-Yes, thanks.
-
-> It seems we are going to write cma-> count, order_per_bit, debugfs fields.
-> To avoid false sharing of the cacheline of struct cma, it is better to align with
-> SMP_CACHE_BYTES.
-> 
-> On the other hand, it seems we are unlikely to write the cma 
-
-I thought about using SMP_CACHE_BYTES, but the structures are simply defined
-as an array today.  This should not be any worse.  I do not believe access
-to the structures is performance sensitive.
-
-Thanks,
 -- 
-Mike Kravetz
+Thanks,
+
+David / dhildenb
+
