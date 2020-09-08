@@ -2,89 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA4A32615E7
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:58:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 216492614FC
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:42:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732035AbgIHQ6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 12:58:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59098 "EHLO mail.kernel.org"
+        id S1731937AbgIHQhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 12:37:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34254 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731864AbgIHQUN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:20:13 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        id S1732021AbgIHQbi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 12:31:38 -0400
+Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BC429206B8;
-        Tue,  8 Sep 2020 12:12:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9E52B206DB;
+        Tue,  8 Sep 2020 12:12:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599567137;
-        bh=1oFmjQlUgTa71eRFaKWUQb7zp5miWus6zoZgGzOe5WY=;
+        s=default; t=1599567145;
+        bh=qmVm2cBZbFlDXg2K5rwPxPvrNmapd2esw84x5y2TZFA=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SsM3uXHS3WpdsVZYPEApclhAwZMRIwwg/+fC6ZWLMZ34+WlbTavcoPCfeKBpDrq0P
-         t/NZ9W7hdsJALfCsGcktqFz0jiBd8FBhTqmVmyEsMWZOzwMo9cZ8/DONK+XaQtT8QP
-         Hn/eWkEW6gDH3zz/TEaICOdklnUmvTDAnZZxSrV0=
-Date:   Tue, 8 Sep 2020 13:11:33 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Jaroslav Kysela <perex@perex.cz>
-Cc:     Vinod Koul <vkoul@kernel.org>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
-        tiwai@suse.de, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, ranjani.sridharan@linux.intel.com,
-        hui.wang@canonical.com, srinivas.kandagatla@linaro.org,
-        jank@cadence.com, mengdong.lin@intel.com, sanyog.r.kale@intel.com,
-        rander.wang@linux.intel.com, bard.liao@intel.com
-Subject: Re: [PATCH 1/7] soundwire: bus: use property to set interrupt masks
-Message-ID: <20200908121133.GA5551@sirena.org.uk>
-References: <20200818140656.29014-1-yung-chuan.liao@linux.intel.com>
- <20200818140656.29014-2-yung-chuan.liao@linux.intel.com>
- <20200828065125.GI2639@vkoul-mobl>
- <ec5fe867-f2e4-4278-0376-e54bcdd7f94d@perex.cz>
+        b=NQ7N43mQZ4LkTz66NIKWIOC2tQ5F40LoHwfxM6xc2UuMF2nup3sPRlDg2/4oHVOgE
+         ueQDJCcgHx6hagKe8KacN6yDsSoeaI90haVA0MrSWqN19Ht8L0EgNacfxJSXPfOOzo
+         XziLjCQjkwu0AgW5+bxQSftlzmQ6q6ckvclcRO5g=
+Date:   Tue, 8 Sep 2020 08:12:24 -0400
+From:   Sasha Levin <sashal@kernel.org>
+To:     Lars Melin <larsm17@gmail.com>
+Cc:     Kristian Evensen <kristian.evensen@gmail.com>,
+        linux-kernel@vger.kernel.org, stable <stable@vger.kernel.org>,
+        Daniele Palmas <dnlplm@gmail.com>,
+        =?iso-8859-1?Q?Bj=F8rn?= Mork <bjorn@mork.no>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-usb@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 4.14 17/33] net: usb: qmi_wwan: add Telit 0x1050
+ composition
+Message-ID: <20200908121224.GT8670@sasha-vm>
+References: <20191026132110.4026-1-sashal@kernel.org>
+ <20191026132110.4026-17-sashal@kernel.org>
+ <CAKfDRXjjuW4VM03HeVoeEyG=cULUK8ZXexWu48rfFvJE+DD8_g@mail.gmail.com>
+ <20200907181552.GN8670@sasha-vm>
+ <6e09f3e2-674d-f7c1-e868-c170dff1dbb9@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="OgqxwSJOaUobr8KG"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <ec5fe867-f2e4-4278-0376-e54bcdd7f94d@perex.cz>
-X-Cookie: Vini, vidi, Linux!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <6e09f3e2-674d-f7c1-e868-c170dff1dbb9@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Sep 08, 2020 at 07:33:21AM +0700, Lars Melin wrote:
+>On 9/8/2020 01:15, Sasha Levin wrote:
+>>On Mon, Sep 07, 2020 at 11:36:37AM +0200, Kristian Evensen wrote:
+>// snip
+>
+>>>When testing the FN980 with kernel 4.14, I noticed that the qmi device
+>>>was not there. Checking the git log, I see that this patch was never
+>>>applied. The patch applies fine, so I guess it was just missed
+>>>somewhere. If it could be added to the next 4.14 release, it would be
+>>>much appreciated.
+>>
+>>Interesting, yes - I'm not sure why it's missing. I'll queue it up.
+>>
+>
+>The patch is missing from all 4.x LTS kernels, not only 4.14
 
---OgqxwSJOaUobr8KG
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Right, it's queued up for all the trees.
 
-On Tue, Sep 08, 2020 at 02:05:11PM +0200, Jaroslav Kysela wrote:
-> Dne 28. 08. 20 v 8:51 Vinod Koul napsal(a):
-
-> >>  sound/soc/codecs/rt700-sdw.c    |  4 ++++
-> >>  sound/soc/codecs/rt711-sdw.c    |  4 ++++
-> >>  sound/soc/codecs/rt715-sdw.c    |  4 ++++
-> >>  sound/soc/codecs/wsa881x.c      |  1 +
-
-> > This touches codecs, can you Ack it please
-
-> Mark, could you ack the ASoC change to accept this patch via the soundwire repo?
-
-I don't have this patch and since I seem to get copied on quite a lot of
-soundwire only serieses I just delete them unread mostly.
-
---OgqxwSJOaUobr8KG
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9XdPQACgkQJNaLcl1U
-h9A5ngf+OrSLYDYVzhuanGeitM41iGcNjpTuhcMxyOTDKbQbseAq9/Ho+tDeS7by
-cIPCEOX9UaRBBlqeursubOr0+EXPmtZGo5t3NqZ6MfOtpZlpcwMq4taAAokRSZBw
-E6uNY6NDb2qP3RoTJ1UIR5qbz80uBgVtIRH58O4LQ3qrk1lJ3qbbi4lZCt1kwZ0p
-D2au1Cuu6iUw0VJ3Or+Rt82XQvE4QesxmlfYR4yCZHw5M4y7c1jFTJa1knNvBcXe
-7C5xmIG/XjqV3yzZgvyosEC1UecbE4R1ibauAx8FDPVahRRYGgeoDArzc/+64OyD
-XLbOiBKLJhbWo4M1CKMEuuVWA2FzKw==
-=UJFU
------END PGP SIGNATURE-----
-
---OgqxwSJOaUobr8KG--
+-- 
+Thanks,
+Sasha
