@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B81F261F89
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 22:04:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3587D261F8C
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 22:05:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730918AbgIHUE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 16:04:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48442 "EHLO
+        id S1730682AbgIHUEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 16:04:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730430AbgIHPXv (ORCPT
+        with ESMTP id S1730418AbgIHPXv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 8 Sep 2020 11:23:51 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC40BC09B051
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 08:19:03 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id j2so19539267wrx.7
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 08:19:03 -0700 (PDT)
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F6A6C0A3BF1
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 08:19:08 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id b79so17563577wmb.4
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 08:19:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=EjvSHXG3RI2RmufIBrYIZQgGCbPKahWO302cZe4SW9Q=;
-        b=1fRpOHn2lUTg/rLqc5FK572t6QTaVx2cYu+zLDiJpPqs8Msd6mxRGNwuQj7o/RemeB
-         lp9id7bzG8bubb29ko3iwRYgZzddu8jc1z5ySmEpJQbi81n/gngRijw8+0G4Hmtjajt3
-         VkvFnYnB70FT/9x3O7OLKvsN8UDOhKP5dcVjqfmkLO3lasTdS+d5yCZZxHw7Ga9Zja2n
-         1y6vyBkEwXn/0qvCvQTQjk71wPIDCn2g6OnC0vEEUSS8gU1hzC2FE/iYN4+XkIbnAbOg
-         otF3YD6EqWDUDKMsSqkb8xASmC62YkldJ00uUh8OxuTRQbumbWBoRkx7YxQGBkWdFmmm
-         Szvw==
+        bh=0IoBahBXL8EV0Zm9JurRP5zVn3O/ezWTWYb2ZZwdoss=;
+        b=GG9m4KU79FRy3Qgbny/8OL+0RnULk7UHa8hwD7IGdlg/qZhDxf7vKcI4P3TtCRnWdZ
+         t6SU2EesiN0Cw098TrXyhVUAbYiefAj+KMX4mOg1eFswalgfcdxfwWFd/2OhgVTFVRXf
+         g0dRQ0aec6jsWRZ846qt63PSfKpe9CRYDVyuynbySXEdwR52T3mzEDOmJpGxQlgwxhsR
+         IpjPOse9s6p0IfHP9+eYD58xNRKvXxt51uPieX/UxsPiOthcKowdpEe+ob6Bpatn2wNW
+         rrfbpmyD9lJLn0HetNn/Bm5glZadk3/taeSTRnHJRgtnOOemPdW3Cmkd8Y5jL0zjvFCG
+         uWWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=EjvSHXG3RI2RmufIBrYIZQgGCbPKahWO302cZe4SW9Q=;
-        b=Lh4hKNN/NvqxaAAvZsg+nJwUzHGeDP0zrWrWC1r53h9nNBe5DPKevX3HxJXtezZ54N
-         FDgsZuoNBZ8fX+XFODsjJxAbP4RIgZkHSSn9ubrqHGgUjO8A1nr3nFnSH6ggW1bM5ohT
-         bepox0GOapyCeah7xOqpIq6oYbV3mUla2TNh0jEtUKbeWUy8gSVxqLXMX8ztylwYDyO+
-         By/b0h+Km6m3we83CDEF/KAWYJvEoliLMMBHt78UsjDgvv0woi0dCKT9cv3ZhbEirgXi
-         Bq9T5VNXK0SFC7UyeYmA3kdpp33zh3cP86VCFTBEocoNxKYbvuX2/S96QHClFGZVRtZk
-         vdew==
-X-Gm-Message-State: AOAM530jE2QRZituKE6L2n5G3t/CIFK/fqZXCxo8hmEQGvm5GNV4dboh
-        oTQULHp70HUZ+WoVXYbUIseUvA==
-X-Google-Smtp-Source: ABdhPJyN+wVgZwcIGrsQVVJMowKAn9fgE7m5lBvFEuTQvke5O9KsubvDObKWcbTu0XD7mkbW64TA/Q==
-X-Received: by 2002:adf:f50a:: with SMTP id q10mr110043wro.319.1599578342220;
-        Tue, 08 Sep 2020 08:19:02 -0700 (PDT)
+        bh=0IoBahBXL8EV0Zm9JurRP5zVn3O/ezWTWYb2ZZwdoss=;
+        b=I75npmQXrC2yJzzre28BW2H+ZNYJzpMsddAIfO3wr3avYXco8dAd1K0dZp+MD0Hq3t
+         iv19NDw87N8owkdigzlVoMO5mJukK6/A6iggF448xHbdEkpzGWQ8oKmJ7YRwoO951rbO
+         y0/4yrLVeQ0/cDvuNBBMciL53JGNXfJzOm4mhPgA+tGuNJ6I7iSgkrVEoFgpY+ki4S92
+         mpTgDBfDN2DBhbyHK8+FfI52n29NNxnb51JZSygpyBeXVyfLZ0KxuA48gIhVjxCPjz3s
+         l92DIO+/z3YrY6ZoHje7nmY8J5PNdLhgMNsEiXdPtWSFVEKD3Hg17MzR+cd3NXSoms3Y
+         6pbA==
+X-Gm-Message-State: AOAM5313oKidzk+v1rCoz/ASApeiXHn3BBecvmtG5rqwbYv6R/wuTi0I
+        Gtz1UwpDkUal48uWWny6EHOMFA==
+X-Google-Smtp-Source: ABdhPJw6zcnIiatO6SQE5a+MzW0yXoBmBj7sAP9Cf3yM7GxqrkpZS5u2132oDAMPyj0810YP9kSkWQ==
+X-Received: by 2002:a05:600c:22d1:: with SMTP id 17mr73546wmg.58.1599578343681;
+        Tue, 08 Sep 2020 08:19:03 -0700 (PDT)
 Received: from bender.baylibre.local ([2a01:e35:2ec0:82b0:5405:9623:e2f1:b2ac])
-        by smtp.gmail.com with ESMTPSA id d25sm10004886wra.25.2020.09.08.08.19.00
+        by smtp.gmail.com with ESMTPSA id d25sm10004886wra.25.2020.09.08.08.19.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Sep 2020 08:19:01 -0700 (PDT)
+        Tue, 08 Sep 2020 08:19:03 -0700 (PDT)
 From:   Neil Armstrong <narmstrong@baylibre.com>
 To:     robh@kernel.org, tomeu.vizoso@collabora.com, steven.price@arm.com,
         alyssa.rosenzweig@collabora.com
@@ -55,9 +55,9 @@ Cc:     dri-devel@lists.freedesktop.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-amlogic@lists.infradead.org,
         Neil Armstrong <narmstrong@baylibre.com>
-Subject: [PATCH 3/5] drm/panfrost: add support for reset quirk
-Date:   Tue,  8 Sep 2020 17:18:51 +0200
-Message-Id: <20200908151853.4837-4-narmstrong@baylibre.com>
+Subject: [PATCH 4/5] drm/panfrost: add amlogic reset quirk callback
+Date:   Tue,  8 Sep 2020 17:18:52 +0200
+Message-Id: <20200908151853.4837-5-narmstrong@baylibre.com>
 X-Mailer: git-send-email 2.22.0
 In-Reply-To: <20200908151853.4837-1-narmstrong@baylibre.com>
 References: <20200908151853.4837-1-narmstrong@baylibre.com>
@@ -71,43 +71,65 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 The T820, G31 & G52 GPUs integratewd by Amlogic in the respective GXM, G12A/SM1 & G12B
 SoCs needs a quirk in the PWR registers at the GPU reset time.
 
-This adds a callback in the device compatible struct of permit this.
+Since the documentation of the GPU cores are not public, we do not know what does these
+values, but they permit having a fully functional GPU running with Panfrost.
 
 Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
 ---
- drivers/gpu/drm/panfrost/panfrost_device.h | 3 +++
- drivers/gpu/drm/panfrost/panfrost_gpu.c    | 4 ++++
- 2 files changed, 7 insertions(+)
+ drivers/gpu/drm/panfrost/panfrost_gpu.c  | 13 +++++++++++++
+ drivers/gpu/drm/panfrost/panfrost_gpu.h  |  2 ++
+ drivers/gpu/drm/panfrost/panfrost_regs.h |  3 +++
+ 3 files changed, 18 insertions(+)
 
-diff --git a/drivers/gpu/drm/panfrost/panfrost_device.h b/drivers/gpu/drm/panfrost/panfrost_device.h
-index 2cf1a6a13af8..4c9cd5452ba5 100644
---- a/drivers/gpu/drm/panfrost/panfrost_device.h
-+++ b/drivers/gpu/drm/panfrost/panfrost_device.h
-@@ -73,6 +73,9 @@ struct panfrost_compatible {
- 
- 	/* IOMMU quirks flags */
- 	unsigned long pgtbl_quirks;
-+
-+	/* Vendor implementation quirks at reset time callback */
-+	void (*vendor_reset_quirk)(struct panfrost_device *pfdev);
- };
- 
- struct panfrost_device {
 diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.c b/drivers/gpu/drm/panfrost/panfrost_gpu.c
-index e0f190e43813..c129aaf77790 100644
+index c129aaf77790..018737bd4ac6 100644
 --- a/drivers/gpu/drm/panfrost/panfrost_gpu.c
 +++ b/drivers/gpu/drm/panfrost/panfrost_gpu.c
-@@ -62,6 +62,10 @@ int panfrost_gpu_soft_reset(struct panfrost_device *pfdev)
- 	gpu_write(pfdev, GPU_INT_CLEAR, GPU_IRQ_RESET_COMPLETED);
- 	gpu_write(pfdev, GPU_CMD, GPU_CMD_SOFT_RESET);
+@@ -80,6 +80,19 @@ int panfrost_gpu_soft_reset(struct panfrost_device *pfdev)
+ 	return 0;
+ }
  
-+	/* The Amlogic GPU integration needs quirks at this stage */
-+	if (pfdev->comp->vendor_reset_quirk)
-+		pfdev->comp->vendor_reset_quirk(pfdev);
++void panfrost_gpu_amlogic_quirks(struct panfrost_device *pfdev)
++{
++	/*
++	 * The Amlogic integrated Mali-T820, Mali-G31 & Mali-G52 needs
++	 * these undocumented bits to be set in order to operate
++	 * correctly.
++	 * These GPU_PWR registers contains:
++	 * "device-specific power control value"
++	 */
++	gpu_write(pfdev, GPU_PWR_KEY, 0x2968A819);
++	gpu_write(pfdev, GPU_PWR_OVERRIDE1, 0xfff | (0x20 << 16));
++}
 +
- 	ret = readl_relaxed_poll_timeout(pfdev->iomem + GPU_INT_RAWSTAT,
- 		val, val & GPU_IRQ_RESET_COMPLETED, 100, 10000);
+ static void panfrost_gpu_init_quirks(struct panfrost_device *pfdev)
+ {
+ 	u32 quirks = 0;
+diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.h b/drivers/gpu/drm/panfrost/panfrost_gpu.h
+index 4112412087b2..a881d7dc812f 100644
+--- a/drivers/gpu/drm/panfrost/panfrost_gpu.h
++++ b/drivers/gpu/drm/panfrost/panfrost_gpu.h
+@@ -16,4 +16,6 @@ int panfrost_gpu_soft_reset(struct panfrost_device *pfdev);
+ void panfrost_gpu_power_on(struct panfrost_device *pfdev);
+ void panfrost_gpu_power_off(struct panfrost_device *pfdev);
  
++void panfrost_gpu_amlogic_reset_quirk(struct panfrost_device *pfdev);
++
+ #endif
+diff --git a/drivers/gpu/drm/panfrost/panfrost_regs.h b/drivers/gpu/drm/panfrost/panfrost_regs.h
+index ea38ac60581c..fa0d02f3c830 100644
+--- a/drivers/gpu/drm/panfrost/panfrost_regs.h
++++ b/drivers/gpu/drm/panfrost/panfrost_regs.h
+@@ -51,6 +51,9 @@
+ #define GPU_STATUS			0x34
+ #define   GPU_STATUS_PRFCNT_ACTIVE	BIT(2)
+ #define GPU_LATEST_FLUSH_ID		0x38
++#define GPU_PWR_KEY			0x050	/* (WO) Power manager key register */
++#define GPU_PWR_OVERRIDE0		0x054	/* (RW) Power manager override settings */
++#define GPU_PWR_OVERRIDE1		0x058	/* (RW) Power manager override settings */
+ #define GPU_FAULT_STATUS		0x3C
+ #define GPU_FAULT_ADDRESS_LO		0x40
+ #define GPU_FAULT_ADDRESS_HI		0x44
 -- 
 2.22.0
 
