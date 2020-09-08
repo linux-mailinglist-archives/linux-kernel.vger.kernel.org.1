@@ -2,71 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA1742620B7
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 22:14:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCD212620E1
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 22:17:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730252AbgIHUOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 16:14:47 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:11268 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729953AbgIHPLD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:11:03 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 3615A118C77403F19825;
-        Tue,  8 Sep 2020 22:08:27 +0800 (CST)
-Received: from huawei.com (10.175.113.133) by DGGEMS403-HUB.china.huawei.com
- (10.3.19.203) with Microsoft SMTP Server id 14.3.487.0; Tue, 8 Sep 2020
- 22:08:21 +0800
-From:   Wang Hai <wanghai38@huawei.com>
-To:     <paul@paul-moore.com>, <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-security-module@vger.kernel.org>
-Subject: [PATCH net-next] netlabel: Fix some kernel-doc warnings
-Date:   Tue, 8 Sep 2020 22:05:43 +0800
-Message-ID: <20200908140543.25514-1-wanghai38@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S1730150AbgIHURB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 16:17:01 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:52761 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729622AbgIHPKB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 11:10:01 -0400
+X-UUID: d32e2253dee546139a98e365ebb57e66-20200908
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=vKVQJoq0ngtrX7X9lUEqQqGl9rFsnjBvVAJAtligKEI=;
+        b=F9grUUsztZ4VmHwoI+rY+AnLqjlB7NyijdnAX2Uw34FtKKepFJq0inu+JGFOYGs/FyU8VZVAem2jsvqz/eBiZdUg0k4mlQhhbHW3O3TK+XSGAv/pafEGJcNO+DULToj37xdA4EwNdqBDWT9FGqmvww1d6oulBuOSQ+fbYYtgefU=;
+X-UUID: d32e2253dee546139a98e365ebb57e66-20200908
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
+        (envelope-from <frankie.chang@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1906233610; Tue, 08 Sep 2020 22:06:51 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 8 Sep 2020 22:06:47 +0800
+Received: from mtkswgap22.mediatek.inc (172.21.77.33) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 8 Sep 2020 22:06:48 +0800
+From:   Frankie Chang <Frankie.Chang@mediatek.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     Todd Kjos <tkjos@google.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Martijn Coenen <maco@android.com>,
+        =?UTF-8?q?Arve=20Hj=C3=B8nnev=C3=A5g?= <arve@android.com>,
+        Christian Brauner <christian@brauner.io>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>,
+        Jian-Min Liu <Jian-Min.Liu@mediatek.com>
+Subject: [PATCH v9] binder: transaction latency tracking for user build
+Date:   Tue, 8 Sep 2020 22:06:45 +0800
+Message-ID: <1599574008-5805-1-git-send-email-Frankie.Chang@mediatek.com>
+X-Mailer: git-send-email 1.7.9.5
+In-Reply-To: <1599543504.16905.65.camel@mtkswgap22>
+References: <1599543504.16905.65.camel@mtkswgap22>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.175.113.133]
-X-CFilter-Loop: Reflected
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following W=1 kernel build warning(s):
-
-net/netlabel/netlabel_calipso.c:438: warning: Excess function parameter 'audit_secid' description in 'calipso_doi_remove'
-net/netlabel/netlabel_calipso.c:605: warning: Excess function parameter 'reg' description in 'calipso_req_delattr'
-
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
----
- net/netlabel/netlabel_calipso.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/net/netlabel/netlabel_calipso.c b/net/netlabel/netlabel_calipso.c
-index 249da67d50a2..1a98247ab148 100644
---- a/net/netlabel/netlabel_calipso.c
-+++ b/net/netlabel/netlabel_calipso.c
-@@ -426,7 +426,7 @@ void calipso_doi_free(struct calipso_doi *doi_def)
- /**
-  * calipso_doi_remove - Remove an existing DOI from the CALIPSO protocol engine
-  * @doi: the DOI value
-- * @audit_secid: the LSM secid to use in the audit message
-+ * @audit_info: NetLabel audit information
-  *
-  * Description:
-  * Removes a DOI definition from the CALIPSO engine.  The NetLabel routines will
-@@ -595,7 +595,7 @@ int calipso_req_setattr(struct request_sock *req,
- 
- /**
-  * calipso_req_delattr - Delete the CALIPSO option from a request socket
-- * @reg: the request socket
-+ * @req: the request socket
-  *
-  * Description:
-  * Removes the CALIPSO option from a request socket, if present.
--- 
-2.17.1
+Q2hhbmdlIGZyb20gdjk6DQogIC0gcmVuYW1lIHRpbWVzdGFtcCB0byB0cyBpbiBiaW5kZXJfaW50
+ZXJuYWwuaCBmb3IgY29uY2lzZW5lc3MuDQogIC0gY2hhbmdlICdzdHJ1Y3QgdGltZXZhbCcgdG8g
+J3N0cnVjdCB0aW1lc3BlYzY0JyBpbiBiaW5kZXJfaW50ZXJuYWwuaC4NCg0KQ2hhbmdlIGZyb20g
+djg6DQogIC0gY2hhbmdlIHJ0Y190aW1lX3RvX3RtIHRvIHJ0Y190aW1lNjRfdG9fdG0uDQogIC0g
+Y2hhbmdlIHRpbWV2YWwgdG8gX19rZXJuZWxfb2xkX3RpbWV2YWwgZHVlIHRvIA0KICAgIGh0dHBz
+Oi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L3RvcnZhbGRzL2xpbnV4
+LmdpdC9jb21taXQvP2lkPWM3NjZkMTQ3MmM3MGQyNWFkNDc1Y2Y1NjA0MmFmMTY1MmU3OTJiMjMN
+CiAgLSBleHBvcnQgdHJhY2Vwb2ludCBzeW1ib2wgZm9yIGJpbmRlcl90eG5fbGF0ZW5jeV8qIHdo
+aWNoIGJpbmRlcl90cmFuc2FjdGlvbl9sYXRlbmN5X3RyYWNlciB0byBiZSBrbyBuZWVkZWQuDQoN
+CkNoYW5nZSBmcm9tIHY3Og0KICAtIFVzZSB0aGUgcGFzc2VkLWluIHZhbHVlcyBpbnN0ZWFkIG9m
+IGFjY2Vzc2luZyB2aWEgdC0+ZnJvbS90b19wcm9jL3RvX3RocmVhZA0KICAgIGZvciB0cmFjZV9i
+aW5kZXJfdHhuX2xhdGVuY3lfZnJlZSwgd2hlbiB0cmFjZV9iaW5kZXJfdHhuX2xhdGVuY3lfZnJl
+ZV9lbmFibGUoKSByZXR1cm4gdHJ1ZS4NCiAgLSBtYWtlIGEgaGVscGVyIGZ1bmN0aW9uIHRvIGRv
+IHRoZSBhYm92ZS4NCg0KQ2hhbmdlIGZyb20gdjY6DQogIC0gY2hhbmdlIENPTkZJR19CSU5ERVJf
+VFJBTlNBQ1RJT05fTEFURU5DWV9UUkFDS0lORyB0eXBlIGZyb20gYm9vbCB0byB0cmlzdGF0ZQ0K
+ICAtIGFkZCBjb21tZW50cyB0byBAdGltZXN0YW1wIGFuZCBAdHYgdW5kZXIgc3RydWN0IGJpbmRl
+cl90cmFuc2FjdGlvbg0KICAtIG1ha2UgYmluZGVyX3R4bl9sYXRlbmN5IHRocmVzaG9sZCBjb25m
+aWd1cmFibGUNCiAgLSBlbmhhbmNlIGxvY2sgcHJvdGVjdGlvbg0KDQpDaGFuZ2UgZnJvbSB2NToN
+CiAgLSBjaGFuZ2UgY29uZmlnIG5hbWUgdG8gdGhlIHByb3BlciBvbmUsIENPTkZJR19CSU5ERVJf
+VFJBTlNBQ1RJT05fTEFURU5DWV9UUkFDS0lORy4NCiAgLSBjaGFuZ2UgdHJhY2Vwb2ludCBuYW1l
+IHRvIG1vcmUgZGVzY3JpcHRpdmUgb25lLCB0cmFjZV9iaW5kZXJfdHhuX2xhdGVuY3lfKGFsbG9j
+fGluZm98ZnJlZSkNCiAgLSBlbmhhbmNlIHNvbWUgbG9jayBwcm90ZWN0aW9uLg0KDQpDaGFuZ2Ug
+ZnJvbSB2NDoNCiAgLSBzcGxpdCB1cCBpbnRvIHBhdGNoIHNlcmllcy4NCg0KQ2hhbmdlIGZyb20g
+djM6DQogIC0gdXNlIHRyYWNlcG9pbnRzIGZvciBiaW5kZXJfdXBkYXRlX2luZm8gYW5kIHByaW50
+X2JpbmRlcl90cmFuc2FjdGlvbl9leHQsDQogICAgaW5zdGVhZCBvZiBjdXN0b20gcmVnaXN0cmF0
+aW9uIGZ1bmN0aW9ucy4NCg0KQ2hhbmdlIGZyb20gdjI6DQogIC0gY3JlYXRlIHRyYW5zYWN0aW9u
+IGxhdGVuY3kgbW9kdWxlIHRvIG1vbml0b3Igc2xvdyB0cmFuc2FjdGlvbi4NCg0KQ2hhbmdlIGZy
+b20gdjE6DQogIC0gZmlyc3QgcGF0Y2hzZXQuDQoNCg0KRnJhbmtpZS5DaGFuZyAoMyk6DQogIGJp
+bmRlcjogbW92ZSBzdHJ1Y3RzIGZyb20gY29yZSBmaWxlIHRvIGhlYWRlciBmaWxlDQogIGJpbmRl
+cjogYWRkIHRyYWNlIGF0IGZyZWUgdHJhbnNhY3Rpb24uDQogIGJpbmRlcjogYWRkIHRyYW5zYWN0
+aW9uIGxhdGVuY3kgdHJhY2VyDQoNCiBkcml2ZXJzL2FuZHJvaWQvS2NvbmZpZyAgICAgICAgICAg
+ICAgICAgfCAgIDggKw0KIGRyaXZlcnMvYW5kcm9pZC9NYWtlZmlsZSAgICAgICAgICAgICAgICB8
+ICAgMSArDQogZHJpdmVycy9hbmRyb2lkL2JpbmRlci5jICAgICAgICAgICAgICAgIHwgNDMwICsr
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KIGRyaXZlcnMvYW5kcm9pZC9iaW5kZXJfaW50ZXJuYWwu
+aCAgICAgICB8IDQxOCArKysrKysrKysrKysrKysrKysrKysrKw0KIGRyaXZlcnMvYW5kcm9pZC9i
+aW5kZXJfbGF0ZW5jeV90cmFjZXIuYyB8IDEwOCArKysrKysNCiBkcml2ZXJzL2FuZHJvaWQvYmlu
+ZGVyX3RyYWNlLmggICAgICAgICAgfCAgNDkgKysrDQogNiBmaWxlcyBjaGFuZ2VkLCA2MDggaW5z
+ZXJ0aW9ucygrKSwgNDA2IGRlbGV0aW9ucygtKQ0KIGNyZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJz
+L2FuZHJvaWQvYmluZGVyX2xhdGVuY3lfdHJhY2VyLmMNCg==
 
