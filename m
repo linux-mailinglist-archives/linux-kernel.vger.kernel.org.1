@@ -2,263 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC626261D7E
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:38:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03544261D0B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:30:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731968AbgIHThx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:37:53 -0400
-Received: from mx2.suse.de ([195.135.220.15]:48792 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730849AbgIHPzp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:55:45 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E7EC8B603;
-        Tue,  8 Sep 2020 15:54:18 +0000 (UTC)
-Subject: Re: PROBLEM: Long Workqueue delays V2
-To:     Jim Baxter <jim_baxter@mentor.com>, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-block@vger.kernel.org
-Cc:     linux-usb@vger.kernel.org,
-        "Frkuska, Joshua" <Joshua_Frkuska@mentor.com>,
-        "Resch Carsten (CM/ESO6)" <Carsten.Resch@de.bosch.com>,
-        "Rosca, Eugeniu (ADITG/ESB)" <erosca@de.adit-jv.com>,
-        "Craske, Mark" <Mark_Craske@mentor.com>,
-        "Brown, Michael" <michael_brown@mentor.com>
-References: <625615f2-3a6b-3136-35f9-2f2fb3c110cf@mentor.com>
- <066753ec-eddc-d7f6-5cc8-fe282baba6ec@mentor.com>
- <bf3d7f89-e652-a26b-bb27-c6dbef08e28c@mentor.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <335b22f6-e579-5ff1-5353-7ab14ca43662@suse.cz>
-Date:   Tue, 8 Sep 2020 17:54:13 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1732161AbgIHTaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 15:30:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59284 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732248AbgIHTaW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 15:30:22 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16081C061756
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 12:30:21 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id x123so1674870pfc.7
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 12:30:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=SsOjzOVIq97WOAc6WZeXaOq483i3DuOEILRijMKc8+c=;
+        b=I2A6OrWWp9ZhN3tycDzSBFzxFhAVc4uVVlf6QeuGM+05TNovmH2B+uVYHRSjh8Tfa4
+         3rbgHqE43zixo0WWMEH/uPn6zQ+k8rp6mukpfWZWv8M5OQw4plGz5nLDUFU8TKhOG76x
+         kbIHeGgSSQCfV0ICNIztWj0FF4yY6nAq3J+2c=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=SsOjzOVIq97WOAc6WZeXaOq483i3DuOEILRijMKc8+c=;
+        b=ZJU41dtIkjizVr1/Y8TIz6+HNOaWEu/3yPH59vrPO7H5klLPwJ5p+GX2HBf69xZ8yh
+         Ta6lkf+TvL8kdQHFMzpKf8tw2+xrZk2WtAFxJWHaonImBKihtMwx945im8NpXaOca4i6
+         4eM62a/xoNMc2YjvNUxcrM+YlWYpYivmhgQNG6Mg7gle9/WZdYnjsVTlgnYoUBSeXdoo
+         RKiLw1j/39SaB+JkTBGvrGmfqnZ8TWi0wOnKjoudFuZWVJYf2hxixzEEX/taiOGy++T8
+         rA9L2Z3XvbMlHbdreNdt3YGMZURQ8+Yue/M4VQ0Bj+sKO13UWhkXmFcMAou5fAcIo3an
+         wJ0g==
+X-Gm-Message-State: AOAM530WBI8idqg/wHvmWzMjbxFtwE/IhASX1u50eRLBQzE66mYO0pqA
+        YbKxBVfecy+icbseSFwwUuPIgQ==
+X-Google-Smtp-Source: ABdhPJxHIdKSrBuYxJO9MpvlN9pOkwSjhGrSBHPFd2611Mm9W5IYS0c3yvOL6x5Xbpknc67grJnfiw==
+X-Received: by 2002:a62:6003:: with SMTP id u3mr279604pfb.55.1599593421304;
+        Tue, 08 Sep 2020 12:30:21 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:1:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id r3sm208389pfh.88.2020.09.08.12.30.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Sep 2020 12:30:20 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <bf3d7f89-e652-a26b-bb27-c6dbef08e28c@mentor.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200907130731.2607-1-rojay@codeaurora.org>
+References: <20200907130731.2607-1-rojay@codeaurora.org>
+Subject: Re: [PATCH V3] i2c: i2c-qcom-geni: Add shutdown callback for i2c
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     dianders@chromium.org, saiprakash.ranjan@codeaurora.org,
+        gregkh@linuxfoundation.org, mka@chromium.org,
+        akashast@codeaurora.org, msavaliy@qti.qualcomm.com,
+        skakit@codeaurora.org, rnayak@codeaurora.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sumit.semwal@linaro.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        Roja Rani Yarubandi <rojay@codeaurora.org>
+To:     Roja Rani Yarubandi <rojay@codeaurora.org>, wsa@kernel.org
+Date:   Tue, 08 Sep 2020 12:30:18 -0700
+Message-ID: <159959341894.454335.3250696075143737399@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/27/20 2:06 PM, Jim Baxter wrote:
-> Has anyone any ideas of how to investigate this delay further?
-> 
-> Comparing the perf output for unplugging the USB stick and using umount
-> which does not cause these delays in other workqueues the main difference
+Why is dri-devel on here? And linaro-mm-sig?
 
-I don't have that much insight in this, but isn't it that in case of umount, the
-exactly same work is done in the umount process context and not workqueues? So
-it might take the same time and cpu, stress the same paths, but as it's
-attributed to the process, there are no workqueue delays reported? Or does your
-measurements suggest otherwise?
+Quoting Roja Rani Yarubandi (2020-09-07 06:07:31)
+> diff --git a/drivers/i2c/busses/i2c-qcom-geni.c b/drivers/i2c/busses/i2c-=
+qcom-geni.c
+> index dead5db3315a..b3609760909f 100644
+> --- a/drivers/i2c/busses/i2c-qcom-geni.c
+> +++ b/drivers/i2c/busses/i2c-qcom-geni.c
+>  struct geni_i2c_err_log {
+> @@ -384,7 +387,8 @@ static int geni_i2c_rx_one_msg(struct geni_i2c_dev *g=
+i2c, struct i2c_msg *msg,
+>         if (dma_buf) {
+>                 if (gi2c->err)
+>                         geni_i2c_rx_fsm_rst(gi2c);
+> -               geni_se_rx_dma_unprep(se, rx_dma, len);
+> +               geni_se_rx_dma_unprep(se, gi2c->rx_dma, len);
+> +               gi2c->rx_dma =3D (dma_addr_t)NULL;
+>                 i2c_put_dma_safe_msg_buf(dma_buf, msg, !gi2c->err);
+>         }
+> =20
+> @@ -394,12 +398,12 @@ static int geni_i2c_rx_one_msg(struct geni_i2c_dev =
+*gi2c, struct i2c_msg *msg,
+>  static int geni_i2c_tx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg=
+ *msg,
+>                                 u32 m_param)
+>  {
+> -       dma_addr_t tx_dma;
+>         unsigned long time_left;
+>         void *dma_buf =3D NULL;
+>         struct geni_se *se =3D &gi2c->se;
+>         size_t len =3D msg->len;
+> =20
+> +       gi2c->xfer_len =3D len;
+>         if (!of_machine_is_compatible("lenovo,yoga-c630"))
+>                 dma_buf =3D i2c_get_dma_safe_msg_buf(msg, 32);
+> =20
+> @@ -410,7 +414,7 @@ static int geni_i2c_tx_one_msg(struct geni_i2c_dev *g=
+i2c, struct i2c_msg *msg,
+> =20
+>         writel_relaxed(len, se->base + SE_I2C_TX_TRANS_LEN);
+> =20
+> -       if (dma_buf && geni_se_tx_dma_prep(se, dma_buf, len, &tx_dma)) {
+> +       if (dma_buf && geni_se_tx_dma_prep(se, dma_buf, len, &gi2c->tx_dm=
+a)) {
+>                 geni_se_select_mode(se, GENI_SE_FIFO);
+>                 i2c_put_dma_safe_msg_buf(dma_buf, msg, false);
+>                 dma_buf =3D NULL;
+> @@ -429,7 +433,8 @@ static int geni_i2c_tx_one_msg(struct geni_i2c_dev *g=
+i2c, struct i2c_msg *msg,
+>         if (dma_buf) {
+>                 if (gi2c->err)
+>                         geni_i2c_tx_fsm_rst(gi2c);
+> -               geni_se_tx_dma_unprep(se, tx_dma, len);
+> +               geni_se_tx_dma_unprep(se, gi2c->tx_dma, len);
+> +               gi2c->tx_dma =3D (dma_addr_t)NULL;
+>                 i2c_put_dma_safe_msg_buf(dma_buf, msg, !gi2c->err);
+>         }
+> =20
+> @@ -479,6 +484,51 @@ static int geni_i2c_xfer(struct i2c_adapter *adap,
+>         return ret;
+>  }
+> =20
+> +static void geni_i2c_stop_xfer(struct geni_i2c_dev *gi2c)
+> +{
+> +       int ret;
+> +       u32 dma;
+> +       u32 val;
+> +       u32 geni_status;
+> +       struct geni_se *se =3D &gi2c->se;
+> +
+> +       ret =3D pm_runtime_get_sync(gi2c->se.dev);
+> +       if (ret < 0) {
+> +               dev_err(gi2c->se.dev, "Failed to resume device: %d\n", re=
+t);
 
-> is that the problem case is executing the code in invalidate_mapping_pages()
-> and a large part of that arch_local_irq_restore() which is part of
-> releasing a lock, I would usually expect that requesting a lock would be
-> where delays may occur.
-> 
-> 	--94.90%--invalidate_partition
-> 	   __invalidate_device
-> 	   |          
-> 	   |--64.55%--invalidate_bdev
-> 	   |  |          
-> 	   |   --64.13%--invalidate_mapping_pages
-> 	   |     |          
-> 	   |     |--24.09%--invalidate_inode_page
-> 	   |     |   |          
-> 	   |     |   --23.44%--remove_mapping
-> 	   |     |     |          
-> 	   |     |      --23.20%--__remove_mapping
-> 	   |     |        |          
-> 	   |     |         --21.90%--arch_local_irq_restore
-> 	   |     |          
-> 	   |     |--22.44%--arch_local_irq_enable
-> 
-> Best regards,
-> Jim
-> 
-> -------- Original Message --------
-> Subject: Re: PROBLEM: Long Workqueue delays V2
-> From: Jim Baxter <jim_baxter@mentor.com>
-> To: 
-> Date: Wed Aug 19 2020 14:12:24 GMT+0100 (British Summer Time)
-> 
->> Added linux-block List which may also be relevant to this issue.
->> 
->> -------- Original Message --------
->> Subject: PROBLEM: Long Workqueue delays V2
->> From: Jim Baxter <jim_baxter@mentor.com>
->> To: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org
->> CC: "Resch Carsten (CM/ESO6)" <Carsten.Resch@de.bosch.com>, "Rosca, Eugeniu (ADITG/ESB)" <erosca@de.adit-jv.com>
->> Date: Tue, 18 Aug 2020 12:58:13 +0100
->> 
->>> I am asking this question again to include the fs-devel list.
->>>
->>>
->>> We have issues with the workqueue of the kernel overloading the CPU 0 
->>> when we we disconnect a USB stick.
->>>
->>> This results in other items on the shared workqueue being delayed by
->>> around 6.5 seconds with a default kernel configuration and 2.3 seconds
->>> on a config tailored for our RCar embedded platform.
->>>
->>>
->>>
->>> We first noticed this issue on custom hardware and we have recreated it
->>> on an RCar Starter Kit using a test module [1] to replicate the
->>> behaviour, the test module outputs any delays of greater then 9ms.
->>>
->>> To run the test we have a 4GB random file on a USB stick and perform
->>> the following test.
->>> The stick is mounted as R/O and we are copying data from the stick:
->>>
->>> - Mount the stick.
->>> mount -o ro,remount /dev/sda1
->>>
->>> - Load the Module:
->>> # taskset -c 0 modprobe latency-mon
->>>
->>> - Copy large amount of data from the stick:
->>> # dd if=/run/media/sda1/sample.txt of=/dev/zero
->>> [ 1437.517603] DELAY: 10
->>> 8388607+1 records in
->>> 8388607+1 records out
->>>
->>>
->>> - Disconnect the USB stick:
->>> [ 1551.796792] usb 2-1: USB disconnect, device number 2
->>> [ 1558.625517] DELAY: 6782
->>>
->>>
->>> The Delay output 6782 is in milliseconds.
->>>
->>>
->>>
->>> Using umount stops the issue occurring but is unfortunately not guaranteed
->>> in our particular system.
->>>
->>>
->>> From my analysis the hub_event workqueue kworker/0:1+usb thread uses around
->>> 98% of the CPU.
->>>
->>> I have traced the workqueue:workqueue_queue_work function while unplugging the USB
->>> and there is no particular workqueue function being executed a lot more then the 
->>> others for the kworker/0:1+usb thread.
->>>
->>>
->>> Using perf I identified the hub_events workqueue was spending a lot of time in
->>> invalidate_partition(), I have included a cut down the captured data from perf in
->>> [2] which shows the additional functions where the kworker spends most of its time.
->>>
->>>
->>> I am aware there will be delays on the shared workqueue, are the delays
->>> we are seeing considered normal?
->>>
->>>
->>> Is there any way to mitigate or identify where the delay is?
->>> I am unsure if this is a memory or filesystem subsystem issue.
->>>
->>>
->>> Thank you for you help.
->>>
->>> Thanks,
->>> Jim Baxter
->>>
->>> [1] Test Module:
->>> // SPDX-License-Identifier: GPL-2.0
->>> /*
->>>  * Simple WQ latency monitoring
->>>  *
->>>  * Copyright (C) 2020 Advanced Driver Information Technology.
->>>  */
->>>
->>> #include <linux/init.h>
->>> #include <linux/ktime.h>
->>> #include <linux/module.h>
->>>
->>> #define PERIOD_MS 100
->>>
->>> static struct delayed_work wq;
->>> static u64 us_save;
->>>
->>> static void wq_cb(struct work_struct *work)
->>> {
->>> 	u64 us = ktime_to_us(ktime_get());
->>> 	u64 us_diff = us - us_save;
->>> 	u64 us_print = 0;
->>>
->>> 	if (!us_save)
->>> 		goto skip_print;
->>>
->>>
->>> 	us_print = us_diff / 1000 - PERIOD_MS;
->>> 	if (us_print > 9)
->>> 		pr_crit("DELAY: %lld\n", us_print);
->>>
->>> skip_print:
->>> 	us_save = us;
->>> 	schedule_delayed_work(&wq, msecs_to_jiffies(PERIOD_MS));
->>> }
->>>
->>> static int latency_mon_init(void)
->>> {
->>> 	us_save = 0;
->>> 	INIT_DELAYED_WORK(&wq, wq_cb);
->>> 	schedule_delayed_work(&wq, msecs_to_jiffies(PERIOD_MS));
->>>
->>> 	return 0;
->>> }
->>>
->>> static void latency_mon_exit(void)
->>> {
->>> 	cancel_delayed_work_sync(&wq);
->>> 	pr_info("%s\n", __func__);
->>> }
->>>
->>> module_init(latency_mon_init);
->>> module_exit(latency_mon_exit);
->>> MODULE_AUTHOR("Eugeniu Rosca <erosca@de.adit-jv.com>");
->>> MODULE_LICENSE("GPL");
->>>
->>>
->>> [2] perf trace:
->>>     95.22%     0.00%  kworker/0:2-eve  [kernel.kallsyms]
->>>     |
->>>     ---ret_from_fork
->>>        kthread
->>>        worker_thread
->>>        |          
->>>         --95.15%--process_one_work
->>> 		  |          
->>> 		   --94.99%--hub_event
->>> 			 |          
->>> 			  --94.99%--usb_disconnect
->>> 			  <snip>
->>> 				|  
->>> 				--94.90%--invalidate_partition
->>> 				   __invalidate_device
->>> 				   |          
->>> 				   |--64.55%--invalidate_bdev
->>> 				   |  |          
->>> 				   |   --64.13%--invalidate_mapping_pages
->>> 				   |     |          
->>> 				   |     |--24.09%--invalidate_inode_page
->>> 				   |     |   |          
->>> 				   |     |   --23.44%--remove_mapping
->>> 				   |     |     |          
->>> 				   |     |      --23.20%--__remove_mapping
->>> 				   |     |        |          
->>> 				   |     |         --21.90%--arch_local_irq_restore
->>> 				   |     |          
->>> 				   |     |--22.44%--arch_local_irq_enable
->>> 				   |          
->>> 					--30.35%--shrink_dcache_sb 
->>> 					<snip>
->>> 					  |      
->>> 					  --30.17%--truncate_inode_pages_range
->>>
-> 
+Is this print really necessary? Doesn't PM core already print this sort
+of information?
 
+> +               return;
+> +       }
+> +
+> +       geni_status =3D readl_relaxed(gi2c->se.base + SE_GENI_STATUS);
+> +       if (geni_status & M_GENI_CMD_ACTIVE) {
+
+Please try to de-indent all this.
+
+	if (!(geni_status & M_GENI_CMD_ACTIVE))
+		goto out;
+
+> +               geni_i2c_abort_xfer(gi2c);
+> +               dma =3D readl_relaxed(se->base + SE_GENI_DMA_MODE_EN);
+> +               if (dma) {
+
+	if (!dma)
+		goto out;
+
+> +                       val =3D readl_relaxed(gi2c->se.base + SE_DMA_DEBU=
+G_REG0);
+> +                       if (val & DMA_TX_ACTIVE) {
+> +                               gi2c->cur_wr =3D 0;
+> +                               if (gi2c->err)
+> +                                       geni_i2c_tx_fsm_rst(gi2c);
+> +                               if (gi2c->tx_dma) {
+> +                                       geni_se_tx_dma_unprep(se,
+> +                                                gi2c->tx_dma, gi2c->xfer=
+_len);
+> +                                       gi2c->tx_dma =3D (dma_addr_t)NULL;
+
+Almost nobody does this. In fact, grep shows me one hit in the kernel.
+If nobody else is doing it something is probably wrong. When would dma
+mode be active and tx_dma not be set to something that should be
+stopped? If it really is necessary I suppose we should assign this to
+DMA_MAPPING_ERROR instead of casting NULL. Then the check above for
+tx_dma being valid can be dropped because geni_se_tx_dma_unprep()
+already checks for a valid mapping before doing anything. But really, we
+should probably be tracking the dma buffer mapped to the CPU as well as
+the dma address that was used for the mapping. Not storing both is a
+problem, see below.
+
+> +                               }
+> +                       } else if (val & DMA_RX_ACTIVE) {
+> +                               gi2c->cur_rd =3D 0;
+> +                               if (gi2c->err)
+> +                                       geni_i2c_rx_fsm_rst(gi2c);
+> +                               if (gi2c->rx_dma) {
+> +                                       geni_se_rx_dma_unprep(se,
+> +                                               gi2c->rx_dma, gi2c->xfer_=
+len);
+
+Looking closely it seems that the geni dma wrappers shouldn't even be
+checking for an iova being non-zero. Instead they should make sure that
+it just isn't invalid with !dma_mapping_error().
+
+> +                                       gi2c->rx_dma =3D (dma_addr_t)NULL;
+
+If we're stopping some dma transaction doesn't that mean the=20
+
+                 i2c_put_dma_safe_msg_buf(dma_buf, msg, !gi2c->err);
+
+code needs to run also? I fail to see where we free the buffer that has
+been mapped for DMA.
+
+> +                               }
+> +                       }
+> +               }
+> +       }
+> +
+
+out:
+
+> +       pm_runtime_put_sync_suspend(gi2c->se.dev);
+> +}
+> +
