@@ -2,42 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FA8F2614FA
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:42:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EB832614EB
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:40:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732118AbgIHQlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 12:41:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60566 "EHLO
+        id S1732073AbgIHQko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 12:40:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732032AbgIHQhO (ORCPT
+        with ESMTP id S1732062AbgIHQhZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:37:14 -0400
-Received: from mail.kmu-office.ch (mail.kmu-office.ch [IPv6:2a02:418:6a02::a2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90B99C0612F1
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 05:56:02 -0700 (PDT)
-Received: from trochilidae.toradex.int (31-10-206-124.static.upc.ch [31.10.206.124])
-        by mail.kmu-office.ch (Postfix) with ESMTPSA id 6BFD55C4CAB;
-        Tue,  8 Sep 2020 14:56:00 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=agner.ch; s=dkim;
-        t=1599569760;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:
-         content-transfer-encoding:content-transfer-encoding:in-reply-to:
-         references; bh=qxfcotVSiPgSlKPB5rZ5xXDXpnK6trtv7RzFevjZqVc=;
-        b=GpnxllrNBTG+jCZMxIjRiuwMkKDhmunZ5oYrsTtVr2FjWZ8FBeSR3aOGSCi7oxp+4zOEZD
-        YK2pCIkK0Kx+ZXHdzzFoKzQv6R7cIYiuV7+Ho/qw0lMc2tEpjklLwNUcVrnZ/1kNm0HRUQ
-        XuSQkc1BYcXovM4hqzcwycbL+krdrP0=
-From:   Stefan Agner <stefan@agner.ch>
-To:     marex@denx.de, stefan@agner.ch
-Cc:     laurent.pinchart@ideasonboard.com, airlied@linux.ie,
-        daniel@ffwll.ch, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, tomi.valkeinen@ti.com,
-        linux-imx@nxp.com, dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] drm: mxsfb: check framebuffer pitch
-Date:   Tue,  8 Sep 2020 14:55:58 +0200
-Message-Id: <20200908125558.256843-1-stefan@agner.ch>
-X-Mailer: git-send-email 2.28.0
+        Tue, 8 Sep 2020 12:37:25 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70ED9C0612F3
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 05:58:24 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id a65so17178768wme.5
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 05:58:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DQtqq8I3b88XI5RYkNp0j+Hhm0cs0BlkIjWpufTUkHo=;
+        b=zGVSmZ8TUolLFNV/SsDchqySxOuN18r9lrsOARAJiX8qgn27HVUTobIjs+FYWvWZpK
+         QJ9gcWtrP5eg2kUnaDlT/VIsKzYVJy5Tgjs6skknmbDBNfWKHIhhM8k92MWQP9grUzvx
+         hO/bdDAA1TCeMktIhuyqFMepQssGn5M6ifZvgjb+ybyIOnK+CeRS5pIKUqZiL2Yvb8c3
+         p+OxFlYmMmL/IPbMNHXlwiYsiND/zk/JjY2fKEW6VLjK0jG6FgBW4WFbYSkSyJtCUPCy
+         uzKGXeFcqyrWDhyozGOeoo3YF6BqoGxKrANx3KnIVV/KCbwsQmkGjcW4P0RzNP+dYHVk
+         PExQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DQtqq8I3b88XI5RYkNp0j+Hhm0cs0BlkIjWpufTUkHo=;
+        b=iFwuqjSXH932LVou+U8cM+1nVqTYxspy/LwP7wwUfQCGiWp59nVQgqGQ3OnZZNM2lY
+         RWF/IX5h/lKQ26URfucmhL6SOQn7dTemfrca0ET2OhL6DjeXySevDRp9NB2pVLm1gsQp
+         f003W+EwiX4USEHDlVbMcbJmFrwQXSsAdlinKkbJBRA4MSDbqGdB7vo4kc+jvqCMwist
+         A139cHSLhVc0EQh77aacFuUIwQnUmzHW37DSb0TwswiOOfmovBIMdT0qQEj8BSULl0eH
+         jh1gxwXtTgwDWIg1Jvn+pdbFLcOeXCYcuC2Ee7MIpibpXVJbBQV1GVPDEdoehGddp2G7
+         sMhA==
+X-Gm-Message-State: AOAM532l/SGpSPAX30YqId1bYh122ofZ77u9MD+uJQywENOygP4jBgBy
+        /NKKrhDT2W63Tkab4APJnmlGvQ==
+X-Google-Smtp-Source: ABdhPJxQEsA3ZPJXdjC2LTeIeTB/KU9KtEAAN1nSB7wVImXoTAnYJJZmEA23KzFA8RTOBZvJqk+S9Q==
+X-Received: by 2002:a7b:c4c4:: with SMTP id g4mr4396170wmk.110.1599569902933;
+        Tue, 08 Sep 2020 05:58:22 -0700 (PDT)
+Received: from debian-brgl.home (lfbn-nic-1-68-20.w2-15.abo.wanadoo.fr. [2.15.159.20])
+        by smtp.gmail.com with ESMTPSA id y207sm34817875wmc.17.2020.09.08.05.58.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Sep 2020 05:58:22 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kent Gibson <warthog618@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: [PATCH 0/3] gpiolib: generalize GPIO line names property
+Date:   Tue,  8 Sep 2020 14:58:10 +0200
+Message-Id: <20200908125813.8809-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.26.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -45,61 +68,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The lcdif IP does not support a framebuffer pitch (stride) other than
-framebuffer width. Check for equality and reject the framebuffer
-otherwise.
+From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-This prevents a distorted picture when using 640x800 and running the
-Mesa graphics stack. Mesa tires to use a cache aligned stride, which
-leads at that particular resolution to width != stride. Currently
-Mesa has no fallback behavior, but rejecting this configuration allows
-userspace to handle the issue correctly.
+I initially sent this as part of the gpio-mockup overhaul but since
+these patches are indepentent and the work on gpio-mockup may become
+more complicated - I'm sending these separately.
 
-Signed-off-by: Stefan Agner <stefan@agner.ch>
----
- drivers/gpu/drm/mxsfb/mxsfb_drv.c | 21 ++++++++++++++++++++-
- 1 file changed, 20 insertions(+), 1 deletion(-)
+The only change is adding additional property helpers to count strings
+in array.
 
-diff --git a/drivers/gpu/drm/mxsfb/mxsfb_drv.c b/drivers/gpu/drm/mxsfb/mxsfb_drv.c
-index 8c549c3931af..fa6798d21029 100644
---- a/drivers/gpu/drm/mxsfb/mxsfb_drv.c
-+++ b/drivers/gpu/drm/mxsfb/mxsfb_drv.c
-@@ -21,6 +21,7 @@
- #include <drm/drm_connector.h>
- #include <drm/drm_drv.h>
- #include <drm/drm_fb_helper.h>
-+#include <drm/drm_fourcc.h>
- #include <drm/drm_gem_cma_helper.h>
- #include <drm/drm_gem_framebuffer_helper.h>
- #include <drm/drm_irq.h>
-@@ -81,8 +82,26 @@ void mxsfb_disable_axi_clk(struct mxsfb_drm_private *mxsfb)
- 		clk_disable_unprepare(mxsfb->clk_axi);
- }
- 
-+static struct drm_framebuffer *
-+mxsfb_fb_create(struct drm_device *dev, struct drm_file *file_priv,
-+		  const struct drm_mode_fb_cmd2 *mode_cmd)
-+{
-+	const struct drm_format_info *info;
-+
-+	info = drm_get_format_info(dev, mode_cmd);
-+	if (!info)
-+		return ERR_PTR(-EINVAL);
-+
-+	if (mode_cmd->width * info->cpp[0] != mode_cmd->pitches[0]) {
-+		dev_dbg(dev->dev, "Invalid pitch: fb width must match pitch\n");
-+		return ERR_PTR(-EINVAL);
-+	}
-+
-+	return drm_gem_fb_create(dev, file_priv, mode_cmd);
-+}
-+
- static const struct drm_mode_config_funcs mxsfb_mode_config_funcs = {
--	.fb_create		= drm_gem_fb_create,
-+	.fb_create		= mxsfb_fb_create,
- 	.atomic_check		= drm_atomic_helper_check,
- 	.atomic_commit		= drm_atomic_helper_commit,
- };
+Bartosz Golaszewski (3):
+  device: property: add helpers to count items in string arrays
+  gpiolib: generalize devprop_gpiochip_set_names() for device properties
+  gpiolib: unexport devprop_gpiochip_set_names()
+
+ drivers/gpio/Makefile          |  1 -
+ drivers/gpio/gpiolib-acpi.c    |  3 --
+ drivers/gpio/gpiolib-devprop.c | 20 ++++++-------
+ drivers/gpio/gpiolib-of.c      |  5 ----
+ drivers/gpio/gpiolib.c         | 55 +++++++++++++++++++++++++++++++---
+ include/linux/gpio/driver.h    |  3 --
+ include/linux/property.h       | 13 ++++++++
+ 7 files changed, 74 insertions(+), 26 deletions(-)
+
 -- 
-2.28.0
+2.26.1
 
