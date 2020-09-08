@@ -2,146 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F8092614B5
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:34:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FE572614BE
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:35:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732031AbgIHQeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 12:34:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59890 "EHLO
+        id S1731752AbgIHQft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 12:35:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732036AbgIHQc4 (ORCPT
+        with ESMTP id S1732040AbgIHQdU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:32:56 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35BE9C061573
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 09:32:56 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id w7so11407462pfi.4
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 09:32:55 -0700 (PDT)
+        Tue, 8 Sep 2020 12:33:20 -0400
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26955C061756
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 09:33:06 -0700 (PDT)
+Received: by mail-pf1-x449.google.com with SMTP id c190so11028977pfa.10
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 09:33:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=D+6OKvAnkUtzzW2cGDkKOGH7rrKsaKBarDqPQyHhqbY=;
-        b=BdIE51BMbD2vJPVe5LWf9jcMVph9ArF3q5hwypOuhEoStuB4LfOeegz+pdZT9WDnvZ
-         cU/VWPGrrEhR6rSHH8usFXpyne27RVDIe99CaJmtzJgMELgiHBZKACItfGUg35zziM3Y
-         mO9ONKxuAfaqEDw88bCqSZOJEHamIcH0lVx0U=
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=CANcWdmkfHocbgVKTAAE9dJkc5hHdQokKhQjsEB1KnE=;
+        b=vnAzXgXnVVnlPrwhtix3PGdB4bxu4RglJmzXo+f+f7F62CokdgVLb0tuJRPbdPVbc8
+         w06zo1pPDysBOFCrFK+32SwVnFYivbrZgchZrc6wXnWsxHwUz4EquvDbTasycuKnL6EB
+         3y0vyptT80/i8+m6Cn6cg6d6oMwQbmp9s6KjhtexFhZHOVO3rdKIq5m96j1Z4Z6dwsVx
+         //IQzVHpk3ZwqP0quOFuiboaKe2Jxa0HRvGfxJ7HWrMvNqmQQ/eMf7gdU9r6kA1+t1+4
+         xGWOovztoXUJSS3lNX+GXa0WcGF4XLFhumezuuM6Uy1y5gJ4pYUqRbX8fs6XIpVmAjP6
+         ZdQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=D+6OKvAnkUtzzW2cGDkKOGH7rrKsaKBarDqPQyHhqbY=;
-        b=Dzz2FtkPLj2pMMf2/YS7shxlI0r+GWBLqT26ISmYim+/BzT7VwNxM27M2BzxdvKMo6
-         VDuks+ZBR+jfsVJVstnyk9JDtlaWeP645+rUUgC08rA3N7gWJLArk/xiE58JBCLuOzgP
-         iwVX4fAqcO0tP8OVp0NNojphkvP7lLTGk0SLhSUqG714eurnqTWQTjBrTQi5yeXirGLg
-         4prp+3oS6xX1hdHmLW7kxMlfx1mlygDAR9KKpqCmrs0IIY6kentXooVzwKoh1aHUUwAk
-         jk1AIGfewFVectqhzI/k5LLTozrAvnpI6fnP/mf8vwXmwMCy4EVVnV/zZELg1LSoeHxJ
-         76Wg==
-X-Gm-Message-State: AOAM532ZzbMDjMIZtJOLuQ0QZrJoDNirOkxyfiwBcYrZ1KdZ2QJZ6rwU
-        QKg1WDKv9UOVj5qPAQSbssDtoA==
-X-Google-Smtp-Source: ABdhPJy/MwLs61JfBGoh37V+yP2UwAlE3gV9saHhDANE/meQtBZQtzbPVViRwvgkDgq95jo5/4KEow==
-X-Received: by 2002:a63:d216:: with SMTP id a22mr11107158pgg.339.1599582775184;
-        Tue, 08 Sep 2020 09:32:55 -0700 (PDT)
-Received: from stbsrv-and-01.and.broadcom.net ([192.19.231.250])
-        by smtp.gmail.com with ESMTPSA id b24sm15079186pjp.22.2020.09.08.09.32.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Sep 2020 09:32:54 -0700 (PDT)
-From:   Jim Quinlan <james.quinlan@broadcom.com>
-To:     linux-pci@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
-        james.quinlan@broadcom.com
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [RESEND PATCH v1] PCI: pcie_bus_config can be set at build time
-Date:   Tue,  8 Sep 2020 12:32:48 -0400
-Message-Id: <20200908163248.14330-1-james.quinlan@broadcom.com>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=CANcWdmkfHocbgVKTAAE9dJkc5hHdQokKhQjsEB1KnE=;
+        b=sedhcjd7NQP43DleiGjRbSMVed7kNvJkqZMULuh3fmSRRglvcRuKVaM1PQBEtcpdaM
+         n6HwugRhjP/TZgTesMFQdjt1nAc83dHRa8TdJD3H10vZpZHYsQdkfBp53M6U66xtO0UL
+         GXGbUUdlJgNh2P5JSqqOJHkhK1pJBCfWaSIguSso+vtWd3ptsaVjzr/fv11tMn6XguSw
+         KP+d3sMlalZ8Nvc6v2bQK4re/uRHH0ckCfZlrlednYd6GGzPA55UiIx4sn5MD0rGDI44
+         qSLejxrL7MyIldE3pP6eNhaCpJ4pD3odRV4s8KlfE7K7yrkNBGO1k6x0pdaFY88ZdYbg
+         qplw==
+X-Gm-Message-State: AOAM530Q5nPuZ+K+GwwIKq5Gug6K3snWFxb64kXo/OlBJraL7NsSn1/L
+        uAKvbYpmS1UlLXnQ2dmqNaZQJ48t0S9N
+X-Google-Smtp-Source: ABdhPJw8HTxak1y58y4eThfivoBBfNjQI2nL+3HJ5ywB683wMLKEawkjBkDqxjTuYE1x3wZHkXnL1MGaRodZ
+X-Received: from brianvv.svl.corp.google.com ([2620:15c:2c4:201:a28c:fdff:fee1:c370])
+ (user=brianvv job=sendgmr) by 2002:a17:90b:80f:: with SMTP id
+ bk15mr8833pjb.36.1599582784358; Tue, 08 Sep 2020 09:33:04 -0700 (PDT)
+Date:   Tue,  8 Sep 2020 09:33:00 -0700
+Message-Id: <20200908163300.729113-1-brianvv@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.526.ge36021eeef-goog
+Subject: [PATCH v2] fib: fix fib_rule_ops indirect call wrappers when CONFIG_IPV6=m
+From:   Brian Vazquez <brianvv@google.com>
+To:     Brian Vazquez <brianvv.kernel@gmail.com>,
+        Brian Vazquez <brianvv@google.com>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S . Miller" <davem@davemloft.net>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Sven Joachim <svenjoac@gmx.de>,
+        Randy Dunlap <rdunlap@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Kconfig is modified so that the pcie_bus_config setting can be done at
-build time in the same manner as the CONFIG_PCIEASPM_XXXX choice.  The
-pci_bus_config setting may still be overridden by the bootline param.
+If CONFIG_IPV6=m, the IPV6 functions won't be found by the linker:
 
-Signed-off-by: Jim Quinlan <james.quinlan@broadcom.com>
+ld: net/core/fib_rules.o: in function `fib_rules_lookup':
+fib_rules.c:(.text+0x606): undefined reference to `fib6_rule_match'
+ld: fib_rules.c:(.text+0x611): undefined reference to `fib6_rule_match'
+ld: fib_rules.c:(.text+0x68c): undefined reference to `fib6_rule_action'
+ld: fib_rules.c:(.text+0x693): undefined reference to `fib6_rule_action'
+ld: fib_rules.c:(.text+0x6aa): undefined reference to `fib6_rule_suppress'
+ld: fib_rules.c:(.text+0x6bc): undefined reference to `fib6_rule_suppress'
+make: *** [Makefile:1166: vmlinux] Error 1
+
+Reported-by: Sven Joachim <svenjoac@gmx.de>
+Fixes: 41d707b7332f ("fib: fix fib_rules_ops indirect calls wrappers")
+Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+Signed-off-by: Brian Vazquez <brianvv@google.com>
 ---
- drivers/pci/Kconfig | 40 ++++++++++++++++++++++++++++++++++++++++
- drivers/pci/pci.c   | 12 ++++++++++++
- 2 files changed, 52 insertions(+)
+v2:
+-amend fixes tag to the right one
 
-diff --git a/drivers/pci/Kconfig b/drivers/pci/Kconfig
-index 4bef5c2bae9f..efe69b0d9f7f 100644
---- a/drivers/pci/Kconfig
-+++ b/drivers/pci/Kconfig
-@@ -187,6 +187,46 @@ config PCI_HYPERV
- 	  The PCI device frontend driver allows the kernel to import arbitrary
- 	  PCI devices from a PCI backend to support PCI driver domains.
+ net/core/fib_rules.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/net/core/fib_rules.c b/net/core/fib_rules.c
+index 51678a528f85..7bcfb16854cb 100644
+--- a/net/core/fib_rules.c
++++ b/net/core/fib_rules.c
+@@ -16,7 +16,7 @@
+ #include <net/ip_tunnels.h>
+ #include <linux/indirect_call_wrapper.h>
  
-+choice
-+	prompt "PCIE default bus config setting"
-+	default PCIE_BUS_DEFAULT
-+	depends on PCI
-+	help
-+	  One of the following choices will set the pci_bus_config at
-+	  compile time.  This will still be overridden by the appropriate
-+	  pci bootline parameter.
-+
-+config PCIE_BUS_TUNE_OFF
-+	bool "Tune Off"
-+	depends on PCI
-+	help
-+	  Use the BIOS defaults; doesn't touch MPS at all.
-+
-+config PCIE_BUS_DEFAULT
-+	bool "Default"
-+	depends on PCI
-+	help
-+	  Ensure MPS matches upstream bridge.
-+
-+config PCIE_BUS_SAFE
-+	bool "Safe"
-+	depends on PCI
-+	help
-+	  Use largest MPS boot-time devices support.
-+
-+config PCIE_BUS_PERFORMANCE
-+	bool "Performance"
-+	depends on PCI
-+	help
-+	  Use MPS and MRRS for best performance.
-+
-+config PCIE_BUS_PEER2PEER
-+	bool "Peer2peer"
-+	depends on PCI
-+	help
-+	  Set MPS = 128 for all devices.
-+endchoice
-+
- source "drivers/pci/hotplug/Kconfig"
- source "drivers/pci/controller/Kconfig"
- source "drivers/pci/endpoint/Kconfig"
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index e39c5499770f..dfb52ed4a931 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -101,7 +101,19 @@ unsigned long pci_hotplug_mmio_pref_size = DEFAULT_HOTPLUG_MMIO_PREF_SIZE;
- #define DEFAULT_HOTPLUG_BUS_SIZE	1
- unsigned long pci_hotplug_bus_size = DEFAULT_HOTPLUG_BUS_SIZE;
- 
-+
-+/* PCIE bus config, can be overridden by bootline param */
-+#ifdef CONFIG_PCIE_BUS_TUNE_OFF
-+enum pcie_bus_config_types pcie_bus_config = PCIE_BUS_TUNE_OFF;
-+#elif defined CONFIG_PCIE_BUS_SAFE
-+enum pcie_bus_config_types pcie_bus_config = PCIE_BUS_SAFE;
-+#elif defined CONFIG_PCIE_BUS_PERFORMANCE
-+enum pcie_bus_config_types pcie_bus_config = PCIE_BUS_PERFORMANCE;
-+#elif defined CONFIG_PCIE_BUS_PEER2PEER
-+enum pcie_bus_config_types pcie_bus_config = PCIE_BUS_PEER2PEER;
-+#else
- enum pcie_bus_config_types pcie_bus_config = PCIE_BUS_DEFAULT;
-+#endif
- 
- /*
-  * The default CLS is used if arch didn't set CLS explicitly and not
+-#ifdef CONFIG_IPV6_MULTIPLE_TABLES
++#if defined(CONFIG_IPV6) && defined(CONFIG_IPV6_MULTIPLE_TABLES)
+ #ifdef CONFIG_IP_MULTIPLE_TABLES
+ #define INDIRECT_CALL_MT(f, f2, f1, ...) \
+ 	INDIRECT_CALL_INET(f, f2, f1, __VA_ARGS__)
 -- 
-2.17.1
+2.28.0.526.ge36021eeef-goog
 
