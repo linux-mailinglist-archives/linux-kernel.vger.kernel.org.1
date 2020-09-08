@@ -2,76 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1865326168C
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:13:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 345BE26171F
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:26:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731802AbgIHRNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 13:13:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58974 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731794AbgIHQTT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:19:19 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 117672485F;
-        Tue,  8 Sep 2020 15:45:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599579929;
-        bh=1BZhO4+UQ67mZNfApbi5PQu9vhFmjk3MHNhnyVGGy3k=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1V3dYgjRVNfMIlQKCyLjgRL5hfHeC/xduEAn92GQXYamRmVQsvE76AksEss/qq4V9
-         QewW+Je9vjkDc8v+qF+AAOFuQAYI+GYkg8LxJioITWeZxLrkDBzEcSfuaMcRX1P5Kj
-         Qk8QqRzot6vH/52MHqyuh5THnmssANyNHvS40908=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Joshua Sivec <sivec@posteo.net>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.4 091/129] ALSA: usb-audio: Add implicit feedback quirk for UR22C
-Date:   Tue,  8 Sep 2020 17:25:32 +0200
-Message-Id: <20200908152234.284393777@linuxfoundation.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200908152229.689878733@linuxfoundation.org>
-References: <20200908152229.689878733@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1731960AbgIHR0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 13:26:08 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:3157 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1731733AbgIHQQ7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 12:16:59 -0400
+Received: from dggeme758-chm.china.huawei.com (unknown [172.30.72.55])
+        by Forcepoint Email with ESMTP id CCE28F1326CF72BA8027;
+        Tue,  8 Sep 2020 23:25:41 +0800 (CST)
+Received: from [10.174.61.242] (10.174.61.242) by
+ dggeme758-chm.china.huawei.com (10.3.19.104) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Tue, 8 Sep 2020 23:25:41 +0800
+Subject: Re: [PATCH net] hinic: fix rewaking txq after netif_tx_disable
+To:     Jakub Kicinski <kuba@kernel.org>
+CC:     <davem@davemloft.net>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <luoxianjun@huawei.com>,
+        <yin.yinshi@huawei.com>, <cloud.wangxiaoyun@huawei.com>,
+        <chiqijun@huawei.com>
+References: <20200907141516.16817-1-luobin9@huawei.com>
+ <20200907142834.368b9bae@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   "luobin (L)" <luobin9@huawei.com>
+Message-ID: <695897ce-9edd-d5cb-12c7-d0c8080bd4e6@huawei.com>
+Date:   Tue, 8 Sep 2020 23:25:41 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200907142834.368b9bae@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.61.242]
+X-ClientProxiedBy: dggeme713-chm.china.huawei.com (10.1.199.109) To
+ dggeme758-chm.china.huawei.com (10.3.19.104)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joshua Sivec <sivec@posteo.net>
-
-commit 7c5b892e0871655fea3294ffac6fa3cc3400b60d upstream.
-
-This uses the same quirk as the Motu and SSL2 devices.
-Tested on the UR22C.
-
-Fixes bug 208851.
-
-Signed-off-by: Joshua Sivec <sivec@posteo.net>
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=208851
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200825165515.8239-1-sivec@posteo.net
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
----
- sound/usb/pcm.c |    1 +
- 1 file changed, 1 insertion(+)
-
---- a/sound/usb/pcm.c
-+++ b/sound/usb/pcm.c
-@@ -356,6 +356,7 @@ static int set_sync_ep_implicit_fb_quirk
- 	case USB_ID(0x07fd, 0x0008): /* MOTU M Series */
- 	case USB_ID(0x31e9, 0x0001): /* Solid State Logic SSL2 */
- 	case USB_ID(0x31e9, 0x0002): /* Solid State Logic SSL2+ */
-+	case USB_ID(0x0499, 0x172f): /* Steinberg UR22C */
- 	case USB_ID(0x0d9a, 0x00df): /* RTX6001 */
- 		ep = 0x81;
- 		ifnum = 2;
-
-
+On 2020/9/8 5:28, Jakub Kicinski wrote:
+> On Mon, 7 Sep 2020 22:15:16 +0800 Luo bin wrote:
+>> When calling hinic_close in hinic_set_channels, all queues are
+>> stopped after netif_tx_disable, but some queue may be rewaken in
+>> free_tx_poll by mistake while drv is handling tx irq. If one queue
+>> is rewaken core may call hinic_xmit_frame to send pkt after
+>> netif_tx_disable within a short time which may results in accessing
+>> memory that has been already freed in hinic_close. So we judge
+>> whether the netdev is in down state before waking txq in free_tx_poll
+>> to fix this bug.
+> 
+> The right fix is to call napi_disable() _before_ you call
+> netif_tx_disable(), not after, like hinic_close() does.
+> .
+> 
+Will fix. Thanks for your review.
