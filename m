@@ -2,90 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCEC3261625
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:04:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6163526161B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:03:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732053AbgIHRDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 13:03:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36428 "EHLO
+        id S1731866AbgIHRDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 13:03:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732038AbgIHRCv (ORCPT
+        with ESMTP id S1731873AbgIHRDD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 13:02:51 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A0C9C061756
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 10:02:50 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id z25so55980iol.10
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 10:02:50 -0700 (PDT)
+        Tue, 8 Sep 2020 13:03:03 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C110C061573
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 10:03:03 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id m8so5175460pgi.3
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 10:03:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=6r8oY7P5aaaNjTS2Z3JuHAo/BodSW0G0Qz3+9SCpdcA=;
-        b=Fc5KlT/QgmDUw9wewiSXZGEfR0knpYXatiwTcFvCBfuTglDqwe97Xqfk0+3x8rqwqz
-         +7tuFM8H7/+AmHKFAaAgiLJ6SRjQRhYk33odBKaz/HYiH3Ner4l978qk7J5fVRCppZat
-         NzbCVkM8xF0xtOByqvqkwhwdQxGZyDDDgP822eVuJM4gG0Hcg8eiv1RslZap/Bek1+wl
-         Zo6pLSrd6Y9goqQPOoDIZfkmRDiwu8LSP2FkQezPzvHh4k3BUYgvl+MCayPCGDN/ggRH
-         EbcMddlY2Qg8dVmq7IG0F2iCUIwDUoScipcAw4Y7Ul6q0kcLqRY/IS7Ixd4PLxrKKOK1
-         TsFA==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=TS+pFAf+gXvyICCIZ7exDi0/Gxg54q8UJXDvRO7l168=;
+        b=pKJ8j7uKJcb7uVWaQ5j/SnvkaAx4KCY55KCie8OQaygCpy1OPF8cDgeNH1qrPaLMvG
+         8srfgOOgbosqJmTceeQvjWZChA+6j/LEIRcay7cMsXtBzLKxqoBwUcyD/WziBOgMhTht
+         H95mhfOyXrIvUmREbH1YWzNRx8qhfoLUnK6vxg72nBJz4Zsryt8ZJJ5SgRHKxhMkN6NG
+         dtOewrVFqRwrzOeM6o0lzzlRd9V3/io+BfvvategCuZpFKOLhdC7d/WJPglYjH7skxA9
+         mFBhEsZ3kh8WuUPDicHPjHktAGiGpoaEUWzf67bzqCSOGx192KG66jA3O0NwWTFIar6q
+         WtYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=6r8oY7P5aaaNjTS2Z3JuHAo/BodSW0G0Qz3+9SCpdcA=;
-        b=e9Uvpk2W9vkCLz3AlQXCXnbtVZLGKOrlN5P+dXlg126jUfO5244YkgV5/1wAntYXVG
-         ksITGZ5q1UxL6wXpdezhuW2RNoFOoiteX2nEO8w1qaEdIQ+9skkXxg9lOS6u7GlIOYCi
-         HEYE0b9761WvuvlVHGPznVUJ10pJSWkfwUgNZ3IdHVSizY0IhF0nluMp9LAImPm9/UYG
-         LsOlph5bYjvn974JX0m5naO8DX6hIMdMUGfGbil6MbOjDl5yAGTckstWS2FiATEGt2kX
-         IQ0fexbelbm1kN/SWvgJRl0ttUp8pnwKK0CcB+nK9bKiXyV1DFHa/2LjpDtJ1FcQdAO9
-         phkA==
-X-Gm-Message-State: AOAM532fPaKQhvhg6u0gETxkJoh538R9iBif7oAIRQ0h031/y6HVhvJR
-        U2dHZ0GX/drGgstQ0x2OK8VTiNARFDk6PmVd
-X-Google-Smtp-Source: ABdhPJwKYohUKj3l/8T5Uy0NjpVMb531t2l/rRzat+mZoQM4CjOho16dsxnLDc/YijlCusjH4qO8bQ==
-X-Received: by 2002:a02:9986:: with SMTP id a6mr23301374jal.28.1599584569815;
-        Tue, 08 Sep 2020 10:02:49 -0700 (PDT)
-Received: from [192.168.1.10] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id i14sm10669430ilb.28.2020.09.08.10.02.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Sep 2020 10:02:49 -0700 (PDT)
-Subject: Re: [PATCH for-next] io_uring: return EBADFD when ring isn't in the
- right state
-To:     Stefano Garzarella <sgarzare@redhat.com>
-Cc:     io-uring@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200908165242.124957-1-sgarzare@redhat.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <6e119be3-d9a3-06ea-1c76-4201816dde46@kernel.dk>
-Date:   Tue, 8 Sep 2020 11:02:48 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=TS+pFAf+gXvyICCIZ7exDi0/Gxg54q8UJXDvRO7l168=;
+        b=DJbSeoz9+qaU8zazsVulREvCd4Suhd1kNsB7ohYwYxKanPQ/oCI9gqBg7ZAx/muvHX
+         fp2k5YYA9UeBFt18ZqBK7gygfHlm0e8yOZD9ehVjUxElYD+eRclYSXaAetvk4cPpb+Aa
+         RXWaroNQbRIZ31+xOHfyF3PZBpsEs5wWXYn1Bv6nFhOFqkEkvn6YKtf2tpcwdfVCRZAX
+         v7Svzm8p5AYE7j+5XAvswRJ/pCKISwo1rcl8DCFG2QwpQNA3p1zenCV3jmaOLd7mi/25
+         hZmieGo4oL8+lnWOj6dBCafvvX1xUMPP5iI43mpe+fkwXnot0x+QimJ9/2Qxs6j83hpw
+         Ka3w==
+X-Gm-Message-State: AOAM533i546oCeSsMdtyl5x4m0sISFp1PwSHOa/X1KRQ1keGgvHq/YAi
+        1NGJ64kGvHacAmGNQsRcfFjEmJ7t3l/U2g==
+X-Google-Smtp-Source: ABdhPJypTa9m8baYyH7KtZLmA6Dhp5bWpLPg7YpbRm1G9HK65/WnGTkmsSsfgelDtI+oA1WrmQRR/g==
+X-Received: by 2002:a17:902:d714:b029:d0:cbe1:e738 with SMTP id w20-20020a170902d714b02900d0cbe1e738mr2106530ply.19.1599584582581;
+        Tue, 08 Sep 2020 10:03:02 -0700 (PDT)
+Received: from google.com ([2620:15c:201:2:f693:9fff:fef4:1b6d])
+        by smtp.gmail.com with ESMTPSA id t15sm19413909pfl.175.2020.09.08.10.03.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Sep 2020 10:03:01 -0700 (PDT)
+Date:   Tue, 8 Sep 2020 10:02:56 -0700
+From:   Sami Tolvanen <samitolvanen@google.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com,
+        kernel-hardening@lists.openwall.com, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        x86@kernel.org
+Subject: Re: [PATCH v2 09/28] kbuild: add support for Clang LTO
+Message-ID: <20200908170256.GA2743468@google.com>
+References: <20200624203200.78870-1-samitolvanen@google.com>
+ <20200903203053.3411268-1-samitolvanen@google.com>
+ <20200903203053.3411268-10-samitolvanen@google.com>
+ <202009031504.07098D6F8@keescook>
 MIME-Version: 1.0
-In-Reply-To: <20200908165242.124957-1-sgarzare@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202009031504.07098D6F8@keescook>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/8/20 10:52 AM, Stefano Garzarella wrote:
-> This patch uniforms the returned error (EBADFD) when the ring state
-> (enabled/disabled) is not the expected one.
+On Thu, Sep 03, 2020 at 03:08:59PM -0700, Kees Cook wrote:
+> On Thu, Sep 03, 2020 at 01:30:34PM -0700, Sami Tolvanen wrote:
+> > This change adds build system support for Clang's Link Time
+> > Optimization (LTO). With -flto, instead of ELF object files, Clang
+> > produces LLVM bitcode, which is compiled into native code at link
+> > time, allowing the final binary to be optimized globally. For more
+> > details, see:
+> > 
+> >   https://llvm.org/docs/LinkTimeOptimization.html
+> > 
+> > The Kconfig option CONFIG_LTO_CLANG is implemented as a choice,
+> > which defaults to LTO being disabled. To use LTO, the architecture
+> > must select ARCH_SUPPORTS_LTO_CLANG and support:
+> > 
+> >   - compiling with Clang,
+> >   - compiling inline assembly with Clang's integrated assembler,
+> >   - and linking with LLD.
+> > 
+> > While using full LTO results in the best runtime performance, the
+> > compilation is not scalable in time or memory. CONFIG_THINLTO
+> > enables ThinLTO, which allows parallel optimization and faster
+> > incremental builds. ThinLTO is used by default if the architecture
+> > also selects ARCH_SUPPORTS_THINLTO:
+> > 
+> >   https://clang.llvm.org/docs/ThinLTO.html
+> > 
+> > To enable LTO, LLVM tools must be used to handle bitcode files. The
+> > easiest way is to pass the LLVM=1 option to make:
+> > 
+> >   $ make LLVM=1 defconfig
+> >   $ scripts/config -e LTO_CLANG
+> >   $ make LLVM=1
+> > 
+> > Alternatively, at least the following LLVM tools must be used:
+> > 
+> >   CC=clang LD=ld.lld AR=llvm-ar NM=llvm-nm
+> > 
+> > To prepare for LTO support with other compilers, common parts are
+> > gated behind the CONFIG_LTO option, and LTO can be disabled for
+> > specific files by filtering out CC_FLAGS_LTO.
+> > 
+> > Note that support for DYNAMIC_FTRACE and MODVERSIONS are added in
+> > follow-up patches.
+> > 
+> > Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
 > 
-> The changes affect io_uring_enter() and io_uring_register() syscalls.
+> I remain crazy excited about being able to use this in upstream. :)
+> 
+> The only suggestion I have here, if it might help with clarity, would be
+> to remove DISABLE_LTO globally as a separate patch, since it's entirely
+> unused in the kernel right now. This series removes it as it goes, which
+> I think is fine, but it might cause some reviewers to ponder "what's
+> this DISABLE_LTO thing? Don't we need that?" without realizing currently
+> unused in the kernel.
 
-I added a Fixes line:
+Sure, that makes sense. I'll add a patch to remove DISABLE_LTO treewide
+in v3.
 
-Fixes: 7ec3d1dd9378 ("io_uring: allow disabling rings during the creation")
-
-and applied it, thanks!
-
-> https://github.com/stefano-garzarella/liburing (branch: fix-disabled-ring-error)
-
-I'll check and pull that one too.
-
--- 
-Jens Axboe
-
+Sami
