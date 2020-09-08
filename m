@@ -2,225 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8A12261014
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 12:39:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD9D026100C
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 12:37:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729633AbgIHKjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 06:39:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60460 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729171AbgIHKer (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 06:34:47 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E575C061573
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 03:34:47 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id m8so4451881pgi.3
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 03:34:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=2nCi8zy7QuQkZMR6IxuyCp5GD0A3R6OZW47abt1o2sE=;
-        b=JR7BTrwJhzX7Mfr1dyfJa8McktGcJbt+Q/yWlCstYdZe6ZP+AbvN60k9wgL+5/Pk3P
-         1Ha3q+LLnrT4pfCJ92nARvsTbKg/JiTQmqCqhZIIZR25oymECHGZb7MgrLHsdFuQVzdN
-         ngYcf0iR33Bd27uwKMpzwWP+dw4i2XLgtky8KXsRKt28cgWlM2oox8/EPjvn/T7H2pA4
-         gNTG+hIaTDVzhVFkXyekNim/O+eVUgQIgedGcF5qT7oBqHihA0sWw9ly4YBqGE45M9HL
-         tl5iqkEOAkbz4NtfqESltSy64RcY+X72jFGfknInIeeYPpgliCklRG5wZeZ9LGLGMGco
-         rALw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=2nCi8zy7QuQkZMR6IxuyCp5GD0A3R6OZW47abt1o2sE=;
-        b=Yi7P5XTZDdqRG6hlWK33Gvf/Z+wc6ZeC4ZXh3TAmQfgCgNzLVFx4ag5ZQmfDv6ZEid
-         2OCjcNG3L09EIriIdICDHNfoxSAf8t6tJjZ6VuzFWOYPxTeO9TSRf+oOAJHuhZj9a8m5
-         VcV50OpYQZwDhiBC2ANxbzQGM0tUO8NtWmNVholRiLxDir077foY8nt5cdm8qidFGm2Y
-         m/cqaT/id9A3Tae93K9lrRFrFR22AqDb60/W9IbHfTdw6asDWhth2HmYqzTWonsgcqGS
-         iuNhm5JpSQJsQr72RwhNDdozM65qPZ6IQsD0USsWUOkoPUizcIzZGkrYt9LPDQA1HcOt
-         KbNQ==
-X-Gm-Message-State: AOAM530DLe99gBeXi1f8PSaHJAnRrng+bq+lgzLkjbS0qycPg3meqMzA
-        1g+gGDQ9YgM+cZKikm4n21/xXA==
-X-Google-Smtp-Source: ABdhPJxYAK1Zi7MXGpBWBuIGleqFscf/lAKVmLVtd3LYQAY3bDRZjWZ/jyNlrvWNehd/7EMXc8I+mA==
-X-Received: by 2002:a63:485c:: with SMTP id x28mr169704pgk.289.1599561286562;
-        Tue, 08 Sep 2020 03:34:46 -0700 (PDT)
-Received: from localhost ([122.181.54.133])
-        by smtp.gmail.com with ESMTPSA id a15sm9887130pfi.119.2020.09.08.03.34.45
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 08 Sep 2020 03:34:45 -0700 (PDT)
-Date:   Tue, 8 Sep 2020 16:04:44 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     rjw@rjwysocki.net, robh+dt@kernel.org, agross@kernel.org,
-        bjorn.andersson@linaro.org, amitk@kernel.org,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        dmitry.baryshkov@linaro.org, tdas@codeaurora.org
-Subject: Re: [PATCH 5/7] cpufreq: qcom-hw: Use regmap for accessing hardware
- registers
-Message-ID: <20200908103444.5e526uawa45om6lt@vireshk-i7>
-References: <20200908075716.30357-1-manivannan.sadhasivam@linaro.org>
- <20200908075716.30357-6-manivannan.sadhasivam@linaro.org>
+        id S1729635AbgIHKhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 06:37:20 -0400
+Received: from mail-db8eur05on2069.outbound.protection.outlook.com ([40.107.20.69]:2080
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729600AbgIHKfK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 06:35:10 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=S6ri6EPGt7YWj2QSBGMAhxfSad22OtId1PKCSyZ3ByvHUHS1PYFoFrDhP1IE/MyBVshwyrmbIv7YGlvFV5fCvXF308If4Mx6Q3vm+56xt6DjvySE7rxN6KhlEMluNIkIBbc27BIDImVDLzJR2Tt2PlpKLYPobb73W3o24praHNd6eqJ1FLtwop4UtLBe1wCXdEsJSxw4B6pcJdhwIWrH2hAm12OfI1lv2jMULRl7wMHVcB/3iSg+k6apCuTWA3P58xzHRff/8ZWsqnroIGXWMuUGLPu86748bKsc6uMwcaVfrIGMWJFqmuM6LRCIwEaEYbX7ILupXKkfurizxXYI9w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vGtT2eaNTqnN9FbQuMB8Bw1+CUSikWZBhlBWY9yKaBo=;
+ b=e+iYaLakCqKxQmfTrXL5or9Z7X3pl/7T7EJKbq89OWfNgSmU2RpH4CqVBK4twxWcJTp0UZssP8lj1K3/yeJNBIPHs6WaSkyzu+DwktyFL8gf66w5D4w4Qwnou8xECgiV9FyHyWhKqPQ0AY7DpkK8awG9Qq4EjCpCFFcoFoioRkTyo3T1pLDQisqyUG9+sq7J7TImdpYN8jpTgwV4vLtC6grpw1k0RfjfzeWHgl38DaFicqpgpeM3tOh5ZKRe/ziyOe6UaPF3ugyHKeFcnC/eSf8GqrbVHWNxnYk75+E4vhQ2u3OWW+RuJbTkXKzIofzH823YN+b3sWXP1F9PXvpmOg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vGtT2eaNTqnN9FbQuMB8Bw1+CUSikWZBhlBWY9yKaBo=;
+ b=D+RzrvrVv12jTTyxBUUzU5FTO1Z1gDc7IaCS7MUKM9BsBb4K2GKs3pHB4fvH15hrIQZvylNTy94en8U/3u7ox7v+8+zMwj+No73Cu4KuQdFXpx3Dt56IN6VXJAfHUGyhTx/kry5bbx2W1pgHntdcsd19zd/R5qS3le5GMFG7yOE=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
+Received: from VI1PR04MB4046.eurprd04.prod.outlook.com (2603:10a6:803:4d::29)
+ by VI1PR04MB4046.eurprd04.prod.outlook.com (2603:10a6:803:4d::29) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.16; Tue, 8 Sep
+ 2020 10:35:07 +0000
+Received: from VI1PR04MB4046.eurprd04.prod.outlook.com
+ ([fe80::8ce:6a19:696b:4f11]) by VI1PR04MB4046.eurprd04.prod.outlook.com
+ ([fe80::8ce:6a19:696b:4f11%6]) with mapi id 15.20.3348.019; Tue, 8 Sep 2020
+ 10:35:07 +0000
+Subject: Re: [PATCH RESEND 1/9] crypto: caam/jr - add fallback for XTS with
+ more than 8B IV
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "Andrei Botila (OSS)" <andrei.botila@oss.nxp.com>
+Cc:     Aymen Sghaier <aymen.sghaier@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>
+References: <20200806163551.14395-1-andrei.botila@oss.nxp.com>
+ <20200806163551.14395-2-andrei.botila@oss.nxp.com>
+ <20200821034651.GA25442@gondor.apana.org.au>
+From:   =?UTF-8?Q?Horia_Geant=c4=83?= <horia.geanta@nxp.com>
+Message-ID: <c360d691-8253-bd99-af92-83d9f8e86a2d@nxp.com>
+Date:   Tue, 8 Sep 2020 13:35:04 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
+In-Reply-To: <20200821034651.GA25442@gondor.apana.org.au>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: AM0PR01CA0102.eurprd01.prod.exchangelabs.com
+ (2603:10a6:208:10e::43) To VI1PR04MB4046.eurprd04.prod.outlook.com
+ (2603:10a6:803:4d::29)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200908075716.30357-6-manivannan.sadhasivam@linaro.org>
-User-Agent: NeoMutt/20180716-391-311a52
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.0.129] (78.97.206.147) by AM0PR01CA0102.eurprd01.prod.exchangelabs.com (2603:10a6:208:10e::43) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.15 via Frontend Transport; Tue, 8 Sep 2020 10:35:06 +0000
+X-Originating-IP: [78.97.206.147]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 93a57c35-2a0c-4a20-da7f-08d853e2daf5
+X-MS-TrafficTypeDiagnostic: VI1PR04MB4046:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR04MB4046B83A8294E6D1E58BD98E98290@VI1PR04MB4046.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: pwW31kmK9IlcezBoOEli38KbLEvFOsexCIH1IPUb7lsPu5dSwEhdHDzoWdTbApBSKlPYk4c3x3S09CedDcbdA8kwkKYOX8PtSq9r90XGiqynfzPGyHi61JQ56AF0uEKtbDnDAv4ayV+QmoC3v+7D8LD5At2pFF8qSc9DOlQfHBS+ZRFvHKQ6UGva0CkTg6qWGetASmjftCx9OWPaf2XONbv7t9n+xRqZvZU5OVMULu+Kua66fAdqb9vkQQCJ69B4S+zJnEqcERw/WaZyhVoPx0pVaczQ78Tip9FbIDi94RfLSUE5OHa0h8+r1Xc+hvwi2UoglWiq4YNyKFkYteMeBll/etDDEo7dGnuh6resOPwzrDWIHqZ1ReMQYDgj2MrpZSLkFiRkdcqPxGaEAXCH3A==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB4046.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(39860400002)(396003)(376002)(346002)(316002)(31686004)(66556008)(53546011)(66476007)(16526019)(26005)(8676002)(36756003)(5660300002)(66946007)(52116002)(4744005)(186003)(4326008)(478600001)(956004)(2616005)(8936002)(86362001)(2906002)(54906003)(83380400001)(110136005)(6486002)(31696002)(16576012)(43740500002)(309714004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: jSnuCNRl7g3RcRTMeRq/yT9JWAI9NTPdYR4sjg3JTURAG5TnXMShu6FZEeOmJSDW45owyeu4K6Lr60AVTX2+rme7UwPqiBCLJQ77xlh5HipJfJLaSovqkBT9Ex51X+tACUy78CxEsks4yVN6oC2r8djkqACko5dk5D12xFRsZpCScBcDrtWoAYLOHwPKAIHruggU38vjNP7Gt9izKNFMqardPG1cOx0pi1AUp9z6LjmmueItLr4naJhLFPNVC643ilgTAXTUjtN0PGlG6EgWbGSrNrs2KQ45VwdCR+BONa4ri9ea6CDlZCMOUGQpr3GFEZDX6DlqTChcriWvJ4wJZhE37XqFtziy+GCqCBFxzxrg4jc6bcpzuTqgUPD+JBo4PksjqT25Y/QQR8TR7Scuy4McyHd3xCnHhG2voNvQ9bj24h5sVMWvuuraTREVhpRfVWH64KYdHXmChb25MWEhuC6dUbCD58JjDe6O7TStGw/+R5rQLaX792SlBkUgPLcUKBixQPVrei8DV4hmDZoYpNfyoymqGy7ceQe+N+P1l9ZqNhet98oGiSsodoJPOSnYJXeswXID6ZeWgJ6oBjoAElFv6Ep0X1Nn/qlMs5Bo6WUNApy7teYY/Qy5Xp/RD8H9Dva1YXiq81D1ib36iWboQQ==
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 93a57c35-2a0c-4a20-da7f-08d853e2daf5
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB4046.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Sep 2020 10:35:07.6483
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 0QTL/BOPBsN16RdYUm8HPsQrpaGIfGpK7ATYVbfl5mTb/SUOJNbkV787xrQmMPF/3tFa0UFIID6ed/+4rSUbXA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4046
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08-09-20, 13:27, Manivannan Sadhasivam wrote:
-> Use regmap for accessing cpufreq registers in hardware.
-
-Why ? Please mention why a change is required in the log.
-
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
->  drivers/cpufreq/qcom-cpufreq-hw.c | 55 ++++++++++++++++++++++++++-----
->  1 file changed, 47 insertions(+), 8 deletions(-)
+On 8/21/2020 6:47 AM, Herbert Xu wrote:
+> On Thu, Aug 06, 2020 at 07:35:43PM +0300, Andrei Botila wrote:
+>>
+>> +static bool xts_skcipher_ivsize(struct skcipher_request *req)
+>> +{
+>> +	struct crypto_skcipher *skcipher = crypto_skcipher_reqtfm(req);
+>> +	unsigned int ivsize = crypto_skcipher_ivsize(skcipher);
+>> +	u64 size = 0;
+>> +
+>> +	if (IS_ALIGNED((unsigned long)req->iv, __alignof__(u64)))
+>> +		size = *(u64 *)(req->iv + (ivsize / 2));
+>> +	else
+>> +		size = get_unaligned((u64 *)(req->iv + (ivsize / 2)));
+>> +
+>> +	return !!size;
+>> +}
 > 
-> diff --git a/drivers/cpufreq/qcom-cpufreq-hw.c b/drivers/cpufreq/qcom-cpufreq-hw.c
-> index 41853db7c9b8..de816bcafd33 100644
-> --- a/drivers/cpufreq/qcom-cpufreq-hw.c
-> +++ b/drivers/cpufreq/qcom-cpufreq-hw.c
-> @@ -12,6 +12,7 @@
->  #include <linux/of_address.h>
->  #include <linux/of_platform.h>
->  #include <linux/pm_opp.h>
-> +#include <linux/regmap.h>
->  #include <linux/slab.h>
->  
->  #define LUT_MAX_ENTRIES			40U
-> @@ -32,6 +33,7 @@ struct qcom_cpufreq_soc_data {
->  
->  struct qcom_cpufreq_data {
->  	void __iomem *base;
-> +	struct regmap *regmap;
->  	const struct qcom_cpufreq_soc_data *soc_data;
->  };
->  
-> @@ -85,8 +87,11 @@ static int qcom_cpufreq_hw_target_index(struct cpufreq_policy *policy,
->  	struct qcom_cpufreq_data *data = policy->driver_data;
->  	const struct qcom_cpufreq_soc_data *soc_data = data->soc_data;
->  	unsigned long freq = policy->freq_table[index].frequency;
-> +	int ret;
->  
-> -	writel_relaxed(index, data->base + soc_data->reg_perf_state);
-> +	ret = regmap_write(data->regmap, soc_data->reg_perf_state, index);
-> +	if (ret)
-> +		return ret;
->  
->  	if (icc_scaling_enabled)
->  		qcom_cpufreq_set_bw(policy, freq);
-> @@ -102,6 +107,7 @@ static unsigned int qcom_cpufreq_hw_get(unsigned int cpu)
->  	const struct qcom_cpufreq_soc_data *soc_data;
->  	struct cpufreq_policy *policy;
->  	unsigned int index;
-> +	int ret;
->  
->  	policy = cpufreq_cpu_get_raw(cpu);
->  	if (!policy)
-> @@ -110,7 +116,10 @@ static unsigned int qcom_cpufreq_hw_get(unsigned int cpu)
->  	data = policy->driver_data;
->  	soc_data = data->soc_data;
->  
-> -	index = readl_relaxed(data->base + soc_data->reg_perf_state);
-> +	ret = regmap_read(data->regmap, soc_data->reg_perf_state, &index);
-> +	if (ret)
-> +		return 0;
-> +
->  	index = min(index, LUT_MAX_ENTRIES - 1);
->  
->  	return policy->freq_table[index].frequency;
-> @@ -123,9 +132,12 @@ static unsigned int qcom_cpufreq_hw_fast_switch(struct cpufreq_policy *policy,
->  	const struct qcom_cpufreq_soc_data *soc_data = data->soc_data;
->  	unsigned int index;
->  	unsigned long freq;
-> +	int ret;
->  
->  	index = policy->cached_resolved_idx;
-> -	writel_relaxed(index, data->base + soc_data->reg_perf_state);
-> +	ret = regmap_write(data->regmap, soc_data->reg_perf_state, index);
-> +	if (ret)
-> +		return 0;
->  
->  	freq = policy->freq_table[index].frequency;
->  	arch_set_freq_scale(policy->related_cpus, freq,
-> @@ -171,14 +183,24 @@ static int qcom_cpufreq_hw_read_lut(struct device *cpu_dev,
->  	}
->  
->  	for (i = 0; i < LUT_MAX_ENTRIES; i++) {
-> -		data = readl_relaxed(drv_data->base + soc_data->reg_freq_lut +
-> -				      i * soc_data->lut_row_size);
-> +		ret = regmap_read(drv_data->regmap, soc_data->reg_freq_lut +
-> +				  i * soc_data->lut_row_size, &data);
-> +		if (ret) {
-> +			kfree(table);
-> +			return ret;
-> +		}
-> +
->  		src = FIELD_GET(LUT_SRC, data);
->  		lval = FIELD_GET(LUT_L_VAL, data);
->  		core_count = FIELD_GET(LUT_CORE_COUNT, data);
->  
-> -		data = readl_relaxed(drv_data->base + soc_data->reg_volt_lut +
-> -				      i * soc_data->lut_row_size);
-> +		ret = regmap_read(drv_data->regmap, soc_data->reg_volt_lut +
-> +				  i * soc_data->lut_row_size, &data);
-> +		if (ret) {
-> +			kfree(table);
-> +			return ret;
-> +		}
-> +
->  		volt = FIELD_GET(LUT_VOLT, data) * 1000;
->  
->  		if (src)
-> @@ -248,6 +270,13 @@ static void qcom_get_related_cpus(int index, struct cpumask *m)
->  	}
->  }
->  
-> +static struct regmap_config qcom_cpufreq_regmap = {
-> +	.reg_bits = 32,
-> +	.reg_stride = 4,
-> +	.val_bits = 32,
-> +	.fast_io = true,
-> +};
-> +
->  static const struct qcom_cpufreq_soc_data qcom_soc_data = {
->  	.reg_enable = 0x0,
->  	.reg_freq_lut = 0x110,
-> @@ -274,6 +303,7 @@ static int qcom_cpufreq_hw_cpu_init(struct cpufreq_policy *policy)
->  	struct qcom_cpufreq_data *data;
->  	const struct of_device_id *match;
->  	int ret, index;
-> +	u32 val;
->  
->  	cpu_dev = get_cpu_device(policy->cpu);
->  	if (!cpu_dev) {
-> @@ -316,9 +346,18 @@ static int qcom_cpufreq_hw_cpu_init(struct cpufreq_policy *policy)
->  
->  	data->soc_data = match->data;
->  	data->base = base;
-> +	data->regmap = devm_regmap_init_mmio(dev, base, &qcom_cpufreq_regmap);
-> +	if (IS_ERR(data->regmap)) {
-> +		ret = PTR_ERR(data->regmap);
-> +		goto error;
-> +	}
->  
->  	/* HW should be in enabled state to proceed */
-> -	if (!(readl_relaxed(base + data->soc_data->reg_enable) & 0x1)) {
-> +	ret = regmap_read(data->regmap, data->soc_data->reg_enable, &val);
-> +	if (ret)
-> +		goto error;
-> +
-> +	if (!(val & 0x1)) {
->  		dev_err(dev, "Domain-%d cpufreq hardware not enabled\n", index);
->  		ret = -ENODEV;
->  		goto error;
-> -- 
-> 2.17.1
+> Just go with the get_unaligned unconditionally.
+> 
+Won't this lead to sub-optimal code for ARMv7
+in case the IV is aligned?
 
--- 
-viresh
+Thanks,
+Horia
