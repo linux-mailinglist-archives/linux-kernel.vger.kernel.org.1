@@ -2,138 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C56A2617D9
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:44:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86CF5261765
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:33:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731730AbgIHRoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 13:44:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56710 "EHLO
+        id S1730140AbgIHRde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 13:33:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731659AbgIHQOE (ORCPT
+        with ESMTP id S1731605AbgIHQPT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:14:04 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6168FC061375
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 05:48:25 -0700 (PDT)
-Date:   Tue, 8 Sep 2020 14:48:50 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1599569303;
+        Tue, 8 Sep 2020 12:15:19 -0400
+Received: from mail.kmu-office.ch (mail.kmu-office.ch [IPv6:2a02:418:6a02::a2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF047C061377
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 05:49:32 -0700 (PDT)
+Received: from webmail.kmu-office.ch (unknown [IPv6:2a02:418:6a02::a3])
+        by mail.kmu-office.ch (Postfix) with ESMTPSA id 7D87A5C4CC6;
+        Tue,  8 Sep 2020 14:49:29 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=agner.ch; s=dkim;
+        t=1599569369;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=6fAFubHHqBfV7rm22ZeRY7ZslhBGVZwuDRVSmUBXy2E=;
-        b=qBMMBzJJPqmVdjdvsckWg2x6CAY94WEen2gUNszKp9zlye67Jgrpr1YZdp7OwIso24T715
-        IW8nCStN1L/QIqNTOewYPJxQFaTg+fab5NhXs8QR1HZCgI0GOohuXwZYSwT4ajwMJOhUbG
-        F5u++3oekU8ixEpXV39zAlOqZRbNjpqVEwimcni11H/wahju6v+3F8OyhAf8xI7oa3fbAJ
-        kpqcWtwZC/CY4ouNoMMrbxDQeFee5oT4jKpCwxySZ7YjHIovtNG5+d9gz6D8aEiHf06qV2
-        ZA+lcRTjS6A6LdSBOde4NjqASAjAfvUFYz7qT9VcLJCnLCWzWBEx8Rpj7UyhkQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1599569303;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6fAFubHHqBfV7rm22ZeRY7ZslhBGVZwuDRVSmUBXy2E=;
-        b=sSmH5JrCzDTThVEx11l5gdKGySWNkg5t9mCiPqK+191e/J9iOpiD4nLQ5j+7/frijEZX5u
-        CBvcG75OkebzF3CQ==
-From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
-To:     peterz@infradead.org
-Cc:     Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Sebastian A. Siewior" <bigeasy@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 4/5] seqlock: seqcount_LOCKNAME_t: Introduce
- PREEMPT_RT support
-Message-ID: <20200908124850.GA487635@lx-t490>
-References: <20200904153231.11994-1-a.darwish@linutronix.de>
- <20200904153231.11994-5-a.darwish@linutronix.de>
- <20200908114520.GS1362448@hirez.programming.kicks-ass.net>
+        bh=vohbHx+KdBMX2EzdqSsM6vNF04Tb3ZHZoZ6qz4lcfE0=;
+        b=jGg7ZsMQSOgS0AQe0NRuKBfBWFSH3JgUAWrcutRt+bVBtF4Fbjd5pYNqkPx3vn4sbSQuRl
+        oKey2G9a8ErcZm3pODU0VjUg2kmuOpd6DRK00WVlNd0/fzRIQLFXLsq77aKzwZ/ApAhjXA
+        20GY1GfnHBpIHu0jxOeQJx5HLInt8W0=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200908114520.GS1362448@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 08 Sep 2020 14:49:29 +0200
+From:   Stefan Agner <stefan@agner.ch>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Daniel Vetter <daniel@ffwll.ch>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Jyri Sarha <jsarha@ti.com>, Marek Vasut <marex@denx.de>,
+        Dave Airlie <airlied@linux.ie>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] drm: mxsfb: check framebuffer pitch
+In-Reply-To: <20200908123304.GG6047@pendragon.ideasonboard.com>
+References: <20200907160343.124405-1-stefan@agner.ch>
+ <20200907161712.GF6047@pendragon.ideasonboard.com>
+ <20200907181855.GE2352366@phenom.ffwll.local>
+ <86615b4b1551d4a6f1cfcc13b38e616c@agner.ch>
+ <dc5a16d0-4d2a-366a-7716-29dd8db1a12a@ti.com>
+ <20200908084855.GH2352366@phenom.ffwll.local>
+ <bed1ef4f988626962317519cb7d8928e@agner.ch>
+ <CAKMK7uG2NgN1fGFTDnP=0Yow4B051pHhYWw-Uu-cZT3t0UPKWg@mail.gmail.com>
+ <20200908123304.GG6047@pendragon.ideasonboard.com>
+User-Agent: Roundcube Webmail/1.4.1
+Message-ID: <545fd348c6bd51626cedc0fdcf3afa1d@agner.ch>
+X-Sender: stefan@agner.ch
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 08, 2020 at 01:45:20PM +0200, peterz@infradead.org wrote:
-> On Fri, Sep 04, 2020 at 05:32:30PM +0200, Ahmed S. Darwish wrote:
-> > @@ -406,13 +443,20 @@ static inline int read_seqcount_t_retry(const seqcount_t *s, unsigned start)
-> >  	return __read_seqcount_t_retry(s, start);
-> >  }
-> >
-> > +/*
-> > + * Enforce non-preemptibility for all seqcount_LOCKNAME_t writers. Don't
-> > + * do it for PREEMPT_RT, for the reasons outlined at __SEQ_LOCK().
-> > + */
-> > +#define __seq_enforce_writer_non_preemptibility(s)			\
-> > +	(!IS_ENABLED(CONFIG_PREEMPT_RT) && __seqcount_lock_preemptible(s))
-> > +
-> >  /**
-> >   * raw_write_seqcount_begin() - start a seqcount_t write section w/o lockdep
-> >   * @s: Pointer to seqcount_t or any of the seqcount_LOCKNAME_t variants
-> >   */
-> >  #define raw_write_seqcount_begin(s)					\
-> >  do {									\
-> > -	if (__seqcount_lock_preemptible(s))				\
-> > +	if (__seq_enforce_writer_non_preemptibility(s))			\
-> >  		preempt_disable();					\
-> >  									\
-> >  	raw_write_seqcount_t_begin(__seqcount_ptr(s));			\
-> > @@ -433,7 +477,7 @@ static inline void raw_write_seqcount_t_begin(seqcount_t *s)
-> >  do {									\
-> >  	raw_write_seqcount_t_end(__seqcount_ptr(s));			\
-> >  									\
-> > -	if (__seqcount_lock_preemptible(s))				\
-> > +	if (__seq_enforce_writer_non_preemptibility(s))			\
-> >  		preempt_enable();					\
-> >  } while (0)
-> >
-> > @@ -456,7 +500,7 @@ static inline void raw_write_seqcount_t_end(seqcount_t *s)
-> >  do {									\
-> >  	__seqcount_assert_lock_held(s);					\
-> >  									\
-> > -	if (__seqcount_lock_preemptible(s))				\
-> > +	if (__seq_enforce_writer_non_preemptibility(s))			\
-> >  		preempt_disable();					\
-> >  									\
-> >  	write_seqcount_t_begin_nested(__seqcount_ptr(s), subclass);	\
-> > @@ -483,7 +527,7 @@ static inline void write_seqcount_t_begin_nested(seqcount_t *s, int subclass)
-> >  do {									\
-> >  	__seqcount_assert_lock_held(s);					\
-> >  									\
-> > -	if (__seqcount_lock_preemptible(s))				\
-> > +	if (__seq_enforce_writer_non_preemptibility(s))			\
-> >  		preempt_disable();					\
-> >  									\
-> >  	write_seqcount_t_begin(__seqcount_ptr(s));			\
-> > @@ -504,7 +548,7 @@ static inline void write_seqcount_t_begin(seqcount_t *s)
-> >  do {									\
-> >  	write_seqcount_t_end(__seqcount_ptr(s));			\
-> >  									\
-> > -	if (__seqcount_lock_preemptible(s))				\
-> > +	if (__seq_enforce_writer_non_preemptibility(s))			\
-> >  		preempt_enable();					\
-> >  } while (0)
->
-> I've replaced the above with the below, afaict there were no users of
-> __seqcount_lock_preemptible() left.
->
-> --- a/include/linux/seqlock.h
-> +++ b/include/linux/seqlock.h
-> @@ -228,7 +228,11 @@ __seqprop_##lockname##_sequence(const se
->  static __always_inline bool						\
->  __seqprop_##lockname##_preemptible(const seqcount_##lockname##_t *s)	\
->  {									\
-> -	return preemptible;						\
-> +	if (!IS_ENABLED(CONFIG_PREEMPT_RT))				\
-> +		return preemptible;					\
-> +									\
-> +	/* PREEMPT_RT relies on the above LOCK+UNLOCK */		\
-> +	return false;							\
->  }									\
->  									\
+On 2020-09-08 14:33, Laurent Pinchart wrote:
+> On Tue, Sep 08, 2020 at 02:29:02PM +0200, Daniel Vetter wrote:
+>> On Tue, Sep 8, 2020 at 2:07 PM Stefan Agner <stefan@agner.ch> wrote:
+>> > On 2020-09-08 10:48, Daniel Vetter wrote:
+>> >> On Tue, Sep 08, 2020 at 11:18:25AM +0300, Tomi Valkeinen wrote:
+>> >>> On 08/09/2020 10:55, Stefan Agner wrote:
+>> >>>> On 2020-09-07 20:18, Daniel Vetter wrote:
+>> >>>>> On Mon, Sep 07, 2020 at 07:17:12PM +0300, Laurent Pinchart wrote:
+>> >>>>>> Hi Stefan,
+>> >>>>>>
+>> >>>>>> Thank you for the patch.
+>> >>>>>>
+>> >>>>>> On Mon, Sep 07, 2020 at 06:03:43PM +0200, Stefan Agner wrote:
+>> >>>>>>> The lcdif IP does not support a framebuffer pitch (stride) other than
+>> >>>>>>> the CRTC width. Check for equality and reject the state otherwise.
+>> >>>>>>>
+>> >>>>>>> This prevents a distorted picture when using 640x800 and running the
+>> >>>>>>> Mesa graphics stack. Mesa tires to use a cache aligned stride, which
+>> >>>>>>
+>> >>>>>> s/tires/tries/
+>> >>>>>>
+>> >>>>>>> leads at that particular resolution to width != stride. Currently
+>> >>>>>>> Mesa has no fallback behavior, but rejecting this configuration allows
+>> >>>>>>> userspace to handle the issue correctly.
+>> >>>>>>
+>> >>>>>> I'm increasingly impressed by how featureful this IP core is :-)
+>> >>>>>>
+>> >>>>>>> Signed-off-by: Stefan Agner <stefan@agner.ch>
+>> >>>>>>> ---
+>> >>>>>>>  drivers/gpu/drm/mxsfb/mxsfb_kms.c | 22 ++++++++++++++++++----
+>> >>>>>>>  1 file changed, 18 insertions(+), 4 deletions(-)
+>> >>>>>>>
+>> >>>>>>> diff --git a/drivers/gpu/drm/mxsfb/mxsfb_kms.c b/drivers/gpu/drm/mxsfb/mxsfb_kms.c
+>> >>>>>>> index b721b8b262ce..79aa14027f91 100644
+>> >>>>>>> --- a/drivers/gpu/drm/mxsfb/mxsfb_kms.c
+>> >>>>>>> +++ b/drivers/gpu/drm/mxsfb/mxsfb_kms.c
+>> >>>>>>> @@ -403,14 +403,28 @@ static int mxsfb_plane_atomic_check(struct drm_plane *plane,
+>> >>>>>>>  {
+>> >>>>>>>         struct mxsfb_drm_private *mxsfb = to_mxsfb_drm_private(plane->dev);
+>> >>>>>>>         struct drm_crtc_state *crtc_state;
+>> >>>>>>> +       unsigned int pitch;
+>> >>>>>>> +       int ret;
+>> >>>>>>>
+>> >>>>>>>         crtc_state = drm_atomic_get_new_crtc_state(plane_state->state,
+>> >>>>>>>                                                    &mxsfb->crtc);
+>> >>>>>>>
+>> >>>>>>> -       return drm_atomic_helper_check_plane_state(plane_state, crtc_state,
+>> >>>>>>> -                                                  DRM_PLANE_HELPER_NO_SCALING,
+>> >>>>>>> -                                                  DRM_PLANE_HELPER_NO_SCALING,
+>> >>>>>>> -                                                  false, true);
+>> >>>>>>> +       ret = drm_atomic_helper_check_plane_state(plane_state, crtc_state,
+>> >>>>>>> +                                                 DRM_PLANE_HELPER_NO_SCALING,
+>> >>>>>>> +                                                 DRM_PLANE_HELPER_NO_SCALING,
+>> >>>>>>> +                                                 false, true);
+>> >>>>>>> +       if (ret || !plane_state->visible)
+>> >>>>>>
+>> >>>>>> Would it be more explict to check for !plane_state->fb ? Otherwise I'll
+>> >>>>>> have to verify that !fb always implies !visible :-)
+>> >>>>>>
+>> >>>>>>> +               return ret;
+>> >>>>>>> +
+>> >>>>>>> +       pitch = crtc_state->mode.hdisplay *
+>> >>>>>>> +               plane_state->fb->format->cpp[0];
+>> >>>>>>
+>> >>>>>> This holds on a single line.
+>> >>>>>>
+>> >>>>>>> +       if (plane_state->fb->pitches[0] != pitch) {
+>> >>>>>>> +               dev_err(plane->dev->dev,
+>> >>>>>>> +                       "Invalid pitch: fb and crtc widths must be the same");
+>> >>>>>>
+>> >>>>>> I'd turn this into a dev_dbg(), printing error messages to the kernel
+>> >>>>>> log in response to user-triggered conditions is a bit too verbose and
+>> >>>>>> could flood the log.
+>> >>>>>>
+>> >>>>>> Wouldn't it be best to catch this issue when creating the framebuffer ?
+>> >>>>>
+>> >>>>> Yeah this should be verified at addfb time. We try to validate as early as
+>> >>>>> possible.
+>> >>>>> -Daniel
+>> >>>>>
+>> >>>>
+>> >>>> Sounds sensible. From what I can tell fb_create is the proper callback
+>> >>>> to implement this at addfb time. Will give this a try.
+>> >>>>
+>> >>>> FWIW, I got the idea from drivers/gpu/drm/tilcdc/tilcdc_plane.c. Maybe
+>> >>>> should be moved to addfb there too?
+>> >>>
+>> >>> But you don't know the crtc width when creating the framebuffer.
+>> >>
+>> >> Hm right this is a different check. What we could check in fb_create for
+>> >> both is that the logical fb size matches exactly the pitch. That's not
+>> >> sufficient criteria, but it will at least catch some of them already.
+>> >>
+>> >> But yeah we'd need both here.
+>> >
+>> > After validating width of framebuffer against pitch, the only thing we
+>> > need to check here is that the width matches. From what I can tell,
+>> > least for mxsfb, this should be covered by
+>> > drm_atomic_helper_check_plane_state's can_position parameter set to
+>> > false.
+>>
+>> This only checks against the src rectangle of the crtc state, there's
+>> nothing forcing that the size of the fb matches the src rectangle
+>> exactly. I guess we could maybe add that as another parameter for hw
+>> like yours or tilcdc. Naming is a bit tricky, maybe
+>> require_matching_fb or src_must_match_fb or something like that.
+> 
+> Can we turn those parameters into flags ? false, true, false is hard to
+> read.
+> 
 
-Sounds good.
+Since it must match, in this case, it would be false, true, true,
+obviously ;-)
+
+I guess this would mean to convert the two existing boolean parameters
+to flags first, and then introduce a new flag handling fb size vs. CRTC
+src.
+
+Hm, this gets all a bit more involved. It is actually not the issue at
+hand (in my case the fb width does match the CRTC). Not sure if that
+case is actually a problem in real world? I can give this a shot still,
+if preferred. But I would do it independently of the framebuffer pitch
+validation.
+
+--
+Stefan
+
+>> > So I think in my case I can get away by only checking the framebuffer.
+>>
+>> You still need both I think.
