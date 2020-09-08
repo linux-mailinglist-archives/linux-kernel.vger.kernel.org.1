@@ -2,166 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D324E261F20
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 22:00:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78DD2261EE3
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:56:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732600AbgIHT7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:59:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50218 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730486AbgIHPfh (ORCPT
+        id S1726479AbgIHT4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 15:56:44 -0400
+Received: from mx0b-002e3701.pphosted.com ([148.163.143.35]:62032 "EHLO
+        mx0b-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730556AbgIHPgo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:35:37 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFAC2C09B04B
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 08:35:06 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id k25so20579978ljg.9
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 08:35:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ragnatech-se.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=tGrF/vntbxcaJrg5poH7gCu+VWyo9L1BGQaIoIoS0bQ=;
-        b=n5qGCXo1v/X8PSEimLNceYfoLFK43B7g0eyI3jYR3uW14XAA4IE07X48ZKE7YJ70UB
-         JEcRKUHQT4cygg8gCURGdeBaerT9Borb6Apcl4jO+AitKEYcyKR+v/V0SsZeW1b9KTKZ
-         T4u/4yQeetA+aH1V5kXiKSA9NeqInShUo9Jj/fF24oDmWL98A/DUSelSqCmPdxjADtXt
-         5egM5+0P5ils3V8bietOEkG7u8rodrCT2oQDTRr94vaFewKmE9Oka8lHZDq/Jryg7P64
-         fBY0QMSrFBHO0ym10Uy5IR1zGhIxxftr1aETdSpB11o9cbC3wy6bK/RXkPmDvIKhlbcJ
-         cRqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=tGrF/vntbxcaJrg5poH7gCu+VWyo9L1BGQaIoIoS0bQ=;
-        b=X4+rGx8JomYr593q4uh4QlRyR2z0HvcwX3rlnZlwiy+ythK4DNR/zO2N4hIis+++Sv
-         1CA7KxkdllfGBlKfKnnnZjYaiATOodUUdhe2cdl5FJBNfoMGCKCJ7if6sVNPLstUTVen
-         ph13Etkl7sIWFFjwJgKK0SknWwURARvGYLCvezgTuZeQ2sQS/dxVOEWTY+8S5jCr/vER
-         23/4Dn9tVxQaivQwtKTZa7gfQZZ5fcIiQRSs9RCbyIWdI3XOcrclkuKyfZIzLyMnuFSA
-         qesq09Kk/4SjnPV+8R3RfcRrzH4g9EXV595lT+Gsm3CUlKoX7Q6u9b3D6bvhEH9CZWC0
-         f6/g==
-X-Gm-Message-State: AOAM533B6/PbGgZfzMsm2KMNiCNVYKsX2R0HuskJZgNEcJL99/fJayGl
-        xkG5ACj1YwhKPqsTu6L7am4pRw==
-X-Google-Smtp-Source: ABdhPJy1r23FBDpD0AieNv6pKwgAOMIvS4RqWasIIr61zMeo/9UcX+kJabzQIpPXrPEHYKTDEOtgpA==
-X-Received: by 2002:a2e:9110:: with SMTP id m16mr13370093ljg.173.1599579304860;
-        Tue, 08 Sep 2020 08:35:04 -0700 (PDT)
-Received: from localhost (h-209-203.A463.priv.bahnhof.se. [155.4.209.203])
-        by smtp.gmail.com with ESMTPSA id y4sm10537582ljk.61.2020.09.08.08.35.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Sep 2020 08:35:04 -0700 (PDT)
-Date:   Tue, 8 Sep 2020 17:35:03 +0200
-From:   Niklas <niklas.soderlund@ragnatech.se>
-To:     "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Subject: Re: [PATCH] media: rcar-vin: Update crop and compose settings for
- every s_fmt call
-Message-ID: <20200908153503.GA3399240@oden.dyn.berto.se>
-References: <1596187745-31596-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20200801090456.GB1379367@oden.dyn.berto.se>
- <CA+V-a8sOHct_JetCsug8Z2BQpMLH2p39hj2XNw_1N5gkBQp1Gg@mail.gmail.com>
- <20200803192108.GB2297236@oden.dyn.berto.se>
- <6d659e56-1e1f-c9c7-2e66-4ddc4e7fad15@xs4all.nl>
- <CA+V-a8uzznUvzGgZ5A4B8ASEDbmMCrQPSAcEjO7v45zmAkdGDQ@mail.gmail.com>
- <20200904022522.GD9369@pendragon.ideasonboard.com>
- <CA+V-a8tTKu5FeEs+Hi2AwXy-i5OFufeyhTKGC6D4C5fK81895g@mail.gmail.com>
+        Tue, 8 Sep 2020 11:36:44 -0400
+Received: from pps.filterd (m0150244.ppops.net [127.0.0.1])
+        by mx0b-002e3701.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 088FWpXv018293;
+        Tue, 8 Sep 2020 15:35:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pps0720;
+ bh=u6qAhC3Cydui3ZKe/Igp5U8X/+bI2x8TraPpBr4rc9k=;
+ b=C/3sQcTVkBq+FK/auaLoZZiZZqIMBBCfZPNezm17VNHFgZQ9pAhogv6M22ktysqAZTqk
+ Y6BqT9gyfaU+iIvimnY0LzAeBXF1vmogW5/lx6HPws1rn3xsJ+Pp3mJ+/Upy5RNWzzhJ
+ pjQgNPalRGTOPNF4QyyszY9iWleP7Dy0Aj24EWW0wivXSru6se73Up4Ikvh3ItjXD0WG
+ qqI627I529hcG7HAkrA4BHGxSI4EhwHqCE3ax5cjpV49HWibzRhlLWhgUK8Y5CQHJSYN
+ 1qaljKv4jaOssdcu60+lJS6nvpgzCIXww1JI9P20W7jA/BBKoQdCEBIhn5dsWdpDQxce fA== 
+Received: from g2t2354.austin.hpe.com (g2t2354.austin.hpe.com [15.233.44.27])
+        by mx0b-002e3701.pphosted.com with ESMTP id 33c3b39p7u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 08 Sep 2020 15:35:41 +0000
+Received: from g2t2360.austin.hpecorp.net (g2t2360.austin.hpecorp.net [16.196.225.135])
+        by g2t2354.austin.hpe.com (Postfix) with ESMTP id 02E8883;
+        Tue,  8 Sep 2020 15:35:40 +0000 (UTC)
+Received: from [16.99.146.51] (unknown [16.99.146.51])
+        by g2t2360.austin.hpecorp.net (Postfix) with ESMTP id 0775E40;
+        Tue,  8 Sep 2020 15:35:37 +0000 (UTC)
+Subject: Re: [PATCH 04/12] x86/platform/uv: Update UV MMRs for UV5
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Steve Wahl <steve.wahl@hpe.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@suse.de>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Russ Anderson <russ.anderson@hpe.com>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Jian Cai <caij2003@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
+References: <20200907185430.363197758@hpe.com>
+ <20200907185430.782245884@hpe.com> <20200908152314.GD4114051@kroah.com>
+From:   Mike Travis <mike.travis@hpe.com>
+Message-ID: <3e93b858-f74d-8e93-e444-fd85fc5856e4@hpe.com>
+Date:   Tue, 8 Sep 2020 08:35:37 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+V-a8tTKu5FeEs+Hi2AwXy-i5OFufeyhTKGC6D4C5fK81895g@mail.gmail.com>
+In-Reply-To: <20200908152314.GD4114051@kroah.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-HPE-SCL: -1
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-08_08:2020-09-08,2020-09-08 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxlogscore=958
+ adultscore=0 lowpriorityscore=0 priorityscore=1501 suspectscore=0
+ phishscore=0 clxscore=1015 bulkscore=0 mlxscore=0 impostorscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009080148
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lad,
 
-On 2020-09-06 20:12:35 +0100, Lad, Prabhakar wrote:
-> Hi Laurent,
+
+On 9/8/2020 8:23 AM, Greg KH wrote:
+> On Mon, Sep 07, 2020 at 01:54:34PM -0500, Mike Travis wrote:
+>> --- linux.orig/drivers/misc/sgi-gru/grufile.c
+>> +++ linux/drivers/misc/sgi-gru/grufile.c
+>> @@ -7,7 +7,8 @@
+>>    * This file supports the user system call for file open, close, mmap, etc.
+>>    * This also incudes the driver initialization code.
+>>    *
+>> - *  Copyright (c) 2008-2014 Silicon Graphics, Inc.  All Rights Reserved.
+>> + * Copyright (c) 2018-2020 Hewlett Packard Enterprise Development LP
+>> + * Copyright (c) 2008-2017 Silicon Graphics, Inc.  All Rights Reserved.
 > 
-> On Fri, Sep 4, 2020 at 3:25 AM Laurent Pinchart
-> <laurent.pinchart@ideasonboard.com> wrote:
-> >
-> > Hi Prabhakar,
-> >
-> > On Thu, Sep 03, 2020 at 03:53:18PM +0100, Lad, Prabhakar wrote:
-> > > On Wed, Aug 19, 2020 at 3:08 PM Hans Verkuil wrote:
-> > > > On 03/08/2020 21:21, Niklas wrote:
-> > > > > On 2020-08-03 19:11:32 +0100, Lad, Prabhakar wrote:
-> > > > >> On Sat, Aug 1, 2020 at 10:04 AM Niklas wrote:
-> > > > >>> On 2020-07-31 10:29:05 +0100, Lad Prabhakar wrote:
-> > > > >>>> The crop and compose settings for VIN in non mc mode werent updated
-> > > > >>>> in s_fmt call this resulted in captured images being clipped.
-> > > > >>>>
-> > > > >>>> With the below sequence on the third capture where size is set to
-> > > > >>>> 640x480 resulted in clipped image of size 320x240.
-> > > > >>>>
-> > > > >>>> high(640x480) -> low (320x240) -> high (640x480)
-> > > > >>>>
-> > > > >>>> This patch makes sure the VIN crop and compose settings are updated.
-> > > > >>>
-> > > > >>> This is clearly an inconsistency in the VIN driver that should be fixed.
-> > > > >>> But I think the none-mc mode implements the correct behavior. That is
-> > > > >>> that S_FMT should not modify the crop/compose rectangles other then make
-> > > > >>> sure they don't go out of bounds. This is an area we tried to clarify in
-> > > > >>> the past but I'm still not sure what the correct answer to.
-> > > > >>>
-> > > > >> What should be the exact behaviour of the bridge driver  for s_fmt
-> > > > >> call. Should the crop/compose settings be updated for every s_fmt
-> > > > >> callback or should they be only updated on s_selection callback.
-> > > > >> Currently the non-mc rcar-vin doesnt update the crop/compose setting
-> > > > >> in s_fmt callback due to which I see the above issue as mentioned.
-> > > > >
-> > > > > This is not entirely correct. It does update the crop and compose
-> > > > > rectangles on s_fmt, it makes sure they are not out-of-bounds for the
-> > > > > new format if it's accepted by s_fmt. See v4l2_rect_map_inside() calls
-> > > > > in the snippet bellow.
-> > > >
-> > > > For non-mc mode s_fmt must update any crop/compose rectangles to ensure that
-> > > > they are not out-of-bounds. But for mc mode the validation is done when you
-> > > > start streaming, so I think s_fmt won't make any changes in that mode.
-> > >
-> > > Thank you Hans.
-> > >
-> > > > Double-check that with Laurent, though...
-> > >
-> > > Niklas/Laurent - How do we proceed on this ?
-> >
-> > MC devices rely on userspace to propagate formats between entities, and
-> > on kernelspace to propagate formats within entities. This is documented
-> > in https://linuxtv.org/downloads/v4l-dvb-apis/userspace-api/v4l/dev-subdev.html.
-> > The configuration of an entity (formats and selection rectangles) must
-> > be valid at all times. Subdev drivers should thus either adjust or reset
-> > the crop and selection rectangles. The specification isn't clear on
-> > which behaviour should be implemented, the only related text is
-> >
-> > "Sub-devices that scale frames using variable scaling factors should
-> > reset the scale factors to default values when sink pads formats are
-> > modified. If the 1:1 scaling ratio is supported, this means that source
-> > pads formats should be reset to the sink pads formats."
-> >
-> > I would recommend resetting as the default behaviour. In any case,
-> > adjustements are needed to ensure that the configuration remains valid.
-> >
-> In that case can I have your Ack to the patch please.
+> Please drop all copyright changes from this series, as these do not look
+> correct at all, sorry.
+> 
+> You can send an add-on patch for all of that if it's really necessary,
+> and you get legal approval for it :)
 
-If this is the approach we wish to take here you should remove the code 
-above and bellow the added block as it becomes redundant whit this 
-change.
+I can move them all to a single patch.  The HPE one is straight from 
+their guidance on Copyrights.  The older SGI one is also from SGI's 
+guidance though I'm not sure if I can find it anymore.  I also wasn't 
+sure if it should be retained since the HPE one didn't take effect until 
+SGI was legally part of HPE (circa 2018).  2017/18 was also the last 
+time we did this big a change (for the UV4A).
 
 > 
-> Cheers,
-> Prabhakar
-
--- 
-Regards,
-Niklas Söderlund
+> thanks,
+> 
+> greg k-h
+> 
