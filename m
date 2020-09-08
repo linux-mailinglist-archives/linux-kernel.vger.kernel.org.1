@@ -2,88 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85B992610EA
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 13:46:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F09CF2610F2
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 13:49:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729292AbgIHLqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 07:46:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41854 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729741AbgIHLiX (ORCPT
+        id S1729721AbgIHLtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 07:49:21 -0400
+Received: from esa1.microchip.iphmx.com ([68.232.147.91]:46899 "EHLO
+        esa1.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730128AbgIHLju (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 07:38:23 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D79DEC061573;
-        Tue,  8 Sep 2020 04:34:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=3PuhP9uGjIipfkXqBzok/ejHi8BsHitcvoa7xFcrBwE=; b=cD4P+Wct6AGR6kYI5B+8HimOQk
-        HV95HuTMSTEL65KIotpV+hS46xqlFMrGV3guc5saUbuFu3HLVU5O0p9xFIWo+tSDfsMOR311qWrkf
-        Cf8IZoz7DZhSEkGLjNJacAyu/0yUt3keRVTYh6dUG6hLHL6nerlv/Omv9ZkY7HBkyYrM3yhl3LPsI
-        RGzbskPglasw1fVUx+hRejR7E2DfI7Q9DAwFX+xniqcJoviyajNk02GRLqtyuCFayy6gmfJl0yWEQ
-        jwQ7AoblGyki+qSw/Oxg7Bi+6UktcvDRYN9iWDJ9kXl6zLRcQ1KfGBMglDBVn27MVV46KfyUUQrad
-        2pOsKkrg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kFbsb-0004Ni-Ui; Tue, 08 Sep 2020 11:33:42 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 092EA300130;
-        Tue,  8 Sep 2020 13:33:39 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id B422923649288; Tue,  8 Sep 2020 13:33:39 +0200 (CEST)
-Date:   Tue, 8 Sep 2020 13:33:39 +0200
-From:   peterz@infradead.org
-To:     "Eddy_Wu@trendmicro.com" <Eddy_Wu@trendmicro.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
+        Tue, 8 Sep 2020 07:39:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1599565189; x=1631101189;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=F+j0JCQ1GOVdffMe15XLwWeslfZg0hQxxi1+nRfhBWA=;
+  b=Uu8U1vN2aiZ9U6xUDsslhIanSUG2YoGzxD1V36m6HqK5UatUCVs42V/K
+   iT5dJ/OxM67dceCsGUngssNgeygGopbssKHzVws6W4oMaIWwn3VG2MJx6
+   3pY9gRnQGguCPNGX2RrJnjbq126x2GOYDF0Jiv2og86nxRRN39tPwpoB1
+   spxBQok4vFWlCJ1wjfi8D4DkcqHJAuQX+j/VERg4ErXDND9IxFaN8mGfB
+   fIIWM7ZdWwt5ZrHL+1pzfKfopKCy1rye+kjJM47TxvFEJ1i334FHv2NHV
+   qM4GaWqtWIWEBod5vDvxSoWyhswuQNqcT1nuMs9/ZHJXQgXU8cZAZzbFT
+   A==;
+IronPort-SDR: UJwLxQvuqzI6LGuw+ZcNKEC8YY1cbiWNN1jw9hkfPBc15ECt57fXIKNF87X+91CTWoeakQp5Y/
+ RkBY/39EGW9iU/VBjbvfE17VrReQ7tgOjNnmC41ElliW39jSfmKdW/eLhaBwhK6idhdfOTizZb
+ txxCGTlnKakYI5A9+OXP+TrSrj3PtV6QmP8kjBnY5GhbDIm4uAli/m+WH/hvEfV4Dzf00Ip7vW
+ QfKKx+xwVTvS2Fa2cnoLaAvS8UeGmGvAjcIcs7Ly8VkSRz9c7FEb+k/A5PDTZ32TvR7T2j/Fl5
+ xMI=
+X-IronPort-AV: E=Sophos;i="5.76,405,1592895600"; 
+   d="scan'208";a="94807242"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 08 Sep 2020 04:35:10 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 8 Sep 2020 04:34:51 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex03.mchp-main.com
+ (10.10.85.151) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Tue, 8 Sep 2020 04:34:37 -0700
+Date:   Tue, 8 Sep 2020 13:35:09 +0200
+From:   "Allan W. Nielsen" <allan.nielsen@microchip.com>
+To:     Henrik Bjoernlund - M31679 <Henrik.Bjoernlund@microchip.com>
+CC:     Nikolay Aleksandrov <nikolay@nvidia.com>,
+        "stephen@networkplumber.org" <stephen@networkplumber.org>,
+        Horatiu Vultur - M31836 <Horatiu.Vultur@microchip.com>,
+        "bridge@lists.linux-foundation.org" 
+        <bridge@lists.linux-foundation.org>,
         "davem@davemloft.net" <davem@davemloft.net>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "naveen.n.rao@linux.ibm.com" <naveen.n.rao@linux.ibm.com>,
-        "anil.s.keshavamurthy@intel.com" <anil.s.keshavamurthy@intel.com>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "cameron@moodycamel.com" <cameron@moodycamel.com>,
-        "oleg@redhat.com" <oleg@redhat.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "paulmck@kernel.org" <paulmck@kernel.org>,
-        "systemtap@sourceware.org" <systemtap@sourceware.org>
-Subject: Re: [PATCH v5 00/21] kprobes: Unify kretprobe trampoline handlers
- and make kretprobe lockless
-Message-ID: <20200908113339.GQ1362448@hirez.programming.kicks-ass.net>
-References: <20200901190808.GK29142@worktop.programming.kicks-ass.net>
- <20200902093739.8bd13603380951eaddbcd8a5@kernel.org>
- <20200902070226.GG2674@hirez.programming.kicks-ass.net>
- <20200902171755.b126672093a3c5d1b3a62a4f@kernel.org>
- <20200902093613.GY1362448@hirez.programming.kicks-ass.net>
- <20200902221926.f5cae5b4ad00b8d8f9ad99c7@kernel.org>
- <20200902134252.GH1362448@hirez.programming.kicks-ass.net>
- <20200903103954.68f0c97da57b3679169ce3a7@kernel.org>
- <20200908103736.GP1362448@hirez.programming.kicks-ass.net>
- <dd1b7b1fdbd84d20ad06abf0c06b4747@trendmicro.com>
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "jiri@mellanox.com" <jiri@mellanox.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Roopa Prabhu <roopa@nvidia.com>,
+        "idosch@mellanox.com" <idosch@mellanox.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        UNGLinuxDriver <UNGLinuxDriver@microchip.com>
+Subject: Re: [PATCH RFC 0/7] net: bridge: cfm: Add support for Connectivity
+ Fault Management(CFM)
+Message-ID: <20200908113509.hvuknvmr54no2cy4@lx-anielsen.microsemi.net>
+References: <20200904091527.669109-1-henrik.bjoernlund@microchip.com>
+ <20200904154406.4fe55b9d@hermes.lan>
+ <20200906182129.274fimjyo7l52puj@soft-dev3.localdomain>
+ <b36a32dbf3b4b315fc4cbfdf06084b75a7c58729.camel@nvidia.com>
+ <BY5PR11MB3928DF9AC75B8AEC2FBD2256ED290@BY5PR11MB3928.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Disposition: inline
-In-Reply-To: <dd1b7b1fdbd84d20ad06abf0c06b4747@trendmicro.com>
+In-Reply-To: <BY5PR11MB3928DF9AC75B8AEC2FBD2256ED290@BY5PR11MB3928.namprd11.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 08, 2020 at 11:15:14AM +0000, Eddy_Wu@trendmicro.com wrote:
-> > From: peterz@infradead.org <peterz@infradead.org>
-> >
-> > I'm now trying and failing to reproduce.... I can't seem to make it use
-> > int3 today. It seems to want to use ftrace or refuses everything. I'm
-> > probably doing it wrong.
-> >
-> 
-> You can turn off CONFIG_KPROBES_ON_FTRACE (and also sysctl
-> debug.kprobes-optimization) to make it use int3 handler
+Hi,
 
-I'm fairly sure I used the sysctl like in your original reproducer.
+On 08.09.2020 11:04, Henrik Bjoernlund - M31679 wrote:
+>>On Sun, 2020-09-06 at 20:21 +0200, Horatiu Vultur wrote:
+>>> The 09/04/2020 15:44, Stephen Hemminger wrote:
+>>> > On Fri, 4 Sep 2020 09:15:20 +0000 Henrik Bjoernlund
+>>> > <henrik.bjoernlund@microchip.com> wrote:
+>>Hi, I also had the same initial thought - this really doesn't seem to
+>>affect the bridge in any way, it's only collecting and transmitting
+>>information. I get that you'd like to use the bridge as a passthrough
+>>device to switchdev to program your hw, could you share what would be
+>>offloaded more specifically ?
+>Yes.
+>
+>The HW will offload the periodic sending of CCM frames, and the
+>reception.
+>
+>If CCM frames are not received as expected, it will raise an interrupt.
+>
+>This means that all the functionality provided in this series will be
+>offloaded to HW.
+>
+>The offloading is very important on our HW where we have a small CPU,
+>serving many ports, with a high frequency of CFM frames.
+>
+>The HW also support Link-Trace and Loop-back, which we may come back to
+>later.
+>
+>>All you do - snooping and blocking these packets can easily be done
+>>from user- space with the help of ebtables, but since we need to have
+>>a software implementation/fallback of anything being offloaded via
+>>switchdev we might need this after all, I'd just prefer to push as
+>>much as possible to user-space.
+In addition to Henriks comment, it is worth mentioning that we are
+trying to push as much of the functionallity to user-space (learnings
+from the MRP discussions).
 
-I'll try again later.
+This is why there are currently no in-kernel users of the CCM-lose
+singnal. When a CCM-defect is happening the network typically needs to
+be re-configured. This we are trying to keep in user-space.
+
+>>I plan to review the individual patches tomorrow.
+Thanks.
+
+/Allan
