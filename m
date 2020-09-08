@@ -2,63 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F11D261D4B
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:35:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EB21261D18
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:32:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732316AbgIHTe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:34:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54198 "EHLO
+        id S1732170AbgIHTb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 15:31:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730901AbgIHP5a (ORCPT
+        with ESMTP id S1731019AbgIHP6F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:57:30 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 545DDC0612B0
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 06:11:29 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id f2so15185559qkh.3
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 06:11:29 -0700 (PDT)
+        Tue, 8 Sep 2020 11:58:05 -0400
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC45FC061242
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 06:11:32 -0700 (PDT)
+Received: by mail-qt1-x835.google.com with SMTP id n10so11814325qtv.3
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 06:11:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=marek-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=D6PZaXfU9lSNNM5STxKLHSbdmpPO4mfVbzPzM2HEmOU=;
-        b=2HYi7leTJH91BZbuOyAcGGekgns8wnQpVx1NmiD8t2s1KvGXkPdU2GaaIyofGc1rFY
-         1HAA71lu4tUzVwKGXzVA8BP3rqDCZa9jJ+zXWeTc+uSdDdhb2xyZl22TPhng6UWSfUCF
-         n+/NB8u/8bpw9L+plqC2Ho7/gCiLgBm28fQjdqo7+ZfKukrrYeUin0giOkSdHOE3vo3J
-         sN8mCXqMRxUY+v5A00+qx3Zyx0vD/ffQY4JWuMVnjqZbjcO1526wjzMNObXMjnTCN0gk
-         /rparC5vd39212atJ4ua76HwUZdqBKv+Z2IoZoIt5hhTOSmfPSWBlxCjvLB93b4yek2h
-         PY0w==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=hUrb8SCFg6HulXICTWjB5J3dJa3WsyRvIUrd/Gj8E1A=;
+        b=Btgln1DzqOK0Ky5OmfZSVznH+IIFskFJhEUd/6L+2EzexX2xFdtpBjfG38nIjkpQK2
+         pmnstu3GxKex83ZqJBTGKEoxQOsaa9ej1y1DmAcjfKwb+0/WbK2LcBN7TCMlSvkpWo6l
+         4QtbYzWr29/ZV+fKFkKIj68KD1so+1Scelu9baU+Kvw3HAAudlLQf80AutQ5xanEeCsL
+         R4JT/89nxaVd+kfU/AIPwxL7uteIXQwOK3LtJdgLl82r3LjSyfuC3lv9Lh8VmS1z8q7H
+         +QwBvwk4vlWlHa85UZOoF69Ob9wSq9wKPzlP8O+GJkTsnX4Bf2jVdcigwybNlpnWXA/V
+         MdGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=D6PZaXfU9lSNNM5STxKLHSbdmpPO4mfVbzPzM2HEmOU=;
-        b=laOfD1F+WPJs8hLr+5tA7+c2uUdlIweia8RlY0kI4SRePGWuZ21Kjdl7RiaN6HGhDa
-         wXwC4ruBauBl/cdbEtnpKxew/KiF0bR0vVWrbPgjGplSO0hKtQisopg1II34hzI50SyI
-         q8uzanPdL7oTPq0PAvg/yNsBjveFhuN+rQkNLiwsyx9zjZM8Q7MvbEz0XAPnZc9qEW5c
-         1nVo05rs3s119aJBjC82l4YhNy3w/xKA+vrFjDCn3wyQtUoBN082IDT4Tw+DbIGT8Ayo
-         egOQb8bHDTXGv02+VHne+/UCxqI6QBqY50QLKXlfagQ//1rgJFBA2CGghPSqt12X71Q9
-         KwIw==
-X-Gm-Message-State: AOAM533TpSmhxO6dVI2kPAdCW7fNsKJu0NFwPsYWWeYCkxtz1eAUV+mB
-        oiyXLCnrvFIOhsIlZaMTs8oBnw==
-X-Google-Smtp-Source: ABdhPJxIqsYRJmgOMoluDb68Y23V5yFz/PWJz14N3xZDX7JJaWWTqdlV3IIK76fYQLTTBEeS2i8B/g==
-X-Received: by 2002:a37:4b84:: with SMTP id y126mr4100qka.148.1599570688312;
-        Tue, 08 Sep 2020 06:11:28 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=hUrb8SCFg6HulXICTWjB5J3dJa3WsyRvIUrd/Gj8E1A=;
+        b=DvgB8FH60CmjLCIOqw1pSjFGJ7v2syPQIsx4D4XszmkZEkpegdbSUxbLpE/DNY+zNx
+         k8PontGg+ArTH5REJX9Z8F++PP1p13A13wf/MN6rN/rYCCpNM4Lj/gKOzheh/5RCKpVB
+         dDnwauaPL7QeU4STCNQGXgQVD9cxfiFs8WOZOjmgt8d7dftyoT8g7mjiLMBAgzo3MwAY
+         Mn+rwEKjvZkWqJpv7jcVXqSF1kBpzTaUO82MYNqOze7TPZTHJoR1BDXaKTCt26CdA5ml
+         pwzN8hXkL42gBD+tV3xTjyAGVeVlOUXRsWlQBJ5PgOlOjExih82uRaU2e5dISaI55uJu
+         JNUw==
+X-Gm-Message-State: AOAM531F/N/e6Y516k/50BkMZYCSTzENE14lT0Yborvrp6w/VfFSe/UC
+        Fik11On00ELK0FhEl08aThP60Q==
+X-Google-Smtp-Source: ABdhPJx3qjKvLLDxptFWyk2taGV4q+N24WetF6P4vAorl5llo7bW4K8NDUDihiwxftcYS6HUZPP72g==
+X-Received: by 2002:aed:39a1:: with SMTP id m30mr25310181qte.39.1599570690288;
+        Tue, 08 Sep 2020 06:11:30 -0700 (PDT)
 Received: from localhost.localdomain ([147.253.86.153])
-        by smtp.gmail.com with ESMTPSA id m196sm13394069qke.87.2020.09.08.06.11.27
+        by smtp.gmail.com with ESMTPSA id m196sm13394069qke.87.2020.09.08.06.11.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Sep 2020 06:11:27 -0700 (PDT)
+        Tue, 08 Sep 2020 06:11:29 -0700 (PDT)
 From:   Jonathan Marek <jonathan@marek.ca>
 To:     linux-arm-msm@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
         Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>,
-        linux-kernel@vger.kernel.org (open list),
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v2 0/3] misc: fastrpc: add ioctl for attaching to sensors pd
-Date:   Tue,  8 Sep 2020 09:10:08 -0400
-Message-Id: <20200908131013.19630-1-jonathan@marek.ca>
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2 1/3] misc: fastrpc: fix indentation error in uapi header
+Date:   Tue,  8 Sep 2020 09:10:09 -0400
+Message-Id: <20200908131013.19630-2-jonathan@marek.ca>
 X-Mailer: git-send-email 2.26.1
+In-Reply-To: <20200908131013.19630-1-jonathan@marek.ca>
+References: <20200908131013.19630-1-jonathan@marek.ca>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -66,23 +67,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Initializing sensors requires attaching to pd 2. Add an ioctl for that.
+Use tabs instead of spaces.
 
-This corresponds to FASTRPC_INIT_ATTACH_SENSORS in the downstream driver.
+Fixes: 2419e55e532d ("misc: fastrpc: add mmap/unmap support")
 
-v2:
- - define names of PD values in a separate patch
- - split out identation fix in a separate patch
+Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+---
+ include/uapi/misc/fastrpc.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Jonathan Marek (3):
-  misc: fastrpc: fix indentation error in uapi header
-  misc: fastrpc: define names for protection domain ids
-  misc: fastrpc: add ioctl for attaching to sensors pd
-
- drivers/misc/fastrpc.c      | 16 ++++++++++++----
- include/uapi/misc/fastrpc.h |  5 +++--
- 2 files changed, 15 insertions(+), 6 deletions(-)
-
+diff --git a/include/uapi/misc/fastrpc.h b/include/uapi/misc/fastrpc.h
+index 07de2b7aac85..de31f0bd4779 100644
+--- a/include/uapi/misc/fastrpc.h
++++ b/include/uapi/misc/fastrpc.h
+@@ -10,8 +10,8 @@
+ #define FASTRPC_IOCTL_INVOKE		_IOWR('R', 3, struct fastrpc_invoke)
+ #define FASTRPC_IOCTL_INIT_ATTACH	_IO('R', 4)
+ #define FASTRPC_IOCTL_INIT_CREATE	_IOWR('R', 5, struct fastrpc_init_create)
+-#define FASTRPC_IOCTL_MMAP              _IOWR('R', 6, struct fastrpc_req_mmap)
+-#define FASTRPC_IOCTL_MUNMAP            _IOWR('R', 7, struct fastrpc_req_munmap)
++#define FASTRPC_IOCTL_MMAP		_IOWR('R', 6, struct fastrpc_req_mmap)
++#define FASTRPC_IOCTL_MUNMAP		_IOWR('R', 7, struct fastrpc_req_munmap)
+ 
+ struct fastrpc_invoke_args {
+ 	__u64 ptr;
 -- 
 2.26.1
 
