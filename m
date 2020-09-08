@@ -2,157 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12D3E260D31
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 10:14:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3FB0260D41
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 10:16:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729824AbgIHIOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 04:14:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39022 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729626AbgIHIOw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 04:14:52 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD930C061757
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 01:14:50 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id b79so16202458wmb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 01:14:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=2l4ulTfYjNlFeRN+9AmUPudn6kXgV7e1zXVy9nKbsRk=;
-        b=e4CeBE11o3dS4jh5WtgwHvX/aVsAUVjNuZFptYv0FYAuqO1K98mRcanGrEOjNjYNFj
-         1B9gH057PfWPjo2QcMRrEZMg90NcPkJMcKVMvyDqhWkGR3PSfvFiGsld3X9Wck4HNBUv
-         Uz1InBHYi4s1FbO7LIIYnsOElzCrPVjFJnvoARcO7gCqxYsS4kSDssOgt6yv3aOgFqUh
-         bAQIDjH0Yi92yGMBsA0dpqV4vMOLuZy0WHY0SVfEuPK2ENzhsTbwoTlvongp9Gi2vvGK
-         TEH1KHEHxZnKwqCzYbY46VsbpquCRbEqwMWCV9Z/tnC6T4PkLE5+QXW4TOkCDzT1t9Jr
-         kDvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=2l4ulTfYjNlFeRN+9AmUPudn6kXgV7e1zXVy9nKbsRk=;
-        b=QFdoBCOqK7YnWCczzIsJr6I/7dAGh1HV8gVUFXAOSOTgFLbpqAhY0d+btyiqGQP+Ve
-         MqawuP2MN4g3yUS32Wo0x1IqaZf/HhdOiliP4yQFXUyv+6fpHZUKpx5dvuY/V2gcB+s2
-         Bgk/JHgu+m6zcgJRTohWHrimFACszIRxcpFofGUIGfkPtknxDiQjgYEjzkzaqa8mwqE1
-         PJmi4Iw/s1NJDksXrc4ftPAVSxvdwB3DEQd5vZvdbjxpcADLV3XNwtV1GU+FCP/xw9Mv
-         +qtjlnkAzIud5I9lBYLzrtKDH9LXxj838gdSCcPAUM7C4GiQLJ2B36y6yRyPqhtEGxUz
-         xZng==
-X-Gm-Message-State: AOAM533ncJqn9DcMJAPVqTD58BuHwiESgUUpvA9r7cdicj65n2fRL5Gn
-        uFP/b+5s5ZxctFHM5xErpE2cjA==
-X-Google-Smtp-Source: ABdhPJxaRvhQRn53vo1Vi/7ljVTSvQijQ2hYfTSSvgSycwVb16Ba3bhMyPCw6FZ7G3YrfyGiH7odlg==
-X-Received: by 2002:a1c:5641:: with SMTP id k62mr3330505wmb.13.1599552888802;
-        Tue, 08 Sep 2020 01:14:48 -0700 (PDT)
-Received: from dell ([91.110.221.204])
-        by smtp.gmail.com with ESMTPSA id 71sm33594957wrm.23.2020.09.08.01.14.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Sep 2020 01:14:48 -0700 (PDT)
-Date:   Tue, 8 Sep 2020 09:14:45 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Mark Brown <broonie@kernel.org>, allen <allen.chen@ite.com.tw>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
-        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Josua Mayer <josua.mayer@jm0.eu>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        Arnd Bergmann <arnd@arndb.de>, Daniel Palmer <daniel@0x0f.com>
-Subject: Re: [PATCH v2 05/10] pwm: ntxec: Add driver for PWM function in
- Netronix EC
-Message-ID: <20200908081445.GC4400@dell>
-References: <20200905133230.1014581-1-j.neuschaefer@gmx.net>
- <20200905133230.1014581-6-j.neuschaefer@gmx.net>
- <CAHp75VdUHoOyM3bObzhdfiqpne0AmSK_UakteTZxnjqJVrNV9A@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHp75VdUHoOyM3bObzhdfiqpne0AmSK_UakteTZxnjqJVrNV9A@mail.gmail.com>
+        id S1729993AbgIHIQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 04:16:06 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37130 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729365AbgIHIPZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 04:15:25 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 340BDACF2;
+        Tue,  8 Sep 2020 08:15:24 +0000 (UTC)
+From:   Daniel Wagner <dwagner@suse.de>
+To:     linux-scsi@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Nilesh Javali <njavali@marvell.com>,
+        Martin Wilck <mwilck@suse.com>, Arun Easi <aeasi@marvell.com>,
+        Daniel Wagner <dwagner@suse.de>
+Subject: [PATCH v3 0/4] qla2xxx: A couple crash fixes
+Date:   Tue,  8 Sep 2020 10:15:12 +0200
+Message-Id: <20200908081516.8561-1-dwagner@suse.de>
+X-Mailer: git-send-email 2.16.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 05 Sep 2020, Andy Shevchenko wrote:
+The first crash we observed is due memory corruption in the srb memory
+pool. Unforuntatly, I couldn't find the source of the problem but the
+workaround by resetting the cleanup callbacks 'fixes' this problem
+(patch #1). I think as intermeditate step this should be merged until
+the real cause can be identified.
 
-> On Saturday, September 5, 2020, Jonathan Neuschäfer <j.neuschaefer@gmx.net>
-> wrote:
-> 
-> > The Netronix EC provides a PWM output which is used for the backlight
-> > on some ebook readers. This patches adds a driver for the PWM output.
-> >
-> > Signed-off-by: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
-> > ---
-> >
-> > v2:
-> > - Various grammar and style improvements, as suggested by Uwe Kleine-König,
-> >   Lee Jones, and Alexandre Belloni
-> > - Switch to regmap
-> > - Prefix registers with NTXEC_REG_
-> > - Add help text to the Kconfig option
-> > - Use the .apply callback instead of the old API
-> > - Add a #define for the time base (125ns)
-> > - Don't change device state in .probe; this avoids multiple problems
-> > - Rework division and overflow check logic to perform divisions in 32 bits
-> > - Avoid setting duty cycle to zero, to work around a hardware quirk
-> > ---
-> >  drivers/pwm/Kconfig     |   8 ++
-> >  drivers/pwm/Makefile    |   1 +
-> >  drivers/pwm/pwm-ntxec.c | 160 ++++++++++++++++++++++++++++++++++++++++
-> >  3 files changed, 169 insertions(+)
-> >  create mode 100644 drivers/pwm/pwm-ntxec.c
-> >
-> > diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
-> > index 7dbcf6973d335..7fd17c6cda95e 100644
-> > --- a/drivers/pwm/Kconfig
-> > +++ b/drivers/pwm/Kconfig
-> > @@ -350,6 +350,14 @@ config PWM_MXS
-> >           To compile this driver as a module, choose M here: the module
-> >           will be called pwm-mxs.
-> >
-> > +config PWM_NTXEC
-> > +       tristate "Netronix embedded controller PWM support"
-> 
-> 
-> 
-> 
-> > +       depends on MFD_NTXEC && OF
-> 
-> 
-> I don’t see need to reduce test coverage and use of the driver by sticking
-> with OF. Actually it’s not used.
+The second crash is due a race condition(?) in the firmware. The sts
+entries are not updated in time which leads to this crash pattern
+which several customers have reported:
 
-If the device is only known to boot with OF, then it's pointless
-building it when !OF.  If you want to increase test coverage enable
-COMPILE_TEST instead.
+ #0 [c00000ffffd1bb80] scsi_dma_unmap at d00000001e4904d4 [scsi_mod]
+ #1 [c00000ffffd1bbe0] qla2x00_sp_compl at d0000000204803cc [qla2xxx]
+ #2 [c00000ffffd1bc20] qla24xx_process_response_queue at d0000000204c5810 [qla2xxx]
+ #3 [c00000ffffd1bd50] qla24xx_msix_rsp_q at d0000000204c8fd8 [qla2xxx]
+ #4 [c00000ffffd1bde0] __handle_irq_event_percpu at c000000000189510
+ #5 [c00000ffffd1bea0] handle_irq_event_percpu at c00000000018978c
+ #6 [c00000ffffd1bee0] handle_irq_event at c00000000018984c
+ #7 [c00000ffffd1bf10] handle_fasteoi_irq at c00000000018efc0
+ #8 [c00000ffffd1bf40] generic_handle_irq at c000000000187f10
+ #9 [c00000ffffd1bf60] __do_irq at c000000000018784
+ #10 [c00000ffffd1bf90] call_do_irq at c00000000002caa4
+ #11 [c00000ecca417a00] do_IRQ at c000000000018970
+ #12 [c00000ecca417a50] restore_check_irq_replay at c00000000000de98
+
+From analyzing the crash dump it was clear that
+qla24xx_mbx_iocb_entry() calls sp->done (qla2x00_sp_compl) which
+crashes because the response is not a mailbox entry, it is a status
+entry. Patch #4 changes the process logic for mailbox commands so that
+the sp is parsed before calling the correct proccess function.
+
+
+changes since v1:
+ - addressed review comments by Martin
+   - patch#1: added dummy warn function
+   - patch#4: added log entry
+
+changes since v2:
+ - added reviewed tags by Martin
+ - addressed review comments by Arun
+   - patch#1: add srb pointer to log message
+   - patch#3: print calling func name in qla2x00_get_sp_from_handle()
+   - patch#4: dropped comment, reset HBA
+
+
+Daniel Wagner (4):
+  qla2xxx: Warn if done() or free() are called on an already freed srb
+  qla2xxx: Simplify return value logic in qla2x00_get_sp_from_handle()
+  qla2xxx: Log calling function name in qla2x00_get_sp_from_handle()
+  qla2xxx: Handle incorrect entry_type entries
+
+ drivers/scsi/qla2xxx/qla_init.c   | 10 +++++++++
+ drivers/scsi/qla2xxx/qla_inline.h |  5 +++++
+ drivers/scsi/qla2xxx/qla_isr.c    | 47 ++++++++++++++++++++++++++++++---------
+ 3 files changed, 51 insertions(+), 11 deletions(-)
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.16.4
+
