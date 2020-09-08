@@ -2,146 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8634D261E04
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:45:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A73F261F30
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 22:00:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732407AbgIHTpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:45:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52770 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730776AbgIHPvm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:51:42 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FB37C0A3BF7;
-        Tue,  8 Sep 2020 07:55:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=fs8KDvUlBtih+JNIUNQobEQslvMWHTx5fiB3hsIGlEU=; b=fToRuRTLBzkwhKm/TBMIAObCfx
-        47SjRyodcVFkso9Pdp1Z4yO8OZ3afLCOAU2HivmVTsp3tP1Bs88OMnOZB7haSutu6gHet6t4VM3wp
-        yw1Wa+3VlMgjCzG1XqrEZAep3+D15GDpvLTW/mHCdv6Urlj/XZbc1Mi4vvIbLWP2FZPmjUyJsZ1Vv
-        yi0qc4NmeefS23wziWDUVQUXwMIwfzTbyLWpaBN3N8hJtzG+iTWHHG4AwwJjrYLudG25EJeXDoso9
-        RVK0YroYrfuP2PbYDLdLaevlsiDgFf5Jm5RM70YkGXbQXegJusJEa/ZMQ6NYGQUa1p9Yi1HBUDqt/
-        tlSbZePw==;
-Received: from [2001:4bb8:184:af1:3dc3:9c83:fc6c:e0f] (helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kFf1I-00030J-0O; Tue, 08 Sep 2020 14:54:58 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Denis Efremov <efremov@linux.com>, Tim Waugh <tim@cyberelk.net>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Borislav Petkov <bp@alien8.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Song Liu <song@kernel.org>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        linux-m68k@lists.linux-m68k.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-ide@vger.kernel.org,
-        linux-raid@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH 18/19] sr: simplify sr_block_revalidate_disk
-Date:   Tue,  8 Sep 2020 16:53:46 +0200
-Message-Id: <20200908145347.2992670-19-hch@lst.de>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200908145347.2992670-1-hch@lst.de>
-References: <20200908145347.2992670-1-hch@lst.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+        id S1732497AbgIHUAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 16:00:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58872 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730477AbgIHPf0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 11:35:26 -0400
+Received: from localhost.localdomain (unknown [194.230.155.174])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8297E22BF3;
+        Tue,  8 Sep 2020 14:59:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599577199;
+        bh=M1E3QlEcopkB9Ss9cwMDRhMIEQp6FQqI/zsyQ4VIOes=;
+        h=From:To:Cc:Subject:Date:From;
+        b=CCHK8NRNe+g16m0fl8p/+qr8DXPm6O+ZWmX5mXl9dowWRiVB5eqVd22tZ4QmhZme/
+         bectj1Ex58awbfrGqq2hFsweAsiG4LqEkbPv8OmAp2ECeWXGv8KxYZtjOVqW4yCqjC
+         aU0U4erElfxRY9UTBIXT8N1Hg/JhWY3O0Nb5sZaQ=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH] ASoC: dt-bindings:  Correct interrupt flags in examples
+Date:   Tue,  8 Sep 2020 16:59:54 +0200
+Message-Id: <20200908145954.4629-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Both callers have a valid CD struture available, so rely on that instead
-of getting another reference.  Also move the function to avoid a forward
-declaration.
+GPIO_ACTIVE_x flags are not correct in the context of interrupt flags.
+These are simple defines so they could be used in DTS but they will not
+have the same meaning:
+1. GPIO_ACTIVE_HIGH = 0 = IRQ_TYPE_NONE
+2. GPIO_ACTIVE_LOW  = 1 = IRQ_TYPE_EDGE_RISING
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Correct the interrupt flags, assuming the author of the code wanted some
+logical behavior behind the name "ACTIVE_xxx", this is:
+  ACTIVE_HIGH => IRQ_TYPE_LEVEL_HIGH
+
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- drivers/scsi/sr.c | 36 +++++++++++++-----------------------
- 1 file changed, 13 insertions(+), 23 deletions(-)
+ Documentation/devicetree/bindings/sound/max98090.txt | 2 +-
+ Documentation/devicetree/bindings/sound/rt5640.txt   | 2 +-
+ Documentation/devicetree/bindings/sound/rt5659.txt   | 2 +-
+ Documentation/devicetree/bindings/sound/rt5665.txt   | 2 +-
+ Documentation/devicetree/bindings/sound/rt5668.txt   | 2 +-
+ Documentation/devicetree/bindings/sound/rt5677.txt   | 2 +-
+ Documentation/devicetree/bindings/sound/rt5682.txt   | 2 +-
+ 7 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/scsi/sr.c b/drivers/scsi/sr.c
-index 34be94b62523fa..2b43c0f97442d4 100644
---- a/drivers/scsi/sr.c
-+++ b/drivers/scsi/sr.c
-@@ -86,7 +86,6 @@ static int sr_remove(struct device *);
- static blk_status_t sr_init_command(struct scsi_cmnd *SCpnt);
- static int sr_done(struct scsi_cmnd *);
- static int sr_runtime_suspend(struct device *dev);
--static int sr_block_revalidate_disk(struct gendisk *disk);
+diff --git a/Documentation/devicetree/bindings/sound/max98090.txt b/Documentation/devicetree/bindings/sound/max98090.txt
+index 7e1bbd5c27fd..39d640294c62 100644
+--- a/Documentation/devicetree/bindings/sound/max98090.txt
++++ b/Documentation/devicetree/bindings/sound/max98090.txt
+@@ -55,5 +55,5 @@ audio-codec@10 {
+ 	compatible = "maxim,max98090";
+ 	reg = <0x10>;
+ 	interrupt-parent = <&gpio>;
+-	interrupts = <TEGRA_GPIO(H, 4) GPIO_ACTIVE_HIGH>;
++	interrupts = <TEGRA_GPIO(H, 4) IRQ_TYPE_LEVEL_HIGH>;
+ };
+diff --git a/Documentation/devicetree/bindings/sound/rt5640.txt b/Documentation/devicetree/bindings/sound/rt5640.txt
+index e40e4893eed8..ff1228713f7e 100644
+--- a/Documentation/devicetree/bindings/sound/rt5640.txt
++++ b/Documentation/devicetree/bindings/sound/rt5640.txt
+@@ -88,7 +88,7 @@ rt5640 {
+ 	compatible = "realtek,rt5640";
+ 	reg = <0x1c>;
+ 	interrupt-parent = <&gpio>;
+-	interrupts = <TEGRA_GPIO(W, 3) GPIO_ACTIVE_HIGH>;
++	interrupts = <TEGRA_GPIO(W, 3) IRQ_TYPE_LEVEL_HIGH>;
+ 	realtek,ldo1-en-gpios =
+ 		<&gpio TEGRA_GPIO(V, 3) GPIO_ACTIVE_HIGH>;
+ };
+diff --git a/Documentation/devicetree/bindings/sound/rt5659.txt b/Documentation/devicetree/bindings/sound/rt5659.txt
+index 1766e0543fc5..56788f50b6cf 100644
+--- a/Documentation/devicetree/bindings/sound/rt5659.txt
++++ b/Documentation/devicetree/bindings/sound/rt5659.txt
+@@ -72,7 +72,7 @@ rt5659 {
+ 	compatible = "realtek,rt5659";
+ 	reg = <0x1b>;
+ 	interrupt-parent = <&gpio>;
+-	interrupts = <TEGRA_GPIO(W, 3) GPIO_ACTIVE_HIGH>;
++	interrupts = <TEGRA_GPIO(W, 3) IRQ_TYPE_LEVEL_HIGH>;
+ 	realtek,ldo1-en-gpios =
+ 		<&gpio TEGRA_GPIO(V, 3) GPIO_ACTIVE_HIGH>;
+ };
+diff --git a/Documentation/devicetree/bindings/sound/rt5665.txt b/Documentation/devicetree/bindings/sound/rt5665.txt
+index 8df170506986..f6ca96b4ce98 100644
+--- a/Documentation/devicetree/bindings/sound/rt5665.txt
++++ b/Documentation/devicetree/bindings/sound/rt5665.txt
+@@ -62,7 +62,7 @@ rt5659 {
+ 	compatible = "realtek,rt5665";
+ 	reg = <0x1b>;
+ 	interrupt-parent = <&gpio>;
+-	interrupts = <TEGRA_GPIO(W, 3) GPIO_ACTIVE_HIGH>;
++	interrupts = <TEGRA_GPIO(W, 3) IRQ_TYPE_LEVEL_HIGH>;
+ 	realtek,ldo1-en-gpios =
+ 		<&gpio TEGRA_GPIO(V, 3) GPIO_ACTIVE_HIGH>;
+ };
+diff --git a/Documentation/devicetree/bindings/sound/rt5668.txt b/Documentation/devicetree/bindings/sound/rt5668.txt
+index c88b96e7764b..a2b7e9a2f2f3 100644
+--- a/Documentation/devicetree/bindings/sound/rt5668.txt
++++ b/Documentation/devicetree/bindings/sound/rt5668.txt
+@@ -41,7 +41,7 @@ rt5668 {
+ 	compatible = "realtek,rt5668b";
+ 	reg = <0x1a>;
+ 	interrupt-parent = <&gpio>;
+-	interrupts = <TEGRA_GPIO(U, 6) GPIO_ACTIVE_HIGH>;
++	interrupts = <TEGRA_GPIO(U, 6) IRQ_TYPE_LEVEL_HIGH>;
+ 	realtek,ldo1-en-gpios =
+ 		<&gpio TEGRA_GPIO(R, 2) GPIO_ACTIVE_HIGH>;
+ 	realtek,dmic1-data-pin = <1>;
+diff --git a/Documentation/devicetree/bindings/sound/rt5677.txt b/Documentation/devicetree/bindings/sound/rt5677.txt
+index 1b3c13d206ff..da2430099181 100644
+--- a/Documentation/devicetree/bindings/sound/rt5677.txt
++++ b/Documentation/devicetree/bindings/sound/rt5677.txt
+@@ -64,7 +64,7 @@ rt5677 {
+ 	compatible = "realtek,rt5677";
+ 	reg = <0x2c>;
+ 	interrupt-parent = <&gpio>;
+-	interrupts = <TEGRA_GPIO(W, 3) GPIO_ACTIVE_HIGH>;
++	interrupts = <TEGRA_GPIO(W, 3) IRQ_TYPE_LEVEL_HIGH>;
  
- static const struct dev_pm_ops sr_pm_ops = {
- 	.runtime_suspend	= sr_runtime_suspend,
-@@ -518,6 +517,17 @@ static blk_status_t sr_init_command(struct scsi_cmnd *SCpnt)
- 	return ret;
- }
- 
-+static void sr_revalidate_disk(struct scsi_cd *cd)
-+{
-+	struct scsi_sense_hdr sshdr;
-+
-+	/* if the unit is not ready, nothing more to do */
-+	if (scsi_test_unit_ready(cd->device, SR_TIMEOUT, MAX_RETRIES, &sshdr))
-+		return;
-+	sr_cd_check(&cd->cdi);
-+	get_sectorsize(cd);
-+}
-+
- static int sr_block_open(struct block_device *bdev, fmode_t mode)
- {
- 	struct scsi_cd *cd;
-@@ -531,7 +541,7 @@ static int sr_block_open(struct block_device *bdev, fmode_t mode)
- 	sdev = cd->device;
- 	scsi_autopm_get_device(sdev);
- 	if (bdev_check_media_change(bdev))
--		sr_block_revalidate_disk(bdev->bd_disk);
-+		sr_revalidate_disk(cd);
- 
- 	mutex_lock(&cd->lock);
- 	ret = cdrom_open(&cd->cdi, bdev, mode);
-@@ -660,26 +670,6 @@ static unsigned int sr_block_check_events(struct gendisk *disk,
- 	return ret;
- }
- 
--static int sr_block_revalidate_disk(struct gendisk *disk)
--{
--	struct scsi_sense_hdr sshdr;
--	struct scsi_cd *cd;
--
--	cd = scsi_cd_get(disk);
--	if (!cd)
--		return -ENXIO;
--
--	/* if the unit is not ready, nothing more to do */
--	if (scsi_test_unit_ready(cd->device, SR_TIMEOUT, MAX_RETRIES, &sshdr))
--		goto out;
--
--	sr_cd_check(&cd->cdi);
--	get_sectorsize(cd);
--out:
--	scsi_cd_put(cd);
--	return 0;
--}
--
- static const struct block_device_operations sr_bdops =
- {
- 	.owner		= THIS_MODULE,
-@@ -803,7 +793,7 @@ static int sr_probe(struct device *dev)
- 
- 	dev_set_drvdata(dev, cd);
- 	disk->flags |= GENHD_FL_REMOVABLE;
--	sr_block_revalidate_disk(disk);
-+	sr_revalidate_disk(cd);
- 	device_add_disk(&sdev->sdev_gendev, disk, NULL);
- 
- 	sdev_printk(KERN_DEBUG, sdev,
+ 	gpio-controller;
+ 	#gpio-cells = <2>;
+diff --git a/Documentation/devicetree/bindings/sound/rt5682.txt b/Documentation/devicetree/bindings/sound/rt5682.txt
+index ade1ece8b45f..707fa98d1310 100644
+--- a/Documentation/devicetree/bindings/sound/rt5682.txt
++++ b/Documentation/devicetree/bindings/sound/rt5682.txt
+@@ -58,7 +58,7 @@ rt5682 {
+ 	compatible = "realtek,rt5682i";
+ 	reg = <0x1a>;
+ 	interrupt-parent = <&gpio>;
+-	interrupts = <TEGRA_GPIO(U, 6) GPIO_ACTIVE_HIGH>;
++	interrupts = <TEGRA_GPIO(U, 6) IRQ_TYPE_LEVEL_HIGH>;
+ 	realtek,ldo1-en-gpios =
+ 		<&gpio TEGRA_GPIO(R, 2) GPIO_ACTIVE_HIGH>;
+ 	realtek,dmic1-data-pin = <1>;
 -- 
-2.28.0
+2.17.1
 
