@@ -2,150 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 930DE260A85
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 08:03:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1C1A260A9A
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 08:10:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728871AbgIHGDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 02:03:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49570 "EHLO mail.kernel.org"
+        id S1728874AbgIHGKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 02:10:42 -0400
+Received: from mga18.intel.com ([134.134.136.126]:46899 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728654AbgIHGC7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 02:02:59 -0400
-Received: from saruman (91-155-214-58.elisa-laajakaista.fi [91.155.214.58])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AA0C12137B;
-        Tue,  8 Sep 2020 06:02:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599544979;
-        bh=mW67zDPy19xrTyXDGAMLyh553gQEFgf/Dow7ph9VSos=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=h/dnpTzqrDk6lp9WKT2V/5WQ3Zipd7dBVaNne1ma/9LlPVAEjm8YANsMKf1RiiBle
-         QRWrGwMrlIX2aXlzK6NfPcQeEx/nSC1TPm6x5ombPpyeMjNo2wWfE8I1M5WSeLSH5M
-         HSGEIXKvvKpH6JJQ7sonja5FYygCoZHp37GSNIKQ=
-From:   Felipe Balbi <balbi@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 10/11] dwc3-of-simple: add support for Hikey 970
-In-Reply-To: <83393769e4391d038c4ab69a67ac77e2ca34efd4.1599493845.git.mchehab+huawei@kernel.org>
-References: <cover.1599493845.git.mchehab+huawei@kernel.org>
- <83393769e4391d038c4ab69a67ac77e2ca34efd4.1599493845.git.mchehab+huawei@kernel.org>
-Date:   Tue, 08 Sep 2020 09:02:49 +0300
-Message-ID: <87tuw8n6uu.fsf@kernel.org>
+        id S1728654AbgIHGKl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 02:10:41 -0400
+IronPort-SDR: iepvQLS4qtraOKeTpuVDhJ09w8ebRiIB5BGOQrB3p1bLq6fJJyxUDRJcFo/2cD27MYJyJV9Auh
+ /q+MMFxlRwxw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9737"; a="145789085"
+X-IronPort-AV: E=Sophos;i="5.76,404,1592895600"; 
+   d="scan'208";a="145789085"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2020 23:10:40 -0700
+IronPort-SDR: WV1iGX4PezN4uM+SBYmsobq8wQfeNgX5mSccINOILxX+uqqhJ1fSilEU4XPtxc6P1gSWzvsQfz
+ ZmYSq5PMiL1g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,404,1592895600"; 
+   d="scan'208";a="407028868"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.139]) ([10.239.159.139])
+  by fmsmga001.fm.intel.com with ESMTP; 07 Sep 2020 23:10:38 -0700
+Cc:     baolu.lu@linux.intel.com, intel-gfx@lists.freedesktop.org,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        iommu@lists.linux-foundation.org,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH V2 5/5] DO NOT MERGE: iommu: disable list appending in
+ dma-iommu
+To:     Christoph Hellwig <hch@infradead.org>, Tom Murphy <murphyt7@tcd.ie>
+References: <20200903201839.7327-1-murphyt7@tcd.ie>
+ <20200903201839.7327-6-murphyt7@tcd.ie>
+ <20200907070035.GA25114@infradead.org>
+ <CALQxJute8_y=JsW4UV1awSccOjxT_1OyPdymq=R_PurVQzENeQ@mail.gmail.com>
+ <20200908053619.GA15418@infradead.org> <20200908055510.GA19078@infradead.org>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <9655fdc9-6ea0-e4c1-e104-a9a8981ecb1e@linux.intel.com>
+Date:   Tue, 8 Sep 2020 14:04:53 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+In-Reply-To: <20200908055510.GA19078@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Hi Christoph,
 
+On 9/8/20 1:55 PM, Christoph Hellwig wrote:
+> On Tue, Sep 08, 2020 at 06:36:19AM +0100, Christoph Hellwig wrote:
+>> On Mon, Sep 07, 2020 at 09:18:50PM +0100, Tom Murphy wrote:
+>>> Yeah we talked about passing an attr to map_sg to disable merging at
+>>> the following microconfernce:
+>>> https://linuxplumbersconf.org/event/7/contributions/846/
+>>> As far as I can remember everyone seemed happy with that solution. I
+>>> won't be working on this though as I don't have any more time to
+>>> dedicate to this. It seems Lu Baolu will take over this.
+>>
+>> I'm absolutely again passing a flag.  Tha just invites further
+>> abuse.  We need a PCI ID based quirk or something else that can't
+>> be as easily abused.
+> 
+> Also, I looked at i915 and there are just three dma_map_sg callers.
+> The two dmabuf related ones are fixed by Marek in his series, leaving
 
-Hi,
+Do you mind telling where can I find Marek's series?
 
-Mauro Carvalho Chehab <mchehab+huawei@kernel.org> writes:
-> This binding driver is needed for Hikey 970 to work,
-> as otherwise a Serror is produced:
->
->     [    1.837458] SError Interrupt on CPU0, code 0xbf000002 -- SError
->     [    1.837462] CPU: 0 PID: 74 Comm: kworker/0:1 Not tainted 5.8.0+ #2=
-05
->     [    1.837463] Hardware name: HiKey970 (DT)
->     [    1.837465] Workqueue: events deferred_probe_work_func
->     [    1.837467] pstate: 20000005 (nzCv daif -PAN -UAO BTYPE=3D--)
->     [    1.837468] pc : _raw_spin_unlock_irqrestore+0x18/0x50
->     [    1.837469] lr : regmap_unlock_spinlock+0x14/0x20
->     [    1.837470] sp : ffff8000124dba60
->     [    1.837471] x29: ffff8000124dba60 x28: 0000000000000000
->     [    1.837474] x27: ffff0001b7e854c8 x26: ffff80001204ea18
->     [    1.837476] x25: 0000000000000005 x24: ffff800011f918f8
->     [    1.837479] x23: ffff800011fbb588 x22: ffff0001b7e40e00
->     [    1.837481] x21: 0000000000000100 x20: 0000000000000000
->     [    1.837483] x19: ffff0001b767ec00 x18: 00000000ff10c000
->     [    1.837485] x17: 0000000000000002 x16: 0000b0740fdb9950
->     [    1.837488] x15: ffff8000116c1198 x14: ffffffffffffffff
->     [    1.837490] x13: 0000000000000030 x12: 0101010101010101
->     [    1.837493] x11: 0000000000000020 x10: ffff0001bf17d130
->     [    1.837495] x9 : 0000000000000000 x8 : ffff0001b6938080
->     [    1.837497] x7 : 0000000000000000 x6 : 000000000000003f
->     [    1.837500] x5 : 0000000000000000 x4 : 0000000000000000
->     [    1.837502] x3 : ffff80001096a880 x2 : 0000000000000000
->     [    1.837505] x1 : ffff0001b7e40e00 x0 : 0000000100000001
->     [    1.837507] Kernel panic - not syncing: Asynchronous SError Interr=
-upt
->     [    1.837509] CPU: 0 PID: 74 Comm: kworker/0:1 Not tainted 5.8.0+ #2=
-05
->     [    1.837510] Hardware name: HiKey970 (DT)
->     [    1.837511] Workqueue: events deferred_probe_work_func
->     [    1.837513] Call trace:
->     [    1.837514]  dump_backtrace+0x0/0x1e0
->     [    1.837515]  show_stack+0x18/0x24
->     [    1.837516]  dump_stack+0xc0/0x11c
->     [    1.837517]  panic+0x15c/0x324
->     [    1.837518]  nmi_panic+0x8c/0x90
->     [    1.837519]  arm64_serror_panic+0x78/0x84
->     [    1.837520]  do_serror+0x158/0x15c
->     [    1.837521]  el1_error+0x84/0x100
->     [    1.837522]  _raw_spin_unlock_irqrestore+0x18/0x50
->     [    1.837523]  regmap_write+0x58/0x80
->     [    1.837524]  hi3660_reset_deassert+0x28/0x34
->     [    1.837526]  reset_control_deassert+0x50/0x260
->     [    1.837527]  reset_control_deassert+0xf4/0x260
->     [    1.837528]  dwc3_probe+0x5dc/0xe6c
->     [    1.837529]  platform_drv_probe+0x54/0xb0
->     [    1.837530]  really_probe+0xe0/0x490
->     [    1.837531]  driver_probe_device+0xf4/0x160
->     [    1.837532]  __device_attach_driver+0x8c/0x114
->     [    1.837533]  bus_for_each_drv+0x78/0xcc
->     [    1.837534]  __device_attach+0x108/0x1a0
->     [    1.837535]  device_initial_probe+0x14/0x20
->     [    1.837537]  bus_probe_device+0x98/0xa0
->     [    1.837538]  deferred_probe_work_func+0x88/0xe0
->     [    1.837539]  process_one_work+0x1cc/0x350
->     [    1.837540]  worker_thread+0x2c0/0x470
->     [    1.837541]  kthread+0x154/0x160
->     [    1.837542]  ret_from_fork+0x10/0x30
->     [    1.837569] SMP: stopping secondary CPUs
->     [    1.837570] Kernel Offset: 0x1d0000 from 0xffff800010000000
->     [    1.837571] PHYS_OFFSET: 0x0
->     [    1.837572] CPU features: 0x240002,20882004
->     [    1.837573] Memory Limit: none
->
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Best regards,
+baolu
 
-applied for v5.9-rc
-
-=2D-=20
-balbi
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQJFBAEBCAAvFiEElLzh7wn96CXwjh2IzL64meEamQYFAl9XHokRHGJhbGJpQGtl
-cm5lbC5vcmcACgkQzL64meEamQYAKA//SJqujeOjKMno3JlLsTq/B4NUQ7Nqa++6
-NxZYcbt2/umlpkf1tHUMldVCNl/vjFNmYp3zarlhd1iVeCuROaWGGEJ384QZ6nnt
-moEsDsb0TPS7RSNBPjymtLtH7+fqFqg3GP5ZuMKhK5OPAKgwHGEGNBho8lQGlpo3
-xrUQ83IkyK5hLmO6DMlcsiwXhgQHcJzzyREcl/NkYyp2Kd2Mm3dYcvJm4P0zptEq
-zheHRWz02xRIuFL3MItsFFsZrloTDrd0K+apyoAiufw7bpyloZ3IasKQ9xjnygje
-iEr/qkMVWvRTBWyZUyJnLVXhEOx9joOslvY9sqN3FJbym702xo7O/nxy8+2yvswp
-y+9aQfqpPZp5KRKwBS5Ce/mtVcRzXJaJlDFlGS/FVw9ogFTKxND1wO9bCHROM/Ih
-okNlkzG3zaxvOAPiRZ1dkxGdg2+jPo7dCs1wuJPwPRDW2oZL9XrtCGu+GIFuGhA6
-K30EFUlmCz3bG72wU13CoMnsdemxiYPUHzL3Y0VsZYE+D2RU1amEDslZyJzzDeiP
-pM/2AsqJ8ru6sOqtFQIQHruU487QemsVeg0bImWmjHl+Aw9hP+5Utnj4E2j0mv9I
-Ak7G91hAv+uUSg2Fqeg2Yw1ogL/5QF1k642M2PIH+hmBXB6bKvKM8yCmaPGUOWpz
-iQi/BDWB0ko=
-=VUox
------END PGP SIGNATURE-----
---=-=-=--
+> just the one in i915_gem_gtt_prepare_pages, which does indeed look
+> very fishy.  But if that one is so hard to fix it can just be replaced
+> by an open coded for_each_sg loop that contains manual dma_map_page
+> calls.
+> _______________________________________________
+> iommu mailing list
+> iommu@lists.linux-foundation.org
+> https://lists.linuxfoundation.org/mailman/listinfo/iommu
+> 
