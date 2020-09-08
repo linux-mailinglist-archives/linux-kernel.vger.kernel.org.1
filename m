@@ -2,226 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1342261660
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:10:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 969FF261657
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:09:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731852AbgIHRKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 13:10:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37598 "EHLO
+        id S1731499AbgIHRJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 13:09:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731354AbgIHRKN (ORCPT
+        with ESMTP id S1731833AbgIHRJC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 13:10:13 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CEEFC061573;
-        Tue,  8 Sep 2020 10:10:13 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id b17so52419pji.1;
-        Tue, 08 Sep 2020 10:10:13 -0700 (PDT)
+        Tue, 8 Sep 2020 13:09:02 -0400
+Received: from mail-vs1-xe36.google.com (mail-vs1-xe36.google.com [IPv6:2607:f8b0:4864:20::e36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B97FAC061755
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 10:09:01 -0700 (PDT)
+Received: by mail-vs1-xe36.google.com with SMTP id x203so9404539vsc.11
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 10:09:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=IJ84Dco6eLoIv+QhaZ1+EKy5WcV+FPbruhEJbqApu5k=;
-        b=NyS6OBFC5QJRqQC59Ilw2MrC0TVowdh91k+YvAcGb0TVyRKHAjoPUaY0KKQIGKc9lS
-         QBW4s/5u4gKcMOnKrAx11MTo+CtcvPsaBVRTevRZZc/Coh9/iUIaGuCce5ElF4XSA4rD
-         Sm0Umjyk/Nu/gEBCythZlr0LRjrisaoKeULzuI1qH9iSrlUnSeyNvV5IOYbz3Dtu37px
-         G5UrEGN4tAWR3a/llp/eq5GE7FqwdAqF6MTWVIN5Y0JI7pH5pZm8hg8y0f9QdsUzl7xm
-         RrZZs04Jl9J35y7g6LO09Oeq5UL02+WY7sWoGbwLJwLnKLyXDZvkMgHU87eWEFsSQAmy
-         VDUA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uxqwH7GZBnEMFxjmA1dYQN29QuSs6NC/OtdCV0Jyouk=;
+        b=dqmW3Vd3XOIXohmkuHyoBu+pD6bpqoalFXzjFXRuZxBqw4z3PXroPnxf6am6dhBWvo
+         qJQGL6tmjieqKDd+3plyj037k/DsTzb+MpCTCRUYC128bEsa1SY0bfoFYEtjCV/qRKba
+         p+sQMxE2dYUwnfD+1E958TNquOG573qSX6pAMpTBv6KAFeTC3lfZz4mlxijLrWdEU1gs
+         IlF4u4G4+Ln8wacwDtx44YT7RyK/lLSlacUSb9TxzQ7QjJcjxrHKbq4zMlmiQP9QS9r2
+         UwJDsfhG4kNpOTcKgYyVfx9d3SRuIz+utNrv1Amz5NvOgKVB3vHAql0wEnsNcpQh7ZiA
+         mGxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=IJ84Dco6eLoIv+QhaZ1+EKy5WcV+FPbruhEJbqApu5k=;
-        b=Sy5QYZKHdYQ5iQBtFr5mDUV3B65C0YJYcsnOCWdpa2kgxJoay40UjV2UAZQkLCwlJz
-         B9qiez4Yt+hVLfdb9LI2qm8COJ4M2bv2TruZM/2/c8OHdkacSBZwk7anbonE2/1jruqX
-         ffZsqowh3UNLUnbVwErt6dzPn3A1fUngmgFXI6v4dnjWpCZaFXij6fSvTpqR5Q0pZjdp
-         0JWHkmQxFGYiupO75SJFIo6EROaZmJI4pTzrqaulKYyIw+BXmZTTn/qWR6fCjwAEnVVZ
-         G6hdIAqhkrVZzJ8lV/r7m2YN0Qjaei4XYmPe1YRLrA8bYIJpbYJH4bqLIDPhbkpp2mpI
-         ewhA==
-X-Gm-Message-State: AOAM532noY7MpILI0mikUEiogxMW+viXi+08Xz0zWKJQA1safGJSN6aL
-        Xkzpa5Wqza3wsObwhGIg8uc=
-X-Google-Smtp-Source: ABdhPJz+LupikwcXi8+L56pMv9pV+9q6l24UCCc9Ms4+oqhlRGluDntBU1vjkieR70cpz6FydIqR3w==
-X-Received: by 2002:a17:90b:357:: with SMTP id fh23mr73628pjb.221.1599585012676;
-        Tue, 08 Sep 2020 10:10:12 -0700 (PDT)
-Received: from gmail.com ([106.201.26.241])
-        by smtp.gmail.com with ESMTPSA id x140sm552pfc.211.2020.09.08.10.10.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Sep 2020 10:10:12 -0700 (PDT)
-Date:   Tue, 8 Sep 2020 22:38:16 +0530
-From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Bjorn Helgaas <bjorn@helgaas.com>,
-        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
-        Adam Radford <aradford@gmail.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Adaptec OEM Raid Solutions <aacraid@microsemi.com>,
-        Hannes Reinecke <hare@suse.com>,
-        Bradley Grove <linuxdrivers@attotech.com>,
-        John Garry <john.garry@huawei.com>,
-        Don Brace <don.brace@microsemi.com>,
-        James Smart <james.smart@broadcom.com>,
-        Dick Kennedy <dick.kennedy@broadcom.com>,
-        Kashyap Desai <kashyap.desai@broadcom.com>,
-        Sumit Saxena <sumit.saxena@broadcom.com>,
-        Shivasharan S <shivasharan.srikanteshwara@broadcom.com>,
-        Sathya Prakash <sathya.prakash@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
-        Jack Wang <jinpu.wang@cloud.ionos.com>
-Cc:     Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-scsi@vger.kernel.org, esc.storagedev@microsemi.com,
-        megaraidlinux.pdl@broadcom.com, MPT-FusionLinux.pdl@broadcom.com
-Subject: Re: [PATCH v2 15/15] scsi: pmcraid: use generic power management
-Message-ID: <20200908170816.GP9948@gmail.com>
-References: <20200720133427.454400-1-vaibhavgupta40@gmail.com>
- <20200720133427.454400-16-vaibhavgupta40@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uxqwH7GZBnEMFxjmA1dYQN29QuSs6NC/OtdCV0Jyouk=;
+        b=Fs5jIwx4hXGCkwbduMpHn8KPt1X8tBJAy0W7XVBbwyt4heLZhnJFUfuC4JvtahbS/M
+         zqXvrVLzNt5NLpuZgS3CpKPTXnuInHqEaBy9ldvCc14oyfeMhXYzUASLB/XX5WVVnBha
+         4/4or8NowdhI/QjjoFb9GA1akwUas19SaJ5UwSKWVhWjw0I6Oa3QU/cF22g8J+AokAhJ
+         UJoInJvEyPRdAzDfgbHydPUVaZNZJUGmUno62JuysNOh72Jaf6UzBJmwb1nhZH2lu748
+         h8T91cs1IJ/F+LnyJB/zkos2XlPVXPR/QvsU2cHQXZU3H8P0Tk2K3GJmYGWE2QVNzPZH
+         Q94A==
+X-Gm-Message-State: AOAM532D0s5Mjl8rETcUB4KXlKeRMTVsYapNsKlHGoU4e5zwb10laTmB
+        6KK4UqgcmMVbGxRcDndZZezRqoaQw7WTfA==
+X-Google-Smtp-Source: ABdhPJyRW8QuY5SRifUqLhi7CTrTR8PlwI/+raYS/uy4c9tSvFOnjOolupFNKITILlccknVZUy95bg==
+X-Received: by 2002:a67:e2c3:: with SMTP id i3mr1607606vsm.13.1599584937795;
+        Tue, 08 Sep 2020 10:08:57 -0700 (PDT)
+Received: from mail-ua1-f45.google.com (mail-ua1-f45.google.com. [209.85.222.45])
+        by smtp.gmail.com with ESMTPSA id h10sm3034521vke.46.2020.09.08.10.08.56
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Sep 2020 10:08:56 -0700 (PDT)
+Received: by mail-ua1-f45.google.com with SMTP id v5so5066232uau.10
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 10:08:56 -0700 (PDT)
+X-Received: by 2002:ab0:60d7:: with SMTP id g23mr92852uam.122.1599584935769;
+ Tue, 08 Sep 2020 10:08:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200720133427.454400-16-vaibhavgupta40@gmail.com>
+References: <CAJht_EOu8GKvdTAeF_rHsaKu7iYOmW8C64bQA21bgKuiANE5Zw@mail.gmail.com>
+ <CAJht_EP=g02o2ygihNo=EWd1OuL3HSjmhqgGiwUGrMde=urSUA@mail.gmail.com>
+ <CA+FuTSdm35x9nA259JgOWcCWJto9MVMHGGgamPPsgnpsTmPO8g@mail.gmail.com>
+ <CAJht_EPEqUMXNdQLL9d5OtzbZ92Jms7nSUR8bS+cw2Ah5mv6cQ@mail.gmail.com>
+ <CA+FuTSeJS22R2VYSzcEVvXiUhX79RYE0o3G6V3NKGzQ4UGaJQg@mail.gmail.com>
+ <CAJht_EN7SXAex-1W49eY7q5p2UqLYvXA8D6hptJGquXdJULLcA@mail.gmail.com>
+ <CA+FuTSfgxt6uqcxy=wnOXo8HxMJ3J0HAqQNiDJBLCs22Ukb_gQ@mail.gmail.com> <CAJht_EN-aBo8rfHAxYxwW2Jb38S2PW3WtxhWuHn5HS1fAWeA1w@mail.gmail.com>
+In-Reply-To: <CAJht_EN-aBo8rfHAxYxwW2Jb38S2PW3WtxhWuHn5HS1fAWeA1w@mail.gmail.com>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Tue, 8 Sep 2020 19:08:17 +0200
+X-Gmail-Original-Message-ID: <CA+FuTScyyE_s8PodEQhj3=s2wO3kGnWP3nL9SESJddf=U6DEfQ@mail.gmail.com>
+Message-ID: <CA+FuTScyyE_s8PodEQhj3=s2wO3kGnWP3nL9SESJddf=U6DEfQ@mail.gmail.com>
+Subject: Re: Question about dev_validate_header used in af_packet.c
+To:     Xie He <xie.he.0141@gmail.com>
+Cc:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 20, 2020 at 07:04:28PM +0530, Vaibhav Gupta wrote:
-> Drivers using legacy PM have to manage PCI states and device's PM states
-> themselves. They also need to take care of configuration registers.
-> 
-> With improved and powerful support of generic PM, PCI Core takes care of
-> above mentioned, device-independent, jobs.
-> 
-> This driver makes use of PCI helper functions like
-> pci_save/restore_state(), pci_enable/disable_device(),
-> pci_set_power_state() and to do required operations. In generic mode, they
-> are no longer needed.
-> 
-> Change function parameter in both .suspend() and .resume() to
-> "struct device*" type. Use to_pci_dev() to get "struct pci_dev*" variable.
-> 
-> In function pmcraid_resume(), earlier, the variable "rc" was set by
-> pci_enable_device() which is now removed. Since PCI core does the required
-> job, initialize "rc" with 0 value when declaring it.
-> 
-> Compile-tested only.
-> 
-> Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
-> ---
->  drivers/scsi/pmcraid.c | 44 +++++++++++-------------------------------
->  1 file changed, 11 insertions(+), 33 deletions(-)
-> 
-> diff --git a/drivers/scsi/pmcraid.c b/drivers/scsi/pmcraid.c
-> index aa9ae2ae8579..b6b70ac2e2ee 100644
-> --- a/drivers/scsi/pmcraid.c
-> +++ b/drivers/scsi/pmcraid.c
-> @@ -5237,54 +5237,39 @@ static void pmcraid_remove(struct pci_dev *pdev)
->  	return;
->  }
->  
-> -#ifdef CONFIG_PM
->  /**
->   * pmcraid_suspend - driver suspend entry point for power management
-> - * @pdev:   PCI device structure
-> - * @state:  PCI power state to suspend routine
-> + * @dev:   Device structure
->   *
->   * Return Value - 0 always
->   */
-> -static int pmcraid_suspend(struct pci_dev *pdev, pm_message_t state)
-> +static int __maybe_unused pmcraid_suspend(struct device *dev)
->  {
-> +	struct pci_dev *pdev = to_pci_dev(dev);
->  	struct pmcraid_instance *pinstance = pci_get_drvdata(pdev);
->  
->  	pmcraid_shutdown(pdev);
->  	pmcraid_disable_interrupts(pinstance, ~0);
->  	pmcraid_kill_tasklets(pinstance);
-> -	pci_set_drvdata(pinstance->pdev, pinstance);
->  	pmcraid_unregister_interrupt_handler(pinstance);
-> -	pci_save_state(pdev);
-> -	pci_disable_device(pdev);
-> -	pci_set_power_state(pdev, pci_choose_state(pdev, state));
->  
->  	return 0;
->  }
->  
->  /**
->   * pmcraid_resume - driver resume entry point PCI power management
-> - * @pdev: PCI device structure
-> + * @dev: Device structure
->   *
->   * Return Value - 0 in case of success. Error code in case of any failure
->   */
-> -static int pmcraid_resume(struct pci_dev *pdev)
-> +static int __maybe_unused pmcraid_resume(struct device *dev)
->  {
-> +	struct pci_dev *pdev = to_pci_dev(dev);
->  	struct pmcraid_instance *pinstance = pci_get_drvdata(pdev);
->  	struct Scsi_Host *host = pinstance->host;
-> -	int rc;
-> -
-> -	pci_set_power_state(pdev, PCI_D0);
-> -	pci_enable_wake(pdev, PCI_D0, 0);
-> -	pci_restore_state(pdev);
-> -
-> -	rc = pci_enable_device(pdev);
-> -
-> -	if (rc) {
-> -		dev_err(&pdev->dev, "resume: Enable device failed\n");
-> -		return rc;
-> -	}
-> +	int rc = 0;
->  
-> -	pci_set_master(pdev);
-> +	device_wakeup_disable(dev);
->  
->  	if (sizeof(dma_addr_t) == 4 ||
->  	    dma_set_mask(&pdev->dev, DMA_BIT_MASK(64)))
-> @@ -5337,18 +5322,10 @@ static int pmcraid_resume(struct pci_dev *pdev)
->  	scsi_host_put(host);
->  
->  disable_device:
-> -	pci_disable_device(pdev);
->  
->  	return rc;
->  }
->  
-> -#else
-> -
-> -#define pmcraid_suspend NULL
-> -#define pmcraid_resume  NULL
-> -
-> -#endif /* CONFIG_PM */
-> -
->  /**
->   * pmcraid_complete_ioa_reset - Called by either timer or tasklet during
->   *				completion of the ioa reset
-> @@ -5836,6 +5813,8 @@ static int pmcraid_probe(struct pci_dev *pdev,
->  	return -ENODEV;
->  }
->  
-> +static SIMPLE_DEV_PM_OPS(pmcraid_pm_ops, pmcraid_suspend, pmcraid_resume);
-> +
->  /*
->   * PCI driver structure of pmcraid driver
->   */
-> @@ -5844,8 +5823,7 @@ static struct pci_driver pmcraid_driver = {
->  	.id_table = pmcraid_pci_table,
->  	.probe = pmcraid_probe,
->  	.remove = pmcraid_remove,
-> -	.suspend = pmcraid_suspend,
-> -	.resume = pmcraid_resume,
-> +	.driver.pm = &pmcraid_pm_ops,
->  	.shutdown = pmcraid_shutdown
->  };
->  
-> -- 
-> 2.27.0
-> 
-.
+On Tue, Sep 8, 2020 at 6:23 PM Xie He <xie.he.0141@gmail.com> wrote:
+>
+> On Tue, Sep 8, 2020 at 4:53 AM Willem de Bruijn
+> <willemdebruijn.kernel@gmail.com> wrote:
+> >
+> > On Tue, Sep 8, 2020 at 1:04 PM Xie He <xie.he.0141@gmail.com> wrote:
+> > >
+> > > I was recently looking at some drivers, and I felt that if af_packet.c
+> > > could help me filter out the invalid RAW frames, I didn't need to
+> > > check the validity of the frames myself (in the driver when
+> > > transmitting). But now I guess I still need to check that.
+> > >
+> > > I feel this makes the dev_validate_header's variable-length header
+> > > check not very useful, because drivers need to do this check again
+> > > (when transmitting) anyway.
+> > >
+> > > I was thinking, after I saw dev_validate_header, that we could
+> > > eventually make it completely take over the responsibility for a
+> > > driver to validate the header when transmitting RAW frames. But now it
+> > > seems we would not be able to do this.
+> >
+> > Agreed. As is, it is mainly useful to block users who are ns_capable,
+> > but not capable.
+> >
+> > A third option is to move it behind a sysctl (with static_branch). Your
+> > point is valid that there really is no need for testing of drivers against
+> > bad packets if the data is validated directly on kernel entry.
+>
+> I was thinking about this again and it came to me that maybe sometimes
+> people actually wanted to send invalid frames on wire (for testing the
+> network device on the other end of the wire)? Having thought about
+> this possibility I think it might be good to keep the ability for
+> people to have 2 choices (either having their RAW frames validated, or
+> not validated) through "capability" or through "sysctl" as you
+> mentioned. We can keep the default to be not validating the RAW frames
+> because RAW sockets are already intended for very special use and are
+> not for normal use.
+
+That offers some configurability. But really, I would just leave it as is.
