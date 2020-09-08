@@ -2,108 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD789261855
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:52:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01A77261770
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:34:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731669AbgIHRwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 13:52:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56838 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731630AbgIHQNo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:13:44 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3B97C061388
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 05:30:11 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id j2so18912977wrx.7
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 05:30:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=y/EkIKvR6iBw+zS5qhGZEpN1iwHB9TWxtJTSD07C3J4=;
-        b=GbC0SGU+jdHDgkoKWG2x4two8n4K73jUfxTdN6DtKPjGlsAaxh51FOkVE6YUzsr5dv
-         Cl/uPdJHLO81KjXKkjm2YvYdaTjNfEdMS/wT0FkZHVgd+Pl9rk9gtifJLHjIO7kvCaMA
-         eAQRJ0CKTL6XgI16ktwVj+sdsxZ4/ZT3SPRDRGEvgvV6Hem09VJQLjoYw52OOMtzAMRU
-         WuCUZ1D2FRKthW77L5ZYlhOGTOLDjUUdyuMHMJP1hLgQNmFOgLRHNQYsOxcYmxQXpWM3
-         Bpbvek41ZTKkov39peOcMfxY1Lf+7U5vKv199vZzovSFk/oQHLmzj0qS0PbV1iitF6qv
-         c+FA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=y/EkIKvR6iBw+zS5qhGZEpN1iwHB9TWxtJTSD07C3J4=;
-        b=KZ7jD41VewP7h0GqzDnE4T11ljwNjCnhQutxnF4T9kssNpjn/sk/7BbiJYDUngBMML
-         wNUFycdTYTW8ns4DLDcNOlGZEQkXq/jOjbckIZMERFlt+Ce89hh1yJigc8eV5hHIcy1/
-         CBf9xyvbva4ejB39x/EZHiRtoqXB6cPzgeKjYGRzwzsjriT8asdOeezUVMUmy1W6XbAC
-         H9O04oPyB9DZtyaVqtXnXyF50brGVE1QyceDKKkSCyi4360j6LFvWPTWKf4GSw2MAp6q
-         RfigGq48Dk2v6O9I4Tloh0X680nq5ov+60R0SuIOXidjpPq0Q73syUyh7ZLYUXywzj7k
-         FQhg==
-X-Gm-Message-State: AOAM532uDg7b8YZQJxFlc4D7i2VyrZoXutC9QlDU8X8rW2Btt/mbFjJW
-        WtI1aKq1sfTs9pvDxBgc3OQgWVlWKoLf8w40kfI3EA==
-X-Google-Smtp-Source: ABdhPJzcPzSvH+P8hTbAa6PCtKuOhme3NG7uL/ej8gWFNWQLmk0e0zNZlg/a/MBGYQeeUXoyAAxylIEsLLY0lkgdWbI=
-X-Received: by 2002:adf:ded0:: with SMTP id i16mr28452918wrn.372.1599568210306;
- Tue, 08 Sep 2020 05:30:10 -0700 (PDT)
+        id S1731763AbgIHReR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 13:34:17 -0400
+Received: from mail1.perex.cz ([77.48.224.245]:41556 "EHLO mail1.perex.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731358AbgIHQPN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 12:15:13 -0400
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+        by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 8487BA0056;
+        Tue,  8 Sep 2020 14:45:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 8487BA0056
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+        t=1599569114; bh=b/A9QPQeR8HGF5I3TJZV1+lxFGDVaYfuxBJZUNhPV+o=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=TzCYYeaw9POFp0HwiKuqLbC3IcaDqlMpRHYzm/XbsldHvouu0SEZJhX6Ub7jMNWdf
+         I66kqeB2khEsI0RfRKMXYFHI5weYKuCtayS9Y7w8mV5+g5C85XYbsJbojkWNINaJ1/
+         zVrCmcYNFrCWVdl6WuDkvyjneHofjrywzjHWsXpI=
+Received: from p1gen2.perex-int.cz (unknown [192.168.100.98])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: perex)
+        by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+        Tue,  8 Sep 2020 14:44:57 +0200 (CEST)
+Subject: Re: [PATCH v2 0/4] soundwire: Remove sdw stream operations from Intel
+To:     Bard Liao <yung-chuan.liao@linux.intel.com>,
+        alsa-devel@alsa-project.org, vkoul@kernel.org
+Cc:     pierre-louis.bossart@linux.intel.com, vinod.koul@linaro.org,
+        tiwai@suse.de, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, ranjani.sridharan@linux.intel.com,
+        hui.wang@canonical.com, broonie@kernel.org,
+        srinivas.kandagatla@linaro.org, jank@cadence.com,
+        mengdong.lin@intel.com, sanyog.r.kale@intel.com,
+        rander.wang@linux.intel.com, bard.liao@intel.com
+References: <20200903204739.31206-1-yung-chuan.liao@linux.intel.com>
+From:   Jaroslav Kysela <perex@perex.cz>
+Message-ID: <28bd0f89-3dc5-0bf4-bf2a-dca62fddc507@perex.cz>
+Date:   Tue, 8 Sep 2020 14:44:57 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200907134055.2878499-1-elver@google.com> <20200907134055.2878499-8-elver@google.com>
- <20200908115316.GD25591@gaia>
-In-Reply-To: <20200908115316.GD25591@gaia>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Tue, 8 Sep 2020 14:29:59 +0200
-Message-ID: <CAG_fn=U8tv2tXdWPTakcpDKG253kHj0YdsSU46GA5WgMo46BWg@mail.gmail.com>
-Subject: Re: [PATCH RFC 07/10] kfence, kmemleak: make KFENCE compatible with KMEMLEAK
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Marco Elver <elver@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, paulmck@kernel.org,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@alien8.de>, dave.hansen@linux.intel.com,
-        Dmitriy Vyukov <dvyukov@google.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>, Qian Cai <cai@lca.pw>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Linux Memory Management List <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200903204739.31206-1-yung-chuan.liao@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Could you instead do:
->
-> #if defined(CONFIG_KFENCE) && defined(CONFIG_HAVE_ARCH_KFENCE_STATIC_POOL=
-)
->         delete_object_part((unsigned long)__kfence_pool, KFENCE_POOL_SIZE=
-);
-> #endif
+Dne 03. 09. 20 v 22:47 Bard Liao napsal(a):
+> Sdw stream operation APIs can be called once per stream. Move these
+> operations to dailink ops. The linked series is "ASoC: Add sdw stream
+> operations to dailink ops".
+> 
+> Pierre-Louis Bossart (4):
+>   soundwire: stream: fix NULL/IS_ERR confusion
+>   soundwire: intel: fix NULL/ERR_PTR confusion
+>   soundwire: intel: remove .trigger operation
+>   soundwire: intel: remove stream handling from .prepare and .hw_free
+> 
+>  drivers/soundwire/intel.c  | 60 +++++---------------------------------
+>  drivers/soundwire/stream.c |  2 +-
+>  2 files changed, 9 insertions(+), 53 deletions(-)
+> 
 
-Thanks, we'll apply this to v2!
+Straight patches. I tested them. For all:
 
---=20
-Alexander Potapenko
-Software Engineer
+Acked-by: Jaroslav Kysela <perex@perex.cz>
 
-Google Germany GmbH
-Erika-Mann-Stra=C3=9Fe, 33
-80636 M=C3=BCnchen
+Note: The ASoC part must be merged in sync -
+  "[PATCH v3 0/3] ASoC: Add sdw stream operations to dailink ops."
 
-Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Halimah DeLaine Prado
-Registergericht und -nummer: Hamburg, HRB 86891
-Sitz der Gesellschaft: Hamburg
+						Jaroslav
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
