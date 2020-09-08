@@ -2,116 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EE5F261284
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 16:19:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8DD62612B3
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 16:29:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730115AbgIHOSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 10:18:36 -0400
-Received: from mga03.intel.com ([134.134.136.65]:52435 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730051AbgIHOQX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 10:16:23 -0400
-IronPort-SDR: 4m6ZvNCocenMRoQp8WfOK+J3M4llfpkdJcHUXw+YUzwdQasusrZ2QhaaXCXYNVhbPTyphi1E5p
- 8cq5DADRY8XQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9737"; a="158154397"
-X-IronPort-AV: E=Sophos;i="5.76,405,1592895600"; 
-   d="scan'208";a="158154397"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2020 06:49:22 -0700
-IronPort-SDR: UVk6x/m63mBVyH71vbfcR5hvGtRm5fgnJc1bMd5sc6UCHlpDtyq2FjtjkWzPPhIvrQE0/YKY7m
- RrfJ1UHBvFgw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,405,1592895600"; 
-   d="scan'208";a="333478612"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga008.jf.intel.com with ESMTP; 08 Sep 2020 06:49:20 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kFdxi-00FDZG-RE; Tue, 08 Sep 2020 16:47:06 +0300
-Date:   Tue, 8 Sep 2020 16:47:06 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Kent Gibson <warthog618@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: Re: [PATCH 1/3] device: property: add helpers to count items in
- string arrays
-Message-ID: <20200908134706.GZ1891694@smile.fi.intel.com>
-References: <20200908125813.8809-1-brgl@bgdev.pl>
- <20200908125813.8809-2-brgl@bgdev.pl>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200908125813.8809-2-brgl@bgdev.pl>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+        id S1729993AbgIHO3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 10:29:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38832 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729305AbgIHOYv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 10:24:51 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB4CDC0619C7;
+        Tue,  8 Sep 2020 06:47:29 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id o68so11006871pfg.2;
+        Tue, 08 Sep 2020 06:47:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=desmngMEhq+Bl6GRnZjRLKp5/Ig6cW8Nd4zeE2+dVOc=;
+        b=l1Aw0Yd/TChtCxJhjaAzLpudFcBidJhdzobIQBiONKCPU+qpeJhWJQLTI/tFIrhokQ
+         QgDtTJ5YTFZ0xB0l0tZRQNSXwV9Mrtnezr8alEj0OqEWxEsrZ/SbPMVRVzy40DqqkzpJ
+         eCBtZQnkOEaTfYPHAFVed2pAJHqLcjcLcZX9NI3BjpIzAD8AvhFM5BePPYVjq+GsSPUe
+         JfXqOJ1pgh4VH6RzJ3DZ0fyzP9+j0dLKPP5dWVusN0GWz69IdCnPwKzB1WAcq4ztmKtK
+         aE3PHF/ni+0jVEpqMy8HcaS3mv3YI/mqb/+70C8flGcHqaKiSG2Oq9gImD7zTStyLEkC
+         18Vw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=desmngMEhq+Bl6GRnZjRLKp5/Ig6cW8Nd4zeE2+dVOc=;
+        b=mS5ZZarigDYGOPbuyzdD5d5DAtElRjkrLrEl8iCMmFvKEsLR7RqvZqRJ7/hj8cVSEH
+         uiHaXQr0tyjPSm1bJo3trt68s4Nyofi6ricxLMdWLuS17gwZ3X6t+osF+p3LG2z1iPQF
+         cPx0OWwt5DBOg5e3xupJlS3jm9jpT1nKtwFSxxTZEOMTnY4MZXVs5YaQeqSzcyyx1qG1
+         lhLhWAMKv6orPveTeEby75kVLKOL4dMiC9rQfFiPttjHiKh7OmJLKpC3VMyEyPU33L69
+         pHB1VDNABkf167CZeKlwR6sJeNF8bgCxKRK7xVJyyMIYXKVjDR450Y2yJomhHO8p6E2Y
+         E1wA==
+X-Gm-Message-State: AOAM532WqkvJjf3/xWu2XlmK4tmOOOfEJ9a0yCyc/UyfJVCHgevK0gdd
+        Cgf1F3Gsz6JTsvtMwmM0JqsIgYg0csM=
+X-Google-Smtp-Source: ABdhPJxSvaO2jI1NLiCtPBZfROkieHeDyd8FUtXyfbKpJq3gy9asID9vNMGjM7NxOcmigxIi/LQ6dw==
+X-Received: by 2002:a63:64c2:: with SMTP id y185mr13694809pgb.125.1599572849347;
+        Tue, 08 Sep 2020 06:47:29 -0700 (PDT)
+Received: from sh05419pcu.spreadtrum.com ([117.18.48.82])
+        by smtp.gmail.com with ESMTPSA id j35sm14852313pgi.91.2020.09.08.06.47.25
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 08 Sep 2020 06:47:28 -0700 (PDT)
+From:   Hongtao Wu <wuht06@gmail.com>
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Billows Wu <billows.wu@unisoc.com>
+Subject: [PATCH v2 0/2] PCI: Add new Unisoc PCIe driver
+Date:   Tue,  8 Sep 2020 21:47:19 +0800
+Message-Id: <1599572841-2652-1-git-send-email-wuht06@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 08, 2020 at 02:58:11PM +0200, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> 
-> Instead of doing the following:
-> 
->     count = device_property_read_string_array(dev, propname, NULL, 0);
-> 
-> Let's provide inline helpers with hardcoded arguments for counting
-> strings in property arrays.
+From: Billows Wu <billows.wu@unisoc.com>
 
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+This series adds PCIe controller driver for Unisoc SoCs.
+This controller is based on DesignWare PCIe IP.
 
-Thanks!
+Changes from v1:
+1) Test this patch on top of Rob Herring's 40 part series of DWC clean-ups:
+   https://lore.kernel.org/linux-pci/20200821035420.380495-1-robh@kernel.org/
 
-> Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> ---
->  include/linux/property.h | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
-> 
-> diff --git a/include/linux/property.h b/include/linux/property.h
-> index 9f805c442819..1fa5e250a8ea 100644
-> --- a/include/linux/property.h
-> +++ b/include/linux/property.h
-> @@ -170,6 +170,12 @@ static inline int device_property_count_u64(struct device *dev, const char *prop
->  	return device_property_read_u64_array(dev, propname, NULL, 0);
->  }
->  
-> +static inline int device_property_count_strings(struct device *dev,
-> +						const char *propname)
-> +{
-> +	return device_property_read_string_array(dev, propname, NULL, 0);
-> +}
-> +
->  static inline bool fwnode_property_read_bool(const struct fwnode_handle *fwnode,
->  					     const char *propname)
->  {
-> @@ -224,6 +230,13 @@ static inline int fwnode_property_count_u64(const struct fwnode_handle *fwnode,
->  	return fwnode_property_read_u64_array(fwnode, propname, NULL, 0);
->  }
->  
-> +static inline int
-> +fwnode_property_count_strings(const struct fwnode_handle *fwnode,
-> +			      const char *propname)
-> +{
-> +	return fwnode_property_read_string_array(fwnode, propname, NULL, 0);
-> +}
-> +
->  struct software_node;
->  
->  /**
-> -- 
-> 2.26.1
-> 
+2) Delete empty function
+
+3) Document property "sprd,pcie-poweron-syscons" and
+   'sprd,pcie-poweroff-syscons'
+
+4) Delete runtime suspend/resume function
+
+5) Add COMPILE_TEST which CONFIG_PCIE_SPRD depends on
+
+Billows Wu (2):
+  dt-bindings: PCI: sprd: Document Unisoc PCIe RC host controller
+  PCI: sprd: Add support for Unisoc SoCs' PCIe controller
+
+ .../devicetree/bindings/pci/sprd-pcie.yaml         | 101 +++++++++
+ drivers/pci/controller/dwc/Kconfig                 |  13 ++
+ drivers/pci/controller/dwc/Makefile                |   1 +
+ drivers/pci/controller/dwc/pcie-sprd.c             | 231 +++++++++++++++++++++
+ 4 files changed, 346 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pci/sprd-pcie.yaml
+ create mode 100644 drivers/pci/controller/dwc/pcie-sprd.c
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.7.4
 
