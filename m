@@ -2,140 +2,341 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6449226149D
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:29:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3A4326141C
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:05:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731675AbgIHQ3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 12:29:07 -0400
-Received: from mx2.suse.de ([195.135.220.15]:43854 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731931AbgIHQXn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:23:43 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E81E7AFED;
-        Tue,  8 Sep 2020 12:16:23 +0000 (UTC)
-Message-ID: <49b99d5a87f349bf9ede2a5f737e4f1981a12441.camel@suse.de>
-Subject: Re: [RFC] arm64: mm: Do not use both DMA zones when 30-bit address
- space unavailable
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     linux-kernel@vger.kernel.org, f.fainelli@gmail.com, hch@lst.de,
-        linux-rpi-kernel@lists.infradead.org,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, robh@kernel.org,
-        Robin Murphy <robin.murphy@arm.com>
-Date:   Tue, 08 Sep 2020 14:15:57 +0200
-In-Reply-To: <20200908111454.GB25591@gaia>
-References: <20200819182434.28196-1-nsaenzjulienne@suse.de>
-         <20200828174338.GK3169@gaia>
-         <1ae30b3bfd97aba56323422baeb5b48b787c7561.camel@suse.de>
-         <20200908111454.GB25591@gaia>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-rb/XBEX16UjId/WsOdIB"
-User-Agent: Evolution 3.36.5 
-MIME-Version: 1.0
+        id S1731226AbgIHQFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 12:05:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53404 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730934AbgIHP5a (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 11:57:30 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BE55C061357
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 05:33:40 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id q21so15832091edv.1
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 05:33:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=07BSV6FZ4poiSm+/jd7LwQlNgIEpEAXaLzeC1JvctXE=;
+        b=SMnPVAVq+CNLCQ0T1LSMvvpTkQRhfvdC957DRxw55JGRxDy5/pS2LaaThhquaUeRgM
+         WT0sbDcx7fSYus/UO1AvvQosPZ0EcmhZuOnInyVngJ/1/+16lk5G/xTyvSpGmuyFw0kP
+         z0wvXwOtokUqe+li/riRJvOUQ1GkXVF7mJShxVUPHps33vmyLliIi341pj2pw7U/1U08
+         eVWq/GTiJFsUVybw3vTBvXwyNE3w9pNuqW94qCtkFUZDG8an5lFUTOuwoB/3LqE+LbYF
+         LXJmvjlJXYSq+12BX2+o0TnlANatNc0GXbdeF8ZLxNTDlfSetrbq11lKZH/PbAclQhli
+         ouKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=07BSV6FZ4poiSm+/jd7LwQlNgIEpEAXaLzeC1JvctXE=;
+        b=MeVknDmbSKm60UgE7OaJGeCBjuYg11j+XJhRl7DDM0bclkSHSERiKj/r1fqfgeKWUy
+         NE0x3mJk7X84PDiZO1FtNajc0u2eaem0DMcPh1V7cssyecWSKyYT3hK318x7SZkdW+Ez
+         YviG5jHJk7t8TCnq5XMTfdr3c33OC7WfaEdShvNlNxYquv0KhtCFJojKk2sH8HjoN2Y/
+         qVFdff5VMCh5dMr08c5qzneBB3j0LoIBJ+vgjyDHdem+HaPUOKFTJTAWiBx8hrx6H/Dj
+         iG3eIj0CSiFbb5pbKvjBTrH6HZfnGInoxOCERYHeUoiNsm2LP5NJqfw1sZfz6m2bLTZl
+         5Bqg==
+X-Gm-Message-State: AOAM532gNuRirsTSINHPiqdHJKE96G7hlG4lYk4vQNUchHNapEeQmO4i
+        XCHc8RFxzHKaq2wzJi5ypM2uF22MyGohsCPr
+X-Google-Smtp-Source: ABdhPJylpKUjFNTj+4ln7S/mA8s9ebnd7qm/7712WoMGQt+HTyZC3PQpWuLcRKlwleHYGksF7zruIw==
+X-Received: by 2002:a50:ee14:: with SMTP id g20mr15064878eds.32.1599568419058;
+        Tue, 08 Sep 2020 05:33:39 -0700 (PDT)
+Received: from localhost.localdomain ([195.24.90.54])
+        by smtp.gmail.com with ESMTPSA id y9sm17499744edo.37.2020.09.08.05.33.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Sep 2020 05:33:38 -0700 (PDT)
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+To:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org
+Cc:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        nicolas.dufresne@collabora.com,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Subject: [PATCH v3 6/6] venus: venc: Use helper to set profile and level
+Date:   Tue,  8 Sep 2020 15:32:21 +0300
+Message-Id: <20200908123221.2793-7-stanimir.varbanov@linaro.org>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200908123221.2793-1-stanimir.varbanov@linaro.org>
+References: <20200908123221.2793-1-stanimir.varbanov@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+We have a new helper to set profile and level use it
+instead.
 
---=-rb/XBEX16UjId/WsOdIB
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+---
+ drivers/media/platform/qcom/venus/core.h      |  13 +-
+ drivers/media/platform/qcom/venus/venc.c      | 159 +-----------------
+ .../media/platform/qcom/venus/venc_ctrls.c    |  14 +-
+ 3 files changed, 6 insertions(+), 180 deletions(-)
 
-Hi Catalin, thanks for taking the time.
-
-On Tue, 2020-09-08 at 12:14 +0100, Catalin Marinas wrote:
-> > Also note the usage of 'zone_dma_bits' in the DMA code, which assumes t=
-hat
-> > ZONE_DMA's physical address space is always smaller than (1 << zone_dma=
-_bits) -
-> > 1.
->=20
-> I think part of those uses are broken. dma_direct_supported() does the
-> right thing and uses the DMA address instead of the physical one. Here
-> __phys_to_dma() subtracts the dma_pfn_offset, which in my above example
-> would be (0b10 << (30 - PAGE_SHIFT)).
->=20
-> dma_direct_optimal_gfp_mask(), OTOH, seems to start ok with a
-> __dma_to_phys() on the dma_limit but it ends up comparing the physical
-> address with the DMA mask. This gives the wrong result on arm64
-> platforms where RAM starts above 4GB and still expect a ZONE_DMA32. It
-> should compare *phys_limit with __dma_to_phys(DMA_BIT_MASK(...)). I
-> guess it ends up bouncing via swiotlb more often.
-
-I'll look into this.
-
-> We assumed such offsets on arm64 since commit d50314a6b070 ("arm64:
-> Create non-empty ZONE_DMA when DRAM starts above 4GB").
->=20
-> > > An alternative (and I think we had a patch at some point) is to make =
-it
-> > > generic and parse the dma-range in the DT to identify the minimum mas=
-k
-> > > and set ZONE_DMA accordingly. But this doesn't solve ACPI, so if Linu=
-x
-> > > can boot with ACPI on RPi4 it would still be broken.
-> >=20
-> > ACPI is being worked on by, among others, Jeremy Linton (one of your co=
-lleagues
-> > I believe).
-> >=20
-> > We could always use sane defaults for ACPI and be smarter with DT. Yet,
-> > implementing this entails translating nested dma-ranges with the only h=
-elp of
-> > libfdt, which isn't trivial (see devices/of/address.c). IIRC RobH said =
-that it
-> > wasn't worth the effort just for a board.
->=20
-> That would have been the ideal, more generic solution. But I agree that
-> it's not worth the effort if the only SoC affected is RPi4.
->=20
-> To summarise, I'd like ZONE_DMA to overlap with ZONE_DMA32 (i.e. expand
-> zone_dma_bits to 32 and drop ZONE_DMA32) for all SoCs other than RPi4.
-> The solutions so far:
->=20
-> 1. Assume that, if RAM starts at 0, we need a zone_dma_bits =3D=3D 30. Th=
-is
->    also assumes that it's only RPi4 in this category or that any such
->    future SoC has a need for 30-bit DMA.
->=20
-> 2. Adjust zone_dma_bits at boot-time only if the SoC is RPi4.
->=20
-> 3. Use the more complex dma-ranges approach to calculate the correct
->    zone_dma_bits as a minimum of all dma masks in the DT.
->=20
-> We can discount (3) as not worth the effort. I'd go with (1) (this
-> patch) if we can guarantee that no current or future SoC has RAM
-> starting at 0 while not needing 30-bit DMA masks. If not, we can go with
-> (2) unless others have a better suggestion.
-
-After a quick check at the devices we have for testing at suse it's clear t=
-hat
-(1) is impossible. So I'll push for solution (2).
-
-Regards,
-Nicolas
-
-
---=-rb/XBEX16UjId/WsOdIB
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl9Xdf0ACgkQlfZmHno8
-x/5FBgf/cwDBci7PK4a6ppnpfI3QWSqAQO/qfY2bb5We8JnAwqWAFwxChmY1AfIw
-PtKwHTZW+5BppSEzvrWiQTDg0NEEJmYKp3eoVf7Sn5QpWh8vzz2GHHZv+gbAt7n2
-y8qIboeCtLbZcjHPUu8YxMnUG9z6pdz/wIrG76/HTucaUZkS0gbM8C7N6PljVK0v
-v+ErRhBrUFfocKCC694ZzomuEnzh7wRN3D0JZlKRFXSsgtrV19DcR8hQ/a6vK+q9
-at1pcoOtMwI52WngNqQRmkUpnA+A8bliFukG9ZLx63elITkLjrngd+VHps63uI1W
-6OoxRbUu/ss8iU7QoO1dEup5q5KQyQ==
-=KAwd
------END PGP SIGNATURE-----
-
---=-rb/XBEX16UjId/WsOdIB--
+diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
+index 1a7aee7ee628..2e70004ef195 100644
+--- a/drivers/media/platform/qcom/venus/core.h
++++ b/drivers/media/platform/qcom/venus/core.h
+@@ -239,17 +239,8 @@ struct venc_controls {
+ 
+ 	u32 header_mode;
+ 
+-	struct {
+-		u32 mpeg4;
+-		u32 h264;
+-		u32 vpx;
+-		u32 hevc;
+-	} profile;
+-	struct {
+-		u32 mpeg4;
+-		u32 h264;
+-		u32 hevc;
+-	} level;
++	u32 profile;
++	u32 level;
+ };
+ 
+ struct venus_buffer {
+diff --git a/drivers/media/platform/qcom/venus/venc.c b/drivers/media/platform/qcom/venus/venc.c
+index 6b758a33397e..f8b1484e7dcd 100644
+--- a/drivers/media/platform/qcom/venus/venc.c
++++ b/drivers/media/platform/qcom/venus/venc.c
+@@ -113,80 +113,6 @@ find_format_by_index(struct venus_inst *inst, unsigned int index, u32 type)
+ static int venc_v4l2_to_hfi(int id, int value)
+ {
+ 	switch (id) {
+-	case V4L2_CID_MPEG_VIDEO_MPEG4_LEVEL:
+-		switch (value) {
+-		case V4L2_MPEG_VIDEO_MPEG4_LEVEL_0:
+-		default:
+-			return HFI_MPEG4_LEVEL_0;
+-		case V4L2_MPEG_VIDEO_MPEG4_LEVEL_0B:
+-			return HFI_MPEG4_LEVEL_0b;
+-		case V4L2_MPEG_VIDEO_MPEG4_LEVEL_1:
+-			return HFI_MPEG4_LEVEL_1;
+-		case V4L2_MPEG_VIDEO_MPEG4_LEVEL_2:
+-			return HFI_MPEG4_LEVEL_2;
+-		case V4L2_MPEG_VIDEO_MPEG4_LEVEL_3:
+-			return HFI_MPEG4_LEVEL_3;
+-		case V4L2_MPEG_VIDEO_MPEG4_LEVEL_4:
+-			return HFI_MPEG4_LEVEL_4;
+-		case V4L2_MPEG_VIDEO_MPEG4_LEVEL_5:
+-			return HFI_MPEG4_LEVEL_5;
+-		}
+-	case V4L2_CID_MPEG_VIDEO_MPEG4_PROFILE:
+-		switch (value) {
+-		case V4L2_MPEG_VIDEO_MPEG4_PROFILE_SIMPLE:
+-		default:
+-			return HFI_MPEG4_PROFILE_SIMPLE;
+-		case V4L2_MPEG_VIDEO_MPEG4_PROFILE_ADVANCED_SIMPLE:
+-			return HFI_MPEG4_PROFILE_ADVANCEDSIMPLE;
+-		}
+-	case V4L2_CID_MPEG_VIDEO_H264_PROFILE:
+-		switch (value) {
+-		case V4L2_MPEG_VIDEO_H264_PROFILE_BASELINE:
+-			return HFI_H264_PROFILE_BASELINE;
+-		case V4L2_MPEG_VIDEO_H264_PROFILE_CONSTRAINED_BASELINE:
+-			return HFI_H264_PROFILE_CONSTRAINED_BASE;
+-		case V4L2_MPEG_VIDEO_H264_PROFILE_MAIN:
+-			return HFI_H264_PROFILE_MAIN;
+-		case V4L2_MPEG_VIDEO_H264_PROFILE_HIGH:
+-		default:
+-			return HFI_H264_PROFILE_HIGH;
+-		}
+-	case V4L2_CID_MPEG_VIDEO_H264_LEVEL:
+-		switch (value) {
+-		case V4L2_MPEG_VIDEO_H264_LEVEL_1_0:
+-			return HFI_H264_LEVEL_1;
+-		case V4L2_MPEG_VIDEO_H264_LEVEL_1B:
+-			return HFI_H264_LEVEL_1b;
+-		case V4L2_MPEG_VIDEO_H264_LEVEL_1_1:
+-			return HFI_H264_LEVEL_11;
+-		case V4L2_MPEG_VIDEO_H264_LEVEL_1_2:
+-			return HFI_H264_LEVEL_12;
+-		case V4L2_MPEG_VIDEO_H264_LEVEL_1_3:
+-			return HFI_H264_LEVEL_13;
+-		case V4L2_MPEG_VIDEO_H264_LEVEL_2_0:
+-			return HFI_H264_LEVEL_2;
+-		case V4L2_MPEG_VIDEO_H264_LEVEL_2_1:
+-			return HFI_H264_LEVEL_21;
+-		case V4L2_MPEG_VIDEO_H264_LEVEL_2_2:
+-			return HFI_H264_LEVEL_22;
+-		case V4L2_MPEG_VIDEO_H264_LEVEL_3_0:
+-			return HFI_H264_LEVEL_3;
+-		case V4L2_MPEG_VIDEO_H264_LEVEL_3_1:
+-			return HFI_H264_LEVEL_31;
+-		case V4L2_MPEG_VIDEO_H264_LEVEL_3_2:
+-			return HFI_H264_LEVEL_32;
+-		case V4L2_MPEG_VIDEO_H264_LEVEL_4_0:
+-			return HFI_H264_LEVEL_4;
+-		case V4L2_MPEG_VIDEO_H264_LEVEL_4_1:
+-			return HFI_H264_LEVEL_41;
+-		case V4L2_MPEG_VIDEO_H264_LEVEL_4_2:
+-			return HFI_H264_LEVEL_42;
+-		case V4L2_MPEG_VIDEO_H264_LEVEL_5_0:
+-		default:
+-			return HFI_H264_LEVEL_5;
+-		case V4L2_MPEG_VIDEO_H264_LEVEL_5_1:
+-			return HFI_H264_LEVEL_51;
+-		}
+ 	case V4L2_CID_MPEG_VIDEO_H264_ENTROPY_MODE:
+ 		switch (value) {
+ 		case V4L2_MPEG_VIDEO_H264_ENTROPY_MODE_CAVLC:
+@@ -195,18 +121,6 @@ static int venc_v4l2_to_hfi(int id, int value)
+ 		case V4L2_MPEG_VIDEO_H264_ENTROPY_MODE_CABAC:
+ 			return HFI_H264_ENTROPY_CABAC;
+ 		}
+-	case V4L2_CID_MPEG_VIDEO_VP8_PROFILE:
+-		switch (value) {
+-		case 0:
+-		default:
+-			return HFI_VPX_PROFILE_VERSION_0;
+-		case 1:
+-			return HFI_VPX_PROFILE_VERSION_1;
+-		case 2:
+-			return HFI_VPX_PROFILE_VERSION_2;
+-		case 3:
+-			return HFI_VPX_PROFILE_VERSION_3;
+-		}
+ 	case V4L2_CID_MPEG_VIDEO_H264_LOOP_FILTER_MODE:
+ 		switch (value) {
+ 		case V4L2_MPEG_VIDEO_H264_LOOP_FILTER_MODE_ENABLED:
+@@ -217,46 +131,6 @@ static int venc_v4l2_to_hfi(int id, int value)
+ 		case V4L2_MPEG_VIDEO_H264_LOOP_FILTER_MODE_DISABLED_AT_SLICE_BOUNDARY:
+ 			return HFI_H264_DB_MODE_SKIP_SLICE_BOUNDARY;
+ 		}
+-	case V4L2_CID_MPEG_VIDEO_HEVC_PROFILE:
+-		switch (value) {
+-		case V4L2_MPEG_VIDEO_HEVC_PROFILE_MAIN:
+-		default:
+-			return HFI_HEVC_PROFILE_MAIN;
+-		case V4L2_MPEG_VIDEO_HEVC_PROFILE_MAIN_STILL_PICTURE:
+-			return HFI_HEVC_PROFILE_MAIN_STILL_PIC;
+-		case V4L2_MPEG_VIDEO_HEVC_PROFILE_MAIN_10:
+-			return HFI_HEVC_PROFILE_MAIN10;
+-		}
+-	case V4L2_CID_MPEG_VIDEO_HEVC_LEVEL:
+-		switch (value) {
+-		case V4L2_MPEG_VIDEO_HEVC_LEVEL_1:
+-		default:
+-			return HFI_HEVC_LEVEL_1;
+-		case V4L2_MPEG_VIDEO_HEVC_LEVEL_2:
+-			return HFI_HEVC_LEVEL_2;
+-		case V4L2_MPEG_VIDEO_HEVC_LEVEL_2_1:
+-			return HFI_HEVC_LEVEL_21;
+-		case V4L2_MPEG_VIDEO_HEVC_LEVEL_3:
+-			return HFI_HEVC_LEVEL_3;
+-		case V4L2_MPEG_VIDEO_HEVC_LEVEL_3_1:
+-			return HFI_HEVC_LEVEL_31;
+-		case V4L2_MPEG_VIDEO_HEVC_LEVEL_4:
+-			return HFI_HEVC_LEVEL_4;
+-		case V4L2_MPEG_VIDEO_HEVC_LEVEL_4_1:
+-			return HFI_HEVC_LEVEL_41;
+-		case V4L2_MPEG_VIDEO_HEVC_LEVEL_5:
+-			return HFI_HEVC_LEVEL_5;
+-		case V4L2_MPEG_VIDEO_HEVC_LEVEL_5_1:
+-			return HFI_HEVC_LEVEL_51;
+-		case V4L2_MPEG_VIDEO_HEVC_LEVEL_5_2:
+-			return HFI_HEVC_LEVEL_52;
+-		case V4L2_MPEG_VIDEO_HEVC_LEVEL_6:
+-			return HFI_HEVC_LEVEL_6;
+-		case V4L2_MPEG_VIDEO_HEVC_LEVEL_6_1:
+-			return HFI_HEVC_LEVEL_61;
+-		case V4L2_MPEG_VIDEO_HEVC_LEVEL_6_2:
+-			return HFI_HEVC_LEVEL_62;
+-		}
+ 	}
+ 
+ 	return 0;
+@@ -657,13 +531,12 @@ static int venc_set_properties(struct venus_inst *inst)
+ {
+ 	struct venc_controls *ctr = &inst->controls.enc;
+ 	struct hfi_intra_period intra_period;
+-	struct hfi_profile_level pl;
+ 	struct hfi_framerate frate;
+ 	struct hfi_bitrate brate;
+ 	struct hfi_idr_period idrp;
+ 	struct hfi_quantization quant;
+ 	struct hfi_quantization_range quant_range;
+-	u32 ptype, rate_control, bitrate, profile = 0, level = 0;
++	u32 ptype, rate_control, bitrate;
+ 	int ret;
+ 
+ 	ret = venus_helper_set_work_mode(inst, VIDC_WORK_MODE_2);
+@@ -811,35 +684,7 @@ static int venc_set_properties(struct venus_inst *inst)
+ 	if (ret)
+ 		return ret;
+ 
+-	if (inst->fmt_cap->pixfmt == V4L2_PIX_FMT_H264) {
+-		profile = venc_v4l2_to_hfi(V4L2_CID_MPEG_VIDEO_H264_PROFILE,
+-					   ctr->profile.h264);
+-		level = venc_v4l2_to_hfi(V4L2_CID_MPEG_VIDEO_H264_LEVEL,
+-					 ctr->level.h264);
+-	} else if (inst->fmt_cap->pixfmt == V4L2_PIX_FMT_VP8) {
+-		profile = venc_v4l2_to_hfi(V4L2_CID_MPEG_VIDEO_VP8_PROFILE,
+-					   ctr->profile.vpx);
+-		level = 0;
+-	} else if (inst->fmt_cap->pixfmt == V4L2_PIX_FMT_MPEG4) {
+-		profile = venc_v4l2_to_hfi(V4L2_CID_MPEG_VIDEO_MPEG4_PROFILE,
+-					   ctr->profile.mpeg4);
+-		level = venc_v4l2_to_hfi(V4L2_CID_MPEG_VIDEO_MPEG4_LEVEL,
+-					 ctr->level.mpeg4);
+-	} else if (inst->fmt_cap->pixfmt == V4L2_PIX_FMT_H263) {
+-		profile = 0;
+-		level = 0;
+-	} else if (inst->fmt_cap->pixfmt == V4L2_PIX_FMT_HEVC) {
+-		profile = venc_v4l2_to_hfi(V4L2_CID_MPEG_VIDEO_HEVC_PROFILE,
+-					   ctr->profile.hevc);
+-		level = venc_v4l2_to_hfi(V4L2_CID_MPEG_VIDEO_HEVC_LEVEL,
+-					 ctr->level.hevc);
+-	}
+-
+-	ptype = HFI_PROPERTY_PARAM_PROFILE_LEVEL_CURRENT;
+-	pl.profile = profile;
+-	pl.level = level;
+-
+-	ret = hfi_session_set_property(inst, ptype, &pl);
++	ret = venus_helper_set_profile_level(inst, ctr->profile, ctr->level);
+ 	if (ret)
+ 		return ret;
+ 
+diff --git a/drivers/media/platform/qcom/venus/venc_ctrls.c b/drivers/media/platform/qcom/venus/venc_ctrls.c
+index 22a7c045c6a9..0708b3b89d0c 100644
+--- a/drivers/media/platform/qcom/venus/venc_ctrls.c
++++ b/drivers/media/platform/qcom/venus/venc_ctrls.c
+@@ -103,25 +103,15 @@ static int venc_op_s_ctrl(struct v4l2_ctrl *ctrl)
+ 		ctr->h264_entropy_mode = ctrl->val;
+ 		break;
+ 	case V4L2_CID_MPEG_VIDEO_MPEG4_PROFILE:
+-		ctr->profile.mpeg4 = ctrl->val;
+-		break;
+ 	case V4L2_CID_MPEG_VIDEO_H264_PROFILE:
+-		ctr->profile.h264 = ctrl->val;
+-		break;
+ 	case V4L2_CID_MPEG_VIDEO_HEVC_PROFILE:
+-		ctr->profile.hevc = ctrl->val;
+-		break;
+ 	case V4L2_CID_MPEG_VIDEO_VP8_PROFILE:
+-		ctr->profile.vpx = ctrl->val;
++		ctr->profile = ctrl->val;
+ 		break;
+ 	case V4L2_CID_MPEG_VIDEO_MPEG4_LEVEL:
+-		ctr->level.mpeg4 = ctrl->val;
+-		break;
+ 	case V4L2_CID_MPEG_VIDEO_H264_LEVEL:
+-		ctr->level.h264 = ctrl->val;
+-		break;
+ 	case V4L2_CID_MPEG_VIDEO_HEVC_LEVEL:
+-		ctr->level.hevc = ctrl->val;
++		ctr->level = ctrl->val;
+ 		break;
+ 	case V4L2_CID_MPEG_VIDEO_H264_I_FRAME_QP:
+ 		ctr->h264_i_qp = ctrl->val;
+-- 
+2.17.1
 
