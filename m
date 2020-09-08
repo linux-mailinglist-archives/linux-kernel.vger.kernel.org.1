@@ -2,205 +2,471 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23789260F69
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 12:14:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70B57260FAD
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 12:27:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729351AbgIHKON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 06:14:13 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:39213 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729132AbgIHKMo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 06:12:44 -0400
-Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200908101235epoutp01f95ecb7718184677e49c06d3735cfa92~yx03y67RV1439114391epoutp013
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 10:12:35 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200908101235epoutp01f95ecb7718184677e49c06d3735cfa92~yx03y67RV1439114391epoutp013
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1599559955;
-        bh=uI09m4rEErR3++Jvp7IJlofxtUSCl4SrKX/A6hkpczo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=owLSs17em1pKu96QDjm4+F1iDw4IjZ76ls/gUsScDAcjyCeDb1wvnDbSOEiVkd/+0
-         HbibgJxfcYHjDB1+0edqFaq2uEv46XJOZG0F605elI471zGgYwA3ArUqGL9cCOVpvV
-         cqWmRfDwaydWNgFJs3zLwD+zIEWu6EPQoP9YUhrk=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
-        20200908101234epcas1p49442d07d33998406b761fe5afa7d7c55~yx0232-uv1796017960epcas1p4W;
-        Tue,  8 Sep 2020 10:12:34 +0000 (GMT)
-Received: from epsmges1p5.samsung.com (unknown [182.195.40.153]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4Bm1DH2klxzMqYkk; Tue,  8 Sep
-        2020 10:12:31 +0000 (GMT)
-Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
-        epsmges1p5.samsung.com (Symantec Messaging Gateway) with SMTP id
-        2A.DE.20696.F09575F5; Tue,  8 Sep 2020 19:12:31 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
-        20200908101230epcas1p3d1fc20eb523c4bccf043ada808611e96~yx0zyAHI02954229542epcas1p3m;
-        Tue,  8 Sep 2020 10:12:30 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20200908101230epsmtrp29ec50113b5870fbdbe4160e4be046aef~yx0zxazSS2650426504epsmtrp2D;
-        Tue,  8 Sep 2020 10:12:30 +0000 (GMT)
-X-AuditID: b6c32a39-eebff700000050d8-bd-5f57590f3497
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        5E.99.08382.E09575F5; Tue,  8 Sep 2020 19:12:30 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.113.221.102]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20200908101230epsmtip2faef9f14462d0f7f64b1ef8d2bd90b69~yx0zl7kDf1358513585epsmtip2q;
-        Tue,  8 Sep 2020 10:12:30 +0000 (GMT)
-From:   Chanwoo Choi <cw00.choi@samsung.com>
-To:     myungjoo.ham@samsung.com, kyungmin.park@samsung.com,
-        cw00.choi@samsung.com, krzk@kernel.org, lukasz.luba@arm.com
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v3 2/3] PM / devfreq: Change prototype of
- devfreq_get_devfreq_by_phandle function
-Date:   Tue,  8 Sep 2020 19:24:46 +0900
-Message-Id: <20200908102447.15097-3-cw00.choi@samsung.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200908102447.15097-1-cw00.choi@samsung.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrGKsWRmVeSWpSXmKPExsWy7bCmni5/ZHi8wcc2AYvrX56zWpw/v4Hd
-        4mzTG3aLTY+vsVpc3jWHzeJz7xFGixnn9zFZLGxqYbe43biCzYHTY828NYwem1Z1snlsXlLv
-        0bdlFaPH501yAaxR2TYZqYkpqUUKqXnJ+SmZeem2St7B8c7xpmYGhrqGlhbmSgp5ibmptkou
-        PgG6bpk5QPcoKZQl5pQChQISi4uV9O1sivJLS1IVMvKLS2yVUgtScgosC/SKE3OLS/PS9ZLz
-        c60MDQyMTIEKE7Iz5h7ZyFjwWabi276prA2M0yW6GDk5JARMJP4vWczSxcjFISSwg1Hi3fYO
-        VgjnE6NEx/IvjBDON0aJ08+/AGU4wFpaW9kg4nsZJRZ/XgnV8YVRYsPLE6wgc9kEtCT2v7jB
-        BmKLCJRJ3P5ylRmkiFmglVHi3vNrTCAJYYFkiW+XpoHZLAKqEj8mbmcE2cArYCXxaCMPxH3y
-        Eqs3HGAGsTkFrCW2r1oItllC4Bq7xMdPR5kgilwk5j1vYYGwhSVeHd/CDmFLSXx+t5cNwq6W
-        WHnyCFRzB6PElv0XWCESxhL7l05mAlnMLKApsX6XPkRYUWLn77mMIDazAJ/Eu689UN/zSnS0
-        CUGUKEtcfnAX6gRJicXtnVCrPCQOXDgMDbk+RomVd9cyTWCUm4WwYQEj4ypGsdSC4tz01GLD
-        AlPkKNvECE5wWpY7GKe//aB3iJGJg/EQowQHs5IIb9eh0Hgh3pTEyqrUovz4otKc1OJDjKbA
-        wJvILCWanA9MsXkl8YamRsbGxhYmhmamhoZK4rwPbynECwmkJ5akZqemFqQWwfQxcXBKNTAl
-        VPmqe1yYKrxs0YwdrbMN5tQxrNJjSpv47phgq7XCE16f9gqF6YKn16jbX5viOUXP6efqDU+Y
-        2xb+Sm6Zcehf1w6/iICJ9bfzOdd8uskccl3cVer4PXG1mqwbv2ZLHtFYV+hZsrnLcsbnqelX
-        1xrW7ri1JCdcYGIiQ2jDsjeX4hN8C1yDebeUJe2ZaTPhqGyEfaCR496PT6wPb0w70v2QrXVN
-        RavbIqddB2IaJcVWnAq/udxIm3ERU+Rq9mSzhwovXkpNX5JqJ57TsmWJ9OGnuvHKuw/MErfZ
-        zVu1KUvllP7KySdMr1nrv9v89vZ81s3cN1iTuevfrHyupSv07+qjjY/PFz+yqq/1sf36JOaY
-        EktxRqKhFnNRcSIAp4gZRvkDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprHLMWRmVeSWpSXmKPExsWy7bCSvC5fZHi8wYmXphbXvzxntTh/fgO7
-        xdmmN+wWmx5fY7W4vGsOm8Xn3iOMFjPO72OyWNjUwm5xu3EFmwOnx5p5axg9Nq3qZPPYvKTe
-        o2/LKkaPz5vkAlijuGxSUnMyy1KL9O0SuDLmHtnIWPBZpuLbvqmsDYzTJboYOTgkBEwkWlvZ
-        uhi5OIQEdjNKdM89w9TFyAkUl5SYdvEoM0SNsMThw8UQNZ8YJT40PQCrYRPQktj/4gYbiC0i
-        UCOxbO4esEHMAp2MEienvQRLCAskSvRtPghmswioSvyYuJ0RZCivgJXEo408ELvkJVZvOMAM
-        YnMKWEtsX7UQrFwIqOTakh2MExj5FjAyrGKUTC0ozk3PLTYsMMxLLdcrTswtLs1L10vOz93E
-        CA5CLc0djNtXfdA7xMjEwXiIUYKDWUmEt+tQaLwQb0piZVVqUX58UWlOavEhRmkOFiVx3huF
-        C+OEBNITS1KzU1MLUotgskwcnFINTOpO84/IFr20nN79+Hfsec0zoUfzOTYeVZGWnd8t8oUn
-        d1FA97qnB0rNj05XfFp/rbr9oKd7y9r3OT8D19cf2MK9peyP98t6K55PZ/5rzGo1lumML87w
-        8PpXwi+9PzxD4tVJx40r9m1eeOiwimdfd79++Qu1x6aM9+7/TFrT+myex7Lwj393Plihd+LE
-        hylBOfciF//p/7tmivb/Q1GX1fe371OTNvjrPf1oleqfW/91pj/eq21jdlil8fGmV/eEUldz
-        H/s3NXVCqLjYQfnr3o+3L/+SderUnJXzT6z4pxX95FVYqEbVZVEPr6bPnCZnThRWM/uyT7z4
-        Qk5Q1mvm+X1bbGbPZuFi7UjZb8HasXaSEktxRqKhFnNRcSIAvVob2LECAAA=
-X-CMS-MailID: 20200908101230epcas1p3d1fc20eb523c4bccf043ada808611e96
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20200908101230epcas1p3d1fc20eb523c4bccf043ada808611e96
-References: <20200908102447.15097-1-cw00.choi@samsung.com>
-        <CGME20200908101230epcas1p3d1fc20eb523c4bccf043ada808611e96@epcas1p3.samsung.com>
+        id S1729705AbgIHK1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 06:27:07 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:57036 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729556AbgIHK0n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 06:26:43 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 4D010201592;
+        Tue,  8 Sep 2020 12:26:13 +0200 (CEST)
+Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 3497820158F;
+        Tue,  8 Sep 2020 12:26:13 +0200 (CEST)
+Received: from fsr-ub1664-175.ea.freescale.net (fsr-ub1664-175.ea.freescale.net [10.171.82.40])
+        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 8465120327;
+        Tue,  8 Sep 2020 12:26:12 +0200 (CEST)
+From:   Abel Vesa <abel.vesa@nxp.com>
+To:     Mike Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <fabio.estevam@nxp.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Anson Huang <anson.huang@nxp.com>,
+        Jacky Bai <ping.bai@nxp.com>, Peng Fan <peng.fan@nxp.com>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Fugang Duan <fugang.duan@nxp.com>, devicetree@vger.kernel.org
+Cc:     NXP Linux Team <linux-imx@nxp.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-clk@vger.kernel.org, Abel Vesa <abel.vesa@nxp.com>
+Subject: [PATCH v3 10/14] clk: imx: Add generic blk-ctl driver
+Date:   Tue,  8 Sep 2020 13:24:47 +0300
+Message-Id: <1599560691-3763-11-git-send-email-abel.vesa@nxp.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1599560691-3763-1-git-send-email-abel.vesa@nxp.com>
+References: <1599560691-3763-1-git-send-email-abel.vesa@nxp.com>
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Previously, devfreq core support 'devfreq' property in order to get
-the devfreq device by phandle. But, 'devfreq' property name is not proper
-on devicetree binding because this name doesn't mean the any h/w attribute.
+The i.MX8MP platform introduces a new type of IP which is called BLK_CTL in
+RM and usually is comprised of some GPRs that are considered too
+generic to be part of any dedicated IP from that specific subsystem.
 
-The devfreq core hand over the right to decide the property name
-for getting the devfreq device on devicetree. Each devfreq driver
-will decide the property name on devicetree binding and pass
-the their own property name to devfreq_get_devfreq_by_phandle function.
+In general, some of the GPRs have some clock bits, some have reset bits,
+so in order to be able to use the imx clock API, this needs to be
+in a clock driver. From there it can use the reset controller API and
+leave the rest to the syscon.
 
-Signed-off-by: Chanwoo Choi <cw00.choi@samsung.com>
+Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
 ---
- drivers/devfreq/devfreq.c    | 11 +++++++----
- drivers/devfreq/exynos-bus.c |  2 +-
- include/linux/devfreq.h      |  5 +++--
- 3 files changed, 11 insertions(+), 7 deletions(-)
+ drivers/clk/imx/Makefile      |   2 +-
+ drivers/clk/imx/clk-blk-ctl.c | 297 ++++++++++++++++++++++++++++++++++++++++++
+ drivers/clk/imx/clk-blk-ctl.h |  80 ++++++++++++
+ 3 files changed, 378 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/clk/imx/clk-blk-ctl.c
+ create mode 100644 drivers/clk/imx/clk-blk-ctl.h
 
-diff --git a/drivers/devfreq/devfreq.c b/drivers/devfreq/devfreq.c
-index b9b27fb3291e..d22bf3ce0404 100644
---- a/drivers/devfreq/devfreq.c
-+++ b/drivers/devfreq/devfreq.c
-@@ -1012,22 +1012,24 @@ struct devfreq *devfreq_get_devfreq_by_node(struct device_node *node)
- /*
-  * devfreq_get_devfreq_by_phandle - Get the devfreq device from devicetree
-  * @dev - instance to the given device
-+ * @phandle_name - name of property holding a phandle value
-  * @index - index into list of devfreq
-  *
-  * return the instance of devfreq device
-  */
--struct devfreq *devfreq_get_devfreq_by_phandle(struct device *dev, int index)
-+struct devfreq *devfreq_get_devfreq_by_phandle(struct device *dev,
-+					const char *phandle_name, int index)
- {
- 	struct device_node *node;
- 	struct devfreq *devfreq;
+diff --git a/drivers/clk/imx/Makefile b/drivers/clk/imx/Makefile
+index 79e53f2..105c117 100644
+--- a/drivers/clk/imx/Makefile
++++ b/drivers/clk/imx/Makefile
+@@ -23,7 +23,7 @@ obj-$(CONFIG_MXC_CLK) += mxc-clk.o
  
--	if (!dev)
-+	if (!dev || !phandle_name)
- 		return ERR_PTR(-EINVAL);
+ obj-$(CONFIG_CLK_IMX8MM) += clk-imx8mm.o
+ obj-$(CONFIG_CLK_IMX8MN) += clk-imx8mn.o
+-obj-$(CONFIG_CLK_IMX8MP) += clk-imx8mp.o
++obj-$(CONFIG_CLK_IMX8MP) += clk-imx8mp.o clk-blk-ctl.o
+ obj-$(CONFIG_CLK_IMX8MQ) += clk-imx8mq.o
  
- 	if (!dev->of_node)
- 		return ERR_PTR(-EINVAL);
- 
--	node = of_parse_phandle(dev->of_node, "devfreq", index);
-+	node = of_parse_phandle(dev->of_node, phandle_name, index);
- 	if (!node)
- 		return ERR_PTR(-ENODEV);
- 
-@@ -1043,7 +1045,8 @@ struct devfreq *devfreq_get_devfreq_by_node(struct device_node *node)
- 	return ERR_PTR(-ENODEV);
- }
- 
--struct devfreq *devfreq_get_devfreq_by_phandle(struct device *dev, int index)
-+struct devfreq *devfreq_get_devfreq_by_phandle(struct device *dev,
-+					const char *phandle_name, int index)
- {
- 	return ERR_PTR(-ENODEV);
- }
-diff --git a/drivers/devfreq/exynos-bus.c b/drivers/devfreq/exynos-bus.c
-index 8fa8eb541373..58dbf51f0983 100644
---- a/drivers/devfreq/exynos-bus.c
-+++ b/drivers/devfreq/exynos-bus.c
-@@ -360,7 +360,7 @@ static int exynos_bus_profile_init_passive(struct exynos_bus *bus,
- 	profile->exit = exynos_bus_passive_exit;
- 
- 	/* Get the instance of parent devfreq device */
--	parent_devfreq = devfreq_get_devfreq_by_phandle(dev, 0);
-+	parent_devfreq = devfreq_get_devfreq_by_phandle(dev, "devfreq", 0);
- 	if (IS_ERR(parent_devfreq))
- 		return -EPROBE_DEFER;
- 
-diff --git a/include/linux/devfreq.h b/include/linux/devfreq.h
-index eb971b8e5051..2f4a74efa6be 100644
---- a/include/linux/devfreq.h
-+++ b/include/linux/devfreq.h
-@@ -262,7 +262,8 @@ void devm_devfreq_unregister_notifier(struct device *dev,
- 				struct notifier_block *nb,
- 				unsigned int list);
- struct devfreq *devfreq_get_devfreq_by_node(struct device_node *node);
--struct devfreq *devfreq_get_devfreq_by_phandle(struct device *dev, int index);
-+struct devfreq *devfreq_get_devfreq_by_phandle(struct device *dev,
-+				const char *phandle_name, int index);
- 
- #if IS_ENABLED(CONFIG_DEVFREQ_GOV_SIMPLE_ONDEMAND)
- /**
-@@ -421,7 +422,7 @@ static inline struct devfreq *devfreq_get_devfreq_by_node(struct device_node *no
- }
- 
- static inline struct devfreq *devfreq_get_devfreq_by_phandle(struct device *dev,
--					int index)
-+					const char *phandle_name, int index)
- {
- 	return ERR_PTR(-ENODEV);
- }
+ obj-$(CONFIG_MXC_CLK_SCU) += clk-imx-scu.o clk-imx-lpcg-scu.o
+diff --git a/drivers/clk/imx/clk-blk-ctl.c b/drivers/clk/imx/clk-blk-ctl.c
+new file mode 100644
+index 00000000..1a6f1eb
+--- /dev/null
++++ b/drivers/clk/imx/clk-blk-ctl.c
+@@ -0,0 +1,297 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Copyright 2020 NXP.
++ */
++
++#include <linux/clk.h>
++#include <linux/reset-controller.h>
++#include <linux/err.h>
++#include <linux/io.h>
++#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/of_address.h>
++#include <linux/of_device.h>
++#include <linux/platform_device.h>
++#include <linux/pm_runtime.h>
++#include <linux/slab.h>
++#include <linux/string.h>
++#include <linux/types.h>
++
++#include "clk.h"
++#include "clk-blk-ctl.h"
++
++struct imx_reset_hw {
++	u32 offset;
++	u32 shift;
++	u32 mask;
++	volatile unsigned long asserted;
++};
++
++struct imx_pm_safekeep_info {
++	uint32_t *regs_values;
++	uint32_t *regs_offsets;
++	uint32_t regs_num;
++};
++
++struct imx_blk_ctl_drvdata {
++	void __iomem *base;
++	struct reset_controller_dev rcdev;
++	struct imx_reset_hw *rst_hws;
++	struct imx_pm_safekeep_info pm_info;
++
++	spinlock_t lock;
++};
++
++static void __maybe_unused imx_blk_ctl_read_write(struct device *dev,
++							bool write)
++{
++	struct imx_blk_ctl_drvdata *drvdata = dev_get_drvdata(dev);
++	struct imx_pm_safekeep_info *pm_info = &drvdata->pm_info;
++	void __iomem *base = drvdata->base;
++	int i;
++
++	if (!pm_info->regs_num)
++		return;
++
++	for (i = 0; i < pm_info->regs_num; i++) {
++		u32 offset = pm_info->regs_offsets[i];
++
++		if (write)
++			writel(pm_info->regs_values[i], base + offset);
++		else
++			pm_info->regs_values[i] = readl(base + offset);
++	}
++
++}
++
++static int __maybe_unused imx_blk_ctl_runtime_suspend(struct device *dev)
++{
++	imx_blk_ctl_read_write(dev, false);
++
++	return 0;
++}
++
++static int __maybe_unused imx_blk_ctl_runtime_resume(struct device *dev)
++{
++	imx_blk_ctl_read_write(dev, true);
++
++	return 0;
++}
++
++const struct dev_pm_ops imx_blk_ctl_pm_ops = {
++	SET_RUNTIME_PM_OPS(imx_blk_ctl_runtime_suspend,
++			   imx_blk_ctl_runtime_resume, NULL)
++	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
++			   pm_runtime_force_resume)
++};
++EXPORT_SYMBOL_GPL(imx_blk_ctl_pm_ops);
++
++static int imx_blk_ctl_reset_set(struct reset_controller_dev *rcdev,
++				  unsigned long id, bool assert)
++{
++	struct imx_blk_ctl_drvdata *drvdata = container_of(rcdev,
++			struct imx_blk_ctl_drvdata, rcdev);
++	unsigned int offset = drvdata->rst_hws[id].offset;
++	unsigned int shift = drvdata->rst_hws[id].shift;
++	unsigned int mask = drvdata->rst_hws[id].mask;
++	void __iomem *reg_addr = drvdata->base + offset;
++	unsigned long flags;
++	u32 reg;
++
++	if (assert && !test_and_set_bit(1, &drvdata->rst_hws[id].asserted))
++		pm_runtime_get_sync(rcdev->dev);
++
++	spin_lock_irqsave(&drvdata->lock, flags);
++
++	reg = readl(reg_addr);
++	if (assert)
++		writel(reg & ~(mask << shift), reg_addr);
++	else
++		writel(reg | (mask << shift), reg_addr);
++
++	spin_unlock_irqrestore(&drvdata->lock, flags);
++
++	if (!assert && test_and_clear_bit(1, &drvdata->rst_hws[id].asserted))
++		pm_runtime_put(rcdev->dev);
++
++	return 0;
++}
++
++static int imx_blk_ctl_reset_assert(struct reset_controller_dev *rcdev,
++					   unsigned long id)
++{
++	return imx_blk_ctl_reset_set(rcdev, id, true);
++}
++
++static int imx_blk_ctl_reset_deassert(struct reset_controller_dev *rcdev,
++					     unsigned long id)
++{
++	return imx_blk_ctl_reset_set(rcdev, id, false);
++}
++
++static const struct reset_control_ops imx_blk_ctl_reset_ops = {
++	.assert		= imx_blk_ctl_reset_assert,
++	.deassert	= imx_blk_ctl_reset_deassert,
++};
++
++static int imx_blk_ctl_register_reset_controller(struct device *dev)
++{
++	const struct imx_blk_ctl_dev_data *dev_data = of_device_get_match_data(dev);
++	struct imx_blk_ctl_drvdata *drvdata = dev_get_drvdata(dev);
++	int max = dev_data->resets_max;
++	struct imx_reset_hw *hws;
++	int i;
++
++	spin_lock_init(&drvdata->lock);
++
++	drvdata->rcdev.owner     = THIS_MODULE;
++	drvdata->rcdev.nr_resets = max;
++	drvdata->rcdev.ops       = &imx_blk_ctl_reset_ops;
++	drvdata->rcdev.of_node   = dev->of_node;
++	drvdata->rcdev.dev	 = dev;
++
++	drvdata->rst_hws = devm_kcalloc(dev, max, sizeof(struct imx_reset_hw),
++					GFP_KERNEL);
++	hws = drvdata->rst_hws;
++
++	for (i = 0; i < dev_data->hws_num; i++) {
++		struct imx_blk_ctl_hw *hw = &dev_data->hws[i];
++
++		if (hw->type != BLK_CTL_RESET)
++			continue;
++
++		hws[hw->id].offset = hw->offset;
++		hws[hw->id].shift = hw->shift;
++		hws[hw->id].mask = hw->mask;
++	}
++
++	return devm_reset_controller_register(dev, &drvdata->rcdev);
++}
++static struct clk_hw *imx_blk_ctl_register_one_clock(struct device *dev,
++						struct imx_blk_ctl_hw *hw)
++{
++	struct imx_blk_ctl_drvdata *drvdata = dev_get_drvdata(dev);
++	void __iomem *base = drvdata->base;
++	struct clk_hw *clk_hw = NULL;
++
++	switch (hw->type) {
++	case BLK_CTL_CLK_MUX:
++		clk_hw = imx_dev_clk_hw_mux_flags(dev, hw->name,
++						  base + hw->offset,
++						  hw->shift, hw->width,
++						  hw->parents,
++						  hw->parents_count,
++						  hw->flags);
++		break;
++	case BLK_CTL_CLK_GATE:
++		clk_hw = imx_dev_clk_hw_gate(dev, hw->name, hw->parents,
++					     base + hw->offset, hw->shift);
++		break;
++	case BLK_CTL_CLK_SHARED_GATE:
++		clk_hw = imx_dev_clk_hw_gate_shared(dev, hw->name,
++						    hw->parents,
++						    base + hw->offset,
++						    hw->shift,
++						    hw->shared_count);
++		break;
++	case BLK_CTL_CLK_PLL14XX:
++		clk_hw = imx_dev_clk_hw_pll14xx(dev, hw->name, hw->parents,
++						base + hw->offset, hw->pll_tbl);
++		break;
++	};
++
++	return clk_hw;
++}
++
++static int imx_blk_ctl_register_clock_controller(struct device *dev)
++{
++	const struct imx_blk_ctl_dev_data *dev_data = of_device_get_match_data(dev);
++	struct clk_hw_onecell_data *clk_hw_data;
++	struct clk_hw **hws;
++	int i;
++
++	clk_hw_data = devm_kzalloc(dev, struct_size(clk_hw_data, hws,
++				dev_data->hws_num), GFP_KERNEL);
++	if (WARN_ON(!clk_hw_data))
++		return -ENOMEM;
++
++	clk_hw_data->num = dev_data->clocks_max;
++	hws = clk_hw_data->hws;
++
++	for (i = 0; i < dev_data->hws_num; i++) {
++		struct imx_blk_ctl_hw *hw = &dev_data->hws[i];
++
++		hws[hw->id] = imx_blk_ctl_register_one_clock(dev, hw);
++		WARN(IS_ERR(hws[hw->id]), "failed to register clock %d", hw->id);
++	}
++
++	imx_check_clk_hws(hws, dev_data->clocks_max);
++
++	return of_clk_add_hw_provider(dev->of_node, of_clk_hw_onecell_get,
++					clk_hw_data);
++}
++
++static int imx_blk_ctl_init_runtime_pm_safekeeping(struct device *dev)
++{
++	const struct imx_blk_ctl_dev_data *dev_data = of_device_get_match_data(dev);
++	struct imx_blk_ctl_drvdata *drvdata = dev_get_drvdata(dev);
++	struct imx_pm_safekeep_info *pm_info = &drvdata->pm_info;
++	u32 regs_num = dev_data->pm_runtime_saved_regs_num;
++	const u32 *regs_offsets = dev_data->pm_runtime_saved_regs;
++
++	if (!dev_data->pm_runtime_saved_regs_num)
++		return 0;
++
++	pm_info->regs_values = devm_kzalloc(dev,
++					    sizeof(u32) * regs_num,
++					    GFP_KERNEL);
++	if (WARN_ON(IS_ERR(pm_info->regs_values)))
++		return PTR_ERR(pm_info->regs_values);
++
++	pm_info->regs_offsets = kmemdup(regs_offsets,
++					regs_num * sizeof(u32), GFP_KERNEL);
++	if (WARN_ON(IS_ERR(pm_info->regs_offsets)))
++		return PTR_ERR(pm_info->regs_offsets);
++
++	pm_info->regs_num = regs_num;
++
++	return 0;
++}
++
++int imx_blk_ctl_probe(struct platform_device *pdev)
++{
++	struct imx_blk_ctl_drvdata *drvdata;
++	struct device *dev = &pdev->dev;
++	int ret;
++
++	drvdata = devm_kzalloc(dev, sizeof(*drvdata), GFP_KERNEL);
++	if (WARN_ON(!drvdata))
++		return -ENOMEM;
++
++	drvdata->base = devm_platform_ioremap_resource(pdev, 0);
++	if (WARN_ON(IS_ERR(drvdata->base)))
++		return PTR_ERR(drvdata->base);
++
++	dev_set_drvdata(dev, drvdata);
++
++	ret = imx_blk_ctl_init_runtime_pm_safekeeping(dev);
++	if (ret)
++		return ret;
++
++	pm_runtime_get_noresume(dev);
++	pm_runtime_set_active(dev);
++	pm_runtime_enable(dev);
++
++	ret = imx_blk_ctl_register_clock_controller(dev);
++	if (ret) {
++		pm_runtime_put(dev);
++		return ret;
++	}
++
++	ret = imx_blk_ctl_register_reset_controller(dev);
++
++	pm_runtime_put(dev);
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(imx_blk_ctl_probe);
+diff --git a/drivers/clk/imx/clk-blk-ctl.h b/drivers/clk/imx/clk-blk-ctl.h
+new file mode 100644
+index 00000000..e5bf723
+--- /dev/null
++++ b/drivers/clk/imx/clk-blk-ctl.h
+@@ -0,0 +1,80 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef __MACH_IMX_CLK_BLK_CTL_H
++#define __MACH_IMX_CLK_BLK_CTL_H
++
++enum imx_blk_ctl_hw_type {
++	BLK_CTL_CLK_MUX,
++	BLK_CTL_CLK_GATE,
++	BLK_CTL_CLK_SHARED_GATE,
++	BLK_CTL_CLK_PLL14XX,
++	BLK_CTL_RESET,
++};
++
++struct imx_blk_ctl_hw {
++	int type;
++	char *name;
++	u32 offset;
++	u32 shift;
++	u32 mask;
++	u32 width;
++	u32 flags;
++	u32 id;
++	const void *parents;
++	u32 parents_count;
++	int *shared_count;
++	const struct imx_pll14xx_clk *pll_tbl;
++};
++
++struct imx_blk_ctl_dev_data {
++	struct imx_blk_ctl_hw *hws;
++	u32 hws_num;
++
++	u32 clocks_max;
++	u32 resets_max;
++
++	u32 pm_runtime_saved_regs_num;
++	u32 pm_runtime_saved_regs[];
++};
++
++#define IMX_BLK_CTL(_type, _name, _id, _offset, _shift, _width, _mask, _parents, _parents_count, _flags, sh_count, _pll_tbl) \
++	{						\
++		.type = _type,				\
++		.name = _name,				\
++		.id = _id,				\
++		.offset = _offset,			\
++		.shift = _shift,			\
++		.width = _width,			\
++		.mask = _mask,				\
++		.parents = _parents,			\
++		.parents_count = _parents_count,	\
++		.flags = _flags,			\
++		.shared_count = sh_count,		\
++		.pll_tbl = _pll_tbl,			\
++	}
++
++#define IMX_BLK_CTL_CLK_MUX(_name, _id, _offset, _shift, _width, _parents) \
++	IMX_BLK_CTL(BLK_CTL_CLK_MUX, _name, _id, _offset, _shift, _width, 0, _parents, ARRAY_SIZE(_parents), 0, NULL, NULL)
++
++#define IMX_BLK_CTL_CLK_MUX_FLAGS(_name, _id, _offset, _shift, _width, _parents, _flags) \
++	IMX_BLK_CTL(BLK_CTL_CLK_MUX, _name, _id, _offset, _shift, _width, 0, _parents, ARRAY_SIZE(_parents), _flags, NULL, NULL)
++
++#define IMX_BLK_CTL_CLK_GATE(_name, _id, _offset, _shift, _parents) \
++	IMX_BLK_CTL(BLK_CTL_CLK_GATE, _name, _id, _offset, _shift, 1, 0, _parents, 1, 0, NULL, NULL)
++
++#define IMX_BLK_CTL_CLK_SHARED_GATE(_name, _id, _offset, _shift, _parents, sh_count) \
++	IMX_BLK_CTL(BLK_CTL_CLK_SHARED_GATE, _name, _id, _offset, _shift, 1, 0, _parents, 1, 0, sh_count, NULL)
++
++#define IMX_BLK_CTL_CLK_PLL14XX(_name, _id, _offset, _parents, _pll_tbl) \
++	IMX_BLK_CTL(BLK_CTL_CLK_PLL14XX, _name, _id, _offset, 0, 0, 0, _parents, 1, 0, NULL, _pll_tbl)
++
++#define IMX_BLK_CTL_RESET(_id, _offset, _shift) \
++	IMX_BLK_CTL(BLK_CTL_RESET, NULL, _id, _offset, _shift, 0, 1, NULL, 0, 0, NULL, NULL)
++
++#define IMX_BLK_CTL_RESET_MASK(_id, _offset, _shift, mask) \
++	IMX_BLK_CTL(BLK_CTL_RESET, NULL, _id, _offset, _shift, 0, mask, NULL, 0, 0, NULL, NULL)
++
++extern const struct dev_pm_ops imx_blk_ctl_pm_ops;
++
++int imx_blk_ctl_probe(struct platform_device *pdev);
++
++#endif
 -- 
-2.17.1
+2.7.4
 
