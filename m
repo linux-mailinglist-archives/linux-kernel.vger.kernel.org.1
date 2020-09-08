@@ -2,74 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFECA2616AE
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:16:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51F8926167A
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:12:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731758AbgIHRQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 13:16:29 -0400
-Received: from 107-174-27-60-host.colocrossing.com ([107.174.27.60]:48248 "EHLO
-        ozlabs.ru" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org with ESMTP
-        id S1731638AbgIHQSb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:18:31 -0400
-X-Greylist: delayed 2642 seconds by postgrey-1.27 at vger.kernel.org; Tue, 08 Sep 2020 12:18:30 EDT
-Received: from fstn1-p1.ozlabs.ibm.com (localhost [IPv6:::1])
-        by ozlabs.ru (Postfix) with ESMTP id 03ED9AE80120;
-        Tue,  8 Sep 2020 10:42:51 -0400 (EDT)
-From:   Alexey Kardashevskiy <aik@ozlabs.ru>
-To:     rcu@vger.kernel.org
-Cc:     Alexey Kardashevskiy <aik@ozlabs.ru>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH kernel] srcu: Fix static initialization
-Date:   Wed,  9 Sep 2020 00:43:06 +1000
-Message-Id: <20200908144306.33355-1-aik@ozlabs.ru>
-X-Mailer: git-send-email 2.17.1
+        id S1731770AbgIHRMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 13:12:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59170 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731803AbgIHQTT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 12:19:19 -0400
+Received: from gaia (unknown [46.69.195.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8D4D522B49;
+        Tue,  8 Sep 2020 14:50:22 +0000 (UTC)
+Date:   Tue, 8 Sep 2020 15:50:20 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 20/35] arm64: mte: Add in-kernel MTE helpers
+Message-ID: <20200908145019.GH25591@gaia>
+References: <cover.1597425745.git.andreyknvl@google.com>
+ <2cf260bdc20793419e32240d2a3e692b0adf1f80.1597425745.git.andreyknvl@google.com>
+ <20200827093808.GB29264@gaia>
+ <CAAeHK+w-NLfCXFxJNEQ2pLpS6P3KCtAWJrxAFog9=BNiZ58wAQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAAeHK+w-NLfCXFxJNEQ2pLpS6P3KCtAWJrxAFog9=BNiZ58wAQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-init_srcu_struct_nodes() is called with is_static==true only internally
-and when this happens, the srcu->sda is not initialized in
-init_srcu_struct_fields() and we crash on dereferencing @sdp.
+On Tue, Sep 08, 2020 at 03:23:20PM +0200, Andrey Konovalov wrote:
+> On Thu, Aug 27, 2020 at 11:38 AM Catalin Marinas
+> <catalin.marinas@arm.com> wrote:
+> > On Fri, Aug 14, 2020 at 07:27:02PM +0200, Andrey Konovalov wrote:
+> > > diff --git a/arch/arm64/include/asm/mte.h b/arch/arm64/include/asm/mte.h
+> > > index 1c99fcadb58c..733be1cb5c95 100644
+> > > --- a/arch/arm64/include/asm/mte.h
+> > > +++ b/arch/arm64/include/asm/mte.h
+> > > @@ -5,14 +5,19 @@
+> > >  #ifndef __ASM_MTE_H
+> > >  #define __ASM_MTE_H
+> > >
+> > > -#define MTE_GRANULE_SIZE     UL(16)
+> > > +#include <asm/mte_asm.h>
+> >
+> > So the reason for this move is to include it in asm/cache.h. Fine by
+> > me but...
+> >
+> > >  #define MTE_GRANULE_MASK     (~(MTE_GRANULE_SIZE - 1))
+> > >  #define MTE_TAG_SHIFT                56
+> > >  #define MTE_TAG_SIZE         4
+> > > +#define MTE_TAG_MASK         GENMASK((MTE_TAG_SHIFT + (MTE_TAG_SIZE - 1)), MTE_TAG_SHIFT)
+> > > +#define MTE_TAG_MAX          (MTE_TAG_MASK >> MTE_TAG_SHIFT)
+> >
+> > ... I'd rather move all these definitions in a file with a more
+> > meaningful name like mte-def.h. The _asm implies being meant for .S
+> > files inclusion which isn't the case.
+> >
+> > > diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
+> > > index eb39504e390a..e2d708b4583d 100644
+> > > --- a/arch/arm64/kernel/mte.c
+> > > +++ b/arch/arm64/kernel/mte.c
+> > > @@ -72,6 +74,47 @@ int memcmp_pages(struct page *page1, struct page *page2)
+> > >       return ret;
+> > >  }
+> > >
+> > > +u8 mte_get_mem_tag(void *addr)
+> > > +{
+> > > +     if (system_supports_mte())
+> > > +             addr = mte_assign_valid_ptr_tag(addr);
+> >
+> > The mte_assign_valid_ptr_tag() is slightly misleading. All it does is
+> > read the allocation tag from memory.
+> >
+> > I also think this should be inline asm, possibly using alternatives.
+> > It's just an LDG instruction (and it saves us from having to invent a
+> > better function name).
+> 
+> Could you point me to an example of inline asm with alternatives if
+> there's any? I see alternative_if and other similar macros used in
+> arch/arm64/ code, is that what you mean? Those seem to always use
+> static conditions, like config values, but here we have a dynamic
+> system_supports_mte(). Could you elaborate on how I should implement
+> this?
 
-This fixes the crash by moving "if (is_static)" out of the loop which
-only does useful work for is_static=false case anyway.
+There are plenty of ALTERNATIVE macro uses under arch/arm64, see
+arch/arm64/include/asm/alternative.h for the definition and some simple
+documentation.
 
-Found by syzkaller.
+In this case, something like (untested, haven't even checked whether it
+matches the mte_assign_valid_ptr_tag() code):
 
-Signed-off-by: Alexey Kardashevskiy <aik@ozlabs.ru>
----
- kernel/rcu/srcutree.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+	asm(ALTERNATIVE("orr %0, %1, #0xff << 56", "ldg %0, [%1]", ARM64_HAS_MTE));
 
-diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index c100acf332ed..49b54a50bde8 100644
---- a/kernel/rcu/srcutree.c
-+++ b/kernel/rcu/srcutree.c
-@@ -135,6 +135,9 @@ static void init_srcu_struct_nodes(struct srcu_struct *ssp, bool is_static)
- 				   levelspread[level - 1];
- 	}
- 
-+	if (is_static)
-+		return;
-+
- 	/*
- 	 * Initialize the per-CPU srcu_data array, which feeds into the
- 	 * leaves of the srcu_node tree.
-@@ -161,8 +164,6 @@ static void init_srcu_struct_nodes(struct srcu_struct *ssp, bool is_static)
- 		timer_setup(&sdp->delay_work, srcu_delay_timer, 0);
- 		sdp->ssp = ssp;
- 		sdp->grpmask = 1 << (cpu - sdp->mynode->grplo);
--		if (is_static)
--			continue;
- 
- 		/* Dynamically allocated, better be no srcu_read_locks()! */
- 		for (i = 0; i < ARRAY_SIZE(sdp->srcu_lock_count); i++) {
 -- 
-2.17.1
-
+Catalin
