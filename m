@@ -2,149 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AF19261DFC
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:44:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4053E261E2A
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:48:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731797AbgIHTor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:44:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45600 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731791AbgIHTof (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 15:44:35 -0400
-Received: from tleilax.poochiereds.net (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5D1E720578;
-        Tue,  8 Sep 2020 19:44:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599594273;
-        bh=TwSgaQVWEpyncboF4JaD9IhTXHoxnoQIBmEUk68HUJI=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=CvcYBcII98mNXdOt3ahcND/odmUUtF1qJ7jdSiGu5rWQigwBgkEIGnxpVHeYd2rj2
-         BSuXy9Eu/sB6mfBPSMnCgiune1xkJVc0Frzvajn6liJxdAa5Xy6U2YFaQd5sWObBlO
-         ey0gPuJXFnLabJ79cydkxypftdh00fQbSdgW+K9o=
-Message-ID: <e4f5ccb298170357ba16ae2870fde6a90ca2aa81.camel@kernel.org>
-Subject: Re: [PATCH] fsync.2: ERRORS: add EIO and ENOSPC
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Jan Kara <jack@suse.cz>,
-        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Cc:     milan.opensource@gmail.com, lkml <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-Date:   Tue, 08 Sep 2020 15:44:32 -0400
-In-Reply-To: <20200908112742.GA2956@quack2.suse.cz>
-References: <1598685186-27499-1-git-send-email-milan.opensource@gmail.com>
-         <CAKgNAkiTjtdaQxbCYS67+SdqSPaGzJnfLEEMFgcoXjHLDxgemw@mail.gmail.com>
-         <20200908112742.GA2956@quack2.suse.cz>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+        id S1732419AbgIHTpz convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 8 Sep 2020 15:45:55 -0400
+Received: from mail-io1-f68.google.com ([209.85.166.68]:46727 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730834AbgIHTpY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 15:45:24 -0400
+Received: by mail-io1-f68.google.com with SMTP id d18so597060iop.13;
+        Tue, 08 Sep 2020 12:45:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=5lSYrf9lRCQJTgoIwlED2IOgz6PWg0TeiQvD28YBEwM=;
+        b=WLD2IEOZ5VTchM2sVeOtAYWhpq7MoVxHtWkQumbqy8ghMqdQh0p5K/Z1Ip1OMFvrxB
+         hvbcye0lCy0blmLmqf7CqnYWCmyE9bgoYPY0Ux/SgUBG9yaDmjVioP8W3rFZEwh+osNH
+         4+3zz2bHAu6T9JS7Vd7Dy/QX5cJswOaDKfSCf+t2erPNFxR6SC6Bspqk3vM4ZYpoGEcB
+         pn1bWT/0hBF0mvIAq+o+lYhvlNyTyD5WBBddgJDK4m21sBW4K9mIZUiW56kXe3YV41Mq
+         jovkD59tJLLwTv0aanP5PK/Hpdiu5l9gqzuodkInCXNU1Jzx9eqcz9ugzyaOhmgpE4pH
+         BvVQ==
+X-Gm-Message-State: AOAM530AehdpOqpsI7ivaLgC/WFuhwhzF6RO70NWFuqiBoh861s9dIT+
+        To0syF0lsuKE0gsUyB8lKQ==
+X-Google-Smtp-Source: ABdhPJxrV9yNZntSsSX3OunFFlneoGXKHbuHAdYw7RbwpAmmT3J6qmGRj2mtzitQiL09fQFNubQ4xA==
+X-Received: by 2002:a05:6602:2b13:: with SMTP id p19mr496738iov.30.1599594322118;
+        Tue, 08 Sep 2020 12:45:22 -0700 (PDT)
+Received: from xps15 ([64.188.179.251])
+        by smtp.gmail.com with ESMTPSA id s85sm108002ilk.35.2020.09.08.12.45.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Sep 2020 12:45:20 -0700 (PDT)
+Received: (nullmailer pid 786764 invoked by uid 1000);
+        Tue, 08 Sep 2020 19:45:20 -0000
+Date:   Tue, 8 Sep 2020 13:45:20 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-nfc@lists.01.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Olof Johansson <olof@lixom.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Krzysztof Opasiak <k.opasiak@samsung.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v2 1/9] dt-bindings: net: nfc: s3fwrn5: Convert to
+ dtschema
+Message-ID: <20200908194520.GA786466@bogus>
+References: <20200906153654.2925-1-krzk@kernel.org>
+ <20200906153654.2925-2-krzk@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20200906153654.2925-2-krzk@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-09-08 at 13:27 +0200, Jan Kara wrote:
-> Added Jeff to CC since he has written the code...
+On Sun, 06 Sep 2020 17:36:46 +0200, Krzysztof Kozlowski wrote:
+> Convert the Samsung S3FWRN5 NCI NFC controller bindings to dtschema.
+> This is conversion only so it includes properties with invalid prefixes
+> (s3fwrn5,en-gpios) which should be addressed later.
 > 
-> On Mon 07-09-20 09:11:06, Michael Kerrisk (man-pages) wrote:
-> > [Widening the CC to include Andrew and linux-fsdevel@]
-> > [Milan: thanks for the patch, but it's unclear to me from your commit
-> > message how/if you verified the details.]
-> > 
-> > Andrew, maybe you (or someone else) can comment, since long ago your
-> > 
-> >     commit f79e2abb9bd452d97295f34376dedbec9686b986
-> >     Author: Andrew Morton <akpm@osdl.org>
-> >     Date:   Fri Mar 31 02:30:42 2006 -0800
-> > 
-> > included a comment that is referred to in  stackoverflow discussion
-> > about this topic (that SO discussion is in turn referred to by
-> > https://bugzilla.kernel.org/show_bug.cgi?id=194757).
-> > 
-> > The essence as I understand it, is this:
-> > (1) fsync() (and similar) may fail EIO or ENOSPC, at which point data
-> > has not been synced.
-> > (2) In this case, the EIO/ENOSPC setting is cleared so that...
-> > (3) A subsequent fsync() might return success, but...
-> > (4) That doesn't mean that the data in (1) landed on the disk.
-> 
-> Correct.
-> 
-> > The proposed manual page patch below wants to document this, but I'd
-> > be happy to have an FS-knowledgeable person comment before I apply.
-> 
-> Just a small comment below:
-> 
-> > On Sat, 29 Aug 2020 at 09:13, <milan.opensource@gmail.com> wrote:
-> > > From: Milan Shah <milan.opensource@gmail.com>
-> > > 
-> > > This Fix addresses Bug 194757.
-> > > Ref: https://bugzilla.kernel.org/show_bug.cgi?id=194757
-> > > ---
-> > >  man2/fsync.2 | 13 +++++++++++++
-> > >  1 file changed, 13 insertions(+)
-> > > 
-> > > diff --git a/man2/fsync.2 b/man2/fsync.2
-> > > index 96401cd..f38b3e4 100644
-> > > --- a/man2/fsync.2
-> > > +++ b/man2/fsync.2
-> > > @@ -186,6 +186,19 @@ In these cases disk caches need to be disabled using
-> > >  or
-> > >  .BR sdparm (8)
-> > >  to guarantee safe operation.
-> > > +
-> > > +When
-> > > +.BR fsync ()
-> > > +or
-> > > +.BR fdatasync ()
-> > > +returns
-> > > +.B EIO
-> > > +or
-> > > +.B ENOSPC
-> > > +any error flags on pages in the file mapping are cleared, so subsequent synchronisation attempts
-> > > +will return without error. It is
-> > > +.I not
-> > > +safe to retry synchronisation and assume that a non-error return means prior writes are now on disk.
-> > >  .SH SEE ALSO
-> > >  .BR sync (1),
-> > >  .BR bdflush (2),
-> 
-> So the error state isn't really stored "on pages in the file mapping".
-> Current implementation (since 4.14) is that error state is stored in struct
-> file (I think this tends to be called "file description" in manpages) and
-> so EIO / ENOSPC is reported once for each file description of the file that
-> was open before the error happened. Not sure if we want to be so precise in
-> the manpages or if it just confuses people. Anyway your takeway that no
-> error on subsequent fsync() does not mean data was written is correct.
-> 
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> ---
+>  .../devicetree/bindings/net/nfc/s3fwrn5.txt   | 25 --------
+>  .../bindings/net/nfc/samsung,s3fwrn5.yaml     | 61 +++++++++++++++++++
+>  MAINTAINERS                                   |  1 +
+>  3 files changed, 62 insertions(+), 25 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/net/nfc/s3fwrn5.txt
+>  create mode 100644 Documentation/devicetree/bindings/net/nfc/samsung,s3fwrn5.yaml
 > 
 
-Thinking about it more, I think we ought to spell this out explicitly as
-we can in the manpage. This is a point of confusion for a lot of people
-and not understanding this can lead to data integrity bugs. Maybe
-something like this in the NOTES section?
 
-'''
-When fsync returns an error, the file is considered to be "clean". A
-subsequent call to fsync will not result in a reattempt to write out the
-data, unless that data has been rewritten. Applications that want to
-reattempt writing to the file after a transient error must re-write
-their data.
-'''
+My bot found errors running 'make dt_binding_check' on your patch:
 
-To be clear:
-
-In practice, you'd only have to write enough to redirty each page in
-most cases.
-
-Also, it is hard to claim that the above behavior is universally true. A
-filesystem could opt to keep the pages dirty for some errors, but the
-vast majority just toss out the data whenever there is a writeback
-problem.
+./Documentation/devicetree/bindings/net/nfc/samsung,s3fwrn5.yaml: $id: relative path/filename doesn't match actual path or filename
+	expected: http://devicetree.org/schemas/net/nfc/samsung,s3fwrn5.yaml#
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/net/nfc/samsung,s3fwrn5.example.dt.yaml: s3fwrn5@27: 's3fwrn5,en-gpios', 's3fwrn5,fw-gpios' do not match any of the regexes: '^#.*', '^(at25|devbus|dmacap|dsa|exynos|fsi[ab]|gpio-fan|gpio|gpmc|hdmi|i2c-gpio),.*', '^(keypad|m25p|max8952|max8997|max8998|mpmc),.*', '^(pinctrl-single|#pinctrl-single|PowerPC),.*', '^(pl022|pxa-mmc|rcar_sound|rotary-encoder|s5m8767|sdhci),.*', '^(simple-audio-card|st-plgpio|st-spics|ts),.*', '^70mai,.*', '^GEFanuc,.*', '^ORCL,.*', '^SUNW,.*', '^[a-zA-Z0-9#_][a-zA-Z0-9+\\-._@]{0,63}$', '^[a-zA-Z0-9+\\-._]*@[0-9a-zA-Z,]*$', '^abilis,.*', '^abracon,.*', '^acer,.*', '^acme,.*', '^actions,.*', '^active-semi,.*', '^ad,.*', '^adafruit,.*', '^adapteva,.*', '^adaptrum,.*', '^adh,.*', '^adi,.*', '^advantech,.*', '^aeroflexgaisler,.*', '^al,.*', '^allegro,.*', '^allo,.*', '^allwinner,.*', '^alphascale,.*', '^alps,.*', '^altr,.*', '^amarula,.*', '^amazon,.*', '^amcc,.*', '^amd,.*', '^amediatech,.*', '^amlogic,.*', '^ampire,.*', '^ams,.*', '^amstaos,.*', '^analogix,.*', '^andestech,.*', '^anvo,.*', '^apm,.*', '^aptina,.*', '^arasan,.*', '^archermind,.*', '^arctic,.*', '^arcx,.*', '^aries,.*', '^arm,.*', '^armadeus,.*', '^arrow,.*', '^artesyn,.*', '^asahi-kasei,.*', '^asc,.*', '^aspeed,.*', '^asus,.*', '^atlas,.*', '^atmel,.*', '^auo,.*', '^auvidea,.*', '^avago,.*', '^avia,.*', '^avic,.*', '^avnet,.*', '^awinic,.*', '^axentia,.*', '^axis,.*', '^azoteq,.*', '^azw,.*', '^baikal,.*', '^bananapi,.*', '^beacon,.*', '^beagle,.*', '^bhf,.*', '^bitmain,.*', '^boe,.*', '^bosch,.*', '^boundary,.*', '^brcm,.*', '^broadmobi,.*', '^bticino,.*', '^buffalo,.*', '^bur,.*', '^calaosystems,.*', '^calxeda,.*', '^capella,.*', '^cascoda,.*', '^catalyst,.*', '^cavium,.*', '^cdns,.*', '^cdtech,.*', '^cellwise,.*', '^ceva,.*', '^checkpoint,.*', '^chipidea,.*', '^chipone,.*', '^chipspark,.*', '^chrontel,.*', '^chrp,.*', '^chunghwa,.*', '^chuwi,.*', '^ciaa,.*', '^cirrus,.*', '^cloudengines,.*', '^cnm,.*', '^cnxt,.*', '^colorfly,.*', '^compulab,.*', '^coreriver,.*', '^corpro,.*', '^cortina,.*', '^cosmic,.*', '^crane,.*', '^creative,.*', '^crystalfontz,.*', '^csky,.*', '^csq,.*', '^cubietech,.*', '^cypress,.*', '^cznic,.*', '^dallas,.*', '^dataimage,.*', '^davicom,.*', '^dell,.*', '^delta,.*', '^denx,.*', '^devantech,.*', '^dh,.*', '^difrnce,.*', '^digi,.*', '^digilent,.*', '^dioo,.*', '^dlc,.*', '^dlg,.*', '^dlink,.*', '^dmo,.*', '^domintech,.*', '^dongwoon,.*', '^dptechnics,.*', '^dragino,.*', '^dserve,.*', '^dynaimage,.*', '^ea,.*', '^ebs-systart,.*', '^ebv,.*', '^eckelmann,.*', '^edt,.*', '^eeti,.*', '^einfochips,.*', '^elan,.*', '^elgin,.*', '^elida,.*', '^embest,.*', '^emlid,.*', '^emmicro,.*', '^empire-electronix,.*', '^emtrion,.*', '^endless,.*', '^ene,.*', '^energymicro,.*', '^engicam,.*', '^epcos,.*', '^epfl,.*', '^epson,.*', '^esp,.*', '^est,.*', '^ettus,.*', '^eukrea,.*', '^everest,.*', '^everspin,.*', '^evervision,.*', '^exar,.*', '^excito,.*', '^ezchip,.*', '^facebook,.*', '^fairphone,.*', '^faraday,.*', '^fastrax,.*', '^fcs,.*', '^feixin,.*', '^feiyang,.*', '^firefly,.*', '^focaltech,.*', '^frida,.*', '^friendlyarm,.*', '^fsl,.*', '^fujitsu,.*', '^gardena,.*', '^gateworks,.*', '^gcw,.*', '^ge,.*', '^geekbuying,.*', '^gef,.*', '^gemei,.*', '^geniatech,.*', '^giantec,.*', '^giantplus,.*', '^globalscale,.*', '^globaltop,.*', '^gmt,.*', '^goodix,.*', '^google,.*', '^grinn,.*', '^grmn,.*', '^gumstix,.*', '^gw,.*', '^hannstar,.*', '^haoyu,.*', '^hardkernel,.*', '^hideep,.*', '^himax,.*', '^hisilicon,.*', '^hit,.*', '^hitex,.*', '^holt,.*', '^holtek,.*', '^honeywell,.*', '^hoperun,.*', '^hp,.*', '^hsg,.*', '^hugsun,.*', '^hwacom,.*', '^hydis,.*', '^hyundai,.*', '^i2se,.*', '^ibm,.*', '^icplus,.*', '^idt,.*', '^ifi,.*', '^ilitek,.*', '^img,.*', '^imi,.*', '^incircuit,.*', '^inet-tek,.*', '^infineon,.*', '^inforce,.*', '^ingenic,.*', '^innolux,.*', '^inside-secure,.*', '^inspur,.*', '^intel,.*', '^intercontrol,.*', '^invensense,.*', '^inversepath,.*', '^iom,.*', '^isee,.*', '^isil,.*', '^issi,.*', '^ite,.*', '^itead,.*', '^ivo,.*', '^iwave,.*', '^jdi,.*', '^jedec,.*', '^jesurun,.*', '^jianda,.*', '^kam,.*', '^karo,.*', '^keithkoep,.*', '^keymile,.*', '^khadas,.*', '^kiebackpeter,.*', '^kinetic,.*', '^kingdisplay,.*', '^kingnovel,.*', '^kionix,.*', '^kobo,.*', '^koe,.*', '^kontron,.*', '^kosagi,.*', '^kyo,.*', '^lacie,.*', '^laird,.*', '^lamobo,.*', '^lantiq,.*', '^lattice,.*', '^leadtek,.*', '^leez,.*', '^lego,.*', '^lemaker,.*', '^lenovo,.*', '^lg,.*', '^lgphilips,.*', '^libretech,.*', '^licheepi,.*', '^linaro,.*', '^linksprite,.*', '^linksys,.*', '^linutronix,.*', '^linux,.*', '^linx,.*', '^lltc,.*', '^logicpd,.*', '^logictechno,.*', '^longcheer,.*', '^loongson,.*', '^lsi,.*', '^lwn,.*', '^lxa,.*', '^macnica,.*', '^mapleboard,.*', '^marvell,.*', '^maxbotix,.*', '^maxim,.*', '^mbvl,.*', '^mcube,.*', '^meas,.*', '^mecer,.*', '^mediatek,.*', '^megachips,.*', '^mele,.*', '^melexis,.*', '^melfas,.*', '^mellanox,.*', '^memsic,.*', '^menlo,.*', '^merrii,.*', '^micrel,.*', '^microchip,.*', '^microcrystal,.*', '^micron,.*', '^microsoft,.*', '^mikroe,.*', '^mikrotik,.*', '^miniand,.*', '^minix,.*', '^miramems,.*', '^mitsubishi,.*', '^mosaixtech,.*', '^motorola,.*', '^moxa,.*', '^mpl,.*', '^mps,.*', '^mqmaker,.*', '^mrvl,.*', '^mscc,.*', '^msi,.*', '^mstar,.*', '^mti,.*', '^multi-inno,.*', '^mundoreader,.*', '^murata,.*', '^mxicy,.*', '^myir,.*', '^national,.*', '^nec,.*', '^neonode,.*', '^netgear,.*', '^netlogic,.*', '^netron-dy,.*', '^netxeon,.*', '^neweast,.*', '^newhaven,.*', '^nexbox,.*', '^nextthing,.*', '^ni,.*', '^nintendo,.*', '^nlt,.*', '^nokia,.*', '^nordic,.*', '^novtech,.*', '^nutsboard,.*', '^nuvoton,.*', '^nvd,.*', '^nvidia,.*', '^nxp,.*', '^oceanic,.*', '^okaya,.*', '^oki,.*', '^olimex,.*', '^olpc,.*', '^onion,.*', '^onnn,.*', '^ontat,.*', '^opalkelly,.*', '^opencores,.*', '^openrisc,.*', '^option,.*', '^oranth,.*', '^orisetech,.*', '^ortustech,.*', '^osddisplays,.*', '^overkiz,.*', '^ovti,.*', '^oxsemi,.*', '^ozzmaker,.*', '^panasonic,.*', '^parade,.*', '^parallax,.*', '^pda,.*', '^pericom,.*', '^pervasive,.*', '^phicomm,.*', '^phytec,.*', '^picochip,.*', '^pine64,.*', '^pineriver,.*', '^pixcir,.*', '^plantower,.*', '^plathome,.*', '^plda,.*', '^plx,.*', '^pni,.*', '^pocketbook,.*', '^polaroid,.*', '^portwell,.*', '^poslab,.*', '^pov,.*', '^powervr,.*', '^primux,.*', '^probox2,.*', '^prt,.*', '^pulsedlight,.*', '^purism,.*', '^qca,.*', '^qcom,.*', '^qemu,.*', '^qi,.*', '^qiaodian,.*', '^qihua,.*', '^qnap,.*', '^radxa,.*', '^raidsonic,.*', '^ralink,.*', '^ramtron,.*', '^raspberrypi,.*', '^raydium,.*', '^rda,.*', '^realtek,.*', '^renesas,.*', '^rervision,.*', '^richtek,.*', '^ricoh,.*', '^rikomagic,.*', '^riscv,.*', '^rockchip,.*', '^rocktech,.*', '^rohm,.*', '^ronbo,.*', '^roofull,.*', '^samsung,.*', '^samtec,.*', '^sancloud,.*', '^sandisk,.*', '^satoz,.*', '^sbs,.*', '^schindler,.*', '^seagate,.*', '^seirobotics,.*', '^semtech,.*', '^sensirion,.*', '^sensortek,.*', '^sff,.*', '^sgd,.*', '^sgmicro,.*', '^sgx,.*', '^sharp,.*', '^shimafuji,.*', '^shiratech,.*', '^si-en,.*', '^si-linux,.*', '^sifive,.*', '^sigma,.*', '^sii,.*', '^sil,.*', '^silabs,.*', '^silead,.*', '^silergy,.*', '^silex-insight,.*', '^siliconmitus,.*', '^simtek,.*', '^sinlinx,.*', '^sinovoip,.*', '^sipeed,.*', '^sirf,.*', '^sis,.*', '^sitronix,.*', '^skyworks,.*', '^smartlabs,.*', '^smsc,.*', '^snps,.*', '^sochip,.*', '^socionext,.*', '^solidrun,.*', '^solomon,.*', '^sony,.*', '^spansion,.*', '^sprd,.*', '^sst,.*', '^sstar,.*', '^st,.*', '^st-ericsson,.*', '^starry,.*', '^startek,.*', '^ste,.*', '^stericsson,.*', '^summit,.*', '^sunchip,.*', '^swir,.*', '^syna,.*', '^synology,.*', '^tbs,.*', '^tbs-biometrics,.*', '^tcg,.*', '^tcl,.*', '^technexion,.*', '^technologic,.*', '^techstar,.*', '^tempo,.*', '^terasic,.*', '^tfc,.*', '^thine,.*', '^thingyjp,.*', '^ti,.*', '^tianma,.*', '^tlm,.*', '^tmt,.*', '^topeet,.*', '^toppoly,.*', '^topwise,.*', '^toradex,.*', '^toshiba,.*', '^toumaz,.*', '^tpk,.*', '^tplink,.*', '^tpo,.*', '^tq,.*', '^tronfy,.*', '^tronsmart,.*', '^truly,.*', '^tsd,.*', '^tyan,.*', '^u-blox,.*', '^u-boot,.*', '^ubnt,.*', '^ucrobotics,.*', '^udoo,.*', '^ugoos,.*', '^uniwest,.*', '^upisemi,.*', '^urt,.*', '^usi,.*', '^utoo,.*', '^v3,.*', '^vaisala,.*', '^vamrs,.*', '^variscite,.*', '^via,.*', '^videostrong,.*', '^virtio,.*', '^vishay,.*', '^visionox,.*', '^vitesse,.*', '^vivante,.*', '^vocore,.*', '^voipac,.*', '^vot,.*', '^vxt,.*', '^waveshare,.*', '^wd,.*', '^we,.*', '^wetek,.*', '^wexler,.*', '^whwave,.*', '^wi2wi,.*', '^winbond,.*', '^winstar,.*', '^wits,.*', '^wlf,.*', '^wm,.*', '^wobo,.*', '^x-powers,.*', '^xes,.*', '^xiaomi,.*', '^xillybus,.*', '^xingbangda,.*', '^xinpeng,.*', '^xlnx,.*', '^xnano,.*', '^xunlong,.*', '^xylon,.*', '^ylm,.*', '^yna,.*', '^yones-toptech,.*', '^ysoft,.*', '^zarlink,.*', '^zeitec,.*', '^zidoo,.*', '^zii,.*', '^zte,.*', '^zyxel,.*'
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/vendor-prefixes.yaml
 
 
--- 
-Jeff Layton <jlayton@kernel.org>
+See https://patchwork.ozlabs.org/patch/1358325
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure dt-schema is up to date:
+
+pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
+
+Please check and re-submit.
 
