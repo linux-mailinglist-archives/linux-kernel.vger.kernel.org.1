@@ -2,77 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0575261EA8
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:54:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E912B261D46
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:35:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732451AbgIHTxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:53:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58874 "EHLO mail.kernel.org"
+        id S1732304AbgIHTeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 15:34:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47746 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730604AbgIHPme (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:42:34 -0400
+        id S1730998AbgIHP6F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 11:58:05 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 771D2221EB;
-        Tue,  8 Sep 2020 15:23:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 612D223C81;
+        Tue,  8 Sep 2020 15:36:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599578582;
-        bh=/d50LFwjiLHA4Aqpr8JwcrmMS8zjjCTo0VyxGdT+oNQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Nbz4R8lbUZEHvU1gtNbMwTjBjyqKKWd1+eR+DjVSHyIHiz8IJEaGCht9DglAzqR3o
-         E6anWYGrSOMLWD9BEP9a9aBgCfyNPkAbZDKZb2bUWOJWVpLMoK07D362zJMcJIPNfJ
-         jyNRBh1DYhJWHiOKTomjphlyaUo/7henJOk23A0U=
-Date:   Tue, 8 Sep 2020 17:23:14 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Mike Travis <mike.travis@hpe.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Steve Wahl <steve.wahl@hpe.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@suse.de>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Russ Anderson <russ.anderson@hpe.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Jian Cai <caij2003@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
-Subject: Re: [PATCH 04/12] x86/platform/uv: Update UV MMRs for UV5
-Message-ID: <20200908152314.GD4114051@kroah.com>
-References: <20200907185430.363197758@hpe.com>
- <20200907185430.782245884@hpe.com>
+        s=default; t=1599579381;
+        bh=MriHG1BLygmaZMuMK3vky09rXD0UTyfXkSs0tB3nb7g=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Yg1Z3zISStLsa3NLcFobvyN4jD3a/321/TwZIyxgGoFUwYvcUkCKYROaBmyARF1br
+         9YNfIuz+UmR165r2pS/i9c68RTeWuFb6Q+lhzmQML1ca122tJM2RcluGwZ0g2/zB4/
+         qSp/mDiwxfj7QehMHAZ0zxYud8+uFuQTWHP4I9Lw=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 055/186] netfilter: nf_tables: incorrect enum nft_list_attributes definition
+Date:   Tue,  8 Sep 2020 17:23:17 +0200
+Message-Id: <20200908152244.338875805@linuxfoundation.org>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200908152241.646390211@linuxfoundation.org>
+References: <20200908152241.646390211@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200907185430.782245884@hpe.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 07, 2020 at 01:54:34PM -0500, Mike Travis wrote:
-> --- linux.orig/drivers/misc/sgi-gru/grufile.c
-> +++ linux/drivers/misc/sgi-gru/grufile.c
-> @@ -7,7 +7,8 @@
->   * This file supports the user system call for file open, close, mmap, etc.
->   * This also incudes the driver initialization code.
->   *
-> - *  Copyright (c) 2008-2014 Silicon Graphics, Inc.  All Rights Reserved.
-> + * Copyright (c) 2018-2020 Hewlett Packard Enterprise Development LP
-> + * Copyright (c) 2008-2017 Silicon Graphics, Inc.  All Rights Reserved.
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 
-Please drop all copyright changes from this series, as these do not look
-correct at all, sorry.
+[ Upstream commit da9125df854ea48a6240c66e8a67be06e2c12c03 ]
 
-You can send an add-on patch for all of that if it's really necessary,
-and you get legal approval for it :)
+This should be NFTA_LIST_UNSPEC instead of NFTA_LIST_UNPEC, all other
+similar attribute definitions are postfixed with _UNSPEC.
 
-thanks,
+Fixes: 96518518cc41 ("netfilter: add nftables")
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ include/uapi/linux/netfilter/nf_tables.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-greg k-h
+diff --git a/include/uapi/linux/netfilter/nf_tables.h b/include/uapi/linux/netfilter/nf_tables.h
+index 4565456c0ef44..0b27da1d771ba 100644
+--- a/include/uapi/linux/netfilter/nf_tables.h
++++ b/include/uapi/linux/netfilter/nf_tables.h
+@@ -133,7 +133,7 @@ enum nf_tables_msg_types {
+  * @NFTA_LIST_ELEM: list element (NLA_NESTED)
+  */
+ enum nft_list_attributes {
+-	NFTA_LIST_UNPEC,
++	NFTA_LIST_UNSPEC,
+ 	NFTA_LIST_ELEM,
+ 	__NFTA_LIST_MAX
+ };
+-- 
+2.25.1
+
+
+
