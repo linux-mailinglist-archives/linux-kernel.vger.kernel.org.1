@@ -2,234 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46376261CFF
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:29:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42EB7261CE2
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:28:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732238AbgIHT3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:29:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54198 "EHLO
+        id S1732207AbgIHT15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 15:27:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730944AbgIHP7x (ORCPT
+        with ESMTP id S1731041AbgIHQAE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:59:53 -0400
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A4C1C061797
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 08:53:55 -0700 (PDT)
-Received: by mail-yb1-xb41.google.com with SMTP id x10so11526081ybj.13
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 08:53:55 -0700 (PDT)
+        Tue, 8 Sep 2020 12:00:04 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8713C06179E
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 08:54:45 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id nw23so23269883ejb.4
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 08:54:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=WMKNLrzDF7/sPPEU8y1v2n71gknBmnCmkI9dRZPe674=;
-        b=tBb9RkBT7PkAZehXVkxlLKQ2DjH/kenKlBga9GRbuu7F0OeOyC+9Zl11tM2QpNlVDB
-         xI4fS0ucuz3JCcJSUuTBaAJdW4RCLW505trAdJp59wF2jThAwWora+hTDxyPcoTpFZA3
-         mp5Q0KhKBXV9HPDb7cZWgGxhDeIBIuwjqUBlHcoHraklkr09Psgr5q+9dutdu1sHtyHy
-         rxGY79ETynm25Hc3tDaWsx+STSN8YCyXo9ho28BRnrS986TZduTIuYYvV14dD55EhWSu
-         En3xhVaHbWkPOSCLBs6TxGq2Mn1RQvCFnsuA1vKfwzzmNPnmAvQ7AT5Q8GVIrHMLu2eL
-         fhWQ==
+        bh=17XSh9T9gNq415bfysrvgCiRW+EHfAHcluquDHGHNnU=;
+        b=ZnrFESfj2n78+Vm/aeBARRjr0Cl6BRKSKMzxUenn2YsqHz8Pl5VtWf2kgaAcBY42tG
+         B6CWuSSZlDpqHRQb6BvAO8Qj0aSubGzT2OhkHzSatWgHZuhO2NLDDWNtkzr4B3imS/ar
+         vl/89rmyhmxmIqD0cMqudwdc04Tupg9qwaODQQgwyE2ZseTX3Oi4XRaKk99z2tCwuCfj
+         xF3ioMRogkeEctXIZNPqqZoa8qg7SATyuUHcJvqPp0NZvi3TzX7TxnBmmb77PTiAyqqS
+         DDuXcYW5+1LtcAKBO7gHRXJ7JKmKD3P/Xjy6nG/2KEc5U2+vRVO9A35znCSC6HNByGzJ
+         3lgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=WMKNLrzDF7/sPPEU8y1v2n71gknBmnCmkI9dRZPe674=;
-        b=sfAeJIZduI6LvuIfp2U6VBRudPOBiCbpGa6MnRq4npT/1mzsXsAPTYDEnv9h3B8BKo
-         kcelWbIHgPG/DXdWHGPe1OirrQbrUiSVSBYiK14eIvYePzIStXG91y7TMT0k+3Q3jMNJ
-         n9IEeGuQ9GyjQyZGMEGNrdU1arrbYsuCmtErnXo/C2q8GxMW3pH77WhpaGIeifNvKyij
-         hPYJzfmFpRCWvjcqArbjh9vVQnWQxfqy+wnnhv7j8Ie4lykDM8dHli0dlRSmOy+ed8XT
-         Tia2k+sWfyyStNg2HGmIn4tS3U4ALHxd43lk3PLRZlo93E9uMs31pDoYhicHYSwE/sld
-         4/Tw==
-X-Gm-Message-State: AOAM533+JKKwFJnxG1GvLw6AdXVtt2pBFaAvZ8gzesTVtN8Sj1xIRnQe
-        F7Mbc3KL/c4DEl/8lGEYtigshD0u8h7c5771CNXyUA==
-X-Google-Smtp-Source: ABdhPJzdMvfsa/IlOorKdDsqGAkDpoCCXep7yMjMOixUz2SkSrRlufjMRSvxarr/is9WvT0a5ZfKEk54011eZf6t4Po=
-X-Received: by 2002:a25:5f4c:: with SMTP id h12mr364293ybm.97.1599580434228;
- Tue, 08 Sep 2020 08:53:54 -0700 (PDT)
+        bh=17XSh9T9gNq415bfysrvgCiRW+EHfAHcluquDHGHNnU=;
+        b=rnT3s1sWX8zFG0wDSkuuKNXYASPujgqr3vI9bvMMHXXG4WH9nY+OfK1Htm/2AyXi5t
+         HbeQOXHXJxZA2qt1VnY1tCXm4fcjsCXBEa/xotGiTX5osk6zM1pvAGLn8alsh80FaIGa
+         A5rfB8Ba+eNzOIdbTavOu81tPbUAwXnN4w58fyh9eZJin1fwV6SwZpUpwKlkEAvRnjLX
+         iNEf8yXC7v2LWfYx6aOcokB6vm82cOYDSruH80oSxMxMes436j2NTUO1P5j7ByrUx0oJ
+         jJ0znwhdLcLMHVl//ShGW4MkKFnsbm0KHaWW08rQfookblBLohQGVInT7s7y5z4sLiXZ
+         w0Qg==
+X-Gm-Message-State: AOAM533Y3ZUNyZHDKapGW2Sz85jDF+puDnvN0Z3yu3sFBnT6JxBwVjzM
+        zZ70u5U8SfSUyuAEe/6Xjr0eQEkzD/9Ft+0qUTanLA==
+X-Google-Smtp-Source: ABdhPJxOnl/Db9+LhMKu/mSd4ErqUeNGdtKZz7PhLmJ8sKtuj9avhfTUo76ZISBf0rvnNW6uboUfYq0v27quH+bjBW0=
+X-Received: by 2002:a17:906:3e90:: with SMTP id a16mr17063280ejj.363.1599580484242;
+ Tue, 08 Sep 2020 08:54:44 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200828032752.3229698-1-agoode@google.com> <20200902200617.1720599-1-agoode@google.com>
- <20200904030336.GG9369@pendragon.ideasonboard.com>
-In-Reply-To: <20200904030336.GG9369@pendragon.ideasonboard.com>
-From:   Adam Goode <agoode@google.com>
-Date:   Tue, 8 Sep 2020 11:53:15 -0400
-Message-ID: <CAOf41NnpkXATUNay+EPucFg7Nx8=rfLta+TZsRrknZiq3Gegxg@mail.gmail.com>
-Subject: Re: [PATCH v3] media: uvcvideo: Convey full colorspace information to V4L2
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200831032006.1019978-1-warthog618@gmail.com>
+ <CAMpxmJUETJgmxzWzHumOVr+vWFQ27P71MtcdSdf_=jvtrSfRPg@mail.gmail.com>
+ <20200903083750.GA17445@sol> <20200904125250.GA323947@sol>
+ <CAMpxmJWVZ8Bf1gPibvbk=E5XNvQ_i76E430MMhUWwE1ACoPTQg@mail.gmail.com> <9db62b42-9a1e-0264-e88c-e636004cb629@linuxfoundation.org>
+In-Reply-To: <9db62b42-9a1e-0264-e88c-e636004cb629@linuxfoundation.org>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Tue, 8 Sep 2020 17:54:33 +0200
+Message-ID: <CAMpxmJVbujnp+Z0b3utDsGmhUgCbhydorOo-9e-=gVctT55NAg@mail.gmail.com>
+Subject: Re: [PATCH v6 00/20] gpio: cdev: add uAPI v2
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     Bamvor Jian Zhang <bamv2005@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Kent Gibson <warthog618@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 3, 2020 at 11:04 PM Laurent Pinchart
-<laurent.pinchart@ideasonboard.com> wrote:
+On Tue, Sep 8, 2020 at 5:24 PM Shuah Khan <skhan@linuxfoundation.org> wrote:
 >
-> Hi Adam,
+> On 9/4/20 7:02 AM, Bartosz Golaszewski wrote:
+> > On Fri, Sep 4, 2020 at 2:52 PM Kent Gibson <warthog618@gmail.com> wrote:
+> >>
+> >> On Thu, Sep 03, 2020 at 04:37:50PM +0800, Kent Gibson wrote:
+> >>> On Thu, Sep 03, 2020 at 10:02:04AM +0200, Bartosz Golaszewski wrote:
+> >>>> On Mon, Aug 31, 2020 at 5:21 AM Kent Gibson <warthog618@gmail.com> wrote:
+> >>>>>
+> >> [snip]
+> >>>>
+> >>>> To me it looks good, just a couple nits here and there and some questions.
+> >>>>
+> >>>> I think it's worth deciding whether we want to keep the selftests in
+> >>>> tools/testing/selftests/gpio/ and then maybe consider porting
+> >>>> gpio-mockup-chardev.c to V2 or simply outsource it entirely to
+> >>>> libgpiod.
+> >>>>
+> >>>
+> >>> Ooops - I wasn't even aware they existed - though it had crossed my mind
+> >>> that the kernel should have some selftests somewhere - I use the libgpiod
+> >>> tests, from my libgpiod port, and my own Go based test suite for my testing,
+> >>> as well as some smoke tests with the tools/gpio.
+> >>>
+> >>> The libgpiod tests only cover v1 equivalent functionality, while my Go
+> >>> tests cover the complete uAPI, and both v1 and v2.
+> >>>
+> >>> It would be good for the kernel to at least have some smoke tests to
+> >>> confirm basic functionality, even thorough testing is left to a
+> >>> userspace library.  So the existing tests should be ported to v2, though
+> >>> should also retain the v1 tests if v1 is still compiled in.
+> >>>
+> >>
+> >> I've got a v7 ready to submit that includes a couple of patches for the
+> >> gpio-mockup selftests (their primary purpose appears to be testing the
+> >> mockup module, rather than the GPIO ABI), but I now notice that the
+> >> selftests/gpio section of the tree has a different maintainer:
+> >>
+> >> scripts/get_maintainer.pl 0021-selftests-gpio-port-to-GPIO-uAPI-v2.patch
+> >> Bamvor Jian Zhang <bamv2005@gmail.com> (maintainer:GPIO MOCKUP DRIVER)
+> >> Shuah Khan <shuah@kernel.org> (maintainer:KERNEL SELFTEST FRAMEWORK)
+> >> linux-gpio@vger.kernel.org (open list:GPIO MOCKUP DRIVER)
+> >> linux-kselftest@vger.kernel.org (open list:KERNEL SELFTEST FRAMEWORK)
+> >> linux-kernel@vger.kernel.org (open list)
+> >
+> > Bamvor, Shuah: do you still have interest in maintaining these, or can
+> > we update MAINTAINERS?
+> >
 >
-> Thank you for the patch.
+> I maintain kselftests and gpio selftest falls under that. Please send
+> selftest patches to me so I can review them.
 >
-> On Wed, Sep 02, 2020 at 04:06:17PM -0400, Adam Goode wrote:
-> > The Color Matching Descriptor has been present in USB cameras since
-> > the original version of UVC, but it has never been fully exposed
-> > in Linux.
-> >
-> > This change informs V4L2 of all of the UVC colorspace parameters:
-> > color primaries, transfer characteristics, and YCbCr encoding.
-> > videodev2.h doesn't have values for all the possible UVC color settings,
-> > so it is mapped as closely as possible.
-> >
-> > Signed-off-by: Adam Goode <agoode@google.com>
-> > ---
-> >
-> > Changes in v3:
-> >  - Remove quantization changes completely.
-> >
-> >  drivers/media/usb/uvc/uvc_driver.c | 64 ++++++++++++++++++++++++++++--
-> >  drivers/media/usb/uvc/uvc_v4l2.c   |  4 ++
-> >  drivers/media/usb/uvc/uvcvideo.h   |  4 +-
-> >  3 files changed, 67 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
-> > index 431d86e1c94b..8682c7ad6949 100644
-> > --- a/drivers/media/usb/uvc/uvc_driver.c
-> > +++ b/drivers/media/usb/uvc/uvc_driver.c
-> > @@ -248,10 +248,10 @@ static struct uvc_format_desc *uvc_format_by_guid(const u8 guid[16])
-> >       return NULL;
-> >  }
-> >
-> > -static u32 uvc_colorspace(const u8 primaries)
-> > +static enum v4l2_colorspace uvc_colorspace(const u8 primaries)
-> >  {
-> > -     static const u8 colorprimaries[] = {
-> > -             0,
-> > +     static const enum v4l2_colorspace colorprimaries[] = {
-> > +             V4L2_COLORSPACE_DEFAULT,  /* Unspecified */
-> >               V4L2_COLORSPACE_SRGB,
-> >               V4L2_COLORSPACE_470_SYSTEM_M,
-> >               V4L2_COLORSPACE_470_SYSTEM_BG,
-> > @@ -262,7 +262,61 @@ static u32 uvc_colorspace(const u8 primaries)
-> >       if (primaries < ARRAY_SIZE(colorprimaries))
-> >               return colorprimaries[primaries];
-> >
-> > -     return 0;
-> > +     return V4L2_COLORSPACE_DEFAULT;  /* Reserved */
-> > +}
-> > +
-> > +static enum v4l2_xfer_func uvc_xfer_func(const u8 transfer_characteristics)
-> > +{
-> > +     /* V4L2 currently does not currently have definitions for all
+> As for the gpio mock driver and test itself, you will have to wait for
+> Bamvor to respond.
 >
-> A single "currently" should be enough :-) I'll fix this when applying.
 
-Thank you! I was fixating too much on the present :)
+Hi Shuah,
 
+I've been de facto maintaining gpio-mockup for a couple years now.
+Bamvor has been quite inactive as far as gpio testing goes. I think
+it's fine if you ack the selftests changes.
 
+In fact: I don't want selftests to block getting V2 uAPI upstream so
+if that'll look like it's going to take more time then I'm for merging
+V2 without any changes to selftests - in the end we have tests in
+user-space already.
+
+Bart
+
+> >>
+> >> The v7 patch up to that point restores the functions that the selftests
+> >> are using so that they build and run again.
 >
-> > +      * possible values of UVC transfer characteristics. If
-> > +      * v4l2_xfer_func is extended with new values, the mapping
-> > +      * below should be updated.
-> > +      *
-> > +      * Substitutions are taken from the mapping given for
-> > +      * V4L2_XFER_FUNC_DEFAULT documented in videodev2.h.
-> > +      */
-> > +     static const enum v4l2_xfer_func xfer_funcs[] = {
-> > +             V4L2_XFER_FUNC_DEFAULT,    /* Unspecified */
-> > +             V4L2_XFER_FUNC_709,
-> > +             V4L2_XFER_FUNC_709,        /* Substitution for BT.470-2 M */
-> > +             V4L2_XFER_FUNC_709,        /* Substitution for BT.470-2 B, G */
-> > +             V4L2_XFER_FUNC_709,        /* Substitution for SMPTE 170M */
-> > +             V4L2_XFER_FUNC_SMPTE240M,
-> > +             V4L2_XFER_FUNC_NONE,
-> > +             V4L2_XFER_FUNC_SRGB,
-> > +     };
-> > +
-> > +     if (transfer_characteristics < ARRAY_SIZE(xfer_funcs))
-> > +             return xfer_funcs[transfer_characteristics];
-> > +
-> > +     return V4L2_XFER_FUNC_DEFAULT;  /* Reserved */
-> > +}
-> > +
-> > +static enum v4l2_ycbcr_encoding uvc_ycbcr_enc(const u8 matrix_coefficients)
-> > +{
-> > +     /* V4L2 currently does not currently have definitions for all
+> This test has been problematic because of its dependency on tools/gpio.
 >
-> Same here.
+> >> So I should hold off on the selftest patches and submit them separately
+> >> after the GPIO changes are in?
+> >>
 >
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> Please send me the selftest patches. Also see the comments in
+> selftests/Makefile about excluding the gpio test from default run.
 >
-> > +      * possible values of UVC matrix coefficients. If
-> > +      * v4l2_ycbcr_encoding is extended with new values, the
-> > +      * mapping below should be updated.
-> > +      *
-> > +      * Substitutions are taken from the mapping given for
-> > +      * V4L2_YCBCR_ENC_DEFAULT documented in videodev2.h.
-> > +      *
-> > +      * FCC is assumed to be close enough to 601.
-> > +      */
-> > +     static const enum v4l2_ycbcr_encoding ycbcr_encs[] = {
-> > +             V4L2_YCBCR_ENC_DEFAULT,  /* Unspecified */
-> > +             V4L2_YCBCR_ENC_709,
-> > +             V4L2_YCBCR_ENC_601,      /* Substitution for FCC */
-> > +             V4L2_YCBCR_ENC_601,      /* Substitution for BT.470-2 B, G */
-> > +             V4L2_YCBCR_ENC_601,
-> > +             V4L2_YCBCR_ENC_SMPTE240M,
-> > +     };
-> > +
-> > +     if (matrix_coefficients < ARRAY_SIZE(ycbcr_encs))
-> > +             return ycbcr_encs[matrix_coefficients];
-> > +
-> > +     return V4L2_YCBCR_ENC_DEFAULT;  /* Reserved */
-> >  }
-> >
-> >  /* Simplify a fraction using a simple continued fraction decomposition. The
-> > @@ -704,6 +758,8 @@ static int uvc_parse_format(struct uvc_device *dev,
-> >               }
-> >
-> >               format->colorspace = uvc_colorspace(buffer[3]);
-> > +             format->xfer_func = uvc_xfer_func(buffer[4]);
-> > +             format->ycbcr_enc = uvc_ycbcr_enc(buffer[5]);
-> >
-> >               buflen -= buffer[0];
-> >               buffer += buffer[0];
-> > diff --git a/drivers/media/usb/uvc/uvc_v4l2.c b/drivers/media/usb/uvc/uvc_v4l2.c
-> > index 0335e69b70ab..dee65e89d6c2 100644
-> > --- a/drivers/media/usb/uvc/uvc_v4l2.c
-> > +++ b/drivers/media/usb/uvc/uvc_v4l2.c
-> > @@ -253,6 +253,8 @@ static int uvc_v4l2_try_format(struct uvc_streaming *stream,
-> >       fmt->fmt.pix.bytesperline = uvc_v4l2_get_bytesperline(format, frame);
-> >       fmt->fmt.pix.sizeimage = probe->dwMaxVideoFrameSize;
-> >       fmt->fmt.pix.colorspace = format->colorspace;
-> > +     fmt->fmt.pix.xfer_func = format->xfer_func;
-> > +     fmt->fmt.pix.ycbcr_enc = format->ycbcr_enc;
-> >
-> >       if (uvc_format != NULL)
-> >               *uvc_format = format;
-> > @@ -289,6 +291,8 @@ static int uvc_v4l2_get_format(struct uvc_streaming *stream,
-> >       fmt->fmt.pix.bytesperline = uvc_v4l2_get_bytesperline(format, frame);
-> >       fmt->fmt.pix.sizeimage = stream->ctrl.dwMaxVideoFrameSize;
-> >       fmt->fmt.pix.colorspace = format->colorspace;
-> > +     fmt->fmt.pix.xfer_func = format->xfer_func;
-> > +     fmt->fmt.pix.ycbcr_enc = format->ycbcr_enc;
-> >
-> >  done:
-> >       mutex_unlock(&stream->mutex);
-> > diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
-> > index 6ab972c643e3..eb5f3ffc0222 100644
-> > --- a/drivers/media/usb/uvc/uvcvideo.h
-> > +++ b/drivers/media/usb/uvc/uvcvideo.h
-> > @@ -370,7 +370,9 @@ struct uvc_format {
-> >       u8 type;
-> >       u8 index;
-> >       u8 bpp;
-> > -     u8 colorspace;
-> > +     enum v4l2_colorspace colorspace;
-> > +     enum v4l2_xfer_func xfer_func;
-> > +     enum v4l2_ycbcr_encoding ycbcr_enc;
-> >       u32 fcc;
-> >       u32 flags;
-> >
+> thanks,
+> -- Shuah
 >
-> --
-> Regards,
 >
-> Laurent Pinchart
