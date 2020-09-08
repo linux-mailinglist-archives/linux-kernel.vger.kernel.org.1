@@ -2,126 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BBD5261070
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 13:06:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DC2D261074
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 13:07:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729791AbgIHLGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 07:06:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729197AbgIHLGW (ORCPT
+        id S1729397AbgIHLHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 07:07:35 -0400
+Received: from relmlor1.renesas.com ([210.160.252.171]:38299 "EHLO
+        relmlie5.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729646AbgIHLGu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 07:06:22 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95D93C061573
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 04:06:17 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Bm2Nf16mGz9sPB;
-        Tue,  8 Sep 2020 21:04:50 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1599563092;
-        bh=6U+pqYLfxynVW7ZBWg5ewtSebrhAHs8Jw/8Fsgfyq0Q=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=CaXld08YvgRf7d39KaKgHP619xkysrKAzZdRY2sqZ0tQerwYvkE0GwKePLTW5SxDf
-         1eg/R3asmvc6sRCDO3kb0sV3KSBu/hdBD8ksAueQANLDhT8xJweSXTrA9jRt634/di
-         ewHOLutGWOkiqBAm5qpo+ic/M++ML7+vRoTYkR3YLNuxVcx/6vQ7CGqMvXKZ/z3dkp
-         tACT/u4z05iYE8zAbUz6F24BvjZs0OQhnYwMC7IFqxuNpdXuTH3rFKm/ZDVbizm742
-         Fij/LE8BI+XdhzcQcAIW+B2rlx3pTEgMWn4PBedj97223donzxhO6brrtrW7iWy4sY
-         kI2KSOrUK6Flw==
-Date:   Tue, 8 Sep 2020 21:04:49 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Guru Das Srinagesh <gurus@codeaurora.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the drm-intel tree with Linus' tree
-Message-ID: <20200908210449.1a4f8e52@canb.auug.org.au>
-In-Reply-To: <db369f50-a3a0-2504-0628-ce5e6780d31b@redhat.com>
-References: <20200908140022.67dd3801@canb.auug.org.au>
-        <db369f50-a3a0-2504-0628-ce5e6780d31b@redhat.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/dGXS.TNI7czMZikC=h9RWLW";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        Tue, 8 Sep 2020 07:06:50 -0400
+X-IronPort-AV: E=Sophos;i="5.76,405,1592838000"; 
+   d="scan'208";a="56675400"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+  by relmlie5.idc.renesas.com with ESMTP; 08 Sep 2020 20:06:48 +0900
+Received: from localhost.localdomain (unknown [10.226.36.204])
+        by relmlir6.idc.renesas.com (Postfix) with ESMTP id 74377423AE53;
+        Tue,  8 Sep 2020 20:06:46 +0900 (JST)
+From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vinod Koul <vkoul@kernel.org>, dmaengine@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Subject: [PATCH] dmaengine: Kconfig: Update description for RCAR_DMAC config
+Date:   Tue,  8 Sep 2020 12:06:40 +0100
+Message-Id: <20200908110640.5003-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/dGXS.TNI7czMZikC=h9RWLW
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+rcar-dmac driver is used on Renesas R-Car Gen2 and Gen3 devices
+update the same to reflect the description for RCAR_DMAC config.
 
-Hi Hans,
+Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+---
+ drivers/dma/sh/Kconfig | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-On Tue, 8 Sep 2020 10:22:06 +0200 Hans de Goede <hdegoede@redhat.com> wrote:
->
-> On 9/8/20 6:00 AM, Stephen Rothwell wrote:
-> >=20
-> > Today's linux-next merge of the drm-intel tree got a conflict in:
-> >=20
-> >    drivers/gpu/drm/i915/display/intel_panel.c
-> >=20
-> > between commit:
-> >=20
-> >    f8bd54d21904 ("drm/i915: panel: Use atomic PWM API for devs with an =
-external PWM controller")
+diff --git a/drivers/dma/sh/Kconfig b/drivers/dma/sh/Kconfig
+index 54d5d0369d3c..5e8a8e122996 100644
+--- a/drivers/dma/sh/Kconfig
++++ b/drivers/dma/sh/Kconfig
+@@ -32,12 +32,12 @@ config SH_DMAE
+ 	  Enable support for the Renesas SuperH DMA controllers.
+ 
+ config RCAR_DMAC
+-	tristate "Renesas R-Car Gen2 DMA Controller"
++	tristate "Renesas R-Car Gen2/Gen3 DMA Controller"
+ 	depends on ARCH_RENESAS || COMPILE_TEST
+ 	select RENESAS_DMA
+ 	help
+ 	  This driver supports the general purpose DMA controller found in the
+-	  Renesas R-Car second generation SoCs.
++	  Renesas R-Car second and third generation SoCs.
+ 
+ config RENESAS_USB_DMAC
+ 	tristate "Renesas USB-DMA Controller"
+-- 
+2.17.1
 
-This should have been
-
-  899c537c25f9 ("drm/i915: Use 64-bit division macro")
-
-> >=20
-> > from Linus' tree and commit:
-> >=20
-> >    6b51e7d23aa8 ("drm/i915: panel: Honor the VBT PWM frequency for devs=
- with an external PWM controller") =20
->=20
-> That doesn't sound correct, those are both commits from the drm-intel tre=
-e.
->=20
-> > from the drm-intel tree.
-> >=20
-> > I fixed it up (I just used the latter) =20
->=20
-> Just taking the drivers/gpu/drm/i915/display/intel_panel.c contents of:
->=20
-> f8bd54d21904 ("drm/i915: panel: Use atomic PWM API for devs with an exter=
-nal PWM controller")
->=20
-> Is the right thing to do, the problem is a difference in a line which gets
-> removed in that commit.
-
-Which is what I actually did, I guess :-)
-
-Sorry about that.
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/dGXS.TNI7czMZikC=h9RWLW
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9XZVEACgkQAVBC80lX
-0Gzlbwf+PPJxV9Q4ttdCmWNOyTMQU/r6ZMUpOfodqyfxbkboiTWSI6NyJshSUujB
-46CgTj20eGsf1wxDpfceCBW10RiLoxvTv9RRCn0FKFJ4knjlUmLgd5H/q3nyw7KY
-I9mymEV1qQR5Bt3qxz1kFzYDyaZVG6QHBSOAwVMkP+WPT9hAFPcJtVg4rqGsW9DS
-xPBjTxacTcrBVq1hG+L+Uc5Urr4zxyGKibMeSd1YikukIuRquftUqjBpjINUBGvU
-6DkZ2Hg5JFvNqbV1BiA9wxOFOUUCJz524+efusX9Fh5dL4YVCV6ex9SJhXboFLMP
-KAlVyNGP4K23MYWFl+nKhqsvhxrf7Q==
-=1Pjd
------END PGP SIGNATURE-----
-
---Sig_/dGXS.TNI7czMZikC=h9RWLW--
