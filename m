@@ -2,63 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A39B5261DD9
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:43:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32317261D83
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:38:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731611AbgIHTnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:43:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52928 "EHLO
+        id S1731020AbgIHTiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 15:38:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730892AbgIHPwr (ORCPT
+        with ESMTP id S1730481AbgIHPzo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:52:47 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02ED3C0612B2
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 06:11:32 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id n18so11832976qtw.0
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 06:11:31 -0700 (PDT)
+        Tue, 8 Sep 2020 11:55:44 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62F1BC061246
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 06:12:31 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id a65so17227269wme.5
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 06:12:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=marek-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=234lHPOkmRtRf38tY/dBUtuiJiCNT+A1HGusExETXW8=;
-        b=Mr9PlJQE8npLe+p4mJ2C+cdVwblHUugaVSN0/1HpRNKDtU2yAgDDTRwo31DxGctwUT
-         olHRgrKSDFjj7TvrvMkScApWdYiLUEko63sQQvNnR72Ko7jxmlBVe/qlpcADv3rpJCJc
-         /x1XGudl2dNlAK5wMVg63lvoO4CKTr1zSXLdQ1vp1mqThpBX4k9XcBdyn2Y6JzM6m2qT
-         b0yxgO+pavHTR05Fn7jlVEmxIs4NSgQ3oiVpbF2IknhHKK6n6TBjDEbQIsYuPgKL2KHH
-         nXCJxmGj2PYyduIFg67o7M1b8J+e1v3aUQYhJ0MHWDCGyxy7mJ20Uhx6lHrUEgZzOR7N
-         44WQ==
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hrkUEQnkIGFGoNQEVpiI9JVsWjIbZBqpkD8BbZf2zOQ=;
+        b=PW143ymqvvugN4bi5TTzJs8LeNJbs5u16TQjl6/VN2bg4e6a5jWm/MbcxnMxZVwgwX
+         HavELQkYGfFuXp29hqY2myCHP/ErTH2k4PLhAEnfJabgYzTA7SOtzKTZMNVL/hjOjd5M
+         5ZwRUchgYXdbR83oKIjrTaRd72ZFyyJX20InDm3G3rZ42nPgSdXHXB7OdEx/oLa0pjJF
+         +UdRV++7E2c02jJ5uhDQpQeXb4lJUJ5JwQfyOJOqKu9mqq0jakcFM2xYC9PP+iMfWq9z
+         t7p/gfiCT957lE1TPQUcGKQlhd50/KloYi+X4MidwOQB7OKXefPHVRjEEppTAUyRU/Ik
+         zPBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=234lHPOkmRtRf38tY/dBUtuiJiCNT+A1HGusExETXW8=;
-        b=tvph+4MzpimUYFsZoieekHwjZRTeJl9ffkWz4f+CVw1FGxGXoorQBXirMFiDr+0hpz
-         WgRpZIjdZ7lyhs+Ix7K0wXz99LyzesaJEinjiVcLuZGRWF1aF0P1od++pHntfM1j8wYv
-         xn2oWe0abs3YAFKSym7xgRc1i0zigl21oO21YeBqK8vXB5D0p11S2pXUMIotW/OjOMSc
-         zwH0ddlqy3d1DJA54E4gBiKjky6/c6+GkjXVK9EZer1U4GDl7bCzA/vaQ61caoooGUFF
-         MGXlxZp14I7smEGz0/gfdIUxKrQrhMxEKNuRp0R8X/iyPRAnRaZNQ+qs+EuPZ8E6L9Aw
-         qYcA==
-X-Gm-Message-State: AOAM533RHGEY4QAjtI1vVBpOlOODh9cvH3tMvXac/HB0/ghrVhuj/Fvd
-        r8dS+8qqjE7AgKj+k0AHKA090s65oJQ0+paP2f8=
-X-Google-Smtp-Source: ABdhPJxOq4dOIR8XqBJjvM4awnVR21mm14rvL4wSXqdtAGU3DDotuiXdbCGUT+4KfYnvHEJ+gOu8qA==
-X-Received: by 2002:ac8:498d:: with SMTP id f13mr11909985qtq.35.1599570691197;
-        Tue, 08 Sep 2020 06:11:31 -0700 (PDT)
-Received: from localhost.localdomain ([147.253.86.153])
-        by smtp.gmail.com with ESMTPSA id m196sm13394069qke.87.2020.09.08.06.11.30
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hrkUEQnkIGFGoNQEVpiI9JVsWjIbZBqpkD8BbZf2zOQ=;
+        b=Fx4pY7CnPinHZ++FW1xBuV0LGi3zuc03aecBC/g0CPY0J3pTgkgn0fZPgQhycEkXl0
+         Xf1t0Jt0xU37cvUNJH6wAFQmW5cynKQkY6zrI9p2Id7XKSlKq8lnuhbxZvwJA1+dFhee
+         hpTEdE8e27j4rmSaS1LVuxe5DQDTr2dCbqdllbfc+RrNo398Gexdro5NFVhmvdzBYXOd
+         W4erA4lAg1szTNDoKyIjmV7HGjuJFFxpdODURQVAmDfAdqJ+5tCXn+Ipvzs8QcJ0tkoT
+         RIWNSiqGlaICv5QuL+nJBiHgIBDFlXPrxhMa6oK1yue0+t2zdqKxJZVtrM58QFSUyBOI
+         9E3w==
+X-Gm-Message-State: AOAM532Fks2ycNDCDSGpdmTI3eQQVJ1TAh4CItOfanUF3+qgprw5fbc0
+        k40nK0gnz4FoOJRySFyy4b7nuw==
+X-Google-Smtp-Source: ABdhPJxX6aEKKbfcibSkGUiwzn+QESAx0tzCBJXX709sOGdeRCmDm2UPrnZVVvx7qrBO+uolnZj/LQ==
+X-Received: by 2002:a05:600c:2215:: with SMTP id z21mr4338869wml.176.1599570750028;
+        Tue, 08 Sep 2020 06:12:30 -0700 (PDT)
+Received: from debian-brgl.home (lfbn-nic-1-68-20.w2-15.abo.wanadoo.fr. [2.15.159.20])
+        by smtp.gmail.com with ESMTPSA id m4sm17596893wro.18.2020.09.08.06.12.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Sep 2020 06:11:30 -0700 (PDT)
-From:   Jonathan Marek <jonathan@marek.ca>
-To:     linux-arm-msm@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2 2/3] misc: fastrpc: define names for protection domain ids
-Date:   Tue,  8 Sep 2020 09:10:10 -0400
-Message-Id: <20200908131013.19630-3-jonathan@marek.ca>
+        Tue, 08 Sep 2020 06:12:29 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kent Gibson <warthog618@gmail.com>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: [PATCH] gpiolib: switch to simpler IDA interface
+Date:   Tue,  8 Sep 2020 15:12:25 +0200
+Message-Id: <20200908131225.10870-1-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200908131013.19630-1-jonathan@marek.ca>
-References: <20200908131013.19630-1-jonathan@marek.ca>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -66,47 +65,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Define SENSORS_PD for the next patch, to void using magic values for these.
+From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+We don't need to specify any ranges when allocating IDs so we can switch
+to ida_alloc() and ida_free() instead of the ida_simple_ counterparts.
+
+ida_simple_get(ida, 0, 0, gfp) is equivalent to
+ida_alloc_range(ida, 0, UINT_MAX, gfp) which is equivalent to
+ida_alloc(ida, gfp). Note: IDR will never actually allocate an ID
+larger than INT_MAX.
+
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 ---
- drivers/misc/fastrpc.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ drivers/gpio/gpiolib.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
-index 7939c55daceb..07b381c042cd 100644
---- a/drivers/misc/fastrpc.c
-+++ b/drivers/misc/fastrpc.c
-@@ -73,6 +73,11 @@
- #define FASTRPC_RMID_INIT_CREATE_ATTR	7
- #define FASTRPC_RMID_INIT_CREATE_STATIC	8
+diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
+index 80137c1b3cdc..97f76334ec7e 100644
+--- a/drivers/gpio/gpiolib.c
++++ b/drivers/gpio/gpiolib.c
+@@ -426,7 +426,7 @@ static void gpiodevice_release(struct device *dev)
+ 	struct gpio_device *gdev = dev_get_drvdata(dev);
  
-+/* Protection Domain(PD) ids */
-+#define AUDIO_PD	(0) /* also GUEST_OS PD? */
-+#define USER_PD		(1)
-+#define SENSORS_PD	(2)
-+
- #define miscdev_to_cctx(d) container_of(d, struct fastrpc_channel_ctx, miscdev)
+ 	list_del(&gdev->list);
+-	ida_simple_remove(&gpio_ida, gdev->id);
++	ida_free(&gpio_ida, gdev->id);
+ 	kfree_const(gdev->label);
+ 	kfree(gdev->descs);
+ 	kfree(gdev);
+@@ -537,7 +537,7 @@ int gpiochip_add_data_with_key(struct gpio_chip *gc, void *data,
+ 		gc->of_node = gdev->dev.of_node;
+ #endif
  
- static const char *domains[FASTRPC_DEV_MAX] = { "adsp", "mdsp",
-@@ -1037,7 +1042,7 @@ static int fastrpc_init_create_process(struct fastrpc_user *fl,
- 	inbuf.pageslen = 1;
- 	inbuf.attrs = init.attrs;
- 	inbuf.siglen = init.siglen;
--	fl->pd = 1;
-+	fl->pd = USER_PD;
- 
- 	if (init.filelen && init.filefd) {
- 		err = fastrpc_map_create(fl, init.filefd, init.filelen, &map);
-@@ -1287,7 +1292,7 @@ static int fastrpc_init_attach(struct fastrpc_user *fl)
- 	args[0].fd = -1;
- 	args[0].reserved = 0;
- 	sc = FASTRPC_SCALARS(FASTRPC_RMID_INIT_ATTACH, 1, 0);
--	fl->pd = 0;
-+	fl->pd = AUDIO_PD;
- 
- 	return fastrpc_internal_invoke(fl, true, FASTRPC_INIT_HANDLE,
- 				       sc, &args[0]);
+-	gdev->id = ida_simple_get(&gpio_ida, 0, 0, GFP_KERNEL);
++	gdev->id = ida_alloc(&gpio_ida, GFP_KERNEL);
+ 	if (gdev->id < 0) {
+ 		ret = gdev->id;
+ 		goto err_free_gdev;
+@@ -705,7 +705,7 @@ int gpiochip_add_data_with_key(struct gpio_chip *gc, void *data,
+ err_free_descs:
+ 	kfree(gdev->descs);
+ err_free_ida:
+-	ida_simple_remove(&gpio_ida, gdev->id);
++	ida_free(&gpio_ida, gdev->id);
+ err_free_gdev:
+ 	/* failures here can mean systems won't boot... */
+ 	pr_err("%s: GPIOs %d..%d (%s) failed to register, %d\n", __func__,
 -- 
 2.26.1
 
