@@ -2,121 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B47BE261D90
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:39:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47F2B261D4D
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:35:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732354AbgIHTit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:38:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53122 "EHLO
+        id S1732328AbgIHTfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 15:35:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730656AbgIHPzo (ORCPT
+        with ESMTP id S1730900AbgIHP5a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:55:44 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D448C0612A1;
-        Tue,  8 Sep 2020 06:03:26 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id b17so5859490pji.1;
-        Tue, 08 Sep 2020 06:03:26 -0700 (PDT)
+        Tue, 8 Sep 2020 11:57:30 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9412C0612A5;
+        Tue,  8 Sep 2020 06:06:59 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id mm21so8257754pjb.4;
+        Tue, 08 Sep 2020 06:06:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=sf6a+1vn+PmIzZTwltttDMRYJhSjubXwj0sptER78Cg=;
-        b=EVypWNpQGe7fdEBP/w3Ex8aHY6qG3F+pzY+HHQ8cvn/RX8uRQ9iYey6zToII+I2HnN
-         1ZbXnM+mdjihJr3CCrtVCuH10zw8w4VCBeC30hnqbom+jaZ/b5BDzk+UfWfVbSv88lyx
-         R2WYUpfftSEN+a7nDUBXP0FiwLWI+NFOHvTuVND2xKHYp80zzQslIbGctvHIx+/vfp1o
-         mCQ5SQaru8CVngU5ePygDORUPi+0+YAryHscMKKK9AVFmboPXrpEePY+nwJyQWLd2xh4
-         4YZhTysC0qTL2lPsqEx8/XE82Ojsrv2dRiqpgU/bZqsuBNv8FziKD4RVWz6qf20Jw0er
-         6bmw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=HhJcpAM1sVTshyBaZ8DqM82F52ye06r+Vvl0X2hVcWg=;
+        b=XuW99k4dYGsFdgmEUUEsLFwx1KigPLt2dJlA7ZkVksTOQQy22ILceeLCzANYHRnNIU
+         7leZtuDfb1Ts3bg0g2Df1SQw2lLMQvu0mIy84RxNiRGYVStyZiv+KiQKTp+AoUOPOZQU
+         lfuEL8MyBMJCUO2rIluMXL8lWslBK2HnPxQD4v9sxuia0/xXiYcKa/3K78xmzxn6h2dp
+         QAyMt5JR0Vs1VUf5S6nSoFo0uCah2siU9L0RG63uURRc2XyL/I0DIOWn+I8Ki5OiAt/1
+         Ybzc4/rm8+T77s9rLeIQHUhVe9peVJrPvkEtyo2BSX26WVEOpdcpfucvbiv/LPE0EU7D
+         IdQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=sf6a+1vn+PmIzZTwltttDMRYJhSjubXwj0sptER78Cg=;
-        b=cbBSr0ItA4TgLcTZSTST0E+Zjd9rd6GZjX4zfHCEJLEC7Ae73MiwPTQmrwlTgXAGun
-         GoR8vbeHT/eB6aItMCqiAI8PVIR4wYihUY1WMrOwcnGQzDTkjsNOeTXU+qFnsO9S9oNp
-         HqrUdW3o3o9+ZJeZ8pEqy6QRY2Uv0bzjtlbr0S8KYSK2ZOKdbD++8KBnx0gfBQEAphJK
-         OMAb4T64UZPBygFPAx4+sHDFZ/lprHne/xbrWBMNuHBQ+eFB4A6PXo9LCRsukPtnJo2H
-         o6uMXuqb4HYilcgPNx5tPQmCG9SS7t+DzU+2rLXDm4RaC3uhxbiGor5QYJF7+0PV41Yl
-         hH1w==
-X-Gm-Message-State: AOAM533G7EcFPKk1bERSvvj9ckJTu27a9oEKTdwdYj0sJtAC4y7jKk3c
-        ZQQ/u23LvfxVselnXb/GMWr4tl4J0QWMj9ZdpMk=
-X-Google-Smtp-Source: ABdhPJxHanwqPAVJ1RW0hDye4bv+gbZ+NxF7HkD04xmpdKJ2ZD7XG60T/1/a6CBN8dwvP8IgYpSTrCwrQqlszx/Fhv4=
-X-Received: by 2002:a17:90a:b387:: with SMTP id e7mr4003979pjr.228.1599570205525;
- Tue, 08 Sep 2020 06:03:25 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=HhJcpAM1sVTshyBaZ8DqM82F52ye06r+Vvl0X2hVcWg=;
+        b=NH2ZmAzkYzh2gRegwVfNlZ02D/jsJ8LHjJkXF+SDlCee/7p3u7itVavFwfG6TC/JtO
+         k0xYFyqDlDEKuu/3Ijx5JcJg/4hLFC4jKAk/Za5FckKf1uZIAxykAinU0UxZn+Pi7s0R
+         WvymA2yyATyEHUvN0SB5kmOJmC81JiztxOalVNah6cH3UV5XNhKSgOeRjF0kFGZazn5I
+         AVqjomb1Knuf39g4XcuJObEhfotx5HgwROsDxy0gj2fYN0rdc52DmFFTtjeLkMhjTv5q
+         pVkxhkzjh43rh3xRsg43va1Klq6rv29oxGXV1jc1fGjo9f75N/sK6GAkepW+d9CEi1zJ
+         F/Sw==
+X-Gm-Message-State: AOAM532lUYzCKqwYV/TZcq0ANGqwFDXNSwcrngQO3jS0JSMGbEOv3nwR
+        QiO422eGPE3tAbI+Gk49KggFLwnKAu0OFG8R
+X-Google-Smtp-Source: ABdhPJzvwq5L6QdMnyzEAjubzxihNYyRFloIuvT+kbZTTjPyszhhTLEBecg0Q+TjP/DLjV1G3oemFw==
+X-Received: by 2002:a17:90b:208:: with SMTP id fy8mr3958774pjb.153.1599570418913;
+        Tue, 08 Sep 2020 06:06:58 -0700 (PDT)
+Received: from haolee.github.io ([2600:3c01::f03c:91ff:fe02:b162])
+        by smtp.gmail.com with ESMTPSA id 13sm18498146pfp.3.2020.09.08.06.06.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Sep 2020 06:06:58 -0700 (PDT)
+Date:   Tue, 8 Sep 2020 13:06:56 +0000
+From:   Hao Lee <haolee.swjtu@gmail.com>
+To:     viro@zeniv.linux.org.uk
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] fs: Eliminate a local variable to make the code more
+ clear
+Message-ID: <20200908130656.GC22780@haolee.github.io>
+References: <20200729151740.GA3430@haolee.github.io>
 MIME-Version: 1.0
-References: <20200908021021.9123-1-digetx@gmail.com> <20200908021021.9123-17-digetx@gmail.com>
- <CAHp75VefU+iXpngPnzQRBfrg3OgLUBqhOCJpPo8natfCBr6Q5w@mail.gmail.com> <3fce58d0-eac6-bbea-74e3-098cb079e9b5@gmail.com>
-In-Reply-To: <3fce58d0-eac6-bbea-74e3-098cb079e9b5@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 8 Sep 2020 16:03:07 +0300
-Message-ID: <CAHp75VfR_4KVYL5rYU6XjQuaozT8W=Opy2cHAV4dB_1VcY1g0Q@mail.gmail.com>
-Subject: Re: [PATCH v6 16/35] i2c: tegra: Reorder location of functions in the code
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        linux-tegra@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200729151740.GA3430@haolee.github.io>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 8, 2020 at 3:55 PM Dmitry Osipenko <digetx@gmail.com> wrote:
-> 08.09.2020 11:43, Andy Shevchenko =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> > On Tue, Sep 8, 2020 at 5:11 AM Dmitry Osipenko <digetx@gmail.com> wrote=
-:
-> >>
-> >> Reorder location of functions in the code in order to have definition
-> >> of functions closer to the place of the invocation. This change makes
-> >> easier to navigate around the code and removes the need to have a
-> >> prototype for tegra_i2c_init().
-> >
-> > Still seems to have ordering issues (it moves pieces you actually
-> > change in the next patches).
->
-> It's unavoidable that this patch either touches previous or next
-> changes. You actually had an opposite complaint to v5.
+ping
 
-Nice :-)
-
-> This diver has a long overdue for the refactoring. I think it's a good
-> time to do it right now because driver works stable and it's quite
-> unlikely that there will ever be fixes for the older code. Hence it
-> should be good to have the code reordered now, so that we could have a
-> nicer code base for the future changes.
-
-I agree.
-
-> > Have you considered which one looks neat this variant or if you move
-> > it closer to the end of the series?
-
-> This variant should be more logical because changes have this order:
->
-> 1. fixes
-> 2. features
-> 3. code reorder
-> 4. more important cleanups
-> 5. less important cleanups
->
-> The 3 merely shuffles code around without any changes to the code, hence
-> it's a safe change.
->
-> The 4 has a potential danger since there are cleanups of the outdated
-> features and some changes may change semantic in a case of a bug. Hence,
-> if in the future we'll happen to find a problem in one of the 4 patches,
-> then there is a better chance that the problem could be fixed with a
-> simple revert. If 3 is placed after 4, then the chance is completely gone=
-.
-
-Thanks for elaboration. If you think so (and I guess you are), go ahead!
-
---=20
-With Best Regards,
-Andy Shevchenko
+On Wed, Jul 29, 2020 at 03:21:28PM +0000, Hao Lee wrote:
+> The dentry local variable is introduced in 'commit 84d17192d2afd ("get
+> rid of full-hash scan on detaching vfsmounts")' to reduce the length of
+> some long statements for example
+> mutex_lock(&path->dentry->d_inode->i_mutex). We have already used
+> inode_lock(dentry->d_inode) to do the same thing now, and its length is
+> acceptable. Furthermore, it seems not concise that assign path->dentry
+> to local variable dentry in the statement before goto. So, this function
+> would be more clear if we eliminate the local variable dentry.
+> 
+> The function logic is not changed.
+> 
+> Signed-off-by: Hao Lee <haolee.swjtu@gmail.com>
+> ---
+>  fs/namespace.c | 13 ++++++-------
+>  1 file changed, 6 insertions(+), 7 deletions(-)
+> 
+> diff --git a/fs/namespace.c b/fs/namespace.c
+> index 4a0f600a3328..fcb93586fcc9 100644
+> --- a/fs/namespace.c
+> +++ b/fs/namespace.c
+> @@ -2187,20 +2187,19 @@ static int attach_recursive_mnt(struct mount *source_mnt,
+>  static struct mountpoint *lock_mount(struct path *path)
+>  {
+>  	struct vfsmount *mnt;
+> -	struct dentry *dentry = path->dentry;
+>  retry:
+> -	inode_lock(dentry->d_inode);
+> -	if (unlikely(cant_mount(dentry))) {
+> -		inode_unlock(dentry->d_inode);
+> +	inode_lock(path->dentry->d_inode);
+> +	if (unlikely(cant_mount(path->dentry))) {
+> +		inode_unlock(path->dentry->d_inode);
+>  		return ERR_PTR(-ENOENT);
+>  	}
+>  	namespace_lock();
+>  	mnt = lookup_mnt(path);
+>  	if (likely(!mnt)) {
+> -		struct mountpoint *mp = get_mountpoint(dentry);
+> +		struct mountpoint *mp = get_mountpoint(path->dentry);
+>  		if (IS_ERR(mp)) {
+>  			namespace_unlock();
+> -			inode_unlock(dentry->d_inode);
+> +			inode_unlock(path->dentry->d_inode);
+>  			return mp;
+>  		}
+>  		return mp;
+> @@ -2209,7 +2208,7 @@ static struct mountpoint *lock_mount(struct path *path)
+>  	inode_unlock(path->dentry->d_inode);
+>  	path_put(path);
+>  	path->mnt = mnt;
+> -	dentry = path->dentry = dget(mnt->mnt_root);
+> +	path->dentry = dget(mnt->mnt_root);
+>  	goto retry;
+>  }
+>  
+> -- 
+> 2.24.1
+> 
