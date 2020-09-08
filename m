@@ -2,108 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DBE2260FD3
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 12:29:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FA82260F6E
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 12:14:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729667AbgIHK3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 06:29:21 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:44896 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729489AbgIHK0i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 06:26:38 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 3CA701A035F;
-        Tue,  8 Sep 2020 12:26:10 +0200 (CEST)
-Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 2ED6A1A0339;
-        Tue,  8 Sep 2020 12:26:10 +0200 (CEST)
-Received: from fsr-ub1664-175.ea.freescale.net (fsr-ub1664-175.ea.freescale.net [10.171.82.40])
-        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 7E33220327;
-        Tue,  8 Sep 2020 12:26:09 +0200 (CEST)
-From:   Abel Vesa <abel.vesa@nxp.com>
-To:     Mike Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <fabio.estevam@nxp.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Anson Huang <anson.huang@nxp.com>,
-        Jacky Bai <ping.bai@nxp.com>, Peng Fan <peng.fan@nxp.com>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Fugang Duan <fugang.duan@nxp.com>, devicetree@vger.kernel.org
-Cc:     NXP Linux Team <linux-imx@nxp.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-clk@vger.kernel.org, Abel Vesa <abel.vesa@nxp.com>
-Subject: [PATCH v3 06/14] dt-bindings: clock: imx8mp: Add hdmi blk_ctl clock IDs
-Date:   Tue,  8 Sep 2020 13:24:43 +0300
-Message-Id: <1599560691-3763-7-git-send-email-abel.vesa@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1599560691-3763-1-git-send-email-abel.vesa@nxp.com>
-References: <1599560691-3763-1-git-send-email-abel.vesa@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1729389AbgIHKOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 06:14:51 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:39201 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729108AbgIHKMj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 06:12:39 -0400
+Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200908101234epoutp01bbc6c0279ad585e65dd4e6e680f006f2~yx02uca0W1439114391epoutp011
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 10:12:34 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200908101234epoutp01bbc6c0279ad585e65dd4e6e680f006f2~yx02uca0W1439114391epoutp011
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1599559954;
+        bh=CmgUl2xaYyV+9cq6Fw4uq9IsbKjByyxJGsTM86w+7yo=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=fDiYV0ZAiHP93dt944xsJQDrpvUjbVvBhqSADdptNE1bHIu40izDyn9ImX85xc/5I
+         neXOJWSw0qp28Dh4c7dtjoYLiWx1AujfGaRObxd0i0WOzIcK4dXb1iRjgajz9VNAO4
+         Ovtutr6v07h6BY/1+cewRkTKSXQZ03KJHk9NCp2M=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
+        20200908101233epcas1p48dbb6ac569c11a55c56e9659a58768ea~yx02J93En1796017960epcas1p4U;
+        Tue,  8 Sep 2020 10:12:33 +0000 (GMT)
+Received: from epsmges1p2.samsung.com (unknown [182.195.40.158]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4Bm1DH240xzMqYkg; Tue,  8 Sep
+        2020 10:12:31 +0000 (GMT)
+Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
+        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        19.1F.19033.F09575F5; Tue,  8 Sep 2020 19:12:31 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
+        20200908101230epcas1p321249119f81d90755efdfafd95f9d180~yx0zoC3g83135431354epcas1p3f;
+        Tue,  8 Sep 2020 10:12:30 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20200908101230epsmtrp2a3b11f448fe27ee9e54fd7fd2acc9d02~yx0znRG3w2650426504epsmtrp2C;
+        Tue,  8 Sep 2020 10:12:30 +0000 (GMT)
+X-AuditID: b6c32a36-159ff70000004a59-6d-5f57590f3237
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        9D.99.08382.E09575F5; Tue,  8 Sep 2020 19:12:30 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.113.221.102]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20200908101230epsmtip21fe1d796ac6b486f74639bab3462d5d7~yx0zbt_dj1358513585epsmtip2p;
+        Tue,  8 Sep 2020 10:12:30 +0000 (GMT)
+From:   Chanwoo Choi <cw00.choi@samsung.com>
+To:     myungjoo.ham@samsung.com, kyungmin.park@samsung.com,
+        cw00.choi@samsung.com, krzk@kernel.org, lukasz.luba@arm.com
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v3 0/3] PM / devfreq: Deprecate fixed property name by using
+ phandle get
+Date:   Tue,  8 Sep 2020 19:24:44 +0900
+Message-Id: <20200908102447.15097-1-cw00.choi@samsung.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrFKsWRmVeSWpSXmKPExsWy7bCmgS5/ZHi8waSpPBbXvzxntTh/fgO7
+        xdmmN+wWmx5fY7W4vGsOm8Xn3iOMFjPO72OyWNjUwm5xu3EFmwOnx5p5axg9Nq3qZPPYvKTe
+        o2/LKkaPz5vkAlijsm0yUhNTUosUUvOS81My89JtlbyD453jTc0MDHUNLS3MlRTyEnNTbZVc
+        fAJ03TJzgO5RUihLzCkFCgUkFhcr6dvZFOWXlqQqZOQXl9gqpRak5BRYFugVJ+YWl+al6yXn
+        51oZGhgYmQIVJmRndF+cxlSwiLdi2uXnbA2MF7i6GDk4JARMJLac4e9i5OIQEtjBKDFtfTsT
+        hPOJUeLdlXY2COcbo8Ty1uWsXYycYB2ti55BVe1llLjVs4UdwvnCKDHj40JGkCo2AS2J/S9u
+        sIHYIgJlEre/XGUGKWIWaGWUuPf8GhNIQlggSuL83L0sIDaLgKrE56sH2UFsXgEriauf/jBD
+        rJOXWL3hAFizhMAhdonfjVug7nCRaG2ZA1UkLPHq+BZ2CFtK4vO7vWwQdrXEypNH2CCaOxgl
+        tuy/ANVsLLF/6WQmUBAwC2hKrN+lDxFWlNj5ey7YB8wCfBLvvvawQkKJV6KjTQiiRFni8oO7
+        TBC2pMTi9k6oVR4Svx4dBYsLCcRKXHr6j2UCo+wshAULGBlXMYqlFhTnpqcWGxYYIUfTJkZw
+        ItMy28E46e0HvUOMTByMhxglOJiVRHi7DoXGC/GmJFZWpRblxxeV5qQWH2I0BQbYRGYp0eR8
+        YCrNK4k3NDUyNja2MDE0MzU0VBLnfXhLIV5IID2xJDU7NbUgtQimj4mDU6qBqd1h8g3WQxEp
+        DolL/i7427TgcfSPV78nCf/b8Sr6wZzSuenvnKOrdC5a2y0wnvHU1frOjF3N04X36YVJxLmc
+        5645fup/09/6zff2n5/49EtP8uVvM6rK519unPrSxcgt9sVhH6beybOXLGqU+pldvPHAnKct
+        zcx+U0LkTjl8V7Hr7spz9v4huZ2jO1GAd+f9713FnisnmPvp2um2nWw7ebXEhXGr7J5J0l7r
+        45O8Km59jbdknbT0vPr8eWsW/3i+5N6Lz31zV1fyMAa8XHc9dL31BmHBCvWJs6xSXUy0pa1a
+        Sps2zDhg0GQfGBQrnf3iQFPXsZRZ6jMyeVo/3O6Y135c8tYiP/akD9xuAabTc5RYijMSDbWY
+        i4oTAXwxT5LtAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupgluLIzCtJLcpLzFFi42LZdlhJXpcvMjzeoO+7tsX1L89ZLc6f38Bu
+        cbbpDbvFpsfXWC0u75rDZvG59wijxYzz+5gsFja1sFvcblzB5sDpsWbeGkaPTas62Tw2L6n3
+        6NuyitHj8ya5ANYoLpuU1JzMstQifbsErozui9OYChbxVky7/JytgfECVxcjJ4eEgIlE66Jn
+        TF2MXBxCArsZJTasPsYEkZCUmHbxKHMXIweQLSxx+HAxRM0nRonmfasZQWrYBLQk9r+4wQZi
+        iwjUSCybu4cNpIhZoJNR4uS0l2AJYYEIiZ1TW8BsFgFVic9XD7KD2LwCVhJXP/1hhlgmL7F6
+        wwHmCYw8CxgZVjFKphYU56bnFhsWGOallusVJ+YWl+al6yXn525iBAeWluYOxu2rPugdYmTi
+        YDzEKMHBrCTC23UoNF6INyWxsiq1KD++qDQntfgQozQHi5I4743ChXFCAumJJanZqakFqUUw
+        WSYOTqkGprAo1fSl35JLsq+brRR68bVrypfeVcoRafulbBS3ponW5mbk3U53V3fc0vw3m2tZ
+        1b5vehs67t005/geOXHZ11Mv5gTkLbkmeDTz9eGkhJe/fs8xe9fXF//pxzbV0JqzNvvC/XKe
+        5DL6530qLw5d8exfe9blpcZmIoVzTh5/8zubefebZRLyEWyJFx8ZvvnEJWZ4rVJv75plfaxH
+        LX+xq5vbv/BNip950mzeu8M7LQI7uw4c/uzuu39HbHHKS5flm668vqTpl3hWIzb0V1x60P1t
+        trM1qyyWyx6N31957fT7KX/Xvn1gXrV7/XLeg70RizltkyvYFhRI/JzG+cZq7a/u49HeV/Yo
+        l7FPef3iQ4cSS3FGoqEWc1FxIgD5DSMqmwIAAA==
+X-CMS-MailID: 20200908101230epcas1p321249119f81d90755efdfafd95f9d180
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20200908101230epcas1p321249119f81d90755efdfafd95f9d180
+References: <CGME20200908101230epcas1p321249119f81d90755efdfafd95f9d180@epcas1p3.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These will be used by the imx8mp for blk_ctl driver.
+Pirot to that devfreq and devfreq-event framework defines the fixed 'devfreq'
+and 'devfreq-event' property to get the devfreq/devfreq-event phandle. But,
+these property name are not expressing the h/w. So, deprecate the fixed
+property name of both 'devfreq' and 'devfreq-event'. But, in order to keep
+the backward compatibility of devicetree, doesn't change the property name
+on devfreq device drivers and devicetree.
 
-Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
-Acked-by: Rob Herring <robh@kernel.org>
----
- include/dt-bindings/clock/imx8mp-clock.h | 40 ++++++++++++++++++++++++++++++++
- 1 file changed, 40 insertions(+)
+This patchset picks only three patches from patchset[1].
 
-diff --git a/include/dt-bindings/clock/imx8mp-clock.h b/include/dt-bindings/clock/imx8mp-clock.h
-index 12632fa..de7d522 100644
---- a/include/dt-bindings/clock/imx8mp-clock.h
-+++ b/include/dt-bindings/clock/imx8mp-clock.h
-@@ -424,4 +424,44 @@
- 
- #define IMX8MP_CLK_MEDIA_BLK_CTL_END			25
- 
-+#define IMX8MP_CLK_HDMI_BLK_CTL_GLOBAL_APB_CLK		0
-+#define IMX8MP_CLK_HDMI_BLK_CTL_GLOBAL_B_CLK		1
-+#define IMX8MP_CLK_HDMI_BLK_CTL_GLOBAL_REF266M_CLK	2
-+#define IMX8MP_CLK_HDMI_BLK_CTL_GLOBAL_XTAL24M_CLK	3
-+#define IMX8MP_CLK_HDMI_BLK_CTL_GLOBAL_XTAL32K_CLK	4
-+#define IMX8MP_CLK_HDMI_BLK_CTL_GLOBAL_TX_PIX_CLK	5
-+#define IMX8MP_CLK_HDMI_BLK_CTL_IRQS_STEER_CLK		6
-+#define IMX8MP_CLK_HDMI_BLK_CTL_NOC_HDMI_CLK		7
-+#define IMX8MP_CLK_HDMI_BLK_CTL_NOC_HDCP_CLK		8
-+#define IMX8MP_CLK_HDMI_BLK_CTL_LCDIF_APB_CLK		9
-+#define IMX8MP_CLK_HDMI_BLK_CTL_LCDIF_B_CLK		10
-+#define IMX8MP_CLK_HDMI_BLK_CTL_LCDIF_PDI_CLK		11
-+#define IMX8MP_CLK_HDMI_BLK_CTL_LCDIF_PIX_CLK		12
-+#define IMX8MP_CLK_HDMI_BLK_CTL_LCDIF_SPU_CLK		13
-+#define IMX8MP_CLK_HDMI_BLK_CTL_FDCC_REF_CLK		14
-+#define IMX8MP_CLK_HDMI_BLK_CTL_HRV_MWR_APB_CLK		15
-+#define IMX8MP_CLK_HDMI_BLK_CTL_HRV_MWR_B_CLK		16
-+#define IMX8MP_CLK_HDMI_BLK_CTL_HRV_MWR_CEA_CLK		17
-+#define IMX8MP_CLK_HDMI_BLK_CTL_VSFD_CEA_CLK		18
-+#define IMX8MP_CLK_HDMI_BLK_CTL_TX_HPI_CLK		19
-+#define IMX8MP_CLK_HDMI_BLK_CTL_TX_APB_CLK		20
-+#define IMX8MP_CLK_HDMI_BLK_CTL_TX_CEC_CLK		21
-+#define IMX8MP_CLK_HDMI_BLK_CTL_TX_ESM_CLK		22
-+#define IMX8MP_CLK_HDMI_BLK_CTL_TX_GPA_CLK		23
-+#define IMX8MP_CLK_HDMI_BLK_CTL_TX_PIXEL_CLK		24
-+#define IMX8MP_CLK_HDMI_BLK_CTL_TX_SFR_CLK		25
-+#define IMX8MP_CLK_HDMI_BLK_CTL_TX_SKP_CLK		26
-+#define IMX8MP_CLK_HDMI_BLK_CTL_TX_PREP_CLK		27
-+#define IMX8MP_CLK_HDMI_BLK_CTL_TX_PHY_APB_CLK		28
-+#define IMX8MP_CLK_HDMI_BLK_CTL_TX_PHY_INT_CLK		29
-+#define IMX8MP_CLK_HDMI_BLK_CTL_TX_SEC_MEM_CLK		30
-+#define IMX8MP_CLK_HDMI_BLK_CTL_TX_TRNG_SKP_CLK		31
-+#define IMX8MP_CLK_HDMI_BLK_CTL_TX_VID_LINK_PIX_CLK	32
-+#define IMX8MP_CLK_HDMI_BLK_CTL_TX_TRNG_APB_CLK		33
-+#define IMX8MP_CLK_HDMI_BLK_CTL_HTXPHY_CLK_SEL		34
-+#define IMX8MP_CLK_HDMI_BLK_CTL_LCDIF_CLK_SEL		35
-+#define IMX8MP_CLK_HDMI_BLK_CTL_TX_PIPE_CLK_SEL		36
-+
-+#define IMX8MP_CLK_HDMI_BLK_CTL_END			37
-+
- #endif
+[1] https://patchwork.kernel.org/cover/11304545/
+- [v2,00/11] PM / devfreq: Remove deprecated 'devfreq' and 'devfreq-events' properties
+
+
+Changes from v2:
+- Send the patches related to both devfreq_get_devfreq_by_phandle
+  and devfreq_event_get_edev_by_phandle function to change the function
+  prototype.
+
+Changes from v1:
+- Edit function name by removing '_by_node' postfix.
+- Split out dt-binding patch to make it the separte patch.
+- Add Lukasz's tag for exynos5422-dmc
+
+Chanwoo Choi (2):
+  PM / devfreq: Change prototype of devfreq_get_devfreq_by_phandle function
+  PM / devfreq: event: Change prototype of devfreq_event_get_edev_by_phandle function
+
+Leonard Crestez (1):
+  PM / devfreq: Add devfreq_get_devfreq_by_node function
+
+ drivers/devfreq/devfreq-event.c         | 14 +++---
+ drivers/devfreq/devfreq.c               | 57 ++++++++++++++++++-------
+ drivers/devfreq/exynos-bus.c            |  7 +--
+ drivers/devfreq/rk3399_dmc.c            |  2 +-
+ drivers/memory/samsung/exynos5422-dmc.c |  6 ++-
+ include/linux/devfreq-event.h           | 14 ++++--
+ include/linux/devfreq.h                 | 11 ++++-
+ 7 files changed, 78 insertions(+), 33 deletions(-)
+
 -- 
-2.7.4
+2.17.1
 
