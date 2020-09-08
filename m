@@ -2,102 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48F28261937
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 20:10:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFB782618C2
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 20:02:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729048AbgIHSKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 14:10:48 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57860 "EHLO mx2.suse.de"
+        id S1731868AbgIHSB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 14:01:57 -0400
+Received: from mga05.intel.com ([192.55.52.43]:17156 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731322AbgIHQLo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:11:44 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 892F8B74F;
-        Tue,  8 Sep 2020 16:11:39 +0000 (UTC)
-Message-ID: <7367c17489ef7d5bc24c0452c9887663f938344b.camel@suse.de>
-Subject: Re: [PATCH v2 0/4] drm/vc4: Support HDMI QHD or higher output
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Hoegeun Kwon <hoegeun.kwon@samsung.com>, eric@anholt.net,
-        maxime@cerno.tech, stefan.wahren@i2se.com,
-        dave.stevenson@raspberrypi.com
-Cc:     devicetree@vger.kernel.org, tim.gover@raspberrypi.com,
-        sboyd@kernel.org, mturquette@baylibre.com, kdasu.kdev@gmail.com,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-clk@vger.kernel.org, robh+dt@kernel.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org, phil@raspberrypi.com,
-        linux-arm-kernel@lists.infradead.org
-Date:   Tue, 08 Sep 2020 18:11:36 +0200
-In-Reply-To: <20200901040759.29992-1-hoegeun.kwon@samsung.com>
-References: <CGME20200901040850epcas1p2150ea195dfb20b46d6421af63b1f5129@epcas1p2.samsung.com>
-         <20200901040759.29992-1-hoegeun.kwon@samsung.com>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-KMxdxbhMfC1Bf45kOePp"
-User-Agent: Evolution 3.36.5 
+        id S1731606AbgIHR72 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 13:59:28 -0400
+IronPort-SDR: dxWIhuJ9uEGq59T5BmAc1ktPKug225/8S+3XFDwiK6p0jd/CvhXieFMVJ5RG7GlNxq1pSaICh3
+ 5DnZKZSxkF8Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9738"; a="243012923"
+X-IronPort-AV: E=Sophos;i="5.76,406,1592895600"; 
+   d="scan'208";a="243012923"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2020 10:59:21 -0700
+IronPort-SDR: WARO9DJMBbdZU31c3kTwLwETLAhMPcS0hnrIUw7KAImr2M0Q6PsVL7nJiRlxDio9c6MmQ0fotY
+ hqlbo+byZkkw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,406,1592895600"; 
+   d="scan'208";a="304175944"
+Received: from lkp-server01.sh.intel.com (HELO fc0154cbc871) ([10.239.97.150])
+  by orsmga006.jf.intel.com with ESMTP; 08 Sep 2020 10:59:20 -0700
+Received: from kbuild by fc0154cbc871 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kFhtn-0000Ce-Cv; Tue, 08 Sep 2020 17:59:19 +0000
+Date:   Wed, 09 Sep 2020 01:58:57 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:dev.2020.09.04b] BUILD SUCCESS
+ e6195051140a6189b588b79e208e380dd8504a13
+Message-ID: <5f57c661.egqPb8FPh/s3aoyZ%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  dev.2020.09.04b
+branch HEAD: e6195051140a6189b588b79e208e380dd8504a13  squash! scftorture: Add an alternative IPI vector
 
---=-KMxdxbhMfC1Bf45kOePp
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+elapsed time: 720m
 
-On Tue, 2020-09-01 at 13:07 +0900, Hoegeun Kwon wrote:
-> Hi everyone,
->=20
-> There is a problem that the output does not work at a resolution
-> exceeding FHD. To solve this, we need to adjust the bvb clock at a
-> resolution exceeding FHD.
->=20
-> Rebased on top of next-20200708 and [1].
->=20
-> [1] : [PATCH v4 00/78] drm/vc4: Support BCM2711 Display Pipeline (Maxime'=
-s patchset)
->=20
-> Changes from v1:
->   - Added dt-bindings documents
->   - Change patch order, first fix driver and then device tree
->=20
-> Hoegeun Kwon (4):
->   clk: bcm: rpi: Add register to control pixel bvb clk
->   drm/vc4: hdmi: Add pixel bvb clock control
->   dt-bindings: display: vc4: hdmi: Add bvb clock-names property
->   ARM: dts: bcm2711: Add bvb clock for hdmi-pixel
->=20
->  .../bindings/display/brcm,bcm2711-hdmi.yaml   | 12 ++++++---
->  arch/arm/boot/dts/bcm2711-rpi-4-b.dts         |  6 +++--
->  drivers/clk/bcm/clk-raspberrypi.c             |  1 +
->  drivers/gpu/drm/vc4/vc4_hdmi.c                | 25 +++++++++++++++++++
->  drivers/gpu/drm/vc4/vc4_hdmi.h                |  1 +
->  5 files changed, 39 insertions(+), 6 deletions(-)
+configs tested: 147
+configs skipped: 10
 
-Small note to anyone reviewing this, patches 3 & 4 where squashed into this
-series: https://lkml.org/lkml/2020/9/3/219
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Regards,
-Nicolas
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                          pxa3xx_defconfig
+x86_64                           allyesconfig
+m68k                          amiga_defconfig
+xtensa                              defconfig
+sh                        edosk7705_defconfig
+arm                         nhk8815_defconfig
+mips                           ip27_defconfig
+arm                   milbeaut_m10v_defconfig
+arc                              alldefconfig
+m68k                        m5272c3_defconfig
+mips                 decstation_r4k_defconfig
+alpha                               defconfig
+mips                malta_qemu_32r6_defconfig
+powerpc                     ep8248e_defconfig
+arm                          pxa910_defconfig
+arm                        spear3xx_defconfig
+arm                         lpc18xx_defconfig
+m68k                       m5208evb_defconfig
+mips                        bcm47xx_defconfig
+powerpc                      tqm8xx_defconfig
+mips                           rs90_defconfig
+xtensa                       common_defconfig
+arm                            u300_defconfig
+c6x                        evmc6457_defconfig
+sh                   sh7724_generic_defconfig
+mips                          ath79_defconfig
+openrisc                    or1ksim_defconfig
+sh                          lboxre2_defconfig
+powerpc                     mpc5200_defconfig
+h8300                     edosk2674_defconfig
+sh                          urquell_defconfig
+sh                        apsh4ad0a_defconfig
+c6x                        evmc6472_defconfig
+xtensa                           alldefconfig
+powerpc                      ppc64e_defconfig
+mips                       capcella_defconfig
+arm                         assabet_defconfig
+riscv                          rv32_defconfig
+m68k                       m5275evb_defconfig
+arm                            hisi_defconfig
+arm                       spear13xx_defconfig
+arm                          pxa168_defconfig
+arm                      pxa255-idp_defconfig
+arm                  colibri_pxa270_defconfig
+powerpc                     powernv_defconfig
+arm                            lart_defconfig
+csky                             alldefconfig
+arm                         lubbock_defconfig
+arm                          badge4_defconfig
+xtensa                           allyesconfig
+mips                malta_kvm_guest_defconfig
+s390                          debug_defconfig
+c6x                        evmc6678_defconfig
+arc                              allyesconfig
+arm                        spear6xx_defconfig
+powerpc                      ppc6xx_defconfig
+powerpc                    gamecube_defconfig
+s390                       zfcpdump_defconfig
+arm                       mainstone_defconfig
+sh                            shmin_defconfig
+mips                           ci20_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                            allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+powerpc                             defconfig
+x86_64               randconfig-a006-20200907
+x86_64               randconfig-a004-20200907
+x86_64               randconfig-a003-20200907
+x86_64               randconfig-a005-20200907
+x86_64               randconfig-a001-20200907
+x86_64               randconfig-a002-20200907
+i386                 randconfig-a004-20200908
+i386                 randconfig-a005-20200908
+i386                 randconfig-a006-20200908
+i386                 randconfig-a002-20200908
+i386                 randconfig-a001-20200908
+i386                 randconfig-a003-20200908
+i386                 randconfig-a004-20200907
+i386                 randconfig-a005-20200907
+i386                 randconfig-a006-20200907
+i386                 randconfig-a002-20200907
+i386                 randconfig-a003-20200907
+i386                 randconfig-a001-20200907
+x86_64               randconfig-a013-20200908
+x86_64               randconfig-a016-20200908
+x86_64               randconfig-a011-20200908
+x86_64               randconfig-a012-20200908
+x86_64               randconfig-a015-20200908
+x86_64               randconfig-a014-20200908
+i386                 randconfig-a016-20200907
+i386                 randconfig-a015-20200907
+i386                 randconfig-a011-20200907
+i386                 randconfig-a013-20200907
+i386                 randconfig-a014-20200907
+i386                 randconfig-a012-20200907
+i386                 randconfig-a016-20200908
+i386                 randconfig-a015-20200908
+i386                 randconfig-a011-20200908
+i386                 randconfig-a013-20200908
+i386                 randconfig-a014-20200908
+i386                 randconfig-a012-20200908
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
+clang tested configs:
+x86_64               randconfig-a013-20200907
+x86_64               randconfig-a011-20200907
+x86_64               randconfig-a016-20200907
+x86_64               randconfig-a012-20200907
+x86_64               randconfig-a015-20200907
+x86_64               randconfig-a014-20200907
 
---=-KMxdxbhMfC1Bf45kOePp
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl9XrTgACgkQlfZmHno8
-x/4bVwf+N7uuI1uhrijPKBHw/kVDjkfpbhhO78uXdO7AwTDOGvasQGmyTwz6rZLo
-nWSHBPD+B8UnmdaSPbBqKpt2b1hDcxCYAh6jdWvd2hwUiX4zzu0dQFrzg+JqVL6n
-7YsL6yIteSo5kBxBnWNZ6XZBCjIsgbXSplVQY2EAEqOhyhD47c1jr9wkam899PE3
-L3s0Qlox7zAGWI9IE9OJoS+pATo2+wyMrUjx8nlSs7ygUP1WCUOnVII6dCJusTXP
-iD5J/IoO/c9VQHa68m9VQUorEW3KG4P0v4I5gCB8dRtSiPXN30bpZZqysWBb1aiv
-uJ0vrxKphu9teKjIoBXxEHl4vBfy0g==
-=2yE8
------END PGP SIGNATURE-----
-
---=-KMxdxbhMfC1Bf45kOePp--
-
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
