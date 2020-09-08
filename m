@@ -2,95 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3F62261B2E
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 20:59:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7602261B3D
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:00:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731423AbgIHS7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 14:59:00 -0400
-Received: from rcdn-iport-9.cisco.com ([173.37.86.80]:22168 "EHLO
-        rcdn-iport-9.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730572AbgIHS6w (ORCPT
+        id S1731448AbgIHTAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 15:00:07 -0400
+Received: from ex13-edg-ou-001.vmware.com ([208.91.0.189]:51727 "EHLO
+        EX13-EDG-OU-001.vmware.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728585AbgIHS63 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 14:58:52 -0400
-X-Greylist: delayed 428 seconds by postgrey-1.27 at vger.kernel.org; Tue, 08 Sep 2020 14:58:51 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=cisco.com; i=@cisco.com; l=1391; q=dns/txt; s=iport;
-  t=1599591531; x=1600801131;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=m2WVpZpXrtQFXh3Ql4JrliPwX+fM66/2SHqLhNxgwkY=;
-  b=KnYh3lHP4/Pu4OSlhFDHLVbfoxOVsRcMaYRNRv459un7R/dOKJu/TVfZ
-   knVJe3j1CGYS+0nTi6yI2AAbBjKCaDRKp537mXeHkDVYbh9mHX4Esi4E0
-   spzQSsk0yz4pU8CBK7o05+KtEyqKAqKdiHtDVeOhk+uBaODMXfKpMSj26
-   Y=;
-X-IronPort-AV: E=Sophos;i="5.76,406,1592870400"; 
-   d="scan'208";a="732158731"
-Received: from rcdn-core-1.cisco.com ([173.37.93.152])
-  by rcdn-iport-9.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 08 Sep 2020 18:51:43 +0000
-Received: from sjc-ads-9087.cisco.com (sjc-ads-9087.cisco.com [10.30.208.97])
-        by rcdn-core-1.cisco.com (8.15.2/8.15.2) with ESMTP id 088IphYE005304;
-        Tue, 8 Sep 2020 18:51:43 GMT
-Received: by sjc-ads-9087.cisco.com (Postfix, from userid 396877)
-        id D89BFBFD; Tue,  8 Sep 2020 11:51:42 -0700 (PDT)
-From:   Julius Hemanth Pitti <jpitti@cisco.com>
-To:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
-        akpm@linux-foundation.org
-Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, xe-linux-external@cisco.com,
-        Julius Hemanth Pitti <jpitti@cisco.com>
-Subject: [PATCH] mm: memcg: yield cpu when we fail to charge pages
-Date:   Tue,  8 Sep 2020 11:50:51 -0700
-Message-Id: <20200908185051.62420-1-jpitti@cisco.com>
-X-Mailer: git-send-email 2.19.1
+        Tue, 8 Sep 2020 14:58:29 -0400
+Received: from sc9-mailhost3.vmware.com (10.113.161.73) by
+ EX13-EDG-OU-001.vmware.com (10.113.208.155) with Microsoft SMTP Server id
+ 15.0.1156.6; Tue, 8 Sep 2020 11:58:24 -0700
+Received: from akaher-virtual-machine.eng.vmware.com (unknown [10.197.103.239])
+        by sc9-mailhost3.vmware.com (Postfix) with ESMTP id 0EBA140B4E;
+        Tue,  8 Sep 2020 11:58:26 -0700 (PDT)
+From:   Ajay Kaher <akaher@vmware.com>
+To:     <gregkh@linuxfoundation.org>, <sashal@kernel.org>
+CC:     <alex.williamson@redhat.com>, <cohuck@redhat.com>,
+        <peterx@redhat.com>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>,
+        <srivatsab@vmware.com>, <srivatsa@csail.mit.edu>,
+        <vsirnapalli@vmware.com>, <akaher@vmware.com>
+Subject: [PATCH v2 v4.14.y 1/3] vfio/type1: Support faulting PFNMAP vmas
+Date:   Wed, 9 Sep 2020 00:24:20 +0530
+Message-ID: <1599591263-46520-1-git-send-email-akaher@vmware.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Auto-Response-Suppress: DR, OOF, AutoReply
-X-Outbound-SMTP-Client: 10.30.208.97, sjc-ads-9087.cisco.com
-X-Outbound-Node: rcdn-core-1.cisco.com
+Content-Type: text/plain
+Received-SPF: None (EX13-EDG-OU-001.vmware.com: akaher@vmware.com does not
+ designate permitted sender hosts)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For non root CG, in try_charge(), we keep trying
-to charge until we succeed. On non-preemptive
-kernel, when we are OOM, this results in holding
-CPU forever.
+From: Alex Williamson <alex.williamson@redhat.com>
 
-On SMP systems, this doesn't create a big problem
-because oom_reaper get a change to kill victim
-and make some free pages. However on a single-core
-CPU (or cases where oom_reaper pinned to same CPU
-where try_charge is executing), oom_reaper shall
-never get scheduled and we stay in try_charge forever.
+commit 41311242221e3482b20bfed10fa4d9db98d87016 upstream.
 
-Steps to repo this on non-smp:
-1. mount -t tmpfs none /sys/fs/cgroup
-2. mkdir /sys/fs/cgroup/memory
-3. mount -t cgroup none /sys/fs/cgroup/memory -o memory
-4. mkdir /sys/fs/cgroup/memory/0
-5. echo 40M > /sys/fs/cgroup/memory/0/memory.limit_in_bytes
-6. echo $$ > /sys/fs/cgroup/memory/0/tasks
-7. stress -m 5 --vm-bytes 10M --vm-hang 0
+With conversion to follow_pfn(), DMA mapping a PFNMAP range depends on
+the range being faulted into the vma.  Add support to manually provide
+that, in the same way as done on KVM with hva_to_pfn_remapped().
 
-Signed-off-by: Julius Hemanth Pitti <jpitti@cisco.com>
+Reviewed-by: Peter Xu <peterx@redhat.com>
+Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+[Ajay: Regenerated the patch for v4.14]
+Signed-off-by: Ajay Kaher <akaher@vmware.com>
 ---
- mm/memcontrol.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/vfio/vfio_iommu_type1.c | 36 +++++++++++++++++++++++++++++++++---
+ 1 file changed, 33 insertions(+), 3 deletions(-)
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 0d6f3ea86738..4620d70267cb 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -2652,6 +2652,8 @@ static int try_charge(struct mem_cgroup *memcg, gfp_t gfp_mask,
- 	if (fatal_signal_pending(current))
- 		goto force;
+diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
+index 35a3750..150be10 100644
+--- a/drivers/vfio/vfio_iommu_type1.c
++++ b/drivers/vfio/vfio_iommu_type1.c
+@@ -336,6 +336,32 @@ static int put_pfn(unsigned long pfn, int prot)
+ 	return 0;
+ }
  
-+	cond_resched();
++static int follow_fault_pfn(struct vm_area_struct *vma, struct mm_struct *mm,
++			    unsigned long vaddr, unsigned long *pfn,
++			    bool write_fault)
++{
++	int ret;
 +
- 	/*
- 	 * keep retrying as long as the memcg oom killer is able to make
- 	 * a forward progress or bypass the charge if the oom killer
++	ret = follow_pfn(vma, vaddr, pfn);
++	if (ret) {
++		bool unlocked = false;
++
++		ret = fixup_user_fault(NULL, mm, vaddr,
++				       FAULT_FLAG_REMOTE |
++				       (write_fault ?  FAULT_FLAG_WRITE : 0),
++				       &unlocked);
++		if (unlocked)
++			return -EAGAIN;
++
++		if (ret)
++			return ret;
++
++		ret = follow_pfn(vma, vaddr, pfn);
++	}
++
++	return ret;
++}
++
+ static int vaddr_get_pfn(struct mm_struct *mm, unsigned long vaddr,
+ 			 int prot, unsigned long *pfn)
+ {
+@@ -375,12 +401,16 @@ static int vaddr_get_pfn(struct mm_struct *mm, unsigned long vaddr,
+ 
+ 	down_read(&mm->mmap_sem);
+ 
++retry:
+ 	vma = find_vma_intersection(mm, vaddr, vaddr + 1);
+ 
+ 	if (vma && vma->vm_flags & VM_PFNMAP) {
+-		if (!follow_pfn(vma, vaddr, pfn) &&
+-		    is_invalid_reserved_pfn(*pfn))
+-			ret = 0;
++		ret = follow_fault_pfn(vma, mm, vaddr, pfn, prot & IOMMU_WRITE);
++		if (ret == -EAGAIN)
++			goto retry;
++
++		if (!ret && !is_invalid_reserved_pfn(*pfn))
++			ret = -EFAULT;
+ 	}
+ 
+ 	up_read(&mm->mmap_sem);
 -- 
-2.17.1
+2.7.4
 
