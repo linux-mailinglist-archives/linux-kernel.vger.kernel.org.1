@@ -2,61 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EB21261D18
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:32:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A39B5261DD9
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:43:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732170AbgIHTb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:31:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53828 "EHLO
+        id S1731611AbgIHTnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 15:43:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731019AbgIHP6F (ORCPT
+        with ESMTP id S1730892AbgIHPwr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:58:05 -0400
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC45FC061242
+        Tue, 8 Sep 2020 11:52:47 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02ED3C0612B2
         for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 06:11:32 -0700 (PDT)
-Received: by mail-qt1-x835.google.com with SMTP id n10so11814325qtv.3
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 06:11:32 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id n18so11832976qtw.0
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 06:11:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=marek-ca.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=hUrb8SCFg6HulXICTWjB5J3dJa3WsyRvIUrd/Gj8E1A=;
-        b=Btgln1DzqOK0Ky5OmfZSVznH+IIFskFJhEUd/6L+2EzexX2xFdtpBjfG38nIjkpQK2
-         pmnstu3GxKex83ZqJBTGKEoxQOsaa9ej1y1DmAcjfKwb+0/WbK2LcBN7TCMlSvkpWo6l
-         4QtbYzWr29/ZV+fKFkKIj68KD1so+1Scelu9baU+Kvw3HAAudlLQf80AutQ5xanEeCsL
-         R4JT/89nxaVd+kfU/AIPwxL7uteIXQwOK3LtJdgLl82r3LjSyfuC3lv9Lh8VmS1z8q7H
-         +QwBvwk4vlWlHa85UZOoF69Ob9wSq9wKPzlP8O+GJkTsnX4Bf2jVdcigwybNlpnWXA/V
-         MdGQ==
+        bh=234lHPOkmRtRf38tY/dBUtuiJiCNT+A1HGusExETXW8=;
+        b=Mr9PlJQE8npLe+p4mJ2C+cdVwblHUugaVSN0/1HpRNKDtU2yAgDDTRwo31DxGctwUT
+         olHRgrKSDFjj7TvrvMkScApWdYiLUEko63sQQvNnR72Ko7jxmlBVe/qlpcADv3rpJCJc
+         /x1XGudl2dNlAK5wMVg63lvoO4CKTr1zSXLdQ1vp1mqThpBX4k9XcBdyn2Y6JzM6m2qT
+         b0yxgO+pavHTR05Fn7jlVEmxIs4NSgQ3oiVpbF2IknhHKK6n6TBjDEbQIsYuPgKL2KHH
+         nXCJxmGj2PYyduIFg67o7M1b8J+e1v3aUQYhJ0MHWDCGyxy7mJ20Uhx6lHrUEgZzOR7N
+         44WQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=hUrb8SCFg6HulXICTWjB5J3dJa3WsyRvIUrd/Gj8E1A=;
-        b=DvgB8FH60CmjLCIOqw1pSjFGJ7v2syPQIsx4D4XszmkZEkpegdbSUxbLpE/DNY+zNx
-         k8PontGg+ArTH5REJX9Z8F++PP1p13A13wf/MN6rN/rYCCpNM4Lj/gKOzheh/5RCKpVB
-         dDnwauaPL7QeU4STCNQGXgQVD9cxfiFs8WOZOjmgt8d7dftyoT8g7mjiLMBAgzo3MwAY
-         Mn+rwEKjvZkWqJpv7jcVXqSF1kBpzTaUO82MYNqOze7TPZTHJoR1BDXaKTCt26CdA5ml
-         pwzN8hXkL42gBD+tV3xTjyAGVeVlOUXRsWlQBJ5PgOlOjExih82uRaU2e5dISaI55uJu
-         JNUw==
-X-Gm-Message-State: AOAM531F/N/e6Y516k/50BkMZYCSTzENE14lT0Yborvrp6w/VfFSe/UC
-        Fik11On00ELK0FhEl08aThP60Q==
-X-Google-Smtp-Source: ABdhPJx3qjKvLLDxptFWyk2taGV4q+N24WetF6P4vAorl5llo7bW4K8NDUDihiwxftcYS6HUZPP72g==
-X-Received: by 2002:aed:39a1:: with SMTP id m30mr25310181qte.39.1599570690288;
-        Tue, 08 Sep 2020 06:11:30 -0700 (PDT)
+        bh=234lHPOkmRtRf38tY/dBUtuiJiCNT+A1HGusExETXW8=;
+        b=tvph+4MzpimUYFsZoieekHwjZRTeJl9ffkWz4f+CVw1FGxGXoorQBXirMFiDr+0hpz
+         WgRpZIjdZ7lyhs+Ix7K0wXz99LyzesaJEinjiVcLuZGRWF1aF0P1od++pHntfM1j8wYv
+         xn2oWe0abs3YAFKSym7xgRc1i0zigl21oO21YeBqK8vXB5D0p11S2pXUMIotW/OjOMSc
+         zwH0ddlqy3d1DJA54E4gBiKjky6/c6+GkjXVK9EZer1U4GDl7bCzA/vaQ61caoooGUFF
+         MGXlxZp14I7smEGz0/gfdIUxKrQrhMxEKNuRp0R8X/iyPRAnRaZNQ+qs+EuPZ8E6L9Aw
+         qYcA==
+X-Gm-Message-State: AOAM533RHGEY4QAjtI1vVBpOlOODh9cvH3tMvXac/HB0/ghrVhuj/Fvd
+        r8dS+8qqjE7AgKj+k0AHKA090s65oJQ0+paP2f8=
+X-Google-Smtp-Source: ABdhPJxOq4dOIR8XqBJjvM4awnVR21mm14rvL4wSXqdtAGU3DDotuiXdbCGUT+4KfYnvHEJ+gOu8qA==
+X-Received: by 2002:ac8:498d:: with SMTP id f13mr11909985qtq.35.1599570691197;
+        Tue, 08 Sep 2020 06:11:31 -0700 (PDT)
 Received: from localhost.localdomain ([147.253.86.153])
-        by smtp.gmail.com with ESMTPSA id m196sm13394069qke.87.2020.09.08.06.11.29
+        by smtp.gmail.com with ESMTPSA id m196sm13394069qke.87.2020.09.08.06.11.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Sep 2020 06:11:29 -0700 (PDT)
+        Tue, 08 Sep 2020 06:11:30 -0700 (PDT)
 From:   Jonathan Marek <jonathan@marek.ca>
 To:     linux-arm-msm@vger.kernel.org
-Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>,
+Cc:     Arnd Bergmann <arnd@arndb.de>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2 1/3] misc: fastrpc: fix indentation error in uapi header
-Date:   Tue,  8 Sep 2020 09:10:09 -0400
-Message-Id: <20200908131013.19630-2-jonathan@marek.ca>
+Subject: [PATCH v2 2/3] misc: fastrpc: define names for protection domain ids
+Date:   Tue,  8 Sep 2020 09:10:10 -0400
+Message-Id: <20200908131013.19630-3-jonathan@marek.ca>
 X-Mailer: git-send-email 2.26.1
 In-Reply-To: <20200908131013.19630-1-jonathan@marek.ca>
 References: <20200908131013.19630-1-jonathan@marek.ca>
@@ -67,30 +66,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use tabs instead of spaces.
-
-Fixes: 2419e55e532d ("misc: fastrpc: add mmap/unmap support")
+Define SENSORS_PD for the next patch, to void using magic values for these.
 
 Signed-off-by: Jonathan Marek <jonathan@marek.ca>
 ---
- include/uapi/misc/fastrpc.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/misc/fastrpc.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/include/uapi/misc/fastrpc.h b/include/uapi/misc/fastrpc.h
-index 07de2b7aac85..de31f0bd4779 100644
---- a/include/uapi/misc/fastrpc.h
-+++ b/include/uapi/misc/fastrpc.h
-@@ -10,8 +10,8 @@
- #define FASTRPC_IOCTL_INVOKE		_IOWR('R', 3, struct fastrpc_invoke)
- #define FASTRPC_IOCTL_INIT_ATTACH	_IO('R', 4)
- #define FASTRPC_IOCTL_INIT_CREATE	_IOWR('R', 5, struct fastrpc_init_create)
--#define FASTRPC_IOCTL_MMAP              _IOWR('R', 6, struct fastrpc_req_mmap)
--#define FASTRPC_IOCTL_MUNMAP            _IOWR('R', 7, struct fastrpc_req_munmap)
-+#define FASTRPC_IOCTL_MMAP		_IOWR('R', 6, struct fastrpc_req_mmap)
-+#define FASTRPC_IOCTL_MUNMAP		_IOWR('R', 7, struct fastrpc_req_munmap)
+diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
+index 7939c55daceb..07b381c042cd 100644
+--- a/drivers/misc/fastrpc.c
++++ b/drivers/misc/fastrpc.c
+@@ -73,6 +73,11 @@
+ #define FASTRPC_RMID_INIT_CREATE_ATTR	7
+ #define FASTRPC_RMID_INIT_CREATE_STATIC	8
  
- struct fastrpc_invoke_args {
- 	__u64 ptr;
++/* Protection Domain(PD) ids */
++#define AUDIO_PD	(0) /* also GUEST_OS PD? */
++#define USER_PD		(1)
++#define SENSORS_PD	(2)
++
+ #define miscdev_to_cctx(d) container_of(d, struct fastrpc_channel_ctx, miscdev)
+ 
+ static const char *domains[FASTRPC_DEV_MAX] = { "adsp", "mdsp",
+@@ -1037,7 +1042,7 @@ static int fastrpc_init_create_process(struct fastrpc_user *fl,
+ 	inbuf.pageslen = 1;
+ 	inbuf.attrs = init.attrs;
+ 	inbuf.siglen = init.siglen;
+-	fl->pd = 1;
++	fl->pd = USER_PD;
+ 
+ 	if (init.filelen && init.filefd) {
+ 		err = fastrpc_map_create(fl, init.filefd, init.filelen, &map);
+@@ -1287,7 +1292,7 @@ static int fastrpc_init_attach(struct fastrpc_user *fl)
+ 	args[0].fd = -1;
+ 	args[0].reserved = 0;
+ 	sc = FASTRPC_SCALARS(FASTRPC_RMID_INIT_ATTACH, 1, 0);
+-	fl->pd = 0;
++	fl->pd = AUDIO_PD;
+ 
+ 	return fastrpc_internal_invoke(fl, true, FASTRPC_INIT_HANDLE,
+ 				       sc, &args[0]);
 -- 
 2.26.1
 
