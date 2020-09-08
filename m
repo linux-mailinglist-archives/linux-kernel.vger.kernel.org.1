@@ -2,155 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B84A9260BB9
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 09:18:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 492A7260BC7
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 09:19:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729365AbgIHHSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 03:18:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58480 "EHLO
+        id S1729473AbgIHHTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 03:19:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729231AbgIHHSP (ORCPT
+        with ESMTP id S1729330AbgIHHST (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 03:18:15 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56ADEC061756;
-        Tue,  8 Sep 2020 00:18:13 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id 7so9399432pgm.11;
-        Tue, 08 Sep 2020 00:18:13 -0700 (PDT)
+        Tue, 8 Sep 2020 03:18:19 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DABA9C061573
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 00:18:17 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id q9so16213144wmj.2
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 00:18:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=nu11smmO1MLPBr0YyFlQ7QMaiS4dHSCwCtOQC6QvghQ=;
-        b=BeN69dOd73In3yvux1bQOAJFhMWC1wLnRHaJvcHqUsJ+Q63UGjkBTdGZeqfu9OGxay
-         FNj8ecK/niHBS6Nnru8IExabjT20+zTvmH9KsgnL0n7FN9R86a45qN4Cb76Yfv4bJFXM
-         Quj3T9q+qOX+3vLEkVGOXUh70rXFCIDeKE2lhW0JN7hoshxbe66OecvCZ1BpipR0MtcS
-         EPJxBxSH1WCcmU/uMU5zP8WLFN4CFcFMAabSzZRhO/5kfoHwfAmlYTWWrBXNKA3LZKjc
-         xc7mJEm01rN6q1Y7COCC1W29ebbIMiRiEdEa4MU4OxhjQRVj2Wzg5RbiBr95GwcS9Mut
-         8YWA==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:autocrypt:organization:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=BnZLlR/MqannyWzL/NE/WCFqx90iIATvWssNkndAyuw=;
+        b=O0Fz0vqVen5yD+ixiiv6Iil1A9arYyZHXu45/ldMkIihqHbX6OTNifTm1rtv3DDvOW
+         WyAFYIb5x77WHNfLxod0m48U/xo74yrRuiwojICLINLDChoNBl0jPeScM/mx4yEFUTrU
+         bg/veOxJBJKVRO/i15Ev9WzsjplgPRjNY7yMQxJJT/gufQ5WKbo7qdYGwc8dtIme62VQ
+         3pPQDEtexpP1n1MZXPOQgBFDjTkxlPHHwpbhpAokREfd8TqVd2tpY+HkQPxD4Kn58KW2
+         TEhIWKbyAiUmfpbCT+kaCuunbLRett5rXNZ19Sk1dyaJCHwQInhoRQiXsFu2zNATHtDR
+         Y8PA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=nu11smmO1MLPBr0YyFlQ7QMaiS4dHSCwCtOQC6QvghQ=;
-        b=iiDbcE4lzcklQmiqDbsxujv2Y5Q8Bt3qjQQTtVdSruqJK5H+e7ueLbRHFbMgzAH605
-         qBn9vIl+GZX2J54cEusvcxIedh3QNeYG4zFq1ujij6A0NPrfb06z6MxFX0XQAv5zLkKV
-         ev+R9sTWXDVcAhvCfHgD4EzV8ym3Kys39wUuir4ffWstoEtdl3U6dPlLcq0IK3XxQOx+
-         eKv2Yxtat97o+/LrUCqTl4rghRMvAtSQL6wlSHb6pCVVyw+NcuupxPiwgsy6Gf4xVszw
-         7rPqemPpdKU0kxEoUSV9PN+Kid/RSDbutNqL/SumJgcbYmQa2NAFZ9LHlzPQvwy9VJQM
-         3BHg==
-X-Gm-Message-State: AOAM533o0e6ava7FzYcLbqalJCsIf23CmmBjnBpjmNbFWpuz7l+U3AHe
-        LGT6B9iZz2UHkOYAWMqFa9wEpjCUrIU=
-X-Google-Smtp-Source: ABdhPJyKWwWgF5Vgs/ibNYf3Ni3RsyjIpiAKFC6RiuRkTQz3Mvi0yRcD1cg9VmpKa34bPVoWn+pQpw==
-X-Received: by 2002:a62:33c1:: with SMTP id z184mr23333624pfz.248.1599549492531;
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :organization:message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=BnZLlR/MqannyWzL/NE/WCFqx90iIATvWssNkndAyuw=;
+        b=umJ4GKYeJTDkzpzAW3nN9HXMl+rFccX+wGcfHO8EoWPAGOLroqdpk6tXWopdNjwSOE
+         vaM4Qyh5UkGplYecNOr0jIyIuwnwZGfW05pcXPvthhdPScaEDQOHc8GI3yXA7VodJp7f
+         uyxYYidPYCsSjwJdWQ6XIyuk9VtAZkWihJAgwd4WPCivnzNGlgOlDNG8oqstIT4ee9QN
+         U8IJhvLN9POar+OpQ1Rsnmlhhm3QPF7mYEKXKCwzrYCAVtSQ3sM2YWM6ePeQWRJEbEXY
+         83f1+9DrwseqJLj5ycI3oKC3JsWPO8MBSjcdHRsaDotzqn8Ks7ASU8HRCzS+0I+rF4AH
+         IZsA==
+X-Gm-Message-State: AOAM532JYYMxPzjk6nmO+cPDh9kWZKucXm4mWkMvqFoP/iBpKJfEiz5y
+        k8+f4i7pndkWCo9Lzmc5O6ulTQ==
+X-Google-Smtp-Source: ABdhPJzj1ecX+gU9LYQBG52HZN4YgLlObJ5QS6k25m00eZqK7euxQxVeZuSFQQDbipQ15acvDmqz+A==
+X-Received: by 2002:a1c:1fcc:: with SMTP id f195mr2744223wmf.127.1599549492849;
         Tue, 08 Sep 2020 00:18:12 -0700 (PDT)
-Received: from localhost.localdomain ([103.7.29.6])
-        by smtp.googlemail.com with ESMTPSA id gt11sm6437801pjb.48.2020.09.08.00.18.09
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 08 Sep 2020 00:18:11 -0700 (PDT)
-From:   Wanpeng Li <kernellwp@gmail.com>
-X-Google-Original-From: Wanpeng Li <wanpengli@tencent.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Subject: [PATCH v2] KVM: LAPIC: Reduce world switch latency caused by timer_advance_ns
-Date:   Tue,  8 Sep 2020 15:17:52 +0800
-Message-Id: <1599549472-26052-1-git-send-email-wanpengli@tencent.com>
-X-Mailer: git-send-email 2.7.4
+Received: from ?IPv6:2a01:e35:2ec0:82b0:5405:9623:e2f1:b2ac? ([2a01:e35:2ec0:82b0:5405:9623:e2f1:b2ac])
+        by smtp.gmail.com with ESMTPSA id k8sm32317392wma.16.2020.09.08.00.18.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Sep 2020 00:18:12 -0700 (PDT)
+Subject: =?UTF-8?B?UmU6IOetlOWkjTogW1BBVENIIHYyIDYvNl0gZHJtL3BhbmVsOiBBZGQg?=
+ =?UTF-8?Q?Ilitek_ILI9341_DBI_panel_driver?=
+To:     Paul Cercueil <paul@crapouillou.net>,
+        Sam Ravnborg <sam@ravnborg.org>
+Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        =?UTF-8?B?5L2V5bCP6b6Z?= <Leon.He@unisoc.com>, od@zcrc.me,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+References: <20200822163250.63664-1-paul@crapouillou.net>
+ <20200822163250.63664-7-paul@crapouillou.net>
+ <edf38d68214247f486db3cc1f81ec404@shmbx04.spreadtrum.com>
+ <COYVFQ.2IA7KFB6BF4C3@crapouillou.net>
+ <20200830191133.GB6043@pendragon.ideasonboard.com>
+ <20200830202822.GA950472@ravnborg.org> <5BHAGQ.KGFJ0K3OLEAO3@crapouillou.net>
+From:   Neil Armstrong <narmstrong@baylibre.com>
+Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
+ 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
+ BSwxi7g3Mu7u5kUByanqHyA=
+Organization: Baylibre
+Message-ID: <cf46c61b-1517-3009-cb92-a86e970dccc0@baylibre.com>
+Date:   Tue, 8 Sep 2020 09:18:10 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <5BHAGQ.KGFJ0K3OLEAO3@crapouillou.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wanpeng Li <wanpengli@tencent.com>
+On 07/09/2020 14:57, Paul Cercueil wrote:
+> 
+> 
+> Le dim. 30 août 2020 à 22:28, Sam Ravnborg <sam@ravnborg.org> a écrit :
+>> Hi Laurent.
+>>
+>>>  >
+>>>  > Please read the cover letter, it explains why it's done this way. The
+>>>  > whole point of this patchset is to merge DSI and DBI frameworks in a
+>>>  > way that can be maintained.
+>>>
+>>>  I think this proves the point that the proposed naming is confusing. At
+>>>  least a rename would be required.
+>>
+>> Do you have any inputs on the amount of rename we are looking into.
+>> Is this a simple s/struct mipi_dsi_device/struct mipi_dxi_device/
+>> or something more?
+>>
+>> We should script the rename as it will tocuh a lot of files,
+>> and without a script we would chase this. But once it is scripted
+>> it would be trivial to perform.
+>>
+>> I did not look at this enough, but I had an idea that we
+>> would have do to a s/dsi/dxi/ in a lot of places.
+>>
+>> (dxi is my best proposal at the moment for something covering both dsi
+>> and dbi).
+> 
+> dcs?
+> 
+> Since DBI and DSI panels generally all use DCS commands.
 
-All the checks in lapic_timer_int_injected(), __kvm_wait_lapic_expire(), and 
-these function calls waste cpu cycles when the timer mode is not tscdeadline. 
-We can observe ~1.3% world switch time overhead by kvm-unit-tests/vmexit.flat 
-vmcall testing on AMD server. This patch reduces the world switch latency 
-caused by timer_advance_ns feature when the timer mode is not tscdeadline by 
-simpling move the check against apic->lapic_timer.expired_tscdeadline much 
-earlier.
+mipi_disp / mipi_display ? since it's all about mipi display interfaces
+with different transport protocols.
 
-Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
----
-v1 -> v2:
- * move the check against apic->lapic_timer.expired_tscdeadline much earlier 
-   instead of reset timer_advance_ns
+Neil
 
- arch/x86/kvm/lapic.c   | 11 +++++------
- arch/x86/kvm/svm/svm.c |  4 +---
- arch/x86/kvm/vmx/vmx.c |  4 +---
- 3 files changed, 7 insertions(+), 12 deletions(-)
-
-diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-index 3b32d3b..51ed4f0 100644
---- a/arch/x86/kvm/lapic.c
-+++ b/arch/x86/kvm/lapic.c
-@@ -1582,9 +1582,6 @@ static void __kvm_wait_lapic_expire(struct kvm_vcpu *vcpu)
- 	struct kvm_lapic *apic = vcpu->arch.apic;
- 	u64 guest_tsc, tsc_deadline;
- 
--	if (apic->lapic_timer.expired_tscdeadline == 0)
--		return;
--
- 	tsc_deadline = apic->lapic_timer.expired_tscdeadline;
- 	apic->lapic_timer.expired_tscdeadline = 0;
- 	guest_tsc = kvm_read_l1_tsc(vcpu, rdtsc());
-@@ -1599,7 +1596,10 @@ static void __kvm_wait_lapic_expire(struct kvm_vcpu *vcpu)
- 
- void kvm_wait_lapic_expire(struct kvm_vcpu *vcpu)
- {
--	if (lapic_timer_int_injected(vcpu))
-+	if (lapic_in_kernel(vcpu) &&
-+	    vcpu->arch.apic->lapic_timer.expired_tscdeadline &&
-+	    vcpu->arch.apic->lapic_timer.timer_advance_ns &&
-+	    lapic_timer_int_injected(vcpu))
- 		__kvm_wait_lapic_expire(vcpu);
- }
- EXPORT_SYMBOL_GPL(kvm_wait_lapic_expire);
-@@ -1635,8 +1635,7 @@ static void apic_timer_expired(struct kvm_lapic *apic, bool from_timer_fn)
- 	}
- 
- 	if (kvm_use_posted_timer_interrupt(apic->vcpu)) {
--		if (apic->lapic_timer.timer_advance_ns)
--			__kvm_wait_lapic_expire(vcpu);
-+		kvm_wait_lapic_expire(vcpu);
- 		kvm_apic_inject_pending_timer_irqs(apic);
- 		return;
- 	}
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index 0194336..19e622a 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -3456,9 +3456,7 @@ static __no_kcsan fastpath_t svm_vcpu_run(struct kvm_vcpu *vcpu)
- 	clgi();
- 	kvm_load_guest_xsave_state(vcpu);
- 
--	if (lapic_in_kernel(vcpu) &&
--		vcpu->arch.apic->lapic_timer.timer_advance_ns)
--		kvm_wait_lapic_expire(vcpu);
-+	kvm_wait_lapic_expire(vcpu);
- 
- 	/*
- 	 * If this vCPU has touched SPEC_CTRL, restore the guest's value if
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index a544351..d6e1656 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -6800,9 +6800,7 @@ static fastpath_t vmx_vcpu_run(struct kvm_vcpu *vcpu)
- 	if (enable_preemption_timer)
- 		vmx_update_hv_timer(vcpu);
- 
--	if (lapic_in_kernel(vcpu) &&
--		vcpu->arch.apic->lapic_timer.timer_advance_ns)
--		kvm_wait_lapic_expire(vcpu);
-+	kvm_wait_lapic_expire(vcpu);
- 
- 	/*
- 	 * If this vCPU has touched SPEC_CTRL, restore the guest's value if
--- 
-2.7.4
+> 
+> -Paul
+> 
+> 
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
 
