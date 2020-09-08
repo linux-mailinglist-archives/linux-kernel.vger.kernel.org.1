@@ -2,97 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1818B260AC9
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 08:20:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71D3B260AC6
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 08:20:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729028AbgIHGUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 02:20:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53726 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726787AbgIHGUT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 02:20:19 -0400
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1358D218AC;
-        Tue,  8 Sep 2020 06:20:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599546019;
-        bh=b4N0Wzo0LlxmMMNaMUj5p464U5T00RHGDqLtbBe11xc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=x+BES2N4uZlqJfb5/nwqjhUJICLuiQCKQLaY67m+Tz1tFLkZh9B4XO2eOxQOgEls/
-         G74xASvcaa+Hn2fVqe2VcjF9sOcLMuW9bwiIExEwWF605JE0tXJXTSNozHCxTEGta2
-         DI88WbufabDj0YxutyGxzFr7Qeg3SVu8GwxEWtGA=
-Received: by mail-ed1-f54.google.com with SMTP id ay8so14764189edb.8;
-        Mon, 07 Sep 2020 23:20:19 -0700 (PDT)
-X-Gm-Message-State: AOAM530uTZvM3BjwuDvT6tLVGt0tdxTPYLsTu86zGi1TKmnHRdRJApB9
-        W90DvZJiRPomP+GzloXalyacWC9pgV/A538hnfg=
-X-Google-Smtp-Source: ABdhPJxm6MgtUFHojJp4O+2jexj7kbpsA8Qrd0PhJH8gKMswfOGXw5c/YTd1KwZLwV84tza8C5lzYwBWlIheSBozyVI=
-X-Received: by 2002:a50:ab1d:: with SMTP id s29mr26477632edc.246.1599546017743;
- Mon, 07 Sep 2020 23:20:17 -0700 (PDT)
+        id S1729003AbgIHGUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 02:20:17 -0400
+Received: from wout1-smtp.messagingengine.com ([64.147.123.24]:44301 "EHLO
+        wout1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726787AbgIHGUO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 02:20:14 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id DEF1ED60;
+        Tue,  8 Sep 2020 02:20:12 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Tue, 08 Sep 2020 02:20:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=cA+1FFkzRN/i815ushS2Yuoq14C
+        CTHDuKJOCWTVbj6g=; b=OLhvtTqz7N/y+06PZChc7Om8Yeqr6zXeenyhdVKBVj3
+        u38WNrGXfdtrid9HSnA2dobRf8cbw2xNm4s3sivfRfo1q/GVIih+joDWgvI3P6mj
+        3Dy1po5/Mhdvd9MMvJdNaiz9DhYzoKmfwAJMnEIzPkLG/BvxR7r37plOgM5Lve/d
+        1CFfXRtxxR27hSHLScf7DXLAqTSvRhpPfmO++Hn1JO55JnUQP8K73FJwbx9D/N34
+        9LA8pou+kRt9vc6pCAVK4xq3Zi4Tj9eAj7kVBtt/7eDRI7SaY7djoxQOxQN7n6F3
+        H2EEBhZOmDzOFHZZP1yqT3MQFK7VHt0YQPVXNLzX2sQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=cA+1FF
+        kzRN/i815ushS2Yuoq14CCTHDuKJOCWTVbj6g=; b=igXWE9laB1QOzhOZHUpbU9
+        x4hovbxY+ke58l4usd/5kxkMDMzTzYMDN+G+pH7daPHlkhUcHlzrqyj9Ah67Q0Yg
+        uqhEL5pquXohfTl/Ab5K9lcEAsnHXT8nPKI7oZG7QpFr/HVhSLcvYKuGmQ8aH375
+        /M+dUzW4DBfaXE/ubxPxz9TdP211fe4ICsJw6H85i5/DjvZIAxJmap3vD/vtF5PK
+        iWFK51L/PPda7cWRM3JDY84SBGqRnvzrTHXdOLycAxRrYRxKeqzSxm0k4+I5SYxI
+        ggxB0CGZ8clDUPCpy5Fk9f0Q9hgdpDlGvxRKbhK0fnMAfA60eTTYtA3fYiiCsNbw
+        ==
+X-ME-Sender: <xms:nCJXX6qVYNJwycDIDgnMbRbwoyB2rZyOZ9i9anMh_AogTdCS6R8tVA>
+    <xme:nCJXX4qRRAYyV9-CBzZ2sLhEHQuu3eJFWS-1ePfywZLy1ZX2uynGlz94rRIPm4y0H
+    s7Rl-b8PuqlYmEgBYw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudehuddguddthecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihi
+    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
+    htthgvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheei
+    heegudenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedune
+    curfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:nCJXX_NLjBTGU8VBMDcLMrnUHs1BQkVVR79WdMe28TIMu--Ecp_FhA>
+    <xmx:nCJXX54U4M6OYn3p0p6Xj6rjefSma5rgEotF9KFouvk3d36jD0XnzQ>
+    <xmx:nCJXX55_2qm965HsROD-BuHtWPzqDi6H4fqBxhBnEUkLPTvM61ht9g>
+    <xmx:nCJXX3TDy7UrTez7lK9aI1QC6LgvlaF709_bwmbR3QDIKZnrq7y5fw>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 2BC30328005D;
+        Tue,  8 Sep 2020 02:20:12 -0400 (EDT)
+Date:   Tue, 8 Sep 2020 08:20:11 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Martin Cerveny <m.cerveny@computer.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        devicetree@vger.kernel.org,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH v3 0/2] ARM: dts: sun8i: v3s: Enable crypto engine
+Message-ID: <20200908062011.srcgzg6q4t6up4na@gilmour.lan>
+References: <20200907162458.23730-1-m.cerveny@computer.org>
 MIME-Version: 1.0
-References: <20200908144622.09385c88@canb.auug.org.au>
-In-Reply-To: <20200908144622.09385c88@canb.auug.org.au>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Tue, 8 Sep 2020 08:20:06 +0200
-X-Gmail-Original-Message-ID: <CAJKOXPeZqmcyDD8KiPQveJEW5DgKvWbcQeTQYG0A6zaHDN=_Qg@mail.gmail.com>
-Message-ID: <CAJKOXPeZqmcyDD8KiPQveJEW5DgKvWbcQeTQYG0A6zaHDN=_Qg@mail.gmail.com>
-Subject: Re: linux-next: manual merge of the mmc tree with the samsung-krzk tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="snpgtitq7enspzex"
+Content-Disposition: inline
+In-Reply-To: <20200907162458.23730-1-m.cerveny@computer.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 8 Sep 2020 at 06:46, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->
-> Hi all,
->
-> Today's linux-next merge of the mmc tree got a conflict in:
->
->   drivers/mmc/host/Kconfig
->
-> between commits:
->
->   cb6c03019cdd ("ARM: exynos: stop selecting PLAT_SAMSUNG")
->   db8230d29c3a ("ARM: s5pv210: don't imply CONFIG_PLAT_SAMSUNG")
->
-> from the samsung-krzk tree and commit:
->
->   54d8454436a2 ("mmc: host: Enable compile testing of multiple drivers")
->
-> from the mmc tree.
->
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
->
-> --
-> Cheers,
-> Stephen Rothwell
->
-> diff --cc drivers/mmc/host/Kconfig
-> index 0d7c61d8d1d9,dc646359b4ff..000000000000
-> --- a/drivers/mmc/host/Kconfig
-> +++ b/drivers/mmc/host/Kconfig
-> @@@ -289,7 -301,8 +301,8 @@@ config MMC_SDHCI_TEGR
->
->   config MMC_SDHCI_S3C
->         tristate "SDHCI support on Samsung S3C SoC"
-> -       depends on MMC_SDHCI && (PLAT_SAMSUNG || ARCH_S5PV210 || ARCH_EXYNOS)
-> +       depends on MMC_SDHCI
->  -      depends on PLAT_SAMSUNG || COMPILE_TEST
-> ++      depends on PLAT_SAMSUNG || ARCH_S5PV210 || ARCH_EXYNOS || COMPILE_TEST
 
-Thanks, this is the expected resolution.
+--snpgtitq7enspzex
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Best regards,
-Krzysztof
+On Mon, Sep 07, 2020 at 06:24:56PM +0200, Martin Cerveny wrote:
+> Add support for crypto engine (sun4i-ss) for Allwinner V3s.
+> Functionality like A33 so add only compatible and enable
+> in device tree.
+>=20
+> Regards.
+
+Applied, thanks
+Maxime
+
+--snpgtitq7enspzex
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX1cimwAKCRDj7w1vZxhR
+xR+EAP41cPkvcWKRNEhE+APLq613AP29gYkthszjAn4FjVddMgEAxbtS3EOJF7/I
+MP+hzIEbCVi6XA1iQuBNAihkYJHpAws=
+=OS+M
+-----END PGP SIGNATURE-----
+
+--snpgtitq7enspzex--
