@@ -2,83 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07D4C260940
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 06:15:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4554260944
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 06:17:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725965AbgIHEPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 00:15:31 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:37169 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725804AbgIHEP2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 00:15:28 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BlsJF3Rswz9sSP;
-        Tue,  8 Sep 2020 14:15:25 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1599538525;
-        bh=Wqtrfj5HlqGrcYAVH1VxP++Iktu5EHpo0Uh5otsB+Yw=;
-        h=Date:From:To:Cc:Subject:From;
-        b=dxgd6gvHmlZyMPSJGHOi5lJ9f/gSHg/5rhLlmKLYY1ZG71wlH1u1C5sbek4stOjFk
-         4bLPdNKGdlLSQ7KcqgpOOq8exsl8WHv7Id2gKFrVmAGbWGjW6+g9nKZr0UtCs6yAsa
-         I/IBcyVPD6RUXvTg+7gn/pH4uLvCt98XxbiJeulcpEcAwWreSeUUCQX/l3zgc+qL4L
-         5qIw0cm6qQOGv2UvRCJO2Gtr1ED58OVKBSBrkmkgbTKUMUHEjVT6p8tgjNFBDrxp9K
-         4X9sc5t8wauUA79vkbIMu+y10qHAjBbCQ/wFhJ5BtuRp3eKfXMAGLTKVaesX8tHL6d
-         wbMHvPA3uLp5w==
-Date:   Tue, 8 Sep 2020 14:15:24 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: linux-next: build warning after merge of the drm-misc tree
-Message-ID: <20200908141524.7b63519e@canb.auug.org.au>
+        id S1726279AbgIHERq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 00:17:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59234 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725806AbgIHERo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 00:17:44 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9630EC061575
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Sep 2020 21:17:43 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id i22so20527809eja.5
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Sep 2020 21:17:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=zdxUWMWXTEs/zs0LJh1bxLoOHpDg1k5nkLimqXptzik=;
+        b=K9XHuuLGTzNyJ6c0RJn8++O/WFnL1UNjFWG4473ctJ/uzgosuXp1oQcnmv3ycgEYT8
+         s4zB4suhYQ2eYl4iEnFSj1NCWQmP/QanAucgF4hOmAATkA8W6aFCm+CE1jJAP0w16N8R
+         rlkWYshr0JoImGQnLNwVMHj37r+ilVvu25BNI50P51MHRU56k266+5iQfobYYv4JWG7J
+         mfEOtUnbkR3ywMnlX62FfcJ8s3izvqDuNdD3pY71lD4BQMBgmaNPWtLFRyC1ZK7srkHJ
+         SLm7adEHVkOWJF95DTxJ+vjD9+TE7nsjMNAY0miP14POvo/GUDOztRNoWK2JolHJ/aLz
+         lMjQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=zdxUWMWXTEs/zs0LJh1bxLoOHpDg1k5nkLimqXptzik=;
+        b=YafvY1p7gRXWnhnEpul4pHGtLswvfYmNduwuAclzjcIrYWzy3kdgc9Vr8j0DfdijPp
+         dn1xiUhr1zBQSAdaXQOAFZnc62H39+FkEytNWC2lkJgb3zYPvKa44SaBuMv2ktqRjv6m
+         poyZbYkglEdNV10Wn66i2Hl9hfkKUB1/KmSP1eYKRUSo+j3RsoeZ5QuKyM6RhcLUufee
+         Od5zZMm/p4q1GqGyFj1MQltI2HLKT733eq3OKXZd8KDWzOdI0O+FpPQQfoovIuBECxbu
+         m58cUrq0CmBPyKpnF2M5Iqq2ylIuRNadTCgLelbx+yAqhqDnFX+zCbH4FpiIFNjejF48
+         CD8w==
+X-Gm-Message-State: AOAM533xbmWZlaKTJLXmo0vIH0nidGbBC1bsEqGfYaxI791HSgR/D6C8
+        AhqhMGBVpQ6ZNKxy0LQlnSl8kwsuEc1lFFAwd2k=
+X-Google-Smtp-Source: ABdhPJxo5tZSkrOiusaKAmI1W5fNgw6E+OMCZvTk9tRx9VaE5gATrysMtmVXjRds1YFVeeDQ33umbI7+Yop/BJkxdfc=
+X-Received: by 2002:a17:906:2f17:: with SMTP id v23mr23454441eji.343.1599538660476;
+ Mon, 07 Sep 2020 21:17:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/.XlmKJHoCIUNF/Gn=PQnoFl";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Received: by 2002:a54:34cd:0:0:0:0:0 with HTTP; Mon, 7 Sep 2020 21:17:39 -0700 (PDT)
+Reply-To: ayishagddafio@mail.ru
+From:   AISHA GADDAFI <floradarpin.d@gmail.com>
+Date:   Mon, 7 Sep 2020 21:17:39 -0700
+Message-ID: <CAPX4zWwsWwRLg8mUHT5J0x3CWchpzHTaCStHV1Cpd5OMw2YrNg@mail.gmail.com>
+Subject: Lieber Freund (Assalamu Alaikum),?
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/.XlmKJHoCIUNF/Gn=PQnoFl
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi all,
-
-After merging the drm-misc tree, today's linux-next build (x86_64
-allmodconfig) produced this warning:
-
-WARNING: modpost: missing MODULE_LICENSE() in drivers/gpu/drm/panel/panel-s=
-amsung-s6e63m0.o
-
-Introduced by commit
-
-  b7b23e447687 ("drm/panel: s6e63m0: Break out SPI transport")
-
 --=20
-Cheers,
-Stephen Rothwell
+Lieber Freund (Assalamu Alaikum),
 
---Sig_/.XlmKJHoCIUNF/Gn=PQnoFl
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Ich bin vor einer privaten Suche auf Ihren E-Mail-Kontakt gesto=C3=9Fen
+Ihre Hilfe. Mein Name ist Aisha Al-Qaddafi, eine alleinerziehende
+Mutter und eine Witwe
+mit drei Kindern. Ich bin die einzige leibliche Tochter des Sp=C3=A4tlibysc=
+hen
+Pr=C3=A4sident (verstorbener Oberst Muammar Gaddafi).
 
------BEGIN PGP SIGNATURE-----
+Ich habe Investmentfonds im Wert von siebenundzwanzig Millionen
+f=C3=BCnfhunderttausend
+United State Dollar ($ 27.500.000.00) und ich brauche eine
+vertrauensw=C3=BCrdige Investition
+Manager / Partner aufgrund meines aktuellen Fl=C3=BCchtlingsstatus bin ich =
+jedoch
+M=C3=B6glicherweise interessieren Sie sich f=C3=BCr die Unterst=C3=BCtzung =
+von
+Investitionsprojekten in Ihrem Land
+Von dort aus k=C3=B6nnen wir in naher Zukunft Gesch=C3=A4ftsbeziehungen auf=
+bauen.
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9XBVwACgkQAVBC80lX
-0GxB/ggAiHVjxZVmZRH4U48nYAh9BXl3leiuMFSupmtqObfxXFoXcNl+6zuSOun/
-LhE5yVnH+QqXB1J+UYI4Rmy6es14KAoEOl8kheQ/Zv7Jf9y43i+gasFhhxEq9g2d
-ucrUtu93e4rg0eXPjtVkqBw1JvWyPYwM5ukicisII2pUNpzjzLQBZf35VaZiNUM7
-cjiyLG8seiflM/aFDKjrHEmoI2C/u8UYHOk91jbox97r56d4zH1ry6yjXoSG7Shs
-njgKoefGvGXrgaAmRmKJbFKo7lMwCyPkRm5/w2Bgu4cFVDuKF+uD0V7F+CnymjOE
-tI6J9EQPV+BdufHHVdKOrrpzNE0rMw==
-=AR27
------END PGP SIGNATURE-----
+Ich bin bereit, mit Ihnen =C3=BCber das Verh=C3=A4ltnis zwischen Investitio=
+n und
+Unternehmensgewinn zu verhandeln
+Basis f=C3=BCr die zuk=C3=BCnftige Investition Gewinne zu erzielen.
 
---Sig_/.XlmKJHoCIUNF/Gn=PQnoFl--
+Wenn Sie bereit sind, dieses Projekt in meinem Namen zu bearbeiten,
+antworten Sie bitte dringend
+Damit ich Ihnen mehr Informationen =C3=BCber die Investmentfonds geben kann=
+.
+
+Ihre dringende Antwort wird gesch=C3=A4tzt. schreibe mir an diese email adr=
+esse (
+ayishagddafio@mail.ru ) zur weiteren Diskussion.
+
+Freundliche Gr=C3=BC=C3=9Fe
+Frau Aisha Al-Qaddafi
