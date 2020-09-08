@@ -2,224 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D77B261FC5
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 22:06:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 317DB261F87
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 22:04:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730378AbgIHUG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 16:06:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48120 "EHLO
+        id S1730157AbgIHUE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 16:04:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729719AbgIHPVk (ORCPT
+        with ESMTP id S1730408AbgIHPXv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:21:40 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F11AC0612FB
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 05:58:29 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id w5so19005842wrp.8
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 05:58:29 -0700 (PDT)
+        Tue, 8 Sep 2020 11:23:51 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17E0BC061264
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 06:23:32 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id k15so10921515pfc.12
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 06:23:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ikPWUVajWpPhi7pSm8HDj7BsQ12e/VRbizs3Bl5cmps=;
-        b=h24MOzIws0owVLCP26G8p4TfyQNkcA9CMUdzjx/1FD/NuKFbPRZAdjmyVpOGHeC52G
-         l4287SGB/RoIq/KGngRwJ2c5tvGgq18w5bwZpE5TC8PMPvIOrpWvPLAXOK7pmpuEMMwm
-         2sEFg7DcTLrf2TqbHdyDw/kPRqYVYywzWS3ixv9mKN+qWVNavk4UA8J0coLwWfngQFZS
-         1c5w/U6CHN+IcIaNaPBgN54KggRnflv8e7lAePrD1QKI+i93TOHLmv6oIhp63/YqPmsZ
-         m4Qx8OHyMCzzHHgDB/JyeGBU2OAFmeFzE9XPGwgIzAkH7G6+ISJQQlPX+qrOHzKDi/Z5
-         LgkA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7QJMDMbNmolR6AioGkNQtnG3AJr/WPDscGoTEPtadkI=;
+        b=BNRMmLHzf/L4KStfbtlT5lPRA5uRA3qlVF6BjWYdYtCPGPu3N3+sbNok5GP3FxCwHL
+         soiZ47Ocytr8BONR/bXPxZBKU5qe1b5sdBjcMsVPJCiVTXFRm6NUZJDRKzzClKLSw/QN
+         2wNVwSS02//ZFGqO65wr6un2nUE8+2KjhPTL1vTihJSfmbfgzLckLmX4b906cLYM4hFb
+         oAuG36s0RK2K+ru1b7aC6/VS9VISv0oNkeKDBNBveMvW531wlGGT/w2Cy40YZ1OXXOxE
+         uMWKyxxqhR/pmjOxr8OmlKgWU4u5smzwhNM1w8QHoyxnAUVew0eCn8w135HTYTsfWoh/
+         V+fQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ikPWUVajWpPhi7pSm8HDj7BsQ12e/VRbizs3Bl5cmps=;
-        b=eLh0QTmfKGwM2NzubIDwXHR/Ehos2nCpQjXkyrfknORQ68jR5NDKubKEr2kyN7zZvt
-         z9dDATSZ/bGu+/820J64Di0OBG22P8NZbDAwu1rQxZVJzm6uj2vDEOfy9gTZ9sRU3xRx
-         KyDZUc8FgzUbfB/jHQa2sfzoHzoPNh949xrC7Z2uIwa1Dmut482dORfbdYX9xmVwhEVk
-         vf5uenYqxYB4r1dwagA+QlfxIvIOumw7MkYMZaEUF3YMQxYQ2ih4J1paBA5k9QNiR7VM
-         KeSJOWAzsKKwd913rhJpcr6jhAkJDZmWYZFeG5vL6/+bTRk+yHqu0raLXgB0xABBMvXG
-         js0A==
-X-Gm-Message-State: AOAM531qonp3aZIQehNXwS09G69RGh7K4yD+n4vPzLHMfisUiGbZfS60
-        r+XMnaFeh/5HoSFuxdXfR5IvNw==
-X-Google-Smtp-Source: ABdhPJwHjgDUtqRBB/g2d8wiJyug79CxIptyIXQB/lJ1EwW+nOgQ4NMwQLw+Ld4+xyg8DQrXp4w50w==
-X-Received: by 2002:adf:b306:: with SMTP id j6mr25583555wrd.279.1599569908453;
-        Tue, 08 Sep 2020 05:58:28 -0700 (PDT)
-Received: from debian-brgl.home (lfbn-nic-1-68-20.w2-15.abo.wanadoo.fr. [2.15.159.20])
-        by smtp.gmail.com with ESMTPSA id y207sm34817875wmc.17.2020.09.08.05.58.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Sep 2020 05:58:27 -0700 (PDT)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Kent Gibson <warthog618@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH 2/3] gpiolib: generalize devprop_gpiochip_set_names() for device properties
-Date:   Tue,  8 Sep 2020 14:58:12 +0200
-Message-Id: <20200908125813.8809-3-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200908125813.8809-1-brgl@bgdev.pl>
-References: <20200908125813.8809-1-brgl@bgdev.pl>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7QJMDMbNmolR6AioGkNQtnG3AJr/WPDscGoTEPtadkI=;
+        b=O82oofIGlV1jBlMTBrm/qoka4WoBzIxzlp/y+Q4OzDX/JmB0iw5XocLRoH+puW8Eqj
+         9n8aqrtrxxEShYG4lRZ4UM2sQlxFUfjcLf+MCjcFPFZXI3zywfX/j6wYHtZGELmehkRs
+         7wnRv1yqMPVsWPjv7I+LKgotPU4/foK/IqeJD9hm3scX3ma2R77appD7QmBwEEvImBbf
+         zpd9Nkgo6p0dFFRybIhFxX5ZcqZzW402ZxDDMGwcfvhcrXVxEXZp+mXRdVbGpjBWtUzW
+         B0NhvuNzKaRBikCLuhE82j2MJWSMCxPwHdBbJ+9l5/tQIO0ZoRNpL2SX2B9EyJ6i+0y5
+         SsQg==
+X-Gm-Message-State: AOAM5304oA6Ob/xO3vGgKFDkDZRuVi7R/64/tHZjQMyMH9JlwSlyfXQI
+        Bcd0WNkJ5sx9Opdrr6JoGt/jthLG5y01DIUrJBuZIA==
+X-Google-Smtp-Source: ABdhPJzTowZLkPaF7Ke2jVTQZa2hLHDoHcJM3WSVrcD+SKJADteSyd8EQhhclsk7eUVN/PuMj+uUge3z+0tBAd+51d8=
+X-Received: by 2002:a17:902:b94c:b029:d0:cbe1:e737 with SMTP id
+ h12-20020a170902b94cb02900d0cbe1e737mr790548pls.18.1599571411337; Tue, 08 Sep
+ 2020 06:23:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1597425745.git.andreyknvl@google.com> <2cf260bdc20793419e32240d2a3e692b0adf1f80.1597425745.git.andreyknvl@google.com>
+ <20200827093808.GB29264@gaia>
+In-Reply-To: <20200827093808.GB29264@gaia>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Tue, 8 Sep 2020 15:23:20 +0200
+Message-ID: <CAAeHK+w-NLfCXFxJNEQ2pLpS6P3KCtAWJrxAFog9=BNiZ58wAQ@mail.gmail.com>
+Subject: Re: [PATCH 20/35] arm64: mte: Add in-kernel MTE helpers
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+On Thu, Aug 27, 2020 at 11:38 AM Catalin Marinas
+<catalin.marinas@arm.com> wrote:
+>
+> On Fri, Aug 14, 2020 at 07:27:02PM +0200, Andrey Konovalov wrote:
+> > diff --git a/arch/arm64/include/asm/mte.h b/arch/arm64/include/asm/mte.h
+> > index 1c99fcadb58c..733be1cb5c95 100644
+> > --- a/arch/arm64/include/asm/mte.h
+> > +++ b/arch/arm64/include/asm/mte.h
+> > @@ -5,14 +5,19 @@
+> >  #ifndef __ASM_MTE_H
+> >  #define __ASM_MTE_H
+> >
+> > -#define MTE_GRANULE_SIZE     UL(16)
+> > +#include <asm/mte_asm.h>
+>
+> So the reason for this move is to include it in asm/cache.h. Fine by
+> me but...
+>
+> >  #define MTE_GRANULE_MASK     (~(MTE_GRANULE_SIZE - 1))
+> >  #define MTE_TAG_SHIFT                56
+> >  #define MTE_TAG_SIZE         4
+> > +#define MTE_TAG_MASK         GENMASK((MTE_TAG_SHIFT + (MTE_TAG_SIZE - 1)), MTE_TAG_SHIFT)
+> > +#define MTE_TAG_MAX          (MTE_TAG_MASK >> MTE_TAG_SHIFT)
+>
+> ... I'd rather move all these definitions in a file with a more
+> meaningful name like mte-def.h. The _asm implies being meant for .S
+> files inclusion which isn't the case.
+>
+> > diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
+> > index eb39504e390a..e2d708b4583d 100644
+> > --- a/arch/arm64/kernel/mte.c
+> > +++ b/arch/arm64/kernel/mte.c
+> > @@ -72,6 +74,47 @@ int memcmp_pages(struct page *page1, struct page *page2)
+> >       return ret;
+> >  }
+> >
+> > +u8 mte_get_mem_tag(void *addr)
+> > +{
+> > +     if (system_supports_mte())
+> > +             addr = mte_assign_valid_ptr_tag(addr);
+>
+> The mte_assign_valid_ptr_tag() is slightly misleading. All it does is
+> read the allocation tag from memory.
+>
+> I also think this should be inline asm, possibly using alternatives.
+> It's just an LDG instruction (and it saves us from having to invent a
+> better function name).
 
-devprop_gpiochip_set_names() is overly complicated with taking the
-fwnode argument (which requires using dev_fwnode() & of_fwnode_handle()
-in ACPI and OF GPIO code respectively). Let's just switch to using the
-generic device properties.
-
-This allows us to pull the code setting line names directly into
-gpiochip_add_data_with_key() instead of handling it separately for
-ACPI and OF.
-
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
----
- drivers/gpio/gpiolib-acpi.c    |  3 ---
- drivers/gpio/gpiolib-devprop.c | 20 ++++++++++----------
- drivers/gpio/gpiolib-of.c      |  5 -----
- drivers/gpio/gpiolib.c         |  8 ++++----
- include/linux/gpio/driver.h    |  3 +--
- 5 files changed, 15 insertions(+), 24 deletions(-)
-
-diff --git a/drivers/gpio/gpiolib-acpi.c b/drivers/gpio/gpiolib-acpi.c
-index 54ca3c18b291..834a12f3219e 100644
---- a/drivers/gpio/gpiolib-acpi.c
-+++ b/drivers/gpio/gpiolib-acpi.c
-@@ -1221,9 +1221,6 @@ void acpi_gpiochip_add(struct gpio_chip *chip)
- 		return;
- 	}
- 
--	if (!chip->names)
--		devprop_gpiochip_set_names(chip, dev_fwnode(chip->parent));
--
- 	acpi_gpiochip_request_regions(acpi_gpio);
- 	acpi_gpiochip_scan_gpios(acpi_gpio);
- 	acpi_walk_dep_device_list(handle);
-diff --git a/drivers/gpio/gpiolib-devprop.c b/drivers/gpio/gpiolib-devprop.c
-index 26741032fa9e..29ee00d7730e 100644
---- a/drivers/gpio/gpiolib-devprop.c
-+++ b/drivers/gpio/gpiolib-devprop.c
-@@ -17,25 +17,23 @@
- /**
-  * devprop_gpiochip_set_names - Set GPIO line names using device properties
-  * @chip: GPIO chip whose lines should be named, if possible
-- * @fwnode: Property Node containing the gpio-line-names property
-  *
-  * Looks for device property "gpio-line-names" and if it exists assigns
-  * GPIO line names for the chip. The memory allocated for the assigned
-- * names belong to the underlying firmware node and should not be released
-+ * names belong to the underlying software node and should not be released
-  * by the caller.
-  */
--void devprop_gpiochip_set_names(struct gpio_chip *chip,
--				const struct fwnode_handle *fwnode)
-+int devprop_gpiochip_set_names(struct gpio_chip *chip)
- {
- 	struct gpio_device *gdev = chip->gpiodev;
-+	struct device *dev = chip->parent;
- 	const char **names;
- 	int ret, i;
- 	int count;
- 
--	count = fwnode_property_read_string_array(fwnode, "gpio-line-names",
--						  NULL, 0);
-+	count = device_property_count_strings(dev, "gpio-line-names");
- 	if (count < 0)
--		return;
-+		return 0;
- 
- 	if (count > gdev->ngpio) {
- 		dev_warn(&gdev->dev, "gpio-line-names is length %d but should be at most length %d",
-@@ -45,19 +43,21 @@ void devprop_gpiochip_set_names(struct gpio_chip *chip,
- 
- 	names = kcalloc(count, sizeof(*names), GFP_KERNEL);
- 	if (!names)
--		return;
-+		return -ENOMEM;
- 
--	ret = fwnode_property_read_string_array(fwnode, "gpio-line-names",
-+	ret = device_property_read_string_array(dev, "gpio-line-names",
- 						names, count);
- 	if (ret < 0) {
- 		dev_warn(&gdev->dev, "failed to read GPIO line names\n");
- 		kfree(names);
--		return;
-+		return ret;
- 	}
- 
- 	for (i = 0; i < count; i++)
- 		gdev->descs[i].name = names[i];
- 
- 	kfree(names);
-+
-+	return 0;
- }
- EXPORT_SYMBOL_GPL(devprop_gpiochip_set_names);
-diff --git a/drivers/gpio/gpiolib-of.c b/drivers/gpio/gpiolib-of.c
-index bd31dd3b6a75..2f895a2b8411 100644
---- a/drivers/gpio/gpiolib-of.c
-+++ b/drivers/gpio/gpiolib-of.c
-@@ -1026,11 +1026,6 @@ int of_gpiochip_add(struct gpio_chip *chip)
- 	if (ret)
- 		return ret;
- 
--	/* If the chip defines names itself, these take precedence */
--	if (!chip->names)
--		devprop_gpiochip_set_names(chip,
--					   of_fwnode_handle(chip->of_node));
--
- 	of_node_get(chip->of_node);
- 
- 	ret = of_gpiochip_scan_gpios(chip);
-diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-index 80137c1b3cdc..0d390f0ec32c 100644
---- a/drivers/gpio/gpiolib.c
-+++ b/drivers/gpio/gpiolib.c
-@@ -340,9 +340,6 @@ static int gpiochip_set_desc_names(struct gpio_chip *gc)
- 	struct gpio_device *gdev = gc->gpiodev;
- 	int i;
- 
--	if (!gc->names)
--		return 0;
--
- 	/* First check all names if they are unique */
- 	for (i = 0; i != gc->ngpio; ++i) {
- 		struct gpio_desc *gpio;
-@@ -621,7 +618,10 @@ int gpiochip_add_data_with_key(struct gpio_chip *gc, void *data,
- 	INIT_LIST_HEAD(&gdev->pin_ranges);
- #endif
- 
--	ret = gpiochip_set_desc_names(gc);
-+	if (gc->names)
-+		ret = gpiochip_set_desc_names(gc);
-+	else
-+		ret = devprop_gpiochip_set_names(gc);
- 	if (ret)
- 		goto err_remove_from_list;
- 
-diff --git a/include/linux/gpio/driver.h b/include/linux/gpio/driver.h
-index d1cef5c2715c..56485a040b82 100644
---- a/include/linux/gpio/driver.h
-+++ b/include/linux/gpio/driver.h
-@@ -756,8 +756,7 @@ struct gpio_desc *gpiochip_request_own_desc(struct gpio_chip *gc,
- 					    enum gpiod_flags dflags);
- void gpiochip_free_own_desc(struct gpio_desc *desc);
- 
--void devprop_gpiochip_set_names(struct gpio_chip *gc,
--				const struct fwnode_handle *fwnode);
-+int devprop_gpiochip_set_names(struct gpio_chip *gc);
- 
- #ifdef CONFIG_GPIOLIB
- 
--- 
-2.26.1
-
+Could you point me to an example of inline asm with alternatives if
+there's any? I see alternative_if and other similar macros used in
+arch/arm64/ code, is that what you mean? Those seem to always use
+static conditions, like config values, but here we have a dynamic
+system_supports_mte(). Could you elaborate on how I should implement
+this?
