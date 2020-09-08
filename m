@@ -2,113 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B84FD2617E6
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:45:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 823452617A8
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:39:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732011AbgIHRpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 13:45:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56702 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731653AbgIHQOE (ORCPT
+        id S1731902AbgIHRjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 13:39:55 -0400
+Received: from mail-pj1-f80.google.com ([209.85.216.80]:40923 "EHLO
+        mail-pj1-f80.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731686AbgIHQOO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:14:04 -0400
-Received: from mail.kmu-office.ch (mail.kmu-office.ch [IPv6:2a02:418:6a02::a2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 430EEC08C5E6
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 07:17:07 -0700 (PDT)
-Received: from trochilidae.toradex.int (31-10-206-124.static.upc.ch [31.10.206.124])
-        by mail.kmu-office.ch (Postfix) with ESMTPSA id 242BF5C291F;
-        Tue,  8 Sep 2020 16:17:03 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=agner.ch; s=dkim;
-        t=1599574623;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:
-         content-transfer-encoding:content-transfer-encoding:in-reply-to:
-         references; bh=zgEgss2wZQe7k40WnKhQQKdlbF5CBIRw28RHGZ6lUxY=;
-        b=UJQIUrp41CoX4tJkMQZjwC4n2RWZ/yRGCdjUFP28trwQZqTZT0PRDPq05R+boIQNJDGDJx
-        okT50jeJ+iPg36wtIgZwc4/+f7WK//PACfAhybPJqdY0kRScep/J0gCMcD50F2sMqteyN+
-        ENsJuQ2+fAWLTNtjB6F7dDyo+trR5PY=
-From:   Stefan Agner <stefan@agner.ch>
-To:     marex@denx.de, stefan@agner.ch
-Cc:     laurent.pinchart@ideasonboard.com, airlied@linux.ie,
-        daniel@ffwll.ch, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, tomi.valkeinen@ti.com,
-        linux-imx@nxp.com, dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3] drm: mxsfb: check framebuffer pitch
-Date:   Tue,  8 Sep 2020 16:16:54 +0200
-Message-Id: <20200908141654.266836-1-stefan@agner.ch>
-X-Mailer: git-send-email 2.28.0
+        Tue, 8 Sep 2020 12:14:14 -0400
+Received: by mail-pj1-f80.google.com with SMTP id a8so2865347pjk.5
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 09:14:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=D/csrweqGrVkpEAZ5pplUNZ1TOwhSVEWpZDLuH0vrCo=;
+        b=q02fzQ48U9nqZk6gOXV1LKQ/j4Dj86ZiROq2MWI2oRzHjAz5nQqXoxCO1bTUrH/T/3
+         D52/hzCUeXYZyI7KBlFGKjQFbUOBRWWDk8PmWbIHWuemK9HPvhTFjcFeblZ0QMsKZ3K8
+         6HKokDohg/2qd55+4zBp5oqPvZXV2w4TxOY1UuRjz+l27b/axS4qY1EDlRBunME3LFNe
+         vaBUszyfvU8swl6kB2fzLIGJgtrg9vZffvEtnRf6B9FLIpAdPlpUgV/jxdynHhXkmdgn
+         fTgPchusHO2FGLA3/XgUY0rGdQCx5edZFo1npT5Wv3fWmyswa0WMxqbQDxfdmcHRtyJp
+         56Tg==
+X-Gm-Message-State: AOAM5320CXOHi8GE1R3YtlAKU2aYedl2UBrWkirOkR2uadpqvcM/3113
+        KfFNlT9iW1K/FW3ygW43FAkftcC5bPa8zv+9To3Htgnotw46
+X-Google-Smtp-Source: ABdhPJzrA5qcyYQg4o7/Izr1PNFz2CRZvSjZXQ0hheFIG88YJDqhJlLXftQMRM+cTsAhyWpq9Medsh/P1HjMX4PRpb8AIQS1cVl9
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a6b:2b07:: with SMTP id r7mr21194679ior.181.1599574756014;
+ Tue, 08 Sep 2020 07:19:16 -0700 (PDT)
+Date:   Tue, 08 Sep 2020 07:19:16 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000001fc64e05aece0537@google.com>
+Subject: BUG: unable to handle kernel paging request in __sb_start_write
+From:   syzbot <syzbot+4d428ef55ad3356698bf@syzkaller.appspotmail.com>
+To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The lcdif IP does not support a framebuffer pitch (stride) other than
-framebuffer width. Check for equality and reject the framebuffer
-otherwise.
+Hello,
 
-This prevents a distorted picture when using 640x800 and running the
-Mesa graphics stack. Mesa tries to use a cache aligned stride, which
-leads at that particular resolution to width != stride. Currently
-Mesa has no fallback behavior, but rejecting this configuration allows
-userspace to handle the issue correctly.
+syzbot found the following issue on:
 
-Fixes: 45d59d704080 ("drm: Add new driver for MXSFB controller")
-Signed-off-by: Stefan Agner <stefan@agner.ch>
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+HEAD commit:    e28f0104 Merge tag 'fixes-2020-09-03' of git://git.kernel...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=11a6b859900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3c5f6ce8d5b68299
+dashboard link: https://syzkaller.appspot.com/bug?extid=4d428ef55ad3356698bf
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13949019900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14fe9e3e900000
+
+Bisection is inconclusive: the issue happens on the oldest tested release.
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12b6a5ae900000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=11b6a5ae900000
+console output: https://syzkaller.appspot.com/x/log.txt?x=16b6a5ae900000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+4d428ef55ad3356698bf@syzkaller.appspotmail.com
+
+BUG: unable to handle page fault for address: ffffe8ffffc33c70
+#PF: supervisor write access in kernel mode
+#PF: error_code(0x0002) - not-present page
+PGD 77000000000000 P4D 77000000000000 
+Oops: 0002 [#1] PREEMPT SMP KASAN
+CPU: 0 PID: 10445 Comm: syz-executor899 Not tainted 5.9.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:percpu_down_read_trylock include/linux/percpu-rwsem.h:82 [inline]
+RIP: 0010:__sb_start_write+0x16e/0x470 fs/super.c:1674
+Code: 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 e3 02 00 00 41 bd 01 00 00 00 bd 01 00 00 00 48 8b 43 68 <65> ff 00 e8 aa 6b b4 ff bf 01 00 00 00 e8 e0 d5 8f ff 31 ff 65 44
+RSP: 0018:ffffc9000a0bfab8 EFLAGS: 00010246
+RAX: 0000607f51633c70 RBX: ffff888098be2380 RCX: ffffffff81bfdf07
+RDX: 1ffff1101317c47d RSI: 0000000000000001 RDI: ffff888098be23e8
+RBP: 0000000000000001 R08: 0000000000000001 R09: 0000000000000001
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000001
+R13: 0000000000000001 R14: 0000000000000000 R15: ffff8880854bc0b0
+FS:  00007fa632ef6700(0000) GS:ffff8880ae600000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffe8ffffc33c70 CR3: 000000000011b000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ sb_start_write_trylock include/linux/fs.h:1648 [inline]
+ touch_atime+0x152/0x370 fs/inode.c:1831
+ file_accessed include/linux/fs.h:2206 [inline]
+ splice_direct_to_actor+0x762/0x980 fs/splice.c:989
+ do_splice_direct+0x1b3/0x280 fs/splice.c:1059
+ do_sendfile+0x55f/0xd40 fs/read_write.c:1540
+ __do_sys_sendfile64 fs/read_write.c:1601 [inline]
+ __se_sys_sendfile64 fs/read_write.c:1587 [inline]
+ __x64_sys_sendfile64+0x1cc/0x210 fs/read_write.c:1587
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x446ac9
+Code: Bad RIP value.
+RSP: 002b:00007fa632ef5d18 EFLAGS: 00000246 ORIG_RAX: 0000000000000028
+RAX: ffffffffffffffda RBX: 00000000006dbc58 RCX: 0000000000446ac9
+RDX: 0000000000000000 RSI: 0000000000000005 RDI: 0000000000000004
+RBP: 00000000006dbc50 R08: 65732f636f72702f R09: 65732f636f72702f
+R10: 0800000080004101 R11: 0000000000000246 R12: 00000000006dbc5c
+R13: 00007fa632ef5d20 R14: 00007fa632ef5d20 R15: 20c49ba5e353f7cf
+Modules linked in:
+CR2: ffffe8ffffc33c70
+---[ end trace 641e2e487fb96738 ]---
+RIP: 0010:percpu_down_read_trylock include/linux/percpu-rwsem.h:82 [inline]
+RIP: 0010:__sb_start_write+0x16e/0x470 fs/super.c:1674
+Code: 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 e3 02 00 00 41 bd 01 00 00 00 bd 01 00 00 00 48 8b 43 68 <65> ff 00 e8 aa 6b b4 ff bf 01 00 00 00 e8 e0 d5 8f ff 31 ff 65 44
+RSP: 0018:ffffc9000a0bfab8 EFLAGS: 00010246
+RAX: 0000607f51633c70 RBX: ffff888098be2380 RCX: ffffffff81bfdf07
+RDX: 1ffff1101317c47d RSI: 0000000000000001 RDI: ffff888098be23e8
+RBP: 0000000000000001 R08: 0000000000000001 R09: 0000000000000001
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000001
+R13: 0000000000000001 R14: 0000000000000000 R15: ffff8880854bc0b0
+FS:  00007fa632ef6700(0000) GS:ffff8880ae600000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000446a9f CR3: 000000000011b000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
 ---
-Changes in v3:
-- Fix typo in commit message
-- Add fixes tag
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Changes in v2:
-- Validate pitch in fb_create callback
-
- drivers/gpu/drm/mxsfb/mxsfb_drv.c | 21 ++++++++++++++++++++-
- 1 file changed, 20 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/gpu/drm/mxsfb/mxsfb_drv.c b/drivers/gpu/drm/mxsfb/mxsfb_drv.c
-index 8c549c3931af..35122aef037b 100644
---- a/drivers/gpu/drm/mxsfb/mxsfb_drv.c
-+++ b/drivers/gpu/drm/mxsfb/mxsfb_drv.c
-@@ -21,6 +21,7 @@
- #include <drm/drm_connector.h>
- #include <drm/drm_drv.h>
- #include <drm/drm_fb_helper.h>
-+#include <drm/drm_fourcc.h>
- #include <drm/drm_gem_cma_helper.h>
- #include <drm/drm_gem_framebuffer_helper.h>
- #include <drm/drm_irq.h>
-@@ -81,8 +82,26 @@ void mxsfb_disable_axi_clk(struct mxsfb_drm_private *mxsfb)
- 		clk_disable_unprepare(mxsfb->clk_axi);
- }
- 
-+static struct drm_framebuffer *
-+mxsfb_fb_create(struct drm_device *dev, struct drm_file *file_priv,
-+		const struct drm_mode_fb_cmd2 *mode_cmd)
-+{
-+	const struct drm_format_info *info;
-+
-+	info = drm_get_format_info(dev, mode_cmd);
-+	if (!info)
-+		return ERR_PTR(-EINVAL);
-+
-+	if (mode_cmd->width * info->cpp[0] != mode_cmd->pitches[0]) {
-+		dev_dbg(dev->dev, "Invalid pitch: fb width must match pitch\n");
-+		return ERR_PTR(-EINVAL);
-+	}
-+
-+	return drm_gem_fb_create(dev, file_priv, mode_cmd);
-+}
-+
- static const struct drm_mode_config_funcs mxsfb_mode_config_funcs = {
--	.fb_create		= drm_gem_fb_create,
-+	.fb_create		= mxsfb_fb_create,
- 	.atomic_check		= drm_atomic_helper_check,
- 	.atomic_commit		= drm_atomic_helper_commit,
- };
--- 
-2.28.0
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
