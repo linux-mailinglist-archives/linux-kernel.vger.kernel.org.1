@@ -2,95 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9610261AEB
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 20:45:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E0EC261B11
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 20:54:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731639AbgIHSne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 14:43:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51840 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731344AbgIHSmQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 14:42:16 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D87FFC061755
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 11:42:15 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id o20so11695195pfp.11
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 11:42:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=JKtiywr7+fjeVER30WU5i+E72d6lfY9W4GWcx21Jgb8=;
-        b=f2fD5pVmpsnDpq+srq+r2lnCbNJJR80fVasFaY9lpjHHU0c58mCDL9B6ng3gzFBLYT
-         eADBy99c9rrDaeJ3AcnnVAOSBLH1yZF28V4bKx3cCQdYjr5LLg7zlZmYubAFh73mq9H1
-         w4lmNNA/lMWopy8w4n2cGWwg/NeQYncP0hnsE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=JKtiywr7+fjeVER30WU5i+E72d6lfY9W4GWcx21Jgb8=;
-        b=oAFUhXCimMeJYc4iPuJk/LqcbIid68bdDGZMwivQY+4G+bTC+5dQR+PPXRrjCEHW+K
-         vd3G2eDanQwwWJYEfJEDVaNKr2fy/q9kMJERq33U1Rs9L5CxemQr6ImYYZw4U+2y4U2r
-         IRDPDFzoWEgFmt4RqF8GTgE4d86R2p55QY4f0rbYwPswGmQ9ipFYbtEy4IOChzzfSxVU
-         Q99j2T0cyQXfvk02QmZ2uT94Bsu9lE59PN7xLI+T7ken62sl6aw17rsLxbkep7oMe2eU
-         PEsGOFOatn6DhBPXhxGCv6URVOdM/+Wd2TMsMnTzDOnTzDoRZw1pfVGXpPRtg/C94Iuk
-         BEjg==
-X-Gm-Message-State: AOAM530SrTCKFkh8O4IbBfAKQbYv3KoQ5es+EGuXUyn+L8CFNBsldr85
-        sjUYNzA+f88tAy3ubEG11o/j86WoaVORaQ==
-X-Google-Smtp-Source: ABdhPJyt1eVQnuCuk4L6IVMa/HQgw45+PS9gTYAZnn5KPjOouxmwZbRHZweN2ayo6qGEOQZeb5kTtA==
-X-Received: by 2002:a63:4810:: with SMTP id v16mr98444pga.374.1599590534338;
-        Tue, 08 Sep 2020 11:42:14 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:1:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id y4sm127196pfq.215.2020.09.08.11.42.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Sep 2020 11:42:11 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        id S1728631AbgIHSnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 14:43:31 -0400
+Received: from mx2.suse.de ([195.135.220.15]:45334 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731306AbgIHSmj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 14:42:39 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E4510AD39;
+        Tue,  8 Sep 2020 18:42:38 +0000 (UTC)
+Date:   Tue, 8 Sep 2020 20:42:34 +0200
+From:   Joerg Roedel <jroedel@suse.de>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Joerg Roedel <joro@8bytes.org>, x86@kernel.org, hpa@zytor.com,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        David Rientjes <rientjes@google.com>,
+        Cfir Cohen <cfir@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mike Stunes <mstunes@vmware.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v7 67/72] x86/smpboot: Load TSS and getcpu GDT entry
+ before loading IDT
+Message-ID: <20200908184234.GE23826@suse.de>
+References: <20200907131613.12703-1-joro@8bytes.org>
+ <20200907131613.12703-68-joro@8bytes.org>
+ <20200908172042.GF25236@zn.tnic>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <990b9edf-055d-6ecf-ee39-5a252b4c8859@marek.ca>
-References: <20200902230215.3452712-1-swboyd@chromium.org> <20200902230215.3452712-8-swboyd@chromium.org> <990b9edf-055d-6ecf-ee39-5a252b4c8859@marek.ca>
-Subject: Re: [PATCH v2 07/10] phy: qcom-qmp: Add support for DP in USB3+DP combo phy
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Jeykumar Sankaran <jsanka@codeaurora.org>,
-        Chandan Uddaraju <chandanu@codeaurora.org>,
-        Vara Reddy <varar@codeaurora.org>,
-        Tanmay Shah <tanmay@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Manu Gautam <mgautam@codeaurora.org>,
-        Sandeep Maheswaram <sanm@codeaurora.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Sean Paul <seanpaul@chromium.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Rob Clark <robdclark@chromium.org>
-To:     Jonathan Marek <jonathan@marek.ca>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>
-Date:   Tue, 08 Sep 2020 11:42:09 -0700
-Message-ID: <159959052954.454335.18265741930513449396@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200908172042.GF25236@zn.tnic>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Jonathan Marek (2020-09-03 16:26:39)
-> On 9/2/20 7:02 PM, Stephen Boyd wrote:
->=20
-> > +static int qcom_qmp_phy_configure_dp_phy(struct qmp_phy *qphy)
+On Tue, Sep 08, 2020 at 07:20:42PM +0200, Borislav Petkov wrote:
+> On Mon, Sep 07, 2020 at 03:16:08PM +0200, Joerg Roedel wrote:
+> > +void cpu_init_exception_handling(void)
 > > +{
-[...]
-> > +     writel(0x05, qphy->pcs + QSERDES_V3_DP_PHY_CFG);
-> > +     writel(0x01, qphy->pcs + QSERDES_V3_DP_PHY_CFG);
-> > +     writel(0x09, qphy->pcs + QSERDES_V3_DP_PHY_CFG);
+> > +	struct tss_struct *tss = this_cpu_ptr(&cpu_tss_rw);
+> > +	int cpu = raw_smp_processor_id();
 > > +
-> > +     writel(0x20, qphy->serdes + QSERDES_COM_RESETSM_CNTRL);
->=20
-> Should be QSERDES_V3_COM_RESETSM_CNTRL and not=20
-> QSERDES_COM_RESETSM_CNTRL, which is for older PHY versions.
->=20
+> > +	/* paranoid_entry() gets the CPU number from the GDT */
+> > +	setup_getcpu(cpu);
+> > +
+> > +	/* IST vectors need TSS to be set up. */
+> > +	tss_setup_ist(tss);
+> > +	tss_setup_io_bitmap(tss);
+> > +	set_tss_desc(cpu, &get_cpu_entry_area(cpu)->tss.x86_tss);
+> > +
+> > +	load_TR_desc();
+> 
+> Aha, this is what you mean here in your 0th message. I'm guessing it is
+> ok to do those things twice in start_secondary...
 
-Thanks! Fixed it.
+Yes, I think its best to do it twice, so that cpu_init() stays the CPU
+state barrier it should be, independent of what happens before.
+
+
+	Joerg
