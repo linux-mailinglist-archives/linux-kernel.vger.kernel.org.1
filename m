@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03110260C0D
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 09:32:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E5B8260C09
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 09:32:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729447AbgIHHcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 03:32:47 -0400
-Received: from mail-io1-f77.google.com ([209.85.166.77]:34816 "EHLO
-        mail-io1-f77.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729353AbgIHHcY (ORCPT
+        id S1729424AbgIHHcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 03:32:36 -0400
+Received: from mail-io1-f80.google.com ([209.85.166.80]:46679 "EHLO
+        mail-io1-f80.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729355AbgIHHcY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 8 Sep 2020 03:32:24 -0400
-Received: by mail-io1-f77.google.com with SMTP id e83so3272774ioa.2
+Received: by mail-io1-f80.google.com with SMTP id c22so2330607iom.13
         for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 00:32:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=B5Ws/Ynq+wCk8d6oGXHx7cxlIQLiWvpyaF11bTnW1Gs=;
-        b=LhbvlgJB6P7UJi5881pQPk7ABt9ajSQBFQKdVAp9pgJ04tDNpMGAydOX+2UEVUtGV8
-         9LonirtN2klqHZxUDICYUf+cRM3agVYT/EYakxPQtsVy4sxdVweZaw3+6JzFOcVgZnzh
-         MJQEflpH0pKNlHW4cwDpJXS0xtQtuM3HKSR4ZWqCBDInhve9LOMpuRRZsC88fzwCqTgO
-         GnQMr5ag36xQXbUt1Df6kzk+prSgmdFFoQj/e2tSQ3ETXzy/Rp/y+rONu1rIb/LiLovq
-         WSt65CccUns1QnU20ywGEFHUj/ddbuIA9/mzr86lW5dnBPqImC0WvW+zFabMuSnVNQsc
-         2Jiw==
-X-Gm-Message-State: AOAM530047lIpbp4F7T0hz2CGH8WzY/YqwsAxV8CBcLCCIrOIpY2LUys
-        gBnxZBbbaKtHf6hnxpNl7P0KPB+pDQOZO+n5Sb/tyQ0iuTxF
-X-Google-Smtp-Source: ABdhPJzF5RJaWXaK2Wqqm9avurAuHZUABdVz4e0UHscvv8uToevqEacCL+UMhvPjvrECjG05FcRfoB/SZb76YGg+ZVVSSSwKt4fV
+        bh=lOlyfhahYs6/L5AwmyUXKM8XGv3jZMcGEniCSrR6SP4=;
+        b=t2ohb3aZExS6VDD3sLDRrZ8cMetMms0oT1tC1AtQTRJgbAk0M2F/MoiwWudAs73sEt
+         OCNSg1HStGM3sL9kweLohxp8hY4RGVg7ee5d5ET9wCbCtA6aRDj8q/XmEWWaK9JRPC0B
+         msnfZQdVJV1/QDu0J3B/1Gmrw8/G35N1+hk5W8lDRyFcKAHrUGp3Ncu98+X4ZVnFhhXn
+         BsZcAsCUh3+BaFqNln5OfjEv3NbhdnhFnL0o3/jQSFC5IG6dSFxKu7VDhi5OIPR3T/k7
+         5CTSpPcSUbvsgWyTeEgt/mFpnFByps2HhJMgcYHCXzD4CK2ZC0mXgUnqYyDJj0kngc2n
+         OWVg==
+X-Gm-Message-State: AOAM532d2Y4P1bvGU9XC8S+gbw7w3t3sCMGx48bK5fM8VYuNg26Y9yhz
+        xLqKqONtBBzdRfkVoNKEHT7lRdMEFsBqAXNA7QyP1yf+eb86
+X-Google-Smtp-Source: ABdhPJyZYiNu6GwZpuOrRS1rAR/sZ9tIPJUCZuurIg9PNiGfqGcVTVcL64VyimeR6S1zJyehjbQx4l0sAKZ8TvL3twhsrHl52NIJ
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:1616:: with SMTP id x22mr10493690jas.110.1599550342906;
- Tue, 08 Sep 2020 00:32:22 -0700 (PDT)
-Date:   Tue, 08 Sep 2020 00:32:22 -0700
+X-Received: by 2002:a92:d48e:: with SMTP id p14mr23282855ilg.259.1599550343103;
+ Tue, 08 Sep 2020 00:32:23 -0700 (PDT)
+Date:   Tue, 08 Sep 2020 00:32:23 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000fd49fb05aec855a8@google.com>
-Subject: KASAN: out-of-bounds Write in i801_isr
-From:   syzbot <syzbot+be15dc0b1933f04b043a@syzkaller.appspotmail.com>
-To:     jdelvare@suse.com, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Message-ID: <0000000000000049a305aec856c6@google.com>
+Subject: general protection fault in page_mkclean_one
+From:   syzbot <syzbot+4d44c88e23baffecc385@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
@@ -48,97 +48,76 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    b765a32a Merge tag 'scsi-fixes' of git://git.kernel.org/pu..
+HEAD commit:    e28f0104 Merge tag 'fixes-2020-09-03' of git://git.kernel...
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=12d86515900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=669314b9008f6680
-dashboard link: https://syzkaller.appspot.com/bug?extid=be15dc0b1933f04b043a
+console output: https://syzkaller.appspot.com/x/log.txt?x=1702c9e1900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3c5f6ce8d5b68299
+dashboard link: https://syzkaller.appspot.com/bug?extid=4d44c88e23baffecc385
 compiler:       gcc (GCC) 10.1.0-syz 20200507
-userspace arch: i386
 
 Unfortunately, I don't have any reproducer for this issue yet.
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+be15dc0b1933f04b043a@syzkaller.appspotmail.com
+Reported-by: syzbot+4d44c88e23baffecc385@syzkaller.appspotmail.com
 
-BUG: KASAN: out-of-bounds in i801_isr_byte_done drivers/i2c/busses/i2c-i801.c:593 [inline]
-BUG: KASAN: out-of-bounds in i801_isr drivers/i2c/busses/i2c-i801.c:664 [inline]
-BUG: KASAN: out-of-bounds in i801_isr+0xb2d/0xbf0 drivers/i2c/busses/i2c-i801.c:645
-Write of size 1 at addr ffffc900039c7d7a by task udevd/9302
-
-CPU: 1 PID: 9302 Comm: udevd Not tainted 5.9.0-rc3-syzkaller #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+general protection fault, probably for non-canonical address 0xdffffc000a02191d: 0000 [#1] PREEMPT SMP KASAN
+KASAN: probably user-memory-access in range [0x000000005010c8e8-0x000000005010c8ef]
+CPU: 1 PID: 8540 Comm: kworker/u4:0 Not tainted 5.9.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: writeback wb_workfn (flush-8:0)
+RIP: 0010:mm_has_notifiers include/linux/mmu_notifier.h:277 [inline]
+RIP: 0010:mmu_notifier_invalidate_range_start include/linux/mmu_notifier.h:451 [inline]
+RIP: 0010:page_mkclean_one+0x271/0x6c0 mm/rmap.c:916
+Code: 89 41 b8 01 00 00 00 e8 fd b9 b1 ff 48 8b 5c 24 68 58 48 b8 00 00 00 00 00 fc ff df 48 8d bb a8 05 00 00 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 f9 03 00 00 48 83 bb a8 05 00 00 00 0f 85 37 03
+RSP: 0018:ffffc9001875ee60 EFLAGS: 00010206
+RAX: dffffc0000000000 RBX: 000000005010c340 RCX: ffffffff815a184b
+RDX: 000000000a02191d RSI: 0000000000000001 RDI: 000000005010c8e8
+RBP: ffffea00017a7740 R08: 0000000000000000 R09: ffffffff8c5f49ff
+R10: fffffbfff18be93f R11: 000000000000016e R12: 0000001b30823000
+R13: 0000000000001000 R14: ffff88800017c420 R15: 0000000000000000
+FS:  0000000000000000(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000746918 CR3: 00000002026b8000 CR4: 00000000001526e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
- <IRQ>
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x198/0x1fd lib/dump_stack.c:118
- print_address_description.constprop.0.cold+0x5/0x497 mm/kasan/report.c:383
- __kasan_report mm/kasan/report.c:513 [inline]
- kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
- i801_isr_byte_done drivers/i2c/busses/i2c-i801.c:593 [inline]
- i801_isr drivers/i2c/busses/i2c-i801.c:664 [inline]
- i801_isr+0xb2d/0xbf0 drivers/i2c/busses/i2c-i801.c:645
- __handle_irq_event_percpu+0x223/0xaa0 kernel/irq/handle.c:156
- handle_irq_event_percpu kernel/irq/handle.c:196 [inline]
- handle_irq_event+0x102/0x285 kernel/irq/handle.c:213
- handle_fasteoi_irq+0x22f/0x9f0 kernel/irq/chip.c:714
- run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:50 [inline]
- handle_irq arch/x86/kernel/irq.c:230 [inline]
- __common_interrupt arch/x86/kernel/irq.c:249 [inline]
- common_interrupt+0x96/0x1f0 arch/x86/kernel/irq.c:239
- asm_common_interrupt+0x1e/0x40 arch/x86/include/asm/idtentry.h:572
-RIP: 0010:__do_softirq+0x1ba/0xa91 kernel/softirq.c:284
-Code: c7 c0 58 3c b6 89 48 c1 e8 03 42 80 3c 30 00 0f 85 ea 07 00 00 48 83 3d ab 3a 96 01 00 0f 84 b7 06 00 00 fb 66 0f 1f 44 00 00 <48> c7 44 24 08 c0 90 a0 89 b8 ff ff ff ff 0f bc 04 24 83 c0 01 89
-RSP: 0018:ffffc900004e8f70 EFLAGS: 00000282
-RAX: 1ffffffff136c78b RBX: ffff88805ed1d6c0 RCX: 0000000000000002
-RDX: 0000000000000000 RSI: 0000000000000100 RDI: 0000000000000000
-RBP: ffffc900028e7b50 R08: 0000000000000001 R09: ffffffff8c5f1a87
-R10: fffffbfff18be350 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: dffffc0000000000 R15: 0000000000000000
- asm_call_on_stack+0xf/0x20 arch/x86/entry/entry_64.S:706
- </IRQ>
- __run_on_irqstack arch/x86/include/asm/irq_stack.h:22 [inline]
- run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:48 [inline]
- do_softirq_own_stack+0x9d/0xd0 arch/x86/kernel/irq_64.c:77
- invoke_softirq kernel/softirq.c:393 [inline]
- __irq_exit_rcu kernel/softirq.c:423 [inline]
- irq_exit_rcu+0x235/0x280 kernel/softirq.c:435
- sysvec_apic_timer_interrupt+0x51/0xf0 arch/x86/kernel/apic/apic.c:1091
- asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:581
-RIP: 0010:generic_write_check_limits+0x0/0x2a0 mm/filemap.c:3001
-Code: 48 2b 04 25 28 00 00 00 75 0e 48 81 c4 a0 00 00 00 5b 5d 41 5c 41 5d c3 e8 7d 34 5f 06 0f 1f 00 66 2e 0f 1f 84 00 00 00 00 00 <41> 56 49 89 fe 41 55 49 89 f5 41 54 55 48 89 d5 53 e8 fa d2 df ff
-RSP: 0018:ffffc900028e7c58 EFLAGS: 00010246
-RAX: dffffc0000000000 RBX: ffffc900028e7db8 RCX: ffffffff81957817
-RDX: ffffc900028e7ca0 RSI: 0000000000000000 RDI: ffff888027b1fa80
-RBP: ffffc900028e7d68 R08: 0000000000000001 R09: ffff888018e7908f
-R10: 0000000000000080 R11: 0000000000000000 R12: ffff888018e79080
-R13: 1ffff9200051cf90 R14: 00000000ffffff80 R15: ffff888027b1fa80
- generic_write_checks mm/filemap.c:3053 [inline]
- generic_file_write_iter+0x2d3/0x5c0 mm/filemap.c:3562
- call_write_iter include/linux/fs.h:1882 [inline]
- new_sync_write+0x422/0x650 fs/read_write.c:503
- vfs_write+0x5ad/0x730 fs/read_write.c:578
- ksys_write+0x12d/0x250 fs/read_write.c:631
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x7f292cccc370
-Code: 73 01 c3 48 8b 0d c8 4a 2b 00 31 d2 48 29 c2 64 89 11 48 83 c8 ff eb ea 90 90 83 3d 85 a2 2b 00 00 75 10 b8 01 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 31 c3 48 83 ec 08 e8 0e 8a 01 00 48 89 04 24
-RSP: 002b:00007ffed324d908 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 000000000000001b RCX: 00007f292cccc370
-RDX: 000000000000001b RSI: 00007f292d5cb000 RDI: 0000000000000005
-RBP: 00007f292d5cb000 R08: 00007f292d5c47a0 R09: 0000000000000001
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000cb8140
-R13: 000000000000001b R14: 00007ffed324d9f0 R15: 0000000000000001
-
-
-Memory state around the buggy address:
- ffffc900039c7c00: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
- ffffc900039c7c80: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
->ffffc900039c7d00: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
-                                                                ^
- ffffc900039c7d80: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
- ffffc900039c7e00: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
-==================================================================
+ rmap_walk_file+0x562/0xbf0 mm/rmap.c:1928
+ rmap_walk+0x105/0x190 mm/rmap.c:1946
+ page_mkclean+0x21c/0x2b0 mm/rmap.c:998
+ clear_page_dirty_for_io+0x31f/0x920 mm/page-writeback.c:2698
+ mpage_submit_page+0x80/0x2c0 fs/ext4/inode.c:2061
+ mpage_process_page_bufs+0x656/0x780 fs/ext4/inode.c:2195
+ mpage_prepare_extent_to_map+0x8fa/0xde0 fs/ext4/inode.c:2607
+ ext4_writepages+0x90f/0x3960 fs/ext4/inode.c:2735
+ do_writepages+0xec/0x290 mm/page-writeback.c:2352
+ __writeback_single_inode+0x125/0x1400 fs/fs-writeback.c:1461
+ writeback_sb_inodes+0x53d/0xf40 fs/fs-writeback.c:1721
+ __writeback_inodes_wb+0xc6/0x280 fs/fs-writeback.c:1790
+ wb_writeback+0x8bb/0xd40 fs/fs-writeback.c:1896
+ wb_check_old_data_flush fs/fs-writeback.c:1998 [inline]
+ wb_do_writeback fs/fs-writeback.c:2051 [inline]
+ wb_workfn+0x8f5/0x13e0 fs/fs-writeback.c:2080
+ process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
+ kthread+0x3b5/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+Modules linked in:
+---[ end trace aa72a7d82af80156 ]---
+RIP: 0010:mm_has_notifiers include/linux/mmu_notifier.h:277 [inline]
+RIP: 0010:mmu_notifier_invalidate_range_start include/linux/mmu_notifier.h:451 [inline]
+RIP: 0010:page_mkclean_one+0x271/0x6c0 mm/rmap.c:916
+Code: 89 41 b8 01 00 00 00 e8 fd b9 b1 ff 48 8b 5c 24 68 58 48 b8 00 00 00 00 00 fc ff df 48 8d bb a8 05 00 00 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 f9 03 00 00 48 83 bb a8 05 00 00 00 0f 85 37 03
+RSP: 0018:ffffc9001875ee60 EFLAGS: 00010206
+RAX: dffffc0000000000 RBX: 000000005010c340 RCX: ffffffff815a184b
+RDX: 000000000a02191d RSI: 0000000000000001 RDI: 000000005010c8e8
+RBP: ffffea00017a7740 R08: 0000000000000000 R09: ffffffff8c5f49ff
+R10: fffffbfff18be93f R11: 000000000000016e R12: 0000001b30823000
+R13: 0000000000001000 R14: ffff88800017c420 R15: 0000000000000000
+FS:  0000000000000000(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fbc5e0b6d70 CR3: 00000000a3ffa000 CR4: 00000000001526e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
 
 ---
