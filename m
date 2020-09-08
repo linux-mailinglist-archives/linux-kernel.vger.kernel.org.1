@@ -2,110 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E74BD2614B3
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:33:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F8092614B5
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 18:34:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732049AbgIHQdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 12:33:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34678 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732031AbgIHQcQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:32:16 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DA597206DB;
-        Tue,  8 Sep 2020 16:32:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599582733;
-        bh=Kpj2oGs3oTNKIeLuZX3DLWaFOXvp+PS3iXMHVDL5oCI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Fhqz/EASt4/Hy/v6q6/hMpIECz0p9PaKHTrr/60CIbY9ruzS7EnRx/epzmpzJIP63
-         CSu8n/bGCI1sECr4fTbibUE+U3OW8bbFqztVeSgTpBc66xoxhofDU2u77oW7SSkBuz
-         iYWc1bh1nE044je8e10+i+ucnQiHnoCyaUaLMy4E=
-Date:   Tue, 8 Sep 2020 18:32:25 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Mike Travis <mike.travis@hpe.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Steve Wahl <steve.wahl@hpe.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Russ Anderson <russ.anderson@hpe.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Jian Cai <caij2003@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
-Subject: Re: [PATCH 04/12] x86/platform/uv: Update UV MMRs for UV5
-Message-ID: <20200908163225.GD10640@kroah.com>
-References: <20200907185430.363197758@hpe.com>
- <20200907185430.782245884@hpe.com>
- <20200908152314.GD4114051@kroah.com>
- <3e93b858-f74d-8e93-e444-fd85fc5856e4@hpe.com>
- <20200908154430.GA4171853@kroah.com>
- <35d4ce27-7a93-c3d5-3c0d-99fff06229c2@hpe.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <35d4ce27-7a93-c3d5-3c0d-99fff06229c2@hpe.com>
+        id S1732031AbgIHQeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 12:34:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59890 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732036AbgIHQc4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 12:32:56 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35BE9C061573
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 09:32:56 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id w7so11407462pfi.4
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 09:32:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=D+6OKvAnkUtzzW2cGDkKOGH7rrKsaKBarDqPQyHhqbY=;
+        b=BdIE51BMbD2vJPVe5LWf9jcMVph9ArF3q5hwypOuhEoStuB4LfOeegz+pdZT9WDnvZ
+         cU/VWPGrrEhR6rSHH8usFXpyne27RVDIe99CaJmtzJgMELgiHBZKACItfGUg35zziM3Y
+         mO9ONKxuAfaqEDw88bCqSZOJEHamIcH0lVx0U=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=D+6OKvAnkUtzzW2cGDkKOGH7rrKsaKBarDqPQyHhqbY=;
+        b=Dzz2FtkPLj2pMMf2/YS7shxlI0r+GWBLqT26ISmYim+/BzT7VwNxM27M2BzxdvKMo6
+         VDuks+ZBR+jfsVJVstnyk9JDtlaWeP645+rUUgC08rA3N7gWJLArk/xiE58JBCLuOzgP
+         iwVX4fAqcO0tP8OVp0NNojphkvP7lLTGk0SLhSUqG714eurnqTWQTjBrTQi5yeXirGLg
+         4prp+3oS6xX1hdHmLW7kxMlfx1mlygDAR9KKpqCmrs0IIY6kentXooVzwKoh1aHUUwAk
+         jk1AIGfewFVectqhzI/k5LLTozrAvnpI6fnP/mf8vwXmwMCy4EVVnV/zZELg1LSoeHxJ
+         76Wg==
+X-Gm-Message-State: AOAM532ZzbMDjMIZtJOLuQ0QZrJoDNirOkxyfiwBcYrZ1KdZ2QJZ6rwU
+        QKg1WDKv9UOVj5qPAQSbssDtoA==
+X-Google-Smtp-Source: ABdhPJy/MwLs61JfBGoh37V+yP2UwAlE3gV9saHhDANE/meQtBZQtzbPVViRwvgkDgq95jo5/4KEow==
+X-Received: by 2002:a63:d216:: with SMTP id a22mr11107158pgg.339.1599582775184;
+        Tue, 08 Sep 2020 09:32:55 -0700 (PDT)
+Received: from stbsrv-and-01.and.broadcom.net ([192.19.231.250])
+        by smtp.gmail.com with ESMTPSA id b24sm15079186pjp.22.2020.09.08.09.32.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Sep 2020 09:32:54 -0700 (PDT)
+From:   Jim Quinlan <james.quinlan@broadcom.com>
+To:     linux-pci@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
+        james.quinlan@broadcom.com
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [RESEND PATCH v1] PCI: pcie_bus_config can be set at build time
+Date:   Tue,  8 Sep 2020 12:32:48 -0400
+Message-Id: <20200908163248.14330-1-james.quinlan@broadcom.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 08, 2020 at 09:20:14AM -0700, Mike Travis wrote:
-> 
-> 
-> On 9/8/2020 8:44 AM, Greg KH wrote:
-> > On Tue, Sep 08, 2020 at 08:35:37AM -0700, Mike Travis wrote:
-> > > 
-> > > 
-> > > On 9/8/2020 8:23 AM, Greg KH wrote:
-> > > > On Mon, Sep 07, 2020 at 01:54:34PM -0500, Mike Travis wrote:
-> > > > > --- linux.orig/drivers/misc/sgi-gru/grufile.c
-> > > > > +++ linux/drivers/misc/sgi-gru/grufile.c
-> > > > > @@ -7,7 +7,8 @@
-> > > > >     * This file supports the user system call for file open, close, mmap, etc.
-> > > > >     * This also incudes the driver initialization code.
-> > > > >     *
-> > > > > - *  Copyright (c) 2008-2014 Silicon Graphics, Inc.  All Rights Reserved.
-> > > > > + * Copyright (c) 2018-2020 Hewlett Packard Enterprise Development LP
-> > > > > + * Copyright (c) 2008-2017 Silicon Graphics, Inc.  All Rights Reserved.
-> > > > 
-> > > > Please drop all copyright changes from this series, as these do not look
-> > > > correct at all, sorry.
-> > > > 
-> > > > You can send an add-on patch for all of that if it's really necessary,
-> > > > and you get legal approval for it :)
-> > > 
-> > > I can move them all to a single patch.  The HPE one is straight from their
-> > > guidance on Copyrights.  The older SGI one is also from SGI's guidance
-> > > though I'm not sure if I can find it anymore.  I also wasn't sure if it
-> > > should be retained since the HPE one didn't take effect until SGI was
-> > > legally part of HPE (circa 2018).  2017/18 was also the last time we did
-> > > this big a change (for the UV4A).
-> > 
-> > If you haven't touched a file in a year, you don't get to claim
-> > copyright on that year.  If you wish to disagree on this, great, I'll
-> > gladly take a patch that modifies the lines that has a signed-off-by
-> > from one of your lawyers for it :)
-> 
-> I skipped over that part.  But I'm moving all changes to a single patch and
-> I will look more closely at HPE's documents.  Heaven knows they have plenty
-> of lawyers, so many it's hard to ask a simple question... like when does a
-> copyright take effect.  When you change it internally, or when it gets
-> published?  Sounds like you lean towards the second?
+The Kconfig is modified so that the pcie_bus_config setting can be done at
+build time in the same manner as the CONFIG_PCIEASPM_XXXX choice.  The
+pci_bus_config setting may still be overridden by the bootline param.
 
-There are established rules for this type of thing, I'm not going to
-tell you what HP's rules are, but this patch really looks wrong from
-what I understand about what the rules are...
+Signed-off-by: Jim Quinlan <james.quinlan@broadcom.com>
+---
+ drivers/pci/Kconfig | 40 ++++++++++++++++++++++++++++++++++++++++
+ drivers/pci/pci.c   | 12 ++++++++++++
+ 2 files changed, 52 insertions(+)
 
-thanks,
+diff --git a/drivers/pci/Kconfig b/drivers/pci/Kconfig
+index 4bef5c2bae9f..efe69b0d9f7f 100644
+--- a/drivers/pci/Kconfig
++++ b/drivers/pci/Kconfig
+@@ -187,6 +187,46 @@ config PCI_HYPERV
+ 	  The PCI device frontend driver allows the kernel to import arbitrary
+ 	  PCI devices from a PCI backend to support PCI driver domains.
+ 
++choice
++	prompt "PCIE default bus config setting"
++	default PCIE_BUS_DEFAULT
++	depends on PCI
++	help
++	  One of the following choices will set the pci_bus_config at
++	  compile time.  This will still be overridden by the appropriate
++	  pci bootline parameter.
++
++config PCIE_BUS_TUNE_OFF
++	bool "Tune Off"
++	depends on PCI
++	help
++	  Use the BIOS defaults; doesn't touch MPS at all.
++
++config PCIE_BUS_DEFAULT
++	bool "Default"
++	depends on PCI
++	help
++	  Ensure MPS matches upstream bridge.
++
++config PCIE_BUS_SAFE
++	bool "Safe"
++	depends on PCI
++	help
++	  Use largest MPS boot-time devices support.
++
++config PCIE_BUS_PERFORMANCE
++	bool "Performance"
++	depends on PCI
++	help
++	  Use MPS and MRRS for best performance.
++
++config PCIE_BUS_PEER2PEER
++	bool "Peer2peer"
++	depends on PCI
++	help
++	  Set MPS = 128 for all devices.
++endchoice
++
+ source "drivers/pci/hotplug/Kconfig"
+ source "drivers/pci/controller/Kconfig"
+ source "drivers/pci/endpoint/Kconfig"
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index e39c5499770f..dfb52ed4a931 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -101,7 +101,19 @@ unsigned long pci_hotplug_mmio_pref_size = DEFAULT_HOTPLUG_MMIO_PREF_SIZE;
+ #define DEFAULT_HOTPLUG_BUS_SIZE	1
+ unsigned long pci_hotplug_bus_size = DEFAULT_HOTPLUG_BUS_SIZE;
+ 
++
++/* PCIE bus config, can be overridden by bootline param */
++#ifdef CONFIG_PCIE_BUS_TUNE_OFF
++enum pcie_bus_config_types pcie_bus_config = PCIE_BUS_TUNE_OFF;
++#elif defined CONFIG_PCIE_BUS_SAFE
++enum pcie_bus_config_types pcie_bus_config = PCIE_BUS_SAFE;
++#elif defined CONFIG_PCIE_BUS_PERFORMANCE
++enum pcie_bus_config_types pcie_bus_config = PCIE_BUS_PERFORMANCE;
++#elif defined CONFIG_PCIE_BUS_PEER2PEER
++enum pcie_bus_config_types pcie_bus_config = PCIE_BUS_PEER2PEER;
++#else
+ enum pcie_bus_config_types pcie_bus_config = PCIE_BUS_DEFAULT;
++#endif
+ 
+ /*
+  * The default CLS is used if arch didn't set CLS explicitly and not
+-- 
+2.17.1
 
-greg k-h
