@@ -2,174 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11426261CFB
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:29:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA3EF261D39
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:34:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731279AbgIHT3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:29:31 -0400
-Received: from rcdn-iport-3.cisco.com ([173.37.86.74]:19756 "EHLO
-        rcdn-iport-3.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731061AbgIHT27 (ORCPT
+        id S1732289AbgIHTdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 15:33:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54128 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730913AbgIHP6F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 15:28:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=cisco.com; i=@cisco.com; l=2748; q=dns/txt; s=iport;
-  t=1599593337; x=1600802937;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=BTJKt78EdgO0ivA536SV09mU6sGZ7cdyg15qZByn8W0=;
-  b=bJMAz+KA0vemHfcrLJV2JffpQFIVyrq2edxK3HR2c2x/GN2arTgQz2z5
-   dalydJFn0Y47OOfaDy8dtyd1wtH6KRpEU1TDF3YEEjDMS/0/EnzCmwiLD
-   mCadTSxWSIhTrLi1buIn4m58JcnXdvAZ07CyzqGrMz1AFlwFfrh1lAzMT
-   0=;
-IronPort-PHdr: =?us-ascii?q?9a23=3Abxz0VRGgLsthYWVon8EVBp1GYnJ96bzpIg4Y7I?=
- =?us-ascii?q?YmgLtSc6Oluo7vJ1Hb+e401A+bU4+d4PVB2KLasKHlDGoH55vJ8HUPa4dFWB?=
- =?us-ascii?q?JNj8IK1xchD8iIBQyeTrbqYiU2Ed4EWApj+He2YkZfXs35Yg6arni79zVHHB?=
- =?us-ascii?q?L5OEJ8Lfj0HYiHicOx2qiy9pTfbh8OiiC6ZOZ5LQ69qkPascxFjA=3D=3D?=
-X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-Anti-Spam-Result: =?us-ascii?q?A0DRBQA02ldf/4wNJK1fHAEBAQEBAQc?=
- =?us-ascii?q?BARIBAQQEAQFAgU+BUlEHgUkvLIQ4g0YDjXKYcYJTA1ULAQEBDAEBLQIEAQG?=
- =?us-ascii?q?ESwIXgXoCJDgTAgMBAQsBAQUBAQECAQYEbYVcAQuFcgEBAQECARIREQwBATc?=
- =?us-ascii?q?BDwIBCBgCAiYCAgIwFRACBA4FIoVQAw4gAad+AoE5iGF2gTKDAQEBBYUQGII?=
- =?us-ascii?q?QCRR6KoJxg2iGURuBQT+EIT6EPAEXgwCCYJJeATyjUwqCZZoyIYMJiW+TXpJ?=
- =?us-ascii?q?Rn1cCBAIEBQIOAQEFgWsjgVdwFYMkUBcCDVeNSAkag06KVnQ3AgYKAQEDCXy?=
- =?us-ascii?q?NcAEB?=
-X-IronPort-AV: E=Sophos;i="5.76,406,1592870400"; 
-   d="scan'208";a="801563527"
-Received: from alln-core-7.cisco.com ([173.36.13.140])
-  by rcdn-iport-3.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 08 Sep 2020 19:28:55 +0000
-Received: from XCH-ALN-003.cisco.com (xch-aln-003.cisco.com [173.36.7.13])
-        by alln-core-7.cisco.com (8.15.2/8.15.2) with ESMTPS id 088JStxG026530
-        (version=TLSv1.2 cipher=AES256-SHA bits=256 verify=FAIL);
-        Tue, 8 Sep 2020 19:28:55 GMT
-Received: from xhs-rtp-001.cisco.com (64.101.210.228) by XCH-ALN-003.cisco.com
- (173.36.7.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 8 Sep
- 2020 14:28:54 -0500
-Received: from xhs-rtp-003.cisco.com (64.101.210.230) by xhs-rtp-001.cisco.com
- (64.101.210.228) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 8 Sep
- 2020 15:28:54 -0400
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (64.101.32.56) by
- xhs-rtp-003.cisco.com (64.101.210.230) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2 via Frontend Transport; Tue, 8 Sep 2020 15:28:53 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MwKXAo0Nwkx65UPVvfOx4ztqdUcRlQ4XQfqsbDP75+LN7gOBLwVfooV1i+9gL3mlu0+FoG85mPrY17sPNub2SOfG6gO9519EP1Wrneo1fUwtpTq9bhIFwj0JQjndYzRWHzb0UzsZjf5omTKYS5SlSw/zXaxh7GuqUubxDdVgCvT6GRleAkRKjTrOGcspIEkrKnWw6j6LCZZLhA0ZCdyEeNTf6adxWLns+6Iep5jcHWCqMsH1eqCRmO05sWHXGRF11yo5D1ZuozSjLyULlT4pvol/2TiCfZj7DLxy/zweNeHbYyIUWHmEDNjMa6xxHtB67c4d4gGF1It8oKxsLkz3Zw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BTJKt78EdgO0ivA536SV09mU6sGZ7cdyg15qZByn8W0=;
- b=QGoDutPOwFXqVggz1WuO19SdV+myCZ7Ghu2fF4ojC9uc8eyfURAmCyZbHyzr7VhZ62olh1GGbOScV4OzfsA77DvT4U/ubUQKZhvssgiFwUYGZBoJc4fXIaKk2yY2F91aYn9eYA5hSuflVP2dJukmaT/MABK30NqmsO/mGQfnZZKhSnHNngi8srULjh5n3Tx5nD3H/U+DjPQ5ZJYFJflyL1ZBZbFwFJPc8RSajNbxjOrt32nMCGkKwT0uOvuDa/ECyo+8wWXdiCN/6lLtinEuPGaX4v7wDrDk9ra6Fe4iPc7tD6523KrhhAwAe5PKDfM/Ks0nagzkGHRTqoqm1VF9Qw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cisco.com; dmarc=pass action=none header.from=cisco.com;
- dkim=pass header.d=cisco.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cisco.onmicrosoft.com;
- s=selector2-cisco-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BTJKt78EdgO0ivA536SV09mU6sGZ7cdyg15qZByn8W0=;
- b=AhLEyyJEpDXk8F8Qm7k7MysDmIgRDYoqznOqyt326+kE7hHTeyl+BG0ylCLKN2XzSU3uJCUxtOym+SRCR/1H2Toss7+RcObdkFRBt7f61fFo3abyx4HUTPjVCoATUSA+8p86bj1docfRpBxiEUM1YDi2LTzFQ604gdMM2/EWAgg=
-Received: from BY5PR11MB4182.namprd11.prod.outlook.com (2603:10b6:a03:183::10)
- by BYAPR11MB3765.namprd11.prod.outlook.com (2603:10b6:a03:f6::25) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.16; Tue, 8 Sep
- 2020 19:28:51 +0000
-Received: from BY5PR11MB4182.namprd11.prod.outlook.com
- ([fe80::1d4e:2269:63d7:f2d6]) by BY5PR11MB4182.namprd11.prod.outlook.com
- ([fe80::1d4e:2269:63d7:f2d6%6]) with mapi id 15.20.3348.019; Tue, 8 Sep 2020
- 19:28:51 +0000
-From:   "Julius Hemanth Pitti (jpitti)" <jpitti@cisco.com>
-To:     "guro@fb.com" <guro@fb.com>
-CC:     "vdavydov.dev@gmail.com" <vdavydov.dev@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
-        "xe-linux-external(mailer list)" <xe-linux-external@cisco.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "mhocko@kernel.org" <mhocko@kernel.org>
-Subject: Re: [PATCH] mm: memcg: yield cpu when we fail to charge pages
-Thread-Topic: [PATCH] mm: memcg: yield cpu when we fail to charge pages
-Thread-Index: AQHWhhEa7koixvCA0Eesx63uX92KqalfHoKAgAAB6gA=
-Date:   Tue, 8 Sep 2020 19:28:51 +0000
-Message-ID: <38c678cac5794cb647ba73799bcaf6df5ff6dc3e.camel@cisco.com>
-References: <20200908185051.62420-1-jpitti@cisco.com>
-         <20200908192159.GB567128@carbon.DHCP.thefacebook.com>
-In-Reply-To: <20200908192159.GB567128@carbon.DHCP.thefacebook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-Auto-Response-Suppress: DR, OOF, AutoReply
-X-MS-TNEF-Correlator: 
-x-mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-authentication-results: fb.com; dkim=none (message not signed)
- header.d=none;fb.com; dmarc=none action=none header.from=cisco.com;
-x-originating-ip: [2001:420:c0c8:1005::83d]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 81c133fe-a051-4371-80b6-08d8542d6aea
-x-ms-traffictypediagnostic: BYAPR11MB3765:
-x-ld-processed: 5ae1af62-9505-4097-a69a-c1553ef7840e,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR11MB37659B7A1E7168000DB6218ADA290@BYAPR11MB3765.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6108;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: vUbv4ysbRWki7aaH/D5BKy9OA3vKlkThw5yaDvPvcXpDEVrFbwS0YMIwihonca15qG065YH0gNiBKKgkeh9X92iBGeX9rZG/Ib3rPA1IKSl4XDoThKFMQA55W5l/7mRH5LzUJnDGPtM0Am67uOXEX1UtoDngFHH5OyGY6F0gmodIbD7Nwnn6NXldtQU9Fc3fMAouLAQRzWr6EU6spLPoEL9N18TbV56Xnljz4eTYzI2RXAz5i2B/7e4BrNbsCvQaKR10sq1iHcNj9FAqkXdSVJzbtGAg+7SYvYCerYGYP4Gkjefb/hC+JF6XNDyNgERerOlK94GpDwMRB739uNiyXag5iRiMdOMppSAHOdDmCkNAzpuxJ8mscH1RHQ6U5O2F
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR11MB4182.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(366004)(136003)(396003)(39860400002)(346002)(4326008)(6506007)(66476007)(66446008)(66556008)(64756008)(6916009)(2616005)(478600001)(6486002)(66946007)(186003)(316002)(76116006)(54906003)(71200400001)(5660300002)(83380400001)(8676002)(86362001)(8936002)(2906002)(36756003)(6512007)(99106002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: 6y1+1ZxLO4YiDJUf8krRbjjblLlPWPNU6efJSyGWpIT4VBqU9O4eeLzKKqq/gW7PWvp3OmlxPyWSg6+JAYfEPn37ezYS4Imvbmp6L5kXeDQkyjzPXWZ+T6rcwg4i1CS1KYOccm0SSO4yzOeXoDTwxFKXYNno3h70SZWFa4jwW3AUUDJZEW+Ta6wqE33R1MwYJ4cVVXTebgreVWvQG7ENAjs+R3iztXujLbgU4oTJfGjoHRqKJwc0U3xgF8c0SHoBxdUYIh1erW3CL/f1oa88nb+iqy2/Lki+SKO4CIcwmEt+4+2OY3qE/cWqLeGj4scAMefpiewcK25Y0EzcKt41JB/XmzJYilq7BENthHJw6foD1Ih49V/9B28y0dVo+AZpRi0RMaxEAGNPLnIt1wRU6xjn5SkHdsY7tW4iL2eoHZHr80f8UZ+7Tk1l+f9r/F6Cl0+XslfCKHLq0QK3tptxO9Mf2ey7GAWTARvFy+kuFzY6sOtt7e2kuJD/4IOd4Ly72rdls71IVHPTm+Vuje61drfxzhj1LYq32VcfFnoTrWJhvr3O4VTguGRCCUJMO8jEk32HkknW1icEkrVSlf/qmCCweaeg3RVbTbFoUYADisshxyQ2l6ovVpUZOIkffDQi81khSl+P0gDjZMW6Fl+bE8S2HWdFiwMcsosLJRAgW6g=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <305EB9137EE72C40BBD18F012D23A2FB@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Tue, 8 Sep 2020 11:58:05 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B105C061757;
+        Tue,  8 Sep 2020 04:58:19 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id n61so6920097ota.10;
+        Tue, 08 Sep 2020 04:58:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RaWHN9Jo7paHemHHjwRTQUV3IWjnykqiJCEfEZHv7v4=;
+        b=XQJxy7+drpA1/z007ulMkN1jJfrJxnTwWTH7zUGrIvWJbJN/3LQI4R21MC1hN4WRp6
+         4kqIdNmyaIJ8lg2NMqPGV95EHEsf7vWCB6IPgQTTdW7payVALTglDWFIuYyCKnJ6StQI
+         PYiEBLEtxx92y+l6XQPXuO1oAM/WKMsCF7R6ovnwoTY14MoJvAMMYLE1Akv7L2YKOJJ4
+         +ybd56OJWwmLmy28WsspezZ/bpMcnR3H8ZPlYFqhhXSipTD+pZ7qDP9vHvFKbTo49SaH
+         cX1TL6uThBQb90O1HCoWkGJYZ2DkTVE9/WL5LveRkbgFocRBpn+hd0x7ycOMyDmaZSk6
+         zZ4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RaWHN9Jo7paHemHHjwRTQUV3IWjnykqiJCEfEZHv7v4=;
+        b=p2xlqr+1WniT2A6WT+yBhElbaO2UFJcerBkdrkgWhG4m8HXleQ3IYb9YMlMuWbROxy
+         9AD99POu9PECdQtZXCl/EcPEt28/86pnDQ0VXr/BvK69eqaTMyMXGeq85ghhyGLsWr/Q
+         53ne5+Ciyw5vd7SNv9M9tqSZkCBXBiNSj5WjSm/JfEoOMVyqkUx1rWt0BKHXH/PEjmzV
+         DQoDNpq0xlZjpTbTRtYnwGbh79cYbAI8QrHPPbFPqgvBsfrG5Nw+ObYDAkYyAXtEw4uE
+         ytmjRs34o9TDnqgsKMA7rgJzxJ8qiMetZZ6GWTbagOw1H48dezVB9dhminMkwb+0wFxP
+         SQDQ==
+X-Gm-Message-State: AOAM533hfWKFe/muPYheZ9u6ktWf/NZX+g8QIelPhUbtxRZJXqXVxBSl
+        f+FH25ZFC1bhjfayZwg6Lf/EwcgY89CAhbHsjkg=
+X-Google-Smtp-Source: ABdhPJy4RDBv/VXPUBpaer4WIVk5Krko0ixIBq7GboCRidoUovp5rSQSrsUWSyZ+VjFWU7QoAysy6HdfwaIl6E+FSAk=
+X-Received: by 2002:a9d:185:: with SMTP id e5mr18127205ote.135.1599566298111;
+ Tue, 08 Sep 2020 04:58:18 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR11MB4182.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 81c133fe-a051-4371-80b6-08d8542d6aea
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Sep 2020 19:28:51.5400
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 5ae1af62-9505-4097-a69a-c1553ef7840e
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: JxSPc/Xfe/aSEeao5xiYZ7AUMl+q5+H4yTJhTt7xYIHldh9wk5iUlxgR6FMzz7LkAI8YbmXSOMmY1Qz8wwqZww==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB3765
-X-OriginatorOrg: cisco.com
-X-Outbound-SMTP-Client: 173.36.7.13, xch-aln-003.cisco.com
-X-Outbound-Node: alln-core-7.cisco.com
+References: <20200907213855.3572-1-nramas@linux.microsoft.com>
+ <CAEjxPJ5C64AmmVKuuPmtbfnY06w49ziryRAnARurWxpQumzfow@mail.gmail.com> <7c4e2e9f-54e1-1dee-c33c-64dac0fe9678@linux.microsoft.com>
+In-Reply-To: <7c4e2e9f-54e1-1dee-c33c-64dac0fe9678@linux.microsoft.com>
+From:   Stephen Smalley <stephen.smalley.work@gmail.com>
+Date:   Tue, 8 Sep 2020 07:58:07 -0400
+Message-ID: <CAEjxPJ6eGcmbtGX7Kvn8e=ZxBUQD5G=8D+o9-BsVXyDFcyPYMw@mail.gmail.com>
+Subject: Re: [PATCH] SELinux: Measure state and hash of policy using IMA
+To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Cc:     Mimi Zohar <zohar@linux.ibm.com>, Paul Moore <paul@paul-moore.com>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        tusharsu@linux.microsoft.com, Sasha Levin <sashal@kernel.org>,
+        James Morris <jmorris@namei.org>,
+        linux-integrity@vger.kernel.org,
+        SElinux list <selinux@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIwLTA5LTA4IGF0IDEyOjIxIC0wNzAwLCBSb21hbiBHdXNoY2hpbiB3cm90ZToN
-Cj4gT24gVHVlLCBTZXAgMDgsIDIwMjAgYXQgMTE6NTA6NTFBTSAtMDcwMCwgSnVsaXVzIEhlbWFu
-dGggUGl0dGkgd3JvdGU6DQo+ID4gRm9yIG5vbiByb290IENHLCBpbiB0cnlfY2hhcmdlKCksIHdl
-IGtlZXAgdHJ5aW5nDQo+ID4gdG8gY2hhcmdlIHVudGlsIHdlIHN1Y2NlZWQuIE9uIG5vbi1wcmVl
-bXB0aXZlDQo+ID4ga2VybmVsLCB3aGVuIHdlIGFyZSBPT00sIHRoaXMgcmVzdWx0cyBpbiBob2xk
-aW5nDQo+ID4gQ1BVIGZvcmV2ZXIuDQo+ID4gDQo+ID4gT24gU01QIHN5c3RlbXMsIHRoaXMgZG9l
-c24ndCBjcmVhdGUgYSBiaWcgcHJvYmxlbQ0KPiA+IGJlY2F1c2Ugb29tX3JlYXBlciBnZXQgYSBj
-aGFuZ2UgdG8ga2lsbCB2aWN0aW0NCj4gPiBhbmQgbWFrZSBzb21lIGZyZWUgcGFnZXMuIEhvd2V2
-ZXIgb24gYSBzaW5nbGUtY29yZQ0KPiA+IENQVSAob3IgY2FzZXMgd2hlcmUgb29tX3JlYXBlciBw
-aW5uZWQgdG8gc2FtZSBDUFUNCj4gPiB3aGVyZSB0cnlfY2hhcmdlIGlzIGV4ZWN1dGluZyksIG9v
-bV9yZWFwZXIgc2hhbGwNCj4gPiBuZXZlciBnZXQgc2NoZWR1bGVkIGFuZCB3ZSBzdGF5IGluIHRy
-eV9jaGFyZ2UgZm9yZXZlci4NCj4gPiANCj4gPiBTdGVwcyB0byByZXBvIHRoaXMgb24gbm9uLXNt
-cDoNCj4gPiAxLiBtb3VudCAtdCB0bXBmcyBub25lIC9zeXMvZnMvY2dyb3VwDQo+ID4gMi4gbWtk
-aXIgL3N5cy9mcy9jZ3JvdXAvbWVtb3J5DQo+ID4gMy4gbW91bnQgLXQgY2dyb3VwIG5vbmUgL3N5
-cy9mcy9jZ3JvdXAvbWVtb3J5IC1vIG1lbW9yeQ0KPiA+IDQuIG1rZGlyIC9zeXMvZnMvY2dyb3Vw
-L21lbW9yeS8wDQo+ID4gNS4gZWNobyA0ME0gPiAvc3lzL2ZzL2Nncm91cC9tZW1vcnkvMC9tZW1v
-cnkubGltaXRfaW5fYnl0ZXMNCj4gPiA2LiBlY2hvICQkID4gL3N5cy9mcy9jZ3JvdXAvbWVtb3J5
-LzAvdGFza3MNCj4gPiA3LiBzdHJlc3MgLW0gNSAtLXZtLWJ5dGVzIDEwTSAtLXZtLWhhbmcgMA0K
-PiA+IA0KPiA+IFNpZ25lZC1vZmYtYnk6IEp1bGl1cyBIZW1hbnRoIFBpdHRpIDxqcGl0dGlAY2lz
-Y28uY29tPg0KPiA+IC0tLQ0KPiA+ICBtbS9tZW1jb250cm9sLmMgfCAyICsrDQo+ID4gIDEgZmls
-ZSBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKykNCj4gPiANCj4gPiBkaWZmIC0tZ2l0IGEvbW0vbWVt
-Y29udHJvbC5jIGIvbW0vbWVtY29udHJvbC5jDQo+ID4gaW5kZXggMGQ2ZjNlYTg2NzM4Li40NjIw
-ZDcwMjY3Y2IgMTAwNjQ0DQo+ID4gLS0tIGEvbW0vbWVtY29udHJvbC5jDQo+ID4gKysrIGIvbW0v
-bWVtY29udHJvbC5jDQo+ID4gQEAgLTI2NTIsNiArMjY1Miw4IEBAIHN0YXRpYyBpbnQgdHJ5X2No
-YXJnZShzdHJ1Y3QgbWVtX2Nncm91cA0KPiA+ICptZW1jZywgZ2ZwX3QgZ2ZwX21hc2ssDQo+ID4g
-IAlpZiAoZmF0YWxfc2lnbmFsX3BlbmRpbmcoY3VycmVudCkpDQo+ID4gIAkJZ290byBmb3JjZTsN
-Cj4gPiAgDQo+ID4gKwljb25kX3Jlc2NoZWQoKTsNCj4gPiArDQo+IA0KPiBDYW4geW91LCBwbGVh
-c2UsIGFkZCBhIHNob3J0IGNvbW1lbnQgaGVyZT8NCj4gU29tZXRoaW5nIGxpa2UgImdpdmUgb29t
-X3JlYXBlciBhIGNoYW5jZSBvbiBhIG5vbi1TTVAgc3lzdGVtIj8NClN1cmUuDQoNCj4gDQo+ID4g
-IAkvKg0KPiA+ICAJICoga2VlcCByZXRyeWluZyBhcyBsb25nIGFzIHRoZSBtZW1jZyBvb20ga2ls
-bGVyIGlzIGFibGUgdG8NCj4gPiBtYWtlDQo+ID4gIAkgKiBhIGZvcndhcmQgcHJvZ3Jlc3Mgb3Ig
-YnlwYXNzIHRoZSBjaGFyZ2UgaWYgdGhlIG9vbSBraWxsZXINCj4gPiAtLSANCj4gPiAyLjE3LjEN
-Cj4gPiANCj4gDQo+IFRoZSBwYXRjaCBtYWtlcyB0b3RhbCBzZW5zZSB0byBtZS4gUGxlYXNlLCBm
-ZWVsIGZyZWUgdG8gYWRkDQo+IEFja2VkLWJ5OiBSb21hbiBHdXNoY2hpbiA8Z3Vyb0BmYi5jb20+
-IGFmdGVyIGFkZGluZyBhIGNvbW1lbnQuDQpUaGFua3MsIEkgc2hhbGwgYWRkLg0KDQo+IA0KPiBU
-aGFuayB5b3UhDQo=
+On Tue, Sep 8, 2020 at 12:44 AM Lakshmi Ramasubramanian
+<nramas@linux.microsoft.com> wrote:
+>
+> On 9/7/20 3:32 PM, Stephen Smalley wrote:
+>
+> >> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+> >> Suggested-by: Stephen Smalley <stephen.smalley.work@gmail.com>
+> >> Reported-by: kernel test robot <lkp@intel.com> # error: implicit declaration of function 'vfree'
+> >> Reported-by: kernel test robot <lkp@intel.com> # error: implicit declaration of function 'crypto_alloc_shash'
+> >> Reported-by: kernel test robot <lkp@intel.com> # sparse: symbol 'security_read_selinux_policy' was not declared. Should it be static?
+> >
+> > Not sure these Reported-by lines are useful since they were just on
+> > submitted versions of the patch not on an actual merged commit.
+>
+> I'll remove them when I update the patch.
+>
+> >
+> >> diff --git a/security/selinux/measure.c b/security/selinux/measure.c
+> >> new file mode 100644
+> >> index 000000000000..caf9107937d9
+> >> --- /dev/null
+> >> +++ b/security/selinux/measure.c
+> > <snip>
+> >> +void selinux_measure_state(struct selinux_state *state, bool policy_mutex_held)
+> >> +{
+> > <snip>
+> >> +
+> >> +       if (!policy_mutex_held)
+> >> +               mutex_lock(&state->policy_mutex);
+> >> +
+> >> +       rc = security_read_policy_kernel(state, &policy, &policy_len);
+> >> +
+> >> +       if (!policy_mutex_held)
+> >> +               mutex_unlock(&state->policy_mutex);
+> >
+> > This kind of conditional taking of a mutex is generally frowned upon
+> > in my experience.
+> > You should likely just always take the mutex in the callers of
+> > selinux_measure_state() instead.
+> > In some cases, it may be the caller of the caller.  Arguably selinuxfs
+> > could be taking it around all state modifying operations (e.g.
+> > enforce, checkreqprot) not just policy modifying ones although it
+> > isn't strictly for that purpose.
+>
+> Since currently policy_mutex is not used to synchronize access to state
+> variables (enforce, checkreqprot, etc.) I am wondering if
+> selinux_measure_state() should measure only state if policy_mutex is not
+> held by the caller - similar to how we skip measuring policy if
+> initialization is not yet completed.
+
+No, we want to measure policy whenever there is a policy to measure.
+Just move the taking of the mutex to the callers of
+selinux_measure_state() so that it can be unconditional.
