@@ -2,113 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CD46261AF3
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 20:49:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F93C261AFE
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 20:51:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731418AbgIHSte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 14:49:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48862 "EHLO mail.kernel.org"
+        id S1731585AbgIHSvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 14:51:54 -0400
+Received: from foss.arm.com ([217.140.110.172]:33472 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726623AbgIHSt2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 14:49:28 -0400
-Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EFB5E20936;
-        Tue,  8 Sep 2020 18:49:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599590968;
-        bh=/PlDYc73I5PrW5B6uIA1VQLp4BTV4oHIIammujpUcdc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=HmSGh740yu0BG3o8RZaACSnauoPWIiTMdYNbvbpK4Xfg6Qt9yp/9PbedxzmcGP1yU
-         gjizIm8AsQYWnKT1w1+JMCOEXMD/RPG6Jr9ca5fIF/zf5pk2X5m86NCTO0LFqcI8lB
-         P6LtCYENiYCraQuMzg/RpFnCp6zLi/BfcHykm6AI=
-Received: by mail-oo1-f44.google.com with SMTP id z1so4181677ooj.3;
-        Tue, 08 Sep 2020 11:49:27 -0700 (PDT)
-X-Gm-Message-State: AOAM532iPabKuWaYeillxffAAa72ppM/1YaQjXNc4X/BJpJ3VJsejRFm
-        VBevMGUBvyAQ9tAMiuD3W3e/aAsCAvODS9sabg==
-X-Google-Smtp-Source: ABdhPJya9363hct12OY48mS3oy3MugvGqPp1r0CFLg7IaMo8S66bOWAkKXuaqZ594ecf4YPBAZ2NNNnWHCf5O70mBZA=
-X-Received: by 2002:a4a:d38c:: with SMTP id i12mr3445oos.81.1599590967271;
- Tue, 08 Sep 2020 11:49:27 -0700 (PDT)
+        id S1726479AbgIHSuP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 14:50:15 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DEDFB1045;
+        Tue,  8 Sep 2020 11:50:12 -0700 (PDT)
+Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id A7E103F73C;
+        Tue,  8 Sep 2020 11:50:11 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     linux-kernel@vger.kernel.org,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Randy Dunlap <rdunlap@infradead.org>, mingo@kernel.org,
+        peterz@infradead.org, vincent.guittot@linaro.org,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: [PATCH] sched/topology: Move sd_flag_debug out of #ifdef CONFIG_SYSCTL
+Date:   Tue,  8 Sep 2020 19:49:56 +0100
+Message-Id: <20200908184956.23369-1-valentin.schneider@arm.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20200817030324.5690-1-crystal.guo@mediatek.com>
- <20200817030324.5690-3-crystal.guo@mediatek.com> <20200825190219.GA1125997@bogus>
- <1598440183.30048.14.camel@mhfsdcap03> <6c292056-1cb1-bc6c-0422-46e047dcf08f@ti.com>
-In-Reply-To: <6c292056-1cb1-bc6c-0422-46e047dcf08f@ti.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Tue, 8 Sep 2020 12:49:16 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqKuL7XM2CL3z0OQdRua5YJO2ZRdsoE3fdAH948mKGfWnA@mail.gmail.com>
-Message-ID: <CAL_JsqKuL7XM2CL3z0OQdRua5YJO2ZRdsoE3fdAH948mKGfWnA@mail.gmail.com>
-Subject: Re: [v4,2/4] dt-binding: reset-controller: ti: add
- 'mediatek,infra-reset' to compatible
-To:     Suman Anna <s-anna@ti.com>
-Cc:     Crystal Guo <crystal.guo@mediatek.com>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        =?UTF-8?B?U2VpeWEgV2FuZyAo546L6L+65ZCbKQ==?= 
-        <seiya.wang@mediatek.com>,
-        =?UTF-8?B?U3RhbmxleSBDaHUgKOacseWOn+mZnik=?= 
-        <stanley.chu@mediatek.com>,
-        =?UTF-8?B?WWluZ2pvZSBDaGVuICjpmbPoi7HmtLIp?= 
-        <Yingjoe.Chen@mediatek.com>,
-        =?UTF-8?B?RmFuIENoZW4gKOmZs+WHoSk=?= <fan.chen@mediatek.com>,
-        =?UTF-8?B?WW9uZyBMaWFuZyAo5qKB5YuHKQ==?= <Yong.Liang@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 2, 2020 at 5:26 PM Suman Anna <s-anna@ti.com> wrote:
->
-> Hi Rob,
->
-> On 8/26/20 6:09 AM, Crystal Guo wrote:
-> > On Wed, 2020-08-26 at 03:02 +0800, Rob Herring wrote:
-> >> On Mon, Aug 17, 2020 at 11:03:22AM +0800, Crystal Guo wrote:
-> >>> The TI syscon reset controller provides a common reset management,
-> >>> and is suitable for MTK SoCs. Add compatible 'mediatek,infra-reset',
-> >>> which denotes to use ti reset-controller driver directly.
-> >>>
-> >>> Signed-off-by: Crystal Guo <crystal.guo@mediatek.com>
-> >>> ---
-> >>>  Documentation/devicetree/bindings/reset/ti-syscon-reset.txt | 1 +
-> >>>  1 file changed, 1 insertion(+)
-> >>>
-> >>> diff --git a/Documentation/devicetree/bindings/reset/ti-syscon-reset.txt b/Documentation/devicetree/bindings/reset/ti-syscon-reset.txt
-> >>> index ab041032339b..5a0e9365b51b 100644
-> >>> --- a/Documentation/devicetree/bindings/reset/ti-syscon-reset.txt
-> >>> +++ b/Documentation/devicetree/bindings/reset/ti-syscon-reset.txt
-> >>> @@ -25,6 +25,7 @@ Required properties:
-> >>>                         "ti,k2l-pscrst"
-> >>>                         "ti,k2hk-pscrst"
-> >>>                         "ti,syscon-reset"
-> >>> +                       "mediatek,infra-reset", "ti,syscon-reset"
-> >>
-> >> You need your own binding doc. If you can use the same driver then fine,
-> >> but that's a separate issue. There's also reset-simple driver if you
-> >> have just array of 32-bit registers with a bit per reset.
-> >>
-> >> Don't repeat 'ti,reset-bits' either.
-> >
-> > Do you mean I should add a Mediatek reset binding doc, although Mediatek
-> > reuse the TI reset controller directly?
->
-> Hmm, how do you envision not repeating the same bits in a separate binding?
+The last sd_flag_debug shuffle inadvertently moved its definition within
+an #ifdef CONFIG_SYSCTL region. While CONFIG_SYSCTL is indeed required to
+produce the sched domain ctl interface (which uses sd_flag_debug to output
+flag names), it isn't required to run any assertion on the sched_domain
+hierarchy itself.
 
-I mean 'ti,reset-bits' isn't really something that should have been in
-DT in the first place, but rather implied by the compatible string.
+Move the definition of sd_flag_debug to a CONFIG_SCHED_DEBUG region of
+topology.c.
 
-> Does it help if I convert this to YAML first without a ti, prefix in the file name?
+Now at long last we have:
+o sd_flag_debug declared in include/linux/sched/topology.h iff
+  CONFIG_SCHED_DEBUG=y
+o sd_flag_debug defined in kernel/sched/topology.c, conditioned by:
+  o CONFIG_SCHED_DEBUG, with an explicit #ifdef block
+  o CONFIG_SMP, as a requirement to compile topology.c
 
-No, I don't think this should be a shared binding. The driver may be
-able to be shared, but that's independent from the binding.
+With this change, all symbols pertaining to SD flag metadata (with the
+exception of __SD_FLAG_CNT) are now defined exclusively within topology.c
 
-Rob
+Fixes: 8fca9494d4b4 ("sched/topology: Move sd_flag_debug out of linux/sched/topology.h")
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+---
+@Randy I didn't keep your Acked-by given that this is a slightly different
+shuffle.
+---
+ kernel/sched/debug.c    | 6 ------
+ kernel/sched/topology.c | 6 ++++++
+ 2 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
+index 0d7896d2a0b2..0655524700d2 100644
+--- a/kernel/sched/debug.c
++++ b/kernel/sched/debug.c
+@@ -245,12 +245,6 @@ set_table_entry(struct ctl_table *entry,
+ 	entry->proc_handler = proc_handler;
+ }
+ 
+-#define SD_FLAG(_name, mflags) [__##_name] = { .meta_flags = mflags, .name = #_name },
+-const struct sd_flag_debug sd_flag_debug[] = {
+-#include <linux/sched/sd_flags.h>
+-};
+-#undef SD_FLAG
+-
+ static int sd_ctl_doflags(struct ctl_table *table, int write,
+ 			  void *buffer, size_t *lenp, loff_t *ppos)
+ {
+diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+index da3cd60e4b78..55c453d140e9 100644
+--- a/kernel/sched/topology.c
++++ b/kernel/sched/topology.c
+@@ -25,6 +25,12 @@ static inline bool sched_debug(void)
+ 	return sched_debug_enabled;
+ }
+ 
++#define SD_FLAG(_name, mflags) [__##_name] = { .meta_flags = mflags, .name = #_name },
++const struct sd_flag_debug sd_flag_debug[] = {
++#include <linux/sched/sd_flags.h>
++};
++#undef SD_FLAG
++
+ static int sched_domain_debug_one(struct sched_domain *sd, int cpu, int level,
+ 				  struct cpumask *groupmask)
+ {
+-- 
+2.27.0
+
