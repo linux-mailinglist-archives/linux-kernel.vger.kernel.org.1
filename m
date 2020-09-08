@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EA45261D66
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:36:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13EFE261E74
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:52:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732156AbgIHTgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:36:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47740 "EHLO mail.kernel.org"
+        id S1730690AbgIHPth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 11:49:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40020 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730960AbgIHP5Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:57:16 -0400
+        id S1730692AbgIHPsF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 11:48:05 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C25FC24696;
-        Tue,  8 Sep 2020 15:39:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 76D0724823;
+        Tue,  8 Sep 2020 15:44:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599579584;
-        bh=1ClE4nVFMN2hjeKwvBixxHf6qulHh5ahnmqBHj+4h24=;
+        s=default; t=1599579857;
+        bh=crnGPu0tyhKeHX2naCZdLKAQ0FrvUkbm16b+X1HG0cY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cNoOAjxDdTHlw91GtBdh48ObCqUx89A323VPHYJfdpl6VDrR1B8g/4cydSe30EYI6
-         jHLMY94S+We/jDkNrXhryeiKJexAoKber8j3P4KoE//pzL+CL+oHOrSlQepKagMtaU
-         8+FJoYTl5CVd1Ys0rA5JWYz4gS7DDn8pbzQSeZlo=
+        b=Y/FP/JLM/DiF9gUtzm8hxNgfiuuPyFfctNryCK9brx/KHWCVe9tn5b+lZvAtpx8Gs
+         skkoREw6sdxQN7Lal44qWYKyA5juwcuY/hhSCbpwSIf3y1wNMmfqeFry1S0ULwjqj1
+         P9DFsqIlpjzdkuqzXjgI/Pf5Fi5nso7SxieHCcMA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Joshua Sivec <sivec@posteo.net>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.8 137/186] ALSA: usb-audio: Add implicit feedback quirk for UR22C
-Date:   Tue,  8 Sep 2020 17:24:39 +0200
-Message-Id: <20200908152248.291979079@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Vasundhara Volam <vasundhara-v.volam@broadcom.com>,
+        Michael Chan <michael.chan@broadcom.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 044/129] bnxt_en: Fix PCI AER error recovery flow
+Date:   Tue,  8 Sep 2020 17:24:45 +0200
+Message-Id: <20200908152231.904065833@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200908152241.646390211@linuxfoundation.org>
-References: <20200908152241.646390211@linuxfoundation.org>
+In-Reply-To: <20200908152229.689878733@linuxfoundation.org>
+References: <20200908152229.689878733@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,35 +46,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joshua Sivec <sivec@posteo.net>
+From: Vasundhara Volam <vasundhara-v.volam@broadcom.com>
 
-commit 7c5b892e0871655fea3294ffac6fa3cc3400b60d upstream.
+[ Upstream commit df3875ec550396974b1d8a518bd120d034738236 ]
 
-This uses the same quirk as the Motu and SSL2 devices.
-Tested on the UR22C.
+When a PCI error is detected the PCI state could be corrupt, save
+the PCI state after initialization and restore it after the slot
+reset.
 
-Fixes bug 208851.
-
-Signed-off-by: Joshua Sivec <sivec@posteo.net>
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=208851
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200825165515.8239-1-sivec@posteo.net
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 6316ea6db93d ("bnxt_en: Enable AER support.")
+Signed-off-by: Vasundhara Volam <vasundhara-v.volam@broadcom.com>
+Signed-off-by: Michael Chan <michael.chan@broadcom.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/usb/pcm.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/sound/usb/pcm.c
-+++ b/sound/usb/pcm.c
-@@ -369,6 +369,7 @@ static int set_sync_ep_implicit_fb_quirk
- 	case USB_ID(0x07fd, 0x0008): /* MOTU M Series */
- 	case USB_ID(0x31e9, 0x0001): /* Solid State Logic SSL2 */
- 	case USB_ID(0x31e9, 0x0002): /* Solid State Logic SSL2+ */
-+	case USB_ID(0x0499, 0x172f): /* Steinberg UR22C */
- 	case USB_ID(0x0d9a, 0x00df): /* RTX6001 */
- 		ep = 0x81;
- 		ifnum = 2;
+diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+index 2cbfe0cd7eefa..7cb74d7a78e3c 100644
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+@@ -11900,6 +11900,7 @@ static int bnxt_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 		    (long)pci_resource_start(pdev, 0), dev->dev_addr);
+ 	pcie_print_link_status(pdev);
+ 
++	pci_save_state(pdev);
+ 	return 0;
+ 
+ init_err_cleanup:
+@@ -12066,6 +12067,8 @@ static pci_ers_result_t bnxt_io_slot_reset(struct pci_dev *pdev)
+ 			"Cannot re-enable PCI device after reset.\n");
+ 	} else {
+ 		pci_set_master(pdev);
++		pci_restore_state(pdev);
++		pci_save_state(pdev);
+ 
+ 		err = bnxt_hwrm_func_reset(bp);
+ 		if (!err && netif_running(netdev))
+-- 
+2.25.1
+
 
 
