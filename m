@@ -2,65 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5872A260D94
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 10:31:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A870260DA4
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 10:35:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729734AbgIHIbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 04:31:50 -0400
-Received: from mga07.intel.com ([134.134.136.100]:63017 "EHLO mga07.intel.com"
+        id S1730067AbgIHIfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 04:35:20 -0400
+Received: from mail.alarsen.net ([144.76.18.233]:57426 "EHLO mail.alarsen.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729234AbgIHIbs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 04:31:48 -0400
-IronPort-SDR: scu6mIea1k1qH3FQFwLo1SmyfsEIWpJlDKUoiK6Kp03aIQ7w5k9ijjbx9GG5Co8KIru3GO7PNm
- y94ljeQRwp7g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9737"; a="222303803"
-X-IronPort-AV: E=Sophos;i="5.76,405,1592895600"; 
-   d="scan'208";a="222303803"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2020 01:31:44 -0700
-IronPort-SDR: FweSmouYNk++v8QtEDs+cCrQB3qHOl51qKbd1PoAMr7SqCMfKSDkfCwcps9QO1kYDfUXJEZ5kb
- 3plRa9JxnjhQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,405,1592895600"; 
-   d="scan'208";a="504298538"
-Received: from yilunxu-optiplex-7050.sh.intel.com ([10.239.159.141])
-  by fmsmga006.fm.intel.com with ESMTP; 08 Sep 2020 01:31:42 -0700
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     krzk@kernel.org, mdf@kernel.org, linux-kernel@vger.kernel.org
-Cc:     trix@redhat.com, yilun.xu@intel.com,
-        matthew.gerlach@linux.intel.com, russell.h.weight@intel.com,
-        lgoncalv@redhat.com, hao.wu@intel.com
-Subject: [PATCH] add the FPGA Device Feature List (DFL) EMIF support
-Date:   Tue,  8 Sep 2020 16:27:24 +0800
-Message-Id: <1599553645-26928-1-git-send-email-yilun.xu@intel.com>
-X-Mailer: git-send-email 2.7.4
+        id S1729629AbgIHIfT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 04:35:19 -0400
+X-Greylist: delayed 386 seconds by postgrey-1.27 at vger.kernel.org; Tue, 08 Sep 2020 04:35:18 EDT
+Received: from oscar.alarsen.net (unknown [IPv6:2001:470:1f0b:246:b440:f8d3:1c0c:d20c])
+        by joe.alarsen.net (Postfix) with ESMTPS id C72DC2B80B87;
+        Tue,  8 Sep 2020 10:28:50 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alarsen.net; s=joe;
+        t=1599553730; bh=vAMC3BpR+mvYVqZXlzgmRJWrQUKXzqY7hp9gqzLPC+M=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=kMpihx1Mn0lZF+E26HcrGXm3wEl1wM3kQy9vMh0OgkdaWmym0/RAttcriMqnUNx+Q
+         onTCxRAk4kQFdU4k5nSd+5wUEG3XWrGMOplq2HqO9QooG+jtDochhQkAddnZU6i3BM
+         A7l1QtSqSgTV0VKpPpD0wi38Cf+6S8QGZy0DmSts=
+Received: from oscar.localnet (localhost [IPv6:::1])
+        by oscar.alarsen.net (Postfix) with ESMTP id 98F8327C02A7;
+        Tue,  8 Sep 2020 10:28:50 +0200 (CEST)
+From:   Anders Larsen <al@alarsen.net>
+To:     Neil Armstrong <narmstrong@baylibre.com>
+Cc:     thierry.reding@gmail.com, sam@ravnborg.org,
+        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/4] dt-bindings: vendor-prefixes: Add Shanghai Top Display Optolelectronics vendor prefix
+Date:   Tue, 08 Sep 2020 10:28:50 +0200
+Message-ID: <14178277.p4ol7qMFiq@alarsen.net>
+In-Reply-To: <20200908075421.17344-2-narmstrong@baylibre.com>
+References: <20200908075421.17344-1-narmstrong@baylibre.com> <20200908075421.17344-2-narmstrong@baylibre.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch depend on the patchsets: "Modularization of DFL private
-feature drivers" & "add dfl bus support to MODULE_DEVICE_TABLE()"
+On Tuesday, 2020-09-08 09:54 Neil Armstrong wrote:
+> Shanghai Top Display Optolelectronics Co., Ltd  is a display manufacturer
+> from Shanghai.
+> Web site of the company: http://www.shtdo.com/
+> 
+> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+> ---
+>  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> index a1e4356cf522..4e9dfb352c68 100644
+> --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> @@ -1078,6 +1078,8 @@ patternProperties:
+>      description: TPK U.S.A. LLC
+>    "^tplink,.*":
+>      description: TP-LINK Technologies Co., Ltd.
+> +  "^tdo,.*":
+> +    description: Shangai Top Display Optoelectronics Co., Ltd
 
-https://lore.kernel.org/linux-fpga/1599488581-16386-1-git-send-email-yilun.xu@intel.com/
+Please keep the list sorted alphabetically as requested in line 25 of the file.
 
-The driver supports the EMIF controller on Intel Programmable
-Acceleration Card (PAC). The controller manages the on-board memory of
-the PCIe card.
+>    "^tpo,.*":
+>      description: TPO
+>    "^tq,.*":
 
-Xu Yilun (1):
-  memory: dfl-emif: add the DFL EMIF private feature driver
+Cheers
+Anders
 
- .../ABI/testing/sysfs-bus-dfl-devices-emif         |  25 +++
- drivers/memory/Kconfig                             |   9 +
- drivers/memory/Makefile                            |   2 +
- drivers/memory/dfl-emif.c                          | 211 +++++++++++++++++++++
- 4 files changed, 247 insertions(+)
- create mode 100644 Documentation/ABI/testing/sysfs-bus-dfl-devices-emif
- create mode 100644 drivers/memory/dfl-emif.c
-
--- 
-2.7.4
 
