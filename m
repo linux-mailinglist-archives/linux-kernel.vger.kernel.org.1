@@ -2,119 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5764C2611D8
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 15:13:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67DF62611C6
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 15:06:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729635AbgIHNNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 09:13:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41860 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729779AbgIHLhi (ORCPT
+        id S1729548AbgIHNFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 09:05:19 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:44853 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729572AbgIHLhj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 07:37:38 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34D8EC061757
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 04:35:26 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id k18so1677837wmj.5
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 04:35:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WSL45Uni0wlxXIfxBtB/5y1z+V6rIa7ooXBAdktfl/A=;
-        b=ZLxft09DWWUQ61e1fg70TdQn/PgGhrvi+SfoTYjEbKMGf2binVugy8MuM9Xj99eAEe
-         VJLWkbCEhx0Q+0u1QI5c9QlkB5pVHml2SnWMDDRBQ9uR8HBRc6kNmOcsXnb8pl0Il5H7
-         XC9oedgjy1s3YBZnSyLsf4JQOOOfT7ZCvDezk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=WSL45Uni0wlxXIfxBtB/5y1z+V6rIa7ooXBAdktfl/A=;
-        b=Oni/dOGM2ktkr24mvSwxErrsH0K6V89U2iMtpr930aAWwGBhury5EGdgP5p21ClsaO
-         ZRXmhBm39LMmWTBxj6ofdex9JLbyH6YvOjKhbXOh/SJbhYt6M0Ai2jyJKQahP9stW1Pb
-         0z1gQQfebridIuLTY8PGWbj3avbAQ9EC9MctNB+57qcclahAbV3ydvO6I5W9KzeA7UhQ
-         HpgxPZcqxEut7aUf5GkjbCxnrLZRYJAWRGbD0PodLfVMevJEWA1ZNfYOdpryCyn9qJUg
-         UkBbIL50SUKa1U1me+OoZnII0h0877lBgmZNOCvACGmw9ALJRuvb6+lSUP+/lShtPGlo
-         FRWA==
-X-Gm-Message-State: AOAM531vXXFlfZ0jhJ7S2Z87rMrx8I5J0We0nrP6bRl5/9dPA+Zs5hwj
-        rhoH/rYXRZbov+LeCwZDjlJiFg==
-X-Google-Smtp-Source: ABdhPJwO92ecdG4LyeNex6dqtxEb2Oh6YdMfEcJIZ3ccJ7o2d+SykbHHt95D77rql1tnIOcP64ekjA==
-X-Received: by 2002:a1c:7215:: with SMTP id n21mr4226341wmc.154.1599564924815;
-        Tue, 08 Sep 2020 04:35:24 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id c6sm33689920wrr.15.2020.09.08.04.35.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Sep 2020 04:35:24 -0700 (PDT)
-Date:   Tue, 8 Sep 2020 13:35:22 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Gerd Hoffmann <kraxel@redhat.com>
-Cc:     dri-devel@lists.freedesktop.org, Dave Airlie <airlied@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "open list:DRM DRIVER FOR QXL VIRTUAL GPU" 
-        <virtualization@lists.linux-foundation.org>,
-        "open list:DRM DRIVER FOR QXL VIRTUAL GPU" 
-        <spice-devel@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/3] drm/qxl: use drmm_mode_config_init
-Message-ID: <20200908113522.GK2352366@phenom.ffwll.local>
-Mail-Followup-To: Gerd Hoffmann <kraxel@redhat.com>,
-        dri-devel@lists.freedesktop.org, Dave Airlie <airlied@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        "open list:DRM DRIVER FOR QXL VIRTUAL GPU" <virtualization@lists.linux-foundation.org>,
-        "open list:DRM DRIVER FOR QXL VIRTUAL GPU" <spice-devel@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20200908093912.26792-1-kraxel@redhat.com>
- <20200908093912.26792-2-kraxel@redhat.com>
+        Tue, 8 Sep 2020 07:37:39 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200908113644euoutp015f6ceec073618456f24a5a1693e6c304~yy_WHx45e0538805388euoutp01j
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 11:36:44 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200908113644euoutp015f6ceec073618456f24a5a1693e6c304~yy_WHx45e0538805388euoutp01j
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1599565004;
+        bh=m5SiHGtB7aCZeEWY7mux4FUg5x879IROw2zkg7TBLFc=;
+        h=From:Subject:To:Cc:Date:In-Reply-To:References:From;
+        b=CzyQpw5K7szWGHITINdvKlIa5UqDlYA1UkJcYk5XZ3M6lvp7gzsyV3DA2PtPuVaG+
+         fqbvwA+53JYkmMyknvJXXV4yktv8+oxkyuw73TtS+RKoLMZIiHDXlTOo95G0AR9vZr
+         rF537hVoOZ/yq2I4oXbFRleIlWRLnzkTKINPEc6Q=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20200908113644eucas1p103a7469440b3e66640ad0b64a26ff0aa~yy_V6qfQK0545005450eucas1p1z;
+        Tue,  8 Sep 2020 11:36:44 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id C2.3E.06456.BCC675F5; Tue,  8
+        Sep 2020 12:36:44 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20200908113643eucas1p17854ce62206401d0fdf33653380a4b46~yy_VfbuY61373613736eucas1p1Q;
+        Tue,  8 Sep 2020 11:36:43 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200908113643eusmtrp13517167108b3686fb356fa7757cb01ac~yy_Ve19p62002320023eusmtrp1Y;
+        Tue,  8 Sep 2020 11:36:43 +0000 (GMT)
+X-AuditID: cbfec7f2-c30869c000001938-5a-5f576ccb4b05
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id 09.94.06017.BCC675F5; Tue,  8
+        Sep 2020 12:36:43 +0100 (BST)
+Received: from [106.120.51.71] (unknown [106.120.51.71]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20200908113643eusmtip1a0e4ba746f1b94b17a4c1ddcf20074f6~yy_VIg-mD0442104421eusmtip1i;
+        Tue,  8 Sep 2020 11:36:43 +0000 (GMT)
+From:   Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Subject: Re: [PATCH] video: fbdev: fix setting of pixclock because a
+ pass-by-value error
+To:     Colin King <colin.king@canonical.com>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jani Nikula <jani.nikula@intel.com>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-ID: <ed082436-9ce3-23fd-679c-9cdf7b1da0cd@samsung.com>
+Date:   Tue, 8 Sep 2020 13:36:43 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+        Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200908093912.26792-2-kraxel@redhat.com>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+In-Reply-To: <20200723170227.996229-1-colin.king@canonical.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrNKsWRmVeSWpSXmKPExsWy7djP87pncsLjDV70Mlr8Xt3LZrHw4V1m
+        iytf37NZ7LnzmtFi6y1pixN9H1gtLu+aw+bA7jGroZfNY++3BSwei/e8ZPK4332cyePzJrkA
+        1igum5TUnMyy1CJ9uwSujC0XO5gKTopVNEw4ztjAeFSwi5GTQ0LARKJ3TQt7FyMXh5DACkaJ
+        n1OusEE4Xxglvr2dzwzhfGaU6D67hQWmZV3vBqiq5YwSa/vOMkI4bxklerZcAqtiE7CSmNi+
+        ihHEFhaIklh85j3QEg4OEQFNifPnikDqmQUuMUpsnbsHrIZXwE7iyrJfbCA2i4CKxK+Tn5lA
+        bFGBCIlPDw6zQtQISpyc+QRsPqeAvcTlw2/BbGYBcYlbT+YzQdjyEtvfzgE7W0JgG7vElnMf
+        oM52kTj85AI7hC0s8er4FihbRuL05B4WiIZ1jBJ/O15AdW9nlFg++R8bRJW1xJ1zIOdxAK3Q
+        lFi/Sx8i7Cixq/kLM0hYQoBP4sZbQYgj+CQmbZsOFeaV6GgTgqhWk9iwbAMbzNqunSuZJzAq
+        zULy2iwk78xC8s4shL0LGFlWMYqnlhbnpqcWG+allusVJ+YWl+al6yXn525iBCah0/+Of9rB
+        +PVS0iFGAQ5GJR7eD15h8UKsiWXFlbmHGCU4mJVEeJ3Ono4T4k1JrKxKLcqPLyrNSS0+xCjN
+        waIkzmu86GWskEB6YklqdmpqQWoRTJaJg1OqgZEzsutJzd+tjyZMqArffPbD0rbj5x0OC6bt
+        5qhb1Sttn55R8++Qy2xzfReOTx4u1eteb4z2LtN8MMVWeply2Le9gT+XHuf9lTt/kqZT3P03
+        GULWOis1xKNfW++zdDoXcsOUvyEnNto42/zQD/5Lu1aFrGNfxp8RxFEvfcC04KD4lzvi8jFz
+        fiqxFGckGmoxFxUnAgCnkfvPPgMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrDIsWRmVeSWpSXmKPExsVy+t/xu7qnc8LjDQ4vUrX4vbqXzWLhw7vM
+        Fle+vmez2HPnNaPF1lvSFif6PrBaXN41h82B3WNWQy+bx95vC1g8Fu95yeRxv/s4k8fnTXIB
+        rFF6NkX5pSWpChn5xSW2StGGFkZ6hpYWekYmlnqGxuaxVkamSvp2NimpOZllqUX6dgl6GVsu
+        djAVnBSraJhwnLGB8ahgFyMnh4SAicS63g1sXYxcHEICSxkllnd/Yuxi5ABKyEgcX18GUSMs
+        8edaF1TNa0aJxUdnsYIk2ASsJCa2r2IEsYUFoiQWn3nPDtIrIqApcf5cEUg9s8AlRokLR26w
+        QzRPAmpe9gWsmVfATuLKsl9sIDaLgIrEr5OfmUBsUYEIicM7ZjFC1AhKnJz5hAXE5hSwl7h8
+        +C2YzSygLvFn3iVmCFtc4taT+UwQtrzE9rdzmCcwCs1C0j4LScssJC2zkLQsYGRZxSiSWlqc
+        m55bbKRXnJhbXJqXrpecn7uJERhz24793LKDsetd8CFGAQ5GJR7eD15h8UKsiWXFlbmHGCU4
+        mJVEeJ3Ono4T4k1JrKxKLcqPLyrNSS0+xGgK9NxEZinR5HxgOsgriTc0NTS3sDQ0NzY3NrNQ
+        EuftEDgYIySQnliSmp2aWpBaBNPHxMEp1cDo+at/9qLNq3j/LRO5nFlSXGZ2qrx4kx/PqYe3
+        ny3jODC3bpF81+lJlp2rgmULtPonb9/88NuDNTO8OvfvbuIMnhj/sabt5sWi4G6hlX4zPnTW
+        u/vaXcj77cxcKmHRM48hUH310zNVPXb9W7fMDJ+7V43Z5+5FR80TMs0LF2tGBrtKcDhIPRJV
+        YinOSDTUYi4qTgQAKPrPVM8CAAA=
+X-CMS-MailID: 20200908113643eucas1p17854ce62206401d0fdf33653380a4b46
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20200723170235eucas1p21b1e0f5ff092d550d65057ae2a31a897
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20200723170235eucas1p21b1e0f5ff092d550d65057ae2a31a897
+References: <CGME20200723170235eucas1p21b1e0f5ff092d550d65057ae2a31a897@eucas1p2.samsung.com>
+        <20200723170227.996229-1-colin.king@canonical.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 08, 2020 at 11:39:10AM +0200, Gerd Hoffmann wrote:
-> Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
 
-Btw going all in on devm_drm_dev_alloc and managed functions might be good
-cleanup for virtio.
+On 7/23/20 7:02 PM, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> The pixclock is being set locally because it is being passed as a
+> pass-by-value argument rather than pass-by-reference, so the computed
+> pixclock is never being set in var->pixclock. Fix this by passing
+> by reference.
+> 
+> [This dates back to 2002, I found the offending commit from the git
+> history git://git.kernel.org/pub/scm/linux/kernel/git/tglx/history.git ]
+> 
+> Addresses-Coverity: ("Unused value")
+> Fixes: 115f4504a64a ("Removed currcon and other console related code. Very little is now left.")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Applied to drm-misc-next tree, thanks and sorry for the delay.
+
+Best regards,
+--
+Bartlomiej Zolnierkiewicz
+Samsung R&D Institute Poland
+Samsung Electronics
 
 > ---
->  drivers/gpu/drm/qxl/qxl_display.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
+>  drivers/video/fbdev/vga16fb.c | 14 +++++++-------
+>  1 file changed, 7 insertions(+), 7 deletions(-)
 > 
-> diff --git a/drivers/gpu/drm/qxl/qxl_display.c b/drivers/gpu/drm/qxl/qxl_display.c
-> index fa79688013b7..4be04eaf7f37 100644
-> --- a/drivers/gpu/drm/qxl/qxl_display.c
-> +++ b/drivers/gpu/drm/qxl/qxl_display.c
-> @@ -1190,7 +1190,9 @@ int qxl_modeset_init(struct qxl_device *qdev)
->  	int i;
->  	int ret;
->  
-> -	drm_mode_config_init(&qdev->ddev);
-> +	ret = drmm_mode_config_init(&qdev->ddev);
-> +	if (ret)
-> +		return ret;
->  
->  	ret = qxl_create_monitors_object(qdev);
->  	if (ret)
-> @@ -1223,5 +1225,4 @@ int qxl_modeset_init(struct qxl_device *qdev)
->  void qxl_modeset_fini(struct qxl_device *qdev)
->  {
->  	qxl_destroy_monitors_object(qdev);
-> -	drm_mode_config_cleanup(&qdev->ddev);
+> diff --git a/drivers/video/fbdev/vga16fb.c b/drivers/video/fbdev/vga16fb.c
+> index a20eeb8308ff..52f273af6cae 100644
+> --- a/drivers/video/fbdev/vga16fb.c
+> +++ b/drivers/video/fbdev/vga16fb.c
+> @@ -243,7 +243,7 @@ static void vga16fb_update_fix(struct fb_info *info)
 >  }
-> -- 
-> 2.27.0
+>  
+>  static void vga16fb_clock_chip(struct vga16fb_par *par,
+> -			       unsigned int pixclock,
+> +			       unsigned int *pixclock,
+>  			       const struct fb_info *info,
+>  			       int mul, int div)
+>  {
+> @@ -259,14 +259,14 @@ static void vga16fb_clock_chip(struct vga16fb_par *par,
+>  		{     0 /* bad */,    0x00, 0x00}};
+>  	int err;
+>  
+> -	pixclock = (pixclock * mul) / div;
+> +	*pixclock = (*pixclock * mul) / div;
+>  	best = vgaclocks;
+> -	err = pixclock - best->pixclock;
+> +	err = *pixclock - best->pixclock;
+>  	if (err < 0) err = -err;
+>  	for (ptr = vgaclocks + 1; ptr->pixclock; ptr++) {
+>  		int tmp;
+>  
+> -		tmp = pixclock - ptr->pixclock;
+> +		tmp = *pixclock - ptr->pixclock;
+>  		if (tmp < 0) tmp = -tmp;
+>  		if (tmp < err) {
+>  			err = tmp;
+> @@ -275,7 +275,7 @@ static void vga16fb_clock_chip(struct vga16fb_par *par,
+>  	}
+>  	par->misc |= best->misc;
+>  	par->clkdiv = best->seq_clock_mode;
+> -	pixclock = (best->pixclock * div) / mul;		
+> +	*pixclock = (best->pixclock * div) / mul;
+>  }
+>  			       
+>  #define FAIL(X) return -EINVAL
+> @@ -497,10 +497,10 @@ static int vga16fb_check_var(struct fb_var_screeninfo *var,
+>  
+>  	if (mode & MODE_8BPP)
+>  		/* pixel clock == vga clock / 2 */
+> -		vga16fb_clock_chip(par, var->pixclock, info, 1, 2);
+> +		vga16fb_clock_chip(par, &var->pixclock, info, 1, 2);
+>  	else
+>  		/* pixel clock == vga clock */
+> -		vga16fb_clock_chip(par, var->pixclock, info, 1, 1);
+> +		vga16fb_clock_chip(par, &var->pixclock, info, 1, 1);
+>  	
+>  	var->red.offset = var->green.offset = var->blue.offset = 
+>  	var->transp.offset = 0;
 > 
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
