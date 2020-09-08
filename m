@@ -2,45 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79A80261E8E
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:52:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42270261E73
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:52:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732424AbgIHTwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:52:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40018 "EHLO mail.kernel.org"
+        id S1732381AbgIHTvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 15:51:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42672 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730694AbgIHPsF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:48:05 -0400
+        id S1730702AbgIHPt5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 11:49:57 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D741E24828;
-        Tue,  8 Sep 2020 15:44:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0B1C324859;
+        Tue,  8 Sep 2020 15:45:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599579865;
-        bh=T/kkUQEE7+ok0kqx2oPASSM9vF53iFJ2MbQnnJfEleM=;
+        s=default; t=1599579917;
+        bh=x6dG5iZPys6XcszX9f3KVT/6LcOENDa9YEo2YC63G9c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=F6pgKb6yLsPGxv3A7zW4WlE0OjSwnGYdDn0Atr1uLzyUOa7d8Cw+RL1YCUVfjvltl
-         Plbx69nKAo136+A50dXFP1lLzP+YPOHXgvWehpskw2JL9yrKz0foAzvwuSD65Yb1z2
-         Zd3tz+JbOmRK1+WHFq7Q6EFXCuqPowpJcCeXXZjk=
+        b=EJC+SgjWj8lTrsk5TGrEdrnSLrfEOuAdBHLj6Yd7kSEAYq06NUWZYPi02x1qJpdYd
+         Pn/Tqg3eUxu9Wvq+vtld1RBervnmRts7E79z0qBxGYxRiX8v7cUaeVjCYgcN1SDWY/
+         OTzRIyEFH6UdR2IvoYRI+rKldSkO7ApjdHS5/elA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Andi Kleen <andi@firstfloor.org>, Jiri Olsa <jolsa@redhat.com>,
-        John Garry <john.garry@huawei.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Stephane Eranian <eranian@google.com>,
-        William Cohen <wcohen@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 064/129] perf jevents: Fix suspicious code in fixregex()
-Date:   Tue,  8 Sep 2020 17:25:05 +0200
-Message-Id: <20200908152232.892355478@linuxfoundation.org>
+        stable@vger.kernel.org, Alexander Lobakin <alobakin@dlink.ru>,
+        Edward Cree <ecree@solarflare.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Hyunsoon Kim <h10.kim@samsung.com>
+Subject: [PATCH 5.4 086/129] net: core: use listified Rx for GRO_NORMAL in napi_gro_receive()
+Date:   Tue,  8 Sep 2020 17:25:27 +0200
+Message-Id: <20200908152234.000867723@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200908152229.689878733@linuxfoundation.org>
 References: <20200908152229.689878733@linuxfoundation.org>
@@ -53,47 +45,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Namhyung Kim <namhyung@kernel.org>
+From: Alexander Lobakin <alobakin@dlink.ru>
 
-[ Upstream commit e62458e3940eb3dfb009481850e140fbee183b04 ]
+commit 6570bc79c0dfff0f228b7afd2de720fb4e84d61d upstream.
 
-The new string should have enough space for the original string and the
-back slashes IMHO.
+Commit 323ebb61e32b4 ("net: use listified RX for handling GRO_NORMAL
+skbs") made use of listified skb processing for the users of
+napi_gro_frags().
+The same technique can be used in a way more common napi_gro_receive()
+to speed up non-merged (GRO_NORMAL) skbs for a wide range of drivers
+including gro_cells and mac80211 users.
+This slightly changes the return value in cases where skb is being
+dropped by the core stack, but it seems to have no impact on related
+drivers' functionality.
+gro_normal_batch is left untouched as it's very individual for every
+single system configuration and might be tuned in manual order to
+achieve an optimal performance.
 
-Fixes: fbc2844e84038ce3 ("perf vendor events: Use more flexible pattern matching for CPU identification for mapfile.csv")
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-Reviewed-by: Ian Rogers <irogers@google.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Andi Kleen <andi@firstfloor.org>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: John Garry <john.garry@huawei.com>
-Cc: Kajol Jain <kjain@linux.ibm.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Stephane Eranian <eranian@google.com>
-Cc: William Cohen <wcohen@redhat.com>
-Link: http://lore.kernel.org/lkml/20200903152510.489233-1-namhyung@kernel.org
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Alexander Lobakin <alobakin@dlink.ru>
+Acked-by: Edward Cree <ecree@solarflare.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Hyunsoon Kim <h10.kim@samsung.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- tools/perf/pmu-events/jevents.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/core/dev.c |    9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/tools/perf/pmu-events/jevents.c b/tools/perf/pmu-events/jevents.c
-index 99e3fd04a5cb3..d36ae65ae3330 100644
---- a/tools/perf/pmu-events/jevents.c
-+++ b/tools/perf/pmu-events/jevents.c
-@@ -137,7 +137,7 @@ static char *fixregex(char *s)
- 		return s;
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -5602,12 +5602,13 @@ static void napi_skb_free_stolen_head(st
+ 	kmem_cache_free(skbuff_head_cache, skb);
+ }
  
- 	/* allocate space for a new string */
--	fixed = (char *) malloc(len + 1);
-+	fixed = (char *) malloc(len + esc_count + 1);
- 	if (!fixed)
- 		return NULL;
+-static gro_result_t napi_skb_finish(gro_result_t ret, struct sk_buff *skb)
++static gro_result_t napi_skb_finish(struct napi_struct *napi,
++				    struct sk_buff *skb,
++				    gro_result_t ret)
+ {
+ 	switch (ret) {
+ 	case GRO_NORMAL:
+-		if (netif_receive_skb_internal(skb))
+-			ret = GRO_DROP;
++		gro_normal_one(napi, skb);
+ 		break;
  
--- 
-2.25.1
-
+ 	case GRO_DROP:
+@@ -5639,7 +5640,7 @@ gro_result_t napi_gro_receive(struct nap
+ 
+ 	skb_gro_reset_offset(skb);
+ 
+-	ret = napi_skb_finish(dev_gro_receive(napi, skb), skb);
++	ret = napi_skb_finish(napi, skb, dev_gro_receive(napi, skb));
+ 	trace_napi_gro_receive_exit(ret);
+ 
+ 	return ret;
 
 
