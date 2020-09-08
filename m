@@ -2,107 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F4BA2608E7
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 05:08:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D62A42608EB
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 05:09:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728452AbgIHDIv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Sep 2020 23:08:51 -0400
-Received: from ozlabs.org ([203.11.71.1]:58529 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728241AbgIHDIo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Sep 2020 23:08:44 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BlqqG3Nkjz9sT6;
-        Tue,  8 Sep 2020 13:08:41 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1599534522;
-        bh=ZR9wZ/taI/ANXKFzUcL1I23XkZtFH+PchbQ6gdX4XAk=;
-        h=Date:From:To:Cc:Subject:From;
-        b=nzKO7XEYJgC4rFcpwit82xayFpTQ2XuvjK880wvJgio4gkDvQpP6iO6A/TspIwbsD
-         YNuU6l6amOpZ9vyUXY7HPS8Kln2uQntJgkQ7FfDSj3Ow2ECoXEPesqH4Und3dswl0B
-         x4pD+UDrplQ5u326ROkrF+fhNtyN1DSaNxgOF7U2fqsqRdVu/hnvkYHT0VUAIiJtz6
-         CJ566Q4ic9k+nTsnvhBN1cerboa6GatlTSeZWDAtibJcyhbO55tSObbuPuM3gP0qKN
-         p7U+JIyYSuOEpsQTiDKNMV3xAtzWTzBNi3TFlG0hp8vSTvGphZUVXPntY/P2sV9cvx
-         MyoOl0O/9gbKw==
-Date:   Tue, 8 Sep 2020 13:08:41 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Networking <netdev@vger.kernel.org>
-Cc:     Andrii Nakryiko <andriin@fb.com>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: linux-next: build failure after merge of the bpf-next tree
-Message-ID: <20200908130841.21980cd9@canb.auug.org.au>
+        id S1728562AbgIHDJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Sep 2020 23:09:42 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:49276 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728241AbgIHDJl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Sep 2020 23:09:41 -0400
+Received: from [10.130.0.80] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx+MXr9VZf2fcSAA--.2842S3;
+        Tue, 08 Sep 2020 11:09:31 +0800 (CST)
+Subject: Re: [PATCH v2] Revert "ALSA: hda: Add support for Loongson 7A1000
+ controller"
+To:     Huacai Chen <chenhuacai@gmail.com>, Takashi Iwai <tiwai@suse.de>
+References: <1598348388-2518-1-git-send-email-yangtiezhu@loongson.cn>
+ <s5hsgcb59gw.wl-tiwai@suse.de>
+ <CAAhV-H5V5adhY2OjJLxW7x3zDaHGgBxxy45hjf22+qMSEBQuww@mail.gmail.com>
+Cc:     alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>,
+        Xuefeng Li <lixuefeng@loongson.cn>
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+Message-ID: <bf50515b-a018-a66d-188a-4901428e66a6@loongson.cn>
+Date:   Tue, 8 Sep 2020 11:09:31 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/EVnkw0V8cQxuqowQN4un1cS";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <CAAhV-H5V5adhY2OjJLxW7x3zDaHGgBxxy45hjf22+qMSEBQuww@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf9Dx+MXr9VZf2fcSAA--.2842S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxZw1rAw1DZryfuF4xJF1DKFg_yoW5GF4kpw
+        1FyF4avr4Dtr4UJa1qvr909r18tw45AasrX3s7Jr1jvF12gr1kJryxJF4SgFs8Gry5ZFW7
+        t398twsrWFyDG37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvG14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26F
+        4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv
+        7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r
+        1j6r4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCYjI0SjxkI62AI1cAE
+        67vIY487MxkIecxEwVAFwVW8GwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJV
+        W8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF
+        1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6x
+        IIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAI
+        cVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa
+        73UjIFyTuYvjfUn2-eDUUUU
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/EVnkw0V8cQxuqowQN4un1cS
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 09/08/2020 08:37 AM, Huacai Chen wrote:
+> Hi, all
+>
+> This patch should be backported to 5.4.
 
-Hi all,
+Hi,
 
-After merging the bpf-next tree, today's linux-next build (powerpcle perf)
-failed like this:
+Commit 61eee4a7fc40 ("ALSA: hda: Add support for Loongson
+7A1000 controller") has been not yet merged into 5.4, so no
+need to backport.
 
-util/bpf-loader.c: In function 'config_bpf_program':
-util/bpf-loader.c:331:2: error: 'bpf_program__title' is deprecated: BPF pro=
-gram title is confusing term; please use bpf_program__section_name() instea=
-d [-Werror=3Ddeprecated-declarations]
-  331 |  config_str =3D bpf_program__title(prog, false);
-      |  ^~~~~~~~~~
-In file included from util/bpf-loader.c:10:
-tools/lib/bpf/libbpf.h:203:13: note: declared here
-  203 | const char *bpf_program__title(const struct bpf_program *prog, bool=
- needs_copy);
-      |             ^~~~~~~~~~~~~~~~~~
-util/bpf-loader.c: In function 'preproc_gen_prologue':
-util/bpf-loader.c:457:3: error: 'bpf_program__title' is deprecated: BPF pro=
-gram title is confusing term; please use bpf_program__section_name() instea=
-d [-Werror=3Ddeprecated-declarations]
-  457 |   title =3D bpf_program__title(prog, false);
-      |   ^~~~~
-In file included from util/bpf-loader.c:10:
-tools/lib/bpf/libbpf.h:203:13: note: declared here
-  203 | const char *bpf_program__title(const struct bpf_program *prog, bool=
- needs_copy);
-      |             ^~~~~~~~~~~~~~~~~~
-cc1: all warnings being treated as errors
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/sound/pci/hda/hda_intel.c?h=v5.4
 
-Caused or exposed by commit
+Thanks,
+Tiezhu
 
-  521095842027 ("libbpf: Deprecate notion of BPF program "title" in favor o=
-f "section name"")
+>
+> Huacai
+>
+> On Tue, Aug 25, 2020 at 6:03 PM Takashi Iwai <tiwai@suse.de> wrote:
+>> On Tue, 25 Aug 2020 11:39:48 +0200,
+>> Tiezhu Yang wrote:
+>>> This reverts commit 61eee4a7fc40 ("ALSA: hda: Add support for Loongson
+>>> 7A1000 controller") to fix the following error on the Loongson LS7A
+>>> platform:
+>>>
+>>> rcu: INFO: rcu_preempt self-detected stall on CPU
+>>> <SNIP>
+>>> NMI backtrace for cpu 0
+>>> CPU: 0 PID: 68 Comm: kworker/0:2 Not tainted 5.8.0+ #3
+>>> Hardware name:  , BIOS
+>>> Workqueue: events azx_probe_work [snd_hda_intel]
+>>> <SNIP>
+>>> Call Trace:
+>>> [<ffffffff80211a64>] show_stack+0x9c/0x130
+>>> [<ffffffff8065a740>] dump_stack+0xb0/0xf0
+>>> [<ffffffff80665774>] nmi_cpu_backtrace+0x134/0x140
+>>> [<ffffffff80665910>] nmi_trigger_cpumask_backtrace+0x190/0x200
+>>> [<ffffffff802b1abc>] rcu_dump_cpu_stacks+0x12c/0x190
+>>> [<ffffffff802b08cc>] rcu_sched_clock_irq+0xa2c/0xfc8
+>>> [<ffffffff802b91d4>] update_process_times+0x2c/0xb8
+>>> [<ffffffff802cad80>] tick_sched_timer+0x40/0xb8
+>>> [<ffffffff802ba5f0>] __hrtimer_run_queues+0x118/0x1d0
+>>> [<ffffffff802bab74>] hrtimer_interrupt+0x12c/0x2d8
+>>> [<ffffffff8021547c>] c0_compare_interrupt+0x74/0xa0
+>>> [<ffffffff80296bd0>] __handle_irq_event_percpu+0xa8/0x198
+>>> [<ffffffff80296cf0>] handle_irq_event_percpu+0x30/0x90
+>>> [<ffffffff8029d958>] handle_percpu_irq+0x88/0xb8
+>>> [<ffffffff80296124>] generic_handle_irq+0x44/0x60
+>>> [<ffffffff80b3cfd0>] do_IRQ+0x18/0x28
+>>> [<ffffffff8067ace4>] plat_irq_dispatch+0x64/0x100
+>>> [<ffffffff80209a20>] handle_int+0x140/0x14c
+>>> [<ffffffff802402e8>] irq_exit+0xf8/0x100
+>>>
+>>> Because AZX_DRIVER_GENERIC can not work well for Loongson LS7A HDA
+>>> controller, it needs some workarounds which are not merged into the
+>>> upstream kernel at this time, so it should revert this patch now.
+>>>
+>>> Fixes: 61eee4a7fc40 ("ALSA: hda: Add support for Loongson 7A1000 controller")
+>>> Cc: <stable@vger.kernel.org> # 5.9-rc1+
+>>> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+>>> ---
+>>>
+>>> v2: update commit message
+>> Applied now.  Thanks.
+>>
+>>
+>> Takashi
 
-I have used the bpf-next tree from next-20200903 for today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/EVnkw0V8cQxuqowQN4un1cS
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9W9bkACgkQAVBC80lX
-0Gzh1gf+PJd9XLf10ut0GPKVjjxhbx9z/2qDaZLqToFE7l54BFaQt6ZfSQdK1PCh
-VY9Ng1ddhUTti0rcs61HnsIZFSb14E74xQknxZk9M+cLx6LZ371w+gt8CQxd3ZDx
-fqkx6Ryt/ZRwGjmtGclmzeCLydf39eq0vnPMejen+wHa+lrgsDh7aF1YY8nzLv3r
-elEKZ0P9onFePvxHPVGxusjh9bBnJdQVDifyNOcktw9TL1tIQ4kEKFH8gkHluKh/
-iJ7DXgebBYEsDYzfQekHsaFt6HcB6YigHoF3tn/fxRgLfdcf3iHhAAE0dHXmeLV+
-yPjmSaNqArjW2zTqEej6qA0YqBmFJA==
-=b3ET
------END PGP SIGNATURE-----
-
---Sig_/EVnkw0V8cQxuqowQN4un1cS--
