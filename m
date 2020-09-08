@@ -2,174 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD5B0261867
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:54:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A9AD26186E
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:55:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731961AbgIHRyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 13:54:32 -0400
-Received: from mx0b-002c1b01.pphosted.com ([148.163.155.12]:39436 "EHLO
-        mx0b-002c1b01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731600AbgIHRxd (ORCPT
+        id S1731714AbgIHRzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 13:55:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44334 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732180AbgIHRyH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 13:53:33 -0400
-Received: from pps.filterd (m0127841.ppops.net [127.0.0.1])
-        by mx0b-002c1b01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 088Hoxon006256;
-        Tue, 8 Sep 2020 10:53:20 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nutanix.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-id : content-transfer-encoding : mime-version;
- s=proofpoint20171006; bh=koXXIwNSHx1ZEUjyncLcH7GEnDnLa+UYnqwSfQnX1lc=;
- b=Sq4RSBxrzXW42yrFPKOXgA0KSKY+y/QqRwwvOtbIVaUvjzcoE/WWprjX2eksW+hjZzZu
- isp5QwKapOFyyFX6IAlrAjDLK6NeGLrPkZRCMCadB8+3NnbcamsjBxKzmrsux7LZ5+CX
- KlRxJs0e9l+UK1Q3sx0vdtaFDtknneekjiFjBI7wX+lhY7oNcDWswJGhGRUi1CoHJkiJ
- xLmoIN0vlYD5rcctRlrG/BUJhYOYsghz3PI5+u/aBmdGxOElEuXO7OfUpMHcxhNJ36+y
- +YhN6ZnxIYBgHh8K/qlY4WE7EmJZxlRkDc097XJ4PIJ8/JIva/ZDqGnwayu8XrhBdgeE 5w== 
-Received: from nam04-sn1-obe.outbound.protection.outlook.com (mail-sn1nam04lp2051.outbound.protection.outlook.com [104.47.44.51])
-        by mx0b-002c1b01.pphosted.com with ESMTP id 33c879xcp7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Sep 2020 10:53:20 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JNk83o1a1RTW/bgU/FMUb70QCKWk9Jsp9F6ibVUn9zKBLjPQBTHZKeUYGedDCwPqDfMbCKdZqus446is6CsLqCGnA9PBnXUnSvXV8Thh01eecZN5xDgD/8tRhrR/PEI380z+pPlN5kz1av7GMX2Q5KZeHbv/8CrtRYVUf6Y8LEFD7Bh+Fm2q48Hsri+EJzOyZCVsHTxJiM/Fj8w+uK9ANaQh/q2ceHfgyjOPWEOyZivS833HWFZeWW5UY6GkdX0nwdChsg9K6x9Ew1O94DzPbyxT4OpWtsXRwFGUal23uO78R3izTmorkqlLAk3+nhpdFvW2+MqbofQ6LPo3fFV1iA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=koXXIwNSHx1ZEUjyncLcH7GEnDnLa+UYnqwSfQnX1lc=;
- b=PZCx/9xfO/hm8OM3pk28BKIMb7rNQept2xvKDJp9LxcwZ00m7OkDcFKV/EONEtjarWyUbJPcmy0ZhWGPy1/gtLLOImg2O7/UeXR1n78DhMvmfSsXBRxecS4OVLHdJ3RIGL+SVFEeaIis+Mjg+ed7S8itxUHzprxHamDB8Dny+rVplAf+GW2tALVZo5dAc3lrAB8CwF4q8o5fuU91XxO9yQZq6S0dNcu/w++7IHAblLlrsJIKOVqvgATBoGpC3jWhdja2GTE/ZsHMC41wCEfvwefB+JFfH8FNYf5uvXAI+iV3ULeZcBxih5B1SDkr9xCjLWiyw6HpZ88TbpKrxgGhGQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nutanix.com; dmarc=pass action=none header.from=nutanix.com;
- dkim=pass header.d=nutanix.com; arc=none
-Received: from BYAPR02MB4358.namprd02.prod.outlook.com (2603:10b6:a03:11::17)
- by BYAPR02MB5847.namprd02.prod.outlook.com (2603:10b6:a03:11f::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.15; Tue, 8 Sep
- 2020 17:53:17 +0000
-Received: from BYAPR02MB4358.namprd02.prod.outlook.com
- ([fe80::10ac:913c:6898:decd]) by BYAPR02MB4358.namprd02.prod.outlook.com
- ([fe80::10ac:913c:6898:decd%3]) with mapi id 15.20.3305.032; Tue, 8 Sep 2020
- 17:53:17 +0000
-From:   Felipe Franciosi <felipe@nutanix.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-CC:     Matej Genci <matej.genci@nutanix.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mst@redhat.com" <mst@redhat.com>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "stefanha@redhat.com" <stefanha@redhat.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>
-Subject: Re: [PATCH] Rescan the entire target on transport reset when LUN is 0
-Thread-Topic: [PATCH] Rescan the entire target on transport reset when LUN is
- 0
-Thread-Index: AdZ9NZ5vwNLMSE8+SVisPIkQE+RzLgItcvIAAAdguYA=
-Date:   Tue, 8 Sep 2020 17:53:16 +0000
-Message-ID: <CCFAFEBB-8250-4627-B25D-3B9054954C45@nutanix.com>
-References: <CY4PR02MB33354370E0A81E75DD9DFE74FB520@CY4PR02MB3335.namprd02.prod.outlook.com>
- <200ad446-1242-9555-96b6-4fa94ee27ec7@redhat.com>
-In-Reply-To: <200ad446-1242-9555-96b6-4fa94ee27ec7@redhat.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3608.120.23.2.1)
-authentication-results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=nutanix.com;
-x-originating-ip: [82.9.225.166]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 85c0e595-523f-417b-3e18-08d8542010c6
-x-ms-traffictypediagnostic: BYAPR02MB5847:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR02MB58476B89F81EE2A162CCAFC7D7290@BYAPR02MB5847.namprd02.prod.outlook.com>
-x-proofpoint-crosstenant: true
-x-ms-oob-tlc-oobclassifiers: OLM:6108;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 8oBDGg2yo4iz3DkhfT2vWRCp8Oagwf0vuH+5yoCtsjbKfdKvMCeo4l39Fb8rOHhkX2XCriFmyeUF9jxXKVeLgVJaRp+3WMm8AQLsXVahemLJjDa2a3WrkfmBE0VrpAJvdptqa20K7WLbAqAvq/N+OUiFpUwgEj+FZLwniMQsT3DBSGJV0/3o4lJhXUKZJDPXn12Rh7r3uW/hSWdp5XTfw3z2lLNX5dW/Dy5x3eEbB8r5oeKNxZ2ZuqrOlUFs/MbTs8yACCBVId+SnETgpiANnBie0iX4Qn52Dpg3u8gCGKCgr+aHI2SzaDB7ywQYWUha8TEVyw0LY/RsLqHnACHMUvge0lcsqic1KLmcIAXv6XWQpM6tUe+mmIFjNwVR1Li7n1dYV4TagdWyJHA8rOHUTw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR02MB4358.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(39860400002)(376002)(136003)(346002)(366004)(53546011)(54906003)(33656002)(6506007)(478600001)(2616005)(8936002)(966005)(6486002)(316002)(7416002)(8676002)(83380400001)(110136005)(186003)(26005)(4326008)(6512007)(64756008)(71200400001)(86362001)(66946007)(5660300002)(2906002)(66476007)(66556008)(66446008)(36756003)(76116006);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: HWf/0jLefwfV2/suSnp0sCThr8QPx+hI+gv0DwkTUueuMGEdaGnd4IjW6DFo9PQqlbkxsrch5epaDHHNU0+TMPZDcyLKWbKgCw8m7p9MIFqGPucBM/QYLdKPfBbotUVz49eunyIuyLEyN50EfiUTEoNThD2wa3wNCKYPik/oA4hfUsNcWm3jbe3G7ibJHqzYe0tdBSGkSK2isvv+ohXS4ZSOsS/qr//A2F96MWpa0m9B3+I7PieEH3sp+rGa4jmYn6KuqBZ3Wifg84Jw2++NiFJf/ry9mj/LlU49BrgfQTDs6ro9gvQ7JTtXRcQir4ldm107C1tW/SkD8poODnzmhJ5Ra1oytwT4a+KcSZ7NhCoTzwVOMDniYP2fwQTLWSHz7CHKDxRuhmTtf6fOrNRwOniD4MBf4f1wHhyyMH6dRiWZwelhbmjl1LwTihJFUK9lrQ99O8U/gwVaBq6JMV7vnmkOWRxV7XB3S//5SC1DoamSx3Yca8YjH/Dbe4X7ogp5wXsb06xELYLGRXKv8BEd7GN1VojPuA0kROklzwiSXDMQZ72e8pF41a6njDTol0wJnRsms8FJfBJb2dGtdtliNXDwoVxIhJE6uM0nOY7JwtlficT4ADettGwobIcIgICJBUu9uZztELemBeB8X4CMqA==
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <111E2BF6B540CF429832F4411553C8D4@namprd02.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        Tue, 8 Sep 2020 13:54:07 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22978C061573
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 10:54:03 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id y13so278905iow.4
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 10:54:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BNthzVzIYmOCtfH4z/pcKeF29sydM0wgwPFHhuTXXMk=;
+        b=bSZftN7p6bmjiLd8ObGYCQG9JPQ8oFsjuGwE1HXkLTzIqLH4SYu+PdtJqi9DX+IH23
+         T1AAtV4UNMRiQrm57b4AModkmKUxqSxE1ILRpC7KPbvXkBsAJhfSqL6v0aOJjnLS1WS1
+         czdrC9sokYVbKjHFOew2VECePyAIJkJ/06FteWe6k03cQaVtrH0QwI0dJghxsgICcLvD
+         XDUqs6nVNHdPzvj80HO+YWQ1MKxjPVQWdrvC9ZzczjRNnhrqDsfuvzZJL2exXi3279cz
+         r79EIghTG0E/fS3FdDzWYEOXD2f95ron5mskBILKdg2cQXYXfISdmyDUnmaAgJKIAece
+         zR3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BNthzVzIYmOCtfH4z/pcKeF29sydM0wgwPFHhuTXXMk=;
+        b=nkFflRSlnui2fcyxgr0KPukQ6KoTHQczjb5Z9jyChuxaQHfh56/R49RK3KdKhryBfS
+         QPb2IdDkioLOCAobwcMZmNq0jI+kfDSEq6XOxAzFscG64ItPKlqqm/W451xumd6jMAXA
+         SKQxC51pr/dfWiDZhpznJc0L5r0oqYOc4vJ2/z5cm1gQCNXjW68klfwRYUEN2F75dKAm
+         PJ8PRzOfzdLa8L+KLoxV9InFcsUkB4PQVOkX3kkf6bqutTBmv/1kpTPVX8s35AiA2o3X
+         ULu80NnbK4VnxzgQUWPAth6QgDnk9iscR5m32koU1fnM35dBgXysoJh8AHtGJKl0aOcz
+         JwQA==
+X-Gm-Message-State: AOAM530j5K5Bk6AXoj8vO5JF+TmRhR1U3dkHNOe7AkSJcsqhNly6BMjf
+        RPR2FvzjW6RSIi47QC61+T/Cvv50vWDeO+VZYQRtlg==
+X-Google-Smtp-Source: ABdhPJxmqm53V46wAgLNnPDatkKyz0eWBKvKAUPzuIsiHXK3CqvHH48lmAKntfKsj3Hzg1iFDzHUJeiY3/C3Yl+CGMg=
+X-Received: by 2002:a02:8805:: with SMTP id r5mr137519jai.52.1599587642348;
+ Tue, 08 Sep 2020 10:54:02 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: nutanix.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR02MB4358.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 85c0e595-523f-417b-3e18-08d8542010c6
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Sep 2020 17:53:16.7820
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: bb047546-786f-4de1-bd75-24e5b6f79043
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: VauQjLFhF18gT5sYjfva4OWq/By0fakS0Wmbj6RiaNkPP/Coet79hHut+BKpeG/ZWgXoca9t2+yvil0f0jSGx4u0ZweNNktdAlL1RTRZ2pM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR02MB5847
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-08_09:2020-09-08,2020-09-08 signatures=0
-X-Proofpoint-Spam-Reason: safe
+References: <20200820054718.20115-1-tingwei@codeaurora.org>
+In-Reply-To: <20200820054718.20115-1-tingwei@codeaurora.org>
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+Date:   Tue, 8 Sep 2020 11:53:51 -0600
+Message-ID: <CANLsYkwhypfEkmhg=wK+_F6TxxGiuoSqpgGR0REqsOqC-X-3mg@mail.gmail.com>
+Subject: Re: [PATCH v9 00/24] coresight: allow to build coresight as modules
+To:     Tingwei Zhang <tingwei@codeaurora.org>
+Cc:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Kim Phillips <kim.phillips@arm.com>,
+        Mian Yousaf Kaukab <ykaukab@suse.de>,
+        tsoni <tsoni@codeaurora.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Mao Jinlong <jinlmao@codeaurora.org>,
+        Coresight ML <coresight@lists.linaro.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Tingwei,
 
+Apologies for the untimely response to this set, I am hoping to get to
+it in the next two weeks.
 
-> On Sep 8, 2020, at 3:22 PM, Paolo Bonzini <pbonzini@redhat.com> wrote:
->=20
-> On 28/08/20 14:21, Matej Genci wrote:
->> VirtIO 1.0 spec says
->>    The removed and rescan events ... when sent for LUN 0, they MAY
->>    apply to the entire target so the driver can ask the initiator
->>    to rescan the target to detect this.
->>=20
->> This change introduces the behaviour described above by scanning the
->> entire scsi target when LUN is set to 0. This is both a functional and a
->> performance fix. It aligns the driver with the spec and allows control
->> planes to hotplug targets with large numbers of LUNs without having to
->> request a RESCAN for each one of them.
->>=20
->> Signed-off-by: Matej Genci <matej@nutanix.com>
->> Suggested-by: Felipe Franciosi <felipe@nutanix.com>
->> ---
->> drivers/scsi/virtio_scsi.c | 7 ++++++-
->> 1 file changed, 6 insertions(+), 1 deletion(-)
->>=20
->> diff --git a/drivers/scsi/virtio_scsi.c b/drivers/scsi/virtio_scsi.c
->> index bfec84aacd90..a4b9bc7b4b4a 100644
->> --- a/drivers/scsi/virtio_scsi.c
->> +++ b/drivers/scsi/virtio_scsi.c
->> @@ -284,7 +284,12 @@ static void virtscsi_handle_transport_reset(struct =
-virtio_scsi *vscsi,
->>=20
->> 	switch (virtio32_to_cpu(vscsi->vdev, event->reason)) {
->> 	case VIRTIO_SCSI_EVT_RESET_RESCAN:
->> -		scsi_add_device(shost, 0, target, lun);
->> +		if (lun =3D=3D 0) {
->> +			scsi_scan_target(&shost->shost_gendev, 0, target,
->> +					 SCAN_WILD_CARD, SCSI_SCAN_INITIAL);
->> +		} else {
->> +			scsi_add_device(shost, 0, target, lun);
->> +		}
->> 		break;
->> 	case VIRTIO_SCSI_EVT_RESET_REMOVED:
->> 		sdev =3D scsi_device_lookup(shost, 0, target, lun);
->>=20
->=20
->=20
-> Acked-by: Paolo Bonzini <pbonzini@redhat.com>
+Thanks,
+Mathieu
 
-Cc: stable@vger.kernel.org
-
-Thanks, Paolo.
-
-I'm Cc'ing stable as I believe this fixes a driver bug where it
-doesn't follow the spec. Per commit message, today devices are
-required to issue RESCAN events for each LUN behind a target when
-hotplugging, or risking the driver not seeing the new LUNs.
-
-Is this enough? Or should we resend after merge per below?
-https://www.kernel.org/doc/Documentation/process/stable-kernel-rules.rst
-
-F.
-
-
+On Wed, 19 Aug 2020 at 23:47, Tingwei Zhang <tingwei@codeaurora.org> wrote:
+>
+> Allow to build coresight as modules. This gives developers the feasibility to
+> test their code without reboot.
+>
+> This series is based on below two series.
+>
+>  - "coresight: allow to build components as modules"
+>    https://lkml.org/lkml/2018/6/5/989
+>  - "coresight: make drivers modular"
+>    https://lkml.org/lkml/2020/1/17/468
+>
+> Change from v8:
+> Protect etmdrvdata[] by modifying it on relevant CPU  (Mathieu and Suzuki)
+> Grab the device before allocating memory for the node (Mathieu)
+> Add author of coresight core driver (Mathieu)
+>
+> Change from v7:
+> Depends on below change for ETM hotplug (Sai)
+> https://lore.kernel.org/linux-arm-kernel/20200729051310.18436-1-saiprakash.ranjan@codeaurora.org/
+> Add mutex lock to protect etmdrvdata[] (Suzuki)
+> Add helper function coresight_get_ref() (Suzuki)
+> Reorg replicator and funnel change. Use two patches to support these
+> two drivers. (Suzuki)
+> Add fix tag to "coresight: etm: perf: Fix warning caused by etm_setup_aux
+> failure" (Suzuki)
+> Update author of "coresight: cti: Fix bug clearing sysfs links on callback"
+>
+> Change from v6:
+> Correct module description for CATU (Mike)
+> Check ect_ret equals 0 and set ect_enabled flag (Mike)
+> Add Tested-by and Reviewed-by from Mike
+>
+> Change from v5:
+> Add below CTI clean up change from Mike into series
+>  -https://lists.linaro.org/pipermail/coresight/2020-July/004349.html
+> Increase module reference count when enabling CTI device (Mike)
+>
+> Change from v4:
+> Fix error handling in coresight_grab_devicei() (Greg)
+> Add coresight: cti: Fix remove sysfs link error from Mike
+>  -https://lists.linaro.org/pipermail/coresight/2020-July/004275.html
+> Move cti_remove_conn_xrefs() into cti_remove() (Mike)
+> Align patch subject to coresight: <component>: <description> (Mike)
+>
+> Change from v3:
+> Rebase to coresight-next (Mike and Mathieu)
+> Reorder try_get_module() (Suzuki)
+> Clean up etmdrvdata[] in device remote path (Mike)
+> Move cti_remove_conn_xrefs to cti_remove (Mike)
+>
+> Change from v2:
+> Rebase to 5.8-rc5. Export coresight_add_sysfs_link and
+> coresight_remove_sysfs_link
+> Fix one cut and paste error on MODULE_DESCRIPTION of CTI
+>
+> Change from v1:
+> Use try_module_get() to avoid module to be unloaded when device is used
+> in active trace session. (Mathieu P)
+>
+> Change from above two series.
+> This series adds the support to dynamically remove module when the device in
+> that module is enabled and used by some trace path. It disables all trace
+> paths with that device and release the trace path.
+>
+> Kim Phillips (8):
+>   coresight: use IS_ENABLED for CONFIGs that may be modules
+>   coresight: etm3x: allow etm3x to be built as a module
+>   coresight: etm4x: allow etm4x to be built as a module
+>   coresight: etb: allow etb to be built as a module
+>   coresight: tpiu: allow tpiu to be built as a module
+>   coresight: tmc: allow tmc to be built as a module
+>   coresight: allow funnel driver to be built as module
+>   coresight: allow replicator driver to be built as module
+>
+> Mian Yousaf Kaukab (2):
+>   coresight: export global symbols
+>   coresight: tmc-etr: add function to register catu ops
+>
+> Mike Leach (2):
+>   coresight: cti: Fix remove sysfs link error
+>   coresight: cti: Fix bug clearing sysfs links on callback
+>
+> Tingwei Zhang (12):
+>   coresight: cpu_debug: add module name in Kconfig
+>   coresight: cpu_debug: define MODULE_DEVICE_TABLE
+>   coresight: add coresight prefix to barrier_pkt
+>   coresight: add try_get_module() in coresight_grab_device()
+>   coresight: stm: allow to build coresight-stm as a module
+>   coresight: etm: perf: Fix warning caused by etm_setup_aux failure
+>   coresight: cti: add function to register cti associate ops
+>   coresight: cti: don't disable ect device if it's not enabled
+>   coresight: cti: increase reference count when enabling cti
+>   coresight: cti: allow cti to be built as a module
+>   coresight: catu: allow catu drivers to be built as modules
+>   coresight: allow the coresight core driver to be built as a module
+>
+>  drivers/hwtracing/coresight/Kconfig           |  54 ++++--
+>  drivers/hwtracing/coresight/Makefile          |  22 +--
+>  drivers/hwtracing/coresight/coresight-catu.c  |  37 ++++-
+>  drivers/hwtracing/coresight/coresight-catu.h  |   2 -
+>  .../{coresight.c => coresight-core.c}         | 154 +++++++++++++++---
+>  .../hwtracing/coresight/coresight-cpu-debug.c |   2 +
+>  .../{coresight-cti.c => coresight-cti-core.c} |  63 ++++++-
+>  drivers/hwtracing/coresight/coresight-etb10.c |  28 +++-
+>  .../hwtracing/coresight/coresight-etm-perf.c  |  13 +-
+>  .../hwtracing/coresight/coresight-etm-perf.h  |   5 +-
+>  ...resight-etm3x.c => coresight-etm3x-core.c} |  28 +++-
+>  ...resight-etm4x.c => coresight-etm4x-core.c} |  84 +++++++---
+>  .../hwtracing/coresight/coresight-funnel.c    |  64 +++++++-
+>  .../hwtracing/coresight/coresight-platform.c  |   1 +
+>  drivers/hwtracing/coresight/coresight-priv.h  |  24 ++-
+>  .../coresight/coresight-replicator.c          |  65 +++++++-
+>  drivers/hwtracing/coresight/coresight-stm.c   |  20 ++-
+>  drivers/hwtracing/coresight/coresight-sysfs.c |   2 +
+>  .../{coresight-tmc.c => coresight-tmc-core.c} |  25 ++-
+>  .../hwtracing/coresight/coresight-tmc-etf.c   |   2 +-
+>  .../hwtracing/coresight/coresight-tmc-etr.c   |  21 ++-
+>  drivers/hwtracing/coresight/coresight-tmc.h   |   3 +
+>  drivers/hwtracing/coresight/coresight-tpiu.c  |  20 ++-
+>  include/linux/coresight.h                     |   3 +-
+>  24 files changed, 634 insertions(+), 108 deletions(-)
+>  rename drivers/hwtracing/coresight/{coresight.c => coresight-core.c} (92%)
+>  rename drivers/hwtracing/coresight/{coresight-cti.c => coresight-cti-core.c} (94%)
+>  rename drivers/hwtracing/coresight/{coresight-etm3x.c => coresight-etm3x-core.c} (97%)
+>  rename drivers/hwtracing/coresight/{coresight-etm4x.c => coresight-etm4x-core.c} (96%)
+>  rename drivers/hwtracing/coresight/{coresight-tmc.c => coresight-tmc-core.c} (95%)
+>
+> --
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+>
