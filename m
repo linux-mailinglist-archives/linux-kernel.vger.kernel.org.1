@@ -2,197 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 227932617D6
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:44:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AFD22617C6
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:42:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731693AbgIHRn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 13:43:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56708 "EHLO
+        id S1731599AbgIHRme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 13:42:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731664AbgIHQOE (ORCPT
+        with ESMTP id S1731666AbgIHQOE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 8 Sep 2020 12:14:04 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70E2EC0617B9
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 05:16:22 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id q9so17091120wmj.2
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 05:16:22 -0700 (PDT)
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72C70C0617BB
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 05:17:19 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id c19so14211633wmd.1
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 05:17:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=25SuQDI0eyCRm9y5WDHzplEK9oGtQL3VKe10BEOjmTA=;
-        b=QPX3it+b0HCvDkvbnLXnuah4CoH16gftRJ7806vrwP3qNieZtYGGzWOWb5H6s2Ymo6
-         tFciYxxHwZ+bLk25IzxWbtHz0zL7hPxojHfBsUJqxOPoVKqSYMw4s5Jhs4CWSe+lLKvZ
-         c5AwWr450MpqcX6CXpFhLMMNrVYkQ9Fjd8nqLWMfFi9LnzsfdtWd0LpKQYtzz+NCxHB3
-         J637fA5b93NLgh+gh4KvKv3RMjqzd73wNSnuCBKM/un+6MXqTcJ0HEPCNbet4mb1L5NA
-         cKFb0yVJxMPcpuUS6t+uXVXwP2CwZFGY4q8U86OqXN4i0oaciML3l3t5SgA2Rsr+bZIa
-         dFfg==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Xc7i9lFK8Z9R/MbK0MEH717j2fSmQT53OR6EzTp19b0=;
+        b=lYC28hVZNplpFlJguFTo17ufEt4v1awGCLlyg53LDahG1qLKkk2iSqo4q5/BXpF1tP
+         mYYZh6zrtoYhycnLgwHULltqyyIyWY6Yo5mxnHZMOBx3b3nPR3Oc/IhnvmR0JqAkoVew
+         JHhfPTj/embJyrxkmS1f5C9vrO1r0N2xl5Athz/e5qwnJuYUmjzaCZeYqCsMHUsljg96
+         eRbZrszeSGw76h3YoKo9+GB/gnsos1P2uVf4FurbAeWGkBuGDP5Tw/Hzw9xq5vdUCMzb
+         OY5dq7iH6YNBm0tXXp4cJ71ksPLYvIx1E8P+FIOn+xFjqmLEVPnO3GdXjtY0FUpJA5Jz
+         x4OQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=25SuQDI0eyCRm9y5WDHzplEK9oGtQL3VKe10BEOjmTA=;
-        b=boefQ8avXQ0E42bqc2BFMAzZoV8ybYrVJvNGYhi189YPd5vouqN9MmBrP0Tha5RFo1
-         bVKZnvQcjJ1IbdQiAvrqAvQXSC7KO9m8rZRIUtXyvecCkZcDl3xIOhqCKiddiGIyfWA4
-         4PdUwPr4kn51e34P2gpHdKAIZ00Pqzu10qSQpGepPXGI7PetV+l4rSharXpPaAu/93/R
-         fcB1+SsIHKovrAqELN1M3DMpPn1uRfj7r+JLH53ClGQCAS4tQQjPF9ElQeS1FrA+lig+
-         FL/31kYRTVIM2nDEp9mRDxiK8CYafuIhanksD2JRduy38/qntsscabjixCvwBauTcCss
-         dKpA==
-X-Gm-Message-State: AOAM533GZAKh1VDluVY3uG07/aHmOgQtgQ9JXW+NM5LwEG0huFdyJiO2
-        pduAP81gJPGjEtFa0ZMWWGhShXZDv/lbhRTm2fkThw==
-X-Google-Smtp-Source: ABdhPJzNFarnK0nYdbKJBLU0NMJuC6Hpm534oaFYqrVkXTx051ncwUm57xW2hX6Fd0DEO38hfYKPpM9pZm6/JEEqxdA=
-X-Received: by 2002:a1c:105:: with SMTP id 5mr4078883wmb.175.1599567380842;
- Tue, 08 Sep 2020 05:16:20 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Xc7i9lFK8Z9R/MbK0MEH717j2fSmQT53OR6EzTp19b0=;
+        b=J9JIeVIrXIFvVMnKYQZ4G535qXD6sizk5FbtWufUV/1xCIpkDRwgZv38ik2xQzAzJI
+         6ubyAzH6O4MIlnlbN1urh+7FmEiSYEcw4d1Y6lfD7EfcL8VDM7p9pFlZX1YOjDsBS3lT
+         gbuHVBu3+RZvHI0hsSTXZsqvDYENEwLSH+cSb9D3WqPY5ysuJDjTRlcM7IwhSka6gQan
+         dUdRxUlFctSyXBDojV6oEMFAcOI9bFI+grkSSjL9lU5kEWlO5+IHwyzxDMkpPPlpk167
+         3sBWu7utgitGQmLqUhar6oPBQsmDE3sYzPMzPxBTi/qE2K9PypyBJocQ2+z13VXGXj/C
+         Mwwg==
+X-Gm-Message-State: AOAM531rjYu7b0xgleMS+W+vTSQ6ja8aRKmghsbFjIVsnEc4DbogaX4j
+        jbRB5QwwS/a3FSUzJZsyW090Pg==
+X-Google-Smtp-Source: ABdhPJxyI6Xo3tu8zWV1QA/p9cNs1Pi+FbS/Si2RJHDJ9AAZhjuqTxhTHzOs3t4qITlTvFu8PwIiCA==
+X-Received: by 2002:a05:600c:c5:: with SMTP id u5mr4044015wmm.14.1599567438139;
+        Tue, 08 Sep 2020 05:17:18 -0700 (PDT)
+Received: from dell ([91.110.221.179])
+        by smtp.gmail.com with ESMTPSA id g186sm13774918wmg.25.2020.09.08.05.17.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Sep 2020 05:17:17 -0700 (PDT)
+Date:   Tue, 8 Sep 2020 13:17:15 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Kalle Valo <kvalo@codeaurora.org>
+Cc:     davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
+        Xinming Hu <huxinming820@gmail.com>
+Subject: Re: [PATCH 16/28] wireless: marvell: mwifiex: init: Move
+ 'tos_to_tid_inv' to where it's used
+Message-ID: <20200908121715.GS4400@dell>
+References: <20200819072402.3085022-17-lee.jones@linaro.org>
+ <20200831155151.0DCB5C4339C@smtp.codeaurora.org>
+ <20200908084953.GJ4400@dell>
+ <010101746d98d278-67bb0cbd-fe22-4344-8c2a-9c65e04ff501-000000@us-west-2.amazonses.com>
 MIME-Version: 1.0
-References: <20200907134055.2878499-1-elver@google.com> <4dc8852a-120d-0835-1dc4-1a91f8391c8a@suse.cz>
-In-Reply-To: <4dc8852a-120d-0835-1dc4-1a91f8391c8a@suse.cz>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Tue, 8 Sep 2020 14:16:09 +0200
-Message-ID: <CAG_fn=UdnN4EL6OtAV8RY7kuqO+VXqSsf+grx2Le64UQJOUMvQ@mail.gmail.com>
-Subject: Re: [PATCH RFC 00/10] KFENCE: A low-overhead sampling-based memory
- safety error detector
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Marco Elver <elver@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, paulmck@kernel.org,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@alien8.de>, dave.hansen@linux.intel.com,
-        Dmitriy Vyukov <dvyukov@google.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>, Qian Cai <cai@lca.pw>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Linux Memory Management List <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <010101746d98d278-67bb0cbd-fe22-4344-8c2a-9c65e04ff501-000000@us-west-2.amazonses.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Toggling a static branch is AFAIK quite disruptive (PeterZ will probably =
-tell
-> you better), and with the default 100ms sample interval, I'd think it's n=
-ot good
-> to toggle it so often? Did you measure what performance would you get, if=
- the
-> static key was only for long-term toggling the whole feature on and off (=
-boot
-> time or even runtime), but the decisions "am I in a sample interval right=
- now?"
-> would be normal tests behind this static key? Thanks.
+On Tue, 08 Sep 2020, Kalle Valo wrote:
 
-100ms is the default that we use for testing, but for production it
-should be fine to pick a longer interval (e.g. 1 second or more).
-We haven't noticed any performance impact with neither 100ms nor bigger val=
-ues.
+> Lee Jones <lee.jones@linaro.org> writes:
+> 
+> > On Mon, 31 Aug 2020, Kalle Valo wrote:
+> >
+> >> Lee Jones <lee.jones@linaro.org> wrote:
+> >> 
+> >> > 'tos_to_tid_inv' is only used in 2 of 17 files it's current being
+> >> > included into.
+> >> > 
+> >> > Fixes the following W=1 kernel build warning(s):
+> >> > 
+> >> >  In file included from drivers/net/wireless/marvell/mwifiex/main.c:23:
+> >> >  In file included from drivers/net/wireless/marvell/mwifiex/cmdevt.c:26:
+> >> >  In file included from drivers/net/wireless/marvell/mwifiex/util.c:25:
+> >> >  In file included from drivers/net/wireless/marvell/mwifiex/txrx.c:25:
+> >> >  In file included from drivers/net/wireless/marvell/mwifiex/11n.c:25:
+> >> >  In file included from drivers/net/wireless/marvell/mwifiex/wmm.c:25:
+> >> >  In file included from drivers/net/wireless/marvell/mwifiex/11n_aggr.c:25:
+> >> >  In file included from drivers/net/wireless/marvell/mwifiex/11n_rxreorder.c:25:
+> >> >  In file included from drivers/net/wireless/marvell/mwifiex/join.c:25:
+> >> >  In file included from drivers/net/wireless/marvell/mwifiex/sta_cmd.c:25:
+> >> >  In file included from drivers/net/wireless/marvell/mwifiex/sta_ioctl.c:25:
+> >> >  In file included from drivers/net/wireless/marvell/mwifiex/sta_event.c:25:
+> >> >  In file included from drivers/net/wireless/marvell/mwifiex/uap_txrx.c:23:
+> >> >  In file included from drivers/net/wireless/marvell/mwifiex/sdio.c:27:
+> >> >  In file included from drivers/net/wireless/marvell/mwifiex/sta_tx.c:25:
+> >> >  drivers/net/wireless/marvell/mwifiex/wmm.h:41:17: warning:
+> >> > ‘tos_to_tid_inv’ defined but not used [-Wunused-const-variable=]
+> >> >  41 | static const u8 tos_to_tid_inv[] = {
+> >> > 
+> >> >  NB: Snipped for brevity
+> >> > 
+> >> > Cc: Amitkumar Karwar <amitkarwar@gmail.com>
+> >> > Cc: Ganapathi Bhat <ganapathi.bhat@nxp.com>
+> >> > Cc: Xinming Hu <huxinming820@gmail.com>
+> >> > Cc: Kalle Valo <kvalo@codeaurora.org>
+> >> > Cc: "David S. Miller" <davem@davemloft.net>
+> >> > Cc: Jakub Kicinski <kuba@kernel.org>
+> >> > Cc: linux-wireless@vger.kernel.org
+> >> > Cc: netdev@vger.kernel.org
+> >> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> >> 
+> >> The patch creates two duplicate arrays, this makes it worse than it was
+> >> before.
+> >
+> > We have a choice (and you don't like either of them). :)
+> >
+> > Either add the variable into the file(s) they are used or tell the
+> > compiler that it's okay for other files to declare but not used them
+> > (mark as __maybe_unused).
+> >
+> > What is your preferred solution?
+> 
+> Yue already sent a patch for this (at least I think so, not 100% sure if
+> this is the same case):
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/wireless-drivers-next.git/commit/?id=d56ee19a148edaa9972ca12f817e395ba436078b
+> 
+> But that's the solution I like :) There's only one array and it's shared
+> by all the users.
 
-Regarding using normal branches, they are quite expensive.
-E.g. at some point we used to have a branch in slab_free() to check
-whether the freed object belonged to KFENCE pool.
-When the pool address was taken from memory, this resulted in some
-non-zero performance penalty.
+Any idea if this results in anything different from making use of
+__maybe_unused once compiled?
 
-As for enabling the whole feature at runtime, our intention is to let
-the users have it enabled by default, otherwise someone will need to
-tell every machine in the fleet when the feature is to be enabled.
->
-> > We have verified by running synthetic benchmarks (sysbench I/O,
-> > hackbench) that a kernel with KFENCE is performance-neutral compared to
-> > a non-KFENCE baseline kernel.
-> >
-> > KFENCE is inspired by GWP-ASan [1], a userspace tool with similar
-> > properties. The name "KFENCE" is a homage to the Electric Fence Malloc
-> > Debugger [2].
-> >
-> > For more details, see Documentation/dev-tools/kfence.rst added in the
-> > series -- also viewable here:
-> >
-> >       https://raw.githubusercontent.com/google/kasan/kfence/Documentati=
-on/dev-tools/kfence.rst
-> >
-> > [1] http://llvm.org/docs/GwpAsan.html
-> > [2] https://linux.die.net/man/3/efence
-> >
-> > Alexander Potapenko (6):
-> >   mm: add Kernel Electric-Fence infrastructure
-> >   x86, kfence: enable KFENCE for x86
-> >   mm, kfence: insert KFENCE hooks for SLAB
-> >   mm, kfence: insert KFENCE hooks for SLUB
-> >   kfence, kasan: make KFENCE compatible with KASAN
-> >   kfence, kmemleak: make KFENCE compatible with KMEMLEAK
-> >
-> > Marco Elver (4):
-> >   arm64, kfence: enable KFENCE for ARM64
-> >   kfence, lockdep: make KFENCE compatible with lockdep
-> >   kfence, Documentation: add KFENCE documentation
-> >   kfence: add test suite
-> >
-> >  Documentation/dev-tools/index.rst  |   1 +
-> >  Documentation/dev-tools/kfence.rst | 285 +++++++++++
-> >  MAINTAINERS                        |  11 +
-> >  arch/arm64/Kconfig                 |   1 +
-> >  arch/arm64/include/asm/kfence.h    |  39 ++
-> >  arch/arm64/mm/fault.c              |   4 +
-> >  arch/x86/Kconfig                   |   2 +
-> >  arch/x86/include/asm/kfence.h      |  60 +++
-> >  arch/x86/mm/fault.c                |   4 +
-> >  include/linux/kfence.h             | 174 +++++++
-> >  init/main.c                        |   2 +
-> >  kernel/locking/lockdep.c           |   8 +
-> >  lib/Kconfig.debug                  |   1 +
-> >  lib/Kconfig.kfence                 |  70 +++
-> >  mm/Makefile                        |   1 +
-> >  mm/kasan/common.c                  |   7 +
-> >  mm/kfence/Makefile                 |   6 +
-> >  mm/kfence/core.c                   | 730 +++++++++++++++++++++++++++
-> >  mm/kfence/kfence-test.c            | 777 +++++++++++++++++++++++++++++
-> >  mm/kfence/kfence.h                 | 104 ++++
-> >  mm/kfence/report.c                 | 201 ++++++++
-> >  mm/kmemleak.c                      |  11 +
-> >  mm/slab.c                          |  46 +-
-> >  mm/slab_common.c                   |   6 +-
-> >  mm/slub.c                          |  72 ++-
-> >  25 files changed, 2591 insertions(+), 32 deletions(-)
-> >  create mode 100644 Documentation/dev-tools/kfence.rst
-> >  create mode 100644 arch/arm64/include/asm/kfence.h
-> >  create mode 100644 arch/x86/include/asm/kfence.h
-> >  create mode 100644 include/linux/kfence.h
-> >  create mode 100644 lib/Kconfig.kfence
-> >  create mode 100644 mm/kfence/Makefile
-> >  create mode 100644 mm/kfence/core.c
-> >  create mode 100644 mm/kfence/kfence-test.c
-> >  create mode 100644 mm/kfence/kfence.h
-> >  create mode 100644 mm/kfence/report.c
-> >
->
-
-
---=20
-Alexander Potapenko
-Software Engineer
-
-Google Germany GmbH
-Erika-Mann-Stra=C3=9Fe, 33
-80636 M=C3=BCnchen
-
-Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Halimah DeLaine Prado
-Registergericht und -nummer: Hamburg, HRB 86891
-Sitz der Gesellschaft: Hamburg
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
