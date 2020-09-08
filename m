@@ -2,176 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27B7E261C1E
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:15:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08038261B67
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 21:02:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731487AbgIHTOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 15:14:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:59663 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731197AbgIHQEv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:04:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599581086;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0nFHBAUKZtW6gfmKK0htBo0gwbtsv3Iq0Ml6HLLohY8=;
-        b=Pn4A1LX68rOZ64MG9Sw2kVJ1k73IzTGWO+Vw9D+dG8a5T2udNYG7xRPnMbuWVCIlr/hL4O
-        ZEDejS1sih3x3iNaIuP0SPHj8g61WJZcz+stXqyzymhX+bAhQsNoil93bj1OF5/gGe9WQU
-        TMNE1ll/BgO4RngVadNV3/6nUlWD8bs=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-462-ojrsyBxoPOuyIGvkDIsFZw-1; Tue, 08 Sep 2020 09:44:53 -0400
-X-MC-Unique: ojrsyBxoPOuyIGvkDIsFZw-1
-Received: by mail-wm1-f69.google.com with SMTP id b73so3502806wmb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 06:44:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0nFHBAUKZtW6gfmKK0htBo0gwbtsv3Iq0Ml6HLLohY8=;
-        b=IVhSXjzIKC9Wo/UJjHyTIo0uCZL4LL52v41cDlsxghYFpDHcmfQJcFIYBP/cZ9LYLg
-         0dm4EXuNwXTbzDhMHsbClRb3p/9jrQvKprRQFp1QhgzwDWGXgte+FDLH+R+WPU3JpDqb
-         A3lwWmGcCSrDnKnMxI2JCVQOsqs/yPKTyhO9pStlyLjarRKKXkYSxP6II+FiKe9jN53f
-         tchIMOtQD5DTfG8zWML5uVn6XP/ibK7/6ycv71gJ6T4PP/NoYd1JKWXkspqBd4toI0EQ
-         RUFDUOc3PC/kHtn54DodeDbLbuUyZnZUpS7cnNTSnVIbtZg+v5FBKYcXyhf1dI+9Epjp
-         QuGg==
-X-Gm-Message-State: AOAM5313noDH/mctpWEODSy13PwEKtpL1Ne/tL0AKVj2J8rBgTI8KcF2
-        raxSv1n3JczdKhMS49QU21g7Vk8xSUt7SE7ctez+yqZGfGgsRKNYMsa2QGOW9hEnxkVgGkPUWaD
-        lfoXldw2ObCqmPxZRuCxNZk5C
-X-Received: by 2002:a5d:680e:: with SMTP id w14mr25476338wru.50.1599572692188;
-        Tue, 08 Sep 2020 06:44:52 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy9ir0JHeXFpAb6judRqJTvTeaAaWL4TLCJr6544I6qsmBmpMMbYdbvWqjAJ6jpsRsfpch5mg==
-X-Received: by 2002:a5d:680e:: with SMTP id w14mr25476320wru.50.1599572691912;
-        Tue, 08 Sep 2020 06:44:51 -0700 (PDT)
-Received: from steredhat (host-79-53-225-185.retail.telecomitalia.it. [79.53.225.185])
-        by smtp.gmail.com with ESMTPSA id a83sm31806176wmh.48.2020.09.08.06.44.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Sep 2020 06:44:51 -0700 (PDT)
-Date:   Tue, 8 Sep 2020 15:44:48 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        linux-fsdevel@vger.kernel.org, io-uring@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Jann Horn <jannh@google.com>, Jeff Moyer <jmoyer@redhat.com>,
-        Aleksa Sarai <asarai@suse.de>,
-        Sargun Dhillon <sargun@sargun.me>,
-        linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH v6 3/3] io_uring: allow disabling rings during the
- creation
-Message-ID: <20200908134448.sg7evdrfn6xa67sn@steredhat>
-References: <20200827145831.95189-1-sgarzare@redhat.com>
- <20200827145831.95189-4-sgarzare@redhat.com>
+        id S1731631AbgIHTCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 15:02:51 -0400
+Received: from mga09.intel.com ([134.134.136.24]:48497 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731304AbgIHQIC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 12:08:02 -0400
+IronPort-SDR: JxtOrhEL2IN2nLZOWwzpucfgbW84Q++ZSiPAB3+UEZGu3N+qTLnTnv7KiaeIdXtHSt1qdsrriC
+ W4ZycAUl4mFg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9737"; a="159100510"
+X-IronPort-AV: E=Sophos;i="5.76,405,1592895600"; 
+   d="scan'208";a="159100510"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2020 06:49:21 -0700
+IronPort-SDR: Y633VkXYeLItp/BiYFQLWnOuVpA1lx6LudGy6mO47pEFOy6pTpuzXaoEMrsUUnhOE4kG4Og2or
+ Ab2bATFPLVkQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,405,1592895600"; 
+   d="scan'208";a="317191899"
+Received: from mylly.fi.intel.com (HELO [10.237.72.195]) ([10.237.72.195])
+  by orsmga002.jf.intel.com with ESMTP; 08 Sep 2020 06:49:19 -0700
+Subject: Re: [PATCH v1] x86/defconfigs: Unbreak 32-bit defconfig builds
+To:     Ingo Molnar <mingo@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-kernel@vger.kernel.org, Tony Luck <tony.luck@intel.com>
+References: <20200908100018.50188-1-andriy.shevchenko@linux.intel.com>
+ <20200908121354.GA3848343@gmail.com>
+From:   Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Message-ID: <7424b868-7463-2ea4-1cb0-386b143dc8f0@linux.intel.com>
+Date:   Tue, 8 Sep 2020 16:49:18 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200827145831.95189-4-sgarzare@redhat.com>
+In-Reply-To: <20200908121354.GA3848343@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jens,
+Hi
 
-On Thu, Aug 27, 2020 at 04:58:31PM +0200, Stefano Garzarella wrote:
-> This patch adds a new IORING_SETUP_R_DISABLED flag to start the
-> rings disabled, allowing the user to register restrictions,
-> buffers, files, before to start processing SQEs.
+On 9/8/20 3:13 PM, Ingo Molnar wrote:
 > 
-> When IORING_SETUP_R_DISABLED is set, SQE are not processed and
-> SQPOLL kthread is not started.
+> * Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
 > 
-> The restrictions registration are allowed only when the rings
-> are disable to prevent concurrency issue while processing SQEs.
+>> After the commit 1d0e12fd3a84 ("x86/defconfigs: Refresh defconfig files")
+>> 32-bit builds using defconfig become broken because on x86_64 build host
+>> with no ARCH provided the default behaviour is to assume 64-bit independently
+>> on the configuration file name. The crucial part is CONFIG_64BIT option
+>> that used to be explicit. Let restore the latter option in order to unbreak
+>> 32-bit builds.
 > 
-> The rings can be enabled using IORING_REGISTER_ENABLE_RINGS
-> opcode with io_uring_register(2).
+> So exactly which build method broke due to this? The typical way to do a defconfig build is:
 > 
-> Suggested-by: Jens Axboe <axboe@kernel.dk>
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
-> ---
-> v4:
->  - fixed io_uring_enter() exit path when ring is disabled
+>    make ARCH=i386 defconfig
 > 
-> v3:
->  - enabled restrictions only when the rings start
+> which still works fine AFAICS.
 > 
-> RFC v2:
->  - removed return value of io_sq_offload_start()
-> ---
->  fs/io_uring.c                 | 52 ++++++++++++++++++++++++++++++-----
->  include/uapi/linux/io_uring.h |  2 ++
->  2 files changed, 47 insertions(+), 7 deletions(-)
-> 
-> diff --git a/fs/io_uring.c b/fs/io_uring.c
-> index 5f62997c147b..b036f3373fbe 100644
-> --- a/fs/io_uring.c
-> +++ b/fs/io_uring.c
-> @@ -226,6 +226,7 @@ struct io_restriction {
->  	DECLARE_BITMAP(sqe_op, IORING_OP_LAST);
->  	u8 sqe_flags_allowed;
->  	u8 sqe_flags_required;
-> +	bool registered;
->  };
->  
->  struct io_ring_ctx {
-> @@ -7497,8 +7498,8 @@ static int io_init_wq_offload(struct io_ring_ctx *ctx,
->  	return ret;
->  }
->  
-> -static int io_sq_offload_start(struct io_ring_ctx *ctx,
-> -			       struct io_uring_params *p)
-> +static int io_sq_offload_create(struct io_ring_ctx *ctx,
-> +				struct io_uring_params *p)
->  {
->  	int ret;
->  
-> @@ -7532,7 +7533,6 @@ static int io_sq_offload_start(struct io_ring_ctx *ctx,
->  			ctx->sqo_thread = NULL;
->  			goto err;
->  		}
-> -		wake_up_process(ctx->sqo_thread);
->  	} else if (p->flags & IORING_SETUP_SQ_AFF) {
->  		/* Can't have SQ_AFF without SQPOLL */
->  		ret = -EINVAL;
-> @@ -7549,6 +7549,12 @@ static int io_sq_offload_start(struct io_ring_ctx *ctx,
->  	return ret;
->  }
->  
-> +static void io_sq_offload_start(struct io_ring_ctx *ctx)
-> +{
-> +	if ((ctx->flags & IORING_SETUP_SQPOLL) && ctx->sqo_thread)
-> +		wake_up_process(ctx->sqo_thread);
-> +}
-> +
->  static inline void __io_unaccount_mem(struct user_struct *user,
->  				      unsigned long nr_pages)
->  {
-> @@ -8295,6 +8301,9 @@ SYSCALL_DEFINE6(io_uring_enter, unsigned int, fd, u32, to_submit,
->  	if (!percpu_ref_tryget(&ctx->refs))
->  		goto out_fput;
->  
-> +	if (ctx->flags & IORING_SETUP_R_DISABLED)
-> +		goto out_fput;
-> +
+Maybe wrong way to do it, just plain "make i386_defconfig". I'm aware of 
+ARCH=, but never needed to specify it for x86 targets.
 
-While writing the man page paragraph, I discovered that if the rings are
-disabled I returned ENXIO error in io_uring_enter(), coming from the previous
-check.
-
-I'm not sure it is the best one, maybe I can return EBADFD or another
-error.
-
-What do you suggest?
-
-I'll add a test for this case.
-
-Thanks,
-Stefano
-
+Jarkko
