@@ -2,86 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A35842617C9
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:43:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF7A82617CE
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:43:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731784AbgIHRm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 13:42:59 -0400
-Received: from mail.zx2c4.com ([192.95.5.64]:36701 "EHLO mail.zx2c4.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731663AbgIHRm2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 13:42:28 -0400
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTP id 832e0821
-        for <linux-kernel@vger.kernel.org>;
-        Tue, 8 Sep 2020 17:13:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=zx2c4.com; h=mime-version
-        :references:in-reply-to:from:date:message-id:subject:to:cc
-        :content-type; s=mail; bh=O1y/MP6BAJBcGK9O2C6twcvboJc=; b=140/DS
-        YGC+zc+6THM1gigQAIcITIcZPrYWw0mr27ZP56zdy8kKFccpokpzcb9/syJquCfo
-        uH0hYSXNTeNk5WKbZe18I0qvdXFOOIWxnx24bgXvfroORab3d+93a8ijLYpjoUTd
-        jz+Lg7evjS7RzZuQhVMy0biNFXUM1U6MYWR6KfMT+hIUjqqeiCBR1v6w7i5vUHdQ
-        xBTWCkvHnrmmHM7tFs3b9BCvoY70F8Ltqc4A7LL/z6i9I04pMUYzyheA0K7XSVwt
-        3IL4DpC9E1+CpwBv6IRsoQpubc/DMRmHJ6gIrqhtIdrFErpqVco6FI/e0zplk+Rl
-        TbmeK5VQYXGstP0A==
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 438e7a61 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO)
-        for <linux-kernel@vger.kernel.org>;
-        Tue, 8 Sep 2020 17:13:30 +0000 (UTC)
-Received: by mail-io1-f48.google.com with SMTP id m17so262366ioo.1
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 10:42:24 -0700 (PDT)
-X-Gm-Message-State: AOAM530F/p4r/Z3YB0ZlIp8gFtMZFLS698daJ2zdkDbWKGKc8clXl6WJ
-        8aLnvc8fy6A4M1n/Nq6rA7J07tM3oy/5yWuT5dI=
-X-Google-Smtp-Source: ABdhPJxEl8mIf/ma7/WnS3cspoEK7tA9iqYNZ+XKMw4mnqGQQyjh8teBzMH9CzZJhd9V+lItr/7qYT5QEJhDQFAnCo8=
-X-Received: by 2002:a6b:7112:: with SMTP id q18mr21480718iog.79.1599586943669;
- Tue, 08 Sep 2020 10:42:23 -0700 (PDT)
+        id S1732081AbgIHRn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 13:43:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42608 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731280AbgIHRmv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 13:42:51 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AAA8C061573
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 10:42:50 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id k18so180465wmj.5
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 10:42:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=OEf+BGjF/t1JSSdnc1xyf+TDXOi/Xxv0WukkmnIdvak=;
+        b=Nip8LBTJIwyVryN3G1TC6CvDmzGXzZLtpIWyp4oLnyJg756Yi/T1XrlRX5l4q10pq5
+         KPXGPSSkxpDZO2ofu+3llwSUCrdutCjsmjJhF874adxIVK/TixD/rUgcb3wtev6fJEDg
+         hQHhNPAqej0ccihmGc52Lsd3cLHMg5TjYKW6J7pQ+VAEajE+BqqayRXzdY1UEu/CbIQl
+         dRZKrnvJJFH1ZIQoQ/N0E/haKrRpS8/VY1hHZhT5kgYf1iCa6tHpQazmOgtD6yy/XGBv
+         VwPiBf5aSdPIhj6PRaAi5PIZHtQM++hnRAdo1Unw1f2FT6sN5vs/FOZLq273pmHDhxbs
+         8wPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=OEf+BGjF/t1JSSdnc1xyf+TDXOi/Xxv0WukkmnIdvak=;
+        b=fZsvRABr13l67gC30FRA8QoPHiNS3AqM8M3mSbD/84Lv/D1c2/dDUQWSb4r3nRahNn
+         oS9xbavUnE9O3b9w94tfnecTydycDArA3JMcqkNshfwAXFhYwH6cQwqpAR8v7blkUJc+
+         NlKlzxyuGLz+qntOtoTuHMJniYcfRMhuQNMp3KzBBakrjCiS/r89dqbiNwMlLZj2BQyh
+         GFnlCgLtDYC9gdkWkP89HEhvBl/JdaQa53rgb2j/oPbDjogH3eLCsPHbYQljPJ8g89Kt
+         lQAncPmNdUAzPXHEexj8pte5mAJecnhHRrxkz3XHcuCXOZSFv4Iz3AYOO59E6jllzqeW
+         7sgg==
+X-Gm-Message-State: AOAM531M8m7XL1P8kO+TemGX8AFjG7Kkp9fgp+wDMpUecFMasdfw/qgX
+        PN3gCw6bLd5uXrTCHFADMOF/GtcUcQ5aexMhQFKzOw==
+X-Google-Smtp-Source: ABdhPJwdAhCHkjes0xF1vFytq4iFsXQyYNDN0A43hixRh6hsuZrP+Tcfw609dCp9J8cPhB1mHHbGKxY9funQbMQmKE4=
+X-Received: by 2002:a1c:7314:: with SMTP id d20mr249187wmb.76.1599586968746;
+ Tue, 08 Sep 2020 10:42:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200907094843.1949-1-Jason@zx2c4.com> <20200907100647.GB10657@zn.tnic>
- <22617e57e541e460fac09db04fdb370f8e96e8ef.camel@linux.intel.com>
- <CAHmME9rh8N-Qui2KVxGP33Aar5tao_obA70XKwR2x5Qp1AytTw@mail.gmail.com>
- <20200908172558.GG25236@zn.tnic> <CAHmME9pKfvPGf97BM1=VdUL1uU_8aOoc4+QOu6b51XnPz3SkRA@mail.gmail.com>
- <20200908173656.GI25236@zn.tnic>
-In-Reply-To: <20200908173656.GI25236@zn.tnic>
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-Date:   Tue, 8 Sep 2020 19:42:12 +0200
-X-Gmail-Original-Message-ID: <CAHmME9pVO01mj8vgKPEX7a6pZDRSfX62e2Ow8R=L79hLSJoaMA@mail.gmail.com>
-Message-ID: <CAHmME9pVO01mj8vgKPEX7a6pZDRSfX62e2Ow8R=L79hLSJoaMA@mail.gmail.com>
-Subject: Re: [PATCH] x86/msr: do not warn on writes to OC_MAILBOX
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        kitsunyan <kitsunyan@airmail.cc>,
-        "Brown, Len" <len.brown@intel.com>, X86 ML <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sultan Alsawaf <sultan@kerneltoast.com>
+References: <20200501193141.30293-1-rad@semihalf.com> <3ad44b75-387f-da75-d7b2-3a16ed00550c@linux.intel.com>
+ <CAOs-w0LPeKgooa_98x_Jkzus-Y5Kad7pDby0CriDGb6nTp_6sA@mail.gmail.com> <8b97bf43-ddd8-df81-90e7-9e87c19af1ab@linux.intel.com>
+In-Reply-To: <8b97bf43-ddd8-df81-90e7-9e87c19af1ab@linux.intel.com>
+From:   =?UTF-8?Q?Rados=C5=82aw_Biernacki?= <rad@semihalf.com>
+Date:   Tue, 8 Sep 2020 19:42:33 +0200
+Message-ID: <CAOs-w0KvKcRnDkMtdAV2n_3XLfwk9KgM65QEO=6+qNshobJx3g@mail.gmail.com>
+Subject: Re: [PATCH V2] ASoC: Intel: boards: Use FS as nau8825 sysclk in
+ nau88125_* machine
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc:     Lech Betlej <Lech.Betlej@intel.com>, alsa-devel@alsa-project.org,
+        Todd Broch <tbroch@google.com>,
+        Harshapriya <harshapriya.n@intel.com>,
+        John Hsu <KCHSU0@nuvoton.com>,
+        Alex Levin <levinale@google.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        "Sienkiewicz, Michal" <michal.sienkiewicz@intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Ben Zhang <benzh@chromium.org>,
+        Mac Chiang <mac.chiang@intel.com>,
+        Vamshi Krishna <vamshi.krishna.gopal@intel.com>,
+        Marcin Wojtas <mw@semihalf.com>, linux-kernel@vger.kernel.org,
+        Yong Zhi <yong.zhi@intel.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 8, 2020 at 7:36 PM Borislav Petkov <bp@alien8.de> wrote:
+Sorry for missing the response for so long.
+Somehow lost this thread in my mailbox.
+
+=C5=9Br., 6 maj 2020 o 00:04 Pierre-Louis Bossart
+<pierre-louis.bossart@linux.intel.com> napisa=C5=82(a):
 >
-> On Tue, Sep 08, 2020 at 07:29:11PM +0200, Jason A. Donenfeld wrote:
-> > Well that's not cool.
 >
-> So you're saying that if someone wants to kill its box by poking at that
-> MSR, we should just let her/him?
+> >>> This single fix address two issues on machines with nau88125:
+> >>> 1) Audio distortion, due to lack of required clock rate on MCLK line
+> >>> 2) Loud audible "pops" on headphones if there is no sysclk during nau=
+8825
+> >>>      playback power up sequence
+> >>>
+> >>> Explanation for:
+> >>> 1) Due to Skylake HW limitation, MCLK pin can only output 24MHz clk
+> >>>      rate (it can be only connected to XTAL parent clk). The BCLK pin
+> >>>      can be driven by dividers and therefore FW is able to set it to =
+rate
+> >>>      required by chosen audio format. According to nau8825 datasheet,=
+ 256*FS
+> >>>      sysclk gives the best audio quality and the only way to achieve =
+this
+> >>>      (taking into account the above limitations) its to regenerate th=
+e MCLK
+> >>>      from BCLK on nau8825 side by FFL. Without required clk rate, aud=
+io is
+> >>>      distorted by added harmonics.
+> >>
+> >> The BCLK is going to be a multiple of 50 * Fs due to clocking
+> >> restrictions. Can the codec regenerate a good-enough sysclk from this?
+> >
+> > According to Intel, silicon has a limitation, on SKL/KBL only clk_id =
+=3D
+> > SKL_XTAL, .name =3D "xtal" is available for IO domain.
+> > As mentioned in the commit:
+> > MCLK is generated by using 24MHz Xtal directly or applying a divider
+> > (so no way of achieving the rate required by audio format).
+> > BCLK/FS is generated from 24MHz and uses dividers and additional
+> > padding bits are used to match the clock source.
+> > Next gen silicon has the possibility of using additional clock sources.
+> >
+> > Summing up, using MCLK from SKL to NAU88L25 is not an option.
+> > The only option we found is to use BCLK and regen the required clock
+> > rate by FLL on the NAU88l25 side.
 >
-> If anything, I think that a BIG FAT WARNING at least would make sense.
+> Right, this 24 MHz is a recurring problem.
+> But what I was asking was if the NAU8825 is fine working with e.g. a
+> 2.4MHz bit clock. i.e. with 25 bit slots or padding at the end of the fra=
+me?
 
-Are you prepared to track down all the MSRs that might maybe do
-something naughty?
+From our tests NAU8825 is working fine with these parameters.
+Also the output audio signal looks fine on the scope and FFT and there
+are no audible glitches.
 
-After determining optimal voltages, people have systemd running
-intel-undervolt for them. It becomes part of the normal system
-configuration, is applied all the time, and after figuring it out
-once, users forget they ever had enabled it, except when observing
-that their laptop works better than it originally did.
+>
+> >
+> >>>
+> >>> 2) Currently Skylake does not output MCLK/FS when the back-end DAI op
+> >>>      hw_param is called, so we cannot switch to MCLK/FS in hw_param. =
+ This
+> >>>      patch reduces pop by letting nau8825 keep using its internal VCO=
+ clock
+> >>>      during widget power up sequence, until SNDRV_PCM_TRIGGER_START w=
+hen
+> >>>      MCLK/FS is available. Once device resumes, the system will only =
+enable
+> >>>      power sequence for playback without doing hardware parameter, au=
+dio
+> >>>      format, and PLL configure. In the mean time, the jack detecion s=
+equence
+> >>>      has changed PLL parameters and switched to internal clock. Thus,=
+ the
+> >>>      playback signal distorted without correct PLL parameters.  That =
+is why
+> >>>      we need to configure the PLL again in SNDRV_PCM_TRIGGER_RESUME c=
+ase.
+> >>
+> >> IIRC the FS can be controlled with the clk_ api with the Skylake drive=
+r,
+> >> as done for some KBL platforms. Or is this not supported by the firmwa=
+re
+> >> used by this machine?
+> >
+> > According to Ben, SKL had limitations in FW for managing the clk's
+> > back in the days.
+> > Can you point to the other driver you mention so we can cross check?
+>
+> There are two KBL drivers that control the SSP clocks from the machine
+> driver, but indeed I don't know if this would work on Firmware, it'd be
+> a question for Lech/Cezary.
+>
+> kbl_rt5663_max98927.c:          ret =3D clk_prepare_enable(priv->mclk);
+> kbl_rt5663_max98927.c:          ret =3D clk_prepare_enable(priv->sclk);
+> kbl_rt5663_rt5514_max98927.c:           ret =3D
+> clk_prepare_enable(priv->mclk);
+> kbl_rt5663_rt5514_max98927.c:           ret =3D
+> clk_prepare_enable(priv->sclk);
+> kbl_rt5663_rt5514_max98927.c:                   ret =3D
+> clk_prepare_enable(priv->mclk);
+>
 
-Does `dd` warn when you run `dd if=/dev/zero of=/dev/sda`?
+Czarek answered this and we got the same response from other Intel
+devs while consulting this change:
+FW cannot request a chosen rate (48k) for MCLK pin as it does not
+"align with what's present on SKL hw".
 
-> Now, if there were a proper interface which would allow only valid
-> commands, now that would be optimal...
+The only way we found out for NAU8825 to cooperate at chosen rate with
+SKL HW is to regen the MCLK from BCLK by FLL as mentioned above.
+NHTL is used to set SSP0 (48k, 24/25 bit on 24MHz crystal).
+If I get all of this right, use of NHTL and HW "abilities" would
+explain why there is no call to change SSP from a machine driver.
 
-Probably not possible. Optimal values are related to the "silicon
-lottery" that occurs when you buy a new CPU. Different optimal values
-for different individual chips.
+
+If all of this is ok I will send V3 with msleep() removed.
