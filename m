@@ -2,114 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 230E6260D7B
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 10:22:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 778F7260D89
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 10:27:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730088AbgIHIWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 04:22:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40228 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729627AbgIHIWj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 04:22:39 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D051C061573
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 01:22:38 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id m6so18155416wrn.0
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 01:22:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=hRCUpBJbsTPAmTlNPl9II0p+aJCvPnoFM+9BG9MADrY=;
-        b=RCX6C2mFrmwa11KW2xUmEyK0/yQavByhhFvoRiMdE/JP6krDXKM6niXvQ6/hcHX/zt
-         INqiSfPRTRYOwev2eSTi/K1ZKeXO4y4nE7NaTYriNzceiBNnWuiECp6OGTE94HdKQcAH
-         RxcpHLNXK8fhOsVS8GmADSXV9oos4nEAjYFvBDu4Ni3QXVXXQg/r1IEhFTam2gA77lpt
-         s8xcYaco/PycR4vzvi6SyTC0+6YQvhvMUZ20ERdH3nC4freEPamfBUG2q7Xy0vL+oUWY
-         M8yMuhF6TsrbtXL5ZynI80t0y2TlkPYPVW7xSxAMXk4vjsC7TYF94zDWqk9tdBBFkbVR
-         SWkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=hRCUpBJbsTPAmTlNPl9II0p+aJCvPnoFM+9BG9MADrY=;
-        b=Mp81ImZ+RHN2M9Pfp84unPFfOD4Stksa9PI1X8GhL/pN6bUrUxbp7k+5WoMCkY6cfr
-         RHOAXlA+NvO4S04ShhgEA8IWb4IbGkzeCilypgca1mQCp6X+D7aW52d/oEggr19j8ib2
-         2RQrTHQSxNke/a5I22ld39WfM0FcFHI+cuTjB6/ROqeCgjVKHz5IkoBhJ8WLsltefkMk
-         J3oHXv1G27DHHSuFLXk51IdICmSuWgn1wrRbH9JHHi6OuNs5sddDvNcbiJzrEBA3BCMi
-         eoo6PuQVqQbvCjqOFRbO7LerRl7dE8l443hNoDe20NuFf91J6/E3od4pcLxPrQjEDex+
-         7DZw==
-X-Gm-Message-State: AOAM530SIt7Bj+/eoLzxD+KSwatQ3Ugp3Mo6ExRyyaVZrUya4GhkOT60
-        bMVTSBOTXwHpMz4lwweA4uE/Bg==
-X-Google-Smtp-Source: ABdhPJx4WuDajYdzs1cXwQPvbTepCBmMIa1dvKOuiFmlzLlhs/o2WqZVGcHrpcRsvnYNkh1CuRVo0g==
-X-Received: by 2002:adf:fd8d:: with SMTP id d13mr26188814wrr.104.1599553356703;
-        Tue, 08 Sep 2020 01:22:36 -0700 (PDT)
-Received: from dell ([91.110.221.204])
-        by smtp.gmail.com with ESMTPSA id f6sm32223618wro.5.2020.09.08.01.22.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Sep 2020 01:22:36 -0700 (PDT)
-Date:   Tue, 8 Sep 2020 09:22:34 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Arnd Bergmann <arnd@arndb.de>, Suman Anna <s-anna@ti.com>,
-        kernel-team@android.com
-Subject: Re: [PATCH] mfd: syscon: Don't free allocated name for regmap_config
-Message-ID: <20200908082234.GD4400@dell>
-References: <20200903160237.932818-1-maz@kernel.org>
+        id S1729927AbgIHI1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 04:27:24 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47978 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729564AbgIHI1W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 04:27:22 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id BFC95ACF2;
+        Tue,  8 Sep 2020 08:27:21 +0000 (UTC)
+Date:   Tue, 8 Sep 2020 10:27:19 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm/memcg: no one use charge_type
+Message-ID: <20200908082719.GB26850@dhcp22.suse.cz>
+References: <1599552727-60003-1-git-send-email-alex.shi@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200903160237.932818-1-maz@kernel.org>
+In-Reply-To: <1599552727-60003-1-git-send-email-alex.shi@linux.alibaba.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 03 Sep 2020, Marc Zyngier wrote:
+On Tue 08-09-20 16:12:07, Alex Shi wrote:
+> After commit 0a31bc97c80c3f mm: memcontrol: rewrite uncharge API, no one
+> using MEM_CGROUP_CHARGE_TYPE_xxx, let's remove them.
+> 
+> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+> Cc: Johannes Weiner <hannes@cmpxchg.org> 
+> Cc: Michal Hocko <mhocko@kernel.org> 
+> Cc: Vladimir Davydov <vdavydov.dev@gmail.com> 
+> Cc: Andrew Morton <akpm@linux-foundation.org> 
+> Cc: cgroups@vger.kernel.org 
+> Cc: linux-mm@kvack.org 
+> Cc: linux-kernel@vger.kernel.org 
 
-> The name allocated for the regmap_config structure is freed
-> pretty early, right after the registration of the MMIO region.
-> 
-> Unfortunately, that doesn't follow the life cycle that debugfs
-> expects, as it can access the name field long after the free
-> has occured.
-> 
-> Move the free on the error path, and keep it forever otherwise.
-> 
-> Fixes: e15d7f2b81d2 ("mfd: syscon: Use a unique name with regmap_config")
-> Signed-off-by: Marc Zyngier <maz@kernel.org>
+Acked-by: Michal Hocko <mhocko@suse.com>
+
+Thanks!
+
 > ---
->  drivers/mfd/syscon.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-
-Does this work for you Suman, Arnd?
-
-> diff --git a/drivers/mfd/syscon.c b/drivers/mfd/syscon.c
-> index 75859e492984..7a660411c562 100644
-> --- a/drivers/mfd/syscon.c
-> +++ b/drivers/mfd/syscon.c
-> @@ -108,7 +108,6 @@ static struct syscon *of_syscon_register(struct device_node *np, bool check_clk)
->  	syscon_config.max_register = resource_size(&res) - reg_io_width;
+>  mm/memcontrol.c | 8 --------
+>  1 file changed, 8 deletions(-)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 5d52b8a88bea..d925905920bf 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -199,14 +199,6 @@ struct mem_cgroup_event {
+>  #define	MEM_CGROUP_MAX_RECLAIM_LOOPS		100
+>  #define	MEM_CGROUP_MAX_SOFT_LIMIT_RECLAIM_LOOPS	2
 >  
->  	regmap = regmap_init_mmio(NULL, base, &syscon_config);
-> -	kfree(syscon_config.name);
->  	if (IS_ERR(regmap)) {
->  		pr_err("regmap init failed\n");
->  		ret = PTR_ERR(regmap);
-> @@ -145,6 +144,7 @@ static struct syscon *of_syscon_register(struct device_node *np, bool check_clk)
->  	regmap_exit(regmap);
->  err_regmap:
->  	iounmap(base);
-> +	kfree(syscon_config.name);
->  err_map:
->  	kfree(syscon);
->  	return ERR_PTR(ret);
+> -enum charge_type {
+> -	MEM_CGROUP_CHARGE_TYPE_CACHE = 0,
+> -	MEM_CGROUP_CHARGE_TYPE_ANON,
+> -	MEM_CGROUP_CHARGE_TYPE_SWAPOUT,	/* for accounting swapcache */
+> -	MEM_CGROUP_CHARGE_TYPE_DROP,	/* a page was unused swap cache */
+> -	NR_CHARGE_TYPE,
+> -};
+> -
+>  /* for encoding cft->private value on file */
+>  enum res_type {
+>  	_MEM,
+> -- 
+> 1.8.3.1
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Michal Hocko
+SUSE Labs
