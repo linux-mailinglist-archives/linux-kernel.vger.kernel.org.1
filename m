@@ -2,169 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83D2D260E90
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 11:21:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1CEA260E7C
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 11:15:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728810AbgIHJVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 05:21:25 -0400
-Received: from mail-eopbgr130044.outbound.protection.outlook.com ([40.107.13.44]:46734
-        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728556AbgIHJVU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 05:21:20 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=li4o5Tof4axTSqe4YWwxob7A4IWIFvrAnzn4ouMqdMP+KX0ya1uvSBq15itxSYYc6qpuICMROYSFI6NHVwiYSEwpuD30tqFGEiNWTFlhDC78AkgwpCz3Acpe6dc35Uxy3CBy47Vn52Xz/DDWt6swhn3Ml1LBtGQp8NM6L/u4gixRMFv3ntXlHV2QBB5fIh02k9+x6K0KeJOqRiUB1ksJwA1ZLZOtAs65QVRsAVVeL9CPpJBfI/jI5IAabmieFyaySu4JOvsUqaCBO0vowaj6YQ6d0JMpLbQ6JwOfiInHGNpnYXaE6FGP7bkpNnnkovtxhjA8CBTu+VVak7TIpS9g2Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EwC+CLnLZujvR+x644yqOwTf8zKz86MxU3oi5BhmBfg=;
- b=IkFN0BckljdauLp3P3APka5CBrhDOWZLxxL2MiQrYhd/ACkkqhjfxVkoG09hrGVWqYm6PwQUfNiaowca+hRH1/MKqMYjc37vaIelesSHL5WI27r2Rz4DPZkV8JFj7JbUthe2Agf31gelAu1tr7Xmr35tBkx8lbsVY/evy7ABensbMLP26LPBEEcHA6fCDuEYAWabdcd9bUwVBG5NJlLoFifK26WH8GgaTiPuvhrpxJnXmTPm5jGRvhomLxfGOPJghjBbrFB3VJsTWDvk0f9lhWw08qVrzYvwcL7HCOuLaQ367SJsZ5xFrnzSgSHbLZ4Kt82QIhcKyx5kjKqXPzOv0w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EwC+CLnLZujvR+x644yqOwTf8zKz86MxU3oi5BhmBfg=;
- b=QGTi26q9CL6YLdxt2raigSb0sZ1/FTo0LCDqoUw2Iw8VrJxIM92KJkzwiMz+JqKUHryEtPnGhZOEMI+YQpnnSL9NuooCAFQKmQu6J0fLLgIJ3Q8hByMRy8S4MPo1tLDhPM1LSBBqQktzXyaF7erkKo46XGqQ0WZ2gbXGDbj3sw0=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
- by DB7PR04MB4937.eurprd04.prod.outlook.com (2603:10a6:10:18::32) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.15; Tue, 8 Sep
- 2020 09:21:16 +0000
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::24d0:f783:3c7d:e232]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::24d0:f783:3c7d:e232%12]) with mapi id 15.20.3348.019; Tue, 8 Sep 2020
- 09:21:16 +0000
-From:   peng.fan@nxp.com
-To:     sboyd@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        festevam@gmail.com, abel.vesa@nxp.com
-Cc:     kernel@pengutronix.de, linux-imx@nxp.com, Anson.Huang@nxp.com,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, aisheng.dong@nxp.com,
-        Peng Fan <peng.fan@nxp.com>
-Subject: [PATCH] clk: imx: lpcg-scu: SW workaround for errata (e10858)
-Date:   Tue,  8 Sep 2020 17:14:47 +0800
-Message-Id: <1599556487-31364-1-git-send-email-peng.fan@nxp.com>
-X-Mailer: git-send-email 2.7.4
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR02CA0003.apcprd02.prod.outlook.com
- (2603:1096:3:17::15) To DB6PR0402MB2760.eurprd04.prod.outlook.com
- (2603:10a6:4:a1::14)
+        id S1729010AbgIHJPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 05:15:15 -0400
+Received: from mout.kundenserver.de ([212.227.17.10]:48151 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728562AbgIHJPK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 05:15:10 -0400
+Received: from mail-qv1-f45.google.com ([209.85.219.45]) by
+ mrelayeu.kundenserver.de (mreue109 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1M6lxY-1kBjgz37L4-008Knt; Tue, 08 Sep 2020 11:15:07 +0200
+Received: by mail-qv1-f45.google.com with SMTP id x7so7432928qvi.5;
+        Tue, 08 Sep 2020 02:15:07 -0700 (PDT)
+X-Gm-Message-State: AOAM530opmyjede38hMRDl+SUsCPKb7auww47KBAi8mH2DnXp48QbMzq
+        XWA17IfhmbMxUWaIx8p4dgh8XlU8BRcSyGFpqV0=
+X-Google-Smtp-Source: ABdhPJxiIPQ4rYzhI3bjSajviknmTbSrxISdggfeTRQMiIpfh+gJ5HSuqCYNegDej0bFDzfD2DGGUM33xRM7fZma9o0=
+X-Received: by 2002:a05:6214:292:: with SMTP id l18mr21604723qvv.11.1599556506523;
+ Tue, 08 Sep 2020 02:15:06 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from 10.192.242.69 (119.31.174.66) by SG2PR02CA0003.apcprd02.prod.outlook.com (2603:1096:3:17::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3348.15 via Frontend Transport; Tue, 8 Sep 2020 09:21:12 +0000
-X-Mailer: git-send-email 2.7.4
-X-Originating-IP: [119.31.174.66]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: fe998cae-0d69-49f9-a8ac-08d853d88967
-X-MS-TrafficTypeDiagnostic: DB7PR04MB4937:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DB7PR04MB4937F4D53A56D1DBEB3C6AEC88290@DB7PR04MB4937.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2803;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: QGM7MJ5Fn8qh97WIYvIeId0dnNQH3O3ycA06OWblaO9Sk8Wy25t4PGVYnVXxxtk9POylBZ2KeWcldSUAQ9knP6AbJQaDzy1O7B+mfIjuoXGbEp/lA3gPqrWnaADjXxT3cDALcgb62qxPtXc1qLgomn0gZy0l9bqB/MA7hSyRRokAWAXGd/+yNKadcNXKjXXruP4UZlvhPcPbfmHOT6Md3eykSX7OaocR2N/OUGy8Y/hZOIzTOcI/iP6QzGokd6biyS0rZ/wtkfH+ajCFMcKr/rdoWrZhH+FCwcauzmIn4etXXrVNLaMK4W8KLaD/ZcxIE7cdPklP9FjUZlNuOt5lzQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(39860400002)(136003)(376002)(396003)(956004)(52116002)(16526019)(4326008)(5660300002)(66946007)(2906002)(6486002)(16576012)(8936002)(36756003)(478600001)(26005)(6666004)(66476007)(86362001)(2616005)(186003)(9686003)(316002)(66556008)(8676002)(83380400001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: p7jEZWPUxybH5aOvBeLrIQD4rjLQ4qUAoazdRy81D7EGOiaLuDToFt90DTuit4eACs49nAvC9xGa7qBbaENVVtgKUZWX/VOBFKptGz02S26L4Kq4eKH4V2dQ01bUU1U7xCB4qMcntsn+i1gAKW5Qi1at5snOxAdl8hVseTUK8z+GICvDZlTKmfuJ+3QsAEyi6VVjnE4V/a0Ts3v3UNT1tgLeVYYcb3KHHo+8LRjWAmuGyX0NSDBui0uIM8XUilUNcCKr/8ltKR3P8OT54VCTzUGDZrpQTbAAL0ptYSxqOlcqWwG3vF9OgSGlhPxXTV89RHNYv+Xc5agK++qHl2QzrTHbrrjxmJC8mviFg07JDrlSYrcsFUYVlKlE762gKSA1eB0EssGsNAWf0Wl8U5MhapIxzYmnrO5xVAjHSx/BWHGFaPR0lYwwpXCziLqcitPrxFJOhGXcyt1teT3dESyrAQoOdxohw5y3qs3/YIK0boUC6YmPk5BeJU5hJFBYN9jv+Lk5FFKHFe46hAXPjlgSAkXkB6ce5j+ULG5SVM2Kp2sURjUThlhPvOVGLFZMsSmKgO6D6PN3oUuxTmSGeo5qjs7oh8PaboaoVxv3jiMDjJyn0gzLZ+veQeCUyISZCaL37pcSzWsRThOoU8pxNpvhbw==
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fe998cae-0d69-49f9-a8ac-08d853d88967
-X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Sep 2020 09:21:15.9726
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Hd+NMvzmdMmk1TR48p2GhGIsrGuyGK9yQWbskAq+W86OeaaaY4Z93tmT9EfRTmpwXWgustiJt2USu2Pm3T66Vg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR04MB4937
+References: <CABb+yY0cW1GZHVmwEr19JRdJTmsAxw9uq83QV_aq-tdPJO5_Fg@mail.gmail.com>
+ <20200604092052.GD8814@bogus> <CABb+yY27Ngb0C-onkU2qyt=uKgG4iVrcv8hGkC+anypQbTRA1w@mail.gmail.com>
+ <20200605045645.GD12397@bogus> <CABb+yY2YZ99NjHYNi0=KLGFDsVUeJmqiJD3E25Chwk-THJV4iw@mail.gmail.com>
+ <20200605085830.GA32372@bogus> <CABb+yY2TR7tuMx6u8yah6mO2GwZ5SWYOO80EQRL-i=ybgn=Wog@mail.gmail.com>
+ <20200610093334.yznxl2esv5ht27ns@vireshk-i7> <20200611100027.GB18781@bogus>
+ <CABb+yY1OwVB+uk+0w+D-4Xy46iYn8tPZYBZ0qjrzQFLA6SaTvw@mail.gmail.com> <20200612052853.nds4iycie6ldjnnr@vireshk-i7>
+In-Reply-To: <20200612052853.nds4iycie6ldjnnr@vireshk-i7>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Tue, 8 Sep 2020 11:14:50 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0nVOR7YYSZaKmzm3WsUZLgOqL7yZq+f0Dfnn2=16AkLA@mail.gmail.com>
+Message-ID: <CAK8P3a0nVOR7YYSZaKmzm3WsUZLgOqL7yZq+f0Dfnn2=16AkLA@mail.gmail.com>
+Subject: Re: [RFC] dt-bindings: mailbox: add doorbell support to ARM MHU
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Jassi Brar <jassisinghbrar@gmail.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:Pj+TK/lZmEq6SlGsUgOKxX976PuX6gpAL3UhVnh9oujev2xOMzE
+ qoFI/4EBXRHFgZXzNV4673J0JNfq3VtaayF6LFM8CWi4Ar1eu7e/RNG2YMO/Xl/69ugrPJA
+ vhZW+eEDf/ul5natKsRPEc/kpHa/u4PpjdXG+7Xlm/sd53MxuLuUW1NaJkHDmBbS0pBawbB
+ I9iA59nUWbJaHQtbyZjlA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:nnAR7mDHdkQ=:Le21OA5CpNQSemtemONpw2
+ IvU71jskXAqWUXRApmxjn+iQ/kYkEGwe6AgTweoPzHtddqmLEtfag2ZkFw4dllyxLuw1q3g6a
+ tg9g1xoU7PF8Z5FM2uFgatU/mphxk5PO2pwaRJUnTIv170oNt2Mtx7XpwzJjbdGewHOz729P/
+ 5v6BTZX/ML/P8iYDk1JFTEvpg5pqBx+7z8aV2SgpQ0/v+8xYUSuBFkwlpF1svi+Yy7CiUfX8O
+ fQLMS5BSLPfBYcC9/66wKPsbzDzyXGadsSLBCZo7fw/Darf4zxr/0OP2SKdA3h8sfwxO82TA2
+ oEiVAYJfcM8DUZ623eDCz0zph5FmeJRoADijGGBFYNAAmO/kyKwNko6gxi50FBwKdwgWMqnq7
+ xwXR87TqdfTagbk0WJNezTQy34ySHULDvYWiX6+iklDDO3bKDK7uuVGHnFl1r3indV9R7CWrB
+ offxHVXhpXetardH6U3lB4psKz/OWtIb+gFJVzxDuDluWzbR51XcfUd4XK69HpYpPjVadgtHs
+ aPyaSlYzBlPKBXUrdf5dOphQ+rq+G8GNI2YXnDlpVipS5r7HW5qF5jQCftJ7vmWMiqo2vQfB/
+ awXbmqsUXXyHHk8CYlv/ccCLohmifD/8SYzzn2elcvNNCq+XmSyTcQTp2oJO2M0k6Sq2DkSHj
+ sqF12tAwicuUG+u7Ah5vL4AG8zcJWa/gyjQ6xCHP6nopaDbWRVfJkD4ZAAMSMBXWEcsFxNTis
+ pm6+PsIbfvlbP/fASKf5flYsi2sMHOS3IaZzqXQN5UCuRzHELQqZjdMK03F5ONPSIFvaUhZwL
+ 2ntsJSm5OKXs3+WnWuSZRzC3VXrio3guIt/oDGPUh2IqSGyvo5cUdsbWPCo/+QaP3YZGGL/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peng Fan <peng.fan@nxp.com>
+Picking up the old thread again after and getting pinged by multiple
+colleagues about it (thanks!) reading through the history.
 
-Back-to-back LPCG writes can be ignored by the LPCG register due to
-a HW bug. The writes need to be separated by at least 4 cycles of
-the gated clock.
+On Fri, Jun 12, 2020 at 7:29 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> On 11-06-20, 19:34, Jassi Brar wrote:
+> > In the first post in this thread, Viresh lamented that mailbox
+> > introduces "a few ms" delay in the scheduler path.
+> > Your own tests show that is certainly not the case -- average is the
+> > same as proposed virtual channels 50-100us, the best case is 3us vs
+> > 53us for virtual channels.
+>
+> Hmmm, I am not sure where is the confusion here Jassi. There are two
+> things which are very very different from each other.
+>
+> - Time taken by the mailbox framework (and remote for acknowledging
+>   it) for completion of a single request, this can be 3us to 100s of
+>   us. This is clear for everyone. THIS IS NOT THE PROBLEM.
+>
+> - Delay introduced by few of such requests on the last one, i.e. 5
+>   normal requests followed by an important one (like DVFS), the last
+>   one needs to wait for the first 5 to finish first. THIS IS THE
+>   PROBLEM.
 
-The workaround is implemented as follows:
-1. For clocks running greater than or equal to 24MHz, a read
-followed by the write will provide sufficient delay.
-2. For clocks running below 24MHz, add a delay of 4 clock cylces
-after the write to the LPCG register.
+Earlier, Jassi also commented "Linux does not provide real-time
+guarantees", which to me is what actually causes the issue here:
 
-Signed-off-by: Peng Fan <peng.fan@nxp.com>
----
- drivers/clk/imx/clk-lpcg-scu.c | 31 +++++++++++++++++++++++++++++--
- 1 file changed, 29 insertions(+), 2 deletions(-)
+Linux having timeouts when communicating to the firmware means
+that it relies on the hardware and firmware having real-time behavior
+even when not providing real-time guarantees to its processes.
 
-diff --git a/drivers/clk/imx/clk-lpcg-scu.c b/drivers/clk/imx/clk-lpcg-scu.c
-index 1f0e44f921ae..6ee9d2caedf2 100644
---- a/drivers/clk/imx/clk-lpcg-scu.c
-+++ b/drivers/clk/imx/clk-lpcg-scu.c
-@@ -6,6 +6,7 @@
- 
- #include <linux/bits.h>
- #include <linux/clk-provider.h>
-+#include <linux/delay.h>
- #include <linux/err.h>
- #include <linux/io.h>
- #include <linux/slab.h>
-@@ -38,6 +39,31 @@ struct clk_lpcg_scu {
- 
- #define to_clk_lpcg_scu(_hw) container_of(_hw, struct clk_lpcg_scu, hw)
- 
-+/* e10858 -LPCG clock gating register synchronization errata */
-+static void do_lpcg_workaround(u32 rate, void __iomem *reg, u32 val)
-+{
-+	writel(val, reg);
-+
-+	if (rate >= 24000000 || rate == 0) {
-+		u32 reg1;
-+
-+		/*
-+		 * The time taken to access the LPCG registers from the AP core
-+		 * through the interconnect is longer than the minimum delay
-+		 * of 4 clock cycles required by the errata.
-+		 * Adding a readl will provide sufficient delay to prevent
-+		 * back-to-back writes.
-+		 */
-+		reg1 = readl(reg);
-+	} else {
-+		/*
-+		 * For clocks running below 24MHz, wait a minimum of
-+		 * 4 clock cycles.
-+		 */
-+		ndelay(4 * (DIV_ROUND_UP(1000000000, rate)));
-+	}
-+}
-+
- static int clk_lpcg_scu_enable(struct clk_hw *hw)
- {
- 	struct clk_lpcg_scu *clk = to_clk_lpcg_scu(hw);
-@@ -54,7 +80,8 @@ static int clk_lpcg_scu_enable(struct clk_hw *hw)
- 		val |= CLK_GATE_SCU_LPCG_HW_SEL;
- 
- 	reg |= val << clk->bit_idx;
--	writel(reg, clk->reg);
-+
-+	do_lpcg_workaround(clk_hw_get_rate(hw), clk->reg, reg);
- 
- 	spin_unlock_irqrestore(&imx_lpcg_scu_lock, flags);
- 
-@@ -71,7 +98,7 @@ static void clk_lpcg_scu_disable(struct clk_hw *hw)
- 
- 	reg = readl_relaxed(clk->reg);
- 	reg &= ~(CLK_GATE_SCU_LPCG_MASK << clk->bit_idx);
--	writel(reg, clk->reg);
-+	do_lpcg_workaround(clk_hw_get_rate(hw), clk->reg, reg);
- 
- 	spin_unlock_irqrestore(&imx_lpcg_scu_lock, flags);
- }
--- 
-2.28.0
+When comparing the two usage models, it's clear that the minimum
+latency for a message delivery is always at least the time time
+to process an interrupt, plus at least one expensive MMIO read
+and one less expensive posted MMIO write for an Ack. If we
+have a doorbell plus out-of-band message, we need an extra
+DMA barrier and a read from coherent memory, both of which can
+be noticeable. As soon as messages are queued in the current
+model, the maximum latency increases by a potentially unbounded
+number of round-trips, while in the doorbell model that problem
+does not exist, so I agree that we need to handle both modes
+in the kernel deal with all existing hardware as well as firmware
+that requires low-latency communication.
 
+It also sounds like that debate is already settled because there
+are platforms using both modes, and in the kernel we usually
+end up supporting the platforms that our users have, whether
+we think it's a good idea or not.
+
+The only questions that I see in need of being answered are:
+
+1. Should the binding use just different "#mbox-cells" values or
+   also different "compatible" strings to tell that difference?
+2. Should one driver try to handle both modes or should there
+   be two drivers?
+
+It sounds like Jassi strongly prefers separate drivers, which
+would make separate compatible strings the more practical
+approach. While the argument can be made that a single
+piece of hardware should only have one DT description,
+the counter-argument would be that the behavior described
+by the DT here is made up by both the hardware and the
+firmware behind it, and they are in fact different.
+
+       Arnd
