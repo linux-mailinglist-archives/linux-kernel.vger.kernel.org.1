@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BF142616A1
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:15:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E21F22616CF
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:19:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731640AbgIHRPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 13:15:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58438 "EHLO mail.kernel.org"
+        id S1731690AbgIHRTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 13:19:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57574 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731776AbgIHQSx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:18:53 -0400
+        id S1731744AbgIHQSD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 12:18:03 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EB23524813;
-        Tue,  8 Sep 2020 15:43:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 812AE24814;
+        Tue,  8 Sep 2020 15:43:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599579814;
-        bh=9xF3pCnhJDst3nnSSl/WT0nA5l0CMHpfotCF6C81O0s=;
+        s=default; t=1599579817;
+        bh=5cTymgNOd6yMe07rM04lmyuuYPSuueVZ4FEQI/Htjg8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p0Ys7pcb0ubYNFV4AXTAscpPRTJfFE1X2tBBdCazkwRB3nveHyL7LlAO4Vqs221Tz
-         HjBi2s5Wi9UQg/m8aLeejTdKtnYtLPb6OjDrSsYHdYBop0onHNUJsSl/N9mB4KaBfW
-         1v/KTLyb/bfebsNgRvDRIqgwyal2JKENP8vOvft4=
+        b=R8knyMCJq7FdjCBsQ39TvJguCYn5MkZvnLrqOBqWZRAadZKSYCU8LkyeRWesWexzg
+         hulOIHpx5zc+sGxHbO1DfMY3yWQIQNPeSKUvc4gZvcF0mB21eo4lGVAx7bkHXMxwMa
+         TBZiNGP8YgLejN+5GQJHrnjgZh1irRA0FhY1u24k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
+        stable@vger.kernel.org,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        Hersen Wu <hersenxs.wu@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 015/129] s390: dont trace preemption in percpu macros
-Date:   Tue,  8 Sep 2020 17:24:16 +0200
-Message-Id: <20200908152230.456715774@linuxfoundation.org>
+Subject: [PATCH 5.4 016/129] drm/amd/display: Reject overlay plane configurations in multi-display scenarios
+Date:   Tue,  8 Sep 2020 17:24:17 +0200
+Message-Id: <20200908152230.517905225@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200908152229.689878733@linuxfoundation.org>
 References: <20200908152229.689878733@linuxfoundation.org>
@@ -44,137 +46,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sven Schnelle <svens@linux.ibm.com>
+From: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
 
-[ Upstream commit 1196f12a2c960951d02262af25af0bb1775ebcc2 ]
+[ Upstream commit 168f09cdadbd547c2b202246ef9a8183da725f13 ]
 
-Since commit a21ee6055c30 ("lockdep: Change hardirq{s_enabled,_context}
-to per-cpu variables") the lockdep code itself uses percpu variables. This
-leads to recursions because the percpu macros are calling preempt_enable()
-which might call trace_preempt_on().
+[Why]
+These aren't stable on some platform configurations when driving
+multiple displays, especially on higher resolution.
 
-Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
-Reviewed-by: Vasily Gorbik <gor@linux.ibm.com>
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+In particular the delay in asserting p-state and validating from
+x86 outweights any power or performance benefit from the hardware
+composition.
+
+Under some configurations this will manifest itself as extreme stutter
+or unresponsiveness especially when combined with cursor movement.
+
+[How]
+Disable these for now. Exposing overlays to userspace doesn't guarantee
+that they'll be able to use them in any and all configurations and it's
+part of the DRM contract to have userspace gracefully handle validation
+failures when they occur.
+
+Valdiation occurs as part of DC and this in particular affects RV, so
+disable this in dcn10_global_validation.
+
+Signed-off-by: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
+Reviewed-by: Hersen Wu <hersenxs.wu@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/include/asm/percpu.h | 28 ++++++++++++++--------------
- 1 file changed, 14 insertions(+), 14 deletions(-)
+ drivers/gpu/drm/amd/display/dc/dcn10/dcn10_resource.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/arch/s390/include/asm/percpu.h b/arch/s390/include/asm/percpu.h
-index 50b4ce8cddfdc..918f0ba4f4d20 100644
---- a/arch/s390/include/asm/percpu.h
-+++ b/arch/s390/include/asm/percpu.h
-@@ -29,7 +29,7 @@
- 	typedef typeof(pcp) pcp_op_T__;					\
- 	pcp_op_T__ old__, new__, prev__;				\
- 	pcp_op_T__ *ptr__;						\
--	preempt_disable();						\
-+	preempt_disable_notrace();					\
- 	ptr__ = raw_cpu_ptr(&(pcp));					\
- 	prev__ = *ptr__;						\
- 	do {								\
-@@ -37,7 +37,7 @@
- 		new__ = old__ op (val);					\
- 		prev__ = cmpxchg(ptr__, old__, new__);			\
- 	} while (prev__ != old__);					\
--	preempt_enable();						\
-+	preempt_enable_notrace();					\
- 	new__;								\
- })
+diff --git a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_resource.c b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_resource.c
+index 1599bb9711111..e860ae05feda1 100644
+--- a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_resource.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_resource.c
+@@ -1151,6 +1151,7 @@ static enum dc_status dcn10_validate_global(struct dc *dc, struct dc_state *cont
+ 	bool video_large = false;
+ 	bool desktop_large = false;
+ 	bool dcc_disabled = false;
++	bool mpo_enabled = false;
  
-@@ -68,7 +68,7 @@
- 	typedef typeof(pcp) pcp_op_T__; 				\
- 	pcp_op_T__ val__ = (val);					\
- 	pcp_op_T__ old__, *ptr__;					\
--	preempt_disable();						\
-+	preempt_disable_notrace();					\
- 	ptr__ = raw_cpu_ptr(&(pcp)); 				\
- 	if (__builtin_constant_p(val__) &&				\
- 	    ((szcast)val__ > -129) && ((szcast)val__ < 128)) {		\
-@@ -84,7 +84,7 @@
- 			: [val__] "d" (val__)				\
- 			: "cc");					\
- 	}								\
--	preempt_enable();						\
-+	preempt_enable_notrace();					\
- }
+ 	for (i = 0; i < context->stream_count; i++) {
+ 		if (context->stream_status[i].plane_count == 0)
+@@ -1159,6 +1160,9 @@ static enum dc_status dcn10_validate_global(struct dc *dc, struct dc_state *cont
+ 		if (context->stream_status[i].plane_count > 2)
+ 			return DC_FAIL_UNSUPPORTED_1;
  
- #define this_cpu_add_4(pcp, val) arch_this_cpu_add(pcp, val, "laa", "asi", int)
-@@ -95,14 +95,14 @@
- 	typedef typeof(pcp) pcp_op_T__; 				\
- 	pcp_op_T__ val__ = (val);					\
- 	pcp_op_T__ old__, *ptr__;					\
--	preempt_disable();						\
-+	preempt_disable_notrace();					\
- 	ptr__ = raw_cpu_ptr(&(pcp));	 				\
- 	asm volatile(							\
- 		op "    %[old__],%[val__],%[ptr__]\n"			\
- 		: [old__] "=d" (old__), [ptr__] "+Q" (*ptr__)		\
- 		: [val__] "d" (val__)					\
- 		: "cc");						\
--	preempt_enable();						\
-+	preempt_enable_notrace();						\
- 	old__ + val__;							\
- })
++		if (context->stream_status[i].plane_count > 1)
++			mpo_enabled = true;
++
+ 		for (j = 0; j < context->stream_status[i].plane_count; j++) {
+ 			struct dc_plane_state *plane =
+ 				context->stream_status[i].plane_states[j];
+@@ -1182,6 +1186,10 @@ static enum dc_status dcn10_validate_global(struct dc *dc, struct dc_state *cont
+ 		}
+ 	}
  
-@@ -114,14 +114,14 @@
- 	typedef typeof(pcp) pcp_op_T__; 				\
- 	pcp_op_T__ val__ = (val);					\
- 	pcp_op_T__ old__, *ptr__;					\
--	preempt_disable();						\
-+	preempt_disable_notrace();					\
- 	ptr__ = raw_cpu_ptr(&(pcp));	 				\
- 	asm volatile(							\
- 		op "    %[old__],%[val__],%[ptr__]\n"			\
- 		: [old__] "=d" (old__), [ptr__] "+Q" (*ptr__)		\
- 		: [val__] "d" (val__)					\
- 		: "cc");						\
--	preempt_enable();						\
-+	preempt_enable_notrace();					\
- }
- 
- #define this_cpu_and_4(pcp, val)	arch_this_cpu_to_op(pcp, val, "lan")
-@@ -136,10 +136,10 @@
- 	typedef typeof(pcp) pcp_op_T__;					\
- 	pcp_op_T__ ret__;						\
- 	pcp_op_T__ *ptr__;						\
--	preempt_disable();						\
-+	preempt_disable_notrace();					\
- 	ptr__ = raw_cpu_ptr(&(pcp));					\
- 	ret__ = cmpxchg(ptr__, oval, nval);				\
--	preempt_enable();						\
-+	preempt_enable_notrace();					\
- 	ret__;								\
- })
- 
-@@ -152,10 +152,10 @@
- ({									\
- 	typeof(pcp) *ptr__;						\
- 	typeof(pcp) ret__;						\
--	preempt_disable();						\
-+	preempt_disable_notrace();					\
- 	ptr__ = raw_cpu_ptr(&(pcp));					\
- 	ret__ = xchg(ptr__, nval);					\
--	preempt_enable();						\
-+	preempt_enable_notrace();					\
- 	ret__;								\
- })
- 
-@@ -171,11 +171,11 @@
- 	typeof(pcp1) *p1__;						\
- 	typeof(pcp2) *p2__;						\
- 	int ret__;							\
--	preempt_disable();						\
-+	preempt_disable_notrace();					\
- 	p1__ = raw_cpu_ptr(&(pcp1));					\
- 	p2__ = raw_cpu_ptr(&(pcp2));					\
- 	ret__ = __cmpxchg_double(p1__, p2__, o1__, o2__, n1__, n2__);	\
--	preempt_enable();						\
-+	preempt_enable_notrace();					\
- 	ret__;								\
- })
- 
++	/* Disable MPO in multi-display configurations. */
++	if (context->stream_count > 1 && mpo_enabled)
++		return DC_FAIL_UNSUPPORTED_1;
++
+ 	/*
+ 	 * Workaround: On DCN10 there is UMC issue that causes underflow when
+ 	 * playing 4k video on 4k desktop with video downscaled and single channel
 -- 
 2.25.1
 
