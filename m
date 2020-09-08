@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CB6A2616B1
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:16:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1865326168C
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:13:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732015AbgIHRQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 13:16:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57642 "EHLO mail.kernel.org"
+        id S1731802AbgIHRNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 13:13:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58974 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731761AbgIHQS0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:18:26 -0400
+        id S1731794AbgIHQTT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 12:19:19 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A5C4924858;
-        Tue,  8 Sep 2020 15:45:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 117672485F;
+        Tue,  8 Sep 2020 15:45:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599579915;
-        bh=pktw6c1CUBLPWEzsCjqwNvU46iLYhUlQd+syHKcIKAo=;
+        s=default; t=1599579929;
+        bh=1BZhO4+UQ67mZNfApbi5PQu9vhFmjk3MHNhnyVGGy3k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2Ywn27CRiMCsSaO+im22FSJjGXz2GQOeTptJUfSuvNl4G1E3PtV6BPs3QjorjrCBj
-         Z5qnIkDOIGqNBiBwYVZHh3KwN3O9DIz0B0LLMBw9pq+MUmVXCi07sUjElFQmHK2KkT
-         nXeM+LJYR0H8eIJVuAHVb6L3c7EblI4xpsLjhyZc=
+        b=1V3dYgjRVNfMIlQKCyLjgRL5hfHeC/xduEAn92GQXYamRmVQsvE76AksEss/qq4V9
+         QewW+Je9vjkDc8v+qF+AAOFuQAYI+GYkg8LxJioITWeZxLrkDBzEcSfuaMcRX1P5Kj
+         Qk8QqRzot6vH/52MHqyuh5THnmssANyNHvS40908=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tyler Richmond <t.d.richmond@gmail.com>,
-        Marcos Paulo de Souza <mpdesouza@suse.com>,
-        Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>
-Subject: [PATCH 5.4 085/129] btrfs: tree-checker: fix the error message for transid error
-Date:   Tue,  8 Sep 2020 17:25:26 +0200
-Message-Id: <20200908152233.949756641@linuxfoundation.org>
+        stable@vger.kernel.org, Joshua Sivec <sivec@posteo.net>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.4 091/129] ALSA: usb-audio: Add implicit feedback quirk for UR22C
+Date:   Tue,  8 Sep 2020 17:25:32 +0200
+Message-Id: <20200908152234.284393777@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200908152229.689878733@linuxfoundation.org>
 References: <20200908152229.689878733@linuxfoundation.org>
@@ -44,35 +43,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qu Wenruo <wqu@suse.com>
+From: Joshua Sivec <sivec@posteo.net>
 
-commit f96d6960abbc52e26ad124e69e6815283d3e1674 upstream.
+commit 7c5b892e0871655fea3294ffac6fa3cc3400b60d upstream.
 
-The error message for inode transid is the same as for inode generation,
-which makes us unable to detect the real problem.
+This uses the same quirk as the Motu and SSL2 devices.
+Tested on the UR22C.
 
-Reported-by: Tyler Richmond <t.d.richmond@gmail.com>
-Fixes: 496245cac57e ("btrfs: tree-checker: Verify inode item")
-CC: stable@vger.kernel.org # 5.4+
-Reviewed-by: Marcos Paulo de Souza <mpdesouza@suse.com>
-Signed-off-by: Qu Wenruo <wqu@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+Fixes bug 208851.
+
+Signed-off-by: Joshua Sivec <sivec@posteo.net>
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=208851
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200825165515.8239-1-sivec@posteo.net
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/btrfs/tree-checker.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/usb/pcm.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/fs/btrfs/tree-checker.c
-+++ b/fs/btrfs/tree-checker.c
-@@ -772,7 +772,7 @@ static int check_inode_item(struct exten
- 	/* Here we use super block generation + 1 to handle log tree */
- 	if (btrfs_inode_generation(leaf, iitem) > super_gen + 1) {
- 		inode_item_err(fs_info, leaf, slot,
--			"invalid inode generation: has %llu expect (0, %llu]",
-+			"invalid inode transid: has %llu expect [0, %llu]",
- 			       btrfs_inode_generation(leaf, iitem),
- 			       super_gen + 1);
- 		return -EUCLEAN;
+--- a/sound/usb/pcm.c
++++ b/sound/usb/pcm.c
+@@ -356,6 +356,7 @@ static int set_sync_ep_implicit_fb_quirk
+ 	case USB_ID(0x07fd, 0x0008): /* MOTU M Series */
+ 	case USB_ID(0x31e9, 0x0001): /* Solid State Logic SSL2 */
+ 	case USB_ID(0x31e9, 0x0002): /* Solid State Logic SSL2+ */
++	case USB_ID(0x0499, 0x172f): /* Steinberg UR22C */
+ 	case USB_ID(0x0d9a, 0x00df): /* RTX6001 */
+ 		ep = 0x81;
+ 		ifnum = 2;
 
 
