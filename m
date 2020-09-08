@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E5B8260C09
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 09:32:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28A9B260C14
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 09:33:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729424AbgIHHcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 03:32:36 -0400
-Received: from mail-io1-f80.google.com ([209.85.166.80]:46679 "EHLO
-        mail-io1-f80.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729355AbgIHHcY (ORCPT
+        id S1729548AbgIHHd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 03:33:29 -0400
+Received: from mail-il1-f206.google.com ([209.85.166.206]:51673 "EHLO
+        mail-il1-f206.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729499AbgIHHdU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 03:32:24 -0400
-Received: by mail-io1-f80.google.com with SMTP id c22so2330607iom.13
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 00:32:23 -0700 (PDT)
+        Tue, 8 Sep 2020 03:33:20 -0400
+Received: by mail-il1-f206.google.com with SMTP id i80so487866ild.18
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 00:33:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=lOlyfhahYs6/L5AwmyUXKM8XGv3jZMcGEniCSrR6SP4=;
-        b=t2ohb3aZExS6VDD3sLDRrZ8cMetMms0oT1tC1AtQTRJgbAk0M2F/MoiwWudAs73sEt
-         OCNSg1HStGM3sL9kweLohxp8hY4RGVg7ee5d5ET9wCbCtA6aRDj8q/XmEWWaK9JRPC0B
-         msnfZQdVJV1/QDu0J3B/1Gmrw8/G35N1+hk5W8lDRyFcKAHrUGp3Ncu98+X4ZVnFhhXn
-         BsZcAsCUh3+BaFqNln5OfjEv3NbhdnhFnL0o3/jQSFC5IG6dSFxKu7VDhi5OIPR3T/k7
-         5CTSpPcSUbvsgWyTeEgt/mFpnFByps2HhJMgcYHCXzD4CK2ZC0mXgUnqYyDJj0kngc2n
-         OWVg==
-X-Gm-Message-State: AOAM532d2Y4P1bvGU9XC8S+gbw7w3t3sCMGx48bK5fM8VYuNg26Y9yhz
-        xLqKqONtBBzdRfkVoNKEHT7lRdMEFsBqAXNA7QyP1yf+eb86
-X-Google-Smtp-Source: ABdhPJyZYiNu6GwZpuOrRS1rAR/sZ9tIPJUCZuurIg9PNiGfqGcVTVcL64VyimeR6S1zJyehjbQx4l0sAKZ8TvL3twhsrHl52NIJ
+        bh=Qdoy1fNxR3DbTJRTFFfZS+5ZeYZDGPLwqlgNTZKWLDU=;
+        b=R+U3Dl2jro8DBzboTEdG/IHlua+7hz/unXV1quFEafATRc9ccYlScM1h6qxONLqYIn
+         h3kkdYfLjy+GlZQ7bCCi4C7h3plsnFjBIzqvJflnKqmwLJy4jHQwWX0RdKm0MGXIeX4x
+         97BatmX7Fd4jxzV95VbyKSEJEaYopp/IcumReW8L36LKrrg6PrRcsl5DJESlnqmHTmgH
+         UZig8L8iQCv+++MxmOX++3+GT5rEVVOkZHMBx104sp6EFsR7YGjCS7kxKBiMHvBunvF2
+         KKyLN6f4+96UG1mZaXkqYESkN7dE3nsg7aI94y50IkrbA4inhoU66N8SbbDmS/MY6eqq
+         gbUg==
+X-Gm-Message-State: AOAM530FqWUVIpH0K7qXNaX+BgTsu0ku6c+rKDO3FDzWk/w/H2gZ4i2Z
+        LUUSILZS0qMG+oSVwOZs+OqcwV0BDkQH9HdvBIA9KynHaaZW
+X-Google-Smtp-Source: ABdhPJzNnCpdH5w3DalyoAVHVYiUvdBRPjrYY6mrYRfFNWcBJhzvqUZZ8/+vQ61IuBKCzHHHj+BeITDmjqvKk0tmzVW3q0rM4zcb
 MIME-Version: 1.0
-X-Received: by 2002:a92:d48e:: with SMTP id p14mr23282855ilg.259.1599550343103;
- Tue, 08 Sep 2020 00:32:23 -0700 (PDT)
-Date:   Tue, 08 Sep 2020 00:32:23 -0700
+X-Received: by 2002:a92:2905:: with SMTP id l5mr21982823ilg.80.1599550399534;
+ Tue, 08 Sep 2020 00:33:19 -0700 (PDT)
+Date:   Tue, 08 Sep 2020 00:33:19 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000049a305aec856c6@google.com>
-Subject: general protection fault in page_mkclean_one
-From:   syzbot <syzbot+4d44c88e23baffecc385@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
+Message-ID: <0000000000005d5b5905aec85912@google.com>
+Subject: BUG: unable to handle kernel NULL pointer dereference in kvm_vm_worker_thread
+From:   syzbot <syzbot+e4a6c438918d1db4e4fc@syzkaller.appspotmail.com>
+To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
@@ -48,74 +48,55 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    e28f0104 Merge tag 'fixes-2020-09-03' of git://git.kernel...
+HEAD commit:    15bc20c6 Merge tag 'tty-5.9-rc3' of git://git.kernel.org/p..
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1702c9e1900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3c5f6ce8d5b68299
-dashboard link: https://syzkaller.appspot.com/bug?extid=4d44c88e23baffecc385
+console output: https://syzkaller.appspot.com/x/log.txt?x=15d432fe900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=978db74cb30aa994
+dashboard link: https://syzkaller.appspot.com/bug?extid=e4a6c438918d1db4e4fc
 compiler:       gcc (GCC) 10.1.0-syz 20200507
 
 Unfortunately, I don't have any reproducer for this issue yet.
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+4d44c88e23baffecc385@syzkaller.appspotmail.com
+Reported-by: syzbot+e4a6c438918d1db4e4fc@syzkaller.appspotmail.com
 
-general protection fault, probably for non-canonical address 0xdffffc000a02191d: 0000 [#1] PREEMPT SMP KASAN
-KASAN: probably user-memory-access in range [0x000000005010c8e8-0x000000005010c8ef]
-CPU: 1 PID: 8540 Comm: kworker/u4:0 Not tainted 5.9.0-rc3-syzkaller #0
+BUG: kernel NULL pointer dereference, address: 0000000000000000
+#PF: supervisor write access in kernel mode
+#PF: error_code(0x0002) - not-present page
+PGD 5d428067 P4D 5d428067 PUD 5d429067 PMD 0 
+Oops: 0002 [#1] PREEMPT SMP KASAN
+CPU: 0 PID: 7418 Comm: kvm-nx-lpage-re Not tainted 5.9.0-rc2-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: writeback wb_workfn (flush-8:0)
-RIP: 0010:mm_has_notifiers include/linux/mmu_notifier.h:277 [inline]
-RIP: 0010:mmu_notifier_invalidate_range_start include/linux/mmu_notifier.h:451 [inline]
-RIP: 0010:page_mkclean_one+0x271/0x6c0 mm/rmap.c:916
-Code: 89 41 b8 01 00 00 00 e8 fd b9 b1 ff 48 8b 5c 24 68 58 48 b8 00 00 00 00 00 fc ff df 48 8d bb a8 05 00 00 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 f9 03 00 00 48 83 bb a8 05 00 00 00 0f 85 37 03
-RSP: 0018:ffffc9001875ee60 EFLAGS: 00010206
-RAX: dffffc0000000000 RBX: 000000005010c340 RCX: ffffffff815a184b
-RDX: 000000000a02191d RSI: 0000000000000001 RDI: 000000005010c8e8
-RBP: ffffea00017a7740 R08: 0000000000000000 R09: ffffffff8c5f49ff
-R10: fffffbfff18be93f R11: 000000000000016e R12: 0000001b30823000
-R13: 0000000000001000 R14: ffff88800017c420 R15: 0000000000000000
-FS:  0000000000000000(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
+RIP: 0010:kvm_vm_worker_thread+0xe9/0x270 arch/x86/kvm/../../../virt/kvm/kvm_main.c:4912
+Code: 00 fc ff df 48 c1 ea 03 80 3c 02 00 0f 85 37 01 00 00 48 8b 7b 08 4c 89 ee e8 23 99 67 00 31 ff 41 89 c4 89 c6 e8 a7 4b 6d 00 <00> 00 00 0f 85 97 31 02 00 e8 19 4f 6d 00 48 8b 54 24 08 48 b8 00
+RSP: 0018:ffffc90012097ed0 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffffc90011e87cf8 RCX: ffffffff8106efe9
+RDX: 0000000000000000 RSI: ffff88804c02e040 RDI: 0000000000000005
+RBP: ffffc90011e87d08 R08: 0000000000000001 R09: ffffffff89bfd407
+R10: 0000000000000000 R11: 0000000000000160 R12: 0000000000000000
+R13: ffff88804c02e040 R14: ffffc90012081000 R15: 0000000000000000
+FS:  0000000000000000(0000) GS:ffff8880ae600000(0000) knlGS:0000000000000000
 CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000746918 CR3: 00000002026b8000 CR4: 00000000001526e0
+CR2: 0000000000000000 CR3: 000000005d427000 CR4: 00000000001526f0
 DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
 DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
- rmap_walk_file+0x562/0xbf0 mm/rmap.c:1928
- rmap_walk+0x105/0x190 mm/rmap.c:1946
- page_mkclean+0x21c/0x2b0 mm/rmap.c:998
- clear_page_dirty_for_io+0x31f/0x920 mm/page-writeback.c:2698
- mpage_submit_page+0x80/0x2c0 fs/ext4/inode.c:2061
- mpage_process_page_bufs+0x656/0x780 fs/ext4/inode.c:2195
- mpage_prepare_extent_to_map+0x8fa/0xde0 fs/ext4/inode.c:2607
- ext4_writepages+0x90f/0x3960 fs/ext4/inode.c:2735
- do_writepages+0xec/0x290 mm/page-writeback.c:2352
- __writeback_single_inode+0x125/0x1400 fs/fs-writeback.c:1461
- writeback_sb_inodes+0x53d/0xf40 fs/fs-writeback.c:1721
- __writeback_inodes_wb+0xc6/0x280 fs/fs-writeback.c:1790
- wb_writeback+0x8bb/0xd40 fs/fs-writeback.c:1896
- wb_check_old_data_flush fs/fs-writeback.c:1998 [inline]
- wb_do_writeback fs/fs-writeback.c:2051 [inline]
- wb_workfn+0x8f5/0x13e0 fs/fs-writeback.c:2080
- process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
  kthread+0x3b5/0x4a0 kernel/kthread.c:292
  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
 Modules linked in:
----[ end trace aa72a7d82af80156 ]---
-RIP: 0010:mm_has_notifiers include/linux/mmu_notifier.h:277 [inline]
-RIP: 0010:mmu_notifier_invalidate_range_start include/linux/mmu_notifier.h:451 [inline]
-RIP: 0010:page_mkclean_one+0x271/0x6c0 mm/rmap.c:916
-Code: 89 41 b8 01 00 00 00 e8 fd b9 b1 ff 48 8b 5c 24 68 58 48 b8 00 00 00 00 00 fc ff df 48 8d bb a8 05 00 00 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 f9 03 00 00 48 83 bb a8 05 00 00 00 0f 85 37 03
-RSP: 0018:ffffc9001875ee60 EFLAGS: 00010206
-RAX: dffffc0000000000 RBX: 000000005010c340 RCX: ffffffff815a184b
-RDX: 000000000a02191d RSI: 0000000000000001 RDI: 000000005010c8e8
-RBP: ffffea00017a7740 R08: 0000000000000000 R09: ffffffff8c5f49ff
-R10: fffffbfff18be93f R11: 000000000000016e R12: 0000001b30823000
-R13: 0000000000001000 R14: ffff88800017c420 R15: 0000000000000000
-FS:  0000000000000000(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
+CR2: 0000000000000000
+---[ end trace 7a7affa1f4a7d557 ]---
+RIP: 0010:kvm_vm_worker_thread+0xe9/0x270 arch/x86/kvm/../../../virt/kvm/kvm_main.c:4912
+Code: 00 fc ff df 48 c1 ea 03 80 3c 02 00 0f 85 37 01 00 00 48 8b 7b 08 4c 89 ee e8 23 99 67 00 31 ff 41 89 c4 89 c6 e8 a7 4b 6d 00 <00> 00 00 0f 85 97 31 02 00 e8 19 4f 6d 00 48 8b 54 24 08 48 b8 00
+RSP: 0018:ffffc90012097ed0 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffffc90011e87cf8 RCX: ffffffff8106efe9
+RDX: 0000000000000000 RSI: ffff88804c02e040 RDI: 0000000000000005
+RBP: ffffc90011e87d08 R08: 0000000000000001 R09: ffffffff89bfd407
+R10: 0000000000000000 R11: 0000000000000160 R12: 0000000000000000
+R13: ffff88804c02e040 R14: ffffc90012081000 R15: 0000000000000000
+FS:  0000000000000000(0000) GS:ffff8880ae600000(0000) knlGS:0000000000000000
 CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fbc5e0b6d70 CR3: 00000000a3ffa000 CR4: 00000000001526e0
+CR2: 0000000000000000 CR3: 000000005d427000 CR4: 00000000001526f0
 DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
 DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
