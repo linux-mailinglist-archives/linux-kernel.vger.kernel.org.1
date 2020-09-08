@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE48026187A
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:56:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E180261882
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Sep 2020 19:56:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731761AbgIHR4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 13:56:33 -0400
-Received: from mga18.intel.com ([134.134.136.126]:60797 "EHLO mga18.intel.com"
+        id S1732142AbgIHR44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 13:56:56 -0400
+Received: from mga18.intel.com ([134.134.136.126]:60831 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731627AbgIHRzw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1731639AbgIHRzw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 8 Sep 2020 13:55:52 -0400
-IronPort-SDR: 9OJTvAM4QfO6yO+jzuedL+2Oot2iPZTGsHigG38YpsB35IwCQG5vIS5syCHmZL7DOCtWAFrK5p
- XOtWb/5j5hkA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9738"; a="145907154"
+IronPort-SDR: vzqi/GRlu6JxPkjbsgnX5AIcNMqHGkFtsJLYODqafhJmtHYCkPQ4wLSQ+OLZASUGCHvgcwZc15
+ YvOL1Xmwb4tg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9738"; a="145907155"
 X-IronPort-AV: E=Sophos;i="5.76,406,1592895600"; 
-   d="scan'208";a="145907154"
+   d="scan'208";a="145907155"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
   by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2020 10:55:28 -0700
-IronPort-SDR: OqijQn5XQJ2/iaYbW4T8ZpmDTkdbfTWJgBmRL58Yhk0+O9v+LxRQy+XkS4oLJ5+IycOU7C+G3l
- cvo2+SoHYBiw==
+IronPort-SDR: 7CkE/gSnq4RS+N7d3i8P3GnGnFZYmGl7ifewZkWc6wWl5FKwOSZKNfLxhC4loqU7pcNpYMbZpO
+ X/UDMNxSfEyw==
 X-IronPort-AV: E=Sophos;i="5.76,406,1592895600"; 
-   d="scan'208";a="480125764"
+   d="scan'208";a="480125768"
 Received: from agluck-desk2.sc.intel.com ([10.3.52.68])
   by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2020 10:55:28 -0700
 From:   Tony Luck <tony.luck@intel.com>
 To:     Borislav Petkov <bp@alien8.de>
-Cc:     Tony Luck <tony.luck@intel.com>,
-        Youquan Song <youquan.song@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 5/8] x86/mce: Avoid tail copy when machine check terminated a copy from user
-Date:   Tue,  8 Sep 2020 10:55:16 -0700
-Message-Id: <20200908175519.14223-6-tony.luck@intel.com>
+Cc:     Youquan Song <youquan.song@intel.com>, tony.luck@intel.com,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 6/8] x86/mce: Change fault_in_kernel_space() from static to global
+Date:   Tue,  8 Sep 2020 10:55:17 -0700
+Message-Id: <20200908175519.14223-7-tony.luck@intel.com>
 X-Mailer: git-send-email 2.21.1
 In-Reply-To: <20200908175519.14223-1-tony.luck@intel.com>
 References: <20200908175519.14223-1-tony.luck@intel.com>
@@ -44,58 +43,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the page fault case it is ok to see if a few more unaligned bytes
-can be copied from the source address. Worst case is that the page fault
-will be triggered again.
+From: Youquan Song <youquan.song@intel.com>
 
-Machine checks are more serious. Just give up at the point where the
-main copy loop triggered the #MC and return as if the copy succeeded.
+Machine check code needs to be able to determine if a faulting address
+is in user of kernel space. There is already a function to do this.
 
-[Tried returning bytes not copied here, but that puts the kernel
- into a loop taking the machine check over and over. I don't know
- at what level some code is retrying]
+Change from "static int" to "bool" and add declaration to <asm/traps.h>
 
-Signed-off-by: Tony Luck <tony.luck@intel.com>
+No functional change.
+
+Signed-off-by: Youquan Song <youquan.song@intel.com>
+Signed-off-by: <tony.luck@intel.com>
 ---
- arch/x86/lib/copy_user_64.S | 7 +++++++
- 1 file changed, 7 insertions(+)
+ arch/x86/include/asm/traps.h | 2 ++
+ arch/x86/mm/fault.c          | 2 +-
+ 2 files changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/lib/copy_user_64.S b/arch/x86/lib/copy_user_64.S
-index 5b68e945bf65..1a58946e7c4e 100644
---- a/arch/x86/lib/copy_user_64.S
-+++ b/arch/x86/lib/copy_user_64.S
-@@ -15,6 +15,7 @@
- #include <asm/asm.h>
- #include <asm/smap.h>
- #include <asm/export.h>
-+#include <asm/trapnr.h>
+diff --git a/arch/x86/include/asm/traps.h b/arch/x86/include/asm/traps.h
+index 714b1a30e7b0..df0b7bfc1234 100644
+--- a/arch/x86/include/asm/traps.h
++++ b/arch/x86/include/asm/traps.h
+@@ -35,6 +35,8 @@ extern int panic_on_unrecovered_nmi;
  
- .macro ALIGN_DESTINATION
- 	/* check for bad alignment of destination */
-@@ -221,6 +222,7 @@ EXPORT_SYMBOL(copy_user_enhanced_fast_string)
-  * Try to copy last bytes and clear the rest if needed.
-  * Since protection fault in copy_from/to_user is not a normal situation,
-  * it is not necessary to optimize tail handling.
-+ * Don't try to copy the tail if machine check happened
-  *
-  * Input:
-  * rdi destination
-@@ -232,10 +234,15 @@ EXPORT_SYMBOL(copy_user_enhanced_fast_string)
-  */
- SYM_CODE_START_LOCAL(.Lcopy_user_handle_tail)
- 	movl %edx,%ecx
-+	cmp $X86_TRAP_MC,%eax		/* check if X86_TRAP_MC */
-+	je 3f
- 1:	rep movsb
- 2:	mov %ecx,%eax
- 	ASM_CLAC
- 	ret
-+3:	xorl %eax,%eax	/* pretend we succeeded? */
-+	ASM_CLAC
-+	ret
+ void math_emulate(struct math_emu_info *);
  
- 	_ASM_EXTABLE_CPY(1b, 2b)
- SYM_CODE_END(.Lcopy_user_handle_tail)
++bool fault_in_kernel_space(unsigned long address);
++
+ #ifdef CONFIG_VMAP_STACK
+ void __noreturn handle_stack_overflow(const char *message,
+ 				      struct pt_regs *regs,
+diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
+index 6e3e8a124903..42606a04ae85 100644
+--- a/arch/x86/mm/fault.c
++++ b/arch/x86/mm/fault.c
+@@ -1128,7 +1128,7 @@ access_error(unsigned long error_code, struct vm_area_struct *vma)
+ 	return 0;
+ }
+ 
+-static int fault_in_kernel_space(unsigned long address)
++bool fault_in_kernel_space(unsigned long address)
+ {
+ 	/*
+ 	 * On 64-bit systems, the vsyscall page is at an address above
 -- 
 2.21.1
 
