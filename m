@@ -2,199 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78655263168
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:12:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D44326316E
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:13:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730736AbgIIQMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 12:12:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53480 "EHLO
+        id S1731002AbgIIQM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 12:12:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730968AbgIIQJa (ORCPT
+        with ESMTP id S1730821AbgIIQJZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 12:09:30 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79051C061798
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 09:09:29 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id o5so3534315wrn.13
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 09:09:29 -0700 (PDT)
+        Wed, 9 Sep 2020 12:09:25 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D900C061756
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 09:09:20 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id j10so1766810qvk.11
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 09:09:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=gRY48n4o7lqyeOMqHNi/gjEPBgAxUiFR7TIRFWcKW3c=;
-        b=G8JNf4WQ/NztVBWlPjOiBhrUInzg7S3HLCwKjVB79t6IN1kv/KTDuJ7JOib17cMbeB
-         F1j/eZYhusposXKnVMPoIIVHEYO1O5ScnP9VZTdWHQvvBQV6bH6xBB5spC1+azLQrbz4
-         yh8mDJUodv981BuP8jff/59jVf5SNu6pLSHuiQaYutcuAtNhIn9d07271/HxvFA9fGaa
-         gRXLbtW1wSxVXNG98pj4PjzTM8U66A2czIUJA+G/hhVvS+Dwiyg+7co5+zfV8dwox5jc
-         A734D3jLZB0//+yl+KG+aRHR9cA2QP//KHVns451RxFLpsO28Pj5sIgh211EXji0pVpa
-         78lA==
+        d=chrisdown.name; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=XOUyPTsa2Cy1aBInD+QuWOlrkZOb1oPn3ygyN5HSAlw=;
+        b=LoZsiyRN6z3nQTE+reJEuHSLJx/sEAeC0/lg9Ji/pYlB7dC9jGShyT3icZv0Jh+YaM
+         EYDrMJiztU1bZr5xo1De0LQt8sutI/Gr9qQ7/n2Dj9y6PqFSdYF6U94Rg9WYCPglKd1d
+         0XX9IN2kGMxwHWlJICG360S5k88hyLU+4KSmI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=gRY48n4o7lqyeOMqHNi/gjEPBgAxUiFR7TIRFWcKW3c=;
-        b=tR7XTe0UPGd8b/t/yw0P2S0jilzeFopAUNi2lNtLBYMH027H97GmMq9Haz6vdwhsHN
-         19WkH1kyH3tW1Dbga3WGqlSXzTnpyU8KAvPiwEXaB5DyyF+NvV4qrhrbHHAaN0PsBkwY
-         aFS2suJNidcMRKe5zfpyVi1wz5Xl+DZZ947QyJHxjPOu+S0vnm+4ctozObkGhUQE6Sk3
-         bKat7ij6g1iZnpPLGdANRQV665m7DfiZ/kG/lobGucq6U9BO5qsq5mMpqoTmLqzMsUMg
-         YpKMRpuSQwvNPJaVeXk2VsqHpD/3M9b0XKTcmAYjxbkX8BIWKiVaOyHvsnbz78qnMNBr
-         DNGw==
-X-Gm-Message-State: AOAM531m9HwuxNFY0toE0HhLOyeDZew//KFnmWx7WJH4Cn9MUHGGltEx
-        Vq9XNU5t1mcMF0DJw02jzc2/kA==
-X-Google-Smtp-Source: ABdhPJzszX7vpVkDZmwOXwkOKo3BLLvvvjBzsK0OfJGSUU4rR98MFT+i0aT0tcOF+WZqRguFRNzg3w==
-X-Received: by 2002:adf:db48:: with SMTP id f8mr4969370wrj.144.1599667768139;
-        Wed, 09 Sep 2020 09:09:28 -0700 (PDT)
-Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.gmail.com with ESMTPSA id k22sm4900824wrd.29.2020.09.09.09.09.27
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=XOUyPTsa2Cy1aBInD+QuWOlrkZOb1oPn3ygyN5HSAlw=;
+        b=idEkoV9rgv4K8y6s4oSDlTTJzxTqCO2/EVf0iq5MHeBRhyEyhU//HnWoWZLafQMmm1
+         kqjaQKsOrafFrxQ+HOSHmRxbmCXAOm6EkKX9w6rQF1gDBKWtqNA/rcl8be1L99dSOUVq
+         4qIgaRm4l51tK3Ctg8bc+6n6guIopAKRMpJS1mOyGg5EQsLvc1Yo/OiMfshWRSCG80S1
+         OqYPjs0OfmWOm1GjKbIRxCbItT6yz24gJ/b0ZfXZu2G51QuGr01N2JOCkaB+qGz/I3bw
+         t4RIOJ2WQUcUl0uHoPzbdMiXmJz3y787Mg8tRmgQ/i06nFaBvqGKbtnAJgnpAQ+OmAOP
+         5uvQ==
+X-Gm-Message-State: AOAM533/FjxBR7ALT+07S6VLxmQiCpeFOOCgSs9WJ8kasRG8CRLTI884
+        g+pq9oSv0v5noM6FCuz9aQd5hA==
+X-Google-Smtp-Source: ABdhPJyL7+T9zIVmdMwKB1/q+iv+QjLVbUi6SxoPu8hTWkv8uve1cnVGV+9GR+PjfuPGIhHSCec3Ng==
+X-Received: by 2002:a0c:b35d:: with SMTP id a29mr4590496qvf.19.1599667759190;
+        Wed, 09 Sep 2020 09:09:19 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:16fd])
+        by smtp.gmail.com with ESMTPSA id q3sm2817689qkq.132.2020.09.09.09.09.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Sep 2020 09:09:27 -0700 (PDT)
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To:     vkoul@kernel.org, yung-chuan.liao@linux.intel.com
-Cc:     pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 2/2] soundwire: qcom: get max rows and cols info from compatible
-Date:   Wed,  9 Sep 2020 17:09:12 +0100
-Message-Id: <20200909160912.3656-3-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20200909160912.3656-1-srinivas.kandagatla@linaro.org>
-References: <20200909160912.3656-1-srinivas.kandagatla@linaro.org>
+        Wed, 09 Sep 2020 09:09:18 -0700 (PDT)
+Date:   Wed, 9 Sep 2020 17:09:17 +0100
+From:   Chris Down <chris@chrisdown.name>
+To:     zangchunxin@bytedance.com
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Muchun Song <songmuchun@bytedance.com>
+Subject: Re: [PATCH v2] mm/vmscan: fix infinite loop in drop_slab_node
+Message-ID: <20200909160917.GA1569471@chrisdown.name>
+References: <20200909152047.27905-1-zangchunxin@bytedance.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20200909152047.27905-1-zangchunxin@bytedance.com>
+User-Agent: Mutt/1.14.6 (2020-07-11)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-currently the max rows and cols values are hardcoded. In reality
-these values depend on the IP version. So get these based on
-device tree compatible strings.
+Thanks! This looks reasonable to me, and avoids hard-to-reason-about changes in 
+the existing semantics.
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- drivers/soundwire/qcom.c | 46 +++++++++++++++++++++++++++-------------
- 1 file changed, 31 insertions(+), 15 deletions(-)
+zangchunxin@bytedance.com writes:
+>Signed-off-by: Chunxin Zang <zangchunxin@bytedance.com>
+>Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 
-diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
-index 1ec0ee931f5b..03c5bc05fc6e 100644
---- a/drivers/soundwire/qcom.c
-+++ b/drivers/soundwire/qcom.c
-@@ -69,11 +69,6 @@
- #define SWRM_REG_VAL_PACK(data, dev, id, reg)	\
- 			((reg) | ((id) << 16) | ((dev) << 20) | ((data) << 24))
- 
--#define SWRM_MAX_ROW_VAL	0 /* Rows = 48 */
--#define SWRM_DEFAULT_ROWS	48
--#define SWRM_MIN_COL_VAL	0 /* Cols = 2 */
--#define SWRM_DEFAULT_COL	16
--#define SWRM_MAX_COL_VAL	7
- #define SWRM_SPECIAL_CMD_ID	0xF
- #define MAX_FREQ_NUM		1
- #define TIMEOUT_MS		(2 * HZ)
-@@ -107,6 +102,8 @@ struct qcom_swrm_ctrl {
- 	unsigned int version;
- 	int num_din_ports;
- 	int num_dout_ports;
-+	int cols_index;
-+	int rows_index;
- 	unsigned long dout_port_mask;
- 	unsigned long din_port_mask;
- 	struct qcom_swrm_port_config pconfig[QCOM_SDW_MAX_PORTS];
-@@ -116,6 +113,21 @@ struct qcom_swrm_ctrl {
- 	int (*reg_write)(struct qcom_swrm_ctrl *ctrl, int reg, int val);
- };
- 
-+struct qcom_swrm_data {
-+	int default_cols;
-+	int default_rows;
-+};
-+
-+static struct qcom_swrm_data swrm_v1_3_data = {
-+	.default_rows = 48,
-+	.default_cols = 16,
-+};
-+
-+static struct qcom_swrm_data swrm_v1_5_data = {
-+	.default_rows = 50,
-+	.default_cols = 16,
-+};
-+
- #define to_qcom_sdw(b)	container_of(b, struct qcom_swrm_ctrl, bus)
- 
- static int qcom_swrm_ahb_reg_read(struct qcom_swrm_ctrl *ctrl, int reg,
-@@ -302,8 +314,8 @@ static int qcom_swrm_init(struct qcom_swrm_ctrl *ctrl)
- 	u32 val;
- 
- 	/* Clear Rows and Cols */
--	val = (SWRM_MAX_ROW_VAL << SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_SHFT |
--	       SWRM_MIN_COL_VAL << SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_SHFT);
-+	val = ctrl->rows_index << SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_SHFT |
-+		ctrl->cols_index << SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_SHFT;
- 
- 	ctrl->reg_write(ctrl, SWRM_MCP_FRAME_CTRL_BANK_ADDR(0), val);
- 
-@@ -382,8 +394,8 @@ static int qcom_swrm_pre_bank_switch(struct sdw_bus *bus)
- 	val &= ~SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_BMSK;
- 	val &= ~SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_BMSK;
- 
--	val |= (SWRM_MAX_ROW_VAL << SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_SHFT |
--		SWRM_MAX_COL_VAL << SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_SHFT);
-+	val |= ctrl->rows_index << SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_SHFT |
-+	       ctrl->cols_index << SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_SHFT;
- 
- 	return ctrl->reg_write(ctrl, reg, val);
- }
-@@ -784,6 +796,7 @@ static int qcom_swrm_probe(struct platform_device *pdev)
- 	struct sdw_master_prop *prop;
- 	struct sdw_bus_params *params;
- 	struct qcom_swrm_ctrl *ctrl;
-+	const struct qcom_swrm_data *data;
- 	struct resource *res;
- 	int ret;
- 	u32 val;
-@@ -792,6 +805,9 @@ static int qcom_swrm_probe(struct platform_device *pdev)
- 	if (!ctrl)
- 		return -ENOMEM;
- 
-+	data = of_device_get_match_data(dev);
-+	ctrl->rows_index = sdw_find_row_index(data->default_rows);
-+	ctrl->cols_index = sdw_find_col_index(data->default_cols);
- #ifdef CONFIG_SLIMBUS
- 	if (dev->parent->bus == &slimbus_bus) {
- #else
-@@ -844,8 +860,8 @@ static int qcom_swrm_probe(struct platform_device *pdev)
- 	params = &ctrl->bus.params;
- 	params->max_dr_freq = DEFAULT_CLK_FREQ;
- 	params->curr_dr_freq = DEFAULT_CLK_FREQ;
--	params->col = SWRM_DEFAULT_COL;
--	params->row = SWRM_DEFAULT_ROWS;
-+	params->col = data->default_cols;
-+	params->row = data->default_rows;
- 	ctrl->reg_read(ctrl, SWRM_MCP_STATUS, &val);
- 	params->curr_bank = val & SWRM_MCP_STATUS_BANK_NUM_MASK;
- 	params->next_bank = !params->curr_bank;
-@@ -855,8 +871,8 @@ static int qcom_swrm_probe(struct platform_device *pdev)
- 	prop->num_clk_gears = 0;
- 	prop->num_clk_freq = MAX_FREQ_NUM;
- 	prop->clk_freq = &qcom_swrm_freq_tbl[0];
--	prop->default_col = SWRM_DEFAULT_COL;
--	prop->default_row = SWRM_DEFAULT_ROWS;
-+	prop->default_col = data->default_cols;
-+	prop->default_row = data->default_rows;
- 
- 	ctrl->reg_read(ctrl, SWRM_COMP_HW_VERSION, &ctrl->version);
- 
-@@ -907,8 +923,8 @@ static int qcom_swrm_remove(struct platform_device *pdev)
- }
- 
- static const struct of_device_id qcom_swrm_of_match[] = {
--	{ .compatible = "qcom,soundwire-v1.3.0", },
--	{ .compatible = "qcom,soundwire-v1.5.1", },
-+	{ .compatible = "qcom,soundwire-v1.3.0", .data = &swrm_v1_3_data },
-+	{ .compatible = "qcom,soundwire-v1.5.1", .data = &swrm_v1_5_data },
- 	{/* sentinel */},
- };
- 
--- 
-2.21.0
-
+Acked-by: Chris Down <chris@chrisdown.name>
