@@ -2,112 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFA44262E9A
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 14:36:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 949E3262EB6
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 14:51:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730187AbgIIMfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 08:35:53 -0400
-Received: from foss.arm.com ([217.140.110.172]:42528 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730166AbgIIMae (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 08:30:34 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 86F7C31B;
-        Wed,  9 Sep 2020 05:05:54 -0700 (PDT)
-Received: from [10.57.40.122] (unknown [10.57.40.122])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8A4743F68F;
-        Wed,  9 Sep 2020 05:05:52 -0700 (PDT)
-Subject: Re: [PATCH] iommu/dma: Fix IOVA reserve dma ranges
-To:     Srinath Mannam <srinath.mannam@broadcom.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>, poza@codeaurora.org
-Cc:     bcm-kernel-feedback-list@broadcom.com,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-References: <20200909053234.17027-1-srinath.mannam@broadcom.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <1996b772-774c-3475-05cc-77ae87176c3f@arm.com>
-Date:   Wed, 9 Sep 2020 13:05:49 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-MIME-Version: 1.0
-In-Reply-To: <20200909053234.17027-1-srinath.mannam@broadcom.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+        id S1726920AbgIIMuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 08:50:18 -0400
+Received: from m17618.mail.qiye.163.com ([59.111.176.18]:22020 "EHLO
+        m17618.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730232AbgIIMhM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 08:37:12 -0400
+Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.226])
+        by m17618.mail.qiye.163.com (Hmail) with ESMTPA id 8D7FC4E13B0;
+        Wed,  9 Sep 2020 20:12:55 +0800 (CST)
+From:   Wang Qing <wangqing@vivo.com>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Wang Qing <wangqing@vivo.com>
+Subject: [PATCH] net/netfilter: fix a typo for nf_conntrack_proto_dccp.c
+Date:   Wed,  9 Sep 2020 20:12:44 +0800
+Message-Id: <1599653567-27147-1-git-send-email-wangqing@vivo.com>
+X-Mailer: git-send-email 2.7.4
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZGRhCH0wYQk9LSU8eVkpOQkJNTkhOTE1LSkxVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKQ1VKS0tZBg++
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Nyo6Nhw4AT8oGh0jPQ0MFjdK
+        EDAaCiJVSlVKTkJCTU5ITkxNT0hJVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
+        SU5KVUxPVUlJTVlXWQgBWUFKQkxMNwY+
+X-HM-Tid: 0a7472c87cd49376kuws8d7fc4e13b0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-09 06:32, Srinath Mannam wrote:
-> Fix IOVA reserve failure for memory regions listed in dma-ranges in the
-> following cases.
-> 
-> - start address of memory region is 0x0.
+Change the comment typo: "direcly" -> "directly".
 
-That's fair enough, and in fact generalises to the case of zero-sized 
-gaps between regions, which is indeed an oversight.
+Signed-off-by: Wang Qing <wangqing@vivo.com>
+---
+ net/netfilter/nf_conntrack_proto_dccp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> - end address of a memory region is equal to start address of next memory
->    region.
+diff --git a/net/netfilter/nf_conntrack_proto_dccp.c b/net/netfilter/nf_conntrack_proto_dccp.c
+index b3f4a33..d9bb0ce
+--- a/net/netfilter/nf_conntrack_proto_dccp.c
++++ b/net/netfilter/nf_conntrack_proto_dccp.c
+@@ -340,7 +340,7 @@ dccp_state_table[CT_DCCP_ROLE_MAX + 1][DCCP_PKT_SYNCACK + 1][CT_DCCP_MAX + 1] =
+ 		 * sNO -> sIV		No connection
+ 		 * sRQ -> sIV		No connection
+ 		 * sRS -> sIV		No connection
+-		 * sPO -> sOP -> sCG	Move direcly to CLOSING
++		 * sPO -> sOP -> sCG	Move directly to CLOSING
+ 		 * sOP -> sCG		Move to CLOSING
+ 		 * sCR -> sIV		Close after CloseReq is invalid
+ 		 * sCG -> sCG		Retransmit
+-- 
+2.7.4
 
-This part doesn't make much sense, however - if the regions described in 
-bridge->dma_ranges overlap, that's a bug in whoever created a malformed 
-list to begin with. Possibly it's just poor wording, and you're using 
-"memory regions" to refer to any or all of the dma_ranges, the reserved 
-IOVA ranges, and what "start" and "end" in this function represent which 
-isn't quite either of those.
-
-> Fixes: aadad097cd46f ("iommu/dma: Reserve IOVA for PCIe inaccessible DMA address")
-> Signed-off-by: Srinath Mannam <srinath.mannam@broadcom.com>
-> ---
->   drivers/iommu/dma-iommu.c | 15 +++++++++++----
->   1 file changed, 11 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
-> index 5141d49a046b..0a3f67a4f9ae 100644
-> --- a/drivers/iommu/dma-iommu.c
-> +++ b/drivers/iommu/dma-iommu.c
-> @@ -213,14 +213,21 @@ static int iova_reserve_pci_windows(struct pci_dev *dev,
->   	resource_list_for_each_entry(window, &bridge->dma_ranges) {
->   		end = window->res->start - window->offset;
->   resv_iova:
-> +		if (end < start) {
-> +			/* dma_ranges list should be sorted */
-> +			dev_err(&dev->dev, "Failed to reserve IOVA\n");
-> +			return -EINVAL;
-> +		}
-> +		/*
-> +		 * Skip the cases when start address of first memory region is
-> +		 * 0x0 and end address of one memory region and start address
-> +		 * of next memory region are equal. Reserve IOVA for rest of
-> +		 * addresses fall in between given memory ranges.
-> +		 */
->   		if (end > start) {
->   			lo = iova_pfn(iovad, start);
->   			hi = iova_pfn(iovad, end);
->   			reserve_iova(iovad, lo, hi);
-> -		} else {
-
-Surely this only needs to be a one-liner?
-
--		} else {
-+		} else if (end < start) {
-
-(or possibly "end != start"; I can't quite decide which expresses the 
-semantic intent better)
-
-The rest just looks like unnecessary churn - I don't think it needs 
-commenting that a sorted list may simply not have gaps between entries, 
-and as above I think the wording of that comment is actively misleading.
-
-Robin.
-
-> -			/* dma_ranges list should be sorted */
-> -			dev_err(&dev->dev, "Failed to reserve IOVA\n");
-> -			return -EINVAL;
->   		}
->   
->   		start = window->res->end - window->offset + 1;
-> 
