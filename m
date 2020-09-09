@@ -2,112 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA54D2631F6
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:32:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E3AB2632A8
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:48:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731156AbgIIQcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 12:32:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56392 "EHLO
+        id S1730929AbgIIQso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 12:48:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731122AbgIIQ13 (ORCPT
+        with ESMTP id S1730927AbgIIQHj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 12:27:29 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 080A2C06137F
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 07:24:49 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id z25so3292393iol.10
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 07:24:49 -0700 (PDT)
+        Wed, 9 Sep 2020 12:07:39 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D86AC061234
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 07:45:42 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id x23so2544355wmi.3
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 07:45:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=J42uWZO91Vl6z53QuSqgDQ5nEZPu3ErBMsf2V3eJXao=;
-        b=vwgyAFNFY0Rk6tGpJrQKkFa2XORu9tkWL3MOvEnxMWQSsbJhAjs0wQkh45yfbxgWty
-         P4LutOppwndoh6fYhlpY/FnHJ7s6roKt4SmQ4ZpkvlcGIxjeXF2o2A/OxCF6LlScMtNO
-         sd1g73r4KiQVkYw0cr9Uby1XQGWuAPxYLmrDOkiYBuC6w2Lor4MVkXLDdEJOmCpTmfNV
-         OooUgHeq067qTX1T/mzo/jYDU8gFVMGTX7A+wovVWcHT9Cn1BOV0cJ5c90cqkK04z5zV
-         FQRf3f1tWU3m+KnOqKecj1nxHPOb0476pqidIdfBKhmVP8zKJt2dC5dXnsGG8kbtXB49
-         uuAQ==
+        d=linaro.org; s=google;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=5VKePPT3rsU28wXCAu1Xs2KBd1A5X4Nlem8vFp45sFs=;
+        b=N+MbeIjrkaWZSL1rnQBBMQ3t8EgtJ5pPqrCari+s74htlzysCeT43xiaa6jOYcy32h
+         4CDd9PSLQ49+GE9aRevle7XYa++OWOquZVftThJ4b3J3mk7MOdGIvX/YVJ4/atzSziBT
+         QHOhNZJHMYRC2WOAByxQXcbJ/TxQLqB4Sr3+9q2HGHmYaySmzrk2sQUUz+Kpl7Ek4wAU
+         cKekwJ1cvRmuB3pCyekrgNUPB9OXHj9eOSQD19+VXVp1lZB1x9oVUJJXVhHAbiYN+eAf
+         kA4jU0llu01THgYWYLbkq9qRnuFNG/4WMZXx0YeYtEuuVct/E2BvPHB6tDgTCXe1CJoG
+         BVVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=J42uWZO91Vl6z53QuSqgDQ5nEZPu3ErBMsf2V3eJXao=;
-        b=AsY/b1L8WchP+J472PxfYcw90gY4q15cL39UoUjgfp6s40jSEJBmFDYgZT1EZkn/wI
-         jiFI+bbfiF4j+O2B8x6WxpqFZgFhjHHYHTus8nmEXe7mahK2dxUvSNPZuRGdUeoPpCaF
-         xx+7cqoE+xIOZ1f8oI6nDuZsoM5uDtiR09uBqM3vPDH6ybsxBnsMEGuf83kxrZGezyy/
-         EoAt0edWiO24SvjS4IsRTy/C807ugYkFy8T1TPen9ABsSjX1BD7bEQ9VxN0IzNLPf2DH
-         yIsUNi6WuASgkOFXovvH58bKWypbdnHldNfG72q2GG/7RZL1tFeot+lkbmucElZvn1GB
-         pXLA==
-X-Gm-Message-State: AOAM5325wcy/W/4Lq9L2tjA8lidUtCfBXjp97Au3JaoEYB6mjPpKhbWy
-        dJ0WB2Jc5Jj/y8X2g1Y4A6lnZg==
-X-Google-Smtp-Source: ABdhPJzw71ClM3e9xwflgpNGkqys4GZLnoSdxzDPCJW81NzzXlaCm+tbHvqOkGBBc4MqR9ZnkKGG6w==
-X-Received: by 2002:a02:1142:: with SMTP id 63mr4314795jaf.73.1599661486949;
-        Wed, 09 Sep 2020 07:24:46 -0700 (PDT)
-Received: from [192.168.1.10] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id 2sm1457722ilj.24.2020.09.09.07.24.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Sep 2020 07:24:46 -0700 (PDT)
-Subject: Re: [PATCH next] io_uring: fix task hung in io_uring_setup
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     Pavel Begunkov <asml.silence@gmail.com>, io-uring@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk,
-        syzbot+107dd59d1efcaf3ffca4@syzkaller.appspotmail.com,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Kees Cook <keescook@chromium.org>
-References: <20200903132119.14564-1-hdanton@sina.com>
- <9bef23b1-6791-6601-4368-93de53212b22@kernel.dk>
- <8031fbe7-9e69-4a79-3b42-55b2a1a690e3@gmail.com>
- <20200908000339.2260-1-hdanton@sina.com>
- <20200909001943.18916-1-hdanton@sina.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <e04aea6a-4049-da2e-e8e8-9025aa03268b@kernel.dk>
-Date:   Wed, 9 Sep 2020 08:24:45 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5VKePPT3rsU28wXCAu1Xs2KBd1A5X4Nlem8vFp45sFs=;
+        b=opx6Lo100TdSFAJwSEzgWKMI0qx9XQKEdQpjNKf2DjZ8a9EXsIKsU3mdWBr3dPoDQX
+         P1VXRvI03SpOq7t6VHj6jG/0zUkRcQQmKexwtJxckD07h27EsDdzng881uhSq/iFWOFl
+         x8p9bN2SqSG9wvihBTrBQr3gebRA7CPJQW4Euk+VZ0J0oCTkeL0HssP4VCEyYS05HVjn
+         aHBWoexpu30ehYe4MBGl0M7euotB1pUliesCYSWtDwSQkKyl4PQFv28Hlnx4ctAOjQUO
+         EeynOI/W2rrpGMsfEubbglBE3/PjrHa5HeyfVVkXy+aF5e0sYcf/eiLTYYHHTDvbY63E
+         CobQ==
+X-Gm-Message-State: AOAM532c14gjNP6F/Bs74WR8CE6bkraSJ/+xZbqRtdeLqfKMhzl5vzrc
+        C/0gv1jkL75hpieAO2Ug3UUGCg==
+X-Google-Smtp-Source: ABdhPJxqI/pYnfEs6qSjztlLK9/QHes6XgHB85V3brQWGlC3Taa9IcIFuEaRLZOMRfZ2rAfTnQSxVA==
+X-Received: by 2002:a1c:1904:: with SMTP id 4mr3865768wmz.119.1599662741033;
+        Wed, 09 Sep 2020 07:45:41 -0700 (PDT)
+Received: from holly.lan (cpc141214-aztw34-2-0-cust773.18-1.cable.virginm.net. [86.9.19.6])
+        by smtp.gmail.com with ESMTPSA id v2sm4773397wrm.16.2020.09.09.07.45.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Sep 2020 07:45:39 -0700 (PDT)
+Date:   Wed, 9 Sep 2020 15:45:37 +0100
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Alexandru Stan <amstan@chromium.org>, linux-pwm@vger.kernel.org,
+        linux-fbdev@vger.kernel.org,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        dri-devel@lists.freedesktop.org,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Matthias Kaehlcke <mka@chromium.org>
+Subject: Re: [PATCH 2/3] backlight: pwm_bl: Artificially add 0% during
+ interpolation
+Message-ID: <20200909144537.daq2exfihhxm6bai@holly.lan>
+References: <20200721042522.2403410-1-amstan@chromium.org>
+ <20200720212502.2.Iab4d2192e4cf50226e0a58d58df7d90ef92713ce@changeid>
+ <20200904113822.xoyt4w5x7vwvh7cr@holly.lan>
+ <20200907075018.GM2352366@phenom.ffwll.local>
 MIME-Version: 1.0
-In-Reply-To: <20200909001943.18916-1-hdanton@sina.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200907075018.GM2352366@phenom.ffwll.local>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/8/20 6:19 PM, Hillf Danton wrote:
+On Mon, Sep 07, 2020 at 09:50:18AM +0200, Daniel Vetter wrote:
+> On Fri, Sep 04, 2020 at 12:38:22PM +0100, Daniel Thompson wrote:
+> > On Mon, Jul 20, 2020 at 09:25:21PM -0700, Alexandru Stan wrote:
+> > > Some displays need the low end of the curve cropped in order to make
+> > > them happy. In that case we still want to have the 0% point, even though
+> > > anything between 0% and 5%(example) would be skipped.
+> > 
+> > For backlights it is not defined that 0 means off and, to be honest, 0
+> > means off is actually rather weird for anything except transflexive
+> > or front lit reflective displays[1]. There is a problem on several
+> > systems that when the backlight slider is reduced to zero you can't
+> > see the screen properly to turn it back up. This patch looks like it
+> > would make that problem worse by hurting systems with will written
+> > device trees.
+> > 
+> > There is some nasty legacy here: some backlight displays that are off
+> > at zero and that sucks because userspace doesn't know whether zero is
+> > off or lowest possible setting.
+> > 
+> > Nevertheless perhaps a better way to handle this case is for 0 to map to
+> > 5% power and for the userspace to turn the backlight on/off as final
+> > step in an animated backlight fade out (and one again for a fade in).
 > 
-> On Tue, 8 Sep 2020 17:34:26 -0600 Jens Axboe wrote:
->> On 9/7/20 6:03 PM, Hillf Danton wrote:
->>> On Mon, 7 Sep 2020 06:55:04 Jens Axboe wrote:
->>>> On 9/7/20 2:50 AM, Pavel Begunkov wrote:
->>>>>
->>>>> BTW, I don't see the patch itself, and it's neither in io_uring, block
->>>>> nor fs mailing lists. Hillf, could you please CC proper lists next time?
->>>
->>> Yes, I can. So will I send io_uring patches with Pavel Cced.
->>
->> While that is nice, it should not be necessary. We need to ensure that your
->> emails reach the list, that's more important than needing to CC a specific
->> person, because it still means that everyone else doesn't see it.
->>
->> Do you get an error from vger, or does it simply not show up?
+> Afaik chromeos encodes "0 means off" somewhere in there stack. We've
+> gotten similar patches for the i915 backlight driver when we started
+> obeying the panel's lower limit in our pwm backlight driver thing that's
+> sometimes used instead of acpi.
+
+Out of interest... were they accepted?
+
+I did took a quick look at intel_panel.c and didn't see anything
+that appeared to be special casing zero but I thought I might double
+check.
+
+
+Daniel.
+
+
+> There's also the problem that with fancy panels with protocol (dsi, edp,
+> ...) shutting of the backlight completely out of the proper power sequence
+> hangs the panel (for some panels at least), so providing a backlight off
+> that doesn't go through the drm modeset sequence isn't always possible.
 > 
-> After tapping the send button for this message, I will receive a message
-> from the sina mail server saying it failed to deliver it to one of the
-> targets (abc@vger.kernel.org), which has been happing over the past a
-> couple of years. One of the redhat guys, I can't remmenber his name,
-> once tryied to help me solve the problem, by sending somebody@vger a
-> message explaining what was going on, but failed. AFAIC there's a
-> glitch in exchanging info between the sina server and the server at the
-> vger end, and it seems it would take more time than thought to figure
-> it out. So let it be for now.
-
-Might be worthwhile to just have a gmail account for sending patches
-and replying to list emails?
-
--- 
-Jens Axboe
-
+> It's a bit a mess indeed :-/
+> -Daniel
+> 
+> > 
+> > 
+> > Daniel.
+> > 
+> > > 
+> > > Signed-off-by: Alexandru Stan <amstan@chromium.org>
+> > > ---
+> > > 
+> > >  drivers/video/backlight/pwm_bl.c | 8 ++++++++
+> > >  1 file changed, 8 insertions(+)
+> > > 
+> > > diff --git a/drivers/video/backlight/pwm_bl.c b/drivers/video/backlight/pwm_bl.c
+> > > index 5193a72305a2..b24711ddf504 100644
+> > > --- a/drivers/video/backlight/pwm_bl.c
+> > > +++ b/drivers/video/backlight/pwm_bl.c
+> > > @@ -349,6 +349,14 @@ static int pwm_backlight_parse_dt(struct device *dev,
+> > >  			/* Fill in the last point, since no line starts here. */
+> > >  			table[x2] = y2;
+> > >  
+> > > +			/*
+> > > +			 * If we don't start at 0 yet we're increasing, assume
+> > > +			 * the dts wanted to crop the low end of the range, so
+> > > +			 * insert a 0 to provide a display off mode.
+> > > +			 */
+> > > +			if (table[0] > 0 && table[0] < table[num_levels - 1])
+> > > +				table[0] = 0;
+> > > +
+> > >  			/*
+> > >  			 * As we use interpolation lets remove current
+> > >  			 * brightness levels table and replace for the
+> > > -- 
+> > > 2.27.0
+> > _______________________________________________
+> > dri-devel mailing list
+> > dri-devel@lists.freedesktop.org
+> > https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> 
+> -- 
+> Daniel Vetter
+> Software Engineer, Intel Corporation
+> http://blog.ffwll.ch
