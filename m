@@ -2,110 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DDA52633D4
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 19:11:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC7362633F3
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 19:12:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730415AbgIIRLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 13:11:07 -0400
-Received: from mga11.intel.com ([192.55.52.93]:19272 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730317AbgIIRK6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 13:10:58 -0400
-IronPort-SDR: 4bZWr28V0muMRHpAwVI5HolmG70awak0f/3q3YhNfoSgXz6NVkQIc09KFxNKdXWWY+Uxn0iE4d
- fHV/EtUi0Ubw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9739"; a="155842243"
-X-IronPort-AV: E=Sophos;i="5.76,409,1592895600"; 
-   d="scan'208";a="155842243"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2020 10:10:56 -0700
-IronPort-SDR: 5qT68Jsn0cJQAktVnxQeDCfV8fH0mpJfxEtiS+SvivGmWwong8TxccfnMWaV91WoWzHQrBbXr3
- ET5pqWXNskJw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,409,1592895600"; 
-   d="scan'208";a="333886837"
-Received: from otc-nc-03.jf.intel.com (HELO otc-nc-03) ([10.54.39.36])
-  by orsmga008.jf.intel.com with ESMTP; 09 Sep 2020 10:10:56 -0700
-Date:   Wed, 9 Sep 2020 10:10:56 -0700
-From:   "Raj, Ashok" <ashok.raj@intel.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     dwmw2@infradead.org, baolu.lu@linux.intel.com, joro@8bytes.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        eperezma@redhat.com, peterx@redhat.com, mst@redhat.com,
-        stable@vger.kernel.org, Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Keith Busch <keith.busch@intel.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Ashok Raj <ashok.raj@intel.com>
-Subject: Re: [PATCH] intel-iommu: don't disable ATS for device without page
- aligned request
-Message-ID: <20200909171056.GF104641@otc-nc-03>
-References: <20200909083432.9464-1-jasowang@redhat.com>
+        id S1728363AbgIIRMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 13:12:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35256 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731249AbgIIRMQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 13:12:16 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D338C061756
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 10:12:16 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id w7so2730083pfi.4
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 10:12:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=CosBFDAizRNCISZV5eHVCzVDJVKQR4om2vS5xFZC3xc=;
+        b=cT3ohcSj+rnWge0Nez3Heio2GDlTkUAedSsaOMSCyZ1XX47xxJRN/fvhoZM61JBJnI
+         XNJwIA8eXAsyh/cC/8cwIgvWWgjjilJLUAmiOw+LcaaPoWKK5N9G6Nxjf0ndjKQs8eoj
+         3LWq48FHhLfpq69l4uYmYS9P0AKNeHV/fl7uw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CosBFDAizRNCISZV5eHVCzVDJVKQR4om2vS5xFZC3xc=;
+        b=na0Rq593Adi4Mia/WCT5eCZT4T67epuMjtT3nIv9WfszjA/PKnS4Qhn7YtGeb6GAPN
+         2YnhPLX/w7XH09WkKvUdOCYyq7dKzy2aWEfiIwA3eYF9OoCSGcKv4Pp6rpASIGj5w1Gv
+         MerICYzNDOFPWAnQiGVImH78nIEg6fcsMsx/SZ+COUweZDYcxuReEajRIoXjFXz8RiWJ
+         VrW3SzLa29fOKYUAzm74zM3Z85TXJvXUyMSKIQ3k5hjc6g2EQtQ2mjZ040qesb/MWl2g
+         qYIdK5aM6tQ9w04Ne3rIF83Y4cv3Ezehg3m4AzJce4dz3XltrzFkQvQueSbpHTGo9Vto
+         siHA==
+X-Gm-Message-State: AOAM532b565i/yTBGP3O7z1hXJYx0fVnnA7o2r3doW9GqaiHcqAXDtc/
+        66wCJKLtGLzXu4aBNnEpktOu6Q==
+X-Google-Smtp-Source: ABdhPJxYjSzhB5uOfoaKKpdMENNizIwt9gyBznrahFk5i+IgdOKycZBi7etQDhEcw8TNcJftOjuAYA==
+X-Received: by 2002:a63:3d0e:: with SMTP id k14mr1356378pga.219.1599671535897;
+        Wed, 09 Sep 2020 10:12:15 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id m20sm3314282pfa.115.2020.09.09.10.12.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Sep 2020 10:12:14 -0700 (PDT)
+Date:   Wed, 9 Sep 2020 10:12:13 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] docs: deprecated.rst: Update zero-length/one-element
+ arrays section
+Message-ID: <202009091012.ADA0342C8@keescook>
+References: <20200901010949.GA21398@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200909083432.9464-1-jasowang@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20200901010949.GA21398@embeddedor>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jason
-
-On Wed, Sep 09, 2020 at 04:34:32PM +0800, Jason Wang wrote:
-> Commit 61363c1474b1 ("iommu/vt-d: Enable ATS only if the device uses
-> page aligned address.") disables ATS for device that can do unaligned
-> page request.
-
-Did you take a look at the PCI specification?
-Page Aligned Request is in the ATS capability Register.
-
-ATS Capability Register (Offset 0x04h)
-
-bit (5):
-Page Aligned Request - If Set, indicates the Untranslated address is always
-aligned to 4096 byte boundary. Setting this field is recommended. This
-field permits software to distinguish between implemntations compatible
-with this specification and those compatible with an earlier version of
-this specification in which a Requester was permitted to supply anything in
-bits [11:2].
-
+On Mon, Aug 31, 2020 at 08:09:49PM -0500, Gustavo A. R. Silva wrote:
+> Update information in the zero-length and one-element arrays section
+> and illustrate how to make use of the new flex_array_size() helper,
+> together with struct_size() and a flexible-array member.
 > 
-> This looks wrong, since the commit log said it's because the page
-> request descriptor doesn't support reporting unaligned request.
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-I don't think you can change the definition from ATS to PRI. Both are
-orthogonal feature.
+Looks great!
 
-> 
-> A victim is Qemu's virtio-pci which doesn't advertise the page aligned
-> address. Fixing by disable PRI instead of ATS if device doesn't have
-> page aligned request.
+Acked-by: Kees Cook <keescook@chromium.org>
 
-This is a requirement for the Intel IOMMU's.
-
-You say virtio, so is it all emulated device or you talking about some
-hardware that implemented virtio-pci compliant hw? If you are sure the
-device actually does comply with the requirement, but just not enumerating
-the capability, you can maybe work a quirk to overcome that?
-
-Now PRI also has an alignment requirement, and Intel IOMMU's requires that
-as well. If your device supports SRIOV as well, PASID and PRI are
-enumerated just on the PF and not the VF. You might want to pay attension
-to that. We are still working on a solution for that problem.
-
-I don't think this is the right fix for your problem. 
-
-> 
-> Cc: stable@vger.kernel.org
-> Cc: Ashok Raj <ashok.raj@intel.com>
-> Cc: Jacob Pan <jacob.jun.pan@linux.intel.com>
-> Cc: Keith Busch <keith.busch@intel.com>
-> Cc: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-> Signed-off-by: Jason Wang <jasowang@redhat.com>
-> ---
->  drivers/iommu/intel/iommu.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
+-- 
+Kees Cook
