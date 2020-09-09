@@ -2,117 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A55926277D
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 08:57:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 515EC26278D
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 08:59:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727085AbgIIG5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 02:57:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52586 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726399AbgIIG5L (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 02:57:11 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF174C061573;
-        Tue,  8 Sep 2020 23:57:10 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id q21so1531692edv.1;
-        Tue, 08 Sep 2020 23:57:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aucFnAaA6n54SqN2ylDW2Uq1+nK592raJ0MmLzBKiSs=;
-        b=mYuIK7PT4ChKZXdBvVrAd7YKq7i/4lwweyhypREg+ye6C6cYuYWQo2zLiWiUGH+tWe
-         6q6Clmjyx92I7Ed1bHBx7IQzZQc90V8ILbwtoZk/4SAT8ccv3Jo/4cM6wi8z41LJ4v3l
-         DSWkf02+8QQ86flhs7lTLOQvzv0X58zrRLhLo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aucFnAaA6n54SqN2ylDW2Uq1+nK592raJ0MmLzBKiSs=;
-        b=g9mlM9R9Hx9Id5uOFiKHhS/o/RuRP/glVKQnZdUJTGP1XsdANsB3VfXP20ux3BSUdW
-         jcjHVi0qO6EcAMHAFjyZNghpGX3kQgYMtu8eTO1iRPem4cf5L3Gh84ihj3VJ01ZddNtx
-         SLnto1z+yEZthl74w+GYBbHNYb8WEl/V3izJx1LDVOVq04nokh01Dsu44hlF2/d5yphj
-         28uyM8seCa1xNgqQE08caVo/n0OPcUUCwg0s8YRN+cGMyVlB5mwh8HPuIUR3WQZNVxFG
-         r5wa6AIs4tTVyFipzBYG/pFnPPD3qzmHMJNlSWTnp4C6k5Z/7MHDkh8kx0YelWI8UuJo
-         Wwnw==
-X-Gm-Message-State: AOAM530ZRZHoN+gx1GkdbaW6FD9ZzgZ/be0nMbp6Ic6dEWS9WJDPAAi0
-        cA/G9/GZacPrhkq353h7+5cC0Hit7VwiR7pOa3g=
-X-Google-Smtp-Source: ABdhPJwPlzh1DnLGo9MSTT8J/yrnEnx7UmuC9FQVeFtz+arOOvvLH5XkI0R9H39kuPOE/iZLcwtZShJUK72WQR+TAXI=
-X-Received: by 2002:a05:6402:ca7:: with SMTP id cn7mr2599331edb.143.1599634629657;
- Tue, 08 Sep 2020 23:57:09 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200908200101.64974-1-eajames@linux.ibm.com> <20200908200101.64974-5-eajames@linux.ibm.com>
-In-Reply-To: <20200908200101.64974-5-eajames@linux.ibm.com>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Wed, 9 Sep 2020 06:56:57 +0000
-Message-ID: <CACPK8Xf0z4kz9JkTWPKveQsmEpKq0YtEQ+1Jracndu9g9UW7ZQ@mail.gmail.com>
-Subject: Re: [PATCH v2 4/5] ARM: dts: Aspeed: Tacoma: Add IBM Operation Panel
- I2C device
-To:     Eddie James <eajames@linux.ibm.com>
-Cc:     linux-input@vger.kernel.org,
+        id S1727113AbgIIG7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 02:59:23 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:55160 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726169AbgIIG7V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 02:59:21 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 512BF7CACEB8EFD54234;
+        Wed,  9 Sep 2020 14:59:17 +0800 (CST)
+Received: from thunder-town.china.huawei.com (10.174.177.253) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 9 Sep 2020 14:59:06 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
         devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        linux-i2c@vger.kernel.org, Andrew Jeffery <andrew@aj.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        dmitry.torokhov@gmail.com, Rob Herring <robh+dt@kernel.org>,
-        wsa@kernel.org, Tao Ren <rentao.bupt@gmail.com>,
-        Ryan Chen <ryan_chen@aspeedtech.com>
-Content-Type: text/plain; charset="UTF-8"
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Haoyu Lv <lvhaoyu@huawei.com>, Libin <huawei.libin@huawei.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>
+Subject: [PATCH v3 0/3] irqchip: dw-apb-ictl: support hierarchy irq domain
+Date:   Wed, 9 Sep 2020 14:58:33 +0800
+Message-ID: <20200909065836.2631-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.177.253]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 8 Sep 2020 at 20:01, Eddie James <eajames@linux.ibm.com> wrote:
->
-> Set I2C bus 0 to multi-master mode and add the panel device that will
-> register as a slave.
->
-> Signed-off-by: Eddie James <eajames@linux.ibm.com>
-> Reviewed-by: Joel Stanley <joel@jms.id.au>
+v2 --> v3:
+1. change (1 << hwirq) to BIT(hwirq).
+2. change __exception_irq_entry to __irq_entry, so we can "#include <linux/interrupt.h>"
+   instead of "#include <asm/exception.h>". Ohterwise, an compilation error will be
+   reported on arch/csky.
+   drivers/irqchip/irq-dw-apb-ictl.c:20:10: fatal error: asm/exception.h: No such file or directory
+3. use "if (!parent || (np == parent))" to determine whether it is primary interrupt controller.
+4. make the primary interrupt controller case also use function handle_level_irq(), I used 
+   handle_fasteoi_irq() as flow_handler before.
+5. Other minor changes are not detailed.
 
-I will take this and the rainier dts patch through the aspeed tree so
-we don't get conflicts.
+v1 --> v2:
+According to Marc Zyngier's suggestion, discard adding an independent SD5203-VIC
+driver, but make the dw-apb-ictl irqchip driver to support hierarchy irq domain.
+It was originally available only for secondary interrupt controller, now it can
+also be used as primary interrupt controller. The related dt-bindings is updated
+appropriately.
 
-Eddie, when you send v3, you can omit them.
+Add "Suggested-by: Marc Zyngier <maz@kernel.org>".
+Add "Tested-by: Haoyu Lv <lvhaoyu@huawei.com>".
 
-Cheers,
 
-Joel
+v1:
+The interrupt controller of SD5203 SoC is VIC(vector interrupt controller), it's
+based on Synopsys DesignWare APB interrupt controller (dw_apb_ictl) IP, but it
+can not directly use dw_apb_ictl driver. The main reason is that VIC is used as
+primary interrupt controller and dw_apb_ictl driver worked for secondary
+interrupt controller. So add a new driver: "hisilicon,sd5203-vic".
 
-> ---
->  arch/arm/boot/dts/aspeed-bmc-opp-tacoma.dts | 7 +++++++
->  1 file changed, 7 insertions(+)
->
-> diff --git a/arch/arm/boot/dts/aspeed-bmc-opp-tacoma.dts b/arch/arm/boot/dts/aspeed-bmc-opp-tacoma.dts
-> index 5f4ee67ac787..4d070d6ba09f 100644
-> --- a/arch/arm/boot/dts/aspeed-bmc-opp-tacoma.dts
-> +++ b/arch/arm/boot/dts/aspeed-bmc-opp-tacoma.dts
-> @@ -4,6 +4,7 @@
->
->  #include "aspeed-g6.dtsi"
->  #include <dt-bindings/gpio/aspeed-gpio.h>
-> +#include <dt-bindings/i2c/i2c.h>
->  #include <dt-bindings/leds/leds-pca955x.h>
->
->  / {
-> @@ -438,7 +439,13 @@ aliases {
->  };
->
->  &i2c0 {
-> +       multi-master;
->         status = "okay";
-> +
-> +       ibm-panel@62 {
-> +               compatible = "ibm,op-panel";
-> +               reg = <(0x62 | I2C_OWN_SLAVE_ADDRESS)>;
-> +       };
->  };
->
->  &i2c1 {
-> --
-> 2.26.2
->
+Zhen Lei (3):
+  irqchip: dw-apb-ictl: prepare for support hierarchy irq domain
+  irqchip: dw-apb-ictl: support hierarchy irq domain
+  dt-bindings: dw-apb-ictl: support hierarchy irq domain
+
+ .../interrupt-controller/snps,dw-apb-ictl.txt | 14 ++-
+ drivers/irqchip/Kconfig                       |  2 +-
+ drivers/irqchip/irq-dw-apb-ictl.c             | 85 ++++++++++++++++---
+ 3 files changed, 87 insertions(+), 14 deletions(-)
+
+-- 
+2.26.0.106.g9fadedd
+
+
