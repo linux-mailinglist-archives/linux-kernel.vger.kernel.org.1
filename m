@@ -2,101 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4DD22630F3
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 17:50:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 467F12630DB
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 17:46:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730434AbgIIPuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 11:50:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50016 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730533AbgIIPrm (ORCPT
+        id S1730511AbgIIPqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 11:46:40 -0400
+Received: from a27-10.smtp-out.us-west-2.amazonses.com ([54.240.27.10]:47568
+        "EHLO a27-10.smtp-out.us-west-2.amazonses.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730368AbgIIPnp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 11:47:42 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B4EEC061375
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 07:18:45 -0700 (PDT)
-Received: from kevin (unknown [IPv6:2607:fea8:55f:a950::68f4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: alyssa)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id C3EE929AF39;
-        Wed,  9 Sep 2020 15:13:33 +0100 (BST)
-Date:   Wed, 9 Sep 2020 10:13:28 -0400
-From:   Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
-To:     Steven Price <steven.price@arm.com>
-Cc:     Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@linux.ie>,
-        Rob Herring <robh@kernel.org>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        "Marty E. Plummer" <hanetzer@startmail.com>,
-        Eric Anholt <eric@anholt.net>,
-        Neil Armstrong <narmstrong@baylibre.com>
-Subject: Re: [PATCH] drm/panfrost: Ensure GPU quirks are always initialised
-Message-ID: <20200909141328.GA1853@kevin>
-References: <20200909122957.51667-1-steven.price@arm.com>
+        Wed, 9 Sep 2020 11:43:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+        s=zsmsymrwgfyinv5wlfyidntwsjeeldzt; d=codeaurora.org; t=1599661265;
+        h=MIME-Version:Content-Type:Content-Transfer-Encoding:Date:From:To:Cc:Subject:In-Reply-To:References:Message-ID;
+        bh=Nr4GXrAKQEOvxB4xB00+a/NEFECU2vP5J134KY5qblo=;
+        b=VZkkPOGHAsSfhD1kEepDMgyMTwzELcSNxX6dLiuhXRZnaJZy1X/lU2NwmHN4tvlb
+        Xj3JIQHFSLHUZfXmrh7MwoHI7c4N0fFHyczP2Jgi4coUFQZq1e/PapNykDkOPyn7uHd
+        OwZzwE0gokI8rn/B2P6WPWz7pn5Kos/jnRywJSPY=
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+        s=hsbnp7p3ensaochzwyq5wwmceodymuwv; d=amazonses.com; t=1599661265;
+        h=MIME-Version:Content-Type:Content-Transfer-Encoding:Date:From:To:Cc:Subject:In-Reply-To:References:Message-ID:Feedback-ID;
+        bh=Nr4GXrAKQEOvxB4xB00+a/NEFECU2vP5J134KY5qblo=;
+        b=jLQhpCQvCA7iTWSJZZ2VoAQNIVhMbgNMcBZbiL71m4vAqscFYVnPGSMoah9OTZ1A
+        rCA/2FVdVPKERcElC+qlx7VzG/4dhJ/4cOyvgiBxL82bbgmAsJ8WTvSDYAYXs52CwVU
+        DbRErXgtsLptA0snYPSLmm2ooWI+VX7M4DZNMxtc=
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="vtzGhvizbBRQ85DL"
-Content-Disposition: inline
-In-Reply-To: <20200909122957.51667-1-steven.price@arm.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 9 Sep 2020 14:21:04 +0000
+From:   skakit@codeaurora.org
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        gregkh@linuxfoundation.org, Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, akashast@codeaurora.org,
+        rojay@codeaurora.org, msavaliy@qti.qualcomm.com
+Subject: Re: [PATCH V4 4/4] tty: serial: qcom_geni_serial: Fix the UART wakeup
+ issue
+In-Reply-To: <20200903165058.GK3419728@google.com>
+References: <1599145498-20707-1-git-send-email-skakit@codeaurora.org>
+ <1599145498-20707-5-git-send-email-skakit@codeaurora.org>
+ <20200903165058.GK3419728@google.com>
+Message-ID: <01010174733dcefc-01bf923c-1fdd-4d80-b7a8-d360c2f6cbf5-000000@us-west-2.amazonses.com>
+X-Sender: skakit@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
+X-SES-Outgoing: 2020.09.09-54.240.27.10
+Feedback-ID: 1.us-west-2.CZuq2qbDmUIuT3qdvXlRHZZCpfZqZ4GtG9v3VKgRyF0=:AmazonSES
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2020-09-03 22:20, Matthias Kaehlcke wrote:
+> On Thu, Sep 03, 2020 at 08:34:58PM +0530, satya priya wrote:
+>> As a part of system suspend uart_port_suspend is called from the
+>> Serial driver, which calls set_mctrl passing mctrl as NULL. This
+> 
+> nit: s/NULL/0/
+> 
 
---vtzGhvizbBRQ85DL
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Okay, will correct it.
 
-Reviewed-by: Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
+>> makes RFR high(NOT_READY) during suspend.
+>> 
+>> Due to this BT SoC is not able to send wakeup bytes to UART during
+>> suspend. Include if check for non-suspend case to keep RFR low
+>> during suspend.
+> 
+> Is this patch actually needed?
+> 
+> With the other patches in this series the UART doesn't control RFR
+> on IDP, and I suppose corresponding pinconf changes should also be
+> done on other devices that want to support wakeup. Effectively,
+> I see Bluetooth wakeup working without this patch on a sc7180
+> device.
+> 
 
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.c b/drivers/gpu/drm/pa=
-nfrost/panfrost_gpu.c
-> index e0f190e43813..6d17d3cbd1df 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_gpu.c
-> +++ b/drivers/gpu/drm/panfrost/panfrost_gpu.c
-> @@ -305,6 +305,8 @@ void panfrost_gpu_power_on(struct panfrost_device *pf=
-dev)
->  	int ret;
->  	u32 val;
-> =20
-> +	panfrost_gpu_init_quirks(pfdev);
-> +
->  	/* Just turn on everything for now */
->  	gpu_write(pfdev, L2_PWRON_LO, pfdev->features.l2_present);
->  	ret =3D readl_relaxed_poll_timeout(pfdev->iomem + L2_READY_LO,
-> @@ -356,7 +358,6 @@ int panfrost_gpu_init(struct panfrost_device *pfdev)
->  		return err;
->  	}
-> =20
-> -	panfrost_gpu_init_quirks(pfdev);
->  	panfrost_gpu_power_on(pfdev);
-> =20
->  	return 0;
-> --=20
-> 2.20.1
->=20
+I am also seeing the same observation now on the tip (checked on IDP), 
+but previously if this patch is not present the RFR line would go high 
+during suspend (even though GPIO mode is configured in sleep state), not 
+sure how it is being low now. Theoretically, this fix is good to have, 
+because in suspend UART_MANUAL_RFR is getting set to not ready state and 
+if QUP gets power to drive this line, it may go high and wakeup from BT 
+will fail.
 
---vtzGhvizbBRQ85DL
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEQ17gm7CvANAdqvY4/v5QWgr1WA0FAl9Y4wIACgkQ/v5QWgr1
-WA1OOQ//bzBrqIhh/+djm4twwCWb3xS/NeuDiMnFzp4N0y8zm9yu9XY7IaQ5lZwB
-pcpSLKMBrHjg2yKcmYwssGdAZROMn9+veiCmk9LC/DsZOo5RMpGXskM76l9xwDDW
-u/gng9rp0917VhpE2G+1gb4oRxBWmEgyHIM6Loe5PI+QG2796mB/LcCabKzU2jSr
-E6NRQcKu6CwATbQpN4uA8BLdS8RYFsCbDVkZTNEr7GcufF6iQZI7QhYil4EHHzYH
-pm1X3nfpWM53iZ87Qr01gQEhYQdJD+sssdgaSaiUiWthkKmC+/CW3WFKi2g7IP7X
-feaawkjOjJO6/5JpKSrJaa78JFR2g/rnRwHHFUtltp8k7cvh5KFY7tFFVbmv24Ga
-xy9ZCro2MCUrjbwEX1QO0IY3oVrTn5iWuWGcGzklDHubZOi3Etsokr4eKKuAtzeY
-AtHFfXYL/iAUUAVnC1tOdOU9IsFjubTnNxfJn8Lu4iExoeHBpSNjvlBb4byCjUzc
-+z38V69Db60/SYn1ieK+odf4DgEdyiD5tNKqyYWmaYnnkQn0tj49Ilkw5MR2/W0C
-rLov5bUObCEs0mGEsOKrnEmBaLWI3PvAc/gRO01YiRkQQSQkZpQAiTX2sHNZJMx4
-B+7ATfTeersP+ELtmrRRYgOqs233S8p7FnpAgvctyFlywPlIcvU=
-=xiuj
------END PGP SIGNATURE-----
-
---vtzGhvizbBRQ85DL--
+>> Signed-off-by: satya priya <skakit@codeaurora.org>
+>> Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>> Reviewed-by: Akash Asthana <akashast@codeaurora.org>
+>> ---
+>> Changes in V2:
+>>  - This patch fixes the UART flow control issue during suspend.
+>>    Newly added in V2.
+>> 
+>> Changes in V3:
+>>  - As per Matthias's comment removed the extra parentheses.
+>> 
+>> Changes in V4:
+>>  - No change.
+>> 
+>>  drivers/tty/serial/qcom_geni_serial.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>> 
+>> diff --git a/drivers/tty/serial/qcom_geni_serial.c 
+>> b/drivers/tty/serial/qcom_geni_serial.c
+>> index 07b7b6b..2aad9d7 100644
+>> --- a/drivers/tty/serial/qcom_geni_serial.c
+>> +++ b/drivers/tty/serial/qcom_geni_serial.c
+>> @@ -242,7 +242,7 @@ static void qcom_geni_serial_set_mctrl(struct 
+>> uart_port *uport,
+>>  	if (mctrl & TIOCM_LOOP)
+>>  		port->loopback = RX_TX_CTS_RTS_SORTED;
+>> 
+>> -	if (!(mctrl & TIOCM_RTS))
+>> +	if (!(mctrl & TIOCM_RTS) && !uport->suspended)
+>>  		uart_manual_rfr = UART_MANUAL_RFR_EN | UART_RFR_NOT_READY;
+>>  	writel(uart_manual_rfr, uport->membase + SE_UART_MANUAL_RFR);
+>>  }
+>> --
+>> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+>> member
+>> of Code Aurora Forum, hosted by The Linux Foundation
+>> 
