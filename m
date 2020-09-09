@@ -2,106 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41F8F263410
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 19:13:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D2C126341A
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 19:14:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730998AbgIIRNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 13:13:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58678 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726293AbgIIPcL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 11:32:11 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DBEA2206F4;
-        Wed,  9 Sep 2020 14:32:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599661972;
-        bh=G6V5+rrjseSZbwoAOOIF/H9RV9qG8won/T+LJdUIn9o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qcC8aUhafORqR4CPAJGT2pHQZbY/gh3kGAru56tbTM2VqzChgPJvPdcBCQggcf0MB
-         qfV56qHpfCJvXbTgxVYOQNoTSW9RD4QRQv4L/gel8Dc1mgjUe0Wy3ZQZiFbNXuf+nR
-         /9xMTu9pV6RNk8x6Sapyzzt2xXiOBf3bINuOG0M0=
-Date:   Wed, 9 Sep 2020 15:32:06 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Kuldip Dwivedi <kuldip.dwivedi@puresoftware.com>
-Cc:     Ashish Kumar <ashish.kumar@nxp.com>,
-        Yogesh Gaur <yogeshgaur.83@gmail.com>,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Varun Sethi <V.Sethi@nxp.com>,
-        Arokia Samy <arokia.samy@nxp.com>
-Subject: Re: [PATCH v1] spi: spi-nxp-fspi: Add ACPI support
-Message-ID: <20200909143206.GD4926@sirena.org.uk>
-References: <20200908060227.299-1-kuldip.dwivedi@puresoftware.com>
- <20200909120148.GC4926@sirena.org.uk>
- <af06cac916ebcdf6f526baa9cba98494@mail.gmail.com>
+        id S1731216AbgIIRO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 13:14:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46762 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730115AbgIIPa1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 11:30:27 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61427C0612F4
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 07:39:56 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id k15so3211246wrn.10
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 07:39:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tessares-net.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=bkORLZG3u3dzhotZjzrL2NcwPRVYSyfBeouqNvnhcek=;
+        b=fyF++iAhOrN2HEuFApmRjksJO4k6V6b/TEDM7ifrpowYJyMF583aiPiVeZeaLz4n01
+         aXIplHyi5iH2rHBH8P3SJ0nfUp/MqUruFrLdz3Qvqp6fN/c3fp6nOD1QNSZRhCD4CTbw
+         3E8dIp+bQUOiHnO8ua9OK42LV54gFGtqzb+47n9xeBlU67pBcM+6xd0Q80bKRBqp7hvF
+         t363NYLHUXSlHpHQngLMGMpGXKBlqFjiRJVNCGODxKJJ03sinIREuTAjEFxKDfbpJH2c
+         Tudwpd6NYqeES0APQoE9eGbWqzIZYYTlXirPT+Lb13tgcARg2eGNQJbNYZ/k+2+FyMS7
+         TssQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=bkORLZG3u3dzhotZjzrL2NcwPRVYSyfBeouqNvnhcek=;
+        b=Y7y25q+RNlHUMd6Mq9I8xl7wxvdyxbyO7IWzFT2LXNFAFWkz5HzilSvB/3rwFVdfzt
+         NsLswoqPXiKNsJ30IvywzHtJrjgEc9B6KRGmCAKvVe2V3BFTmWFwXLuQpaZTbJX6cqlE
+         MvemESmc1IWZwicT7+PWsAuBvu+yMFFxiK/4UnMQhW+tjyokenKmiLf3pr/r6EltxBG8
+         fqwtL284/XGBRd91F3E+as40Rsd3sdH9FL7723qGU3RDDwQI5lDa8W062bY15LWTR+5n
+         GBsYlfu1s7/5f+SBRcjLWd9Ug8qbGOkPZF/rUQgvXv7lbnKd47xvseotDjonQDM3YaBY
+         1xsA==
+X-Gm-Message-State: AOAM533a1BCwp4uOrpvhFlyrEpP+uCvopOc/S4uMxXe2UmT3Q4/hF1By
+        CkC1FUVkgZw/0iG2eVn/Jn9xkPTKTldfYQ==
+X-Google-Smtp-Source: ABdhPJxsySl+jiMG3NFQaWU08dYy2xTnHvxYnOWZzgh2yN0TVSMchxfChJNOhS8s5Nqo0JfFQH5Fww==
+X-Received: by 2002:adf:f846:: with SMTP id d6mr4712246wrq.56.1599662393458;
+        Wed, 09 Sep 2020 07:39:53 -0700 (PDT)
+Received: from tsr-lap-08.nix.tessares.net ([2a02:578:85b0:e00:8ddf:bedd:580e:7a7e])
+        by smtp.gmail.com with ESMTPSA id a10sm4144731wmj.38.2020.09.09.07.39.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Sep 2020 07:39:52 -0700 (PDT)
+Subject: Re: [MPTCP][PATCH v2 net 1/2] mptcp: fix subflow's local_id issues
+To:     Geliang Tang <geliangtang@gmail.com>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Florian Westphal <fw@strlen.de>,
+        Peter Krystad <peter.krystad@linux.intel.com>
+Cc:     netdev@vger.kernel.org, mptcp@lists.01.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1599532593.git.geliangtang@gmail.com>
+ <110eaa273bf313fb1a2a668a446956d27aba05a8.1599532593.git.geliangtang@gmail.com>
+From:   Matthieu Baerts <matthieu.baerts@tessares.net>
+Message-ID: <c1537a78-c2b6-383b-f2fb-817c35bbfdaa@tessares.net>
+Date:   Wed, 9 Sep 2020 16:39:51 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="5gxpn/Q6ypwruk0T"
-Content-Disposition: inline
-In-Reply-To: <af06cac916ebcdf6f526baa9cba98494@mail.gmail.com>
-X-Cookie: MIT:
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <110eaa273bf313fb1a2a668a446956d27aba05a8.1599532593.git.geliangtang@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Geliang,
 
---5gxpn/Q6ypwruk0T
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On 08/09/2020 04:49, Geliang Tang wrote:
+> In mptcp_pm_nl_get_local_id, skc_local is the same as msk_local, so it
+> always return 0. Thus every subflow's local_id is 0. It's incorrect.
+> 
+> This patch fixed this issue.
+> 
+> Also, we need to ignore the zero address here, like 0.0.0.0 in IPv4. When
+> we use the zero address as a local address, it means that we can use any
+> one of the local addresses. The zero address is not a new address, we don't
+> need to add it to PM, so this patch added a new function address_zero to
+> check whether an address is the zero address, if it is, we ignore this
+> address.
+> 
+> Fixes: 01cacb00b35cb ("mptcp: add netlink-based PM")
+> Signed-off-by: Geliang Tang <geliangtang@gmail.com>
 
-On Wed, Sep 09, 2020 at 06:29:10PM +0530, Kuldip Dwivedi wrote:
+Thank you for the v2!
 
-> > | Does NXP know about this ID assignment from their namespace?  ACPI IDs
-> > | should be namespaced by whoever's assigning the ID to avoid
-> collisions.
+Reviewed-by: Matthieu Baerts <matthieu.baerts@tessares.net>
 
-> Yes, NXP is aware.
-
-Can anyone from NXP confirm this?
-
-> > Please don't ignore review comments, people are generally making them
-> for a
-> > reason and are likely to have the same concerns if issues remain
-
-> This is new Patch for different IP (FSPI)  and scenario is different from
-> DSPI driver.
-
-If a generic issue like this exists with one patch you should expect
-that exactly the same issue is going to come up with other very similar
-patches and therefore ensure they are addressed so people don't feel
-like you are ignoring them.
-
-> > >  	/* Reset the module */
-> > > +	fspi_writel(f, FSPI_MCR0_SWRST, (base + FSPI_MCR0));
-> > > +
-
-> > Why are you adding this reset?  How is it connected to adding ACPI
-> support - it
-> > looks like it should be a separate patch.
-
-> I observed a kernel panic in setting up the driver, and this fixed the
-> issue.
-
-At the very least this would need to be called out in the changelog but
-like I say it should really be a separate patch.
-
---5gxpn/Q6ypwruk0T
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9Y52UACgkQJNaLcl1U
-h9AqTAf/fWMxxf95EG2ZsGPtdYfSRjeCSCgERIcQz+KwEjHrU9qHLBQ0mNsCX69a
-VNnVGwT3bW9Ts1AJ8bTW7HrqW6pCFakpiY3tZBV6kkHj+MoljcgRt6I1vjlAjRWW
-8jJd4iFQru98oFktipTbFSQgnPMT2Y/y1q0Wc2DuclzFse2kDsdEmuAAzzqJwzZ3
-M2tO1phNIbeCDBiR9dtHYuxuO+uOYBt0ujftKDawUxSCQAwJ2UmOLUE6vsChOHmF
-vSHuBRQBgkWDg5g093DoIpdT1OUteuDY7ujd+tcsZEqa+RpIn8lLF5yLcxCe2N0c
-7EqZ/Jyvb8qTcEnHKi1GGtx2mK31KQ==
-=l0lP
------END PGP SIGNATURE-----
-
---5gxpn/Q6ypwruk0T--
+Cheers,
+Matt
+-- 
+Tessares | Belgium | Hybrid Access Solutions
+www.tessares.net
