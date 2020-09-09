@@ -2,241 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19FE9262AF8
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 10:54:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BED1C262B01
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 10:55:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727935AbgIIIyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 04:54:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42592 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726728AbgIIIyi (ORCPT
+        id S1729129AbgIIIy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 04:54:59 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:27282 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728207AbgIIIyx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 04:54:38 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37124C061795
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 01:54:37 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id o5so1989698wrn.13
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 01:54:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=apIbSsxgZ3NvYShmhAM+VYa5iL4D093LfOrEXyfUml0=;
-        b=p4MUG4M2XdBlzabakblhZUYnvPy0A6xxOG3JsXgWOADWrqUClY8fmjeIrCUCprQ7GG
-         bb3EE+6VAi6L9wF+wroA1J8ovJqHafMlCeqlZGtrsYq5+EIRYSoJkXVUfO2I8X4C/wRC
-         4Ki5zMK30W/x8pZLWVYBcRDU0j03j50BNuPYiM6arniagLqofm42K+jj1POFFJs2A5LW
-         pGZ+4trgD3jAY7hxZnqsrEvndw9VT47fBzUs+mtjINjb8WRppjGiOMrShDavUCf49alo
-         yfgiOa/QO+Up4wHeAVj9j8fSbcnwS2Qc9aSSzlt7rknW5WV6e8GzJ6cpKWUKYmbD2OY6
-         t2IA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=apIbSsxgZ3NvYShmhAM+VYa5iL4D093LfOrEXyfUml0=;
-        b=KliVp40G2/5Dmz/H5c1cpv7W6vbQ+j/bUxXDdxmOzINztOtzKQRSaZmT4WCewcAaxa
-         8DxRqlmQKaI7+6/M1dO1O0W+pys5XqO7YHL5humyuzRO71JhWLaElE9n4BGuy8Zp/Uhd
-         DmY0R3QRLhUVOe12vUffO/HYPnEWA6g5wHj2w15Z9gikkP9vvcgBwHhPIuQ/V1ysWVEo
-         o7p9Mu+fGoVn0UVz2EnPMN0C/BXLdvCf1X9NGo2SnHmZ6/TqIH9uSE0AdjXnOnPGG4HI
-         IihxtvrnbMQIrRAZyrmODmEvBwOovdXM+p8JWAoLWd3R7MJVpEYRk656M9e9GNSmM1lj
-         GovQ==
-X-Gm-Message-State: AOAM532QNunS7sKQwbYqPSTn6Wp9l8yy49h4EFtccnhFfR5r3Y1hYCen
-        SZjI7lhUrJBxNfDg1ISJgf1AeQ==
-X-Google-Smtp-Source: ABdhPJw8r23Zd9WJ0lZ/NbQON8+zBEaKodj2Fba4mT+MKk3C/AH7xF2QEYr1fuoGXOWvIDUohTQ8Og==
-X-Received: by 2002:adf:e6c8:: with SMTP id y8mr2926512wrm.229.1599641675594;
-        Wed, 09 Sep 2020 01:54:35 -0700 (PDT)
-Received: from localhost.localdomain (amontpellier-657-1-17-60.w109-210.abo.wanadoo.fr. [109.210.64.60])
-        by smtp.gmail.com with ESMTPSA id n17sm3418812wrw.0.2020.09.09.01.54.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Sep 2020 01:54:35 -0700 (PDT)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Kent Gibson <warthog618@gmail.com>
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH v2 3/3] gpiolib: unexport devprop_gpiochip_set_names()
-Date:   Wed,  9 Sep 2020 10:54:26 +0200
-Message-Id: <20200909085426.19862-4-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200909085426.19862-1-brgl@bgdev.pl>
-References: <20200909085426.19862-1-brgl@bgdev.pl>
+        Wed, 9 Sep 2020 04:54:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599641692;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=v1J7anzfs0x90xPTUoNfpAZn+NVUcNxeloajMKaQs88=;
+        b=Urki6VlHx0+BoaA6E4yv7jPounS6SUjqhoZWvTB1/qkh22LfxSBQAT4eHhvTysmZV5Htf/
+        g1iivHOWK+yio7hUz3/1S8MWsEoApWOY07Z5hMYqfQueKamS6cgvJ3Xbmscg6uUVrgI8BG
+        unCeinckDxjNlZ8zb1r8Nd7WQ9ywnbY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-452-V9dOtQlONK2TiuIUhnEkEQ-1; Wed, 09 Sep 2020 04:54:50 -0400
+X-MC-Unique: V9dOtQlONK2TiuIUhnEkEQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1A29B1091061;
+        Wed,  9 Sep 2020 08:54:48 +0000 (UTC)
+Received: from [10.72.12.24] (ovpn-12-24.pek2.redhat.com [10.72.12.24])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E1AFB60C87;
+        Wed,  9 Sep 2020 08:54:37 +0000 (UTC)
+Subject: Re: [PATCH] i2c: virtio: add a virtio i2c frontend driver
+To:     Jie Deng <jie.deng@intel.com>, linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Cc:     mst@redhat.com, wsa+renesas@sang-engineering.com, wsa@kernel.org,
+        andriy.shevchenko@linux.intel.com, jarkko.nikula@linux.intel.com,
+        jdelvare@suse.de, Sergey.Semin@baikalelectronics.ru,
+        krzk@kernel.org, rppt@kernel.org, loic.poulain@linaro.org,
+        tali.perry1@gmail.com, bjorn.andersson@linaro.org,
+        shuo.a.liu@intel.com, conghui.chen@intel.com, yu1.wang@intel.com
+References: <0efc2605c8c06b4b1bf68cbad5536c4a900dc019.1599110284.git.jie.deng@intel.com>
+ <18828d17-c3ac-31bd-2dcf-ecdbd4ad844e@redhat.com>
+ <e63a96bf-65d2-ed03-dadc-42d1d8808c9d@intel.com>
+ <3dc0d61c-9345-2b61-828c-89ca96555e5e@redhat.com>
+ <c9be298b-c51b-f7f3-994b-b7bd9ae53b99@intel.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <f89142e6-a92d-b417-5e1c-bbe813636023@redhat.com>
+Date:   Wed, 9 Sep 2020 16:54:36 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <c9be298b-c51b-f7f3-994b-b7bd9ae53b99@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-Now that devprop_gpiochip_set_names() is only used in a single place
-inside drivers/gpio/gpiolib.c, there's no need anymore for it to be
-exported or to even live in its own source file. Pull this function into
-the core source file for gpiolib.
+On 2020/9/8 上午9:40, Jie Deng wrote:
+>
+>
+> On 2020/9/7 13:40, Jason Wang wrote:
+>>
+>>>
+>>>
+>>>>
+>>>>>
+>>>>> +struct virtio_i2c_msg {
+>>>>> +    struct virtio_i2c_hdr hdr;
+>>>>> +    char *buf;
+>>>>> +    u8 status;
+>>>>
+>>>>
+>>>> Any reason for separating status out of virtio_i2c_hdr?
+>>>>
+>>> The status is not from i2c_msg. 
+>>
+>>
+>> You meant ic2_hdr? You embed status in virtio_i2c_msg anyway.
+>>
+>>
+> The "i2c_msg" structure defined in i2c.h.
+>
+>>> So I put it out of virtio_i2c_hdr.
+>>
+>>
+>> Something like status or response is pretty common in virtio request 
+>> (e.g net or scsi), if no special reason, it's better to keep it in 
+>> the hdr.
+>>
+> Mainly based on IN or OUT.
+>
+> The addr, flags and len are from "i2c_msg". They are put in one 
+> structure as an OUT**scatterlist.
+> The buf can be an OUT**or an IN scatterlist depending on write or read.
+> The status is a result from the backend  which is defined as an IN 
+> scatterlis. 
 
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
----
- drivers/gpio/Makefile          |  1 -
- drivers/gpio/gpiolib-devprop.c | 63 ----------------------------------
- drivers/gpio/gpiolib.c         | 47 +++++++++++++++++++++++++
- include/linux/gpio/driver.h    |  2 --
- 4 files changed, 47 insertions(+), 66 deletions(-)
- delete mode 100644 drivers/gpio/gpiolib-devprop.c
 
-diff --git a/drivers/gpio/Makefile b/drivers/gpio/Makefile
-index 4f9abff4f2dc..639275eb4e4d 100644
---- a/drivers/gpio/Makefile
-+++ b/drivers/gpio/Makefile
-@@ -6,7 +6,6 @@ ccflags-$(CONFIG_DEBUG_GPIO)	+= -DDEBUG
- obj-$(CONFIG_GPIOLIB)		+= gpiolib.o
- obj-$(CONFIG_GPIOLIB)		+= gpiolib-devres.o
- obj-$(CONFIG_GPIOLIB)		+= gpiolib-legacy.o
--obj-$(CONFIG_GPIOLIB)		+= gpiolib-devprop.o
- obj-$(CONFIG_GPIOLIB)		+= gpiolib-cdev.o
- obj-$(CONFIG_OF_GPIO)		+= gpiolib-of.o
- obj-$(CONFIG_GPIO_SYSFS)	+= gpiolib-sysfs.o
-diff --git a/drivers/gpio/gpiolib-devprop.c b/drivers/gpio/gpiolib-devprop.c
-deleted file mode 100644
-index 31599d89a85d..000000000000
---- a/drivers/gpio/gpiolib-devprop.c
-+++ /dev/null
-@@ -1,63 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--/*
-- * Device property helpers for GPIO chips.
-- *
-- * Copyright (C) 2016, Intel Corporation
-- * Author: Mika Westerberg <mika.westerberg@linux.intel.com>
-- */
--
--#include <linux/property.h>
--#include <linux/slab.h>
--#include <linux/gpio/consumer.h>
--#include <linux/gpio/driver.h>
--#include <linux/export.h>
--
--#include "gpiolib.h"
--
--/**
-- * devprop_gpiochip_set_names - Set GPIO line names using device properties
-- * @chip: GPIO chip whose lines should be named, if possible
-- *
-- * Looks for device property "gpio-line-names" and if it exists assigns
-- * GPIO line names for the chip. The memory allocated for the assigned
-- * names belong to the underlying software node and should not be released
-- * by the caller.
-- */
--int devprop_gpiochip_set_names(struct gpio_chip *chip)
--{
--	struct gpio_device *gdev = chip->gpiodev;
--	struct device *dev = chip->parent;
--	const char **names;
--	int ret, i;
--	int count;
--
--	count = device_property_string_array_count(dev, "gpio-line-names");
--	if (count < 0)
--		return 0;
--
--	if (count > gdev->ngpio) {
--		dev_warn(&gdev->dev, "gpio-line-names is length %d but should be at most length %d",
--			 count, gdev->ngpio);
--		count = gdev->ngpio;
--	}
--
--	names = kcalloc(count, sizeof(*names), GFP_KERNEL);
--	if (!names)
--		return -ENOMEM;
--
--	ret = device_property_read_string_array(dev, "gpio-line-names",
--						names, count);
--	if (ret < 0) {
--		dev_warn(&gdev->dev, "failed to read GPIO line names\n");
--		kfree(names);
--		return ret;
--	}
--
--	for (i = 0; i < count; i++)
--		gdev->descs[i].name = names[i];
--
--	kfree(names);
--
--	return 0;
--}
--EXPORT_SYMBOL_GPL(devprop_gpiochip_set_names);
-diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-index 0d390f0ec32c..943a2de340d8 100644
---- a/drivers/gpio/gpiolib.c
-+++ b/drivers/gpio/gpiolib.c
-@@ -358,6 +358,53 @@ static int gpiochip_set_desc_names(struct gpio_chip *gc)
- 	return 0;
- }
- 
-+/*
-+ * devprop_gpiochip_set_names - Set GPIO line names using device properties
-+ * @chip: GPIO chip whose lines should be named, if possible
-+ *
-+ * Looks for device property "gpio-line-names" and if it exists assigns
-+ * GPIO line names for the chip. The memory allocated for the assigned
-+ * names belong to the underlying software node and should not be released
-+ * by the caller.
-+ */
-+static int devprop_gpiochip_set_names(struct gpio_chip *chip)
-+{
-+	struct gpio_device *gdev = chip->gpiodev;
-+	struct device *dev = chip->parent;
-+	const char **names;
-+	int ret, i;
-+	int count;
-+
-+	count = device_property_string_array_count(dev, "gpio-line-names");
-+	if (count < 0)
-+		return 0;
-+
-+	if (count > gdev->ngpio) {
-+		dev_warn(&gdev->dev, "gpio-line-names is length %d but should be at most length %d",
-+			 count, gdev->ngpio);
-+		count = gdev->ngpio;
-+	}
-+
-+	names = kcalloc(count, sizeof(*names), GFP_KERNEL);
-+	if (!names)
-+		return -ENOMEM;
-+
-+	ret = device_property_read_string_array(dev, "gpio-line-names",
-+						names, count);
-+	if (ret < 0) {
-+		dev_warn(&gdev->dev, "failed to read GPIO line names\n");
-+		kfree(names);
-+		return ret;
-+	}
-+
-+	for (i = 0; i < count; i++)
-+		gdev->descs[i].name = names[i];
-+
-+	kfree(names);
-+
-+	return 0;
-+}
-+
- static unsigned long *gpiochip_allocate_mask(struct gpio_chip *gc)
- {
- 	unsigned long *p;
-diff --git a/include/linux/gpio/driver.h b/include/linux/gpio/driver.h
-index 56485a040b82..4a7e295c3640 100644
---- a/include/linux/gpio/driver.h
-+++ b/include/linux/gpio/driver.h
-@@ -756,8 +756,6 @@ struct gpio_desc *gpiochip_request_own_desc(struct gpio_chip *gc,
- 					    enum gpiod_flags dflags);
- void gpiochip_free_own_desc(struct gpio_desc *desc);
- 
--int devprop_gpiochip_set_names(struct gpio_chip *gc);
--
- #ifdef CONFIG_GPIOLIB
- 
- /* lock/unlock as IRQ */
--- 
-2.26.1
+Ok. I get this.
+
+Thanks
+
 
