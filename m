@@ -2,177 +2,351 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62125263143
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:04:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04B0F26314C
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:06:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730873AbgIIQDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 12:03:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52458 "EHLO
+        id S1730357AbgIIQGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 12:06:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730853AbgIIQDU (ORCPT
+        with ESMTP id S1730871AbgIIQDk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 12:03:20 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6340AC061756;
-        Wed,  9 Sep 2020 09:03:20 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id b17so2844392ilh.4;
-        Wed, 09 Sep 2020 09:03:20 -0700 (PDT)
+        Wed, 9 Sep 2020 12:03:40 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D063EC061756;
+        Wed,  9 Sep 2020 09:03:39 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id c10so3216770edk.6;
+        Wed, 09 Sep 2020 09:03:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mZe2FLTTSbE/n6F/d5+lxuoP/zvLhPAND2sQnvRdXKE=;
-        b=SRIw3wD8qb36rmAmhUx8CXTUO1iuSHIemzcH6+WeAaawmp0fB33Ujk193jrG62al2T
-         R5uvU+3NsCNxEaKxjp+QuOX2sdI4vCSogTaRSM3k5cQ47KneChIRp7W5oSbTdfWnZWRA
-         9dXGwL2GILBNoMEOSATqdL968UflSWG+zmBPUinBAyDEh3Valqq3SvKC2tq1wcrTv1tP
-         bJdvywxBsW6V/A0fqEWLEmucOxg4r8VbQMTeTkBJIE0X72hzIffcPA+wjFL1ut9FuyLJ
-         JqXKzhnY9G2UKaMijZ0DMYj1lz4M+Pnv5GogE8y4d6t0HLHJQH+gm26ITsqMTeJ2eoue
-         sg9A==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=wFFzLDrI+LRiU6RjuLeqeQ9NmNXTj6WvqrdOw9KuB74=;
+        b=dtgEidWQWGnPfTY+p6W+UM6e8pUns0tL63U5Lx+mzClihOlw3YnZltPvaa4J+S+hm5
+         eppMOGnpvEqQobOmZwarAPE9FgbEtQNKvhwMj+Ap98TwK5Lu4ijDhfSdLGWnZjkXVcea
+         dh//8CGUm/WD60tLCP4eLk5MjUb68NYLrsleQCpSBqXxewUW1G3XxKF9dapNBYoOznh4
+         3p1FMVR+2t6kYiuJj9G8eHNIWiOklHQrJYJG5vobsCR99x/6CsDAjdI5ftwVL9ljdDQm
+         GsuABHYMl4nwDtyJcfOig//q+syxOeYre7gl9sfha9lBWJBnQ5t8QcqHkyiaILpHedw/
+         qG1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mZe2FLTTSbE/n6F/d5+lxuoP/zvLhPAND2sQnvRdXKE=;
-        b=c9wB9buLJP1HtXJkKn9gJBwjX7NL8JUB0o9kQAGMpd4QLzWMM3RqyoRaqg+KDhKYGQ
-         cKfkb5OP30XfCINf0C2uAjOGpYGaAVSpfHmQilZ/TZx5oaWIesPzHTTKhCtNhnvffjR/
-         73uJGxqhdFCxmKsX+SGdfF5hn7X3MG799oH1OEOKJKQfFjrXUsaGXVqsnqkWbE19TW6i
-         mn9RJKEHq18rcnQN7/J9mkUQkLjRo/xmESnS4wrrtJPI8ZvWvJjJ44jdnFhNLv0MV9n1
-         NLyUh5Tf+q4rUF0Nk6dNgq7lFrf4qLMHQl6NScskvLjI5DpGk3mNN3jRgjTOIj8PXKZC
-         7I8Q==
-X-Gm-Message-State: AOAM530YeXN9l1DqEoKYk/DnAn37n7VpgKK0G9Dm7EotIpG6vuA+eV5Z
-        v473u/XSukMLVPOc/b3pVezRzGyplZUaQ01dCn0=
-X-Google-Smtp-Source: ABdhPJxo1IKLB8JPIGdfnvsji8BNwsuBg4u/4N9QEkxeUOGJ7mX7I3Td0l3eSdGggQuU3P3jUgxO24p4tKPkU/vH2Ac=
-X-Received: by 2002:a05:6e02:685:: with SMTP id o5mr4250436ils.72.1599667399564;
- Wed, 09 Sep 2020 09:03:19 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wFFzLDrI+LRiU6RjuLeqeQ9NmNXTj6WvqrdOw9KuB74=;
+        b=PjfHECZK/U8QzAXCaKjZMa66eFosDYPAwk3RJuvDnLxtkExvwi8XBBvtB351HcrYs1
+         s3dd4a8nx20iNfI4Vu0X9RcFPWdxeDbIetd2Et9XfAsWY4OnnVBDUPUv3a/J66VzB+Cq
+         RmDqlWrhdIFT/Lwd3bht4Ec7Qm40cgdJjCfCXXGIme1TDEsORE0XU5Rvxox1M37QpZKs
+         tL0H9vCbawLP6foM1KyUO8Dv4W7zPHngU4yWmZhoAHMvyrodsVbbApka2iwyOU6hloGj
+         HCg/CftXAHDoJd+s65hacZEO4rBbzlxQ+iHq0sV92URXLOSnPcqltTonSh+u703CuCu/
+         QtOw==
+X-Gm-Message-State: AOAM533GtFqj4lO+f0R5Xs2dJpKg7dtVZZuHhOE1YRR9ok5Yvs/Qle9G
+        bT8QvCj2qZPfHlot0OSUcFJTwVJb0DA=
+X-Google-Smtp-Source: ABdhPJx6EOlwx44g53DleVKdxsTSqVWdmunkZ/V2Qwx8KdcFBUMu3uaER3jCrG+1ovQ9sIE93uMImw==
+X-Received: by 2002:a50:d98d:: with SMTP id w13mr5029328edj.37.1599667418391;
+        Wed, 09 Sep 2020 09:03:38 -0700 (PDT)
+Received: from BV030612LT ([188.24.159.61])
+        by smtp.gmail.com with ESMTPSA id n14sm3065473edb.52.2020.09.09.09.03.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Sep 2020 09:03:37 -0700 (PDT)
+Date:   Wed, 9 Sep 2020 19:03:34 +0300
+From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
+        linux-actions@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH v2 1/6] dt-bindings: mfd: Add Actions Semi ATC260x PMIC
+ binding
+Message-ID: <20200909160334.GA385382@BV030612LT>
+References: <cover.1598043782.git.cristian.ciocaltea@gmail.com>
+ <863c9c1e44cfbe6184bf0bd4893ff456af0e7bb8.1598043782.git.cristian.ciocaltea@gmail.com>
+ <20200908214724.GA959481@bogus>
 MIME-Version: 1.0
-References: <25817189-49a7-c64f-26ee-78d4a27496b6@huawei.com>
- <CAOQ4uxhejJzjKLZCt=b87KAX0sC3RAZ2FHEZbu4188Ar-bkmOg@mail.gmail.com>
- <e399cd17-e95e-def4-e03b-5cc2ae1f9708@huawei.com> <CAOQ4uxgvodepq2ZhmGEpkZYj017tH_pk2AgV=pUhWiONnxOQjw@mail.gmail.com>
- <20200908171859.GA29953@casper.infradead.org> <CAOQ4uxjX2GAJhD70=6SmwdXPH6TuOzGugtdYupDjLLywC2H5Ag@mail.gmail.com>
- <96abf6e3-2442-8871-c9f3-be981c0a1965@huawei.com> <CAOQ4uxjNcjFtQuc9AeWgEO7G3CeGm3vL_wK6UhbHkxOZuRYOeQ@mail.gmail.com>
- <20200909111130.GD24207@quack2.suse.cz>
-In-Reply-To: <20200909111130.GD24207@quack2.suse.cz>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Wed, 9 Sep 2020 19:03:07 +0300
-Message-ID: <CAOQ4uxj91QxZHSYc46ZTNV59Qr-bEEUKS3n4FvU_UU4VUVkbBg@mail.gmail.com>
-Subject: Re: Question: Why is there no notification when a file is opened
- using filp_open()?
-To:     Jan Kara <jack@suse.cz>
-Cc:     Xiaoming Ni <nixiaoming@huawei.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        wangle6@huawei.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200908214724.GA959481@bogus>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 9, 2020 at 2:11 PM Jan Kara <jack@suse.cz> wrote:
->
-> On Wed 09-09-20 10:36:57, Amir Goldstein wrote:
-> > On Wed, Sep 9, 2020 at 10:00 AM Xiaoming Ni <nixiaoming@huawei.com> wrote:
-> > >
-> > > On 2020/9/9 11:44, Amir Goldstein wrote:
-> > > > On Tue, Sep 8, 2020 at 8:19 PM Matthew Wilcox <willy@infradead.org> wrote:
-> > > >>
-> > > >> On Tue, Sep 08, 2020 at 04:18:29PM +0300, Amir Goldstein wrote:
-> > > >>> On Tue, Sep 8, 2020 at 3:53 PM Xiaoming Ni <nixiaoming@huawei.com> wrote:
-> > > >>>> For example, in fs/coredump.c, do_coredump() calls filp_open() to
-> > > >>>> generate core files.
-> > > >>>> In this scenario, the fsnotify_open() notification is missing.
-> > > >>>
-> > > >>> I am not convinced that we should generate an event.
-> > > >>> You will have to explain in what is the real world use case that requires this
-> > > >>> event to be generated.
-> > > >>
-> > > >> Take the typical usage for fsnotify of a graphical file manager.
-> > > >> It would be nice if the file manager showed a corefile as soon as it
-> > > >> appeared in a directory rather than waiting until some other operation
-> > > >> in that directory caused those directory contents to be refreshed.
-> > > >
-> > > > fsnotify_open() is not the correct notification for file managers IMO.
-> > > > fsnotify_create() is and it will be called in this case.
-> > > >
-> > > > If the reason you are interested in open events is because you want
-> > > > to monitor the entire filesystem then welcome to the future -
-> > > > FAN_CREATE is supported since kernel v5.1.
-> > > >
-> > > > Is there another real life case you have in mind where you think users
-> > > > should be able to get an open fd for a file that the kernel has opened?
-> > > > Because that is what FAN_OPEN will do.
-> > > >
-> > >
-> > > There are also cases where file is opened in read-only mode using
-> > > filp_open().
-> > >
-> > > case1: nfsd4_init_recdir() call filp_open()
-> > > filp_open()
-> > > nfsd4_init_recdir() fs/nfsd/nfs4recover.c#L543
-> > >
-> > > L70: static char user_recovery_dirname[PATH_MAX] =
-> > > "/var/lib/nfs/v4recovery";
-> > > L543: nn->rec_file = filp_open(user_recovery_dirname, O_RDONLY |
-> > > O_DIRECTORY, 0);
-> > >
-> > >
-> > > case2: ima_read_policy()
-> > > filp_open()
-> > > kernel_read_file_from_path()  fs/exec.c#L1004
-> > > ima_read_policy()  security/integrity/ima/ima_fs.c#L286
-> > > ima_write_policy() security/integrity/ima/ima_fs.c#L335
-> > > ima_measure_policy_ops   security/integrity/ima/ima_fs.c#L443
-> > > sys_write()
-> > >
-> > > case3: use do_file_open_root() to open file
-> > > do_file_open_root()
-> > > file_open_root()   fs/open.c#L1159
-> > > kernel_read_file_from_path_initns()  fs/exec.c#L1029
-> > > fw_get_filesystem_firmware()  drivers/base/firmware_loader/main.c#L498
-> > >
-> > > Do we need to add fsnotify_open() in these scenarios?
-> >
-> > We do not *need* to add fsnotify_open() if there is no concrete use case
-> > from real life that needs it.
-> >
-> > Matthew gave an example of a real life use case and I explained why IMO
-> > we don't need to add fsnotify_open() for the use case that he described.
-> >
-> > If you want to add fsnotify_open() to any call site, please come up with
-> > a real life use case - not a made up one, one that really exists and where
-> > the open event is really needed.
-> >
-> > grepping the code for callers of filp_open() is not enough.
->
-> Yeah. So in kernel, things are both ways. There are filp_open() users that
-> do take care to manually generate fsnotify_open() event (most notably
-> io_uring, exec, or do_handle_open) and there are others as Xiaoming found
-> which just don't bother.  I'm not sure filp_open() should unconditionally
-> generate fsnotify_open() event as IMO some of those notifications would be
-> more confusing than useful.
->
-> OTOH it is true that e.g. for core dumping we will generate other fsnotify
-> events such as FSNOTIFY_CLOSE (which is generated in __fput()) so missing
+Hi Rob,
 
-And to be fair, those kernel callers will probably also end up generating
-FS_ACCESS/FS_MODIFY too.
+Thanks for reviewing!
 
-> FSNOTIFY_OPEN is somewhat confusing. So having some consistency in this
-> (either by generating FSNOTIFY_OPEN or by not generating FSNOTIFY_CLOSE)
-> would be IMO desirable.
+On Tue, Sep 08, 2020 at 03:47:24PM -0600, Rob Herring wrote:
+> On Sat, Aug 22, 2020 at 01:19:47AM +0300, Cristian Ciocaltea wrote:
+> > Add devicetree binding for Actions Semi ATC260x PMICs.
+> > 
+> > Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+> > ---
+> >  .../bindings/mfd/actions,atc260x.yaml         | 221 ++++++++++++++++++
+> >  1 file changed, 221 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/mfd/actions,atc260x.yaml
+> > 
+> > diff --git a/Documentation/devicetree/bindings/mfd/actions,atc260x.yaml b/Documentation/devicetree/bindings/mfd/actions,atc260x.yaml
+> > new file mode 100644
+> > index 000000000000..4a55bbe1306e
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/mfd/actions,atc260x.yaml
+> > @@ -0,0 +1,221 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/mfd/actions,atc260x.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Actions Semi ATC260x Power Management IC bindings
+> > +
+> > +maintainers:
+> > +  - Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > +  - Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+> > +
+> > +description: |
+> > +  ATC260x series PMICs integrates Audio Codec, Power Management, RTC, IR
+> > +  and GPIO controller blocks. Currently only the PM related functionalities
+> > +  (i.e. regulators and system power-off/reboot) for the ATC2603C and ATC2609A
+> > +  chip variants are supported.
+> > +  ATC2603C includes 3 programmable DC-DC converters and 9 LDO regulators.
+> > +  ATC2609A includes 5 programmable DC-DC converters and 10 LDO regulators.
+> > +
+> > +properties:
+> > +  compatible:
+> > +    enum:
+> > +      - actions,atc2603c
+> > +      - actions,atc2609a
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +
+> > +  interrupts:
+> > +    maxItems: 1
+> > +
+> > +  pwrc:
+> > +    type: object
+> > +    description: |
+> > +      The power controller integrated in ATC260x provides system power-off
+> > +      and reboot operations.
+> 
+> No need for this node as there are no properties, just instantiate 
+> what's needed in the MFD driver.
 
-Well, dropping events (FS_CLOSE in particular) didn't go down well the
-last time we tried it:
-https://lore.kernel.org/linux-fsdevel/CAOQ4uxg8E-im=B6L0PQNaTTKdtxVAO=MSJki7kxq875ME4hOLw@mail.gmail.com/
+My intention was to allow the user specify what functionality in the MFD
+shall be enabled. For this particular case, if the 'pwrc' node is not
+provided, the power-off/reboot functions will be disabled.
 
-I am just wondering who is using FS_OPEN these days and whether
-they would care about this change and if not, why are we doing it?
+> > +
+> > +    properties:
+> > +      compatible:
+> > +        enum:
+> > +          - actions,atc2603c-pwrc
+> > +          - actions,atc2609a-pwrc
+> > +
+> > +    required:
+> > +      - compatible
+> > +
+> > +    additionalProperties: false
+> > +
+> > +  onkey:
+> > +    type: object
+> > +    description: |
+> > +      Use the ONKEY built into ATC260x PMICs as an input device reporting
+> > +      power button status. ONKEY can be used to wakeup from low power
+> > +      modes and force a reset on long press.
+> > +
+> > +    properties:
+> > +      compatible:
+> > +        enum:
+> > +          - actions,atc2603c-onkey
+> > +          - actions,atc2609a-onkey
+> > +
+> > +      actions,reset-time-sec:
+> > +        description: |
+> > +          Duration in seconds which the key should be kept pressed for device
+> > +          to reset automatically. The hardware default is 8. Use 0 to disable
+> > +          this functionality.
+> > +        enum: [0, 6, 8, 10, 12]
+> 
+> We already have 'power-off-time-sec' in input.yaml. How about adding 
+> 'reset-time-sec' there.
 
-The argument that it is confusing to see FS_ACCESS/FS_MODIFY/FS_CLOSE
-and not seeing FS_OPEN is only half true - it is common to see that
-pattern when the file is already open when starting to watch, so application
-should not break because of that pattern.
+Thanks for the suggestion, I was actually looking for this before
+choosing the custom property and just assumed this was not added for
+a particular reason.
 
-Thanks,
-Amir.
+So I'm going to handle it. Would you like me to send a separate patch
+(not part of this series)?
+
+> This could really just be a property in the parent node.
+
+This is similar with 'pwrc': if 'onkey' node is not present, the ONKEY
+functionality will not be enabled.
+
+Is there a better/recommended approach to manage this MFD feature
+selection?
+
+> > +
+> > +    required:
+> > +      - compatible
+> > +
+> > +    additionalProperties: false
+> > +
+> > +  regulators:
+> > +    type: object
+> > +    description: |
+> > +      List of child nodes specifying the regulators, depending on chip variant:
+> > +      * ATC2603C: dcdc[1-3], ldo[1-3,5-8,11], switchldo1
+> > +      * ATC2609A: dcdc[0-4], ldo[0-9]
+> > +
+> > +    properties:
+> > +      compatible:
+> > +        enum:
+> > +          - actions,atc2603c-regulator
+> > +          - actions,atc2609a-regulator
+> > +
+> > +      switchldo1:
+> > +        type: object
+> > +        $ref: ../regulator/regulator.yaml
+> > +
+> > +        properties:
+> > +          regulator-name: true
+> > +          regulator-boot-on: true
+> > +          regulator-always-on: true
+> > +          regulator-min-microvolt: true
+> > +          regulator-max-microvolt: true
+> > +          regulator-allow-bypass: true
+> > +          regulator-active-discharge: true
+> > +
+> > +        additionalProperties: false
+> > +
+> > +    patternProperties:
+> > +      "^(dcdc[0-4]|ldo[0-9]|ldo11|switchldo1)-supply$":
+> > +        description: ATC260x voltage regulators supplies
+> > +
+> > +      "^(dcdc[0-4]|ldo[0-9]|ldo11)$":
+> > +        type: object
+> > +        $ref: ../regulator/regulator.yaml
+> > +
+> > +        properties:
+> > +          regulator-name: true
+> > +          regulator-boot-on: true
+> > +          regulator-always-on: true
+> > +          regulator-min-microvolt: true
+> > +          regulator-max-microvolt: true
+> > +          regulator-allow-bypass: true
+> > +
+> > +        additionalProperties: false
+> > +
+> > +    allOf:
+> > +      - if:
+> > +          properties:
+> > +            compatible:
+> > +              contains:
+> > +                const: actions,atc2603c-regulator
+> > +        then:
+> > +          patternProperties:
+> > +            "^(dcdc[0,4]|ldo[0,4,9])(-supply)?$": false
+> > +
+> > +            "^(ldo|dcdc)":
+> > +              properties:
+> > +                regulator-allow-bypass: false
+> > +      - if:
+> > +          properties:
+> > +            compatible:
+> > +              contains:
+> > +                const: actions,atc2609a-regulator
+> > +        then:
+> > +          patternProperties:
+> > +            "^(ldo11|switchldo1)(-supply)?$": false
+> > +
+> > +            "^(dcdc|ldo[3-9])":
+> > +              properties:
+> > +                regulator-allow-bypass: false
+> > +
+> > +    required:
+> > +      - compatible
+> > +
+> > +    additionalProperties: false
+> > +
+> > +additionalProperties: false
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - interrupts
+> > +
+> > +examples:
+> > +  - |
+> > +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> > +
+> > +    i2c0 {
+> > +      #address-cells = <1>;
+> > +      #size-cells = <0>;
+> > +
+> > +      pmic@65 {
+> > +        compatible = "actions,atc2603c";
+> > +        reg = <0x65>;
+> > +        interrupt-parent = <&sirq>;
+> > +        interrupts = <2 IRQ_TYPE_LEVEL_HIGH>;
+> > +
+> > +        pwrc {
+> > +          compatible = "actions,atc2603c-pwrc";
+> > +        };
+> > +
+> > +        onkey {
+> > +          compatible = "actions,atc2603c-onkey";
+> > +          actions,reset-time-sec = <6>;
+> > +        };
+> > +
+> > +        regulators {
+> > +          compatible = "actions,atc2603c-regulator";
+> > +
+> > +          dcdc1-supply = <&reg_5v0>;
+> > +          dcdc3-supply = <&reg_5v0>;
+> > +          ldo5-supply = <&reg_5v0>;
+> > +          switchldo1-supply = <&vcc>;
+> > +
+> > +          vdd_cpu: dcdc1 {
+> > +            regulator-name = "VDD_CPU";
+> > +            regulator-min-microvolt = <700000>;
+> > +            regulator-max-microvolt = <1400000>;
+> > +            regulator-always-on;
+> > +          };
+> > +
+> > +          vcc: dcdc3 {
+> > +            regulator-name = "VCC";
+> > +            regulator-min-microvolt = <2600000>;
+> > +            regulator-max-microvolt = <3300000>;
+> > +            regulator-always-on;
+> > +          };
+> > +
+> > +          vcc_3v1: ldo5 {
+> > +            regulator-name = "VCC_3V1";
+> > +            regulator-min-microvolt = <2600000>;
+> > +            regulator-max-microvolt = <3300000>;
+> > +          };
+> > +
+> > +          sd_vcc: switchldo1 {
+> > +            regulator-name = "SD_VCC";
+> > +            regulator-min-microvolt = <3000000>;
+> > +            regulator-max-microvolt = <3300000>;
+> > +            regulator-always-on;
+> > +            regulator-boot-on;
+> > +          };
+> > +        };
+> > +      };
+> > +    };
+> > +
+> > +...
+> > -- 
+> > 2.28.0
+> > 
+
+Kind regards,
+Cristi
