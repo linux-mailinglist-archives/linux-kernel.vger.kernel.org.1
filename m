@@ -2,185 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E56B2628F4
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 09:37:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 906442628F9
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 09:37:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730225AbgIIHhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 03:37:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58726 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730256AbgIIHhE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 03:37:04 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B07F5C061573
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 00:37:03 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id m6so1812837wrn.0
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 00:37:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=wWgDfU9nZzKqdvbVx8y3VyybzRdiTj4qfLQtg4MRrko=;
-        b=vKfNkPvSqiCi09QBOevuKE3WTzNxDu6Exs/ueisabXStQuSK3AB5ekMSlyhO5Ekvzn
-         Qd42VrxYIuys9XrdUyMAgBTxiOfliJDL/us5t5yVi/CRjDKifwYXMMWmsN6IENcrBNn0
-         2u8lOJf7c5sdSWLaXG0j1K1QdQv4UacDhefcSjtVSzcPgMBw8i7Y0T/8F8iaeOaJBbOC
-         3HmFIgTcbFfE1C1wPpIcIN6tQoefM20O7EQEn6KaMJVASgtpOz3Z/0JtPUDnMhAB31Ou
-         wuNA7DVOA9MllnqftEPlF8ZOYjL6ksA2pJQPP8YeU0qTjxikv/kDs9yYbovFv+EyyUnz
-         xU6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=wWgDfU9nZzKqdvbVx8y3VyybzRdiTj4qfLQtg4MRrko=;
-        b=AfeI9zOZmpJKo7/kbgeJskOQVDrVxUHIWOUGGmw3+BdMpUBz/qGs4v9gdegVmseawT
-         t+6jk+qwTh5Vv72R6TWknN2WHJg3xcS3uBpeUlspoFhJq+MoMOgt8X8wwEaFgsDidaSV
-         WqQSdXfh2CF5IgNQcOYCss+DyT+Ggbko/iNjpQzyuhAsZxYI+q+CU3jt7lAegNXmGukq
-         ZbJf64DmQ4NPXC2U+RTA2atlT41Yu4RfFXKLA2ZpCwALWZU2dLfvVnOsJHyEcE39qHUf
-         6v/EC/NZvfgoqao23d9yUmAFvwo2beQySuNmsZUM4LZIQIL8jPoYeIFTtVy8o9ePdnOm
-         i/lQ==
-X-Gm-Message-State: AOAM531bm4bZqmq5WZfaIcvf0X3wpWyTgCg82cqGDLGW/lWO2UVwlemo
-        bsGFGUUbP7jqhAZ0LE36AApWoA==
-X-Google-Smtp-Source: ABdhPJzwqJgPmAj9vMXTqolup+yM+UOmHtcxAg+FNcdJ6X/69jQchDfjUR+5dlw1mGEfxngwZltkHQ==
-X-Received: by 2002:adf:e391:: with SMTP id e17mr2316189wrm.289.1599637022185;
-        Wed, 09 Sep 2020 00:37:02 -0700 (PDT)
-Received: from dell ([91.110.221.179])
-        by smtp.gmail.com with ESMTPSA id 91sm3266190wrq.9.2020.09.09.00.37.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Sep 2020 00:37:01 -0700 (PDT)
-Date:   Wed, 9 Sep 2020 08:36:59 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Gene Chen <gene.chen.richtek@gmail.com>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Gene Chen <gene_chen@richtek.com>, benjamin.chao@mediatek.com,
-        shufan_lee@richtek.com, cy_huang@richtek.com
-Subject: Re: [PATCH v4 9/9] mfd: mt6360: Merge different sub-devices I2C
- read/write
-Message-ID: <20200909073659.GA218742@dell>
-References: <1597661277-27862-1-git-send-email-gene.chen.richtek@gmail.com>
- <1597661277-27862-10-git-send-email-gene.chen.richtek@gmail.com>
- <20200828104053.GM1826686@dell>
- <CAE+NS37uFoDhWyGkw0WTu+tR+_85EwzYRqecNMG6nK6b2J=9jg@mail.gmail.com>
- <20200908114819.GO4400@dell>
- <CAE+NS36MVA=9e0Ev73gpJ-gOcY+_aNveTr+DhquD6iqY-GKXCQ@mail.gmail.com>
+        id S1730287AbgIIHhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 03:37:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44618 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730260AbgIIHhG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 03:37:06 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7949620732;
+        Wed,  9 Sep 2020 07:37:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599637026;
+        bh=IO6r3KJjp/JFwGSMPo4xWi2ollridTbwoQYxHByZFVQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aRKeYoPdqKaLssElezrS6ihoIHfR2NnGSHiWt2UlFzmKIA0QrRUh4XFEkkWrWe6qv
+         Vag/j/T4Br7kHkdOjNhRYkFZz8rFY6pHYOlT8Pe/ifeW3NGjYsW71soYB7iFP3q0EN
+         Yiu/tFe+TcCaY2uSrRCFLTrX4lEP3YB5PgD4u6ps=
+Date:   Wed, 9 Sep 2020 09:37:16 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Joe Perches <joe@perches.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Re: [PATCH v1] driver core: Annotate dev_err_probe() with
+ __must_check
+Message-ID: <20200909073716.GA560912@kroah.com>
+References: <20200826104459.81979-1-andriy.shevchenko@linux.intel.com>
+ <9635eaa4ccc1141fb0dd8c3687f46da7149206ad.camel@perches.com>
+ <20200826155507.GV1891694@smile.fi.intel.com>
+ <973f4d54da796db4fcc9b643b10889cbc8839989.camel@perches.com>
+ <CAJKOXPcCAPy-v38dyY_74H_6vrgj0mmEf6KaupVKJb4E2Ha_Ug@mail.gmail.com>
+ <20200909070244.GC311356@kroah.com>
+ <CAJKOXPd=TfCNfHPdsQZ42VEcUZOFZroXg7xmA82zSA=AbADxKw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAE+NS36MVA=9e0Ev73gpJ-gOcY+_aNveTr+DhquD6iqY-GKXCQ@mail.gmail.com>
+In-Reply-To: <CAJKOXPd=TfCNfHPdsQZ42VEcUZOFZroXg7xmA82zSA=AbADxKw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 09 Sep 2020, Gene Chen wrote:
-
-> Lee Jones <lee.jones@linaro.org> 於 2020年9月8日 週二 下午7:48寫道：
+On Wed, Sep 09, 2020 at 09:08:14AM +0200, Krzysztof Kozlowski wrote:
+> On Wed, 9 Sep 2020 at 09:02, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
 > >
-> > On Tue, 01 Sep 2020, Gene Chen wrote:
-> >
-> > > Lee Jones <lee.jones@linaro.org> 於 2020年8月28日 週五 下午6:40寫道：
+> > On Wed, Sep 09, 2020 at 08:29:25AM +0200, Krzysztof Kozlowski wrote:
+> > > On Wed, 26 Aug 2020 at 18:18, Joe Perches <joe@perches.com> wrote:
 > > > >
-> > > > On Mon, 17 Aug 2020, Gene Chen wrote:
-> > > >
-> > > > > From: Gene Chen <gene_chen@richtek.com>
+> > > > On Wed, 2020-08-26 at 18:55 +0300, Andy Shevchenko wrote:
+> > > > > On Wed, Aug 26, 2020 at 08:44:30AM -0700, Joe Perches wrote:
+> > > > > > On Wed, 2020-08-26 at 13:44 +0300, Andy Shevchenko wrote:
 > > > > >
-> > > > > Remove unuse register definition.
-> > > >
-> > > > This should be in a separate patch.
-> > > >
-> > > > > Merge different sub-devices I2C read/write functions into one Regmap,
-> > > > > because PMIC and LDO part need CRC bits for access protection.
+> > > > > ...
 > > > > >
-> > > > > Signed-off-by: Gene Chen <gene_chen@richtek.com>
-> > > > > ---
-> > > > >  drivers/mfd/Kconfig        |   1 +
-> > > > >  drivers/mfd/mt6360-core.c  | 260 +++++++++++++++++++++++++++++++++++++++------
-> > > > >  include/linux/mfd/mt6360.h | 240 -----------------------------------------
-> > > > >  3 files changed, 226 insertions(+), 275 deletions(-)
-> > > > >  delete mode 100644 include/linux/mfd/mt6360.h
-> > > > >
-> > > > > diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-> > > > > index a37d7d1..0684ddc 100644
-> > > > > --- a/drivers/mfd/Kconfig
-> > > > > +++ b/drivers/mfd/Kconfig
-> > > > > @@ -913,6 +913,7 @@ config MFD_MT6360
-> > > > >       select MFD_CORE
-> > > > >       select REGMAP_I2C
-> > > > >       select REGMAP_IRQ
-> > > > > +     select CRC8
-> > > > >       depends on I2C
-> > > > >       help
-> > > > >         Say Y here to enable MT6360 PMU/PMIC/LDO functional support.
-> > > > > diff --git a/drivers/mfd/mt6360-core.c b/drivers/mfd/mt6360-core.c
-> > > > > index 677c974..e995220 100644
-> > > > > --- a/drivers/mfd/mt6360-core.c
-> > > > > +++ b/drivers/mfd/mt6360-core.c
-> > > > > @@ -14,7 +14,53 @@
-> > > > >  #include <linux/regmap.h>
-> > > > >  #include <linux/slab.h>
-> > > > >
-> > > > > -#include <linux/mfd/mt6360.h>
-> > > > > +enum {
-> > > > > +     MT6360_SLAVE_TCPC = 0,
-> > > > > +     MT6360_SLAVE_PMIC,
-> > > > > +     MT6360_SLAVE_LDO,
-> > > > > +     MT6360_SLAVE_PMU,
-> > > > > +     MT6360_SLAVE_MAX,
-> > > > > +};
-> > > > > +
-> > > > > +struct mt6360_ddata {
-> > > > > +     struct i2c_client *i2c[MT6360_SLAVE_MAX];
-> > > > > +     struct device *dev;
-> > > > > +     struct regmap *regmap;
-> > > > > +     struct regmap_irq_chip_data *irq_data;
-> > > > > +     unsigned int chip_rev;
-> > > > > +     u8 crc8_tbl[CRC8_TABLE_SIZE];
-> > > > > +};
-> > > >
-> > > > This is not a new structure, right?  Where was this before?  Surely it
-> > > > should be removed from wherever it was in the same patch that places
-> > > > it here?
-> > > >
+> > > > > > > -int dev_err_probe(const struct device *dev, int err, const char *fmt, ...);
+> > > > > > > +int __must_check dev_err_probe(const struct device *dev, int err, const char *fmt, ...);
 > > >
-> > > No, it is merge from header file to source code for unuse in other sub-module.
+> > > +Cc Stephen and Greg,
+> > >
+> > > Hi Andy,
+> > >
+> > > Did this patch ended up in next somehow? I am surprised because now I
+> > > got warnings for perfectly fine code:
+> > > https://lore.kernel.org/linux-next/20200909155654.76fe3bd6@canb.auug.org.au/T/#u
+> > >
+> > > This creates simply false warnings instead of hints for "optimization".
 > >
-> > So where did it come from and why don't I see the removal in this
-> > patch?
+> > Yes, it got merged into m y driver core tree.
 > >
+> > I'll fix up the tty build warning, should be easy enough, the patch is
+> > below.
 > 
-> Change is in the bottom of this patch.
-> There is a little confuse part in "[PATCH v4 5/9] mfd: mt6360: Rename
-> mt6360_pmu_data by mt6360_ddata"
-> The "PATCH 5/9" change mt6360_pmu_data to mt6360_ddata instead of mt6360_data.
-> I will update PATCH v5 to fix it.
-> 
-> [PATCH v4 9/9]
-> diff --git a/include/linux/mfd/mt6360.h b/include/linux/mfd/mt6360.h
-> -struct mt6360_data {
-> -       struct i2c_client *i2c[MT6360_SLAVE_MAX];
-> -       struct device *dev;
-> -       struct regmap *regmap;
-> -       struct regmap_irq_chip_data *irq_data;
-> -       unsigned int chip_rev;
-> -};
-> 
-> [PATCH v4 5/9]
-> diff --git a/include/linux/mfd/mt6360.h b/include/linux/mfd/mt6360.h
-> -struct mt6360_pmu_data {
-> +struct mt6360_data {
->         struct i2c_client *i2c[MT6360_SLAVE_MAX];
->         struct device *dev;
->         struct regmap *regmap;
+> Yes, this fix suppresses the warning but the question is whether we
+> really want the warning?
+> Such fixes mean additional code which the compiler might not optimize
+> (unless it inlines the dev_err_probe()). This additional code is
+> purely for suppressing the warning, without any meaning on its own.
+> Actually it might be even confusing for someone to see:
+> if (ret)
+>   ret = dev_err_probe(ret);
 
-Oh, you've renamed it whilst moving it.  That is probably not best
-practise, as it causes this kind of confusion.
+Yeah, that is dumb, as the patch I made shows :(
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+> warn_unused_result should point errors, not "optimization
+> opportunities". If you want to have opportunity, add a coccinelle
+> rule. Or a checkpatch rule. Not a compiler warning.
+
+Ok, I now agree, I'll go revert this patch and trust that driver authors
+will "do the right thing" here...
+
+thanks,
+
+greg k-h
