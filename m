@@ -2,79 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDB7A263590
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 20:06:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C90E26353A
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 20:01:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730140AbgIISGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 14:06:48 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:39976 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729717AbgIISGj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 14:06:39 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 089F1sVY098364;
-        Wed, 9 Sep 2020 10:01:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1599663715;
-        bh=MwI22PibRFOWQwMQJkln6M8QN2qmj+Or25iJeEI4Q/Y=;
-        h=To:CC:From:Subject:Date;
-        b=Y81IBlfQilc6cV1c9BkiR4VIoe/1EjbNtN+ZfKRdB4BkqE3fwOWGf3S8y2RLr/ASc
-         HqTEa4+S2TGAl8rtw87UuoFPVqNqg7Do7V6VvvzrtyQ2Jh3OiyVZtE+dXB17R1YY2k
-         nDL1xnoW639rF+SRvWfoAKcWNTtwShyi5GrexR1E=
-Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 089F1sdk027270
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 9 Sep 2020 10:01:54 -0500
-Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 9 Sep
- 2020 10:01:54 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 9 Sep 2020 10:01:54 -0500
-Received: from [10.250.71.177] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 089F1pP5101317;
-        Wed, 9 Sep 2020 10:01:52 -0500
-To:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        "tiwai@suse.com" <tiwai@suse.com>
-CC:     "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        LKML <linux-kernel@vger.kernel.org>
-From:   Dan Murphy <dmurphy@ti.com>
-Subject: [RFC] Device addition to the tlv320adcx140 and tas2562
-Message-ID: <8c47c81f-5f83-2cf4-7bf1-62201b35bed3@ti.com>
-Date:   Wed, 9 Sep 2020 10:01:51 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1729507AbgIISBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 14:01:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58348 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726408AbgIISBN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 14:01:13 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B2C4321D46;
+        Wed,  9 Sep 2020 18:01:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599674472;
+        bh=pgP4b85+7vWCX47zJKllmqZNSN2rbSk1645eUT2KDcI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Fsfo9hAEgI98VGQewvG8mYFbBBuD0TO3DbV1GR5yA3kHtDXak0puLOTW7yRtYQuQT
+         Ecbmjum8Z0yLAE0YNqSTzciTsAs1/XXh7pHVvEH5hGI4j8vXnV/2bUKo7Xw1wTmH0r
+         teG7ruPbCR67OKzBV99SZu1FFnNhrxEIv+C2Pbg4=
+Date:   Wed, 9 Sep 2020 20:01:21 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 5.8 000/186] 5.8.8-rc1 review
+Message-ID: <20200909180121.GD1003763@kroah.com>
+References: <20200908152241.646390211@linuxfoundation.org>
+ <20200909164705.GE1479@roeck-us.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200909164705.GE1479@roeck-us.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello
+On Wed, Sep 09, 2020 at 09:47:05AM -0700, Guenter Roeck wrote:
+> On Tue, Sep 08, 2020 at 05:22:22PM +0200, Greg Kroah-Hartman wrote:
+> > This is the start of the stable review cycle for the 5.8.8 release.
+> > There are 186 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> > 
+> > Responses should be made by Thu, 10 Sep 2020 15:21:57 +0000.
+> > Anything received after that time might be too late.
+> > 
+> 
+> Build results:
+> 	total: 154 pass: 153 fail: 1
+> Failed builds:
+> 	powerpc:allmodconfig
+> Qemu test results:
+> 	total: 430 pass: 430 fail: 0
+> 
+> The powerpc problem is the same as before:
+> 
+> Inconsistent kallsyms data
+> Try make KALLSYMS_EXTRA_PASS=1 as a workaround
+> 
+> KALLSYMS_EXTRA_PASS=1 doesn't help. The problem is sporadic, elusive, and all
+> but impossible to bisect. The same build passes on another system, for example,
+> with a different load pattern. It may pass with -j30 and fail with -j40.
+> The problem started at some point after v5.8, and got worse over time; by now
+> it almost always happens. I'd be happy to debug if there is a means to do it,
+> but I don't have an idea where to even start. I'd disable KALLSYMS in my
+> test configurations, but the symbol is selected from various places and thus
+> difficult to disable. So unless I stop building ppc:allmodconfig entirely
+> we'll just have to live with the failure.
 
-Looking for guidance on how to move forward with adding a device to 
-existing drivers.
+Ah, I was worried when I saw your dashboard orange for this kernel.
 
-For the TLV320adcx140 driver I have another device which is register and 
-bitmap compatible but it does not support Analog microphones or Line In 
-like the x140.
+I guess the powerpc maintainers don't care?  Sad :(
 
-Should I add a new driver specifically for this part or should I add the 
-new audio maps, widgets and controls to the existing driver?  This would 
-make this existing driver really big in terms of LoC and object size.
+Anyway, thanks for testing them all and letting me know.
 
-Similar question for the TAS2562.  I have a new device that is register 
-and bitmap compatible but removes the I/V sense. Adding this new device 
-to the existing driver wouldn't be as intrusive as the x140 as the audio 
-map and controls are much simpler
-
-Dan
-
+greg k-h
