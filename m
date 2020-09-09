@@ -2,93 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 117E0262966
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 09:59:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19EA326296F
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 10:00:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729161AbgIIH7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 03:59:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51446 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726535AbgIIH73 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 03:59:29 -0400
-Received: from localhost (unknown [122.179.21.149])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9B2C22087C;
-        Wed,  9 Sep 2020 07:59:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599638368;
-        bh=3rAE+SPjRZ4i3GefKC27FMyuZcbvx2plcxvfQTsIqXw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ma/Y0tsgx/97CgY0J2Nm/BIU53y37cgwef+KkNlKsUPxvIXzEdJWs80Biln9Mku8S
-         +R5Wim6IxJda9gXOZk2DG617IPPriTIqez1a5G6zxSNyYkSSW60spxDxOxMbXuZs/B
-         z0tQRKoB1A/Oq4rNqbyYGHOSY/nvcHBG0x33EnhM=
-Date:   Wed, 9 Sep 2020 13:29:22 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Jaroslav Kysela <perex@perex.cz>
-Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        alsa-devel@alsa-project.org, tiwai@suse.de,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
-        broonie@kernel.org, srinivas.kandagatla@linaro.org,
-        jank@cadence.com, mengdong.lin@intel.com, sanyog.r.kale@intel.com,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        rander.wang@linux.intel.com, bard.liao@intel.com
-Subject: Re: [PATCH] soundwire: cadence: fix race condition between suspend
- and Slave device alerts
-Message-ID: <20200909075922.GM77521@vkoul-mobl>
-References: <20200817222340.18042-1-yung-chuan.liao@linux.intel.com>
- <20200819090637.GE2639@vkoul-mobl>
- <8d60fa6f-bb7f-daa8-5ae2-51386b87ccad@linux.intel.com>
- <20200821050758.GI2639@vkoul-mobl>
- <29ea5a44-b971-770a-519c-ae879557b63f@linux.intel.com>
- <20200828080024.GP2639@vkoul-mobl>
- <77ecb4bc-10d6-8fbd-e97f-923d01a5e555@linux.intel.com>
- <3e4dee4b-1309-2d3e-ae20-e2dcbadb2f40@perex.cz>
+        id S1730158AbgIIIA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 04:00:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34092 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726642AbgIIIAZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 04:00:25 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B3B1C061573
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 01:00:25 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id b12so1645113edz.11
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 01:00:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=wBquDOMvvGBMKlLoT0ZYSQBY2ltKHLixc0AqZwGUMEg=;
+        b=sLhlkDWQlawJYdG6m+Rc4jQKtlkc+q3fCT1+NzbHo2HA4xyy9xzq+zUpBXekTZfHGi
+         IqiS6LPRxDogwOfWRvTyrTCUsTWr/r5m20KxnDzu9p2cJM/5oZ+GhEbeMQu6CArbqsYs
+         BCBbYDWoEXvjeQbVV5nUyqP80jdT/ukV5bArjBjiCpEMCVzXVpK7TB9ZEutccviygpxV
+         VXUkbGsmn0q+UN1iB2OcB22gUDAwatS5xBeQ5O1f/9B8Ttrq2bDfqRVVjGLjYidRZ50S
+         QTDjgJGKEj8h7rRohjKpViTmqORKxi6dID+T5y9GDYKUPW9Ze0k1JSzLAjHS7RQCuQXe
+         So8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=wBquDOMvvGBMKlLoT0ZYSQBY2ltKHLixc0AqZwGUMEg=;
+        b=o39s3LxOFXxST6sv8EUZrEkpHybU1c7CZiLN/Vkzj+NmQ9o7u6Ds61IVz0qVOHnonm
+         lUzzqmdkXpymIveYQUV7LI3S4tigi35H3UiNQlDho4bqxomG4t9YgX0eT0pN+3VdvqFO
+         dLP708VNiE6oMrGdahw2fGm2poZhGmTigeAG6TkZGMLcP8DjFPSa36CPRfpp3gx957DB
+         g8GthAkCz1AnNjYGR8ZCetVMd6phlQ5zMqMXLPlU7K+LdJTL0o1nRnDTM+PzYUUJa1tf
+         SEaPU6Km1xVuq0tLuK+P0LLgVr7Q7U+H3mDTW7ZDFb4N45cTsorRbDw4GDYWf2LH3y+w
+         Sfkw==
+X-Gm-Message-State: AOAM530JpJW2Azzo+/+9lbX56iCD1kROKDTau1G2fvQ4FaQOP/0ggvir
+        WtnlOpkWMFMMAztbXS1YCU4=
+X-Google-Smtp-Source: ABdhPJyCoapXaBDbIez2oa4OKqWgA9jBW5jloaJK3uy0fraUM4W0WRa2tGJj36NAlFEE0rMEbyzeSg==
+X-Received: by 2002:a50:a693:: with SMTP id e19mr2753440edc.205.1599638423633;
+        Wed, 09 Sep 2020 01:00:23 -0700 (PDT)
+Received: from gmail.com (54007801.dsl.pool.telekom.hu. [84.0.120.1])
+        by smtp.gmail.com with ESMTPSA id bz5sm1278231ejc.83.2020.09.09.01.00.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Sep 2020 01:00:22 -0700 (PDT)
+Date:   Wed, 9 Sep 2020 10:00:20 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Arnaud Lacombe <lacombar@gmail.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-kernel@vger.kernel.org,
+        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Tony Luck <tony.luck@intel.com>
+Subject: Re: [PATCH v1] x86/defconfigs: Unbreak 32-bit defconfig builds
+Message-ID: <20200909080020.GA2437694@gmail.com>
+References: <20200908100018.50188-1-andriy.shevchenko@linux.intel.com>
+ <20200908121354.GA3848343@gmail.com>
+ <20200908134350.GX1891694@smile.fi.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3e4dee4b-1309-2d3e-ae20-e2dcbadb2f40@perex.cz>
+In-Reply-To: <20200908134350.GX1891694@smile.fi.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08-09-20, 13:58, Jaroslav Kysela wrote:
-> Dne 28. 08. 20 v 17:14 Pierre-Louis Bossart napsal(a):
+
+* Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+
+> On Tue, Sep 08, 2020 at 02:13:54PM +0200, Ingo Molnar wrote:
 > > 
+> > * Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
 > > 
+> > > After the commit 1d0e12fd3a84 ("x86/defconfigs: Refresh defconfig files")
+> > > 32-bit builds using defconfig become broken because on x86_64 build host
+> > > with no ARCH provided the default behaviour is to assume 64-bit independently
+> > > on the configuration file name. The crucial part is CONFIG_64BIT option
+> > > that used to be explicit. Let restore the latter option in order to unbreak
+> > > 32-bit builds.
 > > 
-> >> Is this timeout for suspend or resume? Somehow I was under the
-> >> assumption that it is former? Or is the result seen on resume?
-> >>
-> >> Rereading the race describe above in steps, I think this should be
-> >> handled in step c above. Btw is that suspend or runtime suspend which
-> >> causes this? Former would be bigger issue as we should not have work
-> >> running when we return from suspend call. Latter should be dealt with
-> >> anyway as device might be off after suspend.
+> > So exactly which build method broke due to this? The typical way to do a defconfig build is:
 > > 
-> > This happens with a system suspend. Because we disable the interrupts, 
-> > the workqueue never completes, and we have a timeout on system resume.
+> >   make ARCH=i386 defconfig
 > > 
-> > That's why we want to prevent the workqueue from starting, or let it 
-> > complete, but not have this zombie state where we suspend but there's 
-> > still a wait for completion that times out later. The point here is 
-> > really  making sure the workqueue is not used before suspend.
-> > 
+> > which still works fine AFAICS.
 > 
-> Vinod, there is no acceptance progress on this. The patch is really straight
-> and for the Intel controller. They know what they're doing. I would apply
-> this. The code can be refined at anytime. It's a fix. I tested it and I can
-> confirm, that it fixes the issue. It's a vital patch for 5.10 to enable
-> finally SoundWire drivers for the Intel hardware.
-
-I do feel that there is something else going on, but not able to pin
-point, anyway this fixes the issue so I am applying it now
+> uname => x86_64
+> make i386_defconfig
 > 
-> Acked-by: Jaroslav Kysela <perex@perex.cz>
+> It was very convenient to not supply ARCH when build on multi-arch host.
 
-Thanks for ack
+Nice, TIL about the extended 'make *config' targets. :-)
 
--- 
-~Vinod
+Curiously, they aren't even mentioned in the 'configuration targets' 
+section of 'make help' and are not discoverable unless you know their 
+locations.
+
+Anyway, your fix makes sense now to me too.
+
+Do we need a similar for x86_64 defconfig, when built on 32-bit hosts? (not 
+that anyone does that in practice, but just for completeness.)
+
+Also, it would be nice if there was a way to annotate the defconfig for 
+'make savedefconfig' preserved these ARCH choices - it currently strips out 
+all non-enabled options that match their default configuration value.
+
+Thanks,
+
+	Ingo
