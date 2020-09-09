@@ -2,196 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E25F92637BA
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 22:45:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F80C2637BF
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 22:46:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730128AbgIIUpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 16:45:14 -0400
-Received: from mail-bn7nam10on2085.outbound.protection.outlook.com ([40.107.92.85]:52270
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729992AbgIIUpF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 16:45:05 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=X8aI0AeZyNTpLM71m85C71Q6EcboDOhBCdwIXtW6xncEATeZtNCEn0uCuiW3vzeT0gqNlsGK6cwxinSiORIVGP78S7opL+eWLs8uqTG3FIEZkZ25MJ4LzOdY84ghYJSieatQKdKWnUV4daHpjKTGchoYwdZMd3kCXPvS7yIS+3L4Yh0cZK9ScKQYylMlbxfPQHDoOBvElbP9xv6AkZydfIYex4G1eppVrP6S+iw4lBFRrghvt66Iw1Adn7AGrF+kKzkBA7jdrkYVin30/fPg6+IpUXcGXPp4MbLoNCGN+bcn2l5RXz/J7NdWfvoGlbPOvl0ntxY7rM1nCgOrym55OQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=x+2KOMwY5wmlKbRnYeS1i3/CewJ6egRkFbSWXAdbvWg=;
- b=U+zqj5bxoshgimCswGQYCAWNxICdRUirpM0vg8KfN6V9NAl9lM5ZRSi4ZhOu0nJrJZZ5eO5yufyOVWbBaYvH/41PpPWwEGOU0AzvwR/kGIpWBp718pU8sM0+h21GvxPrzlsrTLiLjCx3DqYRrXbvC9zwFb3RwvbmneR/Ei2oiiLC4ALxLmXoI5hjP64568ZJNnoCQTFgAX7L3L/2gTrC+S2xJCOoKDyMdJEehCXZKOQ82Wy3fJ2VRYkPc1Cc3C69Ffx1ZkxD/+KBIo9sqQiKvRAaXf5rL79y6kVgsbkM67MCIpIHxGg0cUy4+y2No77u0y7lyv2n63ja7D2SkTqcoA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.60.83) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=xilinx.com;
- dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
- not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=x+2KOMwY5wmlKbRnYeS1i3/CewJ6egRkFbSWXAdbvWg=;
- b=a3QwWiSZZa0vVJUulOLVOux6o3cwJbXTDJ5pe70FzwFZ7DTGkPk72Kt1mKBOQCFP6qlc/lDc59NgAzePPKmFteeSMyjoSbUoYoOYjCdDFM/fO0T7Ls5AQeD5spXNjldiMru33S2urFdROcxwSIn1q/HjCg23hb5o9FJl9PbKPUA=
-Received: from MN2PR19CA0065.namprd19.prod.outlook.com (2603:10b6:208:19b::42)
- by DM5PR02MB3670.namprd02.prod.outlook.com (2603:10b6:4:b5::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Wed, 9 Sep
- 2020 20:45:01 +0000
-Received: from BL2NAM02FT046.eop-nam02.prod.protection.outlook.com
- (2603:10b6:208:19b:cafe::fd) by MN2PR19CA0065.outlook.office365.com
- (2603:10b6:208:19b::42) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16 via Frontend
- Transport; Wed, 9 Sep 2020 20:45:01 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.60.83)
- smtp.mailfrom=xilinx.com; vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=bestguesspass action=none
- header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.60.83 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.60.83; helo=xsj-pvapsmtpgw01;
-Received: from xsj-pvapsmtpgw01 (149.199.60.83) by
- BL2NAM02FT046.mail.protection.outlook.com (10.152.76.118) with Microsoft SMTP
- Server id 15.20.3348.17 via Frontend Transport; Wed, 9 Sep 2020 20:45:01
- +0000
-Received: from [149.199.38.66] (port=53391 helo=smtp.xilinx.com)
-        by xsj-pvapsmtpgw01 with esmtp (Exim 4.90)
-        (envelope-from <amit.sunil.dhamne@xilinx.com>)
-        id 1kG6xP-0001xX-Nj; Wed, 09 Sep 2020 13:44:43 -0700
-Received: from [127.0.0.1] (helo=localhost)
-        by smtp.xilinx.com with smtp (Exim 4.63)
-        (envelope-from <amit.sunil.dhamne@xilinx.com>)
-        id 1kG6xf-0007dx-V5; Wed, 09 Sep 2020 13:45:00 -0700
-Received: from xsj-pvapsmtp01 (smtp-fallback.xilinx.com [149.199.38.66] (may be forged))
-        by xsj-smtp-dlp2.xlnx.xilinx.com (8.13.8/8.13.1) with ESMTP id 089KisMZ028430;
-        Wed, 9 Sep 2020 13:44:54 -0700
-Received: from [10.18.5.8] (helo=xsjamitsuni51.xilinx.com)
-        by xsj-pvapsmtp01 with esmtp (Exim 4.63)
-        (envelope-from <amit.sunil.dhamne@xilinx.com>)
-        id 1kG6xa-0007dJ-CQ; Wed, 09 Sep 2020 13:44:54 -0700
-From:   Amit Sunil Dhamne <amit.sunil.dhamne@xilinx.com>
-To:     mturquette@baylibre.com, m.tretter@pengutronix.de,
-        sboyd@kernel.org, michal.simek@xilinx.com, mark.rutland@arm.com,
-        linux-clk@vger.kernel.org
-Cc:     rajanv@xilinx.com, jollys@xilinx.com, tejasp@xilinx.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Rajan Vaja <rajan.vaja@xilinx.com>,
-        Tejas Patel <tejas.patel@xilinx.com>,
-        Amit Sunil Dhamne <amit.sunil.dhamne@xilinx.com>
-Subject: [PATCH v4 3/3] clk: zynqmp: Use firmware specific mux clock flags
-Date:   Wed,  9 Sep 2020 13:44:48 -0700
-Message-Id: <1599684288-20917-4-git-send-email-amit.sunil.dhamne@xilinx.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1599684288-20917-1-git-send-email-amit.sunil.dhamne@xilinx.com>
-References: <1599684288-20917-1-git-send-email-amit.sunil.dhamne@xilinx.com>
-X-RCIS-Action: ALLOW
-X-TM-AS-Product-Ver: IMSS-7.1.0.1224-8.2.0.1013-23620.005
-X-TM-AS-User-Approved-Sender: Yes;Yes
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-PublicTrafficType: Email
+        id S1729161AbgIIUp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 16:45:59 -0400
+Received: from a27-18.smtp-out.us-west-2.amazonses.com ([54.240.27.18]:50164
+        "EHLO a27-18.smtp-out.us-west-2.amazonses.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726426AbgIIUpy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 16:45:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+        s=zsmsymrwgfyinv5wlfyidntwsjeeldzt; d=codeaurora.org; t=1599684353;
+        h=MIME-Version:Content-Type:Content-Transfer-Encoding:Date:From:To:Cc:Subject:In-Reply-To:References:Message-ID;
+        bh=F3KC+UymvTZDdP36/YRuUrSRkL0TNi3D0l8uAgEu05c=;
+        b=UWbrv9rsKuGzOH1fWRjl0YAeol7LJ4qsQ0MCN69/0bGG7U+/OIHwyysCFzKmc4Ia
+        ZTwLe0TJ8tKc25dKGWjbUzze/4UdlirCn+EJo/q4NBqCv1T0h/sC+Ltf8FFnm6Yqkw0
+        BrTZury5K7WIbOqAutPPdG970UXIRp5fI+Ycg8X4=
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+        s=hsbnp7p3ensaochzwyq5wwmceodymuwv; d=amazonses.com; t=1599684353;
+        h=MIME-Version:Content-Type:Content-Transfer-Encoding:Date:From:To:Cc:Subject:In-Reply-To:References:Message-ID:Feedback-ID;
+        bh=F3KC+UymvTZDdP36/YRuUrSRkL0TNi3D0l8uAgEu05c=;
+        b=GZZ4fKZ6I42jDmvUicdzEZgwMQQluiKWA0PVhSedAEC1UlzyqCXDJpH/KQmB7Ugr
+        tbP2bnnqlbSrSb7NBtW9KH+a40e049MtomhsfsG4zFLrB4jl9511PmTb9ZlxD7xQyoo
+        fy7KFULTPYYdsHAYy3HR5rQ3DgjSJdwOwInHo+co=
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MS-Office365-Filtering-Correlation-Id: 1c991082-c092-4d43-0d78-08d8550138dd
-X-MS-TrafficTypeDiagnostic: DM5PR02MB3670:
-X-Microsoft-Antispam-PRVS: <DM5PR02MB36706EF3078831490D72F137A7260@DM5PR02MB3670.namprd02.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:989;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: l798Zs6l7FTqI6g07g8hyEuRm7n2nkpS0zLg6jDhix4vbInwWohVgj0GbkEHxoWAXHErL98Z3n8e8/Pz/TGgTNQE1CtspvLJYatvaCM3Y4NHvEkYdF2gMBV092uYIZQ49VxZ0bKTBeegXPGJQVmGwa/WjbOVDH87obgvFDXrPEK7pOvSjJua9wZkUSBpzdM8t1N8efacGkS1VSKjYDTiWgi4e4oin51IhClyjIHIKth9HIHx+NXxse7q7lGymzBj67XiVh/HZa6NmkzjJgyBZNvgJYrLl68EVPaCygQ/eGH22TuuumGYFFLq2QO60cVL0takyrDZNF9Il7LsDRYSpI9lFp5HwM2U7MFRExGQuwBw86OIr9+0+cqnsjbXBgObI7C5F22P459iBRZIW7L0O2q2JVBfHlae2RLEU0pUdj8=
-X-Forefront-Antispam-Report: CIP:149.199.60.83;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapsmtpgw01;PTR:unknown-60-83.xilinx.com;CAT:NONE;SFS:(136003)(39860400002)(346002)(376002)(396003)(46966005)(5660300002)(8936002)(70206006)(70586007)(6666004)(356005)(2906002)(7696005)(336012)(107886003)(81166007)(82740400003)(36756003)(26005)(426003)(4326008)(47076004)(186003)(2616005)(54906003)(8676002)(83380400001)(316002)(478600001)(9786002)(82310400003)(42866002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Sep 2020 20:45:01.0164
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1c991082-c092-4d43-0d78-08d8550138dd
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.60.83];Helo=[xsj-pvapsmtpgw01]
-X-MS-Exchange-CrossTenant-AuthSource: BL2NAM02FT046.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR02MB3670
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 9 Sep 2020 20:45:53 +0000
+From:   tsoni@codeaurora.org
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     Tingwei Zhang <tingweiz@codeaurora.org>,
+        Tingwei Zhang <tingwei@codeaurora.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Kim Phillips <kim.phillips@arm.com>,
+        Mao Jinlong <jinlmao@codeaurora.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Coresight ML <coresight@lists.linaro.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Mian Yousaf Kaukab <ykaukab@suse.de>,
+        Russell King <linux@armlinux.org.uk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Mike Leach <mike.leach@linaro.org>
+Subject: Re: [PATCH v9 00/24] coresight: allow to build coresight as modules
+In-Reply-To: <20200909161523.GA553266@xps15>
+References: <20200820054718.20115-1-tingwei@codeaurora.org>
+ <CANLsYkwhypfEkmhg=wK+_F6TxxGiuoSqpgGR0REqsOqC-X-3mg@mail.gmail.com>
+ <0101017470c9475d-00e296fc-1173-4afa-95cb-22ac70d85d5b-000000@us-west-2.amazonses.com>
+ <20200909161523.GA553266@xps15>
+Message-ID: <01010174749e1e01-e99c3e27-f22b-4b22-83a7-36c0b86c5bdd-000000@us-west-2.amazonses.com>
+X-Sender: tsoni@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
+X-SES-Outgoing: 2020.09.09-54.240.27.18
+Feedback-ID: 1.us-west-2.CZuq2qbDmUIuT3qdvXlRHZZCpfZqZ4GtG9v3VKgRyF0=:AmazonSES
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rajan Vaja <rajan.vaja@xilinx.com>
+On 2020-09-09 09:15, Mathieu Poirier wrote:
+> On Wed, Sep 09, 2020 at 02:54:33AM +0000, Tingwei Zhang wrote:
+>> On Wed, Sep 09, 2020 at 01:53:51AM +0800, Mathieu Poirier wrote:
+>> > Hi Tingwei,
+>> >
+>> > Apologies for the untimely response to this set, I am hoping to get to
+>> > it in the next two weeks.
+>> >
+>> 
+>> It's fine, Mathieu. Please let me know your comments once you have 
+>> time.
+>> I'm targeting to get these set merged in 5.10 Kernel.
+> 
+> From the above it is not clear if you want this set to be _in_ the 5.10 
+> cycle
+> or added to my list _during_ the 5.10 cycle, which would make it part 
+> of the
+> 5.11 cycle.  In any case the latter seems more realistic.
 
-Use ZynqMP specific mux clock flags instead of using CCF flags.
+Tingwei can correct me here, but we prefer to have patches to be part of 
+the 5.10 release. It means they should get merged in Linus's tree in the 
+next merge window.
 
-Signed-off-by: Rajan Vaja <rajan.vaja@xilinx.com>
-Signed-off-by: Tejas Patel <tejas.patel@xilinx.com>
-Signed-off-by: Amit Sunil Dhamne <amit.sunil.dhamne@xilinx.com>
----
- drivers/clk/zynqmp/clk-mux-zynqmp.c | 23 ++++++++++++++++++++++-
- drivers/clk/zynqmp/clk-zynqmp.h     |  8 ++++++++
- 2 files changed, 30 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/clk/zynqmp/clk-mux-zynqmp.c b/drivers/clk/zynqmp/clk-m=
-ux-zynqmp.c
-index a49b1c5..4c28b4d 100644
---- a/drivers/clk/zynqmp/clk-mux-zynqmp.c
-+++ b/drivers/clk/zynqmp/clk-mux-zynqmp.c
-@@ -90,6 +90,27 @@ static const struct clk_ops zynqmp_clk_mux_ro_ops =3D {
-        .get_parent =3D zynqmp_clk_mux_get_parent,
- };
-
-+static inline unsigned long zynqmp_clk_map_mux_ccf_flags(
-+                                      const u32 zynqmp_type_flag)
-+{
-+       unsigned long ccf_flag =3D 0;
-+
-+       if (zynqmp_type_flag & ZYNQMP_CLK_MUX_INDEX_ONE)
-+               ccf_flag |=3D CLK_MUX_INDEX_ONE;
-+       if (zynqmp_type_flag & ZYNQMP_CLK_MUX_INDEX_BIT)
-+               ccf_flag |=3D CLK_MUX_INDEX_BIT;
-+       if (zynqmp_type_flag & ZYNQMP_CLK_MUX_HIWORD_MASK)
-+               ccf_flag |=3D CLK_MUX_HIWORD_MASK;
-+       if (zynqmp_type_flag & ZYNQMP_CLK_MUX_READ_ONLY)
-+               ccf_flag |=3D CLK_MUX_READ_ONLY;
-+       if (zynqmp_type_flag & ZYNQMP_CLK_MUX_ROUND_CLOSEST)
-+               ccf_flag |=3D CLK_MUX_ROUND_CLOSEST;
-+       if (zynqmp_type_flag & ZYNQMP_CLK_MUX_BIG_ENDIAN)
-+               ccf_flag |=3D CLK_MUX_BIG_ENDIAN;
-+
-+       return ccf_flag;
-+}
-+
- /**
-  * zynqmp_clk_register_mux() - Register a mux table with the clock
-  *                            framework
-@@ -125,7 +146,7 @@ struct clk_hw *zynqmp_clk_register_mux(const char *name=
-, u32 clk_id,
-
-        init.parent_names =3D parents;
-        init.num_parents =3D num_parents;
--       mux->flags =3D nodes->type_flag;
-+       mux->flags =3D zynqmp_clk_map_mux_ccf_flags(nodes->type_flag);
-        mux->hw.init =3D &init;
-        mux->clk_id =3D clk_id;
-
-diff --git a/drivers/clk/zynqmp/clk-zynqmp.h b/drivers/clk/zynqmp/clk-zynqm=
-p.h
-index 9b2ff35e..87a2e12 100644
---- a/drivers/clk/zynqmp/clk-zynqmp.h
-+++ b/drivers/clk/zynqmp/clk-zynqmp.h
-@@ -41,6 +41,14 @@
- #define ZYNQMP_CLK_DIVIDER_READ_ONLY           BIT(5)
- #define ZYNQMP_CLK_DIVIDER_MAX_AT_ZERO         BIT(6)
-
-+/* Type Flags for mux clock */
-+#define ZYNQMP_CLK_MUX_INDEX_ONE               BIT(0)
-+#define ZYNQMP_CLK_MUX_INDEX_BIT               BIT(1)
-+#define ZYNQMP_CLK_MUX_HIWORD_MASK             BIT(2)
-+#define ZYNQMP_CLK_MUX_READ_ONLY               BIT(3)
-+#define ZYNQMP_CLK_MUX_ROUND_CLOSEST           BIT(4)
-+#define ZYNQMP_CLK_MUX_BIG_ENDIAN              BIT(5)
-+
- enum topology_type {
-        TYPE_INVALID,
-        TYPE_MUX,
---
-2.7.4
-
-This email and any attachments are intended for the sole use of the named r=
-ecipient(s) and contain(s) confidential information that may be proprietary=
-, privileged or copyrighted under applicable law. If you are not the intend=
-ed recipient, do not read, copy, or forward this email message or any attac=
-hments. Delete this email message and any attachments immediately.
+---Trilok Soni
