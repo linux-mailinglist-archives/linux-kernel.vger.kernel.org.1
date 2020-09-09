@@ -2,311 +2,333 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14D75263343
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 19:00:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3011263469
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 19:20:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731179AbgIIRAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 13:00:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33214 "EHLO
+        id S1731194AbgIIRUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 13:20:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726399AbgIIQ7U (ORCPT
+        with ESMTP id S1729824AbgIIP0h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 12:59:20 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5887C061573;
-        Wed,  9 Sep 2020 09:59:19 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id e23so4613344eja.3;
-        Wed, 09 Sep 2020 09:59:19 -0700 (PDT)
+        Wed, 9 Sep 2020 11:26:37 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2475C0613ED
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 04:11:04 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id w7so1857219pfi.4
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 04:11:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=NITVXCSl7BVc2dfQjN50vkiAOcxU13M8Ih81Zr5I7gQ=;
-        b=YC40ozP4sGC5QRnYvmmYNQ5JO0QQp2itLrYd3m6uP0JHUhgxgxEJJi3Dqbyku03Ine
-         OgpVXumYCpc1Xn+g/WLBJTSZapgu5daSvBVi7GOsPvcpPwLUQU8QFtkKkwGepcLxsvZI
-         vsTJLAM+Ke6WEyxZKymRvsn/MiERg3/aIrtTmux3mjN7DOpGI7iRfTAKUfnvM1lFCF6j
-         3VyBuFTJzc3BAL+9CIF1GJM9NJlEPUGIsGBKEePLwgSrefWwc0wcbJK2HASdgXazcVu/
-         07psxDzFkByTSJFLZjmToS/WXk3EpNYJIh6NKR5uU5U+5n9LbzNsodF5LV1ZUMC29rhR
-         v0Rg==
+        h=from:to:cc:subject:date:message-id;
+        bh=qqvSJveHBiu2R8jk4UINWWaXNNgSO4s/Cjq1/ErtBaY=;
+        b=IM4xNWPtrcHsrP3j9SI5FbGUxVnE7EzMW17aSxO5+z3TVVGb4E0XcWxcVgrOXpx+Lt
+         1mU+BXXQETRlSTn3luVRnPypKtFNVO02AGY65NryEzExnpghCsxaoik2RTleRASlog8D
+         /IaHOctTG1TWcSIvncmoACMyoN+yW691jdLkePQ/URfmUxBozKp5JIZu8eBntrvwyDWc
+         r5adsDO1rSds3z2HVS1FS5DiOBvs0zdcmgKD4mF4YHDDH2l9xC8sOJjd8a/9CJphgHb7
+         YcQA+v6Wtj4bMOYe++tS7/YH9DORCYYhdSZ23Ef3XAWRHZT05zP52r7PvVTC5KEzMVoO
+         4v3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NITVXCSl7BVc2dfQjN50vkiAOcxU13M8Ih81Zr5I7gQ=;
-        b=g/Ivk4MSi3PNDj3OyBRYxf5/JLBt20GR+sQg3IZ0ylMu9UU4UWLdfVVJpG2YipUm8k
-         Scx5K9hE1IeRAxqfvCsZqwSvkbpQkVSaQ2Cfy7XH6sr9wW6N4Cn4eUzTLnq/L7/zASft
-         tdrzNTaKPj7fozhjcOvOFI/6iZD14xbD/pauYcBG6ABNjmLXaZ5LVXYgWHOQdqvpIpRr
-         6VfeuDMxDfxwVlo2fuULkqLuLQzhkuXhbVtqgiI/NsEnnunWEdx9oOQAaxYpIvY9rCw7
-         x9OvmHps8Fal7zU0XAxZh3kdg27egVFBGLeODqCasxCLPt/4vgaqyoAb4rlT3E5Pu4dd
-         d3IA==
-X-Gm-Message-State: AOAM530I4SrH5jhqioT1BqxhaIsO8iYKOZBMh7VVITVDWoNmgHnohgpO
-        fY34SfyD8hJ26In+KQek3mNmiiDQNCY=
-X-Google-Smtp-Source: ABdhPJw6bVr07ndZxCr+L3dt0opUMVl6GpBDrfsPHR1WcT+kRUvOQYCI5akYSTv0q1AfUwohb25P5A==
-X-Received: by 2002:a17:906:bcd5:: with SMTP id lw21mr4629548ejb.430.1599670758387;
-        Wed, 09 Sep 2020 09:59:18 -0700 (PDT)
-Received: from BV030612LT ([188.24.159.61])
-        by smtp.gmail.com with ESMTPSA id a5sm3113455edl.6.2020.09.09.09.59.17
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=qqvSJveHBiu2R8jk4UINWWaXNNgSO4s/Cjq1/ErtBaY=;
+        b=h1RjxTL9R+dY/8TCot2M/zoIdrPK2u+1Tvfq8yNKJl/CzXdIZw9BxnxOEpnlqcQQbG
+         dRL2BeYBCgI9kR9i34ao2kj43Db/RIP3vWoWNG/gPhYwKLPqtwSiP1KtipxDbox1ddbN
+         0AMZe7S83gr4ISWoNSHXhRP9ouuaDA5W3LkmVbupY5iyjhU7MkjMAWxAkjB53dynJ+p5
+         m+tjW1g7OVC2PC/Plo2X40iqMiq4Iw68JHoivWr5R8F7SDWUP2pewE8v/9lWk+0uqjSX
+         M1/oSsw0mFY7OwQUjQZj56LRPQ+Njx/2EB49sd4C2YAHeZD8qz4lLHa1WRugnFMGYCba
+         Ummw==
+X-Gm-Message-State: AOAM532HjPWQsGOl4DygiXwjh/wkv+hhBuFgyxOajcS7PBew767ohdn5
+        Nypni7o44nfKtjXMEBrk418=
+X-Google-Smtp-Source: ABdhPJxHh4tPKa9sPm7s9acN+TCK+NnrCcJBpR+j4BT5dL8OwePvUld7jcTRt1L7lS8BQrUrGrtPuQ==
+X-Received: by 2002:a65:62c3:: with SMTP id m3mr253829pgv.338.1599649864101;
+        Wed, 09 Sep 2020 04:11:04 -0700 (PDT)
+Received: from rapsodo.Rapsodo.com ([101.100.171.87])
+        by smtp.gmail.com with ESMTPSA id f19sm2235762pfj.25.2020.09.09.04.11.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Sep 2020 09:59:17 -0700 (PDT)
-Date:   Wed, 9 Sep 2020 19:59:15 +0300
-From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-actions@lists.infradead.org
-Subject: Re: [PATCH v2 1/1] i2c: busses: Add support for atomic transfers in
- Actions Semi Owl driver
-Message-ID: <20200909165915.GA387239@BV030612LT>
-References: <b6c56858854805b0f03e29b7dde40b20796d5c93.1599561278.git.cristian.ciocaltea@gmail.com>
- <20200909151748.GA11397@mani>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200909151748.GA11397@mani>
+        Wed, 09 Sep 2020 04:11:03 -0700 (PDT)
+From:   Thirumalesha Narasimhappa <nthirumalesha7@gmail.com>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Shivamurthy Shastri <sshivamurthy@micron.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Chuanhong Guo <gch981213@gmail.com>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Thirumalesha Narasimhappa <nthirumalesha7@gmail.com>
+Subject: [RESEND PATCH v3] mtd: spinand: micron: add support for MT29F2G01AAAED
+Date:   Wed,  9 Sep 2020 19:14:18 +0800
+Message-Id: <20200909111418.22549-1-nthirumalesha7@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mani,
+The MT29F2G01AAAED is a single die, 2Gb Micron SPI NAND Flash with 4-bit
+ECC
 
-Thanks for the review!
+Signed-off-by: Thirumalesha Narasimhappa <nthirumalesha7@gmail.com>
+---
+ v3: As per the review comments,
+     1. Renamed read_cache_variants as quadio_read_cache_variants, write_cache_variants as
+	x4_write_cache_variants/x1_write_cache_variants, update_cache_variants as
+	x4_update_cache_variants/x1_update_cache_variants, read_cache_variants
+	as x4_read_cache_variants
+     2. Renamed micron_8_ooblayout as micron_grouped_ooblayout & mt29f2g01aaaed_ooblayout as
+	micron_interleaved_ooblayout
+     3. Generalized page size based oob section check in mt29f2g01aaaed_ooblayout_ecc function
+	and separate case check for two bytes BBM reserved in mt29f2g01aaaed_ooblayout_free function
+     4. Removed mt29f2g01aaaed_ecc_get_status function & MICRON_STATUS_ECC_1TO4_BITFLIPS
 
-On Wed, Sep 09, 2020 at 08:47:48PM +0530, Manivannan Sadhasivam wrote:
-> Hi Cristi,
-> 
-> On 0908, Cristian Ciocaltea wrote:
-> > Atomic transfers are required to properly power off a machine through
-> > an I2C controlled PMIC, such as the Actions Semi ATC260x series.
-> > 
-> > System shutdown may happen with interrupts being disabled and, as a
-> > consequence, the kernel may hang if the driver does not support atomic
-> > transfers.
-> > 
-> > This functionality is essentially implemented by polling the FIFO
-> > Status register until either Command Execute Completed or NACK Error
-> > bits are set.
-> > 
-> 
-> Thanks for the patch! I just have couple of minor comments and other
-> than that it looks good to me.
-> 
-> > Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-> > ---
-> > Changes in v2:
-> >  - Dropped unused return codes from owl_i2c_xfer_data(), per Mani's review
-> >  - Rebased patch on v5.9-rc4
-> > 
-> >  drivers/i2c/busses/i2c-owl.c | 78 ++++++++++++++++++++++++++----------
-> >  1 file changed, 57 insertions(+), 21 deletions(-)
-> > 
-> > diff --git a/drivers/i2c/busses/i2c-owl.c b/drivers/i2c/busses/i2c-owl.c
-> > index 672f1f239bd6..29605257831f 100644
-> > --- a/drivers/i2c/busses/i2c-owl.c
-> > +++ b/drivers/i2c/busses/i2c-owl.c
-> > @@ -14,6 +14,7 @@
-> >  #include <linux/i2c.h>
-> >  #include <linux/interrupt.h>
-> >  #include <linux/io.h>
-> > +#include <linux/iopoll.h>
-> >  #include <linux/module.h>
-> >  #include <linux/of_device.h>
-> >  
-> > @@ -76,6 +77,7 @@
-> >  #define OWL_I2C_FIFOCTL_TFR	BIT(2)
-> >  
-> >  /* I2Cc_FIFOSTAT Bit Mask */
-> > +#define OWL_I2C_FIFOSTAT_CECB	BIT(0)
-> >  #define OWL_I2C_FIFOSTAT_RNB	BIT(1)
-> >  #define OWL_I2C_FIFOSTAT_RFE	BIT(2)
-> >  #define OWL_I2C_FIFOSTAT_TFF	BIT(5)
-> > @@ -83,7 +85,8 @@
-> >  #define OWL_I2C_FIFOSTAT_RFD	GENMASK(15, 8)
-> >  
-> >  /* I2C bus timeout */
-> > -#define OWL_I2C_TIMEOUT		msecs_to_jiffies(4 * 1000)
-> > +#define OWL_I2C_TIMEOUT_MS	(4 * 1000)
-> > +#define OWL_I2C_TIMEOUT		msecs_to_jiffies(OWL_I2C_TIMEOUT_MS)
-> >  
-> >  #define OWL_I2C_MAX_RETRIES	50
-> >  
-> > @@ -161,29 +164,25 @@ static void owl_i2c_set_freq(struct owl_i2c_dev *i2c_dev)
-> >  	writel(OWL_I2C_DIV_FACTOR(val), i2c_dev->base + OWL_I2C_REG_CLKDIV);
-> >  }
-> >  
-> > -static irqreturn_t owl_i2c_interrupt(int irq, void *_dev)
-> > +static void owl_i2c_xfer_data(struct owl_i2c_dev *i2c_dev)
-> >  {
-> > -	struct owl_i2c_dev *i2c_dev = _dev;
-> >  	struct i2c_msg *msg = i2c_dev->msg;
-> > -	unsigned long flags;
-> >  	unsigned int stat, fifostat;
-> >  
-> > -	spin_lock_irqsave(&i2c_dev->lock, flags);
-> > -
-> >  	i2c_dev->err = 0;
-> >  
-> >  	/* Handle NACK from slave */
-> >  	fifostat = readl(i2c_dev->base + OWL_I2C_REG_FIFOSTAT);
-> >  	if (fifostat & OWL_I2C_FIFOSTAT_RNB) {
-> >  		i2c_dev->err = -ENXIO;
-> > -		goto stop;
-> > +		return;
-> >  	}
-> >  
-> >  	/* Handle bus error */
-> >  	stat = readl(i2c_dev->base + OWL_I2C_REG_STAT);
-> >  	if (stat & OWL_I2C_STAT_BEB) {
-> >  		i2c_dev->err = -EIO;
-> > -		goto stop;
-> > +		return;
-> >  	}
-> >  
-> >  	/* Handle FIFO read */
-> > @@ -196,18 +195,28 @@ static irqreturn_t owl_i2c_interrupt(int irq, void *_dev)
-> >  	} else {
-> >  		/* Handle the remaining bytes which were not sent */
-> >  		while (!(readl(i2c_dev->base + OWL_I2C_REG_FIFOSTAT) &
-> > -			 OWL_I2C_FIFOSTAT_TFF) && i2c_dev->msg_ptr < msg->len) {
-> > +			OWL_I2C_FIFOSTAT_TFF) && i2c_dev->msg_ptr < msg->len) {
-> 
-> Spurious change?
+ v2: removed SPINAND_SELECT_TARGET as per the comments & fixed typo errors
 
-I have just fixed a small indentation issue (removed extra space char
-in front of OWL_I2C...). I will revert it if you think it's not the right
-context for doing this (located ~10 lines bellow the previous edit).
+ drivers/mtd/nand/spi/micron.c | 141 ++++++++++++++++++++++++----------
+ 1 file changed, 101 insertions(+), 40 deletions(-)
 
-> >  			writel(msg->buf[i2c_dev->msg_ptr++],
-> >  			       i2c_dev->base + OWL_I2C_REG_TXDAT);
-> >  		}
-> >  	}
-> > +}
-> > +
-> > +static irqreturn_t owl_i2c_interrupt(int irq, void *_dev)
-> > +{
-> > +	struct owl_i2c_dev *i2c_dev = _dev;
-> > +	unsigned long flags;
-> > +
-> > +	spin_lock_irqsave(&i2c_dev->lock, flags);
-> > +
-> > +	owl_i2c_xfer_data(i2c_dev);
-> >  
-> > -stop:
-> >  	/* Clear pending interrupts */
-> >  	owl_i2c_update_reg(i2c_dev->base + OWL_I2C_REG_STAT,
-> >  			   OWL_I2C_STAT_IRQP, true);
-> >  
-> >  	complete_all(&i2c_dev->msg_complete);
-> > +
-> >  	spin_unlock_irqrestore(&i2c_dev->lock, flags);
-> >  
-> >  	return IRQ_HANDLED;
-> > @@ -235,8 +244,8 @@ static int owl_i2c_check_bus_busy(struct i2c_adapter *adap)
-> >  	return 0;
-> >  }
-> >  
-> > -static int owl_i2c_master_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs,
-> > -			       int num)
-> > +static int owl_i2c_xfer_common(struct i2c_adapter *adap, struct i2c_msg *msgs,
-> > +			       int num, bool atomic)
-> >  {
-> >  	struct owl_i2c_dev *i2c_dev = i2c_get_adapdata(adap);
-> >  	struct i2c_msg *msg;
-> > @@ -280,11 +289,12 @@ static int owl_i2c_master_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs,
-> >  		goto err_exit;
-> >  	}
-> >  
-> > -	reinit_completion(&i2c_dev->msg_complete);
-> > +	if (!atomic)
-> > +		reinit_completion(&i2c_dev->msg_complete);
-> >  
-> > -	/* Enable I2C controller interrupt */
-> > +	/* Enable/disable I2C controller interrupt */
-> >  	owl_i2c_update_reg(i2c_dev->base + OWL_I2C_REG_CTL,
-> > -			   OWL_I2C_CTL_IRQE, true);
-> > +			   OWL_I2C_CTL_IRQE, !atomic);
-> >  
-> >  	/*
-> >  	 * Select: FIFO enable, Master mode, Stop enable, Data count enable,
-> > @@ -352,20 +362,33 @@ static int owl_i2c_master_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs,
-> >  
-> >  	spin_unlock_irqrestore(&i2c_dev->lock, flags);
-> >  
-> > -	time_left = wait_for_completion_timeout(&i2c_dev->msg_complete,
-> > -						adap->timeout);
-> > +	if (atomic) {
-> > +		/* Wait for Command Execute Completed or NACK Error bits */
-> > +		ret = readl_poll_timeout_atomic(i2c_dev->base + OWL_I2C_REG_FIFOSTAT,
-> > +						val, val & (OWL_I2C_FIFOSTAT_CECB |
-> > +							    OWL_I2C_FIFOSTAT_RNB),
-> > +						10, OWL_I2C_TIMEOUT_MS * 1000);
-> > +	} else {
-> > +		time_left = wait_for_completion_timeout(&i2c_dev->msg_complete,
-> > +							adap->timeout);
-> > +		if (!time_left)
-> > +			ret = -ETIMEDOUT;
-> > +	}
-> >  
-> >  	spin_lock_irqsave(&i2c_dev->lock, flags);
-> > -	if (time_left == 0) {
-> > +
-> > +	if (ret) {
-> >  		dev_err(&adap->dev, "Transaction timed out\n");
-> >  		/* Send stop condition and release the bus */
-> >  		owl_i2c_update_reg(i2c_dev->base + OWL_I2C_REG_CTL,
-> >  				   OWL_I2C_CTL_GBCC_STOP | OWL_I2C_CTL_RB,
-> >  				   true);
-> > -		ret = -ETIMEDOUT;
-> >  		goto err_exit;
-> >  	}
-> >  
-> > +	if (atomic)
-> > +		owl_i2c_xfer_data(i2c_dev);
-> 
-> You are not clearing the pending interrupts here.
+diff --git a/drivers/mtd/nand/spi/micron.c b/drivers/mtd/nand/spi/micron.c
+index 5d370cfcdaaa..fa8c20f37611 100644
+--- a/drivers/mtd/nand/spi/micron.c
++++ b/drivers/mtd/nand/spi/micron.c
+@@ -28,7 +28,7 @@
+ 
+ #define MICRON_SELECT_DIE(x)	((x) << 6)
+ 
+-static SPINAND_OP_VARIANTS(read_cache_variants,
++static SPINAND_OP_VARIANTS(quadio_read_cache_variants,
+ 		SPINAND_PAGE_READ_FROM_CACHE_QUADIO_OP(0, 2, NULL, 0),
+ 		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
+ 		SPINAND_PAGE_READ_FROM_CACHE_DUALIO_OP(0, 1, NULL, 0),
+@@ -36,14 +36,27 @@ static SPINAND_OP_VARIANTS(read_cache_variants,
+ 		SPINAND_PAGE_READ_FROM_CACHE_OP(true, 0, 1, NULL, 0),
+ 		SPINAND_PAGE_READ_FROM_CACHE_OP(false, 0, 1, NULL, 0));
+ 
+-static SPINAND_OP_VARIANTS(write_cache_variants,
++static SPINAND_OP_VARIANTS(x4_write_cache_variants,
+ 		SPINAND_PROG_LOAD_X4(true, 0, NULL, 0),
+ 		SPINAND_PROG_LOAD(true, 0, NULL, 0));
+ 
+-static SPINAND_OP_VARIANTS(update_cache_variants,
++static SPINAND_OP_VARIANTS(x4_update_cache_variants,
+ 		SPINAND_PROG_LOAD_X4(false, 0, NULL, 0),
+ 		SPINAND_PROG_LOAD(false, 0, NULL, 0));
+ 
++/* Micron  MT29F2G01AAAED Device */
++static SPINAND_OP_VARIANTS(x4_read_cache_variants,
++		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
++		SPINAND_PAGE_READ_FROM_CACHE_X2_OP(0, 1, NULL, 0),
++		SPINAND_PAGE_READ_FROM_CACHE_OP(true, 0, 1, NULL, 0),
++		SPINAND_PAGE_READ_FROM_CACHE_OP(false, 0, 1, NULL, 0));
++
++static SPINAND_OP_VARIANTS(x1_write_cache_variants,
++		SPINAND_PROG_LOAD(true, 0, NULL, 0));
++
++static SPINAND_OP_VARIANTS(x1_update_cache_variants,
++		SPINAND_PROG_LOAD(false, 0, NULL, 0));
++
+ static int micron_8_ooblayout_ecc(struct mtd_info *mtd, int section,
+ 				  struct mtd_oob_region *region)
+ {
+@@ -69,11 +82,49 @@ static int micron_8_ooblayout_free(struct mtd_info *mtd, int section,
+ 	return 0;
+ }
+ 
+-static const struct mtd_ooblayout_ops micron_8_ooblayout = {
++static int mt29f2g01aaaed_ooblayout_ecc(struct mtd_info *mtd, int section,
++					struct mtd_oob_region *region)
++{
++	struct spinand_device *spinand = mtd_to_spinand(mtd);
++
++	if (section >= spinand->base.memorg.pagesize /
++			mtd->ecc_step_size)
++		return -ERANGE;
++
++	region->offset = (section * 16) + 8;
++	region->length = 8;
++
++	return 0;
++}
++
++static int mt29f2g01aaaed_ooblayout_free(struct mtd_info *mtd, int section,
++					 struct mtd_oob_region *region)
++{
++	if (section >= 4)
++		return -ERANGE;
++
++	if (section) {
++		region->offset = 16 * section;
++		region->length = 8;
++	} else {
++		/* section 0 has two bytes reserved for the BBM */
++		region->offset = 2;
++		region->length = 6;
++	}
++
++	return 0;
++}
++
++static const struct mtd_ooblayout_ops micron_grouped_ooblayout = {
+ 	.ecc = micron_8_ooblayout_ecc,
+ 	.free = micron_8_ooblayout_free,
+ };
+ 
++static const struct mtd_ooblayout_ops micron_interleaved_ooblayout = {
++	.ecc = mt29f2g01aaaed_ooblayout_ecc,
++	.free = mt29f2g01aaaed_ooblayout_free,
++};
++
+ static int micron_select_target(struct spinand_device *spinand,
+ 				unsigned int target)
+ {
+@@ -120,55 +171,55 @@ static const struct spinand_info micron_spinand_table[] = {
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x24),
+ 		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 2, 1, 1),
+ 		     NAND_ECCREQ(8, 512),
+-		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+-					      &write_cache_variants,
+-					      &update_cache_variants),
++		     SPINAND_INFO_OP_VARIANTS(&quadio_read_cache_variants,
++					      &x4_write_cache_variants,
++					      &x4_update_cache_variants),
+ 		     0,
+-		     SPINAND_ECCINFO(&micron_8_ooblayout,
++		     SPINAND_ECCINFO(&micron_grouped_ooblayout,
+ 				     micron_8_ecc_get_status)),
+ 	/* M79A 2Gb 1.8V */
+ 	SPINAND_INFO("MT29F2G01ABBGD",
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x25),
+ 		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 2, 1, 1),
+ 		     NAND_ECCREQ(8, 512),
+-		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+-					      &write_cache_variants,
+-					      &update_cache_variants),
++		     SPINAND_INFO_OP_VARIANTS(&quadio_read_cache_variants,
++					      &x4_write_cache_variants,
++					      &x4_update_cache_variants),
+ 		     0,
+-		     SPINAND_ECCINFO(&micron_8_ooblayout,
++		     SPINAND_ECCINFO(&micron_grouped_ooblayout,
+ 				     micron_8_ecc_get_status)),
+ 	/* M78A 1Gb 3.3V */
+ 	SPINAND_INFO("MT29F1G01ABAFD",
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x14),
+ 		     NAND_MEMORG(1, 2048, 128, 64, 1024, 20, 1, 1, 1),
+ 		     NAND_ECCREQ(8, 512),
+-		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+-					      &write_cache_variants,
+-					      &update_cache_variants),
++		     SPINAND_INFO_OP_VARIANTS(&quadio_read_cache_variants,
++					      &x4_write_cache_variants,
++					      &x4_update_cache_variants),
+ 		     0,
+-		     SPINAND_ECCINFO(&micron_8_ooblayout,
++		     SPINAND_ECCINFO(&micron_grouped_ooblayout,
+ 				     micron_8_ecc_get_status)),
+ 	/* M78A 1Gb 1.8V */
+ 	SPINAND_INFO("MT29F1G01ABAFD",
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x15),
+ 		     NAND_MEMORG(1, 2048, 128, 64, 1024, 20, 1, 1, 1),
+ 		     NAND_ECCREQ(8, 512),
+-		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+-					      &write_cache_variants,
+-					      &update_cache_variants),
++		     SPINAND_INFO_OP_VARIANTS(&quadio_read_cache_variants,
++					      &x4_write_cache_variants,
++					      &x4_update_cache_variants),
+ 		     0,
+-		     SPINAND_ECCINFO(&micron_8_ooblayout,
++		     SPINAND_ECCINFO(&micron_grouped_ooblayout,
+ 				     micron_8_ecc_get_status)),
+ 	/* M79A 4Gb 3.3V */
+ 	SPINAND_INFO("MT29F4G01ADAGD",
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x36),
+ 		     NAND_MEMORG(1, 2048, 128, 64, 2048, 80, 2, 1, 2),
+ 		     NAND_ECCREQ(8, 512),
+-		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+-					      &write_cache_variants,
+-					      &update_cache_variants),
++		     SPINAND_INFO_OP_VARIANTS(&quadio_read_cache_variants,
++					      &x4_write_cache_variants,
++					      &x4_update_cache_variants),
+ 		     0,
+-		     SPINAND_ECCINFO(&micron_8_ooblayout,
++		     SPINAND_ECCINFO(&micron_grouped_ooblayout,
+ 				     micron_8_ecc_get_status),
+ 		     SPINAND_SELECT_TARGET(micron_select_target)),
+ 	/* M70A 4Gb 3.3V */
+@@ -176,33 +227,33 @@ static const struct spinand_info micron_spinand_table[] = {
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x34),
+ 		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 1),
+ 		     NAND_ECCREQ(8, 512),
+-		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+-					      &write_cache_variants,
+-					      &update_cache_variants),
++		     SPINAND_INFO_OP_VARIANTS(&quadio_read_cache_variants,
++					      &x4_write_cache_variants,
++					      &x4_update_cache_variants),
+ 		     SPINAND_HAS_CR_FEAT_BIT,
+-		     SPINAND_ECCINFO(&micron_8_ooblayout,
++		     SPINAND_ECCINFO(&micron_grouped_ooblayout,
+ 				     micron_8_ecc_get_status)),
+ 	/* M70A 4Gb 1.8V */
+ 	SPINAND_INFO("MT29F4G01ABBFD",
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x35),
+ 		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 1),
+ 		     NAND_ECCREQ(8, 512),
+-		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+-					      &write_cache_variants,
+-					      &update_cache_variants),
++		     SPINAND_INFO_OP_VARIANTS(&quadio_read_cache_variants,
++					      &x4_write_cache_variants,
++					      &x4_update_cache_variants),
+ 		     SPINAND_HAS_CR_FEAT_BIT,
+-		     SPINAND_ECCINFO(&micron_8_ooblayout,
++		     SPINAND_ECCINFO(&micron_grouped_ooblayout,
+ 				     micron_8_ecc_get_status)),
+ 	/* M70A 8Gb 3.3V */
+ 	SPINAND_INFO("MT29F8G01ADAFD",
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x46),
+ 		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 2),
+ 		     NAND_ECCREQ(8, 512),
+-		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+-					      &write_cache_variants,
+-					      &update_cache_variants),
++		     SPINAND_INFO_OP_VARIANTS(&quadio_read_cache_variants,
++					      &x4_write_cache_variants,
++					      &x4_update_cache_variants),
+ 		     SPINAND_HAS_CR_FEAT_BIT,
+-		     SPINAND_ECCINFO(&micron_8_ooblayout,
++		     SPINAND_ECCINFO(&micron_grouped_ooblayout,
+ 				     micron_8_ecc_get_status),
+ 		     SPINAND_SELECT_TARGET(micron_select_target)),
+ 	/* M70A 8Gb 1.8V */
+@@ -210,13 +261,23 @@ static const struct spinand_info micron_spinand_table[] = {
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x47),
+ 		     NAND_MEMORG(1, 4096, 256, 64, 2048, 40, 1, 1, 2),
+ 		     NAND_ECCREQ(8, 512),
+-		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+-					      &write_cache_variants,
+-					      &update_cache_variants),
++		     SPINAND_INFO_OP_VARIANTS(&quadio_read_cache_variants,
++					      &x4_write_cache_variants,
++					      &x4_update_cache_variants),
+ 		     SPINAND_HAS_CR_FEAT_BIT,
+-		     SPINAND_ECCINFO(&micron_8_ooblayout,
++		     SPINAND_ECCINFO(&micron_grouped_ooblayout,
+ 				     micron_8_ecc_get_status),
+ 		     SPINAND_SELECT_TARGET(micron_select_target)),
++	/* M69A 2Gb 3.3V */
++	SPINAND_INFO("MT29F2G01AAAED",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x9F),
++		     NAND_MEMORG(1, 2048, 64, 64, 2048, 80, 2, 1, 1),
++		     NAND_ECCREQ(4, 512),
++		     SPINAND_INFO_OP_VARIANTS(&x4_read_cache_variants,
++					      &x1_write_cache_variants,
++					      &x1_update_cache_variants),
++		     0,
++		     SPINAND_ECCINFO(&micron_interleaved_ooblayout, NULL)),
+ };
+ 
+ static int micron_spinand_init(struct spinand_device *spinand)
+-- 
+2.17.1
 
-I assumed this is not needed for atomic contexts since the controller
-interrupt is disabled (please see the comment above: Enable/disable I2C
-controller interrupt).
-
-Otherwise I will simply move the clear pending interrupts code from 
-owl_i2c_interrupt() to owl_i2c_xfer_data().
-
-> Thanks,
-> Mani
-> 
-> > +
-> >  	ret = i2c_dev->err < 0 ? i2c_dev->err : num;
-> >  
-> >  err_exit:
-> > @@ -379,9 +402,22 @@ static int owl_i2c_master_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs,
-> >  	return ret;
-> >  }
-> >  
-> > +static int owl_i2c_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs,
-> > +			int num)
-> > +{
-> > +	return owl_i2c_xfer_common(adap, msgs, num, false);
-> > +}
-> > +
-> > +static int owl_i2c_xfer_atomic(struct i2c_adapter *adap,
-> > +			       struct i2c_msg *msgs, int num)
-> > +{
-> > +	return owl_i2c_xfer_common(adap, msgs, num, true);
-> > +}
-> > +
-> >  static const struct i2c_algorithm owl_i2c_algorithm = {
-> > -	.master_xfer    = owl_i2c_master_xfer,
-> > -	.functionality  = owl_i2c_func,
-> > +	.master_xfer	     = owl_i2c_xfer,
-> > +	.master_xfer_atomic  = owl_i2c_xfer_atomic,
-> > +	.functionality	     = owl_i2c_func,
-> >  };
-> >  
-> >  static const struct i2c_adapter_quirks owl_i2c_quirks = {
-> > -- 
-> > 2.28.0
-> > 
-
-Kind regards,
-Cristi
