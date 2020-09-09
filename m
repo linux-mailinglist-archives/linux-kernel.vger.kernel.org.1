@@ -2,79 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91717262736
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 08:35:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5280F262737
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 08:35:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726399AbgIIGfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 02:35:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43118 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725772AbgIIGfP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 02:35:15 -0400
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5CFB721532;
-        Wed,  9 Sep 2020 06:35:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599633314;
-        bh=Jmx/gfAeiOp0+n83Y104nKTHVJsUUirr9Zyouh3z9SU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=VlIdGeGSfpCGWydEZHncvsgvg1D5Z8pouy4+Dqm+6/KZiUq7yX1jvu+MzDXNEW7Dl
-         rYgZusNXR/xgUbzojzQ+RpAXx/Wk2eiWFvgcaqXeddT8QBOtJO0M0m6oG2rnQKQdJi
-         wEv+AxBeAzv7md3R4YVg0pa/sioRq59uT0eOPHYc=
-Received: by mail-ed1-f53.google.com with SMTP id g4so1491440edk.0;
-        Tue, 08 Sep 2020 23:35:14 -0700 (PDT)
-X-Gm-Message-State: AOAM531AiNdrbl+vC3jLk+C3OR97TZ8LVlU5umRPvj318zfKXy61XARg
-        nCBlNVMi3naFIqFteuxLwxrMdhnhQIC4Ro1mU20=
-X-Google-Smtp-Source: ABdhPJyCJq3WS5QRVis8ksBg0a87Uu5M+O+XbjQlSrq+pcwAoif/S8fpOajpxZgwaqRsy01DOOInpTGlPkijuzyYbNE=
-X-Received: by 2002:aa7:da16:: with SMTP id r22mr2682276eds.132.1599633312940;
- Tue, 08 Sep 2020 23:35:12 -0700 (PDT)
+        id S1727812AbgIIGfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 02:35:24 -0400
+Received: from mail-dm6nam10on2058.outbound.protection.outlook.com ([40.107.93.58]:51332
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725772AbgIIGfT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 02:35:19 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BnJsPekNsIRIfPsg8GVj+H1gqbwm4d7QmPXsc5H9anFYWBrlHhztu101oFyhvMGpX+B6T7DO/0t5wp35wXJrB0McZ8RaVWd5PUvIcaRvxkAzZF0Y8L9IP4CmA0OXlMzeP77Lz4ZbZ90eNYOQLZXafwFsG9kmRtsl1XfjnLR37t96pUuHlNoqE4z5XV+QMqAiQQwLQfvj/uqbnFs87Hgxac7TlhbKaUNO8KIywoTOuBbW9GjklG1wO/e8S01SssSM8YeEHY3BBBmeJOVWUu0+0B7RHD60rAbI5aNx2CKvcbzZywjcACotieXEgYC8AN0wAswLlpp1EqeC+vyE4YxkAw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GXJwQd38f+IHVl577VmS/wGUJR59m9LWT0KYwlDj+OU=;
+ b=e112pPIOFRs9qcO8mFJsXbkGj3zKTL59i+KWEJBJHi30SWwwly4YlKOwuwI4h2lzvtppQnTf16i+exHELyUbNx3xR2TMmA0z2hZLZTq7d/XtklCAJYCCXavEV2czrLmc/spXt8y9oLvgI0l5Vw3xgW10DzoQJS0ppiQiUyIYmS/bPEuY1jjbASQNm5T5WEmkx5nj3I69Hm56zWEovtv18bPwRZ9Z2hqR2qSfq++kuKO2joov1gnX1X6h9ULSjq0wKGN5Gql1XO1VT09pabhPFUClNRTmrxO86vuarkW35vn5TnCgUTh3k8m767tnox/dstrcJSAENg8s2FnOrYea8Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GXJwQd38f+IHVl577VmS/wGUJR59m9LWT0KYwlDj+OU=;
+ b=V8gp7+UfLvfEm3wPlE6RbkM3wrH2ZBkD6niEPAUI7YYn6pqwmrf8sMe70WyT2oIGIgFxZwwHZ607AHHjvuDgQIJN/U9alFqU/1ProJzB2CgPxQspF9tAqIT4TPfPCl+pp4wnpKrwNzKd7UjYgZRIafGpYl3Ubo8co89d2xA12ok=
+Received: from BYAPR11MB2632.namprd11.prod.outlook.com (2603:10b6:a02:c4::17)
+ by BYAPR11MB3111.namprd11.prod.outlook.com (2603:10b6:a03:90::25) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.16; Wed, 9 Sep
+ 2020 06:35:16 +0000
+Received: from BYAPR11MB2632.namprd11.prod.outlook.com
+ ([fe80::21a8:8895:6487:5126]) by BYAPR11MB2632.namprd11.prod.outlook.com
+ ([fe80::21a8:8895:6487:5126%6]) with mapi id 15.20.3370.016; Wed, 9 Sep 2020
+ 06:35:15 +0000
+From:   "Zhang, Qiang" <Qiang.Zhang@windriver.com>
+To:     Joel Fernandes <joel@joelfernandes.org>,
+        "paulmck@kernel.org" <paulmck@kernel.org>
+CC:     Uladzislau Rezki <urezki@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        rcu <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: 
+Thread-Index: AQHWhnNgdtT3KSvnnU6Qd/KLSreZGQ==
+Date:   Wed, 9 Sep 2020 06:35:15 +0000
+Message-ID: <BYAPR11MB263285B19261BE8096D87F65FF260@BYAPR11MB2632.namprd11.prod.outlook.com>
+References: <CAEXW_YQu9MAV-3ym0EFB0NmomWkLsBtZCT9sShnzo+vv=8sLgg@mail.gmail.com>
+ <20200818210355.GM27891@paulmck-ThinkPad-P72> <20200818215511.GA2538@pc636>
+ <20200818220245.GO27891@paulmck-ThinkPad-P72>
+ <CAEXW_YRZ6RM90+aYA0JQ1war0n-D0M4peXJZE2_Uqf07xvF+5g@mail.gmail.com>
+ <BYAPR11MB26323E6D956BA22DFE610A13FF5D0@BYAPR11MB2632.namprd11.prod.outlook.com>
+ <20200819135654.GB3875610@google.com>
+ <20200819152159.GX27891@paulmck-ThinkPad-P72> <20200819155808.GA8817@pc636>
+ <20200820223957.GB120898@google.com>,<20200821153328.GH2855@paulmck-ThinkPad-P72>
+In-Reply-To: <20200821153328.GH2855@paulmck-ThinkPad-P72>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: joelfernandes.org; dkim=none (message not signed)
+ header.d=none;joelfernandes.org; dmarc=none action=none
+ header.from=windriver.com;
+x-originating-ip: [60.247.85.82]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: f32c344a-ed2a-4e11-834a-08d8548a8353
+x-ms-traffictypediagnostic: BYAPR11MB3111:
+x-microsoft-antispam-prvs: <BYAPR11MB3111BABF7B22873A77BD6BC8FF260@BYAPR11MB3111.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6108;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 9WWb7SobxDYpBWvMXUksFebWB4HmtR6+E6bOYhOTYpIrp6zr1ncUG9u7wXSKVa8yCpVP8fMexNpzo21HjDlRCOfzCcS5pJLgwvWz4Js+F92+OnDyuljFsoBr45U7Tp2MAOTOW8DJzgI2M/8pHHAK1V751+zkpZMBlMH4gFJY7oYBSAgms7zEt04nr3sBQJl5Vgzu8FL0pIEpdAVGEuFzb/KeQHCoro+/Y+puxzlxxwF3Ig9g3LxBKKZwJ51h+SHB47yjOxf/1scdrvrWlna0hHeH5GwEMHhBG+pdgEMo4ELKj7wUBDkY5mBbRE0Z1NGa
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB2632.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(396003)(39840400004)(346002)(136003)(366004)(6506007)(558084003)(2906002)(8936002)(478600001)(7696005)(316002)(33656002)(54906003)(86362001)(110136005)(9686003)(5660300002)(66446008)(71200400001)(66556008)(64756008)(66476007)(66946007)(76116006)(91956017)(55016002)(186003)(26005)(4326008)(5406001)(52536014);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: RbFNcc/IWaPtNjRKq/MPlihLsy5KwzpeHoGlOHKWcNdlRqJoJVJJIgcAX5Ng6/1Vdalk8LliAxC4TDID/PPRMdjLZv4qM6msbC7YDWZIwm9z0yn0qUTwF1WmzZIKBLIBHuJXbTQTOgiRe8SkwleDBPWXiExceT4XeO99+I4cJNJCV5r+u2YwQyWrDKIuQHjzsMvdqTn+LImWK2gol/RkVKhhZOkjTu7euvib0UaFGAJ35I9h2GLKQBx/s6q+CCDefi+BopiT/pETzDzJeDuw+H9ii6GQzaC5+u67OhN9R7/H7x2TGxL39jbChlscfWkFa7KiTvbstOQd7+Qw7+ZAXIb85kHZEEAgvWss5QrD1vd+xWdPZ2oHTPVd+r9x23Twfvkqcsw89WE0Gxjpl3WGqpNMLoC9mUKC0XNX3Bk17TJpBeJrAZqxX8pUWHFWNnkpNgR5pQ4wLnOLpJbHmtTA7QuCO1fs2KqZWb9NwOPBvpQ9xvJWJNQR1YdCHwLRg8ii8T6IpCiSz8RGfz8ljxAwUrJGkjTkVLFQWkIyvvbAOo4zMVgIzMOmOc7DFmBAc0JKbpFU5RhgJZxlIIGyFm6UaiJtPhcK739bpKonBTE1dLoAXMmriE8adK0xEpdshFfVVC0EU4RGP9Ae0ZgIoJCz1Q==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20200908201319.3567-1-krzk@kernel.org> <20200908201319.3567-2-krzk@kernel.org>
- <33361ba9-51df-3b09-6744-9806cdf166db@ti.com>
-In-Reply-To: <33361ba9-51df-3b09-6744-9806cdf166db@ti.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Wed, 9 Sep 2020 08:35:01 +0200
-X-Gmail-Original-Message-ID: <CAJKOXPcfMPPK4eUWfU5ifJodt0nd-b+hxKV1AQ6oGbnXi--cdw@mail.gmail.com>
-Message-ID: <CAJKOXPcfMPPK4eUWfU5ifJodt0nd-b+hxKV1AQ6oGbnXi--cdw@mail.gmail.com>
-Subject: Re: [PATCH 2/7] power: supply: bq27xxx: report "not charging" on all types
-To:     Dan Murphy <dmurphy@ti.com>
-Cc:     Sebastian Reichel <sre@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB2632.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f32c344a-ed2a-4e11-834a-08d8548a8353
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Sep 2020 06:35:15.6574
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: gt5G/gHSdwaWZpDTeFoKfHWIgGJxAiM9QUDn12egN4JBoDdZvpvsxpt3GrPnFOEIs6edbgXcdxpAqQpDxJirm+9GUelz61nAC+Khs7Ofx90=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB3111
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 8 Sep 2020 at 22:54, Dan Murphy <dmurphy@ti.com> wrote:
->
-> Krzysztof
->
-> On 9/8/20 3:13 PM, Krzysztof Kozlowski wrote:
-> > Commit 6f24ff97e323 ("power: supply: bq27xxx_battery: Add the
-> > BQ27Z561 Battery monitor") and commit d74534c27775 ("power:
-> > bq27xxx_battery: Add support for additional bq27xxx family devices")
-> > added support for new device types by copying most of the code and
-> > adding necessary quirks.
-> >
-> > However they did not copy the code in bq27xxx_battery_status()
-> > responsible for returning POWER_SUPPLY_STATUS_NOT_CHARGING.
-> >
-> > Unify the bq27xxx_battery_status() so for all types when charger is
-> > supplied, it will return "not charging" status.
->
-> If this is a fix then please populate the Fixes tag.
->
-> But not sure how both commits are tied here
-
-I am not convinced that it is a fix. It's rather missing functionality
-on these new devices. The commits did not break anything. They just
-did not implement "not charging" for new types.
-
-Best Regards,
-Krzysztof
+IFdoZW4gY29uZmlnIHByZWVtcHQgUkNVLCAgaWYgdGFzayBzd2l0Y2ggaGFwcGVuZWQgaW4gcmN1
+ICByZWFkIGNyaXRpY2FsIHJlZ2lvbi4KIHRoZSBjdXJyZW50IHRhc2sgYmUgYWRkIHRvICJybnAt
+PmJsa2RfdGFza3MiIGxpbmsgbGlzdCwgIHRoZXNlIHJucCBpcyBsZWFmIG5vZGUgaW4gUkNVICAg
+IHRyZWUuCiBJbiAicmN1X2dwX2Zxc19sb29wIiBmdW5jLCAKCnN0YXRpYyB2b2lkIHJjdV9ncF9m
+cXNfbG9vcCh2b2lkKQogewoKICAgICAgICAgICAgc3RydWN0IHJjdV9ub2RlICpybnAgPSByY3Vf
+Z2V0X3Jvb3QoKTsKfQo=
