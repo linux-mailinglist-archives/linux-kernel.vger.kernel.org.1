@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D14192629BD
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 10:11:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95C2D2629B0
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 10:11:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730168AbgIIILx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 04:11:53 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:14104 "EHLO
+        id S1727935AbgIIILe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 04:11:34 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:14129 "EHLO
         hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728360AbgIIILT (ORCPT
+        with ESMTP id S1728971AbgIIILY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 04:11:19 -0400
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f588da00001>; Wed, 09 Sep 2020 01:09:04 -0700
+        Wed, 9 Sep 2020 04:11:24 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f588da40003>; Wed, 09 Sep 2020 01:09:08 -0700
 Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Wed, 09 Sep 2020 01:11:19 -0700
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Wed, 09 Sep 2020 01:11:23 -0700
 X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Wed, 09 Sep 2020 01:11:19 -0700
-Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 9 Sep
- 2020 08:11:17 +0000
-Received: from rnnvemgw01.nvidia.com (10.128.109.123) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Wed, 9 Sep 2020 08:11:17 +0000
+        by hqpgpgate101.nvidia.com on Wed, 09 Sep 2020 01:11:23 -0700
+Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 9 Sep
+ 2020 08:11:20 +0000
+Received: from rnnvemgw01.nvidia.com (10.128.109.123) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+ Transport; Wed, 9 Sep 2020 08:11:19 +0000
 Received: from jckuo-lt.nvidia.com (Not Verified[10.19.100.126]) by rnnvemgw01.nvidia.com with Trustwave SEG (v7,5,8,10121)
-        id <B5f588e230000>; Wed, 09 Sep 2020 01:11:17 -0700
+        id <B5f588e250003>; Wed, 09 Sep 2020 01:11:19 -0700
 From:   JC Kuo <jckuo@nvidia.com>
 To:     <gregkh@linuxfoundation.org>, <thierry.reding@gmail.com>,
         <robh@kernel.org>, <jonathanh@nvidia.com>, <kishon@ti.com>
 CC:     <linux-tegra@vger.kernel.org>, <linux-usb@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <nkristam@nvidia.com>, JC Kuo <jckuo@nvidia.com>
-Subject: [PATCH v3 14/15] usb: host: xhci-tegra: Unlink power domain devices
-Date:   Wed, 9 Sep 2020 16:10:40 +0800
-Message-ID: <20200909081041.3190157-15-jckuo@nvidia.com>
+Subject: [PATCH v3 15/15] xhci: tegra: Enable ELPG for runtime/system PM
+Date:   Wed, 9 Sep 2020 16:10:41 +0800
+Message-ID: <20200909081041.3190157-16-jckuo@nvidia.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200909081041.3190157-1-jckuo@nvidia.com>
 References: <20200909081041.3190157-1-jckuo@nvidia.com>
@@ -44,365 +44,674 @@ X-NVConfidentiality: public
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1599638944; bh=KeNtw7ps1El5ZpAGSrM1EYkiAfxtpPvpXJs4AKt+XQU=;
+        t=1599638948; bh=tD/5Wp3hSTKebN8Bfr3z8aJvVUzMQzm/8mFortT886Q=;
         h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
          In-Reply-To:References:MIME-Version:X-NVConfidentiality:
          Content-Transfer-Encoding:Content-Type;
-        b=Q0L9x75V2iwIZUXK0/AjcqEm4oX40LU+AAI2hZe6cpwgsLwSMG44/076qkGGROm7K
-         mmAHkw6DVI6J2cHZAlImhE37+gqI/Dc60B/zPaEn22QdQKqtrNkf7C5jfU8jnkVt8W
-         8bgdnBcCGRsGoUj5GwMKxnPYQ9lLKlRni12wGenCzpwsE+uUqZbJIKnocpjgI6Qi/9
-         xe7wSUtgLDnqD4t6KRXYilZiT2OWI245k1+cvttB2uX51Ls9Pb5VdwvRLpOFf7YD+u
-         e5d9morcHv8RM3jR08b5SDALnKOuKD90GV7vn4OEIRdPGJ0fTf2ALsB9krbR3/jyou
-         m3iJ3UB9j1xTg==
+        b=mulne7TQxiEmgFYQqG11QmvFpLR47lNTv+UdqU7uYVatpsC/lVxPnvfXPd+SVUR7Y
+         3M/jjTVCxk8BIhErJdkUCshHOwlBPJsCoyX4CNoPT3Pht3bqaihRvgXlPX9XmdVXaV
+         7ESevDTYnG41rRbUtn8NlO1kX3aMRfxIZdOo8ZluBFtG15AoswvVdUh4LGpDEzXm75
+         ChKm85FpAHUFPKxICY6z3dSafNeNpTBrPcudgmj8iyYpI2RNEPTOSRLMlsNwh33hGs
+         6tU1hkVbM5knOkvZP2DyiZzT8WV1aQ/oBbRqVr6zYBxLo5pE7jGjlEmMxRzMMw2QsM
+         Wcno2TTW6r+nQ==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit unlinks xhci-tegra platform device with ss/host power
-domain devices. Reasons for this change is - at elpg entry, PHY
-sleepwalk and wake configuration need to be done before powering
-down ss/host partitions, and PHY need be powered off after powering
-down ss/host partitions. Sequence looks like roughly below:
+This commit implements the complete programming sequence for ELPG
+entry and exit.
 
-  tegra_xusb_enter_elpg() -> xhci_suspend()
-                          -> enable PHY sleepwalk and wake if needed
-                          -> power down ss/host partitions
-                          -> power down PHY
+ 1. At ELPG entry, invokes tegra_xusb_padctl_enable_phy_sleepwalk()
+    and tegra_xusb_padctl_enable_phy_wake() to configure XUSB PADCTL
+    sleepwalk and wake detection circuits to maintain USB lines level
+    and respond to wake events (wake-on-connect, wake-on-disconnect,
+    device-initiated-wake).
 
-If ss/host power domains are linked to xhci-tegra platform device, we
-are not able to perform the sequence like above.
+ 2. At ELPG exit, invokes tegra_xusb_padctl_disable_phy_sleepwalk()
+    and tegra_xusb_padctl_disable_phy_wake() to disarm sleepwalk and
+    wake detection circuits.
 
-This commit introduces:
-  1. tegra_xusb_unpowergate_partitions() to power up ss and host
-     partitions together. If ss/host power domain devices are
-     available, it invokes pm_runtime_get_sync() to request power
-     driver to power up partitions; If power domain devices are not
-     available, tegra_powergate_sequence_power_up() will be used to
-     power up partitions.
+At runtime suspend, XUSB host controller can enter ELPG to reduce
+power consumption. When XUSB PADCTL wake detection circuit detects
+a wake event, an interrupt will be raised. xhci-tegra driver then
+will invoke pm_runtime_resume() for xhci-tegra.
 
-  2. tegra_xusb_powergate_partitions() to power down ss and host
-     partitions together. If ss/host power domain devices are
-     available, it invokes pm_runtime_put_sync() to request power
-     driver to power down partitions; If power domain devices are not
-     available, tegra_powergate_power_off() will be used to power down
-     partitions.
+Runtime resume could also be triggered by protocol drivers, this is
+the host-initiated-wake event. At runtime resume, xhci-tegra driver
+brings XUSB host controller out of ELPG to handle the wake events.
+
+The same ELPG enter/exit procedure will be performed for system
+suspend/resume path so USB devices can remain connected across SC7.
 
 Signed-off-by: JC Kuo <jckuo@nvidia.com>
 ---
 v3:
-   'use_genpd' base on the results of tegra_xusb_powerdomain_init()
-
- drivers/usb/host/xhci-tegra.c | 199 ++++++++++++++++++----------------
- 1 file changed, 108 insertions(+), 91 deletions(-)
+   use 'unsigned int' for PHY index
+   remove unnecessary 'else'
+   drop IRQF_TRIGGER_HIGH when invokes devm_request_threaded_irq()
+  =20
+ drivers/usb/host/xhci-tegra.c | 389 +++++++++++++++++++++++++++++++---
+ 1 file changed, 360 insertions(+), 29 deletions(-)
 
 diff --git a/drivers/usb/host/xhci-tegra.c b/drivers/usb/host/xhci-tegra.c
-index 934be1686352..aabff8ee0bb3 100644
+index aabff8ee0bb3..ba3f40e78171 100644
 --- a/drivers/usb/host/xhci-tegra.c
 +++ b/drivers/usb/host/xhci-tegra.c
-@@ -249,8 +249,7 @@ struct tegra_xusb {
+@@ -15,9 +15,11 @@
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/of_device.h>
++#include <linux/of_irq.h>
+ #include <linux/phy/phy.h>
+ #include <linux/phy/tegra/xusb.h>
+ #include <linux/platform_device.h>
++#include <linux/usb/ch9.h>
+ #include <linux/pm.h>
+ #include <linux/pm_domain.h>
+ #include <linux/pm_runtime.h>
+@@ -224,6 +226,7 @@ struct tegra_xusb {
 =20
- 	struct device *genpd_dev_host;
- 	struct device *genpd_dev_ss;
--	struct device_link *genpd_dl_host;
--	struct device_link *genpd_dl_ss;
-+	bool use_genpd;
+ 	int xhci_irq;
+ 	int mbox_irq;
++	int padctl_irq;
 =20
- 	struct phy **phys;
- 	unsigned int num_phys;
-@@ -814,36 +813,12 @@ static void tegra_xusb_phy_disable(struct tegra_xusb =
+ 	void __iomem *ipfs_base;
+ 	void __iomem *fpci_base;
+@@ -269,10 +272,13 @@ struct tegra_xusb {
+ 		dma_addr_t phys;
+ 	} fw;
+=20
++	bool suspended;
+ 	struct tegra_xusb_context context;
+ };
+=20
+ static struct hc_driver __read_mostly tegra_xhci_hc_driver;
++static int tegra_xusb_exit_elpg(struct tegra_xusb *tegra, bool runtime);
++static int tegra_xusb_enter_elpg(struct tegra_xusb *tegra, bool runtime);
+=20
+ static inline u32 fpci_readl(struct tegra_xusb *tegra, unsigned int offset=
+)
+ {
+@@ -658,6 +664,9 @@ static irqreturn_t tegra_xusb_mbox_thread(int irq, void=
+ *data)
+=20
+ 	mutex_lock(&tegra->lock);
+=20
++	if (pm_runtime_suspended(tegra->dev) || tegra->suspended)
++		goto out;
++
+ 	value =3D fpci_readl(tegra, tegra->soc->mbox.data_out);
+ 	tegra_xusb_mbox_unpack(&msg, value);
+=20
+@@ -671,6 +680,7 @@ static irqreturn_t tegra_xusb_mbox_thread(int irq, void=
+ *data)
+=20
+ 	tegra_xusb_mbox_handle(tegra, &msg);
+=20
++out:
+ 	mutex_unlock(&tegra->lock);
+ 	return IRQ_HANDLED;
+ }
+@@ -813,12 +823,27 @@ static void tegra_xusb_phy_disable(struct tegra_xusb =
 *tegra)
 =20
  static int tegra_xusb_runtime_suspend(struct device *dev)
  {
--	struct tegra_xusb *tegra =3D dev_get_drvdata(dev);
--
--	regulator_bulk_disable(tegra->soc->num_supplies, tegra->supplies);
--	tegra_xusb_clk_disable(tegra);
--
- 	return 0;
+-	return 0;
++	struct tegra_xusb *tegra =3D dev_get_drvdata(dev);
++	int ret;
++
++	synchronize_irq(tegra->mbox_irq);
++	mutex_lock(&tegra->lock);
++	ret =3D tegra_xusb_enter_elpg(tegra, true);
++	mutex_unlock(&tegra->lock);
++
++	return ret;
  }
 =20
  static int tegra_xusb_runtime_resume(struct device *dev)
  {
--	struct tegra_xusb *tegra =3D dev_get_drvdata(dev);
--	int err;
--
--	err =3D tegra_xusb_clk_enable(tegra);
--	if (err) {
--		dev_err(dev, "failed to enable clocks: %d\n", err);
--		return err;
--	}
--
--	err =3D regulator_bulk_enable(tegra->soc->num_supplies, tegra->supplies);
--	if (err) {
--		dev_err(dev, "failed to enable regulators: %d\n", err);
--		goto disable_clk;
--	}
--
- 	return 0;
--
--disable_clk:
--	tegra_xusb_clk_disable(tegra);
--	return err;
+-	return 0;
++	struct tegra_xusb *tegra =3D dev_get_drvdata(dev);
++	int err;
++
++	mutex_lock(&tegra->lock);
++	err =3D tegra_xusb_exit_elpg(tegra, true);
++	mutex_unlock(&tegra->lock);
++
++	return err;
  }
 =20
  #ifdef CONFIG_PM_SLEEP
-@@ -1019,10 +994,6 @@ static int tegra_xusb_load_firmware(struct tegra_xusb=
- *tegra)
- static void tegra_xusb_powerdomain_remove(struct device *dev,
- 					  struct tegra_xusb *tegra)
+@@ -1118,6 +1143,24 @@ static int __tegra_xusb_enable_firmware_messages(str=
+uct tegra_xusb *tegra)
+ 	return err;
+ }
+=20
++static irqreturn_t tegra_xusb_padctl_irq(int irq, void *data)
++{
++	struct tegra_xusb *tegra =3D data;
++
++	mutex_lock(&tegra->lock);
++
++	if (tegra->suspended) {
++		mutex_unlock(&tegra->lock);
++		return IRQ_HANDLED;
++	}
++
++	mutex_unlock(&tegra->lock);
++
++	pm_runtime_resume(tegra->dev);
++
++	return IRQ_HANDLED;
++}
++
+ static int tegra_xusb_enable_firmware_messages(struct tegra_xusb *tegra)
  {
--	if (tegra->genpd_dl_ss)
--		device_link_del(tegra->genpd_dl_ss);
--	if (tegra->genpd_dl_host)
--		device_link_del(tegra->genpd_dl_host);
- 	if (!IS_ERR_OR_NULL(tegra->genpd_dev_ss))
- 		dev_pm_domain_detach(tegra->genpd_dev_ss, true);
- 	if (!IS_ERR_OR_NULL(tegra->genpd_dev_host))
-@@ -1048,20 +1019,84 @@ static int tegra_xusb_powerdomain_init(struct devic=
-e *dev,
- 		return err;
+ 	int err;
+@@ -1241,6 +1284,50 @@ static void tegra_xhci_id_work(struct work_struct *w=
+ork)
  	}
+ }
 =20
--	tegra->genpd_dl_host =3D device_link_add(dev, tegra->genpd_dev_host,
--					       DL_FLAG_PM_RUNTIME |
--					       DL_FLAG_STATELESS);
--	if (!tegra->genpd_dl_host) {
--		dev_err(dev, "adding host device link failed!\n");
--		return -ENODEV;
-+	tegra->use_genpd =3D true;
-+
-+	return 0;
++static bool is_usb2_otg_phy(struct tegra_xusb *tegra, unsigned int index)
++{
++	return (tegra->usbphy[index] !=3D NULL);
 +}
 +
-+static int tegra_xusb_unpowergate_partitions(struct tegra_xusb *tegra)
++static bool is_usb3_otg_phy(struct tegra_xusb *tegra, unsigned int index)
 +{
-+	struct device *dev =3D tegra->dev;
-+	int rc;
++	struct tegra_xusb_padctl *padctl =3D tegra->padctl;
++	unsigned int i;
++	int port;
 +
-+	if (tegra->use_genpd) {
-+		rc =3D pm_runtime_get_sync(tegra->genpd_dev_ss);
-+		if (rc < 0) {
-+			dev_err(dev, "failed to enable XUSB SS partition\n");
-+			return rc;
++	for (i =3D 0; i < tegra->num_usb_phys; i++) {
++		if (is_usb2_otg_phy(tegra, i)) {
++			port =3D tegra_xusb_padctl_get_usb3_companion(padctl, i);
++			if ((port >=3D 0) && (index =3D=3D (unsigned int)port))
++				return true;
 +		}
++	}
 +
-+		rc =3D pm_runtime_get_sync(tegra->genpd_dev_host);
-+		if (rc < 0) {
-+			dev_err(dev, "failed to enable XUSB Host partition\n");
-+			pm_runtime_put_sync(tegra->genpd_dev_ss);
-+			return rc;
-+		}
-+	} else {
-+		rc =3D tegra_powergate_sequence_power_up(TEGRA_POWERGATE_XUSBA,
-+							tegra->ss_clk,
-+							tegra->ss_rst);
-+		if (rc < 0) {
-+			dev_err(dev, "failed to enable XUSB SS partition\n");
-+			return rc;
-+		}
-+
-+		rc =3D tegra_powergate_sequence_power_up(TEGRA_POWERGATE_XUSBC,
-+							tegra->host_clk,
-+							tegra->host_rst);
-+		if (rc < 0) {
-+			dev_err(dev, "failed to enable XUSB Host partition\n");
-+			tegra_powergate_power_off(TEGRA_POWERGATE_XUSBA);
-+			return rc;
-+		}
- 	}
-=20
--	tegra->genpd_dl_ss =3D device_link_add(dev, tegra->genpd_dev_ss,
--					     DL_FLAG_PM_RUNTIME |
--					     DL_FLAG_STATELESS);
--	if (!tegra->genpd_dl_ss) {
--		dev_err(dev, "adding superspeed device link failed!\n");
--		return -ENODEV;
-+	return 0;
++	return false;
 +}
 +
-+static int tegra_xusb_powergate_partitions(struct tegra_xusb *tegra)
++static bool is_host_mode_phy(struct tegra_xusb *tegra, unsigned int phy_ty=
+pe, unsigned int index)
 +{
-+	struct device *dev =3D tegra->dev;
-+	int rc;
++	if (strcmp(tegra->soc->phy_types[phy_type].name, "hsic") =3D=3D 0)
++		return true;
 +
-+	if (tegra->use_genpd) {
-+		rc =3D pm_runtime_put_sync(tegra->genpd_dev_host);
-+		if (rc < 0) {
-+			dev_err(dev, "failed to disable XUSB Host partition\n");
-+			return rc;
-+		}
++	if (strcmp(tegra->soc->phy_types[phy_type].name, "usb2") =3D=3D 0) {
++		if (is_usb2_otg_phy(tegra, index))
++			return ((index =3D=3D tegra->otg_usb2_port) && tegra->host_mode);
++		else
++			return true;
++	}
 +
-+		rc =3D pm_runtime_put_sync(tegra->genpd_dev_ss);
-+		if (rc < 0) {
-+			dev_err(dev, "failed to disable XUSB SS partition\n");
-+			pm_runtime_get_sync(tegra->genpd_dev_host);
-+			return rc;
-+		}
-+	} else {
-+		rc =3D tegra_powergate_power_off(TEGRA_POWERGATE_XUSBC);
-+		if (rc < 0) {
-+			dev_err(dev, "failed to disable XUSB Host partition\n");
-+			return rc;
-+		}
++	if (strcmp(tegra->soc->phy_types[phy_type].name, "usb3") =3D=3D 0) {
++		if (is_usb3_otg_phy(tegra, index))
++			return ((index =3D=3D tegra->otg_usb3_port) && tegra->host_mode);
++		else
++			return true;
++	}
 +
-+		rc =3D tegra_powergate_power_off(TEGRA_POWERGATE_XUSBA);
-+		if (rc < 0) {
-+			dev_err(dev, "failed to disable XUSB SS partition\n");
-+			tegra_powergate_sequence_power_up(TEGRA_POWERGATE_XUSBC,
-+							  tegra->host_clk,
-+							  tegra->host_rst);
-+			return rc;
-+		}
- 	}
-=20
- 	return 0;
-@@ -1425,25 +1460,6 @@ static int tegra_xusb_probe(struct platform_device *=
++	return false;
++}
++
+ static int tegra_xusb_get_usb2_port(struct tegra_xusb *tegra,
+ 					      struct usb_phy *usbphy)
+ {
+@@ -1333,6 +1420,7 @@ static void tegra_xusb_deinit_usb_phy(struct tegra_xu=
+sb *tegra)
+ static int tegra_xusb_probe(struct platform_device *pdev)
+ {
+ 	struct tegra_xusb *tegra;
++	struct device_node *np;
+ 	struct resource *regs;
+ 	struct xhci_hcd *xhci;
+ 	unsigned int i, j, k;
+@@ -1380,6 +1468,14 @@ static int tegra_xusb_probe(struct platform_device *=
 pdev)
- 				err);
- 			goto put_padctl;
- 		}
--
--		err =3D tegra_powergate_sequence_power_up(TEGRA_POWERGATE_XUSBA,
--							tegra->ss_clk,
--							tegra->ss_rst);
--		if (err) {
--			dev_err(&pdev->dev,
--				"failed to enable XUSBA domain: %d\n", err);
--			goto put_padctl;
--		}
--
--		err =3D tegra_powergate_sequence_power_up(TEGRA_POWERGATE_XUSBC,
--							tegra->host_clk,
--							tegra->host_rst);
--		if (err) {
--			tegra_powergate_power_off(TEGRA_POWERGATE_XUSBA);
--			dev_err(&pdev->dev,
--				"failed to enable XUSBC domain: %d\n", err);
--			goto put_padctl;
--		}
- 	} else {
- 		err =3D tegra_xusb_powerdomain_init(&pdev->dev, tegra);
- 		if (err)
-@@ -1518,10 +1534,22 @@ static int tegra_xusb_probe(struct platform_device =
-*pdev)
- 	 */
- 	platform_set_drvdata(pdev, tegra);
+ 	if (IS_ERR(tegra->padctl))
+ 		return PTR_ERR(tegra->padctl);
 =20
-+	err =3D tegra_xusb_clk_enable(tegra);
-+	if (err) {
-+		dev_err(tegra->dev, "failed to enable clocks: %d\n", err);
-+		goto put_hcd;
-+	}
++	np =3D of_parse_phandle(pdev->dev.of_node, "nvidia,xusb-padctl", 0);
++	if (!np)
++		return -ENODEV;
 +
-+	err =3D regulator_bulk_enable(tegra->soc->num_supplies, tegra->supplies);
-+	if (err) {
-+		dev_err(tegra->dev, "failed to enable regulators: %d\n", err);
-+		goto disable_clk;
-+	}
++	tegra->padctl_irq =3D of_irq_get(np, 0);
++	if (tegra->padctl_irq < 0)
++		return tegra->padctl_irq;
 +
- 	err =3D tegra_xusb_phy_enable(tegra);
- 	if (err < 0) {
- 		dev_err(&pdev->dev, "failed to enable PHYs: %d\n", err);
--		goto put_hcd;
-+		goto disable_regulator;
+ 	tegra->host_clk =3D devm_clk_get(&pdev->dev, "xusb_host");
+ 	if (IS_ERR(tegra->host_clk)) {
+ 		err =3D PTR_ERR(tegra->host_clk);
+@@ -1524,6 +1620,7 @@ static int tegra_xusb_probe(struct platform_device *p=
+dev)
+ 		goto put_powerdomains;
  	}
 =20
- 	/*
-@@ -1540,30 +1568,22 @@ static int tegra_xusb_probe(struct platform_device =
++	tegra->hcd->skip_phy_initialization =3D 1;
+ 	tegra->hcd->regs =3D tegra->regs;
+ 	tegra->hcd->rsrc_start =3D regs->start;
+ 	tegra->hcd->rsrc_len =3D resource_size(regs);
+@@ -1606,12 +1703,6 @@ static int tegra_xusb_probe(struct platform_device *=
+pdev)
+ 		goto put_usb3;
+ 	}
+=20
+-	err =3D tegra_xusb_enable_firmware_messages(tegra);
+-	if (err < 0) {
+-		dev_err(&pdev->dev, "failed to enable messages: %d\n", err);
+-		goto remove_usb3;
+-	}
+-
+ 	err =3D devm_request_threaded_irq(&pdev->dev, tegra->mbox_irq,
+ 					tegra_xusb_mbox_irq,
+ 					tegra_xusb_mbox_thread, 0,
+@@ -1621,12 +1712,36 @@ static int tegra_xusb_probe(struct platform_device =
 *pdev)
+ 		goto remove_usb3;
+ 	}
+=20
++	err =3D devm_request_threaded_irq(&pdev->dev, tegra->padctl_irq, NULL, te=
+gra_xusb_padctl_irq,
++					IRQF_ONESHOT, dev_name(&pdev->dev), tegra);
++	if (err < 0) {
++		dev_err(&pdev->dev, "failed to request padctl IRQ: %d\n", err);
++		goto remove_usb3;
++	}
++
++	err =3D tegra_xusb_enable_firmware_messages(tegra);
++	if (err < 0) {
++		dev_err(&pdev->dev, "failed to enable messages: %d\n", err);
++		goto remove_usb3;
++	}
++
+ 	err =3D tegra_xusb_init_usb_phy(tegra);
+ 	if (err < 0) {
+ 		dev_err(&pdev->dev, "failed to init USB PHY: %d\n", err);
+ 		goto remove_usb3;
+ 	}
+=20
++	/* Enable wake for both USB 2.0 and USB 3.0 roothubs */
++	device_init_wakeup(&tegra->hcd->self.root_hub->dev, true);
++	device_init_wakeup(&xhci->shared_hcd->self.root_hub->dev, true);
++	device_init_wakeup(tegra->dev, true);
++
++	pm_runtime_use_autosuspend(tegra->dev);
++	pm_runtime_set_autosuspend_delay(tegra->dev, 2000);
++	pm_runtime_mark_last_busy(tegra->dev);
++	pm_runtime_set_active(tegra->dev);
++	pm_runtime_enable(tegra->dev);
++
+ 	return 0;
+=20
+ remove_usb3:
+@@ -1662,6 +1777,7 @@ static int tegra_xusb_remove(struct platform_device *=
+pdev)
+=20
+ 	tegra_xusb_deinit_usb_phy(tegra);
+=20
++	pm_runtime_get_sync(&pdev->dev);
+ 	usb_remove_hcd(xhci->shared_hcd);
+ 	usb_put_hcd(xhci->shared_hcd);
+ 	xhci->shared_hcd =3D NULL;
+@@ -1671,8 +1787,8 @@ static int tegra_xusb_remove(struct platform_device *=
+pdev)
+ 	dma_free_coherent(&pdev->dev, tegra->fw.size, tegra->fw.virt,
+ 			  tegra->fw.phys);
+=20
+-	pm_runtime_put_sync(&pdev->dev);
+ 	pm_runtime_disable(&pdev->dev);
++	pm_runtime_put(&pdev->dev);
+=20
+ 	tegra_xusb_powergate_partitions(tegra);
+=20
+@@ -1714,9 +1830,17 @@ static bool xhci_hub_ports_suspended(struct xhci_hub=
+ *hub)
+ static int tegra_xusb_check_ports(struct tegra_xusb *tegra)
+ {
+ 	struct xhci_hcd *xhci =3D hcd_to_xhci(tegra->hcd);
++	struct xhci_hub *rhub =3D  xhci_get_rhub(xhci->main_hcd);
++	struct xhci_bus_state *bus_state =3D &rhub->bus_state;
+ 	unsigned long flags;
+ 	int err =3D 0;
+=20
++	if (bus_state->bus_suspended) {
++		/* xusb_hub_suspend() has just directed one or more USB2 port(s)
++		 * to U3 state, it takes 3ms to enter U3. */
++		usleep_range(3000, 4000);
++	}
++
+ 	spin_lock_irqsave(&xhci->lock, flags);
+=20
+ 	if (!xhci_hub_ports_suspended(&xhci->usb2_rhub) ||
+@@ -1762,45 +1886,186 @@ static void tegra_xusb_restore_context(struct tegr=
+a_xusb *tegra)
+ 	}
+ }
+=20
+-static int tegra_xusb_enter_elpg(struct tegra_xusb *tegra, bool wakeup)
++static enum usb_device_speed tegra_xhci_portsc_to_speed(struct tegra_xusb =
+*tegra, u32 portsc)
+ {
++	if (DEV_LOWSPEED(portsc))
++		return USB_SPEED_LOW;
++
++	if (DEV_HIGHSPEED(portsc))
++		return USB_SPEED_HIGH;
++
++	if (DEV_FULLSPEED(portsc))
++		return USB_SPEED_FULL;
++
++	if (DEV_SUPERSPEED_ANY(portsc))
++		return USB_SPEED_SUPER;
++
++	return USB_SPEED_UNKNOWN;
++}
++
++static void tegra_xhci_enable_phy_sleepwalk_wake(struct tegra_xusb *tegra)
++{
++	struct tegra_xusb_padctl *padctl =3D tegra->padctl;
+ 	struct xhci_hcd *xhci =3D hcd_to_xhci(tegra->hcd);
++	enum usb_device_speed speed;
++	struct phy *phy;
++	unsigned int index, offset;
++	unsigned int i, j, k;
++	struct xhci_hub *rhub;
++	u32 portsc;
++
++	for (i =3D 0, k =3D 0; i < tegra->soc->num_types; i++) {
++		if (strcmp(tegra->soc->phy_types[i].name, "usb3") =3D=3D 0)
++			rhub =3D &xhci->usb3_rhub;
++		else
++			rhub =3D &xhci->usb2_rhub;
++
++		if (strcmp(tegra->soc->phy_types[i].name, "hsic") =3D=3D 0)
++			offset =3D tegra->soc->ports.usb2.count;
++		else
++			offset =3D 0;
++
++		for (j =3D 0; j < tegra->soc->phy_types[i].num; j++) {
++			phy =3D tegra->phys[k++];
++
++			if (!phy)
++				continue;
++
++			index =3D j + offset;
++
++			if (index >=3D rhub->num_ports)
++				continue;
++
++			if (!is_host_mode_phy(tegra, i, j))
++				continue;
++
++			portsc =3D readl(rhub->ports[index]->addr);
++			speed =3D tegra_xhci_portsc_to_speed(tegra, portsc);
++			tegra_xusb_padctl_enable_phy_sleepwalk(padctl, phy, speed);
++			tegra_xusb_padctl_enable_phy_wake(padctl, phy);
++		}
++	}
++}
++
++static void tegra_xhci_disable_phy_wake(struct tegra_xusb *tegra)
++{
++	struct tegra_xusb_padctl *padctl =3D tegra->padctl;
++	unsigned int i;
++
++	for (i =3D 0; i < tegra->num_phys; i++) {
++		if (!tegra->phys[i])
++			continue;
++
++		tegra_xusb_padctl_disable_phy_wake(padctl, tegra->phys[i]);
++	}
++}
++
++static void tegra_xhci_disable_phy_sleepwalk(struct tegra_xusb *tegra)
++{
++	struct tegra_xusb_padctl *padctl =3D tegra->padctl;
++	unsigned int i;
++
++	for (i =3D 0; i < tegra->num_phys; i++) {
++		if (!tegra->phys[i])
++			continue;
++
++		tegra_xusb_padctl_disable_phy_sleepwalk(padctl, tegra->phys[i]);
++	}
++}
++
++static int tegra_xusb_enter_elpg(struct tegra_xusb *tegra, bool runtime)
++{
++	struct xhci_hcd *xhci =3D hcd_to_xhci(tegra->hcd);
++	struct device *dev =3D tegra->dev;
++	bool wakeup =3D runtime ? true : device_may_wakeup(dev);
++	unsigned int i;
+ 	int err;
++	u32 usbcmd;
++
++	dev_dbg(dev, "entering ELPG\n");
++
++	usbcmd =3D readl(&xhci->op_regs->command);
++	usbcmd &=3D ~CMD_EIE;
++	writel(usbcmd, &xhci->op_regs->command);
+=20
+ 	err =3D tegra_xusb_check_ports(tegra);
+ 	if (err < 0) {
+ 		dev_err(tegra->dev, "not all ports suspended: %d\n", err);
+-		return err;
++		goto out;
+ 	}
+=20
+ 	err =3D xhci_suspend(xhci, wakeup);
+ 	if (err < 0) {
+ 		dev_err(tegra->dev, "failed to suspend XHCI: %d\n", err);
+-		return err;
++		goto out;
+ 	}
+=20
+ 	tegra_xusb_save_context(tegra);
+-	tegra_xusb_phy_disable(tegra);
++
++	if (wakeup)
++		tegra_xhci_enable_phy_sleepwalk_wake(tegra);
++
++	tegra_xusb_powergate_partitions(tegra);
++
++	for (i =3D 0; i < tegra->num_phys; i++) {
++		if (!tegra->phys[i])
++			continue;
++
++		phy_power_off(tegra->phys[i]);
++		if (!wakeup)
++			phy_exit(tegra->phys[i]);
++	}
++
+ 	tegra_xusb_clk_disable(tegra);
+=20
+-	return 0;
++out:
++	if (!err)
++		dev_dbg(tegra->dev, "entering ELPG done\n");
++	else {
++		usbcmd =3D readl(&xhci->op_regs->command);
++		usbcmd |=3D CMD_EIE;
++		writel(usbcmd, &xhci->op_regs->command);
++
++		dev_dbg(tegra->dev, "entering ELPG failed\n");
++		pm_runtime_mark_last_busy(tegra->dev);
++	}
++
++	return err;
+ }
+=20
+-static int tegra_xusb_exit_elpg(struct tegra_xusb *tegra, bool wakeup)
++static int tegra_xusb_exit_elpg(struct tegra_xusb *tegra, bool runtime)
+ {
+ 	struct xhci_hcd *xhci =3D hcd_to_xhci(tegra->hcd);
++	struct device *dev =3D tegra->dev;
++	bool wakeup =3D runtime ? true : device_may_wakeup(dev);
++	unsigned int i;
++	u32 usbcmd;
+ 	int err;
+=20
++	dev_dbg(dev, "exiting ELPG\n");
++	pm_runtime_mark_last_busy(tegra->dev);
++
+ 	err =3D tegra_xusb_clk_enable(tegra);
+ 	if (err < 0) {
+ 		dev_err(tegra->dev, "failed to enable clocks: %d\n", err);
+-		return err;
++		goto out;
+ 	}
+=20
+-	err =3D tegra_xusb_phy_enable(tegra);
+-	if (err < 0) {
+-		dev_err(tegra->dev, "failed to enable PHYs: %d\n", err);
+-		goto disable_clk;
++	err =3D tegra_xusb_unpowergate_partitions(tegra);
++	if (err)
++		goto disable_clks;
++
++	if (wakeup)
++		tegra_xhci_disable_phy_wake(tegra);
++
++	for (i =3D 0; i < tegra->num_phys; i++) {
++		if (!tegra->phys[i])
++			continue;
++
++		if (!wakeup)
++			phy_init(tegra->phys[i]);
++
++		phy_power_on(tegra->phys[i]);
+ 	}
+=20
+ 	tegra_xusb_config(tegra);
+@@ -1818,31 +2083,79 @@ static int tegra_xusb_exit_elpg(struct tegra_xusb *=
+tegra, bool wakeup)
  		goto disable_phy;
  	}
 =20
--	pm_runtime_enable(&pdev->dev);
--
--	if (!pm_runtime_enabled(&pdev->dev))
--		err =3D tegra_xusb_runtime_resume(&pdev->dev);
--	else
--		err =3D pm_runtime_get_sync(&pdev->dev);
--
--	if (err < 0) {
--		dev_err(&pdev->dev, "failed to enable device: %d\n", err);
-+	err =3D tegra_xusb_unpowergate_partitions(tegra);
-+	if (err)
- 		goto free_firmware;
--	}
-=20
- 	tegra_xusb_config(tegra);
-=20
- 	err =3D tegra_xusb_load_firmware(tegra);
- 	if (err < 0) {
- 		dev_err(&pdev->dev, "failed to load firmware: %d\n", err);
--		goto put_rpm;
-+		goto powergate;
- 	}
-=20
- 	err =3D usb_add_hcd(tegra->hcd, tegra->xhci_irq, IRQF_SHARED);
- 	if (err < 0) {
- 		dev_err(&pdev->dev, "failed to add USB HCD: %d\n", err);
--		goto put_rpm;
-+		goto powergate;
- 	}
-=20
- 	device_wakeup_enable(tegra->hcd->self.controller);
-@@ -1615,24 +1635,21 @@ static int tegra_xusb_probe(struct platform_device =
-*pdev)
- 	usb_put_hcd(xhci->shared_hcd);
- remove_usb2:
- 	usb_remove_hcd(tegra->hcd);
--put_rpm:
--	if (!pm_runtime_status_suspended(&pdev->dev))
--		tegra_xusb_runtime_suspend(&pdev->dev);
--put_hcd:
--	usb_put_hcd(tegra->hcd);
-+powergate:
-+	tegra_xusb_powergate_partitions(tegra);
- free_firmware:
- 	dma_free_coherent(&pdev->dev, tegra->fw.size, tegra->fw.virt,
- 			  tegra->fw.phys);
- disable_phy:
- 	tegra_xusb_phy_disable(tegra);
--	pm_runtime_disable(&pdev->dev);
-+disable_regulator:
-+	regulator_bulk_disable(tegra->soc->num_supplies, tegra->supplies);
-+disable_clk:
-+	tegra_xusb_clk_disable(tegra);
-+put_hcd:
-+	usb_put_hcd(tegra->hcd);
- put_powerdomains:
--	if (!of_property_read_bool(pdev->dev.of_node, "power-domains")) {
--		tegra_powergate_power_off(TEGRA_POWERGATE_XUSBC);
--		tegra_powergate_power_off(TEGRA_POWERGATE_XUSBA);
--	} else {
--		tegra_xusb_powerdomain_remove(&pdev->dev, tegra);
--	}
-+	tegra_xusb_powerdomain_remove(&pdev->dev, tegra);
- put_padctl:
- 	tegra_xusb_padctl_put(tegra->padctl);
- 	return err;
-@@ -1657,15 +1674,15 @@ static int tegra_xusb_remove(struct platform_device=
- *pdev)
- 	pm_runtime_put_sync(&pdev->dev);
- 	pm_runtime_disable(&pdev->dev);
-=20
--	if (!of_property_read_bool(pdev->dev.of_node, "power-domains")) {
--		tegra_powergate_power_off(TEGRA_POWERGATE_XUSBC);
--		tegra_powergate_power_off(TEGRA_POWERGATE_XUSBA);
--	} else {
-+	tegra_xusb_powergate_partitions(tegra);
+-	err =3D xhci_resume(xhci, true);
++	if (wakeup)
++		tegra_xhci_disable_phy_sleepwalk(tegra);
 +
-+	if (of_property_read_bool(pdev->dev.of_node, "power-domains")) {
- 		tegra_xusb_powerdomain_remove(&pdev->dev, tegra);
++	err =3D xhci_resume(xhci, 0);
+ 	if (err < 0) {
+ 		dev_err(tegra->dev, "failed to resume XHCI: %d\n", err);
+ 		goto disable_phy;
  	}
 =20
- 	tegra_xusb_phy_disable(tegra);
--
-+	tegra_xusb_clk_disable(tegra);
-+	regulator_bulk_disable(tegra->soc->num_supplies, tegra->supplies);
- 	tegra_xusb_padctl_put(tegra->padctl);
+-	return 0;
++	usbcmd =3D readl(&xhci->op_regs->command);
++	usbcmd |=3D CMD_EIE;
++	writel(usbcmd, &xhci->op_regs->command);
++
++	goto out;
 =20
- 	return 0;
+ disable_phy:
+-	tegra_xusb_phy_disable(tegra);
+-disable_clk:
++	for (i =3D 0; i < tegra->num_phys; i++) {
++		if (!tegra->phys[i])
++			continue;
++
++		phy_power_off(tegra->phys[i]);
++		if (!wakeup)
++			phy_exit(tegra->phys[i]);
++	}
++	tegra_xusb_powergate_partitions(tegra);
++disable_clks:
+ 	tegra_xusb_clk_disable(tegra);
++out:
++	if (!err)
++		dev_dbg(dev, "exiting ELPG done\n");
++	else
++		dev_dbg(dev, "exiting ELPG failed\n");
++
+ 	return err;
+ }
+=20
+ static int tegra_xusb_suspend(struct device *dev)
+ {
+ 	struct tegra_xusb *tegra =3D dev_get_drvdata(dev);
+-	bool wakeup =3D device_may_wakeup(dev);
+ 	int err;
+=20
+ 	synchronize_irq(tegra->mbox_irq);
+=20
+ 	mutex_lock(&tegra->lock);
+-	err =3D tegra_xusb_enter_elpg(tegra, wakeup);
++
++	if (pm_runtime_suspended(dev)) {
++		err =3D tegra_xusb_exit_elpg(tegra, true);
++		if (err < 0)
++			goto out;
++	}
++
++	err =3D tegra_xusb_enter_elpg(tegra, false);
++	if (err < 0) {
++		if (pm_runtime_suspended(dev)) {
++			pm_runtime_disable(dev);
++			pm_runtime_set_active(dev);
++			pm_runtime_enable(dev);
++		}
++
++		goto out;
++	}
++
++out:
++	if (!err) {
++		tegra->suspended =3D true;
++		pm_runtime_disable(dev);
++
++		if (device_may_wakeup(dev)) {
++			if (enable_irq_wake(tegra->padctl_irq))
++				dev_err(dev, "failed to enable padctl wakes\n");
++		}
++	}
++
+ 	mutex_unlock(&tegra->lock);
+=20
+ 	return err;
+@@ -1851,14 +2164,32 @@ static int tegra_xusb_suspend(struct device *dev)
+ static int tegra_xusb_resume(struct device *dev)
+ {
+ 	struct tegra_xusb *tegra =3D dev_get_drvdata(dev);
+-	bool wakeup =3D device_may_wakeup(dev);
+ 	int err;
+=20
+ 	mutex_lock(&tegra->lock);
+-	err =3D tegra_xusb_exit_elpg(tegra, wakeup);
++
++	if (!tegra->suspended) {
++		mutex_unlock(&tegra->lock);
++		return 0;
++	}
++
++	err =3D tegra_xusb_exit_elpg(tegra, false);
++	if (err < 0) {
++		mutex_unlock(&tegra->lock);
++		return err;
++	}
++
++	if (device_may_wakeup(dev)) {
++		if (disable_irq_wake(tegra->padctl_irq))
++			dev_err(dev, "failed to disable padctl wakes\n");
++	}
++	tegra->suspended =3D false;
+ 	mutex_unlock(&tegra->lock);
+=20
+-	return err;
++	pm_runtime_set_active(dev);
++	pm_runtime_enable(dev);
++
++	return 0;
+ }
+ #endif
+=20
 --=20
 2.25.1
 
