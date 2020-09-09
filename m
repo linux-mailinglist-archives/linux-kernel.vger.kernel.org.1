@@ -2,102 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF2A6263A59
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 04:27:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A898263A01
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 04:17:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730723AbgIJC1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 22:27:23 -0400
-Received: from smtprelay0192.hostedemail.com ([216.40.44.192]:41384 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729413AbgIJCYQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 22:24:16 -0400
-Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
-        by smtpgrave01.hostedemail.com (Postfix) with ESMTP id 55AC918027FA3;
-        Wed,  9 Sep 2020 22:47:33 +0000 (UTC)
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id A42B7181D337B;
-        Wed,  9 Sep 2020 22:47:32 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2828:2898:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3872:3873:4321:5007:6742:6743:8700:10004:10400:10848:11232:11658:11914:12043:12297:12740:12760:12895:13069:13311:13357:13439:14181:14659:14721:21080:21433:21627:21939:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: sort28_6003546270e1
-X-Filterd-Recvd-Size: 3292
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf20.hostedemail.com (Postfix) with ESMTPA;
-        Wed,  9 Sep 2020 22:47:25 +0000 (UTC)
-Message-ID: <b3d6f71aea87f4bb88554f1a3fdaee0b2feb158c.camel@perches.com>
-Subject: Re: [trivial PATCH] treewide: Convert switch/case fallthrough; to
- break;
-From:   Joe Perches <joe@perches.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Jiri Kosina <trivial@kernel.org>,
-        Kees Cook <kees.cook@canonical.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-mips@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-ide@vger.kernel.org,
-        linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        nouveau@lists.freedesktop.org, linux-input@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-rdma@vger.kernel.org,
-        iommu@lists.linux-foundation.org, dm-devel@redhat.com,
-        linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-mtd@lists.infradead.org, intel-wired-lan@lists.osuosl.org,
-        oss-drivers@netronome.com, linux-usb@vger.kernel.org,
-        linux-wireless@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-nvme@lists.infradead.org, linux-pm@vger.kernel.org,
-        linux-rtc@vger.kernel.org, linux-scsi@vger.kernel.org,
-        storagedev@microchip.com, sparclinux@vger.kernel.org,
-        linux-serial@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-parisc@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, bpf@vger.kernel.org,
-        dccp@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        coreteam@netfilter.org, linux-sctp@vger.kernel.org,
-        alsa-devel <alsa-devel@alsa-project.org>
-Date:   Wed, 09 Sep 2020 15:47:24 -0700
-In-Reply-To: <20200909223602.GJ87483@ziepe.ca>
-References: <e6387578c75736d61b2fe70d9783d91329a97eb4.camel@perches.com>
-         <20200909223602.GJ87483@ziepe.ca>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        id S1730572AbgIJCRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 22:17:03 -0400
+Received: from mx2.suse.de ([195.135.220.15]:52348 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730581AbgIJCNq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 22:13:46 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B68A2AC1F;
+        Wed,  9 Sep 2020 22:51:06 +0000 (UTC)
+From:   NeilBrown <neilb@suse.de>
+To:     Jeff Layton <jlayton@kernel.org>, Jan Kara <jack@suse.cz>,
+        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Date:   Thu, 10 Sep 2020 08:50:42 +1000
+Cc:     milan.opensource@gmail.com, lkml <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH] fsync.2: ERRORS: add EIO and ENOSPC
+In-Reply-To: <f4d38a20cb0f25b137fe07a7f43358ab3a459038.camel@kernel.org>
+References: <1598685186-27499-1-git-send-email-milan.opensource@gmail.com>
+ <CAKgNAkiTjtdaQxbCYS67+SdqSPaGzJnfLEEMFgcoXjHLDxgemw@mail.gmail.com>
+ <20200908112742.GA2956@quack2.suse.cz>
+ <f4d38a20cb0f25b137fe07a7f43358ab3a459038.camel@kernel.org>
+Message-ID: <87mu1yk1j1.fsf@notabene.neil.brown.name>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-09-09 at 19:36 -0300, Jason Gunthorpe wrote:
-> On Wed, Sep 09, 2020 at 01:06:39PM -0700, Joe Perches wrote:
-> > fallthrough to a separate case/default label break; isn't very readable.
-> > 
-> > Convert pseudo-keyword fallthrough; statements to a simple break; when
-> > the next label is case or default and the only statement in the next
-> > label block is break;
-> > 
-> > Found using:
-> > 
-> > $ grep-2.5.4 -rP --include=*.[ch] -n "fallthrough;(\s*(case\s+\w+|default)\s*:\s*){1,7}break;" *
-> > 
-> > Miscellanea:
-> > 
-> > o Move or coalesce a couple label blocks above a default: block.
-> > 
-> > Signed-off-by: Joe Perches <joe@perches.com>
-> > ---
-> > 
-> > Compiled allyesconfig x86-64 only.
-> > A few files for other arches were not compiled.
-> 
-> IB part looks OK, I prefer it like this
-> 
-> You could do the same for continue as well, I saw a few of those..
+--=-=-=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-I saw some continue uses as well but wasn't sure
-and didn't look to see if the switch/case with
-continue was in a for/while loop.
+On Tue, Sep 08 2020, Jeff Layton wrote:
+
+>
+> Yep.
+>
+> My only comment is that there is nothing special about EIO and ENOSPC.
+
+There are two type of errors that fsync can return.
+ EBADF EROFS EINVAL  - these are usage errors.
+ EIO ENOSPC EDQUOT   - these are functional failures.
+
+So I would say there *is* something special about those errors, though
+it isn't *very* special, and it isn't *just* those errors. EDQUOT should
+be included in the list.
+
+NeilBrown
 
 
+> All errors are the same in this regard. Basically, issuing a new fsync
+> after a failed one doesn't do any good. You need to redirty the pages
+> first.
+> --=20
+> Jeff Layton <jlayton@kernel.org>
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJCBAEBCAAsFiEEG8Yp69OQ2HB7X0l6Oeye3VZigbkFAl9ZXEMOHG5laWxiQHN1
+c2UuZGUACgkQOeye3VZigbmtzxAAhBP7kWRRvSM5FxqzA6R1/UmOSLt/LHYytyww
+brm0loAU/lStB6kJcF7eTUBo+4hQaKNyTwfoAQCVTi+u3oEhvz/TsR1Zmc8qLY5X
+6N0f0bFjIbRghPVBjqi1HZX08ZPJkiQF1XsYRKwnijf6WChLZy8Fh6bi5hPo61KU
+KyG6Lt0S2NQj62lPvCdy6JfxXDeQPZ4nMRu99d5of8yShcdPyIhH1nTRg0gnLsvF
+4HDmxYiY6DzJwdjvHOohTMIvQNd8v+fUWLP8TbI7F6xJeqSEWpi2SMs9q5HL/rGq
+Dn6DA3xkS4kqH1iWRZYdhvPSoWHLeHMl6z5GIvKsc1PuxGuek1sqR9Lw9KQSFBY6
+QMf2RkBSQnmm5PFPq1xQsm3SDDS9YIFHt+GRDZWtD6yHzUoz8xe27g9j4uUqDVNn
+lzG2v+Ae7UcyhJIOJjiYh3n+JysUgUhEbx/1VSc0Sykg7O778OWafouAsp9UEoDD
+zyWNp2n9cltcjJ4cRA0qmWNYcSf6tTeJSaCkfsqnsYdVMmpjRM04MHm1K7nlYs2L
+dBbAfwXLw3aMkZFXuFLhigFyjgqj0+OBLR4imrfbYn83OfH/im3Hd6umhP05eaZ+
+HbJi7W0Vj9xUavYd09qkrdRD/JHJnqazKD4o6FIV4jvfcMfl0iRnTK6Y5aq1WcQ1
+T4ak25w=
+=8VKx
+-----END PGP SIGNATURE-----
+--=-=-=--
