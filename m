@@ -2,462 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC7FB26295A
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 09:57:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DD5226295D
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 09:57:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729993AbgIIH5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 03:57:02 -0400
-Received: from mail.v3.sk ([167.172.186.51]:48660 "EHLO shell.v3.sk"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726738AbgIIH46 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 03:56:58 -0400
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by zimbra.v3.sk (Postfix) with ESMTP id D393FDF974;
-        Wed,  9 Sep 2020 07:55:35 +0000 (UTC)
-Received: from shell.v3.sk ([127.0.0.1])
-        by localhost (zimbra.v3.sk [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id HU6uqnTmRYRh; Wed,  9 Sep 2020 07:55:34 +0000 (UTC)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by zimbra.v3.sk (Postfix) with ESMTP id BB7AADF9D7;
-        Wed,  9 Sep 2020 07:55:34 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at zimbra.v3.sk
-Received: from shell.v3.sk ([127.0.0.1])
-        by localhost (zimbra.v3.sk [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id M5HM21kO43rh; Wed,  9 Sep 2020 07:55:34 +0000 (UTC)
-Received: from localhost (unknown [109.183.109.54])
-        by zimbra.v3.sk (Postfix) with ESMTPSA id 6E6BFDF930;
-        Wed,  9 Sep 2020 07:55:34 +0000 (UTC)
-From:   Lubomir Rintel <lkundrak@v3.sk>
-To:     Andrzej Hajda <a.hajda@samsung.com>
-Cc:     Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@linux.ie>,
-        Rob Herring <robh+dt@kernel.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Lubomir Rintel <lkundrak@v3.sk>
-Subject: [PATCH v5 2/2] drm/bridge: hx8837: add a Himax HX8837 display controller driver
-Date:   Wed,  9 Sep 2020 09:56:49 +0200
-Message-Id: <20200909075649.1100300-3-lkundrak@v3.sk>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200909075649.1100300-1-lkundrak@v3.sk>
-References: <20200909075649.1100300-1-lkundrak@v3.sk>
+        id S1730085AbgIIH5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 03:57:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33596 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726738AbgIIH5K (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 03:57:10 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CE13C061573;
+        Wed,  9 Sep 2020 00:57:09 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id j34so1485990pgi.7;
+        Wed, 09 Sep 2020 00:57:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+X4iBxVgYCfC9tgU+NvjvGBXoGYQ0oNypPZZ+t2YZzw=;
+        b=p+qFEAT9Di4hET0XtKTXMae9b7CMXRiAdH6qqIy4ShH+LIwdnzBG5fZHVHOChKbl5L
+         EoHhPq+nKRiyrIvVWEOABLF1jxBQoVCWd1TcFsdVF5fHMVlFp2MPMCOUa2FoP23vLpMZ
+         lUd2pVVAhSm6o4cgx5EaCYdfQnN7d02SUNQrDNmXW0f4A7or65+AMTMzIkdGAvEpjHlS
+         V5V2m/syGQ5yF0OCsHqjUuiccDxi6CmHLypzgNN6A2xIT+atS6j2JXIM4HF8y1dOVaXr
+         M+ut7KKFL5FI/JcXecpaIYiQTC2NaW7iO43iQpnforrxQ4SNx+nFjiw7eqI3ndLa8GSb
+         euCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+X4iBxVgYCfC9tgU+NvjvGBXoGYQ0oNypPZZ+t2YZzw=;
+        b=ZIsvrUjpl0hQa03XMbfTVkezJU98U3BDsrmVNAsnWdBRukrXNSrK5LgcP9NfShrsR0
+         FhS4WsmMPgDAWCENUKbCuelwfVnRWV+Ra4XJyRRt0IFPJ49NKzelWy9AOptoatcLoCHz
+         bgY1AHzA7nkrJsns66J6PmaZxqrG3ABgJNJD0BSBmg6J/I9kGDue+WaHPL350ToiMsdj
+         jpKHuqmcxlg/AxfhEiFLt0X3ZNwi079+7DaEO02EYHbmAhuWL3KaPfNC+XJFV76wjUaf
+         S500PKiPYh/4SK7uSEmTdW2I5nYfhnpKS+qD2fuRHss39pOLGRqH8C6YwPCEn6K7zENN
+         BPJw==
+X-Gm-Message-State: AOAM530yXsHSDB93viP5GjkjMYMYdVgnbNHz88VpheVHwjusHiMURXbR
+        olmIBtrThqpqpwtzq16/9afDuh2hOnU=
+X-Google-Smtp-Source: ABdhPJxz+oH/DPZI3mRC38xvEqVd9RvifIcvUwXuSpWwdWJPblYVgrul0teDjiY4+OTZfYQRFfxQ4Q==
+X-Received: by 2002:a65:679a:: with SMTP id e26mr2148438pgr.167.1599638229298;
+        Wed, 09 Sep 2020 00:57:09 -0700 (PDT)
+Received: from dc803.localdomain (FL1-111-169-191-163.hyg.mesh.ad.jp. [111.169.191.163])
+        by smtp.gmail.com with ESMTPSA id 138sm1804032pfu.180.2020.09.09.00.57.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Sep 2020 00:57:08 -0700 (PDT)
+From:   Tetsuhiro Kohada <kohada.t2@gmail.com>
+To:     kohada.t2@gmail.com
+Cc:     kohada.tetsuhiro@dc.mitsubishielectric.co.jp,
+        mori.takahiro@ab.mitsubishielectric.co.jp,
+        motai.hirotaka@aj.mitsubishielectric.co.jp,
+        Namjae Jeon <namjae.jeon@samsung.com>,
+        Sungjong Seo <sj1557.seo@samsung.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] exfat: remove 'rwoffset' in exfat_inode_info
+Date:   Wed,  9 Sep 2020 16:56:52 +0900
+Message-Id: <20200909075652.11203-1-kohada.t2@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Himax HX8837 is used to drive the LCD panel on OLPC platforms.
+Remove 'rwoffset' in exfat_inode_info and replace it with the parameter(cpos) of exfat_readdir.
+Since rwoffset of  is referenced only by exfat_readdir, it is not necessary a exfat_inode_info's member.
 
-It controls the panel backlight and is able to refresh it when the LCD
-controller (and the rest of the plaform) is powered off.
-
-It also converts regular RGB color data from the LCDC so that it looks
-reasonable on the OLPC LCD panel with a monochromatic layer on top of a
-layer that can either reflect light (b/w sunlight readable mode) or light
-pattern of red, green and blue pixels.
-
-At this point, the driver is rather basic. The self-refresh mode is not
-supported. There's no way of independently controlling the color swizzlin=
-g,
-antialiasing or b/w conversion, but it probably isn't too useful either.
-
-There's another driver for the same hardware on OLPC XO-1.5 and XO-1.75
-in drivers/staging/olpc_dcon. The display on that hardware doesn't utiliz=
-e
-DRM, so this driver doesn't replace the other one yet.
-
-Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
-
+Signed-off-by: Tetsuhiro Kohada <kohada.t2@gmail.com>
 ---
-Changes since v3:
-- Added this patch, in place of a driver derived from
-  drivers/staging/olpc_dcon. Compared to the previous one this
-  implements the bare minimum, without the fancy stuff such as
-  self-refresh that need more work/thinking.
+ fs/exfat/dir.c      | 16 ++++++----------
+ fs/exfat/exfat_fs.h |  2 --
+ fs/exfat/file.c     |  2 --
+ fs/exfat/inode.c    |  3 ---
+ fs/exfat/super.c    |  1 -
+ 5 files changed, 6 insertions(+), 18 deletions(-)
 
- drivers/gpu/drm/bridge/Kconfig        |  13 ++
- drivers/gpu/drm/bridge/Makefile       |   1 +
- drivers/gpu/drm/bridge/himax-hx8837.c | 325 ++++++++++++++++++++++++++
- 3 files changed, 339 insertions(+)
- create mode 100644 drivers/gpu/drm/bridge/himax-hx8837.c
-
-diff --git a/drivers/gpu/drm/bridge/Kconfig b/drivers/gpu/drm/bridge/Kcon=
-fig
-index 43271c21d3fce..df30d61c3fee1 100644
---- a/drivers/gpu/drm/bridge/Kconfig
-+++ b/drivers/gpu/drm/bridge/Kconfig
-@@ -48,6 +48,19 @@ config DRM_DISPLAY_CONNECTOR
- 	  on ARM-based platforms. Saying Y here when this driver is not needed
- 	  will not cause any issue.
-=20
-+config DRM_HIMAX_HX8837
-+        tristate "HiMax HX8837 OLPC Display Controller"
-+	depends on OF
-+	depends on OLPC || ARCH_MMP || COMPILE_TEST
-+	select DRM_KMS_HELPER
-+        select BACKLIGHT_LCD_SUPPORT
-+        select BACKLIGHT_CLASS_DEVICE
-+        help
-+          Enable support for HiMax HX8837 Display Controller as found in=
- the
-+          OLPC XO laptops.
-+
-+          If your laptop doesn't have green ears, say "N"
-+
- config DRM_LVDS_CODEC
- 	tristate "Transparent LVDS encoders and decoders support"
- 	depends on OF
-diff --git a/drivers/gpu/drm/bridge/Makefile b/drivers/gpu/drm/bridge/Mak=
-efile
-index d63d4b7e43473..70d97c84382d5 100644
---- a/drivers/gpu/drm/bridge/Makefile
-+++ b/drivers/gpu/drm/bridge/Makefile
-@@ -2,6 +2,7 @@
- obj-$(CONFIG_DRM_CDNS_DSI) +=3D cdns-dsi.o
- obj-$(CONFIG_DRM_CHRONTEL_CH7033) +=3D chrontel-ch7033.o
- obj-$(CONFIG_DRM_DISPLAY_CONNECTOR) +=3D display-connector.o
-+obj-$(CONFIG_DRM_HIMAX_HX8837) +=3D himax-hx8837.o
- obj-$(CONFIG_DRM_LVDS_CODEC) +=3D lvds-codec.o
- obj-$(CONFIG_DRM_MEGACHIPS_STDPXXXX_GE_B850V3_FW) +=3D megachips-stdpxxx=
-x-ge-b850v3-fw.o
- obj-$(CONFIG_DRM_NXP_PTN3460) +=3D nxp-ptn3460.o
-diff --git a/drivers/gpu/drm/bridge/himax-hx8837.c b/drivers/gpu/drm/brid=
-ge/himax-hx8837.c
-new file mode 100644
-index 0000000000000..1e97fcb8ce505
---- /dev/null
-+++ b/drivers/gpu/drm/bridge/himax-hx8837.c
-@@ -0,0 +1,325 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * HiMax HX8837 Display Controller Driver
-+ *
-+ * Datasheet: http://wiki.laptop.org/images/0/09/DCON_datasheet_HX8837-A=
-.pdf
-+ *
-+ * Copyright (C) 2020 Lubomir Rintel
-+ */
-+
-+#include <linux/gpio/consumer.h>
-+#include <linux/module.h>
-+#include <linux/regmap.h>
-+
-+#include <drm/drm_atomic_helper.h>
-+#include <drm/drm_panel.h>
-+#include <drm/drm_bridge.h>
-+#include <drm/drm_of.h>
-+#include <drm/drm_print.h>
-+#include <drm/drm_probe_helper.h>
-+
-+#define bridge_to_hx8837_priv(x) \
-+	container_of(x, struct hx8837_priv, bridge)
-+
-+/* DCON registers */
-+enum {
-+	DCON_REG_ID		=3D 0x00,
-+	DCON_REG_MODE		=3D 0x01,
-+	DCON_REG_HRES		=3D 0x02,
-+	DCON_REG_HTOTAL		=3D 0x03,
-+	DCON_REG_HSYNC_WIDTH	=3D 0x04,
-+	DCON_REG_VRES		=3D 0x05,
-+	DCON_REG_VTOTAL		=3D 0x06,
-+	DCON_REG_VSYNC_WIDTH	=3D 0x07,
-+	DCON_REG_TIMEOUT	=3D 0x08,
-+	DCON_REG_SCAN_INT	=3D 0x09,
-+	DCON_REG_BRIGHT		=3D 0x0a,
-+	DCON_REG_MEM_OPT_A	=3D 0x41,
-+	DCON_REG_MEM_OPT_B	=3D 0x42,
-+};
-+
-+/* DCON_REG_MODE */
-+enum {
-+	MODE_PASSTHRU		=3D BIT(0),
-+	MODE_SLEEP		=3D BIT(1),
-+	MODE_SLEEP_AUTO		=3D BIT(2),
-+	MODE_BL_ENABLE		=3D BIT(3),
-+	MODE_BLANK		=3D BIT(4),
-+	MODE_CSWIZZLE		=3D BIT(5),
-+	MODE_COL_AA		=3D BIT(6),
-+	MODE_MONO_LUMA		=3D BIT(7),
-+	MODE_SCAN_INT		=3D BIT(8),
-+	MODE_CLOCKDIV		=3D BIT(9),
-+	MODE_DEBUG		=3D BIT(14),
-+	MODE_SELFTEST		=3D BIT(15),
-+};
-+
-+struct hx8837_priv {
-+	struct regmap *regmap;
-+	struct gpio_desc *load_gpio;
-+
-+	struct drm_bridge *panel_bridge;
-+	struct drm_panel *panel;
-+	struct drm_bridge bridge;
-+};
-+
-+static int hx8837_bridge_attach(struct drm_bridge *bridge,
-+				enum drm_bridge_attach_flags flags)
-+{
-+	struct hx8837_priv *priv =3D bridge_to_hx8837_priv(bridge);
-+
-+	return drm_bridge_attach(bridge->encoder, priv->panel_bridge,
-+				 bridge, flags);
-+}
-+
-+static enum drm_mode_status hx8837_bridge_mode_valid(
-+				struct drm_bridge *bridge,
-+				const struct drm_display_info *info,
-+				const struct drm_display_mode *mode)
-+{
-+	if (mode->hdisplay > 0xffff)
-+		return MODE_BAD_HVALUE;
-+	if (mode->htotal > 0xffff)
-+		return MODE_BAD_HVALUE;
-+	if (mode->hsync_start - mode->hdisplay > 0xff)
-+		return MODE_HBLANK_WIDE;
-+	if (mode->hsync_end - mode->hsync_start > 0xff)
-+		return MODE_HSYNC_WIDE;
-+	if (mode->vdisplay > 0xffff)
-+		return MODE_BAD_VVALUE;
-+	if (mode->vtotal > 0xffff)
-+		return MODE_BAD_VVALUE;
-+	if (mode->vsync_start - mode->vdisplay > 0xff)
-+		return MODE_VBLANK_WIDE;
-+	if (mode->vsync_end - mode->vsync_start > 0xff)
-+		return MODE_VSYNC_WIDE;
-+
-+	return MODE_OK;
-+}
-+
-+static void hx8837_bridge_disable(struct drm_bridge *bridge)
-+{
-+	struct hx8837_priv *priv =3D bridge_to_hx8837_priv(bridge);
-+	int ret;
-+
-+	ret =3D gpiod_direction_output(priv->load_gpio, 0);
-+	if (ret)
-+		DRM_ERROR("error enabling the dcon load: %d\n", ret);
-+
-+	ret =3D regmap_update_bits(priv->regmap, DCON_REG_MODE,
-+					       MODE_PASSTHRU |
-+					       MODE_SLEEP,
-+					       MODE_PASSTHRU |
-+					       MODE_SLEEP);
-+	if (ret)
-+		DRM_ERROR("error disabling the dcon: %d\n", ret);
-+}
-+
-+static void hx8837_bridge_enable(struct drm_bridge *bridge)
-+{
-+	struct hx8837_priv *priv =3D bridge_to_hx8837_priv(bridge);
-+	int ret;
-+
-+	ret =3D regmap_update_bits(priv->regmap, DCON_REG_MODE,
-+					       MODE_PASSTHRU |
-+					       MODE_SLEEP |
-+					       MODE_SLEEP_AUTO |
-+					       MODE_BLANK |
-+					       MODE_SCAN_INT |
-+					       MODE_CLOCKDIV |
-+					       MODE_DEBUG |
-+					       MODE_SELFTEST,
-+					       MODE_PASSTHRU);
-+	if (ret)
-+		DRM_ERROR("error enabling the dcon: %d\n", ret);
-+
-+	ret =3D gpiod_direction_output(priv->load_gpio, 1);
-+	if (ret)
-+		DRM_ERROR("error enabling the dcon load: %d\n", ret);
-+}
-+
-+static void hx8837_bridge_mode_set(struct drm_bridge *bridge,
-+			   const struct drm_display_mode *mode,
-+			   const struct drm_display_mode *adjusted_mode)
-+{
-+	struct hx8837_priv *priv =3D bridge_to_hx8837_priv(bridge);
-+
-+	regmap_write(priv->regmap, DCON_REG_HRES, mode->hdisplay);
-+	regmap_write(priv->regmap, DCON_REG_HTOTAL, mode->htotal);
-+	regmap_write(priv->regmap, DCON_REG_HSYNC_WIDTH,
-+			(mode->hsync_start - mode->hdisplay) << 8 |
-+			(mode->hsync_end - mode->hsync_start));
-+	regmap_write(priv->regmap, DCON_REG_VRES, mode->vdisplay);
-+	regmap_write(priv->regmap, DCON_REG_VTOTAL, mode->vtotal);
-+	regmap_write(priv->regmap, DCON_REG_VSYNC_WIDTH,
-+			(mode->vsync_start - mode->vdisplay) << 8 |
-+			(mode->vsync_end - mode->vsync_start));
-+}
-+
-+static const struct drm_bridge_funcs hx8837_bridge_funcs =3D {
-+	.attach =3D hx8837_bridge_attach,
-+	.mode_valid =3D hx8837_bridge_mode_valid,
-+	.disable =3D hx8837_bridge_disable,
-+	.enable =3D hx8837_bridge_enable,
-+	.mode_set =3D hx8837_bridge_mode_set,
-+};
-+
-+static int hx8837_bl_update_status(struct backlight_device *bl)
-+{
-+	struct hx8837_priv *priv =3D bl_get_data(bl);
-+	unsigned int val;
-+	int ret;
-+
-+	ret =3D regmap_update_bits(priv->regmap, DCON_REG_BRIGHT,
-+					       0x000f,
-+					       bl->props.brightness);
-+	if (ret) {
-+		dev_err(&bl->dev, "error setting the backlight: %d\n", ret);
-+		return ret;
-+	}
-+
-+	if (bl->props.brightness)
-+		val =3D MODE_CSWIZZLE | MODE_COL_AA;
-+	else
-+		val =3D MODE_MONO_LUMA;
-+
-+	ret =3D regmap_update_bits(priv->regmap, DCON_REG_MODE,
-+					       MODE_CSWIZZLE |
-+					       MODE_COL_AA |
-+					       MODE_MONO_LUMA,
-+					       val);
-+	if (ret) {
-+		dev_err(&bl->dev, "error setting color mode: %d\n", ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct backlight_ops hx8837_bl_ops =3D {
-+	.update_status =3D hx8837_bl_update_status,
-+};
-+
-+static const struct regmap_config hx8837_regmap_config =3D {
-+	.reg_bits =3D 8,
-+	.val_bits =3D 16,
-+	.max_register =3D 0x4c,
-+	.val_format_endian =3D REGMAP_ENDIAN_LITTLE,
-+};
-+
-+static int hx8837_probe(struct i2c_client *client,
-+			const struct i2c_device_id *id)
-+{
-+	struct backlight_properties bl_props =3D {
-+		.type =3D BACKLIGHT_RAW,
-+		.max_brightness =3D 0xf,
-+	};
-+	struct device *dev =3D &client->dev;
-+	struct backlight_device *bl;
-+	struct hx8837_priv *priv;
-+	unsigned int val;
-+	int ret;
-+
-+	priv =3D devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	dev_set_drvdata(dev, priv);
-+
-+	priv->load_gpio =3D devm_gpiod_get(dev, "load", GPIOD_ASIS);
-+	if (IS_ERR(priv->load_gpio))
-+		return PTR_ERR(priv->load_gpio);
-+
-+	ret =3D drm_of_find_panel_or_bridge(dev->of_node, 1, -1,
-+					  &priv->panel, NULL);
-+	if (ret)
-+		return ret;
-+
-+	if (priv->panel->backlight) {
-+		dev_err(dev, "the panel already has a backlight controller\n");
-+		return -ENODEV;
-+	}
-+
-+	priv->panel_bridge =3D devm_drm_panel_bridge_add(dev, priv->panel);
-+	if (IS_ERR(priv->panel_bridge))
-+		return PTR_ERR(priv->panel_bridge);
-+
-+	priv->regmap =3D devm_regmap_init_i2c(client, &hx8837_regmap_config);
-+	if (IS_ERR(priv->regmap)) {
-+		dev_err(dev, "regmap init failed\n");
-+		return PTR_ERR(priv->regmap);
-+	}
-+
-+	ret =3D regmap_read(priv->regmap, DCON_REG_ID, &val);
-+	if (ret < 0) {
-+		dev_err(dev, "error reading the model id: %d\n", ret);
-+		return ret;
-+	}
-+	if ((val & 0xff00) !=3D 0xdc00) {
-+		dev_err(dev, "the device is not a hx8837\n");
-+		return -ENODEV;
-+	}
-+
-+	ret =3D regmap_read(priv->regmap, DCON_REG_BRIGHT, &val);
-+	if (ret < 0) {
-+		dev_err(&bl->dev, "error getting the backlight: %d\n", ret);
-+		return ret;
-+	}
-+	bl_props.brightness =3D val & 0xf;
-+
-+	bl =3D devm_backlight_device_register(dev, dev_name(dev), dev, priv,
-+					    &hx8837_bl_ops, &bl_props);
-+	if (IS_ERR(bl)) {
-+		dev_err(dev, "failed to register backlight\n");
-+		return PTR_ERR(bl);
-+	}
-+
-+	priv->panel->backlight =3D bl;
-+
-+	INIT_LIST_HEAD(&priv->bridge.list);
-+	priv->bridge.funcs =3D &hx8837_bridge_funcs;
-+	priv->bridge.of_node =3D dev->of_node;
-+	drm_bridge_add(&priv->bridge);
-+
-+	dev_info(dev, "HiMax HX8837 Display Controller Driver\n");
-+	return 0;
-+}
-+
-+static int hx8837_remove(struct i2c_client *client)
-+{
-+	struct device *dev =3D &client->dev;
-+	struct hx8837_priv *priv =3D dev_get_drvdata(dev);
-+
-+	drm_bridge_remove(&priv->bridge);
-+	priv->panel->backlight =3D NULL;
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id hx8837_dt_ids[] =3D {
-+	{ .compatible =3D "himax,hx8837", },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, hx8837_dt_ids);
-+
-+static const struct i2c_device_id hx8837_ids[] =3D {
-+	{ "hx8837", 0 },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(i2c, hx8837_ids);
-+
-+static struct i2c_driver hx8837_driver =3D {
-+	.probe =3D hx8837_probe,
-+	.remove =3D hx8837_remove,
-+	.driver =3D {
-+		.name =3D "hx8837",
-+		.of_match_table =3D of_match_ptr(hx8837_dt_ids),
-+	},
-+	.id_table =3D hx8837_ids,
-+};
-+
-+module_i2c_driver(hx8837_driver);
-+
-+MODULE_AUTHOR("Lubomir Rintel <lkundrak@v3.sk>");
-+MODULE_DESCRIPTION("HiMax HX8837 Display Controller Driver");
-+MODULE_LICENSE("GPL");
---=20
-2.26.2
+diff --git a/fs/exfat/dir.c b/fs/exfat/dir.c
+index a9b13ae3f325..fa5bb72aa295 100644
+--- a/fs/exfat/dir.c
++++ b/fs/exfat/dir.c
+@@ -59,7 +59,7 @@ static void exfat_get_uniname_from_ext_entry(struct super_block *sb,
+ }
+ 
+ /* read a directory entry from the opened directory */
+-static int exfat_readdir(struct inode *inode, struct exfat_dir_entry *dir_entry)
++static int exfat_readdir(struct inode *inode, loff_t *cpos, struct exfat_dir_entry *dir_entry)
+ {
+ 	int i, dentries_per_clu, dentries_per_clu_bits = 0;
+ 	unsigned int type, clu_offset;
+@@ -70,7 +70,7 @@ static int exfat_readdir(struct inode *inode, struct exfat_dir_entry *dir_entry)
+ 	struct super_block *sb = inode->i_sb;
+ 	struct exfat_sb_info *sbi = EXFAT_SB(sb);
+ 	struct exfat_inode_info *ei = EXFAT_I(inode);
+-	unsigned int dentry = ei->rwoffset & 0xFFFFFFFF;
++	unsigned int dentry = EXFAT_B_TO_DEN(*cpos) & 0xFFFFFFFF;
+ 	struct buffer_head *bh;
+ 
+ 	/* check if the given file ID is opened */
+@@ -162,7 +162,7 @@ static int exfat_readdir(struct inode *inode, struct exfat_dir_entry *dir_entry)
+ 			ei->hint_bmap.off = dentry >> dentries_per_clu_bits;
+ 			ei->hint_bmap.clu = clu.dir;
+ 
+-			ei->rwoffset = ++dentry;
++			*cpos = EXFAT_DEN_TO_B(++dentry);
+ 			return 0;
+ 		}
+ 
+@@ -178,7 +178,7 @@ static int exfat_readdir(struct inode *inode, struct exfat_dir_entry *dir_entry)
+ 	}
+ 
+ 	dir_entry->namebuf.lfn[0] = '\0';
+-	ei->rwoffset = dentry;
++	*cpos = EXFAT_DEN_TO_B(dentry);
+ 	return 0;
+ }
+ 
+@@ -242,12 +242,10 @@ static int exfat_iterate(struct file *filp, struct dir_context *ctx)
+ 	if (err)
+ 		goto unlock;
+ get_new:
+-	ei->rwoffset = EXFAT_B_TO_DEN(cpos);
+-
+ 	if (cpos >= i_size_read(inode))
+ 		goto end_of_dir;
+ 
+-	err = exfat_readdir(inode, &de);
++	err = exfat_readdir(inode, &cpos, &de);
+ 	if (err) {
+ 		/*
+ 		 * At least we tried to read a sector.  Move cpos to next sector
+@@ -262,13 +260,11 @@ static int exfat_iterate(struct file *filp, struct dir_context *ctx)
+ 		goto end_of_dir;
+ 	}
+ 
+-	cpos = EXFAT_DEN_TO_B(ei->rwoffset);
+-
+ 	if (!nb->lfn[0])
+ 		goto end_of_dir;
+ 
+ 	i_pos = ((loff_t)ei->start_clu << 32) |
+-		((ei->rwoffset - 1) & 0xffffffff);
++		(EXFAT_B_TO_DEN(cpos-1) & 0xffffffff);
+ 	tmp = exfat_iget(sb, i_pos);
+ 	if (tmp) {
+ 		inum = tmp->i_ino;
+diff --git a/fs/exfat/exfat_fs.h b/fs/exfat/exfat_fs.h
+index 44dc04520175..e586daf5a2e7 100644
+--- a/fs/exfat/exfat_fs.h
++++ b/fs/exfat/exfat_fs.h
+@@ -263,8 +263,6 @@ struct exfat_inode_info {
+ 	 * the validation of hint_stat.
+ 	 */
+ 	unsigned int version;
+-	/* file offset or dentry index for readdir */
+-	loff_t rwoffset;
+ 
+ 	/* hint for cluster last accessed */
+ 	struct exfat_hint hint_bmap;
+diff --git a/fs/exfat/file.c b/fs/exfat/file.c
+index 4831a39632a1..a92478eabfa4 100644
+--- a/fs/exfat/file.c
++++ b/fs/exfat/file.c
+@@ -208,8 +208,6 @@ int __exfat_truncate(struct inode *inode, loff_t new_size)
+ 	/* hint information */
+ 	ei->hint_bmap.off = EXFAT_EOF_CLUSTER;
+ 	ei->hint_bmap.clu = EXFAT_EOF_CLUSTER;
+-	if (ei->rwoffset > new_size)
+-		ei->rwoffset = new_size;
+ 
+ 	/* hint_stat will be used if this is directory. */
+ 	ei->hint_stat.eidx = 0;
+diff --git a/fs/exfat/inode.c b/fs/exfat/inode.c
+index 7f90204adef5..70a33d4807c3 100644
+--- a/fs/exfat/inode.c
++++ b/fs/exfat/inode.c
+@@ -114,8 +114,6 @@ static int exfat_map_cluster(struct inode *inode, unsigned int clu_offset,
+ 	unsigned int local_clu_offset = clu_offset;
+ 	unsigned int num_to_be_allocated = 0, num_clusters = 0;
+ 
+-	ei->rwoffset = EXFAT_CLU_TO_B(clu_offset, sbi);
+-
+ 	if (EXFAT_I(inode)->i_size_ondisk > 0)
+ 		num_clusters =
+ 			EXFAT_B_TO_CLU_ROUND_UP(EXFAT_I(inode)->i_size_ondisk,
+@@ -567,7 +565,6 @@ static int exfat_fill_inode(struct inode *inode, struct exfat_dir_entry *info)
+ 	ei->hint_stat.eidx = 0;
+ 	ei->hint_stat.clu = info->start_clu;
+ 	ei->hint_femp.eidx = EXFAT_HINT_NONE;
+-	ei->rwoffset = 0;
+ 	ei->hint_bmap.off = EXFAT_EOF_CLUSTER;
+ 	ei->i_pos = 0;
+ 
+diff --git a/fs/exfat/super.c b/fs/exfat/super.c
+index 3b6a1659892f..b29935a91b9b 100644
+--- a/fs/exfat/super.c
++++ b/fs/exfat/super.c
+@@ -342,7 +342,6 @@ static int exfat_read_root(struct inode *inode)
+ 	ei->flags = ALLOC_FAT_CHAIN;
+ 	ei->type = TYPE_DIR;
+ 	ei->version = 0;
+-	ei->rwoffset = 0;
+ 	ei->hint_bmap.off = EXFAT_EOF_CLUSTER;
+ 	ei->hint_stat.eidx = 0;
+ 	ei->hint_stat.clu = sbi->root_dir;
+-- 
+2.25.1
 
