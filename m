@@ -2,132 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AAC92637C2
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 22:47:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB8B32637C8
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 22:48:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729251AbgIIUry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 16:47:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40302 "EHLO
+        id S1730093AbgIIUsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 16:48:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725975AbgIIUrw (ORCPT
+        with ESMTP id S1726440AbgIIUsm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 16:47:52 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16A5FC061573;
-        Wed,  9 Sep 2020 13:47:50 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id a12so4035395eds.13;
-        Wed, 09 Sep 2020 13:47:50 -0700 (PDT)
+        Wed, 9 Sep 2020 16:48:42 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CA63C061573;
+        Wed,  9 Sep 2020 13:48:41 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id g4so4383702wrs.5;
+        Wed, 09 Sep 2020 13:48:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=z9HWvpxl+f530kB5Zh2VUTorJ4C9dxFarjvlqPfFRz4=;
-        b=C6jIXA8svVoRtfk0GwKhEQ13h7OwSPzeUf2mqlf33y9tl5528pwXhzaBjNX0iAU2N0
-         /CkU75aXPQ0l25u9ERZJKIhx/YuyEfjOljHzslPvo54hm2Ewft8H8qKZ08krUZSsmqFH
-         iwA5yALNhe/QKqcvLqr9Xllo5CqYuHTzSbve6nrWY27vOhZiRy4B7rXn/f3+BUmQwcZG
-         OEuTWu2WsQLVZx+Z2r9cYkzs9bhNtJDf56UG5mrelQYCMEG54BEBjtEp0N6DB+SMaM/s
-         X7GZ2gfet2Wysn4iotGb8uDTyUMcGeXbfnoDo9L7GR23SA5DFF2GJEEm+0N1PQAadMl/
-         4vGA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=msyTyBuqg+S9lSfyJBnZ2ellRZt6dmdc0yChx+UPxKo=;
+        b=koV/+i57bGxaeWzcaR3ot72iqyXmIiat5L82lel4bkbFuylPHtkYD/RyZwOy8nHAfn
+         E/ess/ZvcMgSwczW+yo3TBTUZNicVuzKtLp05CBwoHOo26gi1+SIW96AklvRX+0TeaVT
+         slR0PB8woP9gDL4LqFubK5Hl+RNqE0CWnky1JJMilUg8hkh4w6pBh2xBUycFJ0uE2cr+
+         i3W3j/fywmoareT5PKXr1dycWj7fFWqh88hXhygfiBLAhDkVxKEXSEn20+Hq+tjlM3PI
+         vH1sasf1KXgZuKIX1Vl1Cqno6BYsaEDMEwfdA2/NhswquDG0MPGmS4Jpc8y6s8JXyepn
+         6JuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=z9HWvpxl+f530kB5Zh2VUTorJ4C9dxFarjvlqPfFRz4=;
-        b=VUR/gJdaWPAU8YuIR8TBfQKRqKfPt2Pu6r25NeIlGlMF1jeVRMlCaDHcW5bTHcfKE9
-         kFCJrL2bi2W1gDDvInb5UsGqZuafaXWAr8yulvOXC4LvsUgW3lj3b64TQ2mSF6r/bR/Y
-         1QJNl7A4vdzdPwb9eGB5aEqz5PhYYMn1IrJ3CLzCm9bRgXL4Zuv9PYbrS63zBYLCZSjR
-         BP5oRydginD/WOz+6FqhiNIpRGES9OrRYxnwF/sFl0tcBLdT4saZ+Wi3jeW+e/JgqKU3
-         6iEaRX4yPBZN3gAI9Lt3R7yBj2/8bzt7I6LNOAEA/rFFl2iVkfE2ZdKWeywQpF9uuKki
-         eatA==
-X-Gm-Message-State: AOAM532af4UlyQVwYKvcUtCxPwBC+2SlLGFBw3Ty5yC/f68xgtGEZKNE
-        mZxZUGmVplJgNomq4ORNRos=
-X-Google-Smtp-Source: ABdhPJyEY1UgPOtP/a2PRgsl0HpmQFPbkfvzcA/2l9pZII63Fcv7ryqmwLpEJOO2WAdNvkXtryN6Sg==
-X-Received: by 2002:a05:6402:22fc:: with SMTP id dn28mr5770505edb.365.1599684469557;
-        Wed, 09 Sep 2020 13:47:49 -0700 (PDT)
-Received: from ?IPv6:2a01:110f:b59:fd00:dd82:1be8:aced:e7a7? ([2a01:110f:b59:fd00:dd82:1be8:aced:e7a7])
-        by smtp.gmail.com with ESMTPSA id n15sm3766242eja.26.2020.09.09.13.47.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Sep 2020 13:47:49 -0700 (PDT)
-Subject: Re: [PATCH v3 1/2] leds: pwm: Allow automatic labels for DT based
- devices
-To:     Pavel Machek <pavel@ucw.cz>, linux-leds@vger.kernel.org,
-        devicetree@vger.kernel.org, Dan Murphy <dmurphy@ti.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        Alexander Dahl <ada@thorsis.com>
-References: <20200907043459.2961-1-post@lespocky.de>
- <20200907043459.2961-2-post@lespocky.de> <20200909090736.GE10891@amd>
- <20200909202907.3z425uujvu532qxs@falbala.internal.home.lespocky.de>
-From:   Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Message-ID: <9e78d793-d0d5-737c-163e-30736c1c7bdf@gmail.com>
-Date:   Wed, 9 Sep 2020 22:47:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        bh=msyTyBuqg+S9lSfyJBnZ2ellRZt6dmdc0yChx+UPxKo=;
+        b=tY//74sls6ZTv55H8NcG4Uuos4wGb9v5EV/4qr4HFiRfrJUzk2fZRAFRSja1imaU/U
+         5S7IqJA0+8/+qv0b7F/pxdqh6kPxWFpR3Ny1KqJBrvnkNfpXuO7QsiRYslwrZrXik+Vq
+         qBVO9BWMMl86nXhdKnkL4szDvegkJokL1CgwQBqEr7kCVz658jaJXHFhfZJu54wCXt5F
+         BYsEAO1eouLm+XcT9HkdjAb0R/Fj9C/qEfT6eGdbfHepjXLpEAvwoQVsdA4Myh2uytP3
+         x36+4p9aFbveg1XVWAocXbuJRqCGJyhVLLc0cAg8WF+hCsSp3ooOz8ZO4gAXBFUMAOft
+         l9BA==
+X-Gm-Message-State: AOAM531wMitRCu9WGkxt/A/IneB6qaPxJjIM3JwvHkzmQB19NE1lOLK7
+        88pkvkLqOfqUIwoR4rH6DVc=
+X-Google-Smtp-Source: ABdhPJzqMJb3CpQd6FD2aRtPqLCg50OLeNOC9diM0ZequY6MDGcUMHsvN30FytEWsWjy1JFN7Lyvvg==
+X-Received: by 2002:a5d:4152:: with SMTP id c18mr5963823wrq.277.1599684520297;
+        Wed, 09 Sep 2020 13:48:40 -0700 (PDT)
+Received: from localhost.localdomain (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
+        by smtp.gmail.com with ESMTPSA id 189sm427103wmb.3.2020.09.09.13.48.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Sep 2020 13:48:39 -0700 (PDT)
+From:   Alex Dewar <alex.dewar90@gmail.com>
+Cc:     Alex Dewar <alex.dewar90@gmail.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: media: atomisp: Don't do unnecessary zeroing of memory
+Date:   Wed,  9 Sep 2020 21:48:00 +0100
+Message-Id: <20200909204807.36501-1-alex.dewar90@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <20200909202907.3z425uujvu532qxs@falbala.internal.home.lespocky.de>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alexander,
+In a few places in pci/sh_css_params.c, memset is used to zero memory
+immediately before it is freed. As none of these structs appear to
+contain sensitive information, just remove the calls to memset.
 
-On 9/9/20 10:29 PM, Alexander Dahl wrote:
-> Hei hei,
-> 
-> On Wed, Sep 09, 2020 at 11:07:36AM +0200, Pavel Machek wrote:
->> Hi!
->>
->>>   	pwm_init_state(led_data->pwm, &led_data->pwmstate);
->>>   
->>> -	ret = devm_led_classdev_register(dev, &led_data->cdev);
->>> +	if (fwnode) {
->>> +		init_data.fwnode = fwnode;
->>> +		ret = devm_led_classdev_register_ext(dev, &led_data->cdev,
->>> +						     &init_data);
->>> +	} else {
->>> +		ret = devm_led_classdev_register(dev, &led_data->cdev);
->>> +	}
->>
->> Can you always use _ext version, even with null fwnode?
-> 
-> I did not try on real hardware, but from reading the code I would say
-> the following would happen: led_classdev_register_ext() calls
-> led_compose_name(parent, init_data, composed_name) which itself calls
-> led_parse_fwnode_props(dev, fwnode, &props); that returns early due to
-> fwnode==NULL without changing props, thus this stays as initialized
-> with {}, so led_compose_name() would return -EINVAL which would let
-> led_classdev_register_ext() fail, too.
-> 
->> If not, can you fix the core to accept that? Having that conditional
->> in driver is ugly.
-> 
-> It is ugly, although the approach is inspired by the leds-gpio driver.
-> I'll see if I can come up with a change to led-core, but I'm also open
-> for suggestions. ;-)
+Suggested-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
+---
+ drivers/staging/media/atomisp/pci/sh_css_params.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-devm_led_classdev_register() calls devm_led_classdev_register_ext()
-with NULL passed in place of init_data, so you could do something like
-below to achieve the same without touching LED core:
-
-struct led_init_data init_data_impl = { .fwnode = fwnode };
-struct led_init_data *init_data = NULL;
-
-if (fwnode)
-	init_data = &init_data_impl;
-
-devm_led_classdev_register_ext(dev, &led_data->cdev, init_data);
-
-> fyi: Peter Ujfalusi answered and would give his Ack to the changed
-> dual license for the yaml file.  You can expect that for v4.
-> 
-> Stay tuned
-> Alex
-> 
-
+diff --git a/drivers/staging/media/atomisp/pci/sh_css_params.c b/drivers/staging/media/atomisp/pci/sh_css_params.c
+index 2c67c23b3700..24fc497bd491 100644
+--- a/drivers/staging/media/atomisp/pci/sh_css_params.c
++++ b/drivers/staging/media/atomisp/pci/sh_css_params.c
+@@ -4378,7 +4378,6 @@ ia_css_3a_statistics_free(struct ia_css_3a_statistics *me)
+ 	if (me) {
+ 		kvfree(me->rgby_data);
+ 		kvfree(me->data);
+-		memset(me, 0, sizeof(struct ia_css_3a_statistics));
+ 		kvfree(me);
+ 	}
+ }
+@@ -4417,7 +4416,6 @@ ia_css_dvs_statistics_free(struct ia_css_dvs_statistics *me)
+ 	if (me) {
+ 		kvfree(me->hor_proj);
+ 		kvfree(me->ver_proj);
+-		memset(me, 0, sizeof(struct ia_css_dvs_statistics));
+ 		kvfree(me);
+ 	}
+ }
+@@ -4459,7 +4457,6 @@ ia_css_dvs_coefficients_free(struct ia_css_dvs_coefficients *me)
+ 	if (me) {
+ 		kvfree(me->hor_coefs);
+ 		kvfree(me->ver_coefs);
+-		memset(me, 0, sizeof(struct ia_css_dvs_coefficients));
+ 		kvfree(me);
+ 	}
+ }
+@@ -4551,7 +4548,6 @@ ia_css_dvs2_statistics_free(struct ia_css_dvs2_statistics *me)
+ 		kvfree(me->ver_prod.odd_imag);
+ 		kvfree(me->ver_prod.even_real);
+ 		kvfree(me->ver_prod.even_imag);
+-		memset(me, 0, sizeof(struct ia_css_dvs2_statistics));
+ 		kvfree(me);
+ 	}
+ }
+@@ -4635,7 +4631,6 @@ ia_css_dvs2_coefficients_free(struct ia_css_dvs2_coefficients *me)
+ 		kvfree(me->ver_coefs.odd_imag);
+ 		kvfree(me->ver_coefs.even_real);
+ 		kvfree(me->ver_coefs.even_imag);
+-		memset(me, 0, sizeof(struct ia_css_dvs2_coefficients));
+ 		kvfree(me);
+ 	}
+ }
+@@ -4710,7 +4705,6 @@ ia_css_dvs2_6axis_config_free(struct ia_css_dvs_6axis_config *dvs_6axis_config)
+ 		kvfree(dvs_6axis_config->ycoords_y);
+ 		kvfree(dvs_6axis_config->xcoords_uv);
+ 		kvfree(dvs_6axis_config->ycoords_uv);
+-		memset(dvs_6axis_config, 0, sizeof(struct ia_css_dvs_6axis_config));
+ 		kvfree(dvs_6axis_config);
+ 	}
+ }
 -- 
-Best regards,
-Jacek Anaszewski
+2.28.0
+
