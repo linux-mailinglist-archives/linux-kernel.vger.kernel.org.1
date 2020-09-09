@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA5AD2630D0
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 17:45:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F9962630DC
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 17:47:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730439AbgIIPol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 11:44:41 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:11757 "EHLO huawei.com"
+        id S1727900AbgIIPrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 11:47:46 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:11325 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729990AbgIIPmP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 11:42:15 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id EE0738C8ED968C64CCB5;
-        Wed,  9 Sep 2020 21:42:08 +0800 (CST)
-Received: from localhost (10.174.179.108) by DGGEMS402-HUB.china.huawei.com
- (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Wed, 9 Sep 2020
- 21:42:00 +0800
+        id S1730450AbgIIPpS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 11:45:18 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 83E9722A8BAE0B106767;
+        Wed,  9 Sep 2020 21:42:51 +0800 (CST)
+Received: from localhost (10.174.179.108) by DGGEMS404-HUB.china.huawei.com
+ (10.3.19.204) with Microsoft SMTP Server id 14.3.487.0; Wed, 9 Sep 2020
+ 21:42:44 +0800
 From:   YueHaibing <yuehaibing@huawei.com>
-To:     <thierry.reding@gmail.com>, <sam@ravnborg.org>, <airlied@linux.ie>,
-        <daniel@ffwll.ch>, <linus.walleij@linaro.org>,
-        <paul@crapouillou.net>
-CC:     <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+To:     <jingoohan1@gmail.com>, <gustavo.pimentel@synopsys.com>,
+        <lorenzo.pieralisi@arm.com>, <robh@kernel.org>,
+        <bhelgaas@google.com>
+CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH -next] drm/panel: s6e63m0: Add missing MODULE_LICENSE
-Date:   Wed, 9 Sep 2020 21:41:37 +0800
-Message-ID: <20200909134137.32284-1-yuehaibing@huawei.com>
+Subject: [PATCH -next] PCI: dwc: unexport dw_pcie_link_set_max_speed
+Date:   Wed, 9 Sep 2020 21:42:34 +0800
+Message-ID: <20200909134234.31204-1-yuehaibing@huawei.com>
 X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 X-Originating-IP: [10.174.179.108]
 X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
@@ -37,30 +36,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kbuild warns when this file is built as a loadable module:
+This function has been made static, which causes warning:
 
-WARNING: modpost: missing MODULE_LICENSE() in drivers/gpu/drm/panel/panel-samsung-s6e63m0.o
+WARNING: modpost: "dw_pcie_link_set_max_speed" [vmlinux] is a static EXPORT_SYMBOL_GPL
 
-Add the missing license/author/description tags.
-
-Fixes: b7b23e447687 ("drm/panel: s6e63m0: Break out SPI transport")
+Fixes: 3af45d34d30c ("PCI: dwc: Centralize link gen setting")
 Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 ---
- drivers/gpu/drm/panel/panel-samsung-s6e63m0.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/pci/controller/dwc/pcie-designware.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/panel/panel-samsung-s6e63m0.c b/drivers/gpu/drm/panel/panel-samsung-s6e63m0.c
-index 044294aafe27..3eee67e2d86a 100644
---- a/drivers/gpu/drm/panel/panel-samsung-s6e63m0.c
-+++ b/drivers/gpu/drm/panel/panel-samsung-s6e63m0.c
-@@ -534,3 +534,7 @@ int s6e63m0_remove(struct device *dev)
- 	return 0;
+diff --git a/drivers/pci/controller/dwc/pcie-designware.c b/drivers/pci/controller/dwc/pcie-designware.c
+index 4d105efb5722..3c3a4d1dbc0b 100644
+--- a/drivers/pci/controller/dwc/pcie-designware.c
++++ b/drivers/pci/controller/dwc/pcie-designware.c
+@@ -508,7 +508,6 @@ static void dw_pcie_link_set_max_speed(struct dw_pcie *pci, u32 link_gen)
+ 	dw_pcie_writel_dbi(pci, offset + PCI_EXP_LNKCAP, cap | link_speed);
+ 
  }
- EXPORT_SYMBOL_GPL(s6e63m0_remove);
-+
-+MODULE_AUTHOR("Paweł Chmiel <pawel.mikolaj.chmiel@gmail.com>");
-+MODULE_DESCRIPTION("s6e63m0 LCD Driver");
-+MODULE_LICENSE("GPL v2");
+-EXPORT_SYMBOL_GPL(dw_pcie_link_set_max_speed);
+ 
+ static u8 dw_pcie_iatu_unroll_enabled(struct dw_pcie *pci)
+ {
 -- 
 2.17.1
 
