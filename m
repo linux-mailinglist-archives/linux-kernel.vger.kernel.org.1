@@ -2,67 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 514AE262AE1
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 10:49:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37FB9262ACE
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 10:46:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728264AbgIIItW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 04:49:22 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:33070 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725826AbgIIItW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 04:49:22 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 4A5E4A72608B428739F2;
-        Wed,  9 Sep 2020 16:49:19 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.58) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 9 Sep 2020 16:49:09 +0800
-From:   Wei Xu <xuwei5@hisilicon.com>
-To:     <netdev@vger.kernel.org>
-CC:     <davem@davemloft.net>, <xuwei5@hisilicon.com>,
-        <linuxarm@huawei.com>, <shameerali.kolothum.thodi@huawei.com>,
-        <jonathan.cameron@huawei.com>, <john.garry@huawei.com>,
-        <salil.mehta@huawei.com>, <shiju.jose@huawei.com>,
-        <jinying@hisilicon.com>, <zhangyi.ac@huawei.com>,
-        <liguozhu@hisilicon.com>, <tangkunshan@huawei.com>,
-        <huangdaode@hisilicon.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        <intel-wired-lan@lists.osuosl.org>, <linux-kernel@vger.kernel.org>
-Subject: [net-next] net: i40e: Use the ARRAY_SIZE macro for aq_to_posix
-Date:   Wed, 9 Sep 2020 16:45:33 +0800
-Message-ID: <1599641134-204167-1-git-send-email-xuwei5@hisilicon.com>
-X-Mailer: git-send-email 2.8.1
+        id S1730168AbgIIIqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 04:46:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41348 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730128AbgIIIqj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 04:46:39 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F12FFC061573
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 01:46:38 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id gf14so1000427pjb.5
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 01:46:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LI1eT1wVUUbEcJhIlIYcasKfk7EA1KHs1hVsDnExyOI=;
+        b=aZmuo4hrrmyxV15MZvTpjPdhO69+xbBqijiZ719cFJe9E+irJ9yvuzUTLIf3BHXE7s
+         O9RYz5mWXZJwB/Jx5VwbLmxzGmc4i4Ki80IjhtbqJH9D5kZmOHlwaGzu4wBqNcfixgTk
+         14TrMfxg9DkXDZizrKNFpbHoJdfJKAP5S92vqp7YW2Uik39jpZAQoUeYYLaMt4Obbrck
+         GwPmNLdQDGvcaIEftHU1mNNYbGDzX1qjlsH2eZHMJciIWhUzFkLewBj1/HjWXFzxOBGZ
+         OCRlucCI5/oOZLMFlQk0EPzdtkenBkRpp8QHVI55sDsj0VPVdYy4989Linda/NC5JmXZ
+         xiBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LI1eT1wVUUbEcJhIlIYcasKfk7EA1KHs1hVsDnExyOI=;
+        b=RzW7JXUFGCAHE8kKiKi1Hgzh3QEjanGzCIbRhOqokhBZuzjxv+fW1KTTmE8z2CIZ9d
+         /rsT8QZcGMCM+edoNXlpiXyeZlbCNo514gJFM4IusGeQufjGm4BlgDuQq/QwmhFmLKG+
+         PlQdyht6Inp6M88OdlBD5gF1eZbI6NodgmX2gE4JC0IIMJoJk8g3nkXjNSNxgEHXvmEz
+         LLUVCejVJ3y438c1fJyUQTowWINXtxv+rVNVjiePBEXJgwjE4+9/MW96Xnp28Q7aiwu/
+         eCkLkh2I09C9MqVcVK3V/IUGO2Mz5VPcNKmQENhGvYK2WOIzLjOC1AP9VZVwsVIEgqM9
+         V2fw==
+X-Gm-Message-State: AOAM530TwiuwPKlJFOUSNkaCPhfLfO2NALSJAcZtK83Yze5O8M5JYnQd
+        cHcAbTKM8zwT3/M+dJqEsePiGPv8HY878eHZhUU=
+X-Google-Smtp-Source: ABdhPJwG4NUZMl7Oq+tys9v7UEH4acrxs7ggLj+InMb9GpBSK7XWkGwnX3fl5EMKvqmUd3xMp4JrOlQ7fa7X1adAHCU=
+X-Received: by 2002:a17:90a:fd98:: with SMTP id cx24mr2552470pjb.181.1599641198404;
+ Wed, 09 Sep 2020 01:46:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.58]
-X-CFilter-Loop: Reflected
+References: <20200826104459.81979-1-andriy.shevchenko@linux.intel.com>
+ <9635eaa4ccc1141fb0dd8c3687f46da7149206ad.camel@perches.com>
+ <20200826155507.GV1891694@smile.fi.intel.com> <973f4d54da796db4fcc9b643b10889cbc8839989.camel@perches.com>
+ <CAJKOXPcCAPy-v38dyY_74H_6vrgj0mmEf6KaupVKJb4E2Ha_Ug@mail.gmail.com>
+ <20200909070244.GC311356@kroah.com> <CAJKOXPd=TfCNfHPdsQZ42VEcUZOFZroXg7xmA82zSA=AbADxKw@mail.gmail.com>
+ <20200909073716.GA560912@kroah.com>
+In-Reply-To: <20200909073716.GA560912@kroah.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 9 Sep 2020 11:46:21 +0300
+Message-ID: <CAHp75VfePEHzuSqfhChFNPsh+Jq+-_VqdDULxtFbzKR5DsT7WA@mail.gmail.com>
+Subject: Re: [PATCH v1] driver core: Annotate dev_err_probe() with __must_check
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Joe Perches <joe@perches.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the ARRAY_SIZE macro to calculate the size of an array.
-This code was detected with the help of Coccinelle.
+On Wed, Sep 9, 2020 at 10:40 AM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+> On Wed, Sep 09, 2020 at 09:08:14AM +0200, Krzysztof Kozlowski wrote:
+> > On Wed, 9 Sep 2020 at 09:02, Greg Kroah-Hartman
+> > <gregkh@linuxfoundation.org> wrote:
+> > > On Wed, Sep 09, 2020 at 08:29:25AM +0200, Krzysztof Kozlowski wrote:
+> > > > On Wed, 26 Aug 2020 at 18:18, Joe Perches <joe@perches.com> wrote:
+> > > > > On Wed, 2020-08-26 at 18:55 +0300, Andy Shevchenko wrote:
+> > > > > > On Wed, Aug 26, 2020 at 08:44:30AM -0700, Joe Perches wrote:
+> > > > > > > On Wed, 2020-08-26 at 13:44 +0300, Andy Shevchenko wrote:
+> > > > > >
+> > > > > > ...
+> > > > > >
+> > > > > > > > -int dev_err_probe(const struct device *dev, int err, const char *fmt, ...);
+> > > > > > > > +int __must_check dev_err_probe(const struct device *dev, int err, const char *fmt, ...);
+> > > >
+> > > > +Cc Stephen and Greg,
+> > > >
+> > > > Hi Andy,
+> > > >
+> > > > Did this patch ended up in next somehow? I am surprised because now I
+> > > > got warnings for perfectly fine code:
+> > > > https://lore.kernel.org/linux-next/20200909155654.76fe3bd6@canb.auug.org.au/T/#u
+> > > >
+> > > > This creates simply false warnings instead of hints for "optimization".
+> > >
+> > > Yes, it got merged into m y driver core tree.
+> > >
+> > > I'll fix up the tty build warning, should be easy enough, the patch is
+> > > below.
+> >
+> > Yes, this fix suppresses the warning but the question is whether we
+> > really want the warning?
+> > Such fixes mean additional code which the compiler might not optimize
+> > (unless it inlines the dev_err_probe()). This additional code is
+> > purely for suppressing the warning, without any meaning on its own.
+> > Actually it might be even confusing for someone to see:
+> > if (ret)
+> >   ret = dev_err_probe(ret);
 
-Signed-off-by: Wei Xu <xuwei5@hisilicon.com>
----
- drivers/net/ethernet/intel/i40e/i40e_adminq.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The problem here is that the dev_err_probe() returns int on purpose.
+In your patch what I can see it seems another issue is that the driver
+is semi converted to devm API and thus uses goto:s here and there.
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_adminq.h b/drivers/net/ethernet/intel/i40e/i40e_adminq.h
-index edec3df..11c5fca 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_adminq.h
-+++ b/drivers/net/ethernet/intel/i40e/i40e_adminq.h
-@@ -120,7 +120,7 @@ static inline int i40e_aq_rc_to_posix(int aq_ret, int aq_rc)
- 	if (aq_ret == I40E_ERR_ADMIN_QUEUE_TIMEOUT)
- 		return -EAGAIN;
- 
--	if (!((u32)aq_rc < (sizeof(aq_to_posix) / sizeof((aq_to_posix)[0]))))
-+	if (!((u32)aq_rc < ARRAY_SIZE(aq_to_posix)))
- 		return -ERANGE;
- 
- 	return aq_to_posix[aq_rc];
+> Yeah, that is dumb, as the patch I made shows :(
+
+I agree.
+
+> > warn_unused_result should point errors, not "optimization
+> > opportunities". If you want to have opportunity, add a coccinelle
+> > rule. Or a checkpatch rule. Not a compiler warning.
+>
+> Ok, I now agree, I'll go revert this patch and trust that driver authors
+> will "do the right thing" here...
+
+I'm fine (as I stated during a review of that patch) to go either way,
+but I see it would be nice to have drivers be better thought about
+using devm APIs.
+
 -- 
-2.8.1
-
+With Best Regards,
+Andy Shevchenko
