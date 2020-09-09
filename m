@@ -2,128 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C09792635FC
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 20:27:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D3E4263624
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 20:37:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729779AbgIIS15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 14:27:57 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:53088 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725772AbgIIS1v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 14:27:51 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1kG4oc-00DxUV-6F; Wed, 09 Sep 2020 20:27:30 +0200
-Date:   Wed, 9 Sep 2020 20:27:30 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Marek =?iso-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>
-Cc:     netdev@vger.kernel.org, linux-leds@vger.kernel.org,
-        Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
-        =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-kernel@vger.kernel.org,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
-Subject: Re: [PATCH net-next + leds v2 1/7] dt-bindings: leds: document
- binding for HW controlled LEDs
-Message-ID: <20200909182730.GK3290129@lunn.ch>
-References: <20200909162552.11032-1-marek.behun@nic.cz>
- <20200909162552.11032-2-marek.behun@nic.cz>
+        id S1728663AbgIISha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 14:37:30 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:33374 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726226AbgIISh2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 14:37:28 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 089Ee08v072586;
+        Wed, 9 Sep 2020 14:41:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
+ date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2020-01-29; bh=ya+QMUymLQUNC5iL3dsPaQ1FPjA+xSOY9snK3tbq+SE=;
+ b=E8z5TGHtsMn0+9RDsXZg3uoJKM8luetu3D1+64GWHDAxIFc27pb+CS+9A2ABl7sF0dDd
+ DVrpshAl3ymsXLxw4oIUKYai6cW7k+85wRZbevS3DURpmU6P5XhyQ52nVKqMIXKIKBUp
+ MlfytnjQr45ijN5uWdNwrRhDYJjgjgO95reLj0b8JkIzognwuc+GHUwZStLLkT4tZaFU
+ FoMypWAjp83rRVvob3Up0nslE7QLEemreUBdqOA1GlJG/3JeLlwokJXs5xxKu5S9mlgV
+ IoOmOT4O0P6e2tT98CaPqXujQlHndpwV21khUHrlplfwah6ZceAQMuf7pGxIzCypGJhc Gw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 33c3an24mn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 09 Sep 2020 14:41:32 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 089Ef4Ll033004;
+        Wed, 9 Sep 2020 14:41:31 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3020.oracle.com with ESMTP id 33cmk6prv4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 09 Sep 2020 14:41:31 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 089EfUC4034192;
+        Wed, 9 Sep 2020 14:41:30 GMT
+Received: from localhost.localdomain (dhcp-10-65-175-55.vpn.oracle.com [10.65.175.55])
+        by aserp3020.oracle.com with ESMTP id 33cmk6pru6-1;
+        Wed, 09 Sep 2020 14:41:30 +0000
+From:   Tom Hromatka <tom.hromatka@oracle.com>
+To:     tom.hromatka@oracle.com, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, fweisbec@gmail.com,
+        tglx@linutronix.de, mingo@kernel.org, adobriyan@gmail.com
+Subject: [RESEND PATCH 0/2] iowait and idle fixes in /proc/stat
+Date:   Wed,  9 Sep 2020 08:41:20 -0600
+Message-Id: <20200909144122.77210-1-tom.hromatka@oracle.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200909162552.11032-2-marek.behun@nic.cz>
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9738 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 priorityscore=1501
+ clxscore=1011 bulkscore=0 malwarescore=0 lowpriorityscore=0
+ mlxlogscore=999 suspectscore=0 adultscore=0 mlxscore=0 impostorscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009090132
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 09, 2020 at 06:25:46PM +0200, Marek Behún wrote:
-> Document binding for LEDs connected to and controlled by various chips
-> (such as ethernet PHY chips).
-> 
-> Signed-off-by: Marek Behún <marek.behun@nic.cz>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Cc: devicetree@vger.kernel.org
-> ---
->  .../leds/linux,hw-controlled-leds.yaml        | 99 +++++++++++++++++++
->  1 file changed, 99 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/leds/linux,hw-controlled-leds.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/leds/linux,hw-controlled-leds.yaml b/Documentation/devicetree/bindings/leds/linux,hw-controlled-leds.yaml
-> new file mode 100644
-> index 0000000000000..eaf6e5d80c5f5
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/leds/linux,hw-controlled-leds.yaml
-> @@ -0,0 +1,99 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/leds/linux,hw-controlled-leds.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: LEDs that can be controlled by hardware (eg. by an ethernet PHY chip)
-> +
-> +maintainers:
-> +  - Marek Behún <marek.behun@nic.cz>
-> +
-> +description:
-> +  Many an ethernet PHY (and other chips) supports various HW control modes
-> +  for LEDs connected directly to them. With this binding such LEDs can be
-> +  described.
-> +
-> +properties:
-> +  compatible:
-> +    const: linux,hw-controlled-leds
-> +
-> +  "#address-cells":
-> +    const: 1
-> +
-> +  "#size-cells":
-> +    const: 0
-> +
-> +patternProperties:
-> +  "^led@[0-9a-f]+$":
-> +    type: object
-> +    allOf:
-> +      - $ref: common.yaml#
-> +    description:
-> +      This node represents a LED device connected to a chip that can control
-> +      the LED in various HW controlled modes.
-> +
-> +    properties:
-> +      reg:
-> +        maxItems: 1
-> +        description:
-> +          This property identifies the LED to the chip the LED is connected to
-> +          (eg. an ethernet PHY chip can have multiple LEDs connected to it).
-> +
-> +      enable-active-high:
-> +        description:
-> +          Polarity of LED is active high. If missing, assumed default is active
-> +          low.
-> +        type: boolean
-> +
-> +      led-tristate:
-> +        description:
-> +          LED pin is tristate type. If missing, assumed false.
-> +        type: boolean
-> +
-> +      linux,default-hw-mode:
-> +        description:
-> +          This parameter, if present, specifies the default HW triggering mode
-> +          of the LED when LED trigger is set to `dev-hw-mode`.
-> +          Available values are specific per device the LED is connected to and
-> +          per LED itself.
-> +        $ref: /schemas/types.yaml#definitions/string
-> +
-> +    required:
-> +      - reg
+A customer is using /proc/stat to track cpu usage in a VM and noted
+that the iowait and idle times behave strangely when a cpu goes
+offline and comes back online.
 
-My Yaml foo is not very good. Do you need to list colour, function and
-linux,default-trigger, or do they automagically get included from the
-generic LED binding?
+This patchset addresses two issues that can cause iowait and idle
+to fluctuate up and down.  With these changes, cpu iowait and idle
+now only monotonically increase.
 
-	Andrew
+Tom Hromatka (2):
+  tick-sched: Do not clear the iowait and idle times
+  /proc/stat: Simplify iowait and idle calculations when cpu is offline
+
+ fs/proc/stat.c           | 24 ++++++------------------
+ kernel/time/tick-sched.c |  9 +++++++++
+ 2 files changed, 15 insertions(+), 18 deletions(-)
+
+-- 
+2.25.4
+
