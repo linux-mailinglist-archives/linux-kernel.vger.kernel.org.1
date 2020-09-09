@@ -2,86 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE5EF262BEF
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 11:34:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F299C262BEE
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 11:34:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729773AbgIIJep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 05:34:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48732 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728663AbgIIJeb (ORCPT
+        id S1729622AbgIIJei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 05:34:38 -0400
+Received: from esa3.microchip.iphmx.com ([68.232.153.233]:7972 "EHLO
+        esa3.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726293AbgIIJeb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 9 Sep 2020 05:34:31 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43370C061573
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 02:34:31 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id i1so1974179edv.2
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 02:34:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pUQTv0UwcEAnnVIsbVlIPVNHF0/vxHu+weScX6eEMtQ=;
-        b=tFSCEFZP3KHzbou/mPsbn1mzHp2NXTkmke31/SYSdOb0XcDRuVh3fAvvEu5gUijjBP
-         0opI7TeH1UjoTSGwrtdgLGbddFfGlH+C7IqU+sgS8V+1FISSEZba0FS6XeYY/l+MbWU+
-         4BI/T5Vx+O2KpAGzfL4Sc78I1xtdXQKpl9YWNm9myelO8L/P5bXmvMiscO7/8kv4lNFo
-         cgpBuEMc8zdzsY8BbbO+IywssO1sCUeDIOedqw+IYxDuxaX4Vpd4lgdpE+cPoIQd2wdT
-         eKVeyurIT1D+h74BvRJgVNonw7nPcNr15Y7abxXNHWLGtD3CPNNoLGKMeyqaVAa8a1hV
-         V+Zg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pUQTv0UwcEAnnVIsbVlIPVNHF0/vxHu+weScX6eEMtQ=;
-        b=FV5eFrFV75ZsY4ufLozbroLkx51uhFtOVUJB6oNnZBccw7RJA0ZIwWjaJWVjD4j60J
-         dxFFiP4rbcZO8DEEOTbCS5m58GjIov/G+2iZJ7KP31TFUlQZ5naCOEhqwUQOQ8xjluGh
-         gwpkTBRGWoUglwBb+07mFNcQyLLCTPqysxQyCtqBGB/84gzxxsZIE/okMM91BNXadA6K
-         gqSfyYHelLvhsjD35GaxAAtz7j53BRMwgvRg11nRuMycRGggTfdUYR48RQmb2o60oT+n
-         qRTMwEzSx6JtyD7CSRUElfd7OMQQ3xrMmqwEgNh23E2qp/h8zil9Kwln1y+CHqVTWeYK
-         IWBA==
-X-Gm-Message-State: AOAM530xnB7B/00AzObMmmKrs7KvS6plpwIgQbQyx1dA8wOaFmLXCXRJ
-        fqh+1q5QElgp97CEj5k0+P4Lpji71ZaVLL+/tYsKbg==
-X-Google-Smtp-Source: ABdhPJxNOSpau3trpVx/Rn+BectgwP2FY5BAAVC9ES7q0huam5mochHXxJCz6o9zOPMUI+uPUhYb+LtyekLKBrta8Os=
-X-Received: by 2002:a05:6402:615:: with SMTP id n21mr3029737edv.59.1599644068361;
- Wed, 09 Sep 2020 02:34:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1599644070; x=1631180070;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=LAfgB1jqP412cl4V+7EuYf+QjFKubW9+J+4ICIUJxqA=;
+  b=QWNcBJbgIbHbLAs0Scc+24+aJxrT8Uz1A9lXfQk47SyINM1cP2ZC9+pk
+   ahagg+ViLPHpXHROp8WbTg0ceWYMvf1JmIwa8RtHppNfzkka0dkGpoW8G
+   ay5nAcm1NedjxPuUs6BI/Xvsmi2NtVnbJuCoX6c0rkbpqjVmxT83VNtcg
+   AlE+iXLIIspOKTZb1Bzk4Cb7t4Kc9IIkpFg4bHi989LduzW5j/OK8xL0c
+   TTSLDgRA5TXPIQnj9A8AH2K/dNmtIDzb5CaYZyK6/Ul/vUk19sZi5No14
+   xVk59oXA4T9HA5sGr5LnMVghO2VpzpgwRsv0PS/p3/dQlQeg10YJqg1UI
+   A==;
+IronPort-SDR: 2UjhJNsuBkIP+KE9133pQ3IFo7Zg0g3v+/KKxLeMKrAoK0Yi8bBo2fwJvSG9Orqv1boJsYK3j6
+ gbtP8J7xPkJfPf86YicExLMKayhWdhcsJ+YxQi0+itgciusdxWfP95bi5vaoxMMtrAK+9qkugw
+ VMUtrQc+4usFPYePW5BqOQRX6X4NfGIDOsXxND82pm0LFTqtfV8CTHdunEjr4RHNTVSlTeg0N3
+ lpqKnABIRbKqmSOxgM0Q1SB7r4gMhiwoo/RsphAV4KzvlYpU/PUuXtsW/PZtGVhUbY+IfnLKpr
+ jkM=
+X-IronPort-AV: E=Sophos;i="5.76,409,1592895600"; 
+   d="scan'208";a="91109851"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 09 Sep 2020 02:34:29 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 9 Sep 2020 02:34:04 -0700
+Received: from training-HP-280-G1-MT-PC.microchip.com (10.10.115.15) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Wed, 9 Sep 2020 02:33:59 -0700
+From:   Divya Koppera <Divya.Koppera@microchip.com>
+To:     <andrew@lunn.ch>, <hkallweit1@gmail.com>, <linux@armlinux.org.uk>,
+        <davem@davemloft.net>, <kuba@kernel.org>, <marex@denx.de>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <UNGLinuxDriver@microchip.com>
+Subject: [PATCH v1 net-next] net: phy: mchp: Add support for LAN8814 QUAD PHY
+Date:   Wed, 9 Sep 2020 15:04:19 +0530
+Message-ID: <20200909093419.32102-1-Divya.Koppera@microchip.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <1599118222-18990-1-git-send-email-dillon.minfei@gmail.com> <1599118222-18990-2-git-send-email-dillon.minfei@gmail.com>
-In-Reply-To: <1599118222-18990-2-git-send-email-dillon.minfei@gmail.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Wed, 9 Sep 2020 11:34:17 +0200
-Message-ID: <CAMpxmJVcyq_QQsKzA6z-Qz24OL2tjgxo8vUUODnayQWa9D0F2Q@mail.gmail.com>
-Subject: Re: [PATCH: V2 1/2] gpio: tc35894: fix up tc35894 interrupt configuration
-To:     dillon.minfei@gmail.com
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 3, 2020 at 9:30 AM <dillon.minfei@gmail.com> wrote:
->
-> From: dillon min <dillon.minfei@gmail.com>
->
-> The offset of regmap is incorrect, j * 8 is move to the
-> wrong register.
->
-> for example:
->
-> asume i = 0, j = 1. we want to set KPY5 as interrupt
-> falling edge mode, regmap[0][1] should be TC3589x_GPIOIBE1 0xcd
-> but, regmap[i] + j * 8 = TC3589x_GPIOIBE0 + 8 ,point to 0xd4,
-> this is TC3589x_GPIOIE2 not TC3589x_GPIOIBE1.
->
-> Fixes: d88b25be3584 ("gpio: Add TC35892 GPIO driver")
-> Signed-off-by: dillon min <dillon.minfei@gmail.com>
-> ---
->
+LAN8814 is a low-power, quad-port triple-speed (10BASE-T/100BASETX/1000BASE-T)
+Ethernet physical layer transceiver (PHY). It supports transmission and
+reception of data on standard CAT-5, as well as CAT-5e and CAT-6, unshielded
+twisted pair (UTP) cables.
 
-Queued for fixes.
+LAN8814 supports industry-standard QSGMII (Quad Serial Gigabit Media
+Independent Interface) and Q-USGMII (Quad Universal Serial Gigabit Media
+Independent Interface) providing chip-to-chip connection to four Gigabit
+Ethernet MACs using a single serialized link (differential pair) in each
+direction.
 
-Thanks!
-Bartosz
+The LAN8814 SKU supports high-accuracy timestamping functions to
+support IEEE-1588 solutions using Microchip Ethernet switches, as well as
+customer solutions based on SoCs and FPGAs.
+
+The LAN8804 SKU has same features as that of LAN8814 SKU except that it does
+not support 1588, SyncE, or Q-USGMII with PCH/MCH.
+
+This adds support for 10BASE-T, 100BASE-TX, and 1000BASE-T,
+QSGMII link with the MAC.
+
+Signed-off-by: Divya Koppera<divya.koppera@microchip.com>
+---
+ drivers/net/phy/micrel.c   | 16 ++++++++++++++++
+ include/linux/micrel_phy.h |  1 +
+ 2 files changed, 17 insertions(+)
+
+diff --git a/drivers/net/phy/micrel.c b/drivers/net/phy/micrel.c
+index 3fe552675dd2..9f60865587ea 100644
+--- a/drivers/net/phy/micrel.c
++++ b/drivers/net/phy/micrel.c
+@@ -1314,6 +1314,21 @@ static struct phy_driver ksphy_driver[] = {
+ 	.get_stats	= kszphy_get_stats,
+ 	.suspend	= genphy_suspend,
+ 	.resume		= kszphy_resume,
++}, {
++	.phy_id		= PHY_ID_LAN8814,
++	.phy_id_mask	= MICREL_PHY_ID_MASK,
++	.name		= "Microchip INDY Gigabit Quad PHY",
++	.driver_data	= &ksz9021_type,
++	.probe		= kszphy_probe,
++	.get_features	= ksz9031_get_features,
++	.config_init	= ksz9031_config_init,
++	.soft_reset	= genphy_soft_reset,
++	.read_status	= ksz9031_read_status,
++	.get_sset_count	= kszphy_get_sset_count,
++	.get_strings	= kszphy_get_strings,
++	.get_stats	= kszphy_get_stats,
++	.suspend	= genphy_suspend,
++	.resume		= kszphy_resume,
+ }, {
+ 	.phy_id		= PHY_ID_KSZ9131,
+ 	.phy_id_mask	= MICREL_PHY_ID_MASK,
+@@ -1387,6 +1402,7 @@ static struct mdio_device_id __maybe_unused micrel_tbl[] = {
+ 	{ PHY_ID_KSZ8081, MICREL_PHY_ID_MASK },
+ 	{ PHY_ID_KSZ8873MLL, MICREL_PHY_ID_MASK },
+ 	{ PHY_ID_KSZ886X, MICREL_PHY_ID_MASK },
++	{ PHY_ID_LAN8814, MICREL_PHY_ID_MASK },
+ 	{ }
+ };
+ 
+diff --git a/include/linux/micrel_phy.h b/include/linux/micrel_phy.h
+index 75f880c25bb8..416ee6dd2574 100644
+--- a/include/linux/micrel_phy.h
++++ b/include/linux/micrel_phy.h
+@@ -27,6 +27,7 @@
+ #define PHY_ID_KSZ8061		0x00221570
+ #define PHY_ID_KSZ9031		0x00221620
+ #define PHY_ID_KSZ9131		0x00221640
++#define PHY_ID_LAN8814		0x00221660
+ 
+ #define PHY_ID_KSZ886X		0x00221430
+ #define PHY_ID_KSZ8863		0x00221435
+-- 
+2.17.1
+
