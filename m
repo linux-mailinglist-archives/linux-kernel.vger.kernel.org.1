@@ -2,138 +2,425 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB6C8262708
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 08:05:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59160262715
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 08:18:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726811AbgIIGFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 02:05:07 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:18174 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725811AbgIIGFH (ORCPT
+        id S1725975AbgIIGSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 02:18:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46720 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725864AbgIIGSq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 02:05:07 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08962K10173414;
-        Wed, 9 Sep 2020 02:04:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : in-reply-to : references : date : message-id : mime-version :
- content-type; s=pp1; bh=+X3RFdinBGBcMGu71k2l0UAXgDapb4BXm7KRlOYIx7c=;
- b=qK+i5Myo9CiCvYjgdMhtUaRYsZGQXEk8Ma0VUGkvKElK5eFseLkOTx1vjo2tYVk2qikL
- to2aTP4b+zunnJws/TrawrUyNhPW5/QcjulhLxk0PJuxqvKvGpHots7KgErYkLtdjB23
- hz62mDhLVy0uV4aAiwAcE7Iqwr6DedcDHM1szIVPMYZcz2jEBk4HpYp2+6M9p48No51Z
- f+GzMWWAHbUm0d4R6wXQd31HWqbeEM+H2l9y65lPTcC+GWCJXBebxYNFSRiLef55w9Y9
- JNWE0uZwOuKvLiyjNugYtYJCller8bmKlm3i9TEry9+DSBVP33Xq7TH7pYzDXCw4J9EI qg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33es8srakr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Sep 2020 02:04:39 -0400
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08962Sv0174176;
-        Wed, 9 Sep 2020 02:04:39 -0400
-Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33es8srak9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Sep 2020 02:04:39 -0400
-Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
-        by ppma03dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08962Ikp017723;
-        Wed, 9 Sep 2020 06:04:38 GMT
-Received: from b01cxnp23034.gho.pok.ibm.com (b01cxnp23034.gho.pok.ibm.com [9.57.198.29])
-        by ppma03dal.us.ibm.com with ESMTP id 33c2a94acp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Sep 2020 06:04:38 +0000
-Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
-        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08964b3B52691222
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 9 Sep 2020 06:04:37 GMT
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C90BCAE064;
-        Wed,  9 Sep 2020 06:04:37 +0000 (GMT)
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5EE12AE05C;
-        Wed,  9 Sep 2020 06:04:35 +0000 (GMT)
-Received: from skywalker.linux.ibm.com (unknown [9.85.95.249])
-        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
-        Wed,  9 Sep 2020 06:04:35 +0000 (GMT)
-X-Mailer: emacs 27.1 (via feedmail 11-beta-1 I)
-From:   "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, npiggin@gmail.com
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 4/5] powerpc/fault: Avoid heavy
- search_exception_tables() verification
-In-Reply-To: <b07bac7a882c69deb9e6c8f234a68b3022f29072.1596734105.git.christophe.leroy@csgroup.eu>
-References: <7baae4086cbb9ffb08c933b065ff7d29dbc03dd6.1596734104.git.christophe.leroy@csgroup.eu>
- <b07bac7a882c69deb9e6c8f234a68b3022f29072.1596734105.git.christophe.leroy@csgroup.eu>
-Date:   Wed, 09 Sep 2020 11:34:31 +0530
-Message-ID: <871rjb5vv4.fsf@linux.ibm.com>
+        Wed, 9 Sep 2020 02:18:46 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5472BC061756
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 23:18:46 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id m8so1325053pgi.3
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 23:18:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=f6AJazrS3jP2mlnRASYyxntzBtGLdmqU3AKO+A+Qu1M=;
+        b=kUDiJsJ35CWphSckgkIP2s2Oq3VGFCJdPhdwq2AKcjV4G/HgUTGyPno0kVwWgr5Eee
+         HCT5rWXZCEfplq3Am3rsa9bMhjQPjlis6G4r763fisDjYrDTlKIGAwGJEWSznHVHtDq5
+         7LcxfnQFKLSbmfI70NVLo3xkofOaXN4bhq18U=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=f6AJazrS3jP2mlnRASYyxntzBtGLdmqU3AKO+A+Qu1M=;
+        b=IJsKRh5mn6XShktiwcyT5WiQ2u0jE+Jb6tzlILTegfogQaod/VPMb4r6nTg+/Mt3Q/
+         rMSClxFoEg4ef4G9sg32dZIAk1QtRLGILdinKpc7bGuMiS/EOi+3TeWQ1OTC8mTtMpi5
+         I/H2hVQcVhlGiM2dbRYCirNv/Ao3Z+k87DjfwvgwKV+5LDofi15Ua/AWsSCNzWnwTsFK
+         q+nonfMqXV3Wx26CV3nTr47r8qTkhFd5G7RT2AEjFpQd6ehwzYw8O5tkKebl/I6CSn40
+         AZlc525ELz7e4B2Mqc6sqUuOVlv6YkZNzqkOeGUebFmZ/uhJjHAVZnTnufJ3t2qXdxa7
+         +l2Q==
+X-Gm-Message-State: AOAM5317eyUQQOKPAxwyp+aSq/WwPYBwSMUQQBj1V9VWE5in40JacKa3
+        RcNe9BZpbCl7YGDeu0mgFrAuTGtMYCgfUA==
+X-Google-Smtp-Source: ABdhPJyXeoAJFRBHAy+RXvRqZ1fZjzkEsT/88mJrOrOkcUiXVkM8Sks2mZVsMxdFAUdMj+xQNjhevA==
+X-Received: by 2002:a63:700e:: with SMTP id l14mr1830934pgc.22.1599632325320;
+        Tue, 08 Sep 2020 23:18:45 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:1:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id w6sm1105021pgf.72.2020.09.08.23.18.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Sep 2020 23:18:44 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-09_03:2020-09-08,2020-09-09 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxscore=0
- lowpriorityscore=0 malwarescore=0 impostorscore=0 phishscore=0 bulkscore=0
- priorityscore=1501 clxscore=1015 suspectscore=0 mlxlogscore=999
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009090050
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200906150247.3aaef3a3@archlinux>
+References: <20200903221828.3657250-1-swboyd@chromium.org> <20200906150247.3aaef3a3@archlinux>
+Subject: Re: [PATCH] dt-bindings: iio: sx9310: Add various settings as DT properties
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        Daniel Campello <campello@chromium.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        Gwendal Grignou <gwendal@chromium.org>,
+        Evan Green <evgreen@chromium.org>
+To:     Jonathan Cameron <jic23@kernel.org>
+Date:   Tue, 08 Sep 2020 23:18:43 -0700
+Message-ID: <159963232334.454335.9794130058200265122@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+Quoting Jonathan Cameron (2020-09-06 07:02:47)
+> On Thu,  3 Sep 2020 15:18:28 -0700
+> Stephen Boyd <swboyd@chromium.org> wrote:
+>=20
+> > We need to set various bits in the hardware registers for this device to
+> > operate properly depending on how it is installed. Add a handful of DT
+> > properties to configure these things.
+> >=20
+> > Cc: Daniel Campello <campello@chromium.org>
+> > Cc: Lars-Peter Clausen <lars@metafoo.de>
+> > Cc: Peter Meerwald-Stadler <pmeerw@pmeerw.net>
+> > Cc: Rob Herring <robh+dt@kernel.org>
+> > Cc: <devicetree@vger.kernel.org>
+> > Cc: Douglas Anderson <dianders@chromium.org>
+> > Cc: Gwendal Grignou <gwendal@chromium.org>
+> > Cc: Evan Green <evgreen@chromium.org>
+> > Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> > ---
+> >=20
+> > I haven't written any code to handle these properties yet. I'd rather do
+> > that once the binding patch is reviewed. Patch based on iio.git testing
+> > branch.
+> Makes sense to do docs first for this.  Quite a bit feels like it isn't
+> a feature of the device configuration, but rather of the usecase.  That
+> stuff should probably be done with a userspace interface, but you may
+> be able to argue me around on some of them!=20
+>=20
+>=20
 
-> search_exception_tables() is an heavy operation, we have to avoid it.
-> When KUAP is selected, we'll know the fault has been blocked by KUAP.
-> Otherwise, it behaves just as if the address was already in the TLBs
-> and no fault was generated.
->
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> ---
->  arch/powerpc/mm/fault.c | 20 +++++---------------
->  1 file changed, 5 insertions(+), 15 deletions(-)
->
-> diff --git a/arch/powerpc/mm/fault.c b/arch/powerpc/mm/fault.c
-> index 525e0c2b5406..edde169ba3a6 100644
-> --- a/arch/powerpc/mm/fault.c
-> +++ b/arch/powerpc/mm/fault.c
-> @@ -214,24 +214,14 @@ static bool bad_kernel_fault(struct pt_regs *regs, unsigned long error_code,
->  	if (address >= TASK_SIZE)
->  		return true;
->  
-> -	if (!is_exec && (error_code & DSISR_PROTFAULT) &&
-> -	    !search_exception_tables(regs->nip)) {
-> +	// Read/write fault blocked by KUAP is bad, it can never succeed.
-> +	if (bad_kuap_fault(regs, address, is_write)) {
->  		pr_crit_ratelimited("Kernel attempted to access user page (%lx) - exploit attempt? (uid: %d)\n",
-> -				    address,
-> -				    from_kuid(&init_user_ns, current_uid()));
-> -	}
-> -
-> -	// Fault on user outside of certain regions (eg. copy_tofrom_user()) is bad
-> -	if (!search_exception_tables(regs->nip))
-> -		return true;
+Thanks for reviewing! I'm not well read on IIO so please bear with my
+ignorance.
 
-We still need to keep this ? Without that we detect the lack of
-exception tables pretty late.
+> >=20
+> >  .../iio/proximity/semtech,sx9310.yaml         | 182 ++++++++++++++++++
+> >  1 file changed, 182 insertions(+)
+> >=20
+> > diff --git a/Documentation/devicetree/bindings/iio/proximity/semtech,sx=
+9310.yaml b/Documentation/devicetree/bindings/iio/proximity/semtech,sx9310.=
+yaml
+> > index 5739074d3592..e74b81483c14 100644
+> > --- a/Documentation/devicetree/bindings/iio/proximity/semtech,sx9310.ya=
+ml
+> > +++ b/Documentation/devicetree/bindings/iio/proximity/semtech,sx9310.ya=
+ml
+> > @@ -40,6 +40,169 @@ properties:
+> >    "#io-channel-cells":
+> >      const: 1
+> > =20
+> > +  semtech,cs0-ground:
+> > +    description: Indicates the CS0 sensor is connected to ground.
+> > +    type: boolean
+>=20
+> This one is probably fine. I can't think of a similar interface we need
+> to match, but maybe Rob or someone else will have a suggestion.
 
+Ok.
 
+>=20
+> > +
+> > +  semtech,combined-sensors:
+> > +    allOf:
+> > +      - $ref: /schemas/types.yaml#definitions/uint32
+> > +      - enum: [0, 1, 2, 3]
+> > +    default: 0
+> > +    description:
+> > +      Which sensors are combined. 0 for CS3, 1 for CS0+CS1, 2 for CS1+=
+CS2,
+> > +      and 3 for all sensors.
+>=20
+> Make it clear in this description what 'combined' means.
+> Also, I think this would be better as a set of values with an anyOf match=
+ to say
+> <3>
+> <0>, <1>=20
+> <1>, <2>=20
+> <1>, <2>, <3>
+>=20
+> Fine to insist they are in numeric order.
 
-> -
-> -	// Read/write fault in a valid region (the exception table search passed
-> -	// above), but blocked by KUAP is bad, it can never succeed.
-> -	if (bad_kuap_fault(regs, address, is_write))
-> +				    address, from_kuid(&init_user_ns, current_uid()));
->  		return true;
-> +	}
->  
-> -	// What's left? Kernel fault on user in well defined regions (extable
-> -	// matched), and allowed by KUAP in the faulting context.
-> +	// What's left? Kernel fault on user and allowed by KUAP in the faulting context.
->  	return false;
->  }
->  
-> -- 
-> 2.25.0
+Ok, sure. I can make it a list of sensor numbers.
+
+>=20
+> > +
+> > +  semtech,cs0-gain-factor:
+> > +    allOf:
+> > +      - $ref: /schemas/types.yaml#definitions/uint32
+> > +      - enum: [1, 2, 4, 8]
+> > +    default: 1
+> > +    description:
+> > +      Gain factor for CS0 (and combined if any) sensor.
+>=20
+> Why is this something that should be in DT as opposed to via
+> a userspace control?  We have hardwaregain for this purpose (I think)
+
+Thanks I'm not aware of hardwaregain. That looks like it should work.
+
+>=20
+> Also we mostly use child nodes to allow us to specify characteristics
+> of individual channels.
+
+Got it.
+
+>=20
+> > +
+> > +  semtech,cs1-gain-factor:
+> > +    allOf:
+> > +      - $ref: /schemas/types.yaml#definitions/uint32
+> > +      - enum: [1, 2, 4, 8]
+> > +    default: 1
+> > +    description:
+> > +      Gain factor for CS1 sensor.
+> > +
+> > +  semtech,cs2-gain-factor:
+> > +    allOf:
+> > +      - $ref: /schemas/types.yaml#definitions/uint32
+> > +      - enum: [1, 2, 4, 8]
+> > +    default: 1
+> > +    description:
+> > +      Gain factor for CS2 sensor.
+> > +
+> > +  semtech,resolution:
+> > +    description:
+> > +      Capacitance measure resolution.
+> > +    enum:
+> > +      - coarsest
+> > +      - very-coarse
+> > +      - coarse
+> > +      - medium-coarse
+> > +      - medium
+> > +      - fine
+> > +      - very-fine
+> > +      - finest
+> I'd normally be very against cases like this where we have something that
+> feels like it should have a clear definition rather than a random wordy s=
+cale
+> but these are all the information I can find in the datasheet.
+>=20
+> I would suggest adding a specific reference to the datasheet for this one.
+
+Are you saying description should say:
+
+Capacitance measure resolution. Refer to datasheet for more details.
+
+?
+
+>=20
+> > +
+> > +  semtech,startup-sensor:
+> > +    allOf:
+> > +      - $ref: /schemas/types.yaml#definitions/uint32
+> > +      - enum: [0, 1, 2, 3]
+> > +    default: 0
+> > +    description:
+> > +      Sensor used for start-up proximity detection. The combined
+> > +      sensor is represented by 3.
+>=20
+> This feels like it should be a userspace control rather than in DT?
+
+I believe this is used during initial compensation, so it needs to be
+set before sx9310_init_compensation() runs at probe time. Probably can't
+be moved to userspace.
+
+>=20
+> > +
+> > +  semtech,proxraw-strength:
+> > +    allOf:
+> > +      - $ref: /schemas/types.yaml#definitions/uint32
+> > +      - enum: [0, 2, 4, 8]
+> > +    default: 2
+> > +    description:
+> > +      PROXRAW filter strength. A value of 0 represents off, and other =
+values
+> > +      represent 1-1/N.
+>=20
+> Having looked at the datasheet I have little or now idea of what this fil=
+ter
+> actually is.  However, what is the argument for it being in DT rather than
+> exposing a userspace control of some type.
+
+I only see this equation in the datasheet
+
+F(PROXRAW ; PROXUSEFUL[n-1] ; RAWFILT) =3D (1 - RAWFILT).PROXRAW + RAWFILT.=
+PROXUSEFUL[n-1]=20
+
+and it's talking about updating PROXUSEFUL. "PROXUSEFUL update consists
+of filtering PROXRAW upfront to remove its high frequencies components".
+So presumably this filter is used to make proxraw into proxuseful so
+that it is a meaningful number. Is this a new knob in userspace?
+
+>=20
+> > +
+> > +  semtech,compensate-common:
+> > +    description: Any sensor triggers compensation of all channels.
+> > +    type: boolean
+>=20
+> Compensation for what?
+
+This is for RegProxCtrl6 bit 6 AVGCOMPMETHOD.=20
+
+	Defines the average compensation method:
+
+	0: Individual. Each sensor triggers only its own compensation
+	1: Common. Any sensor triggers compensation of all channels.=20
+
+I believe this is for the offset compensation.
+
+>=20
+> > +
+> > +  semtech,avg-pos-strength:
+> > +    allOf:
+> > +      - $ref: /schemas/types.yaml#definitions/uint32
+> > +      - enum: [0, 16, 64, 128, 256, 512, 1024, 4294967295]
+> > +    default: 16
+> > +    description:
+> > +      Average positive filter strength. A value of 0 represents off and
+> > +      UINT_MAX (4294967295) represents infinite. Other values
+> > +      represent 1-1/N.
+>=20
+> I'm not sure about using UINT_MAX to represent infinity. Rob any thoughts=
+ on
+> this?
+>=20
+> Again, why does it make sense to have the filter controls in DT?
+
+Is there an IIO property for this? Seems OK to move it to userspace.
+
+>=20
+>=20
+> > +
+> > +  semtech,cs0-prox-threshold:
+> > +    allOf:
+> > +      - $ref: /schemas/types.yaml#definitions/uint32
+> > +      - enum: [2, 4, 6, 8, 12, 16, 20, 24, 28, 32, 40,
+> > +               48, 56, 64, 72, 80, 88, 96, 112, 128, 144,
+> > +               160, 192, 224, 256, 320, 384, 512, 640,
+> > +               768, 1024, 1536]
+> > +    default: 12
+> > +    description:
+> > +      Proximity detection threshold for CS0 (and combined if any) sens=
+or.
+>=20
+> That is definitely a userspace thing. Why would you put it in DT?
+> Also same comment as above for channels as child nodes
+
+Alright. Presumably this is IIO_EV_TYPE_THRESH?
+
+>=20
+> > +
+> > +  semtech,cs1-prox-threshold:
+> > +    allOf:
+> > +      - $ref: /schemas/types.yaml#definitions/uint32
+> > +      - enum: [2, 4, 6, 8, 12, 16, 20, 24, 28, 32, 40,
+> > +               48, 56, 64, 72, 80, 88, 96, 112, 128, 144,
+> > +               160, 192, 224, 256, 320, 384, 512, 640,
+> > +               768, 1024, 1536]
+> > +    default: 12
+> > +    description:
+> > +      Proximity detection threshold for CS1 sensor.
+> > +
+> > +  semtech,cs2-prox-threshold:
+> > +    allOf:
+> > +      - $ref: /schemas/types.yaml#definitions/uint32
+> > +      - enum: [2, 4, 6, 8, 12, 16, 20, 24, 28, 32, 40,
+> > +               48, 56, 64, 72, 80, 88, 96, 112, 128, 144,
+> > +               160, 192, 224, 256, 320, 384, 512, 640,
+> > +               768, 1024, 1536]
+> > +    default: 12
+> > +    description:
+> > +      Proximity detection threshold for CS2 sensor.
+> > +
+> > +  semtech,cs0-body-threshold:
+> > +    allOf:
+> > +      - $ref: /schemas/types.yaml#definitions/uint32
+> > +      - enum: [0, 300, 600, 900, 1200, 1500, 1800, 30000]
+> > +    default: 1800
+> > +    description:
+> > +      Body detection threshold for CS0 (and combined if any) sensor.
+>=20
+> As before, why DT plus child nodes
+
+How should I differentiate body vs. proximity thresholds in userspace?
+Or should I make it /sys/.../events/in_proximity0_thresh_falling_value
+vs. /sys/.../events/in_proximity0_thresh_rising_value?
+
+>=20
+> > +
+> > +  semtech,cs1-body-threshold:
+> > +    allOf:
+> > +      - $ref: /schemas/types.yaml#definitions/uint32
+> > +      - enum: [0, 300, 600, 900, 1200, 1500, 1800, 30000]
+> > +    default: 12
+> > +    description:
+> > +      Body detection threshold for CS1 sensor.
+> > +
+> > +  semtech,cs2-body-threshold:
+> > +    allOf:
+> > +      - $ref: /schemas/types.yaml#definitions/uint32
+> > +      - enum: [0, 300, 600, 900, 1200, 1500, 1800, 30000]
+> > +    default: 12
+> > +    description:
+> > +      Body detection threshold for CS2 sensor.
+> > +
+> > +  semtech,hysteresis:
+> > +    allOf:
+> > +      - $ref: /schemas/types.yaml#definitions/uint32
+> > +      - enum: [0, 6, 12, 25]
+> > +    default: 0
+> > +    description:
+> > +      The percentage of hysteresis +/- applied to proximity/body sampl=
+es.
+>=20
+> Is this hysteresis on an event?  If so we have defined ABI to control that
+> from userspace, though as an absolute value rather than a precentage so s=
+ome
+> magic will be needed.  Hysteresis is usually defined only the 'not event'
+> direction rather than +/-
+
+Is this IIO_EV_INFO_HYSTERESIS? It looks like it is applied to the
+threshold by shifting it right by 4, 3, or 2. I think the +/- is
+actually dependent on the RegProxCtrl10 bit 6 FARCOND value, so maybe
+that isn't a problem. We could make another value like hysteresis shift
+or hysteresis percentage?
+
+>=20
+> > +
+> > +  semtech,close-debounce-samples:
+> > +    allOf:
+> > +      - $ref: /schemas/types.yaml#definitions/uint32
+> > +      - enum: [0, 2, 4, 8]
+> > +    default: 0
+> > +    description:
+> > +      The number of close samples debounced for proximity/body thresho=
+lds.
+>=20
+> This feels like something that has more to do with the object motion than
+> the sensor setup, so perhaps should be controlled from userspace?
+
+Sure. Is there an IIO sample property? Or I should make a custom
+knob for this?
+
+>=20
+> > +
+> > +  semtech,far-debounce-samples:
+> > +    allOf:
+> > +      - $ref: /schemas/types.yaml#definitions/uint32
+> > +      - enum: [0, 2, 4, 8]
+> > +    default: 0
+> > +    description:
+> > +      The number of far samples debounced for proximity/body threshold=
+s.
+> > +
+> >  required:
+> >    - compatible
+> >    - reg
