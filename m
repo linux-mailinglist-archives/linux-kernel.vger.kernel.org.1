@@ -2,123 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60BC8263B15
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 04:57:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 918EB263B5A
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 05:24:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729298AbgIJC5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 22:57:51 -0400
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:38095 "EHLO
-        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729802AbgIJC5k (ORCPT
+        id S1728350AbgIJDYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 23:24:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36804 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729691AbgIJDXB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 22:57:40 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id 8C0815C0159;
-        Wed,  9 Sep 2020 22:57:33 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Wed, 09 Sep 2020 22:57:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=from
-        :to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm3; bh=OB2lHrQebYwpv
-        9JP10shRNTHkMJDTLAT3gH5XItbtFo=; b=Jv1Q6VTDD8ezKAVCoJABssoNjOgUi
-        IhRaZB2lc7CC2zoc2DjgTvg8HSlO2TbuF5hR65TbamBfyOan1enmEDGvVwz3vR0o
-        oHcOIMq9+QZH+Y1YgVycDg926opT6iuxAx2LLtXub5aOOu2eq8p/8/rJKKkIlMdV
-        ZEBFv+G9Bj3JW1bPOIntw0b5fxi9zPxJ5qzpF9VUH97d7ryE0xrnsFvYBL2NZsKv
-        Xu0igyOBiGOTQFELhuPNEurBDC1hVQJV161TuC3sjluoOoTxgwUiQN0ItPk/XQJh
-        1dio4OzNbiEDlTqz87e4TiiqQDPQFZz2klHePE4FuzG7KjPUa5ovqQOwA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=OB2lHrQebYwpv9JP10shRNTHkMJDTLAT3gH5XItbtFo=; b=MTMmKDWd
-        MQOwOIMAoVWGSce5ynfucSeKX9nAvTLcd7fobBlX/RriAnHmAycxsd8B4p1RBESg
-        TZDaeP/8fE2HLad3oyZoS022D+Sr7LnzXyry5NMXgvTcaKY28A5Un2yc/9ist9B5
-        1bdtFoccRvNeCYHk8FKuoxDkxZvJmjEkm1Irass+Z0/RUDGG1isHdQEKh5NWndjZ
-        JBM+GqVOzAzfqxLaXqqJjoHhaMgIz7SZjb4TkI87uwd/k5pWygOlNhbl0q6DaBz5
-        NsZY+fc7G+A42QHYQp5+eCCqWjcM+UdYf8uJa8i4MDxNnzsqYw9IFOX0ks5FuL1+
-        cIBCgp+zKV2Tfg==
-X-ME-Sender: <xms:HZZZX9UEatQ_AzFbDY63hxA5QtxML1Sz5a1mQWpu9luQxO_9yh-lXA>
-    <xme:HZZZX9mIzSOB5I6ev5NvLz0McA8koUkAxIWz-DvyH4Qd73Jz3xNYSH5ssoteG-kg8
-    2K0rLc-YEI-qtekHA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudehiedgieegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
-    dtredttdenucfhrhhomheptehnughrvgifucflvghffhgvrhihuceorghnughrvgifsegr
-    jhdrihgurdgruheqnecuggftrfgrthhtvghrnhepjefgvdevheetkeevgeegleelgfelte
-    etjeffleffvdduudevieffgeetleevhfetnecukfhppedugedrvddruddtledrkeehnecu
-    vehluhhsthgvrhfuihiivgepvdenucfrrghrrghmpehmrghilhhfrhhomheprghnughrvg
-    ifsegrjhdrihgurdgruh
-X-ME-Proxy: <xmx:HZZZX5aS4jRV27s4KdRgmc-xX1ArEfiBIjE_KuiOJVBN87XWOuFUuQ>
-    <xmx:HZZZXwWaVo-Ue7i6VK1SMOKVnk0e9ta3E2o6tcMrbd84wVVBM4Kzsw>
-    <xmx:HZZZX3nWH2UQfewZnIGAJE2tE_-KQoKUt8pQ1rCGPLp4ALzGPpGvIw>
-    <xmx:HZZZXyv8Zo_trE-mSzSlpC-Dgh1WP9JtpYKnW1J8nZKfbLTItL9Axg>
-Received: from mistburn.lan (ppp14-2-109-85.adl-apt-pir-bras32.tpg.internode.on.net [14.2.109.85])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 4C5713068C6A;
-        Wed,  9 Sep 2020 22:57:30 -0400 (EDT)
-From:   Andrew Jeffery <andrew@aj.id.au>
-To:     linux-gpio@vger.kernel.org
-Cc:     linus.walleij@linaro.org, joel@jms.id.au,
-        johnny_huang@aspeedtech.com, linux-aspeed@lists.ozlabs.org,
-        openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
+        Wed, 9 Sep 2020 23:23:01 -0400
+Received: from NAM04-CO1-obe.outbound.protection.outlook.com (mail-co1nam04on060c.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe4d::60c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C450C061786
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 16:17:45 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MDwC4X/0NnBRELrM3MCEe0qDgwH7YhCdisAE3QC2lmF/xaza5F24W1H9WNiCbzUdq/wPSmlOaaddq3OQ0ZShP/0Ve7+7nGZL3JjdHiXEq6tPUiG0IdZV2/ZTTxzd3L6GV2EKDlUxLsVsMvDrdpUra5Mu3a+orRy3BeptxkLnxBalJtgIQByq+kU9w3jP9xUKEKPufvav+lj5k0qlCODBGcfdDByoyX97p3i1Q+zWvnYFeepiENyfla4TnHb26SChMG3JS2Z0H2QZAo/fc1Xfbnr2lVR6OMCLYv+rFvLLrXRSfxgT7ACTFskJNXZyfyoO8+XLKdAkiTT2TcRRf6T9iw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Z5BIUjfF0d2v6kMLZRJe4rMltsy6/ZM3fbKtaDBzEA4=;
+ b=QT/r0blPJNC/gAc3xAgkJK4QsFrQuBCmWBR0IskqD1IsbCpCb2HFUFe5hEhlpfa6fhPJ6Hg171MZwASasnng6dPhESBlwS6flNZLn3D3P10kVk2vv7oBpGIhMIOMemiDBwXj0OE8NUJlpt+OeavWO68C49C5WH7IEcdhAkGSumsy1EGFGz/I4hddkpIYbxl5PbedbK2ehN0KmnCeeIOG3xt5bwE+djWoBqqV4Ewg9+jAO+aOEyfKGSDyqrMGaB+TNv0hNn54xbE+qh7ir0q2fCVkPt+UsVQSTStz49OjdA2Ds2ra740Lt//7oHvXM5ZzyB4kpwSvoRWdBIQQtdLh6w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Z5BIUjfF0d2v6kMLZRJe4rMltsy6/ZM3fbKtaDBzEA4=;
+ b=QIqHWdNYxYKtGjgPLX0tRH/vwnvJWIT+XqJzYf5G/OM98RCXspDlnGtrx1iDE4TukRJIhTkItX+gAQWnTVrv/5GaH8jcxvETZSzgJDnYOROSPw7driGrWTostbZSWtwzzzz2cTEifFGhvspT2Ff0RsHObXr//lXysDa+1vG6DOo=
+Authentication-Results: lists.freedesktop.org; dkim=none (message not signed)
+ header.d=none;lists.freedesktop.org; dmarc=none action=none
+ header.from=amd.com;
+Received: from DM6PR12MB4124.namprd12.prod.outlook.com (2603:10b6:5:221::20)
+ by DM6PR12MB2986.namprd12.prod.outlook.com (2603:10b6:5:39::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.18; Wed, 9 Sep
+ 2020 22:54:34 +0000
+Received: from DM6PR12MB4124.namprd12.prod.outlook.com
+ ([fe80::25a1:ace4:4ca8:167e]) by DM6PR12MB4124.namprd12.prod.outlook.com
+ ([fe80::25a1:ace4:4ca8:167e%8]) with mapi id 15.20.3370.016; Wed, 9 Sep 2020
+ 22:54:34 +0000
+From:   Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
+To:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 3/3] pinctrl: aspeed-g6: Add bias controls for 1.8V GPIO banks
-Date:   Thu, 10 Sep 2020 12:26:31 +0930
-Message-Id: <20200910025631.2996342-4-andrew@aj.id.au>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200910025631.2996342-1-andrew@aj.id.au>
-References: <20200910025631.2996342-1-andrew@aj.id.au>
-MIME-Version: 1.0
+Cc:     Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        hersenxs.wu@amd.com
+Subject: [PATCH 0/3] Enlarge tracepoints in the display component
+Date:   Wed,  9 Sep 2020 18:53:49 -0400
+Message-Id: <20200909225352.4072030-1-Rodrigo.Siqueira@amd.com>
+X-Mailer: git-send-email 2.28.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: YT1PR01CA0143.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:2f::22) To DM6PR12MB4124.namprd12.prod.outlook.com
+ (2603:10b6:5:221::20)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from atma2.hitronhub.home (2607:fea8:56e0:6d60::10ec) by YT1PR01CA0143.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:2f::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16 via Frontend Transport; Wed, 9 Sep 2020 22:54:33 +0000
+X-Mailer: git-send-email 2.28.0
+X-Originating-IP: [2607:fea8:56e0:6d60::10ec]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: e2ac2a58-7a61-47a1-f1a0-08d855135227
+X-MS-TrafficTypeDiagnostic: DM6PR12MB2986:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR12MB298689DFFC3A0DBD8F4F603798260@DM6PR12MB2986.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: LYiN00V6piOB43+wmUcptqubVEjRaMygPHkInp7ZjIeu8Ncw5EOwl4NLAa/7iTxVsgl58aA1G2JrT0Wle8OhZ2dHhE50VV/DN1cbKymGsQzkY1W3+IYc3yonmUfneC3WXHfae1yWrenf4pZTwLAXdA6bI0JVOv+LVtXSyc/HrKpVMd1cEOPqIZdnJ+pGhWZ6VozqUQYxhABrawPfwvr/edl5aa0CXdWm0MXaab+zSinV4kQzB1bfVQOTOerAuTIBwbx8XzyYFO1S6JyVV9t7Pq28yby68P82bOrFftGYfhME8c5Za6prgKv3MVXSvrXSUhFsPX1i6jTdSsho5D6CLWGyoOXcCL/p38YBhGuQqsa21guyZ7nEJCe6EDK++bAqulLnw2vd8nPyyyicfn0aPg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB4124.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(136003)(376002)(346002)(39860400002)(2906002)(8936002)(6486002)(6512007)(5660300002)(16526019)(186003)(478600001)(83380400001)(4326008)(8676002)(52116002)(316002)(1076003)(66476007)(6506007)(6666004)(86362001)(2616005)(66556008)(54906003)(36756003)(66946007)(161623001)(147533002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: 943V/dXkzX4WOInCZUFg90ImvFSYQA8MdL1YKx8+g9c7h1nDLib0g9H08QjBNSDHMdZ2yu+pCw8hxz+M/YZPzHCc44GVihCbqZU2IWAoK8zua/MuWT4GTopn7OJLKsobKrMiMEGKGcWrpvsuTKFavwvhrV/6taROFRfLet4zo3hHtpGvymSO01KPIIkcN3ABMKi1eeSiFOK22YZ4FCmusUtTqj1D2vwh+W9y3YxIHpCPFEEej7lX0oRio/ikRD+JjEkMjW2XSSduJAWaJD3tDZ4EOFXMFgnZHOQe1vupASkcRyhpQBIUezwYKQ5M/4H6K1fC3ouKAnE0fI1ULQ+/6DkBk6tXAPy9SdbkVmUbmHT+i90QiWrYvNPIxWWEoLePZIDyChxBm+Mnpahe2wmdgA5DvJx6wiwHmy3ct6yBXBtyxD+ZC0nlkD13LOP6HYqw9TuS6M/XCg+eRBmMoY5EZ7tgOGNpGGDi3xrPwWmmwG92vN7hXYETc6D2yZbscFTnq+KPJjuyDBiCcqSwCzk9J2G7MtJFJeRaHrlnbNXfTygjHAwBplSPvmXSKaHxBB8InVW7bfZ3RlCtU7UNA1EZqT7z/3KSN/Xzn5vOyEJwMkFfSvrSHWhHqVzyExjm+MI2t8kRZM6LHKO6YZs/ksT3WRQtjaLuW/VNG65Oqot7YxYMUyWzxm9iTsMq/4XYsaKs
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e2ac2a58-7a61-47a1-f1a0-08d855135227
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB4124.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Sep 2020 22:54:34.6095
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Qad6j0Wp+eVwa/YEDMz6Ky72RVYPk3JYN3/VZuwqJSfZttZdHOmoCTjAFR4dGNINJ0T/IWG42NwAtlFv3tHO0g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2986
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These were skipped in the original patches adding pinconf support for
-the AST2600.
+Debug issues related to display can be a challenge due to the complexity
+around this topic and different source of information might help in this
+process. We already have support for tracepoints inside the display
+component, i.e., we have the basic functionalities available and we just
+need to expand it in order to make it more valuable for debugging. For
+this reason, this patchset reworks part of the current tracepoint
+options and add different sets of tracing inside amdgpu_dm, display
+core, and DCN10. The first patch of this series just rework part of the
+current tracepoints and the last set of patches introduces new
+tracepoints.
 
-Cc: Johnny Huang <johnny_huang@aspeedtech.com>
-Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
-Reviewed-by: Joel Stanley <joel@jms.id.au>
----
- drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+This first patchset version is functional. Please, let me know what I
+can improve in the current version but also let me know what kind of
+tracepoint I can add for the next version. 
 
-diff --git a/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c b/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c
-index 7efe6dbe4398..34803a6c7664 100644
---- a/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c
-+++ b/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c
-@@ -19,6 +19,7 @@
- 
- #define SCU400		0x400 /* Multi-function Pin Control #1  */
- #define SCU404		0x404 /* Multi-function Pin Control #2  */
-+#define SCU40C		0x40C /* Multi-function Pin Control #3  */
- #define SCU410		0x410 /* Multi-function Pin Control #4  */
- #define SCU414		0x414 /* Multi-function Pin Control #5  */
- #define SCU418		0x418 /* Multi-function Pin Control #6  */
-@@ -2591,6 +2592,22 @@ static struct aspeed_pin_config aspeed_g6_configs[] = {
- 	/* MAC4 */
- 	{ PIN_CONFIG_POWER_SOURCE,   { F24, B24 }, SCU458, BIT_MASK(5)},
- 	{ PIN_CONFIG_DRIVE_STRENGTH, { F24, B24 }, SCU458, GENMASK(3, 2)},
-+
-+	/* GPIO18E */
-+	ASPEED_SB_PINCONF(PIN_CONFIG_BIAS_PULL_DOWN, Y1, Y4, SCU40C, 4),
-+	ASPEED_SB_PINCONF(PIN_CONFIG_BIAS_DISABLE,   Y1, Y4, SCU40C, 4),
-+	/* GPIO18D */
-+	ASPEED_SB_PINCONF(PIN_CONFIG_BIAS_PULL_DOWN, AB4, AC5, SCU40C, 3),
-+	ASPEED_SB_PINCONF(PIN_CONFIG_BIAS_DISABLE,   AB4, AC5, SCU40C, 3),
-+	/* GPIO18C */
-+	ASPEED_SB_PINCONF(PIN_CONFIG_BIAS_PULL_DOWN, E4, E1, SCU40C, 2),
-+	ASPEED_SB_PINCONF(PIN_CONFIG_BIAS_DISABLE,   E4, E1, SCU40C, 2),
-+	/* GPIO18B */
-+	ASPEED_SB_PINCONF(PIN_CONFIG_BIAS_PULL_DOWN, B2, D3, SCU40C, 1),
-+	ASPEED_SB_PINCONF(PIN_CONFIG_BIAS_DISABLE,   B2, D3, SCU40C, 1),
-+	/* GPIO18A */
-+	ASPEED_SB_PINCONF(PIN_CONFIG_BIAS_PULL_DOWN, C6, A2, SCU40C, 0),
-+	ASPEED_SB_PINCONF(PIN_CONFIG_BIAS_DISABLE,   C6, A2, SCU40C, 0),
- };
- 
- /**
+Finally, I want to highlight that this work is based on a set of patches
+originally made by Nicholas Kazlauskas.
+
+Rodrigo Siqueira (3):
+  drm/amd/display: Rework registers tracepoint
+  drm/amd/display: Add tracepoint for amdgpu_dm
+  drm/amd/display: Add pipe_state tracepoint
+
+ .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |  17 +
+ .../amd/display/amdgpu_dm/amdgpu_dm_trace.h   | 514 ++++++++++++++++--
+ drivers/gpu/drm/amd/display/dc/core/dc.c      |  11 +
+ .../amd/display/dc/dcn10/dcn10_hw_sequencer.c |  17 +-
+ 4 files changed, 523 insertions(+), 36 deletions(-)
+
 -- 
-2.25.1
+2.28.0
 
