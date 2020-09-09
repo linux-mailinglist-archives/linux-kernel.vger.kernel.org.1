@@ -2,109 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EC1E262709
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 08:06:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29B47262703
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 08:03:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727037AbgIIGF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 02:05:58 -0400
-Received: from mga17.intel.com ([192.55.52.151]:17843 "EHLO mga17.intel.com"
+        id S1726535AbgIIGDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 02:03:40 -0400
+Received: from muru.com ([72.249.23.125]:44370 "EHLO muru.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726111AbgIIGF5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 02:05:57 -0400
-IronPort-SDR: q93NnxIEpzV9PRIfttv+r/DkEEGjVpOfuhoKCInPMeTNiZM1JBRWOBoiwhjzbFtPIAMAiBLPTO
- kasNPDZDzt1w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9738"; a="138318994"
-X-IronPort-AV: E=Sophos;i="5.76,408,1592895600"; 
-   d="scan'208";a="138318994"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2020 23:05:57 -0700
-IronPort-SDR: 4pdNsw0ohE71pVTYhIzAUE7J/bNUtGDMR1TPasdybVPyFKeVAt68sia7uoQWmZk6s0smyc6F8v
- acB8Bu4Mh7iw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,408,1592895600"; 
-   d="scan'208";a="377762514"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
-  by orsmga001.jf.intel.com with ESMTP; 08 Sep 2020 23:05:55 -0700
-Date:   Wed, 9 Sep 2020 14:01:40 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     broonie@kernel.org, linux-kernel@vger.kernel.org, trix@redhat.com,
-        matthew.gerlach@linux.intel.com, russell.h.weight@intel.com,
-        lgoncalv@redhat.com, hao.wu@intel.com, yilun.xu@intel.com
-Subject: Re: [PATCH v4 2/2] mfd: intel-m10-bmc: add Max10 BMC chip support
-  for Intel FPGA PAC
-Message-ID: <20200909060140.GB27300@yilunxu-OptiPlex-7050>
-References: <1597822497-25107-1-git-send-email-yilun.xu@intel.com>
- <1597822497-25107-3-git-send-email-yilun.xu@intel.com>
- <20200828100236.GF1826686@dell>
- <20200829182405.GA27132@yilunxu-OptiPlex-7050>
- <20200908120356.GQ4400@dell>
+        id S1725772AbgIIGDk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 02:03:40 -0400
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id ACA1780DD;
+        Wed,  9 Sep 2020 06:03:39 +0000 (UTC)
+Date:   Wed, 9 Sep 2020 09:04:21 +0300
+From:   Tony Lindgren <tony@atomide.com>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Nick Dyer <nick@shmanahar.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        Arthur Demchenkov <spinal.by@gmail.com>,
+        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
+        Merlijn Wajer <merlijn@wizzup.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-omap@vger.kernel.org
+Subject: Re: [PATCH 1/3] Input: atmel_mxt_ts - use runtime PM instead of
+ custom functions
+Message-ID: <20200909060421.GD2747@atomide.com>
+References: <20200318230938.31573-1-tony@atomide.com>
+ <20200908085111.GA31609@duo.ucw.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200908120356.GQ4400@dell>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20200908085111.GA31609@duo.ucw.cz>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > > > + * m10bmc_raw_read - read m10bmc register per addr
-> > > > + * m10bmc_sys_read - read m10bmc system register per offset
-> > > > + */
-> > > > +static inline int
-> > > > +m10bmc_raw_read(struct intel_m10bmc *m10bmc, unsigned int addr,
-> > > > +		unsigned int *val)
-> > > > +{
-> > > > +	int ret;
-> > > > +
-> > > > +	ret = regmap_read(m10bmc->regmap, addr, val);
-> > > > +	if (ret)
-> > > > +		dev_err(m10bmc->dev, "fail to read raw reg %x: %d\n",
-> > > > +			addr, ret);
-> > > > +
-> > > > +	return ret;
-> > > > +}
-> > > > +
-> > > > +#define m10bmc_sys_read(m10bmc, offset, val) \
-> > > > +	m10bmc_raw_read(m10bmc, M10BMC_SYS_BASE + (offset), val)
-> > > 
-> > > No unnecessary abstractions.
-> > > 
-> > > Just use the Regmap API directly please.
-> > 
-> > Could we keep the 2 definition?
-> > 
-> > For m10bmc_raw_read(), we make it to help print some error info if
-> > regmap RW fail. So we don't have to write "if (ret) dev_err" every time
-> > we use regmap.
+* Pavel Machek <pavel@ucw.cz> [200908 08:51]:
+> Hi!
 > 
-> How many call sites are there?
-
-There are about 20 calls of the register read in m10bmc base driver and
-sub device drivers. Most of them calls m10bmc_sys_read().
-I prefer to keep the function for unified error log, but I'm also good
-to follow your opinion. How do you think?
-
-I also realize that it is not necessary that we define so many
-m10bmc_raw_bulk_read/bulk_write/update_bits ... which are not frequently
-used. We could change them.
-
+> > Let's use standard runtime PM functions instead of custom start and stop
+> > functions. This way we can implement runtime idle mode using runtime PM
+> > autosuspend in the following patches.
 > 
-> > For m10bmc_sys_read(), the offset of BMC system registers could be
-> > configured by HW developers (The MAX 10 is an CPLD, it could be easily
-> > reprogrammed). And the HW SPEC will not add the offset when describing
-> > the addresses of system registers. So:
-> > 1. It makes the definition of system registers in code align with HW SPEC.
-> > 2. It makes developers easier to make changes when the offset is adjusted
-> >    in HW (I've been told by HW guys, it is sometimes necessary to adjust
-> >    the offset when changing RTL, required by Altera EDA tool - Quartus).
-> 
-> Make sure you justify this for the function(s) you keep.
+> This is not in recent kernel. What needs to be done here?
 
-Yes, I could add some comments.
+Well it seems that it's lossy for normal use for taps requiring a short
+swipe instead. So by default the autosuspend_timeout should be disabled.
+This would be still usable for cases where we want to wake up the device
+using touchscreen.
 
-Thanks,
-Yilun
+Regards,
+
+Tony
