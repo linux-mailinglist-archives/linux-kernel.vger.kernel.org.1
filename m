@@ -2,99 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA3CA262E44
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 14:01:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCC79262E4C
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 14:06:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730150AbgIIMAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 08:00:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40408 "EHLO mail.kernel.org"
+        id S1729413AbgIIMGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 08:06:20 -0400
+Received: from foss.arm.com ([217.140.110.172]:41930 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726415AbgIILmN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 07:42:13 -0400
-Received: from pali.im (pali.im [31.31.79.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3EBA1207DE;
-        Wed,  9 Sep 2020 11:11:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599649899;
-        bh=gk5ai7/vsUBs2dl7VhzTb79HWtwuO4OdRiCJ/geHW4g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=xt32yCIJZrUnpBjf6/MToHhOH5aK0XvmwKj0BwuSH4Fcsie9nQ0R0tHFTEEnVTFIP
-         29njlrTtNhos9A/wOErrHOF4fNWmUSFQ9GV2x/XbjDPYvt+u9vNWaHJT8TSYsNQWbr
-         xUrm/P+mViuyxOWWowDpQZ7V6BMBiafgTH9hvMDw=
-Received: by pali.im (Postfix)
-        id B61AE7A9; Wed,  9 Sep 2020 13:11:36 +0200 (CEST)
-Date:   Wed, 9 Sep 2020 13:11:36 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Joseph Hwang <josephsih@chromium.org>
-Cc:     linux-bluetooth@vger.kernel.org, marcel@holtmann.org,
-        luiz.dentz@gmail.com, chromeos-bluetooth-upstreaming@chromium.org,
-        josephsih@google.com, Alain Michaud <alainm@chromium.org>,
-        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] Bluetooth: sco: expose WBS packet length in
- socket option
-Message-ID: <20200909111136.ghp5p56m4cxfjreo@pali>
-References: <20200909094202.3863687-1-josephsih@chromium.org>
- <20200909174129.v2.2.I03247d3813c6dcbcdbeab26d068f9fd765edb1f5@changeid>
+        id S1729525AbgIILgR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 07:36:17 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E8DE531B;
+        Wed,  9 Sep 2020 04:36:16 -0700 (PDT)
+Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B2F603F68F;
+        Wed,  9 Sep 2020 04:36:15 -0700 (PDT)
+Date:   Wed, 9 Sep 2020 12:36:13 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     George Cherian <gcherian@marvell.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "will.deacon@arm.com" <will.deacon@arm.com>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "guohanjun@huawei.com" <guohanjun@huawei.com>
+Subject: Re: [PATCH] arm64: PCI: fix memleak when calling pci_iomap/unmap()
+Message-ID: <20200909113613.GB6384@e121166-lin.cambridge.arm.com>
+References: <20200907104546.GC26513@gaia>
+ <BYAPR18MB267959E6FE4BEF38D0A4611EC5280@BYAPR18MB2679.namprd18.prod.outlook.com>
+ <20200907112118.GD26513@gaia>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200909174129.v2.2.I03247d3813c6dcbcdbeab26d068f9fd765edb1f5@changeid>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <20200907112118.GD26513@gaia>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday 09 September 2020 17:42:02 Joseph Hwang wrote:
-> It is desirable to expose the wideband speech packet length via
-> a socket option to the user space so that the user space can set
-> the value correctly in configuring the sco connection.
+On Mon, Sep 07, 2020 at 12:21:19PM +0100, Catalin Marinas wrote:
+> + Lorenzo
+> 
+> On Mon, Sep 07, 2020 at 10:51:21AM +0000, George Cherian wrote:
+> > Catalin Marinas <catalin.marinas@arm.com> wrote:
+> > > On Sat, Sep 05, 2020 at 10:48:11AM +0800, Yang Yingliang wrote:
+> > > > diff --git a/arch/arm64/kernel/pci.c b/arch/arm64/kernel/pci.c index
+> > > > 1006ed2d7c604..ddfa1c53def48 100644
+> > > > --- a/arch/arm64/kernel/pci.c
+> > > > +++ b/arch/arm64/kernel/pci.c
+> > > > @@ -217,4 +217,9 @@ void pcibios_remove_bus(struct pci_bus *bus)
+> > > >  	acpi_pci_remove_bus(bus);
+> > > >  }
+> > > >
+> > > > +void pci_iounmap(struct pci_dev *dev, void __iomem *addr) {
+> > > > +	iounmap(addr);
+> > > > +}
+> > > > +EXPORT_SYMBOL(pci_iounmap);
+> > > 
+> > > So, what's wrong with the generic pci_iounmap() implementation?
+> > > Shouldn't it call iounmap() already?
+> > 
+> > Since ARM64 selects CONFIG_GENERIC_PCI_IOMAP and not
+> > CONFIG_GENERIC_IOMAP,  the pci_iounmap function is reduced to a NULL
+> > function. Due to this, even the managed release variants or even the explicit
+> > pci_iounmap calls doesn't really remove the mappings leading to leak.
+> 
+> Ah, I missed the fact that pci_iounmap() depends on a different
+> config option.
+> 
+> > https://lkml.org/lkml/2020/8/20/28
+> 
+> So is this going to be fixed in the generic code? That would be my
+> preference.
+> 
+> A problem with the iounmap() in the proposed patch is that the region
+> may have been an I/O port, so we could end up unmapping the I/O space.
 
-Hello! I'm fine with change below, but I would suggest to put more
-details into commit message. This change has nothing to do with wideband
-nor with exporting socket option to userspace -- which is already done
-via SCO_OPTIONS option. Also it is relevant to SCO socket with any codec
-data, not only wideband.
+It boils down to finding a way to match a VA to a BAR resource so that
+we can mirror on pci_iounmap() what's done in pci_iomap_range() (ie
+check BAR resource flags to define how/if to unmap them), that would do
+as a generic pci_iounmap() implementation.
 
-This commit description should rather mention that it defines new
-getsockopt options BT_SNDMTU/BT_RCVMTU for SCO socket to be compatible
-with other bluetooth sockets and that these options return same value as
-option SCO_OPTIONS which is already present on existing kernels.
+In the pcim_* interface that looks easy to do, in the non-managed
+case ideas welcome - at the end of the day the deal is having a way
+to detect in a generic way what's behind a void __iomem *.
 
-> 
-> Reviewed-by: Alain Michaud <alainm@chromium.org>
-> Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-> Signed-off-by: Joseph Hwang <josephsih@chromium.org>
-> ---
-> 
-> (no changes since v1)
-> 
->  net/bluetooth/sco.c | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/net/bluetooth/sco.c b/net/bluetooth/sco.c
-> index dcf7f96ff417e6..79ffcdef0b7ad5 100644
-> --- a/net/bluetooth/sco.c
-> +++ b/net/bluetooth/sco.c
-> @@ -1001,6 +1001,12 @@ static int sco_sock_getsockopt(struct socket *sock, int level, int optname,
->  			err = -EFAULT;
->  		break;
->  
-> +	case BT_SNDMTU:
-> +	case BT_RCVMTU:
-> +		if (put_user(sco_pi(sk)->conn->mtu, (u32 __user *)optval))
-> +			err = -EFAULT;
-> +		break;
-> +
->  	default:
->  		err = -ENOPROTOOPT;
->  		break;
-> -- 
-> 2.28.0.526.ge36021eeef-goog
-> 
+Lorenzo
