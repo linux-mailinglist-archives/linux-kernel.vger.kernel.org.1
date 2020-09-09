@@ -2,98 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A41F6262E47
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 14:04:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BCDC262E57
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 14:11:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730181AbgIIMDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 08:03:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40148 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729014AbgIILmN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 07:42:13 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A861CC061795
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 04:41:38 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id z19so1411647lfr.4
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 04:41:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9QFqZ8T4Z8Uwssi88QoBtFjRyO2k2yhi/Ck4LHpw7Qk=;
-        b=bndKyFALCwNbpGG6biL5LEJoMyzVE3/sE7fOKzM0bdlDG5LYKrVzIyaoIPdR2j3xo9
-         ++yPbukmQM8z67YpiR6rloFUdCvnbCIQIwtrfXT11Y3f8mIL6IxU4Ws1RsASWnWA1VXr
-         Jk4QHqNo+AhOG+O7PZKZxH/j0N9bJZKi7cSrxQvpusImfogn4uS06eckyz/qrYsyCO1t
-         Isn93zwFT14OXhtBmKB6DgUDDY8TndPFTtlvWtMdxc40O0hECK8K5IDySLim670nVZDx
-         QhGxOUNiRKJRcPSHjXp2Ggt2pgO9wX7XRbPen0Din2y0bZ5+oALUJdnSVu7jg6Plf+RZ
-         KGQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9QFqZ8T4Z8Uwssi88QoBtFjRyO2k2yhi/Ck4LHpw7Qk=;
-        b=nwh6SbTiXLLq76eY9c1O8bezDH2GvGD7BFEvLzwE9evCr4UNIpiJtxl/f1Cuf8E+vD
-         cm0isjMQM/hEI4dAHXcUtCQfQcflshufaG3CZNng8idLMP8soiJAVhXhk44icBH/NcU8
-         XQEiOzqNiW/CAojC88+Srhdz3a86o/2ZH49qsuuoZQMrBpZrgeeF0I3CazzXNh2kbAX6
-         k8znvWXjaSd/iM6nOtVObyg95LxYccOlA0kzjWhftTvJ/5R1/AuFYCo37vshjPtoGFfL
-         rZZSe3n1eHo5BfxTUU2ioW2JFNY/Z1ptM+db98WjIT51bKkmwa2IW+POWPLyVQU2M7mD
-         MaAA==
-X-Gm-Message-State: AOAM533uZZWF4yaRt6htQ7NgD1fG93lOv98ltzg10UoDOKf3C9h3rm9t
-        HdtWTS9dcJeKEzWKrhe97Ra1qsWTw5b6HHyhG0d5Xg==
-X-Google-Smtp-Source: ABdhPJx1689AN6ZBjH9cFKkBhgvwX3Sn72kLkZELmRxndnnmRkhFO6EY5qp4HI+dRiZKRBpPZpNKfjqIAxtiWfATgOw=
-X-Received: by 2002:ac2:5541:: with SMTP id l1mr1734063lfk.89.1599651696103;
- Wed, 09 Sep 2020 04:41:36 -0700 (PDT)
+        id S1728663AbgIIMLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 08:11:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48922 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729822AbgIIMAk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 08:00:40 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 88A3A215A4;
+        Wed,  9 Sep 2020 11:50:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599652210;
+        bh=vsjTYNMmq1bU3l1iBwYS0EsYYEjqKIejBpLzYh0pyqo=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=meVJ1T4+sNUN3l++6g5sFUQY9BG0qIDH6bh0Z3LmLIHJ8AyG09+hFC4DfI3u5lljP
+         ibWHVA0xChCkPtlKyhBIW/SpOiCkw1U/8Tr812P5IIs/i9SEN4Hu7WQ51AXfkPknzI
+         u11FU/2utLZ/Jqo+nNxQlALOZ6UF3TVyVGGqesGU=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 3748D3523091; Wed,  9 Sep 2020 04:50:10 -0700 (PDT)
+Date:   Wed, 9 Sep 2020 04:50:10 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Alexey Kardashevskiy <aik@ozlabs.ru>
+Cc:     rcu@vger.kernel.org, Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH kernel] srcu: Fix static initialization
+Message-ID: <20200909115010.GG29330@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200908144306.33355-1-aik@ozlabs.ru>
+ <cc25257d-804e-8cf7-150b-e6bdbaf184be@ozlabs.ru>
 MIME-Version: 1.0
-References: <20200822163250.63664-1-paul@crapouillou.net> <20200822163250.63664-2-paul@crapouillou.net>
-In-Reply-To: <20200822163250.63664-2-paul@crapouillou.net>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 9 Sep 2020 13:41:24 +0200
-Message-ID: <CACRpkdZmiar+2RrMb8=2UdyH83_8KQD0VvX2oWcBezmCdVwzzQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/6] dt-bindings: display: Document NewVision NV3052C
- DT node
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Noralf Tronnes <noralf@tronnes.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        od@zcrc.me,
-        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cc25257d-804e-8cf7-150b-e6bdbaf184be@ozlabs.ru>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 22, 2020 at 6:33 PM Paul Cercueil <paul@crapouillou.net> wrote:
+On Wed, Sep 09, 2020 at 07:24:11PM +1000, Alexey Kardashevskiy wrote:
+> 
+> 
+> On 09/09/2020 00:43, Alexey Kardashevskiy wrote:
+> > init_srcu_struct_nodes() is called with is_static==true only internally
+> > and when this happens, the srcu->sda is not initialized in
+> > init_srcu_struct_fields() and we crash on dereferencing @sdp.
+> > 
+> > This fixes the crash by moving "if (is_static)" out of the loop which
+> > only does useful work for is_static=false case anyway.
+> > 
+> > Found by syzkaller.
+> > 
+> > Signed-off-by: Alexey Kardashevskiy <aik@ozlabs.ru>
+> > ---
+> >  kernel/rcu/srcutree.c | 5 +++--
+> >  1 file changed, 3 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> > index c100acf332ed..49b54a50bde8 100644
+> > --- a/kernel/rcu/srcutree.c
+> > +++ b/kernel/rcu/srcutree.c
+> > @@ -135,6 +135,9 @@ static void init_srcu_struct_nodes(struct srcu_struct *ssp, bool is_static)
+> >  				   levelspread[level - 1];
+> >  	}
+> >  
+> > +	if (is_static)
+> > +		return;
+> 
+> Actually, this is needed here too:
+> 
+>  if (!ssp->sda)
+>          return;
+> 
+> as
+> ssp->sda = alloc_percpu(struct srcu_data)
+> 
+> can fail if the process is killed too soon - it is quite easy to get
+> this situation with syzkaller (syscalls fuzzer)
+> 
+> Makes sense?
 
-> Add documentation for the Device Tree node for LCD panels based on the
-> NewVision NV3052C controller.
->
-> v2: - Support backlight property
->     - Add *-supply properties for the 5 different power supplies.
->       Either they must all be present, or 'power-supply' must be
->       present.
->     - Reword description to avoid confusion about 'driver'
->     - Use 4-space indent in example
->
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+Just to make sure that I understand, these failures occur when the task
+running init_srcu_struct_nodes() is killed, correct?
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Or has someone managed to invoke (say) synchronize_srcu() on a
+dynamically allocated srcu_struct before invoking init_srcu_struct() on
+that srcu_struct?  This would be an SRCU usage bug.  If you dynamically
+allocate your srcu_struct, you are absolutely required to invoke
+init_srcu_struct() on it before doing anything else with it.
 
-> +            reset-gpios = <&gpe 2 GPIO_ACTIVE_LOW>;
+Or am I missing something here?
 
-This has the right polarity but the code in patch 6
-seems to use a device tree that does not?
+(The rcutorture test suite does test both static and dynamic allocation
+of the srcu_struct, so I am expecting something a bit subtle here.)
 
-Yours,
-Linus Walleij
+							Thanx, Paul
+
+> > +
+> >  	/*
+> >  	 * Initialize the per-CPU srcu_data array, which feeds into the
+> >  	 * leaves of the srcu_node tree.
+> > @@ -161,8 +164,6 @@ static void init_srcu_struct_nodes(struct srcu_struct *ssp, bool is_static)
+> >  		timer_setup(&sdp->delay_work, srcu_delay_timer, 0);
+> >  		sdp->ssp = ssp;
+> >  		sdp->grpmask = 1 << (cpu - sdp->mynode->grplo);
+> > -		if (is_static)
+> > -			continue;
+> >  
+> >  		/* Dynamically allocated, better be no srcu_read_locks()! */
+> >  		for (i = 0; i < ARRAY_SIZE(sdp->srcu_lock_count); i++) {
+> > 
+> 
+> -- 
+> Alexey
