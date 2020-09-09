@@ -2,64 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AB0A2631DA
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:28:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 236F72631EC
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:30:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731103AbgIIQ2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 12:28:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56382 "EHLO
+        id S1730727AbgIIQaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 12:30:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731132AbgIIQ1k (ORCPT
+        with ESMTP id S1731126AbgIIQ1c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 12:27:40 -0400
+        Wed, 9 Sep 2020 12:27:32 -0400
 Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5383BC0617A3
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 06:28:56 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAF70C0617A5;
+        Wed,  9 Sep 2020 06:30:08 -0700 (PDT)
 Received: by ozlabs.org (Postfix, from userid 1034)
-        id 4BmjWF5Pj0z9sVR; Wed,  9 Sep 2020 23:27:53 +1000 (AEST)
+        id 4BmjWR3xYDz9sVW; Wed,  9 Sep 2020 23:28:03 +1000 (AEST)
 From:   Michael Ellerman <patch-notifications@ellerman.id.au>
-To:     Leonardo Bras <leobras.c@gmail.com>,
-        Murilo Fossa Vicentini <muvic@linux.ibm.com>,
+To:     linuxppc-dev@lists.ozlabs.org, Stephen Kitt <steve@sk2.org>,
+        Scott Wood <oss@buserror.net>,
         Michael Ellerman <mpe@ellerman.id.au>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        David Dai <zdai@linux.vnet.ibm.com>,
-        Ram Pai <linuxram@us.ibm.com>,
-        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
-        Paul Mackerras <paulus@samba.org>,
         Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Brian King <brking@linux.vnet.ibm.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20200805030455.123024-1-leobras.c@gmail.com>
-References: <20200805030455.123024-1-leobras.c@gmail.com>
-Subject: Re: [PATCH v5 0/4] Allow bigger 64bit window by removing default DMA window
-Message-Id: <159965717483.808686.14535897310310541742.b4-ty@ellerman.id.au>
-Date:   Wed,  9 Sep 2020 23:27:53 +1000 (AEST)
+        Paul Mackerras <paulus@samba.org>
+Cc:     linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org
+In-Reply-To: <20200807152713.381588-1-steve@sk2.org>
+References: <20200807152713.381588-1-steve@sk2.org>
+Subject: Re: [PATCH] arch/powerpc: use simple i2c probe function
+Message-Id: <159965716684.808686.4339273777351365516.b4-ty@ellerman.id.au>
+Date:   Wed,  9 Sep 2020 23:28:03 +1000 (AEST)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 5 Aug 2020 00:04:51 -0300, Leonardo Bras wrote:
-> There are some devices in which a hypervisor may only allow 1 DMA window
-> to exist at a time, and in those cases, a DDW is never created to them,
-> since the default DMA window keeps using this resource.
+On Fri, 7 Aug 2020 17:27:13 +0200, Stephen Kitt wrote:
+> The i2c probe functions here don't use the id information provided in
+> their second argument, so the single-parameter i2c probe function
+> ("probe_new") can be used instead.
 > 
-> LoPAR recommends this procedure:
-> 1. Remove the default DMA window,
-> 2. Query for which configs the DDW can be created,
-> 3. Create a DDW.
-> 
-> [...]
+> This avoids scanning the identifier tables during probes.
 
 Applied to powerpc/next.
 
-[1/4] powerpc/pseries/iommu: Create defines for operations in ibm, ddw-applicable
-      https://git.kernel.org/powerpc/c/cac3e629086f1b2e31c87a6c9b0130d29843ae86
-[2/4] powerpc/pseries/iommu: Update call to ibm, query-pe-dma-windows
-      https://git.kernel.org/powerpc/c/80f0251231131d164eddab78d2b6c1b8e37d0093
-[3/4] powerpc/pseries/iommu: Move window-removing part of remove_ddw into remove_dma_window
-      https://git.kernel.org/powerpc/c/74d0b3994e147a2b503170b5e02f1d07dc086586
-[4/4] powerpc/pseries/iommu: Allow bigger 64bit window by removing default DMA window
-      https://git.kernel.org/powerpc/c/8c0d51592f6f0123953633d1ecf21e843fce0bfd
+[1/1] powerpc: Use simple i2c probe function
+      https://git.kernel.org/powerpc/c/6c9100ea39d209e1625ba0fe06134192d9c4752a
 
 cheers
