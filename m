@@ -2,156 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 312F0262A66
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 10:34:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD609262A6D
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 10:35:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727087AbgIIIel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 04:34:41 -0400
-Received: from mail-ej1-f68.google.com ([209.85.218.68]:45769 "EHLO
-        mail-ej1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725975AbgIIIek (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 04:34:40 -0400
-Received: by mail-ej1-f68.google.com with SMTP id i26so2283053ejb.12;
-        Wed, 09 Sep 2020 01:34:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=vsALB+bxuuEP7Stns5jLN4qt786xLJXYhZvHFA9movY=;
-        b=XSf68dHX7NAWM4nzgtejdreYFS8CJQ3ikO4MFMFfcxO6Y+tdjDe2tB0O1K4sUaovBI
-         /Bitupjop/7i9/+xc1wyMfyn2yuj4ulAJf8C8VOyYOpopPj6w6QDL/4CBZDC/KPqhORu
-         hA3G98yTqRcUwkKWNbtfp5ARmY1kd90v6tm+nAp0jaVrR3+ZAaIJmk8gKrseQTULXZXs
-         FcqxRTkfcwbIoEi1AMzCGn5UYweSFuoO+QPRpEvO6DZcXBlxvQ2TG6wpXCDW3K2C1PRt
-         /LeLstgTYWRj/5FFbZeXU64AeDh63g1/4pHO+qdGIzjC9GnBozyZrdK1eheRslTykF4d
-         uuCA==
-X-Gm-Message-State: AOAM5335XkngKzU1Qtff2hlouG5rQqjgO4Qfxw2c3Ydk+kkIhZnBaU0v
-        840PeWQ/cbY1ZvRuZ04o1Lw=
-X-Google-Smtp-Source: ABdhPJzNWdfEaEJMrGWJQ6SgVZ2LZkowL8XUPe1AidTLBAqeR320x6AIAcMg2mNv6uF3Dy3F+cwHGw==
-X-Received: by 2002:a17:906:1b55:: with SMTP id p21mr2628419ejg.457.1599640477647;
-        Wed, 09 Sep 2020 01:34:37 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.174])
-        by smtp.googlemail.com with ESMTPSA id b13sm1320130edf.89.2020.09.09.01.34.35
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 09 Sep 2020 01:34:36 -0700 (PDT)
-Date:   Wed, 9 Sep 2020 10:34:34 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Adam Ford <aford173@gmail.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        Robin Gong <yibin.gong@nxp.com>,
-        Alifer Moraes <alifer.wsdm@gmail.com>,
-        Leonard Crestez <leonard.crestez@nxp.com>,
-        "Angus Ainslie (Purism)" <angus@akkea.ca>,
-        Vitor Massaru Iha <vitor@massaru.org>,
-        Kever Yang <kever.yang@rock-chips.com>,
-        Rajan Vaja <rajan.vaja@xilinx.com>,
-        Anurag Kumar Vulisha <anurag.kumar.vulisha@xilinx.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org
-Subject: Re: [PATCH 3/8] arm64: dts: imx8mm: Correct interrupt flags in
- examples
-Message-ID: <20200909083434.GB11775@kozik-lap>
-References: <20200908150241.5771-1-krzk@kernel.org>
- <20200908150241.5771-3-krzk@kernel.org>
+        id S1728647AbgIIIfr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 04:35:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33112 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725864AbgIIIfq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 04:35:46 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9347520578;
+        Wed,  9 Sep 2020 08:35:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599640545;
+        bh=tOhCuyrwtMUUuVRNkiFaNUZvPPYBLzxQHqIy6RtPF4Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XTK03nSKEn9Y7z+1lbDKDlgXeHdeox/iLUALfEVHTlipG4/X5cdvBnOABI92Alz6b
+         uH1N94H0cC84ABMckSMgzbyn1sMTLM7PdbXSKSD4H42JzTzg+HQ0TCcH3zCqD28Ip/
+         EoWv45PsUOokY3HJdtDAQ+ozyQ3EaXKffXyQw30c=
+Date:   Wed, 9 Sep 2020 10:35:55 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Yu Chen <chenyu56@huawei.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Derek Kiernan <derek.kiernan@xilinx.com>,
+        Dragan Cvetic <dragan.cvetic@xilinx.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 08/11] misc: hisi_hikey_usb: Driver to support onboard
+ USB gpio hub on Hikey960
+Message-ID: <20200909083555.GA579996@kroah.com>
+References: <cover.1599493845.git.mchehab+huawei@kernel.org>
+ <d53de8ab89c23e4be6d2a4fd24b10bcd76dad97d.1599493845.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200908150241.5771-3-krzk@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <d53de8ab89c23e4be6d2a4fd24b10bcd76dad97d.1599493845.git.mchehab+huawei@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 08, 2020 at 05:02:36PM +0200, Krzysztof Kozlowski wrote:
-> GPIO_ACTIVE_x flags are not correct in the context of interrupt flags.
-> These are simple defines so they could be used in DTS but they will not
-> have the same meaning:
-> 1. GPIO_ACTIVE_HIGH = 0 = IRQ_TYPE_NONE
-> 2. GPIO_ACTIVE_LOW  = 1 = IRQ_TYPE_EDGE_RISING
+On Mon, Sep 07, 2020 at 05:59:32PM +0200, Mauro Carvalho Chehab wrote:
+> From: Yu Chen <chenyu56@huawei.com>
 > 
-> Correct the interrupt flags, assuming the author of the code wanted some
-> logical behavior behind the name "ACTIVE_xxx", this is:
->   ACTIVE_LOW  => IRQ_TYPE_LEVEL_LOW
->   ACTIVE_HIGH => IRQ_TYPE_LEVEL_HIGH
+> The HiKey960 has a fairly complex USB configuration due to it
+> needing to support a USB-C port for host/device mode and multiple
+> USB-A ports in host mode, all using a single USB controller.
 > 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> See schematics here:
+>   https://github.com/96boards/documentation/raw/master/consumer/hikey/hikey960/hardware-docs/HiKey960_Schematics.pdf
+> 
+> This driver acts as a usb-role-switch intermediary, intercepting
+> the role switch notifications from the tcpm code, and passing
+> them on to the dwc3 core.
+> 
+> In doing so, it also controls the onboard hub and power gpios in
+> order to properly route the data lines between the USB-C port
+> and the onboard hub to the USB-A ports.
+> 
+> Signed-off-by: Yu Chen <chenyu56@huawei.com>
+> [jstultz: Major rework to make the driver a usb-role-switch
+>           intermediary]
+> Signed-off-by: John Stultz <john.stultz@linaro.org>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 > ---
->  arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi      | 2 +-
->  arch/arm64/boot/dts/freescale/imx8mm-evk.dts              | 2 +-
->  arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dts | 2 +-
->  arch/arm64/boot/dts/freescale/imx8mm-var-som.dtsi         | 2 +-
->  4 files changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi
-> index 620a124dfb5f..fdce665d7ac4 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi
-> @@ -74,7 +74,7 @@
->  		reg = <0x4b>;
->  		pinctrl-0 = <&pinctrl_pmic>;
->  		interrupt-parent = <&gpio1>;
-> -		interrupts = <3 GPIO_ACTIVE_LOW>;
-> +		interrupts = <3 IRQ_TYPE_LEVEL_LOW>;
+>  MAINTAINERS                   |   7 ++
+>  drivers/misc/Kconfig          |   9 ++
+>  drivers/misc/Makefile         |   1 +
+>  drivers/misc/hisi_hikey_usb.c | 205 ++++++++++++++++++++++++++++++++++
+>  4 files changed, 222 insertions(+)
+>  create mode 100644 drivers/misc/hisi_hikey_usb.c
 
-All rohm,bd71847 PMIC interrupts should be rather EDGE_FALLING.  Some of
-the boards do not have external pull ups and most of the boards do not
-configure internal pull up.  Level low would cause the interrupt line to
-stay low all the time.
+Can this, and the next patch, go into my char-misc tree independent of
+the other patches in this series?  Or do they all need to go in
+together?
 
-Best regards,
-Krzysztof
+thanks,
 
->  		rohm,reset-snvs-powered;
->  
->  		regulators {
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mm-evk.dts b/arch/arm64/boot/dts/freescale/imx8mm-evk.dts
-> index 38134d201eef..609d73e19fee 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8mm-evk.dts
-> +++ b/arch/arm64/boot/dts/freescale/imx8mm-evk.dts
-> @@ -166,7 +166,7 @@
->  		reg = <0x4b>;
->  		pinctrl-0 = <&pinctrl_pmic>;
->  		interrupt-parent = <&gpio1>;
-> -		interrupts = <3 GPIO_ACTIVE_LOW>;
-> +		interrupts = <3 IRQ_TYPE_LEVEL_LOW>;
->  		rohm,reset-snvs-powered;
->  
->  		regulators {
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dts b/arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dts
-> index 0bca737964d5..b84d94e10c26 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dts
-> +++ b/arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dts
-> @@ -133,7 +133,7 @@
->  		pinctrl-names = "default";
->  		pinctrl-0 = <&pinctrl_captouch>;
->  		interrupt-parent = <&gpio5>;
-> -		interrupts = <4 GPIO_ACTIVE_HIGH>;
-> +		interrupts = <4 IRQ_TYPE_LEVEL_HIGH>;
->  
->  		touchscreen-size-x = <800>;
->  		touchscreen-size-y = <480>;
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mm-var-som.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-var-som.dtsi
-> index c371cb34b3f7..49743d2f60c1 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8mm-var-som.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/imx8mm-var-som.dtsi
-> @@ -137,7 +137,7 @@
->  		reg = <0x4b>;
->  		pinctrl-0 = <&pinctrl_pmic>;
->  		interrupt-parent = <&gpio2>;
-> -		interrupts = <8 GPIO_ACTIVE_LOW>;
-> +		interrupts = <8 IRQ_TYPE_LEVEL_LOW>;
->  		rohm,reset-snvs-powered;
->  
->  		regulators {
-> -- 
-> 2.17.1
-> 
+greg k-h
