@@ -2,427 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C93AA2636EB
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 21:57:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 028872636F8
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 21:58:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728954AbgIIT5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 15:57:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60682 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727820AbgIIT4z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 15:56:55 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DDAEC0613ED
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 12:56:55 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id n22so3944048edt.4
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 12:56:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=j5Qhu9r/FXCFAdXnXILKq35Q47I1aJmg9ijhJ12lWHA=;
-        b=u2X/lbNOzTCcGF3Wg9bDWJ2yT1N5aT94MiHuWwpaGzuxB/ZJOWUoJrIIMrty6mGCHw
-         amzAeombGYwBJOxPac+QkMEDgTU1+Ow/Vo2YifnwwwWv2T7/JA52NIIARQNiZ7AG5ffm
-         ooMUIISBXzc5YGo3ToJiGCpTOQwFElo0+FSJNiz1ETidjJPSGmHr1A3OFPLaauvcRPJh
-         zJNy2jkZ6fh9IS1hrxd7PZibKOdwomYx1XqBzJUscZmMhMNRwYrCJPfsSB4tR7Z9kccL
-         An5FeAbHTot76U2v2wZZAmpJbRo4EdT6P0C7ccp/c4yWBbA6fOj7Ai52SganKfTMIKeC
-         zwfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=j5Qhu9r/FXCFAdXnXILKq35Q47I1aJmg9ijhJ12lWHA=;
-        b=c1wPxS/tqIXHuS1RLjYz3cuajw1VYuf9pBBlYOlPWsDQicTgtz5gRCo+IhoSEeIyYF
-         tvW+RZu063vnofdxfjspg7q4Fyv6gy8MqmLGxY6U6OOZg6o7mIyMZhcRfyc8/MloVZiW
-         24kszOv7eBE2nTd1Lt11c6hSFBbqd4WAYwXh4kdFDmVYoRBOAKv21OsBD9IUMrwYybjw
-         t7SoLrSHjLyI6NHMcdcVhKnBVOGjpj0Klhi9dy6jMUmTfKjvmRDqOnqX0pHkJLr5ZBGa
-         WD+W1Ouw/YoQKDE/kOykbvEUiNYpwXgL9VZA4d9YNDfqyJ+T8Z62O5y1O3apZxIgU2B1
-         mngw==
-X-Gm-Message-State: AOAM530pObX0mWAnrKmv+EspkbYu1pZS/qRDZ4DlAnvtUSRgA4qcSGkD
-        AGRKmdrko7TBq8XuExwWbAhc8w==
-X-Google-Smtp-Source: ABdhPJwcOSm/rNuRbrYG38G/mvhLFhxCYhFeIA3D6ymnM9Zvy+RjF5L2NrMEwiP9NWew2rS1yQO1Hw==
-X-Received: by 2002:a50:8881:: with SMTP id d1mr5828360edd.306.1599681413599;
-        Wed, 09 Sep 2020 12:56:53 -0700 (PDT)
-Received: from localhost.localdomain (dh207-97-133.xnet.hr. [88.207.97.133])
-        by smtp.googlemail.com with ESMTPSA id n26sm3510870ejz.89.2020.09.09.12.56.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Sep 2020 12:56:53 -0700 (PDT)
-From:   Robert Marko <robert.marko@sartura.hr>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Robert Marko <robert.marko@sartura.hr>,
-        Luka Perkov <luka.perkov@sartura.hr>
-Subject: [PATCH v2 4/4] arm: dts: add 8devices Habanero DVK
-Date:   Wed,  9 Sep 2020 21:56:40 +0200
-Message-Id: <20200909195640.3127341-5-robert.marko@sartura.hr>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200909195640.3127341-1-robert.marko@sartura.hr>
-References: <20200909195640.3127341-1-robert.marko@sartura.hr>
+        id S1729717AbgIIT55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 15:57:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39062 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726801AbgIIT55 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 15:57:57 -0400
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A2B2521D91;
+        Wed,  9 Sep 2020 19:57:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599681475;
+        bh=Fj/ZQbw6iThGFoHDEPgT4Mpjuadx6d6xm8WtTwb+cS8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=gH+Ux2bfsGWe0ZZ8cr/KH4k1RUwrjBxh2rNdIt1VeCmIfHUDCq39wW48JqvtybXWy
+         Rw8pmYp1O3RalPallGy/5d3wY6dSMu5Y/7qWiIPM+cwz8vmVcrJWXqbauDdjEuVqkS
+         bjUUVwZCxI6cw+s+WEaEuQPutenO211vAHrqJv18=
+Received: by mail-ej1-f53.google.com with SMTP id z22so5325528ejl.7;
+        Wed, 09 Sep 2020 12:57:55 -0700 (PDT)
+X-Gm-Message-State: AOAM532xczjPP+a2j7QZz9Ei5PMAPunSRjdE6MeKUDi8151A2r3QS+iV
+        bck/u5pz+icuurvMgAUyRnivU4sM7ER9XFwzM2g=
+X-Google-Smtp-Source: ABdhPJwTMqh5k7vWahnMEeb3gRi7HnzNHjrkeMUXR1813rl6InlKMxnwCaXk5Vx2ppJEqh/OTvng43DjT6sRq5dxx5s=
+X-Received: by 2002:a17:906:8401:: with SMTP id n1mr5150651ejx.215.1599681474195;
+ Wed, 09 Sep 2020 12:57:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200829064726.26268-1-krzk@kernel.org> <20200829064726.26268-8-krzk@kernel.org>
+ <20200909193600.41970d8c@archlinux>
+In-Reply-To: <20200909193600.41970d8c@archlinux>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Wed, 9 Sep 2020 21:57:41 +0200
+X-Gmail-Original-Message-ID: <CAJKOXPeo8SXWaRmiFG6z+t9jcnaSMRpvRPm2X22Rf6rtEeKVew@mail.gmail.com>
+Message-ID: <CAJKOXPeo8SXWaRmiFG6z+t9jcnaSMRpvRPm2X22Rf6rtEeKVew@mail.gmail.com>
+Subject: Re: [PATCH v3 08/18] iio: adc: stm32: Simplify with dev_err_probe()
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Peter Rosin <peda@axentia.se>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Marek Vasut <marek.vasut@gmail.com>,
+        Tomasz Duszynski <tomasz.duszynski@octakon.com>,
+        linux-iio@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        "linux-samsung-soc@vger.kernel.org" 
+        <linux-samsung-soc@vger.kernel.org>,
+        linux-amlogic@lists.infradead.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-8devices Habanero DVK is a dual-band SoM development kit based on Qualcomm
-IPQ4019 + QCA8075 platform.
+On Wed, 9 Sep 2020 at 20:36, Jonathan Cameron <jic23@kernel.org> wrote:
+>
+> On Sat, 29 Aug 2020 08:47:16 +0200
+> Krzysztof Kozlowski <krzk@kernel.org> wrote:
+>
+> > Common pattern of handling deferred probe can be simplified with
+> > dev_err_probe().  Less code and also it prints the error value.
+> >
+> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> > Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> >
+> I don't have the thread to hand, but this tripped a warning next
+> and the patch was dropped as a result. See below.
 
-Specs are:
-CPU: QCA IPQ4019
-RAM: DDR3L 512MB
-Storage: 32MB SPI-NOR and optional Parallel SLC NAND(Some boards ship with it and some without)
-WLAN1: 2.4 GHz built into IPQ4019 (802.11n) 2x2
-WLAN2: 5 GHz built into IPO4019 (802.11ac Wawe-2) 2x2
-Ethernet: 5x Gbit LAN (QCA 8075)
-USB: 1x USB 2.0 and 1x USB 3.0 (Both built into IPQ4019)
-MicroSD slot (Uses SD controller built into IPQ4019)
-SDIO3.0/EMMC slot (Uses the same SD controller)
-Mini PCI-E Gen 2.0 slot (Built into IPQ4019)
-5x LEDs (4 GPIO controllable)
-2x Pushbutton (1 is connected to GPIO, other to SoC reset)
-LCD ZIF socket (Uses the LCD controller built into IPQ4019 which has no driver support)
-1x UART 115200 rate on J18
+Thanks for letting me know. If you mean the warning caused by:
+https://lore.kernel.org/lkml/20200909073716.GA560912@kroah.com/
+then the driver-core patch was dropped, not the iio one:
+https://lore.kernel.org/linux-next/20200909074130.GB561485@kroah.com/T/#t
 
-2x breakout development headers
-12V DC Jack for power
-DIP switch for bootstrap configuration
+So we are good here :)
 
-Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-Cc: Luka Perkov <luka.perkov@sartura.hr>
----
-Changes since v1:
-* Drop include that does not exist
+Best regards,
+Krzysztof
 
- arch/arm/boot/dts/Makefile                    |   1 +
- .../boot/dts/qcom-ipq4019-habanero-dvk.dts    | 304 ++++++++++++++++++
- 2 files changed, 305 insertions(+)
- create mode 100644 arch/arm/boot/dts/qcom-ipq4019-habanero-dvk.dts
-
-diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-index 246d82fc5fcd..004262e0d699 100644
---- a/arch/arm/boot/dts/Makefile
-+++ b/arch/arm/boot/dts/Makefile
-@@ -898,6 +898,7 @@ dtb-$(CONFIG_ARCH_QCOM) += \
- 	qcom-ipq4019-ap.dk04.1-c3.dtb \
- 	qcom-ipq4019-ap.dk07.1-c1.dtb \
- 	qcom-ipq4019-ap.dk07.1-c2.dtb \
-+	qcom-ipq4019-habanero-dvk.dtb \
- 	qcom-ipq8064-ap148.dtb \
- 	qcom-ipq8064-rb3011.dtb \
- 	qcom-msm8660-surf.dtb \
-diff --git a/arch/arm/boot/dts/qcom-ipq4019-habanero-dvk.dts b/arch/arm/boot/dts/qcom-ipq4019-habanero-dvk.dts
-new file mode 100644
-index 000000000000..fe054adda0a7
---- /dev/null
-+++ b/arch/arm/boot/dts/qcom-ipq4019-habanero-dvk.dts
-@@ -0,0 +1,304 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
-+/* Copyright (c) 2019, Robert Marko <robimarko@gmail.com> */
-+
-+#include "qcom-ipq4019.dtsi"
-+#include <dt-bindings/gpio/gpio.h>
-+#include <dt-bindings/input/input.h>
-+
-+/ {
-+	model = "8devices Habanero DVK";
-+	compatible = "8dev,habanero-dvk";
-+
-+	keys {
-+		compatible = "gpio-keys";
-+
-+		reset {
-+			label = "reset";
-+			gpios = <&tlmm 8 GPIO_ACTIVE_LOW>;
-+			linux,code = <KEY_RESTART>;
-+		};
-+	};
-+
-+	leds {
-+		compatible = "gpio-leds";
-+
-+		led_status: status {
-+			label = "habanero-dvk:green:status";
-+			gpios = <&tlmm 37 GPIO_ACTIVE_HIGH>;
-+			panic-indicator;
-+		};
-+
-+		led_upgrade: upgrade {
-+			label = "habanero-dvk:green:upgrade";
-+			gpios = <&tlmm 40 GPIO_ACTIVE_HIGH>;
-+		};
-+
-+		wlan2g {
-+			label = "habanero-dvk:green:wlan2g";
-+			gpios = <&tlmm 46 GPIO_ACTIVE_HIGH>;
-+			linux,default-trigger = "phy0tpt";
-+		};
-+
-+		wlan5g {
-+			label = "habanero-dvk:green:wlan5g";
-+			gpios = <&tlmm 48 GPIO_ACTIVE_HIGH>;
-+			linux,default-trigger = "phy1tpt";
-+		};
-+	};
-+};
-+
-+&vqmmc {
-+	status = "okay";
-+};
-+
-+&sdhci {
-+	status = "okay";
-+
-+	pinctrl-0 = <&sd_pins>;
-+	pinctrl-names = "default";
-+	cd-gpios = <&tlmm 22 GPIO_ACTIVE_LOW>;
-+	vqmmc-supply = <&vqmmc>;
-+};
-+
-+&qpic_bam {
-+	status = "okay";
-+};
-+
-+&tlmm {
-+	mdio_pins: mdio_pinmux {
-+		mux_1 {
-+			pins = "gpio6";
-+			function = "mdio";
-+			bias-pull-up;
-+		};
-+
-+		mux_2 {
-+			pins = "gpio7";
-+			function = "mdc";
-+			bias-pull-up;
-+		};
-+	};
-+
-+	serial_pins: serial_pinmux {
-+		mux {
-+			pins = "gpio16", "gpio17";
-+			function = "blsp_uart0";
-+			bias-disable;
-+		};
-+	};
-+
-+	spi_0_pins: spi_0_pinmux {
-+		pinmux {
-+			function = "blsp_spi0";
-+			pins = "gpio13", "gpio14", "gpio15";
-+			drive-strength = <12>;
-+			bias-disable;
-+		};
-+
-+		pinmux_cs {
-+			function = "gpio";
-+			pins = "gpio12";
-+			drive-strength = <2>;
-+			bias-disable;
-+			output-high;
-+		};
-+	};
-+
-+	nand_pins: nand_pins {
-+		pullups {
-+			pins =  "gpio52", "gpio53", "gpio58", "gpio59";
-+			function = "qpic";
-+			bias-pull-up;
-+		};
-+
-+		pulldowns {
-+			pins = "gpio54", "gpio55", "gpio56", "gpio57",
-+				"gpio60", "gpio62", "gpio63", "gpio64",
-+				"gpio65", "gpio66", "gpio67", "gpio68",
-+				"gpio69";
-+			function = "qpic";
-+			bias-pull-down;
-+		};
-+	};
-+
-+	sd_pins: sd_pins {
-+		pinmux {
-+			function = "sdio";
-+			pins = "gpio23", "gpio24", "gpio25", "gpio26",
-+				"gpio28", "gpio29", "gpio30", "gpio31";
-+			drive-strength = <10>;
-+		};
-+
-+		pinmux_sd_clk {
-+			function = "sdio";
-+			pins = "gpio27";
-+			drive-strength = <16>;
-+		};
-+
-+		pinmux_sd7 {
-+			function = "sdio";
-+			pins = "gpio32";
-+			drive-strength = <10>;
-+			bias-disable;
-+		};
-+	};
-+};
-+
-+&watchdog {
-+	status = "okay";
-+};
-+
-+&prng {
-+	status = "okay";
-+};
-+
-+&blsp_dma {
-+	status = "okay";
-+};
-+
-+&blsp1_spi1 {
-+	status = "okay";
-+
-+	pinctrl-0 = <&spi_0_pins>;
-+	pinctrl-names = "default";
-+	cs-gpios = <&tlmm 12 GPIO_ACTIVE_HIGH>;
-+
-+	flash@0 {
-+		compatible = "jedec,spi-nor";
-+		spi-max-frequency = <24000000>;
-+		reg = <0>;
-+
-+		partitions {
-+			compatible = "fixed-partitions";
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+
-+			partition@0 {
-+				label = "SBL1";
-+				reg = <0x00000000 0x00040000>;
-+				read-only;
-+			};
-+			partition@40000 {
-+				label = "MIBIB";
-+				reg = <0x00040000 0x00020000>;
-+				read-only;
-+			};
-+			partition@60000 {
-+				label = "QSEE";
-+				reg = <0x00060000 0x00060000>;
-+				read-only;
-+			};
-+			partition@c0000 {
-+				label = "CDT";
-+				reg = <0x000c0000 0x00010000>;
-+				read-only;
-+			};
-+			partition@d0000 {
-+				label = "DDRPARAMS";
-+				reg = <0x000d0000 0x00010000>;
-+				read-only;
-+			};
-+			partition@e0000 {
-+				label = "APPSBLENV"; /* uboot env */
-+				reg = <0x000e0000 0x00010000>;
-+				read-only;
-+			};
-+			partition@f0000 {
-+				label = "APPSBL"; /* uboot */
-+				reg = <0x000f0000 0x00080000>;
-+				read-only;
-+			};
-+			partition@170000 {
-+				label = "ART";
-+				reg = <0x00170000 0x00010000>;
-+				read-only;
-+			};
-+			partition@180000 {
-+				label = "cfg";
-+				reg = <0x00180000 0x00040000>;
-+			};
-+			partition@1c0000 {
-+				label = "firmware";
-+				compatible = "denx,fit";
-+				reg = <0x001c0000 0x01e40000>;
-+			};
-+		};
-+	};
-+};
-+
-+/* Some DVK boards ship without NAND */
-+&nand {
-+	status = "okay";
-+
-+	pinctrl-0 = <&nand_pins>;
-+	pinctrl-names = "default";
-+};
-+
-+&blsp1_uart1 {
-+	status = "okay";
-+
-+	pinctrl-0 = <&serial_pins>;
-+	pinctrl-names = "default";
-+};
-+
-+&cryptobam {
-+	status = "okay";
-+};
-+
-+&crypto {
-+	status = "okay";
-+};
-+
-+&mdio {
-+	status = "okay";
-+
-+	pinctrl-0 = <&mdio_pins>;
-+	pinctrl-names = "default";
-+};
-+
-+&pcie0 {
-+	status = "okay";
-+
-+	perst-gpio = <&tlmm 38 GPIO_ACTIVE_LOW>;
-+	wake-gpio = <&tlmm 50 GPIO_ACTIVE_LOW>;
-+
-+	/* Free slot for use */
-+	bridge@0,0 {
-+		reg = <0x00000000 0 0 0 0>;
-+		#address-cells = <3>;
-+		#size-cells = <2>;
-+		ranges;
-+	};
-+};
-+
-+&wifi0 {
-+	status = "okay";
-+
-+	qcom,ath10k-calibration-variant = "8devices-Habanero";
-+};
-+
-+&wifi1 {
-+	status = "okay";
-+
-+	qcom,ath10k-calibration-variant = "8devices-Habanero";
-+};
-+
-+&usb3_ss_phy {
-+	status = "okay";
-+};
-+
-+&usb3_hs_phy {
-+	status = "okay";
-+};
-+
-+&usb3 {
-+	status = "okay";
-+};
-+
-+&usb2_hs_phy {
-+	status = "okay";
-+};
-+
-+&usb2 {
-+	status = "okay";
-+};
--- 
-2.26.2
-
+> Jonathan
+> > ---
+> >
+> > Changes since v2:
+> > 1. Wrap dev_err_probe() lines at 80 character
+> >
+> > Changes since v1:
+> > 1. Convert to devm_clk_get_optional
+> > 2. Update also stm32-dfsdm-core and stm32-dac-core.
+> > 3. Wrap around 100 characters (accepted by checkpatch).
+> > ---
+> >  drivers/iio/adc/stm32-adc-core.c   | 75 ++++++++++--------------------
+> >  drivers/iio/adc/stm32-adc.c        | 10 ++--
+> >  drivers/iio/adc/stm32-dfsdm-adc.c  | 10 ++--
+> >  drivers/iio/adc/stm32-dfsdm-core.c |  9 ++--
+> >  drivers/iio/dac/stm32-dac-core.c   |  5 +-
+> >  5 files changed, 35 insertions(+), 74 deletions(-)
+> >
+> > diff --git a/drivers/iio/adc/stm32-adc-core.c b/drivers/iio/adc/stm32-adc-core.c
+> > index 0e2068ec068b..3f27b4817a42 100644
+> > --- a/drivers/iio/adc/stm32-adc-core.c
+> > +++ b/drivers/iio/adc/stm32-adc-core.c
+> > @@ -582,11 +582,9 @@ static int stm32_adc_core_switches_probe(struct device *dev,
+> >       priv->syscfg = syscon_regmap_lookup_by_phandle(np, "st,syscfg");
+> >       if (IS_ERR(priv->syscfg)) {
+> >               ret = PTR_ERR(priv->syscfg);
+> > -             if (ret != -ENODEV) {
+> > -                     if (ret != -EPROBE_DEFER)
+> > -                             dev_err(dev, "Can't probe syscfg: %d\n", ret);
+> > -                     return ret;
+> > -             }
+> > +             if (ret != -ENODEV)
+> > +                     return dev_err_probe(dev, ret, "Can't probe syscfg\n");
+> > +
+> >               priv->syscfg = NULL;
+> >       }
+> >
+> > @@ -596,12 +594,9 @@ static int stm32_adc_core_switches_probe(struct device *dev,
+> >               priv->booster = devm_regulator_get_optional(dev, "booster");
+> >               if (IS_ERR(priv->booster)) {
+> >                       ret = PTR_ERR(priv->booster);
+> > -                     if (ret != -ENODEV) {
+> > -                             if (ret != -EPROBE_DEFER)
+> > -                                     dev_err(dev, "can't get booster %d\n",
+> > -                                             ret);
+> > -                             return ret;
+> > -                     }
+> > +                     if (ret != -ENODEV)
+> > +                             dev_err_probe(dev, ret, "can't get booster\n");
+>
+> This tripped a warning and got the patch dropped because we no longer
+> return on error.
