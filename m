@@ -2,68 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20372263450
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 19:18:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 604A726346B
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 19:20:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731124AbgIIRSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 13:18:48 -0400
-Received: from mail-il1-f194.google.com ([209.85.166.194]:41314 "EHLO
-        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730168AbgIIRSo (ORCPT
+        id S1731207AbgIIRU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 13:20:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36472 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730889AbgIIRUM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 13:18:44 -0400
-Received: by mail-il1-f194.google.com with SMTP id w8so3058415ilj.8;
-        Wed, 09 Sep 2020 10:18:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1hr4fQWVMQoos6KFmQBQi97levSHBi+dO9Jnfm/kgyc=;
-        b=QgVDrQv79/bMsspyf26g4QQ7M+nDYYC/uCyuQAI6TQmqQO9jt5pBIr+Mlusq9nduAE
-         eyKUQSv+CBNtLnXmfaF4UVbv+Eh9R3p20rQfmcfxvpnJx0bheNnCp274h8xntUrA6YTL
-         pEbbgtFSY1NAQdGEfXBxhlFRZKPfY3yctAMGgEqu3fy4klGIQ3GZBMhu/ML2mfsl91O5
-         m671D9XSpw/34bNwhjwmj+4TwKoVzBKXYDXyqnV6dD5r6WbpGJzHbw5iNhCkiEtNYzVA
-         sOWvIiDr89TV/HICs1wPOonQaP+eqy4+Gi9Hn1ym5+2hPL173KUd8Kq+MG8OZQ0TJvEg
-         QZbg==
-X-Gm-Message-State: AOAM533E7xhtu7K5XJRV2KAI8tOtdLjd6y5OssahsAiIoLgHK5bQASKW
-        xYFJZcSYgX4SjyrA1Szz5pt2u8/klmWD
-X-Google-Smtp-Source: ABdhPJweONXjnuZtBkOGVqg1AFS1ASeGmxxVhyJmF8gPg8PMO09CmvmPl5R9xygei/39Fl6Prjb6gg==
-X-Received: by 2002:a92:bb94:: with SMTP id x20mr4613847ilk.86.1599671923668;
-        Wed, 09 Sep 2020 10:18:43 -0700 (PDT)
-Received: from xps15 ([64.188.179.251])
-        by smtp.gmail.com with ESMTPSA id s15sm1610420ilt.62.2020.09.09.10.18.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Sep 2020 10:18:43 -0700 (PDT)
-Received: (nullmailer pid 2680839 invoked by uid 1000);
-        Wed, 09 Sep 2020 17:18:42 -0000
-Date:   Wed, 9 Sep 2020 11:18:42 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: regulator: Convert mp886x to json-schema
-Message-ID: <20200909171842.GA2680789@bogus>
-References: <20200827150640.267f6edc@xhacker.debian>
+        Wed, 9 Sep 2020 13:20:12 -0400
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAD02C061573;
+        Wed,  9 Sep 2020 10:20:11 -0700 (PDT)
+Received: from lwn.net (localhost [127.0.0.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id BDBD037C;
+        Wed,  9 Sep 2020 17:20:09 +0000 (UTC)
+Date:   Wed, 9 Sep 2020 11:20:08 -0600
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Connor Kuehl <ckuehl@redhat.com>
+Cc:     pbonzini@redhat.com, kvm@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] docs: kvm: fix referenced ioctl symbol
+Message-ID: <20200909112008.23859385@lwn.net>
+In-Reply-To: <20200819211952.251984-1-ckuehl@redhat.com>
+References: <20200819211952.251984-1-ckuehl@redhat.com>
+Organization: LWN.net
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200827150640.267f6edc@xhacker.debian>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 27 Aug 2020 15:06:40 +0800, Jisheng Zhang wrote:
-> Convert the mp886x binding to DT schema format using json-schema.
-> 
-> Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-> ---
->  .../devicetree/bindings/regulator/mp886x.txt  | 31 ----------
->  .../bindings/regulator/mps,mp886x.yaml        | 61 +++++++++++++++++++
->  2 files changed, 61 insertions(+), 31 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/regulator/mp886x.txt
->  create mode 100644 Documentation/devicetree/bindings/regulator/mps,mp886x.yaml
-> 
+On Wed, 19 Aug 2020 16:19:52 -0500
+Connor Kuehl <ckuehl@redhat.com> wrote:
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+> The actual symbol that is exported and usable is
+> 'KVM_MEMORY_ENCRYPT_OP', not 'KVM_MEM_ENCRYPT_OP'
+> 
+> $ git grep -l KVM_MEM_ENCRYPT_OP
+> Documentation/virt/kvm/amd-memory-encryption.rst
+> 
+> $ git grep -l KVM_MEMORY_ENCRYPT_OP
+> Documentation/virt/kvm/api.rst
+> arch/x86/kvm/x86.c
+> include/uapi/linux/kvm.h
+> tools/include/uapi/linux/kvm.h
+> 
+> While we're in there, update the KVM API category for
+> KVM_MEMORY_ENCRYPT_OP. It is called on a VM file descriptor.
+> 
+> Signed-off-by: Connor Kuehl <ckuehl@redhat.com>
+> ---
+>  Documentation/virt/kvm/amd-memory-encryption.rst | 6 +++---
+>  Documentation/virt/kvm/api.rst                   | 2 +-
+>  2 files changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/Documentation/virt/kvm/amd-memory-encryption.rst b/Documentation/virt/kvm/amd-memory-encryption.rst
+> index 2d44388438cc..09a8f2a34e39 100644
+> --- a/Documentation/virt/kvm/amd-memory-encryption.rst
+> +++ b/Documentation/virt/kvm/amd-memory-encryption.rst
+> @@ -53,11 +53,11 @@ key management interface to perform common hypervisor activities such as
+>  encrypting bootstrap code, snapshot, migrating and debugging the guest. For more
+>  information, see the SEV Key Management spec [api-spec]_
+>  
+> -The main ioctl to access SEV is KVM_MEM_ENCRYPT_OP.  If the argument
+> -to KVM_MEM_ENCRYPT_OP is NULL, the ioctl returns 0 if SEV is enabled
+> +The main ioctl to access SEV is KVM_MEMORY_ENCRYPT_OP.  If the argument
+> +to KVM_MEMORY_ENCRYPT_OP is NULL, the ioctl returns 0 if SEV is enabled
+>  and ``ENOTTY` if it is disabled (on some older versions of Linux,
+>  the ioctl runs normally even with a NULL argument, and therefore will
+> -likely return ``EFAULT``).  If non-NULL, the argument to KVM_MEM_ENCRYPT_OP
+> +likely return ``EFAULT``).  If non-NULL, the argument to KVM_MEMORY_ENCRYPT_OP
+>  must be a struct kvm_sev_cmd::
+>  
+>         struct kvm_sev_cmd {
+> diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
+> index eb3a1316f03e..506c8426c583 100644
+> --- a/Documentation/virt/kvm/api.rst
+> +++ b/Documentation/virt/kvm/api.rst
+> @@ -4211,7 +4211,7 @@ H_GET_CPU_CHARACTERISTICS hypercall.
+>  
+>  :Capability: basic
+>  :Architectures: x86
+> -:Type: system
+> +:Type: vm
+>  :Parameters: an opaque platform specific structure (in/out)
+>  :Returns: 0 on success; -1 on error
+>  
+So this appears to have fallen through the cracks.  It looks correct to
+me, so I've applied it, thanks.
+
+jon
