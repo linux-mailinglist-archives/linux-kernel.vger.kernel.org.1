@@ -2,195 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA97D262B5A
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 11:10:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86173262B6C
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 11:11:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729942AbgIIJJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 05:09:59 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55136 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726489AbgIIJJ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 05:09:57 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 30825B03A;
-        Wed,  9 Sep 2020 09:09:55 +0000 (UTC)
-Date:   Wed, 9 Sep 2020 11:09:53 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Laurent Dufour <ldufour@linux.ibm.com>
-Cc:     akpm@linux-foundation.org, David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>, rafael@kernel.org,
-        nathanl@linux.ibm.com, cheloha@linux.ibm.com,
-        stable@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mm: don't rely on system state to detect hot-plug
- operations
-Message-ID: <20200909090953.GE7348@dhcp22.suse.cz>
-References: <5cbd92e1-c00a-4253-0119-c872bfa0f2bc@redhat.com>
- <20200908170835.85440-1-ldufour@linux.ibm.com>
- <20200909074011.GD7348@dhcp22.suse.cz>
- <9faac1ce-c02d-7dbc-f79a-4aaaa5a73d28@linux.ibm.com>
+        id S1730255AbgIIJLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 05:11:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45204 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726605AbgIIJLl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 05:11:41 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C0F0C061573;
+        Wed,  9 Sep 2020 02:11:40 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id c196so1745454pfc.0;
+        Wed, 09 Sep 2020 02:11:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=UdhXGGjmL8NBGezSBYtuMby3MN847qFHmnMYU3bZb0U=;
+        b=qSlgv/rz8fwOcXX/321k0NADun5Hhu6KIKc7OlaqYfc4eLoXvTvHDVLYDtCRYfMzIB
+         f0B/sMbBlEWJBllvqQIjR3wWSLexC2sqfvrN435mAGKFFtTuvam9ktIXSAivUvBLuuxs
+         6o0fTkh9N83o9eVw/A56TSmR5QPGtRBBH6SlwxMz821trnak17bSOnUEpeJlp1VEZBiJ
+         tJh/JxC7GEB/E2Qm9koUlZq6kZhFGq23gML4A5C1aIPqKYDRZ4vTV6rTcbnPFnhghDOq
+         oTPkSk6tC4s4Rx1JSIqNzr6mWPn+Erdhy5QU27fGxAWJ6XrZgOpdKBEyeGaJpCGzwC0+
+         gUzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=UdhXGGjmL8NBGezSBYtuMby3MN847qFHmnMYU3bZb0U=;
+        b=BEeY8xkUSLGHTCrf6ji+qxh6sPUHE3RnEzLnHZ0JkYDwrm6w6sigQTnxTaEXu0Kc4/
+         GFuE0Suy5Tc2yHWJbs9Gj//4sDX2ElBqCsC6kZDKsOv4K7gJ35d3OXZCZVTZDujUyI22
+         /Yb68NoqmFtBiSd5DMNpSkvpquqvVzpR4ds2TUaLUx7Fvvs44ZQQSYnrLgcUJiF2K9wc
+         45DWhtu2FxnP9NlNiAj7AoCK22beOmL2i7e5UkkRJPt4s9wAmuqWNvuZceewtvvUNtql
+         b4aP6anFjTd/6rC81nfxRoPg/VCQ4TcDDnDjg+AdDIHissecvIQWw6UjFk693XBjrh0x
+         Snbw==
+X-Gm-Message-State: AOAM530JL22AclqeLufMY6P3tE3lGL8Lhj9C11FBrIZq2C9ZVXxMxhV0
+        M+9YaHHakoq62OPyz4PMDJqnYhhhP0yjns79V2s=
+X-Google-Smtp-Source: ABdhPJzZoADQ4rrH1HSmn5c+kiBBYH0HmNXud2sbj2Bs2mVz2jIMcCxyETNDqZgT21j87e/8y9U8h3qo3MhNGKBbIZA=
+X-Received: by 2002:aa7:9517:: with SMTP id b23mr2704286pfp.21.1599642699529;
+ Wed, 09 Sep 2020 02:11:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9faac1ce-c02d-7dbc-f79a-4aaaa5a73d28@linux.ibm.com>
+References: <20200908224006.25636-1-digetx@gmail.com>
+In-Reply-To: <20200908224006.25636-1-digetx@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 9 Sep 2020 12:11:22 +0300
+Message-ID: <CAHp75Vdh6bErqeO-ki2xsS9jEeoy4mKF1h0Jw_HM6UpukqH_BQ@mail.gmail.com>
+Subject: Re: [PATCH v7 00/34] Improvements for Tegra I2C driver
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        linux-tegra@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 09-09-20 09:48:59, Laurent Dufour wrote:
-> Le 09/09/2020 à 09:40, Michal Hocko a écrit :
-> > [reposting because the malformed cc list confused my email client]
-> > 
-> > On Tue 08-09-20 19:08:35, Laurent Dufour wrote:
-> > > In register_mem_sect_under_node() the system_state’s value is checked to
-> > > detect whether the operation the call is made during boot time or during an
-> > > hot-plug operation. Unfortunately, that check is wrong on some
-> > > architecture, and may lead to sections being registered under multiple
-> > > nodes if node's memory ranges are interleaved.
-> > 
-> > Why is this check arch specific?
-> 
-> I was wrong the check is not arch specific.
-> 
-> > > This can be seen on PowerPC LPAR after multiple memory hot-plug and
-> > > hot-unplug operations are done. At the next reboot the node's memory ranges
-> > > can be interleaved
-> > 
-> > What is the exact memory layout?
-> 
-> For instance:
-> [    0.000000] Early memory node ranges
-> [    0.000000]   node   1: [mem 0x0000000000000000-0x000000011fffffff]
-> [    0.000000]   node   2: [mem 0x0000000120000000-0x000000014fffffff]
-> [    0.000000]   node   1: [mem 0x0000000150000000-0x00000001ffffffff]
-> [    0.000000]   node   0: [mem 0x0000000200000000-0x000000048fffffff]
-> [    0.000000]   node   2: [mem 0x0000000490000000-0x00000007ffffffff]
+On Wed, Sep 9, 2020 at 1:40 AM Dmitry Osipenko <digetx@gmail.com> wrote:
+>
+> Hello!
+>
+> This series performs refactoring of the Tegra I2C driver code and hardens
+> the atomic-transfer mode.
 
-Include this into the changelog.
+I think there is still room for improvement, but let not block it, FWIW,
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-> > > and since the call to link_mem_sections() is made in
-> > > topology_init() while the system is in the SYSTEM_SCHEDULING state, the
-> > > node's id is not checked, and the sections registered multiple times.
-> > 
-> > So a single memory section/memblock belongs to two numa nodes?
-> 
-> If the node id is not checked in register_mem_sect_under_node(), yes that the case.
+> Changelog:
+>
+> v7: - Reworked the "Clean up probe function" patch by moving out all
+>       variable renamings into the "Clean up variable names" patch.
+>       This results in a nicer diff, which was asked by Andy Shevchenko.
+>
+>     - Squashed "Improve coding style of tegra_i2c_wait_for_config_load()"
+>       patch into "Factor out register polling into separate function" in
+>       order avoid unnecessary ping-pong changes, which was asked by
+>       Andy Shevchenko.
+>
+>     - Added more indentation improvements, it should be ideal now.
+>
+>     - I haven't changed order of the "Clean up variable types" patch,
+>       which was suggested by Andy Shevchenko, because I already moved
+>       that patch multiple times and we decided to sort patches starting
+>       with more important cleanups and down to less important. The type
+>       changes are more important than shuffling code around, IMO.
+>
+> v6: - Added new patch that adds missing RPM puts, thanks to Andy Shevchen=
+ko
+>       for the suggestion.
+>
+>     - Improved commit messages by extending them with more a more detaile=
+d
+>       explanation of the changes.
+>
+>     - Added clarifying comment to the "Use reset_control_reset()" change,
+>       which was asked by Andy Shevchenko.
+>
+>     - Refactored the "Clean up probe function" patch by moving the
+>       dev_err_probe() change into the "Use clk-bulk helpers" patch,
+>       which was suggested by Andy Shevchenko.
+>
+>     - Improved ordering of the patches like it was suggested by
+>       Andy Shevchenko.
+>
+>     - Added Andy Shevchenko to suggested-by of the "Use clk-bulk helpers"
+>       patch.
+>
+>     - Improved "Remove i2c_dev.clk_divisor_non_hs_mode member" patch by
+>       making the case-switch to use "fast plus mode" timing if clock rate
+>       is out-of-range. Just to make it more consistent.
+>
+>     - The "Improve tegra_i2c_dev structure" patch is squashed into
+>      "Improve formatting of variables" and "Clean up types/names" patches=
+.
+>
+>     - All variable-renaming changes are squashed into a single "Clean up
+>       variable names" patch.
+>
+>     - Made extra minor improvement to various patches, like more comments
+>       and indentations improved.
+>
+> v5: - Dropped the "Factor out runtime PM and hardware initialization"
+>       patch, like it was suggested by Micha=C5=82 Miros=C5=82aw. Instead =
+a less
+>       invasive "Factor out hardware initialization into separate function=
+"
+>       patch added, it doesn't touch the RPM initialization.
+>
+>     - The "Remove outdated barrier()" patch now removes outdated comments=
+.
+>
+>     - Updated commit description of the "Remove "dma" variable" patch,
+>       saying that the transfer mode may be changed by a callee. This was
+>       suggested by Micha=C5=82 Miros=C5=82aw.
+>
+>     - Reworked the "Clean up and improve comments" patch. Couple more
+>       comments are corrected and reworded now.
+>
+>     - Added r-b's from Micha=C5=82 Miros=C5=82aw.
+>
+>     - New patches:
+>
+>         i2c: tegra: Mask interrupt in tegra_i2c_issue_bus_clear()
+>         i2c: tegra: Remove redundant check in tegra_i2c_issue_bus_clear()
+>         i2c: tegra: Don't fall back to PIO mode if DMA configuration fail=
+s
+>         i2c: tegra: Clean up variable types
+>         i2c: tegra: Improve tegra_i2c_dev structure
+>
+> v4: - Reordered patches in the fixes/features/cleanups order like it was
+>       suggested by Andy Shevchenko.
+>
+>     - Now using clk-bulk API, which was suggested by Andy Shevchenko.
+>
+>     - Reworked "Make tegra_i2c_flush_fifos() usable in atomic transfer"
+>       patch to use iopoll API, which was suggested by Andy Shevchenko.
+>
+>     - Separated "Clean up probe function" into several smaller patches.
+>
+>     - Squashed "Add missing newline before returns" patch into
+>       "Clean up whitespaces, newlines and indentation".
+>
+>     - The "Drop '_timeout' from wait/poll function names" is renamed to
+>       "Rename wait/poll functions".
+>
+>     - The "Use reset_control_reset()" is changed to not fail tegra_i2c_in=
+it(),
+>       but only emit warning. This should be more friendly behaviour in op=
+pose
+>       to having a non-bootable machine if reset-control fails.
+>
+>     - New patches:
+>
+>         i2c: tegra: Remove error message used for devm_request_irq() fail=
+ure
+>         i2c: tegra: Use devm_platform_get_and_ioremap_resource()
+>         i2c: tegra: Use platform_get_irq()
+>         i2c: tegra: Use clk-bulk helpers
+>         i2c: tegra: Remove bogus barrier()
+>         i2c: tegra: Factor out register polling into separate function
+>         i2c: tegra: Consolidate error handling in tegra_i2c_xfer_msg()
+>         i2c: tegra: Clean up and improve comments
+>         i2c: tegra: Rename couple "ret" variables to "err"
+>
+> v3: - Optimized "Make tegra_i2c_flush_fifos() usable in atomic transfer"
+>       patch by pre-checking FIFO state before starting to poll using
+>       ktime API, which may be expensive under some circumstances.
+>
+>     - The "Clean up messages in the code" patch now makes all messages
+>       to use proper capitalization of abbreviations. Thanks to Andy Shevc=
+henko
+>       and Micha=C5=82 Miros=C5=82aw for the suggestion.
+>
+>     - The "Remove unnecessary whitespaces and newlines" patch is transfor=
+med
+>       into "Clean up whitespaces and newlines", it now also adds missing
+>       newlines and spaces.
+>
+>     - Reworked the "Clean up probe function" patch in accordance to
+>       suggestion from Micha=C5=82 Miros=C5=82aw by factoring out only par=
+ts of
+>       the code that make error unwinding cleaner.
+>
+>     - Added r-b from Micha=C5=82 Miros=C5=82aw.
+>
+>     - Added more patches:
+>
+>         i2c: tegra: Reorder location of functions in the code
+>         i2c: tegra: Factor out packet header setup from tegra_i2c_xfer_ms=
+g()
+>         i2c: tegra: Remove "dma" variable
+>         i2c: tegra: Initialization div-clk rate unconditionally
+>         i2c: tegra: Remove i2c_dev.clk_divisor_non_hs_mode member
+>
+> v2: - Cleaned more messages in the "Clean up messages in the code" patch.
+>
+>     - The error code of reset_control_reset() is checked now.
+>
+>     - Added these new patches to clean up couple more things:
+>
+>         i2c: tegra: Check errors for both positive and negative values
+>         i2c: tegra: Improve coding style of tegra_i2c_wait_for_config_loa=
+d()
+>         i2c: tegra: Remove unnecessary whitespaces and newlines
+>         i2c: tegra: Rename variable in tegra_i2c_issue_bus_clear()
+>         i2c: tegra: Improve driver module description
+>
+> Dmitry Osipenko (34):
+>   i2c: tegra: Make tegra_i2c_flush_fifos() usable in atomic transfer
+>   i2c: tegra: Add missing pm_runtime_put()
+>   i2c: tegra: Handle potential error of tegra_i2c_flush_fifos()
+>   i2c: tegra: Mask interrupt in tegra_i2c_issue_bus_clear()
+>   i2c: tegra: Initialize div-clk rate unconditionally
+>   i2c: tegra: Remove i2c_dev.clk_divisor_non_hs_mode member
+>   i2c: tegra: Runtime PM always available on Tegra
+>   i2c: tegra: Remove error message used for devm_request_irq() failure
+>   i2c: tegra: Use reset_control_reset()
+>   i2c: tegra: Use devm_platform_get_and_ioremap_resource()
+>   i2c: tegra: Use platform_get_irq()
+>   i2c: tegra: Use clk-bulk helpers
+>   i2c: tegra: Move out all device-tree parsing into tegra_i2c_parse_dt()
+>   i2c: tegra: Clean up probe function
+>   i2c: tegra: Reorder location of functions in the code
+>   i2c: tegra: Clean up variable types
+>   i2c: tegra: Remove outdated barrier()
+>   i2c: tegra: Remove likely/unlikely from the code
+>   i2c: tegra: Remove redundant check in tegra_i2c_issue_bus_clear()
+>   i2c: tegra: Remove "dma" variable from tegra_i2c_xfer_msg()
+>   i2c: tegra: Don't fall back to PIO mode if DMA configuration fails
+>   i2c: tegra: Rename wait/poll functions
+>   i2c: tegra: Factor out error recovery from tegra_i2c_xfer_msg()
+>   i2c: tegra: Factor out packet header setup from tegra_i2c_xfer_msg()
+>   i2c: tegra: Factor out register polling into separate function
+>   i2c: tegra: Factor out hardware initialization into separate function
+>   i2c: tegra: Check errors for both positive and negative values
+>   i2c: tegra: Consolidate error handling in tegra_i2c_xfer_msg()
+>   i2c: tegra: Improve formatting of variables
+>   i2c: tegra: Clean up variable names
+>   i2c: tegra: Clean up printk messages
+>   i2c: tegra: Clean up and improve comments
+>   i2c: tegra: Clean up whitespaces, newlines and indentation
+>   i2c: tegra: Improve driver module description
+>
+>  drivers/i2c/busses/i2c-tegra.c | 1435 ++++++++++++++++----------------
+>  1 file changed, 701 insertions(+), 734 deletions(-)
+>
+> --
+> 2.27.0
+>
 
-I do not follow. register_mem_sect_under_node is about user interface.
-This is independent on the low level memory representation - aka memory
-section. I do not think we can handle a section in multiple zones/nodes.
-Memblock in multiple zones/nodes is a different story and interleaving
-physical memory layout can indeed lead to it. This is something that we
-do not allow for runtime hotplug but have to somehow live with that - at
-least not crash.
- 
-> > > In
-> > > that case, the system is able to boot but later hot-plug operation may lead
-> > > to this panic because the node's links are correctly broken:
-> > 
-> > Correctly broken? Could you provide more details on the inconsistency
-> > please?
-> 
-> laurent@ltczep3-lp4:~$ ls -l /sys/devices/system/memory/memory21
-> total 0
-> lrwxrwxrwx 1 root root     0 Aug 24 05:27 node1 -> ../../node/node1
-> lrwxrwxrwx 1 root root     0 Aug 24 05:27 node2 -> ../../node/node2
-> -rw-r--r-- 1 root root 65536 Aug 24 05:27 online
-> -r--r--r-- 1 root root 65536 Aug 24 05:27 phys_device
-> -r--r--r-- 1 root root 65536 Aug 24 05:27 phys_index
-> drwxr-xr-x 2 root root     0 Aug 24 05:27 power
-> -r--r--r-- 1 root root 65536 Aug 24 05:27 removable
-> -rw-r--r-- 1 root root 65536 Aug 24 05:27 state
-> lrwxrwxrwx 1 root root     0 Aug 24 05:25 subsystem -> ../../../../bus/memory
-> -rw-r--r-- 1 root root 65536 Aug 24 05:25 uevent
-> -r--r--r-- 1 root root 65536 Aug 24 05:27 valid_zones
 
-OK, so there are two nodes referenced here. Not terrible from the user
-point of view. Such a memory block will refuse to offline or online
-IIRC.
- 
-> > Which physical memory range you are trying to add here and what is the
-> > node affinity?
-> 
-> None is added, the root cause of the issue is happening at boot time.
-
-Let me clarify my question. The crash has clearly happened during the
-hotplug add_memory_resource - which is clearly not a boot time path.
-I was askin for more information about why this has failed. It is quite
-clear that sysfs machinery has failed and that led to BUG_ON but we are
-mising an information on why. What was the physical memory range to be
-added and why sysfs failed?
- 
-> > > ------------[ cut here ]------------
-> > > kernel BUG at /Users/laurent/src/linux-ppc/mm/memory_hotplug.c:1084!
-> > > Oops: Exception in kernel mode, sig: 5 [#1]
-> > > LE PAGE_SIZE=64K MMU=Hash SMP NR_CPUS=2048 NUMA pSeries
-> > > Modules linked in: rpadlpar_io rpaphp pseries_rng rng_core vmx_crypto gf128mul binfmt_misc ip_tables x_tables xfs libcrc32c crc32c_vpmsum autofs4
-> > > CPU: 8 PID: 10256 Comm: drmgr Not tainted 5.9.0-rc1+ #25
-> > > NIP:  c000000000403f34 LR: c000000000403f2c CTR: 0000000000000000
-> > > REGS: c0000004876e3660 TRAP: 0700   Not tainted  (5.9.0-rc1+)
-> > > MSR:  800000000282b033 <SF,VEC,VSX,EE,FP,ME,IR,DR,RI,LE>  CR: 24000448  XER: 20040000
-> > > CFAR: c000000000846d20 IRQMASK: 0
-> > > GPR00: c000000000403f2c c0000004876e38f0 c0000000012f6f00 ffffffffffffffef
-> > > GPR04: 0000000000000227 c0000004805ae680 0000000000000000 00000004886f0000
-> > > GPR08: 0000000000000226 0000000000000003 0000000000000002 fffffffffffffffd
-> > > GPR12: 0000000088000484 c00000001ec96280 0000000000000000 0000000000000000
-> > > GPR16: 0000000000000000 0000000000000000 0000000000000004 0000000000000003
-> > > GPR20: c00000047814ffe0 c0000007ffff7c08 0000000000000010 c0000000013332c8
-> > > GPR24: 0000000000000000 c0000000011f6cc0 0000000000000000 0000000000000000
-> > > GPR28: ffffffffffffffef 0000000000000001 0000000150000000 0000000010000000
-> > > NIP [c000000000403f34] add_memory_resource+0x244/0x340
-> > > LR [c000000000403f2c] add_memory_resource+0x23c/0x340
-> > > Call Trace:
-> > > [c0000004876e38f0] [c000000000403f2c] add_memory_resource+0x23c/0x340 (unreliable)
-> > > [c0000004876e39c0] [c00000000040408c] __add_memory+0x5c/0xf0
-> > > [c0000004876e39f0] [c0000000000e2b94] dlpar_add_lmb+0x1b4/0x500
-> > > [c0000004876e3ad0] [c0000000000e3888] dlpar_memory+0x1f8/0xb80
-> > > [c0000004876e3b60] [c0000000000dc0d0] handle_dlpar_errorlog+0xc0/0x190
-> > > [c0000004876e3bd0] [c0000000000dc398] dlpar_store+0x198/0x4a0
-> > > [c0000004876e3c90] [c00000000072e630] kobj_attr_store+0x30/0x50
-> > > [c0000004876e3cb0] [c00000000051f954] sysfs_kf_write+0x64/0x90
-> > > [c0000004876e3cd0] [c00000000051ee40] kernfs_fop_write+0x1b0/0x290
-> > > [c0000004876e3d20] [c000000000438dd8] vfs_write+0xe8/0x290
-> > > [c0000004876e3d70] [c0000000004391ac] ksys_write+0xdc/0x130
-> > > [c0000004876e3dc0] [c000000000034e40] system_call_exception+0x160/0x270
-> > > [c0000004876e3e20] [c00000000000d740] system_call_common+0xf0/0x27c
-> > > Instruction dump:
-> > > 48442e35 60000000 0b030000 3cbe0001 7fa3eb78 7bc48402 38a5fffe 7ca5fa14
-> > > 78a58402 48442db1 60000000 7c7c1b78 <0b030000> 7f23cb78 4bda371d 60000000
-> > > ---[ end trace 562fd6c109cd0fb2 ]---
-> > 
-> > The BUG_ON on failure is absolutely horrendous. There must be a better
-> > way to handle a failure like that. The failure means that
-> > sysfs_create_link_nowarn has failed. Please describe why that is the
-> > case.
-> > 
-> > > This patch addresses the root cause by not relying on the system_state
-> > > value to detect whether the call is due to a hot-plug operation or not. An
-> > > additional parameter is added to link_mem_sections() to tell the context of
-> > > the call and this parameter is propagated to register_mem_sect_under_node()
-> > > throuugh the walk_memory_blocks()'s call.
-> > 
-> > This looks like a hack to me and it deserves a better explanation. The
-> > existing code is a hack on its own and it is inconsistent with other
-> > boot time detection. We are using (system_state < SYSTEM_RUNNING) at other
-> > places IIRC. Would it help to use the same here as well? Maybe we want to
-> > wrap that inside a helper (early_memory_init()) and use it at all
-> > places.
-> 
-> I agree, this looks like a hack to check for the system_state value.
-> I'll follow the David's proposal and introduce an enum detailing when the
-> node id check has to be done or not.
-
-I am not sure an enum is going to make the existing situation less
-messy. Sure we somehow have to distinguish boot init and runtime hotplug
-because they have different constrains. I am arguing that a) we should
-have a consistent way to check for those and b) we shouldn't blow up
-easily just because sysfs infrastructure has failed to initialize.
--- 
-Michal Hocko
-SUSE Labs
+--=20
+With Best Regards,
+Andy Shevchenko
