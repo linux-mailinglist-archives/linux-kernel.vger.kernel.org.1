@@ -2,1009 +2,1076 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3B322630C9
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 17:44:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 390E82630A3
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 17:35:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730411AbgIIPnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 11:43:49 -0400
-Received: from esa6.microchip.iphmx.com ([216.71.154.253]:60542 "EHLO
-        esa6.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730085AbgIIPmQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 11:42:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1599666135; x=1631202135;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=tUd5m9jJbSsoGkb/WGk43sfQk6ebxLAK/7FqqMpTSV8=;
-  b=Wu6u/4wTsiza38pE9QSiYZQVqQbObeseHaRUA5n0CVHJNj7ETEL+Z9A5
-   bZLszNQO9TKr5q8wLOFQnXtd3ysvSZDiheiS8CszAFPtyvf7kVBC3JDth
-   rnZ/l+d7cXS8u9QyWf1sBplgj7SRipmYOHmMeiPSLVbOCzHWkgySGkCS8
-   oKCLkU0KwKDBohNFoSD/IZvBpZtCcsS7GFFZaWci3crrYJZrnL1q2Rals
-   iD4/4N3Tmhn0qHmIEXkkVgiGrZIOR4PKfwTYhAl/kpObMVuPBlr715j/t
-   1s24/X5r6wAb5svizFf/Su00882YaPx5oGDdiEHMa+DYmTkXM2cFgdLLe
-   Q==;
-IronPort-SDR: 4moHZr0nvNfui3ALspFscrZhaujph7kWmJgmDyufrW8bg13Angvpkzm3zk318TTX96bz9X4kJ1
- 64CiWj3f9X1vrLzqcYf5zgO4sVtAq4LQ+ti9pT5R1bsBUWIHIczUPZcWZyfI9lD9QsJrTHnBFR
- whh8CbpHuT5a/2E4DOnNQ7fRw8ybFxwX7/NXTsFJWejdZBqcUEtmNC4s7uV4Mz9nvvEk3WP6zP
- QYxxB+/cqWJFD3E0QBDVhKkI+a+WH2zsYeIoCekurEu3/kvokLFPtFFP9ndPKQ3gABiQZNxHz6
- JCg=
-X-IronPort-AV: E=Sophos;i="5.76,409,1592895600"; 
-   d="scan'208";a="25804932"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 09 Sep 2020 07:54:41 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
- chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 9 Sep 2020 07:54:13 -0700
-Received: from rob-ult-m19940.amer.actel.com (10.10.115.15) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Wed, 9 Sep 2020 07:53:52 -0700
-From:   Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-To:     <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <robh+dt@kernel.org>,
-        <perex@perex.cz>, <tiwai@suse.com>, <nicolas.ferre@microchip.com>,
-        <alexandre.belloni@bootlin.com>, <ludovic.desroches@microchip.com>,
-        "Codrin Ciubotariu" <codrin.ciubotariu@microchip.com>
-Subject: [PATCH v4 2/2] ASoC: mchp-spdiftx: add driver for S/PDIF TX Controller
-Date:   Wed, 9 Sep 2020 17:53:48 +0300
-Message-ID: <20200909145348.367033-2-codrin.ciubotariu@microchip.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200909145348.367033-1-codrin.ciubotariu@microchip.com>
-References: <20200909145348.367033-1-codrin.ciubotariu@microchip.com>
+        id S1729251AbgIIPfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 11:35:20 -0400
+Received: from mail-dm6nam12on2056.outbound.protection.outlook.com ([40.107.243.56]:19777
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730166AbgIIPbL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 11:31:11 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dQqsN6dlC7gZG7EaoksfZ89XCh6fYpiPC+xCo0us1x0ASSzyLIzUnEKcw0AmOsLzjJRrlKEC5/DMvKfhbIEADoBjbJPi216J0+abY53PkdDuCXlWvh7ynfcA5USLnagzEX07KMGDO9pRX9ZqG93JMGzwXri9ouyrM0JPaUZ02lCmhthDiTUGWyMM4MjSaH0Wo9cwE5vhT57FGWj97mVSZ39ozAJwu5AZdjWGOUXJUr3XClsWtvubka/1y/pV3FKYslbC6HEsBRSpBUB9HWKs5ycQZferW54yV9yZdeQ02RVBRZNUpmOc2VWq8BXNkhCLiaYtTVJip/OWnSGxQleR0A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hgNqM5LXe9l2GNLk+nrf4GQieM7HdPHrEKKAjaMKgnU=;
+ b=fp+ta6BDjH6BH6ouxupLJIwbsFEiC91lhSSBKnEiDmA+dNApVo+gVEMF1nKV9RXyIgi1dhoLFXMAA3OUc2ERhQhgJcxMJvOWbWeqhbM34mjt+/3NCb3mk4PIaQr7nVgQn181uaU+JzEWpzM2z1H0Z8p71g5AOyplJFzp2+HiPlOGZ7eZyrZhWpEglSBU3tSAJToakxvB3pse4IX9CWUjNzqDqbihDHFUBjMe+DOLVItHYD7/A1PxdpWtf/ghpg8FKojgPfqN28vVzx4K0mPbIiiOPPyTDS6U8CQW76xNouvGjjXjc5BP/IlP15w7S8U38fU4PqXfx9dqYGVtXSZN9w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.60.83) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=xilinx.com;
+ dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
+ not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hgNqM5LXe9l2GNLk+nrf4GQieM7HdPHrEKKAjaMKgnU=;
+ b=E1xcoHedVpMLizZb/qCQ283Fcz+OT05J64hde26ETrzwuSEPEqM3O9l5ipJdtWWuFAzhMtWdM86tWFdsSRJpdlBDpyUnGO/hkQWmUMl0u2MAPrv85wV1cHt9nkgpInPA8Ajf5BiV2VEBGBk5UaAJlRNFLifuHVH1HANH7dbexOs=
+Received: from BL0PR02CA0034.namprd02.prod.outlook.com (2603:10b6:207:3c::47)
+ by BL0PR02MB4833.namprd02.prod.outlook.com (2603:10b6:208:53::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Wed, 9 Sep
+ 2020 15:27:26 +0000
+Received: from BL2NAM02FT039.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:207:3c:cafe::53) by BL0PR02CA0034.outlook.office365.com
+ (2603:10b6:207:3c::47) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.15 via Frontend
+ Transport; Wed, 9 Sep 2020 15:27:26 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.60.83)
+ smtp.mailfrom=xilinx.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=bestguesspass action=none
+ header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.60.83 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.60.83; helo=xsj-pvapsmtpgw01;
+Received: from xsj-pvapsmtpgw01 (149.199.60.83) by
+ BL2NAM02FT039.mail.protection.outlook.com (10.152.77.152) with Microsoft SMTP
+ Server id 15.20.3348.17 via Frontend Transport; Wed, 9 Sep 2020 15:27:26
+ +0000
+Received: from [149.199.38.66] (port=45090 helo=smtp.xilinx.com)
+        by xsj-pvapsmtpgw01 with esmtp (Exim 4.90)
+        (envelope-from <amit.kumar-mahapatra@xilinx.com>)
+        id 1kG206-00056D-15; Wed, 09 Sep 2020 08:27:10 -0700
+Received: from [127.0.0.1] (helo=localhost)
+        by smtp.xilinx.com with smtp (Exim 4.63)
+        (envelope-from <amit.kumar-mahapatra@xilinx.com>)
+        id 1kG20L-00069R-TE; Wed, 09 Sep 2020 08:27:25 -0700
+Received: from xsj-pvapsmtp01 (smtp3.xilinx.com [149.199.38.66])
+        by xsj-smtp-dlp2.xlnx.xilinx.com (8.13.8/8.13.1) with ESMTP id 089FRIa1027853;
+        Wed, 9 Sep 2020 08:27:18 -0700
+Received: from [10.140.6.25] (helo=xhdnagasure40.xilinx.com)
+        by xsj-pvapsmtp01 with esmtp (Exim 4.63)
+        (envelope-from <amit.kumar-mahapatra@xilinx.com>)
+        id 1kG20D-00068K-E7; Wed, 09 Sep 2020 08:27:18 -0700
+From:   Amit Kumar Mahapatra <amit.kumar-mahapatra@xilinx.com>
+To:     broonie@kernel.org
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        michal.simek@xilinx.com, sgoud@xilinx.com, nagasure@xilinx.com,
+        Amit Kumar Mahapatra <amit.kumar-mahapatra@xilinx.com>
+Subject: [PATCH 2/3] spi: spi-zynqmp-gqspi: Update driver to use spi-mem framework
+Date:   Wed,  9 Sep 2020 09:27:07 -0600
+Message-Id: <20200909152708.2767-3-amit.kumar-mahapatra@xilinx.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200909152708.2767-1-amit.kumar-mahapatra@xilinx.com>
+References: <20200909152708.2767-1-amit.kumar-mahapatra@xilinx.com>
+X-RCIS-Action: ALLOW
+X-TM-AS-Product-Ver: IMSS-7.1.0.1224-8.2.0.1013-23620.005
+X-TM-AS-User-Approved-Sender: Yes;Yes
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
+X-MS-Office365-Filtering-Correlation-Id: 8dd9ef04-9edf-48a1-fe5f-08d854d4db58
+X-MS-TrafficTypeDiagnostic: BL0PR02MB4833:
+X-Microsoft-Antispam-PRVS: <BL0PR02MB4833CDC85859647A130832A4BA260@BL0PR02MB4833.namprd02.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: +8L9n4z7fod8cYsqUhvN+mynOIw4V3TVnQtKnNrl8vc92WcpxsQXa8l00kxaCkh0zT5hCi4iLc3wfPAIlaH2ZarAYwrhugqgW2zg7t32VmRaeHm6z4LqKQ4zObC7Gxbmmy1dBX1NN3CRnNodUVNa5Xgtahz+sePLKlEj5p/ckkhFtfhohiG/zw/Nftw9QEkZbTj7pnVORm0q4lY1TMeXJGeIHpxryI4d9iPs38VxSq36q3Iuv5RDGWjj5BgwhSvQEi/xbRKqfBk1bTeWt5MV6n2uCPHUyXi0Nl31Rk6p4vOvjoYwla87N/35VV9EMZapAkEBGiGALig9WxaAHvElqsv9irOmmKcXwu/jaLCHEdOcN0yKEVfW4b8LTHCNQNw7p4XQqcFuOVUo1pLezKVDpw==
+X-Forefront-Antispam-Report: CIP:149.199.60.83;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapsmtpgw01;PTR:unknown-60-83.xilinx.com;CAT:NONE;SFS:(39860400002)(396003)(136003)(346002)(376002)(46966005)(82310400003)(70206006)(70586007)(336012)(4326008)(15650500001)(5660300002)(186003)(8936002)(6916009)(6666004)(9786002)(478600001)(2616005)(26005)(2906002)(7696005)(30864003)(8676002)(107886003)(1076003)(426003)(316002)(36756003)(83380400001)(47076004)(356005)(82740400003)(81166007);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Sep 2020 15:27:26.2717
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8dd9ef04-9edf-48a1-fe5f-08d854d4db58
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.60.83];Helo=[xsj-pvapsmtpgw01]
+X-MS-Exchange-CrossTenant-AuthSource: BL2NAM02FT039.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR02MB4833
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The new SPDIF TX controller is a serial port compliant with the IEC-
-60958 standard. It also supports programmable User Data and Channel
-Status fields.
+Updated Zynqmp qspi controller driver to use spi-mem framework.
 
-This IP is embedded in Microchip's sama7g5 SoC.
-
-Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Signed-off-by: Amit Kumar Mahapatra <amit.kumar-mahapatra@xilinx.com>
 ---
+ drivers/spi/spi-zynqmp-gqspi.c | 645 +++++++++++++++++++--------------
+ 1 file changed, 369 insertions(+), 276 deletions(-)
 
-Changes in v4:
- - moved enable/disable of pclk clock from DAI startup/shutdown ops to
-   probe/remove callbacks;
- - removed extra newline;
- - added comment description for spinlock;
+diff --git a/drivers/spi/spi-zynqmp-gqspi.c b/drivers/spi/spi-zynqmp-gqspi.=
+c
+index b479b9c3d1e6..7f57923f76ea 100644
+--- a/drivers/spi/spi-zynqmp-gqspi.c
++++ b/drivers/spi/spi-zynqmp-gqspi.c
+@@ -21,6 +21,7 @@
+ #include <linux/spi/spi.h>
+ #include <linux/spinlock.h>
+ #include <linux/workqueue.h>
++#include <linux/spi/spi-mem.h>
 
-Changes in v2,v3:
- - none
+ /* Generic QSPI register offsets */
+ #define GQSPI_CONFIG_OFST              0x00000100
+@@ -153,6 +154,7 @@ enum mode_type {GQSPI_MODE_IO, GQSPI_MODE_DMA};
+  * @dma_addr:          DMA address after mapping the kernel buffer
+  * @genfifoentry:      Used for storing the genfifoentry instruction.
+  * @mode:              Defines the mode in which QSPI is operating
++ * @data_completion:   completion structure
+  */
+ struct zynqmp_qspi {
+        void __iomem *regs;
+@@ -170,6 +172,7 @@ struct zynqmp_qspi {
+        dma_addr_t dma_addr;
+        u32 genfifoentry;
+        enum mode_type mode;
++       struct completion data_completion;
+ };
 
- sound/soc/atmel/Kconfig        |  12 +
- sound/soc/atmel/Makefile       |   2 +
- sound/soc/atmel/mchp-spdiftx.c | 871 +++++++++++++++++++++++++++++++++
- 3 files changed, 885 insertions(+)
- create mode 100644 sound/soc/atmel/mchp-spdiftx.c
+ /**
+@@ -344,40 +347,6 @@ static void zynqmp_qspi_copy_read_data(struct zynqmp_q=
+spi *xqspi,
+        xqspi->bytes_to_receive -=3D size;
+ }
 
-diff --git a/sound/soc/atmel/Kconfig b/sound/soc/atmel/Kconfig
-index 71f2d42188c4..93beb7d670a3 100644
---- a/sound/soc/atmel/Kconfig
-+++ b/sound/soc/atmel/Kconfig
-@@ -132,4 +132,16 @@ config SND_MCHP_SOC_I2S_MCC
- 	  and supports a Time Division Multiplexed (TDM) interface with
- 	  external multi-channel audio codecs.
- 
-+config SND_MCHP_SOC_SPDIFTX
-+	tristate "Microchip ASoC driver for boards using S/PDIF TX"
-+	depends on OF && (ARCH_AT91 || COMPILE_TEST)
-+	select SND_SOC_GENERIC_DMAENGINE_PCM
-+	select REGMAP_MMIO
-+	help
-+	  Say Y or M if you want to add support for Microchip S/PDIF TX ASoc
-+	  driver on the following Microchip platforms:
-+	  - sama7g5
-+
-+	  This S/PDIF TX driver is compliant with IEC-60958 standard and
-+	  includes programable User Data and Channel Status fields.
- endif
-diff --git a/sound/soc/atmel/Makefile b/sound/soc/atmel/Makefile
-index c7d2989791be..3fd89a0063df 100644
---- a/sound/soc/atmel/Makefile
-+++ b/sound/soc/atmel/Makefile
-@@ -5,6 +5,7 @@ snd-soc-atmel-pcm-dma-objs := atmel-pcm-dma.o
- snd-soc-atmel_ssc_dai-objs := atmel_ssc_dai.o
- snd-soc-atmel-i2s-objs := atmel-i2s.o
- snd-soc-mchp-i2s-mcc-objs := mchp-i2s-mcc.o
-+snd-soc-mchp-spdiftx-objs := mchp-spdiftx.o
- 
- # pdc and dma need to both be built-in if any user of
- # ssc is built-in.
-@@ -17,6 +18,7 @@ endif
- obj-$(CONFIG_SND_ATMEL_SOC_SSC) += snd-soc-atmel_ssc_dai.o
- obj-$(CONFIG_SND_ATMEL_SOC_I2S) += snd-soc-atmel-i2s.o
- obj-$(CONFIG_SND_MCHP_SOC_I2S_MCC) += snd-soc-mchp-i2s-mcc.o
-+obj-$(CONFIG_SND_MCHP_SOC_SPDIFTX) += snd-soc-mchp-spdiftx.o
- 
- # AT91 Machine Support
- snd-soc-sam9g20-wm8731-objs := sam9g20_wm8731.o
-diff --git a/sound/soc/atmel/mchp-spdiftx.c b/sound/soc/atmel/mchp-spdiftx.c
-new file mode 100644
-index 000000000000..36c23eb3a5ad
---- /dev/null
-+++ b/sound/soc/atmel/mchp-spdiftx.c
-@@ -0,0 +1,871 @@
-+// SPDX-License-Identifier: GPL-2.0
-+//
-+// Driver for Microchip S/PDIF TX Controller
-+//
-+// Copyright (C) 2020 Microchip Technology Inc. and its subsidiaries
-+//
-+// Author: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-+
-+#include <linux/clk.h>
-+#include <linux/io.h>
-+#include <linux/module.h>
-+#include <linux/spinlock.h>
-+
-+#include <sound/asoundef.h>
-+#include <sound/dmaengine_pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+
-+/*
-+ * ---- S/PDIF Transmitter Controller Register map ----
+-/**
+- * zynqmp_prepare_transfer_hardware - Prepares hardware for transfer.
+- * @master:    Pointer to the spi_master structure which provides
+- *             information about the controller.
+- *
+- * This function enables SPI master controller.
+- *
+- * Return:     0 on success; error value otherwise
+- */
+-static int zynqmp_prepare_transfer_hardware(struct spi_master *master)
+-{
+-       struct zynqmp_qspi *xqspi =3D spi_master_get_devdata(master);
+-
+-       zynqmp_gqspi_write(xqspi, GQSPI_EN_OFST, GQSPI_EN_MASK);
+-       return 0;
+-}
+-
+-/**
+- * zynqmp_unprepare_transfer_hardware - Relaxes hardware after transfer
+- * @master:    Pointer to the spi_master structure which provides
+- *             information about the controller.
+- *
+- * This function disables the SPI master controller.
+- *
+- * Return:     Always 0
+- */
+-static int zynqmp_unprepare_transfer_hardware(struct spi_master *master)
+-{
+-       struct zynqmp_qspi *xqspi =3D spi_master_get_devdata(master);
+-
+-       zynqmp_gqspi_write(xqspi, GQSPI_EN_OFST, 0x0);
+-       return 0;
+-}
+-
+ /**
+  * zynqmp_qspi_chipselect - Select or deselect the chip select line
+  * @qspi:      Pointer to the spi_device structure
+@@ -387,12 +356,14 @@ static void zynqmp_qspi_chipselect(struct spi_device =
+*qspi, bool is_high)
+ {
+        struct zynqmp_qspi *xqspi =3D spi_master_get_devdata(qspi->master);
+        ulong timeout;
+-       u32 genfifoentry =3D 0x0, statusreg;
++       u32 genfifoentry =3D 0, statusreg;
+
+        genfifoentry |=3D GQSPI_GENFIFO_MODE_SPI;
+-       genfifoentry |=3D xqspi->genfifobus;
+
+        if (!is_high) {
++               xqspi->genfifobus =3D GQSPI_GENFIFO_BUS_LOWER;
++               xqspi->genfifocs =3D GQSPI_GENFIFO_CS_LOWER;
++               genfifoentry |=3D xqspi->genfifobus;
+                genfifoentry |=3D xqspi->genfifocs;
+                genfifoentry |=3D GQSPI_GENFIFO_CS_SETUP;
+        } else {
+@@ -424,11 +395,38 @@ static void zynqmp_qspi_chipselect(struct spi_device =
+*qspi, bool is_high)
+ }
+
+ /**
+- * zynqmp_qspi_setup_transfer - Configure QSPI controller for specified
++ * zynqmp_qspi_selectspimode - Selects SPI mode - x1 or x2 or x4.
++ * @xqspi:     xqspi is a pointer to the GQSPI instance
++ * @spimode:   spimode - SPI or DUAL or QUAD.
++ * Return:     Mask to set desired SPI mode in GENFIFO entry.
 + */
-+#define SPDIFTX_CR			0x00	/* Control Register */
-+#define SPDIFTX_MR			0x04	/* Mode Register */
-+#define SPDIFTX_CDR			0x0C	/* Common Data Register */
-+
-+#define SPDIFTX_IER			0x14	/* Interrupt Enable Register */
-+#define SPDIFTX_IDR			0x18	/* Interrupt Disable Register */
-+#define SPDIFTX_IMR			0x1C	/* Interrupt Mask Register */
-+#define SPDIFTX_ISR			0x20	/* Interrupt Status Register */
-+
-+#define SPDIFTX_CH1UD(reg)	(0x50 + (reg) * 4)	/* User Data 1 Register x */
-+#define SPDIFTX_CH1S(reg)	(0x80 + (reg) * 4)	/* Channel Status 1 Register x */
-+
-+#define SPDIFTX_VERSION			0xF0
-+
-+/*
-+ * ---- Control Register (Write-only) ----
-+ */
-+#define SPDIFTX_CR_SWRST		BIT(0)	/* Software Reset */
-+#define SPDIFTX_CR_FCLR			BIT(1)	/* FIFO clear */
-+
-+/*
-+ * ---- Mode Register (Read/Write) ----
-+ */
-+/* Transmit Enable */
-+#define SPDIFTX_MR_TXEN_MASK		GENMASK(0, 0)
-+#define SPDIFTX_MR_TXEN_DISABLE		(0 << 0)
-+#define SPDIFTX_MR_TXEN_ENABLE		(1 << 0)
-+
-+/* Multichannel Transfer */
-+#define SPDIFTX_MR_MULTICH_MASK		GENAMSK(1, 1)
-+#define SPDIFTX_MR_MULTICH_MONO		(0 << 1)
-+#define SPDIFTX_MR_MULTICH_DUAL		(1 << 1)
-+
-+/* Data Word Endian Mode */
-+#define SPDIFTX_MR_ENDIAN_MASK		GENMASK(2, 2)
-+#define SPDIFTX_MR_ENDIAN_LITTLE	(0 << 2)
-+#define SPDIFTX_MR_ENDIAN_BIG		(1 << 2)
-+
-+/* Data Justification */
-+#define SPDIFTX_MR_JUSTIFY_MASK		GENMASK(3, 3)
-+#define SPDIFTX_MR_JUSTIFY_LSB		(0 << 3)
-+#define SPDIFTX_MR_JUSTIFY_MSB		(1 << 3)
-+
-+/* Common Audio Register Transfer Mode */
-+#define SPDIFTX_MR_CMODE_MASK			GENMASK(5, 4)
-+#define SPDIFTX_MR_CMODE_INDEX_ACCESS		(0 << 4)
-+#define SPDIFTX_MR_CMODE_TOGGLE_ACCESS		(1 << 4)
-+#define SPDIFTX_MR_CMODE_INTERLVD_ACCESS	(2 << 4)
-+
-+/* Valid Bits per Sample */
-+#define SPDIFTX_MR_VBPS_MASK		GENMASK(13, 8)
-+#define SPDIFTX_MR_VBPS(bps)		(((bps) << 8) & SPDIFTX_MR_VBPS_MASK)
-+
-+/* Chunk Size */
-+#define SPDIFTX_MR_CHUNK_MASK		GENMASK(19, 16)
-+#define SPDIFTX_MR_CHUNK(size)		(((size) << 16) & SPDIFTX_MR_CHUNK_MASK)
-+
-+/* Validity Bits for Channels 1 and 2 */
-+#define SPDIFTX_MR_VALID1			BIT(24)
-+#define SPDIFTX_MR_VALID2			BIT(25)
-+
-+/* Disable Null Frame on underrrun */
-+#define SPDIFTX_MR_DNFR_MASK		GENMASK(27, 27)
-+#define SPDIFTX_MR_DNFR_INVALID		(0 << 27)
-+#define SPDIFTX_MR_DNFR_VALID		(1 << 27)
-+
-+/* Bytes per Sample */
-+#define SPDIFTX_MR_BPS_MASK		GENMASK(29, 28)
-+#define SPDIFTX_MR_BPS(bytes) \
-+	((((bytes) - 1) << 28) & SPDIFTX_MR_BPS_MASK)
-+
-+/*
-+ * ---- Interrupt Enable/Disable/Mask/Status Register (Write/Read-only) ----
-+ */
-+#define SPDIFTX_IR_TXRDY		BIT(0)
-+#define SPDIFTX_IR_TXEMPTY		BIT(1)
-+#define SPDIFTX_IR_TXFULL		BIT(2)
-+#define SPDIFTX_IR_TXCHUNK		BIT(3)
-+#define SPDIFTX_IR_TXUDR		BIT(4)
-+#define SPDIFTX_IR_TXOVR		BIT(5)
-+#define SPDIFTX_IR_CSRDY		BIT(6)
-+#define SPDIFTX_IR_UDRDY		BIT(7)
-+#define SPDIFTX_IR_TXRDYCH(ch)		BIT((ch) + 8)
-+#define SPDIFTX_IR_SECE			BIT(10)
-+#define SPDIFTX_IR_TXUDRCH(ch)		BIT((ch) + 11)
-+#define SPDIFTX_IR_BEND			BIT(13)
-+
-+static bool mchp_spdiftx_readable_reg(struct device *dev, unsigned int reg)
++static inline u32 zynqmp_qspi_selectspimode(struct zynqmp_qspi *xqspi,
++                                           u8 spimode)
 +{
-+	switch (reg) {
-+	case SPDIFTX_MR:
-+	case SPDIFTX_IMR:
-+	case SPDIFTX_ISR:
-+	case SPDIFTX_CH1UD(0):
-+	case SPDIFTX_CH1UD(1):
-+	case SPDIFTX_CH1UD(2):
-+	case SPDIFTX_CH1UD(3):
-+	case SPDIFTX_CH1UD(4):
-+	case SPDIFTX_CH1UD(5):
-+	case SPDIFTX_CH1S(0):
-+	case SPDIFTX_CH1S(1):
-+	case SPDIFTX_CH1S(2):
-+	case SPDIFTX_CH1S(3):
-+	case SPDIFTX_CH1S(4):
-+	case SPDIFTX_CH1S(5):
-+		return true;
-+	default:
-+		return false;
-+	}
++       u32 mask =3D 0;
++
++       switch (spimode) {
++       case GQSPI_SELECT_MODE_DUALSPI:
++               mask =3D GQSPI_GENFIFO_MODE_DUALSPI;
++               break;
++       case GQSPI_SELECT_MODE_QUADSPI:
++               mask =3D GQSPI_GENFIFO_MODE_QUADSPI;
++               break;
++       case GQSPI_SELECT_MODE_SPI:
++               mask =3D GQSPI_GENFIFO_MODE_SPI;
++               break;
++       default:
++               dev_warn(xqspi->dev, "Invalid SPI mode\n");
++       }
++
++       return mask;
 +}
 +
-+static bool mchp_spdiftx_writeable_reg(struct device *dev, unsigned int reg)
-+{
-+	switch (reg) {
-+	case SPDIFTX_CR:
-+	case SPDIFTX_MR:
-+	case SPDIFTX_CDR:
-+	case SPDIFTX_IER:
-+	case SPDIFTX_IDR:
-+	case SPDIFTX_CH1UD(0):
-+	case SPDIFTX_CH1UD(1):
-+	case SPDIFTX_CH1UD(2):
-+	case SPDIFTX_CH1UD(3):
-+	case SPDIFTX_CH1UD(4):
-+	case SPDIFTX_CH1UD(5):
-+	case SPDIFTX_CH1S(0):
-+	case SPDIFTX_CH1S(1):
-+	case SPDIFTX_CH1S(2):
-+	case SPDIFTX_CH1S(3):
-+	case SPDIFTX_CH1S(4):
-+	case SPDIFTX_CH1S(5):
-+		return true;
-+	default:
-+		return false;
-+	}
-+}
-+
-+static bool mchp_spdiftx_precious_reg(struct device *dev, unsigned int reg)
-+{
-+	switch (reg) {
-+	case SPDIFTX_CDR:
-+	case SPDIFTX_ISR:
-+		return true;
-+	default:
-+		return false;
-+	}
-+}
-+
-+static const struct regmap_config mchp_spdiftx_regmap_config = {
-+	.reg_bits = 32,
-+	.reg_stride = 4,
-+	.val_bits = 32,
-+	.max_register = SPDIFTX_VERSION,
-+	.readable_reg = mchp_spdiftx_readable_reg,
-+	.writeable_reg = mchp_spdiftx_writeable_reg,
-+	.precious_reg = mchp_spdiftx_precious_reg,
-+};
-+
-+#define SPDIFTX_GCLK_RATIO	128
-+
-+#define SPDIFTX_CS_BITS		192
-+#define SPDIFTX_UD_BITS		192
-+
-+struct mchp_spdiftx_mixer_control {
-+	unsigned char				ch_stat[SPDIFTX_CS_BITS / 8];
-+	unsigned char				user_data[SPDIFTX_UD_BITS / 8];
-+	spinlock_t				lock; /* exclusive access to control data */
-+};
-+
-+struct mchp_spdiftx_dev {
-+	struct mchp_spdiftx_mixer_control	control;
-+	struct snd_dmaengine_dai_dma_data	playback;
-+	struct device				*dev;
-+	struct regmap				*regmap;
-+	struct clk				*pclk;
-+	struct clk				*gclk;
-+	unsigned int				fmt;
-+	const struct mchp_i2s_caps		*caps;
-+	int					gclk_enabled:1;
-+};
-+
-+static inline int mchp_spdiftx_is_running(struct mchp_spdiftx_dev *dev)
-+{
-+	u32 mr;
-+
-+	regmap_read(dev->regmap, SPDIFTX_MR, &mr);
-+	return !!(mr & SPDIFTX_MR_TXEN_ENABLE);
-+}
-+
-+static void mchp_spdiftx_channel_status_write(struct mchp_spdiftx_dev *dev)
-+{
-+	struct mchp_spdiftx_mixer_control *ctrl = &dev->control;
-+	u32 val;
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(ctrl->ch_stat) / 4; i++) {
-+		val = (ctrl->ch_stat[(i * 4) + 0] << 0) |
-+		      (ctrl->ch_stat[(i * 4) + 1] << 8) |
-+		      (ctrl->ch_stat[(i * 4) + 2] << 16) |
-+		      (ctrl->ch_stat[(i * 4) + 3] << 24);
-+
-+		regmap_write(dev->regmap, SPDIFTX_CH1S(i), val);
-+	}
-+}
-+
-+static void mchp_spdiftx_user_data_write(struct mchp_spdiftx_dev *dev)
-+{
-+	struct mchp_spdiftx_mixer_control *ctrl = &dev->control;
-+	u32 val;
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(ctrl->user_data) / 4; i++) {
-+		val = (ctrl->user_data[(i * 4) + 0] << 0) |
-+		      (ctrl->user_data[(i * 4) + 1] << 8) |
-+		      (ctrl->user_data[(i * 4) + 2] << 16) |
-+		      (ctrl->user_data[(i * 4) + 3] << 24);
-+
-+		regmap_write(dev->regmap, SPDIFTX_CH1UD(i), val);
-+	}
-+}
-+
-+static irqreturn_t mchp_spdiftx_interrupt(int irq, void *dev_id)
-+{
-+	struct mchp_spdiftx_dev *dev = dev_id;
-+	struct mchp_spdiftx_mixer_control *ctrl = &dev->control;
-+	u32 sr, imr, pending, idr = 0;
-+
-+	regmap_read(dev->regmap, SPDIFTX_ISR, &sr);
-+	regmap_read(dev->regmap, SPDIFTX_IMR, &imr);
-+	pending = sr & imr;
-+
-+	if (!pending)
-+		return IRQ_NONE;
-+
-+	if (pending & SPDIFTX_IR_TXUDR) {
-+		dev_warn(dev->dev, "underflow detected\n");
-+		idr |= SPDIFTX_IR_TXUDR;
-+	}
-+
-+	if (pending & SPDIFTX_IR_TXOVR) {
-+		dev_warn(dev->dev, "overflow detected\n");
-+		idr |= SPDIFTX_IR_TXOVR;
-+	}
-+
-+	if (pending & SPDIFTX_IR_UDRDY) {
-+		spin_lock(&ctrl->lock);
-+		mchp_spdiftx_user_data_write(dev);
-+		spin_unlock(&ctrl->lock);
-+		idr |= SPDIFTX_IR_UDRDY;
-+	}
-+
-+	if (pending & SPDIFTX_IR_CSRDY) {
-+		spin_lock(&ctrl->lock);
-+		mchp_spdiftx_channel_status_write(dev);
-+		spin_unlock(&ctrl->lock);
-+		idr |= SPDIFTX_IR_CSRDY;
-+	}
-+
-+	regmap_write(dev->regmap, SPDIFTX_IDR, idr);
-+
-+	return IRQ_HANDLED;
-+}
-+
-+static int mchp_spdiftx_dai_startup(struct snd_pcm_substream *substream,
-+				    struct snd_soc_dai *dai)
-+{
-+	struct mchp_spdiftx_dev *dev = snd_soc_dai_get_drvdata(dai);
-+
-+	/* Software reset the IP */
-+	regmap_write(dev->regmap, SPDIFTX_CR,
-+		     SPDIFTX_CR_SWRST | SPDIFTX_CR_FCLR);
-+
-+	return 0;
-+}
-+
-+static void mchp_spdiftx_dai_shutdown(struct snd_pcm_substream *substream,
-+				      struct snd_soc_dai *dai)
-+{
-+	struct mchp_spdiftx_dev *dev = snd_soc_dai_get_drvdata(dai);
-+
-+	/* Disable interrupts */
-+	regmap_write(dev->regmap, SPDIFTX_IDR, 0xffffffff);
-+}
-+
-+static int mchp_spdiftx_trigger(struct snd_pcm_substream *substream, int cmd,
-+				struct snd_soc_dai *dai)
-+{
-+	struct mchp_spdiftx_dev *dev = snd_soc_dai_get_drvdata(dai);
-+	struct mchp_spdiftx_mixer_control *ctrl = &dev->control;
-+	u32 mr;
-+	int running;
-+	int ret;
-+
-+	/* do not start/stop while channel status or user data is updated */
-+	spin_lock(&ctrl->lock);
-+	regmap_read(dev->regmap, SPDIFTX_MR, &mr);
-+	running = !!(mr & SPDIFTX_MR_TXEN_ENABLE);
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		if (!running) {
-+			mr &= ~SPDIFTX_MR_TXEN_MASK;
-+			mr |= SPDIFTX_MR_TXEN_ENABLE;
-+		}
-+		break;
-+	case SNDRV_PCM_TRIGGER_STOP:
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		if (running) {
-+			mr &= ~SPDIFTX_MR_TXEN_MASK;
-+			mr |= SPDIFTX_MR_TXEN_DISABLE;
-+		}
-+		break;
-+	default:
-+		spin_unlock(&ctrl->lock);
-+		return -EINVAL;
-+	}
-+
-+	ret = regmap_write(dev->regmap, SPDIFTX_MR, mr);
-+	spin_unlock(&ctrl->lock);
-+	if (ret) {
-+		dev_err(dev->dev, "unable to disable TX: %d\n", ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int mchp_spdiftx_hw_params(struct snd_pcm_substream *substream,
-+				  struct snd_pcm_hw_params *params,
-+				  struct snd_soc_dai *dai)
-+{
-+	unsigned long flags;
-+	struct mchp_spdiftx_dev *dev = snd_soc_dai_get_drvdata(dai);
-+	struct mchp_spdiftx_mixer_control *ctrl = &dev->control;
-+	u32 mr;
-+	unsigned int bps = params_physical_width(params) / 8;
-+	int ret;
-+
-+	dev_dbg(dev->dev, "%s() rate=%u format=%#x width=%u channels=%u\n",
-+		__func__, params_rate(params), params_format(params),
-+		params_width(params), params_channels(params));
-+
-+	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
-+		dev_err(dev->dev, "Capture is not supported\n");
-+		return -EINVAL;
-+	}
-+
-+	regmap_read(dev->regmap, SPDIFTX_MR, &mr);
-+
-+	if (mr & SPDIFTX_MR_TXEN_ENABLE) {
-+		dev_err(dev->dev, "PCM already running\n");
-+		return -EBUSY;
-+	}
-+
-+	/* Defaults: Toggle mode, justify to LSB, chunksize 1 */
-+	mr = SPDIFTX_MR_CMODE_TOGGLE_ACCESS | SPDIFTX_MR_JUSTIFY_LSB;
-+	dev->playback.maxburst = 1;
-+	switch (params_channels(params)) {
-+	case 1:
-+		mr |= SPDIFTX_MR_MULTICH_MONO;
-+		break;
-+	case 2:
-+		mr |= SPDIFTX_MR_MULTICH_DUAL;
-+		if (bps > 2)
-+			dev->playback.maxburst = 2;
-+		break;
-+	default:
-+		dev_err(dev->dev, "unsupported number of channels: %d\n",
-+			params_channels(params));
-+		return -EINVAL;
-+	}
-+	mr |= SPDIFTX_MR_CHUNK(dev->playback.maxburst);
-+
-+	switch (params_format(params)) {
-+	case SNDRV_PCM_FORMAT_S8:
-+		mr |= SPDIFTX_MR_VBPS(8);
-+		break;
-+	case SNDRV_PCM_FORMAT_S16_BE:
-+		mr |= SPDIFTX_MR_ENDIAN_BIG;
-+		fallthrough;
-+	case SNDRV_PCM_FORMAT_S16_LE:
-+		mr |= SPDIFTX_MR_VBPS(16);
-+		break;
-+	case SNDRV_PCM_FORMAT_S18_3BE:
-+		mr |= SPDIFTX_MR_ENDIAN_BIG;
-+		fallthrough;
-+	case SNDRV_PCM_FORMAT_S18_3LE:
-+		mr |= SPDIFTX_MR_VBPS(18);
-+		break;
-+	case SNDRV_PCM_FORMAT_S20_3BE:
-+		mr |= SPDIFTX_MR_ENDIAN_BIG;
-+		fallthrough;
-+	case SNDRV_PCM_FORMAT_S20_3LE:
-+		mr |= SPDIFTX_MR_VBPS(20);
-+		break;
-+	case SNDRV_PCM_FORMAT_S24_3BE:
-+		mr |= SPDIFTX_MR_ENDIAN_BIG;
-+		fallthrough;
-+	case SNDRV_PCM_FORMAT_S24_3LE:
-+		mr |= SPDIFTX_MR_VBPS(24);
-+		break;
-+	case SNDRV_PCM_FORMAT_S24_BE:
-+		mr |= SPDIFTX_MR_ENDIAN_BIG;
-+		fallthrough;
-+	case SNDRV_PCM_FORMAT_S24_LE:
-+		mr |= SPDIFTX_MR_VBPS(24);
-+		break;
-+	case SNDRV_PCM_FORMAT_S32_BE:
-+		mr |= SPDIFTX_MR_ENDIAN_BIG;
-+		fallthrough;
-+	case SNDRV_PCM_FORMAT_S32_LE:
-+		mr |= SPDIFTX_MR_VBPS(32);
-+		break;
-+	default:
-+		dev_err(dev->dev, "unsupported PCM format: %d\n",
-+			params_format(params));
-+		return -EINVAL;
-+	}
-+
-+	mr |= SPDIFTX_MR_BPS(bps);
-+
-+	spin_lock_irqsave(&ctrl->lock, flags);
-+	ctrl->ch_stat[3] &= ~IEC958_AES3_CON_FS;
-+	switch (params_rate(params)) {
-+	case 22050:
-+		ctrl->ch_stat[3] |= IEC958_AES3_CON_FS_22050;
-+		break;
-+	case 24000:
-+		ctrl->ch_stat[3] |= IEC958_AES3_CON_FS_24000;
-+		break;
-+	case 32000:
-+		ctrl->ch_stat[3] |= IEC958_AES3_CON_FS_32000;
-+		break;
-+	case 44100:
-+		ctrl->ch_stat[3] |= IEC958_AES3_CON_FS_44100;
-+		break;
-+	case 48000:
-+		ctrl->ch_stat[3] |= IEC958_AES3_CON_FS_48000;
-+		break;
-+	case 88200:
-+		ctrl->ch_stat[3] |= IEC958_AES3_CON_FS_88200;
-+		break;
-+	case 96000:
-+		ctrl->ch_stat[3] |= IEC958_AES3_CON_FS_96000;
-+		break;
-+	case 176400:
-+		ctrl->ch_stat[3] |= IEC958_AES3_CON_FS_176400;
-+		break;
-+	case 192000:
-+		ctrl->ch_stat[3] |= IEC958_AES3_CON_FS_192000;
-+		break;
-+	case 8000:
-+	case 11025:
-+	case 16000:
-+	case 64000:
-+		ctrl->ch_stat[3] |= IEC958_AES3_CON_FS_NOTID;
-+		break;
-+	default:
-+		dev_err(dev->dev, "unsupported sample frequency: %u\n",
-+			params_rate(params));
-+		spin_unlock_irqrestore(&ctrl->lock, flags);
-+		return -EINVAL;
-+	}
-+	mchp_spdiftx_channel_status_write(dev);
-+	spin_unlock_irqrestore(&ctrl->lock, flags);
-+	mr |= SPDIFTX_MR_VALID1 | SPDIFTX_MR_VALID2;
-+
-+	if (dev->gclk_enabled) {
-+		clk_disable_unprepare(dev->gclk);
-+		dev->gclk_enabled = 0;
-+	}
-+	ret = clk_set_rate(dev->gclk, params_rate(params) *
-+				      SPDIFTX_GCLK_RATIO);
-+	if (ret) {
-+		dev_err(dev->dev,
-+			"unable to change gclk rate to: rate %u * ratio %u\n",
-+			params_rate(params), SPDIFTX_GCLK_RATIO);
-+		return ret;
-+	}
-+	ret = clk_prepare_enable(dev->gclk);
-+	if (ret) {
-+		dev_err(dev->dev, "unable to enable gclk: %d\n", ret);
-+		return ret;
-+	}
-+	dev->gclk_enabled = 1;
-+	dev_dbg(dev->dev, "%s(): GCLK set to %d\n", __func__,
-+		params_rate(params) * SPDIFTX_GCLK_RATIO);
-+
-+	/* Enable interrupts */
-+	regmap_write(dev->regmap, SPDIFTX_IER,
-+		     SPDIFTX_IR_TXUDR | SPDIFTX_IR_TXOVR);
-+
-+	regmap_write(dev->regmap, SPDIFTX_MR, mr);
-+
-+	return 0;
-+}
-+
-+static int mchp_spdiftx_hw_free(struct snd_pcm_substream *substream,
-+				struct snd_soc_dai *dai)
-+{
-+	struct mchp_spdiftx_dev *dev = snd_soc_dai_get_drvdata(dai);
-+
-+	regmap_write(dev->regmap, SPDIFTX_IDR,
-+		     SPDIFTX_IR_TXUDR | SPDIFTX_IR_TXOVR);
-+	if (dev->gclk_enabled) {
-+		clk_disable_unprepare(dev->gclk);
-+		dev->gclk_enabled = 0;
-+	}
-+
-+	return regmap_write(dev->regmap, SPDIFTX_CR,
-+			    SPDIFTX_CR_SWRST | SPDIFTX_CR_FCLR);
-+}
-+
-+static const struct snd_soc_dai_ops mchp_spdiftx_dai_ops = {
-+	.startup	= mchp_spdiftx_dai_startup,
-+	.shutdown	= mchp_spdiftx_dai_shutdown,
-+	.trigger	= mchp_spdiftx_trigger,
-+	.hw_params	= mchp_spdiftx_hw_params,
-+	.hw_free	= mchp_spdiftx_hw_free,
-+};
-+
-+#define MCHP_SPDIFTX_RATES	SNDRV_PCM_RATE_8000_192000
-+
-+#define MCHP_SPDIFTX_FORMATS	(SNDRV_PCM_FMTBIT_S8 |		\
-+				 SNDRV_PCM_FMTBIT_S16_LE |	\
-+				 SNDRV_PCM_FMTBIT_U16_BE |	\
-+				 SNDRV_PCM_FMTBIT_S18_3LE |	\
-+				 SNDRV_PCM_FMTBIT_S18_3BE |	\
-+				 SNDRV_PCM_FMTBIT_S20_3LE |	\
-+				 SNDRV_PCM_FMTBIT_S20_3BE |	\
-+				 SNDRV_PCM_FMTBIT_S24_3LE |	\
-+				 SNDRV_PCM_FMTBIT_S24_3BE |	\
-+				 SNDRV_PCM_FMTBIT_S24_LE |	\
-+				 SNDRV_PCM_FMTBIT_S24_BE |	\
-+				 SNDRV_PCM_FMTBIT_S32_LE |	\
-+				 SNDRV_PCM_FMTBIT_S32_BE	\
-+				 )
-+
-+static int mchp_spdiftx_info(struct snd_kcontrol *kcontrol,
-+			     struct snd_ctl_elem_info *uinfo)
-+{
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_IEC958;
-+	uinfo->count = 1;
-+
-+	return 0;
-+}
-+
-+static int mchp_spdiftx_cs_get(struct snd_kcontrol *kcontrol,
-+			       struct snd_ctl_elem_value *uvalue)
-+{
-+	unsigned long flags;
-+	struct snd_soc_dai *dai = snd_kcontrol_chip(kcontrol);
-+	struct mchp_spdiftx_dev *dev = snd_soc_dai_get_drvdata(dai);
-+	struct mchp_spdiftx_mixer_control *ctrl = &dev->control;
-+
-+	spin_lock_irqsave(&ctrl->lock, flags);
-+	memcpy(uvalue->value.iec958.status, ctrl->ch_stat,
-+	       sizeof(ctrl->ch_stat));
-+	spin_unlock_irqrestore(&ctrl->lock, flags);
-+
-+	return 0;
-+}
-+
-+static int mchp_spdiftx_cs_put(struct snd_kcontrol *kcontrol,
-+			       struct snd_ctl_elem_value *uvalue)
-+{
-+	unsigned long flags;
-+	struct snd_soc_dai *dai = snd_kcontrol_chip(kcontrol);
-+	struct mchp_spdiftx_dev *dev = snd_soc_dai_get_drvdata(dai);
-+	struct mchp_spdiftx_mixer_control *ctrl = &dev->control;
-+	int changed = 0;
-+	int i;
-+
-+	spin_lock_irqsave(&ctrl->lock, flags);
-+	for (i = 0; i < ARRAY_SIZE(ctrl->ch_stat); i++) {
-+		if (ctrl->ch_stat[i] != uvalue->value.iec958.status[i])
-+			changed = 1;
-+		ctrl->ch_stat[i] = uvalue->value.iec958.status[i];
-+	}
-+
-+	if (changed) {
-+		/* don't enable IP while we copy the channel status */
-+		if (mchp_spdiftx_is_running(dev)) {
-+			/*
-+			 * if SPDIF is running, wait for interrupt to write
-+			 * channel status
-+			 */
-+			regmap_write(dev->regmap, SPDIFTX_IER,
-+				     SPDIFTX_IR_CSRDY);
-+		} else {
-+			mchp_spdiftx_channel_status_write(dev);
-+		}
-+	}
-+	spin_unlock_irqrestore(&ctrl->lock, flags);
-+
-+	return changed;
-+}
-+
-+static int mchp_spdiftx_cs_mask(struct snd_kcontrol *kcontrol,
-+				struct snd_ctl_elem_value *uvalue)
-+{
-+	memset(uvalue->value.iec958.status, 0xff,
-+	       sizeof(uvalue->value.iec958.status));
-+
-+	return 0;
-+}
-+
-+static int mchp_spdiftx_subcode_get(struct snd_kcontrol *kcontrol,
-+				    struct snd_ctl_elem_value *uvalue)
-+{
-+	struct snd_soc_dai *dai = snd_kcontrol_chip(kcontrol);
-+	struct mchp_spdiftx_dev *dev = snd_soc_dai_get_drvdata(dai);
-+	struct mchp_spdiftx_mixer_control *ctrl = &dev->control;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&ctrl->lock, flags);
-+	memcpy(uvalue->value.iec958.subcode, ctrl->user_data,
-+	       sizeof(ctrl->user_data));
-+	spin_unlock_irqrestore(&ctrl->lock, flags);
-+
-+	return 0;
-+}
-+
-+static int mchp_spdiftx_subcode_put(struct snd_kcontrol *kcontrol,
-+				    struct snd_ctl_elem_value *uvalue)
-+{
-+	unsigned long flags;
-+	struct snd_soc_dai *dai = snd_kcontrol_chip(kcontrol);
-+	struct mchp_spdiftx_dev *dev = snd_soc_dai_get_drvdata(dai);
-+	struct mchp_spdiftx_mixer_control *ctrl = &dev->control;
-+	int changed = 0;
-+	int i;
-+
-+	spin_lock_irqsave(&ctrl->lock, flags);
-+	for (i = 0; i < ARRAY_SIZE(ctrl->user_data); i++) {
-+		if (ctrl->user_data[i] != uvalue->value.iec958.subcode[i])
-+			changed = 1;
-+
-+		ctrl->user_data[i] = uvalue->value.iec958.subcode[i];
-+	}
-+	if (changed) {
-+		if (mchp_spdiftx_is_running(dev)) {
-+			/*
-+			 * if SPDIF is running, wait for interrupt to write
-+			 * user data
-+			 */
-+			regmap_write(dev->regmap, SPDIFTX_IER,
-+				     SPDIFTX_IR_UDRDY);
-+		} else {
-+			mchp_spdiftx_user_data_write(dev);
-+		}
-+	}
-+	spin_unlock_irqrestore(&ctrl->lock, flags);
-+
-+	return changed;
-+}
-+
-+static struct snd_kcontrol_new mchp_spdiftx_ctrls[] = {
-+	/* Channel status controller */
-+	{
-+		.iface = SNDRV_CTL_ELEM_IFACE_PCM,
-+		.name = SNDRV_CTL_NAME_IEC958("", PLAYBACK, DEFAULT),
-+		.access = SNDRV_CTL_ELEM_ACCESS_READWRITE |
-+			SNDRV_CTL_ELEM_ACCESS_VOLATILE,
-+		.info = mchp_spdiftx_info,
-+		.get = mchp_spdiftx_cs_get,
-+		.put = mchp_spdiftx_cs_put,
-+	},
-+	{
-+		.iface = SNDRV_CTL_ELEM_IFACE_PCM,
-+		.name = SNDRV_CTL_NAME_IEC958("", PLAYBACK, MASK),
-+		.access = SNDRV_CTL_ELEM_ACCESS_READ,
-+			SNDRV_CTL_ELEM_ACCESS_VOLATILE,
-+		.info = mchp_spdiftx_info,
-+		.get = mchp_spdiftx_cs_mask,
-+	},
-+	/* User bits controller */
-+	{
-+		.iface = SNDRV_CTL_ELEM_IFACE_PCM,
-+		.name = "IEC958 Subcode Playback Default",
-+		.access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
-+		.info = mchp_spdiftx_info,
-+		.get = mchp_spdiftx_subcode_get,
-+		.put = mchp_spdiftx_subcode_put,
-+	},
-+};
-+
-+static int mchp_spdiftx_dai_probe(struct snd_soc_dai *dai)
-+{
-+	struct mchp_spdiftx_dev *dev = snd_soc_dai_get_drvdata(dai);
-+	int ret;
-+
-+	snd_soc_dai_init_dma_data(dai, &dev->playback, NULL);
-+
-+	ret = clk_prepare_enable(dev->pclk);
-+	if (ret) {
-+		dev_err(dev->dev,
-+			"failed to enable the peripheral clock: %d\n", ret);
-+		return ret;
-+	}
-+
-+	/* Add controls */
-+	snd_soc_add_dai_controls(dai, mchp_spdiftx_ctrls,
-+				 ARRAY_SIZE(mchp_spdiftx_ctrls));
-+
-+	return 0;
-+}
-+
-+static int mchp_spdiftx_dai_remove(struct snd_soc_dai *dai)
-+{
-+	struct mchp_spdiftx_dev *dev = snd_soc_dai_get_drvdata(dai);
-+
-+	clk_disable_unprepare(dev->pclk);
-+
-+	return 0;
-+}
-+
-+static struct snd_soc_dai_driver mchp_spdiftx_dai = {
-+	.name = "mchp-spdiftx",
-+	.probe	= mchp_spdiftx_dai_probe,
-+	.remove	= mchp_spdiftx_dai_remove,
-+	.playback = {
-+		.stream_name = "S/PDIF TX Playback",
-+		.channels_min = 1,
-+		.channels_max = 2,
-+		.rates = MCHP_SPDIFTX_RATES,
-+		.formats = MCHP_SPDIFTX_FORMATS,
-+	},
-+	.ops = &mchp_spdiftx_dai_ops,
-+};
-+
-+static const struct snd_soc_component_driver mchp_spdiftx_component = {
-+	.name		= "mchp-spdiftx",
-+};
-+
-+static const struct of_device_id mchp_spdiftx_dt_ids[] = {
-+	{
-+		.compatible = "microchip,sama7g5-spdiftx",
-+	},
-+	{ /* sentinel */ }
-+};
-+
-+MODULE_DEVICE_TABLE(of, mchp_spdiftx_dt_ids);
-+static int mchp_spdiftx_probe(struct platform_device *pdev)
-+{
-+	struct device_node *np = pdev->dev.of_node;
-+	const struct of_device_id *match;
-+	struct mchp_spdiftx_dev *dev;
-+	struct resource *mem;
-+	struct regmap *regmap;
-+	void __iomem *base;
-+	struct mchp_spdiftx_mixer_control *ctrl;
-+	int irq;
-+	int err;
-+
-+	/* Get memory for driver data. */
-+	dev = devm_kzalloc(&pdev->dev, sizeof(*dev), GFP_KERNEL);
-+	if (!dev)
-+		return -ENOMEM;
-+
-+	/* Get hardware capabilities. */
-+	match = of_match_node(mchp_spdiftx_dt_ids, np);
-+	if (match)
-+		dev->caps = match->data;
-+
-+	/* Map I/O registers. */
-+	base = devm_platform_get_and_ioremap_resource(pdev, 0, &mem);
-+	if (IS_ERR(base))
-+		return PTR_ERR(base);
-+
-+	regmap = devm_regmap_init_mmio(&pdev->dev, base,
-+				       &mchp_spdiftx_regmap_config);
-+	if (IS_ERR(regmap))
-+		return PTR_ERR(regmap);
-+
-+	/* Request IRQ */
-+	irq = platform_get_irq(pdev, 0);
-+	if (irq < 0)
-+		return irq;
-+
-+	err = devm_request_irq(&pdev->dev, irq, mchp_spdiftx_interrupt, 0,
-+			       dev_name(&pdev->dev), dev);
-+	if (err)
-+		return err;
-+
-+	/* Get the peripheral clock */
-+	dev->pclk = devm_clk_get(&pdev->dev, "pclk");
-+	if (IS_ERR(dev->pclk)) {
-+		err = PTR_ERR(dev->pclk);
-+		dev_err(&pdev->dev,
-+			"failed to get the peripheral clock: %d\n", err);
-+		return err;
-+	}
-+
-+	/* Get the generic clock */
-+	dev->gclk = devm_clk_get(&pdev->dev, "gclk");
-+	if (IS_ERR(dev->gclk)) {
-+		err = PTR_ERR(dev->gclk);
-+		dev_err(&pdev->dev,
-+			"failed to get the PMC generic clock: %d\n", err);
-+		return err;
-+	}
-+
-+	ctrl = &dev->control;
-+	spin_lock_init(&ctrl->lock);
-+
-+	/* Init channel status */
-+	ctrl->ch_stat[0] = IEC958_AES0_CON_NOT_COPYRIGHT |
-+			   IEC958_AES0_CON_EMPHASIS_NONE;
-+
-+	dev->dev = &pdev->dev;
-+	dev->regmap = regmap;
-+	platform_set_drvdata(pdev, dev);
-+
-+	dev->playback.addr = (dma_addr_t)mem->start + SPDIFTX_CDR;
-+	dev->playback.addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
-+
-+	err = devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
-+	if (err) {
-+		dev_err(&pdev->dev, "failed to register PMC: %d\n", err);
-+		return err;
-+	}
-+
-+	err = devm_snd_soc_register_component(&pdev->dev,
-+					      &mchp_spdiftx_component,
-+					      &mchp_spdiftx_dai, 1);
-+	if (err) {
-+		dev_err(&pdev->dev, "failed to register component: %d\n", err);
-+		return err;
-+	}
-+
-+	return 0;
-+}
-+
-+static struct platform_driver mchp_spdiftx_driver = {
-+	.probe	= mchp_spdiftx_probe,
-+	.driver	= {
-+		.name	= "mchp_spdiftx",
-+		.of_match_table = of_match_ptr(mchp_spdiftx_dt_ids),
-+	},
-+};
-+
-+module_platform_driver(mchp_spdiftx_driver);
-+
-+MODULE_AUTHOR("Codrin Ciubotariu <codrin.ciubotariu@microchip.com>");
-+MODULE_DESCRIPTION("Microchip S/PDIF TX Controller Driver");
-+MODULE_LICENSE("GPL v2");
--- 
-2.25.1
++/**
++ * zynqmp_qspi_config_op - Configure QSPI controller for specified
+  *                             transfer
++ * @xqspi:     Pointer to the zynqmp_qspi structure
+  * @qspi:      Pointer to the spi_device structure
+- * @transfer:  Pointer to the spi_transfer structure which provides
+- *             information about next transfer setup parameters
+  *
+  * Sets the operational mode of QSPI controller for the next QSPI transfer=
+ and
+  * sets the requested clock frequency.
+@@ -445,17 +443,11 @@ static void zynqmp_qspi_chipselect(struct spi_device =
+*qspi, bool is_high)
+  *     by the QSPI controller the driver will set the highest or lowest
+  *     frequency supported by controller.
+  */
+-static int zynqmp_qspi_setup_transfer(struct spi_device *qspi,
+-                                     struct spi_transfer *transfer)
++static int zynqmp_qspi_config_op(struct zynqmp_qspi *xqspi,
++                                struct spi_device *qspi)
+ {
+-       struct zynqmp_qspi *xqspi =3D spi_master_get_devdata(qspi->master);
+        ulong clk_rate;
+-       u32 config_reg, req_hz, baud_rate_val =3D 0;
+-
+-       if (transfer)
+-               req_hz =3D transfer->speed_hz;
+-       else
+-               req_hz =3D qspi->max_speed_hz;
++       u32 config_reg, baud_rate_val =3D 0;
 
+        /* Set the clock frequency */
+        /* If req_hz =3D=3D 0, default to lowest speed */
+@@ -463,7 +455,7 @@ static int zynqmp_qspi_setup_transfer(struct spi_device=
+ *qspi,
+
+        while ((baud_rate_val < GQSPI_BAUD_DIV_MAX) &&
+               (clk_rate /
+-               (GQSPI_BAUD_DIV_SHIFT << baud_rate_val)) > req_hz)
++               (GQSPI_BAUD_DIV_SHIFT << baud_rate_val)) > qspi->max_speed_=
+hz)
+                baud_rate_val++;
+
+        config_reg =3D zynqmp_gqspi_read(xqspi, GQSPI_CONFIG_OFST);
+@@ -483,7 +475,7 @@ static int zynqmp_qspi_setup_transfer(struct spi_device=
+ *qspi,
+ }
+
+ /**
+- * zynqmp_qspi_setup - Configure the QSPI controller
++ * zynqmp_qspi_setup_op - Configure the QSPI controller
+  * @qspi:      Pointer to the spi_device structure
+  *
+  * Sets the operational mode of QSPI controller for the next QSPI transfer=
+,
+@@ -491,10 +483,30 @@ static int zynqmp_qspi_setup_transfer(struct spi_devi=
+ce *qspi,
+  *
+  * Return:     0 on success; error value otherwise.
+  */
+-static int zynqmp_qspi_setup(struct spi_device *qspi)
++static int zynqmp_qspi_setup_op(struct spi_device *qspi)
+ {
+-       if (qspi->master->busy)
++       struct spi_controller *ctlr =3D qspi->master;
++       struct zynqmp_qspi *xqspi =3D spi_controller_get_devdata(ctlr);
++       struct device *dev =3D &ctlr->dev;
++       int ret;
++
++       if (ctlr->busy)
+                return -EBUSY;
++
++       ret =3D clk_enable(xqspi->refclk);
++       if (ret) {
++               dev_err(dev, "Cannot enable device clock.\n");
++               return ret;
++       }
++
++       ret =3D clk_enable(xqspi->pclk);
++       if (ret) {
++               dev_err(dev, "Cannot enable APB clock.\n");
++               clk_disable(xqspi->refclk);
++               return ret;
++       }
++       zynqmp_gqspi_write(xqspi, GQSPI_EN_OFST, GQSPI_EN_MASK);
++
+        return 0;
+ }
+
+@@ -552,6 +564,75 @@ static void zynqmp_qspi_readrxfifo(struct zynqmp_qspi =
+*xqspi, u32 size)
+        }
+ }
+
++/**
++ * zynqmp_qspi_fillgenfifo - Fills the GENFIFO.
++ * @xqspi:     Pointer to the zynqmp_qspi structure
++ * @nbits:     Transfer/Receive buswidth.
++ * @genfifoentry:       Variable in which GENFIFO mask is saved
++ */
++static void zynqmp_qspi_fillgenfifo(struct zynqmp_qspi *xqspi, u8 nbits,
++                                   u32 genfifoentry)
++{
++       u32 transfer_len =3D 0;
++
++       if (xqspi->txbuf) {
++               genfifoentry &=3D ~GQSPI_GENFIFO_RX;
++               genfifoentry |=3D GQSPI_GENFIFO_DATA_XFER;
++               genfifoentry |=3D GQSPI_GENFIFO_TX;
++               transfer_len =3D xqspi->bytes_to_transfer;
++       } else {
++               genfifoentry &=3D ~GQSPI_GENFIFO_TX;
++               genfifoentry |=3D GQSPI_GENFIFO_DATA_XFER;
++               genfifoentry |=3D GQSPI_GENFIFO_RX;
++               if (xqspi->mode =3D=3D GQSPI_MODE_DMA)
++                       transfer_len =3D xqspi->dma_rx_bytes;
++               else
++                       transfer_len =3D xqspi->bytes_to_receive;
++       }
++       genfifoentry |=3D zynqmp_qspi_selectspimode(xqspi, nbits);
++       xqspi->genfifoentry =3D genfifoentry;
++
++       if ((transfer_len) < GQSPI_GENFIFO_IMM_DATA_MASK) {
++               genfifoentry &=3D ~GQSPI_GENFIFO_IMM_DATA_MASK;
++               genfifoentry |=3D transfer_len;
++               zynqmp_gqspi_write(xqspi, GQSPI_GEN_FIFO_OFST, genfifoentry=
+);
++       } else {
++               int tempcount =3D transfer_len;
++               u32 exponent =3D 8;       /* 2^8 =3D 256 */
++               u8 imm_data =3D tempcount & 0xFF;
++
++               tempcount &=3D ~(tempcount & 0xFF);
++               /* Immediate entry */
++               if (tempcount !=3D 0) {
++                       /* Exponent entries */
++                       genfifoentry |=3D GQSPI_GENFIFO_EXP;
++                       while (tempcount !=3D 0) {
++                               if (tempcount & GQSPI_GENFIFO_EXP_START) {
++                                       genfifoentry &=3D
++                                               ~GQSPI_GENFIFO_IMM_DATA_MAS=
+K;
++                                       genfifoentry |=3D exponent;
++                                       zynqmp_gqspi_write(xqspi,
++                                                          GQSPI_GEN_FIFO_O=
+FST,
++                                                          genfifoentry);
++                               }
++                               tempcount =3D tempcount >> 1;
++                               exponent++;
++                       }
++               }
++               if (imm_data !=3D 0) {
++                       genfifoentry &=3D ~GQSPI_GENFIFO_EXP;
++                       genfifoentry &=3D ~GQSPI_GENFIFO_IMM_DATA_MASK;
++                       genfifoentry |=3D (u8)(imm_data & 0xFF);
++                       zynqmp_gqspi_write(xqspi, GQSPI_GEN_FIFO_OFST,
++                                          genfifoentry);
++               }
++       }
++       if (xqspi->mode =3D=3D GQSPI_MODE_IO && xqspi->rxbuf) {
++               /* Dummy generic FIFO entry */
++               zynqmp_gqspi_write(xqspi, GQSPI_GEN_FIFO_OFST, 0x0);
++       }
++}
++
+ /**
+  * zynqmp_process_dma_irq - Handler for DMA done interrupt of QSPI
+  *                             controller
+@@ -614,9 +695,8 @@ static void zynqmp_process_dma_irq(struct zynqmp_qspi *=
+xqspi)
+  */
+ static irqreturn_t zynqmp_qspi_irq(int irq, void *dev_id)
+ {
+-       struct spi_master *master =3D dev_id;
+-       struct zynqmp_qspi *xqspi =3D spi_master_get_devdata(master);
+-       int ret =3D IRQ_NONE;
++       struct zynqmp_qspi *xqspi =3D (struct zynqmp_qspi *)dev_id;
++       irqreturn_t ret =3D IRQ_NONE;
+        u32 status, mask, dma_status =3D 0;
+
+        status =3D zynqmp_gqspi_read(xqspi, GQSPI_ISR_OFST);
+@@ -648,45 +728,17 @@ static irqreturn_t zynqmp_qspi_irq(int irq, void *dev=
+_id)
+        if ((xqspi->bytes_to_receive =3D=3D 0) && (xqspi->bytes_to_transfer=
+ =3D=3D 0)
+                        && ((status & GQSPI_IRQ_MASK) =3D=3D GQSPI_IRQ_MASK=
+)) {
+                zynqmp_gqspi_write(xqspi, GQSPI_IDR_OFST, GQSPI_ISR_IDR_MAS=
+K);
+-               spi_finalize_current_transfer(master);
++               complete(&xqspi->data_completion);
+                ret =3D IRQ_HANDLED;
+        }
+        return ret;
+ }
+
+ /**
+- * zynqmp_qspi_selectspimode - Selects SPI mode - x1 or x2 or x4.
+- * @xqspi:     xqspi is a pointer to the GQSPI instance
+- * @spimode:   spimode - SPI or DUAL or QUAD.
+- * Return:     Mask to set desired SPI mode in GENFIFO entry.
+- */
+-static inline u32 zynqmp_qspi_selectspimode(struct zynqmp_qspi *xqspi,
+-                                               u8 spimode)
+-{
+-       u32 mask =3D 0;
+-
+-       switch (spimode) {
+-       case GQSPI_SELECT_MODE_DUALSPI:
+-               mask =3D GQSPI_GENFIFO_MODE_DUALSPI;
+-               break;
+-       case GQSPI_SELECT_MODE_QUADSPI:
+-               mask =3D GQSPI_GENFIFO_MODE_QUADSPI;
+-               break;
+-       case GQSPI_SELECT_MODE_SPI:
+-               mask =3D GQSPI_GENFIFO_MODE_SPI;
+-               break;
+-       default:
+-               dev_warn(xqspi->dev, "Invalid SPI mode\n");
+-       }
+-
+-       return mask;
+-}
+-
+-/**
+- * zynq_qspi_setuprxdma - This function sets up the RX DMA operation
++ * zynqmp_qspi_setuprxdma - This function sets up the RX DMA operation
+  * @xqspi:     xqspi is a pointer to the GQSPI instance.
+  */
+-static void zynq_qspi_setuprxdma(struct zynqmp_qspi *xqspi)
++static void zynqmp_qspi_setuprxdma(struct zynqmp_qspi *xqspi)
+ {
+        u32 rx_bytes, rx_rem, config_reg;
+        dma_addr_t addr;
+@@ -733,162 +785,44 @@ static void zynq_qspi_setuprxdma(struct zynqmp_qspi =
+*xqspi)
+ }
+
+ /**
+- * zynqmp_qspi_txrxsetup - This function checks the TX/RX buffers in
+- *                             the transfer and sets up the GENFIFO entrie=
+s,
+- *                             TX FIFO as required.
+- * @xqspi:     xqspi is a pointer to the GQSPI instance.
+- * @transfer:  It is a pointer to the structure containing transfer data.
+- * @genfifoentry:      genfifoentry is pointer to the variable in which
+- *                     GENFIFO mask is returned to calling function
++ * zynqmp_qspi_write_op - This function sets up the GENFIFO entries,
++ *                     TX FIFO, and fills the TX FIFO with as many
++ *                     bytes as possible.
++ * @xqspi:     Pointer to the GQSPI instance.
++ * @tx_nbits:  Transfer buswidth.
++ * @genfifoentry:      Variable in which GENFIFO mask is returned
++ *                     to calling function
+  */
+-static void zynqmp_qspi_txrxsetup(struct zynqmp_qspi *xqspi,
+-                                 struct spi_transfer *transfer,
+-                                 u32 *genfifoentry)
++static void zynqmp_qspi_write_op(struct zynqmp_qspi *xqspi, u8 tx_nbits,
++                                u32 genfifoentry)
+ {
+        u32 config_reg;
+
+-       /* Transmit */
+-       if ((xqspi->txbuf !=3D NULL) && (xqspi->rxbuf =3D=3D NULL)) {
+-               /* Setup data to be TXed */
+-               *genfifoentry &=3D ~GQSPI_GENFIFO_RX;
+-               *genfifoentry |=3D GQSPI_GENFIFO_DATA_XFER;
+-               *genfifoentry |=3D GQSPI_GENFIFO_TX;
+-               *genfifoentry |=3D
+-                       zynqmp_qspi_selectspimode(xqspi, transfer->tx_nbits=
+);
+-               xqspi->bytes_to_transfer =3D transfer->len;
+-               if (xqspi->mode =3D=3D GQSPI_MODE_DMA) {
+-                       config_reg =3D zynqmp_gqspi_read(xqspi,
+-                                                       GQSPI_CONFIG_OFST);
+-                       config_reg &=3D ~GQSPI_CFG_MODE_EN_MASK;
+-                       zynqmp_gqspi_write(xqspi, GQSPI_CONFIG_OFST,
+-                                                               config_reg)=
+;
+-                       xqspi->mode =3D GQSPI_MODE_IO;
+-               }
+-               zynqmp_qspi_filltxfifo(xqspi, GQSPI_TXD_DEPTH);
+-               /* Discard RX data */
+-               xqspi->bytes_to_receive =3D 0;
+-       } else if ((xqspi->txbuf =3D=3D NULL) && (xqspi->rxbuf !=3D NULL)) =
+{
+-               /* Receive */
+-
+-               /* TX auto fill */
+-               *genfifoentry &=3D ~GQSPI_GENFIFO_TX;
+-               /* Setup RX */
+-               *genfifoentry |=3D GQSPI_GENFIFO_DATA_XFER;
+-               *genfifoentry |=3D GQSPI_GENFIFO_RX;
+-               *genfifoentry |=3D
+-                       zynqmp_qspi_selectspimode(xqspi, transfer->rx_nbits=
+);
+-               xqspi->bytes_to_transfer =3D 0;
+-               xqspi->bytes_to_receive =3D transfer->len;
+-               zynq_qspi_setuprxdma(xqspi);
++       zynqmp_qspi_fillgenfifo(xqspi, tx_nbits, genfifoentry);
++       zynqmp_qspi_filltxfifo(xqspi, GQSPI_TXD_DEPTH);
++       if (xqspi->mode =3D=3D GQSPI_MODE_DMA) {
++               config_reg =3D zynqmp_gqspi_read(xqspi,
++                                              GQSPI_CONFIG_OFST);
++               config_reg &=3D ~GQSPI_CFG_MODE_EN_MASK;
++               zynqmp_gqspi_write(xqspi, GQSPI_CONFIG_OFST,
++                                  config_reg);
++               xqspi->mode =3D GQSPI_MODE_IO;
+        }
+ }
+
+ /**
+- * zynqmp_qspi_start_transfer - Initiates the QSPI transfer
+- * @master:    Pointer to the spi_master structure which provides
+- *             information about the controller.
+- * @qspi:      Pointer to the spi_device structure
+- * @transfer:  Pointer to the spi_transfer structure which provide informa=
+tion
+- *             about next transfer parameters
+- *
+- * This function fills the TX FIFO, starts the QSPI transfer, and waits fo=
+r the
+- * transfer to be completed.
+- *
+- * Return:     Number of bytes transferred in the last transfer
++ * zynqmp_qspi_read_op - This function sets up the GENFIFO entries and
++ *                             RX DMA operation.
++ * @xqspi:     xqspi is a pointer to the GQSPI instance.
++ * @rx_nbits:  Receive buswidth.
++ * @genfifoentry:      genfifoentry is pointer to the variable in which
++ *                     GENFIFO mask is returned to calling function
+  */
+-static int zynqmp_qspi_start_transfer(struct spi_master *master,
+-                                     struct spi_device *qspi,
+-                                     struct spi_transfer *transfer)
++static void zynqmp_qspi_read_op(struct zynqmp_qspi *xqspi, u8 rx_nbits,
++                               u32 genfifoentry)
+ {
+-       struct zynqmp_qspi *xqspi =3D spi_master_get_devdata(master);
+-       u32 genfifoentry =3D 0x0, transfer_len;
+-
+-       xqspi->txbuf =3D transfer->tx_buf;
+-       xqspi->rxbuf =3D transfer->rx_buf;
+-
+-       zynqmp_qspi_setup_transfer(qspi, transfer);
+-
+-       genfifoentry |=3D xqspi->genfifocs;
+-       genfifoentry |=3D xqspi->genfifobus;
+-
+-       zynqmp_qspi_txrxsetup(xqspi, transfer, &genfifoentry);
+-
+-       if (xqspi->mode =3D=3D GQSPI_MODE_DMA)
+-               transfer_len =3D xqspi->dma_rx_bytes;
+-       else
+-               transfer_len =3D transfer->len;
+-
+-       xqspi->genfifoentry =3D genfifoentry;
+-       if ((transfer_len) < GQSPI_GENFIFO_IMM_DATA_MASK) {
+-               genfifoentry &=3D ~GQSPI_GENFIFO_IMM_DATA_MASK;
+-               genfifoentry |=3D transfer_len;
+-               zynqmp_gqspi_write(xqspi, GQSPI_GEN_FIFO_OFST, genfifoentry=
+);
+-       } else {
+-               int tempcount =3D transfer_len;
+-               u32 exponent =3D 8;       /* 2^8 =3D 256 */
+-               u8 imm_data =3D tempcount & 0xFF;
+-
+-               tempcount &=3D ~(tempcount & 0xFF);
+-               /* Immediate entry */
+-               if (tempcount !=3D 0) {
+-                       /* Exponent entries */
+-                       genfifoentry |=3D GQSPI_GENFIFO_EXP;
+-                       while (tempcount !=3D 0) {
+-                               if (tempcount & GQSPI_GENFIFO_EXP_START) {
+-                                       genfifoentry &=3D
+-                                           ~GQSPI_GENFIFO_IMM_DATA_MASK;
+-                                       genfifoentry |=3D exponent;
+-                                       zynqmp_gqspi_write(xqspi,
+-                                                          GQSPI_GEN_FIFO_O=
+FST,
+-                                                          genfifoentry);
+-                               }
+-                               tempcount =3D tempcount >> 1;
+-                               exponent++;
+-                       }
+-               }
+-               if (imm_data !=3D 0) {
+-                       genfifoentry &=3D ~GQSPI_GENFIFO_EXP;
+-                       genfifoentry &=3D ~GQSPI_GENFIFO_IMM_DATA_MASK;
+-                       genfifoentry |=3D (u8) (imm_data & 0xFF);
+-                       zynqmp_gqspi_write(xqspi,
+-                                          GQSPI_GEN_FIFO_OFST, genfifoentr=
+y);
+-               }
+-       }
+-
+-       if ((xqspi->mode =3D=3D GQSPI_MODE_IO) &&
+-                       (xqspi->rxbuf !=3D NULL)) {
+-               /* Dummy generic FIFO entry */
+-               zynqmp_gqspi_write(xqspi, GQSPI_GEN_FIFO_OFST, 0x0);
+-       }
+-
+-       /* Since we are using manual mode */
+-       zynqmp_gqspi_write(xqspi, GQSPI_CONFIG_OFST,
+-                          zynqmp_gqspi_read(xqspi, GQSPI_CONFIG_OFST) |
+-                          GQSPI_CFG_START_GEN_FIFO_MASK);
+-
+-       if (xqspi->txbuf !=3D NULL)
+-               /* Enable interrupts for TX */
+-               zynqmp_gqspi_write(xqspi, GQSPI_IER_OFST,
+-                                  GQSPI_IER_TXEMPTY_MASK |
+-                                       GQSPI_IER_GENFIFOEMPTY_MASK |
+-                                       GQSPI_IER_TXNOT_FULL_MASK);
+-
+-       if (xqspi->rxbuf !=3D NULL) {
+-               /* Enable interrupts for RX */
+-               if (xqspi->mode =3D=3D GQSPI_MODE_DMA) {
+-                       /* Enable DMA interrupts */
+-                       zynqmp_gqspi_write(xqspi,
+-                                       GQSPI_QSPIDMA_DST_I_EN_OFST,
+-                                       GQSPI_QSPIDMA_DST_I_EN_DONE_MASK);
+-               } else {
+-                       zynqmp_gqspi_write(xqspi, GQSPI_IER_OFST,
+-                                       GQSPI_IER_GENFIFOEMPTY_MASK |
+-                                       GQSPI_IER_RXNEMPTY_MASK |
+-                                       GQSPI_IER_RXEMPTY_MASK);
+-               }
+-       }
+-
+-       return transfer->len;
++       zynqmp_qspi_fillgenfifo(xqspi, rx_nbits, genfifoentry);
++       zynqmp_qspi_setuprxdma(xqspi);
+ }
+
+ /**
+@@ -901,11 +835,12 @@ static int zynqmp_qspi_start_transfer(struct spi_mast=
+er *master,
+  */
+ static int __maybe_unused zynqmp_qspi_suspend(struct device *dev)
+ {
+-       struct spi_master *master =3D dev_get_drvdata(dev);
++       struct spi_controller *ctlr =3D dev_get_drvdata(dev);
++       struct zynqmp_qspi *xqspi =3D spi_controller_get_devdata(ctlr);
+
+-       spi_master_suspend(master);
++       spi_controller_suspend(ctlr);
+
+-       zynqmp_unprepare_transfer_hardware(master);
++       zynqmp_gqspi_write(xqspi, GQSPI_EN_OFST, 0x0);
+
+        return 0;
+ }
+@@ -921,8 +856,8 @@ static int __maybe_unused zynqmp_qspi_suspend(struct de=
+vice *dev)
+  */
+ static int __maybe_unused zynqmp_qspi_resume(struct device *dev)
+ {
+-       struct spi_master *master =3D dev_get_drvdata(dev);
+-       struct zynqmp_qspi *xqspi =3D spi_master_get_devdata(master);
++       struct spi_controller *ctlr =3D dev_get_drvdata(dev);
++       struct zynqmp_qspi *xqspi =3D spi_controller_get_devdata(ctlr);
+        int ret =3D 0;
+
+        ret =3D clk_enable(xqspi->pclk);
+@@ -938,7 +873,7 @@ static int __maybe_unused zynqmp_qspi_resume(struct dev=
+ice *dev)
+                return ret;
+        }
+
+-       spi_master_resume(master);
++       spi_controller_resume(ctlr);
+
+        clk_disable(xqspi->refclk);
+        clk_disable(xqspi->pclk);
+@@ -955,8 +890,7 @@ static int __maybe_unused zynqmp_qspi_resume(struct dev=
+ice *dev)
+  */
+ static int __maybe_unused zynqmp_runtime_suspend(struct device *dev)
+ {
+-       struct spi_master *master =3D dev_get_drvdata(dev);
+-       struct zynqmp_qspi *xqspi =3D spi_master_get_devdata(master);
++       struct zynqmp_qspi *xqspi =3D (struct zynqmp_qspi *)dev_get_drvdata=
+(dev);
+
+        clk_disable(xqspi->refclk);
+        clk_disable(xqspi->pclk);
+@@ -974,8 +908,7 @@ static int __maybe_unused zynqmp_runtime_suspend(struct=
+ device *dev)
+  */
+ static int __maybe_unused zynqmp_runtime_resume(struct device *dev)
+ {
+-       struct spi_master *master =3D dev_get_drvdata(dev);
+-       struct zynqmp_qspi *xqspi =3D spi_master_get_devdata(master);
++       struct zynqmp_qspi *xqspi =3D (struct zynqmp_qspi *)dev_get_drvdata=
+(dev);
+        int ret;
+
+        ret =3D clk_enable(xqspi->pclk);
+@@ -994,12 +927,177 @@ static int __maybe_unused zynqmp_runtime_resume(stru=
+ct device *dev)
+        return 0;
+ }
+
++/**
++ * zynqmp_qspi_exec_op() - Initiates the QSPI transfer
++ * @mem: The SPI memory
++ * @op: The memory operation to execute
++ *
++ * Executes a memory operation.
++ *
++ * This function first selects the chip and starts the memory operation.
++ *
++ * Return: 0 in case of success, a negative error code otherwise.
++ */
++static int zynqmp_qspi_exec_op(struct spi_mem *mem,
++                              const struct spi_mem_op *op)
++{
++       struct zynqmp_qspi *xqspi =3D spi_controller_get_devdata
++                                   (mem->spi->master);
++       int err =3D 0, i;
++       u8 *tmpbuf;
++       u32 genfifoentry =3D 0;
++
++       dev_dbg(xqspi->dev, "cmd:%#x mode:%d.%d.%d.%d\n",
++               op->cmd.opcode, op->cmd.buswidth, op->addr.buswidth,
++               op->dummy.buswidth, op->data.buswidth);
++
++       zynqmp_qspi_config_op(xqspi, mem->spi);
++       zynqmp_qspi_chipselect(mem->spi, false);
++       genfifoentry |=3D xqspi->genfifocs;
++       genfifoentry |=3D xqspi->genfifobus;
++
++       if (op->cmd.opcode) {
++               tmpbuf =3D kzalloc(op->cmd.nbytes, GFP_KERNEL | GFP_DMA);
++               if (!tmpbuf)
++                       return -ENOMEM;
++               tmpbuf[0] =3D op->cmd.opcode;
++               reinit_completion(&xqspi->data_completion);
++               xqspi->txbuf =3D tmpbuf;
++               xqspi->rxbuf =3D NULL;
++               xqspi->bytes_to_transfer =3D op->cmd.nbytes;
++               xqspi->bytes_to_receive =3D 0;
++               zynqmp_qspi_write_op(xqspi, op->cmd.buswidth, genfifoentry)=
+;
++               zynqmp_gqspi_write(xqspi, GQSPI_CONFIG_OFST,
++                                  zynqmp_gqspi_read(xqspi, GQSPI_CONFIG_OF=
+ST) |
++                                  GQSPI_CFG_START_GEN_FIFO_MASK);
++               zynqmp_gqspi_write(xqspi, GQSPI_IER_OFST,
++                                  GQSPI_IER_GENFIFOEMPTY_MASK |
++                                  GQSPI_IER_TXNOT_FULL_MASK);
++               if (!wait_for_completion_interruptible_timeout
++                   (&xqspi->data_completion, msecs_to_jiffies(1000))) {
++                       err =3D -ETIMEDOUT;
++                       kfree(tmpbuf);
++                       goto return_err;
++               }
++               kfree(tmpbuf);
++       }
++
++       if (op->addr.nbytes) {
++               for (i =3D 0; i < op->addr.nbytes; i++) {
++                       *(((u8 *)xqspi->txbuf) + i) =3D op->addr.val >>
++                                       (8 * (op->addr.nbytes - i - 1));
++               }
++
++               reinit_completion(&xqspi->data_completion);
++               xqspi->rxbuf =3D NULL;
++               xqspi->bytes_to_transfer =3D op->addr.nbytes;
++               xqspi->bytes_to_receive =3D 0;
++               zynqmp_qspi_write_op(xqspi, op->addr.buswidth, genfifoentry=
+);
++               zynqmp_gqspi_write(xqspi, GQSPI_CONFIG_OFST,
++                                  zynqmp_gqspi_read(xqspi,
++                                                    GQSPI_CONFIG_OFST) |
++                                  GQSPI_CFG_START_GEN_FIFO_MASK);
++               zynqmp_gqspi_write(xqspi, GQSPI_IER_OFST,
++                                  GQSPI_IER_TXEMPTY_MASK |
++                                  GQSPI_IER_GENFIFOEMPTY_MASK |
++                                  GQSPI_IER_TXNOT_FULL_MASK);
++               if (!wait_for_completion_interruptible_timeout
++                   (&xqspi->data_completion, msecs_to_jiffies(1000))) {
++                       err =3D -ETIMEDOUT;
++                       goto return_err;
++               }
++       }
++
++       if (op->dummy.nbytes) {
++               tmpbuf =3D kzalloc(op->dummy.nbytes, GFP_KERNEL | GFP_DMA);
++               if (!tmpbuf)
++                       return -ENOMEM;
++               memset(tmpbuf, 0xff, op->dummy.nbytes);
++               reinit_completion(&xqspi->data_completion);
++               xqspi->txbuf =3D tmpbuf;
++               xqspi->rxbuf =3D NULL;
++               xqspi->bytes_to_transfer =3D op->dummy.nbytes;
++               xqspi->bytes_to_receive =3D 0;
++               zynqmp_qspi_write_op(xqspi, op->dummy.buswidth,
++                                    genfifoentry);
++               zynqmp_gqspi_write(xqspi, GQSPI_CONFIG_OFST,
++                                  zynqmp_gqspi_read(xqspi, GQSPI_CONFIG_OF=
+ST) |
++                                  GQSPI_CFG_START_GEN_FIFO_MASK);
++               zynqmp_gqspi_write(xqspi, GQSPI_IER_OFST,
++                                  GQSPI_IER_TXEMPTY_MASK |
++                                  GQSPI_IER_GENFIFOEMPTY_MASK |
++                                  GQSPI_IER_TXNOT_FULL_MASK);
++               if (!wait_for_completion_interruptible_timeout
++                   (&xqspi->data_completion, msecs_to_jiffies(1000))) {
++                       err =3D -ETIMEDOUT;
++                       kfree(tmpbuf);
++                       goto return_err;
++               }
++
++               kfree(tmpbuf);
++       }
++
++       if (op->data.nbytes) {
++               reinit_completion(&xqspi->data_completion);
++               if (op->data.dir =3D=3D SPI_MEM_DATA_OUT) {
++                       xqspi->txbuf =3D (u8 *)op->data.buf.out;
++                       xqspi->rxbuf =3D NULL;
++                       xqspi->bytes_to_transfer =3D op->data.nbytes;
++                       xqspi->bytes_to_receive =3D 0;
++                       zynqmp_qspi_write_op(xqspi, op->data.buswidth,
++                                            genfifoentry);
++                       zynqmp_gqspi_write(xqspi, GQSPI_CONFIG_OFST,
++                                          zynqmp_gqspi_read
++                                          (xqspi, GQSPI_CONFIG_OFST) |
++                                          GQSPI_CFG_START_GEN_FIFO_MASK);
++                       zynqmp_gqspi_write(xqspi, GQSPI_IER_OFST,
++                                          GQSPI_IER_TXEMPTY_MASK |
++                                          GQSPI_IER_GENFIFOEMPTY_MASK |
++                                          GQSPI_IER_TXNOT_FULL_MASK);
++               } else {
++                       xqspi->txbuf =3D NULL;
++                       xqspi->rxbuf =3D (u8 *)op->data.buf.in;
++                       xqspi->bytes_to_receive =3D op->data.nbytes;
++                       xqspi->bytes_to_transfer =3D 0;
++                       zynqmp_qspi_read_op(xqspi, op->data.buswidth,
++                                           genfifoentry);
++                       zynqmp_gqspi_write(xqspi, GQSPI_CONFIG_OFST,
++                                          zynqmp_gqspi_read
++                                          (xqspi, GQSPI_CONFIG_OFST) |
++                                          GQSPI_CFG_START_GEN_FIFO_MASK);
++                       if (xqspi->mode =3D=3D GQSPI_MODE_DMA) {
++                               zynqmp_gqspi_write
++                                       (xqspi, GQSPI_QSPIDMA_DST_I_EN_OFST=
+,
++                                        GQSPI_QSPIDMA_DST_I_EN_DONE_MASK);
++                       } else {
++                               zynqmp_gqspi_write(xqspi, GQSPI_IER_OFST,
++                                                  GQSPI_IER_GENFIFOEMPTY_M=
+ASK |
++                                                  GQSPI_IER_RXNEMPTY_MASK =
+|
++                                                  GQSPI_IER_RXEMPTY_MASK);
++                       }
++               }
++               if (!wait_for_completion_interruptible_timeout
++                   (&xqspi->data_completion, msecs_to_jiffies(1000)))
++                       err =3D -ETIMEDOUT;
++       }
++
++return_err:
++
++       zynqmp_qspi_chipselect(mem->spi, true);
++
++       return err;
++}
++
+ static const struct dev_pm_ops zynqmp_qspi_dev_pm_ops =3D {
+        SET_RUNTIME_PM_OPS(zynqmp_runtime_suspend,
+                           zynqmp_runtime_resume, NULL)
+        SET_SYSTEM_SLEEP_PM_OPS(zynqmp_qspi_suspend, zynqmp_qspi_resume)
+ };
+
++static const struct spi_controller_mem_ops zynqmp_qspi_mem_ops =3D {
++       .exec_op =3D zynqmp_qspi_exec_op,
++};
++
+ /**
+  * zynqmp_qspi_probe - Probe method for the QSPI driver
+  * @pdev:      Pointer to the platform_device structure
+@@ -1011,17 +1109,18 @@ static const struct dev_pm_ops zynqmp_qspi_dev_pm_o=
+ps =3D {
+ static int zynqmp_qspi_probe(struct platform_device *pdev)
+ {
+        int ret =3D 0;
+-       struct spi_master *master;
++       struct spi_controller *ctlr;
+        struct zynqmp_qspi *xqspi;
+        struct device *dev =3D &pdev->dev;
++       struct device_node *np =3D dev->of_node;
+
+-       master =3D spi_alloc_master(&pdev->dev, sizeof(*xqspi));
+-       if (!master)
++       ctlr =3D spi_alloc_master(&pdev->dev, sizeof(*xqspi));
++       if (!ctlr)
+                return -ENOMEM;
+
+-       xqspi =3D spi_master_get_devdata(master);
+-       master->dev.of_node =3D pdev->dev.of_node;
+-       platform_set_drvdata(pdev, master);
++       xqspi =3D spi_controller_get_devdata(ctlr);
++       xqspi->dev =3D dev;
++       platform_set_drvdata(pdev, xqspi);
+
+        xqspi->regs =3D devm_platform_ioremap_resource(pdev, 0);
+        if (IS_ERR(xqspi->regs)) {
+@@ -1029,7 +1128,6 @@ static int zynqmp_qspi_probe(struct platform_device *=
+pdev)
+                goto remove_master;
+        }
+
+-       xqspi->dev =3D dev;
+        xqspi->pclk =3D devm_clk_get(&pdev->dev, "pclk");
+        if (IS_ERR(xqspi->pclk)) {
+                dev_err(dev, "pclk clock not found.\n");
+@@ -1037,11 +1135,7 @@ static int zynqmp_qspi_probe(struct platform_device =
+*pdev)
+                goto remove_master;
+        }
+
+-       ret =3D clk_prepare_enable(xqspi->pclk);
+-       if (ret) {
+-               dev_err(dev, "Unable to enable APB clock.\n");
+-               goto remove_master;
+-       }
++       init_completion(&xqspi->data_completion);
+
+        xqspi->refclk =3D devm_clk_get(&pdev->dev, "ref_clk");
+        if (IS_ERR(xqspi->refclk)) {
+@@ -1050,6 +1144,12 @@ static int zynqmp_qspi_probe(struct platform_device =
+*pdev)
+                goto clk_dis_pclk;
+        }
+
++       ret =3D clk_prepare_enable(xqspi->pclk);
++       if (ret) {
++               dev_err(dev, "Unable to enable APB clock.\n");
++               goto remove_master;
++       }
++
+        ret =3D clk_prepare_enable(xqspi->refclk);
+        if (ret) {
+                dev_err(dev, "Unable to enable device clock.\n");
+@@ -1071,32 +1171,28 @@ static int zynqmp_qspi_probe(struct platform_device=
+ *pdev)
+                goto clk_dis_all;
+        }
+        ret =3D devm_request_irq(&pdev->dev, xqspi->irq, zynqmp_qspi_irq,
+-                              0, pdev->name, master);
++                              0, pdev->name, xqspi);
+        if (ret !=3D 0) {
+                ret =3D -ENXIO;
+                dev_err(dev, "request_irq failed\n");
+                goto clk_dis_all;
+        }
+
+-       master->num_chipselect =3D GQSPI_DEFAULT_NUM_CS;
+-
+-       master->setup =3D zynqmp_qspi_setup;
+-       master->set_cs =3D zynqmp_qspi_chipselect;
+-       master->transfer_one =3D zynqmp_qspi_start_transfer;
+-       master->prepare_transfer_hardware =3D zynqmp_prepare_transfer_hardw=
+are;
+-       master->unprepare_transfer_hardware =3D
+-                                       zynqmp_unprepare_transfer_hardware;
+-       master->max_speed_hz =3D clk_get_rate(xqspi->refclk) / 2;
+-       master->bits_per_word_mask =3D SPI_BPW_MASK(8);
+-       master->mode_bits =3D SPI_CPOL | SPI_CPHA | SPI_RX_DUAL | SPI_RX_QU=
+AD |
++       ctlr->bits_per_word_mask =3D SPI_BPW_MASK(8);
++       ctlr->num_chipselect =3D GQSPI_DEFAULT_NUM_CS;
++       ctlr->mem_ops =3D &zynqmp_qspi_mem_ops;
++       ctlr->setup =3D zynqmp_qspi_setup_op;
++       ctlr->max_speed_hz =3D clk_get_rate(xqspi->refclk) / 2;
++       ctlr->bits_per_word_mask =3D SPI_BPW_MASK(8);
++       ctlr->mode_bits =3D SPI_CPOL | SPI_CPHA | SPI_RX_DUAL | SPI_RX_QUAD=
+ |
+                            SPI_TX_DUAL | SPI_TX_QUAD;
++       ctlr->dev.of_node =3D np;
+
+-       if (master->dev.parent =3D=3D NULL)
+-               master->dev.parent =3D &master->dev;
+-
+-       ret =3D spi_register_master(master);
+-       if (ret)
++       ret =3D devm_spi_register_controller(&pdev->dev, ctlr);
++       if (ret) {
++               dev_err(&pdev->dev, "spi_register_controller failed\n");
+                goto clk_dis_all;
++       }
+
+        return 0;
+
+@@ -1107,7 +1203,7 @@ static int zynqmp_qspi_probe(struct platform_device *=
+pdev)
+ clk_dis_pclk:
+        clk_disable_unprepare(xqspi->pclk);
+ remove_master:
+-       spi_master_put(master);
++       spi_controller_put(ctlr);
+
+        return ret;
+ }
+@@ -1124,8 +1220,7 @@ static int zynqmp_qspi_probe(struct platform_device *=
+pdev)
+  */
+ static int zynqmp_qspi_remove(struct platform_device *pdev)
+ {
+-       struct spi_master *master =3D platform_get_drvdata(pdev);
+-       struct zynqmp_qspi *xqspi =3D spi_master_get_devdata(master);
++       struct zynqmp_qspi *xqspi =3D platform_get_drvdata(pdev);
+
+        zynqmp_gqspi_write(xqspi, GQSPI_EN_OFST, 0x0);
+        clk_disable_unprepare(xqspi->refclk);
+@@ -1133,8 +1228,6 @@ static int zynqmp_qspi_remove(struct platform_device =
+*pdev)
+        pm_runtime_set_suspended(&pdev->dev);
+        pm_runtime_disable(&pdev->dev);
+
+-       spi_unregister_master(master);
+-
+        return 0;
+ }
+
+--
+2.17.1
+
+This email and any attachments are intended for the sole use of the named r=
+ecipient(s) and contain(s) confidential information that may be proprietary=
+, privileged or copyrighted under applicable law. If you are not the intend=
+ed recipient, do not read, copy, or forward this email message or any attac=
+hments. Delete this email message and any attachments immediately.
