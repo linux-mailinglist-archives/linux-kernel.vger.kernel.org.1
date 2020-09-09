@@ -2,280 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF17A263431
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 19:16:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 984FF263407
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 19:13:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731299AbgIIRQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 13:16:20 -0400
-Received: from mail-co1nam11on2063.outbound.protection.outlook.com ([40.107.220.63]:38593
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730167AbgIIP2X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 11:28:23 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RQne3eg9/uBTENfc/txBkJPhFVkVtafUzCvZnlTloWPPauVs4T+EFGDIUe9AFZzM+Enh3qNuceBP5dJrQBNoM28kqHFZ8IjU4lQJKSLYt98jqDSROKCEceK0QY0MFeWLI0DIm43INoDLPM5zvI1OWb516Pefi1h70C7QPVOnC8dBFjWj2P7HhoFw/rm49Ja/J6KPFaUEgGOEwkU+N1i+S4k8zLcJE/xRFbVTd1u3lfNx5tr9KwUqB4DeFaMEbt0tmBXlcbnnWp4TaiB2Gvw5jLSqQskYFXDQmGJ8uDx8YHoYZ8ynJFiCV+gVtmN5KOh9wXx9glvzAse+zxc9987sbA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sYm7dvHgevEBLBzV9q39cYMduiZbAfAan1yGqKp/dpU=;
- b=AtKpDw6fI5ddc/eJu8dwEJUvV3uT89QRTkVqQOyjkDADVPld17WloALQ/XphK0SQeOdqYc0kfUJ3YefN6wFCU+9/PVY/JFqTUa0S4RW2+LkQMkkX1Tb3LkyC5fz6V4439ylY2Dtht/aZ0hBD3+kd2VCF0fBkwQBRcg9XYuJqs+2/UddA0EINGvTflQxQNukCQT1Q64wNcGlWGu3cU9eWTN22Y3kW1gvP7X0CovtWjf5xfd2KwRG5gF96sRxdlPRG8WG5dpP0HvAsOKUYvzx1gdrWrFmVOxaymg7osXUqX1StkFvVP9qEjK9XUyl+1eRrZU5ZUc8xV+L74evYhV059A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.60.83) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=xilinx.com;
- dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
- not signed); arc=none
+        id S1730340AbgIIRNj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 13:13:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47384 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730061AbgIIPcW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 11:32:22 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD645C061756;
+        Wed,  9 Sep 2020 08:31:07 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id 185so2734618oie.11;
+        Wed, 09 Sep 2020 08:31:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sYm7dvHgevEBLBzV9q39cYMduiZbAfAan1yGqKp/dpU=;
- b=fEbNzoXOSgzE6M+ekwXYWV2Xnlj/7Csnv8026aHbgSqWjO9bGNZeYv5Yr0PIY+cyUq5YVVJi4AazpAgiU1WX9E2vetsaSSphcyxlkrkd7ENM0cfy9LdKpsqyseSJHNhAD7ih1aVef8UCItWIbOjKr2DpQXMlV2ZGXT4jYZin4BU=
-Received: from MN2PR08CA0029.namprd08.prod.outlook.com (2603:10b6:208:239::34)
- by BL0PR02MB4433.namprd02.prod.outlook.com (2603:10b6:208:45::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Wed, 9 Sep
- 2020 15:27:26 +0000
-Received: from BL2NAM02FT045.eop-nam02.prod.protection.outlook.com
- (2603:10b6:208:239:cafe::1a) by MN2PR08CA0029.outlook.office365.com
- (2603:10b6:208:239::34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16 via Frontend
- Transport; Wed, 9 Sep 2020 15:27:26 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.60.83)
- smtp.mailfrom=xilinx.com; vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=bestguesspass action=none
- header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.60.83 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.60.83; helo=xsj-pvapsmtpgw01;
-Received: from xsj-pvapsmtpgw01 (149.199.60.83) by
- BL2NAM02FT045.mail.protection.outlook.com (10.152.77.16) with Microsoft SMTP
- Server id 15.20.3348.17 via Frontend Transport; Wed, 9 Sep 2020 15:27:26
- +0000
-Received: from [149.199.38.66] (port=45087 helo=smtp.xilinx.com)
-        by xsj-pvapsmtpgw01 with esmtp (Exim 4.90)
-        (envelope-from <amit.kumar-mahapatra@xilinx.com>)
-        id 1kG205-000567-UF; Wed, 09 Sep 2020 08:27:09 -0700
-Received: from [127.0.0.1] (helo=localhost)
-        by smtp.xilinx.com with smtp (Exim 4.63)
-        (envelope-from <amit.kumar-mahapatra@xilinx.com>)
-        id 1kG20L-00069R-QB; Wed, 09 Sep 2020 08:27:25 -0700
-Received: from xsj-pvapsmtp01 (mailhub.xilinx.com [149.199.38.66])
-        by xsj-smtp-dlp1.xlnx.xilinx.com (8.13.8/8.13.1) with ESMTP id 089FRKQA024347;
-        Wed, 9 Sep 2020 08:27:20 -0700
-Received: from [10.140.6.25] (helo=xhdnagasure40.xilinx.com)
-        by xsj-pvapsmtp01 with esmtp (Exim 4.63)
-        (envelope-from <amit.kumar-mahapatra@xilinx.com>)
-        id 1kG20G-00068K-0I; Wed, 09 Sep 2020 08:27:20 -0700
-From:   Amit Kumar Mahapatra <amit.kumar-mahapatra@xilinx.com>
-To:     broonie@kernel.org
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        michal.simek@xilinx.com, sgoud@xilinx.com, nagasure@xilinx.com,
-        Amit Kumar Mahapatra <amit.kumar-mahapatra@xilinx.com>
-Subject: [PATCH 3/3] spi: spi-zynqmp-gqspi: Fix incorrect indentation
-Date:   Wed,  9 Sep 2020 09:27:08 -0600
-Message-Id: <20200909152708.2767-4-amit.kumar-mahapatra@xilinx.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200909152708.2767-1-amit.kumar-mahapatra@xilinx.com>
-References: <20200909152708.2767-1-amit.kumar-mahapatra@xilinx.com>
-X-RCIS-Action: ALLOW
-X-TM-AS-Product-Ver: IMSS-7.1.0.1224-8.2.0.1013-23620.005
-X-TM-AS-User-Approved-Sender: Yes;Yes
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-PublicTrafficType: Email
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=tSgsq9zZhpkzLhA9Y8uyv8bzBmNho/QvRHp/rEYJJaQ=;
+        b=jrPAVlhOCfDjcxMkdtnXgoaMQ9g+BE0Bt8xsYrxiGhf/ja44JVGrjaUzbbC++rjxk2
+         PgBsVIb/zKiLAZOxNnW4uyKru1hpEtHCj1Ex3/jqh8HnrQhFPffLILS2hi8nDT6rnVP+
+         eC7eCOLYTXuNbEGSRa9Io9ULDN2YDAnMjzkRWS0+w4k3j1nIY969bGHriDGbPMlPcSxR
+         WY1WmxGBgIE1hAulMioHSnl1IgKi1nkx7Rxno6nw3Wnhuop6nbw4jqrxlzwvjJ/nfOAo
+         R0d6M3x3rysIvLQ98MZcT+/RQjEre8h+VUKQYvHYFJHlBh4UQ1Sn0wcKCjZvpAdAAC9D
+         jD3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=tSgsq9zZhpkzLhA9Y8uyv8bzBmNho/QvRHp/rEYJJaQ=;
+        b=LGzGAk6+nCXE8hAy2riuZTzfxHdKRFLzqIUjOP6VwK2Z6b2kzPna1n9nvbnU7BE24N
+         K/Lf/1WuSqpk0sV3DsSHCIUTxvwozkhvtuYDbF7P2e8yDN+x+iykOnJtMUc5cXJmk8Ur
+         YDbirDpadBob4xr6PF+Y7xCrtaoakT33q1nk4yW8AE0RYpXDQXQA+1xmkiIPTnYKeC/R
+         DEJmhlZH/DBlJK9lE6kbFbMtBClz2eh9dbV+NJP30bQ1ioSmSFNn69YBP+7ttSdQD1uU
+         sB97rYyBJp3LsVEh2Mrmceuylw9Fe3VJJTqFkT5aPSQZb6GlZ1KJ/k4gD7jYuBSADCeN
+         cA9w==
+X-Gm-Message-State: AOAM5334DTFcMoixUzJ4/vVM2ITgyGWnzbbPrYdqFJErxUod4JTuZY5D
+        vnpd0Qdssv3gtYC9oWfs1C9hKPgZDLE=
+X-Google-Smtp-Source: ABdhPJwmLueZHLJ64xudh7umkHBP7kF/oOLmyEL+d1nLqrlPu7RN/sQciFpuqObAvspMiYRf9Pa1Qw==
+X-Received: by 2002:aca:fd58:: with SMTP id b85mr972902oii.20.1599665467200;
+        Wed, 09 Sep 2020 08:31:07 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id c14sm432507ooi.9.2020.09.09.08.31.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Sep 2020 08:31:06 -0700 (PDT)
+Subject: Re: [PATCH] hwmon: (pmbus) Expose PEC debugfs attribute
+To:     Andrew Jeffery <andrew@aj.id.au>, linux-hwmon@vger.kernel.org
+Cc:     jdelvare@suse.com, openbmc@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+References: <20200909132411.2906159-1-andrew@aj.id.au>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <4f2de881-1391-b1b1-18b3-8d3a06653da9@roeck-us.net>
+Date:   Wed, 9 Sep 2020 08:31:05 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MS-Office365-Filtering-Correlation-Id: e6c6d7e2-db00-4662-5568-08d854d4db44
-X-MS-TrafficTypeDiagnostic: BL0PR02MB4433:
-X-Microsoft-Antispam-PRVS: <BL0PR02MB443339844AE1BC63E58E4A30BA260@BL0PR02MB4433.namprd02.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: xBZZougCxVzs0FV2ZkRvgqQ8nMK/woq3XU6J+4ErjmN55nIOb79W3HMcs1KGJPQKEoKnS7wJsVjxpNyvogtxDRATS0EUbrV/zvhtXRkk2tirO5S1Q9RsasslEvbt/9kZR+93toWheJRtFPo3tfO/VLmm4jEo93UxU77uL3jqeIjJ8IJZWr/9JWO6vl0WeNZHk6ay2yTgs11OjtinzmIs2/AakYKoqiC4J7fWsukcsyFgY3kmK8R8DGLAyN9re/dd+2PkRjahiPxkIXmrxC2rJFT0S7XazvB2NViiL8HQAGGhI/+LAOzMTRW5X7taDE1t/N8AOc1Er8bjOOxdQudUOEWdT2HBOGYy0BlYTdoOvZEm994e6aIwsJJ2m0SZ9KdDvJJ2wXIfOYTSZMKjwvafSA==
-X-Forefront-Antispam-Report: CIP:149.199.60.83;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapsmtpgw01;PTR:unknown-60-83.xilinx.com;CAT:NONE;SFS:(39860400002)(376002)(346002)(136003)(396003)(46966005)(6916009)(8936002)(7696005)(4326008)(83380400001)(2906002)(107886003)(2616005)(36756003)(478600001)(47076004)(336012)(82740400003)(9786002)(81166007)(356005)(426003)(316002)(70586007)(70206006)(8676002)(82310400003)(26005)(5660300002)(1076003)(6666004)(186003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Sep 2020 15:27:26.1363
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: e6c6d7e2-db00-4662-5568-08d854d4db44
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.60.83];Helo=[xsj-pvapsmtpgw01]
-X-MS-Exchange-CrossTenant-AuthSource: BL2NAM02FT045.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR02MB4433
+In-Reply-To: <20200909132411.2906159-1-andrew@aj.id.au>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixed incorrect indentation in ZynqMP qspi controller driver.
+On 9/9/20 6:24 AM, Andrew Jeffery wrote:
+> Enable runtime debug control of whether the PEC byte is exchanged with
+> the PMBus device.
+> 
+> Some manufacturers have asked for the PEC to be disabled as part of
+> debugging driver communication issues with devices.
+> 
+> Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
+> ---
+>  drivers/hwmon/pmbus/pmbus_core.c | 39 ++++++++++++++++++++++++++++++++
+>  1 file changed, 39 insertions(+)
+> 
+> diff --git a/drivers/hwmon/pmbus/pmbus_core.c b/drivers/hwmon/pmbus/pmbus_core.c
+> index 44535add3a4a..51c8502b35e9 100644
+> --- a/drivers/hwmon/pmbus/pmbus_core.c
+> +++ b/drivers/hwmon/pmbus/pmbus_core.c
+> @@ -2346,6 +2346,42 @@ static int pmbus_debugfs_get_status(void *data, u64 *val)
+>  DEFINE_DEBUGFS_ATTRIBUTE(pmbus_debugfs_ops_status, pmbus_debugfs_get_status,
+>  			 NULL, "0x%04llx\n");
+>  
+> +static int pmbus_debugfs_get_pec(void *data, u64 *val)
+> +{
+> +	struct i2c_client *client = data;
+> +
+> +	*val = !!(client->flags & I2C_CLIENT_PEC);
+> +
+> +	return 0;
+> +}
+> +
+> +static int pmbus_debugfs_set_pec(void *data, u64 val)
+> +{
+> +	int rc;
+> +	struct i2c_client *client = data;
+> +
+> +	if (!val) {
+> +		client->flags &= ~I2C_CLIENT_PEC;
+> +		return 0;
+> +	}
+> +
+> +	if (val != 1)
+> +		return -EINVAL;
+> +
+> +	rc = i2c_smbus_read_byte_data(client, PMBUS_CAPABILITY);
+> +	if (rc < 0)
+> +		return rc;
+> +
+> +	if (!(rc & PB_CAPABILITY_ERROR_CHECK))
+> +		return -ENOTSUPP;
 
-Addresses-checkpatch: "Alignment should match open parenthesis"
-Signed-off-by: Amit Kumar Mahapatra <amit.kumar-mahapatra@xilinx.com>
----
- drivers/spi/spi-zynqmp-gqspi.c | 46 +++++++++++++++++-----------------
- 1 file changed, 23 insertions(+), 23 deletions(-)
+WARNING: ENOTSUPP is not a SUSV4 error code, prefer EOPNOTSUPP
 
-diff --git a/drivers/spi/spi-zynqmp-gqspi.c b/drivers/spi/spi-zynqmp-gqspi.=
-c
-index 7f57923f76ea..c8fa6ee18ae7 100644
---- a/drivers/spi/spi-zynqmp-gqspi.c
-+++ b/drivers/spi/spi-zynqmp-gqspi.c
-@@ -326,8 +326,8 @@ static void zynqmp_qspi_init_hw(struct zynqmp_qspi *xqs=
-pi)
-                                 GQSPI_SELECT_FLASH_BUS_LOWER);
-        /* Initialize DMA */
-        zynqmp_gqspi_write(xqspi,
--                       GQSPI_QSPIDMA_DST_CTRL_OFST,
--                       GQSPI_QSPIDMA_DST_CTRL_RESET_VAL);
-+                          GQSPI_QSPIDMA_DST_CTRL_OFST,
-+                          GQSPI_QSPIDMA_DST_CTRL_RESET_VAL);
+> +
+> +	client->flags |= I2C_CLIENT_PEC;
+> +
+> +	return 0;
+> +}
+> +DEFINE_DEBUGFS_ATTRIBUTE(pmbus_debugfs_ops_pec, pmbus_debugfs_get_pec,
+> +			 pmbus_debugfs_set_pec, "0x%1llu\n");
 
-        /* Enable the GQSPI */
-        zynqmp_gqspi_write(xqspi, GQSPI_EN_OFST, GQSPI_EN_MASK);
-@@ -374,8 +374,8 @@ static void zynqmp_qspi_chipselect(struct spi_device *q=
-spi, bool is_high)
+ERROR: Prefixing 0x with decimal output is defective
 
-        /* Manually start the generic FIFO command */
-        zynqmp_gqspi_write(xqspi, GQSPI_CONFIG_OFST,
--                       zynqmp_gqspi_read(xqspi, GQSPI_CONFIG_OFST) |
--                       GQSPI_CFG_START_GEN_FIFO_MASK);
-+                          zynqmp_gqspi_read(xqspi, GQSPI_CONFIG_OFST) |
-+                          GQSPI_CFG_START_GEN_FIFO_MASK);
+(since the displayed value is a boolean, it is also quite useless).
 
-        timeout =3D jiffies + msecs_to_jiffies(1000);
+> +
+>  static int pmbus_init_debugfs(struct i2c_client *client,
+>  			      struct pmbus_data *data)
+>  {
+> @@ -2374,6 +2410,9 @@ static int pmbus_init_debugfs(struct i2c_client *client,
+>  	if (!entries)
+>  		return -ENOMEM;
+>  
+> +	debugfs_create_file("pec", 0664, data->debugfs, client,
+> +			    &pmbus_debugfs_ops_pec);
+> +
+>  	for (i = 0; i < data->info->pages; ++i) {
+>  		/* Check accessibility of status register if it's not page 0 */
+>  		if (!i || pmbus_check_status_register(client, i)) {
+> 
 
-@@ -384,10 +384,9 @@ static void zynqmp_qspi_chipselect(struct spi_device *=
-qspi, bool is_high)
-                statusreg =3D zynqmp_gqspi_read(xqspi, GQSPI_ISR_OFST);
-
-                if ((statusreg & GQSPI_ISR_GENFIFOEMPTY_MASK) &&
--                       (statusreg & GQSPI_ISR_TXEMPTY_MASK))
-+                   (statusreg & GQSPI_ISR_TXEMPTY_MASK))
-                        break;
--               else
--                       cpu_relax();
-+               cpu_relax();
-        } while (!time_after_eq(jiffies, timeout));
-
-        if (time_after_eq(jiffies, timeout))
-@@ -549,7 +548,7 @@ static void zynqmp_qspi_readrxfifo(struct zynqmp_qspi *=
-xqspi, u32 size)
-
-        while ((count < size) && (xqspi->bytes_to_receive > 0)) {
-                if (xqspi->bytes_to_receive >=3D 4) {
--                       (*(u32 *) xqspi->rxbuf) =3D
-+                       (*(u32 *)xqspi->rxbuf) =3D
-                        zynqmp_gqspi_read(xqspi, GQSPI_RXD_OFST);
-                        xqspi->rxbuf +=3D 4;
-                        xqspi->bytes_to_receive -=3D 4;
-@@ -645,14 +644,14 @@ static void zynqmp_process_dma_irq(struct zynqmp_qspi=
- *xqspi)
-        u32 config_reg, genfifoentry;
-
-        dma_unmap_single(xqspi->dev, xqspi->dma_addr,
--                               xqspi->dma_rx_bytes, DMA_FROM_DEVICE);
-+                        xqspi->dma_rx_bytes, DMA_FROM_DEVICE);
-        xqspi->rxbuf +=3D xqspi->dma_rx_bytes;
-        xqspi->bytes_to_receive -=3D xqspi->dma_rx_bytes;
-        xqspi->dma_rx_bytes =3D 0;
-
-        /* Disabling the DMA interrupts */
-        zynqmp_gqspi_write(xqspi, GQSPI_QSPIDMA_DST_I_DIS_OFST,
--                                       GQSPI_QSPIDMA_DST_I_EN_DONE_MASK);
-+                          GQSPI_QSPIDMA_DST_I_EN_DONE_MASK);
-
-        if (xqspi->bytes_to_receive > 0) {
-                /* Switch to IO mode,for remaining bytes to receive */
-@@ -670,14 +669,15 @@ static void zynqmp_process_dma_irq(struct zynqmp_qspi=
- *xqspi)
-
-                /* Manual start */
-                zynqmp_gqspi_write(xqspi, GQSPI_CONFIG_OFST,
--                       (zynqmp_gqspi_read(xqspi, GQSPI_CONFIG_OFST) |
--                       GQSPI_CFG_START_GEN_FIFO_MASK));
-+                                  (zynqmp_gqspi_read(xqspi,
-+                                                     GQSPI_CONFIG_OFST) |
-+                                  GQSPI_CFG_START_GEN_FIFO_MASK));
-
-                /* Enable the RX interrupts for IO mode */
-                zynqmp_gqspi_write(xqspi, GQSPI_IER_OFST,
--                               GQSPI_IER_GENFIFOEMPTY_MASK |
--                               GQSPI_IER_RXNEMPTY_MASK |
--                               GQSPI_IER_RXEMPTY_MASK);
-+                                  GQSPI_IER_GENFIFOEMPTY_MASK |
-+                                  GQSPI_IER_RXNEMPTY_MASK |
-+                                  GQSPI_IER_RXEMPTY_MASK);
-        }
- }
-
-@@ -708,7 +708,7 @@ static irqreturn_t zynqmp_qspi_irq(int irq, void *dev_i=
-d)
-                dma_status =3D
-                        zynqmp_gqspi_read(xqspi, GQSPI_QSPIDMA_DST_I_STS_OF=
-ST);
-                zynqmp_gqspi_write(xqspi, GQSPI_QSPIDMA_DST_I_STS_OFST,
--                                                               dma_status)=
-;
-+                                  dma_status);
-        }
-
-        if (mask & GQSPI_ISR_TXNOT_FULL_MASK) {
-@@ -725,8 +725,8 @@ static irqreturn_t zynqmp_qspi_irq(int irq, void *dev_i=
-d)
-                ret =3D IRQ_HANDLED;
-        }
-
--       if ((xqspi->bytes_to_receive =3D=3D 0) && (xqspi->bytes_to_transfer=
- =3D=3D 0)
--                       && ((status & GQSPI_IRQ_MASK) =3D=3D GQSPI_IRQ_MASK=
-)) {
-+       if (xqspi->bytes_to_receive =3D=3D 0 && xqspi->bytes_to_transfer =
-=3D=3D 0 &&
-+           ((status & GQSPI_IRQ_MASK) =3D=3D GQSPI_IRQ_MASK)) {
-                zynqmp_gqspi_write(xqspi, GQSPI_IDR_OFST, GQSPI_ISR_IDR_MAS=
-K);
-                complete(&xqspi->data_completion);
-                ret =3D IRQ_HANDLED;
-@@ -744,8 +744,8 @@ static void zynqmp_qspi_setuprxdma(struct zynqmp_qspi *=
-xqspi)
-        dma_addr_t addr;
-        u64 dma_align =3D  (u64)(uintptr_t)xqspi->rxbuf;
-
--       if ((xqspi->bytes_to_receive < 8) ||
--               ((dma_align & GQSPI_DMA_UNALIGN) !=3D 0x0)) {
-+       if (xqspi->bytes_to_receive < 8 ||
-+           ((dma_align & GQSPI_DMA_UNALIGN) !=3D 0x0)) {
-                /* Setting to IO mode */
-                config_reg =3D zynqmp_gqspi_read(xqspi, GQSPI_CONFIG_OFST);
-                config_reg &=3D ~GQSPI_CFG_MODE_EN_MASK;
-@@ -759,17 +759,17 @@ static void zynqmp_qspi_setuprxdma(struct zynqmp_qspi=
- *xqspi)
-        rx_bytes =3D (xqspi->bytes_to_receive - rx_rem);
-
-        addr =3D dma_map_single(xqspi->dev, (void *)xqspi->rxbuf,
--                                               rx_bytes, DMA_FROM_DEVICE);
-+                             rx_bytes, DMA_FROM_DEVICE);
-        if (dma_mapping_error(xqspi->dev, addr))
-                dev_err(xqspi->dev, "ERR:rxdma:memory not mapped\n");
-
-        xqspi->dma_rx_bytes =3D rx_bytes;
-        xqspi->dma_addr =3D addr;
-        zynqmp_gqspi_write(xqspi, GQSPI_QSPIDMA_DST_ADDR_OFST,
--                               (u32)(addr & 0xffffffff));
-+                          (u32)(addr & 0xffffffff));
-        addr =3D ((addr >> 16) >> 16);
-        zynqmp_gqspi_write(xqspi, GQSPI_QSPIDMA_DST_ADDR_MSB_OFST,
--                               ((u32)addr) & 0xfff);
-+                          ((u32)addr) & 0xfff);
-
-        /* Enabling the DMA mode */
-        config_reg =3D zynqmp_gqspi_read(xqspi, GQSPI_CONFIG_OFST);
---
-2.17.1
-
-This email and any attachments are intended for the sole use of the named r=
-ecipient(s) and contain(s) confidential information that may be proprietary=
-, privileged or copyrighted under applicable law. If you are not the intend=
-ed recipient, do not read, copy, or forward this email message or any attac=
-hments. Delete this email message and any attachments immediately.
