@@ -2,143 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE32A2628F6
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 09:37:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E56B2628F4
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 09:37:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728405AbgIIHhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 03:37:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58742 "EHLO
+        id S1730225AbgIIHhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 03:37:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730262AbgIIHhJ (ORCPT
+        with ESMTP id S1730256AbgIIHhE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 03:37:09 -0400
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12E8AC061755;
-        Wed,  9 Sep 2020 00:37:09 -0700 (PDT)
-Received: by mail-il1-x141.google.com with SMTP id m1so1400127ilj.10;
-        Wed, 09 Sep 2020 00:37:09 -0700 (PDT)
+        Wed, 9 Sep 2020 03:37:04 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B07F5C061573
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 00:37:03 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id m6so1812837wrn.0
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 00:37:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9XplU/yDVZod7CQ9qpAr+SAIUpan2fYE9ZFD5UbHSjo=;
-        b=EsydC3cWGV5Dkt1QDytC8dB6gCR2nJKlMi0uCSEDWFYuakbamQOijx3ov3GHvRhLBU
-         QP3OcQkFYLotAFBcFhrM39Ahdtdx0FLUJajXYRltrmANlmfvndldYRImCYQLdHZt3IKe
-         ZNN9ubYuQJsXDd6eFL3Trx3Kw8aiAqz79ffcS2QyCTU3HFnmEAKEr20lAALYpdjn7Av1
-         6ZShmkABQRjuVlqRqde1buu/fQDctMUWqIz2UymaY676oNv+zo4QrMH6jiATdRLtCfVj
-         AMaCxjzUR/EHGoA0FBeeMbyWxFIyE+LMukDNCAwzhd/oI5G8QgsQ30NHleaL3gzlwGtQ
-         46Cg==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=wWgDfU9nZzKqdvbVx8y3VyybzRdiTj4qfLQtg4MRrko=;
+        b=vKfNkPvSqiCi09QBOevuKE3WTzNxDu6Exs/ueisabXStQuSK3AB5ekMSlyhO5Ekvzn
+         Qd42VrxYIuys9XrdUyMAgBTxiOfliJDL/us5t5yVi/CRjDKifwYXMMWmsN6IENcrBNn0
+         2u8lOJf7c5sdSWLaXG0j1K1QdQv4UacDhefcSjtVSzcPgMBw8i7Y0T/8F8iaeOaJBbOC
+         3HmFIgTcbFfE1C1wPpIcIN6tQoefM20O7EQEn6KaMJVASgtpOz3Z/0JtPUDnMhAB31Ou
+         wuNA7DVOA9MllnqftEPlF8ZOYjL6ksA2pJQPP8YeU0qTjxikv/kDs9yYbovFv+EyyUnz
+         xU6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9XplU/yDVZod7CQ9qpAr+SAIUpan2fYE9ZFD5UbHSjo=;
-        b=mI6tkjjmTrxgqfV/YsQ4L8DbZD0WTmM5eDko+FEOO8HD0trFgOkSF1SVazziH7FvAw
-         XQTSzh+AKkj9v3xuZZgtLnDbWC8YRhqJdV5YcbgNz8KDjXrhiZdx17eGKNwjbH0yspQS
-         AeizcUEoEVnBtngL2/RU44ELl+63JnzRrcCLn8mxJVBAbq1p/FNlluuh5ny+vwr9Oa6v
-         GwRFRRQZaXnLWoO6y0WYseqMC4gTfIfAAo1Z0dh6BGLJyYO0Pky9f+km679WKZ82+V+4
-         GycT1G2yi6a/qRVVxt01BwWdDZBZxG9JWOGsmySVTp2W1xEYYMNr5GIQbA6X5qKqlR9o
-         ABJA==
-X-Gm-Message-State: AOAM530u/LlaKsfwid7mS9W90wuixcrtWVBVEaT7b+boXGFZFB+xho9C
-        7Bp7RpjufrN/+o7D3m/jTzLnKGKZnx/v7T7aSOg=
-X-Google-Smtp-Source: ABdhPJz8uHZflvzrflCvmUJfx+x3RiqZkWqsTrkVrrl+8sX6vVGZdBlDIPNkr1jiZlE4u+HgUQB7+Ex+KbZmsqM5c/E=
-X-Received: by 2002:a92:d482:: with SMTP id p2mr2689631ilg.9.1599637028313;
- Wed, 09 Sep 2020 00:37:08 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=wWgDfU9nZzKqdvbVx8y3VyybzRdiTj4qfLQtg4MRrko=;
+        b=AfeI9zOZmpJKo7/kbgeJskOQVDrVxUHIWOUGGmw3+BdMpUBz/qGs4v9gdegVmseawT
+         t+6jk+qwTh5Vv72R6TWknN2WHJg3xcS3uBpeUlspoFhJq+MoMOgt8X8wwEaFgsDidaSV
+         WqQSdXfh2CF5IgNQcOYCss+DyT+Ggbko/iNjpQzyuhAsZxYI+q+CU3jt7lAegNXmGukq
+         ZbJf64DmQ4NPXC2U+RTA2atlT41Yu4RfFXKLA2ZpCwALWZU2dLfvVnOsJHyEcE39qHUf
+         6v/EC/NZvfgoqao23d9yUmAFvwo2beQySuNmsZUM4LZIQIL8jPoYeIFTtVy8o9ePdnOm
+         i/lQ==
+X-Gm-Message-State: AOAM531bm4bZqmq5WZfaIcvf0X3wpWyTgCg82cqGDLGW/lWO2UVwlemo
+        bsGFGUUbP7jqhAZ0LE36AApWoA==
+X-Google-Smtp-Source: ABdhPJzwqJgPmAj9vMXTqolup+yM+UOmHtcxAg+FNcdJ6X/69jQchDfjUR+5dlw1mGEfxngwZltkHQ==
+X-Received: by 2002:adf:e391:: with SMTP id e17mr2316189wrm.289.1599637022185;
+        Wed, 09 Sep 2020 00:37:02 -0700 (PDT)
+Received: from dell ([91.110.221.179])
+        by smtp.gmail.com with ESMTPSA id 91sm3266190wrq.9.2020.09.09.00.37.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Sep 2020 00:37:01 -0700 (PDT)
+Date:   Wed, 9 Sep 2020 08:36:59 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Gene Chen <gene.chen.richtek@gmail.com>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Gene Chen <gene_chen@richtek.com>, benjamin.chao@mediatek.com,
+        shufan_lee@richtek.com, cy_huang@richtek.com
+Subject: Re: [PATCH v4 9/9] mfd: mt6360: Merge different sub-devices I2C
+ read/write
+Message-ID: <20200909073659.GA218742@dell>
+References: <1597661277-27862-1-git-send-email-gene.chen.richtek@gmail.com>
+ <1597661277-27862-10-git-send-email-gene.chen.richtek@gmail.com>
+ <20200828104053.GM1826686@dell>
+ <CAE+NS37uFoDhWyGkw0WTu+tR+_85EwzYRqecNMG6nK6b2J=9jg@mail.gmail.com>
+ <20200908114819.GO4400@dell>
+ <CAE+NS36MVA=9e0Ev73gpJ-gOcY+_aNveTr+DhquD6iqY-GKXCQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <25817189-49a7-c64f-26ee-78d4a27496b6@huawei.com>
- <CAOQ4uxhejJzjKLZCt=b87KAX0sC3RAZ2FHEZbu4188Ar-bkmOg@mail.gmail.com>
- <e399cd17-e95e-def4-e03b-5cc2ae1f9708@huawei.com> <CAOQ4uxgvodepq2ZhmGEpkZYj017tH_pk2AgV=pUhWiONnxOQjw@mail.gmail.com>
- <20200908171859.GA29953@casper.infradead.org> <CAOQ4uxjX2GAJhD70=6SmwdXPH6TuOzGugtdYupDjLLywC2H5Ag@mail.gmail.com>
- <96abf6e3-2442-8871-c9f3-be981c0a1965@huawei.com>
-In-Reply-To: <96abf6e3-2442-8871-c9f3-be981c0a1965@huawei.com>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Wed, 9 Sep 2020 10:36:57 +0300
-Message-ID: <CAOQ4uxjNcjFtQuc9AeWgEO7G3CeGm3vL_wK6UhbHkxOZuRYOeQ@mail.gmail.com>
-Subject: Re: Question: Why is there no notification when a file is opened
- using filp_open()?
-To:     Xiaoming Ni <nixiaoming@huawei.com>
-Cc:     Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        wangle6@huawei.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAE+NS36MVA=9e0Ev73gpJ-gOcY+_aNveTr+DhquD6iqY-GKXCQ@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 9, 2020 at 10:00 AM Xiaoming Ni <nixiaoming@huawei.com> wrote:
->
-> On 2020/9/9 11:44, Amir Goldstein wrote:
-> > On Tue, Sep 8, 2020 at 8:19 PM Matthew Wilcox <willy@infradead.org> wrote:
-> >>
-> >> On Tue, Sep 08, 2020 at 04:18:29PM +0300, Amir Goldstein wrote:
-> >>> On Tue, Sep 8, 2020 at 3:53 PM Xiaoming Ni <nixiaoming@huawei.com> wrote:
-> >>>> For example, in fs/coredump.c, do_coredump() calls filp_open() to
-> >>>> generate core files.
-> >>>> In this scenario, the fsnotify_open() notification is missing.
-> >>>
-> >>> I am not convinced that we should generate an event.
-> >>> You will have to explain in what is the real world use case that requires this
-> >>> event to be generated.
-> >>
-> >> Take the typical usage for fsnotify of a graphical file manager.
-> >> It would be nice if the file manager showed a corefile as soon as it
-> >> appeared in a directory rather than waiting until some other operation
-> >> in that directory caused those directory contents to be refreshed.
+On Wed, 09 Sep 2020, Gene Chen wrote:
+
+> Lee Jones <lee.jones@linaro.org> 於 2020年9月8日 週二 下午7:48寫道：
 > >
-> > fsnotify_open() is not the correct notification for file managers IMO.
-> > fsnotify_create() is and it will be called in this case.
+> > On Tue, 01 Sep 2020, Gene Chen wrote:
 > >
-> > If the reason you are interested in open events is because you want
-> > to monitor the entire filesystem then welcome to the future -
-> > FAN_CREATE is supported since kernel v5.1.
+> > > Lee Jones <lee.jones@linaro.org> 於 2020年8月28日 週五 下午6:40寫道：
+> > > >
+> > > > On Mon, 17 Aug 2020, Gene Chen wrote:
+> > > >
+> > > > > From: Gene Chen <gene_chen@richtek.com>
+> > > > >
+> > > > > Remove unuse register definition.
+> > > >
+> > > > This should be in a separate patch.
+> > > >
+> > > > > Merge different sub-devices I2C read/write functions into one Regmap,
+> > > > > because PMIC and LDO part need CRC bits for access protection.
+> > > > >
+> > > > > Signed-off-by: Gene Chen <gene_chen@richtek.com>
+> > > > > ---
+> > > > >  drivers/mfd/Kconfig        |   1 +
+> > > > >  drivers/mfd/mt6360-core.c  | 260 +++++++++++++++++++++++++++++++++++++++------
+> > > > >  include/linux/mfd/mt6360.h | 240 -----------------------------------------
+> > > > >  3 files changed, 226 insertions(+), 275 deletions(-)
+> > > > >  delete mode 100644 include/linux/mfd/mt6360.h
+> > > > >
+> > > > > diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+> > > > > index a37d7d1..0684ddc 100644
+> > > > > --- a/drivers/mfd/Kconfig
+> > > > > +++ b/drivers/mfd/Kconfig
+> > > > > @@ -913,6 +913,7 @@ config MFD_MT6360
+> > > > >       select MFD_CORE
+> > > > >       select REGMAP_I2C
+> > > > >       select REGMAP_IRQ
+> > > > > +     select CRC8
+> > > > >       depends on I2C
+> > > > >       help
+> > > > >         Say Y here to enable MT6360 PMU/PMIC/LDO functional support.
+> > > > > diff --git a/drivers/mfd/mt6360-core.c b/drivers/mfd/mt6360-core.c
+> > > > > index 677c974..e995220 100644
+> > > > > --- a/drivers/mfd/mt6360-core.c
+> > > > > +++ b/drivers/mfd/mt6360-core.c
+> > > > > @@ -14,7 +14,53 @@
+> > > > >  #include <linux/regmap.h>
+> > > > >  #include <linux/slab.h>
+> > > > >
+> > > > > -#include <linux/mfd/mt6360.h>
+> > > > > +enum {
+> > > > > +     MT6360_SLAVE_TCPC = 0,
+> > > > > +     MT6360_SLAVE_PMIC,
+> > > > > +     MT6360_SLAVE_LDO,
+> > > > > +     MT6360_SLAVE_PMU,
+> > > > > +     MT6360_SLAVE_MAX,
+> > > > > +};
+> > > > > +
+> > > > > +struct mt6360_ddata {
+> > > > > +     struct i2c_client *i2c[MT6360_SLAVE_MAX];
+> > > > > +     struct device *dev;
+> > > > > +     struct regmap *regmap;
+> > > > > +     struct regmap_irq_chip_data *irq_data;
+> > > > > +     unsigned int chip_rev;
+> > > > > +     u8 crc8_tbl[CRC8_TABLE_SIZE];
+> > > > > +};
+> > > >
+> > > > This is not a new structure, right?  Where was this before?  Surely it
+> > > > should be removed from wherever it was in the same patch that places
+> > > > it here?
+> > > >
+> > >
+> > > No, it is merge from header file to source code for unuse in other sub-module.
 > >
-> > Is there another real life case you have in mind where you think users
-> > should be able to get an open fd for a file that the kernel has opened?
-> > Because that is what FAN_OPEN will do.
+> > So where did it come from and why don't I see the removal in this
+> > patch?
 > >
->
-> There are also cases where file is opened in read-only mode using
-> filp_open().
->
-> case1: nfsd4_init_recdir() call filp_open()
-> filp_open()
-> nfsd4_init_recdir() fs/nfsd/nfs4recover.c#L543
->
-> L70: static char user_recovery_dirname[PATH_MAX] =
-> "/var/lib/nfs/v4recovery";
-> L543: nn->rec_file = filp_open(user_recovery_dirname, O_RDONLY |
-> O_DIRECTORY, 0);
->
->
-> case2: ima_read_policy()
-> filp_open()
-> kernel_read_file_from_path()  fs/exec.c#L1004
-> ima_read_policy()  security/integrity/ima/ima_fs.c#L286
-> ima_write_policy() security/integrity/ima/ima_fs.c#L335
-> ima_measure_policy_ops   security/integrity/ima/ima_fs.c#L443
-> sys_write()
->
-> case3: use do_file_open_root() to open file
-> do_file_open_root()
-> file_open_root()   fs/open.c#L1159
-> kernel_read_file_from_path_initns()  fs/exec.c#L1029
-> fw_get_filesystem_firmware()  drivers/base/firmware_loader/main.c#L498
->
-> Do we need to add fsnotify_open() in these scenarios?
+> 
+> Change is in the bottom of this patch.
+> There is a little confuse part in "[PATCH v4 5/9] mfd: mt6360: Rename
+> mt6360_pmu_data by mt6360_ddata"
+> The "PATCH 5/9" change mt6360_pmu_data to mt6360_ddata instead of mt6360_data.
+> I will update PATCH v5 to fix it.
+> 
+> [PATCH v4 9/9]
+> diff --git a/include/linux/mfd/mt6360.h b/include/linux/mfd/mt6360.h
+> -struct mt6360_data {
+> -       struct i2c_client *i2c[MT6360_SLAVE_MAX];
+> -       struct device *dev;
+> -       struct regmap *regmap;
+> -       struct regmap_irq_chip_data *irq_data;
+> -       unsigned int chip_rev;
+> -};
+> 
+> [PATCH v4 5/9]
+> diff --git a/include/linux/mfd/mt6360.h b/include/linux/mfd/mt6360.h
+> -struct mt6360_pmu_data {
+> +struct mt6360_data {
+>         struct i2c_client *i2c[MT6360_SLAVE_MAX];
+>         struct device *dev;
+>         struct regmap *regmap;
 
-We do not *need* to add fsnotify_open() if there is no concrete use case
-from real life that needs it.
+Oh, you've renamed it whilst moving it.  That is probably not best
+practise, as it causes this kind of confusion.
 
-Matthew gave an example of a real life use case and I explained why IMO
-we don't need to add fsnotify_open() for the use case that he described.
-
-If you want to add fsnotify_open() to any call site, please come up with
-a real life use case - not a made up one, one that really exists and where
-the open event is really needed.
-
-grepping the code for callers of filp_open() is not enough.
-
-Thanks,
-Amir.
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
