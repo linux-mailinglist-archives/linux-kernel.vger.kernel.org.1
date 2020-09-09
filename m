@@ -2,135 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D5AA262D25
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 12:30:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F2AA262D08
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 12:27:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730131AbgIIK3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 06:29:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57194 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729942AbgIIK3B (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 06:29:01 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 150CDC061573;
-        Wed,  9 Sep 2020 03:29:01 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id b124so1735466pfg.13;
-        Wed, 09 Sep 2020 03:29:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=HaME3Z5uLAfT5ND31CqQyrNIC7MORGaQXez8ygNaWV4=;
-        b=D0dROmJK5JNEWz6XnpG2UxU0Czt7CjrQi0W9ag56hfNt7ttM6fI42P45oQp/k7RqYw
-         fIac3kaSh3MmEhrajc8Wag+D4jwn+Bzl39wgrsQMLNldOHJCywIYsKh2uH1Q+guTrXDK
-         LR5jIJa2sgzAzhJd15uHb4tlLWIm8osAqbBknGmeFYEqFKetlJbsuJ3VQDTwf9RqMD9y
-         ajjn6hMbYVvubSesTtuLaNxQTLWzg3YFii/lX4WcT5l8qVqfFkKcd1BNhRqeBo20jQ/k
-         TZ1MsNC3zy/vb3dlCSZpIWNnq6aLiq5gESV2dMqVTKojm91W3SjJYB/yW0Vb7V+obozS
-         fs9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=HaME3Z5uLAfT5ND31CqQyrNIC7MORGaQXez8ygNaWV4=;
-        b=UsIbHLfM+Y4OtIknZqSNjp3j9+qwlqYr3UoG3KTgVFXGOb1yHYfPJ9N/xyyRBBkXAi
-         M1SqXkId0FEGWhBJPakQg/UCuHqnES33cSwANK0HBDSvpKmHh5RSHTiQ3X9dx+D4uyXT
-         wfQLD5l3Qtc62q1MF4MySU8zrJQG1bn6LXVwPZpNkPSfwr0U8sH2ru32RVSG4k1A+FsH
-         C9Lrimdm2pfRoULqC4ATsWPewm0VjY165Ty9khY7LvLFgLKpA8D5FRAndEY/bYkPVk7q
-         Lv+qriM6C+xWQ842esTaGrCAGwW20tGgQFum3Y8JUhpEJWWBv2lDCsCcEMoA743Qo5ph
-         1BNw==
-X-Gm-Message-State: AOAM532gcNNVF8hELxSm4Tz5tYTs/dUVG55I8ljjV9uqix8j6SeNufdL
-        Aw6aqG5QIFUqHzDqWDucKUfeCHKAKo4=
-X-Google-Smtp-Source: ABdhPJwAUqpksnuSBZWncdvn/rBaVf87jJeX5Jz+OmNt8HD3RZ5HmOpjHWS0LgVsy0cothOHjdb1LA==
-X-Received: by 2002:a17:902:fe97:b029:d0:cbe1:e745 with SMTP id x23-20020a170902fe97b02900d0cbe1e745mr338180plm.32.1599647340193;
-        Wed, 09 Sep 2020 03:29:00 -0700 (PDT)
-Received: from sol.lan (106-69-184-100.dyn.iinet.net.au. [106.69.184.100])
-        by smtp.gmail.com with ESMTPSA id c7sm2338168pfj.100.2020.09.09.03.28.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Sep 2020 03:28:59 -0700 (PDT)
-From:   Kent Gibson <warthog618@gmail.com>
-To:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        bgolaszewski@baylibre.com, linus.walleij@linaro.org
-Cc:     Kent Gibson <warthog618@gmail.com>
-Subject: [PATCH v8 20/20] tools: gpio: add debounce support to gpio-event-mon
-Date:   Wed,  9 Sep 2020 18:26:40 +0800
-Message-Id: <20200909102640.1657622-21-warthog618@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200909102640.1657622-1-warthog618@gmail.com>
-References: <20200909102640.1657622-1-warthog618@gmail.com>
+        id S1728360AbgIIK1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 06:27:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45314 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727935AbgIIK0v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 06:26:51 -0400
+Received: from saruman (91-155-214-58.elisa-laajakaista.fi [91.155.214.58])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9365D206F4;
+        Wed,  9 Sep 2020 10:26:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599647209;
+        bh=MG0msxZvjCsJNDApogNfiZrhvSjNoctWQSyL9scydxs=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=FedeXmt6fvwowKtOyhe/cRP0eUKyzmP9wPKyX4D8hmyQKsI71a7+ceemLYsWgstGb
+         6AI1ZhtZEIyey4iaef9Elcefio4AU1rhrW6bOmUOxuA4pV9zlVKnZkv0PsjObP9Jfe
+         pCfjE5Yim1FbmjqPyh80HSWywTyr/fhL2hqU2i8g=
+From:   Felipe Balbi <balbi@kernel.org>
+To:     Manish Narani <MNARANI@xilinx.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        Michal Simek <michals@xilinx.com>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>
+Cc:     "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        git <git@xilinx.com>
+Subject: RE: [PATCH 2/2] usb: dwc3: Add driver for Xilinx platforms
+In-Reply-To: <BYAPR02MB58960AA4C87C76223C04D71BC1260@BYAPR02MB5896.namprd02.prod.outlook.com>
+References: <1598467441-124203-1-git-send-email-manish.narani@xilinx.com>
+ <1598467441-124203-3-git-send-email-manish.narani@xilinx.com>
+ <87y2m0ioql.fsf@kernel.org>
+ <BYAPR02MB5896669D47783D06F779608BC1520@BYAPR02MB5896.namprd02.prod.outlook.com>
+ <877dtd7kxc.fsf@kernel.org>
+ <BYAPR02MB58960AA4C87C76223C04D71BC1260@BYAPR02MB5896.namprd02.prod.outlook.com>
+Date:   Wed, 09 Sep 2020 13:26:42 +0300
+Message-ID: <87blifkzz1.fsf@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for debouncing monitored lines to gpio-event-mon.
+--=-=-=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Kent Gibson <warthog618@gmail.com>
----
- tools/gpio/gpio-event-mon.c | 20 +++++++++++++++++---
- 1 file changed, 17 insertions(+), 3 deletions(-)
 
-diff --git a/tools/gpio/gpio-event-mon.c b/tools/gpio/gpio-event-mon.c
-index e50bb107ea3a..bd5ea3cc6e85 100644
---- a/tools/gpio/gpio-event-mon.c
-+++ b/tools/gpio/gpio-event-mon.c
-@@ -148,11 +148,12 @@ void print_usage(void)
- 		"  -s         Set line as open source\n"
- 		"  -r         Listen for rising edges\n"
- 		"  -f         Listen for falling edges\n"
-+		"  -b <n>     Debounce the line with period n microseconds\n"
- 		" [-c <n>]    Do <n> loops (optional, infinite loop if not stated)\n"
- 		"  -?         This helptext\n"
- 		"\n"
- 		"Example:\n"
--		"gpio-event-mon -n gpiochip0 -o 4 -r -f\n"
-+		"gpio-event-mon -n gpiochip0 -o 4 -r -f -b 10000\n"
- 	);
- }
- 
-@@ -167,11 +168,12 @@ int main(int argc, char **argv)
- 	unsigned int num_lines = 0;
- 	unsigned int loops = 0;
- 	struct gpio_v2_line_config config;
--	int c;
-+	int c, attr, i;
-+	unsigned long debounce_period = 0;
- 
- 	memset(&config, 0, sizeof(config));
- 	config.flags = GPIO_V2_LINE_FLAG_INPUT;
--	while ((c = getopt(argc, argv, "c:n:o:dsrf?")) != -1) {
-+	while ((c = getopt(argc, argv, "c:n:o:b:dsrf?")) != -1) {
- 		switch (c) {
- 		case 'c':
- 			loops = strtoul(optarg, NULL, 10);
-@@ -187,6 +189,9 @@ int main(int argc, char **argv)
- 			lines[num_lines] = strtoul(optarg, NULL, 10);
- 			num_lines++;
- 			break;
-+		case 'b':
-+			debounce_period = strtoul(optarg, NULL, 10);
-+			break;
- 		case 'd':
- 			config.flags |= GPIO_V2_LINE_FLAG_OPEN_DRAIN;
- 			break;
-@@ -205,6 +210,15 @@ int main(int argc, char **argv)
- 		}
- 	}
- 
-+	if (debounce_period) {
-+		attr = config.num_attrs;
-+		config.num_attrs++;
-+		for (i = 0; i < num_lines; i++)
-+			gpiotools_set_bit(&config.attrs[attr].mask, i);
-+		config.attrs[attr].attr.id = GPIO_V2_LINE_ATTR_ID_DEBOUNCE;
-+		config.attrs[attr].attr.debounce_period = debounce_period;
-+	}
-+
- 	if (!device_name || num_lines == 0) {
- 		print_usage();
- 		return -1;
--- 
-2.28.0
+Hi,
 
+Manish Narani <MNARANI@xilinx.com> writes:
+>> -----Original Message-----
+>> From: Felipe Balbi <balbi@kernel.org>
+>> Sent: Tuesday, September 1, 2020 5:45 PM
+>>=20
+>> >> > +		goto err;
+>> >> > +	}
+>> >> > +
+>> >> > +	ret =3D dwc3_xlnx_rst_assert(priv_data->apbrst);
+>> >> > +	if (ret < 0) {
+>> >> > +		dev_err(dev, "%s: %d: Failed to assert reset\n",
+>> >> > +			__func__, __LINE__);
+>> >>
+>> >> 		dev_err(dev, "Failed to assert APB reset\n");
+>> >>
+>> >> > +		goto err;
+>> >> > +	}
+>> >> > +
+>> >> > +	ret =3D phy_init(priv_data->usb3_phy);
+>> >>
+>> >> dwc3 core should be handling this already
+>> >
+>> > The USB controller used in Xilinx ZynqMP platform uses xilinx GT phy
+>> > which has 4 GT lanes and can used by 4 peripherals at a time.
+>>=20
+>> At the same time or are they mutually exclusive?
+>
+> The lanes are mutually exclusive.
+
+Thank you for confirming :-)
+
+>  [...]
+>> >> > +	if (ret < 0) {
+>> >> > +		dev_err(dev, "%s: %d: Failed to release reset\n",
+>> >> > +			__func__, __LINE__);
+>> >> > +		goto err;
+>> >> > +	}
+>> >> > +
+>> >> > +	/* Set PIPE power present signal */
+>> >> > +	writel(PIPE_POWER_ON, priv_data->regs + PIPE_POWER_OFFSET);
+>> >> > +
+>> >> > +	/* Clear PIPE CLK signal */
+>> >> > +	writel(PIPE_CLK_OFF, priv_data->regs + PIPE_CLK_OFFSET);
+>> >>
+>> >> shouldn't this be hidden under clk_enable()?
+>> >
+>> > Though its naming suggests something related to clock framework, it is
+>> > a register in the Xilinx USB controller space which configures the
+>> > PIPE clock coming from Serdes.
+>>=20
+>> PIPE clock is a clock. It just so happens that the source is the PHY
+>> itself.
+>
+> This bit is used to choose between PIPE clock coming from SerDes
+> and the Suspend Clock. When the controller is out of reset, this bit
+> needs to be reset in order to make the USB controller work. This
+> register is added in Xilinx USB controller register space. I will
+> add more description about the same in v2.
+
+Aha! That clarifies. It's just a clock selection from clocks that are
+generated elsewhere :-) I guess a clk driver would be overkill, indeed.
+
+Thanks for explaining. Could you add some of this information to commit
+log, then?
+
+cheers
+
+=2D-=20
+balbi
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJFBAEBCAAvFiEElLzh7wn96CXwjh2IzL64meEamQYFAl9YreIRHGJhbGJpQGtl
+cm5lbC5vcmcACgkQzL64meEamQZ/zw/7Btf7KF38ujarqULDRAGPcndKWFLsg+zM
+mf6UkIlysLp3RK3ADxwyLi+9jwnezvSTQ7wHU1E3jF5aHsVpahXOtkkjS6ffYhyG
+LyOGMJNJ1/h4i+QyNs5mkfOTNSP02W0mfd2VrzWse9A1IMqJeoo0xVjrqyZixZEd
+6FaO1mfIXfFFQnfS5q5hZo9GYk6HNM929VKs09bX2uJ8qsJqcI+i5SAdxbo+Zp4T
+2PxrQtcQEYxjL2R39AbAy6U627ZfEtuHrIOtTV5czMqzPAIfi/88WnXvriT7oOcM
+GrvAz+ulf8uSMwNtVc3GUzkFgpppshjoB71WojNxlfbt/5UYLTLyFOfDfPf2i4gE
+Q6EKRU3NPJcnt/2letLFfhSow6qnLuCFYCfl6z+8lgbLHoThfmNtUrx4jlVrPFMJ
+Sz1bSR5NO82aNvbhOIXWGcyoaiZBpYPX0XVyW0wDEc+dnal4oUE12MxOVhzk6QVz
+FqBdmDKXx+jjwwKkWoBONLsTvjScG5PXPMTOMGFffVSnrJ6f8bo1QGuwL8H72uqj
+4z44XEbYjiWGFYroG3VsoVJvf/vGjsfud0ZJLesKF37BeaU1jJkbYQQQjLM9WzXY
+IZ0Mg04mcVLl1vhCDK3KZH0B/8vMDiUgduLflBtuuxPqVU/wAr74jgLRJMDppBDH
+vE++F+UPao4=
+=+Qxk
+-----END PGP SIGNATURE-----
+--=-=-=--
