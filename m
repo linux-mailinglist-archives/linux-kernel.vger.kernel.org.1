@@ -2,68 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB4B6263370
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 19:04:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D88F1263435
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 19:16:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730989AbgIIREB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 13:04:01 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:11759 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730349AbgIIPq3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 11:46:29 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id CEF1D1ADD43EFCF8CF07;
-        Wed,  9 Sep 2020 21:44:58 +0800 (CST)
-Received: from localhost (10.174.179.108) by DGGEMS410-HUB.china.huawei.com
- (10.3.19.210) with Microsoft SMTP Server id 14.3.487.0; Wed, 9 Sep 2020
- 21:44:49 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <edubezval@gmail.com>, <j-keerthy@ti.com>, <rui.zhang@intel.com>,
-        <daniel.lezcano@linaro.org>, <amitk@kernel.org>,
-        <sudipm.mukherjee@gmail.com>
-CC:     <linux-pm@vger.kernel.org>, <linux-omap@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH -next] thermal: ti-soc-thermal: Remove unused function ti_thermal_get_temp()
-Date:   Wed, 9 Sep 2020 21:44:48 +0800
-Message-ID: <20200909134448.30344-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        id S1731236AbgIIRQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 13:16:17 -0400
+Received: from mga04.intel.com ([192.55.52.120]:28962 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730181AbgIIP2W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 11:28:22 -0400
+IronPort-SDR: u/qbi1gTMXwhiA5qBdPXMMgfTHw567dAAkns7X+4bDhXx6pe5JNKHXH9U6JyrwTQHFbDQq5NKi
+ i/s9iXQLJPug==
+X-IronPort-AV: E=McAfee;i="6000,8403,9738"; a="155728553"
+X-IronPort-AV: E=Sophos;i="5.76,409,1592895600"; 
+   d="scan'208";a="155728553"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2020 06:49:26 -0700
+IronPort-SDR: y782X0eff+IGeTeKdlXJWyejH8ArzkbdbpXRdce83ifEs2ysMjfkaoanYmSAds9BB+zVYm7HDX
+ nG4T8f6lNeww==
+X-IronPort-AV: E=Sophos;i="5.76,409,1592895600"; 
+   d="scan'208";a="505456868"
+Received: from rsetyawa-mobl1.amr.corp.intel.com (HELO [10.212.20.145]) ([10.212.20.145])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2020 06:49:25 -0700
+Subject: Re: [PATCH -next] soundwire: intel: Remove ununsed function
+To:     YueHaibing <yuehaibing@huawei.com>, vkoul@kernel.org,
+        yung-chuan.liao@linux.intel.com, sanyog.r.kale@intel.com
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+References: <20200909131531.31380-1-yuehaibing@huawei.com>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <14a09132-d0ed-7129-73df-cbeb3154429b@linux.intel.com>
+Date:   Wed, 9 Sep 2020 08:46:10 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.179.108]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20200909131531.31380-1-yuehaibing@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit b263b473bf62 ("thermal: ti-soc-thermal: Remove redundant code")
-left behind this, remove it.
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- drivers/thermal/ti-soc-thermal/ti-thermal-common.c | 8 --------
- 1 file changed, 8 deletions(-)
 
-diff --git a/drivers/thermal/ti-soc-thermal/ti-thermal-common.c b/drivers/thermal/ti-soc-thermal/ti-thermal-common.c
-index 2ce4b19f312a..93b28c7ce83d 100644
---- a/drivers/thermal/ti-soc-thermal/ti-thermal-common.c
-+++ b/drivers/thermal/ti-soc-thermal/ti-thermal-common.c
-@@ -106,14 +106,6 @@ static inline int __ti_thermal_get_temp(void *devdata, int *temp)
- 	return ret;
- }
- 
--static inline int ti_thermal_get_temp(struct thermal_zone_device *thermal,
--				      int *temp)
--{
--	struct ti_thermal_data *data = thermal->devdata;
+On 9/9/20 8:15 AM, YueHaibing wrote:
+> If CONFIG_PM is not set, build warns:
+> 
+> drivers/soundwire/intel.c:488:12: warning: 'intel_link_power_down' defined but not used [-Wunused-function]
+> 
+> Move this to #ifdef block.
+
+Yes, thanks for the report, it's a valid issue, but maybe the fix is to 
+add __maybe_unused more consistently and remove the CONFIG_PM dependency.
+
+Vinod, what would you prefer?
+
+diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
+index e047910d73f5..7640308174ab 100644
+--- a/drivers/soundwire/intel.c
++++ b/drivers/soundwire/intel.c
+@@ -1540,8 +1540,6 @@ int intel_master_process_wakeen_event(struct 
+platform_device *pdev)
+   * PM calls
+   */
+
+-#ifdef CONFIG_PM
 -
--	return __ti_thermal_get_temp(data, temp);
--}
+  static int __maybe_unused intel_suspend(struct device *dev)
+  {
+         struct sdw_cdns *cdns = dev_get_drvdata(dev);
+@@ -1596,7 +1594,7 @@ static int __maybe_unused intel_suspend(struct 
+device *dev)
+         return 0;
+  }
+
+-static int intel_suspend_runtime(struct device *dev)
++static int __maybe_unused intel_suspend_runtime(struct device *dev)
+  {
+         struct sdw_cdns *cdns = dev_get_drvdata(dev);
+         struct sdw_intel *sdw = cdns_to_intel(cdns);
+@@ -1751,7 +1749,7 @@ static int __maybe_unused intel_resume(struct 
+device *dev)
+         return ret;
+  }
+
+-static int intel_resume_runtime(struct device *dev)
++static int __maybe_unused intel_resume_runtime(struct device *dev)
+  {
+         struct sdw_cdns *cdns = dev_get_drvdata(dev);
+         struct sdw_intel *sdw = cdns_to_intel(cdns);
+@@ -1924,8 +1922,6 @@ static int intel_resume_runtime(struct device *dev)
+         return ret;
+  }
+
+-#endif
 -
- static int __ti_thermal_get_trend(void *p, int trip, enum thermal_trend *trend)
- {
- 	struct ti_thermal_data *data = p;
--- 
-2.17.1
+  static const struct dev_pm_ops intel_pm = {
+         SET_SYSTEM_SLEEP_PM_OPS(intel_suspend, intel_resume)
+         SET_RUNTIME_PM_OPS(intel_suspend_runtime, intel_resume_runtime, 
+NULL)
 
 
