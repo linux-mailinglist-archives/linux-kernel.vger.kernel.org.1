@@ -2,113 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD29126373D
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 22:23:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56B3F263746
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 22:25:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727087AbgIIUXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 16:23:03 -0400
-Received: from mail-il1-f195.google.com ([209.85.166.195]:42951 "EHLO
-        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725772AbgIIUXC (ORCPT
+        id S1728350AbgIIUZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 16:25:09 -0400
+Received: from mail-io1-f65.google.com ([209.85.166.65]:40735 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725772AbgIIUZF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 16:23:02 -0400
-Received: by mail-il1-f195.google.com with SMTP id t13so3578823ile.9;
-        Wed, 09 Sep 2020 13:23:02 -0700 (PDT)
+        Wed, 9 Sep 2020 16:25:05 -0400
+Received: by mail-io1-f65.google.com with SMTP id j2so4620751ioj.7;
+        Wed, 09 Sep 2020 13:25:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=p/XHmGhJiyARP/AywHLjGyFW+zNdKo78DZXJUs497vk=;
-        b=ZX+TvnhYF3bNbwGePW0r5LI+JdBTEnlcxKNGBykNK9hxONtbx0c+X2nOOT8cX5x1Y7
-         jJyB5zLK6s3n8TrKsQVpd1rDRIVzbn1f6jUMyyML9eXqVs2ew1wrh5AkEFYVM5QxKHJ9
-         9kvphNpHIR+TNHHpEtkkwFVarc7/915djha9xBduhEer9IwtA7afT/+sA0K9tyL9oXK2
-         NQPx6lOnCKb3DDOdJYGofFlKKUWjCNxHe5gfwyzmeaNAq9B4a6dt2EsXiLVgXIRY/bgt
-         OCH+/D9BEAjMt5aY26mPAkVmkyKPzCP5xLLn4/8Ctd5fSBCi9cq2ZB0mrRJ6DYwFohfr
-         g0Zg==
-X-Gm-Message-State: AOAM5333xli8KNdRUTufXlAxqXZDQXwPz0YQVjPu+AHjokAQYfe72AdK
-        DDVc5jaX/4//O4jdpYrMmg==
-X-Google-Smtp-Source: ABdhPJwGgJMfrg41VCSlFUyxeF4VEeQtHEzW/mNeG0zBjw9Qla8f2sLKD3BFKup9Yno/CdJR1OlO5Q==
-X-Received: by 2002:a92:bad9:: with SMTP id t86mr4991746ill.308.1599682981597;
-        Wed, 09 Sep 2020 13:23:01 -0700 (PDT)
+        bh=Mvq1pc8VzaCkfmrY21Z3+UytzMH3TjOpdxcopW0FID0=;
+        b=FYQDHWhXYJjZQLj9IaSmB36CLN4yOahsc3+dY+zJiBXbMDUMhwqFfZ0/X+7FxDefQ+
+         SOCIjuThggc/Gvp8HFU4VzijjkoK2w1HBcMQxsdvFZTRuqrDU2vCmW/zo4ydjPb/fm7L
+         /hulI9hdAobRTvWdwttvz4mnqQvE4pndyZf57L+IojfcA7/bHb1cn2WxRyDuiApNHbBe
+         zGnVwFSixieGCpdp83IwdbB0KTTN70oFg9uHIrTt9hA9SLlO6n2yb0/wvasIozRPd39y
+         fG5viXeC1jfJylc84pt3hSUXw/TX4OC+BUfbCQ0ZujGSpR57YsYFz7ibhEr6/8QNZ/U2
+         Oe8Q==
+X-Gm-Message-State: AOAM531IhBCgvN/UGdamWO/Gvq9iuQ9lhpted2lymyndIGcOkpST7R9+
+        pzDsmJWF+pCDU45RV8dc06smYCIHPR4T
+X-Google-Smtp-Source: ABdhPJxJkzwcUL1S24Z0tbRq+VDKpX3tiUGts9lRxpl0Nh4IAME/9iREuCEOedUc1oO/rQKVZ5HRcA==
+X-Received: by 2002:a6b:908:: with SMTP id t8mr4795468ioi.124.1599683104321;
+        Wed, 09 Sep 2020 13:25:04 -0700 (PDT)
 Received: from xps15 ([64.188.179.251])
-        by smtp.gmail.com with ESMTPSA id f83sm2024294ilg.9.2020.09.09.13.22.55
+        by smtp.gmail.com with ESMTPSA id s15sm1840787ilt.62.2020.09.09.13.25.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Sep 2020 13:23:00 -0700 (PDT)
-Received: (nullmailer pid 3008103 invoked by uid 1000);
-        Wed, 09 Sep 2020 20:22:51 -0000
-Date:   Wed, 9 Sep 2020 14:22:51 -0600
+        Wed, 09 Sep 2020 13:25:03 -0700 (PDT)
+Received: (nullmailer pid 3020163 invoked by uid 1000);
+        Wed, 09 Sep 2020 20:24:56 -0000
+Date:   Wed, 9 Sep 2020 14:24:56 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Cc:     Alexandre Torgue <alexandre.torgue@st.com>,
-        devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Fabien Dessenne <fabien.dessenne@st.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: Re: [PATCH 2/3] dt-bindings: remoteproc: stm32_rproc: update for
- firmware synchronization
-Message-ID: <20200909202251.GA2975092@bogus>
-References: <20200827072101.26588-1-arnaud.pouliquen@st.com>
- <20200827072101.26588-3-arnaud.pouliquen@st.com>
+To:     Qiang Zhao <qiang.zhao@nxp.com>
+Cc:     a.zummo@towertech.it, alexandre.belloni@bootlin.com,
+        linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] dt-bindings: rtc-2127: Add bindings for
+ nxp,rtc-2127.txt
+Message-ID: <20200909202456.GA3019412@bogus>
+References: <20200827091441.12972-1-qiang.zhao@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200827072101.26588-3-arnaud.pouliquen@st.com>
+In-Reply-To: <20200827091441.12972-1-qiang.zhao@nxp.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 09:21:00AM +0200, Arnaud Pouliquen wrote:
-> Add new properties description used to attach to a pre-loaded
-> firmware according to the commit 9276536f455b3
-> ("remoteproc: stm32: Parse syscon that will manage M4 synchronisation")
-> which updates the driver part.
+On Thu, Aug 27, 2020 at 05:14:39PM +0800, Qiang Zhao wrote:
+> From: Zhao Qiang <qiang.zhao@nxp.com>
 > 
-> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+> Add bindings for nxp,rtc-2127
+> 
+> Signed-off-by: Zhao Qiang <qiang.zhao@nxp.com>
 > ---
->  .../bindings/remoteproc/st,stm32-rproc.yaml   | 19 +++++++++++++++++++
->  1 file changed, 19 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml b/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml
-> index 4ffa25268fcc..e50957d86b1c 100644
-> --- a/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml
-> +++ b/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml
-> @@ -96,6 +96,25 @@ properties:
->          3rd cell: register bitmask for the deep sleep bit
->      maxItems: 1
->  
-> +  st,syscfg-m4-state:
-> +    $ref: "/schemas/types.yaml#/definitions/phandle-array"
-> +    description: |
-> +      Reference to the tamp register which exposes the Cortex-M4 state.
-> +        1st cell: phandle to syscon block
-> +        2nd cell: register offset containing the Cortex-M4 state
-> +        3rd cell: register bitmask for the Cortex-M4 state
-> +    maxItems: 1
-> +
-> +  st,syscfg-rsc-tbl:
-> +    $ref: "/schemas/types.yaml#/definitions/phandle-array"
-> +    description: |
-> +      Reference to the tamp register which references the Cortex-M4
-> +      resource table address.
-> +        1st cell: phandle to syscon block
-> +        2nd cell: register offset containing the resource table address
-> +        3rd cell: register bitmask for the resource table address
-> +    maxItems: 1
+>  Documentation/devicetree/bindings/rtc/nxp,rtc-2127.txt | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/rtc/nxp,rtc-2127.txt
 
-Why can't these be implied? You can lookup the tamp syscon by 
-compatible.
-
-Please add these to the example.
-
-> +
->    st,auto-boot:
->      $ref: /schemas/types.yaml#/definitions/flag
->      description:
-> -- 
-> 2.17.1
-> 
+Bindings should be in DT schema format now.
