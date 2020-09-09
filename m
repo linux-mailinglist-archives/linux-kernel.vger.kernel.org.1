@@ -2,202 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5788262A87
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 10:39:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E3EB262A84
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 10:38:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729789AbgIIIi6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 04:38:58 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:13756 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725826AbgIIIio (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 04:38:44 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4Bmb5S0y0Yz9v0ZM;
-        Wed,  9 Sep 2020 10:38:36 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id AVJJBZqZz_Lj; Wed,  9 Sep 2020 10:38:36 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4Bmb5R6sd6z9v0ZL;
-        Wed,  9 Sep 2020 10:38:35 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 1B5318B7DC;
-        Wed,  9 Sep 2020 10:38:37 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id c2KpwQPUfYWM; Wed,  9 Sep 2020 10:38:36 +0200 (CEST)
-Received: from [10.0.2.15] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5593A8B7D4;
-        Wed,  9 Sep 2020 10:38:35 +0200 (CEST)
-Subject: Re: [RFC PATCH v2 2/3] mm: make pXd_addr_end() functions
- page-table entry aware
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Alexander Gordeev <agordeev@linux.ibm.com>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-mm <linux-mm@kvack.org>, Paul Mackerras <paulus@samba.org>,
-        linux-sparc <sparclinux@vger.kernel.org>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Richard Weinberger <richard@nod.at>,
-        linux-x86 <x86@kernel.org>, Russell King <linux@armlinux.org.uk>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Jeff Dike <jdike@addtoit.com>,
-        linux-um <linux-um@lists.infradead.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-arm <linux-arm-kernel@lists.infradead.org>,
-        linux-power <linuxppc-dev@lists.ozlabs.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>
-In-Reply-To: <20200908141554.GA20558@oc3871087118.ibm.com>
-References: <20200907180058.64880-1-gerald.schaefer@linux.ibm.com>
-         <20200907180058.64880-3-gerald.schaefer@linux.ibm.com>
-         <31dfb3ed-a0cc-3024-d389-ab9bd19e881f@csgroup.eu>
-         <20200908074638.GA19099@oc3871087118.ibm.com>
-         <5d4f5546-afd0-0b8f-664d-700ae346b9ec@csgroup.eu>
-         <20200908141554.GA20558@oc3871087118.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-Organization: CS Group France
-Date:   Wed, 09 Sep 2020 08:38:31 +0000
-Message-ID: <1599640711.14692.1.camel@po17688vm.idsi0.si.c-s.fr>
-Mime-Version: 1.0
-X-Mailer: Evolution 2.32.3 (2.32.3-37.el6) 
-Content-Transfer-Encoding: 7bit
+        id S1727935AbgIIIis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 04:38:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40058 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726293AbgIIIil (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 04:38:41 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FAFFC061573
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 01:38:41 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id m6so2013493wrn.0
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 01:38:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UHQkjp+Ul8wul3YrlRDrBucDkyHt0QKEfdiQK6HCyts=;
+        b=VNiAEN4udfbH4+C0R/M2mp5yFUqGIJP2zhlm05WWisyOSOFH8hDUZB7/EKeG2LMjtT
+         CSfsKPwjr1Qb092qdjEVwoLDwNpPcxSfrYME4Gq8kZ3ellS0OnyCUSsf9IKqjs9GlCbL
+         UdVFVkacXEiQl/Bj46MK+uGD5tUD/iJkOzAFy7IM3TofGDGH4XidqiJmcRFbhSqaZje5
+         bElHkdzvMC+h94i2zrlnHdfLI+YQtRo+e0E4CyRazv5X/FXhS+EUyojN9d94cVLo6iWc
+         EJxv7dIP7k9ioorDHKv7wOk3RBPKAUq4GjZkaDRAbrjy4OuCwuIAm0WZ3Nl7GOwKH0Ms
+         JvPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UHQkjp+Ul8wul3YrlRDrBucDkyHt0QKEfdiQK6HCyts=;
+        b=dLzqJhO8tFus9GhkAS9YqQ0kLMfm2/31xDcZgbytiMb8dOh0vH5JUd7Bun/o5eU7Qd
+         5V8AMDi9mH3uQMv81/bBe2i1o43BJXfdpL1vYCKJPkKbuCgfmZKWAIeszQil/RKllvmO
+         CAt61kncDsWvg6KW0mC1SDZRcOJW7EYymn+nKk0a5my+tkxfNAP6Z4MJmhZ43dfRN5kv
+         Xn73f9JwoWr9XYhxK61ry8At/3eDdAHzCBp3B42ZTRZY8FAawfN4q1AMaDGIhbLx6bVq
+         8dA45MqUFIw7HXILUYtXDfTPeLppar1S+GLaiiUGMA8JmW85tTcMlQmVLqVr7zrKeRbT
+         q1/w==
+X-Gm-Message-State: AOAM533H/8uZcFe3JyxNQm97w/mgCU6N/krgIxk8GJ5Xt3cXwZqeo3i4
+        /uq5rlYuoSQmuFjINF6iSKucHQ==
+X-Google-Smtp-Source: ABdhPJy715CrU6E8EgLhwBkVRe15wumZzEjDxPVMrDaTPbg4r8wwa1dSrjfVxSI7XmOReFGD8GkYoQ==
+X-Received: by 2002:a5d:634e:: with SMTP id b14mr2568628wrw.190.1599640719478;
+        Wed, 09 Sep 2020 01:38:39 -0700 (PDT)
+Received: from bender.baylibre.local ([2a01:e35:2ec0:82b0:5405:9623:e2f1:b2ac])
+        by smtp.gmail.com with ESMTPSA id g12sm2909022wro.89.2020.09.09.01.38.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Sep 2020 01:38:38 -0700 (PDT)
+From:   Neil Armstrong <narmstrong@baylibre.com>
+To:     alyssa.rosenzweig@collabora.com
+Cc:     linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Neil Armstrong <narmstrong@baylibre.com>
+Subject: [PATCH] drm/meson: osd-afbcd: enable XRGB/ARGB8888 on GXM
+Date:   Wed,  9 Sep 2020 10:38:35 +0200
+Message-Id: <20200909083835.8240-1-narmstrong@baylibre.com>
+X-Mailer: git-send-email 2.22.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-09-08 at 16:15 +0200, Alexander Gordeev wrote:
-> On Tue, Sep 08, 2020 at 10:16:49AM +0200, Christophe Leroy wrote:
-> > >Yes, and also two more sources :/
-> > >	arch/powerpc/mm/kasan/8xx.c
-> > >	arch/powerpc/mm/kasan/kasan_init_32.c
-> > >
-> > >But these two are not quite obvious wrt pgd_addr_end() used
-> > >while traversing pmds. Could you please clarify a bit?
-> > >
-> > >
-> > >diff --git a/arch/powerpc/mm/kasan/8xx.c b/arch/powerpc/mm/kasan/8xx.c
-> > >index 2784224..89c5053 100644
-> > >--- a/arch/powerpc/mm/kasan/8xx.c
-> > >+++ b/arch/powerpc/mm/kasan/8xx.c
-> > >@@ -15,8 +15,8 @@
-> > >  	for (k_cur = k_start; k_cur != k_end; k_cur = k_next, pmd += 2, block += SZ_8M) {
-> > >  		pte_basic_t *new;
-> > >-		k_next = pgd_addr_end(k_cur, k_end);
-> > >-		k_next = pgd_addr_end(k_next, k_end);
-> > >+		k_next = pmd_addr_end(k_cur, k_end);
-> > >+		k_next = pmd_addr_end(k_next, k_end);
-> > 
-> > No, I don't think so.
-> > On powerpc32 we have only two levels, so pgd and pmd are more or
-> > less the same.
-> > But pmd_addr_end() as defined in include/asm-generic/pgtable-nopmd.h
-> > is a no-op, so I don't think it will work.
-> > 
-> > It is likely that this function should iterate on pgd, then you get
-> > pmd = pmd_offset(pud_offset(p4d_offset(pgd)));
-> 
-> It looks like the code iterates over single pmd table while using
-> pgd_addr_end() only to skip all the middle levels and bail out
-> from the loop.
-> 
-> I would be wary for switching from pmds to pgds, since we are
-> trying to minimize impact (especially functional) and the
-> rework does not seem that obvious.
-> 
+This allows XRGB/ARGB8888 on GXM following AFBC support in panfrost.
 
-I've just tested the following change, it works and should fix the
-oddity:
-
-diff --git a/arch/powerpc/mm/kasan/8xx.c b/arch/powerpc/mm/kasan/8xx.c
-index 2784224054f8..8e53ddf57b84 100644
---- a/arch/powerpc/mm/kasan/8xx.c
-+++ b/arch/powerpc/mm/kasan/8xx.c
-@@ -9,11 +9,12 @@
- static int __init
- kasan_init_shadow_8M(unsigned long k_start, unsigned long k_end, void
-*block)
- {
--	pmd_t *pmd = pmd_off_k(k_start);
-+	pgd_t *pgd = pgd_offset_k(k_start);
- 	unsigned long k_cur, k_next;
- 
--	for (k_cur = k_start; k_cur != k_end; k_cur = k_next, pmd += 2, block
-+= SZ_8M) {
-+	for (k_cur = k_start; k_cur != k_end; k_cur = k_next, pgd += 2, block
-+= SZ_8M) {
- 		pte_basic_t *new;
-+		pmd_t *pmd = pmd_offset(pud_offset(p4d_offset(pgd, k_cur), k_cur),
-k_cur);
- 
- 		k_next = pgd_addr_end(k_cur, k_end);
- 		k_next = pgd_addr_end(k_next, k_end);
-diff --git a/arch/powerpc/mm/kasan/kasan_init_32.c
-b/arch/powerpc/mm/kasan/kasan_init_32.c
-index fb294046e00e..e5f524fa71a7 100644
---- a/arch/powerpc/mm/kasan/kasan_init_32.c
-+++ b/arch/powerpc/mm/kasan/kasan_init_32.c
-@@ -30,13 +30,12 @@ static void __init kasan_populate_pte(pte_t *ptep,
-pgprot_t prot)
- 
- int __init kasan_init_shadow_page_tables(unsigned long k_start,
-unsigned long k_end)
- {
--	pmd_t *pmd;
-+	pgd_t *pgd = pgd_offset_k(k_start);
- 	unsigned long k_cur, k_next;
- 
--	pmd = pmd_off_k(k_start);
--
--	for (k_cur = k_start; k_cur != k_end; k_cur = k_next, pmd++) {
-+	for (k_cur = k_start; k_cur != k_end; k_cur = k_next, pgd++) {
- 		pte_t *new;
-+		pmd_t *pmd = pmd_offset(pud_offset(p4d_offset(pgd, k_cur), k_cur),
-k_cur);
- 
- 		k_next = pgd_addr_end(k_cur, k_end);
- 		if ((void *)pmd_page_vaddr(*pmd) != kasan_early_shadow_pte)
-@@ -189,16 +188,18 @@ void __init kasan_early_init(void)
- 	unsigned long addr = KASAN_SHADOW_START;
- 	unsigned long end = KASAN_SHADOW_END;
- 	unsigned long next;
--	pmd_t *pmd = pmd_off_k(addr);
-+	pgd_t *pgd = pgd_offset_k(addr);
- 
- 	BUILD_BUG_ON(KASAN_SHADOW_START & ~PGDIR_MASK);
- 
- 	kasan_populate_pte(kasan_early_shadow_pte, PAGE_KERNEL);
- 
- 	do {
-+		pmd_t *pmd = pmd_offset(pud_offset(p4d_offset(pgd, addr), addr),
-addr);
-+
- 		next = pgd_addr_end(addr, end);
- 		pmd_populate_kernel(&init_mm, pmd, kasan_early_shadow_pte);
--	} while (pmd++, addr = next, addr != end);
-+	} while (pgd++, addr = next, addr != end);
- 
- 	if (early_mmu_has_feature(MMU_FTR_HPTE_TABLE))
- 		kasan_early_hash_table();
+Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
 ---
-Christophe
+ drivers/gpu/drm/meson/meson_osd_afbcd.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/gpu/drm/meson/meson_osd_afbcd.c b/drivers/gpu/drm/meson/meson_osd_afbcd.c
+index f12e0271f166..f8399e795d3f 100644
+--- a/drivers/gpu/drm/meson/meson_osd_afbcd.c
++++ b/drivers/gpu/drm/meson/meson_osd_afbcd.c
+@@ -58,7 +58,9 @@
+ static int meson_gxm_afbcd_pixel_fmt(u64 modifier, uint32_t format)
+ {
+ 	switch (format) {
++	case DRM_FORMAT_XRGB8888:
+ 	case DRM_FORMAT_XBGR8888:
++	case DRM_FORMAT_ARGB8888:
+ 	case DRM_FORMAT_ABGR8888:
+ 		return OSD1_AFBCD_RGB32;
+ 	/* TOFIX support mode formats */
+-- 
+2.22.0
 
