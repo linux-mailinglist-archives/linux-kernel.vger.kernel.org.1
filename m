@@ -2,85 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39757262F9C
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 16:14:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37381263011
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 16:59:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727804AbgIIONy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 10:13:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53472 "EHLO
+        id S1730423AbgIIO7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 10:59:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730273AbgIINHp (ORCPT
+        with ESMTP id S1730116AbgIIMWW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 09:07:45 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10F30C061573;
-        Wed,  9 Sep 2020 06:07:50 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id 67so2012741pgd.12;
-        Wed, 09 Sep 2020 06:07:50 -0700 (PDT)
+        Wed, 9 Sep 2020 08:22:22 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B517EC061796
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 05:11:15 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id n3so1238251pjq.1
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 05:11:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=l/LRvYVAOKtqURaUwND/u+OqQE4NIsYK9mO14jedKw0=;
-        b=iPLT9TuOiQxJCTc104sFUmTZlM86Nqk9+uPt7yOjzR52cklKdMquF7R5lbePKGhqXu
-         f9uHBGvsaWLyLjist4Sd32WyBh84ScHQFwZiQyPVG6oSlZQNNcZHNo2jCDzPaQv6oXN8
-         38eUuHcP8kjuN8gNrSTLbCa/E33vqbfNhiVDheRBZQ5gCZjVhRzYOQpFbeQ664sdiZsD
-         YVwxvvjuhU8MBXUGw4DVcg6G+xW1WHoJJjKnLHElT8WZdD88itgusGoLdsd5iVIA8Jee
-         E82dfsHv9Ff4/9ZpV5UIcROqw+XGWbXS8eK7GrMkXbQDcifwRzc31PRk9lxW7QdV6HRm
-         vCYg==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3CSI24S8plBTXtRgEcDOdjCLZsD8Xjzm/x3QvW5GzzA=;
+        b=CrxiqY4eqzLovv8Iwz2sAdv/R4dvPyNaEFS0bl0Q+eQt7YSX9DLk69dRuVBaBnrwPC
+         dwVAaK9uxYzBLmAen/KHnYGaWDrzgLDsfx6T4RyahPeFdLRkP2buCCet/pe1TM5R5u2+
+         qQh+wQMV7HSCveHSET/gSe12NjhmDGKAwhuooc8xiJ/6oCr/2bvkwQ7TIpSpu1fQ9gT3
+         uBOLib7VicZvdfGzBIFiOEpzy3rFbuaG+lLUIlSPI3Yx0IjLBBXZhziDHGXZgWC/isaM
+         o1HzfXUgWdjlOMoTc6KbAWnC1rcRnvfBQIAgDTG0LxaH/ur8p/t6j4YdTsfDhV8NUT5O
+         gr7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=l/LRvYVAOKtqURaUwND/u+OqQE4NIsYK9mO14jedKw0=;
-        b=U+ZC17M5Iapa8MBN3lrfXwaAcvlMqMQLXPb/+DiQpcM7BqFNGaycWMtQXkjQrl27Ek
-         LIklLUOD1m4bXnR3syI7zyihaOD3L01mn8W+MFkyBaMyiGoVqYtHPcCYUvYuikpRiO3M
-         tv1NzFOz0wGnlfqeXwEX//bj3iKW5uddvBuAUAtPWZkBMniuTJokKLfBeVqVPLG5VDDw
-         M6IQv/MwXz+bYg5UWiOXjJoC/Dcm4Faf8rVDDJjFRygaUcnB9jAJZgZyr8k9m+Lpgswr
-         vao576r7zI4RPyOMa3Y+kpTbOr7xH9qiSvzZbzqgNL2hGnZ3Owp0JWIaB3b96kzmYW+i
-         ksAA==
-X-Gm-Message-State: AOAM533KCFwejg818DrxYn1gXjhi82e4ZpDtLLGfax1+baFTBa9veuo4
-        lNqyD9mJYnYOQjybexbsTwW/8k2sfmh5cF7Y
-X-Google-Smtp-Source: ABdhPJzuCTpu++I4HhPcfcaFCoYpkyOCAXu/nwUhUobuP1+VodiagGec1MKPJDQlk9vCZ9sSdsvMeA==
-X-Received: by 2002:aa7:8512:0:b029:13c:1611:653e with SMTP id v18-20020aa785120000b029013c1611653emr859886pfn.16.1599656869521;
-        Wed, 09 Sep 2020 06:07:49 -0700 (PDT)
-Received: from ubuntu.localdomain ([47.75.194.237])
-        by smtp.gmail.com with ESMTPSA id x3sm2297753pgg.54.2020.09.09.06.07.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Sep 2020 06:07:49 -0700 (PDT)
-From:   ownia <o451686892@gmail.com>
-To:     viro@zeniv.linux.org.uk
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ownia <o451686892@gmail.com>
-Subject: [PATCH] fs/read_write.c: remove extra space
-Date:   Wed,  9 Sep 2020 06:07:42 -0700
-Message-Id: <20200909130742.81895-1-o451686892@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3CSI24S8plBTXtRgEcDOdjCLZsD8Xjzm/x3QvW5GzzA=;
+        b=AQn71Di0OFpqTZG2BqO5Kkw3l2sfRv8IOhe7LlhxULuOFQmKZIUSgTTecf6ciKrQvY
+         5SCEtR+WkRuK1eFCcdOUZfidbX+k3EVBqI2edz7KHdkB1C6L091nStP+TTS3lzWHy0UI
+         fxc0TgGVZGA2Z81h8W7pUXSQiMCozUc43E5ps61nEmzc4tZmWaghOmLLispIymQJ/S0m
+         GCmR+WJW8Mo41h5m/BzWD4qq1mZNan9GVdnPOxYPmC29zWdwkmeWGAltOnOWihj7LTsJ
+         ByEN1v7dZL87jqLC6O69QfXKKrWKcGnzN84a0ituTvFBjcajGDWW4Dl/QcY6vEWu8eWz
+         qlvA==
+X-Gm-Message-State: AOAM532wbjBMGZjJFZbGOryGoZTM5XB3AngEcYC+AMLmRo7zVdSQSMKy
+        v+t+qlrk8CeeBrnbW0ZwJmpugQFKlnxQ8Cjlvata+g==
+X-Google-Smtp-Source: ABdhPJzSzC6P2DfhIWtu+y/IAzCXD0HNAlLfeRfx9UE1/C1qO6I+SsnJZKvhdRFgxyCmlNAKHQM8UXJ8SnF5aucb8yU=
+X-Received: by 2002:a17:90a:bd0e:: with SMTP id y14mr577786pjr.13.1599653475051;
+ Wed, 09 Sep 2020 05:11:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200908142456.89626-1-zangchunxin@bytedance.com>
+ <20200908150945.GA1301981@chrisdown.name> <CAMZfGtXDXzv8FEZa7cw6v+jV4ODnVuA3_UGEGWm7eTtZWCU+Bw@mail.gmail.com>
+ <20200909095915.GA1412646@chrisdown.name>
+In-Reply-To: <20200909095915.GA1412646@chrisdown.name>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Wed, 9 Sep 2020 20:10:38 +0800
+Message-ID: <CAMZfGtXe_5AqdDA5hRfT+CkKVYO0mdvN4k4_D1jXoZneP+jTdw@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH] mm/vmscan: fix infinite loop in drop_slab_node
+To:     Chris Down <chris@chrisdown.name>
+Cc:     zangchunxin@bytedance.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: ownia <o451686892@gmail.com>
----
- fs/read_write.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Wed, Sep 9, 2020 at 5:59 PM Chris Down <chris@chrisdown.name> wrote:
+>
+> Muchun Song writes:
+> >1. Double the threshold currently hard coded as "10" with each iteration
+> >    suggested by Vlastimil. It is also a good idea.
+>
+> I think this sounds reasonable, although I'd like to see what the difference in
+> reclaim looks like in practice.
+>
+> >2. In the while loop, we can check whether the TASK_KILLABLE
+> >    signal is set, if so, we should break the loop. like the following code
+> >    snippe. Thanks.
+> >
+> >@@ -704,6 +704,9 @@ void drop_slab_node(int nid)
+> >  do {
+> >  struct mem_cgroup *memcg = NULL;
+> >
+> >+ if (fatal_signal_pending(current))
+> >+ return;
+> >+
+> >  freed = 0;
+> >  memcg = mem_cgroup_iter(NULL, NULL, NULL);
+> >  do {
+>
+> Regardless of anything, I think this is probably a good idea. Could you send it
+> as a patch? :-)
 
-diff --git a/fs/read_write.c b/fs/read_write.c
-index 5db58b8c78d0..4cdbf45ced98 100644
---- a/fs/read_write.c
-+++ b/fs/read_write.c
-@@ -1497,7 +1497,7 @@ static ssize_t do_sendfile(int out_fd, int in_fd, loff_t *ppos,
- 	if (retval < 0)
- 		goto fput_in;
- 	if (count > MAX_RW_COUNT)
--		count =  MAX_RW_COUNT;
-+		count = MAX_RW_COUNT;
- 
- 	/*
- 	 * Get output file, and verify that it is ok..
+OK, Will do that thanks.
+
+>
+> Thanks,
+>
+> Chris
+
+
+
 -- 
-2.25.1
-
+Yours,
+Muchun
