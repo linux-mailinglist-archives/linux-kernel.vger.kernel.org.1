@@ -2,63 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2AD8262F40
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 15:41:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71F9F262F35
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 15:33:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730377AbgIINih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 09:38:37 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:11720 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730356AbgIINV6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 09:21:58 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id C2CC8973CFAD018ABD1F;
-        Wed,  9 Sep 2020 21:21:40 +0800 (CST)
-Received: from huawei.com (10.175.113.133) by DGGEMS413-HUB.china.huawei.com
- (10.3.19.213) with Microsoft SMTP Server id 14.3.487.0; Wed, 9 Sep 2020
- 21:21:39 +0800
-From:   Wang Hai <wanghai38@huawei.com>
-To:     <jirislaby@kernel.org>, <mickflemm@gmail.com>, <mcgrof@kernel.org>,
-        <kvalo@codeaurora.org>, <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH net-next] ath5k: fix 'mode' kernel-doc warning in ath5k_hw_pcu_init()
-Date:   Wed, 9 Sep 2020 21:18:58 +0800
-Message-ID: <20200909131858.70391-1-wanghai38@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S1730293AbgIINby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 09:31:54 -0400
+Received: from mail-il1-f207.google.com ([209.85.166.207]:44686 "EHLO
+        mail-il1-f207.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730336AbgIINTH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 09:19:07 -0400
+Received: by mail-il1-f207.google.com with SMTP id j11so1987813ilr.11
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 06:19:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=E3DC8oOc5Wv1kvi7EPmKvvKbe0T5xVJz7MHLJ6IZAsg=;
+        b=g4o2pkDAP/5SYWV2TVenm1sJUrEUaQs+9bnw6u6OQEqQa+NbqtVhIwnVEM6+iJ/woq
+         NiTwB689Mhj0R0MHeCBGvRr0VM1AQtiU0bydYyb9n+VQGWkOVRt2exP9mbxsk/BQx3cO
+         +/ahYLUVxnSBW8jIsY8BfypSpdc8SHrJnaE1W/QKZjmHgZA4Zsd7p8TTA+O5Jj/wPI/F
+         yjS/CXpRI274wLlY0skHlg3lRdHtxtQovzbEtOWbVSsc/85S8LGhgsikW9TUkOMhPWdx
+         WCEguDoBKANoSVr8+bV6VX8T9hUdXAlZnOLie4FAMsYsLOPUQalm3y873owAv6KGqREk
+         AV/w==
+X-Gm-Message-State: AOAM530yzeOVGxzfpAocCq1sy+6x2hEI3jlM4qwsi+fH2vM4y7lELpXE
+        Nr80+4FZYRkBcOGEYrB//Tw24XFooxsurozuPDh0WW8qStKC
+X-Google-Smtp-Source: ABdhPJxcQGxT5cF6oLXv72p5cpZNhvBHKbh1UCXK1nE51/J5GhQOYBlu+S/ZZWIBLCIbFJoMJf4qNwXxdUWZdLn5fycpFuyANkem
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.113.133]
-X-CFilter-Loop: Reflected
+X-Received: by 2002:a92:906:: with SMTP id y6mr3753912ilg.106.1599657546811;
+ Wed, 09 Sep 2020 06:19:06 -0700 (PDT)
+Date:   Wed, 09 Sep 2020 06:19:06 -0700
+In-Reply-To: <0000000000002cdf7305aedd838d@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000d7136005aee14bf9@google.com>
+Subject: Re: WARNING: HARDIRQ-safe -> HARDIRQ-unsafe lock order detected (2)
+From:   syzbot <syzbot+22e87cdf94021b984aa6@syzkaller.appspotmail.com>
+To:     bfields@fieldses.org, boqun.feng@gmail.com, jlayton@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mingo@redhat.com, peterz@infradead.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk,
+        will@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following W=1 kernel build warning(s):
+syzbot has bisected this issue to:
 
-drivers/net/wireless/ath/ath5k/pcu.c:955: warning: Excess function parameter 'mode' description in 'ath5k_hw_pcu_init'
+commit f08e3888574d490b31481eef6d84c61bedba7a47
+Author: Boqun Feng <boqun.feng@gmail.com>
+Date:   Fri Aug 7 07:42:30 2020 +0000
 
-This parameter is not in use. Remove it.
+    lockdep: Fix recursive read lock related safe->unsafe detection
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
----
- drivers/net/wireless/ath/ath5k/pcu.c | 1 -
- 1 file changed, 1 deletion(-)
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13034be1900000
+start commit:   dff9f829 Add linux-next specific files for 20200908
+git tree:       linux-next
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=10834be1900000
+console output: https://syzkaller.appspot.com/x/log.txt?x=17034be1900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=37b3426c77bda44c
+dashboard link: https://syzkaller.appspot.com/bug?extid=22e87cdf94021b984aa6
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=108b740d900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12daa9ed900000
 
-diff --git a/drivers/net/wireless/ath/ath5k/pcu.c b/drivers/net/wireless/ath/ath5k/pcu.c
-index 05140d8baa36..3df5f27708fc 100644
---- a/drivers/net/wireless/ath/ath5k/pcu.c
-+++ b/drivers/net/wireless/ath/ath5k/pcu.c
-@@ -945,7 +945,6 @@ ath5k_hw_set_opmode(struct ath5k_hw *ah, enum nl80211_iftype op_mode)
-  * ath5k_hw_pcu_init() - Initialize PCU
-  * @ah: The &struct ath5k_hw
-  * @op_mode: One of enum nl80211_iftype
-- * @mode: One of enum ath5k_driver_mode
-  *
-  * This function is used to initialize PCU by setting current
-  * operation mode and various other settings.
--- 
-2.17.1
+Reported-by: syzbot+22e87cdf94021b984aa6@syzkaller.appspotmail.com
+Fixes: f08e3888574d ("lockdep: Fix recursive read lock related safe->unsafe detection")
 
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
