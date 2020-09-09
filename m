@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B2F3263115
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 17:58:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D60E4263103
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 17:54:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730460AbgIIP6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 11:58:05 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:11326 "EHLO huawei.com"
+        id S1730694AbgIIPxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 11:53:46 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:41702 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730581AbgIIPyK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 11:54:10 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 31D906DFC959D022662F;
-        Wed,  9 Sep 2020 21:51:15 +0800 (CST)
-Received: from localhost (10.174.179.108) by DGGEMS406-HUB.china.huawei.com
- (10.3.19.206) with Microsoft SMTP Server id 14.3.487.0; Wed, 9 Sep 2020
- 21:51:06 +0800
+        id S1730581AbgIIPtp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 11:49:45 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 354901E989B60028A84F;
+        Wed,  9 Sep 2020 21:52:51 +0800 (CST)
+Received: from localhost (10.174.179.108) by DGGEMS412-HUB.china.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Wed, 9 Sep 2020
+ 21:52:41 +0800
 From:   YueHaibing <yuehaibing@huawei.com>
-To:     <gregkh@linuxfoundation.org>, <jirislaby@kernel.org>,
-        <u74147@gmail.com>, <je.yen.tam@ni.com>
-CC:     <linux-serial@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+To:     <clm@fb.com>, <josef@toxicpanda.com>, <dsterba@suse.com>,
+        <nborisov@suse.com>
+CC:     <linux-btrfs@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH -next] serial: 8250_pci: Remove unused function get_pci_irq()
-Date:   Wed, 9 Sep 2020 21:51:03 +0800
-Message-ID: <20200909135103.17768-1-yuehaibing@huawei.com>
+Subject: [PATCH -next] btrfs: Remove unused function calc_global_rsv_need_space()
+Date:   Wed, 9 Sep 2020 21:51:42 +0800
+Message-ID: <20200909135142.27352-1-yuehaibing@huawei.com>
 X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
 Content-Type: text/plain
@@ -35,33 +35,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is not used since commit 8428413b1d14 ("serial: 8250_pci: Implement MSI(-X) support")
+It is not used since commit 0096420adb03 ("btrfs: do not
+account global reserve in can_overcommit")
 
 Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 ---
- drivers/tty/serial/8250/8250_pci.c | 9 ---------
- 1 file changed, 9 deletions(-)
+ fs/btrfs/space-info.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/drivers/tty/serial/8250/8250_pci.c b/drivers/tty/serial/8250/8250_pci.c
-index 85810b8b9d20..824c44ec25a8 100644
---- a/drivers/tty/serial/8250/8250_pci.c
-+++ b/drivers/tty/serial/8250/8250_pci.c
-@@ -2795,15 +2795,6 @@ static struct pci_serial_quirk *find_quirk(struct pci_dev *dev)
- 	return quirk;
+diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
+index b733718f45d3..0f16a2ce5401 100644
+--- a/fs/btrfs/space-info.c
++++ b/fs/btrfs/space-info.c
+@@ -301,11 +301,6 @@ struct btrfs_space_info *btrfs_find_space_info(struct btrfs_fs_info *info,
+ 	return NULL;
  }
  
--static inline int get_pci_irq(struct pci_dev *dev,
--				const struct pciserial_board *board)
+-static inline u64 calc_global_rsv_need_space(struct btrfs_block_rsv *global)
 -{
--	if (board->flags & FL_NOIRQ)
--		return 0;
--	else
--		return dev->irq;
+-	return (global->size << 1);
 -}
 -
- /*
-  * This is the configuration table for all of the PCI serial boards
-  * which we support.  It is directly indexed by the pci_board_num_t enum
+ static u64 calc_available_free_space(struct btrfs_fs_info *fs_info,
+ 			  struct btrfs_space_info *space_info,
+ 			  enum btrfs_reserve_flush_enum flush)
 -- 
 2.17.1
 
