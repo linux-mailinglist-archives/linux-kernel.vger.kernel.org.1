@@ -2,91 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFEB626305D
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 17:19:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87AE2263055
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 17:16:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729275AbgIIPSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 11:18:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36524 "EHLO mail.kernel.org"
+        id S1729785AbgIIPQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 11:16:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36526 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729161AbgIILao (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1729135AbgIILao (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 9 Sep 2020 07:30:44 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 24C7221582;
-        Wed,  9 Sep 2020 11:23:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E1F5820897;
+        Wed,  9 Sep 2020 11:22:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599650582;
-        bh=LkadiQCgclxrhojlBp3ZXM5AWwkkDe239xMCm7eedRk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UrrGsOcTrWGEPvnUvln7SG7bMJdZ8HTJlYOThf6sAUD4Tsyc62iZhuN4/kAh2Zodw
-         6l6UYCdDFnpiAt9e7kHXzKb1ps6JA3d4pmwjio2Yzbtz0FIfh8vjs3UJXhbNa8/cPw
-         r1AD8bDOoFfbRIIic8PEdNoQl6PYUrAmdxQPEjCE=
-Date:   Wed, 9 Sep 2020 12:22:16 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Camel Guo <camelg@axis.com>
-Cc:     "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "dmurphy@ti.com" <dmurphy@ti.com>, Camel Guo <Camel.Guo@axis.com>,
-        "tiwai@suse.com" <tiwai@suse.com>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        kernel <kernel@axis.com>
-Subject: Re: [PATCH 1/2] ASoC: tlv320adcx140: Avoid accessing invalid
- gpio_reset
-Message-ID: <20200909112216.GB4926@sirena.org.uk>
-References: <20200908083521.14105-1-camel.guo@axis.com>
- <159958562064.16576.7853800514030717096.b4-ty@kernel.org>
- <1e17f203-7b60-bf97-4515-937e722f5ef7@axis.com>
+        s=default; t=1599650561;
+        bh=oAgyl5YCzOi2Oys2dADhKhmSZ1VDNwqV2xCYDMZdcWw=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=VGlHUA84CYJaxv0ABm+a7LxuNh29gVlf7PMfczNBCR98EuKwBIr0Bd91ClwrEdbao
+         ZJmTM2fuC1vKlva5mCMB7bzzkTO9BoXDAgwzncyqAvGsXx1PyTsiLJdMRE2XiO4/rq
+         m3UHhFdkjCrWGoIUrbT2sCHDNVlTZYQL/eUnmEZA=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id AB27F3523091; Wed,  9 Sep 2020 04:22:41 -0700 (PDT)
+Date:   Wed, 9 Sep 2020 04:22:41 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Zhang, Qiang" <Qiang.Zhang@windriver.com>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        rcu <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: RCU:  Question   rcu_preempt_blocked_readers_cgp  in
+  rcu_gp_fqs_loop func
+Message-ID: <20200909112241.GE29330@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200818220245.GO27891@paulmck-ThinkPad-P72>
+ <CAEXW_YRZ6RM90+aYA0JQ1war0n-D0M4peXJZE2_Uqf07xvF+5g@mail.gmail.com>
+ <BYAPR11MB26323E6D956BA22DFE610A13FF5D0@BYAPR11MB2632.namprd11.prod.outlook.com>
+ <20200819135654.GB3875610@google.com>
+ <20200819152159.GX27891@paulmck-ThinkPad-P72>
+ <20200819155808.GA8817@pc636>
+ <20200820223957.GB120898@google.com>
+ <20200821153328.GH2855@paulmck-ThinkPad-P72>
+ <BYAPR11MB263285B19261BE8096D87F65FF260@BYAPR11MB2632.namprd11.prod.outlook.com>
+ <BYAPR11MB2632FD34F68A89CCE039018BFF260@BYAPR11MB2632.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="i9LlY+UWpKt15+FH"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1e17f203-7b60-bf97-4515-937e722f5ef7@axis.com>
-X-Cookie: MIT:
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <BYAPR11MB2632FD34F68A89CCE039018BFF260@BYAPR11MB2632.namprd11.prod.outlook.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Sep 09, 2020 at 07:03:39AM +0000, Zhang, Qiang wrote:
+> 
+> When config preempt RCU,  and then  there are multiple levels  node,  the current task is preempted  in rcu  read critical region.
+> the current task be add to "rnp->blkd_tasks" link list,  and the "rnp->gp_tasks"  may be assigned a value .  these rnp is leaf node in RCU tree.
+> 
+> But in "rcu_gp_fqs_loop" func, we check blocked readers in root node. 
+> 
+> static void rcu_gp_fqs_loop(void)
+>  {
+>             .....
+>             struct rcu_node *rnp = rcu_get_root();
+>             .....
+>             if (!READ_ONCE(rnp->qsmask) &&
+>                                !rcu_preempt_blocked_readers_cgp(rnp))    ------> rnp is root node
+>                      break;
+>             ....
+> }
+> 
+> the root node's blkd_tasks never add task, the "rnp->gp_tasks" is never be assigned value,  this check is invailed.
+>  Should we check leaf nodes like this 
 
---i9LlY+UWpKt15+FH
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+There are two cases:
 
-On Wed, Sep 09, 2020 at 12:06:45PM +0200, Camel Guo wrote:
-> On 9/8/20 7:20 PM, Mark Brown wrote:
+1.	There is only a single rcu_node structure, which is both root
+	and leaf.  In this case, the current check is required:  Both
+	->qsmask and the ->blkd_tasks list must be checked.  Your
+	rcu_preempt_blocked_readers() would work in this case, but
+	the current code is a bit faster because it does not need
+	to acquire the ->lock nor does it need the loop overhead.
 
-> > Applied to
+2.	There are multiple levels.  In this case, as you say, the root
+	rcu_node structure's ->blkd_tasks list will always be empty.
+	But also in this case, the root rcu_node structure's ->qsmask
+	cannot be zero until all the leaf rcu_node structures' ->qsmask
+	fields are zero and their ->blkd_tasks lists no longer have
+	tasks blocking the current grace period.  This means that your
+	rcu_preempt_blocked_readers() function would never return
+	true in this case.
 
-> > https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-n=
-ext
+So the current code is fine.
 
-> I think it is "ASoC: tlv320adcx140: Wake up codec before register setting"
-> that is applied to for next not this one.
+Are you seeing failures on mainline kernels?  If so, what is the failure
+mode?
 
-As the mail says:
+							Thanx, Paul
 
-> > [1/1] ASoC: tlv320adcx140: Wake up codec before accessing register
-> >  =A0=A0=A0=A0=A0 commit: 1a5ce48fd667128e369fdc7fb87e21539aed21b5
-
-You didn't send a cover letter.
-
---i9LlY+UWpKt15+FH
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9YuugACgkQJNaLcl1U
-h9BzRAf/eej3UqPw1MAjqnCxeGC25+X4SQHNNj9q/MDJxHNi4cmZhw1xymwlhMvH
-LzzZuVLNsf+iBGnr+Pb1bFs+gbXPK4R2mes/HOAnfrBtTmQaaVdz7gI6GauLubZl
-UhK+XUiP6nLgOw/hQcF0dc9mJzZcL74wixT1Qb4nADxZMIS9NvWsNb9IX7/S4Zi6
-6u6In1DZFzMICqDVirAmTNXwDkEuoK+SuFzQqibMIQ/KOKrNuyevcuFbfEETzeNP
-lCdyuMyDzJp2oAVSRoos9OUQ9K+9szg74RzZ98yjDwBE/sX17iVPO1exFaNS1IG7
-g+jkoNwl+SVDGWK9ouoSKgmmzTUDcQ==
-=hYvu
------END PGP SIGNATURE-----
-
---i9LlY+UWpKt15+FH--
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -1846,6 +1846,25 @@ static bool rcu_gp_init(void)
+>  	return true;
+>  }
+>  
+> +static bool rcu_preempt_blocked_readers(void)
+> +{
+> +	struct rcu_node *rnp;
+> +	unsigned long flags;
+> +	bool ret = false;
+> +
+> +	rcu_for_each_leaf_node(rnp) {
+> +		raw_spin_lock_irqsave_rcu_node(rnp, flags);
+> +		if (rcu_preempt_blocked_readers_cgp(rnp)) {
+> +			ret = true;
+> +			raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+> +			break;
+> +		}
+> +		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+>  /*
+>   * Helper function for swait_event_idle_exclusive() wakeup at force-quiescent-state
+>   * time.
+> @@ -1864,7 +1883,7 @@ static bool rcu_gp_fqs_check_wake(int *gfp)
+>  		return true;
+>  
+>  	// The current grace period has completed.
+> -	if (!READ_ONCE(rnp->qsmask) && !rcu_preempt_blocked_readers_cgp(rnp))
+> +	if (!READ_ONCE(rnp->qsmask) && !rcu_preempt_blocked_readers())
+>  		return true;
+>  
+>  	return false;
+> @@ -1927,7 +1946,7 @@ static void rcu_gp_fqs_loop(void)
+>  		/* Locking provides needed memory barriers. */
+>  		/* If grace period done, leave loop. */
+>  		if (!READ_ONCE(rnp->qsmask) &&
+> -		    !rcu_preempt_blocked_readers_cgp(rnp))
+> +		    !rcu_preempt_blocked_readers())
+>  			break;
+>  		/* If time for quiescent-state forcing, do it. */
+>  		if (!time_after(rcu_state.jiffies_force_qs, jiffies) ||
+> -- 
+> 
+> 
+> thanks
+> Qiang
