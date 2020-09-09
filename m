@@ -2,94 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF31F26340C
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 19:13:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20372263450
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 19:18:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730839AbgIIRNr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 13:13:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35472 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730293AbgIIRNh (ORCPT
+        id S1731124AbgIIRSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 13:18:48 -0400
+Received: from mail-il1-f194.google.com ([209.85.166.194]:41314 "EHLO
+        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730168AbgIIRSo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 13:13:37 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BB65C061573;
-        Wed,  9 Sep 2020 10:13:37 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kG3em-00DIaQ-My; Wed, 09 Sep 2020 17:13:16 +0000
-Date:   Wed, 9 Sep 2020 18:13:16 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
-Cc:     linux-kernel@vger.kernel.org, Aleksa Sarai <cyphar@cyphar.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Christian Heimes <christian@python.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Deven Bowers <deven.desai@linux.microsoft.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Eric Chiang <ericchiang@google.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        James Morris <jmorris@namei.org>, Jan Kara <jack@suse.cz>,
-        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Matthew Garrett <mjg59@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Philippe =?iso-8859-1?Q?Tr=E9buchet?= 
-        <philippe.trebuchet@ssi.gouv.fr>,
-        Scott Shell <scottsh@microsoft.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Steve Dower <steve.dower@python.org>,
-        Steve Grubb <sgrubb@redhat.com>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Thibaut Sautereau <thibaut.sautereau@clip-os.org>,
-        Vincent Strubel <vincent.strubel@ssi.gouv.fr>,
-        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [RFC PATCH v8 0/3] Add support for AT_INTERPRETED (was O_MAYEXEC)
-Message-ID: <20200909171316.GW1236603@ZenIV.linux.org.uk>
-References: <20200908075956.1069018-1-mic@digikod.net>
- <20200908185026.GU1236603@ZenIV.linux.org.uk>
- <e3223b50-0d00-3b64-1e09-cfb1b9648b02@digikod.net>
+        Wed, 9 Sep 2020 13:18:44 -0400
+Received: by mail-il1-f194.google.com with SMTP id w8so3058415ilj.8;
+        Wed, 09 Sep 2020 10:18:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1hr4fQWVMQoos6KFmQBQi97levSHBi+dO9Jnfm/kgyc=;
+        b=QgVDrQv79/bMsspyf26g4QQ7M+nDYYC/uCyuQAI6TQmqQO9jt5pBIr+Mlusq9nduAE
+         eyKUQSv+CBNtLnXmfaF4UVbv+Eh9R3p20rQfmcfxvpnJx0bheNnCp274h8xntUrA6YTL
+         pEbbgtFSY1NAQdGEfXBxhlFRZKPfY3yctAMGgEqu3fy4klGIQ3GZBMhu/ML2mfsl91O5
+         m671D9XSpw/34bNwhjwmj+4TwKoVzBKXYDXyqnV6dD5r6WbpGJzHbw5iNhCkiEtNYzVA
+         sOWvIiDr89TV/HICs1wPOonQaP+eqy4+Gi9Hn1ym5+2hPL173KUd8Kq+MG8OZQ0TJvEg
+         QZbg==
+X-Gm-Message-State: AOAM533E7xhtu7K5XJRV2KAI8tOtdLjd6y5OssahsAiIoLgHK5bQASKW
+        xYFJZcSYgX4SjyrA1Szz5pt2u8/klmWD
+X-Google-Smtp-Source: ABdhPJweONXjnuZtBkOGVqg1AFS1ASeGmxxVhyJmF8gPg8PMO09CmvmPl5R9xygei/39Fl6Prjb6gg==
+X-Received: by 2002:a92:bb94:: with SMTP id x20mr4613847ilk.86.1599671923668;
+        Wed, 09 Sep 2020 10:18:43 -0700 (PDT)
+Received: from xps15 ([64.188.179.251])
+        by smtp.gmail.com with ESMTPSA id s15sm1610420ilt.62.2020.09.09.10.18.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Sep 2020 10:18:43 -0700 (PDT)
+Received: (nullmailer pid 2680839 invoked by uid 1000);
+        Wed, 09 Sep 2020 17:18:42 -0000
+Date:   Wed, 9 Sep 2020 11:18:42 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: regulator: Convert mp886x to json-schema
+Message-ID: <20200909171842.GA2680789@bogus>
+References: <20200827150640.267f6edc@xhacker.debian>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <e3223b50-0d00-3b64-1e09-cfb1b9648b02@digikod.net>
+In-Reply-To: <20200827150640.267f6edc@xhacker.debian>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 09, 2020 at 09:19:11AM +0200, Mickaël Salaün wrote:
+On Thu, 27 Aug 2020 15:06:40 +0800, Jisheng Zhang wrote:
+> Convert the mp886x binding to DT schema format using json-schema.
 > 
-> On 08/09/2020 20:50, Al Viro wrote:
-> > On Tue, Sep 08, 2020 at 09:59:53AM +0200, Mickaël Salaün wrote:
-> >> Hi,
-> >>
-> >> This height patch series rework the previous O_MAYEXEC series by not
-> >> adding a new flag to openat2(2) but to faccessat2(2) instead.  As
-> >> suggested, this enables to perform the access check on a file descriptor
-> >> instead of on a file path (while opening it).  This may require two
-> >> checks (one on open and then with faccessat2) but it is a more generic
-> >> approach [8].
-> > 
-> > Again, why is that folded into lookup/open/whatnot, rather than being
-> > an operation applied to a file (e.g. O_PATH one)?
-> > 
+> Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+> ---
+>  .../devicetree/bindings/regulator/mp886x.txt  | 31 ----------
+>  .../bindings/regulator/mps,mp886x.yaml        | 61 +++++++++++++++++++
+>  2 files changed, 61 insertions(+), 31 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/regulator/mp886x.txt
+>  create mode 100644 Documentation/devicetree/bindings/regulator/mps,mp886x.yaml
 > 
-> I don't understand your question. AT_INTERPRETED can and should be used
-> with AT_EMPTY_PATH. The two checks I wrote about was for IMA.
 
-Once more, with feeling: don't hide that behind existing syscalls.
-If you want to tell LSM have a look at given fs object in a special
-way, *add* *a* *new* *system* *call* *for* *doing* *just* *that*.
+Reviewed-by: Rob Herring <robh@kernel.org>
