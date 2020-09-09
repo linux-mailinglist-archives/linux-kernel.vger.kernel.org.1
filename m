@@ -2,85 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF3EF262A49
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 10:30:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C1F7262A64
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 10:33:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726642AbgIII36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 04:29:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59680 "EHLO mail.kernel.org"
+        id S1728584AbgIIIdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 04:33:49 -0400
+Received: from mga07.intel.com ([134.134.136.100]:20695 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725877AbgIII35 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 04:29:57 -0400
-Received: from localhost (p54b33098.dip0.t-ipconnect.de [84.179.48.152])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4E68021532;
-        Wed,  9 Sep 2020 08:29:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599640197;
-        bh=MbClhGyUdRECN1h82ylvGrl2A/SJZyPj17UZy2kQneA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=zfCmpZVRhOPWymSa+3BrJsvTJiqc8kkneJOJdgLm3KnLuG2u1f/cFsYx/BwYe7/Mo
-         n58YrV9sEiYM0t1DehLE4fPtaIweTnK3j6IW0s+TvxApeOgQJfWp8acFP3S9b345/w
-         k71mqJtcO3OIksU0O/z7N07yBMT1RfTryX+T+wLU=
-Date:   Wed, 9 Sep 2020 10:29:53 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Jeffrey Lin <jeffrey@icurse.nl>
-Cc:     jdelvare@suse.com, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jean Delvare <jdelvare@suse.de>
-Subject: Re: [PATCH v2] i2c: i801: Register lis3lv02d I2C device on Dell
- Latitude 5480
-Message-ID: <20200909082953.GD2272@ninjato>
-References: <20200616234130.814499-1-jeffrey@icurse.nl>
- <20200902045136.527776-1-jeffrey@icurse.nl>
+        id S1726489AbgIIIdr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 04:33:47 -0400
+IronPort-SDR: lb5ns/Thwp9sgI1XRLPXwt7iEgesGVycuxcnBnYHqQAPFY2i+ryc/sXJXSTPZhv8J+a+rJUSZd
+ qDElLPqIZ0wQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9738"; a="222496062"
+X-IronPort-AV: E=Sophos;i="5.76,409,1592895600"; 
+   d="scan'208";a="222496062"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2020 01:33:46 -0700
+IronPort-SDR: cpi5SoaFuZf4vJUtvAmBWGnqKlUO+eVPMSqB/cbUPSJZ/HNe4QZ8yVxG3iA4gQIrUf8J6iJp6r
+ 53FdVwHKuN8g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,409,1592895600"; 
+   d="scan'208";a="300081735"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
+  by orsmga003.jf.intel.com with ESMTP; 09 Sep 2020 01:33:43 -0700
+Date:   Wed, 9 Sep 2020 16:29:29 +0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     broonie@kernel.org, linux-kernel@vger.kernel.org, trix@redhat.com,
+        matthew.gerlach@linux.intel.com, russell.h.weight@intel.com,
+        lgoncalv@redhat.com, hao.wu@intel.com, yilun.xu@intel.com
+Subject: Re: [PATCH v4 2/2] mfd: intel-m10-bmc: add Max10 BMC chip support
+  for Intel FPGA PAC
+Message-ID: <20200909082929.GA23764@yilunxu-OptiPlex-7050>
+References: <1597822497-25107-1-git-send-email-yilun.xu@intel.com>
+ <1597822497-25107-3-git-send-email-yilun.xu@intel.com>
+ <20200828100236.GF1826686@dell>
+ <20200829182405.GA27132@yilunxu-OptiPlex-7050>
+ <20200908120356.GQ4400@dell>
+ <20200909060140.GB27300@yilunxu-OptiPlex-7050>
+ <20200909073140.GC4400@dell>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="EY/WZ/HvNxOox07X"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200902045136.527776-1-jeffrey@icurse.nl>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200909073140.GC4400@dell>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Sep 09, 2020 at 08:31:40AM +0100, Lee Jones wrote:
+> On Wed, 09 Sep 2020, Xu Yilun wrote:
+> 
+> > > > > > + * m10bmc_raw_read - read m10bmc register per addr
+> > > > > > + * m10bmc_sys_read - read m10bmc system register per offset
+> > > > > > + */
+> > > > > > +static inline int
+> > > > > > +m10bmc_raw_read(struct intel_m10bmc *m10bmc, unsigned int addr,
+> > > > > > +		unsigned int *val)
+> > > > > > +{
+> > > > > > +	int ret;
+> > > > > > +
+> > > > > > +	ret = regmap_read(m10bmc->regmap, addr, val);
+> > > > > > +	if (ret)
+> > > > > > +		dev_err(m10bmc->dev, "fail to read raw reg %x: %d\n",
+> > > > > > +			addr, ret);
+> > > > > > +
+> > > > > > +	return ret;
+> > > > > > +}
+> > > > > > +
+> > > > > > +#define m10bmc_sys_read(m10bmc, offset, val) \
+> > > > > > +	m10bmc_raw_read(m10bmc, M10BMC_SYS_BASE + (offset), val)
+> > > > > 
+> > > > > No unnecessary abstractions.
+> > > > > 
+> > > > > Just use the Regmap API directly please.
+> > > > 
+> > > > Could we keep the 2 definition?
+> > > > 
+> > > > For m10bmc_raw_read(), we make it to help print some error info if
+> > > > regmap RW fail. So we don't have to write "if (ret) dev_err" every time
+> > > > we use regmap.
+> > > 
+> > > How many call sites are there?
+> > 
+> > There are about 20 calls of the register read in m10bmc base driver and
+> > sub device drivers. Most of them calls m10bmc_sys_read().
+> > I prefer to keep the function for unified error log, but I'm also good
+> > to follow your opinion. How do you think?
+> 
+> Avoidable abstraction is one of my pet hates.  However,
+> unified/centralised error handling is a valid(ish) reason for
+> abstraction to exist.  Do you really need to know which read failed?
+> Is there a case where a read from only a particular register would
+> fail where others succeed?
 
---EY/WZ/HvNxOox07X
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I think it do helps we know which read failed in the first place when
+communication error happens between FPGA & BMC.
 
-On Wed, Sep 02, 2020 at 12:51:37AM -0400, Jeffrey Lin wrote:
-> Value of /sys/devices/platform/lis3lv02d/position when
->     Horizontal:     (36,-108,-1152)
->     Left elevated:  (-432,-126,-1062)
->     Front elevated: (36,594,-936)
->     Upside down:    (-126,-252,1098)
->=20
-> Signed-off-by: Jeffrey Lin <jeffrey@icurse.nl>
-> Reviewed-by: Jean Delvare <jdelvare@suse.de>
+Generally, if the error happens randomly on all registers, it may be the
+problem of SPI bus.
 
-Applied to for-next, thanks!
+But it is possible in some case error happens on some registers while
+others are fine. The BMC has a internal Avalon mmio bus inside, and sub devices
+connect on the bus. But the sub devices may response to the bus read/write
+request differently according to hardware design. Once I run into a case
+that the sub device stucks on one particular register read for long time
+cause it prepares data so slowly. And the driver always timeout on that
+register.
 
+Thanks,
+Yilun
 
---EY/WZ/HvNxOox07X
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl9YkoEACgkQFA3kzBSg
-KbZOKw//RODDc4CifTdAU7Aka34vLm8LoMuxVa7ZAiVI2qw4VozQ/GQi9m5uXBzD
-KFcFnd6QCD3X+R52IzGX6MrgbMELN6M28+im3e2On0tS6Bs9LsPWu3SpklYeUX9Z
-6G3QKnKucXQ8JqCMuKoYCYudAtUeR7AiWlYv5a8lemIXJaD1Yn/rPFbvgflVje5V
-9HLCPVr40EGX4Jni0jPcqniAq1wBe8HUxxdPxC2KkfrtZh8YsW6TIikbt9jGdKZ3
-9jMmNO9q9VSB4XZaC0fvgWklL9VXkgyzT50UV6vMTTlTxx2fSJcFm665OKHPqszd
-U5D9q9DnKOvDCg/PHUMeEsPpMq3FEApwg+itp8yhdOMwdufa3DnIVWztjcyVRKeC
-zWo/h6MgdGSXlePmVPO4FF98wAzvi62O9F9hpEJF8aDCxvosc1ngrX4Nzzntc9nw
-Vp/6JvJeihtr19dV85QToIJMMFoYMSZQWvk1D05Ryl8QnNm3dqs93iSR5y3FWOnQ
-ofBwBq+ppU+INyo7RFMWr8V3t5BThHuS57C0VLb9OLXAHODV3RZZ7ESIJs79uS9g
-Mi9BGRJp2FOMHPJ9QAFU7vptxa/LzyXLQse0CE7BSuUrhHAkxtzxdD5sCQUO6QXe
-L8CowGSxlN4RYBR9LVXb2LaUtV3GYBQGpy4CYPvXMoNp/QuB19E=
-=vVja
------END PGP SIGNATURE-----
-
---EY/WZ/HvNxOox07X--
+> 
+> > I also realize that it is not necessary that we define so many
+> > m10bmc_raw_bulk_read/bulk_write/update_bits ... which are not frequently
+> > used. We could change them.
+> 
+> Yes please.
+> 
