@@ -2,123 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4909D263457
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 19:19:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAF0E263442
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 19:17:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730916AbgIIRTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 13:19:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20549 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729860AbgIIP1Z (ORCPT
+        id S1731300AbgIIRRq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 13:17:46 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:32511 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729865AbgIIP2A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 11:27:25 -0400
+        Wed, 9 Sep 2020 11:28:00 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599665221;
+        s=mimecast20190719; t=1599665239;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qDWO8mkPjTmNhXQJGJVs3cfb8cCdbkUvXt6QGd7ZUJ8=;
-        b=fBnnNKgGqRHGbiiJ43MOSTjDqmWnxKJ/S9OrSCB0E8Sl1zAOv4tJRYmm/ZMeA6WZr7aFlM
-        lhkF2p2NzaEAz4nFmaQYlb8GuTmkqAy1x4sMjmUbd19Qdj+5hOesAqkEvW2l433+tLIRb4
-        NQBxP9/oImptfVIXYMPH6HEvGckiCH4=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-445-61o_xtKEOvWdWzQSazHOgQ-1; Wed, 09 Sep 2020 11:07:37 -0400
-X-MC-Unique: 61o_xtKEOvWdWzQSazHOgQ-1
-Received: by mail-wr1-f70.google.com with SMTP id v5so1059756wrs.17
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 08:07:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qDWO8mkPjTmNhXQJGJVs3cfb8cCdbkUvXt6QGd7ZUJ8=;
-        b=mBfdMonEHd/b8YL+Orl03Cl2WqQ61Y6s9uxX3oD1Stsgs7ytim5+X4TJJqpTiPenjE
-         WWSiQ7pet2WHF+wBHGHCo7+S6RxauWPO/6CI/4X3uo+OawZPP4M5SWoZ54RzuFY/KYml
-         W3StBgn762vtzNmtDKmoFk5e5vKcF75f+0KZ4j5BKb7PTReQ90ohpBhXW27tx8JJ8VzV
-         wQp+5fJpaHt/ztdtYsTSUlxKGRfaczHurKfuuT7Iq6c+Ns6N+H4tLvQyWa903flo9k0V
-         p8hpe5UyRDz5q67/FA9/TIg6cpYQFxGGFq/8IY7ZOnhNLZp63+PdzZRh+1xpgHgo9UGo
-         2cSA==
-X-Gm-Message-State: AOAM5325co4+Bmivp7bNU5lzWBCau/oCIsOMoZ3f5VVMhuHQAWTwiG0q
-        5Xk7aAgY6R7arvOQd2N0KErWaZI8/kHqq1ebQR6y7pJSqh2mdMguSeQ+BapfAiMjOupWVngBIga
-        Vwai4f0QreLeKcAF2/KI5+rS9
-X-Received: by 2002:a5d:6912:: with SMTP id t18mr4588742wru.326.1599664056036;
-        Wed, 09 Sep 2020 08:07:36 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxgmR6wsbqHZOimKtiUwJzkt0tPbLVLRW+WLKXdq2Ipz3PC56iDhT/bGnogsPhYTPglvB4/+w==
-X-Received: by 2002:a5d:6912:: with SMTP id t18mr4588724wru.326.1599664055788;
-        Wed, 09 Sep 2020 08:07:35 -0700 (PDT)
-Received: from steredhat (host-79-53-225-185.retail.telecomitalia.it. [79.53.225.185])
-        by smtp.gmail.com with ESMTPSA id g186sm4476245wmg.25.2020.09.09.08.07.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Sep 2020 08:07:35 -0700 (PDT)
-Date:   Wed, 9 Sep 2020 17:07:27 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     syzbot <syzbot+3c23789ea938faaef049@syzkaller.appspotmail.com>,
-        io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        viro@zeniv.linux.org.uk
-Subject: Re: INFO: task hung in io_sq_thread_stop
-Message-ID: <20200909150727.wbatiuzl3o6u3vgo@steredhat>
-References: <00000000000030a45905aedd879d@google.com>
- <20200909100355.ibz4jc5ctnwbmy5v@steredhat>
- <fa8f11bf-d0e6-42b9-0a2e-2bb4c8679b99@kernel.dk>
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=gAOxADskf6N6kLtooyF1uApbBx1RmVCuz5XULPdPjeA=;
+        b=PYtIlYC3XJYn0R2rA9+IISZfB5Y4kHVf+suT1xN7QgfDtPJJfWNF60gkx3LK8iXl1aywbH
+        4Q4Lol1eZ54P0addlA8omtenvdG7MraBIto0tzlLA/VHFTT4xpFfvJprp5+LngQlnPbP5+
+        AxKbYwX2yu/bHBO2Q9gMqZGQO6oZng4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-211-18YBVbHtMxS_2Zr8MQBqVA-1; Wed, 09 Sep 2020 11:09:05 -0400
+X-MC-Unique: 18YBVbHtMxS_2Zr8MQBqVA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 080818030A2;
+        Wed,  9 Sep 2020 15:09:03 +0000 (UTC)
+Received: from wsfd-advnetlab06.anl.lab.eng.bos.redhat.com (wsfd-advnetlab06.anl.lab.eng.bos.redhat.com [10.19.107.15])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5CCE019C4F;
+        Wed,  9 Sep 2020 15:09:01 +0000 (UTC)
+From:   Nitesh Narayan Lal <nitesh@redhat.com>
+To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-pci@vger.kernel.org, frederic@kernel.org,
+        mtosatti@redhat.com, sassmann@redhat.com,
+        jeffrey.t.kirsher@intel.com, jacob.e.keller@intel.com,
+        jlelli@redhat.com, hch@infradead.org, bhelgaas@google.com,
+        mike.marciniszyn@intel.com, dennis.dalessandro@intel.com,
+        thomas.lendacky@amd.com, jerinj@marvell.com,
+        mathias.nyman@intel.com, jiri@nvidia.com
+Subject: [RFC] [PATCH v1 0/3] isolation: limit msix vectors based on housekeeping CPUs
+Date:   Wed,  9 Sep 2020 11:08:15 -0400
+Message-Id: <20200909150818.313699-1-nitesh@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fa8f11bf-d0e6-42b9-0a2e-2bb4c8679b99@kernel.dk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 09, 2020 at 08:03:32AM -0600, Jens Axboe wrote:
-> On 9/9/20 4:03 AM, Stefano Garzarella wrote:
-> > On Wed, Sep 09, 2020 at 01:49:22AM -0700, syzbot wrote:
-> >> Hello,
-> >>
-> >> syzbot found the following issue on:
-> >>
-> >> HEAD commit:    dff9f829 Add linux-next specific files for 20200908
-> >> git tree:       linux-next
-> >> console output: https://syzkaller.appspot.com/x/log.txt?x=112f880d900000
-> >> kernel config:  https://syzkaller.appspot.com/x/.config?x=37b3426c77bda44c
-> >> dashboard link: https://syzkaller.appspot.com/bug?extid=3c23789ea938faaef049
-> >> compiler:       gcc (GCC) 10.1.0-syz 20200507
-> >> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17c082a5900000
-> >> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1474f5f9900000
-> >>
-> >> Bisection is inconclusive: the first bad commit could be any of:
-> >>
-> >> d730b1a2 io_uring: add IOURING_REGISTER_RESTRICTIONS opcode
-> >> 7ec3d1dd io_uring: allow disabling rings during the creation
-> > 
-> > I'm not sure it is related, but while rebasing I forgot to update the
-> > right label in the error path.
-> > 
-> > Since the check of ring state is after the increase of ctx refcount, we
-> > need to decrease it jumping to 'out' label instead of 'out_fput':
-> > diff --git a/fs/io_uring.c b/fs/io_uring.c
-> > index d00eb6bf6ce9..f35da516095a 100644
-> > --- a/fs/io_uring.c
-> > +++ b/fs/io_uring.c
-> > @@ -8649,7 +8649,7 @@ SYSCALL_DEFINE6(io_uring_enter, unsigned int, fd, u32, to_submit,
-> >                 goto out_fput;
-> > 
-> >         if (ctx->flags & IORING_SETUP_R_DISABLED)
-> > -               goto out_fput;
-> > +               goto out;
-> > 
-> >         /*
-> >          * For SQ polling, the thread will do all submissions and completions.
-> > 
-> > I'll send a patch ASAP and check if it solves this issue.
-> 
-> I think that's a separate bug, it's definitely a bug. So please do send
-> the fix, thanks.
-> 
+This is a follow-up posting for "[v1] i40e: limit the msix vectors based on
+housekeeping CPUs" [1] (It took longer than expected for me to get back to
+this).
 
-Sure I'm sending it!
 
-Thanks,
-Stefano
+Issue
+=====
+With the current implementation device drivers while creating their MSIX
+vectors only takes num_online_cpus() into consideration which works quite well
+for a non-RT environment, but in an RT environment that has a large number of
+isolated CPUs and a very few housekeeping CPUs this could lead to a problem.
+The problem will be triggered when something like tuned will try to move all
+the IRQs from isolated CPUs to the limited number of housekeeping CPUs to
+prevent interruptions for a latency sensitive workload that will be runing on
+the isolated CPUs. This failure is caused because of the per CPU vector
+limitation.
+
+
+Proposed Fix
+============
+In this patch-set, the following changes are proposed:
+- A generic API num_housekeeping_cpus() which is meant to return the available
+  housekeeping CPUs in an environment with isolated CPUs and all online CPUs
+  otherwise.
+- i40e: Specifically for the i40e driver the num_online_cpus() used in 
+  i40e_init_msix() to calculate numbers msix vectors is replaced with the above
+  defined API. This is done to restrict the number of msix vectors for i40e in
+  RT environments.
+- pci_alloc_irq_vector(): With the help of num_housekeeping_cpus() the max_vecs
+  passed in pci_alloc_irq_vector() is restricted only to the available
+  housekeeping CPUs only in an environment that has isolated CPUs. However, if
+  the min_vecs exceeds the num_housekeeping_cpus(), no change is made to make
+  sure that a device initialization is not prevented due to lack of
+  housekeeping CPUs.
+
+
+
+Reproducing the Issue
+=====================
+I have triggered this issue on a setup that had a total of 72 cores among which
+68 were isolated and only 4 were left for housekeeping tasks. I was using
+tuned's realtime-virtual-host profile to configure the system. In this
+scenario, Tuned reported the error message 'Failed to set SMP affinity of IRQ
+xxx to '00000040,00000010,00000005': [Errno 28] No space left on the device'
+for several IRQs in tuned.log due to the per CPU vector limit.
+
+
+Testing
+=======
+Functionality:
+- To test that the issue is resolved with i40e change I added a tracepoint
+  in i40e_init_msix() to find the number of CPUs derived for vector creation
+  with and without tuned's realtime-virtual-host profile. As per expectation
+  with the profile applied I was only getting the number of housekeeping CPUs
+  and all available CPUs without it.
+
+Performance:
+- To analyze the performance impact I have targetted the change introduced in 
+  pci_alloc_irq_vectors() and compared the results against a vanilla kernel
+  (5.9.0-rc3) results.
+
+  Setup Information:
+  + I had a couple of 24-core machines connected back to back via a couple of
+    mlx5 NICs and I analyzed the average bitrate for server-client TCP and UDP
+    transmission via iperf. 
+  + To minimize the Bitrate variation of iperf TCP and UDP stream test I have
+    applied the tuned's network-throughput profile and disabled HT.
+ Test Information:
+  + For the environment that had no isolated CPUs:
+    I have tested with single stream and 24 streams (same as that of online
+    CPUs).
+  + For the environment that had 20 isolated CPUs:
+    I have tested with single stream, 4 streams (same as that the number of
+    housekeeping) and 24 streams (same as that of online CPUs).
+
+ Results:
+  # UDP Stream Test:
+    + There was no degradation observed in UDP stream tests in both
+      environments. (With isolated CPUs and without isolated CPUs after the
+      introduction of the patches).
+  # TCP Stream Test - No isolated CPUs:
+    + No noticeable degradation was observed.
+  # TCP Stream Test - With isolated CPUs:
+    + Multiple Stream (4)  - Average degradation of around 5-6%
+    + Multiple Stream (24) - Average degradation of around 2-3%
+    + Single Stream        - Even on a vanilla kernel the Bitrate observed for
+                             a TCP single stream test seem to vary
+                             significantly across different runs (eg. the %
+                             variation between the best and the worst case on
+                             a vanilla kernel was around 8-10%). A similar
+                             variation was observed with the kernel that
+                             included my patches. No additional degradation
+                             was observed.
+
+Since the change specifically for pci_alloc_irq_vectors is going to impact
+several drivers I have posted this patch-set as RFC. I would be happy to
+perform more testing based on any suggestions or incorporate any comments to
+ensure that the change is not breaking anything.
+
+[1] https://lore.kernel.org/patchwork/patch/1256308/ 
+
+Nitesh Narayan Lal (3):
+  sched/isolation: API to get num of hosekeeping CPUs
+  i40e: limit msix vectors based on housekeeping CPUs
+  PCI: Limit pci_alloc_irq_vectors as per housekeeping CPUs
+
+ drivers/net/ethernet/intel/i40e/i40e_main.c |  3 ++-
+ include/linux/pci.h                         | 16 ++++++++++++++
+ include/linux/sched/isolation.h             |  7 +++++++
+ kernel/sched/isolation.c                    | 23 +++++++++++++++++++++
+ 4 files changed, 48 insertions(+), 1 deletion(-)
+
+-- 
+2.27.0
+
+
 
