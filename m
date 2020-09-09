@@ -2,69 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C318262DE6
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 13:34:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1931D262E04
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 13:42:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729670AbgIILeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 07:34:25 -0400
-Received: from foss.arm.com ([217.140.110.172]:41878 "EHLO foss.arm.com"
+        id S1729479AbgIILkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 07:40:51 -0400
+Received: from mx2.suse.de ([195.135.220.15]:33016 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726883AbgIILaI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 07:30:08 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B322B31B;
-        Wed,  9 Sep 2020 04:21:09 -0700 (PDT)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 627073F68F;
-        Wed,  9 Sep 2020 04:21:08 -0700 (PDT)
-References: <20200829130016.26106-1-valentin.schneider@arm.com> <678F3D1BB717D949B966B68EAEB446ED482417F4@DGGEMM506-MBX.china.huawei.com> <jhja6y8o3hb.mognet@arm.com> <678F3D1BB717D949B966B68EAEB446ED482431A1@DGGEMM506-MBX.china.huawei.com>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     "Zengtao \(B\)" <prime.zeng@hisilicon.com>
-Cc:     "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel\@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jeremy Linton <Jeremy.Linton@arm.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Morten Rasmussen <morten.rasmussen@arm.com>
-Subject: Re: [PATCH] arm64: topology: Stop using MPIDR for topology information
-In-reply-to: <678F3D1BB717D949B966B68EAEB446ED482431A1@DGGEMM506-MBX.china.huawei.com>
-Date:   Wed, 09 Sep 2020 12:21:03 +0100
-Message-ID: <jhjzh5z5h7k.mognet@arm.com>
+        id S1726426AbgIILdr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 07:33:47 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B6A26AEE9;
+        Wed,  9 Sep 2020 11:21:11 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id AD94B1E12E5; Wed,  9 Sep 2020 13:21:10 +0200 (CEST)
+Date:   Wed, 9 Sep 2020 13:21:10 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Cc:     Jan Kara <jack@suse.cz>, milan.opensource@gmail.com,
+        lkml <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        Jeff Layton <jlayton@kernel.org>
+Subject: Re: [PATCH] fsync.2: ERRORS: add EIO and ENOSPC
+Message-ID: <20200909112110.GA29150@quack2.suse.cz>
+References: <1598685186-27499-1-git-send-email-milan.opensource@gmail.com>
+ <CAKgNAkiTjtdaQxbCYS67+SdqSPaGzJnfLEEMFgcoXjHLDxgemw@mail.gmail.com>
+ <20200908112742.GA2956@quack2.suse.cz>
+ <7be61144-0e77-3c31-d720-f2cbe56bc81e@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7be61144-0e77-3c31-d720-f2cbe56bc81e@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed 09-09-20 12:52:48, Michael Kerrisk (man-pages) wrote:
+> > So the error state isn't really stored "on pages in the file mapping".
+> > Current implementation (since 4.14) is that error state is stored in struct
+> > file (I think this tends to be called "file description" in manpages) and
+> 
+> (Yes, "open file description" is the POSIX terminology for the thing that
+> sits between the FD and the inode--struct file in kernel parlance--and I
+> try to follow POSIX terminology in the manual pages where possible.
+> 
+> > so EIO / ENOSPC is reported once for each file description of the file that
+> > was open before the error happened. Not sure if we want to be so precise in
+> > the manpages or if it just confuses people. 
+> 
+> Well, people are confused now, so I think more detail would be good.
+> 
+> > Anyway your takeway that no
+> > error on subsequent fsync() does not mean data was written is correct.
+> 
+> Thanks. (See also my rply to Jeff.)
+> 
+> By the way, a question related to your comments above. In the 
+> errors section, there is this:
+> 
+>        EIO    An  error  occurred during synchronization.  This error may
+>               relate to data written to some other file descriptor on the
+> *             same  file.   Since Linux 4.13, errors from write-back will
+>               be reported to all file descriptors that might have written
+>               the  data  which  triggered  the  error.   Some filesystems
+>               (e.g., NFS) keep close track of  which  data  came  through
+>               which  file  descriptor,  and  give more precise reporting.
+>               Other  filesystems  (e.g.,  most  local  filesystems)  will
+>               report errors to all file descriptors that were open on the
+> *             file when the error was recorded.
+> 
+> In the marked (*) lines, we have the word "file". Is this accurate? I mean, I
+> would normally take "file" in this context to mean the inode ('struct inode').
+> But I wonder if really what is meant here is "open file description"
+> ('struct file'). In other words, is the EIO being generated for all FDs 
+> connected to the same open file description, or for all FDs for all of the
+> open file descriptions connected to the inode? Your thoughts?
 
-On 03/09/20 02:44, B wrote:
->> -----Original Message-----
->> From: Valentin Schneider [mailto:valentin.schneider@arm.com]
->> On 02/09/20 04:24, B wrote:
->> > I agree with your idea to remove the topology functionality of MPIDR ,
->> > but I think we need also consider ARM32 and GIC.
->> >
->>
->> Could you please elaborate? This change doesn't impact arch_topology, so
->> only arm64 is affected.
->
-> Yes, this change only affects arm64, my question is that do we need to
->  leverage it to arm32 since arm32 got the same issue.
->
-> And for GIC we are also using MPIDR for the topology info, but I am sure
-> It's got the same issue or not, just a suggestion to have a look.
+The error gets reported once for each "open file description" of the file
+(inode) where the error happened. If there are multiple file descriptors
+pointing to the same open file description, then only one of those file
+descriptors will see the error. This is inevitable consequence of kernel
+storing the error state in struct file and clearing it once it is
+reported...
 
-So technically yes, we can be bothered by this on arm32 - Sudeep pointed
-out a list of DT files that shows platforms with non-zero values in Aff1 or
-above.
-
-However, the bigger issue is that artificial separation in clusters of 16
-CPUs due to extra limitations on Aff0 (mainly due to GICv3 AIUI). Given
-that GICv2 can support at most 8 CPU interfaces, I don't think we have it
-as bad on arm32.
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
