@@ -2,513 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76FCA26337B
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 19:04:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4909D263457
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 19:19:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731219AbgIIREl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 13:04:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49466 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730276AbgIIPpK (ORCPT
+        id S1730916AbgIIRTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 13:19:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20549 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729860AbgIIP1Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 11:45:10 -0400
-X-Greylist: delayed 2262 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 09 Sep 2020 08:44:14 PDT
-Received: from srv1.deutnet.info (srv1.deutnet.info [IPv6:2a01:4f8:c2c:6846::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37647C061756;
-        Wed,  9 Sep 2020 08:44:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=deutnet.info; s=default; h=Message-Id:Date:Subject:Cc:To:From:in-reply-to;
-         bh=KY0kc0/dmlQ+FmXekEIwsddM7hMAkt1PznNXe3TSJYk=; b=m1Jw1gn3WWOVFjwC26u1G/NoC
-        5wONsiebsqmIEbf0LLPcrQDNw+904DZo7GUdF2sM6FfbwkbrxQ1nZVpLpClEldeHieYbYUQMNobz1
-        8thvSmDtKDAT1J34XpE7mobpBSSXNGKxQ6uO1vYsXPwWWVgSETTy0DStaq7kfoTKsjfT0OlztWqGH
-        HQPYwqxk7V3E3Gh2wJOkr21HS7n4SBoRk4k5vK2/YsGW01NicXMJhTPZAj9jgRmc4tQ5eCXfOz4rL
-        TE4Hf8JwLnns86jYDczCWO4Bo+bHG55hZGA6qPrfKViuVF3eiwzy2EjpUXiowH1NFeTmafafXWFua
-        5UXV1VYFw==;
-Received: from [2001:bc8:3dc9::1] (helo=srv100.deutnet.info)
-        by srv1.deutnet.info with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <agriveaux@deutnet.info>)
-        id 1kG1fz-000708-3E; Wed, 09 Sep 2020 17:06:23 +0200
-Received: from agriveaux by srv100.deutnet.info with local (Exim 4.92)
-        (envelope-from <agriveaux@deutnet.info>)
-        id 1kG1fy-008KO7-I4; Wed, 09 Sep 2020 17:06:22 +0200
-From:   agriveaux@deutnet.info
-To:     michal.simek@xilinx.com, robh+dt@kernel.org
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Alexandre GRIVEAUX <agriveaux@deutnet.info>
-Subject: [PATCH] ARM: zynq: Add Z-turn board V5
-Date:   Wed,  9 Sep 2020 17:06:08 +0200
-Message-Id: <20200909150608.1984952-1-agriveaux@deutnet.info>
-X-Mailer: git-send-email 2.20.1
+        Wed, 9 Sep 2020 11:27:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599665221;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qDWO8mkPjTmNhXQJGJVs3cfb8cCdbkUvXt6QGd7ZUJ8=;
+        b=fBnnNKgGqRHGbiiJ43MOSTjDqmWnxKJ/S9OrSCB0E8Sl1zAOv4tJRYmm/ZMeA6WZr7aFlM
+        lhkF2p2NzaEAz4nFmaQYlb8GuTmkqAy1x4sMjmUbd19Qdj+5hOesAqkEvW2l433+tLIRb4
+        NQBxP9/oImptfVIXYMPH6HEvGckiCH4=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-445-61o_xtKEOvWdWzQSazHOgQ-1; Wed, 09 Sep 2020 11:07:37 -0400
+X-MC-Unique: 61o_xtKEOvWdWzQSazHOgQ-1
+Received: by mail-wr1-f70.google.com with SMTP id v5so1059756wrs.17
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 08:07:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qDWO8mkPjTmNhXQJGJVs3cfb8cCdbkUvXt6QGd7ZUJ8=;
+        b=mBfdMonEHd/b8YL+Orl03Cl2WqQ61Y6s9uxX3oD1Stsgs7ytim5+X4TJJqpTiPenjE
+         WWSiQ7pet2WHF+wBHGHCo7+S6RxauWPO/6CI/4X3uo+OawZPP4M5SWoZ54RzuFY/KYml
+         W3StBgn762vtzNmtDKmoFk5e5vKcF75f+0KZ4j5BKb7PTReQ90ohpBhXW27tx8JJ8VzV
+         wQp+5fJpaHt/ztdtYsTSUlxKGRfaczHurKfuuT7Iq6c+Ns6N+H4tLvQyWa903flo9k0V
+         p8hpe5UyRDz5q67/FA9/TIg6cpYQFxGGFq/8IY7ZOnhNLZp63+PdzZRh+1xpgHgo9UGo
+         2cSA==
+X-Gm-Message-State: AOAM5325co4+Bmivp7bNU5lzWBCau/oCIsOMoZ3f5VVMhuHQAWTwiG0q
+        5Xk7aAgY6R7arvOQd2N0KErWaZI8/kHqq1ebQR6y7pJSqh2mdMguSeQ+BapfAiMjOupWVngBIga
+        Vwai4f0QreLeKcAF2/KI5+rS9
+X-Received: by 2002:a5d:6912:: with SMTP id t18mr4588742wru.326.1599664056036;
+        Wed, 09 Sep 2020 08:07:36 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxgmR6wsbqHZOimKtiUwJzkt0tPbLVLRW+WLKXdq2Ipz3PC56iDhT/bGnogsPhYTPglvB4/+w==
+X-Received: by 2002:a5d:6912:: with SMTP id t18mr4588724wru.326.1599664055788;
+        Wed, 09 Sep 2020 08:07:35 -0700 (PDT)
+Received: from steredhat (host-79-53-225-185.retail.telecomitalia.it. [79.53.225.185])
+        by smtp.gmail.com with ESMTPSA id g186sm4476245wmg.25.2020.09.09.08.07.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Sep 2020 08:07:35 -0700 (PDT)
+Date:   Wed, 9 Sep 2020 17:07:27 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     syzbot <syzbot+3c23789ea938faaef049@syzkaller.appspotmail.com>,
+        io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        viro@zeniv.linux.org.uk
+Subject: Re: INFO: task hung in io_sq_thread_stop
+Message-ID: <20200909150727.wbatiuzl3o6u3vgo@steredhat>
+References: <00000000000030a45905aedd879d@google.com>
+ <20200909100355.ibz4jc5ctnwbmy5v@steredhat>
+ <fa8f11bf-d0e6-42b9-0a2e-2bb4c8679b99@kernel.dk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fa8f11bf-d0e6-42b9-0a2e-2bb4c8679b99@kernel.dk>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexandre GRIVEAUX <agriveaux@deutnet.info>
+On Wed, Sep 09, 2020 at 08:03:32AM -0600, Jens Axboe wrote:
+> On 9/9/20 4:03 AM, Stefano Garzarella wrote:
+> > On Wed, Sep 09, 2020 at 01:49:22AM -0700, syzbot wrote:
+> >> Hello,
+> >>
+> >> syzbot found the following issue on:
+> >>
+> >> HEAD commit:    dff9f829 Add linux-next specific files for 20200908
+> >> git tree:       linux-next
+> >> console output: https://syzkaller.appspot.com/x/log.txt?x=112f880d900000
+> >> kernel config:  https://syzkaller.appspot.com/x/.config?x=37b3426c77bda44c
+> >> dashboard link: https://syzkaller.appspot.com/bug?extid=3c23789ea938faaef049
+> >> compiler:       gcc (GCC) 10.1.0-syz 20200507
+> >> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17c082a5900000
+> >> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1474f5f9900000
+> >>
+> >> Bisection is inconclusive: the first bad commit could be any of:
+> >>
+> >> d730b1a2 io_uring: add IOURING_REGISTER_RESTRICTIONS opcode
+> >> 7ec3d1dd io_uring: allow disabling rings during the creation
+> > 
+> > I'm not sure it is related, but while rebasing I forgot to update the
+> > right label in the error path.
+> > 
+> > Since the check of ring state is after the increase of ctx refcount, we
+> > need to decrease it jumping to 'out' label instead of 'out_fput':
+> > diff --git a/fs/io_uring.c b/fs/io_uring.c
+> > index d00eb6bf6ce9..f35da516095a 100644
+> > --- a/fs/io_uring.c
+> > +++ b/fs/io_uring.c
+> > @@ -8649,7 +8649,7 @@ SYSCALL_DEFINE6(io_uring_enter, unsigned int, fd, u32, to_submit,
+> >                 goto out_fput;
+> > 
+> >         if (ctx->flags & IORING_SETUP_R_DISABLED)
+> > -               goto out_fput;
+> > +               goto out;
+> > 
+> >         /*
+> >          * For SQ polling, the thread will do all submissions and completions.
+> > 
+> > I'll send a patch ASAP and check if it solves this issue.
+> 
+> I think that's a separate bug, it's definitely a bug. So please do send
+> the fix, thanks.
+> 
 
-Adding Z-turn board V5 to resolve the change between:
+Sure I'm sending it!
 
-"Z-TURNBOARD_schematic.pdf" schematics state version 1 to 4 has Atheros AR8035
-"Z-Turn_Board_sch_V15_20160303.pdf" schematics state version 5 has Micrel KSZ9031
-
-At this time the S25FL128SAGNFI003 doesn't work because of bug:
-
-*** Warning - spi_flash_probe_bus_cs() failed, using default environment
-
-Signed-off-by: Alexandre GRIVEAUX <agriveaux@deutnet.info>
----
- arch/arm/dts/Makefile                         |   1 +
- arch/arm/dts/zynq-zturn-v5.dts                | 121 ++++++++
- .../xilinx/zynq/zynq-zturn-v5/ps7_init_gpl.c  | 273 ++++++++++++++++++
- configs/xilinx_zynq_virt_defconfig            |   4 +-
- 4 files changed, 398 insertions(+), 1 deletion(-)
- create mode 100644 arch/arm/dts/zynq-zturn-v5.dts
- create mode 100644 board/xilinx/zynq/zynq-zturn-v5/ps7_init_gpl.c
-
-diff --git a/arch/arm/dts/Makefile b/arch/arm/dts/Makefile
-index f8f529435b..0f8973b1c8 100644
---- a/arch/arm/dts/Makefile
-+++ b/arch/arm/dts/Makefile
-@@ -277,6 +277,7 @@ dtb-$(CONFIG_ARCH_ZYNQ) += \
- 	zynq-zc770-xm013.dtb \
- 	zynq-zed.dtb \
- 	zynq-zturn.dtb \
-+	zynq-zturn-v5.dtb \
- 	zynq-zybo.dtb \
- 	zynq-zybo-z7.dtb
- dtb-$(CONFIG_ARCH_ZYNQMP) += \
-diff --git a/arch/arm/dts/zynq-zturn-v5.dts b/arch/arm/dts/zynq-zturn-v5.dts
-new file mode 100644
-index 0000000000..eebeec800f
---- /dev/null
-+++ b/arch/arm/dts/zynq-zturn-v5.dts
-@@ -0,0 +1,121 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ *  Copyright (C) 2020 Alexandre Griveaux <alex@deutnet.info>
-+ *
-+ *  Based on zynq-zturn.dts which is:
-+ *  Copyright (C) 2015 Andrea Merello <adnrea.merello@gmail.com>
-+ *  Copyright (C) 2017 Alexander Graf <agraf@suse.de>
-+ *
-+ */
-+
-+/dts-v1/;
-+/include/ "zynq-7000.dtsi"
-+
-+/ {
-+	model = "Zynq Z-Turn MYIR Board V5";
-+	compatible = "myir,zynq-zturn", "xlnx,zynq-7000";
-+
-+	aliases {
-+		ethernet0 = &gem0;
-+		serial0 = &uart1;
-+		serial1 = &uart0;
-+		mmc0 = &sdhci0;
-+	};
-+
-+	memory@0 {
-+		device_type = "memory";
-+		reg = <0x0 0x40000000>;
-+	};
-+
-+	chosen {
-+		stdout-path = "serial0:115200n8";
-+	};
-+
-+	gpio-leds {
-+		compatible = "gpio-leds";
-+		usr-led1 {
-+			label = "usr-led1";
-+			gpios = <&gpio0 0x0 0x1>;
-+			default-state = "off";
-+		};
-+
-+		usr-led2 {
-+			label = "usr-led2";
-+			gpios = <&gpio0 0x9 0x1>;
-+			default-state = "off";
-+		};
-+	};
-+
-+	gpio-keys {
-+		compatible = "gpio-keys";
-+		autorepeat;
-+		K1 {
-+			label = "K1";
-+			gpios = <&gpio0 0x32 0x1>;
-+			linux,code = <0x66>;
-+			wakeup-source;
-+			autorepeat;
-+		};
-+	};
-+};
-+
-+&clkc {
-+	ps-clk-frequency = <33333333>;
-+};
-+
-+&qspi {
-+	u-boot,dm-pre-reloc;
-+	status = "okay";
-+};
-+
-+&gem0 {
-+	status = "okay";
-+	phy-mode = "rgmii-id";
-+	phy-handle = <&ethernet_phy>;
-+
-+	ethernet_phy: ethernet-phy@0 {
-+		reg = <0x3>;
-+	};
-+};
-+
-+&sdhci0 {
-+	u-boot,dm-pre-reloc;
-+	status = "okay";
-+};
-+
-+&uart0 {
-+	u-boot,dm-pre-reloc;
-+	status = "okay";
-+};
-+
-+&uart1 {
-+	u-boot,dm-pre-reloc;
-+	status = "okay";
-+};
-+
-+&usb0 {
-+	status = "okay";
-+	dr_mode = "host";
-+};
-+
-+&can0 {
-+	status = "okay";
-+};
-+
-+&i2c0 {
-+	status = "okay";
-+	clock-frequency = <400000>;
-+
-+	stlm75@49 {
-+		status = "okay";
-+		compatible = "lm75";
-+		reg = <0x49>;
-+	};
-+
-+	accelerometer@53 {
-+		compatible = "adi,adxl345", "adxl345", "adi,adxl34x", "adxl34x";
-+		reg = <0x53>;
-+		interrupt-parent = <&intc>;
-+		interrupts = <0x0 0x1e 0x4>;
-+	};
-+};
-diff --git a/board/xilinx/zynq/zynq-zturn-v5/ps7_init_gpl.c b/board/xilinx/zynq/zynq-zturn-v5/ps7_init_gpl.c
-new file mode 100644
-index 0000000000..5d573868cb
---- /dev/null
-+++ b/board/xilinx/zynq/zynq-zturn-v5/ps7_init_gpl.c
-@@ -0,0 +1,273 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * Copyright (c) Xilinx, Inc.
-+ */
-+
-+#include <asm/arch/ps7_init_gpl.h>
-+
-+static unsigned long ps7_pll_init_data[] = {
-+	EMIT_WRITE(0xF8000008, 0x0000DF0DU),
-+	EMIT_MASKWRITE(0xF8000110, 0x003FFFF0U, 0x000FA220U),
-+	EMIT_MASKWRITE(0xF8000100, 0x0007F000U, 0x00028000U),
-+	EMIT_MASKWRITE(0xF8000100, 0x00000010U, 0x00000010U),
-+	EMIT_MASKWRITE(0xF8000100, 0x00000001U, 0x00000001U),
-+	EMIT_MASKWRITE(0xF8000100, 0x00000001U, 0x00000000U),
-+	EMIT_MASKPOLL(0xF800010C, 0x00000001U),
-+	EMIT_MASKWRITE(0xF8000100, 0x00000010U, 0x00000000U),
-+	EMIT_MASKWRITE(0xF8000120, 0x1F003F30U, 0x1F000200U),
-+	EMIT_MASKWRITE(0xF8000114, 0x003FFFF0U, 0x0012C220U),
-+	EMIT_MASKWRITE(0xF8000104, 0x0007F000U, 0x00020000U),
-+	EMIT_MASKWRITE(0xF8000104, 0x00000010U, 0x00000010U),
-+	EMIT_MASKWRITE(0xF8000104, 0x00000001U, 0x00000001U),
-+	EMIT_MASKWRITE(0xF8000104, 0x00000001U, 0x00000000U),
-+	EMIT_MASKPOLL(0xF800010C, 0x00000002U),
-+	EMIT_MASKWRITE(0xF8000104, 0x00000010U, 0x00000000U),
-+	EMIT_MASKWRITE(0xF8000124, 0xFFF00003U, 0x0C200003U),
-+	EMIT_MASKWRITE(0xF8000118, 0x003FFFF0U, 0x001452C0U),
-+	EMIT_MASKWRITE(0xF8000108, 0x0007F000U, 0x0001E000U),
-+	EMIT_MASKWRITE(0xF8000108, 0x00000010U, 0x00000010U),
-+	EMIT_MASKWRITE(0xF8000108, 0x00000001U, 0x00000001U),
-+	EMIT_MASKWRITE(0xF8000108, 0x00000001U, 0x00000000U),
-+	EMIT_MASKPOLL(0xF800010C, 0x00000004U),
-+	EMIT_MASKWRITE(0xF8000108, 0x00000010U, 0x00000000U),
-+	EMIT_WRITE(0xF8000004, 0x0000767BU),
-+	EMIT_EXIT(),
-+};
-+
-+static unsigned long ps7_clock_init_data[] = {
-+	EMIT_WRITE(0xF8000008, 0x0000DF0DU),
-+	EMIT_MASKWRITE(0xF8000128, 0x03F03F01U, 0x00700F01U),
-+	EMIT_MASKWRITE(0xF8000138, 0x00000011U, 0x00000001U),
-+	EMIT_MASKWRITE(0xF8000140, 0x03F03F71U, 0x00100801U),
-+	EMIT_MASKWRITE(0xF800014C, 0x00003F31U, 0x00000501U),
-+	EMIT_MASKWRITE(0xF8000150, 0x00003F33U, 0x00001401U),
-+	EMIT_MASKWRITE(0xF8000154, 0x00003F33U, 0x00000A03U),
-+	EMIT_MASKWRITE(0xF800015C, 0x03F03F33U, 0x00200501U),
-+	EMIT_MASKWRITE(0xF8000160, 0x007F007FU, 0x00000000U),
-+	EMIT_MASKWRITE(0xF8000168, 0x00003F31U, 0x00000501U),
-+	EMIT_MASKWRITE(0xF8000170, 0x03F03F30U, 0x00200500U),
-+	EMIT_MASKWRITE(0xF8000180, 0x03F03F30U, 0x00400500U),
-+	EMIT_MASKWRITE(0xF80001C4, 0x00000001U, 0x00000001U),
-+	EMIT_MASKWRITE(0xF800012C, 0x01FFCCCDU, 0x01FD044DU),
-+	EMIT_WRITE(0xF8000004, 0x0000767BU),
-+	EMIT_EXIT(),
-+};
-+
-+static unsigned long ps7_ddr_init_data[] = {
-+	EMIT_MASKWRITE(0xF8006000, 0x0001FFFFU, 0x00000080U),
-+	EMIT_MASKWRITE(0xF8006004, 0x0007FFFFU, 0x00001082U),
-+	EMIT_MASKWRITE(0xF8006008, 0x03FFFFFFU, 0x03C0780FU),
-+	EMIT_MASKWRITE(0xF800600C, 0x03FFFFFFU, 0x02001001U),
-+	EMIT_MASKWRITE(0xF8006010, 0x03FFFFFFU, 0x00014001U),
-+	EMIT_MASKWRITE(0xF8006014, 0x001FFFFFU, 0x0004285BU),
-+	EMIT_MASKWRITE(0xF8006018, 0xF7FFFFFFU, 0x44E458D3U),
-+	EMIT_MASKWRITE(0xF800601C, 0xFFFFFFFFU, 0x7282BCE5U),
-+	EMIT_MASKWRITE(0xF8006020, 0x7FDFFFFCU, 0x270872D0U),
-+	EMIT_MASKWRITE(0xF8006024, 0x0FFFFFC3U, 0x00000000U),
-+	EMIT_MASKWRITE(0xF8006028, 0x00003FFFU, 0x00002007U),
-+	EMIT_MASKWRITE(0xF800602C, 0xFFFFFFFFU, 0x00000008U),
-+	EMIT_MASKWRITE(0xF8006030, 0xFFFFFFFFU, 0x00040B30U),
-+	EMIT_MASKWRITE(0xF8006034, 0x13FF3FFFU, 0x000116D4U),
-+	EMIT_MASKWRITE(0xF8006038, 0x00000003U, 0x00000000U),
-+	EMIT_MASKWRITE(0xF800603C, 0x000FFFFFU, 0x00000777U),
-+	EMIT_MASKWRITE(0xF8006040, 0xFFFFFFFFU, 0xFFF00000U),
-+	EMIT_MASKWRITE(0xF8006044, 0x0FFFFFFFU, 0x0F666666U),
-+	EMIT_MASKWRITE(0xF8006048, 0x0003F03FU, 0x0003C008U),
-+	EMIT_MASKWRITE(0xF8006050, 0xFF0F8FFFU, 0x77010800U),
-+	EMIT_MASKWRITE(0xF8006058, 0x00010000U, 0x00000000U),
-+	EMIT_MASKWRITE(0xF800605C, 0x0000FFFFU, 0x00005003U),
-+	EMIT_MASKWRITE(0xF8006060, 0x000017FFU, 0x0000003EU),
-+	EMIT_MASKWRITE(0xF8006064, 0x00021FE0U, 0x00020000U),
-+	EMIT_MASKWRITE(0xF8006068, 0x03FFFFFFU, 0x00284141U),
-+	EMIT_MASKWRITE(0xF800606C, 0x0000FFFFU, 0x00001610U),
-+	EMIT_MASKWRITE(0xF8006078, 0x03FFFFFFU, 0x00466111U),
-+	EMIT_MASKWRITE(0xF800607C, 0x000FFFFFU, 0x00032222U),
-+	EMIT_MASKWRITE(0xF80060A4, 0xFFFFFFFFU, 0x10200802U),
-+	EMIT_MASKWRITE(0xF80060A8, 0x0FFFFFFFU, 0x0690CB73U),
-+	EMIT_MASKWRITE(0xF80060AC, 0x000001FFU, 0x000001FEU),
-+	EMIT_MASKWRITE(0xF80060B0, 0x1FFFFFFFU, 0x1CFFFFFFU),
-+	EMIT_MASKWRITE(0xF80060B4, 0x00000200U, 0x00000200U),
-+	EMIT_MASKWRITE(0xF80060B8, 0x01FFFFFFU, 0x00200066U),
-+	EMIT_MASKWRITE(0xF80060C4, 0x00000003U, 0x00000000U),
-+	EMIT_MASKWRITE(0xF80060C8, 0x000000FFU, 0x00000000U),
-+	EMIT_MASKWRITE(0xF80060DC, 0x00000001U, 0x00000000U),
-+	EMIT_MASKWRITE(0xF80060F0, 0x0000FFFFU, 0x00000000U),
-+	EMIT_MASKWRITE(0xF80060F4, 0x0000000FU, 0x00000008U),
-+	EMIT_MASKWRITE(0xF8006114, 0x000000FFU, 0x00000000U),
-+	EMIT_MASKWRITE(0xF8006118, 0x7FFFFFCFU, 0x40000001U),
-+	EMIT_MASKWRITE(0xF800611C, 0x7FFFFFCFU, 0x40000001U),
-+	EMIT_MASKWRITE(0xF8006120, 0x7FFFFFCFU, 0x40000001U),
-+	EMIT_MASKWRITE(0xF8006124, 0x7FFFFFCFU, 0x40000001U),
-+	EMIT_MASKWRITE(0xF800612C, 0x000FFFFFU, 0x0002A81FU),
-+	EMIT_MASKWRITE(0xF8006130, 0x000FFFFFU, 0x00029822U),
-+	EMIT_MASKWRITE(0xF8006134, 0x000FFFFFU, 0x00026C10U),
-+	EMIT_MASKWRITE(0xF8006138, 0x000FFFFFU, 0x00026013U),
-+	EMIT_MASKWRITE(0xF8006140, 0x000FFFFFU, 0x00000035U),
-+	EMIT_MASKWRITE(0xF8006144, 0x000FFFFFU, 0x00000035U),
-+	EMIT_MASKWRITE(0xF8006148, 0x000FFFFFU, 0x00000035U),
-+	EMIT_MASKWRITE(0xF800614C, 0x000FFFFFU, 0x00000035U),
-+	EMIT_MASKWRITE(0xF8006154, 0x000FFFFFU, 0x0000009FU),
-+	EMIT_MASKWRITE(0xF8006158, 0x000FFFFFU, 0x000000A2U),
-+	EMIT_MASKWRITE(0xF800615C, 0x000FFFFFU, 0x00000090U),
-+	EMIT_MASKWRITE(0xF8006160, 0x000FFFFFU, 0x00000093U),
-+	EMIT_MASKWRITE(0xF8006168, 0x001FFFFFU, 0x000000FFU),
-+	EMIT_MASKWRITE(0xF800616C, 0x001FFFFFU, 0x000000FBU),
-+	EMIT_MASKWRITE(0xF8006170, 0x001FFFFFU, 0x000000F0U),
-+	EMIT_MASKWRITE(0xF8006174, 0x001FFFFFU, 0x000000EDU),
-+	EMIT_MASKWRITE(0xF800617C, 0x000FFFFFU, 0x000000DFU),
-+	EMIT_MASKWRITE(0xF8006180, 0x000FFFFFU, 0x000000E2U),
-+	EMIT_MASKWRITE(0xF8006184, 0x000FFFFFU, 0x000000D0U),
-+	EMIT_MASKWRITE(0xF8006188, 0x000FFFFFU, 0x000000D3U),
-+	EMIT_MASKWRITE(0xF8006190, 0x6FFFFEFEU, 0x00040080U),
-+	EMIT_MASKWRITE(0xF8006194, 0x000FFFFFU, 0x0001FC82U),
-+	EMIT_MASKWRITE(0xF8006204, 0xFFFFFFFFU, 0x00000000U),
-+	EMIT_MASKWRITE(0xF8006208, 0x000703FFU, 0x000003FFU),
-+	EMIT_MASKWRITE(0xF800620C, 0x000703FFU, 0x000003FFU),
-+	EMIT_MASKWRITE(0xF8006210, 0x000703FFU, 0x000003FFU),
-+	EMIT_MASKWRITE(0xF8006214, 0x000703FFU, 0x000003FFU),
-+	EMIT_MASKWRITE(0xF8006218, 0x000F03FFU, 0x000003FFU),
-+	EMIT_MASKWRITE(0xF800621C, 0x000F03FFU, 0x000003FFU),
-+	EMIT_MASKWRITE(0xF8006220, 0x000F03FFU, 0x000003FFU),
-+	EMIT_MASKWRITE(0xF8006224, 0x000F03FFU, 0x000003FFU),
-+	EMIT_MASKWRITE(0xF80062A8, 0x00000FF5U, 0x00000000U),
-+	EMIT_MASKWRITE(0xF80062AC, 0xFFFFFFFFU, 0x00000000U),
-+	EMIT_MASKWRITE(0xF80062B0, 0x003FFFFFU, 0x00005125U),
-+	EMIT_MASKWRITE(0xF80062B4, 0x0003FFFFU, 0x000012A8U),
-+	EMIT_MASKPOLL(0xF8000B74, 0x00002000U),
-+	EMIT_MASKWRITE(0xF8006000, 0x0001FFFFU, 0x00000081U),
-+	EMIT_MASKPOLL(0xF8006054, 0x00000007U),
-+	EMIT_EXIT(),
-+};
-+
-+static unsigned long ps7_mio_init_data[] = {
-+	EMIT_WRITE(0xF8000008, 0x0000DF0DU),
-+	EMIT_MASKWRITE(0xF8000B40, 0x00000FFFU, 0x00000600U),
-+	EMIT_MASKWRITE(0xF8000B44, 0x00000FFFU, 0x00000600U),
-+	EMIT_MASKWRITE(0xF8000B48, 0x00000FFFU, 0x00000672U),
-+	EMIT_MASKWRITE(0xF8000B4C, 0x00000FFFU, 0x00000672U),
-+	EMIT_MASKWRITE(0xF8000B50, 0x00000FFFU, 0x00000674U),
-+	EMIT_MASKWRITE(0xF8000B54, 0x00000FFFU, 0x00000674U),
-+	EMIT_MASKWRITE(0xF8000B58, 0x00000FFFU, 0x00000600U),
-+	EMIT_MASKWRITE(0xF8000B5C, 0xFFFFFFFFU, 0x0018C61CU),
-+	EMIT_MASKWRITE(0xF8000B60, 0xFFFFFFFFU, 0x00F9861CU),
-+	EMIT_MASKWRITE(0xF8000B64, 0xFFFFFFFFU, 0x00F9861CU),
-+	EMIT_MASKWRITE(0xF8000B68, 0xFFFFFFFFU, 0x00F9861CU),
-+	EMIT_MASKWRITE(0xF8000B6C, 0x00007FFFU, 0x00000260U),
-+	EMIT_MASKWRITE(0xF8000B70, 0x00000001U, 0x00000001U),
-+	EMIT_MASKWRITE(0xF8000B70, 0x00000021U, 0x00000020U),
-+	EMIT_MASKWRITE(0xF8000B70, 0x07FEFFFFU, 0x00000823U),
-+	EMIT_MASKWRITE(0xF8000700, 0x00003FFFU, 0x00001600U),
-+	EMIT_MASKWRITE(0xF8000704, 0x00003FFFU, 0x00000602U),
-+	EMIT_MASKWRITE(0xF8000708, 0x00003FFFU, 0x00000602U),
-+	EMIT_MASKWRITE(0xF800070C, 0x00003FFFU, 0x00000602U),
-+	EMIT_MASKWRITE(0xF8000710, 0x00003FFFU, 0x00000602U),
-+	EMIT_MASKWRITE(0xF8000714, 0x00003FFFU, 0x00000602U),
-+	EMIT_MASKWRITE(0xF8000718, 0x00003FFFU, 0x00000602U),
-+	EMIT_MASKWRITE(0xF800071C, 0x00003FFFU, 0x00000600U),
-+	EMIT_MASKWRITE(0xF8000720, 0x00003FFFU, 0x00000602U),
-+	EMIT_MASKWRITE(0xF8000724, 0x00003FFFU, 0x00000600U),
-+	EMIT_MASKWRITE(0xF8000728, 0x00003FFFU, 0x000016E1U),
-+	EMIT_MASKWRITE(0xF800072C, 0x00003FFFU, 0x000016E0U),
-+	EMIT_MASKWRITE(0xF8000730, 0x00003FFFU, 0x00001640U),
-+	EMIT_MASKWRITE(0xF8000734, 0x00003FFFU, 0x00001640U),
-+	EMIT_MASKWRITE(0xF8000738, 0x00003FFFU, 0x00001621U),
-+	EMIT_MASKWRITE(0xF800073C, 0x00003FFFU, 0x00001620U),
-+	EMIT_MASKWRITE(0xF8000740, 0x00003FFFU, 0x00001202U),
-+	EMIT_MASKWRITE(0xF8000744, 0x00003FFFU, 0x00001202U),
-+	EMIT_MASKWRITE(0xF8000748, 0x00003FFFU, 0x00001202U),
-+	EMIT_MASKWRITE(0xF800074C, 0x00003FFFU, 0x00001202U),
-+	EMIT_MASKWRITE(0xF8000750, 0x00003FFFU, 0x00001202U),
-+	EMIT_MASKWRITE(0xF8000754, 0x00003FFFU, 0x00001202U),
-+	EMIT_MASKWRITE(0xF8000758, 0x00003FFFU, 0x00001203U),
-+	EMIT_MASKWRITE(0xF800075C, 0x00003FFFU, 0x00001203U),
-+	EMIT_MASKWRITE(0xF8000760, 0x00003FFFU, 0x00001203U),
-+	EMIT_MASKWRITE(0xF8000764, 0x00003FFFU, 0x00001203U),
-+	EMIT_MASKWRITE(0xF8000768, 0x00003FFFU, 0x00001203U),
-+	EMIT_MASKWRITE(0xF800076C, 0x00003FFFU, 0x00001203U),
-+	EMIT_MASKWRITE(0xF8000770, 0x00003FFFU, 0x00001204U),
-+	EMIT_MASKWRITE(0xF8000774, 0x00003FFFU, 0x00001205U),
-+	EMIT_MASKWRITE(0xF8000778, 0x00003FFFU, 0x00001204U),
-+	EMIT_MASKWRITE(0xF800077C, 0x00003FFFU, 0x00001205U),
-+	EMIT_MASKWRITE(0xF8000780, 0x00003FFFU, 0x00001204U),
-+	EMIT_MASKWRITE(0xF8000784, 0x00003FFFU, 0x00001204U),
-+	EMIT_MASKWRITE(0xF8000788, 0x00003FFFU, 0x00001204U),
-+	EMIT_MASKWRITE(0xF800078C, 0x00003FFFU, 0x00001204U),
-+	EMIT_MASKWRITE(0xF8000790, 0x00003FFFU, 0x00001205U),
-+	EMIT_MASKWRITE(0xF8000794, 0x00003FFFU, 0x00001204U),
-+	EMIT_MASKWRITE(0xF8000798, 0x00003FFFU, 0x00001204U),
-+	EMIT_MASKWRITE(0xF800079C, 0x00003FFFU, 0x00001204U),
-+	EMIT_MASKWRITE(0xF80007A0, 0x00003FFFU, 0x00001280U),
-+	EMIT_MASKWRITE(0xF80007A4, 0x00003FFFU, 0x00001280U),
-+	EMIT_MASKWRITE(0xF80007A8, 0x00003FFFU, 0x00001280U),
-+	EMIT_MASKWRITE(0xF80007AC, 0x00003FFFU, 0x00001280U),
-+	EMIT_MASKWRITE(0xF80007B0, 0x00003FFFU, 0x00001280U),
-+	EMIT_MASKWRITE(0xF80007B4, 0x00003FFFU, 0x00001280U),
-+	EMIT_MASKWRITE(0xF80007B8, 0x00003F01U, 0x00000201U),
-+	EMIT_MASKWRITE(0xF80007BC, 0x00003F01U, 0x00000201U),
-+	EMIT_MASKWRITE(0xF80007C0, 0x00003FFFU, 0x000012E0U),
-+	EMIT_MASKWRITE(0xF80007C4, 0x00003FFFU, 0x000012E1U),
-+	EMIT_MASKWRITE(0xF80007C8, 0x00003FFFU, 0x00000200U),
-+	EMIT_MASKWRITE(0xF80007CC, 0x00003FFFU, 0x00000200U),
-+	EMIT_MASKWRITE(0xF80007D0, 0x00003FFFU, 0x00001280U),
-+	EMIT_MASKWRITE(0xF80007D4, 0x00003FFFU, 0x00001280U),
-+	EMIT_MASKWRITE(0xF8000830, 0x003F003FU, 0x002E002FU),
-+	EMIT_WRITE(0xF8000004, 0x0000767BU),
-+	EMIT_EXIT(),
-+};
-+
-+static unsigned long ps7_peripherals_init_data[] = {
-+	EMIT_WRITE(0xF8000008, 0x0000DF0DU),
-+	EMIT_MASKWRITE(0xF8000B48, 0x00000180U, 0x00000180U),
-+	EMIT_MASKWRITE(0xF8000B4C, 0x00000180U, 0x00000180U),
-+	EMIT_MASKWRITE(0xF8000B50, 0x00000180U, 0x00000180U),
-+	EMIT_MASKWRITE(0xF8000B54, 0x00000180U, 0x00000180U),
-+	EMIT_WRITE(0xF8000004, 0x0000767BU),
-+	EMIT_MASKWRITE(0xE000D000, 0x00080000U, 0x00080000U),
-+	EMIT_MASKWRITE(0xF8007000, 0x20000000U, 0x00000000U),
-+	EMIT_MASKWRITE(0xE000A244, 0x003FFFFFU, 0x00080000U),
-+	EMIT_MASKWRITE(0xE000A00C, 0x003F003FU, 0x00370008U),
-+	EMIT_MASKWRITE(0xE000A248, 0x003FFFFFU, 0x00080000U),
-+	EMIT_MASKWRITE(0xE000A00C, 0x003F003FU, 0x00370000U),
-+	EMIT_MASKDELAY(0xF8F00200, 1),
-+	EMIT_MASKWRITE(0xE000A00C, 0x003F003FU, 0x00370008U),
-+	EMIT_EXIT(),
-+};
-+
-+static unsigned long ps7_post_config_0[] = {
-+	EMIT_WRITE(0xF8000008, 0x0000DF0DU),
-+	EMIT_MASKWRITE(0xF8000900, 0x0000000FU, 0x0000000FU),
-+	EMIT_MASKWRITE(0xF8000240, 0xFFFFFFFFU, 0x00000000U),
-+	EMIT_WRITE(0xF8000004, 0x0000767BU),
-+	EMIT_EXIT(),
-+};
-+
-+int ps7_post_config(void)
-+{
-+	return ps7_config(ps7_post_config_0);
-+}
-+
-+int ps7_init(void)
-+{
-+	int ret;
-+
-+	ret = ps7_config(ps7_mio_init_data);
-+	if (ret != PS7_INIT_SUCCESS)
-+		return ret;
-+
-+	ret = ps7_config(ps7_pll_init_data);
-+	if (ret != PS7_INIT_SUCCESS)
-+		return ret;
-+
-+	ret = ps7_config(ps7_clock_init_data);
-+	if (ret != PS7_INIT_SUCCESS)
-+		return ret;
-+
-+	ret = ps7_config(ps7_ddr_init_data);
-+	if (ret != PS7_INIT_SUCCESS)
-+		return ret;
-+
-+	ret = ps7_config(ps7_peripherals_init_data);
-+	if (ret != PS7_INIT_SUCCESS)
-+		return ret;
-+	return PS7_INIT_SUCCESS;
-+}
-diff --git a/configs/xilinx_zynq_virt_defconfig b/configs/xilinx_zynq_virt_defconfig
-index 8acdab25b7..afbc81afd1 100644
---- a/configs/xilinx_zynq_virt_defconfig
-+++ b/configs/xilinx_zynq_virt_defconfig
-@@ -49,7 +49,7 @@ CONFIG_CMD_MTDPARTS=y
- CONFIG_CMD_MTDPARTS_SPREAD=y
- CONFIG_CMD_MTDPARTS_SHOW_NET_SIZES=y
- CONFIG_CMD_UBI=y
--CONFIG_OF_LIST="zynq-zc702 zynq-zc706 zynq-zc770-xm010 zynq-zc770-xm011 zynq-zc770-xm011-x16 zynq-zc770-xm012 zynq-zc770-xm013 zynq-cc108 zynq-microzed zynq-minized zynq-picozed zynq-zed zynq-zturn zynq-zybo zynq-zybo-z7 zynq-dlc20-rev1.0"
-+CONFIG_OF_LIST="zynq-zc702 zynq-zc706 zynq-zc770-xm010 zynq-zc770-xm011 zynq-zc770-xm011-x16 zynq-zc770-xm012 zynq-zc770-xm013 zynq-cc108 zynq-microzed zynq-minized zynq-picozed zynq-zed zynq-zturn zynq-zturn-v5 zynq-zybo zynq-zybo-z7 zynq-dlc20-rev1.0"
- CONFIG_ENV_OVERWRITE=y
- CONFIG_ENV_IS_IN_SPI_FLASH=y
- CONFIG_SYS_RELOC_GD_ENV_ADDR=y
-@@ -90,6 +90,8 @@ CONFIG_SPI_FLASH_WINBOND=y
- CONFIG_PHY_MARVELL=y
- CONFIG_PHY_REALTEK=y
- CONFIG_PHY_XILINX=y
-+CONFIG_PHY_MICREL=y
-+CONFIG_PHY_MICREL_KSZ90X1=y
- CONFIG_MII=y
- CONFIG_ZYNQ_GEM=y
- CONFIG_ARM_DCC=y
--- 
-2.20.1
+Thanks,
+Stefano
 
