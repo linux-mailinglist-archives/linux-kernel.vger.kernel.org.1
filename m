@@ -2,809 +2,513 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 281562633EC
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 19:12:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76FCA26337B
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 19:04:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731261AbgIIRMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 13:12:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47562 "EHLO
+        id S1731219AbgIIREl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 13:04:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730288AbgIIPcj (ORCPT
+        with ESMTP id S1730276AbgIIPpK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 11:32:39 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 100EFC0611E2;
-        Wed,  9 Sep 2020 08:05:55 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id x69so2659645oia.8;
-        Wed, 09 Sep 2020 08:05:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=SQN0S41PwJqlI7YUrTARcv/dLLG7Ks4iKX3FcqmKz0U=;
-        b=A0PopW66/sKGrXUfNk7iv1JQeFyENvX7fT3SLBAlSyzF4+gnZ7URJ++SCNe1DljIf6
-         +EMzgyAL6jjjgXnLbBO8UWT/Ok1Y1NGEbM4+c7i1x/fmUjhtiXpBk7iouAHdWcsxY1AD
-         3OXunghgXQChk0G/2ytTLD0rcPCu4kvAFj0TEQmjGVl+62G0+liYGo6afbIHzGkjvGqu
-         9BdpX0mv0C7nVR5KVYvgPJm2HqRx0dYtgWopoSYqFK5jpwskXxYQOZJ8s9wHhHzsx5lB
-         tzAOzpBOpDT7Xyaws1jckRHHtA5OWUtghiqh+E0bUPtXlhbIGu97EJ+EWUarfkt7+iRI
-         oCaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=SQN0S41PwJqlI7YUrTARcv/dLLG7Ks4iKX3FcqmKz0U=;
-        b=b3lYXwub8PwxB11EwJYM5YQ7WrQGugkc0uaWCdMPukbIWXZoUrrjeQlTyNUtFqh1x5
-         Bvig5KWue4gVRcgMXEiVgH/y41NmLwW90+mFbAJuV90YRBxs20uD1PcmKfSGrGOVlec/
-         Zps/pfXNK8dfcrk+FAVsPSizflsSyeScYXnfV/WhnDf3esLTIZX9pPhA4pxjavH6jjL9
-         lblk5aO4s6H+0iJLJ3Hm64jX0DqFYR9d17jC1TOA2loHRk0tpszKYGRtiWm77VuPpT1a
-         s5CL3cLAgpz/WSBH/Bun3r+BtSVo2Ml+0X8k00KN+igLDlSFJtwnawvPTH+k3x6fr/Y1
-         Ky2Q==
-X-Gm-Message-State: AOAM531iiCdpO7+8AzVQ+IokfEaY+vxSVDbm74YvPTtsPhCMmjUjy+hJ
-        pxLhfSuCmPp4zsMPrvIZFmk=
-X-Google-Smtp-Source: ABdhPJykvJcBzPiNJNP3z4mhM+kULC/9t2mAxd/mo91e1QU1M3W97OUiEOmPxREly33TI+pXVGV6qg==
-X-Received: by 2002:aca:d409:: with SMTP id l9mr891226oig.70.1599663954906;
-        Wed, 09 Sep 2020 08:05:54 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id c129sm459546oia.8.2020.09.09.08.05.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Sep 2020 08:05:54 -0700 (PDT)
-Subject: Re: [PATCH 2/2] Add driver for Moortec MR75203 PVT controller
-To:     Rahul Tanwar <rahul.tanwar@linux.intel.com>, jdelvare@suse.com,
-        p.zabel@pengutronix.de, linux-hwmon@vger.kernel.org,
-        robh+dt@kernel.org
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        andriy.shevchenko@intel.com, songjun.Wu@intel.com,
-        cheol.yong.kim@intel.com, qi-ming.wu@intel.com,
-        rtanwar@maxlinear.com
-References: <cover.1599634208.git.rahul.tanwar@linux.intel.com>
- <ecb6794a8f2ef6576421e6d5fbdf4e6a91f06b91.1599634208.git.rahul.tanwar@linux.intel.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <a3b95ea8-372b-4f03-0c04-62ee9384fafb@roeck-us.net>
-Date:   Wed, 9 Sep 2020 08:05:52 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 9 Sep 2020 11:45:10 -0400
+X-Greylist: delayed 2262 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 09 Sep 2020 08:44:14 PDT
+Received: from srv1.deutnet.info (srv1.deutnet.info [IPv6:2a01:4f8:c2c:6846::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37647C061756;
+        Wed,  9 Sep 2020 08:44:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=deutnet.info; s=default; h=Message-Id:Date:Subject:Cc:To:From:in-reply-to;
+         bh=KY0kc0/dmlQ+FmXekEIwsddM7hMAkt1PznNXe3TSJYk=; b=m1Jw1gn3WWOVFjwC26u1G/NoC
+        5wONsiebsqmIEbf0LLPcrQDNw+904DZo7GUdF2sM6FfbwkbrxQ1nZVpLpClEldeHieYbYUQMNobz1
+        8thvSmDtKDAT1J34XpE7mobpBSSXNGKxQ6uO1vYsXPwWWVgSETTy0DStaq7kfoTKsjfT0OlztWqGH
+        HQPYwqxk7V3E3Gh2wJOkr21HS7n4SBoRk4k5vK2/YsGW01NicXMJhTPZAj9jgRmc4tQ5eCXfOz4rL
+        TE4Hf8JwLnns86jYDczCWO4Bo+bHG55hZGA6qPrfKViuVF3eiwzy2EjpUXiowH1NFeTmafafXWFua
+        5UXV1VYFw==;
+Received: from [2001:bc8:3dc9::1] (helo=srv100.deutnet.info)
+        by srv1.deutnet.info with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <agriveaux@deutnet.info>)
+        id 1kG1fz-000708-3E; Wed, 09 Sep 2020 17:06:23 +0200
+Received: from agriveaux by srv100.deutnet.info with local (Exim 4.92)
+        (envelope-from <agriveaux@deutnet.info>)
+        id 1kG1fy-008KO7-I4; Wed, 09 Sep 2020 17:06:22 +0200
+From:   agriveaux@deutnet.info
+To:     michal.simek@xilinx.com, robh+dt@kernel.org
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Alexandre GRIVEAUX <agriveaux@deutnet.info>
+Subject: [PATCH] ARM: zynq: Add Z-turn board V5
+Date:   Wed,  9 Sep 2020 17:06:08 +0200
+Message-Id: <20200909150608.1984952-1-agriveaux@deutnet.info>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <ecb6794a8f2ef6576421e6d5fbdf4e6a91f06b91.1599634208.git.rahul.tanwar@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/8/20 11:52 PM, Rahul Tanwar wrote:
-> PVT controller (MR75203) is used to configure & control
-> Moortec embedded analog IP which contains temprature
-> sensor(TS), voltage monitor(VM) & process detector(PD)
-> modules. Add driver to support MR75203 PVT controller.
-> 
-The subject needs to include a hint that this is a hardware monitoring
-driver, and the above should be "Add hardware monitoring driver to ...".
+From: Alexandre GRIVEAUX <agriveaux@deutnet.info>
 
-> Signed-off-by: Rahul Tanwar <rahul.tanwar@linux.intel.com>
-> ---
->  drivers/hwmon/Kconfig   |  10 +
->  drivers/hwmon/Makefile  |   1 +
->  drivers/hwmon/mr75203.c | 617 ++++++++++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 628 insertions(+)
->  create mode 100644 drivers/hwmon/mr75203.c
-> 
-> diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
-> index 8dc28b26916e..2defb46677b4 100644
-> --- a/drivers/hwmon/Kconfig
-> +++ b/drivers/hwmon/Kconfig
-> @@ -1112,6 +1112,16 @@ config SENSORS_MENF21BMC_HWMON
->  	  This driver can also be built as a module. If so the module
->  	  will be called menf21bmc_hwmon.
->  
-> +config SENSORS_MR75203
-> +	tristate "Moortec Semiconductor MR75203 PVT Controller"
-> +	select REGMAP_MMIO
-> +	help
-> +	  If you say yes here you get support for Moortec MR75203
-> +	  PVT controller.
-> +
-> +	  This driver can also be built as a module. If so, the module
-> +	  will be called mr75203.
-> +
->  config SENSORS_ADCXX
->  	tristate "National Semiconductor ADCxxxSxxx"
->  	depends on SPI_MASTER
-> diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
-> index a8f4b35b136b..bb4bd92a5149 100644
-> --- a/drivers/hwmon/Makefile
-> +++ b/drivers/hwmon/Makefile
-> @@ -142,6 +142,7 @@ obj-$(CONFIG_SENSORS_MCP3021)	+= mcp3021.o
->  obj-$(CONFIG_SENSORS_TC654)	+= tc654.o
->  obj-$(CONFIG_SENSORS_MLXREG_FAN) += mlxreg-fan.o
->  obj-$(CONFIG_SENSORS_MENF21BMC_HWMON) += menf21bmc_hwmon.o
-> +obj-$(CONFIG_SENSORS_MR75203)	+= mr75203.o
->  obj-$(CONFIG_SENSORS_NCT6683)	+= nct6683.o
->  obj-$(CONFIG_SENSORS_NCT6775)	+= nct6775.o
->  obj-$(CONFIG_SENSORS_NCT7802)	+= nct7802.o
-> diff --git a/drivers/hwmon/mr75203.c b/drivers/hwmon/mr75203.c
-> new file mode 100644
-> index 000000000000..8b616e53f27b
-> --- /dev/null
-> +++ b/drivers/hwmon/mr75203.c
-> @@ -0,0 +1,617 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (C) 2020 MaxLinear, Inc.
-> + *
-> + * This driver is for PVT controller (MR75203) which is used
-> + * to configure & control Moortec embedded analog IP to enable
-> + * multiple embedded temprature sensor(TS), voltage monitor(VM)
-> + * & process detector(PD) modules.
-> + */
-> +#include <linux/clk.h>
-> +#include <linux/hwmon.h>
-> +#include <linux/module.h>
-> +#include <linux/mutex.h>
-> +#include <linux/of.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/regmap.h>
-> +#include <linux/reset.h>
-> +
-> +/* PVT Common register */
-> +#define PVT_IP_CONFIG	0x04
-> +#define TS_NUM_MSK	GENMASK(4, 0)
-> +#define TS_NUM_SFT	0
-> +#define PD_NUM_MSK	GENMASK(12, 8)
-> +#define PD_NUM_SFT	8
-> +#define VM_NUM_MSK	GENMASK(20, 16)
-> +#define VM_NUM_SFT	16
-> +#define CH_NUM_MSK	GENMASK(31, 24)
-> +#define CH_NUM_SFT	24
-> +
-> +/* Macro Common Register */
-> +#define CLK_SYNTH		0x00
-> +#define CLK_SYNTH_LO_SFT	0
-> +#define CLK_SYNTH_HI_SFT	8
-> +#define CLK_SYNTH_HOLD_SFT	16
-> +#define CLK_SYNTH_EN		BIT(24)
-> +
-> +#define SDIF_DISABLE	0x04
-> +
-> +#define SDIF_STAT	0x08
-> +#define SDIF_BUSY	BIT(0)
-> +#define SDIF_LOCK	BIT(1)
-> +
-> +#define SDIF_W		0x0c
-> +#define SDIF_PROG	BIT(31)
-> +#define SDIF_WRN_W	BIT(27)
-> +#define SDIF_WRN_R	0x00
-> +#define SDIF_ADDR_SFT	24
-> +
-> +#define SDIF_HALT	0x10
-> +#define SDIF_CTRL	0x14
-> +#define SDIF_SMPL_CTRL	0x20
-> +
-> +/* TS & PD Individual Macro Register */
-> +#define COM_REG_SIZE	0x40
-> +
-> +#define SDIF_DONE(n)	(COM_REG_SIZE + 0x14 + 0x40 * (n))
-> +#define SDIF_SMPL_DONE	BIT(0)
-> +
-> +#define SDIF_DATA(n)	(COM_REG_SIZE + 0x18 + 0x40 * (n))
-> +#define SAMPLE_DATA_MSK	GENMASK(15, 0)
-> +
-> +#define HILO_RESET(n)	(COM_REG_SIZE + 0x2c + 0x40 * (n))
-> +
-> +/* VM Individual Macro Register */
-> +#define VM_COM_REG_SIZE	0x200
-> +#define VM_SDIF_DONE(n)	(VM_COM_REG_SIZE + 0x34 + 0x200 * (n))
-> +#define VM_SDIF_DATA(n)	(VM_COM_REG_SIZE + 0x40 + 0x200 * (n))
-> +
-> +/* SDA Slave Register */
-> +#define IP_CTRL			0x00
-> +#define IP_RST_REL		BIT(1)
-> +#define IP_RUN_CONT		BIT(3)
-> +#define IP_AUTO			BIT(8)
-> +#define IP_VM_MODE		BIT(10)
-> +
-> +#define IP_CFG			0x01
-> +#define CFG0_MODE_2		BIT(0)
-> +#define CFG0_PARALLEL_OUT	0
-> +#define CFG0_12_BIT		0
-> +#define CFG1_VOL_MEAS_MODE	0
-> +#define CFG1_PARALLEL_OUT	0
-> +#define CFG1_14_BIT		0
-> +
-> +#define IP_DATA		0x03
-> +
-> +#define IP_POLL		0x04
-> +#define VM_CH_INIT	BIT(20)
-> +#define VM_CH_REQ	BIT(21)
-> +
-> +#define IP_TMR			0x05
-> +#define POWER_DELAY_CYCLE_256	0x80
-> +#define POWER_DELAY_CYCLE_64	0x40
-> +
-> +#define PVT_POLL_DELAY_US	20
-> +#define PVT_POLL_TIMEOUT	20000
-> +#define PVT_H_CONST		100000
-> +#define PVT_CAL5_CONST		2047
-> +#define PVT_G_CONST		40000
-> +#define PVT_CONV_BITS		10
-> +#define PVT_N_CONST		90
-> +#define PVT_R_CONST		245805
-> +
-> +struct pvt_device {
-> +	struct regmap		*c_map;
-> +	struct regmap		*t_map;
-> +	struct regmap		*p_map;
-> +	struct regmap		*v_map;
-> +	struct clk		*clk;
-> +	struct reset_control	*rst;
-> +	u32			t_num;
-> +	u32			p_num;
-> +	u32			v_num;
-> +	u32			ip_freq;
-> +	u8			*vm_idx;
-> +	struct mutex		lock; /* lock to protect register */
-> +};
-> +
-> +static umode_t pvt_is_visible(const void *data, enum hwmon_sensor_types type,
-> +			      u32 attr, int channel)
-> +{
-> +	switch (type) {
-> +	case hwmon_temp:
-> +		if (attr == hwmon_temp_input)
-> +			return 0444;
-> +		else
-> +			return 0;
-> +	case hwmon_in:
-> +		if (attr == hwmon_in_input)
-> +			return 0444;
-> +		else
-> +			return 0;
-> +	default:
-> +		return 0;
-> +	}
-> +}
-> +
-> +static int pvt_read_temp(struct device *dev, u32 attr, int channel, long *val)
-> +{
-> +	struct pvt_device *pvt = dev_get_drvdata(dev);
-> +	struct regmap *t_map = pvt->t_map;
-> +	u32 stat, nbs;
-> +	int ret;
-> +	u64 tmp;
-> +
-> +	if (channel >= pvt->t_num)
-> +		return -EINVAL;
-> +
-> +	switch (attr) {
-> +	case hwmon_temp_input:
-> +		mutex_lock(&pvt->lock);
-> +		ret = regmap_read_poll_timeout(t_map, SDIF_DONE(channel),
-> +					       stat, stat & SDIF_SMPL_DONE,
-> +					       PVT_POLL_DELAY_US,
-> +					       PVT_POLL_TIMEOUT);
-> +		if (ret) {
-> +			mutex_unlock(&pvt->lock);
-> +			return ret;
-> +		}
-> +
-> +		regmap_read(t_map, SDIF_DATA(channel), &nbs);
-> +		nbs &= SAMPLE_DATA_MSK;
-> +		mutex_unlock(&pvt->lock);
-> +
-> +		/*
-> +		 * Convert the register value to
-> +		 * degrees centigrade temperature
-> +		 */
-> +		tmp = nbs * PVT_H_CONST;
-> +		do_div(tmp, PVT_CAL5_CONST);
-> +		*val = tmp - PVT_G_CONST - pvt->ip_freq;
-> +
-> +		return 0;
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	}
-> +}
-> +
-> +static int pvt_read_in(struct device *dev, u32 attr, int channel, long *val)
-> +{
-> +	struct pvt_device *pvt = dev_get_drvdata(dev);
-> +	struct regmap *v_map = pvt->v_map;
-> +	u32 n, stat;
-> +	u8 vm_idx;
-> +	int ret;
-> +
-> +	if (channel >= pvt->v_num)
-> +		return -EINVAL;
-> +
-> +	vm_idx = pvt->vm_idx[channel];
-> +
-> +	switch (attr) {
-> +	case hwmon_in_input:
-> +		mutex_lock(&pvt->lock);
-> +		ret = regmap_read_poll_timeout(v_map, VM_SDIF_DONE(vm_idx),
-> +					       stat, stat & SDIF_SMPL_DONE,
-> +					       PVT_POLL_DELAY_US,
-> +					       PVT_POLL_TIMEOUT);
-> +		if (ret) {
-> +			mutex_unlock(&pvt->lock);
-> +			return ret;
-> +		}
-> +
-> +		regmap_read(v_map, VM_SDIF_DATA(vm_idx), &n);
-> +		n &= SAMPLE_DATA_MSK;
-> +		mutex_unlock(&pvt->lock);
-> +
-> +
-> +		/* Convert the N bitstream count into voltage */
-> +		*val = (PVT_N_CONST * n - PVT_R_CONST) >> PVT_CONV_BITS;
-> +
-> +		return 0;
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	}
-> +}
-> +
-> +static int pvt_read(struct device *dev, enum hwmon_sensor_types type,
-> +		    u32 attr, int channel, long *val)
-> +{
-> +	switch (type) {
-> +	case hwmon_temp:
-> +		return pvt_read_temp(dev, attr, channel, val);
-> +	case hwmon_in:
-> +		return pvt_read_in(dev, attr, channel, val);
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	}
-> +}
-> +
-> +static const u32 pvt_chip_config[] = {
-> +	HWMON_C_REGISTER_TZ,
-> +	0
-> +};
-> +
-> +static const struct hwmon_channel_info pvt_chip = {
-> +	.type = hwmon_chip,
-> +	.config = pvt_chip_config,
-> +};
-> +
-> +static struct hwmon_channel_info pvt_temp = {
-> +	.type = hwmon_temp,
-> +};
-> +
-> +static struct hwmon_channel_info pvt_in = {
-> +	.type = hwmon_in,
-> +};
-> +
-> +static const struct hwmon_ops pvt_hwmon_ops = {
-> +	.is_visible = pvt_is_visible,
-> +	.read = pvt_read,
-> +};
-> +
-> +static struct hwmon_chip_info pvt_chip_info = {
-> +	.ops = &pvt_hwmon_ops,
-> +};
-> +
-> +static int pvt_init(struct pvt_device *pvt)
-> +{
-> +	u16 sys_freq, key, middle, low = 4, high = 8;
-> +	struct regmap *t_map = pvt->t_map;
-> +	struct regmap *p_map = pvt->p_map;
-> +	struct regmap *v_map = pvt->v_map;
-> +	u32 t_num = pvt->t_num;
-> +	u32 p_num = pvt->p_num;
-> +	u32 v_num = pvt->v_num;
-> +	u32 clk_synth, val;
-> +	int ret;
-> +
-> +	sys_freq = clk_get_rate(pvt->clk) / 1000000;
-> +	while (high >= low) {
-> +		middle = DIV_ROUND_CLOSEST(low + high, 2);
-> +		key = DIV_ROUND_CLOSEST(sys_freq, middle);
-> +		if (key > 514) {
-> +			low = middle + 1;
-> +			continue;
-> +		} else if (key < 2) {
-> +			high = middle - 1;
-> +			continue;
-> +		}
-> +
-> +		break;
-> +	}
-> +
-> +	key = clamp_val(key, 2, 514) - 2;
-> +
-> +	clk_synth = ((key + 1) >> 1) << CLK_SYNTH_LO_SFT |
-> +		    (key >> 1) << CLK_SYNTH_HI_SFT |
-> +		    (key >> 1) << CLK_SYNTH_HOLD_SFT | CLK_SYNTH_EN;
-> +
-> +	pvt->ip_freq = sys_freq * 100 / (key + 2);
-> +
-> +	if (t_num) {
-> +		regmap_write(t_map, SDIF_SMPL_CTRL, 0x0);
-> +		regmap_write(t_map, SDIF_HALT, 0x0);
-> +		regmap_write(t_map, CLK_SYNTH, clk_synth);
-> +		regmap_write(t_map, SDIF_DISABLE, 0);
-> +
-> +		ret = regmap_read_poll_timeout(t_map, SDIF_STAT,
-> +					       val, !(val & SDIF_BUSY),
-> +					       PVT_POLL_DELAY_US,
-> +					       PVT_POLL_TIMEOUT);
-> +		if (ret)
-> +			return ret;
-> +
-> +		val = CFG0_MODE_2 | CFG0_PARALLEL_OUT | CFG0_12_BIT |
-> +		      IP_CFG << SDIF_ADDR_SFT | SDIF_WRN_W | SDIF_PROG;
-> +		regmap_write(t_map, SDIF_W, val);
-> +
-> +		ret = regmap_read_poll_timeout(t_map, SDIF_STAT,
-> +					       val, !(val & SDIF_BUSY),
-> +					       PVT_POLL_DELAY_US,
-> +					       PVT_POLL_TIMEOUT);
-> +		if (ret)
-> +			return ret;
-> +
-> +		val = POWER_DELAY_CYCLE_256 | IP_TMR << SDIF_ADDR_SFT |
-> +			      SDIF_WRN_W | SDIF_PROG;
-> +		regmap_write(t_map, SDIF_W, val);
-> +
-> +		ret = regmap_read_poll_timeout(t_map, SDIF_STAT,
-> +					       val, !(val & SDIF_BUSY),
-> +					       PVT_POLL_DELAY_US,
-> +					       PVT_POLL_TIMEOUT);
-> +		if (ret)
-> +			return ret;
-> +
-> +		val = IP_RST_REL | IP_RUN_CONT | IP_AUTO |
-> +		      IP_CTRL << SDIF_ADDR_SFT |
-> +		      SDIF_WRN_W | SDIF_PROG;
-> +		regmap_write(t_map, SDIF_W, val);
-> +	}
-> +
-> +	if (p_num) {
-> +		regmap_write(p_map, SDIF_HALT, 0x0);
-> +		regmap_write(p_map, SDIF_DISABLE, GENMASK(p_num - 1, 0));
-> +		regmap_write(p_map, CLK_SYNTH, clk_synth);
-> +	}
-> +
-> +	if (v_num) {
-> +		regmap_write(v_map, SDIF_SMPL_CTRL, 0x0);
-> +		regmap_write(v_map, SDIF_HALT, 0x0);
-> +		regmap_write(v_map, CLK_SYNTH, clk_synth);
-> +		regmap_write(v_map, SDIF_DISABLE, 0);
-> +
-> +		ret = regmap_read_poll_timeout(v_map, SDIF_STAT,
-> +					       val, !(val & SDIF_BUSY),
-> +					       PVT_POLL_DELAY_US,
-> +					       PVT_POLL_TIMEOUT);
-> +		if (ret)
-> +			return ret;
-> +
-> +		val = CFG1_VOL_MEAS_MODE | CFG1_PARALLEL_OUT |
-> +		      CFG1_14_BIT | IP_CFG << SDIF_ADDR_SFT |
-> +		      SDIF_WRN_W | SDIF_PROG;
-> +		regmap_write(v_map, SDIF_W, val);
-> +
-> +		ret = regmap_read_poll_timeout(v_map, SDIF_STAT,
-> +					       val, !(val & SDIF_BUSY),
-> +					       PVT_POLL_DELAY_US,
-> +					       PVT_POLL_TIMEOUT);
-> +		if (ret)
-> +			return ret;
-> +
-> +		val = POWER_DELAY_CYCLE_64 | IP_TMR << SDIF_ADDR_SFT |
-> +		      SDIF_WRN_W | SDIF_PROG;
-> +		regmap_write(v_map, SDIF_W, val);
-> +
-> +		ret = regmap_read_poll_timeout(v_map, SDIF_STAT,
-> +					       val, !(val & SDIF_BUSY),
-> +					       PVT_POLL_DELAY_US,
-> +					       PVT_POLL_TIMEOUT);
-> +		if (ret)
-> +			return ret;
-> +
-> +		val = IP_RST_REL | IP_RUN_CONT | IP_AUTO | IP_VM_MODE |
-> +		      IP_CTRL << SDIF_ADDR_SFT |
-> +		      SDIF_WRN_W | SDIF_PROG;
-> +		regmap_write(v_map, SDIF_W, val);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static struct regmap_config pvt_regmap_config = {
-> +	.reg_bits = 32,
-> +	.reg_stride = 4,
-> +	.val_bits = 32,
-> +};
-> +
-> +static int pvt_get_regmap(struct platform_device *pdev, char *reg_name)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	struct pvt_device *pvt = platform_get_drvdata(pdev);
+Adding Z-turn board V5 to resolve the change between:
 
-I am quite at loss how this is supposed to work. Platform driver
-data is not initialized with a pointer to struct pvt_device at this point.
-How does this code not crash ? What am I missing ?
+"Z-TURNBOARD_schematic.pdf" schematics state version 1 to 4 has Atheros AR8035
+"Z-Turn_Board_sch_V15_20160303.pdf" schematics state version 5 has Micrel KSZ9031
 
-> +	struct regmap **reg_map;
-> +	void __iomem *io_base;
-> +	struct resource *res;
-> +
-> +	if (!strcmp(reg_name, "common"))
-> +		reg_map = &pvt->c_map;
-> +	else if (!strcmp(reg_name, "ts"))
-> +		reg_map = &pvt->t_map;
-> +	else if (!strcmp(reg_name, "pd"))
-> +		reg_map = &pvt->p_map;
-> +	else if (!strcmp(reg_name, "vm"))
-> +		reg_map = &pvt->v_map;
-> +	else
-> +		return -EINVAL;
-> +
-> +	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, reg_name);
-> +	io_base = devm_ioremap_resource(dev, res);
-> +	if (IS_ERR(io_base))
-> +		return PTR_ERR(io_base);
-> +
-> +	pvt_regmap_config.name = reg_name;
-> +	*reg_map = devm_regmap_init_mmio(dev, io_base, &pvt_regmap_config);
-> +	if (IS_ERR(*reg_map)) {
-> +		dev_err(dev, "failed to init register map\n");
-> +		return PTR_ERR(*reg_map);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static void pvt_clk_disable(void *data)
-> +{
-> +	struct pvt_device *pvt = data;
-> +
-> +	clk_disable_unprepare(pvt->clk);
-> +}
-> +
-> +static int pvt_clk_enable(struct device *dev, struct pvt_device *pvt)
-> +{
-> +	int ret;
-> +
-> +	ret = clk_prepare_enable(pvt->clk);
-> +	if (ret)
-> +		return ret;
-> +
-> +	return devm_add_action_or_reset(dev, pvt_clk_disable, pvt);
-> +}
-> +
-> +static void pvt_reset_control_assert(void *data)
-> +{
-> +	struct pvt_device *pvt = data;
-> +
-> +	reset_control_assert(pvt->rst);
-> +}
-> +
-> +static int pvt_reset_control_deassert(struct device *dev, struct pvt_device *pvt)
-> +{
-> +	int ret;
-> +
-> +	ret = reset_control_deassert(pvt->rst);
-> +	if (ret)
-> +		return ret;
-> +
-> +	return devm_add_action_or_reset(dev, pvt_reset_control_assert, pvt);
-> +}
-> +
-> +static int mr75203_probe(struct platform_device *pdev)
-> +{
-> +	const struct hwmon_channel_info **pvt_info;
-> +	u32 ts_num, vm_num, pd_num, val, index, i;
-> +	struct device *dev = &pdev->dev;
-> +	u32 *temp_config, *in_config;
-> +	struct device *hwmon_dev;
-> +	struct pvt_device *pvt;
-> +	int ret;
-> +
-> +	pvt = devm_kzalloc(dev, sizeof(*pvt), GFP_KERNEL);
-> +	if (!pvt)
-> +		return -ENOMEM;
-> +
-> +	ret = pvt_get_regmap(pdev, "common");
-> +	if (ret)
-> +		return ret;
-> +
-> +	pvt->rst = devm_reset_control_get(dev, NULL);
-> +	if (IS_ERR(pvt->rst))
-> +		return dev_err_probe(dev, PTR_ERR(pvt->rst),
-> +				     "failed to get reset control\n");
-> +
-> +	ret = pvt_reset_control_deassert(dev, pvt);
-> +	if (ret)
-> +		return dev_err_probe(dev, ret, "cannot deassert reset control\n");
-> +
-> +	pvt->clk = devm_clk_get(dev, NULL);
-> +	if (IS_ERR(pvt->clk))
-> +		return dev_err_probe(dev, PTR_ERR(pvt->clk), "failed to get clock\n");
-> +
-> +	ret = pvt_clk_enable(dev, pvt);
-> +	if (ret) {
-> +		dev_err(dev, "failed to enable clock\n");
-> +		return ret;
-> +	}
-> +
-> +	regmap_read(pvt->c_map, PVT_IP_CONFIG, &val);
-> +	ts_num = (val & TS_NUM_MSK) >> TS_NUM_SFT;
-> +	pd_num = (val & PD_NUM_MSK) >> PD_NUM_SFT;
-> +	vm_num = (val & VM_NUM_MSK) >> VM_NUM_SFT;
-> +	pvt->t_num = ts_num;
-> +	pvt->p_num = pd_num;
-> +	pvt->v_num = vm_num;
-> +	val = 0;
-> +	if (ts_num)
-> +		val++;
-> +	if (vm_num)
-> +		val++;
-> +	if (!val && !pd_num) {
-> +		dev_err(dev, "None of TS, VM or PD configured\n");
-> +		return -EINVAL;
-> +	}
+At this time the S25FL128SAGNFI003 doesn't work because of bug:
 
-If ts_num and vm_num are both 0, the driver doesn't create any attributes and
-would just sit there. What would be the point of that ?
+*** Warning - spi_flash_probe_bus_cs() failed, using default environment
 
-> +
-> +	pvt_info = devm_kcalloc(dev, val + 2, sizeof(*pvt_info), GFP_KERNEL);
-> +	if (!pvt_info)
-> +		return -ENOMEM;
-> +	pvt_info[0] = &pvt_chip;
-> +	index = 1;
-> +
-> +	if (ts_num) {
-> +		ret = pvt_get_regmap(pdev, "ts");
-> +		if (ret)
-> +			return ret;
-> +
-> +		temp_config = devm_kcalloc(dev, ts_num + 1,
-> +					   sizeof(*temp_config), GFP_KERNEL);
-> +		if (!temp_config)
-> +			return -ENOMEM;
-> +
-> +		for (i = 0; i < ts_num; i++)
-> +			temp_config[i] = HWMON_T_INPUT;
-> +
-> +		temp_config[ts_num] = 0;
-> +		pvt_temp.config = temp_config;
-> +
-> +		pvt_info[index++] = &pvt_temp;
-> +	}
-> +
-> +	if (pd_num) {
-> +		ret = pvt_get_regmap(pdev, "pd");
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
-> +	if (vm_num) {
-> +		u32 num = vm_num;
-> +
-> +		ret = pvt_get_regmap(pdev, "vm");
-> +		if (ret)
-> +			return ret;
-> +
-> +		pvt->vm_idx = devm_kcalloc(dev, vm_num, sizeof(*pvt->vm_idx),
-> +					   GFP_KERNEL);
-> +		if (!pvt->vm_idx)
-> +			return -ENOMEM;
-> +
-> +		for (i = 0; i < vm_num; i++)
-> +			pvt->vm_idx[i] = i;
-> +
-> +		ret = of_property_read_u8_array(dev->of_node, "vm-map",
-> +						pvt->vm_idx, vm_num);
-> +
-> +		if (!ret)
-> +			for (i = 0; i < vm_num; i++)
-> +				if (pvt->vm_idx[i] >= vm_num ||
-> +				    pvt->vm_idx[i] == 0xff) {
-> +					num = i;
-> +					break;
-> +				}
-> +
-> +		in_config = devm_kcalloc(dev, num + 1,
-> +					 sizeof(*in_config), GFP_KERNEL);
-> +		if (!in_config)
-> +			return -ENOMEM;
-> +
-> +		for (i = 0; i < num; i++)
-> +			in_config[i] = HWMON_I_INPUT;
-> +
-> +		in_config[num] = 0;
-> +		pvt_in.config = in_config;
-> +
-> +		pvt_info[index++] = &pvt_in;
-> +	}
-> +
-> +	ret = pvt_init(pvt);
-> +	if (ret) {
-> +		dev_err(dev, "failed to init pvt: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	mutex_init(&pvt->lock);
-> +
-> +	pvt_info[index] = NULL;
+Signed-off-by: Alexandre GRIVEAUX <agriveaux@deutnet.info>
+---
+ arch/arm/dts/Makefile                         |   1 +
+ arch/arm/dts/zynq-zturn-v5.dts                | 121 ++++++++
+ .../xilinx/zynq/zynq-zturn-v5/ps7_init_gpl.c  | 273 ++++++++++++++++++
+ configs/xilinx_zynq_virt_defconfig            |   4 +-
+ 4 files changed, 398 insertions(+), 1 deletion(-)
+ create mode 100644 arch/arm/dts/zynq-zturn-v5.dts
+ create mode 100644 board/xilinx/zynq/zynq-zturn-v5/ps7_init_gpl.c
 
-Unnecessary.
-
-> +	pvt_chip_info.info = pvt_info;
-> +	hwmon_dev = devm_hwmon_device_register_with_info(dev, "pvt",
-> +							 pvt,
-> +							 &pvt_chip_info,
-> +							 NULL);
-> +
-> +	platform_set_drvdata(pdev, pvt);
-
-Again, I fail to understand how this is supposed to work.
-
-> +	return PTR_ERR_OR_ZERO(hwmon_dev);
-> +}
-> +
-> +static const struct of_device_id moortec_pvt_of_match[] = {
-> +	{ .compatible = "moortec,mr75203" },
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(of, moortec_pvt_of_match);
-> +
-> +static struct platform_driver moortec_pvt_driver = {
-> +	.driver = {
-> +		.name = "moortec-pvt",
-> +		.of_match_table = moortec_pvt_of_match,
-> +	},
-> +	.probe = mr75203_probe,
-> +};
-> +module_platform_driver(moortec_pvt_driver);
-> 
+diff --git a/arch/arm/dts/Makefile b/arch/arm/dts/Makefile
+index f8f529435b..0f8973b1c8 100644
+--- a/arch/arm/dts/Makefile
++++ b/arch/arm/dts/Makefile
+@@ -277,6 +277,7 @@ dtb-$(CONFIG_ARCH_ZYNQ) += \
+ 	zynq-zc770-xm013.dtb \
+ 	zynq-zed.dtb \
+ 	zynq-zturn.dtb \
++	zynq-zturn-v5.dtb \
+ 	zynq-zybo.dtb \
+ 	zynq-zybo-z7.dtb
+ dtb-$(CONFIG_ARCH_ZYNQMP) += \
+diff --git a/arch/arm/dts/zynq-zturn-v5.dts b/arch/arm/dts/zynq-zturn-v5.dts
+new file mode 100644
+index 0000000000..eebeec800f
+--- /dev/null
++++ b/arch/arm/dts/zynq-zturn-v5.dts
+@@ -0,0 +1,121 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ *  Copyright (C) 2020 Alexandre Griveaux <alex@deutnet.info>
++ *
++ *  Based on zynq-zturn.dts which is:
++ *  Copyright (C) 2015 Andrea Merello <adnrea.merello@gmail.com>
++ *  Copyright (C) 2017 Alexander Graf <agraf@suse.de>
++ *
++ */
++
++/dts-v1/;
++/include/ "zynq-7000.dtsi"
++
++/ {
++	model = "Zynq Z-Turn MYIR Board V5";
++	compatible = "myir,zynq-zturn", "xlnx,zynq-7000";
++
++	aliases {
++		ethernet0 = &gem0;
++		serial0 = &uart1;
++		serial1 = &uart0;
++		mmc0 = &sdhci0;
++	};
++
++	memory@0 {
++		device_type = "memory";
++		reg = <0x0 0x40000000>;
++	};
++
++	chosen {
++		stdout-path = "serial0:115200n8";
++	};
++
++	gpio-leds {
++		compatible = "gpio-leds";
++		usr-led1 {
++			label = "usr-led1";
++			gpios = <&gpio0 0x0 0x1>;
++			default-state = "off";
++		};
++
++		usr-led2 {
++			label = "usr-led2";
++			gpios = <&gpio0 0x9 0x1>;
++			default-state = "off";
++		};
++	};
++
++	gpio-keys {
++		compatible = "gpio-keys";
++		autorepeat;
++		K1 {
++			label = "K1";
++			gpios = <&gpio0 0x32 0x1>;
++			linux,code = <0x66>;
++			wakeup-source;
++			autorepeat;
++		};
++	};
++};
++
++&clkc {
++	ps-clk-frequency = <33333333>;
++};
++
++&qspi {
++	u-boot,dm-pre-reloc;
++	status = "okay";
++};
++
++&gem0 {
++	status = "okay";
++	phy-mode = "rgmii-id";
++	phy-handle = <&ethernet_phy>;
++
++	ethernet_phy: ethernet-phy@0 {
++		reg = <0x3>;
++	};
++};
++
++&sdhci0 {
++	u-boot,dm-pre-reloc;
++	status = "okay";
++};
++
++&uart0 {
++	u-boot,dm-pre-reloc;
++	status = "okay";
++};
++
++&uart1 {
++	u-boot,dm-pre-reloc;
++	status = "okay";
++};
++
++&usb0 {
++	status = "okay";
++	dr_mode = "host";
++};
++
++&can0 {
++	status = "okay";
++};
++
++&i2c0 {
++	status = "okay";
++	clock-frequency = <400000>;
++
++	stlm75@49 {
++		status = "okay";
++		compatible = "lm75";
++		reg = <0x49>;
++	};
++
++	accelerometer@53 {
++		compatible = "adi,adxl345", "adxl345", "adi,adxl34x", "adxl34x";
++		reg = <0x53>;
++		interrupt-parent = <&intc>;
++		interrupts = <0x0 0x1e 0x4>;
++	};
++};
+diff --git a/board/xilinx/zynq/zynq-zturn-v5/ps7_init_gpl.c b/board/xilinx/zynq/zynq-zturn-v5/ps7_init_gpl.c
+new file mode 100644
+index 0000000000..5d573868cb
+--- /dev/null
++++ b/board/xilinx/zynq/zynq-zturn-v5/ps7_init_gpl.c
+@@ -0,0 +1,273 @@
++// SPDX-License-Identifier: GPL-2.0+
++/*
++ * Copyright (c) Xilinx, Inc.
++ */
++
++#include <asm/arch/ps7_init_gpl.h>
++
++static unsigned long ps7_pll_init_data[] = {
++	EMIT_WRITE(0xF8000008, 0x0000DF0DU),
++	EMIT_MASKWRITE(0xF8000110, 0x003FFFF0U, 0x000FA220U),
++	EMIT_MASKWRITE(0xF8000100, 0x0007F000U, 0x00028000U),
++	EMIT_MASKWRITE(0xF8000100, 0x00000010U, 0x00000010U),
++	EMIT_MASKWRITE(0xF8000100, 0x00000001U, 0x00000001U),
++	EMIT_MASKWRITE(0xF8000100, 0x00000001U, 0x00000000U),
++	EMIT_MASKPOLL(0xF800010C, 0x00000001U),
++	EMIT_MASKWRITE(0xF8000100, 0x00000010U, 0x00000000U),
++	EMIT_MASKWRITE(0xF8000120, 0x1F003F30U, 0x1F000200U),
++	EMIT_MASKWRITE(0xF8000114, 0x003FFFF0U, 0x0012C220U),
++	EMIT_MASKWRITE(0xF8000104, 0x0007F000U, 0x00020000U),
++	EMIT_MASKWRITE(0xF8000104, 0x00000010U, 0x00000010U),
++	EMIT_MASKWRITE(0xF8000104, 0x00000001U, 0x00000001U),
++	EMIT_MASKWRITE(0xF8000104, 0x00000001U, 0x00000000U),
++	EMIT_MASKPOLL(0xF800010C, 0x00000002U),
++	EMIT_MASKWRITE(0xF8000104, 0x00000010U, 0x00000000U),
++	EMIT_MASKWRITE(0xF8000124, 0xFFF00003U, 0x0C200003U),
++	EMIT_MASKWRITE(0xF8000118, 0x003FFFF0U, 0x001452C0U),
++	EMIT_MASKWRITE(0xF8000108, 0x0007F000U, 0x0001E000U),
++	EMIT_MASKWRITE(0xF8000108, 0x00000010U, 0x00000010U),
++	EMIT_MASKWRITE(0xF8000108, 0x00000001U, 0x00000001U),
++	EMIT_MASKWRITE(0xF8000108, 0x00000001U, 0x00000000U),
++	EMIT_MASKPOLL(0xF800010C, 0x00000004U),
++	EMIT_MASKWRITE(0xF8000108, 0x00000010U, 0x00000000U),
++	EMIT_WRITE(0xF8000004, 0x0000767BU),
++	EMIT_EXIT(),
++};
++
++static unsigned long ps7_clock_init_data[] = {
++	EMIT_WRITE(0xF8000008, 0x0000DF0DU),
++	EMIT_MASKWRITE(0xF8000128, 0x03F03F01U, 0x00700F01U),
++	EMIT_MASKWRITE(0xF8000138, 0x00000011U, 0x00000001U),
++	EMIT_MASKWRITE(0xF8000140, 0x03F03F71U, 0x00100801U),
++	EMIT_MASKWRITE(0xF800014C, 0x00003F31U, 0x00000501U),
++	EMIT_MASKWRITE(0xF8000150, 0x00003F33U, 0x00001401U),
++	EMIT_MASKWRITE(0xF8000154, 0x00003F33U, 0x00000A03U),
++	EMIT_MASKWRITE(0xF800015C, 0x03F03F33U, 0x00200501U),
++	EMIT_MASKWRITE(0xF8000160, 0x007F007FU, 0x00000000U),
++	EMIT_MASKWRITE(0xF8000168, 0x00003F31U, 0x00000501U),
++	EMIT_MASKWRITE(0xF8000170, 0x03F03F30U, 0x00200500U),
++	EMIT_MASKWRITE(0xF8000180, 0x03F03F30U, 0x00400500U),
++	EMIT_MASKWRITE(0xF80001C4, 0x00000001U, 0x00000001U),
++	EMIT_MASKWRITE(0xF800012C, 0x01FFCCCDU, 0x01FD044DU),
++	EMIT_WRITE(0xF8000004, 0x0000767BU),
++	EMIT_EXIT(),
++};
++
++static unsigned long ps7_ddr_init_data[] = {
++	EMIT_MASKWRITE(0xF8006000, 0x0001FFFFU, 0x00000080U),
++	EMIT_MASKWRITE(0xF8006004, 0x0007FFFFU, 0x00001082U),
++	EMIT_MASKWRITE(0xF8006008, 0x03FFFFFFU, 0x03C0780FU),
++	EMIT_MASKWRITE(0xF800600C, 0x03FFFFFFU, 0x02001001U),
++	EMIT_MASKWRITE(0xF8006010, 0x03FFFFFFU, 0x00014001U),
++	EMIT_MASKWRITE(0xF8006014, 0x001FFFFFU, 0x0004285BU),
++	EMIT_MASKWRITE(0xF8006018, 0xF7FFFFFFU, 0x44E458D3U),
++	EMIT_MASKWRITE(0xF800601C, 0xFFFFFFFFU, 0x7282BCE5U),
++	EMIT_MASKWRITE(0xF8006020, 0x7FDFFFFCU, 0x270872D0U),
++	EMIT_MASKWRITE(0xF8006024, 0x0FFFFFC3U, 0x00000000U),
++	EMIT_MASKWRITE(0xF8006028, 0x00003FFFU, 0x00002007U),
++	EMIT_MASKWRITE(0xF800602C, 0xFFFFFFFFU, 0x00000008U),
++	EMIT_MASKWRITE(0xF8006030, 0xFFFFFFFFU, 0x00040B30U),
++	EMIT_MASKWRITE(0xF8006034, 0x13FF3FFFU, 0x000116D4U),
++	EMIT_MASKWRITE(0xF8006038, 0x00000003U, 0x00000000U),
++	EMIT_MASKWRITE(0xF800603C, 0x000FFFFFU, 0x00000777U),
++	EMIT_MASKWRITE(0xF8006040, 0xFFFFFFFFU, 0xFFF00000U),
++	EMIT_MASKWRITE(0xF8006044, 0x0FFFFFFFU, 0x0F666666U),
++	EMIT_MASKWRITE(0xF8006048, 0x0003F03FU, 0x0003C008U),
++	EMIT_MASKWRITE(0xF8006050, 0xFF0F8FFFU, 0x77010800U),
++	EMIT_MASKWRITE(0xF8006058, 0x00010000U, 0x00000000U),
++	EMIT_MASKWRITE(0xF800605C, 0x0000FFFFU, 0x00005003U),
++	EMIT_MASKWRITE(0xF8006060, 0x000017FFU, 0x0000003EU),
++	EMIT_MASKWRITE(0xF8006064, 0x00021FE0U, 0x00020000U),
++	EMIT_MASKWRITE(0xF8006068, 0x03FFFFFFU, 0x00284141U),
++	EMIT_MASKWRITE(0xF800606C, 0x0000FFFFU, 0x00001610U),
++	EMIT_MASKWRITE(0xF8006078, 0x03FFFFFFU, 0x00466111U),
++	EMIT_MASKWRITE(0xF800607C, 0x000FFFFFU, 0x00032222U),
++	EMIT_MASKWRITE(0xF80060A4, 0xFFFFFFFFU, 0x10200802U),
++	EMIT_MASKWRITE(0xF80060A8, 0x0FFFFFFFU, 0x0690CB73U),
++	EMIT_MASKWRITE(0xF80060AC, 0x000001FFU, 0x000001FEU),
++	EMIT_MASKWRITE(0xF80060B0, 0x1FFFFFFFU, 0x1CFFFFFFU),
++	EMIT_MASKWRITE(0xF80060B4, 0x00000200U, 0x00000200U),
++	EMIT_MASKWRITE(0xF80060B8, 0x01FFFFFFU, 0x00200066U),
++	EMIT_MASKWRITE(0xF80060C4, 0x00000003U, 0x00000000U),
++	EMIT_MASKWRITE(0xF80060C8, 0x000000FFU, 0x00000000U),
++	EMIT_MASKWRITE(0xF80060DC, 0x00000001U, 0x00000000U),
++	EMIT_MASKWRITE(0xF80060F0, 0x0000FFFFU, 0x00000000U),
++	EMIT_MASKWRITE(0xF80060F4, 0x0000000FU, 0x00000008U),
++	EMIT_MASKWRITE(0xF8006114, 0x000000FFU, 0x00000000U),
++	EMIT_MASKWRITE(0xF8006118, 0x7FFFFFCFU, 0x40000001U),
++	EMIT_MASKWRITE(0xF800611C, 0x7FFFFFCFU, 0x40000001U),
++	EMIT_MASKWRITE(0xF8006120, 0x7FFFFFCFU, 0x40000001U),
++	EMIT_MASKWRITE(0xF8006124, 0x7FFFFFCFU, 0x40000001U),
++	EMIT_MASKWRITE(0xF800612C, 0x000FFFFFU, 0x0002A81FU),
++	EMIT_MASKWRITE(0xF8006130, 0x000FFFFFU, 0x00029822U),
++	EMIT_MASKWRITE(0xF8006134, 0x000FFFFFU, 0x00026C10U),
++	EMIT_MASKWRITE(0xF8006138, 0x000FFFFFU, 0x00026013U),
++	EMIT_MASKWRITE(0xF8006140, 0x000FFFFFU, 0x00000035U),
++	EMIT_MASKWRITE(0xF8006144, 0x000FFFFFU, 0x00000035U),
++	EMIT_MASKWRITE(0xF8006148, 0x000FFFFFU, 0x00000035U),
++	EMIT_MASKWRITE(0xF800614C, 0x000FFFFFU, 0x00000035U),
++	EMIT_MASKWRITE(0xF8006154, 0x000FFFFFU, 0x0000009FU),
++	EMIT_MASKWRITE(0xF8006158, 0x000FFFFFU, 0x000000A2U),
++	EMIT_MASKWRITE(0xF800615C, 0x000FFFFFU, 0x00000090U),
++	EMIT_MASKWRITE(0xF8006160, 0x000FFFFFU, 0x00000093U),
++	EMIT_MASKWRITE(0xF8006168, 0x001FFFFFU, 0x000000FFU),
++	EMIT_MASKWRITE(0xF800616C, 0x001FFFFFU, 0x000000FBU),
++	EMIT_MASKWRITE(0xF8006170, 0x001FFFFFU, 0x000000F0U),
++	EMIT_MASKWRITE(0xF8006174, 0x001FFFFFU, 0x000000EDU),
++	EMIT_MASKWRITE(0xF800617C, 0x000FFFFFU, 0x000000DFU),
++	EMIT_MASKWRITE(0xF8006180, 0x000FFFFFU, 0x000000E2U),
++	EMIT_MASKWRITE(0xF8006184, 0x000FFFFFU, 0x000000D0U),
++	EMIT_MASKWRITE(0xF8006188, 0x000FFFFFU, 0x000000D3U),
++	EMIT_MASKWRITE(0xF8006190, 0x6FFFFEFEU, 0x00040080U),
++	EMIT_MASKWRITE(0xF8006194, 0x000FFFFFU, 0x0001FC82U),
++	EMIT_MASKWRITE(0xF8006204, 0xFFFFFFFFU, 0x00000000U),
++	EMIT_MASKWRITE(0xF8006208, 0x000703FFU, 0x000003FFU),
++	EMIT_MASKWRITE(0xF800620C, 0x000703FFU, 0x000003FFU),
++	EMIT_MASKWRITE(0xF8006210, 0x000703FFU, 0x000003FFU),
++	EMIT_MASKWRITE(0xF8006214, 0x000703FFU, 0x000003FFU),
++	EMIT_MASKWRITE(0xF8006218, 0x000F03FFU, 0x000003FFU),
++	EMIT_MASKWRITE(0xF800621C, 0x000F03FFU, 0x000003FFU),
++	EMIT_MASKWRITE(0xF8006220, 0x000F03FFU, 0x000003FFU),
++	EMIT_MASKWRITE(0xF8006224, 0x000F03FFU, 0x000003FFU),
++	EMIT_MASKWRITE(0xF80062A8, 0x00000FF5U, 0x00000000U),
++	EMIT_MASKWRITE(0xF80062AC, 0xFFFFFFFFU, 0x00000000U),
++	EMIT_MASKWRITE(0xF80062B0, 0x003FFFFFU, 0x00005125U),
++	EMIT_MASKWRITE(0xF80062B4, 0x0003FFFFU, 0x000012A8U),
++	EMIT_MASKPOLL(0xF8000B74, 0x00002000U),
++	EMIT_MASKWRITE(0xF8006000, 0x0001FFFFU, 0x00000081U),
++	EMIT_MASKPOLL(0xF8006054, 0x00000007U),
++	EMIT_EXIT(),
++};
++
++static unsigned long ps7_mio_init_data[] = {
++	EMIT_WRITE(0xF8000008, 0x0000DF0DU),
++	EMIT_MASKWRITE(0xF8000B40, 0x00000FFFU, 0x00000600U),
++	EMIT_MASKWRITE(0xF8000B44, 0x00000FFFU, 0x00000600U),
++	EMIT_MASKWRITE(0xF8000B48, 0x00000FFFU, 0x00000672U),
++	EMIT_MASKWRITE(0xF8000B4C, 0x00000FFFU, 0x00000672U),
++	EMIT_MASKWRITE(0xF8000B50, 0x00000FFFU, 0x00000674U),
++	EMIT_MASKWRITE(0xF8000B54, 0x00000FFFU, 0x00000674U),
++	EMIT_MASKWRITE(0xF8000B58, 0x00000FFFU, 0x00000600U),
++	EMIT_MASKWRITE(0xF8000B5C, 0xFFFFFFFFU, 0x0018C61CU),
++	EMIT_MASKWRITE(0xF8000B60, 0xFFFFFFFFU, 0x00F9861CU),
++	EMIT_MASKWRITE(0xF8000B64, 0xFFFFFFFFU, 0x00F9861CU),
++	EMIT_MASKWRITE(0xF8000B68, 0xFFFFFFFFU, 0x00F9861CU),
++	EMIT_MASKWRITE(0xF8000B6C, 0x00007FFFU, 0x00000260U),
++	EMIT_MASKWRITE(0xF8000B70, 0x00000001U, 0x00000001U),
++	EMIT_MASKWRITE(0xF8000B70, 0x00000021U, 0x00000020U),
++	EMIT_MASKWRITE(0xF8000B70, 0x07FEFFFFU, 0x00000823U),
++	EMIT_MASKWRITE(0xF8000700, 0x00003FFFU, 0x00001600U),
++	EMIT_MASKWRITE(0xF8000704, 0x00003FFFU, 0x00000602U),
++	EMIT_MASKWRITE(0xF8000708, 0x00003FFFU, 0x00000602U),
++	EMIT_MASKWRITE(0xF800070C, 0x00003FFFU, 0x00000602U),
++	EMIT_MASKWRITE(0xF8000710, 0x00003FFFU, 0x00000602U),
++	EMIT_MASKWRITE(0xF8000714, 0x00003FFFU, 0x00000602U),
++	EMIT_MASKWRITE(0xF8000718, 0x00003FFFU, 0x00000602U),
++	EMIT_MASKWRITE(0xF800071C, 0x00003FFFU, 0x00000600U),
++	EMIT_MASKWRITE(0xF8000720, 0x00003FFFU, 0x00000602U),
++	EMIT_MASKWRITE(0xF8000724, 0x00003FFFU, 0x00000600U),
++	EMIT_MASKWRITE(0xF8000728, 0x00003FFFU, 0x000016E1U),
++	EMIT_MASKWRITE(0xF800072C, 0x00003FFFU, 0x000016E0U),
++	EMIT_MASKWRITE(0xF8000730, 0x00003FFFU, 0x00001640U),
++	EMIT_MASKWRITE(0xF8000734, 0x00003FFFU, 0x00001640U),
++	EMIT_MASKWRITE(0xF8000738, 0x00003FFFU, 0x00001621U),
++	EMIT_MASKWRITE(0xF800073C, 0x00003FFFU, 0x00001620U),
++	EMIT_MASKWRITE(0xF8000740, 0x00003FFFU, 0x00001202U),
++	EMIT_MASKWRITE(0xF8000744, 0x00003FFFU, 0x00001202U),
++	EMIT_MASKWRITE(0xF8000748, 0x00003FFFU, 0x00001202U),
++	EMIT_MASKWRITE(0xF800074C, 0x00003FFFU, 0x00001202U),
++	EMIT_MASKWRITE(0xF8000750, 0x00003FFFU, 0x00001202U),
++	EMIT_MASKWRITE(0xF8000754, 0x00003FFFU, 0x00001202U),
++	EMIT_MASKWRITE(0xF8000758, 0x00003FFFU, 0x00001203U),
++	EMIT_MASKWRITE(0xF800075C, 0x00003FFFU, 0x00001203U),
++	EMIT_MASKWRITE(0xF8000760, 0x00003FFFU, 0x00001203U),
++	EMIT_MASKWRITE(0xF8000764, 0x00003FFFU, 0x00001203U),
++	EMIT_MASKWRITE(0xF8000768, 0x00003FFFU, 0x00001203U),
++	EMIT_MASKWRITE(0xF800076C, 0x00003FFFU, 0x00001203U),
++	EMIT_MASKWRITE(0xF8000770, 0x00003FFFU, 0x00001204U),
++	EMIT_MASKWRITE(0xF8000774, 0x00003FFFU, 0x00001205U),
++	EMIT_MASKWRITE(0xF8000778, 0x00003FFFU, 0x00001204U),
++	EMIT_MASKWRITE(0xF800077C, 0x00003FFFU, 0x00001205U),
++	EMIT_MASKWRITE(0xF8000780, 0x00003FFFU, 0x00001204U),
++	EMIT_MASKWRITE(0xF8000784, 0x00003FFFU, 0x00001204U),
++	EMIT_MASKWRITE(0xF8000788, 0x00003FFFU, 0x00001204U),
++	EMIT_MASKWRITE(0xF800078C, 0x00003FFFU, 0x00001204U),
++	EMIT_MASKWRITE(0xF8000790, 0x00003FFFU, 0x00001205U),
++	EMIT_MASKWRITE(0xF8000794, 0x00003FFFU, 0x00001204U),
++	EMIT_MASKWRITE(0xF8000798, 0x00003FFFU, 0x00001204U),
++	EMIT_MASKWRITE(0xF800079C, 0x00003FFFU, 0x00001204U),
++	EMIT_MASKWRITE(0xF80007A0, 0x00003FFFU, 0x00001280U),
++	EMIT_MASKWRITE(0xF80007A4, 0x00003FFFU, 0x00001280U),
++	EMIT_MASKWRITE(0xF80007A8, 0x00003FFFU, 0x00001280U),
++	EMIT_MASKWRITE(0xF80007AC, 0x00003FFFU, 0x00001280U),
++	EMIT_MASKWRITE(0xF80007B0, 0x00003FFFU, 0x00001280U),
++	EMIT_MASKWRITE(0xF80007B4, 0x00003FFFU, 0x00001280U),
++	EMIT_MASKWRITE(0xF80007B8, 0x00003F01U, 0x00000201U),
++	EMIT_MASKWRITE(0xF80007BC, 0x00003F01U, 0x00000201U),
++	EMIT_MASKWRITE(0xF80007C0, 0x00003FFFU, 0x000012E0U),
++	EMIT_MASKWRITE(0xF80007C4, 0x00003FFFU, 0x000012E1U),
++	EMIT_MASKWRITE(0xF80007C8, 0x00003FFFU, 0x00000200U),
++	EMIT_MASKWRITE(0xF80007CC, 0x00003FFFU, 0x00000200U),
++	EMIT_MASKWRITE(0xF80007D0, 0x00003FFFU, 0x00001280U),
++	EMIT_MASKWRITE(0xF80007D4, 0x00003FFFU, 0x00001280U),
++	EMIT_MASKWRITE(0xF8000830, 0x003F003FU, 0x002E002FU),
++	EMIT_WRITE(0xF8000004, 0x0000767BU),
++	EMIT_EXIT(),
++};
++
++static unsigned long ps7_peripherals_init_data[] = {
++	EMIT_WRITE(0xF8000008, 0x0000DF0DU),
++	EMIT_MASKWRITE(0xF8000B48, 0x00000180U, 0x00000180U),
++	EMIT_MASKWRITE(0xF8000B4C, 0x00000180U, 0x00000180U),
++	EMIT_MASKWRITE(0xF8000B50, 0x00000180U, 0x00000180U),
++	EMIT_MASKWRITE(0xF8000B54, 0x00000180U, 0x00000180U),
++	EMIT_WRITE(0xF8000004, 0x0000767BU),
++	EMIT_MASKWRITE(0xE000D000, 0x00080000U, 0x00080000U),
++	EMIT_MASKWRITE(0xF8007000, 0x20000000U, 0x00000000U),
++	EMIT_MASKWRITE(0xE000A244, 0x003FFFFFU, 0x00080000U),
++	EMIT_MASKWRITE(0xE000A00C, 0x003F003FU, 0x00370008U),
++	EMIT_MASKWRITE(0xE000A248, 0x003FFFFFU, 0x00080000U),
++	EMIT_MASKWRITE(0xE000A00C, 0x003F003FU, 0x00370000U),
++	EMIT_MASKDELAY(0xF8F00200, 1),
++	EMIT_MASKWRITE(0xE000A00C, 0x003F003FU, 0x00370008U),
++	EMIT_EXIT(),
++};
++
++static unsigned long ps7_post_config_0[] = {
++	EMIT_WRITE(0xF8000008, 0x0000DF0DU),
++	EMIT_MASKWRITE(0xF8000900, 0x0000000FU, 0x0000000FU),
++	EMIT_MASKWRITE(0xF8000240, 0xFFFFFFFFU, 0x00000000U),
++	EMIT_WRITE(0xF8000004, 0x0000767BU),
++	EMIT_EXIT(),
++};
++
++int ps7_post_config(void)
++{
++	return ps7_config(ps7_post_config_0);
++}
++
++int ps7_init(void)
++{
++	int ret;
++
++	ret = ps7_config(ps7_mio_init_data);
++	if (ret != PS7_INIT_SUCCESS)
++		return ret;
++
++	ret = ps7_config(ps7_pll_init_data);
++	if (ret != PS7_INIT_SUCCESS)
++		return ret;
++
++	ret = ps7_config(ps7_clock_init_data);
++	if (ret != PS7_INIT_SUCCESS)
++		return ret;
++
++	ret = ps7_config(ps7_ddr_init_data);
++	if (ret != PS7_INIT_SUCCESS)
++		return ret;
++
++	ret = ps7_config(ps7_peripherals_init_data);
++	if (ret != PS7_INIT_SUCCESS)
++		return ret;
++	return PS7_INIT_SUCCESS;
++}
+diff --git a/configs/xilinx_zynq_virt_defconfig b/configs/xilinx_zynq_virt_defconfig
+index 8acdab25b7..afbc81afd1 100644
+--- a/configs/xilinx_zynq_virt_defconfig
++++ b/configs/xilinx_zynq_virt_defconfig
+@@ -49,7 +49,7 @@ CONFIG_CMD_MTDPARTS=y
+ CONFIG_CMD_MTDPARTS_SPREAD=y
+ CONFIG_CMD_MTDPARTS_SHOW_NET_SIZES=y
+ CONFIG_CMD_UBI=y
+-CONFIG_OF_LIST="zynq-zc702 zynq-zc706 zynq-zc770-xm010 zynq-zc770-xm011 zynq-zc770-xm011-x16 zynq-zc770-xm012 zynq-zc770-xm013 zynq-cc108 zynq-microzed zynq-minized zynq-picozed zynq-zed zynq-zturn zynq-zybo zynq-zybo-z7 zynq-dlc20-rev1.0"
++CONFIG_OF_LIST="zynq-zc702 zynq-zc706 zynq-zc770-xm010 zynq-zc770-xm011 zynq-zc770-xm011-x16 zynq-zc770-xm012 zynq-zc770-xm013 zynq-cc108 zynq-microzed zynq-minized zynq-picozed zynq-zed zynq-zturn zynq-zturn-v5 zynq-zybo zynq-zybo-z7 zynq-dlc20-rev1.0"
+ CONFIG_ENV_OVERWRITE=y
+ CONFIG_ENV_IS_IN_SPI_FLASH=y
+ CONFIG_SYS_RELOC_GD_ENV_ADDR=y
+@@ -90,6 +90,8 @@ CONFIG_SPI_FLASH_WINBOND=y
+ CONFIG_PHY_MARVELL=y
+ CONFIG_PHY_REALTEK=y
+ CONFIG_PHY_XILINX=y
++CONFIG_PHY_MICREL=y
++CONFIG_PHY_MICREL_KSZ90X1=y
+ CONFIG_MII=y
+ CONFIG_ZYNQ_GEM=y
+ CONFIG_ARM_DCC=y
+-- 
+2.20.1
 
