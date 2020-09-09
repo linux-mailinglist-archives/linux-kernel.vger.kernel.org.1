@@ -2,179 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90D43263A2D
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 04:22:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7D1D263A13
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 04:19:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730777AbgIJCWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 22:22:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53764 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730717AbgIJCMD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 22:12:03 -0400
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2062e.outbound.protection.outlook.com [IPv6:2a01:111:f400:7e88::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16660C061795
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 16:17:46 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ei/kEyBq1efU6aSN/jGPOs5edxSrky408DmqCVss3UY7u0A7kk/jdFlglCQO2e8Y0ADIzi80FZEVDGrDeYZ0ywBOy+69lXlN7MDneBbWzAJJunKuyA9eNU24MSd3xjiOEp8i5ihzznKApm3JKWqZK7ZWWgYzofnf1KCD0D52WVG6HbXQZ6XSJUTHtL76JNY0D617Fk6y7/G8CG9Zm9mz9BC8wcHlsWcSc7yD8ZfIxVkc4JnLI1aXAV3RviV/hLahvLSCxZ4J9YqJdXZjNx0g6f9YN1SXw6mJuopJk0sMibKbbsFITh3eB0lEL2N9En39bvHCwZt5jiefTbv4cvb85g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LsGkSND//QMcm6QNMK9AopcnDe5fv9Dj0RZojN/pOUQ=;
- b=bKBhiAfCABXXdSk8wPTzN+s78kssWS4R9nCeT/uU6EjvEZicIHUADxpTyxzXzZ/Pj+onVzK5FHvq+jObf6NH1OMNwD+njwrWqz7Rmgm9NbYxHAWH4MQ1jeFb9Tb77U+1+53D5PJDjdIl278M0Rfr7pPxl7W1PHChig1OxNoS71eeLFk2HwVE6DWM1abgbYbQ+yJy0hHzbITpMAtWIZRM9ABpKQDc1Kn5NW1/1irV0tHmliDOgi8uBMozCUemv5Sw6Qefzhe2C7wD5PR8huytKcTF7TAmHnkyOdWi3r9q0HYLoius2ntTIzzabcCKOu5+OU/DyppSkHIfJYC1AP31Jg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LsGkSND//QMcm6QNMK9AopcnDe5fv9Dj0RZojN/pOUQ=;
- b=tSbbd0LYNHKpsDGps6SqbkO2B0Il00Os71DIixFLhLhiuhKDkDHiE6WYw7/eGHRV21VhwRF/FEGC4xqJVgGzqOKYokQJFtTOh7NElXy9ITibE/Akk1fiEcywP5E5a8nGyd/gJatRcNBe0Mlo6sWOkya6Yd7jO9wsSCzSzAxN6eY=
-Authentication-Results: lists.freedesktop.org; dkim=none (message not signed)
- header.d=none;lists.freedesktop.org; dmarc=none action=none
- header.from=amd.com;
-Received: from DM6PR12MB4124.namprd12.prod.outlook.com (2603:10b6:5:221::20)
- by DM6PR12MB2986.namprd12.prod.outlook.com (2603:10b6:5:39::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.18; Wed, 9 Sep
- 2020 22:54:35 +0000
-Received: from DM6PR12MB4124.namprd12.prod.outlook.com
- ([fe80::25a1:ace4:4ca8:167e]) by DM6PR12MB4124.namprd12.prod.outlook.com
- ([fe80::25a1:ace4:4ca8:167e%8]) with mapi id 15.20.3370.016; Wed, 9 Sep 2020
- 22:54:35 +0000
-From:   Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
-To:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Cc:     Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
-        hersenxs.wu@amd.com
-Subject: [PATCH 1/3] drm/amd/display: Rework registers tracepoint
-Date:   Wed,  9 Sep 2020 18:53:50 -0400
-Message-Id: <20200909225352.4072030-2-Rodrigo.Siqueira@amd.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200909225352.4072030-1-Rodrigo.Siqueira@amd.com>
-References: <20200909225352.4072030-1-Rodrigo.Siqueira@amd.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: YT1PR01CA0143.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:2f::22) To DM6PR12MB4124.namprd12.prod.outlook.com
- (2603:10b6:5:221::20)
+        id S1730785AbgIJCSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 22:18:08 -0400
+Received: from mga04.intel.com ([192.55.52.120]:21906 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730526AbgIJCM2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 22:12:28 -0400
+IronPort-SDR: uE6UyTtjPlOTBHpRRpnnfsLptG/Wlg1QLfAeK2lBlBLqo4Bs4Toy5o7wJ9do7Mc3XUgu38dm8l
+ G2GD1PGR4L0g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9739"; a="155830825"
+X-IronPort-AV: E=Sophos;i="5.76,410,1592895600"; 
+   d="scan'208";a="155830825"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2020 15:59:30 -0700
+IronPort-SDR: XtF3ZCQI1jGEeDh1Sr0MERUVxn9OShpOumA+mYvfBRdvTH4fu8xlHlf8EXWt/8kOayqGjNLSoM
+ OWC99aDoyUlw==
+X-IronPort-AV: E=Sophos;i="5.76,410,1592895600"; 
+   d="scan'208";a="304670729"
+Received: from pbhangod-mobl.amr.corp.intel.com (HELO [10.213.170.146]) ([10.213.170.146])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2020 15:59:28 -0700
+Subject: Re: [PATCH v11 25/25] x86/cet/shstk: Add arch_prctl functions for
+ shadow stack
+To:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>,
+        Andy Lutomirski <luto@kernel.org>
+Cc:     Dave Martin <Dave.Martin@arm.com>, "H.J. Lu" <hjl.tools@gmail.com>,
+        Florian Weimer <fweimer@redhat.com>, X86 ML <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Weijiang Yang <weijiang.yang@intel.com>
+References: <086c73d8-9b06-f074-e315-9964eb666db9@intel.com>
+ <73c2211f-8811-2d9f-1930-1c5035e6129c@intel.com>
+ <af258a0e-56e9-3747-f765-dfe45ce76bba@intel.com>
+ <ef7f9e24-f952-d78c-373e-85435f742688@intel.com>
+ <20200826164604.GW6642@arm.com> <87ft892vvf.fsf@oldenburg2.str.redhat.com>
+ <CALCETrVeNA0Kt2rW0CRCVo1JE0CKaBxu9KrJiyqUA8LPraY=7g@mail.gmail.com>
+ <0e9996bc-4c1b-cc99-9616-c721b546f857@intel.com>
+ <4f2dfefc-b55e-bf73-f254-7d95f9c67e5c@intel.com>
+ <CAMe9rOqt9kbqERC8U1+K-LiDyNYuuuz3TX++DChrRJwr5ajt6Q@mail.gmail.com>
+ <20200901102758.GY6642@arm.com>
+ <c91bbad8-9e45-724b-4526-fe3674310c57@intel.com>
+ <CALCETrWJQgtO_tP1pEaDYYsFgkZ=fOxhyTRE50THcxYoHyTTwg@mail.gmail.com>
+ <32005d57-e51a-7c7f-4e86-612c2ff067f3@intel.com>
+ <46dffdfd-92f8-0f05-6164-945f217b0958@intel.com>
+ <ed929729-4677-3d3b-6bfd-b379af9272b8@intel.com>
+ <6e1e22a5-1b7f-2783-351e-c8ed2d4893b8@intel.com>
+ <5979c58d-a6e3-d14d-df92-72cdeb97298d@intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <ab1a3344-60f4-9b9d-81d4-e6538fdcafcf@intel.com>
+Date:   Wed, 9 Sep 2020 15:59:27 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from atma2.hitronhub.home (2607:fea8:56e0:6d60::10ec) by YT1PR01CA0143.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:2f::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16 via Frontend Transport; Wed, 9 Sep 2020 22:54:34 +0000
-X-Mailer: git-send-email 2.28.0
-X-Originating-IP: [2607:fea8:56e0:6d60::10ec]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 74fca6f5-655d-4d6b-cf00-08d85513529f
-X-MS-TrafficTypeDiagnostic: DM6PR12MB2986:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR12MB29863232C11AC798A012BB1E98260@DM6PR12MB2986.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1303;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: sVvX2uDJN0MjymvzlVcDMoQLydpOu+/mTCp51QqKvXiq/XFzTJos30E2pqb63QOi3oKyM2hOMADraQYCoAuPGef/PWcc96dho4Z2ji4IvbbmOZ7DT1DDncd3MzKKECRQyyZyabG05S23QvGOWIxLLqJKnQh23g59uWxEvch1CkEoVmQVyxAhwPWQqNOorTZwTX7Z8tnCJ6VHPP82hSjuf8sdywH5q3AChqZT44ZBQolcijymHwjt7MJqigHTdMmGkGUCDnrFBze3veQReWgA5YFk5Fb++abRHkUxD3fhD4c6I4IrI1frMONbWkJWRlMhTQb13h2+bWSDaZ1cWjCwng==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB4124.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(136003)(376002)(346002)(39860400002)(2906002)(8936002)(6486002)(6512007)(5660300002)(16526019)(186003)(478600001)(83380400001)(4326008)(8676002)(52116002)(316002)(1076003)(66476007)(6506007)(6666004)(86362001)(2616005)(66556008)(54906003)(36756003)(66946007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: uCMS0QiZrmtwwYiUzHZylOadFnNajiTnNgfdznwwOuptXq9FY2l1P9lgeBS3/6D3jO5t5ljV+Quxr7N6Qtt9s/0jYME18BZyeo/AWQyEF5FyuqVKqdsvJE3LzhXtpmsUrM6ff9AgEhxjfRPuIIJ/c2vXsrhe62VWt6/5Yp/TpNXzrgduO3J6VColidDwNnwoEDQ2QFhZ98XQ20yfbRWGKBTMwvACfpIryX36ddNMtiK4nCrEqiZJK6z3/dKvA4HH+OLeJHqY0hxB2Sc2yri6l43d8tiLSOsWRalEJUKNWOWuHjekwU9wUKztr+MtZx2onUUTS3VSRVXhm6gcMAqlwhwplwquRtCt3YQ+ifa26+Bpt8syVEkO+x72ceOdCmARsqpL/uV36GohFBRAkb2bWJlGKJXRicuY0JuzEyG4LqLXWRWPDFgGB07rHOsnjSXdG9kBfyq2JqP8OX8oN2xFonw1irDysgRe/4UBi4ON95sS4YMGf8tjbkB+lcIsrNWbkwRq7xu0/nCAsDYGivIqCpHH3aYTZuFv9XLVHOBvukWMdkJicTr9nhrQ2QPh2kngSd4HaRsZ74XPACpnenRlhsbXn2XDUwUhSvdq+DR6tU9rga+iDgiIhodG1hD6h4nv/Kf2pf9Lh2CoBYYT9Dm2mRdY/LMP0nOfI6ck4M0Nt00Ub+sJ1+kptTKAXSrZGIYy
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 74fca6f5-655d-4d6b-cf00-08d85513529f
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB4124.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Sep 2020 22:54:35.3900
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: O4ycvR4NZDNEYtGMVVREsRpgL1i1y26Dotw3yqCyidvk7q+fDGlXI+u0ZRBa0PHybf/GSdP4DWZeDPkyqwWeJA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2986
+In-Reply-To: <5979c58d-a6e3-d14d-df92-72cdeb97298d@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-amdgpu_dc_rreg and amdgpu_dc_wreg are very similar, for this reason,
-this commits abstract these two events by using DECLARE_EVENT_CLASS and
-create an instance of it for each one of these events.
+On 9/9/20 3:08 PM, Yu, Yu-cheng wrote:
+> After looking at this more, I found the changes are more similar to
+> mprotect() than madvise().  We are going to change an anonymous mapping
+> to a read-only mapping, and add the VM_SHSTK flag to it.  Would an
+> x86-specific mprotect(PROT_SHSTK) make more sense?
+> 
+> One alternative would be requiring a read-only mapping for
+> madvise(MADV_SHSTK).  But that is inconvenient for the application.
 
-Signed-off-by: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
----
- .../amd/display/amdgpu_dm/amdgpu_dm_trace.h   | 55 ++++++++-----------
- 1 file changed, 24 insertions(+), 31 deletions(-)
+Why?  It's just:
 
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_trace.h b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_trace.h
-index d898981684d5..dd34e11b1079 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_trace.h
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_trace.h
-@@ -31,40 +31,33 @@
- 
- #include <linux/tracepoint.h>
- 
--TRACE_EVENT(amdgpu_dc_rreg,
--	TP_PROTO(unsigned long *read_count, uint32_t reg, uint32_t value),
--	TP_ARGS(read_count, reg, value),
--	TP_STRUCT__entry(
--			__field(uint32_t, reg)
--			__field(uint32_t, value)
--		),
--	TP_fast_assign(
--			__entry->reg = reg;
--			__entry->value = value;
--			*read_count = *read_count + 1;
--		),
--	TP_printk("reg=0x%08lx, value=0x%08lx",
--			(unsigned long)__entry->reg,
--			(unsigned long)__entry->value)
--);
-+DECLARE_EVENT_CLASS(amdgpu_dc_reg_template,
-+		    TP_PROTO(unsigned long *count, uint32_t reg, uint32_t value),
-+		    TP_ARGS(count, reg, value),
- 
--TRACE_EVENT(amdgpu_dc_wreg,
--	TP_PROTO(unsigned long *write_count, uint32_t reg, uint32_t value),
--	TP_ARGS(write_count, reg, value),
--	TP_STRUCT__entry(
--			__field(uint32_t, reg)
--			__field(uint32_t, value)
--		),
--	TP_fast_assign(
--			__entry->reg = reg;
--			__entry->value = value;
--			*write_count = *write_count + 1;
--		),
--	TP_printk("reg=0x%08lx, value=0x%08lx",
--			(unsigned long)__entry->reg,
--			(unsigned long)__entry->value)
-+		    TP_STRUCT__entry(
-+				     __field(uint32_t, reg)
-+				     __field(uint32_t, value)
-+		    ),
-+
-+		    TP_fast_assign(
-+				   __entry->reg = reg;
-+				   __entry->value = value;
-+				   *count = *count + 1;
-+		    ),
-+
-+		    TP_printk("reg=0x%08lx, value=0x%08lx",
-+			      (unsigned long)__entry->reg,
-+			      (unsigned long)__entry->value)
- );
- 
-+DEFINE_EVENT(amdgpu_dc_reg_template, amdgpu_dc_rreg,
-+	     TP_PROTO(unsigned long *count, uint32_t reg, uint32_t value),
-+	     TP_ARGS(count, reg, value));
-+
-+DEFINE_EVENT(amdgpu_dc_reg_template, amdgpu_dc_wreg,
-+	     TP_PROTO(unsigned long *count, uint32_t reg, uint32_t value),
-+	     TP_ARGS(count, reg, value));
- 
- TRACE_EVENT(amdgpu_dc_performance,
- 	TP_PROTO(unsigned long read_count, unsigned long write_count,
--- 
-2.28.0
+	mmap()/malloc();
+	mprotect(PROT_READ);
+	madvise(MADV_SHSTK);
 
+vs.
+
+	mmap()/malloc();
+	mprotect(PROT_SHSTK);
+
+I'm not sure a single syscall counts as inconvenient.
+
+I don't quite think we should use a PROT_ bit for this.  It seems like
+the kind of thing that could be fragile and break existing expectations.
+ I don't care _that_ strongly though.
