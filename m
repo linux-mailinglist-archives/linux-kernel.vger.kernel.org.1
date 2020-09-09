@@ -2,133 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C272C262A79
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 10:37:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5788262A87
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 10:39:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729479AbgIIIhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 04:37:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726293AbgIIIhS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 04:37:18 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E02BCC061573;
-        Wed,  9 Sep 2020 01:37:17 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id q13so2318846ejo.9;
-        Wed, 09 Sep 2020 01:37:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=Noo3UKIz6eixoV9cUm0tMx6veXOTEv85/CVG2wDCJ38=;
-        b=UtM/b9gMnxs0qhGhYvm0dCzTEBcPyD56PlS2vDQOS0By4j2Am1WDsZyWFgr4hmmz5P
-         IrowW9xsStMtxIkgiILSwEw+GNfWCaWKwL2q8Oi1C9eRYkixJEbUtgWYJjW3t5Rxa36A
-         SzTdju2Dm5LRl/ZOLJY18Hj6lGEmvA8ndDH18hsuEdmIiQCQCAmV2Gjv+2pesvP7+2Qv
-         6H3338FcjOKRXX8QTx+036jNunqFzPykurd6OsbVh3SBTmiwiN4S2Px0A/IWxPp8mXf7
-         e6efnjcqAHnxLpnEwNaFbnP4MusdpTYj1QOoG6jvtlqUl5QdDXp2DokwF/cE30RN5IIH
-         7L0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=Noo3UKIz6eixoV9cUm0tMx6veXOTEv85/CVG2wDCJ38=;
-        b=V7+4xDIBgMQwYQcygevwGpPJrLvqTyTI/sSfV4GygpOhllaChyVAmjPOC6jExVgaR9
-         8ijT2wp/WeqjpxopMJFaelWd8U/z9qHyR6HAji7tcIY2hIyoT7RP12kwco8LcxiTw4KK
-         /rlrP2wtMYYSRssjoqNV+Ezlzg6UTlbFFEkDAOPLDMhsud51X115YeYcCKCr4PQUQh5z
-         0f0XckxvLauYPm5AqT1D8t1bmWtqTiE8s+acDJJeoHoHdK7rzYqAkl2WOZaRt5bdRza1
-         mU69SmZo2ovNWCz0aOe/9EY1Rn2uwld6Oz3UvX6enRpPkBPGCXXLSDkruHxI9RnlmwdT
-         QYcQ==
-X-Gm-Message-State: AOAM531CHt5zMi05CHU692iiOYEjsVoVCj+zgZ8TzbWjhBwIEK/DFecQ
-        1rZzmVyHe4+5+XoWj0hIsk8=
-X-Google-Smtp-Source: ABdhPJzBZz2+PKiWmK6INFr2pATT9j+pYM10EJr6sKSqPVyoiyX2wA2Goe6ItgZnnBD5ScGJJbQH2A==
-X-Received: by 2002:a17:906:4cc7:: with SMTP id q7mr2599870ejt.437.1599640636594;
-        Wed, 09 Sep 2020 01:37:16 -0700 (PDT)
-Received: from felia ([2001:16b8:2d44:6000:6108:df55:7b8e:67d4])
-        by smtp.gmail.com with ESMTPSA id g19sm1344680ejz.5.2020.09.09.01.37.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Sep 2020 01:37:15 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-X-Google-Original-From: Lukas Bulwahn <lukas@gmail.com>
-Date:   Wed, 9 Sep 2020 10:37:14 +0200 (CEST)
-X-X-Sender: lukas@felia
-To:     John Mathew <john.mathew@unikie.com>
-cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        corbet@lwn.net, mingo@redhat.com, peterz@infradead.org,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, tsbogend@alpha.franken.de,
-        lukas.bulwahn@gmail.com, x86@kernel.org,
-        linux-mips@vger.kernel.org, tglx@linutronix.de,
-        willy@infradead.org, valentin.schneider@arm.com
-Subject: Re: [RFC PATCH v8 0/3] Add scheduler overview documentation
-In-Reply-To: <20200902162632.10271-1-john.mathew@unikie.com>
-Message-ID: <alpine.DEB.2.21.2009090959530.5622@felia>
-References: <20200902162632.10271-1-john.mathew@unikie.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S1729789AbgIIIi6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 04:38:58 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:13756 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725826AbgIIIio (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 04:38:44 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4Bmb5S0y0Yz9v0ZM;
+        Wed,  9 Sep 2020 10:38:36 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id AVJJBZqZz_Lj; Wed,  9 Sep 2020 10:38:36 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4Bmb5R6sd6z9v0ZL;
+        Wed,  9 Sep 2020 10:38:35 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 1B5318B7DC;
+        Wed,  9 Sep 2020 10:38:37 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id c2KpwQPUfYWM; Wed,  9 Sep 2020 10:38:36 +0200 (CEST)
+Received: from [10.0.2.15] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5593A8B7D4;
+        Wed,  9 Sep 2020 10:38:35 +0200 (CEST)
+Subject: Re: [RFC PATCH v2 2/3] mm: make pXd_addr_end() functions
+ page-table entry aware
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Alexander Gordeev <agordeev@linux.ibm.com>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-mm <linux-mm@kvack.org>, Paul Mackerras <paulus@samba.org>,
+        linux-sparc <sparclinux@vger.kernel.org>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Richard Weinberger <richard@nod.at>,
+        linux-x86 <x86@kernel.org>, Russell King <linux@armlinux.org.uk>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Arnd Bergmann <arnd@arndb.de>, Jeff Dike <jdike@addtoit.com>,
+        linux-um <linux-um@lists.infradead.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-arm <linux-arm-kernel@lists.infradead.org>,
+        linux-power <linuxppc-dev@lists.ozlabs.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>
+In-Reply-To: <20200908141554.GA20558@oc3871087118.ibm.com>
+References: <20200907180058.64880-1-gerald.schaefer@linux.ibm.com>
+         <20200907180058.64880-3-gerald.schaefer@linux.ibm.com>
+         <31dfb3ed-a0cc-3024-d389-ab9bd19e881f@csgroup.eu>
+         <20200908074638.GA19099@oc3871087118.ibm.com>
+         <5d4f5546-afd0-0b8f-664d-700ae346b9ec@csgroup.eu>
+         <20200908141554.GA20558@oc3871087118.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+Organization: CS Group France
+Date:   Wed, 09 Sep 2020 08:38:31 +0000
+Message-ID: <1599640711.14692.1.camel@po17688vm.idsi0.si.c-s.fr>
+Mime-Version: 1.0
+X-Mailer: Evolution 2.32.3 (2.32.3-37.el6) 
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 2020-09-08 at 16:15 +0200, Alexander Gordeev wrote:
+> On Tue, Sep 08, 2020 at 10:16:49AM +0200, Christophe Leroy wrote:
+> > >Yes, and also two more sources :/
+> > >	arch/powerpc/mm/kasan/8xx.c
+> > >	arch/powerpc/mm/kasan/kasan_init_32.c
+> > >
+> > >But these two are not quite obvious wrt pgd_addr_end() used
+> > >while traversing pmds. Could you please clarify a bit?
+> > >
+> > >
+> > >diff --git a/arch/powerpc/mm/kasan/8xx.c b/arch/powerpc/mm/kasan/8xx.c
+> > >index 2784224..89c5053 100644
+> > >--- a/arch/powerpc/mm/kasan/8xx.c
+> > >+++ b/arch/powerpc/mm/kasan/8xx.c
+> > >@@ -15,8 +15,8 @@
+> > >  	for (k_cur = k_start; k_cur != k_end; k_cur = k_next, pmd += 2, block += SZ_8M) {
+> > >  		pte_basic_t *new;
+> > >-		k_next = pgd_addr_end(k_cur, k_end);
+> > >-		k_next = pgd_addr_end(k_next, k_end);
+> > >+		k_next = pmd_addr_end(k_cur, k_end);
+> > >+		k_next = pmd_addr_end(k_next, k_end);
+> > 
+> > No, I don't think so.
+> > On powerpc32 we have only two levels, so pgd and pmd are more or
+> > less the same.
+> > But pmd_addr_end() as defined in include/asm-generic/pgtable-nopmd.h
+> > is a no-op, so I don't think it will work.
+> > 
+> > It is likely that this function should iterate on pgd, then you get
+> > pmd = pmd_offset(pud_offset(p4d_offset(pgd)));
+> 
+> It looks like the code iterates over single pmd table while using
+> pgd_addr_end() only to skip all the middle levels and bail out
+> from the loop.
+> 
+> I would be wary for switching from pmds to pgds, since we are
+> trying to minimize impact (especially functional) and the
+> rework does not seem that obvious.
+> 
 
+I've just tested the following change, it works and should fix the
+oddity:
 
-On Wed, 2 Sep 2020, John Mathew wrote:
-
-> This patch series updates the scheduler documentation to add more topics
-> wrt to scheduler overview. New sections are added to provide a brief
-> overview of the kernel structs used by the scheduler, scheduler invocation,
-> and context switch. Previous version of the patch was reviewed at:
-> https://lore.kernel.org/lkml/20200527084421.4673-1-John.Mathew@unikie.com/
->
-
-John, here is some first feedback to get the ball rolling:
-
-I tried to apply your patches on v5.9-rc4, and I got those warnings:
-
-Applying: docs: scheduler: Restructure scheduler documentation.
-.git/rebase-apply/patch:30: new blank line at EOF.
+diff --git a/arch/powerpc/mm/kasan/8xx.c b/arch/powerpc/mm/kasan/8xx.c
+index 2784224054f8..8e53ddf57b84 100644
+--- a/arch/powerpc/mm/kasan/8xx.c
++++ b/arch/powerpc/mm/kasan/8xx.c
+@@ -9,11 +9,12 @@
+ static int __init
+ kasan_init_shadow_8M(unsigned long k_start, unsigned long k_end, void
+*block)
+ {
+-	pmd_t *pmd = pmd_off_k(k_start);
++	pgd_t *pgd = pgd_offset_k(k_start);
+ 	unsigned long k_cur, k_next;
+ 
+-	for (k_cur = k_start; k_cur != k_end; k_cur = k_next, pmd += 2, block
++= SZ_8M) {
++	for (k_cur = k_start; k_cur != k_end; k_cur = k_next, pgd += 2, block
++= SZ_8M) {
+ 		pte_basic_t *new;
++		pmd_t *pmd = pmd_offset(pud_offset(p4d_offset(pgd, k_cur), k_cur),
+k_cur);
+ 
+ 		k_next = pgd_addr_end(k_cur, k_end);
+ 		k_next = pgd_addr_end(k_next, k_end);
+diff --git a/arch/powerpc/mm/kasan/kasan_init_32.c
+b/arch/powerpc/mm/kasan/kasan_init_32.c
+index fb294046e00e..e5f524fa71a7 100644
+--- a/arch/powerpc/mm/kasan/kasan_init_32.c
++++ b/arch/powerpc/mm/kasan/kasan_init_32.c
+@@ -30,13 +30,12 @@ static void __init kasan_populate_pte(pte_t *ptep,
+pgprot_t prot)
+ 
+ int __init kasan_init_shadow_page_tables(unsigned long k_start,
+unsigned long k_end)
+ {
+-	pmd_t *pmd;
++	pgd_t *pgd = pgd_offset_k(k_start);
+ 	unsigned long k_cur, k_next;
+ 
+-	pmd = pmd_off_k(k_start);
+-
+-	for (k_cur = k_start; k_cur != k_end; k_cur = k_next, pmd++) {
++	for (k_cur = k_start; k_cur != k_end; k_cur = k_next, pgd++) {
+ 		pte_t *new;
++		pmd_t *pmd = pmd_offset(pud_offset(p4d_offset(pgd, k_cur), k_cur),
+k_cur);
+ 
+ 		k_next = pgd_addr_end(k_cur, k_end);
+ 		if ((void *)pmd_page_vaddr(*pmd) != kasan_early_shadow_pte)
+@@ -189,16 +188,18 @@ void __init kasan_early_init(void)
+ 	unsigned long addr = KASAN_SHADOW_START;
+ 	unsigned long end = KASAN_SHADOW_END;
+ 	unsigned long next;
+-	pmd_t *pmd = pmd_off_k(addr);
++	pgd_t *pgd = pgd_offset_k(addr);
+ 
+ 	BUILD_BUG_ON(KASAN_SHADOW_START & ~PGDIR_MASK);
+ 
+ 	kasan_populate_pte(kasan_early_shadow_pte, PAGE_KERNEL);
+ 
+ 	do {
++		pmd_t *pmd = pmd_offset(pud_offset(p4d_offset(pgd, addr), addr),
+addr);
 +
-.git/rebase-apply/patch:137: new blank line at EOF.
-+
-warning: 2 lines add whitespace errors.
-Applying: docs: scheduler: Add scheduler overview documentation
-.git/rebase-apply/patch:73: new blank line at EOF.
-+
-warning: 1 line adds whitespace errors.
-Applying: docs: scheduler: Add introduction to scheduler context-switch
-.git/rebase-apply/patch:153: new blank line at EOF.
-+
-.git/rebase-apply/patch:260: new blank line at EOF.
-+
-warning: 2 lines add whitespace errors.
+ 		next = pgd_addr_end(addr, end);
+ 		pmd_populate_kernel(&init_mm, pmd, kasan_early_shadow_pte);
+-	} while (pmd++, addr = next, addr != end);
++	} while (pgd++, addr = next, addr != end);
+ 
+ 	if (early_mmu_has_feature(MMU_FTR_HPTE_TABLE))
+ 		kasan_early_hash_table();
+---
+Christophe
 
-
-You might want to look into this. I also checked that the patch also 
-applies on linux-next, i.e., next-20200908; so, it does not clash in an 
-obvious way with other changes at the moment.
-
-I did run checkpatch.pl and it warned about:
-WARNING: added, moved or deleted file(s), does MAINTAINERS need updating?
-
-No action required here. 
-
-
-Documentation generation (make htmldocs) shows these two new warnings with 
-your patches applied to v5.9-rc4:
-
-  ./kernel/sched/core.c:17: WARNING: Definition list ends without a blank 
-line; unexpected unindent.
-  ./kernel/sched/core.c:21: WARNING: Unexpected indentation.
-
-
-You might want to put those minor fixes on your remaining TODO list for 
-this patchset as well.
-
-I will continue to comment with more editorial points in the next hours 
-and days, while proof-reading your additions to the documentation.
-
-
-Lukas
