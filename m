@@ -2,177 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D78B12633C7
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 19:10:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41F8F263410
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 19:13:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730187AbgIIRK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 13:10:28 -0400
-Received: from mail-ej1-f66.google.com ([209.85.218.66]:42534 "EHLO
-        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730224AbgIIPgB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 11:36:01 -0400
-Received: by mail-ej1-f66.google.com with SMTP id q13so4179483ejo.9;
-        Wed, 09 Sep 2020 08:35:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=qP6O2ucn5KuDRC7RB2WRLd9myNrDAnc1ixV/2OFvSfA=;
-        b=Cg4PLTB08yBHJQsQW/PfsBFiRrKA45GKvH1wRkcrGVceSxcdFgJBavweZraWzLk/bF
-         3PFxarALEuOZO9itpNOZEKOaK3XpquI4u6IywkKlb4vchMx1KazWyEhs24vyBGKNwHeV
-         Gz5GTzI8N5coJMPg3lJZYPq5pC+a/rp0B0rKUHd4R6O+VviycAHYr6C8zk9VOXJEG8vk
-         /GRaXZ8817J7CqF6LOhipPvSon0aJkdkV+O483k7P8xxk9h2rK3Oso9DykYDOF7PQ8bK
-         3r4ddQP7ji6BbQ+5NA5u9t5a4LAtapmcBiRcfu7h0kxNIL8x9o6n5HbdyVUR5Rlpwk2q
-         w3Sg==
-X-Gm-Message-State: AOAM531Cvey5IbHb30HMnaeR7AuEenfpHRmL17e7s7UKBQL3Qbmred6Q
-        E6I7eYzIzCVzUJx2JCC+2sdJLepcs68=
-X-Google-Smtp-Source: ABdhPJxkx0pKWo4zITjkUOd3XsCXmG/5wXI1KoHYWOKbmq1Yq+MSaAZNQZh7k9wsK9NWreIyeaSFVA==
-X-Received: by 2002:a19:4186:: with SMTP id o128mr1899570lfa.148.1599661891771;
-        Wed, 09 Sep 2020 07:31:31 -0700 (PDT)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id 206sm612714lfd.72.2020.09.09.07.31.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Sep 2020 07:31:29 -0700 (PDT)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@xi.terra>)
-        id 1kG18B-00041D-1O; Wed, 09 Sep 2020 16:31:27 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Johan Hovold <johan@kernel.org>,
-        stable <stable@vger.kernel.org>
-Subject: [PATCH 2/2] serial: core: fix console port-lock regression
-Date:   Wed,  9 Sep 2020 16:31:01 +0200
-Message-Id: <20200909143101.15389-3-johan@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200909143101.15389-1-johan@kernel.org>
-References: <20200909143101.15389-1-johan@kernel.org>
+        id S1730998AbgIIRNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 13:13:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58678 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726293AbgIIPcL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 11:32:11 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DBEA2206F4;
+        Wed,  9 Sep 2020 14:32:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599661972;
+        bh=G6V5+rrjseSZbwoAOOIF/H9RV9qG8won/T+LJdUIn9o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qcC8aUhafORqR4CPAJGT2pHQZbY/gh3kGAru56tbTM2VqzChgPJvPdcBCQggcf0MB
+         qfV56qHpfCJvXbTgxVYOQNoTSW9RD4QRQv4L/gel8Dc1mgjUe0Wy3ZQZiFbNXuf+nR
+         /9xMTu9pV6RNk8x6Sapyzzt2xXiOBf3bINuOG0M0=
+Date:   Wed, 9 Sep 2020 15:32:06 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Kuldip Dwivedi <kuldip.dwivedi@puresoftware.com>
+Cc:     Ashish Kumar <ashish.kumar@nxp.com>,
+        Yogesh Gaur <yogeshgaur.83@gmail.com>,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Varun Sethi <V.Sethi@nxp.com>,
+        Arokia Samy <arokia.samy@nxp.com>
+Subject: Re: [PATCH v1] spi: spi-nxp-fspi: Add ACPI support
+Message-ID: <20200909143206.GD4926@sirena.org.uk>
+References: <20200908060227.299-1-kuldip.dwivedi@puresoftware.com>
+ <20200909120148.GC4926@sirena.org.uk>
+ <af06cac916ebcdf6f526baa9cba98494@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="5gxpn/Q6ypwruk0T"
+Content-Disposition: inline
+In-Reply-To: <af06cac916ebcdf6f526baa9cba98494@mail.gmail.com>
+X-Cookie: MIT:
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the port-lock initialisation regression introduced by commit
-a3cb39d258ef ("serial: core: Allow detach and attach serial device for
-console") by making sure that the lock is again initialised during
-console setup.
 
-The console may be registered before the serial controller has been
-probed in which case the port lock needs to be initialised during
-console setup by a call to uart_set_options(). The console-detach
-changes introduced a regression in several drivers by effectively
-removing that initialisation by not initialising the lock when the port
-is used as a console (which is always the case during console setup).
+--5gxpn/Q6ypwruk0T
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Add back the early lock initialisation and instead use a new
-console-reinit flag to handle the case where a console is being
-re-attached through sysfs.
+On Wed, Sep 09, 2020 at 06:29:10PM +0530, Kuldip Dwivedi wrote:
 
-The question whether the console-detach interface should have been added
-in the first place is left for another discussion.
+> > | Does NXP know about this ID assignment from their namespace?  ACPI IDs
+> > | should be namespaced by whoever's assigning the ID to avoid
+> collisions.
 
-Note that the console-enabled check in uart_set_options() is not
-redundant because of kgdboc, which can end up reinitialising an already
-enabled console (see commit 42b6a1baa3ec ("serial_core: Don't
-re-initialize a previously initialized spinlock.")).
+> Yes, NXP is aware.
 
-Fixes: a3cb39d258ef ("serial: core: Allow detach and attach serial device for console")
-Cc: stable <stable@vger.kernel.org>     # 5.7
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Johan Hovold <johan@kernel.org>
----
- drivers/tty/serial/serial_core.c | 32 +++++++++++++++-----------------
- include/linux/serial_core.h      |  1 +
- 2 files changed, 16 insertions(+), 17 deletions(-)
+Can anyone from NXP confirm this?
 
-diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/serial_core.c
-index 53b79e1fcbc8..124524ecfe26 100644
---- a/drivers/tty/serial/serial_core.c
-+++ b/drivers/tty/serial/serial_core.c
-@@ -1916,24 +1916,12 @@ static inline bool uart_console_enabled(struct uart_port *port)
- 	return uart_console(port) && (port->cons->flags & CON_ENABLED);
- }
- 
--static void __uart_port_spin_lock_init(struct uart_port *port)
-+static void uart_port_spin_lock_init(struct uart_port *port)
- {
- 	spin_lock_init(&port->lock);
- 	lockdep_set_class(&port->lock, &port_lock_key);
- }
- 
--/*
-- * Ensure that the serial console lock is initialised early.
-- * If this port is a console, then the spinlock is already initialised.
-- */
--static inline void uart_port_spin_lock_init(struct uart_port *port)
--{
--	if (uart_console(port))
--		return;
--
--	__uart_port_spin_lock_init(port);
--}
--
- #if defined(CONFIG_SERIAL_CORE_CONSOLE) || defined(CONFIG_CONSOLE_POLL)
- /**
-  *	uart_console_write - write a console message to a serial port
-@@ -2086,7 +2074,15 @@ uart_set_options(struct uart_port *port, struct console *co,
- 	struct ktermios termios;
- 	static struct ktermios dummy;
- 
--	uart_port_spin_lock_init(port);
-+	/*
-+	 * Ensure that the serial-console lock is initialised early.
-+	 *
-+	 * Note that the console-enabled check is needed because of kgdboc,
-+	 * which can end up calling uart_set_options() for an already enabled
-+	 * console via tty_find_polling_driver() and uart_poll_init().
-+	 */
-+	if (!uart_console_enabled(port) && !port->console_reinit)
-+		uart_port_spin_lock_init(port);
- 
- 	memset(&termios, 0, sizeof(struct ktermios));
- 
-@@ -2794,10 +2790,12 @@ static ssize_t console_store(struct device *dev,
- 		if (oldconsole && !newconsole) {
- 			ret = unregister_console(uport->cons);
- 		} else if (!oldconsole && newconsole) {
--			if (uart_console(uport))
-+			if (uart_console(uport)) {
-+				uport->console_reinit = 1;
- 				register_console(uport->cons);
--			else
-+			} else {
- 				ret = -ENOENT;
-+			}
- 		}
- 	} else {
- 		ret = -ENXIO;
-@@ -2898,7 +2896,7 @@ int uart_add_one_port(struct uart_driver *drv, struct uart_port *uport)
- 	 * initialised.
- 	 */
- 	if (!uart_console_enabled(uport))
--		__uart_port_spin_lock_init(uport);
-+		uart_port_spin_lock_init(uport);
- 
- 	if (uport->cons && uport->dev)
- 		of_console_check(uport->dev->of_node, uport->cons->name, uport->line);
-diff --git a/include/linux/serial_core.h b/include/linux/serial_core.h
-index 01fc4d9c9c54..8a99279a579b 100644
---- a/include/linux/serial_core.h
-+++ b/include/linux/serial_core.h
-@@ -248,6 +248,7 @@ struct uart_port {
- 
- 	unsigned char		hub6;			/* this should be in the 8250 driver */
- 	unsigned char		suspended;
-+	unsigned char		console_reinit;
- 	const char		*name;			/* port name */
- 	struct attribute_group	*attr_group;		/* port specific attributes */
- 	const struct attribute_group **tty_groups;	/* all attributes (serial core use only) */
--- 
-2.26.2
+> > Please don't ignore review comments, people are generally making them
+> for a
+> > reason and are likely to have the same concerns if issues remain
 
+> This is new Patch for different IP (FSPI)  and scenario is different from
+> DSPI driver.
+
+If a generic issue like this exists with one patch you should expect
+that exactly the same issue is going to come up with other very similar
+patches and therefore ensure they are addressed so people don't feel
+like you are ignoring them.
+
+> > >  	/* Reset the module */
+> > > +	fspi_writel(f, FSPI_MCR0_SWRST, (base + FSPI_MCR0));
+> > > +
+
+> > Why are you adding this reset?  How is it connected to adding ACPI
+> support - it
+> > looks like it should be a separate patch.
+
+> I observed a kernel panic in setting up the driver, and this fixed the
+> issue.
+
+At the very least this would need to be called out in the changelog but
+like I say it should really be a separate patch.
+
+--5gxpn/Q6ypwruk0T
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9Y52UACgkQJNaLcl1U
+h9AqTAf/fWMxxf95EG2ZsGPtdYfSRjeCSCgERIcQz+KwEjHrU9qHLBQ0mNsCX69a
+VNnVGwT3bW9Ts1AJ8bTW7HrqW6pCFakpiY3tZBV6kkHj+MoljcgRt6I1vjlAjRWW
+8jJd4iFQru98oFktipTbFSQgnPMT2Y/y1q0Wc2DuclzFse2kDsdEmuAAzzqJwzZ3
+M2tO1phNIbeCDBiR9dtHYuxuO+uOYBt0ujftKDawUxSCQAwJ2UmOLUE6vsChOHmF
+vSHuBRQBgkWDg5g093DoIpdT1OUteuDY7ujd+tcsZEqa+RpIn8lLF5yLcxCe2N0c
+7EqZ/Jyvb8qTcEnHKi1GGtx2mK31KQ==
+=l0lP
+-----END PGP SIGNATURE-----
+
+--5gxpn/Q6ypwruk0T--
