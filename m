@@ -2,169 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5429C262C9F
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 11:55:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFD34262CA9
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 11:57:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728363AbgIIJzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 05:55:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51922 "EHLO
+        id S1728643AbgIIJ5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 05:57:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725975AbgIIJzD (ORCPT
+        with ESMTP id S1726399AbgIIJ5Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 05:55:03 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73274C061573
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 02:55:03 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id z23so2590140ejr.13
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 02:55:03 -0700 (PDT)
+        Wed, 9 Sep 2020 05:57:16 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E177EC061573;
+        Wed,  9 Sep 2020 02:57:15 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id q9so1669645wmj.2;
+        Wed, 09 Sep 2020 02:57:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GLnm6fS50/hG4SKqNnvGF+6eSY1pTc2O9uX9RZ49myk=;
-        b=K0Bpd4sMj+C4pc3ZDNHmKtT83kJehH18+rcC+ENWJR7Oxn2a667as6qJrWgwW946bR
-         Xg3jo8zS+WwbSp6UuDDzcGfAVPoO3/zzXOv+WIGcGP5p+vcsmovO933p+uslYiCCzkty
-         +Trq8Kvp8WBhDgBwCwn0hYLR1iUCxXqu5LK10r900FFtFa/0seNDIG1T3rCCUSsaDVaf
-         Vetd2+oj7M1izcXeBAc6kHf8GjeqlMNMxEk2DEHto7Rf3ckMKKdbG99GAIxxGHrqPTyE
-         ELluZvF5z11vZqkF3aneOd537ITjr4bn9dJA9jwJ7Y+DpHwq6kbReij7/S31SLhSXWul
-         huVQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vzJ2+owmiLfYv0cJPn9WGDrp2m6lL87kIpE3iI2zcfI=;
+        b=UymuNGiU1rRtNtj90xat6K+VNYkIHfxXx0aUubLRLV8Vt+X7JbbSYF7mdrJwurXZUH
+         8G09VZqoOuUHiHg2Gzj1bzgJH5zZKHG/6etP5k9kZ/MZNrxOZm/7H2avBYfRYQZpVpFL
+         Pb2K1VVkQoJ7gODU+yfDEpCo5eUOLllMC+S+9fSyp2EMYvyOYBnzYnwBCU2qNhc0/nQQ
+         gNozl3Jnh/FbxYbRcE4aHUXH9L0DIG6aPM2msSNk2BZ1oriiEdim+nfGGH7OlMKdg+09
+         /d5clbtplgGXCcRDUExBOMNQR2bcvlqVbuBLlhDk2kTxelR/cKvW/u1pCRp3vJ0F0IUR
+         TSwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GLnm6fS50/hG4SKqNnvGF+6eSY1pTc2O9uX9RZ49myk=;
-        b=R041ybswMDd6zFypV6zR8LesJMJhYLpVe+oKxB6IU3gItHiiTDeGy+pwcCRaQpgQPb
-         EiepZW+FJhiXoi+mnjIQGn2axFmWb+plPfzpxm7Nf5L/FI3P7vDfct4U6KoOSzbeH4QZ
-         hTVGPgXGsoOpjUgnsfPUsntaA7GGBqdKFcxvv9IYt0cgUeyn5X0nQ63+CNdo4aEDQN+X
-         BHdEDTIfENBiXrxHumEdx+S26xxcZ4AhcRgaExaIDRhO5OfKYLF3cCGv1AyacY6R8Mdy
-         geDiIW9jp57ICO8GDrDo3HQVLAR4jbUZBjIfrQgCux7znlikcw4ToLoTHZFw3+tJLNX5
-         0Nng==
-X-Gm-Message-State: AOAM5304/CNLMC49PzHuCrtmcg3qseqZpfbavhZwcRvlLtMUbygku6Q9
-        B2zngkpgBA0nmVsRtLVmHsR5PDzKDKsHhDLuvnBZ2Q==
-X-Google-Smtp-Source: ABdhPJxL+99GcGhuzKwHxoa0LAxKHs9SixyZqjkdSqQ9kwz+V7x2KhYagAkQzhnNRQyLJ94M10zhhK+zUOesCrOVsWY=
-X-Received: by 2002:a17:906:c1c3:: with SMTP id bw3mr2741235ejb.516.1599645302156;
- Wed, 09 Sep 2020 02:55:02 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vzJ2+owmiLfYv0cJPn9WGDrp2m6lL87kIpE3iI2zcfI=;
+        b=LQilAuqMUwXWdjIyZMQS8YoALTjHjxzWK0Vw0Tb1LMt1minfthoUEk1eFV2bDloQGp
+         V3rPKigsGn/f62Qt1TwUogHGcdwZk1dt+/Hoc84BbIHsoxmq81ehJ4WTGDH0z/L9bmRF
+         KfXYU8J3sWgCZ2l2uZj7cK+XGpmd2bnozjkhstbBV9JF8o+kkEt/5eUhfMcWzYhsraGW
+         7hXEeEW5Mvy9pC7kLYRl4gVsK+DbkFlJka88DZwmWM6fOqxFsbQhoFQ4Qn+expsaAObH
+         UJR+FtegyiGNMhf4jjQkUA5dHnk4TlfdyMT6XC6NF0poBEi9Dc3P8Z4aD4AW/ud6FAoY
+         Oi1A==
+X-Gm-Message-State: AOAM533PZbGD+9melJAdQ6WPpzzGxqMHr5yorQbvmgvsra961Smy4JcW
+        mL0vPlo8qN/+MUJIEKYhtJNvuLHjT1b3SQ==
+X-Google-Smtp-Source: ABdhPJx0pAEeNLqqBK/0LW0KyVkmWPS/hnK0xBnBcd/aCzJZ0k8zTYt12mQMUj9IICUolv71rfhAHA==
+X-Received: by 2002:a1c:14e:: with SMTP id 75mr2897019wmb.114.1599645434391;
+        Wed, 09 Sep 2020 02:57:14 -0700 (PDT)
+Received: from localhost.localdomain ([85.153.229.216])
+        by smtp.gmail.com with ESMTPSA id l15sm3381621wrt.81.2020.09.09.02.57.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Sep 2020 02:57:13 -0700 (PDT)
+From:   Necip Fazil Yildiran <fazilyildiran@gmail.com>
+To:     johannes@sipsolutions.net, davem@davemloft.net, kuba@kernel.org
+Cc:     ard.biesheuvel@linaro.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        paul@pgazz.com, jeho@cs.utexas.edu,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>
+Subject: [PATCH] net: wireless: fix unmet direct dependendices config warning when !CRYPTO
+Date:   Wed,  9 Sep 2020 12:54:53 +0300
+Message-Id: <20200909095452.3080-1-fazilyildiran@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20200905133549.24606-1-warthog618@gmail.com> <20200905133549.24606-8-warthog618@gmail.com>
- <20200909092401.GA1431678@sol> <CAMpxmJXh9pKMAXgPWSCPXeyjP0CSo=A5SgLPrL2eRxX-LAyKag@mail.gmail.com>
- <20200909093523.GA1506132@sol> <CAMpxmJVU9ZniBjFSuhYYaDLUX1jeYeEjYJzdoy06J24SiVNn3w@mail.gmail.com>
- <20200909094906.GA1550063@sol>
-In-Reply-To: <20200909094906.GA1550063@sol>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Wed, 9 Sep 2020 11:54:51 +0200
-Message-ID: <CAMpxmJVff+=qeLCottELYTF2yzykyvaoP=jxZ-vaNgCL-MA2CQ@mail.gmail.com>
-Subject: Re: [PATCH v7 07/20] gpiolib: cdev: support GPIO_V2_GET_LINE_IOCTL
- and GPIO_V2_LINE_GET_VALUES_IOCTL
-To:     Kent Gibson <warthog618@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 9, 2020 at 11:49 AM Kent Gibson <warthog618@gmail.com> wrote:
->
-> On Wed, Sep 09, 2020 at 11:41:35AM +0200, Bartosz Golaszewski wrote:
-> > On Wed, Sep 9, 2020 at 11:35 AM Kent Gibson <warthog618@gmail.com> wrote:
-> > >
-> > > On Wed, Sep 09, 2020 at 11:26:00AM +0200, Bartosz Golaszewski wrote:
-> > > > On Wed, Sep 9, 2020 at 11:24 AM Kent Gibson <warthog618@gmail.com> wrote:
-> > > > >
-> > > > > On Sat, Sep 05, 2020 at 09:35:36PM +0800, Kent Gibson wrote:
-> > > > > > Add support for requesting lines using the GPIO_V2_GET_LINE_IOCTL, and
-> > > > > > returning their current values using GPIO_V2_LINE_GET_VALUES_IOCTL.
-> > > > > >
-> > > > > > The struct linereq implementation is based on the v1 struct linehandle
-> > > > > > implementation.
-> > > > > >
-> > > > > > Signed-off-by: Kent Gibson <warthog618@gmail.com>
-> > > > > > ---
-> > > > > >
-> > > > >
-> > > > > [snip]
-> > > > >
-> > > > > >               if (copy_from_user(&offset, ip, sizeof(offset)))
-> > > > > >                       return -EFAULT;
-> > > > > > @@ -1104,6 +1505,25 @@ int gpiolib_cdev_register(struct gpio_device *gdev, dev_t devt)
-> > > > > >                MAJOR(devt), gdev->id);
-> > > > > >
-> > > > > >       return 0;
-> > > > > > +     /*
-> > > > > > +      * array sizes must ensure 64-bit alignment and not create holes in
-> > > > > > +      * the struct packing.
-> > > > > > +      */
-> > > > > > +     BUILD_BUG_ON(IS_ALIGNED(GPIO_V2_LINES_MAX, 2));
-> > > > > > +     BUILD_BUG_ON(IS_ALIGNED(GPIO_MAX_NAME_SIZE, 8));
-> > > > > > +
-> > > > > > +     /*
-> > > > > > +      * check that uAPI structs are 64-bit aligned for 32/64-bit
-> > > > > > +      * compatibility
-> > > > > > +      */
-> > > > > > +     BUILD_BUG_ON(IS_ALIGNED(sizeof(struct gpio_v2_line_attribute), 8));
-> > > > > > +     BUILD_BUG_ON(IS_ALIGNED(sizeof(struct gpio_v2_line_config_attribute), 8));
-> > > > > > +     BUILD_BUG_ON(IS_ALIGNED(sizeof(struct gpio_v2_line_config), 8));
-> > > > > > +     BUILD_BUG_ON(IS_ALIGNED(sizeof(struct gpio_v2_line_request), 8));
-> > > > > > +     BUILD_BUG_ON(IS_ALIGNED(sizeof(struct gpio_v2_line_info), 8));
-> > > > > > +     BUILD_BUG_ON(IS_ALIGNED(sizeof(struct gpio_v2_line_info_changed), 8));
-> > > > > > +     BUILD_BUG_ON(IS_ALIGNED(sizeof(struct gpio_v2_line_event), 8));
-> > > > > > +     BUILD_BUG_ON(IS_ALIGNED(sizeof(struct gpio_v2_line_values), 8));
-> > > > > >  }
-> > > > > >
-> > > > >
-> > > > > A couple of things here - these should all be !IS_ALIGNED.
-> > > > > And the BUILD_BUG_ON gets compiled out, and so doesn't fail, if they are
-> > > > > after the return.
-> > > > >
-> > > > > How would you like that fixed - v8 or a patch once v7 is in?
-> > > > >
-> > > > > Cheers,
-> > > > > Kent.
-> > > >
-> > > > v8 please. Why is it compiled out though? Does it need some config option?
-> > > >
-> > >
-> > > Not sure - haven't looked into it.  I only noticed the condition was
-> > > inverted in passing, and when I flipped it it still compiled.
-> > > Moving the return to the end of the function made them all fail,
-> > > as they should if IS_ALIGNED is true.
-> > >
-> > > Having BUILD_BUG_ON being able to compile out quietly is a problem in
-> > > itself.  Nothing special in my setup that I am aware of.
-> > >
-> > > Cheers,
-> > > Kent.
-> >
-> > From include/linux/compiler_types.h:
-> >
-> > 295 #ifdef __OPTIMIZE__
-> > 296 # define __compiletime_assert(condition, msg, prefix, suffix)           \
-> > 297         do {                                                            \
-> > 298                 extern void prefix ## suffix(void)
-> > __compiletime_error(msg); \
-> > 299                 if (!(condition))                                       \
-> > 300                         prefix ## suffix();                             \
-> > 301         } while (0)
-> > 302 #else
-> > 303 # define __compiletime_assert(condition, msg, prefix, suffix) do {
-> > } while (0)
-> > 304 #endif
-> >
-> > __OPTIMIZE__ is a predefined macro. I'm not sure about your setup but
-> > it it's defined for me in all my yocto SDK builds and BUILD_BUG_ON(1)
-> > fails as expected.
-> >
->
-> Even when placed after the return, as was the case here?
->
-> Kent.
+When LIB80211_CRYPT_CCMP is enabled and CRYPTO is disabled, it results in unmet
+direct dependencies config warning. The reason is that LIB80211_CRYPT_CCMP
+selects CRYPTO_AES and CRYPTO_CCM, which are subordinate to CRYPTO. This is
+reproducible with CRYPTO disabled and R8188EU enabled, where R8188EU selects
+LIB80211_CRYPT_CCMP but does not select or depend on CRYPTO.
 
-No of course not, I put it into a void function. Sorry for the noise.
+Honor the kconfig menu hierarchy to remove kconfig dependency warnings.
 
-I'm not sure how to disable optimizations for a macro.
+Fixes: a11e2f85481c ("lib80211: use crypto API ccm(aes) transform for CCMP processing")
+Signed-off-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
+---
+ net/wireless/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-For now putting it before return should be fine.
+diff --git a/net/wireless/Kconfig b/net/wireless/Kconfig
+index faf74850a1b5..27026f587fa6 100644
+--- a/net/wireless/Kconfig
++++ b/net/wireless/Kconfig
+@@ -217,6 +217,7 @@ config LIB80211_CRYPT_WEP
+ 
+ config LIB80211_CRYPT_CCMP
+ 	tristate
++	select CRYPTO
+ 	select CRYPTO_AES
+ 	select CRYPTO_CCM
+ 
+-- 
+2.25.1
 
-Bart
