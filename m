@@ -2,90 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CE452626A9
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 07:18:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDAEF26269F
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 07:14:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725948AbgIIFSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 01:18:01 -0400
-Received: from mr85p00im-hyfv06021401.me.com ([17.58.23.190]:50335 "EHLO
-        mr85p00im-hyfv06021401.me.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725772AbgIIFSB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 01:18:01 -0400
-X-Greylist: delayed 338 seconds by postgrey-1.27 at vger.kernel.org; Wed, 09 Sep 2020 01:18:01 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
-        t=1599628342; bh=Wx7CdgvR0x2FU5ZQ+IXCDMPlwOpOHWjeFt6nBqtZ8ks=;
-        h=From:To:Subject:Date:Message-Id;
-        b=xzPBsvUzfTFjny8P9/eiO0u2x9aRGyii1Ain6lm2e3Aj+7FXypoUrOXIctWryFLns
-         yiFTnx0KKBsGBqBh4dqN2WMCJc1ZJg+xjYzSM82rUQ/BTtcoLidI9Qodi0A9YP9RdT
-         RrqNlcnjH7HHbJPCOqwtT9opDiE4Y+MZlg30jptdLYAl44FGtbZD5tyUzh4ZHDPVsB
-         b0OKYahihqC/hRjLvtMJrPSJLDR93YG8HPpxaYDHXOOUR0SuTJWcIcNhnG9/a2eC2l
-         r/cJbXTXM0i5XiCQf1mGQGFHYOqhpLx2GGB2U9ABs+GhJ9r7m3dg5VWRRYqKMl6RWm
-         t5n0ZoYOhJ74A==
-Received: from localhost (unknown [80.214.153.78])
-        by mr85p00im-hyfv06021401.me.com (Postfix) with ESMTPSA id 3A9E59C01B1;
-        Wed,  9 Sep 2020 05:12:22 +0000 (UTC)
-From:   Alain Volmat <avolmat@me.com>
-To:     Jassi Brar <jaswinder.singh@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Patrice Chotard <patrice.chotard@st.com>, avolmat@me.com
-Subject: [PATCH v2] mailbox: sti: fix struct description warnings
-Date:   Wed,  9 Sep 2020 07:12:19 +0200
-Message-Id: <20200909051219.4531-1-avolmat@me.com>
-X-Mailer: git-send-email 2.17.1
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-09_03:2020-09-08,2020-09-09 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 clxscore=1015 mlxscore=0
- mlxlogscore=570 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-2006250000 definitions=main-2009090047
+        id S1726036AbgIIFOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 01:14:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54676 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725772AbgIIFOt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 01:14:49 -0400
+Received: from mail.kernel.org (ip5f5ad5d6.dynamic.kabel-deutschland.de [95.90.213.214])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E249221D43;
+        Wed,  9 Sep 2020 05:14:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599628489;
+        bh=EONsNBav4eRxYlNYFP1LXxj6M47uluI/f56SSBbZ0l4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=TxavcDTMMDYy1W7yt+Z+2Bx1j5IsglpAdi6VtwDPKb/QJld9ieLQjFbpXAodG3VAO
+         gwx+rNpg0xf3DV6pl3C5YTQ441dUP5FSnBiLOZClk+oXrwmAZOTT4ao8sUszr11aGN
+         iCOCdn4DWG9igU68jVw6D38iEKLX6hdrPJgiXw/8=
+Received: from mchehab by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1kFsRS-00BfBp-AL; Wed, 09 Sep 2020 07:14:46 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-spdx@vger.kernel.org,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Frank A. Cancio Bello" <frank@generalsoftwareinc.com>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Subject: [PATCH v3 0/2] use SPDX also for GFDL documents
+Date:   Wed,  9 Sep 2020 07:14:31 +0200
+Message-Id: <cover.1599628249.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix formating of struct description to avoid warning highlighted
-by W=1 compilation.
+There are 438 document files that were licensed under the
+free versions of GNU Free Document License.
 
-Signed-off-by: Alain Volmat <avolmat@me.com>
+The free versions are the one that doesn't contain invariant
+parts.
+
+The first patch adds the license files.  As newer documents
+aren't supposed to use them without being dual-licensed
+with GPLv2, add them under LICENSE/deprecated.
+
+The second patch replaces a boilerplate text from 
+ring-buffer-design.rst by the corresponding SPDX header.
+
+The other documents are all under Documentation/uapi/media.
+
+A separate patchset, to be merged via the linux-media tree
+will cover those.
+
 ---
-v2: fixes tag removed
 
- drivers/mailbox/mailbox-sti.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+v3:
+  - Added Valid-License-Identifier, SPDX_URL, Usage-Guide and License-Text 
+    meta-tags.
 
-diff --git a/drivers/mailbox/mailbox-sti.c b/drivers/mailbox/mailbox-sti.c
-index 2baf69a0b81c..0f2bc09c364d 100644
---- a/drivers/mailbox/mailbox-sti.c
-+++ b/drivers/mailbox/mailbox-sti.c
-@@ -36,7 +36,7 @@
- #define MBOX_BASE(mdev, inst)   ((mdev)->base + ((inst) * 4))
- 
- /**
-- * STi Mailbox device data
-+ * struct sti_mbox_device - STi Mailbox device data
-  *
-  * An IP Mailbox is currently composed of 4 instances
-  * Each instance is currently composed of 32 channels
-@@ -60,7 +60,7 @@ struct sti_mbox_device {
- };
- 
- /**
-- * STi Mailbox platform specific configuration
-+ * struct sti_mbox_pdata - STi Mailbox platform specific configuration
-  *
-  * @num_inst:	Maximum number of instances in one HW Mailbox
-  * @num_chan:	Maximum number of channel per instance
-@@ -71,7 +71,7 @@ struct sti_mbox_pdata {
- };
- 
- /**
-- * STi Mailbox allocated channel information
-+ * struct sti_channel - STi Mailbox allocated channel information
-  *
-  * @mdev:	Pointer to parent Mailbox device
-  * @instance:	Instance number channel resides in
+Mauro Carvalho Chehab (2):
+  LICENSE: add GFDL deprecated licenses
+  docs: trace: ring-buffer-design.rst: use the new SPDX tag
+
+ Documentation/trace/ring-buffer-design.rst |  26 +-
+ LICENSES/deprecated/GFDL-1.1               | 377 +++++++++++++++++++
+ LICENSES/deprecated/GFDL-1.2               | 417 +++++++++++++++++++++
+ 3 files changed, 795 insertions(+), 25 deletions(-)
+ create mode 100644 LICENSES/deprecated/GFDL-1.1
+ create mode 100644 LICENSES/deprecated/GFDL-1.2
+
 -- 
-2.17.1
+2.26.2
+
 
