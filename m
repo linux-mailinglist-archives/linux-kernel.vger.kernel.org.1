@@ -2,100 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9814926342D
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 19:15:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DE192633D2
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 19:11:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730784AbgIIRPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 13:15:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47024 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730212AbgIIP3F (ORCPT
+        id S1731046AbgIIRKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 13:10:53 -0400
+Received: from sakti.mail.go.id ([103.8.238.38]:3902 "EHLO
+        mailserver.mail.go.id" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730317AbgIIPfD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 11:29:05 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21494C0612F8
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 07:39:58 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id z1so3254573wrt.3
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 07:39:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tessares-net.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=11MI0KiTsfDovJmHLIZ6mGMd2aO/GNiEEd0QOHNHXg0=;
-        b=Yc1/H8efLlur4NsZLckZuVxVv7eBKW+pOWMidUFk8KtU0BAoPVPXWk16J5mKnNrmIi
-         oWB20T+Z2wVlAeFQT3uhLlx8nm1qKbo+/rKT870Cni1Y1rvHVkbmASg+/AfCDUB8dHFb
-         TLVHSYXSJi6UFU0cTS/U9tEbHBhBLAjxYjnFM7MYgQNxIJtG4KvvC38iEKyftKrY9H+1
-         HSx0E0vxEPJhDXm3VLoD5HTSk56PQ8Z3oow2H9NPpBHJXjDQQLsyXgx6lPJRPrPZoIQc
-         adu/KyZfOH0QEy/Tx3fMUNsu8auumg3t/aka3gUOr2/dPsvtlMe+R4Te4NvYpDU6Qx1s
-         Hzag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=11MI0KiTsfDovJmHLIZ6mGMd2aO/GNiEEd0QOHNHXg0=;
-        b=fOuNhqOT2Q9vq2xown16l1V6FfgKvOTFSngkEaL0aPnzL47BJnTf6/oJk6PVm9kx37
-         Ip5Zd3l22G89n9vblcg4+wIjE3UuIg0GcvICgQvY9cPCnXvNXR5r19q0uSGi605iPteK
-         1prwtfHs76mB3OvZO+pCpgfqlj/G9ugIqjXdLjAHXk2s6DnP4Jo+q1TqvZj5ISknaq0i
-         7z/Rljdr7xfApyVVMQvnpumLNLmSgqCrOUAdF+k2yZYCBW4Ed8dXKZxZhBdr56Q+KDRK
-         GB1cz1fgCin6hta2Z5znOpJl3qJVhuPUyaKh3zux2ErNAeSohT6bHnIt2G/tKpYCa7lJ
-         KdVQ==
-X-Gm-Message-State: AOAM531eVe1f6iiX+4TtsdsHasDWV0K9j3mqAz6+dkjp74KQp4ejP4o0
-        VLMpxLyfQJE4oq/jpsYST9c7zVYZNtMIAw==
-X-Google-Smtp-Source: ABdhPJwg4KZor8Ulp7aL3kakuSHdnlGpdMIVAnOUc1hsbL6VzzEtJVLgSQ4Wqa+k6cfbfZJG5X8vFw==
-X-Received: by 2002:adf:edcc:: with SMTP id v12mr4240797wro.240.1599662396424;
-        Wed, 09 Sep 2020 07:39:56 -0700 (PDT)
-Received: from tsr-lap-08.nix.tessares.net ([2a02:578:85b0:e00:8ddf:bedd:580e:7a7e])
-        by smtp.gmail.com with ESMTPSA id z15sm4368511wrv.94.2020.09.09.07.39.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Sep 2020 07:39:55 -0700 (PDT)
-Subject: Re: [MPTCP][PATCH v2 net 2/2] mptcp: fix subflow's remote_id issues
-To:     Geliang Tang <geliangtang@gmail.com>,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Florian Westphal <fw@strlen.de>,
-        Peter Krystad <peter.krystad@linux.intel.com>
-Cc:     netdev@vger.kernel.org, mptcp@lists.01.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1599532593.git.geliangtang@gmail.com>
- <0127c08400bdf65c03438b0b6e90e4ab72ea1576.1599532593.git.geliangtang@gmail.com>
-From:   Matthieu Baerts <matthieu.baerts@tessares.net>
-Message-ID: <4c6c23fc-f493-ce9e-953f-679109de5fc8@tessares.net>
-Date:   Wed, 9 Sep 2020 16:39:54 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 9 Sep 2020 11:35:03 -0400
+X-Greylist: delayed 1328 seconds by postgrey-1.27 at vger.kernel.org; Wed, 09 Sep 2020 11:35:02 EDT
+Received: from mailserver.mail.go.id (mailserver.mail.go.id [127.0.0.1])
+        by mailserver.mail.go.id (Postfix) with ESMTP id 4BmlNs2nn0z9JJHy
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 21:52:29 +0700 (WIB)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mail.go.id;
+        s=default; t=1599663149;
+        bh=kzJWSXLBri+2IYskEEy5zjDCo07ZCxJ+7J/ZvAzbPwk=;
+        h=To:From:Subject:Date:From;
+        b=j0s1TCCX+XGhgOyr3bd/WU82vAlv4ukZ51E6u8zcYN/nqDxAkP2fmGhPZcCCkJy1W
+         EuA8U8r4zNMlcAz8gYme8uwvLAwuVrFKJ6Hih+n/2N9amk1RIgW30w4dyDMuN1QDhj
+         onzfBDwFpFh0v0uTlCsqipmdkOX7z2bbP3RRFxQMVVQ+lEEb4P1n32rsm7iHeeuk1N
+         uypkeTpvqecTapgiiBTcCTTu0V2laGNC4EeUC3NCMYQ3EGw0VojtzdbTsG1GJ9nX1t
+         f41rFeZtOuObnpKmSKShh+YO4YQrdflZ7z4fCdTNpY/B+ikoF8IywiBE9BgpQKW8Sb
+         cwfuHQFHKwwYw==
+X-Virus-Scanned: Debian amavisd-new at mailserver.mail.go.id
+Authentication-Results: mailserver.mail.go.id (amavisd-new);
+        dkim=pass (2048-bit key) header.d=mail.go.id
+Received: from mailserver.mail.go.id ([127.0.0.1])
+        by mailserver.mail.go.id (mailserver.mail.go.id [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id HXuJA95OeNJ9 for <linux-kernel@vger.kernel.org>;
+        Wed,  9 Sep 2020 21:52:27 +0700 (WIB)
+Received: from mail.go.id (unknown [14.169.252.80])
+        by mailserver.mail.go.id (Postfix) with ESMTPSA id 4Bml836pHJz9BMqP;
+        Wed,  9 Sep 2020 21:41:20 +0700 (WIB)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mail.go.id;
+        s=default; t=1599662514;
+        bh=kzJWSXLBri+2IYskEEy5zjDCo07ZCxJ+7J/ZvAzbPwk=;
+        h=To:From:Subject:Date:From;
+        b=4XirW6qg33xXQ4rrDPeP93kZXQQ5oA805NktRd0bNaonOglTbe1Ga35AN+muJQ9FC
+         gL6eFK6QfWHRnkOhIuIqWGOQHe7sLAuXVDHT2vVSRnKOKqzUrdugptOD9aQokFwutl
+         Yptd2puA8vzbfPvuK/pH4szyNrSd0Pa5EQSzsiVez0mgiOXZBoBqwymNAHtSeoDjby
+         fx6eO2aJIWRhgiUFayl7KKbxNJGT1KPE5B9jBSpl7FMd95Vh6Pvhia8xvZ+Eu3WBRX
+         r4EN/uqVGHSxVWtfwJvuvCBq6B3+thr2nMw4gIthkwFNq0OjlaBAzo4wa482qiQWKl
+         MzX1+9irc93OA==
+To:     "shilpa shet" <shilpa_shet@yahoo.com>,
+        "karmachari5" <karmachari5@yahoo.com>,
+        "pradhan" <pradhan@comcast.net>,
+        "meena sathe" <meena_sathe@yahoo.com>,
+        "unitedhindufront" <unitedhindufront@gmail.com>,
+        "linux kernel" <linux-kernel@vger.kernel.org>,
+        "eci sec jec nct delhi v k harit" <electionjec@gmail.com>,
+        "eci ex KJ RAO" <kjrao27@hotmail.com>
+From:   zamzam318 <eppi.permana@mail.go.id>
+Subject: =?UTF-8?Q?=5BAttenzione!=5D_Mattina._Spero_?= =?UTF-8?Q?tu_stia_bene.?=
+Message-ID: <cbad3eb9-c66c-40b0-b25b-071f73442e97@mail.go.id>
+Date:   Wed, 9 Sep 2020 04:41:21 -1000
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.3.1
 MIME-Version: 1.0
-In-Reply-To: <0127c08400bdf65c03438b0b6e90e4ab72ea1576.1599532593.git.geliangtang@gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geliang,
+https://bit.ly/3lAAQqz
 
-On 08/09/2020 04:49, Geliang Tang wrote:
-> This patch set the init remote_id to zero, otherwise it will be a random
-> number.
-> 
-> Then it added the missing subflow's remote_id setting code both in
-> __mptcp_subflow_connect and in subflow_ulp_clone.
-> 
-> Fixes: 01cacb00b35cb ("mptcp: add netlink-based PM")
-> Fixes: ec3edaa7ca6ce ("mptcp: Add handling of outgoing MP_JOIN requests")
-> Fixes: f296234c98a8f ("mptcp: Add handling of incoming MP_JOIN requests")
-> Signed-off-by: Geliang Tang <geliangtang@gmail.com>
 
-Thank you for the v2!
 
-Reviewed-by: Matthieu Baerts <matthieu.baerts@tessares.net>
 
-Cheers,
-Matt
--- 
-Tessares | Belgium | Hybrid Access Solutions
-www.tessares.net
+
+Buon divertimento,zamzam318@yahoo.com
+
+ 
+
+
+
+
+ =====================NEWS=====================
+
+
+
+ Cutting down trash with bamboo packaging 
+Universal Biopack makes packaging that it sells to restaurants and manufacturers. But rather than plastic, it uses a mixture of bamboo and cassava.
+
+  
+
+==============================================
