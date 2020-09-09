@@ -2,669 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 542BD262DEE
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 13:36:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64172262E09
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 13:42:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729738AbgIILgL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 07:36:11 -0400
-Received: from mga05.intel.com ([192.55.52.43]:38879 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728663AbgIILay (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 07:30:54 -0400
-IronPort-SDR: rKcx0y7cYVy9M2+Ka/FshFo1uIqUtP9aiD3brluUZKjBKRu60mCdzTn64MrPaMRbjwbhv3LEeM
- wPvIt4832xIw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9738"; a="243123889"
-X-IronPort-AV: E=Sophos;i="5.76,409,1592895600"; 
-   d="scan'208";a="243123889"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2020 04:14:30 -0700
-IronPort-SDR: 9hcr/6B970iyS99yEjRXwg+YFLEXOZaH8D3Iz4hZnwlLNmBZSekeUnNQYLgVpsfx+loEpEGYYt
- X0wl91zIAZ2g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,409,1592895600"; 
-   d="scan'208";a="333786622"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga008.jf.intel.com with ESMTP; 09 Sep 2020 04:14:27 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@intel.com>)
-        id 1kFy3U-00FQL4-AW; Wed, 09 Sep 2020 14:14:24 +0300
-Date:   Wed, 9 Sep 2020 14:14:24 +0300
-From:   Andy Shevchenko <andriy.shevchenko@intel.com>
-To:     Amireddy Mallikarjuna reddy <mallikarjunax.reddy@linux.intel.com>
-Cc:     dmaengine@vger.kernel.org, vkoul@kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org,
-        linux-kernel@vger.kernel.org, chuanhua.lei@linux.intel.com,
-        cheol.yong.kim@intel.com, qi-ming.wu@intel.com,
-        malliamireddy009@gmail.com, peter.ujfalusi@ti.com
-Subject: Re: [PATCH v6 2/2] Add Intel LGM soc DMA support.
-Message-ID: <20200909111424.GQ1891694@smile.fi.intel.com>
-References: <cover.1599605765.git.mallikarjunax.reddy@linux.intel.com>
- <748370a51af0ab768e542f1537d1aa3aeefebe8a.1599605765.git.mallikarjunax.reddy@linux.intel.com>
+        id S1729822AbgIILml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 07:42:41 -0400
+Received: from mail-bn8nam11on2042.outbound.protection.outlook.com ([40.107.236.42]:45280
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729521AbgIILf1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 07:35:27 -0400
+Received: from BL0PR12MB2577.namprd12.prod.outlook.com (2603:10b6:207:42::20)
+ by BL0PR12MB2513.namprd12.prod.outlook.com (2603:10b6:207:4a::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.17; Wed, 9 Sep
+ 2020 11:18:28 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=j/nu0L42PiJBSIPgAqnP2hAX1cgUwyL9hGjyOv6FtBM6hYbpElNEqeuX2SBjhi5A9C3hfwT2RPo7CKME1VE5IwezwzMY+IxSEfHXR/9i0nCkpfEFXq79Z4ujy1ct1zDcN2E+mnDyVdn34OewDeBYgNN2cUhheIZY9wdb8BZ/PwvfF1QGBa/qwPjOmY3uU3+1d7JO0QDIuKJmAuCFV4CD1rBNDcE8tI50CdQXClEQ8+B3NeS86IHzbSQU9cv3s1YxYV+X9BVZ0pShbmJFb3fxp1qC1yO+l6kabGhtw0DEtKSswpFuCDk44a+LGc3O7lnFQTk2lHl9e+o9hq64s7DMfA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LkimQOEDA2SAtuJdk0i0H3cyM41EypixKoicSSFeZyU=;
+ b=QKFGzAG7CJnsl05QUVx4o2T4xdd4Yd4P9K9PxmT1zcBUq8LrwKjxIXwCK5x0FnxhxkzyxFHWCzB5fQcDsXSeQjPDI4Nosnf9JmJnvXPk/FbuBr7nzoe7ojWXrQHXDWEBIOYaDDUyjwJ95rYDr1mIUdBEmE61VuCP4P0M6QHIabQh2puOzqCH0xEEC4D7MxNTEBEqE/2cigq2Wk2wDfpNBbq1aOU0hdtbd5avE5Ps/M7EA6/OdjsLyNWGEanpnb31ikKjXqNTZwqzT4uT0Pl7SeChUcR5E/VGUmc6c8eucSjaJdMZtgUvluknO/797k55jT3jLgL+CCLSEL9E5wNgpw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LkimQOEDA2SAtuJdk0i0H3cyM41EypixKoicSSFeZyU=;
+ b=0q7osHpSz0W37wDyPbfz6t6rwAcyDXQnFAX9M0mN4hitZGMasHCfRQGOR99rmpBnGCFxGPoaqxPcPHlCgtK2UC30vkX+bvLZMh+09sSO3cSJk4Yuhm5YHPTeCTEb33Duv8CcgHBRCRMGXKBusz2hzS25rmzwnJHWV827EZA9FOo=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
+ by BL0PR12MB2577.namprd12.prod.outlook.com (2603:10b6:207:42::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.17; Wed, 9 Sep
+ 2020 11:15:18 +0000
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::f8f7:7403:1c92:3a60]) by MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::f8f7:7403:1c92:3a60%6]) with mapi id 15.20.3348.019; Wed, 9 Sep 2020
+ 11:15:18 +0000
+Subject: Re: [PATCH 5.8 101/186] drm/radeon: Prefer lower feedback dividers
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     stable@vger.kernel.org,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Sasha Levin <sashal@kernel.org>
+References: <20200908152241.646390211@linuxfoundation.org>
+ <20200908152246.531365310@linuxfoundation.org>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <77ec0338-32a1-6379-858c-359f636a0e58@amd.com>
+Date:   Wed, 9 Sep 2020 13:15:13 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <20200908152246.531365310@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-ClientProxiedBy: FR2P281CA0023.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:14::10) To MN2PR12MB3775.namprd12.prod.outlook.com
+ (2603:10b6:208:159::19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <748370a51af0ab768e542f1537d1aa3aeefebe8a.1599605765.git.mallikarjunax.reddy@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7] (2a02:908:1252:fb60:be8a:bd56:1f94:86e7) by FR2P281CA0023.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10:14::10) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.9 via Frontend Transport; Wed, 9 Sep 2020 11:15:16 +0000
+X-Originating-IP: [2a02:908:1252:fb60:be8a:bd56:1f94:86e7]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 0f4cbf93-5393-4fba-8ee4-08d854b1a201
+X-MS-TrafficTypeDiagnostic: BL0PR12MB2577:|BL0PR12MB2513:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL0PR12MB25776EE5F685E85BA94B9BD283260@BL0PR12MB2577.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Up87vEtWHoLtcEDi2I94AE6kUkUbEkhiXxRv5vQ5LWlvjVi3HuyGwbg4pmE9R4vvfH8aaZ17Zx62wnLGOiGBBeKpA30VhXbOBV3rdhwUPxb60GSr5YNMXBcRH3dji+e6nVoyk/ibBV6iobQU6DsKtGH36XE9y8nxhYGh5wLR9k3gg8qjEecyzqTHZKsYxSL2o508mQ/KIOUMaNcxISRAiF24EGEP+0IhtZlY5q8EHk96nDxbNsm2TUyjbiKAnG/wFRm62wyfMqQvVV88G3SMHsPsX0ACYqaQmEgSz5P6NvTdKHhQ/A5PNPzEGCw2VkbUg5am7sqe+hawzvyTsg1+PNRLZM0phziRBaun5MKtf0Da0e2NbXpX0OzDQBNvFgd/4aG1/u+yi9XEuS5FpewOdWm80hzcOMDVI4BqegmTc/VlbQV7BADJF9Ty4vLuzNCuXIjLLQfiWjvJwarWPa7r0mtvmy9UUssd0SrsPcDcldU=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39850400004)(396003)(346002)(376002)(136003)(66556008)(45080400002)(8936002)(478600001)(2616005)(36756003)(6666004)(966005)(86362001)(5660300002)(31696002)(54906003)(186003)(16526019)(66946007)(66476007)(31686004)(8676002)(4326008)(52116002)(6486002)(316002)(83380400001)(2906002)(66574015)(154273002)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: X4QwmX8+WXpAga+WiaX4Q3MLSjGA+3EjjKn8GMYjRiEEa7bU2EvhCw5dvJs1J3h0boXTiaXsvS39dJtd2KAIvXVcOPWxY8EXe7rOkIe1jTq9FXqbWcfdxOAcwDI/Qe3RjmQO3baPw1L6SJIqeFAN4HyH4eiorR6Hnzq8FAQfxPDZYn7XnbsHpqJwbl7hBmT6WsIUD1/WOmY2S7rBYkkRS1czI0vg+qBWpJ2Plqur7XuLce11L1gakBM+E+y4bZZkpOTGJqubTGWlTaGHkk8geiNNKODyEya3hqt3BS+6VeRtmHxUHmFy22O35Hvu9AXv9PNLxsg4Nma5TW2TD1td6u4CuVT2kokbTcx8FzeDt8AqVdm48deMzXIyf69U3Gtcn5vCxTC4jW/8XrA0OrcKIPoLRs7NAzVTEE/pM5G/UMfjJtBt92TfXqpNDIwmxRUb9nKy7VLag2a3L7lGl/EJKfWl4p5/aA+8ag0YiR2Vc1V54b5CfYjcRAFTmScZ4is89ZXoMJD7Xl5Tb7WBkwv+upVe1fLHZnXkcY1pfcxS99HCKEXzictJkPDv136LGjEeuPeoAskil/8ftS0LySkK+RAhivrriV2vzgwK9hkyH6dx962QNJaWfLmj7CzBc3mzEYPPp4yxYzJ7MGL5yra85BeRWCR8EzrNwoQ1fsxjQ6jn+gfZAgZUOkK9UM8uurFY9UrVdgjxZAlWVteoXkSxfw==
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0f4cbf93-5393-4fba-8ee4-08d854b1a201
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Sep 2020 11:15:17.9159
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: u02+UWhoxzBoLlI1qv3T3RlZrKNqzszbB3/WkeDalIt3V+nK9HNvI/fNS0NrwfeD
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB2577
+X-OriginatorOrg: amd.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 09, 2020 at 07:07:34AM +0800, Amireddy Mallikarjuna reddy wrote:
-> Add DMA controller driver for Lightning Mountain(LGM) family of SoCs.
-> 
-> The main function of the DMA controller is the transfer of data from/to any
-> DPlus compliant peripheral to/from the memory. A memory to memory copy
-> capability can also be configured.
-> 
-> This ldma driver is used for configure the device and channnels for data
-> and control paths.
-
-...
-
-> +config INTEL_LDMA
-> +	bool "Lightning Mountain centralized low speed DMA and high speed DMA controllers"
-> +	select DMA_ENGINE
-> +	select DMA_VIRTUAL_CHANNELS
-> +	help
-> +	  Enable support for intel Lightning Mountain SOC DMA controllers.
-> +	  These controllers provide DMA capabilities for a variety of on-chip
-> +	  devices such as SSC, HSNAND and GSWIP.
-
-And how module will be called?
-
-...
-
-> +struct ldma_dev;
-> +struct ldma_port;
-
-+ blank line
-
-> +struct ldma_chan {
-> +	struct ldma_port	*port; /* back pointer */
-> +	char			name[8]; /* Channel name */
-
-> +	struct virt_dma_chan	vchan;
-
-You can make container_of() no-op if you put this to be first member of the
-structure.
-
-> +	int			nr; /* Channel id in hardware */
-> +	u32			flags; /* central way or channel based way */
-> +	enum ldma_chan_on_off	onoff;
-> +	dma_addr_t		desc_phys;
-> +	void			*desc_base; /* Virtual address */
-> +	u32			desc_cnt; /* Number of descriptors */
-> +	int			rst;
-> +	u32			hdrm_len;
-> +	bool			hdrm_csum;
-> +	u32			boff_len;
-> +	u32			data_endian;
-> +	u32			desc_endian;
-> +	bool			pden;
-> +	bool			desc_rx_np;
-> +	bool			data_endian_en;
-> +	bool			desc_endian_en;
-> +	bool			abc_en;
-> +	bool			desc_init;
-> +	struct dma_pool		*desc_pool; /* Descriptors pool */
-> +	u32			desc_num;
-> +	struct dw2_desc_sw	*ds;
-> +	struct work_struct	work;
-> +	struct dma_slave_config config;
-> +};
-
-...
-
-> +		struct {
-> +			u32 len		:16;
-> +			u32 res0	:7;
-> +			u32 bofs	:2;
-> +			u32 res1	:3;
-> +			u32 eop		:1;
-> +			u32 sop		:1;
-> +			u32 c		:1;
-> +			u32 own		:1;
-> +		} __packed field;
-> +		u32 word;
-
-Can you rather use bitfield.h?
-
-> +	} __packed status;
-> +	u32 addr;
-> +} __packed __aligned(8);
-
-...
-
-> +struct dw2_desc_sw {
-> +	struct ldma_chan	*chan;
-
-> +	struct virt_dma_desc	vdesc;
-
-Make it first and container_of() becomes no-op.
-
-> +	dma_addr_t		desc_phys;
-> +	size_t			desc_cnt;
-> +	size_t			size;
-> +	struct dw2_desc		*desc_hw;
-> +};
-
-...
-
-> +ldma_update_bits(struct ldma_dev *d, u32 mask, u32 val, u32 ofs)
-> +{
-> +	u32 old_val, new_val;
-> +
-> +	old_val = readl(d->base +  ofs);
-
-> +	new_val = (old_val & ~mask) | (val & mask);
-
-With bitfield.h you will have this as u32_replace_bits().
-
-> +
-> +	if (new_val != old_val)
-> +		writel(new_val, d->base + ofs);
-> +}
-
-...
-
-> +	/* Keep the class value unchanged */
-> +	reg &= DMA_CCTRL_CLASS | DMA_CCTRL_CLASSH;
-> +	reg |= val;
-
-No mask? Consider u32_replace_bits() or other FIELD_*() macros.
-
-...
-
-> +static void ldma_chan_desc_hw_cfg(struct ldma_chan *c, dma_addr_t desc_base,
-> +				  int desc_num)
-> +{
-> +	struct ldma_dev *d = to_ldma_dev(c->vchan.chan.device);
-> +	unsigned long flags;
-> +
-> +	spin_lock_irqsave(&d->dev_lock, flags);
-> +	ldma_update_bits(d, DMA_CS_MASK, c->nr, DMA_CS);
-> +	writel(lower_32_bits(desc_base), d->base + DMA_CDBA);
-
-> +	/* High 4 bits */
-
-Why only 4?
-
-> +	if (IS_ENABLED(CONFIG_64BIT)) {
-
-> +		u32 hi = upper_32_bits(desc_base) & 0xF;
-
-GENMASK() ?
-
-> +
-> +		ldma_update_bits(d, DMA_CDBA_MSB,
-> +				 FIELD_PREP(DMA_CDBA_MSB, hi), DMA_CCTRL);
-> +	}
-> +	writel(desc_num, d->base + DMA_CDLEN);
-> +	spin_unlock_irqrestore(&d->dev_lock, flags);
-> +
-> +	c->desc_init = true;
-> +}
-
-...
-
-
-> +	dev_dbg(d->dev, "Port Control 0x%08x configuration done\n",
-> +		readl(d->base + DMA_PCTRL));
-
-This has a side effect. Better to use temporary variable if you need to read
-back.
-
-...
-
-> +static int ldma_chan_cfg(struct ldma_chan *c)
-> +{
-> +	struct ldma_dev *d = to_ldma_dev(c->vchan.chan.device);
-> +	unsigned long flags;
-> +	u32 reg;
-> +
-> +	reg = c->pden ? DMA_CCTRL_PDEN : 0;
-> +	reg |= c->onoff ? DMA_CCTRL_ON : 0;
-> +	reg |= c->rst ? DMA_CCTRL_RST : 0;
-> +
-> +	ldma_chan_cctrl_cfg(c, reg);
-> +	ldma_chan_irq_init(c);
-
-> +	if (d->ver > DMA_VER22) {
-
-	if (d->ver <= DMA_VER22)
-		return 0;
-
-	?
-
-> +		spin_lock_irqsave(&d->dev_lock, flags);
-> +		ldma_chan_set_class(c, c->nr);
-> +		ldma_chan_byte_offset_cfg(c, c->boff_len);
-> +		ldma_chan_data_endian_cfg(c, c->data_endian_en, c->data_endian);
-> +		ldma_chan_desc_endian_cfg(c, c->desc_endian_en, c->desc_endian);
-> +		ldma_chan_hdr_mode_cfg(c, c->hdrm_len, c->hdrm_csum);
-> +		ldma_chan_rxwr_np_cfg(c, c->desc_rx_np);
-> +		ldma_chan_abc_cfg(c, c->abc_en);
-> +		spin_unlock_irqrestore(&d->dev_lock, flags);
-> +
-> +		if (ldma_chan_is_hw_desc(c))
-> +			ldma_chan_desc_hw_cfg(c, c->desc_phys, c->desc_cnt);
-> +	}
-> +
-> +	return 0;
-> +}
-
-...
-
-> +	/* DMA channel initialization */
-> +	for (i = 0; i < d->chan_nrs; i++) {
-> +		if (d->ver == DMA_VER22 && !(d->channels_mask & BIT(i)))
-> +			continue;
-
-for_each_set_bit() ?
-
-> +		c = &d->chans[i];
-> +		ldma_chan_cfg(c);
-> +	}
-
-...
-
-> +		for (i = 0; i < d->port_nrs; i++) {
-> +			p = &d->ports[i];
-> +			p->rxendi = DMA_DFT_ENDIAN;
-> +			p->txendi = DMA_DFT_ENDIAN;
-
-> +			if (!fwnode_property_read_u32(fwnode, "intel,dma-burst",
-> +						      &prop)) {
-
-How this is not invariant inside the loop?
-
-> +				p->rxbl = prop;
-> +				p->txbl = prop;
-> +			} else {
-> +				p->rxbl = DMA_DFT_BURST;
-> +				p->txbl = DMA_DFT_BURST;
-> +			}
-> +
-> +			p->pkt_drop = DMA_PKT_DROP_DIS;
-> +		}
-
-...
-
-> +	if (d->ver == DMA_VER22) {
-> +		spin_lock_irqsave(&c->vchan.lock, flags);
-> +		if (vchan_issue_pending(&c->vchan)) {
-> +			struct virt_dma_desc *vdesc;
-> +
-> +			/* Get the next descriptor */
-> +			vdesc = vchan_next_desc(&c->vchan);
-> +			if (!vdesc) {
-> +				c->ds = NULL;
-
-Nice! Don't you forget something to do here?
-
-> +				return;
-
-> +			}
-> +			list_del(&vdesc->node);
-> +			c->ds = to_lgm_dma_desc(vdesc);
-> +			ldma_chan_desc_hw_cfg(c, c->ds->desc_phys, c->ds->desc_cnt);
-> +			ldma_chan_irq_en(c);
-> +		}
-> +		spin_unlock_irqrestore(&c->vchan.lock, flags);
-> +	}
-
-...
-
-> +	irncr = readl(d->base + DMA_IRNCR);
-> +	if (!irncr) {
-
-> +		dev_err(d->dev, "dummy interrupt\n");
-
-I could imagine what happens in case of shared IRQ...
-
-> +		return IRQ_NONE;
-> +	}
-
-...
-
-> +	/* Default setting will be used */
-> +	if (cfg->src_maxburst != 2 && cfg->src_maxburst != 4 &&
-> +	    cfg->src_maxburst != 8)
-
-This is strange. Caller should have a possibility to set anything based on the
-channel and device capabilities. This one is hidden problem for the caller. Are
-you going to customize each peripheral driver for your DMA engine
-implementation?
-
-> +		return;
-
-...
-
-> +	if (!sgl)
-> +		return NULL;
-
-Is it possible?
-
-...
-
-> +static int
-> +dma_slave_config(struct dma_chan *chan, struct dma_slave_config *cfg)
-> +{
-> +	struct ldma_chan *c = to_ldma_chan(chan);
-> +
-> +	if ((cfg->direction == DMA_DEV_TO_MEM &&
-> +	     cfg->src_addr_width != DMA_SLAVE_BUSWIDTH_4_BYTES) ||
-> +	    (cfg->direction == DMA_MEM_TO_DEV &&
-> +	     cfg->dst_addr_width != DMA_SLAVE_BUSWIDTH_4_BYTES) ||
-
-Why?
-
-> +	    !is_slave_direction(cfg->direction))
-> +		return -EINVAL;
-> +
-> +	/* Must be the same */
-
-Why?
-
-> +	if (cfg->src_maxburst && cfg->dst_maxburst &&
-> +	    cfg->src_maxburst != cfg->dst_maxburst)
-> +		return -EINVAL;
-
-> +	if (cfg->src_maxburst != 2 && cfg->src_maxburst != 4 &&
-> +	    cfg->src_maxburst != 8)
-
-Why?
-
-> +		return -EINVAL;
-> +
-> +	memcpy(&c->config, cfg, sizeof(c->config));
-> +
-> +	return 0;
-> +}
-
-...
-
-> +static void dma_work(struct work_struct *work)
-> +{
-> +	struct ldma_chan *c = container_of(work, struct ldma_chan, work);
-> +	struct dma_async_tx_descriptor *tx = &c->ds->vdesc.tx;
-> +	struct virt_dma_chan *vc = &c->vchan;
-> +	struct dmaengine_desc_callback cb;
-> +	struct virt_dma_desc *vd, *_vd;
-> +	LIST_HEAD(head);
-> +
-> +	list_splice_tail_init(&vc->desc_completed, &head);
-
-No protection?
-
-> +	dmaengine_desc_get_callback(tx, &cb);
-> +	dma_cookie_complete(tx);
-> +	dmaengine_desc_callback_invoke(&cb, NULL);
-> +
-> +	list_for_each_entry_safe(vd, _vd, &head, node) {
-> +		dmaengine_desc_get_callback(tx, &cb);
-> +		dma_cookie_complete(tx);
-> +		list_del(&vd->node);
-> +		dmaengine_desc_callback_invoke(&cb, NULL);
-> +
-> +		vchan_vdesc_fini(vd);
-> +	}
-> +	c->ds = NULL;
-> +}
-
-...
-
-> +static int
-> +update_client_configs(struct of_dma *ofdma, struct of_phandle_args *spec)
-> +{
-> +	struct ldma_dev *d = ofdma->of_dma_data;
-> +	struct ldma_port *p;
-> +	struct ldma_chan *c;
-> +	u32 chan_id =  spec->args[0];
-> +	u32 port_id =  spec->args[1];
-> +
-> +	if (chan_id >= d->chan_nrs || port_id >= d->port_nrs)
-> +		return 0;
-> +
-> +	p = &d->ports[port_id];
-> +	c = &d->chans[chan_id];
-> +	c->port = p;
-> +
-> +	if (d->ver == DMA_VER22) {
-> +		u32 desc_num;
-> +		u32 burst = spec->args[2];
-> +
-> +		if (burst != 2 && burst != 4 && burst != 8)
-> +			return 0;
-> +
-> +		/* TX and RX has the same burst length */
-> +		p->txbl = ilog2(burst);
-> +		p->rxbl = p->txbl;
-> +
-> +		desc_num = spec->args[3];
-> +		if (desc_num > 255)
-> +			return 0;
-> +		c->desc_num = desc_num;
-> +
-> +		ldma_port_cfg(p);
-> +		ldma_chan_cfg(c);
-> +	} else {
-> +		if (spec->args[2] > 0 && spec->args[2] <= DMA_ENDIAN_TYPE3) {
-> +			c->data_endian = spec->args[2];
-> +			c->data_endian_en = true;
-> +		}
-> +
-> +		if (spec->args[3] > 0 && spec->args[3] <= DMA_ENDIAN_TYPE3) {
-> +			c->desc_endian = spec->args[3];
-> +			c->desc_endian_en = true;
-> +		}
-> +
-> +		if (spec->args[4] > 0 && spec->args[4] < 128)
-> +			c->boff_len = spec->args[4];
-> +
-> +		if (spec->args[5])
-> +			c->desc_rx_np = true;
-> +
-> +		/*
-> +		 * If channel packet drop enabled, port packet drop should
-> +		 * be enabled
-> +		 */
-> +		if (spec->args[6]) {
-> +			c->pden = true;
-> +			p->pkt_drop = DMA_PKT_DROP_EN;
-> +		}
-> +
-> +		/*
-> +		 * hdr-mode: If enabled, header mode size is ignored
-> +		 *           If disabled, header mode size must be provided
-> +		 */
-> +		c->hdrm_csum = !!spec->args[8];
-> +		if (!c->hdrm_csum) {
-> +			if (!spec->args[7] || spec->args[7] > DMA_HDR_LEN_MAX)
-> +				return 0;
-> +			c->hdrm_len = spec->args[7];
-> +		}
-> +
-> +		if (spec->args[10]) {
-> +			c->desc_cnt = spec->args[10];
-> +			if (c->desc_cnt > DMA_MAX_DESC_NUM) {
-> +				dev_err(d->dev, "Channel %d descriptor number out of range %d\n",
-> +					c->nr, c->desc_cnt);
-> +				return 0;
-> +			}
-> +			c->desc_phys = spec->args[9];
-> +			c->flags |= DMA_HW_DESC;
-> +		}
-> +
-> +		ldma_port_cfg(p);
-> +		ldma_chan_cfg(c);
-> +	}
-> +
-> +	return 1;
-> +}
-> +
-
-Can you split all these kind of functions each to three:
-
-foo_vXXX()
-foo_v22()
-
-foo()
-{
-	if (ver = 22)
-		return foo_v22()
-	return foo_vXXX()
-}
-
-?
-
-...
-
-> +	d->rst = devm_reset_control_get_optional(dev, NULL);
-> +	if (IS_ERR(d->rst))
-> +		return PTR_ERR(d->rst);
-> +	reset_control_deassert(d->rst);
-
-Shouldn't be devm_add_action_or_reset() for assert reset?
-
-...
-
-> +	if (IS_ENABLED(CONFIG_64BIT)) {
-> +		if (id & DMA_ID_AW_36B)
-> +			bitn = 36;
-> +	}
-
-if (a) { if (b) { ... }} ==> if (a && b) { ...}
-
-...
-
-> +	if (d->ver == DMA_VER22) {
-
-Split?
-
-> +		ret = of_property_read_u32(pdev->dev.of_node, "dma-channels",
-> +					   &d->chan_nrs);
-> +		if (ret < 0) {
-> +			dev_err(dev, "unable to read dma-channels property\n");
-> +			return ret;
-> +		}
-> +
-> +		ret = of_property_read_u32(pdev->dev.of_node, "dma-channel-mask",
-> +					   &d->channels_mask);
-> +		if (ret < 0)
-> +			d->channels_mask = GENMASK(d->chan_nrs - 1, 0);
-
-of_property*() are leftovers? Shouldn't be device_property_*()?
-
-> +
-> +		d->irq = platform_get_irq(pdev, 0);
-> +		if (d->irq < 0)
-> +			return d->irq;
-> +
-> +		ret = devm_request_irq(&pdev->dev, d->irq, dma_interrupt,
-> +				       0, DRIVER_NAME, d);
-> +		if (ret)
-> +			return ret;
-> +
-> +		d->wq = alloc_ordered_workqueue("dma_wq", WQ_MEM_RECLAIM |
-> +						WQ_HIGHPRI);
-> +		if (!d->wq)
-> +			return -ENOMEM;
-> +	}
-
-...
-
-> +	for (i = 0; i < d->port_nrs; i++) {
-> +		p = &d->ports[i];
-> +		p->portid = i;
-> +		p->ldev = d;
-
-> +		for (j = 0; j < d->chan_nrs && d->ver != DMA_VER22; j++)
-> +			c = &d->chans[j];
-
-What's going on here?
-
-> +	}
-
-...
-
-> +	for (i = 0; i < d->chan_nrs; i++) {
-> +		if (d->ver == DMA_VER22) {
-
-Split...
-
-> +			if (!(d->channels_mask & BIT(i)))
-> +				continue;
-
-...and obviously for_each_set_bit().
-
-> +			c = &d->chans[i];
-> +			c->nr = i; /* Real channel number */
-> +			c->rst = DMA_CHAN_RST;
-> +			snprintf(c->name, sizeof(c->name), "chan%d",
-> +				 c->nr);
-> +			INIT_WORK(&c->work, dma_work);
-> +			c->vchan.desc_free = dma_free_desc_resource;
-> +			vchan_init(&c->vchan, dma_dev);
-> +		} else {
-> +			c = &d->chans[i];
-> +			c->data_endian = DMA_DFT_ENDIAN;
-> +			c->desc_endian = DMA_DFT_ENDIAN;
-> +			c->data_endian_en = false;
-> +			c->desc_endian_en = false;
-> +			c->desc_rx_np = false;
-> +			c->flags |= DEVICE_ALLOC_DESC;
-> +			c->onoff = DMA_CH_OFF;
-> +			c->rst = DMA_CHAN_RST;
-> +			c->abc_en = true;
-> +			c->nr = i;
-> +			c->vchan.desc_free = dma_free_desc_resource;
-> +			vchan_init(&c->vchan, dma_dev);
-> +		}
-> +	}
-
-...
-
-> +static int __init intel_ldma_init(void)
-> +{
-> +	return platform_driver_register(&intel_ldma_driver);
-> +}
-> +
-> +device_initcall(intel_ldma_init);
-
-Each _initcall() in general should be explained.
-
-...
-
-> +#include <linux/dmaengine.h>
-
-I don't see how it's used
-
-struct dma_chan;
-
-should be enough.
-
-> +/*!
-> + * \fn int intel_dma_chan_desc_cfg(struct dma_chan *chan, dma_addr_t desc_base,
-> + *                                 int desc_num)
-> + * \brief Configure low level channel descriptors
-> + * \param[in] chan   pointer to DMA channel that the client is using
-> + * \param[in] desc_base   descriptor base physical address
-> + * \param[in] desc_num   number of descriptors
-> + * \return   0 on success
-> + * \return   kernel bug reported on failure
-> + *
-> + * This function configure the low level channel descriptors. It will be
-> + * used by CBM whose descriptor is not DDR, actually some registers.
-> + */
-> +int intel_dma_chan_desc_cfg(struct dma_chan *chan, dma_addr_t desc_base,
-> +			    int desc_num);
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+Hi Greg,
+
+please drop that patch. It turned out to break a lot of different setups 
+and we are going to revert it now.
+
+Thanks,
+Christian.
+
+Am 08.09.20 um 17:24 schrieb Greg Kroah-Hartman:
+> From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+>
+> [ Upstream commit fc8c70526bd30733ea8667adb8b8ffebea30a8ed ]
+>
+> Commit 2e26ccb119bd ("drm/radeon: prefer lower reference dividers")
+> fixed screen flicker for HP Compaq nx9420 but breaks other laptops like
+> Asus X50SL.
+>
+> Turns out we also need to favor lower feedback dividers.
+>
+> Users confirmed this change fixes the regression and doesn't regress the
+> original fix.
+>
+> Fixes: 2e26ccb119bd ("drm/radeon: prefer lower reference dividers")
+> BugLink: https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fbugs.launchpad.net%2Fbugs%2F1791312&amp;data=02%7C01%7Cchristian.koenig%40amd.com%7C9fcd8f691f97451da30608d8540e3896%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637351767352887370&amp;sdata=KKx0nGwITXVSg5Bg7XJHbVh0T30knZDioivKxO4%2F%2BB0%3D&amp;reserved=0
+> BugLink: https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fbugs.launchpad.net%2Fbugs%2F1861554&amp;data=02%7C01%7Cchristian.koenig%40amd.com%7C9fcd8f691f97451da30608d8540e3896%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637351767352897339&amp;sdata=KWknTc75Zjw3clREsEfY6wtDcv%2F3gddeyHhrhlHN0nY%3D&amp;reserved=0
+> Reviewed-by: Christian König <christian.koenig@amd.com>
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
+>   drivers/gpu/drm/radeon/radeon_display.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/radeon/radeon_display.c b/drivers/gpu/drm/radeon/radeon_display.c
+> index df1a7eb736517..840c4bf6307fd 100644
+> --- a/drivers/gpu/drm/radeon/radeon_display.c
+> +++ b/drivers/gpu/drm/radeon/radeon_display.c
+> @@ -933,7 +933,7 @@ static void avivo_get_fb_ref_div(unsigned nom, unsigned den, unsigned post_div,
+>   
+>   	/* get matching reference and feedback divider */
+>   	*ref_div = min(max(den/post_div, 1u), ref_div_max);
+> -	*fb_div = DIV_ROUND_CLOSEST(nom * *ref_div * post_div, den);
+> +	*fb_div = max(nom * *ref_div * post_div / den, 1u);
+>   
+>   	/* limit fb divider to its maximum */
+>   	if (*fb_div > fb_div_max) {
 
