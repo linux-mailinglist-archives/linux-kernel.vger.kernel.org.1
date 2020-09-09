@@ -2,126 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 519F02632F9
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:54:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B74BD263292
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:46:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730504AbgIIP5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 11:57:09 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58714 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730588AbgIIPxq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 11:53:46 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 71E76B291;
-        Wed,  9 Sep 2020 14:15:09 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 530AC1E12E5; Wed,  9 Sep 2020 16:14:53 +0200 (CEST)
-Date:   Wed, 9 Sep 2020 16:14:53 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Cc:     Jan Kara <jack@suse.cz>, milan.opensource@gmail.com,
-        lkml <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        Jeff Layton <jlayton@kernel.org>, NeilBrown <neilb@suse.com>
-Subject: Re: [PATCH] fsync.2: ERRORS: add EIO and ENOSPC
-Message-ID: <20200909141453.GC29150@quack2.suse.cz>
-References: <1598685186-27499-1-git-send-email-milan.opensource@gmail.com>
- <CAKgNAkiTjtdaQxbCYS67+SdqSPaGzJnfLEEMFgcoXjHLDxgemw@mail.gmail.com>
- <20200908112742.GA2956@quack2.suse.cz>
- <7be61144-0e77-3c31-d720-f2cbe56bc81e@gmail.com>
- <20200909112110.GA29150@quack2.suse.cz>
- <0f473a75-fd5a-82f7-1d0e-e9c168414498@gmail.com>
+        id S1727856AbgIIQHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 12:07:41 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:11390 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730261AbgIIQFV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 12:05:21 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f58e3420001>; Wed, 09 Sep 2020 07:14:26 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Wed, 09 Sep 2020 07:15:10 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Wed, 09 Sep 2020 07:15:10 -0700
+Received: from [10.2.173.224] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 9 Sep
+ 2020 14:15:07 +0000
+From:   Zi Yan <ziy@nvidia.com>
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>
+CC:     <linux-mm@kvack.org>, Roman Gushchin <guro@fb.com>,
+        Rik van Riel <riel@surriel.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        David Nellans <dnellans@nvidia.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH 01/16] mm: add pagechain container for storing
+ multiple pages.
+Date:   Wed, 9 Sep 2020 10:15:05 -0400
+X-Mailer: MailMate (1.13.1r5705)
+Message-ID: <1970690D-DA0B-4C46-BE0C-66F33D881653@nvidia.com>
+In-Reply-To: <20200909134622.xkuzx5nf4xq2vudh@box>
+References: <20200902180628.4052244-1-zi.yan@sent.com>
+ <20200902180628.4052244-2-zi.yan@sent.com>
+ <20200907122228.4zlyfysdul3s62me@box>
+ <50FA95D1-9222-48C0-9223-C1267E8C7A4A@nvidia.com>
+ <20200909134622.xkuzx5nf4xq2vudh@box>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0f473a75-fd5a-82f7-1d0e-e9c168414498@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: multipart/signed;
+        boundary="=_MailMate_D0E4833B-CB0F-4F80-8EC1-E6EF8EC8C2B3_=";
+        micalg=pgp-sha512; protocol="application/pgp-signature"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1599660866; bh=GOFHZK2XhOsa4oTcM5/sgtSmF1DP7Z0sECRgUhmrQ1E=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:X-Mailer:Message-ID:
+         In-Reply-To:References:MIME-Version:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type;
+        b=XwW8NRZF70tCHfYaM4JRWXa89N4P400FcNkY5mm/pAF945976KQ0xMSAZE88jAPwB
+         2JgeqJLArFv2Vv9lqxAOQIwGrp1pu4q6p2USrCQAJGbz65Zs+CvzDt+/li91LRK0Pv
+         yui0706T2RZGj86cVWTCuhLDKHCjFI78xNG47AX8ELXYrTzI/HEhjgfy4N8ZpK3gQ4
+         odTGXbwZuGi4HcBkH/Vyqcqrk2vm59gesd0/8atDspD4nOELWXf30hB8F32lhFv/YF
+         D2s2yG7AN6DK5sDrtOo+syRmpxIwcmIu2golb+PJhyGFQBZs/trHQs8KjAEBT4uCvD
+         dUGenyBovp0nw==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 09-09-20 13:58:50, Michael Kerrisk (man-pages) wrote:
-> [CC += Neil, since he wrote the text we're talking about]
-> 
-> Hello Jan,
-> 
-> On 9/9/20 1:21 PM, Jan Kara wrote:
-> > On Wed 09-09-20 12:52:48, Michael Kerrisk (man-pages) wrote:
-> >>> So the error state isn't really stored "on pages in the file mapping".
-> >>> Current implementation (since 4.14) is that error state is stored in struct
-> >>> file (I think this tends to be called "file description" in manpages) and
-> >>
-> >> (Yes, "open file description" is the POSIX terminology for the thing that
-> >> sits between the FD and the inode--struct file in kernel parlance--and I
-> >> try to follow POSIX terminology in the manual pages where possible.
-> >>
-> >>> so EIO / ENOSPC is reported once for each file description of the file that
-> >>> was open before the error happened. Not sure if we want to be so precise in
-> >>> the manpages or if it just confuses people. 
-> >>
-> >> Well, people are confused now, so I think more detail would be good.
-> >>
-> >>> Anyway your takeway that no
-> >>> error on subsequent fsync() does not mean data was written is correct.
-> >>
-> >> Thanks. (See also my rply to Jeff.)
-> >>
-> >> By the way, a question related to your comments above. In the 
-> >> errors section, there is this:
-> >>
-> >>        EIO    An  error  occurred during synchronization.  This error may
-> >>               relate to data written to some other file descriptor on the
-> >> *             same  file.   Since Linux 4.13, errors from write-back will
-> >>               be reported to all file descriptors that might have written
-> >>               the  data  which  triggered  the  error.   Some filesystems
-> >>               (e.g., NFS) keep close track of  which  data  came  through
-> >>               which  file  descriptor,  and  give more precise reporting.
-> >>               Other  filesystems  (e.g.,  most  local  filesystems)  will
-> >>               report errors to all file descriptors that were open on the
-> >> *             file when the error was recorded.
-> >>
-> >> In the marked (*) lines, we have the word "file". Is this accurate? I mean, I
-> >> would normally take "file" in this context to mean the inode ('struct inode').
-> >> But I wonder if really what is meant here is "open file description"
-> >> ('struct file'). In other words, is the EIO being generated for all FDs 
-> >> connected to the same open file description, or for all FDs for all of the
-> >> open file descriptions connected to the inode? Your thoughts?
-> > 
-> > The error gets reported once for each "open file description" of the file
-> > (inode) where the error happened. If there are multiple file descriptors
-> > pointing to the same open file description, then only one of those file
-> > descriptors will see the error. This is inevitable consequence of kernel
-> > storing the error state in struct file and clearing it once it is
-> > reported...
-> 
-> So, the text in wrong two respects, I believe:
-> 
-> * It should be phrased in terms of "open file description", not "file",
-> in the lines that I marked.
+--=_MailMate_D0E4833B-CB0F-4F80-8EC1-E6EF8EC8C2B3_=
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-No, I believe 'file' is correct on these two lines. I guess I wasn't
-precise enough in my explanation of the mechanism :) We actually have two
-places where we store error state. There's "error counter" in the inode and
-then "last seen error" counter in struct file. Whenever "last seen error"
-is less than "inode error counter" we report error from the syscall and set
-"last seen error" in the used struct file to the current "inode error
-counter". So whenever writeback error happens for the inode, all 'struct
-file's will end up reporting the error exactly once.
+On 9 Sep 2020, at 9:46, Kirill A. Shutemov wrote:
 
-> * Where it says "to all file descriptors" (twice), it should rather say
-> "to any of the file descriptors [that refer to the open file description]"
+> On Mon, Sep 07, 2020 at 11:11:05AM -0400, Zi Yan wrote:
+>> On 7 Sep 2020, at 8:22, Kirill A. Shutemov wrote:
+>>
+>>> On Wed, Sep 02, 2020 at 02:06:13PM -0400, Zi Yan wrote:
+>>>> From: Zi Yan <ziy@nvidia.com>
+>>>>
+>>>> When depositing page table pages for 1GB THPs, we need 512 PTE pages=
+ +
+>>>> 1 PMD page. Instead of counting and depositing 513 pages, we can use=
+ the
+>>>> PMD page as a leader page and chain the rest 512 PTE pages with ->lr=
+u.
+>>>> This, however, prevents us depositing PMD pages with ->lru, which is=
 
-This is correct but I'm not sure it captures well the fact that each open
-file description is guaranteed to get a notification. So maybe I'd rephrase
-it like "reported to all file descriptors" -> "reported to all open file
-descriptions (if there are multiple file descriptors pointing to the same
-open file description, the error is reported only to the first call
-regardless of which of the descriptors it uses)"
+>>>> currently used by depositing PTE pages for 2MB THPs. So add a new
+>>>> pagechain container for PMD pages.
+>>>>
+>>>> Signed-off-by: Zi Yan <ziy@nvidia.com>
+>>>
+>>> Just deposit it to a linked list in the mm_struct as we do for PMD if=
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+>>> split ptl disabled.
+>>>
+>>
+>> Thank you for checking the patches. Since we don=E2=80=99t have PUD sp=
+lit lock
+>> yet, I store the PMD page table pages in a newly added linked list hea=
+d
+>> in mm_struct like you suggested above.
+>>
+>> I was too vague about my pagechain design for depositing page table pa=
+ges
+>> for PUD THPs. Sorry about the confusion. Let me clarify why
+>> I am doing this pagechain here too. I am sure there would be
+>> some other designs and I am happy to change my code.
+>>
+>> In my design, I did not store all page table pages in a single list.
+>> I first deposit 512 PTE pages in one PMD page table page=E2=80=99s pmd=
+_huge_pte
+>> using pgtable_trans_huge_depsit(), then deposit the PMD page to
+>> a newly added linked list in mm_struct. Since pmd_huge_pte shares spac=
+e
+>> with half of lru in struct page, we cannot use lru to link all PMD
+>> pages together. As a result, I added pagechain. Also in this way,
+>> we can avoid these things:
+>>
+>> 1. when we withdraw the PMD page during PUD THP split, we don=E2=80=99=
+t need
+>> to withdraw 513 page, set up one PMD page, then, deposit 512 PTE pages=
+
+>> in that PMD page.
+>>
+>> 2. we don=E2=80=99t mix PMD page table pages and PTE page table pages =
+in a single
+>> list, since they are initialized in different ways. Otherwise, we need=
+
+>> to maintain a subtle rule in the single page table page list that in e=
+very
+>> 513 pages, first one is PMD page table page and the rest are PTE page
+>> table pages.
+>>
+>> As I am typing, I also realize that my current design does not work
+>> when PMD split lock is disabled, so I will fix it. I would store PMD p=
+ages
+>> and PTE pages in two separate lists in mm_struct.
+>>
+>>
+>> Any comments?
+>
+> Okay, fair enough.
+>
+> Although, I think you can get away without a new data structure. We don=
+'t
+> need double-linked list to deposit page tables. You can rework PTE tabl=
+es
+> deposit code to have single-linked list and use one pointer of ->lru (w=
+ith
+> proper name) and make PMD tables deposit to use the other one. This way=
+
+> you can avoid conflict for ->lru.
+>
+> Does it make sense?
+
+Yes. Thanks. Will do this in the next version. I think the single linked =
+list
+from llist.h can be used.
+
+=E2=80=94
+Best Regards,
+Yan Zi
+
+--=_MailMate_D0E4833B-CB0F-4F80-8EC1-E6EF8EC8C2B3_=
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJCBAEBCgAtFiEEh7yFAW3gwjwQ4C9anbJR82th+ooFAl9Y42kPHHppeUBudmlk
+aWEuY29tAAoJEJ2yUfNrYfqK2g8P9RpqkmfY2NIK9W9h7ldxxXgvwvVbCq2xVMI9
+Xj+clVhDb7PbGdN7RP7sgtkNy9woJWAKcAWo+wzILT7KmfN0oFj0ZNTgnyil/MH4
+wmKRrFY6bY911Kwjx62Z+xY2E0rXg0MX1Ang7ols8X2uhO1qA2TRwgjw3fwyEzyK
+237whK8BW40W0nDUi6NPyqhWRZtvEygrEXqiNV7FxZsKqB0F14HAfHGzzSu2B8pB
+E6z0d9X2G6OSn+/Y5UgHmUiXDTuGviTCKPOi4LaA1IYQBSUiUBo8SoxBEjMUdGEC
+KKtUmo32tWbi+WFMoG+3u/eO32k6cyYrmpnEu+Bv9dHaqZL1IHlqQsimbV/ik1Td
+gQKoNhp3UtGwo1i5BW3MvnF1HMxUlgWQAHLcwl/9DzbKMHCfA67SHxVfI9fsa45b
+uxSqfB525/bwT8VePK4qbBjgfkIMeAbt1wrklr3uSPrAlY1AqhbStpzthb2oWaGI
+lLzdXGlbKWJHZVrq11mIu5BIc2a3s3YRB8/Rz6s/gJF6OXbidCuTZop9iuIG8ZGS
+Qo19XYCIY1wg4NtL6ZRGPQnPIYoOu32A4XUCg90TmqYb2kGqhG+YNAHMJvr87zDG
+Dw4e1KeGOK3+05GMnGb5jn5MM9pJuw/8htWmaUwL4GaiPUxDEs+wZ95plYa1PIk+
+m8GltQI=
+=jndG
+-----END PGP SIGNATURE-----
+
+--=_MailMate_D0E4833B-CB0F-4F80-8EC1-E6EF8EC8C2B3_=--
