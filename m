@@ -2,92 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBA06262EBC
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 14:53:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC0E8262ED6
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 15:00:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730085AbgIIMw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 08:52:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37714 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730239AbgIIMhp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 08:37:45 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 40C8421941;
-        Wed,  9 Sep 2020 12:36:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599654987;
-        bh=MyTxeMGJ0aUch6xrrUFEzK1mWKVG/hL4CJaX7/Slcb4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=C19O5ED9pwEGaBq3WjWQS4SEZ5Lwz/9O2+IjIPFpWqNr+we1f2lRLe54jer5JqlNM
-         0eSNjuQLOcEhFYhT4ftwMDXBld7PGwh/f/JVfvv+XZE6TQig928vZxQqqZDRZPZQsc
-         zPOFUH1l4t7YyS3kNcaMlIRHQgbQ9Wd+oQufliok=
-Date:   Wed, 9 Sep 2020 14:36:37 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Laurent Dufour <ldufour@linux.ibm.com>,
-        Michal Hocko <mhocko@suse.com>, akpm@linux-foundation.org,
-        Oscar Salvador <osalvador@suse.de>, rafael@kernel.org,
-        nathanl@linux.ibm.com, cheloha@linux.ibm.com,
-        stable@vger.kernel.org, linux-mm@kvack.org,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mm: don't rely on system state to detect hot-plug
- operations
-Message-ID: <20200909123637.GA671204@kroah.com>
-References: <5cbd92e1-c00a-4253-0119-c872bfa0f2bc@redhat.com>
- <20200908170835.85440-1-ldufour@linux.ibm.com>
- <20200909074011.GD7348@dhcp22.suse.cz>
- <9faac1ce-c02d-7dbc-f79a-4aaaa5a73d28@linux.ibm.com>
- <20200909090953.GE7348@dhcp22.suse.cz>
- <4cdb54be-1a92-4ba4-6fee-3b415f3468a9@linux.ibm.com>
- <9ad553f2-ebbf-cae5-5570-f60d2c965c41@redhat.com>
- <20200909123001.GA670250@kroah.com>
- <e3ea2aab-70d5-0da4-7e72-c02051854497@redhat.com>
+        id S1729614AbgIIM6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 08:58:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51364 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730205AbgIIMyH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 08:54:07 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0483C061573
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 05:54:12 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id gr14so3424868ejb.1
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 05:54:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8MkTFG6PvXpNoyym24U4EGiq+J1JzE76f2uYpJH8tx0=;
+        b=bED0SvmpnihLTx7w6yxuLyY0+FkyiLEaFYFx7SaCxzu3V6SeQV3HJiLHEvYsLeIQ4W
+         RZTidtAZkZaoTYoqd/bfS2EHxx+na8JVzUVMZ8vdzCmAP7nC0WriAT8xggzKwb0DeuMq
+         XldnkdVTUniwcLFwOa3d3lNG7f04GYaEGFRRC/+eejocYP+JW7AC63ZKdTVqR8G9DCJo
+         KmBpVriFFC+qo/VQXgwxbDTFvI4lI1qxj77yGPZ/S0xbmKx4OGAj34OIuqMqH9wC9OKQ
+         3MfO013qxHWBtVEdBuGPwxu7UnNb0vWY87FMWyywTA0PlqpSehJuJEeTLWWegYj9Hvrl
+         0JwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8MkTFG6PvXpNoyym24U4EGiq+J1JzE76f2uYpJH8tx0=;
+        b=s67hmjCltTQkzKyizIKPPthZPaGup8CYFrnnUr1IgWNwNVnRQsBMuWBGZwze+VNM8O
+         FUsKt+hMvDkcVFpN/+EQ2MDCCCUk5L+xNw6REwsgwu3+nK2pKzPjt9YR5LotO+M6sWRX
+         MbkkVu47I42psJEgjb74dAXDvY2WzND6Yo9PsOkM27X6lNelfk+w/N7IablWPA+QnVnu
+         s18n+GHTwgFPccKwDSjjYiA3FYILM6W6S3TmmqDccOa9CyEioXBf5J755FHVp4dppY9n
+         81m/1POnEFP+tSecjM/N4yErCv1mI1U7Oq6uFdFUhAwc/YPcz9o695HFA1kPg/UI13lC
+         /x3A==
+X-Gm-Message-State: AOAM530bZSZ5FUO3qDZhY2YIPtvTI4+4SFUZCKwxDy2W67UuSiYW5Ql4
+        y0H7H769PSii3JiRD38OGMC6XMPwDpNXde6fTWb7WQ==
+X-Google-Smtp-Source: ABdhPJxiW6o5CF789NcjwGT/tFM0KuNKzfoTCu8t7Mkh4H09/JIsdp6BPkaNcid/X6E3sEHrrrajh3SKhiOS/UZctcw=
+X-Received: by 2002:a17:906:a1c2:: with SMTP id bx2mr3608780ejb.426.1599656051243;
+ Wed, 09 Sep 2020 05:54:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e3ea2aab-70d5-0da4-7e72-c02051854497@redhat.com>
+References: <20200907163628.26495-1-vbabka@suse.cz> <20200907163628.26495-6-vbabka@suse.cz>
+ <d5d5ef64-b239-0640-5640-75c7a3c78584@suse.cz> <20200909113647.GG7348@dhcp22.suse.cz>
+In-Reply-To: <20200909113647.GG7348@dhcp22.suse.cz>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Wed, 9 Sep 2020 08:53:35 -0400
+Message-ID: <CA+CK2bAai5CMWVVeTxbAjaeLBJ8sjT7H6OuAEJYjUXcas8EBcQ@mail.gmail.com>
+Subject: Re: [RFC 5/5] mm, page_alloc: disable pcplists during page isolation
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Vlastimil Babka <vbabka@suse.cz>, linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 09, 2020 at 02:32:57PM +0200, David Hildenbrand wrote:
-> On 09.09.20 14:30, Greg Kroah-Hartman wrote:
-> > On Wed, Sep 09, 2020 at 11:24:24AM +0200, David Hildenbrand wrote:
-> >>>> I am not sure an enum is going to make the existing situation less
-> >>>> messy. Sure we somehow have to distinguish boot init and runtime hotplug
-> >>>> because they have different constrains. I am arguing that a) we should
-> >>>> have a consistent way to check for those and b) we shouldn't blow up
-> >>>> easily just because sysfs infrastructure has failed to initialize.
-> >>>
-> >>> For the point a, using the enum allows to know in register_mem_sect_under_node() 
-> >>> if the link operation is due to a hotplug operation or done at boot time.
-> >>>
-> >>> For the point b, one option would be ignore the link error in the case the link 
-> >>> is already existing, but that BUG_ON() had the benefit to highlight the root issue.
-> >>>
-> >>
-> >> WARN_ON_ONCE() would be preferred  - not crash the system but still
-> >> highlight the issue.
-> > 
-> > Many many systems now run with 'panic on warn' enabled, so that wouldn't
-> > change much :(
-> > 
-> > If you can warn, you can properly just print an error message and
-> > recover from the problem.
-> 
-> Maybe VM_WARN_ON_ONCE() then to detect this during testing?
+> because we do not want to call out pcp free lists). I strongly suspect
+> that only the memory hotplug really cares for this hard guanrantee.
+> alloc_contig_range simply goes with EBUSY.
+>
 
-If you all use that, sure.
+You are right, the strong requirement is for hotplug case only, but if
+PCP disable/enable functionality is properly implemented, and we are
+still draining the lists in alloc_contig_range case, I do not see a
+reason not to disable/enable PCP during CMA as well just to reduce
+number of spurious errors.
 
-> (we basically turned WARN_ON_ONCE() useless with 'panic on warn' getting
-> used in production - behaves like BUG_ON and BUG_ON is frowned upon)
-
-Yes we have, but in the end, it's good, those things should be fixed and
-not accessable by anything a user can trigger.
-
-thanks,
-
-greg k-h
+Thanks,
+Pasha
