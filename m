@@ -2,75 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D9C7263A89
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 04:32:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E577A263AF2
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 04:49:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730212AbgIJCcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 22:32:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39572 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730921AbgIJCZa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 22:25:30 -0400
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4BB2D208CA
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 23:57:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599695820;
-        bh=G/d7I7uYDPr+xcXLSAz55tCVxS++/YD+BwhhhZQ43rE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=qP1mLFoFElIO3POE7p4mPUAYXwmsO/XSRrk3t5/qHZWwPmEBX9oUK3Ytty/iZa4Mh
-         UxBxO0tdVkS8hnI6o3a/YfGj5gTiUN4wdk00h/C60TAK1Lr75rN+d793UgH2dGKZXE
-         87xu1sF3AVtntrGULLDYy7gBUkGv67K2IFmH9JPI=
-Received: by mail-wm1-f41.google.com with SMTP id k18so4007605wmj.5
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 16:57:00 -0700 (PDT)
-X-Gm-Message-State: AOAM532+5oyO6h4DRkrmvQjuvNo4B5X1bD0ehbOaBPySh1ws2NULO8fs
-        QfZFT4EIpP3RWyFyCOo4WjtEBph2y/mnqf8kwa8IkQ==
-X-Google-Smtp-Source: ABdhPJzH/nmU4Vf4z8Anq+NWWPNlJPoNfTnH0PJIk0ApNI/X6nVQ/+QvDJXA4QaLUUOZaFv1S6ywVK6a0FKb2CQSs0Q=
-X-Received: by 2002:a05:600c:2183:: with SMTP id e3mr6114629wme.49.1599695818930;
- Wed, 09 Sep 2020 16:56:58 -0700 (PDT)
+        id S1729161AbgIJB7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 21:59:00 -0400
+Received: from a27-188.smtp-out.us-west-2.amazonses.com ([54.240.27.188]:57668
+        "EHLO a27-188.smtp-out.us-west-2.amazonses.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728363AbgIJBhS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 21:37:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+        s=zsmsymrwgfyinv5wlfyidntwsjeeldzt; d=codeaurora.org; t=1599695807;
+        h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:Content-Type:In-Reply-To;
+        bh=l4FYBGdELu+UT/43hvHKaWHmD+LJV7nzWAyhKyqC2ag=;
+        b=VGtjo6KJhXt1Bh4flUMrEAQ5D0jIgKxycT/rcbbYDdW2tXxHZLXllrhSXvJTvwH0
+        X/4ILow0foPIh/aBMoeZ+/5a+eyaMFhy0CBvZF/J3dETlVK8yBw+fdA1K9Rv5QarPNc
+        dWAMQnNSHtQ2MDx4hnqDBLJ3qBwFZ3Vv0LCA/qRQ=
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+        s=hsbnp7p3ensaochzwyq5wwmceodymuwv; d=amazonses.com; t=1599695807;
+        h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:Content-Type:In-Reply-To:Feedback-ID;
+        bh=l4FYBGdELu+UT/43hvHKaWHmD+LJV7nzWAyhKyqC2ag=;
+        b=HMxIXv5U/9CdNvVZL4oxoVcnniDEVlAJKAxIE5aTpViEu/29aJs5VWjwEGjW0Yvj
+        TyiDtAg1Pn0+q2CBNKR9uz5kP6fr224OyvFvpQ2MPUzxBBTOC07hNWQJM6qVwrJY+j8
+        6anfkaBd4Oxeuvq47JfoEPe5Wprp2IH8Tlnc1KrI=
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3D976C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=tingweiz@codeaurora.org
+Date:   Wed, 9 Sep 2020 23:56:47 +0000
+From:   Tingwei Zhang <tingweiz@codeaurora.org>
+To:     tsoni@codeaurora.org
+Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Tingwei Zhang <tingwei@codeaurora.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Kim Phillips <kim.phillips@arm.com>,
+        Mao Jinlong <jinlmao@codeaurora.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Coresight ML <coresight@lists.linaro.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Mian Yousaf Kaukab <ykaukab@suse.de>,
+        Russell King <linux@armlinux.org.uk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Mike Leach <mike.leach@linaro.org>
+Subject: Re: [PATCH v9 00/24] coresight: allow to build coresight as modules
+Message-ID: <01010174754ce1c8-c53380ae-5d29-492f-a6c9-64bd0e16197d-000000@us-west-2.amazonses.com>
+References: <20200820054718.20115-1-tingwei@codeaurora.org>
+ <CANLsYkwhypfEkmhg=wK+_F6TxxGiuoSqpgGR0REqsOqC-X-3mg@mail.gmail.com>
+ <0101017470c9475d-00e296fc-1173-4afa-95cb-22ac70d85d5b-000000@us-west-2.amazonses.com>
+ <20200909161523.GA553266@xps15>
+ <c8737d9935a1b7a7372c41492939648d@codeaurora.org>
 MIME-Version: 1.0
-References: <20200908193029.GM25236@zn.tnic> <025308CD-6E1A-41E1-8B3D-E9842CE00794@amacapital.net>
- <CACdnJusOJVb0xpecFgPQB4N2WhUORikv_1eXAcGfJ3xwBVTo9Q@mail.gmail.com>
-In-Reply-To: <CACdnJusOJVb0xpecFgPQB4N2WhUORikv_1eXAcGfJ3xwBVTo9Q@mail.gmail.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Wed, 9 Sep 2020 16:56:46 -0700
-X-Gmail-Original-Message-ID: <CALCETrV+zLzKvmkJSyXVqVw6FREC__sMXrv2rygruSq3ZAwtiQ@mail.gmail.com>
-Message-ID: <CALCETrV+zLzKvmkJSyXVqVw6FREC__sMXrv2rygruSq3ZAwtiQ@mail.gmail.com>
-Subject: Re: [PATCH] x86/msr: do not warn on writes to OC_MAILBOX
-To:     Matthew Garrett <mjg59@google.com>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Sultan Alsawaf <sultan@kerneltoast.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        kitsunyan <kitsunyan@airmail.cc>,
-        "Brown, Len" <len.brown@intel.com>, X86 ML <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c8737d9935a1b7a7372c41492939648d@codeaurora.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-SES-Outgoing: 2020.09.10-54.240.27.188
+Feedback-ID: 1.us-west-2.CZuq2qbDmUIuT3qdvXlRHZZCpfZqZ4GtG9v3VKgRyF0=:AmazonSES
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 8, 2020 at 3:32 PM Matthew Garrett <mjg59@google.com> wrote:
->
-> On Tue, Sep 8, 2020 at 1:35 PM Andy Lutomirski <luto@amacapital.net> wrot=
-e:
->
-> > Undervolting is a bit different. It=E2=80=99s a genuinely useful config=
-uration that can affect system stability.  In general, I think it should be=
- allowed, and it should have a real driver in tree.
->
-> Agree that this should be a proper driver rather than permitting
-> arbitrary poking (especially if this isn't an architecturally defined
-> MSR - there's no guarantee that it'll have the same functionality
-> everywhere).
+On Thu, Sep 10, 2020 at 04:45:52AM +0800, tsoni@codeaurora.org wrote:
+> On 2020-09-09 09:15, Mathieu Poirier wrote:
+> >On Wed, Sep 09, 2020 at 02:54:33AM +0000, Tingwei Zhang wrote:
+> >>On Wed, Sep 09, 2020 at 01:53:51AM +0800, Mathieu Poirier wrote:
+> >>> Hi Tingwei,
+> >>>
+> >>> Apologies for the untimely response to this set, I am hoping to get
+> to
+> >>> it in the next two weeks.
+> >>>
+> >>
+> >>It's fine, Mathieu. Please let me know your comments once you have time.
+> >>I'm targeting to get these set merged in 5.10 Kernel.
+> >
+> >From the above it is not clear if you want this set to be _in_ the 5.10
+> >cycle
+> >or added to my list _during_ the 5.10 cycle, which would make it part of
+> >the
+> >5.11 cycle.  In any case the latter seems more realistic.
+> 
+> Tingwei can correct me here, but we prefer to have patches to be part of the
+> 5.10 release. It means they should get merged in Linus's tree in the next
+> merge window.
 
-After looking at the code for intel-undervolt a bit, that definitely
-needs kernel or even firmware support.  That MSR really is a mailbox.
-You write commands to it and read responses.  There's no way that user
-code can have adequate locking.
+Yes.  The target is to merge this series into Linus's tree in 5.10 Kernel.
+
+Thanks,
+Tingwei
+
+> 
+> ---Trilok Soni
