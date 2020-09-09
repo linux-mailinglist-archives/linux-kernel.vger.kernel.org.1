@@ -2,116 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F45F26313C
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:03:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F072E26318E
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:18:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730859AbgIIQDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 12:03:22 -0400
-Received: from mga11.intel.com ([192.55.52.93]:12310 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730845AbgIIQDR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 12:03:17 -0400
-IronPort-SDR: HKl1DivXqlVXKm0dIHHkPlBxJbflXQ2chWLlLxcNCLDiWdpl+4R1A+pQddHgAdhf8XYdomAdVF
- gVtwZLqY2JIw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9738"; a="155811594"
-X-IronPort-AV: E=Sophos;i="5.76,409,1592895600"; 
-   d="scan'208";a="155811594"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2020 07:39:27 -0700
-IronPort-SDR: GCSL0Ela4Jea3HKxxVgV9QfVD1pxCMqZXJtu2wol68k9I9lZ4TGaJNC5CJ0ZPDrkyaIqa4e/tr
- efe1lYen/FNQ==
-X-IronPort-AV: E=Sophos;i="5.76,409,1592895600"; 
-   d="scan'208";a="505473210"
-Received: from rsetyawa-mobl1.amr.corp.intel.com (HELO [10.212.20.145]) ([10.212.20.145])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2020 07:39:26 -0700
-Subject: Re: [PATCH] soundwire: bus: add enumerated slave to device list
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        vkoul@kernel.org, yung-chuan.liao@linux.intel.com
-Cc:     sanyog.r.kale@intel.com, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-References: <20200909082711.11670-1-srinivas.kandagatla@linaro.org>
- <80081c70-9137-c9f0-9813-8166275ef7af@linux.intel.com>
- <ab107351-dbde-7f6d-c588-11572aed5d2d@linaro.org>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <4cdcda10-bdc6-211f-d279-e74f57684b79@linux.intel.com>
-Date:   Wed, 9 Sep 2020 09:39:25 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1730885AbgIIQSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 12:18:43 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:46348 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730950AbgIIQPT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 12:15:19 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 089EcaZO039982;
+        Wed, 9 Sep 2020 14:43:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
+ date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=corp-2020-01-29;
+ bh=6ULPP3Gb9cEI6JekEdlEIOYKhWs71LEp2bfdfN7zhRs=;
+ b=yTOeDS0wHSkYYU8WFkoIh5Ce9ZZOxElSYphhkwTfRfseKTRFiGQy0361GiDxIjsNLECN
+ NB2W+blqs9WmJI80WNRon39lhU7mS+KCMm6Owh48l2DXLYAtJqLSj5+1FeBS/LBGwWhi
+ /AgtY8a5hK3ebeqeTIvrJhQrcVWKV2m1VZHB5PZUxaJJtGMaa703FemfNLRIYrY9sZg7
+ HVls44NA6J8YeIvurcGQrIWlU7FIacnPJOYMsKVv097yhRQzWvYrh14R/DmKZh3gGD58
+ VpzDfGNJRENM+JkFXVCN8JlABBsrlglZG8i5fA0t+kcGcdiBDWwHabzjkTDAhUqVyes/ Pw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 33c2mm27me-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 09 Sep 2020 14:43:32 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 089Ef5Tp033108;
+        Wed, 9 Sep 2020 14:41:32 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3020.oracle.com with ESMTP id 33cmk6prwy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 09 Sep 2020 14:41:32 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 089EfUC8034192;
+        Wed, 9 Sep 2020 14:41:32 GMT
+Received: from localhost.localdomain (dhcp-10-65-175-55.vpn.oracle.com [10.65.175.55])
+        by aserp3020.oracle.com with ESMTP id 33cmk6pru6-3;
+        Wed, 09 Sep 2020 14:41:31 +0000
+From:   Tom Hromatka <tom.hromatka@oracle.com>
+To:     tom.hromatka@oracle.com, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, fweisbec@gmail.com,
+        tglx@linutronix.de, mingo@kernel.org, adobriyan@gmail.com
+Subject: [RESEND PATCH 2/2] /proc/stat: Simplify iowait and idle calculations when cpu is offline
+Date:   Wed,  9 Sep 2020 08:41:22 -0600
+Message-Id: <20200909144122.77210-3-tom.hromatka@oracle.com>
+X-Mailer: git-send-email 2.25.4
+In-Reply-To: <20200909144122.77210-1-tom.hromatka@oracle.com>
+References: <20200909144122.77210-1-tom.hromatka@oracle.com>
 MIME-Version: 1.0
-In-Reply-To: <ab107351-dbde-7f6d-c588-11572aed5d2d@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9738 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 priorityscore=1501
+ phishscore=0 adultscore=0 bulkscore=0 clxscore=1015 mlxlogscore=999
+ malwarescore=0 suspectscore=0 lowpriorityscore=0 spamscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009090132
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+A customer reported that when a cpu goes offline, the iowait and idle
+times reported in /proc/stat will sometimes spike.  This is being
+caused by a different data source being used for these values when a
+cpu is offline.
 
->>> Currently slave devices are only added either from device tree or acpi
->>> entries. However lets say, there is wrong or no entry of a slave device
->>> in DT that is enumerated, then there is no way for user to know all
->>> the enumerated devices on the bus.
->>
->> Sorry Srinivas, I don't understand your point.
->>
->> The sysfs entries will include all devices that are described in 
->> platform firmware (be it DT or ACPI).
-> 
-> yes that is true, but it will not include all the enumerated devices on 
-> the bus!
-> 
-> In my case on a new board I was trying to figure out what devices are on 
-> the bus even before even adding any device tree entries!
+Prior to this patch:
 
-We've seen this before but dynamic debug provides all the information 
-you need. see e.g. the logs from 
-https://sof-ci.01.org/linuxpr/PR2425/build4447/devicetest/
+put the system under heavy load so that there is little idle time
 
-jf-cml-rvp-sdw-1 kernel: [  289.751974] soundwire sdw-master-0: Slave 
-attached, programming device number
-jf-cml-rvp-sdw-1 kernel: [  289.752121] soundwire sdw-master-0: SDW 
-Slave Addr: 10025d070000 <<< HERE
-jf-cml-rvp-sdw-1 kernel: [  289.752122] soundwire sdw-master-0: SDW 
-Slave class_id 0, part_id 700, mfg_id 25d, unique_id 0, version 1
+	       user nice system    idle iowait
+	cpu  109515   17  32111  220686    607
 
-  > In second case I had a typo in the device tree entry and sysfs 
-displayed
-> devices with that typo rather than actual enumerated device id.
+take cpu1 offline
 
-That's a feature, not a bug? We use what address the platform firmware 
-provides. If it's inaccurate then nothing can work.
+	       user nice system    idle iowait
+	cpu  113742   17  32721  220724    612
 
->> If you add to sysfs entries unknown devices which happen to be present 
->> on the bus, then what? How would you identify them from the devices 
->> that are described in firmware?
-> 
-> Both of them should be displayed in sysfs, core should be able to 
-> differentiate this based on the presence of fw_node or of_node and not 
-> bind!
+bring cpu1 back online
 
-Core yes but user not so much. If the intent is to list the devices 
-present on the bus, your patch still requires manual work.
+	       user nice system    idle iowait
+	cpu  118332   17  33430  220687    607
 
->> Also the sysfs entries describe properties, but if you haven't bound a 
->> driver then how would this work?
-> 
-> This is would be informative, atleast in cases like me!
-> 
-> All I want to know is the list of enumerated devices on the bus, If 
-> doing this way is not the right thing, then am happy to try any suggestion!
-> 
-> For now I have managed to figure out enumerated device ids on the bus 
-> with this patch, I was hoping that other people would also hit such 
-> issue, so I sent this patch!
+To prevent this, let's use the same data source whether a cpu is
+online or not.
 
-Now I get your point but
-a) you already have a dynamic debug trace to list all devices
-b) adding 'undeclared' devices would make things quite murky and is only 
-half of the solution. We already struggle because we already have 
-'ghost' devices in sysfs that are not physically present, and no way to 
-differentiate between the two. If we did add those entries, then we'd 
-need two new sysfs attributes such as
-'declared' and 'enumerated'.
+With this patch:
+
+put the system under heavy load so that there is little idle time
+
+	       user nice system    idle iowait
+	cpu   14096   16   4646  157687    426
+
+take cpu1 offline
+
+	       user nice system    idle iowait
+	cpu   21614   16   7179  157687    426
+
+bring cpu1 back online
+
+	       user nice system    idle iowait
+	cpu   27362   16   9555  157688    426
+
+Signed-off-by: Tom Hromatka <tom.hromatka@oracle.com>
+---
+ fs/proc/stat.c | 24 ++++++------------------
+ 1 file changed, 6 insertions(+), 18 deletions(-)
+
+diff --git a/fs/proc/stat.c b/fs/proc/stat.c
+index 46b3293015fe..35b92539e711 100644
+--- a/fs/proc/stat.c
++++ b/fs/proc/stat.c
+@@ -47,32 +47,20 @@ static u64 get_iowait_time(struct kernel_cpustat *kcs, int cpu)
+ 
+ static u64 get_idle_time(struct kernel_cpustat *kcs, int cpu)
+ {
+-	u64 idle, idle_usecs = -1ULL;
++	u64 idle, idle_usecs;
+ 
+-	if (cpu_online(cpu))
+-		idle_usecs = get_cpu_idle_time_us(cpu, NULL);
+-
+-	if (idle_usecs == -1ULL)
+-		/* !NO_HZ or cpu offline so we can rely on cpustat.idle */
+-		idle = kcs->cpustat[CPUTIME_IDLE];
+-	else
+-		idle = idle_usecs * NSEC_PER_USEC;
++	idle_usecs = get_cpu_idle_time_us(cpu, NULL);
++	idle = idle_usecs * NSEC_PER_USEC;
+ 
+ 	return idle;
+ }
+ 
+ static u64 get_iowait_time(struct kernel_cpustat *kcs, int cpu)
+ {
+-	u64 iowait, iowait_usecs = -1ULL;
+-
+-	if (cpu_online(cpu))
+-		iowait_usecs = get_cpu_iowait_time_us(cpu, NULL);
++	u64 iowait, iowait_usecs;
+ 
+-	if (iowait_usecs == -1ULL)
+-		/* !NO_HZ or cpu offline so we can rely on cpustat.iowait */
+-		iowait = kcs->cpustat[CPUTIME_IOWAIT];
+-	else
+-		iowait = iowait_usecs * NSEC_PER_USEC;
++	iowait_usecs = get_cpu_iowait_time_us(cpu, NULL);
++	iowait = iowait_usecs * NSEC_PER_USEC;
+ 
+ 	return iowait;
+ }
+-- 
+2.25.4
+
