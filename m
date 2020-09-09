@@ -2,55 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86B8A263780
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 22:34:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31AEC263775
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 22:32:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728617AbgIIUeB convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 9 Sep 2020 16:34:01 -0400
-Received: from mx-host.varioprint.ch ([217.173.235.106]:30286 "EHLO
-        mx-host.varioprint.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725772AbgIIUd7 (ORCPT
+        id S1730099AbgIIUb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 16:31:57 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:46918 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729692AbgIIUbS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 16:33:59 -0400
-X-Greylist: delayed 925 seconds by postgrey-1.27 at vger.kernel.org; Wed, 09 Sep 2020 16:33:58 EDT
-Received: from mx-host.varioprint.ch (127.0.0.1) id hb4u2o0171s1; Wed, 9 Sep 2020 22:18:00 +0200 (envelope-from <office@varioprint.ch>)
-Received: from mail.varioprint.ch ([10.1.65.68])
-        by mx-host.varioprint.ch ([10.1.1.2]) (Spambox)
-        with SMTP id o202009092017490003750-2; Wed, 09 Sep 2020 22:17:50 +0200
-Received: from info.rq1qw2wnpehe3goiu4jkwrclxg.mx.internal.cloudapp.net (Unknown [23.100.104.46])
-        by mail.varioprint.ch
-        ; Wed, 9 Sep 2020 20:27:02 +0200
-Message-ID: <C962E889-6754-442C-A3A8-9BE7DF24565F@mail.varioprint.ch>
-Content-Type: text/plain; charset="iso-8859-1"
+        Wed, 9 Sep 2020 16:31:18 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 089K2nuj123598;
+        Wed, 9 Sep 2020 16:31:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=PuadrHvm0MnklWOLHSJCPokf4kHEQnujJ5UtCKe7LCo=;
+ b=R8UFtztdS16r8HauU/G2TL3nT39oAyRKhhBF8l+uXw2m0E70CWXPgwhljliWy5lTw+Af
+ dbGjuVB/RxIsUVcagoB666I0TBqy8qGQZ2FjITuL+yhGxMkyznYYXMPsMUv9397DJNQ1
+ yvS8vHjYtNgUAZ9maKL2Gk6jFyBW3ALdsbgDYizgwtRtwR3QTzWxGIavJx/oqqb8NTRE
+ zR4LT7xf8LF58nhGIZo6zSZ0mZ8+RLQ9muaD0Xk9QqL8GMAPYOeHT3ioGdh1Y7q4emAQ
+ 9SDqC2T+hl+kfiZzDXVT+slHNPcb9CtRJooaw5h/Pv8e6AtIDUlfbVt9qd9ddwNZnT8a 4A== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33f55khkk4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 09 Sep 2020 16:31:06 -0400
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 089K338r124703;
+        Wed, 9 Sep 2020 16:31:03 -0400
+Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33f55khkjj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 09 Sep 2020 16:31:03 -0400
+Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
+        by ppma01dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 089KS1Af004301;
+        Wed, 9 Sep 2020 20:31:01 GMT
+Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
+        by ppma01dal.us.ibm.com with ESMTP id 33d46mwgfd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 09 Sep 2020 20:31:01 +0000
+Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
+        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 089KUtP141746762
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 9 Sep 2020 20:30:55 GMT
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2EC5178063;
+        Wed,  9 Sep 2020 20:31:00 +0000 (GMT)
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 834797805F;
+        Wed,  9 Sep 2020 20:30:59 +0000 (GMT)
+Received: from SHADE6A.ibmuc.com (unknown [9.163.76.239])
+        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Wed,  9 Sep 2020 20:30:59 +0000 (GMT)
+From:   Eddie James <eajames@linux.ibm.com>
+To:     linux-input@vger.kernel.org
+Cc:     devicetree@vger.kernel.org, linux-aspeed@lists.ozlabs.org,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        robh+dt@kernel.org, dmitry.torokhov@gmail.com, joel@jms.id.au,
+        andrew@aj.id.au, benh@kernel.crashing.org,
+        brendanhiggins@google.com, wsa@kernel.org, rentao.bupt@gmail.com,
+        ryan_chen@aspeedtech.com
+Subject: [PATCH v3 0/5] input: misc: Add IBM Operation Panel driver
+Date:   Wed,  9 Sep 2020 15:30:54 -0500
+Message-Id: <20200909203059.23427-1-eajames@linux.ibm.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: Partner request
-To:     Recipients <office@varioprint.ch>
-From:   "Ms. Reem al-Hashimi" <office@varioprint.ch>
-Date:   Wed, 09 Sep 2020 18:27:02 +0000
-Reply-To: reemalhashimi@daum.net
-X-Mlf-DSE-Version: 6185
-X-Mlf-Rules-Version: s20200506163642; ds20200715013501;
-        di20200514170312; ri20160318003319; fs20200615142104
-X-Mlf-Smartnet-Details: 202009092017490003750
-X-Mlf-Smartnet-Version: 20180828000001
-X-Mlf-Version: 10.0.2.1711
-X-Mlf-License: BSV_C_AP_T_R
-X-Mlf-UniqueId: o202009092017490003750
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-09_16:2020-09-09,2020-09-09 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=1 bulkscore=0
+ clxscore=1015 mlxscore=0 priorityscore=1501 adultscore=0
+ lowpriorityscore=0 phishscore=0 malwarescore=0 spamscore=0 mlxlogscore=999
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009090178
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-My name is Reem E. Al-Hashimi, the Emirates Minister of State and Managing Director of the United Arab Emirates (Dubai) World Expo 2020 Committee. I am writing to you to stand as my partner to receive my share of gratification from foreign companies whom I helped during the bidding exercise towards the Dubai World Expo 2020 Committee and also i want to use this funds to assist Coronavirus Symptoms and Causes.
+This series adds support for input from the IBM Operation Panel, which is
+a simple controller with three buttons and an LCD display meant for
+interacting with a server. It's connected over I2C, typically to a service
+processor. This series only supports the input from the panel, in which the
+panel masters the I2C bus and sends data to the host system when someone
+presses a button on the controller.
 
-Am a single Arab women and serving as a minister, there is a limit to my personal income and investment level and  For this reason, I cannot receive such a huge sum back to my country or my personal account, so an agreement was reached with the foreign companies to direct the gratifications to an open beneficiary account with a financial institution where it will be possible for me to instruct further transfer of the fund to a third party account for investment purpose which is the reason i contacted you to receive the fund as my partner for investment in your country.
+Changes since v2:
+ - Add "additionalProperties: false" to dts doc
+ - Refactor switch statement in the input driver; check command size and call
+   the processing function within the STOP case
+ - Use a different definition name for Aspeed interrupt status mask
 
-The amount is valued at Euro 47,745,533.00 with a financial institution waiting my instruction for further transfer to a destination account as soon as I have your information indicating interest to receive and invest the fund, I will compensate you with 30% of the total amount and you will also get benefit from the investment.
+Changes since v1:
+ - Redo DTS documentation example to use I2C_OWN_SLAVE_ADDRESS
+ - Reject commands received in the input driver that are too long
+ - Add a definition for the interrupt status mask in the Aspeed I2C driver
+ - Use I2C_OWN_SLAVE_ADDRESS for both dts additions
 
-If you can handle the fund in a good investment. reply on this email only: alreemhas109@daum.net     
+Eddie James (5):
+  dt-bindings: input: Add documentation for IBM Operation Panel
+  input: misc: Add IBM Operation Panel driver
+  i2c: aspeed: Mask IRQ status to relevant bits
+  ARM: dts: Aspeed: Tacoma: Add IBM Operation Panel I2C device
+  ARM: dts: Aspeed: Rainier: Add IBM Operation Panel I2C device
 
-Regards,
-Ms. Reem
+ .../bindings/input/ibm,op-panel.yaml          |  41 ++++
+ MAINTAINERS                                   |   7 +
+ arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts  |   7 +
+ arch/arm/boot/dts/aspeed-bmc-opp-tacoma.dts   |   7 +
+ drivers/i2c/busses/i2c-aspeed.c               |   2 +
+ drivers/input/misc/Kconfig                    |  18 ++
+ drivers/input/misc/Makefile                   |   1 +
+ drivers/input/misc/ibm-panel.c                | 189 ++++++++++++++++++
+ 8 files changed, 272 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/input/ibm,op-panel.yaml
+ create mode 100644 drivers/input/misc/ibm-panel.c
+
+-- 
+2.26.2
 
