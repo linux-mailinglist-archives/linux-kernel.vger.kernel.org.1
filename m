@@ -2,154 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8388D262C21
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 11:41:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AB0C262C59
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 11:45:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727856AbgIIJlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 05:41:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49862 "EHLO
+        id S1728207AbgIIJpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 05:45:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726060AbgIIJlr (ORCPT
+        with ESMTP id S1728443AbgIIJma (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 05:41:47 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E237C061573
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 02:41:47 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id c8so1973230edv.5
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 02:41:47 -0700 (PDT)
+        Wed, 9 Sep 2020 05:42:30 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9B2AC061573
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 02:42:29 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id v15so1672951pgh.6
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 02:42:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=T5ZH6tpiwfQ5fkv123INJrXWMFwMdaXrCNUYVgSIWI4=;
-        b=xLBTyw9anFQR+Kd7rhXDv95SHUeqRvsrFyIPWyC7lK4IT43ttofu28gInL/oBJiZHG
-         zY0xcKEvl/VlNT2DvH8wR+R1NvWnawwteul+afp80y/DIXoj7Pg+m+Dk5S9NRGQZQxJS
-         e3InbabcRiDRO0ykYIFEHeVHlRRsaB6EVELbndvv/AbXHqDGczyL3wbT3c0DjtochAGD
-         WPKU4F9e//wlu2KdPwBkspVAGF31KAgd28zIx9sY3MgctFYl1wLfgwpxzyUBUz9Avkwc
-         nCg7/9jvn+LPUzuKp30mDjgcu9Vy1qVz1sbXBBdhkpamrbRszAwwQQ008ompPs/NYAh3
-         Lsyg==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jlaTjOBgc0QZjU31Izm6AsUUQrjtSK2SvcixEKeEsE8=;
+        b=lCHL9DHS53o+bnJKp6cYHHdrWZYOKVCR6NbsR2WBJpkMdvT7ap6vGvxUUyAwT/WgDb
+         wauu3XqVuJHpZCvEb6gG93hDYcCML1aTllTQJZBSGrU97UBjtLSTvSdIGjg/1YZddSf0
+         PgtPlCU6NmuYASDFXLwDqXY2dF20J4mT2Suew=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=T5ZH6tpiwfQ5fkv123INJrXWMFwMdaXrCNUYVgSIWI4=;
-        b=goQl1DKK+CNIksdji4BEqrfTWc6XLPIABrInPDFntSla8EHJmoenVHyhSYmH8HOY5r
-         /yxZRYd9OFN0AueX7IMqqm5Rcy9qqyrxyZ4gjHAX+lFa2qAId63lyMddBOsFd21/7L+b
-         6FZqxN12jd30JQU2iwJJ5+0b+chuTnSfxcbvPlV/auN2FHbhYxZS7BlsNccOR9kvxxMF
-         G8o9hm1JkZZN/SGVfWYruWwIV0H4uhJ4EG/NKhesDBWOVa/ki3+3s9qG+m/PP+/zfkGK
-         LXa5TEqqFsOXKxqq9jwWNdzD6Arl6Uanfzyp+wpUU0SIELO+K+Rqu7xaK/kX7s0sX0Y0
-         7rqQ==
-X-Gm-Message-State: AOAM530Ebr5BWRto6RBY3/5OhIgxnJmJhGYENsg2n3Rld+SGNVJJWVTe
-        eoceb65ixY3U4LkQWGY8nys1SZkieiGBYLb+wlbkVA==
-X-Google-Smtp-Source: ABdhPJywjOk7vZxGOJJADXbQK4tIIqhiK4TeZPZSPtyi3/XubxpIX3IXQbGCy9TL1N/HXNeWieEVbbkpxJTBGX+go9I=
-X-Received: by 2002:a50:99d5:: with SMTP id n21mr3214899edb.88.1599644506197;
- Wed, 09 Sep 2020 02:41:46 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jlaTjOBgc0QZjU31Izm6AsUUQrjtSK2SvcixEKeEsE8=;
+        b=IW35WxsGMcDtfxstJm+8WboLeeDXhxgamOsWuDAPHp1GPB1UHXImYppXOEx0uGKPt3
+         2pq+Aa5pqaU7L2PDe8RiDukX4YYG1YQT81mPHUN78cb1DA0rVcBm/nxG7d+KzI7ZWMpp
+         LN2Ut0x9mqdgf5vq4VVRUhLMvyuKWzJnG3b9RJ8iMH5ZwDZBZhnuf4/KNYF96NqD8i+G
+         3gIjuKu21Hh+Zja/ocBkENdHzMAouV0Lwn3KhoaICdeDk2pguIEPBWmxTo89WHIk6Gx4
+         srPo8k4y3n4XZhwUxOJuqM1HdKYGv0USXjEoruoUn3ldslHFcBKaIuKU5c/4iqs+fEqP
+         l+dA==
+X-Gm-Message-State: AOAM530cUJQFXJd8AsfDcQdX73yly3arp4he8qZbcENWEZHK64KBvYtx
+        loMK94FmUPbzYLkZeJ3qWrGdMA==
+X-Google-Smtp-Source: ABdhPJxD1LhB03iJ0WDmnlt6k5koTHmIjLIFvh5wJ+EJEWXscCXa5QmNf2+TsW5xKjfw8a18oFyatQ==
+X-Received: by 2002:a62:3146:0:b029:13e:d13d:a08e with SMTP id x67-20020a6231460000b029013ed13da08emr125438pfx.37.1599644549498;
+        Wed, 09 Sep 2020 02:42:29 -0700 (PDT)
+Received: from josephsih-z840.tpe.corp.google.com ([2401:fa00:1:10:de4a:3eff:fe7d:ff5f])
+        by smtp.gmail.com with ESMTPSA id a23sm1692275pgv.86.2020.09.09.02.42.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Sep 2020 02:42:28 -0700 (PDT)
+From:   Joseph Hwang <josephsih@chromium.org>
+To:     linux-bluetooth@vger.kernel.org, marcel@holtmann.org,
+        luiz.dentz@gmail.com
+Cc:     chromeos-bluetooth-upstreaming@chromium.org, josephsih@google.com,
+        Joseph Hwang <josephsih@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH v2 0/2] To support the HFP WBS, a chip vendor may choose a particular
+Date:   Wed,  9 Sep 2020 17:42:00 +0800
+Message-Id: <20200909094202.3863687-1-josephsih@chromium.org>
+X-Mailer: git-send-email 2.28.0.526.ge36021eeef-goog
 MIME-Version: 1.0
-References: <20200905133549.24606-1-warthog618@gmail.com> <20200905133549.24606-8-warthog618@gmail.com>
- <20200909092401.GA1431678@sol> <CAMpxmJXh9pKMAXgPWSCPXeyjP0CSo=A5SgLPrL2eRxX-LAyKag@mail.gmail.com>
- <20200909093523.GA1506132@sol>
-In-Reply-To: <20200909093523.GA1506132@sol>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Wed, 9 Sep 2020 11:41:35 +0200
-Message-ID: <CAMpxmJVU9ZniBjFSuhYYaDLUX1jeYeEjYJzdoy06J24SiVNn3w@mail.gmail.com>
-Subject: Re: [PATCH v7 07/20] gpiolib: cdev: support GPIO_V2_GET_LINE_IOCTL
- and GPIO_V2_LINE_GET_VALUES_IOCTL
-To:     Kent Gibson <warthog618@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 9, 2020 at 11:35 AM Kent Gibson <warthog618@gmail.com> wrote:
->
-> On Wed, Sep 09, 2020 at 11:26:00AM +0200, Bartosz Golaszewski wrote:
-> > On Wed, Sep 9, 2020 at 11:24 AM Kent Gibson <warthog618@gmail.com> wrote:
-> > >
-> > > On Sat, Sep 05, 2020 at 09:35:36PM +0800, Kent Gibson wrote:
-> > > > Add support for requesting lines using the GPIO_V2_GET_LINE_IOCTL, and
-> > > > returning their current values using GPIO_V2_LINE_GET_VALUES_IOCTL.
-> > > >
-> > > > The struct linereq implementation is based on the v1 struct linehandle
-> > > > implementation.
-> > > >
-> > > > Signed-off-by: Kent Gibson <warthog618@gmail.com>
-> > > > ---
-> > > >
-> > >
-> > > [snip]
-> > >
-> > > >               if (copy_from_user(&offset, ip, sizeof(offset)))
-> > > >                       return -EFAULT;
-> > > > @@ -1104,6 +1505,25 @@ int gpiolib_cdev_register(struct gpio_device *gdev, dev_t devt)
-> > > >                MAJOR(devt), gdev->id);
-> > > >
-> > > >       return 0;
-> > > > +     /*
-> > > > +      * array sizes must ensure 64-bit alignment and not create holes in
-> > > > +      * the struct packing.
-> > > > +      */
-> > > > +     BUILD_BUG_ON(IS_ALIGNED(GPIO_V2_LINES_MAX, 2));
-> > > > +     BUILD_BUG_ON(IS_ALIGNED(GPIO_MAX_NAME_SIZE, 8));
-> > > > +
-> > > > +     /*
-> > > > +      * check that uAPI structs are 64-bit aligned for 32/64-bit
-> > > > +      * compatibility
-> > > > +      */
-> > > > +     BUILD_BUG_ON(IS_ALIGNED(sizeof(struct gpio_v2_line_attribute), 8));
-> > > > +     BUILD_BUG_ON(IS_ALIGNED(sizeof(struct gpio_v2_line_config_attribute), 8));
-> > > > +     BUILD_BUG_ON(IS_ALIGNED(sizeof(struct gpio_v2_line_config), 8));
-> > > > +     BUILD_BUG_ON(IS_ALIGNED(sizeof(struct gpio_v2_line_request), 8));
-> > > > +     BUILD_BUG_ON(IS_ALIGNED(sizeof(struct gpio_v2_line_info), 8));
-> > > > +     BUILD_BUG_ON(IS_ALIGNED(sizeof(struct gpio_v2_line_info_changed), 8));
-> > > > +     BUILD_BUG_ON(IS_ALIGNED(sizeof(struct gpio_v2_line_event), 8));
-> > > > +     BUILD_BUG_ON(IS_ALIGNED(sizeof(struct gpio_v2_line_values), 8));
-> > > >  }
-> > > >
-> > >
-> > > A couple of things here - these should all be !IS_ALIGNED.
-> > > And the BUILD_BUG_ON gets compiled out, and so doesn't fail, if they are
-> > > after the return.
-> > >
-> > > How would you like that fixed - v8 or a patch once v7 is in?
-> > >
-> > > Cheers,
-> > > Kent.
-> >
-> > v8 please. Why is it compiled out though? Does it need some config option?
-> >
->
-> Not sure - haven't looked into it.  I only noticed the condition was
-> inverted in passing, and when I flipped it it still compiled.
-> Moving the return to the end of the function made them all fail,
-> as they should if IS_ALIGNED is true.
->
-> Having BUILD_BUG_ON being able to compile out quietly is a problem in
-> itself.  Nothing special in my setup that I am aware of.
->
-> Cheers,
-> Kent.
+USB alternate seeting of which the packet size is distinct.
+The patches are to expose the packet size to user space so that
+the user space does not need to hard code those values.
 
-From include/linux/compiler_types.h:
+We have verified this patch on Chromebooks which use
+- Realtek 8822CE controller with USB alt setting 1
+- Intel controller with USB alt setting 6
+Our user space audio server, cras, can get the correct
+packet length from the socket option.
 
-295 #ifdef __OPTIMIZE__
-296 # define __compiletime_assert(condition, msg, prefix, suffix)           \
-297         do {                                                            \
-298                 extern void prefix ## suffix(void)
-__compiletime_error(msg); \
-299                 if (!(condition))                                       \
-300                         prefix ## suffix();                             \
-301         } while (0)
-302 #else
-303 # define __compiletime_assert(condition, msg, prefix, suffix) do {
-} while (0)
-304 #endif
+Changes in v2:
+- 1/2: Used sco_mtu instead of a new sco_pkt_len member in hdev.
+- 1/2: Do not overwrite hdev->sco_mtu in hci_cc_read_buffer_size
+       if it has been set in the USB interface.
+- 2/2: Used BT_SNDMTU/BT_RCVMTU instead of creating a new opt name.
+- 2/2: Used the existing conn->mtu instead of creating a new member
+       in struct sco_pinfo.
+- 2/2: Noted that the old SCO_OPTIONS in sco_sock_getsockopt_old()
+       would just work as it uses sco_pi(sk)->conn->mtu.
 
-__OPTIMIZE__ is a predefined macro. I'm not sure about your setup but
-it it's defined for me in all my yocto SDK builds and BUILD_BUG_ON(1)
-fails as expected.
+Joseph Hwang (2):
+  Bluetooth: btusb: define HCI packet sizes of USB Alts
+  Bluetooth: sco: expose WBS packet length in socket option
 
-Bartosz
+ drivers/bluetooth/btusb.c | 43 +++++++++++++++++++++++++++++----------
+ net/bluetooth/hci_event.c |  7 ++++++-
+ net/bluetooth/sco.c       |  6 ++++++
+ 3 files changed, 44 insertions(+), 12 deletions(-)
+
+-- 
+2.28.0.526.ge36021eeef-goog
+
