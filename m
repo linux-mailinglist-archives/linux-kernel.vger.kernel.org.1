@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E02E2632B2
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:49:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 076E42632B4
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:49:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730984AbgIIQtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 12:49:21 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38050 "EHLO mx2.suse.de"
+        id S1730987AbgIIQt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 12:49:27 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38044 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730627AbgIIQtC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1730435AbgIIQtC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 9 Sep 2020 12:49:02 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id CFD7CAE18;
+        by mx2.suse.de (Postfix) with ESMTP id D2178AE59;
         Wed,  9 Sep 2020 16:49:15 +0000 (UTC)
-Date:   Wed, 09 Sep 2020 18:44:02 +0200
-Message-ID: <s5hwo12rjcd.wl-tiwai@suse.de>
+Date:   Wed, 09 Sep 2020 18:44:15 +0200
+Message-ID: <s5hv9gmrjc0.wl-tiwai@suse.de>
 From:   Takashi Iwai <tiwai@suse.de>
 To:     YueHaibing <yuehaibing@huawei.com>
 Cc:     <perex@perex.cz>, <tiwai@suse.com>, <alsa-devel@alsa-project.org>,
         <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 09/19] ALSA: pci/asihpi: Remove unused function hpi_stream_group_get_map()
-In-Reply-To: <20200909134927.33964-1-yuehaibing@huawei.com>
-References: <20200909134927.33964-1-yuehaibing@huawei.com>
+Subject: Re: [PATCH 04/19] ALSA: pcm: Remove unused inline function snd_mask_sizeof
+In-Reply-To: <20200909135744.33464-1-yuehaibing@huawei.com>
+References: <20200909135744.33464-1-yuehaibing@huawei.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -34,7 +34,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 09 Sep 2020 15:49:27 +0200,
+On Wed, 09 Sep 2020 15:57:44 +0200,
 YueHaibing wrote:
 > 
 > There is no caller in tree, so can remove it.
