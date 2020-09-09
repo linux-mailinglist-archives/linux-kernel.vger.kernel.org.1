@@ -2,416 +2,347 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5240E2626A6
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 07:16:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0EC32626AE
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 07:18:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726662AbgIIFQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 01:16:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37312 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725811AbgIIFQu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 01:16:50 -0400
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95C45C061755
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 22:16:49 -0700 (PDT)
-Received: by mail-qv1-xf4a.google.com with SMTP id p20so738060qvl.4
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 22:16:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc
-         :content-transfer-encoding;
-        bh=hZkaguA2IJiB+Yz+ysCYxUfYklcLU1iNq8wPCuV5FAw=;
-        b=k9HixUQw5zlv5PBtnMXtho9JIjhYUS/sPo5INqnL78/8CsavL5dEH7CdYvwdr3qcby
-         kTo+9kfXEj7tdWxsu9eFCsH5MqgSazUhd7v4RB5+iog3DdTrW+oaPMg59VcqMuki5gfr
-         fVCtRrhjvRJAVnjzrCNZIzOyD8e66Qd8n8I/FAsGcz4bDueRjMnn5Utkprg3IrAiDkj9
-         gHUHioXuqCU0jTLKl/4uqucNP9OEoMnzuVZVkOerHaB41BppE3lzBpyFBoSZbKL8xBCg
-         N4UrozDOd2dU4gy+/IFpA3YsBvjEMcFIQF4aIf5VbsPIRvortcRlHMOh37LJ2/Hk6bCu
-         j7FA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc:content-transfer-encoding;
-        bh=hZkaguA2IJiB+Yz+ysCYxUfYklcLU1iNq8wPCuV5FAw=;
-        b=nbEp/oPXc6VbJXvvpjY8ebLPgEvTpcqobXoYxzvhDo6GXOD/hIFXjKuBfqIXJdV9BW
-         bMCSdVB0lnWpRsPADSqVpuP0YVb1MNn1pq2v+6dIK0F+b6si7U3c5qlMenatT0BEMsrt
-         pk3eTMTZwxMVEg60VWlUwkSM1z92FnCr453//aNXfhwH7Rl4K9lC6GaT09F9Z5sJ8ivZ
-         DavXTG3vn9riL6LueY8+U52xH7Dj/hy7nFn3eXy9s/CbahRmOile/6aV1eOt1XiGXQKc
-         iDa0fgs0tQsIafmIQ9gSQ7hPHw7WdYk5X2IXi1k8huQmHd2lNf0r520aS7P6HyqZQLyH
-         qwsw==
-X-Gm-Message-State: AOAM530pmiscNYvurshku38+EdwsuJw/0WCMTQ0NcgH1Y2urTC4Bywr/
-        lCxcGe0hgzZX8NNNKa5tgMfAGQMhynAiMg==
-X-Google-Smtp-Source: ABdhPJzeLN3zjFSA5UGr1FF9hLvAsmUobP1sITK9TIP9ruN/fVZ3BYJPGR1LwuSKWsDdgx0ZACpmPxNEvAaBPw==
-X-Received: from spirogrip.svl.corp.google.com ([2620:15c:2cb:201:42a8:f0ff:fe4d:3548])
- (user=davidgow job=sendgmr) by 2002:a0c:8001:: with SMTP id
- 1mr2556215qva.21.1599628608615; Tue, 08 Sep 2020 22:16:48 -0700 (PDT)
-Date:   Tue,  8 Sep 2020 22:16:31 -0700
-Message-Id: <20200909051631.2960347-1-davidgow@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.28.0.526.ge36021eeef-goog
-Subject: [PATCH v2] Documentation: kunit: Add naming guidelines
-From:   David Gow <davidgow@google.com>
-To:     Brendan Higgins <brendanhiggins@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Randy Dunlap <rd.dunlab@gmail.com>,
-        "Theodore Ts'o" <tytso@mit.edu>, Tim Bird <Tim.Bird@sony.com>,
-        Marco Elver <elver@google.com>
-Cc:     kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        David Gow <davidgow@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S1726489AbgIIFSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 01:18:53 -0400
+Received: from mx2.suse.de ([195.135.220.15]:49038 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725772AbgIIFSs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 01:18:48 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 31CECAC4C;
+        Wed,  9 Sep 2020 05:18:46 +0000 (UTC)
+Subject: Re: [PATCH v2 3/7] mm/memory_hotplug: prepare passing flags to
+ add_memory() and friends
+To:     David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
+Cc:     virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
+        linux-hyperv@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-acpi@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-s390@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Wei Liu <wei.liu@kernel.org>, Michal Hocko <mhocko@suse.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Baoquan He <bhe@redhat.com>,
+        Wei Yang <richardw.yang@linux.intel.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Oliver O'Halloran <oohall@gmail.com>,
+        Pingfan Liu <kernelfans@gmail.com>,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        Libor Pechacek <lpechacek@suse.cz>,
+        Anton Blanchard <anton@ozlabs.org>,
+        Leonardo Bras <leobras.c@gmail.com>,
+        linuxppc-dev@lists.ozlabs.org
+References: <20200908201012.44168-1-david@redhat.com>
+ <20200908201012.44168-4-david@redhat.com>
+From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Message-ID: <edfe936b-1178-d2c7-8427-caa7253d516b@suse.com>
+Date:   Wed, 9 Sep 2020 07:18:42 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
+MIME-Version: 1.0
+In-Reply-To: <20200908201012.44168-4-david@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As discussed in [1], KUnit tests have hitherto not had a particularly
-consistent naming scheme. This adds documentation outlining how tests
-and test suites should be named, including how those names should be
-used in Kconfig entries and filenames.
+On 08.09.20 22:10, David Hildenbrand wrote:
+> We soon want to pass flags, e.g., to mark added System RAM resources.
+> mergeable. Prepare for that.
+> 
+> This patch is based on a similar patch by Oscar Salvador:
+> 
+> https://lkml.kernel.org/r/20190625075227.15193-3-osalvador@suse.de
+> 
+> Acked-by: Wei Liu <wei.liu@kernel.org>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Michal Hocko <mhocko@suse.com>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+> Cc: Baoquan He <bhe@redhat.com>
+> Cc: Wei Yang <richardw.yang@linux.intel.com>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+> Cc: Paul Mackerras <paulus@samba.org>
+> Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+> Cc: Len Brown <lenb@kernel.org>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Vishal Verma <vishal.l.verma@intel.com>
+> Cc: Dave Jiang <dave.jiang@intel.com>
+> Cc: "K. Y. Srinivasan" <kys@microsoft.com>
+> Cc: Haiyang Zhang <haiyangz@microsoft.com>
+> Cc: Stephen Hemminger <sthemmin@microsoft.com>
+> Cc: Wei Liu <wei.liu@kernel.org>
+> Cc: Heiko Carstens <hca@linux.ibm.com>
+> Cc: Vasily Gorbik <gor@linux.ibm.com>
+> Cc: Christian Borntraeger <borntraeger@de.ibm.com>
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: "Michael S. Tsirkin" <mst@redhat.com>
+> Cc: Jason Wang <jasowang@redhat.com>
+> Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+> Cc: Juergen Gross <jgross@suse.com>
+> Cc: Stefano Stabellini <sstabellini@kernel.org>
+> Cc: "Oliver O'Halloran" <oohall@gmail.com>
+> Cc: Pingfan Liu <kernelfans@gmail.com>
+> Cc: Nathan Lynch <nathanl@linux.ibm.com>
+> Cc: Libor Pechacek <lpechacek@suse.cz>
+> Cc: Anton Blanchard <anton@ozlabs.org>
+> Cc: Leonardo Bras <leobras.c@gmail.com>
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Cc: linux-acpi@vger.kernel.org
+> Cc: linux-nvdimm@lists.01.org
+> Cc: linux-hyperv@vger.kernel.org
+> Cc: linux-s390@vger.kernel.org
+> Cc: virtualization@lists.linux-foundation.org
+> Cc: xen-devel@lists.xenproject.org
+> Signed-off-by: David Hildenbrand <david@redhat.com>
 
-[1]:
-https://lore.kernel.org/linux-kselftest/202006141005.BA19A9D3@keescook/t/#u
-
-Signed-off-by: David Gow <davidgow@google.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
----
-
-This is v2 of the KUnit test nomenclature guidelines. The guidelines have
-changed a bit in response to the discussion on the v1 thread which came
-about after plumbers. The major change is that the filename suffix is
-now "_test", with "_kunit" permitted where it conflicts. There are also
-some other exceptions carved out around existing tests, and very
-non-unit-like tests.
-
-Changelog:
-
-v2:
-- Rewrote the filename section to use "_test" as a suffix, and focus on
-  module names, not filenames.
-- Add a motivating introduction, which also calls out existing tests and
-  tests which cause problems when run automatically (long running,
-  flaky tests) as reasons to avoid the guidelines.
-- Talk about including the type of test in the suite name, but only if
-  theres an actual confict. (And update the example for this).
-
-v1:
-https://lore.kernel.org/linux-kselftest/20200702071416.1780522-1-davidgow@g=
-oogle.com/
-- Fixed a bit of space/tab confusion in the index (Thanks, Randy)
-- Added some more examples (and some test case examples).
-- Added some examples of what not to call subsystems and suites.
-- No longer explicitly require "If unsure, put N" in Kconfig entries.
-- Minor formatting changes
-
-RFC:
-https://lore.kernel.org/linux-kselftest/20200620054944.167330-1-davidgow@go=
-ogle.com/T/#u
-- Initial version
+Reviewed-by: Juergen Gross <jgross@suse.com> (Xen related part)
 
 
-The result is a little bit weaker than the previous versions, but
-hopefully will let us get the areas we agree on down.
+Juergen
 
--- David
-
-
- Documentation/dev-tools/kunit/index.rst |   1 +
- Documentation/dev-tools/kunit/style.rst | 207 ++++++++++++++++++++++++
- 2 files changed, 208 insertions(+)
- create mode 100644 Documentation/dev-tools/kunit/style.rst
-
-diff --git a/Documentation/dev-tools/kunit/index.rst b/Documentation/dev-to=
-ols/kunit/index.rst
-index e93606ecfb01..c234a3ab3c34 100644
---- a/Documentation/dev-tools/kunit/index.rst
-+++ b/Documentation/dev-tools/kunit/index.rst
-@@ -11,6 +11,7 @@ KUnit - Unit Testing for the Linux Kernel
- 	usage
- 	kunit-tool
- 	api/index
-+	style
- 	faq
-=20
- What is KUnit?
-diff --git a/Documentation/dev-tools/kunit/style.rst b/Documentation/dev-to=
-ols/kunit/style.rst
-new file mode 100644
-index 000000000000..c001ea1cd87d
---- /dev/null
-+++ b/Documentation/dev-tools/kunit/style.rst
-@@ -0,0 +1,207 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D
-+Test Style and Nomenclature
-+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D
-+
-+To make finding, writing, and using KUnit tests as simple as possible, it'=
-s
-+strongly encouraged that they are named and written according to the guide=
-lines
-+below. While it's possible to write KUnit tests which do not follow these =
-rules,
-+they may break some tooling, may conflict with other tests, and may not be=
- run
-+automatically by testing systems.
-+
-+It's recommended that you only deviate from these guidelines when:
-+
-+1. Porting tests to KUnit which are already known with an existing name, o=
-r
-+2. Writing tests which would cause serious problems if automatically run (=
-e.g.,
-+   nonderministically producing false positives or negatives, or taking an
-+   extremely long time to run).
-+
-+Subsystems, Suites, and Tests
-+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
-+
-+In order to make tests as easy to find as possible, they're grouped into s=
-uites
-+and subsystems. A test suite is a group of tests which test a related area=
- of
-+the kernel, and a subsystem is a set of test suites which test different p=
-arts
-+of the same kernel subsystem or driver.
-+
-+Subsystems
-+----------
-+
-+Every test suite must belong to a subsystem. A subsystem is a collection o=
-f one
-+or more KUnit test suites which test the same driver or part of the kernel=
-. A
-+rule of thumb is that a test subsystem should match a single kernel module=
-. If
-+the code being tested can't be compiled as a module, in many cases the sub=
-system
-+should correspond to a directory in the source tree or an entry in the
-+MAINTAINERS file. If unsure, follow the conventions set by tests in simila=
-r
-+areas.
-+
-+Test subsystems should be named after the code being tested, either after =
-the
-+module (wherever possible), or after the directory or files being tested. =
-Test
-+subsystems should be named to avoid ambiguity where necessary.
-+
-+If a test subsystem name has multiple components, they should be separated=
- by
-+underscores. *Do not* include "test" or "kunit" directly in the subsystem =
-name
-+unless you are actually testing other tests or the kunit framework itself.
-+
-+Example subsystems could be:
-+
-+``ext4``
-+  Matches the module and filesystem name.
-+``apparmor``
-+  Matches the module name and LSM name.
-+``kasan``
-+  Common name for the tool, prominent part of the path ``mm/kasan``
-+``snd_hda_codec_hdmi``
-+  Has several components (``snd``, ``hda``, ``codec``, ``hdmi``) separated=
- by
-+  underscores. Matches the module name.
-+
-+Avoid names like these:
-+
-+``linear-ranges``
-+  Names should use underscores, not dashes, to separate words. Prefer
-+  ``linear_ranges``.
-+``qos-kunit-test``
-+  As well as using underscores, this name should not have "kunit-test" as =
-a
-+  suffix, and ``qos`` is ambiguous as a subsystem name. ``power_qos`` woul=
-d be a
-+  better name.
-+``pc_parallel_port``
-+  The corresponding module name is ``parport_pc``, so this subsystem shoul=
-d also
-+  be named ``parport_pc``.
-+
-+.. note::
-+        The KUnit API and tools do not explicitly know about subsystems. T=
-hey're
-+        simply a way of categorising test suites and naming modules which
-+        provides a simple, consistent way for humans to find and run tests=
-. This
-+        may change in the future, though.
-+
-+Suites
-+------
-+
-+KUnit tests are grouped into test suites, which cover a specific area of
-+functionality being tested. Test suites can have shared initialisation and
-+shutdown code which is run for all tests in the suite.
-+Not all subsystems will need to be split into multiple test suites (e.g. s=
-imple drivers).
-+
-+Test suites are named after the subsystem they are part of. If a subsystem
-+contains several suites, the specific area under test should be appended t=
-o the
-+subsystem name, separated by an underscore.
-+
-+In the event that there are multiple types of test using KUnit within a
-+subsystem (e.g., both unit tests and integration tests), they should be pu=
-t into
-+separate suites, with the type of test as the last element in the suite na=
-me.
-+Unless these tests are actually present, avoid using ``_test``, ``_unittes=
-t`` or
-+similar in the suite name.
-+
-+The full test suite name (including the subsystem name) should be specifie=
-d as
-+the ``.name`` member of the ``kunit_suite`` struct, and forms the base for=
- the
-+module name (see below).
-+
-+Example test suites could include:
-+
-+``ext4_inode``
-+  Part of the ``ext4`` subsystem, testing the ``inode`` area.
-+``kunit_try_catch``
-+  Part of the ``kunit`` implementation itself, testing the ``try_catch`` a=
-rea.
-+``apparmor_property_entry``
-+  Part of the ``apparmor`` subsystem, testing the ``property_entry`` area.
-+``kasan``
-+  The ``kasan`` subsystem has only one suite, so the suite name is the sam=
-e as
-+  the subsystem name.
-+
-+Avoid names like:
-+
-+``ext4_ext4_inode``
-+  There's no reason to state the subsystem twice.
-+``property_entry``
-+  The suite name is ambiguous without the subsystem name.
-+``kasan_integration_test``
-+  Because there is only one suite in the ``kasan`` subsystem, the suite sh=
-ould
-+  just be called ``kasan``. There's no need to redundantly add
-+  ``integration_test``. Should a separate test suite with, for example, un=
-it
-+  tests be added, then that suite could be named ``kasan_unittest`` or sim=
-ilar.
-+
-+Test Cases
-+----------
-+
-+Individual tests consist of a single function which tests a constrained
-+codepath, property, or function. In the test output, individual tests' res=
-ults
-+will show up as subtests of the suite's results.
-+
-+Tests should be named after what they're testing. This is often the name o=
-f the
-+function being tested, with a description of the input or codepath being t=
-ested.
-+As tests are C functions, they should be named and written in accordance w=
-ith
-+the kernel coding style.
-+
-+.. note::
-+        As tests are themselves functions, their names cannot conflict wit=
-h
-+        other C identifiers in the kernel. This may require some creative
-+        naming. It's a good idea to make your test functions `static` to a=
-void
-+        polluting the global namespace.
-+
-+Example test names include:
-+
-+``unpack_u32_with_null_name``
-+  Tests the ``unpack_u32`` function when a NULL name is passed in.
-+``test_list_splice``
-+  Tests the ``list_splice`` macro. It has the prefix ``test_`` to avoid a
-+  name conflict with the macro itself.
-+
-+
-+Should it be necessary to refer to a test outside the context of its test =
-suite,
-+the *fully-qualified* name of a test should be the suite name followed by =
-the
-+test name, separated by a colon (i.e. ``suite:test``).
-+
-+Test Kconfig Entries
-+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-+
-+Every test suite should be tied to a Kconfig entry.
-+
-+This Kconfig entry must:
-+
-+* be named ``CONFIG_<name>_KUNIT_TEST``: where <name> is the name of the t=
-est
-+  suite.
-+* be listed either alongside the config entries for the driver/subsystem b=
-eing
-+  tested, or be under [Kernel Hacking]=E2=86=92[Kernel Testing and Coverag=
-e]
-+* depend on ``CONFIG_KUNIT``
-+* be visible only if ``CONFIG_KUNIT_ALL_TESTS`` is not enabled.
-+* have a default value of ``CONFIG_KUNIT_ALL_TESTS``.
-+* have a brief description of KUnit in the help text
-+
-+Unless there's a specific reason not to (e.g. the test is unable to be bui=
-lt as
-+a module), Kconfig entries for tests should be tristate.
-+
-+An example Kconfig entry:
-+
-+.. code-block:: none
-+
-+        config FOO_KUNIT_TEST
-+                tristate "KUnit test for foo" if !KUNIT_ALL_TESTS
-+                depends on KUNIT
-+                default KUNIT_ALL_TESTS
-+                help
-+                    This builds unit tests for foo.
-+
-+                    For more information on KUnit and unit tests in genera=
-l, please refer
-+                    to the KUnit documentation in Documentation/dev-tools/=
-kunit
-+
-+                    If unsure, say N
-+
-+
-+Test File and Module Names
-+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D
-+
-+KUnit tests can often be compiled as a module. These modules should be nam=
-ed
-+after the test suite, followed by ``_test``. If this is likely to conflict=
- with
-+non-KUnit tests, the suffic ``_kunit`` can also be used.
-+
-+The easiest way of achieving this is to name the file containing the test =
-suite
-+``<suite>_test.c`` (or, as above, ``<suite>_kunit.c``). This file should b=
-e
-+placed next to the code under test.
-+
-+If the suite name contains some or all of the name of the test's parent
-+directory, it may make sense to modify the source filename to reduce redun=
-dancy.
-+For example, a ``foo_firmware`` suite could be in the ``foo/firmware_test.=
-c``
-+file.
-+
-+
---=20
-2.28.0.526.ge36021eeef-goog
+> ---
+>   arch/powerpc/platforms/powernv/memtrace.c       |  2 +-
+>   arch/powerpc/platforms/pseries/hotplug-memory.c |  2 +-
+>   drivers/acpi/acpi_memhotplug.c                  |  2 +-
+>   drivers/base/memory.c                           |  2 +-
+>   drivers/dax/kmem.c                              |  2 +-
+>   drivers/hv/hv_balloon.c                         |  2 +-
+>   drivers/s390/char/sclp_cmd.c                    |  2 +-
+>   drivers/virtio/virtio_mem.c                     |  2 +-
+>   drivers/xen/balloon.c                           |  2 +-
+>   include/linux/memory_hotplug.h                  | 10 ++++++----
+>   mm/memory_hotplug.c                             | 15 ++++++++-------
+>   11 files changed, 23 insertions(+), 20 deletions(-)
+> 
+> diff --git a/arch/powerpc/platforms/powernv/memtrace.c b/arch/powerpc/platforms/powernv/memtrace.c
+> index 13b369d2cc454..a7475d18c671c 100644
+> --- a/arch/powerpc/platforms/powernv/memtrace.c
+> +++ b/arch/powerpc/platforms/powernv/memtrace.c
+> @@ -224,7 +224,7 @@ static int memtrace_online(void)
+>   			ent->mem = 0;
+>   		}
+>   
+> -		if (add_memory(ent->nid, ent->start, ent->size)) {
+> +		if (add_memory(ent->nid, ent->start, ent->size, 0)) {
+>   			pr_err("Failed to add trace memory to node %d\n",
+>   				ent->nid);
+>   			ret += 1;
+> diff --git a/arch/powerpc/platforms/pseries/hotplug-memory.c b/arch/powerpc/platforms/pseries/hotplug-memory.c
+> index 5d545b78111f9..54a888ea7f751 100644
+> --- a/arch/powerpc/platforms/pseries/hotplug-memory.c
+> +++ b/arch/powerpc/platforms/pseries/hotplug-memory.c
+> @@ -606,7 +606,7 @@ static int dlpar_add_lmb(struct drmem_lmb *lmb)
+>   	block_sz = memory_block_size_bytes();
+>   
+>   	/* Add the memory */
+> -	rc = __add_memory(lmb->nid, lmb->base_addr, block_sz);
+> +	rc = __add_memory(lmb->nid, lmb->base_addr, block_sz, 0);
+>   	if (rc) {
+>   		invalidate_lmb_associativity_index(lmb);
+>   		return rc;
+> diff --git a/drivers/acpi/acpi_memhotplug.c b/drivers/acpi/acpi_memhotplug.c
+> index e294f44a78504..d91b3584d4b2b 100644
+> --- a/drivers/acpi/acpi_memhotplug.c
+> +++ b/drivers/acpi/acpi_memhotplug.c
+> @@ -207,7 +207,7 @@ static int acpi_memory_enable_device(struct acpi_memory_device *mem_device)
+>   		if (node < 0)
+>   			node = memory_add_physaddr_to_nid(info->start_addr);
+>   
+> -		result = __add_memory(node, info->start_addr, info->length);
+> +		result = __add_memory(node, info->start_addr, info->length, 0);
+>   
+>   		/*
+>   		 * If the memory block has been used by the kernel, add_memory()
+> diff --git a/drivers/base/memory.c b/drivers/base/memory.c
+> index 4db3c660de831..2287bcf86480e 100644
+> --- a/drivers/base/memory.c
+> +++ b/drivers/base/memory.c
+> @@ -432,7 +432,7 @@ static ssize_t probe_store(struct device *dev, struct device_attribute *attr,
+>   
+>   	nid = memory_add_physaddr_to_nid(phys_addr);
+>   	ret = __add_memory(nid, phys_addr,
+> -			   MIN_MEMORY_BLOCK_SIZE * sections_per_block);
+> +			   MIN_MEMORY_BLOCK_SIZE * sections_per_block, 0);
+>   
+>   	if (ret)
+>   		goto out;
+> diff --git a/drivers/dax/kmem.c b/drivers/dax/kmem.c
+> index 7dcb2902e9b1b..8e66b28ef5bc6 100644
+> --- a/drivers/dax/kmem.c
+> +++ b/drivers/dax/kmem.c
+> @@ -95,7 +95,7 @@ int dev_dax_kmem_probe(struct dev_dax *dev_dax)
+>   		 * this as RAM automatically.
+>   		 */
+>   		rc = add_memory_driver_managed(numa_node, range.start,
+> -				range_len(&range), kmem_name);
+> +				range_len(&range), kmem_name, 0);
+>   
+>   		res->flags |= IORESOURCE_BUSY;
+>   		if (rc) {
+> diff --git a/drivers/hv/hv_balloon.c b/drivers/hv/hv_balloon.c
+> index 32e3bc0aa665a..0194bed1a5736 100644
+> --- a/drivers/hv/hv_balloon.c
+> +++ b/drivers/hv/hv_balloon.c
+> @@ -726,7 +726,7 @@ static void hv_mem_hot_add(unsigned long start, unsigned long size,
+>   
+>   		nid = memory_add_physaddr_to_nid(PFN_PHYS(start_pfn));
+>   		ret = add_memory(nid, PFN_PHYS((start_pfn)),
+> -				(HA_CHUNK << PAGE_SHIFT));
+> +				(HA_CHUNK << PAGE_SHIFT), 0);
+>   
+>   		if (ret) {
+>   			pr_err("hot_add memory failed error is %d\n", ret);
+> diff --git a/drivers/s390/char/sclp_cmd.c b/drivers/s390/char/sclp_cmd.c
+> index a864b21af602a..a6a908244c742 100644
+> --- a/drivers/s390/char/sclp_cmd.c
+> +++ b/drivers/s390/char/sclp_cmd.c
+> @@ -406,7 +406,7 @@ static void __init add_memory_merged(u16 rn)
+>   	if (!size)
+>   		goto skip_add;
+>   	for (addr = start; addr < start + size; addr += block_size)
+> -		add_memory(0, addr, block_size);
+> +		add_memory(0, addr, block_size, 0);
+>   skip_add:
+>   	first_rn = rn;
+>   	num = 1;
+> diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
+> index 834b7c13ef3dc..314ab753139d1 100644
+> --- a/drivers/virtio/virtio_mem.c
+> +++ b/drivers/virtio/virtio_mem.c
+> @@ -424,7 +424,7 @@ static int virtio_mem_mb_add(struct virtio_mem *vm, unsigned long mb_id)
+>   
+>   	dev_dbg(&vm->vdev->dev, "adding memory block: %lu\n", mb_id);
+>   	return add_memory_driver_managed(nid, addr, memory_block_size_bytes(),
+> -					 vm->resource_name);
+> +					 vm->resource_name, 0);
+>   }
+>   
+>   /*
+> diff --git a/drivers/xen/balloon.c b/drivers/xen/balloon.c
+> index 51427c752b37b..7bac38764513d 100644
+> --- a/drivers/xen/balloon.c
+> +++ b/drivers/xen/balloon.c
+> @@ -331,7 +331,7 @@ static enum bp_state reserve_additional_memory(void)
+>   	mutex_unlock(&balloon_mutex);
+>   	/* add_memory_resource() requires the device_hotplug lock */
+>   	lock_device_hotplug();
+> -	rc = add_memory_resource(nid, resource);
+> +	rc = add_memory_resource(nid, resource, 0);
+>   	unlock_device_hotplug();
+>   	mutex_lock(&balloon_mutex);
+>   
+> diff --git a/include/linux/memory_hotplug.h b/include/linux/memory_hotplug.h
+> index 51a877fec8da8..5cd48332ce119 100644
+> --- a/include/linux/memory_hotplug.h
+> +++ b/include/linux/memory_hotplug.h
+> @@ -345,11 +345,13 @@ extern void set_zone_contiguous(struct zone *zone);
+>   extern void clear_zone_contiguous(struct zone *zone);
+>   
+>   extern void __ref free_area_init_core_hotplug(int nid);
+> -extern int __add_memory(int nid, u64 start, u64 size);
+> -extern int add_memory(int nid, u64 start, u64 size);
+> -extern int add_memory_resource(int nid, struct resource *resource);
+> +extern int __add_memory(int nid, u64 start, u64 size, unsigned long flags);
+> +extern int add_memory(int nid, u64 start, u64 size, unsigned long flags);
+> +extern int add_memory_resource(int nid, struct resource *resource,
+> +			       unsigned long flags);
+>   extern int add_memory_driver_managed(int nid, u64 start, u64 size,
+> -				     const char *resource_name);
+> +				     const char *resource_name,
+> +				     unsigned long flags);
+>   extern void move_pfn_range_to_zone(struct zone *zone, unsigned long start_pfn,
+>   				   unsigned long nr_pages,
+>   				   struct vmem_altmap *altmap, int migratetype);
+> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+> index 8e1cd18b5cf14..64b07f006bc10 100644
+> --- a/mm/memory_hotplug.c
+> +++ b/mm/memory_hotplug.c
+> @@ -1039,7 +1039,8 @@ static int online_memory_block(struct memory_block *mem, void *arg)
+>    *
+>    * we are OK calling __meminit stuff here - we have CONFIG_MEMORY_HOTPLUG
+>    */
+> -int __ref add_memory_resource(int nid, struct resource *res)
+> +int __ref add_memory_resource(int nid, struct resource *res,
+> +			      unsigned long flags)
+>   {
+>   	struct mhp_params params = { .pgprot = PAGE_KERNEL };
+>   	u64 start, size;
+> @@ -1118,7 +1119,7 @@ int __ref add_memory_resource(int nid, struct resource *res)
+>   }
+>   
+>   /* requires device_hotplug_lock, see add_memory_resource() */
+> -int __ref __add_memory(int nid, u64 start, u64 size)
+> +int __ref __add_memory(int nid, u64 start, u64 size, unsigned long flags)
+>   {
+>   	struct resource *res;
+>   	int ret;
+> @@ -1127,18 +1128,18 @@ int __ref __add_memory(int nid, u64 start, u64 size)
+>   	if (IS_ERR(res))
+>   		return PTR_ERR(res);
+>   
+> -	ret = add_memory_resource(nid, res);
+> +	ret = add_memory_resource(nid, res, flags);
+>   	if (ret < 0)
+>   		release_memory_resource(res);
+>   	return ret;
+>   }
+>   
+> -int add_memory(int nid, u64 start, u64 size)
+> +int add_memory(int nid, u64 start, u64 size, unsigned long flags)
+>   {
+>   	int rc;
+>   
+>   	lock_device_hotplug();
+> -	rc = __add_memory(nid, start, size);
+> +	rc = __add_memory(nid, start, size, flags);
+>   	unlock_device_hotplug();
+>   
+>   	return rc;
+> @@ -1167,7 +1168,7 @@ EXPORT_SYMBOL_GPL(add_memory);
+>    * "System RAM ($DRIVER)".
+>    */
+>   int add_memory_driver_managed(int nid, u64 start, u64 size,
+> -			      const char *resource_name)
+> +			      const char *resource_name, unsigned long flags)
+>   {
+>   	struct resource *res;
+>   	int rc;
+> @@ -1185,7 +1186,7 @@ int add_memory_driver_managed(int nid, u64 start, u64 size,
+>   		goto out_unlock;
+>   	}
+>   
+> -	rc = add_memory_resource(nid, res);
+> +	rc = add_memory_resource(nid, res, flags);
+>   	if (rc < 0)
+>   		release_memory_resource(res);
+>   
+> 
 
