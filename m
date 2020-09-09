@@ -2,104 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 906442628F9
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 09:37:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AF22262900
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 09:38:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730287AbgIIHhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 03:37:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44618 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730260AbgIIHhG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 03:37:06 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7949620732;
-        Wed,  9 Sep 2020 07:37:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599637026;
-        bh=IO6r3KJjp/JFwGSMPo4xWi2ollridTbwoQYxHByZFVQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aRKeYoPdqKaLssElezrS6ihoIHfR2NnGSHiWt2UlFzmKIA0QrRUh4XFEkkWrWe6qv
-         Vag/j/T4Br7kHkdOjNhRYkFZz8rFY6pHYOlT8Pe/ifeW3NGjYsW71soYB7iFP3q0EN
-         Yiu/tFe+TcCaY2uSrRCFLTrX4lEP3YB5PgD4u6ps=
-Date:   Wed, 9 Sep 2020 09:37:16 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Joe Perches <joe@perches.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: [PATCH v1] driver core: Annotate dev_err_probe() with
- __must_check
-Message-ID: <20200909073716.GA560912@kroah.com>
-References: <20200826104459.81979-1-andriy.shevchenko@linux.intel.com>
- <9635eaa4ccc1141fb0dd8c3687f46da7149206ad.camel@perches.com>
- <20200826155507.GV1891694@smile.fi.intel.com>
- <973f4d54da796db4fcc9b643b10889cbc8839989.camel@perches.com>
- <CAJKOXPcCAPy-v38dyY_74H_6vrgj0mmEf6KaupVKJb4E2Ha_Ug@mail.gmail.com>
- <20200909070244.GC311356@kroah.com>
- <CAJKOXPd=TfCNfHPdsQZ42VEcUZOFZroXg7xmA82zSA=AbADxKw@mail.gmail.com>
+        id S1730061AbgIIHiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 03:38:11 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:10239 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729161AbgIIHh3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 03:37:29 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f5885b20000>; Wed, 09 Sep 2020 00:35:14 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Wed, 09 Sep 2020 00:37:29 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Wed, 09 Sep 2020 00:37:29 -0700
+Received: from [10.26.73.157] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 9 Sep
+ 2020 07:37:20 +0000
+Subject: Re: [PATCH v21 4/4] arm64: dts: mt8183: add scp node
+To:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Eddie Huang <eddie.huang@mediatek.com>
+CC:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        Pi-Hsun Shih <pihsun@chromium.org>,
+        Erin Lo <erin.lo@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        <lkft-triage@lists.linaro.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        linux-tegra <linux-tegra@vger.kernel.org>
+References: <20191112110330.179649-1-pihsun@chromium.org>
+ <20191112110330.179649-5-pihsun@chromium.org>
+ <2abf8fdd-7b7c-73b0-beea-9c9ac56869dc@gmail.com>
+ <CA+G9fYt9AujG6gyfeV5AaAv0EgggUfGT1jow8DJjVfetVWV3EA@mail.gmail.com>
+ <CAJKOXPeV9zCg4v0kBfToGdJSxswbKtT16LVYADALpYRHqWXBOg@mail.gmail.com>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <ab35a9c7-1b33-dc75-8520-ee072ff1309f@nvidia.com>
+Date:   Wed, 9 Sep 2020 08:37:18 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJKOXPd=TfCNfHPdsQZ42VEcUZOFZroXg7xmA82zSA=AbADxKw@mail.gmail.com>
+In-Reply-To: <CAJKOXPeV9zCg4v0kBfToGdJSxswbKtT16LVYADALpYRHqWXBOg@mail.gmail.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1599636914; bh=NRptkkFmJKN48wrOiQ7yrq/L1r5kklHTYRCDYEWsDB0=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=jnn3trhAfxkws/mo/0eN55qV+nx5mQCk/pzThZ7D2nd/qaWddSQWnqyb6QeJGMpgd
+         q+ta3oSTu4mKCzOXtKbCT+ePy2xLNuB+QIegT9kfNP7SdOmszsOeiPMITVh8PvImwM
+         uaI9owjP8fyXn3hIFiGWlL+Sl9jFS3VJaa8dgz+P/It2afJV5nEPu5t1YSi4Snj2mD
+         3wzmX4o6aTDAH9n1gPe+1Hof32T3WbGJSykqx+hgO0G4T5b+JXcXDBdjQzOjCjtxto
+         WrlnKWqoNxTwhOHsw6zOQByisStAh2vTJIG64NDH/SdxmrvVoYVkZZLYT2r9J/oxoc
+         B22SYp58s553g==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 09, 2020 at 09:08:14AM +0200, Krzysztof Kozlowski wrote:
-> On Wed, 9 Sep 2020 at 09:02, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Wed, Sep 09, 2020 at 08:29:25AM +0200, Krzysztof Kozlowski wrote:
-> > > On Wed, 26 Aug 2020 at 18:18, Joe Perches <joe@perches.com> wrote:
-> > > >
-> > > > On Wed, 2020-08-26 at 18:55 +0300, Andy Shevchenko wrote:
-> > > > > On Wed, Aug 26, 2020 at 08:44:30AM -0700, Joe Perches wrote:
-> > > > > > On Wed, 2020-08-26 at 13:44 +0300, Andy Shevchenko wrote:
-> > > > >
-> > > > > ...
-> > > > >
-> > > > > > > -int dev_err_probe(const struct device *dev, int err, const char *fmt, ...);
-> > > > > > > +int __must_check dev_err_probe(const struct device *dev, int err, const char *fmt, ...);
-> > >
-> > > +Cc Stephen and Greg,
-> > >
-> > > Hi Andy,
-> > >
-> > > Did this patch ended up in next somehow? I am surprised because now I
-> > > got warnings for perfectly fine code:
-> > > https://lore.kernel.org/linux-next/20200909155654.76fe3bd6@canb.auug.org.au/T/#u
-> > >
-> > > This creates simply false warnings instead of hints for "optimization".
-> >
-> > Yes, it got merged into m y driver core tree.
-> >
-> > I'll fix up the tty build warning, should be easy enough, the patch is
-> > below.
+
+On 02/09/2020 17:23, Krzysztof Kozlowski wrote:
+> On Wed, 2 Sep 2020 at 16:45, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+>>
+>> On Thu, 27 Aug 2020 at 15:44, Matthias Brugger <matthias.bgg@gmail.com> wrote:
+>>>
+>>>
+>>>
+>>> On 12/11/2019 12:03, Pi-Hsun Shih wrote:
+>>>> From: Eddie Huang <eddie.huang@mediatek.com>
+>>>>
+>>>> Add scp node to mt8183 and mt8183-evb
+>>>>
+>>>> Signed-off-by: Erin Lo <erin.lo@mediatek.com>
+>>>> Signed-off-by: Pi-Hsun Shih <pihsun@chromium.org>
+>>>> Signed-off-by: Eddie Huang <eddie.huang@mediatek.com>
+>>>
+>>> Sorry I somehow oversaw this. Next time please don't doubt to ping me.
+>>>
+>>> Bjorn, do I understand correctly that you don't send emails to the list
+>>> informing of the inclusion of a patch/series in your tree?
+>>>
+>>> Anyway applied now to v5.9-next/dts64 :)
+>>
+>> arm64 build dtbs failed on linux next 20200902.
 > 
-> Yes, this fix suppresses the warning but the question is whether we
-> really want the warning?
-> Such fixes mean additional code which the compiler might not optimize
-> (unless it inlines the dev_err_probe()). This additional code is
-> purely for suppressing the warning, without any meaning on its own.
-> Actually it might be even confusing for someone to see:
-> if (ret)
->   ret = dev_err_probe(ret);
+> I just hit it as well... I wish the kernel was built after applying
+> patches... it would make the next a better place.
 
-Yeah, that is dumb, as the patch I made shows :(
 
-> warn_unused_result should point errors, not "optimization
-> opportunities". If you want to have opportunity, add a coccinelle
-> rule. Or a checkpatch rule. Not a compiler warning.
+Any update on this? It is still broken as of next-20200908.
 
-Ok, I now agree, I'll go revert this patch and trust that driver authors
-will "do the right thing" here...
+Jon
 
-thanks,
-
-greg k-h
+-- 
+nvpublic
