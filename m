@@ -2,99 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 604A726346B
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 19:20:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D02326348A
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 19:23:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731207AbgIIRU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 13:20:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36472 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730889AbgIIRUM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 13:20:12 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAD02C061573;
-        Wed,  9 Sep 2020 10:20:11 -0700 (PDT)
-Received: from lwn.net (localhost [127.0.0.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1729992AbgIIRXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 13:23:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33998 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726036AbgIIRXC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 13:23:02 -0400
+Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com [209.85.210.42])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id BDBD037C;
-        Wed,  9 Sep 2020 17:20:09 +0000 (UTC)
-Date:   Wed, 9 Sep 2020 11:20:08 -0600
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Connor Kuehl <ckuehl@redhat.com>
-Cc:     pbonzini@redhat.com, kvm@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] docs: kvm: fix referenced ioctl symbol
-Message-ID: <20200909112008.23859385@lwn.net>
-In-Reply-To: <20200819211952.251984-1-ckuehl@redhat.com>
-References: <20200819211952.251984-1-ckuehl@redhat.com>
-Organization: LWN.net
+        by mail.kernel.org (Postfix) with ESMTPSA id 6C0452166E;
+        Wed,  9 Sep 2020 17:23:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599672181;
+        bh=ojYXfjO2DurN2C/opB53TRYM7STqyjyLj7tArEbYnYU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=W40okwbvhzb3YNdQWWE61AnHf+7XtiOdb6MNYys5tClUSQqHRyUMpvh3j0fpRj3NS
+         33B56q0jVNPBQ3AsfsIRkXkarAFSMhPU2JsKSxRbZo06tvNmgrXsWwK3ewSbwGSrxC
+         B3BdieaaNhVMHkaDJiSZWYP+jSTalp6OSB3k8Ud8=
+Received: by mail-ot1-f42.google.com with SMTP id g10so2954608otq.9;
+        Wed, 09 Sep 2020 10:23:01 -0700 (PDT)
+X-Gm-Message-State: AOAM532QNqalj6R3eFLxyi/WKh/V+wpgcVI5mHOwFIhUjqcJfy/ZkstH
+        Yg8ez7sZHgduM4r4zDXprgUh9ezNBpfhIC0Ihg==
+X-Google-Smtp-Source: ABdhPJwF/BBwg1karh3OP6yS1l/x+0g03zifHTvvij6uGN/zcwIb/C59SHbjSoa84vatAmS8zyZQIW9jDnoPNpIu7AQ=
+X-Received: by 2002:a9d:411:: with SMTP id 17mr1405892otc.192.1599672180697;
+ Wed, 09 Sep 2020 10:23:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
+References: <cover.1598043782.git.cristian.ciocaltea@gmail.com>
+ <863c9c1e44cfbe6184bf0bd4893ff456af0e7bb8.1598043782.git.cristian.ciocaltea@gmail.com>
+ <20200908214724.GA959481@bogus> <20200909160334.GA385382@BV030612LT>
+In-Reply-To: <20200909160334.GA385382@BV030612LT>
+From:   Rob Herring <robh@kernel.org>
+Date:   Wed, 9 Sep 2020 11:22:48 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqL+21YH+_w3e6PnW0GqPyEAD6uU-hqHZercKK0xQwCOjg@mail.gmail.com>
+Message-ID: <CAL_JsqL+21YH+_w3e6PnW0GqPyEAD6uU-hqHZercKK0xQwCOjg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/6] dt-bindings: mfd: Add Actions Semi ATC260x PMIC binding
+To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>,
+        linux-actions@lists.infradead.org, devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux Input <linux-input@vger.kernel.org>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 19 Aug 2020 16:19:52 -0500
-Connor Kuehl <ckuehl@redhat.com> wrote:
+On Wed, Sep 9, 2020 at 10:03 AM Cristian Ciocaltea
+<cristian.ciocaltea@gmail.com> wrote:
+>
+> Hi Rob,
+>
+> Thanks for reviewing!
+>
+> On Tue, Sep 08, 2020 at 03:47:24PM -0600, Rob Herring wrote:
+> > On Sat, Aug 22, 2020 at 01:19:47AM +0300, Cristian Ciocaltea wrote:
+> > > Add devicetree binding for Actions Semi ATC260x PMICs.
+> > >
+> > > Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+> > > ---
+> > >  .../bindings/mfd/actions,atc260x.yaml         | 221 ++++++++++++++++++
+> > >  1 file changed, 221 insertions(+)
+> > >  create mode 100644 Documentation/devicetree/bindings/mfd/actions,atc260x.yaml
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/mfd/actions,atc260x.yaml b/Documentation/devicetree/bindings/mfd/actions,atc260x.yaml
+> > > new file mode 100644
+> > > index 000000000000..4a55bbe1306e
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/mfd/actions,atc260x.yaml
+> > > @@ -0,0 +1,221 @@
+> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/mfd/actions,atc260x.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: Actions Semi ATC260x Power Management IC bindings
+> > > +
+> > > +maintainers:
+> > > +  - Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > > +  - Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+> > > +
+> > > +description: |
+> > > +  ATC260x series PMICs integrates Audio Codec, Power Management, RTC, IR
+> > > +  and GPIO controller blocks. Currently only the PM related functionalities
+> > > +  (i.e. regulators and system power-off/reboot) for the ATC2603C and ATC2609A
+> > > +  chip variants are supported.
+> > > +  ATC2603C includes 3 programmable DC-DC converters and 9 LDO regulators.
+> > > +  ATC2609A includes 5 programmable DC-DC converters and 10 LDO regulators.
+> > > +
+> > > +properties:
+> > > +  compatible:
+> > > +    enum:
+> > > +      - actions,atc2603c
+> > > +      - actions,atc2609a
+> > > +
+> > > +  reg:
+> > > +    maxItems: 1
+> > > +
+> > > +  interrupts:
+> > > +    maxItems: 1
+> > > +
+> > > +  pwrc:
+> > > +    type: object
+> > > +    description: |
+> > > +      The power controller integrated in ATC260x provides system power-off
+> > > +      and reboot operations.
+> >
+> > No need for this node as there are no properties, just instantiate
+> > what's needed in the MFD driver.
+>
+> My intention was to allow the user specify what functionality in the MFD
+> shall be enabled. For this particular case, if the 'pwrc' node is not
+> provided, the power-off/reboot functions will be disabled.
 
-> The actual symbol that is exported and usable is
-> 'KVM_MEMORY_ENCRYPT_OP', not 'KVM_MEM_ENCRYPT_OP'
-> 
-> $ git grep -l KVM_MEM_ENCRYPT_OP
-> Documentation/virt/kvm/amd-memory-encryption.rst
-> 
-> $ git grep -l KVM_MEMORY_ENCRYPT_OP
-> Documentation/virt/kvm/api.rst
-> arch/x86/kvm/x86.c
-> include/uapi/linux/kvm.h
-> tools/include/uapi/linux/kvm.h
-> 
-> While we're in there, update the KVM API category for
-> KVM_MEMORY_ENCRYPT_OP. It is called on a VM file descriptor.
-> 
-> Signed-off-by: Connor Kuehl <ckuehl@redhat.com>
-> ---
->  Documentation/virt/kvm/amd-memory-encryption.rst | 6 +++---
->  Documentation/virt/kvm/api.rst                   | 2 +-
->  2 files changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/Documentation/virt/kvm/amd-memory-encryption.rst b/Documentation/virt/kvm/amd-memory-encryption.rst
-> index 2d44388438cc..09a8f2a34e39 100644
-> --- a/Documentation/virt/kvm/amd-memory-encryption.rst
-> +++ b/Documentation/virt/kvm/amd-memory-encryption.rst
-> @@ -53,11 +53,11 @@ key management interface to perform common hypervisor activities such as
->  encrypting bootstrap code, snapshot, migrating and debugging the guest. For more
->  information, see the SEV Key Management spec [api-spec]_
->  
-> -The main ioctl to access SEV is KVM_MEM_ENCRYPT_OP.  If the argument
-> -to KVM_MEM_ENCRYPT_OP is NULL, the ioctl returns 0 if SEV is enabled
-> +The main ioctl to access SEV is KVM_MEMORY_ENCRYPT_OP.  If the argument
-> +to KVM_MEMORY_ENCRYPT_OP is NULL, the ioctl returns 0 if SEV is enabled
->  and ``ENOTTY` if it is disabled (on some older versions of Linux,
->  the ioctl runs normally even with a NULL argument, and therefore will
-> -likely return ``EFAULT``).  If non-NULL, the argument to KVM_MEM_ENCRYPT_OP
-> +likely return ``EFAULT``).  If non-NULL, the argument to KVM_MEMORY_ENCRYPT_OP
->  must be a struct kvm_sev_cmd::
->  
->         struct kvm_sev_cmd {
-> diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
-> index eb3a1316f03e..506c8426c583 100644
-> --- a/Documentation/virt/kvm/api.rst
-> +++ b/Documentation/virt/kvm/api.rst
-> @@ -4211,7 +4211,7 @@ H_GET_CPU_CHARACTERISTICS hypercall.
->  
->  :Capability: basic
->  :Architectures: x86
-> -:Type: system
-> +:Type: vm
->  :Parameters: an opaque platform specific structure (in/out)
->  :Returns: 0 on success; -1 on error
->  
-So this appears to have fallen through the cracks.  It looks correct to
-me, so I've applied it, thanks.
+IIRC, there's a flag property for this already.
 
-jon
+>
+> > > +
+> > > +    properties:
+> > > +      compatible:
+> > > +        enum:
+> > > +          - actions,atc2603c-pwrc
+> > > +          - actions,atc2609a-pwrc
+> > > +
+> > > +    required:
+> > > +      - compatible
+> > > +
+> > > +    additionalProperties: false
+> > > +
+> > > +  onkey:
+> > > +    type: object
+> > > +    description: |
+> > > +      Use the ONKEY built into ATC260x PMICs as an input device reporting
+> > > +      power button status. ONKEY can be used to wakeup from low power
+> > > +      modes and force a reset on long press.
+> > > +
+> > > +    properties:
+> > > +      compatible:
+> > > +        enum:
+> > > +          - actions,atc2603c-onkey
+> > > +          - actions,atc2609a-onkey
+> > > +
+> > > +      actions,reset-time-sec:
+> > > +        description: |
+> > > +          Duration in seconds which the key should be kept pressed for device
+> > > +          to reset automatically. The hardware default is 8. Use 0 to disable
+> > > +          this functionality.
+> > > +        enum: [0, 6, 8, 10, 12]
+> >
+> > We already have 'power-off-time-sec' in input.yaml. How about adding
+> > 'reset-time-sec' there.
+>
+> Thanks for the suggestion, I was actually looking for this before
+> choosing the custom property and just assumed this was not added for
+> a particular reason.
+
+Probably just because the usual behavior of holding the power button
+is to power off rather than reset.
+
+> So I'm going to handle it. Would you like me to send a separate patch
+> (not part of this series)?
+
+Separate patch yes, but it can be part of the series.
+
+> > This could really just be a property in the parent node.
+>
+> This is similar with 'pwrc': if 'onkey' node is not present, the ONKEY
+> functionality will not be enabled.
+
+Would you really want/need to support wakeup, but disable long press
+feature? Seems like a single property would be sufficient.
+
+> Is there a better/recommended approach to manage this MFD feature
+> selection?
+
+But we have child nodes for this in other cases, so I guess it is fine.
+
+Rob
