@@ -2,61 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94C5926274D
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 08:45:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49061262775
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 08:56:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725959AbgIIGpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 02:45:22 -0400
-Received: from mga12.intel.com ([192.55.52.136]:6193 "EHLO mga12.intel.com"
+        id S1726642AbgIIG4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 02:56:25 -0400
+Received: from smtp.h3c.com ([60.191.123.56]:26358 "EHLO h3cspam01-ex.h3c.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725772AbgIIGpS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 02:45:18 -0400
-IronPort-SDR: rgtbG2iJunMjh3+4mJbmG3tpCqHGEBFccqI54I+5dmgU1FjmWwHaVRe0RqzdY/z32Y/IcntPMm
- T6crA+qvFZvg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9738"; a="137796876"
-X-IronPort-AV: E=Sophos;i="5.76,408,1592895600"; 
-   d="scan'208";a="137796876"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2020 23:45:18 -0700
-IronPort-SDR: vpvCsOeJrcXHK+2ZLb/8FiQfDPV6+Xh7438/WGgZ7DOS2IESAIWFqo6sEuSTN8+NVVw1nnLJ5l
- GHr36XrXIDwQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,408,1592895600"; 
-   d="scan'208";a="333724606"
-Received: from um.fi.intel.com (HELO um) ([10.237.72.57])
-  by orsmga008.jf.intel.com with ESMTP; 08 Sep 2020 23:45:15 -0700
-From:   Alexander Shishkin <alexander.shishkin@linux.intel.com>
-To:     Shuah Khan <skhan@linuxfoundation.org>, peterz@infradead.org,
-        mingo@redhat.com, acme@kernel.org, mark.rutland@arm.com,
-        jolsa@redhat.com, namhyung@kernel.org
-Cc:     Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, alexander.shishkin@linux.intel.com
-Subject: Re: [PATCH] kernel: events: Use scnprintf() in show_pmu_*() instead of snprintf()
-In-Reply-To: <20200901234930.359126-1-skhan@linuxfoundation.org>
-References: <20200901234930.359126-1-skhan@linuxfoundation.org>
-Date:   Wed, 09 Sep 2020 09:45:15 +0300
-Message-ID: <87o8mfxxc4.fsf@ashishki-desk.ger.corp.intel.com>
+        id S1725863AbgIIG4Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 02:56:24 -0400
+Received: from DAG2EX03-BASE.srv.huawei-3com.com ([10.8.0.66])
+        by h3cspam01-ex.h3c.com with ESMTPS id 0896u51D043736
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 9 Sep 2020 14:56:05 +0800 (GMT-8)
+        (envelope-from tian.xianting@h3c.com)
+Received: from localhost.localdomain (10.99.212.201) by
+ DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 9 Sep 2020 14:56:07 +0800
+From:   Xianting Tian <tian.xianting@h3c.com>
+To:     <axboe@kernel.dk>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <kafai@fb.com>, <songliubraving@fb.com>, <yhs@fb.com>,
+        <andriin@fb.com>, <john.fastabend@gmail.com>,
+        <kpsingh@chromium.org>
+CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+        Xianting Tian <tian.xianting@h3c.com>
+Subject: [PATCH] block: remove redundant empty check of mq_list
+Date:   Wed, 9 Sep 2020 14:48:14 +0800
+Message-ID: <20200909064814.5704-1-tian.xianting@h3c.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
 Content-Type: text/plain
+X-Originating-IP: [10.99.212.201]
+X-ClientProxiedBy: BJSMTP02-EX.srv.huawei-3com.com (10.63.20.133) To
+ DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66)
+X-DNSRBL: 
+X-MAIL: h3cspam01-ex.h3c.com 0896u51D043736
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Shuah Khan <skhan@linuxfoundation.org> writes:
+blk_mq_flush_plug_list() itself will do the empty check of mq_list,
+so remove such check in blk_flush_plug_list().
+Actually normally mq_list is not empty when blk_flush_plug_list is
+called.
 
-> Since snprintf() returns would-be-output size instead of the actual
-> output size, replace it with scnprintf(), so the nr_addr_filters_show(),
-> type_show(), and perf_event_mux_interval_ms_show() routines return the
-> actual size.
+Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
+---
+ block/blk-core.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Well, firstly they should just be sprintf()s, and secondly, I wouldn't
-worry about it, because [0].
+diff --git a/block/blk-core.c b/block/blk-core.c
+index 10c08ac50..dda301610 100644
+--- a/block/blk-core.c
++++ b/block/blk-core.c
+@@ -1864,8 +1864,7 @@ void blk_flush_plug_list(struct blk_plug *plug, bool from_schedule)
+ {
+ 	flush_plug_callbacks(plug, from_schedule);
+ 
+-	if (!list_empty(&plug->mq_list))
+-		blk_mq_flush_plug_list(plug, from_schedule);
++	blk_mq_flush_plug_list(plug, from_schedule);
+ }
+ 
+ /**
+-- 
+2.17.1
 
-[0] https://marc.info/?l=linux-kernel&m=159874491103969&w=2
-
-Regards,
---
-Alex
