@@ -2,68 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97889263284
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:45:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B08926329E
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:48:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730972AbgIIQpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 12:45:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57824 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730987AbgIIQoz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 12:44:55 -0400
-Received: from localhost (52.sub-72-107-123.myvzw.com [72.107.123.52])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ED6D32166E;
-        Wed,  9 Sep 2020 16:44:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599669895;
-        bh=Fh0fYO6W4eJejAehQe91VaJokQFPRSJs+BT7rxkuW68=;
-        h=From:To:Cc:Subject:Date:From;
-        b=s3Ikb7x5NwtLDVue2TQd7kP87RCc/mUc4HGwjFJvsYQX2Nok7n/DCSQrADeMrZaBC
-         7BHWekOQSnHB+eceVb4b3T4uSYvuAV6kpcnErm6dVFUvjVf96YQf0olIGQottuo152
-         rS8R90u6tUeF4rFrdtagxFd+M7u4NJtbKvmZEKcM=
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Kashyap Desai <kashyap.desai@broadcom.com>,
-        Sumit Saxena <sumit.saxena@broadcom.com>,
-        Shivasharan S <shivasharan.srikanteshwara@broadcom.com>
-Cc:     megaraidlinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Vaibhav Gupta <vaibhavgupta40@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: [PATCH] MAINTAINERS: Drop megaraidlinux.pdl@broadcom.com from MEGARAID SCSI/SAS DRIVERS
-Date:   Wed,  9 Sep 2020 11:44:46 -0500
-Message-Id: <20200909164446.713025-1-helgaas@kernel.org>
-X-Mailer: git-send-email 2.25.1
+        id S1731044AbgIIQrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 12:47:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730999AbgIIQrI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 12:47:08 -0400
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E6C0C061573;
+        Wed,  9 Sep 2020 09:47:07 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id a3so3017926oib.4;
+        Wed, 09 Sep 2020 09:47:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=n3Y+1un3H1D6oJKWN3rI/d5EPhk7L+MJ/htHdyocAoA=;
+        b=qAQAXtOzsZ0sv3YdGzm6xc5j7lysX+ULODN3Fq9+2UQq9/VHPmsThip6XfnudOeKvL
+         Mokc60xqwZAm08xseabSB5eDVTcPMKEcJpQ2IqZ2PO6hjJt1mPHa/NpaOSK8Ng0Y3xEi
+         AEZZpNZFolJy3If3zVDLeu9tPJvqwJtiYvs8oESLMdmaoh0O8oRCNJ3TCnOapH19RoSc
+         cwQBgfD079XNoaOBlCQqiMjs7zlYbM6Eu29UfSIRh85ZjWQgx8XtRdVP4oo9qGrv5au3
+         kUAqS0q2EyNcwUKbq15qUiYCEc4MG49OMlIS4/oZMGoei3yb5+4Cd1FUL5Ih3ThyGP0f
+         WBLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=n3Y+1un3H1D6oJKWN3rI/d5EPhk7L+MJ/htHdyocAoA=;
+        b=GL0QL6eJ3pr2888bMHAdp5SvcYnROHYOhgxrv25b+uK+1CptmWWEWOCwMfy7/nTihS
+         NJVL0oWcsdkFKS/uEKW/C0+A4qfmEaWRDqsw4mh7/PvWn/nkiAjwQlJDw4eZxtYlHK4g
+         EhAHqKLHM4GQzY8+zBKqGRuTMR3XWKVzptffVNKo90h/nU/eJU+0kc998iD65cxglHhN
+         O6Kboea/1vJ986+HozaSnVK9WzwYWHkxS1IsZgXneWF1ojd1W6A7N1Bk+TMlca6/7PBx
+         So+KvMf+TdzUYaL1o4xbiW2g+r8Ahn2PdRbg+k5t8JgV75ubQNYi0rByfSXcbaQ4BtuJ
+         sjnQ==
+X-Gm-Message-State: AOAM532wI+Z7MU8YnVBpNie4mfd71Ao9aCdYfHkxaaKSas446pJub8/Q
+        vm3+ku9EMb/gBfQuxlPm9Jf/1cV52t8=
+X-Google-Smtp-Source: ABdhPJzNLIwCZKb6actD3gqsnpt2pv3CoJ0V79tILh6f9Hfne/GydDWQZDoIMsjZyftM6MSMefkAxA==
+X-Received: by 2002:a05:6808:1a:: with SMTP id u26mr1168579oic.78.1599670027117;
+        Wed, 09 Sep 2020 09:47:07 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id k1sm456972oot.20.2020.09.09.09.47.06
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 09 Sep 2020 09:47:06 -0700 (PDT)
+Date:   Wed, 9 Sep 2020 09:47:05 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 5.8 000/186] 5.8.8-rc1 review
+Message-ID: <20200909164705.GE1479@roeck-us.net>
+References: <20200908152241.646390211@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200908152241.646390211@linuxfoundation.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bjorn Helgaas <bhelgaas@google.com>
+On Tue, Sep 08, 2020 at 05:22:22PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.8.8 release.
+> There are 186 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu, 10 Sep 2020 15:21:57 +0000.
+> Anything received after that time might be too late.
+> 
 
-Every post to megaraidlinux.pdl@broadcom.com seems to generate a bounce, so
-I think the list is defunct.  Remove it from MAINTAINERS.
+Build results:
+	total: 154 pass: 153 fail: 1
+Failed builds:
+	powerpc:allmodconfig
+Qemu test results:
+	total: 430 pass: 430 fail: 0
 
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
----
- MAINTAINERS | 1 -
- 1 file changed, 1 deletion(-)
+The powerpc problem is the same as before:
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index deaafb617361..a92d1517e865 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -11042,7 +11042,6 @@ MEGARAID SCSI/SAS DRIVERS
- M:	Kashyap Desai <kashyap.desai@broadcom.com>
- M:	Sumit Saxena <sumit.saxena@broadcom.com>
- M:	Shivasharan S <shivasharan.srikanteshwara@broadcom.com>
--L:	megaraidlinux.pdl@broadcom.com
- L:	linux-scsi@vger.kernel.org
- S:	Maintained
- W:	http://www.avagotech.com/support/
--- 
-2.25.1
+Inconsistent kallsyms data
+Try make KALLSYMS_EXTRA_PASS=1 as a workaround
 
+KALLSYMS_EXTRA_PASS=1 doesn't help. The problem is sporadic, elusive, and all
+but impossible to bisect. The same build passes on another system, for example,
+with a different load pattern. It may pass with -j30 and fail with -j40.
+The problem started at some point after v5.8, and got worse over time; by now
+it almost always happens. I'd be happy to debug if there is a means to do it,
+but I don't have an idea where to even start. I'd disable KALLSYMS in my
+test configurations, but the symbol is selected from various places and thus
+difficult to disable. So unless I stop building ppc:allmodconfig entirely
+we'll just have to live with the failure.
+
+Tested-by: Guenter Roeck <linux@roeck-us.net>
+
+Guenter
