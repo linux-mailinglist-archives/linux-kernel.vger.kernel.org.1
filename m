@@ -2,106 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEC432632C7
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:51:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA54D2631F6
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:32:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731082AbgIIQux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 12:50:53 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:11389 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726426AbgIIQFV (ORCPT
+        id S1731156AbgIIQcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 12:32:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56392 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731122AbgIIQ13 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 12:05:21 -0400
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f58e45b0000>; Wed, 09 Sep 2020 07:19:07 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Wed, 09 Sep 2020 07:19:50 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Wed, 09 Sep 2020 07:19:50 -0700
-Received: from [10.2.173.224] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 9 Sep
- 2020 14:19:45 +0000
-From:   Zi Yan <ziy@nvidia.com>
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-CC:     <linux-mm@kvack.org>, Roman Gushchin <guro@fb.com>,
-        Rik van Riel <riel@surriel.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        David Nellans <dnellans@nvidia.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH 06/16] mm: thp: add 1GB THP split_huge_pud_page()
- function.
-Date:   Wed, 9 Sep 2020 10:19:43 -0400
-X-Mailer: MailMate (1.13.1r5705)
-Message-ID: <AF9154F7-74D8-4639-BB53-0B6FF245F623@nvidia.com>
-In-Reply-To: <20200909141800.4ueixh2gw5lv4deh@box>
-References: <20200902180628.4052244-1-zi.yan@sent.com>
- <20200902180628.4052244-7-zi.yan@sent.com>
- <20200909141800.4ueixh2gw5lv4deh@box>
+        Wed, 9 Sep 2020 12:27:29 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 080A2C06137F
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 07:24:49 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id z25so3292393iol.10
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 07:24:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=J42uWZO91Vl6z53QuSqgDQ5nEZPu3ErBMsf2V3eJXao=;
+        b=vwgyAFNFY0Rk6tGpJrQKkFa2XORu9tkWL3MOvEnxMWQSsbJhAjs0wQkh45yfbxgWty
+         P4LutOppwndoh6fYhlpY/FnHJ7s6roKt4SmQ4ZpkvlcGIxjeXF2o2A/OxCF6LlScMtNO
+         sd1g73r4KiQVkYw0cr9Uby1XQGWuAPxYLmrDOkiYBuC6w2Lor4MVkXLDdEJOmCpTmfNV
+         OooUgHeq067qTX1T/mzo/jYDU8gFVMGTX7A+wovVWcHT9Cn1BOV0cJ5c90cqkK04z5zV
+         FQRf3f1tWU3m+KnOqKecj1nxHPOb0476pqidIdfBKhmVP8zKJt2dC5dXnsGG8kbtXB49
+         uuAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=J42uWZO91Vl6z53QuSqgDQ5nEZPu3ErBMsf2V3eJXao=;
+        b=AsY/b1L8WchP+J472PxfYcw90gY4q15cL39UoUjgfp6s40jSEJBmFDYgZT1EZkn/wI
+         jiFI+bbfiF4j+O2B8x6WxpqFZgFhjHHYHTus8nmEXe7mahK2dxUvSNPZuRGdUeoPpCaF
+         xx+7cqoE+xIOZ1f8oI6nDuZsoM5uDtiR09uBqM3vPDH6ybsxBnsMEGuf83kxrZGezyy/
+         EoAt0edWiO24SvjS4IsRTy/C807ugYkFy8T1TPen9ABsSjX1BD7bEQ9VxN0IzNLPf2DH
+         yIsUNi6WuASgkOFXovvH58bKWypbdnHldNfG72q2GG/7RZL1tFeot+lkbmucElZvn1GB
+         pXLA==
+X-Gm-Message-State: AOAM5325wcy/W/4Lq9L2tjA8lidUtCfBXjp97Au3JaoEYB6mjPpKhbWy
+        dJ0WB2Jc5Jj/y8X2g1Y4A6lnZg==
+X-Google-Smtp-Source: ABdhPJzw71ClM3e9xwflgpNGkqys4GZLnoSdxzDPCJW81NzzXlaCm+tbHvqOkGBBc4MqR9ZnkKGG6w==
+X-Received: by 2002:a02:1142:: with SMTP id 63mr4314795jaf.73.1599661486949;
+        Wed, 09 Sep 2020 07:24:46 -0700 (PDT)
+Received: from [192.168.1.10] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id 2sm1457722ilj.24.2020.09.09.07.24.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Sep 2020 07:24:46 -0700 (PDT)
+Subject: Re: [PATCH next] io_uring: fix task hung in io_uring_setup
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     Pavel Begunkov <asml.silence@gmail.com>, io-uring@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk,
+        syzbot+107dd59d1efcaf3ffca4@syzkaller.appspotmail.com,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Kees Cook <keescook@chromium.org>
+References: <20200903132119.14564-1-hdanton@sina.com>
+ <9bef23b1-6791-6601-4368-93de53212b22@kernel.dk>
+ <8031fbe7-9e69-4a79-3b42-55b2a1a690e3@gmail.com>
+ <20200908000339.2260-1-hdanton@sina.com>
+ <20200909001943.18916-1-hdanton@sina.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <e04aea6a-4049-da2e-e8e8-9025aa03268b@kernel.dk>
+Date:   Wed, 9 Sep 2020 08:24:45 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: multipart/signed;
-        boundary="=_MailMate_67E22BE1-702B-406F-8717-49758A0ED8D6_=";
-        micalg=pgp-sha512; protocol="application/pgp-signature"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1599661147; bh=ouW3msjo0bxs7Ho0BhRy49F31Peg+avV+uVRSUbnD0s=;
-        h=X-PGP-Universal:From:To:CC:Subject:Date:X-Mailer:Message-ID:
-         In-Reply-To:References:MIME-Version:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type;
-        b=KKPCfQccZ0mz3gX3Iz+YypGO6w/K7rBnVj0RLPJOPNVGoL3aMIpSFGM2kDV0p/O/C
-         XRpHplzO0w57y1ftBbS5AUQa1S5FtZMnfZdqU21mtstSAEm5/gqq3QNFFV8spllok2
-         0CI2bNbJXhEWVgim7Jm+zaDfYVEOv4PLYtQP2NKH9e5cMK/Clmo22yx+ADrNccssyB
-         7wuK9M7ClSh1mnbSsVve9tak0qPCnnIXFo2759Fr90hkf/sT4IfjI4sWqtxG7HJ4C2
-         DK87+yaTN9h6P2a8O+K0FvVqwcSozo3G6jku1mcFc12ykG393WIBeo9V8ZO4qBgpey
-         lV4YKVzNkP/7A==
+In-Reply-To: <20200909001943.18916-1-hdanton@sina.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=_MailMate_67E22BE1-702B-406F-8717-49758A0ED8D6_=
-Content-Type: text/plain; charset="UTF-8"; markup=markdown
-Content-Transfer-Encoding: quoted-printable
+On 9/8/20 6:19 PM, Hillf Danton wrote:
+> 
+> On Tue, 8 Sep 2020 17:34:26 -0600 Jens Axboe wrote:
+>> On 9/7/20 6:03 PM, Hillf Danton wrote:
+>>> On Mon, 7 Sep 2020 06:55:04 Jens Axboe wrote:
+>>>> On 9/7/20 2:50 AM, Pavel Begunkov wrote:
+>>>>>
+>>>>> BTW, I don't see the patch itself, and it's neither in io_uring, block
+>>>>> nor fs mailing lists. Hillf, could you please CC proper lists next time?
+>>>
+>>> Yes, I can. So will I send io_uring patches with Pavel Cced.
+>>
+>> While that is nice, it should not be necessary. We need to ensure that your
+>> emails reach the list, that's more important than needing to CC a specific
+>> person, because it still means that everyone else doesn't see it.
+>>
+>> Do you get an error from vger, or does it simply not show up?
+> 
+> After tapping the send button for this message, I will receive a message
+> from the sina mail server saying it failed to deliver it to one of the
+> targets (abc@vger.kernel.org), which has been happing over the past a
+> couple of years. One of the redhat guys, I can't remmenber his name,
+> once tryied to help me solve the problem, by sending somebody@vger a
+> message explaining what was going on, but failed. AFAIC there's a
+> glitch in exchanging info between the sina server and the server at the
+> vger end, and it seems it would take more time than thought to figure
+> it out. So let it be for now.
 
-On 9 Sep 2020, at 10:18, Kirill A. Shutemov wrote:
+Might be worthwhile to just have a gmail account for sending patches
+and replying to list emails?
 
-> On Wed, Sep 02, 2020 at 02:06:18PM -0400, Zi Yan wrote:
->>  25 files changed, 852 insertions(+), 98 deletions(-)
->
-> It's way too big to have meaningful review.
+-- 
+Jens Axboe
 
-Will split it into small patches in the next version.
-
-=E2=80=94
-Best Regards,
-Yan Zi
-
---=_MailMate_67E22BE1-702B-406F-8717-49758A0ED8D6_=
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQJDBAEBCgAtFiEEh7yFAW3gwjwQ4C9anbJR82th+ooFAl9Y5H8PHHppeUBudmlk
-aWEuY29tAAoJEJ2yUfNrYfqK6bgP/1zuTfokWA7v5i0dOvkMy4hhGhOvmGQ9uZzf
-IHUfm4jaIRwfQQ7U/jwZJatVi5HJTzOYxSMf9hrpv4x/0jsbsszMmvJ/SzIVa0ZD
-Q/ZZf8ItL27F0ZUtGctCqfEABtWIlG9mwik2xf8AmQM8L0I2jB2QCrYWyRMC4Fx8
-iVCnAmUDr1TOGIWwYy2OE3lLsuwRLwpcnAZtYarJsIvd+Ao+I6tdgTS3Mc7Ewn8A
-/G7k8SW8I8oAl+A2RD5c581xGKcvmkXkWkNwZ1meCa17nO4nFmnMz6QCbXYVT2Vm
-BPm8QvCvE7uQ41fqJWLjF+CKM9YHXH5qFyvw7PowRWUSOb0FKpvSRZEl7Y6glxY+
-QB8dWFT+csKEomrkU8Bb01g6oc73cF9Qiv3GTVVPgPPiwhWF4pyfyKQ0wMr3HLaZ
-rKVhl5rVN4zmibwwljaJlO4efUik1GiF16pwcbZNZY/L86XWhZLX8jb18awbEh9I
-hLvYP7MDXcePYz1/ZysTkGPW/EbV2btV2zFtqtxHGoVx5IWr3UL4DMVaXoSPyJYz
-K+K/7vBg13u/ujCh40v53vU5vBIwmQ+l2t0D4N7uqbjmdIz5x4DTB/CmIb35F3Co
-AjLBdCcCWMYngi2iiLCi9zSUJUgMzU49pa57hw5rSiWLnSX2xMCg8hlTZCBPKZpV
-TqSMdqVV
-=KXb2
------END PGP SIGNATURE-----
-
---=_MailMate_67E22BE1-702B-406F-8717-49758A0ED8D6_=--
