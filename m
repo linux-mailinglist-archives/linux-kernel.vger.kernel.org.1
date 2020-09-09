@@ -2,131 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 467F12630DB
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 17:46:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 541C12630F1
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 17:49:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730511AbgIIPqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 11:46:40 -0400
-Received: from a27-10.smtp-out.us-west-2.amazonses.com ([54.240.27.10]:47568
-        "EHLO a27-10.smtp-out.us-west-2.amazonses.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730368AbgIIPnp (ORCPT
+        id S1730588AbgIIPtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 11:49:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50012 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730538AbgIIPrm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 11:43:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=zsmsymrwgfyinv5wlfyidntwsjeeldzt; d=codeaurora.org; t=1599661265;
-        h=MIME-Version:Content-Type:Content-Transfer-Encoding:Date:From:To:Cc:Subject:In-Reply-To:References:Message-ID;
-        bh=Nr4GXrAKQEOvxB4xB00+a/NEFECU2vP5J134KY5qblo=;
-        b=VZkkPOGHAsSfhD1kEepDMgyMTwzELcSNxX6dLiuhXRZnaJZy1X/lU2NwmHN4tvlb
-        Xj3JIQHFSLHUZfXmrh7MwoHI7c4N0fFHyczP2Jgi4coUFQZq1e/PapNykDkOPyn7uHd
-        OwZzwE0gokI8rn/B2P6WPWz7pn5Kos/jnRywJSPY=
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=hsbnp7p3ensaochzwyq5wwmceodymuwv; d=amazonses.com; t=1599661265;
-        h=MIME-Version:Content-Type:Content-Transfer-Encoding:Date:From:To:Cc:Subject:In-Reply-To:References:Message-ID:Feedback-ID;
-        bh=Nr4GXrAKQEOvxB4xB00+a/NEFECU2vP5J134KY5qblo=;
-        b=jLQhpCQvCA7iTWSJZZ2VoAQNIVhMbgNMcBZbiL71m4vAqscFYVnPGSMoah9OTZ1A
-        rCA/2FVdVPKERcElC+qlx7VzG/4dhJ/4cOyvgiBxL82bbgmAsJ8WTvSDYAYXs52CwVU
-        DbRErXgtsLptA0snYPSLmm2ooWI+VX7M4DZNMxtc=
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+        Wed, 9 Sep 2020 11:47:42 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67A3BC06137B
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 07:21:31 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id a8so2516644ilk.1
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 07:21:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=mtr65x6fK5IlIQRtZLNh/NxFbA0Ukhq43XJmWOA2CUc=;
+        b=1kTWQ0Rx17CB3a3l6zRYbeWVNhCtQNdeO1Nyt31G782X3qOLON4LuUwU2Tfa2HcPBh
+         eo2G7kbcA/xqYT4dUkojSxg3+vNGmZt2EyubttIOhQWjesQdymM00mjaHjpLaShFMpCn
+         61y8hoz4MVq8xiOPf9zkqwlAvhn2qYSfAPRjcDSAc5CspVC43c4n4VpfDyNYwdPamoJz
+         3A4tvoOXFutN7GNfYhYGLEIamInVZSviooYPkuI1G9U0ii130k/rjOPPzldqxP1mJCqV
+         nyFrsR/dfjygylN1VDNcS5jSBh1M2gvITzl/AbNA5+8HifN1lQdBIlmucO5fQ/pzz1+Y
+         LMJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=mtr65x6fK5IlIQRtZLNh/NxFbA0Ukhq43XJmWOA2CUc=;
+        b=LoWMLIgyMPvXX8EF3ONfl1FOYbuIXxC6XURnwWdIodmPaJKG451suQ6e6gFeIAd1W4
+         WLCPv96lf7/3zNuvha+roEPTuaJpWAJ+Me/qkx7g7A0mFE+ihSX9G+RsBqzbP0NBfgTT
+         34WBtYHtZxV61H0sY7E2pBcQu9peAOEIVnE/Jgc5ekL7WxR9vpvgkfwxIWH8KiMBURP+
+         IC/vomNXEMQD3ytEKwEImmzipNnGqjmCPF/mtF0Hc7arAYKVHCudQUe/EGfqhUvfQRmB
+         QcUFaPZV25LbLVtG5zgZB1N1ZUBWy8+0fEVn6Rdb+0mMXGPV06uAIBQzpSvjNspNFFhO
+         vh/w==
+X-Gm-Message-State: AOAM5308dFL5p6/jp1sg5V3KNDwP84X0RibPq3frtoV47pYKNdl2dwKy
+        Gy+aPh+0vjl0BoUNCn5hVAIMrw==
+X-Google-Smtp-Source: ABdhPJweYTpuCpa5hQXVyCKu1HNYd1h5alEfQqDr7iNE+D2ODqGnoa1Ri0/JOkdr4eXiKi7PQPRmEw==
+X-Received: by 2002:a05:6e02:d2:: with SMTP id r18mr3681539ilq.303.1599661290531;
+        Wed, 09 Sep 2020 07:21:30 -0700 (PDT)
+Received: from [192.168.1.10] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id j62sm1286878iof.53.2020.09.09.07.21.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Sep 2020 07:21:30 -0700 (PDT)
+Subject: Re: [PATCH] block: remove redundant empty check of mq_list
+To:     Xianting Tian <tian.xianting@h3c.com>, ast@kernel.org,
+        daniel@iogearbox.net, kafai@fb.com, songliubraving@fb.com,
+        yhs@fb.com, andriin@fb.com, john.fastabend@gmail.com,
+        kpsingh@chromium.org
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+References: <20200909064814.5704-1-tian.xianting@h3c.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <466b8c40-9d53-8a40-6c5b-f76db2974c04@kernel.dk>
+Date:   Wed, 9 Sep 2020 08:21:29 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <20200909064814.5704-1-tian.xianting@h3c.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Wed, 9 Sep 2020 14:21:04 +0000
-From:   skakit@codeaurora.org
-To:     Matthias Kaehlcke <mka@chromium.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        gregkh@linuxfoundation.org, Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, akashast@codeaurora.org,
-        rojay@codeaurora.org, msavaliy@qti.qualcomm.com
-Subject: Re: [PATCH V4 4/4] tty: serial: qcom_geni_serial: Fix the UART wakeup
- issue
-In-Reply-To: <20200903165058.GK3419728@google.com>
-References: <1599145498-20707-1-git-send-email-skakit@codeaurora.org>
- <1599145498-20707-5-git-send-email-skakit@codeaurora.org>
- <20200903165058.GK3419728@google.com>
-Message-ID: <01010174733dcefc-01bf923c-1fdd-4d80-b7a8-d360c2f6cbf5-000000@us-west-2.amazonses.com>
-X-Sender: skakit@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
-X-SES-Outgoing: 2020.09.09-54.240.27.10
-Feedback-ID: 1.us-west-2.CZuq2qbDmUIuT3qdvXlRHZZCpfZqZ4GtG9v3VKgRyF0=:AmazonSES
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-03 22:20, Matthias Kaehlcke wrote:
-> On Thu, Sep 03, 2020 at 08:34:58PM +0530, satya priya wrote:
->> As a part of system suspend uart_port_suspend is called from the
->> Serial driver, which calls set_mctrl passing mctrl as NULL. This
-> 
-> nit: s/NULL/0/
-> 
+On 9/9/20 12:48 AM, Xianting Tian wrote:
+> blk_mq_flush_plug_list() itself will do the empty check of mq_list,
+> so remove such check in blk_flush_plug_list().
+> Actually normally mq_list is not empty when blk_flush_plug_list is
+> called.
 
-Okay, will correct it.
+It's cheaper to do in the caller, instead of doing the function call
+and then aborting if it's empty. So I'd suggest just leaving it alone.
+Right now this is the only caller, but it's nicer to assume we can
+be called in any state vs not having the check.
 
->> makes RFR high(NOT_READY) during suspend.
->> 
->> Due to this BT SoC is not able to send wakeup bytes to UART during
->> suspend. Include if check for non-suspend case to keep RFR low
->> during suspend.
-> 
-> Is this patch actually needed?
-> 
-> With the other patches in this series the UART doesn't control RFR
-> on IDP, and I suppose corresponding pinconf changes should also be
-> done on other devices that want to support wakeup. Effectively,
-> I see Bluetooth wakeup working without this patch on a sc7180
-> device.
-> 
+-- 
+Jens Axboe
 
-I am also seeing the same observation now on the tip (checked on IDP), 
-but previously if this patch is not present the RFR line would go high 
-during suspend (even though GPIO mode is configured in sleep state), not 
-sure how it is being low now. Theoretically, this fix is good to have, 
-because in suspend UART_MANUAL_RFR is getting set to not ready state and 
-if QUP gets power to drive this line, it may go high and wakeup from BT 
-will fail.
-
->> Signed-off-by: satya priya <skakit@codeaurora.org>
->> Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->> Reviewed-by: Akash Asthana <akashast@codeaurora.org>
->> ---
->> Changes in V2:
->>  - This patch fixes the UART flow control issue during suspend.
->>    Newly added in V2.
->> 
->> Changes in V3:
->>  - As per Matthias's comment removed the extra parentheses.
->> 
->> Changes in V4:
->>  - No change.
->> 
->>  drivers/tty/serial/qcom_geni_serial.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->> 
->> diff --git a/drivers/tty/serial/qcom_geni_serial.c 
->> b/drivers/tty/serial/qcom_geni_serial.c
->> index 07b7b6b..2aad9d7 100644
->> --- a/drivers/tty/serial/qcom_geni_serial.c
->> +++ b/drivers/tty/serial/qcom_geni_serial.c
->> @@ -242,7 +242,7 @@ static void qcom_geni_serial_set_mctrl(struct 
->> uart_port *uport,
->>  	if (mctrl & TIOCM_LOOP)
->>  		port->loopback = RX_TX_CTS_RTS_SORTED;
->> 
->> -	if (!(mctrl & TIOCM_RTS))
->> +	if (!(mctrl & TIOCM_RTS) && !uport->suspended)
->>  		uart_manual_rfr = UART_MANUAL_RFR_EN | UART_RFR_NOT_READY;
->>  	writel(uart_manual_rfr, uport->membase + SE_UART_MANUAL_RFR);
->>  }
->> --
->> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
->> member
->> of Code Aurora Forum, hosted by The Linux Foundation
->> 
