@@ -2,157 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87AE2263055
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 17:16:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7936626306E
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 17:22:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729785AbgIIPQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 11:16:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36526 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729135AbgIILao (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 07:30:44 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E1F5820897;
-        Wed,  9 Sep 2020 11:22:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599650561;
-        bh=oAgyl5YCzOi2Oys2dADhKhmSZ1VDNwqV2xCYDMZdcWw=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=VGlHUA84CYJaxv0ABm+a7LxuNh29gVlf7PMfczNBCR98EuKwBIr0Bd91ClwrEdbao
-         ZJmTM2fuC1vKlva5mCMB7bzzkTO9BoXDAgwzncyqAvGsXx1PyTsiLJdMRE2XiO4/rq
-         m3UHhFdkjCrWGoIUrbT2sCHDNVlTZYQL/eUnmEZA=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id AB27F3523091; Wed,  9 Sep 2020 04:22:41 -0700 (PDT)
-Date:   Wed, 9 Sep 2020 04:22:41 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Zhang, Qiang" <Qiang.Zhang@windriver.com>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        rcu <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: RCU:  Question   rcu_preempt_blocked_readers_cgp  in
-  rcu_gp_fqs_loop func
-Message-ID: <20200909112241.GE29330@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200818220245.GO27891@paulmck-ThinkPad-P72>
- <CAEXW_YRZ6RM90+aYA0JQ1war0n-D0M4peXJZE2_Uqf07xvF+5g@mail.gmail.com>
- <BYAPR11MB26323E6D956BA22DFE610A13FF5D0@BYAPR11MB2632.namprd11.prod.outlook.com>
- <20200819135654.GB3875610@google.com>
- <20200819152159.GX27891@paulmck-ThinkPad-P72>
- <20200819155808.GA8817@pc636>
- <20200820223957.GB120898@google.com>
- <20200821153328.GH2855@paulmck-ThinkPad-P72>
- <BYAPR11MB263285B19261BE8096D87F65FF260@BYAPR11MB2632.namprd11.prod.outlook.com>
- <BYAPR11MB2632FD34F68A89CCE039018BFF260@BYAPR11MB2632.namprd11.prod.outlook.com>
+        id S1729953AbgIIPVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 11:21:52 -0400
+Received: from mout.kundenserver.de ([217.72.192.73]:35999 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728350AbgIIL2c (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 07:28:32 -0400
+Received: from threadripper.lan ([149.172.98.151]) by mrelayeu.kundenserver.de
+ (mreue108 [212.227.15.145]) with ESMTPA (Nemesis) id
+ 1MG9Xu-1kJCr04Bbw-00GaHP; Wed, 09 Sep 2020 13:27:15 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     Nicholas Piggin <npiggin@gmail.com>, linux-arch@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 00/23] Use asm-generic for mmu_context no-op functions
+Date:   Wed,  9 Sep 2020 13:27:08 +0200
+Message-Id: <159965079776.3591084.10754647036857628984.b4-ty@arndb.de>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200901141539.1757549-1-npiggin@gmail.com>
+References: <20200901141539.1757549-1-npiggin@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BYAPR11MB2632FD34F68A89CCE039018BFF260@BYAPR11MB2632.namprd11.prod.outlook.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:7OMazxQ6DY8MEF6H/bZ/vvXzzHh3+g8R4o0uC3slmdaoHjeIgYq
+ yYLMHXATL1HlHzETUxMec1heCWdAqn5Xbe34Z7iqBpu9Y+QREbqvwyqSFWcQXq6+OkYWUq4
+ mlJxy2fwrK+/O2uwi47EP5zNbeaSwyCVP23+DW/IriB8kDIZHKFD40PKK96QjJV0N2KRzcV
+ XgsmqvhStI+/vCfKlCM9A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:YBNooPUWFN8=:iu760Z4R7UBivMuwhQHeHx
+ YWGUNWbZBoBYfk7wdQPrvP1mVGFgET9PxQovhGbZlFI5aEYtZuOzHfM/eRykMdbMQ6ww1LpMc
+ WK7ZuviVeyXh5f8DYbWBSRFbHi7frupdJsOKbULIrnLSZpdcX/PmV9M7eC2i4AHqbGInC63cs
+ z+hNRtsNbWqEhoyXzsPm49s+EKw+XpUQZM50TYKqMcSbprL3tkjFiOxFGWpCFWmidcZ+qj/+l
+ EKg37uALHPRd2MfjLG0mKt9/hR5zuy57OeAJax1lCwlORQa5kpTvsOhUR5hxRFgN4ZXFQk9wp
+ 3ooVViweyIcusk1tEDI+U9N5c/qXBG7FnGvHREG4qGAfcBw/HTT0zvh8TPR+0HAbcA+Y29nV3
+ HIOH1B6nt0FWzIDzno0O9y/cfTwxDLtOxPqrv+oVWlCsRH8DA63nGHDSTFpE+Q9qCCHzctsVv
+ pLp4TLvZegnYRHmCF44R+K/A/H6jKrFe/snW7gywhGynxLUVNO8MThghQtVUt6m5t8YHcD1wG
+ I/nCCzrTddRlOqIWNT56HKsDJIL6wmlw0xY0V0PXxA/4Hc+4+7xVpEAMttmEa+2airyFYsLaL
+ HIgm4ihHJlHkDCu6WVpWN+D+zYIH/sVzsaQ+0+KB8BMQos8oc4NYbUSlP7RAX9wV7aP47qTMR
+ CWebRmcNhnV55e6Ni/NUvroWkjws9gk8V1vyndOZU09izuC7dDHDUgY6lVvOaN8zv0h9sox/h
+ gscn/yomTex4SVx5LjeVs4jcvyTcr5Pe3XjyR3nvBkLqTFH5dx7HqJNAyqFp5a3OGfu2Gc9Zv
+ qHxP6rHut/gY4hmgJ/SZ/5dZJlXZe+6D6/6HWtbIDvbVPTNE7E/I3CRmKD9daBAzcGBYTMu
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 09, 2020 at 07:03:39AM +0000, Zhang, Qiang wrote:
+On Wed, 2 Sep 2020 00:15:16 +1000, Nicholas Piggin wrote:
+> It would be nice to be able to modify mmu_context functions or add a
+> hook without updating all architectures, many of which will be no-ops.
 > 
-> When config preempt RCU,  and then  there are multiple levels  node,  the current task is preempted  in rcu  read critical region.
-> the current task be add to "rnp->blkd_tasks" link list,  and the "rnp->gp_tasks"  may be assigned a value .  these rnp is leaf node in RCU tree.
+> The motivation for this series is a change to lazy mmu handling, but
+> this series stands on its own as a good cleanup whether or not we end
+> up making that change.
 > 
-> But in "rcu_gp_fqs_loop" func, we check blocked readers in root node. 
-> 
-> static void rcu_gp_fqs_loop(void)
->  {
->             .....
->             struct rcu_node *rnp = rcu_get_root();
->             .....
->             if (!READ_ONCE(rnp->qsmask) &&
->                                !rcu_preempt_blocked_readers_cgp(rnp))    ------> rnp is root node
->                      break;
->             ....
-> }
-> 
-> the root node's blkd_tasks never add task, the "rnp->gp_tasks" is never be assigned value,  this check is invailed.
->  Should we check leaf nodes like this 
+> [...]
 
-There are two cases:
+Applied to asm-generic, thanks!
 
-1.	There is only a single rcu_node structure, which is both root
-	and leaf.  In this case, the current check is required:  Both
-	->qsmask and the ->blkd_tasks list must be checked.  Your
-	rcu_preempt_blocked_readers() would work in this case, but
-	the current code is a bit faster because it does not need
-	to acquire the ->lock nor does it need the loop overhead.
+[01/23] asm-generic: add generic MMU versions of mmu context functions
+        (no commit info)
+[02/23] alpha: use asm-generic/mmu_context.h for no-op implementations
+        (no commit info)
+[03/23] arc: use asm-generic/mmu_context.h for no-op implementations
+        (no commit info)
+[04/23] arm: use asm-generic/mmu_context.h for no-op implementations
+        (no commit info)
+[05/23] arm64: use asm-generic/mmu_context.h for no-op implementations
+        (no commit info)
+[06/23] csky: use asm-generic/mmu_context.h for no-op implementations
+        (no commit info)
+[07/23] hexagon: use asm-generic/mmu_context.h for no-op implementations
+        (no commit info)
+[08/23] ia64: use asm-generic/mmu_context.h for no-op implementations
+        (no commit info)
+[09/23] m68k: use asm-generic/mmu_context.h for no-op implementations
+        (no commit info)
+[10/23] microblaze: use asm-generic/mmu_context.h for no-op implementations
+        (no commit info)
+[11/23] mips: use asm-generic/mmu_context.h for no-op implementations
+        (no commit info)
+[12/23] nds32: use asm-generic/mmu_context.h for no-op implementations
+        (no commit info)
+[13/23] nios2: use asm-generic/mmu_context.h for no-op implementations
+        (no commit info)
+[14/23] openrisc: use asm-generic/mmu_context.h for no-op implementations
+        (no commit info)
+[15/23] parisc: use asm-generic/mmu_context.h for no-op implementations
+        (no commit info)
+[16/23] powerpc: use asm-generic/mmu_context.h for no-op implementations
+        (no commit info)
+[17/23] riscv: use asm-generic/mmu_context.h for no-op implementations
+        (no commit info)
+[18/23] s390: use asm-generic/mmu_context.h for no-op implementations
+        (no commit info)
+[19/23] sh: use asm-generic/mmu_context.h for no-op implementations
+        (no commit info)
+[20/23] sparc: use asm-generic/mmu_context.h for no-op implementations
+        (no commit info)
+[21/23] um: use asm-generic/mmu_context.h for no-op implementations
+        (no commit info)
+[22/23] x86: use asm-generic/mmu_context.h for no-op implementations
+        (no commit info)
+[23/23] xtensa: use asm-generic/mmu_context.h for no-op implementations
+        (no commit info)
 
-2.	There are multiple levels.  In this case, as you say, the root
-	rcu_node structure's ->blkd_tasks list will always be empty.
-	But also in this case, the root rcu_node structure's ->qsmask
-	cannot be zero until all the leaf rcu_node structures' ->qsmask
-	fields are zero and their ->blkd_tasks lists no longer have
-	tasks blocking the current grace period.  This means that your
-	rcu_preempt_blocked_readers() function would never return
-	true in this case.
-
-So the current code is fine.
-
-Are you seeing failures on mainline kernels?  If so, what is the failure
-mode?
-
-							Thanx, Paul
-
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -1846,6 +1846,25 @@ static bool rcu_gp_init(void)
->  	return true;
->  }
->  
-> +static bool rcu_preempt_blocked_readers(void)
-> +{
-> +	struct rcu_node *rnp;
-> +	unsigned long flags;
-> +	bool ret = false;
-> +
-> +	rcu_for_each_leaf_node(rnp) {
-> +		raw_spin_lock_irqsave_rcu_node(rnp, flags);
-> +		if (rcu_preempt_blocked_readers_cgp(rnp)) {
-> +			ret = true;
-> +			raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
-> +			break;
-> +		}
-> +		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
-> +	}
-> +
-> +	return ret;
-> +}
-> +
->  /*
->   * Helper function for swait_event_idle_exclusive() wakeup at force-quiescent-state
->   * time.
-> @@ -1864,7 +1883,7 @@ static bool rcu_gp_fqs_check_wake(int *gfp)
->  		return true;
->  
->  	// The current grace period has completed.
-> -	if (!READ_ONCE(rnp->qsmask) && !rcu_preempt_blocked_readers_cgp(rnp))
-> +	if (!READ_ONCE(rnp->qsmask) && !rcu_preempt_blocked_readers())
->  		return true;
->  
->  	return false;
-> @@ -1927,7 +1946,7 @@ static void rcu_gp_fqs_loop(void)
->  		/* Locking provides needed memory barriers. */
->  		/* If grace period done, leave loop. */
->  		if (!READ_ONCE(rnp->qsmask) &&
-> -		    !rcu_preempt_blocked_readers_cgp(rnp))
-> +		    !rcu_preempt_blocked_readers())
->  			break;
->  		/* If time for quiescent-state forcing, do it. */
->  		if (!time_after(rcu_state.jiffies_force_qs, jiffies) ||
-> -- 
-> 
-> 
-> thanks
-> Qiang
+       Arnd
