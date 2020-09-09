@@ -2,182 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9451263437
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 19:17:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76E15263433
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 19:16:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731126AbgIIRQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 13:16:12 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:43387 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729908AbgIIP2Y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 11:28:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599665279;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=S0HGwn08RTZDvSiMKGm+kokg7Mfm7dvHTLJh8SzogJA=;
-        b=hEOcepWmMWMR2lfZvDcSlB7f0I0wvIYgE7nQsSiDl980VsNvW/O+3IPz97BRDrfLvSAsuO
-        wfv/Qf9P+1MXnvLLlL2joVzKd/T0ei+vOIxw2zT5/GJfaJwMS25Sc3KxZxU24QBOBfwIi5
-        L97lL32LTmHW7/CFnDEns/N+VQ2e2wM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-174-8uZ_4VOWNSiimj2WvWYA1w-1; Wed, 09 Sep 2020 11:25:50 -0400
-X-MC-Unique: 8uZ_4VOWNSiimj2WvWYA1w-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E9E011017DC3;
-        Wed,  9 Sep 2020 15:25:47 +0000 (UTC)
-Received: from kamzik.brq.redhat.com (unknown [10.40.192.171])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 457655C1C2;
-        Wed,  9 Sep 2020 15:25:44 +0000 (UTC)
-Date:   Wed, 9 Sep 2020 17:25:40 +0200
-From:   Andrew Jones <drjones@redhat.com>
-To:     Steven Price <steven.price@arm.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Peter Maydell <Peter.Maydell@arm.com>, qemu-devel@nongnu.org,
-        Dave Martin <Dave.Martin@arm.com>,
-        Juan Quintela <quintela@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 0/2] MTE support for KVM guest
-Message-ID: <20200909152540.ylnrljd6aelxoxrf@kamzik.brq.redhat.com>
-References: <20200904160018.29481-1-steven.price@arm.com>
+        id S1730307AbgIIRQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 13:16:37 -0400
+Received: from mail-dm6nam12on2055.outbound.protection.outlook.com ([40.107.243.55]:6240
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730104AbgIIP2W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 11:28:22 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZtyXAIt6OyybJkr9nfs4+eCO6Byk3WkxuebvMvjmi2LVzv4baRQSNs7GRG0u54r5T6EFe+ot7rmzbGUV33XkTpoi00MHqn2M7tJz1Znfn3zDUI9cBQQwz6yVOzbegd+ZfjhRX6z5p/LDuOb3SpYfx2ooYcr0W3w+1oKvluA4BNiqQ2cBRtiFfM1vTBm2QnhxkZNAYyIEBDtsP9KqsOx7besePh0Z3qSKfWdRUADptkIE81TH5PA9A9wdv8GjEN2L5TYT8gY+iiaO98F9wFvIOSJyOws9w2b1XoMdedYjdbSkvDjOQx+aoMCIpiFmMo6nlYlb072UbUWSmDKHh0YdvQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0LIqqRRZFHpqrPav0tzguRT+BK+vaosDlAzX5ow/r+o=;
+ b=MTuK4+97/z8/FAkrErJOJNnzI5F/wgNQLSVfoGJuSnjoKgKBKzQhSPKGLjZ5PTlv/HIeC+9p5HBGT0n/wltOFHSkZfaaY+NHhwX+XkbA/ODiS0pLGtW/cQIiIrmMntn9BvN/4oA8trRs+wLjsBAUENs1CewNLm2M67VB5vqpqBrPAwQpkNeLpGpQqwd64eP3pIVvEbPVvwELxqeXd/8Ldex4x/iEtapvhCik+3KmT9PmwaklRBRHyCGIRSpd3io7r2SHV8p5gjgHk0GpJE3vXm1OezlBoSfHtTKxBL7bfL0b1JX/TycvlCa3bjt0ibm+RenlWx1MZ4D1+yv4MFg7hA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.60.83) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=xilinx.com;
+ dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
+ not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0LIqqRRZFHpqrPav0tzguRT+BK+vaosDlAzX5ow/r+o=;
+ b=Er4vt2RnPnKUahUHfLtTh30XkRad6E2ojhq5MxOEznOYr2jeJCNuY3j8Q8JYhU5s9JAopkobluboUqmIcVpTHYwNdVwdzfZg1uYTMVZbLMSHjnXE87B4GfhpB4dqTQT3ki1nPwNIMYzDX1PTR9/ySm/5DchbphY2E1m/fAnNKzQ=
+Received: from MN2PR19CA0058.namprd19.prod.outlook.com (2603:10b6:208:19b::35)
+ by BL0PR02MB6516.namprd02.prod.outlook.com (2603:10b6:208:1ca::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Wed, 9 Sep
+ 2020 15:27:17 +0000
+Received: from BL2NAM02FT046.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:208:19b:cafe::fc) by MN2PR19CA0058.outlook.office365.com
+ (2603:10b6:208:19b::35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16 via Frontend
+ Transport; Wed, 9 Sep 2020 15:27:17 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.60.83)
+ smtp.mailfrom=xilinx.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=bestguesspass action=none
+ header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.60.83 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.60.83; helo=xsj-pvapsmtpgw01;
+Received: from xsj-pvapsmtpgw01 (149.199.60.83) by
+ BL2NAM02FT046.mail.protection.outlook.com (10.152.76.118) with Microsoft SMTP
+ Server id 15.20.3348.17 via Frontend Transport; Wed, 9 Sep 2020 15:27:16
+ +0000
+Received: from [149.199.38.66] (port=45015 helo=smtp.xilinx.com)
+        by xsj-pvapsmtpgw01 with esmtp (Exim 4.90)
+        (envelope-from <amit.kumar-mahapatra@xilinx.com>)
+        id 1kG1zv-00055w-KW; Wed, 09 Sep 2020 08:26:59 -0700
+Received: from [127.0.0.1] (helo=localhost)
+        by smtp.xilinx.com with smtp (Exim 4.63)
+        (envelope-from <amit.kumar-mahapatra@xilinx.com>)
+        id 1kG20B-00068i-Fh; Wed, 09 Sep 2020 08:27:15 -0700
+Received: from xsj-pvapsmtp01 (maildrop.xilinx.com [149.199.38.66])
+        by xsj-smtp-dlp1.xlnx.xilinx.com (8.13.8/8.13.1) with ESMTP id 089FRDVE024327;
+        Wed, 9 Sep 2020 08:27:13 -0700
+Received: from [10.140.6.25] (helo=xhdnagasure40.xilinx.com)
+        by xsj-pvapsmtp01 with esmtp (Exim 4.63)
+        (envelope-from <amit.kumar-mahapatra@xilinx.com>)
+        id 1kG208-00068K-Ll; Wed, 09 Sep 2020 08:27:13 -0700
+From:   Amit Kumar Mahapatra <amit.kumar-mahapatra@xilinx.com>
+To:     broonie@kernel.org
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        michal.simek@xilinx.com, sgoud@xilinx.com, nagasure@xilinx.com,
+        Amit Kumar Mahapatra <amit.kumar-mahapatra@xilinx.com>
+Subject: [PATCH 0/3]spi: spi-zynqmp-gqspi: Update driver to use spi-mem framework
+Date:   Wed,  9 Sep 2020 09:27:05 -0600
+Message-Id: <20200909152708.2767-1-amit.kumar-mahapatra@xilinx.com>
+X-Mailer: git-send-email 2.17.1
+X-RCIS-Action: ALLOW
+X-TM-AS-Product-Ver: IMSS-7.1.0.1224-8.2.0.1013-23620.005
+X-TM-AS-User-Approved-Sender: Yes;Yes
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200904160018.29481-1-steven.price@arm.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain
+X-MS-Office365-Filtering-Correlation-Id: 5fe18689-7f25-4e37-8921-08d854d4d5c1
+X-MS-TrafficTypeDiagnostic: BL0PR02MB6516:
+X-Microsoft-Antispam-PRVS: <BL0PR02MB6516A644B9AD6F44A10CD5B8BA260@BL0PR02MB6516.namprd02.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: UzL4jyiSb5TPjIEx52DBVuO2zxFtoLuDwAxCq8HFfTI4T2yuguxJapYAFczc9G9lxJsfORFpT5WruZ1kRkeGBCWhmpa5gk2PTxMNbZoCFURHZa5mdzm2yOtYD2DylfCBWDQ/LDs9UML4UDzBCYr8wYeXpv+HZTHxq4Nt92lsk6SUvfZOKnh3hkux+MJRZZUAfIo82QoCF2u+YGy+UV6hG5AijM9LjEK0O3qrzh8C49C+PvwHlBgnFJUE10iQ+dG+dnA3vtJq8Eq6p40K0+ZxG5/vcW0+KR25sfW7IIWYwPlzPIFauPVUuQcwrLgRayJYnzSXeApr7vST7y+H4fppTiJk5YwBS3/XNSgWG7hBe7jdKM8H+OXr2lkSfZJU3/nBfotwCrbCOiBfCCD/WTBvnw==
+X-Forefront-Antispam-Report: CIP:149.199.60.83;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapsmtpgw01;PTR:unknown-60-83.xilinx.com;CAT:NONE;SFS:(396003)(39860400002)(376002)(346002)(136003)(46966005)(426003)(70206006)(70586007)(47076004)(9786002)(82740400003)(316002)(8936002)(6666004)(107886003)(5660300002)(2616005)(2906002)(36756003)(6916009)(26005)(1076003)(15650500001)(8676002)(186003)(336012)(82310400003)(4744005)(4326008)(356005)(81166007)(478600001)(83380400001)(7696005);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Sep 2020 15:27:16.8735
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5fe18689-7f25-4e37-8921-08d854d4d5c1
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.60.83];Helo=[xsj-pvapsmtpgw01]
+X-MS-Exchange-CrossTenant-AuthSource: BL2NAM02FT046.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR02MB6516
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 04, 2020 at 05:00:16PM +0100, Steven Price wrote:
-> Arm's Memory Tagging Extension (MTE) adds 4 bits of tag data to every 16
-> bytes of memory in the system. This along with stashing a tag within the
-> high bit of virtual addresses allows runtime checking of memory
-> accesses.
-> 
-> These patches add support to KVM to enable MTE within a guest. They are
-> based on Catalin's v9 MTE user-space support series[1].
-> 
-> I'd welcome feedback on the proposed user-kernel ABI. Specifically this
-> series currently:
->
-   0. Feature probing
+This patch series:
+ - Fixes kernel-doc warnings in ZynqMP qspi controller driver file.
+ - Updates the ZynqMP qspi controller driver to use spi-mem framework.
+ - Fixes incorrect indentation in ZynqMP qspi controller driver file.
+---
+Tested: flashcp and mtd_utils
+Branch: for-next
+---
+Amit Kumar Mahapatra (3):
+  spi: spi-zynqmp-gqspi: Fix kernel-doc warnings
+  spi: spi-zynqmp-gqspi: Update driver to use spi-mem framework
+  spi: spi-zynqmp-gqspi: Fix incorrect indentation
 
-Probably a KVM cap, rather than requiring userspace to attempt VCPU
-features one at a time with a scratch VCPU.
- 
->  1. Requires the VMM to enable MTE per-VCPU.
+ drivers/spi/spi-zynqmp-gqspi.c | 720 +++++++++++++++++++--------------
+ 1 file changed, 407 insertions(+), 313 deletions(-)
 
-I suppose. We're collecting many features that are enabling CPU features,
-so they map nicely to VCPU features, yet they're effectively VM features
-due to a shared resource such as an irq or memory.
+--
+2.17.1
 
->  2. Automatically promotes (normal host) memory given to the guest to be
->     tag enabled (sets PG_mte_tagged), if any VCPU has MTE enabled. The
->     tags are cleared if the memory wasn't previously MTE enabled.
-
-Shouldn't this be up to the guest? Or, is this required in order for the
-guest to use tagging at all. Something like making the guest IPAs memtag
-capable, but if the guest doesn't enable tagging then there is no guest
-impact? In any case, shouldn't userspace be the one that adds PROT_MTE
-to the memory regions it wants the guest to be able to use tagging with,
-rather than KVM adding the attribute page by page?
-
->  3. Doesn't provide any new methods for the VMM to access the tags on
->     memory.
-> 
-> (2) and (3) are particularly interesting from the aspect of VM migration.
-> The guest is able to store/retrieve data in the tags (presumably for the
-> purpose of tag checking, but architecturally it could be used as just
-> storage). This means that when migrating a guest the data needs to be
-> transferred (or saved/restored).
-> 
-> MTE tags are controlled by the same permission model as normal pages
-> (i.e. a read-only page has read-only tags), so the normal methods of
-> detecting guest changes to pages can be used. But this would also
-> require the tags within a page to be migrated at the same time as the
-> data (since the access control for tags is the same as the normal data
-> within a page).
-> 
-> (3) may be problematic and I'd welcome input from those familiar with
-> VMMs. User space cannot access tags unless the memory is mapped with the
-> PROT_MTE flag. However enabling PROT_MTE will also enable tag checking
-> for the user space process (assuming the VMM enables tag checking for
-> the process) and since the tags in memory are controlled by the guest
-> it's unlikely the VMM would have an appropriately tagged pointer for its
-> access. This means the VMM would either need to maintain two mappings of
-> memory (one to access tags, the other to access data) or disable tag
-> checking during the accesses to data.
-
-If userspace needs to write to guest memory then it should be due to
-a device DMA or other specific hardware emulation. Those accesses can
-be done with tag checking disabled.
-
-> 
-> If it's not practical to either disable tag checking in the VMM or
-> maintain multiple mappings then the alternatives I'm aware of are:
-> 
->  * Provide a KVM-specific method to extract the tags from guest memory.
->    This might also have benefits in terms of providing an easy way to
->    read bulk tag data from guest memory (since the LDGM instruction
->    isn't available at EL0).
-
-Maybe we need a new version of KVM_GET_DIRTY_LOG that also provides
-the tags for all addresses of each dirty page.
-
->  * Provide support for user space setting the TCMA0 or TCMA1 bits in
->    TCR_EL1. These would allow the VMM to generate pointers which are not
->    tag checked.
-
-So this is necessary to allow the VMM to keep tag checking enabled for
-itself, plus map guest memory as PROT_MTE, and write to that memory when
-needed? 
-
-Thanks,
-drew
-
-> 
-> Feedback is welcome, and feel free to ask questions if anything in the
-> above doesn't make sense.
-> 
-> Changes since the previous v1 posting[2]:
-> 
->  * Rebasing clean-ups
->  * sysreg visibility is now controlled based on whether the VCPU has MTE
->    enabled or not
-> 
-> [1] https://lore.kernel.org/r/20200904103029.32083-1-catalin.marinas@arm.com
-> [2] https://lore.kernel.org/r/20200713100102.53664-1-steven.price%40arm.com
-> 
-> Steven Price (2):
->   arm64: kvm: Save/restore MTE registers
->   arm64: kvm: Introduce MTE VCPU feature
-> 
->  arch/arm64/include/asm/kvm_emulate.h       |  3 +++
->  arch/arm64/include/asm/kvm_host.h          |  9 ++++++++-
->  arch/arm64/include/asm/sysreg.h            |  3 ++-
->  arch/arm64/include/uapi/asm/kvm.h          |  1 +
->  arch/arm64/kvm/hyp/include/hyp/sysreg-sr.h | 14 ++++++++++++++
->  arch/arm64/kvm/mmu.c                       | 15 +++++++++++++++
->  arch/arm64/kvm/reset.c                     |  8 ++++++++
->  arch/arm64/kvm/sys_regs.c                  | 20 +++++++++++++++-----
->  8 files changed, 66 insertions(+), 7 deletions(-)
-> 
-> -- 
-> 2.20.1
-> 
-> _______________________________________________
-> kvmarm mailing list
-> kvmarm@lists.cs.columbia.edu
-> https://lists.cs.columbia.edu/mailman/listinfo/kvmarm
-> 
-
+This email and any attachments are intended for the sole use of the named r=
+ecipient(s) and contain(s) confidential information that may be proprietary=
+, privileged or copyrighted under applicable law. If you are not the intend=
+ed recipient, do not read, copy, or forward this email message or any attac=
+hments. Delete this email message and any attachments immediately.
