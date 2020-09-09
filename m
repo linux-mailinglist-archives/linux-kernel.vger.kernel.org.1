@@ -2,94 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BA88262C10
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 11:37:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 968A2262C16
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 11:38:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729507AbgIIJgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 05:36:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49098 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728197AbgIIJgu (ORCPT
+        id S1728360AbgIIJir (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 05:38:47 -0400
+Received: from smtprelay0036.hostedemail.com ([216.40.44.36]:43920 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726440AbgIIJiq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 05:36:50 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44160C061573;
-        Wed,  9 Sep 2020 02:36:48 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id l63so1933000edl.9;
-        Wed, 09 Sep 2020 02:36:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=Pv6iapq4O5SjVtL1iPYVDh7JKWlokNzhK+8UbOeBFUo=;
-        b=l5qIP+HJ3LRN88aaWALWmY59d9psHRG4Hb0Srkk15LDEvgmE5fi/+JourmV+safV+4
-         jeF4v2tkPmlGclswpxcp7fQD4/T95DcHOKTjy8M7a1hBEkMU9DXgamVslHRPCDGTLqaj
-         AJ0mzWZ0Z7YKniv4BH3qtlBDqHJaOc5HQzwTNbIhz6xerBIjnhqKELWMgzOCVeNHGPbg
-         vzQdQK3T3jscMzP1G00X4+mCKSYT4GNS7Mw2RyaGDoI06sF3xXIi3StOIkP8+Iq5tubG
-         fyY/KaOklPT3WVqwszVuVvyx6QGiAogRXq4QiEmN+Fc++B2DVUZnC4pHEuGOyuWgIGD7
-         BbEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=Pv6iapq4O5SjVtL1iPYVDh7JKWlokNzhK+8UbOeBFUo=;
-        b=OyNIGLsf9W3UkrHnUI3F6U3R83mf8NKTrgJOnXwnf71unDS8TDrDm0emUgPOJggMkB
-         NcRmkb9QPdwYEyKambRPoqHz20GOTt2yN1m+mjACowi6Isbre1RWV5fd0yugUYk2CLf3
-         EQrMQXgoF6KtI4RIbrBA/y82/8EnXI1nD7RhnmmJgPba/Z3mQim6VIUDP5nXv6dRl0t1
-         s/Of7iyT3iWaJFtH2wij7iCfKAh/ViaF8umlKJll/jcZp0Ap3Q8apIQ7HjgUrPtZB2Lc
-         T8UNBDVuu3ak0j51xUPtTNTxbY9uPVyjaAOQ4skTjWNLNbOeVTbPparSTFQZpOFmi9Gz
-         20fQ==
-X-Gm-Message-State: AOAM5316yb8xgg7E5TSI3zYuRzUK52MCqHBNAPlWRACWCti+UzI1321W
-        xR2wJAXeMIbKjE1YLc/kUnU9OybITbmzm9MS
-X-Google-Smtp-Source: ABdhPJyHkS4fr/EaoKgqk7aw9pkfvPCT6zW8m7v5aBiX5PcAhV8fYS3EhOdjTPhbI5mF/c4VhkvQ6g==
-X-Received: by 2002:a05:6402:644:: with SMTP id u4mr3118816edx.182.1599644206902;
-        Wed, 09 Sep 2020 02:36:46 -0700 (PDT)
-Received: from felia ([2001:16b8:2d44:6000:6108:df55:7b8e:67d4])
-        by smtp.gmail.com with ESMTPSA id y21sm1542739eju.46.2020.09.09.02.36.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Sep 2020 02:36:46 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-X-Google-Original-From: Lukas Bulwahn <lukas@gmail.com>
-Date:   Wed, 9 Sep 2020 11:36:44 +0200 (CEST)
-X-X-Sender: lukas@felia
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-cc:     Igor Russkikh <irusskikh@marvell.com>,
-        Nilesh Javali <njavali@marvell.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        "linux-spdx@vger.kernel.org" <linux-spdx@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [EXT] [PATCH 0/5 REBASED to v5.9-rc4] Qlogic drivers: Convert
- to SPDX license identifiers
-In-Reply-To: <DM6PR18MB305266178BB9982CBDF05319AF260@DM6PR18MB3052.namprd18.prod.outlook.com>
-Message-ID: <alpine.DEB.2.21.2009091126290.5622@felia>
-References: <20200908123451.7215-1-lukas.bulwahn@gmail.com> <e5688d4c-f512-6705-6bb1-db832828fb35@marvell.com> <DM6PR18MB305266178BB9982CBDF05319AF260@DM6PR18MB3052.namprd18.prod.outlook.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        Wed, 9 Sep 2020 05:38:46 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 1FF631800175A;
+        Wed,  9 Sep 2020 09:38:42 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3872:3873:4321:5007:6742:8603:10004:10400:11026:11232:11473:11657:11658:11914:12043:12296:12297:12438:12740:12760:12895:13069:13311:13357:13439:14659:14721:21080:21524:21611:21627:21990:30012:30054:30055:30056:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: alarm97_080d766270dc
+X-Filterd-Recvd-Size: 2383
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf15.hostedemail.com (Postfix) with ESMTPA;
+        Wed,  9 Sep 2020 09:38:39 +0000 (UTC)
+Message-ID: <b75ac349af07ac363585ac72cba724e2fcf0c954.camel@perches.com>
+Subject: Re: [net-next] net: iavf: Use the ARRAY_SIZE macro for aq_to_posix
+From:   Joe Perches <joe@perches.com>
+To:     Wei Xu <xuwei5@hisilicon.com>, netdev@vger.kernel.org
+Cc:     davem@davemloft.net, linuxarm@huawei.com,
+        shameerali.kolothum.thodi@huawei.com, jonathan.cameron@huawei.com,
+        john.garry@huawei.com, salil.mehta@huawei.com,
+        shiju.jose@huawei.com, jinying@hisilicon.com,
+        zhangyi.ac@huawei.com, liguozhu@hisilicon.com,
+        tangkunshan@huawei.com, huangdaode@hisilicon.com,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        intel-wired-lan@lists.osuosl.org, linux-kernel@vger.kernel.org
+Date:   Wed, 09 Sep 2020 02:38:38 -0700
+In-Reply-To: <2530c5c8a596b7edd7e2273cffc3b76ac4b437c7.camel@perches.com>
+References: <1599641471-204919-1-git-send-email-xuwei5@hisilicon.com>
+         <2530c5c8a596b7edd7e2273cffc3b76ac4b437c7.camel@perches.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On Wed, 9 Sep 2020, Nilesh Javali wrote:
-
-> Lukas,
+On Wed, 2020-09-09 at 02:33 -0700, Joe Perches wrote:
+> On Wed, 2020-09-09 at 16:51 +0800, Wei Xu wrote:
+> > Use the ARRAY_SIZE macro to calculate the size of an array.
+> > This code was detected with the help of Coccinelle.
+> []
+> > diff --git a/drivers/net/ethernet/intel/iavf/iavf_adminq.h b/drivers/net/ethernet/intel/iavf/iavf_adminq.h
+> []
+> > @@ -120,7 +120,7 @@ static inline int iavf_aq_rc_to_posix(int aq_ret, int aq_rc)
+> >  	if (aq_ret == IAVF_ERR_ADMIN_QUEUE_TIMEOUT)
+> >  		return -EAGAIN;
+> >  
+> > -	if (!((u32)aq_rc < (sizeof(aq_to_posix) / sizeof((aq_to_posix)[0]))))
+> > +	if (!((u32)aq_rc < ARRAY_SIZE(aq_to_posix)))
+> >  		return -ERANGE;
 > 
-> I have Acked for the storage drivers and opt for option B below for spdx maintainers to pick.
->
+> If you want to use a cast,
+> 
+> 	if ((u32)aq_rc >= ARRAY_SIZE(aq_to_posix))
+> 		return -ERANGE;
+> 
+> would be a more common and simpler style, though
+> perhaps testing ac_rc < 0 would be more intelligible.
+> 
+> 	if (ac_rc < 0 || ac_rq >= ARRAY_SIZE(aq_to_posix))
 
-Thomas, Greg,
+(hah, I typed aq_rc wrong both times, so maybe it's not _that_
+ much better...)
 
-We got everything straightened out with Igor and Nilesh.
+	if (aq_rc < 0 || aq_rc >= ARRAY_SIZE(aq_to_posix))
 
-Can you pick this patchset with Igor's and Nilesh's Acked-bys into the 
-spdx tree and forward it to Linus?
-
-One down. Another century of license work ahead to get it done :)
-
-Thanks,
-
-Lukas
