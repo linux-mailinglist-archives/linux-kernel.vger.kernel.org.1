@@ -2,67 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6BC22624DC
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 04:10:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A119E2624ED
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 04:12:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729767AbgIICJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 22:09:59 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:56006 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726642AbgIICJx (ORCPT
+        id S1729960AbgIICMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 22:12:07 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:43080 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725997AbgIICMF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 22:09:53 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08929kId130948;
-        Wed, 9 Sep 2020 02:09:46 GMT
+        Tue, 8 Sep 2020 22:12:05 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0892ASjS094079;
+        Wed, 9 Sep 2020 02:11:45 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=corp-2020-01-29;
- bh=61lXLzKnH+Di6gjmrgky7lh/Z/64jeuG4qmv9ASsX08=;
- b=IDc4AJjdyuB2knGen9Vkhb4r2NEHi3EtUarqUZbzOOLKTC2XmDzXNHqdQUIGi0rOW68h
- Pe4fCZ8F3VE8nQluD0WeqsJdazqR9reM05UdLgC50FOa49ycR1pWzzN9F0oB/XA4vhVF
- 7AoqVkSeb2x20KcNos29qtyQNbkzHH8UHVRvhQ9LhETF9BuQ0ZS0i229CSqxLyEpTNpl
- /9B6uvlBsAsjIL1N8wTen8NHNYfnZEf2wZ8xR708XjvTTeOvFjLJFeJMMimsfc7dH2dv
- V4kt5PYjEF+7vwCksFsIMFjLxTEvRm/XOmiosAV8/SyIp/lE9mtvRsUDMQe1eDvvzCup lg== 
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=LeM08fKThdl5/aX6JHwsFEnFuxQm9szMFtNERqQX6Iw=;
+ b=xEyBx647j2Dh7f00ZvBcy2PUPdaZjV+eMUBB/1IEUau/y/yAAdZf9X+yOJgZvdl/5ubA
+ ab1BZvFa/gzWhAFWrZ1673rHt+2wiNnHwG/Q7KiuncmU2HgXxnVmz2WP55YIsyKct9yA
+ ziGQDG4riDWFgzQGpULorrErKUFggK/NgcOTQAYK3bqlYUIQZR0ARpEECJIEGjGmrjav
+ 2jXrasSx84m+ZtyXZxrJo76RGVivZKWMnYVtTRYbGA+jJq1PRM1nRo8nWxJZ5mxEzn49
+ Xeo4LKV/N2JAooX2/1qX6JD//BF2EfOyglKrT2GqJ1qhraNXjKONVQlKItTu6PNLpPiW IA== 
 Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 33c23qy0ab-1
+        by aserp2120.oracle.com with ESMTP id 33c2mkxvth-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 09 Sep 2020 02:09:45 +0000
+        Wed, 09 Sep 2020 02:11:45 +0000
 Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 089252WV095272;
-        Wed, 9 Sep 2020 02:09:45 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 33cmk53f2p-1
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0892522T095313;
+        Wed, 9 Sep 2020 02:09:44 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 33cmk53f2b-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 09 Sep 2020 02:09:45 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08929eUf022857;
-        Wed, 9 Sep 2020 02:09:40 GMT
+        Wed, 09 Sep 2020 02:09:44 +0000
+Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08929hTN007023;
+        Wed, 9 Sep 2020 02:09:43 GMT
 Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 08 Sep 2020 19:09:40 -0700
+        with ESMTP ; Tue, 08 Sep 2020 19:09:43 -0700
 From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     QLogic-Storage-Upstream@cavium.com, jejb@linux.ibm.com,
-        Xu Wang <vulab@iscas.ac.cn>
+To:     aacraid@microsemi.com, hare@suse.de,
+        Jason Yan <yanaijie@huawei.com>, linux-scsi@vger.kernel.org,
+        jejb@linux.ibm.com, linux-kernel@vger.kernel.org
 Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] scsi: qedi: Remove redundant null check
-Date:   Tue,  8 Sep 2020 22:09:19 -0400
-Message-Id: <159961731706.5787.5843134400258546668.b4-ty@oracle.com>
+        Hulk Robot <hulkci@huawei.com>
+Subject: Re: [PATCH] scsi: dpt_i2o: remove set but not used 'pHba'
+Date:   Tue,  8 Sep 2020 22:09:21 -0400
+Message-Id: <159961731706.5787.582180402400049720.b4-ty@oracle.com>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200827092606.32148-1-vulab@iscas.ac.cn>
-References: <20200827092606.32148-1-vulab@iscas.ac.cn>
+In-Reply-To: <20200827125812.427753-1-yanaijie@huawei.com>
+References: <20200827125812.427753-1-yanaijie@huawei.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9738 signatures=668679
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0 phishscore=0
- mlxlogscore=999 bulkscore=0 adultscore=0 mlxscore=0 suspectscore=1
+ mlxlogscore=999 bulkscore=0 adultscore=0 mlxscore=0 suspectscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
  definitions=main-2009090018
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9738 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 priorityscore=1501
- mlxlogscore=999 mlxscore=0 bulkscore=0 suspectscore=1 spamscore=0
- malwarescore=0 phishscore=0 lowpriorityscore=0 clxscore=1011
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 priorityscore=1501
+ phishscore=0 adultscore=0 bulkscore=0 clxscore=1011 mlxlogscore=999
+ malwarescore=0 suspectscore=0 lowpriorityscore=0 spamscore=0
  impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2006250000 definitions=main-2009090018
 Sender: linux-kernel-owner@vger.kernel.org
@@ -70,15 +72,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 27 Aug 2020 09:26:06 +0000, Xu Wang wrote:
+On Thu, 27 Aug 2020 20:58:12 +0800, Jason Yan wrote:
 
-> Because kfree_skb already checked NULL skb parameter,
-> so the additional check is unnecessary, just remove it.
+> This addresses the following gcc warning with "make W=1":
+> 
+> drivers/scsi/dpt_i2o.c: In function ‘adpt_slave_configure’:
+> drivers/scsi/dpt_i2o.c:411:12: warning: variable ‘pHba’ set but not used
+> [-Wunused-but-set-variable]
+>   411 |  adpt_hba* pHba;
+>       |            ^~~~
 
 Applied to 5.10/scsi-queue, thanks!
 
-[1/1] scsi: qedi: Remove redundant NULL check
-      https://git.kernel.org/mkp/scsi/c/9535f2152ace
+[1/1] scsi: dpt_i2o: Remove set but not used 'pHba'
+      https://git.kernel.org/mkp/scsi/c/e34ce005a177
 
 -- 
 Martin K. Petersen	Oracle Linux Engineering
