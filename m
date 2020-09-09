@@ -2,209 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E8772628CC
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 09:33:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E06D2628E5
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 09:36:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729865AbgIIHdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 03:33:40 -0400
-Received: from a27-186.smtp-out.us-west-2.amazonses.com ([54.240.27.186]:49974
-        "EHLO a27-186.smtp-out.us-west-2.amazonses.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726683AbgIIHdj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 03:33:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=zsmsymrwgfyinv5wlfyidntwsjeeldzt; d=codeaurora.org; t=1599636818;
-        h=Content-Type:MIME-Version:Content-Transfer-Encoding:Subject:From:In-Reply-To:References:To:Cc:Message-Id:Date;
-        bh=iTMWE0vsu9593V6w+Pw8rMzq0zE6ykSu8zGoebQFncI=;
-        b=Nmb481MI2nRdVM+jZRC8AZ40D0QB/tvBx2d6A2JDWwS4zznRXYuHqcSP4YdcV9gs
-        qgUR0elVhlgoa8eYyUD6ovHvguJNnrV+wrxQWNTCqI5dpJs5x7mw2TENzAmcK0rFysQ
-        dueUvFV1RhkhyNuyeIKB8ceWFB263oXMvMl8XyjQ=
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=hsbnp7p3ensaochzwyq5wwmceodymuwv; d=amazonses.com; t=1599636818;
-        h=Content-Type:MIME-Version:Content-Transfer-Encoding:Subject:From:In-Reply-To:References:To:Cc:Message-Id:Date:Feedback-ID;
-        bh=iTMWE0vsu9593V6w+Pw8rMzq0zE6ykSu8zGoebQFncI=;
-        b=Dy05qWxPrvqGQSqFNNWOsJsGDDVu61kWsq/fuaWQABKd7EuGZ0MPUEKC9RttACZa
-        wS6Ve2JU2kxN5FvnB0vdbTnN9KESsRhuY7RhggxTtq6w17nJsFpXXMKN/v3g+eaHlmt
-        9JsaGqaY9/fB/6FVoFCnG4QUaZOCggDt2sM1yvKw=
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
-        version=3.4.0
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 63BB2C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        id S1730210AbgIIHgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 03:36:20 -0400
+Received: from mx2.suse.de ([195.135.220.15]:51528 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729717AbgIIHfZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 03:35:25 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 365B6AC85;
+        Wed,  9 Sep 2020 07:35:23 +0000 (UTC)
+Subject: Re: [PATCH 15/19] md: use bdev_check_media_change
+To:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
+Cc:     Denis Efremov <efremov@linux.com>, Tim Waugh <tim@cyberelk.net>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Borislav Petkov <bp@alien8.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Song Liu <song@kernel.org>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Finn Thain <fthain@telegraphics.com.au>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        linux-m68k@lists.linux-m68k.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-ide@vger.kernel.org,
+        linux-raid@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+References: <20200908145347.2992670-1-hch@lst.de>
+ <20200908145347.2992670-16-hch@lst.de>
+From:   Hannes Reinecke <hare@suse.de>
+Openpgp: preference=signencrypt
+Autocrypt: addr=hare@suse.de; prefer-encrypt=mutual; keydata=
+ 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
+ azzYF4VRJsdl+d0MCaSy8mUh
+Message-ID: <f346a6b9-7a98-5f5b-ca77-bd15223cb6ac@suse.de>
+Date:   Wed, 9 Sep 2020 09:34:54 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH v2] rtlwifi: switch from 'pci_' to 'dma_' API
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20200907193828.318233-1-christophe.jaillet@wanadoo.fr>
-References: <20200907193828.318233-1-christophe.jaillet@wanadoo.fr>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     pkshih@realtek.com, davem@davemloft.net, kuba@kernel.org,
-        Larry.Finger@lwfinger.net, straube.linux@gmail.com,
-        zhengbin13@huawei.com, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-ID: <0101017471c8ca79-31863cec-baa0-43f6-96c2-bd34f321a002-000000@us-west-2.amazonses.com>
-Date:   Wed, 9 Sep 2020 07:33:38 +0000
-X-SES-Outgoing: 2020.09.09-54.240.27.186
-Feedback-ID: 1.us-west-2.CZuq2qbDmUIuT3qdvXlRHZZCpfZqZ4GtG9v3VKgRyF0=:AmazonSES
+In-Reply-To: <20200908145347.2992670-16-hch@lst.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe JAILLET <christophe.jaillet@wanadoo.fr> wrote:
+On 9/8/20 4:53 PM, Christoph Hellwig wrote:
+> The md driver does not have a ->revalidate_disk method, so it can just
+> use bdev_check_media_change without any additional changes.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> ---
+>  drivers/md/md.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/md/md.c b/drivers/md/md.c
+> index 9562ef598ae1f4..27ed61197014ef 100644
+> --- a/drivers/md/md.c
+> +++ b/drivers/md/md.c
+> @@ -7848,7 +7848,7 @@ static int md_open(struct block_device *bdev, fmode_t mode)
+>  	atomic_inc(&mddev->openers);
+>  	mutex_unlock(&mddev->open_mutex);
+>  
+> -	check_disk_change(bdev);
+> +	bdev_check_media_change(bdev);
+>   out:
+>  	if (err)
+>  		mddev_put(mddev);
+> 
+Reviewed-by: Hannes Reinecke <hare@suse.de>
 
-> The wrappers in include/linux/pci-dma-compat.h should go away.
-> 
-> The patch has been generated with the coccinelle script below and has been
-> hand modified to replace GFP_ with a correct flag.
-> It has been compile tested.
-> 
-> The only file where some GFP_ flags are updated is 'pci.c'.
-> 
-> When memory is allocated in '_rtl_pci_init_tx_ring()' and
-> '_rtl_pci_init_rx_ring()' GFP_KERNEL can be used because both functions are
-> called from a probe function and no spinlock is taken.
-> 
-> The call chain is:
->   rtl_pci_probe
->     --> rtl_pci_init
->       --> _rtl_pci_init_trx_ring
->         --> _rtl_pci_init_rx_ring
->         --> _rtl_pci_init_tx_ring
-> 
-> 
-> @@
-> @@
-> -    PCI_DMA_BIDIRECTIONAL
-> +    DMA_BIDIRECTIONAL
-> 
-> @@
-> @@
-> -    PCI_DMA_TODEVICE
-> +    DMA_TO_DEVICE
-> 
-> @@
-> @@
-> -    PCI_DMA_FROMDEVICE
-> +    DMA_FROM_DEVICE
-> 
-> @@
-> @@
-> -    PCI_DMA_NONE
-> +    DMA_NONE
-> 
-> @@
-> expression e1, e2, e3;
-> @@
-> -    pci_alloc_consistent(e1, e2, e3)
-> +    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-> 
-> @@
-> expression e1, e2, e3;
-> @@
-> -    pci_zalloc_consistent(e1, e2, e3)
-> +    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-> 
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_free_consistent(e1, e2, e3, e4)
-> +    dma_free_coherent(&e1->dev, e2, e3, e4)
-> 
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_map_single(e1, e2, e3, e4)
-> +    dma_map_single(&e1->dev, e2, e3, e4)
-> 
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_unmap_single(e1, e2, e3, e4)
-> +    dma_unmap_single(&e1->dev, e2, e3, e4)
-> 
-> @@
-> expression e1, e2, e3, e4, e5;
-> @@
-> -    pci_map_page(e1, e2, e3, e4, e5)
-> +    dma_map_page(&e1->dev, e2, e3, e4, e5)
-> 
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_unmap_page(e1, e2, e3, e4)
-> +    dma_unmap_page(&e1->dev, e2, e3, e4)
-> 
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_map_sg(e1, e2, e3, e4)
-> +    dma_map_sg(&e1->dev, e2, e3, e4)
-> 
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_unmap_sg(e1, e2, e3, e4)
-> +    dma_unmap_sg(&e1->dev, e2, e3, e4)
-> 
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
-> +    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
-> 
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_dma_sync_single_for_device(e1, e2, e3, e4)
-> +    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
-> 
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
-> +    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
-> 
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
-> +    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
-> 
-> @@
-> expression e1, e2;
-> @@
-> -    pci_dma_mapping_error(e1, e2)
-> +    dma_mapping_error(&e1->dev, e2)
-> 
-> @@
-> expression e1, e2;
-> @@
-> -    pci_set_dma_mask(e1, e2)
-> +    dma_set_mask(&e1->dev, e2)
-> 
-> @@
-> expression e1, e2;
-> @@
-> -    pci_set_consistent_dma_mask(e1, e2)
-> +    dma_set_coherent_mask(&e1->dev, e2)
-> 
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cheers,
 
-Patch applied to wireless-drivers-next.git, thanks.
-
-0dc0b5c29be2 rtlwifi: switch from 'pci_' to 'dma_' API
-
+Hannes
 -- 
-https://patchwork.kernel.org/patch/11762141/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+Dr. Hannes Reinecke		           Kernel Storage Architect
+hare@suse.de			                  +49 911 74053 688
+SUSE Software Solutions Germany GmbH, Maxfeldstr. 5, 90409 Nürnberg
+HRB 36809 (AG Nürnberg), GF: Felix Imendörffer
