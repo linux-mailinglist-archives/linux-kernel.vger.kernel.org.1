@@ -2,111 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 649B0263141
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:04:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96874263151
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:07:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730886AbgIIQEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 12:04:04 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:57829 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1730716AbgIIQDZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 12:03:25 -0400
-Received: (qmail 818232 invoked by uid 1000); 9 Sep 2020 10:05:47 -0400
-Date:   Wed, 9 Sep 2020 10:05:47 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Hamish Martin <hamish.martin@alliedtelesis.co.nz>
-Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] usb: ohci: Default to per-port over-current protection
-Message-ID: <20200909140547.GB817244@rowland.harvard.edu>
-References: <20200909035734.22463-1-hamish.martin@alliedtelesis.co.nz>
+        id S1730931AbgIIQHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 12:07:38 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:46798 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730912AbgIIQFS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 12:05:18 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id EC685CB9941A0048A30F;
+        Wed,  9 Sep 2020 22:07:38 +0800 (CST)
+Received: from localhost.localdomain (10.175.112.70) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server (TLS)
+ id 14.3.487.0; Wed, 9 Sep 2020 22:07:34 +0800
+From:   Zhang Changzhong <zhangchangzhong@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH net-next] net: pxa168_eth: remove redundant null check before clk_disable_unprepare()
+Date:   Wed, 9 Sep 2020 22:06:37 +0800
+Message-ID: <1599660397-25077-1-git-send-email-zhangchangzhong@huawei.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200909035734.22463-1-hamish.martin@alliedtelesis.co.nz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-Originating-IP: [10.175.112.70]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 09, 2020 at 03:57:34PM +1200, Hamish Martin wrote:
-> Some integrated OHCI controller hubs do not expose all ports of the hub
-> to pins on the SoC. In some cases the unconnected ports generate
-> spurious over-current events. For example the Broadcom 56060/Ranger 2 SoC
-> contains a nominally 3 port hub but only the first port is wired.
-> 
-> Default behaviour for ohci-platform driver is to use global over-current
-> protection mode (AKA "ganged"). This leads to the spurious over-current
-> events affecting all ports in the hub.
-> 
-> We now alter the default to use per-port over-current protection.
-> 
-> This patch results in the following configuration changes depending
-> on quirks:
-> - For quirk OHCI_QUIRK_SUPERIO no changes. These systems remain set up
->   for ganged power switching and no over-current protection.
+Because clk_prepare_enable() and clk_disable_unprepare() already checked
+NULL clock parameter, so the additional checks are unnecessary, just
+remove them.
 
-How about changing the quirk name to something more meaningful, such as 
-OHCI_QUIRK_GANGED_POWER_NO_OVERCURRENT?
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+---
+ drivers/net/ethernet/marvell/pxa168_eth.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-> - For quirk OHCI_QUIRK_AMD756 or OHCI_QUIRK_HUB_POWER power switching
->   remains at none, while over-current protection is now guaranteed to be
->   set to per-port rather than the previous behaviour where it was either
->   none or global over-current protection depending on the value at
->   function entry.
+diff --git a/drivers/net/ethernet/marvell/pxa168_eth.c b/drivers/net/ethernet/marvell/pxa168_eth.c
+index eb8cf60..faac94b 100644
+--- a/drivers/net/ethernet/marvell/pxa168_eth.c
++++ b/drivers/net/ethernet/marvell/pxa168_eth.c
+@@ -1541,10 +1541,8 @@ static int pxa168_eth_remove(struct platform_device *pdev)
+ 	}
+ 	if (dev->phydev)
+ 		phy_disconnect(dev->phydev);
+-	if (pep->clk) {
+-		clk_disable_unprepare(pep->clk);
+-	}
+ 
++	clk_disable_unprepare(pep->clk);
+ 	mdiobus_unregister(pep->smi_bus);
+ 	mdiobus_free(pep->smi_bus);
+ 	unregister_netdev(dev);
+-- 
+2.9.5
 
-Also consider renaming OHCI_QUIRK_HUB_POWER to something like 
-OHCI_QUIRK_PORT_POWER_ALWAYS_ON.
-
-> Suggested-by: Alan Stern <stern@rowland.harvard.edu>
-> Signed-off-by: Hamish Martin <hamish.martin@alliedtelesis.co.nz>
-> ---
->  drivers/usb/host/ohci-hcd.c | 17 +++++++++++------
->  1 file changed, 11 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/usb/host/ohci-hcd.c b/drivers/usb/host/ohci-hcd.c
-> index dd37e77dae00..8ab81f6ab150 100644
-> --- a/drivers/usb/host/ohci-hcd.c
-> +++ b/drivers/usb/host/ohci-hcd.c
-> @@ -673,20 +673,25 @@ static int ohci_run (struct ohci_hcd *ohci)
->  
->  	/* handle root hub init quirks ... */
->  	val = roothub_a (ohci);
-> -	val &= ~(RH_A_PSM | RH_A_OCPM);
-> +	/* Configure for per-port over-current protection by default */
-> +	val &= ~RH_A_NOCP;
-> +	val |= RH_A_OCPM;
->  	if (ohci->flags & OHCI_QUIRK_SUPERIO) {
-> -		/* NSC 87560 and maybe others */
-> +		/* NSC 87560 and maybe others.
-> +		 * Ganged power switching, no over-current protection.
-> +		 */
->  		val |= RH_A_NOCP;
-> -		val &= ~(RH_A_POTPGT | RH_A_NPS);
-> -		ohci_writel (ohci, val, &ohci->regs->roothub.a);
-> +		val &= ~(RH_A_POTPGT | RH_A_NPS | RH_A_PSM | RH_A_OCPM);
->  	} else if ((ohci->flags & OHCI_QUIRK_AMD756) ||
->  			(ohci->flags & OHCI_QUIRK_HUB_POWER)) {
->  		/* hub power always on; required for AMD-756 and some
-> -		 * Mac platforms.  ganged overcurrent reporting, if any.
-> +		 * Mac platforms.
->  		 */
-> +		val &= ~RH_A_PSM;
->  		val |= RH_A_NPS;
-
-PSM is ignored when NPS is on.  You needn't bother to set it.
-
-> -		ohci_writel (ohci, val, &ohci->regs->roothub.a);
->  	}
-> +	ohci_writel(ohci, val, &ohci->regs->roothub.a);
-> +
->  	ohci_writel (ohci, RH_HS_LPSC, &ohci->regs->roothub.status);
->  	ohci_writel (ohci, (val & RH_A_NPS) ? 0 : RH_B_PPCM,
->  						&ohci->regs->roothub.b);
-
-You didn't actually change the default: distrust_firmware is still 
-initialized to true.
-
-Alan Stern
