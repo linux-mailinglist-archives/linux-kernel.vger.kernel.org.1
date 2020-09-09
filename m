@@ -2,68 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB458263246
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:39:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C0E72631FA
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:33:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731047AbgIIQjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 12:39:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57998 "EHLO
+        id S1730602AbgIIQcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 12:32:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731114AbgIIQhQ (ORCPT
+        with ESMTP id S1731160AbgIIQcV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 12:37:16 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D1E1C06135D
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 07:03:36 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id a8so2452259ilk.1
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 07:03:36 -0700 (PDT)
+        Wed, 9 Sep 2020 12:32:21 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26929C061363
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 07:06:23 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id h4so3267236ioe.5
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 07:06:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=kernel-dk.20150623.gappssmtp.com; s=20150623;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=kCsxeCMw67opcoElUs8hZzWLlvUYaz8JdahayB2RUI4=;
-        b=y8KsdU2xS4h9wwHh/xYDwErwKAwdbag1RHnw+sM66m/fustnVCcke5hzrzLLhpqjyI
-         gAKCWN9X6Ps6x4mAijLqE21trmg9mvsJQ6ZXE0ar9XW5AIXWCAZTNu+/gqEJ6wq0O0gL
-         AzlVewdt+lb/VWNKuLkTogy0q7/FP96IucjOTs0oY3gRRxpBURUZKYXuGXdIarA/8MZG
-         bVbuGmOJ4V48/zvhddDGTpiR5+vFcOkBtV4tQZyGNtf7K6xTmUEgpvSiEmEAXSDc32oN
-         uTt5aC7e2b47Bf/C77XLGczztZb6xRGZ3YIqp8kpjfAi8rNQJ7u+jP0IMx/wbKphG5W1
-         NfiQ==
+        bh=eHcdzC1Vjr+eEnGNce0StnaH8r/3dCNL4SRhcQUMlRk=;
+        b=SRwj4zfFnrfJCYIIa0d/pBN8bUN1FeFiAh96+74cn1CriZXzI62ZHkuLvFCm6P31lL
+         AAOxNZRtYsFtarUskfSyDHgH5fLM4ZtWeKnXcmmKHIaiBKiZNP67+5fR0W0PYjWJIIEF
+         K/PWJr/LqEGo9WHPdegONBrkQLVHa0/EC+BlUxnGBk4/LmqeOO2PXhuT7v9pv2KWydkH
+         U8kkt+8qIX+hlCCV3yYb1+qmBEuPB5wRlccXD0ilVAlYXH8t6Ktl2UoYqQ4p2VJqrOAD
+         voO4N5MntQYmhAR4e36C1c+DcZIgl1QkLbYtrW1phmIzBa8UfN6iN2O5LDMLoySEEKMf
+         7/xg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=kCsxeCMw67opcoElUs8hZzWLlvUYaz8JdahayB2RUI4=;
-        b=MEXzm35I+YZsN76FOUlzFDNS6UG2BelBOeKPjtbuShdqpoRPdMe8miGGvUUFrs9lcN
-         haHUApQgiSlucPyyFXoox3dTg1Onk56rNqv8GyPeqrDKag2uB6DLvzknFrHEYnCVqEV3
-         ++iXeaD6YO1BysjLeuiiMHZ2axooNRP4KpaqTzEP6gCWC9NLcmlwcJ3yjybzwymP2Hon
-         +p5xMpGBInPOmeqOuM01bKHX/4x0gW6Q1i4hKdJaHb4iFJPPmfQD8kaCUdrbwIEIkgYh
-         kpI7NsD5hXOwtsVnXnq6UO/V8kARtFSvogt7sQMkigvU6pp9Ff2bSTfQHzLLCVxu0xCl
-         m13w==
-X-Gm-Message-State: AOAM531bzg8YJT1Uve6030GaE9VcbB2xgxYk6m//5xSu4fSxDg1POTw0
-        jUAfprOfa+Ey/W23QL2/QsDyOu9FwhiniAkV
-X-Google-Smtp-Source: ABdhPJywiqVd3crHHoKQ2WPdED4AxcZSebQ/f1P0yVO+Jydm2uWgdHboDeu9R4fZh5S89cAdslOriA==
-X-Received: by 2002:a92:985a:: with SMTP id l87mr3668939ili.2.1599660214146;
-        Wed, 09 Sep 2020 07:03:34 -0700 (PDT)
+        bh=eHcdzC1Vjr+eEnGNce0StnaH8r/3dCNL4SRhcQUMlRk=;
+        b=uTbZJrk8r+a/qpvJBy32LF14Fm8EPCNpFD3796K4pgp5FeufU2T9/e5geDnvwLjHwo
+         il2X8HZ6x68++qLFjh005LDOrIyO+UmhSfZeRrwqJwvaBw4A41Oe7GEhY1juCewKgvgj
+         3Nux2VHLUKrzkr4gq6iFh4DuicLHImSpXZMiff7DDBhlKQ8JpIP37rJOYEwJvaFLbC61
+         5DovPq+mKFThSZogUIjPDW2K5gEd824qtZ5CpfIdYwkI5flm+GJ5ohVJrrv8IhgaVrn4
+         aVqg2IJ2aNdiHZgbllNJhTZtqD0SeeC2vrvVsHsXHK/cp3fHD8GGIOYJG+VQP1cqz3kB
+         5dng==
+X-Gm-Message-State: AOAM530rJMvJ8r6ALh/wOaUWIYyuFcNaQ0Mp5TFPOUudsbumNALIp/JG
+        mBQVk0j0QShsKViWxmhmvvRRXQ==
+X-Google-Smtp-Source: ABdhPJwtzLv8bwenmUUA+lfQ5tOU/l3y2j8uN59etgpB1Dhk5UazCcenXSIw2/PDFTejToUeurv5fg==
+X-Received: by 2002:a05:6602:584:: with SMTP id v4mr3535381iox.195.1599660378888;
+        Wed, 09 Sep 2020 07:06:18 -0700 (PDT)
 Received: from [192.168.1.10] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id c2sm1464286ilo.7.2020.09.09.07.03.32
+        by smtp.gmail.com with ESMTPSA id y19sm1373254ili.47.2020.09.09.07.06.17
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Sep 2020 07:03:33 -0700 (PDT)
-Subject: Re: INFO: task hung in io_sq_thread_stop
-To:     Stefano Garzarella <sgarzare@redhat.com>,
-        syzbot <syzbot+3c23789ea938faaef049@syzkaller.appspotmail.com>
-Cc:     io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        viro@zeniv.linux.org.uk
-References: <00000000000030a45905aedd879d@google.com>
- <20200909100355.ibz4jc5ctnwbmy5v@steredhat>
+        Wed, 09 Sep 2020 07:06:18 -0700 (PDT)
+Subject: Re: [PATCH -next] io_uring: Remove unneeded semicolon
+To:     Zheng Bin <zhengbin13@huawei.com>, viro@zeniv.linux.org.uk,
+        linux-fsdevel@vger.kernel.org, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     yi.zhang@huawei.com
+References: <20200909121237.39914-1-zhengbin13@huawei.com>
 From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <fa8f11bf-d0e6-42b9-0a2e-2bb4c8679b99@kernel.dk>
-Date:   Wed, 9 Sep 2020 08:03:32 -0600
+Message-ID: <cef491f9-0df7-ec9f-ebb2-0f62adcdc39d@kernel.dk>
+Date:   Wed, 9 Sep 2020 08:06:17 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200909100355.ibz4jc5ctnwbmy5v@steredhat>
+In-Reply-To: <20200909121237.39914-1-zhengbin13@huawei.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -72,49 +70,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/9/20 4:03 AM, Stefano Garzarella wrote:
-> On Wed, Sep 09, 2020 at 01:49:22AM -0700, syzbot wrote:
->> Hello,
->>
->> syzbot found the following issue on:
->>
->> HEAD commit:    dff9f829 Add linux-next specific files for 20200908
->> git tree:       linux-next
->> console output: https://syzkaller.appspot.com/x/log.txt?x=112f880d900000
->> kernel config:  https://syzkaller.appspot.com/x/.config?x=37b3426c77bda44c
->> dashboard link: https://syzkaller.appspot.com/bug?extid=3c23789ea938faaef049
->> compiler:       gcc (GCC) 10.1.0-syz 20200507
->> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17c082a5900000
->> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1474f5f9900000
->>
->> Bisection is inconclusive: the first bad commit could be any of:
->>
->> d730b1a2 io_uring: add IOURING_REGISTER_RESTRICTIONS opcode
->> 7ec3d1dd io_uring: allow disabling rings during the creation
+On 9/9/20 6:12 AM, Zheng Bin wrote:
+> Fixes coccicheck warning:
 > 
-> I'm not sure it is related, but while rebasing I forgot to update the
-> right label in the error path.
-> 
-> Since the check of ring state is after the increase of ctx refcount, we
-> need to decrease it jumping to 'out' label instead of 'out_fput':
-> diff --git a/fs/io_uring.c b/fs/io_uring.c
-> index d00eb6bf6ce9..f35da516095a 100644
-> --- a/fs/io_uring.c
-> +++ b/fs/io_uring.c
-> @@ -8649,7 +8649,7 @@ SYSCALL_DEFINE6(io_uring_enter, unsigned int, fd, u32, to_submit,
->                 goto out_fput;
-> 
->         if (ctx->flags & IORING_SETUP_R_DISABLED)
-> -               goto out_fput;
-> +               goto out;
-> 
->         /*
->          * For SQ polling, the thread will do all submissions and completions.
-> 
-> I'll send a patch ASAP and check if it solves this issue.
+> fs/io_uring.c:4242:13-14: Unneeded semicolon
 
-I think that's a separate bug, it's definitely a bug. So please do send
-the fix, thanks.
+Thanks, applied.
 
 -- 
 Jens Axboe
