@@ -2,104 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85BE1262D33
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 12:32:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86C46262D4A
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 12:34:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729298AbgIIKbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 06:31:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57500 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727935AbgIIKbP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 06:31:15 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D82E0C061755
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 03:30:56 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kFxNO-0004Cf-PD; Wed, 09 Sep 2020 12:30:54 +0200
-Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kFxNN-0005Xg-Pc; Wed, 09 Sep 2020 12:30:53 +0200
-Date:   Wed, 9 Sep 2020 12:30:53 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        Thorsten Scherer <t.scherer@eckelmann.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH v2] gpio: siox: explicitly support only threaded irqs
-Message-ID: <20200909103053.bhzh3533km7ky3jh@pengutronix.de>
-References: <20200907153135.3307-1-a.fatoum@pengutronix.de>
- <CAMpxmJWJo=wZmBdAxS2JWVMmg+g2dZG9Do7z+ROy0s37rWTw+w@mail.gmail.com>
+        id S1728325AbgIIKe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 06:34:26 -0400
+Received: from mga02.intel.com ([134.134.136.20]:29695 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729413AbgIIKda (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 06:33:30 -0400
+IronPort-SDR: sY0qwDgbUV11l4czCb3jlGrhPccjiAky7l9B7TyF/Ydn9lYyYXO4SEfe4+Roqs/EaMPOZwzWDH
+ JDqEjVjAQTbg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9738"; a="146024023"
+X-IronPort-AV: E=Sophos;i="5.76,409,1592895600"; 
+   d="scan'208";a="146024023"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2020 03:33:25 -0700
+IronPort-SDR: b0fZegHHelVqHvkD6wzmTiyf3as0QAL1ZKDn4jFpHjIu2BVakLrkUBUgTzqxmTXk4qp2d603Pr
+ uEU9Erq3gGFg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,409,1592895600"; 
+   d="scan'208";a="333774825"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga008.jf.intel.com with ESMTP; 09 Sep 2020 03:33:20 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@intel.com>)
+        id 1kFxPh-00FPwG-IJ; Wed, 09 Sep 2020 13:33:17 +0300
+Date:   Wed, 9 Sep 2020 13:33:17 +0300
+From:   Andy Shevchenko <andriy.shevchenko@intel.com>
+To:     Rahul Tanwar <rahul.tanwar@linux.intel.com>
+Cc:     jdelvare@suse.com, linux@roeck-us.net, p.zabel@pengutronix.de,
+        linux-hwmon@vger.kernel.org, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        songjun.Wu@intel.com, cheol.yong.kim@intel.com,
+        qi-ming.wu@intel.com, rtanwar@maxlinear.com
+Subject: Re: [PATCH 2/2] Add driver for Moortec MR75203 PVT controller
+Message-ID: <20200909103317.GL1891694@smile.fi.intel.com>
+References: <cover.1599634208.git.rahul.tanwar@linux.intel.com>
+ <ecb6794a8f2ef6576421e6d5fbdf4e6a91f06b91.1599634208.git.rahul.tanwar@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="kpyu2cpc3fs7tqrq"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMpxmJWJo=wZmBdAxS2JWVMmg+g2dZG9Do7z+ROy0s37rWTw+w@mail.gmail.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <ecb6794a8f2ef6576421e6d5fbdf4e6a91f06b91.1599634208.git.rahul.tanwar@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Sep 09, 2020 at 02:52:05PM +0800, Rahul Tanwar wrote:
+> PVT controller (MR75203) is used to configure & control
+> Moortec embedded analog IP which contains temprature
+> sensor(TS), voltage monitor(VM) & process detector(PD)
+> modules. Add driver to support MR75203 PVT controller.
 
---kpyu2cpc3fs7tqrq
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+...
 
-On Wed, Sep 09, 2020 at 11:43:24AM +0200, Bartosz Golaszewski wrote:
-> On Mon, Sep 7, 2020 at 5:32 PM Ahmad Fatoum <a.fatoum@pengutronix.de> wro=
-te:
-> >
-> > The gpio-siox driver uses handle_nested_irq() to implement its
-> > interrupt support. This is only capable of handling threaded irq
-> > actions. For a hardirq action it triggers a NULL pointer oops.
-> > (It calls action->thread_fn which is NULL then.)
-> >
-> > Prevent registration of a hardirq action by setting
-> > gpio_irq_chip::threaded to true.
-> >
-> > Cc: u.kleine-koenig@pengutronix.de
-> > Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
-> > ---
->=20
-> Could you add a Fixes tag? This looks like stable material.
+> +#include <linux/clk.h>
+> +#include <linux/hwmon.h>
+> +#include <linux/module.h>
+> +#include <linux/mutex.h>
 
-Ah, we talked about this in the v1 thread---tglx and I agreed we want
-it. That's:
 
-Fixes: be8c8facc707 ("gpio: new driver to work with a 8x12 siox")
+> +#include <linux/of.h>
 
-Best regards
-Uwe
+I don't see anything special about OF here.
+Perhaps
+	mod_devicetable.h
+	property.h
+?
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+> +#include <linux/platform_device.h>
+> +#include <linux/regmap.h>
+> +#include <linux/reset.h>
 
---kpyu2cpc3fs7tqrq
-Content-Type: application/pgp-signature; name="signature.asc"
+...
 
------BEGIN PGP SIGNATURE-----
+> +#define PVT_POLL_TIMEOUT	20000
 
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl9YrtoACgkQwfwUeK3K
-7AkU7wf8CMI7+dWprPIUEOc6fay4MBwSA7GnYskIGYpSdVvYTOZA2lODBej3A6Ms
-29y3p8JxfNLZss2nKOIZ2XJZt2o9e7KwTmGQurqq3zisoOueAxc+1qt4VTKFzNwb
-xROu6MXSDpoC+j6z8kc8J5BTiy2XT9RAgRkHeDH+jynsfJ4oN67fWh+uz7/xO8Fk
-N+ItAeBPYrxELu8+dBfykzIAuryY+ZDoZYdoTHBOrd2X2zKqC0yDkod8/aHKhiW5
-yELwH8d2iG46qoxSmnDhjnuGlivtD+1W+cVoVktZguaiUCl3GikCADJzUjeeZkvB
-yghYsnfnUYEauBa1WB9Z+M6ujo6DJQ==
-=cEXz
------END PGP SIGNATURE-----
+Units?
 
---kpyu2cpc3fs7tqrq--
+...
+
+> +	sys_freq = clk_get_rate(pvt->clk) / 1000000;
+
+HZ_PER_MHZ ?
+
+> +	while (high >= low) {
+> +		middle = DIV_ROUND_CLOSEST(low + high, 2);
+
+I'm wondering would it be better in the code like
+
+	middle = (low + high + 1) / 2;
+
+> +		key = DIV_ROUND_CLOSEST(sys_freq, middle);
+> +		if (key > 514) {
+> +			low = middle + 1;
+> +			continue;
+> +		} else if (key < 2) {
+> +			high = middle - 1;
+> +			continue;
+> +		}
+> +
+> +		break;
+> +	}
+> +
+> +	key = clamp_val(key, 2, 514) - 2;
+
+I guess above deserves a comment with formulas.
+
+...
+
+> +		regmap_write(p_map, SDIF_DISABLE, GENMASK(p_num - 1, 0));
+
+For non-constants better would be BIT(p_num) - 1.
+
+...
+
+> +		regmap_write(v_map, SDIF_SMPL_CTRL, 0x0);
+> +		regmap_write(v_map, SDIF_HALT, 0x0);
+> +		regmap_write(v_map, SDIF_DISABLE, 0);
+
+In some you have 0, in some 0x0 over the file, can it be consistent?
+
+...
+
+> +static struct regmap_config pvt_regmap_config = {
+> +	.reg_bits = 32,
+> +	.reg_stride = 4,
+> +	.val_bits = 32,
+
+How do you use regmap's lock?
+
+> +};
+
+...
+
+> +static int pvt_get_regmap(struct platform_device *pdev, char *reg_name)
+> +{
+> +	struct device *dev = &pdev->dev;
+
+> +	struct pvt_device *pvt = platform_get_drvdata(pdev);
+
+Can it be first line in definition block?
+
+> +	struct regmap **reg_map;
+> +	void __iomem *io_base;
+> +	struct resource *res;
+> +
+> +	if (!strcmp(reg_name, "common"))
+> +		reg_map = &pvt->c_map;
+> +	else if (!strcmp(reg_name, "ts"))
+> +		reg_map = &pvt->t_map;
+> +	else if (!strcmp(reg_name, "pd"))
+> +		reg_map = &pvt->p_map;
+> +	else if (!strcmp(reg_name, "vm"))
+> +		reg_map = &pvt->v_map;
+> +	else
+> +		return -EINVAL;
+> +
+> +	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, reg_name);
+> +	io_base = devm_ioremap_resource(dev, res);
+
+	io_base = devm_platform_ioremap_resource_by_name(pdev, reg_name);
+
+?
+
+> +	if (IS_ERR(io_base))
+> +		return PTR_ERR(io_base);
+> +
+> +	pvt_regmap_config.name = reg_name;
+
+Hmm... regmap API keeps it in devres. Why is there a copy?
+
+> +	*reg_map = devm_regmap_init_mmio(dev, io_base, &pvt_regmap_config);
+> +	if (IS_ERR(*reg_map)) {
+> +		dev_err(dev, "failed to init register map\n");
+> +		return PTR_ERR(*reg_map);
+> +	}
+> +
+> +	return 0;
+> +}
+
+...
+
+> +		for (i = 0; i < num; i++)
+> +			in_config[i] = HWMON_I_INPUT;
+
+memset32() ?
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
