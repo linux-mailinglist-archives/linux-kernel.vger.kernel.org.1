@@ -2,157 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1F31263A48
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 04:26:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16CA62639D5
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 04:07:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730874AbgIJC0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 22:26:07 -0400
-Received: from mga03.intel.com ([134.134.136.65]:52209 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729993AbgIJCUq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 22:20:46 -0400
-IronPort-SDR: 5ySx/9LPGsQnDq6vHQUrurDcs9Pn1Rx7Gd/1aAPqMmrtjpupV661NFjNbGdOylWReiSzcFc+rE
- cYOG5Bza+v8A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9739"; a="158471144"
-X-IronPort-AV: E=Sophos;i="5.76,410,1592895600"; 
-   d="scan'208";a="158471144"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2020 16:29:55 -0700
-IronPort-SDR: URKeYjk5zRXN3NFuf/Gc1p/WC5orb20QqlfmbScaNhnDqy51Q2xqBwTflishSOOI+CExQ9WZs5
- BsF9iCFhwL9A==
-X-IronPort-AV: E=Sophos;i="5.76,410,1592895600"; 
-   d="scan'208";a="304677213"
-Received: from pbhangod-mobl.amr.corp.intel.com (HELO [10.213.170.146]) ([10.213.170.146])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2020 16:29:53 -0700
-Subject: Re: [PATCH v11 25/25] x86/cet/shstk: Add arch_prctl functions for
- shadow stack
-To:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>,
-        Andy Lutomirski <luto@kernel.org>
-Cc:     Dave Martin <Dave.Martin@arm.com>, "H.J. Lu" <hjl.tools@gmail.com>,
-        Florian Weimer <fweimer@redhat.com>, X86 ML <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Weijiang Yang <weijiang.yang@intel.com>
-References: <086c73d8-9b06-f074-e315-9964eb666db9@intel.com>
- <20200826164604.GW6642@arm.com> <87ft892vvf.fsf@oldenburg2.str.redhat.com>
- <CALCETrVeNA0Kt2rW0CRCVo1JE0CKaBxu9KrJiyqUA8LPraY=7g@mail.gmail.com>
- <0e9996bc-4c1b-cc99-9616-c721b546f857@intel.com>
- <4f2dfefc-b55e-bf73-f254-7d95f9c67e5c@intel.com>
- <CAMe9rOqt9kbqERC8U1+K-LiDyNYuuuz3TX++DChrRJwr5ajt6Q@mail.gmail.com>
- <20200901102758.GY6642@arm.com>
- <c91bbad8-9e45-724b-4526-fe3674310c57@intel.com>
- <CALCETrWJQgtO_tP1pEaDYYsFgkZ=fOxhyTRE50THcxYoHyTTwg@mail.gmail.com>
- <32005d57-e51a-7c7f-4e86-612c2ff067f3@intel.com>
- <46dffdfd-92f8-0f05-6164-945f217b0958@intel.com>
- <ed929729-4677-3d3b-6bfd-b379af9272b8@intel.com>
- <6e1e22a5-1b7f-2783-351e-c8ed2d4893b8@intel.com>
- <5979c58d-a6e3-d14d-df92-72cdeb97298d@intel.com>
- <ab1a3344-60f4-9b9d-81d4-e6538fdcafcf@intel.com>
- <08c91835-8486-9da5-a7d1-75e716fc5d36@intel.com>
- <a881837d-c844-30e8-a614-8b92be814ef6@intel.com>
- <cbec8861-8722-ec31-2c02-1cfed20255eb@intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <b3379d26-d8a7-deb7-59f1-c994bb297dcb@intel.com>
-Date:   Wed, 9 Sep 2020 16:29:53 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1730577AbgIJCGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 22:06:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51290 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730145AbgIJByT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 21:54:19 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27CE5C0617B9;
+        Wed,  9 Sep 2020 16:34:46 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BmyzL0s2vz9sTW;
+        Thu, 10 Sep 2020 09:34:37 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1599694478;
+        bh=/iimjDFu3pasKYMJQEQ/kTu+FsUVpzwxhLgrWCaorIo=;
+        h=Date:From:To:Cc:Subject:From;
+        b=lUM96aD3mSfmgJ1r0i3Jb33pimBT2LGB28cKZ+jKojcm66LDK3VwpIBbV5zPDwkeX
+         bFEpjJFiQUy44dJC9AGTT7ovCCy9LomHf/hQ+MaJTsOzy79MuMB/h2keGLvFRa34P8
+         1eujQ42LCu5aYSEOJul4ylM7Jyz9y1bnfplUAynD2WQSbvmGx2UUM1QTOFMlJhFjgq
+         Vs58Zp+HBpIcwpMkIYCXVQvSARBBW62lL+Z2XFxwCFpdu/lMkcsDLvAr4CjIHH/qlP
+         cmzrpqjSvdJhgxWYBexRRYtIQDIGekGh5NdvNZ1qzD+b5d6XvmPmauJEgYHau6pc7o
+         EzFsO9ls7WREw==
+Date:   Thu, 10 Sep 2020 09:34:37 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Greg Ungerer <gerg@snapgear.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: linux-next: manual merge of the m68knommu tree with the m68k tree
+Message-ID: <20200910093437.4098988b@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <cbec8861-8722-ec31-2c02-1cfed20255eb@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/5OzjCGux=otNrvMezQoDw/3";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/9/20 4:25 PM, Yu, Yu-cheng wrote:
-> On 9/9/2020 4:11 PM, Dave Hansen wrote:
->> On 9/9/20 4:07 PM, Yu, Yu-cheng wrote:
->>> What if a writable mapping is passed to madvise(MADV_SHSTK)?  Should
->>> that be rejected?
->>
->> It doesn't matter to me.  Even if it's readable, it _stops_ being even
->> directly readable after it's a shadow stack, right?  I don't think
->> writes are special in any way.  If anything, we *want* it to be writable
->> because that indicates that it can be written to, and we will want to
->> write to it soon.
->>
-> But in a PROT_WRITE mapping, all the pte's have _PAGE_BIT_RW set.  To
-> change them to shadow stack, we need to clear that bit from the pte's.
-> That will be like mprotect_fixup()/change_protection_range().
+--Sig_/5OzjCGux=otNrvMezQoDw/3
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-The page table hardware bits don't matter.  The user-visible protection
-effects matter.
+Hi all,
 
-For instance, we have PROT_EXEC, which *CLEARS* a hardware NX PTE bit.
-The PROT_ permissions are independent of the hardware.
+Today's linux-next merge of the m68knommu tree got a conflict in:
 
-I don't think the interface should be influenced at *all* by what whacko
-PTE bit combinations we have to set to get the behavior.
+  arch/m68k/Kconfig
+
+between commit:
+
+  dc072012bc94 ("m68k: Sort selects in main Kconfig")
+
+from the m68k tree and commit:
+
+  ef03e4545eac ("m68knommu: switch to using asm-generic/uaccess.h")
+
+from the m68knommu tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc arch/m68k/Kconfig
+index 93bbb74ea876,aefffebc0afa..000000000000
+--- a/arch/m68k/Kconfig
++++ b/arch/m68k/Kconfig
+@@@ -6,32 -6,33 +6,33 @@@ config M68
+  	select ARCH_HAS_BINFMT_FLAT
+  	select ARCH_HAS_DMA_PREP_COHERENT if HAS_DMA && MMU && !COLDFIRE
+  	select ARCH_HAS_SYNC_DMA_FOR_DEVICE if HAS_DMA
+ +	select ARCH_HAVE_NMI_SAFE_CMPXCHG if RMW_INSNS
+  	select ARCH_MIGHT_HAVE_PC_PARPORT if ISA
+  	select ARCH_NO_PREEMPT if !COLDFIRE
+ +	select ARCH_WANT_IPC_PARSE_VERSION
+  	select BINFMT_FLAT_ARGVP_ENVP_ON_STACK
+  	select DMA_DIRECT_REMAP if HAS_DMA && MMU && !COLDFIRE
+ -	select HAVE_IDE
+ -	select HAVE_AOUT if MMU
+ -	select HAVE_ASM_MODVERSIONS
+ -	select HAVE_DEBUG_BUGVERBOSE
+ -	select GENERIC_IRQ_SHOW
+  	select GENERIC_ATOMIC64
+ -	select NO_DMA if !MMU && !COLDFIRE
+ -	select HAVE_UID16
+ -	select VIRT_TO_BUS
+ -	select ARCH_HAVE_NMI_SAFE_CMPXCHG if RMW_INSNS
+  	select GENERIC_CPU_DEVICES
+  	select GENERIC_IOMAP
+ +	select GENERIC_IRQ_SHOW
+  	select GENERIC_STRNCPY_FROM_USER if MMU
+  	select GENERIC_STRNLEN_USER if MMU
+ -	select UACCESS_MEMCPY if !MMU
+ -	select ARCH_WANT_IPC_PARSE_VERSION
+ +	select HAVE_AOUT if MMU
+ +	select HAVE_ASM_MODVERSIONS
+ +	select HAVE_DEBUG_BUGVERBOSE
+  	select HAVE_FUTEX_CMPXCHG if MMU && FUTEX
+ +	select HAVE_IDE
+  	select HAVE_MOD_ARCH_SPECIFIC
+ +	select HAVE_UID16
+ +	select MMU_GATHER_NO_RANGE if MMU
+  	select MODULES_USE_ELF_REL
+  	select MODULES_USE_ELF_RELA
+ -	select OLD_SIGSUSPEND3
+ +	select NO_DMA if !MMU && !COLDFIRE
+  	select OLD_SIGACTION
+ -	select MMU_GATHER_NO_RANGE if MMU
+ +	select OLD_SIGSUSPEND3
+++	select UACCESS_MEMCPY if !MMU
+ +	select VIRT_TO_BUS
+ =20
+  config CPU_BIG_ENDIAN
+  	def_bool y
+
+--Sig_/5OzjCGux=otNrvMezQoDw/3
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9ZZo0ACgkQAVBC80lX
+0GxVyAgAojk8j6SRwOfQxFRWRIC/Yz6kMt1UMnLqldmKcqs4i/b9bKC7/Zw73Ekw
+tMfj4aoZ4UKrij2DZGkD3kwgyT0AI30zCy74D0+TZEdB2tkpG5Gvgf3HHH/Sh/xn
+sjZsUa9ivUix6WAgAnduI6iI8hykgZL5ujsrJFzcXGohWS/ZJonBw4RYjA71nJOE
+cW73kP4rXEYkeLeglHgooMk0bh8tJL/meoHsZsYD7Q83jC7KdxE8ROsO4cbxbsbw
+0v/QzUNEu+nSdqV7LKdButXhw98GphjkcplFoC3HoODTG/uZ9ECpIhoHv/P2sYvV
+67GKuIE+T7vhbFq/ozXLckBqYYeRtw==
+=bvx9
+-----END PGP SIGNATURE-----
+
+--Sig_/5OzjCGux=otNrvMezQoDw/3--
