@@ -2,87 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7ED7262AEE
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 10:50:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6302F262AFE
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 10:55:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725975AbgIIIud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 04:50:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43098 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726970AbgIIIua (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 04:50:30 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C80A2218AC;
-        Wed,  9 Sep 2020 08:50:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599641429;
-        bh=3brvJRSqkSgs/2gqVdKI2of8iGbX+HzT97KJlz3luXY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pXzO2ZOIUIkiJTzva5kMNDyZDu71A/X4nx147Zo3tMAhVckYbbK1mqZ6OJxf+dLUz
-         K1pYBgu/8k1pS1by1NGNXZbS85P8vtqcHmjUTYn1BTi8e5zqwgNYqTF3TBgCPz3Cpr
-         HQng+gm3VKPXaFsSTsvHHiJooaMH7HigMCjELsmU=
-Date:   Wed, 9 Sep 2020 10:50:39 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     =?utf-8?B?6rmA7ZiE7Iic?= <h10.kim@samsung.com>
-Cc:     Edward Cree <ecree@solarflare.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Alexander Lobakin <alobakin@dlink.ru>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: Re: [PATCH 5.4 086/129] net: core: use listified Rx for
- GRO_NORMAL in napi_gro_receive()
-Message-ID: <20200909085039.GA583189@kroah.com>
-References: <20200909063718.GA311356@kroah.com>
- <20200908152229.689878733@linuxfoundation.org>
- <20200908152234.000867723@linuxfoundation.org>
- <70529b6c-7b00-d760-c0c0-42f0ea5784f3@solarflare.com>
- <CGME20200909063710epcas2p340688acd14fad9e0fe53a66d06fd14a7@epcms2p4>
- <20200909072101epcms2p457639b69a22434d140c01aeecd3ef46e@epcms2p4>
+        id S1729738AbgIIIzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 04:55:00 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:11290 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726408AbgIIIy5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 04:54:57 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id CABAE1E26E649B123902;
+        Wed,  9 Sep 2020 16:54:55 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.58) by
+ DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 9 Sep 2020 16:54:45 +0800
+From:   Wei Xu <xuwei5@hisilicon.com>
+To:     <netdev@vger.kernel.org>
+CC:     <davem@davemloft.net>, <xuwei5@hisilicon.com>,
+        <linuxarm@huawei.com>, <shameerali.kolothum.thodi@huawei.com>,
+        <jonathan.cameron@huawei.com>, <john.garry@huawei.com>,
+        <salil.mehta@huawei.com>, <shiju.jose@huawei.com>,
+        <jinying@hisilicon.com>, <zhangyi.ac@huawei.com>,
+        <liguozhu@hisilicon.com>, <tangkunshan@huawei.com>,
+        <huangdaode@hisilicon.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        <intel-wired-lan@lists.osuosl.org>, <linux-kernel@vger.kernel.org>
+Subject: [net-next] net: iavf: Use the ARRAY_SIZE macro for aq_to_posix
+Date:   Wed, 9 Sep 2020 16:51:11 +0800
+Message-ID: <1599641471-204919-1-git-send-email-xuwei5@hisilicon.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200909072101epcms2p457639b69a22434d140c01aeecd3ef46e@epcms2p4>
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.58]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 09, 2020 at 04:21:01PM +0900, 김현순 wrote:
-> Dear Greg,
-> 
->  
-> 
-> I didn't intent to gain performance from this patch. Indeed i requested this
-> patch to resolve the bug we are experiencing.
-> 
->  
-> 
-> Different from kernel 4.19, napi gro made additional data structure called
-> rx_list, and for some reason, the list is always used after napi_gro_flush,
-> which is intended to be created to flush all gro (both merged and non-merged)
-> packets to network stack. Network packets received from network interface are
-> passed to rx_list once, and the rx_list is later flushed to network stack.
-> However, on the other hand, napi_gro_receive doesn't insert packet to rx_list.
-> Instead, it flushes to network stack directly. This causes out of order because
-> there might be some packets in rx_list (which has groups of packets that are
-> not flushed to network stack yet). If the packet from the same stream remains
-> in rx_list, and napi_gro_receive on next packet (from the same stream) is
-> called, this posterior packet will arrive to network stack first, which causes
-> out of order.
-> 
->  
-> 
-> And two patches mentioned by Edward are already in the branch. The patch i am
-> requesting is somewhat missing in android kernel, not sure the reason why.
+Use the ARRAY_SIZE macro to calculate the size of an array.
+This code was detected with the help of Coccinelle.
 
-Ah, you are right, this is odd.  Edward, those patches are already in
-the 5.4.y tree, which makes this patch not being present odd.
+Signed-off-by: Wei Xu <xuwei5@hisilicon.com>
+---
+ drivers/net/ethernet/intel/iavf/iavf_adminq.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I'll go add it back....
+diff --git a/drivers/net/ethernet/intel/iavf/iavf_adminq.h b/drivers/net/ethernet/intel/iavf/iavf_adminq.h
+index baf2fe2..eead12c 100644
+--- a/drivers/net/ethernet/intel/iavf/iavf_adminq.h
++++ b/drivers/net/ethernet/intel/iavf/iavf_adminq.h
+@@ -120,7 +120,7 @@ static inline int iavf_aq_rc_to_posix(int aq_ret, int aq_rc)
+ 	if (aq_ret == IAVF_ERR_ADMIN_QUEUE_TIMEOUT)
+ 		return -EAGAIN;
+ 
+-	if (!((u32)aq_rc < (sizeof(aq_to_posix) / sizeof((aq_to_posix)[0]))))
++	if (!((u32)aq_rc < ARRAY_SIZE(aq_to_posix)))
+ 		return -ERANGE;
+ 
+ 	return aq_to_posix[aq_rc];
+-- 
+2.8.1
 
-thanks,
-
-greg k-h
