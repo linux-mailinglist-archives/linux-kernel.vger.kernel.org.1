@@ -2,252 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CF232632FF
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:55:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 990412632EA
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:54:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730700AbgIIQzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 12:55:24 -0400
-Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:37209 "EHLO
-        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730477AbgIIPxc (ORCPT
+        id S1730973AbgIIQxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 12:53:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52606 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727087AbgIIQET (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 11:53:32 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id E71AFDFE;
-        Wed,  9 Sep 2020 11:53:13 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Wed, 09 Sep 2020 11:53:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=JCFzVNE05bPmOFgi/CGcorXge8/
-        Kg5QW/7D2hsM1y1A=; b=NjEyn4t7D8jp2KObl6caTS0+DOIUK6tq3cQXDCIf+5n
-        MGdSy68RCy2DTJ8jNzFy8TIzXZ/oNyyPiZvDnrCIoWacR6YcC6Ev4hqKf2bcqliM
-        2RbF9f9CYCoqmC25CYVW/VtvjbUP3i07W4Ld4VuC6/QCAClKUYUayqRb4gM0ehxN
-        l2h2Gh0ppzo03dSTuuec7WLfwOuutiXJEPV+/N/B7MZHgGEYqZZ3ZKEU9BZgAu54
-        RUMrXguPSdKAfrhjIuGcJyvv20dCY75yxCGSRCmG2cIfDnRwpp2jISq9nArnyhmy
-        E4Zh2Bqg1XwtOM4sWIxmjPj0oLwEqoXXnFH3XwHBBrg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=JCFzVN
-        E05bPmOFgi/CGcorXge8/Kg5QW/7D2hsM1y1A=; b=MGnPnGML9kg5M8bH4XuNNN
-        eMQzMZz3nD9wI24E9h0dyO87udOhah0CGZ3GdUJyTxKHl9bhx7wcfozXZvlIWrTw
-        +A8gX/DcbPRzWPF+Y7K7RE3pEkyqF8YR2/Esw7z4C6G+EOnJYFE0QFOJb+yuE5du
-        6C3G/STvKs55zqB1am7YtfhBnswq4zTtg5CNeRbw7mRfvUh1/WsN2NXSpo3//Vwg
-        BixPIMN9Q7vFny5jUheLdCMzqJgnibpSAvfFRhHaLnEvPNQxzOGbgDBbpyhNtWmZ
-        FD9EP3GwK4JWuz8kjpDG2tyoKfNRqhmETy6cVKXPNeJDz6/O5IxiqdS+mWEW1bNw
-        ==
-X-ME-Sender: <xms:ZvpYX_vqYDEQg0M4Cs3Pvu860GrdXtEtaApxIqN6kVSB4jo7_A633g>
-    <xme:ZvpYXweru6opq_lMfes0YalDzkPEfVGIDjQb-NqTu7ftDSWx7gZPmSZNgCzIkszjr
-    BeR1oSCs0ZSFuB-9pk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudehhedgledtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepveegudetkeethfetgffgtdekkefghefhffefgeduleehgeehieeuveefgedv
-    ieegnecuffhomhgrihhnpehgihhthhhusgdrtghomhenucfkphepledtrdekledrieekrd
-    ejieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehm
-    rgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:ZvpYXyx0ZAFnJhyy-N5AJwgsNz2uys0JBTsqPgzX4DViUmySjbKKig>
-    <xmx:ZvpYX-NqmF3NyQdIc7Id4MG6v09Qac4f3WzCWQ-68sY8y-rJ_XLB3g>
-    <xmx:ZvpYX_84dWnUwILJWep3bY53ZVn_Nt58rBvdwvJiMJfR7c8yLQTTRA>
-    <xmx:afpYX5nPLkZMOdDKZzrKpM94TFGBS0JfKW-s6UU9u3zBQ0M0s2b3dg>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 2BFC0328005A;
-        Wed,  9 Sep 2020 11:53:09 -0400 (EDT)
-Date:   Wed, 9 Sep 2020 17:53:07 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Wilken Gottwalt <wilken.gottwalt@mailbox.org>
-Cc:     linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>
-Subject: Re: [PATCH] dt-bindings: arm: sunxi: update H2+/H3 cpu clocks
-Message-ID: <20200909155307.pjlebalzo3jqqhfj@gilmour.lan>
-References: <20200903100708.GA466735@monster.powergraphx.local>
- <20200909120859.yosl2vgs3rj34stu@gilmour.lan>
- <20200909155446.382cf06d@monster.powergraphx.local>
+        Wed, 9 Sep 2020 12:04:19 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 464BBC061756
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 09:04:17 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id s13so2814233wmh.4
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 09:04:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fqHDfmvrn1k16mVJQ5+b/SIXRz53SpIEt2htZWi6LBw=;
+        b=MWcvAepihDTzFeQEhYY4dmVrfX1hYZrzB4rWEGRs4dmjdbtUj+2Qif01qedSuWuIzF
+         pTWkOigok9A72v58KpF1HrnrSkw/q3gV/pNBzM6lsDcPtpzwJCjXF0KuVhlOMqmAibM4
+         BNvWlMPLHGrYmjmq9cFMO84V6elPjUgSJ8rXi+n8phF5NJ/1ifTr68u4FfK+28F7B30F
+         KG+s1lHKyfT1hW3fITFNV+T1cPG6rE7Dz2jvtP+F4NxMMDki7qWh6xf8J/yJzRRk5j0J
+         5siS673YwqOMAvBMZZELYYn9H1wEUUvN4WMzsE2eYMOtKM74f29o/BQN8TPAj51/dUHU
+         ikTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fqHDfmvrn1k16mVJQ5+b/SIXRz53SpIEt2htZWi6LBw=;
+        b=tyMNabTa/Aipu5x3ArdQuSEAQGK5w9wWsaXCg9+ciks2A81oYieKIrxQeH4hSr3E5i
+         54jfw86VCi12vpW49s5ofvH05bOPiWMQ/QCws+nzzbVw6nTUGGmEeCg/siVjlooh6bdE
+         0f261uY4Q4qKlBzwvq/5bap/EFKEc6VrFSTFLS+d5uk6I12qNDuTeVvkMMm5P2uIzpS8
+         TBCU1VvLnUJiFUCxpt+EE3yK6YLVIhGsBWOeH4dZ6/lBOvD+QBzcEcNEBOnzZ44nh/21
+         Vy+Vj63z3x92JXEB1gx5LVaxiqAG3tUigrIhIMKZ7wE1iDSylatATP25XdEjEwHtqFyE
+         f6PA==
+X-Gm-Message-State: AOAM533utq38+mStEB0XJxrWb9tRcFdoJyM9GJcRkNo8oPQT7aQCZX4c
+        LmlrkmLEjHDqvNrwzjOj8iCUNA==
+X-Google-Smtp-Source: ABdhPJwPM+/b2ZDI+b2lSlT6ZtTWsjPKk0PA8OlwP8p9CqXazyikXgs/36KZ9HFCJYOviAo2mF99NQ==
+X-Received: by 2002:a1c:81c6:: with SMTP id c189mr4178443wmd.124.1599667455779;
+        Wed, 09 Sep 2020 09:04:15 -0700 (PDT)
+Received: from bender.baylibre.local ([2a01:e35:2ec0:82b0:5405:9623:e2f1:b2ac])
+        by smtp.gmail.com with ESMTPSA id y6sm4850700wrn.41.2020.09.09.09.04.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Sep 2020 09:04:15 -0700 (PDT)
+From:   Neil Armstrong <narmstrong@baylibre.com>
+To:     khilman@baylibre.com, kishon@ti.com, balbi@kernel.org,
+        martin.blumenstingl@googlemail.com
+Cc:     linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        linux-usb@vger.kernel.org
+Subject: [PATCH 0/5] usb: dwc-meson-g12a: Add support for USB on S400 board
+Date:   Wed,  9 Sep 2020 18:04:04 +0200
+Message-Id: <20200909160409.8678-1-narmstrong@baylibre.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="s6fflxmnaiafoupk"
-Content-Disposition: inline
-In-Reply-To: <20200909155446.382cf06d@monster.powergraphx.local>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The Amlogic AXG is close from the GXL Glue but with a single OTG PHY.
 
---s6fflxmnaiafoupk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+It needs the same init sequence as GXL & GXM, but it seems it doesn't need
+the host disconnect bit.
 
-On Wed, Sep 09, 2020 at 03:54:46PM +0200, Wilken Gottwalt wrote:
-> On Wed, 9 Sep 2020 14:08:59 +0200
-> Maxime Ripard <maxime@cerno.tech> wrote:
-> > Hi!
-> >=20
-> > Thanks for contributing
-> >=20
-> > The prefix isn't right though.
-> >=20
-> > dt-bindings is used when you're modifying the binding itself, ie the
-> > description of what the node is supposed to look like, not when you
-> > actually use that node in a DT.
-> >=20
-> > In that case, that would be ARM: dts: sunxi:
-> >=20
-> > (we're on the ARM architecture, modifying dts's, for the sunxi platform)
->=20
-> Ah, I see, it was my first attempt to contribute and wasn't 100% sure, ju=
-st
-> took the line from similar patches on the LKML. Thanks for the correction.
->=20
-> > On Thu, Sep 03, 2020 at 12:07:08PM +0200, Wilken Gottwalt wrote:
-> > > Change H2+/H3 clocks to 8 steps from 528 MHz up to 1200 MHz to suppor=
-t a
-> > > more fine-grained powersave setup. The SoCs are made for 1296 MHz, so
-> > > these clocks are still in a safe range. Tested on a NanoPi Duo and
-> > > OrangePi Zero.
-> >=20
-> > How was this tested?
->=20
-> This is a longer story. It actually runs on hardware which is in producti=
-on
-> for about 2-3 years, some use H2+ with full voltage regulators and some a=
-re
-> similar to the NanoPi DUO, where the voltage regulator can only switch
-> between 1.1 and 1.3 volts. It runs in two ways: A fully dynamic setup whe=
-re
-> the ondemand scheduler is used and the second way where it is switched to
-> fixed values (based on load and temperature) using the cpufrequtils. The
-> devices running a 4.14.x kernel and are tested against 4.19.x kernels.
-> These devices are routers running a custom tcp/ip stack and have a high I=
-/O
-> load. I also prepared devices based on a custom H3 design, which ran stab=
-le
-> at 1.392 GHz (but had passive coolers attached). Do these explanations
-> help?
+The Glue driver reuses the already implemented GXL & GXM work.
 
-To some extent, but not entirely. Depending on the governor / workload,
-some OPPs might never be used at all.
+The USB2 PHY driver needs a slight tweak to keep the OTG detection working.
 
-> > cpufreq OPP misconfiguration on Allwinner SoCs has been known to create
-> > some errors that are fairly hard to spot and be quite easy to go
-> > unnoticed (like caches corruptions).
->=20
-> Yeah, I noticed that in the beginning where I prepared the first kernels
-> for these devices. But after switching to multiples of 48MHz and bigger
-> steps these issues disappeared. I'm aware that this does not proof that
-> these issues do not appear, but thougth I share the values which I
-> consider stable.
+Neil Armstrong (5):
+  phy: amlogic: phy-meson-gxl-usb2: keep ID pull-up even in Host mode
+  dt-bindings: usb: amlogic,meson-g12a-usb-ctrl: add the Amlogic AXG
+    Families USB Glue Bindings
+  usb: dwc-meson-g12a: Add support for USB on AXG SoCs
+  arm64: dts: meson-axg: add USB nodes
+  arm64: dts: meson-axg-s400: enable USB OTG
 
-The only really reliable test we've had so far is the one I pointed out,
-so please run it on one board at least
+ .../usb/amlogic,meson-g12a-usb-ctrl.yaml      | 22 +++++++-
+ .../arm64/boot/dts/amlogic/meson-axg-s400.dts | 10 ++++
+ arch/arm64/boot/dts/amlogic/meson-axg.dtsi    | 51 +++++++++++++++++++
+ drivers/phy/amlogic/phy-meson-gxl-usb2.c      |  3 +-
+ drivers/usb/dwc3/dwc3-meson-g12a.c            | 17 +++++++
+ 5 files changed, 101 insertions(+), 2 deletions(-)
 
-> > The only reliable test we have is:
-> > https://github.com/ssvb/cpuburn-arm/blob/master/cpufreq-ljt-stress-test
-> >=20
-> > > Signed-off-by: Wilken Gottwalt <wilken.gottwalt@mailbox.org>
-> > > ---
-> > >  arch/arm/boot/dts/sun8i-h3.dtsi | 34 +++++++++++++++++++++++++++++++=
---
-> > >  1 file changed, 32 insertions(+), 2 deletions(-)
-> > >=20
-> > > diff --git a/arch/arm/boot/dts/sun8i-h3.dtsi b/arch/arm/boot/dts/sun8=
-i-h3.dtsi
-> > > index 4e89701df91f..5517fcc02b7d 100644
-> > > --- a/arch/arm/boot/dts/sun8i-h3.dtsi
-> > > +++ b/arch/arm/boot/dts/sun8i-h3.dtsi
-> > > @@ -48,23 +48,53 @@ cpu0_opp_table: opp_table0 {
-> > >  		compatible =3D "operating-points-v2";
-> > >  		opp-shared;
-> > > =20
-> > > -		opp-648000000 {
-> > > -			opp-hz =3D /bits/ 64 <648000000>;
-> > > +		opp-528000000 {
-> > > +			opp-hz =3D /bits/ 64 <528000000>;
-> > > +			opp-microvolt =3D <1020000 1020000 1300000>;
-> > > +			clock-latency-ns =3D <244144>; /* 8 32k periods */
-> > > +		};
-> > > +
-> > > +		opp-624000000 {
-> > > +			opp-hz =3D /bits/ 64 <624000000>;
-> > >  			opp-microvolt =3D <1040000 1040000 1300000>;
-> > >  			clock-latency-ns =3D <244144>; /* 8 32k periods */
-> > >  		};
-> > > =20
-> > > +		opp-720000000 {
-> > > +			opp-hz =3D /bits/ 64 <720000000>;
-> > > +			opp-microvolt =3D <1060000 1060000 1300000>;
-> > > +			clock-latency-ns =3D <244144>; /* 8 32k periods */
-> > > +		};
-> > > +
-> > >  		opp-816000000 {
-> > >  			opp-hz =3D /bits/ 64 <816000000>;
-> > >  			opp-microvolt =3D <1100000 1100000 1300000>;
-> > >  			clock-latency-ns =3D <244144>; /* 8 32k periods */
-> > >  		};
-> > > =20
-> > > +		opp-912000000 {
-> > > +			opp-hz =3D /bits/ 64 <912000000>;
-> > > +			opp-microvolt =3D <1140000 1140000 1300000>;
-> > > +			clock-latency-ns =3D <244144>; /* 8 32k periods */
-> > > +		};
-> > > +
-> > >  		opp-1008000000 {
-> > >  			opp-hz =3D /bits/ 64 <1008000000>;
-> > >  			opp-microvolt =3D <1200000 1200000 1300000>;
-> > >  			clock-latency-ns =3D <244144>; /* 8 32k periods */
-> > >  		};
-> > > +
-> > > +		opp-1104000000 {
-> > > +			opp-hz =3D /bits/ 64 <1104000000>;
-> > > +			opp-microvolt =3D <1240000 1240000 1300000>;
-> > > +			clock-latency-ns =3D <244144>; /* 8 32k periods */
-> > > +		};
-> > > +
-> > > +		opp-1200000000 {
-> > > +			opp-hz =3D /bits/ 64 <1200000000>;
-> > > +			opp-microvolt =3D <1300000 1300000 1300000>;
-> > > +			clock-latency-ns =3D <244144>; /* 8 32k periods */
-> > > +		};
-> > >  	};
-> >=20
-> > IIRC U-Boot will start the CPU at 1008 MHz on the H3, so in the
-> > situation where a board doesn't list the regulators attached to the CPU,
-> > the kernel will happily use the 1104 and 1200 MHz frequencies, even
-> > though it won't adjust the voltage accordingly, causing errors.
->=20
-> Yeah, I know that. The u-boot running on the mentioned devices also have
-> these modifications, including a higher clocked DRAM (actually running at
-> 624 MHz).
->=20
-> > The way we worked around that is to provide the extra OOPs in a separate
-> > DTSI so that the boards with regulator support can opt-in.
->=20
-> Oh, did I overlooked something? I was working on 4.14 up to 4.19 kernels
-> and may be a bit to eager to post the modifications.
+-- 
+2.22.0
 
-It's not really my point :)
-
-My point is that since it's in the DTSI, every board using an H2/H3 will
-now get to use those OPPs, even if they don't have the regulator support
-and the voltage set for the highest frequency, so you can end up on
-those boards with the CPU running at 1.2GHz and the voltage associated
-to 1GHz
-
-Maxime
-
---s6fflxmnaiafoupk
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX1j6YwAKCRDj7w1vZxhR
-xTRZAP9aO8Hhtg37XPej7CGIRZmLt7+BWsWhaNZfSQj5wgLKVAEA33djfyzO9dp7
-JHsyv//gGTaUCVevFS4nBHVxEU6OIQc=
-=DhXK
------END PGP SIGNATURE-----
-
---s6fflxmnaiafoupk--
