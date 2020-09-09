@@ -2,131 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC1322632BD
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:49:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCF86263274
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:44:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730993AbgIIQto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 12:49:44 -0400
-Received: from mail-vi1eur05on2069.outbound.protection.outlook.com ([40.107.21.69]:46336
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730774AbgIIQGw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 12:06:52 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VIfOjBxssOZ/s2t2mCAWuM0+37IP15WwawRkAg+G2Lz8LS3pc7gUNek+uqpUbyJ864KxjOZGD+IkUaTBh0HyUvaKWEFdk14tTftdWSfFja1UCk0I7xGbwrYLFvG97zLgF32BWg2+Sk0kRJ2GnGHmOd1OzRLrrnKTsLCz9EmUfa8HnAnIx97UeEKXEm6gPvh3Ai4Mb6ufI5fmL/xSGIjJTvyR4L+IWkCjBg342pTHUtIUo5+RcyMOfvFpXkZNm0fKbor/SCKhxMAqr31pM9Qmhl6JTjbczsJ2XDWtcIOEKqgclOjNYHHnK4FMSL4cgk2VHgO73X78UKxruJ8GldeJ3w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6Y2DCrC1fZgWKxtfW3K/cKe9edhragutDKs+X/iMQCE=;
- b=IFT4iUYIgrfvaO0eMVpjBTg0ZvpyS5+vCFplZ55dA/NCCXFvzPhJtI608xuQXPk9/dMUCOrM2vEwYEQsfrm0P6bLFYyxBm3A3KFxhgzK7TIQroUrGng+EVNPkw3nq6J836mEHAPbbt0tzcvzQe+HWXx116GMjenAV9VGqJVtSlH+saHZnO8YpQ6p2rnDI2NDl1NIUpL4seysy5n4ztQy/5JMQ4zY1TPAEflYhgVGVfWJEMQB0VRuJjb2sRXLUdplqyf1sI1U3Ac6nMR3quMBPyGMZzYy8r6332uTrP5K5eOvLs5nCzWZP6IKV0im9CGoi+TkRKesh6o60pTV5ytfqQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6Y2DCrC1fZgWKxtfW3K/cKe9edhragutDKs+X/iMQCE=;
- b=ZtAX/lt0wrK4zt/HnO9kOG2CqsIeCDn/ND5R2CJEkoROw3xhpDQDOhNZ4i95FML7dixyoyfCYJnGsw+hV8txEkbtqFCqdpGgcS8Sb9k8ELdL0QmUgGiY5YIXyfT3Te9LgLKd6TUUAPQY7MNwHccyC3W7UN0+Xp1F3u+cGT43irI=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=oss.nxp.com;
-Received: from VE1PR04MB6702.eurprd04.prod.outlook.com (2603:10a6:803:123::13)
- by VI1PR04MB3967.eurprd04.prod.outlook.com (2603:10a6:803:4c::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Wed, 9 Sep
- 2020 13:45:10 +0000
-Received: from VE1PR04MB6702.eurprd04.prod.outlook.com
- ([fe80::1dce:f6ac:a750:5ed0]) by VE1PR04MB6702.eurprd04.prod.outlook.com
- ([fe80::1dce:f6ac:a750:5ed0%6]) with mapi id 15.20.3370.016; Wed, 9 Sep 2020
- 13:45:10 +0000
-From:   Wasim Khan <wasim.khan@oss.nxp.com>
-To:     shawnguo@kernel.org, leoyang.li@nxp.com, robh+dt@kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, V.sethi@nxp.com
-Cc:     Wasim Khan <wasim.khan@nxp.com>
-Subject: [PATCH 5/6] arm64: dts: ls1028a: Add label to pcie nodes
-Date:   Wed,  9 Sep 2020 19:14:35 +0530
-Message-Id: <1599659076-28121-6-git-send-email-wasim.khan@oss.nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1599659076-28121-1-git-send-email-wasim.khan@oss.nxp.com>
-References: <1599659076-28121-1-git-send-email-wasim.khan@oss.nxp.com>
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR02CA0095.apcprd02.prod.outlook.com
- (2603:1096:4:90::35) To VE1PR04MB6702.eurprd04.prod.outlook.com
- (2603:10a6:803:123::13)
+        id S1731096AbgIIQnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 12:43:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54022 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730991AbgIIQMs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 12:12:48 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B8A4C06138F
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 06:46:19 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id y2so1606079lfy.10
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 06:46:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=OFXb0fPeLozHIVk13q+oqzPm3YSyHqohd5OhKkyGBzk=;
+        b=snsjbUklactjQNaOxCa7O3dIYtSGEg2ycGoP/cP0ENJaq6E1pxjSgNYk/K28kQk8wS
+         DmGXJF927zgRygzhmTP2PWZdovyGVz9WpC2ykyIfltp92TUwWpJuAqdX6CSQD5TL1XNp
+         fHOPBouWFy6DN7Q1STE438GKb73xVEyXQMaxopP/cyk3z5T5RhgwljPTCw3v0vgPPwIJ
+         KFqpigwngqqiCjwmCxoNTc6BSnwNvwwQMOjXGB5tW+MWntbgcVer+zwxAGhhFRFfJY2Z
+         Nuygjq+UM+c+nMm0NKfrjQ/TjObKOpgZct0cA3365yaUpMMNRKwk42YUCKvbbI4WkkrL
+         JR/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=OFXb0fPeLozHIVk13q+oqzPm3YSyHqohd5OhKkyGBzk=;
+        b=Mtc22PXI8w4WXtfBjhYF/r4DnVZk/au2InFQl1RLmorQbngun4rtZ/HfLEUGBY1uyt
+         y3zW7ZM9GLP4aKkBAjfqYSi6P46Ense5WNAmXWLI+ZeTAiuAST6dIik+xJd/qzlbYwsy
+         EnwK3qfGMJS6456L5XxcSFp1RzD2FjQNxSXm4ng20d0mKXqCHBjziyHM/2KDiNjt+2zc
+         UqOaC7MC3oB6CS33J6nCm5+/kt/ZmvHNjujhy+3nB/yJH6X5pyylTyXPeD18+ISOq+BG
+         TUMxwrOVfhjiDuHCZELPfLnvD+4k6r0SpDDevCTHeoNIBI5qmghvq4aLFa5ZdrVg+i2M
+         zJEA==
+X-Gm-Message-State: AOAM532yZ3iJk0qeTYLAOZDhqgZy4gzAJrqT+Q8iRi0sKLIoOQm5lj8j
+        9JS0hcGXwCW4WXfWVXsnaf7ohw==
+X-Google-Smtp-Source: ABdhPJyTk4108hBQZgn/Y4gNdjt/2DgtafCRGGwNLgK9b1ovUuZLK9iu9GKM7+vEJY6b23OBMrgy6Q==
+X-Received: by 2002:a19:8907:: with SMTP id l7mr1931403lfd.105.1599659177768;
+        Wed, 09 Sep 2020 06:46:17 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id w4sm584720lfq.75.2020.09.09.06.46.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Sep 2020 06:46:17 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 338DA1036AE; Wed,  9 Sep 2020 16:46:22 +0300 (+03)
+Date:   Wed, 9 Sep 2020 16:46:22 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Zi Yan <ziy@nvidia.com>
+Cc:     linux-mm@kvack.org, Roman Gushchin <guro@fb.com>,
+        Rik van Riel <riel@surriel.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        David Nellans <dnellans@nvidia.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 01/16] mm: add pagechain container for storing
+ multiple pages.
+Message-ID: <20200909134622.xkuzx5nf4xq2vudh@box>
+References: <20200902180628.4052244-1-zi.yan@sent.com>
+ <20200902180628.4052244-2-zi.yan@sent.com>
+ <20200907122228.4zlyfysdul3s62me@box>
+ <50FA95D1-9222-48C0-9223-C1267E8C7A4A@nvidia.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from lsv03032.swis.in-blr01.nxp.com (14.142.151.118) by SG2PR02CA0095.apcprd02.prod.outlook.com (2603:1096:4:90::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3370.16 via Frontend Transport; Wed, 9 Sep 2020 13:45:08 +0000
-X-Mailer: git-send-email 2.7.4
-X-Originating-IP: [14.142.151.118]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: ace8932c-7aa4-46bd-4fcf-08d854c691ea
-X-MS-TrafficTypeDiagnostic: VI1PR04MB3967:
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB3967C5B0AEAB2C5E36BA6073D1260@VI1PR04MB3967.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1388;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: tK4xNuBQuUndyNIkaOcxpPI3gstAjyXQmGNcRSdGKwyIzUPrFpcIISw0+tMcbonmB+KgmqdwttqVXB3DWRiSn+f7gO0geXzLOy8k0YUSCitqHfJEj1HqK0aZ8YtnvlICXN+hqn8kOPrvvhg3P0Aud635reTc6uWo8xff1v/1fjlOwQeI9mVuoVPByuRBHJsiEttVxoCE+9IOlwX1+ggumR6+Zqz0s8XUePU77v41Z49veE/YvJL0cYAAypWqiM09IIk+PxSu3wPYSNGnIQvEZgCYtULq5HQ2pkvxmn5Xn6p3RsxgGH4DXYMEKPKLHZbnuDeYxR1upLvymCgWpfcEIvGUPf3cRrzwbbtnOySHJnqZcSnWbG78nDDLvz73A6qI
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB6702.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(39860400002)(136003)(396003)(366004)(55236004)(16526019)(478600001)(186003)(26005)(6506007)(52116002)(83380400001)(6512007)(4326008)(5660300002)(2906002)(316002)(86362001)(66556008)(66946007)(6666004)(1006002)(44832011)(2616005)(956004)(66476007)(8936002)(8676002)(6486002)(110426005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: VtuNLhanQbU+FtTsrPooglKy9SCfZciN8dEJMBps8Lcouc+slvb57S0jIzHNnS9yZrN52veJD+wM1Efok1v9f9qA++HyV+tVg3ZZju7ng1lt9pq7oB9KVi84XPUQIZl8GqGdiYbKCRYz+ypzkf5C55WRonqrbkvl36QO5fzNUvIMk61Hocsb2Ej16it1f3mhF4MK3TUpzLspZ5UglM+uTei/6GzDPcZnlxBt/9z2ZIt/Dz/epCarCqOH/BMl3nI94nySNkNJLt9GBl4Bxvt4Ftb1+kuUMWbfdFkTPYdvPWvRmmisIUhW6h9ffdGY0AXfufbQqVNASdM7uGGEkDeCOdmSTr16QT0NzigvDzaN2hsXj2eFuqaqJcTUmbEe7oDlm1SJg0NKxtcfOd1SVCNVOShBJIyyhamq3puIsGqbEYPzrCetKowyh/DVs0YZKGLxbxvSc9L3l5iq2klrgXE8zccql298TaJc7xSKlNDCqLLDVqcs2/lJIDqpQ+4MfNol9QraiEVY32bXdhI+7dpuLpbSghjHAwFcRI5Z8C75HnIR66+TrsXgQPsf+cDb2eL3BvoVQwZR8g6ukaeegWeX5QHgqUlDdPBhdfdqwWK5sNPiirPkdgqaNsNgXjbJaeajmnMCXRxAC2nyPECNkmAeHQ==
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ace8932c-7aa4-46bd-4fcf-08d854c691ea
-X-MS-Exchange-CrossTenant-AuthSource: VE1PR04MB6702.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Sep 2020 13:45:10.5862
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 4pZsh3VL5xf9GZTzvXkPwVeLdjV6Zsn1c/eoBud6gZNHsqlVFpNQ2Bx8Ske57SH+lKTbnwncxO/fbevEZpmSLQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB3967
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <50FA95D1-9222-48C0-9223-C1267E8C7A4A@nvidia.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wasim Khan <wasim.khan@nxp.com>
+On Mon, Sep 07, 2020 at 11:11:05AM -0400, Zi Yan wrote:
+> On 7 Sep 2020, at 8:22, Kirill A. Shutemov wrote:
+> 
+> > On Wed, Sep 02, 2020 at 02:06:13PM -0400, Zi Yan wrote:
+> >> From: Zi Yan <ziy@nvidia.com>
+> >>
+> >> When depositing page table pages for 1GB THPs, we need 512 PTE pages +
+> >> 1 PMD page. Instead of counting and depositing 513 pages, we can use the
+> >> PMD page as a leader page and chain the rest 512 PTE pages with ->lru.
+> >> This, however, prevents us depositing PMD pages with ->lru, which is
+> >> currently used by depositing PTE pages for 2MB THPs. So add a new
+> >> pagechain container for PMD pages.
+> >>
+> >> Signed-off-by: Zi Yan <ziy@nvidia.com>
+> >
+> > Just deposit it to a linked list in the mm_struct as we do for PMD if
+> > split ptl disabled.
+> >
+> 
+> Thank you for checking the patches. Since we don’t have PUD split lock
+> yet, I store the PMD page table pages in a newly added linked list head
+> in mm_struct like you suggested above.
+> 
+> I was too vague about my pagechain design for depositing page table pages
+> for PUD THPs. Sorry about the confusion. Let me clarify why
+> I am doing this pagechain here too. I am sure there would be
+> some other designs and I am happy to change my code.
+> 
+> In my design, I did not store all page table pages in a single list.
+> I first deposit 512 PTE pages in one PMD page table page’s pmd_huge_pte
+> using pgtable_trans_huge_depsit(), then deposit the PMD page to
+> a newly added linked list in mm_struct. Since pmd_huge_pte shares space
+> with half of lru in struct page, we cannot use lru to link all PMD
+> pages together. As a result, I added pagechain. Also in this way,
+> we can avoid these things:
+> 
+> 1. when we withdraw the PMD page during PUD THP split, we don’t need
+> to withdraw 513 page, set up one PMD page, then, deposit 512 PTE pages
+> in that PMD page.
+> 
+> 2. we don’t mix PMD page table pages and PTE page table pages in a single
+> list, since they are initialized in different ways. Otherwise, we need
+> to maintain a subtle rule in the single page table page list that in every
+> 513 pages, first one is PMD page table page and the rest are PTE page
+> table pages.
+> 
+> As I am typing, I also realize that my current design does not work
+> when PMD split lock is disabled, so I will fix it. I would store PMD pages
+> and PTE pages in two separate lists in mm_struct.
+> 
+> 
+> Any comments?
 
-Add label to pcie nodes
+Okay, fair enough.
 
-Signed-off-by: Wasim Khan <wasim.khan@nxp.com>
----
- arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Although, I think you can get away without a new data structure. We don't
+need double-linked list to deposit page tables. You can rework PTE tables
+deposit code to have single-linked list and use one pointer of ->lru (with
+proper name) and make PMD tables deposit to use the other one. This way
+you can avoid conflict for ->lru.
 
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
-index 0efeb8f..55b6e72 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
-@@ -2,7 +2,7 @@
- /*
-  * Device Tree Include file for NXP Layerscape-1028A family SoC.
-  *
-- * Copyright 2018 NXP
-+ * Copyright 2018-2020 NXP
-  *
-  * Harninder Rai <harninder.rai@nxp.com>
-  *
-@@ -553,7 +553,7 @@
- 			status = "disabled";
- 		};
- 
--		pcie@3400000 {
-+		pcie1: pcie@3400000 {
- 			compatible = "fsl,ls1028a-pcie";
- 			reg = <0x00 0x03400000 0x0 0x00100000   /* controller registers */
- 			       0x80 0x00000000 0x0 0x00002000>; /* configuration space */
-@@ -580,7 +580,7 @@
- 			status = "disabled";
- 		};
- 
--		pcie@3500000 {
-+		pcie2: pcie@3500000 {
- 			compatible = "fsl,ls1028a-pcie";
- 			reg = <0x00 0x03500000 0x0 0x00100000   /* controller registers */
- 			       0x88 0x00000000 0x0 0x00002000>; /* configuration space */
+Does it make sense?
+
 -- 
-2.7.4
-
+ Kirill A. Shutemov
