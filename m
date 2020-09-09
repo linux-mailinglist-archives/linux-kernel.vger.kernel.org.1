@@ -2,67 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA0F62633CA
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 19:10:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 284CE2633CD
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 19:10:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730723AbgIIRKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 13:10:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36252 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730330AbgIIPgA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 11:36:00 -0400
-Received: from mail.kernel.org (ip5f5ad5d6.dynamic.kabel-deutschland.de [95.90.213.214])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7ADFC20672;
-        Wed,  9 Sep 2020 13:55:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599659730;
-        bh=A4xze2O/XEmpibAWCPJ5C9vaARnb4IKBSgOmzWAWWQA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=a0riKZWL4WjQfSwJ1o4IBW5ekIbaZ8lrIujK6CtVAOFmPSKC1M/Gda3CbpFR+vQxL
-         Y7kTi2TB4t6C3zSn7QIfrlmfBniVbYjGql9tKxRaFcT1pH1KCI5ZjPytS75bX2y4GY
-         cxdiDFfZjeOOWzTl0fIRUemF4w0TDCYjYNZDg5UU=
-Received: from mchehab by mail.kernel.org with local (Exim 4.94)
-        (envelope-from <mchehab@kernel.org>)
-        id 1kG0ZK-00DT04-Dm; Wed, 09 Sep 2020 15:55:26 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
-Subject: [PATCH v2] media: camera-sensor.rst: fix a doc build warning
-Date:   Wed,  9 Sep 2020 15:55:25 +0200
-Message-Id: <7f002687c5c310dff305057a9f94bcb32a28269a.1599659722.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.26.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1730316AbgIIPfA convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 9 Sep 2020 11:35:00 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:54982 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730261AbgIIPal (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 11:30:41 -0400
+Received: from mail-pj1-f72.google.com ([209.85.216.72])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1kG0eZ-0003l8-CB
+        for linux-kernel@vger.kernel.org; Wed, 09 Sep 2020 14:00:51 +0000
+Received: by mail-pj1-f72.google.com with SMTP id s19so1729199pjr.2
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 07:00:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=UerQpWjJx3zsxSv3XMGQ5IVVVoYrVWKrJqPq+tgaZ10=;
+        b=MLSoLmSUgqOmRQfg0oqDLY5zPAHjjCZ/5JIk3wMehMcoQ12fCzYgMeyXF6ZYXNyzgc
+         FTwP05kwb6w0da5nc9nM+bQu77vRMgjYwyyjTUpEXiNct0KXZPBhygaNr2ajrV/dZ4wJ
+         HM1VVF+qiUNRo/99ycMOS/joRBNZ+TrRagUvnbbtWvMg38AGKhWXfU+p0nOx9LpcEG6b
+         bQA2LwzNK/XFJligepNvp1eOFhw+s6UFKzxPHpHpcQNh+E3WqpW+L38/AoYqID81tMOn
+         jZgVyqo6F2DbhicDtmMQ52NH1aosk+a8qga+q46aZbeR5A67/re6MfeXndcqnHmmQ4kq
+         v4QA==
+X-Gm-Message-State: AOAM5316SCNE3cClvCSa5YVb2LRZSJYGQSULvxlkrrB8Y34KRvMAqOX2
+        eUoAtUy9UxE6KPMip8bM+T52iWMH30NKwwU0YN09JigWtk4adD7S8JignbdUPBqlsoUiHTWSKeQ
+        +49av7MSK7EBcHjz+epkrBKO+zbZRcQVd/CeIVKiD2w==
+X-Received: by 2002:a17:90a:528a:: with SMTP id w10mr920278pjh.107.1599660049892;
+        Wed, 09 Sep 2020 07:00:49 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyAVNY/MPKZMX7OIaxd4G9JHrM+Ztrkv6RcCSI8EBNgFRgFk435b1SjpHlYvCKVazyifx3ojQ==
+X-Received: by 2002:a17:90a:528a:: with SMTP id w10mr920244pjh.107.1599660049443;
+        Wed, 09 Sep 2020 07:00:49 -0700 (PDT)
+Received: from [192.168.1.208] (220-133-187-190.HINET-IP.hinet.net. [220.133.187.190])
+        by smtp.gmail.com with ESMTPSA id n7sm2871604pfq.114.2020.09.09.07.00.47
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 09 Sep 2020 07:00:48 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.1\))
+Subject: Re: [PATCH] rtw88: pci: Power cycle device during shutdown
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+In-Reply-To: <CA+ASDXOizniWUk3pUM1X5UHyGcrJy=ybAwp6_jjXfEGjNPe27g@mail.gmail.com>
+Date:   Wed, 9 Sep 2020 22:00:45 +0800
+Cc:     Tony Chuang <yhchuang@realtek.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "open list:REALTEK WIRELESS DRIVER (rtw88)" 
+        <linux-wireless@vger.kernel.org>,
+        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Transfer-Encoding: 8BIT
+Message-Id: <D2AE780E-6ED6-4732-8A51-D6431E472C7E@canonical.com>
+References: <20200824093225.13689-1-kai.heng.feng@canonical.com>
+ <CA+ASDXOizniWUk3pUM1X5UHyGcrJy=ybAwp6_jjXfEGjNPe27g@mail.gmail.com>
+To:     Brian Norris <briannorris@chromium.org>
+X-Mailer: Apple Mail (2.3608.120.23.2.1)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-	Documentation/driver-api/media/camera-sensor.rst:123: WARNING: Inline literal start-string without end-string.
 
-There's a missing blank line over there.
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- Documentation/driver-api/media/camera-sensor.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> On Aug 26, 2020, at 08:27, Brian Norris <briannorris@chromium.org> wrote:
+> 
+> On Mon, Aug 24, 2020 at 2:32 AM Kai-Heng Feng
+> <kai.heng.feng@canonical.com> wrote:
+>> 
+>> Sometimes system freeze on cold/warm boot when rtw88 is probing.
+>> 
+>> According to [1], platform firmware may not properly power manage the
+>> device during shutdown. I did some expirements and putting the device to
+>> D3 can workaround the issue.
+>> 
+>> So let's power cycle the device by putting the device to D3 at shutdown
+>> to prevent the issue from happening.
+>> 
+>> [1] https://bugzilla.kernel.org/show_bug.cgi?id=206411#c9
+>> 
+>> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> 
+> Can you at least include some more details, like which hardware
+> version and firmware?
 
-diff --git a/Documentation/driver-api/media/camera-sensor.rst b/Documentation/driver-api/media/camera-sensor.rst
-index bd81c2cc37f8..4d1ae12b9b4d 100644
---- a/Documentation/driver-api/media/camera-sensor.rst
-+++ b/Documentation/driver-api/media/camera-sensor.rst
-@@ -123,7 +123,7 @@ Control framework
- ``v4l2_ctrl_handler_setup()`` function may not be used in the device's runtime
- PM ``runtime_resume`` callback, as it has no way to figure out the power state
- of the device. This is because the power state of the device is only changed
--after the power state transition has taken place. The ``s_ctrl``callback can be
-+after the power state transition has taken place. The ``s_ctrl`` callback can be
- used to obtain device's power state after the power state transition:
- 
- .. c:function::
--- 
-2.26.2
+8723DE, 8822BE and 8822CE are affected [1].
+
+> And which platform?
+
+Many x86 laptops.
+
+Some users claim BIOS update can fix the issue, however some are still affected.
+
+> It seems a bit harsh to
+> include a platform workaround to run for everyone, unless there's
+> truly no downside. But even then, it's good to log what you're working
+> with, in case there are ever problems with this in the future.
+
+Ok. I can send V2 with more detailed commit message.
+
+[1] https://bugs.launchpad.net/bugs/1872984
+
+Kai-Heng
+
+> 
+> Brian
 
