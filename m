@@ -2,94 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBE74262519
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 04:18:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 322EF262521
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 04:20:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729691AbgIICSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 22:18:17 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:46670 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728970AbgIICSB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 22:18:01 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0892EXVH110453;
-        Wed, 9 Sep 2020 02:17:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=corp-2020-01-29;
- bh=+6EeTRUGbtx/wzn7rd/wXstaBoeEwA1blINQVhp/ggI=;
- b=Tw2Y/KfrfMFylSY28sOErTj+Kv+Koy80AGC8Hfh7UWI7p0C4G8JhtBoQGsKHZGE1lLm4
- Y0WXzgWTKyO7CiFfZ1bcp+5g/l/eBlhfyMYjfioJYxMCsn2vgcE1bijUTkc41Q3guw9D
- sdbvmXvpDqESeOniudx3yF5tdhMdI4naajt1iY58GIH1Z8dSlaPwlRWfE2FfYm/XkdBj
- oLpe2rYMXqzrvksx1rDEpTWmGNo0QjB7YRH57KSgUGU4hBkFQrpFARzBzv0Rlojnf99W
- U5UuWyFU1Un701QmE3JrBdqeBJ1KJXHDKsRFijsT7cSpr3HMgxhtt4HiXVN+Ahp3F9u2 uA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 33c2mkxw9v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 09 Sep 2020 02:17:50 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0892GLKE025937;
-        Wed, 9 Sep 2020 02:17:49 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 33cmkwwtqb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 09 Sep 2020 02:17:49 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0892HlwM009697;
-        Wed, 9 Sep 2020 02:17:48 GMT
-Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 08 Sep 2020 19:17:47 -0700
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     alim.akhtar@samsung.com, jejb@linux.ibm.com,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        linux-scsi@vger.kernel.org, avri.altman@wdc.com
-Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        chaotian.jing@mediatek.com, kuohong.wang@mediatek.com,
-        bvanassche@acm.org, chun-hung.wu@mediatek.com,
-        cc.chou@mediatek.com, peter.wang@mediatek.com,
-        andy.teng@mediatek.com, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, matthias.bgg@gmail.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] scsi: ufs-mediatek: Modify the minimum RX/TX lane count to 2
-Date:   Tue,  8 Sep 2020 22:17:31 -0400
-Message-Id: <159961781204.6233.3580543216052006167.b4-ty@oracle.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200819084340.7021-1-stanley.chu@mediatek.com>
-References: <20200819084340.7021-1-stanley.chu@mediatek.com>
+        id S1728617AbgIICUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 22:20:12 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:37174 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726680AbgIICUK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 22:20:10 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 234CB22DEFA86AD3D325;
+        Wed,  9 Sep 2020 10:20:07 +0800 (CST)
+Received: from [127.0.0.1] (10.174.177.253) by DGGEMS406-HUB.china.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server id 14.3.487.0; Wed, 9 Sep 2020
+ 10:20:02 +0800
+Subject: Re: [PATCH v2 1/1] samples/seccomp: eliminate two compile warnings in
+ user-trap.c
+To:     Kees Cook <keescook@chromium.org>
+CC:     Masahiro Yamada <masahiroy@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20200901083903.2083-1-thunder.leizhen@huawei.com>
+ <20200901083903.2083-2-thunder.leizhen@huawei.com>
+ <973a1752-7609-bac9-758a-1a977e6fb1f0@huawei.com>
+ <202009081633.CC35635@keescook>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <06f11309-7088-f528-0779-ffa2efa210d1@huawei.com>
+Date:   Wed, 9 Sep 2020 10:20:01 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
+In-Reply-To: <202009081633.CC35635@keescook>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9738 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishscore=0 suspectscore=0
- spamscore=0 mlxlogscore=999 adultscore=0 malwarescore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009090019
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9738 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 priorityscore=1501
- phishscore=0 adultscore=0 bulkscore=0 clxscore=1011 mlxlogscore=999
- malwarescore=0 suspectscore=0 lowpriorityscore=0 spamscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009090019
+X-Originating-IP: [10.174.177.253]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 19 Aug 2020 16:43:40 +0800, Stanley Chu wrote:
 
-> MediaTek UFS host starts to support 2 lanes, thus modify the
-> minimum lane count to 2.
+
+On 2020/9/9 7:42, Kees Cook wrote:
+> On Wed, Sep 02, 2020 at 09:33:06AM +0800, Leizhen (ThunderTown) wrote:
+>> On 2020/9/1 16:39, Zhen Lei wrote:
+>>> samples/seccomp/user-trap.c is compiled with $(userccflags), and the
+>>> latter does not contain -fno-strict-aliasing, so the warnings reported as
+>>> below. Due to add "userccflags += -fno-strict-aliasing" will impact other
+>>> files, so use __attribute__((__may_alias__)) to suppress it exactly.
+>>>
+>>> My gcc version is 5.5.0 20171010.
+>>>
+>>> ----------
+>>> samples/seccomp/user-trap.c: In function ‘send_fd’:
+>>> samples/seccomp/user-trap.c:50:2: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
+>>>   *((int *)CMSG_DATA(cmsg)) = fd;
+>>>   ^
+>>> samples/seccomp/user-trap.c: In function ‘recv_fd’:
+>>> samples/seccomp/user-trap.c:83:2: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
+>>>   return *((int *)CMSG_DATA(cmsg));
+>>>   ^
+>>
+>> Doesn't anyone care about this? Or is it that everyone hasn't encountered this problem?
+>> Why do these two warnings occur every time I compiled?
 > 
-> This modification shall not impact old 1-lane host because
-> PA_CONNECTEDRXDATALANES and PA_CONNECTEDTXDATALANES will limit the
-> target lanes properly during power mode change. So we could relax
-> the limitation in ufs_dev_params.
+> Hi!
+> 
+> I think the samples have been a bit ignored lately because they have a
+> lot of weird build issues with regard to native vs compat and needing
+> the kernel headers to be built first, etc.
+> 
+> That said, yes, I'd like to fix warnings. However, I can't reproduce
+> this. How are you building? I tried x86_64 and cross-compiled to i386.
 
-Applied to 5.10/scsi-queue, thanks!
+I can reproduce it both on X86 and ARM64.
 
-[1/1] scsi: ufs: ufs-mediatek: Modify the minimum RX/TX lane count to 2
-      https://git.kernel.org/mkp/scsi/c/460d74a0911c
+On X86:
+make distclean allmodconfig
+make -j64 2>err.txt
+vi err.txt
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+$ arch
+x86_64
+$ ls -l samples/seccomp/user-trap
+user-trap    user-trap.c
+$ gcc -v
+gcc version 5.5.0 20171010 (Ubuntu 5.5.0-12ubuntu5~16.04)
+
+On ARM64:
+make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- distclean allmodconfig
+make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -j64 2>err.tx
+vi err.txt
+
+$ ls -l samples/seccomp/user-trap
+user-trap    user-trap.c
+$ aarch64-linux-gnu-gcc -v
+gcc version 5.4.0 20160609 (Ubuntu/Linaro 5.4.0-6ubuntu1~16.04.9)
+> 
+
