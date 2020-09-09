@@ -2,72 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49061262775
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 08:56:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFE1A262757
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 08:48:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726642AbgIIG4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 02:56:25 -0400
-Received: from smtp.h3c.com ([60.191.123.56]:26358 "EHLO h3cspam01-ex.h3c.com"
+        id S1726293AbgIIGsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 02:48:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725863AbgIIG4Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 02:56:24 -0400
-Received: from DAG2EX03-BASE.srv.huawei-3com.com ([10.8.0.66])
-        by h3cspam01-ex.h3c.com with ESMTPS id 0896u51D043736
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 9 Sep 2020 14:56:05 +0800 (GMT-8)
-        (envelope-from tian.xianting@h3c.com)
-Received: from localhost.localdomain (10.99.212.201) by
- DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 9 Sep 2020 14:56:07 +0800
-From:   Xianting Tian <tian.xianting@h3c.com>
-To:     <axboe@kernel.dk>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <kafai@fb.com>, <songliubraving@fb.com>, <yhs@fb.com>,
-        <andriin@fb.com>, <john.fastabend@gmail.com>,
-        <kpsingh@chromium.org>
-CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-        Xianting Tian <tian.xianting@h3c.com>
-Subject: [PATCH] block: remove redundant empty check of mq_list
-Date:   Wed, 9 Sep 2020 14:48:14 +0800
-Message-ID: <20200909064814.5704-1-tian.xianting@h3c.com>
-X-Mailer: git-send-email 2.17.1
+        id S1725840AbgIIGsh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 02:48:37 -0400
+Received: from pobox.suse.cz (nat1.prg.suse.com [195.250.132.148])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3E64A21532;
+        Wed,  9 Sep 2020 06:48:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599634117;
+        bh=r+iun9GKBgUIYvgcdSjSA0N/go3F8FpVCSzZvm6c+9U=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=L6T05Jf+1J4utRWfWlpgAo5CLPUP6sEh4N6ofgZeqYzQqtqibPGduy1zsocQMF0os
+         qkmfPqw8wbZTu/oupPWIU0o3/9pk8guKWqE+ORX9ZGDF61jz0v4PIpZrI6M0DeIS1B
+         /dNq5A9gzJCTnTnhUVLXvVJFPjx5xRRGIuYVXg+8=
+Date:   Wed, 9 Sep 2020 08:48:34 +0200 (CEST)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Laurent Gauthier <laurent.gauthier@soccasys.com>
+cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] HID: hid-debug: fix nonblocking read semantics wrt
+ EIO/ERESTARTSYS
+In-Reply-To: <20200908221149.8986-1-laurent.gauthier@soccasys.com>
+Message-ID: <nycvar.YFH.7.76.2009090848190.4671@cbobk.fhfr.pm>
+References: <20200908221149.8986-1-laurent.gauthier@soccasys.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.99.212.201]
-X-ClientProxiedBy: BJSMTP02-EX.srv.huawei-3com.com (10.63.20.133) To
- DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66)
-X-DNSRBL: 
-X-MAIL: h3cspam01-ex.h3c.com 0896u51D043736
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-blk_mq_flush_plug_list() itself will do the empty check of mq_list,
-so remove such check in blk_flush_plug_list().
-Actually normally mq_list is not empty when blk_flush_plug_list is
-called.
+On Wed, 9 Sep 2020, Laurent Gauthier wrote:
 
-Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
----
- block/blk-core.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+> When the file has been open in non-blocking mode, EIO or ERESTARTSYS
+> would never be returned even if they should (for example when device
+> has been unplugged, you want EIO and not EAGAIN to be returned).
+> 
+> Move the O_NONBLOCK check after other checks have been performed.
 
-diff --git a/block/blk-core.c b/block/blk-core.c
-index 10c08ac50..dda301610 100644
---- a/block/blk-core.c
-+++ b/block/blk-core.c
-@@ -1864,8 +1864,7 @@ void blk_flush_plug_list(struct blk_plug *plug, bool from_schedule)
- {
- 	flush_plug_callbacks(plug, from_schedule);
- 
--	if (!list_empty(&plug->mq_list))
--		blk_mq_flush_plug_list(plug, from_schedule);
-+	blk_mq_flush_plug_list(plug, from_schedule);
- }
- 
- /**
+Makes sense, good catch. Applied, thanks.
+
 -- 
-2.17.1
+Jiri Kosina
+SUSE Labs
 
