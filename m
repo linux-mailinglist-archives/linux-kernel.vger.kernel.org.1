@@ -2,28 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46735263122
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:00:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACFFC263126
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:01:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730586AbgIIQAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 12:00:52 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:37086 "EHLO huawei.com"
+        id S1730578AbgIIQBb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 12:01:31 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:11327 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730702AbgIIP6z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 11:58:55 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id E63D99C6675E0ABF571C;
-        Wed,  9 Sep 2020 21:57:20 +0800 (CST)
-Received: from localhost (10.174.179.108) by DGGEMS413-HUB.china.huawei.com
- (10.3.19.213) with Microsoft SMTP Server id 14.3.487.0; Wed, 9 Sep 2020
- 21:57:13 +0800
+        id S1730315AbgIIP7H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 11:59:07 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 94AA83FBFB2294DE67E2;
+        Wed,  9 Sep 2020 21:58:05 +0800 (CST)
+Received: from localhost (10.174.179.108) by DGGEMS405-HUB.china.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Wed, 9 Sep 2020
+ 21:57:58 +0800
 From:   YueHaibing <yuehaibing@huawei.com>
-To:     <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
-        <yuehaibing@huawei.com>
-CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH -next] scsi: aic94xx: Remove unused inline function
-Date:   Wed, 9 Sep 2020 21:57:11 +0800
-Message-ID: <20200909135711.35728-1-yuehaibing@huawei.com>
+To:     <perex@perex.cz>, <tiwai@suse.com>, <yuehaibing@huawei.com>
+CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH 04/19] ALSA: pcm: Remove unused inline function snd_mask_sizeof
+Date:   Wed, 9 Sep 2020 21:57:44 +0800
+Message-ID: <20200909135744.33464-1-yuehaibing@huawei.com>
 X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
 Content-Type: text/plain
@@ -38,28 +37,25 @@ There is no caller in tree, so can remove it.
 
 Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 ---
- drivers/scsi/aic94xx/aic94xx.h | 8 --------
- 1 file changed, 8 deletions(-)
+ include/sound/pcm_params.h | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/drivers/scsi/aic94xx/aic94xx.h b/drivers/scsi/aic94xx/aic94xx.h
-index c23bbb609126..98978bc199ff 100644
---- a/drivers/scsi/aic94xx/aic94xx.h
-+++ b/drivers/scsi/aic94xx/aic94xx.h
-@@ -42,14 +42,6 @@
- extern struct kmem_cache *asd_dma_token_cache;
- extern struct kmem_cache *asd_ascb_cache;
+diff --git a/include/sound/pcm_params.h b/include/sound/pcm_params.h
+index 36f94735d23d..ba184f49f7e1 100644
+--- a/include/sound/pcm_params.h
++++ b/include/sound/pcm_params.h
+@@ -23,11 +23,6 @@ int snd_pcm_hw_param_value(const struct snd_pcm_hw_params *params,
+ #define MASK_OFS(i)	((i) >> 5)
+ #define MASK_BIT(i)	(1U << ((i) & 31))
  
--static inline void asd_stringify_sas_addr(char *p, const u8 *sas_addr)
+-static inline size_t snd_mask_sizeof(void)
 -{
--	int i;
--	for (i = 0; i < SAS_ADDR_SIZE; i++, p += 2)
--		snprintf(p, 3, "%02X", sas_addr[i]);
--	*p = '\0';
+-	return sizeof(struct snd_mask);
 -}
 -
- struct asd_ha_struct;
- struct asd_ascb;
- 
+ static inline void snd_mask_none(struct snd_mask *mask)
+ {
+ 	memset(mask, 0, sizeof(*mask));
 -- 
 2.17.1
 
