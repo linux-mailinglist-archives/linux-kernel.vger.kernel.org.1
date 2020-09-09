@@ -2,78 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90CD9262725
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 08:29:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A24DC26272B
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 08:30:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725932AbgIIG3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 02:29:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42070 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725840AbgIIG3j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 02:29:39 -0400
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A49BF20936
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 06:29:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599632978;
-        bh=rhREmvlul8Xw7KgGEYlcpWO/gk10jtWkiIJJqKDhD2I=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=elPHtlCW0qhn3FX48az0osgq710RIF/Ca8voVlXSBS0YLjZARlKa6VdTw3SAOu5aP
-         tS11gS/tbLLLW3UZA6bNveZY6bUVZ95DTNHgeTzeTMCYDIES1zhi5q2tddxr7m+dM9
-         /WyYgVELeh5kCtO98OBE0VFLTmS4zTzMYS0thND0=
-Received: by mail-ej1-f51.google.com with SMTP id gr14so1900140ejb.1
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 23:29:38 -0700 (PDT)
-X-Gm-Message-State: AOAM533iItiOWCy5xnqQhMshIyEjsVBPYLnzR7Veti3DQJZbsddoVzml
-        K6ROps4x6+yKr7Cn72DD3pMQHnA/94qGYsxxYpA=
-X-Google-Smtp-Source: ABdhPJx4vB77fq3Ebnr5a5g625QyEN+A6GcGOJi31H5EEyEAFn+qLZ0JwFk8zvry5u2c+i9XYllr6c8HLNvaW22+d0g=
-X-Received: by 2002:a17:906:8401:: with SMTP id n1mr2067774ejx.215.1599632977337;
- Tue, 08 Sep 2020 23:29:37 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200826104459.81979-1-andriy.shevchenko@linux.intel.com>
- <9635eaa4ccc1141fb0dd8c3687f46da7149206ad.camel@perches.com>
- <20200826155507.GV1891694@smile.fi.intel.com> <973f4d54da796db4fcc9b643b10889cbc8839989.camel@perches.com>
-In-Reply-To: <973f4d54da796db4fcc9b643b10889cbc8839989.camel@perches.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Wed, 9 Sep 2020 08:29:25 +0200
-X-Gmail-Original-Message-ID: <CAJKOXPcCAPy-v38dyY_74H_6vrgj0mmEf6KaupVKJb4E2Ha_Ug@mail.gmail.com>
-Message-ID: <CAJKOXPcCAPy-v38dyY_74H_6vrgj0mmEf6KaupVKJb4E2Ha_Ug@mail.gmail.com>
-Subject: Re: [PATCH v1] driver core: Annotate dev_err_probe() with __must_check
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Joe Perches <joe@perches.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Greg KH <greg@kroah.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1727820AbgIIGaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 02:30:19 -0400
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.54]:30963 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726811AbgIIGaT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 02:30:19 -0400
+X-Greylist: delayed 147097 seconds by postgrey-1.27 at vger.kernel.org; Wed, 09 Sep 2020 02:30:17 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1599633014;
+        s=strato-dkim-0002; d=goldelico.com;
+        h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:
+        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+        bh=QxLNng5Qm2uiLw8WQSnN0S+zLfaSuY/I32X69Pq6CT0=;
+        b=nCnFGXE/DLX+yYII7CfrHQ3ZJp2W/uv4d5BGqH+uxGqQvPLABbo0GzVIJ1fziP06Vk
+        J/oF0x+JCxuBP3Sv6DkPCm26lfMtKFVUg+smKcPpm5jYbeLA9vog/iX9wQvSDLvzmM/l
+        xkv1oeMqCfly+tQswoy1I0IijvL77oL24j/AlGBBNMAd54inU8mVlc48em7+92h+W7zE
+        vi85D/0YgSHVKM0lw3rjb73rJB0hM86s7K8Mc0mzaIKOr2ymIDiiz3jeoxEKPk0DYPXA
+        xNChpjEr2AcfsWPJYFAFGHzQYqVSkxznJWXkPOqnchmQklcs1UHAMupiaYTbG8e/1xCY
+        pqWw==
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj4Qpw9iZeHmAgw4nsUA=="
+X-RZG-CLASS-ID: mo00
+Received: from imac.fritz.box
+        by smtp.strato.de (RZmta 46.10.7 DYNA|AUTH)
+        with ESMTPSA id n03b0dw896TWWj7
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+        Wed, 9 Sep 2020 08:29:32 +0200 (CEST)
+Subject: Re: Mailing list about low levels of Linux on cellphones
+Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
+Content-Type: text/plain; charset=us-ascii
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+In-Reply-To: <20200908225610.GA25399@duo.ucw.cz>
+Date:   Wed, 9 Sep 2020 08:29:32 +0200
+Cc:     kernel list <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux-OMAP <linux-omap@vger.kernel.org>,
+        Tony Lindgren <tony@atomide.com>,
+        Sebastian Reichel <sre@kernel.org>, nekit1000@gmail.com,
+        mpartap@gmx.net, Merlijn Wajer <merlijn@wizzup.org>,
+        martin_rysavy@centrum.cz, "David S. Miller" <davem@davemloft.net>,
+        guido.gunther@puri.sm, konradybcio@gmail.com, arnd@arndb.de,
+        martin.botka1@gmail.com,
+        Tinkerphones Community <community@tinkerphones.org>,
+        Discussions about the Letux Kernel 
+        <letux-kernel@openphoenux.org>
+Content-Transfer-Encoding: 7bit
+Message-Id: <A9E9E0CF-FCFA-4224-90CC-F3D2B718CFD0@goldelico.com>
+References: <20200908225610.GA25399@duo.ucw.cz>
+To:     Pavel Machek <pavel@ucw.cz>
+X-Mailer: Apple Mail (2.3124)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 26 Aug 2020 at 18:18, Joe Perches <joe@perches.com> wrote:
->
-> On Wed, 2020-08-26 at 18:55 +0300, Andy Shevchenko wrote:
-> > On Wed, Aug 26, 2020 at 08:44:30AM -0700, Joe Perches wrote:
-> > > On Wed, 2020-08-26 at 13:44 +0300, Andy Shevchenko wrote:
-> >
-> > ...
-> >
-> > > > -int dev_err_probe(const struct device *dev, int err, const char *fmt, ...);
-> > > > +int __must_check dev_err_probe(const struct device *dev, int err, const char *fmt, ...);
+Hi Pavel,
 
-+Cc Stephen and Greg,
+> Am 09.09.2020 um 00:56 schrieb Pavel Machek <pavel@ucw.cz>:
+> 
+> Hi!
+> 
+> It seems there is quite a lot of efforts porting kernel to various
+> cellphones.
 
-Hi Andy,
+Yes, and it is sisyphos work to get it 100% into mainline... Most
+projects I know about are at 99,5%.
 
-Did this patch ended up in next somehow? I am surprised because now I
-got warnings for perfectly fine code:
-https://lore.kernel.org/linux-next/20200909155654.76fe3bd6@canb.auug.org.au/T/#u
+> 
+> Librem 5 and PinePhone have their own hardware, people around Maemo
+> Leste work with Nokia N900 and Droid 4, there's group working with
+> Sony cellphones, there are postmarketOS people and there are probably
+> groups I don't know about.
 
-This creates simply false warnings instead of hints for "optimization".
+And there is Openmoko and successors (GTA04, Pyra, GTA15).
 
-Best regards,
-Krzysztof
+> I believe some coordination would be useful, so we end up with
+> compatible solutions for various problems.
+
+IMHO the main problem we all share is power management.
+
+> 
+> It would be also good to know how ther hardware is progressing. I'd
+> really like to have phone I could use as a _phone_, running mainline
+> kernel. So far N900 with original Maemo is closest I could get. 
+> 
+> Would it be possible to create a mailing list on vger.kernel.org?
+
+Hm. My experience with asking for creating an openpvrsgx mailing list
+at vger.kernel.org was like asking the sun to shine during night.
+
+In the end we did set up our own mailing list and github project:
+
+https://lists.openphoenux.org/mailman/listinfo.cgi/openpvrsgx-devgroup
+https://github.com/openpvrsgx-devgroup/linux_openpvrsgx
+
+What I can offer is to run a similar list. You may remember that
+OpenPhoenux was the continuation of the OpenMoko community mailing lists
+having the same focus as you describe above.
+
+> Probably phones@ or phone-devel@? I believe it would be useful to
+> cover hardware-dependend pieces of the phone stack (ofono,
+> modemmanager) as well as kernel.
+
+I am fine with either.
+
+BR,
+Nikolaus
+
