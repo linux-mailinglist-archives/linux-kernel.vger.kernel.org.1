@@ -2,100 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B978262FA5
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 16:17:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75570262FA0
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 16:16:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730483AbgIIORZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 10:17:25 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:24480 "EHLO
+        id S1730239AbgIINF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 09:05:26 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:34490 "EHLO
         us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1730268AbgIINGI (ORCPT
+        with ESMTP id S1730244AbgIIM4c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 09:06:08 -0400
+        Wed, 9 Sep 2020 08:56:32 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599656762;
+        s=mimecast20190719; t=1599656139;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=xxQpbfVe+Ifq+wURKd+XyljLsPLKIMNuX/nStuM1m48=;
-        b=goRSfJaaREZoldPrAyjwvH7RZ5Asm0zDXNvNaakJ3JhrdhZ71tCJg8U69WrxPKeeMMsKTY
-        UDsJwEj5Zq856Lq3w6rPekrHuLfO2FC1+r6vEphAfSrJWgzrPIFU82QibZAV79hmHu0tI2
-        V71CZhhLKhm1C8BctUQBh8AihH+E8Gc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-343-Ykj5AGabP3q9lIr5ay0lSQ-1; Wed, 09 Sep 2020 08:46:53 -0400
-X-MC-Unique: Ykj5AGabP3q9lIr5ay0lSQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C5A5C51B5;
-        Wed,  9 Sep 2020 12:46:51 +0000 (UTC)
-Received: from treble (ovpn-117-163.rdu2.redhat.com [10.10.117.163])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id B335319936;
-        Wed,  9 Sep 2020 12:46:46 +0000 (UTC)
-Date:   Wed, 9 Sep 2020 07:46:44 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     David Laight <David.Laight@aculab.com>
-Cc:     "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Will Deacon <will@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Waiman Long <longman@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH v2] x86/uaccess: Use pointer masking to limit uaccess
- speculation
-Message-ID: <20200909124644.dndmfnoob5qzd7xi@treble>
-References: <bef9e78f9486d2a06c3e026d401511ffa117b0da.1598973982.git.jpoimboe@redhat.com>
- <20200908174329.ryfprry62e4tuodw@treble>
- <01b027d0d46d4572b3b16e2b49f0f2b3@AcuMS.aculab.com>
+        bh=cwYS+mSAZh9umKPn+XGPvMZJwr6XsPjld2rKUSGA8Rw=;
+        b=GMnh4QiPuS8omOo8XoOCnqWsZUKyNHS/LBIghfFkuD2nMF+vdLRU+2fxJ5NTljhNe+UtoM
+        3D4XLn6kZcWxO39s/d1ARDtC7IuZ3VJ0p/TGvlw7Pz8qnIsV5Vlpnn/JOgtxNUnf6ZgNpE
+        QZcefmKZX9w3KqauqAppZfsXGwgtKRM=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-164-VulnUJBrOG2rleZuuSfpDA-1; Wed, 09 Sep 2020 08:55:37 -0400
+X-MC-Unique: VulnUJBrOG2rleZuuSfpDA-1
+Received: by mail-qt1-f197.google.com with SMTP id a26so1675623qtb.16
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 05:55:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=cwYS+mSAZh9umKPn+XGPvMZJwr6XsPjld2rKUSGA8Rw=;
+        b=KTkbN7Lbz6x89iDgoVEB5Di+zCZRhLySrfGKwlMMCB6r95WJOJzTqUuAeWaqyqVQwz
+         EEBCj7WsskyRgeN57963qtZrUOpoXGyQE1uzFrhHNecVyeD7Yo1IkTq1eBCVFPaSYh4W
+         lHfD7DjfQ2ntv4wNtqoIlT2+nDBbvTpXUIH0r7GDF8p/l48dm5FLrSLDU3FleEyWb8PB
+         qcns+FChw/qPUPHMSjNovpmFNWW3ewzBYno4iEeUYfcDG4zqyk1cG+pv6DxKbvAkKbdo
+         5UcJbJKEdG+HXmL+sAzgyRkx2fx3bWzpBY2Ftj5vS/ir4mkbOUg9dsbrG0Ot0b0ReNEk
+         Buog==
+X-Gm-Message-State: AOAM531NiMJzbZfQmpEegAfvp0Ow7kbRxSsZtcMB/4pEKdBB/3QcAhqf
+        W+kl++nqL6piWoniysFLoHHg7Y+sXHz6UwGCyuzjbwnkcQUYTFyPaO5g/3GPNR0WNaeQDCrzm+g
+        jYQFgOke90cpQVIihCCLI6HSE
+X-Received: by 2002:ac8:6f21:: with SMTP id i1mr2884984qtv.89.1599656136989;
+        Wed, 09 Sep 2020 05:55:36 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyAIj5zzLDvbU03DdW5LzH2DlTOLQd0MX70bcYW8JI6RyB44+LsfBXI3JEmCXCLfXZjSEjh9g==
+X-Received: by 2002:ac8:6f21:: with SMTP id i1mr2884957qtv.89.1599656136618;
+        Wed, 09 Sep 2020 05:55:36 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id 205sm2426626qki.118.2020.09.09.05.55.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Sep 2020 05:55:35 -0700 (PDT)
+Subject: Re: [PATCH 1/3] fpga: dfl: move dfl_device_id to mod_devicetable.h
+To:     Xu Yilun <yilun.xu@intel.com>, mdf@kernel.org,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
+        masahiroy@kernel.org
+Cc:     lgoncalv@redhat.com, Wu Hao <hao.wu@intel.com>,
+        Matthew Gerlach <matthew.gerlach@linux.intel.com>,
+        Russ Weight <russell.h.weight@intel.com>
+References: <1599544129-17594-1-git-send-email-yilun.xu@intel.com>
+ <1599544129-17594-2-git-send-email-yilun.xu@intel.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <aaa2d9a5-f5ae-d026-91c9-730403f04050@redhat.com>
+Date:   Wed, 9 Sep 2020 05:55:33 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
+In-Reply-To: <1599544129-17594-2-git-send-email-yilun.xu@intel.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <01b027d0d46d4572b3b16e2b49f0f2b3@AcuMS.aculab.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 09, 2020 at 08:20:07AM +0000, David Laight wrote:
-> From: Josh Poimboeuf <jpoimboe@redhat.com>
-> > Sent: 08 September 2020 18:43
-> > Hi x86 maintainers,
-> ...
-> > > --- a/arch/x86/lib/putuser.S
-> > > +++ b/arch/x86/lib/putuser.S
-> > > @@ -38,6 +38,8 @@ SYM_FUNC_START(__put_user_1)
-> > >  	ENTER
-> > >  	cmp TASK_addr_limit(%_ASM_BX),%_ASM_CX
-> > >  	jae .Lbad_put_user
-> > > +	sbb %_ASM_BX, %_ASM_BX		/* uaccess_mask_ptr() */
-> > > +	and %_ASM_BX, %_ASM_CX
-> > >  	ASM_STAC
-> > >  1:	movb %al,(%_ASM_CX)
-> > >  	xor %eax,%eax
-> 
-> For 64bit the sbb+and pattern can be replaced by an instruction
-> that clears the high bit (eg btr $63, %rcx).
-> This isn't dependant on the earlier instructions so can execute
-> in parallel with them.
 
-Wouldn't that break with KERNEL_DS?
+On 9/7/20 10:48 PM, Xu Yilun wrote:
+> In order to support MODULE_DEVICE_TABLE() for dfl device driver, this
+> patch moves struct dfl_device_id to mod_devicetable.h
+>
+> Signed-off-by: Xu Yilun <yilun.xu@intel.com>
+> Signed-off-by: Wu Hao <hao.wu@intel.com>
+> Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+> ---
+>  drivers/fpga/dfl.h              | 13 +------------
+>  include/linux/mod_devicetable.h | 12 ++++++++++++
+>  2 files changed, 13 insertions(+), 12 deletions(-)
+>
+> diff --git a/drivers/fpga/dfl.h b/drivers/fpga/dfl.h
+> index 5dc758f..d5b0760 100644
+> --- a/drivers/fpga/dfl.h
+> +++ b/drivers/fpga/dfl.h
+> @@ -26,6 +26,7 @@
+>  #include <linux/slab.h>
+>  #include <linux/uuid.h>
+>  #include <linux/fpga/fpga-region.h>
+> +#include <linux/mod_devicetable.h>
+>  
+>  /* maximum supported number of ports */
+>  #define MAX_DFL_FPGA_PORT_NUM 4
+> @@ -526,18 +527,6 @@ enum dfl_id_type {
+>  };
+>  
+>  /**
+> - * struct dfl_device_id -  dfl device identifier
+> - * @type: contains 4 bits DFL FIU type of the device. See enum dfl_id_type.
+> - * @feature_id: contains 12 bits feature identifier local to its DFL FIU type.
+> - * @driver_data: driver specific data.
+> - */
+> -struct dfl_device_id {
+> -	u8 type;
+> -	u16 feature_id;
+> -	unsigned long driver_data;
+> -};
+> -
+> -/**
+>   * struct dfl_device - represent an dfl device on dfl bus
+>   *
+>   * @dev: generic device interface.
+> diff --git a/include/linux/mod_devicetable.h b/include/linux/mod_devicetable.h
+> index 5b08a47..407d8dc 100644
+> --- a/include/linux/mod_devicetable.h
+> +++ b/include/linux/mod_devicetable.h
+> @@ -838,4 +838,16 @@ struct mhi_device_id {
+>  	kernel_ulong_t driver_data;
+>  };
+>  
+> +/**
+> + * struct dfl_device_id -  dfl device identifier
+> + * @type: contains 4 bits DFL FIU type of the device. See enum dfl_id_type.
+> + * @feature_id: contains 12 bits feature identifier local to its DFL FIU type.
+> + * @driver_data: driver specific data.
+> + */
+> +struct dfl_device_id {
+> +	__u8 type;
+> +	__u16 feature_id;
 
-> I still think that doing the same comparisons in access_ok()
-> and for the pointer masking is silly - and they should get merged.
+I thought i saw feature id's going to 64 bit, does this type need to expand ?
 
-I agree, but as I said multiple times already, that will be a much
-bigger change (tree-wide and multi-arch) which comes later.
+Tom 
 
--- 
-Josh
+> +	kernel_ulong_t driver_data;
+> +};
+> +
+>  #endif /* LINUX_MOD_DEVICETABLE_H */
 
