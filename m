@@ -2,120 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 133FD26330B
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:56:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEC432632C7
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:51:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730913AbgIIQ4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 12:56:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50712 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730508AbgIIPw2 (ORCPT
+        id S1731082AbgIIQux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 12:50:53 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:11389 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726426AbgIIQFV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 11:52:28 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85EE0C061372
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 07:17:23 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id x14so3117989wrl.12
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 07:17:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=YTINV8fXf0M3n9PBAJO84TZ3ZWqVa/k8IvPy7N9wgi4=;
-        b=ISIjZ5JQj4TVnnSGapFb7wbJQYYctJNyBV/BPiddD36GRemkQ2jjGJozi7ZZ/kNFgX
-         L+a9BRRcxvMgswArV5WD4NYsCit9c2oH3aiX4oPX4bd3Jz2GsnLqByOiF29v5yx3b5iD
-         uDbebTiq0Z5y1HyVnJZ+YOiaS2S0q+WjKtZ6Tef9eHw7YRu85EZSVkNInnykwrXTIC+n
-         P5rhgZr4VBrBEVyX5ti/2W5iurPZAztgCxVQu0luBxCahAI/N4dSAyW9VNbxVRuO4gwp
-         I7Snb8LSDhaMGjreOX/81es+gdR7Eb9OtmYjiXDDWcimTmOxMQjfw/bK/6V7yYEScTk0
-         wy+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=YTINV8fXf0M3n9PBAJO84TZ3ZWqVa/k8IvPy7N9wgi4=;
-        b=PWFDkiv85K1UX/tznXp8gE69wD+s914QnexKMrhdQ73X+HuRxkAd8oYXTABSKDisTc
-         WSgWBloBfHbbABbRm/qqSEawJzgXLefyXRipEY5Kfsw0NiNxePyC+WdtU8jF00EDLcsT
-         ykdzy45OiOApjZ4iiWq6TrnOLGPij6pLh4minJDa3osPVxY9fqaxuZhOzRMQlFqwuvd+
-         mRK7UgbouDtmq6rOPth6tl+gIL8s1aiDiDjmiOsfnN51VX2DmaZ3ItWk1NHvsYuBSCZk
-         uHwK/BEXthavHsIQ9Kg5CJlEYS65skGwG4TqyfxMP19NllUa45hJcj7Sk0rdSFD1F+V0
-         /AUA==
-X-Gm-Message-State: AOAM531Fh+moLse1U2pM4fSIPyzlek+nh7tb/Q37/dnl57zT/8/FKI/P
-        73M2O0YYDyIC5ajTLAmuAtGcwQ==
-X-Google-Smtp-Source: ABdhPJyylZV7lGE0N2Ov626dsFCzQyMBnovybUKfA++XerEYgGcuyp66iCHpW/4W3EGC5UFcCO7ASQ==
-X-Received: by 2002:adf:82d5:: with SMTP id 79mr4682690wrc.60.1599661042100;
-        Wed, 09 Sep 2020 07:17:22 -0700 (PDT)
-Received: from dell ([91.110.221.208])
-        by smtp.gmail.com with ESMTPSA id m3sm2774942wrs.83.2020.09.09.07.17.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Sep 2020 07:17:21 -0700 (PDT)
-Date:   Wed, 9 Sep 2020 15:17:19 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Kalle Valo <kvalo@codeaurora.org>
-Cc:     davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
-        Xinming Hu <huxinming820@gmail.com>
-Subject: Re: [PATCH 01/32] wireless: marvell: mwifiex: sdio: Move 'static
- const struct's into their own header file
-Message-ID: <20200909141719.GD218742@dell>
-References: <20200821071644.109970-2-lee.jones@linaro.org>
- <20200901091541.3974FC433C6@smtp.codeaurora.org>
+        Wed, 9 Sep 2020 12:05:21 -0400
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f58e45b0000>; Wed, 09 Sep 2020 07:19:07 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Wed, 09 Sep 2020 07:19:50 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate102.nvidia.com on Wed, 09 Sep 2020 07:19:50 -0700
+Received: from [10.2.173.224] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 9 Sep
+ 2020 14:19:45 +0000
+From:   Zi Yan <ziy@nvidia.com>
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>
+CC:     <linux-mm@kvack.org>, Roman Gushchin <guro@fb.com>,
+        Rik van Riel <riel@surriel.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        David Nellans <dnellans@nvidia.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH 06/16] mm: thp: add 1GB THP split_huge_pud_page()
+ function.
+Date:   Wed, 9 Sep 2020 10:19:43 -0400
+X-Mailer: MailMate (1.13.1r5705)
+Message-ID: <AF9154F7-74D8-4639-BB53-0B6FF245F623@nvidia.com>
+In-Reply-To: <20200909141800.4ueixh2gw5lv4deh@box>
+References: <20200902180628.4052244-1-zi.yan@sent.com>
+ <20200902180628.4052244-7-zi.yan@sent.com>
+ <20200909141800.4ueixh2gw5lv4deh@box>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200901091541.3974FC433C6@smtp.codeaurora.org>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: multipart/signed;
+        boundary="=_MailMate_67E22BE1-702B-406F-8717-49758A0ED8D6_=";
+        micalg=pgp-sha512; protocol="application/pgp-signature"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1599661147; bh=ouW3msjo0bxs7Ho0BhRy49F31Peg+avV+uVRSUbnD0s=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:X-Mailer:Message-ID:
+         In-Reply-To:References:MIME-Version:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type;
+        b=KKPCfQccZ0mz3gX3Iz+YypGO6w/K7rBnVj0RLPJOPNVGoL3aMIpSFGM2kDV0p/O/C
+         XRpHplzO0w57y1ftBbS5AUQa1S5FtZMnfZdqU21mtstSAEm5/gqq3QNFFV8spllok2
+         0CI2bNbJXhEWVgim7Jm+zaDfYVEOv4PLYtQP2NKH9e5cMK/Clmo22yx+ADrNccssyB
+         7wuK9M7ClSh1mnbSsVve9tak0qPCnnIXFo2759Fr90hkf/sT4IfjI4sWqtxG7HJ4C2
+         DK87+yaTN9h6P2a8O+K0FvVqwcSozo3G6jku1mcFc12ykG393WIBeo9V8ZO4qBgpey
+         lV4YKVzNkP/7A==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 01 Sep 2020, Kalle Valo wrote:
+--=_MailMate_67E22BE1-702B-406F-8717-49758A0ED8D6_=
+Content-Type: text/plain; charset="UTF-8"; markup=markdown
+Content-Transfer-Encoding: quoted-printable
 
-> Lee Jones <lee.jones@linaro.org> wrote:
-> 
-> > Only include these tables in the 1 source file they are used.
-> > 
-> > Fixes hundreds of W=1 warnings!
-> > 
-> > Fixes the following W=1 kernel build warning(s):
-> > 
-> >  In file included from drivers/net/wireless/marvell/mwifiex/main.h:59,
-> >  from drivers/net/wireless/marvell/mwifiex/main.c:22:
-> >  drivers/net/wireless/marvell/mwifiex/sdio.h:705:41: warning: ‘mwifiex_sdio_sd8801’ defined but not used [-Wunused-const-variable=]
-> >  705 | static const struct mwifiex_sdio_device mwifiex_sdio_sd8801 = {
-> >  | ^~~~~~~~~~~~~~~~~~~
-> > 
-> >  NB: There were 100's of these - snipped for brevity.
-> > 
-> > Cc: Amitkumar Karwar <amitkarwar@gmail.com>
-> > Cc: Ganapathi Bhat <ganapathi.bhat@nxp.com>
-> > Cc: Xinming Hu <huxinming820@gmail.com>
-> > Cc: Kalle Valo <kvalo@codeaurora.org>
-> > Cc: "David S. Miller" <davem@davemloft.net>
-> > Cc: Jakub Kicinski <kuba@kernel.org>
-> > Cc: linux-wireless@vger.kernel.org
-> > Cc: netdev@vger.kernel.org
-> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> 
-> I don't think static const variables should be in a .h file. Wouldn't
-> sdio.c be the right place for these? At least from a quick look I got
-> that impression.
+On 9 Sep 2020, at 10:18, Kirill A. Shutemov wrote:
 
-That's a bone of contention.  I personally do not like to see C-files
-overwhelmed by a sea of structs/tables and tend to ferry them off into
-*-tables.h header files instead.
+> On Wed, Sep 02, 2020 at 02:06:18PM -0400, Zi Yan wrote:
+>>  25 files changed, 852 insertions(+), 98 deletions(-)
+>
+> It's way too big to have meaningful review.
 
-As the gate-keeper, what you say goes.  So if you insist we move these
-450 lines of tables into the source file which references them, I will
-of course do as you ask.
+Will split it into small patches in the next version.
 
-> Patch set to Changes Requested.
+=E2=80=94
+Best Regards,
+Yan Zi
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+--=_MailMate_67E22BE1-702B-406F-8717-49758A0ED8D6_=
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJDBAEBCgAtFiEEh7yFAW3gwjwQ4C9anbJR82th+ooFAl9Y5H8PHHppeUBudmlk
+aWEuY29tAAoJEJ2yUfNrYfqK6bgP/1zuTfokWA7v5i0dOvkMy4hhGhOvmGQ9uZzf
+IHUfm4jaIRwfQQ7U/jwZJatVi5HJTzOYxSMf9hrpv4x/0jsbsszMmvJ/SzIVa0ZD
+Q/ZZf8ItL27F0ZUtGctCqfEABtWIlG9mwik2xf8AmQM8L0I2jB2QCrYWyRMC4Fx8
+iVCnAmUDr1TOGIWwYy2OE3lLsuwRLwpcnAZtYarJsIvd+Ao+I6tdgTS3Mc7Ewn8A
+/G7k8SW8I8oAl+A2RD5c581xGKcvmkXkWkNwZ1meCa17nO4nFmnMz6QCbXYVT2Vm
+BPm8QvCvE7uQ41fqJWLjF+CKM9YHXH5qFyvw7PowRWUSOb0FKpvSRZEl7Y6glxY+
+QB8dWFT+csKEomrkU8Bb01g6oc73cF9Qiv3GTVVPgPPiwhWF4pyfyKQ0wMr3HLaZ
+rKVhl5rVN4zmibwwljaJlO4efUik1GiF16pwcbZNZY/L86XWhZLX8jb18awbEh9I
+hLvYP7MDXcePYz1/ZysTkGPW/EbV2btV2zFtqtxHGoVx5IWr3UL4DMVaXoSPyJYz
+K+K/7vBg13u/ujCh40v53vU5vBIwmQ+l2t0D4N7uqbjmdIz5x4DTB/CmIb35F3Co
+AjLBdCcCWMYngi2iiLCi9zSUJUgMzU49pa57hw5rSiWLnSX2xMCg8hlTZCBPKZpV
+TqSMdqVV
+=KXb2
+-----END PGP SIGNATURE-----
+
+--=_MailMate_67E22BE1-702B-406F-8717-49758A0ED8D6_=--
