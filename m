@@ -2,127 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 261082631B5
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:24:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC20B2631A7
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:23:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730923AbgIIQYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 12:24:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45292 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731057AbgIIQX4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 12:23:56 -0400
-Received: from gaia (unknown [46.69.195.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1730744AbgIIQXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 12:23:09 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:41519 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730997AbgIIQVm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 12:21:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599668491;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=WnxLiECWEUEeO8grgNMv0XSyMN/3o5FAaKtxYxpeiyI=;
+        b=dbg05bcemZGb5F7dnUYqvHbE39CoZ6qOY/NIO1SZFkePM3wTghH2nrV7HDLFPxDgM/ZDef
+        +Dwb0E8+q9IeC0r5XcyC+F9tDeArpbnShFWqCl/y9/K6SUNfiloOC/3C2e0L0Vf75W7F3b
+        /Z8eyYcodnnRmVYzEteXJVUNLtmNapI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-241-D3rS0gQyP5qczVOKFWlYqQ-1; Wed, 09 Sep 2020 09:54:46 -0400
+X-MC-Unique: D3rS0gQyP5qczVOKFWlYqQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AE68B21D40;
-        Wed,  9 Sep 2020 13:54:03 +0000 (UTC)
-Date:   Wed, 9 Sep 2020 14:54:01 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc:     George Cherian <gcherian@marvell.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "will.deacon@arm.com" <will.deacon@arm.com>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "guohanjun@huawei.com" <guohanjun@huawei.com>
-Subject: Re: [PATCH] arm64: PCI: fix memleak when calling pci_iomap/unmap()
-Message-ID: <20200909135400.GB13047@gaia>
-References: <20200907104546.GC26513@gaia>
- <BYAPR18MB267959E6FE4BEF38D0A4611EC5280@BYAPR18MB2679.namprd18.prod.outlook.com>
- <20200907112118.GD26513@gaia>
- <20200909113613.GB6384@e121166-lin.cambridge.arm.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1155018BA2A9;
+        Wed,  9 Sep 2020 13:54:44 +0000 (UTC)
+Received: from [10.36.113.90] (ovpn-113-90.ams2.redhat.com [10.36.113.90])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 83DED5C1C2;
+        Wed,  9 Sep 2020 13:54:41 +0000 (UTC)
+Subject: Re: [RFC PATCH 00/16] 1GB THP support on x86_64
+To:     Rik van Riel <riel@surriel.com>, Michal Hocko <mhocko@suse.com>
+Cc:     Zi Yan <ziy@nvidia.com>, Roman Gushchin <guro@fb.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>, linux-mm@kvack.org,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        David Nellans <dnellans@nvidia.com>,
+        linux-kernel@vger.kernel.org
+References: <20200902180628.4052244-1-zi.yan@sent.com>
+ <20200903142300.bjq2um5y5nwocvar@box>
+ <20200903163020.GG60440@carbon.dhcp.thefacebook.com>
+ <8e677ead-206d-08dd-d73e-569bd3803e3b@redhat.com>
+ <7E20392E-5ED7-4C22-9555-F3BAABF3CBE9@nvidia.com>
+ <20200908143503.GE26850@dhcp22.suse.cz>
+ <7ed82cb06074b30c2956638082c515fb179f69a3.camel@surriel.com>
+ <20200909070445.GA7348@dhcp22.suse.cz>
+ <054d02f3b34d9946905929ff268b685c91494b3e.camel@surriel.com>
+ <6135d2c5-2a74-6ca8-4b3b-8ceb25c0d4b1@redhat.com>
+ <4923e178c12f38148a2620ba31fcded349e555fb.camel@surriel.com>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat GmbH
+Message-ID: <5e2136d6-c0b3-12e5-2217-d37cec34a155@redhat.com>
+Date:   Wed, 9 Sep 2020 15:54:40 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200909113613.GB6384@e121166-lin.cambridge.arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <4923e178c12f38148a2620ba31fcded349e555fb.camel@surriel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 09, 2020 at 12:36:13PM +0100, Lorenzo Pieralisi wrote:
-> On Mon, Sep 07, 2020 at 12:21:19PM +0100, Catalin Marinas wrote:
-> > On Mon, Sep 07, 2020 at 10:51:21AM +0000, George Cherian wrote:
-> > > Catalin Marinas <catalin.marinas@arm.com> wrote:
-> > > > On Sat, Sep 05, 2020 at 10:48:11AM +0800, Yang Yingliang wrote:
-> > > > > diff --git a/arch/arm64/kernel/pci.c b/arch/arm64/kernel/pci.c index
-> > > > > 1006ed2d7c604..ddfa1c53def48 100644
-> > > > > --- a/arch/arm64/kernel/pci.c
-> > > > > +++ b/arch/arm64/kernel/pci.c
-> > > > > @@ -217,4 +217,9 @@ void pcibios_remove_bus(struct pci_bus *bus)
-> > > > >  	acpi_pci_remove_bus(bus);
-> > > > >  }
-> > > > >
-> > > > > +void pci_iounmap(struct pci_dev *dev, void __iomem *addr) {
-> > > > > +	iounmap(addr);
-> > > > > +}
-> > > > > +EXPORT_SYMBOL(pci_iounmap);
-> > > > 
-> > > > So, what's wrong with the generic pci_iounmap() implementation?
-> > > > Shouldn't it call iounmap() already?
-> > > 
-> > > Since ARM64 selects CONFIG_GENERIC_PCI_IOMAP and not
-> > > CONFIG_GENERIC_IOMAP,  the pci_iounmap function is reduced to a NULL
-> > > function. Due to this, even the managed release variants or even the explicit
-> > > pci_iounmap calls doesn't really remove the mappings leading to leak.
-> > 
-> > Ah, I missed the fact that pci_iounmap() depends on a different
-> > config option.
-> > 
-> > > https://lkml.org/lkml/2020/8/20/28
-> > 
-> > So is this going to be fixed in the generic code? That would be my
-> > preference.
-> > 
-> > A problem with the iounmap() in the proposed patch is that the region
-> > may have been an I/O port, so we could end up unmapping the I/O space.
+On 09.09.20 15:49, Rik van Riel wrote:
+> On Wed, 2020-09-09 at 15:43 +0200, David Hildenbrand wrote:
+>> On 09.09.20 15:19, Rik van Riel wrote:
+>>> On Wed, 2020-09-09 at 09:04 +0200, Michal Hocko wrote:
+>>>
+>>>> That CMA has to be pre-reserved, right? That requires a
+>>>> configuration.
+>>>
+>>> To some extent, yes.
+>>>
+>>> However, because that pool can be used for movable
+>>> 4kB and 2MB
+>>> pages as well as for 1GB pages, it would be easy to just set
+>>> the size of that pool to eg. 1/3 or even 1/2 of memory for every
+>>> system.
+>>>
+>>> It isn't like the pool needs to be the exact right size. We
+>>> just need to avoid the "highmem problem" of having too little
+>>> memory for kernel allocations.
+>>>
+>>
+>> I am not sure I like the trend towards CMA that we are seeing,
+>> reserving
+>> huge buffers for specific users (and eventually even doing it
+>> automatically).
+>>
+>> What we actually want is ZONE_MOVABLE with relaxed guarantees, such
+>> that
+>> anybody who requires large, unmovable allocations can use it.
+>>
+>> I once played with the idea of having ZONE_PREFER_MOVABLE, which
+>> a) Is the primary choice for movable allocations
+>> b) Is allowed to contain unmovable allocations (esp., gigantic pages)
+>> c) Is the fallback for ZONE_NORMAL for unmovable allocations, instead
+>> of
+>> running out of memory
+>>
+>> If someone messes up the zone ratio, issues known from zone
+>> imbalances
+>> are avoided - large allocations simply become less likely to succeed.
+>> In
+>> contrast to ZONE_MOVABLE, memory offlining is not guaranteed to work.
 > 
-> It boils down to finding a way to match a VA to a BAR resource so that
-> we can mirror on pci_iounmap() what's done in pci_iomap_range() (ie
-> check BAR resource flags to define how/if to unmap them), that would do
-> as a generic pci_iounmap() implementation.
+> I really like that idea. This will be easier to deal with than
+> a "just the right size" CMA area, and seems like it would be
+> pretty forgiving in both directions.
+> 
 
-In the !CONFIG_GENERIC_IOMAP case (arm64), for IORESOURCE_IO,
-pci_iomap_range() calls __pci_ioport_map() which, with the default
-ioport_map(), it ends up with a simple PCI_IOBASE + (port &
-IO_SPACE_LIMIT).
+Yes, and can be extended using memory hotplug.
 
-pci_iounmap() could check whether the pointer is in the PCI_IOBASE -
-PCI_IOBASE+IO_SPACE_LIMIT range before calling ioremap(), unless the
-arch code re-defined ioport_map. Something like below (not even
-compiled):
+> Keeping unmovable allocations
+> contained to one part of memory
+> should also make compaction within the ZONE_PREFER_MOVABLE area
+> a lot easier than compaction for higher order allocations is
+> today.
+> 
+> I suspect your proposal solves a lot of issues at once.
+> 
+> For (c) from your proposal, we could even claim a whole
+> 2MB or even 1GB area at once for unmovable allocations,
+> keeping those contained in a limited amount of physical
+> memory again, to make life easier on compaction.
+> 
 
-diff --git a/include/asm-generic/io.h b/include/asm-generic/io.h
-index dabf8cb7203b..fada420c9cd6 100644
---- a/include/asm-generic/io.h
-+++ b/include/asm-generic/io.h
-@@ -919,6 +919,11 @@ extern void __iomem *pci_iomap(struct pci_dev *dev, int bar, unsigned long max);
- #define pci_iounmap pci_iounmap
- static inline void pci_iounmap(struct pci_dev *dev, void __iomem *p)
- {
-+#ifndef ARCH_HAS_IOPORT_MAP
-+	if (p >= PCI_IOBASE && p < PCI_IOBASE + IO_SPACE_LIMIT)
-+		return;
-+	iounmap(p);
-+#endif
- }
- #endif
- #endif /* CONFIG_GENERIC_IOMAP */
-@@ -1009,7 +1014,9 @@ static inline void __iomem *ioremap_uc(phys_addr_t offset, size_t size)
- 
- #ifdef CONFIG_HAS_IOPORT_MAP
- #ifndef CONFIG_GENERIC_IOMAP
--#ifndef ioport_map
-+#ifdef ioport_map
-+#define ARCH_HAS_IOPORT_MAP
-+#else
- #define ioport_map ioport_map
- static inline void __iomem *ioport_map(unsigned long port, unsigned int nr)
- {
+Exactly, locally limiting unmovable allocations to a sane minimum.
+
+(with some smart extra work, we could even convert ZONE_PREFER_MOVABLE
+to ZONE_NORMAL, one memory section/block at a time where needed, that
+direction always works. But that's very tricky.)
 
 -- 
-Catalin
+Thanks,
+
+David / dhildenb
+
