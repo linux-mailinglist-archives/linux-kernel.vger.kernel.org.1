@@ -2,107 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D88F1263435
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 19:16:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42267263452
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 19:19:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731236AbgIIRQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 13:16:17 -0400
-Received: from mga04.intel.com ([192.55.52.120]:28962 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730181AbgIIP2W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 11:28:22 -0400
-IronPort-SDR: u/qbi1gTMXwhiA5qBdPXMMgfTHw567dAAkns7X+4bDhXx6pe5JNKHXH9U6JyrwTQHFbDQq5NKi
- i/s9iXQLJPug==
-X-IronPort-AV: E=McAfee;i="6000,8403,9738"; a="155728553"
-X-IronPort-AV: E=Sophos;i="5.76,409,1592895600"; 
-   d="scan'208";a="155728553"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2020 06:49:26 -0700
-IronPort-SDR: y782X0eff+IGeTeKdlXJWyejH8ArzkbdbpXRdce83ifEs2ysMjfkaoanYmSAds9BB+zVYm7HDX
- nG4T8f6lNeww==
-X-IronPort-AV: E=Sophos;i="5.76,409,1592895600"; 
-   d="scan'208";a="505456868"
-Received: from rsetyawa-mobl1.amr.corp.intel.com (HELO [10.212.20.145]) ([10.212.20.145])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2020 06:49:25 -0700
-Subject: Re: [PATCH -next] soundwire: intel: Remove ununsed function
-To:     YueHaibing <yuehaibing@huawei.com>, vkoul@kernel.org,
-        yung-chuan.liao@linux.intel.com, sanyog.r.kale@intel.com
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-References: <20200909131531.31380-1-yuehaibing@huawei.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <14a09132-d0ed-7129-73df-cbeb3154429b@linux.intel.com>
-Date:   Wed, 9 Sep 2020 08:46:10 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1730735AbgIIRTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 13:19:06 -0400
+Received: from shelob.surriel.com ([96.67.55.147]:45678 "EHLO
+        shelob.surriel.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726440AbgIIP12 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 11:27:28 -0400
+Received: from imladris.surriel.com ([96.67.55.152])
+        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <riel@shelob.surriel.com>)
+        id 1kG0TE-0004A3-Qr; Wed, 09 Sep 2020 09:49:08 -0400
+Message-ID: <4923e178c12f38148a2620ba31fcded349e555fb.camel@surriel.com>
+Subject: Re: [RFC PATCH 00/16] 1GB THP support on x86_64
+From:   Rik van Riel <riel@surriel.com>
+To:     David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@suse.com>
+Cc:     Zi Yan <ziy@nvidia.com>, Roman Gushchin <guro@fb.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>, linux-mm@kvack.org,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        David Nellans <dnellans@nvidia.com>,
+        linux-kernel@vger.kernel.org
+Date:   Wed, 09 Sep 2020 09:49:08 -0400
+In-Reply-To: <6135d2c5-2a74-6ca8-4b3b-8ceb25c0d4b1@redhat.com>
+References: <20200902180628.4052244-1-zi.yan@sent.com>
+         <20200903142300.bjq2um5y5nwocvar@box>
+         <20200903163020.GG60440@carbon.dhcp.thefacebook.com>
+         <8e677ead-206d-08dd-d73e-569bd3803e3b@redhat.com>
+         <7E20392E-5ED7-4C22-9555-F3BAABF3CBE9@nvidia.com>
+         <20200908143503.GE26850@dhcp22.suse.cz>
+         <7ed82cb06074b30c2956638082c515fb179f69a3.camel@surriel.com>
+         <20200909070445.GA7348@dhcp22.suse.cz>
+         <054d02f3b34d9946905929ff268b685c91494b3e.camel@surriel.com>
+         <6135d2c5-2a74-6ca8-4b3b-8ceb25c0d4b1@redhat.com>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-wpHNEj3y3TgmHwDLJS21"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-In-Reply-To: <20200909131531.31380-1-yuehaibing@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--=-wpHNEj3y3TgmHwDLJS21
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 9/9/20 8:15 AM, YueHaibing wrote:
-> If CONFIG_PM is not set, build warns:
-> 
-> drivers/soundwire/intel.c:488:12: warning: 'intel_link_power_down' defined but not used [-Wunused-function]
-> 
-> Move this to #ifdef block.
+On Wed, 2020-09-09 at 15:43 +0200, David Hildenbrand wrote:
+> On 09.09.20 15:19, Rik van Riel wrote:
+> > On Wed, 2020-09-09 at 09:04 +0200, Michal Hocko wrote:
+> >=20
+> > > That CMA has to be pre-reserved, right? That requires a
+> > > configuration.
+> >=20
+> > To some extent, yes.
+> >=20
+> > However, because that pool can be used for movable
+> > 4kB and 2MB
+> > pages as well as for 1GB pages, it would be easy to just set
+> > the size of that pool to eg. 1/3 or even 1/2 of memory for every
+> > system.
+> >=20
+> > It isn't like the pool needs to be the exact right size. We
+> > just need to avoid the "highmem problem" of having too little
+> > memory for kernel allocations.
+> >=20
+>=20
+> I am not sure I like the trend towards CMA that we are seeing,
+> reserving
+> huge buffers for specific users (and eventually even doing it
+> automatically).
+>=20
+> What we actually want is ZONE_MOVABLE with relaxed guarantees, such
+> that
+> anybody who requires large, unmovable allocations can use it.
+>=20
+> I once played with the idea of having ZONE_PREFER_MOVABLE, which
+> a) Is the primary choice for movable allocations
+> b) Is allowed to contain unmovable allocations (esp., gigantic pages)
+> c) Is the fallback for ZONE_NORMAL for unmovable allocations, instead
+> of
+> running out of memory
+>=20
+> If someone messes up the zone ratio, issues known from zone
+> imbalances
+> are avoided - large allocations simply become less likely to succeed.
+> In
+> contrast to ZONE_MOVABLE, memory offlining is not guaranteed to work.
 
-Yes, thanks for the report, it's a valid issue, but maybe the fix is to 
-add __maybe_unused more consistently and remove the CONFIG_PM dependency.
+I really like that idea. This will be easier to deal with than
+a "just the right size" CMA area, and seems like it would be
+pretty forgiving in both directions.
 
-Vinod, what would you prefer?
+Keeping unmovable allocations
+contained to one part of memory
+should also make compaction within the ZONE_PREFER_MOVABLE area
+a lot easier than compaction for higher order allocations is
+today.
 
-diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index e047910d73f5..7640308174ab 100644
---- a/drivers/soundwire/intel.c
-+++ b/drivers/soundwire/intel.c
-@@ -1540,8 +1540,6 @@ int intel_master_process_wakeen_event(struct 
-platform_device *pdev)
-   * PM calls
-   */
+I suspect your proposal solves a lot of issues at once.
 
--#ifdef CONFIG_PM
--
-  static int __maybe_unused intel_suspend(struct device *dev)
-  {
-         struct sdw_cdns *cdns = dev_get_drvdata(dev);
-@@ -1596,7 +1594,7 @@ static int __maybe_unused intel_suspend(struct 
-device *dev)
-         return 0;
-  }
+For (c) from your proposal, we could even claim a whole
+2MB or even 1GB area at once for unmovable allocations,
+keeping those contained in a limited amount of physical
+memory again, to make life easier on compaction.
 
--static int intel_suspend_runtime(struct device *dev)
-+static int __maybe_unused intel_suspend_runtime(struct device *dev)
-  {
-         struct sdw_cdns *cdns = dev_get_drvdata(dev);
-         struct sdw_intel *sdw = cdns_to_intel(cdns);
-@@ -1751,7 +1749,7 @@ static int __maybe_unused intel_resume(struct 
-device *dev)
-         return ret;
-  }
+--=20
+All Rights Reversed.
 
--static int intel_resume_runtime(struct device *dev)
-+static int __maybe_unused intel_resume_runtime(struct device *dev)
-  {
-         struct sdw_cdns *cdns = dev_get_drvdata(dev);
-         struct sdw_intel *sdw = cdns_to_intel(cdns);
-@@ -1924,8 +1922,6 @@ static int intel_resume_runtime(struct device *dev)
-         return ret;
-  }
+--=-wpHNEj3y3TgmHwDLJS21
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
--#endif
--
-  static const struct dev_pm_ops intel_pm = {
-         SET_SYSTEM_SLEEP_PM_OPS(intel_suspend, intel_resume)
-         SET_RUNTIME_PM_OPS(intel_suspend_runtime, intel_resume_runtime, 
-NULL)
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAABCAAdFiEEKR73pCCtJ5Xj3yADznnekoTE3oMFAl9Y3VQACgkQznnekoTE
+3oMMdwgAkZ9yHAJX87rT4KEdtozUgeiv+oJmpMGrFoxuLJusQjDHWmoH/cZxeUKa
+LAyR1o25+vHitFDI8jwBSrK/koD7+aA7g4IWD1yvm+MzMLRE1y3O2mpdT5Py2P/R
+p3zFYlMWaVnons/88lpBVXg4s25BUo1l8oU3Zpo1nIbW6gAW0GLT4k3HrgT1eMoU
+q9FGjN5fg/COFrfFMkxXheD6g3V6AwSo/7/4jSccaeyxOmyf9D+hiCLYkWOFNvg7
+9oz/5K3dekoWR88c5C6hTrr69D32grG8SRk6iqsGAa7CG/HoYFnePOLN7BcI7Wp5
+BJ18+VOF8ozRMrFAuvBoSH3ZVOmPhg==
+=+JlE
+-----END PGP SIGNATURE-----
+
+--=-wpHNEj3y3TgmHwDLJS21--
 
