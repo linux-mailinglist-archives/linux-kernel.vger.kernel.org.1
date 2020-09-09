@@ -2,119 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AE1F263A24
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 04:21:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FA35263A3F
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 04:24:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730750AbgIJCVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 22:21:20 -0400
-Received: from mga03.intel.com ([134.134.136.65]:52209 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730729AbgIJCSf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 22:18:35 -0400
-IronPort-SDR: IzZnHC92zX56tSI2JiAj352zGjlBYSii2icYTIWU6+U42tFtgHuCRMcIcjkEdLw/wlOBPU59GC
- FRgfqUtlQXKg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9739"; a="158468124"
-X-IronPort-AV: E=Sophos;i="5.76,410,1592895600"; 
-   d="scan'208";a="158468124"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2020 16:07:09 -0700
-IronPort-SDR: qkfpSoKV1QeBLR8tjA8HAJxMsc61Q3klbLaexWsYoj4/2+poJ8zDHk1wXd4u6VEzMkKvkZoTVx
- KbyeR31mj0lQ==
-X-IronPort-AV: E=Sophos;i="5.76,410,1592895600"; 
-   d="scan'208";a="300309339"
-Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.243.130]) ([10.212.243.130])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2020 16:07:08 -0700
-Subject: Re: [PATCH v11 25/25] x86/cet/shstk: Add arch_prctl functions for
- shadow stack
-To:     Dave Hansen <dave.hansen@intel.com>,
-        Andy Lutomirski <luto@kernel.org>
-Cc:     Dave Martin <Dave.Martin@arm.com>, "H.J. Lu" <hjl.tools@gmail.com>,
-        Florian Weimer <fweimer@redhat.com>, X86 ML <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Weijiang Yang <weijiang.yang@intel.com>
-References: <086c73d8-9b06-f074-e315-9964eb666db9@intel.com>
- <73c2211f-8811-2d9f-1930-1c5035e6129c@intel.com>
- <af258a0e-56e9-3747-f765-dfe45ce76bba@intel.com>
- <ef7f9e24-f952-d78c-373e-85435f742688@intel.com>
- <20200826164604.GW6642@arm.com> <87ft892vvf.fsf@oldenburg2.str.redhat.com>
- <CALCETrVeNA0Kt2rW0CRCVo1JE0CKaBxu9KrJiyqUA8LPraY=7g@mail.gmail.com>
- <0e9996bc-4c1b-cc99-9616-c721b546f857@intel.com>
- <4f2dfefc-b55e-bf73-f254-7d95f9c67e5c@intel.com>
- <CAMe9rOqt9kbqERC8U1+K-LiDyNYuuuz3TX++DChrRJwr5ajt6Q@mail.gmail.com>
- <20200901102758.GY6642@arm.com>
- <c91bbad8-9e45-724b-4526-fe3674310c57@intel.com>
- <CALCETrWJQgtO_tP1pEaDYYsFgkZ=fOxhyTRE50THcxYoHyTTwg@mail.gmail.com>
- <32005d57-e51a-7c7f-4e86-612c2ff067f3@intel.com>
- <46dffdfd-92f8-0f05-6164-945f217b0958@intel.com>
- <ed929729-4677-3d3b-6bfd-b379af9272b8@intel.com>
- <6e1e22a5-1b7f-2783-351e-c8ed2d4893b8@intel.com>
- <5979c58d-a6e3-d14d-df92-72cdeb97298d@intel.com>
- <ab1a3344-60f4-9b9d-81d4-e6538fdcafcf@intel.com>
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Message-ID: <08c91835-8486-9da5-a7d1-75e716fc5d36@intel.com>
-Date:   Wed, 9 Sep 2020 16:07:07 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1730880AbgIJCYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 22:24:49 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:58534 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730682AbgIJCIi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 22:08:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599703717;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9lUmVHlRg0jPhlantuCk3hiT6WHd/nIzITZFw+wGi90=;
+        b=ATCEs4iarH6CiAeGnelgL9WXp+fL2etKppxLdsXEkK3w42lMmjX0/VCN+huEfWEmHk89Po
+        IECVmvxKpbfW9a8Qm5FmV1BTnUuBABUEoiJCGU5hpUwxGqgRD+O6NOAlHQFB3p+Y/mc5vw
+        kRjxnA1JqRa5L+MaH+6hLuKSCW+bU48=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-381-PdjO5lmxOoqImIc6M2pBzA-1; Wed, 09 Sep 2020 19:07:52 -0400
+X-MC-Unique: PdjO5lmxOoqImIc6M2pBzA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 97082801F98;
+        Wed,  9 Sep 2020 23:07:50 +0000 (UTC)
+Received: from w520.home (ovpn-112-71.phx2.redhat.com [10.3.112.71])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 209F57EED4;
+        Wed,  9 Sep 2020 23:07:48 +0000 (UTC)
+Date:   Wed, 9 Sep 2020 17:07:46 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Matthew Rosato <mjrosato@linux.ibm.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>, bhelgaas@google.com,
+        schnelle@linux.ibm.com, pmorel@linux.ibm.com, mpe@ellerman.id.au,
+        oohall@gmail.com, cohuck@redhat.com, kevin.tian@intel.com,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, linux-pci@vger.kernel.org
+Subject: Re: [PATCH v4 1/3] PCI/IOV: Mark VFs as not implementing MSE bit
+Message-ID: <20200909170746.2286b83a@w520.home>
+In-Reply-To: <38f95349-237e-34e2-66ef-e626cd4aec25@linux.ibm.com>
+References: <20200903164117.GA312152@bjorn-Precision-5520>
+        <38f95349-237e-34e2-66ef-e626cd4aec25@linux.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <ab1a3344-60f4-9b9d-81d4-e6538fdcafcf@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/9/2020 3:59 PM, Dave Hansen wrote:
-> On 9/9/20 3:08 PM, Yu, Yu-cheng wrote:
->> After looking at this more, I found the changes are more similar to
->> mprotect() than madvise().  We are going to change an anonymous mapping
->> to a read-only mapping, and add the VM_SHSTK flag to it.  Would an
->> x86-specific mprotect(PROT_SHSTK) make more sense?
->>
->> One alternative would be requiring a read-only mapping for
->> madvise(MADV_SHSTK).  But that is inconvenient for the application.
+On Thu, 3 Sep 2020 13:10:02 -0400
+Matthew Rosato <mjrosato@linux.ibm.com> wrote:
+
+> On 9/3/20 12:41 PM, Bjorn Helgaas wrote:
+> > On Wed, Sep 02, 2020 at 03:46:34PM -0400, Matthew Rosato wrote:  
+> >> Per the PCIe spec, VFs cannot implement the MSE bit
+> >> AKA PCI_COMMAND_MEMORY, and it must be hard-wired to 0.
+> >> Use a dev_flags bit to signify this requirement.  
+> > 
+> > This approach seems sensible to me, but
+> > 
+> >    - This is confusing because while the spec does not use "MSE" to
+> >      refer to the Command Register "Memory Space Enable" bit
+> >      (PCI_COMMAND_MEMORY), it *does* use "MSE" in the context of the
+> >      "VF MSE" bit, which is in the PF SR-IOV Capability.  But of
+> >      course, you're not talking about that here.  Maybe something like
+> >      this?
+> > 
+> >        For VFs, the Memory Space Enable bit in the Command Register is
+> >        hard-wired to 0.
+> > 
+> >        Add a dev_flags bit to signify devices where the Command
+> >        Register Memory Space Enable bit does not control the device's
+> >        response to MMIO accesses.  
 > 
-> Why?  It's just:
+> Will do.  I'll change the usage of the MSE acronym in the other patches 
+> as well.
 > 
-> 	mmap()/malloc();
-> 	mprotect(PROT_READ);
-> 	madvise(MADV_SHSTK);
+> > 
+> >    - "PCI_DEV_FLAGS_FORCE_COMMAND_MEM" says something about how you
+> >      plan to *use* this, but I'd rather use a term that describes the
+> >      hardware, e.g., "PCI_DEV_FLAGS_NO_COMMAND_MEMORY".  
 > 
-> vs.
+> Sure, I will change.
 > 
-> 	mmap()/malloc();
-> 	mprotect(PROT_SHSTK);
+> > 
+> >    - How do we decide whether to use dev_flags vs a bitfield like
+> >      dev->is_virtfn?  The latter seems simpler unless there's a reason
+> >      to use dev_flags.  If there's a reason, maybe we could add a
+> >      comment at pci_dev_flags for future reference.
+> >   
 > 
-> I'm not sure a single syscall counts as inconvenient.
+> Something like:
 > 
-> I don't quite think we should use a PROT_ bit for this.  It seems like
-> the kind of thing that could be fragile and break existing expectations.
->   I don't care _that_ strongly though.
+> /*
+>   * Device does not implement PCI_COMMAND_MEMORY - this is true for any
+>   * device marked is_virtfn, but is also true for any VF passed-through
+>   * a lower-level hypervisor where emulation of the Memory Space Enable
+>   * bit was not provided.
+>   */
+> PCI_DEV_FLAGS_NO_COMMAND_MEMORY = (__force pci_dev_flags_t) (1 << 12),
 > 
-What if a writable mapping is passed to madvise(MADV_SHSTK)?  Should 
-that be rejected?
+> ?
+> 
+> >    - Wrap the commit log to fill a 75-char line.  It's arbitrary, but
+> >      that's what I use for consistency.  
+> 
+> Sure, will do.  I'll roll up a new version once I have feedback from 
+> Alex on the vfio changes.
+
+The usage of MSE threw me a bit too, as Bjorn notes that's specific to
+the SR-IOV capability.  I think this also uncovers a latent bug in our
+calling of vfio_bar_restore(), it really doesn't do a good job of
+determining whether an enable bit is implemented, regardless of whether
+it's a VF or the device simply doesn't use that address space.  For
+example I imagine you could reproduce triggering a reset recovery on
+s390 by trying to write the VF command register to 1 with setpci from a
+guest (since you won't have is_virtfn to bail out of the recovery
+function).  I think we'll still need this dev_flag to differentiate
+unimplmented and enabled versus simply unimplemented to resolve that
+though, so the change looks ok to me. Thanks,
+
+Alex
+
+> >> Signed-off-by: Matthew Rosato <mjrosato@linux.ibm.com>
+> >> ---
+> >>   drivers/pci/iov.c   | 1 +
+> >>   include/linux/pci.h | 2 ++
+> >>   2 files changed, 3 insertions(+)
+> >>
+> >> diff --git a/drivers/pci/iov.c b/drivers/pci/iov.c
+> >> index b37e08c..2bec77c 100644
+> >> --- a/drivers/pci/iov.c
+> >> +++ b/drivers/pci/iov.c
+> >> @@ -180,6 +180,7 @@ int pci_iov_add_virtfn(struct pci_dev *dev, int id)
+> >>   	virtfn->device = iov->vf_device;
+> >>   	virtfn->is_virtfn = 1;
+> >>   	virtfn->physfn = pci_dev_get(dev);
+> >> +	virtfn->dev_flags |= PCI_DEV_FLAGS_FORCE_COMMAND_MEM;
+> >>   
+> >>   	if (id == 0)
+> >>   		pci_read_vf_config_common(virtfn);
+> >> diff --git a/include/linux/pci.h b/include/linux/pci.h
+> >> index 8355306..9316cce 100644
+> >> --- a/include/linux/pci.h
+> >> +++ b/include/linux/pci.h
+> >> @@ -227,6 +227,8 @@ enum pci_dev_flags {
+> >>   	PCI_DEV_FLAGS_NO_FLR_RESET = (__force pci_dev_flags_t) (1 << 10),
+> >>   	/* Don't use Relaxed Ordering for TLPs directed at this device */
+> >>   	PCI_DEV_FLAGS_NO_RELAXED_ORDERING = (__force pci_dev_flags_t) (1 << 11),
+> >> +	/* Device does not implement PCI_COMMAND_MEMORY (e.g. a VF) */
+> >> +	PCI_DEV_FLAGS_FORCE_COMMAND_MEM = (__force pci_dev_flags_t) (1 << 12),
+> >>   };
+> >>   
+> >>   enum pci_irq_reroute_variant {
+> >> -- 
+> >> 1.8.3.1
+> >>  
+> 
+
