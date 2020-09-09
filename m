@@ -2,67 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA973262558
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 04:45:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B23C262563
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 04:52:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729014AbgIICo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 22:44:57 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:20870 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728584AbgIICot (ORCPT
+        id S1728483AbgIICwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 22:52:53 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:38598 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726369AbgIICww (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 22:44:49 -0400
-X-UUID: ccbc6fc3f2734fae9e1af17c079dd564-20200909
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=KnlunEIZPJSAevHwEXlWcgiUgHwh3n6Mc+pcg4rLANE=;
-        b=cBquiHz0epDUS0Vkcb2xmaLJMoow8PRtHX0wa0rC2s+uCZSiWBdbDY+hgE+nnZCfvhCrPdBuzTIOItUwCSp8gd+dP5f/ZuATOGsaBXRvk/b95U8Tl0M+r9s0PGPtfnct7v2XHeZeWSRoXWm7dHvYQ910fSFXl599yuNMAW0AOPI=;
-X-UUID: ccbc6fc3f2734fae9e1af17c079dd564-20200909
-Received: from mtkcas08.mediatek.inc [(172.21.101.126)] by mailgw02.mediatek.com
-        (envelope-from <hsin-hsiung.wang@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1341309525; Wed, 09 Sep 2020 10:44:46 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 9 Sep 2020 10:44:45 +0800
-Received: from [172.21.77.4] (172.21.77.4) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 9 Sep 2020 10:44:45 +0800
-Message-ID: <1599619486.8380.0.camel@mtksdaap41>
-Subject: Re: [PATCH v2 1/2] dt-bindings: spmi: document binding for the
- Mediatek SPMI controller
-From:   Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     Stephen Boyd <sboyd@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        Tue, 8 Sep 2020 22:52:52 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0892p5j0162498;
+        Wed, 9 Sep 2020 02:52:36 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=C939ozeuxWuJ6UaWKKgz1ial42qnOOBORlZagTLnDZA=;
+ b=GOL2okPLjNan8Ky8Dg7r/p8ODKqq9PWl+8KmOrenLj6O3sY7eeXENiVJhkTszTbVQOU0
+ 4kz3EPwjkW/v1O6eTruAT0KfN3fqeh8Vxiw7MlZYVlBEvnz231KFu402fIR1aZUPmvw5
+ NrREUj+tA+Ip/C4FZ6z/ve9ilplseBhZOKf+TVa0gKdU9ubb4H6xmBD2/ud1KJ604ViF
+ o+Lz383UTGTW6o147OaVSK05gcOMxfgKS7arwEck4Rg4QNbgOVhm+MAsO0EcQ0kk6wyJ
+ 6qXc1oBX0IpNPshhcLUdiK7SHErW/zhVV8wWwYi4ggNCQg1LXKbyi5EiJAWXRemDG931 jQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 33c2mkxysb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 09 Sep 2020 02:52:36 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0892jg7m100313;
+        Wed, 9 Sep 2020 02:50:35 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 33cmerym5p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 09 Sep 2020 02:50:35 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0892oVNG021963;
+        Wed, 9 Sep 2020 02:50:31 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 08 Sep 2020 19:50:30 -0700
+To:     Stanley Chu <stanley.chu@mediatek.com>
+Cc:     <linux-scsi@vger.kernel.org>, <martin.petersen@oracle.com>,
+        <avri.altman@wdc.com>, <alim.akhtar@samsung.com>,
+        <jejb@linux.ibm.com>, <matthias.bgg@gmail.com>,
+        <bvanassche@acm.org>, <linux-mediatek@lists.infradead.org>,
         <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <srv_heupstream@mediatek.com>
-Date:   Wed, 9 Sep 2020 10:44:46 +0800
-In-Reply-To: <20200908204950.GA893759@bogus>
-References: <1598006677-7953-1-git-send-email-hsin-hsiung.wang@mediatek.com>
-         <1598006677-7953-2-git-send-email-hsin-hsiung.wang@mediatek.com>
-         <20200908204950.GA893759@bogus>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        <linux-kernel@vger.kernel.org>, <kuohong.wang@mediatek.com>,
+        <peter.wang@mediatek.com>, <chun-hung.wu@mediatek.com>,
+        <andy.teng@mediatek.com>, <chaotian.jing@mediatek.com>,
+        <cc.chou@mediatek.com>
+Subject: Re: [PATCH 0/4] scsi: ufs-mediatek: Fixes for kernel v5.10
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1o8mf4qah.fsf@ca-mkp.ca.oracle.com>
+References: <20200908064507.30774-1-stanley.chu@mediatek.com>
+Date:   Tue, 08 Sep 2020 22:50:27 -0400
+In-Reply-To: <20200908064507.30774-1-stanley.chu@mediatek.com> (Stanley Chu's
+        message of "Tue, 8 Sep 2020 14:45:03 +0800")
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9738 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=1 adultscore=0
+ bulkscore=0 phishscore=0 malwarescore=0 mlxlogscore=999 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009090023
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9738 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 priorityscore=1501
+ phishscore=0 adultscore=0 bulkscore=0 clxscore=1015 mlxlogscore=999
+ malwarescore=0 suspectscore=1 lowpriorityscore=0 spamscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009090024
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksDQoNCk9uIFR1ZSwgMjAyMC0wOS0wOCBhdCAxNDo0OSAtMDYwMCwgUm9iIEhlcnJpbmcgd3Jv
-dGU6DQo+IE9uIEZyaSwgQXVnIDIxLCAyMDIwIGF0IDA2OjQ0OjM2UE0gKzA4MDAsIEhzaW4tSHNp
-dW5nIFdhbmcgd3JvdGU6DQo+ID4gVGhpcyBhZGRzIGRvY3VtZW50YXRpb24gZm9yIHRoZSBTUE1J
-IGNvbnRyb2xsZXIgZm91bmQgb24gTWVkaWF0ZWsgU29Dcy4NCj4gPiANCj4gPiBTaWduZWQtb2Zm
-LWJ5OiBIc2luLUhzaXVuZyBXYW5nIDxoc2luLWhzaXVuZy53YW5nQG1lZGlhdGVrLmNvbT4NCj4g
-PiAtLS0NCj4gPiAgLi4uL2RldmljZXRyZWUvYmluZGluZ3Mvc3BtaS9zcG1pLW10ay1wbWlmLnR4
-dCAgICAgfCAzMyArKysrKysrKysrKysrKysrKysrKysrDQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCAz
-MyBpbnNlcnRpb25zKCspDQo+ID4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBEb2N1bWVudGF0aW9uL2Rl
-dmljZXRyZWUvYmluZGluZ3Mvc3BtaS9zcG1pLW10ay1wbWlmLnR4dA0KPiANCj4gQmluZGluZ3Mg
-YXJlIGluIERUIHNjaGVtYSBmb3JtYXQgbm93LiBQbGVhc2UgY29udmVydCB0aGlzLg0KPiANCj4g
-Um9iDQoNClRoYW5rcywgSSB3aWxsIHVwZGF0ZSBpdCB3aXRoIGNvcnJlY3QgZm9ybWF0IGluIG5l
-eHQgcGF0Y2guDQo=
 
+Stanley,
+
+> This series fix some defects and introduce host reset mechanism in
+> MediaTek UFS platforms.  Please consider this patch series for kernel
+> v5.10.
+
+Applied to the 5.10 SCSI staging tree. Thanks!
+
+-- 
+Martin K. Petersen	Oracle Linux Engineering
