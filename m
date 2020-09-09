@@ -2,204 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C826263AB7
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 04:42:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44F22263B09
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 04:53:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730436AbgIJCmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 22:42:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53350 "EHLO
+        id S1730329AbgIJCxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 22:53:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730520AbgIJCHb (ORCPT
+        with ESMTP id S1730204AbgIJB5a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 22:07:31 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8386DC061796
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 16:17:47 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id b13so2484633qvl.2
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 16:17:47 -0700 (PDT)
+        Wed, 9 Sep 2020 21:57:30 -0400
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2070d.outbound.protection.outlook.com [IPv6:2a01:111:f400:7eae::70d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67103C0617A4
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 16:29:35 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UKcoj+6EoWVH+QNCscEI5P4ulLHEg/QxjBlBMzTwlQeeI40jG9MalN7qNpgIdlhAc86M2OdhLS/l11C0qvxshq8gJSTujWZYogI+RgHDnUliaFRGWZvxeRZRFQNQWIS5dFpHp6hX/m/eNhBGuZL6n7oxMKPHxLsLThdypzVNk1vlVwXDa+6cvEoZRXHT9NtvHcS8Mvis2gWqK4hWcp7bq+kJj6luDT56bEiLIkfAFE3tr3efRK8+Cxa4kFabBZnbhI86KmpkpXdZl7+QBk8T8qJO8wXZwn2cOQF/k5kdYm6MeAMuMQ6BoWwrCA5MQ9Of9Am539T36LoTnEZuuK/VeQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0+FOCyBQm+nAJpex75lVnuBFIN/TiF/UNojFI8JnQGU=;
+ b=LY2J8B7E55vS7+QvcMGH1OnoogpjSvzMkkz/xl7DczL7G/DGl644eRp5tE4yGv4CW1VgX2ezYeC+iF3XyN/Cwf6Sq3G1miPkFBA+z3yXSj/qCny/7K58SXuICpwqqqDGHT8ij3sfucguMhaNQA0eaSCgd861G8EjPy467cFYOeUIOgWdTdREbW1g4pUMcThJ21/S6OjmBm+C87lJhUT+uG5Et2F6poUwthsM5TIMceCFPcxYCyLVKtB7/GmUq2M9nUmTWxfiszmfrrS+SrFKIlGQwwmkoe2jNxXbCjJQO/2lCEAdrgC6yVlAN6pG2IXf1+Zl6MuCqYIhRxfXuKKxMA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=os.amperecomputing.com; dkim=pass
+ header.d=os.amperecomputing.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=eNbgA7wJNhgB/YQkgVZ6Sifq4zF6BFfhA4BIqD8+kaE=;
-        b=bF8Qb/grHct1/eaX/5eL6k6ObxpykJb0d4zLLV2jGb0xvjs073Ym42sOFNa63xRsKl
-         3UiR7OtWtNLBbgQqlDP/Ze+fx+8eBg1pR3fjkL3tjBrMZOrxXwY9f39eH3HocooAVVNZ
-         H7mQzRzVzUnPj5qbRNxztp/s2ul4YWIYfJklEuDJOAoCgMe/9Ml2w/ZHH0qLx6T/n04F
-         ErB/S2m3jU99ylGanWDQjBbcs8mqb3f7QhPX81WiT2tnbnH1pzdeTTh3KdYG/1FNun5B
-         3x3lbmO3Z8hOpFjJAeJMv7ygsuY6oQr+ylEA9bFQV5A9rkplXpOgTzg67S4c4qvcrl2W
-         rpzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=eNbgA7wJNhgB/YQkgVZ6Sifq4zF6BFfhA4BIqD8+kaE=;
-        b=CsW+JN5hTAs8iA9x1cp6mhxiSIs3xVT9ilC6W07OdqwQ+v9GVmC2kJn1elhhQoROWp
-         084L9o8goalTHgWCWKPSZ9sVzHt8s7Bb1+GkF7VqddIBGLW/T+0ommSyQFinRyICbSgd
-         TtdJx3ClZbV3bauC696pA0yG2pYa8BbSMLaaB4iHxflG43TYSYP8m2Ymif21Gr+IodJO
-         WuwiN1gPxNERZwSk1yGh83G9W7IwYOIJjctaqPDF/HLcXWjTwZvzU7nDsLAWeVQsvddV
-         NN8MsY9JKDsO6Co6yY2x/2LkVLnmbakAd9msmGQlZn5iAX5fgW9Crbf3QhXDS/dgRzs2
-         ntsw==
-X-Gm-Message-State: AOAM533u+N/CRlJboqNXCLQYATgGXMwkhqSDQxPUt1nmf37aC7TtkNaP
-        7JRIQTNy9CEoEkuR96kEnbl5sQ==
-X-Google-Smtp-Source: ABdhPJwudYuv1b4JcL8l9kJC2ypzAliQ961ce7PA3JlrwTvNm3U2ajUl9p33pNfTp/yGmTBaBfxXVQ==
-X-Received: by 2002:a0c:e783:: with SMTP id x3mr6293895qvn.114.1599693417492;
-        Wed, 09 Sep 2020 16:16:57 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id w44sm4934717qth.9.2020.09.09.16.16.54
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Wed, 09 Sep 2020 16:16:56 -0700 (PDT)
-Date:   Wed, 9 Sep 2020 16:16:41 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-cc:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        mgorman@techsingularity.net, tj@kernel.org,
-        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
-        willy@infradead.org, hannes@cmpxchg.org, lkp@intel.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, shakeelb@google.com,
-        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
-        kirill@shutemov.name, alexander.duyck@gmail.com,
-        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
-        shy828301@gmail.com, vbabka@suse.cz, minchan@kernel.org, cai@lca.pw
-Subject: Re: [PATCH v18 00/32] per memcg lru_lock: reviews
-In-Reply-To: <61a42a87-eec9-e300-f710-992756f70de6@linux.alibaba.com>
-Message-ID: <alpine.LSU.2.11.2009091524260.10087@eggly.anvils>
-References: <1598273705-69124-1-git-send-email-alex.shi@linux.alibaba.com> <20200824114204.cc796ca182db95809dd70a47@linux-foundation.org> <alpine.LSU.2.11.2008241231460.1065@eggly.anvils> <alpine.LSU.2.11.2008262301240.4405@eggly.anvils>
- <alpine.LSU.2.11.2009081640070.7256@eggly.anvils> <61a42a87-eec9-e300-f710-992756f70de6@linux.alibaba.com>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+ d=os.amperecomputing.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0+FOCyBQm+nAJpex75lVnuBFIN/TiF/UNojFI8JnQGU=;
+ b=VPlGjP6BSC5DUvaHZ6yxAYPcHtBYisQR0fmcU6gl26p1eJyxV/kltMD8Kp9ISedYWrX37l7T6L/QOmwJ3hE6EyRTH0AA6ziXd8XO6SIURXvs6/mFw28sJRKyWF26/E4Q+WXHtZZX8VmFvRaztGItDDFHUOUzNyA4aIuBEGpRKjs=
+Authentication-Results: amperecomputing.com; dkim=none (message not signed)
+ header.d=none;amperecomputing.com; dmarc=none action=none
+ header.from=os.amperecomputing.com;
+Received: from BYAPR01MB4598.prod.exchangelabs.com (2603:10b6:a03:8a::18) by
+ BYAPR01MB4213.prod.exchangelabs.com (2603:10b6:a03:13::10) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3348.15; Wed, 9 Sep 2020 23:29:09 +0000
+Received: from BYAPR01MB4598.prod.exchangelabs.com
+ ([fe80::419e:edaf:d4b1:3b29]) by BYAPR01MB4598.prod.exchangelabs.com
+ ([fe80::419e:edaf:d4b1:3b29%4]) with mapi id 15.20.3370.016; Wed, 9 Sep 2020
+ 23:29:09 +0000
+From:   Tuan Phan <tuanphan@os.amperecomputing.com>
+Cc:     patches@amperecomputing.com, suzuki.poulose@arm.com,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v5] perf: arm_dsu: Support DSU ACPI devices
+Date:   Wed,  9 Sep 2020 16:29:00 -0700
+Message-Id: <1599694141-16056-1-git-send-email-tuanphan@os.amperecomputing.com>
+X-Mailer: git-send-email 2.7.4
+Content-Type: text/plain
+X-ClientProxiedBy: BYAPR21CA0025.namprd21.prod.outlook.com
+ (2603:10b6:a03:114::35) To BYAPR01MB4598.prod.exchangelabs.com
+ (2603:10b6:a03:8a::18)
 MIME-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="0-945709820-1599693416=:10087"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from aptiov-dev-Latitude-E7470.amperecomputing.com (4.28.12.214) by BYAPR21CA0025.namprd21.prod.outlook.com (2603:10b6:a03:114::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3391.3 via Frontend Transport; Wed, 9 Sep 2020 23:29:08 +0000
+X-Mailer: git-send-email 2.7.4
+X-Originating-IP: [4.28.12.214]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f33bd65d-e15d-44f9-c61b-08d85518267d
+X-MS-TrafficTypeDiagnostic: BYAPR01MB4213:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR01MB4213C145B51600330DF60884E0260@BYAPR01MB4213.prod.exchangelabs.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1923;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Wntox5GWOxrW6Zj+jVb7MqAdGZert08X91KxBmhgn7558wPeMb+VYvPkBB/2XaPObQAyolHHyLV2lKGwZfF2b6GIvVO+FXD39v5Jt0SYI55tnEOPxW87GLxSdES+urwhd9MG5eidnizQPyCXha1kQpPCgqAL4VvPaHEah28eQlbQeG39eRUE/GJ/HUs9ozJ5ZwJEdf7FxZuPa8W3ZkL0Xy+3h1LRYA2HMIm7Dyh2Svc4t2hT4vD2CcA996tOOyABuJk3W79mXrNX1DRsOsdl54P5tdrsE/OsTB6jsoXJr78Ee6RA0fqI3xQU5DTY8Y3W0emPzGSZGX9i2LcJgzFLLCsB2ucwOe0Dek9kFcyO7iZCzUKjCmgXqM+O6FjAQFIOzXMPKgNRhjZ8jtiSlqqvsSYKSUdx2jTwgn/7QYn+oA5cR6c07uvBqjL1rIkvJ5mZZAa9vzaKTbV0sW13MW6Mdw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR01MB4598.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(136003)(39850400004)(366004)(376002)(8936002)(6486002)(2616005)(478600001)(956004)(16526019)(316002)(8676002)(109986005)(966005)(83380400001)(4326008)(26005)(186003)(6506007)(6666004)(52116002)(6512007)(5660300002)(66946007)(86362001)(66476007)(2906002)(54906003)(66556008)(266003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: FAlllZ6LJ3B6rs+duAHm+ECIgE6Qzrk3x5/y9xuV8Xc7ZY9B4ae/m/QPyK4wah/7g7zqpHaZErK4OvSrYQlO9JMmgGTY8dCfh2VC7PC51m9jbcfeMR/jB3SKpjnMIP4EpxevMhsbuhRlq99zHffj/dV7asdLba5mnGvnytx3xsxH0TxrSRqKlGQBzKNthJpbYnP5VnkynGpheSvI0o+EG2Y+PKokIKU9k+jU7OZCVzClS/OAZ4+J3rDkglbPHr+MpNhzwW1H8j3ZWvLT3uDz6685jJqcIlWJpEbZF1U5/PI4CvzF4VBBHTo9dyUTqjZDUeMP+VoBIVv36K+GVoAJ+dpFKchNuQY8F1ro/U+EO7JXq1YwLdLRoH8KRtmrPozavdl2kSbYCBKVyjS3RG51PwUlWyrwvOo9LlFq/X004MhKjeKHmyxZcJ707ppGlSMq9pNCFNKjpMknHRXvextf/GjVL5b1xlMFMQqvbU4bjt7M8IEwnOyP9MQ+urpFNsNuOFs9WXtvIIMKdZWgVmOjOBzdzZQZmTObCEZr4vdFY5dKbl9AYhlB8cTa25L7URcpXN+PT4uGmRJPs1MEBq6E8flo3Dg9Fw0xhfUR/m51zdki/EhkdWTavhGXqriMdwgFv/S5LptAtE8wzpE6i5ZZSg==
+X-OriginatorOrg: os.amperecomputing.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f33bd65d-e15d-44f9-c61b-08d85518267d
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR01MB4598.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Sep 2020 23:29:08.9566
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: LilwY3ZVDbu4X2pZSF921Wm0Werv67dGC+u4pTKZMoDzaAekda6ojsjgtJUWPNp53ozBNNIBayxSsC8tXZtjXw6a6gZNZ5dHGfiTrsMCTz1mZ0/vIa2Zonx3Bj0iegXQ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR01MB4213
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+Add support for probing device from ACPI node.
+Each DSU ACPI node and its associated cpus are inside a cluster node.
 
---0-945709820-1599693416=:10087
-Content-Type: TEXT/PLAIN; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Signed-off-by: Tuan Phan <tuanphan@os.amperecomputing.com>
+---
+Changes in v5:
+- Used CONFIG_ACPI to fix compiling issue.
 
-On Wed, 9 Sep 2020, Alex Shi wrote:
-> =E5=9C=A8 2020/9/9 =E4=B8=8A=E5=8D=887:41, Hugh Dickins =E5=86=99=E9=81=
-=93:
-> >=20
-> > [PATCH v18 05/32] mm/thp: remove code path which never got into
-> > This is a good simplification, but I see no sign that you understand
-> > why it's valid: it relies on lru_add_page_tail() being called while
-> > head refcount is frozen to 0: we would not get this far if someone
-> > else holds a reference to the THP - which they must hold if they have
-> > isolated the page from its lru (and that's true before or after your
-> > per-memcg changes - but even truer after those changes, since PageLRU
-> > can then be flipped without lru_lock at any instant): please explain
-> > something of this in the commit message.
->=20
-> Is the following commit log better?
->=20
->     split_huge_page() will never call on a page which isn't on lru list, =
-so
->     this code never got a chance to run, and should not be run, to add ta=
-il
->     pages on a lru list which head page isn't there.
->=20
->     Hugh Dickins' mentioned:
->     The path should never be called since lru_add_page_tail() being calle=
-d
->     while head refcount is frozen to 0: we would not get this far if some=
-one
->     else holds a reference to the THP - which they must hold if they have
->     isolated the page from its lru.
->=20
->     Although the bug was never triggered, it'better be removed for code
->     correctness, and add a warn for unexpected calling.
+Changes in v4:
+- Addressed Will's comments.
 
-Not much better, no.  split_huge_page() can easily be called for a page
-which is not on the lru list at the time, and I don't know what was the
-bug which was never triggered.  Stick with whatever text you end up with
-for the combination of 05/32 and 18/32, and I'll rewrite it after.
+Changes in v3:
+- Based on the latest ARM ACPI binding at: https://developer.arm.com/documentation/den0093/c/
 
-> > [PATCH v18 06/32] mm/thp: narrow lru locking
-> > Why? What part does this play in the series? "narrow lru locking" can
-> > also be described as "widen page cache locking":=20
->=20
-> Uh, the page cache locking isn't widen, it's still on the old place.
+Changes in v2:
+- Removed IRQF_SHARED.
+- Fixed ACPI runtime detection.
 
-I'm not sure if you're joking there. Perhaps just a misunderstanding.
+ drivers/perf/arm_dsu_pmu.c | 61 +++++++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 55 insertions(+), 6 deletions(-)
 
-Yes, patch 06/32 does not touch the xa_lock(&mapping->i_pages) and
-xa_lock(&swap_cache->i_pages) lines (odd how we've arrived at two of
-those, but please do not get into cleaning it up now); but it removes
-the spin_lock_irqsave(&pgdata->lru_lock, flags) which used to come
-before them, and inserts a spin_lock(&pgdat->lru_lock) after them.
+diff --git a/drivers/perf/arm_dsu_pmu.c b/drivers/perf/arm_dsu_pmu.c
+index 96ed93c..68d2891 100644
+--- a/drivers/perf/arm_dsu_pmu.c
++++ b/drivers/perf/arm_dsu_pmu.c
+@@ -11,6 +11,7 @@
+ #define DRVNAME		PMUNAME "_pmu"
+ #define pr_fmt(fmt)	DRVNAME ": " fmt
+ 
++#include <linux/acpi.h>
+ #include <linux/bitmap.h>
+ #include <linux/bitops.h>
+ #include <linux/bug.h>
+@@ -603,18 +604,19 @@ static struct dsu_pmu *dsu_pmu_alloc(struct platform_device *pdev)
+ }
+ 
+ /**
+- * dsu_pmu_dt_get_cpus: Get the list of CPUs in the cluster.
++ * dsu_pmu_dt_get_cpus: Get the list of CPUs in the cluster
++ * from device tree.
+  */
+-static int dsu_pmu_dt_get_cpus(struct device_node *dev, cpumask_t *mask)
++static int dsu_pmu_dt_get_cpus(struct device *dev, cpumask_t *mask)
+ {
+ 	int i = 0, n, cpu;
+ 	struct device_node *cpu_node;
+ 
+-	n = of_count_phandle_with_args(dev, "cpus", NULL);
++	n = of_count_phandle_with_args(dev->of_node, "cpus", NULL);
+ 	if (n <= 0)
+ 		return -ENODEV;
+ 	for (; i < n; i++) {
+-		cpu_node = of_parse_phandle(dev, "cpus", i);
++		cpu_node = of_parse_phandle(dev->of_node, "cpus", i);
+ 		if (!cpu_node)
+ 			break;
+ 		cpu = of_cpu_node_to_id(cpu_node);
+@@ -631,6 +633,36 @@ static int dsu_pmu_dt_get_cpus(struct device_node *dev, cpumask_t *mask)
+ 	return 0;
+ }
+ 
++/**
++ * dsu_pmu_acpi_get_cpus: Get the list of CPUs in the cluster
++ * from ACPI.
++ */
++static int dsu_pmu_acpi_get_cpus(struct device *dev, cpumask_t *mask)
++{
++#ifdef CONFIG_ACPI
++	int cpu;
++
++	/*
++	 * A dsu pmu node is inside a cluster parent node along with cpu nodes.
++	 * We need to find out all cpus that have the same parent with this pmu.
++	 */
++	for_each_possible_cpu(cpu) {
++		struct acpi_device *acpi_dev;
++		struct device *cpu_dev = get_cpu_device(cpu);
++
++		if (!cpu_dev)
++			continue;
++
++		acpi_dev = ACPI_COMPANION(cpu_dev);
++		if (acpi_dev &&
++			acpi_dev->parent == ACPI_COMPANION(dev)->parent)
++			cpumask_set_cpu(cpu, mask);
++	}
++#endif
++
++	return 0;
++}
++
+ /*
+  * dsu_pmu_probe_pmu: Probe the PMU details on a CPU in the cluster.
+  */
+@@ -676,6 +708,7 @@ static int dsu_pmu_device_probe(struct platform_device *pdev)
+ {
+ 	int irq, rc;
+ 	struct dsu_pmu *dsu_pmu;
++	struct fwnode_handle *fwnode = dev_fwnode(&pdev->dev);
+ 	char *name;
+ 	static atomic_t pmu_idx = ATOMIC_INIT(-1);
+ 
+@@ -683,7 +716,16 @@ static int dsu_pmu_device_probe(struct platform_device *pdev)
+ 	if (IS_ERR(dsu_pmu))
+ 		return PTR_ERR(dsu_pmu);
+ 
+-	rc = dsu_pmu_dt_get_cpus(pdev->dev.of_node, &dsu_pmu->associated_cpus);
++	if (IS_ERR_OR_NULL(fwnode))
++		return -ENOENT;
++
++	if (is_of_node(fwnode))
++		rc = dsu_pmu_dt_get_cpus(&pdev->dev, &dsu_pmu->associated_cpus);
++	else if (is_acpi_device_node(fwnode))
++		rc = dsu_pmu_acpi_get_cpus(&pdev->dev, &dsu_pmu->associated_cpus);
++	else
++		return -ENOENT;
++
+ 	if (rc) {
+ 		dev_warn(&pdev->dev, "Failed to parse the CPUs\n");
+ 		return rc;
+@@ -752,11 +794,19 @@ static const struct of_device_id dsu_pmu_of_match[] = {
+ 	{ .compatible = "arm,dsu-pmu", },
+ 	{},
+ };
++MODULE_DEVICE_TABLE(of, dsu_pmu_of_match);
++
++static const struct acpi_device_id dsu_pmu_acpi_match[] = {
++	{ "ARMHD500", 0},
++	{},
++};
++MODULE_DEVICE_TABLE(acpi, dsu_pmu_acpi_match);
+ 
+ static struct platform_driver dsu_pmu_driver = {
+ 	.driver = {
+ 		.name	= DRVNAME,
+ 		.of_match_table = of_match_ptr(dsu_pmu_of_match),
++		.acpi_match_table = ACPI_PTR(dsu_pmu_acpi_match),
+ 		.suppress_bind_attrs = true,
+ 	},
+ 	.probe = dsu_pmu_device_probe,
+@@ -826,7 +876,6 @@ static void __exit dsu_pmu_exit(void)
+ module_init(dsu_pmu_init);
+ module_exit(dsu_pmu_exit);
+ 
+-MODULE_DEVICE_TABLE(of, dsu_pmu_of_match);
+ MODULE_DESCRIPTION("Perf driver for ARM DynamIQ Shared Unit");
+ MODULE_AUTHOR("Suzuki K Poulose <suzuki.poulose@arm.com>");
+ MODULE_LICENSE("GPL v2");
+-- 
+2.7.4
 
-You call that narrowing the lru locking, okay, but I see it as also
-pushing the page cache locking outwards: before this patch, page cache
-lock was taken inside lru_lock; after this patch, page cache lock is
-taken outside lru_lock.  If you cannot see that, then I think you
-should not have touched this code at all; but it's what we have
-been testing, and I think we should go forward with it.
-
-> > But I wish you could give some reason for it in the commit message!
->=20
-> It's a head scratch task. Would you like to tell me what's detailed info=
-=20
-> should be there? Thanks!
-
-So, you don't know why you did it either: then it will be hard to
-justify.  I guess I'll have to write something for it later.  I'm
-strongly tempted just to drop the patch, but expect it will become
-useful later, for using lock_page_memcg() before getting lru_lock.
-
-> > Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
-> > Is that correct? Or Wei Yang suggested some part of it perhaps?
->=20
-> Yes, we talked a lot to confirm the locking change is safe.
-
-Okay, but the patch was written by you, and sent by you to Andrew:
-that is not a case for "Signed-off-by: Someone Else".
-
-> > [PATCH v18 27/32] mm/swap.c: optimizing __pagevec_lru_add lru_lock
-> > Could we please drop this one for the moment? And come back to it later
-> > when the basic series is safely in.  It's a good idea to try sorting
-> > together those pages which come under the same lock (though my guess is
-> > that they naturally gather themselves together quite well already); but
-> > I'm not happy adding 360 bytes to the kernel stack here (and that in
-> > addition to 192 bytes of horrid pseudo-vma in the shmem swapin case),
-> > though that could be avoided by making it per-cpu. But I hope there's
-> > a simpler way of doing it, as efficient, but also useful for the other
-> > pagevec operations here: perhaps scanning the pagevec for same page->
-> > mem_cgroup (and flags node bits), NULLing entries as they are done.
-> > Another, easily fixed, minor defect in this patch: if I'm reading it
-> > right, it reverses the order in which the pages are put on the lru?
->=20
-> this patch could give about 10+% performance gain on my multiple memcg
-> readtwice testing. fairness locking cost the performance much.
-
-Good to know, should have been mentioned.  s/fairness/Repeated/
-
-But what was the gain or loss on your multiple memcg readtwice
-testing without this patch, compared against node-only lru_lock?
-The 80% gain mentioned before, I presume.  So this further
-optimization can wait until the rest is solid.
-
->=20
-> I also tried per cpu solution but that cause much trouble of per cpu func
-> things, and looks no benefit except a bit struct size of stack, so if=20
-> stack size still fine. May we could use the solution and improve it bette=
-r.
-> like, functionlize, fix the reverse issue etc.
-
-I don't know how important the stack depth consideration is nowadays:
-I still care, maybe others don't, since VMAP_STACK became an option.
-
-Yes, please fix the reversal (if I was right on that); and I expect
-you could use a singly linked list instead of the double.
-
-But I'll look for an alternative - later, once the urgent stuff
-is completed - and leave the acks on this patch to others.
-
-Hugh
---0-945709820-1599693416=:10087--
