@@ -2,146 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53FEB263476
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 19:20:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DA732633A6
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 19:08:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730224AbgIIRUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 13:20:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45946 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729941AbgIIPZN (ORCPT
+        id S1730474AbgIIRIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 13:08:30 -0400
+Received: from lb2-smtp-cloud9.xs4all.net ([194.109.24.26]:51891 "EHLO
+        lb2-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730394AbgIIPhD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 11:25:13 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A9E2C061360
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 07:05:36 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id d190so3273372iof.3
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 07:05:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=1GNvQaJVVbJaa5hqastQ4V9UWSsrJ3TzEQOTc6YZGA0=;
-        b=Wz131WDagK/Rxky/VsKTxm9iJtyF3lZsrhvUt6kH/ULppLy487y62HkZGYeM1pXKOZ
-         DeQ8y3Q16GCVRKCyngWbLjZIjWc72QhidG0e5bcZSKpjLE09P3yHLmATe3Z+FpCFgcTQ
-         W2/C/2AzVGHUu6cHHEPWt6mkn5ZNMcG4xCvMcuGt+NA0M9fQHvWeaRORq0/VJy00UBFW
-         SVuEXZBNl1PaMP21xD5W8PtNgRJ4ghTKDdVbnJzTuhHM+YiLMWOFq46dlbALB9SQ435V
-         /wamSrkHIbLha24honWVVkDwyaCkp0a1caYMHllncnc93uHxavoJRQhw5/gkMF+A5Q2G
-         wUVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=1GNvQaJVVbJaa5hqastQ4V9UWSsrJ3TzEQOTc6YZGA0=;
-        b=CnRKdAIYJ2t9qtyQFfwvikkUXYbU1JQq4jxfRQHhdh/sxKbptzLXoZcbea/OnnNLj/
-         qFlyACwjssFHvpa1IltzjyyXI9fTNeWIJuiLXmGnt4ZtwpO3yhYKgMqLZspWHlbAyVC7
-         y3MW56gbzpfYKSXnq0MvAixQ0lEy9YgDXzWzf3n276zWlkZC9z+ewHT24ximdN+hxbdN
-         ZEktDRv6fCkbz/oC2SOEbaHrnRPjpiHjCsmD1xDzybBHPdcDc8FwlCEcSfqMDqsU5pq4
-         WqkcfNDsRnpVHhBB+m3dxBB3Ltzy2x2p05PhIEHHKypv229bmLaf2J9qWJYLkXYnhaG+
-         JSZA==
-X-Gm-Message-State: AOAM5300NEKyCkuQzoIICdEySfLbXKhOXNeDy9ZIauXbJC5KByTcvhxM
-        Es8awQDViyApdAoU6k1F6hLhHQ==
-X-Google-Smtp-Source: ABdhPJxR0dWjX+LAG42vqffCSj6/FEsKntR0oewD/D0VWfxuQhn1DExXR02/p7rg4pZ6AeBZyQoUdQ==
-X-Received: by 2002:a02:cb99:: with SMTP id u25mr3965325jap.99.1599660335262;
-        Wed, 09 Sep 2020 07:05:35 -0700 (PDT)
-Received: from [192.168.1.10] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id m15sm1464546ild.8.2020.09.09.07.05.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Sep 2020 07:05:34 -0700 (PDT)
-Subject: Re: INFO: task hung in io_sq_thread_stop
-To:     Hillf Danton <hdanton@sina.com>,
-        Stefano Garzarella <sgarzare@redhat.com>
-Cc:     syzbot <syzbot+3c23789ea938faaef049@syzkaller.appspotmail.com>,
-        io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-References: <00000000000030a45905aedd879d@google.com>
- <20200909134317.19732-1-hdanton@sina.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <4d55d988-d45e-ba36-fed7-342e0a6ab16e@kernel.dk>
-Date:   Wed, 9 Sep 2020 08:05:33 -0600
+        Wed, 9 Sep 2020 11:37:03 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud9.xs4all.net with ESMTPA
+        id G0kJkjPcoXgwIG0kKkZggK; Wed, 09 Sep 2020 16:06:48 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
+        t=1599660408; bh=oPrFl/TwIvpVNpQ11j9+60pYM+n2ln10KTC8JKR4WbA=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=S4SA8z+znzkwPxIJSUD15tOO5/tLQ6uyZyT8lVxO4TwZ+NwZxqYV5R0Q4lBJg2YXX
+         4HAhlrwqHrWeMbwd5HyxPYkXg0CqeBGQdnrmtdH5vxGSxQnKhLYMGEZ5CFkVeYlpZe
+         aWcLQoXVXFA/ySFah+HyFZaP9cc2ACsJiDtsX+5q8v4QawL3ljYNk+RO7Q6KiXVGrd
+         Ghcy3euewZlfVUsnno9rFvjzu2ze4ysAsBCUZmCZwIwPQSXeur5zrQlGRqmNm6et4d
+         t15Jw5Q20+7UDi2FMOq/47qoakUi73aWwGllyQSDek0xuwsanhvhdHiEkPs8mpynLX
+         cfrWoDc8TI5Xw==
+Subject: Re: [PATCH 2/3] media: Add support for the AM/FM radio chip KT0913
+ from KT Micro.
+To:     Santiago Hormazabal <santiagohssl@gmail.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org
+References: <20200831220601.20794-1-santiagohssl@gmail.com>
+ <20200831220601.20794-3-santiagohssl@gmail.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <60e1d448-2c79-2642-7fb6-82aceacdb75f@xs4all.nl>
+Date:   Wed, 9 Sep 2020 16:06:47 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200909134317.19732-1-hdanton@sina.com>
+In-Reply-To: <20200831220601.20794-3-santiagohssl@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4wfBGtO1zVijWQzDMb2IpWJbNPvzETDnfTgb43UKoKnwaY0otSN+Sz/6bzbgwUBZNdeghs/Bedcx8wmruysTJ5Tftxj4trdcE3jKaLLjCFuKE0EizMQQu2
+ b4AcZHRP1AT9oEzCmI9EE2qYbDRzETU0dF9wiDtpskjRw+lh5eQIfJPX8cbMCkPzphOtzvCp7yQax+P0Q2vfVDqo5PUhysE3fl9Mgh6eLMRS2NUmhefy21kl
+ DfgUS3/9OjdmmugYGZYKwLuTgvj2nLsYV2q8jnfOdICXQgvn1JVv2BwSKG/Lt9/HCa2n5/riOiKo/5j4sG+/NULvzKBVGQwmWxQ8iGBPuMnvbPYiWNGWQrk8
+ HCISZQGegKeFGT8gc4AF+jxqHhjKyXv1umRD3GgBYLRtSUSG7Dg+Iua796Rrq+qnqtWaVYw2s8OD9IaHKXLjTQL63o/KYi2JzT68jAKQlmtfZiAzm7e9106u
+ vCx3GiLfuPbW+S3B
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/9/20 7:43 AM, Hillf Danton wrote:
-> 
-> On Wed, 9 Sep 2020 12:03:55 +0200 Stefano Garzarella wrote:
->> On Wed, Sep 09, 2020 at 01:49:22AM -0700, syzbot wrote:
->>> Hello,
->>>
->>> syzbot found the following issue on:
->>>
->>> HEAD commit:    dff9f829 Add linux-next specific files for 20200908
->>> git tree:       linux-next
->>> console output: https://syzkaller.appspot.com/x/log.txt?x=112f880d900000
->>> kernel config:  https://syzkaller.appspot.com/x/.config?x=37b3426c77bda44c
->>> dashboard link: https://syzkaller.appspot.com/bug?extid=3c23789ea938faaef049
->>> compiler:       gcc (GCC) 10.1.0-syz 20200507
->>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17c082a5900000
->>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1474f5f9900000
->>>
->>> Bisection is inconclusive: the first bad commit could be any of:
->>>
->>> d730b1a2 io_uring: add IOURING_REGISTER_RESTRICTIONS opcode
->>> 7ec3d1dd io_uring: allow disabling rings during the creation
->>
->> I'm not sure it is related, but while rebasing I forgot to update the
->> right label in the error path.
->>
->> Since the check of ring state is after the increase of ctx refcount, we
->> need to decrease it jumping to 'out' label instead of 'out_fput':
-> 
-> I think we need to fix 6a7bb9ff5744 ("io_uring: remove need for
-> sqd->ctx_lock in io_sq_thread()") because the syzbot report
-> indicates the io_sq_thread has to wake up the kworker before
-> scheduling, and in turn the kworker has the chance to unpark it.
-> 
-> Below is the minimum walkaround I can have because it can't
-> ensure the parker will be waken in every case.
-> 
-> --- a/fs/io_uring.c
-> +++ b/fs/io_uring.c
-> @@ -6834,6 +6834,10 @@ static int io_sq_thread(void *data)
->  			io_sq_thread_drop_mm();
->  		}
->  
-> +		if (kthread_should_park()) {
-> +			/* wake up parker before scheduling */
-> +			continue;
-> +		}
->  		if (ret & SQT_SPIN) {
->  			io_run_task_work();
->  			cond_resched();
-> 
+Hi Santiago,
 
-I think this should go in the slow path:
+On 01/09/2020 00:06, Santiago Hormazabal wrote:
+> This chip requires almost no support components and can used over I2C.
+> The driver uses the I2C bus and exposes the controls as a V4L2 radio.
+> Tested with a module that contains this chip (from SZZSJDZ.com,
+> part number ZJ-801B, even tho the company seems defunct now), and an H2+
+> AllWinner SoC running a kernel built off 07d999f of the media_tree.
+> 
+> Signed-off-by: Santiago Hormazabal <santiagohssl@gmail.com>
+> ---
+>  drivers/media/radio/Kconfig        |   10 +
+>  drivers/media/radio/Makefile       |    1 +
+>  drivers/media/radio/radio-kt0913.c | 1196 ++++++++++++++++++++++++++++
+>  3 files changed, 1207 insertions(+)
+>  create mode 100644 drivers/media/radio/radio-kt0913.c
 
+One more thing: you need to add an entry to the MAINTAINERS file for this
+driver. It can either be part of this patch, or added in a separate patch.
 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index 652cc53432d4..1c4fa2a0fd82 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -6839,6 +6839,8 @@ static int io_sq_thread(void *data)
- 		} else if (ret == SQT_IDLE) {
- 			list_for_each_entry(ctx, &sqd->ctx_list, sqd_list)
- 				io_ring_set_wakeup_flag(ctx);
-+			if (kthread_should_park())
-+				continue;
- 			schedule();
- 			start_jiffies = jiffies;
- 		}
+Regards,
 
--- 
-Jens Axboe
-
+	Hans
