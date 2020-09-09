@@ -2,403 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CCC3263195
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:20:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE83F2631B1
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:24:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730813AbgIIQUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 12:20:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54032 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730996AbgIIQMt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 12:12:49 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2F61C061344;
-        Wed,  9 Sep 2020 06:48:51 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id u13so2127771pgh.1;
-        Wed, 09 Sep 2020 06:48:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4HvDFPexsr3s8vYjArlu6gd3N2WqfJ+OIg8egu/XCac=;
-        b=J72MnFFZPk8u2206qNOtZ8zlPYgrR+X7pVkPWdPhSDSmCOfDa0MEJnRcCwc5XFw0mm
-         Sb1lV3OennBIkiQRhc1R9Cqh98lBtOaDVB+fAUD+z3jcJIBgQ+Oh/oqMMqSJJm1WVdD9
-         14VbNIjhy1+L+Uj5j7VEF9gFJyNVZKbjv4K7dQom9wlg+yNZhsFThmEKa+XBh0dg9f5W
-         19K0E481CVGu3OHopl8TAG3T7AASPx7+BNMyuozy8TwCOs9JHgphikRfA3TPcsQBkMnh
-         ggETmYwWv//F/4g6KmFxUq5LFmeDeHnVgtvaWehFZqCyo+/+kL+okh/+UiDa3eBd+AaW
-         wCcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4HvDFPexsr3s8vYjArlu6gd3N2WqfJ+OIg8egu/XCac=;
-        b=gOd+9JyN/jSl8wdefoSxgaSHu9OElxQCcbCz7/fG98EHUFjyXXBCiNgfqIrIlxfS0O
-         qYdEiOka+sDjCtVbt7U3GBBw7zFMe0BMZSiMugSgxtVsr3UepmL3q2OTVCB2eokIhv4g
-         Ce9TPcO4jrytFGjMfQFlG3ZXkhbVeuEHJyOPtdnFkOyF9ajeH4xXHhcpHgss8XKz488r
-         96MB8E9tE8OQy8kcOmTfCWurp32j3c6MFQ4pJHI62QAy8vBdjCzVksflpUtdWO+rOc7X
-         kfzw1tWBnRbrdMU2SMawLYoezg3oj7hyHeaKVb8euqusAFCV7LRp7NxXSdeKcBFGkefU
-         mcaQ==
-X-Gm-Message-State: AOAM531dN9pvz0GJgprt+osMLPmeClXDAqqwlJokF8i0ngtUxBlVwf90
-        dlC4qWsyLmpwOIrYmptbHBXMeBIybN/b2yrVUOU=
-X-Google-Smtp-Source: ABdhPJwjGN/noYtRq/MK1sDgwwqkVhBVfELDCJ83d3DmuK7PnZsQ3TAXDjKUtQ6RdtWZMOqD40lzOcLYlIZiBWGiE+k=
-X-Received: by 2002:aa7:800c:: with SMTP id j12mr889318pfi.130.1599659331306;
- Wed, 09 Sep 2020 06:48:51 -0700 (PDT)
+        id S1731063AbgIIQYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 12:24:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45288 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730358AbgIIQX4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 12:23:56 -0400
+Received: from coco.lan (ip5f5ad5d6.dynamic.kabel-deutschland.de [95.90.213.214])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A5D332087C;
+        Wed,  9 Sep 2020 13:53:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599659591;
+        bh=rJBfeeTXfNkiLHWwQizTse5alallYawtzifzWGS4E8g=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=u9uSb6rV4/oX10V4lkoRj5rGgDATfOwQM1PuGh9Nb3NN1BzzkEoXYB1MF6cesgA+3
+         axeCYig+MsDAsrwSsGWGBCAvUjzlN5r3dQ+ISkfaEcjREKS8CZWJffFhR+/6lnDDso
+         RfOSbvNyvGsQJYi2IoFYBVFFKJz+cXEAsrE5b3xg=
+Date:   Wed, 9 Sep 2020 15:53:05 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Andrii Nakryiko <andriin@fb.com>, <andrii.nakryiko@gmail.com>
+Cc:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 bpf-next 5/5] docs/bpf: add BPF ring buffer design
+ notes
+Message-ID: <20200909155305.21380532@coco.lan>
+In-Reply-To: <20200529075424.3139988-6-andriin@fb.com>
+References: <20200529075424.3139988-1-andriin@fb.com>
+        <20200529075424.3139988-6-andriin@fb.com>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <1599474459-20853-1-git-send-email-gene.chen.richtek@gmail.com> <1599474459-20853-2-git-send-email-gene.chen.richtek@gmail.com>
-In-Reply-To: <1599474459-20853-2-git-send-email-gene.chen.richtek@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 9 Sep 2020 16:48:33 +0300
-Message-ID: <CAHp75VdLDvoQicP1nLnjOiit6qjaw9n7+LuJ-J3MtaoHUOa_2g@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] leds: mt6360: Add LED driver for MT6360
-To:     Gene Chen <gene.chen.richtek@gmail.com>
-Cc:     Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Dan Murphy <dmurphy@ti.com>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Gene Chen <gene_chen@richtek.com>, Wilma.Wu@mediatek.com,
-        shufan_lee@richtek.com, cy_huang@richtek.com,
-        benjamin.chao@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 7, 2020 at 1:31 PM Gene Chen <gene.chen.richtek@gmail.com> wrote:
->
-> From: Gene Chen <gene_chen@richtek.com>
->
-> Add MT6360 LED driver include 2-channel Flash LED with torch/strobe mode,
-> and 4-channel RGB LED support Register/Flash/Breath Mode
+Em Fri, 29 May 2020 00:54:24 -0700
+Andrii Nakryiko <andriin@fb.com> escreveu:
 
-I'm wondering why you don't use struct led_classdev_flash.
-
-...
-
-> +//
-> +// Copyright (C) 2020 MediaTek Inc.
-> +//
-
-Do you really need these two // lines?
-
-...
-
-> +enum {
-> +       MT6360_LED_ISNK1 = 0,
-> +       MT6360_LED_ISNK2,
-> +       MT6360_LED_ISNK3,
-> +       MT6360_LED_ISNK4,
-> +       MT6360_LED_FLASH1,
-> +       MT6360_LED_FLASH2,
-
-> +       MT6360_MAX_LEDS,
-
-No comma for terminator entry.
-
-> +};
-
-...
-
-> +#define MT6360_ISNK_MASK               0x1F
-
-GENMASK()
-
-...
-
-> +#define MT6360_ITORCH_MIN              25000
-> +#define MT6360_ITORCH_STEP             12500
-> +#define MT6360_ITORCH_MAX              400000
-> +#define MT6360_ISTRB_MIN               50000
-> +#define MT6360_ISTRB_STEP              12500
-> +#define MT6360_ISTRB_MAX               1500000
-> +#define MT6360_STRBTO_MIN              64000
-> +#define MT6360_STRBTO_STEP             32000
-> +#define MT6360_STRBTO_MAX              2432000
-
-Add unit suffixes, please.
-
-...
-
-> +#define FLED_TORCH_FLAG_MASK           0x0c
-
-> +#define FLED_STROBE_FLAG_MASK          0x03
-
-GENMASK()
-
-...
-
-> +       dev_dbg(lcdev->dev, "[%d] brightness %d\n", led->led_no, level);
-
-Not production noise.
-
-...
-
-> +       ret = regmap_update_bits(priv->regmap, MT6360_REG_RGBEN, enable_mask, val);
-> +       if (ret)
-> +               return ret;
+> Add commit description from patch #1 as a stand-alone documentation under
+> Documentation/bpf, as it might be more convenient format, in long term
+> perspective.
+> 
+> Suggested-by: Stanislav Fomichev <sdf@google.com>
+> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> ---
+>  Documentation/bpf/ringbuf.rst | 209 ++++++++++++++++++++++++++++++++++
+>  1 file changed, 209 insertions(+)
+>  create mode 100644 Documentation/bpf/ringbuf.rst
+> 
+> diff --git a/Documentation/bpf/ringbuf.rst b/Documentation/bpf/ringbuf.rst
+> new file mode 100644
+> index 000000000000..75f943f0009d
+> --- /dev/null
+> +++ b/Documentation/bpf/ringbuf.rst
+> @@ -0,0 +1,209 @@
+> +===============
+> +BPF ring buffer
+> +===============
 > +
-> +       return 0;
-
-return regmap...
-
-> +       u32 val = (level) ? MT6360_FLCSEN_MASK(led->led_no) : 0;
-
-Why parens?
-
-...
-
-> +       dev_dbg(lcdev->dev, "[%d] brightness %d\n", led->led_no, level);
-
-Noise.
-
-...
-
-> +       if (priv->fled_strobe_used) {
-> +               dev_warn(lcdev->dev, "Please disable strobe first [%d]\n", priv->fled_strobe_used);
-> +               return -EINVAL;
-
-Hmm... Shouldn't be guaranteed by some framework?
-
-...
-
-> +               curr = prev & (~BIT(led->led_no));
-
-Too many parens.
-
-...
-
-> +static int mt6360_strobe_brightness_set(struct led_classdev_flash *fl_cdev, u32 brightness)
-> +{
-> +       struct mt6360_led *led = container_of(fl_cdev, struct mt6360_led, flash);
-> +       struct led_classdev *lcdev = &fl_cdev->led_cdev;
+> +This document describes BPF ring buffer design, API, and implementation details.
 > +
-
-> +       dev_dbg(lcdev->dev, "[%d] strobe brightness %d\n", led->led_no, brightness);
-
-Noise. Point of this entire function?
-
-> +       return 0;
-> +}
-
-...
-
-> +       dev_dbg(lcdev->dev, "[%d] strobe state %d\n", led->led_no, state);
-
-Noise.
-
-If you wish to do it right, add trace events to the framework.
-
-...
-
-> +       if (priv->fled_torch_used) {
-
-> +               dev_warn(lcdev->dev, "Please disable torch first [0x%x]\n", priv->fled_torch_used);
-
-Again, why the warning? Can this be a part of the framework?
-
-> +               return -EINVAL;
-> +       }
-
-...
-
-> +               curr = prev & (~BIT(led->led_no));
-
-Too many parens.
-
-...
-
-> +       if (!prev && curr)
-> +               usleep_range(5000, 6000);
-> +       else if (prev && !curr)
-> +               udelay(500);
-
-These delays must be explained.
-
-...
-
-> +       if (led->led_no == MT6360_LED_FLASH1) {
-> +               strobe_timeout_mask = MT6360_FLED1STRBTO_MASK;
-> +               fled_short_mask = MT6360_FLED1SHORT_MASK;
-
+> +.. contents::
+> +    :local:
+> +    :depth: 2
 > +
-
-Redundant blank line.
-
-> +       } else {
-> +               strobe_timeout_mask = MT6360_FLED2STRBTO_MASK;
-> +               fled_short_mask = MT6360_FLED2SHORT_MASK;
-> +       }
-
-...
-
-> +static int mt6360_flash_external_strobe_set(struct v4l2_flash *v4l2_flash, bool enable)
-> +{
-> +       struct led_classdev_flash *flash = v4l2_flash->fled_cdev;
-> +       struct mt6360_led *led = container_of(flash, struct mt6360_led, flash);
-> +       struct mt6360_priv *priv = led->priv;
-
-> +       u32 enable_mask = MT6360_FLCSEN_MASK(led->led_no);
-
-enable_mask -> mask
-  u32 value = enable ? mask : 0;
-
-> +       int ret;
+> +Motivation
+> +----------
 > +
-> +       ret = regmap_update_bits(priv->regmap, MT6360_REG_FLEDEN, enable_mask,
-
-> +                                enable ? enable_mask : 0);
-
-  ret =  ... mask, value);
-
-> +       if (ret)
-> +               return ret;
+> +There are two distinctive motivators for this work, which are not satisfied by
+> +existing perf buffer, which prompted creation of a new ring buffer
+> +implementation.
 > +
-> +       if (enable)
-> +               priv->fled_strobe_used |= BIT(led->led_no);
-> +       else
-> +               priv->fled_strobe_used &= (~BIT(led->led_no));
-
-Too many parens.
-
+> +- more efficient memory utilization by sharing ring buffer across CPUs;
+> +- preserving ordering of events that happen sequentially in time, even across
+> +  multiple CPUs (e.g., fork/exec/exit events for a task).
 > +
-> +       return 0;
-> +}
-
-...
-
-> +       s->val = s->max = (s->min) + (lcdev->max_brightness - 1) * s->step;
-
-Ditto.
-
-...
-
-> +static void clamp_align(u32 *v, u32 min, u32 max, u32 step)
-
-Can we keep a similar API, i.e. return a new value rather than update old?
-
-> +{
-
-> +       *v = clamp_val(*v, min, max);
-
-I would rather use a temporary variable (and it actually will be
-required with above).
-
-> +       if (step > 1)
-> +               *v = (*v - min) / step * step + min;
-
-Sounds like open coded rounddown().
-
-> +}
-
-...
-
-> +       lcdev->max_brightness = (val - MT6360_ITORCH_MIN) / MT6360_ITORCH_STEP + 1;
-
-DIV_ROUND_UP(val - MT6360_ITORCH_MIN, MT6360_ITORCH_STEP) ?
-
-...
-
-> +static int mt6360_init_common_properties(struct mt6360_led *led, struct led_init_data *init_data)
-> +{
-> +       const char *str;
+> +These two problems are independent, but perf buffer fails to satisfy both.
+> +Both are a result of a choice to have per-CPU perf ring buffer.  Both can be
+> +also solved by having an MPSC implementation of ring buffer. The ordering
+> +problem could technically be solved for perf buffer with some in-kernel
+> +counting, but given the first one requires an MPSC buffer, the same solution
+> +would solve the second problem automatically.
 > +
-> +       if (!fwnode_property_read_string(init_data->fwnode, "default-state", &str)) {
-> +               if (!strcmp(str, "on"))
-> +                       led->default_state = STATE_ON;
-> +               else if (!strcmp(str, "keep"))
-> +                       led->default_state = STATE_KEEP;
-
-> +               else
-
-I wouldn't allow some garbage to be off.
-
-> +                       led->default_state = STATE_OFF;
-> +       }
-
-What about
-
-static const char * const states = { "on", "keep", "off" };
-
-int ret;
-
-ret = match_string(states, ARRAY_SIZE(states), str);
-if (ret)
- ...
-
-default_state = ret;
-
-?
-
-> +       return 0;
-> +}
-
-...
-
-> +static int mt6360_led_probe(struct platform_device *pdev)
-> +{
-> +       struct mt6360_priv *priv;
-> +       struct fwnode_handle *child;
-> +       int i, ret;
+> +Semantics and APIs
+> +------------------
 > +
-
-> +       priv->regmap = dev_get_regmap(pdev->dev.parent, NULL);
-> +       if (!priv->regmap) {
-> +               dev_err(&pdev->dev, "Failed to get parent regmap\n");
-> +               return -ENODEV;
-> +       }
-
-...
-
-> +out:
-
-out_flash_leds_release: ?
-
-> +       for (i = MT6360_LED_FLASH1; i <= MT6360_LED_FLASH2; i++) {
-> +               struct mt6360_led *led = priv->leds[i];
+> +Single ring buffer is presented to BPF programs as an instance of BPF map of
+> +type ``BPF_MAP_TYPE_RINGBUF``. Two other alternatives considered, but
+> +ultimately rejected.
 > +
-> +               if (led && led->v4l2_flash)
-> +                       v4l2_flash_release(led->v4l2_flash);
+> +One way would be to, similar to ``BPF_MAP_TYPE_PERF_EVENT_ARRAY``, make
+> +``BPF_MAP_TYPE_RINGBUF`` could represent an array of ring buffers, but not
+> +enforce "same CPU only" rule. This would be more familiar interface compatible
+> +with existing perf buffer use in BPF, but would fail if application needed more
+> +advanced logic to lookup ring buffer by arbitrary key.
+> +``BPF_MAP_TYPE_HASH_OF_MAPS`` addresses this with current approach.
+> +Additionally, given the performance of BPF ringbuf, many use cases would just
+> +opt into a simple single ring buffer shared among all CPUs, for which current
+> +approach would be an overkill.
 > +
-> +       }
-
-...
-
-> +static int mt6360_led_remove(struct platform_device *pdev)
-> +{
-> +       struct mt6360_priv *priv = platform_get_drvdata(pdev);
-> +       int i;
+> +Another approach could introduce a new concept, alongside BPF map, to represent
+> +generic "container" object, which doesn't necessarily have key/value interface
+> +with lookup/update/delete operations. This approach would add a lot of extra
+> +infrastructure that has to be built for observability and verifier support. It
+> +would also add another concept that BPF developers would have to familiarize
+> +themselves with, new syntax in libbpf, etc. But then would really provide no
+> +additional benefits over the approach of using a map.  ``BPF_MAP_TYPE_RINGBUF``
+> +doesn't support lookup/update/delete operations, but so doesn't few other map
+> +types (e.g., queue and stack; array doesn't support delete, etc).
 > +
-> +       for (i = MT6360_LED_FLASH1; i <= MT6360_LED_FLASH2; i++) {
-> +               struct mt6360_led *led = priv->leds[i];
+> +The approach chosen has an advantage of re-using existing BPF map
+> +infrastructure (introspection APIs in kernel, libbpf support, etc), being
+> +familiar concept (no need to teach users a new type of object in BPF program),
+> +and utilizing existing tooling (bpftool). For common scenario of using a single
+> +ring buffer for all CPUs, it's as simple and straightforward, as would be with
+> +a dedicated "container" object. On the other hand, by being a map, it can be
+> +combined with ``ARRAY_OF_MAPS`` and ``HASH_OF_MAPS`` map-in-maps to implement
+> +a wide variety of topologies, from one ring buffer for each CPU (e.g., as
+> +a replacement for perf buffer use cases), to a complicated application
+> +hashing/sharding of ring buffers (e.g., having a small pool of ring buffers
+> +with hashed task's tgid being a look up key to preserve order, but reduce
+> +contention).
 > +
-> +               if (led && led->v4l2_flash)
-> +                       v4l2_flash_release(led->v4l2_flash);
+> +Key and value sizes are enforced to be zero. ``max_entries`` is used to specify
+> +the size of ring buffer and has to be a power of 2 value.
 > +
-> +       }
-
-Looks like a code duplication.
-
+> +There are a bunch of similarities between perf buffer
+> +(``BPF_MAP_TYPE_PERF_EVENT_ARRAY``) and new BPF ring buffer semantics:
 > +
-> +       return 0;
-> +}
+> +- variable-length records;
+> +- if there is no more space left in ring buffer, reservation fails, no
+> +  blocking;
+> +- memory-mappable data area for user-space applications for ease of
+> +  consumption and high performance;
+> +- epoll notifications for new incoming data;
+> +- but still the ability to do busy polling for new data to achieve the
+> +  lowest latency, if necessary.
 > +
-> +static const struct of_device_id __maybe_unused mt6360_led_of_id[] = {
-> +       { .compatible = "mediatek,mt6360-led", },
+> +BPF ringbuf provides two sets of APIs to BPF programs:
+> +
+> +- ``bpf_ringbuf_output()`` allows to *copy* data from one place to a ring
+> +  buffer, similarly to ``bpf_perf_event_output()``;
+> +- ``bpf_ringbuf_reserve()``/``bpf_ringbuf_commit()``/``bpf_ringbuf_discard()``
+> +  APIs split the whole process into two steps. First, a fixed amount of space
+> +  is reserved. If successful, a pointer to a data inside ring buffer data
+> +  area is returned, which BPF programs can use similarly to a data inside
+> +  array/hash maps. Once ready, this piece of memory is either committed or
+> +  discarded. Discard is similar to commit, but makes consumer ignore the
+> +  record.
+> +
+> +``bpf_ringbuf_output()`` has disadvantage of incurring extra memory copy,
+> +because record has to be prepared in some other place first. But it allows to
+> +submit records of the length that's not known to verifier beforehand. It also
+> +closely matches ``bpf_perf_event_output()``, so will simplify migration
+> +significantly.
+> +
+> +``bpf_ringbuf_reserve()`` avoids the extra copy of memory by providing a memory
+> +pointer directly to ring buffer memory. In a lot of cases records are larger
+> +than BPF stack space allows, so many programs have use extra per-CPU array as
+> +a temporary heap for preparing sample. bpf_ringbuf_reserve() avoid this needs
+> +completely. But in exchange, it only allows a known constant size of memory to
+> +be reserved, such that verifier can verify that BPF program can't access memory
+> +outside its reserved record space. bpf_ringbuf_output(), while slightly slower
+> +due to extra memory copy, covers some use cases that are not suitable for
+> +``bpf_ringbuf_reserve()``.
+> +
+> +The difference between commit and discard is very small. Discard just marks
+> +a record as discarded, and such records are supposed to be ignored by consumer
+> +code. Discard is useful for some advanced use-cases, such as ensuring
+> +all-or-nothing multi-record submission, or emulating temporary
+> +``malloc()``/``free()`` within single BPF program invocation.
+> +
+> +Each reserved record is tracked by verifier through existing
+> +reference-tracking logic, similar to socket ref-tracking. It is thus
+> +impossible to reserve a record, but forget to submit (or discard) it.
+> +
+> +``bpf_ringbuf_query()`` helper allows to query various properties of ring
+> +buffer.  Currently 4 are supported:
+> +
+> +- ``BPF_RB_AVAIL_DATA`` returns amount of unconsumed data in ring buffer;
+> +- ``BPF_RB_RING_SIZE`` returns the size of ring buffer;
+> +- ``BPF_RB_CONS_POS``/``BPF_RB_PROD_POS`` returns current logical possition
+> +  of consumer/producer, respectively.
+> +
+> +Returned values are momentarily snapshots of ring buffer state and could be
+> +off by the time helper returns, so this should be used only for
+> +debugging/reporting reasons or for implementing various heuristics, that take
+> +into account highly-changeable nature of some of those characteristics.
+> +
+> +One such heuristic might involve more fine-grained control over poll/epoll
+> +notifications about new data availability in ring buffer. Together with
+> +``BPF_RB_NO_WAKEUP``/``BPF_RB_FORCE_WAKEUP`` flags for output/commit/discard
+> +helpers, it allows BPF program a high degree of control and, e.g., more
+> +efficient batched notifications. Default self-balancing strategy, though,
+> +should be adequate for most applications and will work reliable and efficiently
+> +already.
+> +
+> +Design and Implementation
+> +-------------------------
+> +
+> +This reserve/commit schema allows a natural way for multiple producers, either
+> +on different CPUs or even on the same CPU/in the same BPF program, to reserve
+> +independent records and work with them without blocking other producers. This
+> +means that if BPF program was interruped by another BPF program sharing the
+> +same ring buffer, they will both get a record reserved (provided there is
+> +enough space left) and can work with it and submit it independently. This
+> +applies to NMI context as well, except that due to using a spinlock during
+> +reservation, in NMI context, ``bpf_ringbuf_reserve()`` might fail to get
+> +a lock, in which case reservation will fail even if ring buffer is not full.
+> +
+> +The ring buffer itself internally is implemented as a power-of-2 sized
+> +circular buffer, with two logical and ever-increasing counters (which might
+> +wrap around on 32-bit architectures, that's not a problem):
+> +
+> +- consumer counter shows up to which logical position consumer consumed the
+> +  data;
+> +- producer counter denotes amount of data reserved by all producers.
+> +
+> +Each time a record is reserved, producer that "owns" the record will
+> +successfully advance producer counter. At that point, data is still not yet
+> +ready to be consumed, though. Each record has 8 byte header, which contains the
+> +length of reserved record, as well as two extra bits: busy bit to denote that
+> +record is still being worked on, and discard bit, which might be set at commit
+> +time if record is discarded. In the latter case, consumer is supposed to skip
+> +the record and move on to the next one. Record header also encodes record's
+> +relative offset from the beginning of ring buffer data area (in pages). This
+> +allows ``bpf_ringbuf_commit()``/``bpf_ringbuf_discard()`` to accept only the
+> +pointer to the record itself, without requiring also the pointer to ring buffer
+> +itself. Ring buffer memory location will be restored from record metadata
+> +header. This significantly simplifies verifier, as well as improving API
+> +usability.
+> +
+> +Producer counter increments are serialized under spinlock, so there is
+> +a strict ordering between reservations. Commits, on the other hand, are
+> +completely lockless and independent. All records become available to consumer
+> +in the order of reservations, but only after all previous records where
+> +already committed. It is thus possible for slow producers to temporarily hold
+> +off submitted records, that were reserved later.
+> +
+> +Reservation/commit/consumer protocol is verified by litmus tests in
+> +Documentation/litmus_tests/bpf-rb/_.
 
-> +       {},
+Are there any missing patch that were supposed to be merged before this
+one:
 
-No need comma.
+There's no Documentation/litmus_tests/bpf-rb/_. This currently
+causes a warning at the Kernel's building system:
 
-> +};
+	$ ./scripts/documentation-file-ref-check 
+	Documentation/bpf/ringbuf.rst: Documentation/litmus_tests/bpf-rb/_
 
+(This is reported when someone calls "make htmldocs")
 
--- 
-With Best Regards,
-Andy Shevchenko
+Could you please fix this?
+
+Thanks,
+Mauro
