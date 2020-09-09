@@ -2,104 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B08926329E
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:48:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54D292632D5
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:52:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731044AbgIIQrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 12:47:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59568 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730999AbgIIQrI (ORCPT
+        id S1730925AbgIIQwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 12:52:09 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:45890 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731122AbgIIQvU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 12:47:08 -0400
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E6C0C061573;
-        Wed,  9 Sep 2020 09:47:07 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id a3so3017926oib.4;
-        Wed, 09 Sep 2020 09:47:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=n3Y+1un3H1D6oJKWN3rI/d5EPhk7L+MJ/htHdyocAoA=;
-        b=qAQAXtOzsZ0sv3YdGzm6xc5j7lysX+ULODN3Fq9+2UQq9/VHPmsThip6XfnudOeKvL
-         Mokc60xqwZAm08xseabSB5eDVTcPMKEcJpQ2IqZ2PO6hjJt1mPHa/NpaOSK8Ng0Y3xEi
-         AEZZpNZFolJy3If3zVDLeu9tPJvqwJtiYvs8oESLMdmaoh0O8oRCNJ3TCnOapH19RoSc
-         cwQBgfD079XNoaOBlCQqiMjs7zlYbM6Eu29UfSIRh85ZjWQgx8XtRdVP4oo9qGrv5au3
-         kUAqS0q2EyNcwUKbq15qUiYCEc4MG49OMlIS4/oZMGoei3yb5+4Cd1FUL5Ih3ThyGP0f
-         WBLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=n3Y+1un3H1D6oJKWN3rI/d5EPhk7L+MJ/htHdyocAoA=;
-        b=GL0QL6eJ3pr2888bMHAdp5SvcYnROHYOhgxrv25b+uK+1CptmWWEWOCwMfy7/nTihS
-         NJVL0oWcsdkFKS/uEKW/C0+A4qfmEaWRDqsw4mh7/PvWn/nkiAjwQlJDw4eZxtYlHK4g
-         EhAHqKLHM4GQzY8+zBKqGRuTMR3XWKVzptffVNKo90h/nU/eJU+0kc998iD65cxglHhN
-         O6Kboea/1vJ986+HozaSnVK9WzwYWHkxS1IsZgXneWF1ojd1W6A7N1Bk+TMlca6/7PBx
-         So+KvMf+TdzUYaL1o4xbiW2g+r8Ahn2PdRbg+k5t8JgV75ubQNYi0rByfSXcbaQ4BtuJ
-         sjnQ==
-X-Gm-Message-State: AOAM532wI+Z7MU8YnVBpNie4mfd71Ao9aCdYfHkxaaKSas446pJub8/Q
-        vm3+ku9EMb/gBfQuxlPm9Jf/1cV52t8=
-X-Google-Smtp-Source: ABdhPJzNLIwCZKb6actD3gqsnpt2pv3CoJ0V79tILh6f9Hfne/GydDWQZDoIMsjZyftM6MSMefkAxA==
-X-Received: by 2002:a05:6808:1a:: with SMTP id u26mr1168579oic.78.1599670027117;
-        Wed, 09 Sep 2020 09:47:07 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id k1sm456972oot.20.2020.09.09.09.47.06
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 09 Sep 2020 09:47:06 -0700 (PDT)
-Date:   Wed, 9 Sep 2020 09:47:05 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH 5.8 000/186] 5.8.8-rc1 review
-Message-ID: <20200909164705.GE1479@roeck-us.net>
-References: <20200908152241.646390211@linuxfoundation.org>
+        Wed, 9 Sep 2020 12:51:20 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 089Gp7Pa047647;
+        Wed, 9 Sep 2020 11:51:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1599670267;
+        bh=XqRw5QT7qAOnA0fHlBfRovQaKRWcEo/7X0wdNzUW/5g=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=wps6n6OO9R6UmvqkUtasili/Tgvw8xxS5fisiW8Vm91sOxmwDWAs1IaC+Au76LhQV
+         Sv92Jv4J1/rFqWLO9++qxexT1BcGikpAM8b/lSMqLw7jWAKr1LlAd47bw6CzQ1EaI6
+         ydRsOtW15tJkhtot90HM4yasQgZZzgvKwlZDbd3c=
+Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 089Gp7DW110141;
+        Wed, 9 Sep 2020 11:51:07 -0500
+Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 9 Sep
+ 2020 11:51:07 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 9 Sep 2020 11:51:07 -0500
+Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 089Gp59h087921;
+        Wed, 9 Sep 2020 11:51:05 -0500
+Subject: Re: [PATCH net-next v2 2/9] net: ethernet: ti: ale: add static
+ configuration
+To:     David Miller <davem@davemloft.net>
+CC:     <netdev@vger.kernel.org>, <kuba@kernel.org>, <vigneshr@ti.com>,
+        <m-karicheri2@ti.com>, <nsekhar@ti.com>,
+        <linux-kernel@vger.kernel.org>, <linux-omap@vger.kernel.org>
+References: <20200907143143.13735-1-grygorii.strashko@ti.com>
+ <20200907143143.13735-3-grygorii.strashko@ti.com>
+ <20200908.192845.1191873689940729972.davem@davemloft.net>
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+Message-ID: <61332531-0166-c5af-0475-1c338d2ea043@ti.com>
+Date:   Wed, 9 Sep 2020 19:51:01 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200908152241.646390211@linuxfoundation.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200908.192845.1191873689940729972.davem@davemloft.net>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 08, 2020 at 05:22:22PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.8.8 release.
-> There are 186 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+
+
+On 09/09/2020 05:28, David Miller wrote:
+> From: Grygorii Strashko <grygorii.strashko@ti.com>
+> Date: Mon, 7 Sep 2020 17:31:36 +0300
 > 
-> Responses should be made by Thu, 10 Sep 2020 15:21:57 +0000.
-> Anything received after that time might be too late.
+>> +	ale_dev_id = cpsw_ale_match_id(cpsw_ale_id_match, params->dev_id);
+>> +	if (ale_dev_id) {
+>> +		params->ale_entries = ale_dev_id->tbl_entries;
+>> +		params->major_ver_mask = ale_dev_id->major_ver_mask;
+> ...
+>> -	if (!ale->params.major_ver_mask)
+>> -		ale->params.major_ver_mask = 0xff;
+> 
+> This is exactly the kind of change that causes regressions.
+> 
+> The default for the mask if no dev_id is found is now zero, whereas
+> before the default mask would be 0xff.
+> 
+> Please don't make changes like this, they are very risky.
+> 
+> In every step of these changes, existing behavior should be maintained
+> as precisely as possible.  Be as conservative as possible.
 > 
 
-Build results:
-	total: 154 pass: 153 fail: 1
-Failed builds:
-	powerpc:allmodconfig
-Qemu test results:
-	total: 430 pass: 430 fail: 0
+Sorry and thank you for catching it.
+This part belongs to Patch 6. I'll fix it.
 
-The powerpc problem is the same as before:
-
-Inconsistent kallsyms data
-Try make KALLSYMS_EXTRA_PASS=1 as a workaround
-
-KALLSYMS_EXTRA_PASS=1 doesn't help. The problem is sporadic, elusive, and all
-but impossible to bisect. The same build passes on another system, for example,
-with a different load pattern. It may pass with -j30 and fail with -j40.
-The problem started at some point after v5.8, and got worse over time; by now
-it almost always happens. I'd be happy to debug if there is a means to do it,
-but I don't have an idea where to even start. I'd disable KALLSYMS in my
-test configurations, but the symbol is selected from various places and thus
-difficult to disable. So unless I stop building ppc:allmodconfig entirely
-we'll just have to live with the failure.
-
-Tested-by: Guenter Roeck <linux@roeck-us.net>
-
-Guenter
+-- 
+Best regards,
+grygorii
