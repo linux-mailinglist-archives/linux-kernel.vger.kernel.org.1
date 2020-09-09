@@ -2,156 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D65DE263309
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:56:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A09D0263337
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:59:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730855AbgIIQ4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 12:56:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60980 "EHLO
+        id S1730685AbgIIQ7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 12:59:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730913AbgIIQ4Q (ORCPT
+        with ESMTP id S1731065AbgIIQ67 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 12:56:16 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53AD4C061755
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 09:56:16 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id n14so2683295pff.6
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 09:56:16 -0700 (PDT)
+        Wed, 9 Sep 2020 12:58:59 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A665C061573;
+        Wed,  9 Sep 2020 09:58:57 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id o16so1638583pjr.2;
+        Wed, 09 Sep 2020 09:58:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sslab.ics.keio.ac.jp; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=gl5YvAOZp93b/wM56Dis2Ef5sMZofdOKMbfKboGp6yo=;
-        b=cdevoIjGxGVYu95IODtQea1YyoLcyw6sCCXKlJU2yUgo03CQRdkf6cy+flAIUtqrdu
-         oHoIpUwX9jWbMr2IZRh9TNuMUILi8CzSIPwkJstfmd598FkInQIjDRX0zuSX8v9XSxX0
-         ojBsLhQVlcN8Ks5A97aN6vLJ7ahpAMsBuBNMo=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YwWId/wck3bd+vLBnYQNSdgBdWb7exMcGqB9S1NWJKE=;
+        b=UbTIs2+2ydRVwB+sLVePiz7hJjucPqR+ntLyd137U6pdYBnUTo/6A9Rb77ECihq95S
+         sFATauSuQMctvBVq1NJQ8q93gdLaMg4i+g+lxRbFlE1792i5YNORNVJkdl9aoDF332i4
+         f7TpQgbVTlMiKeR0KdGCTs/xB4eHJ6SfTSrdyhWuRF3hQ34hqScbdSfkSX79PX2OAJw1
+         EUqyUm9eDZe/Qh8NbMBgtyCneuDzF4n7CLDSEhwl55hdXuD7L+zbKq9zg94jiQKYoQCx
+         aehyZEJ3fPMsiMM6wy1Krz+j2muU794mY1VlgKgmcog+UscpVDkHoDy9TFr71RM+W7tN
+         cTIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=gl5YvAOZp93b/wM56Dis2Ef5sMZofdOKMbfKboGp6yo=;
-        b=inzgtOJ/bttnzjFcri0m2P3K3Zkp/Hzw6dY5GIr5hIT7n2A8EFlnKLlfWi8ZzH+d4n
-         4S6uparB0YA39Fx54AfiKSYQRBf7o/b7ZvNX8HTL8STq3dl+NyJ/dWxKjGo5JZdqOf32
-         wjLlqjs8LVq9JMXyGoR45/jQ/0hg1D5H/GI+awShR8252hd3GMB/4+R9tfpQsQBIQtOb
-         p+luASzzsPP3tyfYA/nqoARoKknvUZdvoo2GH+NYW9Kqe/EaS08i4Tt0uANCiCi6bq5z
-         2j7HQtzG1Y3LMRkmxX/+PtvzCL0TWFV99jiIlJKnWTtiQdF2uUkihNKOqQzRU6CxedGw
-         Pfsg==
-X-Gm-Message-State: AOAM533Lz9dgmzsfVFRlzWoeKqwZ+Rcvbjo9DW3tDPDkdh8GAu6HRTI3
-        vuAx8M/+bMaj8JkJPi/GQ/3gFg==
-X-Google-Smtp-Source: ABdhPJxETamqFi5zkOw06l3Tp+NSNEkaTDzqtNwNnisPrhkZdLtx8XcQgkZ5FkusZb9DveNbwGLgdw==
-X-Received: by 2002:a17:902:b088:: with SMTP id p8mr1638177plr.86.1599670575585;
-        Wed, 09 Sep 2020 09:56:15 -0700 (PDT)
-Received: from brooklyn.i.sslab.ics.keio.ac.jp (sslab-relay.ics.keio.ac.jp. [131.113.126.173])
-        by smtp.googlemail.com with ESMTPSA id il14sm2370370pjb.54.2020.09.09.09.56.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Sep 2020 09:56:14 -0700 (PDT)
-From:   Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
-Cc:     keitasuzuki.park@sslab.ics.keio.ac.jp,
-        takafumi@sslab.ics.keio.ac.jp,
-        Michal Kalderon <mkalderon@marvell.com>,
-        Ariel Elior <aelior@marvell.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Yuval Bason <yuval.bason@cavium.com>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] qedr: fix resource leak in qedr_create_qp
-Date:   Wed,  9 Sep 2020 16:55:59 +0000
-Message-Id: <20200909165600.20556-1-keitasuzuki.park@sslab.ics.keio.ac.jp>
-X-Mailer: git-send-email 2.17.1
-To:     unlisted-recipients:; (no To-header on input)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YwWId/wck3bd+vLBnYQNSdgBdWb7exMcGqB9S1NWJKE=;
+        b=sY4YM1yAPa565cBDMPygaUaOD++4rdPuYDaNFvhzZW4MSZMqi6PMoxrPSwdhEp1Y2x
+         /qy5gO9RVHpP16yM34RKhMpMO3fGpuZdvi7BiPjALd0lveBqH4G9Cr9CeMcSX/tYmYTV
+         Qgf7E+2X1zMscGaUBPz7VucJEtYgxMPCADeSO7VII06jSV+TztJcK6TwZVmw4krUZsvr
+         B+kCqQ8zCnbJEzj+U73joFIny611WmAgpWmUcp1LHv24Eo6wW15b3zMdBBhF64NVXhYi
+         /aQKdkQckClD7e0jH4Q0JenyE3nSzm6iBffM06u4BnGv/478XzjS9WjIZeqhR3SQ40og
+         xI9w==
+X-Gm-Message-State: AOAM530xQVqpwmhIE5Ei8QkUxMlutJQ0nCVGB/fUtS0ZCBQQaO2z4xKm
+        00umvGbl94+VFS5PmluBCJCc2lL6U9YCeaV/Sgx87MyAU7Nzdg==
+X-Google-Smtp-Source: ABdhPJzheBF5r0rY0eVQhDpQnLbgUkatHbevzu+QTXFNxqXzrPI6QkJ1AbupNIWBFOxMGd2Z9B0v0iBmSZl9C5oIpfw=
+X-Received: by 2002:a17:90b:fc4:: with SMTP id gd4mr1608163pjb.129.1599670737094;
+ Wed, 09 Sep 2020 09:58:57 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200909154439.10308-1-ceggers@arri.de>
+In-Reply-To: <20200909154439.10308-1-ceggers@arri.de>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 9 Sep 2020 19:58:39 +0300
+Message-ID: <CAHp75VeAoDaBtaSb0Qeb=kHPg6kGvx71_iL2snC5iHh4cKPhRA@mail.gmail.com>
+Subject: Re: [PATCH] iio: light: as73211: Increase measurement timeout
+To:     Christian Eggers <ceggers@arri.de>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When xa_insert() fails, the acquired resource in qedr_create_qp should
-also be freed. However, current implementation does not handle the
-error.
+On Wed, Sep 9, 2020 at 6:45 PM Christian Eggers <ceggers@arri.de> wrote:
+>
+> We found some sensors which are much slower (20% at room temperature)
+> than nominal. According to the data sheet, up to 27% is possible. Now I
+> add 33% to the nominal time out, hopefully this is enough.
 
-Fix this by adding a new goto label that calls qedr_free_qp_resources.
+I'm wondering if this is a function of temperature.
+And if that has an actual thermistor inside...
 
-Fixes: 1212767e23bb ("qedr: Add wrapping generic structure for qpidr and
-adjust idr routines.")
-Signed-off-by: Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
----
- drivers/infiniband/hw/qedr/verbs.c | 48 ++++++++++++++++--------------
- 1 file changed, 25 insertions(+), 23 deletions(-)
-
-diff --git a/drivers/infiniband/hw/qedr/verbs.c b/drivers/infiniband/hw/qedr/verbs.c
-index b49bef94637e..19688773c58b 100644
---- a/drivers/infiniband/hw/qedr/verbs.c
-+++ b/drivers/infiniband/hw/qedr/verbs.c
-@@ -2112,6 +2112,28 @@ static int qedr_create_kernel_qp(struct qedr_dev *dev,
- 	return rc;
- }
- 
-+static int qedr_free_qp_resources(struct qedr_dev *dev, struct qedr_qp *qp,
-+				  struct ib_udata *udata)
-+{
-+	struct qedr_ucontext *ctx =
-+		rdma_udata_to_drv_context(udata, struct qedr_ucontext,
-+					  ibucontext);
-+	int rc;
-+
-+	if (qp->qp_type != IB_QPT_GSI) {
-+		rc = dev->ops->rdma_destroy_qp(dev->rdma_ctx, qp->qed_qp);
-+		if (rc)
-+			return rc;
-+	}
-+
-+	if (qp->create_type == QEDR_QP_CREATE_USER)
-+		qedr_cleanup_user(dev, ctx, qp);
-+	else
-+		qedr_cleanup_kernel(dev, qp);
-+
-+	return 0;
-+}
-+
- struct ib_qp *qedr_create_qp(struct ib_pd *ibpd,
- 			     struct ib_qp_init_attr *attrs,
- 			     struct ib_udata *udata)
-@@ -2165,11 +2187,13 @@ struct ib_qp *qedr_create_qp(struct ib_pd *ibpd,
- 	if (rdma_protocol_iwarp(&dev->ibdev, 1)) {
- 		rc = xa_insert(&dev->qps, qp->qp_id, qp, GFP_KERNEL);
- 		if (rc)
--			goto err;
-+			goto err2;
- 	}
- 
- 	return &qp->ibqp;
- 
-+err2:
-+	qedr_free_qp_resources(dev, qp, udata);
- err:
- 	kfree(qp);
- 
-@@ -2671,28 +2695,6 @@ int qedr_query_qp(struct ib_qp *ibqp,
- 	return rc;
- }
- 
--static int qedr_free_qp_resources(struct qedr_dev *dev, struct qedr_qp *qp,
--				  struct ib_udata *udata)
--{
--	struct qedr_ucontext *ctx =
--		rdma_udata_to_drv_context(udata, struct qedr_ucontext,
--					  ibucontext);
--	int rc;
--
--	if (qp->qp_type != IB_QPT_GSI) {
--		rc = dev->ops->rdma_destroy_qp(dev->rdma_ctx, qp->qed_qp);
--		if (rc)
--			return rc;
--	}
--
--	if (qp->create_type == QEDR_QP_CREATE_USER)
--		qedr_cleanup_user(dev, ctx, qp);
--	else
--		qedr_cleanup_kernel(dev, qp);
--
--	return 0;
--}
--
- int qedr_destroy_qp(struct ib_qp *ibqp, struct ib_udata *udata)
- {
- 	struct qedr_qp *qp = get_qedr_qp(ibqp);
 -- 
-2.17.1
-
+With Best Regards,
+Andy Shevchenko
