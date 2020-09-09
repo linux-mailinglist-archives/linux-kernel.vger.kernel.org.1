@@ -2,160 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A082262551
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 04:41:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E0FB262556
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 04:44:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728936AbgIIClT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 22:41:19 -0400
-Received: from mga04.intel.com ([192.55.52.120]:29124 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726605AbgIIClM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 22:41:12 -0400
-IronPort-SDR: vy+PemRLhu+quuvxUmUQ9gq+RiWclY4jSjcRf17VmB+Amgw8bbQgSJp6YeV0yO5avEy/k98ko/
- t4ZTKhgurZQQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9738"; a="155659294"
-X-IronPort-AV: E=Sophos;i="5.76,408,1592895600"; 
-   d="scan'208";a="155659294"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2020 19:41:12 -0700
-IronPort-SDR: ONobC3Pu7Js9+iTPkSF+6bXLZFA44kr1EuVIrpG8LDvRLzwrKNCuRibjU3fRuxeucdbCBVTQZq
- 9YpFeK3Ff8Lw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,408,1592895600"; 
-   d="scan'208";a="480291764"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by orsmga005.jf.intel.com with ESMTP; 08 Sep 2020 19:41:11 -0700
-Received: from orsmsx603.amr.corp.intel.com (10.22.229.16) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Tue, 8 Sep 2020 19:41:11 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Tue, 8 Sep 2020 19:41:11 -0700
-Received: from NAM04-BN3-obe.outbound.protection.outlook.com (104.47.46.51) by
- edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.1713.5; Tue, 8 Sep 2020 19:41:10 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KMBOugqT4vemq9TWNz1ULROlsqmCclhhag9YG/CIX4+c2Ei7gEFOjMCpuDKyrdcgTYV5lD1gqRAJTaToVnrFdT5FdOl4gQbFhTL3/0C6LaFDhCjKmtAB8HbnEVWXFUtLKghA/iB2wd8yL+HQWCrW523S3LKC6BgUoxFxgoGR5XFMIz6Vcwisy88M+1kJqrozghJPgYnyGZu4PUFl78WZ4rELtFmP43eDxffEsJI62BxXLOoinqixRLIZyygl+cnh/lJ9L27Yv5oGqPJFDG3tcenLnUrlLU+KZYgIRXcrHnOEeGPPn4sWJemoCMQyE+fhmZoNHPCY4CojfTy1jf23bQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Zh7f1YaratsRAjIA4vL1ZnYkOW1obYn+Qh9fsznHGUo=;
- b=PsEyJlN1WBVUipU2/P0nG9MSFMRHeSzypFIodL7rCzEAwE9nxcyzhxtnAUA/ftbwjciEKWznCGadGWDpL3nECzaL+INGaF4Ui1XtiySnOkU6Zbo+tRoc5C5zunEiI/pgqInE19jmLg9XQTA9z6/aOrQG1p3S+10Q5pZEuUXFQ1PNwzQe2XpNEw9Zqt09Dc+kZUR0bI4bU5ERuH6aYjhdWNSLiy1LlvuhQgWDMeeoUykwlodl75UG5kkfnAFt5Y2dqfmAoyKPkvHs4UWRurZgFo0W5llvkpElwCB0S8/5Zd6UgHxKnLKnVaIfWfQ8xUqm9JEA7OTkq9fuXr1bQTTWqQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Zh7f1YaratsRAjIA4vL1ZnYkOW1obYn+Qh9fsznHGUo=;
- b=uR9qzCZyBQ2lBL9nYIHj+KWv8o/mkIaosXjvsiNX5k1+pqFvs+2pvGCjgY40YcNX+K2kCwQtpV0hKWdpZ7e1WlUzoWgoKLRpdGszihvTxL7uTslkPMhHJOFg9bM7aymP8nUdUPI2m/2pRQRRoVbpnCgE2gPkJlOBvEsG8yQt/rY=
-Received: from MWHPR11MB1696.namprd11.prod.outlook.com (2603:10b6:300:23::23)
- by MWHPR1101MB2175.namprd11.prod.outlook.com (2603:10b6:301:5b::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.16; Wed, 9 Sep
- 2020 02:41:08 +0000
-Received: from MWHPR11MB1696.namprd11.prod.outlook.com
- ([fe80::ec4a:90cc:bdb4:5a5a]) by MWHPR11MB1696.namprd11.prod.outlook.com
- ([fe80::ec4a:90cc:bdb4:5a5a%9]) with mapi id 15.20.3348.019; Wed, 9 Sep 2020
- 02:41:08 +0000
-From:   "Zhao, Haifeng" <haifeng.zhao@intel.com>
-To:     Ming Lei <ming.lei@redhat.com>
-CC:     Christoph Hellwig <hch@infradead.org>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "mcgrof@kernel.org" <mcgrof@kernel.org>,
-        "Zhang, ShanshanX" <shanshanx.zhang@intel.com>,
-        "Jia, Pei P" <pei.p.jia@intel.com>
-Subject: RE: [PATCH] Revert "block: revert back to synchronous request_queue
- removal"
-Thread-Topic: [PATCH] Revert "block: revert back to synchronous request_queue
- removal"
-Thread-Index: AQHWhbUmn1JF/TbogUavgTta1QMeJqley0QAgADEb6CAAAm2AIAAAGQg
-Date:   Wed, 9 Sep 2020 02:41:08 +0000
-Message-ID: <MWHPR11MB16967EE0DEBE2BBE23D3748A97260@MWHPR11MB1696.namprd11.prod.outlook.com>
-References: <20200908075047.5140-1-haifeng.zhao@intel.com>
- <20200908142128.GA3463@infradead.org>
- <MWHPR11MB1696A6C649BD434390418FE797260@MWHPR11MB1696.namprd11.prod.outlook.com>
- <20200909023918.GA1473752@T590>
-In-Reply-To: <20200909023918.GA1473752@T590>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-version: 11.5.1.3
-dlp-reaction: no-action
-dlp-product: dlpe-windows
-authentication-results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [192.198.147.207]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 1f42aa85-4702-4e8e-f7dd-08d85469ce9c
-x-ms-traffictypediagnostic: MWHPR1101MB2175:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MWHPR1101MB2175EB418C5953B8C75862C797260@MWHPR1101MB2175.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: vPATqRBAlWrq7fNWbfq54Suv7X6GSLJCgjedbkk1s7oEqMuuIqLe53BeI3MvmAKeuY2xK1P51tq1Nq2sw6jJbUcobHOIytv8xW3UsV0lKP/uUFkRzfwVDI6ifHzZhzsoj2XxuSqMGRQKETwBHL+f+AjjB8VXVYjHZPn2a2B0xuIsHMtYa2aGYXtTR/mYlOazXbzTIiBlj/iMrNXQmQRZ/aoASbXHmwwjK2rPBdRkboVuzZDAVRnpzFNY96HgeVGwLEZxrn1jntvc02pUN//J5oQ+ID7nDeot2/RgSjOolZZYPLFPCElflwyveYrpCGLDvpPLYGlzPk6D+VhAp+NHxkQX8FiVRPtbPS/Q3IZ6meS/p1SBc+UBGNZDywqf/2a+qY/iv/1xqXXb9/P3hGFZ0g==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR11MB1696.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(376002)(346002)(396003)(39860400002)(4744005)(9686003)(53546011)(7696005)(66446008)(6506007)(64756008)(6916009)(76116006)(71200400001)(66556008)(66476007)(66946007)(86362001)(107886003)(186003)(26005)(4326008)(5660300002)(2906002)(54906003)(8676002)(316002)(52536014)(966005)(8936002)(478600001)(55016002)(33656002)(83380400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: JRqRwzoPIGBoqJYnSQqtkPi0sI7kH7knaw0AxxprAuWAjthkStvVjxtoREvuJB78y9ZTMHmMDbfnOTHgcfe9aT6Iqbsmbj6LwI9ojcR9jFzQrTFCEMf+8sPqYiOPGvq7TOp3Xng7cItibs0zcGV3QuVIx/ZnarEmHCp+WA35F2NVJ4O1MeSwhJdjTE2301/3ls64VZLNIV5huz22GrcFtDmVghJWZ0UpSEPAhKG0xRQGH0NOML/ROMyZxoaerb13RqfZ4cmdyqXn0E3hHe87OxNsLxqOdUR/2lSwxwpVM9jb6WD5c5WdDkbK9z0dbhbE3JdmfL936u4bta8jDJNO9nBFmbdIAhevfom7B1lfnvchh4+7fw/oVVe7fWEIn1ynyXHxXTzxRFoW3Tgutbonso32IKbNWUNLljYTKzAhUoWc0e8zENOkAXuzmPQwHZ5FXD/Rd200FmzAp6QAvekDRMs2lipzaUyVUS31tGiI+T9lISdRvf5QQrBZN/i8Rqc4LJpMxPMTIIe6tfa/WTVi972SVfaaSRoa75MfL23ppjvW+I7WiZfh1la5a8+50KjXmr9pkn1NALgI8xwqraW50ubOz+M6/T7AdG5niYXrTHHBons6HW323+FlMz2mPBiGpg0OPfBSejtMudUxUucUng==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1728483AbgIICoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 22:44:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726002AbgIICon (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 22:44:43 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC6D9C061573;
+        Tue,  8 Sep 2020 19:44:42 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id m8so976523pgi.3;
+        Tue, 08 Sep 2020 19:44:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=0ZdmUVaaik0Cd28h3Zbe2m43Ssgf1GR/sAhP0i4ZEkE=;
+        b=AnELXMNtpHPPvFIglx8F3SVHWevil/Qj/z/vpbBRAvIn5Z+8QZvRRdtDrnet3+bsLM
+         5mCLGxCFpyFhqz95Hx4U4HTvz5lQjzyhOuSdSEsfTMrNQimYLdlqYew1C5g66rd5/su2
+         CNH0k30TqQpa5zqkDQirUnbrGnTL0LJeLOdkLsfi2Z7BI4YZu/TDAbvV38KLLXcrhNH6
+         zfotW278dwua1xutDu6WQ4z4I55XsYNz9vIlb2ToKsKtYIXaTYjXBj6Dr7qzfXmWutZN
+         ZY89N3EA5hpaqooLt1MKRRrIEkQhWYLwuREAdK6vuhA2hQvMXg+kaJBSOiAgPVm5ebo/
+         hrTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=0ZdmUVaaik0Cd28h3Zbe2m43Ssgf1GR/sAhP0i4ZEkE=;
+        b=lgUfN4KK0n3awGsKwwYCRGSK7EgB2/HCL5KDe0Y/VbGLHdSuNn4kwULEnHrRC05B6K
+         wK4B1vU7sDFXfKHa+yFBIbvU/qaRh7wjsUY7oQN8fB+bydxGWQcke4fBsr4YdCq4Gxgr
+         RBJr4B141tzsqzjuidOy6mw+IhJsQLzRnQs4uOEaVHfZJ1PMq/gh0xFTgLObasKBCHoA
+         sOSKsWaHwHFFo5z8CbBwqSyJe3MJOZHYKnuL5cRh8PGKl1Ql3VsaZUIrdqtjlaoyf0bR
+         QCZC3IaM6c9+EOJOkpsQwc61fP8jIREfuB7+8ZUkilE43mHQrAdc/JBsdrn9qq85DWNm
+         S1dQ==
+X-Gm-Message-State: AOAM531aZVaRWKbnCyeUXsA+neHxGluxzFHIHEguM+XNygZ0lQhXjPTu
+        Xo5Rjbv1qfQAYvm1TfujVdk=
+X-Google-Smtp-Source: ABdhPJy4R6mz9uYwCQ+w3R9a2nnsXjsgw2amLudcvUNkXcUDKVv/IUKrWuLgI1C9iMeS6XgZAub9AQ==
+X-Received: by 2002:a63:110c:: with SMTP id g12mr1261586pgl.91.1599619482359;
+        Tue, 08 Sep 2020 19:44:42 -0700 (PDT)
+Received: from desktop-ziqianlu ([47.89.83.67])
+        by smtp.gmail.com with ESMTPSA id m190sm684741pfm.184.2020.09.08.19.44.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Sep 2020 19:44:41 -0700 (PDT)
+Date:   Wed, 9 Sep 2020 10:44:32 +0800
+From:   Aaron Lu <aaron.lwe@gmail.com>
+To:     Daniel Jordan <daniel.m.jordan@oracle.com>
+Cc:     Alex Shi <alex.shi@linux.alibaba.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        mgorman@techsingularity.net, tj@kernel.org,
+        khlebnikov@yandex-team.ru, willy@infradead.org, hannes@cmpxchg.org,
+        lkp@intel.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, shakeelb@google.com,
+        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
+        kirill@shutemov.name, alexander.duyck@gmail.com,
+        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
+        shy828301@gmail.com
+Subject: Re: [PATCH v18 00/32] per memcg lru_lock
+Message-ID: <20200909024432.GA9736@desktop-ziqianlu>
+References: <1598273705-69124-1-git-send-email-alex.shi@linux.alibaba.com>
+ <20200824114204.cc796ca182db95809dd70a47@linux-foundation.org>
+ <alpine.LSU.2.11.2008241231460.1065@eggly.anvils>
+ <20200825015627.3c3pnwauqznnp3gc@ca-dmjordan1.us.oracle.com>
+ <ec62a835-f79d-2b8c-99c7-120834703b42@linux.alibaba.com>
+ <20200826011946.spknwjt44d2szrdo@ca-dmjordan1.us.oracle.com>
+ <01ed6e45-3853-dcba-61cb-b429a49a7572@linux.alibaba.com>
+ <20200828014022.y5xju6weysqpzxd2@ca-dmjordan1.us.oracle.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR11MB1696.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1f42aa85-4702-4e8e-f7dd-08d85469ce9c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Sep 2020 02:41:08.6288
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: gKwM9bsyKgiGY5hcpdHqLXUTi10SordYLi5IqFYCsZB6MnVGHKbzVMer6TMs9ufzVV2EzPT9ZNmvz+VgGMyuEQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1101MB2175
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200828014022.y5xju6weysqpzxd2@ca-dmjordan1.us.oracle.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ming,=20
-    Got it, will try and give you feedback. Thanks,
+On Thu, Aug 27, 2020 at 09:40:22PM -0400, Daniel Jordan wrote:
+> I went back to your v1 post to see what motivated you originally, and you had
+> some results from aim9 but nothing about where this reared its head in the
+> first place.  How did you discover the bottleneck?  I'm just curious about how
+> lru_lock hurts in practice.
 
------Original Message-----
-From: Ming Lei <ming.lei@redhat.com>=20
-Sent: Wednesday, September 9, 2020 10:39 AM
-To: Zhao, Haifeng <haifeng.zhao@intel.com>
-Cc: Christoph Hellwig <hch@infradead.org>; axboe@kernel.dk; bhelgaas@google=
-.com; linux-block@vger.kernel.org; linux-kernel@vger.kernel.org; linux-pci@=
-vger.kernel.org; mcgrof@kernel.org; Zhang, ShanshanX <shanshanx.zhang@intel=
-.com>; Jia, Pei P <pei.p.jia@intel.com>
-Subject: Re: [PATCH] Revert "block: revert back to synchronous request_queu=
-e removal"
+I think making lru_lock per-memcg helps in colocated environment: some
+workloads are of high priority while some workloads are of low priority.
 
-Hello Haifeng,
-
-On Wed, Sep 09, 2020 at 02:11:20AM +0000, Zhao, Haifeng wrote:
-> Ming, Christoph,
->     Could you point out the patch aimed to fix this issue ? I would like =
-to try it.   This issue blocked my other PCI patch developing and verificat=
-ion work,=20
-> I am not a BLOCK/NVMe expert, wouldn't to be trapped into other sub-syste=
-m bugs, so just reported it for other expert's quick fix.=20
->=20
-
-Please try the following patch:
-
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?=
-id=3Dcafe01ef8fcb248583038e1be071383530fe355a
-
-Thanks,
-Ming
-
+For these low priority workloads, we may even want to use some swap for
+it to save memory and this can cause frequent alloc/reclaim, depending
+on its workingset etc. and these alloc/reclaim need to hold the global
+lru lock and zone lock. And then when the high priority workloads do
+page fault, their performance can be adversely affected and that is not
+acceptible since these high priority workloads normally have strict SLA
+requirement.
