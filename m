@@ -2,154 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAFEB262F60
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 15:52:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A21A262F90
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 16:11:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730478AbgIINws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 09:52:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38320 "EHLO mail.kernel.org"
+        id S1730329AbgIIOLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 10:11:54 -0400
+Received: from elvis.franken.de ([193.175.24.41]:32954 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730236AbgIINX6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 09:23:58 -0400
-Received: from localhost (52.sub-72-107-123.myvzw.com [72.107.123.52])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6B71B2087C;
-        Wed,  9 Sep 2020 13:23:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599657813;
-        bh=9SV+/keZQaLlsbt6dY6GLxcu53/x0HY3jCvWzsM40EU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=NnNoII6trox+kORTlYP8POR6Q5+c/+Nm5eQVS706pe6Ta0P53Jc40DO1fkCBVvIpe
-         VgISw0Dkv3b7E95vQdGdQW1IbvU6zuTGNpQIjncw0D5+v32sc6R2x1cdunqq3Hs7e6
-         OWmhLCkOtCLDYGDqNAuGsFr4WIeLcJOspvrBSvFY=
-Date:   Wed, 9 Sep 2020 08:23:32 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Vaibhav Gupta <vaibhavgupta40@gmail.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Bjorn Helgaas <bjorn@helgaas.com>,
-        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
-        Adam Radford <aradford@gmail.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Adaptec OEM Raid Solutions <aacraid@microsemi.com>,
-        Hannes Reinecke <hare@suse.com>,
-        Bradley Grove <linuxdrivers@attotech.com>,
-        John Garry <john.garry@huawei.com>,
-        Don Brace <don.brace@microsemi.com>,
-        James Smart <james.smart@broadcom.com>,
-        Dick Kennedy <dick.kennedy@broadcom.com>,
-        Kashyap Desai <kashyap.desai@broadcom.com>,
-        Sumit Saxena <sumit.saxena@broadcom.com>,
-        Shivasharan S <shivasharan.srikanteshwara@broadcom.com>,
-        Sathya Prakash <sathya.prakash@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
-        Jack Wang <jinpu.wang@cloud.ionos.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-scsi@vger.kernel.org, esc.storagedev@microsemi.com,
-        megaraidlinux.pdl@broadcom.com, MPT-FusionLinux.pdl@broadcom.com
-Subject: Re: [PATCH v2 01/15] scsi: megaraid_sas: use generic power management
-Message-ID: <20200909132332.GA696701@bjorn-Precision-5520>
+        id S1730295AbgIINKQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 09:10:16 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1kFzrd-0001tu-00; Wed, 09 Sep 2020 15:10:17 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 4848CC0F5F; Wed,  9 Sep 2020 14:10:57 +0200 (CEST)
+Date:   Wed, 9 Sep 2020 14:10:57 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+Subject: Re: [PATCH 00/12] Convert WAR defines to config options
+Message-ID: <20200909121057.GA2814@alpha.franken.de>
+References: <20200824163257.44533-1-tsbogend@alpha.franken.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200909100315.GA13015@gmail.com>
+In-Reply-To: <20200824163257.44533-1-tsbogend@alpha.franken.de>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 09, 2020 at 03:33:15PM +0530, Vaibhav Gupta wrote:
-> On Tue, Sep 08, 2020 at 12:32:09PM -0500, Bjorn Helgaas wrote:
-> > On Mon, Jul 20, 2020 at 07:04:14PM +0530, Vaibhav Gupta wrote:
-> > > With legacy PM hooks, it was the responsibility of a driver to manage PCI
-> > > states and also the device's power state. The generic approach is to let
-> > > the PCI core handle the work.
-> > > 
-> > > PCI core passes "struct device*" as an argument to the .suspend() and
-> > > .resume() callbacks. As the .suspend() work with "struct instance*",
-> > > extract it from "struct device*" using dev_get_drv_data().
-> > > 
-> > > Driver was also using PCI helper functions like pci_save/restore_state(),
-> > > pci_disable/enable_device(), pci_set_power_state() and pci_enable_wake().
-> > > They should not be invoked by the driver.
-> > > 
-> > > Compile-tested only.
-> > > 
-> > > Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
-> > > ---
-> > >  drivers/scsi/megaraid/megaraid_sas_base.c | 61 ++++++-----------------
-> > >  1 file changed, 16 insertions(+), 45 deletions(-)
-> > > 
-> > > diff --git a/drivers/scsi/megaraid/megaraid_sas_base.c b/drivers/scsi/megaraid/megaraid_sas_base.c
-> > > index 00668335c2af..4a6ee7778977 100644
-> > > --- a/drivers/scsi/megaraid/megaraid_sas_base.c
-> > > +++ b/drivers/scsi/megaraid/megaraid_sas_base.c
-> > > @@ -7539,25 +7539,21 @@ static void megasas_shutdown_controller(struct megasas_instance *instance,
-> > >  	megasas_return_cmd(instance, cmd);
-> > >  }
-> > >  
-> > > -#ifdef CONFIG_PM
-> > >  /**
-> > >   * megasas_suspend -	driver suspend entry point
-> > > - * @pdev:		PCI device structure
-> > > - * @state:		PCI power state to suspend routine
-> > > + * @dev:		Device structure
-> > >   */
-> > > -static int
-> > > -megasas_suspend(struct pci_dev *pdev, pm_message_t state)
-> > > +static int __maybe_unused
-> > > +megasas_suspend(struct device *dev)
-> > >  {
-> > > -	struct megasas_instance *instance;
-> > > -
-> > > -	instance = pci_get_drvdata(pdev);
-> > > +	struct megasas_instance *instance = dev_get_drvdata(dev);
-> > >  
-> > >  	if (!instance)
-> > >  		return 0;
-> > >  
-> > >  	instance->unload = 1;
-> > >  
-> > > -	dev_info(&pdev->dev, "%s is called\n", __func__);
-> > > +	dev_info(dev, "%s is called\n", __func__);
-> > >  
-> > >  	/* Shutdown SR-IOV heartbeat timer */
-> > >  	if (instance->requestorId && !instance->skip_heartbeat_timer_del)
-> > > @@ -7579,7 +7575,7 @@ megasas_suspend(struct pci_dev *pdev, pm_message_t state)
-> > >  
-> > >  	tasklet_kill(&instance->isr_tasklet);
-> > >  
-> > > -	pci_set_drvdata(instance->pdev, instance);
-> > > +	dev_set_drvdata(dev, instance);
-> > 
-> > It *might* be correct to replace "instance->pdev" with "dev", but it's
-> > not obvious and deserves some explanation.  It's true that you can
-> > replace &pdev->dev with dev, but I don't know anything about
-> > instance->dev.
-
-Sorry, I meant "instance->pdev" here.
-
-> > I don't think this change is actually necessary, is it?
-> > "instance->pdev" is still a pci_dev pointer, so pci_set_drvdata()
-> > should work fine. ...
-> > 
-> There is no instance->dev . The 'dev' passed dev_set_drvdata() is
-> same &pdev->dev. 
-
-Yes, it's true that "dev" here is the same as the "&pdev->dev" we had
-previously.  But we passed "instance->pdev" (not "pdev") to
-pci_set_drvdata().  So the question is whether instance->pdev->dev ==
-dev.
-
-They *might* be the same, but I don't think it's obvious.
-
-> The dev pointer used here, points to same value.
+On Mon, Aug 24, 2020 at 06:32:42PM +0200, Thomas Bogendoerfer wrote:
+> This patches convert workaround (WAR) defines into config options and
+> gets rid of mach-*/war.h files.
 > 
-> pci_get_drvdata() and pci_set_drvdata() invoke dev_get_drvdata() and
-> dev_set_drvdata() respectively. And they do nothing else. Seems like
-> additional unnecessary function calls and operations.
+> Thomas Bogendoerfer (12):
+>   MIPS: Convert R4600_V1_INDEX_ICACHEOP into a config option
+>   MIPS: Convert R4600_V1_HIT_CACHEOP into a config option
+>   MIPS: Convert R4600_V2_HIT_CACHEOP into a config option
+>   MIPS: Remove MIPS4K_ICACHE_REFILL_WAR and MIPS_CACHE_SYNC_WAR
+>   MIPS: Convert TX49XX_ICACHE_INDEX_INV into a config option
+>   MIPS: Convert ICACHE_REFILLS_WORKAROUND_WAR into a config option
+>   MIPS: Convert R10000_LLSC_WAR info a config option
+>   MIPS: Convert MIPS34K_MISSED_ITLB_WAR into a config option
+>   MIPS: Replace SIBYTE_1956_WAR by CONFIG_SB1_PASS_2_WORKAROUNDS
+>   MIPS: Get rid of BCM1250_M3_WAR
+>   MIPS: Get rid of CAVIUM_OCTEON_DCACHE_PREFETCH_WAR
+>   MIPS: Remove mach-*/war.h
+> 
+>  arch/mips/Kconfig                              |  80 +++++++++++++
+>  arch/mips/cavium-octeon/setup.c                |   2 +-
+>  arch/mips/include/asm/futex.h                  |   4 +-
+>  arch/mips/include/asm/llsc.h                   |   2 +-
+>  arch/mips/include/asm/local.h                  |   4 +-
+>  arch/mips/include/asm/mach-cavium-octeon/war.h |  27 -----
+>  arch/mips/include/asm/mach-generic/war.h       |  23 ----
+>  arch/mips/include/asm/mach-ip22/war.h          |  27 -----
+>  arch/mips/include/asm/mach-ip27/war.h          |  23 ----
+>  arch/mips/include/asm/mach-ip28/war.h          |  23 ----
+>  arch/mips/include/asm/mach-ip30/war.h          |  24 ----
+>  arch/mips/include/asm/mach-ip32/war.h          |  23 ----
+>  arch/mips/include/asm/mach-malta/war.h         |  23 ----
+>  arch/mips/include/asm/mach-rc32434/war.h       |  23 ----
+>  arch/mips/include/asm/mach-rm/war.h            |  27 -----
+>  arch/mips/include/asm/mach-sibyte/war.h        |  38 -------
+>  arch/mips/include/asm/mach-tx49xx/war.h        |  23 ----
+>  arch/mips/include/asm/mipsregs.h               |   4 +-
+>  arch/mips/include/asm/war.h                    | 150 -------------------------
+>  arch/mips/kernel/signal.c                      |   8 +-
+>  arch/mips/kernel/syscall.c                     |   2 +-
+>  arch/mips/mm/c-r4k.c                           |  17 +--
+>  arch/mips/mm/page.c                            |  16 ++-
+>  arch/mips/mm/tlbex.c                           |   8 +-
+>  arch/mips/mm/uasm.c                            |   2 +-
+>  drivers/tty/serial/sb1250-duart.c              |   9 +-
+>  26 files changed, 127 insertions(+), 485 deletions(-)
+>  delete mode 100644 arch/mips/include/asm/mach-cavium-octeon/war.h
+>  delete mode 100644 arch/mips/include/asm/mach-generic/war.h
+>  delete mode 100644 arch/mips/include/asm/mach-ip22/war.h
+>  delete mode 100644 arch/mips/include/asm/mach-ip27/war.h
+>  delete mode 100644 arch/mips/include/asm/mach-ip28/war.h
+>  delete mode 100644 arch/mips/include/asm/mach-ip30/war.h
+>  delete mode 100644 arch/mips/include/asm/mach-ip32/war.h
+>  delete mode 100644 arch/mips/include/asm/mach-malta/war.h
+>  delete mode 100644 arch/mips/include/asm/mach-rc32434/war.h
+>  delete mode 100644 arch/mips/include/asm/mach-rm/war.h
+>  delete mode 100644 arch/mips/include/asm/mach-sibyte/war.h
+>  delete mode 100644 arch/mips/include/asm/mach-tx49xx/war.h
+
+series applied to mips-next.
+
+Thomas.
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
