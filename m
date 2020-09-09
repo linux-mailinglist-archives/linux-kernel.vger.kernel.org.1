@@ -2,63 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B240262694
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 06:59:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55560262690
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 06:59:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727055AbgIIE75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 00:59:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34628 "EHLO
+        id S1726605AbgIIE7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 00:59:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725922AbgIIE73 (ORCPT
+        with ESMTP id S1725932AbgIIE73 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 9 Sep 2020 00:59:29 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 693C1C061757
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 21:59:27 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id s65so120706pgb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 21:59:27 -0700 (PDT)
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69441C0613ED
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 21:59:28 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id s65so120747pgb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 21:59:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
         h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
          :content-transfer-encoding;
-        bh=/CFjqhupI1AWKqg+mCbgMP9R+W6vd0H8IsBhpy0/FFY=;
-        b=hpg4QcQyAdlz4HPaeo1/zixNDr+qZlp7W1wiXTwWOYJ/GWcLojwWm0o9fbPsFjukK9
-         2LKyXGPlUU1c8pEOjV/nFFboLir8U07CRMECpMSSX4NodajoEO5/g2YUnEdaUOliam3v
-         x3A/YIoz3tB3O2UOgr2XwxOPgtcNU/pjXer6Nvjw/A4SmYd3kuVE2yhD1obX3twpm0ZJ
-         uY8gePDhzkbYs2xr3tSi0I50LXoRUBZy62iivUyn1MDOazCVhaC0q5853njaJ5h6HPDo
-         vFAMxiLoka/mwDjY4FpgeA2C3f1ROVcjIJ6bOqoC3xU+j3/VplUtfN7ZTq74wSoUoqgm
-         nYuQ==
+        bh=rdk6qUroklOezfjw+3dsA2Gu4Mz4XSO7jbxK/CWDMqk=;
+        b=JLdEHyMNpt93ohv4NKJl4ziWIkVTXyKDXL23hqJYtMGUwYVaCFrN0D+e4FEGsUwX6w
+         Q6ieMcouBJy1YjgP3onPlT8k7nXF4bBWteYTZIy1rNDVeU9n5w63TXKmbdT+vaH5xEfe
+         8h/7gF0OUTKShx6D8uy6czh+MWyjk/uq2bkYoJZToXb8+w64AYVEsmx9+Cx4HBP4+FqI
+         G/qsuKVYv6ma70aopXEJDY9VLsGF8ErWVyshKumui1bHfHsHjDVKNSSUevajiUUv12K9
+         G16hBntoZRqrzfUSck1ceDayhfa6dUs3bilNqzPIQ5iyTNwbfmz1Prd0wFf0Da+BjAbt
+         ub9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
          :mime-version:content-transfer-encoding;
-        bh=/CFjqhupI1AWKqg+mCbgMP9R+W6vd0H8IsBhpy0/FFY=;
-        b=e8zsvTFAsm4C8dciwMCG6M+HXcwfl/T5mZtN+WVZvR97YcXrbpzq6V1BuvnY3gfI13
-         zkrP/nrc9xM5RVaweWMH8ObPFZ32Ook3QE1DpSEzsGRlOH4ab6y6WTeLyjq0264IUkWd
-         RIC6c4X4FLCILkbCkB8XF6RZ50lWy6niPBngCiQrY1w9e9xRzpmlE7RZdYgd4zju7rzp
-         CT4qJwMSXc1qoMMChJ00ofu1W2Q2LBXQnw9qES+A16fmc5tMcqjMwBwKDNdeyieo42ld
-         xq/WIENyTvsQ1+oOGaQ4TwLFBZ+O8p5pH7TcppQNDtwidUVydjUhAJbqAx8a7MOTB4kB
-         1h3g==
-X-Gm-Message-State: AOAM533/1Yep/d25Izc1Yl2RmcpZ1wTNKGIFZyw/b4yeyp0wTCTssYXZ
-        eP9tNLi+Md5AbZW0JTAFn61sxA==
-X-Google-Smtp-Source: ABdhPJwy3yBcV7Uv8j6LpvPP4ltOvLLGG22xDuMaz75P6SEw83qpXJZok8u89m0LxFNrXKeBbGOOHw==
-X-Received: by 2002:a62:1bc2:: with SMTP id b185mr2014599pfb.75.1599627566376;
-        Tue, 08 Sep 2020 21:59:26 -0700 (PDT)
+        bh=rdk6qUroklOezfjw+3dsA2Gu4Mz4XSO7jbxK/CWDMqk=;
+        b=UtA5FSMvkigxnlplQSzBtIlHAFtsXM8IE6AeiEkTr44cl273nN8iPZ+mFTztUv8+23
+         v7mgUxFXo28sqM2oobhCzaL3EP/XLaIh6KUfvh0X9Zhmg7wvjqejt9oonKeFarlRM0aL
+         GHgkhJujF850aSAlLAtHJrnj3gthLN2PHYoenT0qoAID8ZbB62HXyy69Yk8cBGqEc9d6
+         kZ3GqePZJR+YU6otOEJta7S46gpreLZZXTj53Q0TXGtQ2rcLyUakm9A4/PQChULdHtfV
+         gZ3si1N2wPA818AqUOJ2RIxvBjBLyVx+YlCHxASJDICAZX8gMrh9vxH+TxfgjPcc9E/z
+         dA1g==
+X-Gm-Message-State: AOAM532XFBn34u6L2Wdp5r38277M6/ElmYBiGxPV6YNOh8eOPFMrlO3X
+        uDWQ6K79TSKOKyyjahqFUhQSlfe1i5qh9w==
+X-Google-Smtp-Source: ABdhPJy+mcRn9gBxX26OAJWUpRkuRfLoO0RKY/cwXfFGpspac8HvpMtXj5XV/6ZXVEST2GvI7VaEVA==
+X-Received: by 2002:a63:cd49:: with SMTP id a9mr1595915pgj.277.1599627567758;
+        Tue, 08 Sep 2020 21:59:27 -0700 (PDT)
 Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id z18sm1034026pfn.186.2020.09.08.21.59.25
+        by smtp.gmail.com with ESMTPSA id gb19sm705987pjb.38.2020.09.08.21.59.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Sep 2020 21:59:25 -0700 (PDT)
-Date:   Tue, 08 Sep 2020 21:59:25 -0700 (PDT)
-X-Google-Original-Date: Tue, 08 Sep 2020 21:43:09 PDT (-0700)
-Subject:     Re: [PATCH 6/8] riscv: refactor __get_user and __put_user
-In-Reply-To: <20200907055825.1917151-7-hch@lst.de>
+        Tue, 08 Sep 2020 21:59:27 -0700 (PDT)
+Date:   Tue, 08 Sep 2020 21:59:27 -0700 (PDT)
+X-Google-Original-Date: Tue, 08 Sep 2020 21:44:39 PDT (-0700)
+Subject:     Re: [PATCH 7/8] riscv: implement __get_kernel_nofault and __put_user_nofault
+In-Reply-To: <20200907055825.1917151-8-hch@lst.de>
 CC:     Paul Walmsley <paul.walmsley@sifive.com>,
         Arnd Bergmann <arnd@arndb.de>, viro@zeniv.linux.org.uk,
         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-arch@vger.kernel.org
 From:   Palmer Dabbelt <palmer@dabbelt.com>
 To:     Christoph Hellwig <hch@lst.de>
-Message-ID: <mhng-e4978c15-9e83-4621-a9e6-76a550f6dcda@palmerdabbelt-glaptop1>
+Message-ID: <mhng-c08d96cd-2db3-413b-8e5c-cc159e12b507@palmerdabbelt-glaptop1>
 Mime-Version: 1.0 (MHng)
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
@@ -67,199 +67,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 06 Sep 2020 22:58:23 PDT (-0700), Christoph Hellwig wrote:
-> Add new __get_user_nocheck and __put_user_nocheck that switch on the size
-> and call the actual inline assembly helpers, and move the uaccess enable
-> / disable into the actual __get_user and __put_user.  This prepares for
-> natively implementing __get_kernel_nofault and __put_kernel_nofault.
->
-> Also don't bother with the deprecated register keyword for the error
-> return.
+On Sun, 06 Sep 2020 22:58:24 PDT (-0700), Christoph Hellwig wrote:
+> Implement the non-faulting kernel access helpers directly instead of
+> abusing the uaccess routines under set_fs(KERNEL_DS).
 >
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
 > ---
->  arch/riscv/include/asm/uaccess.h | 94 ++++++++++++++++++--------------
->  1 file changed, 52 insertions(+), 42 deletions(-)
+>  arch/riscv/include/asm/uaccess.h | 20 ++++++++++++++++++++
+>  1 file changed, 20 insertions(+)
 >
 > diff --git a/arch/riscv/include/asm/uaccess.h b/arch/riscv/include/asm/uaccess.h
-> index e8eedf22e90747..b67d1c616ec348 100644
+> index b67d1c616ec348..264e52fb62b143 100644
 > --- a/arch/riscv/include/asm/uaccess.h
 > +++ b/arch/riscv/include/asm/uaccess.h
-> @@ -107,7 +107,6 @@ static inline int __access_ok(unsigned long addr, unsigned long size)
->  do {								\
->  	uintptr_t __tmp;					\
->  	__typeof__(x) __x;					\
-> -	__enable_user_access();					\
->  	__asm__ __volatile__ (					\
->  		"1:\n"						\
->  		"	" insn " %1, %3\n"			\
-> @@ -125,7 +124,6 @@ do {								\
->  		"	.previous"				\
->  		: "+r" (err), "=&r" (__x), "=r" (__tmp)		\
->  		: "m" (*(ptr)), "i" (-EFAULT));			\
-> -	__disable_user_access();				\
->  	(x) = __x;						\
->  } while (0)
->
-> @@ -138,7 +136,6 @@ do {								\
->  	u32 __user *__ptr = (u32 __user *)(ptr);		\
->  	u32 __lo, __hi;						\
->  	uintptr_t __tmp;					\
-> -	__enable_user_access();					\
->  	__asm__ __volatile__ (					\
->  		"1:\n"						\
->  		"	lw %1, %4\n"				\
-> @@ -162,12 +159,30 @@ do {								\
->  			"=r" (__tmp)				\
->  		: "m" (__ptr[__LSW]), "m" (__ptr[__MSW]),	\
->  			"i" (-EFAULT));				\
-> -	__disable_user_access();				\
->  	(x) = (__typeof__(x))((__typeof__((x)-(x)))(		\
->  		(((u64)__hi << 32) | __lo)));			\
->  } while (0)
->  #endif /* CONFIG_64BIT */
->
-> +#define __get_user_nocheck(x, __gu_ptr, __gu_err)		\
-> +do {								\
-> +	switch (sizeof(*__gu_ptr)) {				\
-> +	case 1:							\
-> +		__get_user_asm("lb", (x), __gu_ptr, __gu_err);	\
-> +		break;						\
-> +	case 2:							\
-> +		__get_user_asm("lh", (x), __gu_ptr, __gu_err);	\
-> +		break;						\
-> +	case 4:							\
-> +		__get_user_asm("lw", (x), __gu_ptr, __gu_err);	\
-> +		break;						\
-> +	case 8:							\
-> +		__get_user_8((x), __gu_ptr, __gu_err);	\
-> +		break;						\
-> +	default:						\
-> +		BUILD_BUG();					\
-> +	}							\
-> +} while (0)
->
->  /**
->   * __get_user: - Get a simple variable from user space, with less checking.
-> @@ -191,25 +206,15 @@ do {								\
->   */
->  #define __get_user(x, ptr)					\
->  ({								\
-> -	register long __gu_err = 0;				\
->  	const __typeof__(*(ptr)) __user *__gu_ptr = (ptr);	\
-> +	long __gu_err = 0;					\
-> +								\
->  	__chk_user_ptr(__gu_ptr);				\
-> -	switch (sizeof(*__gu_ptr)) {				\
-> -	case 1:							\
-> -		__get_user_asm("lb", (x), __gu_ptr, __gu_err);	\
-> -		break;						\
-> -	case 2:							\
-> -		__get_user_asm("lh", (x), __gu_ptr, __gu_err);	\
-> -		break;						\
-> -	case 4:							\
-> -		__get_user_asm("lw", (x), __gu_ptr, __gu_err);	\
-> -		break;						\
-> -	case 8:							\
-> -		__get_user_8((x), __gu_ptr, __gu_err);	\
-> -		break;						\
-> -	default:						\
-> -		BUILD_BUG();					\
-> -	}							\
-> +								\
-> +	__enable_user_access();					\
-> +	__get_user_nocheck(x, __gu_ptr, __gu_err);		\
-> +	__disable_user_access();				\
-> +								\
->  	__gu_err;						\
+> @@ -486,6 +486,26 @@ unsigned long __must_check clear_user(void __user *to, unsigned long n)
+>  	__ret;							\
 >  })
 >
-> @@ -243,7 +248,6 @@ do {								\
->  do {								\
->  	uintptr_t __tmp;					\
->  	__typeof__(*(ptr)) __x = x;				\
-> -	__enable_user_access();					\
->  	__asm__ __volatile__ (					\
->  		"1:\n"						\
->  		"	" insn " %z3, %2\n"			\
-> @@ -260,7 +264,6 @@ do {								\
->  		"	.previous"				\
->  		: "+r" (err), "=r" (__tmp), "=m" (*(ptr))	\
->  		: "rJ" (__x), "i" (-EFAULT));			\
-> -	__disable_user_access();				\
->  } while (0)
->
->  #ifdef CONFIG_64BIT
-> @@ -272,7 +275,6 @@ do {								\
->  	u32 __user *__ptr = (u32 __user *)(ptr);		\
->  	u64 __x = (__typeof__((x)-(x)))(x);			\
->  	uintptr_t __tmp;					\
-> -	__enable_user_access();					\
->  	__asm__ __volatile__ (					\
->  		"1:\n"						\
->  		"	sw %z4, %2\n"				\
-> @@ -294,10 +296,28 @@ do {								\
->  			"=m" (__ptr[__LSW]),			\
->  			"=m" (__ptr[__MSW])			\
->  		: "rJ" (__x), "rJ" (__x >> 32), "i" (-EFAULT));	\
-> -	__disable_user_access();				\
->  } while (0)
->  #endif /* CONFIG_64BIT */
->
-> +#define __put_user_nocheck(x, __gu_ptr, __pu_err)					\
-> +do {								\
-> +	switch (sizeof(*__gu_ptr)) {				\
-> +	case 1:							\
-> +		__put_user_asm("sb", (x), __gu_ptr, __pu_err);	\
-> +		break;						\
-> +	case 2:							\
-> +		__put_user_asm("sh", (x), __gu_ptr, __pu_err);	\
-> +		break;						\
-> +	case 4:							\
-> +		__put_user_asm("sw", (x), __gu_ptr, __pu_err);	\
-> +		break;						\
-> +	case 8:							\
-> +		__put_user_8((x), __gu_ptr, __pu_err);	\
-> +		break;						\
-> +	default:						\
-> +		BUILD_BUG();					\
-> +	}							\
+> +#define HAVE_GET_KERNEL_NOFAULT
+> +
+> +#define __get_kernel_nofault(dst, src, type, err_label)			\
+> +do {									\
+> +	long __kr_err;							\
+> +									\
+> +	__get_user_nocheck(*((type *)(dst)), (type *)(src), __kr_err);	\
+> +	if (unlikely(__kr_err))						\
+> +		goto err_label;						\
 > +} while (0)
->
->  /**
->   * __put_user: - Write a simple value into user space, with less checking.
-> @@ -320,25 +340,15 @@ do {								\
->   */
->  #define __put_user(x, ptr)					\
->  ({								\
-> -	register long __pu_err = 0;				\
->  	__typeof__(*(ptr)) __user *__gu_ptr = (ptr);		\
-> +	long __pu_err = 0;					\
-> +								\
->  	__chk_user_ptr(__gu_ptr);				\
-> -	switch (sizeof(*__gu_ptr)) {				\
-> -	case 1:							\
-> -		__put_user_asm("sb", (x), __gu_ptr, __pu_err);	\
-> -		break;						\
-> -	case 2:							\
-> -		__put_user_asm("sh", (x), __gu_ptr, __pu_err);	\
-> -		break;						\
-> -	case 4:							\
-> -		__put_user_asm("sw", (x), __gu_ptr, __pu_err);	\
-> -		break;						\
-> -	case 8:							\
-> -		__put_user_8((x), __gu_ptr, __pu_err);	\
-> -		break;						\
-> -	default:						\
-> -		BUILD_BUG();					\
-> -	}							\
-> +								\
-> +	__enable_user_access();					\
-> +	__put_user_nocheck(x, __gu_ptr, __pu_err);		\
-> +	__disable_user_access();				\
-> +								\
->  	__pu_err;						\
->  })
+> +
+> +#define __put_kernel_nofault(dst, src, type, err_label)			\
+> +do {									\
+> +	long __kr_err;							\
+> +									\
+> +	__put_user_nocheck(*((type *)(dst)), (type *)(src), __kr_err);	\
+> +	if (unlikely(__kr_err))						\
+> +		goto err_label;						\
+> +} while (0)
+> +
+>  #else /* CONFIG_MMU */
+>  #include <asm-generic/uaccess.h>
+>  #endif /* CONFIG_MMU */
 
 Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
 Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
