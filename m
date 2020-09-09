@@ -2,118 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 868B2262E6B
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 14:21:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96483262E73
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 14:23:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729988AbgIIMUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 08:20:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44906 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728971AbgIIMNi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 08:13:38 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4471EC06179E;
-        Wed,  9 Sep 2020 05:02:10 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0ae7002c1f5e624f33a6aa.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:e700:2c1f:5e62:4f33:a6aa])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C37D71EC0423;
-        Wed,  9 Sep 2020 14:02:08 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1599652928;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=kgJlGGMVRB9lfRXv2ieQ2H9t4e0tJoEqcTQEnRU5y84=;
-        b=sdE9CNICvAPqLe7kTQTgGYGJkizFSaRt2dUBWSb6pnR2OzMoqJf56x/jNz2O/vsE3teYJM
-        ThiWdxnHS8E1qmuroDI7eBWqkhdjVK8ezQljpp6rrrcQgDgMI3Fbe2gPasY7jp+p7hnUzx
-        jz9miS5VNff04z9hQ20V9IP+0z6IHq8=
-Date:   Wed, 9 Sep 2020 14:02:03 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Shiju Jose <shiju.jose@huawei.com>
-Cc:     "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "tony.luck@intel.com" <tony.luck@intel.com>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "james.morse@arm.com" <james.morse@arm.com>,
-        "lenb@kernel.org" <lenb@kernel.org>, Linuxarm <linuxarm@huawei.com>
-Subject: Re: [PATCH 1/1] RAS: Add CPU Correctable Error Collector to isolate
- an erroneous CPU core
-Message-ID: <20200909120203.GB12237@zn.tnic>
-References: <20200901140140.1772-1-shiju.jose@huawei.com>
- <20200901143539.GC8392@zn.tnic>
- <512b7b8e6cb846aabaf5a2191cd9b5d4@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        id S1730061AbgIIMXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 08:23:05 -0400
+Received: from mail-am6eur05on2128.outbound.protection.outlook.com ([40.107.22.128]:17132
+        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729992AbgIIMSq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 08:18:46 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Pivjlr6bCNfLCShB+we5Qk/7hVqW6zXdPpEWsjiM1zFMHKN97RalCtFzgoRNfVrDvvEKc7Mxwa9RI1kHunOA/XcUvvr9ZpHN75kdMippkDz7dmg4ju5VTJHn7XSebQmER3sc5aNzX3eRKHTnPC+ix6oLWIlZ6uEaMzYyS0K/XCYkuKUdJ8n0XCTR4gZ+IpUaG/x/chCxQJqzjE1aBIBCXFOufC8GF7tm5BV9EOO7RjaFSnAMyRCKvTU0G5wcht9Di0c5HXW6U7dB3DtGe4fv6eaT7kniVQy2VP2VcSQ5qoN54RIz/I/qC+k0n3HetNK0d6UDw5F4RjXugyj1GCtx2Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zcgzFqwj0qSokQf3n8XTWalbgOd1NPmpmotUkV5Dt0g=;
+ b=X5gmU/eplCuMxKohUdRAxSgHT+chlmWoirjZbJ2dSabWJTyPZKK3My+n3e0EFdINKusp15PcIu1HO939VKlXEWRJMr/PHw8sAo9Ipqs+rJJrj6oYcRVHIQOSOxtJ7IuwwnvP7VMSnKIuZnml035RT8SZiM2g5Q1bHP2pV6DKZbbb+w44qV3reZWjqLd/+FVR/vBbwnTDi+EUiMgk19Nv66c/jdP1SAqz8wWohgorEedMiG3y1NWiF6F45Hg10c2hKBZPFf6U+aMThvdceIdT3QLmQfupXYS4WhzCL0ZYw+iRUFwTUdbP6aa4TNeJXa1hQjunKESwsMzTbb6R3MGJcg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=plvision.eu; dmarc=pass action=none header.from=plvision.eu;
+ dkim=pass header.d=plvision.eu; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plvision.eu;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zcgzFqwj0qSokQf3n8XTWalbgOd1NPmpmotUkV5Dt0g=;
+ b=IGJwNKBut+AHcRsDFeN8OK55US4CLkrGXmtQ2di/dOxjfQN3yLs+M5JTv9Az0C+0cKV1gkVayvcwkX1dVltmkO1+ISFIquMlgLyfJmP7oriCgIRKi4YGgtRZ8VtPNu4XtmaAp8FBVeS/wkUoRvu7+0beiOq1/CrYZwLYuur/D1o=
+Authentication-Results: linaro.org; dkim=none (message not signed)
+ header.d=none;linaro.org; dmarc=none action=none header.from=plvision.eu;
+Received: from HE1P190MB0539.EURP190.PROD.OUTLOOK.COM (2603:10a6:7:56::28) by
+ HE1P190MB0123.EURP190.PROD.OUTLOOK.COM (2603:10a6:3:c5::20) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3370.16; Wed, 9 Sep 2020 12:02:15 +0000
+Received: from HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
+ ([fe80::c1ab:71de:6bc2:89fe]) by HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
+ ([fe80::c1ab:71de:6bc2:89fe%6]) with mapi id 15.20.3348.019; Wed, 9 Sep 2020
+ 12:02:15 +0000
+Date:   Wed, 9 Sep 2020 15:02:07 +0300
+From:   Vadym Kochan <vadym.kochan@plvision.eu>
+To:     Alex Elder <elder@linaro.org>
+Cc:     Alex Elder <elder@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFT net] net: ipa: fix u32_replace_bits by u32p_xxx version
+Message-ID: <20200909120207.GA20411@plvision.eu>
+References: <20200908143237.8816-1-vadym.kochan@plvision.eu>
+ <030185d3-8401-dd2f-8981-9dfe2239866a@linaro.org>
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <512b7b8e6cb846aabaf5a2191cd9b5d4@huawei.com>
+In-Reply-To: <030185d3-8401-dd2f-8981-9dfe2239866a@linaro.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: AM6PR0202CA0050.eurprd02.prod.outlook.com
+ (2603:10a6:20b:3a::27) To HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
+ (2603:10a6:7:56::28)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from plvision.eu (217.20.186.93) by AM6PR0202CA0050.eurprd02.prod.outlook.com (2603:10a6:20b:3a::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16 via Frontend Transport; Wed, 9 Sep 2020 12:02:14 +0000
+X-Originating-IP: [217.20.186.93]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 30a4cff7-c189-4b0a-1b82-08d854b8314c
+X-MS-TrafficTypeDiagnostic: HE1P190MB0123:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <HE1P190MB0123A4D88F38076DC2808AFD95260@HE1P190MB0123.EURP190.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: rvZ6WXDVQQmeTKIv3HG0vvEvlg/1FZ2jrc5K3MQ2N+02ltv2d2MET9UYGmXZjKCJMUDPC7bMErUbQ58FUiAyuwpE+wlAwPBpYqN44/1jNs0NFvA7V4f5UmpaNFeZlxhgqYIPaEAvzIL2h7+nVhUMu6kdAbLurPJwofyUPF0u+XRYKt7DWrUbOlErmRV6fxjEshkEOlJ4+z6ELbAOEHFsxam7KrH488WPIh8FzKUE1prs98nI1n8kKqU13mfI/UGI1/YDSZDY+ELQmt/aWD+HYH2++KnGjsYC+qCGPVWqEb0AA8f1UBuvK4/i8dg3KAgW968NnL/d/sT1gMV3Q9ReJg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1P190MB0539.EURP190.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(376002)(366004)(346002)(136003)(396003)(39830400003)(52116002)(8676002)(1076003)(7696005)(2906002)(66574015)(55016002)(83380400001)(36756003)(54906003)(53546011)(316002)(44832011)(4326008)(66476007)(86362001)(66556008)(66946007)(16526019)(478600001)(26005)(8886007)(2616005)(956004)(8936002)(33656002)(5660300002)(6666004)(186003)(6916009);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: uVFqXAgHQiOky0bxGbBPXObj8fe2HdCcSe5gSmVFfeOgCihmqIpd/kX5C6obdxSXCv6tvdS9jxZ/NKN5gqpEblw5gW/0E8gSO/RVRsMxm8SmIBtgYLl6LJmoXlLN00Oo3oPWT2J8pOGhzcr5fB/MbBuVA3eGgn5PJewjOTViXXzbDBMcJ45tC9K4SPOPspM6gYWSARW1NO1I/41ZgnXa+niPsiPNGjWVKEaM10bpHHj/FhuW4mZlClWuUtvWeG5lhr0ztFy+wtVrVEDuheJO09Tc1G+Cg2WQqjNwItB7Z8TMlNM9BLIRhqBuNFrLmmmHzgbPAkukxpY30o57KYs24OnyWu2/vnQnAFvu3gPoHfRDMWM3YtPzo+07J54WZ/DyvxT/6tlsJPagnHSuo4BvWYgqmPOUOssRTvTfZGAKQQMOgcj7MpoQRChaC0sOyqES/or16QuiUSAC3oYs/Uf5gF5R1sDNvDEN8/3z+7+1ATscPmhfQY1MUpaDRaRwm3vhqd3U1meWLPtKfi/ibNi0JIL56olTnfbjODw3r+LjhXlE8brkWqZAgi7x54nsu63kcGCT5bPZmnrlv7KoMHCAW0i+MASo0QOh/dUurGzvXx9ds3jFMZInZWrQwFqNctARRQJp76UcFecqdfX1u3TO9w==
+X-OriginatorOrg: plvision.eu
+X-MS-Exchange-CrossTenant-Network-Message-Id: 30a4cff7-c189-4b0a-1b82-08d854b8314c
+X-MS-Exchange-CrossTenant-AuthSource: HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Sep 2020 12:02:15.5089
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 03707b74-30f3-46b6-a0e0-ff0a7438c9c4
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: nlelJf5p9ZW07J9Uf6TAI7J1/qPJJYwDF++2eV4qkl8iP+Hfa0B5BJQxZNyUH55Sqae91fhho2c5EgUylsxHIx/gInwIvQocKbR+f/p+fOI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1P190MB0123
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 01, 2020 at 04:20:54PM +0000, Shiju Jose wrote:
-> CPU CEC derived the infrastructure of the CEC only and the logic
-> used in the CEC for CE count storage, CE count calculation and page
-> isolation is very unique for the memory pages, which seems cannot be
-> reusable for the CPU CEs.
+Hi Alex,
 
-Oh, because it saves the reported error's PFN and you want to save
+On Wed, Sep 09, 2020 at 06:53:17AM -0500, Alex Elder wrote:
+> On 9/8/20 9:32 AM, Vadym Kochan wrote:
+> > Looks like u32p_replace_bits() should be used instead of
+> > u32_replace_bits() which does not modifies the value but returns the
+> > modified version.
+> > 
+> > Fixes: 2b9feef2b6c2 ("soc: qcom: ipa: filter and routing tables")
+> > Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
+> 
+> You are correct!  Thank you for finding this.
+> 
+> Your fix is good, and I have now tested it and verified it
+> works as desired.
+> 
+> FYI, this is currently used only for the SDM845 platform.  It turns
+> out the register values (route and filter hash config) that are read
+> and intended to be updated always have value 0, so (fortunately) your
+> change has no effect there.
+> 
 
-[CPU num | error count]
+I had such assumption that probably it works without the fix.
 
-?
+> Nevertheless, you have fixed this bug and I appreciate it.
+> 
+> Reviewed-by: Alex Elder <elder@linaro.org>
+> 
 
-Well, you can easily change that by extending the existing CEC to have a
-different storage format for CPU errors, i.e., use a different ce_array
-which gets passed to the functions anyway.
+My understanding is that I need to re-submit this as an official patch
+without RFT/RFC prefix and with your reviewed tag ?
 
-> Also the values set for the parameters such as threshold, time period
-> for the memory errors and CPU errors would be different.
+Regards,
+Vadym Kochan
 
-And your implementation with sliding windows is so totally different
-that it warrants the duplication of the code? I don't think so.
-
-You can use the current CEC to do exactly what you wanna do, with the
-decaying and so on.
-
-Because all you wanna do is count the errors a CPU triggered.
-
-However, a CPU can trigger a *lot* of different types of errors.
-You're putting them all in the same basket by doing:
-
-                else if (guid_equal(sec_type, &CPER_SEC_PROC_ARM))
-			/* add to CEC */
-
-and only for correctable.
-
-What type of errors get reported in CPER_SEC_PROC_ARM?
-
-If they're all lumped together and if some functional unit generates a
-lot of errors, instead of disabling that unit only, you'll go and remove
-the whole CPU?
-
-Doesn't make a whole lot of sense to me.
-
-How about you define what exactly you're trying to solve, maybe give an
-example of a real issue someone is encountering and you're trying to
-address? Because there was never a necessity so far to disable CPUs on
-x86 due to correctable errors. Why is that needed on ARM?
-
-> Thus extending cec.c to support CPU CEs would include adding CPU CEC
-> specific code for storing error count, isolation etc which I thought
-> would result the code less tidy and less readable unless find more
-> reusable logic.
-
-Depends on how you design it.
-
-But with what I'm seeing so far, I'm still sceptical this is needed at
-all.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+> > ---
+> > Found it while grepping of u32_replace_bits() usage and
+> > replaced it w/o testing.
+> > 
+> >  drivers/net/ipa/ipa_table.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/net/ipa/ipa_table.c b/drivers/net/ipa/ipa_table.c
+> > index 2098ca2f2c90..b3790aa952a1 100644
+> > --- a/drivers/net/ipa/ipa_table.c
+> > +++ b/drivers/net/ipa/ipa_table.c
+> > @@ -521,7 +521,7 @@ static void ipa_filter_tuple_zero(struct ipa_endpoint *endpoint)
+> >  	val = ioread32(endpoint->ipa->reg_virt + offset);
+> >  
+> >  	/* Zero all filter-related fields, preserving the rest */
+> > -	u32_replace_bits(val, 0, IPA_REG_ENDP_FILTER_HASH_MSK_ALL);
+> > +	u32p_replace_bits(&val, 0, IPA_REG_ENDP_FILTER_HASH_MSK_ALL);
+> >  
+> >  	iowrite32(val, endpoint->ipa->reg_virt + offset);
+> >  }
+> > @@ -573,7 +573,7 @@ static void ipa_route_tuple_zero(struct ipa *ipa, u32 route_id)
+> >  	val = ioread32(ipa->reg_virt + offset);
+> >  
+> >  	/* Zero all route-related fields, preserving the rest */
+> > -	u32_replace_bits(val, 0, IPA_REG_ENDP_ROUTER_HASH_MSK_ALL);
+> > +	u32p_replace_bits(&val, 0, IPA_REG_ENDP_ROUTER_HASH_MSK_ALL);
+> >  
+> >  	iowrite32(val, ipa->reg_virt + offset);
+> >  }
+> > 
+> 
