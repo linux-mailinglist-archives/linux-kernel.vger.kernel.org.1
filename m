@@ -2,60 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F50F26312C
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:02:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15DB2263148
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:05:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730591AbgIIQCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 12:02:05 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:40740 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730702AbgIIQA5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 12:00:57 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 2EFB16363AE265E31F7C;
-        Wed,  9 Sep 2020 21:58:46 +0800 (CST)
-Received: from localhost (10.174.179.108) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Wed, 9 Sep 2020
- 21:58:37 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <kvalo@codeaurora.org>, <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <ath10k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH] ath10k: Remove unused macro ATH10K_ROC_TIMEOUT_HZ
-Date:   Wed, 9 Sep 2020 21:58:34 +0800
-Message-ID: <20200909135834.38448-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        id S1730750AbgIIQFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 12:05:30 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38034 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730877AbgIIQDp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 12:03:45 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 488D9AD1B;
+        Wed,  9 Sep 2020 13:59:21 +0000 (UTC)
+Date:   Wed, 9 Sep 2020 15:59:04 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Rik van Riel <riel@surriel.com>
+Cc:     Zi Yan <ziy@nvidia.com>, David Hildenbrand <david@redhat.com>,
+        Roman Gushchin <guro@fb.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>, linux-mm@kvack.org,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        David Nellans <dnellans@nvidia.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 00/16] 1GB THP support on x86_64
+Message-ID: <20200909135904.GL7348@dhcp22.suse.cz>
+References: <20200902180628.4052244-1-zi.yan@sent.com>
+ <20200903142300.bjq2um5y5nwocvar@box>
+ <20200903163020.GG60440@carbon.dhcp.thefacebook.com>
+ <8e677ead-206d-08dd-d73e-569bd3803e3b@redhat.com>
+ <7E20392E-5ED7-4C22-9555-F3BAABF3CBE9@nvidia.com>
+ <20200908143503.GE26850@dhcp22.suse.cz>
+ <7ed82cb06074b30c2956638082c515fb179f69a3.camel@surriel.com>
+ <20200909070445.GA7348@dhcp22.suse.cz>
+ <054d02f3b34d9946905929ff268b685c91494b3e.camel@surriel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.179.108]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <054d02f3b34d9946905929ff268b685c91494b3e.camel@surriel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is no caller in tree, so can remove it.
+On Wed 09-09-20 09:19:16, Rik van Riel wrote:
+> On Wed, 2020-09-09 at 09:04 +0200, Michal Hocko wrote:
+> > On Tue 08-09-20 10:41:10, Rik van Riel wrote:
+> > > On Tue, 2020-09-08 at 16:35 +0200, Michal Hocko wrote:
+> > > 
+> > > > A global knob is insufficient. 1G pages will become a very
+> > > > precious
+> > > > resource as it requires a pre-allocation (reservation). So it
+> > > > really
+> > > > has
+> > > > to be an opt-in and the question is whether there is also some
+> > > > sort
+> > > > of
+> > > > access control needed.
+> > > 
+> > > The 1GB pages do not require that much in the way of
+> > > pre-allocation. The memory can be obtained through CMA,
+> > > which means it can be used for movable 4kB and 2MB
+> > > allocations when not
+> > > being used for 1GB pages.
+> > 
+> > That CMA has to be pre-reserved, right? That requires a
+> > configuration.
+> 
+> To some extent, yes.
+> 
+> However, because that pool can be used for movable
+> 4kB and 2MB
+> pages as well as for 1GB pages, it would be easy to just set
+> the size of that pool to eg. 1/3 or even 1/2 of memory for every
+> system.
+> 
+> It isn't like the pool needs to be the exact right size. We
+> just need to avoid the "highmem problem" of having too little
+> memory for kernel allocations.
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- drivers/net/wireless/ath/ath10k/mac.c | 2 --
- 1 file changed, 2 deletions(-)
+Which is the problem why this is not really suitable for an uneducated
+guesses. It is really hard to guess the right amount of lowmem. Think of
+heavy fs metadata workloads and their memory demand. Memory reclaim
+usually struggles when zones are imbalanced from my experience.
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index fed8682f266f..5991d0ac41ad 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -7033,8 +7033,6 @@ static int ath10k_conf_tx(struct ieee80211_hw *hw,
- 	return ret;
- }
- 
--#define ATH10K_ROC_TIMEOUT_HZ (2 * HZ)
--
- static int ath10k_remain_on_channel(struct ieee80211_hw *hw,
- 				    struct ieee80211_vif *vif,
- 				    struct ieee80211_channel *chan,
 -- 
-2.17.1
-
-
+Michal Hocko
+SUSE Labs
