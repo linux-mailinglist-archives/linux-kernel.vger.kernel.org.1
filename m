@@ -2,143 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DC20262DE2
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 13:33:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD64F262DEA
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 13:35:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729529AbgIILdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 07:33:05 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:47062 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726426AbgIIL3u (ORCPT
+        id S1729298AbgIILfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 07:35:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38402 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729014AbgIILak (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 07:29:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599650988;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=+QS/wYinfkJEgeIeRWLD3Onp/wO9B1CGJ+gGrGLT4f8=;
-        b=e/ZdJatFIRQN5WHB2jToFqccp8xeK/dD25oGIJkdusVuzl7By+fdi/ve6+DvvAZr+vIZ94
-        nxrtenQjle4vmUld3hsMysNFRwTMAnyGBJVZ3ETGzD9fuNF5ly9jTeMpjijkhdIzrAunCB
-        ZVLXjAASgJ4hkaF0N++NiY0M5nMyHz0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-335-8ICRoSinOKiXfGo2vD00Sg-1; Wed, 09 Sep 2020 07:29:44 -0400
-X-MC-Unique: 8ICRoSinOKiXfGo2vD00Sg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E570D1017DC4;
-        Wed,  9 Sep 2020 11:29:42 +0000 (UTC)
-Received: from [10.36.113.90] (ovpn-113-90.ams2.redhat.com [10.36.113.90])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 37066838DA;
-        Wed,  9 Sep 2020 11:29:41 +0000 (UTC)
-Subject: Re: [RFC 0/5] disable pcplists during page isolation
-To:     osalvador@suse.de, Vlastimil Babka <vbabka@suse.cz>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Michal Hocko <mhocko@kernel.org>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-References: <20200907163628.26495-1-vbabka@suse.cz>
- <0ffb1c2d-1b28-23f7-53e1-63e6f0f4cd41@redhat.com>
- <ce8d05db-b804-21c7-0d12-43e11fc232e5@suse.cz>
- <3f4bd7b0c73f59b4cd2adaad3ccc38bf@suse.de>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat GmbH
-Message-ID: <ee56072e-53be-3f3f-cd6d-d56317f15f0a@redhat.com>
-Date:   Wed, 9 Sep 2020 13:29:40 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Wed, 9 Sep 2020 07:30:40 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 997FBC061799
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 04:30:15 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id c8so2278276edv.5
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 04:30:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LtilNnLErxWStMHBinOTYCeOm310xHPWuX9as3A3mtE=;
+        b=zU61Qpz5O3/GAzIi46fVxpPzkj7+7jdqz3YsJkenU7E5tNScab8ZUNQPoLiBwdtcdJ
+         A6cMnNTM4KziQZOBjTByAgZau05rnh9Wze9BXQi0QLqQ+L0dMx1QIGhG4Na10Xx0L6Y6
+         WsRxOwCfOvWrwvOcMlcn6QdVKPofYotcE1+GuXsFfe0KlV68nC/oQjKLtaEkudC1sfhr
+         wU0s+IKyNgZFuehK/62Tb6LyE9Orssud7lYQ6ge3npzTUXB0FNvCXV+isIYu04/C6reJ
+         DqpQKCm05ACC5axB0q3oUC40UOTbV3CF74ST0lWFd4xmkxsWc2rhfj/C5Z/pbUxdoWwf
+         PNtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LtilNnLErxWStMHBinOTYCeOm310xHPWuX9as3A3mtE=;
+        b=CeDKV0bPPcqRO4YiA9/+VzdMVeE/BpKvL/aD6kNrfne7bKW+t6bJnPsYV5Jo369kHm
+         EsyhhLLK5XpoxTcpneLTK/k5yLQNb8Mwvt/ALSPDoWlCp47YGc10XCFol3MOT4m2Bo4N
+         TScXCZzZ8ypMDpeHeAMamXmMYNA3iISrIELBL5MnQZnmtii7tyUqzq0VgCFTJw5fTwB1
+         1zFtY4RTXCPc0SvLbH+PogEqIhna7AQjO3OrJlKjjPeFr56zRZH5g/rU3m307CBiNjdT
+         x6DTzUvWVdA3Z4Cl0h29XERQyY+U2MPCnuaplnNGKa7i7KETpYkWu/aAo8+BzI4yo8BU
+         k/tQ==
+X-Gm-Message-State: AOAM531rwqfSev9swjqaAPrAg7lpjqy/doEttE2UmwYwrV0NtwO18ysU
+        r4GZNcY5D9aF07ndKEQoyvRHC1rQf8fN64jMLEpkYQ==
+X-Google-Smtp-Source: ABdhPJxKvPpeDCtQOiPk+rO6EfnWvAoQI9mv+g/f8nK1I2m8T2UITVllVDurnxGLwjrj/KjQRNIKAjYqDFFHlAMTc9U=
+X-Received: by 2002:a50:84a2:: with SMTP id 31mr3714353edq.138.1599651013751;
+ Wed, 09 Sep 2020 04:30:13 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <3f4bd7b0c73f59b4cd2adaad3ccc38bf@suse.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+References: <1597824397-29894-1-git-send-email-liuqi115@huawei.com>
+ <20200827204426.GD22307@xps15> <548c973d-6964-ca5c-4c8d-fbc2386f3349@arm.com>
+In-Reply-To: <548c973d-6964-ca5c-4c8d-fbc2386f3349@arm.com>
+From:   Mike Leach <mike.leach@linaro.org>
+Date:   Wed, 9 Sep 2020 12:30:02 +0100
+Message-ID: <CAJ9a7Vh8r4q8sCJnOdrrONZpM42QNbMpZGiebXs-mGW=MgmM3Q@mail.gmail.com>
+Subject: Re: [RFC PATCH v2] coresight: etm4x: Modify core-commit of cpu to
+ avoid the overflow of HiSilicon ETM
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>, liuqi115@huawei.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linuxarm@huawei.com, Coresight ML <coresight@lists.linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09.09.20 13:27, osalvador@suse.de wrote:
-> On 2020-09-09 12:54, Vlastimil Babka wrote:
->> Thanks! I expect no performance change while no isolation is in 
->> progress, as
->> there are no new tests added in alloc/free paths. During page isolation 
->> there's
->> a single drain instead of once-per-pageblock, which is a benefit. But 
->> the
->> pcplists are effectively disabled for the whole of online_pages(),
->> offline_pages() or alloc_contig_range(), which will affect parallel 
->> page
->> allocator users. It depends on how long these operations take and how 
->> heavy the
->> parallel usage is, so I have no good answers. Might be similar to the 
->> current
->> periodic drain.
-> 
-> I have seen some systems taking quite some time when offlining sections 
-> due to the migration of
-> the respective pages not being that smooth and having do_migrate_range 
-> to do some spins.
-> But to be fair, online_pages and offline_pages are not routines that get 
-> called that often, and we would be safe to assume that memory-hotplug 
-> operations are not constantly happening, but are rather one-offs 
-> operations.
-> 
-> I am not sure about Xen and HV, IIRC Xen was using online_pages and 
-> offline_pages routines to do the ballooning?
+Hi,
 
-No, they only add more memory blocks and online them. Memory hot(un)plug
-is an expensive operation already, I don't think that's an issue.
+On Wed, 2 Sep 2020 at 11:36, Suzuki K Poulose <suzuki.poulose@arm.com> wrote:
+>
+> On 08/27/2020 09:44 PM, Mathieu Poirier wrote:
+> > Hi Liu,
+> >
+> > On Wed, Aug 19, 2020 at 04:06:37PM +0800, Qi Liu wrote:
+> >> When too much trace information is generated on-chip, the ETM will
+> >> overflow, and cause data loss. This is a common phenomenon on ETM
+> >> devices.
+> >>
+> >> But sometimes we do not want to lose performance trace data, so we
+> >> suppress the speed of instructions sent from CPU core to ETM to
+> >> avoid the overflow of ETM.
+> >>
+> >> Signed-off-by: Qi Liu <liuqi115@huawei.com>
+> >> ---
+> >>
+> >> Changes since v1:
+> >> - ETM on HiSilicon Hip09 platform supports backpressure, so does
+> >> not need to modify core commit.
+> >>
+> >>   drivers/hwtracing/coresight/coresight-etm4x.c | 43 +++++++++++++++++++++++++++
+> >>   1 file changed, 43 insertions(+)
+> >>
+> >> diff --git a/drivers/hwtracing/coresight/coresight-etm4x.c b/drivers/hwtracing/coresight/coresight-etm4x.c
+> >> index 7797a57..7641f89 100644
+> >> --- a/drivers/hwtracing/coresight/coresight-etm4x.c
+> >> +++ b/drivers/hwtracing/coresight/coresight-etm4x.c
+> >> @@ -43,6 +43,10 @@ MODULE_PARM_DESC(boot_enable, "Enable tracing on boot");
+> >>   #define PARAM_PM_SAVE_NEVER          1 /* never save any state */
+> >>   #define PARAM_PM_SAVE_SELF_HOSTED 2 /* save self-hosted state only */
+> >>
+> >> +#define CORE_COMMIT_CLEAR   0x3000
+> >> +#define CORE_COMMIT_SHIFT   12
+> >> +#define HISI_ETM_AMBA_ID_V1 0x000b6d01
+> >> +
+> >>   static int pm_save_enable = PARAM_PM_SAVE_FIRMWARE;
+> >>   module_param(pm_save_enable, int, 0444);
+> >>   MODULE_PARM_DESC(pm_save_enable,
+> >> @@ -104,11 +108,40 @@ struct etm4_enable_arg {
+> >>      int rc;
+> >>   };
+> >>
+> >> +static void etm4_cpu_actlr1_cfg(void *info)
+> >> +{
+> >> +    struct etm4_enable_arg *arg = (struct etm4_enable_arg *)info;
+> >> +    u64 val;
+> >> +
+> >> +    asm volatile("mrs %0,s3_1_c15_c2_5" : "=r"(val));
+>
+>
+> The ID register (S3_1_C15_c2_5) falls into implementation defined space.
+> See Arm ARM DDI 0487F.a, section "D12.3.2  Reserved encodings for
+> IMPLEMENTATION DEFINED registers".
+>
+> So, please stop calling this "etm4_cpu_actlr1_cfg". Since,
+> 1) actlr1 is not an architected name for the said encoding
+> 2) The id register could mean something else on another CPU.
+>
+> Rather this should indicate platform/CPU specific. e.g,
+>
+> etm4_cpu_hisilicon_config_core_commit()
+>
+>
+> >> +    val &= ~CORE_COMMIT_CLEAR;
+> >> +    val |= arg->rc << CORE_COMMIT_SHIFT;
+> >> +    asm volatile("msr s3_1_c15_c2_5,%0" : : "r"(val));
+> >> +}
+> >> +
+> >> +static void etm4_config_core_commit(int cpu, int val)
+> >> +{
+> >> +    struct etm4_enable_arg arg = {0};
+> >> +
+> >> +    arg.rc = val;
+> >> +    smp_call_function_single(cpu, etm4_cpu_actlr1_cfg, &arg, 1);
+> >
+> > Function etm4_enable/disable_hw() are already running on the CPU they are
+> > supposed to so no need to call smp_call_function_single().
+> >
+> >> +}
+> >> +
+> >>   static int etm4_enable_hw(struct etmv4_drvdata *drvdata)
+> >>   {
+> >>      int i, rc;
+> >> +    struct amba_device *adev;
+> >>      struct etmv4_config *config = &drvdata->config;
+> >>      struct device *etm_dev = &drvdata->csdev->dev;
+> >> +    struct device *dev = drvdata->csdev->dev.parent;
+> >> +
+> >> +    adev = container_of(dev, struct amba_device, dev);
+> >> +    /*
+> >> +     * If ETM device is HiSilicon ETM device, reduce the
+> >> +     * core-commit to avoid ETM overflow.
+> >> +     */
+> >> +    if (adev->periphid == HISI_ETM_AMBA_ID_V1)
+>
+> Please could you move this check to the function above ?
+> Ideally, it would be good to have something like :
+>
+>         etm4_config_impdef_features();
+>
+> And :
+>
+>         etm4_config_impdef_features(struct etm4_drvdata *drvdata)
+>         {
+>                 etm4_cpu_hisilicon_config_core_commit(drvdata);
+>         }
+>
+
+In addition to the above, Is it worth having this implementation
+defined code gated in the kernel configuration - like we do for core
+features sometimes?
+i,.e.
+CONFIG_ETM4X_IMPDEF_FEATURE (controls overall impdef support in the driver)
+and
+CONFIG_ETM4X_IMPDEF_HISILICON (depends on CONFIG_ETM4X_IMPDEF_FEATURE )
+
+This way we keep non ETM architectural code off platforms that cannot
+use it / test it.
+
+
+> >
+> > Do you have any documentation on this back pressure feature?  I doubt this is
+> > specific to Hip09 platform and as such would prefer to have a more generic
+> > approach that works on any platform that supports it.
+> >
+> > Anyone on the CS mailing list that knows what this is about?
+>
+> I believe this is hisilicon specific. May be same across their CPUs, may
+> be a specific one. There is no architectural guarantee.
+>
+
+This could be an implementation of the feature provided by the
+TRCSTALLCTRL register - which allows PE to be stalled in response to
+the ETM fifos approaching overflow.
+At present we do nothing with this feature as we have yet to see a
+target with it implemented, but if this is the case then it is an
+ETMv4 architectural feature that could be added into the main driver
+code,  with use/access gated by the relevent TRCIDR bit.
+
+Regards
+
+Mike
+
+
+>
+> Cheers
+> Suzuki
+
+
 
 -- 
-Thanks,
-
-David / dhildenb
-
+Mike Leach
+Principal Engineer, ARM Ltd.
+Manchester Design Centre. UK
