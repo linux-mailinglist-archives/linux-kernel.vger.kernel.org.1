@@ -2,97 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69BBF262E91
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 14:32:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74B5E262EC8
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 14:56:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730206AbgIIMcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 08:32:05 -0400
-Received: from foss.arm.com ([217.140.110.172]:42368 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730167AbgIIMYW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 08:24:22 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AD3B5113E;
-        Wed,  9 Sep 2020 05:23:41 -0700 (PDT)
-Received: from [192.168.1.179] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8081D3F68F;
-        Wed,  9 Sep 2020 05:23:40 -0700 (PDT)
+        id S1729988AbgIIMyt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 08:54:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48778 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730243AbgIIMhj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 08:37:39 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2EC5C06179B
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 05:26:30 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id x14so2693154wrl.12
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 05:26:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:autocrypt:organization:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=v+HVm/b+H3mJ/aQj0jQ6ncdbRg/4ripycG7kuiRXz38=;
+        b=jUxtpZBLgLTuosME3bJvvt9bfduU2oDAAaamtfvY3qWncW8bLR9REXSPg033fPUYwR
+         0fnRvvhqjh/cmoOdMb7jzoFfKxjcHrrb1Pi8kYS1iQf0V3TCfNfm0SNx3JMFlyiPKZCg
+         RXZjEnuxjpbOOUWS4Z39bMqNOoTqqTLsHDGW3xlqIOXDXRzKhzlvNDcIXiwxLAKGZ5yV
+         duh+IoIvEIWNS3V0DFnTXi0pj6h4pocLkNNn/h1H3G80sqaMTig2y6XCf1/IjftlImNZ
+         7tS84K44NxX2tTO0Z3uwnWOlyfBVOAbqG2J8tFmFqIBNaEVF+5zPULfNNlyyewWm5hYq
+         ZIMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :organization:message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=v+HVm/b+H3mJ/aQj0jQ6ncdbRg/4ripycG7kuiRXz38=;
+        b=lLpRNHxym5sNcgqYRQwQ8TmYwOXf6NDv5H5O2MixRJowlONy1epAD3zd7Yta4FR2fU
+         HZwF8KL9btkF950s4Ww5UWXHI08yTbO2EG4KOYj85xB7XNEOAmNkWKm2KhUGSP91g8FG
+         AnhFsWBN3WLW/40fRqjYWuiOCqSHHQ5vsdGTmfvVVeCOE2Yv3/s/iSNOo15mYFVbEfKY
+         GuFLKSClxHqQG333eHrKbDaJIv0i1qSXAdkdC/4KFZa9TmM3q/YH7kg16grzT263pr7p
+         kXquxvDPrYKzDN3R2zi0oq1jvYwzfDWXHZAyvwNADWkmYOg52mqeylDdqzkLKatmM6xI
+         +8ew==
+X-Gm-Message-State: AOAM532W46NEtiA7dhGp3Uux7Pj/9h8omesCSi89hHHp1wY1dh+Rii7j
+        AjZx2B1251jTP4FoM6ZbSa0jWg==
+X-Google-Smtp-Source: ABdhPJxPW6PDEpvFaNndkEuPMdFYL6941r0L8ZAChOFOQ/iiwySXiD8i8WCne0OXa7WsUOnjaAJ5Ng==
+X-Received: by 2002:adf:dfc3:: with SMTP id q3mr3654126wrn.238.1599654389111;
+        Wed, 09 Sep 2020 05:26:29 -0700 (PDT)
+Received: from ?IPv6:2a01:e35:2ec0:82b0:5405:9623:e2f1:b2ac? ([2a01:e35:2ec0:82b0:5405:9623:e2f1:b2ac])
+        by smtp.gmail.com with ESMTPSA id q12sm3896424wrp.17.2020.09.09.05.26.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Sep 2020 05:26:28 -0700 (PDT)
 Subject: Re: [PATCH 3/5] drm/panfrost: add support for reset quirk
-To:     Neil Armstrong <narmstrong@baylibre.com>, robh@kernel.org,
+To:     Steven Price <steven.price@arm.com>, robh@kernel.org,
         tomeu.vizoso@collabora.com, alyssa.rosenzweig@collabora.com
 Cc:     dri-devel@lists.freedesktop.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-amlogic@lists.infradead.org
 References: <20200908151853.4837-1-narmstrong@baylibre.com>
  <20200908151853.4837-4-narmstrong@baylibre.com>
-From:   Steven Price <steven.price@arm.com>
-Message-ID: <ff982600-d705-1dc8-44c8-b69015791997@arm.com>
-Date:   Wed, 9 Sep 2020 13:23:39 +0100
+ <ff982600-d705-1dc8-44c8-b69015791997@arm.com>
+From:   Neil Armstrong <narmstrong@baylibre.com>
+Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
+ 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
+ BSwxi7g3Mu7u5kUByanqHyA=
+Organization: Baylibre
+Message-ID: <6ef08900-9ef8-40d0-d7c6-f45840ce9a39@baylibre.com>
+Date:   Wed, 9 Sep 2020 14:26:27 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200908151853.4837-4-narmstrong@baylibre.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <ff982600-d705-1dc8-44c8-b69015791997@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/09/2020 16:18, Neil Armstrong wrote:
-> The T820, G31 & G52 GPUs integratewd by Amlogic in the respective GXM, G12A/SM1 & G12B
-> SoCs needs a quirk in the PWR registers at the GPU reset time.
+On 09/09/2020 14:23, Steven Price wrote:
+> On 08/09/2020 16:18, Neil Armstrong wrote:
+>> The T820, G31 & G52 GPUs integratewd by Amlogic in the respective GXM, G12A/SM1 & G12B
+>> SoCs needs a quirk in the PWR registers at the GPU reset time.
+>>
+>> This adds a callback in the device compatible struct of permit this.
+>>
+>> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+>> ---
+>>   drivers/gpu/drm/panfrost/panfrost_device.h | 3 +++
+>>   drivers/gpu/drm/panfrost/panfrost_gpu.c    | 4 ++++
+>>   2 files changed, 7 insertions(+)
+>>
+>> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.h b/drivers/gpu/drm/panfrost/panfrost_device.h
+>> index 2cf1a6a13af8..4c9cd5452ba5 100644
+>> --- a/drivers/gpu/drm/panfrost/panfrost_device.h
+>> +++ b/drivers/gpu/drm/panfrost/panfrost_device.h
+>> @@ -73,6 +73,9 @@ struct panfrost_compatible {
+>>         /* IOMMU quirks flags */
+>>       unsigned long pgtbl_quirks;
+>> +
+>> +    /* Vendor implementation quirks at reset time callback */
+>> +    void (*vendor_reset_quirk)(struct panfrost_device *pfdev);
+>>   };
+>>     struct panfrost_device {
+>> diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.c b/drivers/gpu/drm/panfrost/panfrost_gpu.c
+>> index e0f190e43813..c129aaf77790 100644
+>> --- a/drivers/gpu/drm/panfrost/panfrost_gpu.c
+>> +++ b/drivers/gpu/drm/panfrost/panfrost_gpu.c
+>> @@ -62,6 +62,10 @@ int panfrost_gpu_soft_reset(struct panfrost_device *pfdev)
+>>       gpu_write(pfdev, GPU_INT_CLEAR, GPU_IRQ_RESET_COMPLETED);
+>>       gpu_write(pfdev, GPU_CMD, GPU_CMD_SOFT_RESET);
+>>   +    /* The Amlogic GPU integration needs quirks at this stage */
+>> +    if (pfdev->comp->vendor_reset_quirk)
+>> +        pfdev->comp->vendor_reset_quirk(pfdev);
+>> +
+>>       ret = readl_relaxed_poll_timeout(pfdev->iomem + GPU_INT_RAWSTAT,
+>>           val, val & GPU_IRQ_RESET_COMPLETED, 100, 10000);
 > 
-> This adds a callback in the device compatible struct of permit this.
+> Placing the quirk before the reset has completed is dodgy. Can this be ordered after the GPU_IRQ_RESET_COMPLETED signal has been seen? The problem is the reset could (in theory) cause a power transition (e.g. if the GPU is reset while a core is powered) and changing the PWR_OVERRIDEx registers during a transition is undefined. But I don't know the details of how the hardware is broken so it is possible the override is needed for the reset to complete so this would need testing.
 > 
-> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
-> ---
->   drivers/gpu/drm/panfrost/panfrost_device.h | 3 +++
->   drivers/gpu/drm/panfrost/panfrost_gpu.c    | 4 ++++
->   2 files changed, 7 insertions(+)
+> I also wonder if this could live in panfrost_gpu_init_quirks() instead? Although that is mostly about quirks common to all Mali GPU implementations rather than a specific implementation. Although now I've looked I've noticed we have a bug as we don't appear to reapply those quirks after a reset - I'll send a patch!
+
+Indeed, it needs to be applied after each reset, so if you send a patch for this pretty sure it could live in panfrost_gpu_init_quirks().
+
+Neil
+
 > 
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.h b/drivers/gpu/drm/panfrost/panfrost_device.h
-> index 2cf1a6a13af8..4c9cd5452ba5 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_device.h
-> +++ b/drivers/gpu/drm/panfrost/panfrost_device.h
-> @@ -73,6 +73,9 @@ struct panfrost_compatible {
->   
->   	/* IOMMU quirks flags */
->   	unsigned long pgtbl_quirks;
-> +
-> +	/* Vendor implementation quirks at reset time callback */
-> +	void (*vendor_reset_quirk)(struct panfrost_device *pfdev);
->   };
->   
->   struct panfrost_device {
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.c b/drivers/gpu/drm/panfrost/panfrost_gpu.c
-> index e0f190e43813..c129aaf77790 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_gpu.c
-> +++ b/drivers/gpu/drm/panfrost/panfrost_gpu.c
-> @@ -62,6 +62,10 @@ int panfrost_gpu_soft_reset(struct panfrost_device *pfdev)
->   	gpu_write(pfdev, GPU_INT_CLEAR, GPU_IRQ_RESET_COMPLETED);
->   	gpu_write(pfdev, GPU_CMD, GPU_CMD_SOFT_RESET);
->   
-> +	/* The Amlogic GPU integration needs quirks at this stage */
-> +	if (pfdev->comp->vendor_reset_quirk)
-> +		pfdev->comp->vendor_reset_quirk(pfdev);
-> +
->   	ret = readl_relaxed_poll_timeout(pfdev->iomem + GPU_INT_RAWSTAT,
->   		val, val & GPU_IRQ_RESET_COMPLETED, 100, 10000);
+> Steve
 
-Placing the quirk before the reset has completed is dodgy. Can this be 
-ordered after the GPU_IRQ_RESET_COMPLETED signal has been seen? The 
-problem is the reset could (in theory) cause a power transition (e.g. if 
-the GPU is reset while a core is powered) and changing the PWR_OVERRIDEx 
-registers during a transition is undefined. But I don't know the details 
-of how the hardware is broken so it is possible the override is needed 
-for the reset to complete so this would need testing.
-
-I also wonder if this could live in panfrost_gpu_init_quirks() instead? 
-Although that is mostly about quirks common to all Mali GPU 
-implementations rather than a specific implementation. Although now I've 
-looked I've noticed we have a bug as we don't appear to reapply those 
-quirks after a reset - I'll send a patch!
-
-Steve
