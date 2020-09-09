@@ -2,193 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 984FF263407
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 19:13:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FB3D2633DE
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 19:11:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730340AbgIIRNj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 13:13:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47384 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730061AbgIIPcW (ORCPT
+        id S1731056AbgIIRLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 13:11:46 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:45374 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729785AbgIIPdV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 11:32:22 -0400
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD645C061756;
-        Wed,  9 Sep 2020 08:31:07 -0700 (PDT)
-Received: by mail-oi1-x241.google.com with SMTP id 185so2734618oie.11;
-        Wed, 09 Sep 2020 08:31:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=tSgsq9zZhpkzLhA9Y8uyv8bzBmNho/QvRHp/rEYJJaQ=;
-        b=jrPAVlhOCfDjcxMkdtnXgoaMQ9g+BE0Bt8xsYrxiGhf/ja44JVGrjaUzbbC++rjxk2
-         PgBsVIb/zKiLAZOxNnW4uyKru1hpEtHCj1Ex3/jqh8HnrQhFPffLILS2hi8nDT6rnVP+
-         eC7eCOLYTXuNbEGSRa9Io9ULDN2YDAnMjzkRWS0+w4k3j1nIY969bGHriDGbPMlPcSxR
-         WY1WmxGBgIE1hAulMioHSnl1IgKi1nkx7Rxno6nw3Wnhuop6nbw4jqrxlzwvjJ/nfOAo
-         R0d6M3x3rysIvLQ98MZcT+/RQjEre8h+VUKQYvHYFJHlBh4UQ1Sn0wcKCjZvpAdAAC9D
-         jD3g==
+        Wed, 9 Sep 2020 11:33:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599665564;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=YDCg8To8PVZc/Jy4VpaJ8RUW2JiYebaTzDo+8HJa1Rs=;
+        b=UgdqYyCYujoMgztJHPGb/s++My6LYZpCEkL0UpFxdigr1x0qMLOFvy7PVuKrjWJFjGL7ve
+        QnoOqv5eIOkoQUanWqQsI4vMNjA+u2M3TtUMvjBJQUsKs2X3gpkOqS8t2nl2iwcyfUTDo0
+        gYJlYg43qYwTnh2oZia71kmqJg6Ql/c=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-486-JfeRSkT7MpensYoeBZC00Q-1; Wed, 09 Sep 2020 11:32:41 -0400
+X-MC-Unique: JfeRSkT7MpensYoeBZC00Q-1
+Received: by mail-wm1-f72.google.com with SMTP id 189so965473wme.5
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 08:32:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=tSgsq9zZhpkzLhA9Y8uyv8bzBmNho/QvRHp/rEYJJaQ=;
-        b=LGzGAk6+nCXE8hAy2riuZTzfxHdKRFLzqIUjOP6VwK2Z6b2kzPna1n9nvbnU7BE24N
-         K/Lf/1WuSqpk0sV3DsSHCIUTxvwozkhvtuYDbF7P2e8yDN+x+iykOnJtMUc5cXJmk8Ur
-         YDbirDpadBob4xr6PF+Y7xCrtaoakT33q1nk4yW8AE0RYpXDQXQA+1xmkiIPTnYKeC/R
-         DEJmhlZH/DBlJK9lE6kbFbMtBClz2eh9dbV+NJP30bQ1ioSmSFNn69YBP+7ttSdQD1uU
-         sB97rYyBJp3LsVEh2Mrmceuylw9Fe3VJJTqFkT5aPSQZb6GlZ1KJ/k4gD7jYuBSADCeN
-         cA9w==
-X-Gm-Message-State: AOAM5334DTFcMoixUzJ4/vVM2ITgyGWnzbbPrYdqFJErxUod4JTuZY5D
-        vnpd0Qdssv3gtYC9oWfs1C9hKPgZDLE=
-X-Google-Smtp-Source: ABdhPJwmLueZHLJ64xudh7umkHBP7kF/oOLmyEL+d1nLqrlPu7RN/sQciFpuqObAvspMiYRf9Pa1Qw==
-X-Received: by 2002:aca:fd58:: with SMTP id b85mr972902oii.20.1599665467200;
-        Wed, 09 Sep 2020 08:31:07 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id c14sm432507ooi.9.2020.09.09.08.31.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Sep 2020 08:31:06 -0700 (PDT)
-Subject: Re: [PATCH] hwmon: (pmbus) Expose PEC debugfs attribute
-To:     Andrew Jeffery <andrew@aj.id.au>, linux-hwmon@vger.kernel.org
-Cc:     jdelvare@suse.com, openbmc@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-References: <20200909132411.2906159-1-andrew@aj.id.au>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <4f2de881-1391-b1b1-18b3-8d3a06653da9@roeck-us.net>
-Date:   Wed, 9 Sep 2020 08:31:05 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YDCg8To8PVZc/Jy4VpaJ8RUW2JiYebaTzDo+8HJa1Rs=;
+        b=AxBZabz21EHLJMAQo8LK/R8Jn6+Nf4rrtIV0yYlr55MnxYfgcHSOxze6AuaQnohYJU
+         OW71mByO5GGnwhfDkpRW9klwCprpwM+Jm5ObVBnm7hUL5QiN/lLZZbxFiLPHLLAMQMPg
+         3KkP+1otoB767rky67ozo509daUrfiG8BwIuCQ6YtDPMnYe4adPVUTV3hj4wLMJIX/3i
+         GRFQAizTcF3uVRu0IhJ+gdP67S/q4ZSyNiutWsoMyFrdEcSj0wny0SF8L2E+KRpo+FjO
+         ev0j1qoZbFIjzColVZxdfYdUIhzNRs7wWlnJ3aV2maL3NgOrC8ayObPd6vUCfLBhV+ps
+         6tQg==
+X-Gm-Message-State: AOAM530RkNnbcdIicpwfJAXaSP8zXmKYoGl/nBe8lLSCR6MzMlZRjzc7
+        dGK+8TpQe8PvtRpE0HpufKuRYLOZchLpNeQzQR0m9DXC7PB5yjgH8+CK78hJ7AOkpD0Mo8P3y/4
+        9dOn1/j/0wJZ6IlOQkLQ2+f0P
+X-Received: by 2002:a1c:c910:: with SMTP id f16mr4070521wmb.82.1599665559654;
+        Wed, 09 Sep 2020 08:32:39 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwrl9uLP4HdYT7AmY2PVq8Ybf24Jg2oS57iN373p/WZoSRqKSAYvg4TV3HV/QODmFgBvBaGVA==
+X-Received: by 2002:a1c:c910:: with SMTP id f16mr4070489wmb.82.1599665559309;
+        Wed, 09 Sep 2020 08:32:39 -0700 (PDT)
+Received: from steredhat (host-79-53-225-185.retail.telecomitalia.it. [79.53.225.185])
+        by smtp.gmail.com with ESMTPSA id 70sm4689288wme.15.2020.09.09.08.32.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Sep 2020 08:32:38 -0700 (PDT)
+Date:   Wed, 9 Sep 2020 17:32:35 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Jens Axboe <axboe@kernel.dk>, Hillf Danton <hdanton@sina.com>
+Cc:     syzbot <syzbot+3c23789ea938faaef049@syzkaller.appspotmail.com>,
+        io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Subject: Re: INFO: task hung in io_sq_thread_stop
+Message-ID: <20200909153235.joqj6hjyxug3wtwv@steredhat>
+References: <00000000000030a45905aedd879d@google.com>
+ <20200909134317.19732-1-hdanton@sina.com>
+ <4d55d988-d45e-ba36-fed7-342e0a6ab16e@kernel.dk>
 MIME-Version: 1.0
-In-Reply-To: <20200909132411.2906159-1-andrew@aj.id.au>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4d55d988-d45e-ba36-fed7-342e0a6ab16e@kernel.dk>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/9/20 6:24 AM, Andrew Jeffery wrote:
-> Enable runtime debug control of whether the PEC byte is exchanged with
-> the PMBus device.
+On Wed, Sep 09, 2020 at 08:05:33AM -0600, Jens Axboe wrote:
+> On 9/9/20 7:43 AM, Hillf Danton wrote:
+> > 
+> > On Wed, 9 Sep 2020 12:03:55 +0200 Stefano Garzarella wrote:
+> >> On Wed, Sep 09, 2020 at 01:49:22AM -0700, syzbot wrote:
+> >>> Hello,
+> >>>
+> >>> syzbot found the following issue on:
+> >>>
+> >>> HEAD commit:    dff9f829 Add linux-next specific files for 20200908
+> >>> git tree:       linux-next
+> >>> console output: https://syzkaller.appspot.com/x/log.txt?x=112f880d900000
+> >>> kernel config:  https://syzkaller.appspot.com/x/.config?x=37b3426c77bda44c
+> >>> dashboard link: https://syzkaller.appspot.com/bug?extid=3c23789ea938faaef049
+> >>> compiler:       gcc (GCC) 10.1.0-syz 20200507
+> >>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17c082a5900000
+> >>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1474f5f9900000
+> >>>
+> >>> Bisection is inconclusive: the first bad commit could be any of:
+> >>>
+> >>> d730b1a2 io_uring: add IOURING_REGISTER_RESTRICTIONS opcode
+> >>> 7ec3d1dd io_uring: allow disabling rings during the creation
+> >>
+> >> I'm not sure it is related, but while rebasing I forgot to update the
+> >> right label in the error path.
+> >>
+> >> Since the check of ring state is after the increase of ctx refcount, we
+> >> need to decrease it jumping to 'out' label instead of 'out_fput':
+> > 
+> > I think we need to fix 6a7bb9ff5744 ("io_uring: remove need for
+> > sqd->ctx_lock in io_sq_thread()") because the syzbot report
+> > indicates the io_sq_thread has to wake up the kworker before
+> > scheduling, and in turn the kworker has the chance to unpark it.
+> > 
+> > Below is the minimum walkaround I can have because it can't
+> > ensure the parker will be waken in every case.
+> > 
+> > --- a/fs/io_uring.c
+> > +++ b/fs/io_uring.c
+> > @@ -6834,6 +6834,10 @@ static int io_sq_thread(void *data)
+> >  			io_sq_thread_drop_mm();
+> >  		}
+> >  
+> > +		if (kthread_should_park()) {
+> > +			/* wake up parker before scheduling */
+> > +			continue;
+> > +		}
+> >  		if (ret & SQT_SPIN) {
+> >  			io_run_task_work();
+> >  			cond_resched();
+> > 
 > 
-> Some manufacturers have asked for the PEC to be disabled as part of
-> debugging driver communication issues with devices.
+> I think this should go in the slow path:
 > 
-> Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
-> ---
->  drivers/hwmon/pmbus/pmbus_core.c | 39 ++++++++++++++++++++++++++++++++
->  1 file changed, 39 insertions(+)
 > 
-> diff --git a/drivers/hwmon/pmbus/pmbus_core.c b/drivers/hwmon/pmbus/pmbus_core.c
-> index 44535add3a4a..51c8502b35e9 100644
-> --- a/drivers/hwmon/pmbus/pmbus_core.c
-> +++ b/drivers/hwmon/pmbus/pmbus_core.c
-> @@ -2346,6 +2346,42 @@ static int pmbus_debugfs_get_status(void *data, u64 *val)
->  DEFINE_DEBUGFS_ATTRIBUTE(pmbus_debugfs_ops_status, pmbus_debugfs_get_status,
->  			 NULL, "0x%04llx\n");
->  
-> +static int pmbus_debugfs_get_pec(void *data, u64 *val)
-> +{
-> +	struct i2c_client *client = data;
-> +
-> +	*val = !!(client->flags & I2C_CLIENT_PEC);
-> +
-> +	return 0;
-> +}
-> +
-> +static int pmbus_debugfs_set_pec(void *data, u64 val)
-> +{
-> +	int rc;
-> +	struct i2c_client *client = data;
-> +
-> +	if (!val) {
-> +		client->flags &= ~I2C_CLIENT_PEC;
-> +		return 0;
-> +	}
-> +
-> +	if (val != 1)
-> +		return -EINVAL;
-> +
-> +	rc = i2c_smbus_read_byte_data(client, PMBUS_CAPABILITY);
-> +	if (rc < 0)
-> +		return rc;
-> +
-> +	if (!(rc & PB_CAPABILITY_ERROR_CHECK))
-> +		return -ENOTSUPP;
-
-WARNING: ENOTSUPP is not a SUSV4 error code, prefer EOPNOTSUPP
-
-> +
-> +	client->flags |= I2C_CLIENT_PEC;
-> +
-> +	return 0;
-> +}
-> +DEFINE_DEBUGFS_ATTRIBUTE(pmbus_debugfs_ops_pec, pmbus_debugfs_get_pec,
-> +			 pmbus_debugfs_set_pec, "0x%1llu\n");
-
-ERROR: Prefixing 0x with decimal output is defective
-
-(since the displayed value is a boolean, it is also quite useless).
-
-> +
->  static int pmbus_init_debugfs(struct i2c_client *client,
->  			      struct pmbus_data *data)
->  {
-> @@ -2374,6 +2410,9 @@ static int pmbus_init_debugfs(struct i2c_client *client,
->  	if (!entries)
->  		return -ENOMEM;
->  
-> +	debugfs_create_file("pec", 0664, data->debugfs, client,
-> +			    &pmbus_debugfs_ops_pec);
-> +
->  	for (i = 0; i < data->info->pages; ++i) {
->  		/* Check accessibility of status register if it's not page 0 */
->  		if (!i || pmbus_check_status_register(client, i)) {
+> diff --git a/fs/io_uring.c b/fs/io_uring.c
+> index 652cc53432d4..1c4fa2a0fd82 100644
+> --- a/fs/io_uring.c
+> +++ b/fs/io_uring.c
+> @@ -6839,6 +6839,8 @@ static int io_sq_thread(void *data)
+>  		} else if (ret == SQT_IDLE) {
+>  			list_for_each_entry(ctx, &sqd->ctx_list, sqd_list)
+>  				io_ring_set_wakeup_flag(ctx);
+> +			if (kthread_should_park())
+> +				continue;
+>  			schedule();
+>  			start_jiffies = jiffies;
+>  		}
 > 
+
+Yes, I agree since only in this case the kthread is not rescheduled.
+
+Thanks both for the fix :-)
+Feel free to add my R-b:
+
+Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
 
