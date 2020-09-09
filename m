@@ -2,65 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22432262BF2
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 11:35:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C037E262BFE
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 11:36:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729851AbgIIJfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 05:35:06 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44698 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725864AbgIIJfE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 05:35:04 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 87B94ADBD;
-        Wed,  9 Sep 2020 09:35:03 +0000 (UTC)
-Subject: Re: [PATCH v5 6/7] arm: dts: mt7623: move display nodes to separate
- mt7623n.dtsi
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-To:     Frank Wunderlich <linux@fw-web.de>,
-        linux-mediatek@lists.infradead.org
-Cc:     Frank Wunderlich <frank-w@public-files.de>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
-        linux-arm-kernel@lists.infradead.org,
-        David Woodhouse <dwmw@amazon.co.uk>
-References: <20200819081752.4805-1-linux@fw-web.de>
- <20200819081752.4805-7-linux@fw-web.de>
- <57085883-5044-aec2-021b-3b0880da70bc@gmail.com>
-Message-ID: <3b3ef297-a3cf-6a3f-3118-9cc8b4ccc1f4@gmail.com>
-Date:   Wed, 9 Sep 2020 11:35:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1726005AbgIIJfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 05:35:53 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:8276 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725948AbgIIJfi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 05:35:38 -0400
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0899WnO6015286;
+        Wed, 9 Sep 2020 11:35:20 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=STMicroelectronics;
+ bh=AsXvjGauEbCvShCQXkbkbgTM2OrLJ2IWVxMse8nLIso=;
+ b=zk9Wn5Lbk9qPHpYqCdVkPDjFQWWLJE1rXvqCjiXv2HCgVvHid5tFPEoTuBkEuj6HKYg4
+ pHiZm7Kf/bgRILHP2KyeDhGtasPe56YrMVdCABkzwaR+w2PfrIy3+VyQwo/XAch8THU/
+ mQLleJg77r9AhHM7TL8kFeKvpB/fC3Et8QNxDLfW9EJJdbW6AuCo9/oKq1fV7LylLvnF
+ lACvCMRFb5QctXrZUmidrx5xZvbCjloOQwYR/l6062Ip+OQSgvLUf26eY02HJdbNW/W1
+ WiqYAUL4In/OL8xvuqk9mOBtvVwmcGTwj/XeQy6QJVuFTLTvjmGtZ+qStL4vRdgM98VY pg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 33c051c6gr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 09 Sep 2020 11:35:20 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 8CCA210002A;
+        Wed,  9 Sep 2020 11:35:19 +0200 (CEST)
+Received: from Webmail-eu.st.com (gpxdag3node5.st.com [10.75.127.72])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 73410220AE9;
+        Wed,  9 Sep 2020 11:35:19 +0200 (CEST)
+Received: from localhost (10.75.127.47) by GPXDAG3NODE5.st.com (10.75.127.72)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 9 Sep 2020 11:35:19
+ +0200
+From:   Amelie Delaunay <amelie.delaunay@st.com>
+To:     Minas Harutyunyan <hminas@synopsys.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>
+CC:     <linux-usb@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        Fabrice Gasnier <fabrice.gasnier@st.com>,
+        Amelie Delaunay <amelie.delaunay@st.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Subject: [PATCH v6 0/3] Add USB role switch support to DWC2
+Date:   Wed, 9 Sep 2020 11:35:08 +0200
+Message-ID: <20200909093511.4728-1-amelie.delaunay@st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <57085883-5044-aec2-021b-3b0880da70bc@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.47]
+X-ClientProxiedBy: SFHDAG8NODE2.st.com (10.75.127.23) To GPXDAG3NODE5.st.com
+ (10.75.127.72)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-09_03:2020-09-08,2020-09-09 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/09/2020 11:29, Matthias Brugger wrote:
-> 
-> 
-> On 19/08/2020 10:17, Frank Wunderlich wrote:
->> From: Frank Wunderlich <frank-w@public-files.de>
->>
->> mt7623a has no graphics support so move nodes from generic mt7623.dtsi
->> to mt7623n.dtsi
->>
->> Fixes: 1f6ed224594 ("arm: dts: mt7623: add Mali-450 device node")
->> Suggested-by: David Woodhouse <dwmw@amazon.co.uk>
->> Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
-> 
-> Applied to v5.9-next/dts32
-> 
+When using usb-c connector (but it can also be the case with a micro-b
+connector), iddig, avalid, bvalid, vbusvalid input signals may not be
+connected to the DWC2 OTG controller.
+DWC2 OTG controller features an overriding control of the PHY voltage valid
+and ID input signals.
+So, missing signals can be forced using usb role from usb role switch and
+this override feature.
 
-Realized that there is a v6, so I pull out this and 7/7.
+This series adds support for usb role switch to dwc2, by using overriding
+control of the PHY voltage valid and ID input signals.
 
-Regards,
-Matthias
+It has been tested on stm32mp157c-dk2 [1], which has a Type-C connector
+managed by a Type-C port controller, and connected to USB OTG controller.
+
+[1] https://www.st.com/en/evaluation-tools/stm32mp157c-dk2.html
+
+Amelie Delaunay (3):
+  dt-bindings: usb: dwc2: add optional usb-role-switch property
+  usb: dwc2: override PHY input signals with usb role switch support
+  usb: dwc2: don't use ID/Vbus detection if usb-role-switch on STM32MP15
+    SoCs
+---
+Changes in v6:
+- Select USB_ROLE_SWITCH if USB_DWC2, and not only if USB_DWC2_DUAL_ROLE:
+  drd.c is built whatever DWC2 mode (DUAL, HOST, PERIPHERAL) as it is used also
+  to detect attach/detach (so a-valid/b-valid sessions). 
+Changes in v5:
+- Use device_property_read_bool instead of of_read_property_bool in params.c
+Changes in v4:
+- Simplify call to dwc2_force_mode in drd.c
+- Add error_drd label in probe error path in platform.c
+Changes in v3:
+- Fix build issue reported by kernel test robot in drd.c
+Changes in v2:
+- Previous DT patch already in stm32-next branch so removed from v2 patchset
+  "ARM: dts: stm32: enable usb-role-switch on USB OTG on stm32mp15xx-dkx"
+- DWC2 DT bindings update added
+- Build issue reported by kernel test robot fixed
+- Martin's comments taken into account
+---
+ .../devicetree/bindings/usb/dwc2.yaml         |   4 +
+ drivers/usb/dwc2/Kconfig                      |   1 +
+ drivers/usb/dwc2/Makefile                     |   2 +-
+ drivers/usb/dwc2/core.h                       |   9 +
+ drivers/usb/dwc2/drd.c                        | 180 ++++++++++++++++++
+ drivers/usb/dwc2/gadget.c                     |   2 +-
+ drivers/usb/dwc2/params.c                     |   2 +-
+ drivers/usb/dwc2/platform.c                   |  20 +-
+ 8 files changed, 215 insertions(+), 5 deletions(-)
+ create mode 100644 drivers/usb/dwc2/drd.c
+
+-- 
+2.17.1
+
