@@ -2,110 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 385652636DC
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 21:49:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E4522636E3
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 21:54:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729942AbgIITtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 15:49:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59494 "EHLO
+        id S1726642AbgIITyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 15:54:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729865AbgIITtM (ORCPT
+        with ESMTP id S1725975AbgIITyL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 15:49:12 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EED28C061573
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 12:49:11 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id s2so1867390pjr.4
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 12:49:11 -0700 (PDT)
+        Wed, 9 Sep 2020 15:54:11 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46EDEC061573;
+        Wed,  9 Sep 2020 12:54:09 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id t10so4263028wrv.1;
+        Wed, 09 Sep 2020 12:54:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=oqhYmx0NFZNOAJE/eiypbxplY3MuONMIE6qhP6ssddY=;
-        b=H0bHFQ3ASMEAVTRUPtHvl7e6oC+0uJShA88H73hKX19wZcyGfPYU3ObDK/Y4120mWt
-         ybQL2m65jouKpt/NlMoDXLYE1qWA7pxMuoi0ztnpQ3V6o5/yX8ZXd/2s7TV3MF3ANKJX
-         vFku7hYNnUG2uqMyhPP+wCL+4OMsefFwdXQmc=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gePgmXiNRPCVJ7mr+8A/94pjRWAsRsYeShr8lQ1UsyY=;
+        b=tI0b1b8FnXwzjGlrjKqZgjkGXTrYiNy9g7Nt08zfZAo0Ua3JhotY+JPzQXWqr5/19e
+         pr+lNZd6acc1pzfoQi3xMdjy+5HWodUMwuJAa3NtE5pbefCCQsrwVD4Sc6GBXgr/Y9to
+         oTuZRdh55ZxIWv6CQfwqUGdZy630v+jNOgd6uA4Dff3eXRTwRS+3WJwT41z1Js92Xn5r
+         xW6qh3tJg7qf/u+W+I4YnJQEq7BSJGt12EcAtEM9OhVQbT0q56y7cQaX7GQhkWfo4bON
+         x36nLxP6SlSvHR8XoP8OID81QTELHJatCd1zfs2JadPr3uR9UIBGnTsqtACfvXlgrSuX
+         A+0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=oqhYmx0NFZNOAJE/eiypbxplY3MuONMIE6qhP6ssddY=;
-        b=UxT47g/fwFOEb6txOjDTs/IC1yFoSpPCIcj0StiFZfVZssUnvkRTsecPgtzR9+LjLk
-         0SDjquYa2NYqtO1Cb6WGgdC6Cgd0mbDE7MfbttsNOsOYUCqK0H6PqtW10aZsKAMJa+FC
-         c3TCqSGTxCC4yNmh6WKhGcT27qt26J+XWSILvSVNHDtivcB6U0l3ph7O1rbu4MdeEroS
-         sEcBNW/x3uyqlDgWwMl++z98dxb84ReVrqIU2XSAq+0u8icWssIhWf04E01XE4AmwvPj
-         70RrRZa5vjAR0FMBlUEtnTYuMV4crUK4a79y7CYVojko2DN/hb1cJcCAx8dnffduoMEw
-         3Ubw==
-X-Gm-Message-State: AOAM533wFX48Mn1R4ycTqcpOW7qI7NLfACaQaqJnw1Zxf4v4z57y2oN5
-        nngNzMvi9MYC6iro77h4y7X5yQ==
-X-Google-Smtp-Source: ABdhPJxU9aNjxN137DFaJhJ9P+8qFGxNKraARUvOOUlchRyN5dF2XrloEu5kn+x5DFLgaSun59zKsA==
-X-Received: by 2002:a17:90a:c83:: with SMTP id v3mr2067243pja.229.1599680951499;
-        Wed, 09 Sep 2020 12:49:11 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id f19sm3231001pfj.25.2020.09.09.12.49.10
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gePgmXiNRPCVJ7mr+8A/94pjRWAsRsYeShr8lQ1UsyY=;
+        b=YRfR8CEtlSMoTo3dfEkwYxb8QYq3Tvsrc5AqCAl+lR1zhFdNfpgGm40pSXidH5Ia8o
+         l2RWn+pc7wkCVrQ4XolQJPehH9amlBlC3fSbUtOphet7an5HsPRTDBizRnbjdEdpj+Qo
+         M+srcR45++tSyP2yiLHxFTVLu3f3ycGbg9aBJAyEeJxW21kjiXBLFnZ/Ay5VcOZQc6h2
+         Keholq9U+nnAIGNadfaeoUkmRiFbSI+1leXouF2rnRVvDy5kY/2NIjOOzeYFYjCUzud5
+         ZZsFAb4XTjujcQxnfyz83RnSgMzc7+R5SMPHY5DjJ/oGRDxKiEuSZ0qo9LdZyyJjD8N5
+         8Q5w==
+X-Gm-Message-State: AOAM530M+Kos3tY3fQfhJQWhvgjfnLnacRNnBTvaEcScdIrdUhFarj6R
+        7yuy2FOEm+0d9FYaHnSnsZaOH9PqpuBWePjx
+X-Google-Smtp-Source: ABdhPJyDYjFH86wdYbV1UuramIP8zVcuwm3IHRFWB8ood813vDAm/dfqJwqb+LH1zuL1Tf+4WiIVwA==
+X-Received: by 2002:adf:f34f:: with SMTP id e15mr5223399wrp.387.1599681248462;
+        Wed, 09 Sep 2020 12:54:08 -0700 (PDT)
+Received: from localhost.localdomain (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
+        by smtp.gmail.com with ESMTPSA id q18sm5715431wre.78.2020.09.09.12.54.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Sep 2020 12:49:10 -0700 (PDT)
-Date:   Wed, 9 Sep 2020 12:49:09 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Shuah Khan <shuah@kernel.org>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] selftests/lkdtm: Use "comm" instead of "diff" for dmesg
-Message-ID: <202009091247.C10CDA60C@keescook>
-References: <202006261358.3E8AA623A9@keescook>
+        Wed, 09 Sep 2020 12:54:07 -0700 (PDT)
+From:   Alex Dewar <alex.dewar90@gmail.com>
+Cc:     Alex Dewar <alex.dewar90@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: media: atomisp: Use kvfree_sensitive in a few places
+Date:   Wed,  9 Sep 2020 20:53:50 +0100
+Message-Id: <20200909195403.225084-1-alex.dewar90@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202006261358.3E8AA623A9@keescook>
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+In the file pci/sh_css_params.c, there are a number of places where
+memset+kvfree is used, where kvfree_sensitive could be used instead. Fix
+these occurrences.
 
-On Fri, Jun 26, 2020 at 01:59:43PM -0700, Kees Cook wrote:
-> Instead of full GNU diff (which smaller boot environments may not have),
-> use "comm" which is more available.
-> 
-> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-> Link: https://lore.kernel.org/lkml/CA+G9fYtHP+Gg+BrR_GkBMxu2oOi-_e9pATtpb6TVRswv1G1r1Q@mail.gmail.com
-> Fixes: f131d9edc29d ("selftests/lkdtm: Don't clear dmesg when running tests")
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+Issue identified with Coccinelle.
 
-Shuah, this really needs to land to fix lkdtm tests on busybox. Can
-you add this to -next? (Or is it better to direct this to Greg for the
-lkdtm tree?)
+Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
+---
+ .../staging/media/atomisp/pci/sh_css_params.c | 19 +++++++------------
+ 1 file changed, 7 insertions(+), 12 deletions(-)
 
-Thanks!
-
--Kees
-
-> ---
->  tools/testing/selftests/lkdtm/run.sh | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/testing/selftests/lkdtm/run.sh b/tools/testing/selftests/lkdtm/run.sh
-> index 8383eb89d88a..5fe23009ae13 100755
-> --- a/tools/testing/selftests/lkdtm/run.sh
-> +++ b/tools/testing/selftests/lkdtm/run.sh
-> @@ -82,7 +82,7 @@ dmesg > "$DMESG"
->  ($SHELL -c 'cat <(echo '"$test"') >'"$TRIGGER" 2>/dev/null) || true
->  
->  # Record and dump the results
-> -dmesg | diff --changed-group-format='%>' --unchanged-group-format='' "$DMESG" - > "$LOG" || true
-> +dmesg | comm -13 "$DMESG" - > "$LOG" || true
->  
->  cat "$LOG"
->  # Check for expected output
-> -- 
-> 2.25.1
-> 
-> 
-> -- 
-> Kees Cook
-
+diff --git a/drivers/staging/media/atomisp/pci/sh_css_params.c b/drivers/staging/media/atomisp/pci/sh_css_params.c
+index 2c67c23b3700..d1b5d6608d52 100644
+--- a/drivers/staging/media/atomisp/pci/sh_css_params.c
++++ b/drivers/staging/media/atomisp/pci/sh_css_params.c
+@@ -4378,8 +4378,7 @@ ia_css_3a_statistics_free(struct ia_css_3a_statistics *me)
+ 	if (me) {
+ 		kvfree(me->rgby_data);
+ 		kvfree(me->data);
+-		memset(me, 0, sizeof(struct ia_css_3a_statistics));
+-		kvfree(me);
++		kvfree_sensitive(me, sizeof(struct ia_css_3a_statistics));
+ 	}
+ }
+ 
+@@ -4417,8 +4416,7 @@ ia_css_dvs_statistics_free(struct ia_css_dvs_statistics *me)
+ 	if (me) {
+ 		kvfree(me->hor_proj);
+ 		kvfree(me->ver_proj);
+-		memset(me, 0, sizeof(struct ia_css_dvs_statistics));
+-		kvfree(me);
++		kvfree_sensitive(me, sizeof(struct ia_css_dvs_statistics));
+ 	}
+ }
+ 
+@@ -4459,8 +4457,7 @@ ia_css_dvs_coefficients_free(struct ia_css_dvs_coefficients *me)
+ 	if (me) {
+ 		kvfree(me->hor_coefs);
+ 		kvfree(me->ver_coefs);
+-		memset(me, 0, sizeof(struct ia_css_dvs_coefficients));
+-		kvfree(me);
++		kvfree_sensitive(me, sizeof(struct ia_css_dvs_coefficients));
+ 	}
+ }
+ 
+@@ -4551,8 +4548,7 @@ ia_css_dvs2_statistics_free(struct ia_css_dvs2_statistics *me)
+ 		kvfree(me->ver_prod.odd_imag);
+ 		kvfree(me->ver_prod.even_real);
+ 		kvfree(me->ver_prod.even_imag);
+-		memset(me, 0, sizeof(struct ia_css_dvs2_statistics));
+-		kvfree(me);
++		kvfree_sensitive(me, sizeof(struct ia_css_dvs2_statistics));
+ 	}
+ }
+ 
+@@ -4635,8 +4631,7 @@ ia_css_dvs2_coefficients_free(struct ia_css_dvs2_coefficients *me)
+ 		kvfree(me->ver_coefs.odd_imag);
+ 		kvfree(me->ver_coefs.even_real);
+ 		kvfree(me->ver_coefs.even_imag);
+-		memset(me, 0, sizeof(struct ia_css_dvs2_coefficients));
+-		kvfree(me);
++		kvfree_sensitive(me, sizeof(struct ia_css_dvs2_coefficients));
+ 	}
+ }
+ 
+@@ -4710,8 +4705,8 @@ ia_css_dvs2_6axis_config_free(struct ia_css_dvs_6axis_config *dvs_6axis_config)
+ 		kvfree(dvs_6axis_config->ycoords_y);
+ 		kvfree(dvs_6axis_config->xcoords_uv);
+ 		kvfree(dvs_6axis_config->ycoords_uv);
+-		memset(dvs_6axis_config, 0, sizeof(struct ia_css_dvs_6axis_config));
+-		kvfree(dvs_6axis_config);
++		kvfree_sensitive(dvs_6axis_config,
++				 sizeof(struct ia_css_dvs_6axis_config));
+ 	}
+ }
+ 
 -- 
-Kees Cook
+2.28.0
+
