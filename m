@@ -2,737 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20A33262B85
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 11:14:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39F8B262B53
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 11:09:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727893AbgIIJOx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 05:14:53 -0400
-Received: from segapp02.wistron.com ([103.200.3.19]:62526 "EHLO
-        segapp01.wistron.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726169AbgIIJOw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 05:14:52 -0400
-X-Greylist: delayed 326 seconds by postgrey-1.27 at vger.kernel.org; Wed, 09 Sep 2020 05:14:34 EDT
-Received: from EXCHAPP01.whq.wistron (unverified [10.37.38.24]) by TWNHUMSW2.wistron.com
- (Clearswift SMTPRS 5.6.0) with ESMTP id <Te180405e41c0a816701954@TWNHUMSW2.wistron.com>;
- Wed, 9 Sep 2020 17:09:03 +0800
-Received: from EXCHAPP04.whq.wistron (10.37.38.27) by EXCHAPP01.whq.wistron
- (10.37.38.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Wed, 9 Sep 2020
- 17:08:58 +0800
-Received: from gitserver.wistron.com (10.37.38.233) by EXCHAPP04.whq.wistron
- (10.37.38.27) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Wed, 9 Sep 2020 17:08:58 +0800
-From:   Ben Pai <ben_pai@wistron.com>
-To:     <robh+dt@kernel.org>, <joel@jms.id.au>, <andrew@aj.id.au>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
-CC:     <claire_ku@wistron.com>, Ben Pai <ben_pai@wistron.com>,
-        Ben Pai <Ben_Pai@wistron.com>
-Subject: [PATCH v1] ARM: dts: aspeed: Add Mowgli BMC platform
-Date:   Wed, 9 Sep 2020 17:08:18 +0800
-Message-ID: <20200909090818.24021-1-ben_pai@wistron.com>
-X-Mailer: git-send-email 2.17.1
+        id S1728347AbgIIJI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 05:08:57 -0400
+Received: from mga03.intel.com ([134.134.136.65]:25035 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725826AbgIIJIz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 05:08:55 -0400
+IronPort-SDR: AMjOEa3FAZ2PopmKlp4wXc+D5CWsOMRaApS+z7wsXb9UlOw39I0WakheT72NX43Zr0WWbDTNRF
+ ckL8hrE3Y0kA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9738"; a="158328825"
+X-IronPort-AV: E=Sophos;i="5.76,409,1592895600"; 
+   d="scan'208";a="158328825"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2020 02:08:54 -0700
+IronPort-SDR: ichc7mAA1q/Yyvtdvhl4GK6a8S89Q/zF68grT9GpDlokRAyP9DmsqIFXVXcxHLuyiW54BR6/H3
+ 5Ic9W9d4d1Rw==
+X-IronPort-AV: E=Sophos;i="5.76,409,1592895600"; 
+   d="scan'208";a="480388963"
+Received: from shsi6026.sh.intel.com (HELO localhost) ([10.239.147.135])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2020 02:08:51 -0700
+From:   shuo.a.liu@intel.com
+To:     linux-kernel@vger.kernel.org, x86@kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Yu Wang <yu1.wang@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Shuo Liu <shuo.a.liu@intel.com>
+Subject: [PATCH v3 00/17] HSM driver for ACRN hypervisor
+Date:   Wed,  9 Sep 2020 17:08:19 +0800
+Message-Id: <20200909090836.46762-1-shuo.a.liu@intel.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: 7DF0D9674DA3C64F4FD13E12B2F8000D3B837E1E5750211A8D67FC849F93AE802000:8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Mowgli BMC is an ASPEED ast2500 based BMC that is part of an
-OpenPower Power9 server.
+From: Shuo Liu <shuo.a.liu@intel.com>
 
-Signed-off-by: Ben Pai <Ben_Pai@wistron.com>
----
- arch/arm/boot/dts/Makefile                  |   1 +
- arch/arm/boot/dts/aspeed-bmc-opp-mowgli.dts | 663 ++++++++++++++++++++
- 2 files changed, 664 insertions(+)
- create mode 100644 arch/arm/boot/dts/aspeed-bmc-opp-mowgli.dts
+ACRN is a Type 1 reference hypervisor stack, running directly on the bare-metal
+hardware, and is suitable for a variety of IoT and embedded device solutions.
 
-diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-index 4572db3fa5ae..92edb2e12823 100644
---- a/arch/arm/boot/dts/Makefile
-+++ b/arch/arm/boot/dts/Makefile
-@@ -1381,6 +1381,7 @@ dtb-$(CONFIG_ARCH_ASPEED) += \
- 	aspeed-bmc-microsoft-olympus.dtb \
- 	aspeed-bmc-opp-lanyang.dtb \
- 	aspeed-bmc-opp-mihawk.dtb \
-+	aspeed-bmc-opp-mowgli.dtb \
- 	aspeed-bmc-opp-nicole.dtb \
- 	aspeed-bmc-opp-palmetto.dtb \
- 	aspeed-bmc-opp-romulus.dtb \
-diff --git a/arch/arm/boot/dts/aspeed-bmc-opp-mowgli.dts b/arch/arm/boot/dts/aspeed-bmc-opp-mowgli.dts
-new file mode 100644
-index 000000000000..11fd86980162
---- /dev/null
-+++ b/arch/arm/boot/dts/aspeed-bmc-opp-mowgli.dts
-@@ -0,0 +1,663 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/dts-v1/;
-+#include "aspeed-g5.dtsi"
-+#include <dt-bindings/gpio/aspeed-gpio.h>
-+#include <dt-bindings/leds/leds-pca955x.h>
-+
-+/ {
-+	model = "Mowgli BMC";
-+	compatible = "ibm,mowgli-bmc", "aspeed,ast2500";
-+
-+
-+	chosen {
-+		stdout-path = &uart5;
-+		bootargs = "console=ttyS4,115200 earlyprintk";
-+	};
-+
-+	memory@80000000 {
-+		reg = <0x80000000 0x20000000>;
-+	};
-+
-+	reserved-memory {
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		ranges;
-+
-+		flash_memory: region@98000000 {
-+			no-map;
-+			reg = <0x98000000 0x04000000>; /* 64M */
-+		};
-+
-+		gfx_memory: framebuffer {
-+			size = <0x01000000>;
-+			alignment = <0x01000000>;
-+			compatible = "shared-dma-pool";
-+			reusable;
-+		};
-+
-+		video_engine_memory: jpegbuffer {
-+			size = <0x02000000>;
-+			alignment = <0x01000000>;
-+			compatible = "shared-dma-pool";
-+			reusable;
-+		};
-+	};
-+
-+	gpio-keys {
-+		compatible = "gpio-keys";
-+
-+		air-water {
-+			label = "air-water";
-+			gpios = <&gpio ASPEED_GPIO(F, 6) GPIO_ACTIVE_LOW>;
-+			linux,code = <ASPEED_GPIO(F, 6)>;
-+		};
-+
-+		checkstop {
-+			label = "checkstop";
-+			gpios = <&gpio ASPEED_GPIO(J, 2) GPIO_ACTIVE_LOW>;
-+			linux,code = <ASPEED_GPIO(J, 2)>;
-+		};
-+
-+		ps0-presence {
-+			label = "ps0-presence";
-+			gpios = <&gpio ASPEED_GPIO(Z, 2) GPIO_ACTIVE_LOW>;
-+			linux,code = <ASPEED_GPIO(Z, 2)>;
-+		};
-+
-+		ps1-presence {
-+			label = "ps1-presence";
-+			gpios = <&gpio ASPEED_GPIO(Z, 0) GPIO_ACTIVE_LOW>;
-+			linux,code = <ASPEED_GPIO(Z, 0)>;
-+		};
-+
-+		id-button {
-+			label = "id-button";
-+			gpios = <&gpio ASPEED_GPIO(F, 1) GPIO_ACTIVE_LOW>;
-+			linux,code = <ASPEED_GPIO(F, 1)>;
-+		};
-+	};
-+
-+	gpio-keys-polled {
-+		compatible = "gpio-keys-polled";
-+		poll-interval = <1000>;
-+
-+		fan0-presence {
-+			label = "fan0-presence";
-+			gpios = <&pca9552 9 GPIO_ACTIVE_LOW>;
-+			linux,code = <9>;
-+		};
-+
-+		fan1-presence {
-+			label = "fan1-presence";
-+			gpios = <&pca9552 10 GPIO_ACTIVE_LOW>;
-+			linux,code = <10>;
-+		};
-+
-+		fan2-presence {
-+			label = "fan2-presence";
-+			gpios = <&pca9552 11 GPIO_ACTIVE_LOW>;
-+			linux,code = <11>;
-+		};
-+
-+		fan3-presence {
-+			label = "fan3-presence";
-+			gpios = <&pca9552 12 GPIO_ACTIVE_LOW>;
-+			linux,code = <12>;
-+		};
-+
-+		fan4-presence {
-+			label = "fan4-presence";
-+			gpios = <&pca9552 13 GPIO_ACTIVE_LOW>;
-+			linux,code = <13>;
-+		};
-+	};
-+
-+	leds {
-+		compatible = "gpio-leds";
-+
-+		front-fault {
-+			retain-state-shutdown;
-+			default-state = "keep";
-+			gpios = <&gpio ASPEED_GPIO(AA, 0) GPIO_ACTIVE_LOW>;
-+		};
-+
-+		power-button {
-+			retain-state-shutdown;
-+			default-state = "keep";
-+			gpios = <&gpio ASPEED_GPIO(AA, 1) GPIO_ACTIVE_LOW>;
-+		};
-+
-+		front-id {
-+			retain-state-shutdown;
-+			default-state = "keep";
-+			gpios = <&gpio ASPEED_GPIO(AA, 2) GPIO_ACTIVE_LOW>;
-+		};
-+
-+		fan0 {
-+			retain-state-shutdown;
-+			default-state = "keep";
-+			gpios = <&pca9552 0 GPIO_ACTIVE_LOW>;
-+		};
-+
-+		fan1 {
-+			retain-state-shutdown;
-+			default-state = "keep";
-+			gpios = <&pca9552 1 GPIO_ACTIVE_LOW>;
-+		};
-+
-+		fan2 {
-+			retain-state-shutdown;
-+			default-state = "keep";
-+			gpios = <&pca9552 2 GPIO_ACTIVE_LOW>;
-+		};
-+
-+		fan3 {
-+			retain-state-shutdown;
-+			default-state = "keep";
-+			gpios = <&pca9552 3 GPIO_ACTIVE_LOW>;
-+		};
-+
-+		fan4 {
-+			retain-state-shutdown;
-+			default-state = "keep";
-+			gpios = <&pca9552 4 GPIO_ACTIVE_LOW>;
-+		};
-+	};
-+
-+	fsi: gpio-fsi {
-+		compatible = "fsi-master-gpio", "fsi-master";
-+		#address-cells = <2>;
-+		#size-cells = <0>;
-+		no-gpio-delays;
-+
-+		clock-gpios = <&gpio ASPEED_GPIO(E, 6) GPIO_ACTIVE_HIGH>;
-+		data-gpios = <&gpio ASPEED_GPIO(E, 7) GPIO_ACTIVE_HIGH>;
-+		mux-gpios = <&gpio ASPEED_GPIO(R, 2) GPIO_ACTIVE_HIGH>;
-+		enable-gpios = <&gpio ASPEED_GPIO(D, 0) GPIO_ACTIVE_HIGH>;
-+		trans-gpios = <&gpio ASPEED_GPIO(E, 5) GPIO_ACTIVE_HIGH>;
-+	};
-+
-+	iio-hwmon-12v {
-+		compatible = "iio-hwmon";
-+		io-channels = <&adc 0>;
-+	};
-+
-+	iio-hwmon-5v {
-+		compatible = "iio-hwmon";
-+		io-channels = <&adc 1>;
-+	};
-+
-+	iio-hwmon-3v {
-+		compatible = "iio-hwmon";
-+		io-channels = <&adc 2>;
-+	};
-+
-+	iio-hwmon-vdd {
-+		compatible = "iio-hwmon";
-+		io-channels = <&adc 3>;
-+	};
-+
-+	iio-hwmon-vcs {
-+		compatible = "iio-hwmon";
-+		io-channels = <&adc 5>;
-+	};
-+
-+	iio-hwmon-vdn {
-+		compatible = "iio-hwmon";
-+		io-channels = <&adc 7>;
-+	};
-+
-+	iio-hwmon-vio {
-+		compatible = "iio-hwmon";
-+		io-channels = <&adc 9>;
-+	};
-+
-+	iio-hwmon-vddra {
-+		compatible = "iio-hwmon";
-+		io-channels = <&adc 11>;
-+	};
-+
-+	iio-hwmon-battery {
-+		compatible = "iio-hwmon";
-+		io-channels = <&adc 12>;
-+	};
-+
-+	iio-hwmon-vddrb {
-+		compatible = "iio-hwmon";
-+		io-channels = <&adc 13>;
-+	};
-+};
-+
-+&pwm_tacho {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_pwm0_default &pinctrl_pwm1_default
-+		&pinctrl_pwm2_default &pinctrl_pwm3_default
-+		&pinctrl_pwm4_default>;
-+
-+	fan@0 {
-+		reg = <0x00>;
-+		aspeed,fan-tach-ch = /bits/ 8 <0x00>;
-+	};
-+
-+	fan@1 {
-+		reg = <0x01>;
-+		aspeed,fan-tach-ch = /bits/ 8 <0x01>;
-+	};
-+
-+	fan@2 {
-+		reg = <0x02>;
-+		aspeed,fan-tach-ch = /bits/ 8 <0x02>;
-+	};
-+
-+	fan@3 {
-+		reg = <0x03>;
-+		aspeed,fan-tach-ch = /bits/ 8 <0x03>;
-+	};
-+
-+	fan@4 {
-+		reg = <0x04>;
-+		aspeed,fan-tach-ch = /bits/ 8 <0x04>;
-+	};
-+
-+	fan@5 {
-+		reg = <0x00>;
-+		aspeed,fan-tach-ch = /bits/ 8 <0x05>;
-+	};
-+
-+	fan@6 {
-+		reg = <0x01>;
-+		aspeed,fan-tach-ch = /bits/ 8 <0x06>;
-+	};
-+
-+	fan@7 {
-+		reg = <0x02>;
-+		aspeed,fan-tach-ch = /bits/ 8 <0x07>;
-+	};
-+
-+	fan@8 {
-+		reg = <0x03>;
-+		aspeed,fan-tach-ch = /bits/ 8 <0x08>;
-+	};
-+
-+	fan@9 {
-+		reg = <0x04>;
-+		aspeed,fan-tach-ch = /bits/ 8 <0x09>;
-+	};
-+};
-+
-+&fmc {
-+	status = "okay";
-+	flash@0 {
-+		status = "okay";
-+		label = "bmc";
-+		m25p,fast-read;
-+		spi-max-frequency = <50000000>;
-+		partitions {
-+			#address-cells = < 1 >;
-+			#size-cells = < 1 >;
-+			compatible = "fixed-partitions";
-+			u-boot@0 {
-+				reg = < 0 0x60000 >;
-+				label = "u-boot";
-+			};
-+			u-boot-env@60000 {
-+				reg = < 0x60000 0x20000 >;
-+				label = "u-boot-env";
-+			};
-+			obmc-ubi@80000 {
-+				reg = < 0x80000 0x1F80000 >;
-+				label = "obmc-ubi";
-+			};
-+		};
-+	};
-+	flash@1 {
-+		status = "okay";
-+		label = "alt-bmc";
-+		m25p,fast-read;
-+		spi-max-frequency = <50000000>;
-+		partitions {
-+			#address-cells = < 1 >;
-+			#size-cells = < 1 >;
-+			compatible = "fixed-partitions";
-+			u-boot@0 {
-+				reg = < 0 0x60000 >;
-+				label = "alt-u-boot";
-+			};
-+			u-boot-env@60000 {
-+				reg = < 0x60000 0x20000 >;
-+				label = "alt-u-boot-env";
-+			};
-+			obmc-ubi@80000 {
-+				reg = < 0x80000 0x1F80000 >;
-+				label = "alt-obmc-ubi";
-+			};
-+		};
-+	};
-+};
-+
-+&spi1 {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_spi1_default>;
-+
-+	flash@0 {
-+		status = "okay";
-+		label = "pnor";
-+		m25p,fast-read;
-+		spi-max-frequency = <100000000>;
-+	};
-+};
-+
-+&lpc_ctrl {
-+	status = "okay";
-+	memory-region = <&flash_memory>;
-+	flash = <&spi1>;
-+};
-+
-+&uart1 {
-+	/* Rear RS-232 connector */
-+	status = "okay";
-+
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_txd1_default
-+			&pinctrl_rxd1_default
-+			&pinctrl_nrts1_default
-+			&pinctrl_ndtr1_default
-+			&pinctrl_ndsr1_default
-+			&pinctrl_ncts1_default
-+			&pinctrl_ndcd1_default
-+			&pinctrl_nri1_default>;
-+};
-+
-+&uart2 {
-+	/* APSS */
-+	status = "okay";
-+
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_txd2_default &pinctrl_rxd2_default>;
-+};
-+
-+&uart5 {
-+	status = "okay";
-+};
-+
-+&mac0 {
-+	status = "okay";
-+
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_rmii1_default>;
-+	clocks = <&syscon ASPEED_CLK_GATE_MAC1CLK>,
-+		 <&syscon ASPEED_CLK_MAC1RCLK>;
-+	clock-names = "MACCLK", "RCLK";
-+	use-ncsi;
-+};
-+
-+&mac1 {
-+	status = "okay";
-+
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_rgmii2_default &pinctrl_mdio2_default>;
-+};
-+
-+&i2c0 {
-+	status = "okay";
-+
-+	tmp275@48 {
-+		compatible = "ti,tmp275";
-+		reg = <0x48>;
-+	};
-+};
-+
-+&i2c1 {
-+	status = "disabled";
-+};
-+
-+&i2c2 {
-+	status = "okay";
-+
-+	/* CPU MFG CONN */
-+
-+};
-+
-+&i2c3 {
-+	status = "okay";
-+
-+	/* APSS */
-+	/* CPLD */
-+
-+	/* PCA9516 (repeater) ->
-+	 *    CLK Buffer 9FGS9092
-+	 *    Power Supply 0
-+	 *    Power Supply 1
-+	 *    PCA 9552 LED
-+	 */
-+
-+	pca9552: pca9552@60 {
-+		compatible = "nxp,pca9552";
-+		reg = <0x60>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+
-+		gpio@0 {
-+			reg = <0>;
-+			type = <PCA955X_TYPE_GPIO>;
-+		};
-+		gpio@1 {
-+			reg = <1>;
-+			type = <PCA955X_TYPE_GPIO>;
-+		};
-+		gpio@2 {
-+			reg = <2>;
-+			type = <PCA955X_TYPE_GPIO>;
-+		};
-+		gpio@3 {
-+			reg = <3>;
-+			type = <PCA955X_TYPE_GPIO>;
-+		};
-+		gpio@4 {
-+			reg = <4>;
-+			type = <PCA955X_TYPE_GPIO>;
-+		};
-+		gpio@5 {
-+			reg = <5>;
-+			type = <PCA955X_TYPE_GPIO>;
-+		};
-+		gpio@6 {
-+			reg = <6>;
-+			type = <PCA955X_TYPE_GPIO>;
-+		};
-+		gpio@7 {
-+			reg = <7>;
-+			type = <PCA955X_TYPE_GPIO>;
-+		};
-+		gpio@8 {
-+			reg = <8>;
-+			type = <PCA955X_TYPE_GPIO>;
-+		};
-+		gpio@9 {
-+			reg = <9>;
-+			type = <PCA955X_TYPE_GPIO>;
-+		};
-+		gpio@10 {
-+			reg = <10>;
-+			type = <PCA955X_TYPE_GPIO>;
-+		};
-+		gpio@11 {
-+			reg = <11>;
-+			type = <PCA955X_TYPE_GPIO>;
-+		};
-+		gpio@12 {
-+			reg = <12>;
-+			type = <PCA955X_TYPE_GPIO>;
-+		};
-+		gpio@13 {
-+			reg = <13>;
-+			type = <PCA955X_TYPE_GPIO>;
-+		};
-+		gpio@14 {
-+			reg = <14>;
-+			type = <PCA955X_TYPE_GPIO>;
-+		};
-+		gpio@15 {
-+			reg = <15>;
-+			type = <PCA955X_TYPE_GPIO>;
-+		};
-+	};
-+
-+	power-supply@68 {
-+		compatible = "ibm,cffps1";
-+		reg = <0x68>;
-+	};
-+
-+	power-supply@69 {
-+		compatible = "ibm,cffps1";
-+		reg = <0x69>;
-+	};
-+};
-+
-+&i2c4 {
-+	status = "okay";
-+
-+	/* CP0 VDD & VCS : IR35221 */
-+	/* CP0 VDN & VIO : IR35221 */
-+	/* CP0 VDDR : IR35221 */
-+
-+	ir35221@28 {
-+		compatible = "infineon,ir35221";
-+		reg = <0x28>;
-+	};
-+
-+	ir35221@29 {
-+		compatible = "infineon,ir35221";
-+		reg = <0x29>;
-+	};
-+
-+	ir35221@2d {
-+		compatible = "infineon,ir35221";
-+		reg = <0x2d>;
-+	};
-+
-+};
-+
-+&i2c5 {
-+	status = "disabled";
-+};
-+
-+&i2c6 {
-+	status = "disabled";
-+};
-+
-+&i2c7 {
-+	status = "disabled";
-+};
-+
-+&i2c8 {
-+	status = "okay";
-+
-+	eeprom@50 {
-+		compatible = "atmel,24c64";
-+		reg = <0x50>;
-+	};
-+};
-+
-+&i2c9 {
-+	status = "okay";
-+
-+	/* PCIe G3 x16 slot */
-+};
-+
-+&i2c10 {
-+	status = "disabled";
-+};
-+
-+&i2c11 {
-+	status = "okay";
-+
-+	/* CPLD */
-+	/* TPM */
-+	/* RTC RX8900CE */
-+	/* TMP275A */
-+	/* TMP275A */
-+
-+	tmp275@48 {
-+		compatible = "ti,tmp275";
-+		reg = <0x48>;
-+	};
-+
-+	tmp275@49 {
-+		compatible = "ti,tmp275";
-+		reg = <0x49>;
-+	};
-+
-+};
-+
-+&i2c12 {
-+	status = "disabled";
-+};
-+
-+&i2c13 {
-+	status = "disabled";
-+};
-+
-+&vuart {
-+	status = "okay";
-+};
-+
-+&gfx {
-+	status = "okay";
-+	memory-region = <&gfx_memory>;
-+};
-+
-+&adc {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_adc0_default
-+			&pinctrl_adc1_default
-+			&pinctrl_adc2_default
-+			&pinctrl_adc3_default
-+			&pinctrl_adc4_default
-+			&pinctrl_adc5_default
-+			&pinctrl_adc6_default
-+			&pinctrl_adc7_default
-+			&pinctrl_adc8_default
-+			&pinctrl_adc9_default
-+			&pinctrl_adc10_default
-+			&pinctrl_adc11_default
-+			&pinctrl_adc12_default
-+			&pinctrl_adc13_default
-+			&pinctrl_adc14_default
-+			&pinctrl_adc15_default>;
-+};
-+
-+&wdt1 {
-+	aspeed,reset-type = "none";
-+	aspeed,external-signal;
-+	aspeed,ext-push-pull;
-+	aspeed,ext-active-high;
-+
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_wdtrst1_default>;
-+};
-+
-+&wdt2 {
-+	aspeed,alt-boot;
-+};
-+
-+&ibt {
-+	status = "okay";
-+};
-+
-+&vhub {
-+	status = "okay";
-+};
-+
-+&video {
-+	status = "okay";
-+	memory-region = <&video_engine_memory>;
-+};
-+
-+#include "ibm-power9-dual.dtsi"
-+
+ACRN implements a hybrid VMM architecture, using a privileged Service VM. The
+Service VM manages the system resources (CPU, memory, etc.) and I/O devices of
+User VMs. Multiple User VMs are supported, with each of them running Linux,
+Android OS or Windows. Both Service VM and User VMs are guest VM.
+
+Below figure shows the architecture.
+
+                Service VM                    User VM
+      +----------------------------+  |  +------------------+
+      |        +--------------+    |  |  |                  |
+      |        |ACRN userspace|    |  |  |                  |
+      |        +--------------+    |  |  |                  |
+      |-----------------ioctl------|  |  |                  |   ...
+      |kernel space   +----------+ |  |  |                  |
+      |               |   HSM    | |  |  | Drivers          |
+      |               +----------+ |  |  |                  |
+      +--------------------|-------+  |  +------------------+
+  +---------------------hypercall----------------------------------------+
+  |                       ACRN Hypervisor                                |
+  +----------------------------------------------------------------------+
+  |                          Hardware                                    |
+  +----------------------------------------------------------------------+
+
+There is only one Service VM which could run Linux as OS.
+
+In a typical case, the Service VM will be auto started when ACRN Hypervisor is
+booted. Then the ACRN userspace (an application running in Service VM) could be
+used to start/stop User VMs by communicating with ACRN Hypervisor Service
+Module (HSM).
+
+ACRN Hypervisor Service Module (HSM) is a middle layer that allows the ACRN
+userspace and Service VM OS kernel to communicate with ACRN Hypervisor
+and manage different User VMs. This middle layer provides the following
+functionalities,
+  - Issues hypercalls to the hypervisor to manage User VMs:
+      * VM/vCPU management
+      * Memory management
+      * Device passthrough
+      * Interrupts injection
+  - I/O requests handling from User VMs.
+  - Exports ioctl through HSM char device.
+  - Exports function calls for other kernel modules
+
+ACRN is focused on embedded system. So it doesn't support some features.
+E.g.,
+  - ACRN doesn't support VM migration.
+  - ACRN doesn't support vCPU migration.
+
+This patch set adds the HSM to the Linux kernel.
+
+The basic ARCN support was merged to upstream already.
+https://lore.kernel.org/lkml/1559108037-18813-3-git-send-email-yakui.zhao@intel.com/
+
+ChangeLog:
+v3:
+  - Used {get|put}_device() helpers on &acrn_dev->this_device
+  - Moved unused code from front patches to later ones.
+  - Removed self-defined pr_fmt() and dev_fmt()
+  - Provided comments for acrn_vm_list_lock.
+
+v2:
+  - Removed API version related code. (Dave)
+  - Replaced pr_*() by dev_*(). (Greg)
+  - Used -ENOTTY as the error code of unsupported ioctl. (Greg)
+
+
+Shuo Liu (16):
+  docs: acrn: Introduce ACRN
+  x86/acrn: Introduce acrn_{setup, remove}_intr_handler()
+  x86/acrn: Introduce hypercall interfaces
+  virt: acrn: Introduce ACRN HSM basic driver
+  virt: acrn: Introduce VM management interfaces
+  virt: acrn: Introduce an ioctl to set vCPU registers state
+  virt: acrn: Introduce EPT mapping management
+  virt: acrn: Introduce I/O request management
+  virt: acrn: Introduce PCI configuration space PIO accesses combiner
+  virt: acrn: Introduce interfaces for PCI device passthrough
+  virt: acrn: Introduce interrupt injection interfaces
+  virt: acrn: Introduce interfaces to query C-states and P-states
+    allowed by hypervisor
+  virt: acrn: Introduce I/O ranges operation interfaces
+  virt: acrn: Introduce ioeventfd
+  virt: acrn: Introduce irqfd
+  virt: acrn: Introduce an interface for Service VM to control vCPU
+
+
+Yin Fengwei (1):
+  x86/acrn: Introduce an API to check if a VM is privileged
+
+ .../userspace-api/ioctl/ioctl-number.rst      |   1 +
+ Documentation/virt/acrn/index.rst             |  11 +
+ Documentation/virt/acrn/introduction.rst      |  40 ++
+ Documentation/virt/acrn/io-request.rst        |  97 +++
+ Documentation/virt/index.rst                  |   1 +
+ MAINTAINERS                                   |   9 +
+ arch/x86/include/asm/acrn.h                   |  74 ++
+ arch/x86/kernel/cpu/acrn.c                    |  38 +-
+ drivers/virt/Kconfig                          |   2 +
+ drivers/virt/Makefile                         |   1 +
+ drivers/virt/acrn/Kconfig                     |  15 +
+ drivers/virt/acrn/Makefile                    |   3 +
+ drivers/virt/acrn/acrn_drv.h                  | 228 +++++++
+ drivers/virt/acrn/hsm.c                       | 425 ++++++++++++
+ drivers/virt/acrn/hypercall.h                 | 254 +++++++
+ drivers/virt/acrn/ioeventfd.c                 | 273 ++++++++
+ drivers/virt/acrn/ioreq.c                     | 642 ++++++++++++++++++
+ drivers/virt/acrn/irqfd.c                     | 235 +++++++
+ drivers/virt/acrn/mm.c                        | 300 ++++++++
+ drivers/virt/acrn/vm.c                        | 123 ++++
+ include/uapi/linux/acrn.h                     | 486 +++++++++++++
+ 21 files changed, 3257 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/virt/acrn/index.rst
+ create mode 100644 Documentation/virt/acrn/introduction.rst
+ create mode 100644 Documentation/virt/acrn/io-request.rst
+ create mode 100644 arch/x86/include/asm/acrn.h
+ create mode 100644 drivers/virt/acrn/Kconfig
+ create mode 100644 drivers/virt/acrn/Makefile
+ create mode 100644 drivers/virt/acrn/acrn_drv.h
+ create mode 100644 drivers/virt/acrn/hsm.c
+ create mode 100644 drivers/virt/acrn/hypercall.h
+ create mode 100644 drivers/virt/acrn/ioeventfd.c
+ create mode 100644 drivers/virt/acrn/ioreq.c
+ create mode 100644 drivers/virt/acrn/irqfd.c
+ create mode 100644 drivers/virt/acrn/mm.c
+ create mode 100644 drivers/virt/acrn/vm.c
+ create mode 100644 include/uapi/linux/acrn.h
+
+
+base-commit: 18445bf405cb331117bc98427b1ba6f12418ad17
 -- 
-2.17.1
+2.28.0
 
