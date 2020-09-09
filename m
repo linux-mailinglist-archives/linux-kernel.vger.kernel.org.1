@@ -2,132 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 674EF263484
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 19:21:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60C4626339B
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 19:07:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728954AbgIIRVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 13:21:47 -0400
-Received: from lb2-smtp-cloud9.xs4all.net ([194.109.24.26]:42061 "EHLO
-        lb2-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727113AbgIIPXK (ORCPT
+        id S1730520AbgIIRHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 13:07:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730402AbgIIPhV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 11:23:10 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud9.xs4all.net with ESMTPA
-        id G14wkjX7EXgwIG14xkZkWe; Wed, 09 Sep 2020 16:28:08 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
-        t=1599661688; bh=+xRI7RCVjWPFLjTuzSdpKFeCB3MzDQJw+96p0B8ybuQ=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=GhZMVx7pRGfoeYUSkx+6M0RckAcR1G9X/4Z1Z7eKsxh9pkUJuKeQkeHnsrDfozlB7
-         fV1d5JNDKC61U1UFhVchtDeVN3NaJxdVdmFBRbzDoyaTDB8l/K0yYz0oj0ZT1MCIO6
-         TOfNLINWQVC4n7rQq5AThsjvsPmygt8tmZ6ll8qlBvgzZCimKb1VEIbmhreGVeoZTc
-         fLZ85a/y1BBSAcV5fczOpK5HQ0Wpv0QjvKH4qfdMYKaH41yINXEpkBQbb4X740v1KB
-         1CBv6JL9Qk9JzlYLkmNnMgMdcqeBHT8YuVDaq/HZBogfWRz55VpFtTsfwvyi9gn47y
-         hxuBCrPmakEBw==
-Subject: Re: [PATCH] media: em28xx: fix function pointer check
-To:     trix@redhat.com, mchehab@kernel.org, natechancellor@gmail.com,
-        ndesaulniers@google.com, brad@nextdimension.cc, mkrufky@linuxtv.org
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-References: <20200903145038.20076-1-trix@redhat.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <65584276-f49c-15c9-5f20-a4e5f5fe5085@xs4all.nl>
-Date:   Wed, 9 Sep 2020 16:28:06 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 9 Sep 2020 11:37:21 -0400
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71CF2C0612EF
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 07:29:15 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id ef16so1577555qvb.8
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 07:29:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=2+MMmBdP9os8fl/yaCqGjSQYHpapGZyjQs+McN3AAL0=;
+        b=Qw/eo1lQV40Nr9573LICHCk7pTW8t0dOs6I6S1SIW2IfjNhLvVkh0IqTD+gnRoiEL0
+         3yChX1o8ZupFl7v8nQzApKz9YW84FQCsaiJ4i7UNyh14Z8M8Im8CFh8dnNOmibsmRm2k
+         dhzHrX0Rmpj7v0vBp3b/l5OmOCYjP5tH34h1WfLwI0WleuM20LDkI+29x+s9gDeQYy1k
+         oL3LCZEsO1Grs7wz1JW9Y/xCUN1agefDVhc9tbqcoyU42ELnuax4Hj94w73cSfVQ1ojT
+         8n4c5EMqbNWzmfbWlpKCplEZfLQ57JDc6vp7R6MsDo/7NfX6NR/9gPY/WHVjYvn05MMx
+         lFOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to:content-transfer-encoding;
+        bh=2+MMmBdP9os8fl/yaCqGjSQYHpapGZyjQs+McN3AAL0=;
+        b=anpNvJEyOBL+5qhbG0U3a+rvElyaI02SeRlV2mh/IC4nM1IwETpHyqt3Ebl7QHFEDR
+         yMphav7b/t5LNkcH0kullTCZCOsOI4eAE2c0xi+RnhxddQ0BNB92vjfdrNVZzTEo0Ehe
+         /6tnD1zy0t+WefDDlxiBbINR/qBQn8jfXv5eY6tOzpMYQRcS4kkTDVkgmvDm1CjTDzWZ
+         IZ0dpRai5a2Efi4bVNysdrsAyfsoWuaZDQP+16rg/FaLAOJbspOW5Az7G7ALy5N7MMgG
+         zv3pwxQeoOU3KAcliGnHQZCJ8NUfTad/PlMn1XHPP2CU6aXfz0yOb4bcacDFuDC0tt8f
+         bvNQ==
+X-Gm-Message-State: AOAM533glh+woBSQtfMHe4y6Oh0vA0YSwUa/EmQAPfcNR2wjaeA7U1yx
+        mWkDOmBin+LNluXTFFdILB6ZRrrgQws8apcLbNY=
+X-Google-Smtp-Source: ABdhPJxP9acd8BHfJsP6NpBM7bVCw/1ENT7p6slttXwKqCZv4r9hnNP1JT/FZt+7ZOX2KLh2cwq4tx4LqMEp0J3oGzY=
+X-Received: by 2002:a0c:ed31:: with SMTP id u17mr4320907qvq.21.1599661754491;
+ Wed, 09 Sep 2020 07:29:14 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200903145038.20076-1-trix@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4wfK0x4z69G0pcN0tTyBl9g89oLI40CCA1Pcs6+GL8aCFjhEJWXG1+Fp/IEtwiTOlOPLh63xcX/ctPdCy/4klHm+VaxJzPhy+afVtZY62B2TEirP2HL1qf
- YV/AfjMvr86y2vsJj//XYI3hm8N57Og9gM30h6lUlp9j+94aX/BSkc5DzA9hJF/3Qzqy9zCQ2ovoCZoX2oN/ynVm+bMoVvJ9mXoVw+dS/ECWlUZyTyT6ZQNG
- qmBqg4DFcYXVSz1HLXcvyXQ66fz50w5zNVJHdbMzE7xTrxHlFUNBdDwvLckTvbRQD6RRu+iMx2jKZXBYlM0LMusm6z0Wdly4uY25757jT6wJ2Uvj2JkKoVtL
- 7EDr/cykZK+ssUldtBs17BGk7XZd/V8fH3hbcuEj6MNvlB5nu1LS5L1STLA37L14Yy8bl24HxIWRRTG39hvNz52p1+OOU5c88TW/YguYpjq2c954K2MQYryY
- c2dSOckvGMqKK5W1okBJ3RE/UfoNy3pDnj3oJW/UcNb5ekMesMT7V+U1gJF+dEagNWHtMPX+ioSIEW7ERdqOYadyQ5DTAHQpFRXKVA==
+Reply-To: mrahmedmuzashah@gmail.com
+Received: by 2002:ac8:2913:0:0:0:0:0 with HTTP; Wed, 9 Sep 2020 07:29:14 -0700 (PDT)
+From:   "Mr.Ahmed Muzashah" <ahmedmuzashah@gmail.com>
+Date:   Wed, 9 Sep 2020 15:29:14 +0100
+X-Google-Sender-Auth: Tehezv93eu8r8NCzBDZPvFt879M
+Message-ID: <CA+as4LXfFOQ-a2iF5sx_jzDJyXnRf6W1jbkarvnjHwUZhhWuGw@mail.gmail.com>
+Subject: =?UTF-8?B?U2Now7ZuZW4gVGFn?=
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/09/2020 16:50, trix@redhat.com wrote:
-> From: Tom Rix <trix@redhat.com>
-> 
-> clang static analyzer reports this problem
-> 
-> em28xx-core.c:1162:4: warning: Called function pointer
->   is null (null dereference)
->         ops->suspend(dev->dev_next);
->         ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-> 
-> This is the problem block
-> 
-> 	if (ops->suspend)
-> 		ops->suspend(dev);
-> 	if (dev->dev_next)
-> 		ops->suspend(dev->dev_next);
-> 
-> The check for ops->suspend only covers one statement.
-> So fix the check consistent with other similar in
-> the file.
-> 
-> Change a similar check in em28xx_resume_extension()
-> to use consistent logic as its siblings.
-> 
-> Fixes: be7fd3c3a8c5 ("media: em28xx: Hauppauge DualHD second tuner functionality")
-> Signed-off-by: Tom Rix <trix@redhat.com>
-> ---
->  drivers/media/usb/em28xx/em28xx-core.c | 17 +++++++++--------
->  1 file changed, 9 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/media/usb/em28xx/em28xx-core.c b/drivers/media/usb/em28xx/em28xx-core.c
-> index e6088b5d1b80..d60f4c2a661d 100644
-> --- a/drivers/media/usb/em28xx/em28xx-core.c
-> +++ b/drivers/media/usb/em28xx/em28xx-core.c
-> @@ -1156,10 +1156,11 @@ int em28xx_suspend_extension(struct em28xx *dev)
->  	dev_info(&dev->intf->dev, "Suspending extensions\n");
->  	mutex_lock(&em28xx_devlist_mutex);
->  	list_for_each_entry(ops, &em28xx_extension_devlist, next) {
-> -		if (ops->suspend)
-> +		if (ops->suspend) {
->  			ops->suspend(dev);
-> -		if (dev->dev_next)
-> -			ops->suspend(dev->dev_next);
-> +			if (dev->dev_next)
-> +				ops->suspend(dev->dev_next);
-> +		}
->  	}
->  	mutex_unlock(&em28xx_devlist_mutex);
->  	return 0;
-> @@ -1172,11 +1173,11 @@ int em28xx_resume_extension(struct em28xx *dev)
->  	dev_info(&dev->intf->dev, "Resuming extensions\n");
->  	mutex_lock(&em28xx_devlist_mutex);
->  	list_for_each_entry(ops, &em28xx_extension_devlist, next) {
-> -		if (!ops->resume)
-> -			continue;
+Sch=C3=B6nen Tag,
 
-Actually, this code is fine: if !ops->resume, then just continue.
+Bitte entschuldigen Sie, dass Sie einen =C3=9Cberraschungsbrief geschrieben
+haben. Ich bin Herr Ahmed Muzashah, Account Manager bei einer
+Investmentbank hier in Burkina Faso. Ich habe ein sehr wichtiges
+Gesch=C3=A4ft, das ich mit Ihnen besprechen m=C3=B6chte. In meinem Konto is=
+t ein
+Kontoentwurf er=C3=B6ffnet Ich habe die M=C3=B6glichkeit, den verbleibenden
+Fonds (15,8 Millionen US-Dollar) von f=C3=BCnfzehn Millionen
+achthunderttausend US-Dollar eines meiner Bankkunden zu =C3=BCbertragen,
+der beim Zusammenbruch der Welt gestorben ist Handelszentrum in den
+Vereinigten Staaten am 11. September 2001.
 
-So there is no need to change this resume code.
+Ich m=C3=B6chte diese Mittel investieren und Sie unserer Bank f=C3=BCr dies=
+en
+Deal vorstellen. Alles, was ich ben=C3=B6tige, ist Ihre ehrliche
+Zusammenarbeit und ich garantiere Ihnen, dass dies unter einer
+legitimen Vereinbarung durchgef=C3=BChrt wird, die uns vor
+Gesetzesverst=C3=B6=C3=9Fen sch=C3=BCtzt Ich bin damit einverstanden, dass =
+40% dieses
+Geldes f=C3=BCr Sie als meinen ausl=C3=A4ndischen Partner, 50% f=C3=BCr mic=
+h und 10%
+f=C3=BCr die Schaffung der Grundlage f=C3=BCr die weniger Privilegien in Ih=
+rem
+Land bestimmt sind. Wenn Sie wirklich an meinem Vorschlag interessiert
+sind, werden weitere Einzelheiten der =C3=9Cbertragung ber=C3=BCcksichtigt =
+Sie
+werden an Sie weitergeleitet, sobald ich Ihre Bereitschaftsmail f=C3=BCr
+eine erfolgreiche =C3=9Cberweisung erhalte.
 
-And in fact, I think it would be best if the same approach was used in
-em28xx_suspend_extension.
-
-Regards,
-
-	Hans
-
-> -		ops->resume(dev);
-> -		if (dev->dev_next)
-> -			ops->resume(dev->dev_next);
-> +		if (ops->resume) {
-> +			ops->resume(dev);
-> +			if (dev->dev_next)
-> +				ops->resume(dev->dev_next);
-> +		}
->  	}
->  	mutex_unlock(&em28xx_devlist_mutex);
->  	return 0;
-> 
-
+Dein,
+Mr Ahmed Muzashah,
