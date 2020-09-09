@@ -2,89 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 609EB262E31
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 13:51:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59847262E16
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 13:45:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727804AbgIILvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 07:51:07 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:33002 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729305AbgIILpZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 07:45:25 -0400
-Received: by mail-wm1-f66.google.com with SMTP id e11so1658418wme.0;
-        Wed, 09 Sep 2020 04:45:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=WXoG8q5ed4XfWQ3Dzmu5hYVDZuDpMKCum26BXIBxJ60=;
-        b=Dxgh49/fpUtpYueRVoJ53/eHoZkjHiSdzsoIwFf6J2MLCAoBQTM8tE/keaLpaXqYNQ
-         SHzXHY7sso7M4FVK23KmUAUggnYJZxIEvIyGe1iZaE5znKgK5+6NcBlZT/kxnn6bkN+i
-         YPb7ht3We1KNPrusjcIzf0f0OCFNEsu38Sdotms7OAy0HylMjztbfx3+nEkGfEbw9jkI
-         QU81ObXohN3WoMaB3lko3t/zl4VE7W2ynAepFBuleI3iHqasnPSUnk7tnOmnKGiKvAgb
-         SxmelVs1Rf3hMb3bmdNHgz2bmn1r0pD1N6KafhUC0aFA8mqNxt5FBRmyrD00E8OoD6KH
-         u+fQ==
-X-Gm-Message-State: AOAM532zgbw4p1ea0K5acka9ETS3Vn+ieneEd5BVfuHeYzclsafgM8Rc
-        ZJjM3RVD6FtnibfcQ386D2Yi3hULWkE=
-X-Google-Smtp-Source: ABdhPJwRwoXoUtaCWApFPVRqDFMXzGia8naxYrrD7VA8gMVZpqLFW7kaX7pbsSAAErAck1wAGhUKhQ==
-X-Received: by 2002:a1c:2403:: with SMTP id k3mr3029102wmk.153.1599651480007;
-        Wed, 09 Sep 2020 04:38:00 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id d3sm3720722wrr.84.2020.09.09.04.37.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Sep 2020 04:37:59 -0700 (PDT)
-Date:   Wed, 9 Sep 2020 11:37:58 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Michael Kelley <mikelley@microsoft.com>
-Cc:     Dexuan Cui <decui@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        vkuznets <vkuznets@redhat.com>
-Subject: Re: [PATCH] Drivers: hv: vmbus: hibernation: do not hang forever in
- vmbus_bus_resume()
-Message-ID: <20200909113758.7ucufasongrttxdw@liuwe-devbox-debian-v2>
-References: <20200905025555.45614-1-decui@microsoft.com>
- <MW2PR2101MB1052BE3C25E87FE1CA5BA0F8D7290@MW2PR2101MB1052.namprd21.prod.outlook.com>
+        id S1730099AbgIILpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 07:45:15 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36500 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726293AbgIILmO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 07:42:14 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 0C6D4B732;
+        Wed,  9 Sep 2020 11:40:59 +0000 (UTC)
+Date:   Wed, 9 Sep 2020 13:40:57 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Aaron Lu <aaron.lwe@gmail.com>
+Cc:     Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        mgorman@techsingularity.net, tj@kernel.org,
+        khlebnikov@yandex-team.ru, willy@infradead.org, hannes@cmpxchg.org,
+        lkp@intel.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, shakeelb@google.com,
+        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
+        kirill@shutemov.name, alexander.duyck@gmail.com,
+        rong.a.chen@intel.com, vdavydov.dev@gmail.com, shy828301@gmail.com
+Subject: Re: [PATCH v18 00/32] per memcg lru_lock
+Message-ID: <20200909114057.GH7348@dhcp22.suse.cz>
+References: <1598273705-69124-1-git-send-email-alex.shi@linux.alibaba.com>
+ <20200824114204.cc796ca182db95809dd70a47@linux-foundation.org>
+ <alpine.LSU.2.11.2008241231460.1065@eggly.anvils>
+ <20200825015627.3c3pnwauqznnp3gc@ca-dmjordan1.us.oracle.com>
+ <ec62a835-f79d-2b8c-99c7-120834703b42@linux.alibaba.com>
+ <20200826011946.spknwjt44d2szrdo@ca-dmjordan1.us.oracle.com>
+ <01ed6e45-3853-dcba-61cb-b429a49a7572@linux.alibaba.com>
+ <20200828014022.y5xju6weysqpzxd2@ca-dmjordan1.us.oracle.com>
+ <20200909024432.GA9736@desktop-ziqianlu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <MW2PR2101MB1052BE3C25E87FE1CA5BA0F8D7290@MW2PR2101MB1052.namprd21.prod.outlook.com>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <20200909024432.GA9736@desktop-ziqianlu>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 08, 2020 at 09:05:34PM +0000, Michael Kelley wrote:
-> From: Dexuan Cui <decui@microsoft.com> Sent: Friday, September 4, 2020 7:56 PM
-> > 
-> > After we Stop and later Start a VM that uses Accelerated Networking (NIC
-> > SR-IOV), currently the VF vmbus device's Instance GUID can change, so after
-> > vmbus_bus_resume() -> vmbus_request_offers(), vmbus_onoffer() can not find
-> > the original vmbus channel of the VF, and hence we can't complete()
-> > vmbus_connection.ready_for_resume_event in check_ready_for_resume_event(),
-> > and the VM hangs in vmbus_bus_resume() forever.
-> > 
-> > Fix the issue by adding a timeout, so the resuming can still succeed, and
-> > the saved state is not lost, and according to my test, the user can disable
-> > Accelerated Networking and then will be able to SSH into the VM for
-> > further recovery. Also prevent the VM in question from suspending again.
-> > 
-> > The host will be fixed so in future the Instance GUID will stay the same
-> > across hibernation.
-> > 
-> > Fixes: d8bd2d442bb2 ("Drivers: hv: vmbus: Resume after fixing up old primary channels")
-> > Signed-off-by: Dexuan Cui <decui@microsoft.com>
-> > ---
-> >  drivers/hv/vmbus_drv.c | 9 +++++++--
-> >  1 file changed, 7 insertions(+), 2 deletions(-)
+On Wed 09-09-20 10:44:32, Aaron Lu wrote:
+> On Thu, Aug 27, 2020 at 09:40:22PM -0400, Daniel Jordan wrote:
+> > I went back to your v1 post to see what motivated you originally, and you had
+> > some results from aim9 but nothing about where this reared its head in the
+> > first place.  How did you discover the bottleneck?  I'm just curious about how
+> > lru_lock hurts in practice.
 > 
-> Reviewed-by: Michael Kelley <mikelley@microsoft.com>
+> I think making lru_lock per-memcg helps in colocated environment: some
+> workloads are of high priority while some workloads are of low priority.
 > 
+> For these low priority workloads, we may even want to use some swap for
+> it to save memory and this can cause frequent alloc/reclaim, depending
+> on its workingset etc. and these alloc/reclaim need to hold the global
+> lru lock and zone lock. And then when the high priority workloads do
+> page fault, their performance can be adversely affected and that is not
+> acceptible since these high priority workloads normally have strict SLA
+> requirement.
 
-Applied to hyperv-fixes. Thanks.
+While this all sounds reasonably. We are lacking _any_ numbers to
+actually make that a solid argumentation rather than hand waving.
+Having something solid is absolutely necessary for a big change like
+this.
+
+-- 
+Michal Hocko
+SUSE Labs
