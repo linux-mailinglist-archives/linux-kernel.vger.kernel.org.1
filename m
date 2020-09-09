@@ -2,136 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 402BF26318A
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:18:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21569263194
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:19:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731019AbgIIQSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 12:18:05 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:64112 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730885AbgIIQN0 (ORCPT
+        id S1731004AbgIIQTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 12:19:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54436 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730937AbgIIQPb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 12:13:26 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 089G3hGt094150;
-        Wed, 9 Sep 2020 12:12:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=l58yEDHShi5ObMeKXd9i1HaDyPqzpve8oVA61+yeocE=;
- b=MkLV2iGRLrJMnX5uAc0U1tKsI6PtfCpTFLq0ne+qlZoGDxasR0vpXy0ZPQFv53fQioKS
- Njkr3bSJU9cSed7Dznmbo9BmJczRYk4RfUadU7jKzxZzmlvIbclW1mWXcF38rx/3YBHD
- DHGFzRfbHRhULHpR4pMwew+G5+a7cM4wQ8S6KHO0/Vn8+p0qPD1IaNDa27Ys8fdQ7ayu
- mkAPh04ADJ9xzS/1izjRTf5b07VXHfPvqzONbas5SsWm0Wr8YBUObSz63a3/j7CZP7rT
- EXGtrBqSj1ncxxjLbt/3Wb6mGFGOd2DCOaIuQKq8Kp7HtL1bzAl06aqbqtEuMqwEMpQZ BA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33eyv56ynt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Sep 2020 12:12:20 -0400
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 089G4E1s096945;
-        Wed, 9 Sep 2020 12:12:19 -0400
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33eyv56yn1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Sep 2020 12:12:19 -0400
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 089GA6XD019174;
-        Wed, 9 Sep 2020 16:12:17 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma06fra.de.ibm.com with ESMTP id 33e5gmrvyy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Sep 2020 16:12:17 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 089GCEnm26673490
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 9 Sep 2020 16:12:14 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 23E2111C054;
-        Wed,  9 Sep 2020 16:12:14 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E726D11C052;
-        Wed,  9 Sep 2020 16:12:12 +0000 (GMT)
-Received: from thinkpad (unknown [9.171.79.102])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Wed,  9 Sep 2020 16:12:12 +0000 (GMT)
-Date:   Wed, 9 Sep 2020 18:12:11 +0200
-From:   Gerald Schaefer <gerald.schaefer@linux.ibm.com>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Mike Rapoport <rppt@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-mm <linux-mm@kvack.org>, Paul Mackerras <paulus@samba.org>,
-        linux-sparc <sparclinux@vger.kernel.org>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Richard Weinberger <richard@nod.at>,
-        linux-x86 <x86@kernel.org>, Russell King <linux@armlinux.org.uk>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Ingo Molnar <mingo@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Jeff Dike <jdike@addtoit.com>,
-        linux-um <linux-um@lists.infradead.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-arm <linux-arm-kernel@lists.infradead.org>,
-        linux-power <linuxppc-dev@lists.ozlabs.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [RFC PATCH v2 0/3] mm/gup: fix gup_fast with dynamic page table
- folding
-Message-ID: <20200909181211.1cad8d28@thinkpad>
-In-Reply-To: <20200908193650.1c1511d0@thinkpad>
-References: <20200907180058.64880-1-gerald.schaefer@linux.ibm.com>
-        <20200907201256.GC1976319@kernel.org>
-        <9bde9857-fdfd-e384-ea27-a14e5a06f1e6@csgroup.eu>
-        <20200908193650.1c1511d0@thinkpad>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Wed, 9 Sep 2020 12:15:31 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EECBC061756
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 09:15:27 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id d6so2570509pfn.9
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 09:15:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=oY8i8zDBnk0gKRnuxDGT2YiT6nqinwVfpiV/RQrvGWs=;
+        b=stzkNDaVyhJCHKQmG7jR2O5DxAT3JhXv3Q6LGkHxCHBrg+IvTNsmlpxt7B1Za2Vln7
+         JQSsQ/uisoUXYwSKhvPpqXxtGJROw6RpuMfWWY4/gShEZwdEEknHqsMX4tl/HvOJ7dzQ
+         AKlGp8HLcB8YfeY7RlIfQUTY1BMAfl4c7NYxizDlflT9gfDuKOH0yJScDzH2Ae3va3+4
+         qUB2xxbWq5xewl+7OsPjZr9DeKNi0IJA6OZ9zkSLxzpVybrafSpBQMg7dKKbpElYPWWq
+         bvOH+XjwYnPkX+MxghvOF+Z+kFXPrfWyZnSag7/sNxCIfkuAcRH7muKw76ORDMVdkYhi
+         OYaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=oY8i8zDBnk0gKRnuxDGT2YiT6nqinwVfpiV/RQrvGWs=;
+        b=XPSEgfwHn+isDFTivXD5bOuKwb4q2AfI9Wya1kAqtUiFcVpQt3zd147PpCA8aQ/1tF
+         /XxcKlssfheNtfdjV3NpcWsXJNO8bqqMCipPM6Psc+cg1NoQgKewfuMZ+Edc4EEI8T+r
+         TUwPNam2ak96juqZ+fpjy6AIMWwUZ9LIvDNpyHxwJ8SBDtLovx2rRN78uWTJBD1i8I3V
+         bNd/nTVhRJEkk3GAAOMiqOxHELwY/KYRsLlgQkeyVUK5N23DfrirRw0XgA9K4qdJqY/9
+         s3aNupq8ZyNRbc5nXmkxJcWKyIR0/kyxrAiqw5RehoYa323ohN3EBBGMRNrPQDOCA/XD
+         UnVw==
+X-Gm-Message-State: AOAM530NX0UvpldB5253f/oAkdQZr9Ui5fyLC27jYvwanRGVNOCEr+t3
+        arlfB+kcr0fWoeEhXrozvwC/9A==
+X-Google-Smtp-Source: ABdhPJzut6xo3S3CXtU88zGtMAjgEL23PD4NB6Sd4V4IL9r6CGSyHYS/ucSCmHf+At+JaIMXxbVklA==
+X-Received: by 2002:a17:902:7298:b029:d0:cbe1:e74c with SMTP id d24-20020a1709027298b02900d0cbe1e74cmr1697938pll.39.1599668126381;
+        Wed, 09 Sep 2020 09:15:26 -0700 (PDT)
+Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
+        by smtp.gmail.com with ESMTPSA id y5sm2947356pge.62.2020.09.09.09.15.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Sep 2020 09:15:25 -0700 (PDT)
+Date:   Wed, 9 Sep 2020 10:15:23 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Tingwei Zhang <tingweiz@codeaurora.org>
+Cc:     Tingwei Zhang <tingwei@codeaurora.org>,
+        tsoni <tsoni@codeaurora.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Kim Phillips <kim.phillips@arm.com>,
+        Mao Jinlong <jinlmao@codeaurora.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Coresight ML <coresight@lists.linaro.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Mian Yousaf Kaukab <ykaukab@suse.de>,
+        Russell King <linux@armlinux.org.uk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Mike Leach <mike.leach@linaro.org>
+Subject: Re: [PATCH v9 00/24] coresight: allow to build coresight as modules
+Message-ID: <20200909161523.GA553266@xps15>
+References: <20200820054718.20115-1-tingwei@codeaurora.org>
+ <CANLsYkwhypfEkmhg=wK+_F6TxxGiuoSqpgGR0REqsOqC-X-3mg@mail.gmail.com>
+ <0101017470c9475d-00e296fc-1173-4afa-95cb-22ac70d85d5b-000000@us-west-2.amazonses.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-09_09:2020-09-09,2020-09-09 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
- clxscore=1015 impostorscore=0 mlxlogscore=999 mlxscore=0 bulkscore=0
- lowpriorityscore=0 phishscore=0 adultscore=0 malwarescore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009090139
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0101017470c9475d-00e296fc-1173-4afa-95cb-22ac70d85d5b-000000@us-west-2.amazonses.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 8 Sep 2020 19:36:50 +0200
-Gerald Schaefer <gerald.schaefer@linux.ibm.com> wrote:
-
-[..]
+On Wed, Sep 09, 2020 at 02:54:33AM +0000, Tingwei Zhang wrote:
+> On Wed, Sep 09, 2020 at 01:53:51AM +0800, Mathieu Poirier wrote:
+> > Hi Tingwei,
+> > 
+> > Apologies for the untimely response to this set, I am hoping to get to
+> > it in the next two weeks.
+> >
 > 
-> It seems now that the generalization is very well accepted so far,
-> apart from some apparent issues on arm. Also, merging 2 + 3 and
-> putting them first seems to be acceptable, so we could do that for
-> v3, if there are no objections.
-> 
-> Of course, we first need to address the few remaining issues for
-> arm(32?), which do look quite confusing to me so far. BTW, sorry for
-> the compile error with patch 3, I guess we did the cross-compile only
-> for 1 + 2 applied, to see the bloat-o-meter changes. But I guess
-> patch 3 already proved its usefulness by that :-)
+> It's fine, Mathieu. Please let me know your comments once you have time.
+> I'm targeting to get these set merged in 5.10 Kernel.
 
-Umm, replace "arm" with "power", sorry. No issues on arm so far, but
-also no ack I think.
+From the above it is not clear if you want this set to be _in_ the 5.10 cycle
+or added to my list _during_ the 5.10 cycle, which would make it part of the
+5.11 cycle.  In any case the latter seems more realistic. 
 
-Thanks to Christophe for the power change, and to Mike for volunteering
-for some cross compilation and cross-arch testing. Will send v3 with
-merged and re-ordered patches after some more testing.
+>  
+> > Thanks,
+> > Mathieu
+> > 
+> > On Wed, 19 Aug 2020 at 23:47, Tingwei Zhang <tingwei@codeaurora.org>
+> > wrote:
+> > >
+> > > Allow to build coresight as modules. This gives developers the
+> > feasibility to
+> > > test their code without reboot.
+> > >
+> > > This series is based on below two series.
+> > >
+> > >  - "coresight: allow to build components as modules"
+> > >    https://lkml.org/lkml/2018/6/5/989
+> > >  - "coresight: make drivers modular"
+> > >    https://lkml.org/lkml/2020/1/17/468
+> > >
+> > > Change from v8:
+> > > Protect etmdrvdata[] by modifying it on relevant CPU  (Mathieu and
+> > Suzuki)
+> > > Grab the device before allocating memory for the node (Mathieu)
+> > > Add author of coresight core driver (Mathieu)
+> > >
+> > > Change from v7:
+> > > Depends on below change for ETM hotplug (Sai)
+> > >
+> > https://lore.kernel.org/linux-arm-kernel/20200729051310.18436-1-saiprakash
+> > .ranjan@codeaurora.org/
+> > > Add mutex lock to protect etmdrvdata[] (Suzuki)
+> > > Add helper function coresight_get_ref() (Suzuki)
+> > > Reorg replicator and funnel change. Use two patches to support these
+> > > two drivers. (Suzuki)
+> > > Add fix tag to "coresight: etm: perf: Fix warning caused by
+> > etm_setup_aux
+> > > failure" (Suzuki)
+> > > Update author of "coresight: cti: Fix bug clearing sysfs links on
+> > callback"
+> > >
+> > > Change from v6:
+> > > Correct module description for CATU (Mike)
+> > > Check ect_ret equals 0 and set ect_enabled flag (Mike)
+> > > Add Tested-by and Reviewed-by from Mike
+> > >
+> > > Change from v5:
+> > > Add below CTI clean up change from Mike into series
+> > >  -https://lists.linaro.org/pipermail/coresight/2020-July/004349.html
+> > > Increase module reference count when enabling CTI device (Mike)
+> > >
+> > > Change from v4:
+> > > Fix error handling in coresight_grab_devicei() (Greg)
+> > > Add coresight: cti: Fix remove sysfs link error from Mike
+> > >  -https://lists.linaro.org/pipermail/coresight/2020-July/004275.html
+> > > Move cti_remove_conn_xrefs() into cti_remove() (Mike)
+> > > Align patch subject to coresight: <component>: <description> (Mike)
+> > >
+> > > Change from v3:
+> > > Rebase to coresight-next (Mike and Mathieu)
+> > > Reorder try_get_module() (Suzuki)
+> > > Clean up etmdrvdata[] in device remote path (Mike)
+> > > Move cti_remove_conn_xrefs to cti_remove (Mike)
+> > >
+> > > Change from v2:
+> > > Rebase to 5.8-rc5. Export coresight_add_sysfs_link and
+> > > coresight_remove_sysfs_link
+> > > Fix one cut and paste error on MODULE_DESCRIPTION of CTI
+> > >
+> > > Change from v1:
+> > > Use try_module_get() to avoid module to be unloaded when device is used
+> > > in active trace session. (Mathieu P)
+> > >
+> > > Change from above two series.
+> > > This series adds the support to dynamically remove module when the
+> > device in
+> > > that module is enabled and used by some trace path. It disables all
+> > trace
+> > > paths with that device and release the trace path.
+> > >
+> > > Kim Phillips (8):
+> > >   coresight: use IS_ENABLED for CONFIGs that may be modules
+> > >   coresight: etm3x: allow etm3x to be built as a module
+> > >   coresight: etm4x: allow etm4x to be built as a module
+> > >   coresight: etb: allow etb to be built as a module
+> > >   coresight: tpiu: allow tpiu to be built as a module
+> > >   coresight: tmc: allow tmc to be built as a module
+> > >   coresight: allow funnel driver to be built as module
+> > >   coresight: allow replicator driver to be built as module
+> > >
+> > > Mian Yousaf Kaukab (2):
+> > >   coresight: export global symbols
+> > >   coresight: tmc-etr: add function to register catu ops
+> > >
+> > > Mike Leach (2):
+> > >   coresight: cti: Fix remove sysfs link error
+> > >   coresight: cti: Fix bug clearing sysfs links on callback
+> > >
+> > > Tingwei Zhang (12):
+> > >   coresight: cpu_debug: add module name in Kconfig
+> > >   coresight: cpu_debug: define MODULE_DEVICE_TABLE
+> > >   coresight: add coresight prefix to barrier_pkt
+> > >   coresight: add try_get_module() in coresight_grab_device()
+> > >   coresight: stm: allow to build coresight-stm as a module
+> > >   coresight: etm: perf: Fix warning caused by etm_setup_aux failure
+> > >   coresight: cti: add function to register cti associate ops
+> > >   coresight: cti: don't disable ect device if it's not enabled
+> > >   coresight: cti: increase reference count when enabling cti
+> > >   coresight: cti: allow cti to be built as a module
+> > >   coresight: catu: allow catu drivers to be built as modules
+> > >   coresight: allow the coresight core driver to be built as a module
+> > >
+> > >  drivers/hwtracing/coresight/Kconfig           |  54 ++++--
+> > >  drivers/hwtracing/coresight/Makefile          |  22 +--
+> > >  drivers/hwtracing/coresight/coresight-catu.c  |  37 ++++-
+> > >  drivers/hwtracing/coresight/coresight-catu.h  |   2 -
+> > >  .../{coresight.c => coresight-core.c}         | 154 +++++++++++++++---
+> > >  .../hwtracing/coresight/coresight-cpu-debug.c |   2 +
+> > >  .../{coresight-cti.c => coresight-cti-core.c} |  63 ++++++-
+> > >  drivers/hwtracing/coresight/coresight-etb10.c |  28 +++-
+> > >  .../hwtracing/coresight/coresight-etm-perf.c  |  13 +-
+> > >  .../hwtracing/coresight/coresight-etm-perf.h  |   5 +-
+> > >  ...resight-etm3x.c => coresight-etm3x-core.c} |  28 +++-
+> > >  ...resight-etm4x.c => coresight-etm4x-core.c} |  84 +++++++---
+> > >  .../hwtracing/coresight/coresight-funnel.c    |  64 +++++++-
+> > >  .../hwtracing/coresight/coresight-platform.c  |   1 +
+> > >  drivers/hwtracing/coresight/coresight-priv.h  |  24 ++-
+> > >  .../coresight/coresight-replicator.c          |  65 +++++++-
+> > >  drivers/hwtracing/coresight/coresight-stm.c   |  20 ++-
+> > >  drivers/hwtracing/coresight/coresight-sysfs.c |   2 +
+> > >  .../{coresight-tmc.c => coresight-tmc-core.c} |  25 ++-
+> > >  .../hwtracing/coresight/coresight-tmc-etf.c   |   2 +-
+> > >  .../hwtracing/coresight/coresight-tmc-etr.c   |  21 ++-
+> > >  drivers/hwtracing/coresight/coresight-tmc.h   |   3 +
+> > >  drivers/hwtracing/coresight/coresight-tpiu.c  |  20 ++-
+> > >  include/linux/coresight.h                     |   3 +-
+> > >  24 files changed, 634 insertions(+), 108 deletions(-)
+> > >  rename drivers/hwtracing/coresight/{coresight.c => coresight-core.c}
+> > (92%)
+> > >  rename drivers/hwtracing/coresight/{coresight-cti.c =>
+> > coresight-cti-core.c} (94%)
+> > >  rename drivers/hwtracing/coresight/{coresight-etm3x.c =>
+> > coresight-etm3x-core.c} (97%)
+> > >  rename drivers/hwtracing/coresight/{coresight-etm4x.c =>
+> > coresight-etm4x-core.c} (96%)
+> > >  rename drivers/hwtracing/coresight/{coresight-tmc.c =>
+> > coresight-tmc-core.c} (95%)
+> > >
+> > > --
+> > > The Qualcomm Innovation Center, Inc. is a member of the Code Aurora
+> > Forum,
+> > > a Linux Foundation Collaborative Project
+> > >
+> > 
+> > _______________________________________________
+> > linux-arm-kernel mailing list
+> > linux-arm-kernel@lists.infradead.org
+> > http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
