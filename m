@@ -2,84 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7343C26311D
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 17:59:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B13EE26319F
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:21:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730507AbgIIP7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 11:59:42 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:43416 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730585AbgIIP6H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 11:58:07 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 089FrxWM018239;
-        Wed, 9 Sep 2020 15:57:43 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=oM9mCkOZDmZm+GjACibq9sK0TlBY0UOX8QC2r3avGT8=;
- b=bUqajC69nNeYQ6U35vodC23YlpcUtJL1bJGL8j22NSYsiOVXsMQpc793U3cDGOQx6PyM
- HW9j8rWcpBtplxxeE30kPxpruGohdiBrsj53DWygGz8fFF0ZwP8QawnNkE8Em5NzMiGd
- IG7AylFTaYls8xYzYxqC7BWS7QHsBbjz6oI/oSHZWU8zw7Lq8zUFeaOBZJ6SOOxbTv09
- 9C3UyI3n9cc1e3MrKuH1t8t37fvDU6zvE4UZ2vHfDj3CH+n725DduetKakGVuZPlJVe4
- ca0vEiGjrLSxb7WdkIR5NV6S3FSmcv9Y6z22oTVGykTFpihYje3kZO4eMATE/n7dP5sS 9w== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 33c3an2mnn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 09 Sep 2020 15:57:43 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 089FuNAU088223;
-        Wed, 9 Sep 2020 15:57:42 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 33cmky3ja1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 09 Sep 2020 15:57:42 +0000
-Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 089Fvftl024773;
-        Wed, 9 Sep 2020 15:57:41 GMT
-Received: from [192.168.1.102] (/39.109.231.106)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 09 Sep 2020 08:57:41 -0700
-Subject: Re: [PATCH -next] btrfs: Remove unused function
- calc_global_rsv_need_space()
-To:     YueHaibing <yuehaibing@huawei.com>, clm@fb.com,
-        josef@toxicpanda.com, dsterba@suse.com, nborisov@suse.com
-Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200909135142.27352-1-yuehaibing@huawei.com>
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <3ecd422e-9c5a-642b-aee9-1f6089c52137@oracle.com>
-Date:   Wed, 9 Sep 2020 23:57:34 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.1
+        id S1731018AbgIIQVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 12:21:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43206 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730960AbgIIQUh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 12:20:37 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C78FD2080A;
+        Wed,  9 Sep 2020 12:02:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599652954;
+        bh=d1VPp2eGTbfk4sew+NdAoO5ayog5TMbbY751vFWzHYk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MIdj8AT1nbtAiLWaw61l4SSyyy7x4leBftdyuc+EbAK1AoirXhmDAnnB12j5oIeFz
+         aeZbokP+qcIvyQgnp7VSRVs3Js8Pd1X+BySDq882jN6wDpRoxAsAwJlVOYp8JlaDgL
+         KWJS1ETKifh0+aqDbYT3hwXgsWBb2L31bCJ8oNNQ=
+Date:   Wed, 9 Sep 2020 13:01:48 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     kuldip dwivedi <kuldip.dwivedi@puresoftware.com>
+Cc:     Ashish Kumar <ashish.kumar@nxp.com>,
+        Yogesh Gaur <yogeshgaur.83@gmail.com>,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Varun Sethi <V.Sethi@nxp.com>,
+        Arokia Samy <arokia.samy@nxp.com>
+Subject: Re: [PATCH v1] spi: spi-nxp-fspi: Add ACPI support
+Message-ID: <20200909120148.GC4926@sirena.org.uk>
+References: <20200908060227.299-1-kuldip.dwivedi@puresoftware.com>
 MIME-Version: 1.0
-In-Reply-To: <20200909135142.27352-1-yuehaibing@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9739 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishscore=0 suspectscore=0
- spamscore=0 mlxlogscore=999 adultscore=0 malwarescore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009090143
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9739 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 priorityscore=1501
- clxscore=1011 bulkscore=0 malwarescore=0 lowpriorityscore=0
- mlxlogscore=999 suspectscore=0 adultscore=0 mlxscore=0 impostorscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009090143
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="69pVuxX8awAiJ7fD"
+Content-Disposition: inline
+In-Reply-To: <20200908060227.299-1-kuldip.dwivedi@puresoftware.com>
+X-Cookie: MIT:
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/9/20 9:51 pm, YueHaibing wrote:
-> It is not used since commit 0096420adb03 ("btrfs: do not
-> account global reserve in can_overcommit")
-> 
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 
-Reviewed-by: Anand Jain <anand.jain@oracle.com>
+--69pVuxX8awAiJ7fD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks, Anand
+On Tue, Sep 08, 2020 at 11:32:27AM +0530, kuldip dwivedi wrote:
 
+This appears to be v2 not v1?
+
+> Currently NXP fspi  driver has support of DT only. Adding ACPI
+> support to the driver so that it can be used by UEFI firmware
+> booting in ACPI mode. This driver will be probed if any firmware
+> will expose HID "NXP0009" in DSDT table.
+
+As I said on your previous version:
+
+| Does NXP know about this ID assignment from their namespace?  ACPI IDs
+| should be namespaced by whoever's assigning the ID to avoid collisions.
+
+Please don't ignore review comments, people are generally making them
+for a reason and are likely to have the same concerns if issues remain
+unaddressed.  Having to repeat the same comments can get repetitive and
+make people question the value of time spent reviewing.  If you disagree
+with the review comments that's fine but you need to reply and discuss
+your concerns so that the reviewer can understand your decisions.
+
+> @@ -900,6 +910,8 @@ static int nxp_fspi_default_setup(struct nxp_fspi *f)
+>  		return ret;
+> =20
+>  	/* Reset the module */
+> +	fspi_writel(f, FSPI_MCR0_SWRST, (base + FSPI_MCR0));
+> +
+>  	/* w1c register, wait unit clear */
+>  	ret =3D fspi_readl_poll_tout(f, f->iobase + FSPI_MCR0,
+>  				   FSPI_MCR0_SWRST, 0, POLL_TOUT, false);
+
+Why are you adding this reset?  How is it connected to adding ACPI
+support - it looks like it should be a separate patch.
+
+--69pVuxX8awAiJ7fD
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9YxCwACgkQJNaLcl1U
+h9Dw+Qf/Q3uvLOUD0+1rXIWEQAQHg8wHohO05a6mn6uFYSxUUPgXEy8Z6uSVAhwV
+4f7yQVvZohw3A88mE0kNp4/9FJ5Lr0P7s6iFSWmkVKC8oYRAjuy04BYARUeLr/GS
+LFoMyxc4OzGUUpqRXNiw6+i7aYZjjQlJ4/OlJwxQGhfW8/vfy+R0fFQE7rpekkvb
+mwLVKCbPDhdryUi+ehCqkJ24Yb+DaQFUutr205wGKxbMm0Yv8QWOeuRoUnaysr5e
+FbaW0iGGSejcmKezQHqqF99YfY5yPJeFCAUP/n0diqJBcypJHmZBJjV4PgSBAkAA
+92ipwXC0WYVajy+isIB3W7zfzmfwXw==
+=t/eJ
+-----END PGP SIGNATURE-----
+
+--69pVuxX8awAiJ7fD--
