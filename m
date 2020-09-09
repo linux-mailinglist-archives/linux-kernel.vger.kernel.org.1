@@ -2,240 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85C7B263176
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:14:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AADD263137
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:02:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731013AbgIIQOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 12:14:09 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:58549 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730791AbgIIQK0 (ORCPT
+        id S1730810AbgIIQCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 12:02:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730567AbgIIP5U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 12:10:26 -0400
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200909144710euoutp01b889bd5b29e206c9724d294dc1b261ed~zJN5XYBs23010330103euoutp01B
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 14:47:09 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200909144710euoutp01b889bd5b29e206c9724d294dc1b261ed~zJN5XYBs23010330103euoutp01B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1599662830;
-        bh=6pD2jBm6l4NY8TMCPp0T0+uNfiB/x7JVe6XpoPosFww=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=Ab58mHj/nrCKS1ik30p5kv8vxCIElYMllX720IHeoWDLwdpv5Xdxd+2F0lItj/7+p
-         Id2qc+lEGkNFIv6MInMB6llvVd53Z+n07yMGIIwShjk+QiX4fU/IRyi0FrrD7Rt3RJ
-         dp1rwJ0SYVMxViFYkWxDkgThm3HUmN230Sq+MBFo=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20200909144709eucas1p2b4703806571a6b7d4677bb44b1129e64~zJN4vjCO_0720307203eucas1p2H;
-        Wed,  9 Sep 2020 14:47:09 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges2new.samsung.com (EUCPMTA) with SMTP id 54.DC.05997.DEAE85F5; Wed,  9
-        Sep 2020 15:47:09 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20200909144708eucas1p22c7a9c941f4656ff4efc94e1d156a9a6~zJN4U79yv0034700347eucas1p20;
-        Wed,  9 Sep 2020 14:47:08 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200909144708eusmtrp1cea369908fda34b63479819aba3041e8~zJN4UJEpe1317213172eusmtrp1G;
-        Wed,  9 Sep 2020 14:47:08 +0000 (GMT)
-X-AuditID: cbfec7f4-65dff7000000176d-0e-5f58eaed414a
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id B1.1E.06017.CEAE85F5; Wed,  9
-        Sep 2020 15:47:08 +0100 (BST)
-Received: from [106.210.123.115] (unknown [106.210.123.115]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20200909144707eusmtip2e63e94961e81d7208ff2d3503e173a61~zJN3U6Wu32459124591eusmtip2b;
-        Wed,  9 Sep 2020 14:47:07 +0000 (GMT)
-Subject: Re: [PATCH RFC v6 1/6] dt-bindings: exynos-bus: Add documentation
- for interconnect properties
-To:     Georgi Djakov <georgi.djakov@linaro.org>,
-        Rob Herring <robh@kernel.org>
-Cc:     cw00.choi@samsung.com, krzk@kernel.org, devicetree@vger.kernel.org,
-        a.swigon@samsung.com, myungjoo.ham@samsung.com,
-        inki.dae@samsung.com, sw0312.kim@samsung.com,
-        b.zolnierkie@samsung.com, m.szyprowski@samsung.com,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org
-From:   Sylwester Nawrocki <s.nawrocki@samsung.com>
-Message-ID: <e6e369fb-ccf2-09ed-ad6a-680e67198359@samsung.com>
-Date:   Wed, 9 Sep 2020 16:47:06 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
-        Thunderbird/68.12.0
+        Wed, 9 Sep 2020 11:57:20 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA6DEC061239
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 07:56:57 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id di5so1619129qvb.13
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 07:56:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=bAr5DveSt2j6c3Ji2Xpkc3bdZPC9ueaRBHJ+E2ddcbI=;
+        b=rK7l2L6Ba2JCzvKHKa2SJN5u2fNNGcz+xX5FS2fVzlzE39G8QwlSi/S9fdbWoWAxte
+         lRCguLhNf5RYuc9lo5f3oE4Vg8A5hPxuxXsJdR2PC1c2dJzcKAd1xdT+aiqPbVFA2G+c
+         NeXiQNVqrVoihFGdA17ilFkkFzBmfhBUldl7oOfmkoDbT8QG9KI/IuOhFH2SWcD6oNS/
+         2g3NyQLRJuVPWj6iFMdDrGMoGxZFkRrepBFTsyENh17ExzZib5VUsUcKLuD/b/oTNTfu
+         Da44+gz/P7k+oDOGzPrpBwvn8NpegUiR/09kLs5DB137Mbv5KbiO+WssE1W8pTn4BGwN
+         DAbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bAr5DveSt2j6c3Ji2Xpkc3bdZPC9ueaRBHJ+E2ddcbI=;
+        b=GNMPzBfplch9D7F7lmyC9kXw6b9uvYCftS4qriiNViVEp1wfngZq6OEHjplHXrg2Vz
+         4N5r5WuVw6we8QLuNLsVuhVeMwaIVLKOELlFa7uSz8Vh5ClYH83rwlvbCcq6I1gV2QtL
+         bLFq5WFvc7PiqH1W3nTVXP+bO4LNUZMJRqdVAKIvDluTQeILaxJWJsFsw7WL4Ws/SPF3
+         DLCLUhFPTlKzTJ8zbU6uG1FNkACAPE1JXB0XMdefyWyyUQy5QeUFdp7oVqhykGZ3bUSD
+         quphhpHcOvzWsh3S8uIi9Ouhi6kR+/8gJQVX2/xygYoO375vIHKmKK1F2t3Zpav3poxY
+         dCDw==
+X-Gm-Message-State: AOAM530/2JRY2EOfCT6JTmQm1ksDRix/kKVEKQVIhTPPurXR55gZ2Vdg
+        gkpyvqn0T+uJOuNNss5Ywr6VCg==
+X-Google-Smtp-Source: ABdhPJyHGx6zvZoCwcK+52bMv7ajUNNqnFSrgAK1OIrd54oREZtOqFV8s0blObcX2qXQxFQT0Cl0Ew==
+X-Received: by 2002:a05:6214:bce:: with SMTP id ff14mr4374172qvb.32.1599663416747;
+        Wed, 09 Sep 2020 07:56:56 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:755a])
+        by smtp.gmail.com with ESMTPSA id q35sm3172982qtd.75.2020.09.09.07.56.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Sep 2020 07:56:55 -0700 (PDT)
+Date:   Wed, 9 Sep 2020 10:55:34 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        =Shakeel Butt <shakeelb@google.com>,
+        Michal Hocko <mhocko@kernel.org>, kernel-team@fb.com,
+        linux-kernel@vger.kernel.org, Michal Hocko <mhocko@suse.com>
+Subject: Re: [PATCH] mm: workingset: ignore slab memory size when calculating
+ shadows pressure
+Message-ID: <20200909145534.GA100698@cmpxchg.org>
+References: <20200903230055.1245058-1-guro@fb.com>
 MIME-Version: 1.0
-In-Reply-To: <b711257d-c34b-b609-3ada-312871967b98@linaro.org>
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Se0hTYRjG+XYuO462jsvyRcVqSRelqRnxSSXdqFH/BFmElLb04Cy3YnPV
-        Qsgww3uW1dastAso01iuMjXtDy9ZWq60THJmmCWO7KaRdtE6nkX+93ue93n5nhc+hpD3Un5M
-        ki6F0+vUyQpaQlY9GHcuHXbvjAt7NyjDfZczEK602Cn8cnSQwsVN7RR+/u0Tjc31Dhqf6Ssg
-        sdN5U4wdb7so3Fl7kcYjeU0IW5z3RfhGU68Y9xwvo/FkXbUYWwqH6DWsymHLolWurjpa1ZfT
-        IlLdun5MlX/bhlQjjsCtdIxkVQKXnHSI04dG7ZFoskq6xQc/zj8y5rKhNFTpn428GGCXg9v6
-        gs5GEkbOliEo63lDCWIUQXHveY8YQdD4I1/0b6Wr87VnUIqg3fLYI74g6HCWUnxqFquB8bu5
-        NM8+7BZ4erWO4EMEe4KAvKFyxA9oNhzymvOnWMpGQeOp72Q2YhiSDYJPmTLens3GwoPWflKI
-        eMOjCwNT7PU3/sE5QfBMsL7waqBYJPBcSL9TNPUWsMcZ+DqY4am9AZ5VnqUEngXulttigQOg
-        rTCXFBbSEeTe6xELogBBX0sJElIrwdX+g+bbEewSsNeGCvZauDlZI+JtYGXQPewtlJDBmSoz
-        IdhSyDwpF9JB8NNm9tTxg5yBSbIAKazTTrNOO8c67Rzr/3dLEGlDvpzRoE3kDMt03GGlQa01
-        GHWJyvgDWgf6++naJlpGq1Htr70NiGWQYoY0s3dnnJxSHzKYtA0IGELhI133pC1WLk1Qm45y
-        +gNxemMyZ2hA/gyp8JVGXB3aLWcT1Sncfo47yOn/TUWMl18aOrlZMVY+HjLvpbmgvzzkdGi8
-        O/LStYhXqLk4ZsG9U67mnMiNHa31mmjb5J6IYP/UfXuv0DUVWWAPiMRPF7a+XRRo3JXU+RAb
-        w7aj8ni8WnK+7VxK5jufinNVmqIVnz9bTcbu0NjCCeX76E39QWEzg43KbYuHTXNSf5dutK6P
-        3mFXkAaNOjyY0BvUfwBBw3q3cAMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrLIsWRmVeSWpSXmKPExsVy+t/xe7pvXkXEG2zu1re4P6+V0WLjjPWs
-        Fte/PGe1mH/kHKvFla/v2Sym793EZjHp/gQWi/PnN7BbbHp8jdXi8q45bBafe48wWsw4v4/J
-        Yu2Ru+wWtxtXsFn837OD3WLG5JdsDgIem1Z1snncubaHzeN+93Emj81L6j36tqxi9Pi8SS6A
-        LUrPpii/tCRVISO/uMRWKdrQwkjP0NJCz8jEUs/Q2DzWyshUSd/OJiU1J7MstUjfLkEvo3PB
-        DfaCd4oVP+6sYmxg3CjdxcjJISFgInHt8j1WEFtIYCmjRP+E8C5GDqC4lMT8FiWIEmGJP9e6
-        2LoYuYBK3jNKPDn0lw0kISyQIbFs3wtGEFtEwFviwqI9zCBFzAItzBJfJ81gguj4zyTR0PIW
-        bAObgKFE79E+sA5eATuJw/3fWUC2sQioSLzv4AMJiwrESZzpecEGUSIocXLmExYQmxOo/M35
-        f8wgNrOAusSfeZegbHGJW0/mM0HY8hLNW2czT2AUmoWkfRaSlllIWmYhaVnAyLKKUSS1tDg3
-        PbfYSK84Mbe4NC9dLzk/dxMjMKq3Hfu5ZQdj17vgQ4wCHIxKPLwddyPihVgTy4orcw8xSnAw
-        K4nwOp09HSfEm5JYWZValB9fVJqTWnyI0RTot4nMUqLJ+cCEk1cSb2hqaG5haWhubG5sZqEk
-        ztshcDBGSCA9sSQ1OzW1ILUIpo+Jg1OqgbHZKfJ1pMsdHmPmi1Mju2In5gtEaGjr/3TT+HH7
-        WPAD9tOvvXef2/dz4Trpd8u32K5esXSmZ/ncKo61qrc2FPOaTj37WuPFm1/r5VdMzVNsm3j1
-        nHl6mOZlL++nu3lvTzfeov13xvzLt1kSP/JWeRQw+7MbfA7gf/G4lXVm+bGdh1KYzObEPPZS
-        YinOSDTUYi4qTgQABaXelwADAAA=
-X-CMS-MailID: 20200909144708eucas1p22c7a9c941f4656ff4efc94e1d156a9a6
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20200702163748eucas1p2cf7eab70bc072dea9a95183018b38ad3
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20200702163748eucas1p2cf7eab70bc072dea9a95183018b38ad3
-References: <20200702163724.2218-1-s.nawrocki@samsung.com>
-        <CGME20200702163748eucas1p2cf7eab70bc072dea9a95183018b38ad3@eucas1p2.samsung.com>
-        <20200702163724.2218-2-s.nawrocki@samsung.com>
-        <20200709210448.GA876103@bogus>
-        <65af1a5c-8f8a-ef65-07f8-e0b3d04c336c@samsung.com>
-        <35d9d396-b553-a815-1f3b-1af4dc37a2ca@samsung.com>
-        <b711257d-c34b-b609-3ada-312871967b98@linaro.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200903230055.1245058-1-guro@fb.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Georgi,
-
-On 09.09.2020 11:07, Georgi Djakov wrote:
-> On 8/28/20 17:49, Sylwester Nawrocki wrote:
->> On 30.07.2020 14:28, Sylwester Nawrocki wrote:
->>> On 09.07.2020 23:04, Rob Herring wrote:
->>>> On Thu, Jul 02, 2020 at 06:37:19PM +0200, Sylwester Nawrocki wrote:
->>>>> Add documentation for new optional properties in the exynos bus nodes:
->>>>> samsung,interconnect-parent, #interconnect-cells, bus-width.
->>>>> These properties allow to specify the SoC interconnect structure which
->>>>> then allows the interconnect consumer devices to request specific
->>>>> bandwidth requirements.
->>>>>
->>>>> Signed-off-by: Artur Świgoń <a.swigon@samsung.com>
->>>>> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
->>
->>>>> --- a/Documentation/devicetree/bindings/devfreq/exynos-bus.txt
->>>>> +++ b/Documentation/devicetree/bindings/devfreq/exynos-bus.txt
-
->>>>> +Optional properties for interconnect functionality (QoS frequency constraints):
->>>>> +- samsung,interconnect-parent: phandle to the parent interconnect node; for
->>>>> +  passive devices should point to same node as the exynos,parent-bus property.
->>
->>>> Adding vendor specific properties for a common binding defeats the 
->>>> point.
->>
->> Actually we could do without any new property if we used existing interconnect
->> consumers binding to specify linking between the provider nodes. I think those
->> exynos-bus nodes could well be considered both the interconnect providers 
->> and consumers. The example would then be something along the lines 
->> (yes, I know the bus node naming needs to be fixed):
->>
->> 	soc {
->> 		bus_dmc: bus_dmc {
->> 			compatible = "samsung,exynos-bus";
->> 			/* ... */
->> 			samsung,data-clock-ratio = <4>;
->> 			#interconnect-cells = <0>;
->> 		};
->>
->> 		bus_leftbus: bus_leftbus {
->> 			compatible = "samsung,exynos-bus";
->> 			/* ... */
->> 			interconnects = <&bus_leftbus &bus_dmc>;
->> 			#interconnect-cells = <0>;
->> 		};
->>
->> 		bus_display: bus_display {
->> 			compatible = "samsung,exynos-bus";
->> 			/* ... */
->> 			interconnects = <&bus_display &bus_leftbus>;
+On Thu, Sep 03, 2020 at 04:00:55PM -0700, Roman Gushchin wrote:
+> In the memcg case count_shadow_nodes() sums the number of pages in lru
+> lists and the amount of slab memory (reclaimable and non-reclaimable)
+> as a baseline for the allowed number of shadow entries.
 > 
-> Hmm, bus_display being a consumer of itself is a bit odd? Did you mean:
->  			interconnects = <&bus_dmc &bus_leftbus>;
-
-Might be, but we would need to swap the phandles so <source, destination>
-order is maintained, i.e. interconnects = <&bus_leftbus &bus_dmc>;
-
-My intention here was to describe the 'bus_display -> bus_leftbus' part 
-of data path 'bus_display -> bus_leftbus -> bus_dmc', bus_display is
-really a consumer of 'bus_leftbus -> bus_dmc' path.
-
-I'm not sure if it is allowed to specify only single phandle (and 
-interconnect provider specifier) in the interconnect property, that would
-be needed for the bus_leftbus node to define bus_dmc as the interconnect 
-destination port. There seems to be such a use case in arch/arm64/boot/
-dts/allwinner/sun50i-a64.dtsi. 
-
->> 			#interconnect-cells = <0>;
->> 		};
->>
->>
->> 		&mixer {
->> 			compatible = "samsung,exynos4212-mixer";
->> 			interconnects = <&bus_display &bus_dmc>;
->> 			/* ... */
->> 		};
->> 	};
->>
->> What do you think, Georgi, Rob?
+> It seems to be a good analogy for the !memcg case, where
+> node_present_pages() is used. However, it's not quite true, as there
+> two problems:
 > 
-> I can't understand the above example with bus_display being it's own consumer.
-> This seems strange to me. Could you please clarify it?
+> 1) Due to slab reparenting introduced by commit fb2f2b0adb98 ("mm:
+> memcg/slab: reparent memcg kmem_caches on cgroup removal") local
+> per-lruvec slab counters might be inaccurate on non-leaf levels.
+> It's the only place where local slab counters are used.
 
-> Otherwise the interconnect consumer DT bindings are already well established
-> and i don't see anything preventing a node to be both consumer and provider.
-> So this should be okay in general.
+Hm, that sounds like a bug tbh. We're reparenting the kmem caches and
+the individual objects on the list_lru when a cgroup is removed -
+shouldn't we also reparent the corresponding memory counters?
 
-Thanks, below is an updated example according to your suggestions. 
-Does it look better now?
+> 2) Shadow nodes by themselves are backed by slabs. So there is a loop
+> dependency: the more shadow entries are there, the less pressure the
+> kernel applies to reclaim them.
 
----------------------------8<------------------------------
-soc {
-	bus_dmc: bus_dmc {
-		compatible = "samsung,exynos-bus";
-		/* ... */
-		samsung,data-clock-ratio = <4>;
-		#interconnect-cells = <0>;
-	};
+This effect is negligible in practice.
 
-	bus_leftbus: bus_leftbus {
-		compatible = "samsung,exynos-bus";
-		/* ... */
-		interconnects = <&bus_dmc>;
-		#interconnect-cells = <0>;
-	};
+The permitted shadow nodes are a tiny percentage of memory consumed by
+the cgroup. If shadow nodes make up a significant part of the cgroup's
+footprint, or are the only thing left, they will be pushed out fast.
 
-	bus_display: bus_display {
-		compatible = "samsung,exynos-bus";
-		/* ... */
-		interconnects = <&bus_leftbus &bus_dmc>;
-		#interconnect-cells = <0>;
-	};
+The formula is max_nodes = total_pages >> 3, and one page can hold 28
+nodes. So if the cgroup holds nothing but 262,144 pages (1G) of shadow
+nodes, the shrinker target is 32,768 nodes, which is 32,768 pages
+(128M) in the worst packing case and 1,170 pages (4M) at best.
 
-	&mixer {
-		compatible = "samsung,exynos4212-mixer";
-		interconnects = <&bus_display &bus_dmc>;
-		/* ... */
-	};
-};
----------------------------8<------------------------------
+However, if you don't take slab into account here, it can evict shadow
+entries with undue aggression when they are needed the most. If, say,
+the inode or dentry cache explode temporarily and displace the page
+cache, it would be a big problem to drop the cache's non-resident info
+at the same time! This is when it's at its most important.
 
--- 
-Regards,
-Sylwester
+Let's drop this patch, please.
