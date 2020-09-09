@@ -2,125 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E628262F5A
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 15:51:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05AD0262F31
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 15:31:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730463AbgIINtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 09:49:33 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57818 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730388AbgIINYB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 09:24:01 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 5AAC9B211;
-        Wed,  9 Sep 2020 12:14:08 +0000 (UTC)
-Subject: Re: [RFC 5/5] mm, page_alloc: disable pcplists during page isolation
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-References: <20200907163628.26495-1-vbabka@suse.cz>
- <20200907163628.26495-6-vbabka@suse.cz>
- <d5d5ef64-b239-0640-5640-75c7a3c78584@suse.cz>
- <20200909113647.GG7348@dhcp22.suse.cz>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <b057e618-94f1-3f5a-a4f6-55fc93ac34eb@suse.cz>
-Date:   Wed, 9 Sep 2020 13:55:49 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1729912AbgIIN3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 09:29:41 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:47364 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730233AbgIINSn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 09:18:43 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 60FA1B4F17F6B4DD9650;
+        Wed,  9 Sep 2020 21:00:33 +0800 (CST)
+Received: from huawei.com (10.90.53.225) by DGGEMS413-HUB.china.huawei.com
+ (10.3.19.213) with Microsoft SMTP Server id 14.3.487.0; Wed, 9 Sep 2020
+ 21:00:26 +0800
+From:   Zheng Bin <zhengbin13@huawei.com>
+To:     <alexander.deucher@amd.com>, <christian.koenig@amd.com>,
+        <airlied@linux.ie>, <daniel@ffwll.ch>,
+        <amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <yi.zhang@huawei.com>, <zhengbin13@huawei.com>
+Subject: [PATCH -next 3/8] drm/amd/amdgpu: fix comparison pointer to bool warning in sdma_v5_0.c
+Date:   Wed, 9 Sep 2020 21:07:15 +0800
+Message-ID: <20200909130720.105234-4-zhengbin13@huawei.com>
+X-Mailer: git-send-email 2.26.0.106.g9fadedd
+In-Reply-To: <20200909130720.105234-1-zhengbin13@huawei.com>
+References: <20200909130720.105234-1-zhengbin13@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20200909113647.GG7348@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.90.53.225]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/9/20 1:36 PM, Michal Hocko wrote:
-> On Wed 09-09-20 12:48:54, Vlastimil Babka wrote:
->> Here's a version that will apply on top of next-20200908. The first 4 patches need no change.
->> 
->> ----8<----
->> >From 8febc17272b8e8b378e2e5ea5e76b2616f029c5b Mon Sep 17 00:00:00 2001
->> From: Vlastimil Babka <vbabka@suse.cz>
->> Date: Mon, 7 Sep 2020 17:20:39 +0200
->> Subject: [PATCH] mm, page_alloc: disable pcplists during page isolation
->> 
->> Page isolation can race with process freeing pages to pcplists in a way that
->> a page from isolated pageblock can end up on pcplist. This can be fixed by
->> repeated draining of pcplists, as done by patch "mm/memory_hotplug: drain
->> per-cpu pages again during memory offline" in [1].
->> 
->> David and Michal would prefer that this race was closed in a way that callers
->> of page isolation don't need to care about drain. David suggested disabling
->> pcplists usage completely during page isolation, instead of repeatedly draining
->> them.
->> 
->> To achieve this without adding special cases in alloc/free fastpath, we can use
->> the same 'trick' as boot pagesets - when pcp->high is 0, any pcplist addition
->> will be immediately flushed.
->> 
->> The race can thus be closed by setting pcp->high to 0 and draining pcplists
->> once in start_isolate_page_range(). The draining will serialize after processes
->> that already disabled interrupts and read the old value of pcp->high in
->> free_unref_page_commit(), and processes that have not yet disabled interrupts,
->> will observe pcp->high == 0 when they are rescheduled, and skip pcplists.
->> This guarantees no stray pages on pcplists in zones where isolation happens.
->> 
->> We can use the variable zone->nr_isolate_pageblock (protected by zone->lock)
->> to detect transitions from 0 to 1 (to change pcp->high to 0 and issue drain)
->> and from 1 to 0 (to restore original pcp->high and batch values cached in
->> struct zone). We have to avoid external updates to high and batch by taking
->> pcp_batch_high_lock. To allow multiple isolations in parallel, change this
->> lock from mutex to rwsem.
->> 
->> For callers that pair start_isolate_page_range() with
->> undo_isolated_page_range() properly, this is transparent. Currently that's
->> alloc_contig_range(). __offline_pages() doesn't call undo_isolated_page_range()
->> in the succes case, so it has to be carful to handle restoring pcp->high and batch
->> and unlocking pcp_batch_high_lock.
-> 
-> I was hoping that it would be possible to have this completely hidden
-> inside start_isolate_page_range code path.
+Fixes coccicheck warning:
 
-I hoped so too, but we can't know the moment when all processes that were in the
-critical part of freeing pages to pcplists have moved on (they might have been
-rescheduled).
-We could change free_unref_page() to disable IRQs sooner, before
-free_unref_page_prepare(), or at least the get_pfnblock_migratetype() part. Then
-after the single drain, we should be safe, AFAICS?
-RT guys might not be happy though, but it's much simpler than this patch. I
-still like some of the cleanups in 1-4 though tbh :)
+drivers/gpu/drm/amd/amdgpu/sdma_v5_0.c:619:5-11: WARNING: Comparison to bool
 
-> If we need some sort of
-> disable_pcp_free/enable_pcp_free then it seems like a better fit to have
-> an explicit API for that (the naming would be obviously different
-> because we do not want to call out pcp free lists). I strongly suspect
-> that only the memory hotplug really cares for this hard guanrantee.
-> alloc_contig_range simply goes with EBUSY.
->  
->> This commit also changes drain_all_pages() to not trust reading pcp->count during
->> drain for page isolation - I believe that could be racy and lead to missing some
->> cpu's to drain. If others agree, this can be separated and potentially backported.
->> 
->> [1] https://lore.kernel.org/linux-mm/20200903140032.380431-1-pasha.tatashin@soleen.com/
->> 
->> Suggested-by: David Hildenbrand <david@redhat.com>
->> Suggested-by: Michal Hocko <mhocko@suse.com>
->> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
->> ---
->>  include/linux/gfp.h |  1 +
->>  mm/internal.h       |  4 +++
->>  mm/memory_hotplug.c | 55 ++++++++++++++++++++++++++++-------------
->>  mm/page_alloc.c     | 60 +++++++++++++++++++++++++++++----------------
->>  mm/page_isolation.c | 45 ++++++++++++++++++++++++++++------
->>  5 files changed, 119 insertions(+), 46 deletions(-)
-> 
-> This has turned out much larger than I would expect.
-> 
+Signed-off-by: Zheng Bin <zhengbin13@huawei.com>
+---
+ drivers/gpu/drm/amd/amdgpu/sdma_v5_0.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/amd/amdgpu/sdma_v5_0.c b/drivers/gpu/drm/amd/amdgpu/sdma_v5_0.c
+index e2232dd12d8e..48c95a78a173 100644
+--- a/drivers/gpu/drm/amd/amdgpu/sdma_v5_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/sdma_v5_0.c
+@@ -616,7 +616,7 @@ static void sdma_v5_0_enable(struct amdgpu_device *adev, bool enable)
+ 	u32 f32_cntl;
+ 	int i;
+
+-	if (enable == false) {
++	if (!enable) {
+ 		sdma_v5_0_gfx_stop(adev);
+ 		sdma_v5_0_rlc_stop(adev);
+ 	}
+--
+2.26.0.106.g9fadedd
 
