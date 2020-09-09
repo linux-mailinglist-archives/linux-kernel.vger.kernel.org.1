@@ -2,90 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5C1B262E4E
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 14:07:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 868B2262E6B
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 14:21:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728709AbgIIMHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 08:07:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43136 "EHLO
+        id S1729988AbgIIMUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 08:20:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729738AbgIIMBB (ORCPT
+        with ESMTP id S1728971AbgIIMNi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 08:01:01 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75010C06179E
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 05:01:00 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id u21so3160278eja.2
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 05:01:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TKqV5XSoH6x5apOh2Nzg4ObPZHKKEF8Qi7zC+PdttRs=;
-        b=foW1Md5+PcY51Wfk/sk1BBTgjv6d/chmKaf0uEYrbBg0jd7Bvi6Fkhls4g0/gu296a
-         UCEO8KqfQ7ZjID0nbU2267W+NAEMkWeHxYqdFLyZjeF/4lshOVmLeEadcabQL9vAcyBy
-         1sxugjTRoJlpEioOX+JeP5pNiQ9hXysXYkB9xJ6xgK+cI4CKr3X/T0BMRREPcXfA1Ft8
-         H2Nnmg/2ghq/ZYdkq9NpO8zSjVB78iNNI2mQVfptzeELeGy+t03jkU0hH2SLnILaThFo
-         GZw4NXu2NengHu5frTpzbdKqMACUAt5KJM58ItWRHAlMGbpx3XRW2gU+G1rdU9QPkctd
-         /zmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TKqV5XSoH6x5apOh2Nzg4ObPZHKKEF8Qi7zC+PdttRs=;
-        b=k7Nan0vt1feoCe6ORqmxkbKBBOZErRRZkeJ8PnKkqgHIb76bjycqI3fi59j2d6qsfC
-         XVEin/+EydBYrKt0rDuBL0Aa/J3vJuoW7tAQ9XVX18uPkSmyJiRawrf/RSwh/SjI735e
-         XdwXCecXlWtM9CE7GUIwYA3/ePZMOaHn0IagZ8sbH071Gd5C9la9KmhLv9TRxjwzduxq
-         4SlFNU8uPGluFAhwKHff3mc1mdlTuD9bbaaSn7lIwqO5B/KAZnXm6cOpZ0h+g0XqljfU
-         Yk/Le80vKXHdotlSsVSA1xPK4gVsr75p9YYh8F2IBCl/G80chFJ0WsPJqDOv4IWRP6yH
-         N0wA==
-X-Gm-Message-State: AOAM530VlXQBYzt+SLFH2/eRnlGchASW2CgGOghwW9xRK2/oihFEJyz1
-        vJ4+8Xp1l+HTgiXURcO85L3wfxS/vpic3LDlH5M=
-X-Google-Smtp-Source: ABdhPJzBbr6B4ZQ9Naj8exihC3G1QjkWySYloBeInyig6sZdE4Ug9NrPIGKfHX4XIwFRG3ako1/JZYdHI9UcS1J3EAQ=
-X-Received: by 2002:a17:906:4b18:: with SMTP id y24mr3123340eju.471.1599652859057;
- Wed, 09 Sep 2020 05:00:59 -0700 (PDT)
+        Wed, 9 Sep 2020 08:13:38 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4471EC06179E;
+        Wed,  9 Sep 2020 05:02:10 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0ae7002c1f5e624f33a6aa.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:e700:2c1f:5e62:4f33:a6aa])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C37D71EC0423;
+        Wed,  9 Sep 2020 14:02:08 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1599652928;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=kgJlGGMVRB9lfRXv2ieQ2H9t4e0tJoEqcTQEnRU5y84=;
+        b=sdE9CNICvAPqLe7kTQTgGYGJkizFSaRt2dUBWSb6pnR2OzMoqJf56x/jNz2O/vsE3teYJM
+        ThiWdxnHS8E1qmuroDI7eBWqkhdjVK8ezQljpp6rrrcQgDgMI3Fbe2gPasY7jp+p7hnUzx
+        jz9miS5VNff04z9hQ20V9IP+0z6IHq8=
+Date:   Wed, 9 Sep 2020 14:02:03 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Shiju Jose <shiju.jose@huawei.com>
+Cc:     "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "tony.luck@intel.com" <tony.luck@intel.com>,
+        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
+        "james.morse@arm.com" <james.morse@arm.com>,
+        "lenb@kernel.org" <lenb@kernel.org>, Linuxarm <linuxarm@huawei.com>
+Subject: Re: [PATCH 1/1] RAS: Add CPU Correctable Error Collector to isolate
+ an erroneous CPU core
+Message-ID: <20200909120203.GB12237@zn.tnic>
+References: <20200901140140.1772-1-shiju.jose@huawei.com>
+ <20200901143539.GC8392@zn.tnic>
+ <512b7b8e6cb846aabaf5a2191cd9b5d4@huawei.com>
 MIME-Version: 1.0
-References: <20200909112901.5002-1-weiyongjun1@huawei.com>
-In-Reply-To: <20200909112901.5002-1-weiyongjun1@huawei.com>
-From:   Pekka Enberg <penberg@gmail.com>
-Date:   Wed, 9 Sep 2020 15:00:42 +0300
-Message-ID: <CAOJsxLH5tQzWaZcGJ15fMNNsguodNj-mTNci8nT02bxVt-TRNA@mail.gmail.com>
-Subject: Re: [PATCH -next] riscv/mm/fault: fix old-style-declaration warning
-To:     Wei Yongjun <weiyongjun1@huawei.com>
-Cc:     Hulk Robot <hulkci@huawei.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Xu <peterx@redhat.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Michel Lespinasse <walken@google.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <512b7b8e6cb846aabaf5a2191cd9b5d4@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, Sep 01, 2020 at 04:20:54PM +0000, Shiju Jose wrote:
+> CPU CEC derived the infrastructure of the CEC only and the logic
+> used in the CEC for CE count storage, CE count calculation and page
+> isolation is very unique for the memory pages, which seems cannot be
+> reusable for the CPU CEs.
 
-On Wed, Sep 9, 2020 at 2:20 PM Wei Yongjun <weiyongjun1@huawei.com> wrote:
->
-> gcc report build warning as follows:
->
-> arch/riscv/mm/fault.c:81:1: warning:
->  'inline' is not at beginning of declaration [-Wold-style-declaration]
->    81 | static void inline vmalloc_fault(struct pt_regs *regs, int code, unsigned long addr)
->       | ^~~~~~
->
-> This commit fix it by moving 'inline' after 'static'.
->
-> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+Oh, because it saves the reported error's PFN and you want to save
 
-Thanks for the fix, but Palmer committed similar fix from me to for-next:
+[CPU num | error count]
 
-https://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git/commit/?h=for-next&id=6f36a9635082e1d6910bc7853d0c9fd12d7890b5
+?
 
-- Pekka
+Well, you can easily change that by extending the existing CEC to have a
+different storage format for CPU errors, i.e., use a different ce_array
+which gets passed to the functions anyway.
+
+> Also the values set for the parameters such as threshold, time period
+> for the memory errors and CPU errors would be different.
+
+And your implementation with sliding windows is so totally different
+that it warrants the duplication of the code? I don't think so.
+
+You can use the current CEC to do exactly what you wanna do, with the
+decaying and so on.
+
+Because all you wanna do is count the errors a CPU triggered.
+
+However, a CPU can trigger a *lot* of different types of errors.
+You're putting them all in the same basket by doing:
+
+                else if (guid_equal(sec_type, &CPER_SEC_PROC_ARM))
+			/* add to CEC */
+
+and only for correctable.
+
+What type of errors get reported in CPER_SEC_PROC_ARM?
+
+If they're all lumped together and if some functional unit generates a
+lot of errors, instead of disabling that unit only, you'll go and remove
+the whole CPU?
+
+Doesn't make a whole lot of sense to me.
+
+How about you define what exactly you're trying to solve, maybe give an
+example of a real issue someone is encountering and you're trying to
+address? Because there was never a necessity so far to disable CPUs on
+x86 due to correctable errors. Why is that needed on ARM?
+
+> Thus extending cec.c to support CPU CEs would include adding CPU CEC
+> specific code for storing error count, isolation etc which I thought
+> would result the code less tidy and less readable unless find more
+> reusable logic.
+
+Depends on how you design it.
+
+But with what I'm seeing so far, I'm still sceptical this is needed at
+all.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
