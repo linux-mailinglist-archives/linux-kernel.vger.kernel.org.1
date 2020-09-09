@@ -2,127 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE20026272E
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 08:30:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6686C262730
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 08:32:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727935AbgIIGau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 02:30:50 -0400
-Received: from mail-eopbgr150051.outbound.protection.outlook.com ([40.107.15.51]:64322
-        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726662AbgIIGat (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 02:30:49 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mGGKyVQ+J3ao8YMDsaREAyhPhh44tDgg+lVzqENWOibYkLdvGTrASxsUeCtYjdQUwUGFLwUaAiVpR6aK6TQEAM45CC8WUvizJEPHuUJdYbv55o8vl10KC378TGUwgVdo0jFsEfNKJb6zI0Cfuv6zkTJ6MvBfqaEtbbk62siG3bwEXLeMeX1NKOk/ls7fHfKhXdUSpD/T6z2u+/htYbQffRh6hzq6qh6WO+yL8Sbm6ICp/Gdx3Q2O8Z94+qpMo9nM8QyuQ+hOTx276fh/gNbwaOlEnecOUqifz08MM9+LI5XdokgX0K2Dv5thArzLjT0Z9drH5SQsjoyrZzwFGHst7Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8qMZfnKjWitdkg1/6HYKiLWZLak+ytMCozqtCpN+y+s=;
- b=Y+AMWYbPCmwa3arQkj6l6U8tUsdl4+vfeJpFJXvVyJ8Ru7h0ZmDFSNCm3vTeXoWHM2P2iuMDpuM4ggI2ifh9URMP3OKCCZGOmB4i4taQMUMrNc+9xQE3RIAiWwJQzcn1Ofqkjb5iVseKEv0Pm2HUAzOzGOXpcDtx3hruBab7/ciyklsNZx9zg7nhKmTGPjHdQiych0PdTwijQM9PJWvxqWT59bhcE9FTOhr0NFk62FOi+fMC2odiuXxAi+ajhTwQPJ6ouoAUzU0/Yt7GjudXkOdpghW2+wZJIPSc5OT6vRrjnTuDLEIOAlfD/oGUWW0aZeZogNNrs1iawqIulgXQNg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fi.rohmeurope.com; dmarc=pass action=none
- header.from=fi.rohmeurope.com; dkim=pass header.d=fi.rohmeurope.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=rohmsemiconductoreurope.onmicrosoft.com;
- s=selector1-rohmsemiconductoreurope-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8qMZfnKjWitdkg1/6HYKiLWZLak+ytMCozqtCpN+y+s=;
- b=assvi7c6kxJHZCASpTNmq04SyL/gtzp7C4m2uH5gfwiqXbi8X2hEC29EVvWdX4X8nsb9sTMlIx101LlCyMSLYgRjVvDTEOKKgyQyKGLogiN1B91v6lt44fFdAQIFkJdWdngjnH/ecklo0T0k16fVDuzEbzTJyqB4jBGmDJRM+v0=
-Received: from HE1PR03MB3162.eurprd03.prod.outlook.com (2603:10a6:7:55::20) by
- HE1PR0301MB2282.eurprd03.prod.outlook.com (2603:10a6:3:24::19) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3370.16; Wed, 9 Sep 2020 06:30:44 +0000
-Received: from HE1PR03MB3162.eurprd03.prod.outlook.com
- ([fe80::3d81:df5c:63de:a527]) by HE1PR03MB3162.eurprd03.prod.outlook.com
- ([fe80::3d81:df5c:63de:a527%6]) with mapi id 15.20.3348.019; Wed, 9 Sep 2020
- 06:30:44 +0000
-From:   "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
-To:     "krzk@kernel.org" <krzk@kernel.org>,
-        "lee.jones@linaro.org" <lee.jones@linaro.org>,
-        linux-power <linux-power@fi.rohmeurope.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "tharvey@gateworks.com" <tharvey@gateworks.com>,
-        "rjones@gateworks.com" <rjones@gateworks.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>
-Subject: Re: [PATCH] dt-bindings: mfd: Correct interrupt flags in examples
-Thread-Topic: [PATCH] dt-bindings: mfd: Correct interrupt flags in examples
-Thread-Index: AQHWhfCctrMc+RkfU02vebcoA9GUSalf2ZuA
-Date:   Wed, 9 Sep 2020 06:30:44 +0000
-Message-ID: <5ea2a75a873b6291962f6b6a7949e9d185187911.camel@fi.rohmeurope.com>
-References: <20200908145900.4423-1-krzk@kernel.org>
-In-Reply-To: <20200908145900.4423-1-krzk@kernel.org>
-Reply-To: "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
-Accept-Language: fi-FI, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none
- header.from=fi.rohmeurope.com;
-x-originating-ip: [213.255.186.46]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: e3276392-d076-4a3f-b6cd-08d85489e1b9
-x-ms-traffictypediagnostic: HE1PR0301MB2282:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <HE1PR0301MB2282325FE07455D165461DC3AD260@HE1PR0301MB2282.eurprd03.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: p/msr5oceY6Ex64Yqwk0o53vHgbX1NsxXrKEALzDv18PyNqqqi+Cf+EbRmG/GptM6Flx4HNUoldKGYQySxj6M23I6Xx2M28vrBHzjO0RqezlzfYrz5iYNZJQWT/8F/oR5Sd48Jo3kuY6L1disETc5DCFBzNUxFFYhpxD0x5RaXB9ao8KZZbudxUiF0U5fqZhrMWpDGoGJvlBXIZcZMCqSoKQid2IkTeOi2/ySjMpwj9Ls3HxQsMB5m1D7VTZ5z2/IeAE7TBmZVM7UksY+ugImoXLW9bahlopKkYkbKKexN8HBYaTnW3jB2GEoci0qazW3wf58AVG7+Jmb6HdVxUxzSy9W9OxZV2u1xK6Bd49YChzJyaA794UAbDe8BG/wwlA
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR03MB3162.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39840400004)(376002)(366004)(396003)(346002)(136003)(478600001)(6512007)(5660300002)(110136005)(71200400001)(3450700001)(2616005)(8936002)(6506007)(8676002)(66446008)(66946007)(66476007)(66556008)(64756008)(76116006)(316002)(186003)(6486002)(86362001)(2906002)(83380400001)(26005)(21314003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: TpSsAf5cFDYEEq3fp/j4UjxOOfo01vCI0vhBkeDCzcSc6KhDE5XBgG1CoRXk+Gu3Eu00MJ5ICDddb6Txjy9nPMxMZwIt4FdSqEHBrw9etRnZqaY6YC/z6ze+3nfzqW38FeK5DtxJFN/wuxjvtqxeFkL3BHXOjpJDwdFPYl9aBqML5Pnawk+Z2XOpjh73ocdvpCWOSl0IeKkqEpY2UqVm8n1vUS9yUE1hI9KHaVL2n0NZB+ihup0WvOiy1b+4YFrebXqiWteLjQguoe76ENoZwCwUAXPVMcCGyFX5CpkFjQCWIhgbBgUgIFs55onzt3RGBrSAHNGWkvAiJU1xHcM1fvVZz/w7TrtfgOZ6ZU2KT4zGDi/VURKAAuMucTtr7U9mGrdpE/GU7jPOy3b7O/vy+5hyRx+Sll+E7sS3e7EcNk83//JKJL7WbEe6kRs89eUnH0iBND/LfsE2B70/phCYBy+BmVqxoocsF/GBT08CJE9Sziv8uO1NaDStMMVwJjpwp+rZ7Ns8Y8131vwLTuvDa9G86YyEWB3DndS0cqizlo2rYLGFmmWA9H91LuMKu5cA7KtSf0uUjIYl6Xbg9/xTZPazI4h6gLxnoumiSgMoydak9Xc6qK++IYcZNb66Za9UVs1k8Kj/fxtQPWhT/SQt4A==
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <8E53E74421E28A449E0A3D42A59E5F75@eurprd03.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1727005AbgIIGcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 02:32:04 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:36990 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725856AbgIIGcB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 02:32:01 -0400
+Received: from mail-oi1-f198.google.com ([209.85.167.198])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <koba.ko@canonical.com>)
+        id 1kFteA-0000w8-ME
+        for linux-kernel@vger.kernel.org; Wed, 09 Sep 2020 06:31:58 +0000
+Received: by mail-oi1-f198.google.com with SMTP id b25so537499oic.3
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 23:31:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Tt9naxs3e2ZAHwC5wB+w1syKG9EDUzrC63aR5SbSofw=;
+        b=BgEApoBLDHXqPMuOrMbO6SkmKnefPP6NGkMdN+nwE3HddJGUF7J6Z/YothKeQdaeX8
+         9XzleIGu4GwJJs+PeOb4cl1pVlXCKb6yGy1UdDOFo7cnmv/8n4KRp/vlKwLVy5JEqzce
+         Uwa+P3JkuYHCjv/r+XXX90hJ6Pf7UEyxueOHZtWeMW4S97ESXoMlKw4RTcFq33uC+IV9
+         WQnUzOh+38U4tp4XulTYfB0lDPuKCQcjN/qQBqrGb+5UcEO6IcarY3kUNwK43XrcOV9n
+         /5tawCr5FhKgLsvtF8IMOVl5bLSe43DzxyofXkjW6dVHhSxKXeJEnRrWVvsgwxzoHtrV
+         H6gg==
+X-Gm-Message-State: AOAM530VtdQqjvb4Mu5maiM9XXriHYRDpxSQ8Tqk4YrY7VdSqtcybv77
+        kPtl7ZvSTgoysW6w2r/hIIX9njRwXh8fgmXxmYY2KdWYBazOyMAuSfTvfrHtgTGKvLdan/srT9o
+        IV9s7pJ8lKpzhaePgk3HpijVVmi4Bvm5ogp2eiI2kNYlmSb11yGuEGBxggw==
+X-Received: by 2002:a05:6830:20d8:: with SMTP id z24mr1940333otq.3.1599633117530;
+        Tue, 08 Sep 2020 23:31:57 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxIgOfVj1Xg5MKBylPjHguycQ6vULKoi57GYsxKum8ZxbTrhGYO63dGWYCJKkz5ED1KgcVWPeVGQh57Xbg2PK4=
+X-Received: by 2002:a05:6830:20d8:: with SMTP id z24mr1940322otq.3.1599633117150;
+ Tue, 08 Sep 2020 23:31:57 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: fi.rohmeurope.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: HE1PR03MB3162.eurprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e3276392-d076-4a3f-b6cd-08d85489e1b9
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Sep 2020 06:30:44.5643
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 94f2c475-a538-4112-b5dd-63f17273d67a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: sS1CrKGLJtK++ENDoC/4hFuDYUehayzTDd7IvqWUxiG2vyRJ8OkvlqhabTcu2bvs5Jug3l0+5mbmRBP6YdsF8yH0k65yZ4LDFL7JO/OF8HuAU8CaLBKU9V5KpMUwlVkE
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR0301MB2282
+References: <20200827053053.11271-1-koba.ko@canonical.com>
+In-Reply-To: <20200827053053.11271-1-koba.ko@canonical.com>
+From:   Koba Ko <koba.ko@canonical.com>
+Date:   Wed, 9 Sep 2020 14:31:46 +0800
+Message-ID: <CAJB-X+WPiUR8N5sLMS2UC-rPHj=TGJy2ezeBPjjeUXzbN5bfcg@mail.gmail.com>
+Subject: Re: [PATCH] drm/dp: For MST hub, Get max_link_rate&max_lane from
+ extended rx capability field if EXTENDED_RECEIVER_CAPABILITY_FILED_PRESENT is set.
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        lyude@redhat.com
+Cc:     Anthony Wong <anthony.wong@canonical.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQpPbiBUdWUsIDIwMjAtMDktMDggYXQgMTY6NTkgKzAyMDAsIEtyenlzenRvZiBLb3psb3dza2kg
-d3JvdGU6DQo+IEdQSU9fQUNUSVZFX3ggZmxhZ3MgYXJlIG5vdCBjb3JyZWN0IGluIHRoZSBjb250
-ZXh0IG9mIGludGVycnVwdA0KPiBmbGFncy4NCj4gVGhlc2UgYXJlIHNpbXBsZSBkZWZpbmVzIHNv
-IHRoZXkgY291bGQgYmUgdXNlZCBpbiBEVFMgYnV0IHRoZXkgd2lsbA0KPiBub3QNCj4gaGF2ZSB0
-aGUgc2FtZSBtZWFuaW5nOg0KPiAxLiBHUElPX0FDVElWRV9ISUdIID0gMCA9IElSUV9UWVBFX05P
-TkUNCj4gMi4gR1BJT19BQ1RJVkVfTE9XICA9IDEgPSBJUlFfVFlQRV9FREdFX1JJU0lORw0KPiAN
-Cj4gQ29ycmVjdCB0aGUgaW50ZXJydXB0IGZsYWdzLCBhc3N1bWluZyB0aGUgYXV0aG9yIG9mIHRo
-ZSBjb2RlIHdhbnRlZA0KPiBzb21lDQo+IGxvZ2ljYWwgYmVoYXZpb3IgYmVoaW5kIHRoZSBuYW1l
-ICJBQ1RJVkVfeHh4IiwgdGhpcyBpczoNCj4gICBBQ1RJVkVfTE9XID0+IElSUV9UWVBFX0xFVkVM
-X0xPVw0KPiANCj4gU2lnbmVkLW9mZi1ieTogS3J6eXN6dG9mIEtvemxvd3NraSA8a3J6a0BrZXJu
-ZWwub3JnPg0KDQpGb3IgQkQ3MDUyODoNCkFja2VkLUJ5OiBNYXR0aSBWYWl0dGluZW4gPG1hdHRp
-LnZhaXR0aW5lbkBmaS5yb2htZXVyb3BlLmNvbT4NCg0KPiAtLS0NCj4gIERvY3VtZW50YXRpb24v
-ZGV2aWNldHJlZS9iaW5kaW5ncy9tZmQvYWN0ODk0NWEudHh0ICAgICAgICAgIHwgMiArLQ0KPiAg
-RG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL21mZC9nYXRld29ya3MtZ3NjLnlhbWwg
-ICAgfCAzICsrLQ0KPiAgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL21mZC9yb2ht
-LGJkNzA1MjgtcG1pYy50eHQgfCAyICstDQo+ICAzIGZpbGVzIGNoYW5nZWQsIDQgaW5zZXJ0aW9u
-cygrKSwgMyBkZWxldGlvbnMoLSkNCj4gDQo+IA0KPiBkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlv
-bi9kZXZpY2V0cmVlL2JpbmRpbmdzL21mZC9yb2htLGJkNzA1MjgtDQo+IHBtaWMudHh0IGIvRG9j
-dW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL21mZC9yb2htLGJkNzA1MjgtDQo+IHBtaWMu
-dHh0DQo+IGluZGV4IGMzYzAyY2U3M2NkZS4uMzg2ZWVjMDZjZjA4IDEwMDY0NA0KPiAtLS0gYS9E
-b2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbWZkL3JvaG0sYmQ3MDUyOC1wbWljLnR4
-dA0KPiArKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbWZkL3JvaG0sYmQ3
-MDUyOC1wbWljLnR4dA0KPiBAQCAtMzksNyArMzksNyBAQCBwbWljOiBwbWljQDRiIHsNCj4gIAlj
-b21wYXRpYmxlID0gInJvaG0sYmQ3MDUyOCI7DQo+ICAJcmVnID0gPDB4NGI+Ow0KPiAgCWludGVy
-cnVwdC1wYXJlbnQgPSA8JmdwaW8xPjsNCj4gLQlpbnRlcnJ1cHRzID0gPDI5IEdQSU9fQUNUSVZF
-X0xPVz47DQo+ICsJaW50ZXJydXB0cyA9IDwyOSBJUlFfVFlQRV9MRVZFTF9MT1c+Ow0KDQpUaGlz
-IGlzIGhvdyBpdCBzaG91bGQgaGF2ZSBiZWVuIGZyb20gdGhlIGJlZ2lubmluZyA6KSBUaGFua3Mh
-DQoNCkJyLA0KCU1hdHRpDQoNCi0tDQpNYXR0aSBWYWl0dGluZW4sIExpbnV4IGRldmljZSBkcml2
-ZXJzDQpST0hNIFNlbWljb25kdWN0b3JzLCBGaW5sYW5kDQpTV0RDDQpLaXZpaGFyanVubGVua2tp
-IDFFDQo5MDIyMCBPVUxVDQpGSU5MQU5EDQoNCn5+fiAiSSBkb24ndCB0aGluayBzbywiIHNhaWQg
-UmVuZSBEZXNjYXJ0ZXMuIEp1c3QgdGhlbiBoZSB2YW5pc2hlZCB+fn4NCg0KU2ltb24gc2F5cyAt
-IGluIExhdGluIHBsZWFzZS4NCiJub24gY29naXRvIG1lIiBkaXhpdCBSZW5lIERlc2NhcnRlLCBk
-ZWluZGUgZXZhbmVzY2F2aXQNCg0KKFRoYW5rcyBmb3IgdGhlIHRyYW5zbGF0aW9uIFNpbW9uKQ0K
-DQo=
+On Thu, Aug 27, 2020 at 1:30 PM Koba Ko <koba.ko@canonical.com> wrote:
+>
+> Currently, DRM get the capability of the mst hub only from DP_DPCD_REV and
+> get the slower speed even the mst hub can run in the faster speed.
+>
+> As per DP-1.3, First check DP_EXTENDED_RECEIVER_CAP_FIELD_PRESENT.
+> If DP_EXTENDED_RECEIVER_CAP_FIELD_PRESENT is 1, read the DP_DP13_DPCD_REV to
+> get the faster capability.
+> If DP_EXTENDED_RECEIVER_CAP_FIELD_PRESENT is 0, read DP_DPCD_REV.
+>
+> Signed-off-by: Koba Ko <koba.ko@canonical.com>
+> ---
+>  drivers/gpu/drm/drm_dp_mst_topology.c | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c b/drivers/gpu/drm/drm_dp_mst_topology.c
+> index 67dd72ea200e..3b84c6801281 100644
+> --- a/drivers/gpu/drm/drm_dp_mst_topology.c
+> +++ b/drivers/gpu/drm/drm_dp_mst_topology.c
+> @@ -3497,6 +3497,8 @@ static int drm_dp_get_vc_payload_bw(u8 dp_link_bw, u8  dp_link_count)
+>  int drm_dp_mst_topology_mgr_set_mst(struct drm_dp_mst_topology_mgr *mgr, bool mst_state)
+>  {
+>         int ret = 0;
+> +       u8 dpcd_ext = 0;
+> +       unsigned int dpcd_offset = 0;
+>         struct drm_dp_mst_branch *mstb = NULL;
+>
+>         mutex_lock(&mgr->payload_lock);
+> @@ -3510,9 +3512,15 @@ int drm_dp_mst_topology_mgr_set_mst(struct drm_dp_mst_topology_mgr *mgr, bool ms
+>                 struct drm_dp_payload reset_pay;
+>
+>                 WARN_ON(mgr->mst_primary);
+> +               drm_dp_dpcd_read(mgr->aux,
+> +                                DP_TRAINING_AUX_RD_INTERVAL,
+> +                                &dpcd_ext, sizeof(dpcd_ext));
+> +
+> +               dpcd_offset =
+> +                       ((dpcd_ext & DP_EXTENDED_RECEIVER_CAP_FIELD_PRESENT) ?  DP_DP13_DPCD_REV : DP_DPCD_REV);
+>
+>                 /* get dpcd info */
+> -               ret = drm_dp_dpcd_read(mgr->aux, DP_DPCD_REV, mgr->dpcd, DP_RECEIVER_CAP_SIZE);
+> +               ret = drm_dp_dpcd_read(mgr->aux, dpcd_offset, mgr->dpcd, DP_RECEIVER_CAP_SIZE);
+>                 if (ret != DP_RECEIVER_CAP_SIZE) {
+>                         DRM_DEBUG_KMS("failed to read DPCD\n");
+>                         goto out_unlock;
+> --
+> 2.25.1
+>
+Add Lyude Paul
