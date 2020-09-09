@@ -2,57 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F33C02638AC
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 23:49:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 552922638AF
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 23:52:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727782AbgIIVtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 17:49:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49780 "EHLO
+        id S1726440AbgIIVwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 17:52:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726440AbgIIVtR (ORCPT
+        with ESMTP id S1726226AbgIIVwM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 17:49:17 -0400
+        Wed, 9 Sep 2020 17:52:12 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31808C061573
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 14:49:16 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E40DBC061573
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 14:52:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
         References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=HXIdUpByyG4qzsIKApPAxHn9z/7NYiDmd4oaoQuNQ6Y=; b=es56dcOcXXKCGaOzeKAMOjtmhq
-        4MSph/lwjOSVoCSqbDhjIiJEd1XMYkQ6YO45X5TPqeUn9aG95K3tvmqYBSQqLKUVEnFz1ls1Mt3QB
-        KelVEdkr+tfQYlV8hTpKkHUHtd0HblJA8Bsw9z+kxOEQMIGM0TBzJjUcBYjIneI6e2dgMzbr0n+sR
-        lzLFsds9XKOpd2goZR2GyXkC22vSP/Eh1NUZJcyTIpJtpSlcvhYt+q2GbxZqbRw16oME9h4XW9oLC
-        s+pmmZiS9XkaipAeWgIXGRMuCiIri0xU1d4mRWdp5HWxnZ3H6cg1Dh4RFiqL5/f5+FVMpVLAOApc5
-        zQTsAfZQ==;
+        bh=9AelBTRGGkaycQWCIOP8/Ny69L3JnwJ2r2LMDHo8IXc=; b=uhJlBGKaw4qHaktb6IwOYqmKKP
+        fjkviTcwwyFqfqZ3qvJZ88vgCUgR5rDFTt6bStcnT1bXx3rH9LlCWapM1lQ3hdU+/cNPY2Qo2jFaX
+        LWCLK6t49O/+R09xAutwb83n97LxQmkPai5qBqGobBdwOxN1g/gDe/diTqFrGjw5vK2kQEeYvRVpg
+        qJ4EMLxgqEQCIpHJJ+pdvAO1K3RJxBRvuQDqkXOrbbm4KhMpyJ4+bZD6PR4dxTA4DED/srM96Q7MI
+        f7OUL8bQR2yJPtremyonRj/QIN0GHlKD3x2X71y5Samsejj6VTX08qM2JskDow2G9rVdd81fIp96e
+        1ZW5+piw==;
 Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kG7xo-0000N8-S5; Wed, 09 Sep 2020 21:49:12 +0000
-Date:   Wed, 9 Sep 2020 22:49:12 +0100
+        id 1kG80f-0000Zc-4A; Wed, 09 Sep 2020 21:52:09 +0000
+Date:   Wed, 9 Sep 2020 22:52:09 +0100
 From:   Matthew Wilcox <willy@infradead.org>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     zangchunxin@bytedance.com, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+To:     Chris Down <chris@chrisdown.name>
+Cc:     Vlastimil Babka <vbabka@suse.cz>, zangchunxin@bytedance.com,
+        akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
         Muchun Song <songmuchun@bytedance.com>
 Subject: Re: [PATCH v2] mm/vmscan: fix infinite loop in drop_slab_node
-Message-ID: <20200909214912.GO6583@casper.infradead.org>
+Message-ID: <20200909215209.GP6583@casper.infradead.org>
 References: <20200909152047.27905-1-zangchunxin@bytedance.com>
  <16906d44-9e3c-76a1-f1a9-ced61e865467@suse.cz>
+ <20200909214724.GA1577471@chrisdown.name>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <16906d44-9e3c-76a1-f1a9-ced61e865467@suse.cz>
+In-Reply-To: <20200909214724.GA1577471@chrisdown.name>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 09, 2020 at 07:59:44PM +0200, Vlastimil Babka wrote:
-> - Exit also on other signals such as SIGABRT, SIGTERM? If I write to drop_caches
-> and think it's too long, I would prefer to kill it by ctrl-c and not just kill
-> -9. Dunno if the canonical way of testing for this is if
-> (signal_pending(current)) or differently.
+On Wed, Sep 09, 2020 at 10:47:24PM +0100, Chris Down wrote:
+> Vlastimil Babka writes:
+> > - Exit also on other signals such as SIGABRT, SIGTERM? If I write to drop_caches
+> > and think it's too long, I would prefer to kill it by ctrl-c and not just kill
+> 
+> Oh dear, fatal_signal_pending() doesn't consider cases with no more
+> userspace instructions due to SIG_DFL on TERM/INT etc, that seems misleading
+> :-( I had (naively) believed it internally checks the same set as
+> TASK_KILLABLE.
+> 
+> Chuxin, Muchun, can you please make it work using TASK_KILLABLE in a similar
+> way to how schedule_timeout_killable and friends do it instead, so that
+> other signals will be caught?
 
-fatal_signal_pending() is the canonical way to do it.  If your task has
-installed a signal handler for ABRT or TERM, that's its prerogative,
-but it's chosen not to get killed, and it's not allowed to see short
-reads/writes, so we can't break out early.
+You're mistaken.
+
+        if (sig_fatal(p, sig) &&
+            !(signal->flags & SIGNAL_GROUP_EXIT) &&
+            !sigismember(&t->real_blocked, sig) &&
+            (sig == SIGKILL || !p->ptrace)) {
+...
+                                sigaddset(&t->pending.signal, SIGKILL);
+
+static inline int __fatal_signal_pending(struct task_struct *p)
+{
+        return unlikely(sigismember(&p->pending.signal, SIGKILL));
+}
+
