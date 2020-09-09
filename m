@@ -2,133 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1CBA262C00
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 11:36:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22938262C12
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 11:37:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730178AbgIIJgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 05:36:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52406 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730136AbgIIJgA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 05:36:00 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7EAD62087C;
-        Wed,  9 Sep 2020 09:35:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599644159;
-        bh=WhCbCOYAgVBM6ESgc/BWT45n0KWObYl8AhVF0LbOeRU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FN3smRmor9Z1cEEK3TX/DIf7Jl/x7cExqmZOic2iQnUbIrI0hsCU00CqsGBJWuRmZ
-         3XwgvBHoMCJf7aHNRVQ4/NwXAulPMLL1aeXx1WgLiTejGOVc3dBTVjuydHlnB9FeFU
-         otjBmtLoOVgU+vP5aLGuqGj53acpQwMDaUfEq/NU=
-Date:   Wed, 9 Sep 2020 11:36:09 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     shuo.a.liu@intel.com
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Yu Wang <yu1.wang@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Yakui Zhao <yakui.zhao@intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Fengwei Yin <fengwei.yin@intel.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>
-Subject: Re: [PATCH v3 02/17] x86/acrn: Introduce acrn_{setup,
- remove}_intr_handler()
-Message-ID: <20200909093609.GA607744@kroah.com>
-References: <20200909090836.46762-1-shuo.a.liu@intel.com>
- <20200909090836.46762-3-shuo.a.liu@intel.com>
+        id S1730244AbgIIJhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 05:37:14 -0400
+Received: from regular1.263xmail.com ([211.150.70.195]:56020 "EHLO
+        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727935AbgIIJhM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 05:37:12 -0400
+Received: from localhost (unknown [192.168.167.235])
+        by regular1.263xmail.com (Postfix) with ESMTP id 17FAA1429;
+        Wed,  9 Sep 2020 17:37:01 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-SKE-CHECKED: 1
+X-ABS-CHECKED: 1
+Received: from localhost.localdomain (unknown [125.88.171.115])
+        by smtp.263.net (postfix) whith ESMTP id P22910T140609314805504S1599644205131669_;
+        Wed, 09 Sep 2020 17:37:01 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <b5ed33ce01a696681b3a5834883ecf40>
+X-RL-SENDER: yili@winhong.com
+X-SENDER: yili@winhong.com
+X-LOGIN-NAME: yili@winhong.com
+X-FST-TO: akpm@linux-foundation.org
+X-SENDER-IP: 125.88.171.115
+X-ATTACHMENT-NUM: 0
+X-DNS-TYPE: 0
+X-System-Flag: 0
+From:   Yi Li <yili@winhong.com>
+To:     akpm@linux-foundation.org, cl@linux.com, penberg@kernel.org,
+        rientjes@google.com, iamjoonsoo.kim@lge.com
+Cc:     yilikernel@gmail.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
+        clin@suse.com, mark.rutland@arm.com, maz@kernel.org,
+        anshuman.khandual@arm.com, ardb@kernel.org, geert@linux-m68k.org,
+        rppt@kernel.org, Yi Li <yili@winhong.com>
+Subject: [PATCH] Remove duplicate include file
+Date:   Wed,  9 Sep 2020 17:36:32 +0800
+Message-Id: <20200909093632.1278408-1-yili@winhong.com>
+X-Mailer: git-send-email 2.25.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200909090836.46762-3-shuo.a.liu@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 09, 2020 at 05:08:21PM +0800, shuo.a.liu@intel.com wrote:
-> From: Shuo Liu <shuo.a.liu@intel.com>
-> 
-> The ACRN Hypervisor builds an I/O request when a trapped I/O access
-> happens in User VM. Then, ACRN Hypervisor issues an upcall by sending
-> a notification interrupt to the Service VM. HSM in the Service VM needs
-> to hook the notification interrupt to handle I/O requests.
-> 
-> Notification interrupts from ACRN Hypervisor are already supported and
-> a, currently uninitialized, callback called.
-> 
-> Export two APIs for HSM to setup/remove its callback.
-> 
-> Originally-by: Yakui Zhao <yakui.zhao@intel.com>
-> Signed-off-by: Shuo Liu <shuo.a.liu@intel.com>
-> Reviewed-by: Zhi Wang <zhi.a.wang@intel.com>
-> Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
-> Cc: Dave Hansen <dave.hansen@intel.com>
-> Cc: Sean Christopherson <sean.j.christopherson@intel.com>
-> Cc: Dan Williams <dan.j.williams@intel.com>
-> Cc: Fengwei Yin <fengwei.yin@intel.com>
-> Cc: Zhi Wang <zhi.a.wang@intel.com>
-> Cc: Zhenyu Wang <zhenyuw@linux.intel.com>
-> Cc: Yu Wang <yu1.wang@intel.com>
-> Cc: Reinette Chatre <reinette.chatre@intel.com>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> ---
->  arch/x86/include/asm/acrn.h |  8 ++++++++
->  arch/x86/kernel/cpu/acrn.c  | 19 +++++++++++++++++++
->  2 files changed, 27 insertions(+)
->  create mode 100644 arch/x86/include/asm/acrn.h
-> 
-> diff --git a/arch/x86/include/asm/acrn.h b/arch/x86/include/asm/acrn.h
-> new file mode 100644
-> index 000000000000..ff259b69cde7
-> --- /dev/null
-> +++ b/arch/x86/include/asm/acrn.h
-> @@ -0,0 +1,8 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef _ASM_X86_ACRN_H
-> +#define _ASM_X86_ACRN_H
-> +
-> +void acrn_setup_intr_handler(void (*handler)(void));
-> +void acrn_remove_intr_handler(void);
-> +
-> +#endif /* _ASM_X86_ACRN_H */
-> diff --git a/arch/x86/kernel/cpu/acrn.c b/arch/x86/kernel/cpu/acrn.c
-> index 0b2c03943ac6..bd1d7e759a0f 100644
-> --- a/arch/x86/kernel/cpu/acrn.c
-> +++ b/arch/x86/kernel/cpu/acrn.c
-> @@ -9,7 +9,11 @@
->   *
->   */
->  
-> +#define pr_fmt(fmt) "acrn: " fmt
-> +
->  #include <linux/interrupt.h>
-> +
-> +#include <asm/acrn.h>
->  #include <asm/apic.h>
->  #include <asm/cpufeatures.h>
->  #include <asm/desc.h>
-> @@ -55,6 +59,21 @@ DEFINE_IDTENTRY_SYSVEC(sysvec_acrn_hv_callback)
->  	set_irq_regs(old_regs);
->  }
->  
-> +void acrn_setup_intr_handler(void (*handler)(void))
-> +{
-> +	if (acrn_intr_handler)
-> +		pr_warn("Overwrite the acrn_intr_handler.\n");
+Remove duplicate include file
 
-What can someone do with this warning?  If it's really an "error", why
-not prevent this from happening?
+Signed-off-by: Yi Li <yili@winhong.com>
+---
+ arch/arm/mm/mmu.c | 1 -
+ mm/slab.h         | 1 -
+ 2 files changed, 2 deletions(-)
 
-Don't scare users with things they can do nothing about.
+diff --git a/arch/arm/mm/mmu.c b/arch/arm/mm/mmu.c
+index c36f977b2ccb..7bbcdb29413e 100644
+--- a/arch/arm/mm/mmu.c
++++ b/arch/arm/mm/mmu.c
+@@ -34,7 +34,6 @@
+ #include <asm/mach/arch.h>
+ #include <asm/mach/map.h>
+ #include <asm/mach/pci.h>
+-#include <asm/fixmap.h>
+ 
+ #include "fault.h"
+ #include "mm.h"
+diff --git a/mm/slab.h b/mm/slab.h
+index 6cc323f1313a..95e5cc1bb2a3 100644
+--- a/mm/slab.h
++++ b/mm/slab.h
+@@ -46,7 +46,6 @@ struct kmem_cache {
+ #include <linux/kmemleak.h>
+ #include <linux/random.h>
+ #include <linux/sched/mm.h>
+-#include <linux/kmemleak.h>
+ 
+ /*
+  * State of the slab allocator.
+-- 
+2.25.3
 
-thanks,
 
-greg k-h
+
