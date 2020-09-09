@@ -2,246 +2,281 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BD0726280F
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 09:10:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9835B2627CB
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 09:04:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728350AbgIIHKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 03:10:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54552 "EHLO
+        id S1728551AbgIIHEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 03:04:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727085AbgIIHJ6 (ORCPT
+        with ESMTP id S1729129AbgIIHAJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 03:09:58 -0400
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D97E5C061573
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 00:09:57 -0700 (PDT)
-Received: by mail-il1-x141.google.com with SMTP id t18so742859ilp.5
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 00:09:57 -0700 (PDT)
+        Wed, 9 Sep 2020 03:00:09 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F232DC061573
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 00:00:07 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id b79so1192593wmb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 00:00:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=K5nt6NW95MoUAw6MEltboJP4x+aHBBR4bvSni/nMTG8=;
-        b=HX+OlvYfFmyRY5KpnVk1/SUaMZH+K1Xnbx4XAYBPTuFmyWdcLqS50beKODjTdFXU38
-         ueuKrhflniqebAemuOkyT7bjtG/DbEI26PRkrdAVlMTxbNRBHL3FVNHv6rRbySPWYwM2
-         oinTrfj9fbCM547HrtJlFn1ROfb8IdjVvi1E17ndMY9F6Oub5qfD4i3uxav+hRjHKbmn
-         otQy3DKscJbCeBBmuAZ951ikCqkzbXQCMWcCjUNIqDQEzJuPP8axmWCPpa6CALAZPRrd
-         SncUjs/kvzfLyisAKFoz1NhI/4LYSp1QG4p7E+nthO8NTQeq73mjmjB7o8fGjOtymCxv
-         GTXQ==
+         :cc;
+        bh=C0T1xsgL8KLicvdVgVXLl7s0tEv0E1jWAmUmJuZvE6M=;
+        b=FB387YjF0O6z0PHyDFeCCLcy3kWqNJt7oO3U0OstfwqkQ+XYxn9kG2V06bZcnD+89I
+         U94+cHwlpttdMWHUaX2aou0JDOPG1WrblqY9S5Qv1sR9dLlfPmNacb83UByeOv5age4o
+         4XIiU8aSpcOZSzga3NNYCiEptWUcr7L8htrO0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=K5nt6NW95MoUAw6MEltboJP4x+aHBBR4bvSni/nMTG8=;
-        b=XkOAAgEVSiNcAagopaS2LdKjF+K7J9yMdgZD+DG+NWvP64hQGOu15jFc2c2Mu8U3kP
-         uEf8G9D++/Yo1RcdjwLDJZQGkm4i2dWSw4PzXnxegTzSpDwuozbh16R2g7DXMAslHVTN
-         EM3catmwTbU/C/iELg59+ciOBJUyVYR/uONXzDTmusPm8rabLP+nC0U2bvyNr6RiW41t
-         t3rmkUgFVRSUrIigrlbl1juR4cf4RpuxhTzWDjB/Lb0ZR7wuTSPaEja3IdV9GEEZXAbs
-         QK3qKC4d9vaNDfJnTASuNXZg4OZLh3HzHLFsVLSQbsBa3z3mfJE/cWEo6sWi8hsyDgi1
-         EITA==
-X-Gm-Message-State: AOAM5306r2jQ3N6S0RmpqH4JBOTiYVjiMm//kX/9G2muwv+ucuH+NPPN
-        q9cPFA8ougvdjZEVreCnkFfG6WzvjQvybPHZ0ns=
-X-Google-Smtp-Source: ABdhPJwIA2ommqfDJurjDZrxOv9h0V7R0Dq40OXozD6jcy0NEPGLU4HA7zRSMsxBa1m/L5xOhP6cWc1IIKoPAjG7CgQ=
-X-Received: by 2002:a92:d188:: with SMTP id z8mr2525174ilz.292.1599635395503;
- Wed, 09 Sep 2020 00:09:55 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=C0T1xsgL8KLicvdVgVXLl7s0tEv0E1jWAmUmJuZvE6M=;
+        b=DDUgeYOXg5vQ7S6ieg+PVMEQ8n+DNXvUdfSL7YiDVivEXXe55O+RBv4ob59Qb2tu5Z
+         X0ByfhRap1oWUp8I8lz8QZpBimu5BoXJ5HI4kvGrAJLrixmP51eZ3f9cwfCChdZG2AHM
+         wz58p8Z8vItoFbMyRkN3s9A4CpppMfhsWOOmIwtoN0V4yq37um+qUdqeUwNufXE8V2sC
+         OgV0GRc9zImedN8OT7TbzhvdrDZyuQUT6TUrOcvkDPIDwKwBiPPF+G/Xttl10jhc0nd8
+         9T3Es68J5kMJKxe3UqG38P/wdYNDh5/WnKov/lcvnEQojj76ZF2aFF+ibCkIMuVCBNoe
+         0p5g==
+X-Gm-Message-State: AOAM5310xeJSKYX41B3HNk58FTxbTq8q6Vq0FWJ+7/EhN32FZSGlEFyr
+        PR10qWDxAStPZbWDD+uBxl6YehbVf75La3P+3SrHvA==
+X-Google-Smtp-Source: ABdhPJwinfaFAdsCsDojdsyX6Fk+9P/lQi6aByGWz4YFFegaUm9jLw/oMWdy1Oa5TFgKOyNI7g30Nt2iV7pNUjidmsA=
+X-Received: by 2002:a1c:99c7:: with SMTP id b190mr1997587wme.44.1599634806373;
+ Wed, 09 Sep 2020 00:00:06 -0700 (PDT)
 MIME-Version: 1.0
-References: <1597661277-27862-1-git-send-email-gene.chen.richtek@gmail.com>
- <1597661277-27862-10-git-send-email-gene.chen.richtek@gmail.com>
- <20200828104053.GM1826686@dell> <CAE+NS37uFoDhWyGkw0WTu+tR+_85EwzYRqecNMG6nK6b2J=9jg@mail.gmail.com>
- <20200908114819.GO4400@dell>
-In-Reply-To: <20200908114819.GO4400@dell>
-From:   Gene Chen <gene.chen.richtek@gmail.com>
-Date:   Wed, 9 Sep 2020 07:09:44 +0800
-Message-ID: <CAE+NS36MVA=9e0Ev73gpJ-gOcY+_aNveTr+DhquD6iqY-GKXCQ@mail.gmail.com>
-Subject: Re: [PATCH v4 9/9] mfd: mt6360: Merge different sub-devices I2C read/write
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Gene Chen <gene_chen@richtek.com>, benjamin.chao@mediatek.com,
-        shufan_lee@richtek.com, cy_huang@richtek.com
+References: <20200901162133.1.I8693156f555875e5c8342e86ab37ce968dfdd277@changeid>
+ <20200901162133.4.I900b1b80709b7632a47d0ddb4cd375b4a3616c9e@changeid> <2f1e64e4-bb37-0cfb-6b3b-3f51fd5faca3@xs4all.nl>
+In-Reply-To: <2f1e64e4-bb37-0cfb-6b3b-3f51fd5faca3@xs4all.nl>
+From:   Sam McNally <sammc@chromium.org>
+Date:   Wed, 9 Sep 2020 16:59:29 +1000
+Message-ID: <CAJqEsoB6V6LWoY-whLGV74tamxppObPtNqWYMUyqtwAgnjrhPQ@mail.gmail.com>
+Subject: Re: [PATCH 4/5] drm_dp_cec: add plumbing in preparation for MST support
+To:     Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        David Airlie <airlied@linux.ie>, nouveau@lists.freedesktop.org,
+        =?UTF-8?Q?Jos=C3=A9_Roberto_de_Souza?= <jose.souza@intel.com>,
+        David Francis <David.Francis@amd.com>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        amd-gfx@lists.freedesktop.org, Ben Skeggs <bskeggs@redhat.com>,
+        Wambui Karuga <wambui.karugax@gmail.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Leo Li <sunpeng.li@amd.com>,
+        Lucas De Marchi <lucas.demarchi@intel.com>,
+        intel-gfx@lists.freedesktop.org,
+        Gwan-gyeong Mun <gwan-gyeong.mun@intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Mikita Lipski <mikita.lipski@amd.com>,
+        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
+        dri-devel@lists.freedesktop.org,
+        Manasi Navare <manasi.d.navare@intel.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lee Jones <lee.jones@linaro.org> =E6=96=BC 2020=E5=B9=B49=E6=9C=888=E6=97=
-=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=887:48=E5=AF=AB=E9=81=93=EF=BC=9A
+On Tue, 8 Sep 2020 at 18:41, Hans Verkuil <hverkuil@xs4all.nl> wrote:
 >
-> On Tue, 01 Sep 2020, Gene Chen wrote:
->
-> > Lee Jones <lee.jones@linaro.org> =E6=96=BC 2020=E5=B9=B48=E6=9C=8828=E6=
-=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8B=E5=8D=886:40=E5=AF=AB=E9=81=93=EF=BC=9A
-> > >
-> > > On Mon, 17 Aug 2020, Gene Chen wrote:
-> > >
-> > > > From: Gene Chen <gene_chen@richtek.com>
-> > > >
-> > > > Remove unuse register definition.
-> > >
-> > > This should be in a separate patch.
-> > >
-> > > > Merge different sub-devices I2C read/write functions into one Regma=
-p,
-> > > > because PMIC and LDO part need CRC bits for access protection.
-> > > >
-> > > > Signed-off-by: Gene Chen <gene_chen@richtek.com>
-> > > > ---
-> > > >  drivers/mfd/Kconfig        |   1 +
-> > > >  drivers/mfd/mt6360-core.c  | 260 +++++++++++++++++++++++++++++++++=
-++++++------
-> > > >  include/linux/mfd/mt6360.h | 240 ---------------------------------=
---------
-> > > >  3 files changed, 226 insertions(+), 275 deletions(-)
-> > > >  delete mode 100644 include/linux/mfd/mt6360.h
-> > > >
-> > > > diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-> > > > index a37d7d1..0684ddc 100644
-> > > > --- a/drivers/mfd/Kconfig
-> > > > +++ b/drivers/mfd/Kconfig
-> > > > @@ -913,6 +913,7 @@ config MFD_MT6360
-> > > >       select MFD_CORE
-> > > >       select REGMAP_I2C
-> > > >       select REGMAP_IRQ
-> > > > +     select CRC8
-> > > >       depends on I2C
-> > > >       help
-> > > >         Say Y here to enable MT6360 PMU/PMIC/LDO functional support=
-.
-> > > > diff --git a/drivers/mfd/mt6360-core.c b/drivers/mfd/mt6360-core.c
-> > > > index 677c974..e995220 100644
-> > > > --- a/drivers/mfd/mt6360-core.c
-> > > > +++ b/drivers/mfd/mt6360-core.c
-> > > > @@ -14,7 +14,53 @@
-> > > >  #include <linux/regmap.h>
-> > > >  #include <linux/slab.h>
-> > > >
-> > > > -#include <linux/mfd/mt6360.h>
-> > > > +enum {
-> > > > +     MT6360_SLAVE_TCPC =3D 0,
-> > > > +     MT6360_SLAVE_PMIC,
-> > > > +     MT6360_SLAVE_LDO,
-> > > > +     MT6360_SLAVE_PMU,
-> > > > +     MT6360_SLAVE_MAX,
-> > > > +};
-> > > > +
-> > > > +struct mt6360_ddata {
-> > > > +     struct i2c_client *i2c[MT6360_SLAVE_MAX];
-> > > > +     struct device *dev;
-> > > > +     struct regmap *regmap;
-> > > > +     struct regmap_irq_chip_data *irq_data;
-> > > > +     unsigned int chip_rev;
-> > > > +     u8 crc8_tbl[CRC8_TABLE_SIZE];
-> > > > +};
-> > >
-> > > This is not a new structure, right?  Where was this before?  Surely i=
-t
-> > > should be removed from wherever it was in the same patch that places
-> > > it here?
-> > >
+> On 01/09/2020 08:22, Sam McNally wrote:
+> > From: Hans Verkuil <hans.verkuil@cisco.com>
 > >
-> > No, it is merge from header file to source code for unuse in other sub-=
-module.
->
-> So where did it come from and why don't I see the removal in this
-> patch?
->
-
-Change is in the bottom of this patch.
-There is a little confuse part in "[PATCH v4 5/9] mfd: mt6360: Rename
-mt6360_pmu_data by mt6360_ddata"
-The "PATCH 5/9" change mt6360_pmu_data to mt6360_ddata instead of mt6360_da=
-ta.
-I will update PATCH v5 to fix it.
-
-[PATCH v4 9/9]
-diff --git a/include/linux/mfd/mt6360.h b/include/linux/mfd/mt6360.h
--struct mt6360_data {
--       struct i2c_client *i2c[MT6360_SLAVE_MAX];
--       struct device *dev;
--       struct regmap *regmap;
--       struct regmap_irq_chip_data *irq_data;
--       unsigned int chip_rev;
--};
-
-[PATCH v4 5/9]
-diff --git a/include/linux/mfd/mt6360.h b/include/linux/mfd/mt6360.h
--struct mt6360_pmu_data {
-+struct mt6360_data {
-        struct i2c_client *i2c[MT6360_SLAVE_MAX];
-        struct device *dev;
-        struct regmap *regmap;
-
-
-> [...]
->
-> > > > -static const unsigned short mt6360_slave_addr[MT6360_SLAVE_MAX] =
-=3D {
-> > > > -     MT6360_PMU_SLAVEID,
-> > > > +static const u16 mt6360_slave_addrs[MT6360_SLAVE_MAX] =3D {
-> > >
-> > > Why are you changing the data type?
-> > >
+> > Signed-off-by: Hans Verkuil <hans.verkuil@cisco.com>
+> > [sammc@chromium.org:
+> >  - rebased
+> >  - removed polling-related changes
+> >  - moved the calls to drm_dp_cec_(un)set_edid() into the next patch
+> > ]
+> > Signed-off-by: Sam McNally <sammc@chromium.org>
+> > ---
 > >
-> > Easy to read.
-> > I think it's the same?
->
-> It's an unrelated change and should not be in this patch.
->
-> Please separate patches into functional changes.
->
-
-ACK. It's not very important change. I will revert it.
-
-> > > > +     MT6360_TCPC_SLAVEID,
-> > > >       MT6360_PMIC_SLAVEID,
-> > > >       MT6360_LDO_SLAVEID,
-> > > > -     MT6360_TCPC_SLAVEID,
-> > > > +     MT6360_PMU_SLAVEID,
-> > > > +};
->
-> [...]
->
-> > > >  static int mt6360_probe(struct i2c_client *client)
-> > > > @@ -329,9 +521,23 @@ static int mt6360_probe(struct i2c_client *cli=
-ent)
-> > > >               return -ENOMEM;
-> > > >
-> > > >       ddata->dev =3D &client->dev;
-> > > > -     i2c_set_clientdata(client, ddata);
-> > > >
-> > > > -     ddata->regmap =3D devm_regmap_init_i2c(client, &mt6360_pmu_re=
-gmap_config);
-> > > > +     for (i =3D 0; i < MT6360_SLAVE_MAX - 1; i++) {
-> > > > +             ddata->i2c[i] =3D devm_i2c_new_dummy_device(&client->=
-dev,
-> > > > +                                                       client->ada=
-pter,
-> > > > +                                                       mt6360_slav=
-e_addrs[i]);
-> > > > +             if (IS_ERR(ddata->i2c[i])) {
-> > > > +                     dev_err(&client->dev,
-> > > > +                             "Failed to get new dummy I2C device f=
-or address 0x%x",
-> > > > +                             mt6360_slave_addrs[i]);
-> > > > +                     return PTR_ERR(ddata->i2c[i]);
-> > >
-> > > Do you have to free the new devices you just allocated?
-> > >
+> >  .../display/amdgpu_dm/amdgpu_dm_mst_types.c   |  2 +-
+> >  drivers/gpu/drm/drm_dp_cec.c                  | 22 ++++++++++---------
+> >  drivers/gpu/drm/i915/display/intel_dp.c       |  2 +-
+> >  drivers/gpu/drm/nouveau/nouveau_connector.c   |  2 +-
+> >  include/drm/drm_dp_helper.h                   |  6 +++--
+> >  5 files changed, 19 insertions(+), 15 deletions(-)
 > >
-> > Usually no need to free devm_i2c_new_dummy_device,
-> > Should I use kfree(ddata->i2c[i]);?
+> > diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c
+> > index 461fa4da0a34..6e7075893ec9 100644
+> > --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c
+> > +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c
+> > @@ -419,7 +419,7 @@ void amdgpu_dm_initialize_dp_connector(struct amdgpu_display_manager *dm,
+> >
+> >       drm_dp_aux_init(&aconnector->dm_dp_aux.aux);
+> >       drm_dp_cec_register_connector(&aconnector->dm_dp_aux.aux,
+> > -                                   &aconnector->base);
+> > +                                   &aconnector->base, false);
+> >
+> >       if (aconnector->base.connector_type == DRM_MODE_CONNECTOR_eDP)
+> >               return;
+> > diff --git a/drivers/gpu/drm/drm_dp_cec.c b/drivers/gpu/drm/drm_dp_cec.c
+> > index 3ab2609f9ec7..04ab7b88055c 100644
+> > --- a/drivers/gpu/drm/drm_dp_cec.c
+> > +++ b/drivers/gpu/drm/drm_dp_cec.c
+> > @@ -14,6 +14,7 @@
+> >  #include <drm/drm_connector.h>
+> >  #include <drm/drm_device.h>
+> >  #include <drm/drm_dp_helper.h>
+> > +#include <drm/drm_dp_mst_helper.h>
+> >
+> >  /*
+> >   * Unfortunately it turns out that we have a chicken-and-egg situation
+> > @@ -338,8 +339,6 @@ void drm_dp_cec_set_edid(struct drm_dp_aux *aux, const struct edid *edid)
+> >       if (aux->cec.adap) {
+> >               if (aux->cec.adap->capabilities == cec_caps &&
+> >                   aux->cec.adap->available_log_addrs == num_las) {
+> > -                     /* Unchanged, so just set the phys addr */
+> > -                     cec_s_phys_addr_from_edid(aux->cec.adap, edid);
+> >                       goto unlock;
+> >               }
+> >               /*
+> > @@ -364,15 +363,16 @@ void drm_dp_cec_set_edid(struct drm_dp_aux *aux, const struct edid *edid)
+> >       if (cec_register_adapter(aux->cec.adap, connector->dev->dev)) {
+> >               cec_delete_adapter(aux->cec.adap);
+> >               aux->cec.adap = NULL;
+> > -     } else {
+> > -             /*
+> > -              * Update the phys addr for the new CEC adapter. When called
+> > -              * from drm_dp_cec_register_connector() edid == NULL, so in
+> > -              * that case the phys addr is just invalidated.
+> > -              */
+> > -             cec_s_phys_addr_from_edid(aux->cec.adap, edid);
+> >       }
+> >  unlock:
+> > +     /*
+> > +      * Update the phys addr for the new CEC adapter. When called
+> > +      * from drm_dp_cec_register_connector() edid == NULL, so in
+> > +      * that case the phys addr is just invalidated.
+> > +      */
 >
-> You tell me.
+> The comment is no longer in sync with the code: if EDID == NULL, then
+> nothing is done due to the edid check in the 'if' below.
+>
+> > +     if (aux->cec.adap && edid) {
+>
+> I think this should just be: if (aux->cec.adap)
+>
+> Also, the {} aren't necessary here.
+>
+> > +             cec_s_phys_addr_from_edid(aux->cec.adap, edid);
+> > +     }
+> >       mutex_unlock(&aux->cec.lock);
+> >  }
+> >  EXPORT_SYMBOL(drm_dp_cec_set_edid);
+>
+> Frankly, the changes to this function should be dropped completely, from
+> what I can see they are not necessary. It was done in my original patch
+> because of the way I handled mst, but you did it differently (and I think
+> better), so these changes are no longer needed.
+>
+> I know I am actually commenting on my old patch, but that patch was from a
+> work-in-progress git branch and was never meant as a 'proper' patch.
+>
+> However, what complicates matters is that after digging a bit more I discovered
+> that commit 732300154980 ("drm: Do not call drm_dp_cec_set_edid() while registering
+> DP connectors") changed drm_dp_cec_register_connector() so that it no longer
+> calls drm_dp_cec_set_edid(), but the comments there and in this function were
+> not updated. It would be nice if you can add a patch fixing these outdated
+> comments.
+>
+> Regardless of that change in commit 732300154980, the edid pointer can still be
+> NULL and the existing behavior should be kept (i.e. create a CEC device, but with
+> an invalid physical address since there is no EDID for some reason).
+>
+> Regards,
+>
+>         Hans
 >
 
-I survey the upstream code e.q. drivers/mfd/tps80031.c
-It' should not have to free the memory.
+Thanks. Leaving drm_dp_cec_set_edid() unchanged combined with Lyude's
+suggestion to use aux->is_remote removes the need for this patch
+entirely.
 
-> --
-> Lee Jones [=E6=9D=8E=E7=90=BC=E6=96=AF]
-> Senior Technical Lead - Developer Services
-> Linaro.org =E2=94=82 Open source software for Arm SoCs
-> Follow Linaro: Facebook | Twitter | Blog
+> > @@ -418,6 +418,7 @@ EXPORT_SYMBOL(drm_dp_cec_unset_edid);
+> >   * drm_dp_cec_register_connector() - register a new connector
+> >   * @aux: DisplayPort AUX channel
+> >   * @connector: drm connector
+> > + * @is_mst: set to true if this is an MST branch
+> >   *
+> >   * A new connector was registered with associated CEC adapter name and
+> >   * CEC adapter parent device. After registering the name and parent
+> > @@ -425,12 +426,13 @@ EXPORT_SYMBOL(drm_dp_cec_unset_edid);
+> >   * CEC and to register a CEC adapter if that is the case.
+> >   */
+> >  void drm_dp_cec_register_connector(struct drm_dp_aux *aux,
+> > -                                struct drm_connector *connector)
+> > +                                struct drm_connector *connector, bool is_mst)
+> >  {
+> >       WARN_ON(aux->cec.adap);
+> >       if (WARN_ON(!aux->transfer))
+> >               return;
+> >       aux->cec.connector = connector;
+> > +     aux->cec.is_mst = is_mst;
+> >       INIT_DELAYED_WORK(&aux->cec.unregister_work,
+> >                         drm_dp_cec_unregister_work);
+> >  }
+> > diff --git a/drivers/gpu/drm/i915/display/intel_dp.c b/drivers/gpu/drm/i915/display/intel_dp.c
+> > index 82b9de274f65..744cb55572f9 100644
+> > --- a/drivers/gpu/drm/i915/display/intel_dp.c
+> > +++ b/drivers/gpu/drm/i915/display/intel_dp.c
+> > @@ -6261,7 +6261,7 @@ intel_dp_connector_register(struct drm_connector *connector)
+> >       intel_dp->aux.dev = connector->kdev;
+> >       ret = drm_dp_aux_register(&intel_dp->aux);
+> >       if (!ret)
+> > -             drm_dp_cec_register_connector(&intel_dp->aux, connector);
+> > +             drm_dp_cec_register_connector(&intel_dp->aux, connector, false);
+> >       return ret;
+> >  }
+> >
+> > diff --git a/drivers/gpu/drm/nouveau/nouveau_connector.c b/drivers/gpu/drm/nouveau/nouveau_connector.c
+> > index 49dd0cbc332f..671a70e95cd1 100644
+> > --- a/drivers/gpu/drm/nouveau/nouveau_connector.c
+> > +++ b/drivers/gpu/drm/nouveau/nouveau_connector.c
+> > @@ -1414,7 +1414,7 @@ nouveau_connector_create(struct drm_device *dev,
+> >       switch (type) {
+> >       case DRM_MODE_CONNECTOR_DisplayPort:
+> >       case DRM_MODE_CONNECTOR_eDP:
+> > -             drm_dp_cec_register_connector(&nv_connector->aux, connector);
+> > +             drm_dp_cec_register_connector(&nv_connector->aux, connector, false);
+> >               break;
+> >       }
+> >
+> > diff --git a/include/drm/drm_dp_helper.h b/include/drm/drm_dp_helper.h
+> > index 85513eeb2196..12bca1b9512b 100644
+> > --- a/include/drm/drm_dp_helper.h
+> > +++ b/include/drm/drm_dp_helper.h
+> > @@ -1495,12 +1495,14 @@ struct drm_connector;
+> >   * @lock: mutex protecting this struct
+> >   * @adap: the CEC adapter for CEC-Tunneling-over-AUX support.
+> >   * @connector: the connector this CEC adapter is associated with
+> > + * @is_mst: this is an MST branch
+> >   * @unregister_work: unregister the CEC adapter
+> >   */
+> >  struct drm_dp_aux_cec {
+> >       struct mutex lock;
+> >       struct cec_adapter *adap;
+> >       struct drm_connector *connector;
+> > +     bool is_mst;
+> >       struct delayed_work unregister_work;
+> >  };
+> >
+> > @@ -1746,7 +1748,7 @@ drm_dp_has_quirk(const struct drm_dp_desc *desc, u32 edid_quirks,
+> >  #ifdef CONFIG_DRM_DP_CEC
+> >  void drm_dp_cec_irq(struct drm_dp_aux *aux);
+> >  void drm_dp_cec_register_connector(struct drm_dp_aux *aux,
+> > -                                struct drm_connector *connector);
+> > +                                struct drm_connector *connector, bool is_mst);
+> >  void drm_dp_cec_unregister_connector(struct drm_dp_aux *aux);
+> >  void drm_dp_cec_set_edid(struct drm_dp_aux *aux, const struct edid *edid);
+> >  void drm_dp_cec_unset_edid(struct drm_dp_aux *aux);
+> > @@ -1757,7 +1759,7 @@ static inline void drm_dp_cec_irq(struct drm_dp_aux *aux)
+> >
+> >  static inline void
+> >  drm_dp_cec_register_connector(struct drm_dp_aux *aux,
+> > -                           struct drm_connector *connector)
+> > +                           struct drm_connector *connector, bool is_mst)
+> >  {
+> >  }
+> >
+> >
+>
