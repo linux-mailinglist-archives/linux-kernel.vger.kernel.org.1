@@ -2,77 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 762FB2636C7
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 21:44:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 315402636CF
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 21:48:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729455AbgIITom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 15:44:42 -0400
-Received: from mail-ej1-f46.google.com ([209.85.218.46]:43921 "EHLO
-        mail-ej1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726184AbgIIToj (ORCPT
+        id S1728970AbgIITsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 15:48:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59340 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726642AbgIITsZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 15:44:39 -0400
-Received: by mail-ej1-f46.google.com with SMTP id o8so5264568ejb.10;
-        Wed, 09 Sep 2020 12:44:37 -0700 (PDT)
+        Wed, 9 Sep 2020 15:48:25 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95C32C061755
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 12:48:23 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id ay8so3892334edb.8
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 12:48:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jGoxTNHQetF7fWue/FsBwgBc5cdIuqMc5s44Uajfba8=;
+        b=CeoXEIZBu6YhTVERAjUZGRjiPJZspQoOCh5rpLEodjsvPqEnEDRgWGpaELQrPeObQv
+         CeKvNjw1eItFKS6YX84cs4eS8XJ8DxwjoZ7A8A3tfcvWCFna4X/Kkg6xM3EReyYhK9Sk
+         OcnSfiljESAeHPf1QGN79OVLMCrGiOIU+apdTZ+0adyqnz1pccwwzkQFx0QryK2dENx9
+         ItsPyFKrqsjB4CKKs1WIw0NRMIyHVHw7dFWLVCtSSfFcBut/3Mhg48lo7wh/QnFn+QOL
+         meZzMneUjsW5SOObIlAH3TMIpACofHUvcczGb2IKw5bn4wYyqdNwRcfLJm70q4oinaH8
+         FOGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=rWZU3unCj9fu1p22kF6MLzALPkoa763qB+YvDpsCgmo=;
-        b=CnjWCFYIVtuJ0YiUZfyi42HiFydXEFlyKWBDqF+Jcfq33yNY+qF6bjnaR2X8qcFjfm
-         L+F7hL6L/YiAwSwKBgu/55y92dapL9sG9OaowdNpAg+Dq6fVNLG3kMhH5BuyZesPe2jK
-         2Hvai8ZFREM+ir+eyLLRofpxCKdpiHbs/Hhv0ZyMtkN/TrDeaeMTb/llloU8w59+e7NY
-         ivvBmD3STCufrIJQkilIHh+/EWWdOcJD/q/384NRPXeTF3rCXTPmOKI3+BO59/5mqyPv
-         VqXrBogQCCrYRDjltIoZOZyUgPz1l5kJisSj8f57UFbvBkYZSuL+swvRqRnDmZW5RCyV
-         VBNQ==
-X-Gm-Message-State: AOAM5326DcfNjHMX9M0DHW2OSv09/rHCaAh2MXfWPhI9Nf4BIvihlLOE
-        3klZBEy4a+EV3tBpFpArOTY=
-X-Google-Smtp-Source: ABdhPJyoIVF6Kb8LIjY5/OZ5vuY2/SXqKdvpYPhrn2U0y2XVc9KbqJ0z8AQAQd7yR9KeYvl2A6A+NQ==
-X-Received: by 2002:a17:906:8401:: with SMTP id n1mr5107934ejx.215.1599680676715;
-        Wed, 09 Sep 2020 12:44:36 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.174])
-        by smtp.googlemail.com with ESMTPSA id g20sm3460946ejx.12.2020.09.09.12.44.34
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 09 Sep 2020 12:44:35 -0700 (PDT)
-Date:   Wed, 9 Sep 2020 21:44:33 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Kukjin Kim <kgene@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Jonathan Bakker <xc-racer2@live.ca>,
-        =?utf-8?B?UGF3ZcWC?= Chmiel <pawel.mikolaj.chmiel@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org
-Subject: Re: [RFT 24/25] ARM: dts: s5pv210: align SPI GPIO node name with
- dtschema in Aries
-Message-ID: <20200909194433.GD21431@kozik-lap>
-References: <20200907161141.31034-1-krzk@kernel.org>
- <20200907161141.31034-25-krzk@kernel.org>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jGoxTNHQetF7fWue/FsBwgBc5cdIuqMc5s44Uajfba8=;
+        b=q8O89u8ZksSuUbAov4A6gxfGQehTE2H3cCoLr4mIXcFP3jO190RAfuZ2BmBILgztnj
+         Hij0Q1YUSH1oNVZdqgIj9F267dGXdED6JkP79GYAbsk6URgTwS1JjzOIJvm8coO9fjpr
+         fkG9JwV38xd99lnRGm4o3M/6dyvDj5iJrIxEB1zSoz5wqJMJ2djXg3MPAbCcZ3KLYAiQ
+         +hbMtBfF1wXH9zOWHyPXVhG8mLeY9kDYU+S9BpWY3gA1TMzVBKYrmiPaNCWz5KdfUnoM
+         Ym4PhDsoYK+AYAEWCPpIjR2a+HbnX0UfZCyZWYIEvQlDS805Cgdm1IMOKLUTEhoFVwHx
+         zu4g==
+X-Gm-Message-State: AOAM532tzJIX8yDihZyVwmQM7Gdv9x/nQfCCUIWIsLO41tL7jPRDmQap
+        ferh/VGd8zAJ652/SoxpJPwvrQ==
+X-Google-Smtp-Source: ABdhPJy+AsLa/GrOqTK4l40JtalccZr5BVueT0w4yBYWM6KSdC/BeSG+/ge730Qph7akQNgiojK2tg==
+X-Received: by 2002:a50:f1d1:: with SMTP id y17mr5521552edl.231.1599680902299;
+        Wed, 09 Sep 2020 12:48:22 -0700 (PDT)
+Received: from localhost.localdomain (dh207-97-133.xnet.hr. [88.207.97.133])
+        by smtp.googlemail.com with ESMTPSA id hk14sm3461452ejb.88.2020.09.09.12.48.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Sep 2020 12:48:21 -0700 (PDT)
+From:   Robert Marko <robert.marko@sartura.hr>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Robert Marko <robert.marko@sartura.hr>,
+        Luka Perkov <luka.perkov@sartura.hr>
+Subject: [PATCH 0/4] arm: dts: qcom: ipq4019: add more boards
+Date:   Wed,  9 Sep 2020 21:48:12 +0200
+Message-Id: <20200909194816.3125213-1-robert.marko@sartura.hr>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200907161141.31034-25-krzk@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 07, 2020 at 06:11:40PM +0200, Krzysztof Kozlowski wrote:
-> The device tree schema expects SPI controller to be named "spi",
-> otherwise dtbs_check complain with a warning like:
-> 
->   spi-gpio-0: $nodename:0: 'spi-gpio-0' does not match '^spi(@.*|-[0-9a-f])*$'
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> ---
->  arch/arm/boot/dts/s5pv210-aries.dtsi | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+This patch series adds support for some popular IPQ4019 based
+boards.
 
-Applied.
+This patch series depends on:
+https://patchwork.kernel.org/patch/11765789/
+https://patchwork.kernel.org/patch/11760437/
 
-Best regards,
-Krzysztof
+Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+Cc: Luka Perkov <luka.perkov@sartura.hr>
+
+Robert Marko (4):
+  arm: dts: qcom: ipq4019: add more labels
+  arm: dts: add 8devices Jalapeno
+  arm: dts: add Alfa Network AP120C-AC
+  arm: dts: add 8devices Habanero DVK
+
+ arch/arm/boot/dts/Makefile                    |   4 +
+ .../boot/dts/qcom-ipq4018-ap120c-ac-bit.dts   |  28 ++
+ arch/arm/boot/dts/qcom-ipq4018-ap120c-ac.dts  |  27 ++
+ arch/arm/boot/dts/qcom-ipq4018-ap120c-ac.dtsi | 255 +++++++++++++++
+ arch/arm/boot/dts/qcom-ipq4018-jalapeno.dts   | 215 ++++++++++++
+ .../boot/dts/qcom-ipq4019-habanero-dvk.dts    | 305 ++++++++++++++++++
+ arch/arm/boot/dts/qcom-ipq4019.dtsi           |   6 +-
+ 7 files changed, 837 insertions(+), 3 deletions(-)
+ create mode 100644 arch/arm/boot/dts/qcom-ipq4018-ap120c-ac-bit.dts
+ create mode 100644 arch/arm/boot/dts/qcom-ipq4018-ap120c-ac.dts
+ create mode 100644 arch/arm/boot/dts/qcom-ipq4018-ap120c-ac.dtsi
+ create mode 100644 arch/arm/boot/dts/qcom-ipq4018-jalapeno.dts
+ create mode 100644 arch/arm/boot/dts/qcom-ipq4019-habanero-dvk.dts
+
+-- 
+2.26.2
 
