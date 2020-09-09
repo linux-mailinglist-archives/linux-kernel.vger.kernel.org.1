@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D2C126341A
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 19:14:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9814926342D
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 19:15:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731216AbgIIRO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 13:14:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46762 "EHLO
+        id S1730784AbgIIRPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 13:15:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730115AbgIIPa1 (ORCPT
+        with ESMTP id S1730212AbgIIP3F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 11:30:27 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61427C0612F4
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 07:39:56 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id k15so3211246wrn.10
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 07:39:56 -0700 (PDT)
+        Wed, 9 Sep 2020 11:29:05 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21494C0612F8
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 07:39:58 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id z1so3254573wrt.3
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 07:39:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=tessares-net.20150623.gappssmtp.com; s=20150623;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=bkORLZG3u3dzhotZjzrL2NcwPRVYSyfBeouqNvnhcek=;
-        b=fyF++iAhOrN2HEuFApmRjksJO4k6V6b/TEDM7ifrpowYJyMF583aiPiVeZeaLz4n01
-         aXIplHyi5iH2rHBH8P3SJ0nfUp/MqUruFrLdz3Qvqp6fN/c3fp6nOD1QNSZRhCD4CTbw
-         3E8dIp+bQUOiHnO8ua9OK42LV54gFGtqzb+47n9xeBlU67pBcM+6xd0Q80bKRBqp7hvF
-         t363NYLHUXSlHpHQngLMGMpGXKBlqFjiRJVNCGODxKJJ03sinIREuTAjEFxKDfbpJH2c
-         Tudwpd6NYqeES0APQoE9eGbWqzIZYYTlXirPT+Lb13tgcARg2eGNQJbNYZ/k+2+FyMS7
-         TssQ==
+        bh=11MI0KiTsfDovJmHLIZ6mGMd2aO/GNiEEd0QOHNHXg0=;
+        b=Yc1/H8efLlur4NsZLckZuVxVv7eBKW+pOWMidUFk8KtU0BAoPVPXWk16J5mKnNrmIi
+         oWB20T+Z2wVlAeFQT3uhLlx8nm1qKbo+/rKT870Cni1Y1rvHVkbmASg+/AfCDUB8dHFb
+         TLVHSYXSJi6UFU0cTS/U9tEbHBhBLAjxYjnFM7MYgQNxIJtG4KvvC38iEKyftKrY9H+1
+         HSx0E0vxEPJhDXm3VLoD5HTSk56PQ8Z3oow2H9NPpBHJXjDQQLsyXgx6lPJRPrPZoIQc
+         adu/KyZfOH0QEy/Tx3fMUNsu8auumg3t/aka3gUOr2/dPsvtlMe+R4Te4NvYpDU6Qx1s
+         Hzag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=bkORLZG3u3dzhotZjzrL2NcwPRVYSyfBeouqNvnhcek=;
-        b=Y7y25q+RNlHUMd6Mq9I8xl7wxvdyxbyO7IWzFT2LXNFAFWkz5HzilSvB/3rwFVdfzt
-         NsLswoqPXiKNsJ30IvywzHtJrjgEc9B6KRGmCAKvVe2V3BFTmWFwXLuQpaZTbJX6cqlE
-         MvemESmc1IWZwicT7+PWsAuBvu+yMFFxiK/4UnMQhW+tjyokenKmiLf3pr/r6EltxBG8
-         fqwtL284/XGBRd91F3E+as40Rsd3sdH9FL7723qGU3RDDwQI5lDa8W062bY15LWTR+5n
-         GBsYlfu1s7/5f+SBRcjLWd9Ug8qbGOkPZF/rUQgvXv7lbnKd47xvseotDjonQDM3YaBY
-         1xsA==
-X-Gm-Message-State: AOAM533a1BCwp4uOrpvhFlyrEpP+uCvopOc/S4uMxXe2UmT3Q4/hF1By
-        CkC1FUVkgZw/0iG2eVn/Jn9xkPTKTldfYQ==
-X-Google-Smtp-Source: ABdhPJxsySl+jiMG3NFQaWU08dYy2xTnHvxYnOWZzgh2yN0TVSMchxfChJNOhS8s5Nqo0JfFQH5Fww==
-X-Received: by 2002:adf:f846:: with SMTP id d6mr4712246wrq.56.1599662393458;
-        Wed, 09 Sep 2020 07:39:53 -0700 (PDT)
+        bh=11MI0KiTsfDovJmHLIZ6mGMd2aO/GNiEEd0QOHNHXg0=;
+        b=fOuNhqOT2Q9vq2xown16l1V6FfgKvOTFSngkEaL0aPnzL47BJnTf6/oJk6PVm9kx37
+         Ip5Zd3l22G89n9vblcg4+wIjE3UuIg0GcvICgQvY9cPCnXvNXR5r19q0uSGi605iPteK
+         1prwtfHs76mB3OvZO+pCpgfqlj/G9ugIqjXdLjAHXk2s6DnP4Jo+q1TqvZj5ISknaq0i
+         7z/Rljdr7xfApyVVMQvnpumLNLmSgqCrOUAdF+k2yZYCBW4Ed8dXKZxZhBdr56Q+KDRK
+         GB1cz1fgCin6hta2Z5znOpJl3qJVhuPUyaKh3zux2ErNAeSohT6bHnIt2G/tKpYCa7lJ
+         KdVQ==
+X-Gm-Message-State: AOAM531eVe1f6iiX+4TtsdsHasDWV0K9j3mqAz6+dkjp74KQp4ejP4o0
+        VLMpxLyfQJE4oq/jpsYST9c7zVYZNtMIAw==
+X-Google-Smtp-Source: ABdhPJwg4KZor8Ulp7aL3kakuSHdnlGpdMIVAnOUc1hsbL6VzzEtJVLgSQ4Wqa+k6cfbfZJG5X8vFw==
+X-Received: by 2002:adf:edcc:: with SMTP id v12mr4240797wro.240.1599662396424;
+        Wed, 09 Sep 2020 07:39:56 -0700 (PDT)
 Received: from tsr-lap-08.nix.tessares.net ([2a02:578:85b0:e00:8ddf:bedd:580e:7a7e])
-        by smtp.gmail.com with ESMTPSA id a10sm4144731wmj.38.2020.09.09.07.39.51
+        by smtp.gmail.com with ESMTPSA id z15sm4368511wrv.94.2020.09.09.07.39.55
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Sep 2020 07:39:52 -0700 (PDT)
-Subject: Re: [MPTCP][PATCH v2 net 1/2] mptcp: fix subflow's local_id issues
+        Wed, 09 Sep 2020 07:39:55 -0700 (PDT)
+Subject: Re: [MPTCP][PATCH v2 net 2/2] mptcp: fix subflow's remote_id issues
 To:     Geliang Tang <geliangtang@gmail.com>,
         Mat Martineau <mathew.j.martineau@linux.intel.com>,
         "David S. Miller" <davem@davemloft.net>,
@@ -60,14 +60,14 @@ To:     Geliang Tang <geliangtang@gmail.com>,
 Cc:     netdev@vger.kernel.org, mptcp@lists.01.org,
         linux-kernel@vger.kernel.org
 References: <cover.1599532593.git.geliangtang@gmail.com>
- <110eaa273bf313fb1a2a668a446956d27aba05a8.1599532593.git.geliangtang@gmail.com>
+ <0127c08400bdf65c03438b0b6e90e4ab72ea1576.1599532593.git.geliangtang@gmail.com>
 From:   Matthieu Baerts <matthieu.baerts@tessares.net>
-Message-ID: <c1537a78-c2b6-383b-f2fb-817c35bbfdaa@tessares.net>
-Date:   Wed, 9 Sep 2020 16:39:51 +0200
+Message-ID: <4c6c23fc-f493-ce9e-953f-679109de5fc8@tessares.net>
+Date:   Wed, 9 Sep 2020 16:39:54 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <110eaa273bf313fb1a2a668a446956d27aba05a8.1599532593.git.geliangtang@gmail.com>
+In-Reply-To: <0127c08400bdf65c03438b0b6e90e4ab72ea1576.1599532593.git.geliangtang@gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
@@ -79,19 +79,15 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 Hi Geliang,
 
 On 08/09/2020 04:49, Geliang Tang wrote:
-> In mptcp_pm_nl_get_local_id, skc_local is the same as msk_local, so it
-> always return 0. Thus every subflow's local_id is 0. It's incorrect.
+> This patch set the init remote_id to zero, otherwise it will be a random
+> number.
 > 
-> This patch fixed this issue.
-> 
-> Also, we need to ignore the zero address here, like 0.0.0.0 in IPv4. When
-> we use the zero address as a local address, it means that we can use any
-> one of the local addresses. The zero address is not a new address, we don't
-> need to add it to PM, so this patch added a new function address_zero to
-> check whether an address is the zero address, if it is, we ignore this
-> address.
+> Then it added the missing subflow's remote_id setting code both in
+> __mptcp_subflow_connect and in subflow_ulp_clone.
 > 
 > Fixes: 01cacb00b35cb ("mptcp: add netlink-based PM")
+> Fixes: ec3edaa7ca6ce ("mptcp: Add handling of outgoing MP_JOIN requests")
+> Fixes: f296234c98a8f ("mptcp: Add handling of incoming MP_JOIN requests")
 > Signed-off-by: Geliang Tang <geliangtang@gmail.com>
 
 Thank you for the v2!
