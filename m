@@ -2,136 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6F0C2631B6
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:24:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52F7A2631BC
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:25:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731043AbgIIQXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 12:23:24 -0400
-Received: from nat-hk.nvidia.com ([203.18.50.4]:3056 "EHLO nat-hk.nvidia.com"
+        id S1731001AbgIIQY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 12:24:59 -0400
+Received: from mailout06.rmx.de ([94.199.90.92]:47913 "EHLO mailout06.rmx.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730701AbgIIQVm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 12:21:42 -0400
-Received: from hkpgpgate101.nvidia.com (Not Verified[10.18.92.9]) by nat-hk.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f59010f0000>; Thu, 10 Sep 2020 00:21:35 +0800
-Received: from HKMAIL104.nvidia.com ([10.18.16.13])
-  by hkpgpgate101.nvidia.com (PGP Universal service);
-  Wed, 09 Sep 2020 09:21:35 -0700
-X-PGP-Universal: processed;
-        by hkpgpgate101.nvidia.com on Wed, 09 Sep 2020 09:21:35 -0700
-Received: from HKMAIL104.nvidia.com (10.18.16.13) by HKMAIL104.nvidia.com
- (10.18.16.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 9 Sep
- 2020 16:21:30 +0000
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (104.47.36.58) by
- HKMAIL104.nvidia.com (10.18.16.13) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Wed, 9 Sep 2020 16:21:30 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lu/mUR/K46DzbyE6ZpefU6yr9uD8d/9zHoErsFlOf85LfjuSyUW4vuhR7Mfj81O7NXxED4P+X1KbQqJ8Q1VeZEaJ1WqbE3UWgkSiGms+Bkl6+I739gbQCdwMSyDK7YAngvj/5ybfLXEc7bre0OkTsxOFaXraazsXt2XAu5xqgHWZ6EhqCE6P3m/B7mVXPo9qh39ETdEuRVNLBy3He9LDKgDZS0T3KsgM/6OeI6CmIuxLGACOKcWhTkvmuZHvtdNTdJQ8BRCwD6yri54aTKHb77s+9cmdEpK55uLUKRHToSYDM1kG7bqfL6rclGYu2eC2Zko+/XCMvcQegcC4tUUO+A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bdxkPg4cqdDqJ8Dl3OzMSMsSkp/jiUhpJqU0D/mresE=;
- b=hwmqcboBZFnG2WBvYou6G0OpbKqsoTbJsFj9GyLGHA99Yv3HHd5tV5xzrF1CbWaLOHrIwy3cSxl+0I0YcUuIisNidv+U+Tjo9y2mlXLCBn46OtscqxVOGmQ5wMnu7/19RKSAOfWVcjvAXBgleOITl7HzQ2QJH1GcYPoaqFjxzOAqh/mx1gzFzcoMe62wzPdy8i1NEq9t2cs63xsV/GXWqBfYH/M9RXGIh4sPDjKcQZPRoulZ4S05B/azuaucNxX8zhGqlIfeR0xVCT3H2tWwakECfMlCUuBQOmC50+YoK7jy6y5li0U1FFjWXE0Yb6cTuR+ICwMGFffzvBqod3ZvQg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Authentication-Results: huawei.com; dkim=none (message not signed)
- header.d=none;huawei.com; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR12MB1754.namprd12.prod.outlook.com (2603:10b6:3:10f::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Wed, 9 Sep
- 2020 16:21:26 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3370.016; Wed, 9 Sep 2020
- 16:21:26 +0000
-Date:   Wed, 9 Sep 2020 13:21:23 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     YueHaibing <yuehaibing@huawei.com>
-CC:     <selvin.xavier@broadcom.com>, <devesh.sharma@broadcom.com>,
-        <somnath.kotur@broadcom.com>, <sriharsha.basavapatna@broadcom.com>,
-        <nareshkumar.pbs@broadcom.com>, <dledford@redhat.com>,
-        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH -next] RDMA/bnxt_re: Remove set but not used variable
- 'qplib_ctx'
-Message-ID: <20200909162123.GA834958@nvidia.com>
-References: <20200905121624.32776-1-yuehaibing@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200905121624.32776-1-yuehaibing@huawei.com>
-X-ClientProxiedBy: MN2PR05CA0034.namprd05.prod.outlook.com
- (2603:10b6:208:c0::47) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S1730570AbgIIQXM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 12:23:12 -0400
+Received: from kdin02.retarus.com (kdin02.dmz1.retloc [172.19.17.49])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mailout06.rmx.de (Postfix) with ESMTPS id 4BmnP26wDzz9sp2;
+        Wed,  9 Sep 2020 18:22:46 +0200 (CEST)
+Received: from mta.arri.de (unknown [217.111.95.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by kdin02.retarus.com (Postfix) with ESMTPS id 4BmnNc1mPXz2TSDs;
+        Wed,  9 Sep 2020 18:22:24 +0200 (CEST)
+Received: from N95HX1G2.wgnetz.xx (192.168.54.16) by mta.arri.de
+ (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.408.0; Wed, 9 Sep
+ 2020 18:22:23 +0200
+From:   Christian Eggers <ceggers@arri.de>
+To:     Jonathan Cameron <jic23@kernel.org>
+CC:     Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Christian Eggers <ceggers@arri.de>, <stable@vger.kernel.org>
+Subject: [PATCH] iio: trigger: Don't use RT priority
+Date:   Wed, 9 Sep 2020 18:22:16 +0200
+Message-ID: <20200909162216.13765-1-ceggers@arri.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR05CA0034.namprd05.prod.outlook.com (2603:10b6:208:c0::47) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.10 via Frontend Transport; Wed, 9 Sep 2020 16:21:25 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kG2qZ-003VDk-SR; Wed, 09 Sep 2020 13:21:23 -0300
-X-Originating-IP: [156.34.48.30]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 6a69cabc-d2eb-4a47-8ead-08d854dc65f0
-X-MS-TrafficTypeDiagnostic: DM5PR12MB1754:
-X-Microsoft-Antispam-PRVS: <DM5PR12MB17541F593035F1C78B7AEB56C2260@DM5PR12MB1754.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: xQ2DTRuIUMxXvd6V8rTqzuIdsOXBm6Y0bCeT6KOhQMAalkSOrNPu+CxdeYYXew5y/asspEuidFvS1BBDwwhu/1k5tXstXg1l763+tUXxNMA31ksFV8yrm8+mH2chJiHv0wqP+krI7EuBQaU7LQcW4YgwBKob8ejcaqWeKpJhTqG+ZGAo4lgJ9g6NaJ6tX+LbmYpWlnGhZ+dY+14ndP0HQxveyMpGuVRf1lLpU3m1lPd2jF0YJnIyqHYpdiq9HxJTZh3q+tWyqnWXoINdYInGpukvwyCuZ0IMkJVZux/T6d76Ft+k9lsIDB6RtuOHRtpoecCf1YFickPvqkznkZMQaEZ4EoJF6KrtrfRu1ep3LDJ7AIEDzpPmerRa4bWW7b3a
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(396003)(376002)(366004)(346002)(8676002)(86362001)(1076003)(36756003)(186003)(426003)(5660300002)(83380400001)(26005)(2906002)(4744005)(9786002)(9746002)(316002)(4326008)(6916009)(66946007)(66476007)(66556008)(478600001)(33656002)(8936002)(2616005)(27376004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: zZ5DjXFpWGn83QpXK7+2bu0fbkzr66999WpZJh08poE6M1A25VnREBC9T4E2e5sxuaFuUS5675+wIBgFxD/ntyZT3v6KyA9EKdWvpE6HNN8MdaLZqNZWb03THzpYN6mpMACMldkJ8mUvZF9cRPDfhx6joJcjg1K47rbUXY7l3on7KsQ9NUBLUFRPinoAqa8Sc3oH85CkI9ZlyowyBi1+VgSINIfkcEkCQVhZ4hH9kVSWlKe/bi4Lo6QS72+aXceOumx7qx9BbgA+IovR5mKbOwN/C3x4jbgHWnVrO9+zXfDSb/d3ZvZ17YzSaJkvNyx0s1GqZfJAxlPM4BfZ/Sm669iO8+FkIA+BkawynUx1yMhaOAUXOPf1G+tn2pwyAGnerYotlOAV/ZVtb04D+ONNJfUMkNU1Z2xJd2WuyXw2M3vsjaw/hs9DnL1fByx1ozg24pisgExl1SDlTZVcmvB8xVlbZCvAORDggJMxiHyTuW259su5v68c2EwMqdZ3W7t+eS+D5S+uGCWRQZWAxxl+9NEMGVqZ+6kiZc4HvbjtiDRlRdRjuVwfH5DlMrCI1MUdlzxGNVIwPKnuIy6RzBNWs5TKJLgK0ZMAsge92HjfjRNlDqR7Jr5ZxeBUCJmA9oQeZaa/EQzo8aR9paAMRGsk+Q==
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6a69cabc-d2eb-4a47-8ead-08d854dc65f0
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Sep 2020 16:21:25.9623
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +Ym9onbWIeXYUMOouI1mNj/3hM0NUAKpxC2tAbuyxNmgsZVTTclURyGUwFjEFbsg
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1754
-X-OriginatorOrg: Nvidia.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1599668495; bh=JBh7Xwr9nXOir7sTeqt4nRVwF9gez2ot/pqAvBeuqgE=;
-        h=X-PGP-Universal:ARC-Seal:ARC-Message-Signature:
-         ARC-Authentication-Results:Authentication-Results:Date:From:To:CC:
-         Subject:Message-ID:References:Content-Type:Content-Disposition:
-         Content-Transfer-Encoding:In-Reply-To:X-ClientProxiedBy:
-         MIME-Version:X-MS-Exchange-MessageSentRepresentingType:
-         X-Originating-IP:X-MS-PublicTrafficType:
-         X-MS-Office365-Filtering-Correlation-Id:X-MS-TrafficTypeDiagnostic:
-         X-Microsoft-Antispam-PRVS:X-MS-Oob-TLC-OOBClassifiers:
-         X-MS-Exchange-SenderADCheck:X-Microsoft-Antispam:
-         X-Microsoft-Antispam-Message-Info:X-Forefront-Antispam-Report:
-         X-MS-Exchange-AntiSpam-MessageData:
-         X-MS-Exchange-CrossTenant-Network-Message-Id:
-         X-MS-Exchange-CrossTenant-AuthSource:
-         X-MS-Exchange-CrossTenant-AuthAs:
-         X-MS-Exchange-CrossTenant-OriginalArrivalTime:
-         X-MS-Exchange-CrossTenant-FromEntityHeader:
-         X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
-         X-MS-Exchange-CrossTenant-UserPrincipalName:
-         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
-        b=alVzraIPWMduqvBUPQF+cv/YmP9s1amSNrV3M+k67VsbaHj34hzmCJP8NILOcx1YS
-         RRRzLk4VYOEPJoStStSTfgFXd7TPEWytq0XFyc/RRUiOEhKrheOr3otrSrX/h0imRh
-         8flrSk360AhKft+djsRGDBFly3DV/+wQiwMG96tjYT6TIatRXZAdWmnei1b2CUIi+Y
-         wBmQz+GnYlyryvA4FR+AKaO9uCvSg5U6ha6AClwb34tDH4B4XSNpx3X56Tvds6AIc9
-         eoVDp1gqh8mKxPLftI8tp2Gr85lG3u+1XN3e8tWvLCG8AUBeXFwLWeKq15DtzZIewa
-         qLp4dzULVvIbw==
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [192.168.54.16]
+X-RMX-ID: 20200909-182224-4BmnNc1mPXz2TSDs-0@kdin02
+X-RMX-SOURCE: 217.111.95.66
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 05, 2020 at 08:16:24PM +0800, YueHaibing wrote:
-> drivers/infiniband/hw/bnxt_re/main.c:1012:25:
->  warning: variable =E2=80=98qplib_ctx=E2=80=99 set but not used [-Wunused=
--but-set-variable]
->=20
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-> Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
-> ---
->  drivers/infiniband/hw/bnxt_re/main.c | 2 --
->  1 file changed, 2 deletions(-)
+Triggers may raise transactions on slow busses like I2C.  Using the
+original RT priority of a threaded IRQ may prevent other important IRQ
+handlers from being run.
 
-Applied to for-rc, thanks
+In my particular case (on a RT kernel), the RT priority of the sysfstrig
+threaded IRQ handler caused (temporarily) raising the prio of a user
+space process which was holding the I2C bus mutex.
 
-Jason
+Although this process did nothing more than blocking on i2c-dev ioctl(),
+no other threaded IRQ handlers (like DMA) were switched in during this
+time.
+
+Signed-off-by: Christian Eggers <ceggers@arri.de>
+Cc: stable@vger.kernel.org
+---
+ drivers/iio/industrialio-trigger.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/drivers/iio/industrialio-trigger.c b/drivers/iio/industrialio-trigger.c
+index 6f16357fd732..b74180293da2 100644
+--- a/drivers/iio/industrialio-trigger.c
++++ b/drivers/iio/industrialio-trigger.c
+@@ -9,8 +9,12 @@
+ #include <linux/err.h>
+ #include <linux/device.h>
+ #include <linux/interrupt.h>
++#include <linux/irq.h>
++#include <linux/irqdesc.h>
+ #include <linux/list.h>
++#include <linux/sched.h>
+ #include <linux/slab.h>
++#include <uapi/linux/sched/types.h>
+ 
+ #include <linux/iio/iio.h>
+ #include <linux/iio/trigger.h>
+@@ -245,6 +249,8 @@ int iio_trigger_attach_poll_func(struct iio_trigger *trig,
+ 	int ret = 0;
+ 	bool notinuse
+ 		= bitmap_empty(trig->pool, CONFIG_IIO_CONSUMERS_PER_TRIGGER);
++	struct sched_param sched_param = { .sched_priority = 0 };
++	struct irq_desc *irq_desc;
+ 
+ 	/* Prevent the module from being removed whilst attached to a trigger */
+ 	__module_get(pf->indio_dev->driver_module);
+@@ -264,6 +270,12 @@ int iio_trigger_attach_poll_func(struct iio_trigger *trig,
+ 	if (ret < 0)
+ 		goto out_put_irq;
+ 
++	/* Triggers may raise transactions on slow busses like I2C.  Using the original RT priority
++	 * of a threaded IRQ may prevent other threaded IRQ handlers from being run.
++	 */
++	irq_desc = irq_to_desc(pf->irq);
++	sched_setscheduler_nocheck(irq_desc->action->thread, SCHED_NORMAL, &sched_param);
++
+ 	/* Enable trigger in driver */
+ 	if (trig->ops && trig->ops->set_trigger_state && notinuse) {
+ 		ret = trig->ops->set_trigger_state(trig, true);
+-- 
+Christian Eggers
+Embedded software developer
+
+Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
+Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRA 57918
+Persoenlich haftender Gesellschafter: Arnold & Richter Cine Technik GmbH
+Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRB 54477
+Geschaeftsfuehrer: Dr. Michael Neuhaeuser; Stephan Schenk; Walter Trauninger; Markus Zeiler
+
