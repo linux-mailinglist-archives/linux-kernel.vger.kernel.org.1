@@ -2,99 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB685262D9B
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 13:03:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B12B262D93
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 13:02:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729824AbgIILDS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 07:03:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33764 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729691AbgIILAX (ORCPT
+        id S1728584AbgIILCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 07:02:34 -0400
+Received: from smtprelay0003.hostedemail.com ([216.40.44.3]:35116 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729692AbgIILBb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 07:00:23 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA96DC061755
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 04:00:18 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id w1so2208434edr.3
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 04:00:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=bEIjD3Fgz65WVghfdzsdddXtKdCJzNlZ7zhZxRvCWO4=;
-        b=ta1IxR+zC2l+CxVuWK0IXfx8IDFUdg4W6uIlxwd8GOP2puX7bFjFjwD6en1DZtAq0M
-         E9QcAicZeZCFIRO47qLqZaPBnImcS/uVSaIt+PORdG2WS4TKVhWACa3zi68sFwn4lCFU
-         0HWv1EEVt3RBsMS87dlaz5A+F67SCDq4kyGnCRCoTJbW37n+ZZ6nyjUXqyEVUEEtj4jM
-         vIJLQ39UPU4nggdLAeIanDPLTLDVgGsS93YnPLh0UYEjWfFkfsVtMtw6+67DFgm0KI5J
-         0ltyTaLq71XvIPE6WlzrgVYS5GoDuJD5GCXrJjRWSxILcFAYMnc0QTReREa48S4fFn7g
-         IYpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=bEIjD3Fgz65WVghfdzsdddXtKdCJzNlZ7zhZxRvCWO4=;
-        b=O/YvgnZjOWnBCCZEARz7RI+FT/lcPwRbEG3cbdfDxntODQ0TRlgEvzvBrkIRuisA4I
-         +EBp6t6C2zlpYP3Kea+/lMgalXinpBPZcs/GOpnFfwLefbU4CbSkhNVhl5lTQ9pnQu6c
-         /qRQU1OJ8hoBT124x39rBfTQEwrKcQnpS3SKtSCA8njFRPYl/+K1tL/ObN90FWmo9/y5
-         wnFeLtFIYQGXdz5YQ6yPAX97quDB3HgBYUHHlvZI8jfVcUd4mCyxOOhr//A/AK/upLqn
-         CdW0g8hE1S1bIeea47YB6fOV36YMc19rdz5jauIWmARaoDi7lquJlSu9DrMR/ju6yMKy
-         g3rg==
-X-Gm-Message-State: AOAM530VrE630d3sri7Q5rodkB5nGFDz7f44tbU22g+SwBIT9WA1XIqB
-        Nkcea81s60vhsWZWoX6hk/te3mPHzSZZSYZi6I2TuA==
-X-Google-Smtp-Source: ABdhPJzbAc3q5qsLeFjf8EqMqhsMHUgeXBTX1AGqLAvUtMVU7zfDWVI09WmBKw/UB3JjpPnBU6/9Wi5vh0sx7g1LRPU=
-X-Received: by 2002:a05:6402:78b:: with SMTP id d11mr3604631edy.341.1599649217273;
- Wed, 09 Sep 2020 04:00:17 -0700 (PDT)
+        Wed, 9 Sep 2020 07:01:31 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 479AC100E7B45;
+        Wed,  9 Sep 2020 11:00:19 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:968:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2194:2199:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3867:3868:3871:3872:4225:4321:5007:10004:10400:10848:11026:11232:11657:11658:11914:12043:12048:12297:12740:12760:12895:13069:13311:13357:13439:14659:14721:21080:21627:30046:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: horn54_50064b2270dc
+X-Filterd-Recvd-Size: 1987
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf04.hostedemail.com (Postfix) with ESMTPA;
+        Wed,  9 Sep 2020 11:00:17 +0000 (UTC)
+Message-ID: <e2dfa0e0c279cd39a0b7ab725a634831e1f188cc.camel@perches.com>
+Subject: Re: [PATCH][next] mt7601u: Use fallthrough pseudo-keyword
+From:   Joe Perches <joe@perches.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Jakub Kicinski <kubakici@wp.pl>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Date:   Wed, 09 Sep 2020 04:00:16 -0700
+In-Reply-To: <20200901173603.GA2701@embeddedor>
+References: <20200901173603.GA2701@embeddedor>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-References: <20200907153135.3307-1-a.fatoum@pengutronix.de>
- <CAMpxmJWJo=wZmBdAxS2JWVMmg+g2dZG9Do7z+ROy0s37rWTw+w@mail.gmail.com> <20200909103053.bhzh3533km7ky3jh@pengutronix.de>
-In-Reply-To: <20200909103053.bhzh3533km7ky3jh@pengutronix.de>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Wed, 9 Sep 2020 13:00:06 +0200
-Message-ID: <CAMpxmJXLnbhjt3ZL1j0vJk5Q6m3tqgT15wWDZSpZJ=sNm4_mKw@mail.gmail.com>
-Subject: Re: [PATCH v2] gpio: siox: explicitly support only threaded irqs
-To:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        Thorsten Scherer <t.scherer@eckelmann.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 9, 2020 at 12:30 PM Uwe Kleine-K=C3=B6nig
-<u.kleine-koenig@pengutronix.de> wrote:
->
-> On Wed, Sep 09, 2020 at 11:43:24AM +0200, Bartosz Golaszewski wrote:
-> > On Mon, Sep 7, 2020 at 5:32 PM Ahmad Fatoum <a.fatoum@pengutronix.de> w=
-rote:
-> > >
-> > > The gpio-siox driver uses handle_nested_irq() to implement its
-> > > interrupt support. This is only capable of handling threaded irq
-> > > actions. For a hardirq action it triggers a NULL pointer oops.
-> > > (It calls action->thread_fn which is NULL then.)
-> > >
-> > > Prevent registration of a hardirq action by setting
-> > > gpio_irq_chip::threaded to true.
-> > >
-> > > Cc: u.kleine-koenig@pengutronix.de
-> > > Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
-> > > ---
-> >
-> > Could you add a Fixes tag? This looks like stable material.
->
-> Ah, we talked about this in the v1 thread---tglx and I agreed we want
-> it. That's:
->
-> Fixes: be8c8facc707 ("gpio: new driver to work with a 8x12 siox")
->
+On Tue, 2020-09-01 at 12:36 -0500, Gustavo A. R. Silva wrote:
+> Replace the existing /* fall through */ comments and its variants with
+> the new pseudo-keyword macro fallthrough[1]. Also, remove unnecessary
+> fall-through markings when it is the case.
+[]
+> diff --git a/drivers/net/wireless/mediatek/mt7601u/dma.c b/drivers/net/wireless/mediatek/mt7601u/dma.c
+[]
+> @@ -196,7 +196,7 @@ static void mt7601u_complete_rx(struct urb *urb)
+>  	default:
+>  		dev_err_ratelimited(dev->dev, "rx urb failed: %d\n",
+>  				    urb->status);
+> -		/* fall through */
+> +		fallthrough;
+		
+		fallthrough to break is odd.
+		break would probably be better.
 
-Thanks, now queued for fixes.
+>  	case 0:
+>  		break;
+>  	}
+> @@ -241,7 +241,7 @@ static void mt7601u_complete_tx(struct urb *urb)
+>  	default:
+>  		dev_err_ratelimited(dev->dev, "tx urb failed: %d\n",
+>  				    urb->status);
+> -		/* fall through */
+> +		fallthrough;
 
-Bartosz
+here too...
+
+>  	case 0:
+>  		break;
+>  	}
+> 
+
