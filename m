@@ -2,92 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20C27262927
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 09:41:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E698F26292E
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 09:49:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729135AbgIIHlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 03:41:35 -0400
-Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:49663 "EHLO
-        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725826AbgIIHle (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 03:41:34 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.west.internal (Postfix) with ESMTP id 7A7573A0;
-        Wed,  9 Sep 2020 03:41:33 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Wed, 09 Sep 2020 03:41:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=NOoNnSLry96ghkpKyZi33e5/if7
-        J5y/CnHP8cELn0SM=; b=b86SL9oLP3SQFqC0LsMaCnSoxIu9bReZg74F1I3p64I
-        fgHAlRtVAKnVw74NrlVXPmRRqh1Qe8ywCwiVpYWtxJ+CTm9QzSWC+mGZoWoSHEgK
-        zMFto7danDXnZ3WqqVC3v3vIxYAq4IcNz2rr4nv1EZRKf0iZmesnAQGzuG3b+97z
-        RgeDmHN4kCqt//iCJ4aQ8cF9/vsstp46SAiPu+Vi7UM35Game9zZMUprS3oiSrga
-        ScBMSh0KM90TKStRPx+sU8St6+tn1p19RVLiW+OuPXOmYCw4osSfQ0F106qnfI1I
-        mmetUz01Z7oC/iqlIoSuQv1FmKjJuZkoAMzMIZK1x6A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=NOoNnS
-        Lry96ghkpKyZi33e5/if7J5y/CnHP8cELn0SM=; b=Spy2W2ONBiALJyEt7BvWSq
-        0W7Z0o84+k6uZyfPQssUvrn1vVK4wMa7KOdt7QYKAY2qGjiC6RgPRsYst72eM3K8
-        lxvI0/gjyziE1Qo22WwOx8c3oDxHZAQOVjzzKkM+L+otaKIEvi+OHzoeix0Ga5B5
-        npZ2UFbwDIf/Mz/6CkTr0xSUckMyjek9rs76WsRKvxpPh4MvEHZtEBXbvfadaL1Z
-        MPcnUSeuAKnLJwhN1w1CS3NT2grJRGhOhaGerJwgaa5cyx3xeXabSSZcu41XOoC/
-        TubQ0kbDCPvBAN1wyP9lH3yw0xPi1zhMcaWvhe1U6DlTM6SQ45QZG2mxWW4bpQTw
-        ==
-X-ME-Sender: <xms:LYdYX3MrM2Ds2bqtA6n94l_jYAGLWbHsV5Q6jbB55OYcqZzc23pb-Q>
-    <xme:LYdYXx_uzP5heL4KE22rzsGjm71eZPA8halIEAnW5TtLVNgN1rc3O-K9QX017Lf78
-    z8zZU0V8cgQWg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudehgedguddviecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghg
-    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuhe
-    ejgfffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecukfhppeek
-    fedrkeeirdejgedrieegnecuvehluhhsthgvrhfuihiivgepudenucfrrghrrghmpehmrg
-    hilhhfrhhomhepghhrvghgsehkrhhorghhrdgtohhm
-X-ME-Proxy: <xmx:LYdYX2SVJfkY8i79FZzfTePTdSaVxnwet3OjKPLRZ7woBXQaLMJ66Q>
-    <xmx:LYdYX7vfS47hbhCaqadNwPJBK4JBqyoAYBBsBJ13xHwqeMctMy0iMw>
-    <xmx:LYdYX_cI-Gd7ktElcOwGbmVKl2xz1BIF69uZKgVfd0GQbheunAk72Q>
-    <xmx:LYdYX3EHGw6FrVld7z0VZdDmJJvcOJMhEc_QH8ENhyKgv2bimaPMPA>
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        by mail.messagingengine.com (Postfix) with ESMTPA id B0F133064A9F;
-        Wed,  9 Sep 2020 03:41:32 -0400 (EDT)
-Date:   Wed, 9 Sep 2020 09:41:43 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the tty tree
-Message-ID: <20200909074143.GC561485@kroah.com>
-References: <20200909155654.76fe3bd6@canb.auug.org.au>
+        id S1728443AbgIIHtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 03:49:40 -0400
+Received: from mga11.intel.com ([192.55.52.93]:33039 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725975AbgIIHtj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 03:49:39 -0400
+IronPort-SDR: xZG0TLYED3DQ3GYwqhvT0aI8PwVcEOBUi8wAu+7LlqaOAlqS4BOqE/mqgPGOFUQzwTt+25BnwL
+ 76u6sbBSYfmQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9738"; a="155764832"
+X-IronPort-AV: E=Sophos;i="5.76,409,1592895600"; 
+   d="scan'208";a="155764832"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2020 00:49:38 -0700
+IronPort-SDR: ZW37UUCOy1QRW9RgXi/SN6w7f1IqMwGoNIL/LukNFw31uIiUoDpn1TkrrHibzmhz3xRQwpe4NY
+ 8NaQ6aNDvEZw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,409,1592895600"; 
+   d="scan'208";a="286140168"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
+  by fmsmga008.fm.intel.com with ESMTP; 09 Sep 2020 00:49:36 -0700
+Date:   Wed, 9 Sep 2020 15:45:21 +0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     mdf@kernel.org, linux-kernel@vger.kernel.org, trix@redhat.com,
+        matthew.gerlach@linux.intel.com, russell.h.weight@intel.com,
+        lgoncalv@redhat.com, hao.wu@intel.com, yilun.xu@intel.com
+Subject: Re: [PATCH] add the FPGA Device Feature List (DFL) EMIF support
+Message-ID: <20200909074521.GB10039@yilunxu-OptiPlex-7050>
+References: <1599553645-26928-1-git-send-email-yilun.xu@intel.com>
+ <20200908090335.GA24693@pi3>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200909155654.76fe3bd6@canb.auug.org.au>
+In-Reply-To: <20200908090335.GA24693@pi3>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 09, 2020 at 03:56:54PM +1000, Stephen Rothwell wrote:
-> Hi all,
+On Tue, Sep 08, 2020 at 11:03:35AM +0200, Krzysztof Kozlowski wrote:
+> On Tue, Sep 08, 2020 at 04:27:24PM +0800, Xu Yilun wrote:
+> > This patch depend on the patchsets: "Modularization of DFL private
+> > feature drivers" & "add dfl bus support to MODULE_DEVICE_TABLE()"
 > 
-> After merging the tty tree, today's linux-next build (arm
-> multi_v7_defconfig) produced this warning:
-> 
-> drivers/tty/serial/8250/8250_bcm2835aux.c: In function 'bcm2835aux_serial_probe':
-> drivers/tty/serial/8250/8250_bcm2835aux.c:154:3: warning: ignoring return value of 'dev_err_probe' declared with attribute 'warn_unused_result' [-Wunused-result]
->   154 |   dev_err_probe(&pdev->dev, ret, "unable to register 8250 port\n");
->       |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> 
-> Introduced by commit
-> 
->   ea43a60b1548 ("serial: 8250: Simplify with dev_err_probe()")
+> The need for bus I understand but why it depends on the "Modularization
+> of DFL private feature drivers"?
 
-Offending patch now dropped from the driver-core tree, thanks.
+Sorry, maybe the titles of the two Patch 0 make confusion.
 
-greg k-h
+The patchset "Modularization of DFL private feature drivers" implements
+the dfl bus.
+
+The "add dfl bus support to MODULE_DEVICE_TABLE()" adds the support for
+dfl driver module autoloading by changing script/mod. It creates the
+dfl-bus.h head file that would be used in this driver.
+
+> 
+> Anyway I will need a stable tag with mentioned dependencies or this will
+> wait for the next cycle.
+
+OK. Maybe I sent it a little earlier. I could wait until the dependencies
+are applied.
+
+Thanks,
+Yilun
+
+> 
+> Best regards,
+> Krzysztof
+> 
+> 
+> > 
+> > https://lore.kernel.org/linux-fpga/1599488581-16386-1-git-send-email-yilun.xu@intel.com/
+> > 
+> > The driver supports the EMIF controller on Intel Programmable
+> > Acceleration Card (PAC). The controller manages the on-board memory of
+> > the PCIe card.
+> > 
+> > Xu Yilun (1):
+> >   memory: dfl-emif: add the DFL EMIF private feature driver
+> > 
+> >  .../ABI/testing/sysfs-bus-dfl-devices-emif         |  25 +++
+> >  drivers/memory/Kconfig                             |   9 +
+> >  drivers/memory/Makefile                            |   2 +
+> >  drivers/memory/dfl-emif.c                          | 211 +++++++++++++++++++++
+> >  4 files changed, 247 insertions(+)
+> >  create mode 100644 Documentation/ABI/testing/sysfs-bus-dfl-devices-emif
+> >  create mode 100644 drivers/memory/dfl-emif.c
+> > 
+> > -- 
+> > 2.7.4
+> > 
