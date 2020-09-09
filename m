@@ -2,136 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92E4C26317C
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:16:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 402BF26318A
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:18:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730938AbgIIQP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 12:15:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730576AbgIIQLl (ORCPT
+        id S1731019AbgIIQSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 12:18:05 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:64112 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730885AbgIIQN0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 12:11:41 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56ED3C061756;
-        Wed,  9 Sep 2020 09:11:40 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id t16so2820126ilf.13;
-        Wed, 09 Sep 2020 09:11:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fi6EPOk4V99JFbqYmEhNPN5TNg8BdROS9o2xQ3RBg5E=;
-        b=rlfBLzoK50AdGuXYFUe5sFCgGZuO8AeB+DJLXTpOd98w2tONPNvWw7PRN8UwfX1kcB
-         qpaUWzVXxXFCR4QS6X1eKPXKlVCOw84PnHMfRJcwucgm7MCtrONclkv3c2KGz6NKRWF6
-         bIpuGEl92zf3lDES3mrCY0o9yN5bbmlesde/nSjHgaz11aqQZJE94l16lobir7khJp1G
-         cAcR6z9rG4oAj+dPwZ9HPfHvbwf3BM1FGFuYK/NIxWfxS1rSM4FBiuz2BiSu5KXeaOPw
-         QTce2zDZfvrieGVGSjHvcdTXGqtBQ81gE7ZOjeMSmma7RQZoOn1sEkpUSmqsZ5lAvgfp
-         /a4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fi6EPOk4V99JFbqYmEhNPN5TNg8BdROS9o2xQ3RBg5E=;
-        b=qJha6f4gmbSWYnm3pGMA6D5vLY6ARzjyxho3VTsLMjBB/cTxAtHxTt94z8Aoa+r5xE
-         EWpB1yVgcPRfJoAy9OD8AfSKjtSZVpG4/+TEplEuCjhedRNFCRDWSymyo8b8qvKZCZTL
-         jrw3/FM1+i9EGAcnFdXFtRyir26nDvRCPWImbaGfJN/vcyM9QQm6INroR9lLzetFSvSK
-         u4XhOKZEwVJp3VAnEkn2CIVldc2MXdTk0oCCSjSHLLgojnkQsmWSq2WBlAxQJ+pdOjgB
-         fzVKx3+seybPo0VHEOcW01GkOfJmc/G1C754Qb9KKbvNskgtlfQcYyQsRgRkE89rR+Q0
-         GbUQ==
-X-Gm-Message-State: AOAM5321nXgtgmyU/XSM+cjnc5QIBRQkFic+sZNGwaw4A+QIhdbi+DdM
-        Di3dKc9UoZfhuVY0iZciEBhYXP4U67TKgyaDnY0=
-X-Google-Smtp-Source: ABdhPJx7KEby+OfH82kXGH3NIHe6v3PfIbd7mVCLU00Uzi2e/UVTJzdsgLsJe7WH+xQ5FqL4JHH6CPwAlr9OBlnQ7WQ=
-X-Received: by 2002:a92:ae06:: with SMTP id s6mr4063803ilh.64.1599667899575;
- Wed, 09 Sep 2020 09:11:39 -0700 (PDT)
-MIME-Version: 1.0
-References: <1598273705-69124-1-git-send-email-alex.shi@linux.alibaba.com>
- <20200824114204.cc796ca182db95809dd70a47@linux-foundation.org>
- <alpine.LSU.2.11.2008241231460.1065@eggly.anvils> <alpine.LSU.2.11.2008262301240.4405@eggly.anvils>
- <alpine.LSU.2.11.2009081640070.7256@eggly.anvils>
-In-Reply-To: <alpine.LSU.2.11.2009081640070.7256@eggly.anvils>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Wed, 9 Sep 2020 09:11:28 -0700
-Message-ID: <CAKgT0Uc_L-Tz_rVJiHc5GUK_ZWOs2wRvez4QGf2wwEjx38qnbg@mail.gmail.com>
-Subject: Re: [PATCH v18 00/32] per memcg lru_lock: reviews
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Alex Shi <alex.shi@linux.alibaba.com>,
+        Wed, 9 Sep 2020 12:13:26 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 089G3hGt094150;
+        Wed, 9 Sep 2020 12:12:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=l58yEDHShi5ObMeKXd9i1HaDyPqzpve8oVA61+yeocE=;
+ b=MkLV2iGRLrJMnX5uAc0U1tKsI6PtfCpTFLq0ne+qlZoGDxasR0vpXy0ZPQFv53fQioKS
+ Njkr3bSJU9cSed7Dznmbo9BmJczRYk4RfUadU7jKzxZzmlvIbclW1mWXcF38rx/3YBHD
+ DHGFzRfbHRhULHpR4pMwew+G5+a7cM4wQ8S6KHO0/Vn8+p0qPD1IaNDa27Ys8fdQ7ayu
+ mkAPh04ADJ9xzS/1izjRTf5b07VXHfPvqzONbas5SsWm0Wr8YBUObSz63a3/j7CZP7rT
+ EXGtrBqSj1ncxxjLbt/3Wb6mGFGOd2DCOaIuQKq8Kp7HtL1bzAl06aqbqtEuMqwEMpQZ BA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33eyv56ynt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 09 Sep 2020 12:12:20 -0400
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 089G4E1s096945;
+        Wed, 9 Sep 2020 12:12:19 -0400
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33eyv56yn1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 09 Sep 2020 12:12:19 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 089GA6XD019174;
+        Wed, 9 Sep 2020 16:12:17 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma06fra.de.ibm.com with ESMTP id 33e5gmrvyy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 09 Sep 2020 16:12:17 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 089GCEnm26673490
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 9 Sep 2020 16:12:14 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 23E2111C054;
+        Wed,  9 Sep 2020 16:12:14 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E726D11C052;
+        Wed,  9 Sep 2020 16:12:12 +0000 (GMT)
+Received: from thinkpad (unknown [9.171.79.102])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Wed,  9 Sep 2020 16:12:12 +0000 (GMT)
+Date:   Wed, 9 Sep 2020 18:12:11 +0200
+From:   Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Mike Rapoport <rppt@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-mm <linux-mm@kvack.org>, Paul Mackerras <paulus@samba.org>,
+        linux-sparc <sparclinux@vger.kernel.org>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Richard Weinberger <richard@nod.at>,
+        linux-x86 <x86@kernel.org>, Russell King <linux@armlinux.org.uk>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Ingo Molnar <mingo@redhat.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Jeff Dike <jdike@addtoit.com>,
+        linux-um <linux-um@lists.infradead.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-arm <linux-arm-kernel@lists.infradead.org>,
+        linux-power <linuxppc-dev@lists.ozlabs.org>,
+        LKML <linux-kernel@vger.kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Tejun Heo <tj@kernel.org>,
-        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        kbuild test robot <lkp@intel.com>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, cgroups@vger.kernel.org,
-        Shakeel Butt <shakeelb@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Rong Chen <rong.a.chen@intel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>, shy828301@gmail.com,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Minchan Kim <minchan@kernel.org>, Qian Cai <cai@lca.pw>
-Content-Type: text/plain; charset="UTF-8"
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [RFC PATCH v2 0/3] mm/gup: fix gup_fast with dynamic page table
+ folding
+Message-ID: <20200909181211.1cad8d28@thinkpad>
+In-Reply-To: <20200908193650.1c1511d0@thinkpad>
+References: <20200907180058.64880-1-gerald.schaefer@linux.ibm.com>
+        <20200907201256.GC1976319@kernel.org>
+        <9bde9857-fdfd-e384-ea27-a14e5a06f1e6@csgroup.eu>
+        <20200908193650.1c1511d0@thinkpad>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-09_09:2020-09-09,2020-09-09 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
+ clxscore=1015 impostorscore=0 mlxlogscore=999 mlxscore=0 bulkscore=0
+ lowpriorityscore=0 phishscore=0 adultscore=0 malwarescore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009090139
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 8, 2020 at 4:41 PM Hugh Dickins <hughd@google.com> wrote:
->
+On Tue, 8 Sep 2020 19:36:50 +0200
+Gerald Schaefer <gerald.schaefer@linux.ibm.com> wrote:
 
-<snip>
+[..]
+> 
+> It seems now that the generalization is very well accepted so far,
+> apart from some apparent issues on arm. Also, merging 2 + 3 and
+> putting them first seems to be acceptable, so we could do that for
+> v3, if there are no objections.
+> 
+> Of course, we first need to address the few remaining issues for
+> arm(32?), which do look quite confusing to me so far. BTW, sorry for
+> the compile error with patch 3, I guess we did the cross-compile only
+> for 1 + 2 applied, to see the bloat-o-meter changes. But I guess
+> patch 3 already proved its usefulness by that :-)
 
-> [PATCH v18 28/32] mm/compaction: Drop locked from isolate_migratepages_block
-> Most of this consists of replacing "locked" by "lruvec", which is good:
-> but please fold those changes back into 20/32 (or would it be 17/32?
-> I've not yet looked into the relationship between those two), so we
-> can then see more clearly what change this 28/32 (will need renaming!)
-> actually makes, to use lruvec_holds_page_lru_lock(). That may be a
-> good change, but it's mixed up with the "locked"->"lruvec" at present,
-> and I think you could have just used lruvec for locked all along
-> (but of course there's a place where you'll need new_lruvec too).
+Umm, replace "arm" with "power", sorry. No issues on arm so far, but
+also no ack I think.
 
-I am good with my patch being folded in. No need to keep it separate.
-
-> [PATCH v18 29/32] mm: Identify compound pages sooner in isolate_migratepages_block
-> NAK. I agree that isolate_migratepages_block() looks nicer this way, but
-> take a look at prep_new_page() in mm/page_alloc.c: post_alloc_hook() is
-> where set_page_refcounted() changes page->_refcount from 0 to 1, allowing
-> a racing get_page_unless_zero() to succeed; then later prep_compound_page()
-> is where PageHead and PageTails get set. So there's a small race window in
-> which this patch could deliver a compound page when it should not.
-
-So the main motivation for the patch was to avoid the case where we
-are having to reset the LRU flag. One question I would have is what if
-we swapped the code block with the __isolate_lru_page_prepare section?
-WIth that we would be taking a reference on the page, then verifying
-the LRU flag is set, and then testing for compound page flag bit.
-Would doing that close the race window since the LRU flag being set
-should indicate that the allocation has already been completed has it
-not?
-
-> [PATCH v18 30/32] mm: Drop use of test_and_set_skip in favor of just setting skip
-> I haven't looked at this yet (but recall that per-memcg lru_lock can
-> change the point at which compaction should skip a contended lock: IIRC
-> the current kernel needs nothing extra, whereas some earlier kernels did
-> need extra; but when I look at 30/32, may find these remarks irrelevant).
->
-> [PATCH v18 31/32] mm: Add explicit page decrement in exception path for isolate_lru_pages
-> The title of this patch is definitely wrong: there was an explicit page
-> decrement there before (put_page), now it's wrapping it up inside a
-> WARN_ON().  We usually prefer to avoid doing functional operations
-> inside WARN/BUGs, but I think I'll overlook that - anyone else worried?
-> The comment is certainly better than what was there before: yes, this
-> warning reflects the difficulty we have in thinking about the
-> TestClearPageLRU protocol: which I'm still not sold on, but
-> agree we should proceed with.  With a change in title, perhaps
-> "mm: add warning where TestClearPageLRU failed on freeable page"?
-> Acked-by: Hugh Dickins <hughd@google.com>
-
-I can update that and resubmit it if needed. I know there were also
-some suggestions from Matthew.
+Thanks to Christophe for the power change, and to Mike for volunteering
+for some cross compilation and cross-arch testing. Will send v3 with
+merged and re-ordered patches after some more testing.
