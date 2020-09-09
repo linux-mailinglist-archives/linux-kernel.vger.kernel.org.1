@@ -2,105 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF66E2633BA
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 19:09:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DDA52633D4
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 19:11:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731092AbgIIRJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 13:09:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34714 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730478AbgIIRJA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 13:09:00 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D83C1C061573;
-        Wed,  9 Sep 2020 10:08:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=MRdA/hKdv0ZcdKd+zTHc7r+qLakKPSZ3f21yjj7iix8=; b=W0z7GgqihZ/V4Z7UeVxZGpUsGi
-        fNtN2kOEVeoJg5PsX4hYNOL9UiKCDC1aL6S8iu96XC/lfTSWIcTebCpqJ42vX/9r6SALHImHwdpEA
-        w7x5dNWyxDOj35NtO6bfUn0jhcKHgNnDIik72Xdto/v3qNPbg2L8s335x9JHltpJEUoFNxzi0jMZM
-        56LECQWH4AagiWAmkERe4aycbsVrjyL+mF0zcaH9PgyWiPunyhED6QEeXT32E2RCY2sPDVmsdl36+
-        X1Kl0YB/gsqBOMjd8Swoai7DBdYFxORo1iIW5YcAOH8/JyAJQk3ipHD1bhuZmBnXCqF23m8pepW8E
-        GSsMNYIg==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kG3aV-0008Hj-Iu; Wed, 09 Sep 2020 17:08:51 +0000
-Date:   Wed, 9 Sep 2020 18:08:51 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>, linux-kernel@vger.kernel.org,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Christian Heimes <christian@python.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Deven Bowers <deven.desai@linux.microsoft.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Eric Chiang <ericchiang@google.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        James Morris <jmorris@namei.org>, Jan Kara <jack@suse.cz>,
-        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Matthew Garrett <mjg59@google.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Philippe =?iso-8859-1?Q?Tr=E9buchet?= 
-        <philippe.trebuchet@ssi.gouv.fr>,
-        Scott Shell <scottsh@microsoft.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Steve Dower <steve.dower@python.org>,
-        Steve Grubb <sgrubb@redhat.com>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Thibaut Sautereau <thibaut.sautereau@clip-os.org>,
-        Vincent Strubel <vincent.strubel@ssi.gouv.fr>,
-        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [RFC PATCH v8 0/3] Add support for AT_INTERPRETED (was O_MAYEXEC)
-Message-ID: <20200909170851.GL6583@casper.infradead.org>
-References: <20200908075956.1069018-1-mic@digikod.net>
- <20200908185026.GU1236603@ZenIV.linux.org.uk>
- <e3223b50-0d00-3b64-1e09-cfb1b9648b02@digikod.net>
+        id S1730415AbgIIRLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 13:11:07 -0400
+Received: from mga11.intel.com ([192.55.52.93]:19272 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730317AbgIIRK6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 13:10:58 -0400
+IronPort-SDR: 4bZWr28V0muMRHpAwVI5HolmG70awak0f/3q3YhNfoSgXz6NVkQIc09KFxNKdXWWY+Uxn0iE4d
+ fHV/EtUi0Ubw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9739"; a="155842243"
+X-IronPort-AV: E=Sophos;i="5.76,409,1592895600"; 
+   d="scan'208";a="155842243"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2020 10:10:56 -0700
+IronPort-SDR: 5qT68Jsn0cJQAktVnxQeDCfV8fH0mpJfxEtiS+SvivGmWwong8TxccfnMWaV91WoWzHQrBbXr3
+ ET5pqWXNskJw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,409,1592895600"; 
+   d="scan'208";a="333886837"
+Received: from otc-nc-03.jf.intel.com (HELO otc-nc-03) ([10.54.39.36])
+  by orsmga008.jf.intel.com with ESMTP; 09 Sep 2020 10:10:56 -0700
+Date:   Wed, 9 Sep 2020 10:10:56 -0700
+From:   "Raj, Ashok" <ashok.raj@intel.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     dwmw2@infradead.org, baolu.lu@linux.intel.com, joro@8bytes.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        eperezma@redhat.com, peterx@redhat.com, mst@redhat.com,
+        stable@vger.kernel.org, Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Keith Busch <keith.busch@intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Ashok Raj <ashok.raj@intel.com>
+Subject: Re: [PATCH] intel-iommu: don't disable ATS for device without page
+ aligned request
+Message-ID: <20200909171056.GF104641@otc-nc-03>
+References: <20200909083432.9464-1-jasowang@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <e3223b50-0d00-3b64-1e09-cfb1b9648b02@digikod.net>
+In-Reply-To: <20200909083432.9464-1-jasowang@redhat.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 09, 2020 at 09:19:11AM +0200, Mickaël Salaün wrote:
-> 
-> On 08/09/2020 20:50, Al Viro wrote:
-> > On Tue, Sep 08, 2020 at 09:59:53AM +0200, Mickaël Salaün wrote:
-> >> Hi,
-> >>
-> >> This height patch series rework the previous O_MAYEXEC series by not
-> >> adding a new flag to openat2(2) but to faccessat2(2) instead.  As
-> >> suggested, this enables to perform the access check on a file descriptor
-> >> instead of on a file path (while opening it).  This may require two
-> >> checks (one on open and then with faccessat2) but it is a more generic
-> >> approach [8].
-> > 
-> > Again, why is that folded into lookup/open/whatnot, rather than being
-> > an operation applied to a file (e.g. O_PATH one)?
-> 
-> I don't understand your question. AT_INTERPRETED can and should be used
-> with AT_EMPTY_PATH. The two checks I wrote about was for IMA.
+Hi Jason
 
-Al is saying you should add a new syscall, not try to fold it into
-some existing syscall.
+On Wed, Sep 09, 2020 at 04:34:32PM +0800, Jason Wang wrote:
+> Commit 61363c1474b1 ("iommu/vt-d: Enable ATS only if the device uses
+> page aligned address.") disables ATS for device that can do unaligned
+> page request.
 
-I agree with him.  Add a new syscall, just like you were told to do it
-last time.
+Did you take a look at the PCI specification?
+Page Aligned Request is in the ATS capability Register.
+
+ATS Capability Register (Offset 0x04h)
+
+bit (5):
+Page Aligned Request - If Set, indicates the Untranslated address is always
+aligned to 4096 byte boundary. Setting this field is recommended. This
+field permits software to distinguish between implemntations compatible
+with this specification and those compatible with an earlier version of
+this specification in which a Requester was permitted to supply anything in
+bits [11:2].
+
+> 
+> This looks wrong, since the commit log said it's because the page
+> request descriptor doesn't support reporting unaligned request.
+
+I don't think you can change the definition from ATS to PRI. Both are
+orthogonal feature.
+
+> 
+> A victim is Qemu's virtio-pci which doesn't advertise the page aligned
+> address. Fixing by disable PRI instead of ATS if device doesn't have
+> page aligned request.
+
+This is a requirement for the Intel IOMMU's.
+
+You say virtio, so is it all emulated device or you talking about some
+hardware that implemented virtio-pci compliant hw? If you are sure the
+device actually does comply with the requirement, but just not enumerating
+the capability, you can maybe work a quirk to overcome that?
+
+Now PRI also has an alignment requirement, and Intel IOMMU's requires that
+as well. If your device supports SRIOV as well, PASID and PRI are
+enumerated just on the PF and not the VF. You might want to pay attension
+to that. We are still working on a solution for that problem.
+
+I don't think this is the right fix for your problem. 
+
+> 
+> Cc: stable@vger.kernel.org
+> Cc: Ashok Raj <ashok.raj@intel.com>
+> Cc: Jacob Pan <jacob.jun.pan@linux.intel.com>
+> Cc: Keith Busch <keith.busch@intel.com>
+> Cc: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> Signed-off-by: Jason Wang <jasowang@redhat.com>
+> ---
+>  drivers/iommu/intel/iommu.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
