@@ -2,81 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08ED6263830
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 23:07:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77058263835
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 23:09:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729953AbgIIVHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 17:07:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43324 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725975AbgIIVHg (ORCPT
+        id S1728289AbgIIVJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 17:09:36 -0400
+Received: from smtprelay0134.hostedemail.com ([216.40.44.134]:34596 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726408AbgIIVJg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 17:07:36 -0400
-Received: from mail.nic.cz (mail.nic.cz [IPv6:2001:1488:800:400::400])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04345C061573;
-        Wed,  9 Sep 2020 14:07:34 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2a0e:b107:ae1:0:3e97:eff:fe61:c680])
-        by mail.nic.cz (Postfix) with ESMTPSA id 4BAF1140A64;
-        Wed,  9 Sep 2020 23:07:27 +0200 (CEST)
-Date:   Wed, 9 Sep 2020 23:07:26 +0200
-From:   Marek Behun <marek.behun@nic.cz>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Andrew Lunn <andrew@lunn.ch>, netdev@vger.kernel.org,
-        linux-leds@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
-        Dan Murphy <dmurphy@ti.com>,
-        =?UTF-8?B?T25kxZllag==?= Jirman <megous@megous.com>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-kernel@vger.kernel.org,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
-        "David S. Miller" <davem@davemloft.net>, devicetree@vger.kernel.org
-Subject: Re: [PATCH net-next + leds v2 1/7] dt-bindings: leds: document
- binding for HW controlled LEDs
-Message-ID: <20200909230726.233b4081@nic.cz>
-In-Reply-To: <20200909205923.GB3056507@bogus>
-References: <20200909162552.11032-1-marek.behun@nic.cz>
-        <20200909162552.11032-2-marek.behun@nic.cz>
-        <20200909182730.GK3290129@lunn.ch>
-        <20200909203310.15ca4e42@dellmb.labs.office.nic.cz>
-        <20200909205923.GB3056507@bogus>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Wed, 9 Sep 2020 17:09:36 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id CC7DB180A7FFF;
+        Wed,  9 Sep 2020 21:09:34 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2194:2199:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3867:3872:3874:4321:5007:10004:10400:10848:11026:11232:11658:11914:12043:12048:12297:12438:12555:12740:12760:12895:13069:13311:13357:13439:14096:14097:14659:21080:21627:21939:30012:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: copy43_3c134c7270e0
+X-Filterd-Recvd-Size: 2033
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf01.hostedemail.com (Postfix) with ESMTPA;
+        Wed,  9 Sep 2020 21:09:33 +0000 (UTC)
+Message-ID: <b0c31cbb82aa64027569dff69803ca3ec2f65501.camel@perches.com>
+Subject: Re: [trivial PATCH] treewide: Convert switch/case fallthrough; to
+ break;
+From:   Joe Perches <joe@perches.com>
+To:     Keith Busch <kbusch@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-crypto@vger.kernel.org
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Jiri Kosina <trivial@kernel.org>,
+        Kees Cook <kees.cook@canonical.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 09 Sep 2020 14:09:32 -0700
+In-Reply-To: <20200909205558.GA3384631@dhcp-10-100-145-180.wdl.wdc.com>
+References: <e6387578c75736d61b2fe70d9783d91329a97eb4.camel@perches.com>
+         <20200909205558.GA3384631@dhcp-10-100-145-180.wdl.wdc.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-100.0 required=5.9 tests=SHORTCIRCUIT,
-        USER_IN_WELCOMELIST,USER_IN_WHITELIST shortcircuit=ham
-        autolearn=disabled version=3.4.2
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.nic.cz
-X-Virus-Scanned: clamav-milter 0.102.2 at mail
-X-Virus-Status: Clean
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 9 Sep 2020 14:59:23 -0600
-Rob Herring <robh@kernel.org> wrote:
-
-> > 
-> > I don't know :) I copied this from other drivers, I once tried setting
-> > up environment for doing checking of device trees with YAML schemas,
-> > and it was a little painful :)  
+On Wed, 2020-09-09 at 13:55 -0700, Keith Busch wrote:
+> On Wed, Sep 09, 2020 at 01:06:39PM -0700, Joe Perches wrote:
+> > diff --git a/crypto/tcrypt.c b/crypto/tcrypt.c
+> > index eea0f453cfb6..8aac5bc60f4c 100644
+> > --- a/crypto/tcrypt.c
+> > +++ b/crypto/tcrypt.c
+> > @@ -2464,7 +2464,7 @@ static int do_test(const char *alg, u32 type, u32 mask, int m, u32 num_mb)
+> >  		test_hash_speed("streebog512", sec,
+> >  				generic_hash_speed_template);
+> >  		if (mode > 300 && mode < 400) break;
+> > -		fallthrough;
+> > +		break;
+> >  	case 399:
+> >  		break;
 > 
-> pip3 install dtschema ?
-> 
-> Can you elaborate on the issue.
-> 
-> Rob
-> 
+> Just imho, this change makes the preceding 'if' look even more
+> pointless. Maybe the fallthrough was a deliberate choice? Not that my
+> opinion matters here as I don't know this module, but it looked a bit
+> odd to me.
 
-I am using Gentoo and didn't want to bloat system with non-portage
-packages, nor try to start a virtual environment. In the end I did it
-in a chroot Ubuntu :)
+It does look odd to me too.
 
-The other thing is that the make dt_binding_check executed for
-quite a long time, and I didn't find a way to just do the binding check
-some of the schemas.
+It's also just a test module though so the
+code isn't particularly crucial.
 
-But I am not criticizing anything, I think that it is a good thing to
-have this system.
+Herbert/David? thoughts?
 
-Marek
+
