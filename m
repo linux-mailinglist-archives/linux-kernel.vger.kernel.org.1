@@ -2,125 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0750F26308F
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 17:30:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAF142630EC
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 17:49:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730270AbgIIPaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 11:30:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46128 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729479AbgIIP1Y (ORCPT
+        id S1727055AbgIIPt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 11:49:28 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:57472 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730509AbgIIPqn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 11:27:24 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44E6EC0619CD
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 08:23:03 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id z22so4127213ejl.7
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 08:23:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gateworks-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WEwEbnNsXZjBgBxJEh5Bf6szwR7IBaWPKXdffPtXQmM=;
-        b=FQfkSVbt0TJjxkLzdkjxMdxChaICGXb5/iU+clkD8FTy59ttPHD+OmEPovEIS/H4Pp
-         NNeHqoRDq/TG4WvBvjKmBYdcbRJ64aerOxpQzmaR40OlM7+WA3Fu9y707eyNtZ187B9R
-         v3/F/AvIapYg00hhLzb4v0++j3gAJYU8ZNS2P491XZCEbOyB3RyHHn7olqX9UiFYM5pg
-         8zEMXt4myqOT0Zf9OqQxxFzm3ZpNdw/Fa9HK4xfNL3SyToUmW3seXEI0mrhVLtsaZ96U
-         Mg9nJNxR0kggGKQPm6QUoOijakKKZyr8QH4QQyRj/0vBMLQphOOKA/uOGLLii8CHfvd4
-         xbIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WEwEbnNsXZjBgBxJEh5Bf6szwR7IBaWPKXdffPtXQmM=;
-        b=esPqziimQbUDWW2/oESp1lENSZuIh5ADImmt9uAM/WAnrff4XevBTW9gsk/CgygbMs
-         ev28Vsa5YFZ3uleQy3yNP6QTz6duKA5u1lgdIFNBx14xNbMJDLA7Ml9XKr4ykbcTL705
-         lcanKtHvvPOrDVB932h4p51lAPlt1JqSji6m0jsaYDRX9CAM9tql/3FOROAcrbzM7VD7
-         LwbXS+FUtzoaiB0n98rnqBzCFnhgO9Ve2d0lqdvBko+RDayQb4Suvee8Vs+Lf90CZuI0
-         RLYW24YokL7swmq9MyYvxEW/diRHlUSNNoqI5o1CVZ+ljRMvq2JXUqfCxhCQb2BnCYQx
-         atYw==
-X-Gm-Message-State: AOAM533QulgMNe+ff889vP4x80//hbltownXr79DueZrYncGRR0SwzIC
-        uSoJWWBIuIUgSMBHim/eXY4UAQH05Ji1eXhBo2m64w==
-X-Google-Smtp-Source: ABdhPJwu2mzQKKbe2wMgt1PJ18pf1x9XZJbozu8RejL84jNJxbbkhDB5KO0zZ7VQklovUtNVWce5atlqkB1u6+ORvh4=
-X-Received: by 2002:a17:906:874f:: with SMTP id hj15mr4349435ejb.539.1599664981802;
- Wed, 09 Sep 2020 08:23:01 -0700 (PDT)
+        Wed, 9 Sep 2020 11:46:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599666400;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=Ky8u5V/th/v/tf+Q7eLpMxHnRviGkQPtzvV05l6+ZFk=;
+        b=E0N7nnj7txGr6G6FHmuoX43wNcZEZBhZPso6iEt95jPVbiP5AkTjaETb0F4ITZ3NiWCipO
+        CGokSV+OyS3n1b5tl29TY0UfrzonEeobAgvLef90RjkDWakwW5/+YJMShxum8NF4yao6nT
+        zKnLt/0KvqTTHB5mTXWnZCvc/0JSySo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-406-wf7vO7Y8PbmhvrThUYqrcw-1; Wed, 09 Sep 2020 09:28:03 -0400
+X-MC-Unique: wf7vO7Y8PbmhvrThUYqrcw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 911788015A4;
+        Wed,  9 Sep 2020 13:28:01 +0000 (UTC)
+Received: from [10.36.113.90] (ovpn-113-90.ams2.redhat.com [10.36.113.90])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 14FAB19C4F;
+        Wed,  9 Sep 2020 13:27:57 +0000 (UTC)
+Subject: Re: [RFC PATCH 00/16] 1GB THP support on x86_64
+To:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     Zi Yan <ziy@nvidia.com>, Roman Gushchin <guro@fb.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>, linux-mm@kvack.org,
+        Rik van Riel <riel@surriel.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        David Nellans <dnellans@nvidia.com>,
+        linux-kernel@vger.kernel.org
+References: <20200902180628.4052244-1-zi.yan@sent.com>
+ <20200903142300.bjq2um5y5nwocvar@box>
+ <20200903163020.GG60440@carbon.dhcp.thefacebook.com>
+ <8e677ead-206d-08dd-d73e-569bd3803e3b@redhat.com>
+ <7E20392E-5ED7-4C22-9555-F3BAABF3CBE9@nvidia.com>
+ <20200908142758.GF27537@casper.infradead.org>
+ <20200909121117.GD87483@ziepe.ca>
+ <20200909123244.GD6583@casper.infradead.org>
+ <20200909131449.GF87483@ziepe.ca>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat GmbH
+Message-ID: <53b360d4-8d16-892b-0f7f-5c4cd95208d8@redhat.com>
+Date:   Wed, 9 Sep 2020 15:27:57 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-References: <20200908145900.4423-1-krzk@kernel.org>
-In-Reply-To: <20200908145900.4423-1-krzk@kernel.org>
-From:   Tim Harvey <tharvey@gateworks.com>
-Date:   Wed, 9 Sep 2020 08:22:49 -0700
-Message-ID: <CAJ+vNU3COwMZuPMLO8XYtKcVsGLawhpzuBC3XRMdkU01ePJi+Q@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: mfd: Correct interrupt flags in examples
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Robert Jones <rjones@gateworks.com>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Device Tree Mailing List <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-power@fi.rohmeurope.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200909131449.GF87483@ziepe.ca>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 8, 2020 at 7:59 AM Krzysztof Kozlowski <krzk@kernel.org> wrote:
->
-> GPIO_ACTIVE_x flags are not correct in the context of interrupt flags.
-> These are simple defines so they could be used in DTS but they will not
-> have the same meaning:
-> 1. GPIO_ACTIVE_HIGH = 0 = IRQ_TYPE_NONE
-> 2. GPIO_ACTIVE_LOW  = 1 = IRQ_TYPE_EDGE_RISING
->
-> Correct the interrupt flags, assuming the author of the code wanted some
-> logical behavior behind the name "ACTIVE_xxx", this is:
->   ACTIVE_LOW => IRQ_TYPE_LEVEL_LOW
->
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> ---
->  Documentation/devicetree/bindings/mfd/act8945a.txt          | 2 +-
->  Documentation/devicetree/bindings/mfd/gateworks-gsc.yaml    | 3 ++-
->  Documentation/devicetree/bindings/mfd/rohm,bd70528-pmic.txt | 2 +-
->  3 files changed, 4 insertions(+), 3 deletions(-)
->
-> diff --git a/Documentation/devicetree/bindings/mfd/act8945a.txt b/Documentation/devicetree/bindings/mfd/act8945a.txt
-> index e6f168db6c72..5ca75d888b4a 100644
-> --- a/Documentation/devicetree/bindings/mfd/act8945a.txt
-> +++ b/Documentation/devicetree/bindings/mfd/act8945a.txt
-> @@ -71,7 +71,7 @@ Example:
->                         pinctrl-names = "default";
->                         pinctrl-0 = <&pinctrl_charger_chglev &pinctrl_charger_lbo &pinctrl_charger_irq>;
->                         interrupt-parent = <&pioA>;
-> -                       interrupts = <45 GPIO_ACTIVE_LOW>;
-> +                       interrupts = <45 IRQ_TYPE_LEVEL_LOW>;
->
->                         active-semi,chglev-gpios = <&pioA 12 GPIO_ACTIVE_HIGH>;
->                         active-semi,lbo-gpios = <&pioA 72 GPIO_ACTIVE_LOW>;
-> diff --git a/Documentation/devicetree/bindings/mfd/gateworks-gsc.yaml b/Documentation/devicetree/bindings/mfd/gateworks-gsc.yaml
-> index 9b6eb50606e8..e541eb0d02ed 100644
-> --- a/Documentation/devicetree/bindings/mfd/gateworks-gsc.yaml
-> +++ b/Documentation/devicetree/bindings/mfd/gateworks-gsc.yaml
-> @@ -147,6 +147,7 @@ required:
->  examples:
->    - |
->      #include <dt-bindings/gpio/gpio.h>
-> +    #include <dt-bindings/interrupt-controller/irq.h>
->      i2c {
->          #address-cells = <1>;
->          #size-cells = <0>;
-> @@ -155,7 +156,7 @@ examples:
->              compatible = "gw,gsc";
->              reg = <0x20>;
->              interrupt-parent = <&gpio1>;
-> -            interrupts = <4 GPIO_ACTIVE_LOW>;
-> +            interrupts = <4 IRQ_TYPE_LEVEL_LOW>;
->              interrupt-controller;
->              #interrupt-cells = <1>;
->              #address-cells = <1>;
+On 09.09.20 15:14, Jason Gunthorpe wrote:
+> On Wed, Sep 09, 2020 at 01:32:44PM +0100, Matthew Wilcox wrote:
+> 
+>> But here's the thing ... we already allow
+>> 	mmap(MAP_POPULATE | MAP_HUGETLB | MAP_HUGE_1GB)
+>>
+>> So if we're not doing THP, what's the point of this thread?
+> 
+> I wondered that too..
+> 
+>> An madvise flag is a different beast; that's just letting the kernel
+>> know what the app thinks its behaviour will be.  The kernel can pay
+> 
+> But madvise is too late, the VMA already has an address, if it is not
+> 1G aligned it cannot be 1G THP already.
 
-For gateworks-gsc.yaml:
-Acked-By: Tim Harvey <tharvey@gateworks.com>
+That's why user space (like QEMU) is THP-aware and selects an address
+that is aligned to the expected THP granularity (e.g., 2MB on x86_64).
 
-Thanks for finding this!
+-- 
+Thanks,
 
-Tim
+David / dhildenb
+
