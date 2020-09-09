@@ -2,74 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F0C62638E3
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 00:13:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 516672638E7
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 00:15:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729413AbgIIWNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 18:13:52 -0400
-Received: from mx2.suse.de ([195.135.220.15]:48672 "EHLO mx2.suse.de"
+        id S1728442AbgIIWPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 18:15:32 -0400
+Received: from lists.nic.cz ([217.31.204.67]:49558 "EHLO mail.nic.cz"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726726AbgIIWNu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 18:13:50 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B20C3ACDF;
-        Wed,  9 Sep 2020 22:14:04 +0000 (UTC)
-Subject: Re: [PATCH v2] mm/vmscan: fix infinite loop in drop_slab_node
-To:     Matthew Wilcox <willy@infradead.org>,
-        Chris Down <chris@chrisdown.name>
-Cc:     zangchunxin@bytedance.com, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>
-References: <20200909152047.27905-1-zangchunxin@bytedance.com>
- <16906d44-9e3c-76a1-f1a9-ced61e865467@suse.cz>
- <20200909214724.GA1577471@chrisdown.name>
- <20200909215209.GP6583@casper.infradead.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <4e022a8c-68da-a322-4101-926a0bb9d44b@suse.cz>
-Date:   Thu, 10 Sep 2020 00:13:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1726440AbgIIWPa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 18:15:30 -0400
+Received: from localhost (unknown [IPv6:2a0e:b107:ae1:0:3e97:eff:fe61:c680])
+        by mail.nic.cz (Postfix) with ESMTPSA id 0B3EC140A73;
+        Thu, 10 Sep 2020 00:15:27 +0200 (CEST)
+Date:   Thu, 10 Sep 2020 00:15:26 +0200
+From:   Marek Behun <marek.behun@nic.cz>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     netdev@vger.kernel.org, linux-leds@vger.kernel.org,
+        Dan Murphy <dmurphy@ti.com>,
+        =?UTF-8?B?T25kxZllag==?= Jirman <megous@megous.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Andrew Lunn <andrew@lunn.ch>, linux-kernel@vger.kernel.org,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH net-next + leds v2 2/7] leds: add generic API for LEDs
+ that can be controlled by hardware
+Message-ID: <20200910001526.48a978c4@nic.cz>
+In-Reply-To: <20200909214009.GA16084@ucw.cz>
+References: <20200909162552.11032-1-marek.behun@nic.cz>
+        <20200909162552.11032-3-marek.behun@nic.cz>
+        <20200909204815.GB20388@amd>
+        <20200909232016.138bd1db@nic.cz>
+        <20200909214009.GA16084@ucw.cz>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20200909215209.GP6583@casper.infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-100.0 required=5.9 tests=SHORTCIRCUIT,
+        USER_IN_WELCOMELIST,USER_IN_WHITELIST shortcircuit=ham
+        autolearn=disabled version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.nic.cz
+X-Virus-Scanned: clamav-milter 0.102.2 at mail
+X-Virus-Status: Clean
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/9/20 11:52 PM, Matthew Wilcox wrote:
-> On Wed, Sep 09, 2020 at 10:47:24PM +0100, Chris Down wrote:
->> Vlastimil Babka writes:
->> > - Exit also on other signals such as SIGABRT, SIGTERM? If I write to drop_caches
->> > and think it's too long, I would prefer to kill it by ctrl-c and not just kill
->> 
->> Oh dear, fatal_signal_pending() doesn't consider cases with no more
->> userspace instructions due to SIG_DFL on TERM/INT etc, that seems misleading
->> :-( I had (naively) believed it internally checks the same set as
->> TASK_KILLABLE.
->> 
->> Chuxin, Muchun, can you please make it work using TASK_KILLABLE in a similar
->> way to how schedule_timeout_killable and friends do it instead, so that
->> other signals will be caught?
-> 
-> You're mistaken.
+On Wed, 9 Sep 2020 23:40:09 +0200
+Pavel Machek <pavel@ucw.cz> wrote:
 
-Ah actually it was me who thought fatal_signal_pending() was only for SIGKILL,
-OOM and whatnot. Sorry for the noise.
-
->         if (sig_fatal(p, sig) &&
->             !(signal->flags & SIGNAL_GROUP_EXIT) &&
->             !sigismember(&t->real_blocked, sig) &&
->             (sig == SIGKILL || !p->ptrace)) {
-> ...
->                                 sigaddset(&t->pending.signal, SIGKILL);
+> > > 
+> > > 80 columns :-) (and please fix that globally, at least at places where
+> > > it is easy, like comments).
+> > >   
+> > 
+> > Linux is at 100 columns now since commit bdc48fa11e46, commited by
+> > Linus. See
+> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/scripts/checkpatch.pl?h=v5.9-rc4&id=bdc48fa11e46f867ea4d75fa59ee87a7f48be144
+> > There was actually an article about this on Phoronix, I think.  
 > 
-> static inline int __fatal_signal_pending(struct task_struct *p)
-> {
->         return unlikely(sigismember(&p->pending.signal, SIGKILL));
-> }
-> 
+> It is not. Checkpatch no longer warns about it, but 80 columns is
+> still preffered, see Documentation/process/coding-style.rst . Plus,
+> you want me to take the patch, not Linus.
 
+Very well, I shall rewrap it to 80 columns :)
+
+Marek
