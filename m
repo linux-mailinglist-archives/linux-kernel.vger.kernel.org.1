@@ -2,92 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4A502633B7
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 19:09:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C73662633A4
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 19:08:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730892AbgIIRJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 13:09:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36956 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730354AbgIIPgM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 11:36:12 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 00C142078E;
-        Wed,  9 Sep 2020 15:36:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599665771;
-        bh=3HW7/YZpNR5PKfJypmmXKtFx2FgzoWRoaPzw05ImMYU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=wLzlH809IZZ8Q09B/sG7jf9PBljl6iCXX/4tdxMzMRKUtkG2wiGZR4Cc90e61dTy5
-         1dUPctUxZ8MElnHsnXk2AIxOxLjiSoNmcaIMcOMyywsWtCaAc//woQfJxCoEJg7YY+
-         UF4UtexqtQji6PJ8oc/lVuKjdWwKoCies9lvjLG8=
-Date:   Wed, 9 Sep 2020 16:35:25 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Dan Murphy <dmurphy@ti.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        "tiwai@suse.com" <tiwai@suse.com>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC] Device addition to the tlv320adcx140 and tas2562
-Message-ID: <20200909153525.GF4926@sirena.org.uk>
-References: <8c47c81f-5f83-2cf4-7bf1-62201b35bed3@ti.com>
+        id S1730638AbgIIRIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 13:08:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48334 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730393AbgIIPgz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 11:36:55 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C7B6C06134A;
+        Wed,  9 Sep 2020 08:36:55 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id u4so4102092ljd.10;
+        Wed, 09 Sep 2020 08:36:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=XU1ZtzBl+1dsx6yIj55gnRA9ur3suV6Xeost/94vjf4=;
+        b=LwGh4anNyth/MyytVIlJfhNHjNXoiiWeSRiwuxbEl22Enwzo69J1kUgmxiFRa8kuJQ
+         Od5ZbS41PBUKMr0sXT3rOrJ34xiX5lGUpiKlRZsLZvoV4lwe4Yp0oQeSeKXwOhDzXZf/
+         u/PkWxKP4/VU3bh18T70yCFyKT/pWhd9WdIAbbVsL3i+Vb83WVLYVELRBxbgNf4BPaij
+         C3KSsmX4EWkB8kv3OTmy+MwgOBpIXhYBkp09nKKXM0WMY4pBa9nVyTY+KWoLRttAPQPt
+         pkvR3HKd0TgZ37ImaTmSYnHLBa5IGaGM2bxLHvQBwsbu8c0VMWQr6mX8AtpaaQty7mvq
+         Bmng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=XU1ZtzBl+1dsx6yIj55gnRA9ur3suV6Xeost/94vjf4=;
+        b=OjNFcuYNbwePWkCSqIKWGZJrJOIsRJY1DcxuLfRvccYW8Eni2phv62gugY+MFGDKPP
+         bLEkTpfj2tW/8aO+wrdYWEqTj+Xxory3SeJfyzuGv3G1BWVAyiZRlfGzshcNFeNabfQK
+         Ax7YOt1PlKY59fYGc4OxHaBQC3iWS0ZtmSBU1MzHTFb+gN8I8jACxfpDdxp9W9Ai/Pfb
+         4BxroVTQ4ZnMgggp2Ej2cwRzknt5d1vfxffNnYHA4RF2oDqKPzbJRmzHNb/9oYgsCLTs
+         nFETzThwPQoh7BI+Xc4I4I7X6XeDbwj91SVGbgpGKrGUVzlripkGBShtQKFuythL9l+/
+         1EoQ==
+X-Gm-Message-State: AOAM533UacRNqycNh0qymW+4XqwzcGVEQiaWCHD+AKDGAVGVDFGfct5n
+        wq/iKEiLk65/Ci7USNF09anfAHDYvE0=
+X-Google-Smtp-Source: ABdhPJwzVCRzTQ0E8502ffif0fVJTnPlR6Fvt/HW9AaMtT5L4hkrtvW9IZIKYK8m+eg+fhnS69mYhw==
+X-Received: by 2002:a2e:9c9:: with SMTP id 192mr2037989ljj.197.1599665813443;
+        Wed, 09 Sep 2020 08:36:53 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
+        by smtp.googlemail.com with ESMTPSA id t82sm645752lff.43.2020.09.09.08.36.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Sep 2020 08:36:52 -0700 (PDT)
+Subject: Re: [PATCH v7 00/34] Improvements for Tegra I2C driver
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        linux-tegra@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20200908224006.25636-1-digetx@gmail.com>
+ <CAHp75Vdh6bErqeO-ki2xsS9jEeoy4mKF1h0Jw_HM6UpukqH_BQ@mail.gmail.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <854a0ed8-35dd-0b25-6c53-4915be0e33e9@gmail.com>
+Date:   Wed, 9 Sep 2020 18:36:50 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="sDKAb4OeUBrWWL6P"
-Content-Disposition: inline
-In-Reply-To: <8c47c81f-5f83-2cf4-7bf1-62201b35bed3@ti.com>
-X-Cookie: MIT:
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAHp75Vdh6bErqeO-ki2xsS9jEeoy4mKF1h0Jw_HM6UpukqH_BQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+09.09.2020 12:11, Andy Shevchenko пишет:
+> On Wed, Sep 9, 2020 at 1:40 AM Dmitry Osipenko <digetx@gmail.com> wrote:
+>>
+>> Hello!
+>>
+>> This series performs refactoring of the Tegra I2C driver code and hardens
+>> the atomic-transfer mode.
+> 
+> I think there is still room for improvement, but let not block it, FWIW,
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
---sDKAb4OeUBrWWL6P
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Sep 09, 2020 at 10:01:51AM -0500, Dan Murphy wrote:
-
-> For the TLV320adcx140 driver I have another device which is register and
-> bitmap compatible but it does not support Analog microphones or Line In l=
-ike
-> the x140.
-
-> Should I add a new driver specifically for this part or should I add the =
-new
-> audio maps, widgets and controls to the existing driver?=A0 This would ma=
-ke
-> this existing driver really big in terms of LoC and object size.
-
-Are they sharing anything (eg, the code is the same but the data tables
-vary) or is it just two unrelated devices?
-
-> Similar question for the TAS2562.=A0 I have a new device that is register=
- and
-> bitmap compatible but removes the I/V sense. Adding this new device to the
-> existing driver wouldn't be as intrusive as the x140 as the audio map and
-> controls are much simpler
-
-That definitely sounds like sharing the driver makes sense.
-
---sDKAb4OeUBrWWL6P
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9Y9jwACgkQJNaLcl1U
-h9BRGgf/a6zuU0wHCq5OOO1RymVVtslMfSmac1WHzxfuSkO69/NsPCzFN75Hf+aU
-41aKjkomQcSwL+xAhIG5dvAKqtgxWUpJ/SmMtFT3EVIv3vwerr2aMlK25j1Im444
-IJzswJ5J7U+FbLc7Ie8bs18+QX3Vnq/iRyt3tgT6sqEvlpPOQuWeS9a0WSVyYpKc
-Ay6Rju4a2WzTYF5+B3XUsNZwpmlBG2UgG+thli0zqg8z/4brKGBSiethg40D6XcV
-NeqLIj0x5pe2H/5T61++/KSibVi0HQZoKeUYnLwHM9am0fqxJtk4I2hFCC0d4wHS
-kMEY/ad8Gny5AGUphwwmp9WxtI3XdQ==
-=kQP4
------END PGP SIGNATURE-----
-
---sDKAb4OeUBrWWL6P--
+Thank you and Michał for helping with the review! Very appreciate this!
