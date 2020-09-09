@@ -2,240 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44F22263B09
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 04:53:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68323263A9C
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 04:36:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730329AbgIJCxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 22:53:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51804 "EHLO
+        id S1730868AbgIJCf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 22:35:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730204AbgIJB5a (ORCPT
+        with ESMTP id S1730635AbgIJCdw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 21:57:30 -0400
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2070d.outbound.protection.outlook.com [IPv6:2a01:111:f400:7eae::70d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67103C0617A4
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 16:29:35 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UKcoj+6EoWVH+QNCscEI5P4ulLHEg/QxjBlBMzTwlQeeI40jG9MalN7qNpgIdlhAc86M2OdhLS/l11C0qvxshq8gJSTujWZYogI+RgHDnUliaFRGWZvxeRZRFQNQWIS5dFpHp6hX/m/eNhBGuZL6n7oxMKPHxLsLThdypzVNk1vlVwXDa+6cvEoZRXHT9NtvHcS8Mvis2gWqK4hWcp7bq+kJj6luDT56bEiLIkfAFE3tr3efRK8+Cxa4kFabBZnbhI86KmpkpXdZl7+QBk8T8qJO8wXZwn2cOQF/k5kdYm6MeAMuMQ6BoWwrCA5MQ9Of9Am539T36LoTnEZuuK/VeQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0+FOCyBQm+nAJpex75lVnuBFIN/TiF/UNojFI8JnQGU=;
- b=LY2J8B7E55vS7+QvcMGH1OnoogpjSvzMkkz/xl7DczL7G/DGl644eRp5tE4yGv4CW1VgX2ezYeC+iF3XyN/Cwf6Sq3G1miPkFBA+z3yXSj/qCny/7K58SXuICpwqqqDGHT8ij3sfucguMhaNQA0eaSCgd861G8EjPy467cFYOeUIOgWdTdREbW1g4pUMcThJ21/S6OjmBm+C87lJhUT+uG5Et2F6poUwthsM5TIMceCFPcxYCyLVKtB7/GmUq2M9nUmTWxfiszmfrrS+SrFKIlGQwwmkoe2jNxXbCjJQO/2lCEAdrgC6yVlAN6pG2IXf1+Zl6MuCqYIhRxfXuKKxMA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
- header.from=os.amperecomputing.com; dkim=pass
- header.d=os.amperecomputing.com; arc=none
+        Wed, 9 Sep 2020 22:33:52 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 182C3C0617BC
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 16:44:29 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id x10so3692892ybj.19
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 16:44:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=os.amperecomputing.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0+FOCyBQm+nAJpex75lVnuBFIN/TiF/UNojFI8JnQGU=;
- b=VPlGjP6BSC5DUvaHZ6yxAYPcHtBYisQR0fmcU6gl26p1eJyxV/kltMD8Kp9ISedYWrX37l7T6L/QOmwJ3hE6EyRTH0AA6ziXd8XO6SIURXvs6/mFw28sJRKyWF26/E4Q+WXHtZZX8VmFvRaztGItDDFHUOUzNyA4aIuBEGpRKjs=
-Authentication-Results: amperecomputing.com; dkim=none (message not signed)
- header.d=none;amperecomputing.com; dmarc=none action=none
- header.from=os.amperecomputing.com;
-Received: from BYAPR01MB4598.prod.exchangelabs.com (2603:10b6:a03:8a::18) by
- BYAPR01MB4213.prod.exchangelabs.com (2603:10b6:a03:13::10) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3348.15; Wed, 9 Sep 2020 23:29:09 +0000
-Received: from BYAPR01MB4598.prod.exchangelabs.com
- ([fe80::419e:edaf:d4b1:3b29]) by BYAPR01MB4598.prod.exchangelabs.com
- ([fe80::419e:edaf:d4b1:3b29%4]) with mapi id 15.20.3370.016; Wed, 9 Sep 2020
- 23:29:09 +0000
-From:   Tuan Phan <tuanphan@os.amperecomputing.com>
-Cc:     patches@amperecomputing.com, suzuki.poulose@arm.com,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v5] perf: arm_dsu: Support DSU ACPI devices
-Date:   Wed,  9 Sep 2020 16:29:00 -0700
-Message-Id: <1599694141-16056-1-git-send-email-tuanphan@os.amperecomputing.com>
-X-Mailer: git-send-email 2.7.4
-Content-Type: text/plain
-X-ClientProxiedBy: BYAPR21CA0025.namprd21.prod.outlook.com
- (2603:10b6:a03:114::35) To BYAPR01MB4598.prod.exchangelabs.com
- (2603:10b6:a03:8a::18)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from aptiov-dev-Latitude-E7470.amperecomputing.com (4.28.12.214) by BYAPR21CA0025.namprd21.prod.outlook.com (2603:10b6:a03:114::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3391.3 via Frontend Transport; Wed, 9 Sep 2020 23:29:08 +0000
-X-Mailer: git-send-email 2.7.4
-X-Originating-IP: [4.28.12.214]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f33bd65d-e15d-44f9-c61b-08d85518267d
-X-MS-TrafficTypeDiagnostic: BYAPR01MB4213:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR01MB4213C145B51600330DF60884E0260@BYAPR01MB4213.prod.exchangelabs.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1923;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Wntox5GWOxrW6Zj+jVb7MqAdGZert08X91KxBmhgn7558wPeMb+VYvPkBB/2XaPObQAyolHHyLV2lKGwZfF2b6GIvVO+FXD39v5Jt0SYI55tnEOPxW87GLxSdES+urwhd9MG5eidnizQPyCXha1kQpPCgqAL4VvPaHEah28eQlbQeG39eRUE/GJ/HUs9ozJ5ZwJEdf7FxZuPa8W3ZkL0Xy+3h1LRYA2HMIm7Dyh2Svc4t2hT4vD2CcA996tOOyABuJk3W79mXrNX1DRsOsdl54P5tdrsE/OsTB6jsoXJr78Ee6RA0fqI3xQU5DTY8Y3W0emPzGSZGX9i2LcJgzFLLCsB2ucwOe0Dek9kFcyO7iZCzUKjCmgXqM+O6FjAQFIOzXMPKgNRhjZ8jtiSlqqvsSYKSUdx2jTwgn/7QYn+oA5cR6c07uvBqjL1rIkvJ5mZZAa9vzaKTbV0sW13MW6Mdw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR01MB4598.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(136003)(39850400004)(366004)(376002)(8936002)(6486002)(2616005)(478600001)(956004)(16526019)(316002)(8676002)(109986005)(966005)(83380400001)(4326008)(26005)(186003)(6506007)(6666004)(52116002)(6512007)(5660300002)(66946007)(86362001)(66476007)(2906002)(54906003)(66556008)(266003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: FAlllZ6LJ3B6rs+duAHm+ECIgE6Qzrk3x5/y9xuV8Xc7ZY9B4ae/m/QPyK4wah/7g7zqpHaZErK4OvSrYQlO9JMmgGTY8dCfh2VC7PC51m9jbcfeMR/jB3SKpjnMIP4EpxevMhsbuhRlq99zHffj/dV7asdLba5mnGvnytx3xsxH0TxrSRqKlGQBzKNthJpbYnP5VnkynGpheSvI0o+EG2Y+PKokIKU9k+jU7OZCVzClS/OAZ4+J3rDkglbPHr+MpNhzwW1H8j3ZWvLT3uDz6685jJqcIlWJpEbZF1U5/PI4CvzF4VBBHTo9dyUTqjZDUeMP+VoBIVv36K+GVoAJ+dpFKchNuQY8F1ro/U+EO7JXq1YwLdLRoH8KRtmrPozavdl2kSbYCBKVyjS3RG51PwUlWyrwvOo9LlFq/X004MhKjeKHmyxZcJ707ppGlSMq9pNCFNKjpMknHRXvextf/GjVL5b1xlMFMQqvbU4bjt7M8IEwnOyP9MQ+urpFNsNuOFs9WXtvIIMKdZWgVmOjOBzdzZQZmTObCEZr4vdFY5dKbl9AYhlB8cTa25L7URcpXN+PT4uGmRJPs1MEBq6E8flo3Dg9Fw0xhfUR/m51zdki/EhkdWTavhGXqriMdwgFv/S5LptAtE8wzpE6i5ZZSg==
-X-OriginatorOrg: os.amperecomputing.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f33bd65d-e15d-44f9-c61b-08d85518267d
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR01MB4598.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Sep 2020 23:29:08.9566
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: LilwY3ZVDbu4X2pZSF921Wm0Werv67dGC+u4pTKZMoDzaAekda6ojsjgtJUWPNp53ozBNNIBayxSsC8tXZtjXw6a6gZNZ5dHGfiTrsMCTz1mZ0/vIa2Zonx3Bj0iegXQ
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR01MB4213
-To:     unlisted-recipients:; (no To-header on input)
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=DHwWEFMQdmnuxNjm/Olb1jwBcPoSrUeSsheT6vgRQVs=;
+        b=NrRNO8Kqhm8eWcB+S17v1Q00oGlXJn0iJO0P2uWSg61PSn6lS0EjyAli4TQ77ChGla
+         6OeFSiAxeQvP9mD/gk2ASnnz37VgtAtjgKbNOft6v5q+p2EOZPI0bRdCM/3IAhzXhy5r
+         piKVJsdISgay54uz00OQk9Pq7T58lzuibbBOUOwv5Nxr7DEjxg3BiY1sQi4fnqPv2VAP
+         CawTLii12bD9YWr8gPd9A2aim7tRpbuyr/Cwevg9r9qMUetz8GHqtTyJNTFnnICnwq9/
+         pZKbkso9nobiOYKK5CRTrnSSb9qNAVFOKLrCONsJrWvPA6/H7My9pqLFzJQdpIIp0f18
+         7AzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=DHwWEFMQdmnuxNjm/Olb1jwBcPoSrUeSsheT6vgRQVs=;
+        b=g77DOAVT7p/5AH8FhsgFwd2resjVTXYGPngLPfWxIebHe4S1nsL+68q29DbstaA9BH
+         kCpjdUkAV4AnQvE/9brt0RAAUBuDCAL4/ge/Ps/in/Af4vWVGzDBQz5OImHl4rAYeA2a
+         sCdGcPUnJ1ynd+dzFObnyMIl2KEnrTbW0IEw4UFVGqJhMF5cQX96zssaDKBpq3MvKNuE
+         yAhv+cLlHjxIFfa0lWum5MBv0A5nb6QOf9a9jZUJaxTb+CIY24gk3W0+1tLYIiRHwG+M
+         5cyRlCeXmzRLikZYtvu8yzk15OFah33KZGEeNbrauXTTBP+pw88XOVHMVKtVjcqzTof2
+         G8RA==
+X-Gm-Message-State: AOAM5301Paa1Ix1tCSrNfAzzcS2JLKT01/4f16Hj9/21jlOwC8SGXBg4
+        18jlBqcnf2iZNyzXL0+DynvYIetpTa0=
+X-Google-Smtp-Source: ABdhPJy+RSLuoVD0yGW7ois0IJb5w2X4VoW/pKKhpkdaqpbInVRXxyUdRDsnmKS+pqa57cpiNKv0/QxF4z0=
+X-Received: from satyaprateek.c.googlers.com ([fda3:e722:ac3:10:24:72f4:c0a8:2d8e])
+ (user=satyat job=sendgmr) by 2002:a25:81cb:: with SMTP id n11mr9544225ybm.490.1599695068787;
+ Wed, 09 Sep 2020 16:44:28 -0700 (PDT)
+Date:   Wed,  9 Sep 2020 23:44:19 +0000
+Message-Id: <20200909234422.76194-1-satyat@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.526.ge36021eeef-goog
+Subject: [PATCH 0/3] add support for inline encryption to device mapper
+From:   Satya Tangirala <satyat@google.com>
+To:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dm-devel@redhat.com
+Cc:     Jens Axboe <axboe@kernel.dk>, Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>,
+        Eric Biggers <ebiggers@google.com>,
+        Satya Tangirala <satyat@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for probing device from ACPI node.
-Each DSU ACPI node and its associated cpus are inside a cluster node.
+This patch series adds support for inline encryption to the device mapper.
 
-Signed-off-by: Tuan Phan <tuanphan@os.amperecomputing.com>
----
-Changes in v5:
-- Used CONFIG_ACPI to fix compiling issue.
+Patch 1 introduces the "passthrough" keyslot manager.
 
-Changes in v4:
-- Addressed Will's comments.
+The regular keyslot manager is designed for inline encryption hardware that
+have only a small fixed number of keyslots. A DM device itself does not
+actually have only a small fixed number of keyslots - it doesn't actually
+have any keyslots in the first place, and programming an encryption context
+into a DM device doesn't make much semantic sense. It is possible for a DM
+device to set up a keyslot manager with some "sufficiently large" number of
+keyslots in its request queue, so that upper layers can use the inline
+encryption capabilities of the DM device's underlying devices, but the
+memory being allocated for the DM device's keyslots is a waste since they
+won't actually be used by the DM device.
 
-Changes in v3:
-- Based on the latest ARM ACPI binding at: https://developer.arm.com/documentation/den0093/c/
+The passthrough keyslot manager solves this issue - when the block layer
+sees that a request queue has a passthrough keyslot manager, it doesn't
+attempt to program any encryption context into the keyslot manager. The
+passthrough keyslot manager only allows the device to expose its inline
+encryption capabilities, and a way for upper layers to evict keys if
+necessary.
 
-Changes in v2:
-- Removed IRQF_SHARED.
-- Fixed ACPI runtime detection.
+There also exist inline encryption hardware that can handle encryption
+contexts directly, and allow users to pass them a data request along with
+the encryption context (as opposed to inline encryption hardware that
+require users to first program a keyslot with an encryption context, and
+then require the users to pass the keyslot index with the data request).
+Such devices can also make use of the passthrough keyslot manager.
 
- drivers/perf/arm_dsu_pmu.c | 61 +++++++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 55 insertions(+), 6 deletions(-)
+Patch 2 introduces the changes for inline encryption support for the device
+mapper. A DM device only exposes the intersection of the crypto
+capabilities of its underlying devices. This is so that in case a bio with
+an encryption context is eventually mapped to an underlying device that
+doesn't support that encryption context, the blk-crypto-fallback's cipher
+tfms are allocated ahead of time by the call to blk_crypto_start_using_key.
 
-diff --git a/drivers/perf/arm_dsu_pmu.c b/drivers/perf/arm_dsu_pmu.c
-index 96ed93c..68d2891 100644
---- a/drivers/perf/arm_dsu_pmu.c
-+++ b/drivers/perf/arm_dsu_pmu.c
-@@ -11,6 +11,7 @@
- #define DRVNAME		PMUNAME "_pmu"
- #define pr_fmt(fmt)	DRVNAME ": " fmt
- 
-+#include <linux/acpi.h>
- #include <linux/bitmap.h>
- #include <linux/bitops.h>
- #include <linux/bug.h>
-@@ -603,18 +604,19 @@ static struct dsu_pmu *dsu_pmu_alloc(struct platform_device *pdev)
- }
- 
- /**
-- * dsu_pmu_dt_get_cpus: Get the list of CPUs in the cluster.
-+ * dsu_pmu_dt_get_cpus: Get the list of CPUs in the cluster
-+ * from device tree.
-  */
--static int dsu_pmu_dt_get_cpus(struct device_node *dev, cpumask_t *mask)
-+static int dsu_pmu_dt_get_cpus(struct device *dev, cpumask_t *mask)
- {
- 	int i = 0, n, cpu;
- 	struct device_node *cpu_node;
- 
--	n = of_count_phandle_with_args(dev, "cpus", NULL);
-+	n = of_count_phandle_with_args(dev->of_node, "cpus", NULL);
- 	if (n <= 0)
- 		return -ENODEV;
- 	for (; i < n; i++) {
--		cpu_node = of_parse_phandle(dev, "cpus", i);
-+		cpu_node = of_parse_phandle(dev->of_node, "cpus", i);
- 		if (!cpu_node)
- 			break;
- 		cpu = of_cpu_node_to_id(cpu_node);
-@@ -631,6 +633,36 @@ static int dsu_pmu_dt_get_cpus(struct device_node *dev, cpumask_t *mask)
- 	return 0;
- }
- 
-+/**
-+ * dsu_pmu_acpi_get_cpus: Get the list of CPUs in the cluster
-+ * from ACPI.
-+ */
-+static int dsu_pmu_acpi_get_cpus(struct device *dev, cpumask_t *mask)
-+{
-+#ifdef CONFIG_ACPI
-+	int cpu;
-+
-+	/*
-+	 * A dsu pmu node is inside a cluster parent node along with cpu nodes.
-+	 * We need to find out all cpus that have the same parent with this pmu.
-+	 */
-+	for_each_possible_cpu(cpu) {
-+		struct acpi_device *acpi_dev;
-+		struct device *cpu_dev = get_cpu_device(cpu);
-+
-+		if (!cpu_dev)
-+			continue;
-+
-+		acpi_dev = ACPI_COMPANION(cpu_dev);
-+		if (acpi_dev &&
-+			acpi_dev->parent == ACPI_COMPANION(dev)->parent)
-+			cpumask_set_cpu(cpu, mask);
-+	}
-+#endif
-+
-+	return 0;
-+}
-+
- /*
-  * dsu_pmu_probe_pmu: Probe the PMU details on a CPU in the cluster.
-  */
-@@ -676,6 +708,7 @@ static int dsu_pmu_device_probe(struct platform_device *pdev)
- {
- 	int irq, rc;
- 	struct dsu_pmu *dsu_pmu;
-+	struct fwnode_handle *fwnode = dev_fwnode(&pdev->dev);
- 	char *name;
- 	static atomic_t pmu_idx = ATOMIC_INIT(-1);
- 
-@@ -683,7 +716,16 @@ static int dsu_pmu_device_probe(struct platform_device *pdev)
- 	if (IS_ERR(dsu_pmu))
- 		return PTR_ERR(dsu_pmu);
- 
--	rc = dsu_pmu_dt_get_cpus(pdev->dev.of_node, &dsu_pmu->associated_cpus);
-+	if (IS_ERR_OR_NULL(fwnode))
-+		return -ENOENT;
-+
-+	if (is_of_node(fwnode))
-+		rc = dsu_pmu_dt_get_cpus(&pdev->dev, &dsu_pmu->associated_cpus);
-+	else if (is_acpi_device_node(fwnode))
-+		rc = dsu_pmu_acpi_get_cpus(&pdev->dev, &dsu_pmu->associated_cpus);
-+	else
-+		return -ENOENT;
-+
- 	if (rc) {
- 		dev_warn(&pdev->dev, "Failed to parse the CPUs\n");
- 		return rc;
-@@ -752,11 +794,19 @@ static const struct of_device_id dsu_pmu_of_match[] = {
- 	{ .compatible = "arm,dsu-pmu", },
- 	{},
- };
-+MODULE_DEVICE_TABLE(of, dsu_pmu_of_match);
-+
-+static const struct acpi_device_id dsu_pmu_acpi_match[] = {
-+	{ "ARMHD500", 0},
-+	{},
-+};
-+MODULE_DEVICE_TABLE(acpi, dsu_pmu_acpi_match);
- 
- static struct platform_driver dsu_pmu_driver = {
- 	.driver = {
- 		.name	= DRVNAME,
- 		.of_match_table = of_match_ptr(dsu_pmu_of_match),
-+		.acpi_match_table = ACPI_PTR(dsu_pmu_acpi_match),
- 		.suppress_bind_attrs = true,
- 	},
- 	.probe = dsu_pmu_device_probe,
-@@ -826,7 +876,6 @@ static void __exit dsu_pmu_exit(void)
- module_init(dsu_pmu_init);
- module_exit(dsu_pmu_exit);
- 
--MODULE_DEVICE_TABLE(of, dsu_pmu_of_match);
- MODULE_DESCRIPTION("Perf driver for ARM DynamIQ Shared Unit");
- MODULE_AUTHOR("Suzuki K Poulose <suzuki.poulose@arm.com>");
- MODULE_LICENSE("GPL v2");
+Each DM target can now also specify that it "may_passthrough_inline_crypto"
+to opt-in to supporting passing through the underlying inline encryption
+capabilities.  This flag is needed because it doesn't make much semantic
+sense for certain targets like dm-crypt to expose the underlying inline
+encryption capabilities to the upper layers. Again, the DM exposes inline
+encryption capabilities of the underlying devices only if all of them
+opt-in to passing through inline encryption support.
+
+This patch doesn't handle the possibility that the crypto capabilities of a
+DM device may change at runtime after the initial table is loaded. While it
+may be possible to handle the case with (possibly quite) some effort, the
+use case might be unlikely enough in practice that it doesn't matter right
+now. This patch also only exposes the intersection of the underlying
+device's capabilities, which has the effect of causing en/decryption of a
+bio to fall back to the kernel crypto API (if the fallback is enabled)
+whenever any of the underlying devices doesn't support the encryption
+context of the bio - it might be possible to make the bio only fall back to
+the kernel crypto API if the bio's target underlying device doesn't support
+the bio's encryption context, but again, the use case may be uncommon
+enough in the first place not to warrant worrying about it right now.
+
+Patch 3 makes some DM targets opt-in to passing through inline encryption
+support. It does not (yet) try to enable this option with dm-raid, since
+users can "hot add" disks to a raid device, which makes this not completely
+straightforward (we'll need to ensure that any "hot added" disks must have
+a superset of the inline encryption capabilities of the rest of the disks
+in the raid device, due to the way Patch 2 of this series works).
+
+Eric Biggers (2):
+  dm: add support for passing through inline crypto support
+  dm: enable may_passthrough_inline_crypto on some targets
+
+Satya Tangirala (1):
+  block: keyslot-manager: Introduce passthrough keyslot manager
+
+ block/blk-crypto.c              |  1 +
+ block/keyslot-manager.c         | 75 +++++++++++++++++++++++++++
+ drivers/md/dm-core.h            |  4 ++
+ drivers/md/dm-flakey.c          |  1 +
+ drivers/md/dm-linear.c          |  1 +
+ drivers/md/dm-table.c           | 52 +++++++++++++++++++
+ drivers/md/dm-zero.c            |  1 +
+ drivers/md/dm.c                 | 92 ++++++++++++++++++++++++++++++++-
+ include/linux/device-mapper.h   |  6 +++
+ include/linux/keyslot-manager.h |  9 ++++
+ 10 files changed, 241 insertions(+), 1 deletion(-)
+
 -- 
-2.7.4
+2.28.0.618.gf4bc123cb7-goog
 
