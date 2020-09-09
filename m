@@ -2,79 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A7E1263534
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 20:00:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C3AE2635CE
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 20:20:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728617AbgIISAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 14:00:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57902 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726408AbgIISA1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 14:00:27 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A408B21D46;
-        Wed,  9 Sep 2020 18:00:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599674427;
-        bh=DOoeeveQ0VVxlLlCresq8YojZcwhQfJRmwWG5zSLuGg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=M1q8qW/vg1zJJuFBbGYcAIjxf2ZRs8UV/CV86yVYc6HybFmi8FZUaiaghemU8umk3
-         t2L804MJhHcZhZa/dJ4tjsonnPJogiW9MpI1RMn42yRROc4BKJcXAE88oJ40pbPbAs
-         fLq1erl/PaG9DeTrhWssNqZ1do2nkeiBnRhO1eNY=
-Date:   Wed, 9 Sep 2020 20:00:36 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
-        linux- stable <stable@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH 5.8 000/186] 5.8.8-rc1 review
-Message-ID: <20200909180036.GB1003763@kroah.com>
-References: <20200908152241.646390211@linuxfoundation.org>
- <CA+G9fYsUF_7qVThy7Q-HcSs19_VsGnqCJCYTcpJmwdx0oBpO0g@mail.gmail.com>
+        id S1730021AbgIISUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 14:20:51 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:37134 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725772AbgIISUp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 14:20:45 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 089EdGeS055361;
+        Wed, 9 Sep 2020 14:41:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
+ date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=corp-2020-01-29;
+ bh=h6y6WG3zhGQaU+uqolHKa4rZq0wEiHiUEuGCpqBnCxU=;
+ b=qXgkdU5hP/usLZQAIcf8Iy8dOMot2CleWzLeMSLZsHLWujbogAtw8nQ+j711GUARiayq
+ wm/NGaUciipGKRjuqZXyRQwTlWae9zJ25IhwKOS7y/yo3Ohceg2rFtJ04YHMoe/00KF+
+ y2nKY7qwlYooHb7lLP4Y7Si0BkE7qq+Dverptuy7epWWCG36t19+l1v7I4tEJnoyXZ2Q
+ MNz+fg/XXuhLZRYU2T/7ZjfESETnCm0pz4b+h9beXyduqBsyZ9aGS2hthV/SCsRO8ky3
+ bd+AGP3xkR0045C00NmkSYf7EvM+opd0ZmoHNISsRbLs6Vujj+sLl69MkekGb/gt306a DA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 33c23r29ws-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 09 Sep 2020 14:41:32 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 089Ef4EG032991;
+        Wed, 9 Sep 2020 14:41:31 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3020.oracle.com with ESMTP id 33cmk6prw1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 09 Sep 2020 14:41:31 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 089EfUC6034192;
+        Wed, 9 Sep 2020 14:41:31 GMT
+Received: from localhost.localdomain (dhcp-10-65-175-55.vpn.oracle.com [10.65.175.55])
+        by aserp3020.oracle.com with ESMTP id 33cmk6pru6-2;
+        Wed, 09 Sep 2020 14:41:31 +0000
+From:   Tom Hromatka <tom.hromatka@oracle.com>
+To:     tom.hromatka@oracle.com, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, fweisbec@gmail.com,
+        tglx@linutronix.de, mingo@kernel.org, adobriyan@gmail.com
+Subject: [RESEND PATCH 1/2] tick-sched: Do not clear the iowait and idle times
+Date:   Wed,  9 Sep 2020 08:41:21 -0600
+Message-Id: <20200909144122.77210-2-tom.hromatka@oracle.com>
+X-Mailer: git-send-email 2.25.4
+In-Reply-To: <20200909144122.77210-1-tom.hromatka@oracle.com>
+References: <20200909144122.77210-1-tom.hromatka@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+G9fYsUF_7qVThy7Q-HcSs19_VsGnqCJCYTcpJmwdx0oBpO0g@mail.gmail.com>
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9738 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 priorityscore=1501
+ mlxlogscore=999 mlxscore=0 bulkscore=0 suspectscore=0 spamscore=0
+ malwarescore=0 phishscore=0 lowpriorityscore=0 clxscore=1015
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009090132
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 09, 2020 at 11:18:57AM +0530, Naresh Kamboju wrote:
-> On Tue, 8 Sep 2020 at 21:05, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > This is the start of the stable review cycle for the 5.8.8 release.
-> > There are 186 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> >
-> > Responses should be made by Thu, 10 Sep 2020 15:21:57 +0000.
-> > Anything received after that time might be too late.
-> >
-> > The whole patch series can be found in one patch at:
-> >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.8.8-rc1.gz
-> > or in the git tree and branch at:
-> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.8.y
-> > and the diffstat can be found below.
-> >
-> > thanks,
-> >
-> > greg k-h
-> 
-> Results from Linaro’s test farm.
-> No regressions on arm64, arm, x86_64, and i386.
-> 
-> Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+A customer reported that when a cpu goes offline and then comes back
+online, the overall cpu idle and iowait data in /proc/stat decreases.
+This is wreaking havoc with their cpu usage calculations.
 
-Thanks for testing them all and letting me konw.
+Prior to this patch:
 
-greg k-h
+	        user nice system    idle iowait
+	cpu  1390748  636 209444 9802206  19598
+	cpu1  178384   75  24545 1392450   3025
+
+take cpu1 offline and bring it back online
+
+	        user nice system    idle iowait
+	cpu  1391209  636 209682 8453440  16595
+	cpu1  178440   75  24572     627      0
+
+To prevent this, do not clear the idle and iowait times for the
+cpu that has come back online.
+
+With this patch:
+
+	        user nice system    idle iowait
+	cpu   129913   17  17590  166512    704
+	cpu1   15916    3   2395   20989     47
+
+take cpu1 offline and bring it back online
+
+	        user nice system    idle iowait
+	cpu   130089   17  17686  184625    711
+        cpu1   15942    3   2401   23088     47
+
+Signed-off-by: Tom Hromatka <tom.hromatka@oracle.com>
+---
+ kernel/time/tick-sched.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
+index 3e2dc9b8858c..8103bad7bbd6 100644
+--- a/kernel/time/tick-sched.c
++++ b/kernel/time/tick-sched.c
+@@ -1375,13 +1375,22 @@ void tick_setup_sched_timer(void)
+ void tick_cancel_sched_timer(int cpu)
+ {
+ 	struct tick_sched *ts = &per_cpu(tick_cpu_sched, cpu);
++	ktime_t idle_sleeptime, iowait_sleeptime;
+ 
+ # ifdef CONFIG_HIGH_RES_TIMERS
+ 	if (ts->sched_timer.base)
+ 		hrtimer_cancel(&ts->sched_timer);
+ # endif
+ 
++	/* save off and restore the idle_sleeptime and the iowait_sleeptime
++	 * to avoid discontinuities and ensure that they are monotonically
++	 * increasing
++	 */
++	idle_sleeptime = ts->idle_sleeptime;
++	iowait_sleeptime = ts->iowait_sleeptime;
+ 	memset(ts, 0, sizeof(*ts));
++	ts->idle_sleeptime = idle_sleeptime;
++	ts->iowait_sleeptime = iowait_sleeptime;
+ }
+ #endif
+ 
+-- 
+2.25.4
+
