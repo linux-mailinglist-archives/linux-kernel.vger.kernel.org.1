@@ -2,123 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36408262439
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 02:51:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5BF526242A
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 02:46:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729860AbgIIAvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 20:51:22 -0400
-Received: from mga14.intel.com ([192.55.52.115]:22693 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728363AbgIIAvV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 20:51:21 -0400
-IronPort-SDR: UEjRTOMSJrxi11+hsedHtycIAkrH73nr6OVMXYFrz8xjSBz0OoHSO9+RS3ShJ+CjE4DRGzShO7
- Q0Gt6GjDDvLQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9738"; a="157525453"
-X-IronPort-AV: E=Sophos;i="5.76,407,1592895600"; 
-   d="scan'208";a="157525453"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2020 17:51:21 -0700
-IronPort-SDR: neuHOgq9l1gHuCN25qtE8sAqX/QJU8vSfuki6yo9jisO826Aixw7SHAUEIC0MEaTOWf29qdjUq
- ydr8xTMMTFVg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,407,1592895600"; 
-   d="scan'208";a="407307247"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.139]) ([10.239.159.139])
-  by fmsmga001.fm.intel.com with ESMTP; 08 Sep 2020 17:51:19 -0700
-Cc:     baolu.lu@linux.intel.com, Joerg Roedel <joro@8bytes.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2 2/5] iommu: Add iommu_dma_free_cpu_cached_iovas
- function
-To:     Tom Murphy <murphyt7@tcd.ie>, iommu@lists.linux-foundation.org
-References: <20200903201839.7327-1-murphyt7@tcd.ie>
- <20200903201839.7327-3-murphyt7@tcd.ie>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <b30be538-a4dd-987e-78df-ff23b703bbe3@linux.intel.com>
-Date:   Wed, 9 Sep 2020 08:45:34 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728633AbgIIAqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 20:46:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52284 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726660AbgIIAqX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 20:46:23 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92E18C061573;
+        Tue,  8 Sep 2020 17:46:22 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BmNcX5L7zz9sTW;
+        Wed,  9 Sep 2020 10:46:20 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1599612380;
+        bh=LcyqUDdmTFo/hpRQO2EuNKhJuisUTlJ8dkPNFe9MyJU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=c6LQWgXAjJWSgZFeuU/T5fGLN50G2Y6jvVmtiPWLTJFQMHSO8GOwRgjNiMkhyA/4i
+         qxESn7015hbbwP4x0HK09pRCY0rvEXHhgC+5ZIK1Xm80k4+HaMt7QqRaxG9LDHY28V
+         6QE07ZT3AhmGjn3M9MaCZ2uhVjzLAPAA+/oIn9WdWIFgj6nSoljzzSHbIJP142kKsP
+         xmRWPLgCatjEqayTG+p5bf6a3E9uiE5AcIqOAxskpdwLHn6AHot4mr+KCW7cO+ZOm1
+         f3h7m8By11mU6rFMG2dUAjfw7MNnWJDM6D62MN5mXoP49dIpJ+NClWVYpdVfHnZBkc
+         UFQV4tQhO7d/Q==
+Date:   Wed, 9 Sep 2020 10:46:19 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: Re: linux-next: Tree for Sep 2 (lib/ubsan.c)
+Message-ID: <20200909104619.0902238c@canb.auug.org.au>
+In-Reply-To: <84531c68-2ac8-924b-5e71-077f9abb2503@infradead.org>
+References: <20200902180950.4bc7c4de@canb.auug.org.au>
+        <3abfa193-a56e-66ba-1080-885906fa0196@infradead.org>
+        <fdf322d4-cc01-2c85-67cd-86b2d6f4ebff@infradead.org>
+        <CAFd5g44g6OrL3fxQNRZ1rR0PruAty8tBZr8JDzM-oonZJRDZyw@mail.gmail.com>
+        <84531c68-2ac8-924b-5e71-077f9abb2503@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20200903201839.7327-3-murphyt7@tcd.ie>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/EXWxTn/MK9ozwgFhmWyLq_J";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/4/20 4:18 AM, Tom Murphy wrote:
-> to dma-iommu ops
-> 
-> Add a iommu_dma_free_cpu_cached_iovas function to allow drivers which
-> use the dma-iommu ops to free cached cpu iovas.
-> 
-> Signed-off-by: Tom Murphy <murphyt7@tcd.ie>
-> ---
->   drivers/iommu/dma-iommu.c | 9 +++++++++
->   include/linux/dma-iommu.h | 3 +++
->   2 files changed, 12 insertions(+)
-> 
-> diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
-> index f69dc9467d71..33f3f4f5edc5 100644
-> --- a/drivers/iommu/dma-iommu.c
-> +++ b/drivers/iommu/dma-iommu.c
-> @@ -50,6 +50,15 @@ struct iommu_dma_cookie {
->   	struct iommu_domain		*fq_domain;
->   };
->   
-> +void iommu_dma_free_cpu_cached_iovas(unsigned int cpu,
-> +		struct iommu_domain *domain)
-> +{
-> +	struct iommu_dma_cookie *cookie = domain->iova_cookie;
-> +	struct iova_domain *iovad = &cookie->iovad;
-> +
-> +	free_cpu_cached_iovas(cpu, iovad);
-> +}
-> +
->   static void iommu_dma_entry_dtor(unsigned long data)
->   {
->   	struct page *freelist = (struct page *)data;
-> diff --git a/include/linux/dma-iommu.h b/include/linux/dma-iommu.h
-> index 2112f21f73d8..316d22a4a860 100644
-> --- a/include/linux/dma-iommu.h
-> +++ b/include/linux/dma-iommu.h
-> @@ -37,6 +37,9 @@ void iommu_dma_compose_msi_msg(struct msi_desc *desc,
->   
->   void iommu_dma_get_resv_regions(struct device *dev, struct list_head *list);
->   
-> +void iommu_dma_free_cpu_cached_iovas(unsigned int cpu,
-> +		struct iommu_domain *domain);
-> +
->   #else /* CONFIG_IOMMU_DMA */
->   
->   struct iommu_domain;
-> 
+--Sig_/EXWxTn/MK9ozwgFhmWyLq_J
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-I will add below in the next version:
+Hi Randy,
 
-diff --git a/include/linux/dma-iommu.h b/include/linux/dma-iommu.h
-index 37df037788f0..ab4bffea3aaa 100644
---- a/include/linux/dma-iommu.h
-+++ b/include/linux/dma-iommu.h
-@@ -81,5 +81,10 @@ static inline void iommu_dma_get_resv_regions(struct 
-device *dev, struct list_he
-  {
-  }
+On Tue, 8 Sep 2020 07:38:31 -0700 Randy Dunlap <rdunlap@infradead.org> wrot=
+e:
+>
+> On 9/4/20 12:59 AM, Brendan Higgins wrote:
+> > On Thu, Sep 3, 2020 at 11:12 PM Randy Dunlap <rdunlap@infradead.org> wr=
+ote: =20
+> >>
+> >> On 9/2/20 8:44 AM, Randy Dunlap wrote: =20
+> >>> On 9/2/20 1:09 AM, Stephen Rothwell wrote: =20
+> >>>> Hi all,
+> >>>>
+> >>>> Changes since 20200828:
+> >>>> =20
+> >>>
+> >>>
+> >>> on i386:
+> >>>
+> >>> ../lib/ubsan.c: In function =E2=80=98ubsan_prologue=E2=80=99:
+> >>> ../lib/ubsan.c:141:2: error: implicit declaration of function =E2=80=
+=98kunit_fail_current_test=E2=80=99; did you mean =E2=80=98kunit_init_test=
+=E2=80=99? [-Werror=3Dimplicit-function-declaration]
+> >>>   kunit_fail_current_test();
+> >>>
+> >>>
+> >>> Full randconfig file is attached.
+> >>> =20
+> >>
+> >> Hi Brendan,
+> >>
+> >> Do you know anything about this build error?
+> >>
+> >> I can't find kunit_fail_current_test() anywhere. =20
+> >=20
+> > Yeah, this got applied for some reason without the prerequisite
+> > patches. It is from a two patch series, the other being here:
+> >=20
+> > https://lore.kernel.org/linux-kselftest/20200813205722.1384108-1-urielg=
+uajardojr@gmail.com/
+> >=20
+> > which in turn depends on another patchset which didn't make it into 5.9.
+> >=20
+> > Again, I don't know why this was applied without it's prereqs. Sorry ab=
+out that.
+> >  =20
+>=20
+> Well.  Who is responsible for this small mess?
+> It is still killing linux-next builds for me (2020-0908).
 
-+static inline void iommu_dma_free_cpu_cached_iovas(unsigned int cpu,
-+                                                  struct iommu_domain 
-*domain)
-+{
-+}
-+
-  #endif /* CONFIG_IOMMU_DMA */
-  #endif /* __DMA_IOMMU_H */
+It came in via the kunit-next tree (Shuah cc'd).  I will revert commit
+abe83f7621ee ("kunit: ubsan integration") today.
 
-Others looks good to me.
+--=20
+Cheers,
+Stephen Rothwell
 
-Best regards,
-baolu
+--Sig_/EXWxTn/MK9ozwgFhmWyLq_J
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9YJdsACgkQAVBC80lX
+0GyK+wgAjTHDhBW6vb4+obLH3Ebgk9/5ea0BdLvPmuHn6X2dVOldQRwLDdPEoqUg
+Xwrz+9aPXZVeSy+rcTEnQIjEB1+qXhmpbBVu9NUtp9yeowrFU0XHAcRafDamVSB4
+o4hHgb4MLvlUd3E22QvacN/Ed4yLFXR4t5x27nlXKpc8heX1h606y9NO878AKVui
+ngi4GaQXUSRlNSbwdMGb7fED9o+HiUsJ1ogxl5U6uF9s4fk5zFcLV+yR+AdiCpxJ
+89aFZtozDKsKVyu7FLLS8xn1MipzPdLdoLaNsR7LHcR8rOuaD1PAXfwj9E9iz/Y2
+XGigs29hVDUCytHm73nPDSTv367JQQ==
+=tOVS
+-----END PGP SIGNATURE-----
+
+--Sig_/EXWxTn/MK9ozwgFhmWyLq_J--
