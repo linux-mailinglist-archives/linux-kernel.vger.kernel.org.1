@@ -2,53 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B647263203
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:33:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26CC82632F5
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:54:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731085AbgIIQdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 12:33:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57256 "EHLO
+        id S1730669AbgIIQyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 12:54:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730710AbgIIQci (ORCPT
+        with ESMTP id S1730552AbgIIP5T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 12:32:38 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB535C0617A9;
-        Wed,  9 Sep 2020 06:37:35 -0700 (PDT)
+        Wed, 9 Sep 2020 11:57:19 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC776C0617BB;
+        Wed,  9 Sep 2020 06:39:48 -0700 (PDT)
 Received: by ozlabs.org (Postfix, from userid 1034)
-        id 4BmjkP4f7pz9sV5; Wed,  9 Sep 2020 23:37:33 +1000 (AEST)
+        id 4BmjkQ2FV7z9sVM; Wed,  9 Sep 2020 23:37:34 +1000 (AEST)
 From:   Michael Ellerman <patch-notifications@ellerman.id.au>
-To:     alexandre.belloni@bootlin.com, robh+dt@kernel.org,
-        a.zummo@towertech.it, mpe@ellerman.id.au, leoyang.li@nxp.com,
-        benh@kernel.crashing.org, Biwen Li <biwen.li@oss.nxp.com>
-Cc:     devicetree@vger.kernel.org, Biwen Li <biwen.li@nxp.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-rtc@vger.kernel.org
-In-Reply-To: <20200527034228.23793-1-biwen.li@oss.nxp.com>
-References: <20200527034228.23793-1-biwen.li@oss.nxp.com>
-Subject: Re: [v3 1/2] dts: ppc: t4240rdb: remove interrupts property
-Message-Id: <159965824243.811679.11439322992907877530.b4-ty@ellerman.id.au>
-Date:   Wed,  9 Sep 2020 23:37:33 +1000 (AEST)
+To:     oprofile-list@lists.sf.net, Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        Colin King <colin.king@canonical.com>,
+        Robert Richter <rric@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+In-Reply-To: <20200804174316.402425-1-colin.king@canonical.com>
+References: <20200804174316.402425-1-colin.king@canonical.com>
+Subject: Re: [PATCH] powerpc/oprofile: fix spelling mistake "contex" -> "context"
+Message-Id: <159965824316.811679.2643424244803475085.b4-ty@ellerman.id.au>
+Date:   Wed,  9 Sep 2020 23:37:34 +1000 (AEST)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 May 2020 11:42:27 +0800, Biwen Li wrote:
-> Since the interrupt pin for RTC DS1374 is not connected
-> to the CPU on T4240RDB, remove the interrupt property
-> from the device tree.
-> 
-> This also fix the following warning for hwclock.util-linux:
-> $ hwclock.util-linux
-> hwclock.util-linux: select() to /dev/rtc0
-> to wait for clock tick timed out
+On Tue, 4 Aug 2020 18:43:16 +0100, Colin King wrote:
+> There is a spelling mistake in a pr_debug message. Fix it.
 
 Applied to powerpc/next.
 
-[1/2] powerpc/dts/t4240rdb: remove interrupts property
-      https://git.kernel.org/powerpc/c/8c7614d648037b0776e0b76cb62911be3b059ea4
-[2/2] powerc/dtc/t1024rdb: remove interrupts property
-      https://git.kernel.org/powerpc/c/843dc8ee23d1b353fa9cc24da3e52be0111d5931
+[1/1] powerpc/oprofile: fix spelling mistake "contex" -> "context"
+      https://git.kernel.org/powerpc/c/346427e668163e85cbbe14e4d9a2ddd49df1536c
 
 cheers
