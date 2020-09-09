@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C037E262BFE
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 11:36:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AEB5262C0C
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 11:36:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726005AbgIIJfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 05:35:53 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:8276 "EHLO
+        id S1730207AbgIIJgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 05:36:35 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:58756 "EHLO
         mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725948AbgIIJfi (ORCPT
+        by vger.kernel.org with ESMTP id S1729912AbgIIJfi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 9 Sep 2020 05:35:38 -0400
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0899WnO6015286;
+Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0899WagC011169;
         Wed, 9 Sep 2020 11:35:20 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=STMicroelectronics;
- bh=AsXvjGauEbCvShCQXkbkbgTM2OrLJ2IWVxMse8nLIso=;
- b=zk9Wn5Lbk9qPHpYqCdVkPDjFQWWLJE1rXvqCjiXv2HCgVvHid5tFPEoTuBkEuj6HKYg4
- pHiZm7Kf/bgRILHP2KyeDhGtasPe56YrMVdCABkzwaR+w2PfrIy3+VyQwo/XAch8THU/
- mQLleJg77r9AhHM7TL8kFeKvpB/fC3Et8QNxDLfW9EJJdbW6AuCo9/oKq1fV7LylLvnF
- lACvCMRFb5QctXrZUmidrx5xZvbCjloOQwYR/l6062Ip+OQSgvLUf26eY02HJdbNW/W1
- WiqYAUL4In/OL8xvuqk9mOBtvVwmcGTwj/XeQy6QJVuFTLTvjmGtZ+qStL4vRdgM98VY pg== 
+ : date : message-id : in-reply-to : references : mime-version :
+ content-type; s=STMicroelectronics;
+ bh=s219bebDsKh1L2vM/1ayxJLzmLx96sr1VIGMZeYyaqg=;
+ b=Wyl2+qVUL1ic0S0ClwNcFUaQZDySPG6x1GZ35qKPJ9aK9Zf5K+IsO2bI/9hz4LpMIM0W
+ XR+vye8ttOF8iFN/teAXPvwhnYqkPP/zXLgiGCX4l2BSOqNMpy/h1rt1x9HtKqNq0ij+
+ NnOhGvLdAgmm9CPmkIHKGKprS4cVLpNfO/K4pQG6p+93sv9hCxqszpeZ5CPMDl4Vh9va
+ 0cT8m0RtIsPVN6sMBHfPzm5j0mlHB/A5ax0Thk1bKkeTAw/z4/nPIw48OrxsIaYzmbBj
+ M09ajOa57KCTm8DzSzIm3N9tA1wDQnxdWOBrsXnWoRUhizVDRfGEj4dMfoB7q8o2t1Ob xQ== 
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 33c051c6gr-1
+        by mx07-00178001.pphosted.com with ESMTP id 33c0euv558-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
         Wed, 09 Sep 2020 11:35:20 +0200
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 8CCA210002A;
-        Wed,  9 Sep 2020 11:35:19 +0200 (CEST)
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 53D20100034;
+        Wed,  9 Sep 2020 11:35:20 +0200 (CEST)
 Received: from Webmail-eu.st.com (gpxdag3node5.st.com [10.75.127.72])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 73410220AE9;
-        Wed,  9 Sep 2020 11:35:19 +0200 (CEST)
-Received: from localhost (10.75.127.47) by GPXDAG3NODE5.st.com (10.75.127.72)
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 3D683220AE9;
+        Wed,  9 Sep 2020 11:35:20 +0200 (CEST)
+Received: from localhost (10.75.127.46) by GPXDAG3NODE5.st.com (10.75.127.72)
  with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 9 Sep 2020 11:35:19
  +0200
 From:   Amelie Delaunay <amelie.delaunay@st.com>
@@ -50,13 +51,15 @@ CC:     <linux-usb@vger.kernel.org>, <devicetree@vger.kernel.org>,
         Fabrice Gasnier <fabrice.gasnier@st.com>,
         Amelie Delaunay <amelie.delaunay@st.com>,
         Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Subject: [PATCH v6 0/3] Add USB role switch support to DWC2
-Date:   Wed, 9 Sep 2020 11:35:08 +0200
-Message-ID: <20200909093511.4728-1-amelie.delaunay@st.com>
+Subject: [PATCH v6 1/3] dt-bindings: usb: dwc2: add optional usb-role-switch property
+Date:   Wed, 9 Sep 2020 11:35:09 +0200
+Message-ID: <20200909093511.4728-2-amelie.delaunay@st.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200909093511.4728-1-amelie.delaunay@st.com>
+References: <20200909093511.4728-1-amelie.delaunay@st.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.75.127.47]
+X-Originating-IP: [10.75.127.46]
 X-ClientProxiedBy: SFHDAG8NODE2.st.com (10.75.127.23) To GPXDAG3NODE5.st.com
  (10.75.127.72)
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
@@ -66,57 +69,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When using usb-c connector (but it can also be the case with a micro-b
-connector), iddig, avalid, bvalid, vbusvalid input signals may not be
-connected to the DWC2 OTG controller.
-DWC2 OTG controller features an overriding control of the PHY voltage valid
-and ID input signals.
-So, missing signals can be forced using usb role from usb role switch and
-this override feature.
+This patch documents the usb-role-switch property in dwc2 bindings, now
+that usb-role-switch support is available in dwc2 driver.
 
-This series adds support for usb role switch to dwc2, by using overriding
-control of the PHY voltage valid and ID input signals.
-
-It has been tested on stm32mp157c-dk2 [1], which has a Type-C connector
-managed by a Type-C port controller, and connected to USB OTG controller.
-
-[1] https://www.st.com/en/evaluation-tools/stm32mp157c-dk2.html
-
-Amelie Delaunay (3):
-  dt-bindings: usb: dwc2: add optional usb-role-switch property
-  usb: dwc2: override PHY input signals with usb role switch support
-  usb: dwc2: don't use ID/Vbus detection if usb-role-switch on STM32MP15
-    SoCs
+Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Acked-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Amelie Delaunay <amelie.delaunay@st.com>
 ---
-Changes in v6:
-- Select USB_ROLE_SWITCH if USB_DWC2, and not only if USB_DWC2_DUAL_ROLE:
-  drd.c is built whatever DWC2 mode (DUAL, HOST, PERIPHERAL) as it is used also
-  to detect attach/detach (so a-valid/b-valid sessions). 
-Changes in v5:
-- Use device_property_read_bool instead of of_read_property_bool in params.c
-Changes in v4:
-- Simplify call to dwc2_force_mode in drd.c
-- Add error_drd label in probe error path in platform.c
-Changes in v3:
-- Fix build issue reported by kernel test robot in drd.c
-Changes in v2:
-- Previous DT patch already in stm32-next branch so removed from v2 patchset
-  "ARM: dts: stm32: enable usb-role-switch on USB OTG on stm32mp15xx-dkx"
-- DWC2 DT bindings update added
-- Build issue reported by kernel test robot fixed
-- Martin's comments taken into account
----
- .../devicetree/bindings/usb/dwc2.yaml         |   4 +
- drivers/usb/dwc2/Kconfig                      |   1 +
- drivers/usb/dwc2/Makefile                     |   2 +-
- drivers/usb/dwc2/core.h                       |   9 +
- drivers/usb/dwc2/drd.c                        | 180 ++++++++++++++++++
- drivers/usb/dwc2/gadget.c                     |   2 +-
- drivers/usb/dwc2/params.c                     |   2 +-
- drivers/usb/dwc2/platform.c                   |  20 +-
- 8 files changed, 215 insertions(+), 5 deletions(-)
- create mode 100644 drivers/usb/dwc2/drd.c
+ Documentation/devicetree/bindings/usb/dwc2.yaml | 4 ++++
+ 1 file changed, 4 insertions(+)
 
+diff --git a/Documentation/devicetree/bindings/usb/dwc2.yaml b/Documentation/devicetree/bindings/usb/dwc2.yaml
+index ffa157a0fce7..fa6612551d08 100644
+--- a/Documentation/devicetree/bindings/usb/dwc2.yaml
++++ b/Documentation/devicetree/bindings/usb/dwc2.yaml
+@@ -102,6 +102,10 @@ properties:
+   dr_mode:
+     enum: [host, peripheral, otg]
+ 
++  usb-role-switch:
++    $ref: /schemas/types.yaml#/definitions/flag
++    description: Support role switch.
++
+   g-rx-fifo-size:
+     $ref: /schemas/types.yaml#/definitions/uint32
+     description: size of rx fifo size in gadget mode.
 -- 
 2.17.1
 
