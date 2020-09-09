@@ -2,92 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0468263A7B
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 04:30:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4266B263A88
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 04:32:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730700AbgIJCa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 22:30:29 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:57712 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730324AbgIJC14 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 22:27:56 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08A2PZkS114583;
-        Thu, 10 Sep 2020 02:27:44 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : mime-version :
- content-type; s=corp-2020-01-29;
- bh=9Ibs7xWJTEoFALDAJQCCP9M59JmFkAkVy3lEm4PabJs=;
- b=FD2ji85HIJiDkq37oNgiXWtPe0WdfYEe1ZeYqlSm8zAu4AduTGZUd+wY3fkIicK+x172
- vBZQlD8ojp3ToHwBcQYMywHKBzy7uofdhXl5YUgGBWwmV/CYCa7LwUy+wq/MPDW2cOuy
- 5bAWieUnyrPmns282VnfofjU/j5fFaSX4HL+2QztoytFzbDXpjjUATFyjH4O49BihRUi
- 9rAlA5vxFfvU246O4o/hFJm/4ljhhwF5WUWe53jCm15PdT/89scZJ5Fb/JyKVEN1oqr+
- 3CJ9xlEGl0pcid0a/fHba2HHx5QBuaO7dw2vHMsbosDjAFJudg/ZVT4UiyO8H77I6L1x IA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 33c23r5b0p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 10 Sep 2020 02:27:44 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08A2QOhJ131789;
-        Thu, 10 Sep 2020 02:27:44 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 33cmkyyqat-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 10 Sep 2020 02:27:44 +0000
-Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08A2RdLP011989;
-        Thu, 10 Sep 2020 02:27:40 GMT
-Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 09 Sep 2020 19:27:38 -0700
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
-        "'Stephen Rothwell'" <sfr@canb.auug.org.au>,
-        "'Linux Next Mailing List'" <linux-next@vger.kernel.org>,
-        "'Linux Kernel Mailing List'" <linux-kernel@vger.kernel.org>,
-        "'linux-scsi'" <linux-scsi@vger.kernel.org>,
-        "'Santosh Yaraganavi'" <santosh.sy@samsung.com>,
-        "'Vinayak Holikatti'" <h.vinayak@samsung.com>,
-        "'Seungwon Jeon'" <essuuj@gmail.com>
-Subject: Re: linux-next: Tree for Jul 20 (scsi/ufs/exynos)
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1a6xy2wph.fsf@ca-mkp.ca.oracle.com>
-References: <20200720194225.17de9962@canb.auug.org.au>
-        <CGME20200720164116epcas5p2021c67d1778e737d7c695f6bdbc5b2d4@epcas5p2.samsung.com>
-        <e6112633-61c9-fa80-8479-fe90bb360868@infradead.org>
-        <06a601d65f86$3d8aeee0$b8a0cca0$@samsung.com>
-        <f72b8022-1ebd-c5a1-2fe2-a3e93854fd0e@infradead.org>
-Date:   Wed, 09 Sep 2020 22:27:36 -0400
-In-Reply-To: <f72b8022-1ebd-c5a1-2fe2-a3e93854fd0e@infradead.org> (Randy
-        Dunlap's message of "Wed, 9 Sep 2020 13:04:24 -0700")
+        id S1730484AbgIJCc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 22:32:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39566 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730920AbgIJCZa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 22:25:30 -0400
+Received: from localhost (lfbn-ncy-1-588-162.w81-51.abo.wanadoo.fr [81.51.203.162])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C863520C09;
+        Wed,  9 Sep 2020 22:48:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599691735;
+        bh=GitDIBjazlg2aEqgUHmiwSZ1KvMEnONcmZnbecWQMHg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qWBOrgBhJ6HySZn5zs3kJR2qeJSz9FHowfK3pRxJokck9fF7dQDomXTHwy2FSiAJl
+         r2nuh0mLY0R75xVoBe/3vRdkWNP04KJ4e8z8/pHu2SzmMgpAy+79VLmBzEK6yT5+2h
+         4KYi+gJ8FApk6hC0cW3PTD13MAv7IOogBAXJAyYM=
+Date:   Thu, 10 Sep 2020 00:48:52 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Marcelo Tosatti <mtosatti@redhat.com>,
+        Phil Auld <pauld@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: Requirements to control kernel isolation/nohz_full at runtime
+Message-ID: <20200909224852.GC20541@lenoir>
+References: <20200901104640.GA13814@lenoir>
+ <20200904204740.GP29330@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9739 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishscore=0 suspectscore=1
- spamscore=0 mlxlogscore=921 adultscore=0 malwarescore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009100021
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9739 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 priorityscore=1501
- mlxlogscore=928 mlxscore=0 bulkscore=0 suspectscore=1 spamscore=0
- malwarescore=0 phishscore=0 lowpriorityscore=0 clxscore=1011
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009100021
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200904204740.GP29330@paulmck-ThinkPad-P72>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Sep 04, 2020 at 01:47:40PM -0700, Paul E. McKenney wrote:
+> On Tue, Sep 01, 2020 at 12:46:41PM +0200, Frederic Weisbecker wrote:
+> > Hi,
+> > 
+> > I'm currently working on making nohz_full/nohz_idle runtime toggable
+> > and some other people seem to be interested as well. So I've dumped
+> > a few thoughts about some pre-requirements to achieve that for those
+> > interested.
+> > 
+> > As you can see, there is a bit of hard work in the way. I'm iterating
+> > that in https://pad.kernel.org/p/isolation, feel free to edit:
+> > 
+> > 
+> > == RCU nocb ==
+> > 
+> > Currently controllable with "rcu_nocbs=" boot parameter and/or through nohz_full=/isolcpus=nohz
+> > We need to make it toggeable at runtime. Currently handling that:
+> > v1: https://lwn.net/Articles/820544/
+> > v2: coming soon
+> 
+> Looking forward to seeing it!
 
-Randy,
+So many ordering riddles I had to put on paper. But I'm getting close to
+something RFC-postable now.
 
-> I am still seeing this in linux-next of 20200909.
-> Was there a patch posted that I missed and is not applied anywhere yet?
+> 
+> > == TIF_NOHZ ==
+> > 
+> > Need to get rid of that in order not to trigger syscall slowpath on CPUs that don't want nohz_full.
+> > Also we don't want to iterate all threads and clear the flag when the last nohz_full CPU exits nohz_full
+> > mode. Prefer static keys to call context tracking on archs. x86 does that well.
+> 
+> Would it help if RCU was able to, on a per-CPU basis, distinguish between
+> nohz_full userspace execution on the one hand and idle-loop execution
+> on the other?  Or do you have some other trick in mind?
 
-This patch became a victim of dropping the Exynos changes in 5.9. I have
-added it back in.
+No it's more about context tracking. Initially it used TIF_NOHZ to enter
+the syscall slow path and call to context tracking on kernel entry and exit.
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+The problem is that it forces all CPUs, including housekeepers, to run into
+that syscall slowpath. So we rather want the context tracking call conditional
+on a per cpu basis and not on a per task basis. And static keys are good for
+that. That's what x86 does.
+
+So RCU can't help much I fear (but hey, first time I can say that! ;-)
+
+Thanks.
