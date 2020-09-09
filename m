@@ -2,202 +2,737 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E2C5262B52
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 11:08:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20A33262B85
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 11:14:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727900AbgIIJH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 05:07:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44614 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727087AbgIIJHu (ORCPT
+        id S1727893AbgIIJOx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 05:14:53 -0400
+Received: from segapp02.wistron.com ([103.200.3.19]:62526 "EHLO
+        segapp01.wistron.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726169AbgIIJOw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 05:07:50 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCAC2C061756
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 02:07:49 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id m6so2112913wrn.0
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 02:07:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:autocrypt:message-id:date
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=/jpvCnRB/HY9hnqXXH+ktB0xBbVQklIkg8Ire344+nU=;
-        b=c2tPwYEYDjUGLEkoxbELD4SOFyNJ1uMDf3DaMpmr5L23YBmeDVB1C5npwyTPw1WK06
-         K1d4QKR4qlTQliBvduKLq2Da7+mSkgWOgS4PyzzE8aiJU+xsaU+eiqtgoaR6avtzKoRD
-         LiNJsbWUf9QqrxJn508NGBUukWU9ClLaHdVgooXs7kVn2unNnN49foc5nZ8fr2Ismgdg
-         SlJerKYGYASYXzTNWxpZ3vT7CvRVs78SuZu7bwcQNWpA1PbEYpkgUUi/5ybXsnsRVkrh
-         fZGE/PXHTi5frPG3Fy5g/ACszH2OmOmCKMNKwxhh4cPjColZrnT2aZwXvzMn1qEkeV29
-         HDIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/jpvCnRB/HY9hnqXXH+ktB0xBbVQklIkg8Ire344+nU=;
-        b=h8IM9+optbB+Wa2y8dFcXRtusGs1X6mEtC5OVo3qSLIZyKYMBlr39Q06zg9mqtOzwN
-         xdYSYU7iZqqVy4NCSGb53h2FfGiYgWyb/AEHzjCQZo5nXT/Pq4OOXArNDYW6m8xbYhjl
-         9rlJ4LRhQybShjxg22+khRy35eRHcrxrZWkoGDfD/PRLAoB0LncUE1b8DKf42hTYmgPb
-         XKLrnt/sFUnsjjhrXNANYYsB47tDD0tGw08IITP7YH/e4caECrrY2Nzh0cvCfHWBqI7d
-         CpqnRFbA3iLS2xrrY5rSg/W41/0+KRl2dyH6Ke2Lo09DKo1N5iDm+u54qXo78XU4LnEz
-         1l7g==
-X-Gm-Message-State: AOAM532saPWE6Junk1B8VnMKvaHVmf3NfNHnbw8/RA8sBbHwe6TSIzjN
-        d5+6WmzhQmKMAylKLkQeohUvAQ==
-X-Google-Smtp-Source: ABdhPJwdL1SulUvOGytNTBBIIfnQR9CTiQxJ7ytzerFaEVPi8TWrlKtJMKE9CkIsFMUJ4V/0NIyKaQ==
-X-Received: by 2002:adf:f24d:: with SMTP id b13mr2750980wrp.316.1599642468243;
-        Wed, 09 Sep 2020 02:07:48 -0700 (PDT)
-Received: from [10.44.66.8] ([212.45.67.2])
-        by smtp.googlemail.com with ESMTPSA id b11sm3196985wrt.38.2020.09.09.02.07.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Sep 2020 02:07:47 -0700 (PDT)
-Subject: Re: [PATCH RFC v6 1/6] dt-bindings: exynos-bus: Add documentation for
- interconnect properties
-To:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Rob Herring <robh@kernel.org>
-Cc:     cw00.choi@samsung.com, krzk@kernel.org, devicetree@vger.kernel.org,
-        a.swigon@samsung.com, myungjoo.ham@samsung.com,
-        inki.dae@samsung.com, sw0312.kim@samsung.com,
-        b.zolnierkie@samsung.com, m.szyprowski@samsung.com,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20200702163724.2218-1-s.nawrocki@samsung.com>
- <CGME20200702163748eucas1p2cf7eab70bc072dea9a95183018b38ad3@eucas1p2.samsung.com>
- <20200702163724.2218-2-s.nawrocki@samsung.com>
- <20200709210448.GA876103@bogus>
- <65af1a5c-8f8a-ef65-07f8-e0b3d04c336c@samsung.com>
- <35d9d396-b553-a815-1f3b-1af4dc37a2ca@samsung.com>
-From:   Georgi Djakov <georgi.djakov@linaro.org>
-Autocrypt: addr=georgi.djakov@linaro.org; prefer-encrypt=mutual; keydata=
- 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
- KEmKjLDvB0pePJkdTw==
-Message-ID: <b711257d-c34b-b609-3ada-312871967b98@linaro.org>
-Date:   Wed, 9 Sep 2020 12:07:46 +0300
+        Wed, 9 Sep 2020 05:14:52 -0400
+X-Greylist: delayed 326 seconds by postgrey-1.27 at vger.kernel.org; Wed, 09 Sep 2020 05:14:34 EDT
+Received: from EXCHAPP01.whq.wistron (unverified [10.37.38.24]) by TWNHUMSW2.wistron.com
+ (Clearswift SMTPRS 5.6.0) with ESMTP id <Te180405e41c0a816701954@TWNHUMSW2.wistron.com>;
+ Wed, 9 Sep 2020 17:09:03 +0800
+Received: from EXCHAPP04.whq.wistron (10.37.38.27) by EXCHAPP01.whq.wistron
+ (10.37.38.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Wed, 9 Sep 2020
+ 17:08:58 +0800
+Received: from gitserver.wistron.com (10.37.38.233) by EXCHAPP04.whq.wistron
+ (10.37.38.27) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
+ Transport; Wed, 9 Sep 2020 17:08:58 +0800
+From:   Ben Pai <ben_pai@wistron.com>
+To:     <robh+dt@kernel.org>, <joel@jms.id.au>, <andrew@aj.id.au>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
+CC:     <claire_ku@wistron.com>, Ben Pai <ben_pai@wistron.com>,
+        Ben Pai <Ben_Pai@wistron.com>
+Subject: [PATCH v1] ARM: dts: aspeed: Add Mowgli BMC platform
+Date:   Wed, 9 Sep 2020 17:08:18 +0800
+Message-ID: <20200909090818.24021-1-ben_pai@wistron.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <35d9d396-b553-a815-1f3b-1af4dc37a2ca@samsung.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TM-SNTS-SMTP: 7DF0D9674DA3C64F4FD13E12B2F8000D3B837E1E5750211A8D67FC849F93AE802000:8
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sylwester,
+The Mowgli BMC is an ASPEED ast2500 based BMC that is part of an
+OpenPower Power9 server.
 
-On 8/28/20 17:49, Sylwester Nawrocki wrote:
-> On 30.07.2020 14:28, Sylwester Nawrocki wrote:
->> On 09.07.2020 23:04, Rob Herring wrote:
->>> On Thu, Jul 02, 2020 at 06:37:19PM +0200, Sylwester Nawrocki wrote:
->>>> Add documentation for new optional properties in the exynos bus nodes:
->>>> samsung,interconnect-parent, #interconnect-cells, bus-width.
->>>> These properties allow to specify the SoC interconnect structure which
->>>> then allows the interconnect consumer devices to request specific
->>>> bandwidth requirements.
->>>>
->>>> Signed-off-by: Artur Świgoń <a.swigon@samsung.com>
->>>> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-> 
->>>> --- a/Documentation/devicetree/bindings/devfreq/exynos-bus.txt
->>>> +++ b/Documentation/devicetree/bindings/devfreq/exynos-bus.txt
->>>> @@ -51,6 +51,13 @@ Optional properties only for parent bus device:
->>>>  - exynos,saturation-ratio: the percentage value which is used to calibrate
->>>>  			the performance count against total cycle count.
->>>>  
->>>> +Optional properties for interconnect functionality (QoS frequency constraints):
->>>> +- samsung,interconnect-parent: phandle to the parent interconnect node; for
->>>> +  passive devices should point to same node as the exynos,parent-bus property.
-> 
->>> Adding vendor specific properties for a common binding defeats the 
->>> point.
-> 
-> Actually we could do without any new property if we used existing interconnect
-> consumers binding to specify linking between the provider nodes. I think those
-> exynos-bus nodes could well be considered both the interconnect providers 
-> and consumers. The example would then be something along the lines 
-> (yes, I know the bus node naming needs to be fixed):
-> 
-> 	soc {
-> 		bus_dmc: bus_dmc {
-> 			compatible = "samsung,exynos-bus";
-> 			/* ... */
-> 			samsung,data-clock-ratio = <4>;
-> 			#interconnect-cells = <0>;
-> 		};
-> 
-> 		bus_leftbus: bus_leftbus {
-> 			compatible = "samsung,exynos-bus";
-> 			/* ... */
-> 			interconnects = <&bus_leftbus &bus_dmc>;
-> 			#interconnect-cells = <0>;
-> 		};
-> 
-> 		bus_display: bus_display {
-> 			compatible = "samsung,exynos-bus";
-> 			/* ... */
-> 			interconnects = <&bus_display &bus_leftbus>;
+Signed-off-by: Ben Pai <Ben_Pai@wistron.com>
+---
+ arch/arm/boot/dts/Makefile                  |   1 +
+ arch/arm/boot/dts/aspeed-bmc-opp-mowgli.dts | 663 ++++++++++++++++++++
+ 2 files changed, 664 insertions(+)
+ create mode 100644 arch/arm/boot/dts/aspeed-bmc-opp-mowgli.dts
 
-Hmm, bus_display being a consumer of itself is a bit odd? Did you mean:
- 			interconnects = <&bus_dmc &bus_leftbus>;
+diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+index 4572db3fa5ae..92edb2e12823 100644
+--- a/arch/arm/boot/dts/Makefile
++++ b/arch/arm/boot/dts/Makefile
+@@ -1381,6 +1381,7 @@ dtb-$(CONFIG_ARCH_ASPEED) += \
+ 	aspeed-bmc-microsoft-olympus.dtb \
+ 	aspeed-bmc-opp-lanyang.dtb \
+ 	aspeed-bmc-opp-mihawk.dtb \
++	aspeed-bmc-opp-mowgli.dtb \
+ 	aspeed-bmc-opp-nicole.dtb \
+ 	aspeed-bmc-opp-palmetto.dtb \
+ 	aspeed-bmc-opp-romulus.dtb \
+diff --git a/arch/arm/boot/dts/aspeed-bmc-opp-mowgli.dts b/arch/arm/boot/dts/aspeed-bmc-opp-mowgli.dts
+new file mode 100644
+index 000000000000..11fd86980162
+--- /dev/null
++++ b/arch/arm/boot/dts/aspeed-bmc-opp-mowgli.dts
+@@ -0,0 +1,663 @@
++// SPDX-License-Identifier: GPL-2.0+
++/dts-v1/;
++#include "aspeed-g5.dtsi"
++#include <dt-bindings/gpio/aspeed-gpio.h>
++#include <dt-bindings/leds/leds-pca955x.h>
++
++/ {
++	model = "Mowgli BMC";
++	compatible = "ibm,mowgli-bmc", "aspeed,ast2500";
++
++
++	chosen {
++		stdout-path = &uart5;
++		bootargs = "console=ttyS4,115200 earlyprintk";
++	};
++
++	memory@80000000 {
++		reg = <0x80000000 0x20000000>;
++	};
++
++	reserved-memory {
++		#address-cells = <1>;
++		#size-cells = <1>;
++		ranges;
++
++		flash_memory: region@98000000 {
++			no-map;
++			reg = <0x98000000 0x04000000>; /* 64M */
++		};
++
++		gfx_memory: framebuffer {
++			size = <0x01000000>;
++			alignment = <0x01000000>;
++			compatible = "shared-dma-pool";
++			reusable;
++		};
++
++		video_engine_memory: jpegbuffer {
++			size = <0x02000000>;
++			alignment = <0x01000000>;
++			compatible = "shared-dma-pool";
++			reusable;
++		};
++	};
++
++	gpio-keys {
++		compatible = "gpio-keys";
++
++		air-water {
++			label = "air-water";
++			gpios = <&gpio ASPEED_GPIO(F, 6) GPIO_ACTIVE_LOW>;
++			linux,code = <ASPEED_GPIO(F, 6)>;
++		};
++
++		checkstop {
++			label = "checkstop";
++			gpios = <&gpio ASPEED_GPIO(J, 2) GPIO_ACTIVE_LOW>;
++			linux,code = <ASPEED_GPIO(J, 2)>;
++		};
++
++		ps0-presence {
++			label = "ps0-presence";
++			gpios = <&gpio ASPEED_GPIO(Z, 2) GPIO_ACTIVE_LOW>;
++			linux,code = <ASPEED_GPIO(Z, 2)>;
++		};
++
++		ps1-presence {
++			label = "ps1-presence";
++			gpios = <&gpio ASPEED_GPIO(Z, 0) GPIO_ACTIVE_LOW>;
++			linux,code = <ASPEED_GPIO(Z, 0)>;
++		};
++
++		id-button {
++			label = "id-button";
++			gpios = <&gpio ASPEED_GPIO(F, 1) GPIO_ACTIVE_LOW>;
++			linux,code = <ASPEED_GPIO(F, 1)>;
++		};
++	};
++
++	gpio-keys-polled {
++		compatible = "gpio-keys-polled";
++		poll-interval = <1000>;
++
++		fan0-presence {
++			label = "fan0-presence";
++			gpios = <&pca9552 9 GPIO_ACTIVE_LOW>;
++			linux,code = <9>;
++		};
++
++		fan1-presence {
++			label = "fan1-presence";
++			gpios = <&pca9552 10 GPIO_ACTIVE_LOW>;
++			linux,code = <10>;
++		};
++
++		fan2-presence {
++			label = "fan2-presence";
++			gpios = <&pca9552 11 GPIO_ACTIVE_LOW>;
++			linux,code = <11>;
++		};
++
++		fan3-presence {
++			label = "fan3-presence";
++			gpios = <&pca9552 12 GPIO_ACTIVE_LOW>;
++			linux,code = <12>;
++		};
++
++		fan4-presence {
++			label = "fan4-presence";
++			gpios = <&pca9552 13 GPIO_ACTIVE_LOW>;
++			linux,code = <13>;
++		};
++	};
++
++	leds {
++		compatible = "gpio-leds";
++
++		front-fault {
++			retain-state-shutdown;
++			default-state = "keep";
++			gpios = <&gpio ASPEED_GPIO(AA, 0) GPIO_ACTIVE_LOW>;
++		};
++
++		power-button {
++			retain-state-shutdown;
++			default-state = "keep";
++			gpios = <&gpio ASPEED_GPIO(AA, 1) GPIO_ACTIVE_LOW>;
++		};
++
++		front-id {
++			retain-state-shutdown;
++			default-state = "keep";
++			gpios = <&gpio ASPEED_GPIO(AA, 2) GPIO_ACTIVE_LOW>;
++		};
++
++		fan0 {
++			retain-state-shutdown;
++			default-state = "keep";
++			gpios = <&pca9552 0 GPIO_ACTIVE_LOW>;
++		};
++
++		fan1 {
++			retain-state-shutdown;
++			default-state = "keep";
++			gpios = <&pca9552 1 GPIO_ACTIVE_LOW>;
++		};
++
++		fan2 {
++			retain-state-shutdown;
++			default-state = "keep";
++			gpios = <&pca9552 2 GPIO_ACTIVE_LOW>;
++		};
++
++		fan3 {
++			retain-state-shutdown;
++			default-state = "keep";
++			gpios = <&pca9552 3 GPIO_ACTIVE_LOW>;
++		};
++
++		fan4 {
++			retain-state-shutdown;
++			default-state = "keep";
++			gpios = <&pca9552 4 GPIO_ACTIVE_LOW>;
++		};
++	};
++
++	fsi: gpio-fsi {
++		compatible = "fsi-master-gpio", "fsi-master";
++		#address-cells = <2>;
++		#size-cells = <0>;
++		no-gpio-delays;
++
++		clock-gpios = <&gpio ASPEED_GPIO(E, 6) GPIO_ACTIVE_HIGH>;
++		data-gpios = <&gpio ASPEED_GPIO(E, 7) GPIO_ACTIVE_HIGH>;
++		mux-gpios = <&gpio ASPEED_GPIO(R, 2) GPIO_ACTIVE_HIGH>;
++		enable-gpios = <&gpio ASPEED_GPIO(D, 0) GPIO_ACTIVE_HIGH>;
++		trans-gpios = <&gpio ASPEED_GPIO(E, 5) GPIO_ACTIVE_HIGH>;
++	};
++
++	iio-hwmon-12v {
++		compatible = "iio-hwmon";
++		io-channels = <&adc 0>;
++	};
++
++	iio-hwmon-5v {
++		compatible = "iio-hwmon";
++		io-channels = <&adc 1>;
++	};
++
++	iio-hwmon-3v {
++		compatible = "iio-hwmon";
++		io-channels = <&adc 2>;
++	};
++
++	iio-hwmon-vdd {
++		compatible = "iio-hwmon";
++		io-channels = <&adc 3>;
++	};
++
++	iio-hwmon-vcs {
++		compatible = "iio-hwmon";
++		io-channels = <&adc 5>;
++	};
++
++	iio-hwmon-vdn {
++		compatible = "iio-hwmon";
++		io-channels = <&adc 7>;
++	};
++
++	iio-hwmon-vio {
++		compatible = "iio-hwmon";
++		io-channels = <&adc 9>;
++	};
++
++	iio-hwmon-vddra {
++		compatible = "iio-hwmon";
++		io-channels = <&adc 11>;
++	};
++
++	iio-hwmon-battery {
++		compatible = "iio-hwmon";
++		io-channels = <&adc 12>;
++	};
++
++	iio-hwmon-vddrb {
++		compatible = "iio-hwmon";
++		io-channels = <&adc 13>;
++	};
++};
++
++&pwm_tacho {
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_pwm0_default &pinctrl_pwm1_default
++		&pinctrl_pwm2_default &pinctrl_pwm3_default
++		&pinctrl_pwm4_default>;
++
++	fan@0 {
++		reg = <0x00>;
++		aspeed,fan-tach-ch = /bits/ 8 <0x00>;
++	};
++
++	fan@1 {
++		reg = <0x01>;
++		aspeed,fan-tach-ch = /bits/ 8 <0x01>;
++	};
++
++	fan@2 {
++		reg = <0x02>;
++		aspeed,fan-tach-ch = /bits/ 8 <0x02>;
++	};
++
++	fan@3 {
++		reg = <0x03>;
++		aspeed,fan-tach-ch = /bits/ 8 <0x03>;
++	};
++
++	fan@4 {
++		reg = <0x04>;
++		aspeed,fan-tach-ch = /bits/ 8 <0x04>;
++	};
++
++	fan@5 {
++		reg = <0x00>;
++		aspeed,fan-tach-ch = /bits/ 8 <0x05>;
++	};
++
++	fan@6 {
++		reg = <0x01>;
++		aspeed,fan-tach-ch = /bits/ 8 <0x06>;
++	};
++
++	fan@7 {
++		reg = <0x02>;
++		aspeed,fan-tach-ch = /bits/ 8 <0x07>;
++	};
++
++	fan@8 {
++		reg = <0x03>;
++		aspeed,fan-tach-ch = /bits/ 8 <0x08>;
++	};
++
++	fan@9 {
++		reg = <0x04>;
++		aspeed,fan-tach-ch = /bits/ 8 <0x09>;
++	};
++};
++
++&fmc {
++	status = "okay";
++	flash@0 {
++		status = "okay";
++		label = "bmc";
++		m25p,fast-read;
++		spi-max-frequency = <50000000>;
++		partitions {
++			#address-cells = < 1 >;
++			#size-cells = < 1 >;
++			compatible = "fixed-partitions";
++			u-boot@0 {
++				reg = < 0 0x60000 >;
++				label = "u-boot";
++			};
++			u-boot-env@60000 {
++				reg = < 0x60000 0x20000 >;
++				label = "u-boot-env";
++			};
++			obmc-ubi@80000 {
++				reg = < 0x80000 0x1F80000 >;
++				label = "obmc-ubi";
++			};
++		};
++	};
++	flash@1 {
++		status = "okay";
++		label = "alt-bmc";
++		m25p,fast-read;
++		spi-max-frequency = <50000000>;
++		partitions {
++			#address-cells = < 1 >;
++			#size-cells = < 1 >;
++			compatible = "fixed-partitions";
++			u-boot@0 {
++				reg = < 0 0x60000 >;
++				label = "alt-u-boot";
++			};
++			u-boot-env@60000 {
++				reg = < 0x60000 0x20000 >;
++				label = "alt-u-boot-env";
++			};
++			obmc-ubi@80000 {
++				reg = < 0x80000 0x1F80000 >;
++				label = "alt-obmc-ubi";
++			};
++		};
++	};
++};
++
++&spi1 {
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_spi1_default>;
++
++	flash@0 {
++		status = "okay";
++		label = "pnor";
++		m25p,fast-read;
++		spi-max-frequency = <100000000>;
++	};
++};
++
++&lpc_ctrl {
++	status = "okay";
++	memory-region = <&flash_memory>;
++	flash = <&spi1>;
++};
++
++&uart1 {
++	/* Rear RS-232 connector */
++	status = "okay";
++
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_txd1_default
++			&pinctrl_rxd1_default
++			&pinctrl_nrts1_default
++			&pinctrl_ndtr1_default
++			&pinctrl_ndsr1_default
++			&pinctrl_ncts1_default
++			&pinctrl_ndcd1_default
++			&pinctrl_nri1_default>;
++};
++
++&uart2 {
++	/* APSS */
++	status = "okay";
++
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_txd2_default &pinctrl_rxd2_default>;
++};
++
++&uart5 {
++	status = "okay";
++};
++
++&mac0 {
++	status = "okay";
++
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_rmii1_default>;
++	clocks = <&syscon ASPEED_CLK_GATE_MAC1CLK>,
++		 <&syscon ASPEED_CLK_MAC1RCLK>;
++	clock-names = "MACCLK", "RCLK";
++	use-ncsi;
++};
++
++&mac1 {
++	status = "okay";
++
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_rgmii2_default &pinctrl_mdio2_default>;
++};
++
++&i2c0 {
++	status = "okay";
++
++	tmp275@48 {
++		compatible = "ti,tmp275";
++		reg = <0x48>;
++	};
++};
++
++&i2c1 {
++	status = "disabled";
++};
++
++&i2c2 {
++	status = "okay";
++
++	/* CPU MFG CONN */
++
++};
++
++&i2c3 {
++	status = "okay";
++
++	/* APSS */
++	/* CPLD */
++
++	/* PCA9516 (repeater) ->
++	 *    CLK Buffer 9FGS9092
++	 *    Power Supply 0
++	 *    Power Supply 1
++	 *    PCA 9552 LED
++	 */
++
++	pca9552: pca9552@60 {
++		compatible = "nxp,pca9552";
++		reg = <0x60>;
++		#address-cells = <1>;
++		#size-cells = <0>;
++		gpio-controller;
++		#gpio-cells = <2>;
++
++		gpio@0 {
++			reg = <0>;
++			type = <PCA955X_TYPE_GPIO>;
++		};
++		gpio@1 {
++			reg = <1>;
++			type = <PCA955X_TYPE_GPIO>;
++		};
++		gpio@2 {
++			reg = <2>;
++			type = <PCA955X_TYPE_GPIO>;
++		};
++		gpio@3 {
++			reg = <3>;
++			type = <PCA955X_TYPE_GPIO>;
++		};
++		gpio@4 {
++			reg = <4>;
++			type = <PCA955X_TYPE_GPIO>;
++		};
++		gpio@5 {
++			reg = <5>;
++			type = <PCA955X_TYPE_GPIO>;
++		};
++		gpio@6 {
++			reg = <6>;
++			type = <PCA955X_TYPE_GPIO>;
++		};
++		gpio@7 {
++			reg = <7>;
++			type = <PCA955X_TYPE_GPIO>;
++		};
++		gpio@8 {
++			reg = <8>;
++			type = <PCA955X_TYPE_GPIO>;
++		};
++		gpio@9 {
++			reg = <9>;
++			type = <PCA955X_TYPE_GPIO>;
++		};
++		gpio@10 {
++			reg = <10>;
++			type = <PCA955X_TYPE_GPIO>;
++		};
++		gpio@11 {
++			reg = <11>;
++			type = <PCA955X_TYPE_GPIO>;
++		};
++		gpio@12 {
++			reg = <12>;
++			type = <PCA955X_TYPE_GPIO>;
++		};
++		gpio@13 {
++			reg = <13>;
++			type = <PCA955X_TYPE_GPIO>;
++		};
++		gpio@14 {
++			reg = <14>;
++			type = <PCA955X_TYPE_GPIO>;
++		};
++		gpio@15 {
++			reg = <15>;
++			type = <PCA955X_TYPE_GPIO>;
++		};
++	};
++
++	power-supply@68 {
++		compatible = "ibm,cffps1";
++		reg = <0x68>;
++	};
++
++	power-supply@69 {
++		compatible = "ibm,cffps1";
++		reg = <0x69>;
++	};
++};
++
++&i2c4 {
++	status = "okay";
++
++	/* CP0 VDD & VCS : IR35221 */
++	/* CP0 VDN & VIO : IR35221 */
++	/* CP0 VDDR : IR35221 */
++
++	ir35221@28 {
++		compatible = "infineon,ir35221";
++		reg = <0x28>;
++	};
++
++	ir35221@29 {
++		compatible = "infineon,ir35221";
++		reg = <0x29>;
++	};
++
++	ir35221@2d {
++		compatible = "infineon,ir35221";
++		reg = <0x2d>;
++	};
++
++};
++
++&i2c5 {
++	status = "disabled";
++};
++
++&i2c6 {
++	status = "disabled";
++};
++
++&i2c7 {
++	status = "disabled";
++};
++
++&i2c8 {
++	status = "okay";
++
++	eeprom@50 {
++		compatible = "atmel,24c64";
++		reg = <0x50>;
++	};
++};
++
++&i2c9 {
++	status = "okay";
++
++	/* PCIe G3 x16 slot */
++};
++
++&i2c10 {
++	status = "disabled";
++};
++
++&i2c11 {
++	status = "okay";
++
++	/* CPLD */
++	/* TPM */
++	/* RTC RX8900CE */
++	/* TMP275A */
++	/* TMP275A */
++
++	tmp275@48 {
++		compatible = "ti,tmp275";
++		reg = <0x48>;
++	};
++
++	tmp275@49 {
++		compatible = "ti,tmp275";
++		reg = <0x49>;
++	};
++
++};
++
++&i2c12 {
++	status = "disabled";
++};
++
++&i2c13 {
++	status = "disabled";
++};
++
++&vuart {
++	status = "okay";
++};
++
++&gfx {
++	status = "okay";
++	memory-region = <&gfx_memory>;
++};
++
++&adc {
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_adc0_default
++			&pinctrl_adc1_default
++			&pinctrl_adc2_default
++			&pinctrl_adc3_default
++			&pinctrl_adc4_default
++			&pinctrl_adc5_default
++			&pinctrl_adc6_default
++			&pinctrl_adc7_default
++			&pinctrl_adc8_default
++			&pinctrl_adc9_default
++			&pinctrl_adc10_default
++			&pinctrl_adc11_default
++			&pinctrl_adc12_default
++			&pinctrl_adc13_default
++			&pinctrl_adc14_default
++			&pinctrl_adc15_default>;
++};
++
++&wdt1 {
++	aspeed,reset-type = "none";
++	aspeed,external-signal;
++	aspeed,ext-push-pull;
++	aspeed,ext-active-high;
++
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_wdtrst1_default>;
++};
++
++&wdt2 {
++	aspeed,alt-boot;
++};
++
++&ibt {
++	status = "okay";
++};
++
++&vhub {
++	status = "okay";
++};
++
++&video {
++	status = "okay";
++	memory-region = <&video_engine_memory>;
++};
++
++#include "ibm-power9-dual.dtsi"
++
+-- 
+2.17.1
 
-> 			#interconnect-cells = <0>;
-> 		};
-> 
-> 
-> 		&mixer {
-> 			compatible = "samsung,exynos4212-mixer";
-> 			interconnects = <&bus_display &bus_dmc>;
-> 			/* ... */
-> 		};
-> 	};
-> 
-> What do you think, Georgi, Rob?
-
-I can't understand the above example with bus_display being it's own consumer.
-This seems strange to me. Could you please clarify it?
-
-Otherwise the interconnect consumer DT bindings are already well established
-and i don't see anything preventing a node to be both consumer and provider.
-So this should be okay in general.
-
-Thanks,
-Georgi
