@@ -2,101 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A3F02630C1
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 17:42:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F8BC26311F
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:00:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730416AbgIIPln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 11:41:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41048 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728442AbgIIPka (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 11:40:30 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7681822240;
-        Wed,  9 Sep 2020 15:29:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599665377;
-        bh=TODrVcs9lgVCPiXcAEfLvUZlnsS84ktzJrcnCMX1MKg=;
-        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=FY4sgLDDXx1wg27+Ljvut8xHybpkWQIHYtUAsv96blD6Wh6IeNsMO5lKZ4mATR23F
-         G2JVLlILS5NoIvW+hUvsFBsE0SCBbOD4sJNMPWwIiH4P5TcKH/x0yYb7nfTfqm+lH0
-         ZCd5YGHXme1dc0s7OslYkmkiil92Mu448CHiBotA=
-Date:   Wed, 09 Sep 2020 16:28:51 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Fabio Estevam <festevam@gmail.com>, rnayak@codeaurora.org,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        David Airlie <airlied@linux.ie>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>, Qiang Yu <yuq825@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Andy Gross <agross@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>
-Cc:     linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Douglas Anderson <dianders@chromium.org>,
-        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
-        freedreno@lists.freedesktop.org,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        linux-spi@vger.kernel.org, linux-serial@vger.kernel.org,
-        lima@lists.freedesktop.org, Nishanth Menon <nm@ti.com>,
-        linux-mmc@vger.kernel.org, Stephen Boyd <sboyd@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <cover.1598594714.git.viresh.kumar@linaro.org>
-References: <cover.1598594714.git.viresh.kumar@linaro.org>
-Subject: Re: [PATCH V2 0/8] opp: Unconditionally call dev_pm_opp_of_remove_table()
-Message-Id: <159966533166.54485.703021491015822828.b4-ty@kernel.org>
+        id S1730718AbgIIP7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 11:59:50 -0400
+Received: from mail-m975.mail.163.com ([123.126.97.5]:51034 "EHLO
+        mail-m975.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730577AbgIIP6l (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 11:58:41 -0400
+X-Greylist: delayed 965 seconds by postgrey-1.27 at vger.kernel.org; Wed, 09 Sep 2020 11:58:05 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=uwS0B
+        ZkJxp7aqJXVSsXep+7iwuK+EfIF9+hccxzGrAk=; b=o0bNKeWGTJfkaOxtSEh1D
+        +GzlLtBIscb9UKl7SP608fxmKv0nZrQj+Oi54aEY9UpoEf7mYdqKfX3sX5mtV98m
+        9hyFvY1qoKiTO+LyzvclhewoOZLDuXZkV9nOaXuI4hALSFpOUYPIumz1stLulSOu
+        spaq7Nb9nUpWM0nrcRdSOE=
+Received: from ubuntu.localdomain (unknown [183.158.94.209])
+        by smtp5 (Coremail) with SMTP id HdxpCgA3yCCm91hfB2vFJw--.5S4;
+        Wed, 09 Sep 2020 23:41:27 +0800 (CST)
+From:   Li Qiang <liq3ea@163.com>
+To:     mst@redhat.com, jasowang@redhat.com
+Cc:     kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        liq3ea@gmail.com, Li Qiang <liq3ea@163.com>
+Subject: [PATCH] vhost-vdpa: fix memory leak in error path
+Date:   Wed,  9 Sep 2020 08:41:20 -0700
+Message-Id: <20200909154120.363209-1-liq3ea@163.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: HdxpCgA3yCCm91hfB2vFJw--.5S4
+X-Coremail-Antispam: 1Uf129KBjvdXoWrKw48JF1UtFy5uw47WFWxZwb_yoWfCrXE9w
+        4xurn7JFn3tr4Yv3ZFyw4fAry7KFsru3Z3u3WFkryavF17Z3ZIq3W8ZrnrJw17XrWxGa43
+        Crn7Cr1I9F1ftjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7xRRIztUUUUUU==
+X-Originating-IP: [183.158.94.209]
+X-CM-SenderInfo: 5oltjvrd6rljoofrz/xtbBLweabVUMN-fMFgAAsc
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 28 Aug 2020 11:37:45 +0530, Viresh Kumar wrote:
-> This cleans up some of the user code around calls to
-> dev_pm_opp_of_remove_table().
-> 
-> All the patches can be picked by respective maintainers directly except
-> for the last patch, which needs the previous two to get merged first.
-> 
-> These are based for 5.9-rc1.
-> 
-> [...]
+Free the 'page_list' when the 'npages' is zero.
 
-Applied to
+Signed-off-by: Li Qiang <liq3ea@163.com>
+---
+ drivers/vhost/vdpa.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+index 3fab94f88894..6a9fcaf1831d 100644
+--- a/drivers/vhost/vdpa.c
++++ b/drivers/vhost/vdpa.c
+@@ -609,8 +609,10 @@ static int vhost_vdpa_process_iotlb_update(struct vhost_vdpa *v,
+ 		gup_flags |= FOLL_WRITE;
+ 
+ 	npages = PAGE_ALIGN(msg->size + (iova & ~PAGE_MASK)) >> PAGE_SHIFT;
+-	if (!npages)
+-		return -EINVAL;
++	if (!npages) {
++		ret = -EINVAL;
++		goto free_page;
++	}
+ 
+ 	mmap_read_lock(dev->mm);
+ 
+@@ -666,6 +668,8 @@ static int vhost_vdpa_process_iotlb_update(struct vhost_vdpa *v,
+ 		atomic64_sub(npages, &dev->mm->pinned_vm);
+ 	}
+ 	mmap_read_unlock(dev->mm);
++
++free_page:
+ 	free_page((unsigned long)page_list);
+ 	return ret;
+ }
+-- 
+2.25.1
 
-Thanks!
-
-[1/2] spi: spi-geni-qcom: Unconditionally call dev_pm_opp_of_remove_table()
-      commit: 7d568edff5cb7968cc5f29e85da15f941b8070b8
-[2/2] spi: spi-qcom-qspi: Unconditionally call dev_pm_opp_of_remove_table()
-      commit: 062cf7fc927d2546b58ed128383e5c52f26a00a5
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
