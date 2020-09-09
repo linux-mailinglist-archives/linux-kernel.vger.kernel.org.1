@@ -2,317 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 511222633C9
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 19:10:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9451263437
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 19:17:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729990AbgIIRKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 13:10:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36248 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730329AbgIIPgB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 11:36:01 -0400
-Received: from kozik-lap.mshome.net (unknown [194.230.155.174])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1731126AbgIIRQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 13:16:12 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:43387 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729908AbgIIP2Y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 11:28:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599665279;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=S0HGwn08RTZDvSiMKGm+kokg7Mfm7dvHTLJh8SzogJA=;
+        b=hEOcepWmMWMR2lfZvDcSlB7f0I0wvIYgE7nQsSiDl980VsNvW/O+3IPz97BRDrfLvSAsuO
+        wfv/Qf9P+1MXnvLLlL2joVzKd/T0ei+vOIxw2zT5/GJfaJwMS25Sc3KxZxU24QBOBfwIi5
+        L97lL32LTmHW7/CFnDEns/N+VQ2e2wM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-174-8uZ_4VOWNSiimj2WvWYA1w-1; Wed, 09 Sep 2020 11:25:50 -0400
+X-MC-Unique: 8uZ_4VOWNSiimj2WvWYA1w-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 69EF0222B8;
-        Wed,  9 Sep 2020 15:24:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599665099;
-        bh=2WwRmmt7f866/A9JCegXVqfznAsO3D/tNIxgCSClshU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZDxVyFwFg4UjF+lS46wf96EusNfPsZzRSTZRCXqjaTRsQ4ws4JJidnZYjSvsmxSBb
-         sQv2OjJH6JOgNs0kMqvh+OApNWxDgNn/CkPq2brplgX41L75JRhGhB1lJYNjNhcY8J
-         JXnm7PqgquM+hy2nprC1x8+5BdVpPl69/z2nJaAw=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Li Yang <leoyang.li@nxp.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH 3/3] arm64: dts: imx8mn-var-som-symphony: Add Variscite Symphony board with VAR-SOM-MX8MN
-Date:   Wed,  9 Sep 2020 17:24:34 +0200
-Message-Id: <20200909152434.18643-3-krzk@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200909152434.18643-1-krzk@kernel.org>
-References: <20200909152434.18643-1-krzk@kernel.org>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E9E011017DC3;
+        Wed,  9 Sep 2020 15:25:47 +0000 (UTC)
+Received: from kamzik.brq.redhat.com (unknown [10.40.192.171])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 457655C1C2;
+        Wed,  9 Sep 2020 15:25:44 +0000 (UTC)
+Date:   Wed, 9 Sep 2020 17:25:40 +0200
+From:   Andrew Jones <drjones@redhat.com>
+To:     Steven Price <steven.price@arm.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Peter Maydell <Peter.Maydell@arm.com>, qemu-devel@nongnu.org,
+        Dave Martin <Dave.Martin@arm.com>,
+        Juan Quintela <quintela@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 0/2] MTE support for KVM guest
+Message-ID: <20200909152540.ylnrljd6aelxoxrf@kamzik.brq.redhat.com>
+References: <20200904160018.29481-1-steven.price@arm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200904160018.29481-1-steven.price@arm.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a basic DTS for Variscite Symphony evaluation kit with VAR-SOM-MX8MN
-(i.MX 8M Nano) System on Module.  This brings up the board with basic
-functionalities although still few issues remain (e.g. I2C3 and USB OTG
-port, although it might not be the problem of DTS).
+On Fri, Sep 04, 2020 at 05:00:16PM +0100, Steven Price wrote:
+> Arm's Memory Tagging Extension (MTE) adds 4 bits of tag data to every 16
+> bytes of memory in the system. This along with stashing a tag within the
+> high bit of virtual addresses allows runtime checking of memory
+> accesses.
+> 
+> These patches add support to KVM to enable MTE within a guest. They are
+> based on Catalin's v9 MTE user-space support series[1].
+> 
+> I'd welcome feedback on the proposed user-kernel ABI. Specifically this
+> series currently:
+>
+   0. Feature probing
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- arch/arm64/boot/dts/freescale/Makefile        |   1 +
- .../dts/freescale/imx8mn-var-som-symphony.dts | 240 ++++++++++++++++++
- 2 files changed, 241 insertions(+)
- create mode 100644 arch/arm64/boot/dts/freescale/imx8mn-var-som-symphony.dts
+Probably a KVM cap, rather than requiring userspace to attempt VCPU
+features one at a time with a scratch VCPU.
+ 
+>  1. Requires the VMM to enable MTE per-VCPU.
 
-diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
-index 6b3494b6aa99..28904ebd92cf 100644
---- a/arch/arm64/boot/dts/freescale/Makefile
-+++ b/arch/arm64/boot/dts/freescale/Makefile
-@@ -33,6 +33,7 @@ dtb-$(CONFIG_ARCH_MXC) += imx8mm-evk.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8mm-var-som-symphony.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8mn-evk.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8mn-ddr4-evk.dtb
-+dtb-$(CONFIG_ARCH_MXC) += imx8mn-var-som-symphony.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8mp-evk.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8mq-evk.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8mq-hummingboard-pulse.dtb
-diff --git a/arch/arm64/boot/dts/freescale/imx8mn-var-som-symphony.dts b/arch/arm64/boot/dts/freescale/imx8mn-var-som-symphony.dts
-new file mode 100644
-index 000000000000..1faa90e2d215
---- /dev/null
-+++ b/arch/arm64/boot/dts/freescale/imx8mn-var-som-symphony.dts
-@@ -0,0 +1,240 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright (C) 2020 Krzysztof Kozlowski <krzk@kernel.org>
-+ */
-+
-+/dts-v1/;
-+
-+#include "imx8mn-var-som.dtsi"
-+
-+/ {
-+	model = "Variscite VAR-SOM-MX8MN Symphony evaluation board";
-+	compatible = "variscite,var-som-mx8mn-symphony", "variscite,var-som-mx8mn", "fsl,imx8mn";
-+
-+	reg_usdhc2_vmmc: regulator-usdhc2-vmmc {
-+		compatible = "regulator-fixed";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_reg_usdhc2_vmmc>;
-+		regulator-name = "VSD_3V3";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		gpio = <&gpio4 22 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+	};
-+
-+	gpio-keys {
-+		compatible = "gpio-keys";
-+
-+		back {
-+			label = "Back";
-+			gpios = <&pca9534 1 GPIO_ACTIVE_LOW>;
-+			linux,code = <KEY_BACK>;
-+		};
-+
-+		home {
-+			label = "Home";
-+			gpios = <&pca9534 2 GPIO_ACTIVE_LOW>;
-+			linux,code = <KEY_HOME>;
-+		};
-+
-+		menu {
-+			label = "Menu";
-+			gpios = <&pca9534 3 GPIO_ACTIVE_LOW>;
-+			linux,code = <KEY_MENU>;
-+		};
-+	};
-+
-+	leds {
-+		compatible = "gpio-leds";
-+
-+		led {
-+			label = "Heartbeat";
-+			gpios = <&pca9534 0 GPIO_ACTIVE_LOW>;
-+			linux,default-trigger = "heartbeat";
-+		};
-+	};
-+};
-+
-+&ethphy {
-+	reset-gpios = <&pca9534 5 GPIO_ACTIVE_HIGH>;
-+};
-+
-+&i2c2 {
-+	clock-frequency = <400000>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_i2c2>;
-+	status = "okay";
-+
-+	pca9534: gpio@20 {
-+		compatible = "nxp,pca9534";
-+		reg = <0x20>;
-+		gpio-controller;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_pca9534>;
-+		interrupt-parent = <&gpio1>;
-+		interrupts = <7 IRQ_TYPE_EDGE_FALLING>;
-+		#gpio-cells = <2>;
-+		wakeup-source;
-+
-+		/* USB 3.0 OTG (usbotg1) / SATA port switch, set to USB 3.0 */
-+		usb3-sata-sel-hog {
-+			gpio-hog;
-+			gpios = <4 GPIO_ACTIVE_HIGH>;
-+			output-low;
-+			line-name = "usb3_sata_sel";
-+		};
-+
-+		som-vselect-hog {
-+			gpio-hog;
-+			gpios = <6 GPIO_ACTIVE_HIGH>;
-+			output-low;
-+			line-name = "som_vselect";
-+		};
-+
-+		enet-sel-hog {
-+			gpio-hog;
-+			gpios = <7 GPIO_ACTIVE_HIGH>;
-+			output-low;
-+			line-name = "enet_sel";
-+		};
-+	};
-+
-+	extcon_usbotg1: typec@3d {
-+		compatible = "nxp,ptn5150";
-+		reg = <0x3d>;
-+		interrupt-parent = <&gpio1>;
-+		interrupts = <11 IRQ_TYPE_LEVEL_LOW>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_ptn5150>;
-+		status = "okay";
-+	};
-+};
-+
-+&i2c3 {
-+	/* Capacitive touch controller */
-+	ft5x06_ts: touchscreen@38 {
-+		compatible = "edt,edt-ft5406";
-+		reg = <0x38>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_captouch>;
-+		interrupt-parent = <&gpio5>;
-+		interrupts = <4 IRQ_TYPE_LEVEL_HIGH>;
-+
-+		touchscreen-size-x = <800>;
-+		touchscreen-size-y = <480>;
-+		touchscreen-inverted-x;
-+		touchscreen-inverted-y;
-+	};
-+
-+	rtc@68 {
-+		compatible = "dallas,ds1337";
-+		reg = <0x68>;
-+		wakeup-source;
-+	};
-+};
-+
-+/* Header */
-+&uart1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_uart1>;
-+	status = "okay";
-+};
-+
-+/* Header */
-+&uart3 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_uart3>;
-+	status = "okay";
-+};
-+
-+&usbotg1 {
-+	disable-over-current;
-+	extcon = <&extcon_usbotg1>, <&extcon_usbotg1>;
-+};
-+
-+&pinctrl_fec1 {
-+	fsl,pins = <
-+		MX8MN_IOMUXC_ENET_MDC_ENET1_MDC			0x3
-+		MX8MN_IOMUXC_ENET_MDIO_ENET1_MDIO		0x3
-+		MX8MN_IOMUXC_ENET_TD3_ENET1_RGMII_TD3		0x1f
-+		MX8MN_IOMUXC_ENET_TD2_ENET1_RGMII_TD2		0x1f
-+		MX8MN_IOMUXC_ENET_TD1_ENET1_RGMII_TD1		0x1f
-+		MX8MN_IOMUXC_ENET_TD0_ENET1_RGMII_TD0		0x1f
-+		MX8MN_IOMUXC_ENET_RD3_ENET1_RGMII_RD3		0x91
-+		MX8MN_IOMUXC_ENET_RD2_ENET1_RGMII_RD2		0x91
-+		MX8MN_IOMUXC_ENET_RD1_ENET1_RGMII_RD1		0x91
-+		MX8MN_IOMUXC_ENET_RD0_ENET1_RGMII_RD0		0x91
-+		MX8MN_IOMUXC_ENET_TXC_ENET1_RGMII_TXC		0x1f
-+		MX8MN_IOMUXC_ENET_RXC_ENET1_RGMII_RXC		0x91
-+		MX8MN_IOMUXC_ENET_RX_CTL_ENET1_RGMII_RX_CTL	0x91
-+		MX8MN_IOMUXC_ENET_TX_CTL_ENET1_RGMII_TX_CTL	0x1f
-+		/* Remove the MX8MM_IOMUXC_GPIO1_IO09_GPIO1_IO9 as not used */
-+	>;
-+};
-+
-+&pinctrl_fec1_sleep {
-+	fsl,pins = <
-+		MX8MN_IOMUXC_ENET_MDC_GPIO1_IO16		0x120
-+		MX8MN_IOMUXC_ENET_MDIO_GPIO1_IO17		0x120
-+		MX8MN_IOMUXC_ENET_TD3_GPIO1_IO18		0x120
-+		MX8MN_IOMUXC_ENET_TD2_GPIO1_IO19		0x120
-+		MX8MN_IOMUXC_ENET_TD1_GPIO1_IO20		0x120
-+		MX8MN_IOMUXC_ENET_TD0_GPIO1_IO21		0x120
-+		MX8MN_IOMUXC_ENET_RD3_GPIO1_IO29		0x120
-+		MX8MN_IOMUXC_ENET_RD2_GPIO1_IO28		0x120
-+		MX8MN_IOMUXC_ENET_RD1_GPIO1_IO27		0x120
-+		MX8MN_IOMUXC_ENET_RD0_GPIO1_IO26		0x120
-+		MX8MN_IOMUXC_ENET_TXC_GPIO1_IO23		0x120
-+		MX8MN_IOMUXC_ENET_RXC_GPIO1_IO25		0x120
-+		MX8MN_IOMUXC_ENET_RX_CTL_GPIO1_IO24		0x120
-+		MX8MN_IOMUXC_ENET_TX_CTL_GPIO1_IO22		0x120
-+		/* Remove the MX8MM_IOMUXC_GPIO1_IO09_GPIO1_IO9 as not used */
-+	>;
-+};
-+
-+&iomuxc {
-+	pinctrl_captouch: captouchgrp {
-+		fsl,pins = <
-+			MX8MN_IOMUXC_SPDIF_RX_GPIO5_IO4		0x16
-+		>;
-+	};
-+
-+	pinctrl_i2c2: i2c2grp {
-+		fsl,pins = <
-+			MX8MN_IOMUXC_I2C2_SCL_I2C2_SCL		0x400001c3
-+			MX8MN_IOMUXC_I2C2_SDA_I2C2_SDA		0x400001c3
-+		>;
-+	};
-+
-+	pinctrl_pca9534: pca9534grp {
-+		fsl,pins = <
-+			MX8MN_IOMUXC_GPIO1_IO07_GPIO1_IO7	0x16
-+		>;
-+	};
-+
-+	pinctrl_ptn5150: ptn5150grp {
-+		fsl,pins = <
-+			MX8MN_IOMUXC_GPIO1_IO11_GPIO1_IO11	0x16
-+		>;
-+	};
-+
-+	pinctrl_reg_usdhc2_vmmc: regusdhc2vmmcgrp {
-+		fsl,pins = <
-+			MX8MN_IOMUXC_SAI2_RXC_GPIO4_IO22	0x41
-+		>;
-+	};
-+
-+	pinctrl_uart1: uart1grp {
-+		fsl,pins = <
-+			MX8MN_IOMUXC_UART1_RXD_UART1_DCE_RX	0x140
-+			MX8MN_IOMUXC_UART1_TXD_UART1_DCE_TX	0x140
-+		>;
-+	};
-+
-+	pinctrl_uart3: uart3grp {
-+		fsl,pins = <
-+			MX8MN_IOMUXC_UART3_RXD_UART3_DCE_RX	0x140
-+			MX8MN_IOMUXC_UART3_TXD_UART3_DCE_TX	0x140
-+		>;
-+	};
-+};
--- 
-2.17.1
+I suppose. We're collecting many features that are enabling CPU features,
+so they map nicely to VCPU features, yet they're effectively VM features
+due to a shared resource such as an irq or memory.
+
+>  2. Automatically promotes (normal host) memory given to the guest to be
+>     tag enabled (sets PG_mte_tagged), if any VCPU has MTE enabled. The
+>     tags are cleared if the memory wasn't previously MTE enabled.
+
+Shouldn't this be up to the guest? Or, is this required in order for the
+guest to use tagging at all. Something like making the guest IPAs memtag
+capable, but if the guest doesn't enable tagging then there is no guest
+impact? In any case, shouldn't userspace be the one that adds PROT_MTE
+to the memory regions it wants the guest to be able to use tagging with,
+rather than KVM adding the attribute page by page?
+
+>  3. Doesn't provide any new methods for the VMM to access the tags on
+>     memory.
+> 
+> (2) and (3) are particularly interesting from the aspect of VM migration.
+> The guest is able to store/retrieve data in the tags (presumably for the
+> purpose of tag checking, but architecturally it could be used as just
+> storage). This means that when migrating a guest the data needs to be
+> transferred (or saved/restored).
+> 
+> MTE tags are controlled by the same permission model as normal pages
+> (i.e. a read-only page has read-only tags), so the normal methods of
+> detecting guest changes to pages can be used. But this would also
+> require the tags within a page to be migrated at the same time as the
+> data (since the access control for tags is the same as the normal data
+> within a page).
+> 
+> (3) may be problematic and I'd welcome input from those familiar with
+> VMMs. User space cannot access tags unless the memory is mapped with the
+> PROT_MTE flag. However enabling PROT_MTE will also enable tag checking
+> for the user space process (assuming the VMM enables tag checking for
+> the process) and since the tags in memory are controlled by the guest
+> it's unlikely the VMM would have an appropriately tagged pointer for its
+> access. This means the VMM would either need to maintain two mappings of
+> memory (one to access tags, the other to access data) or disable tag
+> checking during the accesses to data.
+
+If userspace needs to write to guest memory then it should be due to
+a device DMA or other specific hardware emulation. Those accesses can
+be done with tag checking disabled.
+
+> 
+> If it's not practical to either disable tag checking in the VMM or
+> maintain multiple mappings then the alternatives I'm aware of are:
+> 
+>  * Provide a KVM-specific method to extract the tags from guest memory.
+>    This might also have benefits in terms of providing an easy way to
+>    read bulk tag data from guest memory (since the LDGM instruction
+>    isn't available at EL0).
+
+Maybe we need a new version of KVM_GET_DIRTY_LOG that also provides
+the tags for all addresses of each dirty page.
+
+>  * Provide support for user space setting the TCMA0 or TCMA1 bits in
+>    TCR_EL1. These would allow the VMM to generate pointers which are not
+>    tag checked.
+
+So this is necessary to allow the VMM to keep tag checking enabled for
+itself, plus map guest memory as PROT_MTE, and write to that memory when
+needed? 
+
+Thanks,
+drew
+
+> 
+> Feedback is welcome, and feel free to ask questions if anything in the
+> above doesn't make sense.
+> 
+> Changes since the previous v1 posting[2]:
+> 
+>  * Rebasing clean-ups
+>  * sysreg visibility is now controlled based on whether the VCPU has MTE
+>    enabled or not
+> 
+> [1] https://lore.kernel.org/r/20200904103029.32083-1-catalin.marinas@arm.com
+> [2] https://lore.kernel.org/r/20200713100102.53664-1-steven.price%40arm.com
+> 
+> Steven Price (2):
+>   arm64: kvm: Save/restore MTE registers
+>   arm64: kvm: Introduce MTE VCPU feature
+> 
+>  arch/arm64/include/asm/kvm_emulate.h       |  3 +++
+>  arch/arm64/include/asm/kvm_host.h          |  9 ++++++++-
+>  arch/arm64/include/asm/sysreg.h            |  3 ++-
+>  arch/arm64/include/uapi/asm/kvm.h          |  1 +
+>  arch/arm64/kvm/hyp/include/hyp/sysreg-sr.h | 14 ++++++++++++++
+>  arch/arm64/kvm/mmu.c                       | 15 +++++++++++++++
+>  arch/arm64/kvm/reset.c                     |  8 ++++++++
+>  arch/arm64/kvm/sys_regs.c                  | 20 +++++++++++++++-----
+>  8 files changed, 66 insertions(+), 7 deletions(-)
+> 
+> -- 
+> 2.20.1
+> 
+> _______________________________________________
+> kvmarm mailing list
+> kvmarm@lists.cs.columbia.edu
+> https://lists.cs.columbia.edu/mailman/listinfo/kvmarm
+> 
 
