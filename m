@@ -2,137 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4458A263279
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:44:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 438C0263302
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:55:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730821AbgIIQoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 12:44:12 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:50632 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730993AbgIIQnv (ORCPT
+        id S1731061AbgIIQzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 12:55:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50898 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730573AbgIIPxb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 12:43:51 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 089FAAnU061479;
-        Wed, 9 Sep 2020 10:10:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1599664210;
-        bh=y4ypjBJCmmVVWSAzOMpL0Yzjxk7jCoHxtQOFSri+Anw=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=u/+ts5j5SpV+waYzgQySKVrYaTAvl6uBOp84sSfEcJAW//jpLjWcjzkvnMwA3Frda
-         DcgUnu9/SR6ASEHDG8soaQr/EkhVrE5ai+thntuHL3iTqY/7r++fqS6qUx7nOGhlcq
-         SPIlVSjWsVfaLxzELrbxRnvkTv2hHoKgNfcaYKp8=
-Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 089FAAeT090290;
-        Wed, 9 Sep 2020 10:10:10 -0500
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 9 Sep
- 2020 10:10:09 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 9 Sep 2020 10:10:09 -0500
-Received: from [10.250.34.59] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 089FA99W115484;
-        Wed, 9 Sep 2020 10:10:09 -0500
-Subject: Re: [v4,2/4] dt-binding: reset-controller: ti: add
- 'mediatek,infra-reset' to compatible
-To:     Rob Herring <robh@kernel.org>
-CC:     Crystal Guo <crystal.guo@mediatek.com>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        =?UTF-8?B?U2VpeWEgV2FuZyAo546L6L+65ZCbKQ==?= 
-        <seiya.wang@mediatek.com>,
-        =?UTF-8?B?U3RhbmxleSBDaHUgKOacseWOn+mZnik=?= 
-        <stanley.chu@mediatek.com>,
-        =?UTF-8?B?WWluZ2pvZSBDaGVuICjpmbPoi7HmtLIp?= 
-        <Yingjoe.Chen@mediatek.com>,
-        =?UTF-8?B?RmFuIENoZW4gKOmZs+WHoSk=?= <fan.chen@mediatek.com>,
-        =?UTF-8?B?WW9uZyBMaWFuZyAo5qKB5YuHKQ==?= <Yong.Liang@mediatek.com>
-References: <20200817030324.5690-1-crystal.guo@mediatek.com>
- <20200817030324.5690-3-crystal.guo@mediatek.com>
- <20200825190219.GA1125997@bogus> <1598440183.30048.14.camel@mhfsdcap03>
- <6c292056-1cb1-bc6c-0422-46e047dcf08f@ti.com>
- <CAL_JsqKuL7XM2CL3z0OQdRua5YJO2ZRdsoE3fdAH948mKGfWnA@mail.gmail.com>
-From:   Suman Anna <s-anna@ti.com>
-Message-ID: <b91c4ddf-8f12-2154-0a41-bf9563b5aefd@ti.com>
-Date:   Wed, 9 Sep 2020 10:10:04 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 9 Sep 2020 11:53:31 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A3F9C061756
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 08:53:17 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id q21so3203874edv.1
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 08:53:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tYTAx4l6f2u8KbHrEy5Rn6tgANLlely6K9NrAKkKaD4=;
+        b=RfcRjolnslna7osjOO1TXCoghzNi2fKgyFZPEMSQax8YEU8v4535p5x6dM2zbOIX8K
+         aGJX4vT0l4XB4cYXiNDKH+3JzRNjm3eijcTc7SfI9q1BpSt79VwY8JZjA17Leq2ZJjYD
+         tOpHiKVDtUz2jt2C6HN0AItE24CYkZLmi72A1fJlHm2sL3JbaocWOehxQ156RbPQE4DY
+         LBdCPb63BwhCd9tiQqsumCNyOc414IoPmrhnv6Dx6RngxPr4gNNW9DYbjhlC3gMkccSL
+         0WNDOoOdeaTUr5BMaP0jEDoAul/y2Yq5eI7X8LXVuiR4Tsj+mAF5IlR5CJZySYjOgH/B
+         gTbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tYTAx4l6f2u8KbHrEy5Rn6tgANLlely6K9NrAKkKaD4=;
+        b=bBCGtyzeiRoXxi8nnYyYMm2Du8Ox8IhKedHRmHaXLLGgxGXotimKi16IL7E9s+fetH
+         H8QQMN47GluI20NPFDoymJrX25ivgxMmmVeZTU08A6ObC0GJvaRVacaUvd/cNrjMAvD/
+         YnQywxtuXVgRAPZffkt2mf6g9B7iBQGNtdN2dgFk6y0+NmiIJk7hErNEnRvTP71csxku
+         f2XxBkcXFrrFWC+doTe/pEKsl9LyAEIuPgH/zGAtNUnXkiGklu/0CX80JVIcUqurWCEg
+         nJ3q2dUQ+syrr/U5DMSZ4/LhEVhUjY7zutW1o4ikufGYNiqElHiMEb70SfEf27ejZu6E
+         ZIkA==
+X-Gm-Message-State: AOAM5313ZYR7RWPrTtmEHKT868aMCj8WT5FAryIi7ZdIveJS5XOfFsEl
+        DrmUz6deoKiaBuU9/jABRlLJOuHars3DLSi/BauNykXCVdrmOw==
+X-Google-Smtp-Source: ABdhPJw/klL8m+jTWg8TN2b2YPUs5PNhV2M3PAJmM/yRQZlC76+0uLWD3k61ammc5irNXocl1b/iC7V5ejqeyp86R9g=
+X-Received: by 2002:aa7:dd4b:: with SMTP id o11mr4647541edw.251.1599666793751;
+ Wed, 09 Sep 2020 08:53:13 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAL_JsqKuL7XM2CL3z0OQdRua5YJO2ZRdsoE3fdAH948mKGfWnA@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20200904160018.29481-1-steven.price@arm.com> <20200904160018.29481-3-steven.price@arm.com>
+ <20200909154804.mide6szbzgdy7jju@kamzik.brq.redhat.com>
+In-Reply-To: <20200909154804.mide6szbzgdy7jju@kamzik.brq.redhat.com>
+From:   Peter Maydell <peter.maydell@linaro.org>
+Date:   Wed, 9 Sep 2020 16:53:02 +0100
+Message-ID: <CAFEAcA_1YnBg3HVmtrSMP8u7GqHY8mtDAJwVcZuNUhwA+q9q=w@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] arm64: kvm: Introduce MTE VCPU feature
+To:     Andrew Jones <drjones@redhat.com>
+Cc:     Steven Price <steven.price@arm.com>,
+        Peter Maydell <Peter.Maydell@arm.com>,
+        Juan Quintela <quintela@redhat.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        QEMU Developers <qemu-devel@nongnu.org>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        kvmarm@lists.cs.columbia.edu,
+        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>,
+        Dave Martin <Dave.Martin@arm.com>,
+        lkml - Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/8/20 1:49 PM, Rob Herring wrote:
-> On Wed, Sep 2, 2020 at 5:26 PM Suman Anna <s-anna@ti.com> wrote:
->>
->> Hi Rob,
->>
->> On 8/26/20 6:09 AM, Crystal Guo wrote:
->>> On Wed, 2020-08-26 at 03:02 +0800, Rob Herring wrote:
->>>> On Mon, Aug 17, 2020 at 11:03:22AM +0800, Crystal Guo wrote:
->>>>> The TI syscon reset controller provides a common reset management,
->>>>> and is suitable for MTK SoCs. Add compatible 'mediatek,infra-reset',
->>>>> which denotes to use ti reset-controller driver directly.
->>>>>
->>>>> Signed-off-by: Crystal Guo <crystal.guo@mediatek.com>
->>>>> ---
->>>>>  Documentation/devicetree/bindings/reset/ti-syscon-reset.txt | 1 +
->>>>>  1 file changed, 1 insertion(+)
->>>>>
->>>>> diff --git a/Documentation/devicetree/bindings/reset/ti-syscon-reset.txt b/Documentation/devicetree/bindings/reset/ti-syscon-reset.txt
->>>>> index ab041032339b..5a0e9365b51b 100644
->>>>> --- a/Documentation/devicetree/bindings/reset/ti-syscon-reset.txt
->>>>> +++ b/Documentation/devicetree/bindings/reset/ti-syscon-reset.txt
->>>>> @@ -25,6 +25,7 @@ Required properties:
->>>>>                         "ti,k2l-pscrst"
->>>>>                         "ti,k2hk-pscrst"
->>>>>                         "ti,syscon-reset"
->>>>> +                       "mediatek,infra-reset", "ti,syscon-reset"
->>>>
->>>> You need your own binding doc. If you can use the same driver then fine,
->>>> but that's a separate issue. There's also reset-simple driver if you
->>>> have just array of 32-bit registers with a bit per reset.
->>>>
->>>> Don't repeat 'ti,reset-bits' either.
->>>
->>> Do you mean I should add a Mediatek reset binding doc, although Mediatek
->>> reuse the TI reset controller directly?
->>
->> Hmm, how do you envision not repeating the same bits in a separate binding?
-> 
-> I mean 'ti,reset-bits' isn't really something that should have been in
-> DT in the first place, but rather implied by the compatible string.
+On Wed, 9 Sep 2020 at 16:48, Andrew Jones <drjones@redhat.com> wrote:
+> We either need a KVM cap or a new CPU feature probing interface to avoid
+> making userspace try features one at a time. It's too bad that VCPU_INIT
+> doesn't clear all offending features from the feature set when returning
+> EINVAL, because then userspace could create a scratch VCPU with everything
+> it supports in order to see what KVM also supports in one go.
 
-Ok, should I be deprecating this and move this data to driver then?
+You could add one if you wanted -- add a new feature bit
+TELL_ME_WHAT_YOU_HAVE. If the kernel sees that then on filure
+it clears out feature bits it doesn't support and also clears
+TELL_ME_WHAT_YOU_HAVE. If QEMU sees EINVAL and TELL_ME_WHAT_YOU_HAVE
+is still set, then it knows it's dealing with an old kernel
+and has to do one-at-a-time probing. If it sees EINVAL but not
+TELL_ME_WHAT_YOU_HAVE then it knows it has a new kernel and
+has just got all the info.
 
-I am assuming that is how you are envisioning the new Mediatek binding to be
-atleast.
-
-regards
-Suman
-
-> 
->> Does it help if I convert this to YAML first without a ti, prefix in the file name?
-> 
-> No, I don't think this should be a shared binding. The driver may be
-> able to be shared, but that's independent from the binding.
-> 
-> Rob
-> 
-
+-- PMM
