@@ -2,119 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8FEE26328D
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:46:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06AFD2632B1
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:49:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730964AbgIIQqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 12:46:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53976 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730924AbgIIQMj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 12:12:39 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0101BC0617BE
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 06:43:46 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id t18so1734725ilp.5
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 06:43:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=wzRfPI8VPUjN9UUY3Djh37yv6ix7hIv2rZzunO2y6YU=;
-        b=VuxVtlS7tRUJRgKbX6B92xD/alpWvZmwy0QcPUOJka6AklyudrnjCYnvg2MN7/kTiy
-         Eju4t6MsQBRWUiI4HgKmZeQpgaai/AJ5utoqDQFRdzKfQpGVZaPd7ZP1KgM3eTFDoC/P
-         RDFMHhmwOfjadPsROfab/T/wWDz2dV0gc2a7j9otYGEP+2oF7FuTpObi+EdOXb7ygJ5z
-         /7NxrBiBFUArJ5Gahh9Cu/AyAV7VP8GekjGc7ggBO3prmthyyQmW+3DWjzzPsj192uXS
-         Z37vsixhJz15sQGX+G08UZXWaUY05HdUGarpsm3V9oD0b6aPnpdcbv9eelRcR5c4FSQs
-         EG7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=wzRfPI8VPUjN9UUY3Djh37yv6ix7hIv2rZzunO2y6YU=;
-        b=a8xaXKNWuXBHPzzx92bGBeCy34TsECSP8oOcOgD+cRjDetOtkM47qg8e/MXR5ewboC
-         0FtEN88yxvPhfGAtZuleSTlZXzqGPn09+gXOGoR2dBncqOK7COk9ptqpZxi0QPK1c57I
-         DKf/+xcdvbXHd4ucHQ006WkTAA2xF+WYDOzF4XPwC+lElVX46bBYvk5LiV1MUmpcUkJp
-         rEKLX0zLR44aHcadlNkaapQ4OIhIls3WlPXPapMgbgpJ7Pliz2RuR2X+82JxIdlbaH04
-         8D1FtzmJ4s/GwT2cSbZx5SeI8lfHn+hjUtkYBibee8F2oo8enpOXMTdDgUnld3Cy7PyV
-         8fvQ==
-X-Gm-Message-State: AOAM532lNBXt9WthPj2sB0cy3RXolwzRWNLqfpSH6n/nZdy2HUFSrUT+
-        OxaRgWqczc3wgY6Tjj0UGSO/w1/wus4+Lw==
-X-Google-Smtp-Source: ABdhPJwIGrbK4KyNTds5smWJJ4zAFhQ5IOHVVyhL0gObMVN3sTRsWG+b+dllHjOw03HyY0O4b+99fw==
-X-Received: by 2002:a92:512:: with SMTP id q18mr3637460ile.196.1599659025914;
-        Wed, 09 Sep 2020 06:43:45 -0700 (PDT)
-Received: from [172.22.22.26] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id e28sm1437589ill.79.2020.09.09.06.43.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Sep 2020 06:43:45 -0700 (PDT)
-Subject: Re: [PATCH net-next 1/5] net: ipa: use atomic exchange for suspend
- reference
-To:     David Miller <davem@davemloft.net>
-Cc:     kuba@kernel.org, evgreen@chromium.org, subashab@codeaurora.org,
-        cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200909002127.21089-1-elder@linaro.org>
- <20200909002127.21089-2-elder@linaro.org>
- <20200908.202731.923992684489468023.davem@davemloft.net>
-From:   Alex Elder <elder@linaro.org>
-Message-ID: <bd61d3fb-44b7-9bc3-ccad-1101c5c34ebc@linaro.org>
-Date:   Wed, 9 Sep 2020 08:43:44 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1730943AbgIIQtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 12:49:18 -0400
+Received: from mail-eopbgr60081.outbound.protection.outlook.com ([40.107.6.81]:20520
+        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730877AbgIIQHW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 12:07:22 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BjysOS7ratPOUxzGzvbwhWINL9b7IY9ClIrAgkipDVxH49Jjl0jzQ6hlSYVUkTigrLT2WY+zSk5jxkExFLPLm9uztlbxgxRwSMtfl9eQJbl+EK1nuAh9754zUUzqqsm2i0qTAAzRPFgOweQmW1VQzKW25++Jt+PvHpdJSFDDYvilUMQRCuKbs41RIlAua+0cwn51t586RiLpAHrIGrdxY1qBvR/5FuuU/i8qOrIexUJts9lNkGostmFHgN+66KKRQn5mU+CbHt9WB1m7chpQ023POrizO8J35fF5adFK/x/+U0ELfJB+roG8OtyEcI1p9Ef2s9JhypGs4ooGATcCtw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lihQTziA7S3zqAbrzv1N1gwI19JfbbVgdO1YVjxjwP4=;
+ b=aCzVOz59LmzSZLUGtt/Sb8PAq4wpGKRak6XT1Is5JbyG+jp7B2piMmi/64xzJSOL395Vu/31WDlPb4kNyF01Ae76FsiA8wziPX/f6ShvAEzTHC6aAiG+A8gazUHnknlEnOdmsD4hmBXesHOlMhLNwZTPAt27by7mHmZpZePzRXGS/44n65n+AlflxrtXZsGAZSv1hTtJpHyGnOaJ4GJz7tQW4s86FnUvcy9uVCMcQJH3XKa8absEu2JjrOHHwq1ZTmQUMMvpxvblYMxYu50+eH9EiDagoUplqdYcHo80VAsP81nl2ezFRrV2Npdfdhx/rgfk3crHBhEo1jLWatRcwA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lihQTziA7S3zqAbrzv1N1gwI19JfbbVgdO1YVjxjwP4=;
+ b=HSIHSKvtpHZQxWlIBKTh3dNxSuR7detZ8W2o5YolWP3U/Bf5A4YNiT2D/LyDcRkgY03pj7bGbBCtmKR9Fwnu5qIcPCywRENMb1okS8cdZ0/Whgb6RXVqCcThw3l/sqLO03lSIsqNuEZqhs8IIBKVwLZ6/d0fRw1k0jCnXUkrgKs=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=oss.nxp.com;
+Received: from VE1PR04MB6702.eurprd04.prod.outlook.com (2603:10a6:803:123::13)
+ by VI1PR0402MB3710.eurprd04.prod.outlook.com (2603:10a6:803:25::29) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Wed, 9 Sep
+ 2020 13:44:57 +0000
+Received: from VE1PR04MB6702.eurprd04.prod.outlook.com
+ ([fe80::1dce:f6ac:a750:5ed0]) by VE1PR04MB6702.eurprd04.prod.outlook.com
+ ([fe80::1dce:f6ac:a750:5ed0%6]) with mapi id 15.20.3370.016; Wed, 9 Sep 2020
+ 13:44:57 +0000
+From:   Wasim Khan <wasim.khan@oss.nxp.com>
+To:     shawnguo@kernel.org, leoyang.li@nxp.com, robh+dt@kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, V.sethi@nxp.com
+Cc:     Wasim Khan <wasim.khan@nxp.com>
+Subject: [PATCH 0/6] arch: arm64: Add label to pcie nodes
+Date:   Wed,  9 Sep 2020 19:14:30 +0530
+Message-Id: <1599659076-28121-1-git-send-email-wasim.khan@oss.nxp.com>
+X-Mailer: git-send-email 2.7.4
+Content-Type: text/plain
+X-ClientProxiedBy: SG2PR02CA0095.apcprd02.prod.outlook.com
+ (2603:1096:4:90::35) To VE1PR04MB6702.eurprd04.prod.outlook.com
+ (2603:10a6:803:123::13)
 MIME-Version: 1.0
-In-Reply-To: <20200908.202731.923992684489468023.davem@davemloft.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from lsv03032.swis.in-blr01.nxp.com (14.142.151.118) by SG2PR02CA0095.apcprd02.prod.outlook.com (2603:1096:4:90::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3370.16 via Frontend Transport; Wed, 9 Sep 2020 13:44:54 +0000
+X-Mailer: git-send-email 2.7.4
+X-Originating-IP: [14.142.151.118]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 244f241b-06cb-42d2-44dc-08d854c689bd
+X-MS-TrafficTypeDiagnostic: VI1PR0402MB3710:
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR0402MB371037B5C96CA68360A7BA7CD1260@VI1PR0402MB3710.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1923;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: VAuT7rK9fUdZlH6A3VQCAN0lvboQianrtILTL3mBQJN2FhWVUOxxC8ludaRFICdqiQSc/jU8OdgBINdkxKugTrO8AVgS/JHTjIl3VS0VX2zzz7PXpqYlaaIbbskNfJJsK1CpSpnDBK50Fx2CitcMs4/U+c/NwzD7IIG/83/nH0zhsKZ/b6J1MSDw671MVG8eezfEtn9lrTA0W57Qsvlr0hqfdoJ+fbBHU+fLZ72dvdMFpnys7koFci9Cg1WwgIEJV1FuFuWpgiH3Fsxyy780PxKvzDdutmQLqk7OEBh7jRjLihT3sz5mQbmJUVc55r22mQzgKJHktZfxflGQTJuRi9Tulj1xUwuxVsbBIuwKs8u06aTx7vUbHDLGNNc7NmKm
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB6702.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(346002)(39860400002)(136003)(376002)(8936002)(5660300002)(1006002)(2616005)(16526019)(4744005)(186003)(8676002)(316002)(956004)(6486002)(44832011)(83380400001)(478600001)(66946007)(6506007)(6666004)(55236004)(52116002)(2906002)(66476007)(66556008)(4326008)(6512007)(26005)(86362001)(110426005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: ubZhyrsAPh7/X9UVfOh2fW07py/N88GLliNHrIz4rjwguORYZyqme/6no7oIwhsR61Yjgaf7evILVdCj5osGw7xF6AbdXzN7puLW/wKbOqlp/tnZ33Vx8ZdYpIJNd/iRCcZGu4gUW5SrS7bQjVTsbqWCFVpIICjYVGtATvHxAiAQhacIvpIQFl7G3J6jY61ZRqLyDHxj9znZwtHwk2t1oruJElxKyk+Fyj5Sg8TRF455YmE7vIo6p1dxeKFIelEK2oV980056HeoyWEGWc1S7G/ayW++muXtFjwtnsTNF64mOpjoHI6u2a5eJpedf2BIqiumpGK8GBBMmhi5ERaftf0KQBhSdncVANklXSawd3MoWrzIVilbVBj57LVHo+V+TQH6e6AC153u5ymyGMmP4od/vLmBtpm702Www/rERLsN7Tzyvf2Wm5ckdmEWoYXdCJWCUlzGW2Lv2DtwDRow04TE1YKgVDyVdLv2vSkTEDFzl9Pt3OcNEevbD0vl8R+ffslVO4Z/dCiLCRqkRWQMkucITjZpPmv2uGnJfSfzgcm90VYhXn2rptLOK1pLgIElrlhzbzoh/BKZ0PHXKqDTzrFuiVWfeb4JpFSpCfKJnM1CdPJC9ocURCMnWmbgShcZeFXl63rhrX2Oc5Jp3DRP+w==
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 244f241b-06cb-42d2-44dc-08d854c689bd
+X-MS-Exchange-CrossTenant-AuthSource: VE1PR04MB6702.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Sep 2020 13:44:56.8322
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: wh7z1xHVp+2kMPmtHOF5U6er00grRp/Y/eRO0wkX5+ctRLtGVvZAyn+0/vnh/RNO6Y3Gh4cLhUp5hQFUVZDkYA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB3710
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/8/20 10:27 PM, David Miller wrote:
-> From: Alex Elder <elder@linaro.org>
-> Date: Tue,  8 Sep 2020 19:21:23 -0500
-> 
->> We take a single IPA clock reference to keep the clock running
->> until we get a system suspend operation.  When a system suspend
->> request arrives, we drop that reference, and if that's the last
->> reference (likely) we'll proceed with suspending endpoints and
->> disabling the IPA core clock and interconnects.
->>
->> In most places we simply set the reference count to 0 or 1
->> atomically.  Instead--primarily to catch coding errors--use an
->> atomic exchange to update the reference count value, and report
->> an error in the event the previous value was unexpected.
->>
->> In a few cases it's not hard to see that the error message should
->> never be reported.  Report them anyway, but add some excitement
->> to the message by ending it with an exclamation point.
->>
->> Signed-off-by: Alex Elder <elder@linaro.org>
-> 
-> Please use refcount_t if you're wanting to validate things like
-> this.
+From: Wasim Khan <wasim.khan@nxp.com>
 
-There is exactly one reference here; the "reference" is
-essentially a Boolean flag.  So the value is always either
-0 or 1.
+This patch series adds label to pcie nodes
+so that they are easy to refer.
 
-I can use refcount_dec_if_one() for the 1->0 transition,
-but I'm not sure how I can do the 0->1 transition with
-refcount_t.  I admit I might be missing something.
+Wasim Khan (6):
+  arm64: dts: lx2160a: Add label to pcie nodes
+  arm64: dts: ls1012a: Add label to pcie nodes
+  arm64: dts: ls1043a: Add label to pcie nodes
+  arm64: dts: ls1046a: Add label to pcie nodes
+  arm64: dts: ls1028a: Add label to pcie nodes
+  arm64: dts: ls1088a: Add label to pcie nodes
 
-Would you like me to add refcount_inc_if_zero()?
+ arch/arm64/boot/dts/freescale/fsl-ls1012a-oxalis.dts |  2 +-
+ arch/arm64/boot/dts/freescale/fsl-ls1012a.dtsi       |  5 +++--
+ arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi       |  6 +++---
+ arch/arm64/boot/dts/freescale/fsl-ls1043a.dtsi       | 10 +++++-----
+ arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi       | 16 ++++++++--------
+ arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi       |  8 ++++----
+ arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi       | 12 ++++++------
+ 7 files changed, 30 insertions(+), 29 deletions(-)
 
-Otherwise would you prefer a different naming convention
-to use for this Boolean "reference count"?
-
-Thanks.
-
-					-Alex
-
-> 
-> Thank you.
-> 
+-- 
+2.7.4
 
