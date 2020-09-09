@@ -2,133 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 241542623E3
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 02:19:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FCE52623F2
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 02:22:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728936AbgIIATU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 20:19:20 -0400
-Received: from mail-il1-f205.google.com ([209.85.166.205]:40054 "EHLO
-        mail-il1-f205.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726699AbgIIATS (ORCPT
+        id S1727935AbgIIAVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 20:21:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48506 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726002AbgIIAVd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 20:19:18 -0400
-Received: by mail-il1-f205.google.com with SMTP id g188so767396ilh.7
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 17:19:17 -0700 (PDT)
+        Tue, 8 Sep 2020 20:21:33 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14536C061573
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Sep 2020 17:21:33 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id u126so1285948iod.12
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Sep 2020 17:21:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8tybThLlRbjVkLUpKNVR8TAToijTPsCOvNfuIS/nQe4=;
+        b=QnZqESsuB1xtnKr2wBGGEtm9HSR6eH4UoS3XsVWZszlNFjgNmIEoI10+ya6jXE8Kac
+         0ncF2dLsd89AjLeCRkaQWwU/8HrQKfHDi1OF1aEfcRgAMaSsAnR8Sotz73iNZvjGP5BZ
+         8z+u+qqjrCc3PZJWhccmJEbW/yumTy5rFeZNWVGQNHiPlgi4+GMDaUjy74Y94jnFmyX1
+         LfwmSrZixq17zeKcBOP3uw6qkMwfTH0jzmgtI/pVO/SldF5C3AzKlvxsIzwh72wF6E+o
+         kQ3C+Xwiqk878ETf6sj8wPOkOCM4eyHJQfpn4Cwk9J7pYNdMnsCwGhFeGc3YOwNyz53y
+         enaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=3hFNhuwHSPIPBIOlcnTYPFJp9i+qgW8XJEWKfOsjOz4=;
-        b=EiwMjwSz1g9DLfv3gNATO6bY9YFggMXGAxiR1IOdEdhstAg9Rku2gyzKOVzr+aD5yp
-         +zNjPWGNhWyWdw9y3+zG/jlf0VNzGZGUbqUncQoJSRSOxatNHdET8ZaiGP7eTY9Db3is
-         Y/Tu3I0pA5CdhcbYJaoMhPR4TYh/tJtP6CkUtn7wfCtp4Np0qL37fViilet/1esdGdMS
-         feUTqpdlfRyboT6+xCEavZ8pipqIOOHAzHYQ7G8Z+y+BNBj5BC0Oe8WXRedO+D2dPpeQ
-         mjqox12TQJDSNByz6yOSp1JRtanVpMa+ePIEbOYJOpx1lvc6hImuHXoWgh4CZsZWI+qh
-         zV7A==
-X-Gm-Message-State: AOAM532p6+nmCpEBafxs5F0i7NfSyLzliu60LPt6ImykmBopNRmRHm4G
-        AzPPmIHu4f/fV+pfBQWnqTL1BOBM4vRIJhiNnWvg7uxXPDHv
-X-Google-Smtp-Source: ABdhPJxXX65q1CaKSofPWywleeOKt1VSBDbfouD7Lzok6jAVFzEklQ1/DOIQS8Ditfql8KFQA7dFTaIjT+90+gazisgiaqLPe+tw
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8tybThLlRbjVkLUpKNVR8TAToijTPsCOvNfuIS/nQe4=;
+        b=tgkrb2pC4WQsV8tQgtIN3wqxZ+i/91XMm/ogp6n+q3iZeR1mLrIaVLwCC9VteRbgMd
+         iIzwgoWgmX+LmUuUUQpDvjChYAFtx/Lus9KHg6QjktXCVhLMv8PWMuaRMtnIMvuxb4kl
+         hqcBbKWHpTPu0rxKKBM4Mtxy6lnHUANUxUw16w5E+ADJe9YgF8UmavWjS3j4Uj5svLou
+         wnn1NShtJUHnLdv7y3wO047nvTiy2Hhn6ADboWjt0J2HQ+nAvniN/Pj6Y8DGAxPHEwtz
+         F62hNVW5M7NFuy82He9fBOV9iok8VlArECXP9ZBIOG8i2YLtQ7NFPE5nsSiYZf8KZQQX
+         61FQ==
+X-Gm-Message-State: AOAM5307E0tBeHXBrj42FUdBtyvOf1zeOkavUIMkOODDCxEqWn2pLQsO
+        r7rZcgLbFKtxBcwSLkVMnZVoeg==
+X-Google-Smtp-Source: ABdhPJwsJruqibBWhLh59+eqHvJcw029rPxA1ngSj8jmGqUV0XB2L32F0MOWqPFaXUjdnHn6+X1sZQ==
+X-Received: by 2002:a02:8384:: with SMTP id z4mr1577253jag.121.1599610892152;
+        Tue, 08 Sep 2020 17:21:32 -0700 (PDT)
+Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id f21sm457739ioh.1.2020.09.08.17.21.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Sep 2020 17:21:31 -0700 (PDT)
+From:   Alex Elder <elder@linaro.org>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     evgreen@chromium.org, subashab@codeaurora.org,
+        cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next 0/5] net: ipa: wake up system on RX available
+Date:   Tue,  8 Sep 2020 19:21:22 -0500
+Message-Id: <20200909002127.21089-1-elder@linaro.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-X-Received: by 2002:a92:5bda:: with SMTP id c87mr1359737ilg.202.1599610757280;
- Tue, 08 Sep 2020 17:19:17 -0700 (PDT)
-Date:   Tue, 08 Sep 2020 17:19:17 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f7793505aed666dc@google.com>
-Subject: general protection fault in unlink_file_vma
-From:   syzbot <syzbot+c5d5a51dcbb558ca0cb5@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+This series arranges for the IPA driver to wake up a suspended
+system if the IPA hardware has a packet to deliver to the AP.
 
-syzbot found the following issue on:
+Currently, the GSI interrupt is set up to be a waking interrupt.
+But the GSI interrupt won't actually fire for a stopped channel (or
+a channel that underlies a suspended endpoint).  The fix involves
+having the IPA rather than GSI interrupt wake up the AP.
 
-HEAD commit:    59126901 Merge tag 'perf-tools-fixes-for-v5.9-2020-09-03' ..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1166cb5d900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3c5f6ce8d5b68299
-dashboard link: https://syzkaller.appspot.com/bug?extid=c5d5a51dcbb558ca0cb5
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11901e95900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15f56195900000
+The IPA hardware clock is managed by both the modem and the AP.
+Even if the AP is in a fully-suspended state, the modem can clock
+the IPA hardware, and can send a packet through IPA that is destined
+for an endpoint on the AP.
 
-Bisection is inconclusive: the issue happens on the oldest tested release.
+When the IPA hardware finds a packet's destination is stopped or
+suspended, it sends an *IPA interrupt* to the destination "execution
+environment" (EE--in this case, the AP).  The desired behavior is
+for the EE (even if suspended) to be able to handle the incoming
+packet.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1205faed900000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=1105faed900000
-console output: https://syzkaller.appspot.com/x/log.txt?x=1605faed900000
+To do this, we arrange for the IPA interrupt to be a wakeup
+interrupt.  And if the system is suspended when that interrupt
+fires, we trigger a system resume operation.  While resuming the
+system, the IPA driver starts all its channels (or for SDM845, take
+its endpoints out of suspend mode).
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+c5d5a51dcbb558ca0cb5@syzkaller.appspotmail.com
+Whenever an RX channel is started, if it has a packet ready to be
+consumed, the GSI interrupt will fire.  At this point the inbound
+packet that caused this wakeup activity will be received.
 
-general protection fault, probably for non-canonical address 0xe00eeaee0000003b: 0000 [#1] PREEMPT SMP KASAN
-KASAN: maybe wild-memory-access in range [0x00777770000001d8-0x00777770000001df]
-CPU: 1 PID: 10488 Comm: syz-executor721 Not tainted 5.9.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:unlink_file_vma+0x57/0xb0 mm/mmap.c:164
-Code: 4c 8b a5 a0 00 00 00 4d 85 e4 74 4e e8 92 d7 cd ff 49 8d bc 24 d8 01 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 75 3d 4d 8b b4 24 d8 01 00 00 4d 8d 6e 78 4c 89 ef e8
-RSP: 0018:ffffc9000ac0f9b0 EFLAGS: 00010202
-RAX: dffffc0000000000 RBX: ffff88800010ceb0 RCX: ffffffff81592421
-RDX: 000eeeee0000003b RSI: ffffffff81a6736e RDI: 00777770000001d8
-RBP: ffff88800010ceb0 R08: 0000000000000001 R09: ffff88801291a50f
-R10: ffffed10025234a1 R11: 0000000000000001 R12: 0077777000000000
-R13: 00007f1eea0da000 R14: 00007f1eea0d9000 R15: 0000000000000000
-FS:  0000000000000000(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f1eea11a9d0 CR3: 000000000007e000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- free_pgtables+0x1b3/0x2f0 mm/memory.c:415
- exit_mmap+0x2c0/0x530 mm/mmap.c:3184
- __mmput+0x122/0x470 kernel/fork.c:1076
- mmput+0x53/0x60 kernel/fork.c:1097
- exit_mm kernel/exit.c:483 [inline]
- do_exit+0xa8b/0x29f0 kernel/exit.c:793
- do_group_exit+0x125/0x310 kernel/exit.c:903
- get_signal+0x428/0x1f00 kernel/signal.c:2757
- arch_do_signal+0x82/0x2520 arch/x86/kernel/signal.c:811
- exit_to_user_mode_loop kernel/entry/common.c:136 [inline]
- exit_to_user_mode_prepare+0x1ae/0x200 kernel/entry/common.c:167
- syscall_exit_to_user_mode+0x7e/0x2e0 kernel/entry/common.c:242
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x446ad9
-Code: Bad RIP value.
-RSP: 002b:00007f1eea0f8d18 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
-RAX: fffffffffffffe00 RBX: 00000000006dbc58 RCX: 0000000000446ad9
-RDX: 0000000000000000 RSI: 0000000000000080 RDI: 00000000006dbc58
-RBP: 00000000006dbc50 R08: 65732f636f72702f R09: 65732f636f72702f
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc5c
-R13: 00007f1eea0f8d20 R14: 00007f1eea0f8d20 R15: 20c49ba5e353f7cf
-Modules linked in:
----[ end trace 22e4d2773b69c9b0 ]---
-RIP: 0010:unlink_file_vma+0x57/0xb0 mm/mmap.c:164
-Code: 4c 8b a5 a0 00 00 00 4d 85 e4 74 4e e8 92 d7 cd ff 49 8d bc 24 d8 01 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 75 3d 4d 8b b4 24 d8 01 00 00 4d 8d 6e 78 4c 89 ef e8
-RSP: 0018:ffffc9000ac0f9b0 EFLAGS: 00010202
-RAX: dffffc0000000000 RBX: ffff88800010ceb0 RCX: ffffffff81592421
-RDX: 000eeeee0000003b RSI: ffffffff81a6736e RDI: 00777770000001d8
-RBP: ffff88800010ceb0 R08: 0000000000000001 R09: ffff88801291a50f
-R10: ffffed10025234a1 R11: 0000000000000001 R12: 0077777000000000
-R13: 00007f1eea0da000 R14: 00007f1eea0d9000 R15: 0000000000000000
-FS:  0000000000000000(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f1eea11a9d0 CR3: 000000000007e000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+The first patch just checks the previous value of a reference
+counter used for suspend, as precaution to catch bugs.  The next
+three arrange for the IPA interrupt wake up the system.  Finally,
+with this design, we no longer want the GSI interrupt to wake a
+suspended system, so that is removed by the last patch.`
 
+					-Alex
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Alex Elder (5):
+  net: ipa: use atomic exchange for suspend reference
+  net: ipa: manage endpoints separate from clock
+  net: ipa: use device_init_wakeup()
+  net: ipa: enable wakeup on IPA interrupt
+  net: ipa: do not enable GSI interrupt for wakeup
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+ drivers/net/ipa/gsi.c           | 17 +++------
+ drivers/net/ipa/gsi.h           |  1 -
+ drivers/net/ipa/ipa.h           |  2 --
+ drivers/net/ipa/ipa_clock.c     |  4 ---
+ drivers/net/ipa/ipa_interrupt.c | 14 ++++++++
+ drivers/net/ipa/ipa_main.c      | 62 ++++++++++++++++++---------------
+ 6 files changed, 51 insertions(+), 49 deletions(-)
+
+-- 
+2.20.1
+
