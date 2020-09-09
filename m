@@ -2,96 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B874262850
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 09:18:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3450262855
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 09:19:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729305AbgIIHSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 03:18:49 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:43484 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727935AbgIIHSp (ORCPT
+        id S1729692AbgIIHT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 03:19:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56004 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726738AbgIIHTY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 03:18:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599635923;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8kHLShDIjtW+nOie5lwVauvpaW35ekCPOUCvTdPotmg=;
-        b=bf/yfZM6NDPiar3UcMy36StZGiXT7Q1+CHXsOuIIQTZlT8WpgRzpEFc2KVj6vk7i9BjfG4
-        o/FAymVM6Xtlf1oCHuYWvHCivC4xFPdqEMcloBWROJoPeiLubjRHhI6H4W0BJ/P+0mMj9J
-        GfdGlkvKqbHA15eKrV5GL3qXyd8obmg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-361-eHeI1RO6Ov2mrQOsZapeZA-1; Wed, 09 Sep 2020 03:18:42 -0400
-X-MC-Unique: eHeI1RO6Ov2mrQOsZapeZA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B057D10055B6;
-        Wed,  9 Sep 2020 07:18:40 +0000 (UTC)
-Received: from localhost (ovpn-12-76.pek2.redhat.com [10.72.12.76])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id F0C425C1C4;
-        Wed,  9 Sep 2020 07:18:39 +0000 (UTC)
-From:   Ming Lei <ming.lei@redhat.com>
-To:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org
-Cc:     Ming Lei <ming.lei@redhat.com>,
-        Veronika Kabatova <vkabatov@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>, Tejun Heo <tj@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Bart Van Assche <bvanassche@acm.org>
-Subject: [PATCH V4 3/3] block: move 'q_usage_counter' into front of 'request_queue'
-Date:   Wed,  9 Sep 2020 15:18:13 +0800
-Message-Id: <20200909071813.1580038-4-ming.lei@redhat.com>
-In-Reply-To: <20200909071813.1580038-1-ming.lei@redhat.com>
-References: <20200909071813.1580038-1-ming.lei@redhat.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+        Wed, 9 Sep 2020 03:19:24 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07137C061573
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 00:19:24 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id kk9so902048pjb.2
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 00:19:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sslab.ics.keio.ac.jp; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=7yi/vsERj3XSiUmPF9/ytkB61PwQoPSacfDXXxnQXzM=;
+        b=hn4uTxWfwCO2Go8jK7YZ0cVEpAJS7tuMGyZgZkA8UNovAOsFFk0FIruGG0U1lQTwXH
+         ZvNE0IIUZX1ZbYH2oYr412I5ddkmOu2Bl3bYaiOPMJyNfs1P2q16x+yq9n37Dc+41Wcx
+         /EsjKmVoHkYRBAVorjpKp2UiBc7pHcKJDR3sM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=7yi/vsERj3XSiUmPF9/ytkB61PwQoPSacfDXXxnQXzM=;
+        b=VeupulzwG+cy84nLO9EmmtUNumXtOdUglcnFE2GbQsy3HpPqGhg28hhLJSPkEJyZTu
+         kSc9p+RY3b5pTwhGz82tQTK95OLGgTlJP9wetWsdFJp/QQ61h1lA6IqK3deUiPUwCvka
+         AZ7Q/jFnp2HZnVobg+s4JU5K6631PlaxtEeobhzC7XBwo7AvlyM6rFiQBjvYvLhFHZbK
+         h3X1RNikn80i2b/Q/URHg7uQTit73+fczTQrIY8EMyKw+ZxmoK8dYI4n2d6oBb2ktAfe
+         KyOCpsB2HPd3MJAwNUM4hFzETZbo2quitEuPunk3/dSnYpAmjAIG1aGBq6EZQ3XXy1Sc
+         dEjw==
+X-Gm-Message-State: AOAM531bXUwoG9q6mjuVJz4M2qx/G6qjXKk7Stt16s9lRJIP8RhvgyAK
+        TzvtMquMGnJgLGQq72jjvoGJzA==
+X-Google-Smtp-Source: ABdhPJzsoWtEs9yiO0+OBwfOeMP55wB7jvsEYZFOrTReGuLx2A5RE6IU3IIYxMb5LEaNl//q6iPS2A==
+X-Received: by 2002:a17:90a:7084:: with SMTP id g4mr2224010pjk.116.1599635963495;
+        Wed, 09 Sep 2020 00:19:23 -0700 (PDT)
+Received: from brooklyn.i.sslab.ics.keio.ac.jp (sslab-relay.ics.keio.ac.jp. [131.113.126.173])
+        by smtp.googlemail.com with ESMTPSA id 194sm1583885pfy.44.2020.09.09.00.19.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Sep 2020 00:19:22 -0700 (PDT)
+From:   Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
+Cc:     keitasuzuki.park@sslab.ics.keio.ac.jp,
+        takafumi@sslab.ics.keio.ac.jp, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Vaibhav Gupta <vaibhavgupta40@gmail.com>,
+        Klaus Doth <kdlnx@doth.eu>, Rui Feng <rui_feng@realsil.com.cn>,
+        Ricky Wu <ricky_wu@realtek.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH] misc: rtsx: Fix memory leak in rtsx_pci_probe
+Date:   Wed,  9 Sep 2020 07:18:51 +0000
+Message-Id: <20200909071853.4053-1-keitasuzuki.park@sslab.ics.keio.ac.jp>
+X-Mailer: git-send-email 2.17.1
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The field of 'q_usage_counter' is always fetched in fast path of every
-block driver, and move it into front of 'request_queue', so it can be
-fetched into 1st cacheline of 'request_queue' instance.
+When mfd_add_devices() fail, pcr->slots should also be freed. However,
+the current implementation does not free the member, leading to a memory
+leak.
 
-Tested-by: Veronika Kabatova <vkabatov@redhat.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Cc: Sagi Grimberg <sagi@grimberg.me>
-Cc: Tejun Heo <tj@kernel.org>
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Jens Axboe <axboe@kernel.dk>
-Cc: Bart Van Assche <bvanassche@acm.org>
-Signed-off-by: Ming Lei <ming.lei@redhat.com>
+Fix this by adding a new goto label that frees pcr->slots.
+
+Signed-off-by: Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
 ---
- include/linux/blkdev.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/misc/cardreader/rtsx_pcr.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-index 7d82959e7b86..7b1e53084799 100644
---- a/include/linux/blkdev.h
-+++ b/include/linux/blkdev.h
-@@ -397,6 +397,8 @@ struct request_queue {
- 	struct request		*last_merge;
- 	struct elevator_queue	*elevator;
+diff --git a/drivers/misc/cardreader/rtsx_pcr.c b/drivers/misc/cardreader/rtsx_pcr.c
+index 37ccc67f4914..f2b2805942f5 100644
+--- a/drivers/misc/cardreader/rtsx_pcr.c
++++ b/drivers/misc/cardreader/rtsx_pcr.c
+@@ -1562,12 +1562,14 @@ static int rtsx_pci_probe(struct pci_dev *pcidev,
+ 	ret = mfd_add_devices(&pcidev->dev, pcr->id, rtsx_pcr_cells,
+ 			ARRAY_SIZE(rtsx_pcr_cells), NULL, 0, NULL);
+ 	if (ret < 0)
+-		goto disable_irq;
++		goto free_slots;
  
-+	struct percpu_ref	q_usage_counter;
-+
- 	struct blk_queue_stats	*stats;
- 	struct rq_qos		*rq_qos;
+ 	schedule_delayed_work(&pcr->idle_work, msecs_to_jiffies(200));
  
-@@ -569,7 +571,6 @@ struct request_queue {
- 	 * percpu_ref_kill() and percpu_ref_reinit().
- 	 */
- 	struct mutex		mq_freeze_lock;
--	struct percpu_ref	q_usage_counter;
+ 	return 0;
  
- 	struct blk_mq_tag_set	*tag_set;
- 	struct list_head	tag_set_list;
++free_slots:
++	kfree(pcr->slots);
+ disable_irq:
+ 	free_irq(pcr->irq, (void *)pcr);
+ disable_msi:
 -- 
-2.25.2
+2.17.1
 
