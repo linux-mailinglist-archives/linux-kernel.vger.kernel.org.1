@@ -2,112 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A111262CCB
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 12:04:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3555262CD4
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 12:06:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727856AbgIIKEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 06:04:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58263 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726738AbgIIKEJ (ORCPT
+        id S1728971AbgIIKGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 06:06:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53646 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725948AbgIIKGJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 06:04:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599645848;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Xgpe6AT0UH4aDp5ykLA0ugjbjmAIMFTMCg4Q4aJi8W4=;
-        b=Ah0lIFLrde0uX1aZHJdNHdUjBzLkfR4y0I+6fIHE7HKfq93i2G7sSqjtFxO5ss0ZmTtVTK
-        0tqgs8VyaCRsFaK5JEKPE6DqsKP5cXjfv6vynqdVasqgQdNqpb97zx3PlsfBmwhf0ll1uK
-        sdhvXBBkWVPde5IJM5SmSrEBWCXGYws=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-349-S7xj42T3O5SkebEzdQf29w-1; Wed, 09 Sep 2020 06:04:00 -0400
-X-MC-Unique: S7xj42T3O5SkebEzdQf29w-1
-Received: by mail-wr1-f70.google.com with SMTP id r16so769940wrm.18
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 03:03:59 -0700 (PDT)
+        Wed, 9 Sep 2020 06:06:09 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C2B2C061573
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 03:06:09 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id ay8so2027228edb.8
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 03:06:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=rYuQ9FT+4m9DZF/zl6tu1R42tR6bJhq4IHrczHtHxTo=;
+        b=GWj2iioFTE0yKF2+rMUo93NPAu9EfreyVb6Xkw1GODQRyL/neHXuuXOYtjxrIRldJZ
+         016K09m57fsMl6gEoBUfy2TeDR6WZyxKzKeIQS4F7NQAlEIa2lqrDznlJTQKwlokuLUA
+         isI9SfjW7/m9dpJFCaRLVmdkxqzTYWhLcMpiD8eeJZBpd7ysVoiv9qLwNzRh3PlQXRrD
+         rrPq6e+1gfSw3XN+JiWfR9O5E1at1VnnnOIyfN3D4ktWRJ/+fkiGZwiNbH4M+PzzELpd
+         Ct1OU6BxQhDmJsUyiKDOhBtOpLb1IA8x0bQxUtbelbuP4J8LlHeiZ1HRwojMMmq2kNSF
+         7ccA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Xgpe6AT0UH4aDp5ykLA0ugjbjmAIMFTMCg4Q4aJi8W4=;
-        b=BqE9X6uKqNYhUYqwERm2CgScJVqfu55kwnI95iRnkejsbBB+xScbgC+lliVrh6XW2k
-         S9r9D3eyJ8v8H6ypH8bV/qNV/10Zyfh+eSuc0+nzFI8j8mPZOJEKNcsRe2XFjgUHUNJM
-         Ll8re+Z6EwGZ4BGA6dSbf77wnE+YCKT+pYQ7Lmf9e8eAHWUPRbgILcydil66KCYtIOsJ
-         Os/oWbQRQYjoiaLACG+bPh4+Qn3JKlC96aYR6fMdiNoB9zRjFPqRtxOnjobfeTuSBlff
-         6hNctn1wu8q1b03yYt5RsSDBUhpOK72MmnFnaOOU/3n+4ZIwU2WpKK2xwh43td8ZFGNq
-         lsdQ==
-X-Gm-Message-State: AOAM531iH2BNLnV1rxceogxINWmeK1TUQN6AHIM3S3RzEL2TF14zV7ni
-        OSTtUo9gof9yNP8YwnPn5OHCBEDNL6SstNOltDI3cV94o1kAo0VTfT22CKv7qMKcJYZJueGKLj3
-        wlTt/l7hc8Fy4TaWCFseoy+93
-X-Received: by 2002:a5d:4d82:: with SMTP id b2mr3055061wru.232.1599645838889;
-        Wed, 09 Sep 2020 03:03:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxxzpk4/SFORo74kpPgFd3e7iurHZ1Y5Kodi+AuWqmcAZhebg/lKbKSiR2B2/p/oi5E2UOPzg==
-X-Received: by 2002:a5d:4d82:: with SMTP id b2mr3055044wru.232.1599645838666;
-        Wed, 09 Sep 2020 03:03:58 -0700 (PDT)
-Received: from steredhat (host-79-53-225-185.retail.telecomitalia.it. [79.53.225.185])
-        by smtp.gmail.com with ESMTPSA id y1sm3133255wma.36.2020.09.09.03.03.57
+        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=rYuQ9FT+4m9DZF/zl6tu1R42tR6bJhq4IHrczHtHxTo=;
+        b=sG+ipO/L6OsZyPkumqdjrUzFOaWtrw9FrD4/ZhuL9JUThTaVqIw4P3t2G8HgVbgsgC
+         ufuFvskZG3YUwEhQsQDxRb2qj/OT5ktdu50sSbAHPmmWvy4/ni7Az7KJzVhcRzhnylvA
+         7C7HJa1/PeCsQAhgZwsT5dkmZt2AOcm1poRDDbauqXdN7zgPBnqO8knVGxIbCVzBVLhs
+         o+YUhflUREXSXrAeCovVmVlOXKqJMLolsD7jtW07J/F/Pq0815uGKkOjMAdlI8+hFb98
+         xmUPEdB+HvjooPqcTOT7U6aGG78nLGDUHWOOOycl+H4F7huDACTmkuf40Hl6Ad+uiiun
+         H9FA==
+X-Gm-Message-State: AOAM532sgGBjMgIm1FGuph68Q7wk6fjp1Tr2L9XflL5mLqNqPgReTMZf
+        e+4VfVR6h/iyemPQMWtVogg=
+X-Google-Smtp-Source: ABdhPJwqzsZFPacwfD7vzqPUXRVINBaFATYFLDGAMQz0Vz7Fr8o3Rx1HqXczCJ/z/yfAPVlUlsk2ZA==
+X-Received: by 2002:aa7:d558:: with SMTP id u24mr3342099edr.336.1599645967911;
+        Wed, 09 Sep 2020 03:06:07 -0700 (PDT)
+Received: from felia ([2001:16b8:2d44:6000:6108:df55:7b8e:67d4])
+        by smtp.gmail.com with ESMTPSA id t4sm1593478ejj.6.2020.09.09.03.06.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Sep 2020 03:03:58 -0700 (PDT)
-Date:   Wed, 9 Sep 2020 12:03:55 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     syzbot <syzbot+3c23789ea938faaef049@syzkaller.appspotmail.com>
-Cc:     axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Subject: Re: INFO: task hung in io_sq_thread_stop
-Message-ID: <20200909100355.ibz4jc5ctnwbmy5v@steredhat>
-References: <00000000000030a45905aedd879d@google.com>
+        Wed, 09 Sep 2020 03:06:07 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+X-Google-Original-From: Lukas Bulwahn <lukas@gmail.com>
+Date:   Wed, 9 Sep 2020 12:06:06 +0200 (CEST)
+X-X-Sender: lukas@felia
+To:     Ayush <ayush@disroot.org>
+cc:     Joe Perches <joe@perches.com>, apw@canonical.com,
+        lukas.bulwahn@gmail.com,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [Linux-kernel-mentees] [PATCH] checkpatch: GIT_COMMIT_ID: handle
+ commit messages with multiple quotes
+In-Reply-To: <22db634e7be36f4514f0c9b3ecf0060a@disroot.org>
+Message-ID: <alpine.DEB.2.21.2009091152530.5622@felia>
+References: <beed63208cc412f122fe273602675801add08ede.camel@perches.com> <20200907151417.44453-1-ayush@disroot.org> <22db634e7be36f4514f0c9b3ecf0060a@disroot.org>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <00000000000030a45905aedd879d@google.com>
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 09, 2020 at 01:49:22AM -0700, syzbot wrote:
-> Hello,
+
+
+On Tue, 8 Sep 2020, Ayush wrote:
+
+> > I think all your examples are broken.
+> > 
+> > I think all should start with revert
+> > i.e.: Reverts commit <SHA-1> ("description...")
 > 
-> syzbot found the following issue on:
+> Actually I am talking about those commits which referenced a revert commit.
 > 
-> HEAD commit:    dff9f829 Add linux-next specific files for 20200908
-> git tree:       linux-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=112f880d900000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=37b3426c77bda44c
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3c23789ea938faaef049
-> compiler:       gcc (GCC) 10.1.0-syz 20200507
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17c082a5900000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1474f5f9900000
+> For example:
 > 
-> Bisection is inconclusive: the first bad commit could be any of:
+> If I want to mention a revert commit in my commit message, I will do something like.
 > 
-> d730b1a2 io_uring: add IOURING_REGISTER_RESTRICTIONS opcode
-> 7ec3d1dd io_uring: allow disabling rings during the creation
+> This bug appeared first in commit 1234567890ab ("Revert "abc: foo bar"").
+> (Just an example)
+> 
+> Here, according to syntax, it is right but checkpatch.pl gives an error as multiple
+> quotes in commit messages are not handled in checkpatch.pl.
+>
 
-I'm not sure it is related, but while rebasing I forgot to update the
-right label in the error path.
+As the mentor in the linux kernel community bridge program, I usually 
+inform the mentees when the review on the mentee mailing list has 
+successfully concluded to a first acceptable state and I think it is well 
+advised to reach out to the maintainers for further discussion.
 
-Since the check of ring state is after the increase of ctx refcount, we
-need to decrease it jumping to 'out' label instead of 'out_fput':
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index d00eb6bf6ce9..f35da516095a 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -8649,7 +8649,7 @@ SYSCALL_DEFINE6(io_uring_enter, unsigned int, fd, u32, to_submit,
-                goto out_fput;
+You did not do that, but just send some patch to the maintainers.
+That is fully up to you, but I will not support the patch acceptance in 
+any way, and it suggests that you do not see the need to be mentored.
 
-        if (ctx->flags & IORING_SETUP_R_DISABLED)
--               goto out_fput;
-+               goto out;
+If you can land patches without mentoring support successfully, that is 
+great, but then you do not need a mentorship.
 
-        /*
-         * For SQ polling, the thread will do all submissions and completions.
+Now, to the commit:
 
-I'll send a patch ASAP and check if it solves this issue.
+Ayush, your commit message is largely incomprehensible.
 
-Thanks,
-Stefano
+Your follow-up explanation that was needed should have been in the commit 
+message in the first place.
 
+Ayush, you did not sign-off with your full legal name.
+
+So, I advice NOT TO TAKE this patch.
+
+I did not even start testing and reviewing the code yet.
+
+Lukas
