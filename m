@@ -2,137 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95FD1262BF6
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 11:35:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FAD7262BFF
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 11:36:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729449AbgIIJfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 05:35:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48880 "EHLO
+        id S1729913AbgIIJgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 05:36:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726005AbgIIJfa (ORCPT
+        with ESMTP id S1730131AbgIIJf6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 05:35:30 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7252BC061573;
-        Wed,  9 Sep 2020 02:35:29 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id u13so1679434pgh.1;
-        Wed, 09 Sep 2020 02:35:29 -0700 (PDT)
+        Wed, 9 Sep 2020 05:35:58 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1252C061757
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 02:35:57 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id b12so1924737edz.11
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 02:35:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=rUMM26Eh1qMtncc4/WqzQ8pK0qp9gOhr6F1dkKvdtyY=;
-        b=ag+PT8ukrimDRfbfIhHjpeu42vFjqkYUuIKYM+2NOhMWllqqIG+lrGAPR+eWR3ukbb
-         wMjuYhiFTZwm+76ARlzbDxPsf0WDHllktjaOVyBOlACtSw2ufmT/blFrMMuXcxK+QTBt
-         RnPLTFrgVdZVj4qN+gDive0hoVNgC29g/TthTgiJ+Cf0vuQgOImfS4bY2gXwqF6zyHjF
-         DPMrj7qSJQTeU0JzsINVCHJ9HnC/uYN/nKJYF85qLEAafvJU/FWfYt5ybiXsVqHdqcCo
-         tfjrg78U6InYv+ChZ3R3jObFqcEVnse7cvRDksgP7Pk6894y9zXHTv0obs1cajgkZ1D9
-         Uwjw==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gEj+lZMiE2N3jtcmr4bdk2b4ihEa+T3DPwIHNq/FC0A=;
+        b=MnAYd8sc0uAXa4xqRVnzLJOadO+X8KmqyIdvburVZXxUL900xJEyapW1Ct9zaawwd8
+         kdze07iRXbco8NxlLs0ExiS6gTmQetCxZiIOmR9Yg+M8EawfaFn1iWYEgpGI0s42KylK
+         dgB2r/HBUaniUTEIOcju/3mYFv4TyrExxjQTEOV00ZCEmbREPRWjjF7D9qzN19ighwhP
+         0AsQKxChLAS+EvKvrfXgdsB0KUeINDtJ4IS3ZcAFQRpC/Muyg2qAxI6VwmuhLuXlBUFL
+         8Q/nrHAacTrDozB1be9KjpVvtf3rTEIi0Ockq4zC2UPya7XOiPu4h5bCZRpWpz52UZcQ
+         zWPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rUMM26Eh1qMtncc4/WqzQ8pK0qp9gOhr6F1dkKvdtyY=;
-        b=YhBKGge6CRyeXUv7OqqPYFcTdq/IgF6xJN/4mEsWVZEd/zLKLNMd9E1TFmL3ogOGH+
-         nK1LBwqB+0lC2OJFbv8JcJlXIR4I+FiTVymrsVRkTIvlqIARilboGp5UWV3q6GR02NMz
-         dgOUMt/VU5UK464+Pggbt/IakwsFel5M8SRF9TgY9ASlE6bcr3nQzLEq7CCLBti4vah5
-         bN6zzkLg9L7N8id/F+Cm0i/Tyv+IIIeizT9vHtdh3XhGHfWY/hMSK7L8UsYP/4OImsuC
-         QvMG8854Ow1KQD1M2gRQwKFp79mj2bhHWc5PGAp1bggT5WX7JXBG60DSEDZzlv9rbZdF
-         aKbg==
-X-Gm-Message-State: AOAM532eMYqXlP1SMauZlfECGJWaqJmY1vo9Q8nPZgdzP/Gh+pgOiwbO
-        ysy38vII5k0eSYzpiuFwhdKJ+6h76W8=
-X-Google-Smtp-Source: ABdhPJyA6svORv5Yq4fMn/Aic/zR8YgAw5Q11Q3iouElifaENfaUmF+/ReJF8TNcqiZnpRVySxKtsw==
-X-Received: by 2002:a17:902:ac8b:b029:d0:89f4:6220 with SMTP id h11-20020a170902ac8bb02900d089f46220mr89212plr.8.1599644128952;
-        Wed, 09 Sep 2020 02:35:28 -0700 (PDT)
-Received: from sol (106-69-184-100.dyn.iinet.net.au. [106.69.184.100])
-        by smtp.gmail.com with ESMTPSA id r6sm2165019pfq.11.2020.09.09.02.35.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Sep 2020 02:35:28 -0700 (PDT)
-Date:   Wed, 9 Sep 2020 17:35:23 +0800
-From:   Kent Gibson <warthog618@gmail.com>
-To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH v7 07/20] gpiolib: cdev: support GPIO_V2_GET_LINE_IOCTL
- and GPIO_V2_LINE_GET_VALUES_IOCTL
-Message-ID: <20200909093523.GA1506132@sol>
-References: <20200905133549.24606-1-warthog618@gmail.com>
- <20200905133549.24606-8-warthog618@gmail.com>
- <20200909092401.GA1431678@sol>
- <CAMpxmJXh9pKMAXgPWSCPXeyjP0CSo=A5SgLPrL2eRxX-LAyKag@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gEj+lZMiE2N3jtcmr4bdk2b4ihEa+T3DPwIHNq/FC0A=;
+        b=nHNzk8XNR0j+y9XoRZeyVQLQPKuGEm4cg+0zKc4H5uw+gtj3Sz6UzYDdlTnCGyH35W
+         bXRloQ39hJ15uDaOMRKoR/S8SsZRmvyKAHXiUnYEXWlpI+7ukXWt3hp7l8sQUy41RQBe
+         WUNBvB7oaB4z1zQYovwxSpOHafSyPueaJ2i6szwtQKZjP+KsIziqwnBuAMQqWIJLL0C4
+         LJEWyi7WNrIonvweqRMM6ySiDIEsRUQG7vq3LTmeoUSlNHqP0m+NxUR5Sw+5OcfE4vTM
+         aQQ0N+errIK3cFzFN31NzxL+5fD7vAaosnkW/H/eZeFDKoGLc77rPzgYAsSsLmndP57Z
+         NWRQ==
+X-Gm-Message-State: AOAM533rep6YTbVPooM+SJMD5V+D9sAjIqU6p5OJu9p1lz9EUW3z/tNR
+        R50kP7EmwUUtkbN/QwqJquv9GUqBTVD3ngMQ7vxCmg==
+X-Google-Smtp-Source: ABdhPJwhn4migTaK4XUgkdD/7pGNuIDSlXbAnJe2m4X+uNc0EalSYsW9Z+emyP0Y7X4qKQ74oQEQGGD1thAkW+JQzkY=
+X-Received: by 2002:aa7:c9ce:: with SMTP id i14mr3328398edt.186.1599644156363;
+ Wed, 09 Sep 2020 02:35:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMpxmJXh9pKMAXgPWSCPXeyjP0CSo=A5SgLPrL2eRxX-LAyKag@mail.gmail.com>
+References: <20200903081550.6012-1-sakari.ailus@linux.intel.com> <20200903081550.6012-7-sakari.ailus@linux.intel.com>
+In-Reply-To: <20200903081550.6012-7-sakari.ailus@linux.intel.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Wed, 9 Sep 2020 11:35:45 +0200
+Message-ID: <CAMpxmJX40=iYYxL9Uvs1Pjj9c3NvZBGJ9Mh9-87T0c==FKEXRw@mail.gmail.com>
+Subject: Re: [PATCH v8 6/6] at24: Support probing while off
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     linux-i2c <linux-i2c@vger.kernel.org>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rajmohan Mani <rajmohan.mani@intel.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>,
+        Hyungwoo Yang <hyungwoo.yang@intel.com>,
+        linux-media <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 09, 2020 at 11:26:00AM +0200, Bartosz Golaszewski wrote:
-> On Wed, Sep 9, 2020 at 11:24 AM Kent Gibson <warthog618@gmail.com> wrote:
-> >
-> > On Sat, Sep 05, 2020 at 09:35:36PM +0800, Kent Gibson wrote:
-> > > Add support for requesting lines using the GPIO_V2_GET_LINE_IOCTL, and
-> > > returning their current values using GPIO_V2_LINE_GET_VALUES_IOCTL.
-> > >
-> > > The struct linereq implementation is based on the v1 struct linehandle
-> > > implementation.
-> > >
-> > > Signed-off-by: Kent Gibson <warthog618@gmail.com>
-> > > ---
-> > >
-> >
-> > [snip]
-> >
-> > >               if (copy_from_user(&offset, ip, sizeof(offset)))
-> > >                       return -EFAULT;
-> > > @@ -1104,6 +1505,25 @@ int gpiolib_cdev_register(struct gpio_device *gdev, dev_t devt)
-> > >                MAJOR(devt), gdev->id);
-> > >
-> > >       return 0;
-> > > +     /*
-> > > +      * array sizes must ensure 64-bit alignment and not create holes in
-> > > +      * the struct packing.
-> > > +      */
-> > > +     BUILD_BUG_ON(IS_ALIGNED(GPIO_V2_LINES_MAX, 2));
-> > > +     BUILD_BUG_ON(IS_ALIGNED(GPIO_MAX_NAME_SIZE, 8));
-> > > +
-> > > +     /*
-> > > +      * check that uAPI structs are 64-bit aligned for 32/64-bit
-> > > +      * compatibility
-> > > +      */
-> > > +     BUILD_BUG_ON(IS_ALIGNED(sizeof(struct gpio_v2_line_attribute), 8));
-> > > +     BUILD_BUG_ON(IS_ALIGNED(sizeof(struct gpio_v2_line_config_attribute), 8));
-> > > +     BUILD_BUG_ON(IS_ALIGNED(sizeof(struct gpio_v2_line_config), 8));
-> > > +     BUILD_BUG_ON(IS_ALIGNED(sizeof(struct gpio_v2_line_request), 8));
-> > > +     BUILD_BUG_ON(IS_ALIGNED(sizeof(struct gpio_v2_line_info), 8));
-> > > +     BUILD_BUG_ON(IS_ALIGNED(sizeof(struct gpio_v2_line_info_changed), 8));
-> > > +     BUILD_BUG_ON(IS_ALIGNED(sizeof(struct gpio_v2_line_event), 8));
-> > > +     BUILD_BUG_ON(IS_ALIGNED(sizeof(struct gpio_v2_line_values), 8));
-> > >  }
-> > >
-> >
-> > A couple of things here - these should all be !IS_ALIGNED.
-> > And the BUILD_BUG_ON gets compiled out, and so doesn't fail, if they are
-> > after the return.
-> >
-> > How would you like that fixed - v8 or a patch once v7 is in?
-> >
-> > Cheers,
-> > Kent.
-> 
-> v8 please. Why is it compiled out though? Does it need some config option?
-> 
+On Thu, Sep 3, 2020 at 10:15 AM Sakari Ailus
+<sakari.ailus@linux.intel.com> wrote:
+>
+> In certain use cases (where the chip is part of a camera module, and the
+> camera module is wired together with a camera privacy LED), powering on
+> the device during probe is undesirable. Add support for the at24 to
+> execute probe while being powered off. For this to happen, a hint in form
+> of a device property is required from the firmware.
+>
+> Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+> ---
+>  drivers/misc/eeprom/at24.c | 43 +++++++++++++++++++++++---------------
+>  1 file changed, 26 insertions(+), 17 deletions(-)
+>
+> diff --git a/drivers/misc/eeprom/at24.c b/drivers/misc/eeprom/at24.c
+> index 8f5de5f10bbea..2d24e33788d7d 100644
+> --- a/drivers/misc/eeprom/at24.c
+> +++ b/drivers/misc/eeprom/at24.c
+> @@ -595,6 +595,7 @@ static int at24_probe(struct i2c_client *client)
+>         bool i2c_fn_i2c, i2c_fn_block;
+>         unsigned int i, num_addresses;
+>         struct at24_data *at24;
+> +       bool low_power;
+>         struct regmap *regmap;
+>         bool writable;
+>         u8 test_byte;
+> @@ -733,25 +734,30 @@ static int at24_probe(struct i2c_client *client)
+>
+>         i2c_set_clientdata(client, at24);
+>
+> -       err = regulator_enable(at24->vcc_reg);
+> -       if (err) {
+> -               dev_err(dev, "Failed to enable vcc regulator\n");
+> -               return err;
+> -       }
+> +       low_power = acpi_dev_state_low_power(&client->dev);
+> +       if (!low_power) {
+> +               err = regulator_enable(at24->vcc_reg);
+> +               if (err) {
+> +                       dev_err(dev, "Failed to enable vcc regulator\n");
+> +                       return err;
+> +               }
+>
+> -       /* enable runtime pm */
+> -       pm_runtime_set_active(dev);
+> +               pm_runtime_set_active(dev);
+> +       }
+>         pm_runtime_enable(dev);
+>
+>         /*
+> -        * Perform a one-byte test read to verify that the
+> -        * chip is functional.
+> +        * Perform a one-byte test read to verify that the chip is functional,
+> +        * unless powering on the device is to be avoided during probe (i.e.
+> +        * it's powered off right now).
+>          */
+> -       err = at24_read(at24, 0, &test_byte, 1);
+> -       if (err) {
+> -               pm_runtime_disable(dev);
+> -               regulator_disable(at24->vcc_reg);
+> -               return -ENODEV;
+> +       if (!low_power) {
+> +               err = at24_read(at24, 0, &test_byte, 1);
+> +               if (err) {
+> +                       pm_runtime_disable(dev);
+> +                       regulator_disable(at24->vcc_reg);
+> +                       return -ENODEV;
+> +               }
+>         }
+>
+>         pm_runtime_idle(dev);
+> @@ -771,9 +777,11 @@ static int at24_remove(struct i2c_client *client)
+>         struct at24_data *at24 = i2c_get_clientdata(client);
+>
+>         pm_runtime_disable(&client->dev);
+> -       if (!pm_runtime_status_suspended(&client->dev))
+> -               regulator_disable(at24->vcc_reg);
+> -       pm_runtime_set_suspended(&client->dev);
+> +       if (!acpi_dev_state_low_power(&client->dev)) {
+> +               if (!pm_runtime_status_suspended(&client->dev))
+> +                       regulator_disable(at24->vcc_reg);
+> +               pm_runtime_set_suspended(&client->dev);
+> +       }
+>
+>         return 0;
+>  }
+> @@ -810,6 +818,7 @@ static struct i2c_driver at24_driver = {
+>         .probe_new = at24_probe,
+>         .remove = at24_remove,
+>         .id_table = at24_ids,
+> +       .flags = I2C_DRV_FL_ALLOW_LOW_POWER_PROBE,
+>  };
+>
+>  static int __init at24_init(void)
+> --
+> 2.20.1
+>
 
-Not sure - haven't looked into it.  I only noticed the condition was
-inverted in passing, and when I flipped it it still compiled.
-Moving the return to the end of the function made them all fail,
-as they should if IS_ALIGNED is true.
+This currently conflicts with the fix I queued for at24 for v5.9.
+Which tree is going to take this series?
 
-Having BUILD_BUG_ON being able to compile out quietly is a problem in
-itself.  Nothing special in my setup that I am aware of.
-
-Cheers,
-Kent.
+Bartosz
