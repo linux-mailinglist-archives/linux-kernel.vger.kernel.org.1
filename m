@@ -2,124 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 111AB262A82
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 10:38:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F07BE262A75
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 10:37:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728954AbgIIIiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 04:38:02 -0400
-Received: from mail-eopbgr770055.outbound.protection.outlook.com ([40.107.77.55]:60533
-        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726293AbgIIIiA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 04:38:00 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VCQVplxlwj9iX6Gz5PzqSHmDOTLaStvKu0DtCBinkE8B83pqI9GAWjgnvB/da88TQIlalIm88xPKY4SbFy6fd9tkqpsfOZ16Ch3pav2zCy+Cia92y77Xf1MtFBusdNRUn7fwlmmqsT06n11vnnciffOxk6BvqLswMSdFXUno6Z0iFWl4cKMB6ayYMcgKt83hPEcMH49WpbQxvq6gCDCljlbNnl6BvhvnelBW7k+7QFPr/a3oAZn89IOkp0H/bn89VaOjYMArgMQFWtHaLTdG034rIXw+oi+j0fXX7fziEC75wanXMjnz8nip/uxhQunm+N9jxu6sAq9MPBxqM0jkWw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zWKU3+E0uGMriPbQVbqUoLuf5GcXi4s5+g1Ao3ohpvI=;
- b=gscHa5pLHzqePG+BUYxi8Rozz2hj+MzZKgjxvFg6KijPqazo03G/iVjfeEWVgYIumZWYMifThYwSry3mclWdueIzLTN7D3+yLF/qUtPcRRF35Aw4hYPcYBEt4cmE3q2jB6U1B70VHICH8FP76F08C9/cVYOTzCLAAoBKhn8LKlMpuYuozUsp9Fsa206AaTxHgCQDzPi1Nojchif0hCVQ6n/NHKxsZTJTSNSo4mrdwB0SrNxg+w8JVYARB9YlGiD96TN91560YjlSxYIusAWxrx0csVekiGzVo4pCszXec76bJMBU+WutCLcL4HKYm6pavzknYN2yxbT2yM5hmNZDJw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=tw.synaptics.com; dmarc=pass action=none
- header.from=tw.synaptics.com; dkim=pass header.d=tw.synaptics.com; arc=none
+        id S1727976AbgIIIhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 04:37:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39798 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726293AbgIIIhC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 04:37:02 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60865C061755
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 01:37:01 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id q9so1436723wmj.2
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 01:37:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zWKU3+E0uGMriPbQVbqUoLuf5GcXi4s5+g1Ao3ohpvI=;
- b=D5wkIpZgavx6juHXCqQ0WC8I7ZBPBSXSddiCygxzzn7T4CZ2GZyvfP1YOwpF9e69HXbYD5cIxcKZ1VGuGaz7nJcYKz+46AqrFAc4gc+3mlEtfiE0lECx3q+ASJTP0tSOhL/mB+C9rRWh+gFuOit3JdG9rpeU5JRBKBEk/vQkWNM=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=tw.synaptics.com;
-Received: from SN6PR03MB3952.namprd03.prod.outlook.com (2603:10b6:805:75::26)
- by SA0PR03MB5562.namprd03.prod.outlook.com (2603:10b6:806:b7::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.15; Wed, 9 Sep
- 2020 08:37:55 +0000
-Received: from SN6PR03MB3952.namprd03.prod.outlook.com
- ([fe80::3c54:f5cf:3148:407e]) by SN6PR03MB3952.namprd03.prod.outlook.com
- ([fe80::3c54:f5cf:3148:407e%7]) with mapi id 15.20.3370.016; Wed, 9 Sep 2020
- 08:37:55 +0000
-From:   Vincent Huang <vincent.huang@tw.synaptics.com>
-To:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Vincent Huang <vincent.huang@tw.synaptics.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Andrew Duggan <aduggan@synaptics.com>
-Subject: [PATCH] Input: trackpoint - add new trackpoint variant IDs
-Date:   Wed,  9 Sep 2020 16:36:32 +0800
-Message-Id: <20200909083632.12971-1-vincent.huang@tw.synaptics.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: HK0PR03CA0103.apcprd03.prod.outlook.com
- (2603:1096:203:b0::19) To SN6PR03MB3952.namprd03.prod.outlook.com
- (2603:10b6:805:75::26)
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=BhyBPgB9vs4GX0WG0TB0f4M/oPN9+cSShKiQ6+MBT10=;
+        b=OPN9vAK9sNgPp5A/WCtYKZk4EXN1Xv0wFzNPosFQBrGLKCNlgDFMXSLTi1DzTXcVvQ
+         U5mDF/rrsVKk3hj4upMkQ5Xu1yelPahQ3J3SjNu7gPE6TlyM5fwq1GNOiSRLh3WT2MN9
+         uJnP16gsogLc9kRrF/MY8ctXVS/nt59oIcTjh4apsEQcJAOa7fZ2I80LdFK8s6Zip30a
+         qIaYdbcw8KjjcfPwWG7haVmyFwgYW7+J5eHtdcJEXIUqW05F7kRcUh0UyJ5mdkPcsrat
+         IniktyEOHY3TTukZNwemyKmcTbIqc+D69GiOb5YjGOwN+EEg5iFhXdswjOAI5DcweYD0
+         Ornw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=BhyBPgB9vs4GX0WG0TB0f4M/oPN9+cSShKiQ6+MBT10=;
+        b=j6yKjHEE7ViS2dpX2ReA5Ow3P2AYIMm8nXXJnYHa+mO+hrusSy/9Bvj6ivv5pUurF8
+         HD9PRkwcPCHeX6S6f0HOEyFOhKibjU0LzsnUSMv6+gEhqKmMJ6M0VPOkqb8T4YIhWwUs
+         QO5/Y/s6C2fotAdLbFyzZN47jX/2cppIaOGZliEDWM9JW2rxoyQ/MaScL6hffAvm9/ox
+         Xdqli7+53jW1hYbaeSS470/ESUNAPy8LDbTXfe+XZWzzlC/cMhT9yXJz9d88AoXRvNNy
+         xPSi11gTQsBXzK6LXmUcEjDVZnBHq78uOE0J9q+Q8ToHm6z1qKIM5rcXv2/FI241Bo9Y
+         qEpA==
+X-Gm-Message-State: AOAM5322X/xv5xd4iGha1iOLdmNyuitw28FSaVTv1JW8NDNMD+cR/ZRR
+        Asrwr1j8XUTgm9oeReBk2GPozQ==
+X-Google-Smtp-Source: ABdhPJzu82wH9CRZsiCU2R+ocLOX+gu3BxWXYAGsPmOfOmqbjHOVa4PINfNYscUgauOLun5/lvakdw==
+X-Received: by 2002:a7b:ce86:: with SMTP id q6mr2557860wmj.163.1599640619750;
+        Wed, 09 Sep 2020 01:36:59 -0700 (PDT)
+Received: from elver.google.com ([100.105.32.75])
+        by smtp.gmail.com with ESMTPSA id a127sm2812203wmh.34.2020.09.09.01.36.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Sep 2020 01:36:58 -0700 (PDT)
+Date:   Wed, 9 Sep 2020 10:36:53 +0200
+From:   Marco Elver <elver@google.com>
+To:     David Gow <davidgow@google.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Randy Dunlap <rd.dunlab@gmail.com>,
+        Theodore Ts'o <tytso@mit.edu>, Tim Bird <Tim.Bird@sony.com>,
+        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] Documentation: kunit: Add naming guidelines
+Message-ID: <20200909083653.GA620870@elver.google.com>
+References: <20200909051631.2960347-1-davidgow@google.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (60.250.40.148) by HK0PR03CA0103.apcprd03.prod.outlook.com (2603:1096:203:b0::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16 via Frontend Transport; Wed, 9 Sep 2020 08:37:52 +0000
-X-Mailer: git-send-email 2.25.1
-X-Originating-IP: [60.250.40.148]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 5f506b8a-222a-4c6b-0886-08d8549ba5b0
-X-MS-TrafficTypeDiagnostic: SA0PR03MB5562:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SA0PR03MB556216190B3A85D7B826A5F5D6260@SA0PR03MB5562.namprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:404;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: xe6ywytwovSIgUBTSmEQ5jKr3CouQBNLpxxzKGe5GaMTDwwh6bueCdExCwaY1vQx3EVB6XjoUf127P8JutCVWwBwursm/R0PUpktW1zydEdzt0CYbogyxWfnVr+hxdMSdJK0rL/99md4Wxwzsz45W/AlFlaHwQFLNiXY+xtAiL9bxRFec93cL+T42drX9IKPebTYeucaF7DA07DlP6PPInZMkvLr9gyRmtFlztROnTJwXxYP6Y6WgbJX+zBjnESo+2OFLh6TwUTwdz4LBH6z0SiZrvoU7MRy9IXk1ht1iiLYG04I6TM/eI+T+jDcey8s8XTdFwlXfD+NFbHOOzSo8ai7vzqlOBvzI/s52SiCyxmGb2jg7pFE+iLMhnUDl7Xc
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR03MB3952.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(346002)(396003)(136003)(366004)(39860400002)(66946007)(8936002)(1076003)(4326008)(478600001)(6512007)(8676002)(66476007)(66556008)(2616005)(956004)(6666004)(86362001)(54906003)(107886003)(26005)(52116002)(2906002)(6486002)(44832011)(316002)(186003)(16526019)(69590400008)(5660300002)(6506007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: FpNzgB+cq8bMUd3oVBw8ELdlAC/FkHnEBmz01A7CB2h3+IWXHnaYniuLv/T/nc73oVE8y0kLW+Yj2qCf2CVX1+5b/guMY3wAKvc+H19y7pjHnreKf8dvFlBdjARc8yAsYRlJdEFZVbpnuRyeD1mhzaWWULUfY5ozfqwZxWKoHia8W3ODuMaTMM32HinR+l8mAK0wUGu4+2GHproBPc7aUZlXzOJINF0GZE1GRfLCLf5RSgsE/6WvPbG6RaUnZUcOdzGF0X+uYF1zR3HMbyQM/oHuBW1ZOcmORDzjF2JoG9qKs47tbCe2SRpYrnuwiud4rNn9VBf7KNPFwPdLt9C3jzDwX3BFXCRBqQaZNYEM0+zIqJyfgPd/oNZWN9mYUZz6wCemMcQWWHvlRGFJavPTPb9h/Win3RIgtipZpvwknPS6k8c8GRnG/CY/k0Crf9fIBSYhWDxjgF9XziPhYFN22qZP63NIM2owpbj5IuaWn09idZ/9WzZUoRYcuEAuVvMUXd16pqD6abwaitW//Bz57k7kMdYN4AXdLV+pmda7qD/mJZkdf5gPDRoxrEKi1YLITkwPIDCF4th6g1o5CAo9FkF+2HUBtFVtoeUADyKdt1mhiXgkFeiHlsH4Q5il8B4z0ci8KTkflQBJSMgxXk2WXg==
-X-OriginatorOrg: tw.synaptics.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5f506b8a-222a-4c6b-0886-08d8549ba5b0
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR03MB3952.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Sep 2020 08:37:55.3913
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: OaqFYuiCPstSkMAyNE8MpjKmrazxSM6q4hZA8YkmSJ1OQRafETMRtDVI5ZpdtOc2N5aPcOsxmfkxGRxBI3VK/w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR03MB5562
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200909051631.2960347-1-davidgow@google.com>
+User-Agent: Mutt/1.14.4 (2020-06-18)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add trackpoint variant IDs to allow supported control
-on Synaptics trackpoints
+On Tue, Sep 08, 2020 at 10:16PM -0700, David Gow wrote:
+> As discussed in [1], KUnit tests have hitherto not had a particularly
+> consistent naming scheme. This adds documentation outlining how tests
+> and test suites should be named, including how those names should be
+> used in Kconfig entries and filenames.
+> 
+> [1]:
+> https://lore.kernel.org/linux-kselftest/202006141005.BA19A9D3@keescook/t/#u
+> 
+> Signed-off-by: David Gow <davidgow@google.com>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+> ---
+> 
+> This is v2 of the KUnit test nomenclature guidelines. The guidelines have
+> changed a bit in response to the discussion on the v1 thread which came
+> about after plumbers. The major change is that the filename suffix is
+> now "_test", with "_kunit" permitted where it conflicts. There are also
+> some other exceptions carved out around existing tests, and very
+> non-unit-like tests.
+> 
+> Changelog:
+> 
+> v2:
+> - Rewrote the filename section to use "_test" as a suffix, and focus on
+>   module names, not filenames.
+> - Add a motivating introduction, which also calls out existing tests and
+>   tests which cause problems when run automatically (long running,
+>   flaky tests) as reasons to avoid the guidelines.
+> - Talk about including the type of test in the suite name, but only if
+>   theres an actual confict. (And update the example for this).
+> 
+> v1:
+> https://lore.kernel.org/linux-kselftest/20200702071416.1780522-1-davidgow@google.com/
+> - Fixed a bit of space/tab confusion in the index (Thanks, Randy)
+> - Added some more examples (and some test case examples).
+> - Added some examples of what not to call subsystems and suites.
+> - No longer explicitly require "If unsure, put N" in Kconfig entries.
+> - Minor formatting changes
+> 
+> RFC:
+> https://lore.kernel.org/linux-kselftest/20200620054944.167330-1-davidgow@google.com/T/#u
+> - Initial version
+> 
+> 
+> The result is a little bit weaker than the previous versions, but
+> hopefully will let us get the areas we agree on down.
+> 
+> -- David
+> 
+> 
+>  Documentation/dev-tools/kunit/index.rst |   1 +
+>  Documentation/dev-tools/kunit/style.rst | 207 ++++++++++++++++++++++++
+>  2 files changed, 208 insertions(+)
+>  create mode 100644 Documentation/dev-tools/kunit/style.rst
+> 
+> diff --git a/Documentation/dev-tools/kunit/index.rst b/Documentation/dev-tools/kunit/index.rst
+> index e93606ecfb01..c234a3ab3c34 100644
+> --- a/Documentation/dev-tools/kunit/index.rst
+> +++ b/Documentation/dev-tools/kunit/index.rst
+> @@ -11,6 +11,7 @@ KUnit - Unit Testing for the Linux Kernel
+>  	usage
+>  	kunit-tool
+>  	api/index
+> +	style
+>  	faq
+>  
+>  What is KUnit?
+> diff --git a/Documentation/dev-tools/kunit/style.rst b/Documentation/dev-tools/kunit/style.rst
+> new file mode 100644
+> index 000000000000..c001ea1cd87d
+> --- /dev/null
+> +++ b/Documentation/dev-tools/kunit/style.rst
+> @@ -0,0 +1,207 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +===========================
+> +Test Style and Nomenclature
+> +===========================
+> +
+> +To make finding, writing, and using KUnit tests as simple as possible, it's
+> +strongly encouraged that they are named and written according to the guidelines
+> +below. While it's possible to write KUnit tests which do not follow these rules,
+> +they may break some tooling, may conflict with other tests, and may not be run
+> +automatically by testing systems.
+> +
+> +It's recommended that you only deviate from these guidelines when:
+> +
+> +1. Porting tests to KUnit which are already known with an existing name, or
+> +2. Writing tests which would cause serious problems if automatically run (e.g.,
+> +   nonderministically producing false positives or negatives, or taking an
 
-Signed-off-by: Vincent Huang <vincent.huang@tw.synaptics.com>
----
- drivers/input/mouse/trackpoint.c | 2 ++
- drivers/input/mouse/trackpoint.h | 2 ++
- 2 files changed, 4 insertions(+)
+s/nonderministically/nondeterministically/ (or non-deterministically?)
 
-diff --git a/drivers/input/mouse/trackpoint.c b/drivers/input/mouse/trackpoint.c
-index 3eefee2ee2a1..c54d2f9e1c4a 100644
---- a/drivers/input/mouse/trackpoint.c
-+++ b/drivers/input/mouse/trackpoint.c
-@@ -21,6 +21,8 @@ static const char * const trackpoint_variants[] = {
- 	[TP_VARIANT_ALPS]	= "ALPS",
- 	[TP_VARIANT_ELAN]	= "Elan",
- 	[TP_VARIANT_NXP]	= "NXP",
-+	[TP_VARIANT_JYT_SYNAPTICS]	= "JYT_SYNAPTICS",
-+	[TP_VARIANT_SYNAPTICS]	= "SYNAPTICS",
- };
- 
- /*
-diff --git a/drivers/input/mouse/trackpoint.h b/drivers/input/mouse/trackpoint.h
-index 5cb93ed26085..42eda7d4ba08 100644
---- a/drivers/input/mouse/trackpoint.h
-+++ b/drivers/input/mouse/trackpoint.h
-@@ -28,6 +28,8 @@
- #define TP_VARIANT_ALPS		0x02
- #define TP_VARIANT_ELAN		0x03
- #define TP_VARIANT_NXP		0x04
-+#define TP_VARIANT_JYT_SYNAPTICS		0x05
-+#define TP_VARIANT_SYNAPTICS		0x06
- 
- /*
-  * Commands
--- 
-2.25.1
+> +   extremely long time to run).
+[...]
+> +Test File and Module Names
+> +==========================
+> +
+> +KUnit tests can often be compiled as a module. These modules should be named
+> +after the test suite, followed by ``_test``. If this is likely to conflict with
+> +non-KUnit tests, the suffic ``_kunit`` can also be used.
 
+s/suffic/suffix/
+
+> +The easiest way of achieving this is to name the file containing the test suite
+> +``<suite>_test.c`` (or, as above, ``<suite>_kunit.c``). This file should be
+> +placed next to the code under test.
+> +
+> +If the suite name contains some or all of the name of the test's parent
+> +directory, it may make sense to modify the source filename to reduce redundancy.
+> +For example, a ``foo_firmware`` suite could be in the ``foo/firmware_test.c``
+> +file.
+
+Reviewed-by: Marco Elver <elver@google.com>
+
+Thank you!
