@@ -2,253 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94DEB263879
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 23:30:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE922263880
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 23:31:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730064AbgIIVaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 17:30:02 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:17143 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726426AbgIIVaB (ORCPT
+        id S1730180AbgIIVb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 17:31:26 -0400
+Received: from mail-io1-f66.google.com ([209.85.166.66]:33090 "EHLO
+        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725975AbgIIVbZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 17:30:01 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f5948d10000>; Wed, 09 Sep 2020 14:27:45 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Wed, 09 Sep 2020 14:30:01 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Wed, 09 Sep 2020 14:30:01 -0700
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 9 Sep
- 2020 21:30:00 +0000
-Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Wed, 9 Sep 2020 21:30:00 +0000
-Received: from rcampbell-dev.nvidia.com (Not Verified[10.110.48.66]) by hqnvemgw03.nvidia.com with Trustwave SEG (v7,5,8,10121)
-        id <B5f5949580004>; Wed, 09 Sep 2020 14:30:00 -0700
-From:   Ralph Campbell <rcampbell@nvidia.com>
-To:     <linux-doc@vger.kernel.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse=20?= <jglisse@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ralph Campbell <rcampbell@nvidia.com>
-Subject: [PATCH] mm/doc: add usage description for migrate_vma_*()
-Date:   Wed, 9 Sep 2020 14:29:56 -0700
-Message-ID: <20200909212956.20104-1-rcampbell@nvidia.com>
-X-Mailer: git-send-email 2.20.1
+        Wed, 9 Sep 2020 17:31:25 -0400
+Received: by mail-io1-f66.google.com with SMTP id r25so4878572ioj.0;
+        Wed, 09 Sep 2020 14:31:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4LJPa6wY+bmsqueUyPNc2PybKgdIOrPEhe+awiCsZb8=;
+        b=tVlWtGorMxVbEhgGrlqRTgTSSqmAZxdodriD8XQm0QPwJn9ZX23B5gV28j3p5WFfYq
+         ZVta2bFlWQYvw6m+u+fgNdtcEdMwx244/sZxEP0q3i5pEqvzXlqJoCCKGOOIDWpxVomJ
+         5muKTPsUhBVgNSLwFq8fhtXGi3gXdOtANOIVpMEvW6xXdhrbOV3DGorLiVbslsGs+rtY
+         FPxo8OGPCfQM5Ji2V3jCKfws+tSJ0Jw25lrZHIrn/z2yPjhg4heL35jtNI0g289d9rBc
+         pmvOmMD9E6wlbZd9X9XEsffNi6awV3M2w2T0DwIMgfa1MWdyLipt0AScZB5LuGbdli7R
+         2OVw==
+X-Gm-Message-State: AOAM532rE9WzXeX+pNVU15Ddu49P4OYPUDSGtdgGuKo+8UMRDpf/E9JZ
+        z8WC6FAEoVSWmhZMIvyPhA==
+X-Google-Smtp-Source: ABdhPJx+yi3NeE5/5sKNkbuyeC6+1XRipNeRGuLJCswC6gjgCaTEgcvbt1hptOmwmXb8008oPjMkBA==
+X-Received: by 2002:a02:8805:: with SMTP id r5mr6116720jai.52.1599687084653;
+        Wed, 09 Sep 2020 14:31:24 -0700 (PDT)
+Received: from xps15 ([64.188.179.251])
+        by smtp.gmail.com with ESMTPSA id u25sm1733942iot.35.2020.09.09.14.31.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Sep 2020 14:31:23 -0700 (PDT)
+Received: (nullmailer pid 3107682 invoked by uid 1000);
+        Wed, 09 Sep 2020 21:31:22 -0000
+Date:   Wed, 9 Sep 2020 15:31:22 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Marek Behun <marek.behun@nic.cz>
+Cc:     Andrew Lunn <andrew@lunn.ch>, netdev@vger.kernel.org,
+        linux-leds@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
+        Dan Murphy <dmurphy@ti.com>,
+        =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-kernel@vger.kernel.org,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        "David S. Miller" <davem@davemloft.net>, devicetree@vger.kernel.org
+Subject: Re: [PATCH net-next + leds v2 1/7] dt-bindings: leds: document
+ binding for HW controlled LEDs
+Message-ID: <20200909213122.GA3087645@bogus>
+References: <20200909162552.11032-1-marek.behun@nic.cz>
+ <20200909162552.11032-2-marek.behun@nic.cz>
+ <20200909182730.GK3290129@lunn.ch>
+ <20200909203310.15ca4e42@dellmb.labs.office.nic.cz>
+ <20200909205923.GB3056507@bogus>
+ <20200909230726.233b4081@nic.cz>
 MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1599686865; bh=9pn2LAJQ88Ern7DgcA6IA3HL7U+bde50sQiNMbe+78A=;
-        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
-         MIME-Version:X-NVConfidentiality:Content-Transfer-Encoding:
-         Content-Type;
-        b=kibLqazczBhICvNhHQybzFkZ0zo4zJqPgza2W2xlfjtdWeGWCMeURoezbns3nQJKB
-         7skLSbzBvGyPAeR1vSknOjjUF2D0X077AFeQPOdesNJdySV2RkHOqM2BbHQ5mSmtCy
-         EHGbUS10OXJGJIwVeUptqiTWvCA2vwKnFdtew0sXv4NrS+tmJjgdydJddw9f0y4/Lr
-         1bJiKyTiIE670maHK1Yt8Ny7WHuuTgl0t878mM5oGxmoipnMG87W8tnhsXkZRF4BxX
-         xpVyqf2vAbrBpRkN1AbApeiCqk5hcFOczmvTgFmKl8RRbY/eAzALlrde9Y4AFSfcgs
-         i3hC+iQwtV1dQ==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200909230726.233b4081@nic.cz>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The migrate_vma_setup(), migrate_vma_pages(), and migrate_vma_finalize()
-API usage by device drivers is not well documented.
-Add a description for how device drivers are expected to use it.
+On Wed, Sep 09, 2020 at 11:07:26PM +0200, Marek Behun wrote:
+> On Wed, 9 Sep 2020 14:59:23 -0600
+> Rob Herring <robh@kernel.org> wrote:
+> 
+> > > 
+> > > I don't know :) I copied this from other drivers, I once tried setting
+> > > up environment for doing checking of device trees with YAML schemas,
+> > > and it was a little painful :)  
+> > 
+> > pip3 install dtschema ?
+> > 
+> > Can you elaborate on the issue.
+> > 
+> > Rob
+> > 
+> 
+> I am using Gentoo and didn't want to bloat system with non-portage
+> packages, nor try to start a virtual environment. In the end I did it
+> in a chroot Ubuntu :)
 
-Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
----
+A user install doesn't work?
 
-There shouldn't be any merge conflict with my previous patch which
-touched hmm.rst but since Jonathan Corbet took my last patch, perhaps he
-would like to take this one through his tree too.
+I don't really care for virtual env either.
 
- Documentation/vm/hmm.rst | 137 +++++++++++++++++++++++++++++++++++++--
- 1 file changed, 133 insertions(+), 4 deletions(-)
+> The other thing is that the make dt_binding_check executed for
+> quite a long time, and I didn't find a way to just do the binding check
+> some of the schemas.
 
-diff --git a/Documentation/vm/hmm.rst b/Documentation/vm/hmm.rst
-index 7453acc1ea4f..dd9f76a4ef29 100644
---- a/Documentation/vm/hmm.rst
-+++ b/Documentation/vm/hmm.rst
-@@ -271,10 +271,139 @@ map those pages from the CPU side.
- Migration to and from device memory
- =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-=20
--Because the CPU cannot access device memory, migration must use the device=
- DMA
--engine to perform copy from and to device memory. For this we need to use
--migrate_vma_setup(), migrate_vma_pages(), and migrate_vma_finalize() helpe=
-rs.
--
-+Because the CPU cannot access device memory directly, the device driver mu=
-st
-+use hardware DMA or device specific load/store instructions to migrate dat=
-a.
-+The migrate_vma_setup(), migrate_vma_pages(), and migrate_vma_finalize()
-+functions are designed to make drivers easier to write and to centralize c=
-ommon
-+code across drivers.
-+
-+Before migrating pages to device private memory, special device private
-+``struct page`` need to be created. These will be used as special "swap"
-+page table entries so that a CPU process will fault if it tries to access
-+a page that has been migrated to device private memory.
-+
-+These can be allocated and freed with::
-+
-+    struct resource *res;
-+    struct dev_pagemap pagemap;
-+
-+    res =3D request_free_mem_region(&iomem_resource, /* number of bytes */=
-,
-+                                  "name of driver resource");
-+    pagemap.type =3D MEMORY_DEVICE_PRIVATE;
-+    pagemap.range.start =3D res->start;
-+    pagemap.range.end =3D res->end;
-+    pagemap.nr_range =3D 1;
-+    pagemap.ops =3D &device_devmem_ops;
-+    memremap_pages(&pagemap, numa_node_id());
-+
-+    memunmap_pages(&pagemap);
-+    release_mem_region(pagemap.range.start, range_len(&pagemap.range));
-+
-+There are also devm_request_free_mem_region(), devm_memremap_pages(),
-+devm_memunmap_pages(), and devm_release_mem_region() when the resources ca=
-n
-+be tied to a ``struct device``.
-+
-+The overall migration steps are similar to migrating NUMA pages within sys=
-tem
-+memory (see :ref:`Page migration <page_migration>`) but the steps are spli=
-t
-+between device driver specific code and shared common code:
-+
-+1. ``mmap_read_lock()``
-+
-+   The device driver has to pass a ``struct vm_area_struct`` to
-+   migrate_vma_setup() so the mmap_read_lock() or mmap_write_lock() needs =
-to
-+   be held for the duration of the migration.
-+
-+2. ``migrate_vma_setup(struct migrate_vma *args)``
-+
-+   The device driver initializes the ``struct migrate_vma`` fields and pas=
-ses
-+   the pointer to migrate_vma_setup(). The ``args->flags`` field is used t=
-o
-+   filter which source pages should be migrated. For example, setting
-+   ``MIGRATE_VMA_SELECT_SYSTEM`` will only migrate system memory and
-+   ``MIGRATE_VMA_SELECT_DEVICE_PRIVATE`` will only migrate pages residing =
-in
-+   device private memory. If the latter flag is set, the ``args->pgmap_own=
-er``
-+   field is used to identify device private pages owned by the driver. Thi=
-s
-+   avoids trying to migrate device private pages residing in other devices=
-.
-+   Currently only anonymous private VMA ranges can be migrated to or from
-+   system memory and device private memory.
-+
-+   One of the first steps migrate_vma_setup() does is to invalidate other
-+   device's MMUs with the ``mmu_notifier_invalidate_range_start(()`` and
-+   ``mmu_notifier_invalidate_range_end()`` calls around the page table
-+   walks to fill in the ``args->src`` array with PFNs to be migrated.
-+   The ``invalidate_range_start()`` callback is passed a
-+   ``struct mmu_notifier_range`` with the ``event`` field set to
-+   ``MMU_NOTIFY_MIGRATE`` and the ``migrate_pgmap_owner`` field set to
-+   the ``args->pgmap_owner`` field passed to migrate_vma_setup(). This is
-+   allows the device driver to skip the invalidation callback and only
-+   invalidate device private MMU mappings that are actually migrating.
-+   This is explained more in the next section.
-+
-+   While walking the page tables, a ``pte_none()`` or ``is_zero_pfn()``
-+   entry results in a valid "zero" PFN stored in the ``args->src`` array.
-+   This lets the driver allocate device private memory and clear it instea=
-d
-+   of copying a page of zeros. Valid PTE entries to system memory or
-+   device private struct pages will be locked with ``lock_page()``, isolat=
-ed
-+   from the LRU (if system memory since device private pages are not on
-+   the LRU), unmapped from the process, and a special migration PTE is
-+   inserted in place of the original PTE.
-+   migrate_vma_setup() also clears the ``args->dst`` array.
-+
-+3. The device driver allocates destination pages and copies source pages t=
-o
-+   destination pages.
-+
-+   The driver checks each ``src`` entry to see if the ``MIGRATE_PFN_MIGRAT=
-E``
-+   bit is set and skips entries that are not migrating. The device driver
-+   can also choose to skip migrating a page by not filling in the ``dst``
-+   array for that page.
-+
-+   The driver then allocates either a device private struct page or a
-+   system memory page, locks the page with ``lock_page()``, and fills in t=
-he
-+   ``dst`` array entry with::
-+
-+   dst[i] =3D migrate_pfn(page_to_pfn(dpage)) | MIGRATE_PFN_LOCKED;
-+
-+   Now that the driver knows that this page is being migrated, it can
-+   invalidate device private MMU mappings and copy device private memory
-+   to system memory or another device private page. The core Linux kernel
-+   handles CPU page table invalidations so the device driver only has to
-+   invalidate its own MMU mappings.
-+
-+   The driver can use ``migrate_pfn_to_page(src[i])`` to get the
-+   ``struct page`` of the source and either copy the source page to the
-+   destination or clear the destination device private memory if the point=
-er
-+   is ``NULL`` meaning the source page was not populated in system memory.
-+
-+4. ``migrate_vma_pages()``
-+
-+   This step is where the migration is actually "committed".
-+
-+   If the source page was a ``pte_none()`` or ``is_zero_pfn()`` page, this
-+   is where the newly allocated page is inserted into the CPU's page table=
-.
-+   This can fail if a CPU thread faults on the same page. However, the pag=
-e
-+   table is locked and only one of the new pages will be inserted.
-+   The device driver will see that the ``MIGRATE_PFN_MIGRATE`` bit is clea=
-red
-+   if it loses the race.
-+
-+   If the source page was locked, isolated, etc. the source ``struct page`=
-`
-+   information is now copied to destination ``struct page`` finalizing the
-+   migration on the CPU side.
-+
-+5. Device driver updates device MMU page tables for pages still migrating,
-+   rolling back pages not migrating.
-+
-+   If the ``src`` entry still has ``MIGRATE_PFN_MIGRATE`` bit set, the dev=
-ice
-+   driver can update the device MMU and set the write enable bit if the
-+   ``MIGRATE_PFN_WRITE`` bit is set.
-+
-+6. ``migrate_vma_finalize()``
-+
-+   This step replaces the special migration page table entry with the new
-+   page's page table entry and releases the reference to the source and
-+   destination ``struct page``.
-+
-+7. ``mmap_read_unlock()``
-+
-+   The lock can now be released.
-=20
- Memory cgroup (memcg) and rss accounting
- =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
---=20
-2.20.1
+It's a bit faster now with what's queued for 5.10. The schema 
+validation is under 10sec now on my laptop. For the examples, any 
+new schema could apply to any example, so we have to check them all. 
+It's faster too, but still minutes to run.
+
+> But I am not criticizing anything, I think that it is a good thing to
+> have this system.
+
+Good to hear. Just want to improve any pain points if possible.
+
+Rob
 
