@@ -2,112 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E17F262DDB
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 13:31:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D745262E03
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 13:42:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729298AbgIILbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 07:31:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38098 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726415AbgIIL2a (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 07:28:30 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27536C061796;
-        Wed,  9 Sep 2020 04:28:20 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S1729663AbgIILmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 07:42:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38672 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729622AbgIILfa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 07:35:30 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BmfmN3SGmz9sTd;
-        Wed,  9 Sep 2020 21:24:04 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1599650649;
-        bh=McxY0vGyvNVlrIIx6KzYtU4PcHnFzd9G9dek0Ykf36c=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=SmXDZKzAAkIskfZPfi7qrbi2STOAaRgkLgLUwpRIri563PnPrs5blw/OlSwl2MX5i
-         69HKj9JHLONl1Qz3CbYvZy/4cbddpiJHmROqXSbmg8WJh+BTuQXH9dKNRHILZpAo1t
-         hze5cgR0ZcFpNy/5f5QSzsCR/ywLKY3MFV1MB2evwZ2HPd+YxWui6TnWbMXUjz3bFE
-         Dflejkj7ciOj6dUGOWs0UizA/kfuOX43D8JH9M1T139ttlnt9G8+OPWPLzwt3iVOxx
-         uuXIzjXH4T67FDy3bvc2QCqjoeC0dD5axnVjQL4imxfeD2KhwwbuLyb1WJFKSm2qYS
-         /CHKbJLh3kYdA==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     David Hildenbrand <david@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
-        linux-hyperv@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-acpi@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-s390@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Wei Liu <wei.liu@kernel.org>, Michal Hocko <mhocko@suse.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Baoquan He <bhe@redhat.com>,
-        Wei Yang <richardw.yang@linux.intel.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Oliver O'Halloran <oohall@gmail.com>,
-        Pingfan Liu <kernelfans@gmail.com>,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        Libor Pechacek <lpechacek@suse.cz>,
-        Anton Blanchard <anton@ozlabs.org>,
-        Leonardo Bras <leobras.c@gmail.com>,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v2 3/7] mm/memory_hotplug: prepare passing flags to add_memory() and friends
-In-Reply-To: <3bc5b464-3229-d442-714a-ec33b5728ac6@redhat.com>
-References: <20200908201012.44168-1-david@redhat.com> <20200908201012.44168-4-david@redhat.com> <20200909071759.GD435421@kroah.com> <3bc5b464-3229-d442-714a-ec33b5728ac6@redhat.com>
-Date:   Wed, 09 Sep 2020 21:24:02 +1000
-Message-ID: <87eenbry5p.fsf@mpe.ellerman.id.au>
+        by mail.kernel.org (Postfix) with ESMTPSA id B4F7C21D7B;
+        Wed,  9 Sep 2020 11:24:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599650682;
+        bh=LsZZCgcD9CKkSW0yTqr5sXk2HVFb9a1pnywslo7fZww=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vIur60NMEckDbV+dW9IzqmRMhQRqdG47fgB2CmYQCO4frCQmILdcuxdpwkGsZk3Ut
+         MS6De6rBF8MOvEMUxl1qnrdy7RKi7swqmuyJ5RTtCLEHXtSahUJ0SgRlkwtzGg3CC3
+         aA8hRwkCVNcsZHlg/uAXJpPt5P+opjQ5xPXgy5RI=
+Date:   Wed, 9 Sep 2020 13:24:52 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.8 101/186] drm/radeon: Prefer lower feedback dividers
+Message-ID: <20200909112452.GA621541@kroah.com>
+References: <20200908152241.646390211@linuxfoundation.org>
+ <20200908152246.531365310@linuxfoundation.org>
+ <77ec0338-32a1-6379-858c-359f636a0e58@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <77ec0338-32a1-6379-858c-359f636a0e58@amd.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-David Hildenbrand <david@redhat.com> writes:
-> On 09.09.20 09:17, Greg Kroah-Hartman wrote:
->> On Tue, Sep 08, 2020 at 10:10:08PM +0200, David Hildenbrand wrote:
->>> We soon want to pass flags, e.g., to mark added System RAM resources.
->>> mergeable. Prepare for that.
->> 
->> What are these random "flags", and how do we know what should be passed
->> to them?
->> 
->> Why not make this an enumerated type so that we know it all works
->> properly, like the GPF_* flags are?  Passing around a random unsigned
->> long feels very odd/broken...
->
-> Agreed, an enum (mhp_flags) seems to give a better hint what can
-> actually be passed. Thanks!
+On Wed, Sep 09, 2020 at 01:15:13PM +0200, Christian König wrote:
+> Hi Greg,
+> 
+> please drop that patch. It turned out to break a lot of different setups and
+> we are going to revert it now.
 
-You probably know this but ...
+Ok, now dropped from all trees, thanks.
 
-Just using a C enum doesn't get you any type safety.
-
-You can get some checking via sparse by using __bitwise, which is what
-gfp_t does. You don't actually have to use an enum for that, it works
-with #defines also.
-
-Or you can wrap the flag in a struct, the way atomic_t does, and then
-the compiler will prevent passing plain integers in place of your custom
-type.
-
-cheers
+greg k-h
