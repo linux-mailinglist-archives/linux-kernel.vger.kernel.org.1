@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63B5B26344E
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 19:18:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D45EA263441
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 19:17:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730560AbgIIRSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 13:18:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54612 "EHLO mail.kernel.org"
+        id S1731305AbgIIRRl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 13:17:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54558 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729822AbgIIP17 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 11:27:59 -0400
+        id S1729717AbgIIP2A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 11:28:00 -0400
 Received: from kozik-lap.mshome.net (unknown [194.230.155.174])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 40C3D22276;
-        Wed,  9 Sep 2020 15:18:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B79F022283;
+        Wed,  9 Sep 2020 15:18:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599664684;
-        bh=YrPDcU8CAauI5I1aJRFu4u8EEBAbnGremxHMZQRp3ms=;
-        h=From:To:Subject:Date:From;
-        b=qUpIqDTile1YKhos64e+JX+Vd1ZPbBaihbYqVqYHNa9BmqbJur/oIeojIfO+mg+S0
-         Arp8CWRYSUDB3NauXHi2VUUuD6nUXIwirUwJY3GDUPVmQ9mHI/DSkBut62rN8hvGbU
-         vudS1hkGrjbPpflVIPvAxqRVCuBBIEIuRMaXlACE=
+        s=default; t=1599664687;
+        bh=N/D7fR7BGgOx2lZpaHNGW+Rl2JGBL1AiJ7z668klV+c=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=slbCvm8U9lnMRQ+hYn/j7ofXUJ13IRFPxhcVUHN1f8DL+IaFG+Ya316Ugp94pgsLs
+         jxEDbN4cgxppFXnS7x2Qg3d9KlFoiCLKsbwkNh2FDiXRKMdRJDAfJ6+hQV42yv099P
+         5vZDq1/udt0+KpTcENIgTTFXEUjgIX+juo6fXGMs=
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
         Sascha Hauer <s.hauer@pengutronix.de>,
@@ -32,39 +32,56 @@ To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
         Krzysztof Kozlowski <krzk@kernel.org>,
         Anson Huang <Anson.Huang@nxp.com>, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/3] arm64: dts: imx8mm-var-som-symphony: Remove unneeded i2c3 properties
-Date:   Wed,  9 Sep 2020 17:17:53 +0200
-Message-Id: <20200909151755.17783-1-krzk@kernel.org>
+Subject: [PATCH 2/3] arm64: dts: imx8mm-var-som-symphony: Adjust ethernet pin configuration
+Date:   Wed,  9 Sep 2020 17:17:54 +0200
+Message-Id: <20200909151755.17783-2-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200909151755.17783-1-krzk@kernel.org>
+References: <20200909151755.17783-1-krzk@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The i2c3 clock frequency and pin configuration are already set by
-imx8mm-var-som.dtsi.
+The Symphony board uses GPIO from expander as Ethernet PHY reset pin,
+not the GPIO1_IO9.
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dts | 5 -----
- 1 file changed, 5 deletions(-)
+ .../dts/freescale/imx8mm-var-som-symphony.dts | 20 +++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
 diff --git a/arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dts b/arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dts
-index fbf321cdcf16..1c427260e887 100644
+index 1c427260e887..07214d7dfc06 100644
 --- a/arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dts
 +++ b/arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dts
-@@ -121,11 +121,6 @@
+@@ -181,6 +181,26 @@
+ 	status = "disabled";
  };
  
- &i2c3 {
--	clock-frequency = <400000>;
--	pinctrl-names = "default";
--	pinctrl-0 = <&pinctrl_i2c3>;
--	status = "okay";
--
- 	/* Capacitive touch controller */
- 	ft5x06_ts: touchscreen@38 {
- 		compatible = "edt,edt-ft5406";
++&pinctrl_fec1 {
++	fsl,pins = <
++		MX8MM_IOMUXC_ENET_MDC_ENET1_MDC			0x3
++		MX8MM_IOMUXC_ENET_MDIO_ENET1_MDIO		0x3
++		MX8MM_IOMUXC_ENET_TD3_ENET1_RGMII_TD3		0x1f
++		MX8MM_IOMUXC_ENET_TD2_ENET1_RGMII_TD2		0x1f
++		MX8MM_IOMUXC_ENET_TD1_ENET1_RGMII_TD1		0x1f
++		MX8MM_IOMUXC_ENET_TD0_ENET1_RGMII_TD0		0x1f
++		MX8MM_IOMUXC_ENET_RD3_ENET1_RGMII_RD3		0x91
++		MX8MM_IOMUXC_ENET_RD2_ENET1_RGMII_RD2		0x91
++		MX8MM_IOMUXC_ENET_RD1_ENET1_RGMII_RD1		0x91
++		MX8MM_IOMUXC_ENET_RD0_ENET1_RGMII_RD0		0x91
++		MX8MM_IOMUXC_ENET_TXC_ENET1_RGMII_TXC		0x1f
++		MX8MM_IOMUXC_ENET_RXC_ENET1_RGMII_RXC		0x91
++		MX8MM_IOMUXC_ENET_RX_CTL_ENET1_RGMII_RX_CTL	0x91
++		MX8MM_IOMUXC_ENET_TX_CTL_ENET1_RGMII_TX_CTL	0x1f
++		/* Remove the MX8MM_IOMUXC_GPIO1_IO09_GPIO1_IO9 as not used */
++	>;
++};
++
+ &iomuxc {
+ 	pinctrl_captouch: captouchgrp {
+ 		fsl,pins = <
 -- 
 2.17.1
 
