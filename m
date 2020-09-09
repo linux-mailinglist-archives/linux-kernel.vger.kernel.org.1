@@ -2,29 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEB442630F9
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 17:52:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73A892630EB
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 17:49:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730696AbgIIPvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 11:51:54 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:40364 "EHLO huawei.com"
+        id S1730411AbgIIPtO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 11:49:14 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:11758 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730460AbgIIPsr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 11:48:47 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 57B99F08137A5C2B9BFE;
-        Wed,  9 Sep 2020 21:45:42 +0800 (CST)
-Received: from localhost (10.174.179.108) by DGGEMS414-HUB.china.huawei.com
- (10.3.19.214) with Microsoft SMTP Server id 14.3.487.0; Wed, 9 Sep 2020
- 21:45:35 +0800
+        id S1730423AbgIIPqU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 11:46:20 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id A10404D340DED2722EB1;
+        Wed,  9 Sep 2020 21:48:02 +0800 (CST)
+Received: from localhost (10.174.179.108) by DGGEMS405-HUB.china.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Wed, 9 Sep 2020
+ 21:47:52 +0800
 From:   YueHaibing <yuehaibing@huawei.com>
-To:     <kvalo@codeaurora.org>, <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <ath11k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH] ath11k: Remove unused inline function htt_htt_stats_debug_dump()
-Date:   Wed, 9 Sep 2020 21:45:33 +0800
-Message-ID: <20200909134533.19604-1-yuehaibing@huawei.com>
+To:     <tglx@linutronix.de>, <john.stultz@linaro.org>, <sboyd@kernel.org>,
+        <frederic@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH -next] timers: Remove unused inline funtion debug_timer_free()
+Date:   Wed, 9 Sep 2020 21:47:49 +0800
+Message-ID: <20200909134749.32300-1-yuehaibing@huawei.com>
 X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
 Content-Type: text/plain
@@ -39,64 +38,25 @@ There is no caller in tree, so can remove it.
 
 Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 ---
- .../net/wireless/ath/ath11k/debug_htt_stats.c | 44 -------------------
- 1 file changed, 44 deletions(-)
+ kernel/time/timer.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath11k/debug_htt_stats.c b/drivers/net/wireless/ath/ath11k/debug_htt_stats.c
-index 6b532dc99c98..ad3f08a5b031 100644
---- a/drivers/net/wireless/ath/ath11k/debug_htt_stats.c
-+++ b/drivers/net/wireless/ath/ath11k/debug_htt_stats.c
-@@ -3895,50 +3895,6 @@ static inline void htt_print_backpressure_stats_tlv_v(const u32 *tag_buf,
- 	}
+diff --git a/kernel/time/timer.c b/kernel/time/timer.c
+index a50364df1054..7da4af49d1d7 100644
+--- a/kernel/time/timer.c
++++ b/kernel/time/timer.c
+@@ -732,11 +732,6 @@ static inline void debug_timer_deactivate(struct timer_list *timer)
+ 	debug_object_deactivate(timer, &timer_debug_descr);
  }
  
--static inline void htt_htt_stats_debug_dump(const u32 *tag_buf,
--					    struct debug_htt_stats_req *stats_req)
+-static inline void debug_timer_free(struct timer_list *timer)
 -{
--	u8 *buf = stats_req->buf;
--	u32 len = stats_req->buf_len;
--	u32 buf_len = ATH11K_HTT_STATS_BUF_SIZE;
--	u32 tlv_len = 0, i = 0, word_len = 0;
--
--	tlv_len  = FIELD_GET(HTT_TLV_LEN, *tag_buf) + HTT_TLV_HDR_LEN;
--	word_len = (tlv_len % 4) == 0 ? (tlv_len / 4) : ((tlv_len / 4) + 1);
--	len += HTT_DBG_OUT(buf + len, buf_len - len,
--			   "============================================");
--	len += HTT_DBG_OUT(buf + len, buf_len - len,
--			   "HKDBG TLV DUMP: (tag_len=%u bytes, words=%u)",
--			   tlv_len, word_len);
--
--	for (i = 0; i + 3 < word_len; i += 4) {
--		len += HTT_DBG_OUT(buf + len, buf_len - len,
--				   "0x%08x 0x%08x 0x%08x 0x%08x",
--				   tag_buf[i], tag_buf[i + 1],
--				   tag_buf[i + 2], tag_buf[i + 3]);
--	}
--
--	if (i + 3 == word_len) {
--		len += HTT_DBG_OUT(buf + len, buf_len - len, "0x%08x 0x%08x 0x%08x ",
--				tag_buf[i], tag_buf[i + 1], tag_buf[i + 2]);
--	} else if (i + 2 == word_len) {
--		len += HTT_DBG_OUT(buf + len, buf_len - len, "0x%08x 0x%08x ",
--				tag_buf[i], tag_buf[i + 1]);
--	} else if (i + 1 == word_len) {
--		len += HTT_DBG_OUT(buf + len, buf_len - len, "0x%08x ",
--				tag_buf[i]);
--	}
--	len += HTT_DBG_OUT(buf + len, buf_len - len,
--			   "============================================");
--
--	if (len >= buf_len)
--		buf[buf_len - 1] = 0;
--	else
--		buf[len] = 0;
--
--	stats_req->buf_len = len;
+-	debug_object_free(timer, &timer_debug_descr);
 -}
 -
- static int ath11k_dbg_htt_ext_stats_parse(struct ath11k_base *ab,
- 					  u16 tag, u16 len, const void *tag_buf,
- 					  void *user_data)
+ static inline void debug_timer_assert_init(struct timer_list *timer)
+ {
+ 	debug_object_assert_init(timer, &timer_debug_descr);
 -- 
 2.17.1
 
