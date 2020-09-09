@@ -2,111 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4942A263EC6
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 09:29:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE11A263EFC
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 09:49:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730104AbgIJH3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 03:29:47 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:11338 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726746AbgIJH3o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 03:29:44 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 63B7C9D187AFAC1DC36D;
-        Thu, 10 Sep 2020 15:29:38 +0800 (CST)
-Received: from localhost (10.174.179.108) by DGGEMS403-HUB.china.huawei.com
- (10.3.19.203) with Microsoft SMTP Server id 14.3.487.0; Thu, 10 Sep 2020
- 15:29:31 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <vkoul@kernel.org>, <yung-chuan.liao@linux.intel.com>,
-        <pierre-louis.bossart@linux.intel.com>, <sanyog.r.kale@intel.com>
-CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH -next] soundwire: intel: Fix -Wunused-function warning
-Date:   Thu, 10 Sep 2020 15:29:06 +0800
-Message-ID: <20200910072906.28284-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
-In-Reply-To: <20200909131531.31380-1-yuehaibing@huawei.com>
-References: <20200909131531.31380-1-yuehaibing@huawei.com>
+        id S1729455AbgIJHty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 03:49:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50072 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728626AbgIJHtq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 03:49:46 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04F8FC061573;
+        Thu, 10 Sep 2020 00:49:45 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id z13so6043445iom.8;
+        Thu, 10 Sep 2020 00:49:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=1PTiGOyennkCERiFVjnl2rpLQDxKh0UO1rwGXhcdHGQ=;
+        b=vfyHU6z2AJeojj+DWgkbr8McnduBaV7heEabpt0g7kNPwmEEG10g4cZCf2g5RoUr8L
+         Q9mrImohY/lrKLwhtTFKLikxUndWYRFzDTnnIPRyDhfOoe4z4P/rrfporvWxZjZQYhD6
+         OduT7XQZbzNZhau4enoa/5whfKYXaBewGG8T1EMPWpUwZ5lRtug1Pyx7inuxUi1oOcxD
+         gqtstBvTo5Sc7MjPW5IZT8o10fx+6AGZ9jn7DhZm0e0hFgln4T5seRFyRHUZOYGQL3lf
+         qTbGjWNYed3kKGn9WQW/wwK5Gj+cSixputaA11nRgAQ9aXfQ9gSIz2/G+2rIJ2JJHM5N
+         Suvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=1PTiGOyennkCERiFVjnl2rpLQDxKh0UO1rwGXhcdHGQ=;
+        b=o6fhXTSvn8MFlWEAKO/LN7wIEwOvJFPGB9BvGds5fRX9+25UdPl/FQQw9ga9W91r/C
+         GpjAaGKN0ranep6y8jURWw9W7vtZt4BZooEj8cF4fWBsWOlE/6a1pRlUmNqzNf/O72IN
+         OD33rgSvCrdooGyPb09ZugNtGi4Df/17bWJKvrSp8GvSZ6HCKaDU1/RhO6LAbpcihh1p
+         a7IAx/N9K+rSsKwk/NZSpQgINDinC4+zPS0VDZLEylRXlVffXJ+wbaavO0kURNMJw7Mh
+         KAEHeXG+XbqtNgFric4/W1BkU/+kt6iGEzZ/haUkUPzXykP/CbywH6RcPQ3WSIDWfZZh
+         JGIw==
+X-Gm-Message-State: AOAM533MCuRKxeTZ22m/JNaHY22M7LhaAIpr21r5za0gq+ekOWvbLXi4
+        K93K2fsgRmmkjbCqbhzdFQ/RluFo+FyNsl1LioNJRSFDZu4=
+X-Google-Smtp-Source: ABdhPJwgD4ZKx8mYopgg3XNY+Per6BffD+Xe9MaqvAy593SfYzFkMrwyS/vdUj1XLskp7sbFyMsOb1GTewknce7HAXI=
+X-Received: by 2002:a02:ce8c:: with SMTP id y12mr7734842jaq.53.1599724185207;
+ Thu, 10 Sep 2020 00:49:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.179.108]
-X-CFilter-Loop: Reflected
+References: <1599474459-20853-1-git-send-email-gene.chen.richtek@gmail.com>
+ <1599474459-20853-2-git-send-email-gene.chen.richtek@gmail.com> <20200908222544.GF1005@bug>
+In-Reply-To: <20200908222544.GF1005@bug>
+From:   Gene Chen <gene.chen.richtek@gmail.com>
+Date:   Thu, 10 Sep 2020 07:49:33 +0800
+Message-ID: <CAE+NS34h9qbdHkYDYDnHGgk+9mFNTRpKEMKNEFZ+Secf6JyoZg@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] leds: mt6360: Add LED driver for MT6360
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     jacek.anaszewski@gmail.com, robh+dt@kernel.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Dan Murphy <dmurphy@ti.com>, linux-leds@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Gene Chen <gene_chen@richtek.com>, Wilma.Wu@mediatek.com,
+        shufan_lee@richtek.com, cy_huang@richtek.com,
+        benjamin.chao@mediatek.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If CONFIG_PM is not set, build warns:
+Pavel Machek <pavel@ucw.cz> =E6=96=BC 2020=E5=B9=B49=E6=9C=889=E6=97=A5 =E9=
+=80=B1=E4=B8=89 =E4=B8=8A=E5=8D=886:25=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> Hi!
+>
+> > From: Gene Chen <gene_chen@richtek.com>
+> >
+> > Add MT6360 LED driver include 2-channel Flash LED with torch/strobe mod=
+e,
+> > and 4-channel RGB LED support Register/Flash/Breath Mode
+> >
+> > Signed-off-by: Gene Chen <gene_chen@richtek.com>
+> > ---
+> >  drivers/leds/Kconfig       |  11 +
+> >  drivers/leds/Makefile      |   1 +
+> >  drivers/leds/leds-mt6360.c | 681 +++++++++++++++++++++++++++++++++++++=
+++++++++
+> >  3 files changed, 693 insertions(+)
+> >  create mode 100644 drivers/leds/leds-mt6360.c
+> >
+> > +     help
+> > +       This option enables support for dual Flash LED drivers found on
+> > +       Mediatek MT6360 PMIC.
+> > +       Independent current sources supply for each flash LED support t=
+orch and strobe mode.
+> > +       Includes Low-VF and short protection.
+> > +
+>
+> 80 columns. And perhaps user does not need to know about protections... a=
+nd actually
+> about independend sources, either.
+>
 
-drivers/soundwire/intel.c:488:12: warning: 'intel_link_power_down' defined but not used [-Wunused-function]
+ACK
 
-Mark the functions __maybe_unused and remove the CONFIG_PM dependency.
+> "Enable this for RGB LED and flash LED support on..."?
+>
+> > +static int mt6360_torch_brightness_set(struct led_classdev *lcdev, enu=
+m led_brightness level)
+> > +{
+> > +     struct mt6360_led *led =3D container_of(lcdev, struct mt6360_led,=
+ flash.led_cdev);
+> > +     struct mt6360_priv *priv =3D led->priv;
+> > +     u32 enable_mask =3D MT6360_TORCHEN_MASK | MT6360_FLCSEN_MASK(led-=
+>led_no);
+> > +     u32 val =3D (level) ? MT6360_FLCSEN_MASK(led->led_no) : 0;
+> > +     u32 prev =3D priv->fled_torch_used, curr;
+> > +     int ret;
+> > +
+> > +     dev_dbg(lcdev->dev, "[%d] brightness %d\n", led->led_no, level);
+> > +     if (priv->fled_strobe_used) {
+> > +             dev_warn(lcdev->dev, "Please disable strobe first [%d]\n"=
+, priv->fled_strobe_used);
+> > +             return -EINVAL;
+> > +     }
+>
+> So... how does its userland interface look like?
+>
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- drivers/soundwire/intel.c | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
+1. set FLED1 brightness
+# echo 1 > /sys/class/leds/white:flash1/flash_brightness
+2. enable FLED1 strobe
+# echo 1 > /sys/class/leds/white:flash1/flash_strobe
+3 . turn off FLED1 strobe (just used to gaurantee the strobe mode
+flash leds must be turned off)
+# echo 0 > /sys/class/leds/white:flash1/flash_strobe
 
-diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index e047910d73f5..48ae8800594a 100644
---- a/drivers/soundwire/intel.c
-+++ b/drivers/soundwire/intel.c
-@@ -400,7 +400,7 @@ static void intel_shim_glue_to_master_ip(struct sdw_intel *sdw)
- }
- 
- /* this needs to be called with shim_lock */
--static void intel_shim_master_ip_to_glue(struct sdw_intel *sdw)
-+static void __maybe_unused intel_shim_master_ip_to_glue(struct sdw_intel *sdw)
- {
- 	unsigned int link_id = sdw->instance;
- 	void __iomem *shim = sdw->link_res->shim;
-@@ -485,7 +485,7 @@ static void intel_shim_wake(struct sdw_intel *sdw, bool wake_enable)
- 	mutex_unlock(sdw->link_res->shim_lock);
- }
- 
--static int intel_link_power_down(struct sdw_intel *sdw)
-+static int __maybe_unused intel_link_power_down(struct sdw_intel *sdw)
- {
- 	u32 link_control, spa_mask, cpa_mask;
- 	unsigned int link_id = sdw->instance;
-@@ -1540,8 +1540,6 @@ int intel_master_process_wakeen_event(struct platform_device *pdev)
-  * PM calls
-  */
- 
--#ifdef CONFIG_PM
--
- static int __maybe_unused intel_suspend(struct device *dev)
- {
- 	struct sdw_cdns *cdns = dev_get_drvdata(dev);
-@@ -1596,7 +1594,7 @@ static int __maybe_unused intel_suspend(struct device *dev)
- 	return 0;
- }
- 
--static int intel_suspend_runtime(struct device *dev)
-+static int __maybe_unused intel_suspend_runtime(struct device *dev)
- {
- 	struct sdw_cdns *cdns = dev_get_drvdata(dev);
- 	struct sdw_intel *sdw = cdns_to_intel(cdns);
-@@ -1751,7 +1749,7 @@ static int __maybe_unused intel_resume(struct device *dev)
- 	return ret;
- }
- 
--static int intel_resume_runtime(struct device *dev)
-+static int __maybe_unused intel_resume_runtime(struct device *dev)
- {
- 	struct sdw_cdns *cdns = dev_get_drvdata(dev);
- 	struct sdw_intel *sdw = cdns_to_intel(cdns);
-@@ -1924,8 +1922,6 @@ static int intel_resume_runtime(struct device *dev)
- 	return ret;
- }
- 
--#endif
--
- static const struct dev_pm_ops intel_pm = {
- 	SET_SYSTEM_SLEEP_PM_OPS(intel_suspend, intel_resume)
- 	SET_RUNTIME_PM_OPS(intel_suspend_runtime, intel_resume_runtime, NULL)
--- 
-2.17.1
-
-
+> Best regards,
+>                                                                         P=
+avel
+> --
+> (english) http://www.livejournal.com/~pavelmachek
+> (cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/b=
+log.html
