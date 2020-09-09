@@ -2,825 +2,437 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4070A263220
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:35:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC9DD263230
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:37:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731191AbgIIQfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 12:35:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56206 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731104AbgIIQ0Z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 12:26:25 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A346C061756
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 09:26:25 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id jw11so1617066pjb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 09:26:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=malTI9J5/Kv2ZSnm48hMc/ik7eqFHRvjcHo2TwZ/1kU=;
-        b=ZUw46eks2XTN+P/LLAp296TJp3q5iI6HAhVO8lsXYXHjFIceikiE0DI0lPU5bSMYCA
-         4KChdC99ZLd1YmAxrUHopJAnwRC+gaHFXwCf6WFp2ul8ZuO0Rbf06IzTWJAj5hHzVIB7
-         Uc9rKLFF8YFfqmD53YswRrYUnrylKe6HnWGoksPuoF5y1q+AD/gRMA/wl82fUXVgmDNK
-         pn5LuTKz5Ky+vtOrFUT//ys+k8hpgLg1CDTb0jYdL03s3fORb6Qoau+dXLnM79ttX8VG
-         R1OFKxF3ryeTybg+l/rOUqfqC/vuZ+Wea/ITlRKknpiuSVtfsXhY/6r0hzHmCJUC3ds9
-         rl5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=malTI9J5/Kv2ZSnm48hMc/ik7eqFHRvjcHo2TwZ/1kU=;
-        b=UQH9AeITSeMsX3ofDtF0Qs3P2iXAS33D6qMTM9FgwwP5eju9OSjteeIaYC21Inggb4
-         OoSTKrdpyybpQo5zOQIKagM9WrizsgvL2umcSVUALf0HsyVODGun1g+yXmGWmE/RXhMa
-         RHPF3z38uSnMEDRtWmvo+DZd6utAMwyayap3gdw4+TTIlGczOozyn0NHe2JRbF69lg15
-         QjRmZM+NdlrwgsSSJPdN5eLD1JoyznVLpac55YSARohYfmsypW6epmuvV05GB1lFTErk
-         Ed0aTBGQysCx8QxW9emkHueTgsQ/CsuinCFYozoT45fXt4bLH+5hwmqwBzdtQiHdJExT
-         rT9Q==
-X-Gm-Message-State: AOAM530jA4A1tBQmZ7N3gaMjdHXPr2R7LbI9iMLaAyPREax3jYqTU3iT
-        X5Br5DYPByX4/TBYRw/MCZykTWzr17+CHlL3kWwTHg==
-X-Google-Smtp-Source: ABdhPJyXjQRKhoQBkxIKAzxCkn6JlZJ8AqEgWl3ECL6Mtc83iPvOQRgj2cFGrVEheu2onGDEIJYYKubYoCfXhMK2Tq0=
-X-Received: by 2002:a17:90a:a583:: with SMTP id b3mr1451894pjq.127.1599668784247;
- Wed, 09 Sep 2020 09:26:24 -0700 (PDT)
+        id S1731220AbgIIQgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 12:36:47 -0400
+Received: from lists.nic.cz ([217.31.204.67]:34640 "EHLO mail.nic.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731056AbgIIQ0D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 12:26:03 -0400
+Received: from dellmb.labs.office.nic.cz (unknown [IPv6:2001:1488:fffe:6:cac7:3539:7f1f:463])
+        by mail.nic.cz (Postfix) with ESMTP id EF442140A6D;
+        Wed,  9 Sep 2020 18:25:54 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nic.cz; s=default;
+        t=1599668755; bh=u3IRK7xXgZ5VpwhMjFOls8Tmo4FXyAhmL45+VBDAzGQ=;
+        h=From:To:Date;
+        b=ML2TxvAbqcLwYDA0iPUeyrPLt7/bWP2m5GIAVAYoln6nWfuooRfcZy2RVrmzjS6cj
+         qmzIEH+URpE8jFAlG9leOJRAMFPvg28Zqlud4BWYV1XBLgjEYyoONyIk3RU51Iefx6
+         Dn4QklVmNXP4LmWWd2ckC6Jx9pm5NoQENhkuFwoo=
+From:   =?UTF-8?q?Marek=20Beh=C3=BAn?= <marek.behun@nic.cz>
+To:     netdev@vger.kernel.org
+Cc:     linux-leds@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
+        Dan Murphy <dmurphy@ti.com>,
+        =?UTF-8?q?Ond=C5=99ej=20Jirman?= <megous@megous.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Andrew Lunn <andrew@lunn.ch>, linux-kernel@vger.kernel.org,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        =?UTF-8?q?Marek=20Beh=C3=BAn?= <marek.behun@nic.cz>
+Subject: [PATCH net-next + leds v2 2/7] leds: add generic API for LEDs that can be controlled by hardware
+Date:   Wed,  9 Sep 2020 18:25:47 +0200
+Message-Id: <20200909162552.11032-3-marek.behun@nic.cz>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200909162552.11032-1-marek.behun@nic.cz>
+References: <20200909162552.11032-1-marek.behun@nic.cz>
 MIME-Version: 1.0
-References: <20200618222225.102337-1-axelrasmussen@google.com>
- <20200618222225.102337-2-axelrasmussen@google.com> <CALOAHbA00V8H5jSnaUG_eJ47NptDaz_JLQVOpdGO6yiUf4_fuw@mail.gmail.com>
-In-Reply-To: <CALOAHbA00V8H5jSnaUG_eJ47NptDaz_JLQVOpdGO6yiUf4_fuw@mail.gmail.com>
-From:   Axel Rasmussen <axelrasmussen@google.com>
-Date:   Wed, 9 Sep 2020 09:25:47 -0700
-Message-ID: <CAJHvVciAsYOq_JSVf3f7oMUM7ZgrqNSotZJ3gmA9kpEBJm2twA@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 1/1] mmap_lock: add tracepoints around mmap_lock acquisition
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     Michel Lespinasse <walken@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        David Howells <dhowells@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Jonathan Adams <jwadams@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Ying Han <yinghan@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.nic.cz
+X-Spam-Status: No, score=0.00
+X-Spamd-Bar: /
+X-Virus-Scanned: clamav-milter 0.102.2 at mail
+X-Virus-Status: Clean
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yafang,
+Many an ethernet PHY (and other chips) supports various HW control modes
+for LEDs connected directly to them.
 
-I've felt a bit stuck on this, as tracepoints alone don't quite
-address my use case (performance overhead is too high), but I haven't
-been able to come up with a palatable approach which does. I was
-planning to conduct an experiment on Google production servers, to
-provide real-world evidence of why this would be useful.
+This patch adds a generic API for registering such LEDs when described
+in device tree. This API also exposes generic way to select between
+these hardware control modes.
 
-However, the tracepoints alone are still useful, and it sounds like
-that may be enough for your needs? I'm happy to send a version of this
-which only adds tracepoints this week. I think at least that subset is
-uncontroversial.
+This API registers a new private LED trigger called dev-hw-mode. When
+this trigger is enabled for a LED, the various HW control modes which
+are supported by the device for given LED can be get/set via hw_mode
+sysfs file.
 
-On Tue, Sep 8, 2020 at 4:41 AM Yafang Shao <laoar.shao@gmail.com> wrote:
->
-> On Fri, Jun 19, 2020 at 6:43 AM Axel Rasmussen <axelrasmussen@google.com> wrote:
-> >
-> > The goal is to be able to collect a latency histogram for contended
-> > mmap_lock acquisitions. This will be used to diagnose slowness observed
-> > in production workloads, as well as to measure the effect of upcoming
-> > mmap_lock optimizations like maple trees and range-based locks. The
-> > "start_locking" and "lock_released" tracepoints can be used to find out
-> > which process / call stack was waiting on / holding the lock.
-> >
-> > The use of tracepoints with histogram triggers for this purpose was
-> > recommended here: https://marc.info/?l=linux-mm&m=159076475528369&w=2
-> >
-> > A new Kconfig is added, because this change requires uninlining some
-> > functions, adding branches, etc., even if the tracepoints aren't enabled
-> > at runtime.
-> >
-> > The semantics of the "acquire_returned" tracepoint are as follows:
-> >
-> > - We leverage a new "contended hook" rwsem API so "_trylock" variants
-> >   are called first, and only in the contended case is the trace event
-> >   triggered. This eliminates overhead for the "common" uncontended case.
-> >
-> > - "acquire_returned" is triggered even if acquisition fails (e.g. in the
-> >   case of killable acquires). This is so we can see how long we waited,
-> >   even if we didn't get the lock in the end. Whether or not the
-> >   acquisition succeeded is an event parameter.
-> >
-> > - The path of the memcg to which the mm_struct belongs is reported in
-> >   the event, so we can have per-memcg historams. But, note that the
-> >   stats are *not* hierarchical; if consumers want a histogram for a
-> >   memcg *and all of its children*, the consumer will need to add up the
-> >   separate per-memcg stats itself. This is to avoid paying the cost of
-> >   traversing a series of memcgs *at record time* (more overhead).
-> >
-> > - Bucketing based upon the duration (bucket_{lower,upper}) is done in
-> >   the kernel, as histogram triggers don't have an API to configure such
-> >   a thing at runtime.
-> >
-> > Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
-> > ---
-> >
-> > Changes since v2:
-> > - Switched to TRACE_EVENT hist triggers instead of a new hist library.
-> > - Reduced inlining, as it increased code size with no performance gain.
-> > - Stopped instrumenting the uncontended case, to reduce overhead. Added
-> >   additional rwsem.h API surface in order to be able to do this.
-> >
-> >  include/linux/lockdep.h          |  47 ++++++
-> >  include/linux/mmap_lock.h        |  27 ++-
-> >  include/linux/rwsem.h            |  12 ++
-> >  include/trace/events/mmap_lock.h |  76 +++++++++
-> >  kernel/locking/rwsem.c           |  64 +++++++
-> >  mm/Kconfig                       |  19 +++
-> >  mm/Makefile                      |   1 +
-> >  mm/mmap_lock.c                   | 281 +++++++++++++++++++++++++++++++
-> >  8 files changed, 526 insertions(+), 1 deletion(-)
-> >  create mode 100644 include/trace/events/mmap_lock.h
-> >  create mode 100644 mm/mmap_lock.c
-> >
-> > diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
-> > index 8fce5c98a4b0..6de91046437c 100644
-> > --- a/include/linux/lockdep.h
-> > +++ b/include/linux/lockdep.h
-> > @@ -590,6 +590,17 @@ do {                                                               \
-> >         lock_acquired(&(_lock)->dep_map, _RET_IP_);                     \
-> >  } while (0)
-> >
-> > +#define LOCK_CONTENDED_HOOK(_lock, try, lock, pre, post, arg)  \
-> > +do {                                                           \
-> > +       if (!try(_lock)) {                                      \
-> > +               lock_contended(&(_lock)->dep_map, _RET_IP_);    \
-> > +               pre(arg);                                       \
-> > +               lock(_lock);                                    \
-> > +               post(arg);                                      \
-> > +       }                                                       \
-> > +       lock_acquired(&(_lock)->dep_map, _RET_IP_);             \
-> > +} while (0)
-> > +
-> >  #define LOCK_CONTENDED_RETURN(_lock, try, lock)                        \
-> >  ({                                                             \
-> >         int ____err = 0;                                        \
-> > @@ -602,6 +613,21 @@ do {                                                               \
-> >         ____err;                                                \
-> >  })
-> >
-> > +#define LOCK_CONTENDED_HOOK_RETURN(                            \
-> > +       _lock, try, lock, pre, post, arg)                       \
-> > +({                                                             \
-> > +       int ____err = 0;                                        \
-> > +       if (!try(_lock)) {                                      \
-> > +               lock_contended(&(_lock)->dep_map, _RET_IP_);    \
-> > +               pre(arg);                                       \
-> > +               ____err = lock(_lock);                          \
-> > +               post(arg, ____err);                             \
-> > +       }                                                       \
-> > +       if (!____err)                                           \
-> > +               lock_acquired(&(_lock)->dep_map, _RET_IP_);     \
-> > +       ____err;                                                \
-> > +})
-> > +
-> >  #else /* CONFIG_LOCK_STAT */
-> >
-> >  #define lock_contended(lockdep_map, ip) do {} while (0)
-> > @@ -610,9 +636,30 @@ do {                                                               \
-> >  #define LOCK_CONTENDED(_lock, try, lock) \
-> >         lock(_lock)
-> >
-> > +#define LOCK_CONTENDED_HOOK(_lock, try, lock, pre, post, arg)  \
-> > +do {                                                           \
-> > +       if (!try(_lock)) {                                      \
-> > +               pre(arg);                                       \
-> > +               lock(_lock);                                    \
-> > +               post(arg);                                      \
-> > +       }                                                       \
-> > +} while (0)
-> > +
-> >  #define LOCK_CONTENDED_RETURN(_lock, try, lock) \
-> >         lock(_lock)
-> >
-> > +#define LOCK_CONTENDED_HOOK_RETURN(                            \
-> > +       _lock, try, lock, pre, post, arg)                       \
-> > +({                                                             \
-> > +       int ____err = 0;                                        \
-> > +       if (!try(_lock)) {                                      \
-> > +               pre(arg);                                       \
-> > +               ____err = lock(_lock);                          \
-> > +               post(arg, ____err);                             \
-> > +       }                                                       \
-> > +       ____err;                                                \
-> > +})
-> > +
-> >  #endif /* CONFIG_LOCK_STAT */
-> >
-> >  #ifdef CONFIG_LOCKDEP
-> > diff --git a/include/linux/mmap_lock.h b/include/linux/mmap_lock.h
-> > index 0707671851a8..1f61f1eac319 100644
-> > --- a/include/linux/mmap_lock.h
-> > +++ b/include/linux/mmap_lock.h
-> > @@ -1,11 +1,34 @@
-> >  #ifndef _LINUX_MMAP_LOCK_H
-> >  #define _LINUX_MMAP_LOCK_H
-> >
-> > +#include <linux/mm_types.h>
-> >  #include <linux/mmdebug.h>
-> > +#include <linux/rwsem.h>
-> > +#include <linux/types.h>
-> >
-> >  #define MMAP_LOCK_INITIALIZER(name) \
-> >         .mmap_lock = __RWSEM_INITIALIZER((name).mmap_lock),
-> >
-> > +#ifdef CONFIG_MMAP_LOCK_TRACEPOINTS
-> > +
-> > +void mmap_init_lock(struct mm_struct *mm);
-> > +void mmap_write_lock(struct mm_struct *mm);
-> > +void mmap_write_lock_nested(struct mm_struct *mm, int subclass);
-> > +int mmap_write_lock_killable(struct mm_struct *mm);
-> > +bool mmap_write_trylock(struct mm_struct *mm);
-> > +void mmap_write_unlock(struct mm_struct *mm);
-> > +void mmap_write_downgrade(struct mm_struct *mm);
-> > +void mmap_read_lock(struct mm_struct *mm);
-> > +int mmap_read_lock_killable(struct mm_struct *mm);
-> > +bool mmap_read_trylock(struct mm_struct *mm);
-> > +void mmap_read_unlock(struct mm_struct *mm);
-> > +bool mmap_read_trylock_non_owner(struct mm_struct *mm);
-> > +void mmap_read_unlock_non_owner(struct mm_struct *mm);
-> > +void mmap_assert_locked(struct mm_struct *mm);
-> > +void mmap_assert_write_locked(struct mm_struct *mm);
-> > +
-> > +#else /* !CONFIG_MMAP_LOCK_TRACEPOINTS */
-> > +
-> >  static inline void mmap_init_lock(struct mm_struct *mm)
-> >  {
-> >         init_rwsem(&mm->mmap_lock);
-> > @@ -63,7 +86,7 @@ static inline void mmap_read_unlock(struct mm_struct *mm)
-> >
-> >  static inline bool mmap_read_trylock_non_owner(struct mm_struct *mm)
-> >  {
-> > -       if (down_read_trylock(&mm->mmap_lock)) {
-> > +       if (mmap_read_trylock(mm)) {
-> >                 rwsem_release(&mm->mmap_lock.dep_map, _RET_IP_);
-> >                 return true;
-> >         }
-> > @@ -87,4 +110,6 @@ static inline void mmap_assert_write_locked(struct mm_struct *mm)
-> >         VM_BUG_ON_MM(!rwsem_is_locked(&mm->mmap_lock), mm);
-> >  }
-> >
-> > +#endif /* CONFIG_MMAP_LOCK_TRACEPOINTS */
-> > +
-> >  #endif /* _LINUX_MMAP_LOCK_H */
-> > diff --git a/include/linux/rwsem.h b/include/linux/rwsem.h
-> > index 7e5b2a4eb560..3304a35da4c0 100644
-> > --- a/include/linux/rwsem.h
-> > +++ b/include/linux/rwsem.h
-> > @@ -123,7 +123,13 @@ static inline int rwsem_is_contended(struct rw_semaphore *sem)
-> >   * lock for reading
-> >   */
-> >  extern void down_read(struct rw_semaphore *sem);
-> > +extern void down_read_contended_hook(struct rw_semaphore *sem,
-> > +                                    void (*pre)(void *), void (*post)(void *),
-> > +                                    void *arg);
-> >  extern int __must_check down_read_killable(struct rw_semaphore *sem);
-> > +extern int __must_check
-> > +down_read_killable_contended_hook(struct rw_semaphore *sem, void (*pre)(void *),
-> > +                                 void (*post)(void *, int), void *arg);
-> >
-> >  /*
-> >   * trylock for reading -- returns 1 if successful, 0 if contention
-> > @@ -134,7 +140,13 @@ extern int down_read_trylock(struct rw_semaphore *sem);
-> >   * lock for writing
-> >   */
-> >  extern void down_write(struct rw_semaphore *sem);
-> > +extern void down_write_contended_hook(struct rw_semaphore *sem,
-> > +                                     void (*pre)(void *), void (*post)(void *),
-> > +                                     void *arg);
-> >  extern int __must_check down_write_killable(struct rw_semaphore *sem);
-> > +extern int __must_check down_write_killable_contended_hook(
-> > +       struct rw_semaphore *sem, void (*pre)(void *),
-> > +       void (*post)(void *, int), void *arg);
-> >
-> >  /*
-> >   * trylock for writing -- returns 1 if successful, 0 if contention
-> > diff --git a/include/trace/events/mmap_lock.h b/include/trace/events/mmap_lock.h
-> > new file mode 100644
-> > index 000000000000..d1d4c83b848e
-> > --- /dev/null
-> > +++ b/include/trace/events/mmap_lock.h
-> > @@ -0,0 +1,76 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +#undef TRACE_SYSTEM
-> > +#define TRACE_SYSTEM mmap_lock
-> > +
-> > +#if !defined(_TRACE_MMAP_LOCK_H) || defined(TRACE_HEADER_MULTI_READ)
-> > +#define _TRACE_MMAP_LOCK_H
-> > +
-> > +#include <linux/tracepoint.h>
-> > +#include <linux/types.h>
-> > +
-> > +struct mm_struct;
-> > +
-> > +DECLARE_EVENT_CLASS(
-> > +       mmap_lock_template,
-> > +
-> > +       TP_PROTO(struct mm_struct *mm, const char *memcg_path, u64 duration,
-> > +                bool success, u64 bucket_lower, u64 bucket_upper),
-> > +
-> > +       TP_ARGS(mm, memcg_path, duration, success, bucket_lower, bucket_upper),
-> > +
-> > +       TP_STRUCT__entry(
-> > +               __field(struct mm_struct *, mm)
-> > +               __string(memcg_path, memcg_path)
-> > +               __field(u64, duration)
-> > +               __field(bool, success)
-> > +               __field(u64, bucket_lower)
-> > +               __field(u64, bucket_upper)
-> > +       ),
-> > +
-> > +       TP_fast_assign(
-> > +               __entry->mm = mm;
-> > +               __assign_str(memcg_path, memcg_path);
-> > +               __entry->duration = duration;
-> > +               __entry->success = success;
-> > +               __entry->bucket_lower = bucket_lower;
-> > +               __entry->bucket_upper = bucket_upper;
-> > +       ),
-> > +
-> > +       TP_printk(
-> > +               "mm=%p memcg_path=%s duration=%llu success=%s bucket=[%llu, %llu]\n",
-> > +               __entry->mm,
-> > +               __get_str(memcg_path),
-> > +               __entry->duration,
-> > +               __entry->success ? "true" : "false",
-> > +               __entry->bucket_lower,
-> > +               __entry->bucket_upper)
-> > +       );
-> > +
-> > +DEFINE_EVENT(mmap_lock_template, mmap_lock_start_locking,
-> > +
-> > +       TP_PROTO(struct mm_struct *mm, const char *memcg_path, u64 duration,
-> > +                bool success, u64 bucket_lower, u64 bucket_upper),
-> > +
-> > +       TP_ARGS(mm, memcg_path, duration, success, bucket_lower, bucket_upper)
-> > +);
-> > +
-> > +DEFINE_EVENT(mmap_lock_template, mmap_lock_acquire_returned,
-> > +
-> > +       TP_PROTO(struct mm_struct *mm, const char *memcg_path, u64 duration,
-> > +                bool success, u64 bucket_lower, u64 bucket_upper),
-> > +
-> > +       TP_ARGS(mm, memcg_path, duration, success, bucket_lower, bucket_upper)
-> > +);
-> > +
-> > +DEFINE_EVENT(mmap_lock_template, mmap_lock_released,
-> > +
-> > +       TP_PROTO(struct mm_struct *mm, const char *memcg_path, u64 duration,
-> > +                bool success, u64 bucket_lower, u64 bucket_upper),
-> > +
-> > +       TP_ARGS(mm, memcg_path, duration, success, bucket_lower, bucket_upper)
-> > +);
-> > +
-> > +#endif /* _TRACE_MMAP_LOCK_H */
-> > +
-> > +/* This part must be outside protection */
-> > +#include <trace/define_trace.h>
-> > diff --git a/kernel/locking/rwsem.c b/kernel/locking/rwsem.c
-> > index f11b9bd3431d..6aabea1cbc5d 100644
-> > --- a/kernel/locking/rwsem.c
-> > +++ b/kernel/locking/rwsem.c
-> > @@ -1495,6 +1495,20 @@ void __sched down_read(struct rw_semaphore *sem)
-> >  }
-> >  EXPORT_SYMBOL(down_read);
-> >
-> > +/*
-> > + * lock for reading
-> > + */
-> > +void __sched down_read_contended_hook(struct rw_semaphore *sem,
-> > +                                     void (*pre)(void *),
-> > +                                     void (*post)(void *), void *arg)
-> > +{
-> > +       might_sleep();
-> > +       rwsem_acquire_read(&sem->dep_map, 0, 0, _RET_IP_);
-> > +       LOCK_CONTENDED_HOOK(sem, __down_read_trylock, __down_read, pre, post,
-> > +                           arg);
-> > +}
-> > +EXPORT_SYMBOL(down_read_contended_hook);
-> > +
-> >  int __sched down_read_killable(struct rw_semaphore *sem)
-> >  {
-> >         might_sleep();
-> > @@ -1509,6 +1523,24 @@ int __sched down_read_killable(struct rw_semaphore *sem)
-> >  }
-> >  EXPORT_SYMBOL(down_read_killable);
-> >
-> > +int __sched down_read_killable_contended_hook(struct rw_semaphore *sem,
-> > +                                             void (*pre)(void *),
-> > +                                             void (*post)(void *, int),
-> > +                                             void *arg)
-> > +{
-> > +       might_sleep();
-> > +       rwsem_acquire_read(&sem->dep_map, 0, 0, _RET_IP_);
-> > +
-> > +       if (LOCK_CONTENDED_HOOK_RETURN(sem, __down_read_trylock,
-> > +                                      __down_read_killable, pre, post, arg)) {
-> > +               rwsem_release(&sem->dep_map, _RET_IP_);
-> > +               return -EINTR;
-> > +       }
-> > +
-> > +       return 0;
-> > +}
-> > +EXPORT_SYMBOL(down_read_killable_contended_hook);
-> > +
-> >  /*
-> >   * trylock for reading -- returns 1 if successful, 0 if contention
-> >   */
-> > @@ -1533,6 +1565,20 @@ void __sched down_write(struct rw_semaphore *sem)
-> >  }
-> >  EXPORT_SYMBOL(down_write);
-> >
-> > +/*
-> > + * lock for writing
-> > + */
-> > +void __sched down_write_contended_hook(struct rw_semaphore *sem,
-> > +                                      void (*pre)(void *),
-> > +                                      void (*post)(void *), void *arg)
-> > +{
-> > +       might_sleep();
-> > +       rwsem_acquire(&sem->dep_map, 0, 0, _RET_IP_);
-> > +       LOCK_CONTENDED_HOOK(sem, __down_write_trylock, __down_write, pre, post,
-> > +                           arg);
-> > +}
-> > +EXPORT_SYMBOL(down_write_contended_hook);
-> > +
-> >  /*
-> >   * lock for writing
-> >   */
-> > @@ -1551,6 +1597,24 @@ int __sched down_write_killable(struct rw_semaphore *sem)
-> >  }
-> >  EXPORT_SYMBOL(down_write_killable);
-> >
-> > +int __sched down_write_killable_contended_hook(struct rw_semaphore *sem,
-> > +                                              void (*pre)(void *),
-> > +                                              void (*post)(void *, int),
-> > +                                              void *arg)
-> > +{
-> > +       might_sleep();
-> > +       rwsem_acquire_read(&sem->dep_map, 0, 0, _RET_IP_);
-> > +
-> > +       if (LOCK_CONTENDED_HOOK_RETURN(sem, __down_write_trylock,
-> > +                                      __down_write_killable, pre, post, arg)) {
-> > +               rwsem_release(&sem->dep_map, _RET_IP_);
-> > +               return -EINTR;
-> > +       }
-> > +
-> > +       return 0;
-> > +}
-> > +EXPORT_SYMBOL(down_write_killable_contended_hook);
-> > +
-> >  /*
-> >   * trylock for writing -- returns 1 if successful, 0 if contention
-> >   */
-> > diff --git a/mm/Kconfig b/mm/Kconfig
-> > index f2104cc0d35c..a88b44ff46e2 100644
-> > --- a/mm/Kconfig
-> > +++ b/mm/Kconfig
-> > @@ -822,6 +822,25 @@ config DEVICE_PRIVATE
-> >  config FRAME_VECTOR
-> >         bool
-> >
-> > +config MMAP_LOCK_TRACEPOINTS
-> > +       bool "mmap_lock tracepoints"
-> > +       select HISTOGRAM
-> > +       select HIST_TRIGGERS
-> > +       default n
-> > +
-> > +       help
-> > +         Enable kernel tracepoints around mmap_lock acquisition. These can be
-> > +         enabled / disabled at runtime, although note there is a small amount
-> > +         of overhead even before the tracepoints are runtime-enabled. When
-> > +         histogram triggers are configured at runtime, less than 1% overhead
-> > +         is added to typical workloads.
-> > +
-> > +         This option selects CONFIG_HIST_TRIGGERS, since one of the main
-> > +         purposes of this feature is to allow lock acquisition latency
-> > +         histograms to be collected.
-> > +
-> > +         If unsure, say "N".
-> > +
-> >  config ARCH_USES_HIGH_VMA_FLAGS
-> >         bool
-> >  config ARCH_HAS_PKEYS
-> > diff --git a/mm/Makefile b/mm/Makefile
-> > index 6e9d46b2efc9..14860f7b9984 100644
-> > --- a/mm/Makefile
-> > +++ b/mm/Makefile
-> > @@ -121,3 +121,4 @@ obj-$(CONFIG_MEMFD_CREATE) += memfd.o
-> >  obj-$(CONFIG_MAPPING_DIRTY_HELPERS) += mapping_dirty_helpers.o
-> >  obj-$(CONFIG_PTDUMP_CORE) += ptdump.o
-> >  obj-$(CONFIG_PAGE_REPORTING) += page_reporting.o
-> > +obj-$(CONFIG_MMAP_LOCK_TRACEPOINTS) += mmap_lock.o
-> > diff --git a/mm/mmap_lock.c b/mm/mmap_lock.c
-> > new file mode 100644
-> > index 000000000000..d0734d6325ea
-> > --- /dev/null
-> > +++ b/mm/mmap_lock.c
-> > @@ -0,0 +1,281 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +#define CREATE_TRACE_POINTS
-> > +#include <trace/events/mmap_lock.h>
-> > +
-> > +#include <linux/cgroup.h>
-> > +#include <linux/kernel.h>
-> > +#include <linux/memcontrol.h>
-> > +#include <linux/mmap_lock.h>
-> > +#include <linux/percpu.h>
-> > +#include <linux/smp.h>
-> > +#include <linux/trace_events.h>
-> > +#include <linux/sched/clock.h>
-> > +
-> > +static const u64 mmap_lock_buckets[] = {
-> > +       250,            /* 250 ns */
-> > +       375,            /* 375 ns */
-> > +       500,            /* 500 ns */
-> > +       1000,           /* 1 us */
-> > +       10000,          /* 10 us */
-> > +       100000,         /* 100 us */
-> > +       500000,         /* 500 us */
-> > +       1000000,        /* 1 ms */
-> > +       5000000,        /* 5 ms */
-> > +       10000000,       /* 10 ms */
-> > +       50000000,       /* 50 ms */
-> > +       100000000,      /* 100 ms */
-> > +       500000000,      /* 500 ms */
-> > +       1000000000,     /* 1 s */
-> > +       5000000000UL,   /* 5 s */
-> > +       10000000000UL,  /* 10 s */
-> > +       ~0              /* > 10s */
-> > +};
-> > +
-> > +static int find_bucket(u64 duration)
-> > +{
-> > +       int i, lower, upper;
-> > +
-> > +       lower = 0;
-> > +       upper = ARRAY_SIZE(mmap_lock_buckets) - 1;
-> > +       while (lower < upper) {
-> > +               /* Can't realistically overflow, number of buckets < 2**63. */
-> > +               i = (lower + upper) / 2;
-> > +               if (duration <= mmap_lock_buckets[i])
-> > +                       upper = i;
-> > +               else
-> > +                       lower = i + 1;
-> > +       }
-> > +       return upper;
-> > +}
-> > +
-> > +#ifdef CONFIG_MEMCG
-> > +
-> > +DEFINE_PER_CPU(char[MAX_FILTER_STR_VAL], trace_memcg_path);
-> > +
-> > +/*
-> > + * Write the given mm_struct's memcg path to a percpu buffer, and return a
-> > + * pointer to it. If the path cannot be determined, the buffer will contain the
-> > + * empty string.
-> > + *
-> > + * Note: buffers are allocated per-cpu to avoid locking, so preemption must be
-> > + * disabled by the caller before calling us, and re-enabled only after the
-> > + * caller is done with the pointer.
-> > + */
-> > +static const char *get_mm_memcg_path(struct mm_struct *mm)
-> > +{
-> > +       struct mem_cgroup *memcg = get_mem_cgroup_from_mm(mm);
-> > +
-> > +       if (memcg != NULL && likely(memcg->css.cgroup != NULL)) {
-> > +               char *buf = this_cpu_ptr(trace_memcg_path);
-> > +
-> > +               cgroup_path(memcg->css.cgroup, buf, MAX_FILTER_STR_VAL);
-> > +               return buf;
-> > +       }
-> > +       return "";
-> > +}
-> > +
-> > +#define TRACE_MMAP_LOCK_EVENT(type, mm, ...)                                   \
-> > +       do {                                                                   \
-> > +               if (trace_mmap_lock_##type##_enabled()) {                      \
-> > +                       get_cpu();                                             \
-> > +                       trace_mmap_lock_##type(mm, get_mm_memcg_path(mm),      \
-> > +                                              ##__VA_ARGS__);                 \
-> > +                       put_cpu();                                             \
-> > +               }                                                              \
-> > +       } while (0)
-> > +
-> > +#else /* CONFIG_MEMCG */
-> > +
-> > +#define TRACE_MMAP_LOCK_EVENT(type, mm, ...)                                   \
-> > +       trace_mmap_lock_##type(mm, "", ##__VA_ARGS__)
-> > +
-> > +#endif /* CONFIG_MEMCG */
-> > +
-> > +/*
-> > + * Trace calls must be in a separate file, as otherwise there's a cirtuclar
-> > + * dependency between linux/mmap_lock.h and trace/events/mmap_lock.h.
-> > + */
-> > +
-> > +static void trace_start_locking(struct mm_struct *mm)
-> > +{
-> > +       TRACE_MMAP_LOCK_EVENT(start_locking, mm, 0, true, 0,
-> > +                             mmap_lock_buckets[0]);
-> > +}
-> > +
-> > +static void trace_acquire_returned(struct mm_struct *mm, u64 start_time_ns,
-> > +                                  bool success)
-> > +{
-> > +       u64 duration = sched_clock() - start_time_ns;
-> > +       int i = find_bucket(duration);
-> > +
-> > +       TRACE_MMAP_LOCK_EVENT(acquire_returned, mm, duration, success,
-> > +                             i > 0 ? mmap_lock_buckets[i - 1] + 1 : 0,
-> > +                             mmap_lock_buckets[i]);
-> > +}
-> > +
-> > +static void trace_released(struct mm_struct *mm)
-> > +{
-> > +       TRACE_MMAP_LOCK_EVENT(released, mm, 0, true, 0, mmap_lock_buckets[0]);
-> > +}
-> > +
-> > +struct trace_context {
-> > +       struct mm_struct *mm;
-> > +       u64 start_time_ns;
-> > +};
-> > +
-> > +static inline void trace_pre(void *c)
-> > +{
-> > +       ((struct trace_context *) c)->start_time_ns = sched_clock();
-> > +}
-> > +
-> > +static void trace_post_return(void *c, int ret)
-> > +{
-> > +       struct trace_context *context = (struct trace_context *)c;
-> > +
-> > +       trace_acquire_returned(context->mm, context->start_time_ns, ret == 0);
-> > +}
-> > +
-> > +static inline void trace_post(void *c)
-> > +{
-> > +       trace_post_return(c, 0);
-> > +}
-> > +
-> > +static inline bool trylock_impl(struct mm_struct *mm,
-> > +                               int (*trylock)(struct rw_semaphore *))
-> > +{
-> > +       trace_start_locking(mm);
-> > +       return trylock(&mm->mmap_lock) != 0;
-> > +}
-> > +
-> > +static inline void lock_impl(struct mm_struct *mm,
-> > +                            void (*lock)(struct rw_semaphore *,
-> > +                                         void (*)(void *), void (*)(void *),
-> > +                                         void *))
-> > +{
-> > +       struct trace_context context = { .mm = mm, .start_time_ns = 0 };
-> > +
-> > +       trace_start_locking(mm);
-> > +       lock(&mm->mmap_lock, trace_pre, trace_post, &context);
-> > +}
-> > +
-> > +static inline int lock_return_impl(struct mm_struct *mm,
-> > +                                  int (*lock)(struct rw_semaphore *,
-> > +                                              void (*)(void *),
-> > +                                              void (*)(void *, int), void *))
-> > +{
-> > +       struct trace_context context = { .mm = mm, .start_time_ns = 0 };
-> > +
-> > +       trace_start_locking(mm);
-> > +       return lock(&mm->mmap_lock, trace_pre, trace_post_return, &context);
-> > +}
-> > +
-> > +void mmap_init_lock(struct mm_struct *mm)
-> > +{
-> > +       init_rwsem(&mm->mmap_lock);
-> > +}
-> > +EXPORT_SYMBOL_GPL(mmap_init_lock);
-> > +
-> > +void mmap_write_lock(struct mm_struct *mm)
-> > +{
-> > +       lock_impl(mm, down_write_contended_hook);
-> > +}
-> > +EXPORT_SYMBOL_GPL(mmap_write_lock);
-> > +
-> > +void mmap_write_lock_nested(struct mm_struct *mm, int subclass)
-> > +{
-> > +       /*
-> > +        * Unlike other functions, we don't need the contended hook API here.
-> > +        * This is because we don't care about breaking out the {un,}contended
-> > +        * cases.
-> > +        *
-> > +        * This function is only called once on fork (nowhere else), so 1)
-> > +        * performance isn't as important, and 2) we expect to never experience
-> > +        * contention.
-> > +        */
-> > +       u64 start_time_ns = sched_clock();
-> > +
-> > +       down_write_nested(&mm->mmap_lock, subclass);
-> > +       trace_acquire_returned(mm, start_time_ns, true);
-> > +}
-> > +EXPORT_SYMBOL_GPL(mmap_write_lock_nested);
-> > +
-> > +int mmap_write_lock_killable(struct mm_struct *mm)
-> > +{
-> > +       return lock_return_impl(mm, down_write_killable_contended_hook);
-> > +}
-> > +EXPORT_SYMBOL_GPL(mmap_write_lock_killable);
-> > +
-> > +bool mmap_write_trylock(struct mm_struct *mm)
-> > +{
-> > +       return trylock_impl(mm, down_write_trylock);
-> > +}
-> > +EXPORT_SYMBOL_GPL(mmap_write_trylock);
-> > +
-> > +void mmap_write_unlock(struct mm_struct *mm)
-> > +{
-> > +       up_write(&mm->mmap_lock);
-> > +       trace_released(mm);
-> > +}
-> > +EXPORT_SYMBOL_GPL(mmap_write_unlock);
-> > +
-> > +void mmap_write_downgrade(struct mm_struct *mm)
-> > +{
-> > +       downgrade_write(&mm->mmap_lock);
-> > +}
-> > +EXPORT_SYMBOL_GPL(mmap_write_downgrade);
-> > +
-> > +void mmap_read_lock(struct mm_struct *mm)
-> > +{
-> > +       lock_impl(mm, down_read_contended_hook);
-> > +}
-> > +EXPORT_SYMBOL_GPL(mmap_read_lock);
-> > +
-> > +int mmap_read_lock_killable(struct mm_struct *mm)
-> > +{
-> > +       return lock_return_impl(mm, down_read_killable_contended_hook);
-> > +}
-> > +EXPORT_SYMBOL_GPL(mmap_read_lock_killable);
-> > +
-> > +bool mmap_read_trylock(struct mm_struct *mm)
-> > +{
-> > +       return trylock_impl(mm, down_read_trylock);
-> > +}
-> > +EXPORT_SYMBOL_GPL(mmap_read_trylock);
-> > +
-> > +void mmap_read_unlock(struct mm_struct *mm)
-> > +{
-> > +       up_read(&mm->mmap_lock);
-> > +       trace_released(mm);
-> > +}
-> > +EXPORT_SYMBOL_GPL(mmap_read_unlock);
-> > +
-> > +bool mmap_read_trylock_non_owner(struct mm_struct *mm)
-> > +{
-> > +       if (trylock_impl(mm, down_read_trylock)) {
-> > +               rwsem_release(&mm->mmap_lock.dep_map, _RET_IP_);
-> > +               return true;
-> > +       }
-> > +       return false;
-> > +}
-> > +EXPORT_SYMBOL_GPL(mmap_read_trylock_non_owner);
-> > +
-> > +void mmap_read_unlock_non_owner(struct mm_struct *mm)
-> > +{
-> > +       up_read_non_owner(&mm->mmap_lock);
-> > +       trace_released(mm);
-> > +}
-> > +EXPORT_SYMBOL_GPL(mmap_read_unlock_non_owner);
-> > +
-> > +void mmap_assert_locked(struct mm_struct *mm)
-> > +{
-> > +       lockdep_assert_held(&mm->mmap_lock);
-> > +       VM_BUG_ON_MM(!rwsem_is_locked(&mm->mmap_lock), mm);
-> > +}
-> > +EXPORT_SYMBOL_GPL(mmap_assert_locked);
-> > +
-> > +void mmap_assert_write_locked(struct mm_struct *mm)
-> > +{
-> > +       lockdep_assert_held_write(&mm->mmap_lock);
-> > +       VM_BUG_ON_MM(!rwsem_is_locked(&mm->mmap_lock), mm);
-> > +}
-> > +EXPORT_SYMBOL_GPL(mmap_assert_write_locked);
-> > --
-> > 2.27.0.111.gc72c7da667-goog
-> >
-> >
->
-> Hi Axel,
->
-> Any updates on this patchset ?
->
-> I think adding tracepoints to trace the mmap_lock would be helpful to
-> us, which can help us identify which one holds the mmap_lock too long
-> and why it takes too long.
->
->
-> --
-> Thanks
-> Yafang
+Signed-off-by: Marek Behún <marek.behun@nic.cz>
+---
+ .../sysfs-class-led-trigger-dev-hw-mode       |   8 +
+ drivers/leds/Kconfig                          |  10 +
+ drivers/leds/Makefile                         |   1 +
+ drivers/leds/leds-hw-controlled.c             | 227 ++++++++++++++++++
+ include/linux/leds-hw-controlled.h            |  74 ++++++
+ 5 files changed, 320 insertions(+)
+ create mode 100644 Documentation/ABI/testing/sysfs-class-led-trigger-dev-hw-mode
+ create mode 100644 drivers/leds/leds-hw-controlled.c
+ create mode 100644 include/linux/leds-hw-controlled.h
+
+diff --git a/Documentation/ABI/testing/sysfs-class-led-trigger-dev-hw-mode b/Documentation/ABI/testing/sysfs-class-led-trigger-dev-hw-mode
+new file mode 100644
+index 0000000000000..7bca112e7ff93
+--- /dev/null
++++ b/Documentation/ABI/testing/sysfs-class-led-trigger-dev-hw-mode
+@@ -0,0 +1,8 @@
++What:		/sys/class/leds/<led>/hw_mode
++Date:		September 2020
++KernelVersion:	5.10
++Contact:	Marek Behún <marek.behun@nic.cz>
++		linux-leds@vger.kernel.org
++Description:	(W) Set the HW control mode of this LED. The various available HW control modes
++		    are specific per device to which the LED is connected to and per LED itself.
++		(R) Show the available HW control modes and the currently selected one.
+diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
+index 1c181df24eae4..5e47ab21aafb4 100644
+--- a/drivers/leds/Kconfig
++++ b/drivers/leds/Kconfig
+@@ -49,6 +49,16 @@ config LEDS_BRIGHTNESS_HW_CHANGED
+ 
+ 	  See Documentation/ABI/testing/sysfs-class-led for details.
+ 
++config LEDS_HW_CONTROLLED
++	bool "API for LEDs that can be controlled by hardware"
++	depends on LEDS_CLASS
++	select LEDS_TRIGGERS
++	help
++	  This option enables support for a generic API via which other drivers
++	  can register LEDs that can be put into hardware controlled mode, eg.
++	  a LED connected to an ethernet PHY can be configured to blink on
++	  network activity.
++
+ comment "LED drivers"
+ 
+ config LEDS_88PM860X
+diff --git a/drivers/leds/Makefile b/drivers/leds/Makefile
+index c2c7d7ade0d06..858e468e40df0 100644
+--- a/drivers/leds/Makefile
++++ b/drivers/leds/Makefile
+@@ -6,6 +6,7 @@ obj-$(CONFIG_LEDS_CLASS)		+= led-class.o
+ obj-$(CONFIG_LEDS_CLASS_FLASH)		+= led-class-flash.o
+ obj-$(CONFIG_LEDS_CLASS_MULTICOLOR)	+= led-class-multicolor.o
+ obj-$(CONFIG_LEDS_TRIGGERS)		+= led-triggers.o
++obj-$(CONFIG_LEDS_HW_CONTROLLED)	+= leds-hw-controlled.o
+ 
+ # LED Platform Drivers (keep this sorted, M-| sort)
+ obj-$(CONFIG_LEDS_88PM860X)		+= leds-88pm860x.o
+diff --git a/drivers/leds/leds-hw-controlled.c b/drivers/leds/leds-hw-controlled.c
+new file mode 100644
+index 0000000000000..9ef58bf275efd
+--- /dev/null
++++ b/drivers/leds/leds-hw-controlled.c
+@@ -0,0 +1,227 @@
++// SPDX-License-Identifier: GPL-2.0+
++/*
++ * Generic API for LEDs that can be controlled by hardware (eg. by an ethernet PHY chip)
++ *
++ * Copyright (C) 2020 Marek Behun <marek.behun@nic.cz>
++ */
++#include <linux/leds-hw-controlled.h>
++#include <linux/module.h>
++#include <linux/of.h>
++
++int hw_controlled_led_brightness_set(struct led_classdev *cdev, enum led_brightness brightness)
++{
++	struct hw_controlled_led *led = led_cdev_to_hw_controlled_led(cdev);
++	int ret;
++
++	mutex_lock(&led->lock);
++	ret = led->ops->led_brightness_set(cdev->dev->parent, led, brightness);
++	mutex_unlock(&led->lock);
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(hw_controlled_led_brightness_set);
++
++static int of_register_hw_controlled_led(struct device *dev, struct device_node *np,
++					 const char *devicename,
++					 const struct hw_controlled_led_ops *ops)
++{
++	struct led_init_data init_data = {};
++	struct hw_controlled_led *led;
++	u32 reg;
++	int ret;
++
++	ret = of_property_read_u32(np, "reg", &reg);
++	if (ret < 0)
++		return ret;
++
++	led = devm_kzalloc(dev, sizeof(struct hw_controlled_led), GFP_KERNEL);
++	if (!led)
++		return -ENOMEM;
++
++	led->ops = ops;
++
++	led->cdev.max_brightness = 1;
++	led->cdev.brightness_set_blocking = hw_controlled_led_brightness_set;
++	led->cdev.trigger_type = &hw_control_led_trig_type;
++	led->addr = reg;
++
++	of_property_read_string(np, "linux,default-trigger", &led->cdev.default_trigger);
++	of_property_read_string(np, "linux,default-hw-mode", &led->hw_mode);
++
++	led->active_low = !of_property_read_bool(np, "enable-active-high");
++	led->tristate = of_property_read_bool(np, "led-tristate");
++
++	init_data.fwnode = &np->fwnode;
++	init_data.devname_mandatory = true;
++	init_data.devicename = devicename;
++
++	ret = led->ops->led_init(dev, led);
++	if (ret < 0)
++		goto err_free;
++
++	ret = devm_led_classdev_register_ext(dev, &led->cdev, &init_data);
++	if (ret < 0)
++		goto err_free;
++
++	return 0;
++err_free:
++	devm_kfree(dev, led);
++	return ret;
++}
++
++int of_register_hw_controlled_leds(struct device *dev, const char *devicename,
++				   const struct hw_controlled_led_ops *ops)
++{
++	struct device_node *node = dev->of_node;
++	struct device_node *leds, *led;
++	int ret;
++
++	if (!IS_ENABLED(CONFIG_OF_MDIO))
++		return 0;
++
++	if (!ops)
++		return -EINVAL;
++
++	/* maybe we should have of_get_compatible_available_child as well */
++	leds = of_get_compatible_child(node, "linux,hw-controlled-leds");
++	if (!leds)
++		return 0;
++
++	if (!devicename)
++		devicename = dev_name(dev);
++
++	for_each_available_child_of_node(leds, led) {
++		ret = of_register_hw_controlled_led(dev, led, devicename, ops);
++		if (ret < 0)
++			dev_err(dev, "Nonfatal error: cannot register LED from node %pOFn: %i\n",
++				led, ret);
++	}
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(of_register_hw_controlled_leds);
++
++static int hw_control_led_trig_activate(struct led_classdev *cdev)
++{
++	struct hw_controlled_led *led;
++	int ret;
++
++	led = led_cdev_to_hw_controlled_led(cdev);
++
++	if (!led->hw_mode)
++		return 0;
++
++	mutex_lock(&led->lock);
++	ret = led->ops->led_set_hw_mode(cdev->dev->parent, led, led->hw_mode);
++	mutex_unlock(&led->lock);
++
++	if (ret < 0)
++		dev_warn(cdev->dev->parent, "Could not set HW mode %s on LED %s: %i\n",
++			 led->hw_mode, cdev->name, ret);
++
++	/* don't fail to activate this trigger so that user can write hw_mode file */
++	return 0;
++}
++
++static void hw_control_led_trig_deactivate(struct led_classdev *cdev)
++{
++	struct hw_controlled_led *led;
++	int ret;
++
++	led = led_cdev_to_hw_controlled_led(cdev);
++
++	mutex_lock(&led->lock);
++	/* store HW mode before deactivation */
++	led->hw_mode = led->ops->led_get_hw_mode(cdev->dev->parent, led);
++	ret = led->ops->led_set_hw_mode(cdev->dev->parent, led, NULL);
++	mutex_unlock(&led->lock);
++
++	if (ret < 0)
++		dev_err(cdev->dev->parent, "Failed deactivating HW mode on LED %s\n", cdev->name);
++}
++
++static ssize_t hw_mode_show(struct device *dev, struct device_attribute *attr, char *buf)
++{
++	struct hw_controlled_led *led;
++	const char *mode, *cur_mode;
++	void *iter = NULL;
++	int len = 0;
++
++	led = led_cdev_to_hw_controlled_led(led_trigger_get_led(dev));
++
++	mutex_lock(&led->lock);
++
++	cur_mode = led->ops->led_get_hw_mode(dev->parent, led);
++
++	for (mode = led->ops->led_iter_hw_mode(dev->parent, led, &iter);
++	     mode;
++	     mode = led->ops->led_iter_hw_mode(dev->parent, led, &iter)) {
++		bool sel;
++
++		sel = cur_mode && !strcmp(mode, cur_mode);
++
++		len += scnprintf(buf + len, PAGE_SIZE - len, "%s%s%s ", sel ? "[" : "", mode,
++				 sel ? "]" : "");
++	}
++
++	if (buf[len - 1] == ' ')
++		buf[len - 1] = '\n';
++
++	mutex_unlock(&led->lock);
++
++	return len;
++}
++
++static ssize_t hw_mode_store(struct device *dev, struct device_attribute *attr, const char *buf,
++			     size_t count)
++{
++	struct hw_controlled_led *led;
++	int ret;
++
++	led = led_cdev_to_hw_controlled_led(led_trigger_get_led(dev));
++
++	mutex_lock(&led->lock);
++	ret = led->ops->led_set_hw_mode(dev->parent, led, buf);
++	if (ret < 0)
++		return ret;
++	mutex_unlock(&led->lock);
++
++	return count;
++}
++
++static DEVICE_ATTR_RW(hw_mode);
++
++static struct attribute *hw_control_led_trig_attrs[] = {
++	&dev_attr_hw_mode.attr,
++	NULL
++};
++ATTRIBUTE_GROUPS(hw_control_led_trig);
++
++struct led_hw_trigger_type hw_control_led_trig_type;
++EXPORT_SYMBOL_GPL(hw_control_led_trig_type);
++
++struct led_trigger hw_control_led_trig = {
++	.name		= "dev-hw-mode",
++	.activate	= hw_control_led_trig_activate,
++	.deactivate	= hw_control_led_trig_deactivate,
++	.trigger_type	= &hw_control_led_trig_type,
++	.groups		= hw_control_led_trig_groups,
++};
++EXPORT_SYMBOL_GPL(hw_control_led_trig);
++
++static int __init hw_controlled_leds_init(void)
++{
++	return led_trigger_register(&hw_control_led_trig);
++}
++
++static void __exit hw_controlled_leds_exit(void)
++{
++	led_trigger_unregister(&hw_control_led_trig);
++}
++
++subsys_initcall(hw_controlled_leds_init);
++module_exit(hw_controlled_leds_exit);
++
++MODULE_AUTHOR("Marek Behun <marek.behun@nic.cz>");
++MODULE_LICENSE("GPL v2");
++MODULE_DESCRIPTION("API for HW controlled LEDs");
+diff --git a/include/linux/leds-hw-controlled.h b/include/linux/leds-hw-controlled.h
+new file mode 100644
+index 0000000000000..2c9b8a06def18
+--- /dev/null
++++ b/include/linux/leds-hw-controlled.h
+@@ -0,0 +1,74 @@
++/* SPDX-License-Identifier: GPL-2.0+ */
++/*
++ * Generic API for LEDs that can be controlled by hardware (eg. by an ethernet PHY chip)
++ *
++ * Copyright (C) 2020 Marek Behun <marek.behun@nic.cz>
++ */
++#ifndef _LINUX_LEDS_HW_CONTROLLED_H_
++#define _LINUX_LEDS_HW_CONTROLLED_H_
++
++#include <linux/kernel.h>
++#include <linux/leds.h>
++
++struct hw_controlled_led {
++	struct led_classdev cdev;
++	const struct hw_controlled_led_ops *ops;
++	struct mutex lock;
++
++	/* these members are filled in by OF if OF is enabled */
++	int addr;
++	bool active_low;
++	bool tristate;
++
++	/* also filled in by OF, but changed by led_set_hw_mode operation */
++	const char *hw_mode;
++
++	void *priv;
++};
++#define led_cdev_to_hw_controlled_led(l) container_of(l, struct hw_controlled_led, cdev)
++
++/* struct hw_controlled_led_ops: Operations on LEDs that can be controlled by HW
++ *
++ * All the following operations must be implemented:
++ * @led_init: Should initialize the LED from OF data (and sanity check whether they are correct).
++ *            This should also change led->cdev.max_brightness, if the value differs from default,
++ *            which is 1.
++ * @led_brightness_set: Sets brightness.
++ * @led_iter_hw_mode: Iterates available HW control mode names for this LED.
++ * @led_set_hw_mode: Sets HW control mode to value specified by given name.
++ * @led_get_hw_mode: Returns current HW control mode name.
++ */
++struct hw_controlled_led_ops {
++	int (*led_init)(struct device *dev, struct hw_controlled_led *led);
++	int (*led_brightness_set)(struct device *dev, struct hw_controlled_led *led,
++				  enum led_brightness brightness);
++	const char *(*led_iter_hw_mode)(struct device *dev, struct hw_controlled_led *led,
++					void **iter);
++	int (*led_set_hw_mode)(struct device *dev, struct hw_controlled_led *led,
++			       const char *mode);
++	const char *(*led_get_hw_mode)(struct device *dev, struct hw_controlled_led *led);
++};
++
++#if IS_ENABLED(CONFIG_LEDS_HW_CONTROLLED)
++
++#define hw_controlled_led_ops_ptr(s) (s)
++
++int of_register_hw_controlled_leds(struct device *dev, const char *devicename,
++				   const struct hw_controlled_led_ops *ops);
++int hw_controlled_led_brightness_set(struct led_classdev *cdev, enum led_brightness brightness);
++
++extern struct led_hw_trigger_type hw_control_led_trig_type;
++extern struct led_trigger hw_control_led_trig;
++
++#else /* !IS_ENABLED(CONFIG_LEDS_HW_CONTROLLED) */
++
++#define hw_controlled_led_ops_ptr(s) NULL
++static inline int of_register_hw_controlled_leds(struct device *dev, const char *devicename,
++						 const struct hw_controlled_led_ops *ops)
++{
++	return 0;
++}
++
++#endif /* !IS_ENABLED(CONFIG_LEDS_HW_CONTROLLED) */
++
++#endif /* _LINUX_LEDS_HW_CONTROLLED_H_ */
+-- 
+2.26.2
+
