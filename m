@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A633262AF9
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 10:54:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B91F262B07
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 10:55:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727085AbgIIIyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 04:54:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42566 "EHLO
+        id S1730025AbgIIIz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 04:55:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726414AbgIIIyf (ORCPT
+        with ESMTP id S1726555AbgIIIyf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 9 Sep 2020 04:54:35 -0400
 Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CBB5C061756
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 01:54:33 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id c18so2015933wrm.9
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 01:54:33 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCC3CC061786
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 01:54:34 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id z4so2050587wrr.4
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 01:54:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9ge+LjYBvfrPR/6z1eGAAmD+KiWvreg+tXjIgUs0btU=;
-        b=q8tRc+rU8QeroDtIWNLDBOL7Agmfjh51hQKjf49eFv3+n5GlODrSJopzzbOq9DLd8c
-         CC3Q651wyFUH0A4OoOF/DyS8hzBbBOpGv52huurWK8FPRP8YHmvTcp5jA4FsmmZOZy5P
-         yb57ng9AXG1SlNsC7WiI8TcRkWW0+E6HmsJvap8jb4C73AnG/bXpTDXs6k/RG88ZieUc
-         VRKkf3YuSKSyZjW4mQt1aQXYSF0YhZv3W7N0KR/iHQ56C1bGZ+CkhvfUmMH97g2uNSaR
-         TYe3Lg6uz5Yjs96QMJi+/Fu2vDFWYS70UNXtZp4GhHfaB8LF+K9qNqGlBpzho/nnxVUq
-         AKSw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=yjs3H1T57/OsvxujNGQGLBWexjTmuttV9nlq5vhVwiw=;
+        b=1hogus410UbSTewZULq8XN8hOyyBaL3K5B6EOLPEBYnY2sGYGPLbPW3ExsJq4pq4+H
+         GICD3jVw0enYx6Gprar6A5TRJmmt56br+sRooWOV1CwuhcTx+bsn//Px3L+pkoJCOh+m
+         fYwbhRd6W8qaWAXI2rTd6jScVykNjvgR7bNmSjXEZ7TDiBxHT09dlxpG5Ezja1cg/s8A
+         FOAyOQuANxMt5ChTXpvKigtNMY0VAmWUmnKt7iiXAycAGWMUovJrodozixh0MtVmJxen
+         gXRZ4DATBIzKNBdBoi/e96MQ3hAxtrVB9feV6GsGHB4jQ8BKl5oVyhuQNjPFJ0zTIu28
+         J8Vg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9ge+LjYBvfrPR/6z1eGAAmD+KiWvreg+tXjIgUs0btU=;
-        b=YxXuuZK/YsmQJnBhcH42Go/qYeT6url30ZWbXEb5JIFGqZVJEeSsqBf9KRUD/1Ntrq
-         hOMWnF8pFDjqLheXBu/mfQqQEa+xImW8Mj6pHEE6wvTtLbZ5KEiBOcqLGSHNgYYvusTb
-         SmJdVhK1TuUdMhDMfSO/vUhMk0jg1vfN7rw9FKS/DttOLaAR6zVfg436tmvqSmp7lQec
-         AyC/9ULzWtnGIHXm4k2ZEfGIhHKNO7KnB/+eshn29Rr9jyK99cIDFvg1MS96PB53OUDs
-         VX3qCCH5KeQtAUCr5/f6dCl53RtZH3GUUQeJF4IJHJP9mFM5XXhPeQZc7BjTm4fiy8/N
-         8TPA==
-X-Gm-Message-State: AOAM531q1TwO2rwbAZcH+BCYy/kV1+mCHnZRh8kTG8TnBJ8LKXWJLEb3
-        MIFcfriRFRdUuZ9JcnZuTuoi3Q==
-X-Google-Smtp-Source: ABdhPJwzDEHKLjOwS9evMvXAKBTZ65IQav9hZYJOaGRhp8jhiQvjJGKJ4Qp9YoxUuuDLlZGHFpXwzA==
-X-Received: by 2002:a5d:6404:: with SMTP id z4mr2860751wru.423.1599641672353;
-        Wed, 09 Sep 2020 01:54:32 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=yjs3H1T57/OsvxujNGQGLBWexjTmuttV9nlq5vhVwiw=;
+        b=AVvZ9q2PuBN2EBpOtDjDkRYUtTni3eCpNVNUzf2tLtCb6TIdsZJTCCyqPtt4RIV89r
+         JISJftD5Sq0pYTH+PCXlX/QybWo8vjgXW8fOzGZ29+T9QrKZTRvn1cDT02esS3t+DivM
+         zzYGKy/m3/isTASEJ3SxgprWPdoqfsVMoE6qHMSNaZXXSoZ97noktCH0B0lXMeHGmIrc
+         P/8wOwXSazuaR873psWBMbNBNkbFgNqwoaA8Gr8ZUTXUCEJbs0LuIJtvvFplrOX8hn/u
+         tsnjcZ4rjqXtneknssylsONCNI5WblEuB7phbwG9t250LYo/8S8Jcg3IESMCMEf/resE
+         SNpQ==
+X-Gm-Message-State: AOAM532VEIN/BzB75mosScExUkmKI2BYXaeeLw806RfOQt4NUqh0289C
+        jL35SZIYopyJUA0DGNSvm9/GfQ==
+X-Google-Smtp-Source: ABdhPJyfX1lAkYRdf3f086UINT2xngPSrOgIgkfFzYyUgZA0LaGJG7CLOAi3E9XKsLi6Ob8wB4E1zg==
+X-Received: by 2002:a5d:46cd:: with SMTP id g13mr2988799wrs.153.1599641673479;
+        Wed, 09 Sep 2020 01:54:33 -0700 (PDT)
 Received: from localhost.localdomain (amontpellier-657-1-17-60.w109-210.abo.wanadoo.fr. [109.210.64.60])
-        by smtp.gmail.com with ESMTPSA id n17sm3418812wrw.0.2020.09.09.01.54.31
+        by smtp.gmail.com with ESMTPSA id n17sm3418812wrw.0.2020.09.09.01.54.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Sep 2020 01:54:31 -0700 (PDT)
+        Wed, 09 Sep 2020 01:54:32 -0700 (PDT)
 From:   Bartosz Golaszewski <brgl@bgdev.pl>
 To:     Linus Walleij <linus.walleij@linaro.org>,
         Mika Westerberg <mika.westerberg@linux.intel.com>,
@@ -56,10 +56,12 @@ To:     Linus Walleij <linus.walleij@linaro.org>,
 Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-acpi@vger.kernel.org,
         Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH v2 0/3] gpiolib: generalize GPIO line names property
-Date:   Wed,  9 Sep 2020 10:54:23 +0200
-Message-Id: <20200909085426.19862-1-brgl@bgdev.pl>
+Subject: [PATCH v2 1/3] device: property: add helpers to count items in string arrays
+Date:   Wed,  9 Sep 2020 10:54:24 +0200
+Message-Id: <20200909085426.19862-2-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.26.1
+In-Reply-To: <20200909085426.19862-1-brgl@bgdev.pl>
+References: <20200909085426.19862-1-brgl@bgdev.pl>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -69,32 +71,50 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-I initially sent this as part of the gpio-mockup overhaul but since
-these patches are indepentent and the work on gpio-mockup may become
-more complicated - I'm sending these separately.
+Instead of doing the following:
 
-The only change is adding additional property helpers to count strings
-in array.
+    count = device_property_read_string_array(dev, propname, NULL, 0);
 
-v1 -> v2:
-- actually remove the previous devprop source file in patch 3
-- rename the string counting functions to something more explicit
+Let's provide inline helpers with hardcoded arguments for counting
+strings in property arrays.
 
-Bartosz Golaszewski (3):
-  device: property: add helpers to count items in string arrays
-  gpiolib: generalize devprop_gpiochip_set_names() for device properties
-  gpiolib: unexport devprop_gpiochip_set_names()
+Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+---
+ include/linux/property.h | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
- drivers/gpio/Makefile          |  1 -
- drivers/gpio/gpiolib-acpi.c    |  3 --
- drivers/gpio/gpiolib-devprop.c | 63 ----------------------------------
- drivers/gpio/gpiolib-of.c      |  5 ---
- drivers/gpio/gpiolib.c         | 55 ++++++++++++++++++++++++++---
- include/linux/gpio/driver.h    |  3 --
- include/linux/property.h       | 13 +++++++
- 7 files changed, 64 insertions(+), 79 deletions(-)
- delete mode 100644 drivers/gpio/gpiolib-devprop.c
-
+diff --git a/include/linux/property.h b/include/linux/property.h
+index 9f805c442819..75c178055bc9 100644
+--- a/include/linux/property.h
++++ b/include/linux/property.h
+@@ -170,6 +170,12 @@ static inline int device_property_count_u64(struct device *dev, const char *prop
+ 	return device_property_read_u64_array(dev, propname, NULL, 0);
+ }
+ 
++static inline int device_property_string_array_count(struct device *dev,
++						     const char *propname)
++{
++	return device_property_read_string_array(dev, propname, NULL, 0);
++}
++
+ static inline bool fwnode_property_read_bool(const struct fwnode_handle *fwnode,
+ 					     const char *propname)
+ {
+@@ -224,6 +230,13 @@ static inline int fwnode_property_count_u64(const struct fwnode_handle *fwnode,
+ 	return fwnode_property_read_u64_array(fwnode, propname, NULL, 0);
+ }
+ 
++static inline int
++fwnode_property_string_array_count(const struct fwnode_handle *fwnode,
++				   const char *propname)
++{
++	return fwnode_property_read_string_array(fwnode, propname, NULL, 0);
++}
++
+ struct software_node;
+ 
+ /**
 -- 
 2.26.1
 
