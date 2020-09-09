@@ -2,501 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C961F262817
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 09:10:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 322AC26281A
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 09:11:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729479AbgIIHKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 03:10:40 -0400
-Received: from mail-eopbgr60048.outbound.protection.outlook.com ([40.107.6.48]:39550
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728729AbgIIHKQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 03:10:16 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=e52+DvJ+RFSskvSYCQayAxlErnhqxmGrlv2kGwul7rYB1etZw+OKEHTpXFlTfv1DGP9MLckDrTR2YbXoJrM8OCZ8mLn7/YcxFe6xwxALLa3xiev7NCmrJbb/+OAerUQyH/sOkOeMkqtnRqL7Epi7CvwLXNHvQXGQhv2cpWghB4d/CsheZJMyOJiXe3PPnwbG4KgxgDgNgnggr+Uap6MyytoA83gQIOl/GMW7I1CaTQ6WcGVXzZR2+FtXmMrXqT8vu7hve2/QMSnQMSd/cAlLln7dmuCCWuKL2PLnXkVBR/TEyC1fozGR2oGIA0uedQerjs8fq77efhkoZ8rzTr3jGw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4GisOiA8Heg4oRfzeLFnV+JjERGwguwh0dqebfdr1g0=;
- b=X9DFntL6xq/HuHXP+zlvmeMrCZnCfjpa8ZI8ar908HEJ58LpTxSbsY4eyiMezsQ4bi2Xn2Tvw7YQDkBbjZTgexHscpqlDYdmIz5Rku4MRI5z6n5Gd2ArYS/Myxxo0SA+UYzF+aNTU04XCOpDu0Nen90hz2x6bYOP/RhlFG+c/ozuX7gYq0GxfNOpDpkhwvP7NcIo/gmh3+SyarYKy5eE4Uh74aIFmbk0lAAdih7fKTK1p8p8DlRcKAm+9RTlxOAa5rwh3vYEKJ9MkQ4q6nz3tWWUJ0APUgSoSPHMZy6ZwE996WGY5L1U/TKlOAQ26INlLo82+3/mWpFnVmpW9OXKCA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4GisOiA8Heg4oRfzeLFnV+JjERGwguwh0dqebfdr1g0=;
- b=Zjjb0Vt/WEgxROtq/5Vtft8HEDYnSC9BKp5l9rpffbwVMeZdefHDG9CEXdFSIS76nmUUvf1ossHuG9J/eOpEYWd+qiuoiT4EsIe9SS7aryeuoYrYxk7hPJpwWDRUr48BSdU+iVexgSMUo7DJyfEnM6UTgG1YKjC+mZeTKpdvekQ=
-Received: from AM7PR04MB6885.eurprd04.prod.outlook.com (2603:10a6:20b:10d::24)
- by AM6PR04MB5432.eurprd04.prod.outlook.com (2603:10a6:20b:93::33) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Wed, 9 Sep
- 2020 07:10:12 +0000
-Received: from AM7PR04MB6885.eurprd04.prod.outlook.com
- ([fe80::f431:1df6:f18b:ad99]) by AM7PR04MB6885.eurprd04.prod.outlook.com
- ([fe80::f431:1df6:f18b:ad99%7]) with mapi id 15.20.3370.016; Wed, 9 Sep 2020
- 07:10:12 +0000
-From:   Meenakshi Aggarwal <meenakshi.aggarwal@nxp.com>
-To:     Shawn Guo <shawnguo@kernel.org>
-CC:     "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        Varun Sethi <V.Sethi@nxp.com>, Leo Li <leoyang.li@nxp.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        id S1729802AbgIIHKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 03:10:55 -0400
+Received: from rtits2.realtek.com ([211.75.126.72]:48150 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729305AbgIIHKl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 03:10:41 -0400
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.69 with qID 0897AKaD4024324, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexmb05.realtek.com.tw[172.21.6.98])
+        by rtits2.realtek.com.tw (8.15.2/2.66/5.86) with ESMTPS id 0897AKaD4024324
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 9 Sep 2020 15:10:20 +0800
+Received: from RTEXDAG02.realtek.com.tw (172.21.6.101) by
+ RTEXMB05.realtek.com.tw (172.21.6.98) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Wed, 9 Sep 2020 15:10:20 +0800
+Received: from RTEXMB01.realtek.com.tw (172.21.6.94) by
+ RTEXDAG02.realtek.com.tw (172.21.6.101) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2044.4; Wed, 9 Sep 2020 15:10:19 +0800
+Received: from RTEXMB01.realtek.com.tw ([fe80::3d72:efbe:f42a:2926]) by
+ RTEXMB01.realtek.com.tw ([fe80::3d72:efbe:f42a:2926%13]) with mapi id
+ 15.01.2044.004; Wed, 9 Sep 2020 15:10:19 +0800
+From:   =?big5?B?p2Sp/rzhIFJpY2t5?= <ricky_wu@realtek.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+CC:     "arnd@arndb.de" <arnd@arndb.de>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
+        "rui_feng@realsil.com.cn" <rui_feng@realsil.com.cn>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Kuldeep Singh <kuldeep.singh@nxp.com>
-Subject: RE: [PATCH 2/2] arm64: dts: lx2160a: add device tree for lx2162aqds
- board
-Thread-Topic: [PATCH 2/2] arm64: dts: lx2160a: add device tree for lx2162aqds
- board
-Thread-Index: AQHWgTuoJIcsrSh3jEy4wdu9ducPKqlZsQ4AgAY8A2A=
-Date:   Wed, 9 Sep 2020 07:10:12 +0000
-Message-ID: <AM7PR04MB688571606382A8992C71E8E38E260@AM7PR04MB6885.eurprd04.prod.outlook.com>
-References: <1599059610-7570-1-git-send-email-meenakshi.aggarwal@nxp.com>
- <1599059610-7570-2-git-send-email-meenakshi.aggarwal@nxp.com>
- <20200905075419.GN9261@dragon>
-In-Reply-To: <20200905075419.GN9261@dragon>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
+        "puranjay12@gmail.com" <puranjay12@gmail.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "vailbhavgupta40@gamail.com" <vailbhavgupta40@gamail.com>
+Subject: RE: [PATCH v5 2/2] misc: rtsx: Add power saving functions and fix driving parameter
+Thread-Topic: [PATCH v5 2/2] misc: rtsx: Add power saving functions and fix
+ driving parameter
+Thread-Index: AQHWhP62uKuuQJQ5k0+R6Z2U1e37UKlezqwAgAES/lA=
+Date:   Wed, 9 Sep 2020 07:10:19 +0000
+Message-ID: <a5abd0d6029646ff8faae61cc4a4dd55@realtek.com>
+References: <20200907100731.7722-1-ricky_wu@realtek.com>
+ <20200908222834.GA646416@bjorn-Precision-5520>
+In-Reply-To: <20200908222834.GA646416@bjorn-Precision-5520>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [103.92.43.199]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 23b187d1-78eb-43bb-a6d1-08d8548f6500
-x-ms-traffictypediagnostic: AM6PR04MB5432:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <AM6PR04MB54322C07AF85D4EBD0FDAF908E260@AM6PR04MB5432.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2201;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: GK+nhiLtGX700oNDOPLBfKJaAIZOJJ+1i6ULEA47NRB1DKt0iwp0vby8D3QovuYdj+CD1G6fQgSMope8hmnzza2iq8EyY838G5E/ctFXL/iLHrYaKMwBDIulXw/5MJDG8SxB6rt7ZahECHgWc4dTsnWS7TjZZe4OG0R/y4Vztl6oOcFw/bUIlmsdehire60+9Bw8JHk7vZuH6utZi/EoNXtzhq0yz3uriAEzy+zvM6wcBgAP4sLu+e/EEZUYd3ZMJO258krVNmFUajA+UUUKrcGWPJgKcoEMrPKo/G9FnIN+E5ALU8j4urZrlwTjVtOHN2C/PGki8KxsH5aNppjarA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM7PR04MB6885.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39860400002)(346002)(366004)(376002)(136003)(44832011)(52536014)(5660300002)(9686003)(8936002)(4326008)(55016002)(86362001)(71200400001)(316002)(26005)(2906002)(83380400001)(53546011)(7696005)(6506007)(64756008)(186003)(478600001)(66946007)(54906003)(66556008)(66446008)(76116006)(6916009)(8676002)(66476007)(33656002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: Otg5vLvrWuFW7lPKU9h4aQgOLuUpfCqnPplwW0uhq52IZ7ZGD7C/l1tUO6b0FGltvj3f3p/Co/k27uOsJjz9bB6SFqZBBBseAmU1qBtd1Snx5bkKbTTY1wuukdwEkorF8moClCEggvJ6HNg/j5bY2r0glO9fdAD7s++bNuoObplxCHId8vJon3GStbPNpJu4TASSE8q7ED7qRS6P9x0ksOUZTV4YslFE+qZYkW1KcjCDJC5SlAANg0hkoCrTfaJ3n2SWk3+9J5qZ1h8sPFuqGujZHTp0cKv8ZEy/1G22zDEIm7oIeIlZzkHcgCcbewx54nHUqRwP8nygyBFJ/AgiklKP+ZiWu8V43oLy6AGsr6H5q4T3k6+qMSyFuSICVy4vK0B0FVha6m2CWANJdXSIIhuO77f2LHgJ0nTrrI6PCrfgd0Dj8T8gRRjPkBVqoLiVm09MayzhujG78INr9l40vAi/nwtBrsK1aRn/Jf2v7bzKIRuY6U+2ffpMstKeoTFHk0/07hikTIr7siNiIpqk2To3Qc6bdxMfPooTW8flvT1JunxWHq46VUz8csFB0abEgqsEq8sdEvu5K55eNvMzx2xI8fiIMPbGgNibnRq9EOSeIF6y5+K5YZWOv9UT34IzxafrZqKJsysc0pZPx2jE/A==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+x-originating-ip: [172.22.88.99]
+Content-Type: text/plain; charset="big5"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM7PR04MB6885.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 23b187d1-78eb-43bb-a6d1-08d8548f6500
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Sep 2020 07:10:12.3756
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: EDsXDe6ziUO5E1Ej0g3oLw23sUOveo8kThfJ7+EASwp2gksVKuMJjzOBAf5xsCaO9264Vgs146a49pJN2sF7GE2oLPj1a2eaw5CsyjTvRYA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB5432
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-> -----Original Message-----
-> From: Shawn Guo <shawnguo@kernel.org>
-> Sent: Saturday, September 5, 2020 1:24 PM
-> To: Meenakshi Aggarwal <meenakshi.aggarwal@nxp.com>
-> Cc: robh+dt@kernel.org; Varun Sethi <V.Sethi@nxp.com>; Leo Li
-> <leoyang.li@nxp.com>; linux-arm-kernel@lists.infradead.org;
-> devicetree@vger.kernel.org; linux-kernel@vger.kernel.org; Ioana Ciornei
-> <ioana.ciornei@nxp.com>; Kuldeep Singh <kuldeep.singh@nxp.com>
-> Subject: Re: [PATCH 2/2] arm64: dts: lx2160a: add device tree for lx2162a=
-qds
-> board
->=20
-> On Wed, Sep 02, 2020 at 08:43:30PM +0530, meenakshi.aggarwal@nxp.com
-> wrote:
-> > From: Meenakshi Aggarwal <meenakshi.aggarwal@nxp.com>
-> >
-> > Add device tree support for LX2162AQDS board.
-> > LX2162A has same die as of LX2160A with different packaging.
-> >
-> > Signed-off-by: Ioana Ciornei <ioana.ciornei@nxp.com>
-> > Signed-off-by: Kuldeep Singh <kuldeep.singh@nxp.com>
-> > Signed-off-by: Meenakshi Aggarwal <meenakshi.aggarwal@nxp.com>
-> > ---
-> >  arch/arm64/boot/dts/freescale/Makefile            |   1 +
-> >  arch/arm64/boot/dts/freescale/fsl-lx2162a-qds.dts | 336
-> > ++++++++++++++++++++++
-> >  2 files changed, 337 insertions(+)
-> >  create mode 100644 arch/arm64/boot/dts/freescale/fsl-lx2162a-qds.dts
-> >
-> > diff --git a/arch/arm64/boot/dts/freescale/Makefile
-> > b/arch/arm64/boot/dts/freescale/Makefile
-> > index a39f0a1..ab9fbd3 100644
-> > --- a/arch/arm64/boot/dts/freescale/Makefile
-> > +++ b/arch/arm64/boot/dts/freescale/Makefile
-> > @@ -27,6 +27,7 @@ dtb-$(CONFIG_ARCH_LAYERSCAPE) +=3D
-> > fsl-lx2160a-clearfog-cx.dtb
-> >  dtb-$(CONFIG_ARCH_LAYERSCAPE) +=3D fsl-lx2160a-honeycomb.dtb
-> >  dtb-$(CONFIG_ARCH_LAYERSCAPE) +=3D fsl-lx2160a-qds.dtb
-> >  dtb-$(CONFIG_ARCH_LAYERSCAPE) +=3D fsl-lx2160a-rdb.dtb
-> > +dtb-$(CONFIG_ARCH_LAYERSCAPE) +=3D fsl-lx2162a-qds.dtb
-> >
-> >  dtb-$(CONFIG_ARCH_MXC) +=3D imx8mm-evk.dtb
-> >  dtb-$(CONFIG_ARCH_MXC) +=3D imx8mn-evk.dtb diff --git
-> > a/arch/arm64/boot/dts/freescale/fsl-lx2162a-qds.dts
-> > b/arch/arm64/boot/dts/freescale/fsl-lx2162a-qds.dts
-> > new file mode 100644
-> > index 0000000..a81c6a4
-> > --- /dev/null
-> > +++ b/arch/arm64/boot/dts/freescale/fsl-lx2162a-qds.dts
-> > @@ -0,0 +1,336 @@
-> > +// SPDX-License-Identifier: (GPL-2.0 OR MIT) // // Device Tree file
-> > +for LX2162AQDS // // Copyright 2020 NXP
-> > +
-> > +/dts-v1/;
-> > +
-> > +#include "fsl-lx2160a.dtsi"
-> > +
-> > +/ {
-> > +	model =3D "NXP Layerscape LX2162AQDS";
-> > +	compatible =3D "nxp,lx2162a-qds", "fsl,lx2160a";
-> > +
-> > +	aliases {
-> > +		crypto =3D &crypto;
-> > +		serial0 =3D &uart0;
-> > +	};
-> > +
-> > +	chosen {
-> > +		stdout-path =3D "serial0:115200n8";
-> > +	};
-> > +
-> > +	sb_3v3: regulator-sb3v3 {
-> > +		compatible =3D "regulator-fixed";
-> > +		regulator-name =3D "MC34717-3.3VSB";
-> > +		regulator-min-microvolt =3D <3300000>;
-> > +		regulator-max-microvolt =3D <3300000>;
-> > +		regulator-boot-on;
-> > +		regulator-always-on;
->=20
-> I do not see any point to have regulator-boot-on or regulator-always-on f=
-or a
-> regulator that doesn't have on/off control.
-[Meenakshi Aggarwal] Properties are added to specify that platform firmware=
-'s out of reset configuration enabled the regulator and=20
-regulator should never be disabled or change its operative status.
-
-Can you help in understanding why these optional properties cannot be used =
-together
->=20
-> > +	};
-> > +
-> > +	mdio-mux-1 {
-> > +		compatible =3D "mdio-mux-multiplexer";
-> > +		mux-controls =3D <&mux 0>;
-> > +		mdio-parent-bus =3D <&emdio1>;
-> > +		#address-cells=3D<1>;
-> > +		#size-cells =3D <0>;
-> > +
-> > +		mdio@0 { /* On-board RTL8211F PHY #1 RGMII1*/
-> > +			reg =3D <0x00>;
-> > +			#address-cells =3D <1>;
-> > +			#size-cells =3D <0>;
-> > +
-> > +			rgmii_phy1: ethernet-phy@1 {
-> > +				compatible =3D "ethernet-phy-id001c.c916";
-> > +				reg =3D <0x1>;
-> > +				eee-broken-1000t;
-> > +			};
-> > +		};
-> > +
-> > +		mdio@8 { /* On-board RTL8211F PHY #2 RGMII2*/
->=20
-> Missing one space before closing comment.
-[Meenakshi Aggarwal] will correct in next version
->=20
-> Shawn
->=20
-> > +			reg =3D <0x8>;
-> > +			#address-cells =3D <1>;
-> > +			#size-cells =3D <0>;
-> > +
-> > +			rgmii_phy2: ethernet-phy@2 {
-> > +				compatible =3D "ethernet-phy-id001c.c916";
-> > +				reg =3D <0x2>;
-> > +				eee-broken-1000t;
-> > +			};
-> > +		};
-> > +
-> > +		mdio@18 { /* Slot #1 */
-> > +			reg =3D <0x18>;
-> > +			#address-cells =3D <1>;
-> > +			#size-cells =3D <0>;
-> > +		};
-> > +
-> > +		mdio@19 { /* Slot #2 */
-> > +			reg =3D <0x19>;
-> > +			#address-cells =3D <1>;
-> > +			#size-cells =3D <0>;
-> > +		};
-> > +
-> > +		mdio@1a { /* Slot #3 */
-> > +			reg =3D <0x1a>;
-> > +			#address-cells =3D <1>;
-> > +			#size-cells =3D <0>;
-> > +		};
-> > +
-> > +		mdio@1b { /* Slot #4 */
-> > +			reg =3D <0x1b>;
-> > +			#address-cells =3D <1>;
-> > +			#size-cells =3D <0>;
-> > +		};
-> > +
-> > +		mdio@1c { /* Slot #5 */
-> > +			reg =3D <0x1c>;
-> > +			#address-cells =3D <1>;
-> > +			#size-cells =3D <0>;
-> > +		};
-> > +
-> > +		mdio@1d { /* Slot #6 */
-> > +			reg =3D <0x1d>;
-> > +			#address-cells =3D <1>;
-> > +			#size-cells =3D <0>;
-> > +		};
-> > +
-> > +		mdio@1e { /* Slot #7 */
-> > +			reg =3D <0x1e>;
-> > +			#address-cells =3D <1>;
-> > +			#size-cells =3D <0>;
-> > +		};
-> > +
-> > +		mdio@1f { /* Slot #8 */
-> > +			reg =3D <0x1f>;
-> > +			#address-cells =3D <1>;
-> > +			#size-cells =3D <0>;
-> > +		};
-> > +	};
-> > +
-> > +	mdio-mux-2 {
-> > +		compatible =3D "mdio-mux-multiplexer";
-> > +		mux-controls =3D <&mux 1>;
-> > +		mdio-parent-bus =3D <&emdio2>;
-> > +		#address-cells=3D<1>;
-> > +		#size-cells =3D <0>;
-> > +
-> > +		mdio@0 { /* Slot #1 (secondary EMI) */
-> > +			reg =3D <0x00>;
-> > +			#address-cells =3D <1>;
-> > +			#size-cells =3D <0>;
-> > +		};
-> > +
-> > +		mdio@1 { /* Slot #2 (secondary EMI) */
-> > +			reg =3D <0x01>;
-> > +			#address-cells =3D <1>;
-> > +			#size-cells =3D <0>;
-> > +		};
-> > +
-> > +		mdio@2 { /* Slot #3 (secondary EMI) */
-> > +			reg =3D <0x02>;
-> > +			#address-cells =3D <1>;
-> > +			#size-cells =3D <0>;
-> > +		};
-> > +
-> > +		mdio@3 { /* Slot #4 (secondary EMI) */
-> > +			reg =3D <0x03>;
-> > +			#address-cells =3D <1>;
-> > +			#size-cells =3D <0>;
-> > +		};
-> > +
-> > +		mdio@4 { /* Slot #5 (secondary EMI) */
-> > +			reg =3D <0x04>;
-> > +			#address-cells =3D <1>;
-> > +			#size-cells =3D <0>;
-> > +		};
-> > +
-> > +		mdio@5 { /* Slot #6 (secondary EMI) */
-> > +			reg =3D <0x05>;
-> > +			#address-cells =3D <1>;
-> > +			#size-cells =3D <0>;
-> > +		};
-> > +
-> > +		mdio@6 { /* Slot #7 (secondary EMI) */
-> > +			reg =3D <0x06>;
-> > +			#address-cells =3D <1>;
-> > +			#size-cells =3D <0>;
-> > +		};
-> > +
-> > +		mdio@7 { /* Slot #8 (secondary EMI) */
-> > +			reg =3D <0x07>;
-> > +			#address-cells =3D <1>;
-> > +			#size-cells =3D <0>;
-> > +		};
-> > +	};
-> > +};
-> > +
-> > +&crypto {
-> > +	status =3D "okay";
-> > +};
-> > +
-> > +&dpmac17 {
-> > +	phy-handle =3D <&rgmii_phy1>;
-> > +	phy-connection-type =3D "rgmii-id";
-> > +};
-> > +
-> > +&dpmac18 {
-> > +	phy-handle =3D <&rgmii_phy2>;
-> > +	phy-connection-type =3D "rgmii-id";
-> > +};
-> > +
-> > +&dspi0 {
-> > +	status =3D "okay";
-> > +
-> > +	dflash0: flash@0 {
-> > +		#address-cells =3D <1>;
-> > +		#size-cells =3D <1>;
-> > +		compatible =3D "jedec,spi-nor";
-> > +		reg =3D <0>;
-> > +		spi-max-frequency =3D <1000000>;
-> > +	};
-> > +};
-> > +
-> > +&dspi1 {
-> > +	status =3D "okay";
-> > +
-> > +	dflash1: flash@0 {
-> > +		#address-cells =3D <1>;
-> > +		#size-cells =3D <1>;
-> > +		compatible =3D "jedec,spi-nor";
-> > +		reg =3D <0>;
-> > +		spi-max-frequency =3D <1000000>;
-> > +	};
-> > +};
-> > +
-> > +&dspi2 {
-> > +	status =3D "okay";
-> > +
-> > +	dflash2: flash@0 {
-> > +		#address-cells =3D <1>;
-> > +		#size-cells =3D <1>;
-> > +		compatible =3D "jedec,spi-nor";
-> > +		reg =3D <0>;
-> > +		spi-max-frequency =3D <1000000>;
-> > +	};
-> > +};
-> > +
-> > +&emdio1 {
-> > +	status =3D "okay";
-> > +};
-> > +
-> > +&emdio2 {
-> > +	status =3D "okay";
-> > +};
-> > +
-> > +&esdhc0 {
-> > +	status =3D "okay";
-> > +};
-> > +
-> > +&esdhc1 {
-> > +	status =3D "okay";
-> > +};
-> > +
-> > +&fspi {
-> > +	status =3D "okay";
-> > +
-> > +	mt35xu512aba0: flash@0 {
-> > +		#address-cells =3D <1>;
-> > +		#size-cells =3D <1>;
-> > +		compatible =3D "jedec,spi-nor";
-> > +		m25p,fast-read;
-> > +		spi-max-frequency =3D <50000000>;
-> > +		reg =3D <0>;
-> > +		spi-rx-bus-width =3D <8>;
-> > +		spi-tx-bus-width =3D <8>;
-> > +	};
-> > +};
-> > +
-> > +&i2c0 {
-> > +	status =3D "okay";
-> > +
-> > +	fpga@66 {
-> > +		compatible =3D "fsl,lx2160aqds-fpga", "fsl,fpga-qixis-i2c",
-> > +			     "simple-mfd";
-> > +		reg =3D <0x66>;
-> > +
-> > +		mux: mux-controller {
-> > +			compatible =3D "reg-mux";
-> > +			#mux-control-cells =3D <1>;
-> > +			mux-reg-masks =3D <0x54 0xf8>, /* 0: reg 0x54, bits 7:3
-> */
-> > +					<0x54 0x07>; /* 1: reg 0x54, bit 2:0 */
-> > +		};
-> > +	};
-> > +
-> > +	i2c-mux@77 {
-> > +		compatible =3D "nxp,pca9547";
-> > +		reg =3D <0x77>;
-> > +		#address-cells =3D <1>;
-> > +		#size-cells =3D <0>;
-> > +
-> > +		i2c@2 {
-> > +			#address-cells =3D <1>;
-> > +			#size-cells =3D <0>;
-> > +			reg =3D <0x2>;
-> > +
-> > +			power-monitor@40 {
-> > +				compatible =3D "ti,ina220";
-> > +				reg =3D <0x40>;
-> > +				shunt-resistor =3D <500>;
-> > +			};
-> > +
-> > +			power-monitor@41 {
-> > +				compatible =3D "ti,ina220";
-> > +				reg =3D <0x41>;
-> > +				shunt-resistor =3D <1000>;
-> > +			};
-> > +		};
-> > +
-> > +		i2c@3 {
-> > +			#address-cells =3D <1>;
-> > +			#size-cells =3D <0>;
-> > +			reg =3D <0x3>;
-> > +
-> > +			temperature-sensor@4c {
-> > +				compatible =3D "nxp,sa56004";
-> > +				reg =3D <0x4c>;
-> > +				vcc-supply =3D <&sb_3v3>;
-> > +			};
-> > +
-> > +			rtc@51 {
-> > +				compatible =3D "nxp,pcf2129";
-> > +				reg =3D <0x51>;
-> > +			};
-> > +		};
-> > +	};
-> > +};
-> > +
-> > +&sata0 {
-> > +	status =3D "okay";
-> > +};
-> > +
-> > +&sata1 {
-> > +	status =3D "okay";
-> > +};
-> > +
-> > +&sata2 {
-> > +	status =3D "okay";
-> > +};
-> > +
-> > +&sata3 {
-> > +	status =3D "okay";
-> > +};
-> > +
-> > +&uart0 {
-> > +	status =3D "okay";
-> > +};
-> > +
-> > +&uart1 {
-> > +	status =3D "okay";
-> > +};
-> > +
-> > +&usb0 {
-> > +	status =3D "okay";
-> > +};
-> > --
-> > 2.7.4
-> >
+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBCam9ybiBIZWxnYWFzIFttYWls
+dG86aGVsZ2Fhc0BrZXJuZWwub3JnXQ0KPiBTZW50OiBXZWRuZXNkYXksIFNlcHRlbWJlciAwOSwg
+MjAyMCA2OjI5IEFNDQo+IFRvOiCnZKn+vOEgUmlja3kNCj4gQ2M6IGFybmRAYXJuZGIuZGU7IGdy
+ZWdraEBsaW51eGZvdW5kYXRpb24ub3JnOyBiaGVsZ2Fhc0Bnb29nbGUuY29tOw0KPiB1bGYuaGFu
+c3NvbkBsaW5hcm8ub3JnOyBydWlfZmVuZ0ByZWFsc2lsLmNvbS5jbjsgbGludXgta2VybmVsQHZn
+ZXIua2VybmVsLm9yZzsNCj4gcHVyYW5qYXkxMkBnbWFpbC5jb207IGxpbnV4LXBjaUB2Z2VyLmtl
+cm5lbC5vcmc7DQo+IHZhaWxiaGF2Z3VwdGE0MEBnYW1haWwuY29tDQo+IFN1YmplY3Q6IFJlOiBb
+UEFUQ0ggdjUgMi8yXSBtaXNjOiBydHN4OiBBZGQgcG93ZXIgc2F2aW5nIGZ1bmN0aW9ucyBhbmQg
+Zml4IGRyaXZpbmcNCj4gcGFyYW1ldGVyDQo+IA0KPiBPbiBNb24sIFNlcCAwNywgMjAyMCBhdCAw
+NjowNzozMVBNICswODAwLCByaWNreV93dUByZWFsdGVrLmNvbSB3cm90ZToNCj4gPiBGcm9tOiBS
+aWNreSBXdSA8cmlja3lfd3VAcmVhbHRlay5jb20+DQo+ID4NCj4gPiB2NDoNCj4gPiBzcGxpdCBw
+b3dlciBkb3duIGZsb3cgYW5kIHBvd2VyIHNhdmluZyBmdW5jdGlvbiB0byB0d28gcGF0Y2gNCj4g
+Pg0KPiA+IHY1Og0KPiA+IGZpeCB1cCBtb2RpZmllZCBjaGFuZ2UgdW5kZXIgdGhlIC0tLSBsaW5l
+DQo+IA0KPiBIZWhlLCB0aGlzIGNhbWUgb3V0ICphYm92ZSogdGhlICItLS0iIGxpbmUgOikNCj4g
+DQo+ID4gQWRkIHJ0czUyMmEgTDEgc3ViLXN0YXRlIHN1cHBvcnQNCj4gPiBTYXZlIG1vcmUgcG93
+ZXIgb24gcnRzNTIyNyBydHM1MjQ5IHJ0czUyNWEgcnRzNTI2MA0KPiA+IEZpeCBydHM1MjYwIGRy
+aXZpbmcgcGFyYW1ldGVyDQo+ID4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBSaWNreSBXdSA8cmlja3lf
+d3VAcmVhbHRlay5jb20+DQo+ID4gLS0tDQo+ID4gIGRyaXZlcnMvbWlzYy9jYXJkcmVhZGVyL3J0
+czUyMjcuYyAgfCAxMTIgKysrKysrKysrKysrKysrKysrKysrLQ0KPiA+ICBkcml2ZXJzL21pc2Mv
+Y2FyZHJlYWRlci9ydHM1MjQ5LmMgIHwgMTQ1DQo+ICsrKysrKysrKysrKysrKysrKysrKysrKysr
+KystDQo+ID4gIGRyaXZlcnMvbWlzYy9jYXJkcmVhZGVyL3J0czUyNjAuYyAgfCAgMjggKysrLS0t
+DQo+ID4gIGRyaXZlcnMvbWlzYy9jYXJkcmVhZGVyL3J0c3hfcGNyLmggfCAgMTcgKysrKw0KPiA+
+ICA0IGZpbGVzIGNoYW5nZWQsIDI4MyBpbnNlcnRpb25zKCspLCAxOSBkZWxldGlvbnMoLSkNCj4g
+Pg0KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL21pc2MvY2FyZHJlYWRlci9ydHM1MjI3LmMNCj4g
+Yi9kcml2ZXJzL21pc2MvY2FyZHJlYWRlci9ydHM1MjI3LmMNCj4gPiBpbmRleCA3NDczOTFlM2Zi
+NWQuLjg4NTkwMTE2NzJjYiAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL21pc2MvY2FyZHJlYWRl
+ci9ydHM1MjI3LmMNCj4gPiArKysgYi9kcml2ZXJzL21pc2MvY2FyZHJlYWRlci9ydHM1MjI3LmMN
+Cj4gPiBAQCAtNzIsMTUgKzcyLDgwIEBAIHN0YXRpYyB2b2lkIHJ0czUyMjdfZmV0Y2hfdmVuZG9y
+X3NldHRpbmdzKHN0cnVjdA0KPiBydHN4X3BjciAqcGNyKQ0KPiA+DQo+ID4gIAlwY2lfcmVhZF9j
+b25maWdfZHdvcmQocGRldiwgUENSX1NFVFRJTkdfUkVHMiwgJnJlZyk7DQo+ID4gIAlwY3JfZGJn
+KHBjciwgIkNmZyAweCV4OiAweCV4XG4iLCBQQ1JfU0VUVElOR19SRUcyLCByZWcpOw0KPiA+ICsJ
+aWYgKHJ0c3hfY2hlY2tfbW1jX3N1cHBvcnQocmVnKSkNCj4gPiArCQlwY3ItPmV4dHJhX2NhcHMg
+fD0gRVhUUkFfQ0FQU19OT19NTUM7DQo+ID4gIAlwY3ItPnNkMzBfZHJpdmVfc2VsXzN2MyA9IHJ0
+c3hfcmVnX3RvX3NkMzBfZHJpdmVfc2VsXzN2MyhyZWcpOw0KPiA+ICAJaWYgKHJ0c3hfcmVnX2No
+ZWNrX3JldmVyc2Vfc29ja2V0KHJlZykpDQo+ID4gIAkJcGNyLT5mbGFncyB8PSBQQ1JfUkVWRVJT
+RV9TT0NLRVQ7DQo+ID4gIH0NCj4gPg0KPiA+ICtzdGF0aWMgdm9pZCBydHM1MjI3X2luaXRfZnJv
+bV9jZmcoc3RydWN0IHJ0c3hfcGNyICpwY3IpDQo+ID4gK3sNCj4gPiArCXN0cnVjdCBwY2lfZGV2
+ICpwZGV2ID0gcGNyLT5wY2k7DQo+ID4gKwlpbnQgbDFzczsNCj4gPiArCXUzMiBsdmFsOw0KPiA+
+ICsJc3RydWN0IHJ0c3hfY3Jfb3B0aW9uICpvcHRpb24gPSAmcGNyLT5vcHRpb247DQo+ID4gKw0K
+PiA+ICsJbDFzcyA9IHBjaV9maW5kX2V4dF9jYXBhYmlsaXR5KHBkZXYsIFBDSV9FWFRfQ0FQX0lE
+X0wxU1MpOw0KPiA+ICsJaWYgKCFsMXNzKQ0KPiA+ICsJCXJldHVybjsNCj4gPiArDQo+ID4gKwlw
+Y2lfcmVhZF9jb25maWdfZHdvcmQocGRldiwgbDFzcyArIFBDSV9MMVNTX0NUTDEsICZsdmFsKTsN
+Cj4gDQo+IFRoaXMgbG9va3MgYSBsaXR0bGUgcHJvYmxlbWF0aWMuICBQQ0lfTDFTU19DVEwxIGlz
+IGFuIGFyY2hpdGVjdGVkDQo+IHJlZ2lzdGVyIGluIHRoZSBBU1BNIEwxIFBNIFN1YnN0YXRlcyBj
+YXBhYmlsaXR5LCBhbmQgaXRzIHZhbHVlIG1heQ0KPiBjaGFuZ2UgYXQgcnVudGltZSBiZWNhdXNl
+IGRyaXZlcnMvcGNpL3BjaWUvYXNwbS5jIG1hbmFnZXMgaXQuDQo+IA0KPiBJdCBsb29rcyBsaWtl
+IHRoZSBjb2RlIGJlbG93IGRvZXMgZGV2aWNlLXNwZWNpZmljIGNvbmZpZ3VyYXRpb24gYmFzZWQN
+Cj4gb24gdGhlIGN1cnJlbnQgUENJX0wxU1NfQ1RMMSB2YWx1ZS4gIEJ1dCB3aGF0IGhhcHBlbnMg
+aWYgYXNwbS5jDQo+IGNoYW5nZXMgUENJX0wxU1NfQ1RMMSBsYXRlcj8NCj4gDQoNCldlIGFyZSBn
+b2luZyB0byBtYWtlIHN1cmUgYW5kIHNldCB0aGUgYmVzdCBjb25maWd1cmF0aW9uIG9uIHRoZSBj
+dXJyZW50IHRpbWUsIA0KaWYgaG9zdCBjaGFuZ2UgdGhlIGNhcGFiaWxpdHkgbGF0ZXIsIGl0IGRv
+ZXNuJ3QgYWZmZWN0IGZ1bmN0aW9uLCBvbmx5IGFmZmVjdCBhIGxpdHRsZSBwb3dlciBzYXZpbmcg
+ICANCg0KPiA+ICsJaWYgKENIS19QQ0lfUElEKHBjciwgMHg1MjJBKSkgew0KPiA+ICsJCWlmICgw
+ID09IChsdmFsICYgMHgwRikpDQo+ID4gKwkJCXJ0c3hfcGNpX2VuYWJsZV9vb2JzX3BvbGxpbmco
+cGNyKTsNCj4gPiArCQllbHNlDQo+ID4gKwkJCXJ0c3hfcGNpX2Rpc2FibGVfb29ic19wb2xsaW5n
+KHBjcik7DQo+ID4gKwl9DQo+ID4gKw0KPiA+ICsJaWYgKGx2YWwgJiBQQ0lfTDFTU19DVEwxX0FT
+UE1fTDFfMSkNCj4gPiArCQlydHN4X3NldF9kZXZfZmxhZyhwY3IsIEFTUE1fTDFfMV9FTik7DQo+
+ID4gKwllbHNlDQo+ID4gKwkJcnRzeF9jbGVhcl9kZXZfZmxhZyhwY3IsIEFTUE1fTDFfMV9FTik7
+DQo+ID4gKw0KPiA+ICsJaWYgKGx2YWwgJiBQQ0lfTDFTU19DVEwxX0FTUE1fTDFfMikNCj4gPiAr
+CQlydHN4X3NldF9kZXZfZmxhZyhwY3IsIEFTUE1fTDFfMl9FTik7DQo+ID4gKwllbHNlDQo+ID4g
+KwkJcnRzeF9jbGVhcl9kZXZfZmxhZyhwY3IsIEFTUE1fTDFfMl9FTik7DQo+ID4gKw0KPiA+ICsJ
+aWYgKGx2YWwgJiBQQ0lfTDFTU19DVEwxX1BDSVBNX0wxXzEpDQo+ID4gKwkJcnRzeF9zZXRfZGV2
+X2ZsYWcocGNyLCBQTV9MMV8xX0VOKTsNCj4gPiArCWVsc2UNCj4gPiArCQlydHN4X2NsZWFyX2Rl
+dl9mbGFnKHBjciwgUE1fTDFfMV9FTik7DQo+ID4gKw0KPiA+ICsJaWYgKGx2YWwgJiBQQ0lfTDFT
+U19DVEwxX1BDSVBNX0wxXzIpDQo+ID4gKwkJcnRzeF9zZXRfZGV2X2ZsYWcocGNyLCBQTV9MMV8y
+X0VOKTsNCj4gPiArCWVsc2UNCj4gPiArCQlydHN4X2NsZWFyX2Rldl9mbGFnKHBjciwgUE1fTDFf
+Ml9FTik7DQo+ID4gKw0KPiA+ICsJaWYgKG9wdGlvbi0+bHRyX2VuKSB7DQo+ID4gKwkJdTE2IHZh
+bDsNCj4gPiArDQo+ID4gKwkJcGNpZV9jYXBhYmlsaXR5X3JlYWRfd29yZChwY3ItPnBjaSwgUENJ
+X0VYUF9ERVZDVEwyLCAmdmFsKTsNCj4gDQo+IFNhbWUgdGhpbmcgaGVyZS4gIEkgZG9uJ3QgdGhp
+bmsgdGhlIFBDSSBjb3JlIGN1cnJlbnRseSBjaGFuZ2VzDQo+IFBDSV9FWFBfREVWQ1RMMiBhZnRl
+ciBib290LCBidXQgaXQncyBub3QgYSBnb29kIGlkZWEgdG8gYXNzdW1lIGl0J3MNCj4gZ29pbmcg
+dG8gYmUgY29uc3RhbnQuDQo+IA0KDQpUaGUgc2FtZSByZXBseQ0KDQo+ID4gKwkJaWYgKHZhbCAm
+IFBDSV9FWFBfREVWQ1RMMl9MVFJfRU4pIHsNCj4gPiArCQkJb3B0aW9uLT5sdHJfZW5hYmxlZCA9
+IHRydWU7DQo+ID4gKwkJCW9wdGlvbi0+bHRyX2FjdGl2ZSA9IHRydWU7DQo+ID4gKwkJCXJ0c3hf
+c2V0X2x0cl9sYXRlbmN5KHBjciwgb3B0aW9uLT5sdHJfYWN0aXZlX2xhdGVuY3kpOw0KPiA+ICsJ
+CX0gZWxzZSB7DQo+ID4gKwkJCW9wdGlvbi0+bHRyX2VuYWJsZWQgPSBmYWxzZTsNCj4gPiArCQl9
+DQo+ID4gKwl9DQo+ID4gKw0KPiA+ICsJaWYgKHJ0c3hfY2hlY2tfZGV2X2ZsYWcocGNyLCBBU1BN
+X0wxXzFfRU4gfCBBU1BNX0wxXzJfRU4NCj4gPiArCQkJCXwgUE1fTDFfMV9FTiB8IFBNX0wxXzJf
+RU4pKQ0KPiA+ICsJCW9wdGlvbi0+Zm9yY2VfY2xrcmVxXzAgPSBmYWxzZTsNCj4gPiArCWVsc2UN
+Cj4gPiArCQlvcHRpb24tPmZvcmNlX2Nsa3JlcV8wID0gdHJ1ZTsNCj4gPiArDQo+ID4gK30NCj4g
+DQo+IC0tLS0tLVBsZWFzZSBjb25zaWRlciB0aGUgZW52aXJvbm1lbnQgYmVmb3JlIHByaW50aW5n
+IHRoaXMgZS1tYWlsLg0K
