@@ -2,115 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C893263352
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 19:01:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEB73263377
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 19:04:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731098AbgIIRBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 13:01:34 -0400
-Received: from mga14.intel.com ([192.55.52.115]:42301 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731255AbgIIRBH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 13:01:07 -0400
-IronPort-SDR: bHno9ZgnHJF7A5usV6zlKzWavmLmaJjnf133iDWCMZGZi7SAMEiDivWmTbolxeDsMq78ZHKAOu
- D7L1NO5jVqqg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9739"; a="157652638"
-X-IronPort-AV: E=Sophos;i="5.76,409,1592895600"; 
-   d="scan'208";a="157652638"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2020 10:01:01 -0700
-IronPort-SDR: /N/heFDKxKb2HFDk4yR30nCvJc4feNSfGOv8JktzCfqUo5uUbej66lwTOSnK38lIgTO2iLeICJ
- sITk8ooDxFwQ==
-X-IronPort-AV: E=Sophos;i="5.76,409,1592895600"; 
-   d="scan'208";a="505516346"
-Received: from rsetyawa-mobl1.amr.corp.intel.com (HELO [10.212.20.145]) ([10.212.20.145])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2020 10:01:00 -0700
-Subject: Re: [PATCH] soundwire: bus: add enumerated slave to device list
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        vkoul@kernel.org, yung-chuan.liao@linux.intel.com
-Cc:     sanyog.r.kale@intel.com, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-References: <20200909082711.11670-1-srinivas.kandagatla@linaro.org>
- <80081c70-9137-c9f0-9813-8166275ef7af@linux.intel.com>
- <ab107351-dbde-7f6d-c588-11572aed5d2d@linaro.org>
- <4cdcda10-bdc6-211f-d279-e74f57684b79@linux.intel.com>
- <d0c71a83-9dc1-83c3-5cb1-d8fb7dc7f809@linaro.org>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <ed88432c-e21c-b5fc-3abc-5f574769b722@linux.intel.com>
-Date:   Wed, 9 Sep 2020 12:00:57 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1731228AbgIIREQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 13:04:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33964 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730551AbgIIREK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 13:04:10 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13401C061573;
+        Wed,  9 Sep 2020 10:04:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=LfHxT4ZNG1X4ZvN2dtQwo2pwpei3uAvCD6OoC4DuCCA=; b=PTtQzQukf2s/Vju2X06eMGOIWP
+        yiKhMDLhWzkhhzXfGg5yOClIpORVoMG0/fj6/fpwo52WI1xZPN5qKbPPCsMiNn0HPycb4loydQe7S
+        I6WrDdx271lhA3YooKU3xJDSgsMCZyHvpo86ehdFhVeKuyESTJNrwTEiRPQOwJfafit1oD5PsZCgx
+        MFxdeLOJPKdwBNxs+qH9oG9W3ybCDan9eMHA3eGFa0liIqhXormAofOtqmu5+vGxHN3/rPBfYcXRs
+        ys5s3+t08k47reP+/evgeFtoXj55NgSu/kMDsPjPinUWRrwZmVzZwdHRTCZ2HLoSovpn8vQAS2/pI
+        +qSPo5CQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kG3Vq-0007vP-FL; Wed, 09 Sep 2020 17:04:03 +0000
+Date:   Wed, 9 Sep 2020 18:04:02 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Ming Mao <maoming.maoming@huawei.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-mm@kvack.org, alex.williamson@redhat.com,
+        akpm@linux-foundation.org, cohuck@redhat.com,
+        jianjay.zhou@huawei.com, weidong.huang@huawei.com,
+        peterx@redhat.com, aarcange@redhat.com, wangyunjian@huawei.com,
+        jhubbard@nvidia.com
+Subject: Re: [PATCH V4 1/2] vfio dma_map/unmap: optimized for hugetlbfs pages
+Message-ID: <20200909170402.GJ6583@casper.infradead.org>
+References: <20200908133204.1338-1-maoming.maoming@huawei.com>
+ <20200908133204.1338-2-maoming.maoming@huawei.com>
+ <20200909080114.GA8321@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <d0c71a83-9dc1-83c3-5cb1-d8fb7dc7f809@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200909080114.GA8321@infradead.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/9/20 10:54 AM, Srinivas Kandagatla wrote:
+On Wed, Sep 09, 2020 at 09:01:14AM +0100, Christoph Hellwig wrote:
+>  (1) a FOLL_HUGEPAGE flag for the pin_user_pages API family that returns
+>      a single struct page for any kind of huge page, which would also
+>      benefit all kinds of other users rather than adding these kinds of
+>      hacks to vfio.
+>  (2) add a bvec version of the API that returns a variable size
+>      "extent"
 > 
+> I had started on (2) a while ago, and here is branch with my code (which
+> is broken and fails test, but might be a start):
 > 
-> On 09/09/2020 15:39, Pierre-Louis Bossart wrote:
->>
->>>>> Currently slave devices are only added either from device tree or acpi
->>>>> entries. However lets say, there is wrong or no entry of a slave 
->>>>> device
->>>>> in DT that is enumerated, then there is no way for user to know all
->>>>> the enumerated devices on the bus.
->>>>
->>>> Sorry Srinivas, I don't understand your point.
->>>>
->>>> The sysfs entries will include all devices that are described in 
->>>> platform firmware (be it DT or ACPI).
->>>
->>> yes that is true, but it will not include all the enumerated devices 
->>> on the bus!
->>>
->>> In my case on a new board I was trying to figure out what devices are 
->>> on the bus even before even adding any device tree entries!
->>
->> We've seen this before but dynamic debug provides all the information 
->> you need. see e.g. the logs from 
->> https://sof-ci.01.org/linuxpr/PR2425/build4447/devicetest/
->>
->> jf-cml-rvp-sdw-1 kernel: [  289.751974] soundwire sdw-master-0: Slave 
->> attached, programming device number
->> jf-cml-rvp-sdw-1 kernel: [  289.752121] soundwire sdw-master-0: SDW 
->> Slave Addr: 10025d070000 <<< HERE
+> http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/gup-bvec
 > 
-> Yes, I have noticed this too! This will be printed for every call to 
-> sdw_extract_slave_id()!
-> 
-> ...
->>
->> Now I get your point but
->> a) you already have a dynamic debug trace to list all devices
->> b) adding 'undeclared' devices would make things quite murky and is 
->> only half of the solution. We already struggle because we already have 
->> 'ghost' devices in sysfs that are not physically present, and no way 
->> to differentiate between the two. If we did add those entries, then 
->> we'd need two new sysfs attributes such as
->> 'declared' and 'enumerated'.
-> 
-> I totally agree with you on dealing with the undeclared devices, which 
-> is unnecessary mess!
+> But for now I wonder if (1) is the better start, which could still be
+> reused to (2) later.
 
-It's not necessarily that bad.
-- if the intent is to have a single platform firmware that can deal with 
-different boards, it's a good thing.
-- but if it's just sloppy platform firmware that just does copy-paste 
-from platform to platform then indeed it becomes a mess.
+(1) doesn't work.  Suppose you have a 16kB MAP_PRIVATE of a file which happens
+to have a THP in the page cache.  When you write a byte, that base page gets
+copied and your bvec for that 16kB needs to look something like:
 
-> May be we could make the enumerated devices discovery bit more verbose!
+{ page A, offset 0, length 4096 },
+{ page B, offset 0, length 4096 },
+{ page A, offset 8192, length 8192 },
 
-Maybe adding a device number sysfs entry would help, e.g. reporting
-NotAttched or a value in [0,11] would tell you if the device is actually 
-present.
-
-
+You can come up with other scenarios, like partial mappings of THPs with
+an adjacent VMA of a different THP, but I think we just need to make
+(2) work.
