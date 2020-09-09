@@ -2,48 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1A02262B6A
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 11:11:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF6B2262B58
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 11:09:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730239AbgIIJLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 05:11:31 -0400
-Received: from mga02.intel.com ([134.134.136.20]:23297 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726605AbgIIJL1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 05:11:27 -0400
-IronPort-SDR: lTAJ6kFvOb9R3HkV5gV31Ved2XWbYZK2uzKPp+te3+V0qWBWUhV8y1LrQySR+OHCDTpa2tWSKS
- WTmREXUtYpjA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9738"; a="146014739"
-X-IronPort-AV: E=Sophos;i="5.76,409,1592895600"; 
-   d="scan'208";a="146014739"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2020 02:11:27 -0700
-IronPort-SDR: PMp8nss6SKAu9ABX5z4Gsyy5jPcsvZRVmMKKSr+ug7TXCKi8WxsMvQzZRfq/Fr8mPaA1M+x6t4
- qZhleqk/xzOg==
-X-IronPort-AV: E=Sophos;i="5.76,409,1592895600"; 
-   d="scan'208";a="300090431"
-Received: from shsi6026.sh.intel.com (HELO localhost) ([10.239.147.135])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2020 02:11:23 -0700
-From:   shuo.a.liu@intel.com
-To:     linux-kernel@vger.kernel.org, x86@kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Yu Wang <yu1.wang@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Shuo Liu <shuo.a.liu@intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>
-Subject: [PATCH v3 17/17] virt: acrn: Introduce an interface for Service VM to control vCPU
-Date:   Wed,  9 Sep 2020 17:08:36 +0800
-Message-Id: <20200909090836.46762-18-shuo.a.liu@intel.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200909090836.46762-1-shuo.a.liu@intel.com>
-References: <20200909090836.46762-1-shuo.a.liu@intel.com>
+        id S1729808AbgIIJJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 05:09:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44908 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727085AbgIIJJq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 05:09:46 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2716CC061573
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 02:09:46 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id i17so1630063oig.10
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 02:09:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Lp4vuPsvFxDFpD3RPxxQA9GDt79f5fSUFEakGXQllkE=;
+        b=X8bZqPNpcH6+/UUTOlrjCUxpBIHRpxYnhOVxM9oVc76gpNUIHtMobQJxnLGp2RHGb4
+         Ag+2MVXMcEdEA5t+cj1rLZk0Loc4qT1G9mve+/e3J57GPskWXfTbKzlUAspPm1JYQSV/
+         8xdRiRdynXSrUFPoqwxTCuuPf2R5OVVoYvbt1xSfcQ4urDIBFVnF9H6kmQnrjb3bZOyO
+         2y1f9ogfYDKHVe1Fg/AckWNNvnU8JFinD76QEsugAs6t7Qavjw8fFb6SnfZVdzwKTI9l
+         /CTKR4aq+vjinFMOaI1/hFpbqqSEsAgOOlBvbHYTYgit2N1FeQnGeWkpHsw10i0o12vY
+         2PXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Lp4vuPsvFxDFpD3RPxxQA9GDt79f5fSUFEakGXQllkE=;
+        b=G6s03++dpaWIIbTa2JXIaDukJGQL0UioOdG3mfOgu5B2zGACicJTWU6uIbB/lpmBGe
+         SaHnu9iTX9DoBJAqCd+PZrCji74KOXSp1U8XWaHEI1SBs4+ummkbSyUGaVpFFWP1MTfn
+         KLGXnnNiqXao00LlfMjwD2nMyAHl4VhfuvH8r3IzFqKtWDLmhei2bPfEhKiUT34eDnHJ
+         xG0O3gJFkcwbDJNrBMDzprHmARr66CdWpzW6jUb+VVIcxcwcX78mD6Ux45WxRMBYR5Hk
+         PN61XdSzHe9Mdc91gViJTMo9dJ/C51d2+ddAF3trZao2kM0V5YnwoQpAirWEPUfZXOGG
+         bWDg==
+X-Gm-Message-State: AOAM5331i9jwk+GWCMgalyDgnANOdUJb4oRCEpi+86c0RxOv0vESdz2x
+        bd+Lp0fLeJ0ICOauNvcfNrc=
+X-Google-Smtp-Source: ABdhPJyP27LE1UC7njpXncKDhJawWmQ1Ejpu8fVvV8tdd7fcZld6Lvd9Z4q2EY3q8EfEC6geCr9Ofg==
+X-Received: by 2002:aca:e144:: with SMTP id y65mr24383oig.101.1599642584322;
+        Wed, 09 Sep 2020 02:09:44 -0700 (PDT)
+Received: from localhost.localdomain ([50.236.19.102])
+        by smtp.gmail.com with ESMTPSA id 187sm342993oie.42.2020.09.09.02.09.37
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 09 Sep 2020 02:09:43 -0700 (PDT)
+From:   qianjun.kernel@gmail.com
+To:     tglx@linutronix.de, peterz@infradead.org, will@kernel.org,
+        luto@kernel.org, linux-kernel@vger.kernel.org
+Cc:     laoar.shao@gmail.com, urezki@gmail.com,
+        jun qian <qianjun.kernel@gmail.com>
+Subject: [PATCH V6 1/1] Softirq:avoid large sched delay from the pending softirqs
+Date:   Wed,  9 Sep 2020 17:09:31 +0800
+Message-Id: <20200909090931.8836-1-qianjun.kernel@gmail.com>
+X-Mailer: git-send-email 2.20.1 (Apple Git-117)
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -51,144 +64,167 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shuo Liu <shuo.a.liu@intel.com>
+From: jun qian <qianjun.kernel@gmail.com>
 
-ACRN supports partition mode to achieve real-time requirements. In
-partition mode, a CPU core can be dedicated to a vCPU of User VM. The
-local APIC of the dedicated CPU core can be passthrough to the User VM.
-The Service VM controls the assignment of the CPU cores.
+When get the pending softirqs, it need to process all the pending
+softirqs in the while loop. If the processing time of each pending
+softirq is need more than 2 msec in this loop, or one of the softirq
+will running a long time, according to the original code logic, it
+will process all the pending softirqs without wakeuping ksoftirqd,
+which will cause a relatively large scheduling delay on the
+corresponding CPU, which we do not wish to see. The patch will check
+the total time to process pending softirq, if the time exceeds 2 ms
+we need to wakeup the ksofirqd to aviod large sched delay.
 
-Introduce an interface for the Service VM to remove the control of CPU
-core from hypervisor perspective so that the CPU core can be a dedicated
-CPU core of User VM.
-
-Signed-off-by: Shuo Liu <shuo.a.liu@intel.com>
-Reviewed-by: Zhi Wang <zhi.a.wang@intel.com>
-Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
-Cc: Zhi Wang <zhi.a.wang@intel.com>
-Cc: Zhenyu Wang <zhenyuw@linux.intel.com>
-Cc: Yu Wang <yu1.wang@intel.com>
-Cc: Reinette Chatre <reinette.chatre@intel.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: jun qian <qianjun.kernel@gmail.com>
 ---
- drivers/virt/acrn/hsm.c       | 50 +++++++++++++++++++++++++++++++++++
- drivers/virt/acrn/hypercall.h | 14 ++++++++++
- 2 files changed, 64 insertions(+)
+ kernel/softirq.c | 83 ++++++++++++++++++++++++++++++++++++++++++++++----------
+ 1 file changed, 69 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/virt/acrn/hsm.c b/drivers/virt/acrn/hsm.c
-index 5594ef8e4947..72144cb7569f 100644
---- a/drivers/virt/acrn/hsm.c
-+++ b/drivers/virt/acrn/hsm.c
-@@ -9,6 +9,7 @@
-  *	Yakui Zhao <yakui.zhao@intel.com>
+diff --git a/kernel/softirq.c b/kernel/softirq.c
+index c4201b7f..1f696c8 100644
+--- a/kernel/softirq.c
++++ b/kernel/softirq.c
+@@ -25,6 +25,7 @@
+ #include <linux/smpboot.h>
+ #include <linux/tick.h>
+ #include <linux/irq.h>
++#include <linux/sched/clock.h>
+ 
+ #define CREATE_TRACE_POINTS
+ #include <trace/events/irq.h>
+@@ -199,18 +200,17 @@ void __local_bh_enable_ip(unsigned long ip, unsigned int cnt)
+ 
+ /*
+  * We restart softirq processing for at most MAX_SOFTIRQ_RESTART times,
+- * but break the loop if need_resched() is set or after 2 ms.
+- * The MAX_SOFTIRQ_TIME provides a nice upper bound in most cases, but in
+- * certain cases, such as stop_machine(), jiffies may cease to
+- * increment and so we need the MAX_SOFTIRQ_RESTART limit as
+- * well to make sure we eventually return from this method.
++ * but break the loop if need_resched() is set or after MAX_SOFTIRQ_TIME_NS
++ * ns. In the loop, if the processing time of the softirq has exceeded
++ * MAX_SOFTIRQ_TIME_NS ns, we also need to break the loop to wakeup the
++ * ksofirqd.
+  *
+  * These limits have been established via experimentation.
+  * The two things to balance is latency against fairness -
+  * we want to handle softirqs as soon as possible, but they
+  * should not be able to lock up the box.
   */
+-#define MAX_SOFTIRQ_TIME  msecs_to_jiffies(2)
++#define MAX_SOFTIRQ_TIME_NS 2000000
+ #define MAX_SOFTIRQ_RESTART 10
  
-+#include <linux/cpu.h>
- #include <linux/io.h>
- #include <linux/miscdevice.h>
- #include <linux/mm.h>
-@@ -342,6 +343,47 @@ static struct miscdevice acrn_dev = {
- 	.fops	= &acrn_fops,
- };
+ #ifdef CONFIG_TRACE_IRQFLAGS
+@@ -246,15 +246,20 @@ static inline void lockdep_softirq_end(bool in_hardirq)
+ static inline void lockdep_softirq_end(bool in_hardirq) { }
+ #endif
  
-+static ssize_t remove_cpu_store(struct device *dev,
-+				struct device_attribute *attr,
-+				const char *buf, size_t count)
-+{
-+	u64 cpu, lapicid;
-+	int ret;
++DEFINE_PER_CPU(__u32, pending_new_flag);
++DEFINE_PER_CPU(__u32, pending_next_bit);
++#define SOFTIRQ_PENDING_MASK ((1UL << NR_SOFTIRQS) - 1)
 +
-+	if (kstrtoull(buf, 0, &cpu) < 0)
-+		return -EINVAL;
-+
-+	if (cpu >= num_possible_cpus() || cpu == 0 || !cpu_is_hotpluggable(cpu))
-+		return -EINVAL;
-+
-+	if (cpu_online(cpu))
-+		remove_cpu(cpu);
-+
-+	lapicid = cpu_data(cpu).apicid;
-+	dev_dbg(dev, "Try to remove cpu %lld with lapicid %lld\n", cpu, lapicid);
-+	ret = hcall_sos_remove_cpu(lapicid);
-+	if (ret < 0) {
-+		dev_err(dev, "Failed to remove cpu %lld!\n", cpu);
-+		goto fail_remove;
-+	}
-+
-+	return count;
-+
-+fail_remove:
-+	add_cpu(cpu);
-+	return ret;
-+}
-+static DEVICE_ATTR_WO(remove_cpu);
-+
-+static struct attribute *acrn_attrs[] = {
-+	&dev_attr_remove_cpu.attr,
-+	NULL
-+};
-+
-+static struct attribute_group acrn_attr_group = {
-+	.attrs = acrn_attrs,
-+};
-+
- static int __init hsm_init(void)
+ asmlinkage __visible void __softirq_entry __do_softirq(void)
  {
- 	int ret;
-@@ -358,13 +400,21 @@ static int __init hsm_init(void)
- 		return ret;
+-	unsigned long end = jiffies + MAX_SOFTIRQ_TIME;
++	u64 end = sched_clock() + MAX_SOFTIRQ_TIME_NS;
+ 	unsigned long old_flags = current->flags;
+ 	int max_restart = MAX_SOFTIRQ_RESTART;
+ 	struct softirq_action *h;
+ 	bool in_hardirq;
+-	__u32 pending;
+-	int softirq_bit;
++	__u32 pending, pending_left, pending_new;
++	int softirq_bit, next_bit;
++	unsigned long flags;
+ 
+ 	/*
+ 	 * Mask out PF_MEMALLOC as the current task context is borrowed for the
+@@ -277,10 +282,33 @@ asmlinkage __visible void __softirq_entry __do_softirq(void)
+ 
+ 	h = softirq_vec;
+ 
+-	while ((softirq_bit = ffs(pending))) {
+-		unsigned int vec_nr;
++	next_bit = per_cpu(pending_next_bit, smp_processor_id());
++	per_cpu(pending_new_flag, smp_processor_id()) = 0;
++
++	pending_left = pending &
++		(SOFTIRQ_PENDING_MASK << next_bit);
++	pending_new = pending &
++		(SOFTIRQ_PENDING_MASK >> (NR_SOFTIRQS - next_bit));
++
++	/*
++	 * In order to be fair, we shold process the pengding bits by the
++	 * last processing order.
++	 */
++	while ((softirq_bit = ffs(pending_left)) ||
++		(softirq_bit = ffs(pending_new))) {
+ 		int prev_count;
++		unsigned int vec_nr = 0;
+ 
++		/*
++		 * when the left pengding bits have been handled, we should
++		 * to reset the h to softirq_vec.
++		 */
++		if (!ffs(pending_left)) {
++			if (per_cpu(pending_new_flag, smp_processor_id()) == 0) {
++				h = softirq_vec;
++				per_cpu(pending_new_flag, smp_processor_id()) = 1;
++			}
++		}
+ 		h += softirq_bit - 1;
+ 
+ 		vec_nr = h - softirq_vec;
+@@ -298,17 +326,44 @@ asmlinkage __visible void __softirq_entry __do_softirq(void)
+ 			preempt_count_set(prev_count);
+ 		}
+ 		h++;
+-		pending >>= softirq_bit;
++
++		if (ffs(pending_left))
++			pending_left >>= softirq_bit;
++		else
++			pending_new >>= softirq_bit;
++
++		/*
++		 * the softirq's action has been run too much time,
++		 * so it may need to wakeup the ksoftirqd
++		 */
++		if (need_resched() && sched_clock() > end) {
++			/*
++			 * Ensure that the remaining pending bits will be
++			 * handled.
++			 */
++			local_irq_save(flags);
++			if (ffs(pending_left))
++				or_softirq_pending((pending_left << (vec_nr + 1)) |
++							pending_new);
++			else
++				or_softirq_pending(pending_new << (vec_nr + 1));
++			local_irq_restore(flags);
++			per_cpu(pending_next_bit, smp_processor_id()) = vec_nr + 1;
++			break;
++		}
  	}
  
-+	ret = sysfs_create_group(&acrn_dev.this_device->kobj, &acrn_attr_group);
-+	if (ret) {
-+		dev_warn(acrn_dev.this_device, "sysfs create failed\n");
-+		misc_deregister(&acrn_dev);
-+		return ret;
-+	}
- 	acrn_ioreq_intr_setup();
++	/* reset the pending_next_bit */
++	per_cpu(pending_next_bit, smp_processor_id()) = 0;
 +
- 	return 0;
- }
+ 	if (__this_cpu_read(ksoftirqd) == current)
+ 		rcu_softirq_qs();
+ 	local_irq_disable();
  
- static void __exit hsm_exit(void)
- {
- 	acrn_ioreq_intr_remove();
-+	sysfs_remove_group(&acrn_dev.this_device->kobj, &acrn_attr_group);
- 	misc_deregister(&acrn_dev);
- }
- module_init(hsm_init);
-diff --git a/drivers/virt/acrn/hypercall.h b/drivers/virt/acrn/hypercall.h
-index e640632366f0..0cfad05bd1a9 100644
---- a/drivers/virt/acrn/hypercall.h
-+++ b/drivers/virt/acrn/hypercall.h
-@@ -13,6 +13,9 @@
+ 	pending = local_softirq_pending();
+ 	if (pending) {
+-		if (time_before(jiffies, end) && !need_resched() &&
+-		    --max_restart)
++		if (!need_resched() && --max_restart &&
++		    sched_clock() <= end)
+ 			goto restart;
  
- #define HC_ID 0x80UL
- 
-+#define HC_ID_GEN_BASE			0x0UL
-+#define HC_SOS_REMOVE_CPU		_HC_ID(HC_ID, HC_ID_GEN_BASE + 0x01)
-+
- #define HC_ID_VM_BASE			0x10UL
- #define HC_CREATE_VM			_HC_ID(HC_ID, HC_ID_VM_BASE + 0x00)
- #define HC_DESTROY_VM			_HC_ID(HC_ID, HC_ID_VM_BASE + 0x01)
-@@ -42,6 +45,17 @@
- #define HC_ID_PM_BASE			0x80UL
- #define HC_PM_GET_CPU_STATE		_HC_ID(HC_ID, HC_ID_PM_BASE + 0x00)
- 
-+/**
-+ * hcall_sos_remove_cpu() - Remove a vCPU of Service VM
-+ * @cpu: The vCPU to be removed
-+ *
-+ * Return: 0 on success, <0 on failure
-+ */
-+static inline long hcall_sos_remove_cpu(u64 cpu)
-+{
-+	return acrn_hypercall1(HC_SOS_REMOVE_CPU, cpu);
-+}
-+
- /**
-  * hcall_create_vm() - Create a User VM
-  * @vminfo:	Service VM GPA of info of User VM creation
+ 		wakeup_softirqd();
 -- 
-2.28.0
+1.8.3.1
 
