@@ -2,141 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93A39263383
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 19:05:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E7A426337C
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 19:05:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730418AbgIIPnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 11:43:12 -0400
-Received: from out2-smtp.messagingengine.com ([66.111.4.26]:51747 "EHLO
-        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730380AbgIIPlh (ORCPT
+        id S1731181AbgIIREy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 13:04:54 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:56656 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730386AbgIIPom (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 11:41:37 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id CE43A5C0081;
-        Wed,  9 Sep 2020 09:24:44 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Wed, 09 Sep 2020 09:24:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=from
-        :to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=fm3; bh=pA47cFB778b3Ymf9wpPAhJB/Ec
-        9gzjiU19iV59xcPGY=; b=GU3C3zDL2FhbrBfCnirbeEe6HZGumvsfxJVMXzZ7m6
-        qr8I88o30ZtttVwIqAC96+83zdxvC2AlqxV8nB4kmIxP0wwNLUD4aoSbRm9XKFPt
-        dJLuxxejjiSU9SexZLHTOS/1wwl1vPcRqwi0mQb0KYKB1jUNVcSInR9RdB3RaVDR
-        302u8VhhUTjosqknFsiLAYg0G4W26+8ss023eiYlUjBnAfsMUpDXkUdCi2LRADr/
-        7piWAZBxaWayhLfJ8xghJgA1rqAmM+DJPrhK5nTgfTsEton2Hy1D+DFcA8OWDJ0r
-        1Bfqp9NPLc/ndIQOkDNNmIcimC83OrsD88TSqotZZrPA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=pA47cFB778b3Ymf9w
-        pPAhJB/Ec9gzjiU19iV59xcPGY=; b=f0GY7bBdhSZu4PeW7rz+WXiu+zhbgJPV4
-        YLQniA8PR5jgiJK0SLcLScg/sdwcRqJ5EjYpfdnsfMynLwnYqTqfI2fy+xWghZ0a
-        WiShOK0j7YiveO5r4Ccun45Wm/7RzXNnTCIVUZB3F/bI+0oql2b1ZZf9jsIFaaxK
-        UZOjDp8iLK3KICus9BQGdSfOjHDcL9dh+1ltmf4h+E1gLiNPMsl3T1eXAARLbfaP
-        qrGqx1wU58FyEHnLPNr95arySFK5FHJTUE70viwbuScAKnyt2iEXkEkPgePtZhgo
-        8CHikhwR7IXLkN2A3M96IQ6fD/AMG1ZEVwKBp1NbsDUYOdyE49QxQ==
-X-ME-Sender: <xms:m9dYX9hk_WNINY2WyXtQ8wfJWY9HK1YyjU6tGEzM7nIj7zSTesQmXA>
-    <xme:m9dYXyAclMrofz_6uhIO461AIaJE0_tOqTmjTyYe7gupCMRtWYtMNSOkhVF1prpEG
-    JCiByEmduBtABA0vw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudehhedgiedtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgggfestdekredtre
-    dttdenucfhrhhomheptehnughrvgifucflvghffhgvrhihuceorghnughrvgifsegrjhdr
-    ihgurdgruheqnecuggftrfgrthhtvghrnhepkefhieffjeevfeevhedtieeihfefvdejle
-    dvvddthefftedujeethfeuueelfedtnecukfhppedugedrvddruddtledrkeehnecuvehl
-    uhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprghnughrvgifse
-    grjhdrihgurdgruh
-X-ME-Proxy: <xmx:m9dYX9ERNffaFbfVAkdhnsIhZJ0Je0RT9LH8Xe8sxpj2tYQtu8sPqg>
-    <xmx:m9dYXyTIKd9n4zGMEjygZdOlPDcM83flWIUVL95PFyHmraK5Fn-TZA>
-    <xmx:m9dYX6xTDoTvfWI-njfTZtDUCF1jynByrx4XSXLnpMvkI3vKEF1YSg>
-    <xmx:nNdYX1-qd5R86oz-ZQLkWg7urlriuTVs3SuJHN3y1g6Efq8twZTjvw>
-Received: from localhost.localdomain (ppp14-2-109-85.adl-apt-pir-bras32.tpg.internode.on.net [14.2.109.85])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 099193066355;
-        Wed,  9 Sep 2020 09:24:41 -0400 (EDT)
-From:   Andrew Jeffery <andrew@aj.id.au>
-To:     linux-hwmon@vger.kernel.org
-Cc:     linux@roeck-us.net, jdelvare@suse.com, openbmc@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] hwmon: (pmbus) Expose PEC debugfs attribute
-Date:   Wed,  9 Sep 2020 22:54:11 +0930
-Message-Id: <20200909132411.2906159-1-andrew@aj.id.au>
-X-Mailer: git-send-email 2.25.1
+        Wed, 9 Sep 2020 11:44:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599666256;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3Z+yPEMCTmeMzDKoGBf7peDSr8BK2RKJoBhQ4aH3NRo=;
+        b=UkbxbeN1us4Uvyq8uj28efWND51RqtBytxvkuEb+RllQUsBQvLJ9pcZNhOzqvHKVzpSBsQ
+        5DIAfuZpVExU4xrcizJDbF1dQF+2WyjjQVM+2CdkBwDs+T4wi2ydX7NHT/WqALR/BweH2/
+        xhfQJfYZxoKP87bDIU8LpIx245av9Bo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-535-ek1SMh84NSq0ZRU3QtpJbQ-1; Wed, 09 Sep 2020 09:24:29 -0400
+X-MC-Unique: ek1SMh84NSq0ZRU3QtpJbQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1053C100746A;
+        Wed,  9 Sep 2020 13:24:26 +0000 (UTC)
+Received: from lacos-laptop-7.usersys.redhat.com (ovpn-114-82.ams2.redhat.com [10.36.114.82])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id BA0C15D9E8;
+        Wed,  9 Sep 2020 13:24:20 +0000 (UTC)
+Subject: Re: [PATCH v7 71/72] x86/efi: Add GHCB mappings when SEV-ES is active
+From:   Laszlo Ersek <lersek@redhat.com>
+To:     Ard Biesheuvel <ardb@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        brijesh.singh@amd.com
+Cc:     Joerg Roedel <joro@8bytes.org>, X86 ML <x86@kernel.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Juergen Gross <jgross@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        David Rientjes <rientjes@google.com>,
+        Cfir Cohen <cfir@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mike Stunes <mstunes@vmware.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org
+References: <20200907131613.12703-1-joro@8bytes.org>
+ <20200907131613.12703-72-joro@8bytes.org> <20200908174616.GJ25236@zn.tnic>
+ <CAMj1kXHbePrDYXGbVG0fHfH5=M19ZpCLm9YVTs-yKTuR_jFLDg@mail.gmail.com>
+ <e3911fe6-84e8-cb50-d95d-e33f8ae005f8@redhat.com>
+Message-ID: <0524c7fa-2fe2-ab6a-01f9-a04dacf86f6d@redhat.com>
+Date:   Wed, 9 Sep 2020 15:24:19 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <e3911fe6-84e8-cb50-d95d-e33f8ae005f8@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable runtime debug control of whether the PEC byte is exchanged with
-the PMBus device.
+On 09/09/20 14:44, Laszlo Ersek wrote:
 
-Some manufacturers have asked for the PEC to be disabled as part of
-debugging driver communication issues with devices.
+> To summarize: for QemuFlashFvbServicesRuntimeDxe to allocate UEFI
+> Runtime Services Data type memory, for its own runtime GHCB, two
+> permissions are necessary (together), at OS runtime:
+> 
+> - QemuFlashFvbServicesRuntimeDxe must be allowed to swap MSR_SEV_ES_GHCB
+>   temporarily (before executing VMGEXIT),
+> 
+> - QemuFlashFvbServicesRuntimeDxe must be allowed to change the OS-owned
+>   PTE temporarily (for remapping the GHCB as plaintext, before writing
+>   to it).
 
-Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
----
- drivers/hwmon/pmbus/pmbus_core.c | 39 ++++++++++++++++++++++++++++++++
- 1 file changed, 39 insertions(+)
+Condition#2 gets worse:
 
-diff --git a/drivers/hwmon/pmbus/pmbus_core.c b/drivers/hwmon/pmbus/pmbus_core.c
-index 44535add3a4a..51c8502b35e9 100644
---- a/drivers/hwmon/pmbus/pmbus_core.c
-+++ b/drivers/hwmon/pmbus/pmbus_core.c
-@@ -2346,6 +2346,42 @@ static int pmbus_debugfs_get_status(void *data, u64 *val)
- DEFINE_DEBUGFS_ATTRIBUTE(pmbus_debugfs_ops_status, pmbus_debugfs_get_status,
- 			 NULL, "0x%04llx\n");
- 
-+static int pmbus_debugfs_get_pec(void *data, u64 *val)
-+{
-+	struct i2c_client *client = data;
-+
-+	*val = !!(client->flags & I2C_CLIENT_PEC);
-+
-+	return 0;
-+}
-+
-+static int pmbus_debugfs_set_pec(void *data, u64 val)
-+{
-+	int rc;
-+	struct i2c_client *client = data;
-+
-+	if (!val) {
-+		client->flags &= ~I2C_CLIENT_PEC;
-+		return 0;
-+	}
-+
-+	if (val != 1)
-+		return -EINVAL;
-+
-+	rc = i2c_smbus_read_byte_data(client, PMBUS_CAPABILITY);
-+	if (rc < 0)
-+		return rc;
-+
-+	if (!(rc & PB_CAPABILITY_ERROR_CHECK))
-+		return -ENOTSUPP;
-+
-+	client->flags |= I2C_CLIENT_PEC;
-+
-+	return 0;
-+}
-+DEFINE_DEBUGFS_ATTRIBUTE(pmbus_debugfs_ops_pec, pmbus_debugfs_get_pec,
-+			 pmbus_debugfs_set_pec, "0x%1llu\n");
-+
- static int pmbus_init_debugfs(struct i2c_client *client,
- 			      struct pmbus_data *data)
- {
-@@ -2374,6 +2410,9 @@ static int pmbus_init_debugfs(struct i2c_client *client,
- 	if (!entries)
- 		return -ENOMEM;
- 
-+	debugfs_create_file("pec", 0664, data->debugfs, client,
-+			    &pmbus_debugfs_ops_pec);
-+
- 	for (i = 0; i < data->info->pages; ++i) {
- 		/* Check accessibility of status register if it's not page 0 */
- 		if (!i || pmbus_check_status_register(client, i)) {
--- 
-2.25.1
+If the firmware-allocated runtime GHCB happens to be virt-mapped by the
+OS using a 2MB page (covering other UEFI runtime data areas, perhaps?),
+then simply flipping the encryption bit in
+QemuFlashFvbServicesRuntimeDxe would mark more runtime memory than just
+the GHCB as "plaintext". (2MB-4KB specifically.)
+
+This could result in:
+- firmware read accesses outside of the GHCB returning garbage
+- firmware write accesses ouside of the GHCB leaking information to the
+hypervisor, and reading back later as garbage
+
+In order to prevent those symptoms, the firmware would have to split the
+2MB page to 4KB pages, and decrypt just the one (GHCB) page.
+
+But page splitting requires additional memory (for the finer granularity
+page table), and fw memory cannot be allocated at OS runtime. So that
+extra memory too would have to be pre-allocated by the firmware. Nasty.
+
+I'd recommend sticking with this kernel patch.
+
+Thanks,
+Laszlo
 
