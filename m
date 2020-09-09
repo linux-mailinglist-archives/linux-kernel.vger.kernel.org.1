@@ -2,83 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06AFD2632B1
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:49:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9208263293
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:46:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730943AbgIIQtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 12:49:18 -0400
+        id S1731062AbgIIQq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 12:46:27 -0400
 Received: from mail-eopbgr60081.outbound.protection.outlook.com ([40.107.6.81]:20520
         "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730877AbgIIQHW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 12:07:22 -0400
+        id S1730854AbgIIQHl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 12:07:41 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BjysOS7ratPOUxzGzvbwhWINL9b7IY9ClIrAgkipDVxH49Jjl0jzQ6hlSYVUkTigrLT2WY+zSk5jxkExFLPLm9uztlbxgxRwSMtfl9eQJbl+EK1nuAh9754zUUzqqsm2i0qTAAzRPFgOweQmW1VQzKW25++Jt+PvHpdJSFDDYvilUMQRCuKbs41RIlAua+0cwn51t586RiLpAHrIGrdxY1qBvR/5FuuU/i8qOrIexUJts9lNkGostmFHgN+66KKRQn5mU+CbHt9WB1m7chpQ023POrizO8J35fF5adFK/x/+U0ELfJB+roG8OtyEcI1p9Ef2s9JhypGs4ooGATcCtw==
+ b=VqFYzdSj8Qrw84dBOWXu9UqPydbuVLBliKNoLNcy2P0txyS7CqQhSO69uj3+AvK2ca4IbayNj9rv3g+b4U4Rp19FHCfJgOOFx7bazHf3OH5+Xpwfj5x0nUJe4cZiv0f68JU2cNJOVAgx5E7zGoMGjgOCs7W39EScpIWKrlkjg/jh/xMIQvzRTsEUIiDbBkGhiqaQ0JGXwj0bsfg3eCdo8bZfoJCaaqK6teoHqKMlrhFojqW/FzndCB6xECmGl/DxZSzApMc5KCgqEv14kdyiiZdyO8bFoAwT9x2mw/VzvGCWkUgQRSW/VRNsRsmanUzkeHV4xzf6IUZcJeUcfIiCzw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lihQTziA7S3zqAbrzv1N1gwI19JfbbVgdO1YVjxjwP4=;
- b=aCzVOz59LmzSZLUGtt/Sb8PAq4wpGKRak6XT1Is5JbyG+jp7B2piMmi/64xzJSOL395Vu/31WDlPb4kNyF01Ae76FsiA8wziPX/f6ShvAEzTHC6aAiG+A8gazUHnknlEnOdmsD4hmBXesHOlMhLNwZTPAt27by7mHmZpZePzRXGS/44n65n+AlflxrtXZsGAZSv1hTtJpHyGnOaJ4GJz7tQW4s86FnUvcy9uVCMcQJH3XKa8absEu2JjrOHHwq1ZTmQUMMvpxvblYMxYu50+eH9EiDagoUplqdYcHo80VAsP81nl2ezFRrV2Npdfdhx/rgfk3crHBhEo1jLWatRcwA==
+ bh=zcxFN4oeON1YsgquLNgKALNnxmet68CBuPz9ddGyWCg=;
+ b=Vrf6uZEW3FFDu2L7MRhTktaIv2+Rk8uvfWEv6iLpSdWP66GZIrztfjleIdaKJUoz79qd4ATGUBQIQVvg8334jPuY/oTSCXkYpm3oFs3U4xvzoRDf2/jZErL5X8iBv9c/FinmFp6xQa77Cxtkr23chPijqQGBeYuht77MXq2qeY6+c/ONmblHr7a78XqXojlvPE3ApoH48wBe/K66QJIPHpgX3gXsC81+kWp8Tlteqm4eTPbQSyCHxdJNWp/QPJpMLq5OSs25Jm0s9qQ5f9a7V0TXNuccYzKQLIdWujJoxTi7tReBc/Bi9f2v/PNj4/QT0G3aBIxYswXoQrXJ307zIw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
  dkim=pass header.d=oss.nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
  s=selector2-NXP1-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lihQTziA7S3zqAbrzv1N1gwI19JfbbVgdO1YVjxjwP4=;
- b=HSIHSKvtpHZQxWlIBKTh3dNxSuR7detZ8W2o5YolWP3U/Bf5A4YNiT2D/LyDcRkgY03pj7bGbBCtmKR9Fwnu5qIcPCywRENMb1okS8cdZ0/Whgb6RXVqCcThw3l/sqLO03lSIsqNuEZqhs8IIBKVwLZ6/d0fRw1k0jCnXUkrgKs=
+ bh=zcxFN4oeON1YsgquLNgKALNnxmet68CBuPz9ddGyWCg=;
+ b=Bth+Smwynou/e5OsirBmh5bK6Hloh47qNYzSa0cvyO0YJlwoAHEYgbRTsjkYsrVfZYxhkvhHN2NJ+uYSQgbgQxxOKvGUyWQbmU9G5IYtYV1ei8cFBE1HkYUrNDgO1RWOHQIlZBhz41nnStn7t6B2sJR3RmsbqQkR0bD/zrhlqeI=
 Authentication-Results: kernel.org; dkim=none (message not signed)
  header.d=none;kernel.org; dmarc=none action=none header.from=oss.nxp.com;
 Received: from VE1PR04MB6702.eurprd04.prod.outlook.com (2603:10a6:803:123::13)
  by VI1PR0402MB3710.eurprd04.prod.outlook.com (2603:10a6:803:25::29) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Wed, 9 Sep
- 2020 13:44:57 +0000
+ 2020 13:45:02 +0000
 Received: from VE1PR04MB6702.eurprd04.prod.outlook.com
  ([fe80::1dce:f6ac:a750:5ed0]) by VE1PR04MB6702.eurprd04.prod.outlook.com
  ([fe80::1dce:f6ac:a750:5ed0%6]) with mapi id 15.20.3370.016; Wed, 9 Sep 2020
- 13:44:57 +0000
+ 13:45:02 +0000
 From:   Wasim Khan <wasim.khan@oss.nxp.com>
 To:     shawnguo@kernel.org, leoyang.li@nxp.com, robh+dt@kernel.org,
         linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, V.sethi@nxp.com
 Cc:     Wasim Khan <wasim.khan@nxp.com>
-Subject: [PATCH 0/6] arch: arm64: Add label to pcie nodes
-Date:   Wed,  9 Sep 2020 19:14:30 +0530
-Message-Id: <1599659076-28121-1-git-send-email-wasim.khan@oss.nxp.com>
+Subject: [PATCH 2/6] arm64: dts: ls1012a: Add label to pcie nodes
+Date:   Wed,  9 Sep 2020 19:14:32 +0530
+Message-Id: <1599659076-28121-3-git-send-email-wasim.khan@oss.nxp.com>
 X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1599659076-28121-1-git-send-email-wasim.khan@oss.nxp.com>
+References: <1599659076-28121-1-git-send-email-wasim.khan@oss.nxp.com>
 Content-Type: text/plain
 X-ClientProxiedBy: SG2PR02CA0095.apcprd02.prod.outlook.com
  (2603:1096:4:90::35) To VE1PR04MB6702.eurprd04.prod.outlook.com
  (2603:10a6:803:123::13)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from lsv03032.swis.in-blr01.nxp.com (14.142.151.118) by SG2PR02CA0095.apcprd02.prod.outlook.com (2603:1096:4:90::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3370.16 via Frontend Transport; Wed, 9 Sep 2020 13:44:54 +0000
+Received: from lsv03032.swis.in-blr01.nxp.com (14.142.151.118) by SG2PR02CA0095.apcprd02.prod.outlook.com (2603:1096:4:90::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3370.16 via Frontend Transport; Wed, 9 Sep 2020 13:45:00 +0000
 X-Mailer: git-send-email 2.7.4
 X-Originating-IP: [14.142.151.118]
 X-MS-PublicTrafficType: Email
 X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 244f241b-06cb-42d2-44dc-08d854c689bd
+X-MS-Office365-Filtering-Correlation-Id: 22ab4025-bf79-4828-352d-08d854c68d56
 X-MS-TrafficTypeDiagnostic: VI1PR0402MB3710:
 X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR0402MB371037B5C96CA68360A7BA7CD1260@VI1PR0402MB3710.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1923;
+X-Microsoft-Antispam-PRVS: <VI1PR0402MB3710C0EAB4CAD8C3064CA620D1260@VI1PR0402MB3710.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1388;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: VAuT7rK9fUdZlH6A3VQCAN0lvboQianrtILTL3mBQJN2FhWVUOxxC8ludaRFICdqiQSc/jU8OdgBINdkxKugTrO8AVgS/JHTjIl3VS0VX2zzz7PXpqYlaaIbbskNfJJsK1CpSpnDBK50Fx2CitcMs4/U+c/NwzD7IIG/83/nH0zhsKZ/b6J1MSDw671MVG8eezfEtn9lrTA0W57Qsvlr0hqfdoJ+fbBHU+fLZ72dvdMFpnys7koFci9Cg1WwgIEJV1FuFuWpgiH3Fsxyy780PxKvzDdutmQLqk7OEBh7jRjLihT3sz5mQbmJUVc55r22mQzgKJHktZfxflGQTJuRi9Tulj1xUwuxVsbBIuwKs8u06aTx7vUbHDLGNNc7NmKm
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB6702.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(346002)(39860400002)(136003)(376002)(8936002)(5660300002)(1006002)(2616005)(16526019)(4744005)(186003)(8676002)(316002)(956004)(6486002)(44832011)(83380400001)(478600001)(66946007)(6506007)(6666004)(55236004)(52116002)(2906002)(66476007)(66556008)(4326008)(6512007)(26005)(86362001)(110426005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: ubZhyrsAPh7/X9UVfOh2fW07py/N88GLliNHrIz4rjwguORYZyqme/6no7oIwhsR61Yjgaf7evILVdCj5osGw7xF6AbdXzN7puLW/wKbOqlp/tnZ33Vx8ZdYpIJNd/iRCcZGu4gUW5SrS7bQjVTsbqWCFVpIICjYVGtATvHxAiAQhacIvpIQFl7G3J6jY61ZRqLyDHxj9znZwtHwk2t1oruJElxKyk+Fyj5Sg8TRF455YmE7vIo6p1dxeKFIelEK2oV980056HeoyWEGWc1S7G/ayW++muXtFjwtnsTNF64mOpjoHI6u2a5eJpedf2BIqiumpGK8GBBMmhi5ERaftf0KQBhSdncVANklXSawd3MoWrzIVilbVBj57LVHo+V+TQH6e6AC153u5ymyGMmP4od/vLmBtpm702Www/rERLsN7Tzyvf2Wm5ckdmEWoYXdCJWCUlzGW2Lv2DtwDRow04TE1YKgVDyVdLv2vSkTEDFzl9Pt3OcNEevbD0vl8R+ffslVO4Z/dCiLCRqkRWQMkucITjZpPmv2uGnJfSfzgcm90VYhXn2rptLOK1pLgIElrlhzbzoh/BKZ0PHXKqDTzrFuiVWfeb4JpFSpCfKJnM1CdPJC9ocURCMnWmbgShcZeFXl63rhrX2Oc5Jp3DRP+w==
+X-Microsoft-Antispam-Message-Info: RtPexlNRtc7yh/bF9whGQeSfKuly4YiXdzt9rei8CT+9c6zAv5ow3VhofWHC86TVRgk0k1BzeKsgCASKyZ9/Nm4pQT3LGBJvTCdukqMS0Hqs+jpRtqGT0aH5myI+7LC3HBYYZrWhdKnXbQ9zW7TcWJDOcQJslnh9cKi5Neg2GTcBBZhFONvzex2JoeUarIY7ONnjXHz2n4QePxa44OiH/iSklIVMwAQyF7dsV9bTzY9zlv5x2jLYYCLV74p2SMaZtBttETV0JlKYPWqgBAFlGtnKEHw5XcirNduj8iRX2Jk4YDZhavyqeNtdgXf00Lnv/m6N0FL9if8PT2GO+6tE/knewraE806xvruiP6UbLLn3yn3ADVFrixZW4ryZJ655
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB6702.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(346002)(39860400002)(136003)(376002)(8936002)(5660300002)(1006002)(2616005)(16526019)(186003)(8676002)(316002)(956004)(6486002)(44832011)(83380400001)(478600001)(66946007)(6506007)(6666004)(55236004)(52116002)(2906002)(66476007)(66556008)(4326008)(6512007)(26005)(86362001)(110426005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: 767uMNuyttYB1MnjzecEjpWIthzr3LMe6rYFf3yAD8IxIlgTARp1A7z75GJSJacO512+CWGmy8D3fDHl7d5K+SVYeGQOrM5NSuCtxNpUkeQ8TzDMGHMQTCGh/PzApBvzR30JFYrCG5JKjgl2UzOKnMtVXN1/vrPVtakH/0CiV6IB+rW1C1P53JB3gECbXOL3VxfALU5oLMFlTxIkPYRTE3ZiwtmvrCezLT475HTOZaAp2lnPYk51tkvaOPqtP6JTfZzdAka60QlzrLwcmESif/aRfoeIGApc3pUp0ewK6BJDYrK/p95NMOfVCO2oLuoy3nhwTn1hALjwN5FeKXo3jcAY7AXlLwGP9ufPhDUz2VQU88/hxj9R3sFuUlPM2rtnv5OWWyx3BUwztKohc6wKI6Hn3c6SCsAkcGiVlCHVXm3LUUhTaIJ1e0x1uKlDY0cRZYNVyydEZIPN/wY6Nr5z/UPTWqYw1/J8po09cikwCx58uGGwkQlynBAiiZ2lZjP1OjFJbKcI2cW7Qn8VoXsuVlLAsDQ8lWq1r/hhD3cwPuQEcq0jZMMkiUOpDvCDWPPqhYQBdlxlmSjcQTd9kGlURq93NryUZxDVk8l9EVQAR3Bgfy4np9uPO7hddYUJubidHz/uQwJZ/mapPJAZPm9DXw==
 X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 244f241b-06cb-42d2-44dc-08d854c689bd
+X-MS-Exchange-CrossTenant-Network-Message-Id: 22ab4025-bf79-4828-352d-08d854c68d56
 X-MS-Exchange-CrossTenant-AuthSource: VE1PR04MB6702.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Sep 2020 13:44:56.8322
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Sep 2020 13:45:02.6189
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: wh7z1xHVp+2kMPmtHOF5U6er00grRp/Y/eRO0wkX5+ctRLtGVvZAyn+0/vnh/RNO6Y3Gh4cLhUp5hQFUVZDkYA==
+X-MS-Exchange-CrossTenant-UserPrincipalName: lrEQ9/sb1lF4EI7mRpSyICNykBaX1nwVhekSAuM36ITEMmlvQjblKWHOAsIU2WTNlg7YrSgUrisiYfH/9ePbNQ==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB3710
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
@@ -87,26 +89,51 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Wasim Khan <wasim.khan@nxp.com>
 
-This patch series adds label to pcie nodes
-so that they are easy to refer.
+Add label to pcie nodes
 
-Wasim Khan (6):
-  arm64: dts: lx2160a: Add label to pcie nodes
-  arm64: dts: ls1012a: Add label to pcie nodes
-  arm64: dts: ls1043a: Add label to pcie nodes
-  arm64: dts: ls1046a: Add label to pcie nodes
-  arm64: dts: ls1028a: Add label to pcie nodes
-  arm64: dts: ls1088a: Add label to pcie nodes
+Signed-off-by: Wasim Khan <wasim.khan@nxp.com>
+---
+ arch/arm64/boot/dts/freescale/fsl-ls1012a-oxalis.dts | 2 +-
+ arch/arm64/boot/dts/freescale/fsl-ls1012a.dtsi       | 5 +++--
+ 2 files changed, 4 insertions(+), 3 deletions(-)
 
- arch/arm64/boot/dts/freescale/fsl-ls1012a-oxalis.dts |  2 +-
- arch/arm64/boot/dts/freescale/fsl-ls1012a.dtsi       |  5 +++--
- arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi       |  6 +++---
- arch/arm64/boot/dts/freescale/fsl-ls1043a.dtsi       | 10 +++++-----
- arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi       | 16 ++++++++--------
- arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi       |  8 ++++----
- arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi       | 12 ++++++------
- 7 files changed, 30 insertions(+), 29 deletions(-)
-
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1012a-oxalis.dts b/arch/arm64/boot/dts/freescale/fsl-ls1012a-oxalis.dts
+index 9927b09..242f4b0 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1012a-oxalis.dts
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1012a-oxalis.dts
+@@ -87,7 +87,7 @@
+ 	status = "okay";
+ };
+ 
+-&pcie {
++&pcie1 {
+ 	status = "okay";
+ };
+ 
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1012a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1012a.dtsi
+index ff19ec4..6a2c091 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1012a.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1012a.dtsi
+@@ -1,8 +1,9 @@
+ // SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+ /*
+- * Device Tree Include file for Freescale Layerscape-1012A family SoC.
++ * Device Tree Include file for NXP Layerscape-1012A family SoC.
+  *
+  * Copyright 2016 Freescale Semiconductor, Inc.
++ * Copyright 2019-2020 NXP
+  *
+  */
+ 
+@@ -489,7 +490,7 @@
+ 			interrupts = <0 126 IRQ_TYPE_LEVEL_HIGH>;
+ 		};
+ 
+-		pcie: pcie@3400000 {
++		pcie1: pcie@3400000 {
+ 			compatible = "fsl,ls1012a-pcie";
+ 			reg = <0x00 0x03400000 0x0 0x00100000   /* controller registers */
+ 			       0x40 0x00000000 0x0 0x00002000>; /* configuration space */
 -- 
 2.7.4
 
