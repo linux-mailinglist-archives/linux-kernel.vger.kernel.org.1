@@ -2,99 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2237263845
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 23:14:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26A7B26384F
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 23:16:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730154AbgIIVOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 17:14:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44406 "EHLO
+        id S1726489AbgIIVQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 17:16:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728626AbgIIVOn (ORCPT
+        with ESMTP id S1728617AbgIIVPz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 17:14:43 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2E67C061573;
-        Wed,  9 Sep 2020 14:14:42 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id k15so3255351pfc.12;
-        Wed, 09 Sep 2020 14:14:42 -0700 (PDT)
+        Wed, 9 Sep 2020 17:15:55 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50ADAC061573;
+        Wed,  9 Sep 2020 14:15:55 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id u21so5417672ljl.6;
+        Wed, 09 Sep 2020 14:15:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=iQzKmwOo0Zi6lGT6PpXR22p/4KKjcdAVozwCuUgWRsc=;
-        b=PnO5NUvEdNNV0rBBzYIX7aDeTfmGam9hgf9f/eNuGfkMxR2yCZdWQowQKPZJmtByJ8
-         3GcyfKMsDo4jyXo/XnEa6jyjsBDF4Z7g+FPJMpOMTj26nlaCBbZ9U6T0YLqH5iJc9PGj
-         X/lN9bUbcn8Uf+JPwfyLm1pTd6JtukCBWTkq3SiJzVshl5/kNJUF7yo+r91m0QMIopbI
-         r9g5tb9rwqRERwKJ80SODvLZJtLSMGYkZzNJArihtC+OvbXZpMAvVhPNldbmkUm/XrvG
-         ZcvEnxX2Q2Eq0pbb9VVksHeZmSd4ErSj4IGCJxH3Adwin5utiIt8ytoBCM9MHHK4uYwz
-         YGAg==
+        bh=HnVKigTPD0SFBmS6CufvtEE5hp82hUFW+McOGmr8ObQ=;
+        b=AEMv6CEcQnDBpdKHTGDMpkqWbBkkyC3XIxDghgAq6QwSz0FWI1czP7m0rAzo79YaUO
+         HhSPr/YEjsCxhLZNISf2Be4NR3orDy7ZMU3ziy+PCzsbiOvedaK+eULC3/znoKwQpZQN
+         yEFMKl+0lLsRF885mZeeYpXmXqdzwu2hriKD0arnoUdoFgdQq/W7VbK0tMmb4llhPzLH
+         mylxshFdjPd7CFrrJjAFAcdxxmHgEZQUtW8vDl46F6E2AS+0y0rImqP+AIcfI+PYsOlt
+         0lsDcTyRVia/TrfsxcEeguz4Au8Zcsz1oZXSrbyLfaWKtThupylDm5rqOR7ozYYE3wOt
+         ou7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=iQzKmwOo0Zi6lGT6PpXR22p/4KKjcdAVozwCuUgWRsc=;
-        b=mPRzHKoGLFjf3cGv1Xyd5meQbP0i+Gbq8l2/xNinAyrj535QYtH25KzxwPHlMXJMaD
-         9ojGyt43whWIMhvBMD0zl5wSU3WZrNGPHSKfCsEoMDvUX5JXzt9PgRvEyxMjdM6tdW6+
-         Ynk0l7LVudsQ0OhGQ8lRQ4SMMmN5zRAWuV9lmEMDSMroY2B6798iettexFKFNR4mg4c+
-         4MePmGelfwmP0CZireCxxpYEB0hgIl7vWWQtIRZLixUa4A+R3uw9CCd3D5WM8l+7Vqx+
-         f0Qej/iCSxZ00F122cfINQ++19HRScInmiJkOBTpWctvSG7WaPRJ+9zXM8xe0tEZ3tfb
-         Vong==
-X-Gm-Message-State: AOAM531jw4ylwzeuLuK4LWUPuf8AzvJRblJdi4vYGJcp8IxzyGvfDFVy
-        tbG41uMKcKcHeBfS0yisVngNJRwGOH4=
-X-Google-Smtp-Source: ABdhPJwZ1/HSV7C6JTjYSTgF/keuH8TyMxhSCQFzc+AGr0MJ9GlUOPtKnchRs/4OoRsz4OZ1PUkp7g==
-X-Received: by 2002:a63:ba5e:: with SMTP id l30mr1911360pgu.425.1599686082098;
-        Wed, 09 Sep 2020 14:14:42 -0700 (PDT)
-Received: from [10.230.30.107] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id 143sm3545110pfc.66.2020.09.09.14.14.40
+        bh=HnVKigTPD0SFBmS6CufvtEE5hp82hUFW+McOGmr8ObQ=;
+        b=j6YOlfc+i9nYu4BbHNVQbikoz3VLtx3rKUbGHci6QejzkdvPQtYnom1IAI18aKAspo
+         HiHJLVYkLp4Q8n5vBO7Q+e24u5HM+H7z9me9Bqa8Pn95esVHwCSgL/WmWSnRzeUB+gKp
+         u0tBOHrEy8iIaCcI9RqJuyr57FrHZ1lhdi9kNbfTpftF3stT+SfP69ECRb7WX19qiiD6
+         2pIpVYB6NGMsXwYXVl72YbOYJmlF9vU+0HceaCTcp1miAQpbH1FZeqJCjKwwyeDI9EHg
+         o5vebFgTAxU5RFjI0A8TdaGEyCDG75CywStqg+0LPX5XwtAfYp8IMOsM79AFdl3Cgga3
+         sT8A==
+X-Gm-Message-State: AOAM530NuBi/HUzoz2zhQPZS4csxmEaW8rqw/WjWoEr6i4sj6lXLQ5N4
+        6fMvbysnFNdhHhvLdR/N5tYO6ALxong=
+X-Google-Smtp-Source: ABdhPJxp8VYmLXdjWwfoDoXk3NH/mFiHKjQmDtqVaj5hvvbbW+sEPnZMlMfqd4r/5YSVXyKy5zLhqw==
+X-Received: by 2002:a2e:3c08:: with SMTP id j8mr2597735lja.358.1599686153003;
+        Wed, 09 Sep 2020 14:15:53 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
+        by smtp.googlemail.com with ESMTPSA id j7sm821561lfb.41.2020.09.09.14.15.51
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Sep 2020 14:14:41 -0700 (PDT)
-Subject: Re: [PATCH 0/5] qspi binding and DTS fixes
-To:     Florian Fainelli <f.fainelli@gmail.com>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     Kamal Dasu <kdasu.kdev@gmail.com>,
-        "maintainer:BROADCOM SPI DRIVER" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Hauke Mehrtens <hauke@hauke-m.de>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        Yendapally Reddy Dhananjaya Reddy 
-        <yendapally.reddy@broadcom.com>,
-        "open list:SPI SUBSYSTEM" <linux-spi@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20200827181842.1000451-1-f.fainelli@gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <c8d43c72-eed7-44ae-f8f8-f8217bab5a3a@gmail.com>
-Date:   Wed, 9 Sep 2020 14:14:39 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.2.1
+        Wed, 09 Sep 2020 14:15:52 -0700 (PDT)
+Subject: Re: [PATCH v5 27/36] memory: tegra-mc: Register as interconnect
+ provider
+To:     Georgi Djakov <georgi.djakov@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Mikko Perttunen <cyndis@kapsi.fi>
+Cc:     linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org
+References: <20200814000621.8415-1-digetx@gmail.com>
+ <20200814000621.8415-28-digetx@gmail.com>
+ <923b6801-5194-b936-13c6-0972761c29b8@linaro.org>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <01996606-84cd-909d-8dfc-4f33bdf8f3cc@gmail.com>
+Date:   Thu, 10 Sep 2020 00:15:51 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200827181842.1000451-1-f.fainelli@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <923b6801-5194-b936-13c6-0972761c29b8@linaro.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/27/2020 11:18 AM, Florian Fainelli wrote:
-> Hi all,
+09.09.2020 11:31, Georgi Djakov пишет:
+> On 8/14/20 03:06, Dmitry Osipenko wrote:
+>> Now memory controller is a memory interconnection provider. This allows us
+>> to use interconnect API in order to change memory configuration.
+>>
+>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 > 
-> This patch series fixes incorrectly defined compatible strings for the
-> Broadcom QSPI controller which resulted in the strings not being
-> ordered from most to least compatible.
+> Thanks Dmitry! Looks good to me.
 > 
-> We will need to apply some changes to the spi-bcm-qspi.c driver in
-> the future to assume no revision register exist, and these patches
-> are a preliminary step towards that goal.
+> Acked-by: Georgi Djakov <georgi.djakov@linaro.org>
+> 
 
-Series applied to devicetree/fixes, sending the PR shortly.
--- 
-Florian
+Thanks you!
