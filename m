@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF9662636C1
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 21:44:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D73EC2636C2
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 21:44:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728264AbgIITn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 15:43:58 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:47260 "EHLO
+        id S1728970AbgIIToH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 15:44:07 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:47294 "EHLO
         fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725772AbgIITn5 (ORCPT
+        with ESMTP id S1728347AbgIIToC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 15:43:57 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 089JhoDh021373;
-        Wed, 9 Sep 2020 14:43:50 -0500
+        Wed, 9 Sep 2020 15:44:02 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 089Jhv8Q021391;
+        Wed, 9 Sep 2020 14:43:57 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1599680630;
-        bh=/czBZGu7D21+O5ILIP8EVJaQjv5J+NV+j9SplcX4p5U=;
+        s=ti-com-17Q1; t=1599680637;
+        bh=k8H3ySxg/5Hu3LKDVffSO2sqa0Uyy5zNLnUTjK7eCzg=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=SX3ufc4kBVGrw83Vhk3IXeA2Me+HTIdZ99b6vJoyK0VbBrOqasyCzY64BWfDKw96U
-         GiPlENPDZ9bF3Dy430pcGFjg+fL0bhSciZ6EdDxUJ7kj1lWEaoWjgm5v26t85sOrqq
-         Rtb73vNaAbgUAQWtjpHaVb6iIaEcuyo95HWHJNNg=
-Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 089JhoBQ050848
+        b=mQJ/P6I02UnvprJU7jHtW8AnyCxfT0q+cwZmHuBdEHaclA4w/Oel0RD75z/6DWYVs
+         H2EzHP6Rfp8XFo81BF19ZCWRbJZ4Z512+CSyQ2GDT1oxTYG/rb3KP4pxnZVUd/qtHo
+         2HoIj7s8gMJcsyxWoobewQcT0nZk+wUsYGgl3qYw=
+Received: from DLEE101.ent.ti.com (dlee101.ent.ti.com [157.170.170.31])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 089Jhvtv068869
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 9 Sep 2020 14:43:50 -0500
-Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+        Wed, 9 Sep 2020 14:43:57 -0500
+Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 9 Sep
- 2020 14:43:49 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ 2020 14:43:57 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 9 Sep 2020 14:43:49 -0500
+ Frontend Transport; Wed, 9 Sep 2020 14:43:56 -0500
 Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 089JhmPM130087;
-        Wed, 9 Sep 2020 14:43:49 -0500
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 089JhtA5019776;
+        Wed, 9 Sep 2020 14:43:56 -0500
 From:   Grygorii Strashko <grygorii.strashko@ti.com>
 To:     Tero Kristo <t-kristo@ti.com>, Nishanth Menon <nm@ti.com>,
         Santosh Shilimkar <ssantosh@kernel.org>,
@@ -46,9 +46,9 @@ CC:     Peter Ujfalusi <peter.ujfalusi@ti.com>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>,
         Grygorii Strashko <grygorii.strashko@ti.com>
-Subject: [RESEND PATCH next v2 1/2] soc: ti: k3: ringacc: add am65x sr2.0 support
-Date:   Wed, 9 Sep 2020 22:43:37 +0300
-Message-ID: <20200909194338.21840-2-grygorii.strashko@ti.com>
+Subject: [RESEND PATCH next v2 2/2] bindings: soc: ti: soc: ringacc: remove ti,dma-ring-reset-quirk
+Date:   Wed, 9 Sep 2020 22:43:38 +0300
+Message-ID: <20200909194338.21840-3-grygorii.strashko@ti.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200909194338.21840-1-grygorii.strashko@ti.com>
 References: <20200909194338.21840-1-grygorii.strashko@ti.com>
@@ -60,94 +60,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The AM65x SR2.0 Ringacc has fixed errata i2023 "RINGACC, UDMA: RINGACC and
-UDMA Ring State Interoperability Issue after Channel Teardown". This errata
-also fixed for J271E SoC.
-
-Use SOC bus data for K3 SoC identification and enable i2023 errate w/a only
-for the AM65x SR1.0. This also makes obsolete "ti,dma-ring-reset-quirk" DT
-property.
+Remove "ti,dma-ring-reset-quirk" DT property as proper w/a handling is
+implemented now in Ringacc driver using SoC info.
 
 Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
 ---
- drivers/soc/ti/k3-ringacc.c | 33 ++++++++++++++++++++++++++++++---
- 1 file changed, 30 insertions(+), 3 deletions(-)
+ Documentation/devicetree/bindings/soc/ti/k3-ringacc.yaml | 6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/drivers/soc/ti/k3-ringacc.c b/drivers/soc/ti/k3-ringacc.c
-index 6dcc21dde0cb..1147dc4c1d59 100644
---- a/drivers/soc/ti/k3-ringacc.c
-+++ b/drivers/soc/ti/k3-ringacc.c
-@@ -10,6 +10,7 @@
- #include <linux/init.h>
- #include <linux/of.h>
- #include <linux/platform_device.h>
-+#include <linux/sys_soc.h>
- #include <linux/soc/ti/k3-ringacc.h>
- #include <linux/soc/ti/ti_sci_protocol.h>
- #include <linux/soc/ti/ti_sci_inta_msi.h>
-@@ -208,6 +209,15 @@ struct k3_ringacc {
- 	const struct k3_ringacc_ops *ops;
- };
+diff --git a/Documentation/devicetree/bindings/soc/ti/k3-ringacc.yaml b/Documentation/devicetree/bindings/soc/ti/k3-ringacc.yaml
+index ae33fc957141..c3c595e235a8 100644
+--- a/Documentation/devicetree/bindings/soc/ti/k3-ringacc.yaml
++++ b/Documentation/devicetree/bindings/soc/ti/k3-ringacc.yaml
+@@ -62,11 +62,6 @@ properties:
+     $ref: /schemas/types.yaml#/definitions/uint32
+     description: TI-SCI device id of the ring accelerator
  
-+/**
-+ * struct k3_ringacc - Rings accelerator SoC data
-+ *
-+ * @dma_ring_reset_quirk:  DMA reset w/a enable
-+ */
-+struct k3_ringacc_soc_data {
-+	unsigned dma_ring_reset_quirk:1;
-+};
-+
- static long k3_ringacc_ring_get_fifo_pos(struct k3_ring *ring)
- {
- 	return K3_RINGACC_FIFO_WINDOW_SIZE_BYTES -
-@@ -1051,9 +1061,6 @@ static int k3_ringacc_probe_dt(struct k3_ringacc *ringacc)
- 		return ret;
- 	}
- 
--	ringacc->dma_ring_reset_quirk =
--			of_property_read_bool(node, "ti,dma-ring-reset-quirk");
+-  ti,dma-ring-reset-quirk:
+-    $ref: /schemas/types.yaml#definitions/flag
+-    description: |
+-      enable ringacc/udma ring state interoperability issue software w/a
 -
- 	ringacc->tisci = ti_sci_get_by_phandle(node, "ti,sci");
- 	if (IS_ERR(ringacc->tisci)) {
- 		ret = PTR_ERR(ringacc->tisci);
-@@ -1084,9 +1091,22 @@ static int k3_ringacc_probe_dt(struct k3_ringacc *ringacc)
- 						 ringacc->rm_gp_range);
- }
- 
-+static const struct k3_ringacc_soc_data k3_ringacc_soc_data_sr1 = {
-+	.dma_ring_reset_quirk = 1,
-+};
-+
-+static const struct soc_device_attribute k3_ringacc_socinfo[] = {
-+	{ .family = "AM65X",
-+	  .revision = "SR1.0",
-+	  .data = &k3_ringacc_soc_data_sr1
-+	},
-+	{/* sentinel */}
-+};
-+
- static int k3_ringacc_init(struct platform_device *pdev,
- 			   struct k3_ringacc *ringacc)
- {
-+	const struct soc_device_attribute *soc;
- 	void __iomem *base_fifo, *base_rt;
- 	struct device *dev = &pdev->dev;
- 	struct resource *res;
-@@ -1103,6 +1123,13 @@ static int k3_ringacc_init(struct platform_device *pdev,
- 	if (ret)
- 		return ret;
- 
-+	soc = soc_device_match(k3_ringacc_socinfo);
-+	if (soc && soc->data) {
-+		const struct k3_ringacc_soc_data *soc_data = soc->data;
-+
-+		ringacc->dma_ring_reset_quirk = soc_data->dma_ring_reset_quirk;
-+	}
-+
- 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "rt");
- 	base_rt = devm_ioremap_resource(dev, res);
- 	if (IS_ERR(base_rt))
+ required:
+   - compatible
+   - reg
+@@ -94,7 +89,6 @@ examples:
+             reg-names = "rt", "fifos", "proxy_gcfg", "proxy_target";
+             ti,num-rings = <818>;
+             ti,sci-rm-range-gp-rings = <0x2>; /* GP ring range */
+-            ti,dma-ring-reset-quirk;
+             ti,sci = <&dmsc>;
+             ti,sci-dev-id = <187>;
+             msi-parent = <&inta_main_udmass>;
 -- 
 2.17.1
 
