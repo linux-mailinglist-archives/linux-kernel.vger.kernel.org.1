@@ -2,185 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 723842629C0
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 10:12:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F16CC2629CA
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 10:12:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730232AbgIIIME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 04:12:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35894 "EHLO
+        id S1730259AbgIIIMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 04:12:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729860AbgIIIL6 (ORCPT
+        with ESMTP id S1729521AbgIIIMo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 04:11:58 -0400
-Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C935C061755
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 01:11:58 -0700 (PDT)
-Received: by mail-vs1-xe43.google.com with SMTP id j185so857078vsc.3
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 01:11:57 -0700 (PDT)
+        Wed, 9 Sep 2020 04:12:44 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C387C061756;
+        Wed,  9 Sep 2020 01:12:43 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id s13so1364164wmh.4;
+        Wed, 09 Sep 2020 01:12:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=nKdqPjqDFfHRMf/XA+KUr72ZflIzyRtrjQk6IDY1xAE=;
-        b=HC5Ww9NtA0ci3XvaOTxTTQu5xn6MYQ0fbWSI8XpDmXdD5/zURS4DHti0j2deZrqQxf
-         BsoHZHOPDTzwpJPG4nrr1DUYw4E/2CnLlOAqnFAkGomr9XXzd+8f+BdL+zyRL3H5Gk3t
-         0sT4JTOY7gmPywBd8128yMTp9sjQ3cVxGf+r5gHyiLALFuE7obUQhn/SAGmMZg/d5xB8
-         HV9elqNF5GSxucmsrHz+a9YXID4gvx+rERxM6KecjYsmsgnUog4jmMExk0s8jIM8Aj9g
-         48tfp85bAoEPAQpkCGuccLvfy9hzRaUkqFisvSatHNuA1X/VHC122zDIk/6EJ0+1TWR+
-         BE2A==
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=zWDA6BwSldfyMXCEjHeoPUemwX4iXhVKjCMVzCIFz5o=;
+        b=eE9pldJHq4R2SKBKiFAfarDVN9/9b/G25TWKtyLmKlNKXMTtmd3bAR9JVHBLsuXB9B
+         /Dzxr9k78I1tRomZmNPTLz5TRFQFPoTUL+F53pmKs9/SxTOG5MsObYn9spCVCK7Dp//r
+         Q3WNozbLYKxf2uVzUNgi65U0Lw9Rcm+PDwnlqksiVrC+MhQGipZlAJyzewLSNJO8BVL0
+         dx0vGpDtmotN5QK9jQtDYbyQ0vr/dfaGh38SndjWhzUZfRZVVzv2Inov9DlpWGny/Hw1
+         AOPeyY2gGILThE5vl83sJmyvgfUhZoPdQRPee5ptKBw/w42JZ46i1fLDxhQ2toLWurS9
+         6yPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=nKdqPjqDFfHRMf/XA+KUr72ZflIzyRtrjQk6IDY1xAE=;
-        b=NCNgb5VY7SA/LrU+B6+ijYevTXmWSTRENjDyg/hEyNFjfMRmh7cdXjllvYiIZfenXd
-         O/rILR/mmWfi5gwQ6SJSjbW07fmebLBdEyGX4Ia7xUAuGX1ndzYQ61VA2kp5sqxa8XrE
-         u0k2/+NVsDQbr2+LHl6aP9fvHgXWzYdga652ACf9YHsXOzpCC0bCkvJeU8kqyZety3ay
-         n4JO46DmZMqBeHvLB+5sGQPJ2QrZV1nLx7xc9Aa1niaKCkJGmkKdxDPg73WjlVgyiSRf
-         It3PFq7HhRLj8QXtXi+py50xfOLiDjeLbJRDCgTuO2l+8xh8XXQmmVxkTHPswMVMU3FB
-         KBDg==
-X-Gm-Message-State: AOAM530i9Xi71FhAEVFGhpqC2UcLuSkXPNzo+gcfFs8iOy2K/2XJomk1
-        GqGrBY5evAv6uP6oH4I6J9Yy2fpZ0pBb0GZPqkoL7w==
-X-Google-Smtp-Source: ABdhPJwOrsN0F3PCf7X8sxg5rr2tDNxsyMAPCRs0iEwwBZyxPVE2ENQnIIsDNxArWPzu2lDFlX3pP59bN7/EAYDZoDk=
-X-Received: by 2002:a67:7c52:: with SMTP id x79mr1548525vsc.21.1599639117011;
- Wed, 09 Sep 2020 01:11:57 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=zWDA6BwSldfyMXCEjHeoPUemwX4iXhVKjCMVzCIFz5o=;
+        b=qjtl5Luv9Kc2OHNAYh1pyxKGNfG2ZVBLlw+Xn14DhTf9A9REpIgoUs11HJC7mvmNYn
+         WCamVR348Mq98TYNQ5Ru8Lq5qKvZvPcr71K4baeAjqvSiFeK0FohTf7ZrCvgT1zH24ts
+         abwpwPibK1JLjtPP9zvVGBd/TXFcwKCyEorKz9FhOasKE/ZIWTEJ2k/NpIizDKPXaR7n
+         6t4Srj9Y2p6OVAZPfLO6bxXAoZj3eAydEJfYSNGmeEnKdHgGPi76DkrCAVMtgRtjK5qj
+         2FSc8o9YeEGdiBBX2LyqG6F8wLsC3Op/zR8uL4rzhZOv3jttukdy+1BexkxzBhaJPYyS
+         MEzg==
+X-Gm-Message-State: AOAM531ZuufHO0LQExqsNySyBYQMVD45HP0iEaw3v6H7E80/N3yqW7Nl
+        vVrMemazSYRS3X7sH7vOsds=
+X-Google-Smtp-Source: ABdhPJzovEJ+yb8T6cY28y9nptnqhzwXad0TRIE9F+pM30PT4pIRe//ziWPukpq3Uj5mxKLQ7ObBRA==
+X-Received: by 2002:a1c:4303:: with SMTP id q3mr2313548wma.158.1599639162215;
+        Wed, 09 Sep 2020 01:12:42 -0700 (PDT)
+Received: from gmail.com (54007801.dsl.pool.telekom.hu. [84.0.120.1])
+        by smtp.gmail.com with ESMTPSA id b2sm2690916wmh.47.2020.09.09.01.12.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Sep 2020 01:12:41 -0700 (PDT)
+Date:   Wed, 9 Sep 2020 10:12:39 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     "Christopherson, Sean J" <sean.j.christopherson@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [GIT PULL] First batch of KVM changes for Linux 5.9
+Message-ID: <20200909081239.GA2446260@gmail.com>
+References: <20200805182606.12621-1-pbonzini@redhat.com>
+ <20200908180939.GA2378263@gmail.com>
+ <6a83e6f1e9c34e44ae818ef88ec185a7@intel.com>
 MIME-Version: 1.0
-References: <20200908152221.082184905@linuxfoundation.org>
-In-Reply-To: <20200908152221.082184905@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 9 Sep 2020 13:41:45 +0530
-Message-ID: <CA+G9fYsjO2khWuitvNrtrmVuOW3hQiWNc+XHoTmTE0+xKT3dBw@mail.gmail.com>
-Subject: Re: [PATCH 4.19 00/88] 4.19.144-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
-        linux- stable <stable@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6a83e6f1e9c34e44ae818ef88ec185a7@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 8 Sep 2020 at 21:18, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.19.144 release.
-> There are 88 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Thu, 10 Sep 2020 15:21:57 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.19.144-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.19.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
->
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+* Christopherson, Sean J <sean.j.christopherson@intel.com> wrote:
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> Ingo Molnar wrote:
+> > * Paolo Bonzini <pbonzini@redhat.com> wrote:
+> > 
+> > > Paolo Bonzini (11):
+> > >       Merge branch 'kvm-async-pf-int' into HEAD
+> > 
+> > kvmtool broke in this merge window, hanging during bootup right after CPU bringup:
+> > 
+> >  [    1.289404]  #63
+> >  [    0.012468] kvm-clock: cpu 63, msr 6ff69fc1, secondary cpu clock
+> >  [    0.012468] [Firmware Bug]: CPU63: APIC id mismatch. Firmware: 3f APIC: 14
+> >  [    1.302320] kvm-guest: KVM setup async PF for cpu 63
+> >  [    1.302320] kvm-guest: stealtime: cpu 63, msr 1379d7600
+> > 
+> > Eventually trigger an RCU stall warning:
+> > 
+> >  [   22.302392] rcu: INFO: rcu_sched detected stalls on CPUs/tasks:
+> >  [   22.302392] rcu: 	1-...!: (68 GPs behind) idle=00c/0/0x0 softirq=0/0 fqs=0  (false positive?)
+> > 
+> > I've bisected this down to the above merge commit. The individual commit:
+> > 
+> >    b1d405751cd5: ("KVM: x86: Switch KVM guest to using interrupts for page ready APF delivery")
+> > 
+> > appears to be working fine standalone.
+> > 
+> > I'm using x86-64 defconfig+kvmconfig on SVM. Can send more info on request.
+> > 
+> > The kvmtool.git commit I've tested is 90b2d3adadf2.
+> 
+> Looks a lot like the lack of APIC EOI issue that Vitaly reported[*].
+> 
+> ---
+>  arch/x86/kernel/kvm.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
+> index d45f34cbe1ef..9663ba31347c 100644
+> --- a/arch/x86/kernel/kvm.c
+> +++ b/arch/x86/kernel/kvm.c
+> @@ -271,6 +271,8 @@ DEFINE_IDTENTRY_SYSVEC(sysvec_kvm_asyncpf_interrupt)
+>  	struct pt_regs *old_regs = set_irq_regs(regs);
+>  	u32 token;
+>  
+> +	ack_APIC_irq();
+> +
+>  	inc_irq_stat(irq_hv_callback_count);
+>  
+>  	if (__this_cpu_read(apf_reason.enabled)) {
+> --
+> 
+> [*] https://lkml.kernel.org/r/20200908135350.355053-1-vkuznets@redhat.com
 
-Summary
-------------------------------------------------------------------------
+Yep, this does the trick, thanks!
 
-kernel: 4.19.144-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-4.19.y
-git commit: 539e30e8c9cd0a71379976e504f64e148d714ba3
-git describe: v4.19.143-89-g539e30e8c9cd
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-4.19-oe/bu=
-ild/v4.19.143-89-g539e30e8c9cd
+Tested-by: Ingo Molnar <mingo@kernel.org>
 
-No regressions (compared to build v4.19.143)
-
-No fixes (compared to build v4.19.143)
-
-Ran 36520 total tests in the following environments and test suites.
-
-Environments
---------------
-- dragonboard-410c - arm64
-- hi6220-hikey - arm64
-- i386
-- juno-r2 - arm64
-- juno-r2-compat
-- juno-r2-kasan
-- nxp-ls2088
-- qemu_arm
-- qemu_arm64
-- qemu_i386
-- qemu_x86_64
-- x15 - arm
-- x86_64
-- x86-kasan
-
-Test Suites
------------
-* build
-* install-android-platform-tools-r2600
-* kselftest
-* kselftest/drivers
-* kselftest/filesystems
-* kselftest/net
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-sched-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* perf
-* v4l2-compliance
-* ltp-controllers-tests
-* ltp-fs-tests
-* ltp-hugetlb-tests
-* network-basic-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-securebits-tests
-* igt-gpu-tools
-* ssuite
-* kselftest-vsyscall-mode-native
-* kselftest-vsyscall-mode-native/drivers
-* kselftest-vsyscall-mode-native/filesystems
-* kselftest-vsyscall-mode-native/net
-* kselftest-vsyscall-mode-none
-* kselftest-vsyscall-mode-none/drivers
-* kselftest-vsyscall-mode-none/filesystems
-* kselftest-vsyscall-mode-none/net
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
+	Ingo
