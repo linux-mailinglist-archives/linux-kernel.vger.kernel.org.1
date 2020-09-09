@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C8CC263346
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 19:00:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEE1E263334
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:59:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730077AbgIIRAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 13:00:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51428 "EHLO mail.kernel.org"
+        id S1730926AbgIIQ7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 12:59:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51430 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730631AbgIIPvM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1730644AbgIIPvM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 9 Sep 2020 11:51:12 -0400
 Received: from mail.kernel.org (ip5f5ad5d6.dynamic.kabel-deutschland.de [95.90.213.214])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7E59822227;
+        by mail.kernel.org (Postfix) with ESMTPSA id 7B44F22224;
         Wed,  9 Sep 2020 14:11:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1599660665;
-        bh=2/yKtEUICes8Nbwus1uyctYK8EdcFW1fE//ARdB9QF0=;
+        bh=/bHl1yHvnGqPKNbvJvHMSS5pZd7oY1zhfyqb1y94N8k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Vr14xcXryE0ERgqBs+nLcsfPoWHnAbO1EY093bosqoOe2E039x9mKItxYQlGLCL2b
-         bKtm/7T7xrLwpXj/r0ASWB9zD5Fpq2PeOOlq0HMoL40MECPF5XYpoehUDckqj/4tKH
-         kz5cFEr3IVb1HetQyTP/cqTayT3Hu3p/pqDrkPlU=
+        b=FCK6umZ/T1bgfxy0JCt+Ww14qBxq5foV4KXk4yy+EPtB5Y0u/S1ZBpjPv+g9xPtXv
+         SqsRk79xfI2OzOoxhGFp9OosrB6Vy+aR6p49iktgbnvULxELbw4TcBswrWwHqbTrXX
+         xcui4rdXkUcSmR/EWTcqLMYRKpnUPnG5DLlKi2/I=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kG0oR-00DUXU-Kf; Wed, 09 Sep 2020 16:11:03 +0200
+        id 1kG0oR-00DUXX-LW; Wed, 09 Sep 2020 16:11:03 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
         Jonathan Corbet <corbet@lwn.net>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 21/30] iio: industrialio-core.c: solve a kernel-doc warning
-Date:   Wed,  9 Sep 2020 16:10:52 +0200
-Message-Id: <dbcb8abc849ea52a3262fdece50aa978a55aac26.1599660067.git.mchehab+huawei@kernel.org>
+Subject: [PATCH 22/30] kunit: test.h: solve kernel-doc warnings
+Date:   Wed,  9 Sep 2020 16:10:53 +0200
+Message-Id: <8fc5501c341836d8591f8dd11721585cc8694d73.1599660067.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1599660067.git.mchehab+huawei@kernel.org>
 References: <cover.1599660067.git.mchehab+huawei@kernel.org>
@@ -44,31 +44,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kernel-doc currently compains with:
-	./drivers/iio/industrialio-core.c:177: warning: Function parameter or member 'indio_dev' not described in 'iio_get_debugfs_dentry'
-	./drivers/iio/industrialio-core.c:1530: warning: Function parameter or member 'parent' not described in 'iio_device_alloc'
+There are some warnings there:
+	./include/kunit/test.h:90: warning: Function parameter or member 'name' not described in 'kunit_resource'
+	./include/kunit/test.h:353: warning: Function parameter or member 'res' not described in 'kunit_add_resource'
+	./include/kunit/test.h:367: warning: Function parameter or member 'res' not described in 'kunit_add_named_resource'
+	./include/kunit/test.h:367: warning: Function parameter or member 'name' not described in 'kunit_add_named_resource'
+	./include/kunit/test.h:367: warning: Function parameter or member 'data' not described in 'kunit_add_named_resource'
+	./include/kunit/test.h:367: warning: Excess function parameter 'name_data' description in 'kunit_add_named_resource'
 
-The problem is that the comment just before iio_get_debugfs_dentry()
-is just a comment, and not really a kernel-doc markup.
+Address them, ensuring that all non-private arguments will
+be properly described. With that regards, at struct kunit_resource,
+the free argument is described as user-provided. So, this
+doesn't seem to belong to the "private" part of the struct.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- drivers/iio/industrialio-core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/kunit/test.h | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
-index d882c7f31ba9..b05ff9154310 100644
---- a/drivers/iio/industrialio-core.c
-+++ b/drivers/iio/industrialio-core.c
-@@ -169,7 +169,7 @@ static const char * const iio_chan_info_postfix[] = {
- };
- 
- #if defined(CONFIG_DEBUG_FS)
--/**
-+/*
-  * There's also a CONFIG_DEBUG_FS guard in include/linux/iio/iio.h for
-  * iio_get_debugfs_dentry() to make it inline if CONFIG_DEBUG_FS is undefined
+diff --git a/include/kunit/test.h b/include/kunit/test.h
+index 59f3144f009a..41b3a266bf8c 100644
+--- a/include/kunit/test.h
++++ b/include/kunit/test.h
+@@ -25,6 +25,7 @@ typedef void (*kunit_resource_free_t)(struct kunit_resource *);
+ /**
+  * struct kunit_resource - represents a *test managed resource*
+  * @data: for the user to store arbitrary data.
++ * @name: optional name
+  * @free: a user supplied function to free the resource. Populated by
+  * kunit_resource_alloc().
+  *
+@@ -80,10 +81,10 @@ typedef void (*kunit_resource_free_t)(struct kunit_resource *);
   */
+ struct kunit_resource {
+ 	void *data;
+-	const char *name;		/* optional name */
+-
+-	/* private: internal use only. */
++	const char *name;
+ 	kunit_resource_free_t free;
++
++	/* private: internal use only. */
+ 	struct kref refcount;
+ 	struct list_head node;
+ };
+@@ -343,6 +344,7 @@ static inline void kunit_put_resource(struct kunit_resource *res)
+  *        none is supplied, the resource data value is simply set to @data.
+  *	  If an init function is supplied, @data is passed to it instead.
+  * @free: a user-supplied function to free the resource (if needed).
++ * @res: The resource.
+  * @data: value to pass to init function or set in resource data field.
+  */
+ int kunit_add_resource(struct kunit *test,
+@@ -356,7 +358,9 @@ int kunit_add_resource(struct kunit *test,
+  * @test: The test context object.
+  * @init: a user-supplied function to initialize the resource data, if needed.
+  * @free: a user-supplied function to free the resource data, if needed.
+- * @name_data: name and data to be set for resource.
++ * @res: The resource.
++ * @name: name to be set for resource.
++ * @data: value to pass to init function or set in resource data field.
+  */
+ int kunit_add_named_resource(struct kunit *test,
+ 			     kunit_resource_init_t init,
 -- 
 2.26.2
 
