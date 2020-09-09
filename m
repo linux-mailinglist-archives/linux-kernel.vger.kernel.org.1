@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4304E263312
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:56:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D50126331B
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:57:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731093AbgIIQ4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 12:56:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51682 "EHLO mail.kernel.org"
+        id S1731165AbgIIQ5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 12:57:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51816 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730436AbgIIPvV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 11:51:21 -0400
+        id S1730674AbgIIPvT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 11:51:19 -0400
 Received: from mail.kernel.org (ip5f5ad5d6.dynamic.kabel-deutschland.de [95.90.213.214])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 49925221EA;
+        by mail.kernel.org (Postfix) with ESMTPSA id 8AD212222E;
         Wed,  9 Sep 2020 14:11:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1599660665;
-        bh=EYgkON9WK+YOtTQ//Z7US9lvuUlSByEmJKos/ZeBw4w=;
+        bh=9mtg6cPA9MJfrf7/vYpFkaem8befp1IfLRwT5OVMr08=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QKUzWVqyHcDZO3aslNuJfH3lLVyd40A6D+hAKDtJ0XzSsyqLsDIlXj4CHHlXi4PT5
-         xpYOZgCqCyMsLqvuW9Y6jZsaG5nxDElK1e3qYvzfRum0VUcuh2YIhExg0oKuBZMbX9
-         aMQUuN2DkqlNzJQWo4JmiYD2ohCDKOXotzK2J4Sc=
+        b=dS8pMw7j1MtPEqlMq0ixPlfAtQhJpyIBoponCnJTeqk8I5zJhdvnX0evblJGL2p8w
+         ia/f5r7YNjiwb0UFrLSCiYZShlLWVBHQOYsmKLHEkbiTs5PRbpIWH/cC68CUiZfH+K
+         SzpQs/A7P9ghDVdFKlFuqT3KbFg5nXDj9s+jDLSw=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kG0oR-00DUX8-Ds; Wed, 09 Sep 2020 16:11:03 +0200
+        id 1kG0oR-00DUXB-Eq; Wed, 09 Sep 2020 16:11:03 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
         Jonathan Corbet <corbet@lwn.net>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 14/30] docs: add some new files to their respective index.rst files
-Date:   Wed,  9 Sep 2020 16:10:45 +0200
-Message-Id: <9fd4d04f0d122ff38b5342a0098d99cc2f546652.1599660067.git.mchehab+huawei@kernel.org>
+Subject: [PATCH 15/30] docs: powerpc: syscall64-abi.rst: fix a malformed table
+Date:   Wed,  9 Sep 2020 16:10:46 +0200
+Message-Id: <0c2159084936a8a14aaa9e6416424e80fe488a03.1599660067.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1599660067.git.mchehab+huawei@kernel.org>
 References: <cover.1599660067.git.mchehab+huawei@kernel.org>
@@ -44,59 +44,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There were some new file additions for Kernel 5.7 and 5.8
-that weren't added at the corresponding index file.
+As reported:
+
+	Documentation/powerpc/syscall64-abi.rst:53: WARNING: Malformed table.
+	Text in column margin in table line 2.
+
+	=========== ============= ========================================
+	--- For the sc instruction, differences with the ELF ABI ---
+	r0          Volatile      (System call number.)
+
+This table requires a different notation to be valid.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/driver-api/nvdimm/index.rst   | 1 +
- Documentation/firmware-guide/acpi/index.rst | 1 +
- Documentation/hwmon/index.rst               | 1 +
- Documentation/vm/index.rst                  | 1 +
- 4 files changed, 4 insertions(+)
+ Documentation/powerpc/syscall64-abi.rst | 32 ++++++++++++-------------
+ 1 file changed, 16 insertions(+), 16 deletions(-)
 
-diff --git a/Documentation/driver-api/nvdimm/index.rst b/Documentation/driver-api/nvdimm/index.rst
-index a4f8f98aeb94..5863bd04f056 100644
---- a/Documentation/driver-api/nvdimm/index.rst
-+++ b/Documentation/driver-api/nvdimm/index.rst
-@@ -10,3 +10,4 @@ Non-Volatile Memory Device (NVDIMM)
-    nvdimm
-    btt
-    security
-+   firmware-activate
-diff --git a/Documentation/firmware-guide/acpi/index.rst b/Documentation/firmware-guide/acpi/index.rst
-index ad3b5afdae77..f72b5f1769fb 100644
---- a/Documentation/firmware-guide/acpi/index.rst
-+++ b/Documentation/firmware-guide/acpi/index.rst
-@@ -26,3 +26,4 @@ ACPI Support
-    lpit
-    video_extension
-    extcon-intel-int3496
-+   intel-pmc-mux
-diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
-index af064a9ad42f..a926f1abaec3 100644
---- a/Documentation/hwmon/index.rst
-+++ b/Documentation/hwmon/index.rst
-@@ -159,6 +159,7 @@ Hardware Monitoring Kernel Drivers
-    smsc47b397
-    smsc47m192
-    smsc47m1
-+   sparx5-temp
-    tc654
-    tc74
-    thmc50
-diff --git a/Documentation/vm/index.rst b/Documentation/vm/index.rst
-index 611140ffef7e..eff5fbd492d0 100644
---- a/Documentation/vm/index.rst
-+++ b/Documentation/vm/index.rst
-@@ -29,6 +29,7 @@ descriptions of data structures and algorithms.
-    :maxdepth: 1
+diff --git a/Documentation/powerpc/syscall64-abi.rst b/Documentation/powerpc/syscall64-abi.rst
+index 379817ca64d2..cf9b2857c72a 100644
+--- a/Documentation/powerpc/syscall64-abi.rst
++++ b/Documentation/powerpc/syscall64-abi.rst
+@@ -49,22 +49,22 @@ Register preservation rules
+ Register preservation rules match the ELF ABI calling sequence with the
+ following differences:
  
-    active_mm
-+   arch_pgtable_helpers
-    balance
-    cleancache
-    free_page_reporting
+---- For the sc instruction, differences with the ELF ABI ---
+-=========== ============= ========================================
+-r0          Volatile      (System call number.)
+-r3          Volatile      (Parameter 1, and return value.)
+-r4-r8       Volatile      (Parameters 2-6.)
+-cr0         Volatile      (cr0.SO is the return error condition.)
+-cr1, cr5-7  Nonvolatile
+-lr          Nonvolatile
+-=========== ============= ========================================
+-
+---- For the scv 0 instruction, differences with the ELF ABI ---
+-=========== ============= ========================================
+-r0          Volatile      (System call number.)
+-r3          Volatile      (Parameter 1, and return value.)
+-r4-r8       Volatile      (Parameters 2-6.)
+-=========== ============= ========================================
+++------------------------------------------------------------------------+
++|        For the sc instruction, differences with the ELF ABI		 |
+++--------------+--------------+------------------------------------------+
++| r0           | Volatile     | (System call number.)			 |
++| rr3          | Volatile     | (Parameter 1, and return value.)	 |
++| rr4-r8       | Volatile     | (Parameters 2-6.)			 |
++| rcr0         | Volatile     | (cr0.SO is the return error condition.)	 |
++| rcr1, cr5-7  | Nonvolatile  |						 |
++| rlr          | Nonvolatile  |						 |
+++--------------+--------------+------------------------------------------+
++|      For the scv 0 instruction, differences with the ELF ABI		 |
+++--------------+--------------+------------------------------------------+
++| r0           | Volatile     | (System call number.)			 |
++| r3           | Volatile     | (Parameter 1, and return value.)	 |
++| r4-r8        | Volatile     | (Parameters 2-6.)			 |
+++--------------+--------------+------------------------------------------+
+ 
+ All floating point and vector data registers as well as control and status
+ registers are nonvolatile.
 -- 
 2.26.2
 
