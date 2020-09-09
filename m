@@ -2,133 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6749C26298D
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 10:06:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E82F5262998
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 10:09:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730187AbgIIIGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 04:06:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35002 "EHLO
+        id S1727820AbgIIIJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 04:09:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730083AbgIIIGJ (ORCPT
+        with ESMTP id S1725917AbgIIIJq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 04:06:09 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23409C061573
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 01:06:09 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id w7so1475813pfi.4
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 01:06:09 -0700 (PDT)
+        Wed, 9 Sep 2020 04:09:46 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55BB6C061573;
+        Wed,  9 Sep 2020 01:09:46 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id m8so1522278pgi.3;
+        Wed, 09 Sep 2020 01:09:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jVlYlbWkozbz0sLJ6S/+BIlF4v5FRp4qwtHLHAvdMQ8=;
-        b=Jbdhf4gHp3pe7ZAg6MfN+hmU7XutrDtvHYeWgzZC69kwrslIzxW3C5cjPf9rdszvVs
-         IlpM/YR2tNGDZg3yTGtyhT7TFvneCjyhGgODs4OAECJ+6GHWMFzU+tbdmCPJtFaUGmnq
-         1aG+i5wU/AK9VW/a8k5N6GsGYvM5QgSw6ixoM=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=x1ennYUlzh5ZiE58CNNa6Rmzq+yOs03mH5GcYAaRQyI=;
+        b=Yc1be8SBjWq+KAkLjeHBXNGg8D8viucHr66IFvqr6CPDdnxzpg7V64QlqeP+DThD5B
+         91WRDzyRNWp48mkFkh/Mj+4ZC+xzdtjx4rCB6RvL8bWiZa4nmaJz1C/8T5a3mw0nEpHd
+         NuI1+sKPX3ExoP/YaVhuXeOCKSVudYL8dGLpykiiIRSaGEp1P47q5yVRtEA2R2qiOomN
+         +4E4KscqSXJibUJ8xPCbTXp8UjcEvJMDqvGh2xcaYbOjuOC3owp/S6hDg/+4/NfnuQVk
+         Rvlu9ZGgV0uNmWU0bhkYAwD9kNGkMd4LWAU6Ub1P6S8uiN4t4b1vS1CBYIvA/dPojSns
+         ofdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jVlYlbWkozbz0sLJ6S/+BIlF4v5FRp4qwtHLHAvdMQ8=;
-        b=My+01KSf2CbcWM5xZT1qc9hpHJhfJYxl6trBz7gGV524F08kr4D4HH+9j4Z7SA/++J
-         974l3uIQlEx/Pl3neUiiQpj6bWEVb2A/B58gbqr9J3UHVdw9pSwmpp9sxiIuWzI6anIc
-         M29URZZirM91xjmwnOzxo2XOJdNh+p3pbJAFSl/LkhsRqzdD6PPrDJ2Vc0jE/y/Qk22I
-         73T43Ja/Iudz6Pojzh7teovJnmgABwBh7qGBt0Yp81E1P3mcpO3yhDfBg4Fh3f+D3OJp
-         HnfJDc7eMeEnocWblxvXceReIx4VaVr4TcpFkHjIJEs6FOJcg4HEtHx0iqvSPXuFLiAZ
-         ctIg==
-X-Gm-Message-State: AOAM530kAZP0cI5QKyJjCbVhoS05RJJI1yxY9Ye6EWcd3OIpGbFuqtel
-        71w2M9w82HrilucSPaqQ0tRniQ==
-X-Google-Smtp-Source: ABdhPJzwx8jiPPdem7eCjQdoXrfB3KZxZs1HdZ8y27DOvo/H7K6FuYkhAgGi5eOJxtphcwcCI89QLA==
-X-Received: by 2002:a63:5c66:: with SMTP id n38mr2053035pgm.217.1599638768656;
-        Wed, 09 Sep 2020 01:06:08 -0700 (PDT)
-Received: from kafuu-chino.c.googlers.com.com (105.219.229.35.bc.googleusercontent.com. [35.229.219.105])
-        by smtp.googlemail.com with ESMTPSA id d8sm1260489pjs.47.2020.09.09.01.06.06
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=x1ennYUlzh5ZiE58CNNa6Rmzq+yOs03mH5GcYAaRQyI=;
+        b=DGdZbyIxQQmeEOLmrbfWYdzvDwFhX/fZ3+l3MHfPMWqfUE58SpyQbjEBU7Yu6H4wZj
+         tWVKlsFEpcygU6XUQV8abHM3Jn4xfIbD8coakCyvT75Uc9vbfDgwaKTFbG1fVjsDDrBv
+         rRZCVMnUsemkp3cPz1ODQZ4mLeaczyUCq33h7RAKigr9va0pdOB3lxDGXQgU6HL+sxO6
+         v9wftzvv+RrvGOUwkUUf2ix5isrA55Q+HNEJQX1rucwIcHcGuKALWH780AXbv9XyZxjI
+         8/r9cztpajnixIAEZW0nexQxeZYvMe3bs32AEXfRabbHfBgCD+q4dLSYEg+SHmrKOfxF
+         Gizg==
+X-Gm-Message-State: AOAM5304J8j5nIFYU8MjvGki7gp3yHJDbnvCb5JMMhQEf3wjA04FwdkD
+        pc7+8ZrXjfmga71Lq+zsTfU=
+X-Google-Smtp-Source: ABdhPJwLmGAG2A5a2r29KKqQm2O+XLzOCLEkeRfBbqYIWr+0Gl9hJUGEkYlO4HbYh4Z8nRMVyY5bPA==
+X-Received: by 2002:a17:902:ff02:b029:d0:89f3:28d2 with SMTP id f2-20020a170902ff02b02900d089f328d2mr2840803plj.14.1599638985715;
+        Wed, 09 Sep 2020 01:09:45 -0700 (PDT)
+Received: from adolin ([49.207.200.122])
+        by smtp.gmail.com with ESMTPSA id f10sm1790655pfk.195.2020.09.09.01.09.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Sep 2020 01:06:08 -0700 (PDT)
-From:   Pi-Hsun Shih <pihsun@chromium.org>
-Cc:     Pi-Hsun Shih <pihsun@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
-        DEVICE TREE BINDINGS),
-        linux-arm-kernel@lists.infradead.org (moderated list:ARM/Mediatek SoC
-        support),
-        linux-mediatek@lists.infradead.org (moderated list:ARM/Mediatek SoC
-        support), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] arm64: dts: mt8183-kukui: add scp node
-Date:   Wed,  9 Sep 2020 16:05:58 +0800
-Message-Id: <20200909080558.2409470-1-pihsun@chromium.org>
-X-Mailer: git-send-email 2.28.0.526.ge36021eeef-goog
+        Wed, 09 Sep 2020 01:09:44 -0700 (PDT)
+Date:   Wed, 9 Sep 2020 13:39:39 +0530
+From:   Sumera Priyadarsini <sylphrenadin@gmail.com>
+To:     cocci@systeme.lip6.fr
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Julia.Lawall@lip6.fr, Gilles.Muller@lip6.fr, masahiroy@kernel.org,
+        michal.lkml@markovi.net, nicolas.palix@imag.fr
+Subject: [PATCH V2] scripts: coccicheck: Do not use shift command when rule
+ is specfified
+Message-ID: <20200909080939.bhkgluvo5zw2kder@adolin>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add scp node to mt8183-kukui
+The command "make coccicheck C=1 CHECK=scripts/coccicheck" results in the
+error:
+	./scripts/coccicheck: line 65: -1: shift count out of range
 
-Signed-off-by: Pi-Hsun Shih <pihsun@chromium.org>
+This happens because every time the C variable is specified,
+the shell arguments need to be "shifted" in order to take only
+the last argument, which is the C file to test. These shell arguments
+mostly comprise flags that have been set in the Makefile. However,
+when coccicheck is specified in the make command as a rule, the
+number of shell arguments is zero, thus passing the invalid value -1
+to the shift command, resulting in an error.
+
+Modify coccicheck to use the shift command only when
+number of shell arguments is not zero.
+
+Signed-off-by: Sumera Priyadarsini <sylphrenadin@gmail.com>
+
 ---
- .../arm64/boot/dts/mediatek/mt8183-kukui.dtsi | 30 +++++++++++++++++++
- 1 file changed, 30 insertions(+)
+Changes in V2:
+	- Fix spelling errors as suggested by Markus Elfring
+---
+ scripts/coccicheck | 16 +++++++++++++---
+ 1 file changed, 13 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
-index f0a070535b34..85f7c33ba446 100644
---- a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
-@@ -90,6 +90,18 @@ pp3300_alw: regulator6 {
- 		regulator-max-microvolt = <3300000>;
- 	};
+diff --git a/scripts/coccicheck b/scripts/coccicheck
+index e04d328210ac..5c8df337e1e3 100755
+--- a/scripts/coccicheck
++++ b/scripts/coccicheck
+@@ -61,9 +61,19 @@ COCCIINCLUDE=${COCCIINCLUDE// -include/ --include}
+ if [ "$C" = "1" -o "$C" = "2" ]; then
+     ONLINE=1
  
-+	reserved_memory: reserved-memory {
-+		#address-cells = <2>;
-+		#size-cells = <2>;
-+		ranges;
-+
-+		scp_mem_reserved: scp_mem_region {
-+			compatible = "shared-dma-pool";
-+			reg = <0 0x50000000 0 0x2900000>;
-+			no-map;
-+		};
-+	};
-+
- 	max98357a: codec0 {
- 		compatible = "maxim,max98357a";
- 		sdmode-gpios = <&pio 175 0>;
-@@ -524,6 +536,13 @@ pins_clk {
- 		};
- 	};
+-    # Take only the last argument, which is the C file to test
+-    shift $(( $# - 1 ))
+-    OPTIONS="$COCCIINCLUDE $1"
++    # If the rule coccicheck is specified when calling make, number of
++    # arguments is zero
++    if [ $# -ne 0 ]; then
++	    # Take only the last argument, which is the C file to test
++	    shift $(( $# -1 ))
++	    OPTIONS="$COCCIINCLUDE $1"
++    else
++	if [ "$KBUILD_EXTMOD" = "" ] ; then
++		OPTIONS="--dir $srctree $COCCIINCLUDE"
++	else
++		OPTIONS="--dir $KBUILD_EXTMOD $COCCIINCLUDE"
++	fi
++    fi
  
-+	scp_pins: scp {
-+		pins_scp_uart {
-+			pinmux = <PINMUX_GPIO110__FUNC_TP_URXD1_AO>,
-+				 <PINMUX_GPIO112__FUNC_TP_UTXD1_AO>;
-+		};
-+	};
-+
- 	spi0_pins: spi0 {
- 		pins_spi{
- 			pinmux = <PINMUX_GPIO85__FUNC_SPI0_MI>,
-@@ -651,6 +670,17 @@ pins_wifi_wakeup {
- 	};
- };
- 
-+&scp {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&scp_pins>;
-+
-+	cros_ec {
-+		compatible = "google,cros-ec-rpmsg";
-+		mtk,rpmsg-name = "cros-ec-rpmsg";
-+	};
-+};
-+
- &soc_data {
- 	status = "okay";
- };
+     # No need to parallelize Coccinelle since this mode takes one input file.
+     NPROC=1
 -- 
-2.28.0.526.ge36021eeef-goog
+2.25.1
 
