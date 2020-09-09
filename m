@@ -2,91 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20DF22628C1
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 09:32:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 671AF262905
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 09:38:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728264AbgIIHct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 03:32:49 -0400
-Received: from a27-10.smtp-out.us-west-2.amazonses.com ([54.240.27.10]:33348
-        "EHLO a27-10.smtp-out.us-west-2.amazonses.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725864AbgIIHcs (ORCPT
+        id S1728971AbgIIHfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 03:35:22 -0400
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:21901 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725863AbgIIHfO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 03:32:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=zsmsymrwgfyinv5wlfyidntwsjeeldzt; d=codeaurora.org; t=1599636767;
-        h=Content-Type:MIME-Version:Content-Transfer-Encoding:Subject:From:In-Reply-To:References:To:Cc:Message-Id:Date;
-        bh=ET7FgPkRWgZUD0pQCf4g5M9uCcqpNbuZNq4ME2uq3JI=;
-        b=S0fgPqJDItDcMZ/Kk/DNu3p8E7jiUyKRg4lttV68ZCFmwx9MAHriKy8WdHAAHqyT
-        JX+wjy9rgMtPP8zSg95aWAoLA9vilLtlqFDBxkrQAknaUElV1cq2KCXIsTdLAGuvNbw
-        vnIbv2c8bKdjQKjH81UHE3vfZ+F1gXNzOAWq9lqc=
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=hsbnp7p3ensaochzwyq5wwmceodymuwv; d=amazonses.com; t=1599636767;
-        h=Content-Type:MIME-Version:Content-Transfer-Encoding:Subject:From:In-Reply-To:References:To:Cc:Message-Id:Date:Feedback-ID;
-        bh=ET7FgPkRWgZUD0pQCf4g5M9uCcqpNbuZNq4ME2uq3JI=;
-        b=PPBch/EcDcefxPL3C8fVjcnk6/VkiNuI8nU3FpTVJTzqoAQ1/+/CKlrjHkBH2scZ
-        gzzvCeAsmI7zXdWjxNmv2km9KlHLbrf/1Ovue6ICsdx0NM6U0VpHewmy/BwiC66pRpb
-        V/XJcZTsZ/JM2aQR+wCFxclHWFDqbGSJrbc5Sot4=
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.0
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org AB729C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        Wed, 9 Sep 2020 03:35:14 -0400
+X-UUID: f2492bd2181d40c08033af1d79287253-20200909
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=n3YjiM2kc6MoQ07z5fNbMit68fBr1Ssmwppm8Zjd+W8=;
+        b=UTKPlUArgqJVc4X+G3yOS8Hlp0NnHZmhjPCKa6RXTNTJcbtO3nrjzA2aJoIyNGwQR7hD2P1NbBAXnJ+qU4UYAG6vsFVFEJinc/I6k1FhhDzbl2mB6pOas587WkSEt/7mQUxe7PH7lemMlBvkSUZ3LJT2imFcx9utbCQg02B3Hqw=;
+X-UUID: f2492bd2181d40c08033af1d79287253-20200909
+Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 923242639; Wed, 09 Sep 2020 15:35:06 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ MTKMBS31N2.mediatek.inc (172.27.4.87) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 9 Sep 2020 15:35:04 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 9 Sep 2020 15:35:03 +0800
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     Felipe Balbi <balbi@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Al Cooper <alcooperx@gmail.com>,
+        Peter Chen <peter.chen@nxp.com>, Bin Liu <b-liu@ti.com>,
+        Sasi Kumar <sasi.kumar@broadcom.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>
+Subject: [PATCH v3 01/11] usb: gadget: bdc: fix improper SPDX comment style for header file
+Date:   Wed, 9 Sep 2020 15:32:52 +0800
+Message-ID: <1599636782-7654-1-git-send-email-chunfeng.yun@mediatek.com>
+X-Mailer: git-send-email 1.8.1.1.dirty
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH v2] brcmsmac: fix memory leak in wlc_phy_attach_lcnphy
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20200908121743.23108-1-keitasuzuki.park@sslab.ics.keio.ac.jp>
-References: <20200908121743.23108-1-keitasuzuki.park@sslab.ics.keio.ac.jp>
-To:     Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
-Cc:     unlisted-recipients:; (no To-header on input)
-        keitasuzuki.park@sslab.ics.keio.ac.jp,
-        takafumi@sslab.ics.keio.ac.jp,
-        Arend van Spriel <arend.vanspriel@broadcom.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Chi-Hsien Lin <chi-hsien.lin@cypress.com>,
-        Wright Feng <wright.feng@cypress.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org,
-        brcm80211-dev-list.pdl@broadcom.com,
-        brcm80211-dev-list@cypress.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Illegal-Object: Syntax error in Cc: address found on vger.kernel.org:
-        Cc:     unlisted-recipients:; (no To-header on input)keitasuzuki.park@sslab.ics.keio.ac.jp
-                                                                     ^-missing end of address
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-ID: <0101017471c8011a-8c36c26e-bef6-438b-b4d7-3e423983ac30-000000@us-west-2.amazonses.com>
-Date:   Wed, 9 Sep 2020 07:32:47 +0000
-X-SES-Outgoing: 2020.09.09-54.240.27.10
-Feedback-ID: 1.us-west-2.CZuq2qbDmUIuT3qdvXlRHZZCpfZqZ4GtG9v3VKgRyF0=:AmazonSES
+Content-Type: text/plain
+X-TM-SNTS-SMTP: 23F105834685684BA0C91F48B221F89C613AFB0FFB1CDE61C41957954E1270092000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp> wrote:
-
-> When wlc_phy_txpwr_srom_read_lcnphy fails in wlc_phy_attach_lcnphy,
-> the allocated pi->u.pi_lcnphy is leaked, since struct brcms_phy will be
-> freed in the caller function.
-> 
-> Fix this by calling wlc_phy_detach_lcnphy in the error handler of
-> wlc_phy_txpwr_srom_read_lcnphy before returning.
-> 
-> Signed-off-by: Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
-
-Patch applied to wireless-drivers-next.git, thanks.
-
-f4443293d741 brcmsmac: fix memory leak in wlc_phy_attach_lcnphy
-
--- 
-https://patchwork.kernel.org/patch/11763749/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Rm9yIEMgaGVhZGVyIGZpbGVzIERvY3VtZW50YXRpb24vcHJvY2Vzcy9saWNlbnNlLXJ1bGVzLnJz
+dA0KbWFuZGF0ZXMgQy1saWtlIGNvbW1lbnRzIChvcHBvc2VkIHRvIEMgc291cmNlIGZpbGVzIHdo
+ZXJlDQpDKysgc3R5bGUgc2hvdWxkIGJlIHVzZWQpLg0KDQpDYzogRmxvcmlhbiBGYWluZWxsaSA8
+Zi5mYWluZWxsaUBnbWFpbC5jb20+DQpTaWduZWQtb2ZmLWJ5OiBDaHVuZmVuZyBZdW4gPGNodW5m
+ZW5nLnl1bkBtZWRpYXRlay5jb20+DQpBY2tlZC1ieTogRmxvcmlhbiBGYWluZWxsaSA8Zi5mYWlu
+ZWxsaUBnbWFpbC5jb20+DQotLS0NCnYzOiBhZGQgYWNrZWQtYnkgRmxvcmlhbg0KDQp2MjogYWRk
+IENjIEZsb3JpYW4NCi0tLQ0KIGRyaXZlcnMvdXNiL2dhZGdldC91ZGMvYmRjL2JkYy5oICAgICB8
+IDIgKy0NCiBkcml2ZXJzL3VzYi9nYWRnZXQvdWRjL2JkYy9iZGNfY21kLmggfCAyICstDQogZHJp
+dmVycy91c2IvZ2FkZ2V0L3VkYy9iZGMvYmRjX2RiZy5oIHwgMiArLQ0KIGRyaXZlcnMvdXNiL2dh
+ZGdldC91ZGMvYmRjL2JkY19lcC5oICB8IDIgKy0NCiA0IGZpbGVzIGNoYW5nZWQsIDQgaW5zZXJ0
+aW9ucygrKSwgNCBkZWxldGlvbnMoLSkNCg0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvdXNiL2dhZGdl
+dC91ZGMvYmRjL2JkYy5oIGIvZHJpdmVycy91c2IvZ2FkZ2V0L3VkYy9iZGMvYmRjLmgNCmluZGV4
+IGFjNzVlMjUuLmZjYmE3N2UgMTAwNjQ0DQotLS0gYS9kcml2ZXJzL3VzYi9nYWRnZXQvdWRjL2Jk
+Yy9iZGMuaA0KKysrIGIvZHJpdmVycy91c2IvZ2FkZ2V0L3VkYy9iZGMvYmRjLmgNCkBAIC0xLDQg
+KzEsNCBAQA0KLS8vIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiBHUEwtMi4wKw0KKy8qIFNQRFgt
+TGljZW5zZS1JZGVudGlmaWVyOiBHUEwtMi4wKyAqLw0KIC8qDQogICogYmRjLmggLSBoZWFkZXIg
+Zm9yIHRoZSBCUkNNIEJEQyBVU0IzLjAgZGV2aWNlIGNvbnRyb2xsZXINCiAgKg0KZGlmZiAtLWdp
+dCBhL2RyaXZlcnMvdXNiL2dhZGdldC91ZGMvYmRjL2JkY19jbWQuaCBiL2RyaXZlcnMvdXNiL2dh
+ZGdldC91ZGMvYmRjL2JkY19jbWQuaA0KaW5kZXggMjljYzk4OC4uMzczZTY3NCAxMDA2NDQNCi0t
+LSBhL2RyaXZlcnMvdXNiL2dhZGdldC91ZGMvYmRjL2JkY19jbWQuaA0KKysrIGIvZHJpdmVycy91
+c2IvZ2FkZ2V0L3VkYy9iZGMvYmRjX2NtZC5oDQpAQCAtMSw0ICsxLDQgQEANCi0vLyBTUERYLUxp
+Y2Vuc2UtSWRlbnRpZmllcjogR1BMLTIuMCsNCisvKiBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjog
+R1BMLTIuMCsgKi8NCiAvKg0KICAqIGJkY19jbWQuaCAtIGhlYWRlciBmb3IgdGhlIEJEQyBkZWJ1
+ZyBmdW5jdGlvbnMNCiAgKg0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvdXNiL2dhZGdldC91ZGMvYmRj
+L2JkY19kYmcuaCBiL2RyaXZlcnMvdXNiL2dhZGdldC91ZGMvYmRjL2JkY19kYmcuaA0KaW5kZXgg
+MzczZDVhYi4uODU5ZDU4OCAxMDA2NDQNCi0tLSBhL2RyaXZlcnMvdXNiL2dhZGdldC91ZGMvYmRj
+L2JkY19kYmcuaA0KKysrIGIvZHJpdmVycy91c2IvZ2FkZ2V0L3VkYy9iZGMvYmRjX2RiZy5oDQpA
+QCAtMSw0ICsxLDQgQEANCi0vLyBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIuMCsNCisv
+KiBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIuMCsgKi8NCiAvKg0KICAqIGJkY19kYmcu
+aCAtIGhlYWRlciBmb3IgdGhlIEJEQyBkZWJ1ZyBmdW5jdGlvbnMNCiAgKg0KZGlmZiAtLWdpdCBh
+L2RyaXZlcnMvdXNiL2dhZGdldC91ZGMvYmRjL2JkY19lcC5oIGIvZHJpdmVycy91c2IvZ2FkZ2V0
+L3VkYy9iZGMvYmRjX2VwLmgNCmluZGV4IGEzN2ZmODAzLi41YmJkNzNmIDEwMDY0NA0KLS0tIGEv
+ZHJpdmVycy91c2IvZ2FkZ2V0L3VkYy9iZGMvYmRjX2VwLmgNCisrKyBiL2RyaXZlcnMvdXNiL2dh
+ZGdldC91ZGMvYmRjL2JkY19lcC5oDQpAQCAtMSw0ICsxLDQgQEANCi0vLyBTUERYLUxpY2Vuc2Ut
+SWRlbnRpZmllcjogR1BMLTIuMCsNCisvKiBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIu
+MCsgKi8NCiAvKg0KICAqIGJkY19lcC5oIC0gaGVhZGVyIGZvciB0aGUgQkRDIGRlYnVnIGZ1bmN0
+aW9ucw0KICAqDQotLSANCjEuOS4xDQo=
 
