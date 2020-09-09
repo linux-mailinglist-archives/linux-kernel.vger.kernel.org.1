@@ -2,28 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3568F2630E1
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 17:48:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEB442630F9
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 17:52:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730543AbgIIPsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 11:48:18 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:37118 "EHLO huawei.com"
+        id S1730696AbgIIPvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 11:51:54 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:40364 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730446AbgIIPpP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 11:45:15 -0400
+        id S1730460AbgIIPsr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 11:48:47 -0400
 Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 43882EA083EC8B2B931C;
-        Wed,  9 Sep 2020 21:43:31 +0800 (CST)
+        by Forcepoint Email with ESMTP id 57B99F08137A5C2B9BFE;
+        Wed,  9 Sep 2020 21:45:42 +0800 (CST)
 Received: from localhost (10.174.179.108) by DGGEMS414-HUB.china.huawei.com
  (10.3.19.214) with Microsoft SMTP Server id 14.3.487.0; Wed, 9 Sep 2020
- 21:43:20 +0800
+ 21:45:35 +0800
 From:   YueHaibing <yuehaibing@huawei.com>
-To:     <stefan@agner.ch>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
-        <vigneshr@ti.com>, <yuehaibing@huawei.com>
-CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH -next] mtd: rawnand: vf610_nfc: Remove unused function vf610_nfc_transfer_size()
-Date:   Wed, 9 Sep 2020 21:43:18 +0800
-Message-ID: <20200909134318.36340-1-yuehaibing@huawei.com>
+To:     <kvalo@codeaurora.org>, <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <ath11k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH] ath11k: Remove unused inline function htt_htt_stats_debug_dump()
+Date:   Wed, 9 Sep 2020 21:45:33 +0800
+Message-ID: <20200909134533.19604-1-yuehaibing@huawei.com>
 X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
 Content-Type: text/plain
@@ -34,30 +35,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit ecc40b8df59a ("mtd: rawnand: vf610_nfc: remove old hooks")
-left behind this, remove it.
+There is no caller in tree, so can remove it.
 
 Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 ---
- drivers/mtd/nand/raw/vf610_nfc.c | 5 -----
- 1 file changed, 5 deletions(-)
+ .../net/wireless/ath/ath11k/debug_htt_stats.c | 44 -------------------
+ 1 file changed, 44 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/vf610_nfc.c b/drivers/mtd/nand/raw/vf610_nfc.c
-index 7248c5901183..ed8e0928c0b2 100644
---- a/drivers/mtd/nand/raw/vf610_nfc.c
-+++ b/drivers/mtd/nand/raw/vf610_nfc.c
-@@ -323,11 +323,6 @@ static inline void vf610_nfc_ecc_mode(struct vf610_nfc *nfc, int ecc_mode)
- 			    CONFIG_ECC_MODE_SHIFT, ecc_mode);
+diff --git a/drivers/net/wireless/ath/ath11k/debug_htt_stats.c b/drivers/net/wireless/ath/ath11k/debug_htt_stats.c
+index 6b532dc99c98..ad3f08a5b031 100644
+--- a/drivers/net/wireless/ath/ath11k/debug_htt_stats.c
++++ b/drivers/net/wireless/ath/ath11k/debug_htt_stats.c
+@@ -3895,50 +3895,6 @@ static inline void htt_print_backpressure_stats_tlv_v(const u32 *tag_buf,
+ 	}
  }
  
--static inline void vf610_nfc_transfer_size(struct vf610_nfc *nfc, int size)
+-static inline void htt_htt_stats_debug_dump(const u32 *tag_buf,
+-					    struct debug_htt_stats_req *stats_req)
 -{
--	vf610_nfc_write(nfc, NFC_SECTOR_SIZE, size);
+-	u8 *buf = stats_req->buf;
+-	u32 len = stats_req->buf_len;
+-	u32 buf_len = ATH11K_HTT_STATS_BUF_SIZE;
+-	u32 tlv_len = 0, i = 0, word_len = 0;
+-
+-	tlv_len  = FIELD_GET(HTT_TLV_LEN, *tag_buf) + HTT_TLV_HDR_LEN;
+-	word_len = (tlv_len % 4) == 0 ? (tlv_len / 4) : ((tlv_len / 4) + 1);
+-	len += HTT_DBG_OUT(buf + len, buf_len - len,
+-			   "============================================");
+-	len += HTT_DBG_OUT(buf + len, buf_len - len,
+-			   "HKDBG TLV DUMP: (tag_len=%u bytes, words=%u)",
+-			   tlv_len, word_len);
+-
+-	for (i = 0; i + 3 < word_len; i += 4) {
+-		len += HTT_DBG_OUT(buf + len, buf_len - len,
+-				   "0x%08x 0x%08x 0x%08x 0x%08x",
+-				   tag_buf[i], tag_buf[i + 1],
+-				   tag_buf[i + 2], tag_buf[i + 3]);
+-	}
+-
+-	if (i + 3 == word_len) {
+-		len += HTT_DBG_OUT(buf + len, buf_len - len, "0x%08x 0x%08x 0x%08x ",
+-				tag_buf[i], tag_buf[i + 1], tag_buf[i + 2]);
+-	} else if (i + 2 == word_len) {
+-		len += HTT_DBG_OUT(buf + len, buf_len - len, "0x%08x 0x%08x ",
+-				tag_buf[i], tag_buf[i + 1]);
+-	} else if (i + 1 == word_len) {
+-		len += HTT_DBG_OUT(buf + len, buf_len - len, "0x%08x ",
+-				tag_buf[i]);
+-	}
+-	len += HTT_DBG_OUT(buf + len, buf_len - len,
+-			   "============================================");
+-
+-	if (len >= buf_len)
+-		buf[buf_len - 1] = 0;
+-	else
+-		buf[len] = 0;
+-
+-	stats_req->buf_len = len;
 -}
 -
- static inline void vf610_nfc_run(struct vf610_nfc *nfc, u32 col, u32 row,
- 				 u32 cmd1, u32 cmd2, u32 trfr_sz)
- {
+ static int ath11k_dbg_htt_ext_stats_parse(struct ath11k_base *ab,
+ 					  u16 tag, u16 len, const void *tag_buf,
+ 					  void *user_data)
 -- 
 2.17.1
 
