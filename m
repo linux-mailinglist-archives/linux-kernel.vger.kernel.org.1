@@ -2,90 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00D71262A2A
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 10:23:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0927C262A31
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 10:26:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729005AbgIIIXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 04:23:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58086 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726414AbgIIIXm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 04:23:42 -0400
-Received: from localhost (p54b33098.dip0.t-ipconnect.de [84.179.48.152])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 823552076C;
-        Wed,  9 Sep 2020 08:23:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599639822;
-        bh=Yk5f469iMe5uWClYWw+4w6OxQkIrjVVzv2bmDLHjXYw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YZe0HoVzUIgRWM3KPO86BpYg5a8BnYcAfxf6e82HppawaU50U9lxnIpf3Ku1F2IBJ
-         jObg2dxqyvt7AiX/Ka160aLnUeZkhthwnYDAvdYfw2U8MFzL5rpKKB8+dpKMc0H8bR
-         /0fPCUxZonQAHaQPNbKhylyl/BJASHCYkf48P6Oc=
-Date:   Wed, 9 Sep 2020 10:23:38 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Evan Nimmo <evan.nimmo@alliedtelesis.co.nz>
-Cc:     andriy.shevchenko@linux.intel.com,
-        chris.packham@alliedtelesis.co.nz, jarkko.nikula@linux.intel.com,
-        jdelvare@suse.de, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/1] i2c: algo-pca: Reapply i2c bus settings after
- reset
-Message-ID: <20200909082338.GC2272@ninjato>
-References: <20200908203247.14374-1-evan.nimmo@alliedtelesis.co.nz>
+        id S1726440AbgIII0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 04:26:17 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:60122 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725975AbgIII0Q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 04:26:16 -0400
+Date:   Wed, 09 Sep 2020 08:26:12 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1599639973;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QoDD1UDHTlJFMLx9+RNng8Fd9vf19kX3LXI/EPptrC0=;
+        b=PC3VAOwVybDTf8GPzx8pjT6Y/hC7lBII2+oTwXXS/3Ehgdj2VOAS203Y0qp18f+uyqD+hS
+        /thKbVSHFJ4X5OsTGTlGbZlXYJEC0jXKd+9liwaZ0AFgq+brAkGPVb9/wr1+M9jW+CcPpg
+        WXK3W+YA05iI8OoBcbHUB6Wg/e5iq2iTjOq0rJ180pN/LsMbXbAcp/Y9X0V1cKVxEdX7vk
+        +vyJIx/v9xT1n5BAbnDml4nNPhuXWaOAZIVlo1XEY7FraaBQvqxOb4NJEuxRdnGBhYzM1C
+        +SxLI0epwGnk+RBxSnnpmWcbbzMb8Zdai1x7dFUccF6czktXYZEn8p70gRmk9A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1599639973;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QoDD1UDHTlJFMLx9+RNng8Fd9vf19kX3LXI/EPptrC0=;
+        b=iMBqAbWC2jRtBf0RHg2K8mr94DRlCVOcQK7RMU+RjhAzyd64Io5HaSCFxS9m0NnGCfbezI
+        uvgtqkfj/kqjeWBg==
+From:   "tip-bot2 for Valentin Schneider" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: sched/core] sched/topology: Move sd_flag_debug out of #ifdef
+ CONFIG_SYSCTL
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Ingo Molnar <mingo@kernel.org>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200908184956.23369-1-valentin.schneider@arm.com>
+References: <20200908184956.23369-1-valentin.schneider@arm.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="kVXhAStRUZ/+rrGn"
-Content-Disposition: inline
-In-Reply-To: <20200908203247.14374-1-evan.nimmo@alliedtelesis.co.nz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Message-ID: <159963997277.20229.10716555225789484968.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following commit has been merged into the sched/core branch of tip:
 
---kVXhAStRUZ/+rrGn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Commit-ID:     848785df48835eefebe0c4eb5da7690690b0a8b7
+Gitweb:        https://git.kernel.org/tip/848785df48835eefebe0c4eb5da7690690b0a8b7
+Author:        Valentin Schneider <valentin.schneider@arm.com>
+AuthorDate:    Tue, 08 Sep 2020 19:49:56 +01:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Wed, 09 Sep 2020 10:09:03 +02:00
 
-On Wed, Sep 09, 2020 at 08:32:47AM +1200, Evan Nimmo wrote:
-> If something goes wrong (such as the SCL being stuck low) then we need
-> to reset the PCA chip. The issue with this is that on reset we lose all
-> config settings and the chip ends up in a disabled state which results
-> in a lock up/high CPU usage. We need to re-apply any configuration that
-> had previously been set and re-enable the chip.
->=20
-> Signed-off-by: Evan Nimmo <evan.nimmo@alliedtelesis.co.nz>
-> Reviewed-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Reviewed-by: Wolfram Sang <wsa@kernel.org>
+sched/topology: Move sd_flag_debug out of #ifdef CONFIG_SYSCTL
 
-Applied to for-current, thanks!
+The last sd_flag_debug shuffle inadvertently moved its definition within
+an #ifdef CONFIG_SYSCTL region. While CONFIG_SYSCTL is indeed required to
+produce the sched domain ctl interface (which uses sd_flag_debug to output
+flag names), it isn't required to run any assertion on the sched_domain
+hierarchy itself.
 
-For the record, were you able to test both, PCA9564 and PCA9665?
+Move the definition of sd_flag_debug to a CONFIG_SCHED_DEBUG region of
+topology.c.
 
+Now at long last we have:
 
---kVXhAStRUZ/+rrGn
-Content-Type: application/pgp-signature; name="signature.asc"
+- sd_flag_debug declared in include/linux/sched/topology.h iff
+  CONFIG_SCHED_DEBUG=y
+- sd_flag_debug defined in kernel/sched/topology.c, conditioned by:
+  - CONFIG_SCHED_DEBUG, with an explicit #ifdef block
+  - CONFIG_SMP, as a requirement to compile topology.c
 
------BEGIN PGP SIGNATURE-----
+With this change, all symbols pertaining to SD flag metadata (with the
+exception of __SD_FLAG_CNT) are now defined exclusively within topology.c
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl9YkQoACgkQFA3kzBSg
-Kbb+QQ/9E7gUmj6g6blrvZZpCuk9+cGTLSBERDhTHqADvFLASAzYwW6sd5ZIMYkI
-FkYxSngIxqbhxLDPcPJGiTzp2m6+Fg/nkcAOEqePWHxlluhZ09E5pOPznBtdaoPa
-OuXSi60LuHk8S9tUluox2UbHohlVOJ46gMtbzT7bW2/tcer3WL+I5Q1XHTqIsE9w
-bA7xZStj03hto3GHT+gB9O2HjF/dgnkUSqAIkX/mlGj2RGenfpxAmuYeo7D87ozK
-Br+1nb9ZiqYNdawSRXoI2xyvtuFkCNGUq+YWbwJYqHFiICdz7Q2+0mJk+uRqPqdk
-XhMfmzc6OvFrqNLOw+o5Vd6m2INiLdo9dHtiWzT1B4eujliqZpfZ0ky1cCwNXU3Q
-VojyoJ1uaX+PgdeAl4IczCDPrBv6dvz7nXo4bj03Vjdhzce40RpFXn3tfs05idnR
-fciO//UlJNdjk2FR3qaK5dWWLGANrKtPcW+y7BXr5BNgMHBRXeUg+3g5pjrw0eg6
-JSBud0OsqCCZv2V3Angg5pQI2q+FmSMW7q48MZJzNUmg8V7UI1D4SVu62Nf8mVDO
-hluoM80Yfqs1PnXjQP3lqEQKSV35HOUMR95Hb7/r4oPsvAr6VB4EFwuRm7Hqit/v
-fQpVPJ3cyjJP7GWPP26um0SLLz+F2xe9urjQLZ3FakaiY7fpFIY=
-=7ey7
------END PGP SIGNATURE-----
+Fixes: 8fca9494d4b4 ("sched/topology: Move sd_flag_debug out of linux/sched/topology.h")
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lore.kernel.org/r/20200908184956.23369-1-valentin.schneider@arm.com
+---
+ kernel/sched/debug.c    | 6 ------
+ kernel/sched/topology.c | 6 ++++++
+ 2 files changed, 6 insertions(+), 6 deletions(-)
 
---kVXhAStRUZ/+rrGn--
+diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
+index 0d7896d..0655524 100644
+--- a/kernel/sched/debug.c
++++ b/kernel/sched/debug.c
+@@ -245,12 +245,6 @@ set_table_entry(struct ctl_table *entry,
+ 	entry->proc_handler = proc_handler;
+ }
+ 
+-#define SD_FLAG(_name, mflags) [__##_name] = { .meta_flags = mflags, .name = #_name },
+-const struct sd_flag_debug sd_flag_debug[] = {
+-#include <linux/sched/sd_flags.h>
+-};
+-#undef SD_FLAG
+-
+ static int sd_ctl_doflags(struct ctl_table *table, int write,
+ 			  void *buffer, size_t *lenp, loff_t *ppos)
+ {
+diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+index aa1676a..249bec7 100644
+--- a/kernel/sched/topology.c
++++ b/kernel/sched/topology.c
+@@ -25,6 +25,12 @@ static inline bool sched_debug(void)
+ 	return sched_debug_enabled;
+ }
+ 
++#define SD_FLAG(_name, mflags) [__##_name] = { .meta_flags = mflags, .name = #_name },
++const struct sd_flag_debug sd_flag_debug[] = {
++#include <linux/sched/sd_flags.h>
++};
++#undef SD_FLAG
++
+ static int sched_domain_debug_one(struct sched_domain *sd, int cpu, int level,
+ 				  struct cpumask *groupmask)
+ {
