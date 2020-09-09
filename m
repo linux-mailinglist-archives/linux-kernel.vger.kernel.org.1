@@ -2,100 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A21A262F90
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 16:11:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B978262FA5
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 16:17:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730329AbgIIOLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 10:11:54 -0400
-Received: from elvis.franken.de ([193.175.24.41]:32954 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730295AbgIINKQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 09:10:16 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1kFzrd-0001tu-00; Wed, 09 Sep 2020 15:10:17 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 4848CC0F5F; Wed,  9 Sep 2020 14:10:57 +0200 (CEST)
-Date:   Wed, 9 Sep 2020 14:10:57 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Subject: Re: [PATCH 00/12] Convert WAR defines to config options
-Message-ID: <20200909121057.GA2814@alpha.franken.de>
-References: <20200824163257.44533-1-tsbogend@alpha.franken.de>
+        id S1730483AbgIIORZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 10:17:25 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:24480 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730268AbgIINGI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 09:06:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599656762;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xxQpbfVe+Ifq+wURKd+XyljLsPLKIMNuX/nStuM1m48=;
+        b=goRSfJaaREZoldPrAyjwvH7RZ5Asm0zDXNvNaakJ3JhrdhZ71tCJg8U69WrxPKeeMMsKTY
+        UDsJwEj5Zq856Lq3w6rPekrHuLfO2FC1+r6vEphAfSrJWgzrPIFU82QibZAV79hmHu0tI2
+        V71CZhhLKhm1C8BctUQBh8AihH+E8Gc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-343-Ykj5AGabP3q9lIr5ay0lSQ-1; Wed, 09 Sep 2020 08:46:53 -0400
+X-MC-Unique: Ykj5AGabP3q9lIr5ay0lSQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C5A5C51B5;
+        Wed,  9 Sep 2020 12:46:51 +0000 (UTC)
+Received: from treble (ovpn-117-163.rdu2.redhat.com [10.10.117.163])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id B335319936;
+        Wed,  9 Sep 2020 12:46:46 +0000 (UTC)
+Date:   Wed, 9 Sep 2020 07:46:44 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     David Laight <David.Laight@aculab.com>
+Cc:     "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Will Deacon <will@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Waiman Long <longman@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH v2] x86/uaccess: Use pointer masking to limit uaccess
+ speculation
+Message-ID: <20200909124644.dndmfnoob5qzd7xi@treble>
+References: <bef9e78f9486d2a06c3e026d401511ffa117b0da.1598973982.git.jpoimboe@redhat.com>
+ <20200908174329.ryfprry62e4tuodw@treble>
+ <01b027d0d46d4572b3b16e2b49f0f2b3@AcuMS.aculab.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200824163257.44533-1-tsbogend@alpha.franken.de>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <01b027d0d46d4572b3b16e2b49f0f2b3@AcuMS.aculab.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 24, 2020 at 06:32:42PM +0200, Thomas Bogendoerfer wrote:
-> This patches convert workaround (WAR) defines into config options and
-> gets rid of mach-*/war.h files.
+On Wed, Sep 09, 2020 at 08:20:07AM +0000, David Laight wrote:
+> From: Josh Poimboeuf <jpoimboe@redhat.com>
+> > Sent: 08 September 2020 18:43
+> > Hi x86 maintainers,
+> ...
+> > > --- a/arch/x86/lib/putuser.S
+> > > +++ b/arch/x86/lib/putuser.S
+> > > @@ -38,6 +38,8 @@ SYM_FUNC_START(__put_user_1)
+> > >  	ENTER
+> > >  	cmp TASK_addr_limit(%_ASM_BX),%_ASM_CX
+> > >  	jae .Lbad_put_user
+> > > +	sbb %_ASM_BX, %_ASM_BX		/* uaccess_mask_ptr() */
+> > > +	and %_ASM_BX, %_ASM_CX
+> > >  	ASM_STAC
+> > >  1:	movb %al,(%_ASM_CX)
+> > >  	xor %eax,%eax
 > 
-> Thomas Bogendoerfer (12):
->   MIPS: Convert R4600_V1_INDEX_ICACHEOP into a config option
->   MIPS: Convert R4600_V1_HIT_CACHEOP into a config option
->   MIPS: Convert R4600_V2_HIT_CACHEOP into a config option
->   MIPS: Remove MIPS4K_ICACHE_REFILL_WAR and MIPS_CACHE_SYNC_WAR
->   MIPS: Convert TX49XX_ICACHE_INDEX_INV into a config option
->   MIPS: Convert ICACHE_REFILLS_WORKAROUND_WAR into a config option
->   MIPS: Convert R10000_LLSC_WAR info a config option
->   MIPS: Convert MIPS34K_MISSED_ITLB_WAR into a config option
->   MIPS: Replace SIBYTE_1956_WAR by CONFIG_SB1_PASS_2_WORKAROUNDS
->   MIPS: Get rid of BCM1250_M3_WAR
->   MIPS: Get rid of CAVIUM_OCTEON_DCACHE_PREFETCH_WAR
->   MIPS: Remove mach-*/war.h
-> 
->  arch/mips/Kconfig                              |  80 +++++++++++++
->  arch/mips/cavium-octeon/setup.c                |   2 +-
->  arch/mips/include/asm/futex.h                  |   4 +-
->  arch/mips/include/asm/llsc.h                   |   2 +-
->  arch/mips/include/asm/local.h                  |   4 +-
->  arch/mips/include/asm/mach-cavium-octeon/war.h |  27 -----
->  arch/mips/include/asm/mach-generic/war.h       |  23 ----
->  arch/mips/include/asm/mach-ip22/war.h          |  27 -----
->  arch/mips/include/asm/mach-ip27/war.h          |  23 ----
->  arch/mips/include/asm/mach-ip28/war.h          |  23 ----
->  arch/mips/include/asm/mach-ip30/war.h          |  24 ----
->  arch/mips/include/asm/mach-ip32/war.h          |  23 ----
->  arch/mips/include/asm/mach-malta/war.h         |  23 ----
->  arch/mips/include/asm/mach-rc32434/war.h       |  23 ----
->  arch/mips/include/asm/mach-rm/war.h            |  27 -----
->  arch/mips/include/asm/mach-sibyte/war.h        |  38 -------
->  arch/mips/include/asm/mach-tx49xx/war.h        |  23 ----
->  arch/mips/include/asm/mipsregs.h               |   4 +-
->  arch/mips/include/asm/war.h                    | 150 -------------------------
->  arch/mips/kernel/signal.c                      |   8 +-
->  arch/mips/kernel/syscall.c                     |   2 +-
->  arch/mips/mm/c-r4k.c                           |  17 +--
->  arch/mips/mm/page.c                            |  16 ++-
->  arch/mips/mm/tlbex.c                           |   8 +-
->  arch/mips/mm/uasm.c                            |   2 +-
->  drivers/tty/serial/sb1250-duart.c              |   9 +-
->  26 files changed, 127 insertions(+), 485 deletions(-)
->  delete mode 100644 arch/mips/include/asm/mach-cavium-octeon/war.h
->  delete mode 100644 arch/mips/include/asm/mach-generic/war.h
->  delete mode 100644 arch/mips/include/asm/mach-ip22/war.h
->  delete mode 100644 arch/mips/include/asm/mach-ip27/war.h
->  delete mode 100644 arch/mips/include/asm/mach-ip28/war.h
->  delete mode 100644 arch/mips/include/asm/mach-ip30/war.h
->  delete mode 100644 arch/mips/include/asm/mach-ip32/war.h
->  delete mode 100644 arch/mips/include/asm/mach-malta/war.h
->  delete mode 100644 arch/mips/include/asm/mach-rc32434/war.h
->  delete mode 100644 arch/mips/include/asm/mach-rm/war.h
->  delete mode 100644 arch/mips/include/asm/mach-sibyte/war.h
->  delete mode 100644 arch/mips/include/asm/mach-tx49xx/war.h
+> For 64bit the sbb+and pattern can be replaced by an instruction
+> that clears the high bit (eg btr $63, %rcx).
+> This isn't dependant on the earlier instructions so can execute
+> in parallel with them.
 
-series applied to mips-next.
+Wouldn't that break with KERNEL_DS?
 
-Thomas.
+> I still think that doing the same comparisons in access_ok()
+> and for the pointer masking is silly - and they should get merged.
+
+I agree, but as I said multiple times already, that will be a much
+bigger change (tree-wide and multi-arch) which comes later.
 
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Josh
+
