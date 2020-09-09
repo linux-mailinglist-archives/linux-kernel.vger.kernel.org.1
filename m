@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F53126333E
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 19:00:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A5E7263336
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:59:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731218AbgIIRAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 13:00:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51810 "EHLO mail.kernel.org"
+        id S1731212AbgIIQ7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 12:59:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51682 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730657AbgIIPvM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1730640AbgIIPvM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 9 Sep 2020 11:51:12 -0400
 Received: from mail.kernel.org (ip5f5ad5d6.dynamic.kabel-deutschland.de [95.90.213.214])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5DEEC221EE;
+        by mail.kernel.org (Postfix) with ESMTPSA id 79A1522211;
         Wed,  9 Sep 2020 14:11:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1599660665;
-        bh=bDug0htbPkTs/pWzV7NVGwmuxDPdL8W15RowRtsr554=;
+        bh=H8u21lHYR0QTzmGXeeCy6jkZ+7enZwKCuGPulIWQAOA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gQv2sxO0Zsye0NXp8e8i/m2mlH4a/zBs+UbaZSmg8+GubGmhR4KlcQOT59f3DDPaz
-         oCTHkIrIM+nOM/RxTwixwrDYTBps0kQqlESbc5dIUPSB5xWI1Tr86xIBy3x8DXdV90
-         oKr7jCzvLsLIOxTd6lm+o83rg6E7JZtAWq83pHm8=
+        b=HdCZoQ/PmDz30lrsWHlrr/ifUApUJOutPWMpwMmgnMdUaxTNCWA/ycqQJ57twnRLN
+         eiRz0md1CU4JTlxmYF8ckrHM5tvTHOKA+dWaY1PAKE4I7LBgjglRASCFpCnINvZmBU
+         Bn+EmCQKWjMkT/DVXBb6NL8EkGmMLKb5UEpJT/N8=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kG0oR-00DUXK-Ha; Wed, 09 Sep 2020 16:11:03 +0200
+        id 1kG0oR-00DUXN-Ib; Wed, 09 Sep 2020 16:11:03 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
         Jonathan Corbet <corbet@lwn.net>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 18/30] block: bio: fix a warning at the kernel-doc markups
-Date:   Wed,  9 Sep 2020 16:10:49 +0200
-Message-Id: <73fb7b91726f95ba038fbff025bdecdc8faaf204.1599660067.git.mchehab+huawei@kernel.org>
+Subject: [PATCH 19/30] docs: soundwire: fix some identation at stream.rst
+Date:   Wed,  9 Sep 2020 16:10:50 +0200
+Message-Id: <eddde9f8d121e27d7968b3d747064e16de8bec4f.1599660067.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1599660067.git.mchehab+huawei@kernel.org>
 References: <cover.1599660067.git.mchehab+huawei@kernel.org>
@@ -44,40 +44,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Using "@bio's parent" causes the following waring:
-	./block/bio.c:10: WARNING: Inline emphasis start-string without end-string.
+Currently, sphinx emits one warning on this file:
 
-The main problem here is that this would be converted into:
+	Documentation/driver-api/soundwire/stream.rst:522: WARNING: Block quote ends without a blank line; unexpected unindent.
 
-	**bio**'s parent
+That's due to some extra spaces before the title of a chapter.
 
-By kernel-doc, which is not a valid notation. It would be
-possible to use, instead, this kernel-doc markup:
+Yet, the list afterwards is missing identation.
 
-	``bio's`` parent
-
-Yet, here, is probably simpler to just use an altenative language:
-
-	the parent of @bio
+So, address both issues.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- block/bio.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Documentation/driver-api/soundwire/stream.rst | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/block/bio.c b/block/bio.c
-index a9931f23d933..ccd3ab549d41 100644
---- a/block/bio.c
-+++ b/block/bio.c
-@@ -327,7 +327,7 @@ static void bio_chain_endio(struct bio *bio)
- /**
-  * bio_chain - chain bio completions
-  * @bio: the target bio
-- * @parent: the @bio's parent bio
-+ * @parent: the parent bio of @bio
-  *
-  * The caller won't have a bi_end_io called when @bio completes - instead,
-  * @parent's bi_end_io won't be called until both @parent and @bio have
+diff --git a/Documentation/driver-api/soundwire/stream.rst b/Documentation/driver-api/soundwire/stream.rst
+index 8858cea7bfe0..b432a2de45d3 100644
+--- a/Documentation/driver-api/soundwire/stream.rst
++++ b/Documentation/driver-api/soundwire/stream.rst
+@@ -518,10 +518,10 @@ typically called during a dailink .shutdown() callback, which clears
+ the stream pointer for all DAIS connected to a stream and releases the
+ memory allocated for the stream.
+ 
+-  Not Supported
++Not Supported
+ =============
+ 
+ 1. A single port with multiple channels supported cannot be used between two
+-streams or across stream. For example a port with 4 channels cannot be used
+-to handle 2 independent stereo streams even though it's possible in theory
+-in SoundWire.
++   streams or across stream. For example a port with 4 channels cannot be used
++   to handle 2 independent stereo streams even though it's possible in theory
++   in SoundWire.
 -- 
 2.26.2
 
