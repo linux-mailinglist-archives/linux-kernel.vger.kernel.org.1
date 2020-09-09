@@ -2,155 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 785B2262903
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 09:38:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60CC026290E
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 09:39:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730140AbgIIHiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 03:38:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58860 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726408AbgIIHh4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 03:37:56 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CFA1C061573
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 00:37:56 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id s2so918174pjr.4
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 00:37:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Iy/APQd+Om2zvfiNSuBSqVLHET3wSuMQMAbhPYL7p8g=;
-        b=RXMckBVOzfWh5lB0NGjYDRdVwoFWX6RIu3D4DLvpoZYEsN2bn7czl8s92gvRXRuvC1
-         jkKloomDCmnelqvDVvGV+DDqOaLVv1Ly/uBqYJvYsQY/xzk7+KG7Utpo5zmK7Hirybcp
-         w/YLYhv45WVnQ+CS5HsuPUJB1XkxczMgYCUW0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Iy/APQd+Om2zvfiNSuBSqVLHET3wSuMQMAbhPYL7p8g=;
-        b=eQxAGisyu2u79VF4fCKetdJaaiJTLnblei9rui/g4RseCKYeNr+i4UV5OiW+20mUDq
-         rv2fzJOfUvm16/lfqPrgg8wqwYN0yLO2cG/NEhXkJIQtI6LH+WMXhzjh5ERpqqT785fv
-         74JSb3UDtaVAYrxaNOB/EV4qiQkRpwoVnT9dwSLoZUWHFTdMMkdsdU0+C6X/91EPWcGP
-         Kz2J02qgm9fCea6CW//QRViIP5FLrf91dPBz08qRMQ8MrF3cSVsN+TAfSEEFTuADoHCd
-         j9G5WGJP2skP2cleggnGiPZBSYzti2SGaMigscYGgnYCLfa5YaArS0obxkYkRLj4AbPb
-         bdTg==
-X-Gm-Message-State: AOAM533Z6UWm/gZgeXf96SWiTlTzL8iNmP087bbqKkAn0KE+xMnu6A9k
-        IA8RYtUisHXOuskHp9RXYUyIBrqymcXT6A==
-X-Google-Smtp-Source: ABdhPJymus8agbUoPSDDSSddmS+9FIwgQYcgK1fT6qDpKUASDuNarYsPQQLpgt3Qgn+nsXWqsxaInQ==
-X-Received: by 2002:a17:90b:1107:: with SMTP id gi7mr2342742pjb.233.1599637075433;
-        Wed, 09 Sep 2020 00:37:55 -0700 (PDT)
-Received: from localhost ([2401:fa00:9:15:7220:84ff:fe09:cabc])
-        by smtp.gmail.com with ESMTPSA id h65sm1693068pfb.210.2020.09.09.00.37.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Sep 2020 00:37:54 -0700 (PDT)
-From:   Sam McNally <sammc@chromium.org>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Imre Deak <imre.deak@intel.com>, Sam McNally <sammc@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH v2] drm/dp_mst: Add ddc i2c device links for DP MST connectors
-Date:   Wed,  9 Sep 2020 17:37:38 +1000
-Message-Id: <20200909173712.v2.1.Iaa9c3d7c4332cf8717653f3d3ae6f2b955aa3fc6@changeid>
-X-Mailer: git-send-email 2.28.0.526.ge36021eeef-goog
+        id S1730309AbgIIHjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 03:39:02 -0400
+Received: from mx2.suse.de ([195.135.220.15]:54176 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730177AbgIIHi7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 03:38:59 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 5B63FB666;
+        Wed,  9 Sep 2020 07:38:55 +0000 (UTC)
+Subject: Re: [PATCH 18/19] sr: simplify sr_block_revalidate_disk
+To:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
+Cc:     Denis Efremov <efremov@linux.com>, Tim Waugh <tim@cyberelk.net>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Borislav Petkov <bp@alien8.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Song Liu <song@kernel.org>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Finn Thain <fthain@telegraphics.com.au>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        linux-m68k@lists.linux-m68k.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-ide@vger.kernel.org,
+        linux-raid@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+References: <20200908145347.2992670-1-hch@lst.de>
+ <20200908145347.2992670-19-hch@lst.de>
+From:   Hannes Reinecke <hare@suse.de>
+Openpgp: preference=signencrypt
+Autocrypt: addr=hare@suse.de; prefer-encrypt=mutual; keydata=
+ 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
+ azzYF4VRJsdl+d0MCaSy8mUh
+Message-ID: <08e6de4e-4c7d-209c-a15d-2a8f85bbeeca@suse.de>
+Date:   Wed, 9 Sep 2020 09:38:10 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
+In-Reply-To: <20200908145347.2992670-19-hch@lst.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DP MST DDC I2C devices are not parented to their connectors. This makes
-it challenging to associate the ddc i2c device with its connector from
-userspace. With further refactoring, this can be changed, but in the
-meantime, follow the pattern of commit e1a29c6c5955 ("drm: Add ddc link
-in sysfs created by drm_connector"), creating sysfs ddc links to the
-associated i2c device for MST DP connectors.
+On 9/8/20 4:53 PM, Christoph Hellwig wrote:
+> Both callers have a valid CD struture available, so rely on that instead
+> of getting another reference.  Also move the function to avoid a forward
+> declaration.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> ---
+>  drivers/scsi/sr.c | 36 +++++++++++++-----------------------
+>  1 file changed, 13 insertions(+), 23 deletions(-)
+> 
+Reviewed-by: Hannes Reinecke <hare@suse.de>
 
-If the connector is created and registered before the i2c device, create
-the link when registering the i2c device; otherwise, create the link
-after registering the connector.
+Cheers,
 
-Signed-off-by: Sam McNally <sammc@chromium.org>
----
-
-Changes in v2:
-- Reworded description to avoid accusing an innocent commit of
-  responsibility for the problem being addressed
-
- drivers/gpu/drm/drm_dp_mst_topology.c | 29 +++++++++++++++++++++++++--
- 1 file changed, 27 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c b/drivers/gpu/drm/drm_dp_mst_topology.c
-index 17dbed0a9800..e60a6b8af3c1 100644
---- a/drivers/gpu/drm/drm_dp_mst_topology.c
-+++ b/drivers/gpu/drm/drm_dp_mst_topology.c
-@@ -2159,11 +2159,23 @@ static void build_mst_prop_path(const struct drm_dp_mst_branch *mstb,
- int drm_dp_mst_connector_late_register(struct drm_connector *connector,
- 				       struct drm_dp_mst_port *port)
- {
-+	int ret;
- 	DRM_DEBUG_KMS("registering %s remote bus for %s\n",
- 		      port->aux.name, connector->kdev->kobj.name);
- 
- 	port->aux.dev = connector->kdev;
--	return drm_dp_aux_register_devnode(&port->aux);
-+	ret = drm_dp_aux_register_devnode(&port->aux);
-+	if (ret)
-+		return ret;
-+
-+	if (port->pdt != DP_PEER_DEVICE_NONE &&
-+	    drm_dp_mst_is_end_device(port->pdt, port->mcs)) {
-+		ret = sysfs_create_link(&port->connector->kdev->kobj,
-+					&port->aux.ddc.dev.kobj, "ddc");
-+		if (ret)
-+			drm_dp_aux_unregister_devnode(&port->aux);
-+	}
-+	return ret;
- }
- EXPORT_SYMBOL(drm_dp_mst_connector_late_register);
- 
-@@ -5439,6 +5451,7 @@ static int drm_dp_mst_register_i2c_bus(struct drm_dp_mst_port *port)
- {
- 	struct drm_dp_aux *aux = &port->aux;
- 	struct device *parent_dev = port->mgr->dev->dev;
-+	int ret;
- 
- 	aux->ddc.algo = &drm_dp_mst_i2c_algo;
- 	aux->ddc.algo_data = aux;
-@@ -5453,7 +5466,17 @@ static int drm_dp_mst_register_i2c_bus(struct drm_dp_mst_port *port)
- 	strlcpy(aux->ddc.name, aux->name ? aux->name : dev_name(parent_dev),
- 		sizeof(aux->ddc.name));
- 
--	return i2c_add_adapter(&aux->ddc);
-+	ret = i2c_add_adapter(&aux->ddc);
-+	if (ret)
-+		return ret;
-+
-+	if (port->connector && port->connector->kdev) {
-+		ret = sysfs_create_link(&port->connector->kdev->kobj,
-+					&port->aux.ddc.dev.kobj, "ddc");
-+		if (ret)
-+			i2c_del_adapter(&port->aux.ddc);
-+	}
-+	return ret;
- }
- 
- /**
-@@ -5462,6 +5485,8 @@ static int drm_dp_mst_register_i2c_bus(struct drm_dp_mst_port *port)
-  */
- static void drm_dp_mst_unregister_i2c_bus(struct drm_dp_mst_port *port)
- {
-+	if (port->connector && port->connector->kdev)
-+		sysfs_remove_link(&port->connector->kdev->kobj, "ddc");
- 	i2c_del_adapter(&port->aux.ddc);
- }
- 
+Hannes
 -- 
-2.28.0.526.ge36021eeef-goog
-
+Dr. Hannes Reinecke		           Kernel Storage Architect
+hare@suse.de			                  +49 911 74053 688
+SUSE Software Solutions Germany GmbH, Maxfeldstr. 5, 90409 Nürnberg
+HRB 36809 (AG Nürnberg), GF: Felix Imendörffer
