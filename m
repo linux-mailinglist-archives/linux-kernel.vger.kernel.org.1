@@ -2,125 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B46326362F
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 20:44:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5604926364B
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 20:52:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726801AbgIISoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 14:44:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49458 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726399AbgIISn6 (ORCPT
+        id S1726801AbgIISwQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 14:52:16 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:34012 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725772AbgIISwM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 14:43:58 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21915C061573;
-        Wed,  9 Sep 2020 11:43:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=EaCCaUS/GA5zKTWx+EqB8AflyC7OJgYop8KOzI5rmeE=; b=GomwRcHmRkv+TFrVR0WQdaBrR0
-        IdVlKI/PUaruAuCEPKQBmtZ7JZL4we75h3/irAUxJ5gsU6M6mTs94C2fOhTV5pfIxcT3EddDzUl3v
-        bu8NKjOCp53mKvhHgrfPPxWkyrooRmtL8rXlsAQoHv7o2YfeSyCdsDl3NgWQ472DZXJGPePZ55nSQ
-        2OKgY8UtasfDK043LRoY1nwBTIYe2u5DI6qP7K08HwvybWJBo+CFTJ2p/0tzGYKZYGX/OGo7ChH74
-        BOTNo89H1Y+r6WmkB5DnHB9RsbMya/p7/YqieedDFsC5IKr9tKeJzgWaoH852g0zCtGTfYU7xTrVI
-        PBNIWO2Q==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kG549-0005ns-Am; Wed, 09 Sep 2020 18:43:34 +0000
-Subject: Re: [PATCH net-next + leds v2 2/7] leds: add generic API for LEDs
- that can be controlled by hardware
-To:     =?UTF-8?Q?Marek_Beh=c3=ban?= <marek.behun@nic.cz>
-Cc:     netdev@vger.kernel.org, linux-leds@vger.kernel.org,
-        Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
-        =?UTF-8?Q?Ond=c5=99ej_Jirman?= <megous@megous.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Andrew Lunn <andrew@lunn.ch>, linux-kernel@vger.kernel.org,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
-        "David S. Miller" <davem@davemloft.net>
-References: <20200909162552.11032-1-marek.behun@nic.cz>
- <20200909162552.11032-3-marek.behun@nic.cz>
- <84bfc0ce-752d-9d1f-1043-fabe4cc25b15@infradead.org>
- <20200909203121.73bfcfa1@dellmb.labs.office.nic.cz>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <444169ca-cfd7-dcb5-3ce6-59d3bfea6190@infradead.org>
-Date:   Wed, 9 Sep 2020 11:43:28 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Wed, 9 Sep 2020 14:52:12 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 089InQks133666;
+        Wed, 9 Sep 2020 18:52:03 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=wRQMBbgyE780H9oZKmHohxX9YEocjPdiZcrrNX6RqgU=;
+ b=pqXxk0jXvuvIc0hLSHZJ8pDjnjfKnkusrAvXzr8/LuidugfJQKnKWUvszi3ETv/buWPc
+ iK95IV+VUDlrikw1Wz288I6ALUieGSQZvwYBaEIXSirgwqumJwFm5LiK+L5Ils2sXEn4
+ WR+zbLwzIJ25eWXFNJ+GpTE6HLcDmqt04S6m3qJ+m2A16nuLUuJw7yWLYxqcD/aFKkG7
+ k+YaL9zsqlVExxR1eJmuOs2gvv7bPOUtv/6miM6nWz8Cvd7z1YLdAeXR1tLK6VENT7f1
+ nGSSMcFaY//gI5paTTnJxeU64wABVAXLn3LRTAUSknOU80Jy41FtitOQ6AjM3rOG1Er5 HA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 33c23r3rkj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 09 Sep 2020 18:52:03 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 089IjcEk041590;
+        Wed, 9 Sep 2020 18:52:02 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 33dackwt8p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 09 Sep 2020 18:52:02 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 089Iq2TE026548;
+        Wed, 9 Sep 2020 18:52:02 GMT
+Received: from localhost (/67.169.218.210)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 09 Sep 2020 11:52:02 -0700
+Date:   Wed, 9 Sep 2020 11:52:00 -0700
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     Zheng Bin <zhengbin13@huawei.com>
+Cc:     linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yi.zhang@huawei.com
+Subject: Re: [PATCH -next] xfs: Remove unneeded semicolon
+Message-ID: <20200909185200.GL7955@magnolia>
+References: <20200909120733.115415-1-zhengbin13@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20200909203121.73bfcfa1@dellmb.labs.office.nic.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200909120733.115415-1-zhengbin13@huawei.com>
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9739 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 malwarescore=0
+ bulkscore=0 phishscore=0 adultscore=0 suspectscore=1 spamscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009090166
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9739 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 priorityscore=1501
+ mlxlogscore=999 mlxscore=0 bulkscore=0 suspectscore=1 spamscore=0
+ malwarescore=0 phishscore=0 lowpriorityscore=0 clxscore=1011
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009090166
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/9/20 11:31 AM, Marek Behún wrote:
-> On Wed, 9 Sep 2020 11:20:00 -0700
-> Randy Dunlap <rdunlap@infradead.org> wrote:
+On Wed, Sep 09, 2020 at 08:07:32PM +0800, Zheng Bin wrote:
+> Fixes coccicheck warning:
 > 
->> Hi,
->>
->> On 9/9/20 9:25 AM, Marek Behún wrote:
->>> Many an ethernet PHY (and other chips) supports various HW control
->>> modes for LEDs connected directly to them.
->>>
->>> This patch adds a generic API for registering such LEDs when
->>> described in device tree. This API also exposes generic way to
->>> select between these hardware control modes.
->>>
->>> This API registers a new private LED trigger called dev-hw-mode.
->>> When this trigger is enabled for a LED, the various HW control
->>> modes which are supported by the device for given LED can be
->>> get/set via hw_mode sysfs file.
->>>
->>> Signed-off-by: Marek Behún <marek.behun@nic.cz>
->>> ---
->>>  .../sysfs-class-led-trigger-dev-hw-mode       |   8 +
->>>  drivers/leds/Kconfig                          |  10 +
->>>  drivers/leds/Makefile                         |   1 +
->>>  drivers/leds/leds-hw-controlled.c             | 227
->>> ++++++++++++++++++ include/linux/leds-hw-controlled.h            |
->>> 74 ++++++ 5 files changed, 320 insertions(+)
->>>  create mode 100644
->>> Documentation/ABI/testing/sysfs-class-led-trigger-dev-hw-mode
->>> create mode 100644 drivers/leds/leds-hw-controlled.c create mode
->>> 100644 include/linux/leds-hw-controlled.h 
->>
->>> diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
->>> index 1c181df24eae4..5e47ab21aafb4 100644
->>> --- a/drivers/leds/Kconfig
->>> +++ b/drivers/leds/Kconfig
->>> @@ -49,6 +49,16 @@ config LEDS_BRIGHTNESS_HW_CHANGED
->>>  
->>>  	  See Documentation/ABI/testing/sysfs-class-led for
->>> details. 
->>> +config LEDS_HW_CONTROLLED
->>> +	bool "API for LEDs that can be controlled by hardware"
->>> +	depends on LEDS_CLASS  
->>
->> 	depends on OF || COMPILE_TEST
->> ?
->>
+> fs/xfs/xfs_icache.c:1214:2-3: Unneeded semicolon
 > 
-> I specifically did not add OF dependency so that this can be also used
-> on non-OF systems. A device driver may register such LED itself...
-> That's why hw_controlled_led_brightness_set symbol is exported.
+> Signed-off-by: Zheng Bin <zhengbin13@huawei.com>
+
+Looks ok,
+Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+
+--D
+
+> ---
+>  fs/xfs/xfs_icache.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Do you think I shouldn't do it?
-
-I have no problem with it as it is.
-
->>> +	select LEDS_TRIGGERS
->>> +	help
->>> +	  This option enables support for a generic API via which
->>> other drivers
->>> +	  can register LEDs that can be put into hardware
->>> controlled mode, eg.  
-
-thanks.
--- 
-~Randy
-
+> diff --git a/fs/xfs/xfs_icache.c b/fs/xfs/xfs_icache.c
+> index 101028ebb571..5e926912e507 100644
+> --- a/fs/xfs/xfs_icache.c
+> +++ b/fs/xfs/xfs_icache.c
+> @@ -1211,7 +1211,7 @@ xfs_reclaim_inodes(
+>  	while (radix_tree_tagged(&mp->m_perag_tree, XFS_ICI_RECLAIM_TAG)) {
+>  		xfs_ail_push_all_sync(mp->m_ail);
+>  		xfs_reclaim_inodes_ag(mp, &nr_to_scan);
+> -	};
+> +	}
+>  }
+> 
+>  /*
+> --
+> 2.26.0.106.g9fadedd
+> 
