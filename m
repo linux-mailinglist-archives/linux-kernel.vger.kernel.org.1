@@ -2,152 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 576282630BC
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 17:41:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 332B3263110
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 17:56:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728350AbgIIPke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 11:40:34 -0400
-Received: from mga12.intel.com ([192.55.52.136]:54861 "EHLO mga12.intel.com"
+        id S1730437AbgIIP4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 11:56:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51430 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729960AbgIIPik (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 11:38:40 -0400
-IronPort-SDR: d1GsyPyiZwWl4ulR8RjseG6zBdSS6PjRyZuDHyuknB86r0CQoMEqmk0pBLDgeZQVDq6Q59/8V3
- Ryo2CoYYBR5w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9738"; a="137847942"
-X-IronPort-AV: E=Sophos;i="5.76,409,1592895600"; 
-   d="scan'208";a="137847942"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2020 07:06:32 -0700
-IronPort-SDR: oEEFyWNbpQPRngTVKDuAJbpVTYcGsbTmtgnm2tPuu4g6/whgj+UfS89DoVGczN9funvDt7PqXc
- WIPiKHHJT1Qg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,409,1592895600"; 
-   d="scan'208";a="328919425"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.190]) ([10.237.72.190])
-  by fmsmga004.fm.intel.com with ESMTP; 09 Sep 2020 07:06:29 -0700
-Subject: Re: [PATCH V2] scsi: ufs-pci: Add LTR support for Intel controllers
-From:   Adrian Hunter <adrian.hunter@intel.com>
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Can Guo <cang@codeaurora.org>,
-        Stanley Chu <stanley.chu@mediatek.com>
-References: <20200827072030.24655-1-adrian.hunter@intel.com>
- <yq14kohexka.fsf@ca-mkp.ca.oracle.com>
- <dc615e02-18a3-334d-dbc4-8aba94e4be6b@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <a27fa387-356c-82e1-a49f-62602336589e@intel.com>
-Date:   Wed, 9 Sep 2020 17:06:05 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1730547AbgIIPvV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 11:51:21 -0400
+Received: from mail.kernel.org (ip5f5ad5d6.dynamic.kabel-deutschland.de [95.90.213.214])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 44546221E8;
+        Wed,  9 Sep 2020 14:11:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599660665;
+        bh=iY6OqVOcgu1zhpou4oMMQ2MqoLuggzVS9uTeM1VK3V8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=eCdjr+F3S/SUxOlc1bDPVGLdKtcVY4Cm21Hs3RkfNxm6TUWoGhAKvXl0HtKTPnuJc
+         eWiRXuu0xCS5Iy19k6LbQdtChs1cGtoRFavApk2arVzpZ0B4XOoXVokg9tFi8CZojt
+         V4tXBxnhPnoiRs8McKT3J7lXwWd9q1E1nw3icZEU=
+Received: from mchehab by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1kG0oR-00DUWr-8U; Wed, 09 Sep 2020 16:11:03 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 08/30] docs: fix location of nommu-mmap.rst file
+Date:   Wed,  9 Sep 2020 16:10:39 +0200
+Message-Id: <275a0c634408d89a3b3fb51ca93a6c0e8b4f7905.1599660067.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <cover.1599660067.git.mchehab+huawei@kernel.org>
+References: <cover.1599660067.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <dc615e02-18a3-334d-dbc4-8aba94e4be6b@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/09/20 12:27 pm, Adrian Hunter wrote:
-> On 2/09/20 5:12 am, Martin K. Petersen wrote:
->>
->> Adrian,
->>
->>> Intel host controllers support the setting of latency tolerance.
->>> Accordingly, implement the PM QoS ->set_latency_tolerance() callback. The
->>> raw register values are also exposed via debugfs.
->>
->> Does not apply to 5.10/scsi-queue. Please rebase. Thanks!
->>
-> 
-> Hi
-> 
-> Thanks for processing this.
-> 
-> The 5.10/scsi-queue branch seems to be missing the following fix.  If you cherry
-> pick that, then it applies.
+mm/nommu-mmap.rst -> admin-guide/mm/ nommu-mmap.rst
 
-Now there seem to be conflicts between 5.10/scsi-queue and v5.9-rc4.
-I am not sure what I can do?
+Fixes: 800c02f5d030 ("docs: move nommu-mmap.txt to admin-guide and rename to ReST")
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+---
+ init/Kconfig | 2 +-
+ mm/Kconfig   | 2 +-
+ mm/nommu.c   | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-
-~/git/scsi-mkp$ git branch -v --list 5.10/scsi-queue
-* 5.10/scsi-queue 2e9defc7e918 [ahead 427, behind 97] scsi: ufs: Fix a race condition between error handler and runtime PM ops
-~/git/scsi-mkp$ git rebase --onto v5.9-rc4 v5.9-rc1
-First, rewinding head to replay your work on top of it...
-Applying: scsi: ufs: Add checks before setting clk-gating states
-Applying: scsi: ufs: ufs-qcom: Fix race conditions caused by ufs_qcom_testbus_config()
-Applying: scsi: ufs-qcom: Remove testbus dump in ufs_qcom_dump_dbg_regs
-Applying: scsi: ufs: Add some debug information to ufshcd_print_host_state()
-Applying: scsi: ufs: Fix concurrency of error handler and other error recovery paths
-Applying: scsi: ufs: Recover HBA runtime PM error in error handler
-Applying: scsi: ufs: Move dumps in IRQ handler to error handler
-Applying: scsi: ufs: Fix a race condition between error handler and runtime PM ops
-Applying: scsi: ufs: Properly release resources if a task is aborted successfully
-Using index info to reconstruct a base tree...
-M       drivers/scsi/ufs/ufshcd.c
-Falling back to patching base and 3-way merge...
-Auto-merging drivers/scsi/ufs/ufshcd.c
-CONFLICT (content): Merge conflict in drivers/scsi/ufs/ufshcd.c
-error: Failed to merge in the changes.
-Patch failed at 0009 scsi: ufs: Properly release resources if a task is aborted successfully
-Use 'git am --show-current-patch' to see the failed patch
-
-Resolve all conflicts manually, mark them as resolved with
-"git add/rm <conflicted_files>", then run "git rebase --continue".
-You can instead skip this commit: run "git rebase --skip".
-To abort and get back to the state before "git rebase", run "git rebase --abort".
-
-~/git/scsi-mkp$ git diff
-diff --cc drivers/scsi/ufs/ufshcd.c
-index d9386f85c255,efb40b1b95b4..000000000000
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@@ -6640,12 -6636,8 +6640,14 @@@ static int ufshcd_abort(struct scsi_cmn
-                goto out;
-        }
-  
-++<<<<<<< HEAD
- +cleanup:
- +      scsi_dma_unmap(cmd);
- +
-++=======
-++>>>>>>> scsi: ufs: Properly release resources if a task is aborted successfully
-        spin_lock_irqsave(host->host_lock, flags);
--       ufshcd_outstanding_req_clear(hba, tag);
--       hba->lrb[tag].cmd = NULL;
-+       __ufshcd_transfer_req_compl(hba, (1UL << tag));
-        spin_unlock_irqrestore(host->host_lock, flags);
-  
-  out:
-
-~/git/scsi-mkp$ git am --show-current-patch | head -25
-commit 8bb2dde069d860e7ea379862a7d0e8ee01cec5e9
-Author: Can Guo <cang@codeaurora.org>
-Date:   Sun Aug 9 05:15:55 2020 -0700
-
-    scsi: ufs: Properly release resources if a task is aborted successfully
-    
-    In current UFS task abort hook, namely ufshcd_abort(), if one task is
-    aborted successfully, clk_gating.active_reqs held by this task is not
-    decreased, which makes clk_gating.active_reqs stay above zero forever, thus
-    clock gating would never happen. Instead of releasing resources of one task
-    "manually", use the existing func __ufshcd_transfer_req_compl().  This
-    change also eliminates a possible race of scsi_dma_unmap() from the real
-    completion in IRQ handler path.
-    
-    Link: https://lore.kernel.org/r/1596975355-39813-10-git-send-email-cang@codeaurora.org
-    Fixes: 1ab27c9cf8b6 ("ufs: Add support for clock gating")
-    CC: Stanley Chu <stanley.chu@mediatek.com>
-    Reviewed-by: Stanley Chu <stanley.chu@mediatek.com>
-    Reviewed-by: Asutosh Das <asutoshd@codeaurora.org>
-    Signed-off-by: Can Guo <cang@codeaurora.org>
-    Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+diff --git a/init/Kconfig b/init/Kconfig
+index 91456ac0ef20..c9446911cf41 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -1990,7 +1990,7 @@ config MMAP_ALLOW_UNINITIALIZED
+ 	  userspace.  Since that isn't generally a problem on no-MMU systems,
+ 	  it is normally safe to say Y here.
+ 
+-	  See Documentation/mm/nommu-mmap.rst for more information.
++	  See Documentation/admin-guide/mm/nommu-mmap.rst for more information.
+ 
+ config SYSTEM_DATA_VERIFICATION
+ 	def_bool n
+diff --git a/mm/Kconfig b/mm/Kconfig
+index 7d56281ff41e..c7f30f8b282b 100644
+--- a/mm/Kconfig
++++ b/mm/Kconfig
+@@ -383,7 +383,7 @@ config NOMMU_INITIAL_TRIM_EXCESS
+ 	  This option specifies the initial value of this option.  The default
+ 	  of 1 says that all excess pages should be trimmed.
+ 
+-	  See Documentation/mm/nommu-mmap.rst for more information.
++	  See Documentation/admin-guide/mm/nommu-mmap.rst for more information.
+ 
+ config TRANSPARENT_HUGEPAGE
+ 	bool "Transparent Hugepage Support"
+diff --git a/mm/nommu.c b/mm/nommu.c
+index 75a327149af1..0df7ca321314 100644
+--- a/mm/nommu.c
++++ b/mm/nommu.c
+@@ -5,7 +5,7 @@
+  *  Replacement code for mm functions to support CPU's that don't
+  *  have any form of memory management unit (thus no virtual memory).
+  *
+- *  See Documentation/mm/nommu-mmap.rst
++ *  See Documentation/admin-guide/mm/nommu-mmap.rst
+  *
+  *  Copyright (c) 2004-2008 David Howells <dhowells@redhat.com>
+  *  Copyright (c) 2000-2003 David McCullough <davidm@snapgear.com>
+-- 
+2.26.2
 
