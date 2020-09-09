@@ -2,112 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3F42262F36
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 15:34:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7B97262F5B
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 15:51:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730307AbgIINeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 09:34:01 -0400
-Received: from shelob.surriel.com ([96.67.55.147]:45342 "EHLO
-        shelob.surriel.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730355AbgIINTe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 09:19:34 -0400
-Received: from imladris.surriel.com ([96.67.55.152])
-        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <riel@shelob.surriel.com>)
-        id 1kG00L-0003w1-7V; Wed, 09 Sep 2020 09:19:17 -0400
-Message-ID: <054d02f3b34d9946905929ff268b685c91494b3e.camel@surriel.com>
-Subject: Re: [RFC PATCH 00/16] 1GB THP support on x86_64
-From:   Rik van Riel <riel@surriel.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Zi Yan <ziy@nvidia.com>, David Hildenbrand <david@redhat.com>,
-        Roman Gushchin <guro@fb.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>, linux-mm@kvack.org,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        David Nellans <dnellans@nvidia.com>,
-        linux-kernel@vger.kernel.org
-Date:   Wed, 09 Sep 2020 09:19:16 -0400
-In-Reply-To: <20200909070445.GA7348@dhcp22.suse.cz>
-References: <20200902180628.4052244-1-zi.yan@sent.com>
-         <20200903142300.bjq2um5y5nwocvar@box>
-         <20200903163020.GG60440@carbon.dhcp.thefacebook.com>
-         <8e677ead-206d-08dd-d73e-569bd3803e3b@redhat.com>
-         <7E20392E-5ED7-4C22-9555-F3BAABF3CBE9@nvidia.com>
-         <20200908143503.GE26850@dhcp22.suse.cz>
-         <7ed82cb06074b30c2956638082c515fb179f69a3.camel@surriel.com>
-         <20200909070445.GA7348@dhcp22.suse.cz>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-a/joHFftty7+65yl3VYm"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+        id S1730358AbgIINvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 09:51:52 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:51252 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730400AbgIINZB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 09:25:01 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id DA026C71AC4136B1ABFA;
+        Wed,  9 Sep 2020 21:23:51 +0800 (CST)
+Received: from huawei.com (10.175.113.133) by DGGEMS412-HUB.china.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Wed, 9 Sep 2020
+ 21:23:49 +0800
+From:   Wang Hai <wanghai38@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>, <sgoutham@marvell.com>,
+        <bprakash@marvell.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH net-next] net: cavium: Fix a bunch of kerneldoc parameter issues
+Date:   Wed, 9 Sep 2020 21:21:09 +0800
+Message-ID: <20200909132109.71466-1-wanghai38@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.175.113.133]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Rename ptp to ptp_info.
 
---=-a/joHFftty7+65yl3VYm
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Fix W=1 compile warnings (invalid kerneldoc):
 
-On Wed, 2020-09-09 at 09:04 +0200, Michal Hocko wrote:
-> On Tue 08-09-20 10:41:10, Rik van Riel wrote:
-> > On Tue, 2020-09-08 at 16:35 +0200, Michal Hocko wrote:
-> >=20
-> > > A global knob is insufficient. 1G pages will become a very
-> > > precious
-> > > resource as it requires a pre-allocation (reservation). So it
-> > > really
-> > > has
-> > > to be an opt-in and the question is whether there is also some
-> > > sort
-> > > of
-> > > access control needed.
-> >=20
-> > The 1GB pages do not require that much in the way of
-> > pre-allocation. The memory can be obtained through CMA,
-> > which means it can be used for movable 4kB and 2MB
-> > allocations when not
-> > being used for 1GB pages.
->=20
-> That CMA has to be pre-reserved, right? That requires a
-> configuration.
+drivers/net/ethernet/cavium/common/cavium_ptp.c:94: warning: Excess function parameter 'ptp' description in 'cavium_ptp_adjfine'
+drivers/net/ethernet/cavium/common/cavium_ptp.c:141: warning: Excess function parameter 'ptp' description in 'cavium_ptp_adjtime'
+drivers/net/ethernet/cavium/common/cavium_ptp.c:163: warning: Excess function parameter 'ptp' description in 'cavium_ptp_gettime'
+drivers/net/ethernet/cavium/common/cavium_ptp.c:185: warning: Excess function parameter 'ptp' description in 'cavium_ptp_settime'
+drivers/net/ethernet/cavium/common/cavium_ptp.c:208: warning: Excess function parameter 'ptp' description in 'cavium_ptp_enable'
 
-To some extent, yes.
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+---
+ drivers/net/ethernet/cavium/common/cavium_ptp.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-However, because that pool can be used for movable
-4kB and 2MB
-pages as well as for 1GB pages, it would be easy to just set
-the size of that pool to eg. 1/3 or even 1/2 of memory for every
-system.
-
-It isn't like the pool needs to be the exact right size. We
-just need to avoid the "highmem problem" of having too little
-memory for kernel allocations.
-
---=20
-All Rights Reversed.
-
---=-a/joHFftty7+65yl3VYm
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEKR73pCCtJ5Xj3yADznnekoTE3oMFAl9Y1lQACgkQznnekoTE
-3oPHVQf/bgeq438Tq37bx4goKsEOaJmg8kdwGMi1Sa0MPj0rHzIqrrcpBGN7MoTB
-cJwWBXlXktTn7r9fdv3TVFu2DwctuUu3U8XA6tKveENqUqW/rZJfkayb6mCF8qDv
-deKHkCbDyFrp4ugPQ8Ey2QX8fPcqI02kHTGmJQQxohE7Y1Gim5qiLzkn5aYQVDK1
-mC2AgQYpGISMW/hPJ8yAZl3mKaQ5MKqfrhlqRHbq8y8oibv4ttkSLTFKX5E+Xizn
-zRQ4Re4Ld/zou/xUVXYMUkA71eqoIb+qDhXFmomWrBxmdHirzgMqDpKX6L7Kxm4+
-+s3riO3TZZP2YCwj5xbMWABajAf8Mw==
-=tW2I
------END PGP SIGNATURE-----
-
---=-a/joHFftty7+65yl3VYm--
+diff --git a/drivers/net/ethernet/cavium/common/cavium_ptp.c b/drivers/net/ethernet/cavium/common/cavium_ptp.c
+index 81ff9ac73f9a..9fd717b9cf69 100644
+--- a/drivers/net/ethernet/cavium/common/cavium_ptp.c
++++ b/drivers/net/ethernet/cavium/common/cavium_ptp.c
+@@ -86,7 +86,7 @@ EXPORT_SYMBOL(cavium_ptp_put);
+ 
+ /**
+  * cavium_ptp_adjfine() - Adjust ptp frequency
+- * @ptp: PTP clock info
++ * @ptp_info: PTP clock info
+  * @scaled_ppm: how much to adjust by, in parts per million, but with a
+  *              16 bit binary fractional field
+  */
+@@ -134,7 +134,7 @@ static int cavium_ptp_adjfine(struct ptp_clock_info *ptp_info, long scaled_ppm)
+ 
+ /**
+  * cavium_ptp_adjtime() - Adjust ptp time
+- * @ptp:   PTP clock info
++ * @ptp_info:   PTP clock info
+  * @delta: how much to adjust by, in nanosecs
+  */
+ static int cavium_ptp_adjtime(struct ptp_clock_info *ptp_info, s64 delta)
+@@ -155,7 +155,7 @@ static int cavium_ptp_adjtime(struct ptp_clock_info *ptp_info, s64 delta)
+ 
+ /**
+  * cavium_ptp_gettime() - Get hardware clock time with adjustment
+- * @ptp: PTP clock info
++ * @ptp_info: PTP clock info
+  * @ts:  timespec
+  */
+ static int cavium_ptp_gettime(struct ptp_clock_info *ptp_info,
+@@ -177,7 +177,7 @@ static int cavium_ptp_gettime(struct ptp_clock_info *ptp_info,
+ 
+ /**
+  * cavium_ptp_settime() - Set hardware clock time. Reset adjustment
+- * @ptp: PTP clock info
++ * @ptp_info: PTP clock info
+  * @ts:  timespec
+  */
+ static int cavium_ptp_settime(struct ptp_clock_info *ptp_info,
+@@ -199,7 +199,7 @@ static int cavium_ptp_settime(struct ptp_clock_info *ptp_info,
+ 
+ /**
+  * cavium_ptp_enable() - Request to enable or disable an ancillary feature.
+- * @ptp: PTP clock info
++ * @ptp_info: PTP clock info
+  * @rq:  request
+  * @on:  is it on
+  */
+-- 
+2.17.1
 
