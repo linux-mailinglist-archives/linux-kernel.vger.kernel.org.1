@@ -2,123 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D161263A92
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 04:35:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D9C7263A89
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 04:32:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730794AbgIJCef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 22:34:35 -0400
-Received: from mga06.intel.com ([134.134.136.31]:15314 "EHLO mga06.intel.com"
+        id S1730212AbgIJCcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 22:32:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39572 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730760AbgIJCWt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 22:22:49 -0400
-IronPort-SDR: FHvfqVu/9grH6dsuyuNpnE7maoL6zq4Sn9ajX95JR47dKJZ7vN1tLWCh1qcwf0ijDJdSRkoj7N
- ud6mbMAe8B4g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9739"; a="219997824"
-X-IronPort-AV: E=Sophos;i="5.76,411,1592895600"; 
-   d="scan'208";a="219997824"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2020 16:46:02 -0700
-IronPort-SDR: mn+6z1txUnM20cyC1uC/43VSqPtFs7oZN20YoAzttVEqZ0/5B8qxGmJol8TF5pH4EnxDuguv/u
- qhB2+FKWVvbA==
-X-IronPort-AV: E=Sophos;i="5.76,411,1592895600"; 
-   d="scan'208";a="304681357"
-Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.243.130]) ([10.212.243.130])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2020 16:46:00 -0700
-Subject: Re: [PATCH v11 25/25] x86/cet/shstk: Add arch_prctl functions for
- shadow stack
-To:     Dave Hansen <dave.hansen@intel.com>,
-        Andy Lutomirski <luto@kernel.org>
-Cc:     Dave Martin <Dave.Martin@arm.com>, "H.J. Lu" <hjl.tools@gmail.com>,
-        Florian Weimer <fweimer@redhat.com>, X86 ML <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Weijiang Yang <weijiang.yang@intel.com>
-References: <086c73d8-9b06-f074-e315-9964eb666db9@intel.com>
- <87ft892vvf.fsf@oldenburg2.str.redhat.com>
- <CALCETrVeNA0Kt2rW0CRCVo1JE0CKaBxu9KrJiyqUA8LPraY=7g@mail.gmail.com>
- <0e9996bc-4c1b-cc99-9616-c721b546f857@intel.com>
- <4f2dfefc-b55e-bf73-f254-7d95f9c67e5c@intel.com>
- <CAMe9rOqt9kbqERC8U1+K-LiDyNYuuuz3TX++DChrRJwr5ajt6Q@mail.gmail.com>
- <20200901102758.GY6642@arm.com>
- <c91bbad8-9e45-724b-4526-fe3674310c57@intel.com>
- <CALCETrWJQgtO_tP1pEaDYYsFgkZ=fOxhyTRE50THcxYoHyTTwg@mail.gmail.com>
- <32005d57-e51a-7c7f-4e86-612c2ff067f3@intel.com>
- <46dffdfd-92f8-0f05-6164-945f217b0958@intel.com>
- <ed929729-4677-3d3b-6bfd-b379af9272b8@intel.com>
- <6e1e22a5-1b7f-2783-351e-c8ed2d4893b8@intel.com>
- <5979c58d-a6e3-d14d-df92-72cdeb97298d@intel.com>
- <ab1a3344-60f4-9b9d-81d4-e6538fdcafcf@intel.com>
- <08c91835-8486-9da5-a7d1-75e716fc5d36@intel.com>
- <a881837d-c844-30e8-a614-8b92be814ef6@intel.com>
- <cbec8861-8722-ec31-2c02-1cfed20255eb@intel.com>
- <b3379d26-d8a7-deb7-59f1-c994bb297dcb@intel.com>
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Message-ID: <fe6774f4-2554-9c0c-f1b8-110bb9398324@intel.com>
-Date:   Wed, 9 Sep 2020 16:45:59 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1730921AbgIJCZa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 22:25:30 -0400
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4BB2D208CA
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 23:57:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599695820;
+        bh=G/d7I7uYDPr+xcXLSAz55tCVxS++/YD+BwhhhZQ43rE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=qP1mLFoFElIO3POE7p4mPUAYXwmsO/XSRrk3t5/qHZWwPmEBX9oUK3Ytty/iZa4Mh
+         UxBxO0tdVkS8hnI6o3a/YfGj5gTiUN4wdk00h/C60TAK1Lr75rN+d793UgH2dGKZXE
+         87xu1sF3AVtntrGULLDYy7gBUkGv67K2IFmH9JPI=
+Received: by mail-wm1-f41.google.com with SMTP id k18so4007605wmj.5
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 16:57:00 -0700 (PDT)
+X-Gm-Message-State: AOAM532+5oyO6h4DRkrmvQjuvNo4B5X1bD0ehbOaBPySh1ws2NULO8fs
+        QfZFT4EIpP3RWyFyCOo4WjtEBph2y/mnqf8kwa8IkQ==
+X-Google-Smtp-Source: ABdhPJzH/nmU4Vf4z8Anq+NWWPNlJPoNfTnH0PJIk0ApNI/X6nVQ/+QvDJXA4QaLUUOZaFv1S6ywVK6a0FKb2CQSs0Q=
+X-Received: by 2002:a05:600c:2183:: with SMTP id e3mr6114629wme.49.1599695818930;
+ Wed, 09 Sep 2020 16:56:58 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <b3379d26-d8a7-deb7-59f1-c994bb297dcb@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200908193029.GM25236@zn.tnic> <025308CD-6E1A-41E1-8B3D-E9842CE00794@amacapital.net>
+ <CACdnJusOJVb0xpecFgPQB4N2WhUORikv_1eXAcGfJ3xwBVTo9Q@mail.gmail.com>
+In-Reply-To: <CACdnJusOJVb0xpecFgPQB4N2WhUORikv_1eXAcGfJ3xwBVTo9Q@mail.gmail.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Wed, 9 Sep 2020 16:56:46 -0700
+X-Gmail-Original-Message-ID: <CALCETrV+zLzKvmkJSyXVqVw6FREC__sMXrv2rygruSq3ZAwtiQ@mail.gmail.com>
+Message-ID: <CALCETrV+zLzKvmkJSyXVqVw6FREC__sMXrv2rygruSq3ZAwtiQ@mail.gmail.com>
+Subject: Re: [PATCH] x86/msr: do not warn on writes to OC_MAILBOX
+To:     Matthew Garrett <mjg59@google.com>
+Cc:     Borislav Petkov <bp@alien8.de>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Sultan Alsawaf <sultan@kerneltoast.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        kitsunyan <kitsunyan@airmail.cc>,
+        "Brown, Len" <len.brown@intel.com>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/9/2020 4:29 PM, Dave Hansen wrote:
-> On 9/9/20 4:25 PM, Yu, Yu-cheng wrote:
->> On 9/9/2020 4:11 PM, Dave Hansen wrote:
->>> On 9/9/20 4:07 PM, Yu, Yu-cheng wrote:
->>>> What if a writable mapping is passed to madvise(MADV_SHSTK)?  Should
->>>> that be rejected?
->>>
->>> It doesn't matter to me.  Even if it's readable, it _stops_ being even
->>> directly readable after it's a shadow stack, right?  I don't think
->>> writes are special in any way.  If anything, we *want* it to be writable
->>> because that indicates that it can be written to, and we will want to
->>> write to it soon.
->>>
->> But in a PROT_WRITE mapping, all the pte's have _PAGE_BIT_RW set.  To
->> change them to shadow stack, we need to clear that bit from the pte's.
->> That will be like mprotect_fixup()/change_protection_range().
-> 
-> The page table hardware bits don't matter.  The user-visible protection
-> effects matter.
-> 
-> For instance, we have PROT_EXEC, which *CLEARS* a hardware NX PTE bit.
-> The PROT_ permissions are independent of the hardware.
+On Tue, Sep 8, 2020 at 3:32 PM Matthew Garrett <mjg59@google.com> wrote:
+>
+> On Tue, Sep 8, 2020 at 1:35 PM Andy Lutomirski <luto@amacapital.net> wrot=
+e:
+>
+> > Undervolting is a bit different. It=E2=80=99s a genuinely useful config=
+uration that can affect system stability.  In general, I think it should be=
+ allowed, and it should have a real driver in tree.
+>
+> Agree that this should be a proper driver rather than permitting
+> arbitrary poking (especially if this isn't an architecturally defined
+> MSR - there's no guarantee that it'll have the same functionality
+> everywhere).
 
-Same for shadow stack here.  We consider shadow stack "writable", but we 
-want to clear _PAGE_BIT_RW, which is set for the PTEs of the other type 
-of "writable" mapping.  To change a writable data mapping to a writable 
-shadow stack mapping, we need to call change_protection_range().
-
-> 
-> I don't think the interface should be influenced at *all* by what whacko
-> PTE bit combinations we have to set to get the behavior.
-> 
+After looking at the code for intel-undervolt a bit, that definitely
+needs kernel or even firmware support.  That MSR really is a mailbox.
+You write commands to it and read responses.  There's no way that user
+code can have adequate locking.
