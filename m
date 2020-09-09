@@ -2,76 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 299B6263196
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:20:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49D662631A4
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 18:22:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730690AbgIIQUo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 12:20:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40950 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731011AbgIIQRj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 12:17:39 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 459B3206A2;
-        Wed,  9 Sep 2020 16:17:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599668240;
-        bh=ZWI8ZIwwaG0xk3zDY/v0B7Ja0OHPsLcZD8PYPK+ImiM=;
-        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=mviIVirCVmP0xqdQRsgVrxrWvJf3fZlkLSRYDAmQKaurnCBPjlwrNAjI7tAGt5VTt
-         O4QUFP4EMiyuaNE4nOc2qS1kKCAI9R8ljt4PptFEUIIe+52cPzmh65awNDDKRi2SfD
-         JW+rckVFPgX+7omG043GtVSFGaiBGj7GSkM8P834=
-Date:   Wed, 09 Sep 2020 17:16:35 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        alsa-devel@alsa-project.org,
-        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
-        devicetree@vger.kernel.org
-Cc:     Rob Herring <robh@kernel.org>, tiwai@suse.com,
-        alexandre.belloni@bootlin.com, lgirdwood@gmail.com,
-        nicolas.ferre@microchip.com, ludovic.desroches@microchip.com,
-        robh+dt@kernel.org
-In-Reply-To: <20200909145348.367033-1-codrin.ciubotariu@microchip.com>
-References: <20200909145348.367033-1-codrin.ciubotariu@microchip.com>
-Subject: Re: [PATCH v4 1/2] dt-bindings: sound: add DT bindings for Microchip S/PDIF TX Controller
-Message-Id: <159966819527.17677.10566984537165572569.b4-ty@kernel.org>
+        id S1730751AbgIIQWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 12:22:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55100 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730975AbgIIQUD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 12:20:03 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 901BEC061756
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 09:19:36 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id y6so2920472oie.5
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 09:19:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=LkoSSq8WPACZ/QHWA4I24uXK2makUJpC8Vvbzb8/Mzw=;
+        b=OyTvZbHbIWZ+X76naLRjHS4Y4vdrWG3SfSw4OVldHx1EhCcoo0ebTkKE3013opJoGX
+         WslRB3cGvqmZHxVUjKMPuWk0gZEQP1aYyX2e3gcn/yUg1NbxWAlWqOkZD1ZD2Ag48mj4
+         eik+jw4qlvzuGFUmfhf0h5BwndBKYQA0exeXU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=LkoSSq8WPACZ/QHWA4I24uXK2makUJpC8Vvbzb8/Mzw=;
+        b=hzMSHz1491xH80GAeVxELJ6fyejJedwiM5ymDczlBpQQ5FGKv5ByzLDJLLS6ePH113
+         H4dd+XDCq7DfWhIEH3tjk8FDVdVcOMsWMRV29Y32YvqU0W70dNZBK+nkEIPd+h7/OSoj
+         v+yOH6IQIb8wTL6D6lpNjwSi+HKs/+73O/VCpl1jNjWX78TODTfGfYs9azuMvKHNf+21
+         /4ppSQxUr/+dEVPziiwYxcQKCoyn4ovuA4mtUOEjQ6oa2ckzB9yneD0WIKTCIoZuNB/R
+         XAMo2dqBuHfqTJAj8FUDLWgUHGLFFXmYP7IiDhKGuFZhuornFMNXIYtkkzkyJk35Uzj2
+         tsBA==
+X-Gm-Message-State: AOAM533C9BS3TBpa8gh7YHK0s3wCagipA3EH8vLcJTKGPENPNsHPbbXO
+        vIe6q5itB1NRlF/uEgyNRtZUUA==
+X-Google-Smtp-Source: ABdhPJyZcH5O+jGex+tDr0HJWglht4OaZpAYStGLnupFZcr4YYnKmIAJn3dkGv4SPWtpB29RyKdweQ==
+X-Received: by 2002:aca:d885:: with SMTP id p127mr1165992oig.1.1599668376019;
+        Wed, 09 Sep 2020 09:19:36 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id j18sm434490otr.12.2020.09.09.09.19.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Sep 2020 09:19:35 -0700 (PDT)
+Subject: Re: [PATCH] kernel: events: Use scnprintf() in show_pmu_*() instead
+ of snprintf()
+To:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        mark.rutland@arm.com, jolsa@redhat.com, namhyung@kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20200901234930.359126-1-skhan@linuxfoundation.org>
+ <87o8mfxxc4.fsf@ashishki-desk.ger.corp.intel.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <d0c52cb6-5eb2-8ea0-a1b4-c97f447835f6@linuxfoundation.org>
+Date:   Wed, 9 Sep 2020 10:19:34 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <87o8mfxxc4.fsf@ashishki-desk.ger.corp.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 9 Sep 2020 17:53:47 +0300, Codrin Ciubotariu wrote:
-> This patch adds DT bindings for the new Microchip S/PDIF TX Controller
-> embedded inside sama7g5 SoCs.
+On 9/9/20 12:45 AM, Alexander Shishkin wrote:
+> Shuah Khan <skhan@linuxfoundation.org> writes:
+> 
+>> Since snprintf() returns would-be-output size instead of the actual
+>> output size, replace it with scnprintf(), so the nr_addr_filters_show(),
+>> type_show(), and perf_event_mux_interval_ms_show() routines return the
+>> actual size.
+> 
+> Well, firstly they should just be sprintf()s, and secondly, I wouldn't
+> worry about it, because [0].
 
-Applied to
+scnprintf() or sprinf() could be used.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+> 
+> [0] https://marc.info/?l=linux-kernel&m=159874491103969&w=2
 
-Thanks!
+Awesome. Thanks for the pointer. I wasn't aware of this work and
+it takes care of the problem kernel wide. A better way to solve
+the problem.
 
-[1/2] ASoC: add DT bindings for Microchip S/PDIF TX Controller
-      commit: 7a8cca56f75ec9fe94550f846e66d62bc3a2778c
-[2/2] ASoC: mchp-spdiftx: add driver for S/PDIF TX Controller
-      commit: 06ca24e98e6bcc17c32ebe4b2fc579e5bf9ff5b2
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+thanks,
+-- Shuah
