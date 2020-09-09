@@ -2,81 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B48D2636BE
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 21:43:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F53B2636C3
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 21:44:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727075AbgIITnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 15:43:43 -0400
-Received: from mail-ej1-f66.google.com ([209.85.218.66]:38348 "EHLO
-        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725772AbgIITnk (ORCPT
+        id S1728626AbgIIToH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 15:44:07 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:45718 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725772AbgIIToC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 15:43:40 -0400
-Received: by mail-ej1-f66.google.com with SMTP id i22so5289230eja.5;
-        Wed, 09 Sep 2020 12:43:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=GYrujSeHLlrIuqFch9Co1kvUCUdPKeLia6WoU1oQSBE=;
-        b=PzxisdhuyGKwd1NF0wXCG8TZiNpTl/KT+E1P1mbcNrDTa6lc+7jTRB0/XR+CJP9Gsn
-         51XUr7ewOpCpFcybyzVelCDpQ++22dYuKGSNy69tw5hWstwsbZ5hqZvoa2peDsfh6iZu
-         T/a4CWOZUE7IYqTkEgQnXkhbosgwdqyuMhr5JT7rWdCV/PmZpnBKKf+uYtEBEViyEclt
-         rTO7w+0nJRddHwPTg/CK2jsQ4BewdtU6JPIETgXTR63cl9G+ax1AOeUXhkbkATzzysgo
-         6ii6Lh+vPoBOZVAxp2Z/xyq+uFG7+3MBbde9sSnXYiSowjtWUWqsBJQO6ngfFU4Ooc4L
-         VKXQ==
-X-Gm-Message-State: AOAM530RvkG3HXUkOwq0Z41oUwrLwdhkoCRml4LPs/J/8U/7yPTqYk77
-        EZRcww5TDspiLbytWEMqxlQ=
-X-Google-Smtp-Source: ABdhPJypFVYMywNXOVcZc2Z0ISwLTR57hTvYVWqB8kCnxxkMBCNZkwQ5wttH+UwTNdi5iMmd0d7plg==
-X-Received: by 2002:a17:907:9ed:: with SMTP id ce13mr5081258ejc.180.1599680618145;
-        Wed, 09 Sep 2020 12:43:38 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.174])
-        by smtp.googlemail.com with ESMTPSA id z21sm3537912eja.72.2020.09.09.12.43.36
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 09 Sep 2020 12:43:37 -0700 (PDT)
-Date:   Wed, 9 Sep 2020 21:43:34 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Kukjin Kim <kgene@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Jonathan Bakker <xc-racer2@live.ca>,
-        =?utf-8?B?UGF3ZcWC?= Chmiel <pawel.mikolaj.chmiel@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org
-Subject: Re: [PATCH 10/25] ARM: dts: s5pv210: add RTC 32 KHz clock in Aquilla
-Message-ID: <20200909194334.GC21431@kozik-lap>
-References: <20200907161141.31034-1-krzk@kernel.org>
- <20200907161141.31034-11-krzk@kernel.org>
+        Wed, 9 Sep 2020 15:44:02 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 089JhhQ1004659;
+        Wed, 9 Sep 2020 14:43:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1599680623;
+        bh=/wApmn7ZtwxFJNgG8a6wEP9k6l5peo+pVV8h6xcv3Bc=;
+        h=From:To:CC:Subject:Date;
+        b=s85dDtWEjsBhdKOqKf7Hv9G+ulrt3LB9aUTOQ06RSdMmDV8JiJs5nmKPMKwIflz1Z
+         3M8Yr2XFMJoOUVBvFyUaLuzBXbfN8LjFNFbuyYFz097glPDqhDS5pQ39a3ytVroZWX
+         SWBPpd6FLyOAWdGvUPiw6YUI/Kfb7eWtg4KTbfVs=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 089Jhhh6113741
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 9 Sep 2020 14:43:43 -0500
+Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 9 Sep
+ 2020 14:43:42 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 9 Sep 2020 14:43:42 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 089JhfZB019570;
+        Wed, 9 Sep 2020 14:43:42 -0500
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+To:     Tero Kristo <t-kristo@ti.com>, Nishanth Menon <nm@ti.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        <santosh.shilimkar@oracle.com>
+CC:     Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Rob Herring <robh+dt@kernel.org>, Sekhar Nori <nsekhar@ti.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>
+Subject: [RESEND PATCH next v2 0/2] soc: ti: k3: ringacc: add am65x sr2.0 support
+Date:   Wed, 9 Sep 2020 22:43:36 +0300
+Message-ID: <20200909194338.21840-1-grygorii.strashko@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200907161141.31034-11-krzk@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 07, 2020 at 06:11:26PM +0200, Krzysztof Kozlowski wrote:
-> The S3C RTC requires 32768 Hz clock as input which is provided by PMIC.
-> However there is no such clock provider but rather a regulator driver
-> which registers the clock as a regulator.  This is an old driver which
-> will not be updated so add a workaround - a fixed-clock to fill missing
-> clock phandle reference in S3C RTC.
-> 
-> This fixes dtbs_check warnings:
-> 
->   rtc@e2800000: clocks: [[2, 145]] is too short
->   rtc@e2800000: clock-names: ['rtc'] is too short
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> ---
->  arch/arm/boot/dts/s5pv210-aquila.dts | 17 +++++++++++++++++
+soc: ti: k3: ringacc: add am65x sr2.0 support
 
-Applied 10-19.
+Hi Santosh,
 
-Best regards,
-Krzysztof
+This is re-send of v2 with DT patch dropped.
+
+---
+This series adds support for the TI AM65x SR2.0 SoC Ringacc which has fixed
+errata i2023 "RINGACC, UDMA: RINGACC and UDMA Ring State Interoperability
+Issue after Channel Teardown". This errata also fixed for J271E SoC.
+The SOC bus chipinfo data is used to identify the SoC and configure
+i2023 errata W/A.
+
+This changes made "ti,dma-ring-reset-quirk" DT property obsolete, so it's removed.
+
+Changes in v2:
+ - no functional changes
+ - rebased on top of linux-next
+ - added ask from Rob Herring
+
+v2: https://lore.kernel.org/patchwork/cover/1297255/
+v1: https://lore.kernel.org/patchwork/cover/1284233/
+
+Grygorii Strashko (2):
+  soc: ti: k3: ringacc: add am65x sr2.0 support
+  bindings: soc: ti: soc: ringacc: remove ti,dma-ring-reset-quirk
+
+ .../bindings/soc/ti/k3-ringacc.yaml           |  6 ----
+ drivers/soc/ti/k3-ringacc.c                   | 33 +++++++++++++++++--
+ 2 files changed, 30 insertions(+), 9 deletions(-)
+
+-- 
+2.17.1
 
