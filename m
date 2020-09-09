@@ -2,192 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DAC2263AB5
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 04:42:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C826263AB7
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 04:42:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730627AbgIJCl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 22:41:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53352 "EHLO
+        id S1730436AbgIJCmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 22:42:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730588AbgIJCHb (ORCPT
+        with ESMTP id S1730520AbgIJCHb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 9 Sep 2020 22:07:31 -0400
-Received: from NAM02-BL2-obe.outbound.protection.outlook.com (mail-bl2nam02on0617.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe46::617])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EBB5C0613ED
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 16:17:45 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=X4mJN5ZHPewRzPck3atcj/n297MNjreTNVnt23r+A2LFs7zTGoIK0rcswgR4qr0LuNhugYUK6V8scs5gDaNPLG3gaAly/IxoNkg78MCebgXTV/JmBgAis1EWsQ/Rx5bYKFeT3Sol3gP17NKSHuh/GYmEkCgzqwpnWGWYg1h3V0sDtMS78bjtM2qHAh53ujSlsIKgIlfff9ZSPvOZLroKD6qeBMGirvepChOFs5n5C92EJntAnSrv7tbNKrEWLVQt6G/LVPnPpxZ/y4fi2wllW3pmKXRGlLxc5oz2q85LyIzst5cyKvnqe9VjIyq9Vgur9g3mToykQfknJRJfOixfvQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4LzcoqAlH4iO6jIGM92kDsG45vR3hzsdE8S9FsehYlk=;
- b=iL4pNoDtd0Y3NOJ3poW0nxfYs8GqkfXi65p1b7G2yxf9YECkl5z+EOlqX/WIbqvbSct7njxX3uVriPb71CC6RwVWyP7VZ5IGUGkkjHxn3hv4gRCnELcc73rOunOsBkk1YlpYinjAvw5GBjfZysXREqCGXcfXdwjv18D1bvCTtseGsNv3l6Rarx0vTWKK37iX+/8U7oGqWbcCMTbvAtk37Fl+Ax75g+OR21j7vmmVHqCNcb3C2+gSCLR4+X7VAVu2peHNdHIjX7HPoCABrkyAtrFN1qJobU3+6wJ6P3wcgFhVBQI1V1kL7AOYrkARBzxz5pqIwDKFfXUq2zQa83OwZg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=temperror (sender ip
- is 149.199.60.83) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=xilinx.com;
- dmarc=none action=none header.from=xilinx.com; dkim=none (message not
- signed); arc=none
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8386DC061796
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 16:17:47 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id b13so2484633qvl.2
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 16:17:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4LzcoqAlH4iO6jIGM92kDsG45vR3hzsdE8S9FsehYlk=;
- b=ipduMG0iEOF1CdZjCnCxtRXWSzggRfD3AVMe1Tv7Xd/Ucsas2faS7OWbnQa3GiiYEa2pIZBM8Ai+tYk/1X+6j1Hc17IykSE/5zxNsBn+HwJUakTpGCafnzDfEVBotddhWYTIBvc0onnQ3Ws3qIB318rX8ackVCkONh72XRYIac0=
-Received: from CY4PR21CA0038.namprd21.prod.outlook.com (2603:10b6:903:12b::24)
- by BN8PR02MB6001.namprd02.prod.outlook.com (2603:10b6:408:b6::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.15; Wed, 9 Sep
- 2020 23:10:19 +0000
-Received: from CY1NAM02FT040.eop-nam02.prod.protection.outlook.com
- (2603:10b6:903:12b:cafe::28) by CY4PR21CA0038.outlook.office365.com
- (2603:10b6:903:12b::24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.0 via Frontend
- Transport; Wed, 9 Sep 2020 23:10:18 +0000
-X-MS-Exchange-Authentication-Results: spf=temperror (sender IP is
- 149.199.60.83) smtp.mailfrom=xilinx.com; vger.kernel.org; dkim=none (message
- not signed) header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=xilinx.com;
-Received-SPF: TempError (protection.outlook.com: error in processing during
- lookup of xilinx.com: DNS Timeout)
-Received: from xsj-pvapsmtpgw01 (149.199.60.83) by
- CY1NAM02FT040.mail.protection.outlook.com (10.152.75.135) with Microsoft SMTP
- Server id 15.20.3348.17 via Frontend Transport; Wed, 9 Sep 2020 23:10:17
- +0000
-Received: from [149.199.38.66] (port=53398 helo=smtp.xilinx.com)
-        by xsj-pvapsmtpgw01 with esmtp (Exim 4.90)
-        (envelope-from <amit.sunil.dhamne@xilinx.com>)
-        id 1kG9E0-0005XP-Dp; Wed, 09 Sep 2020 16:10:00 -0700
-Received: from [127.0.0.1] (helo=localhost)
-        by smtp.xilinx.com with smtp (Exim 4.63)
-        (envelope-from <amit.sunil.dhamne@xilinx.com>)
-        id 1kG9EG-00076o-Pc; Wed, 09 Sep 2020 16:10:16 -0700
-Received: from xsj-pvapsmtp01 (mailhub.xilinx.com [149.199.38.66])
-        by xsj-smtp-dlp1.xlnx.xilinx.com (8.13.8/8.13.1) with ESMTP id 089NA2kB005031;
-        Wed, 9 Sep 2020 16:10:02 -0700
-Received: from [10.18.5.8] (helo=xsjamitsuni51.xilinx.com)
-        by xsj-pvapsmtp01 with esmtp (Exim 4.63)
-        (envelope-from <amit.sunil.dhamne@xilinx.com>)
-        id 1kG9E2-0006Zq-62; Wed, 09 Sep 2020 16:10:02 -0700
-From:   Amit Sunil Dhamne <amit.sunil.dhamne@xilinx.com>
-To:     ard.biesheuvel@linaro.org, mingo@kernel.org,
-        gregkh@linuxfoundation.org, matt@codeblueprint.co.uk,
-        sudeep.holla@arm.com, hkallweit1@gmail.com, keescook@chromium.org,
-        dmitry.torokhov@gmail.com, michal.simek@xilinx.com
-Cc:     rajanv@xilinx.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, tejasp@xilinx.com, jollys@xilinx.com,
-        Rajan Vaja <rajan.vaja@xilinx.com>,
-        Amit Sunil Dhamne <amit.sunil.dhamne@xilinx.com>
-Subject: [PATCH v2] drivers: soc: xilinx: Call InitFinalize from late_initcall_sync instead of probe
-Date:   Wed,  9 Sep 2020 16:10:00 -0700
-Message-Id: <1599693000-25641-1-git-send-email-amit.sunil.dhamne@xilinx.com>
-X-Mailer: git-send-email 2.7.4
-X-RCIS-Action: ALLOW
-X-TM-AS-Product-Ver: IMSS-7.1.0.1224-8.2.0.1013-23620.005
-X-TM-AS-User-Approved-Sender: Yes;Yes
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-PublicTrafficType: Email
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=eNbgA7wJNhgB/YQkgVZ6Sifq4zF6BFfhA4BIqD8+kaE=;
+        b=bF8Qb/grHct1/eaX/5eL6k6ObxpykJb0d4zLLV2jGb0xvjs073Ym42sOFNa63xRsKl
+         3UiR7OtWtNLBbgQqlDP/Ze+fx+8eBg1pR3fjkL3tjBrMZOrxXwY9f39eH3HocooAVVNZ
+         H7mQzRzVzUnPj5qbRNxztp/s2ul4YWIYfJklEuDJOAoCgMe/9Ml2w/ZHH0qLx6T/n04F
+         ErB/S2m3jU99ylGanWDQjBbcs8mqb3f7QhPX81WiT2tnbnH1pzdeTTh3KdYG/1FNun5B
+         3x3lbmO3Z8hOpFjJAeJMv7ygsuY6oQr+ylEA9bFQV5A9rkplXpOgTzg67S4c4qvcrl2W
+         rpzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=eNbgA7wJNhgB/YQkgVZ6Sifq4zF6BFfhA4BIqD8+kaE=;
+        b=CsW+JN5hTAs8iA9x1cp6mhxiSIs3xVT9ilC6W07OdqwQ+v9GVmC2kJn1elhhQoROWp
+         084L9o8goalTHgWCWKPSZ9sVzHt8s7Bb1+GkF7VqddIBGLW/T+0ommSyQFinRyICbSgd
+         TtdJx3ClZbV3bauC696pA0yG2pYa8BbSMLaaB4iHxflG43TYSYP8m2Ymif21Gr+IodJO
+         WuwiN1gPxNERZwSk1yGh83G9W7IwYOIJjctaqPDF/HLcXWjTwZvzU7nDsLAWeVQsvddV
+         NN8MsY9JKDsO6Co6yY2x/2LkVLnmbakAd9msmGQlZn5iAX5fgW9Crbf3QhXDS/dgRzs2
+         ntsw==
+X-Gm-Message-State: AOAM533u+N/CRlJboqNXCLQYATgGXMwkhqSDQxPUt1nmf37aC7TtkNaP
+        7JRIQTNy9CEoEkuR96kEnbl5sQ==
+X-Google-Smtp-Source: ABdhPJwudYuv1b4JcL8l9kJC2ypzAliQ961ce7PA3JlrwTvNm3U2ajUl9p33pNfTp/yGmTBaBfxXVQ==
+X-Received: by 2002:a0c:e783:: with SMTP id x3mr6293895qvn.114.1599693417492;
+        Wed, 09 Sep 2020 16:16:57 -0700 (PDT)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id w44sm4934717qth.9.2020.09.09.16.16.54
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Wed, 09 Sep 2020 16:16:56 -0700 (PDT)
+Date:   Wed, 9 Sep 2020 16:16:41 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Alex Shi <alex.shi@linux.alibaba.com>
+cc:     Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        mgorman@techsingularity.net, tj@kernel.org,
+        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
+        willy@infradead.org, hannes@cmpxchg.org, lkp@intel.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, shakeelb@google.com,
+        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
+        kirill@shutemov.name, alexander.duyck@gmail.com,
+        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
+        shy828301@gmail.com, vbabka@suse.cz, minchan@kernel.org, cai@lca.pw
+Subject: Re: [PATCH v18 00/32] per memcg lru_lock: reviews
+In-Reply-To: <61a42a87-eec9-e300-f710-992756f70de6@linux.alibaba.com>
+Message-ID: <alpine.LSU.2.11.2009091524260.10087@eggly.anvils>
+References: <1598273705-69124-1-git-send-email-alex.shi@linux.alibaba.com> <20200824114204.cc796ca182db95809dd70a47@linux-foundation.org> <alpine.LSU.2.11.2008241231460.1065@eggly.anvils> <alpine.LSU.2.11.2008262301240.4405@eggly.anvils>
+ <alpine.LSU.2.11.2009081640070.7256@eggly.anvils> <61a42a87-eec9-e300-f710-992756f70de6@linux.alibaba.com>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MS-Office365-Filtering-Correlation-Id: 81f44f60-bedf-49a8-3feb-08d85515848e
-X-MS-TrafficTypeDiagnostic: BN8PR02MB6001:
-X-Microsoft-Antispam-PRVS: <BN8PR02MB60018EED2B314E1A9B2DAB5CA7260@BN8PR02MB6001.namprd02.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: BEvQYLV43lCJErm9O1sFyypEl5rY3YDzrWixijUZ95gcM4NX/H6605PB8u60dzRddAyKX7OzjDnZ/XGh9ipdbwdH3nqu3XZbinoI3xJZhrsxCjNmvQ9z9y4Iua+eqMaWR/5fMpJez3Nvc332B6gaAAZhP8xvfHvTTlCWlcoNDrDntNP6J3rcOv/iAUZ/JgobYo/Aa9PuKeGspH/Pxxdnkq7PQmkvchg/eDV05FbKSFaK3FocJa0TBYeO/Tlb3OzcQZvCy0J+nYC34r9926BRuxJIiGtf0B7r/1N5HUqK80HCT7FysrKXXd/bJ/pK7q09fiXKb9ivHvLW4J4eX45v6hQlPdon+SuyyTDGtyVWVdDJ8JGX6fKk41pyf3cE6L2SDCWceF2tAWk+x+GdDOv8dA==
-X-Forefront-Antispam-Report: CIP:149.199.60.83;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapsmtpgw01;PTR:unknown-60-83.xilinx.com;CAT:NONE;SFS:(136003)(396003)(346002)(39860400002)(376002)(46966005)(478600001)(2616005)(82740400003)(2906002)(47076004)(26005)(36756003)(316002)(186003)(63350400001)(5660300002)(9786002)(6636002)(54906003)(70206006)(82310400003)(70586007)(107886003)(336012)(7696005)(8936002)(356005)(4326008)(83380400001)(81166007)(426003)(7416002)(8676002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Sep 2020 23:10:17.9404
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 81f44f60-bedf-49a8-3feb-08d85515848e
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.60.83];Helo=[xsj-pvapsmtpgw01]
-X-MS-Exchange-CrossTenant-AuthSource: CY1NAM02FT040.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR02MB6001
+Content-Type: MULTIPART/MIXED; BOUNDARY="0-945709820-1599693416=:10087"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rajan Vaja <rajan.vaja@xilinx.com>
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Initially all devices are in power up state. Firmware expect that
-processor should call InitFinalize API once it have requested devices
-which are required so that it can turn off all unused devices and
-save power. From Linux, PM driver calls InitFinalize to inform the
-firmware that it can power down the unused devices. Upon
-InitFinalize() call firmware power downs all unused devices.
+--0-945709820-1599693416=:10087
+Content-Type: TEXT/PLAIN; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-There are chances that PM driver is probed along with or before other
-device drivers. So in that case some of the devices may not be
-requested from firmware which is done by genpd driver. Due to that
-firmware will consider those devices as unused and firmware will power
-down those devices. Later when any device driver is probed, genpd
-driver will ask firmware to power up that device using request node
-API. So for those devices, power transition will be like on->off->on
-which creates unnecessary power glitch to those devices.
+On Wed, 9 Sep 2020, Alex Shi wrote:
+> =E5=9C=A8 2020/9/9 =E4=B8=8A=E5=8D=887:41, Hugh Dickins =E5=86=99=E9=81=
+=93:
+> >=20
+> > [PATCH v18 05/32] mm/thp: remove code path which never got into
+> > This is a good simplification, but I see no sign that you understand
+> > why it's valid: it relies on lru_add_page_tail() being called while
+> > head refcount is frozen to 0: we would not get this far if someone
+> > else holds a reference to the THP - which they must hold if they have
+> > isolated the page from its lru (and that's true before or after your
+> > per-memcg changes - but even truer after those changes, since PageLRU
+> > can then be flipped without lru_lock at any instant): please explain
+> > something of this in the commit message.
+>=20
+> Is the following commit log better?
+>=20
+>     split_huge_page() will never call on a page which isn't on lru list, =
+so
+>     this code never got a chance to run, and should not be run, to add ta=
+il
+>     pages on a lru list which head page isn't there.
+>=20
+>     Hugh Dickins' mentioned:
+>     The path should never be called since lru_add_page_tail() being calle=
+d
+>     while head refcount is frozen to 0: we would not get this far if some=
+one
+>     else holds a reference to the THP - which they must hold if they have
+>     isolated the page from its lru.
+>=20
+>     Although the bug was never triggered, it'better be removed for code
+>     correctness, and add a warn for unexpected calling.
 
-To avoid such unnecessary power transitions and as ideal behavior
-InitFinalize should be called after all drivers are probed. So call
-InitFinalize from late_initcall_sync.
+Not much better, no.  split_huge_page() can easily be called for a page
+which is not on the lru list at the time, and I don't know what was the
+bug which was never triggered.  Stick with whatever text you end up with
+for the combination of 05/32 and 18/32, and I'll rewrite it after.
 
-Signed-off-by: Rajan Vaja <rajan.vaja@xilinx.com>
-Signed-off-by: Amit Sunil Dhamne <amit.sunil.dhamne@xilinx.com>
----
-Changes in v2:
- - Check for compatible string for zynqmp or versal platform before
-   calling init finalize.
----
- drivers/soc/xilinx/zynqmp_power.c | 18 +++++++++++++++++-
- 1 file changed, 17 insertions(+), 1 deletion(-)
+> > [PATCH v18 06/32] mm/thp: narrow lru locking
+> > Why? What part does this play in the series? "narrow lru locking" can
+> > also be described as "widen page cache locking":=20
+>=20
+> Uh, the page cache locking isn't widen, it's still on the old place.
 
-diff --git a/drivers/soc/xilinx/zynqmp_power.c b/drivers/soc/xilinx/zynqmp_=
-power.c
-index 31ff49f..22d2d2e 100644
---- a/drivers/soc/xilinx/zynqmp_power.c
-+++ b/drivers/soc/xilinx/zynqmp_power.c
-@@ -178,7 +178,6 @@ static int zynqmp_pm_probe(struct platform_device *pdev=
-)
-        u32 pm_api_version;
-        struct mbox_client *client;
+I'm not sure if you're joking there. Perhaps just a misunderstanding.
 
--       zynqmp_pm_init_finalize();
-        zynqmp_pm_get_api_version(&pm_api_version);
+Yes, patch 06/32 does not touch the xa_lock(&mapping->i_pages) and
+xa_lock(&swap_cache->i_pages) lines (odd how we've arrived at two of
+those, but please do not get into cleaning it up now); but it removes
+the spin_lock_irqsave(&pgdata->lru_lock, flags) which used to come
+before them, and inserts a spin_lock(&pgdat->lru_lock) after them.
 
-        /* Check PM API version number */
-@@ -246,6 +245,23 @@ static int zynqmp_pm_remove(struct platform_device *pd=
-ev)
-        return 0;
- }
+You call that narrowing the lru locking, okay, but I see it as also
+pushing the page cache locking outwards: before this patch, page cache
+lock was taken inside lru_lock; after this patch, page cache lock is
+taken outside lru_lock.  If you cannot see that, then I think you
+should not have touched this code at all; but it's what we have
+been testing, and I think we should go forward with it.
 
-+static int __init do_init_finalize(void)
-+{
-+       struct device_node *np;
-+
-+       np =3D of_find_compatible_node(NULL, NULL, "xlnx,zynqmp");
-+       if (!np) {
-+               np =3D of_find_compatible_node(NULL, NULL, "xlnx,versal");
-+               if (!np)
-+                       return 0;
-+       }
-+       of_node_put(np);
-+
-+       return zynqmp_pm_init_finalize();
-+}
-+
-+late_initcall_sync(do_init_finalize);
-+
- static const struct of_device_id pm_of_match[] =3D {
-        { .compatible =3D "xlnx,zynqmp-power", },
-        { /* end of table */ },
---
-2.7.4
+> > But I wish you could give some reason for it in the commit message!
+>=20
+> It's a head scratch task. Would you like to tell me what's detailed info=
+=20
+> should be there? Thanks!
 
-This email and any attachments are intended for the sole use of the named r=
-ecipient(s) and contain(s) confidential information that may be proprietary=
-, privileged or copyrighted under applicable law. If you are not the intend=
-ed recipient, do not read, copy, or forward this email message or any attac=
-hments. Delete this email message and any attachments immediately.
+So, you don't know why you did it either: then it will be hard to
+justify.  I guess I'll have to write something for it later.  I'm
+strongly tempted just to drop the patch, but expect it will become
+useful later, for using lock_page_memcg() before getting lru_lock.
+
+> > Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
+> > Is that correct? Or Wei Yang suggested some part of it perhaps?
+>=20
+> Yes, we talked a lot to confirm the locking change is safe.
+
+Okay, but the patch was written by you, and sent by you to Andrew:
+that is not a case for "Signed-off-by: Someone Else".
+
+> > [PATCH v18 27/32] mm/swap.c: optimizing __pagevec_lru_add lru_lock
+> > Could we please drop this one for the moment? And come back to it later
+> > when the basic series is safely in.  It's a good idea to try sorting
+> > together those pages which come under the same lock (though my guess is
+> > that they naturally gather themselves together quite well already); but
+> > I'm not happy adding 360 bytes to the kernel stack here (and that in
+> > addition to 192 bytes of horrid pseudo-vma in the shmem swapin case),
+> > though that could be avoided by making it per-cpu. But I hope there's
+> > a simpler way of doing it, as efficient, but also useful for the other
+> > pagevec operations here: perhaps scanning the pagevec for same page->
+> > mem_cgroup (and flags node bits), NULLing entries as they are done.
+> > Another, easily fixed, minor defect in this patch: if I'm reading it
+> > right, it reverses the order in which the pages are put on the lru?
+>=20
+> this patch could give about 10+% performance gain on my multiple memcg
+> readtwice testing. fairness locking cost the performance much.
+
+Good to know, should have been mentioned.  s/fairness/Repeated/
+
+But what was the gain or loss on your multiple memcg readtwice
+testing without this patch, compared against node-only lru_lock?
+The 80% gain mentioned before, I presume.  So this further
+optimization can wait until the rest is solid.
+
+>=20
+> I also tried per cpu solution but that cause much trouble of per cpu func
+> things, and looks no benefit except a bit struct size of stack, so if=20
+> stack size still fine. May we could use the solution and improve it bette=
+r.
+> like, functionlize, fix the reverse issue etc.
+
+I don't know how important the stack depth consideration is nowadays:
+I still care, maybe others don't, since VMAP_STACK became an option.
+
+Yes, please fix the reversal (if I was right on that); and I expect
+you could use a singly linked list instead of the double.
+
+But I'll look for an alternative - later, once the urgent stuff
+is completed - and leave the acks on this patch to others.
+
+Hugh
+--0-945709820-1599693416=:10087--
