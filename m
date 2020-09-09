@@ -2,108 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24EF3262581
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 04:59:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 322F8262589
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 05:00:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729212AbgIIC7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Sep 2020 22:59:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44430 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726714AbgIIC7b (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Sep 2020 22:59:31 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 056F3C061573;
-        Tue,  8 Sep 2020 19:59:30 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id 5so999209pgl.4;
-        Tue, 08 Sep 2020 19:59:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Tp4bbytIV3MCk9Tk4/Dcp87bEHrVbZ661Kr/3La1Mzw=;
-        b=BXLzG0CCg8YsEc/oa74A1IAubX08MzTTwjX3ERrPica6/CzeaP+L0rn27XGSfd/Prv
-         1tGWI90koY3PhMaZtS9WknbIdljle39k7zdDNYea+OD4aqSa9hp4qaXr3sGr4ANb5VZa
-         GyjGvBX/rEQJUmmZR6SWnldR+PD62bSLjVHX1/1IvVLWfilBnd9Cvat4V7yAWWO5PRPJ
-         27iynbyZTsjYFYWYZYLNObcfD4pr3RI7UomsdfezTOpVv+Z71MsBAMTXqXWJBDhqkbBl
-         hewfqhgHbwhf/aqfYNxgxCS4fO2yujrAs6yHtw0OdY7znKewN1CVDKqmkGFJWUOlFMhd
-         bhGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Tp4bbytIV3MCk9Tk4/Dcp87bEHrVbZ661Kr/3La1Mzw=;
-        b=FQXZ5cr4z2G4xksXWAiVUHLHK6ZbbntGYtrYBb5IhwqrUHwase54pmhJT8lH4mx872
-         xytOOjpKePdjEqVteuJGBj7p4kqHyPX/Tf2pnlxLqkBUtr4andwdqK1OoShqXV4PcFq7
-         AgY7MFQ7YRCdJANYUDiNVGe6jn8GJRLEu3Ob1u9XrIO5gslSEo8uyRh5Hj2bzFV4h2QY
-         mKKdchR+qt9ttuWYnE2T0R6KL31VMz9pYNyw+hqYIpmwqLwXwGjZ+JhNMVyRaM5Tf3FG
-         ukt/EwHAYYZyoQY5+DChxN3KfEzDsYsxWiPqkYtZ2Oqx4Ni8iEB2+tbXcmd89Ev5Wwxi
-         zjVA==
-X-Gm-Message-State: AOAM531UuFPAgUiXl/m2/OA4enpYzzpM45A5AG+xn5SQSfdwllgQclf4
-        OT2zQiIO2GLcpKiExdqVYQwVJ0Hdi3FzHG9k
-X-Google-Smtp-Source: ABdhPJy6hCj+lJaBzifhBxZCkz9qq1bH+dxXTHRmupp1dQ+tjy7/i6gvzc5Ux5ZUvy5YbEMKVZ43Jw==
-X-Received: by 2002:a63:fe06:: with SMTP id p6mr1321871pgh.337.1599620369318;
-        Tue, 08 Sep 2020 19:59:29 -0700 (PDT)
-Received: from taoren-ubuntu-R90MNF91 (c-73-252-146-110.hsd1.ca.comcast.net. [73.252.146.110])
-        by smtp.gmail.com with ESMTPSA id r123sm737300pfc.187.2020.09.08.19.59.27
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 08 Sep 2020 19:59:28 -0700 (PDT)
-Date:   Tue, 8 Sep 2020 19:59:22 -0700
-From:   Tao Ren <rentao.bupt@gmail.com>
-To:     Eddie James <eajames@linux.ibm.com>
-Cc:     linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-aspeed@lists.ozlabs.org,
-        linux-i2c@vger.kernel.org, joel@jms.id.au, andrew@aj.id.au,
-        benh@kernel.crashing.org, brendanhiggins@google.com,
-        dmitry.torokhov@gmail.com, robh+dt@kernel.org, wsa@kernel.org,
-        ryan_chen@aspeedtech.com
-Subject: Re: [PATCH v2 3/5] i2c: aspeed: Mask IRQ status to relevant bits
-Message-ID: <20200909025921.GA3449@taoren-ubuntu-R90MNF91>
-References: <20200908200101.64974-1-eajames@linux.ibm.com>
- <20200908200101.64974-4-eajames@linux.ibm.com>
+        id S1729692AbgIIDAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Sep 2020 23:00:50 -0400
+Received: from ozlabs.org ([203.11.71.1]:50703 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727804AbgIIDAu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Sep 2020 23:00:50 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BmRbg2x0Gz9sTX;
+        Wed,  9 Sep 2020 13:00:47 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1599620447;
+        bh=3sMO884hg7pPLK7RKjxOZTh+vUD/yFzH8k0FjgNvOok=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=uaWxMc0OMTr1wT+EG8NLJgY72MEJ32VhO4TLbXpDfqMIzmrLbH29lQ6JnUTONVx0x
+         BZlAZPt3+huulhPQhxvbnk8TkpY0LY4iqvZWxyELQKL0So61IFOeCvg+ZRMU6kTamW
+         wyU5VNazyX/xdSYYSD3mu/vviL0pqGy7w2xGTqoV3l4xSKQmJ/uwFldU7Jv4daUC8k
+         xCRer2a8AftNyH7pXTpHw2XxTXH+/puJjJr+ePzazfA58pklYRFFOYDLJKt6zPrrg8
+         yRB6X4wiKEvniWJe0GgevNTULo4Z0PkwziAnufQqwhAMez3MM24jamB8jC6FFon0g0
+         wKmyr1gXzfbuQ==
+Date:   Wed, 9 Sep 2020 13:00:46 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Qian Cai <cai@lca.pw>
+Cc:     skhan@linuxfoundation.org, brendanhiggins@google.com,
+        urielguajardo@google.com, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-next@vger.kernel.org
+Subject: Re: [PATCH 2/2] kunit: ubsan integration
+Message-ID: <20200909130046.118fe505@canb.auug.org.au>
+In-Reply-To: <20200903123824.GA4225@lca.pw>
+References: <20200806174326.3577537-1-urielguajardojr@gmail.com>
+        <20200806174326.3577537-2-urielguajardojr@gmail.com>
+        <20200902125223.GA5676@lca.pw>
+        <20200903123824.GA4225@lca.pw>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200908200101.64974-4-eajames@linux.ibm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: multipart/signed; boundary="Sig_/zfuNZ91fUths2EWrVnzCG=u";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 08, 2020 at 03:00:59PM -0500, Eddie James wrote:
-> Mask the IRQ status to only the bits that the driver checks. This
-> prevents excessive driver warnings when operating in slave mode
-> when additional bits are set that the driver doesn't handle.
-> 
-> Signed-off-by: Eddie James <eajames@linux.ibm.com>
+--Sig_/zfuNZ91fUths2EWrVnzCG=u
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Tao Ren <rentao.bupt@gmail.com>
+Hi Qian,
 
-> ---
->  drivers/i2c/busses/i2c-aspeed.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/i2c/busses/i2c-aspeed.c b/drivers/i2c/busses/i2c-aspeed.c
-> index 31268074c422..2a388911038a 100644
-> --- a/drivers/i2c/busses/i2c-aspeed.c
-> +++ b/drivers/i2c/busses/i2c-aspeed.c
-> @@ -69,6 +69,7 @@
->   * These share bit definitions, so use the same values for the enable &
->   * status bits.
->   */
-> +#define ASPEED_I2CD_INTR_ALL				0xf000ffff
->  #define ASPEED_I2CD_INTR_SDA_DL_TIMEOUT			BIT(14)
->  #define ASPEED_I2CD_INTR_BUS_RECOVER_DONE		BIT(13)
->  #define ASPEED_I2CD_INTR_SLAVE_MATCH			BIT(7)
-> @@ -604,6 +605,7 @@ static irqreturn_t aspeed_i2c_bus_irq(int irq, void *dev_id)
->  	writel(irq_received & ~ASPEED_I2CD_INTR_RX_DONE,
->  	       bus->base + ASPEED_I2C_INTR_STS_REG);
->  	readl(bus->base + ASPEED_I2C_INTR_STS_REG);
-> +	irq_received &= ASPEED_I2CD_INTR_ALL;
->  	irq_remaining = irq_received;
->  
->  #if IS_ENABLED(CONFIG_I2C_SLAVE)
-> -- 
-> 2.26.2
-> 
+On Thu, 3 Sep 2020 08:38:25 -0400 Qian Cai <cai@lca.pw> wrote:
+>
+> On Wed, Sep 02, 2020 at 08:52:24AM -0400, Qian Cai wrote:
+> > On Thu, Aug 06, 2020 at 05:43:26PM +0000, Uriel Guajardo wrote: =20
+> > > Integrates UBSAN into the KUnit testing framework. It fails KUnit tes=
+ts
+> > > whenever it reports undefined behavior.
+> > >=20
+> > > Signed-off-by: Uriel Guajardo <urielguajardo@google.com> =20
+> >=20
+> > It looks like this patch had been merged into linux-next but the "[PATC=
+H 1/2]
+> > kunit: support failure from dynamic analysis tools" did not. Hence, it =
+caused a
+> > compiling failure.
+> >=20
+> > lib/ubsan.c: In function =E2=80=98ubsan_prologue=E2=80=99:
+> > lib/ubsan.c:141:2: error: implicit declaration of function =E2=80=98kun=
+it_fail_current_test=E2=80=99; did you mean =E2=80=98kunit_init_test=E2=80=
+=99? [-Werror=3Dimplicit-function-declaration]
+> >   kunit_fail_current_test();
+> >   ^~~~~~~~~~~~~~~~~~~~~~~
+> >   kunit_init_test
+> > cc1: some warnings being treated as errors =20
+>=20
+> Stephen, Shuah, can you revert this commit or pick up its dependency as w=
+ell?
+
+Sorry, for the slow response ... this should be gone today.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/zfuNZ91fUths2EWrVnzCG=u
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9YRV4ACgkQAVBC80lX
+0Gw8EQf/c1VzFm3ro9TFRsYuojPzJHb6J39cJzCwYjxVJ9yH1Qcf0d1rUbpt6w1W
+8+EupMS6gQrVVzdawHGApftrxHuV8ELNRDVNsRo07V9E/cjbdHSaB7gXvnoCrjzR
+msDborabO43BmnOVFs2Ji54y7Fl1Uy6EiTl9hDYXCEC3clXZaFL2FOU4myWaFLd0
+kZJD4/pEcbe56T5Javo/fQFZCKYxC3jHGOeE1QQZ7yilSRsYFBLbvH5eTaOSDFOm
+TIeuV0erCW3wrqKvhjz6ZWJHlilxSiBCnIPWuEu8dq+rcrXzGzvFDkWJs0REJU70
+P90MDo8f4SV1Zgav4daSHApS5PnpLQ==
+=qlg+
+-----END PGP SIGNATURE-----
+
+--Sig_/zfuNZ91fUths2EWrVnzCG=u--
