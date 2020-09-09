@@ -2,720 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD4C826276D
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 08:53:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0744262764
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Sep 2020 08:52:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727804AbgIIGxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 02:53:30 -0400
-Received: from mga09.intel.com ([134.134.136.24]:60077 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726535AbgIIGxY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 02:53:24 -0400
-IronPort-SDR: 1jxGk0TT0REvcB7gUGScpo7887AOikl6tCnRe08trUN2bumrluzWbe9EEAJZF/PQQoNZy7iRrY
- ZNpohmef0/Sw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9738"; a="159243536"
-X-IronPort-AV: E=Sophos;i="5.76,408,1592895600"; 
-   d="scan'208";a="159243536"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2020 23:52:21 -0700
-IronPort-SDR: roRoK338pjY+V2I5f7lJFUsznqJgd338/jLsOKKmStCVoDaDQ8OAzwZcezTkbpMsvJkqfMjsIx
- wksevksb3WIg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,408,1592895600"; 
-   d="scan'208";a="284773913"
-Received: from sgsxdev001.isng.intel.com (HELO localhost) ([10.226.88.11])
-  by fmsmga007.fm.intel.com with ESMTP; 08 Sep 2020 23:52:18 -0700
-From:   Rahul Tanwar <rahul.tanwar@linux.intel.com>
-To:     jdelvare@suse.com, linux@roeck-us.net, p.zabel@pengutronix.de,
-        linux-hwmon@vger.kernel.org, robh+dt@kernel.org
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        andriy.shevchenko@intel.com, songjun.Wu@intel.com,
-        cheol.yong.kim@intel.com, qi-ming.wu@intel.com,
-        rtanwar@maxlinear.com, Rahul Tanwar <rahul.tanwar@linux.intel.com>
-Subject: [PATCH 2/2] Add driver for Moortec MR75203 PVT controller
-Date:   Wed,  9 Sep 2020 14:52:05 +0800
-Message-Id: <ecb6794a8f2ef6576421e6d5fbdf4e6a91f06b91.1599634208.git.rahul.tanwar@linux.intel.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <cover.1599634208.git.rahul.tanwar@linux.intel.com>
-References: <cover.1599634208.git.rahul.tanwar@linux.intel.com>
-In-Reply-To: <cover.1599634208.git.rahul.tanwar@linux.intel.com>
-References: <cover.1599634208.git.rahul.tanwar@linux.intel.com>
+        id S1726708AbgIIGwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 02:52:47 -0400
+Received: from rtits2.realtek.com ([211.75.126.72]:46321 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725840AbgIIGwo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 02:52:44 -0400
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.69 with qID 0896qLYK1021135, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexmb06.realtek.com.tw[172.21.6.99])
+        by rtits2.realtek.com.tw (8.15.2/2.66/5.86) with ESMTPS id 0896qLYK1021135
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 9 Sep 2020 14:52:21 +0800
+Received: from RTEXMB03.realtek.com.tw (172.21.6.96) by
+ RTEXMB06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2044.4; Wed, 9 Sep 2020 14:52:21 +0800
+Received: from RTEXMB01.realtek.com.tw (172.21.6.94) by
+ RTEXMB03.realtek.com.tw (172.21.6.96) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2044.4; Wed, 9 Sep 2020 14:52:20 +0800
+Received: from RTEXMB01.realtek.com.tw ([fe80::3d72:efbe:f42a:2926]) by
+ RTEXMB01.realtek.com.tw ([fe80::3d72:efbe:f42a:2926%13]) with mapi id
+ 15.01.2044.004; Wed, 9 Sep 2020 14:52:20 +0800
+From:   =?big5?B?p2Sp/rzhIFJpY2t5?= <ricky_wu@realtek.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+CC:     "arnd@arndb.de" <arnd@arndb.de>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
+        "rui_feng@realsil.com.cn" <rui_feng@realsil.com.cn>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "puranjay12@gmail.com" <puranjay12@gmail.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "vailbhavgupta40@gamail.com" <vailbhavgupta40@gamail.com>
+Subject: RE: [PATCH v5 1/2] misc: rtsx: Fix power down flow
+Thread-Topic: [PATCH v5 1/2] misc: rtsx: Fix power down flow
+Thread-Index: AQHWhP6u8LXGP2a+OESrIDzf/6oSdqlezCyAgADgXIA=
+Date:   Wed, 9 Sep 2020 06:52:20 +0000
+Message-ID: <f4d7d2ee1f1b4404b2acab7636cddc41@realtek.com>
+References: <20200907100718.7672-1-ricky_wu@realtek.com>
+ <20200908221937.GA646017@bjorn-Precision-5520>
+In-Reply-To: <20200908221937.GA646017@bjorn-Precision-5520>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.22.88.99]
+Content-Type: text/plain; charset="big5"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PVT controller (MR75203) is used to configure & control
-Moortec embedded analog IP which contains temprature
-sensor(TS), voltage monitor(VM) & process detector(PD)
-modules. Add driver to support MR75203 PVT controller.
-
-Signed-off-by: Rahul Tanwar <rahul.tanwar@linux.intel.com>
----
- drivers/hwmon/Kconfig   |  10 +
- drivers/hwmon/Makefile  |   1 +
- drivers/hwmon/mr75203.c | 617 ++++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 628 insertions(+)
- create mode 100644 drivers/hwmon/mr75203.c
-
-diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
-index 8dc28b26916e..2defb46677b4 100644
---- a/drivers/hwmon/Kconfig
-+++ b/drivers/hwmon/Kconfig
-@@ -1112,6 +1112,16 @@ config SENSORS_MENF21BMC_HWMON
- 	  This driver can also be built as a module. If so the module
- 	  will be called menf21bmc_hwmon.
- 
-+config SENSORS_MR75203
-+	tristate "Moortec Semiconductor MR75203 PVT Controller"
-+	select REGMAP_MMIO
-+	help
-+	  If you say yes here you get support for Moortec MR75203
-+	  PVT controller.
-+
-+	  This driver can also be built as a module. If so, the module
-+	  will be called mr75203.
-+
- config SENSORS_ADCXX
- 	tristate "National Semiconductor ADCxxxSxxx"
- 	depends on SPI_MASTER
-diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
-index a8f4b35b136b..bb4bd92a5149 100644
---- a/drivers/hwmon/Makefile
-+++ b/drivers/hwmon/Makefile
-@@ -142,6 +142,7 @@ obj-$(CONFIG_SENSORS_MCP3021)	+= mcp3021.o
- obj-$(CONFIG_SENSORS_TC654)	+= tc654.o
- obj-$(CONFIG_SENSORS_MLXREG_FAN) += mlxreg-fan.o
- obj-$(CONFIG_SENSORS_MENF21BMC_HWMON) += menf21bmc_hwmon.o
-+obj-$(CONFIG_SENSORS_MR75203)	+= mr75203.o
- obj-$(CONFIG_SENSORS_NCT6683)	+= nct6683.o
- obj-$(CONFIG_SENSORS_NCT6775)	+= nct6775.o
- obj-$(CONFIG_SENSORS_NCT7802)	+= nct7802.o
-diff --git a/drivers/hwmon/mr75203.c b/drivers/hwmon/mr75203.c
-new file mode 100644
-index 000000000000..8b616e53f27b
---- /dev/null
-+++ b/drivers/hwmon/mr75203.c
-@@ -0,0 +1,617 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2020 MaxLinear, Inc.
-+ *
-+ * This driver is for PVT controller (MR75203) which is used
-+ * to configure & control Moortec embedded analog IP to enable
-+ * multiple embedded temprature sensor(TS), voltage monitor(VM)
-+ * & process detector(PD) modules.
-+ */
-+#include <linux/clk.h>
-+#include <linux/hwmon.h>
-+#include <linux/module.h>
-+#include <linux/mutex.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
-+#include <linux/regmap.h>
-+#include <linux/reset.h>
-+
-+/* PVT Common register */
-+#define PVT_IP_CONFIG	0x04
-+#define TS_NUM_MSK	GENMASK(4, 0)
-+#define TS_NUM_SFT	0
-+#define PD_NUM_MSK	GENMASK(12, 8)
-+#define PD_NUM_SFT	8
-+#define VM_NUM_MSK	GENMASK(20, 16)
-+#define VM_NUM_SFT	16
-+#define CH_NUM_MSK	GENMASK(31, 24)
-+#define CH_NUM_SFT	24
-+
-+/* Macro Common Register */
-+#define CLK_SYNTH		0x00
-+#define CLK_SYNTH_LO_SFT	0
-+#define CLK_SYNTH_HI_SFT	8
-+#define CLK_SYNTH_HOLD_SFT	16
-+#define CLK_SYNTH_EN		BIT(24)
-+
-+#define SDIF_DISABLE	0x04
-+
-+#define SDIF_STAT	0x08
-+#define SDIF_BUSY	BIT(0)
-+#define SDIF_LOCK	BIT(1)
-+
-+#define SDIF_W		0x0c
-+#define SDIF_PROG	BIT(31)
-+#define SDIF_WRN_W	BIT(27)
-+#define SDIF_WRN_R	0x00
-+#define SDIF_ADDR_SFT	24
-+
-+#define SDIF_HALT	0x10
-+#define SDIF_CTRL	0x14
-+#define SDIF_SMPL_CTRL	0x20
-+
-+/* TS & PD Individual Macro Register */
-+#define COM_REG_SIZE	0x40
-+
-+#define SDIF_DONE(n)	(COM_REG_SIZE + 0x14 + 0x40 * (n))
-+#define SDIF_SMPL_DONE	BIT(0)
-+
-+#define SDIF_DATA(n)	(COM_REG_SIZE + 0x18 + 0x40 * (n))
-+#define SAMPLE_DATA_MSK	GENMASK(15, 0)
-+
-+#define HILO_RESET(n)	(COM_REG_SIZE + 0x2c + 0x40 * (n))
-+
-+/* VM Individual Macro Register */
-+#define VM_COM_REG_SIZE	0x200
-+#define VM_SDIF_DONE(n)	(VM_COM_REG_SIZE + 0x34 + 0x200 * (n))
-+#define VM_SDIF_DATA(n)	(VM_COM_REG_SIZE + 0x40 + 0x200 * (n))
-+
-+/* SDA Slave Register */
-+#define IP_CTRL			0x00
-+#define IP_RST_REL		BIT(1)
-+#define IP_RUN_CONT		BIT(3)
-+#define IP_AUTO			BIT(8)
-+#define IP_VM_MODE		BIT(10)
-+
-+#define IP_CFG			0x01
-+#define CFG0_MODE_2		BIT(0)
-+#define CFG0_PARALLEL_OUT	0
-+#define CFG0_12_BIT		0
-+#define CFG1_VOL_MEAS_MODE	0
-+#define CFG1_PARALLEL_OUT	0
-+#define CFG1_14_BIT		0
-+
-+#define IP_DATA		0x03
-+
-+#define IP_POLL		0x04
-+#define VM_CH_INIT	BIT(20)
-+#define VM_CH_REQ	BIT(21)
-+
-+#define IP_TMR			0x05
-+#define POWER_DELAY_CYCLE_256	0x80
-+#define POWER_DELAY_CYCLE_64	0x40
-+
-+#define PVT_POLL_DELAY_US	20
-+#define PVT_POLL_TIMEOUT	20000
-+#define PVT_H_CONST		100000
-+#define PVT_CAL5_CONST		2047
-+#define PVT_G_CONST		40000
-+#define PVT_CONV_BITS		10
-+#define PVT_N_CONST		90
-+#define PVT_R_CONST		245805
-+
-+struct pvt_device {
-+	struct regmap		*c_map;
-+	struct regmap		*t_map;
-+	struct regmap		*p_map;
-+	struct regmap		*v_map;
-+	struct clk		*clk;
-+	struct reset_control	*rst;
-+	u32			t_num;
-+	u32			p_num;
-+	u32			v_num;
-+	u32			ip_freq;
-+	u8			*vm_idx;
-+	struct mutex		lock; /* lock to protect register */
-+};
-+
-+static umode_t pvt_is_visible(const void *data, enum hwmon_sensor_types type,
-+			      u32 attr, int channel)
-+{
-+	switch (type) {
-+	case hwmon_temp:
-+		if (attr == hwmon_temp_input)
-+			return 0444;
-+		else
-+			return 0;
-+	case hwmon_in:
-+		if (attr == hwmon_in_input)
-+			return 0444;
-+		else
-+			return 0;
-+	default:
-+		return 0;
-+	}
-+}
-+
-+static int pvt_read_temp(struct device *dev, u32 attr, int channel, long *val)
-+{
-+	struct pvt_device *pvt = dev_get_drvdata(dev);
-+	struct regmap *t_map = pvt->t_map;
-+	u32 stat, nbs;
-+	int ret;
-+	u64 tmp;
-+
-+	if (channel >= pvt->t_num)
-+		return -EINVAL;
-+
-+	switch (attr) {
-+	case hwmon_temp_input:
-+		mutex_lock(&pvt->lock);
-+		ret = regmap_read_poll_timeout(t_map, SDIF_DONE(channel),
-+					       stat, stat & SDIF_SMPL_DONE,
-+					       PVT_POLL_DELAY_US,
-+					       PVT_POLL_TIMEOUT);
-+		if (ret) {
-+			mutex_unlock(&pvt->lock);
-+			return ret;
-+		}
-+
-+		regmap_read(t_map, SDIF_DATA(channel), &nbs);
-+		nbs &= SAMPLE_DATA_MSK;
-+		mutex_unlock(&pvt->lock);
-+
-+		/*
-+		 * Convert the register value to
-+		 * degrees centigrade temperature
-+		 */
-+		tmp = nbs * PVT_H_CONST;
-+		do_div(tmp, PVT_CAL5_CONST);
-+		*val = tmp - PVT_G_CONST - pvt->ip_freq;
-+
-+		return 0;
-+	default:
-+		return -EOPNOTSUPP;
-+	}
-+}
-+
-+static int pvt_read_in(struct device *dev, u32 attr, int channel, long *val)
-+{
-+	struct pvt_device *pvt = dev_get_drvdata(dev);
-+	struct regmap *v_map = pvt->v_map;
-+	u32 n, stat;
-+	u8 vm_idx;
-+	int ret;
-+
-+	if (channel >= pvt->v_num)
-+		return -EINVAL;
-+
-+	vm_idx = pvt->vm_idx[channel];
-+
-+	switch (attr) {
-+	case hwmon_in_input:
-+		mutex_lock(&pvt->lock);
-+		ret = regmap_read_poll_timeout(v_map, VM_SDIF_DONE(vm_idx),
-+					       stat, stat & SDIF_SMPL_DONE,
-+					       PVT_POLL_DELAY_US,
-+					       PVT_POLL_TIMEOUT);
-+		if (ret) {
-+			mutex_unlock(&pvt->lock);
-+			return ret;
-+		}
-+
-+		regmap_read(v_map, VM_SDIF_DATA(vm_idx), &n);
-+		n &= SAMPLE_DATA_MSK;
-+		mutex_unlock(&pvt->lock);
-+
-+
-+		/* Convert the N bitstream count into voltage */
-+		*val = (PVT_N_CONST * n - PVT_R_CONST) >> PVT_CONV_BITS;
-+
-+		return 0;
-+	default:
-+		return -EOPNOTSUPP;
-+	}
-+}
-+
-+static int pvt_read(struct device *dev, enum hwmon_sensor_types type,
-+		    u32 attr, int channel, long *val)
-+{
-+	switch (type) {
-+	case hwmon_temp:
-+		return pvt_read_temp(dev, attr, channel, val);
-+	case hwmon_in:
-+		return pvt_read_in(dev, attr, channel, val);
-+	default:
-+		return -EOPNOTSUPP;
-+	}
-+}
-+
-+static const u32 pvt_chip_config[] = {
-+	HWMON_C_REGISTER_TZ,
-+	0
-+};
-+
-+static const struct hwmon_channel_info pvt_chip = {
-+	.type = hwmon_chip,
-+	.config = pvt_chip_config,
-+};
-+
-+static struct hwmon_channel_info pvt_temp = {
-+	.type = hwmon_temp,
-+};
-+
-+static struct hwmon_channel_info pvt_in = {
-+	.type = hwmon_in,
-+};
-+
-+static const struct hwmon_ops pvt_hwmon_ops = {
-+	.is_visible = pvt_is_visible,
-+	.read = pvt_read,
-+};
-+
-+static struct hwmon_chip_info pvt_chip_info = {
-+	.ops = &pvt_hwmon_ops,
-+};
-+
-+static int pvt_init(struct pvt_device *pvt)
-+{
-+	u16 sys_freq, key, middle, low = 4, high = 8;
-+	struct regmap *t_map = pvt->t_map;
-+	struct regmap *p_map = pvt->p_map;
-+	struct regmap *v_map = pvt->v_map;
-+	u32 t_num = pvt->t_num;
-+	u32 p_num = pvt->p_num;
-+	u32 v_num = pvt->v_num;
-+	u32 clk_synth, val;
-+	int ret;
-+
-+	sys_freq = clk_get_rate(pvt->clk) / 1000000;
-+	while (high >= low) {
-+		middle = DIV_ROUND_CLOSEST(low + high, 2);
-+		key = DIV_ROUND_CLOSEST(sys_freq, middle);
-+		if (key > 514) {
-+			low = middle + 1;
-+			continue;
-+		} else if (key < 2) {
-+			high = middle - 1;
-+			continue;
-+		}
-+
-+		break;
-+	}
-+
-+	key = clamp_val(key, 2, 514) - 2;
-+
-+	clk_synth = ((key + 1) >> 1) << CLK_SYNTH_LO_SFT |
-+		    (key >> 1) << CLK_SYNTH_HI_SFT |
-+		    (key >> 1) << CLK_SYNTH_HOLD_SFT | CLK_SYNTH_EN;
-+
-+	pvt->ip_freq = sys_freq * 100 / (key + 2);
-+
-+	if (t_num) {
-+		regmap_write(t_map, SDIF_SMPL_CTRL, 0x0);
-+		regmap_write(t_map, SDIF_HALT, 0x0);
-+		regmap_write(t_map, CLK_SYNTH, clk_synth);
-+		regmap_write(t_map, SDIF_DISABLE, 0);
-+
-+		ret = regmap_read_poll_timeout(t_map, SDIF_STAT,
-+					       val, !(val & SDIF_BUSY),
-+					       PVT_POLL_DELAY_US,
-+					       PVT_POLL_TIMEOUT);
-+		if (ret)
-+			return ret;
-+
-+		val = CFG0_MODE_2 | CFG0_PARALLEL_OUT | CFG0_12_BIT |
-+		      IP_CFG << SDIF_ADDR_SFT | SDIF_WRN_W | SDIF_PROG;
-+		regmap_write(t_map, SDIF_W, val);
-+
-+		ret = regmap_read_poll_timeout(t_map, SDIF_STAT,
-+					       val, !(val & SDIF_BUSY),
-+					       PVT_POLL_DELAY_US,
-+					       PVT_POLL_TIMEOUT);
-+		if (ret)
-+			return ret;
-+
-+		val = POWER_DELAY_CYCLE_256 | IP_TMR << SDIF_ADDR_SFT |
-+			      SDIF_WRN_W | SDIF_PROG;
-+		regmap_write(t_map, SDIF_W, val);
-+
-+		ret = regmap_read_poll_timeout(t_map, SDIF_STAT,
-+					       val, !(val & SDIF_BUSY),
-+					       PVT_POLL_DELAY_US,
-+					       PVT_POLL_TIMEOUT);
-+		if (ret)
-+			return ret;
-+
-+		val = IP_RST_REL | IP_RUN_CONT | IP_AUTO |
-+		      IP_CTRL << SDIF_ADDR_SFT |
-+		      SDIF_WRN_W | SDIF_PROG;
-+		regmap_write(t_map, SDIF_W, val);
-+	}
-+
-+	if (p_num) {
-+		regmap_write(p_map, SDIF_HALT, 0x0);
-+		regmap_write(p_map, SDIF_DISABLE, GENMASK(p_num - 1, 0));
-+		regmap_write(p_map, CLK_SYNTH, clk_synth);
-+	}
-+
-+	if (v_num) {
-+		regmap_write(v_map, SDIF_SMPL_CTRL, 0x0);
-+		regmap_write(v_map, SDIF_HALT, 0x0);
-+		regmap_write(v_map, CLK_SYNTH, clk_synth);
-+		regmap_write(v_map, SDIF_DISABLE, 0);
-+
-+		ret = regmap_read_poll_timeout(v_map, SDIF_STAT,
-+					       val, !(val & SDIF_BUSY),
-+					       PVT_POLL_DELAY_US,
-+					       PVT_POLL_TIMEOUT);
-+		if (ret)
-+			return ret;
-+
-+		val = CFG1_VOL_MEAS_MODE | CFG1_PARALLEL_OUT |
-+		      CFG1_14_BIT | IP_CFG << SDIF_ADDR_SFT |
-+		      SDIF_WRN_W | SDIF_PROG;
-+		regmap_write(v_map, SDIF_W, val);
-+
-+		ret = regmap_read_poll_timeout(v_map, SDIF_STAT,
-+					       val, !(val & SDIF_BUSY),
-+					       PVT_POLL_DELAY_US,
-+					       PVT_POLL_TIMEOUT);
-+		if (ret)
-+			return ret;
-+
-+		val = POWER_DELAY_CYCLE_64 | IP_TMR << SDIF_ADDR_SFT |
-+		      SDIF_WRN_W | SDIF_PROG;
-+		regmap_write(v_map, SDIF_W, val);
-+
-+		ret = regmap_read_poll_timeout(v_map, SDIF_STAT,
-+					       val, !(val & SDIF_BUSY),
-+					       PVT_POLL_DELAY_US,
-+					       PVT_POLL_TIMEOUT);
-+		if (ret)
-+			return ret;
-+
-+		val = IP_RST_REL | IP_RUN_CONT | IP_AUTO | IP_VM_MODE |
-+		      IP_CTRL << SDIF_ADDR_SFT |
-+		      SDIF_WRN_W | SDIF_PROG;
-+		regmap_write(v_map, SDIF_W, val);
-+	}
-+
-+	return 0;
-+}
-+
-+static struct regmap_config pvt_regmap_config = {
-+	.reg_bits = 32,
-+	.reg_stride = 4,
-+	.val_bits = 32,
-+};
-+
-+static int pvt_get_regmap(struct platform_device *pdev, char *reg_name)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct pvt_device *pvt = platform_get_drvdata(pdev);
-+	struct regmap **reg_map;
-+	void __iomem *io_base;
-+	struct resource *res;
-+
-+	if (!strcmp(reg_name, "common"))
-+		reg_map = &pvt->c_map;
-+	else if (!strcmp(reg_name, "ts"))
-+		reg_map = &pvt->t_map;
-+	else if (!strcmp(reg_name, "pd"))
-+		reg_map = &pvt->p_map;
-+	else if (!strcmp(reg_name, "vm"))
-+		reg_map = &pvt->v_map;
-+	else
-+		return -EINVAL;
-+
-+	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, reg_name);
-+	io_base = devm_ioremap_resource(dev, res);
-+	if (IS_ERR(io_base))
-+		return PTR_ERR(io_base);
-+
-+	pvt_regmap_config.name = reg_name;
-+	*reg_map = devm_regmap_init_mmio(dev, io_base, &pvt_regmap_config);
-+	if (IS_ERR(*reg_map)) {
-+		dev_err(dev, "failed to init register map\n");
-+		return PTR_ERR(*reg_map);
-+	}
-+
-+	return 0;
-+}
-+
-+static void pvt_clk_disable(void *data)
-+{
-+	struct pvt_device *pvt = data;
-+
-+	clk_disable_unprepare(pvt->clk);
-+}
-+
-+static int pvt_clk_enable(struct device *dev, struct pvt_device *pvt)
-+{
-+	int ret;
-+
-+	ret = clk_prepare_enable(pvt->clk);
-+	if (ret)
-+		return ret;
-+
-+	return devm_add_action_or_reset(dev, pvt_clk_disable, pvt);
-+}
-+
-+static void pvt_reset_control_assert(void *data)
-+{
-+	struct pvt_device *pvt = data;
-+
-+	reset_control_assert(pvt->rst);
-+}
-+
-+static int pvt_reset_control_deassert(struct device *dev, struct pvt_device *pvt)
-+{
-+	int ret;
-+
-+	ret = reset_control_deassert(pvt->rst);
-+	if (ret)
-+		return ret;
-+
-+	return devm_add_action_or_reset(dev, pvt_reset_control_assert, pvt);
-+}
-+
-+static int mr75203_probe(struct platform_device *pdev)
-+{
-+	const struct hwmon_channel_info **pvt_info;
-+	u32 ts_num, vm_num, pd_num, val, index, i;
-+	struct device *dev = &pdev->dev;
-+	u32 *temp_config, *in_config;
-+	struct device *hwmon_dev;
-+	struct pvt_device *pvt;
-+	int ret;
-+
-+	pvt = devm_kzalloc(dev, sizeof(*pvt), GFP_KERNEL);
-+	if (!pvt)
-+		return -ENOMEM;
-+
-+	ret = pvt_get_regmap(pdev, "common");
-+	if (ret)
-+		return ret;
-+
-+	pvt->rst = devm_reset_control_get(dev, NULL);
-+	if (IS_ERR(pvt->rst))
-+		return dev_err_probe(dev, PTR_ERR(pvt->rst),
-+				     "failed to get reset control\n");
-+
-+	ret = pvt_reset_control_deassert(dev, pvt);
-+	if (ret)
-+		return dev_err_probe(dev, ret, "cannot deassert reset control\n");
-+
-+	pvt->clk = devm_clk_get(dev, NULL);
-+	if (IS_ERR(pvt->clk))
-+		return dev_err_probe(dev, PTR_ERR(pvt->clk), "failed to get clock\n");
-+
-+	ret = pvt_clk_enable(dev, pvt);
-+	if (ret) {
-+		dev_err(dev, "failed to enable clock\n");
-+		return ret;
-+	}
-+
-+	regmap_read(pvt->c_map, PVT_IP_CONFIG, &val);
-+	ts_num = (val & TS_NUM_MSK) >> TS_NUM_SFT;
-+	pd_num = (val & PD_NUM_MSK) >> PD_NUM_SFT;
-+	vm_num = (val & VM_NUM_MSK) >> VM_NUM_SFT;
-+	pvt->t_num = ts_num;
-+	pvt->p_num = pd_num;
-+	pvt->v_num = vm_num;
-+	val = 0;
-+	if (ts_num)
-+		val++;
-+	if (vm_num)
-+		val++;
-+	if (!val && !pd_num) {
-+		dev_err(dev, "None of TS, VM or PD configured\n");
-+		return -EINVAL;
-+	}
-+
-+	pvt_info = devm_kcalloc(dev, val + 2, sizeof(*pvt_info), GFP_KERNEL);
-+	if (!pvt_info)
-+		return -ENOMEM;
-+	pvt_info[0] = &pvt_chip;
-+	index = 1;
-+
-+	if (ts_num) {
-+		ret = pvt_get_regmap(pdev, "ts");
-+		if (ret)
-+			return ret;
-+
-+		temp_config = devm_kcalloc(dev, ts_num + 1,
-+					   sizeof(*temp_config), GFP_KERNEL);
-+		if (!temp_config)
-+			return -ENOMEM;
-+
-+		for (i = 0; i < ts_num; i++)
-+			temp_config[i] = HWMON_T_INPUT;
-+
-+		temp_config[ts_num] = 0;
-+		pvt_temp.config = temp_config;
-+
-+		pvt_info[index++] = &pvt_temp;
-+	}
-+
-+	if (pd_num) {
-+		ret = pvt_get_regmap(pdev, "pd");
-+		if (ret)
-+			return ret;
-+	}
-+
-+	if (vm_num) {
-+		u32 num = vm_num;
-+
-+		ret = pvt_get_regmap(pdev, "vm");
-+		if (ret)
-+			return ret;
-+
-+		pvt->vm_idx = devm_kcalloc(dev, vm_num, sizeof(*pvt->vm_idx),
-+					   GFP_KERNEL);
-+		if (!pvt->vm_idx)
-+			return -ENOMEM;
-+
-+		for (i = 0; i < vm_num; i++)
-+			pvt->vm_idx[i] = i;
-+
-+		ret = of_property_read_u8_array(dev->of_node, "vm-map",
-+						pvt->vm_idx, vm_num);
-+
-+		if (!ret)
-+			for (i = 0; i < vm_num; i++)
-+				if (pvt->vm_idx[i] >= vm_num ||
-+				    pvt->vm_idx[i] == 0xff) {
-+					num = i;
-+					break;
-+				}
-+
-+		in_config = devm_kcalloc(dev, num + 1,
-+					 sizeof(*in_config), GFP_KERNEL);
-+		if (!in_config)
-+			return -ENOMEM;
-+
-+		for (i = 0; i < num; i++)
-+			in_config[i] = HWMON_I_INPUT;
-+
-+		in_config[num] = 0;
-+		pvt_in.config = in_config;
-+
-+		pvt_info[index++] = &pvt_in;
-+	}
-+
-+	ret = pvt_init(pvt);
-+	if (ret) {
-+		dev_err(dev, "failed to init pvt: %d\n", ret);
-+		return ret;
-+	}
-+
-+	mutex_init(&pvt->lock);
-+
-+	pvt_info[index] = NULL;
-+	pvt_chip_info.info = pvt_info;
-+	hwmon_dev = devm_hwmon_device_register_with_info(dev, "pvt",
-+							 pvt,
-+							 &pvt_chip_info,
-+							 NULL);
-+
-+	platform_set_drvdata(pdev, pvt);
-+	return PTR_ERR_OR_ZERO(hwmon_dev);
-+}
-+
-+static const struct of_device_id moortec_pvt_of_match[] = {
-+	{ .compatible = "moortec,mr75203" },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, moortec_pvt_of_match);
-+
-+static struct platform_driver moortec_pvt_driver = {
-+	.driver = {
-+		.name = "moortec-pvt",
-+		.of_match_table = moortec_pvt_of_match,
-+	},
-+	.probe = mr75203_probe,
-+};
-+module_platform_driver(moortec_pvt_driver);
--- 
-2.11.0
-
+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBCam9ybiBIZWxnYWFzIFttYWls
+dG86aGVsZ2Fhc0BrZXJuZWwub3JnXQ0KPiBTZW50OiBXZWRuZXNkYXksIFNlcHRlbWJlciAwOSwg
+MjAyMCA2OjIwIEFNDQo+IFRvOiCnZKn+vOEgUmlja3kNCj4gQ2M6IGFybmRAYXJuZGIuZGU7IGdy
+ZWdraEBsaW51eGZvdW5kYXRpb24ub3JnOyBiaGVsZ2Fhc0Bnb29nbGUuY29tOw0KPiB1bGYuaGFu
+c3NvbkBsaW5hcm8ub3JnOyBydWlfZmVuZ0ByZWFsc2lsLmNvbS5jbjsgbGludXgta2VybmVsQHZn
+ZXIua2VybmVsLm9yZzsNCj4gcHVyYW5qYXkxMkBnbWFpbC5jb207IGxpbnV4LXBjaUB2Z2VyLmtl
+cm5lbC5vcmc7DQo+IHZhaWxiaGF2Z3VwdGE0MEBnYW1haWwuY29tDQo+IFN1YmplY3Q6IFJlOiBb
+UEFUQ0ggdjUgMS8yXSBtaXNjOiBydHN4OiBGaXggcG93ZXIgZG93biBmbG93DQo+IA0KPiBPbiBN
+b24sIFNlcCAwNywgMjAyMCBhdCAwNjowNzoxOFBNICswODAwLCByaWNreV93dUByZWFsdGVrLmNv
+bSB3cm90ZToNCj4gPiBGcm9tOiBSaWNreSBXdSA8cmlja3lfd3VAcmVhbHRlay5jb20+DQo+ID4N
+Cj4gPiBGaXggYW5kIHNvcnQgb3V0IHJ0c3ggZHJpdmVyIHBvd2VyIGRvd24gZmxvdw0KPiANCj4g
+SXQgd291bGQgYmUgbmljZSB0byBzYXkgd2hhdCdzIGNoYW5naW5nIGhlcmUsIGJ1dCBpdCdzIGEg
+Z3JlYXQNCj4gaW1wcm92ZW1lbnQgdG8gaGF2ZSB0aGlzIHNwbGl0IG91dC4NCj4gDQo+IEZvciBl
+eGFtcGxlLCB0aGlzIGRyb3BzIHRoZSAicG1fc3RhdGUgPT0gSE9TVF9FTlRFUl9TMyIgY2hlY2ss
+IGJ1dA0KPiB0aGVyZSdzIG5vIGV4cGxhbmF0aW9uLg0KPiANCj4gTWlub3IgY29tbWVudHMgYmVs
+b3cuDQo+IA0KDQpEcm9wIG91dCAicG1fc3RhdGUgPT0gSE9TVF9FTlRFUl9TMyINCkJlY2F1c2Ug
+aW4gc2h1dGRvd24gZmxvdyB3ZSBhbHNvIG5lZWQgdG8gY2xlYW4gdGhpcyByZWdpc3Rlcg0KQnV0
+IHBtX3N0YXRlIHdlIG1heSB1c2UgaW4gdGhlIGZ1dHVyZSBsaWtlIEQzLi4uIA0KDQo+ID4gU2ln
+bmVkLW9mZi1ieTogUmlja3kgV3UgPHJpY2t5X3d1QHJlYWx0ZWsuY29tPg0KPiA+IC0tLQ0KPiA+
+ICBkcml2ZXJzL21pc2MvY2FyZHJlYWRlci9ydHM1MjI3LmMgIHwgMTUgLS0tLS0tLS0tLS0tLS0t
+DQo+ID4gIGRyaXZlcnMvbWlzYy9jYXJkcmVhZGVyL3J0czUyMjguYyAgfCAgNSArKy0tLQ0KPiA+
+ICBkcml2ZXJzL21pc2MvY2FyZHJlYWRlci9ydHM1MjQ5LmMgIHwgMTcgLS0tLS0tLS0tLS0tLS0t
+LS0NCj4gPiAgZHJpdmVycy9taXNjL2NhcmRyZWFkZXIvcnRzNTI2MC5jICB8IDE2IC0tLS0tLS0t
+LS0tLS0tLS0NCj4gPiAgZHJpdmVycy9taXNjL2NhcmRyZWFkZXIvcnRzeF9wY3IuYyB8IDE2ICsr
+KysrKysrKysrKysrKysNCj4gPiAgNSBmaWxlcyBjaGFuZ2VkLCAxOCBpbnNlcnRpb25zKCspLCA1
+MSBkZWxldGlvbnMoLSkNCj4gPg0KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL21pc2MvY2FyZHJl
+YWRlci9ydHM1MjI3LmMNCj4gYi9kcml2ZXJzL21pc2MvY2FyZHJlYWRlci9ydHM1MjI3LmMNCj4g
+PiBpbmRleCBmNWYzOTJkZGYzZDYuLjc0NzM5MWUzZmI1ZCAxMDA2NDQNCj4gPiAtLS0gYS9kcml2
+ZXJzL21pc2MvY2FyZHJlYWRlci9ydHM1MjI3LmMNCj4gPiArKysgYi9kcml2ZXJzL21pc2MvY2Fy
+ZHJlYWRlci9ydHM1MjI3LmMNCj4gPiBAQCAtNzcsMTkgKzc3LDYgQEAgc3RhdGljIHZvaWQgcnRz
+NTIyN19mZXRjaF92ZW5kb3Jfc2V0dGluZ3Moc3RydWN0DQo+IHJ0c3hfcGNyICpwY3IpDQo+ID4g
+IAkJcGNyLT5mbGFncyB8PSBQQ1JfUkVWRVJTRV9TT0NLRVQ7DQo+ID4gIH0NCj4gPg0KPiA+IC1z
+dGF0aWMgdm9pZCBydHM1MjI3X2ZvcmNlX3Bvd2VyX2Rvd24oc3RydWN0IHJ0c3hfcGNyICpwY3Is
+IHU4IHBtX3N0YXRlKQ0KPiA+IC17DQo+ID4gLQkvKiBTZXQgcmVsaW5rX3RpbWUgdG8gMCAqLw0K
+PiA+IC0JcnRzeF9wY2lfd3JpdGVfcmVnaXN0ZXIocGNyLCBBVVRPTE9BRF9DRkdfQkFTRSArIDEs
+IDB4RkYsIDApOw0KPiA+IC0JcnRzeF9wY2lfd3JpdGVfcmVnaXN0ZXIocGNyLCBBVVRPTE9BRF9D
+RkdfQkFTRSArIDIsIDB4RkYsIDApOw0KPiA+IC0JcnRzeF9wY2lfd3JpdGVfcmVnaXN0ZXIocGNy
+LCBBVVRPTE9BRF9DRkdfQkFTRSArIDMsIDB4MDEsIDApOw0KPiA+IC0NCj4gPiAtCWlmIChwbV9z
+dGF0ZSA9PSBIT1NUX0VOVEVSX1MzKQ0KPiA+IC0JCXJ0c3hfcGNpX3dyaXRlX3JlZ2lzdGVyKHBj
+ciwgcGNyLT5yZWdfcG1fY3RybDMsIDB4MTAsIDB4MTApOw0KPiA+IC0NCj4gPiAtCXJ0c3hfcGNp
+X3dyaXRlX3JlZ2lzdGVyKHBjciwgRlBEQ1RMLCAweDAzLCAweDAzKTsNCj4gPiAtfQ0KPiA+IC0N
+Cj4gPiAgc3RhdGljIGludCBydHM1MjI3X2V4dHJhX2luaXRfaHcoc3RydWN0IHJ0c3hfcGNyICpw
+Y3IpDQo+ID4gIHsNCj4gPiAgCXUxNiBjYXA7DQo+ID4gQEAgLTIzOSw3ICsyMjYsNiBAQCBzdGF0
+aWMgY29uc3Qgc3RydWN0IHBjcl9vcHMgcnRzNTIyN19wY3Jfb3BzID0gew0KPiA+ICAJLnN3aXRj
+aF9vdXRwdXRfdm9sdGFnZSA9IHJ0czUyMjdfc3dpdGNoX291dHB1dF92b2x0YWdlLA0KPiA+ICAJ
+LmNkX2RlZ2xpdGNoID0gTlVMTCwNCj4gPiAgCS5jb252X2Nsa19hbmRfZGl2X24gPSBOVUxMLA0K
+PiA+IC0JLmZvcmNlX3Bvd2VyX2Rvd24gPSBydHM1MjI3X2ZvcmNlX3Bvd2VyX2Rvd24sDQo+ID4g
+IH07DQo+ID4NCj4gPiAgLyogU0QgUHVsbCBDb250cm9sIEVuYWJsZToNCj4gPiBAQCAtMzg5LDcg
+KzM3NSw2IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgcGNyX29wcyBydHM1MjJhX3Bjcl9vcHMgPSB7
+DQo+ID4gIAkuc3dpdGNoX291dHB1dF92b2x0YWdlID0gcnRzNTIyYV9zd2l0Y2hfb3V0cHV0X3Zv
+bHRhZ2UsDQo+ID4gIAkuY2RfZGVnbGl0Y2ggPSBOVUxMLA0KPiA+ICAJLmNvbnZfY2xrX2FuZF9k
+aXZfbiA9IE5VTEwsDQo+ID4gLQkuZm9yY2VfcG93ZXJfZG93biA9IHJ0czUyMjdfZm9yY2VfcG93
+ZXJfZG93biwNCj4gPiAgfTsNCj4gPg0KPiA+ICB2b2lkIHJ0czUyMmFfaW5pdF9wYXJhbXMoc3Ry
+dWN0IHJ0c3hfcGNyICpwY3IpDQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbWlzYy9jYXJkcmVh
+ZGVyL3J0czUyMjguYw0KPiBiL2RyaXZlcnMvbWlzYy9jYXJkcmVhZGVyL3J0czUyMjguYw0KPiA+
+IGluZGV4IDI4ZmVhYjE0NDlhYi4uNzgxYTg2ZGVmNTlhIDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZl
+cnMvbWlzYy9jYXJkcmVhZGVyL3J0czUyMjguYw0KPiA+ICsrKyBiL2RyaXZlcnMvbWlzYy9jYXJk
+cmVhZGVyL3J0czUyMjguYw0KPiA+IEBAIC05OSw5ICs5OSw4IEBAIHN0YXRpYyB2b2lkIHJ0czUy
+MjhfZm9yY2VfcG93ZXJfZG93bihzdHJ1Y3QgcnRzeF9wY3INCj4gKnBjciwgdTggcG1fc3RhdGUp
+DQo+ID4gIAlydHN4X3BjaV93cml0ZV9yZWdpc3RlcihwY3IsIEFVVE9MT0FEX0NGR19CQVNFICsg
+MywNCj4gPiAgCQkJCVJFTElOS19USU1FX01BU0ssIDApOw0KPiA+DQo+ID4gLQlpZiAocG1fc3Rh
+dGUgPT0gSE9TVF9FTlRFUl9TMykNCj4gPiAtCQlydHN4X3BjaV93cml0ZV9yZWdpc3RlcihwY3Is
+IHBjci0+cmVnX3BtX2N0cmwzLA0KPiA+IC0JCQkJCUQzX0RFTElOS19NT0RFX0VOLCBEM19ERUxJ
+TktfTU9ERV9FTik7DQo+ID4gKwlydHN4X3BjaV93cml0ZV9yZWdpc3RlcihwY3IsIHBjci0+cmVn
+X3BtX2N0cmwzLA0KPiA+ICsJCQlEM19ERUxJTktfTU9ERV9FTiwgRDNfREVMSU5LX01PREVfRU4p
+Ow0KPiA+DQo+ID4gIAlydHN4X3BjaV93cml0ZV9yZWdpc3RlcihwY3IsIEZQRENUTCwNCj4gPiAg
+CQlTU0NfUE9XRVJfRE9XTiwgU1NDX1BPV0VSX0RPV04pOw0KPiA+IGRpZmYgLS1naXQgYS9kcml2
+ZXJzL21pc2MvY2FyZHJlYWRlci9ydHM1MjQ5LmMNCj4gYi9kcml2ZXJzL21pc2MvY2FyZHJlYWRl
+ci9ydHM1MjQ5LmMNCj4gPiBpbmRleCA5NDFiM2Q3N2YxZTkuLjcxOWFhMmQ2MTkxOSAxMDA2NDQN
+Cj4gPiAtLS0gYS9kcml2ZXJzL21pc2MvY2FyZHJlYWRlci9ydHM1MjQ5LmMNCj4gPiArKysgYi9k
+cml2ZXJzL21pc2MvY2FyZHJlYWRlci9ydHM1MjQ5LmMNCj4gPiBAQCAtNzgsMjAgKzc4LDYgQEAg
+c3RhdGljIHZvaWQgcnRzeF9iYXNlX2ZldGNoX3ZlbmRvcl9zZXR0aW5ncyhzdHJ1Y3QNCj4gcnRz
+eF9wY3IgKnBjcikNCj4gPiAgCQlwY3ItPmZsYWdzIHw9IFBDUl9SRVZFUlNFX1NPQ0tFVDsNCj4g
+PiAgfQ0KPiA+DQo+ID4gLXN0YXRpYyB2b2lkIHJ0c3hfYmFzZV9mb3JjZV9wb3dlcl9kb3duKHN0
+cnVjdCBydHN4X3BjciAqcGNyLCB1OCBwbV9zdGF0ZSkNCj4gPiAtew0KPiA+IC0JLyogU2V0IHJl
+bGlua190aW1lIHRvIDAgKi8NCj4gPiAtCXJ0c3hfcGNpX3dyaXRlX3JlZ2lzdGVyKHBjciwgQVVU
+T0xPQURfQ0ZHX0JBU0UgKyAxLCAweEZGLCAwKTsNCj4gPiAtCXJ0c3hfcGNpX3dyaXRlX3JlZ2lz
+dGVyKHBjciwgQVVUT0xPQURfQ0ZHX0JBU0UgKyAyLCAweEZGLCAwKTsNCj4gPiAtCXJ0c3hfcGNp
+X3dyaXRlX3JlZ2lzdGVyKHBjciwgQVVUT0xPQURfQ0ZHX0JBU0UgKyAzLCAweDAxLCAwKTsNCj4g
+PiAtDQo+ID4gLQlpZiAocG1fc3RhdGUgPT0gSE9TVF9FTlRFUl9TMykNCj4gPiAtCQlydHN4X3Bj
+aV93cml0ZV9yZWdpc3RlcihwY3IsIHBjci0+cmVnX3BtX2N0cmwzLA0KPiA+IC0JCQlEM19ERUxJ
+TktfTU9ERV9FTiwgRDNfREVMSU5LX01PREVfRU4pOw0KPiA+IC0NCj4gPiAtCXJ0c3hfcGNpX3dy
+aXRlX3JlZ2lzdGVyKHBjciwgRlBEQ1RMLCAweDAzLCAweDAzKTsNCj4gPiAtfQ0KPiA+IC0NCj4g
+PiAgc3RhdGljIHZvaWQgcnRzNTI0OV9pbml0X2Zyb21fY2ZnKHN0cnVjdCBydHN4X3BjciAqcGNy
+KQ0KPiA+ICB7DQo+ID4gIAlzdHJ1Y3QgcGNpX2RldiAqcGRldiA9IHBjci0+cGNpOw0KPiA+IEBA
+IC0zNjAsNyArMzQ2LDYgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBwY3Jfb3BzIHJ0czUyNDlfcGNy
+X29wcyA9IHsNCj4gPiAgCS5jYXJkX3Bvd2VyX29uID0gcnRzeF9iYXNlX2NhcmRfcG93ZXJfb24s
+DQo+ID4gIAkuY2FyZF9wb3dlcl9vZmYgPSBydHN4X2Jhc2VfY2FyZF9wb3dlcl9vZmYsDQo+ID4g
+IAkuc3dpdGNoX291dHB1dF92b2x0YWdlID0gcnRzeF9iYXNlX3N3aXRjaF9vdXRwdXRfdm9sdGFn
+ZSwNCj4gPiAtCS5mb3JjZV9wb3dlcl9kb3duID0gcnRzeF9iYXNlX2ZvcmNlX3Bvd2VyX2Rvd24s
+DQo+ID4gIH07DQo+ID4NCj4gPiAgLyogU0QgUHVsbCBDb250cm9sIEVuYWJsZToNCj4gPiBAQCAt
+NTg1LDcgKzU3MCw2IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgcGNyX29wcyBydHM1MjRhX3Bjcl9v
+cHMgPSB7DQo+ID4gIAkuY2FyZF9wb3dlcl9vbiA9IHJ0c3hfYmFzZV9jYXJkX3Bvd2VyX29uLA0K
+PiA+ICAJLmNhcmRfcG93ZXJfb2ZmID0gcnRzeF9iYXNlX2NhcmRfcG93ZXJfb2ZmLA0KPiA+ICAJ
+LnN3aXRjaF9vdXRwdXRfdm9sdGFnZSA9IHJ0c3hfYmFzZV9zd2l0Y2hfb3V0cHV0X3ZvbHRhZ2Us
+DQo+ID4gLQkuZm9yY2VfcG93ZXJfZG93biA9IHJ0c3hfYmFzZV9mb3JjZV9wb3dlcl9kb3duLA0K
+PiA+ICAJLnNldF9sMW9mZl9jZmdfc3ViX2QwID0gcnRzNTI1MF9zZXRfbDFvZmZfY2ZnX3N1Yl9k
+MCwNCj4gPiAgfTsNCj4gPg0KPiA+IEBAIC03MDAsNyArNjg0LDYgQEAgc3RhdGljIGNvbnN0IHN0
+cnVjdCBwY3Jfb3BzIHJ0czUyNWFfcGNyX29wcyA9IHsNCj4gPiAgCS5jYXJkX3Bvd2VyX29uID0g
+cnRzNTI1YV9jYXJkX3Bvd2VyX29uLA0KPiA+ICAJLmNhcmRfcG93ZXJfb2ZmID0gcnRzeF9iYXNl
+X2NhcmRfcG93ZXJfb2ZmLA0KPiA+ICAJLnN3aXRjaF9vdXRwdXRfdm9sdGFnZSA9IHJ0czUyNWFf
+c3dpdGNoX291dHB1dF92b2x0YWdlLA0KPiA+IC0JLmZvcmNlX3Bvd2VyX2Rvd24gPSBydHN4X2Jh
+c2VfZm9yY2VfcG93ZXJfZG93biwNCj4gPiAgCS5zZXRfbDFvZmZfY2ZnX3N1Yl9kMCA9IHJ0czUy
+NTBfc2V0X2wxb2ZmX2NmZ19zdWJfZDAsDQo+ID4gIH07DQo+ID4NCj4gPiBkaWZmIC0tZ2l0IGEv
+ZHJpdmVycy9taXNjL2NhcmRyZWFkZXIvcnRzNTI2MC5jDQo+IGIvZHJpdmVycy9taXNjL2NhcmRy
+ZWFkZXIvcnRzNTI2MC5jDQo+ID4gaW5kZXggYjlmNjZiMTM4NGE2Li44OTdjZmVlMzUwZTcgMTAw
+NjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9taXNjL2NhcmRyZWFkZXIvcnRzNTI2MC5jDQo+ID4gKysr
+IGIvZHJpdmVycy9taXNjL2NhcmRyZWFkZXIvcnRzNTI2MC5jDQo+ID4gQEAgLTg3LDIxICs4Nyw2
+IEBAIHN0YXRpYyB2b2lkIHJ0c3hfYmFzZV9mZXRjaF92ZW5kb3Jfc2V0dGluZ3Moc3RydWN0DQo+
+IHJ0c3hfcGNyICpwY3IpDQo+ID4gIAkJcGNyLT5mbGFncyB8PSBQQ1JfUkVWRVJTRV9TT0NLRVQ7
+DQo+ID4gIH0NCj4gPg0KPiA+IC1zdGF0aWMgdm9pZCBydHN4X2Jhc2VfZm9yY2VfcG93ZXJfZG93
+bihzdHJ1Y3QgcnRzeF9wY3IgKnBjciwgdTggcG1fc3RhdGUpDQo+ID4gLXsNCj4gPiAtCS8qIFNl
+dCByZWxpbmtfdGltZSB0byAwICovDQo+ID4gLQlydHN4X3BjaV93cml0ZV9yZWdpc3RlcihwY3Is
+IEFVVE9MT0FEX0NGR19CQVNFICsgMSwgTUFTS184X0JJVF9ERUYsDQo+IDApOw0KPiA+IC0JcnRz
+eF9wY2lfd3JpdGVfcmVnaXN0ZXIocGNyLCBBVVRPTE9BRF9DRkdfQkFTRSArIDIsIE1BU0tfOF9C
+SVRfREVGLA0KPiAwKTsNCj4gPiAtCXJ0c3hfcGNpX3dyaXRlX3JlZ2lzdGVyKHBjciwgQVVUT0xP
+QURfQ0ZHX0JBU0UgKyAzLA0KPiA+IC0JCQkJUkVMSU5LX1RJTUVfTUFTSywgMCk7DQo+ID4gLQ0K
+PiA+IC0JaWYgKHBtX3N0YXRlID09IEhPU1RfRU5URVJfUzMpDQo+ID4gLQkJcnRzeF9wY2lfd3Jp
+dGVfcmVnaXN0ZXIocGNyLCBwY3ItPnJlZ19wbV9jdHJsMywNCj4gPiAtCQkJCQlEM19ERUxJTktf
+TU9ERV9FTiwgRDNfREVMSU5LX01PREVfRU4pOw0KPiA+IC0NCj4gPiAtCXJ0c3hfcGNpX3dyaXRl
+X3JlZ2lzdGVyKHBjciwgRlBEQ1RMLCBBTExfUE9XRVJfRE9XTiwNCj4gQUxMX1BPV0VSX0RPV04p
+Ow0KPiA+IC19DQo+ID4gLQ0KPiA+ICBzdGF0aWMgaW50IHJ0c3hfYmFzZV9lbmFibGVfYXV0b19i
+bGluayhzdHJ1Y3QgcnRzeF9wY3IgKnBjcikNCj4gPiAgew0KPiA+ICAJcmV0dXJuIHJ0c3hfcGNp
+X3dyaXRlX3JlZ2lzdGVyKHBjciwgT0xUX0xFRF9DVEwsDQo+ID4gQEAgLTYyMCw3ICs2MDUsNiBA
+QCBzdGF0aWMgY29uc3Qgc3RydWN0IHBjcl9vcHMgcnRzNTI2MF9wY3Jfb3BzID0gew0KPiA+ICAJ
+LmNhcmRfcG93ZXJfb24gPSBydHM1MjYwX2NhcmRfcG93ZXJfb24sDQo+ID4gIAkuY2FyZF9wb3dl
+cl9vZmYgPSBydHM1MjYwX2NhcmRfcG93ZXJfb2ZmLA0KPiA+ICAJLnN3aXRjaF9vdXRwdXRfdm9s
+dGFnZSA9IHJ0czUyNjBfc3dpdGNoX291dHB1dF92b2x0YWdlLA0KPiA+IC0JLmZvcmNlX3Bvd2Vy
+X2Rvd24gPSBydHN4X2Jhc2VfZm9yY2VfcG93ZXJfZG93biwNCj4gPiAgCS5zdG9wX2NtZCA9IHJ0
+czUyNjBfc3RvcF9jbWQsDQo+ID4gIAkuc2V0X2wxb2ZmX2NmZ19zdWJfZDAgPSBydHM1MjYwX3Nl
+dF9sMW9mZl9jZmdfc3ViX2QwLA0KPiA+ICAJLmVuYWJsZV9vY3AgPSBydHM1MjYwX2VuYWJsZV9v
+Y3AsDQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbWlzYy9jYXJkcmVhZGVyL3J0c3hfcGNyLmMN
+Cj4gYi9kcml2ZXJzL21pc2MvY2FyZHJlYWRlci9ydHN4X3Bjci5jDQo+ID4gaW5kZXggMzdjY2M2
+N2Y0OTE0Li4zZjg0Yjg5OGJkOWMgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9taXNjL2NhcmRy
+ZWFkZXIvcnRzeF9wY3IuYw0KPiA+ICsrKyBiL2RyaXZlcnMvbWlzYy9jYXJkcmVhZGVyL3J0c3hf
+cGNyLmMNCj4gPiBAQCAtMTA5Niw2ICsxMDk2LDIwIEBAIHN0YXRpYyB2b2lkIHJ0c3hfcGNpX2lk
+bGVfd29yayhzdHJ1Y3Qgd29ya19zdHJ1Y3QNCj4gKndvcmspDQo+ID4gIAltdXRleF91bmxvY2so
+JnBjci0+cGNyX211dGV4KTsNCj4gPiAgfQ0KPiA+DQo+ID4gK3N0YXRpYyB2b2lkIHJ0c3hfYmFz
+ZV9mb3JjZV9wb3dlcl9kb3duKHN0cnVjdCBydHN4X3BjciAqcGNyLCB1OCBwbV9zdGF0ZSkNCj4g
+PiArew0KPiA+ICsJLyogU2V0IHJlbGlua190aW1lIHRvIDAgKi8NCj4gPiArCXJ0c3hfcGNpX3dy
+aXRlX3JlZ2lzdGVyKHBjciwgQVVUT0xPQURfQ0ZHX0JBU0UgKyAxLCBNQVNLXzhfQklUX0RFRiwN
+Cj4gMCk7DQo+ID4gKwlydHN4X3BjaV93cml0ZV9yZWdpc3RlcihwY3IsIEFVVE9MT0FEX0NGR19C
+QVNFICsgMiwgTUFTS184X0JJVF9ERUYsDQo+IDApOw0KPiANCj4gUGVyc29uYWxseSwgSSBkb24n
+dCB0aGluayBNQVNLXzhfQklUX0RFRiBpcyBhbiBpbXByb3ZlbWVudCBvdmVyIDB4RkYuDQo+IA0K
+PiA+ICsJcnRzeF9wY2lfd3JpdGVfcmVnaXN0ZXIocGNyLCBBVVRPTE9BRF9DRkdfQkFTRSArIDMs
+DQo+ID4gKwkJCVJFTElOS19USU1FX01BU0ssIDApOw0KPiA+ICsNCj4gPiArCXJ0c3hfcGNpX3dy
+aXRlX3JlZ2lzdGVyKHBjciwgcGNyLT5yZWdfcG1fY3RybDMsDQo+ID4gKwkJCUQzX0RFTElOS19N
+T0RFX0VOLCBEM19ERUxJTktfTU9ERV9FTik7DQo+ID4gKw0KPiA+ICsJcnRzeF9wY2lfd3JpdGVf
+cmVnaXN0ZXIocGNyLCBGUERDVEwsIEFMTF9QT1dFUl9ET1dOLA0KPiBBTExfUE9XRVJfRE9XTik7
+DQo+IA0KPiBUaGlzIGNoYW5nZXMgdGhlIHZhbHVlIHdyaXR0ZW4gZnJvbSAweDMgdG8gMHg3IChB
+TExfUE9XRVJfRE9XTikgaW4gYQ0KPiBjb3VwbGUgY2FzZXMuICBJIGd1ZXNzIHlvdSBrbm93IHRo
+YXQncyBPSy4NCj4gDQoNClllcywgc28gSSBsZWZ0IHJ0czUyMjhfZm9yY2VfcG93ZXJfZG93biBm
+b3IgY2FsbCBiYWNrDQoNCj4gPiArfQ0KPiA+ICsNCj4gPiAgc3RhdGljIHZvaWQgX19tYXliZV91
+bnVzZWQgcnRzeF9wY2lfcG93ZXJfb2ZmKHN0cnVjdCBydHN4X3BjciAqcGNyLCB1OA0KPiBwbV9z
+dGF0ZSkNCj4gPiAgew0KPiA+ICAJaWYgKHBjci0+b3BzLT50dXJuX29mZl9sZWQpDQo+ID4gQEAg
+LTExMDksNiArMTEyMyw4IEBAIHN0YXRpYyB2b2lkIF9fbWF5YmVfdW51c2VkDQo+IHJ0c3hfcGNp
+X3Bvd2VyX29mZihzdHJ1Y3QgcnRzeF9wY3IgKnBjciwgdTggcG1fc3RhdGUpDQo+ID4NCj4gPiAg
+CWlmIChwY3ItPm9wcy0+Zm9yY2VfcG93ZXJfZG93bikNCj4gPiAgCQlwY3ItPm9wcy0+Zm9yY2Vf
+cG93ZXJfZG93bihwY3IsIHBtX3N0YXRlKTsNCj4gPiArCWVsc2UNCj4gPiArCQlydHN4X2Jhc2Vf
+Zm9yY2VfcG93ZXJfZG93bihwY3IsIHBtX3N0YXRlKTsNCj4gPiAgfQ0KPiA+DQo+ID4gIHZvaWQg
+cnRzeF9wY2lfZW5hYmxlX29jcChzdHJ1Y3QgcnRzeF9wY3IgKnBjcikNCj4gPiAtLQ0KPiA+IDIu
+MTcuMQ0KPiA+DQo+IA0KPiAtLS0tLS1QbGVhc2UgY29uc2lkZXIgdGhlIGVudmlyb25tZW50IGJl
+Zm9yZSBwcmludGluZyB0aGlzIGUtbWFpbC4NCg==
