@@ -2,98 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37977264A03
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 18:41:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 617422649CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 18:32:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726515AbgIJQk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 12:40:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48004 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726896AbgIJQis (ORCPT
+        id S1725866AbgIJQcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 12:32:01 -0400
+Received: from a27-187.smtp-out.us-west-2.amazonses.com ([54.240.27.187]:41402
+        "EHLO a27-187.smtp-out.us-west-2.amazonses.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726109AbgIJQbq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 12:38:48 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99960C0617A2
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 09:31:50 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id w5so7406598wrp.8
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 09:31:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sslab.ics.keio.ac.jp; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=8XrenaZC7x7EEzLKgWnRWWP3kw9ET6fFDlth4Zp/gtY=;
-        b=hS3ujk0SNbO+KKIhwCtkhoaR3D4iaqKNbu5obxXUIkUAIZEavvzLtR/AmkXCcWoApD
-         6qpvZyIpj9MYpkAyH9G8uDL9NSGEi/1lDmYfV7LcqkQ60EBegndDFNwM8JmtO545n85S
-         MOg1C3tt9lgEWQfDFA9RZTtn4r+yEtCoUD0KQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=8XrenaZC7x7EEzLKgWnRWWP3kw9ET6fFDlth4Zp/gtY=;
-        b=eCdVSUYoEiCJXy8c/XK0a0bZe50Pz2h/irXZTPOMPOctDrFyyE8XLcab8WAu/wjWd8
-         V3f6qlKhpU5xnujmgvNc6R5g1WMBPQOlLwV4F3z3Gb/g97TcWDcdSr9F+kVT6mBNwV5+
-         Qkjmhp1WbO9REjHyqfky44Her4OtvJgrgAQX903TQuuza4NncymgPer69EASv556L6t+
-         /4UDKMUMyw+KLguqnNJC+eiRkm4qeBV45rQNQG6YzhxsfXP+KKtmnVtWZunRxu7uox00
-         f27kRYl67uuxqWWIOKJ9oKeq2FaMC1ruJ6ZAhterrfNqfjSZFsc42wJOJsijon8uYAZP
-         HAwg==
-X-Gm-Message-State: AOAM533v87j1/wz+Vh2P55R51kf93nrRlDr8HWhLkAaCOnkh8Ya3O0bX
-        0Habp8oX4JgCqYrbv0M6+wIndXshejGJXS+Kfr4G/w==
-X-Google-Smtp-Source: ABdhPJwcM1WR8tf/ZS8yQwLpBis3MuAq9iXnzyvBX/Zvx2Mb7vIdbYBdQkdSZNftBa2+3D5j79NwEzxaMX89slqGZpY=
-X-Received: by 2002:a05:6000:124d:: with SMTP id j13mr10703282wrx.182.1599755508951;
- Thu, 10 Sep 2020 09:31:48 -0700 (PDT)
+        Thu, 10 Sep 2020 12:31:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+        s=zsmsymrwgfyinv5wlfyidntwsjeeldzt; d=codeaurora.org; t=1599755503;
+        h=Content-Type:MIME-Version:Content-Transfer-Encoding:Subject:From:In-Reply-To:References:To:Cc:Message-Id:Date;
+        bh=JsEHHJbA/KTCse1B/sa8kRNxBwgyPWQGjQkRyaMNlIE=;
+        b=kdb+4ClnoNgQB9XvuE8wF69B70K5E8XGdqGljaBK6N9y1RJ8UVIbPeJ62qb7V2+4
+        JA6hg5XsqOK1xQH+21gf8xYfnVsKeQCHrSBWiF32xkrgRB3n5Rr/Fz6spB6f1G+xfyT
+        c08PoGZq3QnnPlfeokVeW3n1Dj4nLjuwQ1vrkG4w=
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+        s=hsbnp7p3ensaochzwyq5wwmceodymuwv; d=amazonses.com; t=1599755503;
+        h=Content-Type:MIME-Version:Content-Transfer-Encoding:Subject:From:In-Reply-To:References:To:Cc:Message-Id:Date:Feedback-ID;
+        bh=JsEHHJbA/KTCse1B/sa8kRNxBwgyPWQGjQkRyaMNlIE=;
+        b=lRTq3Z1vh/fetU1kFqkDu7HdsTb3VjMs/Vinm/bTWNF8NfDcGNjWq6JQuReUyAh4
+        ruGnzCTclrgKvaJBYjxsM+gQFrmn2Rcy40f32kXkC44zRUfQc/jMOq9IW7sy+40BSpc
+        tIfCHOOzhW2zBWBmqdRR7Yf+r6zlbLGE6/lXMVaI=
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.0
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9A6F6C433F0
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <f79159af-4408-dc2f-6efa-45c5b45cf2d9@web.de>
-In-Reply-To: <f79159af-4408-dc2f-6efa-45c5b45cf2d9@web.de>
-From:   Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
-Date:   Fri, 11 Sep 2020 01:31:38 +0900
-Message-ID: <CAEYrHj=pfGB7OuHt90t2aaawr31W9XZCHeHJurt3o0rK44jZ+A@mail.gmail.com>
-Subject: Re: [PATCH] qedr: fix resource leak in qedr_create_qp
-To:     Markus Elfring <Markus.Elfring@web.de>
-Cc:     linux-rdma@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org, Ariel Elior <aelior@marvell.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Michal Kalderon <mkalderon@marvell.com>,
-        Takafumi Kubota <takafumi@sslab.ics.keio.ac.jp>,
-        Yuval Bason <yuval.bason@cavium.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH 24/29] ath9k: ar9002_initvals: Remove unused array
+ 'ar9280PciePhy_clkreq_off_L1_9280'
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20200910065431.657636-25-lee.jones@linaro.org>
+References: <20200910065431.657636-25-lee.jones@linaro.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        Lee Jones <lee.jones@linaro.org>,
+        QCA ath9k Development <ath9k-devel@qca.qualcomm.com>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-ID: <0101017478dbc6e7-1d4ddf5e-fade-4e45-a0d5-ecb92bf35a72-000000@us-west-2.amazonses.com>
+Date:   Thu, 10 Sep 2020 16:31:43 +0000
+X-SES-Outgoing: 2020.09.10-54.240.27.187
+Feedback-ID: 1.us-west-2.CZuq2qbDmUIuT3qdvXlRHZZCpfZqZ4GtG9v3VKgRyF0=:AmazonSES
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Lee Jones <lee.jones@linaro.org> wrote:
 
-Thank you for your comment.
-I will re-label the goto statements and post the patch as version 2.
+> Fixes the following W=1 kernel build warning(s):
+> 
+>  drivers/net/wireless/ath/ath9k/ar9002_initvals.h:900:18: warning: ‘ar9280PciePhy_clkreq_off_L1_9280’ defined but not used [-Wunused-const-variable=]
+> 
+> Cc: QCA ath9k Development <ath9k-devel@qca.qualcomm.com>
+> Cc: Kalle Valo <kvalo@codeaurora.org>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: linux-wireless@vger.kernel.org
+> Cc: netdev@vger.kernel.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-Thanks,
-Keita
+Already fixed in ath.git.
 
-2020=E5=B9=B49=E6=9C=8810=E6=97=A5(=E6=9C=A8) 22:24 Markus Elfring <Markus.=
-Elfring@web.de>:
->
-> > Fix this by adding a new goto label that calls qedr_free_qp_resources.
->
-> =E2=80=A6
-> > +++ b/drivers/infiniband/hw/qedr/verbs.c
-> =E2=80=A6
-> > @@ -2165,11 +2187,13 @@ struct ib_qp *qedr_create_qp(struct ib_pd *ibpd=
-,
-> =E2=80=A6
-> >       return &qp->ibqp;
-> >
-> > +err2:
-> > +     qedr_free_qp_resources(dev, qp, udata);
-> >  err:
-> >       kfree(qp);
->
-> I propose to choose further alternatives for numbered labels.
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/D=
-ocumentation/process/coding-style.rst?id=3D7fe10096c1508c7f033d34d0741809f8=
-eecc1ed4#n485
->
-> Regards,
-> Markus
+error: patch failed: drivers/net/wireless/ath/ath9k/ar9002_initvals.h:897
+error: drivers/net/wireless/ath/ath9k/ar9002_initvals.h: patch does not apply
+stg import: Diff does not apply cleanly
+
+Patch set to Rejected.
+
+-- 
+https://patchwork.kernel.org/patch/11766749/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
