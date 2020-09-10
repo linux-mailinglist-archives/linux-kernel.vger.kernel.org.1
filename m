@@ -2,70 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC7E2263E75
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 09:21:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1510A263EA7
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 09:24:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729789AbgIJHVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 03:21:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45536 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729993AbgIJHUZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 03:20:25 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0ABAC061573;
-        Thu, 10 Sep 2020 00:20:23 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id 0862028AE4F
-Subject: Re: [PATCH 1/2] arm64: dts: mt8173: elm: Set uart0 to mmio32 iotype
-To:     Hsin-Yi Wang <hsinyi@chromium.org>,
-        linux-mediatek@lists.infradead.org
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20200910054635.3337487-1-hsinyi@chromium.org>
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Message-ID: <ba77586c-7902-9ce4-0f4f-ad1743596d85@collabora.com>
-Date:   Thu, 10 Sep 2020 09:20:12 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1730064AbgIJHX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 03:23:57 -0400
+Received: from mx2.suse.de ([195.135.220.15]:54574 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730262AbgIJHXe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 03:23:34 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 0AA18B165;
+        Thu, 10 Sep 2020 07:23:48 +0000 (UTC)
+Date:   Thu, 10 Sep 2020 09:23:31 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Laurent Dufour <ldufour@linux.ibm.com>
+Cc:     akpm@linux-foundation.org, David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>, rafael@kernel.org,
+        nathanl@linux.ibm.com, cheloha@linux.ibm.com,
+        stable@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mm: don't rely on system state to detect hot-plug
+ operations
+Message-ID: <20200910072331.GB28354@dhcp22.suse.cz>
+References: <5cbd92e1-c00a-4253-0119-c872bfa0f2bc@redhat.com>
+ <20200908170835.85440-1-ldufour@linux.ibm.com>
+ <20200909074011.GD7348@dhcp22.suse.cz>
+ <9faac1ce-c02d-7dbc-f79a-4aaaa5a73d28@linux.ibm.com>
+ <20200909090953.GE7348@dhcp22.suse.cz>
+ <4cdb54be-1a92-4ba4-6fee-3b415f3468a9@linux.ibm.com>
+ <20200909105914.GF7348@dhcp22.suse.cz>
+ <74a62b00-235e-7deb-2814-f3b240fea25e@linux.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <20200910054635.3337487-1-hsinyi@chromium.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <74a62b00-235e-7deb-2814-f3b240fea25e@linux.ibm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hsin-Yi,
-
-On 10/9/20 7:46, Hsin-Yi Wang wrote:
-> Set uart0 iotype to mmio32 to make earlycon work with stdout-path.
+On Wed 09-09-20 18:07:15, Laurent Dufour wrote:
+> Le 09/09/2020 à 12:59, Michal Hocko a écrit :
+> > On Wed 09-09-20 11:21:58, Laurent Dufour wrote:
+[...]
+> > > For the point a, using the enum allows to know in
+> > > register_mem_sect_under_node() if the link operation is due to a hotplug
+> > > operation or done at boot time.
+> > 
+> > Yes, but let me repeat. We have a mess here and different paths check
+> > for the very same condition by different ways. We need to unify those.
 > 
-> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-> ---
->  arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi b/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi
-> index a5a12b2599a4a..d54e62f72c65d 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi
-> +++ b/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi
-> @@ -1160,6 +1160,8 @@ &thermal {
->  };
->  
->  &uart0 {
-> +	reg-io-width = <4>;
-> +	reg-shift = <2>;
+> What are you suggesting to unify these checks (using a MP_* enum as
+> suggested by David, something else)?
 
-I am wondering if these properties are common enough to go to mt8173.dtsi
-instead of here.
+We do have system_state check spread at different places. I would use
+this one and wrap it behind a helper. Or have I missed any reason why
+that wouldn't work for this case?
 
->  	status = "okay";
->  };
->  
-> 
+-- 
+Michal Hocko
+SUSE Labs
