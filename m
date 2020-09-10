@@ -2,112 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F14DA2653BC
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:40:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1884265420
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:51:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728332AbgIJVkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 17:40:01 -0400
-Received: from a27-10.smtp-out.us-west-2.amazonses.com ([54.240.27.10]:50286
-        "EHLO a27-10.smtp-out.us-west-2.amazonses.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727055AbgIJNHI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 09:07:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=zsmsymrwgfyinv5wlfyidntwsjeeldzt; d=codeaurora.org; t=1599742198;
-        h=MIME-Version:Content-Type:Content-Transfer-Encoding:Date:From:To:Cc:Subject:In-Reply-To:References:Message-ID;
-        bh=s775L7iCYKpGMncC/fTv63fok23Pnh/vNT1134dXG/I=;
-        b=Elr96xnzsEBEUVxFkM7+mD6XMQzh9xlVq4Brz8bIKJnMDvSi1h14zCUFkejWeOfW
-        R5SACiNIuAObBH2Pb82/9UAy99TS7GDOfNucN4Z2Euqhv8MST+nzqQBcb1yZ5s9Cieu
-        yzLU6A6PeyNu1POswfM/bDdYqidogQwTXneVxHkg=
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=hsbnp7p3ensaochzwyq5wwmceodymuwv; d=amazonses.com; t=1599742198;
-        h=MIME-Version:Content-Type:Content-Transfer-Encoding:Date:From:To:Cc:Subject:In-Reply-To:References:Message-ID:Feedback-ID;
-        bh=s775L7iCYKpGMncC/fTv63fok23Pnh/vNT1134dXG/I=;
-        b=Wv3iIPZmLaD1mQJyPljMTQiUJ40ELe5fJ5rkE7TTk/pyGEVNsuHRr8997X2cDNW3
-        VxFwSm8ikScENv1tYJJ/UnEWPM0hQKxyOcXAtARDo5ZF+H+hdqvKqSRm4Kxulje5q5w
-        rxYqdhdLfUrgb/QP2LSW18r/xKRCcV+uXTapIEdE=
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+        id S1725904AbgIJVvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 17:51:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35186 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730825AbgIJMuj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 08:50:39 -0400
+Received: from localhost (p5486ceec.dip0.t-ipconnect.de [84.134.206.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AD22320882;
+        Thu, 10 Sep 2020 12:50:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599742207;
+        bh=DqxNaNfAxBAFdZARRzshzmaGwx327r2VxbQbaMWY+Jc=;
+        h=Date:From:To:Subject:References:In-Reply-To:From;
+        b=pbXOrTd5KXxDPnmhFcVLnfFAZcllCFUP+VVM53WJsVW9sf1O7HXBU6EylvrYVEV5w
+         vyXbueUqRW/dJjj7rgj/walpI+dkjHuIyj6qFIkRJ6DzzEBF54FubPkkrH5x1tyi6j
+         m/Zukaa9CC2cg2EGmwdf0PNshU6qn4kRu1ofy4zo=
+Date:   Thu, 10 Sep 2020 14:50:04 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     pierre-yves.mordret@st.com, alexandre.torgue@st.com,
+        linux-i2c@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        fabrice.gasnier@st.com, Krzysztof Kozlowski <krzk@kernel.org>,
+        Holger Assmann <h.assmann@pengutronix.de>
+Subject: Re: [PATCH] i2c: stm32: do not display error when DMA is not
+ requested
+Message-ID: <20200910125004.GK1031@ninjato>
+References: <1599730349-2160-1-git-send-email-alain.volmat@st.com>
+ <20200910100607.GJ1031@ninjato>
+ <20200910122739.GA5093@gnbcxd0016.gnb.st.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 10 Sep 2020 12:49:58 +0000
-From:   skakit@codeaurora.org
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Akash Asthana <akashast@codeaurora.org>,
-        Roja Rani Yarubandi <rojay@codeaurora.org>,
-        msavaliy@qti.qualcomm.com
-Subject: Re: [PATCH V4 2/4] arm64: dts: qcom: sc7180: Improve the pin config
- settings for CTS and TX
-In-Reply-To: <CAD=FV=XZgmQXCzVx3CdeOkAWC6zz8bNW+f6Qt1=O9ZSaGUr75g@mail.gmail.com>
-References: <1599145498-20707-1-git-send-email-skakit@codeaurora.org>
- <1599145498-20707-3-git-send-email-skakit@codeaurora.org>
- <CAD=FV=XZgmQXCzVx3CdeOkAWC6zz8bNW+f6Qt1=O9ZSaGUr75g@mail.gmail.com>
-Message-ID: <010101747810c24f-a169785b-0866-4932-a24e-80ff53393de2-000000@us-west-2.amazonses.com>
-X-Sender: skakit@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
-X-SES-Outgoing: 2020.09.10-54.240.27.10
-Feedback-ID: 1.us-west-2.CZuq2qbDmUIuT3qdvXlRHZZCpfZqZ4GtG9v3VKgRyF0=:AmazonSES
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="iSeZnk6FyAS3EJ1y"
+Content-Disposition: inline
+In-Reply-To: <20200910122739.GA5093@gnbcxd0016.gnb.st.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Doug,
 
-On 2020-09-10 02:58, Doug Anderson wrote:
-> Hi,
-> 
-> On Thu, Sep 3, 2020 at 8:07 AM satya priya <skakit@codeaurora.org> 
-> wrote:
->> 
->> --- a/arch/arm64/boot/dts/qcom/sc7180-idp.dts
->> +++ b/arch/arm64/boot/dts/qcom/sc7180-idp.dts
->> @@ -474,32 +474,30 @@
->>  &qup_uart3_default {
->>         pinconf-cts {
->>                 /*
->> -                * Configure a pull-down on 38 (CTS) to match the pull 
->> of
->> -                * the Bluetooth module.
->> +                * Configure no-pull on CTS. As this is driven by BT, 
->> do not
->> +                * specify any pull in order to not conflict with BT 
->> pulls.
->>                  */
->>                 pins = "gpio38";
->> -               bias-pull-down;
->> -               output-high;
-> 
-> Weird, how did that output-high sneak in there?  Glad it's going away.
-> 
-> 
->> +               bias-disable;
-> 
-> I'm not convinced that the removal of the pul is the correct thing
-> here.  Specifically for the rx line the comment makes the argument
-> that if we power off the Bluetooth module then it will stop driving
-> this pin.  In that case if we remove the pull here then the line will
-> be floating and that can cause some extra power consumption as the
-> line floats between different logic levels.  Do you really need to
-> remove this pull?
-> 
+--iSeZnk6FyAS3EJ1y
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Okay, will keep the pull-down back for CTS.
 
-> Same comment for the next patch where you add the sleep settings.
-> 
-> 
-> -Doug
+> Indeed, that's a good point. I'll rework it then, to avoid the dependency
+> on dev_err_probe change. If that is ok, I propose to push a two patches serie
+> with both this fix (updated) followed by a rebased version of the
+> dev_err_probe patch from Krzysztof for dev_err_probe change.
+
+Perfect!
+
+
+--iSeZnk6FyAS3EJ1y
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl9aIPgACgkQFA3kzBSg
+KbYgHA//TZ1dChdYgru0+uAzrZfxdIpwWVnNaKn7ETaRe5xAJba24FzjiYdHUiTy
+lI6TI4QbPc4Pc/YavOEmnuj6gRXsYSZE/ZKkLNdhESkNuGYcBfHwhWfXecs5J6RB
+D55pc+nbkXwHZZZp/Ojo9e2/XW8m6I5BvophEKb3ORb54VENLekaF7YWBm0nzliy
+yxQ6kwUQfJ9zQk9wr8QGRKy4XvRJp4VrOq8DfSdjnGev9rYIfsfDOn5RyHetUOqJ
+D/wBck/RKqXYM+CXWijwe7qZLp3wHOGtgmv9KdBE4j/Jb4ZKk70K8xE8rRE9hUSS
+7ZjoWIEfYbZs7pPvja2svuOy9cslLIjhOigaZn/hCVHQS5+uebRBUKUoyqZVUjcH
+2JD7IdC6UtCqcv0D4HKMw6F01HQxx/YKUIs8Ik+ObRdeB3MKZNeGlM1HpRRDq52C
+5G6wKWTlD+JQqRtrypvpYUNo151keAi5pKcPsKSPynglOc06Vadeagl1hwcP4tTD
+dT4NjtsmAASoQcakM3QZ1TQ7pjnOwjj9C2QlN99+2/ysGKggMy/EimM4YNC8Ne9N
+7FAtAFMS8awvHPjaHyXm77fcApgnMot6D6JpsINKEwRQ+T0ayVXRBVRSuU6/TCGK
+995S7CtiEWnQgR9k0+HfuMHZCbRKT+/b6W//CMDaGzhnesfHJ54=
+=9MtT
+-----END PGP SIGNATURE-----
+
+--iSeZnk6FyAS3EJ1y--
