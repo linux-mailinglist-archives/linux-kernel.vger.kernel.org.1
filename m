@@ -2,138 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1C7C264CD6
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 20:26:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3604264CD7
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 20:26:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726810AbgIJS0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 14:26:01 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:5565 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726805AbgIJSTr (ORCPT
+        id S1726226AbgIJS0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 14:26:44 -0400
+Received: from mail-il1-f194.google.com ([209.85.166.194]:41930 "EHLO
+        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726855AbgIJSUy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 14:19:47 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f5a6dfb0002>; Thu, 10 Sep 2020 11:18:35 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Thu, 10 Sep 2020 11:19:19 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Thu, 10 Sep 2020 11:19:19 -0700
-Received: from [10.26.73.219] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 10 Sep
- 2020 18:19:17 +0000
-Subject: Re: [PATCH 1/5] misc: eeprom: at24: Initialise AT24 NVMEM ID field
-From:   Jon Hunter <jonathanh@nvidia.com>
-To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
-CC:     Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>
-References: <20200910134239.192030-1-jonathanh@nvidia.com>
- <20200910134239.192030-2-jonathanh@nvidia.com>
- <CAMpxmJXbhrmJJn4f3zk4=Y2tCwLzpFc+c6NbxcqVe8eaLSRvtw@mail.gmail.com>
- <88021f57-b8cf-d3d6-0e9c-19ed0bccb729@nvidia.com>
-Message-ID: <5afe9537-dc50-16ff-028e-b4539c6f924a@nvidia.com>
-Date:   Thu, 10 Sep 2020 19:19:14 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 10 Sep 2020 14:20:54 -0400
+Received: by mail-il1-f194.google.com with SMTP id f82so1926967ilh.8;
+        Thu, 10 Sep 2020 11:20:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nm+cpWqF/0w8fPRtUs5YT9BMbNN+qWhAn3urvKoqdsQ=;
+        b=asTBWdmTyIOn/eTV69q4+7ozP1Kt3gB2GR7ad7TMIDKhP86AGlY1wZnHpXbzlKe0Vf
+         jGcsB6KZfXeNC6cXMJL/4841NpsAfmT05ubDPT4CNs2cpY4xmkats+vBxI2sDqHknBtW
+         S2o0/ZXERVwiCH8oJum8ND3WODXaMMJGWMK0Q2W4D4ZmaAI/lr7L9/c6vE8RIxGudJRJ
+         KqUh4tpA3CPhbhBHjC9u7E4zwZGpHrPHRK4IwbLmIQ+IL/JL0Ifhf5r0RFy1jRQQ0Uw/
+         AmEAWHLnGmQsWIA9zxz0ln72N3ohLirdw+umemApbVjWn0pEBe2/+hlqe8yj5nWfBBJS
+         b0dg==
+X-Gm-Message-State: AOAM532+a+RQxwxutpbEIYHIGjYKXFcyVsi0qeEDBpXChsNPvpDVbgYL
+        Z39LP8c4c7WnUEo9nRZ6Gg==
+X-Google-Smtp-Source: ABdhPJzqhhjaHzYvYkjaNFzZT4HCADVFhWy5EKa/cO2kMKG2i/3FrZl2iswxcaos80RAbzMBsKOuNA==
+X-Received: by 2002:a92:6f11:: with SMTP id k17mr9527739ilc.178.1599762044394;
+        Thu, 10 Sep 2020 11:20:44 -0700 (PDT)
+Received: from xps15 ([64.188.179.251])
+        by smtp.gmail.com with ESMTPSA id z18sm3709635ill.1.2020.09.10.11.20.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Sep 2020 11:20:43 -0700 (PDT)
+Received: (nullmailer pid 626172 invoked by uid 1000);
+        Thu, 10 Sep 2020 18:20:42 -0000
+Date:   Thu, 10 Sep 2020 12:20:42 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Cc:     devicetree@vger.kernel.org,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        linux-pci@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Jassi Brar <jaswinder.singh@linaro.org>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Masami Hiramatsu <masami.hiramatsu@linaro.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>
+Subject: Re: [PATCH v6 2/6] PCI: dwc: Add msi_host_isr() callback
+Message-ID: <20200910182042.GA626124@bogus>
+References: <1596795922-705-1-git-send-email-hayashi.kunihiko@socionext.com>
+ <1596795922-705-3-git-send-email-hayashi.kunihiko@socionext.com>
 MIME-Version: 1.0
-In-Reply-To: <88021f57-b8cf-d3d6-0e9c-19ed0bccb729@nvidia.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1599761915; bh=relp5/wSsIqsD906iDWJJiEpu85XdzNneJxGcqDM//I=;
-        h=X-PGP-Universal:Subject:From:To:CC:References:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=Jo9IhtiG2ASEAijTpfHP3ape8NSkNjtJFTKB89QW/beXoFkgNO3YlurRMYmx0CuEZ
-         JHywXBJWEL2iZ+QzhUzpd+4fM1Om8KvAM4Jo4WSn2hsoorflJw3nrDG5NxU4jKZmmK
-         LLmNsHWigUG86i8o7OaAGOU54pp3cAU0qCARt5PEneC8IohtoUJDoaphjP5Ml3ToMb
-         u7XYNbYTED0Aa/AjcNENZ0eIO70MBT58lp9cTdInRqwlraUdn6Nc5vrxLLGLt4h/B2
-         X3Zk3+QUQbwGQQJADaJxlAT4cmYDJwRm60sPFmGvpCbH4QAX2egFnpMYZD8Vu0su8P
-         XfzBYBK8OGZ/Q==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1596795922-705-3-git-send-email-hayashi.kunihiko@socionext.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 10/09/2020 19:15, Jon Hunter wrote:
+On Fri, 07 Aug 2020 19:25:18 +0900, Kunihiko Hayashi wrote:
+> This adds msi_host_isr() callback function support to describe
+> SoC-dependent service triggered by MSI.
 > 
-> On 10/09/2020 16:35, Bartosz Golaszewski wrote:
->> On Thu, Sep 10, 2020 at 3:43 PM Jon Hunter <jonathanh@nvidia.com> wrote:
->>>
->>> The AT24 EEPROM driver does not initialise the 'id' field of the
->>> nvmem_config structure and because the entire structure is not
->>> initialised, it ends up with a random value. This causes the NVMEM
->>> driver to append the device 'devid' value to name of the NVMEM
->>> device. Although this is not a problem per-se, for I2C devices such as
->>> the AT24, that already have a device unique name, there does not seem
->>> much value in appending an additional 0 to the I2C name. For example,
->>> appending a 0 to an I2C device name such as 1-0050 does not seem
->>> necessary and maybe even a bit confusing. Therefore, fix this by
->>> setting the NVMEM config.id to NVMEM_DEVID_NONE for AT24 EEPROMs.
->>>
->>> Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
->>> ---
->>>  drivers/misc/eeprom/at24.c | 1 +
->>>  1 file changed, 1 insertion(+)
->>>
->>> diff --git a/drivers/misc/eeprom/at24.c b/drivers/misc/eeprom/at24.c
->>> index e9df1ca251df..3f7a3bb6a36c 100644
->>> --- a/drivers/misc/eeprom/at24.c
->>> +++ b/drivers/misc/eeprom/at24.c
->>> @@ -715,6 +715,7 @@ static int at24_probe(struct i2c_client *client)
->>>
->>>         nvmem_config.name = dev_name(dev);
->>>         nvmem_config.dev = dev;
->>> +       nvmem_config.id = NVMEM_DEVID_NONE;
->>>         nvmem_config.read_only = !writable;
->>>         nvmem_config.root_only = !(flags & AT24_FLAG_IRUGO);
->>>         nvmem_config.owner = THIS_MODULE;
->>> --
->>> 2.25.1
->>>
->>
->> This patch is correct and thanks for catching it. I vaguely recall
->> wondering at some point why the appended 0 in the nvmem name for at24.
->> Unfortunately this change would affect how the device is visible in
->> user-space in /sys/bus/nvmem/devices/ and this could break existing
->> users. Also: there are many in-kernel users that would need to be
->> updated. I'm afraid we'll need some sort of backward compatibility.
+> For example, when AER interrupt is triggered by MSI, the callback function
+> reads SoC-dependent registers and detects that the interrupt is from AER,
+> and invoke AER interrupts related to MSI.
 > 
+> Cc: Marc Zyngier <maz@kernel.org>
+> Cc: Jingoo Han <jingoohan1@gmail.com>
+> Cc: Gustavo Pimentel <gustavo.pimentel@synopsys.com>
+> Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+> Acked-by: Gustavo Pimentel <gustavo.pimentel@synopsys.com>
+> ---
+>  drivers/pci/controller/dwc/pcie-designware-host.c | 3 +++
+>  drivers/pci/controller/dwc/pcie-designware.h      | 1 +
+>  2 files changed, 4 insertions(+)
 > 
-> Thanks, yes that is a problem. I guess for now we could explicitly init
-> to NVMEM_DEVID_AUTO or maybe just 0 so that it defaults to the same path
-> in the NVMEM driver. However, I am not sure how we can make allow some
-> devices to use NVMEM_DEVID_NONE and others use something else. This is
-> not really something that we can describe in DT because it has nothing
-> to do with h/w.
 
-
-Unless we make the configuration of the 'id' dependent on the 'label'
-property so something like ...
-
-	if (device_property_present(dev, "label")) {
-                nvmem_config.id = NVMEM_DEVID_NONE;
-		err = device_property_read_string(dev, "label",
-						  &nvmem_config.name);
-		if (err)
-			return err;
-	} else {
-                nvmem_config.id = NVMEM_DEVID_AUTO;
-		nvmem_config.name = dev_name(dev);
-	}
-
-Cheers
-Jon
-
--- 
-nvpublic
+Acked-by: Rob Herring <robh@kernel.org>
