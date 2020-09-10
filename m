@@ -2,62 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04C0E2651D5
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:03:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1782A2651C4
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:01:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727876AbgIJVDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 17:03:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56944 "EHLO
+        id S1728004AbgIJVBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 17:01:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731137AbgIJOiW (ORCPT
+        with ESMTP id S1731218AbgIJOkP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 10:38:22 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07990C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 07:38:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=339zgSxlL+lIOBUMV+vGyrR7HJ2OP+EpscMBIaERCsY=; b=niIsVsuiYZMuYDebocCko43GH3
-        LC64ZGy+0bUGrsPvvsP3UEJNNEXjW/tbm/G9dCIXBWLdrDvOkvIVLbDltd/BPSRb1cNi/OKMYwmm7
-        c/KTpVxtAaAnna5TBi4EngQofZQqeSgoEPKLeEbrkoPo5tTDn96HGk0sxeNNfZhXwX6tre49kryBz
-        7M6YInC/k0vrSEdVlX872vrkIaJdWe7lFlwL/W40CGs8jGfUCuQfuGo+rD2odj5sSt+T+Yo5G9m2b
-        QcN1o2X9qP0FA+RY1urVRC9JIJMzCNYFSlRUM88u+9ongnLQQfJ06/7mRhG9J9yKFvb5xyqyVJrQv
-        zVaH+HsA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kGNhq-00067N-5M; Thu, 10 Sep 2020 14:37:46 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 44FE4305C10;
-        Thu, 10 Sep 2020 16:37:45 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 2E03824C0EAEA; Thu, 10 Sep 2020 16:37:45 +0200 (CEST)
-Date:   Thu, 10 Sep 2020 16:37:45 +0200
-From:   peterz@infradead.org
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, anna-maria@linutronix.de,
-        vbabka@suse.cz, mgorman@techsingularity.net, mhocko@suse.com,
-        linux-mm@kvack.org
-Subject: Re: kcompactd hotplug fail
-Message-ID: <20200910143745.GE35926@hirez.programming.kicks-ass.net>
-References: <20200910141006.GA1362448@hirez.programming.kicks-ass.net>
+        Thu, 10 Sep 2020 10:40:15 -0400
+Received: from mail-ua1-x941.google.com (mail-ua1-x941.google.com [IPv6:2607:f8b0:4864:20::941])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72EC2C061799
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 07:40:15 -0700 (PDT)
+Received: by mail-ua1-x941.google.com with SMTP id l1so2059976uai.3
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 07:40:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JlHSJzzDMd2cH/FNwWRua8Mp268amVy5W9EWLGVmUPc=;
+        b=oD1xRjIlRnK44AUoNaWNO/km7pvdC4CuwaFjutnksJPfr5b6oJmdEgdZ9yNz7Xk2Gm
+         bpWVhEtYTCTfJtAz6L1JEx6u/7KKahQo8ztrJBFbVTUqiD5g0ViXtUYWrkuVf7U4IKSh
+         OltoiL9sRb/sIZiVWKa1ZI4bJymSa/9pkerP0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JlHSJzzDMd2cH/FNwWRua8Mp268amVy5W9EWLGVmUPc=;
+        b=ZWqrLmS5L3pEyDKEMM4Ap29ga1rehA3GVqEuqISIivfKUR0maxNaf/ztT9mPanOQTY
+         ZVFwEG404e9j5cIIxVUsMswliNNXM1ATqfkmNTJJMj7OIvTcUY6zhZeCjBbGIq9ouaTg
+         Thxm1hGsuquif47JJbBJCQlnhOjh48+QsjweHW0YlFGqPfac4ePmNNIhcDuD58Tct8Eq
+         XtOwDigJ2NmIDjIV1lkXWM8fRwX56Gt6BEAxOlWdu0wxBuWj/u6STMIkYtW7WudxPX06
+         a6SOOwwW7OJjWGSP5+cGP/syc6W6zKiGzj/GcYldDO3bYWnU4UKh4Cpm2brg6ZuP5NAM
+         ocag==
+X-Gm-Message-State: AOAM532Xh7lyzCNwSACpP2FXKmFWQ2mq0c3y6XVRdzDdnJCcu2nU4Gi2
+        5nWF9KlGum3CcQt3g5bw4HlzKlKX9+yDww==
+X-Google-Smtp-Source: ABdhPJy2aII55ju5fI5ma1k+BGPNamszfPR0oLKGh37acAn5lkHnnJjXQd7FJtcKMw+4ZNUQWqKkEA==
+X-Received: by 2002:ab0:2a93:: with SMTP id h19mr4064430uar.18.1599748813338;
+        Thu, 10 Sep 2020 07:40:13 -0700 (PDT)
+Received: from mail-vs1-f48.google.com (mail-vs1-f48.google.com. [209.85.217.48])
+        by smtp.gmail.com with ESMTPSA id 89sm756370ual.11.2020.09.10.07.40.12
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Sep 2020 07:40:12 -0700 (PDT)
+Received: by mail-vs1-f48.google.com with SMTP id a16so3493763vsp.12
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 07:40:12 -0700 (PDT)
+X-Received: by 2002:a67:d907:: with SMTP id t7mr4542751vsj.8.1599748811523;
+ Thu, 10 Sep 2020 07:40:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200910141006.GA1362448@hirez.programming.kicks-ass.net>
+References: <1599742438-16811-1-git-send-email-skakit@codeaurora.org> <1599742438-16811-2-git-send-email-skakit@codeaurora.org>
+In-Reply-To: <1599742438-16811-2-git-send-email-skakit@codeaurora.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Thu, 10 Sep 2020 07:40:00 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=XYqiGk3QEPxVKCgnYA0FVrizyarSW52HPRGVyAUSugrQ@mail.gmail.com>
+Message-ID: <CAD=FV=XYqiGk3QEPxVKCgnYA0FVrizyarSW52HPRGVyAUSugrQ@mail.gmail.com>
+Subject: Re: [PATCH V5 1/4] arm64: dts: qcom: sc7180: Improve the pin config
+ settings for CTS and TX
+To:     satya priya <skakit@codeaurora.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Akash Asthana <akashast@codeaurora.org>,
+        Roja Rani Yarubandi <rojay@codeaurora.org>,
+        msavaliy@qti.qualcomm.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 04:10:06PM +0200, peterz@infradead.org wrote:
-> Hi,
-> 
-> While playing with hotplug, I ran into the below:
+Hi,
 
-Ah, it could be I wrecked my kernel bad... :-(
+On Thu, Sep 10, 2020 at 5:55 AM satya priya <skakit@codeaurora.org> wrote:
+>
+> Remove output-high from CTS and TX as this is not really required. During
+> bringup to fix transfer failures this was added to match with console uart
+> settings. Probably some boot loader config was missing then. As it is
+> working fine now, remove it.
+>
+> Signed-off-by: satya priya <skakit@codeaurora.org>
+> Reviewed-by: Akash Asthana <akashast@codeaurora.org>
+> Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+> ---
+> Changes in V4:
+>  - This is newly added in V4 to separate the improvements in pin settings
+>    and wakeup related changes.
+>
+> Changes in V5:
+>  - As per Doug's comment configured pull-down for CTS pin as earlier.
+>
+>  arch/arm64/boot/dts/qcom/sc7180-idp.dts | 10 ++++------
+>  1 file changed, 4 insertions(+), 6 deletions(-)
 
-I'll let you know if I can reproduce this on a pristine kernel.
+Looks fine to me.  Slight nit that this only applies to the IDP board
+but ${SUBJECT} makes it sound as if this applies to all sc7180.  I
+wouldn't spin just for that, though.  If Bjorn agrees, he can always
+adjust the subject when applying.
+
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
