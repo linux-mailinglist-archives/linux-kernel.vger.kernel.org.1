@@ -2,107 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A54C2650FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 22:38:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BCC1265103
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 22:39:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727790AbgIJUhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 16:37:47 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:60128 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726781AbgIJUbU (ORCPT
+        id S1726267AbgIJUjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 16:39:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56380 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726911AbgIJUbU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 10 Sep 2020 16:31:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599769875;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=oG4VtYBGXuzb613fx5hBBNMTZQ49H6hy0YeFdmvTD8g=;
-        b=N0o4Jr5PcYTMPx6n//feqv4Uglx21vVaPykquu5MNn4Dh+IzDcuxuQgiCVDjxkw2YAhZ6m
-        zgbDPdutXNRV1OAlMnbgXmD9M5bU4FdpghIfYMDnPHScdJ3hytILcB0/Zts5NZxI4EpDgR
-        0F1BFFCFhKxUiE2FvzJ51d0Y+wddX6o=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-265-hirjGdpVMoCeQMCuV-R7GQ-1; Thu, 10 Sep 2020 16:31:12 -0400
-X-MC-Unique: hirjGdpVMoCeQMCuV-R7GQ-1
-Received: by mail-ej1-f71.google.com with SMTP id e13so3387861ejk.1
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 13:31:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=oG4VtYBGXuzb613fx5hBBNMTZQ49H6hy0YeFdmvTD8g=;
-        b=UbvsBQXVc9KxfjP/kXEY51rjTxuMn5ix5r+XzF9iCnJ0B8wr4+f/sKK9tZjV1YdI7F
-         GHGkbWeZwY3UarUCOVMoMCNDBo+vgNnXwiRgtX1xetVAOvv52OB3Su+a0kxyOza97gXW
-         wpZAAO5kxienDggm8q3NB3EpKtaboDeAAV9N1qz84HE5yLUZe0DH4TcHWzFUaVfOWd+p
-         yJGInEHyiKPVYTuvBnIvmgz1VJiLnJqny3EvzJWWZt1h6aaxgc9sONWi53wjaXcITdWw
-         DoNX60qBA0QrxjgjwVJcIs1OMUgCxGIMS7dopj6hi5PV3V4xjfG+rXg7/pLKGr0dUb0K
-         P2XA==
-X-Gm-Message-State: AOAM533ZRPkR+hyLaMOTNdP3KEXpZYDF3nr17GWu6yZjtMJUaazTYKMK
-        hMFkZ2iU3xMnd1D4dwsiLoKtpSFRkUZHVlsuuN+VYxe92BTzRlk6mmtX4UDyzmL9Xu/fZoySrgO
-        KG4d7a2FM3AAXmvCM0kE9OPlo
-X-Received: by 2002:a17:906:4d4d:: with SMTP id b13mr10371714ejv.221.1599769871000;
-        Thu, 10 Sep 2020 13:31:11 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwH4nFbqdIdClpGW3cyhzIHHW/NNlAPR9E4pCL3OlvSjq9ChPfVJPacAk9tIeJ6YFp4UpQGsg==
-X-Received: by 2002:a17:906:4d4d:: with SMTP id b13mr10371701ejv.221.1599769870830;
-        Thu, 10 Sep 2020 13:31:10 -0700 (PDT)
-Received: from [192.168.3.122] (p5b0c6042.dip0.t-ipconnect.de. [91.12.96.66])
-        by smtp.gmail.com with ESMTPSA id d6sm21881edm.31.2020.09.10.13.31.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Sep 2020 13:31:10 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   David Hildenbrand <david@redhat.com>
-Mime-Version: 1.0 (1.0)
-Subject: Re: Ways to deprecate /sys/devices/system/memory/memoryX/phys_device ?
-Date:   Thu, 10 Sep 2020 22:31:09 +0200
-Message-Id: <3E00A442-7107-48DA-8172-EED95F6E1663@redhat.com>
-References: <f14f7f00-0501-bb93-88cc-780ae4fbaad3@intel.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        =?utf-8?Q?Jan_H=C3=B6ppner?= <hoeppner@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        linux-api@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-In-Reply-To: <f14f7f00-0501-bb93-88cc-780ae4fbaad3@intel.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-X-Mailer: iPhone Mail (17G68)
+Received: from mail.nic.cz (mail.nic.cz [IPv6:2001:1488:800:400::400])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79508C061573;
+        Thu, 10 Sep 2020 13:31:19 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2a0e:b107:ae1:0:3e97:eff:fe61:c680])
+        by mail.nic.cz (Postfix) with ESMTPSA id B671E13FD86;
+        Thu, 10 Sep 2020 22:31:12 +0200 (CEST)
+Date:   Thu, 10 Sep 2020 22:31:12 +0200
+From:   Marek Behun <marek.behun@nic.cz>
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     Andrew Lunn <andrew@lunn.ch>, Pavel Machek <pavel@ucw.cz>,
+        netdev@vger.kernel.org, linux-leds@vger.kernel.org,
+        Dan Murphy <dmurphy@ti.com>,
+        =?UTF-8?B?T25kxZllag==?= Jirman <megous@megous.com>,
+        linux-kernel@vger.kernel.org,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH net-next + leds v2 6/7] net: phy: marvell: add support
+ for LEDs controlled by Marvell PHYs
+Message-ID: <20200910223112.26b57dd6@nic.cz>
+In-Reply-To: <20200910183435.GC1551@shell.armlinux.org.uk>
+References: <20200909162552.11032-1-marek.behun@nic.cz>
+        <20200909162552.11032-7-marek.behun@nic.cz>
+        <20200910122341.GC7907@duo.ucw.cz>
+        <20200910131541.GD3316362@lunn.ch>
+        <20200910182434.GA22845@duo.ucw.cz>
+        <20200910183154.GF3354160@lunn.ch>
+        <20200910183435.GC1551@shell.armlinux.org.uk>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-100.0 required=5.9 tests=SHORTCIRCUIT,URIBL_BLOCKED,
+        USER_IN_WELCOMELIST,USER_IN_WHITELIST shortcircuit=ham
+        autolearn=disabled version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.nic.cz
+X-Virus-Scanned: clamav-milter 0.102.2 at mail
+X-Virus-Status: Clean
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 10 Sep 2020 19:34:35 +0100
+Russell King - ARM Linux admin <linux@armlinux.org.uk> wrote:
 
+> On Thu, Sep 10, 2020 at 08:31:54PM +0200, Andrew Lunn wrote:
+> > Generally the driver will default to the hardware reset blink
+> > pattern. There are a few PHY drivers which change this at probe, but
+> > not many. The silicon defaults are pretty good.  
+> 
+> The "right" blink pattern can be a matter of how the hardware is
+> wired.  For example, if you have bi-colour LEDs and the PHY supports
+> special bi-colour mixing modes.
+> 
 
-> Am 10.09.2020 um 22:01 schrieb Dave Hansen <dave.hansen@intel.com>:
->=20
-> =EF=BB=BFOn 9/10/20 3:20 AM, David Hildenbrand wrote:
->> I was just exploring how /sys/devices/system/memory/memoryX/phys_device
->> is/was used. It's one of these interfaces that most probably never
->> should have been added but now we are stuck with it.
->=20
-> While I'm all for cleanups, what specific problems is phys_device causing?=
+Have you seen such, Russell? This could be achieved via the multicolor
+LED framework, but I don't have a device which uses such LEDs, so I
+did not write support for this in the Marvell PHY driver.
 
->=20
-
-Mostly stumbling over it, understanding that it is basically unused with new=
- userspace for good reason, questioning its existence.
-
-E.g., I am working on virtio-mem support for s390x. Displaying misleading/wr=
-ong phys_device indications isn=E2=80=98t particularly helpful - especially o=
-nce there are different ways to hotplug memory for an architecture.
-
-> Are you hoping that we can just remove users of memoryX/* until there
-> are no more left, and this is the easiest place to start?
-
-At least reducing it to a minimum with clear semantics. Even with automatic o=
-nlining there are still reasons why we need to keep the interface for now (e=
-.g., reloading kexec to update the kdump headers on memory hot(un)plug). But=
- also standby memory handling on s399x requires it (->manual onlining).=
-
+(I guess I could test it though, since on my device LED0 and LED1
+are used, and this to can be put into bi-colour LED mode.)
