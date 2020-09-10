@@ -2,107 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FE5E263D59
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 08:28:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D74D2263D7A
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 08:36:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729992AbgIJG2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 02:28:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52524 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726440AbgIJG21 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 02:28:27 -0400
-Received: from coco.lan (ip5f5ad5ac.dynamic.kabel-deutschland.de [95.90.213.172])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726961AbgIJGgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 02:36:33 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:28606 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726693AbgIJGga (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 02:36:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599719788;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9UW16lUstnnCGbjpX3liKw7JzbSB4SPpIDupEPmn0vI=;
+        b=ORBbdEvCijRtsn9ZbDuTzo6MtTssRFeHeCL7cXE8A7QjDukN6mZEe01r+bMrY+9Yt/BCWX
+        LIwj4GWpd4CrHYMrxK6nZV/MKzrwXtepQMRHMWI6M/d4ztlcmdBnwu45mCGYB7z2ioj+Ij
+        zThFZJ2dl+/BZTRhbCbIFe/GEb4DODE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-326-l5e4-x2BMViknvYHd6dgQQ-1; Thu, 10 Sep 2020 02:36:25 -0400
+X-MC-Unique: l5e4-x2BMViknvYHd6dgQQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 79CF6206A1;
-        Thu, 10 Sep 2020 06:28:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599719306;
-        bh=DjrBPnz1BgCnBYG/64IiUxKEJrMJGKb1A3mRWVpncJk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=KppkCOGGex5Td4qsjLzCFk1NCf4XHbXpibLJsQYMVVaT0bkaAFQjn+ZuEeXf2o77m
-         UyE3jBNOXTpotfoeco2l+h7jkiCeDQm7I+A6v3H6sCfl0zDTboY8/bNQu+oaB5Un+6
-         r8LmWMYkPZepovOPOzqdHyn81ea3fXGQ2O9gVUL8=
-Date:   Thu, 10 Sep 2020 08:28:12 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Joe Perches <joe@perches.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Jiri Kosina <trivial@kernel.org>,
-        Kees Cook <kees.cook@canonical.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-mips@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-ide@vger.kernel.org,
-        linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        nouveau@lists.freedesktop.org, linux-input@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-rdma@vger.kernel.org,
-        iommu@lists.linux-foundation.org, dm-devel@redhat.com,
-        linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-mtd@lists.infradead.org, intel-wired-lan@lists.osuosl.org,
-        oss-drivers@netronome.com, linux-usb@vger.kernel.org,
-        linux-wireless@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-nvme@lists.infradead.org, linux-pm@vger.kernel.org,
-        linux-rtc@vger.kernel.org, linux-scsi@vger.kernel.org,
-        storagedev@microchip.com, sparclinux@vger.kernel.org,
-        linux-serial@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-parisc@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, bpf@vger.kernel.org,
-        dccp@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        coreteam@netfilter.org, linux-sctp@vger.kernel.org,
-        alsa-devel <alsa-devel@alsa-project.org>
-Subject: Re: [trivial PATCH] treewide: Convert switch/case fallthrough; to
- break;
-Message-ID: <20200910082812.057a04e6@coco.lan>
-In-Reply-To: <e6387578c75736d61b2fe70d9783d91329a97eb4.camel@perches.com>
-References: <e6387578c75736d61b2fe70d9783d91329a97eb4.camel@perches.com>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B56951005E7C;
+        Thu, 10 Sep 2020 06:30:06 +0000 (UTC)
+Received: from kamzik.brq.redhat.com (unknown [10.40.192.124])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 60B0B7E46E;
+        Thu, 10 Sep 2020 06:30:01 +0000 (UTC)
+Date:   Thu, 10 Sep 2020 08:29:58 +0200
+From:   Andrew Jones <drjones@redhat.com>
+To:     Steven Price <steven.price@arm.com>
+Cc:     Peter Maydell <Peter.Maydell@arm.com>,
+        Juan Quintela <quintela@redhat.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        qemu-devel@nongnu.org,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>,
+        Dave Martin <Dave.Martin@arm.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/2] MTE support for KVM guest
+Message-ID: <20200910062958.o55apuvdxmf3uiqb@kamzik.brq.redhat.com>
+References: <20200904160018.29481-1-steven.price@arm.com>
+ <20200909152540.ylnrljd6aelxoxrf@kamzik.brq.redhat.com>
+ <857566df-1b98-84f7-9268-d092722dc749@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <857566df-1b98-84f7-9268-d092722dc749@arm.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, 09 Sep 2020 13:06:39 -0700
-Joe Perches <joe@perches.com> escreveu:
+On Wed, Sep 09, 2020 at 05:04:15PM +0100, Steven Price wrote:
+> On 09/09/2020 16:25, Andrew Jones wrote:
+> > On Fri, Sep 04, 2020 at 05:00:16PM +0100, Steven Price wrote:
+> > >   2. Automatically promotes (normal host) memory given to the guest to be
+> > >      tag enabled (sets PG_mte_tagged), if any VCPU has MTE enabled. The
+> > >      tags are cleared if the memory wasn't previously MTE enabled.
+> > 
+> > Shouldn't this be up to the guest? Or, is this required in order for the
+> > guest to use tagging at all. Something like making the guest IPAs memtag
+> > capable, but if the guest doesn't enable tagging then there is no guest
+> > impact? In any case, shouldn't userspace be the one that adds PROT_MTE
+> > to the memory regions it wants the guest to be able to use tagging with,
+> > rather than KVM adding the attribute page by page?
+> 
+> I think I've probably explained this badly.
+> 
+> The guest can choose how to populate the stage 1 mapping - so can choose
+> which parts of memory are accessed tagged or not. However, the hypervisor
+> cannot restrict this in stage 2 (except by e.g. making the memory uncached
+> but that's obviously not great - however devices forward to the guest can be
+> handled like this).
+> 
+> Because the hypervisor cannot restrict the guest's access to the tags, the
+> hypervisor must assume that all memory given to the guest could have the
+> tags accessed. So it must (a) clear any stale data from the tags, and (b)
+> ensure that the tags are preserved (e.g. when swapping pages out).
+> 
 
-> fallthrough to a separate case/default label break; isn't very readable.
-> 
-> Convert pseudo-keyword fallthrough; statements to a simple break; when
-> the next label is case or default and the only statement in the next
-> label block is break;
-> 
-> Found using:
-> 
-> $ grep-2.5.4 -rP --include=*.[ch] -n "fallthrough;(\s*(case\s+\w+|default)\s*:\s*){1,7}break;" *
-> 
-> Miscellanea:
-> 
-> o Move or coalesce a couple label blocks above a default: block.
-> 
-> Signed-off-by: Joe Perches <joe@perches.com>
-> ---
-> 
-> Compiled allyesconfig x86-64 only.
-> A few files for other arches were not compiled.
-> 
+Yes, this is how I understood it.
 
+> Because of the above the current series automatically sets PG_mte_tagged on
+> the pages. Note that this doesn't change the mappings that the VMM has (a
+> non-PROT_MTE mapping will still not have access to the tags).
 
->  drivers/media/dvb-frontends/drxd_hard.c                   |  2 +-
->  drivers/media/i2c/ov5640.c                                |  2 +-
->  drivers/media/i2c/ov6650.c                                |  5 ++---
->  drivers/media/i2c/smiapp/smiapp-core.c                    |  2 +-
->  drivers/media/i2c/tvp5150.c                               |  2 +-
->  drivers/media/pci/ddbridge/ddbridge-core.c                |  2 +-
->  drivers/media/usb/cpia2/cpia2_core.c                      |  2 +-
+But if userspace created the memslots with memory already set with
+PROT_MTE, then this wouldn't be necessary, right? And, as long as
+there's still a way to access the memory with tag checking disabled,
+then it shouldn't be a problem.
 
-For media drivers:
+> > 
+> > If userspace needs to write to guest memory then it should be due to
+> > a device DMA or other specific hardware emulation. Those accesses can
+> > be done with tag checking disabled.
+> 
+> Yes, the question is can the VMM (sensibly) wrap the accesses with a
+> disable/renable tag checking for the process sequence. The alternative at
+> the moment is to maintain a separate (untagged) mapping for the purpose
+> which might present it's own problems.
 
-Reviewed-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Hmm, so there's no easy way to disable tag checking when necessary? If we
+don't map the guest ram with PROT_MTE and continue setting the attribute
+in KVM, as this series does, then we don't need to worry about it tag
+checking when accessing the memory, but then we can't access the tags for
+migration.
 
+> 
+> > > 
+> > > If it's not practical to either disable tag checking in the VMM or
+> > > maintain multiple mappings then the alternatives I'm aware of are:
+> > > 
+> > >   * Provide a KVM-specific method to extract the tags from guest memory.
+> > >     This might also have benefits in terms of providing an easy way to
+> > >     read bulk tag data from guest memory (since the LDGM instruction
+> > >     isn't available at EL0).
+> > 
+> > Maybe we need a new version of KVM_GET_DIRTY_LOG that also provides
+> > the tags for all addresses of each dirty page.
+> 
+> Certainly possible, although it seems to conflate two operations: "get list
+> of dirty pages", "get tags from page". It would also require a lot of return
+> space (size of slot/32).
+>
+
+It would require num-set-bits * host-page-size / 16 / 2, right?
+ 
+> > >   * Provide support for user space setting the TCMA0 or TCMA1 bits in
+> > >     TCR_EL1. These would allow the VMM to generate pointers which are not
+> > >     tag checked.
+> > 
+> > So this is necessary to allow the VMM to keep tag checking enabled for
+> > itself, plus map guest memory as PROT_MTE, and write to that memory when
+> > needed?
+> 
+> This is certainly one option. The architecture provides two "magic" values
+> (all-0s and all-1s) which can be configured using TCMAx to be treated
+> differently. The VMM could therefore construct pointers to otherwise tagged
+> memory which would be treated as untagged.
+> 
+> However, Catalin's user space series doesn't at the moment expose this
+> functionality.
+>
+
+So if I understand correctly this would allow us to map the guest memory
+with PAGE_MTE and still access the memory when needed. If so, then this
+sounds interesting.
 
 Thanks,
-Mauro
+drew 
+
