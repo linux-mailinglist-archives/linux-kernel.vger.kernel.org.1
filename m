@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80AF6263DCF
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 08:58:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2F5D263DD6
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 08:59:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730270AbgIJG6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 02:58:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41790 "EHLO
+        id S1730276AbgIJG73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 02:59:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730128AbgIJG4a (ORCPT
+        with ESMTP id S1729802AbgIJG5e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 02:56:30 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 253D3C061386
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 23:55:06 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id w2so4475452wmi.1
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 23:55:06 -0700 (PDT)
+        Thu, 10 Sep 2020 02:57:34 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80F32C061346
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 23:55:12 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id a65so4458687wme.5
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 23:55:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=dJ089mc+jG2SVa5Dv6nfNI2A1vqsj2U3E/4seGpFeQ0=;
-        b=f7I7/sOE5MX2MwYG0P7i9T0mXlgEc/Xg/VnzodtaTudMO88woJ1hS+eKDB7SiFV+vH
-         TJKdZ0nKQdU1VSMvuH4XRX5knInP266MCc9oE6QVW9gxLQVPipXHQIH0bSkFz3Tu4rWX
-         aoSPEOSa5W5RxBACYetaAr29wn4cv2jy3eFHeaqqx6nGqHAmvtW8UUn841lHiqv7Mfjq
-         vpfncZHtm/KM57VHcU5w1jnbMhIBCKRNh0i8yG5XorXF5b3mUpoz1TpN09FostJpBILe
-         cABq3qJleabsAl1uYBqTq58PkKy5sb6NOfqbfWjbrZf3FUmqGyCb9Q5uJzq1s1gqj1pI
-         mr0w==
+        bh=QBwZYByjjh942d4ggJkaITmm4qS6KFDbT+209YIFm2k=;
+        b=o/wDvUp3hJQejPqXu9BVpd4DAZVvxNEGCvwNBjgtKaCHOvkvK2PixeedyU+euKj3uM
+         6RE7sSsFhFn7II5R/AT4j99dXRYjA64fISNqweLwk21m2ilur2CuKdp/ldA/0ExeQSGq
+         diVFzJGZeH2I02ScPXSS9m+HBcHIDpVwWqSW1r9F9iwqMgVKVdY4b2m6LsXoe2I6Rhrd
+         qtpxpuulD/8hye47v78oTqmg0QNkvrzcxD/6+noLrHjKzcw3SIkL670d75vQivrpQE5q
+         T54i9iRRejeNy+G8gWYcBfd7RPfc2DxpwcbWyOpeX0qNDjoHkUvj6rD+YIlXhopr6css
+         qhTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=dJ089mc+jG2SVa5Dv6nfNI2A1vqsj2U3E/4seGpFeQ0=;
-        b=ASCfhtFh1lE+z68QIHLn98485Sx8wcaUONLBGC9AUtAsjQfFt+Bama08S4hHELMUlU
-         LaobOBtVcK4nEPZUK1n9y3iD2SMviWT5qJQggtCE3kwyoKt4+8nvg+ZFNctxITAcPfTK
-         XzUzVtEae8bVn0mrP726b9unFoq4pmkZLItTihTXRZQsH+8hnhh+muwJvU+7d6lykKZF
-         IJ8r2Wx9+wo91qhf+QNYaknZ9WDOZDHWPrH17ObfWUrpm/n0Ann3rZfhVty0G01hU11n
-         Ypnxvri135W1hLgL3MKoP8kBZSI99Wi7Mc0apndmQBeKQwtDerUwlN8fQt+7JZpnUTrl
-         jL/A==
-X-Gm-Message-State: AOAM5336xWMxldBu0URRjb0OFritLluwhKSj+6Nm6GM+Vc7vrh9NrThO
-        yqiA2k0dOyCuffSBKQtc1mj5YQ==
-X-Google-Smtp-Source: ABdhPJx8tJ70LHF6HpOyRTSAL+A8LVJtbLNEjzH/eMpBtN3oalvlMo2E8ReiliY1BaBveE11V2DF9Q==
-X-Received: by 2002:a05:600c:2246:: with SMTP id a6mr7270091wmm.38.1599720904847;
-        Wed, 09 Sep 2020 23:55:04 -0700 (PDT)
+        bh=QBwZYByjjh942d4ggJkaITmm4qS6KFDbT+209YIFm2k=;
+        b=owOFLcIqHP6eGQC6GndZls2ouP35S+GUFYQ/2MIY5qpHx/QE3A62PThVgHUTxzrf02
+         H2OfrZCvw40mvNamKymIiVf3kLULCDvmlJpqIM9C4Qo0VXpK19zJQ9oVNfZp4tylUA8c
+         w2Ycl6ABR1M/gVgiFljAZhUK2H19ilL8jZcp7/P0aBvLcVSmduo83oXA7mcNfLwPvV4Y
+         VcSCWHrcEEEDWA01TPle1LoA/C7s4CuISGtQB+J0WzwNFxzP8lWVM3zZsB0HMSCAH+OD
+         tvTvCGX18mDCxP9KEqJb7wQjLLy3gMWy1l4RXsXAbXzB7oxwTaVtMreAcIcBx4kQqVpB
+         2NgQ==
+X-Gm-Message-State: AOAM533c7+UUqx8gOOerf1irlLEtwaJ2Hl6DvONhKjRrw+6vhhhkzeuj
+        k1XHcAIj4VR7CZ+Y8qR4abETPg==
+X-Google-Smtp-Source: ABdhPJyzPwfgv9BHfQPFHkUwcAwFvGoFXu5+ZZChSk0rDJAdQiIj3E9ve0VgMnmySY7mUABMHevIVQ==
+X-Received: by 2002:a7b:c5c1:: with SMTP id n1mr6617171wmk.125.1599720910831;
+        Wed, 09 Sep 2020 23:55:10 -0700 (PDT)
 Received: from dell.default ([91.110.221.246])
-        by smtp.gmail.com with ESMTPSA id m3sm2444028wme.31.2020.09.09.23.55.03
+        by smtp.gmail.com with ESMTPSA id m3sm2444028wme.31.2020.09.09.23.55.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Sep 2020 23:55:04 -0700 (PDT)
+        Wed, 09 Sep 2020 23:55:10 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org
 Cc:     linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
@@ -56,9 +56,9 @@ Cc:     linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
         Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
         Luca Coelho <luciano.coelho@intel.com>,
         Intel Linux Wireless <linuxwifi@intel.com>
-Subject: [PATCH 10/29] iwlwifi: mvm: utils: Fix some doc-rot
-Date:   Thu, 10 Sep 2020 07:54:12 +0100
-Message-Id: <20200910065431.657636-11-lee.jones@linaro.org>
+Subject: [PATCH 15/29] iwlwifi: iwl-drv: Provide descriptions debugfs dentries
+Date:   Thu, 10 Sep 2020 07:54:17 +0100
+Message-Id: <20200910065431.657636-16-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200910065431.657636-1-lee.jones@linaro.org>
 References: <20200910065431.657636-1-lee.jones@linaro.org>
@@ -69,17 +69,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix misnamed, and missing descriptions likely due to doc-rot.
+Also demote a non-conforming kernel-doc function header.
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/net/wireless/intel/iwlwifi/mvm/utils.c:669: warning: Function parameter or member 'mvm' not described in 'iwl_mvm_send_lq_cmd'
- drivers/net/wireless/intel/iwlwifi/mvm/utils.c:669: warning: Function parameter or member 'lq' not described in 'iwl_mvm_send_lq_cmd'
- drivers/net/wireless/intel/iwlwifi/mvm/utils.c:669: warning: Excess function parameter 'sync' description in 'iwl_mvm_send_lq_cmd'
- drivers/net/wireless/intel/iwlwifi/mvm/utils.c:695: warning: Function parameter or member 'mvm' not described in 'iwl_mvm_update_smps'
- drivers/net/wireless/intel/iwlwifi/mvm/utils.c:695: warning: Function parameter or member 'vif' not described in 'iwl_mvm_update_smps'
- drivers/net/wireless/intel/iwlwifi/mvm/utils.c:695: warning: Function parameter or member 'smps_request' not described in 'iwl_mvm_update_smps'
- drivers/net/wireless/intel/iwlwifi/mvm/utils.c:695: warning: Excess function parameter 'smps_requests' description in 'iwl_mvm_update_smps'
+ drivers/net/wireless/intel/iwlwifi/iwl-drv.c:124: warning: Function parameter or member 'dbgfs_drv' not described in 'iwl_drv'
+ drivers/net/wireless/intel/iwlwifi/iwl-drv.c:124: warning: Function parameter or member 'dbgfs_trans' not described in 'iwl_drv'
+ drivers/net/wireless/intel/iwlwifi/iwl-drv.c:124: warning: Function parameter or member 'dbgfs_op_mode' not described in 'iwl_drv'
+ drivers/net/wireless/intel/iwlwifi/iwl-drv.c:1329: warning: Function parameter or member 'ucode_raw' not described in 'iwl_req_fw_callback'
+ drivers/net/wireless/intel/iwlwifi/iwl-drv.c:1329: warning: Function parameter or member 'context' not described in 'iwl_req_fw_callback'
 
 Cc: Johannes Berg <johannes.berg@intel.com>
 Cc: Emmanuel Grumbach <emmanuel.grumbach@intel.com>
@@ -92,35 +90,32 @@ Cc: linux-wireless@vger.kernel.org
 Cc: netdev@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/net/wireless/intel/iwlwifi/mvm/utils.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/net/wireless/intel/iwlwifi/iwl-drv.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/utils.c b/drivers/net/wireless/intel/iwlwifi/mvm/utils.c
-index be57b83918506..71eda04946023 100644
---- a/drivers/net/wireless/intel/iwlwifi/mvm/utils.c
-+++ b/drivers/net/wireless/intel/iwlwifi/mvm/utils.c
-@@ -658,7 +658,8 @@ int iwl_mvm_reconfig_scd(struct iwl_mvm *mvm, int queue, int fifo, int sta_id,
+diff --git a/drivers/net/wireless/intel/iwlwifi/iwl-drv.c b/drivers/net/wireless/intel/iwlwifi/iwl-drv.c
+index 04f14bfdd0914..2a9075b1b3747 100644
+--- a/drivers/net/wireless/intel/iwlwifi/iwl-drv.c
++++ b/drivers/net/wireless/intel/iwlwifi/iwl-drv.c
+@@ -102,6 +102,9 @@ static struct dentry *iwl_dbgfs_root;
+  * @fw_index: firmware revision to try loading
+  * @firmware_name: composite filename of ucode file to load
+  * @request_firmware_complete: the firmware has been obtained from user space
++ * @dbgfs_drv: debugfs root directory entry
++ * @dbgfs_trans: debugfs transport directory entry
++ * @dbgfs_op_mode: debugfs op_mode directory entry
+  */
+ struct iwl_drv {
+ 	struct list_head list;
+@@ -1319,7 +1322,7 @@ static void _iwl_op_mode_stop(struct iwl_drv *drv)
+ 	}
+ }
  
- /**
-  * iwl_mvm_send_lq_cmd() - Send link quality command
-- * @sync: This command can be sent synchronously.
-+ * @mvm: Driver data.
-+ * @lq: Link quality command to send.
+-/**
++/*
+  * iwl_req_fw_callback - callback when firmware was loaded
   *
-  * The link quality command is sent as the last step of station creation.
-  * This is the special case in which init is set and we call a callback in
-@@ -683,8 +684,10 @@ int iwl_mvm_send_lq_cmd(struct iwl_mvm *mvm, struct iwl_lq_cmd *lq)
- 
- /**
-  * iwl_mvm_update_smps - Get a request to change the SMPS mode
-+ * @mvm: Driver data.
-+ * @vif: Pointer to the ieee80211_vif structure
-  * @req_type: The part of the driver who call for a change.
-- * @smps_requests: The request to change the SMPS mode.
-+ * @smps_request: The request to change the SMPS mode.
-  *
-  * Get a requst to change the SMPS mode,
-  * and change it according to all other requests in the driver.
+  * If loaded successfully, copies the firmware into buffers
 -- 
 2.25.1
 
