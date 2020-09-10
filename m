@@ -2,128 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4738264A83
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 19:01:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3118264A8A
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 19:03:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726005AbgIJRAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 13:00:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55200 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727099AbgIJQ77 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 12:59:59 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E7C5320C09;
-        Thu, 10 Sep 2020 16:59:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599757194;
-        bh=Q/e3hiHaPu3poZppk1c3ftJgjPBuy0Ukwxh4Gmcyk2M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=asliYRIbd39pJbuu62/Pfj+xB5cKoNxdpvCFYGwQB7KOzedbtjaIqAYtHyU7MXsol
-         Hg8pi639TLU4OVwIf39leirjjN+dUir0riatVbr48vtYpiXsh+l4PjAZbLKt0RlD54
-         AZ29/uLX3BsYdiK9fEZHoz0WGm9N5DT0A9Ny9wk4=
-Date:   Thu, 10 Sep 2020 19:00:01 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     "Eads, Gage" <gage.eads@intel.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        "Topel, Bjorn" <bjorn.topel@intel.com>
-Subject: Re: [PATCH v3 01/19] dlb2: add skeleton for DLB 2.0 driver
-Message-ID: <20200910170001.GA1621093@kroah.com>
-References: <20200901191548.31646-1-gage.eads@intel.com>
- <20200901191548.31646-2-gage.eads@intel.com>
- <20200907130150.GE2371705@kroah.com>
- <SN6PR11MB2574DA2AA215E9566BA4F410F6270@SN6PR11MB2574.namprd11.prod.outlook.com>
- <20200910163208.GA1321670@kroah.com>
- <SN6PR11MB257475DF5F45FED24F4D4968F6270@SN6PR11MB2574.namprd11.prod.outlook.com>
+        id S1727784AbgIJRDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 13:03:39 -0400
+Received: from brightrain.aerifal.cx ([216.12.86.13]:52496 "EHLO
+        brightrain.aerifal.cx" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727052AbgIJRC6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 13:02:58 -0400
+Date:   Thu, 10 Sep 2020 13:02:56 -0400
+From:   Rich Felker <dalias@libc.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     linux-api@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] vfs: add fchmodat2 syscall
+Message-ID: <20200910170256.GK3265@brightrain.aerifal.cx>
+References: <20200910142335.GG3265@brightrain.aerifal.cx>
+ <20200910162059.GA18228@infradead.org>
+ <20200910163949.GJ3265@brightrain.aerifal.cx>
+ <20200910164234.GA25140@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <SN6PR11MB257475DF5F45FED24F4D4968F6270@SN6PR11MB2574.namprd11.prod.outlook.com>
+In-Reply-To: <20200910164234.GA25140@infradead.org>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 04:52:37PM +0000, Eads, Gage wrote:
+On Thu, Sep 10, 2020 at 05:42:34PM +0100, Christoph Hellwig wrote:
+> On Thu, Sep 10, 2020 at 12:39:50PM -0400, Rich Felker wrote:
+> > On Thu, Sep 10, 2020 at 05:20:59PM +0100, Christoph Hellwig wrote:
+> > > On Thu, Sep 10, 2020 at 10:23:37AM -0400, Rich Felker wrote:
+> > > > userspace emulation done in libc implementations. No change is made to
+> > > > the underlying chmod_common(), so it's still possible to attempt
+> > > > changes via procfs, if desired.
+> > > 
+> > > And that is the goddamn problem.  We need to fix that _first_.
+> > 
+> > Can you clarify exactly what that is? Do you mean fixing the
+> > underlying fs backends, or just ensuring that the chmod for symlinks
+> > doesn't reach them by putting the check in chmod_common? I'm ok with
+> > any of these.
 > 
+> Either - we need to make sure the user can't change the permission
+> bits.
 > 
-> > -----Original Message-----
-> > From: Greg KH <gregkh@linuxfoundation.org>
-> > Sent: Thursday, September 10, 2020 11:32 AM
-> > To: Eads, Gage <gage.eads@intel.com>
-> > Cc: linux-kernel@vger.kernel.org; arnd@arndb.de; Karlsson, Magnus
-> > <magnus.karlsson@intel.com>; Topel, Bjorn <bjorn.topel@intel.com>
-> > Subject: Re: [PATCH v3 01/19] dlb2: add skeleton for DLB 2.0 driver
+> > > After that we can add sugarcoating using new syscalls if needed.
 > > 
-> > On Thu, Sep 10, 2020 at 04:24:31PM +0000, Eads, Gage wrote:
-> > >
-> > >
-> > > > -----Original Message-----
-> > > > From: Greg KH <gregkh@linuxfoundation.org>
-> > > > Sent: Monday, September 7, 2020 8:02 AM
-> > > > To: Eads, Gage <gage.eads@intel.com>
-> > > > Cc: linux-kernel@vger.kernel.org; arnd@arndb.de; Karlsson, Magnus
-> > > > <magnus.karlsson@intel.com>; Topel, Bjorn <bjorn.topel@intel.com>
-> > > > Subject: Re: [PATCH v3 01/19] dlb2: add skeleton for DLB 2.0 driver
-> > > >
-> > > > On Tue, Sep 01, 2020 at 02:15:30PM -0500, Gage Eads wrote:
-> > > > > --- /dev/null
-> > > > > +++ b/drivers/misc/dlb2/dlb2_main.c
-> > > > > @@ -0,0 +1,208 @@
-> > > > > +// SPDX-License-Identifier: GPL-2.0-only
-> > > > > +/* Copyright(c) 2018-2020 Intel Corporation */
-> > > > > +
-> > > > > +#include <linux/aer.h>
-> > > > > +#include <linux/cdev.h>
-> > > > > +#include <linux/delay.h>
-> > > > > +#include <linux/fs.h>
-> > > > > +#include <linux/init.h>
-> > > > > +#include <linux/list.h>
-> > > > > +#include <linux/module.h>
-> > > > > +#include <linux/pci.h>
-> > > > > +#include <linux/uaccess.h>
-> > > > > +
-> > > > > +#include "dlb2_main.h"
-> > > > > +
-> > > > > +static const char
-> > > > > +dlb2_driver_copyright[] = "Copyright(c) 2018-2020 Intel Corporation";
-> > > >
-> > > > Why have this in a string and then:
-> > > >
-> > > > > +MODULE_LICENSE("GPL v2");
-> > > > > +MODULE_AUTHOR("Copyright(c) 2018-2020 Intel Corporation");
-> > > >
-> > > > Not use it?
-> > > >
-> > > > It's probably not needed at all, right?
-> > > >
-> > > > Don't you get a build warning about this when applying and building this
-> > > > patch?
-> > > >
-> > > > thanks,
-> > > >
-> > > > greg k-h
-> > >
-> > > dlb2_driver_copyright was used in a pr_info() in the v1 patchset that was
-> > > removed at Arnd's recommendation, and I forgot to remove the string.
-> > Will fix.
-> > > The unused warning variable was likely missed in the deluge of warnings
-> > from
-> > > included kernel headers.
-> > 
-> > You should not have any build warnings.  If you do, then something is
-> > really wrong, the kernel builds cleanly today.
-> > 
-> > thanks,
-> > 
-> > greg k-h
+> > The new syscall is _not_ about this problem. It's about the missing
+> > flags argument and inability to implement fchmodat() without access to
+> > procfs. The above problem is just something you encounter and have to
+> > make a decision about in order to fix the missing flags problem and
+> > make a working AT_SYMLINK_NOFOLLOW.
 > 
-> Sorry, I worded that ambiguously. The driver builds without any warnings with
-> my GCC (7.3.1) by default. The deluge from kernel headers only occurs after
-> adding EXTRA_CFLAGS=-W. There shouldn't be any dlb2 warnings with -W enabled,
-> but I'll double check.
+> And I'm generally supportive of that.  But we need to fix the damn
+> bug first an then do nice to haves.
 
-You do know about "W=1", right?
+Would you be happy with a pair of patches where the first blocks chmod
+of symlinks in chmod_common and the second adds the syscall with
+flags? I think this is a clearly understandable fix, but it does
+eliminate the ability to *fix* link access modes that have been set to
+ridiculous values (note: I don't think it really matters since the
+modes don't do anything anyway) in the past.
+
+That's why I preferred to *start* with the forced-EOPNOTSUPP just in
+the new interface, so that links won't inadvertently get bogus modes
+set on them when libc starts using it. As long as some filesystems are
+representing access modes in links (and returning them via stat), it
+seems like there should be a way to "fix" any that were set in the
+past. The patch as I've submitted it now is the least invasive change
+in this sense; it does not take away any capability that already
+existed.
+
+Rich
