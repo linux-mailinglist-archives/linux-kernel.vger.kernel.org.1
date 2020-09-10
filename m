@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88C68263F7B
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 10:15:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56E2E263F86
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 10:17:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730204AbgIJIPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 04:15:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53634 "EHLO
+        id S1730193AbgIJIRk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 04:17:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729161AbgIJIMs (ORCPT
+        with ESMTP id S1729005AbgIJIMs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 10 Sep 2020 04:12:48 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7E09C061786
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 01:12:45 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id n3so961584pjq.1
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 01:12:45 -0700 (PDT)
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7A4DC061573
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 01:12:47 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id z19so4176335pfn.8
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 01:12:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=sifive.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=pBZg38YV3F0UBIikGh/iifz81s+4k+D3Kp7Tc68TLZI=;
-        b=QMmGQYeC6WHteUVor0MkG/umERsoUyehK2V8+a5Xgv0HC+1W/5a/3SgTR1co9SZdzr
-         b0TxGgynak/YrX59cQrA2aDjs+g1TnA4h28P1AoV4tqxL63aD4nfD9B3TmCMskjuaaL0
-         ED7eIL2mKHpTHcOvzwn2ud/ORFKZDbShWyGUO1y4bKo2Ez1uY0bFyEpRziFilumZSLv/
-         7ZuzbGVSFp6BPE8UmMIgcRfIUlyxsSeeN4XCD2hILXiWjD/pn+uUb/um1ehh4K1BPWcT
-         mwT/t1FlGLgKRToL3dEkcJDNNNOGUvmkvROg7n5fOJK1NEEf+Ar/OI9LbaMmXQut80ou
-         b+wg==
+        bh=jTWmtcACzAQn5qJ6Bhs/uGk8LJx7IP1Lqtl0V+UVL/4=;
+        b=azD4MkWSBr7dTIgX/UNno4IJiwn9U8nNOQ8s9HUsHeqnVRrnURFEzjZT9lcM7D6ZOq
+         Qtcc/XgUcCXx5yOWHr6ZYbTQZK2EeBLqP0tpb+W1pNeStoC/bSIkPpzGx1XrIyqLqznI
+         gOFGvz0fzvDQz7GnULmd9o5cgBDmnznWPBC0m5hrBiHSLGB0tJkMkw7ssJphBfpR1M5/
+         V4NnYVTumV+zc09YMyI1kzZbm5p7yFtT6lBfbgdXfOavjjpkDvJwOA7LH0x4vt92Uw0F
+         9KPhlH1QLoaP06XBpwzq26j/x2hd1QT1GdvCmVSMWcjkFlbHk1R9YpVI+YGgKa6wDUeR
+         +QWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=pBZg38YV3F0UBIikGh/iifz81s+4k+D3Kp7Tc68TLZI=;
-        b=g02nkgZy5PX6KLVuO7S67Tdt6y729W4YMJdf5py0QKOnnNsJAIw6NHESZhNpTmZzlW
-         g1XVOg/GZJLhRNpuYfGDvFUwPsyyZySaF3r3k1hh68+YDLWdIMQLOrcG3K669lOq0NQv
-         gyXwo0xwsZBWAiQMtGvdkJrlA3cALBDXvkrEGlOfk8JWHL8xJbVbgTVql1/fRXg0Kvaw
-         Urd3V/NA1RTM1WUY7T++zRCLSZu3ifBHUoDN6LS9m7N0QvhnlCGygQcfJedOIhgjxWtc
-         68YJMungJzsOY5Rw021wrDesJ2Yfc+ygoMXwomYzT91LHmkc1TdSiWcTCLUaqKfJsS5C
-         T1IQ==
-X-Gm-Message-State: AOAM5316abl52AB/QO2li5b9MSOF+pe6SKZaaKzNA7ZH7aez0dt0yDQ/
-        em74EquIx+DC+XvsjcOaqxLffg==
-X-Google-Smtp-Source: ABdhPJx5AqEGmcn4ZmggG6tMGtXj1OMr4k67KXCra2/D96tG0n9Nv2iG9jor2KACZRPMEfu9BZEzBQ==
-X-Received: by 2002:a17:90b:815:: with SMTP id bk21mr1154992pjb.57.1599725565272;
-        Thu, 10 Sep 2020 01:12:45 -0700 (PDT)
+        bh=jTWmtcACzAQn5qJ6Bhs/uGk8LJx7IP1Lqtl0V+UVL/4=;
+        b=pfWHFu8WX3DppAP1C/9UoDCAfzankNV6srN8fWg4u5N294xSq5mWa86iwe2Q3EfffH
+         PVEImW4fDQCIWbXqpymFOoZvILnzgQYJ+3F5aPR8wZp4AOZDF+GzldQ62RNr4kQl+Fkq
+         ywja15AGolM93HbGz2YylCV4CdKMRIRU3B+1sT6iu7dV3ijPfSrj+RE7SAwVvnOUQNRI
+         A/6UZP/xv+5zO/EajWk9f3YN6Ubq5smUxlUw+L/ro3QGOY6RgGU8USAShpOZzV3pbf1f
+         hS8aA0AkPQ3Ad3AG2qvzELnCsy61gFYr6uYiJFh5NY8zZdgD4cIJmKm9uaUKOugFez8f
+         5/xA==
+X-Gm-Message-State: AOAM532iSRWBIaW0wZJLywz4cpD6NfalfkFo3pyHO604Qpi92se3haLz
+        henHBEP1wT1EpcgXyrH8ASAGdg==
+X-Google-Smtp-Source: ABdhPJxKgW/VRNPprSjSiwbdDxz6nC0HICvtgnXwr9m2q/8ztRXpjt6uqMgZy5wNQsaju/4R2qnk4Q==
+X-Received: by 2002:aa7:9aa9:: with SMTP id x9mr2832162pfi.67.1599725567281;
+        Thu, 10 Sep 2020 01:12:47 -0700 (PDT)
 Received: from hsinchu02.internal.sifive.com (114-34-229-221.HINET-IP.hinet.net. [114.34.229.221])
-        by smtp.gmail.com with ESMTPSA id e1sm2196056pfl.162.2020.09.10.01.12.43
+        by smtp.gmail.com with ESMTPSA id e1sm2196056pfl.162.2020.09.10.01.12.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Sep 2020 01:12:44 -0700 (PDT)
+        Thu, 10 Sep 2020 01:12:46 -0700 (PDT)
 From:   Greentime Hu <greentime.hu@sifive.com>
 To:     greentime.hu@sifive.com, linux-riscv@lists.infradead.org,
         linux-kernel@vger.kernel.org, aou@eecs.berkeley.edu,
         palmer@dabbelt.com, paul.walmsley@sifive.com
-Cc:     Guo Ren <guoren@linux.alibaba.com>, Guo Ren <guoren@kernel.org>
-Subject: [RFC PATCH v7 04/21] riscv: Add new csr defines related to vector extension
-Date:   Thu, 10 Sep 2020 16:11:59 +0800
-Message-Id: <c75e35c53ad8eb24a3f21f17f383d1f0177138a8.1599719352.git.greentime.hu@sifive.com>
+Cc:     Guo Ren <guoren@linux.alibaba.com>
+Subject: [RFC PATCH v7 05/21] riscv: Add vector feature to compile
+Date:   Thu, 10 Sep 2020 16:12:00 +0800
+Message-Id: <a9f3a84d3dc7d66b36f10a68c49d6cb75a648a08.1599719352.git.greentime.hu@sifive.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <cover.1599719352.git.greentime.hu@sifive.com>
 References: <cover.1599719352.git.greentime.hu@sifive.com>
@@ -66,58 +66,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Follow the riscv vector spec to add new csr numbers.
+From: Guo Ren <guoren@linux.alibaba.com>
 
-[guoren@linux.alibaba.com: first porting for new vector related csr]
-Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
+This patch adds a new config option which could enable assembler's
+vector feature.
+
 Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-Acked-by: Guo Ren <guoren@kernel.org>
+Reviewed-by: Greentime Hu <greentime.hu@sifive.com>
 ---
- arch/riscv/include/asm/csr.h | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+ arch/riscv/Kconfig  | 9 +++++++++
+ arch/riscv/Makefile | 1 +
+ 2 files changed, 10 insertions(+)
 
-diff --git a/arch/riscv/include/asm/csr.h b/arch/riscv/include/asm/csr.h
-index cec462e198ce..0d4c89fb97b5 100644
---- a/arch/riscv/include/asm/csr.h
-+++ b/arch/riscv/include/asm/csr.h
-@@ -24,6 +24,12 @@
- #define SR_FS_CLEAN	_AC(0x00004000, UL)
- #define SR_FS_DIRTY	_AC(0x00006000, UL)
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index df18372861d8..58673089c900 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -327,6 +327,15 @@ config FPU
  
-+#define SR_VS           _AC(0x00000600, UL) /* Vector Status */
-+#define SR_VS_OFF       _AC(0x00000000, UL)
-+#define SR_VS_INITIAL   _AC(0x00000200, UL)
-+#define SR_VS_CLEAN     _AC(0x00000400, UL)
-+#define SR_VS_DIRTY     _AC(0x00000600, UL)
+ 	  If you don't know what to do here, say Y.
+ 
++config VECTOR
++	bool "VECTOR support"
++	default n
++	help
++	  Say N here if you want to disable all vector related procedure
++	  in the kernel.
 +
- #define SR_XS		_AC(0x00018000, UL) /* Extension Status */
- #define SR_XS_OFF	_AC(0x00000000, UL)
- #define SR_XS_INITIAL	_AC(0x00008000, UL)
-@@ -31,9 +37,9 @@
- #define SR_XS_DIRTY	_AC(0x00018000, UL)
- 
- #ifndef CONFIG_64BIT
--#define SR_SD		_AC(0x80000000, UL) /* FS/XS dirty */
-+#define SR_SD		_AC(0x80000000, UL) /* FS/VS/XS dirty */
- #else
--#define SR_SD		_AC(0x8000000000000000, UL) /* FS/XS dirty */
-+#define SR_SD		_AC(0x8000000000000000, UL) /* FS/VS/XS dirty */
- #endif
- 
- /* SATP flags */
-@@ -111,6 +117,12 @@
- #define CSR_PMPADDR0		0x3b0
- #define CSR_MHARTID		0xf14
- 
-+#define CSR_VSTART		0x8
-+#define CSR_VCSR		0xf
-+#define CSR_VL			0xc20
-+#define CSR_VTYPE		0xc21
-+#define CSR_VLENB		0xc22
++	  If you don't know what to do here, say Y.
 +
- #ifdef CONFIG_RISCV_M_MODE
- # define CSR_STATUS	CSR_MSTATUS
- # define CSR_IE		CSR_MIE
+ endmenu
+ 
+ menu "Kernel features"
+diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
+index 957d064bead0..7c80c95582e3 100644
+--- a/arch/riscv/Makefile
++++ b/arch/riscv/Makefile
+@@ -46,6 +46,7 @@ riscv-march-aflags-$(CONFIG_ARCH_RV32I)		:= rv32ima
+ riscv-march-aflags-$(CONFIG_ARCH_RV64I)		:= rv64ima
+ riscv-march-aflags-$(CONFIG_FPU)		:= $(riscv-march-aflags-y)fd
+ riscv-march-aflags-$(CONFIG_RISCV_ISA_C)	:= $(riscv-march-aflags-y)c
++riscv-march-aflags-$(CONFIG_VECTOR)		:= $(riscv-march-aflags-y)v
+ 
+ KBUILD_CFLAGS += -march=$(riscv-march-cflags-y)
+ KBUILD_AFLAGS += -march=$(riscv-march-aflags-y)
 -- 
 2.28.0
 
