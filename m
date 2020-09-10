@@ -2,87 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62DB8264314
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 11:59:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5971B264307
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 11:58:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730826AbgIJJ7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 05:59:50 -0400
-Received: from mga14.intel.com ([192.55.52.115]:59262 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730596AbgIJJ5Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 05:57:24 -0400
-IronPort-SDR: IkdEGsVYDeaSHd5zC8Fd3i1SzO3AaG5IbjMmMP1R6K/khjivYSWoMVXbHcnPb2exhCI+sS6nzb
- a6wE20bz+Rlg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9739"; a="157782360"
-X-IronPort-AV: E=Sophos;i="5.76,412,1592895600"; 
-   d="scan'208";a="157782360"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2020 02:54:07 -0700
-IronPort-SDR: 3iiISJzVPsvq7qAGyQ55MzatYYoTRWENmLKuHQylsst8Jd+oXMVzz4BqbMfT01Ckx2SBEsrYSy
- WfpwSu//TCFg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,412,1592895600"; 
-   d="scan'208";a="317858423"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga002.jf.intel.com with ESMTP; 10 Sep 2020 02:54:01 -0700
-Received: from [10.215.160.12] (rtanwar-MOBL.gar.corp.intel.com [10.215.160.12])
-        by linux.intel.com (Postfix) with ESMTP id 87C22580223;
-        Thu, 10 Sep 2020 02:53:58 -0700 (PDT)
-Subject: Re: [PATCH 2/2] Add driver for Moortec MR75203 PVT controller
-To:     Andy Shevchenko <andriy.shevchenko@intel.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>, jdelvare@suse.com,
-        p.zabel@pengutronix.de, linux-hwmon@vger.kernel.org,
-        robh+dt@kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, songjun.Wu@intel.com,
-        cheol.yong.kim@intel.com, qi-ming.wu@intel.com,
-        rtanwar@maxlinear.com
-References: <cover.1599634208.git.rahul.tanwar@linux.intel.com>
- <ecb6794a8f2ef6576421e6d5fbdf4e6a91f06b91.1599634208.git.rahul.tanwar@linux.intel.com>
- <a3b95ea8-372b-4f03-0c04-62ee9384fafb@roeck-us.net>
- <c72665ba-b594-bbb0-00c5-ed763233d609@linux.intel.com>
- <20200910094622.GO1891694@smile.fi.intel.com>
-From:   "Tanwar, Rahul" <rahul.tanwar@linux.intel.com>
-Message-ID: <457b8ff8-4093-3b82-5358-4b8460a1b012@linux.intel.com>
-Date:   Thu, 10 Sep 2020 17:53:57 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1730655AbgIJJ6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 05:58:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41330 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730552AbgIJJzB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 05:55:01 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAC61C061798
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 02:55:00 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id k18so5145054wmj.5
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 02:55:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kBmlII5Vo//A9yPEJvnx3pKLF3xO4ua5qFTJHSq3g7w=;
+        b=Mp48Y5o3UTjqc7GRbcTi2cjvv51nFGNvyAA5DE1UfeTL1TMGbjAHc4RUbolyjBcq78
+         jLfYRxESN0S1R7j1vveSLWJeMYK+nJX28JhMyTmyicQtPHsq5swlYfpyW+55u5AoImfZ
+         oBxeH5Lbwxs2v/dztAijetFrho1Wx6bVj+Oc/dkvUXrE5TyUZWh0epgiUpxiOto85MsG
+         hTEOT+NcLacuqmR7JmXxY+IDVmr5voQ/ECTLxZvFSYbuWjRg4MsOVEUUgTnqbsR0HMQb
+         V0et67mMhX/LXsQcKVGVYQwUkRusWYFa/RLbGrMSils0/fDIHW0nT7CA22W1u9F3htI4
+         NkqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kBmlII5Vo//A9yPEJvnx3pKLF3xO4ua5qFTJHSq3g7w=;
+        b=klT+HSWJLb6EGpLYR+lx+ZY4wJC+ovGzPEyoJYQkaNq/pNlITXyJ3jl4EivUfked7P
+         R1XZBu4JC/0ZIaPHFfpTRt2uXPbfqLvu2T9E0h0Qk2LYO1c1+9pgq6DYw/yoGBbuLKQN
+         rn404CO/ONfwS8YWB3SyFowDO/tkKTFi9qL4VYq+xl0S0TXJhNRVJqpJBvGzZYEihkWA
+         8cUVj3XWW2UVss87QHTmNWwCeH9pmrXoC5wWZxy8UrpV43M1oWETs9wFVOJS4q6gDW8+
+         +U13pcNvbEK/89EiNouy4N8KaSInMWIvdfkkBA0wPo0IKGookz8SlIzXxI75UV/gcCr0
+         qZIg==
+X-Gm-Message-State: AOAM5314CCjStuO4jggLN2/gXZ5fWFWVBdxkyX8G0u5XJYCvKjP1PwMs
+        XwfDJYZ4Hac588tc6sS6H9/cPg==
+X-Google-Smtp-Source: ABdhPJxw2J4g1tLxlXhkthydaDC7Hl8eCBStOVqNL7T4xvp4Dg/q8If7FlfLMGbTnCUpJcon0gm14g==
+X-Received: by 2002:a7b:c14d:: with SMTP id z13mr7474778wmi.19.1599731699416;
+        Thu, 10 Sep 2020 02:54:59 -0700 (PDT)
+Received: from google.com ([2a00:79e0:d:109:4a0f:cfff:fe4a:6363])
+        by smtp.gmail.com with ESMTPSA id b76sm2975511wme.45.2020.09.10.02.54.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Sep 2020 02:54:58 -0700 (PDT)
+Date:   Thu, 10 Sep 2020 10:54:54 +0100
+From:   Andrew Scull <ascull@google.com>
+To:     David Brazdil <dbrazdil@google.com>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Dennis Zhou <dennis@kernel.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kvmarm@lists.cs.columbia.edu, linux-arch@vger.kernel.org,
+        kernel-team@android.com
+Subject: Re: [PATCH v2 02/10] kvm: arm64: Partially link nVHE hyp code,
+ simplify HYPCOPY
+Message-ID: <20200910095454.GB93664@google.com>
+References: <20200903091712.46456-1-dbrazdil@google.com>
+ <20200903091712.46456-3-dbrazdil@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20200910094622.GO1891694@smile.fi.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200903091712.46456-3-dbrazdil@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Sep 03, 2020 at 11:17:04AM +0200, 'David Brazdil' via kernel-team wrote:
+> Previous series introduced custom build rules for nVHE hyp code, using
+> objcopy to prefix ELF section and symbol names to separate nVHE code
+> into its own "namespace". This approach was limited by the expressiveness
+> of objcopy's command line interface, eg. missing support for wildcards.
+> 
+> Improve the build rules by partially linking all '.hyp.o' files and
+> prefixing their ELF section names using a linker script. Continue using
+> objcopy for prefixing ELF symbol names.
+> 
+> One immediate advantage of this approach is that all subsections
+> matching a pattern can be merged into a single prefixed section, eg.
+> .text and .text.* can be linked into a single '.hyp.text'. This removes
+> the need for -fno-reorder-functions on GCC and will be useful in the
+> future too: LTO builds use .text subsections, compilers routinely
+> generate .rodata subsections, etc.
 
+This certaintly feels like a more robust and controlled approach to the
+sections now that we have an explicit list of those that are allowed.
 
-On 10/9/2020 5:46 pm, Andy Shevchenko wrote:
-> On Thu, Sep 10, 2020 at 03:27:11PM +0800, Tanwar, Rahul wrote:
->> On 9/9/2020 11:05 pm, Guenter Roeck wrote:
->>> On 9/8/20 11:52 PM, Rahul Tanwar wrote:
-> ...
->
->>>> +static int pvt_get_regmap(struct platform_device *pdev, char *reg_name)
->>>> +{
->>>> +	struct device *dev = &pdev->dev;
->>>> +	struct pvt_device *pvt = platform_get_drvdata(pdev);
->>> I am quite at loss how this is supposed to work. Platform driver
->>> data is not initialized with a pointer to struct pvt_device at this point.
->>> How does this code not crash ? What am I missing ?
->> Big mistake on my part. Last minute change based on internal review feedback
->> about moving platform_set_drvdata() at the end of probe. I will fix it in v2.
->> Thanks.
-> Since IIRC it was me who suggested this I should say that reviewer can make
-> mistakes, on the other hand contributor should have had known their code to
-> refuse certain changes.
->
+> Partially linking all hyp code into a single object file also makes it
+> easier to analyze.
+> 
+> Signed-off-by: David Brazdil <dbrazdil@google.com>
+> ---
+>  arch/arm64/kvm/hyp/nvhe/Makefile  | 56 ++++++++++++++++---------------
+>  arch/arm64/kvm/hyp/nvhe/hyp.lds.S | 14 ++++++++
+>  2 files changed, 43 insertions(+), 27 deletions(-)
+>  create mode 100644 arch/arm64/kvm/hyp/nvhe/hyp.lds.S
+> 
+> diff --git a/arch/arm64/kvm/hyp/nvhe/Makefile b/arch/arm64/kvm/hyp/nvhe/Makefile
+> index aef76487edc2..1b2fbb19f3e8 100644
+> --- a/arch/arm64/kvm/hyp/nvhe/Makefile
+> +++ b/arch/arm64/kvm/hyp/nvhe/Makefile
+> @@ -10,40 +10,42 @@ obj-y := timer-sr.o sysreg-sr.o debug-sr.o switch.o tlb.o hyp-init.o
+>  obj-y += ../vgic-v3-sr.o ../aarch32.o ../vgic-v2-cpuif-proxy.o ../entry.o \
+>  	 ../fpsimd.o ../hyp-entry.o
+>  
+> -obj-y := $(patsubst %.o,%.hyp.o,$(obj-y))
+> -extra-y := $(patsubst %.hyp.o,%.hyp.tmp.o,$(obj-y))
+> +##
+> +## Build rules for compiling nVHE hyp code
+> +## Output of this folder is `hyp.o`, a partially linked object file containing
+> +## all nVHE hyp code and data.
+> +##
+>  
+> -$(obj)/%.hyp.tmp.o: $(src)/%.c FORCE
+> +hyp-obj := $(patsubst %.o,%.hyp.o,$(obj-y))
+> +obj-y := hyp.o
+> +extra-y := $(hyp-obj) hyp.tmp.o hyp.lds
+> +
+> +# 1) Compile all source files to `.hyp.o` object files. The file extension
+> +#    avoids file name clashes for files shared with VHE.
 
-Totally agree. Overlooked in a hasty change..
+Very much a nit, but possibly .nvhe.o or .kvm_nvhe.o would make the
+intended distinction more obvious and line up with the prefix being
+applied to the symbols.
 
-Regards,
-Rahul
+> +$(obj)/%.hyp.o: $(src)/%.c FORCE
+>  	$(call if_changed_rule,cc_o_c)
+> -$(obj)/%.hyp.tmp.o: $(src)/%.S FORCE
+> +$(obj)/%.hyp.o: $(src)/%.S FORCE
+>  	$(call if_changed_rule,as_o_S)
+> -$(obj)/%.hyp.o: $(obj)/%.hyp.tmp.o FORCE
+> -	$(call if_changed,hypcopy)
+>  
+> -# Disable reordering functions by GCC (enabled at -O2).
+> -# This pass puts functions into '.text.*' sections to aid the linker
+> -# in optimizing ELF layout. See HYPCOPY comment below for more info.
+> -ccflags-y += $(call cc-option,-fno-reorder-functions)
+> +# 2) Compile linker script.
+> +$(obj)/hyp.lds: $(src)/hyp.lds.S FORCE
+> +	$(call if_changed_dep,cpp_lds_S)
+> +
+> +# 3) Partially link all '.hyp.o' files and apply the linker script.
+> +#    Prefixes names of ELF sections with '.hyp', eg. '.hyp.text'.
+> +LDFLAGS_hyp.tmp.o := -r -T $(obj)/hyp.lds
+> +$(obj)/hyp.tmp.o: $(addprefix $(obj)/,$(hyp-obj)) $(obj)/hyp.lds FORCE
+> +	$(call if_changed,ld)
+> +
+> +# 4) Produce the final 'hyp.o', ready to be linked into 'vmlinux'.
+> +#    Prefixes names of ELF symbols with '__kvm_nvhe_'.
+> +$(obj)/hyp.o: $(obj)/hyp.tmp.o FORCE
+> +	$(call if_changed,hypcopy)
+>  
+>  # The HYPCOPY command uses `objcopy` to prefix all ELF symbol names
+> -# and relevant ELF section names to avoid clashes with VHE code/data.
+> -#
+> -# Hyp code is assumed to be in the '.text' section of the input object
+> -# files (with the exception of specialized sections such as
+> -# '.hyp.idmap.text'). This assumption may be broken by a compiler that
+> -# divides code into sections like '.text.unlikely' so as to optimize
+> -# ELF layout. HYPCOPY checks that no such sections exist in the input
+> -# using `objdump`, otherwise they would be linked together with other
+> -# kernel code and not memory-mapped correctly at runtime.
+> +# to avoid clashes with VHE code/data.
+>  quiet_cmd_hypcopy = HYPCOPY $@
+> -      cmd_hypcopy =							\
+> -	if $(OBJDUMP) -h $< | grep -F '.text.'; then			\
+> -		echo "$@: function reordering not supported in nVHE hyp code" >&2; \
+> -		/bin/false;						\
+> -	fi;								\
+> -	$(OBJCOPY) --prefix-symbols=__kvm_nvhe_				\
+> -		   --rename-section=.text=.hyp.text			\
+> -		   $< $@
+> +      cmd_hypcopy = $(OBJCOPY) --prefix-symbols=__kvm_nvhe_ $< $@
+>  
+>  # Remove ftrace and Shadow Call Stack CFLAGS.
+>  # This is equivalent to the 'notrace' and '__noscs' annotations.
+> diff --git a/arch/arm64/kvm/hyp/nvhe/hyp.lds.S b/arch/arm64/kvm/hyp/nvhe/hyp.lds.S
+> new file mode 100644
+> index 000000000000..aaa0ce133a32
+> --- /dev/null
+> +++ b/arch/arm64/kvm/hyp/nvhe/hyp.lds.S
+> @@ -0,0 +1,14 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Linker script used during partial linking of nVHE EL2 object files.
+> + * Written by David Brazdil <dbrazdil@google.com>
+> + */
 
+Should this file have the standard copyright line?
+
+> +
+> +/*
+> + * Defines an ELF hyp section from input section @NAME and its subsections.
+> + */
+> +#define HYP_SECTION(NAME) .hyp##NAME : { *(NAME NAME##.[0-9a-zA-Z_]*) }
+> +
+> +SECTIONS {
+> +	HYP_SECTION(.text)
+> +}
+> -- 
+> 2.28.0.402.g5ffc5be6b7-goog
+> 
+> -- 
+> To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
+> 
