@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1935D2653CD
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:40:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E87DF2653D2
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:41:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728421AbgIJVky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 17:40:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42796 "EHLO
+        id S1728411AbgIJVkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 17:40:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730279AbgIJNGb (ORCPT
+        with ESMTP id S1730307AbgIJNGb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 10 Sep 2020 09:06:31 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E71BC0617A3
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 06:05:08 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id k18so5711495wmj.5
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 06:05:07 -0700 (PDT)
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31887C0617A5
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 06:05:09 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id a17so6622787wrn.6
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 06:05:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=6nrHj9I7O9lphgMpg3nYt8s6m+DhlUlMF3Q2xQwYP4o=;
-        b=JfhHhfwgFyod/Q11QsB20PWg+IXp0MwbLVKEVJL8Xc96YCyL4xey0pP2SGU5uojuTs
-         DuUjgoLnOJnE2X03XlZelu56WjbjShlK8YJIoPLTPFIv048vx5ZHsjchrG0l0/qXf6zv
-         zJcPOkKfIPzxM1OGvHyaxnmgcFvu7TFEfr+Ghl9yJIWUlUSGUnv7XQCAfhHRgWL0v5bP
-         IWAxunEPLeefjeEALzZY1jnkyGBQDjazW9O3bcDClAhuUkxOi8l8Yfj5POLh0grL1t22
-         aMdMbvtXZO0Oa7SvxlredWytF7nuav3rLEDUoUAVuLhC9xJb7DYBWfpbZ9CO5MOu5TTF
-         f0Zw==
+        bh=XwhhTmIpt9I/D9KrOo2LJ6gPM74tL0wwMib4UYGiVq4=;
+        b=Hg5YB683SBcxwBOJuYWAbPVzcbtuI8GTdFc7yNFZkPuGlTOospMoDqTJVh5eyvbHRy
+         Lybj7DyI8+K7Gj4Lhk3d5DZUUX1omx6RWWhTFNmdmVJF9M2kdDIy2HrjJHIRoAVuIqYI
+         aAsQ4O5g5g4p5Bq9AlB5o80bKRwJX0q/PoLtGW2myp1DbkBjM3pJVR8AjFsqRs0Yzc9P
+         t19ntKuWvjd7+1BVfF3FhLHF6JAW3CaxzY6hDQ+zuQWVnU/cZWgmqcubK8dtrDytUqEs
+         DSZ5atmiFFgcIw+YPM+v9lSNC1j7IFgjRGLIQv+74i1lAOA3WvLUmXCWbQhFobQcl79m
+         KFjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=6nrHj9I7O9lphgMpg3nYt8s6m+DhlUlMF3Q2xQwYP4o=;
-        b=Lw1kIOT7+o4+qwEmCy2D2cw5lMQZrxAKzByFv4rW4XOcwcg9mbIvpi79L4r+os7iOj
-         kws44sLm5DyjchOc3ITiuyQbCNTv2cmzOynq1X7EPbtON1IM+2qRimAU3UfyO54u/K0w
-         MVm12xDSMXdzieiYqfoB4Gb4zuDMpULTtt6BLjyYIn7vYR3h0t/+BXylC6nh9zFd9La8
-         xGRUT7NDzZIpSFQ44qvNSIpLc8KabXtyhPn3aEDyTjaxn91Y+5kLyvTrOZUkew8P+fqx
-         wz0ObOry+yi6PKF2W3i7ljdP4H4gbITNpNnpax6401gi/l01pcoI9XF9s5wQmzMF1WT2
-         178A==
-X-Gm-Message-State: AOAM531qBmwPBHTMZPsXTsXG25QEfoIASWUEZLyrzrjWqoN6zHvQUIQq
-        51oPexegUQ0B6R3nhqheCFPVVA==
-X-Google-Smtp-Source: ABdhPJyQlwnTdOQN8O42Q8fGi8/D7oqfz4eeL8TeUHl2gPGc3qd3UR/PR3mSgO2NeUBm2nMrBpNovA==
-X-Received: by 2002:a1c:bad5:: with SMTP id k204mr8796864wmf.111.1599743106742;
-        Thu, 10 Sep 2020 06:05:06 -0700 (PDT)
+        bh=XwhhTmIpt9I/D9KrOo2LJ6gPM74tL0wwMib4UYGiVq4=;
+        b=UxZ0nTpXuuvgmQ35H84Co4qvdV2evndWsC81iExF7Py5aLBlAKSInY6PRQLBfFYtb0
+         1szfnhzanBhV7x1k0U1pE15DThyJZw6MlqvZy08Tbv3xulzX+ceOzxpBSu8vbVp/W8Hd
+         9dLSbt93JJc6sT6zb1dc6TY/CGiIphgoTfSya/bN3zonhni3kRCcLZpcb42zXlsnck2F
+         q9sLtbBrYaBcRu/zTTDL0+vUw31FONGKg63QIZkZIbjvZTjHPVTOkXOV8kXu3r5I3HMN
+         +czX/SXH56ge19Xb0VgVNhPhEjimh530xlaUwcGknklkSx+Q7KVdpVjV5csk1zmQd9GK
+         /iSw==
+X-Gm-Message-State: AOAM533cCgoQl+jq1E1NhZzFo9XQq0MlIXn2CuWq5hU6WQOYcKihb841
+        4JJ+uYwHRlVsUhUaebcqmnVU3A==
+X-Google-Smtp-Source: ABdhPJzcvEpeSQuLyTVjL7Lr8uyfJn1qlbCPNliUserEbRmtMZTR1dNxSRyJtap07RsrxrZOGLBAwg==
+X-Received: by 2002:adf:81a3:: with SMTP id 32mr8910094wra.368.1599743107847;
+        Thu, 10 Sep 2020 06:05:07 -0700 (PDT)
 Received: from debian-brgl.home (lfbn-nic-1-68-20.w2-15.abo.wanadoo.fr. [2.15.159.20])
-        by smtp.gmail.com with ESMTPSA id p16sm9321988wro.71.2020.09.10.06.05.05
+        by smtp.gmail.com with ESMTPSA id p16sm9321988wro.71.2020.09.10.06.05.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Sep 2020 06:05:06 -0700 (PDT)
+        Thu, 10 Sep 2020 06:05:07 -0700 (PDT)
 From:   Bartosz Golaszewski <brgl@bgdev.pl>
 To:     Alessandro Zummo <a.zummo@towertech.it>,
         Alexandre Belloni <alexandre.belloni@bootlin.com>
 Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
         Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH v2 08/11] rtc: rx8010: prefer sizeof(*val) over sizeof(struct type_of_val)
-Date:   Thu, 10 Sep 2020 15:04:43 +0200
-Message-Id: <20200910130446.5689-9-brgl@bgdev.pl>
+Subject: [PATCH v2 09/11] rtc: rx8010: switch to using the preferred RTC API
+Date:   Thu, 10 Sep 2020 15:04:44 +0200
+Message-Id: <20200910130446.5689-10-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.26.1
 In-Reply-To: <20200910130446.5689-1-brgl@bgdev.pl>
 References: <20200910130446.5689-1-brgl@bgdev.pl>
@@ -68,27 +68,43 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-Using the size of the variable is preferred over using the size of its
-type when allocating memory. Convert the call to devm_kzalloc() in
-probe().
+Use devm_rtc_allocate_device() + rtc_register_device() instead of the
+deprecated devm_rtc_device_register().
 
 Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 ---
- drivers/rtc/rtc-rx8010.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/rtc/rtc-rx8010.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/rtc/rtc-rx8010.c b/drivers/rtc/rtc-rx8010.c
-index e401d8ed0e19..0665878e8843 100644
+index 0665878e8843..bb6578aad972 100644
 --- a/drivers/rtc/rtc-rx8010.c
 +++ b/drivers/rtc/rtc-rx8010.c
-@@ -419,7 +419,7 @@ static int rx8010_probe(struct i2c_client *client,
- 		return -EIO;
+@@ -447,16 +447,21 @@ static int rx8010_probe(struct i2c_client *client,
+ 		}
  	}
  
--	rx8010 = devm_kzalloc(dev, sizeof(struct rx8010_data), GFP_KERNEL);
-+	rx8010 = devm_kzalloc(dev, sizeof(*rx8010), GFP_KERNEL);
- 	if (!rx8010)
- 		return -ENOMEM;
+-	rx8010->rtc = devm_rtc_device_register(dev, client->name,
+-		&rx8010_rtc_ops, THIS_MODULE);
+-
++	rx8010->rtc = devm_rtc_allocate_device(dev);
+ 	if (IS_ERR(rx8010->rtc)) {
+-		dev_err(dev, "unable to register the class device\n");
++		dev_err(dev, "unable to allocate rtc device\n");
+ 		return PTR_ERR(rx8010->rtc);
+ 	}
+ 
++	rx8010->rtc->ops = &rx8010_rtc_ops;
+ 	rx8010->rtc->max_user_freq = 1;
+ 
++	err = rtc_register_device(rx8010->rtc);
++	if (err) {
++		dev_err(dev, "unable to register the class device\n");
++		return err;
++	}
++
+ 	return 0;
+ }
  
 -- 
 2.26.1
