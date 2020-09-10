@@ -2,153 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DAB3264DDD
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 20:54:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70095264DEC
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 20:55:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727775AbgIJSyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1727827AbgIJSzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 14:55:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41140 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726805AbgIJSyN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 10 Sep 2020 14:54:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59692 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726688AbgIJSxy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 14:53:54 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A7E15214F1;
-        Thu, 10 Sep 2020 18:53:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599764033;
-        bh=siiRw7n02QPHZqLsAI1o12gJA+B9z/i5S2t9am34BFI=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=r9t9cTNDWy4a4WVYDUDu4fn2k6wzRCikshOkIcbGiPfZjhiy6ibJrypAPzf6sQOkA
-         93/XddU3b4RL4EwCz1kXStmecK+FvwEPcAGqF+PSXFIExOJlXIQgGk+omsVrcy5XJP
-         lyW42wxHoKkvczrKGLhejlv2k4zdbC7YiTBthcEc=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 768903523080; Thu, 10 Sep 2020 11:53:53 -0700 (PDT)
-Date:   Thu, 10 Sep 2020 11:53:53 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Alexey Kardashevskiy <aik@ozlabs.ru>
-Cc:     rcu@vger.kernel.org, Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH kernel] srcu: Fix static initialization
-Message-ID: <20200910185353.GS29330@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200908144306.33355-1-aik@ozlabs.ru>
- <cc25257d-804e-8cf7-150b-e6bdbaf184be@ozlabs.ru>
- <20200909115010.GG29330@paulmck-ThinkPad-P72>
- <37f76aac-d8e3-8ab1-24e9-c417b719e2a6@ozlabs.ru>
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39748C061573;
+        Thu, 10 Sep 2020 11:54:13 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id gf14so465246pjb.5;
+        Thu, 10 Sep 2020 11:54:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=2Xa8adrS68p10V9uAlCA1zNdv/U/GcBjRclFrOXiS48=;
+        b=gyUqp0qm8ln6pVCngaN7s20aFFvyFckMVpNQYk128QI9pagHu2mKSdbTs2JYRvLeTK
+         QZcDep/Q1nfAj+q4hDlRXJi6rPbvXBDSBsJmKscnozvrOE4ZXFin9qMBfsNR/Kd5uRWQ
+         AJU7KZXE3Qk2dx3F5SvDaOIsRk33Msb1vjmUs76kSEwzhV1MVUhBShgA48EsUp6R4UZM
+         iheF35RSl5eFN2WlsfiPmK5FP4jfrO5Juu+2kLVkqxd/kC3Ks5us3yM2XfsONuWghrjU
+         s6D23HcupvG31AT9riVU0ZCWFpOMbzasmrRbM020VO4nHlycpm3HPj5odRw83zXlr/nx
+         SMnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=2Xa8adrS68p10V9uAlCA1zNdv/U/GcBjRclFrOXiS48=;
+        b=cEcs7EZ7h9H3qTLAyrkudkdLquqaygZOZ5NMc80TZIc9eiu5VfqhJwVQTHkqkRi+NO
+         6E0zGoBJAHBWuAKE+M57XtV5Wk6WdjL4+XAxsw/EiCugjZdtxAsPRUaZ7j26eN1BklsS
+         QpArm8xfWLFHo44D1mt/LP/hrUbL8MoG4N/+MmShieGLxlhK1jwLreBtYPCko4sHVZCQ
+         1UOzVR44TwvJUALmfRBUeFh8tLvgiVzux663kjGgB338wXxR0HD9+JvH7lhhXenrNymI
+         ulMphmgO/aF61idz44MOfXT3J5UIyxbYjvMXb9/RjyUGyq/UIaxFKm1jPLT33SpMOKd5
+         AKyA==
+X-Gm-Message-State: AOAM5337CsCqtKfE517wMSvwffMSv/hSgi49QZ1AbMyTm3WalAALrT52
+        hqZzYR6SSZTp6FsVSqi9o4yx2/v6TOs=
+X-Google-Smtp-Source: ABdhPJyQypWjMN7zIVrB/qW+UZo9cXIHTKKUrEfZmWYJCb4LBOJuMS5AQaKJfMkXxnrwyDS3ChDf7g==
+X-Received: by 2002:a17:90a:13c7:: with SMTP id s7mr1309300pjf.124.1599764052289;
+        Thu, 10 Sep 2020 11:54:12 -0700 (PDT)
+Received: from [10.230.30.107] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id v205sm6620706pfc.110.2020.09.10.11.54.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Sep 2020 11:54:11 -0700 (PDT)
+Subject: Re: [PATCH v11 04/11] PCI: brcmstb: Add suspend and resume pm_ops
+To:     Rob Herring <robh@kernel.org>,
+        Jim Quinlan <james.quinlan@broadcom.com>
+Cc:     "open list:PCI NATIVE HOST BRIDGE AND ENDPOINT DRIVERS" 
+        <linux-pci@vger.kernel.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Christoph Hellwig <hch@lst.de>,
+        Robin Murphy <robin.murphy@arm.com>,
+        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20200824193036.6033-1-james.quinlan@broadcom.com>
+ <20200824193036.6033-5-james.quinlan@broadcom.com>
+ <20200910155637.GA423872@bogus>
+ <CA+-6iNy9g8fhJvd7SOKtc-SZcL8_gLLN1HEs-W8fe-=q6n430A@mail.gmail.com>
+ <CAL_JsqJR4wALnsFKKPQ8h2y-o-933rzxHbV29zGXiptgYuuHTg@mail.gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <027ee22c-0981-f49f-52be-0c8aa3a3699b@gmail.com>
+Date:   Thu, 10 Sep 2020 11:54:10 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.2.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <37f76aac-d8e3-8ab1-24e9-c417b719e2a6@ozlabs.ru>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CAL_JsqJR4wALnsFKKPQ8h2y-o-933rzxHbV29zGXiptgYuuHTg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 09, 2020 at 10:31:03PM +1000, Alexey Kardashevskiy wrote:
-> 
-> 
-> On 09/09/2020 21:50, Paul E. McKenney wrote:
-> > On Wed, Sep 09, 2020 at 07:24:11PM +1000, Alexey Kardashevskiy wrote:
-> >>
-> >>
-> >> On 09/09/2020 00:43, Alexey Kardashevskiy wrote:
-> >>> init_srcu_struct_nodes() is called with is_static==true only internally
-> >>> and when this happens, the srcu->sda is not initialized in
-> >>> init_srcu_struct_fields() and we crash on dereferencing @sdp.
-> >>>
-> >>> This fixes the crash by moving "if (is_static)" out of the loop which
-> >>> only does useful work for is_static=false case anyway.
-> >>>
-> >>> Found by syzkaller.
-> >>>
-> >>> Signed-off-by: Alexey Kardashevskiy <aik@ozlabs.ru>
-> >>> ---
-> >>>  kernel/rcu/srcutree.c | 5 +++--
-> >>>  1 file changed, 3 insertions(+), 2 deletions(-)
-> >>>
-> >>> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> >>> index c100acf332ed..49b54a50bde8 100644
-> >>> --- a/kernel/rcu/srcutree.c
-> >>> +++ b/kernel/rcu/srcutree.c
-> >>> @@ -135,6 +135,9 @@ static void init_srcu_struct_nodes(struct srcu_struct *ssp, bool is_static)
-> >>>  				   levelspread[level - 1];
-> >>>  	}
-> >>>  
-> >>> +	if (is_static)
-> >>> +		return;
-> >>
-> >> Actually, this is needed here too:
-> >>
-> >>  if (!ssp->sda)
-> >>          return;
-> >>
-> >> as
-> >> ssp->sda = alloc_percpu(struct srcu_data)
-> >>
-> >> can fail if the process is killed too soon - it is quite easy to get
-> >> this situation with syzkaller (syscalls fuzzer)
-> >>
-> >> Makes sense?
-> > 
-> > Just to make sure that I understand, these failures occur when the task
-> > running init_srcu_struct_nodes() is killed, correct?
-> 
-> There are multiple user tasks (8) which open /dev/kvm, do 1 ioctl -
-> KVM_CREATE_VM - and terminate, running on 8 vcpus, 8 VMs, crashes every
-> 20min or so, less tasks or vcpus - and the problem does not appear.
-> 
-> 
-> > 
-> > Or has someone managed to invoke (say) synchronize_srcu() on a
-> > dynamically allocated srcu_struct before invoking init_srcu_struct() on
-> > that srcu_struct?  
-> 
-> Nah, none of that :)
-> 
-> init_srcu_struct_nodes() assumes ssp->sda!=NULL but alloc_percpu() fails
-> here:
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/mm/percpu.c#n1734
-> ===
-> 	} else if (mutex_lock_killable(&pcpu_alloc_mutex)) {
-> 			pcpu_memcg_post_alloc_hook(objcg, NULL, 0, size);
-> 			return NULL;
-> ===
-> 
-> I am still up to reading that osr-rcuusage.pdf to provide better
-> analysis :) Thanks,
 
-Ah, got it!  Does the following patch help?
 
-There will likely also need to be changes to cleanup_srcu_struct(),
-but first let's see if I understand the problem.  ;-)
+On 9/10/2020 11:50 AM, Rob Herring wrote:
+> On Thu, Sep 10, 2020 at 10:42 AM Jim Quinlan <james.quinlan@broadcom.com> wrote:
+>>
+>> On Thu, Sep 10, 2020 at 11:56 AM Rob Herring <robh@kernel.org> wrote:
+>>>
+>>> On Mon, Aug 24, 2020 at 03:30:17PM -0400, Jim Quinlan wrote:
+>>>> From: Jim Quinlan <jquinlan@broadcom.com>
+>>>>
+>>>> Broadcom Set-top (BrcmSTB) boards typically support S2, S3, and S5 suspend
+>>>> and resume.  Now the PCIe driver may do so as well.
+>>>>
+>>>> Signed-off-by: Jim Quinlan <jquinlan@broadcom.com>
+>>>> Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+>>>> ---
+>>>>   drivers/pci/controller/pcie-brcmstb.c | 47 +++++++++++++++++++++++++++
+>>>>   1 file changed, 47 insertions(+)
+>>>>
+>>>> diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
+>>>> index c2b3d2946a36..3d588ab7a6dd 100644
+>>>> --- a/drivers/pci/controller/pcie-brcmstb.c
+>>>> +++ b/drivers/pci/controller/pcie-brcmstb.c
+>>>> @@ -978,6 +978,47 @@ static void brcm_pcie_turn_off(struct brcm_pcie *pcie)
+>>>>        brcm_pcie_bridge_sw_init_set(pcie, 1);
+>>>>   }
+>>>>
+>>>> +static int brcm_pcie_suspend(struct device *dev)
+>>>> +{
+>>>> +     struct brcm_pcie *pcie = dev_get_drvdata(dev);
+>>>> +
+>>>> +     brcm_pcie_turn_off(pcie);
+>>>> +     clk_disable_unprepare(pcie->clk);
+>>>> +
+>>>> +     return 0;
+>>>> +}
+>>>> +
+>>>> +static int brcm_pcie_resume(struct device *dev)
+>>>> +{
+>>>> +     struct brcm_pcie *pcie = dev_get_drvdata(dev);
+>>>> +     void __iomem *base;
+>>>> +     u32 tmp;
+>>>> +     int ret;
+>>>> +
+>>>> +     base = pcie->base;
+>>>> +     clk_prepare_enable(pcie->clk);
+>>>> +
+>>>> +     /* Take bridge out of reset so we can access the SERDES reg */
+>>>> +     brcm_pcie_bridge_sw_init_set(pcie, 0);
+>>>> +
+>>>> +     /* SERDES_IDDQ = 0 */
+>>>> +     tmp = readl(base + PCIE_MISC_HARD_PCIE_HARD_DEBUG);
+>>>> +     u32p_replace_bits(&tmp, 0, PCIE_MISC_HARD_PCIE_HARD_DEBUG_SERDES_IDDQ_MASK);
+>>>> +     writel(tmp, base + PCIE_MISC_HARD_PCIE_HARD_DEBUG);
+>>>> +
+>>>> +     /* wait for serdes to be stable */
+>>>> +     udelay(100);
+>>>
+>>> Really needs to be a spinloop?
+>>>
+>>>> +
+>>>> +     ret = brcm_pcie_setup(pcie);
+>>>> +     if (ret)
+>>>> +             return ret;
+>>>> +
+>>>> +     if (pcie->msi)
+>>>> +             brcm_msi_set_regs(pcie->msi);
+>>>> +
+>>>> +     return 0;
+>>>> +}
+>>>> +
+>>>>   static void __brcm_pcie_remove(struct brcm_pcie *pcie)
+>>>>   {
+>>>>        brcm_msi_remove(pcie);
+>>>> @@ -1087,12 +1128,18 @@ static int brcm_pcie_probe(struct platform_device *pdev)
+>>>>
+>>>>   MODULE_DEVICE_TABLE(of, brcm_pcie_match);
+>>>>
+>>>> +static const struct dev_pm_ops brcm_pcie_pm_ops = {
+>>>> +     .suspend_noirq = brcm_pcie_suspend,
+>>>> +     .resume_noirq = brcm_pcie_resume,
+>>>
+>>> Why do you need interrupts disabled? There's 39 cases of .suspend_noirq
+>>> and 1352 of .suspend in the tree.
+>>
+>> I will test switching this to  suspend_late/resume_early.
+> 
+> Why not just the 'regular' flavor suspend/resume?
 
-							Thanx, Paul
+We must have inherited this from when the driver was not a 
+platform_device back in our 3.14 downstream kernel and we used 
+syscore_ops to do the system suspend/resume.
 
-------------------------------------------------------------------------
-
-diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index c13348e..6f7880a 100644
---- a/kernel/rcu/srcutree.c
-+++ b/kernel/rcu/srcutree.c
-@@ -177,11 +177,13 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp, bool is_static)
- 	INIT_DELAYED_WORK(&ssp->work, process_srcu);
- 	if (!is_static)
- 		ssp->sda = alloc_percpu(struct srcu_data);
-+	if (!ssp->sda)
-+		return -ENOMEM;
- 	init_srcu_struct_nodes(ssp, is_static);
- 	ssp->srcu_gp_seq_needed_exp = 0;
- 	ssp->srcu_last_gp_end = ktime_get_mono_fast_ns();
- 	smp_store_release(&ssp->srcu_gp_seq_needed, 0); /* Init done. */
--	return ssp->sda ? 0 : -ENOMEM;
-+	return 0;
- }
- 
- #ifdef CONFIG_DEBUG_LOCK_ALLOC
+Later on, we sort of mechanically made those _noirq() to preserve the 
+semantics of syscore_ops, but in hindsight it should not be necessary, 
+the regular suspsend/resume should work and the device driver model 
+ordering between parent/child should take care of the bridge being 
+suspended last within the PCI bus type that is.
+-- 
+Florian
