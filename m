@@ -2,64 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B7C8265068
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 22:17:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE00C265056
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 22:12:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726293AbgIJUPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 16:15:37 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:57142 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1731074AbgIJO7V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 10:59:21 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 94A2D98F4AF437EC229;
-        Thu, 10 Sep 2020 22:59:18 +0800 (CST)
-Received: from huawei.com (10.175.113.133) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Thu, 10 Sep 2020
- 22:59:11 +0800
-From:   Wang Hai <wanghai38@huawei.com>
-To:     <yisen.zhuang@huawei.com>, <salil.mehta@huawei.com>,
-        <davem@davemloft.net>, <kuba@kernel.org>, <snelson@pensando.io>,
-        <colin.king@canonical.com>, <maz@kernel.org>, <luobin9@huawei.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH net-next 6/6] net: hns: Fix a kernel-doc warning in hinic_hw_eqs.c
-Date:   Thu, 10 Sep 2020 22:56:20 +0800
-Message-ID: <20200910145620.27470-7-wanghai38@huawei.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200910145620.27470-1-wanghai38@huawei.com>
-References: <20200910145620.27470-1-wanghai38@huawei.com>
+        id S1726961AbgIJULp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 16:11:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38046 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727830AbgIJO7v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 10:59:51 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 374E12075A;
+        Thu, 10 Sep 2020 14:59:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599749986;
+        bh=VxQVC648qQ3aQ7KAntrOBMaixdukqiVVbKsy/UOgfbo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EVNBnRotKgVhSUvQ8fjuA/p57cW1gM3ixuT6H+i2fFWc0tBV1Kl6O8vv6UW26vTYC
+         qOEtDdXT2U5Dhv5fAkDYxM4odfmArF5CqgTupH0rO9tvLu6uhulA+c6nv3QrFgitaj
+         pqwgbtf58sVqHXdgFJSAjeYuvOopPRxRzQSjG8rs=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 48FE240D3D; Thu, 10 Sep 2020 11:59:44 -0300 (-03)
+Date:   Thu, 10 Sep 2020 11:59:44 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>, lkml <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>
+Subject: Re: [PATCHv2] perf tools: Call test_attr__open directly
+Message-ID: <20200910145944.GE4018363@kernel.org>
+References: <20200827134830.126721-1-jolsa@kernel.org>
+ <20200827134830.126721-2-jolsa@kernel.org>
+ <20200827193201.GB127372@krava>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.113.133]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200827193201.GB127372@krava>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following W=1 kernel build warning(s):
+Em Thu, Aug 27, 2020 at 09:32:01PM +0200, Jiri Olsa escreveu:
+> nack.. forgot python header change :-\ v2 attached
+> 
+> thanks,
+> jirka
 
-drivers/net/ethernet/huawei/hinic/hinic_hw_eqs.c:115: warning: Excess function parameter 'hw_handler' description in 'hinic_aeq_register_hw_cb'
+Thanks, applied.
+ 
+> 
+> ---
+> There's no longer need to have test_attr__open inside
+> sys_perf_event_open call, because both record and stat
+> call evsel__open_cpu, so we can call it directly from
+> there and not polute perf-sys.h header.
+> 
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  tools/perf/perf-sys.h    | 22 ++--------------------
+>  tools/perf/tests/attr.c  |  2 +-
+>  tools/perf/util/evsel.c  |  5 +++++
+>  tools/perf/util/python.c |  2 +-
+>  tools/perf/util/util.h   |  6 ++++++
+>  5 files changed, 15 insertions(+), 22 deletions(-)
+> 
+> diff --git a/tools/perf/perf-sys.h b/tools/perf/perf-sys.h
+> index 15e458e150bd..7a2264e1e4e1 100644
+> --- a/tools/perf/perf-sys.h
+> +++ b/tools/perf/perf-sys.h
+> @@ -9,31 +9,13 @@
+>  
+>  struct perf_event_attr;
+>  
+> -extern bool test_attr__enabled;
+> -void test_attr__ready(void);
+> -void test_attr__init(void);
+> -void test_attr__open(struct perf_event_attr *attr, pid_t pid, int cpu,
+> -		     int fd, int group_fd, unsigned long flags);
+> -
+> -#ifndef HAVE_ATTR_TEST
+> -#define HAVE_ATTR_TEST 1
+> -#endif
+> -
+>  static inline int
+>  sys_perf_event_open(struct perf_event_attr *attr,
+>  		      pid_t pid, int cpu, int group_fd,
+>  		      unsigned long flags)
+>  {
+> -	int fd;
+> -
+> -	fd = syscall(__NR_perf_event_open, attr, pid, cpu,
+> -		     group_fd, flags);
+> -
+> -#if HAVE_ATTR_TEST
+> -	if (unlikely(test_attr__enabled))
+> -		test_attr__open(attr, pid, cpu, fd, group_fd, flags);
+> -#endif
+> -	return fd;
+> +	return syscall(__NR_perf_event_open, attr, pid, cpu,
+> +		       group_fd, flags);
+>  }
+>  
+>  #endif /* _PERF_SYS_H */
+> diff --git a/tools/perf/tests/attr.c b/tools/perf/tests/attr.c
+> index a9599ab8c471..ec972e0892ab 100644
+> --- a/tools/perf/tests/attr.c
+> +++ b/tools/perf/tests/attr.c
+> @@ -30,9 +30,9 @@
+>  #include <sys/types.h>
+>  #include <sys/stat.h>
+>  #include <unistd.h>
+> -#include "../perf-sys.h"
+>  #include <subcmd/exec-cmd.h>
+>  #include "event.h"
+> +#include "util.h"
+>  #include "tests.h"
+>  
+>  #define ENV "PERF_TEST_ATTR"
+> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+> index fd865002cbbd..6f0e23105cf8 100644
+> --- a/tools/perf/util/evsel.c
+> +++ b/tools/perf/util/evsel.c
+> @@ -1680,6 +1680,11 @@ static int evsel__open_cpu(struct evsel *evsel, struct perf_cpu_map *cpus,
+>  
+>  			FD(evsel, cpu, thread) = fd;
+>  
+> +			if (unlikely(test_attr__enabled)) {
+> +				test_attr__open(&evsel->core.attr, pid, cpus->map[cpu],
+> +						fd, group_fd, flags);
+> +			}
+> +
+>  			if (fd < 0) {
+>  				err = -errno;
+>  
+> diff --git a/tools/perf/util/python.c b/tools/perf/util/python.c
+> index 75a9b1d62bba..74f85948d101 100644
+> --- a/tools/perf/util/python.c
+> +++ b/tools/perf/util/python.c
+> @@ -17,7 +17,7 @@
+>  #include "mmap.h"
+>  #include "util/env.h"
+>  #include <internal/lib.h>
+> -#include "../perf-sys.h"
+> +#include "util.h"
+>  
+>  #if PY_MAJOR_VERSION < 3
+>  #define _PyUnicode_FromString(arg) \
+> diff --git a/tools/perf/util/util.h b/tools/perf/util/util.h
+> index f486fdd3a538..ad737052e597 100644
+> --- a/tools/perf/util/util.h
+> +++ b/tools/perf/util/util.h
+> @@ -62,4 +62,10 @@ char *perf_exe(char *buf, int len);
+>  #endif
+>  #endif
+>  
+> +extern bool test_attr__enabled;
+> +void test_attr__ready(void);
+> +void test_attr__init(void);
+> +struct perf_event_attr;
+> +void test_attr__open(struct perf_event_attr *attr, pid_t pid, int cpu,
+> +		     int fd, int group_fd, unsigned long flags);
+>  #endif /* GIT_COMPAT_UTIL_H */
+> -- 
+> 2.26.2
+> 
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
----
- drivers/net/ethernet/huawei/hinic/hinic_hw_eqs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_hw_eqs.c b/drivers/net/ethernet/huawei/hinic/hinic_hw_eqs.c
-index ca8cb68a8d20..b30733f4a59e 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_hw_eqs.c
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_hw_eqs.c
-@@ -106,7 +106,7 @@ enum eq_arm_state {
-  * @aeqs: pointer to Async eqs of the chip
-  * @event: aeq event to register callback for it
-  * @handle: private data will be used by the callback
-- * @hw_handler: callback function
-+ * @hwe_handler: callback function
-  **/
- void hinic_aeq_register_hw_cb(struct hinic_aeqs *aeqs,
- 			      enum hinic_aeq_type event, void *handle,
 -- 
-2.17.1
 
+- Arnaldo
