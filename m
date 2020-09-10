@@ -2,89 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2814C264AB2
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 19:08:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82869264A87
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 19:02:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727016AbgIJRIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 13:08:01 -0400
-Received: from mail-ej1-f66.google.com ([209.85.218.66]:40527 "EHLO
-        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726911AbgIJQyc (ORCPT
+        id S1727027AbgIJRCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 13:02:34 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:25571 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727808AbgIJQ5t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 12:54:32 -0400
-Received: by mail-ej1-f66.google.com with SMTP id z22so9728574ejl.7;
-        Thu, 10 Sep 2020 09:54:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=z+RRvOyKYsSB07pFbec6LrWNZNZGtC9Skn84W6Crqbc=;
-        b=mFIRBviG67oPi7GvSQ7YoMkkKwQDBqGPStCwOgxWTo96mbmHDxixw8DSuAuu4tGF0f
-         YRk0s/D8aUvDLD7s8GZsB97DJ9KFxdWV2GCpVkE0026Hplo/KyvZkvnguomhF6uZ8BRv
-         +YxWpg85UQyCDieSLNNIt5UlfUAogNI4BXBTz+rQTyYbx6cnldg0F4S4ABZjXV3sANU9
-         jPv54qXwUiLhR1u14lgW6apJ9AX0KUHlNL/jdiuh2mSS+OEpa3zLXnPYvH4tUay7VcBo
-         LhkOgq/1sStz83zVtT3A5ahpJgtGD2gbPF7PbDS58BdbImACCS0gREdTrkRHw1eu2Aln
-         n0NA==
-X-Gm-Message-State: AOAM532hPN/V8y+ByBW1lmhbhDM49M81B9LgP9dJtfsHYFHOD8kt2xeV
-        H5lPMAgBG4k1KJgqfEbC4lU=
-X-Google-Smtp-Source: ABdhPJyj5xfspeBLG8ppW3CbSisewa6vNwOrvIyYECPfXCHzGxITo2vMAJd3CXmp+RnBY0Xa2JprUQ==
-X-Received: by 2002:a17:906:cf9b:: with SMTP id um27mr9876859ejb.66.1599756856544;
-        Thu, 10 Sep 2020 09:54:16 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.174])
-        by smtp.googlemail.com with ESMTPSA id p20sm7917053eja.18.2020.09.10.09.54.14
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 10 Sep 2020 09:54:15 -0700 (PDT)
-Date:   Thu, 10 Sep 2020 18:54:12 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        =?utf-8?Q?Beno=C3=AEt?= Cousson <bcousson@baylibre.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Stefan Agner <stefan@agner.ch>, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org
-Subject: Re: [PATCH 1/6] dt-bindings: gpio: Convert bindings for NXP PCA953x
- family to dtschema
-Message-ID: <20200910165412.GB11510@kozik-lap>
-References: <20200829094024.31842-1-krzk@kernel.org>
+        Thu, 10 Sep 2020 12:57:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599757066;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1N39+l9Ba/WkrqUymZo6lvs+0CWTXq8+9In9bijFEEk=;
+        b=FKpyRZF083iFmSs87VLe1ptwiUnjd/vfBMzLUMdTxEfAEq1NJlcG3Gvkzqwrx/8bkzb9dj
+        b99EXH8RL0qtD8xOWtDBbj44POVRNrwv8BKoVQmE95TXfhWjAAyAYF0RkqBxFHPJh8IIYB
+        6KeLC8e8gLi7YD6AHLxLALPqgRHT6l4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-18-b_SV9j85Oa6bodKfoGhiyA-1; Thu, 10 Sep 2020 12:57:42 -0400
+X-MC-Unique: b_SV9j85Oa6bodKfoGhiyA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0A74B420E7;
+        Thu, 10 Sep 2020 16:57:41 +0000 (UTC)
+Received: from w520.home (ovpn-112-71.phx2.redhat.com [10.3.112.71])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 48C97100239A;
+        Thu, 10 Sep 2020 16:57:36 +0000 (UTC)
+Date:   Thu, 10 Sep 2020 10:57:35 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Vikas Gupta <vikas.gupta@broadcom.com>
+Cc:     Cornelia Huck <cohuck@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Vikram Prakash <vikram.prakash@broadcom.com>,
+        Srinath Mannam <srinath.mannam@broadcom.com>,
+        Auger Eric <eric.auger@redhat.com>
+Subject: Re: MSI/MSIX for VFIO platform
+Message-ID: <20200910105735.1e060b95@w520.home>
+In-Reply-To: <c94c36305980f80674aa699e27b9895b@mail.gmail.com>
+References: <c94c36305980f80674aa699e27b9895b@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200829094024.31842-1-krzk@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 29, 2020 at 11:40:19AM +0200, Krzysztof Kozlowski wrote:
-> Convert the NXP PCA953x family of GPIO expanders bindings to device tree
-> schema.
+On Thu, 10 Sep 2020 16:15:27 +0530
+Vikas Gupta <vikas.gupta@broadcom.com> wrote:
+
+> Hi Alex/Cornelia,
 > 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> ---
->  .../devicetree/bindings/gpio/gpio-pca953x.txt |  90 ------------
->  .../bindings/gpio/gpio-pca95xx.yaml           | 138 ++++++++++++++++++
->  .../devicetree/bindings/trivial-devices.yaml  |   4 -
->  3 files changed, 138 insertions(+), 94 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/gpio/gpio-pca953x.txt
->  create mode 100644 Documentation/devicetree/bindings/gpio/gpio-pca95xx.yaml
->
+> We are looking for MSI interrupts for platform devices in user-space
+> applications via event/poll mechanism using VFIO.
+> 
+> Since there is no support for MSI/MSIX handling in VFIO-platform in kernel,
+> it may not possible to get this feature in user-space.
+> 
+> Is there any other way we can get this feature in user-space OR can you
+> please suggest if any patch or feature is in progress for same in VFIO
+> platform?
+> 
+> Any suggestions would be helpful.
 
-I will resend the dt-bindings replacing unevaluated ->
-additionalProperties.
+Eric (Cc'd) is the maintainer of vfio-platform.
 
-Best regards,
-Krzysztof
+vfio-platform devices don't have IRQ indexes dedicated to MSI and MSI-X
+like vfio-pci devices do (technically these are PCI concepts, but I
+assume we're referring generically to message signaled interrupts), but
+that's simply due to the lack of standardization in platform devices.
+Logically these are simply collections of edge triggered interrupts,
+which the vfio device API supports generically, it's simply a matter
+that the vfio bus driver exposing a vfio-platform device create an IRQ
+index exposing these vectors.  Thanks,
+
+Alex
 
