@@ -2,162 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 633D926493E
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 18:00:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28D2A264934
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 17:58:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731492AbgIJQAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 12:00:00 -0400
-Received: from mail-il1-f195.google.com ([209.85.166.195]:44489 "EHLO
-        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731529AbgIJP5P (ORCPT
+        id S1731356AbgIJP6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 11:58:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41448 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731452AbgIJP5H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 11:57:15 -0400
-Received: by mail-il1-f195.google.com with SMTP id h11so6095177ilj.11;
-        Thu, 10 Sep 2020 08:56:39 -0700 (PDT)
+        Thu, 10 Sep 2020 11:57:07 -0400
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AEA6C061795
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 08:56:59 -0700 (PDT)
+Received: by mail-io1-xd2d.google.com with SMTP id d18so7591824iop.13
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 08:56:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Lw00I39tMMHoHHOPSgKttYErvt005RuGUQAb9q20a8A=;
+        b=bITux9EFWpfNdlM5j2+5LAzN74905Ih29yvwShF2RYD0rdrq4WVzARSbVJuvSmQPWY
+         j+to5gM/LtwviynJuV6Xw/wsJke0MBYGFTvqAsfHMn62ENDQNHKZLFd0IqeGy/YXQAkv
+         VzQea9i8kja5dzDE6N1RmEiA7mq7G6VZefYJanQOq9PYYyXW+7SVTKtT7DLY3JQQ6Yaf
+         +LznXIrys7f2IeFYvBnmS1Ki0TO452S54+EFTgcsHoySCF2Om2MslpGe1shaUybTvJ4Z
+         NYXD4pbGxmghN4rFbQnUMh+SSZHjhXFnidMaDDjLyfrIe/7fFBBzJAix6vpXnIjh1sFh
+         cB7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=75EPNsIBYVup6AIGiJwzSdSJw0NGHqRELWm5o6mzFMs=;
-        b=OFDjh6hXcTEHijVpQPKY2/5EJ9quxQApX6oyZHIpX8M2xXFg+f+Z7HwXbjiexxblCb
-         6LNbcVaev6A3zSUmi42nhcqgTr7D/DVyfOH5FWibGfMNKVlXNO00LwZlv10eNdBW/gvv
-         lHJBcMZs+GRUToF14HtoW0tQzNXTQHryrO9b2XMNlccxSBxXrDsz3ozBzB+zMVvVHdHV
-         wmp5I5dZOe1gV03HNErhwQaCwjp+nHeDB/KaV5XvpMW690SCCgPCb6dpxIy/giNWQZxI
-         fyz1twZJpg6Pq7X6k/P9pfKV+sqidHiMqk8PjIjqqzX09rSsT5iIg3tqIlHxomkWiC0c
-         M4fg==
-X-Gm-Message-State: AOAM530QzhnanBZRfYCj/+zKcYWquXqhlzcfDRvJzXT95yhaQK4D8OCL
-        JXRZ1T2+GprIJvDHIQVeMiTNnwkeAToe
-X-Google-Smtp-Source: ABdhPJy4YBC4Og5nCPNZgXln9mIj11eNmiP8UC9Zd2pwLdDntsNRTIUnoo41piAt35aUn1jJdSewgA==
-X-Received: by 2002:a92:7984:: with SMTP id u126mr7266050ilc.139.1599753398667;
-        Thu, 10 Sep 2020 08:56:38 -0700 (PDT)
-Received: from xps15 ([64.188.179.251])
-        by smtp.gmail.com with ESMTPSA id s17sm1301374ilb.24.2020.09.10.08.56.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Sep 2020 08:56:38 -0700 (PDT)
-Received: (nullmailer pid 439332 invoked by uid 1000);
-        Thu, 10 Sep 2020 15:56:37 -0000
-Date:   Thu, 10 Sep 2020 09:56:37 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Jim Quinlan <james.quinlan@broadcom.com>
-Cc:     linux-pci@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Christoph Hellwig <hch@lst.de>,
-        Robin Murphy <robin.murphy@arm.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v11 04/11] PCI: brcmstb: Add suspend and resume pm_ops
-Message-ID: <20200910155637.GA423872@bogus>
-References: <20200824193036.6033-1-james.quinlan@broadcom.com>
- <20200824193036.6033-5-james.quinlan@broadcom.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Lw00I39tMMHoHHOPSgKttYErvt005RuGUQAb9q20a8A=;
+        b=OdCIXzsbPbRezNCCnN8ctjvlpsjGjli8vFpvW5Sm0z4RS0WFwf1PiQ9Muzo4VH+WZG
+         qg+jd46+s4IEU3LLn8BUtfAahclTTjNvgkDpWlPIC3EPcoN2XmUcL/GzAUiwzCALPb1o
+         yrYHYvviZHja3Q4br/PVMGV5xpga4V8XcVQONPF9wZ5Qk9Q7swiUi1jTaTyu0SzbUXtm
+         5bA8OOmcO+lBAEMT+0nxaBBOohT+MyjOFwaycGAAcH4IaFZ8ahMoMopbbbqMX/Fw42ew
+         /Ego1RLk/LkDFBMLviDUrHGHnCDEphyn3ckU0zrazf5MZquovcuIGen5YpRsFOoxkZeE
+         f2/w==
+X-Gm-Message-State: AOAM532tUTRVjbpwijEed7stbvJ3w/lFqMjo22teq+ZMl8dHGD74JzAB
+        7CW7ms/JTU+llrj0l7lgdNSj8FWj/krl0Hyk
+X-Google-Smtp-Source: ABdhPJwLFvlr74/NHaaMQeIpR+L/bjIZVmaEteWtsH6Bm9x6kvp/ngajFsz8dvwqEASUe60lfJ+Ljw==
+X-Received: by 2002:a05:6638:1448:: with SMTP id l8mr9177707jad.83.1599753418617;
+        Thu, 10 Sep 2020 08:56:58 -0700 (PDT)
+Received: from [192.168.1.10] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id m12sm3225470ilg.55.2020.09.10.08.56.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Sep 2020 08:56:58 -0700 (PDT)
+Subject: Re: [PATCH] [v2] blkcg: add plugging support for punt bio
+To:     Xianting Tian <tian.xianting@h3c.com>, tj@kernel.org
+Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200910061506.45704-1-tian.xianting@h3c.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <2bf5a5c3-1f1f-6ed1-8871-6e9d3e7b80d4@kernel.dk>
+Date:   Thu, 10 Sep 2020 09:56:57 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200824193036.6033-5-james.quinlan@broadcom.com>
+In-Reply-To: <20200910061506.45704-1-tian.xianting@h3c.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 24, 2020 at 03:30:17PM -0400, Jim Quinlan wrote:
-> From: Jim Quinlan <jquinlan@broadcom.com>
-> 
-> Broadcom Set-top (BrcmSTB) boards typically support S2, S3, and S5 suspend
-> and resume.  Now the PCIe driver may do so as well.
-> 
-> Signed-off-by: Jim Quinlan <jquinlan@broadcom.com>
-> Acked-by: Florian Fainelli <f.fainelli@gmail.com>
-> ---
->  drivers/pci/controller/pcie-brcmstb.c | 47 +++++++++++++++++++++++++++
->  1 file changed, 47 insertions(+)
-> 
-> diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
-> index c2b3d2946a36..3d588ab7a6dd 100644
-> --- a/drivers/pci/controller/pcie-brcmstb.c
-> +++ b/drivers/pci/controller/pcie-brcmstb.c
-> @@ -978,6 +978,47 @@ static void brcm_pcie_turn_off(struct brcm_pcie *pcie)
->  	brcm_pcie_bridge_sw_init_set(pcie, 1);
->  }
->  
-> +static int brcm_pcie_suspend(struct device *dev)
-> +{
-> +	struct brcm_pcie *pcie = dev_get_drvdata(dev);
-> +
-> +	brcm_pcie_turn_off(pcie);
-> +	clk_disable_unprepare(pcie->clk);
-> +
-> +	return 0;
-> +}
-> +
-> +static int brcm_pcie_resume(struct device *dev)
-> +{
-> +	struct brcm_pcie *pcie = dev_get_drvdata(dev);
-> +	void __iomem *base;
-> +	u32 tmp;
-> +	int ret;
-> +
-> +	base = pcie->base;
-> +	clk_prepare_enable(pcie->clk);
-> +
-> +	/* Take bridge out of reset so we can access the SERDES reg */
-> +	brcm_pcie_bridge_sw_init_set(pcie, 0);
-> +
-> +	/* SERDES_IDDQ = 0 */
-> +	tmp = readl(base + PCIE_MISC_HARD_PCIE_HARD_DEBUG);
-> +	u32p_replace_bits(&tmp, 0, PCIE_MISC_HARD_PCIE_HARD_DEBUG_SERDES_IDDQ_MASK);
-> +	writel(tmp, base + PCIE_MISC_HARD_PCIE_HARD_DEBUG);
-> +
-> +	/* wait for serdes to be stable */
-> +	udelay(100);
+Applied, thanks.
 
-Really needs to be a spinloop?
+-- 
+Jens Axboe
 
-> +
-> +	ret = brcm_pcie_setup(pcie);
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (pcie->msi)
-> +		brcm_msi_set_regs(pcie->msi);
-> +
-> +	return 0;
-> +}
-> +
->  static void __brcm_pcie_remove(struct brcm_pcie *pcie)
->  {
->  	brcm_msi_remove(pcie);
-> @@ -1087,12 +1128,18 @@ static int brcm_pcie_probe(struct platform_device *pdev)
->  
->  MODULE_DEVICE_TABLE(of, brcm_pcie_match);
->  
-> +static const struct dev_pm_ops brcm_pcie_pm_ops = {
-> +	.suspend_noirq = brcm_pcie_suspend,
-> +	.resume_noirq = brcm_pcie_resume,
-
-Why do you need interrupts disabled? There's 39 cases of .suspend_noirq 
-and 1352 of .suspend in the tree.
-
-Is doing a clk unprepare even safe in .suspend_noirq? IIRC, 
-prepare/unprepare can sleep.
-
-> +};
-> +
->  static struct platform_driver brcm_pcie_driver = {
->  	.probe = brcm_pcie_probe,
->  	.remove = brcm_pcie_remove,
->  	.driver = {
->  		.name = "brcm-pcie",
->  		.of_match_table = brcm_pcie_match,
-> +		.pm = &brcm_pcie_pm_ops,
->  	},
->  };
->  module_platform_driver(brcm_pcie_driver);
-> -- 
-> 2.17.1
-> 
