@@ -2,90 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 522F2264B9E
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 19:40:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B8F1264BB3
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 19:46:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727771AbgIJRkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 13:40:49 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:52758 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726844AbgIJRem (ORCPT
+        id S1727771AbgIJRqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 13:46:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727023AbgIJRm6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 13:34:42 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08AHYZd6070090;
-        Thu, 10 Sep 2020 12:34:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1599759275;
-        bh=HNcXE24gLodGk/pYnEjtALKDPSSo1riHaJjB1RV+ZCw=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=TalcK8c1fG7RnK2xc+mbsJks00QLpOoGxnT47DmAJp3XSQZCXa9HD5q2FUrXBMKds
-         eUylw3V/mYfdFbE6yjoNYEqQ/bTaqrGx8NiXfus1PdyJdVLYd7L3wBDpruu9dq4fTF
-         gARNSoQWP80FbGd74iW7MbXgF5T2bw0TTUzxCr7c=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08AHYZNc121733
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 10 Sep 2020 12:34:35 -0500
-Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 10
- Sep 2020 12:34:35 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 10 Sep 2020 12:34:35 -0500
-Received: from [10.250.38.37] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08AHYYxE007690;
-        Thu, 10 Sep 2020 12:34:34 -0500
-Subject: Re: [PATCH net-next v3 3/3] net: dp83869: Add speed optimization
- feature
-To:     Jakub Kicinski <kuba@kernel.org>
-CC:     <davem@davemloft.net>, <andrew@lunn.ch>, <f.fainelli@gmail.com>,
-        <hkallweit1@gmail.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20200903114259.14013-1-dmurphy@ti.com>
- <20200903114259.14013-4-dmurphy@ti.com>
- <20200905113818.7962b6d4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <9848c3ee-51c2-2e06-a51b-3aacc1384557@ti.com>
- <20200908104719.0b8aced3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Dan Murphy <dmurphy@ti.com>
-Message-ID: <9d5c56ab-fe37-f132-8891-f20f2bfddb9f@ti.com>
-Date:   Thu, 10 Sep 2020 12:34:34 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 10 Sep 2020 13:42:58 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 148E6C061573
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 10:42:41 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id c2so9258943ljj.12
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 10:42:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tV9NvYryEbzez94zd9hdsCWt3FfBuGGawTOfDap0eBk=;
+        b=CyoQUM+SKXH6085O6WtByg3nDuki2CTSBORvYvwm25BqShZutFnNs6mSZACayZwSEH
+         qcd6gDs3XmrAOcCBysWWLpsCbEXmLRDCQnQxo0ENK46fWC+ppV/l5rSOr47qH79HuDsY
+         BAC6cJAHl7u65bYmrM5WLZPBZBfoI7ltEXEKA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tV9NvYryEbzez94zd9hdsCWt3FfBuGGawTOfDap0eBk=;
+        b=gaxeIL1UgV6zoe7GWetUE3JjPlgTm/X5pVQ00k/OZDKQrq6c5PRLIVhi8kAemoy5ps
+         0x86BFP2GZaLbIvFrB7LlPc1ObX6yWnx7PjT6Kl+uRgBQ7SYnH+WNNTKQVSOdoDLPSQ/
+         KELD2jAX7P5H7vhpHm32HcMM5lphNrh3gM7ZRY6f4+Kfpz0x7La22mX54LTh68Fw3YDm
+         PHFUyslCe3K/LjZuZ7dMMw4lMryBkx7FGOpaEjOP0rmiq97zsG1GHZpMdw1KaXz18CZk
+         VH8ryN95hNffSAl1SoyHo7DAJnAST4ls4agqZyEZKVqVs7w8Tqhbu1F/ZVu1LwM32Sss
+         goJw==
+X-Gm-Message-State: AOAM531slHtsCwgFPVs39pmhW7QgBOfxIzDwG8u8VG9ExhEJkJywikrz
+        27PB+TS+/Y0relb78Y0rP8T9ra/1bV4cCA==
+X-Google-Smtp-Source: ABdhPJyhWTw2yd7niyvGkh6b2x2kXbNyNxMZaHZ+ZAMzB8ie0jBkLA6wBWwZ1pJ5m3lp16Kd/krN/w==
+X-Received: by 2002:a2e:6a04:: with SMTP id f4mr4611377ljc.119.1599759759148;
+        Thu, 10 Sep 2020 10:42:39 -0700 (PDT)
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com. [209.85.208.178])
+        by smtp.gmail.com with ESMTPSA id u18sm1489111lfg.86.2020.09.10.10.42.38
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Sep 2020 10:42:38 -0700 (PDT)
+Received: by mail-lj1-f178.google.com with SMTP id b19so9256106lji.11
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 10:42:38 -0700 (PDT)
+X-Received: by 2002:a19:7d8b:: with SMTP id y133mr4765702lfc.152.1599759354367;
+ Thu, 10 Sep 2020 10:35:54 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200908104719.0b8aced3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20200907180058.64880-1-gerald.schaefer@linux.ibm.com>
+ <20200907180058.64880-2-gerald.schaefer@linux.ibm.com> <0dbc6ec8-45ea-0853-4856-2bc1e661a5a5@intel.com>
+ <20200909142904.00b72921@thinkpad> <aacad1b7-f121-44a5-f01d-385cb0f6351e@intel.com>
+ <20200909192534.442f8984@thinkpad> <20200909180324.GI87483@ziepe.ca> <20200910093925.GB29166@oc3871087118.ibm.com>
+In-Reply-To: <20200910093925.GB29166@oc3871087118.ibm.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 10 Sep 2020 10:35:38 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wh4SuNvThq1nBiqk0N-fW6NsY5w=VawC=rJs7ekmjAhjA@mail.gmail.com>
+Message-ID: <CAHk-=wh4SuNvThq1nBiqk0N-fW6NsY5w=VawC=rJs7ekmjAhjA@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 1/3] mm/gup: fix gup_fast with dynamic page table folding
+To:     Alexander Gordeev <agordeev@linux.ibm.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Mike Rapoport <rppt@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        linux-x86 <x86@kernel.org>,
+        linux-arm <linux-arm-kernel@lists.infradead.org>,
+        linux-power <linuxppc-dev@lists.ozlabs.org>,
+        linux-sparc <sparclinux@vger.kernel.org>,
+        linux-um <linux-um@lists.infradead.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jakub
+On Thu, Sep 10, 2020 at 2:40 AM Alexander Gordeev
+<agordeev@linux.ibm.com> wrote:
+>
+> It is only gup_fast case that exposes the issue. It hits because
+> pointers to stack copies are passed to gup_pXd_range iterators, not
+> pointers to real page tables itself.
 
-On 9/8/20 12:47 PM, Jakub Kicinski wrote:
-> On Tue, 8 Sep 2020 09:07:22 -0500 Dan Murphy wrote:
->> On 9/5/20 1:38 PM, Jakub Kicinski wrote:
->>> On Thu, 3 Sep 2020 06:42:59 -0500 Dan Murphy wrote:
->>>> +static int dp83869_set_downshift(struct phy_device *phydev, u8 cnt)
->>>> +{
->>>> +	int val, count;
->>>> +
->>>> +	if (cnt > DP83869_DOWNSHIFT_8_COUNT)
->>>> +		return -E2BIG;
->>> ERANGE
->> This is not checking a range but making sure it is not bigger then 8.
->>
->> IMO I would use ERANGE if the check was a boundary check for upper and
->> lower bounds.
-> Yeah, ERANGE is not perfect, but the strerror for E2BIG is
-> "Argument list too long" - IDK if users seeing that will know that it
-> means the value is too large. Perhaps we should stick to EINVAL?
+Can we possibly change fast-gup to not do the stack copies?
 
-EINVAL works for me to.
+I'd actually rather do something like that, than the "addr_end" thing.
 
-Dan
+As you say, none of the other page table walking code does what the
+GUP code does, and I don't think it's required.
 
+The GUP code is kind of strange, I'm not quite sure why. Some of it
+unusually came from the powerpc code that handled their special odd
+hugepage model, and that may be why it's so different.
+
+How painful would it be to just pass the pmd (etc) _pointers_ around,
+rather than do the odd "take the address of local copies"?
+
+                  Linus
