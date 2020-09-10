@@ -2,191 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA958265301
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:27:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0FEC2652A4
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:22:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726898AbgIJV1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 17:27:44 -0400
-Received: from mail-il1-f205.google.com ([209.85.166.205]:44014 "EHLO
-        mail-il1-f205.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731099AbgIJOJs (ORCPT
+        id S1727861AbgIJVV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 17:21:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55038 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731116AbgIJOYO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 10:09:48 -0400
-Received: by mail-il1-f205.google.com with SMTP id o2so4623850ilg.10
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 07:09:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=zVqSsWX+nI5HXEyIHZ7ZaxwHe+dDtC+0l7LqQAeVjBM=;
-        b=Cwa3Rg3U52RM0l29YOh+ZVmKwzefVAlsiDX6jMKaQoCpBtxE+yzu8a7aKdgEeKLKM1
-         ul28/kjYifK3sFqcNeTWgO8UeGqVZyHKAbroiBi9sgcDeeHSePwsOGFbZOH7TaTCJZUj
-         EU1S8rXBnYiZqir70rH/84j09j3kqShFXOGE2I2oB6q6vC1vNaaTJlFr+iBijld0Dwcm
-         RrNqOJPeODAVlUOF6UdDjfmWDawk130ZFn9ag9zIa83PPRCD9hhk81mXj0kCZrr90auq
-         FtS4B2Q8ljns7pDgQv/XvmW6UJ5EbfyUH2sgPKXn5jczSHQOiZFAVabIIClH9tLrBkjA
-         LRnQ==
-X-Gm-Message-State: AOAM533f3B3hGB0xcZhNeiBONRTtVVB2DoCh/7qmep3GfCEbN6rAqH7z
-        52L+ooeSsYyj8Jh6sHHqvMwgkEOyOyH6CDu0bqUp4yXV77GZ
-X-Google-Smtp-Source: ABdhPJxPWT1Q8/TP1NXh/xIeSW78G9A8i63k6ycgGU/3/OEQZmP1D6dEMJqfScus9pU65THHIFnKDRqW7jtXdrB/AvOYzftXQJOE
+        Thu, 10 Sep 2020 10:24:14 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58361C0617A1
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 07:10:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=G8KFWo1YZT/jwQRpDVwfY4DfSs9Xk8pRCGIbApr9hxQ=; b=qtJIUX3C9OPEUoxhRq5qtVjFrN
+        liojIf66iFvov5CqAyuArA/k4c6N6e3DClhZs3TCVt1tdQc77cLPxerkhbaHk2qqqBTwkEbjA696q
+        Jgh0eDiE15I1t923HciVm/1IX1nvIOYM+65XXlZrfYoYgC3vb2HXo7XpFGPgJE93saBFHlrIk0cLV
+        vIjrCfmicxgrJaQHs+CYxFnk6wq7LgYlPzVK/AC5Z6B7Z5ht4cXr0qPy7z8lFR11j8K7SW+FiWdkD
+        iUU2pHH631+0XehEYg1oXBk+NNw3qIh2R20NkMi0IdxEfz+YUd0l01txTaB3fKUC42YpiSHhnm32u
+        IjKIbavg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kGNH7-0004sp-RP; Thu, 10 Sep 2020 14:10:09 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4C9E4305815;
+        Thu, 10 Sep 2020 16:10:07 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id EEBCC2651245B; Thu, 10 Sep 2020 16:10:06 +0200 (CEST)
+Date:   Thu, 10 Sep 2020 16:10:06 +0200
+From:   peterz@infradead.org
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, anna-maria@linutronix.de,
+        vbabka@suse.cz, mgorman@techsingularity.net, mhocko@suse.com,
+        linux-mm@kvack.org
+Subject: kcompactd hotplug fail
+Message-ID: <20200910141006.GA1362448@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:2e87:: with SMTP id m7mr7487680iow.106.1599746964353;
- Thu, 10 Sep 2020 07:09:24 -0700 (PDT)
-Date:   Thu, 10 Sep 2020 07:09:24 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000008a7ae505aef61db1@google.com>
-Subject: KMSAN: uninit-value in aes_encrypt (4)
-From:   syzbot <syzbot+828dfc12440b4f6f305d@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, glider@google.com,
-        herbert@gondor.apana.org.au, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi,
 
-syzbot found the following issue on:
+While playing with hotplug, I ran into the below:
 
-HEAD commit:    3b3ea602 x86: add failure injection to get/put/clear_user
-git tree:       https://github.com/google/kmsan.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=1030dda5900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ee5f7a0b2e48ed66
-dashboard link: https://syzkaller.appspot.com/bug?extid=828dfc12440b4f6f305d
-compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17b15055900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12931621900000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+828dfc12440b4f6f305d@syzkaller.appspotmail.com
-
-=====================================================
-BUG: KMSAN: uninit-value in subshift lib/crypto/aes.c:149 [inline]
-BUG: KMSAN: uninit-value in aes_encrypt+0x12c5/0x1bc0 lib/crypto/aes.c:282
-CPU: 0 PID: 8537 Comm: syz-executor872 Not tainted 5.8.0-rc5-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x21c/0x280 lib/dump_stack.c:118
- kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:121
- __msan_warning+0x58/0xa0 mm/kmsan/kmsan_instr.c:215
- subshift lib/crypto/aes.c:149 [inline]
- aes_encrypt+0x12c5/0x1bc0 lib/crypto/aes.c:282
- aesti_encrypt+0xe8/0x130 crypto/aes_ti.c:31
- cipher_crypt_one crypto/cipher.c:75 [inline]
- crypto_cipher_encrypt_one+0x1e2/0x3a0 crypto/cipher.c:82
- crypto_cbcmac_digest_update+0x3e3/0x560 crypto/ccm.c:830
- crypto_shash_update+0x455/0x5a0 crypto/shash.c:119
- shash_ahash_finup+0x20b/0x7a0 crypto/shash.c:291
- shash_async_finup+0xbb/0x110 crypto/shash.c:306
- crypto_ahash_op+0x1c3/0x770 crypto/ahash.c:370
- crypto_ahash_finup+0x8c/0xb0 crypto/ahash.c:395
- crypto_ccm_auth+0x16b6/0x1780 crypto/ccm.c:221
- crypto_ccm_encrypt+0x285/0x850 crypto/ccm.c:300
- crypto_aead_encrypt+0x107/0x190 crypto/aead.c:94
- tls_do_encryption net/tls/tls_sw.c:528 [inline]
- tls_push_record+0x3cb9/0x4fc0 net/tls/tls_sw.c:762
- bpf_exec_tx_verdict+0x195a/0x29e0 net/tls/tls_sw.c:802
- tls_sw_do_sendpage+0x138a/0x1e30 net/tls/tls_sw.c:1213
- tls_sw_sendpage+0x1da/0x250 net/tls/tls_sw.c:1277
- inet_sendpage+0x1dc/0x2f0 net/ipv4/af_inet.c:828
- kernel_sendpage net/socket.c:3642 [inline]
- sock_sendpage+0x1dc/0x2b0 net/socket.c:945
- pipe_to_sendpage+0x3f4/0x530 fs/splice.c:448
- splice_from_pipe_feed fs/splice.c:502 [inline]
- __splice_from_pipe+0x5e3/0xff0 fs/splice.c:626
- splice_from_pipe fs/splice.c:661 [inline]
- generic_splice_sendpage+0x1d5/0x2d0 fs/splice.c:834
- do_splice_from fs/splice.c:846 [inline]
- do_splice+0x2727/0x39e0 fs/splice.c:1144
- __do_sys_splice fs/splice.c:1419 [inline]
- __se_sys_splice+0x323/0x500 fs/splice.c:1401
- __x64_sys_splice+0x6e/0x90 fs/splice.c:1401
- do_syscall_64+0xad/0x160 arch/x86/entry/common.c:386
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x446a29
-Code: Bad RIP value.
-RSP: 002b:00007f91f8c0bd98 EFLAGS: 00000246 ORIG_RAX: 0000000000000113
-RAX: ffffffffffffffda RBX: 00000000006dbc48 RCX: 0000000000446a29
-RDX: 0000000000000004 RSI: 0000000000000000 RDI: 0000000000000003
-RBP: 00000000006dbc40 R08: 00080000fffffffc R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc4c
-R13: 0000000020000680 R14: 00000000004ae948 R15: 20c49ba5e353f7cf
-
-Uninit was stored to memory at:
- kmsan_save_stack_with_flags mm/kmsan/kmsan.c:144 [inline]
- kmsan_internal_chain_origin+0xad/0x130 mm/kmsan/kmsan.c:310
- __msan_chain_origin+0x50/0x90 mm/kmsan/kmsan_instr.c:165
- __crypto_xor+0x251/0x1610 crypto/algapi.c:1000
- crypto_xor include/crypto/algapi.h:152 [inline]
- crypto_cbcmac_digest_update+0x2b8/0x560 crypto/ccm.c:824
- crypto_shash_update+0x455/0x5a0 crypto/shash.c:119
- shash_ahash_finup+0x20b/0x7a0 crypto/shash.c:291
- shash_async_finup+0xbb/0x110 crypto/shash.c:306
- crypto_ahash_op+0x1c3/0x770 crypto/ahash.c:370
- crypto_ahash_finup+0x8c/0xb0 crypto/ahash.c:395
- crypto_ccm_auth+0x16b6/0x1780 crypto/ccm.c:221
- crypto_ccm_encrypt+0x285/0x850 crypto/ccm.c:300
- crypto_aead_encrypt+0x107/0x190 crypto/aead.c:94
- tls_do_encryption net/tls/tls_sw.c:528 [inline]
- tls_push_record+0x3cb9/0x4fc0 net/tls/tls_sw.c:762
- bpf_exec_tx_verdict+0x195a/0x29e0 net/tls/tls_sw.c:802
- tls_sw_do_sendpage+0x138a/0x1e30 net/tls/tls_sw.c:1213
- tls_sw_sendpage+0x1da/0x250 net/tls/tls_sw.c:1277
- inet_sendpage+0x1dc/0x2f0 net/ipv4/af_inet.c:828
- kernel_sendpage net/socket.c:3642 [inline]
- sock_sendpage+0x1dc/0x2b0 net/socket.c:945
- pipe_to_sendpage+0x3f4/0x530 fs/splice.c:448
- splice_from_pipe_feed fs/splice.c:502 [inline]
- __splice_from_pipe+0x5e3/0xff0 fs/splice.c:626
- splice_from_pipe fs/splice.c:661 [inline]
- generic_splice_sendpage+0x1d5/0x2d0 fs/splice.c:834
- do_splice_from fs/splice.c:846 [inline]
- do_splice+0x2727/0x39e0 fs/splice.c:1144
- __do_sys_splice fs/splice.c:1419 [inline]
- __se_sys_splice+0x323/0x500 fs/splice.c:1401
- __x64_sys_splice+0x6e/0x90 fs/splice.c:1401
- do_syscall_64+0xad/0x160 arch/x86/entry/common.c:386
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-Uninit was created at:
- kmsan_save_stack_with_flags+0x3c/0x90 mm/kmsan/kmsan.c:144
- kmsan_internal_alloc_meta_for_pages mm/kmsan/kmsan_shadow.c:269 [inline]
- kmsan_alloc_page+0xc5/0x1a0 mm/kmsan/kmsan_shadow.c:293
- __alloc_pages_nodemask+0xdf0/0x1030 mm/page_alloc.c:4889
- alloc_pages_current+0x685/0xb50 mm/mempolicy.c:2292
- alloc_pages include/linux/gfp.h:545 [inline]
- skb_page_frag_refill+0x540/0x780 net/core/sock.c:2487
- sk_page_frag_refill+0xa3/0x3b0 net/core/sock.c:2507
- sk_msg_alloc+0x26e/0x1340 net/core/skmsg.c:38
- tls_alloc_encrypted_msg net/tls/tls_sw.c:289 [inline]
- tls_sw_do_sendpage+0xb0d/0x1e30 net/tls/tls_sw.c:1191
- tls_sw_sendpage+0x1da/0x250 net/tls/tls_sw.c:1277
- inet_sendpage+0x1dc/0x2f0 net/ipv4/af_inet.c:828
- kernel_sendpage net/socket.c:3642 [inline]
- sock_sendpage+0x1dc/0x2b0 net/socket.c:945
- pipe_to_sendpage+0x3f4/0x530 fs/splice.c:448
- splice_from_pipe_feed fs/splice.c:502 [inline]
- __splice_from_pipe+0x5e3/0xff0 fs/splice.c:626
- splice_from_pipe fs/splice.c:661 [inline]
- generic_splice_sendpage+0x1d5/0x2d0 fs/splice.c:834
- do_splice_from fs/splice.c:846 [inline]
- do_splice+0x2727/0x39e0 fs/splice.c:1144
- __do_sys_splice fs/splice.c:1419 [inline]
- __se_sys_splice+0x323/0x500 fs/splice.c:1401
- __x64_sys_splice+0x6e/0x90 fs/splice.c:1401
- do_syscall_64+0xad/0x160 arch/x86/entry/common.c:386
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-=====================================================
+[ 2305.676384] ------------[ cut here ]------------
+[ 2305.681543] WARNING: CPU: 1 PID: 15 at kernel/sched/core.c:1924 __set_cpus_allowed_ptr+0x1bd/0x230
+[ 2305.691540] Modules linked in: kvm_intel kvm irqbypass rapl intel_cstate intel_uncore
+[ 2305.700284] CPU: 1 PID: 15 Comm: cpuhp/1 Tainted: G        W         5.9.0-rc1-00126-g560d2f906d7e-dirty #392
+[ 2305.711349] Hardware name: Intel Corporation S2600GZ/S2600GZ, BIOS SE5C600.86B.02.02.0002.122320131210 12/23/2013
+[ 2305.722803] RIP: 0010:__set_cpus_allowed_ptr+0x1bd/0x230
+[ 2305.728732] Code: ba 00 02 00 00 48 c7 c6 20 78 9e 82 4c 89 ef e8 19 ec 5f 00 85 c0 0f 85 5e ff ff ff 83 bb 60 03 00 00 01 0f 84 51 ff ff ff 90 <0f> 0b 90 e9 48 ff ff ff 83 bd 10 0a 00 00 02 48 89 5c 24 10 44 89
+[ 2305.749687] RSP: 0000:ffffc900033dbdd8 EFLAGS: 00010002
+[ 2305.755518] RAX: 0000000000000000 RBX: ffff88842c33cbc0 RCX: 0000000000000200
+[ 2305.763478] RDX: 0000000000000008 RSI: ffffffff829e7820 RDI: ffffffff83055720
+[ 2305.771439] RBP: ffff88842f43b4c0 R08: 0000000000000009 R09: ffffffff83055720
+[ 2305.779399] R10: 0000000000000008 R11: 0000000000000000 R12: 00000000ffffffea
+[ 2305.787360] R13: ffffffff83055720 R14: 000000000000000d R15: 00000000000000b6
+[ 2305.795321] FS:  0000000000000000(0000) GS:ffff88842f480000(0000) knlGS:0000000000000000
+[ 2305.804348] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 2305.810760] CR2: 0000000000000000 CR3: 0000000002810001 CR4: 00000000001706e0
+[ 2305.818720] Call Trace:
+[ 2305.821454]  kcompactd_cpu_online+0xa1/0xb0
+[ 2305.826119]  ? __compaction_suitable+0xa0/0xa0
+[ 2305.831079]  cpuhp_invoke_callback+0x9a/0x360
+[ 2305.835941]  cpuhp_thread_fun+0x19d/0x220
+[ 2305.840414]  ? smpboot_thread_fn+0x1b4/0x280
+[ 2305.845178]  ? smpboot_thread_fn+0x26/0x280
+[ 2305.849842]  ? smpboot_register_percpu_thread+0xe0/0xe0
+[ 2305.855672]  smpboot_thread_fn+0x1d0/0x280
+[ 2305.860243]  kthread+0x153/0x170
+[ 2305.863843]  ? kthread_create_worker_on_cpu+0x70/0x70
+[ 2305.869482]  ret_from_fork+0x22/0x30
+[ 2305.873474] irq event stamp: 236
+[ 2305.877067] hardirqs last  enabled at (235): [<ffffffff81cfad7c>] _raw_spin_unlock_irqrestore+0x4c/0x60
+[ 2305.887550] hardirqs last disabled at (236): [<ffffffff81cf4050>] __schedule+0xc0/0xb10
+[ 2305.896482] softirqs last  enabled at (0): [<ffffffff810b9849>] copy_process+0x889/0x1d40
+[ 2305.905611] softirqs last disabled at (0): [<0000000000000000>] 0x0
+[ 2305.912602] ---[ end trace e7f6c2a95b741e6b ]---
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Given:
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+
+static int __init kcompactd_init(void)
+{
+	...
+	ret = cpuhp_setup_state_nocalls(CPUHP_AP_ONLINE_DYN,
+					"mm/compaction:online",
+					kcompactd_cpu_online, NULL);
+
+and:
+
+
+	CPUHP_AP_ONLINE_DYN,
+	CPUHP_AP_ONLINE_DYN_END		= CPUHP_AP_ONLINE_DYN + 30,
+	CPUHP_AP_X86_HPET_ONLINE,
+	CPUHP_AP_X86_KVM_CLK_ONLINE,
+	CPUHP_AP_ACTIVE,
+
+this is somewhat expected behaviour.
+
+It tries and set the compaction affinity to include the newly onlined
+CPU before it is marked active and that's a no-no.
+
+Ideally the kcompactd notifier is ran after AP_ACTIVE, not before.
