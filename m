@@ -2,91 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B561E264F9B
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:47:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27058264F7F
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:45:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727041AbgIJTrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 15:47:11 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:28696 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1730769AbgIJPZ1 (ORCPT
+        id S1726738AbgIJTox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 15:44:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37544 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731301AbgIJPcj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 11:25:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599751512;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=UQEeRxYOrGoLGB9nBiblTSrr/ssmHsXtBv8lg+YH02U=;
-        b=RLHZ+M99unTCxJefSM7gm84nOTOuR4KFNUJmaO62dkN7aC+KXOEkal43q+X0du3nWju9rl
-        AlLeLDgUGq15L51TflErnmGHfPVzRBozvSDk8eMFYeOTGT1Dfe0I+IDTbb4ZpVyKMuoB7v
-        J3Z1i/j2qF8B1xoAhdaUuIIZcbEyGWE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-572-6uLkSfj2Ny-0totYFoFYqA-1; Thu, 10 Sep 2020 11:25:10 -0400
-X-MC-Unique: 6uLkSfj2Ny-0totYFoFYqA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 07BE318C89CB;
-        Thu, 10 Sep 2020 15:25:09 +0000 (UTC)
-Received: from treble.redhat.com (ovpn-119-118.rdu2.redhat.com [10.10.119.118])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 62E645D9EF;
-        Thu, 10 Sep 2020 15:25:08 +0000 (UTC)
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     x86@kernel.org
-Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Thu, 10 Sep 2020 11:32:39 -0400
+Received: from mail-oi1-x264.google.com (mail-oi1-x264.google.com [IPv6:2607:f8b0:4864:20::264])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D21F1C06136C
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 08:26:11 -0700 (PDT)
+Received: by mail-oi1-x264.google.com with SMTP id t76so6268128oif.7
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 08:26:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=TAjjOvVAHuYufOKkxDIWgneZqY7sSReSHXxF69LgeUk=;
+        b=ef6JEEgmO8Bbat620fzmhEP4DAAoGctxfoKgC48sZJe39cxAsZKKJ+6SKqXP+FLZbr
+         6VesQPojPH6t+Y8emVnJ+O9gvwAIpHWp2cbREdVKsNw31R/o6Kizo9YKh8caSPcxE86Q
+         vtEqoR4k0yyR8PAsyaafhDNsbFUE+lRE+/gZE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=TAjjOvVAHuYufOKkxDIWgneZqY7sSReSHXxF69LgeUk=;
+        b=i4S2JvbBg1kp28rIN98dz0QOAZVm0Ymb0f5mq7wyE9fMZ637nJ0g875rdQT5nR4QT5
+         ENFJcU3ldPM0i+HaPfxnS7tVMY51KTxm3HkhShX4La70uAH3MMn/9UGbjs3xppfT85T/
+         Uu184lO+uROOgh94OI9Xd0pzX4/SGMZ+2jUoDMZCOb68jVKZ38JoYq4M6VOyWz7TZtq6
+         5y3bE5kkWykCMjVVDHBQVWbNUm97Kt0VyYWmnNOGwmNNx6N2WlZ7guZ7p9Gkia9hjIx6
+         G040hYDIPzS0TGZF2nqX7WR032Z322+INz3iwWimSb+LaSzmYWWNnN3mPsRsQJpoIrAn
+         k4Fw==
+X-Gm-Message-State: AOAM5335DXCMtO9n6Fi/16boqsJ5mSOiB5PSDuAmWM9y05bkgzmImTRr
+        Y3O/MNmmEbjcJipqtUB6zOV38tfnbrqpleY578kJr2JVqNiD
+X-Google-Smtp-Source: ABdhPJxKUzw42D+XPlJKJWoGyUjU8x+sICTg8mVg0T3jhhHLXIY9y81C+5EjNBZp41/FYbR5CqPx15pRIPht
+X-Received: by 2002:a54:4086:: with SMTP id i6mr361723oii.66.1599751570606;
+        Thu, 10 Sep 2020 08:26:10 -0700 (PDT)
+Received: from rj-aorus.ric.broadcom.com ([192.19.228.250])
+        by smtp-relay.gmail.com with ESMTPS id h4sm943004oom.19.2020.09.10.08.26.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Sep 2020 08:26:10 -0700 (PDT)
+X-Relaying-Domain: broadcom.com
+From:   Ray Jui <ray.jui@broadcom.com>
+To:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Kamal Dasu <kdasu.kdev@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>
+Cc:     linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH] objtool: Fix noreturn detection for ignored functions
-Date:   Thu, 10 Sep 2020 10:24:57 -0500
-Message-Id: <5b1e2536cdbaa5246b60d7791b76130a74082c62.1599751464.git.jpoimboe@redhat.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+        bcm-kernel-feedback-list@broadcom.com,
+        Ray Jui <ray.jui@broadcom.com>
+Subject: [PATCH 2/4] spi: bcm-qspi: Add compatible string for BRCMSTB 7445 SoCs
+Date:   Thu, 10 Sep 2020 08:25:37 -0700
+Message-Id: <20200910152539.45584-2-ray.jui@broadcom.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200910152539.45584-1-ray.jui@broadcom.com>
+References: <20200910152539.45584-1-ray.jui@broadcom.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a function is annotated with STACK_FRAME_NON_STANDARD, objtool
-doesn't validate its code paths.  It also skips sibling call detection
-within the function.
+Add compatible string for BRCMSTB 7445 SoCs and indicate it has MSPI rev
+support.
 
-But sibling call detection is actually needed for the case where the
-ignored function doesn't have any return instructions.  Otherwise
-objtool naively marks the function as implicit static noreturn, which
-affects the reachability of its callers, resulting in "unreachable
-instruction" warnings.
-
-Fix it by just enabling sibling call detection for ignored functions.
-The 'insn->ignore' check in add_jump_destinations() is no longer needed
-after commit e6da9567959e ("objtool: Don't use ignore flag for fake
-jumps").
-
-Fixes the following warning:
-
-  arch/x86/kvm/vmx/vmx.o: warning: objtool: vmx_handle_exit_irqoff()+0x142: unreachable instruction
-
-Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Signed-off-by: Ray Jui <ray.jui@broadcom.com>
 ---
- tools/objtool/check.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/spi/spi-bcm-qspi.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index e034a8f24f46..90a66891441a 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -619,7 +619,7 @@ static int add_jump_destinations(struct objtool_file *file)
- 		if (!is_static_jump(insn))
- 			continue;
- 
--		if (insn->ignore || insn->offset == FAKE_JUMP_OFFSET)
-+		if (insn->offset == FAKE_JUMP_OFFSET)
- 			continue;
- 
- 		reloc = find_reloc_by_dest_range(file->elf, insn->sec,
+diff --git a/drivers/spi/spi-bcm-qspi.c b/drivers/spi/spi-bcm-qspi.c
+index 681d09085175..c5209b42b0d2 100644
+--- a/drivers/spi/spi-bcm-qspi.c
++++ b/drivers/spi/spi-bcm-qspi.c
+@@ -1293,6 +1293,11 @@ static const struct of_device_id bcm_qspi_of_match[] = {
+ 		.compatible = "brcm,spi-bcm7435-qspi",
+ 		.data = &bcm_qspi_no_rev_data,
+ 	},
++	{
++		.compatible = "brcm,spi-bcm7445-qspi",
++		.data = &bcm_qspi_rev_data,
++
++	},
+ 	{
+ 		.compatible = "brcm,spi-bcm-qspi",
+ 		.data = &bcm_qspi_rev_data,
 -- 
-2.25.4
+2.17.1
 
