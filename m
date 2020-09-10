@@ -2,119 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6496263FF1
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 10:32:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3803263FF8
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 10:32:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730538AbgIJIc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 04:32:28 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:59482 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730085AbgIJIcH (ORCPT
+        id S1730504AbgIJIcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 04:32:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56778 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730287AbgIJIcr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 04:32:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599726707;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7fZGuKxC07VUp0Irvl6Nj323Z7bzMsW/GZh3NECR3ds=;
-        b=Q0lHLlY7fQC7P7hA9l1ji8i4pOffxMwt87lk1jZM5PTgfizuoQ6w7QPbMGP8bbbdCCWzzZ
-        Qpr6hWj+OAICCWbK4e///u8zTIaa4ei94KjX4knnDa87uUVWUNEvIQ9Jaao+DBoJ9o/1zv
-        N6kGgFnoHemoQUIKAeoE0Q4IgN3CYxc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-223-k5TyNAz2OYi7rm-KVdWm5A-1; Thu, 10 Sep 2020 04:31:44 -0400
-X-MC-Unique: k5TyNAz2OYi7rm-KVdWm5A-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B3DB21005E5A;
-        Thu, 10 Sep 2020 08:31:42 +0000 (UTC)
-Received: from [10.64.54.123] (vpn2-54-123.bne.redhat.com [10.64.54.123])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0FFFE10001B3;
-        Thu, 10 Sep 2020 08:31:40 +0000 (UTC)
-Reply-To: Gavin Shan <gshan@redhat.com>
-Subject: Re: [PATCH 2/2] arm64/mm: Use CONT_SHIFT to define CONT_PTE_SHIFT
-To:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
-        will@kernel.org, shan.gavin@gmail.com
-References: <20200908071931.47767-1-gshan@redhat.com>
- <20200908071931.47767-2-gshan@redhat.com>
- <459d0f64-fea9-a060-91a5-17a37834fb1b@arm.com>
-From:   Gavin Shan <gshan@redhat.com>
-Message-ID: <283283a2-f516-6890-ae25-101d2b1b46a2@redhat.com>
-Date:   Thu, 10 Sep 2020 18:31:38 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.0
+        Thu, 10 Sep 2020 04:32:47 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF917C061573;
+        Thu, 10 Sep 2020 01:32:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=G3nNqf5JBiDJaw2zC0YQ7yH7mIdITSgiMb8ebwlBBr8=; b=rUsfX3hYLhfcfajSqh1YoOUQJm
+        lvXH0WoX3lNO33iU0NeSkXptod9s+vcx27Eqa1KCHBRZt57G4pkxNGmX5D4i97HfJYgMcI//yilvM
+        FFOVK34ocrYKszzfKlukkRmLXtoTsfXdI+OYqKJJSdwdzidGE4x0LyULaacQHcZHSQf4QV4R8WcmQ
+        1N/Lyyx3spy22oxzEi4QLuMtbBJrhJe+rF4jJdG8wbiF18JYpV6hNWxQflbmnUbXeguqu9R9xfQMu
+        uWk3/XdwEa3XUOv0qjo+gyuebDctyP/XWu73MuTQ7WDbtf9G0tQzuQWf05HEDHRSZvhkLEqoVyfwA
+        UpnoJC1g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kGI0L-000566-SJ; Thu, 10 Sep 2020 08:32:30 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 545D23050F0;
+        Thu, 10 Sep 2020 10:32:23 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id A8A1726512445; Thu, 10 Sep 2020 10:32:23 +0200 (CEST)
+Date:   Thu, 10 Sep 2020 10:32:23 +0200
+From:   peterz@infradead.org
+To:     Kim Phillips <kim.phillips@amd.com>
+Cc:     Borislav Petkov <bp@alien8.de>, Borislav Petkov <bp@suse.de>,
+        Ingo Molnar <mingo@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephane Eranian <eranian@google.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, x86 <x86@kernel.org>,
+        Stephane Eranian <stephane.eranian@google.com>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH v2 3/7] arch/x86/amd/ibs: Fix re-arming IBS Fetch
+Message-ID: <20200910083223.GY1362448@hirez.programming.kicks-ass.net>
+References: <20200908214740.18097-1-kim.phillips@amd.com>
+ <20200908214740.18097-4-kim.phillips@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <459d0f64-fea9-a060-91a5-17a37834fb1b@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200908214740.18097-4-kim.phillips@amd.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Anshuman,
-
-On 9/10/20 4:17 PM, Anshuman Khandual wrote:
-> On 09/08/2020 12:49 PM, Gavin Shan wrote:
->> The macro CONT_PTE_SHIFT actually depends on CONT_SHIFT, which has
->> been defined in page-def.h, based on CONFIG_ARM64_CONT_SHIFT. Lets
->> reflect the dependency.
->>
->> Signed-off-by: Gavin Shan <gshan@redhat.com>
->> ---
->>   arch/arm64/include/asm/pgtable-hwdef.h | 4 +---
->>   1 file changed, 1 insertion(+), 3 deletions(-)
->>
->> diff --git a/arch/arm64/include/asm/pgtable-hwdef.h b/arch/arm64/include/asm/pgtable-hwdef.h
->> index 8a399e666837..0bd9469f4323 100644
->> --- a/arch/arm64/include/asm/pgtable-hwdef.h
->> +++ b/arch/arm64/include/asm/pgtable-hwdef.h
->> @@ -81,14 +81,12 @@
->>   /*
->>    * Contiguous page definitions.
->>    */
->> +#define CONT_PTE_SHIFT		(CONT_SHIFT + PAGE_SHIFT)
->>   #ifdef CONFIG_ARM64_64K_PAGES
->> -#define CONT_PTE_SHIFT		(5 + PAGE_SHIFT)
->>   #define CONT_PMD_SHIFT		(5 + PMD_SHIFT)
->>   #elif defined(CONFIG_ARM64_16K_PAGES)
->> -#define CONT_PTE_SHIFT		(7 + PAGE_SHIFT)
->>   #define CONT_PMD_SHIFT		(5 + PMD_SHIFT)
->>   #else
->> -#define CONT_PTE_SHIFT		(4 + PAGE_SHIFT)
->>   #define CONT_PMD_SHIFT		(4 + PMD_SHIFT)
->>   #endif
-> Could not a similar CONT_PMD be created from a new CONFIG_ARM64_CONT_PMD
-> config option, which would help unify CONT_PMD_SHIFT here as well ?
+On Tue, Sep 08, 2020 at 04:47:36PM -0500, Kim Phillips wrote:
+> Stephane Eranian found a bug in that IBS' current Fetch counter was not
+> being reset when the driver would write the new value to clear it along
+> with the enable bit set, and found that adding an MSR write that would
+> first disable IBS Fetch would make IBS Fetch reset its current count.
 > 
+> Indeed, the PPR for AMD Family 17h Model 31h B0 55803 Rev 0.54 - Sep 12,
+> 2019 states "The periodic fetch counter is set to IbsFetchCnt [...] when
+> IbsFetchEn is changed from 0 to 1."
+> 
+> Explicitly set IbsFetchEn to 0 and then to 1 when re-enabling IBS Fetch,
+> so the driver properly resets the internal counter to 0 and IBS
+> Fetch starts counting again.
+> 
+> A family 15h machine tested does not have this problem, and the extra
+> wrmsr is also not needed on Family 19h, so only do the extra wrmsr on
+> families 16h through 18h.
 
-I was thinking of it, to have CONFIG_ARM64_CONT_PMD and defined the
-following macros in arch/arm64/include/asm/page-def.h:
+*groan*...
 
-    #define CONT_PMD_SHIFT	CONFIG_ARM64_CONT_PMD_SHIFT
-    #define CONT_PMD_SIZE        (_AC(1, UL) << (CONT_PMD_SHIFT + PMD_SHIFT)
-    #define CONT_PMD_MASK        (~(CONT_PMD_SIZE - 1))
+> ---
+>  arch/x86/events/amd/ibs.c | 9 ++++++++-
+>  1 file changed, 8 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/events/amd/ibs.c b/arch/x86/events/amd/ibs.c
+> index 26c36357c4c9..3eb9a55e998c 100644
+> --- a/arch/x86/events/amd/ibs.c
+> +++ b/arch/x86/events/amd/ibs.c
+> @@ -363,7 +363,14 @@ perf_ibs_event_update(struct perf_ibs *perf_ibs, struct perf_event *event,
+>  static inline void perf_ibs_enable_event(struct perf_ibs *perf_ibs,
+>  					 struct hw_perf_event *hwc, u64 config)
+>  {
+> -	wrmsrl(hwc->config_base, hwc->config | config | perf_ibs->enable_mask);
+> +	u64 _config = (hwc->config | config) & ~perf_ibs->enable_mask;
+> +
+> +	/* On Fam17h, the periodic fetch counter is set when IbsFetchEn is changed from 0 to 1 */
+> +	if (perf_ibs == &perf_ibs_fetch && boot_cpu_data.x86 >= 0x16 && boot_cpu_data.x86 <= 0x18)
+> +		wrmsrl(hwc->config_base, _config);
 
-PMD_SHIFT is variable because PMD could be folded into PUD or PGD,
-depending on the kernel configuration. PMD_SHIFT is declared
-in arch/arm64/include/asm/pgtable-types.h, which isn't supposed
-to be included in "page-def.h".
+That's an anti-patttern (and for some reason this is the second time in
+a week I've seen it). This is a fairly hot path and you're adding a
+whole bunch of loads and branches.
 
-So the peroper way to handle this might be drop the continuous page
-macros in page-def.h and introduce the following ones into pgtable-hwdef.h.
-I will post v2 to do this if it sounds good to you.
+Granted, in case you need the extra wrmsr that's probably noise, but
+supposedly you're going to be fixing this in hardware eventually, and
+you'll be getting rid of the second wrmsr again. But then you're stuck
+with the loads and branches.
 
-    #define CONT_PTE_SHIFT         (CONFIG_ARM64_CONT_PTE_SHIFT + PAGE_SHIFT)
-    #define CONT_PMD_SHIFT         (CONFIG_ARM64_CONT_PMD_SHIFT + PMD_SHIFT)
+A better option would be to use hwc->flags, you're loading from that
+line already, so it's guaranteed hot and then you only have a single
+branch. Or stick it in perf_ibs near enable_mask, same difference.
 
-Thanks,
-Gavin
-
+> + 	_config |= perf_ibs->enable_mask;
+> +	wrmsrl(hwc->config_base, _config);
+>  }
+>  
+>  /*
+> -- 
+> 2.27.0
+> 
