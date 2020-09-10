@@ -2,60 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82AC2265413
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:49:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 882DD265414
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:50:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725767AbgIJVty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 17:49:54 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:11773 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730522AbgIJMZr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 08:25:47 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id D4A7FAC483107EA50ED7;
-        Thu, 10 Sep 2020 20:25:36 +0800 (CST)
-Received: from DESKTOP-8RFUVS3.china.huawei.com (10.174.185.226) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 10 Sep 2020 20:25:26 +0800
-From:   Zenghui Yu <yuzenghui@huawei.com>
-To:     <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <alex.williamson@redhat.com>, <cohuck@redhat.com>,
-        <kwankhede@nvidia.com>, <wanghaibin.wang@huawei.com>,
-        Zenghui Yu <yuzenghui@huawei.com>
-Subject: [PATCH] vfio: Fix typo of the device_state
-Date:   Thu, 10 Sep 2020 20:25:08 +0800
-Message-ID: <20200910122508.705-1-yuzenghui@huawei.com>
-X-Mailer: git-send-email 2.23.0.windows.1
+        id S1725773AbgIJVuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 17:50:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36652 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730257AbgIJMZt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 08:25:49 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A4AFC061573
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 05:25:49 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id u3so2955643pjr.3
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 05:25:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tcd-ie.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hJMQ3l7D9c1jHa3lkbxsVQsPn/mQ9PWhdKwZ9KNTL6I=;
+        b=m1sx4C55eJpUl/NnpzeEMYTsIQfCoVNwoG8sK1YYCwSWbS6ebtldCBKjzYquGLJjNb
+         QIkcdQuSa6qC23sA76PmOxA0DkhHCbwLrOhCEHp1G0PBy1xjZp/tUNmksgcasW7GOT0j
+         E9LXqk9iqt+2QCWGibI/eDous4DmVn8USIg9HEQU3Kay7RmqvtCf+q4GWnMism4PPEgM
+         SQymKP32ZUnheFlxQNdm9dPFNFQZjZDRu8ZIHOuCFTwW7TGer0Ztk/FbzPMimjfA9q1J
+         izcM2lTlMcR61ypwwE6qfjLhQC7PrBL/SE/MpsfAFJXSHemJijDGeKQ7xQIGqWaTMYcG
+         t7mg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hJMQ3l7D9c1jHa3lkbxsVQsPn/mQ9PWhdKwZ9KNTL6I=;
+        b=IrI13oFehvUqp7a/a7MGWtxwmq0oAdbjrkeyjgdqFbMZFg1aw2MkqX1zYa/nAUnBbz
+         ItFGpddvyv8XgFgymkDbtxC+HO/91Sqf0W426YLKmCQyKnMWJFLVnQDNKzfYOeAs8mnb
+         n5TrQTxhzZikBFig2xqZNzLbB/IB9uC/jH2ljLR6Uwbd72dv+5q1ugFlaAH/lI9/1Heo
+         fM5f0zvNvBY/qNFs7r0jRjExZxFzH3OmIs6Fn7cLDJ2Sbhoy8gTkk2zTfwoxY8wgCSSc
+         wlyViy62en+Cz35sVKLkhq5JcDpUSXgCxNlxjETIEZJKSpZggPBjVjmmtN6hd+pj0n8Q
+         ouPg==
+X-Gm-Message-State: AOAM53205x9B+LMR2ltZDsK0XVnCplVssoVfpBHUNjPz1jEq4cgSX/xu
+        3LRDryvZA5y7rG8Z1PQvTydj6QrWxNKwcA==
+X-Google-Smtp-Source: ABdhPJxF0L7lT3zbj43remcUB5Nu+6dRtVmxE0rsS/gucrCs0yEG8pClpd02cocKxEcMYApUlX0oyQ==
+X-Received: by 2002:a17:90b:1046:: with SMTP id gq6mr4966136pjb.231.1599740748465;
+        Thu, 10 Sep 2020 05:25:48 -0700 (PDT)
+Received: from tom-ThinkPad-X1-Carbon-5th.teksavvy.com ([69.172.145.184])
+        by smtp.googlemail.com with ESMTPSA id z18sm5884124pfn.186.2020.09.10.05.25.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Sep 2020 05:25:47 -0700 (PDT)
+From:   Tom Murphy <murphyt7@tcd.ie>
+To:     iommu@lists.linux-foundation.org
+Cc:     Tom Murphy <murphyt7@tcd.ie>, Joerg Roedel <joro@8bytes.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] Handle init_iova_flush_queue failure in dma-iommu path
+Date:   Thu, 10 Sep 2020 13:25:38 +0100
+Message-Id: <20200910122539.3662-1-murphyt7@tcd.ie>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.185.226]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A typo fix ("_RUNNNG" => "_RUNNING") in comment block of the uapi header.
+init_iova_flush_queue can fail if we run out of memory. Fall back to noflush
+ queue if it fails.
 
-Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
+Signed-off-by: Tom Murphy <murphyt7@tcd.ie>
 ---
- include/uapi/linux/vfio.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/iommu/dma-iommu.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/include/uapi/linux/vfio.h b/include/uapi/linux/vfio.h
-index 920470502329..d4bd39e124bf 100644
---- a/include/uapi/linux/vfio.h
-+++ b/include/uapi/linux/vfio.h
-@@ -462,7 +462,7 @@ struct vfio_region_gfx_edid {
-  * 5. Resumed
-  *                  |--------->|
-  *
-- * 0. Default state of VFIO device is _RUNNNG when the user application starts.
-+ * 0. Default state of VFIO device is _RUNNING when the user application starts.
-  * 1. During normal shutdown of the user application, the user application may
-  *    optionally change the VFIO device state from _RUNNING to _STOP. This
-  *    transition is optional. The vendor driver must support this transition but
+diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
+index 4959f5df21bd..5f69126f3e91 100644
+--- a/drivers/iommu/dma-iommu.c
++++ b/drivers/iommu/dma-iommu.c
+@@ -343,8 +343,11 @@ static int iommu_dma_init_domain(struct iommu_domain *domain, dma_addr_t base,
+ 
+ 	if (!cookie->fq_domain && !iommu_domain_get_attr(domain,
+ 			DOMAIN_ATTR_DMA_USE_FLUSH_QUEUE, &attr) && attr) {
+-		cookie->fq_domain = domain;
+-		init_iova_flush_queue(iovad, iommu_dma_flush_iotlb_all, NULL);
++		if (init_iova_flush_queue(iovad, iommu_dma_flush_iotlb_all,
++					NULL))
++			pr_warn("iova flush queue initialization failed\n");
++		else
++			cookie->fq_domain = domain;
+ 	}
+ 
+ 	if (!dev)
 -- 
-2.19.1
+2.20.1
 
