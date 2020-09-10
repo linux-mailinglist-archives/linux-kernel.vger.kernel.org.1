@@ -2,162 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D74D2263D7A
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 08:36:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07C3A263D6E
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 08:30:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726961AbgIJGgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 02:36:33 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:28606 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726693AbgIJGga (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 02:36:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599719788;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9UW16lUstnnCGbjpX3liKw7JzbSB4SPpIDupEPmn0vI=;
-        b=ORBbdEvCijRtsn9ZbDuTzo6MtTssRFeHeCL7cXE8A7QjDukN6mZEe01r+bMrY+9Yt/BCWX
-        LIwj4GWpd4CrHYMrxK6nZV/MKzrwXtepQMRHMWI6M/d4ztlcmdBnwu45mCGYB7z2ioj+Ij
-        zThFZJ2dl+/BZTRhbCbIFe/GEb4DODE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-326-l5e4-x2BMViknvYHd6dgQQ-1; Thu, 10 Sep 2020 02:36:25 -0400
-X-MC-Unique: l5e4-x2BMViknvYHd6dgQQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B56951005E7C;
-        Thu, 10 Sep 2020 06:30:06 +0000 (UTC)
-Received: from kamzik.brq.redhat.com (unknown [10.40.192.124])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 60B0B7E46E;
-        Thu, 10 Sep 2020 06:30:01 +0000 (UTC)
-Date:   Thu, 10 Sep 2020 08:29:58 +0200
-From:   Andrew Jones <drjones@redhat.com>
-To:     Steven Price <steven.price@arm.com>
-Cc:     Peter Maydell <Peter.Maydell@arm.com>,
-        Juan Quintela <quintela@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        qemu-devel@nongnu.org,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        Marc Zyngier <maz@kernel.org>,
+        id S1728617AbgIJGak (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 02:30:40 -0400
+Received: from mga18.intel.com ([134.134.136.126]:17717 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726642AbgIJGaj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 02:30:39 -0400
+IronPort-SDR: 2IfyOgCIjaY2IxGhSlaisomYhAGWDbZjscqYNcrVr6BaAZjLR0s9+h0i36P6pe9EMB91TbCkrn
+ uRi+n/NvvppQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9739"; a="146197074"
+X-IronPort-AV: E=Sophos;i="5.76,412,1592895600"; 
+   d="scan'208";a="146197074"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2020 23:30:38 -0700
+IronPort-SDR: 2SHvKZI52W59UxXnsyvreedC99fKtuEdJuAxlKNpWlJrk1m+lUcI8uM0z7CuYb3m9q1Nk6u5j/
+ IlxShIQtMKTg==
+X-IronPort-AV: E=Sophos;i="5.76,412,1592895600"; 
+   d="scan'208";a="480766765"
+Received: from shuo-intel.sh.intel.com (HELO localhost) ([10.239.154.30])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2020 23:30:34 -0700
+Date:   Thu, 10 Sep 2020 14:30:32 +0800
+From:   Shuo A Liu <shuo.a.liu@intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        "H . Peter Anvin" <hpa@zytor.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>,
-        Dave Martin <Dave.Martin@arm.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/2] MTE support for KVM guest
-Message-ID: <20200910062958.o55apuvdxmf3uiqb@kamzik.brq.redhat.com>
-References: <20200904160018.29481-1-steven.price@arm.com>
- <20200909152540.ylnrljd6aelxoxrf@kamzik.brq.redhat.com>
- <857566df-1b98-84f7-9268-d092722dc749@arm.com>
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Yu Wang <yu1.wang@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Yakui Zhao <yakui.zhao@intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Fengwei Yin <fengwei.yin@intel.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>
+Subject: Re: [PATCH v3 02/17] x86/acrn: Introduce acrn_{setup,
+ remove}_intr_handler()
+Message-ID: <20200910063032.GJ13723@shuo-intel.sh.intel.com>
+References: <20200909090836.46762-1-shuo.a.liu@intel.com>
+ <20200909090836.46762-3-shuo.a.liu@intel.com>
+ <20200909093609.GA607744@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <857566df-1b98-84f7-9268-d092722dc749@arm.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <20200909093609.GA607744@kroah.com>
+User-Agent: Mutt/1.8.3 (2017-05-23)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 09, 2020 at 05:04:15PM +0100, Steven Price wrote:
-> On 09/09/2020 16:25, Andrew Jones wrote:
-> > On Fri, Sep 04, 2020 at 05:00:16PM +0100, Steven Price wrote:
-> > >   2. Automatically promotes (normal host) memory given to the guest to be
-> > >      tag enabled (sets PG_mte_tagged), if any VCPU has MTE enabled. The
-> > >      tags are cleared if the memory wasn't previously MTE enabled.
-> > 
-> > Shouldn't this be up to the guest? Or, is this required in order for the
-> > guest to use tagging at all. Something like making the guest IPAs memtag
-> > capable, but if the guest doesn't enable tagging then there is no guest
-> > impact? In any case, shouldn't userspace be the one that adds PROT_MTE
-> > to the memory regions it wants the guest to be able to use tagging with,
-> > rather than KVM adding the attribute page by page?
-> 
-> I think I've probably explained this badly.
-> 
-> The guest can choose how to populate the stage 1 mapping - so can choose
-> which parts of memory are accessed tagged or not. However, the hypervisor
-> cannot restrict this in stage 2 (except by e.g. making the memory uncached
-> but that's obviously not great - however devices forward to the guest can be
-> handled like this).
-> 
-> Because the hypervisor cannot restrict the guest's access to the tags, the
-> hypervisor must assume that all memory given to the guest could have the
-> tags accessed. So it must (a) clear any stale data from the tags, and (b)
-> ensure that the tags are preserved (e.g. when swapping pages out).
-> 
+Hi Greg,
 
-Yes, this is how I understood it.
-
-> Because of the above the current series automatically sets PG_mte_tagged on
-> the pages. Note that this doesn't change the mappings that the VMM has (a
-> non-PROT_MTE mapping will still not have access to the tags).
-
-But if userspace created the memslots with memory already set with
-PROT_MTE, then this wouldn't be necessary, right? And, as long as
-there's still a way to access the memory with tag checking disabled,
-then it shouldn't be a problem.
-
-> > 
-> > If userspace needs to write to guest memory then it should be due to
-> > a device DMA or other specific hardware emulation. Those accesses can
-> > be done with tag checking disabled.
-> 
-> Yes, the question is can the VMM (sensibly) wrap the accesses with a
-> disable/renable tag checking for the process sequence. The alternative at
-> the moment is to maintain a separate (untagged) mapping for the purpose
-> which might present it's own problems.
-
-Hmm, so there's no easy way to disable tag checking when necessary? If we
-don't map the guest ram with PROT_MTE and continue setting the attribute
-in KVM, as this series does, then we don't need to worry about it tag
-checking when accessing the memory, but then we can't access the tags for
-migration.
-
-> 
-> > > 
-> > > If it's not practical to either disable tag checking in the VMM or
-> > > maintain multiple mappings then the alternatives I'm aware of are:
-> > > 
-> > >   * Provide a KVM-specific method to extract the tags from guest memory.
-> > >     This might also have benefits in terms of providing an easy way to
-> > >     read bulk tag data from guest memory (since the LDGM instruction
-> > >     isn't available at EL0).
-> > 
-> > Maybe we need a new version of KVM_GET_DIRTY_LOG that also provides
-> > the tags for all addresses of each dirty page.
-> 
-> Certainly possible, although it seems to conflate two operations: "get list
-> of dirty pages", "get tags from page". It would also require a lot of return
-> space (size of slot/32).
+On Wed  9.Sep'20 at 11:36:09 +0200, Greg Kroah-Hartman wrote:
+>On Wed, Sep 09, 2020 at 05:08:21PM +0800, shuo.a.liu@intel.com wrote:
+>> From: Shuo Liu <shuo.a.liu@intel.com>
+>>
+>> The ACRN Hypervisor builds an I/O request when a trapped I/O access
+>> happens in User VM. Then, ACRN Hypervisor issues an upcall by sending
+>> a notification interrupt to the Service VM. HSM in the Service VM needs
+>> to hook the notification interrupt to handle I/O requests.
+>>
+>> Notification interrupts from ACRN Hypervisor are already supported and
+>> a, currently uninitialized, callback called.
+>>
+>> Export two APIs for HSM to setup/remove its callback.
+>>
+>> Originally-by: Yakui Zhao <yakui.zhao@intel.com>
+>> Signed-off-by: Shuo Liu <shuo.a.liu@intel.com>
+>> Reviewed-by: Zhi Wang <zhi.a.wang@intel.com>
+>> Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
+>> Cc: Dave Hansen <dave.hansen@intel.com>
+>> Cc: Sean Christopherson <sean.j.christopherson@intel.com>
+>> Cc: Dan Williams <dan.j.williams@intel.com>
+>> Cc: Fengwei Yin <fengwei.yin@intel.com>
+>> Cc: Zhi Wang <zhi.a.wang@intel.com>
+>> Cc: Zhenyu Wang <zhenyuw@linux.intel.com>
+>> Cc: Yu Wang <yu1.wang@intel.com>
+>> Cc: Reinette Chatre <reinette.chatre@intel.com>
+>> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>> ---
+>>  arch/x86/include/asm/acrn.h |  8 ++++++++
+>>  arch/x86/kernel/cpu/acrn.c  | 19 +++++++++++++++++++
+>>  2 files changed, 27 insertions(+)
+>>  create mode 100644 arch/x86/include/asm/acrn.h
+>>
+>> diff --git a/arch/x86/include/asm/acrn.h b/arch/x86/include/asm/acrn.h
+>> new file mode 100644
+>> index 000000000000..ff259b69cde7
+>> --- /dev/null
+>> +++ b/arch/x86/include/asm/acrn.h
+>> @@ -0,0 +1,8 @@
+>> +/* SPDX-License-Identifier: GPL-2.0 */
+>> +#ifndef _ASM_X86_ACRN_H
+>> +#define _ASM_X86_ACRN_H
+>> +
+>> +void acrn_setup_intr_handler(void (*handler)(void));
+>> +void acrn_remove_intr_handler(void);
+>> +
+>> +#endif /* _ASM_X86_ACRN_H */
+>> diff --git a/arch/x86/kernel/cpu/acrn.c b/arch/x86/kernel/cpu/acrn.c
+>> index 0b2c03943ac6..bd1d7e759a0f 100644
+>> --- a/arch/x86/kernel/cpu/acrn.c
+>> +++ b/arch/x86/kernel/cpu/acrn.c
+>> @@ -9,7 +9,11 @@
+>>   *
+>>   */
+>>
+>> +#define pr_fmt(fmt) "acrn: " fmt
+>> +
+>>  #include <linux/interrupt.h>
+>> +
+>> +#include <asm/acrn.h>
+>>  #include <asm/apic.h>
+>>  #include <asm/cpufeatures.h>
+>>  #include <asm/desc.h>
+>> @@ -55,6 +59,21 @@ DEFINE_IDTENTRY_SYSVEC(sysvec_acrn_hv_callback)
+>>  	set_irq_regs(old_regs);
+>>  }
+>>
+>> +void acrn_setup_intr_handler(void (*handler)(void))
+>> +{
+>> +	if (acrn_intr_handler)
+>> +		pr_warn("Overwrite the acrn_intr_handler.\n");
 >
+>What can someone do with this warning?  If it's really an "error", why
+>not prevent this from happening?
 
-It would require num-set-bits * host-page-size / 16 / 2, right?
- 
-> > >   * Provide support for user space setting the TCMA0 or TCMA1 bits in
-> > >     TCR_EL1. These would allow the VMM to generate pointers which are not
-> > >     tag checked.
-> > 
-> > So this is necessary to allow the VMM to keep tag checking enabled for
-> > itself, plus map guest memory as PROT_MTE, and write to that memory when
-> > needed?
-> 
-> This is certainly one option. The architecture provides two "magic" values
-> (all-0s and all-1s) which can be configured using TCMAx to be treated
-> differently. The VMM could therefore construct pointers to otherwise tagged
-> memory which would be treated as untagged.
-> 
-> However, Catalin's user space series doesn't at the moment expose this
-> functionality.
+It cannot happen if there are not new user of it. The current user is
+HSM hsm_init()/hsm_exit() in the later patches of this series.
+
+I can remove the warn.
+
 >
+>Don't scare users with things they can do nothing about.
 
-So if I understand correctly this would allow us to map the guest memory
-with PAGE_MTE and still access the memory when needed. If so, then this
-sounds interesting.
+OK. Got it. Thanks.
 
-Thanks,
-drew 
-
+Thanks
+shuo
