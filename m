@@ -2,208 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ABA8263D30
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 08:22:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85B78263D12
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 08:15:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727770AbgIJGWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 02:22:45 -0400
-Received: from smtp.h3c.com ([60.191.123.56]:42091 "EHLO h3cspam01-ex.h3c.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725971AbgIJGWh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 02:22:37 -0400
-Received: from DAG2EX03-BASE.srv.huawei-3com.com ([10.8.0.66])
-        by h3cspam01-ex.h3c.com with ESMTPS id 08A6Lve4044174
+        id S1726847AbgIJGPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 02:15:40 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:47234 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725971AbgIJGPg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 02:15:36 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08A6FQtY049111;
+        Thu, 10 Sep 2020 01:15:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1599718526;
+        bh=/VNycKZ14LQxw9x1eq6avObp2vT11079Y5YpGx6O+dA=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=S1svpqgmZW+g0YKIBj6K3bkf4z5MUTmUGQMKgT2aWloJQzWnWnkf5WuIn9P6PMu39
+         Q9pfOYT1kijDlm+JpBk8+E4SjZcXffYmR3HWexaONhev0/UV4RM0UooyOOHCZmdvS4
+         1CAeYSKr+I9KaODmCQlNtQld0FGl3sGQiSWcgo3s=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08A6FQQW007266
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 10 Sep 2020 14:21:57 +0800 (GMT-8)
-        (envelope-from tian.xianting@h3c.com)
-Received: from localhost.localdomain (10.99.212.201) by
- DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 10 Sep 2020 14:21:59 +0800
-From:   Xianting Tian <tian.xianting@h3c.com>
-To:     <tj@kernel.org>, <axboe@kernel.dk>
-CC:     <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Xianting Tian <tian.xianting@h3c.com>
-Subject: [PATCH] [v2] blkcg: add plugging support for punt bio
-Date:   Thu, 10 Sep 2020 14:15:06 +0800
-Message-ID: <20200910061506.45704-1-tian.xianting@h3c.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 10 Sep 2020 01:15:26 -0500
+Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 10
+ Sep 2020 01:15:26 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 10 Sep 2020 01:15:26 -0500
+Received: from [10.250.232.147] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08A6FL7k078627;
+        Thu, 10 Sep 2020 01:15:22 -0500
+Subject: Re: [PATCH v5 2/2] phy: cadence-torrent: Use kernel PHY API to set
+ PHY attributes
+To:     Milind Parab <mparab@cadence.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+CC:     Swapnil Kashinath Jakhade <sjakhade@cadence.com>,
+        "vkoul@kernel.org" <vkoul@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "maxime@cerno.tech" <maxime@cerno.tech>,
+        Yuti Suresh Amonkar <yamonkar@cadence.com>,
+        "nsekhar@ti.com" <nsekhar@ti.com>,
+        "tomi.valkeinen@ti.com" <tomi.valkeinen@ti.com>,
+        "jsarha@ti.com" <jsarha@ti.com>,
+        "praneeth@ti.com" <praneeth@ti.com>
+References: <1598293711-23362-1-git-send-email-sjakhade@cadence.com>
+ <1598293711-23362-3-git-send-email-sjakhade@cadence.com>
+ <20200902002956.GE14351@pendragon.ideasonboard.com>
+ <DM6PR07MB6154CC4A67BC3568A7339CC9C52F0@DM6PR07MB6154.namprd07.prod.outlook.com>
+ <20200902121722.GA16811@pendragon.ideasonboard.com>
+ <DM6PR07MB6154F54322C38E6D864C7797C52C0@DM6PR07MB6154.namprd07.prod.outlook.com>
+ <b7903295-6482-53a5-2f08-3da17ced0c87@ti.com>
+ <20200903152951.GE6492@pendragon.ideasonboard.com>
+ <DM6PR07MB55314937E004DCB2BCF9BEB8D3290@DM6PR07MB5531.namprd07.prod.outlook.com>
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <634823a7-1a4d-6418-575b-484998afa7ae@ti.com>
+Date:   Thu, 10 Sep 2020 11:45:21 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.99.212.201]
-X-ClientProxiedBy: BJSMTP02-EX.srv.huawei-3com.com (10.63.20.133) To
- DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66)
-X-DNSRBL: 
-X-MAIL: h3cspam01-ex.h3c.com 08A6Lve4044174
+In-Reply-To: <DM6PR07MB55314937E004DCB2BCF9BEB8D3290@DM6PR07MB5531.namprd07.prod.outlook.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The test and the explaination of the patch as bellow.
+Hi Milind,
 
-Before test we added more debug code in blkg_async_bio_workfn():
-	int count = 0
-	if (bios.head && bios.head->bi_next) {
-		need_plug = true;
-		blk_start_plug(&plug);
-	}
-	while ((bio = bio_list_pop(&bios))) {
-		/*io_punt is a sysctl user interface to control the print*/
-		if(io_punt) {
-			printk("[%s:%d] bio start,size:%llu,%d count=%d plug?%d\n",
-				current->comm, current->pid, bio->bi_iter.bi_sector,
-				(bio->bi_iter.bi_size)>>9, count++, need_plug);
-		}
-		submit_bio(bio);
-	}
-	if (need_plug)
-		blk_finish_plug(&plug);
+On 08/09/20 7:45 pm, Milind Parab wrote:
+> Hi Kishon,
+> 
+>> -----Original Message-----
+>> From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+>> Sent: Thursday, September 3, 2020 9:00 PM
+>> To: Kishon Vijay Abraham I <kishon@ti.com>
+>> Cc: Swapnil Kashinath Jakhade <sjakhade@cadence.com>; vkoul@kernel.org;
+>> linux-kernel@vger.kernel.org; maxime@cerno.tech; Milind Parab
+>> <mparab@cadence.com>; Yuti Suresh Amonkar <yamonkar@cadence.com>;
+>> nsekhar@ti.com; tomi.valkeinen@ti.com; jsarha@ti.com; praneeth@ti.com
+>> Subject: Re: [PATCH v5 2/2] phy: cadence-torrent: Use kernel PHY API to set
+>> PHY attributes
+>>
+>> EXTERNAL MAIL
+>>
+>>
+>> Hi Kishon,
+>>
+>> On Thu, Sep 03, 2020 at 05:00:14PM +0530, Kishon Vijay Abraham I wrote:
+>>> On 9/3/2020 4:29 PM, Swapnil Kashinath Jakhade wrote:
+>>>> On Wednesday, September 2, 2020 5:47 PM, Laurent Pinchart wrote:
+>>>>> On Wed, Sep 02, 2020 at 07:09:21AM +0000, Swapnil Kashinath Jakhade
+>> wrote:
+>>>>>> On Wednesday, September 2, 2020 6:00 AM Laurent Pinchart wrote:
+>>>>>>> On Mon, Aug 24, 2020 at 08:28:31PM +0200, Swapnil Jakhade wrote:
+>>>>>>>> Use generic PHY framework function phy_set_attrs() to set number
+>>>>>>>> of lanes and maximum link rate supported by PHY.
+>>>>>>>>
+>>>>>>>> Signed-off-by: Swapnil Jakhade <sjakhade@cadence.com>
+>>>>>>>> Acked-by: Kishon Vijay Abraham I <kishon@ti.com>
+>>>>>>>> ---
+>>>>>>>>   drivers/phy/cadence/phy-cadence-torrent.c | 7 +++++++
+>>>>>>>>   1 file changed, 7 insertions(+)
+>>>>>>>>
+>>>>>>>> diff --git a/drivers/phy/cadence/phy-cadence-torrent.c
+>>>>>>>> b/drivers/phy/cadence/phy-cadence-torrent.c
+>>>>>>>> index 7116127358ee..eca71467c4a8 100644
+>>>>>>>> --- a/drivers/phy/cadence/phy-cadence-torrent.c
+>>>>>>>> +++ b/drivers/phy/cadence/phy-cadence-torrent.c
+>>>>>>>> @@ -1710,6 +1710,7 @@ static int cdns_torrent_phy_probe(struct
+>> platform_device *pdev)
+>>>>>>>>   	struct cdns_torrent_phy *cdns_phy;
+>>>>>>>>   	struct device *dev = &pdev->dev;
+>>>>>>>>   	struct phy_provider *phy_provider;
+>>>>>>>> +	struct phy_attrs torrent_attr;
+>>>>>>>>   	const struct of_device_id *match;
+>>>>>>>>   	struct cdns_torrent_data *data;
+>>>>>>>>   	struct device_node *child;
+>>>>>>>> @@ -1852,6 +1853,12 @@ static int cdns_torrent_phy_probe(struct
+>> platform_device *pdev)
+>>>>>>>>   				 cdns_phy->phys[node].num_lanes,
+>>>>>>>>   				 cdns_phy->max_bit_rate / 1000,
+>>>>>>>>   				 cdns_phy->max_bit_rate % 1000);
+>>>>>>>> +
+>>>>>>>> +			torrent_attr.bus_width = cdns_phy-
+>>> phys[node].num_lanes;
+>>>>>>>> +			torrent_attr.max_link_rate = cdns_phy-
+>>> max_bit_rate;
+>>>>>>>> +			torrent_attr.mode = PHY_MODE_DP;
+>>>>>>>> +
+>>>>>>>> +			phy_set_attrs(gphy, &torrent_attr);
+>>>>>>>
+>>>>>>> Why is this better than accessing the attributes manually as follows ?
+>>>>>>>
+>>>>>>> 			gphy->attrs.bus_width = cdns_phy-
+>>> phys[node].num_lanes;
+>>>>>>> 			gphy->attrs.max_link_rate = cdns_phy-
+>>> max_bit_rate;
+>>>>>>> 			gphy->attrs.mode = PHY_MODE_DP;
+>>>>>>>
+>>>>>>> This is called in cdns_torrent_phy_probe(), before the PHY
+>>>>>>> provider is registered, so nothing can access the PHY yet. What
+>>>>>>> race condition are you trying to protect against with usage of
+>> phy_set_attrs() ?
+>>>>>>
+>>>>>> I agree that for Cadence DP bridge driver and Torrent PHY driver
+>>>>>> use case, it would not matter even if we set the attributes in
+>>>>>> Torrent PHY driver in a way you suggested above.
+>>>>>> But as per the discussion in [1], phy_set_attrs/phy_get_attrs APIs
+>>>>>> in future could maybe used by other drivers replacing existing
+>>>>>> individual functions for attributes bus_width and mode which are
+>>>>>> phy_set_bus_width/phy_get_bus_width and
+>> phy_set_mode/phy_get_mode.
+>>>>>> So this usage in Torrent PHY driver is an example implementation of the
+>> API.
+>>>>>>
+>>>>>> [1]
+>>>>>> https://urldefense.com/v3/__https://lkml.org/lkml/2020/5/18/472__;
+>>>>>> !!EH
+>>>>>> scmS1ygiU1lA!QKTTI7BS1R35a_zoMfJsY4A4yCtEKrQNtiAXTyIZ-
+>> SYIEEibYdpBM
+>>>>>> JTll
+>>>>>> Yrd-00$
+>>>>>
+>>>>> This doesn't seem a very good API to me :-S It will require callers
+>>>>> to always call phy_get_attrs() first, modify the attributes they
+>>>>> want to set, and then call phy_set_attrs(). Not only will be copy
+>>>>> the whole phy_attrs structure needlessly, it will also not be an
+>>>>> atomic operation as someone else could modify attributes between the
+>> get and set calls.
+>>>>> The lack of atomicity may not be an issue in practice if there's a
+>>>>> single user of the PHY at all times, but in that case no mutex is needed.
+>>>
+>>> What if the consumer tries to set an attribute at the middle of a
+>>> phy_power_on() operation? That is still a valid operation and phy core
+>>> layer should try to prevent it no?
+>>
+>> I see multiple questions here.
+>>
+>> First of all, unless I'm mistaken, the attributes set here are static properties,
+>> set by the PHY driver at probe time, and only read by PHY consumers. There
+>> should be no need for any kind of protection or special API to access them.
+>>
+>> Then, there's the question of how to handle dynamic attributes. In theory a
+>> dynamic attribute could be changed at any time, and thus race wit, for
+>> instance phy_power_on(). However, the proposed API won't help much
+>> address this issue. Using a mutex will indeed ensure that the attribute change
+>> will be serialized with other operations, but it won't give any guarantee to the
+>> PHY consumer on whether the attribute will be set before or after
+>> phy_power_on() is processed. The consumer will not know if the new value
+>> of the attribute has been taken into account.
+>>
+>> The question is thus whether we want to make the PHY consumer API thread-
+>> safe (note that due to the usage of a mutex, we don't support calling most of
+>> the API functions from an interrupt handler, so it really requires the consumer
+>> to use a work queue, a thread, or possibly a threaded interrupt). If the answer
+>> is yes, the API should define what use cases are valid, and how the PHY has to
+>> behave. This includes documenting when new attribute values can be set, and
+>> when they are taken into account. If we had to document this as part of this
+>> patch series, we would have to state that the new values are taken into
+>> account at an undefined point of time if the attribute set call is concurrent
+>> with other API calls, which makes the API ill-defined in my opinion. I expect
+>> that we would need to turn attribute setting into a callback to the PHY driver
+>> in that case, or at least make it a more complex operation handled by the PHY
+>> core that would use the existing PHY ops to reconfigure the PHY.
+>>
+>> Is it worth it allowing drivers to call the PHY API from different threads as
+>> opposed to requiring consumers to serialize calls if their use cases require so ?
+>> I would expect most consumers to only try to reconfigure a PHY when it's
+>> stopped, or to manually stop, reconfigure and restart the PHY.
+>>
+>>>>> I think this series tries to fix a problem that doesn't exist.
+>>>>
+>>>> Thanks Laurent for your comments.
+>>>>
+>>>> Hi Kishon,
+>>>>
+>>>> Could you please suggest what would be the better approach regarding
+>>>> this PHY attributes series. Should we add individual get/set
+>>>> functions for new attribute max_link_rate just like mode and
+>>>> bus_width, or should we use phy_get_attrs() and phy_set_attrs()
+>> functions removing mutex.  Your suggestions would really help.
+>>>
+>>> I think Laurent's point is not having an API at all for configuring
+>>> attributes and access them manually?
+>>
+>> If the answer to the above question is that a thread-safe API isn't worth it as
+>> we wouldn't have good use cases for it, then I think accessing the attributes
+>> manually is all we need.
+>>
+> 
+> Should we proceed accessing attribute manually
 
-Steps that need to be set to trigger *PUNT* io before testing:
-	mount -t btrfs -o compress=lzo /dev/sda6 /btrfs
-	mount -t cgroup2 nodev /cgroup2
-	mkdir /cgroup2/cg3
-	echo "+io" > /cgroup2/cgroup.subtree_control
-	echo "8:0 wbps=1048576000" > /cgroup2/cg3/io.max #1000M/s
-	echo $$ > /cgroup2/cg3/cgroup.procs
+yeah, let's deal with dynamic attributes later when the use cases arise 
+unless Vinod disagrees.
 
-Then use dd command to test btrfs PUNT io in current shell:
-	dd if=/dev/zero of=/btrfs/file bs=64K count=100000
-
-Test hardware environment as below:
-	[root@localhost btrfs]# lscpu
-	Architecture:          x86_64
-	CPU op-mode(s):        32-bit, 64-bit
-	Byte Order:            Little Endian
-	CPU(s):                32
-	On-line CPU(s) list:   0-31
-	Thread(s) per core:    2
-	Core(s) per socket:    8
-	Socket(s):             2
-	NUMA node(s):          2
-	Vendor ID:             GenuineIntel
-
-With above debug code, test command and test environment, I did the
-tests under 3 different system loads, which are triggered by stress:
-1, Run 64 threads by command "stress -c 64 &"
-	[53615.975974] [kworker/u66:18:1490] bio start,size:45583056,8 count=0 plug?1
-	[53615.975980] [kworker/u66:18:1490] bio start,size:45583064,8 count=1 plug?1
-	[53615.975984] [kworker/u66:18:1490] bio start,size:45583072,8 count=2 plug?1
-	[53615.975987] [kworker/u66:18:1490] bio start,size:45583080,8 count=3 plug?1
-	[53615.975990] [kworker/u66:18:1490] bio start,size:45583088,8 count=4 plug?1
-	[53615.975993] [kworker/u66:18:1490] bio start,size:45583096,8 count=5 plug?1
-	... ...
-	[53615.977041] [kworker/u66:18:1490] bio start,size:45585480,8 count=303 plug?1
-	[53615.977044] [kworker/u66:18:1490] bio start,size:45585488,8 count=304 plug?1
-	[53615.977047] [kworker/u66:18:1490] bio start,size:45585496,8 count=305 plug?1
-	[53615.977050] [kworker/u66:18:1490] bio start,size:45585504,8 count=306 plug?1
-	[53615.977053] [kworker/u66:18:1490] bio start,size:45585512,8 count=307 plug?1
-	[53615.977056] [kworker/u66:18:1490] bio start,size:45585520,8 count=308 plug?1
-	[53615.977058] [kworker/u66:18:1490] bio start,size:45585528,8 count=309 plug?1
-
-2, Run 32 threads by command "stress -c 32 &"
-	[50586.290521] [kworker/u66:6:32351] bio start,size:45806496,8 count=0 plug?1
-	[50586.290526] [kworker/u66:6:32351] bio start,size:45806504,8 count=1 plug?1
-	[50586.290529] [kworker/u66:6:32351] bio start,size:45806512,8 count=2 plug?1
-	[50586.290531] [kworker/u66:6:32351] bio start,size:45806520,8 count=3 plug?1
-	[50586.290533] [kworker/u66:6:32351] bio start,size:45806528,8 count=4 plug?1
-	[50586.290535] [kworker/u66:6:32351] bio start,size:45806536,8 count=5 plug?1
-	... ...
-	[50586.299640] [kworker/u66:5:32350] bio start,size:45808576,8 count=252 plug?1
-	[50586.299643] [kworker/u66:5:32350] bio start,size:45808584,8 count=253 plug?1
-	[50586.299646] [kworker/u66:5:32350] bio start,size:45808592,8 count=254 plug?1
-	[50586.299649] [kworker/u66:5:32350] bio start,size:45808600,8 count=255 plug?1
-	[50586.299652] [kworker/u66:5:32350] bio start,size:45808608,8 count=256 plug?1
-	[50586.299663] [kworker/u66:5:32350] bio start,size:45808616,8 count=257 plug?1
-	[50586.299665] [kworker/u66:5:32350] bio start,size:45808624,8 count=258 plug?1
-	[50586.299668] [kworker/u66:5:32350] bio start,size:45808632,8 count=259 plug?1
-
-3, Don't run thread by stress
-	[50861.355246] [kworker/u66:19:32376] bio start,size:13544504,8 count=0 plug?0
-	[50861.355288] [kworker/u66:19:32376] bio start,size:13544512,8 count=0 plug?0
-	[50861.355322] [kworker/u66:19:32376] bio start,size:13544520,8 count=0 plug?0
-	[50861.355353] [kworker/u66:19:32376] bio start,size:13544528,8 count=0 plug?0
-	[50861.355392] [kworker/u66:19:32376] bio start,size:13544536,8 count=0 plug?0
-	[50861.355431] [kworker/u66:19:32376] bio start,size:13544544,8 count=0 plug?0
-	[50861.355468] [kworker/u66:19:32376] bio start,size:13544552,8 count=0 plug?0
-	[50861.355499] [kworker/u66:19:32376] bio start,size:13544560,8 count=0 plug?0
-	[50861.355532] [kworker/u66:19:32376] bio start,size:13544568,8 count=0 plug?0
-	[50861.355575] [kworker/u66:19:32376] bio start,size:13544576,8 count=0 plug?0
-	[50861.355618] [kworker/u66:19:32376] bio start,size:13544584,8 count=0 plug?0
-	[50861.355659] [kworker/u66:19:32376] bio start,size:13544592,8 count=0 plug?0
-	[50861.355740] [kworker/u66:0:32346] bio start,size:13544600,8 count=0 plug?1
-	[50861.355748] [kworker/u66:0:32346] bio start,size:13544608,8 count=1 plug?1
-	[50861.355962] [kworker/u66:2:32347] bio start,size:13544616,8 count=0 plug?0
-	[50861.356272] [kworker/u66:7:31962] bio start,size:13544624,8 count=0 plug?0
-	[50861.356446] [kworker/u66:7:31962] bio start,size:13544632,8 count=0 plug?0
-	[50861.356567] [kworker/u66:7:31962] bio start,size:13544640,8 count=0 plug?0
-	[50861.356707] [kworker/u66:19:32376] bio start,size:13544648,8 count=0 plug?0
-	[50861.356748] [kworker/u66:15:32355] bio start,size:13544656,8 count=0 plug?0
-	[50861.356825] [kworker/u66:17:31970] bio start,size:13544664,8 count=0 plug?0
-
-Analysis of above 3 test results with different system load:
-From above test, we can see more and more continuous bios can be plugged
-with system load increasing. When run "stress -c 64 &", 310 continuous
-bios are plugged; When run "stress -c 32 &", 260 continuous bios are
-plugged; When don't run stress, at most only 2 continuous bios are
-plugged, in most cases, bio_list only contains one single bio.
-
-How to explain above phenomenon:
-We know, in submit_bio(), if the bio is a REQ_CGROUP_PUNT io, it will
-queue a work to workqueue blkcg_punt_bio_wq. But when the workqueue is
-scheduled, it depends on the system load.  When system load is low, the
-workqueue will be quickly scheduled, and the bio in bio_list will be
-quickly processed in blkg_async_bio_workfn(), so there is less chance
-that the same io submit thread can add multiple continuous bios to
-bio_list before workqueue is scheduled to run. The analysis aligned with
-above test "3".
-When system load is high, there is some delay before the workqueue can
-be scheduled to run, the higher the system load the greater the delay.
-So there is more chance that the same io submit thread can add multiple
-continuous bios to bio_list. Then when the workqueue is scheduled to run,
-there are more continuous bios in bio_list, which will be processed in
-blkg_async_bio_workfn(). The analysis aligned with above test "1" and "2".
-
-According to test, we can get io performance improved with the patch,
-especially when system load is higher. Another optimazition is to use
-the plug only when bio_list contains at least 2 bios.
-
-Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
----
- block/blk-cgroup.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
-index c195365c9..f35a205d5 100644
---- a/block/blk-cgroup.c
-+++ b/block/blk-cgroup.c
-@@ -119,6 +119,8 @@ static void blkg_async_bio_workfn(struct work_struct *work)
- 					     async_bio_work);
- 	struct bio_list bios = BIO_EMPTY_LIST;
- 	struct bio *bio;
-+	struct blk_plug plug;
-+	bool need_plug = false;
- 
- 	/* as long as there are pending bios, @blkg can't go away */
- 	spin_lock_bh(&blkg->async_bio_lock);
-@@ -126,8 +128,15 @@ static void blkg_async_bio_workfn(struct work_struct *work)
- 	bio_list_init(&blkg->async_bios);
- 	spin_unlock_bh(&blkg->async_bio_lock);
- 
-+	/* start plug only when bio_list contains at least 2 bios */
-+	if (bios.head && bios.head->bi_next) {
-+		need_plug = true;
-+		blk_start_plug(&plug);
-+	}
- 	while ((bio = bio_list_pop(&bios)))
- 		submit_bio(bio);
-+	if (need_plug)
-+		blk_finish_plug(&plug);
- }
- 
- /**
--- 
-2.17.1
-
+Thanks
+Kishon
