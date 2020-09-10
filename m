@@ -2,99 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8612D263AA6
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 04:39:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F798263AAE
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 04:40:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730629AbgIJCjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 22:39:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57806 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730870AbgIJCgS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 22:36:18 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E90ADC061573
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 19:36:17 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id j7so175622plk.11
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 19:36:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Qi/C9aaUBtjbfZdmUnacP7NMqMiArkbulm9um4Od9hw=;
-        b=pMxYK2/Pkb0EZMXzFIXZUb6i3ZFLn1ko9Syhefb9p3U0eQsJxrLTbXusA8P70M5CT1
-         8OaC7qRD2zdgicdwfeVKJlgVkWTlRsAH0SdhHr0hIR5zwzLmPGuCpl2IuZNHv0Pc9xj3
-         BOC0fSJHik5f1LzVopnGUaF/QLaXqno0bZRRXC3gwpKHEwAlEzehzkS7voGPGxTqqnnh
-         tifUkmYJgkLubTgcQbn/Acy9Xq71HDbvKid54UCDspt6u7L/Qf/Nw7NMvAo+5PC+FfPt
-         GXQnCvAde4Mvz2b9/OjnzIgnhwKg2SktKcz40RdDNw+TI9PSCQXMazxo8P4GYADd2tk+
-         aWvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Qi/C9aaUBtjbfZdmUnacP7NMqMiArkbulm9um4Od9hw=;
-        b=EJ4BrRWyFJFD3E+GjAZqOZY91p5PKiqMQxnOa6HVpwdmhAwrLG8ZSzpuZSezm1gQFf
-         oyvHzUKDAJguFtl2xs2FoQgVX5rgEIQq36u6i/t3crW5mm0bEljfL0CNXr1Apf9nuQ0g
-         cGqGm9WL94UXien+kW7pewGkLFd9GotVrkegzoovK2yRYDQ7src1u/qjoyyBwhVb2y3J
-         QM+aERDR0tVj6j/mHBYDyLSMiqnPdKdq6BkhhCzCGg9/DeRjoGt1gTX4UCMiioew6cWg
-         gyysjXqQI/U77qwABpSKEcHe5pdl83CEG7XGctEfWH8la4Ph7DfkEBQJdAmR0dtCs+HO
-         1tjw==
-X-Gm-Message-State: AOAM533nFpO3prRPgfkXXjudRSRvkRk4kwPUnizRRPdN93Ut53q2trUk
-        O2VFlJMICIxJfxDt1UhfWOo=
-X-Google-Smtp-Source: ABdhPJyB/gDClpFCWVlduVuK4BaWMjZ2z2J8E2w9T/1NXHxm4i56LLkl2BnupOFpqNKNYfWvC7cqsQ==
-X-Received: by 2002:a17:902:7d92:: with SMTP id a18mr3549422plm.68.1599705377388;
-        Wed, 09 Sep 2020 19:36:17 -0700 (PDT)
-Received: from [10.230.30.107] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id x9sm3975288pfj.96.2020.09.09.19.36.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Sep 2020 19:36:16 -0700 (PDT)
-Subject: Re: [GIT PULL 1/1] bcm2835-dt-next-2020-09-08
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20200908185427.4196-1-nsaenzjulienne@suse.de>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <6ce1010d-b3e5-d795-5702-41590eb1bb67@gmail.com>
-Date:   Wed, 9 Sep 2020 19:36:15 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.2.1
+        id S1730478AbgIJCk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 22:40:27 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:46288 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730680AbgIJCic (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 22:38:32 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 1487A9E9BBC2C9955179;
+        Thu, 10 Sep 2020 10:38:21 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 10 Sep 2020 10:38:13 +0800
+From:   Jing Xiangfeng <jingxiangfeng@huawei.com>
+To:     <maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>,
+        <tzimmermann@suse.de>, <airlied@linux.ie>, <daniel@ffwll.ch>,
+        <nirmoy.das@amd.com>, <christian.koenig@amd.com>
+CC:     <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+        <jingxiangfeng@huawei.com>
+Subject: [PATCH] drm/mm: prevent a potential null-pointer dereference
+Date:   Thu, 10 Sep 2020 10:38:58 +0800
+Message-ID: <20200910023858.43759-1-jingxiangfeng@huawei.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20200908185427.4196-1-nsaenzjulienne@suse.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The macro 'DECLARE_NEXT_HOLE_ADDR' may hit a potential null-pointer
+dereference. So use 'entry' after checking it.
 
+Fixes: 5fad79fd66ff ("drm/mm: cleanup and improve next_hole_*_addr()")
+Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+---
+ drivers/gpu/drm/drm_mm.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-On 9/8/2020 11:54 AM, Nicolas Saenz Julienne wrote:
-> Hi Florian,
-> 
-> The following changes since commit 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5:
-> 
->    Linux 5.9-rc1 (2020-08-16 13:04:57 -0700)
-> 
-> are available in the Git repository at:
-> 
->    https://git.kernel.org/pub/scm/linux/kernel/git/nsaenz/linux-rpi.git tags/bcm2835-dt-next-2020-09-08
-> 
-> for you to fetch changes up to 4564363351e2680e55edc23c7953aebd2acb4ab7:
-> 
->    ARM: dts: bcm2711: Enable the display pipeline (2020-09-08 18:28:23 +0200)
-> 
-> ----------------------------------------------------------------
-> Maxime Ripard enables vc4 on BCM2711 (RPi4), which among other things
-> adds HDMI functionality (no 4K yet).
-> 
-> ----------------------------------------------------------------
-
-Merged into devicetree/next, thanks Nicolas.
+diff --git a/drivers/gpu/drm/drm_mm.c b/drivers/gpu/drm/drm_mm.c
+index a4a04d246135..6fcf70f71962 100644
+--- a/drivers/gpu/drm/drm_mm.c
++++ b/drivers/gpu/drm/drm_mm.c
+@@ -392,11 +392,14 @@ first_hole(struct drm_mm *mm,
+ #define DECLARE_NEXT_HOLE_ADDR(name, first, last)			\
+ static struct drm_mm_node *name(struct drm_mm_node *entry, u64 size)	\
+ {									\
+-	struct rb_node *parent, *node = &entry->rb_hole_addr;		\
++	struct rb_node *parent, *node;					\
+ 									\
+-	if (!entry || RB_EMPTY_NODE(node))				\
++	if (!entry)							\
+ 		return NULL;						\
+ 									\
++	node = &entry->rb_hole_addr;					\
++	if (RB_EMPTY_NODE(node))					\
++		return NULL;						\
+ 	if (usable_hole_addr(node->first, size)) {			\
+ 		node = node->first;					\
+ 		while (usable_hole_addr(node->last, size))		\
 -- 
-Florian
+2.17.1
+
