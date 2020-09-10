@@ -2,78 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E12B926523D
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:12:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D21BC2652CE
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:24:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726688AbgIJVMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 17:12:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56380 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731135AbgIJOcg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 10:32:36 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A72CC0617AA;
-        Thu, 10 Sep 2020 07:20:48 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id q21so6530339edv.1;
-        Thu, 10 Sep 2020 07:20:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DqYP69u6EXo/SysyWBW0+nlQMG0J6Ocm49GIaUZelBo=;
-        b=bUDAZHWm9YF4plGhsM1Nza1WuKrIrg3kVvCIilsl7y96mCWYP/2edjQVFXlzqm3LqA
-         z1x0oHSkiWBt5dCCVloB6KxbVuT6zXqQ7NoRmvRoQQk+0nGhemZ4vL1XItmz7eCQwCIk
-         O4zJNB2Vw4K/+ywSpq+x4ByKQ9pV5wFVdvj9E4SaLWJlriRaONdbZbF5IVjwQH8rB5z6
-         wmMRd4LQzwo7OHoFvxxpAblyj94sW+WzZiUhNtOujX9L3XDfPjiPV/yPq9BF/W6Dmygy
-         w3Rs/8EK5FAhW2k3Iw4IUDJL09YJTyi7yT0rXZqqH+6oozTtBDZoVDWMOjoPPNu5C1+x
-         ArWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DqYP69u6EXo/SysyWBW0+nlQMG0J6Ocm49GIaUZelBo=;
-        b=ufhuVXPdzBnXaXPNc43K989KJFpD+pCNFyAXx1fd9x2T6VoExGYLJ7eVbtR4DZByfW
-         HeRVTBQ9vEoYe4z40IZhHWTa9SnbMC1L0qmJ9yZQ0so+msgx/doE01pgxVDJUULrRyet
-         YujIYB3u0tt4E/tF7vV0k32Cf+gozcXNdWGIaRWnk3ckKXXoivkpv0adC1ZuXSdSKLuP
-         0LFy6DADk9dErJsRL8/+g+TZDcNb81twtbjX3LFTueBG8ILlpHVAZYJIUDjVUeILNPQm
-         FkBsbXGco3ZiUrA1TKsLY/wyly0GhZOAGaJqNC1eQGEliQjSJcPoiWzxURxOyysGJFZ6
-         8A/g==
-X-Gm-Message-State: AOAM532EQxnKTWtCXIy+ij1Wjm7TCDFZK6G7P2d50pIcWZedUVgyzbn9
-        C8KdpdaOEzPq335FVuShfxkosNVnrmGzmVfwkkvZ66OWBRI=
-X-Google-Smtp-Source: ABdhPJz1awMw7XZ11QjIEJ4q0d1xkTs1E/NS/8CmOFBaVYYqxRVkRHSm8uiDeK4OOuiOKf9v4V/YZ0XXO9+OvrdlPy8=
-X-Received: by 2002:aa7:c504:: with SMTP id o4mr9794775edq.82.1599747646976;
- Thu, 10 Sep 2020 07:20:46 -0700 (PDT)
+        id S1727095AbgIJVYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 17:24:49 -0400
+Received: from foss.arm.com ([217.140.110.172]:37282 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731004AbgIJOXM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 10:23:12 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E3BEB11B3;
+        Thu, 10 Sep 2020 07:21:17 -0700 (PDT)
+Received: from [10.57.40.122] (unknown [10.57.40.122])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1B4783F66E;
+        Thu, 10 Sep 2020 07:21:08 -0700 (PDT)
+Subject: Re: [trivial PATCH] treewide: Convert switch/case fallthrough; to
+ break;
+To:     Joe Perches <joe@perches.com>, LKML <linux-kernel@vger.kernel.org>,
+        Jiri Kosina <trivial@kernel.org>
+Cc:     linux-wireless@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        oss-drivers@netronome.com, nouveau@lists.freedesktop.org,
+        alsa-devel <alsa-devel@alsa-project.org>,
+        dri-devel@lists.freedesktop.org, linux-ide@vger.kernel.org,
+        dm-devel@redhat.com, linux-mtd@lists.infradead.org,
+        linux-i2c@vger.kernel.org, sparclinux@vger.kernel.org,
+        kvmarm@lists.cs.columbia.edu, linux-rtc@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
+        dccp@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-atm-general@lists.sourceforge.net,
+        linux-afs@lists.infradead.org, coreteam@netfilter.org,
+        intel-wired-lan@lists.osuosl.org, linux-serial@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-mmc@vger.kernel.org,
+        Kees Cook <kees.cook@canonical.com>,
+        linux-media@vger.kernel.org, linux-pm@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, linux-sctp@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-nvme@lists.infradead.org,
+        storagedev@microchip.com, ceph-devel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-nfs@vger.kernel.org,
+        linux-parisc@vger.kernel.org, netdev@vger.kernel.org,
+        linux-usb@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-mips@vger.kernel.org, iommu@lists.linux-foundation.org,
+        netfilter-devel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        bpf@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Will Deacon <will@kernel.org>
+References: <e6387578c75736d61b2fe70d9783d91329a97eb4.camel@perches.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <9372456a-8dcf-2735-57a4-e126aa5df3a6@arm.com>
+Date:   Thu, 10 Sep 2020 15:21:05 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <CADxRZqwGH3c5SvByBB3WSQhR_0NLCY=3RZ6541m8afX-scA4HA@mail.gmail.com>
- <20200910134040.GZ1362448@hirez.programming.kicks-ass.net>
-In-Reply-To: <20200910134040.GZ1362448@hirez.programming.kicks-ass.net>
-From:   Anatoly Pugachev <matorola@gmail.com>
-Date:   Thu, 10 Sep 2020 17:20:35 +0300
-Message-ID: <CADxRZqyQo5XhMeyGy2regB4rcRp6tm4DLd=LK6DOJ=c-RTmHww@mail.gmail.com>
-Subject: Re: [sparc64] kernel OOPS bisected from "lockdep: improve
- current->(hard|soft)irqs_enabled synchronisation with actual irq state"
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Sparc kernel list <sparclinux@vger.kernel.org>,
-        Linux Kernel list <linux-kernel@vger.kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <e6387578c75736d61b2fe70d9783d91329a97eb4.camel@perches.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 4:40 PM <peterz@infradead.org> wrote:
->
-> On Thu, Sep 10, 2020 at 02:43:13PM +0300, Anatoly Pugachev wrote:
-> > Hello!
-> >
-> > The following git patch 044d0d6de9f50192f9697583504a382347ee95ca
-> > (linux git master branch) introduced the following kernel OOPS upon
-> > kernel boot on my sparc64 T5-2 ldom (VM):
->
-> https://lkml.kernel.org/r/20200908154157.GV1362448@hirez.programming.kicks-ass.net
+On 2020-09-09 21:06, Joe Perches wrote:
+> fallthrough to a separate case/default label break; isn't very readable.
+> 
+> Convert pseudo-keyword fallthrough; statements to a simple break; when
+> the next label is case or default and the only statement in the next
+> label block is break;
+> 
+> Found using:
+> 
+> $ grep-2.5.4 -rP --include=*.[ch] -n "fallthrough;(\s*(case\s+\w+|default)\s*:\s*){1,7}break;" *
+> 
+> Miscellanea:
+> 
+> o Move or coalesce a couple label blocks above a default: block.
+> 
+> Signed-off-by: Joe Perches <joe@perches.com>
+> ---
+> 
+> Compiled allyesconfig x86-64 only.
+> A few files for other arches were not compiled.
+> 
 
-Peter, thanks!
+[...]
+> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+> index c192544e874b..743db1abec40 100644
+> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+> @@ -3777,7 +3777,7 @@ static int arm_smmu_device_hw_probe(struct arm_smmu_device *smmu)
+>   	switch (FIELD_GET(IDR0_TTF, reg)) {
+>   	case IDR0_TTF_AARCH32_64:
+>   		smmu->ias = 40;
+> -		fallthrough;
+> +		break;
+>   	case IDR0_TTF_AARCH64:
+>   		break;
+>   	default:
 
-That fixes the issue for me.
+I have to say I don't really agree with the readability argument for 
+this one - a fallthrough is semantically correct here, since the first 
+case is a superset of the second. It just happens that anything we would 
+do for the common subset is implicitly assumed (there are other 
+potential cases we simply haven't added support for at the moment), thus 
+the second case is currently empty.
+
+This change actively obfuscates that distinction.
+
+Robin.
