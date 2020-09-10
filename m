@@ -2,179 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE00C265056
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 22:12:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EF96265041
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 22:09:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726961AbgIJULp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 16:11:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38046 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727830AbgIJO7v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 10:59:51 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 374E12075A;
-        Thu, 10 Sep 2020 14:59:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599749986;
-        bh=VxQVC648qQ3aQ7KAntrOBMaixdukqiVVbKsy/UOgfbo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EVNBnRotKgVhSUvQ8fjuA/p57cW1gM3ixuT6H+i2fFWc0tBV1Kl6O8vv6UW26vTYC
-         qOEtDdXT2U5Dhv5fAkDYxM4odfmArF5CqgTupH0rO9tvLu6uhulA+c6nv3QrFgitaj
-         pqwgbtf58sVqHXdgFJSAjeYuvOopPRxRzQSjG8rs=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 48FE240D3D; Thu, 10 Sep 2020 11:59:44 -0300 (-03)
-Date:   Thu, 10 Sep 2020 11:59:44 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Ian Rogers <irogers@google.com>
-Subject: Re: [PATCHv2] perf tools: Call test_attr__open directly
-Message-ID: <20200910145944.GE4018363@kernel.org>
-References: <20200827134830.126721-1-jolsa@kernel.org>
- <20200827134830.126721-2-jolsa@kernel.org>
- <20200827193201.GB127372@krava>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200827193201.GB127372@krava>
-X-Url:  http://acmel.wordpress.com
+        id S1726984AbgIJUIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 16:08:40 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:61852 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730859AbgIJPAn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 11:00:43 -0400
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08AEi4YI192630;
+        Thu, 10 Sep 2020 11:00:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id; s=pp1;
+ bh=5VXKsHTc2YlCV3PXBFCbmF1hTMHTSBXPxb9CKodxcuc=;
+ b=lJm0/tYKVnLWLps2+W6cAz1a9vrIWBEiP+kwk1q2U+Ibr3tK9hHfmZoMaZ7sHL4AOzFG
+ U8MF73hxTxtHjYbp0vBLEb92NkHzmKnOhS/u21GYrVf3OdLrsa7h7TQHZKyALnhekAjo
+ nKXwusdMDgbyylGqJ1WSDugrkjpm2fcrQ+t0h8aSm/92l+ZV3JK/cliqzGPxJ4jZlzMZ
+ da2I0XmeJAYCxvHw+l7r2ceDyk78W3+gRRTLx1nHTrEG94Euogl/XhE/by94e7BT5SNn
+ 48fbqOVVb7A3D2xgiKi3CzcaUtJ8k2udWAmivgmg0FDa3PkDt/Z/Kpfc5gNYS1a2gcgF zA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 33fnyv0wgf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Sep 2020 11:00:07 -0400
+Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08AEq17J025485;
+        Thu, 10 Sep 2020 11:00:07 -0400
+Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 33fnyv0wew-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Sep 2020 11:00:06 -0400
+Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
+        by ppma03dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08AEqMb2000343;
+        Thu, 10 Sep 2020 15:00:06 GMT
+Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
+        by ppma03dal.us.ibm.com with ESMTP id 33c2a9jbjd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Sep 2020 15:00:05 +0000
+Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
+        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08AF00At32702764
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 10 Sep 2020 15:00:00 GMT
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 984DF7806E;
+        Thu, 10 Sep 2020 15:00:02 +0000 (GMT)
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0909778064;
+        Thu, 10 Sep 2020 15:00:00 +0000 (GMT)
+Received: from oc4221205838.ibm.com (unknown [9.211.91.207])
+        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Thu, 10 Sep 2020 15:00:00 +0000 (GMT)
+From:   Matthew Rosato <mjrosato@linux.ibm.com>
+To:     alex.williamson@redhat.com, bhelgaas@google.com
+Cc:     schnelle@linux.ibm.com, pmorel@linux.ibm.com, mpe@ellerman.id.au,
+        oohall@gmail.com, cohuck@redhat.com, kevin.tian@intel.com,
+        hca@linux.ibm.com, gor@linux.ibm.com, borntraeger@de.ibm.com,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, linux-pci@vger.kernel.org
+Subject: [PATCH v5 0/3] vfio/pci: Restore MMIO access for s390 detached VFs
+Date:   Thu, 10 Sep 2020 10:59:54 -0400
+Message-Id: <1599749997-30489-1-git-send-email-mjrosato@linux.ibm.com>
+X-Mailer: git-send-email 1.8.3.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-10_03:2020-09-10,2020-09-10 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
+ lowpriorityscore=0 bulkscore=0 phishscore=0 impostorscore=0 clxscore=1015
+ suspectscore=0 priorityscore=1501 mlxlogscore=864 spamscore=0 mlxscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009100130
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Aug 27, 2020 at 09:32:01PM +0200, Jiri Olsa escreveu:
-> nack.. forgot python header change :-\ v2 attached
-> 
-> thanks,
-> jirka
+Changes from v4:
+- Switch from dev_flags to a bitfield
+- Scrubbed improper use of MSE acronym
+- Restored the fixes tag to patch 3 (but the other 2 patches are
+  now pre-reqs -- cc stable 5.8?) 
 
-Thanks, applied.
- 
-> 
-> ---
-> There's no longer need to have test_attr__open inside
-> sys_perf_event_open call, because both record and stat
-> call evsel__open_cpu, so we can call it directly from
-> there and not polute perf-sys.h header.
-> 
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  tools/perf/perf-sys.h    | 22 ++--------------------
->  tools/perf/tests/attr.c  |  2 +-
->  tools/perf/util/evsel.c  |  5 +++++
->  tools/perf/util/python.c |  2 +-
->  tools/perf/util/util.h   |  6 ++++++
->  5 files changed, 15 insertions(+), 22 deletions(-)
-> 
-> diff --git a/tools/perf/perf-sys.h b/tools/perf/perf-sys.h
-> index 15e458e150bd..7a2264e1e4e1 100644
-> --- a/tools/perf/perf-sys.h
-> +++ b/tools/perf/perf-sys.h
-> @@ -9,31 +9,13 @@
->  
->  struct perf_event_attr;
->  
-> -extern bool test_attr__enabled;
-> -void test_attr__ready(void);
-> -void test_attr__init(void);
-> -void test_attr__open(struct perf_event_attr *attr, pid_t pid, int cpu,
-> -		     int fd, int group_fd, unsigned long flags);
-> -
-> -#ifndef HAVE_ATTR_TEST
-> -#define HAVE_ATTR_TEST 1
-> -#endif
-> -
->  static inline int
->  sys_perf_event_open(struct perf_event_attr *attr,
->  		      pid_t pid, int cpu, int group_fd,
->  		      unsigned long flags)
->  {
-> -	int fd;
-> -
-> -	fd = syscall(__NR_perf_event_open, attr, pid, cpu,
-> -		     group_fd, flags);
-> -
-> -#if HAVE_ATTR_TEST
-> -	if (unlikely(test_attr__enabled))
-> -		test_attr__open(attr, pid, cpu, fd, group_fd, flags);
-> -#endif
-> -	return fd;
-> +	return syscall(__NR_perf_event_open, attr, pid, cpu,
-> +		       group_fd, flags);
->  }
->  
->  #endif /* _PERF_SYS_H */
-> diff --git a/tools/perf/tests/attr.c b/tools/perf/tests/attr.c
-> index a9599ab8c471..ec972e0892ab 100644
-> --- a/tools/perf/tests/attr.c
-> +++ b/tools/perf/tests/attr.c
-> @@ -30,9 +30,9 @@
->  #include <sys/types.h>
->  #include <sys/stat.h>
->  #include <unistd.h>
-> -#include "../perf-sys.h"
->  #include <subcmd/exec-cmd.h>
->  #include "event.h"
-> +#include "util.h"
->  #include "tests.h"
->  
->  #define ENV "PERF_TEST_ATTR"
-> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-> index fd865002cbbd..6f0e23105cf8 100644
-> --- a/tools/perf/util/evsel.c
-> +++ b/tools/perf/util/evsel.c
-> @@ -1680,6 +1680,11 @@ static int evsel__open_cpu(struct evsel *evsel, struct perf_cpu_map *cpus,
->  
->  			FD(evsel, cpu, thread) = fd;
->  
-> +			if (unlikely(test_attr__enabled)) {
-> +				test_attr__open(&evsel->core.attr, pid, cpus->map[cpu],
-> +						fd, group_fd, flags);
-> +			}
-> +
->  			if (fd < 0) {
->  				err = -errno;
->  
-> diff --git a/tools/perf/util/python.c b/tools/perf/util/python.c
-> index 75a9b1d62bba..74f85948d101 100644
-> --- a/tools/perf/util/python.c
-> +++ b/tools/perf/util/python.c
-> @@ -17,7 +17,7 @@
->  #include "mmap.h"
->  #include "util/env.h"
->  #include <internal/lib.h>
-> -#include "../perf-sys.h"
-> +#include "util.h"
->  
->  #if PY_MAJOR_VERSION < 3
->  #define _PyUnicode_FromString(arg) \
-> diff --git a/tools/perf/util/util.h b/tools/perf/util/util.h
-> index f486fdd3a538..ad737052e597 100644
-> --- a/tools/perf/util/util.h
-> +++ b/tools/perf/util/util.h
-> @@ -62,4 +62,10 @@ char *perf_exe(char *buf, int len);
->  #endif
->  #endif
->  
-> +extern bool test_attr__enabled;
-> +void test_attr__ready(void);
-> +void test_attr__init(void);
-> +struct perf_event_attr;
-> +void test_attr__open(struct perf_event_attr *attr, pid_t pid, int cpu,
-> +		     int fd, int group_fd, unsigned long flags);
->  #endif /* GIT_COMPAT_UTIL_H */
-> -- 
-> 2.26.2
-> 
+Since commit abafbc551fdd ("vfio-pci: Invalidate mmaps and block MMIO
+access on disabled memory") VFIO now rejects guest MMIO access when the
+PCI_COMMAND_MEMORY bit is OFF.  This is however not the case for VFs
+(fixed in commit ebfa440ce38b ("vfio/pci: Fix SR-IOV VF handling with
+MMIO blocking")).  Furthermore, on s390 where we always run with at
+least a bare-metal hypervisor (LPAR) PCI_COMMAND_MEMORY, unlike Device/
+Vendor IDs and BARs, is not emulated when VFs are passed-through to the
+OS independently.
+
+Based upon Bjorn's most recent comment [1], I investigated the notion of
+setting is_virtfn=1 for VFs passed-through to Linux and not linked to a
+parent PF (referred to as a 'detached VF' in my prior post).  However,
+we rapidly run into issues on how to treat an is_virtfn device with no
+linked PF. Further complicating the issue is when you consider the guest
+kernel has a passed-through VF but has CONFIG_PCI_IOV=n as in many 
+locations is_virtfn checking is ifdef'd out altogether and the device is
+assumed to be an independent PCI function.
+
+The decision made by VFIO whether to require or emulate a PCI feature 
+(in this case PCI_COMMAND_MEMORY) is based upon the knowledge it has 
+about the device, including implicit expectations of what/is not
+emulated below VFIO. (ex: is it safe to read vendor/id from config
+space?) -- Our firmware layer attempts similar behavior by emulating
+things such as vendor/id/BAR access - without these an unlinked VF would
+not be usable. But what is or is not emulated by the layer below may be
+different based upon which entity is providing the emulation (vfio,
+LPAR, some other hypervisor)
+
+So, the proposal here aims to fix the immediate issue of s390
+pass-through VFs becoming suddenly unusable by vfio by using a new 
+bit to identify a VF feature that we know is hardwired to 0 for any
+VF (PCI_COMMAND_MEMORY) and de-coupling the need for emulating
+PCI_COMMAND_MEMORY from the is_virtfn flag. The exact scope of is_virtfn
+and physfn for bare-metal vs guest scenarios and identifying what
+features are / are not emulated by the lower-level hypervisors is a much
+bigger discussion independent of this limited proposal.
+
+[1]: https://marc.info/?l=linux-pci&m=159856041930022&w=2
+
+
+
+Matthew Rosato (3):
+  PCI/IOV: Mark VFs as not implementing PCI_COMMAND_MEMORY
+  s390/pci: Mark all VFs as not implementing PCI_COMMAND_MEMORY
+  vfio/pci: Decouple PCI_COMMAND_MEMORY bit checks from is_virtfn
+
+ arch/s390/pci/pci_bus.c            |  5 +++--
+ drivers/pci/iov.c                  |  1 +
+ drivers/vfio/pci/vfio_pci_config.c | 24 ++++++++++++++----------
+ include/linux/pci.h                |  1 +
+ 4 files changed, 19 insertions(+), 12 deletions(-)
 
 -- 
+1.8.3.1
 
-- Arnaldo
