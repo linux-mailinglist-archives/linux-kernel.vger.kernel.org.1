@@ -2,97 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2967C2639D0
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 04:05:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BB062639D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 04:06:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730477AbgIJCF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 22:05:28 -0400
-Received: from a27-56.smtp-out.us-west-2.amazonses.com ([54.240.27.56]:47372
-        "EHLO a27-56.smtp-out.us-west-2.amazonses.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730085AbgIJBu7 (ORCPT
+        id S1730455AbgIJCBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 22:01:13 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:30403 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728631AbgIJBib (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 21:50:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=zsmsymrwgfyinv5wlfyidntwsjeeldzt; d=codeaurora.org; t=1599701327;
-        h=MIME-Version:Content-Type:Content-Transfer-Encoding:Date:From:To:Cc:Subject:In-Reply-To:References:Message-ID;
-        bh=hq2qlkdV42iGEc13LOvCdrQppZ9s1QRk5yIifv+RCMM=;
-        b=Gtp1ylcYQEVffdmQtrBdvWH6cosDN3shEHQfkw+bgx6Ro5QhyXrBcKyC6pfcTNz7
-        rbWuLo5VnItBdXEcxunj6/g5YpDAfomy7BtiaoKPUz9DvOi2xjgHYocsnW22TrXjhHr
-        dSvdRA2fjmc/VHb4sFdWZQDwPKZKZz0Q5UUVslmY=
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=hsbnp7p3ensaochzwyq5wwmceodymuwv; d=amazonses.com; t=1599701327;
-        h=MIME-Version:Content-Type:Content-Transfer-Encoding:Date:From:To:Cc:Subject:In-Reply-To:References:Message-ID:Feedback-ID;
-        bh=hq2qlkdV42iGEc13LOvCdrQppZ9s1QRk5yIifv+RCMM=;
-        b=hAdnamzqH6Sz+WfF7VgwmYHYvbw8SovftoShQbKOecaXxjmJ86e9F/RKtxRZwU1P
-        NW+MtO0G19y10UU3IsUpdE/08HbqIAC/ylBbSphW09uXjZ84qij0WM3BkyYQiqcJZHg
-        ckryzDCljEw96cyUVjwPAfgjKCHaoXzzid3Oqzps=
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+        Wed, 9 Sep 2020 21:38:31 -0400
+X-UUID: 222f52f8355341d2b9647e654a8e4954-20200910
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=/kpiSBfDpcyE748DN9WDHc2W37kjiStGnsyZ7yp56L0=;
+        b=pNzeSiPWeWjfzL2aW5NgVC1CC5xJFh47nUNG/ao7Jr4fF26Upi8Z92/Ru5dqzsDH3Y3Bu9zECtlIadBCaB16X1ZaKvIbhmyVodLO4rsGWZ8eHf/zypE6R5id1YlJ43N8+DnqCDbvAnxw+NgElfozVwsak0Aivic3Dv22MMNOS1E=;
+X-UUID: 222f52f8355341d2b9647e654a8e4954-20200910
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
+        (envelope-from <stanley.chu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1348526883; Thu, 10 Sep 2020 09:38:01 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 10 Sep 2020 09:37:58 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 10 Sep 2020 09:37:58 +0800
+From:   Stanley Chu <stanley.chu@mediatek.com>
+To:     <linux-scsi@vger.kernel.org>, <martin.petersen@oracle.com>,
+        <avri.altman@wdc.com>, <alim.akhtar@samsung.com>,
+        <jejb@linux.ibm.com>
+CC:     <matthias.bgg@gmail.com>, <bvanassche@acm.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <kuohong.wang@mediatek.com>,
+        <peter.wang@mediatek.com>, <chun-hung.wu@mediatek.com>,
+        <andy.teng@mediatek.com>, <chaotian.jing@mediatek.com>,
+        <cc.chou@mediatek.com>, Stanley Chu <stanley.chu@mediatek.com>
+Subject: [PATCH] scsi: ufs-mediatek: Fix build warnings with make W=1
+Date:   Thu, 10 Sep 2020 09:37:56 +0800
+Message-ID: <20200910013756.11385-1-stanley.chu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 10 Sep 2020 01:28:47 +0000
-From:   nguyenb@codeaurora.org
-To:     cang@codeaurora.org, asutoshd@codeaurora.org,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org
-Cc:     linux-arm-msm@vger.kernel.org,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/1] scsi: ufshcd: Properly set the device Icc Level
-In-Reply-To: <5c9d6f76303bbe5188bf839b2ea5e5bf530e7281.1598923023.git.nguyenb@codeaurora.org>
-References: <5c9d6f76303bbe5188bf839b2ea5e5bf530e7281.1598923023.git.nguyenb@codeaurora.org>
-Message-ID: <0101017475a11c06-5e39bfe2-d5ca-4eba-957e-339f317f8b55-000000@us-west-2.amazonses.com>
-X-Sender: nguyenb@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
-X-SES-Outgoing: 2020.09.10-54.240.27.56
-Feedback-ID: 1.us-west-2.CZuq2qbDmUIuT3qdvXlRHZZCpfZqZ4GtG9v3VKgRyF0=:AmazonSES
+Content-Type: text/plain
+X-TM-SNTS-SMTP: 38E1E23B3D021B9BE7FEBC5B0F21E00D3CD02EEAB16EADD8D4E73E28F58D18842000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-08-31 18:19, Bao D. Nguyen wrote:
-> UFS version 3.0 and later devices require Vcc and Vccq power supplies
-> with Vccq2 being optional. While earlier UFS version 2.0 and 2.1
-> devices, the Vcc and Vccq2 are required with Vccq being optional.
-> Check the required power supplies used by the device
-> and set the device's supported Icc level properly.
-> 
-> Signed-off-by: Can Guo <cang@codeaurora.org>
-> Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
-> Signed-off-by: Bao D. Nguyen <nguyenb@codeaurora.org>
-> ---
->  drivers/scsi/ufs/ufshcd.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index 06e2439..fdd1d3e 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -6845,8 +6845,9 @@ static u32
-> ufshcd_find_max_sup_active_icc_level(struct ufs_hba *hba,
->  {
->  	u32 icc_level = 0;
-> 
-> -	if (!hba->vreg_info.vcc || !hba->vreg_info.vccq ||
-> -						!hba->vreg_info.vccq2) {
-> +	if (!hba->vreg_info.vcc ||
-> +		(!hba->vreg_info.vccq && hba->dev_info.wspecversion >= 0x300) ||
-> +		(!hba->vreg_info.vccq2 && hba->dev_info.wspecversion < 0x300)) {
->  		dev_err(hba->dev,
->  			"%s: Regulator capability was not set, actvIccLevel=%d",
->  							__func__, icc_level);
+Rml4IGJ1aWxkIHdhcm5pbmdzIHdpdGggbWFrZSBXPTEgYXMgYmVsb3csDQoNCjEuDQo+PiBkcml2
+ZXJzL3Njc2kvdWZzL3Vmcy1tZWRpYXRlay5jOjExNjoyMjogd2FybmluZzogZm9ybWF0ICclZCcg
+ZXhwZWN0cw0KPj4gYXJndW1lbnQgb2YgdHlwZSAnaW50JywgYnV0IGFyZ3VtZW50IDQgaGFzIHR5
+cGUgJ2xvbmcgaW50Jw0KDQoyLg0KICBDQyBbTV0gIGRyaXZlcnMvc2NzaS91ZnMvdWZzLW1lZGlh
+dGVrLm8NCi4uL2RyaXZlcnMvc2NzaS91ZnMvdWZzLW1lZGlhdGVrLmM6NzQ5OiBlcnJvcjogQ2Fu
+bm90IHBhcnNlIHN0cnVjdCBvciB1bmlvbiENCg0KLyoqIGlzIHVzZWQgc3BlY2lmaWNhbGx5IHdp
+dGgga2VybmVsLWRvYyB0b29sLg0KQXMgYSBxdWljayBmaXggYnkgcmVtb3ZpbmcgZHViaW91cyAv
+KiogaW4gdGhlIGNvbW1lbnQgYmxvY2sgb2YNCnN0cnVjdCB1ZnNfaGJhX3ZhcmlhbnRfb3BzIHVm
+c19oYmFfbXRrX3ZvcHMuDQoNClNpZ25lZC1vZmYtYnk6IFN0YW5sZXkgQ2h1IDxzdGFubGV5LmNo
+dUBtZWRpYXRlay5jb20+DQotLS0NCiBkcml2ZXJzL3Njc2kvdWZzL3Vmcy1tZWRpYXRlay5jIHwg
+NiArKystLS0NCiAxIGZpbGUgY2hhbmdlZCwgMyBpbnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygt
+KQ0KDQpkaWZmIC0tZ2l0IGEvZHJpdmVycy9zY3NpL3Vmcy91ZnMtbWVkaWF0ZWsuYyBiL2RyaXZl
+cnMvc2NzaS91ZnMvdWZzLW1lZGlhdGVrLmMNCmluZGV4IDFhOTEzM2FjNmVmYi4uM2VjNDRkZmEy
+NTY3IDEwMDY0NA0KLS0tIGEvZHJpdmVycy9zY3NpL3Vmcy91ZnMtbWVkaWF0ZWsuYw0KKysrIGIv
+ZHJpdmVycy9zY3NpL3Vmcy91ZnMtbWVkaWF0ZWsuYw0KQEAgLTExMyw3ICsxMTMsNyBAQCBzdGF0
+aWMgdm9pZCB1ZnNfbXRrX2luaXRfcmVzZXRfY29udHJvbChzdHJ1Y3QgdWZzX2hiYSAqaGJhLA0K
+IHsNCiAJKnJjID0gZGV2bV9yZXNldF9jb250cm9sX2dldChoYmEtPmRldiwgc3RyKTsNCiAJaWYg
+KElTX0VSUigqcmMpKSB7DQotCQlkZXZfaW5mbyhoYmEtPmRldiwgIkZhaWxlZCB0byBnZXQgcmVz
+ZXQgY29udHJvbCAlczogJWRcbiIsDQorCQlkZXZfaW5mbyhoYmEtPmRldiwgIkZhaWxlZCB0byBn
+ZXQgcmVzZXQgY29udHJvbCAlczogJWxkXG4iLA0KIAkJCSBzdHIsIFBUUl9FUlIoKnJjKSk7DQog
+CQkqcmMgPSBOVUxMOw0KIAl9DQpAQCAtNzI3LDEzICs3MjcsMTMgQEAgc3RhdGljIHZvaWQgdWZz
+X210a19maXh1cF9kZXZfcXVpcmtzKHN0cnVjdCB1ZnNfaGJhICpoYmEpDQogCXVmc2hjZF9maXh1
+cF9kZXZfcXVpcmtzKGhiYSwgdWZzX210a19kZXZfZml4dXBzKTsNCiB9DQogDQotLyoqDQorLyoN
+CiAgKiBzdHJ1Y3QgdWZzX2hiYV9tdGtfdm9wcyAtIFVGUyBNVEsgc3BlY2lmaWMgdmFyaWFudCBv
+cGVyYXRpb25zDQogICoNCiAgKiBUaGUgdmFyaWFudCBvcGVyYXRpb25zIGNvbmZpZ3VyZSB0aGUg
+bmVjZXNzYXJ5IGNvbnRyb2xsZXIgYW5kIFBIWQ0KICAqIGhhbmRzaGFrZSBkdXJpbmcgaW5pdGlh
+bGl6YXRpb24uDQogICovDQotc3RhdGljIHN0cnVjdCB1ZnNfaGJhX3ZhcmlhbnRfb3BzIHVmc19o
+YmFfbXRrX3ZvcHMgPSB7DQorc3RhdGljIGNvbnN0IHN0cnVjdCB1ZnNfaGJhX3ZhcmlhbnRfb3Bz
+IHVmc19oYmFfbXRrX3ZvcHMgPSB7DQogCS5uYW1lICAgICAgICAgICAgICAgID0gIm1lZGlhdGVr
+LnVmc2hjaSIsDQogCS5pbml0ICAgICAgICAgICAgICAgID0gdWZzX210a19pbml0LA0KIAkuc2V0
+dXBfY2xvY2tzICAgICAgICA9IHVmc19tdGtfc2V0dXBfY2xvY2tzLA0KLS0gDQoyLjE4LjANCg==
 
-Hello, please help review the change and comment if any.
-
-Thanks!
-Bao
