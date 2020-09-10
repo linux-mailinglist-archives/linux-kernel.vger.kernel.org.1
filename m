@@ -2,120 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2FCA2649C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 18:31:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CD9A2649FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 18:40:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726792AbgIJQbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 12:31:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46060 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726853AbgIJQ0p (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 12:26:45 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 542CAC061757;
-        Thu, 10 Sep 2020 09:26:21 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id f142so6620268qke.13;
-        Thu, 10 Sep 2020 09:26:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=u6ipngvB4JWmCirHiN613ekfbG1vVvJJvC/3Qroc/h4=;
-        b=DQagOZDOT9VqXFwVB+dkIE3jQpoY/zrtom7izhYOg/bqtMTt2+ERhXCXfoD0apNiRW
-         z5ZhAl6oFjX2VTSNSnQI0ulS/Ju0QoH16cgdiPE0Pei2dztMAdYsDQ4pm9ZJUnJgHGmD
-         YhAeg0uCkoYLl2zyod6/ySwLc/+yPPXHLyjayg4HBmGYzqttrYI+4+ZDSJmD0QdKEUfq
-         FLw7qMmlO5QXXw+YyGhoVFBS3WkeuvXobkOhjbt+rM1GF+y0fonU0NdpV1vPxzZaRx8s
-         zHX8ngswv1h6MwoZ+giVrcv02tZ5QS4qQn6V6JekfCIPac+oQLBBDI7XLhJ062u6/iP0
-         bHYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=u6ipngvB4JWmCirHiN613ekfbG1vVvJJvC/3Qroc/h4=;
-        b=ZVetFd0lIlM10L94z9pp3Un/2yHfBKCg5G0CcO0bQHXRQDK412+xNiCiAB+h/3jzGC
-         x3tMwCipAUKDvjH0X5NQ25iuyznBMtPlYrCWSv96Ryd8OQfLEZ2xvIn7lTkMNdpvEC19
-         5WX0gYiHQrB1h9aJAkLEW6hlWkkfo/cd7YFk2OXo85CIv0NJX9axbMmxM/VE38X5AW7M
-         EbJPQpdWRPEKFeChgIFuWf1VZCTasBtt2Ue7sQFBFh+YOTx9JQiknVRNNF1yH8YBiwC1
-         w9DlDWcXZXkod9zIg+M1lxrWyMeFct6eJ5x+B7BwhQrOGwc/OxmHwbF4JNUG0f5cd4eL
-         NDfg==
-X-Gm-Message-State: AOAM530ao8LcXUgQgFicxsKCu1qN2W/lryGmkNmjD4GIQEWBV+kDA8GT
-        INSLI0zzesDRDjbXyrUWGbs=
-X-Google-Smtp-Source: ABdhPJyKeaURFSZ52gJgA2Rq5+VQW6v3QZzcl9Td9Bf1H0J1p3MyR4dI4EKuNA5vgDRzH8WbvpMlkQ==
-X-Received: by 2002:a37:a7cb:: with SMTP id q194mr8685507qke.183.1599755180181;
-        Thu, 10 Sep 2020 09:26:20 -0700 (PDT)
-Received: from ubuntu-n2-xlarge-x86 ([2604:1380:45d1:2600::1])
-        by smtp.gmail.com with ESMTPSA id 15sm6630858qka.96.2020.09.10.09.26.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Sep 2020 09:26:19 -0700 (PDT)
-Date:   Thu, 10 Sep 2020 09:26:17 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will@kernel.org>,
-        clang-built-linux@googlegroups.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/4] kbuild: remove cc-option test of -fno-strict-overflow
-Message-ID: <20200910162617.GA3119896@ubuntu-n2-xlarge-x86>
-References: <20200910135120.3527468-1-masahiroy@kernel.org>
+        id S1727070AbgIJQjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 12:39:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45550 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726966AbgIJQfw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 12:35:52 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5F2FC2075A;
+        Thu, 10 Sep 2020 16:28:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599755282;
+        bh=aAjYBTZ3/89B51LJ2Wk5dGPzivMcjg7GrmlvXzSk3Wk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=xg4Eyc35xllZSP2TmUr6B9GmszG4r1jvspO0QO2MFd6xU4cbGjEPo3wyR2E/OYVwZ
+         v7omHP/al7ElPqmweJTiQ5DWzIhVyOQuybnXnKjzIGJuWLAydswtfVw4COrKAVdHaY
+         osBhnzzOXIUmAQwUfTuNnUJXS/paGvh6pswL+2AI=
+Date:   Thu, 10 Sep 2020 18:28:10 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Shuo A Liu <shuo.a.liu@intel.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Yu Wang <yu1.wang@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>
+Subject: Re: [PATCH v3 06/17] virt: acrn: Introduce VM management interfaces
+Message-ID: <20200910162810.GB1265411@kroah.com>
+References: <20200909090836.46762-1-shuo.a.liu@intel.com>
+ <20200909090836.46762-7-shuo.a.liu@intel.com>
+ <20200909094516.GB607744@kroah.com>
+ <20200910061900.GI13723@shuo-intel.sh.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200910135120.3527468-1-masahiroy@kernel.org>
+In-Reply-To: <20200910061900.GI13723@shuo-intel.sh.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 10:51:17PM +0900, Masahiro Yamada wrote:
-> The minimal compiler versions, GCC 4.9 and Clang 10 support this flag.
+On Thu, Sep 10, 2020 at 02:19:00PM +0800, Shuo A Liu wrote:
+> Hi Greg,
 > 
-> Here is the godbolt:
-> https://godbolt.org/z/odq8h9
+> On Wed  9.Sep'20 at 11:45:16 +0200, Greg Kroah-Hartman wrote:
+> > On Wed, Sep 09, 2020 at 05:08:25PM +0800, shuo.a.liu@intel.com wrote:
+> > > From: Shuo Liu <shuo.a.liu@intel.com>
+> > > 
+> > > The VM management interfaces expose several VM operations to ACRN
+> > > userspace via ioctls. For example, creating VM, starting VM, destroying
+> > > VM and so on.
+> > > 
+> > > The ACRN Hypervisor needs to exchange data with the ACRN userspace
+> > > during the VM operations. HSM provides VM operation ioctls to the ACRN
+> > > userspace and communicates with the ACRN Hypervisor for VM operations
+> > > via hypercalls.
+> > > 
+> > > HSM maintains a list of User VM. Each User VM will be bound to an
+> > > existing file descriptor of /dev/acrn_hsm. The User VM will be
+> > > destroyed when the file descriptor is closed.
+> > > 
+> > > Signed-off-by: Shuo Liu <shuo.a.liu@intel.com>
+> > > Reviewed-by: Zhi Wang <zhi.a.wang@intel.com>
+> > > Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
+> > > Cc: Zhi Wang <zhi.a.wang@intel.com>
+> > > Cc: Zhenyu Wang <zhenyuw@linux.intel.com>
+> > > Cc: Yu Wang <yu1.wang@intel.com>
+> > > Cc: Reinette Chatre <reinette.chatre@intel.com>
+> > > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > ---
+> > >  .../userspace-api/ioctl/ioctl-number.rst      |  1 +
+> > >  MAINTAINERS                                   |  1 +
+> > >  drivers/virt/acrn/Makefile                    |  2 +-
+> > >  drivers/virt/acrn/acrn_drv.h                  | 22 +++++-
+> > >  drivers/virt/acrn/hsm.c                       | 66 ++++++++++++++++
+> > >  drivers/virt/acrn/hypercall.h                 | 78 +++++++++++++++++++
+> > >  drivers/virt/acrn/vm.c                        | 69 ++++++++++++++++
+> > >  include/uapi/linux/acrn.h                     | 56 +++++++++++++
+> > >  8 files changed, 293 insertions(+), 2 deletions(-)
+> > >  create mode 100644 drivers/virt/acrn/hypercall.h
+> > >  create mode 100644 drivers/virt/acrn/vm.c
+> > >  create mode 100644 include/uapi/linux/acrn.h
+> > > 
+> > > diff --git a/Documentation/userspace-api/ioctl/ioctl-number.rst b/Documentation/userspace-api/ioctl/ioctl-number.rst
+> > > index 2a198838fca9..ac60efedb104 100644
+> > > --- a/Documentation/userspace-api/ioctl/ioctl-number.rst
+> > > +++ b/Documentation/userspace-api/ioctl/ioctl-number.rst
+> > > @@ -319,6 +319,7 @@ Code  Seq#    Include File                                           Comments
+> > >  0xA0  all    linux/sdp/sdp.h                                         Industrial Device Project
+> > >                                                                       <mailto:kenji@bitgate.com>
+> > >  0xA1  0      linux/vtpm_proxy.h                                      TPM Emulator Proxy Driver
+> > > +0xA2  all    uapi/linux/acrn.h                                       ACRN hypervisor
+> > >  0xA3  80-8F                                                          Port ACL  in development:
+> > >                                                                       <mailto:tlewis@mindspring.com>
+> > >  0xA3  90-9F  linux/dtlk.h
+> > > diff --git a/MAINTAINERS b/MAINTAINERS
+> > > index 3030d0e93d02..d4c1ef303c2d 100644
+> > > --- a/MAINTAINERS
+> > > +++ b/MAINTAINERS
+> > > @@ -443,6 +443,7 @@ S:	Supported
+> > >  W:	https://projectacrn.org
+> > >  F:	Documentation/virt/acrn/
+> > >  F:	drivers/virt/acrn/
+> > > +F:	include/uapi/linux/acrn.h
+> > > 
+> > >  AD1889 ALSA SOUND DRIVER
+> > >  L:	linux-parisc@vger.kernel.org
+> > > diff --git a/drivers/virt/acrn/Makefile b/drivers/virt/acrn/Makefile
+> > > index 6920ed798aaf..cf8b4ed5e74e 100644
+> > > --- a/drivers/virt/acrn/Makefile
+> > > +++ b/drivers/virt/acrn/Makefile
+> > > @@ -1,3 +1,3 @@
+> > >  # SPDX-License-Identifier: GPL-2.0
+> > >  obj-$(CONFIG_ACRN_HSM)	:= acrn.o
+> > > -acrn-y := hsm.o
+> > > +acrn-y := hsm.o vm.o
+> > > diff --git a/drivers/virt/acrn/acrn_drv.h b/drivers/virt/acrn/acrn_drv.h
+> > > index 29eedd696327..043ae6840995 100644
+> > > --- a/drivers/virt/acrn/acrn_drv.h
+> > > +++ b/drivers/virt/acrn/acrn_drv.h
+> > > @@ -3,16 +3,36 @@
+> > >  #ifndef __ACRN_HSM_DRV_H
+> > >  #define __ACRN_HSM_DRV_H
+> > > 
+> > > +#include <linux/acrn.h>
+> > > +#include <linux/dev_printk.h>
+> > >  #include <linux/types.h>
+> > > 
+> > > +#include "hypercall.h"
+> > > +
+> > >  #define ACRN_INVALID_VMID (0xffffU)
+> > > 
+> > > +#define ACRN_VM_FLAG_DESTROYED		0U
+> > > +extern struct list_head acrn_vm_list;
+> > > +extern rwlock_t acrn_vm_list_lock;
+> > >  /**
+> > >   * struct acrn_vm - Properties of ACRN User VM.
+> > > + * @dev:	The struct device this VM belongs to
+> > > + * @list:	Entry within global list of all VMs
+> > >   * @vmid:	User VM ID
+> > > + * @vcpu_num:	Number of virtual CPUs in the VM
+> > > + * @flags:	Flags (ACRN_VM_FLAG_*) of the VM. This is VM flag management
+> > > + *		in HSM which is different from the &acrn_vm_creation.vm_flag.
+> > >   */
+> > >  struct acrn_vm {
+> > > -	u16	vmid;
+> > > +	struct device		*dev;
+> > > +	struct list_head	list;
+> > > +	u16			vmid;
+> > > +	int			vcpu_num;
+> > > +	unsigned long		flags;
+> > >  };
+> > > 
+> > > +struct acrn_vm *acrn_vm_create(struct acrn_vm *vm,
+> > > +			       struct acrn_vm_creation *vm_param);
+> > > +int acrn_vm_destroy(struct acrn_vm *vm);
+> > > +
+> > >  #endif /* __ACRN_HSM_DRV_H */
+> > > diff --git a/drivers/virt/acrn/hsm.c b/drivers/virt/acrn/hsm.c
+> > > index 28a3052ffa55..bc85a3c14f87 100644
+> > > --- a/drivers/virt/acrn/hsm.c
+> > > +++ b/drivers/virt/acrn/hsm.c
+> > > @@ -19,6 +19,8 @@
+> > > 
+> > >  #include "acrn_drv.h"
+> > > 
+> > > +static struct miscdevice acrn_dev;
+> > > +
+> > >  /*
+> > >   * When /dev/acrn_hsm is opened, a 'struct acrn_vm' object is created to
+> > >   * represent a VM instance and continues to be associated with the opened file
+> > > @@ -34,14 +36,77 @@ static int acrn_dev_open(struct inode *inode, struct file *filp)
+> > >  		return -ENOMEM;
+> > > 
+> > >  	vm->vmid = ACRN_INVALID_VMID;
+> > > +	vm->dev = get_device(acrn_dev.this_device);
+> > 
+> > You are grabbing a reference on a static structure?
 > 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> acrn_dev is static, but acrn_dev.this_device is not.
 
-Appeared in clang 3.0.0 in commit 6e50103acda2b918545f30141edeb991d766f2a4.
+But you don't control that device, the misc device core does.
 
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+> > 
+> > Ugh, who reviewed this code before it was sent out???
+> 
+> This part was just newly added according to your suggestion.. Please
+> refer to
+> https://lore.kernel.org/lkml/1946bf48-fda7-20e0-246d-93414a1a67f5@intel.com/
 
-> ---
+What you were doing there was wrong, and what you are doing here is just
+odd.
+
+Step back please, and describe exactly what you are trying to do.  And
+then explain how grabbing a reference to the device reference count for
+the misc device is going to help solve that issue.
+
+
+> > > +	ret = hcall_create_vm(virt_to_phys(vm_param));
+> > > +	if (ret < 0 || vm_param->vmid == ACRN_INVALID_VMID) {
+> > > +		dev_err(vm->dev, "Failed to create VM! Error: %d\n", ret);
+> > > +		return NULL;
+> > > +	}
+> > > +
+> > > +	vm->vmid = vm_param->vmid;
+> > > +	vm->vcpu_num = vm_param->vcpu_num;
+> > > +
+> > > +	write_lock_bh(&acrn_vm_list_lock);
+> > > +	list_add(&vm->list, &acrn_vm_list);
+> > 
+> > Wait, why do you have a global list of devices?  Shouldn't that device
+> > be tied to the vm structure?  Who will be iterating this list that does
+> > not have the file handle to start with?
 > 
->  Makefile                          | 2 +-
->  arch/arm64/kernel/vdso32/Makefile | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/Makefile b/Makefile
-> index 4b5a305e30d2..059b36f2ea53 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -922,7 +922,7 @@ KBUILD_CFLAGS += $(call cc-disable-warning, restrict)
->  KBUILD_CFLAGS += $(call cc-disable-warning, maybe-uninitialized)
->  
->  # disable invalid "can't wrap" optimizations for signed / pointers
-> -KBUILD_CFLAGS	+= $(call cc-option,-fno-strict-overflow)
-> +KBUILD_CFLAGS	+= -fno-strict-overflow
->  
->  # clang sets -fmerge-all-constants by default as optimization, but this
->  # is non-conforming behavior for C and in fact breaks the kernel, so we
-> diff --git a/arch/arm64/kernel/vdso32/Makefile b/arch/arm64/kernel/vdso32/Makefile
-> index d6adb4677c25..dfffd55175a3 100644
-> --- a/arch/arm64/kernel/vdso32/Makefile
-> +++ b/arch/arm64/kernel/vdso32/Makefile
-> @@ -90,7 +90,7 @@ VDSO_CFLAGS  += -O2
->  # Some useful compiler-dependent flags from top-level Makefile
->  VDSO_CFLAGS += $(call cc32-option,-Wdeclaration-after-statement,)
->  VDSO_CFLAGS += $(call cc32-option,-Wno-pointer-sign)
-> -VDSO_CFLAGS += $(call cc32-option,-fno-strict-overflow)
-> +VDSO_CFLAGS += -fno-strict-overflow
->  VDSO_CFLAGS += $(call cc32-option,-Werror=strict-prototypes)
->  VDSO_CFLAGS += $(call cc32-option,-Werror=date-time)
->  VDSO_CFLAGS += $(call cc32-option,-Werror=incompatible-pointer-types)
-> -- 
-> 2.25.1
-> 
+> Active VMs in this list will be used by the I/O requests dispatching
+> tasklet ioreq_tasklet, whose callback function is ioreq_tasklet_handler()
+> in patch 0009. ioreq_tasklet_handler() currently handles the notification
+> interrupt from the hypervisor and dispatches I/O requests to each VMs.
+
+So you need to somehow look through the whole list of devices for every
+I/O request?  That feels really really wrong, why don't you have that
+pointer in the first place?
+
+Again, step back and describe what you need/desire and then think about
+how to best solve that.  Almost always, a list of objects that you have
+to iterate over all the time is not the way to do it...
+
+Somedays I think we need an "here's how to do the things you really need
+to do in a driver" chapter in the Linux Device Driver's book...
+
+thanks,
+
+greg k-h
