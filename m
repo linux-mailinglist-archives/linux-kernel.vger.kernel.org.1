@@ -2,105 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA136264DD5
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 20:53:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B35F264DE7
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 20:55:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726419AbgIJSxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 14:53:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726871AbgIJSwN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 14:52:13 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C735CC061756;
-        Thu, 10 Sep 2020 11:52:00 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id m6so8081199wrn.0;
-        Thu, 10 Sep 2020 11:52:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NoURE3RosGdEZhUcwRMpu2K3apR4AlJgBKa/tawEZfk=;
-        b=Z/IeTM2e5NkdtHQMUTb3OBmgHD+yR+MMTlGFeyQDVmqgkF5U8650h+tRODQpFU5kgu
-         mo7+bXbrs+gl/nHwF3XbbNUYNC+RwCYpn/Mfr64lBXPq9IzuhbYQm1e/1jftVD8V7/2p
-         esqP62aZvxUvJLR5XZQZldvaHkKKyHC8hawG/RRtVj3A6Ve3SZzXKbAGJGJu8SA5mbiK
-         YqQ1PcoouNZD6SyHdF20+qEnJrBar560sZujlPoMVVddRMqCtSLf8rssgtqmXupduZwY
-         9vbxwvV04Zo0pv+n6oVhpSlXvE6YVz80BNjhKmxyah2pAotDUvJErEg1xdoxEIBKbuEv
-         ZhxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NoURE3RosGdEZhUcwRMpu2K3apR4AlJgBKa/tawEZfk=;
-        b=Y2CkRtPKo7Hh/r7dAJIAQfeJj9f5nr0RuY7rZcuuvtRAoH1+7VNnr+zovsvieNQNA3
-         dNoGdhBxN6zeyEj3DI1zcbDD/+wERD+LSw7nR3YIV1TSzME7+iFiH7Y3BsZoruF57RoB
-         kwnShsOC6KEK+8KjTv6yuhwLBo73xUwNB5CZ73bc8wv6PS4AsE5kfx2Rej/aGePEDo/E
-         4ucrl4F/GH7odjPl9J5ZqcVQunxRTQb6ySvLuANjeHg3eJJIhi0oviqqRxwK5oVs+c5y
-         G13Z64HiIGnPbe8c26pAGGHgogS0asDb0HLEuJA8oXUa/SvFDeyOrrJE7Mb02wIHiEdt
-         96VA==
-X-Gm-Message-State: AOAM532anGwOSGArnSvWy305PgJPPvJOaZSk9n4T7SrdxJ0bYKfL012H
-        I7iIATlwyhoidFq1w1c7zZwIt59Uc5bOm/6eB2mpAwB9BfE=
-X-Google-Smtp-Source: ABdhPJzUqIlEf2y1VGjc3kYbIjir/oxCkfS4m5t1QPeH+zkIf2r0/3BLeq+PMPP2oRVwe/WAHibHdBxxCBRWp8JuO00=
-X-Received: by 2002:a05:6000:1152:: with SMTP id d18mr10331726wrx.173.1599763919345;
- Thu, 10 Sep 2020 11:51:59 -0700 (PDT)
+        id S1726973AbgIJSzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 14:55:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60144 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726539AbgIJSyJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 14:54:09 -0400
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4BA8921D92;
+        Thu, 10 Sep 2020 18:54:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599764045;
+        bh=XhMR0se3B2M3cCm4dG7gM2H1njurlMTbkC88FGhIKJs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=NWf2TTe71JDTV5fTFH3pnw3HOYxZ5ivZJJsDunUt35gp25A4mNzl407I2iacg6Psi
+         Budl9qFpHKWvZJLdEln1WkpXuBpI3tCHQdwvnqxK5EHBixzH8JD2FeS50pKl/BJZ9Q
+         oW6NJfp9FaoUigAD/y/1aDn9KN/rWfhNcmsuNGLQ=
+Received: by mail-ed1-f42.google.com with SMTP id ay8so7391618edb.8;
+        Thu, 10 Sep 2020 11:54:05 -0700 (PDT)
+X-Gm-Message-State: AOAM530PpEiF4gd8hIQjezXCsXKEU4jDKO+O2s24KIZK0hCqdcKi6WP6
+        lRd0yze+KWFNX6QGZfOtGdAIUkCUMP64yFo52DA=
+X-Google-Smtp-Source: ABdhPJzxOkwjKIRJe1J7RhPZI8K0aJEHMtzOqR5F+V93515rBHAjgLIuO18iiQn+8UTlJNwgheXSwAxcmyXoMHMFYBk=
+X-Received: by 2002:a05:6402:180a:: with SMTP id g10mr10672940edy.18.1599764043844;
+ Thu, 10 Sep 2020 11:54:03 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200909193419.2006744-1-james.hilliard1@gmail.com>
- <1599706954.10822.3.camel@suse.de> <a1161f77-5b37-39ea-eb91-7b0b59278960@gmail.com>
- <20200910080850.GD24441@localhost> <CADvTj4rDdj8KtLhGZEZP+XZcF4DTE4oW9sNf=zNWaRPzkny93A@mail.gmail.com>
- <20200910085541.GA1099591@kroah.com> <CADvTj4pYR9H1X1_f4DYTkb5ViXAdx9sO5yBgHgM5vFaDMs_miQ@mail.gmail.com>
- <26a723e4-e166-6377-875a-f737a15dc6b1@marcansoft.com>
-In-Reply-To: <26a723e4-e166-6377-875a-f737a15dc6b1@marcansoft.com>
-From:   James Hilliard <james.hilliard1@gmail.com>
-Date:   Thu, 10 Sep 2020 12:51:47 -0600
-Message-ID: <CADvTj4o9GL5p6eZq+0Q_Pw_ZKuYHvAtav79==CJDdnTj7q+bBg@mail.gmail.com>
-Subject: Re: [PATCH v2] usb: serial: Repair FTDI FT232R bricked eeprom
-To:     Hector Martin <hector@marcansoft.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Johan Hovold <johan@kernel.org>,
-        Lars Melin <larsm17@gmail.com>,
-        Oliver Neukum <oneukum@suse.de>, linux-usb@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Russ Dill <Russ.Dill@gmail.com>
+References: <20200910175733.11046-1-krzk@kernel.org> <20200910175733.11046-2-krzk@kernel.org>
+ <20200910182814.veviax3n377undkv@akan>
+In-Reply-To: <20200910182814.veviax3n377undkv@akan>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Thu, 10 Sep 2020 20:53:52 +0200
+X-Gmail-Original-Message-ID: <CAJKOXPdQJz7aLu4sjds46SiZwxvB-VMBR=stjpUme+8iEo+d-w@mail.gmail.com>
+Message-ID: <CAJKOXPdQJz7aLu4sjds46SiZwxvB-VMBR=stjpUme+8iEo+d-w@mail.gmail.com>
+Subject: Re: [PATCH v2 01/15] dt-bindings: gpio: convert bindings for NXP
+ PCA953x family to dtschema
+To:     Nishanth Menon <nm@ti.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        =?UTF-8?Q?Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Tero Kristo <t-kristo@ti.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-mediatek@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 3:57 AM Hector Martin <hector@marcansoft.com> wrote:
+On Thu, 10 Sep 2020 at 20:28, Nishanth Menon <nm@ti.com> wrote:
 >
-> On 10/09/2020 18.52, James Hilliard wrote:
-> > So I'm having trouble coming up with a reliable way to fix this in userspace,
-> > I've already got quite a few moving parts there as is and most of what I
-> > come up with seems like it would not work reliably, at least for automatically
-> > repairing the eeprom.
+> On 19:57-20200910, Krzysztof Kozlowski wrote:
+> [...]
+> > +  wakeup-source:
+> > +    $ref: /schemas/types.yaml#/definitions/flag
+> > +
+> > +patternProperties:
+> > +  "^(hog-[0-9]+|.+-hog(-[0-9]+)?)$":
 >
-> I'm confused as to why this is hard to fix in userspace. You already
-> said you have userspace code binding to the proper VID/PID, so your code
-> won't find the bricked device. Then it's just a matter of having a udev
-> rule run the unbricker when it detects the bad device (which should
-> issue a USB reset when it's done reprogramming, making the device appear
-> as the right VID/PID), thus effectively doing the same thing the kernel
-> does. If this is embedded and not using udev, then substitute whatever
-> equivalent you have. If you're polling for the device at runtime instead
-> and don't have a device manager, just poll for the VID 0 device too and
-> apply the fix.
-Wouldn't you have to do a bunch of stuff like unbind the ftdi_sio driver before
-you can issue usb control commands from userspace?
+> I wonder if "hog" is too generic and might clash with "something-hog" in
+> the future?
 
-I haven't tested this yet but my assumption was that either a kernel driver
-or libusb can issue usb control messages, but both can not be bound to
-a device at the same time. I figured this wouldn't have come up when you
-tested your python script since the script likely predated adding the brick PID
-to the ftdi_sio Linux kernel driver.
+This pattern is already used in
+Documentation/devicetree/bindings/gpio/fsl-imx-gpio.yaml. It will
+match only children and so far it did not find any other nodes in ARM
+and ARM64 dts. I don't expect clashes. Also the question is then - if
+one adds a child of GPIO expander named "foobar-hog" and it is not a
+GPIO hog, then what is it?
 
-Maybe it makes sense to add a sysfs interface for reading/writing eeprom values
-without having to unbind the ftdi_sio driver.
->
-> I can't think of a scenario where this would be difficult to fix in
-> userspace...
->
-> --
-> Hector Martin (hector@marcansoft.com)
-> Public Key: https://mrcn.st/pub
+Best regards,
+Krzysztof
