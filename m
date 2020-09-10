@@ -2,166 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E22192654F3
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 00:19:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 163002654FE
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 00:22:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725832AbgIJWTX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 18:19:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44950 "EHLO
+        id S1725848AbgIJWWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 18:22:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725294AbgIJWTW (ORCPT
+        with ESMTP id S1725294AbgIJWWr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 18:19:22 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72653C061573
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 15:19:21 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id f18so5625895pfa.10
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 15:19:21 -0700 (PDT)
+        Thu, 10 Sep 2020 18:22:47 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25B8DC061573;
+        Thu, 10 Sep 2020 15:22:47 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id a17so9091810wrn.6;
+        Thu, 10 Sep 2020 15:22:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=dvP7V0T9HkPbDpdUEFrDiOxvK8qa0XZPhS3F7Oqqwxc=;
-        b=R9oQ7pXA/c0lZeV14Dm7qqv6025jr49V/L1ldKLzpy+F47pYVsRbYMi9o9BXpRn/X3
-         eOmVjGtmQbGT1RiVVmcWdD/nT6o/4OqDmzIHu/1ev+HJPik4Dwu4R3XQtu/djxigj/GS
-         sBLOuUm/PTrXXRudrPYTkU4lUNrj/WU2rDPVrWeun5p8YlnvMu45WOdb6cPSktjXZ1hE
-         URPvOfZEZaqMJcYMSw6KMyCeXtDEjE83Q1QFr8+4uIlR5vTciOdB9pAXZWD68vxdrZj0
-         M3wV2LFUV8P0fa0hnKeAhzx3QrwB/zDwa2k6lP3SnFCpYmtlumrxcoLvutc3eLNUCSIL
-         GdCQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QJdryBOClKOA56RF0lno73w+2jIzy3qa74iAnOwAYJM=;
+        b=Ojaen4RDlczPCynflQ2X+Woxi0hEuMMYDJ68edSPXfpPvF+u0vKCVW4FCO2vw1K7VV
+         kXvV0Z/jsR6035H1U+auwdtoW07iSD+BUF8c4uQSmHrycBsPxQdUqxWBlWBywXApxT3h
+         k239KmY1XHQo3ddTeDrWbl1rzFIpQDdMIBEzFl1g3IfIE+kHQBJu45Y3chtYK/roJoZJ
+         Q4cQzN22p3gSjfkrxtS5xjfdXLrnEbCcf5Aw7Sez8H47t1Y2z90YYG+HfBUpIhJMrtaS
+         4F1yYEcA5wA5YvZROcJkH/glNVkStXIZlDG4f+SklpgJ6emzPwNoFKU3q2bd2/pEgjC/
+         XZng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dvP7V0T9HkPbDpdUEFrDiOxvK8qa0XZPhS3F7Oqqwxc=;
-        b=qZtvAa4DLclWa34JUZIMS5SYtY5RFEtpSojKEwczQO9o9TQvIZKK3H0VhrHsJLWfuh
-         IBzVz1YpyMANWF+c33JIICNK6d1NpZJ4CY90ooGneOMPeOQHa4WM/hKxNDXTDmxdVdwH
-         auXgcTcDrFwKFOW9WpVbJhh+WEQA7bmN2Powi0Ui7weqTJUAm3hsUqyM8gWVBX6Thtri
-         uY3NlvxuAS+3LoGkuPZDnEysM9l52zmtKB4RgZx5/O64p4HlwFiRbtLJekEewBJynhPs
-         nKkd4Na9Cu8hIxx7BBtJaeN0tu6xR1wAbkiSOm1SO+pm8N0kQ1tbT9sdgF43ooQunaGk
-         tZpw==
-X-Gm-Message-State: AOAM532/XPt2kob97rRMOQ/5+LGCuYWdCyitekM7HsiFQnu7A1/v4ypC
-        sHKN1a1HiMRPpxFDO7r1cetD/A==
-X-Google-Smtp-Source: ABdhPJygb86nqLNOdHUeLvSSD8F9QRsi74sX874rMXt7ADW2ahqSMeoeuC+z4gOp5BNrGyVqwdrKRA==
-X-Received: by 2002:a62:dd01:0:b029:13c:f607:5fff with SMTP id w1-20020a62dd010000b029013cf6075fffmr7372214pff.3.1599776360917;
-        Thu, 10 Sep 2020 15:19:20 -0700 (PDT)
-Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id gk14sm42292pjb.41.2020.09.10.15.19.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Sep 2020 15:19:20 -0700 (PDT)
-Date:   Thu, 10 Sep 2020 16:19:18 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Tingwei Zhang <tingwei@codeaurora.org>
-Cc:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Kim Phillips <kim.phillips@arm.com>,
-        Mian Yousaf Kaukab <ykaukab@suse.de>, tsoni@codeaurora.org,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Mao Jinlong <jinlmao@codeaurora.org>,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v10 04/24] coresight: add coresight prefix to barrier_pkt
-Message-ID: <20200910221918.GA590446@xps15>
-References: <20200821034445.967-1-tingwei@codeaurora.org>
- <20200821034445.967-5-tingwei@codeaurora.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QJdryBOClKOA56RF0lno73w+2jIzy3qa74iAnOwAYJM=;
+        b=bMktxDt4QcdY4YqBBkpVnVbQzOtFE8Z4RYPPJ/thhkR79Ukg+5txYffrs3UdvcaxJP
+         aeGcOcXOmNscnc+vIXRWcwVEJgzHCmm+bQmh6GcaqSGUheFg/LqHMjIXNok32xE9nMte
+         0nbQ01wofOMPo7sP575EY4kYI9seUHNaroNU0/MIenJmdtMlwoiaCj5zN8feG3t55PJ3
+         /vSD0LSanb8xMp/7EYpunoHtjSn6646K+nqMt2jj+tXy5lu3TN+lunylVDPbAWmGg7dp
+         l2N+pDgYRrvkONaklDV4sEodyepb4pON+skmYJJ3xRd2Hy/AsZSkuLUMsJz/8G7jdT4i
+         mAwA==
+X-Gm-Message-State: AOAM532Ra3lesVnKHzTRtGOh+8R9pip0Rq3fPeCpVDAUvlppUQcfJeog
+        dLGPQ/Mv97dxfiRAhicvUWE02GRBTM8O+GkTv3Y=
+X-Google-Smtp-Source: ABdhPJw1y+dDHeLHjy/0iRFHZOUDlGfXVKBifM7P89aTJ9bB6XIMhdV8RFZwEBJY8C362hS+59YnVjan715cn1kHtd0=
+X-Received: by 2002:adf:f984:: with SMTP id f4mr11205365wrr.102.1599776565758;
+ Thu, 10 Sep 2020 15:22:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200821034445.967-5-tingwei@codeaurora.org>
+References: <f32130bf-cfd4-b1bf-538c-dbc9ee2d947a@eaxlabs.cz> <CACRpkdaHNuuS-2zMwWf-2--8FFV_4aQuAjYx8pLu66h4adQcwQ@mail.gmail.com>
+In-Reply-To: <CACRpkdaHNuuS-2zMwWf-2--8FFV_4aQuAjYx8pLu66h4adQcwQ@mail.gmail.com>
+From:   Andrey Smirnov <andrew.smirnov@gmail.com>
+Date:   Thu, 10 Sep 2020 15:22:34 -0700
+Message-ID: <CAHQ1cqGF3PsaWc0b0_1Mk8=4f36tO+WKwK0D6tRRxbFYtkTcpQ@mail.gmail.com>
+Subject: Re: pinctrl: sx150x bug
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Martin DEVERA <devik@eaxlabs.cz>, Peter Rosin <peda@axentia.se>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Chris Healy <cphealy@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 21, 2020 at 11:44:25AM +0800, Tingwei Zhang wrote:
-> Add coresight prefix to make it specific. It will be a export symbol.
-> 
-> Signed-off-by: Mian Yousaf Kaukab <ykaukab@suse.de>
-> Signed-off-by: Tingwei Zhang <tingwei@codeaurora.org>
-> Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> ---
->  drivers/hwtracing/coresight/coresight-etb10.c   | 2 +-
->  drivers/hwtracing/coresight/coresight-priv.h    | 8 ++++----
->  drivers/hwtracing/coresight/coresight-tmc-etf.c | 2 +-
->  drivers/hwtracing/coresight/coresight.c         | 2 +-
->  4 files changed, 7 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/hwtracing/coresight/coresight-etb10.c b/drivers/hwtracing/coresight/coresight-etb10.c
-> index 03e3f2590191..04ee9cda988d 100644
-> --- a/drivers/hwtracing/coresight/coresight-etb10.c
-> +++ b/drivers/hwtracing/coresight/coresight-etb10.c
-> @@ -525,7 +525,7 @@ static unsigned long etb_update_buffer(struct coresight_device *csdev,
->  
->  	cur = buf->cur;
->  	offset = buf->offset;
-> -	barrier = barrier_pkt;
-> +	barrier = coresight_barrier_pkt;
->  
->  	for (i = 0; i < to_read; i += 4) {
->  		buf_ptr = buf->data_pages[cur] + offset;
-> diff --git a/drivers/hwtracing/coresight/coresight-priv.h b/drivers/hwtracing/coresight/coresight-priv.h
-> index d801a2755432..dcb8aeb6af62 100644
-> --- a/drivers/hwtracing/coresight/coresight-priv.h
-> +++ b/drivers/hwtracing/coresight/coresight-priv.h
-> @@ -66,8 +66,8 @@ static DEVICE_ATTR_RO(name)
->  #define coresight_simple_reg64(type, name, lo_off, hi_off)		\
->  	__coresight_simple_func(type, NULL, name, lo_off, hi_off)
->  
-> -extern const u32 barrier_pkt[4];
-> -#define CORESIGHT_BARRIER_PKT_SIZE (sizeof(barrier_pkt))
-> +extern const u32 coresight_barrier_pkt[4];
-> +#define CORESIGHT_BARRIER_PKT_SIZE (sizeof(coresight_barrier_pkt))
->  
->  enum etm_addr_type {
->  	ETM_ADDR_TYPE_NONE,
-> @@ -104,10 +104,10 @@ struct cs_buffers {
->  static inline void coresight_insert_barrier_packet(void *buf)
->  {
->  	if (buf)
-> -		memcpy(buf, barrier_pkt, CORESIGHT_BARRIER_PKT_SIZE);
-> +		memcpy(buf, coresight_barrier_pkt,
-> +				CORESIGHT_BARRIER_PKT_SIZE);
+On Thu, Aug 6, 2020 at 2:41 AM Linus Walleij <linus.walleij@linaro.org> wrote:
+>
+> Hi Martin,
+>
+> thanks for your report, let's check with Peter, Neil and Andrey who also
+> use this expander if they also see this problem (CC).
+>
 
-Didn't I comment on this before?
+Looks reasonable. I haven't used that HW in a while, so I added Chris
+Healy to this thread, since he might be in a better position to
+comment on this and maybe even provide a Tested-by
 
->  }
->  
-> -
->  static inline void CS_LOCK(void __iomem *addr)
->  {
->  	do {
-> diff --git a/drivers/hwtracing/coresight/coresight-tmc-etf.c b/drivers/hwtracing/coresight/coresight-tmc-etf.c
-> index 6375504ba8b0..44402d413ebb 100644
-> --- a/drivers/hwtracing/coresight/coresight-tmc-etf.c
-> +++ b/drivers/hwtracing/coresight/coresight-tmc-etf.c
-> @@ -519,7 +519,7 @@ static unsigned long tmc_update_etf_buffer(struct coresight_device *csdev,
->  
->  	cur = buf->cur;
->  	offset = buf->offset;
-> -	barrier = barrier_pkt;
-> +	barrier = coresight_barrier_pkt;
->  
->  	/* for every byte to read */
->  	for (i = 0; i < to_read; i += 4) {
-> diff --git a/drivers/hwtracing/coresight/coresight.c b/drivers/hwtracing/coresight/coresight.c
-> index e9c90f2de34a..d515088cc47d 100644
-> --- a/drivers/hwtracing/coresight/coresight.c
-> +++ b/drivers/hwtracing/coresight/coresight.c
-> @@ -53,7 +53,7 @@ static struct list_head *stm_path;
->   * beginning of the data collected in a buffer.  That way the decoder knows that
->   * it needs to look for another sync sequence.
->   */
-> -const u32 barrier_pkt[4] = {0x7fffffff, 0x7fffffff, 0x7fffffff, 0x7fffffff};
-> +const u32 coresight_barrier_pkt[4] = {0x7fffffff, 0x7fffffff, 0x7fffffff, 0x7fffffff};
->  
->  static int coresight_id_match(struct device *dev, void *data)
->  {
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
+> On Wed, Aug 5, 2020 at 11:28 AM Martin DEVERA <devik@eaxlabs.cz> wrote:
+>
+> > I encountered bug in SX1502 expander driver in 5.7.7. Here is relevant
+> > DTS part:
+> >
+> > compatible = "semtech,sx1502q";
+> > gpio4_cfg_pins: gpio2-cfg {
+> >                          pins = "gpio5";
+> >                          output-high;
+> >      };
+> >
+> > And part of OOPS:
+> >
+> > [    0.673996] [<c023cfa6>] (gpiochip_get_data) from [<c023b235>]
+> > (sx150x_gpio_direction_output+0xd)
+> > [    0.683259] [<c023b235>] (sx150x_gpio_direction_output) from
+> > [<c023b363>] (sx150x_pinconf_set+0x)
+> > [    0.692796] [<c023b363>] (sx150x_pinconf_set) from [<c0238fef>]
+> > (pinconf_apply_setting+0x39/0x7e)
+> > [    0.701635] [<c0238fef>] (pinconf_apply_setting) from [<c0236c77>]
+> > (pinctrl_commit_state+0xa5/0x)
+> > [    0.710648] [<c0236c77>] (pinctrl_commit_state) from [<c0237e03>]
+> > (pinctrl_enable+0xff/0x1d4)
+> > [    0.719139] [<c0237e03>] (pinctrl_enable) from [<c023b791>]
+> > (sx150x_probe+0x1a3/0x358)
+> > [    0.727027] [<c023b791>] (sx150x_probe) from [<c02c38bf>]
+> > (i2c_device_probe+0x1bb/0x1dc)
+> >
+> > The problem is that sx150x_pinconf_set uses sx150x_gpio_direction_output
+> > but gpio is not
+> > setup yet. Patch below fixes it but I'm not sure whether is it correct:
+> >
+> > diff --git a/drivers/pinctrl/pinctrl-sx150x.c
+> > b/drivers/pinctrl/pinctrl-sx150x.c
+> > index 6e74bd87d959..3f5651edd336 100644
+> > --- a/drivers/pinctrl/pinctrl-sx150x.c
+> > +++ b/drivers/pinctrl/pinctrl-sx150x.c
+> > @@ -1154,12 +1154,6 @@ static int sx150x_probe(struct i2c_client *client,
+> >                  return ret;
+> >          }
+> >
+> > -       ret = pinctrl_enable(pctl->pctldev);
+> > -       if (ret) {
+> > -               dev_err(dev, "Failed to enable pinctrl device\n");
+> > -               return ret;
+> > -       }
+> > -
+> >          /* Register GPIO controller */
+> >          pctl->gpio.base = -1;
+> >          pctl->gpio.ngpio = pctl->data->npins;
+> > @@ -1191,6 +1185,12 @@ static int sx150x_probe(struct i2c_client *client,
+> >          if (ret)
+> >                  return ret;
+> >
+> > +       ret = pinctrl_enable(pctl->pctldev);
+> > +       if (ret) {
+> > +               dev_err(dev, "Failed to enable pinctrl device\n");
+> > +               return ret;
+> > +       }
+> > +
+> >          ret = gpiochip_add_pin_range(&pctl->gpio, dev_name(dev),
+> >                                       0, 0, pctl->data->npins);
+> >          if (ret)
+>
+> I don't see any problem with the patch, can you send a proper patch
+> with git-send-email so we can test it and apply it if it works for the
+> other users? Include the mentioned people on CC.
+>
+> Yours,
+> Linus Walleij
