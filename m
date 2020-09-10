@@ -2,134 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E56F2644C7
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 12:55:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 253E026452B
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 13:10:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729455AbgIJKzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 06:55:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50416 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730423AbgIJKwm (ORCPT
+        id S1730511AbgIJLKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 07:10:21 -0400
+Received: from out4-smtp.messagingengine.com ([66.111.4.28]:40225 "EHLO
+        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730518AbgIJKyx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 06:52:42 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34B21C061795
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 03:52:42 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id h6so4436264qtd.6
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 03:52:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=landley-net.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=3bq6Xd8oBWW/kHc7+k0vFqhBls4w6B4cN1d1NTriuls=;
-        b=ZW+XrCOJ9Hh8BdUcXHsXfPQsWDxpPcRlA+Zod0PrwTfm4pqgiZReUjNgCeFIZXPmpD
-         WSg1VkhZnd49D1+mvRomDad172OZhvVlZLSBBc4AXkayC2lVG+pm8OLUf/CZ5Et8uL3W
-         ybvngSICWecytQ4N9qHaCd3ksvrLTd/H81rbEn9lOZ+H5mcJ7uRvQvSPKR/AezVigLbC
-         NlJl/Xzgyq5WF2JFWsWKbHmxkTLe4t5eewOpcQqME8SApDZZ9YRCosJvauJ7P4yP02lI
-         kam36xVAyMsflj7fT1713H6j/vNnlm3K1DFv3DOBQraKHmkn/RC7yev0Kt5TjA5AbUwD
-         Bacw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=3bq6Xd8oBWW/kHc7+k0vFqhBls4w6B4cN1d1NTriuls=;
-        b=lZYjl8jlGILHxcVua3X1lEtQNMGRnv6HhiPeWf/+oJExAnTyJUSykK5O4cj3xUxxH6
-         H3HrhDlJrkX4xIBSi8y11aOGkalskJnhXVhRH5h1nYJfPSNdYNtklNCdM2RGs+uwX20r
-         uQsuslaAttCOnOtHk5UwmfIApVMiTJa2u3807xTonxTCGR1HXVxt4BP2kxfaVQ1MVypr
-         bpbhWs2V0tGzWgjcCPFWGA3hHczJc05RbdSXgGbPFqsNHaGdOxKdAtHeya58ZXOfn2nS
-         F14hKHDqIsd/GJlsuDRiUbYlos1Jj0zXWXJoNO61OhZAT+y29v4Wrn1EoamslCOVZgU0
-         xOfg==
-X-Gm-Message-State: AOAM532U8cBuAmruHSoq7jpefaDDSZbWcKacHTXvohUgqANkBi3aECiC
-        MjNAkYyuE0/0pCn/IvvTv7m2eCk0+/YU9g==
-X-Google-Smtp-Source: ABdhPJy6O+/o8/P4gNB4yn6wAiyYvPZg0hNmNysrRDLfOHkpzISuROIy5kgaJXZUaKMI6m3u9qatJw==
-X-Received: by 2002:ac8:7145:: with SMTP id h5mr7571530qtp.110.1599735161446;
-        Thu, 10 Sep 2020 03:52:41 -0700 (PDT)
-Received: from ?IPv6:2607:fb90:5e99:306e:7450:cff:fe32:650b? ([2607:fb90:5e99:306e:7450:cff:fe32:650b])
-        by smtp.gmail.com with ESMTPSA id j31sm6893908qta.6.2020.09.10.03.52.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Sep 2020 03:52:40 -0700 (PDT)
-Subject: Re: [PATCH] sh: fix syscall tracing
-To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Rich Felker <dalias@libc.org>
-Cc:     linux-sh@vger.kernel.org,
-        Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>,
-        linux-kernel@vger.kernel.org,
-        Yoshinori Sato <ysato@users.sourceforge.jp>
-References: <20200903054803.GX3265@brightrain.aerifal.cx>
- <e456a455-62cd-4f76-a69a-84d1e5b4d153@physik.fu-berlin.de>
- <20200903161639.GE3265@brightrain.aerifal.cx>
- <1a3f0f7e-f6e6-db4e-06ad-9c7d560a6265@physik.fu-berlin.de>
- <20200907174436.GK3265@brightrain.aerifal.cx>
- <3b8d5e6a-38d6-6eca-a49a-69e06680ec1c@physik.fu-berlin.de>
-From:   Rob Landley <rob@landley.net>
-Message-ID: <c0685f0b-e997-39e9-8ae9-ee22c8e74a01@landley.net>
-Date:   Thu, 10 Sep 2020 06:02:05 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 10 Sep 2020 06:54:53 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id D98BB5C10CA;
+        Thu, 10 Sep 2020 06:54:52 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Thu, 10 Sep 2020 06:54:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=from
+        :to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm3; bh=7fKJTSl0aTWXfPqJvnHuuREMnq
+        wvVIPeCygVKzFLhOk=; b=fxtXh8w7MOT/hbSneypqL4AaQEJs9Oa7hjYBE36m6V
+        bFQbNlck8V5HR+8Og664JCIeTPrQtbMn6O3Hr2yjdfd7/fXUryMyt+rAfnkLm8Xd
+        qsmKUYhLqlv5q/zOTbqkLNMURKjvFNJQjrZY0z1qaoiM9coVN/71pOg2m4x3Pd2x
+        4iO6PM9TXcfN4FDnA3K56qTPCawdW7e1EjVv3u+Jk4cbEW3Q/x+Slp8eZVOtTeVW
+        fJ99fyfkrcVZ1TxqeYdibUf5dOq2lduZemAmyfFCLwjJYmhH3me2h6ArZvzJp7qV
+        FPoUgdf6b6vXnf4aOSYyXr9fW0Ejbq9uZyTDjNzWbZMA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=7fKJTSl0aTWXfPqJv
+        nHuuREMnqwvVIPeCygVKzFLhOk=; b=esHI8a9kX3HYOmCJF/FpjTamHSxljQ/3W
+        rXI5ymnmwwzpcGOlDoiug7t8xGo+9lt3FDQ9VRMBEqZ3y3VylAk47gS9Bc6FygzY
+        g4Dd/awAKLQzZpMmKIECUUwKthXG4/tfN5aOE+OwbIXiF1cXMBs9Ib3l5DYKdHIB
+        N6SosTwHX9NIiB8/JZKiX4uCmy0JvXcNkiJwNhvQeToicI81qnUVdZ0XaYFIxX5T
+        3LNPBL163D0DFwxb3VTFJzGiZcokT9cZ/axUP2Do7020FuIr4Wj/Hw6dR0aM19+Z
+        nrcoMAmk7qggYV68akFDWEGSTmJ4FSfeEks70zvxyuv68voBVYcdg==
+X-ME-Sender: <xms:-wVaX-WKFyau5GnnmRSgZMXohkCOYq4WcdHAPTH0SyfF-wgt4_Hrfw>
+    <xme:-wVaX6n94UdHrfu_KWsqQnPz6lW_ZlplSzuGXYbrHRkvLVI3PXmhfwnDZym721iPx
+    O3LiiafmceUnQqbKQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudehjedgvdejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgggfestdekredtre
+    dttdenucfhrhhomheptehnughrvgifucflvghffhgvrhihuceorghnughrvgifsegrjhdr
+    ihgurdgruheqnecuggftrfgrthhtvghrnhepkefhieffjeevfeevhedtieeihfefvdejle
+    dvvddthefftedujeethfeuueelfedtnecukfhppedugedrvddruddtledrkeehnecuvehl
+    uhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprghnughrvgifse
+    grjhdrihgurdgruh
+X-ME-Proxy: <xmx:-wVaXyYvSwKl1dXxL0Zk70s0r7UxLVD3BrXBYfW5RSp1FNDf4l0IUg>
+    <xmx:-wVaX1WjSjZC7qa1ZMhvd0bLPwO_PLxVC_k7y4YNigLbclrZYn30iA>
+    <xmx:-wVaX4mtJbHWNwba7tbwaSIWM0uO1eOgWSTTMS0mdVXJ5Lh43_3txw>
+    <xmx:_AVaX2ZzQVYpU_Rod9vcAulCnt5CGQIkOYl7GsIZr2eJRjxbbCbQZQ>
+Received: from localhost.localdomain (ppp14-2-109-85.adl-apt-pir-bras32.tpg.internode.on.net [14.2.109.85])
+        by mail.messagingengine.com (Postfix) with ESMTPA id BA51F3064674;
+        Thu, 10 Sep 2020 06:54:48 -0400 (EDT)
+From:   Andrew Jeffery <andrew@aj.id.au>
+To:     linux-mmc@vger.kernel.org
+Cc:     adrian.hunter@intel.com, ulf.hansson@linaro.org, joel@jms.id.au,
+        robh+dt@kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/3] mmc: sdhci-of-aspeed: Expose data sample phase delay tuning
+Date:   Thu, 10 Sep 2020 20:24:37 +0930
+Message-Id: <20200910105440.3087723-1-andrew@aj.id.au>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <3b8d5e6a-38d6-6eca-a49a-69e06680ec1c@physik.fu-berlin.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/10/20 4:55 AM, John Paul Adrian Glaubitz wrote:
-> Hi Rich!
-> 
-> On 9/7/20 7:44 PM, Rich Felker wrote:
->>> Can we still get this merged as a hotfix for 5.9?
->>
->> Yes, fixes for regressions in the same release cycle are in-scope (the
->> whole point of having -rc's). I have at least one other fix that needs
->> to go in too and was just giving it a little time to make sure
->> everything's ok now and that there are no more.
-> 
-> Let me know if there is anything else left for testing.
+Hello,
 
-Could you also merge the fix the build break, ala:
+This series exposes some devicetree properties for tuning sample phase
+delay in the Aspeed SD/eMMC controllers. The relevant register was
+introduced on the AST2600 and is present for both the SD/MMC controller
+and the dedicated eMMC controller.
 
-> The vmlinux image is a current vanilla Linux kernel using an initramfs filesystem:
-> 
->   make ARCH=sh CROSS_COMPILE=sh2eb-linux-muslfdpic- j2_defconfig vmlinux
-> 
-> And trying to do that in current git dies with:
-> 
->   CC      init/version.o
-> In file included from ./include/linux/spinlock.h:318,
->                  from ./arch/sh/include/asm/smp.h:11,
->                  from ./include/linux/smp.h:82,
->                  from ./include/linux/lockdep.h:14,
->                  from ./include/linux/rcupdate.h:29,
->                  from ./include/linux/rculist.h:11,
->                  from ./include/linux/pid.h:5,
->                  from ./include/linux/sched.h:14,
->                  from ./include/linux/utsname.h:6,
->                  from init/version.c:14:
-> ./include/linux/spinlock_api_smp.h: In function '__raw_spin_trylock':
-> ./include/linux/spinlock_api_smp.h:90:3: error: implicit declaration of function
-> 'spin_acquire'; did you mean 'xchg_acquire'? [-Werror=implicit-function-declaration]
->    90 |   spin_acquire(&lock->dep_map, 0, 1, _RET_IP_);
->       |   ^~~~~~~~~~~~
->       |   xchg_acquire
-> ./include/linux/spinlock_api_smp.h:90:21: error: 'raw_spinlock_t' {aka 'struct
-> raw_spinlock'} has no member named 'dep_map'
->    90 |   spin_acquire(&lock->dep_map, 0, 1, _RET_IP_);
->       |                     ^~
-> 
-> And so on and so forth for pages. I bisected it to:
-> 
-> commit 0cd39f4600ed4de859383018eb10f0f724900e1b
-> Author: Peter Zijlstra <peterz@infradead.org>
-> Date:   Thu Aug 6 14:35:11 2020 +0200
-> 
->     locking/seqlock, headers: Untangle the spaghetti monster
+Please review!
 
-Which I reported to Rich on the 2nd and he had me test a one line patch fixing
-it (adding an extra #include) on the 3rd, but I just did a fresh pull and the
-j2_defconfig build still broke a week later.
+Joel: If Rob's happy with the binding change can you take the dts patch
+through the aspeed dt tree?
 
-Rob
+Cheers,
+
+Andrew
+
+Andrew Jeffery (3):
+  dt: bindings: mmc: Add phase control properties for the Aspeed SDHCI
+  mmc: sdhci-of-aspeed: Expose data sample phase delay tuning
+  ARM: dts: tacoma: Add data sample phase delay for eMMC
+
+ .../devicetree/bindings/mmc/aspeed,sdhci.yaml |   8 +
+ arch/arm/boot/dts/aspeed-bmc-opp-tacoma.dts   |   2 +
+ drivers/mmc/host/sdhci-of-aspeed.c            | 137 +++++++++++++++++-
+ 3 files changed, 142 insertions(+), 5 deletions(-)
+
+-- 
+2.25.1
+
