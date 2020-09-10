@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 383C02643E1
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 12:25:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAD592643F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 12:26:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730846AbgIJKZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 06:25:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35504 "EHLO mail.kernel.org"
+        id S1730938AbgIJK0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 06:26:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35468 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730277AbgIJKYO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 06:24:14 -0400
+        id S1730717AbgIJKY3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 06:24:29 -0400
 Received: from mail.kernel.org (ip5f5ad5ac.dynamic.kabel-deutschland.de [95.90.213.172])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 86B7821D7E;
+        by mail.kernel.org (Postfix) with ESMTPSA id 95B87221E2;
         Thu, 10 Sep 2020 10:24:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1599733450;
-        bh=18bO8d6MOtL5Fa/RGVc/YxGeCwHKjnI3HmekDYcuXzk=;
+        bh=qdz3piIzX1wpe0r/0uZBhudtd/hwLAcckI0SXN+J6n8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cDB6b/QRMluCKDbFpemYuHMDRjUG0DODdX1cTqirdjsujjsH9Gk/tZxFdGQjQCWQM
-         eJ6D+Rr3Z9IfW6TXdsOsUdPZ4grIE48flujXZ/HaUOsYZykwUS/4S85gWdl8ad5jJl
-         E35F5NgwgMuF4O5ryMCLHB3VGeDNLNtc8oUWaKsg=
+        b=OQpLTaxB1z+Z8hDXGlg8cWhS9z7JIQEwW+eYG6nntM8/nl7ldg0I0JNhBYs31bxpR
+         SzRJ3LLPi+i6O3YoeRSxv0jmoRkU4vYNPqCpTp/UM5+mXVGb8+A5bTIpyzGt9PzIea
+         oTUMalbEK3WyDorvp6Xq4VTz1T9DfMZjNFIlPTPo=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kGJkO-00EINi-BR; Thu, 10 Sep 2020 12:24:08 +0200
+        id 1kGJkO-00EINk-D0; Thu, 10 Sep 2020 12:24:08 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
         Jonathan Corbet <corbet@lwn.net>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 03/14] XArray: docs: add missing kernel-doc parameters for xas_split_alloc()
-Date:   Thu, 10 Sep 2020 12:23:56 +0200
-Message-Id: <17aed0aeb9dad9ad3a1ca97da11bec16a6283f3c.1599732764.git.mchehab+huawei@kernel.org>
+Subject: [PATCH 04/14] blk-mq: docs: add kernel-doc description for a new struct member
+Date:   Thu, 10 Sep 2020 12:23:57 +0200
+Message-Id: <5d4405e08fa3cb5b1fa66e7c7567cb643c7b0b04.1599732764.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1599732764.git.mchehab+huawei@kernel.org>
 References: <cover.1599732764.git.mchehab+huawei@kernel.org>
@@ -44,37 +44,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The parameters for such function are not described. Copy the
-description from the conventions (at the beginning of this
-file), and fill in the blanks for the @order parameter.
+As reported by kernel-doc:
+	./include/linux/blk-mq.h:267: warning: Function parameter or member 'active_queues_shared_sbitmap' not described in 'blk_mq_tag_set'
 
+There is now a new member for struct blk_mq_tag_set. Add a
+description for it, based on the commit that introduced it.
+
+Fixes: f1b49fdc1c64 ("blk-mq: Record active_queues_shared_sbitmap per tag_set for when using shared sbitmap")
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- lib/xarray.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ include/linux/blk-mq.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/lib/xarray.c b/lib/xarray.c
-index c2ae180bd57f..b2dea0c63dbb 100644
---- a/lib/xarray.c
-+++ b/lib/xarray.c
-@@ -1004,8 +1004,15 @@ static void node_set_marks(struct xa_node *node, unsigned int offset,
- }
- 
- /**
-- * Allocate memory for splitting an entry of @order size into the order
-- * stored in the @xas.
-+ * xas_split_alloc() - Allocate memory for splitting an entry of
-+ *		       @order size into the order stored in the @xas.
-+ *
-+ * @xas: is the 'xarray operation state'.  It may be either a pointer to
-+ * an xa_state, or an xa_state stored on the stack.  This is an unfortunate
-+ * ambiguity.
-+ * @entry: refers to something stored in a slot in the xarray
-+ * @order: size of each entry
-+ * @gfp: GFP allocation flags
-  */
- void xas_split_alloc(struct xa_state *xas, void *entry, unsigned int order,
- 		gfp_t gfp)
+diff --git a/include/linux/blk-mq.h b/include/linux/blk-mq.h
+index b23eeca4d677..794b2a33a2c3 100644
+--- a/include/linux/blk-mq.h
++++ b/include/linux/blk-mq.h
+@@ -235,6 +235,8 @@ enum hctx_type {
+  * @flags:	   Zero or more BLK_MQ_F_* flags.
+  * @driver_data:   Pointer to data owned by the block driver that created this
+  *		   tag set.
++ * @active_queues_shared_sbitmap:
++ * 		   number of active request queues per tag set.
+  * @__bitmap_tags: A shared tags sbitmap, used over all hctx's
+  * @__breserved_tags:
+  *		   A shared reserved tags sbitmap, used over all hctx's
 -- 
 2.26.2
 
