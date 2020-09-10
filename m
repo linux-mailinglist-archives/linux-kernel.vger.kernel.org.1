@@ -2,127 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86DE52643EB
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 12:25:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDFE12643E5
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 12:25:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730914AbgIJKZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 06:25:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46054 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730779AbgIJKZF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1730874AbgIJKZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 06:25:33 -0400
+Received: from foss.arm.com ([217.140.110.172]:60422 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730181AbgIJKZF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 10 Sep 2020 06:25:05 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0594DC061573
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 03:25:02 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=localhost)
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <l.stach@pengutronix.de>)
-        id 1kGJl0-0007HR-Ia; Thu, 10 Sep 2020 12:24:46 +0200
-Message-ID: <a325e1594dff339ddd6858f0ac93698582a6000a.camel@pengutronix.de>
-Subject: Re: [PATCH] drm/imx/dcss: fix compilation issue on 32bit
-From:   Lucas Stach <l.stach@pengutronix.de>
-To:     Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Thu, 10 Sep 2020 12:24:44 +0200
-In-Reply-To: <20200910102128.5agk4vxf2jeonw3q@fsr-ub1864-141>
-References: <20200910095250.7663-1-laurentiu.palcu@oss.nxp.com>
-         <CAKMK7uGsJcg81a_cGebBgk3pwxj4VPrFfmV5AF+5fRyK3_Pigw@mail.gmail.com>
-         <20200910102128.5agk4vxf2jeonw3q@fsr-ub1864-141>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.30.5-1.1 
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A14DC1063;
+        Thu, 10 Sep 2020 03:24:58 -0700 (PDT)
+Received: from [192.168.1.179] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6FED23F68F;
+        Thu, 10 Sep 2020 03:24:56 -0700 (PDT)
+Subject: Re: [PATCH v2 0/2] MTE support for KVM guest
+To:     Richard Henderson <richard.henderson@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>
+Cc:     James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Peter Maydell <Peter.Maydell@arm.com>,
+        Haibo Xu <Haibo.Xu@arm.com>
+References: <20200904160018.29481-1-steven.price@arm.com>
+ <8e661984-70bc-790c-8636-39dcd8b00131@linaro.org>
+From:   Steven Price <steven.price@arm.com>
+Message-ID: <842807ac-562a-36ce-8061-aa323341b605@arm.com>
+Date:   Thu, 10 Sep 2020 11:24:51 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <8e661984-70bc-790c-8636-39dcd8b00131@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: l.stach@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Do, 2020-09-10 at 13:21 +0300, Laurentiu Palcu wrote:
-> On Thu, Sep 10, 2020 at 11:57:10AM +0200, Daniel Vetter wrote:
-> > On Thu, Sep 10, 2020 at 11:53 AM Laurentiu Palcu
-> > <laurentiu.palcu@oss.nxp.com> wrote:
-> > > When compiling for 32bit platforms, the compilation fails with:
-> > > 
-> > > ERROR: modpost: "__aeabi_ldivmod"
-> > > [drivers/gpu/drm/imx/dcss/imx-dcss.ko] undefined!
-> > > ERROR: modpost: "__aeabi_uldivmod"
-> > > [drivers/gpu/drm/imx/dcss/imx-dcss.ko] undefined!
-> > > 
-> > > This patch adds a dependency on ARM64 since no 32bit SoCs have DCSS, so far.
-> > 
-> > Usual way to fix this correctly is using the right division macros,
-> > not limiting the driver to 64bit. But this works for now, would be
-> > good to fix this properly for compile-testing and all that.
+On 10/09/2020 01:33, Richard Henderson wrote:
+> On 9/4/20 9:00 AM, Steven Price wrote:
+>>   3. Doesn't provide any new methods for the VMM to access the tags on
+>>      memory.
+> ...
+>> (3) may be problematic and I'd welcome input from those familiar with
+>> VMMs. User space cannot access tags unless the memory is mapped with the
+>> PROT_MTE flag. However enabling PROT_MTE will also enable tag checking
+>> for the user space process (assuming the VMM enables tag checking for
+>> the process)...
 > 
-> I didn't see the point in using the macros since this is running only on
-> 64bit. Though I will probably revisit it and fix it properly in a
-> subsequent patch.
+> The latest version of the kernel patches for user mte support has separate
+> controls for how tag check fail is reported.  Including
 > 
-> > > Signed-off-by: Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>
-> > > Reported-by: Daniel Vetter <daniel@ffwll.ch>
-> > 
-> > Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-> > 
-> > Please push to drm-misc-next.
+>> +- ``PR_MTE_TCF_NONE``  - *Ignore* tag check faults
 > 
-> About that, I may need some help pushing it.
+> That may be less than optimal once userland starts uses tags itself, e.g.
+> running qemu itself with an mte-aware malloc.
+> 
+> Independent of that, there's also the TCO bit, which can be toggled by any
+> piece of code that wants to disable checking locally.
 
-I've already pushed a few minutes ago, so we don't disturb the build
-tests any longer.
+Yes, I would expect the TCO bit is the best option for wrapping accesses 
+to make them unchecked.
 
-Regards,
-Lucas
+> However, none of that is required for accessing tags.  User space can always
+> load/store tags via LDG/STG.  That's going to be slow, though.
 
-> Apparently, my request for
-> a legacy SSH account for contributing to drm-misc got stalled:
-> 
-> https://gitlab.freedesktop.org/freedesktop/freedesktop/-/issues/289
-> 
-> Thanks,
-> laurentiu
-> 
-> > -Daniel
-> > 
-> > 
-> > 
-> > ---
-> > >  drivers/gpu/drm/imx/dcss/Kconfig | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > 
-> > > diff --git a/drivers/gpu/drm/imx/dcss/Kconfig b/drivers/gpu/drm/imx/dcss/Kconfig
-> > > index 69860de8861f..2b17a964ff05 100644
-> > > --- a/drivers/gpu/drm/imx/dcss/Kconfig
-> > > +++ b/drivers/gpu/drm/imx/dcss/Kconfig
-> > > @@ -3,7 +3,7 @@ config DRM_IMX_DCSS
-> > >         select IMX_IRQSTEER
-> > >         select DRM_KMS_CMA_HELPER
-> > >         select VIDEOMODE_HELPERS
-> > > -       depends on DRM && ARCH_MXC
-> > > +       depends on DRM && ARCH_MXC && ARM64
-> > >         help
-> > >           Choose this if you have a NXP i.MX8MQ based system and want to use the
-> > >           Display Controller Subsystem. This option enables DCSS support.
-> > > --
-> > > 2.17.1
-> > > 
-> > 
-> > -- 
-> > Daniel Vetter
-> > Software Engineer, Intel Corporation
-> > http://blog.ffwll.ch
+Yes as things stand LDG/STG is the way for user space to access tags. 
+Since I don't have any real hardware I can't really comment on speed.
 
+> It's a shame that LDGM/STGM are privileged instructions.  I don't understand
+> why that was done, since there's absolutely nothing that those insns can do
+> that you can't do with (up to) 16x LDG/STG.
+
+It is a shame, however I suspect this is because to use those 
+instructions you need to know the block size held in GMID_EL1. And at 
+least in theory that could vary between CPUs.
+
+> I think it might be worth adding some sort of kernel entry point that can bulk
+> copy tags, e.g. page aligned quantities.  But that's just a speed of migration
+> thing and could come later.
+
+When we have some real hardware it would be worth profiling this. At the 
+moment I've no idea whether the kernel entry overhead would make such an 
+interface useful from a performance perspective or not.
+
+Steve
