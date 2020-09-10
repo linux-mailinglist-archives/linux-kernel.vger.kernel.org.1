@@ -2,150 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD6E02639DF
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 04:08:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 796DA2639E7
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 04:12:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730637AbgIJCIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 22:08:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34908 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730187AbgIJB4K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 21:56:10 -0400
-Received: from localhost (52.sub-72-107-123.myvzw.com [72.107.123.52])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 873F6206DB;
-        Thu, 10 Sep 2020 01:55:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599702960;
-        bh=0pv/t21ONbGS8OMxlG8e+YQCpa0mHZfiPXOrYCKcUDQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=vKwkjxl2TiEvihJm3uVP3drewJd4xUtplcDOkYzAJLmgGQlLBrOXwolosBYEX5ewJ
-         LFC2tuLsRFvwMchTyRQGNkePt5RuEO+72fVXhWKm2eVLiJKlLRiOxmJS/JUharUWoB
-         Zid13h3j9O6nqjX0dpOxnJqBFLCtGrD7buFXwfkI=
-Date:   Wed, 9 Sep 2020 20:55:58 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     bhelgaas@google.com, jonathan.derrick@intel.com,
-        Mario.Limonciello@dell.com, Heiner Kallweit <hkallweit1@gmail.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Xiongfeng Wang <wangxiongfeng2@huawei.com>,
-        Krzysztof Wilczynski <kw@linux.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Saheed O. Bolarinwa" <refactormyself@gmail.com>
-Subject: Re: [PATCH] PCI/ASPM: Enable ASPM for links under VMD domain
-Message-ID: <20200910015558.GA746864@bjorn-Precision-5520>
+        id S1730083AbgIJCMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 22:12:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730359AbgIJCDq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 22:03:46 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DC7DC0617A4;
+        Wed,  9 Sep 2020 19:02:40 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id b12so4641229edz.11;
+        Wed, 09 Sep 2020 19:02:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=142NeoCcx3wHhBUQEiqLvgYqCFhcu9mCRWA11xQEdVg=;
+        b=nBsz6061VcS6cYSgt5yHM+R707WWE5ZZd412JS1mVQWo22/CqWZA4jbCYWRRKRySc5
+         LstyfExbNbtK4mWp/VqaQIk0dnYfPY8Gyv2JmR7CDjI6X5l81dgMIb40FSENPz8VrftB
+         erSBKmbxWGVQJ3/4S7wPVYfmwN/IPSDi5dyvM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=142NeoCcx3wHhBUQEiqLvgYqCFhcu9mCRWA11xQEdVg=;
+        b=LK4y8pH3Yg9eFgjT1zJnjVW0rWdZi82nddP8HNFktXMVPU2mRPIVqa8o1BiL8Zy/kC
+         ApM+9XEL2+BUG5XoPtAOEB+kRZ57TfdvzbTkgWMW27oewpPMAHoOYjFjjWfz//ZErcUW
+         y1NrCoYaOWyI/AYOmEw1sjmdwj4dDdoAx42oNffUmaJtqzmZMolG3JOptnW8OSchDAkR
+         vUVN4IHj4woCdqMmMezhreYLyQWEpQkuu0t0ZB/3mSG07gRf9jF3PbLv6+K6R+p4P90+
+         QtXqNxFh/AH8bhbAzsDI4/GML/BZQO7I9JZVs89Iuk7xdSMwEK88hmhYFE+Qd4BikfSO
+         JP5Q==
+X-Gm-Message-State: AOAM530wIHwRt7/CxuqQXpsb6WAMQ+4zqeTHoNClUxfzjccwMoxmp0Ki
+        sHtUaH+e07YwzJ6+EUZT4DnI3Wg70yt0J9UNb3A=
+X-Google-Smtp-Source: ABdhPJyp05MBzEqBviRTff7yzhFYD8zxQ47BHJ7qdCVuj6D4R7LJpyBwxAt5/LL+KaXatY3R5CwSh2ltSkkRFgzQfeI=
+X-Received: by 2002:aa7:de03:: with SMTP id h3mr7240898edv.232.1599703358638;
+ Wed, 09 Sep 2020 19:02:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200821123222.32093-1-kai.heng.feng@canonical.com>
+References: <20200909114312.2863675-1-andrew@aj.id.au> <20200909114312.2863675-4-andrew@aj.id.au>
+In-Reply-To: <20200909114312.2863675-4-andrew@aj.id.au>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Thu, 10 Sep 2020 02:02:26 +0000
+Message-ID: <CACPK8Xd5rE_s680Y0wdktoP4RwDzACCaetUxBrbWSTGnwBMWVQ@mail.gmail.com>
+Subject: Re: [PATCH 3/3] pinctrl: aspeed-g6: Add bias controls for 1.8V GPIO banks
+To:     Andrew Jeffery <andrew@aj.id.au>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        johnny_huang@aspeedtech.com,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+cc Saheed]
+On Wed, 9 Sep 2020 at 11:43, Andrew Jeffery <andrew@aj.id.au> wrote:
+>
+> These were skipped in the original patches adding pinconf support for
+> the AST2600.
+>
+> Cc: Johnny Huang <johnny_huang@aspeedtech.com>
+> Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
 
-On Fri, Aug 21, 2020 at 08:32:20PM +0800, Kai-Heng Feng wrote:
-> New Intel laptops with VMD cannot reach deeper power saving state,
-> renders very short battery time.
-> 
-> As BIOS may not be able to program the config space for devices under
-> VMD domain, ASPM needs to be programmed manually by software. This is
-> also the case under Windows.
-> 
-> The VMD controller itself is a root complex integrated endpoint that
-> doesn't have ASPM capability, so we can't propagate the ASPM settings to
-> devices under it. Hence, simply apply ASPM_STATE_ALL to the links under
-> VMD domain, unsupported states will be cleared out anyway.
-> 
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Reviewed-by: Joel Stanley <joel@jms.id.au>
+
 > ---
->  drivers/pci/pcie/aspm.c |  3 ++-
->  drivers/pci/quirks.c    | 11 +++++++++++
->  include/linux/pci.h     |  2 ++
->  3 files changed, 15 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
-> index 253c30cc1967..dcc002dbca19 100644
-> --- a/drivers/pci/pcie/aspm.c
-> +++ b/drivers/pci/pcie/aspm.c
-> @@ -624,7 +624,8 @@ static void pcie_aspm_cap_init(struct pcie_link_state *link, int blacklist)
->  		aspm_calc_l1ss_info(link, &upreg, &dwreg);
->  
->  	/* Save default state */
-> -	link->aspm_default = link->aspm_enabled;
-> +	link->aspm_default = parent->dev_flags & PCI_DEV_FLAGS_ENABLE_ASPM ?
-> +			     ASPM_STATE_ALL : link->aspm_enabled;
-
-This function is ridiculously complicated already, and I really don't
-want to make it worse.
-
-What exactly is the PCIe topology here?  Apparently the VMD controller
-is a Root Complex Integrated Endpoint, so it's a Type 0 (non-bridge)
-device.  And it has no Link, hence no Link Capabilities or Control and
-hence no ASPM-related bits.  Right?
-
-And the devices under the VMD controller?  I guess they are regular
-PCIe Endpoints, Switch Ports, etc?  Obviously there's a Link involved
-somewhere.  Does the VMD controller have some magic, non-architected
-Port on the downstream side?
-
-Does this patch enable ASPM on this magic Link between VMD and the
-next device?  Configuring ASPM correctly requires knowledge and knobs
-from both ends of the Link, and apparently we don't have those for the
-VMD end.
-
-Or is it for Links deeper in the hierarchy?  I assume those should
-just work already, although there might be issues with latency
-computation, etc., because we may not be able to account for the part
-of the path above VMD.
-
-I want aspm.c to eventually get out of the business of managing struct
-pcie_link_state.  I think it should manage *device* state for each end
-of the link.  Maybe that's a path forward, e.g., if we cache the Link
-Capabilities during enumeration, quirks could modify that directly,
-and aspm.c could just consume that cached information.  I think Saheed
-(cc'd) is already working on patches in this direction.
-
-I'm still not sure how this works if VMD is the upstream end of a
-Link, though.
-
->  	/* Setup initial capable state. Will be updated later */
->  	link->aspm_capable = link->aspm_support;
-> diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-> index bdf9b52567e0..2e2f525bd892 100644
-> --- a/drivers/pci/quirks.c
-> +++ b/drivers/pci/quirks.c
-> @@ -5632,3 +5632,14 @@ static void apex_pci_fixup_class(struct pci_dev *pdev)
->  }
->  DECLARE_PCI_FIXUP_CLASS_HEADER(0x1ac1, 0x089a,
->  			       PCI_CLASS_NOT_DEFINED, 8, apex_pci_fixup_class);
+>  drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c | 17 +++++++++++++++++
+>  1 file changed, 17 insertions(+)
+>
+> diff --git a/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c b/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c
+> index 7efe6dbe4398..34803a6c7664 100644
+> --- a/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c
+> +++ b/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c
+> @@ -19,6 +19,7 @@
+>
+>  #define SCU400         0x400 /* Multi-function Pin Control #1  */
+>  #define SCU404         0x404 /* Multi-function Pin Control #2  */
+> +#define SCU40C         0x40C /* Multi-function Pin Control #3  */
+>  #define SCU410         0x410 /* Multi-function Pin Control #4  */
+>  #define SCU414         0x414 /* Multi-function Pin Control #5  */
+>  #define SCU418         0x418 /* Multi-function Pin Control #6  */
+> @@ -2591,6 +2592,22 @@ static struct aspeed_pin_config aspeed_g6_configs[] = {
+>         /* MAC4 */
+>         { PIN_CONFIG_POWER_SOURCE,   { F24, B24 }, SCU458, BIT_MASK(5)},
+>         { PIN_CONFIG_DRIVE_STRENGTH, { F24, B24 }, SCU458, GENMASK(3, 2)},
 > +
-> +/*
-> + * Device [8086:9a09]
-> + * BIOS may not be able to access config space of devices under VMD domain, so
-> + * it relies on software to enable ASPM for links under VMD.
-> + */
-> +static void pci_fixup_enable_aspm(struct pci_dev *pdev)
-> +{
-> +	pdev->dev_flags |= PCI_DEV_FLAGS_ENABLE_ASPM;
-> +}
-> +DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x9a09, pci_fixup_enable_aspm);
-> diff --git a/include/linux/pci.h b/include/linux/pci.h
-> index 835530605c0d..66a45916c7c6 100644
-> --- a/include/linux/pci.h
-> +++ b/include/linux/pci.h
-> @@ -227,6 +227,8 @@ enum pci_dev_flags {
->  	PCI_DEV_FLAGS_NO_FLR_RESET = (__force pci_dev_flags_t) (1 << 10),
->  	/* Don't use Relaxed Ordering for TLPs directed at this device */
->  	PCI_DEV_FLAGS_NO_RELAXED_ORDERING = (__force pci_dev_flags_t) (1 << 11),
-> +	/* Enable ASPM regardless of how LnkCtl is programmed */
-> +	PCI_DEV_FLAGS_ENABLE_ASPM = (__force pci_dev_flags_t) (1 << 12),
+> +       /* GPIO18E */
+> +       ASPEED_SB_PINCONF(PIN_CONFIG_BIAS_PULL_DOWN, Y1, Y4, SCU40C, 4),
+> +       ASPEED_SB_PINCONF(PIN_CONFIG_BIAS_DISABLE,   Y1, Y4, SCU40C, 4),
+> +       /* GPIO18D */
+> +       ASPEED_SB_PINCONF(PIN_CONFIG_BIAS_PULL_DOWN, AB4, AC5, SCU40C, 3),
+> +       ASPEED_SB_PINCONF(PIN_CONFIG_BIAS_DISABLE,   AB4, AC5, SCU40C, 3),
+> +       /* GPIO18C */
+> +       ASPEED_SB_PINCONF(PIN_CONFIG_BIAS_PULL_DOWN, E4, E1, SCU40C, 2),
+> +       ASPEED_SB_PINCONF(PIN_CONFIG_BIAS_DISABLE,   E4, E1, SCU40C, 2),
+> +       /* GPIO18B */
+> +       ASPEED_SB_PINCONF(PIN_CONFIG_BIAS_PULL_DOWN, B2, D3, SCU40C, 1),
+> +       ASPEED_SB_PINCONF(PIN_CONFIG_BIAS_DISABLE,   B2, D3, SCU40C, 1),
+> +       /* GPIO18A */
+> +       ASPEED_SB_PINCONF(PIN_CONFIG_BIAS_PULL_DOWN, C6, A2, SCU40C, 0),
+> +       ASPEED_SB_PINCONF(PIN_CONFIG_BIAS_DISABLE,   C6, A2, SCU40C, 0),
 >  };
->  
->  enum pci_irq_reroute_variant {
-> -- 
-> 2.17.1
-> 
+>
+>  /**
+> --
+> 2.25.1
+>
