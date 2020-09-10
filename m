@@ -2,152 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D0A5264FC2
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:51:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E4F6264F6A
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:41:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726761AbgIJTuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 15:50:55 -0400
-Received: from mail-eopbgr60110.outbound.protection.outlook.com ([40.107.6.110]:16487
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725616AbgIJPEX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 11:04:23 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UHkdPiq3mss8syqZNNTzgfS9ZtJufjpw6trLfRJMGn4l3pSOgEhdxkdpkjutIBAvPMYfrq65auGWU8fTGpzQUVCOehURtTxrRQ1UtmoH6EUrPsAEpqojWQyKZ6J3Qa+gnmcRzUEnhvb+CY3l8JeDav6X3+MQypeEoLrwAe51a2IVhn9JQjctWdxhsOnj6amfW1VCkhZbEQCMWLND0TF/ETMAHQgs+Ba+KH4autW1txi+NH4T8h1lPbYhxPxTZRvNyso9zOpa6AE8RbViytHfrdSqfR85uuUoYzZcVO1P3lS2yOpvUFIVud3FO/dXbiGoJuZgYXrc6NAKzxWGTDVzsQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OUm1aS9UUuseD4nWcf7QHncYBRxQA+2Hm6PztoMAtIA=;
- b=NcuSxIAgj61H84w0e46gnf89tHzCpthPEXeVjd5eW2imodpLDFX9XPgcGjFzYlRcfjF7NAaDohYSJJX85wuzYmVqSj68txyG6YKZCQaG0BIpOoDZGKq5REtWamBHZu8ZhDkq7LuUAL057vOEgffek8A0VygNcDfDTMGJI5wF/hK0j8KvCZcEpTe4H+Zsmt7O3r1ul/R709fTptWEiwZhAyFhsuOQ0RNfYi4kbOD/tbZkOQb0DElszlPKrrJKyAcYabM+oAe3OD1BcAQ4JXvPvJdI/V5fEDAdaIeDoFreXov2fCk/uWqJH+iPNRLEQOao/6UDYBodo31fRjHl4it89w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=plvision.eu; dmarc=pass action=none header.from=plvision.eu;
- dkim=pass header.d=plvision.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plvision.eu;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OUm1aS9UUuseD4nWcf7QHncYBRxQA+2Hm6PztoMAtIA=;
- b=NojERvsjo54O08RnMfIYKkuxV2VC8Cmv6ab7CrAf1GXSmuMaercf/q+Fo8QzfLXGEM0AwdrLwoWCK+Gj9JZ/m+WDk+RkAcV+TbyZod9v+WoWltsfMjBr6PVdT2/Sz+wRN385Zn2XWq/iFjep626lF2Xfs4WCkPlFB5+p3ic8LmA=
-Authentication-Results: davemloft.net; dkim=none (message not signed)
- header.d=none;davemloft.net; dmarc=none action=none header.from=plvision.eu;
-Received: from HE1P190MB0539.EURP190.PROD.OUTLOOK.COM (2603:10a6:7:56::28) by
- HE1P190MB0459.EURP190.PROD.OUTLOOK.COM (2603:10a6:7:5b::14) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3348.19; Thu, 10 Sep 2020 15:01:25 +0000
-Received: from HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
- ([fe80::c1ab:71de:6bc2:89fe]) by HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
- ([fe80::c1ab:71de:6bc2:89fe%6]) with mapi id 15.20.3348.019; Thu, 10 Sep 2020
- 15:01:25 +0000
-From:   Vadym Kochan <vadym.kochan@plvision.eu>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jiri Pirko <jiri@mellanox.com>,
-        Ido Schimmel <idosch@mellanox.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Oleksandr Mazur <oleksandr.mazur@plvision.eu>,
-        Serhiy Boiko <serhiy.boiko@plvision.eu>,
-        Serhiy Pshyk <serhiy.pshyk@plvision.eu>,
-        Volodymyr Mytnyk <volodymyr.mytnyk@plvision.eu>,
-        Taras Chornyi <taras.chornyi@plvision.eu>,
-        Andrii Savka <andrii.savka@plvision.eu>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Mickey Rachamim <mickeyr@marvell.com>,
-        Vadym Kochan <vadym.kochan@plvision.eu>
-Subject: [net-next v8 6/6] dt-bindings: marvell,prestera: Add description for device-tree bindings
-Date:   Thu, 10 Sep 2020 18:00:55 +0300
-Message-Id: <20200910150055.15598-7-vadym.kochan@plvision.eu>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200910150055.15598-1-vadym.kochan@plvision.eu>
-References: <20200910150055.15598-1-vadym.kochan@plvision.eu>
-Content-Type: text/plain
-X-ClientProxiedBy: BE0P281CA0009.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:b10:a::19) To HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
- (2603:10a6:7:56::28)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from pc60716vkochan.x.ow.s (217.20.186.93) by BE0P281CA0009.DEUP281.PROD.OUTLOOK.COM (2603:10a6:b10:a::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.10 via Frontend Transport; Thu, 10 Sep 2020 15:01:24 +0000
-X-Mailer: git-send-email 2.17.1
-X-Originating-IP: [217.20.186.93]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 3c48ebea-ecfa-45b2-b60b-08d8559a6389
-X-MS-TrafficTypeDiagnostic: HE1P190MB0459:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <HE1P190MB0459E594078DF47F00DC3D1995270@HE1P190MB0459.EURP190.PROD.OUTLOOK.COM>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: haBAvJ0it3u0Qujw43GjQBSdFiV8uALErBvD9wkgNyqrFQwIpm14/tnHqnZFffxkEHm16CoidzbCJ/Zdf9nKNdYmecBQPcx9xspLaqkIDPhlC7LkcgmUpMKvdOg37a0fMAwhakk8miPjw8OQz/65vxzmNNu3Vq9jsjbYc8lhZkQNk/NVCZ0xMRTaBsrG3CPKgyslnOG710p2tnHcalv2ym+0rshA98xJ+mhGAUeWxFFkk/3aig8yeIBCF5NO0I71MvVk3QSEAiMozb55ix/gFs4cD676nFOciNleeWi61GJIYVJO3WsoVQh+5zEqNkYnk0h2ijxrU+qv0rQ1JsIJXe4gt8Xgwyhhi+CKgMbEe0cQNhN3QgdJDz3WiTGYTt+25Kw5W0NvluEkC1bj0e94sA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1P190MB0539.EURP190.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(136003)(39830400003)(396003)(346002)(366004)(376002)(26005)(2906002)(8936002)(110136005)(186003)(16526019)(8676002)(2616005)(83380400001)(44832011)(4326008)(66556008)(66946007)(54906003)(66476007)(1076003)(6506007)(5660300002)(6666004)(107886003)(956004)(6486002)(478600001)(86362001)(316002)(6512007)(36756003)(52116002)(142933001)(921003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: jnm1mTpkrVFkE2+MIVfvsnkCib78YJWuQg6ySoy47j+QxTl5DBNt5Wj0C1ZfGDTsRpqXBkjmZLE4/7GBqJFCR/QiEflHJktz3eTqPWFX1jL9nQ//ALsJAOAyOoTXbZFgaO4Mfy0qDXs3l+KjSDafxdF+aqTeQwiw7k5ef6mjTfALXciCxIRytt9DCaHH9vn86i8baoeZmAKItRNLAuQH2E1G+snaszlRP2Ez5HTMwmVt7l/yJHq4AO8AR9B8Da6tPVWUivlTKyeLM7Rh/2ckOXtP7sRYg3bLVUUp6cAkGd8JqtzmFaoVevwyH+jOt73bEaLEgH2tWvyuaYFEFrrl8EAPekf2IIKvlMTy9Y0AxKwU7+6UgFaCzTG2dQ6GSWFq7AHF6EsnhW5vkHj6zXdaNEzyBNfTpk6hJ7f9T+8/z1XpY9x2pI1lPQsVimO5k5hHJAYnxBGGPMsfrDnPWsi29j2cNHeaHTEoJQpVvEUVPM8bYzls/y2+d7qE6qoir9dS4QnxDgwu1Qthq7ung6o8WVXV9AR3diAI1yqgXJ7hqCljfFhWIw/P6xu3pexDekhsUf+rFqgWilB1N8Reu2gwmFMYNGaKpeX21n4926JKHvdbGZtFXJDzBT9aWFGtiFbArKemN/b2zcwrkzdJwufFbw==
-X-OriginatorOrg: plvision.eu
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3c48ebea-ecfa-45b2-b60b-08d8559a6389
-X-MS-Exchange-CrossTenant-AuthSource: HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Sep 2020 15:01:25.8287
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 03707b74-30f3-46b6-a0e0-ff0a7438c9c4
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: JZC1W7zyoXsAAzA4+q1kQrPOa/Ut2YGlqZLk9IwXRstDWgrWDbtUNer6jinVbq2SUeOGaRjabZ2hX+FE1GBcKU3fVy63RBNCO1yJNUEvL2w=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1P190MB0459
+        id S1727027AbgIJTlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 15:41:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34919 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731242AbgIJPfI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 11:35:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599752101;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=c93RPNenWSa8Q8zrhsnxgdtparF1pzVAsKmNQNMwnlE=;
+        b=Hqe7gvUsKtY6EGH1FXppQgcGdTK3j7rbL5vm6MJCksH2nLpgMleJgIgBh7xSzo0BnOcjWX
+        X0uhcx+ZUS1QfWjdB5Euw9yy0MhmJIvwtMownNwBVD89ypxlFcaR08vHfYELV4n8/GT3qd
+        2h8KH+X1MD/Wdo6o9SbBhiqKFkiC/c8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-595-F9eqrIHzNAKH37HHqBySfg-1; Thu, 10 Sep 2020 11:03:44 -0400
+X-MC-Unique: F9eqrIHzNAKH37HHqBySfg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1859488EF2E;
+        Thu, 10 Sep 2020 15:02:41 +0000 (UTC)
+Received: from madcap2.tricolour.ca (unknown [10.10.110.17])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0CA3719C66;
+        Thu, 10 Sep 2020 15:02:38 +0000 (UTC)
+From:   Richard Guy Briggs <rgb@redhat.com>
+To:     Linux-Audit Mailing List <linux-audit@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Security Module list 
+        <linux-security-module@vger.kernel.org>
+Cc:     Paul Moore <paul@paul-moore.com>, Eric Paris <eparis@redhat.com>,
+        Richard Guy Briggs <rgb@redhat.com>
+Subject: [[PATCH V4]] audit: trigger accompanying records when no rules present
+Date:   Thu, 10 Sep 2020 11:01:54 -0400
+Message-Id: <35f2b8c69b4b9abbc076dd55a6f0f52cf20abad7.1599687447.git.rgb@redhat.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add brief description how to configure base mac address binding in
-device-tree.
+When there are no audit rules registered, mandatory records (config,
+etc.) are missing their accompanying records (syscall, proctitle, etc.).
 
-Describe requirement for the PCI port which is connected to the ASIC, to
-allow access to the firmware related registers.
+This is due to audit context dummy set on syscall entry based on absence
+of rules that signals that no other records are to be printed.
 
-Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
+Clear the dummy bit if any record is generated.
+
+The proctitle context and dummy checks are pointless since the
+proctitle record will not be printed if no syscall records are printed.
+
+The fds array is reset to -1 after the first syscall to indicate it
+isn't valid any more, but was never set to -1 when the context was
+allocated to indicate it wasn't yet valid.
+
+The audit_inode* functions can be called without going through
+getname_flags() or getname_kernel() that sets audit_names and cwd, so
+set the cwd if it has not already been done so due to audit_names being
+valid.
+
+The LSM dump_common_audit_data() LSM_AUDIT_DATA_NET:AF_UNIX case was
+missed with the ghak96 patch, so add that case here.
+
+Thanks to bauen1 <j2468h@googlemail.com> for reporting LSM situations in
+which context->cwd is not valid, inadvertantly fixed by the ghak96 patch.
+
+Please see upstream github issue
+https://github.com/linux-audit/audit-kernel/issues/120
+This is also related to upstream github issue
+https://github.com/linux-audit/audit-kernel/issues/96
+
+Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
 ---
- .../bindings/net/marvell,prestera.txt         | 34 +++++++++++++++++++
- 1 file changed, 34 insertions(+)
+Passes audit-testsuite.
 
-diff --git a/Documentation/devicetree/bindings/net/marvell,prestera.txt b/Documentation/devicetree/bindings/net/marvell,prestera.txt
-index 83370ebf5b89..e28938ddfdf5 100644
---- a/Documentation/devicetree/bindings/net/marvell,prestera.txt
-+++ b/Documentation/devicetree/bindings/net/marvell,prestera.txt
-@@ -45,3 +45,37 @@ dfx-server {
- 	ranges = <0 MBUS_ID(0x08, 0x00) 0 0x100000>;
- 	reg = <MBUS_ID(0x08, 0x00) 0 0x100000>;
- };
+Chagelog:
+v4:
+- rebase on audit/next v5.9-rc1
+- squash v2+v3fix
+- add pwd NULL check in audit_log_name()
+- resubmit after revert
+
+v3:
+- initialize fds[0] to -1
+- init cwd for ghak96 LSM_AUDIT_DATA_NET:AF_UNIX case
+- init cwd for audit_inode{,_child}
+
+v2:
+- unconditionally clear dummy
+- create audit_clear_dummy accessor function
+- remove proctitle context and dummy checks
+
+ kernel/audit.c       |  1 +
+ kernel/audit.h       |  8 ++++++++
+ kernel/auditsc.c     | 11 +++++++----
+ security/lsm_audit.c |  1 +
+ 4 files changed, 17 insertions(+), 4 deletions(-)
+
+diff --git a/kernel/audit.c b/kernel/audit.c
+index 68cee3bc8cfe..8604eccb348f 100644
+--- a/kernel/audit.c
++++ b/kernel/audit.c
+@@ -1865,6 +1865,7 @@ struct audit_buffer *audit_log_start(struct audit_context *ctx, gfp_t gfp_mask,
+ 	}
+ 
+ 	audit_get_stamp(ab->ctx, &t, &serial);
++	audit_clear_dummy(ab->ctx);
+ 	audit_log_format(ab, "audit(%llu.%03lu:%u): ",
+ 			 (unsigned long long)t.tv_sec, t.tv_nsec/1000000, serial);
+ 
+diff --git a/kernel/audit.h b/kernel/audit.h
+index 3b9c0945225a..abcfef58435b 100644
+--- a/kernel/audit.h
++++ b/kernel/audit.h
+@@ -290,6 +290,13 @@ extern int audit_signal_info_syscall(struct task_struct *t);
+ extern void audit_filter_inodes(struct task_struct *tsk,
+ 				struct audit_context *ctx);
+ extern struct list_head *audit_killed_trees(void);
 +
-+Marvell Prestera SwitchDev bindings
-+-----------------------------------
-+Optional properties:
-+- compatible: must be "marvell,prestera"
-+- base-mac-provider: describes handle to node which provides base mac address,
-+	might be a static base mac address or nvme cell provider.
++static inline void audit_clear_dummy(struct audit_context *ctx)
++{
++	if (ctx)
++		ctx->dummy = 0;
++}
 +
-+Example:
-+
-+eeprom_mac_addr: eeprom-mac-addr {
-+       compatible = "eeprom,mac-addr-cell";
-+       status = "okay";
-+
-+       nvmem = <&eeprom_at24>;
-+};
-+
-+prestera {
-+       compatible = "marvell,prestera";
-+       status = "okay";
-+
-+       base-mac-provider = <&eeprom_mac_addr>;
-+};
-+
-+The current implementation of Prestera Switchdev PCI interface driver requires
-+that BAR2 is assigned to 0xf6000000 as base address from the PCI IO range:
-+
-+&cp0_pcie0 {
-+	ranges = <0x81000000 0x0 0xfb000000 0x0 0xfb000000 0x0 0xf0000
-+		0x82000000 0x0 0xf6000000 0x0 0xf6000000 0x0 0x2000000
-+		0x82000000 0x0 0xf9000000 0x0 0xf9000000 0x0 0x100000>;
-+	phys = <&cp0_comphy0 0>;
-+	status = "okay";
-+};
+ #else /* CONFIG_AUDITSYSCALL */
+ #define auditsc_get_stamp(c, t, s) 0
+ #define audit_put_watch(w) {}
+@@ -323,6 +330,7 @@ static inline int audit_signal_info_syscall(struct task_struct *t)
+ }
+ 
+ #define audit_filter_inodes(t, c) AUDIT_DISABLED
++#define audit_clear_dummy(c) {}
+ #endif /* CONFIG_AUDITSYSCALL */
+ 
+ extern char *audit_unpack_string(void **bufp, size_t *remain, size_t len);
+diff --git a/kernel/auditsc.c b/kernel/auditsc.c
+index 8dba8f0983b5..9d2de93f40b3 100644
+--- a/kernel/auditsc.c
++++ b/kernel/auditsc.c
+@@ -929,6 +929,7 @@ static inline struct audit_context *audit_alloc_context(enum audit_state state)
+ 	context->prio = state == AUDIT_RECORD_CONTEXT ? ~0ULL : 0;
+ 	INIT_LIST_HEAD(&context->killed_trees);
+ 	INIT_LIST_HEAD(&context->names_list);
++	context->fds[0] = -1;
+ 	return context;
+ }
+ 
+@@ -1367,7 +1368,10 @@ static void audit_log_name(struct audit_context *context, struct audit_names *n,
+ 			/* name was specified as a relative path and the
+ 			 * directory component is the cwd
+ 			 */
+-			audit_log_d_path(ab, " name=", &context->pwd);
++			if (&context->pwd)
++				audit_log_d_path(ab, " name=", &context->pwd);
++			else
++				audit_log_format(ab, " name=(null)");
+ 			break;
+ 		default:
+ 			/* log the name's directory component */
+@@ -1435,9 +1439,6 @@ static void audit_log_proctitle(void)
+ 	struct audit_context *context = audit_context();
+ 	struct audit_buffer *ab;
+ 
+-	if (!context || context->dummy)
+-		return;
+-
+ 	ab = audit_log_start(context, GFP_KERNEL, AUDIT_PROCTITLE);
+ 	if (!ab)
+ 		return;	/* audit_panic or being filtered */
+@@ -2079,6 +2080,7 @@ void __audit_inode(struct filename *name, const struct dentry *dentry,
+ 	}
+ 	handle_path(dentry);
+ 	audit_copy_inode(n, dentry, inode, flags & AUDIT_INODE_NOEVAL);
++	_audit_getcwd(context);
+ }
+ 
+ void __audit_file(const struct file *file)
+@@ -2197,6 +2199,7 @@ void __audit_inode_child(struct inode *parent,
+ 		audit_copy_inode(found_child, dentry, inode, 0);
+ 	else
+ 		found_child->ino = AUDIT_INO_UNSET;
++	_audit_getcwd(context);
+ }
+ EXPORT_SYMBOL_GPL(__audit_inode_child);
+ 
+diff --git a/security/lsm_audit.c b/security/lsm_audit.c
+index 53d0d183db8f..e93077612246 100644
+--- a/security/lsm_audit.c
++++ b/security/lsm_audit.c
+@@ -369,6 +369,7 @@ static void dump_common_audit_data(struct audit_buffer *ab,
+ 					audit_log_untrustedstring(ab, p);
+ 				else
+ 					audit_log_n_hex(ab, p, len);
++				audit_getcwd();
+ 				break;
+ 			}
+ 		}
 -- 
-2.17.1
+2.18.4
 
