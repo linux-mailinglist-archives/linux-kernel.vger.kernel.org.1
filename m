@@ -2,81 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBE0D264D93
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 20:46:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 510CE264D80
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 20:43:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727080AbgIJSqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 14:46:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59816 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726741AbgIJQNa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 12:13:30 -0400
-Received: from localhost.localdomain (unknown [194.230.155.174])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8744221D90;
-        Thu, 10 Sep 2020 16:12:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599754364;
-        bh=zplVVIgMQojsbwVzaG1n4QTE3TMlBcAZb0xfKeub8eE=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=p9Aps4ONeROFriwJ9u8H2cjA/DUEGWRKzoNnFEhQRzm20lKlg1F4hg8ZODe4lfyvA
-         hSobjF/nxCveprXcdjdJCZMp/51Xv7pRgUjZPxTwi0ZFYXc7udvs3NWsCssjExJ0pB
-         KFQLwO9iAu60t1Y4VrlazrSz2f2NIfyXSgQxCeM8=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Krzysztof Opasiak <k.opasiak@samsung.com>,
-        Kukjin Kim <kgene@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-nfc@lists.01.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org
-Subject: [PATCH v3 4/8] nfc: s3fwrn5: Remove unneeded 'ret' variable
-Date:   Thu, 10 Sep 2020 18:12:15 +0200
-Message-Id: <20200910161219.6237-5-krzk@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200910161219.6237-1-krzk@kernel.org>
-References: <20200910161219.6237-1-krzk@kernel.org>
+        id S1726216AbgIJSnx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 14:43:53 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:58620 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725866AbgIJSRw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 14:17:52 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08AGjjV5057212;
+        Thu, 10 Sep 2020 11:45:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1599756345;
+        bh=mGo45HNyVsJh9MrMbASyD3eQepVmN2osS7RHtgRFbMM=;
+        h=From:To:CC:Subject:Date;
+        b=KpyFds9ngk+ftnoC+TNLyXN92cT84SbXJLXajIAYTz5FwsG22luBX0DJzURyLg39k
+         DOU3fmROxeT7iO0daUhdjutxiS1zpkPVwcxM8//FFHyHKjtg7w/fwZh9sJYLNGEWNR
+         ALut7W1Tc1bzjnKbO2TBzapSPgQ5C5m3RuS1qVf4=
+Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08AGjjoe119473
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 10 Sep 2020 11:45:45 -0500
+Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 10
+ Sep 2020 11:45:45 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 10 Sep 2020 11:45:44 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08AGjhP7022560;
+        Thu, 10 Sep 2020 11:45:44 -0500
+From:   Ricardo Rivera-Matos <r-rivera-matos@ti.com>
+To:     <sre@kernel.org>, <robh+dt@kernel.org>, <linux-pm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <dmurphy@ti.com>, Ricardo Rivera-Matos <r-rivera-matos@ti.com>
+Subject: [PATCH v3 0/2]  Introduce the BQ256XX family of chargers
+Date:   Thu, 10 Sep 2020 11:45:32 -0500
+Message-ID: <20200910164534.16987-1-r-rivera-matos@ti.com>
+X-Mailer: git-send-email 2.28.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The local variable 'ret' can be removed:
+Hello,
 
-  drivers/nfc/s3fwrn5/i2c.c:167:6: warning: variable 'ret' set but not used [-Wunused-but-set-variable]
+This patchset introduces the bq256xx family of charging ICs. The bq256xx
+ICs are highly integrated, buck, switching chargers intended for use in 
+smartphones, tablets, and portable electronics.
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- drivers/nfc/s3fwrn5/i2c.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+Ricardo Rivera-Matos (2):
+  dt-bindings: power: Add the bq256xx dt bindings
+  power: supply: bq256xx: Introduce the BQ256XX charger driver
 
-diff --git a/drivers/nfc/s3fwrn5/i2c.c b/drivers/nfc/s3fwrn5/i2c.c
-index 557279492503..dc995286be84 100644
---- a/drivers/nfc/s3fwrn5/i2c.c
-+++ b/drivers/nfc/s3fwrn5/i2c.c
-@@ -164,7 +164,6 @@ static int s3fwrn5_i2c_read(struct s3fwrn5_i2c_phy *phy)
- static irqreturn_t s3fwrn5_i2c_irq_thread_fn(int irq, void *phy_id)
- {
- 	struct s3fwrn5_i2c_phy *phy = phy_id;
--	int ret = 0;
- 
- 	if (!phy || !phy->ndev) {
- 		WARN_ON_ONCE(1);
-@@ -179,10 +178,9 @@ static irqreturn_t s3fwrn5_i2c_irq_thread_fn(int irq, void *phy_id)
- 	switch (phy->mode) {
- 	case S3FWRN5_MODE_NCI:
- 	case S3FWRN5_MODE_FW:
--		ret = s3fwrn5_i2c_read(phy);
-+		s3fwrn5_i2c_read(phy);
- 		break;
- 	case S3FWRN5_MODE_COLD:
--		ret = -EREMOTEIO;
- 		break;
- 	}
- 
+ .../bindings/power/supply/bq256xx.yaml        |   97 +
+ drivers/power/supply/Kconfig                  |   11 +
+ drivers/power/supply/Makefile                 |    1 +
+ drivers/power/supply/bq256xx_charger.c        | 1769 +++++++++++++++++
+ 4 files changed, 1878 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/power/supply/bq256xx.yaml
+ create mode 100644 drivers/power/supply/bq256xx_charger.c
+
 -- 
-2.17.1
+2.28.0
 
