@@ -2,89 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A3D4264EF3
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:31:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8329264EFF
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:32:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727101AbgIJTaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 15:30:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47882 "EHLO mail.kernel.org"
+        id S1726853AbgIJTcq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 15:32:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47930 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727943AbgIJT3U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 15:29:20 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.3])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1727807AbgIJT32 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 15:29:28 -0400
+Received: from localhost.localdomain (unknown [194.230.155.174])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 077E0207DE;
-        Thu, 10 Sep 2020 19:29:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7CA4620882;
+        Thu, 10 Sep 2020 19:29:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599766159;
-        bh=xdEi+nnHPoX5+tUHKLW+zfHZQoV5peod/7jyP2Gpm2M=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=RLBqZtOnV1AeXSaA467zCMMCU+znsxkYt803axM7g++QJ8p3fwxC9VyJmfswYrA8l
-         bJOgluRzemVb3+QGs8hx+httc+U05KpcvvPbBG+aRmZjznhs0UEfOFVVHc63VY/oFO
-         qLVDZhOitrvd11Sb/WFEArDcs0vQpWck4UBWDb94=
-Date:   Thu, 10 Sep 2020 12:29:12 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Luo Jiaxing <luojiaxing@huawei.com>
-Cc:     <peppe.cavallaro@st.com>, <alexandre.torgue@st.com>,
-        <joabreu@synopsys.com>, <davem@davemloft.net>,
-        <mcoquelin.stm32@gmail.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>
-Subject: Re: [PATCH net-next] net: stmmac: Remove unused variable 'ret' at
- stmmac_rx_buf1_len()
-Message-ID: <20200910122912.5792f657@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <1599705765-15562-1-git-send-email-luojiaxing@huawei.com>
-References: <1599705765-15562-1-git-send-email-luojiaxing@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+        s=default; t=1599766166;
+        bh=hL6w8E8SUjjPiOKWWzA5Ali9T6LnigQnlGkrYfgRtaI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=x84wJj85EWTbHdmxLHCcca3DxsfFMsG5BqTYdZV6EXFQI3f9917GjfxRCRslYuc9m
+         Etxu4BonuYY/VCMILOoyvU/yUt4mKRBC5qjGZ/oVZi4ZOsLZrjmWNCg6EmArpuPXdx
+         UIoQu++lCJCrdk5jovaAHaOen43XILBCHQRS6B/c=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Corentin Labbe <clabbe.montjoie@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com
+Cc:     Iuliana Prodan <iuliana.prodan@nxp.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH v2 1/4] crypto: caam - Fix kerneldoc
+Date:   Thu, 10 Sep 2020 21:29:16 +0200
+Message-Id: <20200910192919.12503-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Sep 2020 10:42:45 +0800 Luo Jiaxing wrote:
-> Fixes the following warning when using W=3D1 to build kernel:
->=20
-> drivers/net/ethernet/stmicro/stmmac/stmmac_main.c:3634:6: warning: variab=
-le =E2=80=98ret=E2=80=99 set but not used [-Wunused-but-set-variable]
-> int ret, coe =3D priv->hw->rx_csum;
->=20
-> When digging stmmac_get_rx_header_len(), dwmac4_get_rx_header_len() and
-> dwxgmac2_get_rx_header_len() return 0 by default. Therefore, ret do not
-> need to check the error value and can be directly deleted.
->=20
-> Signed-off-by: Luo Jiaxing <luojiaxing@huawei.com>
-> ---
->  drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/=
-net/ethernet/stmicro/stmmac/stmmac_main.c
-> index 89b2b34..7e95412 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> @@ -3631,15 +3631,15 @@ static unsigned int stmmac_rx_buf1_len(struct stm=
-mac_priv *priv,
->  				       struct dma_desc *p,
->  				       int status, unsigned int len)
->  {
-> -	int ret, coe =3D priv->hw->rx_csum;
->  	unsigned int plen =3D 0, hlen =3D 0;
-> +	int coe =3D priv->hw->rx_csum;
-> =20
->  	/* Not first descriptor, buffer is always zero */
->  	if (priv->sph && len)
->  		return 0;
-> =20
->  	/* First descriptor, get split header length */
-> -	ret =3D stmmac_get_rx_header_len(priv, p, &hlen);
-> +	stmmac_get_rx_header_len(priv, p, &hlen);
+Fix kerneldoc warnings like:
 
-This function should return void if there never are any errors to
-report.
+  drivers/crypto/caam/caamalg_qi2.c:73: warning: cannot understand function prototype: 'struct caam_ctx'
+  drivers/crypto/caam/caamalg_qi2.c:2962: warning: cannot understand function prototype: 'struct caam_hash_ctx'
+  drivers/crypto/caam/ctrl.c:449: warning: Function parameter or member 'ctrl' not described in 'caam_get_era'
 
->  	if (priv->sph && hlen) {
->  		priv->xstats.rx_split_hdr_pkt_n++;
->  		return hlen;
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+
+---
+
+Changes since v1:
+1. Fix more warnings
+---
+ drivers/crypto/caam/caamalg_desc.c |  1 +
+ drivers/crypto/caam/caamalg_qi2.c  |  4 ++--
+ drivers/crypto/caam/ctrl.c         |  4 +++-
+ drivers/crypto/caam/jr.c           | 10 +++++-----
+ 4 files changed, 11 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/crypto/caam/caamalg_desc.c b/drivers/crypto/caam/caamalg_desc.c
+index d6c58184bb57..f0f0fdd1ef32 100644
+--- a/drivers/crypto/caam/caamalg_desc.c
++++ b/drivers/crypto/caam/caamalg_desc.c
+@@ -373,6 +373,7 @@ EXPORT_SYMBOL(cnstr_shdsc_aead_encap);
+  *         with OP_ALG_AAI_HMAC_PRECOMP.
+  * @ivsize: initialization vector size
+  * @icvsize: integrity check value (ICV) size (truncated or full)
++ * @geniv: whether to generate Encrypted Chain IV
+  * @is_rfc3686: true when ctr(aes) is wrapped by rfc3686 template
+  * @nonce: pointer to rfc3686 nonce
+  * @ctx1_iv_off: IV offset in CONTEXT1 register
+diff --git a/drivers/crypto/caam/caamalg_qi2.c b/drivers/crypto/caam/caamalg_qi2.c
+index 66ae1d581168..0441e4ff2df2 100644
+--- a/drivers/crypto/caam/caamalg_qi2.c
++++ b/drivers/crypto/caam/caamalg_qi2.c
+@@ -59,7 +59,7 @@ struct caam_skcipher_alg {
+ };
+ 
+ /**
+- * caam_ctx - per-session context
++ * struct caam_ctx - per-session context
+  * @flc: Flow Contexts array
+  * @key:  [authentication key], encryption key
+  * @flc_dma: I/O virtual addresses of the Flow Contexts
+@@ -2951,7 +2951,7 @@ enum hash_optype {
+ };
+ 
+ /**
+- * caam_hash_ctx - ahash per-session context
++ * struct caam_hash_ctx - ahash per-session context
+  * @flc: Flow Contexts array
+  * @key: authentication key
+  * @flc_dma: I/O virtual addresses of the Flow Contexts
+diff --git a/drivers/crypto/caam/ctrl.c b/drivers/crypto/caam/ctrl.c
+index 65de57f169d9..f7adcf6ecea5 100644
+--- a/drivers/crypto/caam/ctrl.c
++++ b/drivers/crypto/caam/ctrl.c
+@@ -444,7 +444,9 @@ static int caam_get_era_from_hw(struct caam_ctrl __iomem *ctrl)
+  * by u-boot.
+  * In case this property is not passed an attempt to retrieve the CAAM
+  * era via register reads will be made.
+- **/
++ *
++ * @ctrl:	controller region
++ */
+ static int caam_get_era(struct caam_ctrl __iomem *ctrl)
+ {
+ 	struct device_node *caam_node;
+diff --git a/drivers/crypto/caam/jr.c b/drivers/crypto/caam/jr.c
+index bf6b03b17251..6f669966ba2c 100644
+--- a/drivers/crypto/caam/jr.c
++++ b/drivers/crypto/caam/jr.c
+@@ -324,7 +324,7 @@ EXPORT_SYMBOL(caam_jr_alloc);
+ 
+ /**
+  * caam_jr_free() - Free the Job Ring
+- * @rdev     - points to the dev that identifies the Job ring to
++ * @rdev:      points to the dev that identifies the Job ring to
+  *             be released.
+  **/
+ void caam_jr_free(struct device *rdev)
+@@ -349,15 +349,15 @@ EXPORT_SYMBOL(caam_jr_free);
+  *        of this request. This has the form:
+  *        callback(struct device *dev, u32 *desc, u32 stat, void *arg)
+  *        where:
+- *        @dev:    contains the job ring device that processed this
++ *        dev:     contains the job ring device that processed this
+  *                 response.
+- *        @desc:   descriptor that initiated the request, same as
++ *        desc:    descriptor that initiated the request, same as
+  *                 "desc" being argued to caam_jr_enqueue().
+- *        @status: untranslated status received from CAAM. See the
++ *        status:  untranslated status received from CAAM. See the
+  *                 reference manual for a detailed description of
+  *                 error meaning, or see the JRSTA definitions in the
+  *                 register header file
+- *        @areq:   optional pointer to an argument passed with the
++ *        areq:    optional pointer to an argument passed with the
+  *                 original request
+  * @areq: optional pointer to a user argument for use at callback
+  *        time.
+-- 
+2.17.1
 
