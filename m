@@ -2,76 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4AB2264A44
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 18:50:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58EC6264A26
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 18:46:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726879AbgIJQty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 12:49:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48628 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727027AbgIJQmh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 12:42:37 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF3BBC061573;
-        Thu, 10 Sep 2020 09:42:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=+47H5A8WVuSjFI0h3Ukcy2wKP9GdHGo5YwAsuUcoBHw=; b=IZ9xQ3mRAEpm+VKYGpxZ6vLdsI
-        Y3eCN0u46t2Gtb6MN41UIrlUIVEe/inE5XiA7SYxFwTCsdqKhEGzG51DN2UEs42BT9NXMz0NIyYha
-        Yzcdul7y9R+B8PnjyZwlXGZjmXfWEcdRSWZIBBC39OsiFXSA8JDks8HQowaJwDXdQH3t5sava4AEi
-        ibxHvTh8fl8ZqS3nrT2k8W5z3mrMDYTgEHtZ5QLUyIk2ff828NoSYYElFfR9vUbqVhCabQ4CDjpvN
-        qPg22j9V8tUfapO7FFSURCYeE+O5sIsrSRbtV+XrPqEyfR5WY4ytSoFjXHkuN9kWz97wUT0ZtL+gZ
-        bkA+FgIQ==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kGPec-0006Zw-Kg; Thu, 10 Sep 2020 16:42:34 +0000
-Date:   Thu, 10 Sep 2020 17:42:34 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Rich Felker <dalias@libc.org>
-Cc:     Christoph Hellwig <hch@infradead.org>, linux-api@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] vfs: add fchmodat2 syscall
-Message-ID: <20200910164234.GA25140@infradead.org>
-References: <20200910142335.GG3265@brightrain.aerifal.cx>
- <20200910162059.GA18228@infradead.org>
- <20200910163949.GJ3265@brightrain.aerifal.cx>
+        id S1726957AbgIJQpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 12:45:07 -0400
+Received: from ms.lwn.net ([45.79.88.28]:42212 "EHLO ms.lwn.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726794AbgIJQnu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 12:43:50 -0400
+Received: from lwn.net (localhost [127.0.0.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 5F08F4FA;
+        Thu, 10 Sep 2020 16:42:51 +0000 (UTC)
+Date:   Thu, 10 Sep 2020 10:42:50 -0600
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andy Gross <agross@kernel.org>,
+        Benson Leung <bleung@chromium.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Cheng-Yi Chiang <cychiang@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>, Jens Axboe <axboe@kernel.dk>,
+        Joerg Reuter <jreuter@yaina.de>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Jyri Sarha <jsarha@ti.com>, Lee Jones <lee.jones@linaro.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [PATCH 00/30] docs: fix documentation build parsing errors
+Message-ID: <20200910104250.63281185@lwn.net>
+In-Reply-To: <cover.1599660067.git.mchehab+huawei@kernel.org>
+References: <cover.1599660067.git.mchehab+huawei@kernel.org>
+Organization: LWN.net
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200910163949.GJ3265@brightrain.aerifal.cx>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 12:39:50PM -0400, Rich Felker wrote:
-> On Thu, Sep 10, 2020 at 05:20:59PM +0100, Christoph Hellwig wrote:
-> > On Thu, Sep 10, 2020 at 10:23:37AM -0400, Rich Felker wrote:
-> > > userspace emulation done in libc implementations. No change is made to
-> > > the underlying chmod_common(), so it's still possible to attempt
-> > > changes via procfs, if desired.
-> > 
-> > And that is the goddamn problem.  We need to fix that _first_.
+On Wed,  9 Sep 2020 16:10:31 +0200
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
+
+> Currently, there are several warnings/errors produced when building
+> the documentation with "make htmldocs".
 > 
-> Can you clarify exactly what that is? Do you mean fixing the
-> underlying fs backends, or just ensuring that the chmod for symlinks
-> doesn't reach them by putting the check in chmod_common? I'm ok with
-> any of these.
-
-Either - we need to make sure the user can't change the permission
-bits.
-
-> > After that we can add sugarcoating using new syscalls if needed.
+> This series fixes almost all such errors. It is produced against
+> linux-next, branch next-20200909.
 > 
-> The new syscall is _not_ about this problem. It's about the missing
-> flags argument and inability to implement fchmodat() without access to
-> procfs. The above problem is just something you encounter and have to
-> make a decision about in order to fix the missing flags problem and
-> make a working AT_SYMLINK_NOFOLLOW.
+> Some of the patches here were already sent individually, but nobody
+> picked them. So, I'm re-sending the full series.
 
-And I'm generally supportive of that.  But we need to fix the damn
-bug first an then do nice to haves.
+I'd sure love to just apply the whole series and clean up a lot of this
+stuff, but (1) I'm not entirely comfortable taking a few through
+docs-next, and (2) some of them don't apply even if I catch up to -rc4.
+So I'm going to pass through them individually and snag as many as I can...
+
+Thanks,
+
+jon
