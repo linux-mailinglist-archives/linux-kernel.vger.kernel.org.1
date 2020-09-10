@@ -2,85 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BB062639D4
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 04:06:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5C092639C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 04:03:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730455AbgIJCBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 22:01:13 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:30403 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728631AbgIJBib (ORCPT
+        id S1730565AbgIJCDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 22:03:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49216 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729507AbgIJBk6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 21:38:31 -0400
-X-UUID: 222f52f8355341d2b9647e654a8e4954-20200910
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=/kpiSBfDpcyE748DN9WDHc2W37kjiStGnsyZ7yp56L0=;
-        b=pNzeSiPWeWjfzL2aW5NgVC1CC5xJFh47nUNG/ao7Jr4fF26Upi8Z92/Ru5dqzsDH3Y3Bu9zECtlIadBCaB16X1ZaKvIbhmyVodLO4rsGWZ8eHf/zypE6R5id1YlJ43N8+DnqCDbvAnxw+NgElfozVwsak0Aivic3Dv22MMNOS1E=;
-X-UUID: 222f52f8355341d2b9647e654a8e4954-20200910
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
-        (envelope-from <stanley.chu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1348526883; Thu, 10 Sep 2020 09:38:01 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 10 Sep 2020 09:37:58 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 10 Sep 2020 09:37:58 +0800
-From:   Stanley Chu <stanley.chu@mediatek.com>
-To:     <linux-scsi@vger.kernel.org>, <martin.petersen@oracle.com>,
-        <avri.altman@wdc.com>, <alim.akhtar@samsung.com>,
-        <jejb@linux.ibm.com>
-CC:     <matthias.bgg@gmail.com>, <bvanassche@acm.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <kuohong.wang@mediatek.com>,
-        <peter.wang@mediatek.com>, <chun-hung.wu@mediatek.com>,
-        <andy.teng@mediatek.com>, <chaotian.jing@mediatek.com>,
-        <cc.chou@mediatek.com>, Stanley Chu <stanley.chu@mediatek.com>
-Subject: [PATCH] scsi: ufs-mediatek: Fix build warnings with make W=1
-Date:   Thu, 10 Sep 2020 09:37:56 +0800
-Message-ID: <20200910013756.11385-1-stanley.chu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Wed, 9 Sep 2020 21:40:58 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2B46C061342
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 18:40:57 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id s65so2300473pgb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 18:40:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gTez5zBL4O/mFCX1yAYIY6uoJGixvvecrhH5yeefCRU=;
+        b=b0zJlrJ3/FxkSGhXn87cvP+RTMUhelRrCM1riW4kT7+txcP800FsUvP6kSl1Tx+BQ9
+         nlnSbaIdcJf/ctfzMo8lklWjGAlMfBcz670pLHXNIAzEyKNqQRUVeGBFLUGnDrDQvmmo
+         LiL1peql9jifg/8mL5CDMgP9HFRyzTX8uyAco=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gTez5zBL4O/mFCX1yAYIY6uoJGixvvecrhH5yeefCRU=;
+        b=AZi8rafTABa/JTVIjxuffU9/ZGTYjkrycu47HfvE56mV4lXSOQCTNExsJ6dnucuFf5
+         G4ZZYpOaHTT3VaVNPX+INos2uT1hTQKxY3z/3EbdtlLAo+lNktJtGJ23Ilwy3oWit1Pi
+         2pmSH1ICq9lCGHus21IShlkCu1Up5rA6zIQtOxocyY5DgOM7uS8CUQqAXGVEERuGrVtU
+         FTIRHqECb0wWD5zfRrTzC7mjoS9EDm7KG+zRsOOHkrpuSU6VG2TtJLqA0/+bxhqVpX0r
+         rewHbMm9/7UaVNCEBO83WQX6IOMAW7f0s9FBgi42Ixmo6g77IdsFmFZI0a9N2l9dhRmU
+         Unfg==
+X-Gm-Message-State: AOAM533jfd/CZuhUkqWVtOFuKlOX6PoNySNMzIjov47UPuiGpBdYlc4k
+        xk+RuJweeJkJ2xfbNBCwOszaOQ==
+X-Google-Smtp-Source: ABdhPJzBPsq3OhqI1wKePrmNY399SC3c/Mj0s1LcqZge53ktq1ymQHWKSBttbMamebJGRQYDAMFBPA==
+X-Received: by 2002:a63:d25:: with SMTP id c37mr2501235pgl.403.1599702057352;
+        Wed, 09 Sep 2020 18:40:57 -0700 (PDT)
+Received: from apsdesk.mtv.corp.google.com ([2620:15c:202:1:7220:84ff:fe09:2b94])
+        by smtp.gmail.com with ESMTPSA id j19sm3885366pfi.51.2020.09.09.18.40.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Sep 2020 18:40:56 -0700 (PDT)
+From:   Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+To:     linux-bluetooth@vger.kernel.org
+Cc:     marcel@holtmann.org,
+        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH] Bluetooth: Re-order clearing suspend tasks
+Date:   Wed,  9 Sep 2020 18:40:06 -0700
+Message-Id: <20200909183952.1.Ie55bb8dde9847e8005f24402f3f2d66ea09cd7b2@changeid>
+X-Mailer: git-send-email 2.28.0.618.gf4bc123cb7-goog
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: 38E1E23B3D021B9BE7FEBC5B0F21E00D3CD02EEAB16EADD8D4E73E28F58D18842000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rml4IGJ1aWxkIHdhcm5pbmdzIHdpdGggbWFrZSBXPTEgYXMgYmVsb3csDQoNCjEuDQo+PiBkcml2
-ZXJzL3Njc2kvdWZzL3Vmcy1tZWRpYXRlay5jOjExNjoyMjogd2FybmluZzogZm9ybWF0ICclZCcg
-ZXhwZWN0cw0KPj4gYXJndW1lbnQgb2YgdHlwZSAnaW50JywgYnV0IGFyZ3VtZW50IDQgaGFzIHR5
-cGUgJ2xvbmcgaW50Jw0KDQoyLg0KICBDQyBbTV0gIGRyaXZlcnMvc2NzaS91ZnMvdWZzLW1lZGlh
-dGVrLm8NCi4uL2RyaXZlcnMvc2NzaS91ZnMvdWZzLW1lZGlhdGVrLmM6NzQ5OiBlcnJvcjogQ2Fu
-bm90IHBhcnNlIHN0cnVjdCBvciB1bmlvbiENCg0KLyoqIGlzIHVzZWQgc3BlY2lmaWNhbGx5IHdp
-dGgga2VybmVsLWRvYyB0b29sLg0KQXMgYSBxdWljayBmaXggYnkgcmVtb3ZpbmcgZHViaW91cyAv
-KiogaW4gdGhlIGNvbW1lbnQgYmxvY2sgb2YNCnN0cnVjdCB1ZnNfaGJhX3ZhcmlhbnRfb3BzIHVm
-c19oYmFfbXRrX3ZvcHMuDQoNClNpZ25lZC1vZmYtYnk6IFN0YW5sZXkgQ2h1IDxzdGFubGV5LmNo
-dUBtZWRpYXRlay5jb20+DQotLS0NCiBkcml2ZXJzL3Njc2kvdWZzL3Vmcy1tZWRpYXRlay5jIHwg
-NiArKystLS0NCiAxIGZpbGUgY2hhbmdlZCwgMyBpbnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygt
-KQ0KDQpkaWZmIC0tZ2l0IGEvZHJpdmVycy9zY3NpL3Vmcy91ZnMtbWVkaWF0ZWsuYyBiL2RyaXZl
-cnMvc2NzaS91ZnMvdWZzLW1lZGlhdGVrLmMNCmluZGV4IDFhOTEzM2FjNmVmYi4uM2VjNDRkZmEy
-NTY3IDEwMDY0NA0KLS0tIGEvZHJpdmVycy9zY3NpL3Vmcy91ZnMtbWVkaWF0ZWsuYw0KKysrIGIv
-ZHJpdmVycy9zY3NpL3Vmcy91ZnMtbWVkaWF0ZWsuYw0KQEAgLTExMyw3ICsxMTMsNyBAQCBzdGF0
-aWMgdm9pZCB1ZnNfbXRrX2luaXRfcmVzZXRfY29udHJvbChzdHJ1Y3QgdWZzX2hiYSAqaGJhLA0K
-IHsNCiAJKnJjID0gZGV2bV9yZXNldF9jb250cm9sX2dldChoYmEtPmRldiwgc3RyKTsNCiAJaWYg
-KElTX0VSUigqcmMpKSB7DQotCQlkZXZfaW5mbyhoYmEtPmRldiwgIkZhaWxlZCB0byBnZXQgcmVz
-ZXQgY29udHJvbCAlczogJWRcbiIsDQorCQlkZXZfaW5mbyhoYmEtPmRldiwgIkZhaWxlZCB0byBn
-ZXQgcmVzZXQgY29udHJvbCAlczogJWxkXG4iLA0KIAkJCSBzdHIsIFBUUl9FUlIoKnJjKSk7DQog
-CQkqcmMgPSBOVUxMOw0KIAl9DQpAQCAtNzI3LDEzICs3MjcsMTMgQEAgc3RhdGljIHZvaWQgdWZz
-X210a19maXh1cF9kZXZfcXVpcmtzKHN0cnVjdCB1ZnNfaGJhICpoYmEpDQogCXVmc2hjZF9maXh1
-cF9kZXZfcXVpcmtzKGhiYSwgdWZzX210a19kZXZfZml4dXBzKTsNCiB9DQogDQotLyoqDQorLyoN
-CiAgKiBzdHJ1Y3QgdWZzX2hiYV9tdGtfdm9wcyAtIFVGUyBNVEsgc3BlY2lmaWMgdmFyaWFudCBv
-cGVyYXRpb25zDQogICoNCiAgKiBUaGUgdmFyaWFudCBvcGVyYXRpb25zIGNvbmZpZ3VyZSB0aGUg
-bmVjZXNzYXJ5IGNvbnRyb2xsZXIgYW5kIFBIWQ0KICAqIGhhbmRzaGFrZSBkdXJpbmcgaW5pdGlh
-bGl6YXRpb24uDQogICovDQotc3RhdGljIHN0cnVjdCB1ZnNfaGJhX3ZhcmlhbnRfb3BzIHVmc19o
-YmFfbXRrX3ZvcHMgPSB7DQorc3RhdGljIGNvbnN0IHN0cnVjdCB1ZnNfaGJhX3ZhcmlhbnRfb3Bz
-IHVmc19oYmFfbXRrX3ZvcHMgPSB7DQogCS5uYW1lICAgICAgICAgICAgICAgID0gIm1lZGlhdGVr
-LnVmc2hjaSIsDQogCS5pbml0ICAgICAgICAgICAgICAgID0gdWZzX210a19pbml0LA0KIAkuc2V0
-dXBfY2xvY2tzICAgICAgICA9IHVmc19tdGtfc2V0dXBfY2xvY2tzLA0KLS0gDQoyLjE4LjANCg==
+Unregister_pm_notifier is a blocking call so suspend tasks should be
+cleared beforehand. Otherwise, the notifier will wait for completion
+before returning (and we encounter a 2s timeout on resume).
+
+Fixes: 0e9952804ec9c8 (Bluetooth: Clear suspend tasks on unregister)
+Signed-off-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+---
+Should have caught that unregister_pm_notifier was blocking last time
+but when testing the earlier patch, I got unlucky and saw that the error
+message was never hit (the suspend timeout).
+
+When re-testing this patch on the same device, I was able to reproduce
+the problem on an older build with the 0e9952804ec9c8 but not on a newer
+build with the same patch. Changing the order correctly fixes it
+everywhere. Confirmed this by adding debug logs in btusb_disconnect and
+hci_suspend_notifier to confirm what order things were getting called.
+
+Sorry about the churn. Next I'm going try to do something about the palm
+shaped indentation on my forehead...
+
+ net/bluetooth/hci_core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
+index efc0fe2b47dac2..be9cdf5dabe5dc 100644
+--- a/net/bluetooth/hci_core.c
++++ b/net/bluetooth/hci_core.c
+@@ -3794,8 +3794,8 @@ void hci_unregister_dev(struct hci_dev *hdev)
+ 
+ 	cancel_work_sync(&hdev->power_on);
+ 
+-	unregister_pm_notifier(&hdev->suspend_notifier);
+ 	hci_suspend_clear_tasks(hdev);
++	unregister_pm_notifier(&hdev->suspend_notifier);
+ 	cancel_work_sync(&hdev->suspend_prepare);
+ 
+ 	hci_dev_do_close(hdev);
+-- 
+2.28.0.618.gf4bc123cb7-goog
 
