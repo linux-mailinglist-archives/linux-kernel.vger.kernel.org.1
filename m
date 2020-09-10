@@ -2,114 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C16902640D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 11:01:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 528C12640DE
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 11:04:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730223AbgIJJBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 05:01:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32926 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730116AbgIJJBG (ORCPT
+        id S1728971AbgIJJED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 05:04:03 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:46576 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727787AbgIJJEB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 05:01:06 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E22D5C0613ED
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 02:01:05 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id w7so4261458pfi.4
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 02:01:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ikzS6RYjoj2agknRb+4ptOX5afJxX0ugn9/c1CJ7PGY=;
-        b=susunWFFKwqMfxgI6ByE2bxzf0efOUepi18FJy0I3JaGM6PyRxlr5pWK3ZQrDC2hnN
-         ReIMsZIjJ33de7BpVFfN6XqNS2jyfb9GZ4K4h/I+P+A/84lrh4EPnpGm+66JuThreZhq
-         iAMtKUT4cO0Ytr/lL4S5Sgtjvq1DbmwGLc9mWMpW0LEU+uV0uBZdkKDexwQrIXp5JxOQ
-         RA7+krRJzRP7PBsEmcwR2pTSvNWBUhC9PH7lfT+vnhnZJ2EJ/bJDi6mlKCS+wRvd9Aam
-         hrjVglwXEJHhNVjheCVAFPlrQygD9qBLmsofYecD5zPuBl8kXkIXPqbFzTT4CDb1bFpn
-         vioA==
+        Thu, 10 Sep 2020 05:04:01 -0400
+Received: by mail-oi1-f196.google.com with SMTP id u126so5202631oif.13;
+        Thu, 10 Sep 2020 02:04:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ikzS6RYjoj2agknRb+4ptOX5afJxX0ugn9/c1CJ7PGY=;
-        b=oPihWGn3vPLHJMPDo4rnBPLtPj478ahFGNeqEesyZBxrgMUgkonI63Y9oePyXiRKRf
-         9/VjBWIzIeJtOmISQFM0HusQJlIYtUluKPkBlc9gLlZmACcFj59+Iw11ABQzSZVL4KiV
-         1gluorMjaG2Kpb7q/NBUbb4MAxRGm81FwYQSUxLk5IZwalkhyJyKDBkajDpBf65NpvrH
-         Iy19UWi0zW9h7yZVCvxyTrmvXfuSQG+5+R30W+xtCsck2Sb8xTGlv3DI+uq0upL64dyK
-         tCuy3JmkB9Ok5GsfAL2CUqfZfPTIiSBHe79Oair8+azcyBdZMqAXQWTbW/q7MN2t2+/K
-         ChcA==
-X-Gm-Message-State: AOAM532eTfkQMN4tIT9C8rCgEbvZEnTVONXvl1cg6iMchad/HTl0khJy
-        c+IbV2OGQk8j0GHIPjOk8ooYBY683VFzc2FOqdEn5A==
-X-Google-Smtp-Source: ABdhPJyz+lxVXWAN3RjhjfBgNFqBMssrHGsYLq26O3vVlwR5Eg9ERiehVAHVqUqpwEj5gFDwZOX+ebtv3+a8IJuSeMA=
-X-Received: by 2002:a63:fd03:: with SMTP id d3mr3605973pgh.201.1599728464251;
- Thu, 10 Sep 2020 02:01:04 -0700 (PDT)
+        bh=vyZ7f5uXtM7ISWgSMBc6d2lGqzDhzGCA2R8PUpwU1as=;
+        b=PL2G/FMnhH8YF8exjS2fYXePnacjxyvhHjEGc/N9PYjxvY6H6JiD4mMXRVQYFGvR0N
+         gPmC0GeDLlArjX2Lg2tvQ5wkVulTXWQH9icnW0aYxunxlDVQIG67G4n44Ztiq2bdtnZe
+         O9hUOCwFYmtMgbdBJPZdHowsSPfiDeK9I0im4qkkKWUMmGWESK1F8yUBT0JZBiqQ05fG
+         2FE7cwviHMhXQyyqzqHHzkfWHrBSv6EJVtqpOAX17OeVls72tdD7zIFtOagnV6l1ivMk
+         aJnPjSUjc5kO1Dl0zR66cXv5TT5ZcD/F/uQNAKBIfsjg1joNqr/Nr97UegXg9p9Z3AnV
+         oYLw==
+X-Gm-Message-State: AOAM532rAunHoppwPrJ0eMIQ3cv8fOD4iKiarqiuL/hnTcIQhzfocSR5
+        gWy1zHHUtp2N+0MqplnRdXf4ppHcblJDenmgv78aGUm4
+X-Google-Smtp-Source: ABdhPJwK9joVgz1WweswXwyB16kFHPWfbKTRZyivUL59SmLk3d2uai4kHvjqbeTX6rdOTm5Fwy2TiNP8DwpVO8PJgIE=
+X-Received: by 2002:aca:b742:: with SMTP id h63mr2973435oif.148.1599728640909;
+ Thu, 10 Sep 2020 02:04:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200909203059.23427-1-eajames@linux.ibm.com> <20200909203059.23427-4-eajames@linux.ibm.com>
-In-Reply-To: <20200909203059.23427-4-eajames@linux.ibm.com>
-From:   Brendan Higgins <brendanhiggins@google.com>
-Date:   Thu, 10 Sep 2020 02:00:53 -0700
-Message-ID: <CAFd5g46ghV7ArmM8LnMkGa-Nip_fT934+3cPOkVxS-b5odZXYw@mail.gmail.com>
-Subject: Re: [PATCH v3 3/5] i2c: aspeed: Mask IRQ status to relevant bits
-To:     Eddie James <eajames@linux.ibm.com>
-Cc:     linux-input@vger.kernel.org,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        linux-i2c@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+References: <20200907155541.2011-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20200907155541.2011-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20200907155541.2011-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 10 Sep 2020 11:03:49 +0200
+Message-ID: <CAMuHMdV9Ydnqp-XXVDGaRCVMT+-hyb6a96tVsBz5R=x-C4K3Ag@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] ARM: dts: r8a7742-iwg21d-q7: Add SPI NOR support
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Magnus Damm <magnus.damm@gmail.com>,
         Rob Herring <robh+dt@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        wsa@kernel.org, rentao.bupt@gmail.com,
-        Ryan Chen <ryan_chen@aspeedtech.com>
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Prabhakar <prabhakar.csengg@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 9, 2020 at 1:31 PM Eddie James <eajames@linux.ibm.com> wrote:
+On Mon, Sep 7, 2020 at 5:56 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> Add support for the SPI NOR device which is connected to MSIOF0 interface
+> on the iWave RainboW-G21d-q7 board.
 >
-> Mask the IRQ status to only the bits that the driver checks. This
-> prevents excessive driver warnings when operating in slave mode
-> when additional bits are set that the driver doesn't handle.
->
-> Signed-off-by: Eddie James <eajames@linux.ibm.com>
-> Reviewed-by: Tao Ren <rentao.bupt@gmail.com>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Chris Paterson <Chris.Paterson2@renesas.com>
+> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Sorry, looks like I didn't get my comment in in time.
+Thanks for the update, will queue in renesas-devel for v5.10.
 
-Looks good in principle. One minor comment below:
+Gr{oetje,eeting}s,
 
-> ---
->  drivers/i2c/busses/i2c-aspeed.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/drivers/i2c/busses/i2c-aspeed.c b/drivers/i2c/busses/i2c-aspeed.c
-> index 31268074c422..724bf30600d6 100644
-> --- a/drivers/i2c/busses/i2c-aspeed.c
-> +++ b/drivers/i2c/busses/i2c-aspeed.c
-> @@ -69,6 +69,7 @@
->   * These share bit definitions, so use the same values for the enable &
->   * status bits.
->   */
-> +#define ASPEED_I2CD_INTR_RECV_MASK                     0xf000ffff
+                        Geert
 
-Could we define ASPEED_I2CD_INTR_RECV_MASK to be ASPEED_I2CD_INTR_ALL ?
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
->  #define ASPEED_I2CD_INTR_SDA_DL_TIMEOUT                        BIT(14)
->  #define ASPEED_I2CD_INTR_BUS_RECOVER_DONE              BIT(13)
->  #define ASPEED_I2CD_INTR_SLAVE_MATCH                   BIT(7)
-> @@ -604,6 +605,7 @@ static irqreturn_t aspeed_i2c_bus_irq(int irq, void *dev_id)
->         writel(irq_received & ~ASPEED_I2CD_INTR_RX_DONE,
->                bus->base + ASPEED_I2C_INTR_STS_REG);
->         readl(bus->base + ASPEED_I2C_INTR_STS_REG);
-> +       irq_received &= ASPEED_I2CD_INTR_RECV_MASK;
->         irq_remaining = irq_received;
->
->  #if IS_ENABLED(CONFIG_I2C_SLAVE)
-> --
-> 2.26.2
->
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
