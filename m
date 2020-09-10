@@ -2,105 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49414263E03
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 09:06:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F326263E21
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 09:11:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730462AbgIJHG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 03:06:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42954 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730328AbgIJHDw (ORCPT
+        id S1730356AbgIJHK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 03:10:57 -0400
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:44777 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730408AbgIJHIo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 03:03:52 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7D38C0617A0
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 00:03:51 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id j20so4575662ybt.10
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 00:03:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=yVT9yLW7JYWhoMqFcNSvIQqOD/OC9Y5kGyMXj6mDfzA=;
-        b=SWzaAF3z61UdDBRXy/OCKHiF8fjMlKLNvdTmk6/Dbh+Kq1lqavqta7ibeGJDMVVjK9
-         9axKITn1wFqjz5tlBRpOkLHHQYFcxzoWXqmY1Wr+HNvMkBdSC5mKf3xMXU+ryg27V0jn
-         Th4btmcNJXuVRUgMFzA+P1ccT7ZakwLeIba9vmrMXLytgcsHgtPq/ujpT4Fvy8CJSLCl
-         Qe3OIPeflNh4YVVch2brsFc0DsYZFIzzMQKNykwBbU9Kf3BE4FGLV7RgkC7+kUlkcYlm
-         vQCACO2h7BOQiACwrP48GTHlEEljHMJN9F8kLZF8t731qo/RgTIaPzL/vO9bN/p+0HRJ
-         8pZQ==
+        Thu, 10 Sep 2020 03:08:44 -0400
+Received: by mail-lj1-f195.google.com with SMTP id b19so6743653lji.11;
+        Thu, 10 Sep 2020 00:08:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=yVT9yLW7JYWhoMqFcNSvIQqOD/OC9Y5kGyMXj6mDfzA=;
-        b=DGkuPdLlTcH9dBBUeOHDw+TSg4UiRLZ/puo6bkw4TzL0ocq+dCzwZd9zJNWPGczjHk
-         QvZyYrxfJSBOcMnfhWt65Zb2Cq+CkB3/EuYmrfB0k/M/4UFRKzEqSVFqDeJeQ+kd2ckl
-         nmizUnlPUC0IVbt/7RaMgtA6fK/+lQESKnBHt6OKK/oBkydC/IcQrCTIU5+7COmWblUl
-         z8wvbJ20xhJiGzvkNmax4yHMQuPBFpScV3hWez/F8iZ//YQbzm0sIvSHTXnp1ydgEEtD
-         QOuJ+lXUua5jTq3gaqfiNjX6e5IpwcuggvMGXMo0s6xQ5LLfcg3vmyGFR4pvjizUrwUs
-         QLVA==
-X-Gm-Message-State: AOAM533gVujmBz7orTW00ft5DaPs+3HL/CwcLbicA+gc1RmUOwtncCM0
-        m6lHZuH6Q8xMkoSVPX0oBws5dVyWA0IgxA==
-X-Google-Smtp-Source: ABdhPJx6wYqq0LRezDVx5FLW+SCF9/8HZEb3hTyx5Wg3k/fevn1boLeFIzGzqQKYhcL1qVh2j1dn8STpGk5QXw==
-X-Received: from spirogrip.svl.corp.google.com ([2620:15c:2cb:201:42a8:f0ff:fe4d:3548])
- (user=davidgow job=sendgmr) by 2002:a25:ef03:: with SMTP id
- g3mr9920500ybd.364.1599721430919; Thu, 10 Sep 2020 00:03:50 -0700 (PDT)
-Date:   Thu, 10 Sep 2020 00:03:30 -0700
-In-Reply-To: <20200910070331.3358048-1-davidgow@google.com>
-Message-Id: <20200910070331.3358048-6-davidgow@google.com>
-Mime-Version: 1.0
-References: <20200910070331.3358048-1-davidgow@google.com>
-X-Mailer: git-send-email 2.28.0.526.ge36021eeef-goog
-Subject: [PATCH v13 5/5] mm: kasan: Do not panic if both panic_on_warn and
- kasan_multishot set
-From:   David Gow <davidgow@google.com>
-To:     trishalfonso@google.com, brendanhiggins@google.com,
-        aryabinin@virtuozzo.com, dvyukov@google.com, mingo@redhat.com,
-        peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, andreyknvl@google.com,
-        shuah@kernel.org, akpm@linux-foundation.org
-Cc:     David Gow <davidgow@google.com>, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com, kunit-dev@googlegroups.com,
-        linux-kselftest@vger.kernel.org, linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rLyVaAJAglFySSpr2MGhrCSvoIYdsTOte9p/4jLkzmo=;
+        b=ivrn1aIWEFXz+cMgUi7eGCFI6kl+Ow9i96etPX4Q1XzYqtOQ98ky6EyJd9pEX/cCUL
+         4vj0Vw20W1nBBCGrVojg/uVfHTjXFVWDqr/r5rjbn6KEw1DvR6F9wfl1NIPG8stp3+cQ
+         jVhy/b5Jwan+SGnBG9fmyHoGM0AlohDibqxnfHthsu2ZfEU9pdcsRwNHgqwJovIn2Wb8
+         Miyohu57hsdIIpxa7K1XlcdayUNfSDPLh1TpU7B27kop6S813mu/N1/TrS51COHYa7eJ
+         cN4LtsVieqT2SSyqrGWSD96EqN3k9Vwo3NDo8seMsxY4Mq5hQ1y5A2drG0FefXBaI0yR
+         Blnw==
+X-Gm-Message-State: AOAM533FM88CY1FcUR84h+obTP730R95HOmKVzR1anllSXA+kIQICPSL
+        KCPT+21HaCsVQRv7spCFMDU=
+X-Google-Smtp-Source: ABdhPJzcLGO0skLg/9MNKQOq2gGlzisRR/xiOYj/piuMfbP3jScnhymaPvFW15ZJ6AgBtqBeh2jeFA==
+X-Received: by 2002:a2e:b8d1:: with SMTP id s17mr602390ljp.222.1599721721980;
+        Thu, 10 Sep 2020 00:08:41 -0700 (PDT)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id z8sm1349606ljh.19.2020.09.10.00.08.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Sep 2020 00:08:41 -0700 (PDT)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1kGGhA-0005SA-Rw; Thu, 10 Sep 2020 09:08:37 +0200
+Date:   Thu, 10 Sep 2020 09:08:36 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Johan Hovold <johan@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable <stable@vger.kernel.org>
+Subject: Re: [PATCH 1/2] serial: core: fix port-lock initialisation
+Message-ID: <20200910070836.GB24441@localhost>
+References: <20200909143101.15389-1-johan@kernel.org>
+ <20200909143101.15389-2-johan@kernel.org>
+ <20200909152158.GC1891694@smile.fi.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200909152158.GC1891694@smile.fi.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-KASAN errors will currently trigger a panic when panic_on_warn is set.
-This renders kasan_multishot useless, as further KASAN errors won't be
-reported if the kernel has already paniced. By making kasan_multishot
-disable this behaviour for KASAN errors, we can still have the benefits
-of panic_on_warn for non-KASAN warnings, yet be able to use
-kasan_multishot.
+On Wed, Sep 09, 2020 at 06:21:58PM +0300, Andy Shevchenko wrote:
+> On Wed, Sep 09, 2020 at 04:31:00PM +0200, Johan Hovold wrote:
+> > Commit f743061a85f5 ("serial: core: Initialise spin lock before use in
+> > uart_configure_port()") tried to work around a breakage introduced by
+> > commit a3cb39d258ef ("serial: core: Allow detach and attach serial
+> > device for console") by adding a second initialisation of the port lock
+> > when registering the port.
+> > 
+> > As reported by the build robots [1], this doesn't really solve the
+> > regression introduced by the console-detach changes and also adds a
+> > second redundant initialisation of the lock for normal ports.
+> 
+> I thought, though doubtfully, it was a regression made by
+> 679193b7baf8 ("serial: 8250: Let serial core initialise spin lock")
+> and then I completely forgot about [1].
 
-This is particularly important when running KASAN tests, which need to
-trigger multiple KASAN errors: previously these would panic the system
-if panic_on_warn was set, now they can run (and will panic the system
-should non-KASAN warnings show up).
+Yes, that driver has had an explicit early initialisation of the lock
+and it was indeed the removal of that which triggered the robot's
+report. With the initialisation again done during console setup (patch
+2/2), that should no longer be an issue (at least not for the console
+port...).
 
-Signed-off-by: David Gow <davidgow@google.com>
-Reviewed-by: Andrey Konovalov <andreyknvl@google.com>
-Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
-Tested-by: Andrey Konovalov <andreyknvl@google.com>
----
- mm/kasan/report.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> > Start cleaning up this mess by removing the redundant initialisation and
+> > making sure that the port lock is again initialised once-only for ports
+> > that aren't already in use as a console.
+> 
+> Thanks for looking into this!
+> 
+> I agree this is better place for lock initialization.
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-diff --git a/mm/kasan/report.c b/mm/kasan/report.c
-index e2c14b10bc81..00a53f1355ae 100644
---- a/mm/kasan/report.c
-+++ b/mm/kasan/report.c
-@@ -95,7 +95,7 @@ static void end_report(unsigned long *flags)
- 	pr_err("==================================================================\n");
- 	add_taint(TAINT_BAD_PAGE, LOCKDEP_NOW_UNRELIABLE);
- 	spin_unlock_irqrestore(&report_lock, *flags);
--	if (panic_on_warn) {
-+	if (panic_on_warn && !test_bit(KASAN_BIT_MULTI_SHOT, &kasan_flags)) {
- 		/*
- 		 * This thread may hit another WARN() in the panic path.
- 		 * Resetting this prevents additional WARN() from panicking the
--- 
-2.28.0.526.ge36021eeef-goog
+Thanks for reviewing.
 
+Johan
