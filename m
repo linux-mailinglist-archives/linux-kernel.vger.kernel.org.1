@@ -2,109 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E97D22646C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 15:20:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C5552646D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 15:23:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730890AbgIJNUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 09:20:36 -0400
-Received: from a27-10.smtp-out.us-west-2.amazonses.com ([54.240.27.10]:55914
-        "EHLO a27-10.smtp-out.us-west-2.amazonses.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728350AbgIJNTD (ORCPT
+        id S1730841AbgIJNWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 09:22:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43844 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730717AbgIJNMX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 09:19:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=zsmsymrwgfyinv5wlfyidntwsjeeldzt; d=codeaurora.org; t=1599743499;
-        h=From:To:Cc:References:In-Reply-To:Subject:Date:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=q1h4X0rhfpIJxvratDwVA1xQ2ilL0QOAEAb+uD7egDE=;
-        b=VjstSm6SLxkPGyaLYcFwWUhmBToXnHG7l+rPcxgvCItWVC0aa+7BTPxCIEiutCBF
-        2p5s6MXaf3uKMyr0AzVSiTQbQoOyhXGhHgl+aPbEwdjDR+gmpqr4L939wRwraQM7fDN
-        GIchkauHt3Q1jTqkC87trqepleIPWxEz8EL4YeNk=
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=hsbnp7p3ensaochzwyq5wwmceodymuwv; d=amazonses.com; t=1599743499;
-        h=From:To:Cc:References:In-Reply-To:Subject:Date:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding:Feedback-ID;
-        bh=q1h4X0rhfpIJxvratDwVA1xQ2ilL0QOAEAb+uD7egDE=;
-        b=EAP81zcmtP5pM8qeNkBZwikGEcWsITaMeTFgnhhfP/D0RTXC9/1oiApbm+j5aTiQ
-        F3AMLWsXs1oJjeEtga7PvYsGxOczIdA4BGHQWTUacdnXP/yl6EsfMKsQdgLP9RfUZK+
-        AofoY6SjblTMp97w49y9/GMCbmUqRByEVpP/uixA=
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 92023C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=pillair@codeaurora.org
-From:   "Rakesh Pillai" <pillair@codeaurora.org>
-To:     "'Kalle Valo'" <kvalo@codeaurora.org>
-Cc:     <linux-wireless@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <ath10k@lists.infradead.org>
-References: <1593193990-30366-1-git-send-email-pillair@codeaurora.org>  <87y2ls4lbf.fsf@codeaurora.org> <0101017459fdd62b-791355e4-ea88-4142-96a7-06849bcd7b09-000000@us-west-2.amazonses.com> <87k0x51rz3.fsf@codeaurora.org>
-In-Reply-To: <87k0x51rz3.fsf@codeaurora.org>
-Subject: RE: [PATCH] ath10k: Use bdf calibration variant for snoc targets
-Date:   Thu, 10 Sep 2020 13:11:39 +0000
-Message-ID: <0101017478249a7e-ec85ae99-51da-4af5-9314-c3a6b205795e-000000@us-west-2.amazonses.com>
+        Thu, 10 Sep 2020 09:12:23 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0A4AC061757
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 06:12:16 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id m6so6688235wrn.0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 06:12:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Bq+U/roPoyR+PFGiWvFpI6j3vo6m28j+pYae81Oydrk=;
+        b=LxW9JQardfe6ovRqT818t4MTPCbypCYUo6YFqdrT244gD5a1S0M2FecEI0fJMIgCzr
+         Ar89gXm/TIGENRR2BL49FoHZo7vujerVPjd5M+e2s3HXP4Wo7+O2P4figtbf5/nmwDS/
+         Q2R1sft6rUH2GuRa5ewLVT4dLProx4KzE35qEa4E6nG7xI6czJpWrd4mlBvx4KBv1Ccz
+         A73yWuTvok4lQOj7F9He312DDKguKWTUTaFTwJ9WMRqZBv5IIXVbgFL3+SKSF4xaBQqF
+         6f2aAKtqQ+uZhXhgjIwYfEadfGfIDAA1hYNVQFQSDpaEu0fH3OPF+Cxvx5kbZQoNIkpH
+         Yvmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Bq+U/roPoyR+PFGiWvFpI6j3vo6m28j+pYae81Oydrk=;
+        b=Uci+QvLkMqfIUi+bwDyPoL0p8n3Ae5wXJP5bHkSDPw5siVL8vU57u91dOPLjmfQhBc
+         AKJRv650UDf1j/uIG0HOSwHGuU6aBvPIXhP1Ylz448smvowHIUHHL+E1+9J1wUTG1fIZ
+         lBnlCtrq24MqBGV8rlEjIug7vPvX3eO+nkYF2bRIcf17qAsXGvg79GW8mHGMv3FXcV+c
+         5RF9YJk59mnV3quXZBVP9sl1TvMGESCPXS8krvcsBz6yQK+xFWC3E2tPiO3JZ2R0Hf6o
+         iWQ0XJlHiYluyYgXVNbWucXOBrdGYV/q03SkVy00jutqUytzeuN6pzoQQtL6Miz2DXzX
+         ObKA==
+X-Gm-Message-State: AOAM532A968/F4Jykc6iF8Y3o1v7Y2c3agKfJhGm299uZvh3T+IVg79M
+        3umaMhW2GlBXkvB75Cy4pjMJ4A==
+X-Google-Smtp-Source: ABdhPJx2Dvf8nFJMefE2zEyQsiA8oS3cus97b9p96If1Q7HdqZx1B5j3NrbyrLIFhtzFYQ1R++dhWQ==
+X-Received: by 2002:a5d:6301:: with SMTP id i1mr8482460wru.323.1599743535091;
+        Thu, 10 Sep 2020 06:12:15 -0700 (PDT)
+Received: from holly.lan (cpc141214-aztw34-2-0-cust773.18-1.cable.virginm.net. [86.9.19.6])
+        by smtp.gmail.com with ESMTPSA id j14sm3301883wmj.19.2020.09.10.06.12.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Sep 2020 06:12:14 -0700 (PDT)
+Date:   Thu, 10 Sep 2020 14:12:12 +0100
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Jann Horn <jannh@google.com>, Arnd Bergmann <arnd@arndb.de>,
+        Jason Yan <yanaijie@huawei.com>,
+        Chuhong Yuan <hslester96@gmail.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Ben Dooks <ben.dooks@codethink.co.uk>,
+        Saurav Girepunje <saurav.girepunje@gmail.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Mathias Nyman <mathias.nyman@linux.intel.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Subject: Re: [PATCH RESEND v3 04/11] usb: xhci-rcar: convert to
+ readl_poll_timeout_atomic()
+Message-ID: <20200910131212.wm7zskxvcesl652c@holly.lan>
+References: <1599726112-4439-1-git-send-email-chunfeng.yun@mediatek.com>
+ <1599726112-4439-4-git-send-email-chunfeng.yun@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQJRm8Tt2m+V2vXQfAtV0J7j7miBFwIt3U/7AmGQD+ACiFXeLKgy8eGg
-Content-Language: en-us
-X-SES-Outgoing: 2020.09.10-54.240.27.10
-Feedback-ID: 1.us-west-2.CZuq2qbDmUIuT3qdvXlRHZZCpfZqZ4GtG9v3VKgRyF0=:AmazonSES
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1599726112-4439-4-git-send-email-chunfeng.yun@mediatek.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-> -----Original Message-----
-> From: Kalle Valo <kvalo@codeaurora.org>
-> Sent: Monday, September 7, 2020 9:48 PM
-> To: Rakesh Pillai <pillair@codeaurora.org>
-> Cc: linux-wireless@vger.kernel.org; linux-kernel@vger.kernel.org;
-> ath10k@lists.infradead.org
-> Subject: Re: [PATCH] ath10k: Use bdf calibration variant for snoc targets
+On Thu, Sep 10, 2020 at 04:21:45PM +0800, Chunfeng Yun wrote:
+> Use readl_poll_timeout_atomic() to simplify code
 > 
-> "Rakesh Pillai" <pillair@codeaurora.org> writes:
+> Cc: Mathias Nyman <mathias.nyman@linux.intel.com>
+> Cc: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+> ---
+> v2~v3: no changes
+> ---
+>  drivers/usb/host/xhci-rcar.c | 43 ++++++++++++-------------------------------
+>  1 file changed, 12 insertions(+), 31 deletions(-)
 > 
-> >> > --- a/drivers/net/wireless/ath/ath10k/qmi.c
-> >> > +++ b/drivers/net/wireless/ath/ath10k/qmi.c
-> >> > @@ -576,6 +576,8 @@ static int
-> ath10k_qmi_cap_send_sync_msg(struct
-> >> ath10k_qmi *qmi)
-> >> >  	if (resp->chip_info_valid) {
-> >> >  		qmi->chip_info.chip_id = resp->chip_info.chip_id;
-> >> >  		qmi->chip_info.chip_family =
-resp->chip_info.chip_family;
-> >> > +	} else {
-> >> > +		qmi->chip_info.chip_id = 0xFF;
-> >> >  	}
-> >>
-> >> So you hard code chip_id to 0xff if it's not valid. Is it 100%
-> >> guaranteed that there never will be a chip id with 0xff?
-> >
-> > 0x0 and 0xff are invalid chip id and are are not used.
-> > If the chip_id read fails, we fallback to the default board data.
-> > 0xff is used to go to the default board data (Also this is in alignment
-with
-> > the current implementation of board_id)
-> >
-> > Does that make sense ?
-> 
-> I'm a bit hesitant, over the years I have seen cases so many cases where
-> "foo is not used anywhere" and later that foo is actually used
-> somewhere. 0xff means that there's only 254 different values, but I
-> guess there are not that many chip ids? So a chip id is very different
-> from a board id, right?
+> diff --git a/drivers/usb/host/xhci-rcar.c b/drivers/usb/host/xhci-rcar.c
+> index c1025d3..74f836f 100644
+> --- a/drivers/usb/host/xhci-rcar.c
+> +++ b/drivers/usb/host/xhci-rcar.c
+> @@ -6,6 +6,7 @@
+>   */
+>  
+>  #include <linux/firmware.h>
+> +#include <linux/iopoll.h>
+>  #include <linux/module.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/of.h>
+> @@ -127,8 +128,7 @@ static int xhci_rcar_download_firmware(struct usb_hcd *hcd)
+>  	void __iomem *regs = hcd->regs;
+>  	struct xhci_plat_priv *priv = hcd_to_xhci_priv(hcd);
+>  	const struct firmware *fw;
+> -	int retval, index, j, time;
+> -	int timeout = 10000;
+> +	int retval, index, j;
+>  	u32 data, val, temp;
+>  	u32 quirks = 0;
+>  	const struct soc_device_attribute *attr;
+> @@ -166,32 +166,19 @@ static int xhci_rcar_download_firmware(struct usb_hcd *hcd)
+>  		temp |= RCAR_USB3_DL_CTRL_FW_SET_DATA0;
+>  		writel(temp, regs + RCAR_USB3_DL_CTRL);
+>  
+> -		for (time = 0; time < timeout; time++) {
+> -			val = readl(regs + RCAR_USB3_DL_CTRL);
+> -			if ((val & RCAR_USB3_DL_CTRL_FW_SET_DATA0) == 0)
+> -				break;
+> -			udelay(1);
+> -		}
+> -		if (time == timeout) {
+> -			retval = -ETIMEDOUT;
+> +		retval = readl_poll_timeout_atomic(regs + RCAR_USB3_DL_CTRL,
+> +				val, !(val & RCAR_USB3_DL_CTRL_FW_SET_DATA0),
+> +				1, 10000);
+> +		if (retval < 0)
+>  			break;
+> -		}
+>  	}
+>  
+>  	temp = readl(regs + RCAR_USB3_DL_CTRL);
+>  	temp &= ~RCAR_USB3_DL_CTRL_ENABLE;
+>  	writel(temp, regs + RCAR_USB3_DL_CTRL);
+>  
+> -	for (time = 0; time < timeout; time++) {
+> -		val = readl(regs + RCAR_USB3_DL_CTRL);
+> -		if (val & RCAR_USB3_DL_CTRL_FW_SUCCESS) {
+> -			retval = 0;
+> -			break;
+> -		}
+> -		udelay(1);
+> -	}
+> -	if (time == timeout)
+> -		retval = -ETIMEDOUT;
+> +	retval = readl_poll_timeout_atomic((regs + RCAR_USB3_DL_CTRL),
+> +			val, (val & RCAR_USB3_DL_CTRL_FW_SUCCESS), 1, 10000);
 
-Yes that's correct.
-Chip id is already being used in case of qca6174 (pci bus)
-We are bringing this to snoc bus chipset (WCN3990)
+Directly assigning to retval at this point will clobber a previous
+-ETIMEDOUT error.
 
-> 
-> --
-> https://wireless.wiki.kernel.org/en/developers/documentation/submittingp
-> atches
+In other words if there is a timeout waiting for FW_SET_DATA0, but not for
+DW_SUCCESS, then we will return the wrong return value.
 
+
+Daniel.
+
+
+>  
+>  	release_firmware(fw);
+>  
+> @@ -200,18 +187,12 @@ static int xhci_rcar_download_firmware(struct usb_hcd *hcd)
+>  
+>  static bool xhci_rcar_wait_for_pll_active(struct usb_hcd *hcd)
+>  {
+> -	int timeout = 1000;
+> +	int retval;
+>  	u32 val, mask = RCAR_USB3_AXH_STA_PLL_ACTIVE_MASK;
+>  
+> -	while (timeout > 0) {
+> -		val = readl(hcd->regs + RCAR_USB3_AXH_STA);
+> -		if ((val & mask) == mask)
+> -			return true;
+> -		udelay(1);
+> -		timeout--;
+> -	}
+> -
+> -	return false;
+> +	retval = readl_poll_timeout_atomic(hcd->regs + RCAR_USB3_AXH_STA,
+> +			val, ((val & mask) == mask), 1, 1000);
+> +	return !!retval;
+
+This function returns a bool so !! is either wrong or redundant... I
+think in this case it is wrong and should be a single ! .
+
+
+Daniel.
