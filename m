@@ -2,175 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9C9E263B40
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 05:14:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC79B263B2E
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 05:09:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729298AbgIJDOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 23:14:19 -0400
-Received: from regular1.263xmail.com ([211.150.70.199]:44566 "EHLO
-        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726440AbgIJDOI (ORCPT
+        id S1728442AbgIJDJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 23:09:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34510 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726426AbgIJDIS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 23:14:08 -0400
-X-Greylist: delayed 394 seconds by postgrey-1.27 at vger.kernel.org; Wed, 09 Sep 2020 23:14:05 EDT
-Received: from localhost (unknown [192.168.167.69])
-        by regular1.263xmail.com (Postfix) with ESMTP id 487AD104E;
-        Thu, 10 Sep 2020 11:07:19 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-ANTISPAM-LEVEL: 2
-X-SKE-CHECKED: 1
-X-ABS-CHECKED: 1
-Received: from [172.16.12.236] (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P25134T140525325764352S1599707237793667_;
-        Thu, 10 Sep 2020 11:07:18 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <9b78765c88d40245569064639cb03e69>
-X-RL-SENDER: zhangqing@rock-chips.com
-X-SENDER: zhangqing@rock-chips.com
-X-LOGIN-NAME: zhangqing@rock-chips.com
-X-FST-TO: kever.yang@rock-chips.com
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-DNS-TYPE: 0
-X-System-Flag: 0
-Subject: Re: [PATCH v3 6/6] clk: rockchip: rk3399: Support module build
-To:     =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>
-Cc:     mturquette@baylibre.com, sboyd@kernel.org,
-        linux-clk@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-kernel@vger.kernel.org, xxx@rock-chips.com,
-        xf@rock-chips.com, huangtao@rock-chips.com,
-        kever.yang@rock-chips.com
-References: <20200904074405.24439-1-zhangqing@rock-chips.com>
- <20200904074505.24917-1-zhangqing@rock-chips.com> <3524790.GmC4BGDxql@diego>
-From:   "elaine.zhang" <zhangqing@rock-chips.com>
-Organization: rockchip
-Message-ID: <ad06ac8a-e7f9-382d-1cbc-01aea6256e5c@rock-chips.com>
-Date:   Thu, 10 Sep 2020 11:07:17 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 9 Sep 2020 23:08:18 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9AF1C061756
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 20:08:17 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id j11so6566070ejk.0
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 20:08:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=L+5q3xGL1nHZB00+ew0QJmqWRuBGR2SupPBxFEZiggQ=;
+        b=Y+eo6iz0kU1zd9R0JHjSL9PrdhWcFHDUG29LiKaSOSAwibWV1zfMHyDdNWfYtRJifr
+         ShicgtbBF7Hma5FXvkMstjNdFUynDDqTiOxj0SJt979RZ936AQ3xE4yAmjr0plHQVLRC
+         LanabjPwDKli2rFVgpxYFFmqLKnIwlsjoe6IQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=L+5q3xGL1nHZB00+ew0QJmqWRuBGR2SupPBxFEZiggQ=;
+        b=hiJWmsXK/K72Dm4rIwbZHGx28Nl8L6e+x3PucjM9lsG/QVVtXVkFAIstlCHbeaICkC
+         ZmLlf1LCCM4nObRACTon6i0YMA7Rri0x9G8X5Fm9UYpxIR05tkIX7m4s/iyil7WYRyVb
+         d3KPO0pODhJTwIwfNmJTDf7IW45DFugph/5B+NQjmXoy2VuxVZI1mXPMqR9pIak0lrNd
+         JNKT7J+/d1eN5BeLG06YgFxOlWmi5oXVQGrY4LRUg5jEha5/gSkSgBH48g83+b+m5vpY
+         eZ3bS/ZL6IlS8QkZC14/bZNX5mO0UCRoiSyZgRwNG8R9Gd/UMxFCClRnvpB5ZYtl+Ozr
+         u/Ig==
+X-Gm-Message-State: AOAM533SV5HDk5g8ApjX4VSKf8zHsm2n4EPe4TJnIxnsNmwSr4+YzC9p
+        3Sx2hvLiJ6XnGhBJiywvzBLVFQ9o0L1D95TX3pI=
+X-Google-Smtp-Source: ABdhPJx8iM/WU+SzKn+c+T79bN73xos+cZitoR52UC2+IovPS/ouxIrzAldRj1RCts3x1dhXgaKsvN9GumQR1XU1kTA=
+X-Received: by 2002:a17:906:4c58:: with SMTP id d24mr7056648ejw.108.1599707296448;
+ Wed, 09 Sep 2020 20:08:16 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <3524790.GmC4BGDxql@diego>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20200724071518.430515-1-joel@jms.id.au> <20200724071518.430515-3-joel@jms.id.au>
+ <d5722caa-cf98-15c4-2e45-9c569ca959b3@roeck-us.net>
+In-Reply-To: <d5722caa-cf98-15c4-2e45-9c569ca959b3@roeck-us.net>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Thu, 10 Sep 2020 03:08:04 +0000
+Message-ID: <CACPK8XcnyO+T18W0pk6dRahg1aanaJYsVfxtXtZN31phub+=TQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] fsi/sbefifo: Fix reset timeout
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-fsi@lists.ozlabs.org, Joachim Fenkes <fenkes@de.ibm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alistar Popple <alistair@popple.id.au>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-hi,
-
-在 2020/9/7 上午6:49, Heiko Stübner 写道:
-> Am Freitag, 4. September 2020, 09:45:05 CEST schrieb Elaine Zhang:
->> support CLK_OF_DECLARE and builtin_platform_driver_probe
->> double clk init method.
->> add module author, description and license to support building
->> Soc Rk3399 clock driver as module.
->>
->> Signed-off-by: Elaine Zhang <zhangqing@rock-chips.com>
->> Reviewed-by: Kever Yang <kever.yang@rock-chips.com>
->> ---
->>   drivers/clk/rockchip/clk-rk3399.c | 55 +++++++++++++++++++++++++++++++
->>   1 file changed, 55 insertions(+)
->>
->> diff --git a/drivers/clk/rockchip/clk-rk3399.c b/drivers/clk/rockchip/clk-rk3399.c
->> index ce1d2446f142..40ff17aee5b6 100644
->> --- a/drivers/clk/rockchip/clk-rk3399.c
->> +++ b/drivers/clk/rockchip/clk-rk3399.c
->> @@ -5,9 +5,11 @@
->>    */
->>   
->>   #include <linux/clk-provider.h>
->> +#include <linux/module.h>
->>   #include <linux/io.h>
->>   #include <linux/of.h>
->>   #include <linux/of_address.h>
->> +#include <linux/of_device.h>
->>   #include <linux/platform_device.h>
->>   #include <linux/regmap.h>
->>   #include <dt-bindings/clock/rk3399-cru.h>
->> @@ -1600,3 +1602,56 @@ static void __init rk3399_pmu_clk_init(struct device_node *np)
->>   	rockchip_clk_of_add_provider(np, ctx);
->>   }
->>   CLK_OF_DECLARE(rk3399_cru_pmu, "rockchip,rk3399-pmucru", rk3399_pmu_clk_init);
->> +
->> +struct clk_rk3399_inits {
->> +		void (*inits)(struct device_node *np);
->> +};
->> +
->> +static const struct clk_rk3399_inits clk_rk3399_pmucru_init = {
->> +	.inits = rk3399_pmu_clk_init,
->> +};
->> +
->> +static const struct clk_rk3399_inits clk_rk3399_cru_init = {
->> +	.inits = rk3399_clk_init,
->> +};
->> +
->> +static const struct of_device_id clk_rk3399_match_table[] = {
->> +	{
->> +		.compatible = "rockchip,rk3399-cru",
->> +		.data = &clk_rk3399_cru_init,
->> +	},  {
->> +		.compatible = "rockchip,rk3399-pmucru",
->> +		.data = &clk_rk3399_pmucru_init,
->> +	},
->> +	{ }
->> +};
->> +MODULE_DEVICE_TABLE(of, clk_rk3399_match_table);
->> +
->> +static int __init clk_rk3399_probe(struct platform_device *pdev)
->> +{
->> +	struct device_node *np = pdev->dev.of_node;
->> +	const struct of_device_id *match;
->> +	const struct clk_rk3399_inits *init_data;
->> +
->> +	match = of_match_device(clk_rk3399_match_table, &pdev->dev);
->> +	if (!match || !match->data)
->> +		return -EINVAL;
->> +
->> +	init_data = match->data;
->> +	if (init_data->inits)
->> +		init_data->inits(np);
->> +
->> +	return 0;
->> +}
->> +
->> +static struct platform_driver clk_rk3399_driver = {
->> +	.driver		= {
->> +		.name	= "clk-rk3399",
->> +		.of_match_table = clk_rk3399_match_table,
-> I guess we probably want
-> 		.suppress_bind_attrs = true,
-OK, I will add it in the next version.
+On Fri, 24 Jul 2020 at 14:34, Guenter Roeck <linux@roeck-us.net> wrote:
 >
-> here, because there is no unloading.
-> Also what happens when you try to rmmod the module?
-console:/ # lsmod | grep clk
-
-clk_rk808              16384  0
-clk_rk3399             49152  0 [permanent]
-clk_rockchip           57344  32 rockchip_dmc,rockchip_opp_select,clk_rk3399
-rockchip_sip           24576  6 
-rk_vcodec,rockchip_pwm_remotectl,rockchip_bus,nvmem_rockchip_efuse,rockchip_pm_config,clk_rockchip
-
-console:/ # rmmod clk_rk3399
-
-rmmod: failed to unload clk_rk3399: Device or resource busy
-
-console:/ # rmmod -f clk_rk3399
-
-rmmod: failed to unload clk_rk3399: Device or resource busy
-
-
-The builtin_platform_driver_probe()  without the __exit parts.
-
+> On 7/24/20 12:15 AM, Joel Stanley wrote:
+> > From: Joachim Fenkes <FENKES@de.ibm.com>
+> >
+> > On BMCs with lower timer resolution than 1ms, msleep(1) will take
+> > way longer than 1ms, so looping 10k times won't wait for 10s but
+> > significantly longer.
+> >
+> > Fix this by using jiffies like the rest of the code.
+> >
+> > Fixes: 9f4a8a2d7f9d ("fsi/sbefifo: Add driver for the SBE FIFO")
+> > Signed-off-by: Joachim Fenkes <fenkes@de.ibm.com>
+> > Signed-off-by: Joel Stanley <joel@jms.id.au>
+> > ---
+> >  drivers/fsi/fsi-sbefifo.c | 6 ++++--
+> >  1 file changed, 4 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/fsi/fsi-sbefifo.c b/drivers/fsi/fsi-sbefifo.c
+> > index 655b45c1f6ba..3ad9510ad4a4 100644
+> > --- a/drivers/fsi/fsi-sbefifo.c
+> > +++ b/drivers/fsi/fsi-sbefifo.c
+> > @@ -325,6 +325,7 @@ static int sbefifo_up_write(struct sbefifo *sbefifo, __be32 word)
+> >  static int sbefifo_request_reset(struct sbefifo *sbefifo)
+> >  {
+> >       struct device *dev = &sbefifo->fsi_dev->dev;
+> > +     unsigned long end_time;
+> >       u32 status, timeout;
+> >       int rc;
+> >
+> > @@ -341,7 +342,8 @@ static int sbefifo_request_reset(struct sbefifo *sbefifo)
+> >       }
+> >
+> >       /* Wait for it to complete */
+> > -     for (timeout = 0; timeout < SBEFIFO_RESET_TIMEOUT; timeout++) {
+> > +     end_time = jiffies + msecs_to_jiffies(SBEFIFO_RESET_TIMEOUT);
+> > +     while (!time_after(jiffies, end_time)) {
+> >               rc = sbefifo_regr(sbefifo, SBEFIFO_UP | SBEFIFO_STS, &status);
+> >               if (rc) {
+> >                       dev_err(dev, "Failed to read UP fifo status during reset"
+> > @@ -355,7 +357,7 @@ static int sbefifo_request_reset(struct sbefifo *sbefifo)
+> >                       return 0;
+> >               }
+> >
+> > -             msleep(1);
+> > +             cond_resched();
 >
-> Heiko
->
->
->
->
+> A hot loop ? Are you sure ? usleep_range() might make more sense here.
 
+Thanks for the review.
 
+Joachim, I can fix this up for you.
+
+Do you have a suggestion for how long to wait? What's the best case
+completion time for a sbe reset?
+
+We also have a hot loop in sbefifo_wait. I'm open to suggestions for
+how long that should delay for.
+
+Cheers,
+
+Joel
