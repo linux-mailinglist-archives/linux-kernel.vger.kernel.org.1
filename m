@@ -2,70 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52CF2264229
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 11:34:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D8A52641FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 11:31:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730788AbgIJJdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 05:33:45 -0400
-Received: from mx2.suse.de ([195.135.220.15]:47998 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730356AbgIJJXL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 05:23:11 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id BBAEFAF47;
-        Thu, 10 Sep 2020 09:23:25 +0000 (UTC)
-Date:   Thu, 10 Sep 2020 11:23:07 +0200
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Michal Hocko <mhocko@kernel.org>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        David Hildenbrand <david@redhat.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Subject: Re: [RFC 3/5] mm, page_alloc(): remove setup_pageset()
-Message-ID: <20200910092307.GD2285@linux>
-References: <20200907163628.26495-1-vbabka@suse.cz>
- <20200907163628.26495-4-vbabka@suse.cz>
+        id S1730462AbgIJJay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 05:30:54 -0400
+Received: from mail-il1-f205.google.com ([209.85.166.205]:39532 "EHLO
+        mail-il1-f205.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730474AbgIJJ3S (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 05:29:18 -0400
+Received: by mail-il1-f205.google.com with SMTP id u8so571672ilc.6
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 02:29:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=wbQ5hEj6rADmWVMRkDe2eqg2V1dhGor68kn9Ygqa8iA=;
+        b=KxsUc23Ue3rNOdzKJzuLrWJV8avBFfuiRtqZJw06v+VJ3e85DC3/m6RPYeF7LwGZXe
+         W2cC2V22M0zGSydGi9dv5O8ulPFYqQwuL8+zLTErZEX6wp1c7tL0YJ5yiDNvdR1sGbN8
+         /K11nX/MlXJc+prdy1tI7HC9OeketuT2tKyAQq2tXomVXnBFdlmwwi18mJSv9XEJFFjn
+         HXVQel552v4uUxakvI0EVtUcP7CUNSw7VJ28VrfV9Ft46kdYezlY3WdUnXBizHJv2+Ud
+         CSzA4tWc+6ELO5LsYDr6wMrl26eBfWrtlQk+ZVgITpa4GPf9kTx+Whw2BN7kUnajvSKW
+         qX+g==
+X-Gm-Message-State: AOAM532EPQxPwBvtICaVQ1TK5qyP+T19Y0E/xSqua8+6hHhnrrEb3ugI
+        5WlbSqFhT1/WsT6npyBqRpZaiGRyZPOavJM+kreF/hBWNp7D
+X-Google-Smtp-Source: ABdhPJysA8PxfONSscctagFdb07Pwycnr+IyT1EJoVzpbEd5spAORPGz6sq4E1/U597TkUzi0Uji6askr1L0y35jAufu+PZB7B5v
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200907163628.26495-4-vbabka@suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Received: by 2002:a05:6e02:d2:: with SMTP id r18mr6888793ilq.303.1599730157627;
+ Thu, 10 Sep 2020 02:29:17 -0700 (PDT)
+Date:   Thu, 10 Sep 2020 02:29:17 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c82fe505aef233c6@google.com>
+Subject: WARNING in bpf_raw_tp_link_fill_link_info
+From:   syzbot <syzbot+976d5ecfab0c7eb43ac3@syzkaller.appspotmail.com>
+To:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@chromium.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 07, 2020 at 06:36:26PM +0200, Vlastimil Babka wrote:
-> We initialize boot-time pagesets with setup_pageset(), which sets high and
-> batch values that effectively disable pcplists.
-> 
-> We can remove this wrapper if we just set these values for all pagesets in
-> pageset_init(). Non-boot pagesets then subsequently update them to specific
-> values.
-> 
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+Hello,
 
-Reviewed-by: Oscar Salvador <osalvador@suse.de>
+syzbot found the following issue on:
 
-Just one question below:
+HEAD commit:    7fb5eefd selftests/bpf: Fix test_sysctl_loop{1, 2} failure..
+git tree:       bpf-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=1424fdb3900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b6856d16f78d8fa9
+dashboard link: https://syzkaller.appspot.com/bug?extid=976d5ecfab0c7eb43ac3
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14a1f411900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10929c11900000
 
-> -static void setup_pageset(struct per_cpu_pageset *p)
-> -{
-> -	pageset_init(p);
-> -	pageset_update(&p->pcp, 0, 1);
-> +	/*
-> +	 * Set batch and high values safe for a boot pageset. Proper pageset's
-> +	 * initialization will update them.
-> +	 */
-> +	pcp->high = 0;
-> +	pcp->batch  = 1;
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+976d5ecfab0c7eb43ac3@syzkaller.appspotmail.com
 
-pageset_update was manipulating these values with barriers in between.
-I guess we do not care here because we are not really updating but
-initializing them, right?
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 6854 at include/linux/thread_info.h:150 check_copy_size include/linux/thread_info.h:150 [inline]
+WARNING: CPU: 0 PID: 6854 at include/linux/thread_info.h:150 copy_to_user include/linux/uaccess.h:167 [inline]
+WARNING: CPU: 0 PID: 6854 at include/linux/thread_info.h:150 bpf_raw_tp_link_fill_link_info+0x306/0x350 kernel/bpf/syscall.c:2661
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 0 PID: 6854 Comm: syz-executor574 Not tainted 5.9.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x18f/0x20d lib/dump_stack.c:118
+ panic+0x2e3/0x75c kernel/panic.c:231
+ __warn.cold+0x20/0x4a kernel/panic.c:600
+ report_bug+0x1bd/0x210 lib/bug.c:198
+ handle_bug+0x38/0x90 arch/x86/kernel/traps.c:234
+ exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
+ asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
+RIP: 0010:check_copy_size include/linux/thread_info.h:150 [inline]
+RIP: 0010:copy_to_user include/linux/uaccess.h:167 [inline]
+RIP: 0010:bpf_raw_tp_link_fill_link_info+0x306/0x350 kernel/bpf/syscall.c:2661
+Code: 41 bc ea ff ff ff e9 35 ff ff ff 4c 89 ff e8 41 66 33 00 e9 d0 fd ff ff 4c 89 ff e8 a4 66 33 00 e9 06 ff ff ff e8 ca ed f2 ff <0f> 0b eb 94 48 89 ef e8 2e 66 33 00 e9 65 fd ff ff e8 24 66 33 00
+RSP: 0018:ffffc900051c7bd0 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffffc900051c7c60 RCX: ffffffff818179d6
+RDX: ffff88808b490000 RSI: ffffffff81817a96 RDI: 0000000000000006
+RBP: 0000000000000019 R08: 0000000000000000 R09: ffffc900051c7c7f
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000019
+R13: 0000000000001265 R14: ffffffff8986ecc0 R15: ffffc900051c7c78
+ bpf_link_get_info_by_fd kernel/bpf/syscall.c:3626 [inline]
+ bpf_obj_get_info_by_fd+0x43a/0xc40 kernel/bpf/syscall.c:3664
+ __do_sys_bpf+0x1906/0x4b30 kernel/bpf/syscall.c:4237
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x4405f9
+Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b 13 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007fff47155808 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 00000000004405f9
+RDX: 0000000000000010 RSI: 00000000200000c0 RDI: 000000000000000f
+RBP: 00000000006ca018 R08: 00000000004002c8 R09: 00000000004002c8
+R10: 00000000004002c8 R11: 0000000000000246 R12: 0000000000401e00
+R13: 0000000000401e90 R14: 0000000000000000 R15: 0000000000000000
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
 
--- 
-Oscar Salvador
-SUSE L3
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
