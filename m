@@ -2,52 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DECDA264289
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 11:39:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC2E0264281
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 11:38:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730423AbgIJJjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 05:39:17 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:38578 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728971AbgIJJWH (ORCPT
+        id S1730969AbgIJJit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 05:38:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36176 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730261AbgIJJWS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 05:22:07 -0400
-Date:   Thu, 10 Sep 2020 09:22:02 -0000
+        Thu, 10 Sep 2020 05:22:18 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26D69C061757;
+        Thu, 10 Sep 2020 02:22:14 -0700 (PDT)
+Date:   Thu, 10 Sep 2020 09:22:04 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1599729723;
+        s=2020; t=1599729725;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=a25V2E+wAE7dX5+wwOu3rkr4Vai48wnbBAxgmbtRXVs=;
-        b=hgVHzqZdOdPrBZJYGGu1JUfDaE3z/CnwUxa0Uf6tdLwc13LKaLN5ORam7TeXe4WRf+bRRB
-        AKszmMO232Gb/7VRYwLDL6D+y0BBiqoSalIjGaciSrd9/8aTDPBc8GUbRw8Jt7+T9Lc3iS
-        oC2V3KpLFK6ddmPy/AU/D6fwQAskR82AdALRAemzsINbpdY+VKwZi73Ql9w5m9fGiPx5zQ
-        HAJQ45NOEaFutdIAyMGzVqldL26ZJoZLb2ahwLX1AKsBTaK9/6J9kIo6PXnmXnCNNKkNDw
-        Xd0ozSQZEaCmJ6XRJpvipK7nOZmzmQjQObhoPx+D1cS2dF28Z1A8APAk6rGB4Q==
+        bh=JoPNXNLBsyEhUtHUT6JCTfcPaPR55B+KvWTtgjELRNo=;
+        b=fYGRSAMRecM89JjXnxIlHEoYQAm+ry93aGFj4kuBzxKq8UBr1W/mWM2h8PeUiNeafO9H/7
+        4YICcNqsmvn2iNUHUEfrMcXfh1sp1sUe2QEU9SBQxOOn9eu2wFwnDACEMg6BAbjf3tNWGW
+        lNwjBcBXVgzdf6NAYQCwH+DUsCLxfDh8WrNN8N7uSCuL9AH7OLyg91RyyYHtfFjaiCaGin
+        BQYrDJJ6XALz6mxcf/HuysBBCI5Avg73e3q/4GjXNNj9tg/uJu/5mjXQk9HXMUn4ldYK6X
+        ZxB4YuAxCRIz454qC8QxkrDcxmW0lQvKx1tmoy0Ih1GSETD8VwyT/QhYwJn0FQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1599729723;
+        s=2020e; t=1599729725;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=a25V2E+wAE7dX5+wwOu3rkr4Vai48wnbBAxgmbtRXVs=;
-        b=32goGh+6k6CcU2iKY86EAJbdZHoi8VC41sZtBatdXK2iIWXoR3eidGUqTEL4z6JLHke83f
-        d2z79w16GmHU4cBA==
-From:   "tip-bot2 for Martin Radev" <tip-bot2@linutronix.de>
+        bh=JoPNXNLBsyEhUtHUT6JCTfcPaPR55B+KvWTtgjELRNo=;
+        b=j8miQl2qX4Sj+Xbb7olJPd/fGrzHNTBbXUHKG92iz3DxwYN1kfJwZA+7tJZsxop7jA0xcb
+        UhCEwjCa5LA/TuAA==
+From:   "tip-bot2 for Joerg Roedel" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/seves] x86/sev-es: Check required CPU features for SEV-ES
-Cc:     Martin Radev <martin.b.radev@gmail.com>,
-        Joerg Roedel <jroedel@suse.de>, Borislav Petkov <bp@suse.de>,
-        Kees Cook <keescook@chromium.org>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200907131613.12703-73-joro@8bytes.org>
-References: <20200907131613.12703-73-joro@8bytes.org>
+Subject: [tip: x86/seves] x86/smpboot: Load TSS and getcpu GDT entry before
+ loading IDT
+Cc:     Joerg Roedel <jroedel@suse.de>, Borislav Petkov <bp@suse.de>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200907131613.12703-68-joro@8bytes.org>
+References: <20200907131613.12703-68-joro@8bytes.org>
 MIME-Version: 1.0
-Message-ID: <159972972230.20229.13856025450251640816.tip-bot2@tip-bot2>
+Message-ID: <159972972435.20229.954025378215732104.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -59,125 +61,84 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/seves branch of tip:
 
-Commit-ID:     1ac0dc494a9796d6f94ff392f16e0c9a8cea7021
-Gitweb:        https://git.kernel.org/tip/1ac0dc494a9796d6f94ff392f16e0c9a8cea7021
-Author:        Martin Radev <martin.b.radev@gmail.com>
-AuthorDate:    Mon, 07 Sep 2020 15:16:13 +02:00
+Commit-ID:     520d030852b4c9babfce9a79d8b5320b6b5545e6
+Gitweb:        https://git.kernel.org/tip/520d030852b4c9babfce9a79d8b5320b6b5545e6
+Author:        Joerg Roedel <jroedel@suse.de>
+AuthorDate:    Mon, 07 Sep 2020 15:16:08 +02:00
 Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Wed, 09 Sep 2020 18:03:48 +02:00
+CommitterDate: Wed, 09 Sep 2020 11:33:20 +02:00
 
-x86/sev-es: Check required CPU features for SEV-ES
+x86/smpboot: Load TSS and getcpu GDT entry before loading IDT
 
-Make sure the machine supports RDRAND, otherwise there is no trusted
-source of randomness in the system.
+The IDT on 64-bit contains vectors which use paranoid_entry() and/or IST
+stacks. To make these vectors work, the TSS and the getcpu GDT entry need
+to be set up before the IDT is loaded.
 
-To also check this in the pre-decompression stage, make has_cpuflag()
-not depend on CONFIG_RANDOMIZE_BASE anymore.
-
-Signed-off-by: Martin Radev <martin.b.radev@gmail.com>
 Signed-off-by: Joerg Roedel <jroedel@suse.de>
 Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Link: https://lkml.kernel.org/r/20200907131613.12703-73-joro@8bytes.org
+Link: https://lkml.kernel.org/r/20200907131613.12703-68-joro@8bytes.org
 ---
- arch/x86/boot/compressed/cpuflags.c |  4 ----
- arch/x86/boot/compressed/misc.h     |  5 +++--
- arch/x86/boot/compressed/sev-es.c   |  3 +++
- arch/x86/kernel/sev-es-shared.c     | 15 +++++++++++++++
- arch/x86/kernel/sev-es.c            |  3 +++
- 5 files changed, 24 insertions(+), 6 deletions(-)
+ arch/x86/include/asm/processor.h |  1 +
+ arch/x86/kernel/cpu/common.c     | 23 +++++++++++++++++++++++
+ arch/x86/kernel/smpboot.c        |  2 +-
+ 3 files changed, 25 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/boot/compressed/cpuflags.c b/arch/x86/boot/compressed/cpuflags.c
-index 6448a81..0cc1323 100644
---- a/arch/x86/boot/compressed/cpuflags.c
-+++ b/arch/x86/boot/compressed/cpuflags.c
-@@ -1,6 +1,4 @@
- // SPDX-License-Identifier: GPL-2.0
--#ifdef CONFIG_RANDOMIZE_BASE
--
- #include "../cpuflags.c"
+diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
+index 97143d8..615dd44 100644
+--- a/arch/x86/include/asm/processor.h
++++ b/arch/x86/include/asm/processor.h
+@@ -696,6 +696,7 @@ extern void load_direct_gdt(int);
+ extern void load_fixmap_gdt(int);
+ extern void load_percpu_segment(int);
+ extern void cpu_init(void);
++extern void cpu_init_exception_handling(void);
+ extern void cr4_init(void);
  
- bool has_cpuflag(int flag)
-@@ -9,5 +7,3 @@ bool has_cpuflag(int flag)
- 
- 	return test_bit(flag, cpu.flags);
+ static inline unsigned long get_debugctlmsr(void)
+diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
+index 81fba4d..beffea2 100644
+--- a/arch/x86/kernel/cpu/common.c
++++ b/arch/x86/kernel/cpu/common.c
+@@ -1863,6 +1863,29 @@ static inline void tss_setup_io_bitmap(struct tss_struct *tss)
  }
--
--#endif
-diff --git a/arch/x86/boot/compressed/misc.h b/arch/x86/boot/compressed/misc.h
-index c0e0ffe..6d31f1b 100644
---- a/arch/x86/boot/compressed/misc.h
-+++ b/arch/x86/boot/compressed/misc.h
-@@ -85,8 +85,6 @@ void choose_random_location(unsigned long input,
- 			    unsigned long *output,
- 			    unsigned long output_size,
- 			    unsigned long *virt_addr);
--/* cpuflags.c */
--bool has_cpuflag(int flag);
- #else
- static inline void choose_random_location(unsigned long input,
- 					  unsigned long input_size,
-@@ -97,6 +95,9 @@ static inline void choose_random_location(unsigned long input,
- }
- #endif
  
-+/* cpuflags.c */
-+bool has_cpuflag(int flag);
-+
- #ifdef CONFIG_X86_64
- extern int set_page_decrypted(unsigned long address);
- extern int set_page_encrypted(unsigned long address);
-diff --git a/arch/x86/boot/compressed/sev-es.c b/arch/x86/boot/compressed/sev-es.c
-index 2a6c7c3..954cb27 100644
---- a/arch/x86/boot/compressed/sev-es.c
-+++ b/arch/x86/boot/compressed/sev-es.c
-@@ -145,6 +145,9 @@ void sev_es_shutdown_ghcb(void)
- 	if (!boot_ghcb)
- 		return;
- 
-+	if (!sev_es_check_cpu_features())
-+		error("SEV-ES CPU Features missing.");
-+
- 	/*
- 	 * GHCB Page must be flushed from the cache and mapped encrypted again.
- 	 * Otherwise the running kernel will see strange cache effects when
-diff --git a/arch/x86/kernel/sev-es-shared.c b/arch/x86/kernel/sev-es-shared.c
-index 4be8af2..5f83cca 100644
---- a/arch/x86/kernel/sev-es-shared.c
-+++ b/arch/x86/kernel/sev-es-shared.c
-@@ -9,6 +9,21 @@
-  * and is included directly into both code-bases.
-  */
- 
-+#ifndef __BOOT_COMPRESSED
-+#define error(v)	pr_err(v)
-+#define has_cpuflag(f)	boot_cpu_has(f)
-+#endif
-+
-+static bool __init sev_es_check_cpu_features(void)
+ /*
++ * Setup everything needed to handle exceptions from the IDT, including the IST
++ * exceptions which use paranoid_entry().
++ */
++void cpu_init_exception_handling(void)
 +{
-+	if (!has_cpuflag(X86_FEATURE_RDRAND)) {
-+		error("RDRAND instruction not supported - no trusted source of randomness available\n");
-+		return false;
-+	}
++	struct tss_struct *tss = this_cpu_ptr(&cpu_tss_rw);
++	int cpu = raw_smp_processor_id();
 +
-+	return true;
++	/* paranoid_entry() gets the CPU number from the GDT */
++	setup_getcpu(cpu);
++
++	/* IST vectors need TSS to be set up. */
++	tss_setup_ist(tss);
++	tss_setup_io_bitmap(tss);
++	set_tss_desc(cpu, &get_cpu_entry_area(cpu)->tss.x86_tss);
++
++	load_TR_desc();
++
++	/* Finally load the IDT */
++	load_current_idt();
 +}
 +
- static void sev_es_terminate(unsigned int reason)
- {
- 	u64 val = GHCB_SEV_TERMINATE;
-diff --git a/arch/x86/kernel/sev-es.c b/arch/x86/kernel/sev-es.c
-index 8cac9f8..6fcfdd3 100644
---- a/arch/x86/kernel/sev-es.c
-+++ b/arch/x86/kernel/sev-es.c
-@@ -665,6 +665,9 @@ void __init sev_es_init_vc_handling(void)
- 	if (!sev_es_active())
- 		return;
- 
-+	if (!sev_es_check_cpu_features())
-+		panic("SEV-ES CPU Features missing");
-+
- 	/* Enable SEV-ES special handling */
- 	static_branch_enable(&sev_es_enable_key);
- 
++/*
+  * cpu_init() initializes state that is per-CPU. Some data is already
+  * initialized (naturally) in the bootstrap process, such as the GDT
+  * and IDT. We reload them nevertheless, this function acts as a
+diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
+index f5ef689..de776b2 100644
+--- a/arch/x86/kernel/smpboot.c
++++ b/arch/x86/kernel/smpboot.c
+@@ -227,7 +227,7 @@ static void notrace start_secondary(void *unused)
+ 	load_cr3(swapper_pg_dir);
+ 	__flush_tlb_all();
+ #endif
+-	load_current_idt();
++	cpu_init_exception_handling();
+ 	cpu_init();
+ 	x86_cpuinit.early_percpu_clock_init();
+ 	preempt_disable();
