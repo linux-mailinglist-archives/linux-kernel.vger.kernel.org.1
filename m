@@ -2,90 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 932F0264CD9
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 20:26:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97DE0264CDD
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 20:27:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725864AbgIJS0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 14:26:47 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:38734 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726853AbgIJSV5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 14:21:57 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08AILigX125786;
-        Thu, 10 Sep 2020 13:21:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1599762104;
-        bh=11GKWFJbgoEwg1d2kcqLWyqiPTh+7X6kqteZc6SwQ4w=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=aCEU0dysBTDbi+CxFop2c316bT1UMJrS3GI1M+x9u7cK3p/ChvKqH9CNBdz6KfyC0
-         ECkoE2OnaCJtKhMvxoMdrbDumY6nKvhgJp6w2maB4LF+/ZiDu84DzX1x93gn4Sd0VF
-         ld7200zXRD/G3VXBWIFjmTWbiS6oyr9shz2JXBlQ=
-Received: from DFLE107.ent.ti.com (dfle107.ent.ti.com [10.64.6.28])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08AILiQD127001
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 10 Sep 2020 13:21:44 -0500
-Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 10
- Sep 2020 13:21:43 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 10 Sep 2020 13:21:43 -0500
-Received: from [10.250.38.37] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08AILhLN051137;
-        Thu, 10 Sep 2020 13:21:43 -0500
-Subject: Re: [PATCH net-next v3 2/3] net: phy: dp83869: support Wake on LAN
-To:     Andrew Lunn <andrew@lunn.ch>
-CC:     Jakub Kicinski <kuba@kernel.org>, <davem@davemloft.net>,
-        <f.fainelli@gmail.com>, <hkallweit1@gmail.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20200903114259.14013-1-dmurphy@ti.com>
- <20200903114259.14013-3-dmurphy@ti.com>
- <20200905113428.5bd7dc95@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <5051f1e2-4f8e-a021-df6c-d4066938422f@ti.com>
- <20200910180257.GD3354160@lunn.ch>
-From:   Dan Murphy <dmurphy@ti.com>
-Message-ID: <acb8368f-2ead-cf3e-c099-18aeeab2b3f3@ti.com>
-Date:   Thu, 10 Sep 2020 13:21:38 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20200910180257.GD3354160@lunn.ch>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+        id S1726657AbgIJS1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 14:27:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48288 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726932AbgIJSXI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 14:23:08 -0400
+Received: from localhost.localdomain (unknown [194.230.155.174])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A26B12076C;
+        Thu, 10 Sep 2020 18:22:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599762171;
+        bh=vf3/2Ah6EEIFVEDc7rxh6WIcbRaV1jukW6ZgpYx8MBo=;
+        h=From:To:Subject:Date:From;
+        b=caAhTjA9m8qhS3qW41xW8P4YOygLHEsgNjo92qujXNQh1nEIfRkaitJKpBmvnV0Cm
+         R4dtxtAua/TxQUqL0No+5urrSdnWeJgs7LaMeI3IgA8i8aMfgbhhAfRPjJPYQqfxlO
+         KfWnyEMuySfAPdcMbbnQAyKI8jTwy90xALgnfkCo=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Wolfram Sang <wolfram@the-dreams.de>,
+        linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 1/4] dt-bindings: i2c: imx-lpi2c: Add properties and use unevaluatedProperties
+Date:   Thu, 10 Sep 2020 20:22:41 +0200
+Message-Id: <20200910182244.5815-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andrew
+Additional properties actually might appear (e.g. power-domains) so
+describe all typical properties, reference generic i2c schema and use
+unevaluatedProperties to fix dtbs_check warnings like:
 
-On 9/10/20 1:02 PM, Andrew Lunn wrote:
->>>>    static int dp83869_config_port_mirroring(struct phy_device *phydev)
->>>>    {
->>>>    	struct dp83869_private *dp83869 = phydev->priv;
->>> Overall this code looks quite similar to dp83867, is there no way to
->>> factor this out?
->> Factor what out?  Yes the DP83867 and DP83869 are very similar in registers
->> and bitmaps.  They just differ in their feature sets.
->>
->> The WoL code was copied and pasted to the 869 and I would like to keep the
->> two files as similar as I can as it will be easier to fix and find bugs.
-> It will be even easier if they shared the same code. You could create
-> a library of functions, like bcm-phy-lib.c.
+  arch/arm64/boot/dts/freescale/imx8qxp-ai_ml.dt.yaml: i2c@5a800000:
+    'assigned-clock-rates', 'assigned-clocks', 'clock-names', 'power-domains' do not match any of the regexes: 'pinctrl-[0-9]+'
 
-If I do that I would want to add in the DP83822 and the DP83811 as well 
-even though the SOP and Data registers are different the code is the same.
+  arch/arm64/boot/dts/freescale/imx8qxp-colibri-eval-v3.dt.yaml: i2c@5a800000:
+    'touchscreen@2c' does not match any of the regexes: 'pinctrl-[0-9]+'
 
-I can just pass in the register numbers in.
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-That will have to be something I refactor later as it will rip up at 
-least 4 TI drivers if not more.
+---
 
-Dan
+Changes since v2:
+1. Add assigned-clock-parents
+
+Changes since v1:
+1. Add more properties and include /schemas/i2c/i2c-controller.yaml#
+---
+ .../bindings/i2c/i2c-imx-lpi2c.yaml           | 20 +++++++++++++++++--
+ 1 file changed, 18 insertions(+), 2 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/i2c/i2c-imx-lpi2c.yaml b/Documentation/devicetree/bindings/i2c/i2c-imx-lpi2c.yaml
+index ac0bc5dd64d6..918535b33384 100644
+--- a/Documentation/devicetree/bindings/i2c/i2c-imx-lpi2c.yaml
++++ b/Documentation/devicetree/bindings/i2c/i2c-imx-lpi2c.yaml
+@@ -9,6 +9,9 @@ title: Freescale Low Power Inter IC (LPI2C) for i.MX
+ maintainers:
+   - Anson Huang <Anson.Huang@nxp.com>
+ 
++allOf:
++  - $ref: /schemas/i2c/i2c-controller.yaml#
++
+ properties:
+   compatible:
+     enum:
+@@ -16,29 +19,42 @@ properties:
+       - fsl,imx8qxp-lpi2c
+       - fsl,imx8qm-lpi2c
+ 
++  '#address-cells': true
++  '#size-cells': true
++
+   reg:
+     maxItems: 1
+ 
+   interrupts:
+     maxItems: 1
+ 
++  assigned-clock-parents: true
++  assigned-clock-rates: true
++  assigned-clocks: true
++  clock-frequency: true
++
++  clock-names:
++    maxItems: 1
++
+   clocks:
+     maxItems: 1
+ 
++  power-domains: true
++
+ required:
+   - compatible
+   - reg
+   - interrupts
+   - clocks
+ 
+-additionalProperties: false
++unevaluatedProperties: false
+ 
+ examples:
+   - |
+     #include <dt-bindings/clock/imx7ulp-clock.h>
+     #include <dt-bindings/interrupt-controller/arm-gic.h>
+ 
+-    lpi2c7@40a50000 {
++    i2c@40a50000 {
+         compatible = "fsl,imx7ulp-lpi2c";
+         reg = <0x40A50000 0x10000>;
+         interrupt-parent = <&intc>;
+-- 
+2.17.1
 
