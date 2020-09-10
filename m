@@ -2,131 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F30632648CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 17:34:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADBFC2648E5
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 17:37:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731313AbgIJPeK convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 10 Sep 2020 11:34:10 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:40132 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730077AbgIJPcP (ORCPT
+        id S1731338AbgIJPhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 11:37:36 -0400
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:60831 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731355AbgIJPgW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 11:32:15 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-276-Rr3yeOHPPMud0l-oIQnsyA-1; Thu, 10 Sep 2020 16:31:54 +0100
-X-MC-Unique: Rr3yeOHPPMud0l-oIQnsyA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Thu, 10 Sep 2020 16:31:53 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Thu, 10 Sep 2020 16:31:53 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Segher Boessenkool' <segher@kernel.crashing.org>
-CC:     'Christophe Leroy' <christophe.leroy@csgroup.eu>,
-        'Linus Torvalds' <torvalds@linux-foundation.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        "Luis Chamberlain" <mcgrof@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Christoph Hellwig <hch@lst.de>
-Subject: RE: remove the last set_fs() in common code, and remove it for x86
- and powerpc v3
-Thread-Topic: remove the last set_fs() in common code, and remove it for x86
- and powerpc v3
-Thread-Index: AQHWhvDyD2c/lZfV3kC0Ftay5UVebqlhgjnw///zuACAABnIEIAAOoMggAAi9ACAABJI8A==
-Date:   Thu, 10 Sep 2020 15:31:53 +0000
-Message-ID: <18fdbaeacba349a0a8bf7568f709e991@AcuMS.aculab.com>
-References: <20200903142242.925828-1-hch@lst.de>
- <20200903142803.GM1236603@ZenIV.linux.org.uk>
- <CAHk-=wgQNyeHxXfckd1WtiYnoDZP1Y_kD-tJKqWSksRoDZT=Aw@mail.gmail.com>
- <20200909184001.GB28786@gate.crashing.org>
- <CAHk-=whu19Du_rZ-zBtGsXAB-Qo7NtoJjQjd-Sa9OB5u1Cq_Zw@mail.gmail.com>
- <3beb8b019e4a4f7b81fdb1bc68bd1e2d@AcuMS.aculab.com>
- <186a62fc-042c-d6ab-e7dc-e61b18945498@csgroup.eu>
- <59a64e9a210847b59f70f9bd2d02b5c3@AcuMS.aculab.com>
- <5050b43687c84515a49b345174a98822@AcuMS.aculab.com>
- <20200910152030.GJ28786@gate.crashing.org>
-In-Reply-To: <20200910152030.GJ28786@gate.crashing.org>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Thu, 10 Sep 2020 11:36:22 -0400
+X-Originating-IP: 99.144.118.237
+Received: from m1nmax.no-ip.org (unknown [99.144.118.237])
+        (Authenticated sender: matthias@kaehlcke.net)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 0EE321BF20A;
+        Thu, 10 Sep 2020 15:35:38 +0000 (UTC)
+Received: by m1nmax.no-ip.org (Postfix, from userid 1000)
+        id B0CFD80655; Thu, 10 Sep 2020 08:35:36 -0700 (PDT)
+Date:   Thu, 10 Sep 2020 08:35:36 -0700
+From:   Matthias Kaehlcke <matthias@kaehlcke.net>
+To:     satya priya <skakit@codeaurora.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        gregkh@linuxfoundation.org, Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, akashast@codeaurora.org,
+        rojay@codeaurora.org, msavaliy@qti.qualcomm.com,
+        dianders@chromium.org
+Subject: Re: [PATCH V5 2/4] arm64: dts: qcom: sc7180: Add necessary pinctrl
+ and interrupt config for BT UART
+Message-ID: <20200910153536.lcifa6ljy7hwgptn@debian>
+Mail-Followup-To: Matthias Kaehlcke <matthias@kaehlcke.net>,
+        satya priya <skakit@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Matthias Kaehlcke <mka@chromium.org>, gregkh@linuxfoundation.org,
+        Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, akashast@codeaurora.org,
+        rojay@codeaurora.org, msavaliy@qti.qualcomm.com,
+        dianders@chromium.org
+References: <1599742438-16811-1-git-send-email-skakit@codeaurora.org>
+ <1599742438-16811-3-git-send-email-skakit@codeaurora.org>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0.001
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1599742438-16811-3-git-send-email-skakit@codeaurora.org>
+User-Agent: NeoMutt/20180716
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+El Thu, Sep 10, 2020 at 06:23:56PM +0530 satya priya ha dit:
 
-
-> -----Original Message-----
-> From: Segher Boessenkool <segher@kernel.crashing.org>
-> Sent: 10 September 2020 16:21
-> To: David Laight <David.Laight@ACULAB.COM>
-> Cc: 'Christophe Leroy' <christophe.leroy@csgroup.eu>; 'Linus Torvalds' <torvalds@linux-
-> foundation.org>; linux-arch <linux-arch@vger.kernel.org>; Kees Cook <keescook@chromium.org>; the
-> arch/x86 maintainers <x86@kernel.org>; Nick Desaulniers <ndesaulniers@google.com>; Linux Kernel
-> Mailing List <linux-kernel@vger.kernel.org>; Alexey Dobriyan <adobriyan@gmail.com>; Luis Chamberlain
-> <mcgrof@kernel.org>; Al Viro <viro@zeniv.linux.org.uk>; linux-fsdevel <linux-fsdevel@vger.kernel.org>;
-> linuxppc-dev <linuxppc-dev@lists.ozlabs.org>; Christoph Hellwig <hch@lst.de>
-> Subject: Re: remove the last set_fs() in common code, and remove it for x86 and powerpc v3
+> Add a suitable sleep configuration for uart3 to support Bluetooth wakeup.
 > 
-> On Thu, Sep 10, 2020 at 12:26:53PM +0000, David Laight wrote:
-> > Actually this is pretty sound:
-> > 	__label__ label;
-> > 	register int eax asm ("eax");
-> > 	// Ensure eax can't be reloaded from anywhere
-> > 	// In particular it can't be reloaded after the asm goto line
-> > 	asm volatile ("" : "=r" (eax));
+> If QUP function is selected in sleep state, UART RTS/RFR is pulled high
+> during suspend and BT SoC not able to send wakeup bytes. So, configure
+> GPIO mode in sleep state to keep it low during suspend.
 > 
-> This asm is fine.  It says it writes the "eax" variable, which lives in
-> the eax register *in that asm* (so *not* guaranteed after it!).
+> Signed-off-by: satya priya <skakit@codeaurora.org>
+> Reviewed-by: Akash Asthana <akashast@codeaurora.org>
+
+Was this change really reviewed (privately) by Akash or are you still
+carrying forward this tag from v2? The configuration and the comments
+have change substantially since v2, IMO you should drop the tag unless
+Akash really reviewed the current version or something close to it.
+
+> ---
+> Changes in V2:
+>  - This patch adds sleep state for BT UART. Newly added in V2.
 > 
-> > 	// Provided gcc doesn't save eax here...
-> > 	asm volatile goto ("xxxxx" ::: "eax" : label);
+> Changes in V3:
+>  - Remove "output-high" for TX from both sleep and default states
+>    as it is not required. Configure pull-up for TX in sleep state.
 > 
-> So this is incorrect.
-
-From the other email:
-
-> It is neither input nor output operand here!  Only *then* is a local
-> register asm guaranteed to be in the given reg: as input or output to an
-> inline asm.
-
-Ok, so adding '"r" (eax)' to the input section helps a bit.
-
-> > 	// ... and reload the saved value here.
-> > 	// The input value here will be that modified by the 'asm goto'.
-> > 	// Since this modifies eax it can't be moved before the 'asm goto'.
-> > 	asm volatile ("" : "+r" (eax));
-> > 	// So here eax must contain the value set by the "xxxxx" instructions.
+> Changes in V4:
+>  - As per Matthias's comment, removed drive-strength for sleep state
+>    and fixed nit-pick.
 > 
-> No, the register eax will contain the value of the eax variable.  In the
-> asm; it might well be there before or after the asm as well, but none of
-> that is guaranteed.
+> Changes in V5:
+>  - As per Matthias's comments, moved pinmux change for sleep state,
+>    pinctrl and interrupt config to the board specific file.
+> 
+>  arch/arm64/boot/dts/qcom/sc7180-idp.dts | 48 +++++++++++++++++++++++++++++++++
+>  1 file changed, 48 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sc7180-idp.dts b/arch/arm64/boot/dts/qcom/sc7180-idp.dts
+> index 04888df..e529a41 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7180-idp.dts
+> +++ b/arch/arm64/boot/dts/qcom/sc7180-idp.dts
+> @@ -344,6 +344,10 @@
+>  };
+>  
+>  &uart3 {
+> +	pinctrl-names = "default", "sleep";
+> +	pinctrl-1 = <&qup_uart3_sleep>;
+> +	interrupts-extended = <&intc GIC_SPI 604 IRQ_TYPE_LEVEL_HIGH>,
+> +				<&tlmm 41 IRQ_TYPE_EDGE_FALLING>;
 
-Perhaps not 'guaranteed', but very unlikely to be wrong.
-It doesn't give gcc much scope for not generating the desired code.
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+As Doug already said, you need to delete the 'interrupts' property now
+that we have 'interrupts-extended'.
