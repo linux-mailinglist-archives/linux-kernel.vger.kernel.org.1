@@ -2,88 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62326264F56
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:40:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D908264F6C
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:42:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727999AbgIJTkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 15:40:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48282 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727870AbgIJTjo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 15:39:44 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E6A9C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 12:39:44 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id jw11so537984pjb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 12:39:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/OnhzWxRrpb9iMtadcuHWcNh629tQc4KM19Wi54LRtg=;
-        b=hCSXD6upMfBV9X5KA/ZtlWSvvN2u/jrPNiyohNzJP5Um1eFsUXMt0IYITSRfjZ2N7F
-         CCqyc169XJ1S8IpNzSTR7/Q5A6TudydibF3Vn3kjFa/RYlfcqOXVCvzTm5PgzV4g4OqP
-         8v0wzqe/u6KCVeDEuK6H/5IOXZL8hQeFkHNqU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/OnhzWxRrpb9iMtadcuHWcNh629tQc4KM19Wi54LRtg=;
-        b=KTiNrIqO6e9sybQ8xgXGfUno6XIPzlzwd82PqcD6G5yGZUO1dT35GCDRxgJWHH6h7e
-         YDZj3jhJ1XOUh5n2QE6ZWTjSDVgfBpdYcpKQa98DwEAQ9GrqJjZShixKoLA79I/dnkzu
-         otth90qnQYvIqDgoRe46y+kesNAjL3TRnF5aqji2FMOy2Hrb93n4LIQUoKwXH309XAwl
-         0MwiKt6jXaZ/kVrqWj1uuDvu8cZu+4V4MtaUmyThEDFkObIGtdc/hFWcgvf96HzUvXeg
-         /Axvxh5NM3IfFeNyK5QkbZgOpcqd4yUy9EzCGvRBS/exV2bt5qUi0Gb/C/B1u/G0ICUo
-         v5bQ==
-X-Gm-Message-State: AOAM530jAy1mIXLDosQp0/KML40J9CefFb4H4btIqg+WaoIm5B5oJR+I
-        SLeb3j5oH3RJ0kBihnSV5tqFMw==
-X-Google-Smtp-Source: ABdhPJxXAuAUy5u4R4yCF630iZaul9HrpugdlwL5m6UWHu3jTbgBmhRTURbZ4j97AJLKFthjZy6HwQ==
-X-Received: by 2002:a17:90a:5a48:: with SMTP id m8mr1431789pji.181.1599766783160;
-        Thu, 10 Sep 2020 12:39:43 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id q24sm6804281pfs.206.2020.09.10.12.39.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Sep 2020 12:39:42 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Kees Cook <keescook@chromium.org>, Joe Perches <joe@perches.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] mailmap: Add older email addresses for Kees Cook
-Date:   Thu, 10 Sep 2020 12:39:39 -0700
-Message-Id: <20200910193939.3798377-1-keescook@chromium.org>
-X-Mailer: git-send-email 2.25.1
+        id S1728101AbgIJTmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 15:42:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51500 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726848AbgIJTlj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 15:41:39 -0400
+Received: from localhost (52.sub-72-107-123.myvzw.com [72.107.123.52])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 442A721556;
+        Thu, 10 Sep 2020 19:41:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599766899;
+        bh=xVKQeh6vK/bSUtAb8QmMQzYllSypqGLdxdvE0zPLxSU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=cv+Tr1pNNaxP2eOUGtBsg7HrYjYKSN2v7JvR6yNY5z7cMXtbl9CCyZJKDi6BZl4eb
+         jKIfC7kah7XB2mcYTWUlU7AXuxJzQaxUgP+gmvu7KW9x0vBn8Xg01KQnA+5QkY+8L4
+         B1pH9L/kzJQUVLSeqKTyzh3q3g7hhGfqaUNaQ8vE=
+Date:   Thu, 10 Sep 2020 14:41:38 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: Re: [RFC PATCH] PCI/portdrv: No need to call pci_disable_device()
+ during shutdown
+Message-ID: <20200910194138.GA808043@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1599294806-13889-1-git-send-email-yangtiezhu@loongson.cn>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds explicit mailmap entries for my older/other email addresses.
+On Sat, Sep 05, 2020 at 04:33:26PM +0800, Tiezhu Yang wrote:
+> After commit 745be2e700cd ("PCIe: portdrv: call pci_disable_device
+> during remove") and commit cc27b735ad3a ("PCI/portdrv: Turn off PCIe
+> services during shutdown"), it also calls pci_disable_device() during
+> shutdown, this seems unnecessary, so just remove it.
 
-Reported-by: Joe Perches <joe@perches.com>
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- .mailmap | 4 ++++
- 1 file changed, 4 insertions(+)
+I would like to get rid of the portdrv completely by folding its
+functionality into the PCI core itself, so there would be no portdrv
+probe or remove.
 
-diff --git a/.mailmap b/.mailmap
-index 50096b96c85d..a780211468e4 100644
---- a/.mailmap
-+++ b/.mailmap
-@@ -169,6 +169,10 @@ Juha Yrjola <juha.yrjola@solidboot.com>
- Julien Thierry <julien.thierry.kdev@gmail.com> <julien.thierry@arm.com>
- Kamil Konieczny <k.konieczny@samsung.com> <k.konieczny@partner.samsung.com>
- Kay Sievers <kay.sievers@vrfy.org>
-+Kees Cook <keescook@chromium.org> <kees.cook@canonical.com>
-+Kees Cook <keescook@chromium.org> <keescook@google.com>
-+Kees Cook <keescook@chromium.org> <kees@outflux.net>
-+Kees Cook <keescook@chromium.org> <kees@ubuntu.com>
- Kenneth W Chen <kenneth.w.chen@intel.com>
- Konstantin Khlebnikov <koct9i@gmail.com> <khlebnikov@yandex-team.ru>
- Konstantin Khlebnikov <koct9i@gmail.com> <k.khlebnikov@samsung.com>
--- 
-2.25.1
+Does this solve a problem?  If not, I'm inclined to just leave it
+as-is for now.  But if it fixes something, we should do the fix, of
+course.
 
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> ---
+>  drivers/pci/pcie/portdrv_core.c |  1 -
+>  drivers/pci/pcie/portdrv_pci.c  | 14 +++++++++++++-
+>  2 files changed, 13 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/pci/pcie/portdrv_core.c b/drivers/pci/pcie/portdrv_core.c
+> index 50a9522..1991aca 100644
+> --- a/drivers/pci/pcie/portdrv_core.c
+> +++ b/drivers/pci/pcie/portdrv_core.c
+> @@ -491,7 +491,6 @@ void pcie_port_device_remove(struct pci_dev *dev)
+>  {
+>  	device_for_each_child(&dev->dev, NULL, remove_iter);
+>  	pci_free_irq_vectors(dev);
+> -	pci_disable_device(dev);
+>  }
+>  
+>  /**
+> diff --git a/drivers/pci/pcie/portdrv_pci.c b/drivers/pci/pcie/portdrv_pci.c
+> index 3a3ce40..cab37a8 100644
+> --- a/drivers/pci/pcie/portdrv_pci.c
+> +++ b/drivers/pci/pcie/portdrv_pci.c
+> @@ -143,6 +143,18 @@ static void pcie_portdrv_remove(struct pci_dev *dev)
+>  	}
+>  
+>  	pcie_port_device_remove(dev);
+> +	pci_disable_device(dev);
+> +}
+> +
+> +static void pcie_portdrv_shutdown(struct pci_dev *dev)
+> +{
+> +	if (pci_bridge_d3_possible(dev)) {
+> +		pm_runtime_forbid(&dev->dev);
+> +		pm_runtime_get_noresume(&dev->dev);
+> +		pm_runtime_dont_use_autosuspend(&dev->dev);
+> +	}
+> +
+> +	pcie_port_device_remove(dev);
+>  }
+>  
+>  static pci_ers_result_t pcie_portdrv_error_detected(struct pci_dev *dev,
+> @@ -211,7 +223,7 @@ static struct pci_driver pcie_portdriver = {
+>  
+>  	.probe		= pcie_portdrv_probe,
+>  	.remove		= pcie_portdrv_remove,
+> -	.shutdown	= pcie_portdrv_remove,
+> +	.shutdown	= pcie_portdrv_shutdown,
+>  
+>  	.err_handler	= &pcie_portdrv_err_handler,
+>  
+> -- 
+> 2.1.0
+> 
