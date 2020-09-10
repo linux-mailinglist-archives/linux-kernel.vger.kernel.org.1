@@ -2,125 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B8F1264BB3
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 19:46:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72F33264B7A
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 19:39:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727771AbgIJRqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 13:46:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58266 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727023AbgIJRm6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 13:42:58 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 148E6C061573
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 10:42:41 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id c2so9258943ljj.12
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 10:42:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tV9NvYryEbzez94zd9hdsCWt3FfBuGGawTOfDap0eBk=;
-        b=CyoQUM+SKXH6085O6WtByg3nDuki2CTSBORvYvwm25BqShZutFnNs6mSZACayZwSEH
-         qcd6gDs3XmrAOcCBysWWLpsCbEXmLRDCQnQxo0ENK46fWC+ppV/l5rSOr47qH79HuDsY
-         BAC6cJAHl7u65bYmrM5WLZPBZBfoI7ltEXEKA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tV9NvYryEbzez94zd9hdsCWt3FfBuGGawTOfDap0eBk=;
-        b=gaxeIL1UgV6zoe7GWetUE3JjPlgTm/X5pVQ00k/OZDKQrq6c5PRLIVhi8kAemoy5ps
-         0x86BFP2GZaLbIvFrB7LlPc1ObX6yWnx7PjT6Kl+uRgBQ7SYnH+WNNTKQVSOdoDLPSQ/
-         KELD2jAX7P5H7vhpHm32HcMM5lphNrh3gM7ZRY6f4+Kfpz0x7La22mX54LTh68Fw3YDm
-         PHFUyslCe3K/LjZuZ7dMMw4lMryBkx7FGOpaEjOP0rmiq97zsG1GHZpMdw1KaXz18CZk
-         VH8ryN95hNffSAl1SoyHo7DAJnAST4ls4agqZyEZKVqVs7w8Tqhbu1F/ZVu1LwM32Sss
-         goJw==
-X-Gm-Message-State: AOAM531slHtsCwgFPVs39pmhW7QgBOfxIzDwG8u8VG9ExhEJkJywikrz
-        27PB+TS+/Y0relb78Y0rP8T9ra/1bV4cCA==
-X-Google-Smtp-Source: ABdhPJyhWTw2yd7niyvGkh6b2x2kXbNyNxMZaHZ+ZAMzB8ie0jBkLA6wBWwZ1pJ5m3lp16Kd/krN/w==
-X-Received: by 2002:a2e:6a04:: with SMTP id f4mr4611377ljc.119.1599759759148;
-        Thu, 10 Sep 2020 10:42:39 -0700 (PDT)
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com. [209.85.208.178])
-        by smtp.gmail.com with ESMTPSA id u18sm1489111lfg.86.2020.09.10.10.42.38
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Sep 2020 10:42:38 -0700 (PDT)
-Received: by mail-lj1-f178.google.com with SMTP id b19so9256106lji.11
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 10:42:38 -0700 (PDT)
-X-Received: by 2002:a19:7d8b:: with SMTP id y133mr4765702lfc.152.1599759354367;
- Thu, 10 Sep 2020 10:35:54 -0700 (PDT)
+        id S1726966AbgIJRjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 13:39:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49224 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727868AbgIJRiL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 13:38:11 -0400
+Received: from localhost (52.sub-72-107-123.myvzw.com [72.107.123.52])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6861B206A1;
+        Thu, 10 Sep 2020 17:38:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599759490;
+        bh=wirOhMrKlm4G/NzCV37qJEm6kwJQ042CHK5V4SSeCZU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=zxlCCK0rGyMV8ypDJyD1tkzQbiSvWrnBaodEvAqatfCOCzCtRiJy4JzB4J0ptpyh3
+         THPpFpYirqSfT6jt8FHBpsPzF1u09HKLzj4Ma/TGldVy6Ahbtv85Q8G5MVijxCI/Z4
+         hNIvUv8z5cBHamwkgYZi7chChE55WQxZN6XkojdA=
+Date:   Thu, 10 Sep 2020 12:38:09 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     "Derrick, Jonathan" <jonathan.derrick@intel.com>
+Cc:     "kai.heng.feng@canonical.com" <kai.heng.feng@canonical.com>,
+        "wangxiongfeng2@huawei.com" <wangxiongfeng2@huawei.com>,
+        "kw@linux.com" <kw@linux.com>,
+        "hkallweit1@gmail.com" <hkallweit1@gmail.com>,
+        "refactormyself@gmail.com" <refactormyself@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mika.westerberg@linux.intel.com" <mika.westerberg@linux.intel.com>,
+        "Mario.Limonciello@dell.com" <Mario.Limonciello@dell.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>
+Subject: Re: [PATCH] PCI/ASPM: Enable ASPM for links under VMD domain
+Message-ID: <20200910173809.GA797818@bjorn-Precision-5520>
 MIME-Version: 1.0
-References: <20200907180058.64880-1-gerald.schaefer@linux.ibm.com>
- <20200907180058.64880-2-gerald.schaefer@linux.ibm.com> <0dbc6ec8-45ea-0853-4856-2bc1e661a5a5@intel.com>
- <20200909142904.00b72921@thinkpad> <aacad1b7-f121-44a5-f01d-385cb0f6351e@intel.com>
- <20200909192534.442f8984@thinkpad> <20200909180324.GI87483@ziepe.ca> <20200910093925.GB29166@oc3871087118.ibm.com>
-In-Reply-To: <20200910093925.GB29166@oc3871087118.ibm.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 10 Sep 2020 10:35:38 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wh4SuNvThq1nBiqk0N-fW6NsY5w=VawC=rJs7ekmjAhjA@mail.gmail.com>
-Message-ID: <CAHk-=wh4SuNvThq1nBiqk0N-fW6NsY5w=VawC=rJs7ekmjAhjA@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 1/3] mm/gup: fix gup_fast with dynamic page table folding
-To:     Alexander Gordeev <agordeev@linux.ibm.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Mike Rapoport <rppt@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        linux-x86 <x86@kernel.org>,
-        linux-arm <linux-arm-kernel@lists.infradead.org>,
-        linux-power <linuxppc-dev@lists.ozlabs.org>,
-        linux-sparc <sparclinux@vger.kernel.org>,
-        linux-um <linux-um@lists.infradead.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5b7513ff64315d7a1c2529d34cd78b51ce3c3605.camel@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 2:40 AM Alexander Gordeev
-<agordeev@linux.ibm.com> wrote:
+On Thu, Sep 10, 2020 at 04:33:39PM +0000, Derrick, Jonathan wrote:
+> On Wed, 2020-09-09 at 20:55 -0500, Bjorn Helgaas wrote:
+> > On Fri, Aug 21, 2020 at 08:32:20PM +0800, Kai-Heng Feng wrote:
+> > > New Intel laptops with VMD cannot reach deeper power saving state,
+> > > renders very short battery time.
+> > > 
+> > > As BIOS may not be able to program the config space for devices under
+> > > VMD domain, ASPM needs to be programmed manually by software. This is
+> > > also the case under Windows.
+> > > 
+> > > The VMD controller itself is a root complex integrated endpoint that
+> > > doesn't have ASPM capability, so we can't propagate the ASPM settings to
+> > > devices under it. Hence, simply apply ASPM_STATE_ALL to the links under
+> > > VMD domain, unsupported states will be cleared out anyway.
+> > > 
+> > > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> > > ---
+> > >  drivers/pci/pcie/aspm.c |  3 ++-
+> > >  drivers/pci/quirks.c    | 11 +++++++++++
+> > >  include/linux/pci.h     |  2 ++
+> > >  3 files changed, 15 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
+> > > index 253c30cc1967..dcc002dbca19 100644
+> > > --- a/drivers/pci/pcie/aspm.c
+> > > +++ b/drivers/pci/pcie/aspm.c
+> > > @@ -624,7 +624,8 @@ static void pcie_aspm_cap_init(struct pcie_link_state *link, int blacklist)
+> > >  		aspm_calc_l1ss_info(link, &upreg, &dwreg);
+> > >  
+> > >  	/* Save default state */
+> > > -	link->aspm_default = link->aspm_enabled;
+> > > +	link->aspm_default = parent->dev_flags & PCI_DEV_FLAGS_ENABLE_ASPM ?
+> > > +			     ASPM_STATE_ALL : link->aspm_enabled;
+> > 
+> > This function is ridiculously complicated already, and I really don't
+> > want to make it worse.
+> > 
+> > What exactly is the PCIe topology here?  Apparently the VMD controller
+> > is a Root Complex Integrated Endpoint, so it's a Type 0 (non-bridge)
+> > device.  And it has no Link, hence no Link Capabilities or Control and
+> > hence no ASPM-related bits.  Right?
 >
-> It is only gup_fast case that exposes the issue. It hits because
-> pointers to stack copies are passed to gup_pXd_range iterators, not
-> pointers to real page tables itself.
+> That's correct. VMD is the Type 0 device providing config/mmio
+> apertures to another segment and MSI/X remapping. No link and no ASPM
+> related bits.
+> 
+> Hierarchy is usually something like:
+> 
+> Segment 0           | VMD segment
+> Root Complex -> VMD | Type 0 (RP/Bridge; physical slot) - Type 1
+>                     | Type 0 (RP/Bridge; physical slot) - Type 1
+> 
+> > 
+> > And the devices under the VMD controller?  I guess they are regular
+> > PCIe Endpoints, Switch Ports, etc?  Obviously there's a Link involved
+> > somewhere.  Does the VMD controller have some magic, non-architected
+> > Port on the downstream side?
+>
+> Correct: Type 0 and Type 1 devices, and any number of Switch ports as
+> it's usually pinned out to physical slot.
+> 
+> > Does this patch enable ASPM on this magic Link between VMD and the
+> > next device?  Configuring ASPM correctly requires knowledge and knobs
+> > from both ends of the Link, and apparently we don't have those for the
+> > VMD end.
+>
+> VMD itself doesn't have the link to it's domain. It's really just the
+> config/mmio aperture and MSI/X remapper. The PCIe link is between the
+> Type 0 and Type 1 devices on the VMD domain. So fortunately the VMD
+> itself is not the upstream part of the link.
+> 
+> > Or is it for Links deeper in the hierarchy?  I assume those should
+> > just work already, although there might be issues with latency
+> > computation, etc., because we may not be able to account for the part
+> > of the path above VMD.
+>
+> That's correct. This is for the links within the domain itself, such as
+> between a type 0 and NVMe device.
 
-Can we possibly change fast-gup to not do the stack copies?
+OK, great.  So IIUC, below the VMD, there is a Root Port, and the Root
+Port has a link to some Endpoint or Switch, e.g., an NVMe device.  And
+we just want to enable ASPM on that link.
 
-I'd actually rather do something like that, than the "addr_end" thing.
+That should not be a special case; we should be able to make this so
+it Just Works.  Based on this patch, I guess the reason it doesn't
+work is because link->aspm_enabled for that link isn't set correctly.
 
-As you say, none of the other page table walking code does what the
-GUP code does, and I don't think it's required.
+So is this just a consequence of us depending on the initial Link
+Control value from BIOS?  That seems like something we shouldn't
+really depend on.
 
-The GUP code is kind of strange, I'm not quite sure why. Some of it
-unusually came from the powerpc code that handled their special odd
-hugepage model, and that may be why it's so different.
-
-How painful would it be to just pass the pmd (etc) _pointers_ around,
-rather than do the odd "take the address of local copies"?
-
-                  Linus
+> > I want aspm.c to eventually get out of the business of managing struct
+> > pcie_link_state.  I think it should manage *device* state for each end
+> > of the link.  Maybe that's a path forward, e.g., if we cache the Link
+> > Capabilities during enumeration, quirks could modify that directly,
+> > and aspm.c could just consume that cached information.  I think Saheed
+> > (cc'd) is already working on patches in this direction.
+> > 
+> > I'm still not sure how this works if VMD is the upstream end of a
+> > Link, though.
+> > 
+> > >  	/* Setup initial capable state. Will be updated later */
+> > >  	link->aspm_capable = link->aspm_support;
+> > > diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+> > > index bdf9b52567e0..2e2f525bd892 100644
+> > > --- a/drivers/pci/quirks.c
+> > > +++ b/drivers/pci/quirks.c
+> > > @@ -5632,3 +5632,14 @@ static void apex_pci_fixup_class(struct pci_dev *pdev)
+> > >  }
+> > >  DECLARE_PCI_FIXUP_CLASS_HEADER(0x1ac1, 0x089a,
+> > >  			       PCI_CLASS_NOT_DEFINED, 8, apex_pci_fixup_class);
+> > > +
+> > > +/*
+> > > + * Device [8086:9a09]
+> > > + * BIOS may not be able to access config space of devices under VMD domain, so
+> > > + * it relies on software to enable ASPM for links under VMD.
+> > > + */
+> > > +static void pci_fixup_enable_aspm(struct pci_dev *pdev)
+> > > +{
+> > > +	pdev->dev_flags |= PCI_DEV_FLAGS_ENABLE_ASPM;
+> > > +}
+> > > +DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x9a09, pci_fixup_enable_aspm);
+> > > diff --git a/include/linux/pci.h b/include/linux/pci.h
+> > > index 835530605c0d..66a45916c7c6 100644
+> > > --- a/include/linux/pci.h
+> > > +++ b/include/linux/pci.h
+> > > @@ -227,6 +227,8 @@ enum pci_dev_flags {
+> > >  	PCI_DEV_FLAGS_NO_FLR_RESET = (__force pci_dev_flags_t) (1 << 10),
+> > >  	/* Don't use Relaxed Ordering for TLPs directed at this device */
+> > >  	PCI_DEV_FLAGS_NO_RELAXED_ORDERING = (__force pci_dev_flags_t) (1 << 11),
+> > > +	/* Enable ASPM regardless of how LnkCtl is programmed */
+> > > +	PCI_DEV_FLAGS_ENABLE_ASPM = (__force pci_dev_flags_t) (1 << 12),
+> > >  };
+> > >  
+> > >  enum pci_irq_reroute_variant {
+> > > -- 
+> > > 2.17.1
+> > > 
