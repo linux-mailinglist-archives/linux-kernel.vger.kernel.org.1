@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 808282652B3
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:22:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BC532652CB
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:24:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726932AbgIJVWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 17:22:49 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:54746 "EHLO huawei.com"
+        id S1728275AbgIJVYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 17:24:40 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:40154 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1731001AbgIJOYF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 10:24:05 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 79844F2DCA6CBF645C48;
-        Thu, 10 Sep 2020 22:06:21 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by DGGEMS403-HUB.china.huawei.com
- (10.3.19.203) with Microsoft SMTP Server id 14.3.487.0; Thu, 10 Sep 2020
- 22:06:14 +0800
+        id S1730995AbgIJOXM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 10:23:12 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 7C049B0A9E6989A5FA4D;
+        Thu, 10 Sep 2020 22:06:33 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by DGGEMS402-HUB.china.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Thu, 10 Sep 2020
+ 22:06:24 +0800
 From:   Jason Yan <yanaijie@huawei.com>
-To:     <thomas@winischhofer.net>, <b.zolnierkie@samsung.com>,
-        <yanaijie@huawei.com>, <dri-devel@lists.freedesktop.org>,
-        <linux-fbdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Hulk Robot <hulkci@huawei.com>
-Subject: [PATCH] video: fbdev: sis: remove unneeded semicolon
-Date:   Thu, 10 Sep 2020 22:05:36 +0800
-Message-ID: <20200910140536.1191150-1-yanaijie@huawei.com>
+To:     <mripard@kernel.org>, <wens@csie.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Jason Yan <yanaijie@huawei.com>, Hulk Robot <hulkci@huawei.com>
+Subject: [PATCH] soc: sunxi: sram: remove unneeded semicolon
+Date:   Thu, 10 Sep 2020 22:05:46 +0800
+Message-ID: <20200910140546.1191280-1-yanaijie@huawei.com>
 X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -38,52 +38,27 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Eliminate the following coccicheck warning:
 
-drivers/video/fbdev/sis/sis_accel.h:143:72-73: Unneeded semicolon
-drivers/video/fbdev/sis/sis_accel.h:144:72-73: Unneeded semicolon
-drivers/video/fbdev/sis/sis_accel.h:145:72-73: Unneeded semicolon
-drivers/video/fbdev/sis/sis_accel.h:273:75-76: Unneeded semicolon
-drivers/video/fbdev/sis/sis_accel.h:274:75-76: Unneeded semicolon
-drivers/video/fbdev/sis/sis_accel.h:275:73-74: Unneeded semicolon
-drivers/video/fbdev/sis/sis_accel.h:276:75-76: Unneeded semicolon
+drivers/soc/sunxi/sunxi_sram.c:197:2-3: Unneeded semicolon
 
 Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: Jason Yan <yanaijie@huawei.com>
 ---
- drivers/video/fbdev/sis/sis_accel.h | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ drivers/soc/sunxi/sunxi_sram.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/video/fbdev/sis/sis_accel.h b/drivers/video/fbdev/sis/sis_accel.h
-index c3dfd2a20cf9..98d209658662 100644
---- a/drivers/video/fbdev/sis/sis_accel.h
-+++ b/drivers/video/fbdev/sis/sis_accel.h
-@@ -140,9 +140,9 @@
+diff --git a/drivers/soc/sunxi/sunxi_sram.c b/drivers/soc/sunxi/sunxi_sram.c
+index 1b0d50f36349..d4c7bd59429e 100644
+--- a/drivers/soc/sunxi/sunxi_sram.c
++++ b/drivers/soc/sunxi/sunxi_sram.c
+@@ -194,7 +194,7 @@ static const struct sunxi_sram_data *sunxi_sram_of_parse(struct device_node *nod
+ 	if (!data) {
+ 		ret = -EINVAL;
+ 		goto err;
+-	};
++	}
  
- #define SiS300Idle \
-   { \
--  	while((MMIO_IN16(ivideo->mmio_vbase, BR(16)+2) & 0xE000) != 0xE000){}; \
--  	while((MMIO_IN16(ivideo->mmio_vbase, BR(16)+2) & 0xE000) != 0xE000){}; \
--  	while((MMIO_IN16(ivideo->mmio_vbase, BR(16)+2) & 0xE000) != 0xE000){}; \
-+	while((MMIO_IN16(ivideo->mmio_vbase, BR(16)+2) & 0xE000) != 0xE000){} \
-+	while((MMIO_IN16(ivideo->mmio_vbase, BR(16)+2) & 0xE000) != 0xE000){} \
-+	while((MMIO_IN16(ivideo->mmio_vbase, BR(16)+2) & 0xE000) != 0xE000){} \
-   	CmdQueLen = MMIO_IN16(ivideo->mmio_vbase, 0x8240); \
-   }
- /* (do three times, because 2D engine seems quite unsure about whether or not it's idle) */
-@@ -270,10 +270,10 @@
- 
- #define SiS310Idle \
-   { \
--  	while( (MMIO_IN16(ivideo->mmio_vbase, Q_STATUS+2) & 0x8000) != 0x8000){}; \
--  	while( (MMIO_IN16(ivideo->mmio_vbase, Q_STATUS+2) & 0x8000) != 0x8000){}; \
--	while( (MMIO_IN16(ivideo->mmio_vbase, Q_STATUS+2) & 0x8000) != 0x8000){}; \
--  	while( (MMIO_IN16(ivideo->mmio_vbase, Q_STATUS+2) & 0x8000) != 0x8000){}; \
-+	while( (MMIO_IN16(ivideo->mmio_vbase, Q_STATUS+2) & 0x8000) != 0x8000){} \
-+	while( (MMIO_IN16(ivideo->mmio_vbase, Q_STATUS+2) & 0x8000) != 0x8000){} \
-+	while( (MMIO_IN16(ivideo->mmio_vbase, Q_STATUS+2) & 0x8000) != 0x8000){} \
-+	while( (MMIO_IN16(ivideo->mmio_vbase, Q_STATUS+2) & 0x8000) != 0x8000){} \
-   	CmdQueLen = 0; \
-   }
- 
+ 	for (func = data->func; func->func; func++) {
+ 		if (val == func->val) {
 -- 
 2.25.4
 
