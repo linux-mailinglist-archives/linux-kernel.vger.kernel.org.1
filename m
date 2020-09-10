@@ -2,122 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E110265410
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:49:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A225265412
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:49:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725294AbgIJVtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 17:49:06 -0400
-Received: from cmccmta3.chinamobile.com ([221.176.66.81]:18257 "EHLO
-        cmccmta3.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730567AbgIJL5g (ORCPT
+        id S1725613AbgIJVtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 17:49:45 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:41780 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728526AbgIJMXn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 07:57:36 -0400
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.13]) by rmmx-syy-dmz-app10-12010 (RichMail) with SMTP id 2eea5f5a1432a09-8b324; Thu, 10 Sep 2020 19:55:30 +0800 (CST)
-X-RM-TRANSID: 2eea5f5a1432a09-8b324
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from localhost.localdomain (unknown[223.112.105.130])
-        by rmsmtp-syy-appsvr07-12007 (RichMail) with SMTP id 2ee75f5a142f81d-8c931;
-        Thu, 10 Sep 2020 19:55:30 +0800 (CST)
-X-RM-TRANSID: 2ee75f5a142f81d-8c931
-From:   Tang Bin <tangbin@cmss.chinamobile.com>
-To:     balbi@kernel.org, gregkh@linuxfoundation.org,
-        thierry.reding@gmail.com, jonathanh@nvidia.com
-Cc:     linux-usb@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Tang Bin <tangbin@cmss.chinamobile.com>,
-        Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-Subject: [PATCH] usb: phy: tegra: Use IS_ERR() to check and simplify code
-Date:   Thu, 10 Sep 2020 19:56:07 +0800
-Message-Id: <20200910115607.11392-1-tangbin@cmss.chinamobile.com>
-X-Mailer: git-send-email 2.20.1.windows.1
+        Thu, 10 Sep 2020 08:23:43 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 172D01C0B9E; Thu, 10 Sep 2020 14:23:42 +0200 (CEST)
+Date:   Thu, 10 Sep 2020 14:23:41 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Marek =?iso-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>
+Cc:     netdev@vger.kernel.org, linux-leds@vger.kernel.org,
+        Dan Murphy <dmurphy@ti.com>,
+        =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Andrew Lunn <andrew@lunn.ch>, linux-kernel@vger.kernel.org,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH net-next + leds v2 6/7] net: phy: marvell: add support
+ for LEDs controlled by Marvell PHYs
+Message-ID: <20200910122341.GC7907@duo.ucw.cz>
+References: <20200909162552.11032-1-marek.behun@nic.cz>
+ <20200909162552.11032-7-marek.behun@nic.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="JWEK1jqKZ6MHAcjA"
+Content-Disposition: inline
+In-Reply-To: <20200909162552.11032-7-marek.behun@nic.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use IS_ERR() and PTR_ERR() instead of PTR_ERR_OR_ZERO() to
-simplify code, avoid redundant judgements.
 
-Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
----
- drivers/usb/phy/phy-tegra-usb.c | 25 ++++++++++---------------
- 1 file changed, 10 insertions(+), 15 deletions(-)
+--JWEK1jqKZ6MHAcjA
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/usb/phy/phy-tegra-usb.c b/drivers/usb/phy/phy-tegra-usb.c
-index 6153cc35a..3b901429d 100644
---- a/drivers/usb/phy/phy-tegra-usb.c
-+++ b/drivers/usb/phy/phy-tegra-usb.c
-@@ -1121,10 +1121,9 @@ static int tegra_usb_phy_probe(struct platform_device *pdev)
- 		return PTR_ERR(tegra_phy->vbus);
- 
- 	tegra_phy->pll_u = devm_clk_get(&pdev->dev, "pll_u");
--	err = PTR_ERR_OR_ZERO(tegra_phy->pll_u);
--	if (err) {
-+	if (IS_ERR(tegra_phy->pll_u)) {
- 		dev_err(&pdev->dev, "Failed to get pll_u clock: %d\n", err);
--		return err;
-+		return PTR_ERR(tegra_phy->pll_u);
- 	}
- 
- 	phy_type = of_usb_get_phy_mode(np);
-@@ -1135,20 +1134,18 @@ static int tegra_usb_phy_probe(struct platform_device *pdev)
- 			return err;
- 
- 		tegra_phy->pad_clk = devm_clk_get(&pdev->dev, "utmi-pads");
--		err = PTR_ERR_OR_ZERO(tegra_phy->pad_clk);
--		if (err) {
-+		if (IS_ERR(tegra_phy->pad_clk)) {
- 			dev_err(&pdev->dev,
- 				"Failed to get UTMIP pad clock: %d\n", err);
--			return err;
-+			return PTR_ERR(tegra_phy->pad_clk);
- 		}
- 
- 		reset = devm_reset_control_get_optional_shared(&pdev->dev,
- 							       "utmi-pads");
--		err = PTR_ERR_OR_ZERO(reset);
--		if (err) {
-+		if (IS_ERR(reset)) {
- 			dev_err(&pdev->dev,
- 				"Failed to get UTMI-pads reset: %d\n", err);
--			return err;
-+			return PTR_ERR(reset);
- 		}
- 		tegra_phy->pad_rst = reset;
- 		break;
-@@ -1157,22 +1154,20 @@ static int tegra_usb_phy_probe(struct platform_device *pdev)
- 		tegra_phy->is_ulpi_phy = true;
- 
- 		tegra_phy->clk = devm_clk_get(&pdev->dev, "ulpi-link");
--		err = PTR_ERR_OR_ZERO(tegra_phy->clk);
--		if (err) {
-+		if (IS_ERR(tegra_phy->clk)) {
- 			dev_err(&pdev->dev,
- 				"Failed to get ULPI clock: %d\n", err);
--			return err;
-+			return PTR_ERR(tegra_phy->clk);
- 		}
- 
- 		gpiod = devm_gpiod_get_from_of_node(&pdev->dev, np,
- 						    "nvidia,phy-reset-gpio",
- 						    0, GPIOD_OUT_HIGH,
- 						    "ulpi_phy_reset_b");
--		err = PTR_ERR_OR_ZERO(gpiod);
--		if (err) {
-+		if (IS_ERR(gpiod)) {
- 			dev_err(&pdev->dev,
- 				"Request failed for reset GPIO: %d\n", err);
--			return err;
-+			return PTR_ERR(gpiod);
- 		}
- 		tegra_phy->reset_gpio = gpiod;
- 
--- 
-2.20.1.windows.1
+On Wed 2020-09-09 18:25:51, Marek Beh=FAn wrote:
+> This patch adds support for controlling the LEDs connected to several
+> families of Marvell PHYs via the PHY HW LED trigger API. These families
+> are: 88E1112, 88E1121R, 88E1240, 88E1340S, 88E1510 and 88E1545. More can
+> be added.
+>=20
+> This patch does not yet add support for compound LED modes. This could
+> be achieved via the LED multicolor framework.
+>=20
+> Settings such as HW blink rate or pulse stretch duration are not yet
+> supported.
+>=20
+> Signed-off-by: Marek Beh=FAn <marek.behun@nic.cz>
 
+I suggest limiting to "useful" hardware modes, and documenting what
+those modes do somewhere.
 
+Best regards,
+								Pavel
+							=09
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
 
+--JWEK1jqKZ6MHAcjA
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX1oazQAKCRAw5/Bqldv6
+8r1rAJ0SjhIyIQqbj9KUZqddKARSesMANwCffOTWiRmn+HILo9WjGID7UjPc2AQ=
+=oSP7
+-----END PGP SIGNATURE-----
+
+--JWEK1jqKZ6MHAcjA--
