@@ -2,346 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B19B2651D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:03:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B5192651E4
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:04:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725974AbgIJVDS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 17:03:18 -0400
-Received: from brightrain.aerifal.cx ([216.12.86.13]:52352 "EHLO
-        brightrain.aerifal.cx" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731200AbgIJOja (ORCPT
+        id S1727998AbgIJVEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 17:04:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57192 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731176AbgIJOhg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 10:39:30 -0400
-Date:   Thu, 10 Sep 2020 10:23:37 -0400
-From:   Rich Felker <dalias@libc.org>
-To:     linux-api@vger.kernel.org
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] vfs: add fchmodat2 syscall
-Message-ID: <20200910142335.GG3265@brightrain.aerifal.cx>
+        Thu, 10 Sep 2020 10:37:36 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 734F8C061796;
+        Thu, 10 Sep 2020 07:25:09 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id g128so7223528iof.11;
+        Thu, 10 Sep 2020 07:25:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NJbG0wJxu+3OkwLFEOd0Ennw5o6VsPA/l71MgV2bL8A=;
+        b=CsIlPa7kgf5QyQFS8hC4+hb0L/bF/jNeX8ymjdfPGndzk6+fjtb6UPlyyDOgn9T/Rj
+         dcNmQZtqRILJ5b0WMWAc4ARCiPRsOwn3OAskLXH4wSnP6Fci/pDDyc9GoV3CkuB65CRE
+         gCg/SteaRqwF7agvOR3wOsgUovXU4Sk9WMgkXj7yL2Q8Osfwx9Q9xYGiSHVOIpXEQ5A/
+         yTEI8iUxit6bTdUVaNNcOqXYtIqzxR47TjMSxqbx8tT+xNLFdbC99+e8WoQz4furBy7G
+         kgFpOOKohzSXDEmsL3JJgxTPGBG3JAgnQ2qg4iT0sUE0gv9NfreIR9dAMEP/R00EWqml
+         ypGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NJbG0wJxu+3OkwLFEOd0Ennw5o6VsPA/l71MgV2bL8A=;
+        b=m305sujl89sqGb3s93TS12t8M3gcv94pf0kVCn9YMYkglB841PjXYCqgiBKU9bYinG
+         q742Pzm1OKoxTb0qklN2+oOrl+1y2VnMXTu+odTd6w6aT7pI21uP1IJ4pQzgiT5F0Mg+
+         JTKLcMy9psarNhE6VUqFr2y5IP855ZZMyXupnh5kJIigoptUKbmOFfjZ9mMxoCo16fNq
+         +zmYdXdYBfevZXiyl+pNA+bXOMT81nneI7wKqDnMZYCe/nce4UzADf2Lym8SYsajgp5n
+         YZUxOL/GkuMs/oe1VqDUopj4CevUrCBQshEvFZBHTxTjcSoEYD8wW+Ylp7y5/ptw1zGu
+         n6Jg==
+X-Gm-Message-State: AOAM531h5gcPtFfQHdXUg2FXuYUUZUOSlZ5CCxiWXtsMf8nBViXysbVq
+        UDjh/DRM2H22LJT6IaZE8OgLpLmv4ilK3BqVSfM=
+X-Google-Smtp-Source: ABdhPJyHLAehFart54v04ZVzdd9dYoO1X/9VyzBD35P5qq8nrYTHzo/wmLH9Bi9dzeOL0T4JorwX9diu/ssyuf15Fzg=
+X-Received: by 2002:a05:6602:240c:: with SMTP id s12mr7606501ioa.5.1599747907552;
+ Thu, 10 Sep 2020 07:25:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.5.21 (2010-09-15)
+References: <1598273705-69124-1-git-send-email-alex.shi@linux.alibaba.com>
+ <20200824114204.cc796ca182db95809dd70a47@linux-foundation.org>
+ <alpine.LSU.2.11.2008241231460.1065@eggly.anvils> <alpine.LSU.2.11.2008262301240.4405@eggly.anvils>
+ <alpine.LSU.2.11.2009081640070.7256@eggly.anvils> <CAKgT0Uc_L-Tz_rVJiHc5GUK_ZWOs2wRvez4QGf2wwEjx38qnbg@mail.gmail.com>
+ <alpine.LSU.2.11.2009091640490.10087@eggly.anvils>
+In-Reply-To: <alpine.LSU.2.11.2009091640490.10087@eggly.anvils>
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+Date:   Thu, 10 Sep 2020 07:24:56 -0700
+Message-ID: <CAKgT0Ucive3RreD3TJt1Fjch_BH2ygFfUnpAJ_1BhsHy74w88g@mail.gmail.com>
+Subject: Re: [PATCH v18 00/32] per memcg lru_lock: reviews
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Alex Shi <alex.shi@linux.alibaba.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Tejun Heo <tj@kernel.org>,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        kbuild test robot <lkp@intel.com>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, cgroups@vger.kernel.org,
+        Shakeel Butt <shakeelb@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Rong Chen <rong.a.chen@intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>, shy828301@gmail.com,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Minchan Kim <minchan@kernel.org>, Qian Cai <cai@lca.pw>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-POSIX defines fchmodat as having a 4th argument, flags, that can be
-AT_SYMLINK_NOFOLLOW. Support for changing the access mode of symbolic
-links is optional (EOPNOTSUPP allowed if not supported), but this flag
-is important even on systems where symlinks do not have access modes,
-since it's the only way to safely change the mode of a file which
-might be asynchronously replaced with a symbolic link, without a race
-condition whereby the link target is changed.
+On Wed, Sep 9, 2020 at 5:32 PM Hugh Dickins <hughd@google.com> wrote:
+>
+> On Wed, 9 Sep 2020, Alexander Duyck wrote:
+> > On Tue, Sep 8, 2020 at 4:41 PM Hugh Dickins <hughd@google.com> wrote:
+> > > [PATCH v18 28/32] mm/compaction: Drop locked from isolate_migratepages_block
+> > > Most of this consists of replacing "locked" by "lruvec", which is good:
+> > > but please fold those changes back into 20/32 (or would it be 17/32?
+> > > I've not yet looked into the relationship between those two), so we
+> > > can then see more clearly what change this 28/32 (will need renaming!)
+> > > actually makes, to use lruvec_holds_page_lru_lock(). That may be a
+> > > good change, but it's mixed up with the "locked"->"lruvec" at present,
+> > > and I think you could have just used lruvec for locked all along
+> > > (but of course there's a place where you'll need new_lruvec too).
+> >
+> > I am good with my patch being folded in. No need to keep it separate.
+>
+> Thanks.  Though it was only the "locked"->"lruvec" changes I was
+> suggesting to fold back, to minimize the diff, so that we could
+> see your use of lruvec_holds_page_lru_lock() more clearly - you
+> had not introduced that function at the stage of the earlier patches.
+>
+> But now that I stare at it again, using lruvec_holds_page_lru_lock()
+> there doesn't look like an advantage to me: when it decides no, the
+> same calculation is made all over again in mem_cgroup_page_lruvec(),
+> whereas the code before only had to calculate it once.
+>
+> So, the code before looks better to me: I wonder, do you think that
+> rcu_read_lock() is more expensive than I think it?  There can be
+> debug instrumentation that makes it heavier, but by itself it is
+> very cheap (by design) - not worth branching around.
 
-It's possible to emulate AT_SYMLINK_NOFOLLOW in userspace, and both
-musl libc and glibc do this, by opening an O_PATH file descriptor and
-performing chmod on the corresponding magic symlink in /proc/self/fd.
-However, this requires procfs to be mounted and accessible.
+Actually what I was more concerned with was the pointer chase that
+required the RCU lock. With this function we are able to compare a
+pair of pointers from the page and the lruvec and avoid the need for
+the RCU lock. The way the old code was working we had to crawl through
+the memcg to get to the lruvec before we could compare it to the one
+we currently hold. The general idea is to use the data we have instead
+of having to pull in some additional cache lines to perform the test.
 
-It was determined (see glibc issue #14578 and commit a492b1e5ef) that,
-on some filesystems, performing chmod on the link itself produces a
-change in the inode's access mode, but returns an EOPNOTSUPP error.
-This is non-conforming and wrong. Rather than try to fix all the
-broken filesystem backends, block attempts to change the symlink
-access mode via fchmodat2 at the frontend layer. This matches the
-userspace emulation done in libc implementations. No change is made to
-the underlying chmod_common(), so it's still possible to attempt
-changes via procfs, if desired. If at some point all filesystems have
-been fixed, this could be relaxed to allow filesystems to make their
-own decision whether changing access mode of links is supported.
+> >
+> > > [PATCH v18 29/32] mm: Identify compound pages sooner in isolate_migratepages_block
+> > > NAK. I agree that isolate_migratepages_block() looks nicer this way, but
+> > > take a look at prep_new_page() in mm/page_alloc.c: post_alloc_hook() is
+> > > where set_page_refcounted() changes page->_refcount from 0 to 1, allowing
+> > > a racing get_page_unless_zero() to succeed; then later prep_compound_page()
+> > > is where PageHead and PageTails get set. So there's a small race window in
+> > > which this patch could deliver a compound page when it should not.
+> >
+> > So the main motivation for the patch was to avoid the case where we
+> > are having to reset the LRU flag.
+>
+> That would be satisfying.  Not necessary, but I agree satisfying.
+> Maybe depends also on your "skip" change, which I've not looked at yet?
 
-Signed-off-by: Rich Felker <dalias@libc.org>
----
- arch/alpha/kernel/syscalls/syscall.tbl      |  1 +
- arch/arm/tools/syscall.tbl                  |  1 +
- arch/arm64/include/asm/unistd.h             |  2 +-
- arch/arm64/include/asm/unistd32.h           |  2 ++
- arch/ia64/kernel/syscalls/syscall.tbl       |  1 +
- arch/m68k/kernel/syscalls/syscall.tbl       |  1 +
- arch/microblaze/kernel/syscalls/syscall.tbl |  1 +
- arch/mips/kernel/syscalls/syscall_n32.tbl   |  1 +
- arch/mips/kernel/syscalls/syscall_n64.tbl   |  1 +
- arch/mips/kernel/syscalls/syscall_o32.tbl   |  1 +
- arch/parisc/kernel/syscalls/syscall.tbl     |  1 +
- arch/powerpc/kernel/syscalls/syscall.tbl    |  1 +
- arch/s390/kernel/syscalls/syscall.tbl       |  1 +
- arch/sh/kernel/syscalls/syscall.tbl         |  1 +
- arch/sparc/kernel/syscalls/syscall.tbl      |  1 +
- arch/x86/entry/syscalls/syscall_32.tbl      |  1 +
- arch/x86/entry/syscalls/syscall_64.tbl      |  1 +
- arch/xtensa/kernel/syscalls/syscall.tbl     |  1 +
- fs/open.c                                   | 29 ++++++++++++++++++---
- include/linux/syscalls.h                    |  2 ++
- include/uapi/asm-generic/unistd.h           |  4 ++-
- 21 files changed, 49 insertions(+), 6 deletions(-)
+My concern is that we have scenarios where isolate_migratepages_block
+could possibly prevent another page from being able to isolate a page.
+I'm mostly concerned with us potentially creating something like an
+isolation leak if multiple threads are doing something like clearing
+and then resetting the LRU flag. In my mind if we clear the LRU flag
+we should be certain we are going to remove the page as otherwise
+another thread would have done it if it would have been allowed
+access.
 
-diff --git a/arch/alpha/kernel/syscalls/syscall.tbl b/arch/alpha/kernel/syscalls/syscall.tbl
-index ec8bed9e7b75..5648fa8be7a1 100644
---- a/arch/alpha/kernel/syscalls/syscall.tbl
-+++ b/arch/alpha/kernel/syscalls/syscall.tbl
-@@ -479,3 +479,4 @@
- 547	common	openat2				sys_openat2
- 548	common	pidfd_getfd			sys_pidfd_getfd
- 549	common	faccessat2			sys_faccessat2
-+550	common	fchmodat2			sys_fchmodat2
-diff --git a/arch/arm/tools/syscall.tbl b/arch/arm/tools/syscall.tbl
-index 171077cbf419..b6b715bb3315 100644
---- a/arch/arm/tools/syscall.tbl
-+++ b/arch/arm/tools/syscall.tbl
-@@ -453,3 +453,4 @@
- 437	common	openat2				sys_openat2
- 438	common	pidfd_getfd			sys_pidfd_getfd
- 439	common	faccessat2			sys_faccessat2
-+440	common	fchmodat2			sys_fchmodat2
-diff --git a/arch/arm64/include/asm/unistd.h b/arch/arm64/include/asm/unistd.h
-index 3b859596840d..b3b2019f8d16 100644
---- a/arch/arm64/include/asm/unistd.h
-+++ b/arch/arm64/include/asm/unistd.h
-@@ -38,7 +38,7 @@
- #define __ARM_NR_compat_set_tls		(__ARM_NR_COMPAT_BASE + 5)
- #define __ARM_NR_COMPAT_END		(__ARM_NR_COMPAT_BASE + 0x800)
- 
--#define __NR_compat_syscalls		440
-+#define __NR_compat_syscalls		441
- #endif
- 
- #define __ARCH_WANT_SYS_CLONE
-diff --git a/arch/arm64/include/asm/unistd32.h b/arch/arm64/include/asm/unistd32.h
-index 734860ac7cf9..cd0845f3c19f 100644
---- a/arch/arm64/include/asm/unistd32.h
-+++ b/arch/arm64/include/asm/unistd32.h
-@@ -887,6 +887,8 @@ __SYSCALL(__NR_openat2, sys_openat2)
- __SYSCALL(__NR_pidfd_getfd, sys_pidfd_getfd)
- #define __NR_faccessat2 439
- __SYSCALL(__NR_faccessat2, sys_faccessat2)
-+#define __NR_fchmodat2 440
-+__SYSCALL(__NR_fchmodat2, sys_fchmodat2)
- 
- /*
-  * Please add new compat syscalls above this comment and update
-diff --git a/arch/ia64/kernel/syscalls/syscall.tbl b/arch/ia64/kernel/syscalls/syscall.tbl
-index f52a41f4c340..7c3f8564d0f3 100644
---- a/arch/ia64/kernel/syscalls/syscall.tbl
-+++ b/arch/ia64/kernel/syscalls/syscall.tbl
-@@ -360,3 +360,4 @@
- 437	common	openat2				sys_openat2
- 438	common	pidfd_getfd			sys_pidfd_getfd
- 439	common	faccessat2			sys_faccessat2
-+440	common	fchmodat2			sys_fchmodat2
-diff --git a/arch/m68k/kernel/syscalls/syscall.tbl b/arch/m68k/kernel/syscalls/syscall.tbl
-index 81fc799d8392..063d875377bf 100644
---- a/arch/m68k/kernel/syscalls/syscall.tbl
-+++ b/arch/m68k/kernel/syscalls/syscall.tbl
-@@ -439,3 +439,4 @@
- 437	common	openat2				sys_openat2
- 438	common	pidfd_getfd			sys_pidfd_getfd
- 439	common	faccessat2			sys_faccessat2
-+440	common	fchmodat2			sys_fchmodat2
-diff --git a/arch/microblaze/kernel/syscalls/syscall.tbl b/arch/microblaze/kernel/syscalls/syscall.tbl
-index b4e263916f41..6aea8a435fd0 100644
---- a/arch/microblaze/kernel/syscalls/syscall.tbl
-+++ b/arch/microblaze/kernel/syscalls/syscall.tbl
-@@ -445,3 +445,4 @@
- 437	common	openat2				sys_openat2
- 438	common	pidfd_getfd			sys_pidfd_getfd
- 439	common	faccessat2			sys_faccessat2
-+440	common	fchmodat2			sys_fchmodat2
-diff --git a/arch/mips/kernel/syscalls/syscall_n32.tbl b/arch/mips/kernel/syscalls/syscall_n32.tbl
-index f9df9edb67a4..a9205843251d 100644
---- a/arch/mips/kernel/syscalls/syscall_n32.tbl
-+++ b/arch/mips/kernel/syscalls/syscall_n32.tbl
-@@ -378,3 +378,4 @@
- 437	n32	openat2				sys_openat2
- 438	n32	pidfd_getfd			sys_pidfd_getfd
- 439	n32	faccessat2			sys_faccessat2
-+440	n32	fchmodat2			sys_fchmodat2
-diff --git a/arch/mips/kernel/syscalls/syscall_n64.tbl b/arch/mips/kernel/syscalls/syscall_n64.tbl
-index 557f9954a2b9..31da28e2d6f3 100644
---- a/arch/mips/kernel/syscalls/syscall_n64.tbl
-+++ b/arch/mips/kernel/syscalls/syscall_n64.tbl
-@@ -354,3 +354,4 @@
- 437	n64	openat2				sys_openat2
- 438	n64	pidfd_getfd			sys_pidfd_getfd
- 439	n64	faccessat2			sys_faccessat2
-+440	n64	fchmodat2			sys_fchmodat2
-diff --git a/arch/mips/kernel/syscalls/syscall_o32.tbl b/arch/mips/kernel/syscalls/syscall_o32.tbl
-index 195b43cf27c8..af0e38302ed8 100644
---- a/arch/mips/kernel/syscalls/syscall_o32.tbl
-+++ b/arch/mips/kernel/syscalls/syscall_o32.tbl
-@@ -427,3 +427,4 @@
- 437	o32	openat2				sys_openat2
- 438	o32	pidfd_getfd			sys_pidfd_getfd
- 439	o32	faccessat2			sys_faccessat2
-+440	o32	fchmodat2			sys_fchmodat2
-diff --git a/arch/parisc/kernel/syscalls/syscall.tbl b/arch/parisc/kernel/syscalls/syscall.tbl
-index def64d221cd4..379cdb44ca0b 100644
---- a/arch/parisc/kernel/syscalls/syscall.tbl
-+++ b/arch/parisc/kernel/syscalls/syscall.tbl
-@@ -437,3 +437,4 @@
- 437	common	openat2				sys_openat2
- 438	common	pidfd_getfd			sys_pidfd_getfd
- 439	common	faccessat2			sys_faccessat2
-+440	common	fchmodat2			sys_fchmodat2
-diff --git a/arch/powerpc/kernel/syscalls/syscall.tbl b/arch/powerpc/kernel/syscalls/syscall.tbl
-index c2d737ff2e7b..ada11db506e6 100644
---- a/arch/powerpc/kernel/syscalls/syscall.tbl
-+++ b/arch/powerpc/kernel/syscalls/syscall.tbl
-@@ -529,3 +529,4 @@
- 437	common	openat2				sys_openat2
- 438	common	pidfd_getfd			sys_pidfd_getfd
- 439	common	faccessat2			sys_faccessat2
-+440	common	fchmodat2			sys_fchmodat2
-diff --git a/arch/s390/kernel/syscalls/syscall.tbl b/arch/s390/kernel/syscalls/syscall.tbl
-index 10456bc936fb..a4dae0abb353 100644
---- a/arch/s390/kernel/syscalls/syscall.tbl
-+++ b/arch/s390/kernel/syscalls/syscall.tbl
-@@ -442,3 +442,4 @@
- 437  common	openat2			sys_openat2			sys_openat2
- 438  common	pidfd_getfd		sys_pidfd_getfd			sys_pidfd_getfd
- 439  common	faccessat2		sys_faccessat2			sys_faccessat2
-+440  common	fchmodat2		sys_fchmodat2			sys_fchmodat2
-diff --git a/arch/sh/kernel/syscalls/syscall.tbl b/arch/sh/kernel/syscalls/syscall.tbl
-index ae0a00beea5f..b59b4408b85f 100644
---- a/arch/sh/kernel/syscalls/syscall.tbl
-+++ b/arch/sh/kernel/syscalls/syscall.tbl
-@@ -442,3 +442,4 @@
- 437	common	openat2				sys_openat2
- 438	common	pidfd_getfd			sys_pidfd_getfd
- 439	common	faccessat2			sys_faccessat2
-+440	common	fchmodat2			sys_fchmodat2
-diff --git a/arch/sparc/kernel/syscalls/syscall.tbl b/arch/sparc/kernel/syscalls/syscall.tbl
-index 4af114e84f20..e817416f81df 100644
---- a/arch/sparc/kernel/syscalls/syscall.tbl
-+++ b/arch/sparc/kernel/syscalls/syscall.tbl
-@@ -485,3 +485,4 @@
- 437	common	openat2			sys_openat2
- 438	common	pidfd_getfd			sys_pidfd_getfd
- 439	common	faccessat2			sys_faccessat2
-+440	common	fchmodat2			sys_fchmodat2
-diff --git a/arch/x86/entry/syscalls/syscall_32.tbl b/arch/x86/entry/syscalls/syscall_32.tbl
-index 9d1102873666..208b06650cef 100644
---- a/arch/x86/entry/syscalls/syscall_32.tbl
-+++ b/arch/x86/entry/syscalls/syscall_32.tbl
-@@ -444,3 +444,4 @@
- 437	i386	openat2			sys_openat2
- 438	i386	pidfd_getfd		sys_pidfd_getfd
- 439	i386	faccessat2		sys_faccessat2
-+440	i386	fchmodat2		sys_fchmodat2
-diff --git a/arch/x86/entry/syscalls/syscall_64.tbl b/arch/x86/entry/syscalls/syscall_64.tbl
-index f30d6ae9a688..d9a591db72fb 100644
---- a/arch/x86/entry/syscalls/syscall_64.tbl
-+++ b/arch/x86/entry/syscalls/syscall_64.tbl
-@@ -361,6 +361,7 @@
- 437	common	openat2			sys_openat2
- 438	common	pidfd_getfd		sys_pidfd_getfd
- 439	common	faccessat2		sys_faccessat2
-+440	common	fchmodat2		sys_fchmodat2
- 
- #
- # x32-specific system call numbers start at 512 to avoid cache impact
-diff --git a/arch/xtensa/kernel/syscalls/syscall.tbl b/arch/xtensa/kernel/syscalls/syscall.tbl
-index 6276e3c2d3fc..ff756cb2f5d7 100644
---- a/arch/xtensa/kernel/syscalls/syscall.tbl
-+++ b/arch/xtensa/kernel/syscalls/syscall.tbl
-@@ -410,3 +410,4 @@
- 437	common	openat2				sys_openat2
- 438	common	pidfd_getfd			sys_pidfd_getfd
- 439	common	faccessat2			sys_faccessat2
-+440	common	fchmodat2			sys_fchmodat2
-diff --git a/fs/open.c b/fs/open.c
-index 9af548fb841b..570a21f4d81e 100644
---- a/fs/open.c
-+++ b/fs/open.c
-@@ -610,15 +610,30 @@ SYSCALL_DEFINE2(fchmod, unsigned int, fd, umode_t, mode)
- 	return err;
- }
- 
--static int do_fchmodat(int dfd, const char __user *filename, umode_t mode)
-+static int do_fchmodat(int dfd, const char __user *filename, umode_t mode, int flags)
- {
- 	struct path path;
- 	int error;
- 	unsigned int lookup_flags = LOOKUP_FOLLOW;
-+
-+	if (flags & AT_SYMLINK_NOFOLLOW)
-+		lookup_flags &= ~LOOKUP_FOLLOW;
-+	if (flags & ~AT_SYMLINK_NOFOLLOW)
-+		return -EINVAL;
- retry:
- 	error = user_path_at(dfd, filename, lookup_flags, &path);
- 	if (!error) {
--		error = chmod_common(&path, mode);
-+		/* Block chmod from getting to fs layer. Ideally the
-+		 * fs would either allow it or fail with EOPNOTSUPP,
-+		 * but some are buggy and return an error but change
-+		 * the mode, which is non-conforming and wrong.
-+		 * Userspace emulation of AT_SYMLINK_NOFOLLOW in
-+		 * glibc and musl blocked it too, for same reason. */
-+		if (S_ISLNK(path.dentry->d_inode->i_mode)
-+		    && (flags & AT_SYMLINK_NOFOLLOW))
-+			error = -EOPNOTSUPP;
-+		else
-+			error = chmod_common(&path, mode);
- 		path_put(&path);
- 		if (retry_estale(error, lookup_flags)) {
- 			lookup_flags |= LOOKUP_REVAL;
-@@ -628,15 +643,21 @@ static int do_fchmodat(int dfd, const char __user *filename, umode_t mode)
- 	return error;
- }
- 
-+SYSCALL_DEFINE4(fchmodat2, int, dfd, const char __user *, filename,
-+		umode_t, mode, int, flags)
-+{
-+	return do_fchmodat(dfd, filename, mode, flags);
-+}
-+
- SYSCALL_DEFINE3(fchmodat, int, dfd, const char __user *, filename,
- 		umode_t, mode)
- {
--	return do_fchmodat(dfd, filename, mode);
-+	return do_fchmodat(dfd, filename, mode, 0);
- }
- 
- SYSCALL_DEFINE2(chmod, const char __user *, filename, umode_t, mode)
- {
--	return do_fchmodat(AT_FDCWD, filename, mode);
-+	return do_fchmodat(AT_FDCWD, filename, mode, 0);
- }
- 
- int chown_common(const struct path *path, uid_t user, gid_t group)
-diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
-index 75ac7f8ae93c..ced00c56eba7 100644
---- a/include/linux/syscalls.h
-+++ b/include/linux/syscalls.h
-@@ -435,6 +435,8 @@ asmlinkage long sys_chroot(const char __user *filename);
- asmlinkage long sys_fchmod(unsigned int fd, umode_t mode);
- asmlinkage long sys_fchmodat(int dfd, const char __user * filename,
- 			     umode_t mode);
-+asmlinkage long sys_fchmodat2(int dfd, const char __user * filename,
-+			      umode_t mode, int flags);
- asmlinkage long sys_fchownat(int dfd, const char __user *filename, uid_t user,
- 			     gid_t group, int flag);
- asmlinkage long sys_fchown(unsigned int fd, uid_t user, gid_t group);
-diff --git a/include/uapi/asm-generic/unistd.h b/include/uapi/asm-generic/unistd.h
-index 995b36c2ea7d..ebf5cdb3f444 100644
---- a/include/uapi/asm-generic/unistd.h
-+++ b/include/uapi/asm-generic/unistd.h
-@@ -859,9 +859,11 @@ __SYSCALL(__NR_openat2, sys_openat2)
- __SYSCALL(__NR_pidfd_getfd, sys_pidfd_getfd)
- #define __NR_faccessat2 439
- __SYSCALL(__NR_faccessat2, sys_faccessat2)
-+#define __NR_fchmodat2 440
-+__SYSCALL(__NR_fchmodat2, sys_fchmodat2)
- 
- #undef __NR_syscalls
--#define __NR_syscalls 440
-+#define __NR_syscalls 441
- 
- /*
-  * 32 bit systems traditionally used different
--- 
-2.21.0
+> > One question I would have is what if
+> > we swapped the code block with the __isolate_lru_page_prepare section?
+> > WIth that we would be taking a reference on the page, then verifying
+> > the LRU flag is set, and then testing for compound page flag bit.
+> > Would doing that close the race window since the LRU flag being set
+> > should indicate that the allocation has already been completed has it
+> > not?
+>
+> Yes, I think that would be safe, and would look better.  But I am
+> very hesitant to give snap assurances here (I've twice missed out
+> a vital PageLRU check from this sequence myself): it is very easy
+> to deceive myself and only see it later.
 
+I'm not looking for assurances, just sanity checks to make sure I am
+not missing something obvious.
+
+> If you can see a bug in what's there before these patches, certainly
+> we need to fix it.  But adding non-essential patches to the already
+> overlong series risks delaying it.
+
+My concern ends up being that if we are clearing the bit and restoring
+it while holding the LRU lock we can effectively cause pages to become
+pseudo-pinned on the LRU. In my mind I would want us to avoid clearing
+the LRU flag until we know we are going to be pulling the page from
+the list once we take the lruvec lock. I interpret clearing of the
+flag to indicate the page has already been pulled, it just hasn't left
+the list yet. With us resetting the bit we are violating that which I
+worry will lead to issues.
