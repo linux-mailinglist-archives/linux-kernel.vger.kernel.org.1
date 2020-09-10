@@ -2,270 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B6C5264788
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 15:55:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B3D6264782
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 15:54:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730368AbgIJNzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 09:55:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57768 "EHLO mail.kernel.org"
+        id S1730959AbgIJNwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 09:52:43 -0400
+Received: from mga12.intel.com ([192.55.52.136]:36678 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730957AbgIJNuh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 09:50:37 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C7BD620C09;
-        Thu, 10 Sep 2020 13:43:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599745399;
-        bh=nqUozDsWHKFfK8W6Zmuq3D8dIUc6nBawbFyjEB7VGKs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RZ5D8wygQYIg8oUMLgaF0zYDleFR6e+9IoW4WXZ78laPqeE8jd88MnFlwU7rp+Lc5
-         U3QPa0XDOWRUg7YvOE+XovMe/piv/VtX+1yPnClvdT2tAkQVtwCp4+YVbwcPgCQCYr
-         E2o3xf2EHhbCrDLaiwu6+4DO+b/m5Y3WVzPgCOsA=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Christoph Hellwig <hch@lst.de>, Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Maor Gottlieb <maorg@nvidia.com>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-next v1 3/4] lib/scatterlist: Add support in dynamic allocation of SG table from pages
-Date:   Thu, 10 Sep 2020 16:42:58 +0300
-Message-Id: <20200910134259.1304543-4-leon@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200910134259.1304543-1-leon@kernel.org>
-References: <20200910134259.1304543-1-leon@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1730952AbgIJNuR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 09:50:17 -0400
+IronPort-SDR: mwnIROKhcOrqaneIHRX3CfqC0uI6P0ydyDBCKFZjKbeWEK2K7H0Ei2tCyabGYSalO+p1cTmC0T
+ bGVYezn4f5mQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9739"; a="138048792"
+X-IronPort-AV: E=Sophos;i="5.76,413,1592895600"; 
+   d="scan'208";a="138048792"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2020 06:48:40 -0700
+IronPort-SDR: M/DNsiLGwSXiGhORbTB7veNX9xsiSupY1CwUhfgcERVKKp9uVUHn0+d9v0X9/voN/RdkNPhRkq
+ csoKQOX4RxyQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,413,1592895600"; 
+   d="scan'208";a="300557768"
+Received: from ssp-icl-u-210.jf.intel.com ([10.54.55.52])
+  by orsmga003.jf.intel.com with ESMTP; 10 Sep 2020 06:48:40 -0700
+From:   kan.liang@linux.intel.com
+To:     acme@kernel.org, peterz@infradead.org, mingo@redhat.com,
+        jolsa@redhat.com, namhyung@kernel.org, linux-kernel@vger.kernel.org
+Cc:     eranian@google.com, ak@linux.intel.com,
+        Kan Liang <kan.liang@linux.intel.com>
+Subject: [PATCH V2 2/4] perf record: Support sample-read topdown metric group
+Date:   Thu, 10 Sep 2020 06:44:59 -0700
+Message-Id: <20200910134501.11352-3-kan.liang@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200910134501.11352-1-kan.liang@linux.intel.com>
+References: <20200910134501.11352-1-kan.liang@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maor Gottlieb <maorg@nvidia.com>
+From: Kan Liang <kan.liang@linux.intel.com>
 
-Add an API that supports dynamic allocation of the SG table from pages,
-such function should be used by drivers that can't supply all the pages
-at one time.
+With the hardware TopDown metrics feature, sample-read feature should be
+supported for a topdown group, e.g., sample a non-topdown event and read
+a topdown metric group. But the current perf record code errors out.
 
-This function returns the last populated sge in the table. Users should
-pass it as an argument to the function from the second call and forward.
-As for sg_alloc_table_from_pages, nents will be equal to the number of
-populated SGEs (chunks).
+For a topdown metric group, the slots event must be the leader of the
+group, but the leader slots event doesn't support sampling.
 
-With this new API, drivers can benefit the optimization of merging
-contiguous pages without a need to allocate all pages in advance and
-hold them in a large buffer.
+To support sample-read the topdown metric group, use the 2nd event of
+the group as the "leader" for the purposes of sampling.
 
-E.g. with the Infiniband driver that allocates a single page for hold the
-pages. For 1TB memory registration, the temporary buffer would consume only
-4KB, instead of 2GB.
+Only the platform with Topdown metic feature supports sample-read the
+topdown group. Add arch_topdown_sample_read() to indicate whether the
+topdown group supports sample-read.
 
-Signed-off-by: Maor Gottlieb <maorg@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Acked-by: Jiri Olsa <jolsa@redhat.com>
+Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 ---
- include/linux/scatterlist.h |   6 ++
- lib/scatterlist.c           | 131 +++++++++++++++++++++++++++++++-----
- 2 files changed, 119 insertions(+), 18 deletions(-)
+ tools/perf/arch/x86/util/topdown.c | 35 ++++++++++++++++++++++++++++++
+ tools/perf/util/record.c           |  3 ++-
+ tools/perf/util/topdown.c          |  5 +++++
+ tools/perf/util/topdown.h          |  2 ++
+ 4 files changed, 44 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/scatterlist.h b/include/linux/scatterlist.h
-index 9d13004334aa..9fcc5783dfbc 100644
---- a/include/linux/scatterlist.h
-+++ b/include/linux/scatterlist.h
-@@ -291,6 +291,12 @@ void sg_free_table(struct sg_table *);
- int __sg_alloc_table(struct sg_table *, unsigned int, unsigned int,
- 		     struct scatterlist *, unsigned int, gfp_t, sg_alloc_fn *);
- int sg_alloc_table(struct sg_table *, unsigned int, gfp_t);
-+#ifndef CONFIG_ARCH_NO_SG_CHAIN
-+struct scatterlist *sg_alloc_table_append(
-+	struct sg_table *sgt, struct page **pages, unsigned int n_pages,
-+	unsigned int offset, unsigned long size, unsigned int max_segment,
-+	gfp_t gfp_mask, struct scatterlist *prv, unsigned int left_pages);
-+#endif
- int __sg_alloc_table_from_pages(struct sg_table *sgt, struct page **pages,
- 				unsigned int n_pages, unsigned int offset,
- 				unsigned long size, unsigned int max_segment,
-diff --git a/lib/scatterlist.c b/lib/scatterlist.c
-index ade5c4a6fbf9..8249a6764efe 100644
---- a/lib/scatterlist.c
-+++ b/lib/scatterlist.c
-@@ -403,19 +403,51 @@ int sg_alloc_table(struct sg_table *table, unsigned int nents, gfp_t gfp_mask)
+diff --git a/tools/perf/arch/x86/util/topdown.c b/tools/perf/arch/x86/util/topdown.c
+index 597e963fb3e7..fcf1f9c17a44 100644
+--- a/tools/perf/arch/x86/util/topdown.c
++++ b/tools/perf/arch/x86/util/topdown.c
+@@ -1,6 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0
+ #include <stdio.h>
+ #include "api/fs/fs.h"
++#include "util/pmu.h"
+ #include "util/topdown.h"
+ 
+ /*
+@@ -26,3 +27,37 @@ void arch_topdown_group_warn(void)
+ 		"nmi_watchdog enabled with topdown. May give wrong results.\n"
+ 		"Disable with echo 0 > /proc/sys/kernel/nmi_watchdog\n");
  }
- EXPORT_SYMBOL(sg_alloc_table);
-
--static struct scatterlist *
--alloc_from_pages_common(struct sg_table *sgt, struct page **pages,
--			unsigned int n_pages, unsigned int offset,
--			unsigned long size, unsigned int max_segment,
--			gfp_t gfp_mask)
-+static struct scatterlist *get_next_sg(struct sg_table *table,
-+				       struct scatterlist *prv,
-+				       unsigned long left_npages,
-+				       gfp_t gfp_mask)
- {
--	unsigned int chunks, cur_page, seg_len, i;
--	struct scatterlist *prv, *s = NULL;
-+	struct scatterlist *next_sg;
-+	int ret;
 +
-+	/* If table was just allocated */
-+	if (!prv)
-+		return table->sgl;
++#define TOPDOWN_SLOTS		0x0400
 +
-+	/* Check if last entry should be keeped for chainning */
-+	next_sg = sg_next(prv);
-+	if (!sg_is_last(next_sg) || left_npages == 1)
-+		return next_sg;
++static bool is_topdown_slots_event(struct evsel *counter)
++{
++	if (!counter->pmu_name)
++		return false;
 +
-+	ret = sg_alloc_next(table, next_sg,
-+			    min_t(unsigned long, left_npages,
-+				  SG_MAX_SINGLE_ALLOC),
-+			    SG_MAX_SINGLE_ALLOC, gfp_mask);
-+	if (ret)
-+		return ERR_PTR(ret);
-+	return sg_next(prv);
++	if (strcmp(counter->pmu_name, "cpu"))
++		return false;
++
++	if (counter->core.attr.config == TOPDOWN_SLOTS)
++		return true;
++
++	return false;
 +}
 +
-+static struct scatterlist *alloc_from_pages_common(
-+	struct sg_table *sgt, struct page **pages, unsigned int n_pages,
-+	unsigned int offset, unsigned long size, unsigned int max_segment,
-+	gfp_t gfp_mask, struct scatterlist *prv, unsigned int left_pages)
-+{
-+	unsigned int chunks, cur_page, seg_len, i, prv_len = 0;
-+	unsigned int tmp_nents = sgt->nents;
-+	struct scatterlist *s = prv;
-+	unsigned int table_size;
- 	int ret;
-
- 	if (WARN_ON(!max_segment || offset_in_page(max_segment)))
- 		return ERR_PTR(-EINVAL);
-
-+	if (prv &&
-+	    page_to_pfn(sg_page(prv)) + (prv->length >> PAGE_SHIFT) ==
-+	    page_to_pfn(pages[0]))
-+		prv_len = prv->length;
-+
- 	/* compute number of contiguous chunks */
- 	chunks = 1;
- 	seg_len = 0;
-@@ -428,13 +460,16 @@ alloc_from_pages_common(struct sg_table *sgt, struct page **pages,
- 		}
- 	}
-
--	ret = sg_alloc_table(sgt, chunks, gfp_mask);
--	if (unlikely(ret))
--		return ERR_PTR(ret);
-+	if (!prv) {
-+		/* Only the last allocation could be less than the maximum */
-+		table_size = left_pages ? SG_MAX_SINGLE_ALLOC : chunks;
-+		ret = sg_alloc_table(sgt, table_size, gfp_mask);
-+		if (unlikely(ret))
-+			return ERR_PTR(ret);
-+	}
-
- 	/* merging chunks and putting them into the scatterlist */
- 	cur_page = 0;
--	s = sgt->sgl;
- 	for (i = 0; i < chunks; i++) {
- 		unsigned int j, chunk_size;
-
-@@ -444,22 +479,82 @@ alloc_from_pages_common(struct sg_table *sgt, struct page **pages,
- 			seg_len += PAGE_SIZE;
- 			if (seg_len >= max_segment ||
- 			    page_to_pfn(pages[j]) !=
--			    page_to_pfn(pages[j - 1]) + 1)
-+				    page_to_pfn(pages[j - 1]) + 1)
- 				break;
- 		}
-
- 		chunk_size = ((j - cur_page) << PAGE_SHIFT) - offset;
--		sg_set_page(s, pages[cur_page],
--			    min_t(unsigned long, size, chunk_size), offset);
-+		chunk_size = min_t(unsigned long, size, chunk_size);
-+		if (!i && prv_len) {
-+			if (max_segment - prv->length >= chunk_size) {
-+				sg_set_page(s, sg_page(s),
-+					    s->length + chunk_size, s->offset);
-+				goto next;
-+			}
-+		}
-+
-+		/* Pass how many chunks might left */
-+		s = get_next_sg(sgt, s, chunks - i + left_pages, gfp_mask);
-+		if (IS_ERR(s)) {
-+			/* Adjust entry length to be as before function was
-+			 * called
-+			 */
-+			if (prv_len)
-+				prv->length = prv_len;
-+			goto out;
-+		}
-+		sg_set_page(s, pages[cur_page], chunk_size, offset);
-+		tmp_nents++;
-+next:
- 		size -= chunk_size;
- 		offset = 0;
- 		cur_page = j;
--		prv = s;
--		s = sg_next(s);
- 	}
--	return prv;
-+	sgt->nents = tmp_nents;
-+out:
-+	return s;
- }
-
-+#ifndef CONFIG_ARCH_NO_SG_CHAIN
-+/**
-+ * sg_alloc_table_append - Allocate and initialize an sg table from
-+ *                         an array of pages
-+ * @sgt:	 The sg table header to use
-+ * @pages:	 Pointer to an array of page pointers
-+ * @n_pages:	 Number of pages in the pages array
-+ * @offset:      Offset from start of the first page to the start of a buffer
-+ * @size:        Number of valid bytes in the buffer (after offset)
-+ * @max_segment: Maximum size of a scatterlist node in bytes (page aligned)
-+ * @gfp_mask:	 GFP allocation mask
-+ * @prv:	 Last populated sge in sgt
-+ * @left_pages:  Left pages caller have to set after this call
++/*
++ * Check whether a topdown group supports sample-read.
 + *
-+ *  Description:
-+ *    If @prv is NULL, it allocates and initialize an sg table from a list of
-+ *    pages. Contiguous ranges of the pages are squashed into a single
-+ *    scatterlist node up to the maximum size specified in @max_segment. A user
-+ *    may provide an offset at a start and a size of valid data in a buffer
-+ *    specified by the page array. A user may provide @append to chain pages
-+ *    to last entry in sgt. The returned sg table is released by sg_free_table.
-+ *
-+ * Returns:
-+ *   Last SGE in sgt on success, negative error on failure.
-+ *
-+ * Notes:
-+ *   If this function returns non-0 (eg failure), the caller must call
-+ *   sg_free_table() to cleanup any leftover allocations.
++ * Only Topdown metic supports sample-read. The slots
++ * event must be the leader of the topdown group.
 + */
-+struct scatterlist *sg_alloc_table_append(
-+	struct sg_table *sgt, struct page **pages, unsigned int n_pages,
-+	unsigned int offset, unsigned long size, unsigned int max_segment,
-+	gfp_t gfp_mask, struct scatterlist *prv, unsigned int left_pages)
-+{
-+	return alloc_from_pages_common(sgt, pages, n_pages, offset, size,
-+				       max_segment, gfp_mask, prv, left_pages);
-+}
-+EXPORT_SYMBOL_GPL(sg_alloc_table_append);
-+#endif
 +
- /**
-  * __sg_alloc_table_from_pages - Allocate and initialize an sg table from
-  *			         an array of pages
-@@ -489,7 +584,7 @@ int __sg_alloc_table_from_pages(struct sg_table *sgt, struct page **pages,
- 	struct scatterlist *sg;
-
- 	sg = alloc_from_pages_common(sgt, pages, n_pages, offset, size,
--				     max_segment, gfp_mask);
-+				     max_segment, gfp_mask, NULL, 0);
- 	return PTR_ERR_OR_ZERO(sg);
++bool arch_topdown_sample_read(struct evsel *leader)
++{
++	if (!pmu_have_event("cpu", "slots"))
++		return false;
++
++	if (is_topdown_slots_event(leader))
++		return true;
++
++	return false;
++}
+diff --git a/tools/perf/util/record.c b/tools/perf/util/record.c
+index a4cc11592f6b..a857a13b0544 100644
+--- a/tools/perf/util/record.c
++++ b/tools/perf/util/record.c
+@@ -13,6 +13,7 @@
+ #include "util/perf_api_probe.h"
+ #include "record.h"
+ #include "../perf-sys.h"
++#include "topdown.h"
+ 
+ /*
+  * evsel__config_leader_sampling() uses special rules for leader sampling.
+@@ -23,7 +24,7 @@ static struct evsel *evsel__read_sampler(struct evsel *evsel, struct evlist *evl
+ {
+ 	struct evsel *leader = evsel->leader;
+ 
+-	if (evsel__is_aux_event(leader)) {
++	if (evsel__is_aux_event(leader) || arch_topdown_sample_read(leader)) {
+ 		evlist__for_each_entry(evlist, evsel) {
+ 			if (evsel->leader == leader && evsel != evsel->leader)
+ 				return evsel;
+diff --git a/tools/perf/util/topdown.c b/tools/perf/util/topdown.c
+index a085b3c77c27..1081b20f9891 100644
+--- a/tools/perf/util/topdown.c
++++ b/tools/perf/util/topdown.c
+@@ -51,3 +51,8 @@ __weak bool arch_topdown_check_group(bool *warn)
+ __weak void arch_topdown_group_warn(void)
+ {
  }
- EXPORT_SYMBOL(__sg_alloc_table_from_pages);
---
-2.26.2
++
++__weak bool arch_topdown_sample_read(struct evsel *leader __maybe_unused)
++{
++	return false;
++}
+diff --git a/tools/perf/util/topdown.h b/tools/perf/util/topdown.h
+index e3d70e95f4f1..2f0d0b887639 100644
+--- a/tools/perf/util/topdown.h
++++ b/tools/perf/util/topdown.h
+@@ -1,9 +1,11 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
+ #ifndef TOPDOWN_H
+ #define TOPDOWN_H 1
++#include "evsel.h"
+ 
+ bool arch_topdown_check_group(bool *warn);
+ void arch_topdown_group_warn(void);
++bool arch_topdown_sample_read(struct evsel *leader);
+ 
+ int topdown_filter_events(const char **attr, char **str, bool use_group);
+ 
+-- 
+2.17.1
 
