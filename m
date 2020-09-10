@@ -2,46 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F46326528D
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:20:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6917B265236
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:11:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728115AbgIJVUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 17:20:18 -0400
-Received: from condef-05.nifty.com ([202.248.20.70]:42807 "EHLO
+        id S1727807AbgIJVLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 17:11:12 -0400
+Received: from condef-05.nifty.com ([202.248.20.70]:48209 "EHLO
         condef-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730262AbgIJO0N (ORCPT
+        with ESMTP id S1731166AbgIJOen (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 10:26:13 -0400
-Received: from conuserg-09.nifty.com ([10.126.8.72])by condef-05.nifty.com with ESMTP id 08ADllED030900;
-        Thu, 10 Sep 2020 22:47:48 +0900
+        Thu, 10 Sep 2020 10:34:43 -0400
+Received: from conuserg-10.nifty.com ([10.126.8.73])by condef-05.nifty.com with ESMTP id 08ADsiG3031431;
+        Thu, 10 Sep 2020 22:54:45 +0900
 Received: from oscar.flets-west.jp (softbank126090211135.bbtec.net [126.90.211.135]) (authenticated)
-        by conuserg-09.nifty.com with ESMTP id 08ADiY4U001894;
-        Thu, 10 Sep 2020 22:44:34 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-09.nifty.com 08ADiY4U001894
+        by conuserg-10.nifty.com with ESMTP id 08ADpSIw001308;
+        Thu, 10 Sep 2020 22:51:30 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-10.nifty.com 08ADpSIw001308
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1599745475;
-        bh=WL98q/7s+UmiqnVaDR4JUCigpcZ/zOKRJsU9m2uipak=;
-        h=From:To:Cc:Subject:Date:From;
-        b=uMHg8B9hXQAKipMm67kWTGQPCaRSrrFL5TEi64sGGq0dDnT2S79HsPKf9LczpVOKC
-         cmixqMGo40sBqVF1Eag9hqFIJZ2EtwXi2ZtNuUTT+cgeqdkPZzeH1EYaXGFkOB1cC6
-         twd9D/964iMd/sUoFHr+qF9uqwaMpEiw+hQK3LDrl4rwxjNk34vWi2bjt4SJ0hHNe9
-         44qVFnaomtwi1C9JtKZs3b/l+5E5D+xWN8RAqzCHGEx5osmh7EOpqhHGQg6YJat/Zs
-         ZEfhk5b/uUkrH9m7dJ2L/qhVdfN/LHLehchIlUDlmoLxdy5a23fSL9fO4GeuspcgSr
-         O0SjVT0MmZIiw==
+        s=dec2015msa; t=1599745891;
+        bh=wXl8du5fQhGV7mBkLY962W3rgMjpZxKVsM/SEXRS3J8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=JyBBb5kLp2N76xsz+5D18ojWUBSRwP4DCXi86XTh0zqLNtsGHqeIIEmEVKl+H09p+
+         GUcZSK5FrUXi/dTaPwmIWCKA8e7OMFkG9Gf89WeJJngR+kuUgVBrKjRxX9fSQDD+J7
+         IZerFkkD+a4EEkhuMsDXOo4bqa7tJpaBcKxNrqD8v5b/N/5GPBIAClGAgGFKc79Qie
+         Ypm9vcgmPWiu3FlJzM7z5WPL7HfYdtOGgzT4bL7On/7bufH0d3IF8nhpsvCZ3nMvMN
+         jdjLpldSliX52wzsZYCQJpr/AxfmlrZsO2ovZWzJE9l1HX6RbPJg82DZX+FxZL7bXM
+         a+Qr2TTs61ULg==
 X-Nifty-SrcIP: [126.90.211.135]
 From:   Masahiro Yamada <masahiroy@kernel.org>
 To:     linux-kbuild@vger.kernel.org
 Cc:     Ingo Molnar <mingo@redhat.com>,
         Masahiro Yamada <masahiroy@kernel.org>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
         Michal Marek <michal.lkml@markovi.net>,
-        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] kbuild: remove redundant CONFIG_KASAN check from scripts/Makefile.kasan
-Date:   Thu, 10 Sep 2020 22:44:28 +0900
-Message-Id: <20200910134429.3525408-1-masahiroy@kernel.org>
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org
+Subject: [PATCH 2/4] kbuild: remove cc-option test of -fno-merge-all-constants
+Date:   Thu, 10 Sep 2020 22:51:18 +0900
+Message-Id: <20200910135120.3527468-2-masahiroy@kernel.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200910135120.3527468-1-masahiroy@kernel.org>
+References: <20200910135120.3527468-1-masahiroy@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -49,31 +50,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit e0fe0bbe57b8 ("kbuild: include scripts/Makefile.* only
-when relevant CONFIG is enabled"), this file is included only when
-CONFIG_KASAN=y.
+The minimal compiler versions, GCC 4.9 and Clang 10 support this flag.
 
-This ifdef is redundant.
+Here is the godbolt:
+https://godbolt.org/z/8T4177
 
 Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
 
- scripts/Makefile.kasan | 2 --
- 1 file changed, 2 deletions(-)
+ Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/scripts/Makefile.kasan b/scripts/Makefile.kasan
-index f4beee1b0013..1532f1a41a8f 100644
---- a/scripts/Makefile.kasan
-+++ b/scripts/Makefile.kasan
-@@ -1,8 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0
--ifdef CONFIG_KASAN
- CFLAGS_KASAN_NOSANITIZE := -fno-builtin
- KASAN_SHADOW_OFFSET ?= $(CONFIG_KASAN_SHADOW_OFFSET)
--endif
+diff --git a/Makefile b/Makefile
+index 059b36f2ea53..1b6abecc5cab 100644
+--- a/Makefile
++++ b/Makefile
+@@ -927,7 +927,7 @@ KBUILD_CFLAGS	+= -fno-strict-overflow
+ # clang sets -fmerge-all-constants by default as optimization, but this
+ # is non-conforming behavior for C and in fact breaks the kernel, so we
+ # need to disable it here generally.
+-KBUILD_CFLAGS	+= $(call cc-option,-fno-merge-all-constants)
++KBUILD_CFLAGS	+= -fno-merge-all-constants
  
- ifdef CONFIG_KASAN_GENERIC
- 
+ # for gcc -fno-merge-all-constants disables everything, but it is fine
+ # to have actual conforming behavior enabled.
 -- 
 2.25.1
 
