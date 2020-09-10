@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67978264FAB
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:48:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0D3A264F33
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:38:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726641AbgIJTsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 15:48:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33054 "EHLO
+        id S1727961AbgIJTiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 15:38:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730233AbgIJPE2 (ORCPT
+        with ESMTP id S1731366AbgIJPnN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 11:04:28 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A264C0617A2
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 08:04:06 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id a12so6615167eds.13
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 08:04:06 -0700 (PDT)
+        Thu, 10 Sep 2020 11:43:13 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90907C0617A4
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 08:04:08 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id i22so9215788eja.5
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 08:04:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=fTE5okIaZncPcsNAR/BLkNFx9agcEUU8fNdeLliCC+o=;
-        b=PAhxqj8d4BjZcNqyTI5oy9vce0jGU+gd1VbIjm4jPzZAM8ZU6y1smrj62r+lUaMPlX
-         VNCcoJWN62Nzm/7gCVs8OxaV8p7EUZoLrxptFwqeZPQ8uOyM/jluUiIgJzcrkTF16HpL
-         k52L4xDbCBIDf/z7PoriWberOij1vyLniaKa/kD+NFhEi/B8kOtwCqGcq0aCvJe92Ngw
-         rfZEO9bFCWWAT+tY8nu5cVZj6YJ19gAltdU9qRLWVLUHO9dX4I+TvNmQkTqrrdeQBF8x
-         u3h/yR0MCYNdyC+GxCACATrkqRR5BvrGF2TLnoZ73a8Z1nfYOKYUrbkeOR8IpXJqDc8S
-         ZEJA==
+        bh=wptBGDLLzX2MKQextGuJpdWgYcfBlbPlr/5rrFvg6GU=;
+        b=MmD4HkroiuEhAhtAeaiL4zCyV5VY+NMH/tOatBEguUwjtbeVbd/laIlXAHgbwXN0O8
+         g3aWok4N64jepEZpeOvS0PCPh29X3+UoukiM1KyxAwu6odwXIQH00L75nPdCtpkTcEcx
+         cZ2inNPdPT1mHOydcVjB3LJtcbkSGh/KO/egGj5RSnwNNnC5lcG8YQdndLurUp5reEyw
+         AeyJKRGzhVWKje5aFQrfRm/igOYAMvg1ghmKw7MjTLNn5omPyFDY5nH2d9EN2fc7Gd0l
+         5MloU4zqyAhJEaPtHA9hpNG3so0Uq7jskNZeI8b9OKT558KVr8/TmNV+5kuXJg7NXZOE
+         flug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=fTE5okIaZncPcsNAR/BLkNFx9agcEUU8fNdeLliCC+o=;
-        b=MG1dWBo0/+qGhWtBgj74k/xUJ+R6+HRJ3IzqPmtSc6WyrcoqJjquEwMvHWj0Rb1jv5
-         h7vmdfv5gxDHk1OqtlUc80/t6JZzm21ISjuObewlQpI6SrjCUYxqGaNkFGUfyVyKXxsr
-         nD7bUidfhqP4KJ82NqoddDbX6/2LQeQtmq7S99Lo9D4VE4VNScmLc9PcjhOGFr5KRRfD
-         MUs5/PF2iBuHWxkIHECCTVNtsqFBcSmpg+Eea+Ytr02Mkgmki94195Ah9Cwa2SA2IiST
-         o/jXwK1OHChAIERAjBN6ypg8NrPezzI3cTINPB+Iw7AkpIuhjMJf2oOdw5D491X9IeCD
-         u8jA==
-X-Gm-Message-State: AOAM533VKQaWM4ij37UhNW2ZddPJcmyYXVA4GuzWRupGrHlk5rNNnuah
-        jFVgNiOQZXrm1F4eY5rl/ScGsjciLts=
-X-Google-Smtp-Source: ABdhPJwYrYpuVAOPwCUBwmFZSxDzU3T/sbb3FzqLpyNhbpUmUJwCCfBrm5cqSGGWRVVBMhn731e9dQ==
-X-Received: by 2002:a50:cf46:: with SMTP id d6mr9854798edk.339.1599750243986;
-        Thu, 10 Sep 2020 08:04:03 -0700 (PDT)
+        bh=wptBGDLLzX2MKQextGuJpdWgYcfBlbPlr/5rrFvg6GU=;
+        b=rbL5SAmksLEma1YlBVC4i9FDjONDjL6+ggEudYsqaTMb3LENee6HUYkPD+y/oqAtts
+         6MwuQquexs+qXcwlfjg7qIsbqbUwjaV3ElZLYCiwKf4Dwba63f5WJDy9oTRPzI3Hy/6m
+         Ge+/iE2xv8OdWerEihOszpp/bo1x2HsaEslz1RHJ1o1VFP9Ny05NYdkLOQ8D5ygzYKTN
+         dUy8/3JnhugsMBetR6Tg+RPdN/hH6sEMxxUogu4UMNVy+LhccS//w+Q32lqSwUJvIVe1
+         DLEpPb1PUyrP3ix97Cxh4N5X69+HR0BP7FHGTa8Y9ecjjs8ZRg1vLx4QnLCldMAK92tb
+         ef8w==
+X-Gm-Message-State: AOAM5314ZrGLPLa0I8nNodM5lNRPYx2r5qWxeJpOVTdvaUNA6L5FljR4
+        VN5imuIx7XaA/MdA4BSAFjlbxAb73dU=
+X-Google-Smtp-Source: ABdhPJxswCL9H4fJTSdm8Cdd3PSGRaoIM7j/FDNpjmF5i1LM0CMT+yrHuXnKGwXd+miLTAOYDMNLZg==
+X-Received: by 2002:a17:906:b317:: with SMTP id n23mr9126523ejz.6.1599750246285;
+        Thu, 10 Sep 2020 08:04:06 -0700 (PDT)
 Received: from ogabbay-VM.habana-labs.com ([213.57.90.10])
-        by smtp.gmail.com with ESMTPSA id o3sm7443925edt.79.2020.09.10.08.04.02
+        by smtp.gmail.com with ESMTPSA id o3sm7443925edt.79.2020.09.10.08.04.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Sep 2020 08:04:03 -0700 (PDT)
+        Thu, 10 Sep 2020 08:04:05 -0700 (PDT)
 From:   Oded Gabbay <oded.gabbay@gmail.com>
 To:     linux-kernel@vger.kernel.org, SW_Drivers@habana.ai
 Cc:     gregkh@linuxfoundation.org, Omer Shpigelman <oshpigelman@habana.ai>
-Subject: [PATCH 11/15] habanalabs/gaudi: add QP error handling
-Date:   Thu, 10 Sep 2020 18:03:24 +0300
-Message-Id: <20200910150328.20545-12-oded.gabbay@gmail.com>
+Subject: [PATCH 12/15] habanalabs/gaudi: add debugfs entries for the NIC
+Date:   Thu, 10 Sep 2020 18:03:25 +0300
+Message-Id: <20200910150328.20545-13-oded.gabbay@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200910150328.20545-1-oded.gabbay@gmail.com>
 References: <20200910150328.20545-1-oded.gabbay@gmail.com>
@@ -63,158 +63,543 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Omer Shpigelman <oshpigelman@habana.ai>
 
-Add Queue Pair (QP) error notification to the user e.g. security violation,
-too many retransmissions, invalid QP etc.
+Add several debugfs entries to help us debug the NIC engines and ports and
+also the communication layer of the DL training application that use them.
 
-Whenever a QP caused an error, the firmware will send an event to the
-driver which will push the error as an error entry to the Completion Queue
-(if exists).
+There are eight new entries. Detailed description is in the documentation
+file but here is a summary:
+
+- nic_mac_loopback: enable mac loopback mode per port
+- nic_ports_status: print physical connection status per port
+- nic_pcs_fail_time_frame: configure windows size for measuring pcs
+                           failures
+- nic_pcs_fail_threshold: configure pcs failures threshold for
+                          reconfiguring the link
+- nic_pam4_tx_taps: configure PAM4 TX taps
+- nic_polarity: configure polarity for NIC port lanes
+- nic_check_link: configure whether to check the PCS link periodically
+- nic_phy_auto_neg_lpbk: enable PHY auto-negotiation loopback
 
 Signed-off-by: Omer Shpigelman <oshpigelman@habana.ai>
 Reviewed-by: Oded Gabbay <oded.gabbay@gmail.com>
 Signed-off-by: Oded Gabbay <oded.gabbay@gmail.com>
 ---
- drivers/misc/habanalabs/gaudi/gaudi.c     | 13 ++++
- drivers/misc/habanalabs/gaudi/gaudiP.h    |  1 +
- drivers/misc/habanalabs/gaudi/gaudi_nic.c | 93 +++++++++++++++++++++++
- 3 files changed, 107 insertions(+)
+ .../ABI/testing/debugfs-driver-habanalabs     |  69 +++
+ drivers/misc/habanalabs/gaudi/Makefile        |   3 +-
+ drivers/misc/habanalabs/gaudi/gaudi_nic.c     |   2 +
+ .../misc/habanalabs/gaudi/gaudi_nic_debugfs.c | 402 ++++++++++++++++++
+ 4 files changed, 475 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/misc/habanalabs/gaudi/gaudi_nic_debugfs.c
 
-diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
-index 34b99bd94ef0..8fc2288fb424 100644
---- a/drivers/misc/habanalabs/gaudi/gaudi.c
-+++ b/drivers/misc/habanalabs/gaudi/gaudi.c
-@@ -6658,6 +6658,19 @@ static void gaudi_handle_eqe(struct hl_device *hdev,
- 		hl_fw_unmask_irq(hdev, event_type);
- 		break;
- 
-+	case GAUDI_EVENT_NIC0_QP0:
-+	case GAUDI_EVENT_NIC0_QP1:
-+	case GAUDI_EVENT_NIC1_QP0:
-+	case GAUDI_EVENT_NIC1_QP1:
-+	case GAUDI_EVENT_NIC2_QP0:
-+	case GAUDI_EVENT_NIC2_QP1:
-+	case GAUDI_EVENT_NIC3_QP0:
-+	case GAUDI_EVENT_NIC3_QP1:
-+	case GAUDI_EVENT_NIC4_QP0:
-+	case GAUDI_EVENT_NIC4_QP1:
-+		gaudi_nic_handle_qp_err(hdev, event_type);
-+		break;
+diff --git a/Documentation/ABI/testing/debugfs-driver-habanalabs b/Documentation/ABI/testing/debugfs-driver-habanalabs
+index 2e9ae311e02d..8fca02b92a80 100644
+--- a/Documentation/ABI/testing/debugfs-driver-habanalabs
++++ b/Documentation/ABI/testing/debugfs-driver-habanalabs
+@@ -176,3 +176,72 @@ KernelVersion:  5.6
+ Contact:        oded.gabbay@gmail.com
+ Description:    Sets the stop-on_error option for the device engines. Value of
+                 "0" is for disable, otherwise enable.
 +
- 	case GAUDI_EVENT_PSOC_GPIO_U16_0:
- 		cause = le64_to_cpu(eq_entry->data[0]) & 0xFF;
- 		dev_err(hdev->dev,
-diff --git a/drivers/misc/habanalabs/gaudi/gaudiP.h b/drivers/misc/habanalabs/gaudi/gaudiP.h
-index ba3150c073ca..dc1dcff43cd6 100644
---- a/drivers/misc/habanalabs/gaudi/gaudiP.h
-+++ b/drivers/misc/habanalabs/gaudi/gaudiP.h
-@@ -578,5 +578,6 @@ netdev_tx_t gaudi_nic_handle_tx_pkt(struct gaudi_nic_device *gaudi_nic,
- 					struct sk_buff *skb);
- int gaudi_nic_sw_init(struct hl_device *hdev);
- void gaudi_nic_sw_fini(struct hl_device *hdev);
-+void gaudi_nic_handle_qp_err(struct hl_device *hdev, u16 event_type);
++What:           /sys/kernel/debug/habanalabs/hl<n>/nic_mac_loopback
++Date:           Nov 2020
++KernelVersion:  5.10
++Contact:        oshpigelman@habana.ai
++Description:    Allows the root user to disable/enable MAC loopback for Gaudi
++                NIC ports. The ports will function as if a physical loopback
++                transceiver was connected. A bitmask should be provided where
++                each bit represents a port, up to 20 bits.
++                Known issues for this mode:
++                1. Odd ports PHY is not stopped so the peer's odd ports will get
++                PCS link.
++                2. Might cause an interrupt storm due to high B/W.
++
++What:           /sys/kernel/debug/habanalabs/hl<n>/nic_ports_status
++Date:           Nov 2020
++KernelVersion:  5.10
++Contact:        oshpigelman@habana.ai
++Description:    Displays a summary the PC link state of all Gaudi NIC ports.
++
++What:           /sys/kernel/debug/habanalabs/hl<n>/nic_pcs_fail_time_frame
++Date:           Nov 2020
++KernelVersion:  5.10
++Contact:        oshpigelman@habana.ai
++Description:    Allows the root user to set the used time frame in seconds for
++                detecting a loose PCS link of a Gaudi NIC port. We count how
++                many PCS link failures occurred in a time frame up to a
++                threshold which will cause PHY reconfiguration for getting a new
++                PCS link.
++
++What:           /sys/kernel/debug/habanalabs/hl<n>/nic_pcs_fail_threshold
++Date:           Nov 2020
++KernelVersion:  5.10
++Contact:        oshpigelman@habana.ai
++Description:    Allows the root user to set the used threshold for detecting a
++                loose PCS link of a Gaudi NIC port. We count how many PCS link
++                failures occurred in a time frame up to the threshold which will
++                cause PHY reconfiguration for getting a new PCS link.
++
++What:           /sys/kernel/debug/habanalabs/hl<n>/nic_pam4_tx_taps
++Date:           Nov 2020
++KernelVersion:  5.10
++Contact:        oshpigelman@habana.ai
++Description:    Allows the root user to set the PAM4 Tx taps for Gaudi NIC port
++                lanes. The lanes indices are 0-39.
++                Acceptable input string form:
++                <lane> <tx_pre2> <tx_pre1> <tx_main> <tx_post1> <tx_post2>.
++
++What:           /sys/kernel/debug/habanalabs/hl<n>/nic_polarity
++Date:           Nov 2020
++KernelVersion:  5.10
++Contact:        oshpigelman@habana.ai
++Description:    Allows the root user to set the polarity for Gaudi NIC port
++                lanes. The lanes indices are 0-39.
++                Acceptable input string form: <lane> <pol_tx> <pol_rx>.
++
++What:           /sys/kernel/debug/habanalabs/hl<n>/nic_check_link
++Date:           Nov 2020
++KernelVersion:  5.10
++Contact:        oshpigelman@habana.ai
++Description:    Sets the PCS link periodic check for all Gaudi NIC ports. Value
++                of "0" is for disable, otherwise enable.
++
++What:           /sys/kernel/debug/habanalabs/hl<n>/nic_phy_auto_neg_lpbk
++Date:           Nov 2020
++KernelVersion:  5.10
++Contact:        oshpigelman@habana.ai
++Description:    Sets the PHY Autoneg loopback support for all Gaudi NIC ports.
++                Value of "0" is for disable, otherwise enable.
+diff --git a/drivers/misc/habanalabs/gaudi/Makefile b/drivers/misc/habanalabs/gaudi/Makefile
+index c5143cf6f025..437b21e54c95 100644
+--- a/drivers/misc/habanalabs/gaudi/Makefile
++++ b/drivers/misc/habanalabs/gaudi/Makefile
+@@ -2,4 +2,5 @@
+ HL_GAUDI_FILES := gaudi/gaudi.o gaudi/gaudi_hwmgr.o gaudi/gaudi_security.o \
+ 	gaudi/gaudi_coresight.o
  
- #endif /* GAUDIP_H_ */
+-HL_GAUDI_FILES += gaudi/gaudi_nic.o gaudi/gaudi_phy.o
++HL_GAUDI_FILES += gaudi/gaudi_nic.o gaudi/gaudi_phy.o \
++	gaudi/gaudi_nic_debugfs.o
 diff --git a/drivers/misc/habanalabs/gaudi/gaudi_nic.c b/drivers/misc/habanalabs/gaudi/gaudi_nic.c
-index 8f6585c700cf..41789f7ed32e 100644
+index 41789f7ed32e..a73635a4c44b 100644
 --- a/drivers/misc/habanalabs/gaudi/gaudi_nic.c
 +++ b/drivers/misc/habanalabs/gaudi/gaudi_nic.c
-@@ -3958,3 +3958,96 @@ int gaudi_nic_cq_mmap(struct hl_device *hdev, struct vm_area_struct *vma)
+@@ -3025,6 +3025,8 @@ int gaudi_nic_ports_init(struct hl_device *hdev)
+ 			}
+ 		}
  
- 	return rc;
- }
++	gaudi_nic_debugfs_init(hdev);
 +
-+static char *get_syndrome_text(u32 syndrome)
+ 	gaudi->hw_cap_initialized |= HW_CAP_NIC_DRV;
+ 
+ 	return 0;
+diff --git a/drivers/misc/habanalabs/gaudi/gaudi_nic_debugfs.c b/drivers/misc/habanalabs/gaudi/gaudi_nic_debugfs.c
+new file mode 100644
+index 000000000000..2e99d2683512
+--- /dev/null
++++ b/drivers/misc/habanalabs/gaudi/gaudi_nic_debugfs.c
+@@ -0,0 +1,402 @@
++// SPDX-License-Identifier: GPL-2.0
++
++/*
++ * Copyright 2018-2020 HabanaLabs, Ltd.
++ * All Rights Reserved.
++ */
++
++#include "gaudi_nic.h"
++#include <linux/debugfs.h>
++#include <linux/nospec.h>
++
++#ifdef CONFIG_DEBUG_FS
++
++#define POLARITY_KBUF_SIZE	8
++#define TX_TAPS_KBUF_SIZE	25
++
++static ssize_t debugfs_pam4_tx_taps_write(struct file *f,
++						const char __user *buf,
++						size_t count, loff_t *ppos)
 +{
-+	char *str;
++	struct hl_device *hdev = file_inode(f)->i_private;
++	struct gaudi_device *gaudi = hdev->asic_specific;
++	char kbuf[TX_TAPS_KBUF_SIZE];
++	char *c1, *c2;
++	ssize_t rc;
++	u32 lane;
++	s32 tx_pre2, tx_pre1, tx_main, tx_post1, tx_post2;
++	s32 *taps;
 +
-+	switch (syndrome) {
-+	case 0x05:
-+		str = "Rx got invalid QP";
-+		break;
-+	case 0x06:
-+		str = "Rx transport service mismatch";
-+		break;
-+	case 0x09:
-+		str = "Rx Rkey check failed";
-+		break;
-+	case 0x40:
-+		str = "timer retry exceeded";
-+		break;
-+	case 0x41:
-+		str = "NACK retry exceeded";
-+		break;
-+	case 0x42:
-+		str = "doorbell on invalid QP";
-+		break;
-+	case 0x43:
-+		str = "doorbell security check failed";
-+		break;
-+	case 0x44:
-+		str = "Tx got invalid QP";
-+		break;
-+	case 0x45:
-+		str = "responder got ACK/NACK on invalid QP";
-+		break;
-+	case 0x46:
-+		str = "responder try to send ACK/NACK on invalid QP";
-+		break;
-+	default:
-+		str = "unknown syndrome";
-+		break;
++	if (count > sizeof(kbuf) - 1)
++		goto err;
++	if (copy_from_user(kbuf, buf, count))
++		goto err;
++	kbuf[count] = '\0';
++
++	c1 = kbuf;
++	c2 = strchr(c1, ' ');
++	if (!c2)
++		goto err;
++	*c2 = '\0';
++
++	rc = kstrtou32(c1, 10, &lane);
++	if (rc)
++		goto err;
++
++	if (lane >= NIC_MAX_NUM_OF_LANES) {
++		dev_err(hdev->dev, "lane max value is %d\n",
++			NIC_MAX_NUM_OF_LANES - 1);
++		return -EINVAL;
 +	}
 +
-+	return str;
++	/* Turn off speculation due to Spectre vulnerability */
++	lane = array_index_nospec(lane, NIC_MAX_NUM_OF_LANES);
++
++	c1 = c2 + 1;
++
++	c2 = strchr(c1, ' ');
++	if (!c2)
++		goto err;
++	*c2 = '\0';
++
++	rc = kstrtos32(c1, 10, &tx_pre2);
++	if (rc)
++		goto err;
++
++	c1 = c2 + 1;
++
++	c2 = strchr(c1, ' ');
++	if (!c2)
++		goto err;
++	*c2 = '\0';
++
++	rc = kstrtos32(c1, 10, &tx_pre1);
++	if (rc)
++		goto err;
++
++	c1 = c2 + 1;
++
++	c2 = strchr(c1, ' ');
++	if (!c2)
++		goto err;
++	*c2 = '\0';
++
++	rc = kstrtos32(c1, 10, &tx_main);
++	if (rc)
++		goto err;
++
++	c1 = c2 + 1;
++
++	c2 = strchr(c1, ' ');
++	if (!c2)
++		goto err;
++	*c2 = '\0';
++
++	rc = kstrtos32(c1, 10, &tx_post1);
++	if (rc)
++		goto err;
++
++	c1 = c2 + 1;
++
++	rc = kstrtos32(c1, 10, &tx_post2);
++	if (rc)
++		goto err;
++
++	taps = gaudi->nic_pam4_tx_taps[lane].taps;
++	taps[0] = tx_pre2;
++	taps[1] = tx_pre1;
++	taps[2] = tx_main;
++	taps[3] = tx_post1;
++	taps[4] = tx_post2;
++
++	return count;
++err:
++	dev_err(hdev->dev,
++		"usage: echo <lane> <tx_pre2> <tx_pre1> <tx_main> <tx_post1> <tx_post2> > nic_pam4_tx_taps\n");
++
++	return -EINVAL;
 +}
 +
-+void gaudi_nic_handle_qp_err(struct hl_device *hdev, u16 event_type)
++static const struct file_operations debugfs_pam4_tx_taps_fops = {
++	.owner = THIS_MODULE,
++	.write = debugfs_pam4_tx_taps_write,
++};
++
++static ssize_t debugfs_polarity_write(struct file *f, const char __user *buf,
++					size_t count, loff_t *ppos)
++{
++	struct hl_device *hdev = file_inode(f)->i_private;
++	struct gaudi_device *gaudi = hdev->asic_specific;
++	struct cpucp_nic_info *nic_info = &hdev->asic_prop.cpucp_nic_info;
++	char kbuf[POLARITY_KBUF_SIZE];
++	char *c1, *c2;
++	ssize_t rc;
++	u64 val;
++	u32 lane;
++	u8 pol_tx, pol_rx;
++
++	if (count > sizeof(kbuf) - 1)
++		goto err;
++	if (copy_from_user(kbuf, buf, count))
++		goto err;
++	kbuf[count] = '\0';
++
++	c1 = kbuf;
++	c2 = strchr(c1, ' ');
++	if (!c2)
++		goto err;
++	*c2 = '\0';
++
++	rc = kstrtou32(c1, 10, &lane);
++	if (rc)
++		goto err;
++
++	if (lane >= NIC_MAX_NUM_OF_LANES) {
++		dev_err(hdev->dev, "lane max value is %d\n",
++			NIC_MAX_NUM_OF_LANES - 1);
++		return -EINVAL;
++	}
++
++	c1 = c2 + 1;
++
++	c2 = strchr(c1, ' ');
++	if (!c2)
++		goto err;
++	*c2 = '\0';
++
++	rc = kstrtou8(c1, 10, &pol_tx);
++	if (rc)
++		goto err;
++
++	c1 = c2 + 1;
++
++	rc = kstrtou8(c1, 10, &pol_rx);
++	if (rc)
++		goto err;
++
++	if ((pol_tx & ~1) || (pol_rx & ~1)) {
++		dev_err(hdev->dev, "pol_tx and pol_rx should be 0 or 1\n");
++		goto err;
++	}
++
++	val = le64_to_cpu(nic_info->pol_tx_mask[0]);
++	val &= ~BIT_ULL(lane);
++	val |= ((u64) pol_tx) << lane;
++	nic_info->pol_tx_mask[0] = cpu_to_le64(val);
++
++	val = le64_to_cpu(nic_info->pol_rx_mask[0]);
++	val &= ~BIT_ULL(lane);
++	val |= ((u64) pol_rx) << lane;
++	nic_info->pol_rx_mask[0] = cpu_to_le64(val);
++
++	gaudi->nic_use_fw_polarity = true;
++
++	return count;
++err:
++	dev_err(hdev->dev,
++		"usage: echo <lane> <pol_tx> <pol_rx> > nic_polarity\n");
++
++	return -EINVAL;
++}
++
++static const struct file_operations debugfs_polarity_fops = {
++	.owner = THIS_MODULE,
++	.write = debugfs_polarity_write,
++};
++
++static ssize_t debugfs_ports_status_read(struct file *f, char __user *buf,
++					size_t count, loff_t *ppos)
++{
++	struct hl_device *hdev = file_inode(f)->i_private;
++	struct gaudi_device *gaudi = hdev->asic_specific;
++	char tmp_buf[512] = {0};
++	ssize_t rc;
++	int i, up_cnt = 0, down_cnt = 0;
++
++	if (*ppos)
++		return 0;
++
++	for (i = 0 ; i < NIC_NUMBER_OF_PORTS ; i++)
++		if ((hdev->nic_ports_mask & BIT(i))) {
++			if (gaudi->nic_devices[i].active)
++				up_cnt++;
++			else
++				down_cnt++;
++		}
++
++	if (up_cnt) {
++		sprintf(tmp_buf, "%d ports up (", up_cnt);
++
++		for (i = 0 ; i < NIC_NUMBER_OF_PORTS ; i++)
++			if ((hdev->nic_ports_mask & BIT(i)) &&
++				gaudi->nic_devices[i].active)
++				sprintf(tmp_buf + strlen(tmp_buf), "%d, ", i);
++
++		sprintf(tmp_buf + strlen(tmp_buf) - 2, ")");
++	}
++
++	if (down_cnt) {
++		if (up_cnt)
++			sprintf(tmp_buf + strlen(tmp_buf), "\n");
++
++		sprintf(tmp_buf + strlen(tmp_buf), "%d ports down (", down_cnt);
++
++		for (i = 0 ; i < NIC_NUMBER_OF_PORTS ; i++)
++			if ((hdev->nic_ports_mask & BIT(i)) &&
++				!gaudi->nic_devices[i].active)
++				sprintf(tmp_buf + strlen(tmp_buf), "%d, ", i);
++
++		sprintf(tmp_buf + strlen(tmp_buf) - 2, ")");
++	}
++
++	sprintf(tmp_buf + strlen(tmp_buf), "\n");
++
++	rc = simple_read_from_buffer(buf, strlen(tmp_buf) + 1, ppos, tmp_buf,
++					strlen(tmp_buf) + 1);
++
++	return rc;
++}
++
++static const struct file_operations debugfs_ports_status_fops = {
++	.owner = THIS_MODULE,
++	.read = debugfs_ports_status_read,
++};
++
++#define NIC_DEBUGFS(X, fmt, do_reset) \
++static ssize_t debugfs_##X##_read(struct file *f, \
++					char __user *buf, \
++					size_t count, \
++					loff_t *ppos) \
++{ \
++	struct hl_device *hdev = file_inode(f)->i_private; \
++	struct gaudi_device *gaudi = hdev->asic_specific; \
++	char tmp_buf[32]; \
++	ssize_t rc; \
++\
++	if (*ppos) \
++		return 0; \
++\
++	sprintf(tmp_buf, fmt "\n", gaudi->nic_##X); \
++	rc = simple_read_from_buffer(buf, strlen(tmp_buf) + 1, ppos, tmp_buf, \
++			strlen(tmp_buf) + 1); \
++\
++	return rc; \
++} \
++\
++static ssize_t debugfs_##X##_write(struct file *f, \
++					const char __user *buf, \
++					size_t count, \
++					loff_t *ppos) \
++{ \
++	struct hl_device *hdev = file_inode(f)->i_private; \
++	struct gaudi_device *gaudi = hdev->asic_specific; \
++	u64 val, base; \
++	ssize_t rc; \
++\
++	if (!strcmp(fmt, "%d")) \
++		base = 10; \
++	else \
++		base = 16; \
++\
++	rc = kstrtoull_from_user(buf, count, base, &val); \
++	if (rc) \
++		return rc; \
++\
++	if (val == gaudi->nic_##X) \
++		return count; \
++\
++	if (do_reset && gaudi->nic_debugfs_reset) { \
++		gaudi->nic_##X = val; \
++		hl_device_reset(hdev, true, false); \
++		ssleep(HL_PENDING_RESET_PER_SEC); \
++		return count; \
++	} \
++\
++	dev_info(hdev->dev, "NIC reset for %s started\n", __stringify(X)); \
++\
++	rc = gaudi_nic_hard_reset_prepare(hdev); \
++	if (rc) \
++		return rc; \
++\
++	gaudi_nic_stop(hdev); \
++\
++	/* must do this so the ports will be reopened */ \
++	gaudi->hw_cap_initialized &= ~HW_CAP_NIC_DRV; \
++\
++	gaudi->nic_##X = val; \
++\
++	gaudi_nic_ports_reopen(hdev); \
++\
++	dev_info(hdev->dev, "NIC reset for %s finished\n", __stringify(X)); \
++\
++	return count; \
++} \
++\
++static const struct file_operations debugfs_##X##_fops = { \
++	.owner = THIS_MODULE, \
++	.read = debugfs_##X##_read, \
++	.write = debugfs_##X##_write, \
++}
++
++NIC_DEBUGFS(mac_loopback, "0x%llx", true);
++NIC_DEBUGFS(pcs_fail_time_frame, "%d", false);
++NIC_DEBUGFS(pcs_fail_threshold, "%d", false);
++
++void gaudi_nic_debugfs_init(struct hl_device *hdev)
 +{
 +	struct gaudi_device *gaudi = hdev->asic_specific;
-+	struct gaudi_nic_device *gaudi_nic =
-+			&gaudi->nic_devices[event_type - GAUDI_EVENT_NIC0_QP0];
-+	struct qp_err *qp_err_arr = gaudi_nic->qp_err_mem_cpu;
-+	struct hl_nic_cqe cqe_sw;
-+	u32 pi, ci;
 +
-+	mutex_lock(&gaudi->nic_qp_err_lock);
++	debugfs_create_file("nic_mac_loopback",
++				0644,
++				hdev->hl_debugfs.root,
++				hdev,
++				&debugfs_mac_loopback_fops);
 +
-+	if (!gaudi->nic_cq_enable)
-+		dev_err_ratelimited(hdev->dev,
-+			"received NIC %d QP error event %d but no CQ to push it\n",
-+			gaudi_nic->port, event_type);
++	debugfs_create_file("nic_ports_status",
++				0444,
++				hdev->hl_debugfs.root,
++				hdev,
++				&debugfs_ports_status_fops);
 +
-+	pi = NIC_RREG32(mmNIC0_QPC0_ERR_FIFO_PRODUCER_INDEX);
-+	ci = gaudi_nic->qp_err_ci;
++	debugfs_create_file("nic_pcs_fail_time_frame",
++				0644,
++				hdev->hl_debugfs.root,
++				hdev,
++				&debugfs_pcs_fail_time_frame_fops);
 +
-+	cqe_sw.is_err = true;
-+	cqe_sw.port = gaudi_nic->port;
++	debugfs_create_file("nic_pcs_fail_threshold",
++				0644,
++				hdev->hl_debugfs.root,
++				hdev,
++				&debugfs_pcs_fail_threshold_fops);
 +
-+	while (ci < pi) {
-+		cqe_sw.type = QP_ERR_IS_REQ(qp_err_arr[ci]) ?
-+				HL_NIC_CQE_TYPE_REQ : HL_NIC_CQE_TYPE_RES;
-+		cqe_sw.qp_number = QP_ERR_QP_NUM(qp_err_arr[ci]);
-+		cqe_sw.qp_err.syndrome = QP_ERR_ERR_NUM(qp_err_arr[ci]);
++	debugfs_create_file("nic_pam4_tx_taps",
++				0444,
++				hdev->hl_debugfs.root,
++				hdev,
++				&debugfs_pam4_tx_taps_fops);
 +
-+		ci = (ci + 1) & (QP_ERR_BUF_LEN - 1);
++	debugfs_create_file("nic_polarity",
++				0444,
++				hdev->hl_debugfs.root,
++				hdev,
++				&debugfs_polarity_fops);
 +
-+		dev_err_ratelimited(hdev->dev,
-+			"NIC QP error port: %d, type: %d, qpn: %d, syndrome: %s (0x%x)\n",
-+			cqe_sw.port, cqe_sw.type, cqe_sw.qp_number,
-+			get_syndrome_text(cqe_sw.qp_err.syndrome),
-+			cqe_sw.qp_err.syndrome);
++	debugfs_create_u8("nic_check_link",
++				0644,
++				hdev->hl_debugfs.root,
++				&gaudi->nic_check_link);
 +
-+		if (gaudi->nic_cq_enable)
-+			copy_cqe_to_main_queue(hdev, &cqe_sw);
-+	}
-+
-+	gaudi_nic->qp_err_ci = ci;
-+	NIC_WREG32(mmNIC0_QPC0_ERR_FIFO_CONSUMER_INDEX, ci);
-+
-+	/* signal the completion queue that there are available CQEs */
-+	if (gaudi->nic_cq_enable)
-+		complete(&gaudi->nic_cq_comp);
-+
-+	mutex_unlock(&gaudi->nic_qp_err_lock);
++	debugfs_create_u8("nic_phy_auto_neg_lpbk",
++				0644,
++				hdev->hl_debugfs.root,
++				&gaudi->nic_phy_auto_neg_lpbk);
 +}
++
++#else
++
++void gaudi_nic_debugfs_init(struct hl_device *hdev)
++{
++}
++
++#endif /* CONFIG_DEBUG_FS */
 -- 
 2.17.1
 
