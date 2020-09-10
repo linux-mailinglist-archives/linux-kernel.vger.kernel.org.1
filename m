@@ -2,74 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 096072640EA
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 11:06:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DF902640E7
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 11:06:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730204AbgIJJGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 05:06:55 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:55600 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726474AbgIJJGy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 05:06:54 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 9C3B8853F2AA88842628;
-        Thu, 10 Sep 2020 17:06:49 +0800 (CST)
-Received: from huawei.com (10.175.104.175) by DGGEMS414-HUB.china.huawei.com
- (10.3.19.214) with Microsoft SMTP Server id 14.3.487.0; Thu, 10 Sep 2020
- 17:06:39 +0800
-From:   Miaohe Lin <linmiaohe@huawei.com>
-To:     <davem@davemloft.net>, <viro@zeniv.linux.org.uk>,
-        <mingo@kernel.org>, <keescook@chromium.org>, <ardb@kernel.org>,
-        <will@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <linmiaohe@huawei.com>
-Subject: [PATCH] lib: Fix some broken comments
-Date:   Thu, 10 Sep 2020 05:05:24 -0400
-Message-ID: <20200910090524.5147-1-linmiaohe@huawei.com>
-X-Mailer: git-send-email 2.19.1
+        id S1730140AbgIJJF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 05:05:58 -0400
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:35972 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726474AbgIJJF4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 05:05:56 -0400
+Received: by mail-ot1-f65.google.com with SMTP id 60so4744587otw.3;
+        Thu, 10 Sep 2020 02:05:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hFNMAhYmlLxYKeb7svmHG1hXMeSW5ltqU9S2s32FYG4=;
+        b=CYI0oCOON+BOI+EKwufA9OK+FX4kOM5NGW0+T7yLf5MUob7E31XVwV4wp3/WJRqNUH
+         rujuaqljxc4TFrIHo8IEhOXtvA4+gHbGCkpoiAmACmBgsWr+5RyiZFNCcCBI1IB8MgUb
+         V1oP404UcUhdp9aDPWGnexQNhUCoa4q6I4kfGa1ZKUaldg3rJ/s8eh2QwaA3Kuiszixf
+         tE9xT7tkkz97sjoq/zWGf2truMxjg8WXQKuBzjDPyBmFn/3Xf4++O4EFYN/vwq4IeCwf
+         bpCRJkMHNxF3E9tlZ70IyFwuv3qNuOxjXl+Qhcik0CtTvPKG7dhJGLiuKBM4nANev2Xy
+         W+zA==
+X-Gm-Message-State: AOAM530vh5jxBTsNaZnCrvj/CyPum2vj4r+QMcPKY4iNyx0bXmwOrVlp
+        70gQ9qfxC4Sf8c+DhXW24EoLbNqYjtg/sr8bYmk=
+X-Google-Smtp-Source: ABdhPJxniUaza46mYCMHdv2Xhtn1rGJeyKAGQvZtGFWosMTcRyVa75TOrOoPNNukhNh2gMy/jn4/RGfhdoG1mbLYG5I=
+X-Received: by 2002:a05:6830:1008:: with SMTP id a8mr3061640otp.107.1599728755415;
+ Thu, 10 Sep 2020 02:05:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.175]
-X-CFilter-Loop: Reflected
+References: <20200907155541.2011-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20200907155541.2011-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20200907155541.2011-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 10 Sep 2020 11:05:44 +0200
+Message-ID: <CAMuHMdVdfZCbKdXbWMONVRdBPE2k07Gp1tRsGO495DStA9uRpA@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] ARM: dts: r8a7742-iwg21d-q7: Enable SD2 LED indication
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix some weird and confusing comments.
+On Mon, Sep 7, 2020 at 5:56 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> Add support for LED trigger on SD2 interface.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Chris Paterson <Chris.Paterson2@renesas.com>
+> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
----
- lib/checksum.c | 2 +-
- lib/refcount.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Thanks for the update, will queue in renesas-devel for v5.10.
 
-diff --git a/lib/checksum.c b/lib/checksum.c
-index c7861e84c526..cd0175c6a355 100644
---- a/lib/checksum.c
-+++ b/lib/checksum.c
-@@ -146,7 +146,7 @@ __sum16 ip_compute_csum(const void *buff, int len)
- EXPORT_SYMBOL(ip_compute_csum);
- 
- /*
-- * copy from ds while checksumming, otherwise like csum_partial
-+ * copy from src while checksumming, otherwise like csum_partial
-  */
- __wsum
- csum_partial_copy_nocheck(const void *src, void *dst, int len, __wsum sum)
-diff --git a/lib/refcount.c b/lib/refcount.c
-index ebac8b7d15a7..39e179ed2c58 100644
---- a/lib/refcount.c
-+++ b/lib/refcount.c
-@@ -161,7 +161,7 @@ EXPORT_SYMBOL(refcount_dec_and_lock);
-  *                                 interrupts if able to decrement refcount to 0
-  * @r: the refcount
-  * @lock: the spinlock to be locked
-- * @flags: saved IRQ-flags if the is acquired
-+ * @flags: saved IRQ-flags if the @lock is acquired
-  *
-  * Same as refcount_dec_and_lock() above except that the spinlock is acquired
-  * with disabled interupts.
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.19.1
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
