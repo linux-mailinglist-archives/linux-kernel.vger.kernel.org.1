@@ -2,93 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCEA1264E7C
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:16:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2C7A264E8B
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:18:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726855AbgIJTQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 15:16:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41060 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731461AbgIJPyg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 11:54:36 -0400
-Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAB7EC061795
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 08:54:35 -0700 (PDT)
-Received: by mail-il1-x135.google.com with SMTP id u20so6135729ilk.6
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 08:54:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=OZHxSy9GxPtwL4FPXTEL4wHPxBFDa6n0iEKloHdc+dY=;
-        b=dJRG8Qmps859QERXNYLJxi55QI15qf+NmhuQCnsZM3tzSEE4XDm6akhiZPmfFP2D5L
-         noKfGQmOG//ogqGq6MHNPrBzfyTsSRYDDvmU4HpGKt2M3+VX34Rn11vzjMP7dWCeXtL7
-         peTBqP2XxuoNfSrqxocG1z0zzHqFPkd4E6mCLjflVUpkyfeWBoxTosdtHT8O3weuXwoU
-         tQ9lPzZrLFElRA5AiEu/B7dHsjPFnIljwQ7uqXHEHqGd8+4jBMrrg/VTkfD3IGCBJS5B
-         tsG5z+xzaGHBSxD5B1GWK+wIELg2uX73o8AHY/LKWaXB7jjiscV+sTvRU/rMsZateAut
-         mn4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=OZHxSy9GxPtwL4FPXTEL4wHPxBFDa6n0iEKloHdc+dY=;
-        b=WHybdPpEYDuv6ML0Xo+QCCvK7Ss6kPO23j9t3o9BiTYZjk94W93eb9ny5SnrEGsblR
-         k6++HOAVU2E0aDJiByF8yCUkxAsEanpqySrjQ7olzqxrB6Ebuub9/B/GH7o2EpPcCxKl
-         ECU+YZsADiBy9w/J9NdIgTtsuA4QhYD4r0BAHv1PjlC77GKn4Ox6G8G5nK2w3AnU1gQ6
-         ZR4KfxcolLDIctBwdtr+gat55A8XAW8OVBPtB1z8u6cB9Zif1jVVYye/UXgYtKl9Zjpr
-         puauBpit8Eog9UNdL+Vo+jJS7UnxcUJa3bH3PGQwc5ip2HQIx++wcwcNWVAgcqTqhuYX
-         8c3w==
-X-Gm-Message-State: AOAM530tFKKy7JbNbEgQljX+F8B8mLbwZbImPDh08mFZUC7bdAst9viI
-        VfAKnbQaqybRiXHaX6Lb/M4aNA==
-X-Google-Smtp-Source: ABdhPJxHvxNIiZ7YNxR9PEQ5wMasrzeeVlpwNZVmQsRSVIQZmYnp6kGKrBV3BTGdMbs3dPcZtBZnXQ==
-X-Received: by 2002:a92:b309:: with SMTP id p9mr6758105ilh.125.1599753274952;
-        Thu, 10 Sep 2020 08:54:34 -0700 (PDT)
-Received: from [192.168.1.10] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id z15sm3315413ilb.73.2020.09.10.08.54.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Sep 2020 08:54:34 -0700 (PDT)
-Subject: Re: rework check_disk_change() v2
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Denis Efremov <efremov@linux.com>, Tim Waugh <tim@cyberelk.net>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Borislav Petkov <bp@alien8.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Song Liu <song@kernel.org>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        linux-m68k@lists.linux-m68k.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-ide@vger.kernel.org,
-        linux-raid@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-References: <20200908145347.2992670-1-hch@lst.de>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <b5e51c24-b9a6-979f-8fe0-f762f113bba3@kernel.dk>
-Date:   Thu, 10 Sep 2020 09:54:33 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727044AbgIJTSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 15:18:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47850 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731423AbgIJPyf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 11:54:35 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AF5D12087C;
+        Thu, 10 Sep 2020 15:54:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599753273;
+        bh=06yvRqufpDKTL7eJkUTiaY9kU5FEtoxUdBgPI2zHOnI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=1aK7tmLdeqBcvUuSqsNwRcB9FXAlcQ9ikJshaBOwu1MeKRb+C3UaySFiBFuvVzFOd
+         tQqZ79YSa9ackPE1j5JMlAMYZxYVaYp+9zY0KZt7keuI8//0nivXcy8yHZVwjJ3KJG
+         Z6AzNO8odyBG8OvcfuMj+KmSr4C6sh50MTAEqciI=
+Date:   Thu, 10 Sep 2020 17:54:40 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Oded Gabbay <oded.gabbay@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, SW_Drivers@habana.ai
+Subject: Re: [PATCH 00/15] Adding GAUDI NIC code to habanalabs driver
+Message-ID: <20200910155440.GC1151284@kroah.com>
+References: <20200910150328.20545-1-oded.gabbay@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200908145347.2992670-1-hch@lst.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200910150328.20545-1-oded.gabbay@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/8/20 8:53 AM, Christoph Hellwig wrote:
-> Hi Jens,
+On Thu, Sep 10, 2020 at 06:03:13PM +0300, Oded Gabbay wrote:
+> This patch-set adds support for initializing and using the GAUDI NIC ports,
+> functioning as scale-out interconnect when doing distributed Deep Learning
+> training. The training can be performed over tens of thousands of GAUDIs
+> and it is done using the RDMA-over-converged-Ethernet (RoCE) v2 protocol.
 > 
-> this series replaced the not very nice check_disk_change() function with
-> a new bdev_media_changed that avoids having the ->revalidate_disk call
-> at its end.  As a result ->revalidate_disk can be removed from a lot of
-> drivers.
+> Each GAUDI exposes 10x100GbE ports that are designed to scale-out the
+> inter-GAUDI communication by integrating a complete communication engine
+> on-die. This native integration allows users to use the same scaling
+> technology, both inside the server and rack (termed as scale-up), as well
+> as for scaling across racks (scale-out). The racks can be connected
+> directly between GAUDI processors, or through any number of standard
+> Ethernet switches.
+> 
+> The driver exposes the NIC ports to the user as standard Ethernet ports by
+> registering each port to the networking subsystem. This allows the user to
+> manage the ports with standard tools such as ifconfig, ethtool, etc. It
+> also enables us to connect to the Linux networking stack and thus support
+> standard networking protocols, such as IPv4, IPv6, TCP, etc. In addition,
+> we can also leverage protocols such as DCB for dynamically configuring
+> priorities to avoid congestion.
+> 
+> For each NIC port there is a matching QMAN entity. For RoCE, the user
+> submits workloads to the NIC through the QMAN, same as he does for the
+> compute engines. For regular Ethernet, the user sends and receives packets
+> through the standard Ethernet sockets. Those sockets are used only as a
+> control path. The data path that is used for AI training goes through the
+> RoCE interface.
+> 
+> It is important to note that there are some limitations and uniqueness
+> in GAUDI's NIC H/W, compared to other networking adapters that enforced us
+> to use a less-than-common driver design:
+> 
+> 1. The NIC functionality is NOT exposed as different PCI Physical
+>    Functions. There is a single PF which is used for compute and
+>    networking, as the main goal of the NIC ports is to be used as
+>    intra-communication and not as standard network interfaces. This
+>    implies we can't connect different drivers to handle the networking
+>    ports because it is the same device, from the kernel POV, as the
+>    compute. Therefore, we must integrate the networking code into the
+>    main habanalabs driver.
 
-Applied, thanks.
+That's kind of common, see the long threads on the netdev and IB mailing
+lists about this type of issue on other networking cards today.  The
+whole "virtual bus" code should help solve this, if Intel ever gets
+around to posting a new version of that patch series one day...
 
--- 
-Jens Axboe
+But, because you are writing networking driver code here, you really
+should run all of this by the netdev@vger.kernel.org maintainers and
+developers, as they know how to review this interaction with the network
+stack better than anyone else.
 
+Care to resend it and cc: them too?
+
+thanks,
+
+greg k-h
