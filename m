@@ -2,152 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9AF5263FA2
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 10:25:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8065263F95
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 10:22:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730411AbgIJIYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 04:24:47 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2802 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726961AbgIJINp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 04:13:45 -0400
-Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.108])
-        by Forcepoint Email with ESMTP id CCFBE850CD2915818418;
-        Thu, 10 Sep 2020 09:13:43 +0100 (IST)
-Received: from localhost (10.52.121.43) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Thu, 10 Sep
- 2020 09:13:43 +0100
-Date:   Thu, 10 Sep 2020 09:12:08 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-CC:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Tomasz Duszynski <tomasz.duszynski@octakon.com>,
-        "Michael Hennerich" <Michael.Hennerich@analog.com>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        Marek Vasut <marek.vasut@gmail.com>,
-        "linux-samsung-soc@vger.kernel.org" 
-        <linux-samsung-soc@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        "linux-amlogic@lists.infradead.org" 
-        <linux-amlogic@lists.infradead.org>, Peter Rosin <peda@axentia.se>,
-        Jonathan Cameron <jic23@kernel.org>
-Subject: Re: [PATCH v3 08/18] iio: adc: stm32: Simplify with dev_err_probe()
-Message-ID: <20200910091208.000055fa@Huawei.com>
-In-Reply-To: <CAJKOXPdNAw8scFKCGaC_hp4jMyLD_mFLKr=+fGKSm6nCkcRF9g@mail.gmail.com>
-References: <20200829064726.26268-1-krzk@kernel.org>
-        <20200829064726.26268-8-krzk@kernel.org>
-        <20200909193600.41970d8c@archlinux>
-        <CAJKOXPeo8SXWaRmiFG6z+t9jcnaSMRpvRPm2X22Rf6rtEeKVew@mail.gmail.com>
-        <a37c69f2-1f16-2680-2716-0c1b77748d55@axentia.se>
-        <CAHp75Vc4-zkkWtOz8w7pA0Vu1yMAVodhPSLQ1NJH4K+j9XD52g@mail.gmail.com>
-        <CAJKOXPdNAw8scFKCGaC_hp4jMyLD_mFLKr=+fGKSm6nCkcRF9g@mail.gmail.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        id S1730179AbgIJIWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 04:22:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53722 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730021AbgIJINM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 04:13:12 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40D65C06179A
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 01:13:04 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id kk9so2666984pjb.2
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 01:13:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=tmVmQi4QczzbK2b3xdY3rz6WWhSlEhI5RcevTuWtQ58=;
+        b=AarNnDFOxNAlUIh0nHQvfBbeWAZNOrG7tjykLy0n25WFy2xVwm3LqnVIrayGXI1kCW
+         yPjAcUqXSIEI0JX2OfN1AN4MUvYzLMFP2h68SoCybPpeLokYnXJ9GZ49GrU2ZiYa9Gv9
+         s6zO3jwxF5ZgN+QmxfNLlEekdekFW0I/eZ4nXABF897qHg3WRtBAH/p2NP2Vu6s/YCHo
+         W+NrwDTidOHsMP1+ryE/SwQktx1hzM/+rWs94acYkX2GPq76IdPTfVF0CQqEfuKuZRIm
+         Nhzp6Rrxf19fIAvj8h/b//TKa3ojgKHUfH5t7Lhqo0p5gi3fTHWNt1/8JmYxxWtxXbqk
+         5BNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=tmVmQi4QczzbK2b3xdY3rz6WWhSlEhI5RcevTuWtQ58=;
+        b=WBHikrYnJO+pa/ukXCVH+PDalE/BhSKHZvDPC9OlAwxp074aENkVyIWtw3Bu/vVJO7
+         6QyOZm5tD+4kYyJh41PcBFW9G5g8/JeOuRIcnOlWhwJFhDBlWiFVlp/nOei/LqiMMFbs
+         M6qB1JS1fjvQe0TofsTFERDDYru5aI2X8gU3AHI8WVxP1PIZRn4jeg1LLD4VkFRf6ivg
+         4PiWLj+ee8Et0IiPjaJm3ErVWUXl836Nwc3TNaZ6/R2t1LYxbah5x9Jplp3nqkkgsJLq
+         E17qZf2iFHD4/JeyHjVzDH8HzroZ2A23DTuBS27XljidEZuhdeZfayk1vqpmL5fs/Q6u
+         2eWQ==
+X-Gm-Message-State: AOAM530zk2BD0Oy1eYP6i78nrbyhXvKqHghW/Zf84MlN51GCmrOcOnyL
+        FF5HitJyyC0o/1iy8rna2QXPQ5Gc+Xr04/Dj
+X-Google-Smtp-Source: ABdhPJz96xoXAZuuQhPrIcu0NvS5AAv98ShenisDtQDUjy++Pd2NlOyV0OLUFAOacfUYGIghGJ4GdA==
+X-Received: by 2002:a17:90a:8418:: with SMTP id j24mr4248231pjn.212.1599725583693;
+        Thu, 10 Sep 2020 01:13:03 -0700 (PDT)
+Received: from hsinchu02.internal.sifive.com (114-34-229-221.HINET-IP.hinet.net. [114.34.229.221])
+        by smtp.gmail.com with ESMTPSA id e1sm2196056pfl.162.2020.09.10.01.13.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Sep 2020 01:13:03 -0700 (PDT)
+From:   Greentime Hu <greentime.hu@sifive.com>
+To:     greentime.hu@sifive.com, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, aou@eecs.berkeley.edu,
+        palmer@dabbelt.com, paul.walmsley@sifive.com
+Cc:     Vincent Chen <vincent.chen@sifive.com>
+Subject: [RFC PATCH v7 13/21] riscv: signal: Report signal frame size to userspace via auxv
+Date:   Thu, 10 Sep 2020 16:12:08 +0800
+Message-Id: <1cee6bbffc9434d0a30cf0f47fa2c23e0dacaaeb.1599719352.git.greentime.hu@sifive.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <cover.1599719352.git.greentime.hu@sifive.com>
+References: <cover.1599719352.git.greentime.hu@sifive.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.121.43]
-X-ClientProxiedBy: lhreml712-chm.china.huawei.com (10.201.108.63) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Sep 2020 08:58:57 +0200
-Krzysztof Kozlowski <krzk@kernel.org> wrote:
+From: Vincent Chen <vincent.chen@sifive.com>
 
-> On Thu, 10 Sep 2020 at 08:52, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-> >
-> >
-> >
-> > On Thursday, September 10, 2020, Peter Rosin <peda@axentia.se> wrote:  
-> >>
-> >> Hi!
-> >>
-> >> On 2020-09-09 21:57, Krzysztof Kozlowski wrote:  
-> >> > On Wed, 9 Sep 2020 at 20:36, Jonathan Cameron <jic23@kernel.org> wrote:  
-> >> >>
-> >> >> On Sat, 29 Aug 2020 08:47:16 +0200
-> >> >> Krzysztof Kozlowski <krzk@kernel.org> wrote:
-> >> >>  
-> >> >>> Common pattern of handling deferred probe can be simplified with
-> >> >>> dev_err_probe().  Less code and also it prints the error value.
-> >> >>>
-> >> >>> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> >> >>> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> >> >>>  
-> >> >> I don't have the thread to hand, but this tripped a warning next
-> >> >> and the patch was dropped as a result. See below.  
+The vector register belongs to the signal context. They need to be stored
+and restored as entering and leaving the signal handler. According to the
+V-extension specification, the maximum length of the vector registers can
+be 2^(XLEN-1). Hence, if userspace refers to the MINSIGSTKSZ #define
+(2KB) to create a sigframe, it may not be enough. To resolve this problem,
+this patch refers to the commit 94b07c1f8c39c
+("arm64: signal: Report signal frame size to userspace via auxv") to enable
+userspace to know the minimum required sigframe size through the auxiliary
+vector and use it to allocate enough memory for signal context.
 
-oops. That is what I get for reading an email very quickly then looking
-at the code a few hours later.  Still a problem here we need to fix
-unless I'm missing something.
+Signed-off-by: Vincent Chen <vincent.chen@sifive.com>
+---
+ arch/riscv/include/asm/elf.h         | 17 +++++++++++++----
+ arch/riscv/include/asm/processor.h   |  2 ++
+ arch/riscv/include/uapi/asm/auxvec.h |  2 ++
+ arch/riscv/kernel/setup.c            |  5 +++++
+ arch/riscv/kernel/signal.c           | 16 ++++++++++++++++
+ 5 files changed, 38 insertions(+), 4 deletions(-)
 
-> >> >
-> >> > Thanks for letting me know. If you mean the warning caused by:
-> >> > https://lore.kernel.org/lkml/20200909073716.GA560912@kroah.com/
-> >> > then the driver-core patch was dropped, not the iio one:
-> >> > https://lore.kernel.org/linux-next/20200909074130.GB561485@kroah.com/T/#t
-> >> >
-> >> > So we are good here :)  
-> >>
-> >> No, we are definitely not good. See below. That means "See below", and
-> >> not "Please take a guess at what is being talking about".  
-> >
-> >
-> >  
-> >>  
-> >> >>> @@ -596,12 +594,9 @@ static int stm32_adc_core_switches_probe(struct device *dev,
-> >> >>>               priv->booster = devm_regulator_get_optional(dev, "booster");
-> >> >>>               if (IS_ERR(priv->booster)) {
-> >> >>>                       ret = PTR_ERR(priv->booster);
-> >> >>> -                     if (ret != -ENODEV) {
-> >> >>> -                             if (ret != -EPROBE_DEFER)
-> >> >>> -                                     dev_err(dev, "can't get booster %d\n",
-> >> >>> -                                             ret);
-> >> >>> -                             return ret;
-> >> >>> -                     }
-> >> >>> +                     if (ret != -ENODEV)
-> >> >>> +                             dev_err_probe(dev, ret, "can't get booster\n");  
-> >> >>
-> >> >> This tripped a warning and got the patch dropped because we no longer
-> >> >> return on error.  
-> >>
-> >> As Jonathan already said, we no longer return in this hunk. I.e., you have
-> >> clobbered the error path.  
-> >
-> >
-> > Exactly my point why I proposed _must_check in the first place.  
-> 
-> That was not exactly that point as you did not mention possible errors
-> but only "miss the opportunity to optimize". Optimization is different
-> things than a mistake.
-
-In this particular case we have introduced a bug. If the regulator returns
-an error other than -ENODEV we will carry on when really should error out.
-This includes deferred probe route in which it won't print a message but also won't
-actually defer.
-
-Jonathan
-
-
-> 
-> Best regards,
-> Krzysztof
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-
+diff --git a/arch/riscv/include/asm/elf.h b/arch/riscv/include/asm/elf.h
+index d83a4efd052b..b6b15fc5f784 100644
+--- a/arch/riscv/include/asm/elf.h
++++ b/arch/riscv/include/asm/elf.h
+@@ -57,10 +57,19 @@ extern unsigned long elf_hwcap;
+ #define ELF_PLATFORM	(NULL)
+ 
+ #ifdef CONFIG_MMU
+-#define ARCH_DLINFO						\
+-do {								\
+-	NEW_AUX_ENT(AT_SYSINFO_EHDR,				\
+-		(elf_addr_t)current->mm->context.vdso);		\
++#define ARCH_DLINFO						 \
++do {								 \
++	NEW_AUX_ENT(AT_SYSINFO_EHDR,				 \
++		(elf_addr_t)current->mm->context.vdso);		 \
++	/*							 \
++	 * Should always be nonzero unless there's a kernel bug. \
++	 * If we haven't determined a sensible value to give to	 \
++	 * userspace, omit the entry:				 \
++	 */							 \
++	if (likely(signal_minsigstksz))				 \
++		NEW_AUX_ENT(AT_MINSIGSTKSZ, signal_minsigstksz); \
++	else							 \
++		NEW_AUX_ENT(AT_IGNORE, 0);			 \
+ } while (0)
+ #define ARCH_HAS_SETUP_ADDITIONAL_PAGES
+ struct linux_binprm;
+diff --git a/arch/riscv/include/asm/processor.h b/arch/riscv/include/asm/processor.h
+index a66a5d4ee5ad..bcf004435f26 100644
+--- a/arch/riscv/include/asm/processor.h
++++ b/arch/riscv/include/asm/processor.h
+@@ -7,6 +7,7 @@
+ #define _ASM_RISCV_PROCESSOR_H
+ 
+ #include <linux/const.h>
++#include <linux/cache.h>
+ 
+ #include <vdso/processor.h>
+ 
+@@ -72,6 +73,7 @@ int riscv_of_parent_hartid(struct device_node *node);
+ 
+ extern void riscv_fill_hwcap(void);
+ 
++extern unsigned long signal_minsigstksz __ro_after_init;
+ #endif /* __ASSEMBLY__ */
+ 
+ #endif /* _ASM_RISCV_PROCESSOR_H */
+diff --git a/arch/riscv/include/uapi/asm/auxvec.h b/arch/riscv/include/uapi/asm/auxvec.h
+index d86cb17bbabe..9745a01e5e61 100644
+--- a/arch/riscv/include/uapi/asm/auxvec.h
++++ b/arch/riscv/include/uapi/asm/auxvec.h
+@@ -10,4 +10,6 @@
+ /* vDSO location */
+ #define AT_SYSINFO_EHDR 33
+ 
++#define AT_MINSIGSTKSZ 51
++
+ #endif /* _UAPI_ASM_RISCV_AUXVEC_H */
+diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
+index 2c6dd329312b..f020fd627202 100644
+--- a/arch/riscv/kernel/setup.c
++++ b/arch/riscv/kernel/setup.c
+@@ -17,6 +17,7 @@
+ #include <linux/sched/task.h>
+ #include <linux/swiotlb.h>
+ #include <linux/smp.h>
++#include <linux/processor.h>
+ 
+ #include <asm/cpu_ops.h>
+ #include <asm/setup.h>
+@@ -60,6 +61,8 @@ void __init parse_dtb(void)
+ #endif
+ }
+ 
++extern void __init minsigstksz_setup(void);
++
+ void __init setup_arch(char **cmdline_p)
+ {
+ 	init_mm.start_code = (unsigned long) _stext;
+@@ -96,6 +99,8 @@ void __init setup_arch(char **cmdline_p)
+ #endif
+ 
+ 	riscv_fill_hwcap();
++
++	minsigstksz_setup();
+ }
+ 
+ static int __init topology_init(void)
+diff --git a/arch/riscv/kernel/signal.c b/arch/riscv/kernel/signal.c
+index d27bd39a3490..b3f5375267cd 100644
+--- a/arch/riscv/kernel/signal.c
++++ b/arch/riscv/kernel/signal.c
+@@ -404,3 +404,19 @@ asmlinkage __visible void do_notify_resume(struct pt_regs *regs,
+ 		tracehook_notify_resume(regs);
+ 	}
+ }
++
++unsigned long __ro_after_init signal_minsigstksz;
++
++/*
++ * Determine the stack space required for guaranteed signal devliery.
++ * This function is used to populate AT_MINSIGSTKSZ at process startup.
++ * cpufeatures setup is assumed to be complete.
++ */
++void __init minsigstksz_setup(void)
++{
++	signal_minsigstksz = sizeof(struct rt_sigframe);
++#ifdef CONFIG_VECTOR
++	if (has_vector)
++		signal_minsigstksz += riscv_vsize;
++#endif
++}
+-- 
+2.28.0
 
