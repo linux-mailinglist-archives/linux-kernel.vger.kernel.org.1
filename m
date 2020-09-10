@@ -2,397 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D1452652FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:27:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E479F265321
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:28:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726286AbgIJV1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 17:27:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52894 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731051AbgIJOKU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 10:10:20 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C694C06179B
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 06:57:34 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id e16so6851067wrm.2
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 06:57:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=JuyBy5SQ7Lbzjz7YW70om8n+KmTvxYMUk+MZk/dzwhw=;
-        b=Kwb9FGhK/VZxBJyw32CBJXlBvPh8JJqrejHsDQcx6O9DfDnqGscFNi1vOWFEv/JDvO
-         5bAKHrqOopKBjW9KfqBdjL9jpxEYypeGrNbite8YEhbzS/6fWZq+rBh370l7/6vWc4nP
-         JhO6l8tEbyb7nY7fvmUNAT6zOQMAkr82dtEs5HJE/YrOioqhkQX13VW8nVVKJpErzG9m
-         vx8UVTFUrPweHMq/vdGw2RHq0tMqqxSftmckFvCmoC56PCOcuRm0akrg9j2j0ehiyO8e
-         LGul4m6xMpzIJP0fKoPklKZxvdcdHpBkAtmOFjk9galeiYUzhBn3cIdn5ooBwljP+BNw
-         0Bqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=JuyBy5SQ7Lbzjz7YW70om8n+KmTvxYMUk+MZk/dzwhw=;
-        b=e0MBJWF+n7UlDM4YUO0/So5+oRGR357CuWltV0oLLCdur9aYq+MCs5xjM2ZzdMrYew
-         MUVXgN4wRqxBhoODYqlQ06Jv2POwXtoeOVsrQJxvVr1RdA/2/mdOuNt/t29wDwvekZ+B
-         OoSIJdxc3VG+W0tm61HAFVIAsE5lbLuST9TBNodGU7NAww79gwHRR3joZIUIvY241JVr
-         3eeIXZa/UcQ2JFMLbW/Z7dwAdrnNVTieWqjGlp32+vKuPaAyf6b/P8hn/QlvJYoT3nbi
-         SdYc0dFXwOuvMJVBFZCFC3HOWGKqSs92I8yKnKyO1Nv5fV4X6S1v7gHvl5vdz17StH5I
-         NxAg==
-X-Gm-Message-State: AOAM533qvhsrRmp/nAGl8r1r7WtQnB8od7xi0PTnf78T+YPQDbYKKvSj
-        NIxzS1LpInbWDqmemHCsYnZUSg==
-X-Google-Smtp-Source: ABdhPJxoAB4SgLJt/G+GmfOLrydKZkE5iN65qR8j3d4TGTuQTXLIW7vY72H0j/6CKQVH6sTxQnkeWw==
-X-Received: by 2002:adf:e4c9:: with SMTP id v9mr8851548wrm.375.1599746252966;
-        Thu, 10 Sep 2020 06:57:32 -0700 (PDT)
-Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.gmail.com with ESMTPSA id b2sm3786154wmh.47.2020.09.10.06.57.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Sep 2020 06:57:32 -0700 (PDT)
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To:     broonie@kernel.org, robh+dt@kernel.org
-Cc:     lgirdwood@gmail.com, plai@codeaurora.org, bgoswami@codeaurora.org,
-        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sboyd@kernel.org,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 2/2] ASoC: q6afe-clocks: add q6afe clock controller
-Date:   Thu, 10 Sep 2020 14:57:08 +0100
-Message-Id: <20200910135708.14842-3-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20200910135708.14842-1-srinivas.kandagatla@linaro.org>
-References: <20200910135708.14842-1-srinivas.kandagatla@linaro.org>
+        id S1726794AbgIJV24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 17:28:56 -0400
+Received: from mga07.intel.com ([134.134.136.100]:10272 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730905AbgIJODB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 10:03:01 -0400
+IronPort-SDR: 4CUH9CAo1kmLt4gDqS9lGTtNsWEfTmvyQlgAXJIlXnYcbhqH0WJiP2G4reYmm5dG8E2XNY8PB6
+ Nke+0zSL9RRQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9739"; a="222733224"
+X-IronPort-AV: E=Sophos;i="5.76,413,1592895600"; 
+   d="scan'208";a="222733224"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2020 07:02:38 -0700
+IronPort-SDR: Ka9Vqfs5i/2dOTqodoODRERtS3b5CqFhX+fj9c3C+8NdRDTsvPJ8fNe6M0apBAb8AFFZ65Rmlf
+ tNkf/2qB4OTg==
+X-IronPort-AV: E=Sophos;i="5.76,413,1592895600"; 
+   d="scan'208";a="480900189"
+Received: from minfanti-mobl.amr.corp.intel.com (HELO [10.254.126.4]) ([10.254.126.4])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2020 07:02:37 -0700
+Subject: Re: [PATCH] soundwire: bus: add enumerated slave to device list
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     yung-chuan.liao@linux.intel.com, sanyog.r.kale@intel.com,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+References: <20200909082711.11670-1-srinivas.kandagatla@linaro.org>
+ <80081c70-9137-c9f0-9813-8166275ef7af@linux.intel.com>
+ <ab107351-dbde-7f6d-c588-11572aed5d2d@linaro.org>
+ <4cdcda10-bdc6-211f-d279-e74f57684b79@linux.intel.com>
+ <d0c71a83-9dc1-83c3-5cb1-d8fb7dc7f809@linaro.org>
+ <ed88432c-e21c-b5fc-3abc-5f574769b722@linux.intel.com>
+ <20200910085621.GS77521@vkoul-mobl>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <f3880470-cdc4-7b84-97a1-303f9a95d3f4@linux.intel.com>
+Date:   Thu, 10 Sep 2020 09:02:36 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200910085621.GS77521@vkoul-mobl>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-q6afe already exposes lpass clocks, however this was not presented
-as proper clock controller driver. This patch basically adds clock
-controller support for q6afe clocks.
 
-This is useful for other drivers like lpass digital codec or lpass
-lowpower island drivers to request or vote for these clocks.
+>>> May be we could make the enumerated devices discovery bit more verbose!
+>>
+>> Maybe adding a device number sysfs entry would help, e.g. reporting
+>> NotAttched or a value in [0,11] would tell you if the device is actually
+>> present.
+> 
+> Agreed, I cooked this patch to report verbose device status, let me know
+> if you are okay with this. I think this would be useful regardless of
+> current discussion.
+> 
+> On Db845c I see:
+> 
+> root@linaro-alip:/sys/bus/soundwire/devices# cat sdw:0:217:2010:0:1/status
+> Attached
+> root@linaro-alip:/sys/bus/soundwire/devices# cat sdw:0:217:2010:0:2/status
+> Attached
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- sound/soc/qcom/Kconfig              |   4 +
- sound/soc/qcom/qdsp6/Makefile       |   1 +
- sound/soc/qcom/qdsp6/q6afe-clocks.c | 270 ++++++++++++++++++++++++++++
- 3 files changed, 275 insertions(+)
- create mode 100644 sound/soc/qcom/qdsp6/q6afe-clocks.c
+looks like we are all aligned on the idea, I have a similar patch to at 
+https://github.com/thesofproject/linux/pull/2426
 
-diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
-index a607ace8b089..a7ef62685b41 100644
---- a/sound/soc/qcom/Kconfig
-+++ b/sound/soc/qcom/Kconfig
-@@ -63,6 +63,9 @@ config SND_SOC_QDSP6_AFE
- config SND_SOC_QDSP6_AFE_DAI
- 	tristate
- 
-+config SND_SOC_QDSP6_AFE_CLOCKS
-+	tristate
-+
- config SND_SOC_QDSP6_ADM
- 	tristate
- 
-@@ -83,6 +86,7 @@ config SND_SOC_QDSP6
- 	select SND_SOC_QDSP6_CORE
- 	select SND_SOC_QDSP6_AFE
- 	select SND_SOC_QDSP6_AFE_DAI
-+	select SND_SOC_QDSP6_AFE_CLOCKS
- 	select SND_SOC_QDSP6_ADM
- 	select SND_SOC_QDSP6_ROUTING
- 	select SND_SOC_QDSP6_ASM
-diff --git a/sound/soc/qcom/qdsp6/Makefile b/sound/soc/qcom/qdsp6/Makefile
-index 7e91e96f7ad5..3c1dd9f32f1d 100644
---- a/sound/soc/qcom/qdsp6/Makefile
-+++ b/sound/soc/qcom/qdsp6/Makefile
-@@ -3,6 +3,7 @@ obj-$(CONFIG_SND_SOC_QDSP6_COMMON) += q6dsp-common.o
- obj-$(CONFIG_SND_SOC_QDSP6_CORE) += q6core.o
- obj-$(CONFIG_SND_SOC_QDSP6_AFE) += q6afe.o
- obj-$(CONFIG_SND_SOC_QDSP6_AFE_DAI) += q6afe-dai.o
-+obj-$(CONFIG_SND_SOC_QDSP6_AFE_CLOCKS) += q6afe-clocks.o
- obj-$(CONFIG_SND_SOC_QDSP6_ADM) += q6adm.o
- obj-$(CONFIG_SND_SOC_QDSP6_ROUTING) += q6routing.o
- obj-$(CONFIG_SND_SOC_QDSP6_ASM) += q6asm.o
-diff --git a/sound/soc/qcom/qdsp6/q6afe-clocks.c b/sound/soc/qcom/qdsp6/q6afe-clocks.c
-new file mode 100644
-index 000000000000..2967f4546af5
---- /dev/null
-+++ b/sound/soc/qcom/qdsp6/q6afe-clocks.c
-@@ -0,0 +1,270 @@
-+// SPDX-License-Identifier: GPL-1.0
-+// Copyright (c) 2020, Linaro Limited
-+
-+#include <linux/err.h>
-+#include <linux/init.h>
-+#include <linux/clk-provider.h>
-+#include <linux/module.h>
-+#include <linux/device.h>
-+#include <linux/platform_device.h>
-+#include <linux/of.h>
-+#include <linux/slab.h>
-+#include "q6afe.h"
-+
-+#define Q6AFE_CLK(id) &(struct q6afe_clk) {		\
-+		.clk_id	= id,				\
-+		.afe_clk_id	= Q6AFE_##id,		\
-+		.name = #id,				\
-+		.attributes = LPASS_CLK_ATTRIBUTE_COUPLE_NO, \
-+		.hw.init = &(struct clk_init_data) {	\
-+			.ops = &clk_q6afe_ops,		\
-+			.name = #id,			\
-+		},					\
-+	}
-+
-+#define Q6AFE_VOTE_CLK(id, blkid, n) &(struct q6afe_clk) { \
-+		.clk_id	= id,				\
-+		.afe_clk_id = blkid,			\
-+		.name = #n,				\
-+		.hw.init = &(struct clk_init_data) {	\
-+			.ops = &clk_vote_q6afe_ops,	\
-+			.name = #id,			\
-+		},					\
-+	}
-+
-+struct q6afe_clk {
-+	struct device *dev;
-+	int clk_id;
-+	int afe_clk_id;
-+	char *name;
-+	int attributes;
-+	int rate;
-+	uint32_t handle;
-+	struct clk_hw hw;
-+};
-+
-+#define to_q6afe_clk(_hw) container_of(_hw, struct q6afe_clk, hw)
-+
-+struct q6afe_cc {
-+	struct device *dev;
-+	struct q6afe_clk **clks;
-+	int num_clks;
-+};
-+
-+static int clk_q6afe_prepare(struct clk_hw *hw)
-+{
-+	struct q6afe_clk *clk = to_q6afe_clk(hw);
-+
-+	return q6afe_set_lpass_clock(clk->dev, clk->afe_clk_id, clk->attributes,
-+				     Q6AFE_LPASS_CLK_ROOT_DEFAULT, clk->rate);
-+}
-+
-+static void clk_q6afe_unprepare(struct clk_hw *hw)
-+{
-+	struct q6afe_clk *clk = to_q6afe_clk(hw);
-+
-+	q6afe_set_lpass_clock(clk->dev, clk->afe_clk_id, clk->attributes,
-+			      Q6AFE_LPASS_CLK_ROOT_DEFAULT, 0);
-+}
-+
-+static int clk_q6afe_set_rate(struct clk_hw *hw, unsigned long rate,
-+			      unsigned long parent_rate)
-+{
-+	struct q6afe_clk *clk = to_q6afe_clk(hw);
-+
-+	clk->rate = rate;
-+
-+	return 0;
-+}
-+
-+static unsigned long clk_q6afe_recalc_rate(struct clk_hw *hw,
-+					   unsigned long parent_rate)
-+{
-+	struct q6afe_clk *clk = to_q6afe_clk(hw);
-+
-+	return clk->rate;
-+}
-+
-+static long clk_q6afe_round_rate(struct clk_hw *hw, unsigned long rate,
-+				 unsigned long *parent_rate)
-+{
-+	return rate;
-+}
-+
-+static const struct clk_ops clk_q6afe_ops = {
-+	.prepare	= clk_q6afe_prepare,
-+	.unprepare	= clk_q6afe_unprepare,
-+	.set_rate	= clk_q6afe_set_rate,
-+	.round_rate	= clk_q6afe_round_rate,
-+	.recalc_rate	= clk_q6afe_recalc_rate,
-+};
-+
-+static int clk_vote_q6afe_block(struct clk_hw *hw)
-+{
-+	struct q6afe_clk *clk = to_q6afe_clk(hw);
-+
-+	return q6afe_vote_lpass_core_hw(clk->dev, clk->afe_clk_id,
-+					clk->name, &clk->handle);
-+}
-+
-+static void clk_unvote_q6afe_block(struct clk_hw *hw)
-+{
-+	struct q6afe_clk *clk = to_q6afe_clk(hw);
-+
-+	q6afe_unvote_lpass_core_hw(clk->dev, clk->afe_clk_id, clk->handle);
-+}
-+
-+static const struct clk_ops clk_vote_q6afe_ops = {
-+	.prepare	= clk_vote_q6afe_block,
-+	.unprepare	= clk_unvote_q6afe_block,
-+};
-+
-+struct q6afe_clk *q6afe_clks[Q6AFE_MAX_CLK_ID] = {
-+	[LPASS_CLK_ID_PRI_MI2S_IBIT] = Q6AFE_CLK(LPASS_CLK_ID_PRI_MI2S_IBIT),
-+	[LPASS_CLK_ID_PRI_MI2S_EBIT] = Q6AFE_CLK(LPASS_CLK_ID_PRI_MI2S_EBIT),
-+	[LPASS_CLK_ID_SEC_MI2S_IBIT] = Q6AFE_CLK(LPASS_CLK_ID_SEC_MI2S_IBIT),
-+	[LPASS_CLK_ID_SEC_MI2S_EBIT] = Q6AFE_CLK(LPASS_CLK_ID_SEC_MI2S_EBIT),
-+	[LPASS_CLK_ID_TER_MI2S_IBIT] = Q6AFE_CLK(LPASS_CLK_ID_TER_MI2S_IBIT),
-+	[LPASS_CLK_ID_TER_MI2S_EBIT] = Q6AFE_CLK(LPASS_CLK_ID_TER_MI2S_EBIT),
-+	[LPASS_CLK_ID_QUAD_MI2S_IBIT] = Q6AFE_CLK(LPASS_CLK_ID_QUAD_MI2S_IBIT),
-+	[LPASS_CLK_ID_QUAD_MI2S_EBIT] = Q6AFE_CLK(LPASS_CLK_ID_QUAD_MI2S_EBIT),
-+	[LPASS_CLK_ID_SPEAKER_I2S_IBIT] =
-+				Q6AFE_CLK(LPASS_CLK_ID_SPEAKER_I2S_IBIT),
-+	[LPASS_CLK_ID_SPEAKER_I2S_EBIT] =
-+				Q6AFE_CLK(LPASS_CLK_ID_SPEAKER_I2S_EBIT),
-+	[LPASS_CLK_ID_SPEAKER_I2S_OSR] =
-+				Q6AFE_CLK(LPASS_CLK_ID_SPEAKER_I2S_OSR),
-+	[LPASS_CLK_ID_QUI_MI2S_IBIT] = Q6AFE_CLK(LPASS_CLK_ID_QUI_MI2S_IBIT),
-+	[LPASS_CLK_ID_QUI_MI2S_EBIT] = Q6AFE_CLK(LPASS_CLK_ID_QUI_MI2S_EBIT),
-+	[LPASS_CLK_ID_SEN_MI2S_IBIT] = Q6AFE_CLK(LPASS_CLK_ID_SEN_MI2S_IBIT),
-+	[LPASS_CLK_ID_SEN_MI2S_EBIT] = Q6AFE_CLK(LPASS_CLK_ID_SEN_MI2S_EBIT),
-+	[LPASS_CLK_ID_INT0_MI2S_IBIT] = Q6AFE_CLK(LPASS_CLK_ID_INT0_MI2S_IBIT),
-+	[LPASS_CLK_ID_INT1_MI2S_IBIT] = Q6AFE_CLK(LPASS_CLK_ID_INT1_MI2S_IBIT),
-+	[LPASS_CLK_ID_INT2_MI2S_IBIT] = Q6AFE_CLK(LPASS_CLK_ID_INT2_MI2S_IBIT),
-+	[LPASS_CLK_ID_INT3_MI2S_IBIT] = Q6AFE_CLK(LPASS_CLK_ID_INT3_MI2S_IBIT),
-+	[LPASS_CLK_ID_INT4_MI2S_IBIT] = Q6AFE_CLK(LPASS_CLK_ID_INT4_MI2S_IBIT),
-+	[LPASS_CLK_ID_INT5_MI2S_IBIT] = Q6AFE_CLK(LPASS_CLK_ID_INT5_MI2S_IBIT),
-+	[LPASS_CLK_ID_INT6_MI2S_IBIT] = Q6AFE_CLK(LPASS_CLK_ID_INT6_MI2S_IBIT),
-+	[LPASS_CLK_ID_QUI_MI2S_OSR] = Q6AFE_CLK(LPASS_CLK_ID_QUI_MI2S_OSR),
-+	[LPASS_CLK_ID_PRI_PCM_IBIT] = Q6AFE_CLK(LPASS_CLK_ID_PRI_PCM_IBIT),
-+	[LPASS_CLK_ID_PRI_PCM_EBIT] = Q6AFE_CLK(LPASS_CLK_ID_PRI_PCM_EBIT),
-+	[LPASS_CLK_ID_SEC_PCM_IBIT] = Q6AFE_CLK(LPASS_CLK_ID_SEC_PCM_IBIT),
-+	[LPASS_CLK_ID_SEC_PCM_EBIT] = Q6AFE_CLK(LPASS_CLK_ID_SEC_PCM_EBIT),
-+	[LPASS_CLK_ID_TER_PCM_IBIT] = Q6AFE_CLK(LPASS_CLK_ID_TER_PCM_IBIT),
-+	[LPASS_CLK_ID_TER_PCM_EBIT] = Q6AFE_CLK(LPASS_CLK_ID_TER_PCM_EBIT),
-+	[LPASS_CLK_ID_QUAD_PCM_IBIT] = Q6AFE_CLK(LPASS_CLK_ID_QUAD_PCM_IBIT),
-+	[LPASS_CLK_ID_QUAD_PCM_EBIT] = Q6AFE_CLK(LPASS_CLK_ID_QUAD_PCM_EBIT),
-+	[LPASS_CLK_ID_QUIN_PCM_IBIT] = Q6AFE_CLK(LPASS_CLK_ID_QUIN_PCM_IBIT),
-+	[LPASS_CLK_ID_QUIN_PCM_EBIT] = Q6AFE_CLK(LPASS_CLK_ID_QUIN_PCM_EBIT),
-+	[LPASS_CLK_ID_QUI_PCM_OSR] = Q6AFE_CLK(LPASS_CLK_ID_QUI_PCM_OSR),
-+	[LPASS_CLK_ID_PRI_TDM_IBIT] = Q6AFE_CLK(LPASS_CLK_ID_PRI_TDM_IBIT),
-+	[LPASS_CLK_ID_PRI_TDM_EBIT] = Q6AFE_CLK(LPASS_CLK_ID_PRI_TDM_EBIT),
-+	[LPASS_CLK_ID_SEC_TDM_IBIT] = Q6AFE_CLK(LPASS_CLK_ID_SEC_TDM_IBIT),
-+	[LPASS_CLK_ID_SEC_TDM_EBIT] = Q6AFE_CLK(LPASS_CLK_ID_SEC_TDM_EBIT),
-+	[LPASS_CLK_ID_TER_TDM_IBIT] = Q6AFE_CLK(LPASS_CLK_ID_TER_TDM_IBIT),
-+	[LPASS_CLK_ID_TER_TDM_EBIT] = Q6AFE_CLK(LPASS_CLK_ID_TER_TDM_EBIT),
-+	[LPASS_CLK_ID_QUAD_TDM_IBIT] = Q6AFE_CLK(LPASS_CLK_ID_QUAD_TDM_IBIT),
-+	[LPASS_CLK_ID_QUAD_TDM_EBIT] = Q6AFE_CLK(LPASS_CLK_ID_QUAD_TDM_EBIT),
-+	[LPASS_CLK_ID_QUIN_TDM_IBIT] = Q6AFE_CLK(LPASS_CLK_ID_QUIN_TDM_IBIT),
-+	[LPASS_CLK_ID_QUIN_TDM_EBIT] = Q6AFE_CLK(LPASS_CLK_ID_QUIN_TDM_EBIT),
-+	[LPASS_CLK_ID_QUIN_TDM_OSR] = Q6AFE_CLK(LPASS_CLK_ID_QUIN_TDM_OSR),
-+	[LPASS_CLK_ID_MCLK_1] = Q6AFE_CLK(LPASS_CLK_ID_MCLK_1),
-+	[LPASS_CLK_ID_MCLK_2] = Q6AFE_CLK(LPASS_CLK_ID_MCLK_2),
-+	[LPASS_CLK_ID_MCLK_3] = Q6AFE_CLK(LPASS_CLK_ID_MCLK_3),
-+	[LPASS_CLK_ID_MCLK_4] = Q6AFE_CLK(LPASS_CLK_ID_MCLK_4),
-+	[LPASS_CLK_ID_INTERNAL_DIGITAL_CODEC_CORE] =
-+		Q6AFE_CLK(LPASS_CLK_ID_INTERNAL_DIGITAL_CODEC_CORE),
-+	[LPASS_CLK_ID_INT_MCLK_0] = Q6AFE_CLK(LPASS_CLK_ID_INT_MCLK_0),
-+	[LPASS_CLK_ID_INT_MCLK_1] = Q6AFE_CLK(LPASS_CLK_ID_INT_MCLK_1),
-+	[LPASS_CLK_ID_WSA_CORE_MCLK] = Q6AFE_CLK(LPASS_CLK_ID_WSA_CORE_MCLK),
-+	[LPASS_CLK_ID_WSA_CORE_NPL_MCLK] =
-+				Q6AFE_CLK(LPASS_CLK_ID_WSA_CORE_NPL_MCLK),
-+	[LPASS_CLK_ID_VA_CORE_MCLK] = Q6AFE_CLK(LPASS_CLK_ID_VA_CORE_MCLK),
-+	[LPASS_CLK_ID_TX_CORE_MCLK] = Q6AFE_CLK(LPASS_CLK_ID_TX_CORE_MCLK),
-+	[LPASS_CLK_ID_TX_CORE_NPL_MCLK] =
-+			Q6AFE_CLK(LPASS_CLK_ID_TX_CORE_NPL_MCLK),
-+	[LPASS_CLK_ID_RX_CORE_MCLK] = Q6AFE_CLK(LPASS_CLK_ID_RX_CORE_MCLK),
-+	[LPASS_CLK_ID_RX_CORE_NPL_MCLK] =
-+				Q6AFE_CLK(LPASS_CLK_ID_RX_CORE_NPL_MCLK),
-+	[LPASS_CLK_ID_VA_CORE_2X_MCLK] =
-+				Q6AFE_CLK(LPASS_CLK_ID_VA_CORE_2X_MCLK),
-+	[LPASS_HW_AVTIMER_VOTE] = Q6AFE_VOTE_CLK(LPASS_HW_AVTIMER_VOTE,
-+						 Q6AFE_LPASS_CORE_AVTIMER_BLOCK,
-+						 "LPASS_AVTIMER_MACRO"),
-+	[LPASS_HW_MACRO_VOTE] = Q6AFE_VOTE_CLK(LPASS_HW_MACRO_VOTE,
-+						Q6AFE_LPASS_CORE_HW_MACRO_BLOCK,
-+						"LPASS_HW_MACRO"),
-+	[LPASS_HW_DCODEC_VOTE] = Q6AFE_VOTE_CLK(LPASS_HW_DCODEC_VOTE,
-+					Q6AFE_LPASS_CORE_HW_DCODEC_BLOCK,
-+					"LPASS_HW_DCODEC"),
-+};
-+
-+static struct clk_hw *q6afe_of_clk_hw_get(struct of_phandle_args *clkspec,
-+					  void *data)
-+{
-+	struct q6afe_cc *cc = data;
-+	unsigned int idx = clkspec->args[0];
-+	unsigned int attr = clkspec->args[1];
-+
-+	if (idx >= cc->num_clks || attr > LPASS_CLK_ATTRIBUTE_COUPLE_DIVISOR) {
-+		dev_err(cc->dev, "Invalid clk specifier (%d, %d)\n", idx, attr);
-+		return ERR_PTR(-EINVAL);
-+	}
-+
-+	if (cc->clks[idx]) {
-+		cc->clks[idx]->attributes = attr;
-+		return &cc->clks[idx]->hw;
-+	}
-+
-+	return ERR_PTR(-ENOENT);
-+}
-+
-+static int q6afe_clock_dev_probe(struct platform_device *pdev)
-+{
-+	struct q6afe_cc *cc;
-+	struct device *dev = &pdev->dev;
-+	int i, ret;
-+
-+	cc = devm_kzalloc(dev, sizeof(*cc), GFP_KERNEL);
-+	if (!cc)
-+		return -ENOMEM;
-+
-+	cc->clks = &q6afe_clks[0];
-+	cc->num_clks = ARRAY_SIZE(q6afe_clks);
-+	for (i = 0; i < ARRAY_SIZE(q6afe_clks); i++) {
-+		if (!q6afe_clks[i])
-+			continue;
-+
-+		q6afe_clks[i]->dev = dev;
-+
-+		ret = devm_clk_hw_register(dev, &q6afe_clks[i]->hw);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	ret = of_clk_add_hw_provider(dev->of_node, q6afe_of_clk_hw_get, cc);
-+	if (ret)
-+		return ret;
-+
-+	dev_set_drvdata(dev, cc);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id q6afe_clock_device_id[] = {
-+	{ .compatible = "qcom,q6afe-clocks" },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, q6afe_clock_device_id);
-+
-+static struct platform_driver q6afe_clock_platform_driver = {
-+	.driver = {
-+		.name = "q6afe-clock",
-+		.of_match_table = of_match_ptr(q6afe_clock_device_id),
-+	},
-+	.probe = q6afe_clock_dev_probe,
-+};
-+module_platform_driver(q6afe_clock_platform_driver);
-+
-+MODULE_DESCRIPTION("Q6 Audio Frontend clock driver");
-+MODULE_LICENSE("GPL v2");
--- 
-2.21.0
+The difference is that the sysfs status and device_number is added even 
+without a driver probe and when there's no firmware description. sysfs 
+is currently only added after the driver probe, which wouldn't work for 
+the case Srinivas was trying to deal with.
 
+but the way you dealt the status below is better than the switch case I 
+used, so will merge this into my code.
+
+Srinivas' patch needs a fix for ACPI platforms, won't probe otherwise 
+since we don't have an of_node. If that's alright with everyone I can 
+submit a patchset that gathers the 3 contributions.
+
+> 
+> diff --git a/drivers/soundwire/sysfs_slave.c b/drivers/soundwire/sysfs_slave.c
+> index f510071b0add..3b2765f10024 100644
+> --- a/drivers/soundwire/sysfs_slave.c
+> +++ b/drivers/soundwire/sysfs_slave.c
+> @@ -97,8 +97,27 @@ static ssize_t modalias_show(struct device *dev,
+>   }
+>   static DEVICE_ATTR_RO(modalias);
+>   
+> +#define SDW_SLAVE_MAX (SDW_SLAVE_RESERVED + 1)
+> +
+> +static const char *const slave_status[SDW_SLAVE_MAX] = {
+> +	[SDW_SLAVE_UNATTACHED] =  "UNATTACHED",
+> +	[SDW_SLAVE_ATTACHED] = "Attached",
+> +	[SDW_SLAVE_ALERT] = "Alert",
+> +	[SDW_SLAVE_RESERVED] = "Reserved",
+> +};
+> +
+> +static ssize_t status_show(struct device *dev,
+> +			   struct device_attribute *attr, char *buf)
+> +{
+> +	struct sdw_slave *slave = dev_to_sdw_dev(dev);
+> +
+> +	return sprintf(buf, "%s\n", slave_status[slave->status]);
+> +}
+> +static DEVICE_ATTR_RO(status);
+> +
+>   static struct attribute *slave_attrs[] = {
+>   	&dev_attr_modalias.attr,
+> +	&dev_attr_status.attr,
+>   	NULL,
+>   };
+>   ATTRIBUTE_GROUPS(slave);
+> 
