@@ -2,74 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1879D263E12
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 09:09:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6B8D263DFE
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 09:06:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730377AbgIJHIj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 03:08:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35886 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730184AbgIJHD3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 03:03:29 -0400
-Received: from coco.lan (ip5f5ad5ac.dynamic.kabel-deutschland.de [95.90.213.172])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BC05020732;
-        Thu, 10 Sep 2020 07:03:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599721408;
-        bh=GHwpOYNmP2VBs3IsWSoD/Y47FY59xH8qEK8oIuyUzS4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=hRhDEOC5550ziCYEAcuP4EshnVG6QqVh9PKQniInln2swjwtInL7b3QkvvMqBTIL1
-         flXt8lSPfCUUMsuzAVg8ShS5+kcG+6q4dGQF2gdwR5lOO0zqJxJIrF9Se4IFq3Yxxj
-         O1q4S+RAHhbz3yTIACpn+9+ZjsuS+yfCoaanbxl8=
-Date:   Thu, 10 Sep 2020 09:03:25 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     YueHaibing <yuehaibing@huawei.com>
-Cc:     <gregkh@linuxfoundation.org>, <devel@driverdev.osuosl.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH -next] staging: regulator: hi6421v600-regulator: Remove
- unused including <linux/version.h>
-Message-ID: <20200910090325.133061db@coco.lan>
-In-Reply-To: <20200910061756.40864-1-yuehaibing@huawei.com>
-References: <20200910061756.40864-1-yuehaibing@huawei.com>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1730436AbgIJHGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 03:06:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42918 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730178AbgIJHDp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 03:03:45 -0400
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B32D2C061795
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 00:03:44 -0700 (PDT)
+Received: by mail-qt1-x849.google.com with SMTP id j19so3478017qtp.19
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 00:03:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=W2nrS/kBK4lWw8uYN1BB5WUGx+sqFHBHeS5Oy6sIX6M=;
+        b=ecV7GTgPDsG/kApsANDQzCfbg0cEbu4YIiSd36Fb/L+RAwrNpvp/FUFv/nBGuALrML
+         pJRzm0dq75dEmTd0SdXVvQC6D1BeKD2mcUuQhJQjWXX7OJKSrRJ3qMBdCbNVTIRPXotv
+         vfTA6wz65eudtK2ZmK0w78GFHF05VRyUE/YIEjgBXUVK2aD7YooMd3U0tgjzXetoSLhq
+         IdSN+uK8VTaxz2keWnRS6y3jNhlRkR7YnxhzbZocEAaqTtAuNjHa5yQBG2wWFbpEPeCW
+         2OLZmM9N0cXkodbwtwpwxmG9DtcYVY9J8vzszCBKAeFO1zVSB+6jHYq2YYs0SPxcbw4B
+         olnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=W2nrS/kBK4lWw8uYN1BB5WUGx+sqFHBHeS5Oy6sIX6M=;
+        b=UYXRyVURAkwtPG81Keh/yz9wLgPKmSFP53i/xM7s1Otb8RVgYODVWXOg+CIk4hgQxa
+         PAcGLM/yYF84Oc5XTAn9mL1W++lEizMtQUV8va/ljJcbyEC3fZuZn3rqCTKTMqZ4QlWt
+         Mar/6oTaeHNASxIW3KpxJWJcDM8PtCapWiZKZNqa8UERSGV35GhhaCCzCwU36ySM0m4G
+         SvlayB1MOJrX+C8b4kKl9UUJ6UZvl62AoxOviZ9TwqnogRmJGdtU3E1pjpX7QGXvlMtJ
+         ddDcG0JBSRb2b3l+Yh8rSym705GfzJfmSYwRXVPbo0GGLR6BtQveAMwEBPo2Nh4Eaoym
+         h4gQ==
+X-Gm-Message-State: AOAM530gZU6YWIBA7Lc+jheBMmdBNFWLRLCwF5pUQmJGFSRt+GKvtgpY
+        8JvB85Q8dLfRDluAIpK4Xs9r1TZeqG4bJw==
+X-Google-Smtp-Source: ABdhPJzXpkB2ckKT5eUysvFRDlrYdivhKP1T1o74kG0EOhhSSnmL7Z3PI7l2Fxsys3P2CKihUDCs2QOYTTDF7Q==
+X-Received: from spirogrip.svl.corp.google.com ([2620:15c:2cb:201:42a8:f0ff:fe4d:3548])
+ (user=davidgow job=sendgmr) by 2002:ad4:5a53:: with SMTP id
+ ej19mr7590337qvb.54.1599721423196; Thu, 10 Sep 2020 00:03:43 -0700 (PDT)
+Date:   Thu, 10 Sep 2020 00:03:26 -0700
+In-Reply-To: <20200910070331.3358048-1-davidgow@google.com>
+Message-Id: <20200910070331.3358048-2-davidgow@google.com>
+Mime-Version: 1.0
+References: <20200910070331.3358048-1-davidgow@google.com>
+X-Mailer: git-send-email 2.28.0.526.ge36021eeef-goog
+Subject: [PATCH v13 1/5] Add KUnit Struct to Current Task
+From:   David Gow <davidgow@google.com>
+To:     trishalfonso@google.com, brendanhiggins@google.com,
+        aryabinin@virtuozzo.com, dvyukov@google.com, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, andreyknvl@google.com,
+        shuah@kernel.org, akpm@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
+        linux-mm@kvack.org, David Gow <davidgow@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, 10 Sep 2020 14:17:56 +0800
-YueHaibing <yuehaibing@huawei.com> escreveu:
+From: Patricia Alfonso <trishalfonso@google.com>
 
-> Remove including <linux/version.h> that don't need it.
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+In order to integrate debugging tools like KASAN into the KUnit
+framework, add KUnit struct to the current task to keep track of the
+current KUnit test.
 
-Reviewed-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Patricia Alfonso <trishalfonso@google.com>
+Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+Tested-by: Andrey Konovalov <andreyknvl@google.com>
+Signed-off-by: David Gow <davidgow@google.com>
+---
+ include/linux/sched.h | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-> ---
->  drivers/staging/hikey9xx/hi6421v600-regulator.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/staging/hikey9xx/hi6421v600-regulator.c b/drivers/staging/hikey9xx/hi6421v600-regulator.c
-> index 82635ff54a74..614b03c9ddfb 100644
-> --- a/drivers/staging/hikey9xx/hi6421v600-regulator.c
-> +++ b/drivers/staging/hikey9xx/hi6421v600-regulator.c
-> @@ -36,7 +36,6 @@
->  #include <linux/spmi.h>
->  #include <linux/time.h>
->  #include <linux/uaccess.h>
-> -#include <linux/version.h>
->  
->  #define rdev_dbg(rdev, fmt, arg...)	\
->  		 pr_debug("%s: %s: " fmt, (rdev)->desc->name, __func__, ##arg)
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index afe01e232935..9df9416c5a40 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -1203,6 +1203,10 @@ struct task_struct {
+ #endif
+ #endif
+ 
++#if IS_ENABLED(CONFIG_KUNIT)
++	struct kunit			*kunit_test;
++#endif
++
+ #ifdef CONFIG_FUNCTION_GRAPH_TRACER
+ 	/* Index of current stored address in ret_stack: */
+ 	int				curr_ret_stack;
+-- 
+2.28.0.526.ge36021eeef-goog
 
-
-
-Thanks,
-Mauro
