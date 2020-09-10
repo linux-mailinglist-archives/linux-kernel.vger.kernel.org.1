@@ -2,95 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71A05264D85
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 20:44:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F8FF264D7B
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 20:43:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725804AbgIJSoI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 14:44:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35414 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725933AbgIJSRv (ORCPT
+        id S1727771AbgIJSnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 14:43:25 -0400
+Received: from mail-il1-f196.google.com ([209.85.166.196]:44285 "EHLO
+        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726415AbgIJSSD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 14:17:51 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38AEAC061573
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 11:17:34 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id k15so5084504pfc.12
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 11:17:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DtLKtH7cWRrM3fBgblOeHcZmUDs1Wpod83D+Qi8K1cc=;
-        b=QiJNnp9n6c1hPuSVLuFhpjOR4+ZpNWRatUSshd6auMBfdw4ViobGDo1sLp8WptM+cr
-         WzZ9S8RWNEJwaO9biXJJrXzZKrPD7/t8BroZ8/UqwcRk7x7UzOY5o5uG1GPrOILcHVF/
-         sxqlovkq+EUePECSFJ8hAQxubuFE9VBRx1m8cNWkmk01F3S4bDCxA5HOU12fr/D+FZtM
-         zNclSwXRg8HFwdlqmrzcSakRfrcUqv5VlzrlucdOuNku1VjFt5BNAInX4Lz24qUFd6Rb
-         qgeoK+b4jxLXFXn1swOnaBleoO4cOdN6pK/11zb2yFXKBdxlhSbf49UCOUR2O/CRm912
-         Wj3A==
+        Thu, 10 Sep 2020 14:18:03 -0400
+Received: by mail-il1-f196.google.com with SMTP id h11so6563235ilj.11;
+        Thu, 10 Sep 2020 11:18:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DtLKtH7cWRrM3fBgblOeHcZmUDs1Wpod83D+Qi8K1cc=;
-        b=XYTX8WZH5WB1di1wH+LMI/GWByZ4kOZ11xz2f1SBRQJ5qpysjilmqthA0woXnqySjz
-         fQS/8zCj3lRlH8ibIu5gpUpV1pF5aBgIjZzAWAPi0oACTvqipHQcb1g2jIF2vcli/19A
-         TaZhEi849QoLhxpC+A/rlBH5xksOM25xB5FwfF+uDQO5Bz1AB0uqaVR3VbAnmENRttyG
-         EjDvCaTaZEARYsS87V+vSziSfAIvjXO8lzSAhlS5PKcigDvZ4jPQQj+gTFWeacAJX2/R
-         CDLaC/LQ868rHpDB4NrzMvxkaldAvYaiY+osMqHpJYTmECetpmOPrlaGTOqqzVfbjSMV
-         M6sw==
-X-Gm-Message-State: AOAM530pM7YmjMRRwpeHWswp9sa3VAnadFdbBCEduH9afpI+gOVWU2h3
-        mn53TdR9CxzqEybx65j5qS0DsjK56zIy3apECasYkQ==
-X-Google-Smtp-Source: ABdhPJxEKiKH222RavCG1MjIuH2RIPD8diBxo187fBd0IF7zvgXujERcwklhJn5QVzlBDwMXk82VeIgbOz+PuiM8csA=
-X-Received: by 2002:a17:902:988f:: with SMTP id s15mr6555650plp.26.1599761853442;
- Thu, 10 Sep 2020 11:17:33 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Km+ilfssoEe+/1p9cVPzW4JFS2R1ND0MVv0bL/RJ3KA=;
+        b=Don4oH6oAOp/tlgJeGwCZCUutAuJsFfgbSasUuh9WPrbrCCB82IrespXJVuevda8F9
+         DuaZcM5dQEZWvNFifMHL/NK3QGQUxr67bjCejHvUz85ouPpeUb4TndyZL3pU0zZtcIbN
+         FpvPszLWPHgQCoZGWm131wEUpf+TNgPtF3+kPfcD1cPJ8l6cg/2bnOPC/mBWmP4I4MB2
+         zdq68V24U6Yk7VEHwTutp9ljmS9dAhHGvagYmsrG4y7g3mIA5B8/t1iCnSO/rKX4KMSv
+         HE3t/uZoixcSEpVzhETfPFrkparvXUKRvEhtRkJuX5DdgjpGWc1fVSeLIDlBOiLjOYUs
+         N1MA==
+X-Gm-Message-State: AOAM531tgbCFurahPzoI7wlHrjE416ifkW4UJf8X7WZBzQe3f7DFEri2
+        J1PQZhZuV0TI6zZj/mNZ3w==
+X-Google-Smtp-Source: ABdhPJy+jchPNAOwGP+KNIMYqdpVqnrsL4xX8ntPRCH549LF5iQzWhwqkjz2WczcZQva+Hj27kd1qg==
+X-Received: by 2002:a92:9186:: with SMTP id e6mr8300661ill.278.1599761882138;
+        Thu, 10 Sep 2020 11:18:02 -0700 (PDT)
+Received: from xps15 ([64.188.179.251])
+        by smtp.gmail.com with ESMTPSA id y10sm3147009ioy.25.2020.09.10.11.17.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Sep 2020 11:18:01 -0700 (PDT)
+Received: (nullmailer pid 622379 invoked by uid 1000);
+        Thu, 10 Sep 2020 18:17:56 -0000
+Date:   Thu, 10 Sep 2020 12:17:56 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Zhiqiang Hou <Zhiqiang.Hou@nxp.com>
+Cc:     bhelgaas@google.com, shawnguo@kernel.org, minghuan.Lian@nxp.com,
+        leoyang.li@nxp.com, linuxppc-dev@lists.ozlabs.org,
+        robh+dt@kernel.org, linux-arm-kernel@lists.infradead.org,
+        roy.zang@nxp.com, andrew.murray@arm.com, linux-pci@vger.kernel.org,
+        lorenzo.pieralisi@arm.com, gustavo.pimentel@synopsys.com,
+        mingkai.hu@nxp.com, linux-kernel@vger.kernel.org,
+        jingoohan1@gmail.com, kishon@ti.com, devicetree@vger.kernel.org
+Subject: Re: [PATCHv7 12/12] misc: pci_endpoint_test: Add driver data for
+ Layerscape PCIe controllers
+Message-ID: <20200910181756.GA622331@bogus>
+References: <20200811095441.7636-1-Zhiqiang.Hou@nxp.com>
+ <20200811095441.7636-13-Zhiqiang.Hou@nxp.com>
 MIME-Version: 1.0
-References: <20200910070331.3358048-1-davidgow@google.com>
-In-Reply-To: <20200910070331.3358048-1-davidgow@google.com>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Thu, 10 Sep 2020 20:17:22 +0200
-Message-ID: <CAAeHK+z1qMgg042rii5kNuDR1UeC9JzhXYMT=pSHnHQtoFFKew@mail.gmail.com>
-Subject: Re: [PATCH v13 0/5] KASAN-KUnit Integration
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Cc:     Patricia Alfonso <trishalfonso@google.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Shuah Khan <shuah@kernel.org>, David Gow <davidgow@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200811095441.7636-13-Zhiqiang.Hou@nxp.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 9:03 AM David Gow <davidgow@google.com> wrote:
->
-> This patchset contains everything needed to integrate KASAN and KUnit.
->
-> KUnit will be able to:
-> (1) Fail tests when an unexpected KASAN error occurs
-> (2) Pass tests when an expected KASAN error occurs
->
-> Convert KASAN tests to KUnit with the exception of copy_user_test
-> because KUnit is unable to test those.
->
-> Add documentation on how to run the KASAN tests with KUnit and what to
-> expect when running these tests.
->
-> The dependencies for this patchset are all present in 5.9-rc1+.
+On Tue, 11 Aug 2020 17:54:41 +0800, Zhiqiang Hou wrote:
+> From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+> 
+> The commit 0a121f9bc3f5 ("misc: pci_endpoint_test: Use streaming DMA
+> APIs for buffer allocation") changed to use streaming DMA APIs, however,
+> dma_map_single() might not return a 4KB aligned address, so add the
+> default_data as driver data for Layerscape PCIe controllers to make it
+> 4KB aligned.
+> 
+> Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+> ---
+> V7:
+>  - New patch.
+> 
+>  drivers/misc/pci_endpoint_test.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+> 
 
-Hi Andrew,
-
-Could you consider taking this for 5.10?
-
-Thanks!
+Acked-by: Rob Herring <robh@kernel.org>
