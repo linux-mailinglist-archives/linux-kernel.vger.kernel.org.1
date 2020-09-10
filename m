@@ -2,86 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ABBC263EAA
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 09:24:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC411263EB7
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 09:27:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730252AbgIJHYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 03:24:04 -0400
-Received: from a27-21.smtp-out.us-west-2.amazonses.com ([54.240.27.21]:56620
-        "EHLO a27-21.smtp-out.us-west-2.amazonses.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726932AbgIJHXt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 03:23:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=zsmsymrwgfyinv5wlfyidntwsjeeldzt; d=codeaurora.org; t=1599722628;
-        h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:MIME-Version:Content-Type;
-        bh=rBdxxxmDhpAfoIEEJUGR//NUhzr+yOlKNMkan6WiZag=;
-        b=lbyYS0wk/dHrFob5sp7wdBNFi4vJDZ3U9lS+2uy97YWB+67lAxh0yXm8erl3vl5/
-        5/1GOmhg7qIwssMnW3+RHRXN9y73gTJg6EXENk948hXx1tgbr8ZBmJHy5vIl4p+NRCj
-        Klf/QaQQALWa15SBFPuUSNZhvOACOp4hUBgkj1+I=
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=hsbnp7p3ensaochzwyq5wwmceodymuwv; d=amazonses.com; t=1599722628;
-        h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:MIME-Version:Content-Type:Feedback-ID;
-        bh=rBdxxxmDhpAfoIEEJUGR//NUhzr+yOlKNMkan6WiZag=;
-        b=kohVCh69KUJKCNnZg7wun4zs2vdhkIYo7pnnQRsGx4+K+q9o/83XNzWjCaCyJ+Y4
-        eRnbUBdUlnORvpVIsX3W6ZwW+RhwX4hbuh2NIaY2Dk2IdsBkt62vIgdGY0/Yu7G5+0X
-        6e1z0vgvFK93my6KweLBOqKz7RYEh7Ge7+y4aKfA=
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org F09E4C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ath11k@lists.infradead.org
-Subject: Re: linux-next: Tree for Sep 9 (ath11k)
-References: <20200909202624.2cc6c3d1@canb.auug.org.au>
-        <3f8649d7-c64a-4b0a-a2db-69f1b11e31e5@infradead.org>
-        <0101017476bd06e1-16ca4de8-647e-4423-9630-753fb5675e8b-000000@us-west-2.amazonses.com>
-Date:   Thu, 10 Sep 2020 07:23:48 +0000
-In-Reply-To: <0101017476bd06e1-16ca4de8-647e-4423-9630-753fb5675e8b-000000@us-west-2.amazonses.com>
-        (Kalle Valo's message of "Thu, 10 Sep 2020 06:38:53 +0000")
-Message-ID: <0101017476e62656-22a95a04-af3b-4d23-b454-70e8a6d8a45c-000000@us-west-2.amazonses.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        id S1730025AbgIJH1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 03:27:44 -0400
+Received: from mga12.intel.com ([192.55.52.136]:5784 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726746AbgIJH1m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 03:27:42 -0400
+IronPort-SDR: /5d06dtqMTRY7lzQF5tuf4rGO9rWV19sXXnxea+WnfwuVZaz1kvbuZNKHiaxmZOdh7gm9hqn7I
+ zqxB6vAviJeQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9739"; a="138002032"
+X-IronPort-AV: E=Sophos;i="5.76,412,1592895600"; 
+   d="scan'208";a="138002032"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2020 00:26:09 -0700
+IronPort-SDR: IuROGYMsnJyCthmZ52YfiKeT6z1c0bLlhrO5j9eYWcfQ6dc22mFu4mnQLj+rMrjb/U/ZfAD7w+
+ VbAIrvI8i++Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,412,1592895600"; 
+   d="scan'208";a="407683701"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga001.fm.intel.com with ESMTP; 10 Sep 2020 00:26:09 -0700
+Received: from [10.215.160.12] (rtanwar-MOBL.gar.corp.intel.com [10.215.160.12])
+        by linux.intel.com (Postfix) with ESMTP id 261DA5807AD;
+        Thu, 10 Sep 2020 00:26:05 -0700 (PDT)
+Subject: Re: [PATCH 2/2] Add driver for Moortec MR75203 PVT controller
+To:     Andy Shevchenko <andriy.shevchenko@intel.com>
+Cc:     jdelvare@suse.com, linux@roeck-us.net, p.zabel@pengutronix.de,
+        linux-hwmon@vger.kernel.org, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        songjun.Wu@intel.com, cheol.yong.kim@intel.com,
+        qi-ming.wu@intel.com, rtanwar@maxlinear.com
+References: <cover.1599634208.git.rahul.tanwar@linux.intel.com>
+ <ecb6794a8f2ef6576421e6d5fbdf4e6a91f06b91.1599634208.git.rahul.tanwar@linux.intel.com>
+ <20200909103317.GL1891694@smile.fi.intel.com>
+From:   "Tanwar, Rahul" <rahul.tanwar@linux.intel.com>
+Message-ID: <41cf7b4d-2476-4d0e-0dae-f0200649d7dd@linux.intel.com>
+Date:   Thu, 10 Sep 2020 15:26:04 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-SES-Outgoing: 2020.09.10-54.240.27.21
-Feedback-ID: 1.us-west-2.CZuq2qbDmUIuT3qdvXlRHZZCpfZqZ4GtG9v3VKgRyF0=:AmazonSES
+In-Reply-To: <20200909103317.GL1891694@smile.fi.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kalle Valo <kvalo@codeaurora.org> writes:
 
-> Randy Dunlap <rdunlap@infradead.org> writes:
+Hi Andy,
+
+Thanks for the review & feedback.
+
+On 9/9/2020 6:33 pm, Andy Shevchenko wrote:
+> On Wed, Sep 09, 2020 at 02:52:05PM +0800, Rahul Tanwar wrote:
+>> PVT controller (MR75203) is used to configure & control
+>> Moortec embedded analog IP which contains temprature
+>> sensor(TS), voltage monitor(VM) & process detector(PD)
+>> modules. Add driver to support MR75203 PVT controller.
+> ...
 >
->> On 9/9/20 3:26 AM, Stephen Rothwell wrote:
->>> Hi all,
->>> 
->>> Changes since 20200908:
->>> 
->>
->> on x86_64:
->>
->> ld: drivers/net/wireless/ath/ath11k/core.o: in function `ath11k_core_init':
->> core.c:(.text+0x121f): undefined reference to `rproc_get_by_phandle'
+>> +#include <linux/clk.h>
+>> +#include <linux/hwmon.h>
+>> +#include <linux/module.h>
+>> +#include <linux/mutex.h>
 >
-> This is because CONFIG_REMOTEPROC is not, I'll fix the dependency in
-> ath11k. Thanks for the report.
+>> +#include <linux/of.h>
+> I don't see anything special about OF here.
+> Perhaps
+> 	mod_devicetable.h
+> 	property.h
+> ?
 
-Patch sent:
+of.h is needed because of of_property_read_u8_array(). I will add
+mod_devicetable.h.
+property.h seems not required at all.
 
-ath11k: fix link error when CONFIG_REMOTEPROC is disabled
+>> +#include <linux/platform_device.h>
+>> +#include <linux/regmap.h>
+>> +#include <linux/reset.h>
+> ...
+>
+>> +#define PVT_POLL_TIMEOUT	20000
+> Units?
 
-https://patchwork.kernel.org/patch/11766849/
+Well noted.
 
--- 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+> ...
+>
+>> +	sys_freq = clk_get_rate(pvt->clk) / 1000000;
+> HZ_PER_MHZ ?
+
+Well noted.
+
+>> +	while (high >= low) {
+>> +		middle = DIV_ROUND_CLOSEST(low + high, 2);
+> I'm wondering would it be better in the code like
+>
+> 	middle = (low + high + 1) / 2;
+
+Will update.
+
+>> +		key = DIV_ROUND_CLOSEST(sys_freq, middle);
+>> +		if (key > 514) {
+>> +			low = middle + 1;
+>> +			continue;
+>> +		} else if (key < 2) {
+>> +			high = middle - 1;
+>> +			continue;
+>> +		}
+>> +
+>> +		break;
+>> +	}
+>> +
+>> +	key = clamp_val(key, 2, 514) - 2;
+> I guess above deserves a comment with formulas.
+
+Hmm..I will try to add some more info. Problem is that the datasheet doesn't
+explain it clearly.
+
+> ...
+>
+>> +		regmap_write(p_map, SDIF_DISABLE, GENMASK(p_num - 1, 0));
+> For non-constants better would be BIT(p_num) - 1.
+
+Well noted.
+
+> ...
+>
+>> +		regmap_write(v_map, SDIF_SMPL_CTRL, 0x0);
+>> +		regmap_write(v_map, SDIF_HALT, 0x0);
+>> +		regmap_write(v_map, SDIF_DISABLE, 0);
+> In some you have 0, in some 0x0 over the file, can it be consistent?
+
+Yes, missed that, will update.
+
+> ...
+>
+>> +static struct regmap_config pvt_regmap_config = {
+>> +	.reg_bits = 32,
+>> +	.reg_stride = 4,
+>> +	.val_bits = 32,
+> How do you use regmap's lock?
+
+We mutex lock whenever read temperature or voltage values from the registers.
+All non-probe/non-init paths. We do not override regmap's internal lock.
+
+>> +};
+> ...
+>
+>> +static int pvt_get_regmap(struct platform_device *pdev, char *reg_name)
+>> +{
+>> +	struct device *dev = &pdev->dev;
+>> +	struct pvt_device *pvt = platform_get_drvdata(pdev);
+> Can it be first line in definition block?
+
+Well noted.
+
+>> +	struct regmap **reg_map;
+>> +	void __iomem *io_base;
+>> +	struct resource *res;
+>> +
+>> +	if (!strcmp(reg_name, "common"))
+>> +		reg_map = &pvt->c_map;
+>> +	else if (!strcmp(reg_name, "ts"))
+>> +		reg_map = &pvt->t_map;
+>> +	else if (!strcmp(reg_name, "pd"))
+>> +		reg_map = &pvt->p_map;
+>> +	else if (!strcmp(reg_name, "vm"))
+>> +		reg_map = &pvt->v_map;
+>> +	else
+>> +		return -EINVAL;
+>> +
+>> +	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, reg_name);
+>> +	io_base = devm_ioremap_resource(dev, res);
+> 	io_base = devm_platform_ioremap_resource_by_name(pdev, reg_name);
+>
+> ?
+
+Well noted.
+
+>> +	if (IS_ERR(io_base))
+>> +		return PTR_ERR(io_base);
+>> +
+>> +	pvt_regmap_config.name = reg_name;
+> Hmm... regmap API keeps it in devres. Why is there a copy?
+
+Just populating the name in regmap config because of multiple register
+regions.. 
+
+>> +	*reg_map = devm_regmap_init_mmio(dev, io_base, &pvt_regmap_config);
+>> +	if (IS_ERR(*reg_map)) {
+>> +		dev_err(dev, "failed to init register map\n");
+>> +		return PTR_ERR(*reg_map);
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+> ...
+>
+>> +		for (i = 0; i < num; i++)
+>> +			in_config[i] = HWMON_I_INPUT;
+> memset32() ?
+>
+
+Well noted. Thanks.
+
+Regards,
+Rahul
