@@ -2,171 +2,330 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46EC1263B57
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 05:23:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E73E5263B2A
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 05:03:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729971AbgIJDX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 23:23:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36720 "EHLO
+        id S1729717AbgIJDDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 23:03:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729413AbgIJDWc (ORCPT
+        with ESMTP id S1726642AbgIJDCe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 23:22:32 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48D1CC06136A
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 17:49:15 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id o16so2174315pjr.2
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 17:49:15 -0700 (PDT)
+        Wed, 9 Sep 2020 23:02:34 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59506C061756
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 20:02:34 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id g29so3476220pgl.2
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 20:02:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=xwN4Lh5cIbYb5K/fWg1B1RhUro5At/hehYhhAFZFYDY=;
-        b=IYpG+o8osL3jV0fGYCHqwt9RdRbRuqmWBfR4qyAuE0L6ojF4AIt2kUBpEYzxzgJk2J
-         w5ViSvufWqvaNmF17VeZMxnPIhtkxOoQKuaRHylOpBTnRM1PrsqCWy7m0qiKV698tzvM
-         zCtNtkzUdcdurd+IHQADspLB0VShaLjJNk14o=
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=7wmqHwuWgwCLEAmNKT7oSxTHKRbzHI6O9rQQYc3usEo=;
+        b=fMPFg4Kr2jeFE2wrK3v++wDHIN59L4QGJHxuwhzQjWgeT1YnsW9kg/SZZCawYfJbrr
+         nq//znYcQYKWPs89B0CPxwtVKk3iuAH1ZKEGsNHbei5bv9O0HresYf/sNXoecpnoieuY
+         oHXr2297U69poayAPPrRZjD3EDgh5pBnTySMzj6hNKeWw1uypH+gvLuc9eJzFWxpbsqA
+         HGIinAksy3Cs17xuyuYz19NLc60ow76F8KzElnfjqb7ChokJz1pUSERKxedcLEz6qW+A
+         hJhpQLZwM1flkuL2ywK4bGKgvSlDTExM1j3JJC7gFnPNW7AOzDxmacLrRGe5UhJxRfhD
+         crbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=xwN4Lh5cIbYb5K/fWg1B1RhUro5At/hehYhhAFZFYDY=;
-        b=NXSoiJXBLukOs2kaz0ayr8cPTnLuRxy5FMsjBi3NqIqMrmCYCmYPCb8J7zEUA9bvHQ
-         Ud6yZDSMUx9Ny+1L0zZFujesd7t2zHwdYbT9OY9s9C2qu7RS5tQhGiMcqkmKtRCDxzfC
-         lE/e8576Gj7kpndx72t3pepwTwzb4sOAMFuVAPe5+w7m4bDLk2O9ul44Yn3n48+63JsV
-         3sqMRINzgr0GnZdmairAxxl7thNbUFBocafxclM6oOytPL+QRmXVv74XcN+KkjVZNNU+
-         U9HT+5e8yxhJntlIDflSxPAvtzGoPUKI32xNX/+Xo7FuFDfn796ZDVG58qpX5zNGHtdL
-         CL3Q==
-X-Gm-Message-State: AOAM532+gcM6EIuSh0P6NmNtcRvUOzosRENtPel9ZpaFiKjn9LMHXS0C
-        7/atbfIcgycloOtLWuDV7Uv4pA==
-X-Google-Smtp-Source: ABdhPJzGfJrijyfmzqoXN5IwnenXE95DhQ2QdA9WqdBgyxT76NbFyCxjrbB9Gnby5SlF39MaiwihCg==
-X-Received: by 2002:a17:90a:e98d:: with SMTP id v13mr2893452pjy.79.1599698954869;
-        Wed, 09 Sep 2020 17:49:14 -0700 (PDT)
-Received: from smtp.gmail.com ([2620:15c:202:1:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id c7sm3899050pfj.100.2020.09.09.17.49.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Sep 2020 17:49:14 -0700 (PDT)
-From:   Stephen Boyd <swboyd@chromium.org>
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Jeykumar Sankaran <jsanka@codeaurora.org>,
-        Chandan Uddaraju <chandanu@codeaurora.org>,
-        Vara Reddy <varar@codeaurora.org>,
-        Tanmay Shah <tanmay@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Manu Gautam <mgautam@codeaurora.org>,
-        Sandeep Maheswaram <sanm@codeaurora.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Sean Paul <seanpaul@chromium.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Rob Clark <robdclark@chromium.org>
-Subject: [PATCH v3 09/10] clk: qcom: dispcc: Update DP clk ops for phy design
-Date:   Wed,  9 Sep 2020 17:49:01 -0700
-Message-Id: <20200910004902.2252694-10-swboyd@chromium.org>
-X-Mailer: git-send-email 2.28.0.526.ge36021eeef-goog
-In-Reply-To: <20200910004902.2252694-1-swboyd@chromium.org>
-References: <20200910004902.2252694-1-swboyd@chromium.org>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=7wmqHwuWgwCLEAmNKT7oSxTHKRbzHI6O9rQQYc3usEo=;
+        b=etbv1vwA2bgK/XGTWE6ehhAJAeRjphNsY0wu95Fik9svEd/T6AE4w0eLUW4rYjJj6t
+         R3tWZ4mnArCUlRHI29Xydf0yRm7Txv+gkW/FOMjSEv0bDIaZndlF1KmMJw4D4I42Xmem
+         VOLZwIDkp79P7/RYdQpSHA4keOfRhxQ1bADONGvzifoAHJwxkmcdsREx1wfaxukfegWT
+         +yGlynWBSY/b8Ly24znvbQC+nBUw20S6YwUpahwFxLPAzthm+oa5y/56XCj/ArUEsb5t
+         /UQ17IZjTfgSaivsC+7Pr4SG6+b3keHTabIcGtks/PoAD3SSMYMkGjsrzK1vu1M2/2c1
+         Gs+w==
+X-Gm-Message-State: AOAM533DQO9MtPAGesf1RyC+rVlmn6XOw+3Goa0g/TleA1bFaT/iH288
+        kX1wM1uzx2WNfqMg9B/yynwl
+X-Google-Smtp-Source: ABdhPJx8ZkjTltlGvVabpDziR1G6W5Pmxbe646gRwG34I21NsnRHyT8DP1bEDugQCF4yAoAnSPCmiQ==
+X-Received: by 2002:a63:5043:: with SMTP id q3mr2752250pgl.293.1599706953368;
+        Wed, 09 Sep 2020 20:02:33 -0700 (PDT)
+Received: from mani ([103.59.133.81])
+        by smtp.gmail.com with ESMTPSA id i1sm4087390pfk.21.2020.09.09.20.02.30
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 09 Sep 2020 20:02:32 -0700 (PDT)
+Date:   Thu, 10 Sep 2020 08:32:25 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+Cc:     Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
+        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-actions@lists.infradead.org
+Subject: Re: [PATCH v2 1/1] i2c: busses: Add support for atomic transfers in
+ Actions Semi Owl driver
+Message-ID: <20200910030225.GA10495@mani>
+References: <b6c56858854805b0f03e29b7dde40b20796d5c93.1599561278.git.cristian.ciocaltea@gmail.com>
+ <20200909151748.GA11397@mani>
+ <20200909165915.GA387239@BV030612LT>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200909165915.GA387239@BV030612LT>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The clk_rcg2_dp_determine_rate() function is used for the DP pixel clk.
-This function should return the rate that can be achieved by the pixel
-clk in 'struct clk_rate_request::rate' and match the logic similar to
-what is seen in clk_rcg2_dp_set_rate(). But that isn't the case. Instead
-the code merely bubbles the rate request up to the parent of the pixel
-clk and doesn't try to do a rational approximation of the rate that
-would be achieved by picking some m/n value for the RCG.
+On 0909, Cristian Ciocaltea wrote:
+> Hi Mani,
+> 
+> Thanks for the review!
+> 
+> On Wed, Sep 09, 2020 at 08:47:48PM +0530, Manivannan Sadhasivam wrote:
+> > Hi Cristi,
+> > 
+> > On 0908, Cristian Ciocaltea wrote:
+> > > Atomic transfers are required to properly power off a machine through
+> > > an I2C controlled PMIC, such as the Actions Semi ATC260x series.
+> > > 
+> > > System shutdown may happen with interrupts being disabled and, as a
+> > > consequence, the kernel may hang if the driver does not support atomic
+> > > transfers.
+> > > 
+> > > This functionality is essentially implemented by polling the FIFO
+> > > Status register until either Command Execute Completed or NACK Error
+> > > bits are set.
+> > > 
+> > 
+> > Thanks for the patch! I just have couple of minor comments and other
+> > than that it looks good to me.
+> > 
+> > > Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+> > > ---
+> > > Changes in v2:
+> > >  - Dropped unused return codes from owl_i2c_xfer_data(), per Mani's review
+> > >  - Rebased patch on v5.9-rc4
+> > > 
+> > >  drivers/i2c/busses/i2c-owl.c | 78 ++++++++++++++++++++++++++----------
+> > >  1 file changed, 57 insertions(+), 21 deletions(-)
+> > > 
+> > > diff --git a/drivers/i2c/busses/i2c-owl.c b/drivers/i2c/busses/i2c-owl.c
+> > > index 672f1f239bd6..29605257831f 100644
+> > > --- a/drivers/i2c/busses/i2c-owl.c
+> > > +++ b/drivers/i2c/busses/i2c-owl.c
+> > > @@ -14,6 +14,7 @@
+> > >  #include <linux/i2c.h>
+> > >  #include <linux/interrupt.h>
+> > >  #include <linux/io.h>
+> > > +#include <linux/iopoll.h>
+> > >  #include <linux/module.h>
+> > >  #include <linux/of_device.h>
+> > >  
+> > > @@ -76,6 +77,7 @@
+> > >  #define OWL_I2C_FIFOCTL_TFR	BIT(2)
+> > >  
+> > >  /* I2Cc_FIFOSTAT Bit Mask */
+> > > +#define OWL_I2C_FIFOSTAT_CECB	BIT(0)
+> > >  #define OWL_I2C_FIFOSTAT_RNB	BIT(1)
+> > >  #define OWL_I2C_FIFOSTAT_RFE	BIT(2)
+> > >  #define OWL_I2C_FIFOSTAT_TFF	BIT(5)
+> > > @@ -83,7 +85,8 @@
+> > >  #define OWL_I2C_FIFOSTAT_RFD	GENMASK(15, 8)
+> > >  
+> > >  /* I2C bus timeout */
+> > > -#define OWL_I2C_TIMEOUT		msecs_to_jiffies(4 * 1000)
+> > > +#define OWL_I2C_TIMEOUT_MS	(4 * 1000)
+> > > +#define OWL_I2C_TIMEOUT		msecs_to_jiffies(OWL_I2C_TIMEOUT_MS)
+> > >  
+> > >  #define OWL_I2C_MAX_RETRIES	50
+> > >  
+> > > @@ -161,29 +164,25 @@ static void owl_i2c_set_freq(struct owl_i2c_dev *i2c_dev)
+> > >  	writel(OWL_I2C_DIV_FACTOR(val), i2c_dev->base + OWL_I2C_REG_CLKDIV);
+> > >  }
+> > >  
+> > > -static irqreturn_t owl_i2c_interrupt(int irq, void *_dev)
+> > > +static void owl_i2c_xfer_data(struct owl_i2c_dev *i2c_dev)
+> > >  {
+> > > -	struct owl_i2c_dev *i2c_dev = _dev;
+> > >  	struct i2c_msg *msg = i2c_dev->msg;
+> > > -	unsigned long flags;
+> > >  	unsigned int stat, fifostat;
+> > >  
+> > > -	spin_lock_irqsave(&i2c_dev->lock, flags);
+> > > -
+> > >  	i2c_dev->err = 0;
+> > >  
+> > >  	/* Handle NACK from slave */
+> > >  	fifostat = readl(i2c_dev->base + OWL_I2C_REG_FIFOSTAT);
+> > >  	if (fifostat & OWL_I2C_FIFOSTAT_RNB) {
+> > >  		i2c_dev->err = -ENXIO;
+> > > -		goto stop;
+> > > +		return;
+> > >  	}
+> > >  
+> > >  	/* Handle bus error */
+> > >  	stat = readl(i2c_dev->base + OWL_I2C_REG_STAT);
+> > >  	if (stat & OWL_I2C_STAT_BEB) {
+> > >  		i2c_dev->err = -EIO;
+> > > -		goto stop;
+> > > +		return;
+> > >  	}
+> > >  
+> > >  	/* Handle FIFO read */
+> > > @@ -196,18 +195,28 @@ static irqreturn_t owl_i2c_interrupt(int irq, void *_dev)
+> > >  	} else {
+> > >  		/* Handle the remaining bytes which were not sent */
+> > >  		while (!(readl(i2c_dev->base + OWL_I2C_REG_FIFOSTAT) &
+> > > -			 OWL_I2C_FIFOSTAT_TFF) && i2c_dev->msg_ptr < msg->len) {
+> > > +			OWL_I2C_FIFOSTAT_TFF) && i2c_dev->msg_ptr < msg->len) {
+> > 
+> > Spurious change?
+> 
+> I have just fixed a small indentation issue (removed extra space char
+> in front of OWL_I2C...). I will revert it if you think it's not the right
+> context for doing this (located ~10 lines bellow the previous edit).
+> 
 
-Let's change this logic so that we can assume the parent clk frequency
-is fixed (it is because it's the VCO of the DP PLL that is configured
-based on the link rate) and so that we can calculate what the m/n value
-will be and adjust the req->rate appropriately.
+The extra space was there to align with the starting of 'readl', so please keep
+it as it is.
 
-Cc: Jeykumar Sankaran <jsanka@codeaurora.org>
-Cc: Chandan Uddaraju <chandanu@codeaurora.org>
-Cc: Vara Reddy <varar@codeaurora.org>
-Cc: Tanmay Shah <tanmay@codeaurora.org>
-Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc: Manu Gautam <mgautam@codeaurora.org>
-Cc: Sandeep Maheswaram <sanm@codeaurora.org>
-Cc: Douglas Anderson <dianders@chromium.org>
-Cc: Sean Paul <seanpaul@chromium.org>
-Cc: Stephen Boyd <sboyd@kernel.org>
-Cc: Jonathan Marek <jonathan@marek.ca>
-Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: Rob Clark <robdclark@chromium.org>
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
----
- drivers/clk/qcom/clk-rcg2.c      | 19 +++++++++++++------
- drivers/clk/qcom/dispcc-sc7180.c |  3 ---
- 2 files changed, 13 insertions(+), 9 deletions(-)
+> > >  			writel(msg->buf[i2c_dev->msg_ptr++],
+> > >  			       i2c_dev->base + OWL_I2C_REG_TXDAT);
+> > >  		}
+> > >  	}
+> > > +}
+> > > +
+> > > +static irqreturn_t owl_i2c_interrupt(int irq, void *_dev)
+> > > +{
+> > > +	struct owl_i2c_dev *i2c_dev = _dev;
+> > > +	unsigned long flags;
+> > > +
+> > > +	spin_lock_irqsave(&i2c_dev->lock, flags);
+> > > +
+> > > +	owl_i2c_xfer_data(i2c_dev);
+> > >  
+> > > -stop:
+> > >  	/* Clear pending interrupts */
+> > >  	owl_i2c_update_reg(i2c_dev->base + OWL_I2C_REG_STAT,
+> > >  			   OWL_I2C_STAT_IRQP, true);
+> > >  
+> > >  	complete_all(&i2c_dev->msg_complete);
+> > > +
+> > >  	spin_unlock_irqrestore(&i2c_dev->lock, flags);
+> > >  
+> > >  	return IRQ_HANDLED;
+> > > @@ -235,8 +244,8 @@ static int owl_i2c_check_bus_busy(struct i2c_adapter *adap)
+> > >  	return 0;
+> > >  }
+> > >  
+> > > -static int owl_i2c_master_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs,
+> > > -			       int num)
+> > > +static int owl_i2c_xfer_common(struct i2c_adapter *adap, struct i2c_msg *msgs,
+> > > +			       int num, bool atomic)
+> > >  {
+> > >  	struct owl_i2c_dev *i2c_dev = i2c_get_adapdata(adap);
+> > >  	struct i2c_msg *msg;
+> > > @@ -280,11 +289,12 @@ static int owl_i2c_master_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs,
+> > >  		goto err_exit;
+> > >  	}
+> > >  
+> > > -	reinit_completion(&i2c_dev->msg_complete);
+> > > +	if (!atomic)
+> > > +		reinit_completion(&i2c_dev->msg_complete);
+> > >  
+> > > -	/* Enable I2C controller interrupt */
+> > > +	/* Enable/disable I2C controller interrupt */
+> > >  	owl_i2c_update_reg(i2c_dev->base + OWL_I2C_REG_CTL,
+> > > -			   OWL_I2C_CTL_IRQE, true);
+> > > +			   OWL_I2C_CTL_IRQE, !atomic);
+> > >  
+> > >  	/*
+> > >  	 * Select: FIFO enable, Master mode, Stop enable, Data count enable,
+> > > @@ -352,20 +362,33 @@ static int owl_i2c_master_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs,
+> > >  
+> > >  	spin_unlock_irqrestore(&i2c_dev->lock, flags);
+> > >  
+> > > -	time_left = wait_for_completion_timeout(&i2c_dev->msg_complete,
+> > > -						adap->timeout);
+> > > +	if (atomic) {
+> > > +		/* Wait for Command Execute Completed or NACK Error bits */
+> > > +		ret = readl_poll_timeout_atomic(i2c_dev->base + OWL_I2C_REG_FIFOSTAT,
+> > > +						val, val & (OWL_I2C_FIFOSTAT_CECB |
+> > > +							    OWL_I2C_FIFOSTAT_RNB),
+> > > +						10, OWL_I2C_TIMEOUT_MS * 1000);
+> > > +	} else {
+> > > +		time_left = wait_for_completion_timeout(&i2c_dev->msg_complete,
+> > > +							adap->timeout);
+> > > +		if (!time_left)
+> > > +			ret = -ETIMEDOUT;
+> > > +	}
+> > >  
+> > >  	spin_lock_irqsave(&i2c_dev->lock, flags);
+> > > -	if (time_left == 0) {
+> > > +
+> > > +	if (ret) {
+> > >  		dev_err(&adap->dev, "Transaction timed out\n");
+> > >  		/* Send stop condition and release the bus */
+> > >  		owl_i2c_update_reg(i2c_dev->base + OWL_I2C_REG_CTL,
+> > >  				   OWL_I2C_CTL_GBCC_STOP | OWL_I2C_CTL_RB,
+> > >  				   true);
+> > > -		ret = -ETIMEDOUT;
+> > >  		goto err_exit;
+> > >  	}
+> > >  
+> > > +	if (atomic)
+> > > +		owl_i2c_xfer_data(i2c_dev);
+> > 
+> > You are not clearing the pending interrupts here.
+> 
+> I assumed this is not needed for atomic contexts since the controller
+> interrupt is disabled (please see the comment above: Enable/disable I2C
+> controller interrupt).
+> 
+> Otherwise I will simply move the clear pending interrupts code from 
+> owl_i2c_interrupt() to owl_i2c_xfer_data().
+> 
 
-diff --git a/drivers/clk/qcom/clk-rcg2.c b/drivers/clk/qcom/clk-rcg2.c
-index 357159fe85b5..59a5a0f261f3 100644
---- a/drivers/clk/qcom/clk-rcg2.c
-+++ b/drivers/clk/qcom/clk-rcg2.c
-@@ -1182,14 +1182,21 @@ static int clk_rcg2_dp_set_rate_and_parent(struct clk_hw *hw,
- static int clk_rcg2_dp_determine_rate(struct clk_hw *hw,
- 				struct clk_rate_request *req)
- {
--	struct clk_rate_request parent_req = *req;
--	int ret;
-+	struct clk_rcg2 *rcg = to_clk_rcg2(hw);
-+	unsigned long num, den;
-+	u64 tmp;
- 
--	ret = __clk_determine_rate(clk_hw_get_parent(hw), &parent_req);
--	if (ret)
--		return ret;
-+	/* Parent rate is a fixed phy link rate */
-+	rational_best_approximation(req->best_parent_rate, req->rate,
-+			GENMASK(rcg->mnd_width - 1, 0),
-+			GENMASK(rcg->mnd_width - 1, 0), &den, &num);
-+
-+	if (!num || !den)
-+		return -EINVAL;
- 
--	req->best_parent_rate = parent_req.rate;
-+	tmp = req->best_parent_rate * num;
-+	do_div(tmp, den);
-+	req->rate = tmp;
- 
- 	return 0;
- }
-diff --git a/drivers/clk/qcom/dispcc-sc7180.c b/drivers/clk/qcom/dispcc-sc7180.c
-index 0a5d395bce93..f487515701e3 100644
---- a/drivers/clk/qcom/dispcc-sc7180.c
-+++ b/drivers/clk/qcom/dispcc-sc7180.c
-@@ -202,7 +202,6 @@ static struct clk_rcg2 disp_cc_mdss_dp_crypto_clk_src = {
- 		.name = "disp_cc_mdss_dp_crypto_clk_src",
- 		.parent_data = disp_cc_parent_data_1,
- 		.num_parents = ARRAY_SIZE(disp_cc_parent_data_1),
--		.flags = CLK_SET_RATE_PARENT,
- 		.ops = &clk_byte2_ops,
- 	},
- };
-@@ -216,7 +215,6 @@ static struct clk_rcg2 disp_cc_mdss_dp_link_clk_src = {
- 		.name = "disp_cc_mdss_dp_link_clk_src",
- 		.parent_data = disp_cc_parent_data_1,
- 		.num_parents = ARRAY_SIZE(disp_cc_parent_data_1),
--		.flags = CLK_SET_RATE_PARENT,
- 		.ops = &clk_byte2_ops,
- 	},
- };
-@@ -230,7 +228,6 @@ static struct clk_rcg2 disp_cc_mdss_dp_pixel_clk_src = {
- 		.name = "disp_cc_mdss_dp_pixel_clk_src",
- 		.parent_data = disp_cc_parent_data_1,
- 		.num_parents = ARRAY_SIZE(disp_cc_parent_data_1),
--		.flags = CLK_SET_RATE_PARENT,
- 		.ops = &clk_dp_ops,
- 	},
- };
--- 
-Sent by a computer, using git, on the internet
+Hmm. My intention was to say that we are not clearing the error bits when they
+happen but I misinterpreted that setting IRQP will take care of that but it
+doesn't.
 
+So I think you should submit a patch which writes to RNB and BEB fields when
+they are set (writing 1 will clear the interrupts) and ignore my previous
+comment.
+
+Thanks,
+Mani
+
+> > Thanks,
+> > Mani
+> > 
+> > > +
+> > >  	ret = i2c_dev->err < 0 ? i2c_dev->err : num;
+> > >  
+> > >  err_exit:
+> > > @@ -379,9 +402,22 @@ static int owl_i2c_master_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs,
+> > >  	return ret;
+> > >  }
+> > >  
+> > > +static int owl_i2c_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs,
+> > > +			int num)
+> > > +{
+> > > +	return owl_i2c_xfer_common(adap, msgs, num, false);
+> > > +}
+> > > +
+> > > +static int owl_i2c_xfer_atomic(struct i2c_adapter *adap,
+> > > +			       struct i2c_msg *msgs, int num)
+> > > +{
+> > > +	return owl_i2c_xfer_common(adap, msgs, num, true);
+> > > +}
+> > > +
+> > >  static const struct i2c_algorithm owl_i2c_algorithm = {
+> > > -	.master_xfer    = owl_i2c_master_xfer,
+> > > -	.functionality  = owl_i2c_func,
+> > > +	.master_xfer	     = owl_i2c_xfer,
+> > > +	.master_xfer_atomic  = owl_i2c_xfer_atomic,
+> > > +	.functionality	     = owl_i2c_func,
+> > >  };
+> > >  
+> > >  static const struct i2c_adapter_quirks owl_i2c_quirks = {
+> > > -- 
+> > > 2.28.0
+> > > 
+> 
+> Kind regards,
+> Cristi
