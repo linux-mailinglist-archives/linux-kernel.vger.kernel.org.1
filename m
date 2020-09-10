@@ -2,170 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94DCD26470F
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 15:34:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C69412647BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 16:07:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730916AbgIJNeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 09:34:08 -0400
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:1704 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726080AbgIJN0e (ORCPT
+        id S1731068AbgIJOGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 10:06:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50104 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730995AbgIJNxs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 09:26:34 -0400
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08ADOUUN003353;
-        Thu, 10 Sep 2020 09:26:25 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-00128a01.pphosted.com with ESMTP id 33fmjp842k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Sep 2020 09:26:25 -0400
-Received: from m0167088.ppops.net (m0167088.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08ADQOqG014905;
-        Thu, 10 Sep 2020 09:26:24 -0400
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-        by mx0a-00128a01.pphosted.com with ESMTP id 33fmjp842e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Sep 2020 09:26:24 -0400
-Received: from SCSQMBX11.ad.analog.com (scsqmbx11.ad.analog.com [10.77.17.10])
-        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 08ADQNmk019361
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Thu, 10 Sep 2020 09:26:23 -0400
-Received: from SCSQMBX11.ad.analog.com (10.77.17.10) by
- SCSQMBX11.ad.analog.com (10.77.17.10) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Thu, 10 Sep 2020 06:26:21 -0700
-Received: from zeus.spd.analog.com (10.66.68.11) by SCSQMBX11.ad.analog.com
- (10.77.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Thu, 10 Sep 2020 06:26:21 -0700
-Received: from btogorean-pc.ad.analog.com ([10.48.65.108])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 08ADPnkb007313;
-        Thu, 10 Sep 2020 09:26:16 -0400
-From:   Bogdan Togorean <bogdan.togorean@analog.com>
-To:     <linux-media@vger.kernel.org>
-CC:     Bogdan Togorean <bogdan.togorean@analog.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Shawn Tu <shawnx.tu@intel.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Dongchun Zhu <dongchun.zhu@mediatek.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH 2/2] media: dt-bindings: media: i2c: Add bindings for ADDI9036
-Date:   Thu, 10 Sep 2020 19:24:07 +0300
-Message-ID: <20200910162426.55306-2-bogdan.togorean@analog.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200910162426.55306-1-bogdan.togorean@analog.com>
-References: <20200910162426.55306-1-bogdan.togorean@analog.com>
+        Thu, 10 Sep 2020 09:53:48 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F3ECC061573;
+        Thu, 10 Sep 2020 06:40:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=qid5VVZzlgwDQXJxhD3JSaTvS0/ROxlbq6Lq5kL7DUU=; b=sJt12gg0bTIr+NVG+ai4i7knDT
+        bUTdAzzbk/uv3Q0XwvdXU5kChmZXiXoSe1cHeg5Fa+M4oQd/MV5G1OMLh3fZZY/wSmjInR/T0g34f
+        knMQQvnhBJguSgRQQoU4cV5ZrLLgQLgkD8QGK8F2ex96tMqX4kEID3PSzYe0GjlYLL8PBuZWDM/HD
+        vBAcaL2Pr9kp3uX+kXfwwLiKy6iFv21DmkGgx4G6PmmvtW66MxJ1IBaa/FxzlYXfvQ2ku1gD8z8jP
+        0g6gyvlSJzwG/5iVRYYFL8D+5oEKJ0R7m0nAwFi01zVQG5wH1f65UHEK+KOPZSHhZvCJVWTBbSakq
+        u09qqaow==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kGMoc-0002pZ-It; Thu, 10 Sep 2020 13:40:42 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2B994303F45;
+        Thu, 10 Sep 2020 15:40:40 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 15E812B83026D; Thu, 10 Sep 2020 15:40:40 +0200 (CEST)
+Date:   Thu, 10 Sep 2020 15:40:40 +0200
+From:   peterz@infradead.org
+To:     Anatoly Pugachev <matorola@gmail.com>
+Cc:     Sparc kernel list <sparclinux@vger.kernel.org>,
+        Linux Kernel list <linux-kernel@vger.kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [sparc64] kernel OOPS bisected from "lockdep: improve
+ current->(hard|soft)irqs_enabled synchronisation with actual irq state"
+Message-ID: <20200910134040.GZ1362448@hirez.programming.kicks-ass.net>
+References: <CADxRZqwGH3c5SvByBB3WSQhR_0NLCY=3RZ6541m8afX-scA4HA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ADIRoutedOnPrem: True
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-10_03:2020-09-10,2020-09-10 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- phishscore=0 clxscore=1011 impostorscore=0 bulkscore=0 mlxlogscore=999
- malwarescore=0 adultscore=0 spamscore=0 mlxscore=0 priorityscore=1501
- suspectscore=1 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009100123
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CADxRZqwGH3c5SvByBB3WSQhR_0NLCY=3RZ6541m8afX-scA4HA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add YAML device tree bindings for Analog Devices Inc. ADDI9036 CCD TOF
-front-end.
+On Thu, Sep 10, 2020 at 02:43:13PM +0300, Anatoly Pugachev wrote:
+> Hello!
+> 
+> The following git patch 044d0d6de9f50192f9697583504a382347ee95ca
+> (linux git master branch) introduced the following kernel OOPS upon
+> kernel boot on my sparc64 T5-2 ldom (VM):
 
-Signed-off-by: Bogdan Togorean <bogdan.togorean@analog.com>
----
- .../bindings/media/i2c/adi,addi9036.yaml      | 72 +++++++++++++++++++
- 1 file changed, 72 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/media/i2c/adi,addi9036.yaml
-
-diff --git a/Documentation/devicetree/bindings/media/i2c/adi,addi9036.yaml b/Documentation/devicetree/bindings/media/i2c/adi,addi9036.yaml
-new file mode 100644
-index 000000000000..8af7f397d4e0
---- /dev/null
-+++ b/Documentation/devicetree/bindings/media/i2c/adi,addi9036.yaml
-@@ -0,0 +1,72 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/media/i2c/adi,addi9036.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Analog Devices ADDI9036 VGA CCD Time of Flight Sensor
-+
-+maintainers:
-+  - Bogdan Togorean <bogdan.togorean@analog.com>
-+
-+description: |-
-+  The ADDI9036 is a complete, 45 MHz, front-end solution for charge coupled
-+  device (CCD) time of flight (TOF) imaging applications. It is programmable
-+  through I2C interface. Image data is sent through MIPI CSI-2 2 lanes and
-+  can output two RAW12 packed data streams. One is IR and the other is Depth.
-+  Each data stream is on a separate or same MIPI Virtual Channel, depending
-+  on configuration and each have 640x480 resolution.
-+
-+properties:
-+  compatible:
-+    const: adi,addi9036
-+
-+  reset-gpios:
-+    description: |-
-+      Reference to the GPIO connected to the RST/SYNC pin, if any.
-+      Must be released (set high) after all supplies are applied.
-+
-+  # See ../video-interfaces.txt for more details
-+  port:
-+    type: object
-+    properties:
-+      endpoint:
-+        type: object
-+        properties:
-+          data-lanes:
-+            description: |-
-+              The sensor supports two-lane operation.
-+              For two-lane operation the property must be set to <1 2>.
-+            items:
-+              - const: 1
-+              - const: 2
-+
-+required:
-+  - compatible
-+  - reg
-+  - port
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    i2c0 {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        addi9036: addi9036_tof@64 {
-+            compatible = "adi,addi9036";
-+            reg = <0x64>;
-+
-+            reset-gpios = <&gpio 41 1>;
-+
-+            port {
-+                addi9036_ep: endpoint {
-+                    remote-endpoint = <&csi1_ep>;
-+                    data-lanes = <1 2>;
-+                };
-+            };
-+        };
-+    };
-+
-+...
--- 
-2.28.0
-
+https://lkml.kernel.org/r/20200908154157.GV1362448@hirez.programming.kicks-ass.net
