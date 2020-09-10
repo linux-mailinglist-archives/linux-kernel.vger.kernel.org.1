@@ -2,161 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D8FD264316
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 12:00:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 708AE26430E
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 11:59:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730541AbgIJKAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 06:00:07 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:45796 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1730493AbgIJJ5C (ORCPT
+        id S1730339AbgIJJ7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 05:59:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41714 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727090AbgIJJ5W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 05:57:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599731809;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BKrok+4G3YivlFdtR5hJYqXNeCQUSOlGeu6cAcn1/oI=;
-        b=QuCRn09GMDhMLLllkX6rzVv9419j03dE5xKQXe5LCS8+6ECv06BWPD2WqFtTimTkQOGewI
-        Q3/15ctsmjOC9zkItHwhqNfuS3+0H34F6s3ZVNXIcPdzkrV7tGDvH7oVMybw/Ry2ETyPx0
-        5dOfeGLgKtZvW3cOH03UCm2hgK/dwGc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-258-BCBpAEiXO12tezHLeO3ZkA-1; Thu, 10 Sep 2020 05:56:45 -0400
-X-MC-Unique: BCBpAEiXO12tezHLeO3ZkA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C870C2FD00;
-        Thu, 10 Sep 2020 09:56:43 +0000 (UTC)
-Received: from [10.64.54.123] (vpn2-54-123.bne.redhat.com [10.64.54.123])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id E4E6C81F44;
-        Thu, 10 Sep 2020 09:56:41 +0000 (UTC)
-Reply-To: Gavin Shan <gshan@redhat.com>
-Subject: Re: [PATCH 2/2] arm64/mm: Use CONT_SHIFT to define CONT_PTE_SHIFT
-To:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
-        will@kernel.org, shan.gavin@gmail.com
-References: <20200908071931.47767-1-gshan@redhat.com>
- <20200908071931.47767-2-gshan@redhat.com>
- <459d0f64-fea9-a060-91a5-17a37834fb1b@arm.com>
- <283283a2-f516-6890-ae25-101d2b1b46a2@redhat.com>
- <966505a6-16f6-8129-804b-fcf890429fb8@arm.com>
-From:   Gavin Shan <gshan@redhat.com>
-Message-ID: <b253e307-eec4-3cd9-b921-2c6672120e9b@redhat.com>
-Date:   Thu, 10 Sep 2020 19:56:35 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.0
+        Thu, 10 Sep 2020 05:57:22 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 798DAC061786
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 02:57:22 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id n61so4818496ota.10
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 02:57:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=b8o/OdIgmicw5SsCNp3Naz/+qmsku0fW0+vnOAgjeRQ=;
+        b=lbENKBHnK8HQLUtN6t8VplidxfCxoX5K4jZeqGoVssrXlDImvZTG2rwIZ+Qd6Ad7Xg
+         gP+UfXPkjv7Ljx+8p6viF0DjMEN6qv+iCguJagt9gvXXLucWEFBFfLPON39taOecj1tT
+         TbIkQDfFk+YjILy4vCnwBCK5BAwbkvF4eqc44=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=b8o/OdIgmicw5SsCNp3Naz/+qmsku0fW0+vnOAgjeRQ=;
+        b=gIecWJjD5XDOJHPazyRn16GmpzQBBODfRSa19u/b8TQ+aU4mI7qOOjMddg9hyW+PMt
+         NLMKZERGjYdQXm4sReceGIEALiU6W24YFqKvVhusQw/HgJN2Y4R8RwJ1RDcwJUbsM3CD
+         7Tc6Bf0kk+z8elEYnyiPowpwpbdPUMDYobdaNW0U34fAVOXqlDnwdmOxYzP50q/exm/S
+         V450jtcVI1AqBOF7CUrY4ZhtatSGNOGKINdjEqj6h6iGbo+pWpP2BRkokRx6PPopPqvq
+         IMuPI1I7Ymh2AVCbz/4euPwlO+wD1zvSHwwrXfzkbnfKtlhwIO7T59Gnujh7EsKxrUrm
+         E3ZQ==
+X-Gm-Message-State: AOAM5315juJ4yKbFuAwO4yV0nTRxIajIOqJ0vUkqY1+ZwetSMX5Y21t5
+        9PM3e8l9M8hq+g6CrUoSZ5xcpcz0wfybgz7WlThLCA==
+X-Google-Smtp-Source: ABdhPJyKbkeuE1movR4GhbYugiEC9r5oz6JkFiWCCSIKzBoYaqZy8qzK822tETc4HGQtg9spjqqob/CkaHFshNtZwrU=
+X-Received: by 2002:a05:6830:14d9:: with SMTP id t25mr3575661otq.188.1599731841886;
+ Thu, 10 Sep 2020 02:57:21 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <966505a6-16f6-8129-804b-fcf890429fb8@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+References: <20200910095250.7663-1-laurentiu.palcu@oss.nxp.com>
+In-Reply-To: <20200910095250.7663-1-laurentiu.palcu@oss.nxp.com>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Thu, 10 Sep 2020 11:57:10 +0200
+Message-ID: <CAKMK7uGsJcg81a_cGebBgk3pwxj4VPrFfmV5AF+5fRyK3_Pigw@mail.gmail.com>
+Subject: Re: [PATCH] drm/imx/dcss: fix compilation issue on 32bit
+To:     Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>
+Cc:     Lucas Stach <l.stach@pengutronix.de>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Anshuman,
+On Thu, Sep 10, 2020 at 11:53 AM Laurentiu Palcu
+<laurentiu.palcu@oss.nxp.com> wrote:
+>
+> When compiling for 32bit platforms, the compilation fails with:
+>
+> ERROR: modpost: "__aeabi_ldivmod"
+> [drivers/gpu/drm/imx/dcss/imx-dcss.ko] undefined!
+> ERROR: modpost: "__aeabi_uldivmod"
+> [drivers/gpu/drm/imx/dcss/imx-dcss.ko] undefined!
+>
+> This patch adds a dependency on ARM64 since no 32bit SoCs have DCSS, so far.
 
-On 9/10/20 7:28 PM, Anshuman Khandual wrote:
-> On 09/10/2020 02:01 PM, Gavin Shan wrote:
->> On 9/10/20 4:17 PM, Anshuman Khandual wrote:
->>> On 09/08/2020 12:49 PM, Gavin Shan wrote:
->>>> The macro CONT_PTE_SHIFT actually depends on CONT_SHIFT, which has
->>>> been defined in page-def.h, based on CONFIG_ARM64_CONT_SHIFT. Lets
->>>> reflect the dependency.
->>>>
->>>> Signed-off-by: Gavin Shan <gshan@redhat.com>
->>>> ---
->>>>    arch/arm64/include/asm/pgtable-hwdef.h | 4 +---
->>>>    1 file changed, 1 insertion(+), 3 deletions(-)
->>>>
->>>> diff --git a/arch/arm64/include/asm/pgtable-hwdef.h b/arch/arm64/include/asm/pgtable-hwdef.h
->>>> index 8a399e666837..0bd9469f4323 100644
->>>> --- a/arch/arm64/include/asm/pgtable-hwdef.h
->>>> +++ b/arch/arm64/include/asm/pgtable-hwdef.h
->>>> @@ -81,14 +81,12 @@
->>>>    /*
->>>>     * Contiguous page definitions.
->>>>     */
->>>> +#define CONT_PTE_SHIFT        (CONT_SHIFT + PAGE_SHIFT)
->>>>    #ifdef CONFIG_ARM64_64K_PAGES
->>>> -#define CONT_PTE_SHIFT        (5 + PAGE_SHIFT)
->>>>    #define CONT_PMD_SHIFT        (5 + PMD_SHIFT)
->>>>    #elif defined(CONFIG_ARM64_16K_PAGES)
->>>> -#define CONT_PTE_SHIFT        (7 + PAGE_SHIFT)
->>>>    #define CONT_PMD_SHIFT        (5 + PMD_SHIFT)
->>>>    #else
->>>> -#define CONT_PTE_SHIFT        (4 + PAGE_SHIFT)
->>>>    #define CONT_PMD_SHIFT        (4 + PMD_SHIFT)
->>>>    #endif
->>> Could not a similar CONT_PMD be created from a new CONFIG_ARM64_CONT_PMD
->>> config option, which would help unify CONT_PMD_SHIFT here as well ?
->>>
->>
->> I was thinking of it, to have CONFIG_ARM64_CONT_PMD and defined the
->> following macros in arch/arm64/include/asm/page-def.h:
->>
->>     #define CONT_PMD_SHIFT    CONFIG_ARM64_CONT_PMD_SHIFT
->>     #define CONT_PMD_SIZE        (_AC(1, UL) << (CONT_PMD_SHIFT + PMD_SHIFT)
->>     #define CONT_PMD_MASK        (~(CONT_PMD_SIZE - 1))
->>
->> PMD_SHIFT is variable because PMD could be folded into PUD or PGD,
->> depending on the kernel configuration. PMD_SHIFT is declared
-> 
-> Even CONT_PMD_SHIFT via the new CONFIG_ARM64_CONT_PMD_SHIFT will
-> be a variable as well depending on page size.
-> 
+Usual way to fix this correctly is using the right division macros,
+not limiting the driver to 64bit. But this works for now, would be
+good to fix this properly for compile-testing and all that.
 
-Yes, it depends on the variable PMD_SHIFT.
+> Signed-off-by: Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>
+> Reported-by: Daniel Vetter <daniel@ffwll.ch>
 
->> in arch/arm64/include/asm/pgtable-types.h, which isn't supposed
->> to be included in "page-def.h".
-> 
-> Are there build failures if <pgtable-types.h> is included from <page-def.h> ?
-> 
+Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
 
-Yes, something like this:
-
-   AS      arch/arm64/kernel/head.o
-In file included from ./arch/arm64/include/asm/pgtable-hwdef.h:8,
-                  from ./arch/arm64/include/asm/page-def.h:12,
-                  from ./arch/arm64/include/asm/page.h:11,
-                  from ./arch/arm64/include/asm/proc-fns.h:14,
-                  from ./arch/arm64/include/asm/pgtable.h:9,
-                  from ./include/linux/pgtable.h:6,
-                  from ./arch/arm64/include/asm/io.h:12,
-                  from ./include/linux/io.h:13,
-                  from drivers/bus/vexpress-config.c:9:
-./arch/arm64/include/asm/memory.h:91:55: warning: "PAGE_SHIFT" is not defined, evaluates to 0 [-Wundef]
-  #if defined(CONFIG_VMAP_STACK) && (MIN_THREAD_SHIFT < PAGE_SHIFT)
-                                                        ^~~~~~~~~~
-./arch/arm64/include/asm/memory.h:97:21: warning: "PAGE_SHIFT" is not defined, evaluates to 0 [-Wundef]
-  #if THREAD_SHIFT >= PAGE_SHIFT
-                      ^~~~~~~~~~
+Please push to drm-misc-next.
+-Daniel
 
 
->>
->> So the peroper way to handle this might be drop the continuous page
->> macros in page-def.h and introduce the following ones into pgtable-hwdef.h.
->> I will post v2 to do this if it sounds good to you.
-> 
-> Sure, go ahead if that builds. But unifying both these macros seems cleaner.
-> 
 
-Thanks for your confirmation. v2 is on the way :)
+---
+>  drivers/gpu/drm/imx/dcss/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/imx/dcss/Kconfig b/drivers/gpu/drm/imx/dcss/Kconfig
+> index 69860de8861f..2b17a964ff05 100644
+> --- a/drivers/gpu/drm/imx/dcss/Kconfig
+> +++ b/drivers/gpu/drm/imx/dcss/Kconfig
+> @@ -3,7 +3,7 @@ config DRM_IMX_DCSS
+>         select IMX_IRQSTEER
+>         select DRM_KMS_CMA_HELPER
+>         select VIDEOMODE_HELPERS
+> -       depends on DRM && ARCH_MXC
+> +       depends on DRM && ARCH_MXC && ARM64
+>         help
+>           Choose this if you have a NXP i.MX8MQ based system and want to use the
+>           Display Controller Subsystem. This option enables DCSS support.
+> --
+> 2.17.1
+>
 
->>
->>     #define CONT_PTE_SHIFT         (CONFIG_ARM64_CONT_PTE_SHIFT + PAGE_SHIFT)
->>     #define CONT_PMD_SHIFT         (CONFIG_ARM64_CONT_PMD_SHIFT + PMD_SHIFT)
->>
 
-Thanks,
-Gavin
-
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
