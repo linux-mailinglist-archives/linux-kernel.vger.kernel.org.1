@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03C83264EDE
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:28:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ACD6264ECA
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:26:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726728AbgIJT2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 15:28:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39990 "EHLO
+        id S1727808AbgIJT0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 15:26:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731413AbgIJPsR (ORCPT
+        with ESMTP id S1730408AbgIJPs1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 11:48:17 -0400
+        Thu, 10 Sep 2020 11:48:27 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 091C3C06134F;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 772ECC061357;
         Thu, 10 Sep 2020 08:08:29 -0700 (PDT)
-Date:   Thu, 10 Sep 2020 15:08:26 -0000
+Date:   Thu, 10 Sep 2020 15:08:27 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1599750507;
+        s=2020; t=1599750508;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=HIqSlBM5m5tgXp5bs0+fPyqW4eg6ui/UC5UO14epl3s=;
-        b=nbDL8HtnCHJ9RwqMV1du7VKQKsuDeWwJf4Y2OR3XGJdSBZ8vaBP/4BxBPSw9XnFV0LI4F7
-        LDyfG6aCjJEVYqVR180R/p9oCiaNvXegZepP8DyUZyBcmfmaI08NCCw9sAh4j8PnL9STIu
-        AKWt80DqM8wy4yxVIx9XFiWEriVbaQO78akWYjeOvQ8Sn1w5KQKaqm40UhZ5RQUqY/cGvZ
-        DcT6l0cu+fkvHzz8F6pxBspCQDVK74RbnEHiu9YlajDgh+ZIsvA87NC8tx9eeEAVx5oFV2
-        WNm7kU01+5mowueM9stobrEHwb6ETyLiWQsFE3/Fkg1TzO1oZ76bx3B5cWGfAw==
+        bh=L0m5hkB+ccYH+x0REmVy1EbpacF/uWU6RknxT4dz2eE=;
+        b=VMz6dL4yUiRiwUrxthpgSI5eAS1bzOnTA9DTFdL8ZV6ImIbQQh3RbFK9FhQM4FlOpqJfMK
+        pZzcPO3U3Mjt1cGe9TREoX8fPdd9Zs21VMowg3EPtgRHCB5Tncf/yAAeA8DPJFtigrFo3R
+        FELoOJxNQivl3UI5W0ly/oMY2bOriIfMRo5uVMkLXI1Ycb49XcsHeAuTZ8qPiLPHl6jQE4
+        v2BuPFw3ZUWyDeepVf3e9fog4eQf0BfZIbw88nDg9N+S8DEhlHdc+2w4Xff/Z+wmMGnUSr
+        vFivSpI9NKo/R/8QFZaciclCSs4U9relzbCoVth+fArJ0JULxev3S6H/rVuqPw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1599750507;
+        s=2020e; t=1599750508;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=HIqSlBM5m5tgXp5bs0+fPyqW4eg6ui/UC5UO14epl3s=;
-        b=THZq6iK77vEbIteolIsWT3+Q2L/dBN8GPR7HaRLnI2Qgf+HSTgDqWWXDTfl60GdLypDAI9
-        ZxfBcmPqhTFEa5DA==
+        bh=L0m5hkB+ccYH+x0REmVy1EbpacF/uWU6RknxT4dz2eE=;
+        b=wwB99IscBcsPFeUbKjxInZFJd2XZmmWU+4G8MG+3lq181I1M5i2fZKWOzo1yhfa2eB5K7B
+        wl+UVK1dOE6viOBA==
 From:   "tip-bot2 for Ahmed S. Darwish" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/core] rbtree_latch: Use seqcount_latch_t
+Subject: [tip: locking/core] timekeeping: Use seqcount_latch_t
 Cc:     "Ahmed S. Darwish" <a.darwish@linutronix.de>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200827114044.11173-8-a.darwish@linutronix.de>
-References: <20200827114044.11173-8-a.darwish@linutronix.de>
+In-Reply-To: <20200827114044.11173-6-a.darwish@linutronix.de>
+References: <20200827114044.11173-6-a.darwish@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <159975050648.20229.11045619138069270549.tip-bot2@tip-bot2>
+Message-ID: <159975050740.20229.1073373223572014594.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -61,50 +61,96 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the locking/core branch of tip:
 
-Commit-ID:     24bf401cebfd630cc9e2c3746e43945e836626f9
-Gitweb:        https://git.kernel.org/tip/24bf401cebfd630cc9e2c3746e43945e836626f9
+Commit-ID:     249d053835320cb3e7c00066cf085a6ba9b1f126
+Gitweb:        https://git.kernel.org/tip/249d053835320cb3e7c00066cf085a6ba9b=
+1f126
 Author:        Ahmed S. Darwish <a.darwish@linutronix.de>
-AuthorDate:    Thu, 27 Aug 2020 13:40:43 +02:00
+AuthorDate:    Thu, 27 Aug 2020 13:40:41 +02:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
 CommitterDate: Thu, 10 Sep 2020 11:19:29 +02:00
 
-rbtree_latch: Use seqcount_latch_t
+timekeeping: Use seqcount_latch_t
 
-Latch sequence counters have unique read and write APIs, and thus
-seqcount_latch_t was recently introduced at seqlock.h.
+Latch sequence counters are a multiversion concurrency control mechanism
+where the seqcount_t counter even/odd value is used to switch between
+two data storage copies. This allows the seqcount_t read path to safely
+interrupt its write side critical section (e.g. from NMIs).
 
-Use that new data type instead of plain seqcount_t. This adds the
-necessary type-safety and ensures that only latching-safe seqcount APIs
-are to be used.
+Initially, latch sequence counters were implemented as a single write
+function, raw_write_seqcount_latch(), above plain seqcount_t. The read
+path was expected to use plain seqcount_t raw_read_seqcount().
 
+A specialized read function was later added, raw_read_seqcount_latch(),
+and became the standardized way for latch read paths. Having unique read
+and write APIs meant that latch sequence counters are basically a data
+type of their own -- just inappropriately overloading plain seqcount_t.
+The seqcount_latch_t data type was thus introduced at seqlock.h.
+
+Use that new data type instead of seqcount_raw_spinlock_t. This ensures
+that only latch-safe APIs are to be used with the sequence counter.
+
+Note that the use of seqcount_raw_spinlock_t was not very useful in the
+first place. Only the "raw_" subset of seqcount_t APIs were used at
+timekeeping.c. This subset was created for contexts where lockdep cannot
+be used. seqcount_LOCKTYPE_t's raison d'=C3=AAtre -- verifying that the
+seqcount_t writer serialization lock is held -- cannot thus be done.
+
+References: 0c3351d451ae ("seqlock: Use raw_ prefix instead of _no_lockdep")
+References: 55f3560df975 ("seqlock: Extend seqcount API with associated locks=
+")
 Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20200827114044.11173-8-a.darwish@linutronix.de
+Link: https://lkml.kernel.org/r/20200827114044.11173-6-a.darwish@linutronix.de
 ---
- include/linux/rbtree_latch.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ kernel/time/timekeeping.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/include/linux/rbtree_latch.h b/include/linux/rbtree_latch.h
-index 7d012fa..3d1a9e7 100644
---- a/include/linux/rbtree_latch.h
-+++ b/include/linux/rbtree_latch.h
-@@ -42,8 +42,8 @@ struct latch_tree_node {
- };
- 
- struct latch_tree_root {
--	seqcount_t	seq;
--	struct rb_root	tree[2];
+diff --git a/kernel/time/timekeeping.c b/kernel/time/timekeeping.c
+index 4c47f38..999c981 100644
+--- a/kernel/time/timekeeping.c
++++ b/kernel/time/timekeeping.c
+@@ -64,7 +64,7 @@ static struct timekeeper shadow_timekeeper;
+  * See @update_fast_timekeeper() below.
+  */
+ struct tk_fast {
+-	seqcount_raw_spinlock_t	seq;
 +	seqcount_latch_t	seq;
-+	struct rb_root		tree[2];
+ 	struct tk_read_base	base[2];
  };
- 
- /**
-@@ -206,7 +206,7 @@ latch_tree_find(void *key, struct latch_tree_root *root,
- 	do {
- 		seq = raw_read_seqcount_latch(&root->seq);
- 		node = __lt_find(key, root, seq & 1, ops->comp);
--	} while (read_seqcount_retry(&root->seq, seq));
-+	} while (read_seqcount_latch_retry(&root->seq, seq));
- 
- 	return node;
+=20
+@@ -81,13 +81,13 @@ static struct clocksource dummy_clock =3D {
+ };
+=20
+ static struct tk_fast tk_fast_mono ____cacheline_aligned =3D {
+-	.seq     =3D SEQCNT_RAW_SPINLOCK_ZERO(tk_fast_mono.seq, &timekeeper_lock),
++	.seq     =3D SEQCNT_LATCH_ZERO(tk_fast_mono.seq),
+ 	.base[0] =3D { .clock =3D &dummy_clock, },
+ 	.base[1] =3D { .clock =3D &dummy_clock, },
+ };
+=20
+ static struct tk_fast tk_fast_raw  ____cacheline_aligned =3D {
+-	.seq     =3D SEQCNT_RAW_SPINLOCK_ZERO(tk_fast_raw.seq, &timekeeper_lock),
++	.seq     =3D SEQCNT_LATCH_ZERO(tk_fast_raw.seq),
+ 	.base[0] =3D { .clock =3D &dummy_clock, },
+ 	.base[1] =3D { .clock =3D &dummy_clock, },
+ };
+@@ -467,7 +467,7 @@ static __always_inline u64 __ktime_get_fast_ns(struct tk_=
+fast *tkf)
+ 					tk_clock_read(tkr),
+ 					tkr->cycle_last,
+ 					tkr->mask));
+-	} while (read_seqcount_retry(&tkf->seq, seq));
++	} while (read_seqcount_latch_retry(&tkf->seq, seq));
+=20
+ 	return now;
+ }
+@@ -533,7 +533,7 @@ static __always_inline u64 __ktime_get_real_fast_ns(struc=
+t tk_fast *tkf)
+ 					tk_clock_read(tkr),
+ 					tkr->cycle_last,
+ 					tkr->mask));
+-	} while (read_seqcount_retry(&tkf->seq, seq));
++	} while (read_seqcount_latch_retry(&tkf->seq, seq));
+=20
+ 	return now;
  }
