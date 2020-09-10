@@ -2,230 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2A64264F17
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:34:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A880264F71
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:43:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727944AbgIJTeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 15:34:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39528 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731325AbgIJPq4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 11:46:56 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA255C0617AB
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 08:04:12 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id gr14so9252068ejb.1
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 08:04:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=3UPlh3Kyd3Y4TY4RZl2rxdxtBbfraaBRvID8Rle5+Mg=;
-        b=BD9KbQRzjtq6zrQc9NFmvlPMK4of6zDGEF8y4yRn5fExSO3y0KsjiEb61n3Xmysgh8
-         VGVLMPe0N1DVxzhTcwNk1mX9n5UIfpWInRVKXQtfMr793pIC6uY2rz7z9+VLII/YMzXM
-         csxUQDX+ziMXosAAkj2YrAeg3tqno/TZeHcwCcFqhRT+wqkPA0wftFA2rPS3avmS7GVo
-         J/Fn8PIq9Q5Dc6Wp1da0RIXXplWTwsfq5hi7WVvW42GtRYBj+icTNcq85Gnda13SbXSE
-         0J49bK14hMrK4c+utKgn44VMpV/3YpzmeHkjh2uq+Udsu11SNAM/hkTvky3wFzzw2sA7
-         DiEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=3UPlh3Kyd3Y4TY4RZl2rxdxtBbfraaBRvID8Rle5+Mg=;
-        b=tSCKZ3LrtKm3nfcebkqcbTkUBKDNzu1/M5IQXzy5rx5HeMZkPJurHcbUzu3HO/YMjE
-         Tncp2/uzhYI9qOY+K7gf+nna5bLwt+Vg4VKhfHvzVPFIy+K3QPN1YWkDe9VRDt+L5XTy
-         YberFJAV6dVOAoIsJPMbvFDtJCvjy0HEUW1IO1fh3eEJ5o5xkI6I5PqC0WSFCzHG9u/5
-         r8qwZbpKdkmVyJ1o7nXkHCRVSI0p5Ot50zwwybVrODyrUSwddam15o+FH4LJ2b9bn6L+
-         lcWpkOtc0jKgmGiV/hovm7LjoyxA1muACPk1hZ3VaVbqMl9dnUVKbQcjuSmKbxUH+dIg
-         smKA==
-X-Gm-Message-State: AOAM530OBO3lJ2uJsdpkUdxCIQmLHWf7/NhjUOEoMi/jfTy/DmW8yBZh
-        GIi1hbWb7qzVuF897geBSnGVPh0gf0Q=
-X-Google-Smtp-Source: ABdhPJxOTIyh31yb4f3+y791eNHSdne+YYppbXiXlhSaSyotwHbrhunvMsXUyRPBWDWj4lbR5ud3sg==
-X-Received: by 2002:a17:907:374:: with SMTP id rs20mr9726694ejb.135.1599750250719;
-        Thu, 10 Sep 2020 08:04:10 -0700 (PDT)
-Received: from ogabbay-VM.habana-labs.com ([213.57.90.10])
-        by smtp.gmail.com with ESMTPSA id o3sm7443925edt.79.2020.09.10.08.04.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Sep 2020 08:04:09 -0700 (PDT)
-From:   Oded Gabbay <oded.gabbay@gmail.com>
-To:     linux-kernel@vger.kernel.org, SW_Drivers@habana.ai
-Cc:     gregkh@linuxfoundation.org, Omer Shpigelman <oshpigelman@habana.ai>
-Subject: [PATCH 14/15] habanalabs/gaudi: support DCB protocol
-Date:   Thu, 10 Sep 2020 18:03:27 +0300
-Message-Id: <20200910150328.20545-15-oded.gabbay@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200910150328.20545-1-oded.gabbay@gmail.com>
-References: <20200910150328.20545-1-oded.gabbay@gmail.com>
+        id S1727028AbgIJTmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 15:42:33 -0400
+Received: from mx1.tq-group.com ([62.157.118.193]:15843 "EHLO mx1.tq-group.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731287AbgIJPeg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 11:34:36 -0400
+IronPort-SDR: pCOmsQnRJqe9zlPacUN95X9aFAUhjndCWJzg1blWeKAvwnOj4niYnZo3WzObfZaeIPagK8/GV5
+ VIVJAgBbXHIOJUUybzY8mR0RiMhi3U6XsrQiP9LNxu5xSIkuXtwF7Q91H5AmaR/BlnyfDWjUgi
+ pJ/bitr10ocAaMZUiu6tvfTKgSwPOxJKpZr8BbVHpHSISSw+oorlnWVV/aoNJLJ2JIB0lQRd1w
+ bJqFf6xNddcZOnzbKDCvhwRbZsg971PCRrwKQG6dnLrBCYnkygzEzxfH/K9BpV+olV5HzK2LHm
+ oP0=
+X-IronPort-AV: E=Sophos;i="5.76,413,1592863200"; 
+   d="scan'208";a="13815820"
+Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
+  by mx1-pgp.tq-group.com with ESMTP; 10 Sep 2020 17:06:37 +0200
+Received: from mx1.tq-group.com ([192.168.6.7])
+  by tq-pgp-pr1.tq-net.de (PGP Universal service);
+  Thu, 10 Sep 2020 17:06:37 +0200
+X-PGP-Universal: processed;
+        by tq-pgp-pr1.tq-net.de on Thu, 10 Sep 2020 17:06:37 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1599750397; x=1631286397;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=frcCV1k9oG9oKj3dpUqdJg1PxRT2RSN/XKdLCPjaYaY=;
+  b=OW9u7L6Z4pq4mADaBmKOtPSkz3HI9ADnBj/yRvA3vsOFoyCsRDWGw3KG
+   tGOuver6HlVvBJi4uGpB+uAlBd2CDnSitBTYLJjy+4mWVS5ion59LCEhp
+   G5Dyo/M04poRNuzyWR2o9+L3Z+f+BWGIHiNA6q82AzCHI1DUG21ZZhBFd
+   xfMzxekSRP7a9QzNTnDICs6O9IWGeVNxgygZPA00gyhsg/OGQ6lXi+0LK
+   rCVCFgQZdZrlN7VlLWDxLcwHhMnjn/6kfeLuFndSWuKNMtPqlg93l4Ydb
+   dZ0j+QgkzOn85h6IBoEY4voAPsAYI7KyCK9Z+ATitLu9tx1R1UGg8cy74
+   g==;
+IronPort-SDR: nV6kLyKfx0S0N10OfKe1cWMXV1w1jcBZOvuBpfxAFpqd+3RdAx7BOhaGwemaUsOzDgG+8idN6W
+ JL2jpZXNeVvpZiN3w+gLUi01bc3qlDILEQFUZaOP8jVjEo/MggrCu5Fs6l8y38iVFmPbOK4OI4
+ YERj9g4EWgNzq2daXmNaZSKe+A4ozEiBOwdz4N2byo8P10+WvmTtVuz9f7sj8fBPme57dO8I+y
+ gZlBIMNoN8SnJd476DVdAIMMJQUjTnG7rZkiepaurOew7loh7Yr496O7uDeQ+qXo/YE0G0mbIL
+ POY=
+X-IronPort-AV: E=Sophos;i="5.76,413,1592863200"; 
+   d="scan'208";a="13815819"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 10 Sep 2020 17:06:37 +0200
+Received: from herburgerg-w.tq-net.de (herburgerg-w.tq-net.de [10.122.52.145])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id E2F1B280070;
+        Thu, 10 Sep 2020 17:06:36 +0200 (CEST)
+Date:   Thu, 10 Sep 2020 17:06:28 +0200
+From:   Gregor Herburger <gregor.herburger@ew.tq-group.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     "york.sun@nxp.com" <york.sun@nxp.com>,
+        "mchehab@kernel.org" <mchehab@kernel.org>,
+        "tony.luck@intel.com" <tony.luck@intel.com>,
+        "james.morse@arm.com" <james.morse@arm.com>,
+        "rrichter@marvell.com" <rrichter@marvell.com>,
+        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        gregor.herburger@ew.tq-group.com
+Subject: Re: (EXT) Re: [PATCH v2 1/1] edac: fsl_ddr_edac: fix expected data
+ message
+Message-ID: <20200910150628.GA26249@herburgerg-w.tq-net.de>
+References: <kcEE.e0qfoTd8SOOr3lTVWaXz/A.AASg8YeC1gE@vtuxmail01.tq-net.de>
+ <20200904091718.GC21499@zn.tnic>
+ <20200904133258.GA21716@herburgerg-w.tq-net.de>
+ <20200908192400.GL25236@zn.tnic>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200908192400.GL25236@zn.tnic>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Omer Shpigelman <oshpigelman@habana.ai>
-
-Add DCB support to configure the NIC's Priority Flow Control (PFC).
-The added support is minimal because a full support is not
-currently required.
-
-A summary of the supported callbacks:
-
-- ieee_getpfc: get the current PFC configuration. PFC is enabled by
-               default.
-- ieee_setpfc: set PFC configuration. Only 0 or all 4 priorities can be
-               enabled, no subset is allowed.
-- getdcbx: get DCBX capability.
-- setdcbx: set DCBX capability. Only host LLDP agent and IEEE protocol
-           flavors are supported.
-
-Signed-off-by: Omer Shpigelman <oshpigelman@habana.ai>
-Reviewed-by: Oded Gabbay <oded.gabbay@gmail.com>
-Signed-off-by: Oded Gabbay <oded.gabbay@gmail.com>
----
- drivers/misc/habanalabs/gaudi/Makefile        |   2 +-
- drivers/misc/habanalabs/gaudi/gaudi_nic.c     |   3 +
- .../misc/habanalabs/gaudi/gaudi_nic_dcbnl.c   | 108 ++++++++++++++++++
- 3 files changed, 112 insertions(+), 1 deletion(-)
- create mode 100644 drivers/misc/habanalabs/gaudi/gaudi_nic_dcbnl.c
-
-diff --git a/drivers/misc/habanalabs/gaudi/Makefile b/drivers/misc/habanalabs/gaudi/Makefile
-index e3002dc34a74..9757c8ba1cb0 100644
---- a/drivers/misc/habanalabs/gaudi/Makefile
-+++ b/drivers/misc/habanalabs/gaudi/Makefile
-@@ -3,5 +3,5 @@ HL_GAUDI_FILES := gaudi/gaudi.o gaudi/gaudi_hwmgr.o gaudi/gaudi_security.o \
- 	gaudi/gaudi_coresight.o
- 
- HL_GAUDI_FILES += gaudi/gaudi_nic.o gaudi/gaudi_phy.o \
--	gaudi/gaudi_nic_ethtool.o \
-+	gaudi/gaudi_nic_ethtool.o gaudi/gaudi_nic_dcbnl.o \
- 	gaudi/gaudi_nic_debugfs.o
-diff --git a/drivers/misc/habanalabs/gaudi/gaudi_nic.c b/drivers/misc/habanalabs/gaudi/gaudi_nic.c
-index 108db990efa8..1ea410cdafdf 100644
---- a/drivers/misc/habanalabs/gaudi/gaudi_nic.c
-+++ b/drivers/misc/habanalabs/gaudi/gaudi_nic.c
-@@ -2745,6 +2745,9 @@ static int port_register(struct hl_device *hdev, int port)
- 
- 	ndev->netdev_ops = &gaudi_nic_netdev_ops;
- 	ndev->ethtool_ops = &gaudi_nic_ethtool_ops;
-+#ifdef CONFIG_DCB
-+	ndev->dcbnl_ops = &gaudi_nic_dcbnl_ops;
-+#endif
- 	ndev->watchdog_timeo = NIC_TX_TIMEOUT;
- 	ndev->min_mtu = ETH_MIN_MTU;
- 	ndev->max_mtu = NIC_MAX_MTU;
-diff --git a/drivers/misc/habanalabs/gaudi/gaudi_nic_dcbnl.c b/drivers/misc/habanalabs/gaudi/gaudi_nic_dcbnl.c
-new file mode 100644
-index 000000000000..b8f37fd0d3cf
---- /dev/null
-+++ b/drivers/misc/habanalabs/gaudi/gaudi_nic_dcbnl.c
-@@ -0,0 +1,108 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+/*
-+ * Copyright 2018-2020 HabanaLabs, Ltd.
-+ * All Rights Reserved.
-+ */
-+
-+#include "gaudi_nic.h"
-+
-+#define PFC_PRIO_NUM		4
-+#define PFC_PRIO_MASK_ALL	GENMASK(PFC_PRIO_NUM - 1, 0)
-+#define PFC_PRIO_MASK_NONE	0
-+#define PFC_STAT_TX_OFFSET	17
-+#define PFC_STAT_RX_OFFSET	27
-+
-+#ifdef CONFIG_DCB
-+static int gaudi_nic_dcbnl_ieee_getpfc(struct net_device *netdev,
-+					struct ieee_pfc *pfc)
-+{
-+	struct gaudi_nic_device **ptr = netdev_priv(netdev);
-+	struct gaudi_nic_device *gaudi_nic = *ptr;
-+	struct hl_device *hdev = gaudi_nic->hdev;
-+	u32 port = gaudi_nic->port;
-+	int rc = 0, i, tx_idx, rx_idx;
-+
-+	if (disabled_or_in_reset(gaudi_nic)) {
-+		dev_info_ratelimited(hdev->dev,
-+				"port %d is in reset, can't get PFC", port);
-+		return -EBUSY;
-+	}
-+
-+	pfc->pfc_en = gaudi_nic->pfc_enable ? PFC_PRIO_MASK_ALL :
-+							PFC_PRIO_MASK_NONE;
-+	pfc->pfc_cap = PFC_PRIO_NUM;
-+
-+	for (i = 0 ; i < PFC_PRIO_NUM ; i++) {
-+		tx_idx = PFC_STAT_TX_OFFSET + i;
-+		rx_idx = PFC_STAT_RX_OFFSET + i;
-+
-+		pfc->requests[i] = gaudi_nic_read_mac_stat_counter(hdev, port,
-+								tx_idx, false);
-+		pfc->indications[i] = gaudi_nic_read_mac_stat_counter(hdev,
-+							port, rx_idx, true);
-+	}
-+
-+	return rc;
-+}
-+
-+static int gaudi_nic_dcbnl_ieee_setpfc(struct net_device *netdev,
-+					struct ieee_pfc *pfc)
-+{
-+	struct gaudi_nic_device **ptr = netdev_priv(netdev);
-+	struct gaudi_nic_device *gaudi_nic = *ptr;
-+	struct hl_device *hdev = gaudi_nic->hdev;
-+	u32 port = gaudi_nic->port;
-+	u8 curr_pfc_en;
-+
-+	if (pfc->pfc_en & ~PFC_PRIO_MASK_ALL) {
-+		dev_info_ratelimited(hdev->dev,
-+					"PFC supports %d priorities only, port %d\n",
-+					PFC_PRIO_NUM, port);
-+		return -EINVAL;
-+	}
-+
-+	if ((pfc->pfc_en != PFC_PRIO_MASK_NONE) &&
-+			(pfc->pfc_en != PFC_PRIO_MASK_ALL)) {
-+		dev_info_ratelimited(hdev->dev,
-+					"PFC should be enabled/disabled on all priorities, port %d\n",
-+					port);
-+		return -EINVAL;
-+	}
-+
-+	if (disabled_or_in_reset(gaudi_nic)) {
-+		dev_info_ratelimited(hdev->dev,
-+				"port %d is in reset, can't set PFC", port);
-+		return -EBUSY;
-+	}
-+
-+	curr_pfc_en = gaudi_nic->pfc_enable ? PFC_PRIO_MASK_ALL :
-+							PFC_PRIO_MASK_NONE;
-+
-+	if (pfc->pfc_en == curr_pfc_en)
-+		return 0;
-+
-+	gaudi_nic->pfc_enable = !gaudi_nic->pfc_enable;
-+
-+	gaudi_nic_set_pfc(gaudi_nic);
-+
-+	return 0;
-+}
-+
-+static u8 gaudi_nic_dcbnl_getdcbx(struct net_device *netdev)
-+{
-+	return DCB_CAP_DCBX_HOST | DCB_CAP_DCBX_VER_IEEE;
-+}
-+
-+static u8 gaudi_nic_dcbnl_setdcbx(struct net_device *netdev, u8 mode)
-+{
-+	return !(mode == (DCB_CAP_DCBX_HOST | DCB_CAP_DCBX_VER_IEEE));
-+}
-+
-+const struct dcbnl_rtnl_ops gaudi_nic_dcbnl_ops = {
-+	.ieee_getpfc	= gaudi_nic_dcbnl_ieee_getpfc,
-+	.ieee_setpfc	= gaudi_nic_dcbnl_ieee_setpfc,
-+	.getdcbx	= gaudi_nic_dcbnl_getdcbx,
-+	.setdcbx	= gaudi_nic_dcbnl_setdcbx
-+};
-+#endif
--- 
-2.17.1
 
