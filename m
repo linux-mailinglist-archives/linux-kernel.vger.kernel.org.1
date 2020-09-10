@@ -2,92 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 138882649EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 18:36:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50AB72649F8
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 18:39:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725803AbgIJQf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 12:35:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44800 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725951AbgIJQeR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 12:34:17 -0400
-Received: from localhost (unknown [70.37.104.77])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 16DB121582;
-        Thu, 10 Sep 2020 16:34:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599755657;
-        bh=dzZnmnmW/OcULkwgSlJBXQmNt6Lts9wz/zHvPwNp9Eo=;
-        h=Date:From:To:To:To:Cc:Cc:Cc:Cc:Cc:Cc:Cc:Cc:Cc:Cc:Cc:Cc:Cc:Cc:Cc:
-         Cc:Cc:Cc:Subject:In-Reply-To:References:From;
-        b=YpwMjIwo8m5ztCnRf7uNWp5ABWFf5uIsg56Ck/Eaw1TrHozTf4PNKD0au+S2BG6Zi
-         iy9hvggmavdj7R+XijSp1G4Jq13Fdz/pfIZ50NBq1VBmhRTe7QaDFEIrbvXqnCCzo4
-         lPALA2tpLa5g2okAe36l/zqwGrcoi/YYz5GM99C0=
-Date:   Thu, 10 Sep 2020 16:34:16 +0000
-From:   Sasha Levin <sashal@kernel.org>
-To:     Sasha Levin <sashal@kernel.org>
-To:     Kim Phillips <kim.phillips@amd.com>
-To:     Borislav Petkov <bp@alien8.de>, Borislav Petkov <bp@suse.de>
-Cc:     Stephane Eranian <eranian@google.com>
-Cc:     Stephane Eranian <eranian@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@kernel.org>
-Cc:     Ingo Molnar <mingo@redhat.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Borislav Petkov <bp@alien8.de>
-Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     "H. Peter Anvin" <hpa@zytor.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Michael Petlan <mpetlan@redhat.com>
-Cc:     Namhyung Kim <namhyung@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Cc:     x86 <x86@kernel.org>
-Cc:     stable@vger.kernel.org
-Cc:     stable@vger.kernel.org
-Subject: Re: [PATCH v2 1/7] perf/amd/uncore: Set all slices and threads to restore perf stat -a behaviour
-In-Reply-To: <20200908214740.18097-2-kim.phillips@amd.com>
-References: <20200908214740.18097-2-kim.phillips@amd.com>
-Message-Id: <20200910163417.16DB121582@mail.kernel.org>
+        id S1725877AbgIJQjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 12:39:25 -0400
+Received: from a27-186.smtp-out.us-west-2.amazonses.com ([54.240.27.186]:34566
+        "EHLO a27-186.smtp-out.us-west-2.amazonses.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727035AbgIJQfw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 12:35:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+        s=zsmsymrwgfyinv5wlfyidntwsjeeldzt; d=codeaurora.org; t=1599755708;
+        h=Content-Type:MIME-Version:Content-Transfer-Encoding:Subject:From:In-Reply-To:References:To:Cc:Message-Id:Date;
+        bh=0PT+vIyl1PoeZhnomnVBk6Rk41hJM44VFaoGQTbCFoo=;
+        b=KoCbIREUQM0dfEuq3aDk8d4GZgl8qXtHs4Wb3lR557IQ18uz9IbbU+VRRhKO1zQ6
+        dBsXmVL7swkggjl3xQPctbPZmtT+U2jkMjmtoZZ9DdUy3MVinchge8pC/Gmi1PjG1PM
+        hLxsYkWezodhbsPMom8tKzJ8rVK0ASRebdgr1vnA=
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+        s=hsbnp7p3ensaochzwyq5wwmceodymuwv; d=amazonses.com; t=1599755708;
+        h=Content-Type:MIME-Version:Content-Transfer-Encoding:Subject:From:In-Reply-To:References:To:Cc:Message-Id:Date:Feedback-ID;
+        bh=0PT+vIyl1PoeZhnomnVBk6Rk41hJM44VFaoGQTbCFoo=;
+        b=b4CRwJu/VsIOjn2SJRgR8PUsUJBOXF7+JwnJ3I0V+kVc/MYNy7j1+Tc+luGH2OUy
+        oLUmCc2rNvLrmGWy3P8MR8mOGIkz6W5hD6rqZN66zA/9p9mNR9BZxO0nn2E4AgE5NLx
+        AxDLUGAunDwkx2x/aWbbRSMEUSY5EuNivRWr1rUc=
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.0
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 76771C433F0
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH 27/29] ath9k: ar5008_initvals: Move ar5416Bank{0,1,2,3,7}
+ to
+ where they are used
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20200910065431.657636-28-lee.jones@linaro.org>
+References: <20200910065431.657636-28-lee.jones@linaro.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        Lee Jones <lee.jones@linaro.org>,
+        QCA ath9k Development <ath9k-devel@qca.qualcomm.com>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-ID: <0101017478dee7a5-d1bf9eb4-8ec4-44d0-bc89-11497cdf681c-000000@us-west-2.amazonses.com>
+Date:   Thu, 10 Sep 2020 16:35:08 +0000
+X-SES-Outgoing: 2020.09.10-54.240.27.186
+Feedback-ID: 1.us-west-2.CZuq2qbDmUIuT3qdvXlRHZZCpfZqZ4GtG9v3VKgRyF0=:AmazonSES
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+Lee Jones <lee.jones@linaro.org> wrote:
 
-[This is an automated email]
+> Fixes the following W=1 kernel build warning(s):
+> 
+>  drivers/net/wireless/ath/ath9k/ar5008_initvals.h:627:18: warning: ‘ar5416Bank7’ defined but not used [-Wunused-const-variable=]
+>  627 | static const u32 ar5416Bank7[][2] = {
+>  | ^~~~~~~~~~~
+>  drivers/net/wireless/ath/ath9k/ar5008_initvals.h:548:18: warning: ‘ar5416Bank3’ defined but not used [-Wunused-const-variable=]
+>  548 | static const u32 ar5416Bank3[][3] = {
+>  | ^~~~~~~~~~~
+>  drivers/net/wireless/ath/ath9k/ar5008_initvals.h:542:18: warning: ‘ar5416Bank2’ defined but not used [-Wunused-const-variable=]
+>  542 | static const u32 ar5416Bank2[][2] = {
+>  | ^~~~~~~~~~~
+>  drivers/net/wireless/ath/ath9k/ar5008_initvals.h:536:18: warning: ‘ar5416Bank1’ defined but not used [-Wunused-const-variable=]
+>  536 | static const u32 ar5416Bank1[][2] = {
+>  | ^~~~~~~~~~~
+>  drivers/net/wireless/ath/ath9k/ar5008_initvals.h:462:18: warning: ‘ar5416Bank0’ defined but not used [-Wunused-const-variable=]
+>  462 | static const u32 ar5416Bank0[][2] = {
+>  | ^~~~~~~~~~~
+> 
+> Cc: QCA ath9k Development <ath9k-devel@qca.qualcomm.com>
+> Cc: Kalle Valo <kvalo@codeaurora.org>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: linux-wireless@vger.kernel.org
+> Cc: netdev@vger.kernel.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-This commit has been processed because it contains a "Fixes:" tag
-fixing commit: 2f217d58a8a0 ("perf/x86/amd/uncore: Set the thread mask for F17h L3 PMCs").
+Already fixed in ath.git.
 
-The bot has tested the following trees: v5.8.7, v5.4.63, v4.19.143, v4.14.196.
+error: patch failed: drivers/net/wireless/ath/ath9k/ar5008_initvals.h:459
+error: drivers/net/wireless/ath/ath9k/ar5008_initvals.h: patch does not apply
+error: patch failed: drivers/net/wireless/ath/ath9k/ar5008_phy.c:18
+error: drivers/net/wireless/ath/ath9k/ar5008_phy.c: patch does not apply
+stg import: Diff does not apply cleanly
 
-v5.8.7: Build OK!
-v5.4.63: Failed to apply! Possible dependencies:
-    4dcc3df82573 ("perf/amd/uncore: Prepare L3 thread mask code for Family 19h")
-    9689dbbeaea8 ("perf/amd/uncore: Make L3 thread mask code more readable")
-    e48667b86548 ("perf/amd/uncore: Add support for Family 19h L3 PMU")
-
-v4.19.143: Failed to apply! Possible dependencies:
-    4dcc3df82573 ("perf/amd/uncore: Prepare L3 thread mask code for Family 19h")
-    6d0ef316b9f8 ("x86/events: Add Hygon Dhyana support to PMU infrastructure")
-    9689dbbeaea8 ("perf/amd/uncore: Make L3 thread mask code more readable")
-    e48667b86548 ("perf/amd/uncore: Add support for Family 19h L3 PMU")
-
-v4.14.196: Failed to apply! Possible dependencies:
-    4dcc3df82573 ("perf/amd/uncore: Prepare L3 thread mask code for Family 19h")
-    6d0ef316b9f8 ("x86/events: Add Hygon Dhyana support to PMU infrastructure")
-    9689dbbeaea8 ("perf/amd/uncore: Make L3 thread mask code more readable")
-    e48667b86548 ("perf/amd/uncore: Add support for Family 19h L3 PMU")
-
-
-NOTE: The patch will not be queued to stable trees until it is upstream.
-
-How should we proceed with this patch?
+Patch set to Rejected.
 
 -- 
-Thanks
-Sasha
+https://patchwork.kernel.org/patch/11766769/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
