@@ -2,84 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1884265420
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:51:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 373C226541F
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:51:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725904AbgIJVvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 17:51:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35186 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730825AbgIJMuj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1725896AbgIJVva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 17:51:30 -0400
+Received: from a27-11.smtp-out.us-west-2.amazonses.com ([54.240.27.11]:45382
+        "EHLO a27-11.smtp-out.us-west-2.amazonses.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730067AbgIJMuj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 10 Sep 2020 08:50:39 -0400
-Received: from localhost (p5486ceec.dip0.t-ipconnect.de [84.134.206.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AD22320882;
-        Thu, 10 Sep 2020 12:50:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599742207;
-        bh=DqxNaNfAxBAFdZARRzshzmaGwx327r2VxbQbaMWY+Jc=;
-        h=Date:From:To:Subject:References:In-Reply-To:From;
-        b=pbXOrTd5KXxDPnmhFcVLnfFAZcllCFUP+VVM53WJsVW9sf1O7HXBU6EylvrYVEV5w
-         vyXbueUqRW/dJjj7rgj/walpI+dkjHuIyj6qFIkRJ6DzzEBF54FubPkkrH5x1tyi6j
-         m/Zukaa9CC2cg2EGmwdf0PNshU6qn4kRu1ofy4zo=
-Date:   Thu, 10 Sep 2020 14:50:04 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     pierre-yves.mordret@st.com, alexandre.torgue@st.com,
-        linux-i2c@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        fabrice.gasnier@st.com, Krzysztof Kozlowski <krzk@kernel.org>,
-        Holger Assmann <h.assmann@pengutronix.de>
-Subject: Re: [PATCH] i2c: stm32: do not display error when DMA is not
- requested
-Message-ID: <20200910125004.GK1031@ninjato>
-References: <1599730349-2160-1-git-send-email-alain.volmat@st.com>
- <20200910100607.GJ1031@ninjato>
- <20200910122739.GA5093@gnbcxd0016.gnb.st.com>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+        s=zsmsymrwgfyinv5wlfyidntwsjeeldzt; d=codeaurora.org; t=1599742237;
+        h=MIME-Version:Content-Type:Content-Transfer-Encoding:Date:From:To:Cc:Subject:In-Reply-To:References:Message-ID;
+        bh=A9Lh+vWkVNILygqWZqjls4YC1TZDnQLkSvqL2XZ3eIY=;
+        b=NxfYxLCx5rlXYYDTuelbyMbjN32D2KSdTUxQIaitStu/OcDhhTxt/k7a9bInokxb
+        uH059kXmlQ8+vw8HB/aAWx/xHGdk1dOq3a9kO/LUw0Fio1z6JGWpjP1SfAg6Tq7zwLA
+        OqySPARGPcA5wO4eciHZAgAsjbsmOGOZY77+OWMk=
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+        s=hsbnp7p3ensaochzwyq5wwmceodymuwv; d=amazonses.com; t=1599742237;
+        h=MIME-Version:Content-Type:Content-Transfer-Encoding:Date:From:To:Cc:Subject:In-Reply-To:References:Message-ID:Feedback-ID;
+        bh=A9Lh+vWkVNILygqWZqjls4YC1TZDnQLkSvqL2XZ3eIY=;
+        b=UuYYvFIzIIrkH4W7FFzYBwgGZdTyMev1iIAKnKd2rW1t9IfsVCf9gdEPUKQvP4th
+        2RZ6X8kf3kZx+lsieWBY3qoHDy5LgQK0fdruwR8CRSVTuUjoMIXNFAmGSixWJVAUUWT
+        C5le0DXzBGAr8bN3rCn/b1n/ttvmL6+2q52GAt3g=
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="iSeZnk6FyAS3EJ1y"
-Content-Disposition: inline
-In-Reply-To: <20200910122739.GA5093@gnbcxd0016.gnb.st.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 10 Sep 2020 12:50:36 +0000
+From:   skakit@codeaurora.org
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Akash Asthana <akashast@codeaurora.org>,
+        Roja Rani Yarubandi <rojay@codeaurora.org>,
+        msavaliy@qti.qualcomm.com
+Subject: Re: [PATCH V4 3/4] arm64: dts: qcom: sc7180: Add sleep state for BT
+ UART
+In-Reply-To: <CAD=FV=VyRU3+BLx_6YPrOsaA6E05cJn_OpBR1y3Dt0LA0X5REA@mail.gmail.com>
+References: <1599145498-20707-1-git-send-email-skakit@codeaurora.org>
+ <1599145498-20707-4-git-send-email-skakit@codeaurora.org>
+ <CAD=FV=VyRU3+BLx_6YPrOsaA6E05cJn_OpBR1y3Dt0LA0X5REA@mail.gmail.com>
+Message-ID: <010101747811583e-172b27b5-ea28-4660-a64b-407b13bb6fd1-000000@us-west-2.amazonses.com>
+X-Sender: skakit@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
+X-SES-Outgoing: 2020.09.10-54.240.27.11
+Feedback-ID: 1.us-west-2.CZuq2qbDmUIuT3qdvXlRHZZCpfZqZ4GtG9v3VKgRyF0=:AmazonSES
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2020-09-10 02:59, Doug Anderson wrote:
+> Hi,
+> 
+> On Thu, Sep 3, 2020 at 8:08 AM satya priya <skakit@codeaurora.org> 
+> wrote:
+>> 
+>> diff --git a/arch/arm64/boot/dts/qcom/sc7180-idp.dts 
+>> b/arch/arm64/boot/dts/qcom/sc7180-idp.dts
+>> index cecac3e..77e3523 100644
+>> --- a/arch/arm64/boot/dts/qcom/sc7180-idp.dts
+>> +++ b/arch/arm64/boot/dts/qcom/sc7180-idp.dts
+>> @@ -507,6 +507,43 @@
+>>         };
+>>  };
+>> 
+>> +&qup_uart3_sleep {
+>> +       pinconf-cts {
+>> +               /*
+>> +                * Configure no-pull on CTS. As this is driven by BT, 
+>> do not
+>> +                * specify any pull in order to not conflict with BT 
+>> pulls.
+>> +                */
+>> +               pins = "gpio38";
+>> +               bias-disable;
+> 
+> Same comment as in the previous patch that I'm not convinced removing
+> the bias here is correct.
+> 
 
---iSeZnk6FyAS3EJ1y
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Okay.
 
+> 
+>> +       };
+>> +
+>> +       pinconf-rts {
+>> +               /*
+>> +                * Configure pull-down on RTS to make sure that the BT 
+>> SoC can
+>> +                * wake up the system by sending wakeup bytes during 
+>> suspend.
+>> +                */
+>> +               pins = "gpio39";
+>> +               bias-pull-down;
+>> +       };
+>> +
+>> +       pinconf-tx {
+>> +               /* Configure pull-up on TX when it isn't actively 
+>> driven */
+>> +               pins = "gpio40";
+>> +               bias-pull-up;
+>> +       };
+>> +
+>> +       pinconf-rx {
+>> +               /*
+>> +                * Configure a pull-up on RX. This is needed to avoid
+>> +                * garbage data when the TX pin of the Bluetooth 
+>> module is
+>> +                * in tri-state (module powered off or not driving the
+>> +                * signal yet).
+>> +                */
+>> +               pins = "gpio41";
+>> +               bias-pull-up;
+>> +       };
+>> +};
+>> +
+>>  &qup_uart8_default {
+> 
+> Slight nit that "default" starts with a "d" which sorts before "sleep"
+> which starts with an "s".  Thus "qup_uart8_default" should be above
+> "qup_uart3_sleep", not below.
 
-> Indeed, that's a good point. I'll rework it then, to avoid the dependency
-> on dev_err_probe change. If that is ok, I propose to push a two patches serie
-> with both this fix (updated) followed by a rebased version of the
-> dev_err_probe patch from Krzysztof for dev_err_probe change.
-
-Perfect!
-
-
---iSeZnk6FyAS3EJ1y
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl9aIPgACgkQFA3kzBSg
-KbYgHA//TZ1dChdYgru0+uAzrZfxdIpwWVnNaKn7ETaRe5xAJba24FzjiYdHUiTy
-lI6TI4QbPc4Pc/YavOEmnuj6gRXsYSZE/ZKkLNdhESkNuGYcBfHwhWfXecs5J6RB
-D55pc+nbkXwHZZZp/Ojo9e2/XW8m6I5BvophEKb3ORb54VENLekaF7YWBm0nzliy
-yxQ6kwUQfJ9zQk9wr8QGRKy4XvRJp4VrOq8DfSdjnGev9rYIfsfDOn5RyHetUOqJ
-D/wBck/RKqXYM+CXWijwe7qZLp3wHOGtgmv9KdBE4j/Jb4ZKk70K8xE8rRE9hUSS
-7ZjoWIEfYbZs7pPvja2svuOy9cslLIjhOigaZn/hCVHQS5+uebRBUKUoyqZVUjcH
-2JD7IdC6UtCqcv0D4HKMw6F01HQxx/YKUIs8Ik+ObRdeB3MKZNeGlM1HpRRDq52C
-5G6wKWTlD+JQqRtrypvpYUNo151keAi5pKcPsKSPynglOc06Vadeagl1hwcP4tTD
-dT4NjtsmAASoQcakM3QZ1TQ7pjnOwjj9C2QlN99+2/ysGKggMy/EimM4YNC8Ne9N
-7FAtAFMS8awvHPjaHyXm77fcApgnMot6D6JpsINKEwRQ+T0ayVXRBVRSuU6/TCGK
-995S7CtiEWnQgR9k0+HfuMHZCbRKT+/b6W//CMDaGzhnesfHJ54=
-=9MtT
------END PGP SIGNATURE-----
-
---iSeZnk6FyAS3EJ1y--
+Okay.
