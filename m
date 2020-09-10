@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 750A3264407
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 12:28:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 383C02643E1
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 12:25:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726345AbgIJK1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 06:27:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35376 "EHLO mail.kernel.org"
+        id S1730846AbgIJKZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 06:25:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35504 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727893AbgIJKYL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 06:24:11 -0400
+        id S1730277AbgIJKYO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 06:24:14 -0400
 Received: from mail.kernel.org (ip5f5ad5ac.dynamic.kabel-deutschland.de [95.90.213.172])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7D42D21556;
+        by mail.kernel.org (Postfix) with ESMTPSA id 86B7821D7E;
         Thu, 10 Sep 2020 10:24:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1599733450;
-        bh=uAmqZ5lhgQiIp+ZbTBM+IlrsfVig3NUg8EB06Ii3lck=;
+        bh=18bO8d6MOtL5Fa/RGVc/YxGeCwHKjnI3HmekDYcuXzk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0FNGjU1gT0b0tH5ePOzeEjjqluZksqgnM2IYSFK0iTuPCj6skx7m1Qjy1Hi/tUcMn
-         PbPjoGs1GUikqdAZ06iCvPeMUFE32rTBkItgyYwxYR1AadrS+GZBwhWqT4e8FwBmBD
-         n5LOYEHzKsZjUmD0quThkBM2HvnXZ/1FeUDBvxOk=
+        b=cDB6b/QRMluCKDbFpemYuHMDRjUG0DODdX1cTqirdjsujjsH9Gk/tZxFdGQjQCWQM
+         eJ6D+Rr3Z9IfW6TXdsOsUdPZ4grIE48flujXZ/HaUOsYZykwUS/4S85gWdl8ad5jJl
+         E35F5NgwgMuF4O5ryMCLHB3VGeDNLNtc8oUWaKsg=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kGJkO-00EINg-AH; Thu, 10 Sep 2020 12:24:08 +0200
+        id 1kGJkO-00EINi-BR; Thu, 10 Sep 2020 12:24:08 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
         Jonathan Corbet <corbet@lwn.net>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 02/14] usb: docs: document altmode register/unregister functions
-Date:   Thu, 10 Sep 2020 12:23:55 +0200
-Message-Id: <3a62f4520e8eedfbf701fc67ba8de49ac8e5b9ce.1599732764.git.mchehab+huawei@kernel.org>
+Subject: [PATCH 03/14] XArray: docs: add missing kernel-doc parameters for xas_split_alloc()
+Date:   Thu, 10 Sep 2020 12:23:56 +0200
+Message-Id: <17aed0aeb9dad9ad3a1ca97da11bec16a6283f3c.1599732764.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1599732764.git.mchehab+huawei@kernel.org>
 References: <cover.1599732764.git.mchehab+huawei@kernel.org>
@@ -44,81 +44,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The typec_bus.rst asks for documentation of those two
-functions, but they don't exist:
-
-	./drivers/usb/typec/bus.c:1: warning: 'typec_altmode_unregister_driver' not found
-	./drivers/usb/typec/bus.c:1: warning: 'typec_altmode_register_driver' not found
-
-Also, they're not declared on bus.c but, instead, at a header
-file (typec_altmode.h).
-
-So, add documentation for both functions at the header and
-change the kernel-doc markup under typec_bus.rst to point
-to the right place.
-
-While here, also place the documentation for both structs
-declared on typec_altmode.h at the rst file.
+The parameters for such function are not described. Copy the
+description from the conventions (at the beginning of this
+file), and fill in the blanks for the @order parameter.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/driver-api/usb/typec_bus.rst |  8 +++++++-
- include/linux/usb/typec_altmode.h          | 16 ++++++++++++++++
- 2 files changed, 23 insertions(+), 1 deletion(-)
+ lib/xarray.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/driver-api/usb/typec_bus.rst b/Documentation/driver-api/usb/typec_bus.rst
-index 03dfa9c018b7..21c890ae17e5 100644
---- a/Documentation/driver-api/usb/typec_bus.rst
-+++ b/Documentation/driver-api/usb/typec_bus.rst
-@@ -91,10 +91,16 @@ their control.
- Driver API
- ----------
+diff --git a/lib/xarray.c b/lib/xarray.c
+index c2ae180bd57f..b2dea0c63dbb 100644
+--- a/lib/xarray.c
++++ b/lib/xarray.c
+@@ -1004,8 +1004,15 @@ static void node_set_marks(struct xa_node *node, unsigned int offset,
+ }
  
-+Alternate mode structs
-+~~~~~~~~~~~~~~~~~~~~~~
-+
-+.. kernel-doc:: include/linux/usb/typec_altmode.h
-+   :functions: typec_altmode_driver typec_altmode_ops
-+
- Alternate mode driver registering/unregistering
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- 
--.. kernel-doc:: drivers/usb/typec/bus.c
-+.. kernel-doc:: include/linux/usb/typec_altmode.h
-    :functions: typec_altmode_register_driver typec_altmode_unregister_driver
- 
- Alternate mode driver operations
-diff --git a/include/linux/usb/typec_altmode.h b/include/linux/usb/typec_altmode.h
-index a4b65eaa0f62..5e0a7b7647c3 100644
---- a/include/linux/usb/typec_altmode.h
-+++ b/include/linux/usb/typec_altmode.h
-@@ -152,10 +152,26 @@ struct typec_altmode_driver {
- #define to_altmode_driver(d) container_of(d, struct typec_altmode_driver, \
- 					  driver)
- 
-+/**
-+ * typec_altmode_register_driver - registers a USB Type-C alternate mode
-+ * 				   device driver
-+ * @drv: pointer to struct typec_altmode_driver
+ /**
+- * Allocate memory for splitting an entry of @order size into the order
+- * stored in the @xas.
++ * xas_split_alloc() - Allocate memory for splitting an entry of
++ *		       @order size into the order stored in the @xas.
 + *
-+ * These drivers will be bind to the partner alternate mode devices. They will
-+ * handle all SVID specific communication.
-+ */
- #define typec_altmode_register_driver(drv) \
- 		__typec_altmode_register_driver(drv, THIS_MODULE)
- int __typec_altmode_register_driver(struct typec_altmode_driver *drv,
- 				    struct module *module);
-+/**
-+ * typec_altmode_unregister_driver - unregisters a USB Type-C alternate mode
-+ * 				     device driver
-+ * @drv: pointer to struct typec_altmode_driver
-+ *
-+ * These drivers will be bind to the partner alternate mode devices. They will
-+ * handle all SVID specific communication.
-+ */
- void typec_altmode_unregister_driver(struct typec_altmode_driver *drv);
- 
- #define module_typec_altmode_driver(__typec_altmode_driver) \
++ * @xas: is the 'xarray operation state'.  It may be either a pointer to
++ * an xa_state, or an xa_state stored on the stack.  This is an unfortunate
++ * ambiguity.
++ * @entry: refers to something stored in a slot in the xarray
++ * @order: size of each entry
++ * @gfp: GFP allocation flags
+  */
+ void xas_split_alloc(struct xa_state *xas, void *entry, unsigned int order,
+ 		gfp_t gfp)
 -- 
 2.26.2
 
