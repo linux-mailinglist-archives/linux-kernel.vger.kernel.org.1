@@ -2,137 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7CDB264AC9
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 19:13:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57491264AD2
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 19:14:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726167AbgIJRM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 13:12:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53386 "EHLO
+        id S1726675AbgIJROW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 13:14:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726612AbgIJRLf (ORCPT
+        with ESMTP id S1726922AbgIJRMB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 13:11:35 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D631BC061573
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 10:11:34 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id o5so7546576wrn.13
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 10:11:34 -0700 (PDT)
+        Thu, 10 Sep 2020 13:12:01 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9259FC061757
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 10:11:53 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id p15so3171592qvk.5
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 10:11:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=e7jefh25XCKZfPoIkRNxN7N4Tflp0SqsV/tI/tWYRzk=;
-        b=XG1F0moHLQKlC3AzqilBlzA2HA0fK1G/k0lQDl+t35aFaRzrjooU2skfOKLerx6Zpr
-         aU6YzU6ZJZ/zKaE8xcC+nNp0VAcKbPZuR5BZHuXK1f46JHA+yueimFnO63xfUaOObu2B
-         a6KEqTqY8qvD8imR7OJy2tdob5sN4dHzBtqQ9OFtO1alOVwWU8wjmOzFcHO9bjUwDMCP
-         872eO5nSO78xuXnQhncEZ1VUIIBsbB/7ORAtpx+i3CAvAnubYuxfBiDBrQh0RNYa1vGH
-         pl2FeosyK0AxyAbc10rEw4avzsAxWRxIcKVeMMKiOA8kETxcpqtVxC1B/Uy1nrGlciAA
-         Eetg==
+        bh=8vk1P98X5wFislYUCmYAXFRXimxyGQmLmxtAeRXAYBI=;
+        b=dJ2eDS6OYx+Rr1FutsvSR3n0fKpYmBxf+wOjWwihbER0Mw3BpAiGD3a1kT4fo1a656
+         V80AfRGIV99omd5ddL5JXBPXJpatkmQWDKWjGcSi3nGAYjSpVDMG2pZu8Fkynp9EzdjX
+         2/ZYKWFE1At3yPuYVv1KopWAn5xo8pS001kqzr2rly3W3jrkKbttTPtkG2EYUKUj4EGt
+         MHWogp+BNZlsUeqAcYg4Aoal6ThfyH5NVr26hIbvK3Mt8XY3Y5C7MiXhyp78D251+52b
+         C8d5kNgjGwTl6Xk71d0Q0zyx2a8aj5SlpPUBsKpl7rd0oX916/kxRsgG0UC0xMBgkc6E
+         U4WQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=e7jefh25XCKZfPoIkRNxN7N4Tflp0SqsV/tI/tWYRzk=;
-        b=kUDg8S6fUWGzMEZ+bpIbwa2iXixlDi+uHF0mkZk2yIDJ2K3bKJK3NKWSeXvCMWVSbB
-         ipHBBrdUwgkuJt6bA3bNcb4hxSM+B8XF7te4BKgHXTPKAPNK26VRrWqO2JE1eslCwYqY
-         E2iTPWqnY3P99e+OMRck9JZ1Y46kNDa7Xrzh4xAc3hnQqy4kvMRLQD80oSm2z1wRSMq0
-         JpslwVhGW8NXmqeOfcr9S/R4YNAUTPTLKWmqL8Ho/TD+tHQLuxLlMH10AjgtddgWkOJB
-         D3hCNRWM49xkXIqLqTS4rnJa4HqLE32q5HXldQpfcPCNRkwMmt0Mm7kxIsZEdcmAbnZG
-         q5dw==
-X-Gm-Message-State: AOAM532LME/rRDRD81LMKKIgRm5POzYyMIycjIxqgFQFl7NacMatOR2E
-        VLokipGDqQn/5K0iddA7WQlXp+PI56Tii/JQ0N/KVw==
-X-Google-Smtp-Source: ABdhPJwtHTt5kfroDQYT7AFrVej7dGgwjf21yW5MaYlzGNNQRhDz4YP5JrYn6cWgBC7NRLjptYY2REfgsATBs5jY8V0=
-X-Received: by 2002:adf:82b1:: with SMTP id 46mr10891426wrc.271.1599757893281;
- Thu, 10 Sep 2020 10:11:33 -0700 (PDT)
+        bh=8vk1P98X5wFislYUCmYAXFRXimxyGQmLmxtAeRXAYBI=;
+        b=KoDr1P79dr5EBEU7duK+WwR0DLzXAglOSO1lLgOK5wed0jWKf1Zlw6XuUunIhhX5nQ
+         pLvNzauFQ9/y5cth/BkoKlZFEqTOSTEVGCoK8FNSGVE7FAgLsZBUuncKuC8OUNBhoJox
+         0/xP1ncT1IwkWfJvlspuTisU1dsCgOhQoLOCvRr0cBzNYbuNyHtLcM9J2b0/8Cy5yTmA
+         xx4ralB6pn8H5sK+9w8ScYJ93phY3+n32BE+Nz3VTvfzJheANMvbtPwX0wg2zFzqUkWQ
+         VjHQmbqza0MLm9wfj2ZFINnzfks6n2BU0FbPsDLJB0edVGiC0psnmJsrslJKvums0eMB
+         8iIQ==
+X-Gm-Message-State: AOAM532+kvRIEzHb64nwUXS5faXguminUWG4gDbfJAQYtVBn73ERcYv5
+        LOho1Lm+hW/jIWAUwdNPkiAJEaH2gPaVuj+6InivWg==
+X-Google-Smtp-Source: ABdhPJxGU1FdqtWLYisiJfOMl6bKtcIBYvD7h4od2dwulxA+1a32srJ7nxaPEvQ9IFFnstG56C9dtYDNYTUhBbF+tSo=
+X-Received: by 2002:a0c:f984:: with SMTP id t4mr9654083qvn.18.1599757912407;
+ Thu, 10 Sep 2020 10:11:52 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200908044228.61197-1-namhyung@kernel.org> <20200910155736.jadhmqvnqquammpn@two.firstfloor.org>
-In-Reply-To: <20200910155736.jadhmqvnqquammpn@two.firstfloor.org>
-From:   Ian Rogers <irogers@google.com>
-Date:   Thu, 10 Sep 2020 10:11:21 -0700
-Message-ID: <CAP-5=fUp90QrY+HcetpgZJeUn2fSqndRCZ8f1m=rFcEwO7ZZew@mail.gmail.com>
-Subject: Re: [PATCHSET 0/4] perf stat: Add --multiply-cgroup option
-To:     Andi Kleen <andi@firstfloor.org>
-Cc:     Namhyung Kim <namhyung@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+References: <20200907134055.2878499-1-elver@google.com> <20200907134055.2878499-2-elver@google.com>
+ <CACT4Y+bfp2ch2KbSMkUd3142aA4p2CiMOmdXrr0-muu6bQ5xXg@mail.gmail.com> <CAG_fn=W4es7jaTotDORt2SwspE4A804mdwAY1j4gcaSEKtRjiw@mail.gmail.com>
+In-Reply-To: <CAG_fn=W4es7jaTotDORt2SwspE4A804mdwAY1j4gcaSEKtRjiw@mail.gmail.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Thu, 10 Sep 2020 19:11:41 +0200
+Message-ID: <CACT4Y+awrz-j8y5Qc8OS9qkov4doMnw1V=obwp3MB_LTvaUFXw@mail.gmail.com>
+Subject: Re: [PATCH RFC 01/10] mm: add Kernel Electric-Fence infrastructure
+To:     Alexander Potapenko <glider@google.com>
+Cc:     Marco Elver <elver@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Lameter <cl@linux.com>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
         Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Stephane Eranian <eranian@google.com>,
-        LKML <linux-kernel@vger.kernel.org>
+        Pekka Enberg <penberg@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>, Qian Cai <cai@lca.pw>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux-MM <linux-mm@kvack.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 8:57 AM Andi Kleen <andi@firstfloor.org> wrote:
+On Thu, Sep 10, 2020 at 6:19 PM Alexander Potapenko <glider@google.com> wrote:
 >
-> On Tue, Sep 08, 2020 at 01:42:24PM +0900, Namhyung Kim wrote:
-> > When we profile cgroup events with perf stat, it's very annoying to
-> > specify events and cgroups on the command line as it requires the
-> > mapping between events and cgroups.  (Note that perf record can use
-> > cgroup sampling but it's not usable for perf stat).
+> On Thu, Sep 10, 2020 at 5:43 PM Dmitry Vyukov <dvyukov@google.com> wrote:
 >
-> The problem is real, but I don't really like your solution.
-> The option is ugly. Should rather be solved with some suitable
-> syntax in the expression parser to express: apply to all,
-> instead of adding adhoc options like this.
 >
-> There are some additional problems that really need to be eventually
-> solved too:
+> > > +       /* Calculate address for this allocation. */
+> > > +       if (right)
+> > > +               meta->addr += PAGE_SIZE - size;
+> > > +       meta->addr = ALIGN_DOWN(meta->addr, cache->align);
+> >
+> > I would move this ALIGN_DOWN under the (right) if.
+> > Do I understand it correctly that it will work, but we expect it to do
+> > nothing for !right? If cache align is >PAGE_SIZE, nothing good will
+> > happen anyway, right?
+> > The previous 2 lines look like part of the same calculation -- "figure
+> > out the addr for the right case".
 >
-> - If you use the old syntax and some cgroups are not covered you don't
-> get any warning. At least that should be fixed too.
+> Yes, makes sense.
 >
-> - And of course if everything works it is still very slow for the kernel
-> because there are so many perf events to handle. Long term we probably
-> need some more flexible way to just specify for given perf events which set of
-> cgroups they should apply, so that sharing and low overhead monitoring
-> of many cgroups is possible I hate to say it, but maybe some eBPF filter
-> is the solution here.
+> > > +
+> > > +       schedule_delayed_work(&kfence_timer, 0);
+> > > +       WRITE_ONCE(kfence_enabled, true);
+> >
+> > Can toggle_allocation_gate run before we set kfence_enabled? If yes,
+> > it can break. If not, it's still somewhat confusing.
 >
-> -Andi
+> Correct, it should go after we enable KFENCE. We'll fix that in v2.
+>
+> > > +void __kfence_free(void *addr)
+> > > +{
+> > > +       struct kfence_metadata *meta = addr_to_metadata((unsigned long)addr);
+> > > +
+> > > +       if (unlikely(meta->cache->flags & SLAB_TYPESAFE_BY_RCU))
+> >
+> > This may deserve a comment as to why we apply rcu on object level
+> > whereas SLAB_TYPESAFE_BY_RCU means slab level only.
+>
+> Sorry, what do you mean by "slab level"?
+> SLAB_TYPESAFE_BY_RCU means we have to wait for possible RCU accesses
+> in flight before freeing objects from that slab - that's basically
+> what we are doing here below:
 
-Just to throw in some 2c worth. A nice thing about Namhyung's approach
-is that it can apply for metrics, events and pfm-events. It would be
-nice if there were a single option for specifying these, perhaps we
-can figure one out.
+Exactly! You see it is confusing :)
+SLAB_TYPESAFE_BY_RCU does not mean that. rcu-freeing only applies to
+whole pages, that's what I mean by "slab level" (whole slabs are freed
+by rcu).
 
-One thought that came to mind based on Namhyung's multiply name was
-and assuming a cgroup could be a modifier:
-
-perf record -e cycles:G1
-
-there could be equivalent to a new syntax of lists and multiplies of:
-
-perf record -e [cycles]*[:G1]
-
-This would allow expressions like:
-
-perf record -e [{instructions,cycles},branches]*[:u,:k]
-
-which would be equivalent to (showing the effect on sibling groups):
-
-perf record -e {instructions:u,cycles:u},branches:u,{instructions:k,cycles:k},branches:k
-
-Adding in cgroups makes a longer list of events:
-
-perf record -e [{instructions,cycles},branches]*[:u,:k]*[:G1,:G2]
-
-becomes:
-
-perf record -e {instructions:u:G1,cycles:u:G1},branches:u:G1,{instructions:k:G1,cycles:k:G1},branches:k:G1,{instructions:u:G2,cycles:u:G2},branches:u:G2,{instructions:k:G2,cycles:k:G2},branches:k:G2
-
-This is somewhat similar to Arnaldo's proposal but trying to make
-things a bit more generic, avoiding overloading the use of sibling
-groups, .. Perhaps there is a syntax that others prefer or could be
-borrowed from a familiar source like a programming language.
-
-I think for Namhyung's sake it is important not to get too distracted
-by desires for better syntax, as this change makes a benefit in a way
-that works with the existing flags. If it is accepted, the man pages
-need to be updated.
-
-Thanks,
-Ian
+> > > +               call_rcu(&meta->rcu_head, rcu_guarded_free);
+> > > +       else
+> > > +               kfence_guarded_free(addr, meta);
+> > > +}
