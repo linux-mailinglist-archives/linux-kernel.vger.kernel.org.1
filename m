@@ -2,46 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3572264E01
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 20:58:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72DBA264E1B
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:00:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727115AbgIJS60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 14:58:26 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:41884 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727800AbgIJSzG (ORCPT
+        id S1727924AbgIJTAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 15:00:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727028AbgIJSzr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 14:55:06 -0400
-Date:   Thu, 10 Sep 2020 18:54:39 -0000
+        Thu, 10 Sep 2020 14:55:47 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 753ABC06179B;
+        Thu, 10 Sep 2020 11:54:42 -0700 (PDT)
+Date:   Thu, 10 Sep 2020 18:54:40 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1599764080;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=Qldr24ZABIko766Gx//VbWWMqXYF18LhWtWeiqzwtIw=;
-        b=jisq6GbOJAxMIKv5XxZCD8bMLvfzZz82EXUOiy7xgs5aLA9KCqlZD5sEMJPLUTf3KjxE+/
-        NE9ROqdj5qCGYDpulaaDq/mqCmCJMUc5wi1OMLuBzSGFW1WY1gvpla8HD8h6WWq7EGlfrE
-        1+Y6lOqPRpftbOK6+PA+TXv+HlpH7MlVPwvjtCznBpGtBDCrya8IbJEOKV01+K9uHhnsMG
-        7JnI/6QhbsEzc7mn+omGDmy8cTyLlJeGT3Cj1Kbd2iWkB8nSy0r8+aav7qHUVKtwRjwuBd
-        P8d5+LNYbMocPUczk6ww9onyoyWTr+l2zg3tXi1k0gaMj6WF4qp2B/v+hulCBg==
+        bh=cmBUa79ZL4WJl5jNgzdooZslXx0/ZBdAe4JG9csV4A0=;
+        b=orOlJXPx1s0qMhZgTjmKJnJxparJuQEZwkBqQnR9Y8nU9NHe51+ChrBZfozAgbwS0Wef83
+        adK+chGnMbkAyyg3YTBf/ilQMuj/NnUVSSmOHkvxgbQqlCNEsL+Qw4gdvdVyyWy4KPhd++
+        2eduue939fT2kMcyRX5DjO0GYUD/NInSHDnleovjCfGB5+pO3ZdOHvDqG+t5MuLzSctX3t
+        zZnrYNRCH339DKyj0f455mddI5crPDPI/zCgQHFQMuuFfgG2c/C2VA3W+5/iEUWsczMIWQ
+        3ZKxsRXyzekr5fjugnskFwdJtiCXjadOHievhO9VkYmk/CMZPO1EW+OU1qvzJw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1599764080;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=Qldr24ZABIko766Gx//VbWWMqXYF18LhWtWeiqzwtIw=;
-        b=aY6r3Pg0mjUbqere7IyZn4fFIZL/DDInioK6lPanDnrj3fk1eVfhVmhhcwNNGaburh7aVj
-        hT2hu+jo5OjglkBw==
+        bh=cmBUa79ZL4WJl5jNgzdooZslXx0/ZBdAe4JG9csV4A0=;
+        b=av4Bj7z1B69ennepX60dMJLnUBg6hjbqGsCzR74NShQ74j4w2ncSarj4/3yLZCK3pJOlsu
+        Ufnw9My32VDlu/Cg==
 From:   "tip-bot2 for Julien Thierry" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: objtool/core] objtool: Skip ORC entry creation for non-text sections
-Cc:     Miroslav Benes <mbenes@suse.cz>,
-        Julien Thierry <jthierry@redhat.com>,
+Subject: [tip: objtool/core] objtool: Move ORC logic out of check()
+Cc:     Julien Thierry <jthierry@redhat.com>,
+        Miroslav Benes <mbenes@suse.cz>,
         Josh Poimboeuf <jpoimboe@redhat.com>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <159976407967.20229.8320651008758701134.tip-bot2@tip-bot2>
+Message-ID: <159976408016.20229.4845386271122861472.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -53,39 +56,154 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the objtool/core branch of tip:
 
-Commit-ID:     3eaecac88a17f7fdf29561a197dc728f7f697c60
-Gitweb:        https://git.kernel.org/tip/3eaecac88a17f7fdf29561a197dc728f7f697c60
+Commit-ID:     d44becb9decf4438d1e555b1428634964d2e5764
+Gitweb:        https://git.kernel.org/tip/d44becb9decf4438d1e555b1428634964d2e5764
 Author:        Julien Thierry <jthierry@redhat.com>
-AuthorDate:    Tue, 25 Aug 2020 13:47:41 +01:00
+AuthorDate:    Tue, 25 Aug 2020 13:47:40 +01:00
 Committer:     Josh Poimboeuf <jpoimboe@redhat.com>
 CommitterDate: Tue, 01 Sep 2020 17:19:11 -05:00
 
-objtool: Skip ORC entry creation for non-text sections
+objtool: Move ORC logic out of check()
 
-Orc generation is only done for text sections, but some instructions
-can be found in non-text sections (e.g. .discard.text sections).
+Now that the objtool_file can be obtained outside of the check function,
+orc generation builtin no longer requires check to explicitly call its
+orc related functions.
 
-Skip setting their orc sections since their whole sections will be
-skipped for orc generation.
-
-Reviewed-by: Miroslav Benes <mbenes@suse.cz>
 Signed-off-by: Julien Thierry <jthierry@redhat.com>
+Reviewed-by: Miroslav Benes <mbenes@suse.cz>
 Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
 ---
- tools/objtool/orc_gen.c | 3 +++
- 1 file changed, 3 insertions(+)
+ tools/objtool/builtin-check.c | 10 +++++++++-
+ tools/objtool/builtin-orc.c   | 21 ++++++++++++++++++++-
+ tools/objtool/check.c         | 18 +-----------------
+ tools/objtool/objtool.h       |  2 +-
+ tools/objtool/weak.c          |  2 +-
+ 5 files changed, 32 insertions(+), 21 deletions(-)
 
-diff --git a/tools/objtool/orc_gen.c b/tools/objtool/orc_gen.c
-index e6b2363..22fe439 100644
---- a/tools/objtool/orc_gen.c
-+++ b/tools/objtool/orc_gen.c
-@@ -18,6 +18,9 @@ int create_orc(struct objtool_file *file)
- 		struct cfi_reg *cfa = &insn->cfi.cfa;
- 		struct cfi_reg *bp = &insn->cfi.regs[CFI_BP];
+diff --git a/tools/objtool/builtin-check.c b/tools/objtool/builtin-check.c
+index 0126ec3..c6d199b 100644
+--- a/tools/objtool/builtin-check.c
++++ b/tools/objtool/builtin-check.c
+@@ -42,6 +42,7 @@ int cmd_check(int argc, const char **argv)
+ {
+ 	const char *objname, *s;
+ 	struct objtool_file *file;
++	int ret;
  
-+		if (!insn->sec->text)
-+			continue;
+ 	argc = parse_options(argc, argv, check_options, check_usage, 0);
+ 
+@@ -58,5 +59,12 @@ int cmd_check(int argc, const char **argv)
+ 	if (!file)
+ 		return 1;
+ 
+-	return check(file, false);
++	ret = check(file);
++	if (ret)
++		return ret;
 +
- 		orc->end = insn->cfi.end;
++	if (file->elf->changed)
++		return elf_write(file->elf);
++
++	return 0;
+ }
+diff --git a/tools/objtool/builtin-orc.c b/tools/objtool/builtin-orc.c
+index 3979f27..7b31121 100644
+--- a/tools/objtool/builtin-orc.c
++++ b/tools/objtool/builtin-orc.c
+@@ -32,6 +32,7 @@ int cmd_orc(int argc, const char **argv)
  
- 		if (cfa->base == CFI_UNDEFINED) {
+ 	if (!strncmp(argv[0], "gen", 3)) {
+ 		struct objtool_file *file;
++		int ret;
+ 
+ 		argc = parse_options(argc, argv, check_options, orc_usage, 0);
+ 		if (argc != 1)
+@@ -43,7 +44,25 @@ int cmd_orc(int argc, const char **argv)
+ 		if (!file)
+ 			return 1;
+ 
+-		return check(file, true);
++		ret = check(file);
++		if (ret)
++			return ret;
++
++		if (list_empty(&file->insn_list))
++			return 0;
++
++		ret = create_orc(file);
++		if (ret)
++			return ret;
++
++		ret = create_orc_sections(file);
++		if (ret)
++			return ret;
++
++		if (!file->elf->changed)
++			return 0;
++
++		return elf_write(file->elf);
+ 	}
+ 
+ 	if (!strcmp(argv[0], "dump")) {
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index 9d4efa3..4afc2d5 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -2908,7 +2908,7 @@ static int validate_reachable_instructions(struct objtool_file *file)
+ 	return 0;
+ }
+ 
+-int check(struct objtool_file *file, bool orc)
++int check(struct objtool_file *file)
+ {
+ 	int ret, warnings = 0;
+ 
+@@ -2960,22 +2960,6 @@ int check(struct objtool_file *file, bool orc)
+ 		goto out;
+ 	warnings += ret;
+ 
+-	if (orc) {
+-		ret = create_orc(file);
+-		if (ret < 0)
+-			goto out;
+-
+-		ret = create_orc_sections(file);
+-		if (ret < 0)
+-			goto out;
+-	}
+-
+-	if (file->elf->changed) {
+-		ret = elf_write(file->elf);
+-		if (ret < 0)
+-			goto out;
+-	}
+-
+ out:
+ 	if (ret < 0) {
+ 		/*
+diff --git a/tools/objtool/objtool.h b/tools/objtool/objtool.h
+index 7efc43f..a635f68 100644
+--- a/tools/objtool/objtool.h
++++ b/tools/objtool/objtool.h
+@@ -22,7 +22,7 @@ struct objtool_file {
+ 
+ struct objtool_file *objtool_open_read(const char *_objname);
+ 
+-int check(struct objtool_file *file, bool orc);
++int check(struct objtool_file *file);
+ int orc_dump(const char *objname);
+ int create_orc(struct objtool_file *file);
+ int create_orc_sections(struct objtool_file *file);
+diff --git a/tools/objtool/weak.c b/tools/objtool/weak.c
+index 8269831..29180d5 100644
+--- a/tools/objtool/weak.c
++++ b/tools/objtool/weak.c
+@@ -17,7 +17,7 @@
+ 	return ENOSYS;							\
+ })
+ 
+-int __weak check(struct objtool_file *file, bool orc)
++int __weak check(struct objtool_file *file)
+ {
+ 	UNSUPPORTED("check subcommand");
+ }
