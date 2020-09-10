@@ -2,175 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C160C2649B0
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 18:27:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 711832649A8
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 18:25:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726899AbgIJQ0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 12:26:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45440 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726821AbgIJQW0 (ORCPT
+        id S1725864AbgIJQZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 12:25:45 -0400
+Received: from mail-io1-f66.google.com ([209.85.166.66]:41365 "EHLO
+        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726879AbgIJQWs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 12:22:26 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61A33C061795
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 09:22:26 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id n2so6497231oij.1
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 09:22:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=G8lEmdXJHmLOdLPgAHRWZC3Ha8HGaj35IzxQ2qyGHjk=;
-        b=cIEj1NRaBj3M+vU2iU5O6NxPxOz2OWM1BzVMyxB4iPiscMa9JGHXkOCcWTjuRKdQn+
-         WW3XmjV4GSKBqibNlmOnZMdYU1FSj7QhwWIM4h/5UvZyFxO1GuT1DC2ZsFq0IUK2urFK
-         2xOEYLoylWBJQlA1j2lpZSv00UpBNmW7Y1O7vtigGc8RFmSFpUQtNLAmtMH8+BCCLOfD
-         HLUSvIKlP7HTRs8ocXFmIkKXrDHKTqU+YDL2DcPRmJ8isxfkmVK7mlxvfqUmKnQTJif1
-         xV8/VTAG5c5yDEDHCOjSpoYUil7R3ci2GtAoq5lF1msz4i3k3XT/em3WjQHx7Fe5Yx5E
-         EoIg==
+        Thu, 10 Sep 2020 12:22:48 -0400
+Received: by mail-io1-f66.google.com with SMTP id z13so7715071iom.8;
+        Thu, 10 Sep 2020 09:22:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=G8lEmdXJHmLOdLPgAHRWZC3Ha8HGaj35IzxQ2qyGHjk=;
-        b=HDms5HONW5RHub+7AxsfQX7O8b09FocAyjBWBk3mjzi9qbtbYOE5ugDwU+nGGyFdjR
-         XngiG+lFCcpyWH/0vkxag84tw8pZTwRol6Qm5KmrAvyxVVFioRDOre1blSv0RoL4qnXd
-         hZUB1kDj+f4zh2ySggpNyd8jqrX12N/paSjjNRuOdtRCumCGTNLIVdbTYCh4HJNMYZ/s
-         Jg6AfnsKhiFlnaZ3gdXGOAIqT3ILWZyRAFD7DTjh/g7fCZPCb+EG/R7PSsqvb25NTYwM
-         Jc06QtwlcZflwG5AFtDh8vFTKDmBzulca9n0whmZ8cJ3lwmwKikJRz8sp1CX/nbpWTKH
-         C6Rg==
-X-Gm-Message-State: AOAM531f7jVSoy0kysrNpXGjMVzqY68ZkafmvCKFbjssNKE9iXEwYwu3
-        m9u+OOjNfh85v9xdN/x/s/+1zKkaAagVY9ez2+vfvg==
-X-Google-Smtp-Source: ABdhPJzKNGteSKAUrvVsUcBoSfx3F9MALvWpVeqSzgYD6tFzAaSmto/tK7cbRNgR8Dn3g9SKOUDKEr5MqvOYL+UKHww=
-X-Received: by 2002:aca:54d1:: with SMTP id i200mr508579oib.172.1599754945387;
- Thu, 10 Sep 2020 09:22:25 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=x6OVAQDQzdq4Ax57japRQmg3Kt6tqa724ilE749v5J4=;
+        b=KaPyBZcaC04//Ehq0Skajr+JEo26pxveDzgxEmghdQ8CV+vYdJmlhFtbnZxfWlKE70
+         jNrQ6vvKzbCdpbawDKbY9nO/TW3LbNxOAk72pfsl8SmSYp0J1mgF2u2He59JN23ktOAF
+         OIijDP7pzdYWVo+8jWqrJhkFE3Jd2EGqf5bIC7Gq5Puv+hFSD3u3bV/rOEaYLbtGRVoL
+         w5Ecc/HN41m82f+Qz4237pOZEJRr9KSBAGpP4bgIlPqNcbTcexolNKxl7daNEQ4PzcXX
+         MRR8lv8vOXMqw/TCFgUzAb3Xts1qjOG8zN69CFPpKZR1tWomrRG9bPAlkyiE9/grpnnH
+         0yag==
+X-Gm-Message-State: AOAM533Xr5o0kOMiaYRFGmI0XTDkVT6a5JaehN7Ms6DuxBL8AAix5lV6
+        xNRmUJLAyotoRRhiZA4b3g==
+X-Google-Smtp-Source: ABdhPJw4Thmx5N2ZRDFawSye6Tqzmj20WVyp4QCJb16NMBP8tvFUnBNZw3i+HbuDS33bT1SUtnOW7A==
+X-Received: by 2002:a5e:c906:: with SMTP id z6mr8071995iol.86.1599754966762;
+        Thu, 10 Sep 2020 09:22:46 -0700 (PDT)
+Received: from xps15 ([64.188.179.251])
+        by smtp.gmail.com with ESMTPSA id k16sm2994874ioc.15.2020.09.10.09.22.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Sep 2020 09:22:46 -0700 (PDT)
+Received: (nullmailer pid 473755 invoked by uid 1000);
+        Thu, 10 Sep 2020 16:22:43 -0000
+Date:   Thu, 10 Sep 2020 10:22:43 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Jim Quinlan <james.quinlan@broadcom.com>
+Cc:     linux-pci@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Robin Murphy <robin.murphy@arm.com>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v11 10/11] PCI: brcmstb: Set bus max burst size by chip
+ type
+Message-ID: <20200910162243.GA473672@bogus>
+References: <20200824193036.6033-1-james.quinlan@broadcom.com>
+ <20200824193036.6033-11-james.quinlan@broadcom.com>
 MIME-Version: 1.0
-References: <20200907134055.2878499-1-elver@google.com> <20200907134055.2878499-2-elver@google.com>
- <CACT4Y+aBpeQYOWGrCoaJ=HAa0BsSekyL88kcLBTGwc--C+Ch0w@mail.gmail.com>
- <CANpmjNN7qAtnUmibwGJEnxd+UcjBM1WeocoLeW0SO24NW3SkVA@mail.gmail.com> <CACT4Y+Z2Nay4mDjnHjooRa7u3ZXf72AFkF=EfkrZjCg9YEduMw@mail.gmail.com>
-In-Reply-To: <CACT4Y+Z2Nay4mDjnHjooRa7u3ZXf72AFkF=EfkrZjCg9YEduMw@mail.gmail.com>
-From:   Marco Elver <elver@google.com>
-Date:   Thu, 10 Sep 2020 18:22:14 +0200
-Message-ID: <CANpmjNM53_yGwC1VFybzzZQ8f9wM=cjtmDdUYjWVct9CO1z6Ag@mail.gmail.com>
-Subject: Re: [PATCH RFC 01/10] mm: add Kernel Electric-Fence infrastructure
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     Alexander Potapenko <glider@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>, Qian Cai <cai@lca.pw>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux-MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200824193036.6033-11-james.quinlan@broadcom.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Sep 2020 at 17:48, Dmitry Vyukov <dvyukov@google.com> wrote:
->
-> On Thu, Sep 10, 2020 at 5:06 PM Marco Elver <elver@google.com> wrote:
-> > > On Mon, Sep 7, 2020 at 3:41 PM Marco Elver <elver@google.com> wrote:
-> > > > +config KFENCE_NUM_OBJECTS
-> > > > +       int "Number of guarded objects available"
-> > > > +       default 255
-> > > > +       range 1 65535
-> > > > +       help
-> > > > +         The number of guarded objects available. For each KFENCE object, 2
-> > > > +         pages are required; with one containing the object and two adjacent
-> > > > +         ones used as guard pages.
-> > >
-> > > Hi Marco,
-> > >
-> > > Wonder if you tested build/boot with KFENCE_NUM_OBJECTS=65535? Can a
-> > > compiler create such a large object?
-> >
-> > Indeed, I get a "ld: kernel image bigger than KERNEL_IMAGE_SIZE".
-> > Let's lower it to something more reasonable.
-> >
-> > The main reason to have the limit is to constrain random configs and
-> > avoid the inevitable error reports.
-> >
-> > > > +config KFENCE_FAULT_INJECTION
-> > > > +       int "Fault injection for stress testing"
-> > > > +       default 0
-> > > > +       depends on EXPERT
-> > > > +       help
-> > > > +         The inverse probability with which to randomly protect KFENCE object
-> > > > +         pages, resulting in spurious use-after-frees. The main purpose of
-> > > > +         this option is to stress-test KFENCE with concurrent error reports
-> > > > +         and allocations/frees. A value of 0 disables fault injection.
-> > >
-> > > I would name this differently. "FAULT_INJECTION" is already taken for
-> > > a different thing, so it's a bit confusing.
-> > > KFENCE_DEBUG_SOMETHING may be a better name.
-> > > It would also be good to make it very clear in the short description
-> > > that this is for testing of KFENCE itself. When I configure syzbot I
-> > > routinely can't figure out if various DEBUG configs detect user
-> > > errors, or enable additional unit tests, or something else.
-> >
-> > Makes sense, we'll change the name.
-> >
-> > > Maybe it should depend on DEBUG_KERNEL as well?
-> >
-> > EXPERT selects DEBUG_KERNEL, so depending on DEBUG_KERNEL doesn't make sense.
-> >
-> > > > +/*
-> > > > + * Get the canary byte pattern for @addr. Use a pattern that varies based on the
-> > > > + * lower 3 bits of the address, to detect memory corruptions with higher
-> > > > + * probability, where similar constants are used.
-> > > > + */
-> > > > +#define KFENCE_CANARY_PATTERN(addr) ((u8)0xaa ^ (u8)((unsigned long)addr & 0x7))
-> > >
-> > > (addr) in macro body
-> >
-> > Done for v2.
-> >
-> > > > +       seq_con_printf(seq,
-> > > > +                      "kfence-#%zd [0x" PTR_FMT "-0x" PTR_FMT
-> > >
-> > > PTR_FMT is only used in this file, should it be declared in report.c?
-> >
-> > It's also used by the test.
-> >
-> > > Please post example reports somewhere. It's hard to figure out all
-> > > details of the reporting/formatting.
-> >
-> > They can be seen in Documentation added later in the series (also
-> > viewable here: https://github.com/google/kasan/blob/kfence/Documentation/dev-tools/kfence.rst)
->
->
-> Looking at the first report. I got impression we are trying to skip
-> __kfence frames, but this includes it:
->
-> kfence-#17 [0xffffffffb672f000-0xffffffffb672f01f, size=32,
-> cache=kmalloc-32] allocated in:
->    __kfence_alloc+0x42d/0x4c0
->    __kmalloc+0x133/0x200
->
-> Is it working as intended?
+On Mon, 24 Aug 2020 15:30:23 -0400, Jim Quinlan wrote:
+> From: Jim Quinlan <jquinlan@broadcom.com>
+> 
+> The proper value of the parameter SCB_MAX_BURST_SIZE varies per chip.  The
+> 2711 family requires 128B whereas other devices can employ 512.  The
+> assignment is complicated by the fact that the values for this two-bit
+> field have different meanings;
+> 
+>   Value   Type_Generic    Type_7278
+> 
+>      00       Reserved         128B
+>      01           128B         256B
+>      10           256B         512B
+>      11           512B     Reserved
+> 
+> Signed-off-by: Jim Quinlan <jquinlan@broadcom.com>
+> Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+> ---
+>  drivers/pci/controller/pcie-brcmstb.c | 19 +++++++++++++++----
+>  1 file changed, 15 insertions(+), 4 deletions(-)
+> 
 
-We're not skipping them for the allocation/free stacks. We can skip
-the kfence+kmalloc frame as well.
+Reviewed-by: Rob Herring <robh@kernel.org>
