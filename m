@@ -2,98 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83E4426502D
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 22:06:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48F8326503A
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 22:08:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726931AbgIJUGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 16:06:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52042 "EHLO
+        id S1726872AbgIJUIM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 16:08:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726844AbgIJUDb (ORCPT
+        with ESMTP id S1726901AbgIJUF6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 16:03:31 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A68AC061757
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 13:03:31 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: dafna)
-        with ESMTPSA id 426C529B6F0
-From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-To:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
-        broonie@kernel.org
-Cc:     tiwai@suse.com, enric.balletbo@collabora.com, kernel@collabora.com,
-        dafna3@gmail.com, lgirdwood@gmail.com, perex@perex.cz,
-        linux-mediatek@lists.infradead.org,
-        ranjani.sridharan@linux.intel.com, matthias.bgg@gmail.com,
-        dmitry.baryshkov@linaro.org,
-        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-Subject: [PATCH] ASoC: core: Optionaly add the component driver name to the component name
-Date:   Thu, 10 Sep 2020 22:03:08 +0200
-Message-Id: <20200910200308.9125-1-dafna.hirschfeld@collabora.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 10 Sep 2020 16:05:58 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BBD9C061573;
+        Thu, 10 Sep 2020 13:05:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=c2OmDmw3CBNdMhbSUreC74RlMC1GtRl7G6wTRWdIDhg=; b=oalS+EShumiM+wP4ntMj+va6+Q
+        Nh1j9337AoOX5aS6ehlDvYBnbeH5wAQR/9ls36am10xynQpwjAzNspdirI5ohbUmCjgytsp6ExJhu
+        61TqiAGlfQvDFqi1JocYtyt1E3SBqZt+RHR5ElNE0185BXyGVupHaZe0djMdV/ttf1KoyzZ8hdeFJ
+        z0CoXaDzfHr5fh5hlf6Gt1AywT/4OZMjRpww4aVwjYJG+OoB5dzIFkkHg42E79TUXRRyuDmQBueyp
+        KAqaQ+Hi5YPbc5abQpTeFLdmAJTJqOQETXvwfl9CDwTes6XA46M10L1IXyJSp5ODcSg+CifPThbbA
+        V4gIP2hA==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kGSpD-0003dj-CF; Thu, 10 Sep 2020 20:05:43 +0000
+Date:   Thu, 10 Sep 2020 21:05:43 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
+        Mimi Zohar <zohar@linux.ibm.com>, linux-kernel@vger.kernel.org,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Christian Heimes <christian@python.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Deven Bowers <deven.desai@linux.microsoft.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Eric Chiang <ericchiang@google.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        James Morris <jmorris@namei.org>, Jan Kara <jack@suse.cz>,
+        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        Matthew Garrett <mjg59@google.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Philippe =?iso-8859-1?Q?Tr=E9buchet?= 
+        <philippe.trebuchet@ssi.gouv.fr>,
+        Scott Shell <scottsh@microsoft.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Steve Dower <steve.dower@python.org>,
+        Steve Grubb <sgrubb@redhat.com>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Thibaut Sautereau <thibaut.sautereau@clip-os.org>,
+        Vincent Strubel <vincent.strubel@ssi.gouv.fr>,
+        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [RFC PATCH v9 0/3] Add introspect_access(2) (was O_MAYEXEC)
+Message-ID: <20200910200543.GY6583@casper.infradead.org>
+References: <20200910164612.114215-1-mic@digikod.net>
+ <20200910170424.GU6583@casper.infradead.org>
+ <f6e2358c-8e5e-e688-3e66-2cdd943e360e@digikod.net>
+ <a48145770780d36e90f28f1526805a7292eb74f6.camel@linux.ibm.com>
+ <880bb4ee-89a2-b9b0-747b-0f779ceda995@digikod.net>
+ <20200910184033.GX6583@casper.infradead.org>
+ <20200910200010.GF1236603@ZenIV.linux.org.uk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200910200010.GF1236603@ZenIV.linux.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ASoC platform driver for Mediatek MT8173 registers
-several components with identical name. This cause an
-error:
-"Directory '11220000.audio-controller' with parent 'mtk-rt5650' already present!"
-when adding debugfs directory for those components.
-To fix this, the function 'fmt_single_name' can receive the name
-of the component driver and concatenate it to the name of the debugfs
-directory for the component.
+On Thu, Sep 10, 2020 at 09:00:10PM +0100, Al Viro wrote:
+> On Thu, Sep 10, 2020 at 07:40:33PM +0100, Matthew Wilcox wrote:
+> > On Thu, Sep 10, 2020 at 08:38:21PM +0200, Mickaël Salaün wrote:
+> > > There is also the use case of noexec mounts and file permissions. From
+> > > user space point of view, it doesn't matter which kernel component is in
+> > > charge of defining the policy. The syscall should then not be tied with
+> > > a verification/integrity/signature/appraisal vocabulary, but simply an
+> > > access control one.
+> > 
+> > permission()?
+> 
+> int lsm(int fd, const char *how, char *error, int size);
+> 
+> Seriously, this is "ask LSM to apply special policy to file"; let's
+> _not_ mess with flags, etc. for that; give it decent bandwidth
+> and since it's completely opaque for the rest of the kernel,
+> just a pass a string to be parsed by LSM as it sees fit.
 
-Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
----
- sound/soc/soc-core.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
-
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 74df22486e30..f470e713b030 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -2227,7 +2227,7 @@ EXPORT_SYMBOL_GPL(snd_soc_unregister_card);
-  * Simplify DAI link configuration by removing ".-1" from device names
-  * and sanitizing names.
-  */
--static char *fmt_single_name(struct device *dev, int *id)
-+static char *fmt_single_name(struct device *dev, int *id, const char *component_driver_name)
- {
- 	const char *devname = dev_name(dev);
- 	char *found, *name;
-@@ -2263,6 +2263,12 @@ static char *fmt_single_name(struct device *dev, int *id)
- 		*id = 0;
- 	}
- 
-+	if (component_driver_name) {
-+		char *tmp = name;
-+
-+		name = devm_kasprintf(dev, GFP_KERNEL, "%s-%s", name, component_driver_name);
-+		devm_kfree(dev, tmp);
-+	}
- 	return name;
- }
- 
-@@ -2327,7 +2333,7 @@ struct snd_soc_dai *snd_soc_register_dai(struct snd_soc_component *component,
- 	 */
- 	if (legacy_dai_naming &&
- 	    (dai_drv->id == 0 || dai_drv->name == NULL)) {
--		dai->name = fmt_single_name(dev, &dai->id);
-+		dai->name = fmt_single_name(dev, &dai->id, NULL);
- 	} else {
- 		dai->name = fmt_multiple_name(dev, dai_drv);
- 		if (dai_drv->id)
-@@ -2460,7 +2466,7 @@ int snd_soc_component_initialize(struct snd_soc_component *component,
- 	INIT_LIST_HEAD(&component->card_list);
- 	mutex_init(&component->io_mutex);
- 
--	component->name = fmt_single_name(dev, &component->id);
-+	component->name = fmt_single_name(dev, &component->id, driver->name);
- 	if (!component->name) {
- 		dev_err(dev, "ASoC: Failed to allocate name\n");
- 		return -ENOMEM;
--- 
-2.17.1
+Hang on, it does have some things which aren't BD^W^WLSM.  It lets
+the interpreter honour the mount -o noexec option.  I presume it's
+not easily defeated by
+	cat /home/salaun/bin/bad.pl | perl -
 
