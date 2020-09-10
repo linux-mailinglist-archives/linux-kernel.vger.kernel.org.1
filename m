@@ -2,58 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A1F72640DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 11:03:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0D222640E1
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 11:04:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727075AbgIJJDw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 05:03:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42074 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725920AbgIJJDv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 05:03:51 -0400
-Received: from kernel.org (unknown [104.132.0.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 06455206A1;
-        Thu, 10 Sep 2020 09:03:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599728631;
-        bh=PXXK58jPCqS6xYVS0F97ACb3SCnVEU4nMHvu1m+Yjww=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=u5/cueTq+S2bdNS+dHMZ3rey0YBx20X/O3idxF7MPKKoBFhB4uB8oNjCldahtEx29
-         gXpFp9cGK6chH8HZamzspUrTZUyCWy7c6pYp8umQlTBTawp8P0wRXER6fvIUcjF3vS
-         oc6q2KtIBUxFLCVYO6B4DrQaVY2hD8J95MCWeWVg=
-Content-Type: text/plain; charset="utf-8"
+        id S1729860AbgIJJEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 05:04:54 -0400
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:35500 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726474AbgIJJEv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 05:04:51 -0400
+Received: by mail-ot1-f67.google.com with SMTP id o6so4761510ota.2;
+        Thu, 10 Sep 2020 02:04:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GeVr52xcVYVVQYH2mCzX9kx4mcN8+pPPI08tkLGlc7k=;
+        b=ZloRhBdZN0rz1EG6wa9rR44Pz00UpQT9/jikTtSb/vZ7m1Fv/yJJ8EF2SLbWE9IK1C
+         tfEeIQKhd33JBdVEyDFeMnzEMGoNIwDlMR64ZAlBZJLdfmZMaVIXo31Xt9LrLH8+EwvT
+         j01NN9XFH7nOYjT2GrGw3jsQsxhNx7GFZ7qzvSgf7xND5BhaYPyssQNEPnHgtQU2zV8m
+         Bntd/WvC3qa1rN2okba4JJ/cMEhEzJHwHML3jPkuOKC1i6kWe5vtGut2x4I9/lOauwmP
+         9z+jBtn3LwPcoBzJ8wz9n7f10hMk/zGCm9BL7/KTeKba1gcMjHqhofhtG+4honM2NnuS
+         TLBA==
+X-Gm-Message-State: AOAM533Z+BweCpxj41CuURytx05pWpJRqMsJ4AsNATurQGTU3QiJi6Vg
+        Om3kbSKeKeKbVj+6bgs9bWPqU8N4KES6LnISM8I=
+X-Google-Smtp-Source: ABdhPJxXoCrwrjpFoN4CQiWLs6WAjXs6RRX2ytCZfe2BhTqBLoPDb12+bVxvd1zFW5gLoibYUb/Si6j3YQ4rJ4mIshU=
+X-Received: by 2002:a9d:5a92:: with SMTP id w18mr200413oth.145.1599728690733;
+ Thu, 10 Sep 2020 02:04:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200827141629.101802-1-jingxiangfeng@huawei.com>
-References: <20200827141629.101802-1-jingxiangfeng@huawei.com>
-Subject: Re: [PATCH] clk: qcom: lpass: Correct goto target in lpass_core_sc7180_probe()
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jingxiangfeng@huawei.com
-To:     Jing Xiangfeng <jingxiangfeng@huawei.com>, agross@kernel.org,
-        bjorn.andersson@linaro.org, mturquette@baylibre.com,
-        tdas@codeaurora.org
-Date:   Thu, 10 Sep 2020 02:03:49 -0700
-Message-ID: <159972862952.2295844.10882678924928944990@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+References: <20200907155541.2011-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20200907155541.2011-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20200907155541.2011-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 10 Sep 2020 11:04:39 +0200
+Message-ID: <CAMuHMdWeMOi3K=QJdC6Mwi=B_L2Fiw8ebp26AqyP2bjtqF=mjg@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] ARM: dts: r8a7742-iwg21d-q7: Add can1 support to
+ carrier board
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Jing Xiangfeng (2020-08-27 07:16:29)
-> lpass_core_sc7180_probe() misses to call pm_clk_destroy() and
-> pm_runtime_disable() in error paths. Correct goto target to fix it.
-> This issue is found by code inspection.
->=20
-> Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
-> ---
+On Mon, Sep 7, 2020 at 5:56 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> This patch enables CAN1 interface exposed through connector J20 on the
+> carrier board.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Chris Paterson <Chris.Paterson2@renesas.com>
 
-HMm.. presumably
+Thanks for the update, will queue in renesas-devel for v5.10.
 
-Fixes: edab812d802d ("clk: qcom: lpass: Add support for LPASS clock control=
-ler for SC7180")
+Gr{oetje,eeting}s,
 
-should be added?
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
