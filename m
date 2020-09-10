@@ -2,97 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05D97264A9E
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 19:05:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33314264AAD
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 19:07:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727852AbgIJRFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 13:05:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52306 "EHLO
+        id S1726853AbgIJRH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 13:07:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727843AbgIJREh (ORCPT
+        with ESMTP id S1727088AbgIJRGp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 13:04:37 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99F84C061573;
-        Thu, 10 Sep 2020 10:04:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=OyXzjCB63mYRe0BvSmc1T78HrhzEXzQ566vkrNeunqA=; b=PNzhRz1iWp6AsZIRd/72enP4n6
-        0cGLlHpItHhRrb4V65JwvV3zyrBFvKYVo7bXAjFWgtvpAGHhyayXpGt/uOkz4CdqT81VeYf3/wKF0
-        dXdbNkOXmfBwjUe/8WbUJI+7Vk5iQf0emhN7GpuPd3c1HZw1T/xWQ/usVNovNbEbO3dRSZMv8JA9H
-        OKXxTeHazmHVvtSSMEOViFLnER1ZFjPDzrdQwYHy6uhKo7rXrBo2NV67Q4zlWAafMgPlX0XLrLhKw
-        SbjsUxcCvBG1XQYoYuuVkZSevrSXz3Hxd8Tl2n4dv5NKRrECTXUzBKQ5zFpZ27FcC/z0JgqFihe9Z
-        QR+thY4g==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kGPzk-000804-44; Thu, 10 Sep 2020 17:04:24 +0000
-Date:   Thu, 10 Sep 2020 18:04:24 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
-Cc:     linux-kernel@vger.kernel.org, Aleksa Sarai <cyphar@cyphar.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Christian Heimes <christian@python.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Deven Bowers <deven.desai@linux.microsoft.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Eric Chiang <ericchiang@google.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        James Morris <jmorris@namei.org>, Jan Kara <jack@suse.cz>,
-        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Matthew Garrett <mjg59@google.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Philippe =?iso-8859-1?Q?Tr=E9buchet?= 
-        <philippe.trebuchet@ssi.gouv.fr>,
-        Scott Shell <scottsh@microsoft.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Steve Dower <steve.dower@python.org>,
-        Steve Grubb <sgrubb@redhat.com>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Thibaut Sautereau <thibaut.sautereau@clip-os.org>,
-        Vincent Strubel <vincent.strubel@ssi.gouv.fr>,
-        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [RFC PATCH v9 0/3] Add introspect_access(2) (was O_MAYEXEC)
-Message-ID: <20200910170424.GU6583@casper.infradead.org>
-References: <20200910164612.114215-1-mic@digikod.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200910164612.114215-1-mic@digikod.net>
+        Thu, 10 Sep 2020 13:06:45 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18566C0613ED
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 10:06:45 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id l39so2313620ybe.14
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 10:06:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to;
+        bh=adI7wIapGHyMuBg8Kx00Pr23ARAsrS6b/e9orFM8JOA=;
+        b=TxixLvjFpgGmwKdMeWaIR8kRBrFRRk06I6hOZ9AnaRZjohco0VkPVEq1D45uXsls+1
+         bXKkgPTkNAYkdNwC63x96d4F9C+deAvT6NOcfjza5Ista3qCP4u231q7B5emR4cawDf7
+         5TDSdzCNod5MEmQIsw7kq4ZBGbGR+XUXidwXtrHWD63lggQgGXd1Zok+9ldBzpH15208
+         Skljw+OPWZmt72AjmO+/jaiJZ1/T3c/1GL0+m4GkAtshks0hRWJMRtILLGhSb48mNiCL
+         zbpmVmsm58N5BnPMtjoj797wJVSBQG1KQwI0eqgFb0XRYuPeAgnnNDksnZLT+mdpcMVi
+         LJ2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to;
+        bh=adI7wIapGHyMuBg8Kx00Pr23ARAsrS6b/e9orFM8JOA=;
+        b=Mvy57Bpvg9QEh05UhssV2E5y0Q09qmYF6rFEgvhnNAZ1xRwqMox96nn07sPrJ4x1Ef
+         hFmX9e/sitY/fScOtZ6RzBams7iCR8onwdiRLYFSeSbH5LVWPwUfpbdKk3LgXuATJTYx
+         NgbD6+Fs8o2aNtC2Ewz/ADz+S1h9XXIq/3WbcEAFmkIy08PyMfEZGG8O1Mv5PVkGFgd7
+         lGFBY9yzhV2t2z2YCGchiKhaYTdz29elLspDgXzrh2PTjQIt6e+kKMd2ovxEpZctIhoT
+         nYaOJ9ttoEMkAbLkjdTxzkhfxtXT2K8rcZ0+w5Vndv/7MmRLxzMwC1jqWDGY1iGXacvX
+         S91g==
+X-Gm-Message-State: AOAM5310RMWBCepXlBucOh+L3qR25fEFI1LFElVAyWqexHrQ3qXx7iwN
+        5C/+Dku6aj8qFu7JxvmHD770Q7yNQ0LUm36U
+X-Google-Smtp-Source: ABdhPJyTReOFIEOH4u3OH8hr4+z1tGzkBXnTI1Wp04EnSFLUMzrekUKJ7atrss2kzIi0XvJ8DrKoGoqZaudODrpE
+X-Received: from chu-dev.c.googlers.com ([fda3:e722:ac3:10:24:72f4:c0a8:3cfb])
+ (user=linchuyuan job=sendgmr) by 2002:a25:61c2:: with SMTP id
+ v185mr14987007ybb.314.1599757604064; Thu, 10 Sep 2020 10:06:44 -0700 (PDT)
+Date:   Thu, 10 Sep 2020 17:06:38 +0000
+Message-Id: <20200910170638.1985729-1-linchuyuan@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.526.ge36021eeef-goog
+Subject: [PATCH] dt-bindings: hwmon: max20730: adding device tree doc for max20730
+From:   Chu Lin <linchuyuan@google.com>
+To:     linchuyuan@google.com, jdelvare@suse.com, linux@roeck-us.net,
+        robh+dt@kernel.org, linux-hwmon@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        qiongwang@google.com, zhongqil@google.com, jasonling@google.com,
+        belgaied@google.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 06:46:09PM +0200, Mickaël Salaün wrote:
-> This ninth patch series rework the previous AT_INTERPRETED and O_MAYEXEC
-> series with a new syscall: introspect_access(2) .  Access check are now
-> only possible on a file descriptor, which enable to avoid possible race
-> conditions in user space.
+Testing:
+make dt_binding_check
 
-But introspection is about examining _yourself_.  This isn't about
-doing that.  It's about doing ... something ... to a script that you're
-going to execute.  If the script were going to call the syscall, then
-it might be introspection.  Or if the interpreter were measuring itself,
-that would be introspection.  But neither of those would be useful things
-to do, because an attacker could simply avoid doing them.
+Signed-off-by: Chu Lin <linchuyuan@google.com>
+---
+ .../devicetree/bindings/hwmon/max20730.txt    | 23 +++++++++++++++++++
+ MAINTAINERS                                   |  1 +
+ 2 files changed, 24 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/hwmon/max20730.txt
 
-So, bad name.  What might be better?  sys_security_check()?
-sys_measure()?  sys_verify_fd()?  I don't know.
+diff --git a/Documentation/devicetree/bindings/hwmon/max20730.txt b/Documentation/devicetree/bindings/hwmon/max20730.txt
+new file mode 100644
+index 000000000000..3afb42b04567
+--- /dev/null
++++ b/Documentation/devicetree/bindings/hwmon/max20730.txt
+@@ -0,0 +1,23 @@
++max20730 properties
++
++Required properties:
++- compatible: Must be one of the supported compatible strings:
++	"maxim,max20730" for max20730
++	"maxim,max20734" for max20734
++	"maxim,max20743" for max20743
++- reg: I2C address
++
++Optional properties:
++
++- vout-voltage-divider
++	Resistance of the vout voltage divider.
++	Two numbers, the first number is the output resistor,
++	the second number is the total resistance.
++
++Example:
++
++max20730@10 {
++	compatible = "maxim,max20730";
++	reg = <0x10>;
++	vout-voltage-divider = <1000 2000>;
++};
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 0a6ac3f00ed5..a04bf34a65b8 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -12371,6 +12371,7 @@ W:	http://www.roeck-us.net/linux/drivers/
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git
+ S:	Maintained
+ F:	Documentation/devicetree/bindings/hwmon/ibm,cffps1.txt
++F:	Documentation/devicetree/bindings/hwmon/max20730.txt
+ F:	Documentation/devicetree/bindings/hwmon/max31785.txt
+ F:	Documentation/devicetree/bindings/hwmon/ltc2978.txt
+ F:	Documentation/hwmon/adm1275
+-- 
+2.28.0.526.ge36021eeef-goog
 
