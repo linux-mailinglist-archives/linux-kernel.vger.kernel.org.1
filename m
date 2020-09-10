@@ -2,73 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 278B6264F21
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:35:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B561E264F9B
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:47:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726410AbgIJTfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 15:35:14 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35968 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731398AbgIJPnn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 11:43:43 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 06CFEACC8;
-        Thu, 10 Sep 2020 15:24:33 +0000 (UTC)
-Date:   Thu, 10 Sep 2020 17:24:47 +0200
-From:   Cyril Hrubis <chrubis@suse.cz>
-To:     Martin Doucha <mdoucha@suse.cz>
-Cc:     ltp@lists.linux.it,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, lkp@lists.01.org,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [LTP] [PATCH v2] syscall/ptrace08: Simplify the test.
-Message-ID: <20200910152447.GA10844@yuki.lan>
-References: <20200904140931.10153-1-chrubis@suse.cz>
- <5d127ee5-56d1-01c5-c364-dcb004204e9d@suse.cz>
+        id S1727041AbgIJTrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 15:47:11 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:28696 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730769AbgIJPZ1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 11:25:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599751512;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=UQEeRxYOrGoLGB9nBiblTSrr/ssmHsXtBv8lg+YH02U=;
+        b=RLHZ+M99unTCxJefSM7gm84nOTOuR4KFNUJmaO62dkN7aC+KXOEkal43q+X0du3nWju9rl
+        AlLeLDgUGq15L51TflErnmGHfPVzRBozvSDk8eMFYeOTGT1Dfe0I+IDTbb4ZpVyKMuoB7v
+        J3Z1i/j2qF8B1xoAhdaUuIIZcbEyGWE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-572-6uLkSfj2Ny-0totYFoFYqA-1; Thu, 10 Sep 2020 11:25:10 -0400
+X-MC-Unique: 6uLkSfj2Ny-0totYFoFYqA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 07BE318C89CB;
+        Thu, 10 Sep 2020 15:25:09 +0000 (UTC)
+Received: from treble.redhat.com (ovpn-119-118.rdu2.redhat.com [10.10.119.118])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 62E645D9EF;
+        Thu, 10 Sep 2020 15:25:08 +0000 (UTC)
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     x86@kernel.org
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH] objtool: Fix noreturn detection for ignored functions
+Date:   Thu, 10 Sep 2020 10:24:57 -0500
+Message-Id: <5b1e2536cdbaa5246b60d7791b76130a74082c62.1599751464.git.jpoimboe@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5d127ee5-56d1-01c5-c364-dcb004204e9d@suse.cz>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
-> looks good and the test passes on older fixed kernels. Just one
-> compatibility issue below.
+When a function is annotated with STACK_FRAME_NON_STANDARD, objtool
+doesn't validate its code paths.  It also skips sibling call detection
+within the function.
 
-I've fixed that and also the kernel version when the behavior had
-changed and pushed, thanks for the review and testing.
+But sibling call detection is actually needed for the case where the
+ignored function doesn't have any return instructions.  Otherwise
+objtool naively marks the function as implicit static noreturn, which
+affects the reachability of its callers, resulting in "unreachable
+instruction" warnings.
 
-...
+Fix it by just enabling sibling call detection for ignored functions.
+The 'insn->ignore' check in add_jump_destinations() is no longer needed
+after commit e6da9567959e ("objtool: Don't use ignore flag for fake
+jumps").
 
-> > +	if (TST_RET != -1) {
-> > +		tst_res(TFAIL, "ptrace() breakpoint with kernel addr succeeded");
-> > +	} else {
-> > +		if (TST_ERR == EINVAL) {
-> > +			tst_res(TPASS | TTERRNO,
-> > +				"ptrace() breakpoint with kernel addr failed");
-> > +		} else {
-> > +			tst_res(TFAIL | TTERRNO,
-> > +				"ptrace() breakpoint on kernel addr should return EINVAL, got");
-> > +		}
-> > +	}
-> > +
-> > +	unsigned long addr;
-> 
-> AFAICT, we're not compiling with --std=c99 so older compilers may
-> complain about the variable declaration here.
+Fixes the following warning:
 
-The default std for gcc has been at least gnu90 for ages, which includes
-subset of c99 features as well including this one. So unless you
-explicitly pass --std=c90 or older it will work just fine.
+  arch/x86/kvm/vmx/vmx.o: warning: objtool: vmx_handle_exit_irqoff()+0x142: unreachable instruction
 
-I've moved the declaration to the top of the function nevertheless.
+Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+---
+ tools/objtool/check.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index e034a8f24f46..90a66891441a 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -619,7 +619,7 @@ static int add_jump_destinations(struct objtool_file *file)
+ 		if (!is_static_jump(insn))
+ 			continue;
+ 
+-		if (insn->ignore || insn->offset == FAKE_JUMP_OFFSET)
++		if (insn->offset == FAKE_JUMP_OFFSET)
+ 			continue;
+ 
+ 		reloc = find_reloc_by_dest_range(file->elf, insn->sec,
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.25.4
+
