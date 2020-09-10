@@ -2,46 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7D22264E22
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:01:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4733D264E20
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:01:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726639AbgIJTBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 15:01:46 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:41784 "EHLO
+        id S1727941AbgIJTA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 15:00:59 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:41798 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726688AbgIJSyr (ORCPT
+        with ESMTP id S1727122AbgIJSzE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 14:54:47 -0400
-Date:   Thu, 10 Sep 2020 18:54:34 -0000
+        Thu, 10 Sep 2020 14:55:04 -0400
+Date:   Thu, 10 Sep 2020 18:54:35 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1599764075;
+        s=2020; t=1599764076;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=L3SZZFRPUnHcIHVodRamdf0L5LfD+h08IWUNNnV6fF4=;
-        b=31sXwdLmjes405/3vEOkXQyPs9RjzZ383TQby9neFl9B7VGxb0S8VXVN8JYV56830zf96l
-        FoH4iEczP4pZOXQXhuwike+PJ1b93iCtBWMImREpHZBT90Pngl3D5qS3ona/fD+9i/naNc
-        NvP1+AtJNysJGJcXV4kvINJsdMWlMLxk/V4ToM9imaJt94ek7N3f7qEtP5R0yWdtiXIji0
-        +wtxRYF40RXKiPZjvQv82hlIjTO5FFcmNMWiMECueuuM3mtRng77fq9eQFgaVGgavfWTZu
-        tjdmsDNde5QWszNMXcEF2G93qpB9EnT9zas9ewoY6LqYEHhrkX/pV9COcQKvxQ==
+        bh=O1U9gwlmdTl0TOace+0dFjWfuN/OBnld9Ordkmuttgs=;
+        b=1YYqsvlrcVIIy19hHYEMC2SGkMI0rXq2bX/Jt35yqaMM+Km5PfL+Sfkn03wHeLS4ZaJJZw
+        g4AbUfeMZ3QehkzuntDW3ncfx4GQG+eVywSUzLs/iLSOxKur2zUoXnBOKGDV3qHtw6ynNu
+        7NNbGtPBfZEQYdFXfg5vbAvKqmgN4obwQTRjTlzDBfXWm6+u0ua+Gj+rccyzgiQ78TxKwR
+        x7Jia7ogdjEnJA77n+WbxRjA6Y9dC03/3yHZyg2siXjqjhbKNuBzcZ/eU8uiM1LP/RKON4
+        yeLc6mwsRi7FM3jjJ1QOuaqAsvhfHJbK0ZOy7+1oaMkyzLH2G6T7hQv+aJs5Ag==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1599764075;
+        s=2020e; t=1599764076;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=L3SZZFRPUnHcIHVodRamdf0L5LfD+h08IWUNNnV6fF4=;
-        b=fPiTbZdo9J6Ch1hjtIlrHfNGSaVZt8Zp4HX3IAaXWpN77kknEDt4IqoLe/nSeIzjU+GsDQ
-        cYRkFKLL+fn/AVCw==
+        bh=O1U9gwlmdTl0TOace+0dFjWfuN/OBnld9Ordkmuttgs=;
+        b=/ydKEwGH8Hz1chwX1gGls1VnnLY2uBasYQQTZ0iHxDMcxpfvUAPiA3mPVoVOPL3B1g+hlC
+        tP6K3DBT1C/y3UAA==
 From:   "tip-bot2 for Julien Thierry" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: objtool/core] objtool: Decode unwind hint register depending on
- architecture
-Cc:     Julien Thierry <jthierry@redhat.com>,
+Subject: [tip: objtool/core] objtool: Only include valid definitions depending
+ on source file type
+Cc:     Miroslav Benes <mbenes@suse.cz>,
+        Julien Thierry <jthierry@redhat.com>,
         Josh Poimboeuf <jpoimboe@redhat.com>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <159976407436.20229.15130486625259199732.tip-bot2@tip-bot2>
+Message-ID: <159976407532.20229.15338761572639027794.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -53,125 +54,55 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the objtool/core branch of tip:
 
-Commit-ID:     edea9e6bcbeaa41718b022a8b99ffddef2330bbc
-Gitweb:        https://git.kernel.org/tip/edea9e6bcbeaa41718b022a8b99ffddef2330bbc
+Commit-ID:     5567c6c39f3404e4492c18c0c1abff5556684f6e
+Gitweb:        https://git.kernel.org/tip/5567c6c39f3404e4492c18c0c1abff5556684f6e
 Author:        Julien Thierry <jthierry@redhat.com>
-AuthorDate:    Fri, 04 Sep 2020 16:30:28 +01:00
+AuthorDate:    Fri, 04 Sep 2020 16:30:26 +01:00
 Committer:     Josh Poimboeuf <jpoimboe@redhat.com>
 CommitterDate: Thu, 10 Sep 2020 10:43:13 -05:00
 
-objtool: Decode unwind hint register depending on architecture
+objtool: Only include valid definitions depending on source file type
 
-The set of registers that can be included in an unwind hint and their
-encoding will depend on the architecture. Have arch specific code to
-decode that register.
+Header include/linux/objtool.h contains both C and assembly definition that
+are visible regardless of the file including them.
 
+Place definition under conditional __ASSEMBLY__.
+
+Reviewed-by: Miroslav Benes <mbenes@suse.cz>
 Signed-off-by: Julien Thierry <jthierry@redhat.com>
 Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
 ---
- tools/objtool/arch.h            |  2 ++-
- tools/objtool/arch/x86/decode.c | 37 ++++++++++++++++++++++++++++++++-
- tools/objtool/check.c           | 27 +-----------------------
- 3 files changed, 40 insertions(+), 26 deletions(-)
+ include/linux/objtool.h | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/tools/objtool/arch.h b/tools/objtool/arch.h
-index b18c5f6..4a84c30 100644
---- a/tools/objtool/arch.h
-+++ b/tools/objtool/arch.h
-@@ -88,4 +88,6 @@ unsigned long arch_dest_reloc_offset(int addend);
+diff --git a/include/linux/objtool.h b/include/linux/objtool.h
+index 358175c..15e9997 100644
+--- a/include/linux/objtool.h
++++ b/include/linux/objtool.h
+@@ -3,6 +3,8 @@
+ #define _LINUX_OBJTOOL_H
  
- const char *arch_nop_insn(int len);
- 
-+int arch_decode_hint_reg(struct instruction *insn, u8 sp_reg);
+ #ifdef CONFIG_STACK_VALIDATION
 +
- #endif /* _ARCH_H */
-diff --git a/tools/objtool/arch/x86/decode.c b/tools/objtool/arch/x86/decode.c
-index 1967370..cde9c36 100644
---- a/tools/objtool/arch/x86/decode.c
-+++ b/tools/objtool/arch/x86/decode.c
-@@ -15,6 +15,7 @@
- #include "../../elf.h"
- #include "../../arch.h"
- #include "../../warn.h"
-+#include <asm/orc_types.h>
++#ifndef __ASSEMBLY__
+ /*
+  * This macro marks the given function's stack frame as "non-standard", which
+  * tells objtool to ignore the function when doing stack metadata validation.
+@@ -15,6 +17,8 @@
+ 	static void __used __section(.discard.func_stack_frame_non_standard) \
+ 		*__func_stack_frame_non_standard_##func = func
  
- static unsigned char op_to_cfi_reg[][2] = {
- 	{CFI_AX, CFI_R8},
-@@ -583,3 +584,39 @@ const char *arch_nop_insn(int len)
- 
- 	return nops[len-1];
- }
++#else /* __ASSEMBLY__ */
 +
-+int arch_decode_hint_reg(struct instruction *insn, u8 sp_reg)
-+{
-+	struct cfi_reg *cfa = &insn->cfi.cfa;
-+
-+	switch (sp_reg) {
-+	case ORC_REG_UNDEFINED:
-+		cfa->base = CFI_UNDEFINED;
-+		break;
-+	case ORC_REG_SP:
-+		cfa->base = CFI_SP;
-+		break;
-+	case ORC_REG_BP:
-+		cfa->base = CFI_BP;
-+		break;
-+	case ORC_REG_SP_INDIRECT:
-+		cfa->base = CFI_SP_INDIRECT;
-+		break;
-+	case ORC_REG_R10:
-+		cfa->base = CFI_R10;
-+		break;
-+	case ORC_REG_R13:
-+		cfa->base = CFI_R13;
-+		break;
-+	case ORC_REG_DI:
-+		cfa->base = CFI_DI;
-+		break;
-+	case ORC_REG_DX:
-+		cfa->base = CFI_DX;
-+		break;
-+	default:
-+		return -1;
-+	}
-+
-+	return 0;
-+}
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index 95c6e0d..4e2f703 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -1367,32 +1367,7 @@ static int read_unwind_hints(struct objtool_file *file)
+ /*
+  * This macro indicates that the following intra-function call is valid.
+  * Any non-annotated intra-function call will cause objtool to issue a warning.
+@@ -25,6 +29,8 @@
+ 	.long 999b;						\
+ 	.popsection;
  
- 		insn->hint = true;
++#endif /* __ASSEMBLY__ */
++
+ #else /* !CONFIG_STACK_VALIDATION */
  
--		switch (hint->sp_reg) {
--		case ORC_REG_UNDEFINED:
--			cfa->base = CFI_UNDEFINED;
--			break;
--		case ORC_REG_SP:
--			cfa->base = CFI_SP;
--			break;
--		case ORC_REG_BP:
--			cfa->base = CFI_BP;
--			break;
--		case ORC_REG_SP_INDIRECT:
--			cfa->base = CFI_SP_INDIRECT;
--			break;
--		case ORC_REG_R10:
--			cfa->base = CFI_R10;
--			break;
--		case ORC_REG_R13:
--			cfa->base = CFI_R13;
--			break;
--		case ORC_REG_DI:
--			cfa->base = CFI_DI;
--			break;
--		case ORC_REG_DX:
--			cfa->base = CFI_DX;
--			break;
--		default:
-+		if (arch_decode_hint_reg(insn, hint->sp_reg)) {
- 			WARN_FUNC("unsupported unwind_hint sp base reg %d",
- 				  insn->sec, insn->offset, hint->sp_reg);
- 			return -1;
+ #define STACK_FRAME_NON_STANDARD(func)
