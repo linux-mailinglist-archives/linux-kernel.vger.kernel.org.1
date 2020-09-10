@@ -2,131 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D45E726495E
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 18:11:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADBC6264979
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 18:14:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726358AbgIJQLV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 12:11:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57076 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725803AbgIJQIQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 12:08:16 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5EFFB20BED;
-        Thu, 10 Sep 2020 16:08:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599754091;
-        bh=U8UPf2zD1wD4F/oWQsINk4jgPZ05SckxVHhW9g+Hi8s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mZqBCLyVIULyL6HwvtYdbbM7Wrer1Z2zsTM5bo3K5ezyUUq2dwIoUdusDwc3NXDnI
-         vtlz3tBLnZ4xBZzf6yhEfzA9+VjPaYzI4uPYta8fwCJOnV2eXdMdG2y66fC4XMme9M
-         X/WorXSSs/SYtFNR/wdPBTO93xqquIVP8q7+wyoQ=
-Date:   Thu, 10 Sep 2020 18:08:18 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Oded Gabbay <oded.gabbay@gmail.com>
-Cc:     "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        SW_Drivers <SW_Drivers@habana.ai>
-Subject: Re: [PATCH 00/15] Adding GAUDI NIC code to habanalabs driver
-Message-ID: <20200910160818.GA1158578@kroah.com>
-References: <20200910150328.20545-1-oded.gabbay@gmail.com>
- <20200910155440.GC1151284@kroah.com>
- <CAFCwf132vzvEQ2Jrzme8SuK8OCSB8-QTXiwr5Rj96_hwi91TKQ@mail.gmail.com>
+        id S1726821AbgIJQOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 12:14:19 -0400
+Received: from mail-io1-f67.google.com ([209.85.166.67]:45743 "EHLO
+        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725804AbgIJQJJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 12:09:09 -0400
+Received: by mail-io1-f67.google.com with SMTP id u126so7643315iod.12;
+        Thu, 10 Sep 2020 09:09:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zc8GA9vTTSJxVHMRNbdfsfSw3v5NMHWSVWa3ZEF82EA=;
+        b=jdZPajd90q+C4bbbPn0SIpkL3oS6b1vB7PaphENit6lKgI2vgPBFdolK+Gj+T7jc3+
+         DCUIpZq23Ys5q1XHrsYjGYAAJvBMQTSGht0GBftyC+dSknTJ4iepRwt1oYvajJbBjYN2
+         JxmTya55bM73sXNhw9v+5kfxGlZaf8oIOY4F1COcdcK/VxmZX/oAO6HhCBaq+1T0gtQJ
+         InnWvIAVh29E1Oh4kFNyFD7bZNkB77ehZcUKrN0xCFcRf7Sydd+ItHFtrpb+bup7dH2j
+         Qnw5kWD+NM5PLLLPVcbbZRe1K1AmDnu1d/9mCtQl8wAM5bef4KxIgCM/LH+qNioevVe6
+         3ilA==
+X-Gm-Message-State: AOAM531IQRBTBlzjL2QzbQbqiaSy/G7oqouu+XI4AMTCpFlYNwztnBLE
+        JXcFh01x7vxHQLPGibc3ww==
+X-Google-Smtp-Source: ABdhPJwBzF9QDhz4zxfnBRc0JUca9uTxeJNx1KXRji3nNnPQRTLRmpi0RvbR/wzoxOKSqky6i5NlkA==
+X-Received: by 2002:a6b:f301:: with SMTP id m1mr7776065ioh.162.1599754147737;
+        Thu, 10 Sep 2020 09:09:07 -0700 (PDT)
+Received: from xps15 ([64.188.179.251])
+        by smtp.gmail.com with ESMTPSA id l2sm3269509ilk.19.2020.09.10.09.09.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Sep 2020 09:09:07 -0700 (PDT)
+Received: (nullmailer pid 455740 invoked by uid 1000);
+        Thu, 10 Sep 2020 16:09:06 -0000
+Date:   Thu, 10 Sep 2020 10:09:06 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Jim Quinlan <james.quinlan@broadcom.com>
+Cc:     linux-pci@vger.kernel.org,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Christoph Hellwig <hch@lst.de>,
+        Robin Murphy <robin.murphy@arm.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v11 06/11] PCI: brcmstb: Add control of rescal reset
+Message-ID: <20200910160906.GA449597@bogus>
+References: <20200824193036.6033-1-james.quinlan@broadcom.com>
+ <20200824193036.6033-7-james.quinlan@broadcom.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAFCwf132vzvEQ2Jrzme8SuK8OCSB8-QTXiwr5Rj96_hwi91TKQ@mail.gmail.com>
+In-Reply-To: <20200824193036.6033-7-james.quinlan@broadcom.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 06:59:41PM +0300, Oded Gabbay wrote:
-> On Thu, Sep 10, 2020 at 6:54 PM Greg KH <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Thu, Sep 10, 2020 at 06:03:13PM +0300, Oded Gabbay wrote:
-> > > This patch-set adds support for initializing and using the GAUDI NIC ports,
-> > > functioning as scale-out interconnect when doing distributed Deep Learning
-> > > training. The training can be performed over tens of thousands of GAUDIs
-> > > and it is done using the RDMA-over-converged-Ethernet (RoCE) v2 protocol.
-> > >
-> > > Each GAUDI exposes 10x100GbE ports that are designed to scale-out the
-> > > inter-GAUDI communication by integrating a complete communication engine
-> > > on-die. This native integration allows users to use the same scaling
-> > > technology, both inside the server and rack (termed as scale-up), as well
-> > > as for scaling across racks (scale-out). The racks can be connected
-> > > directly between GAUDI processors, or through any number of standard
-> > > Ethernet switches.
-> > >
-> > > The driver exposes the NIC ports to the user as standard Ethernet ports by
-> > > registering each port to the networking subsystem. This allows the user to
-> > > manage the ports with standard tools such as ifconfig, ethtool, etc. It
-> > > also enables us to connect to the Linux networking stack and thus support
-> > > standard networking protocols, such as IPv4, IPv6, TCP, etc. In addition,
-> > > we can also leverage protocols such as DCB for dynamically configuring
-> > > priorities to avoid congestion.
-> > >
-> > > For each NIC port there is a matching QMAN entity. For RoCE, the user
-> > > submits workloads to the NIC through the QMAN, same as he does for the
-> > > compute engines. For regular Ethernet, the user sends and receives packets
-> > > through the standard Ethernet sockets. Those sockets are used only as a
-> > > control path. The data path that is used for AI training goes through the
-> > > RoCE interface.
-> > >
-> > > It is important to note that there are some limitations and uniqueness
-> > > in GAUDI's NIC H/W, compared to other networking adapters that enforced us
-> > > to use a less-than-common driver design:
-> > >
-> > > 1. The NIC functionality is NOT exposed as different PCI Physical
-> > >    Functions. There is a single PF which is used for compute and
-> > >    networking, as the main goal of the NIC ports is to be used as
-> > >    intra-communication and not as standard network interfaces. This
-> > >    implies we can't connect different drivers to handle the networking
-> > >    ports because it is the same device, from the kernel POV, as the
-> > >    compute. Therefore, we must integrate the networking code into the
-> > >    main habanalabs driver.
-> >
-> > That's kind of common, see the long threads on the netdev and IB mailing
-> > lists about this type of issue on other networking cards today.  The
-> > whole "virtual bus" code should help solve this, if Intel ever gets
-> > around to posting a new version of that patch series one day...
-> >
-> > But, because you are writing networking driver code here, you really
-> > should run all of this by the netdev@vger.kernel.org maintainers and
-> > developers, as they know how to review this interaction with the network
-> > stack better than anyone else.
-> >
-> > Care to resend it and cc: them too?
-> >
-> > thanks,
-> >
-> > greg k-h
+On Mon, Aug 24, 2020 at 03:30:19PM -0400, Jim Quinlan wrote:
+> From: Jim Quinlan <jquinlan@broadcom.com>
 > 
-> Sure, np.
-> Do you have someone specific or should I just send it to that mailing list ?
-> I don't know anyone there.
+> Some STB chips have a special purpose reset controller named RESCAL (reset
+> calibration).  The PCIe HW can now control RESCAL to start and stop its
+> operation.  On probe(), the RESCAL is deasserted and the driver goes
+> through the sequence of setting registers and reading status in order to
+> start the internal PHY that is required for the PCIe.
+> 
+> Signed-off-by: Jim Quinlan <jquinlan@broadcom.com>
+> Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+> ---
+>  drivers/pci/controller/pcie-brcmstb.c | 82 ++++++++++++++++++++++++++-
+>  1 file changed, 81 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
+> index acf2239b0251..041b8d109563 100644
+> --- a/drivers/pci/controller/pcie-brcmstb.c
+> +++ b/drivers/pci/controller/pcie-brcmstb.c
+> @@ -23,6 +23,7 @@
+>  #include <linux/of_platform.h>
+>  #include <linux/pci.h>
+>  #include <linux/printk.h>
+> +#include <linux/reset.h>
+>  #include <linux/sizes.h>
+>  #include <linux/slab.h>
+>  #include <linux/string.h>
+> @@ -158,6 +159,16 @@
+>  #define DATA_ADDR(pcie)			(pcie->reg_offsets[EXT_CFG_DATA])
+>  #define PCIE_RGR1_SW_INIT_1(pcie)	(pcie->reg_offsets[RGR1_SW_INIT_1])
+>  
+> +/* Rescal registers */
+> +#define PCIE_DVT_PMU_PCIE_PHY_CTRL				0xc700
+> +#define  PCIE_DVT_PMU_PCIE_PHY_CTRL_DAST_NFLDS			0x3
+> +#define  PCIE_DVT_PMU_PCIE_PHY_CTRL_DAST_DIG_RESET_MASK		0x4
+> +#define  PCIE_DVT_PMU_PCIE_PHY_CTRL_DAST_DIG_RESET_SHIFT	0x2
+> +#define  PCIE_DVT_PMU_PCIE_PHY_CTRL_DAST_RESET_MASK		0x2
+> +#define  PCIE_DVT_PMU_PCIE_PHY_CTRL_DAST_RESET_SHIFT		0x1
+> +#define  PCIE_DVT_PMU_PCIE_PHY_CTRL_DAST_PWRDN_MASK		0x1
+> +#define  PCIE_DVT_PMU_PCIE_PHY_CTRL_DAST_PWRDN_SHIFT		0x0
+> +
+>  enum {
+>  	RGR1_SW_INIT_1,
+>  	EXT_CFG_INDEX,
+> @@ -247,6 +258,7 @@ struct brcm_pcie {
+>  	const int		*reg_offsets;
+>  	const int		*reg_field_info;
+>  	enum pcie_type		type;
+> +	struct reset_control	*rescal;
+>  };
+>  
+>  /*
+> @@ -965,6 +977,47 @@ static void brcm_pcie_enter_l23(struct brcm_pcie *pcie)
+>  		dev_err(pcie->dev, "failed to enter low-power link state\n");
+>  }
+>  
+> +static int brcm_phy_cntl(struct brcm_pcie *pcie, const int start)
+> +{
+> +	static const u32 shifts[PCIE_DVT_PMU_PCIE_PHY_CTRL_DAST_NFLDS] = {
+> +		PCIE_DVT_PMU_PCIE_PHY_CTRL_DAST_PWRDN_SHIFT,
+> +		PCIE_DVT_PMU_PCIE_PHY_CTRL_DAST_RESET_SHIFT,
+> +		PCIE_DVT_PMU_PCIE_PHY_CTRL_DAST_DIG_RESET_SHIFT,};
+> +	static const u32 masks[PCIE_DVT_PMU_PCIE_PHY_CTRL_DAST_NFLDS] = {
+> +		PCIE_DVT_PMU_PCIE_PHY_CTRL_DAST_PWRDN_MASK,
+> +		PCIE_DVT_PMU_PCIE_PHY_CTRL_DAST_RESET_MASK,
+> +		PCIE_DVT_PMU_PCIE_PHY_CTRL_DAST_DIG_RESET_MASK,};
+> +	const int beg = start ? 0 : PCIE_DVT_PMU_PCIE_PHY_CTRL_DAST_NFLDS - 1;
+> +	const int end = start ? PCIE_DVT_PMU_PCIE_PHY_CTRL_DAST_NFLDS : -1;
+> +	u32 tmp, combined_mask = 0;
+> +	u32 val = !!start;
+> +	void __iomem *base = pcie->base;
+> +	int i;
+> +
+> +	for (i = beg; i != end; start ? i++ : i--) {
+> +		tmp = readl(base + PCIE_DVT_PMU_PCIE_PHY_CTRL);
+> +		tmp = (tmp & ~masks[i]) | ((val << shifts[i]) & masks[i]);
+> +		writel(tmp, base + PCIE_DVT_PMU_PCIE_PHY_CTRL);
+> +		usleep_range(50, 200);
+> +		combined_mask |= masks[i];
+> +	}
+> +
+> +	tmp = readl(base + PCIE_DVT_PMU_PCIE_PHY_CTRL);
+> +	val = start ? combined_mask : 0;
+> +
+> +	return (tmp & combined_mask) == val ? 0 : -EIO;
+> +}
+> +
+> +static inline int brcm_phy_start(struct brcm_pcie *pcie)
+> +{
+> +	return pcie->rescal ? brcm_phy_cntl(pcie, 1) : 0;
+> +}
+> +
+> +static inline int brcm_phy_stop(struct brcm_pcie *pcie)
+> +{
+> +	return pcie->rescal ? brcm_phy_cntl(pcie, 0) : 0;
+> +}
+> +
+>  static void brcm_pcie_turn_off(struct brcm_pcie *pcie)
+>  {
+>  	void __iomem *base = pcie->base;
+> @@ -992,11 +1045,15 @@ static void brcm_pcie_turn_off(struct brcm_pcie *pcie)
+>  static int brcm_pcie_suspend(struct device *dev)
+>  {
+>  	struct brcm_pcie *pcie = dev_get_drvdata(dev);
+> +	int ret;
+>  
+>  	brcm_pcie_turn_off(pcie);
+> +	ret = brcm_phy_stop(pcie);
+> +	if (ret)
+> +		dev_err(pcie->dev, "failed to stop phy\n");
+>  	clk_disable_unprepare(pcie->clk);
+>  
+> -	return 0;
+> +	return ret;
+>  }
+>  
+>  static int brcm_pcie_resume(struct device *dev)
+> @@ -1009,6 +1066,12 @@ static int brcm_pcie_resume(struct device *dev)
+>  	base = pcie->base;
+>  	clk_prepare_enable(pcie->clk);
+>  
+> +	ret = brcm_phy_start(pcie);
+> +	if (ret) {
+> +		dev_err(pcie->dev, "failed to start phy\n");
+> +		return ret;
+> +	}
+> +
+>  	/* Take bridge out of reset so we can access the SERDES reg */
+>  	brcm_pcie_bridge_sw_init_set(pcie, 0);
+>  
+> @@ -1034,6 +1097,9 @@ static void __brcm_pcie_remove(struct brcm_pcie *pcie)
+>  {
+>  	brcm_msi_remove(pcie);
+>  	brcm_pcie_turn_off(pcie);
+> +	if (brcm_phy_stop(pcie))
+> +		dev_err(pcie->dev, "failed to stop phy\n");
+> +	reset_control_assert(pcie->rescal);
+>  	clk_disable_unprepare(pcie->clk);
+>  }
+>  
+> @@ -1112,6 +1178,20 @@ static int brcm_pcie_probe(struct platform_device *pdev)
+>  		dev_err(&pdev->dev, "could not enable clock\n");
+>  		return ret;
+>  	}
+> +	pcie->rescal = devm_reset_control_get_optional_shared(&pdev->dev, "rescal");
+> +	if (IS_ERR(pcie->rescal))
+> +		return PTR_ERR(pcie->rescal);
+> +
+> +	ret = reset_control_deassert(pcie->rescal);
+> +	if (ret)
+> +		dev_err(&pdev->dev, "failed to deassert 'rescal'\n");
+> +
+> +	ret = brcm_phy_start(pcie);
+> +	if (ret) {
+> +		dev_err(pcie->dev, "failed to start phy\n");
 
-the MAINTAINERS file should help you:
-	NETWORKING DRIVERS
-	M:      "David S. Miller" <davem@davemloft.net>
-	M:      Jakub Kicinski <kuba@kernel.org>
-	L:      netdev@vger.kernel.org
-	S:      Maintained
-	W:      http://www.linuxfoundation.org/en/Net
-	Q:      http://patchwork.ozlabs.org/project/netdev/list/
-	T:      git git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git
-	T:      git git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git
-	F:      Documentation/devicetree/bindings/net/
-	F:      drivers/net/
-	F:      include/linux/etherdevice.h
-	F:      include/linux/fcdevice.h
-	F:      include/linux/fddidevice.h
-	F:      include/linux/hippidevice.h
-	F:      include/linux/if_*
-	F:      include/linux/inetdevice.h
-	F:      include/linux/netdevice.h
-	F:      include/uapi/linux/if_*
-	F:      include/uapi/linux/netdevice.h
+4 calls to brcm_phy_cntl() and 4 error prints. Move the error print to 
+brcm_phy_cntl.
 
-:)
+> +		reset_control_assert(pcie->rescal);
+> +		return ret;
+> +	}
+>  
+>  	ret = brcm_pcie_setup(pcie);
+>  	if (ret)
+> -- 
+> 2.17.1
+> 
