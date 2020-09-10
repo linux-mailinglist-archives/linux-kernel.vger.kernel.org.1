@@ -2,130 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FD2B264BC7
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 19:49:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AE06264BD4
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 19:50:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727085AbgIJRtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 13:49:43 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:36292 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727857AbgIJRsI (ORCPT
+        id S1727822AbgIJRu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 13:50:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59260 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727025AbgIJRtQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 13:48:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599760085;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ehkzB4LttygthmWCADkLgwoMYDzvXG4NiI7HnkwKLek=;
-        b=UTdhcYLvxBi1Bau5hz+Iqcq8FJ1trQs3Ri4rHYhT7OJAy2vtlTY0OV8114J7XMI8BOE84T
-        iBkK/x0ugwEGSeSRP9u11aAlt+EBULrNEo0ap1l/LxC+LQ6MGZkGpBMMA3b5ETUPLnzTPp
-        89KEijfzCTb2wl4kXMtVK4sniABb+rs=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-286-jz0-BJkJM5SSKqcPNeS_jw-1; Thu, 10 Sep 2020 13:48:02 -0400
-X-MC-Unique: jz0-BJkJM5SSKqcPNeS_jw-1
-Received: by mail-qk1-f198.google.com with SMTP id r4so4082982qkb.12
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 10:48:02 -0700 (PDT)
+        Thu, 10 Sep 2020 13:49:16 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8746CC061573;
+        Thu, 10 Sep 2020 10:49:16 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id t20so5521463qtr.8;
+        Thu, 10 Sep 2020 10:49:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=466BP3gTqbYzho2Xtm74KeHTUl+MUpLWLJk7QtAP2ns=;
+        b=RNK6sGRSmvXu6TgFnuA0d/SF3aqKQ3/5gA4cb0ywADDTEMkeb9DUMz+B+rgKBcWwlz
+         IvUR6yVuE9dBTegmje/RutMzo5eXfULJzi7cJjjBpq6rNBdZ78ugR3Y5YJTpgW3VtrLJ
+         gCxDR99e4JJ0da2DshXzz+nmwqtFv55Hmfl2UhAJM3fwTwYENZcQliolNimqeHL3mvAp
+         vp+c0TOPjEvPVO9sg6qnSBP28M9DDeWxEUjNKQa2mOjTkdJaJQmPSvosRoMEhJN8Jf0Z
+         lRdluq+wksEYT79Tld0arwL0Whb/rMv4ddm9ISSrxJrMgKISkg39OztFCdUuHJ7YQc49
+         ZnGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:organization:user-agent:mime-version
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=ehkzB4LttygthmWCADkLgwoMYDzvXG4NiI7HnkwKLek=;
-        b=q9EHz/7r0XbwMBZgdbAv6dd/YPeAVsNvWyNayXlyu/q4M+QaoDrRFTrub5fASUZAC7
-         yCntIyoLwRr7BcvBQcuqvkSNC8rGT41L+0dOUgZFeGlouoANrIGt588ttx9O2+5jYPwl
-         tld8zOytnHfu1Kr27KzU0GSSCv6KtAfGaztcsBey+BlRIk/dlhuTP8DPalsbG4Gq4Ker
-         W/nEL3IOtjVBK+TQ/XX9zodc5EiX4eIyZEb8FHBzymnny8d6mmP8kW7hdwiqPIyDDo1l
-         2oq8yuzC4jKniHEtRE+Cu2Z1ZFuFuq2+5uMeV3TiRbF85Y/8Pt7sDl8I2nDFchrVIjZA
-         E4SQ==
-X-Gm-Message-State: AOAM531WZhwwe1ayuPVA69e1TT1fIctA9s5h7IHaWzs8kdMHTq+JTUAh
-        RGGFbohS38JIElfsWEUi9vI4GZjtCl7NnlAW9sjGQJaEAFSc6jFbBkBKR66/e24xchf2tTripRI
-        6HDFs9UkeNkCGFDJ+qdAeJPN3
-X-Received: by 2002:ac8:4757:: with SMTP id k23mr8914739qtp.105.1599760082024;
-        Thu, 10 Sep 2020 10:48:02 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwzrl4LkG26r8eXUfai68ZH7uwANmEYme9QgnBK2OI1JAg0CpzmWdq4JyMISo9AxCnwM+2uzQ==
-X-Received: by 2002:ac8:4757:: with SMTP id k23mr8914716qtp.105.1599760081800;
-        Thu, 10 Sep 2020 10:48:01 -0700 (PDT)
-Received: from Ruby.lyude.net (pool-108-49-102-102.bstnma.fios.verizon.net. [108.49.102.102])
-        by smtp.gmail.com with ESMTPSA id o13sm6910440qkm.16.2020.09.10.10.48.00
+        bh=466BP3gTqbYzho2Xtm74KeHTUl+MUpLWLJk7QtAP2ns=;
+        b=JT2bn6I3WkO+gBrmQKggT5stDp6iHgtg9DzQfJxNadCKcsFcikjaeqN281WFWgJlMB
+         gkd9N0E4dBWF+hLXNECQA92/Lk2yBeVW6uHqSm6pMS7w0XFiKEkveUrYFJSuMKFGRQOE
+         BzT0mr3WIlmF0JwyzBBRabmhxHXM6dMpekWbEtddSTe/Ikdqprz0bPAh5vVhm1J44vpK
+         G0Gb/erbYht6zNJAF6S/vFD3OnCKQGDz1azXcFQreJU44fbqpHaeOEOHbh/vxCzQJJwX
+         WygzGjHwmgylYYUJlkyos5LixfG80dU5w9F1WYlvQGJCOo9Tm2pbjco1vpWUsY14PZ1F
+         Odxg==
+X-Gm-Message-State: AOAM531OHcdAk8knwCnqBM2dzQlFuRZzIDjbhX+1zZX83vn6dl/V+xyj
+        rJwKbJ0O4C6IOVktrJe5aYU=
+X-Google-Smtp-Source: ABdhPJyJGWyNq7dGbZouBNuXr4iWetgbF5nqvZvcOj/ywxAuuFcc2AuLXD0MOwbAYwbzwYPGfZkc4g==
+X-Received: by 2002:ac8:ecb:: with SMTP id w11mr8828228qti.373.1599760155606;
+        Thu, 10 Sep 2020 10:49:15 -0700 (PDT)
+Received: from localhost.localdomain ([2604:1380:45d1:2600::1])
+        by smtp.gmail.com with ESMTPSA id r48sm7927350qtb.26.2020.09.10.10.49.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Sep 2020 10:48:01 -0700 (PDT)
-Message-ID: <d1571cdd6a68e8f17ff2e386abd35fd5819d2de8.camel@redhat.com>
-Subject: Re: [PATCH] V2: Currently, DRM get the capability of the mst hub
- only from DP_DPCD_REV and get the slower speed even the mst hub can run in
- the faster speed.
-From:   Lyude Paul <lyude@redhat.com>
-To:     Koba Ko <koba.ko@canonical.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc:     anthony.wong@canonical.com
-Date:   Thu, 10 Sep 2020 13:48:00 -0400
-In-Reply-To: <20200910063640.21519-1-koba.ko@canonical.com>
-References: <20200910063640.21519-1-koba.ko@canonical.com>
-Organization: Red Hat
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+        Thu, 10 Sep 2020 10:49:14 -0700 (PDT)
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Russell King <rmk+kernel@armlinux.org.uk>,
+        Andrew Lunn <andrew@lunn.ch>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Nathan Chancellor <natechancellor@gmail.com>
+Subject: [PATCH net-next] net: mvpp2: Initialize link in mvpp2_isr_handle_{xlg,gmac_internal}
+Date:   Thu, 10 Sep 2020 10:48:27 -0700
+Message-Id: <20200910174826.511423-1-natechancellor@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The commit message should be shorter and follow the format other commits for
-drm usually do, in this case something like:
+Clang warns (trimmed for brevity):
 
-drm/dp_mst: Retrieve extended DPCD caps for topology manager
+drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c:3073:7: warning:
+variable 'link' is used uninitialized whenever 'if' condition is false
+[-Wsometimes-uninitialized]
+                if (val & MVPP22_XLG_STATUS_LINK_UP)
+                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c:3075:31: note:
+uninitialized use occurs here
+                mvpp2_isr_handle_link(port, link);
+                                            ^~~~
+...
+drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c:3090:8: warning:
+variable 'link' is used uninitialized whenever 'if' condition is false
+[-Wsometimes-uninitialized]
+                        if (val & MVPP2_GMAC_STATUS0_LINK_UP)
+                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c:3092:32: note:
+uninitialized use occurs here
+                        mvpp2_isr_handle_link(port, link);
+                                                    ^~~~
 
-On Thu, 2020-09-10 at 14:36 +0800, Koba Ko wrote:
-> As per DP-1.3, First check DP_EXTENDED_RECEIVER_CAP_FIELD_PRESENT.
-> If DP_EXTENDED_RECEIVER_CAP_FIELD_PRESENT is 1, read the DP_DP13_DPCD_REV to
-> get the faster capability.
-> If DP_EXTENDED_RECEIVER_CAP_FIELD_PRESENT is 0, read DP_DPCD_REV.
-> 
-> Signed-off-by: Koba Ko <koba.ko@canonical.com>
-> ---
-> ChangeLog:
-> 1. use drm_dp_read_dpcd_caps instead.
-> ---
->  drivers/gpu/drm/drm_dp_mst_topology.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c
-> b/drivers/gpu/drm/drm_dp_mst_topology.c
-> index 7753c718ddf9..293f71d0ae90 100644
-> --- a/drivers/gpu/drm/drm_dp_mst_topology.c
-> +++ b/drivers/gpu/drm/drm_dp_mst_topology.c
-> @@ -3694,8 +3694,8 @@ int drm_dp_mst_topology_mgr_set_mst(struct
-> drm_dp_mst_topology_mgr *mgr, bool ms
->  			((dpcd_ext & DP_EXTENDED_RECEIVER_CAP_FIELD_PRESENT)
-> ?  DP_DP13_DPCD_REV : DP_DPCD_REV);
->  
->  		/* get dpcd info */
-> -		ret = drm_dp_dpcd_read(mgr->aux, dpcd_offset, mgr->dpcd,
-> DP_RECEIVER_CAP_SIZE);
-> -		if (ret != DP_RECEIVER_CAP_SIZE) {
-> +		ret = drm_dp_read_dpcd_caps(mgr->aux, mgr->dpcd);
-> +		if (ret < 0) {
->  			DRM_DEBUG_KMS("failed to read DPCD\n");
+Initialize link to false like it was before the refactoring that
+happened around link status so that a valid valid is always passed into
+mvpp2_isr_handle_link.
 
-Let's use drm_dbg_kms() here, and let's also print the return code when this
-fails.
+Fixes: 36cfd3a6e52b ("net: mvpp2: restructure "link status" interrupt handling")
+Link: https://github.com/ClangBuiltLinux/linux/issues/1151
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+---
+ drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-With those things fixed:
+diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
+index 7d86940747d1..0d5ee96f89b4 100644
+--- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
++++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
+@@ -3064,7 +3064,7 @@ static void mvpp2_isr_handle_link(struct mvpp2_port *port, bool link)
+ 
+ static void mvpp2_isr_handle_xlg(struct mvpp2_port *port)
+ {
+-	bool link;
++	bool link = false;
+ 	u32 val;
+ 
+ 	val = readl(port->base + MVPP22_XLG_INT_STAT);
+@@ -3078,7 +3078,7 @@ static void mvpp2_isr_handle_xlg(struct mvpp2_port *port)
+ 
+ static void mvpp2_isr_handle_gmac_internal(struct mvpp2_port *port)
+ {
+-	bool link;
++	bool link = false;
+ 	u32 val;
+ 
+ 	if (phy_interface_mode_is_rgmii(port->phy_interface) ||
 
-Reviewed-by: Lyude Paul <lyude@redhat.com>
-
->  			goto out_unlock;
->  		}
+base-commit: 4f6a5caf187ff5807cd5b4ea5678982c249bd964
 -- 
-Cheers,
-	Lyude Paul (she/her)
-	Software Engineer at Red Hat
+2.28.0
 
