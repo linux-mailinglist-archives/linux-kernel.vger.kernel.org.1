@@ -2,118 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65CC32654A2
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:59:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1B44265499
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:59:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725877AbgIJV7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 17:59:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53998 "EHLO mail.kernel.org"
+        id S1725856AbgIJV7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 17:59:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54250 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730518AbgIJLKf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 07:10:35 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        id S1725887AbgIJLLC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 07:11:02 -0400
+Received: from mail.kernel.org (ip5f5ad5ac.dynamic.kabel-deutschland.de [95.90.213.172])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DB4B621556;
-        Thu, 10 Sep 2020 11:10:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C788220684;
+        Thu, 10 Sep 2020 11:10:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599736223;
-        bh=n7fko+K24EPbXR431Tv5ZgLjx98hbWABFxYSBLUpKws=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Jbc6qqCieYpi405/MUUIN69qEpUHLQ9tvNwfAcZHqz1p0Qa7gTdQeldC50pB+Sruy
-         zGXbzZDsMsIvYrX9Cka1lOYuNk1YecakhwfgEVpZJQSN5D+7qaSl22txo6jxtWedR7
-         SnfcYWMTV1s2CoKH6zv6DEyb7hHPkwvZb0Z+Ie58=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id D1C8540D3D; Thu, 10 Sep 2020 08:10:20 -0300 (-03)
-Date:   Thu, 10 Sep 2020 08:10:20 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Namhyung Kim <namhyung@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Stephane Eranian <eranian@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <andi@firstfloor.org>,
-        Ian Rogers <irogers@google.com>
-Subject: Re: [PATCHSET 0/4] perf stat: Add --multiply-cgroup option
-Message-ID: <20200910111020.GA4018363@kernel.org>
-References: <20200908044228.61197-1-namhyung@kernel.org>
- <20200910091542.GD1627030@krava>
+        s=default; t=1599736256;
+        bh=hwbguJAyWYPwpsu2D9i8rT7/tZ9bdITwH1YQjeqWGeY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=yU9kK7kDFEFEj4H2bNq6YF57ElD9FDd6tMPu4RNKVVzIr6NO1swabRB0YYIl1rBus
+         cH149spIdCImg539GhPPFyBg20iIAuna9Qwz4jgm9JwX/Qu2UfzxF9Ng5PcL7eqdLn
+         hUaQNH1qaHSsJAtSudoIgt0yJyK17f3H90cv+0AE=
+Received: from mchehab by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1kGKTd-00ELvC-8a; Thu, 10 Sep 2020 13:10:53 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
+Subject: [PATCH] drm: kernel-doc: add description for a new function parameter
+Date:   Thu, 10 Sep 2020 13:10:51 +0200
+Message-Id: <c089fc458b7347e5ab287dab9fb661979736566d.1599736241.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200910091542.GD1627030@krava>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Sep 10, 2020 at 11:15:42AM +0200, Jiri Olsa escreveu:
-> On Tue, Sep 08, 2020 at 01:42:24PM +0900, Namhyung Kim wrote:
-> > When we profile cgroup events with perf stat, it's very annoying to
-> > specify events and cgroups on the command line as it requires the
-> > mapping between events and cgroups.  (Note that perf record can use
-> > cgroup sampling but it's not usable for perf stat).
+As reported by "make htmldocs":
 
-> > I guess most cases we just want to use a same set of events (N) for
-> > all cgroups (M), but we need to specify NxM events and NxM cgroups.
-> > This is not good especially when profiling large number of cgroups:
-> > say M=200.
+	./drivers/gpu/drm/drm_prime.c:808: warning: Function parameter or member 'dev' not described in 'drm_prime_pages_to_sg'
 
-> > So I added --multiply-cgroup option to make it easy for that case.  It
-> > will create NxM events from N events and M cgroups.  One more upside
-> > is that it can handle metrics too.
+Add a description for the new parameter.
 
-> agreed that it's PITA to use -G option ;-)
+Fixes: 707d561f77b5 ("drm: allow limiting the scatter list size.")
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+---
+ drivers/gpu/drm/drm_prime.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-yeah, its great that someone is looking at cgroups improvements, thanks
-Namyung, its great to have you working on this!
-
-More below.
+diff --git a/drivers/gpu/drm/drm_prime.c b/drivers/gpu/drm/drm_prime.c
+index 8a6a3c99b7d8..45e70ecdfa45 100644
+--- a/drivers/gpu/drm/drm_prime.c
++++ b/drivers/gpu/drm/drm_prime.c
+@@ -793,6 +793,7 @@ static const struct dma_buf_ops drm_gem_prime_dmabuf_ops =  {
  
-> > For example, the following example measures IPC metric for 3 cgroups
+ /**
+  * drm_prime_pages_to_sg - converts a page array into an sg list
++ * @dev: DRM device
+  * @pages: pointer to the array of page pointers to convert
+  * @nr_pages: length of the page vector
+  *
+-- 
+2.26.2
 
-> >   $ cat perf-multi-cgrp.sh
-> >   #!/bin/sh
-
-> >   METRIC=${1:-IPC}
-> >   CGROUP_DIR=/sys/fs/cgroup/perf_event
-
-> >   sudo mkdir $CGROUP_DIR/A $CGROUP_DIR/B $CGROUP_DIR/C
-
-> >   # add backgroupd workload for each cgroup
-> >   echo $$ | sudo tee $CGROUP_DIR/A/cgroup.procs > /dev/null
-> >   yes > /dev/null &
-> >   echo $$ | sudo tee $CGROUP_DIR/B/cgroup.procs > /dev/null
-> >   yes > /dev/null &
-> >   echo $$ | sudo tee $CGROUP_DIR/C/cgroup.procs > /dev/null
-> >   yes > /dev/null &
-
-> >   # run 'perf stat' in the root cgroup
-> >   echo $$ | sudo tee $CGROUP_DIR/cgroup.procs > /dev/null
-> >   perf stat -a -M $METRIC --multiply-cgroup -G A,B,C sleep 1
-> 
-> would it be easier to have new option for this? like:
-> 
->   perf stat -a -M $METRIC --for-cgroup A,B,C
->   perf stat -a -M $METRIC --for-each-cgroup A,B,C
->   perf stat -a -M $METRIC --attach-cgroup A,B,C
->   perf stat -a -M $METRIC --attach-to-cgroup A,B,C
-> 
-> I'm still not sure how the --multiply-cgroup deals with empty
-> cgroup A,,C but looks like we don't need this behaviour now?
-
-Yeah, I also didn't like the --multiply-cgroup thing, perhaps we can use
-a per-event term? or per group, for example:
-
-  perf stat -a -M $METRIC/cgroups=A,B,C/
-  perf stat -a -e '{cycles,instructions,cache-misses}/cgroups=A,B,C/'
-
-Allowing wildcards or regexps would help with some use cases.
-
-We already have several terms that allows us to control per event knobs,
-this would be one more.
-
-- Arnaldo
