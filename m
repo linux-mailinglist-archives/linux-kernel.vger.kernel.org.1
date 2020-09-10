@@ -2,70 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12AA6264A6B
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 18:56:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDC11264A3C
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 18:49:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727796AbgIJQ4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 12:56:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51262 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727001AbgIJQza (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 12:55:30 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7139D21D90;
-        Thu, 10 Sep 2020 16:46:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599756389;
-        bh=GIOd68aD5s2ODT6PXYS1Bo0/NkpEhMffA97SHDguaXw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RF5IhkyJvKQ42gsqx2D/gQfZlHzoIpDVmcHqxvAmvjl7IWLEuZrl58dI9C+JsaGMC
-         2DqpxvowGWWDtciqv5eAjQMoRQUIN/PeHNRcYWG/IPBIGMOhOjt/vGW10lbTRY3zHp
-         zK/G9vaYeThaHWggcw7W4QhxUpwQzqzyRzLMXJuM=
-Date:   Thu, 10 Sep 2020 18:46:36 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     jim.cromie@gmail.com, Petr Mladek <pmladek@suse.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org, Jason Baron <jbaron@akamai.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>, Miroslav Benes <mbenes@suse.cz>
-Subject: Re: kernel BUG at /usr/src/kernel/lib/dynamic_debug.c:267!
-Message-ID: <20200910164636.GA1458062@kroah.com>
-References: <CA+G9fYvg7voMNArr3nPpv_dRn10RwYos075NW_b5rFbBLZ=-8g@mail.gmail.com>
- <20200909144745.504c4cbfeea9bc298e3c6b9b@kernel.org>
- <20200909080025.GC3864@alley>
- <20200909122502.GB668220@kroah.com>
- <CAJfuBxzNFmgY=Wbz99K8QTxkBVDaJn5+gTTxUTJTtkJe7nxfsQ@mail.gmail.com>
- <20200909181251.GA1007128@kroah.com>
- <20200910082323.59e41def@canb.auug.org.au>
+        id S1725831AbgIJQsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 12:48:43 -0400
+Received: from mail-io1-f65.google.com ([209.85.166.65]:37239 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726794AbgIJQsB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 12:48:01 -0400
+Received: by mail-io1-f65.google.com with SMTP id y13so7853527iow.4;
+        Thu, 10 Sep 2020 09:47:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8fGVKyujTXfspLo9JJxZPzvPko08bc51xw+f5J3oCdk=;
+        b=HlVE4pEp0qLe9fJp9qEuw540NgYxi6sd5xsUsV8yV3BOk/qiamWT/MhNDO6iGT+it7
+         gOGpFpZmV2338ILARRSqcSOnyw6ge8fNh4l+x8P4Ojs1Tk3+o6I48jEtRS+1ouWAO7Fc
+         p0h/zXva7RPFnzslAku3w2mTU7scHyDjo7T3Ru/9qPLiQ215spEA8D8QeW5zhUfksp4R
+         I3PhlgCHgtUkcNxPhhTHi0ZNQ54SXtT7uzy1tU7mt6RW/Ef5xG32t1hHqm1GSoccLGnb
+         htVQkbSIY9b2EQi69UtPzCpe1AwaN+1LLNBUblostVKKGBcA21Se2jOkS9+xGjSB2y9E
+         /pUA==
+X-Gm-Message-State: AOAM533XyxfSmt55e1nX6GK9cr3foXHS5Y9RYllpBulCzBmGBc3/KcyB
+        nJFjpDSz+hI0uVSGaQFFkw==
+X-Google-Smtp-Source: ABdhPJwkuwX0aPaAkSbWdGm7o1Ri1aLdjcJ5kGgtZ1S+LH4iKuSnnyuKFwKcAm7mIz2wxQQQ1TSTTg==
+X-Received: by 2002:a5d:8245:: with SMTP id n5mr2399112ioo.149.1599756474870;
+        Thu, 10 Sep 2020 09:47:54 -0700 (PDT)
+Received: from xps15 ([64.188.179.251])
+        by smtp.gmail.com with ESMTPSA id d23sm3039062ioh.22.2020.09.10.09.47.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Sep 2020 09:47:53 -0700 (PDT)
+Received: (nullmailer pid 505061 invoked by uid 1000);
+        Thu, 10 Sep 2020 16:47:51 -0000
+Date:   Thu, 10 Sep 2020 10:47:51 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Zhiqiang Hou <Zhiqiang.Hou@nxp.com>
+Cc:     linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linuxppc-dev@lists.ozlabs.org, bhelgaas@google.com,
+        lorenzo.pieralisi@arm.com, shawnguo@kernel.org, leoyang.li@nxp.com,
+        kishon@ti.com, gustavo.pimentel@synopsys.com, roy.zang@nxp.com,
+        jingoohan1@gmail.com, andrew.murray@arm.com, mingkai.hu@nxp.com,
+        minghuan.Lian@nxp.com, Xiaowei Bao <xiaowei.bao@nxp.com>
+Subject: Re: [PATCHv7 10/12] arm64: dts: layerscape: Add PCIe EP node for
+ ls1088a
+Message-ID: <20200910164751.GA501845@bogus>
+References: <20200811095441.7636-1-Zhiqiang.Hou@nxp.com>
+ <20200811095441.7636-11-Zhiqiang.Hou@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200910082323.59e41def@canb.auug.org.au>
+In-Reply-To: <20200811095441.7636-11-Zhiqiang.Hou@nxp.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 08:23:23AM +1000, Stephen Rothwell wrote:
-> Hi Greg,
+On Tue, Aug 11, 2020 at 05:54:39PM +0800, Zhiqiang Hou wrote:
+> From: Xiaowei Bao <xiaowei.bao@nxp.com>
 > 
-> On Wed, 9 Sep 2020 20:12:51 +0200 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> >
-> > I'll go revert both patches from my tree in the morning, which should
-> > clear these issues up.
+> Add PCIe EP node for ls1088a to support EP mode.
 > 
-> I have reverted them from linux-next today.
+> Signed-off-by: Xiaowei Bao <xiaowei.bao@nxp.com>
+> Reviewed-by: Andrew Murray <andrew.murray@arm.com>
+> Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+> ---
+> V7:
+>  - Rebase the patch without functionality change.
 > 
+>  .../arm64/boot/dts/freescale/fsl-ls1088a.dtsi | 31 +++++++++++++++++++
+>  1 file changed, 31 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
+> index 169f4742ae3b..915592141f1b 100644
+> --- a/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
+> +++ b/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
+> @@ -499,6 +499,17 @@
+>  			status = "disabled";
+>  		};
+>  
+> +		pcie_ep@3400000 {
 
-Dropped in my tree now too, thanks.
+pci-ep@...
 
-greg k-h
+> +			compatible = "fsl,ls1088a-pcie-ep","fsl,ls-pcie-ep";
+> +			reg = <0x00 0x03400000 0x0 0x00100000
+> +			       0x20 0x00000000 0x8 0x00000000>;
+> +			reg-names = "regs", "addr_space";
+> +			num-ib-windows = <24>;
+> +			num-ob-windows = <128>;
+> +			max-functions = /bits/ 8 <2>;
+> +			status = "disabled";
+> +		};
+> +
+>  		pcie@3500000 {
+>  			compatible = "fsl,ls1088a-pcie";
+>  			reg = <0x00 0x03500000 0x0 0x00100000   /* controller registers */
+> @@ -525,6 +536,16 @@
+>  			status = "disabled";
+>  		};
+>  
+> +		pcie_ep@3500000 {
+> +			compatible = "fsl,ls1088a-pcie-ep","fsl,ls-pcie-ep";
+> +			reg = <0x00 0x03500000 0x0 0x00100000
+> +			       0x28 0x00000000 0x8 0x00000000>;
+> +			reg-names = "regs", "addr_space";
+> +			num-ib-windows = <6>;
+> +			num-ob-windows = <8>;
+> +			status = "disabled";
+> +		};
+> +
+>  		pcie@3600000 {
+>  			compatible = "fsl,ls1088a-pcie";
+>  			reg = <0x00 0x03600000 0x0 0x00100000   /* controller registers */
+> @@ -551,6 +572,16 @@
+>  			status = "disabled";
+>  		};
+>  
+> +		pcie_ep@3600000 {
+> +			compatible = "fsl,ls1088a-pcie-ep","fsl,ls-pcie-ep";
+> +			reg = <0x00 0x03600000 0x0 0x00100000
+> +			       0x30 0x00000000 0x8 0x00000000>;
+> +			reg-names = "regs", "addr_space";
+> +			num-ib-windows = <6>;
+> +			num-ob-windows = <8>;
+> +			status = "disabled";
+> +		};
+> +
+>  		smmu: iommu@5000000 {
+>  			compatible = "arm,mmu-500";
+>  			reg = <0 0x5000000 0 0x800000>;
+> -- 
+> 2.17.1
+> 
