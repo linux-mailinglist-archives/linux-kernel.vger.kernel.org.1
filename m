@@ -2,150 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AAF1264DD1
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 20:53:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02168264DD7
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 20:53:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725866AbgIJSxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 14:53:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57964 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726728AbgIJSuq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 14:50:46 -0400
-Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com [209.85.210.47])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726939AbgIJSxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 14:53:46 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:36669 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726385AbgIJSw4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 14:52:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599763973;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KkaYcC4r9CnQPKRFQbJspK1ku3ZqxcVTouDc6fHIVAg=;
+        b=EgTXBW4yFKzxjxDdw8uDJb6Q4fpTvB+59k7s0Ba6ZX7EvRrCFpBswZwK0qftQftX2+w79C
+        wR5VMRRSOof2Hl6ZkU6eJaEK8dTSae7fh/zvjTFGYGh9+Gzmtoqx2eqT0J3ZhMDg9pqxFR
+        VXvoO4SIy1dVwlzAIlkyO0uIi1alfXA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-291-MmffAxY7PsOXl4PCaX0n3g-1; Thu, 10 Sep 2020 14:52:51 -0400
+X-MC-Unique: MmffAxY7PsOXl4PCaX0n3g-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F369720855;
-        Thu, 10 Sep 2020 18:50:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599763846;
-        bh=8/FN2pGrV2e6oHJ4XPt99FQ76GAY46jbQGsYN15injo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=c9rA0ACnX9KBuHVDn0E0CuwtvCHjuD9ZzW5VyN6mV1QkoX34R0JctiRzqAAVZ+Gmc
-         PvNdTEoxeGC5w/b5qmGhDSqKkj/hyJfmjOVuj9vjhq34djOA7cjH7W7fMtkwNPV7u7
-         Tg0wt9KtvgYZ7ZN2QKZJ8pniNAg+rRoEVTuOUXvI=
-Received: by mail-ot1-f47.google.com with SMTP id g10so6234718otq.9;
-        Thu, 10 Sep 2020 11:50:45 -0700 (PDT)
-X-Gm-Message-State: AOAM533UAVMdWhEgkaezVmC2zdlvVkVEi8b0SZvQrd74hXURTg+EWtEE
-        UIr0tYxOwmnd4gQeaM+esJLZqMbctQdarqHa0g==
-X-Google-Smtp-Source: ABdhPJxId/3nNZbBGqZxSbJuxtyRdyh2ZW5+MJHU0lYZCDw8GvbX0pkcX7nJAy2HYsIcmimVL93DTH8UyT5yVJErc2E=
-X-Received: by 2002:a9d:411:: with SMTP id 17mr4977165otc.192.1599763845337;
- Thu, 10 Sep 2020 11:50:45 -0700 (PDT)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7D4EE80BCA1;
+        Thu, 10 Sep 2020 18:52:50 +0000 (UTC)
+Received: from fuller.cnet (ovpn-112-5.gru2.redhat.com [10.97.112.5])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2A22060BF1;
+        Thu, 10 Sep 2020 18:52:50 +0000 (UTC)
+Received: by fuller.cnet (Postfix, from userid 1000)
+        id C252A41853FD; Thu, 10 Sep 2020 15:51:00 -0300 (-03)
+Date:   Thu, 10 Sep 2020 15:51:00 -0300
+From:   Marcelo Tosatti <mtosatti@redhat.com>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org
+Subject: Re: [patch 2/2] nohz: try to avoid IPI when setting tick dependency
+ for task
+Message-ID: <20200910185100.GA23968@fuller.cnet>
+References: <20200825184147.948670309@fuller.cnet>
+ <20200825184414.486721471@fuller.cnet>
+ <20200903150152.GA5353@lenoir>
 MIME-Version: 1.0
-References: <20200824193036.6033-1-james.quinlan@broadcom.com>
- <20200824193036.6033-5-james.quinlan@broadcom.com> <20200910155637.GA423872@bogus>
- <CA+-6iNy9g8fhJvd7SOKtc-SZcL8_gLLN1HEs-W8fe-=q6n430A@mail.gmail.com>
-In-Reply-To: <CA+-6iNy9g8fhJvd7SOKtc-SZcL8_gLLN1HEs-W8fe-=q6n430A@mail.gmail.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Thu, 10 Sep 2020 12:50:34 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqJR4wALnsFKKPQ8h2y-o-933rzxHbV29zGXiptgYuuHTg@mail.gmail.com>
-Message-ID: <CAL_JsqJR4wALnsFKKPQ8h2y-o-933rzxHbV29zGXiptgYuuHTg@mail.gmail.com>
-Subject: Re: [PATCH v11 04/11] PCI: brcmstb: Add suspend and resume pm_ops
-To:     Jim Quinlan <james.quinlan@broadcom.com>
-Cc:     "open list:PCI NATIVE HOST BRIDGE AND ENDPOINT DRIVERS" 
-        <linux-pci@vger.kernel.org>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Christoph Hellwig <hch@lst.de>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200903150152.GA5353@lenoir>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 10:42 AM Jim Quinlan <james.quinlan@broadcom.com> wrote:
->
-> On Thu, Sep 10, 2020 at 11:56 AM Rob Herring <robh@kernel.org> wrote:
-> >
-> > On Mon, Aug 24, 2020 at 03:30:17PM -0400, Jim Quinlan wrote:
-> > > From: Jim Quinlan <jquinlan@broadcom.com>
-> > >
-> > > Broadcom Set-top (BrcmSTB) boards typically support S2, S3, and S5 suspend
-> > > and resume.  Now the PCIe driver may do so as well.
-> > >
-> > > Signed-off-by: Jim Quinlan <jquinlan@broadcom.com>
-> > > Acked-by: Florian Fainelli <f.fainelli@gmail.com>
-> > > ---
-> > >  drivers/pci/controller/pcie-brcmstb.c | 47 +++++++++++++++++++++++++++
-> > >  1 file changed, 47 insertions(+)
-> > >
-> > > diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
-> > > index c2b3d2946a36..3d588ab7a6dd 100644
-> > > --- a/drivers/pci/controller/pcie-brcmstb.c
-> > > +++ b/drivers/pci/controller/pcie-brcmstb.c
-> > > @@ -978,6 +978,47 @@ static void brcm_pcie_turn_off(struct brcm_pcie *pcie)
-> > >       brcm_pcie_bridge_sw_init_set(pcie, 1);
-> > >  }
-> > >
-> > > +static int brcm_pcie_suspend(struct device *dev)
-> > > +{
-> > > +     struct brcm_pcie *pcie = dev_get_drvdata(dev);
-> > > +
-> > > +     brcm_pcie_turn_off(pcie);
-> > > +     clk_disable_unprepare(pcie->clk);
-> > > +
-> > > +     return 0;
-> > > +}
-> > > +
-> > > +static int brcm_pcie_resume(struct device *dev)
-> > > +{
-> > > +     struct brcm_pcie *pcie = dev_get_drvdata(dev);
-> > > +     void __iomem *base;
-> > > +     u32 tmp;
-> > > +     int ret;
-> > > +
-> > > +     base = pcie->base;
-> > > +     clk_prepare_enable(pcie->clk);
-> > > +
-> > > +     /* Take bridge out of reset so we can access the SERDES reg */
-> > > +     brcm_pcie_bridge_sw_init_set(pcie, 0);
-> > > +
-> > > +     /* SERDES_IDDQ = 0 */
-> > > +     tmp = readl(base + PCIE_MISC_HARD_PCIE_HARD_DEBUG);
-> > > +     u32p_replace_bits(&tmp, 0, PCIE_MISC_HARD_PCIE_HARD_DEBUG_SERDES_IDDQ_MASK);
-> > > +     writel(tmp, base + PCIE_MISC_HARD_PCIE_HARD_DEBUG);
-> > > +
-> > > +     /* wait for serdes to be stable */
-> > > +     udelay(100);
-> >
-> > Really needs to be a spinloop?
-> >
-> > > +
-> > > +     ret = brcm_pcie_setup(pcie);
-> > > +     if (ret)
-> > > +             return ret;
-> > > +
-> > > +     if (pcie->msi)
-> > > +             brcm_msi_set_regs(pcie->msi);
-> > > +
-> > > +     return 0;
-> > > +}
-> > > +
-> > >  static void __brcm_pcie_remove(struct brcm_pcie *pcie)
-> > >  {
-> > >       brcm_msi_remove(pcie);
-> > > @@ -1087,12 +1128,18 @@ static int brcm_pcie_probe(struct platform_device *pdev)
-> > >
-> > >  MODULE_DEVICE_TABLE(of, brcm_pcie_match);
-> > >
-> > > +static const struct dev_pm_ops brcm_pcie_pm_ops = {
-> > > +     .suspend_noirq = brcm_pcie_suspend,
-> > > +     .resume_noirq = brcm_pcie_resume,
-> >
-> > Why do you need interrupts disabled? There's 39 cases of .suspend_noirq
-> > and 1352 of .suspend in the tree.
->
-> I will test switching this to  suspend_late/resume_early.
+On Thu, Sep 03, 2020 at 05:01:53PM +0200, Frederic Weisbecker wrote:
+> On Tue, Aug 25, 2020 at 03:41:49PM -0300, Marcelo Tosatti wrote:
+> > When enabling per-CPU posix timers, an IPI to nohz_full CPUs might be
+> > performed (to re-read the dependencies and possibly not re-enter
+> > nohz_full on a given CPU).
+> > 
+> > A common case is for applications that run on nohz_full= CPUs
+> > to not use POSIX timers (eg DPDK).
+> > 
+> > This patch optimizes tick_nohz_dep_set_task to avoid kicking
+> > all nohz_full= CPUs in case the task allowed mask does not
+> > intersect with nohz_full= CPU mask,
+> > when going through tick_nohz_dep_set_task.
+> > 
+> > This reduces interruptions to nohz_full= CPUs.
+> > 
+> > ---
+> >  kernel/time/tick-sched.c |    9 +++++++--
+> >  1 file changed, 7 insertions(+), 2 deletions(-)
+> > 
+> > Index: linux-2.6/kernel/time/tick-sched.c
+> > ===================================================================
+> > --- linux-2.6.orig/kernel/time/tick-sched.c
+> > +++ linux-2.6/kernel/time/tick-sched.c
+> > @@ -383,11 +383,16 @@ void tick_nohz_dep_set_task(struct task_
+> >  			tick_nohz_full_kick();
+> >  			preempt_enable();
+> >  		} else {
+> > +			unsigned long flags;
+> > +
+> >  			/*
+> >  			 * Some future tick_nohz_full_kick_task()
+> > -			 * should optimize this.
+> > +			 * should further optimize this.
+> >  			 */
+> > -			tick_nohz_full_kick_all();
+> > +			raw_spin_lock_irqsave(&tsk->pi_lock, flags);
+> > +			if (cpumask_intersects(&tsk->cpus_mask, tick_nohz_full_mask))
+> > +				tick_nohz_full_kick_all();
+> > +			raw_spin_unlock_irqrestore(&tsk->pi_lock, flags);
+> >  		}
+> >  	}
+> >  }
+> > 
+> > 
+> 
+> Not long ago, Peterz suggested that we simply do:
+> 
+> diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
+> index f0199a4ba1ad..42ce8e458013 100644
+> --- a/kernel/time/tick-sched.c
+> +++ b/kernel/time/tick-sched.c
+> @@ -357,17 +357,26 @@ EXPORT_SYMBOL_GPL(tick_nohz_dep_clear_cpu);
+>  void tick_nohz_dep_set_task(struct task_struct *tsk, enum tick_dep_bits bit)
+>  {
+>  	if (!atomic_fetch_or(BIT(bit), &tsk->tick_dep_mask)) {
+> -		if (tsk == current) {
+> -			preempt_disable();
+> -			tick_nohz_full_kick();
+> -			preempt_enable();
+> -		} else {
+> -			/*
+> -			 * Some future tick_nohz_full_kick_task()
+> -			 * should optimize this.
+> -			 */
+> -			tick_nohz_full_kick_all();
+> -		}
+> +		int cpu = task_cpu(tsk);
+> +
+> +		/*
+> +		 * If the task concurrently migrates to another cpu,
+> +		 * we guarantee it sees the new tick dependency upon
+> +		 * schedule.
+> +		 *
+> +		 * set_task_cpu(p, cpu);
+> +		 *   STORE p->cpu = @cpu
+> +		 * __schedule() (switch to task 'p')
+> +		 *   LOCK rq->lock
+> +		 *   smp_mb__after_spin_lock()		STORE p->tick_dep_mask
+> +		 *   tick_nohz_task_switch()		smp_mb() (atomic_fetch_or())
+> +		 *      LOAD p->tick_dep_mask		LOAD p->cpu
+> +		 */
+> +
+> +		preempt_disable();
+> +		if (cpu_online(cpu))
+> +			tick_nohz_full_kick_cpu(cpu);
+> +		preempt_enable();
+>  	}
+>  }
+>  EXPORT_SYMBOL_GPL(tick_nohz_dep_set_task);
 
-Why not just the 'regular' flavor suspend/resume?
+This can also be used for the signal case... thanks.
 
-Rob
