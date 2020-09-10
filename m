@@ -2,200 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CA99264809
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 16:32:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B80726480F
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 16:36:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730211AbgIJOcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1726725AbgIJOgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 10:36:18 -0400
+Received: from mail-co1nam11on2055.outbound.protection.outlook.com ([40.107.220.55]:37088
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1731139AbgIJOcb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 10 Sep 2020 10:32:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731127AbgIJO3J (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 10:29:09 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 243D5C06179B
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 07:28:28 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id w16so6109241oia.2
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 07:28:28 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nUu13nCcldwfj0zDc8IcJLuhodqXOfoC5WPqC6rXUlCl5tX2vcfIFQ+cwkNrwG78UAlK0QytAUHdb2eBESTc8N1GZt/ZnsYDFe8mdDs7/w+mQMzA3gnPZQNlgLuc7KKVmNPLpKv7OBxrJBFAJRAK1fnnkSxJ/rO55el6dC86c+XxXJ4cQ2bnaI8h9TaYthNUHS3j6Pr3TZjnPCHEgzTtj7A3aCcPrDQgn3vtOk3HRP1cRf+HG/Z09k5foAGctm/60TPSzUi8O70dCX3BIirRx/rel9tpartU7lp3YpMlIys1w+ryDW2NXO9iG17SLIW+MXtoJCl8uvXm9UWSPl06QQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WW4FB5BAqYyM/jWrbRbi4oI5x6RGXYhuHWhEq5RQO2s=;
+ b=lTeaJPx0dBx0ZoEOn60kcXlr9ZKG066KEwoM7Bm3soqi3HWlSh8DI6HZOR24tNWEBe6scHhmEIjLoBfv5n4ec70NfiKkvnFOjjgtMy1BIYLt5t/1FZReW5WnjAzFQJu7Pz/CcHddFzkbWl5/tOrs82Jfqo646K60ERsfyMaGwuYskU3+UfAiJr0O/KTEKoknaLVYVMizB+kymvnTZ7hhh/1gwyxpDJ+BV7x7m5AR/SdpwQ5tfELrecRrLyMJAhbsj4WGMGFZgIYzdVyqPJNZn76jmq6AvgQHqC+ikRigyImxHUs9/6avDqHTbmVUeqi/EkSpA4rPSvoVV8wytXkZRg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=inIFVMzh2cK+gIjB1/6vqch+0n+qm5nu5qiM5tL0M/o=;
-        b=VQZwUq3LMO6SQzI5bj2Bxqai3S8LLAkeql3BGl5ZNdb+ICqjYu/F1MQEAjlZe8LbF8
-         6eY1SC942QYJ0qqsWoqyaXFQtSVjY93Hq4MWI9yHAqu92uPFkhJA1BQSq6rYWuWmwObN
-         sjGl4c4frsWrUGVnX17iM8ENNT2HRXEvVM9cev5oFrkzM+R6mkQsLvbZJDtUGzIHgKKg
-         Ms4n8t6Fc7I/AOwIZu2FDlKJkEd6QJ12ZXvdW+lcV3wrBKiObIjXzlA42ALrlyuXCcKU
-         4I05MbEuTMENQrcHA498Dp9JYZt43G4uropluoi4lXLvdXOi1F1DrmNcaUXlGRwPPgpu
-         QY6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=inIFVMzh2cK+gIjB1/6vqch+0n+qm5nu5qiM5tL0M/o=;
-        b=eOV6c5i9Ca/AU6y3QQCDeKbZlZVwqp2ZdO+GsggOqNjZ1KG4KZNcOEuCcDh0z2Scl1
-         qKscpd3ax5sSr8i+6vY7jJGEXI4q+Tz+xVF2svxaFbHCaD1WvE1Zu/s23ySoDIYQq0nN
-         jB0sTVsn9qMvWZln4a4r0x1L7SlyyKXGZH51xcghL4/RBaGsZjKPjnyt2EeFgQkmR+p7
-         mfpKOsY87H99jdTvKjmN3Gq6z27qgB/Y/Nw3ZDeluMmpW1kIzc6uK2YlzMuJLBvLoe3s
-         Ikf67Fhjj69shjPGrQVrxLegJ/VQF2oTnlYFG9cpWjIdL+b/qbygCpJhVQPQfD+zJhBq
-         rK2Q==
-X-Gm-Message-State: AOAM533w0WVwfEdVHlCTueGk+IGkrALVFnVufWZl7d1OjY22POt4NAGP
-        8ujWoR26lIbgpX6aGgxwJexs0/3TXc4=
-X-Google-Smtp-Source: ABdhPJyoQ7G3tNadZOpmO+uJuLJDMeMkkwshwsD1aDZwF3ucdJTLkGHhPyh9kQSCRPEfxZTIvdFC5w==
-X-Received: by 2002:aca:b706:: with SMTP id h6mr176063oif.23.1599748107317;
-        Thu, 10 Sep 2020 07:28:27 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id q62sm925803ooa.12.2020.09.10.07.28.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Sep 2020 07:28:26 -0700 (PDT)
-Subject: Re: [PATCH] scripts/setlocalversion: make git describe output more
- reliable
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Brian Norris <briannorris@chromium.org>,
-        Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Cc:     linux-kernel@vger.kernel.org
-References: <20200910112701.13853-1-linux@rasmusvillemoes.dk>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <91104720-e389-a53d-37f6-1de4d665474f@roeck-us.net>
-Date:   Thu, 10 Sep 2020 07:28:25 -0700
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WW4FB5BAqYyM/jWrbRbi4oI5x6RGXYhuHWhEq5RQO2s=;
+ b=gBWl3EZNKiZqnT82uHhfeWUUJtD1wrSZlfAQaZmTsnDhHWIJHeD5Da3qxF2mVp7p3LVciiOSRWbexd8InjhuqqbbBEniWkCJaLmfcLC0sZfstU0zcu6Gqx9icUkcqw1pDdH18YcRr9eLBka04Gnzjs4/bHIg09mkmtC9+YNd2AY=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from SN1PR12MB2414.namprd12.prod.outlook.com (2603:10b6:802:2e::31)
+ by SN1PR12MB2447.namprd12.prod.outlook.com (2603:10b6:802:27::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.15; Thu, 10 Sep
+ 2020 14:32:24 +0000
+Received: from SN1PR12MB2414.namprd12.prod.outlook.com
+ ([fe80::d548:1236:cb4f:1be9]) by SN1PR12MB2414.namprd12.prod.outlook.com
+ ([fe80::d548:1236:cb4f:1be9%7]) with mapi id 15.20.3370.016; Thu, 10 Sep 2020
+ 14:32:24 +0000
+Subject: Re: [PATCH v2 -next] drm/amdkfd: Fix -Wunused-const-variable warning
+To:     YueHaibing <yuehaibing@huawei.com>, alexander.deucher@amd.com,
+        christian.koenig@amd.com, airlied@linux.ie, daniel@ffwll.ch,
+        Yong.Zhao@amd.com, ray.huang@amd.com
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+References: <20200910025532.19616-1-yuehaibing@huawei.com>
+ <20200910075006.41484-1-yuehaibing@huawei.com>
+From:   Felix Kuehling <felix.kuehling@amd.com>
+Message-ID: <a0dec097-399e-f29e-c252-cd741862ac9e@amd.com>
+Date:   Thu, 10 Sep 2020 10:32:22 -0400
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20200910112701.13853-1-linux@rasmusvillemoes.dk>
+In-Reply-To: <20200910075006.41484-1-yuehaibing@huawei.com>
 Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: YTOPR0101CA0012.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b00:15::25) To SN1PR12MB2414.namprd12.prod.outlook.com
+ (2603:10b6:802:2e::31)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.2.100] (142.116.113.11) by YTOPR0101CA0012.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b00:15::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16 via Frontend Transport; Thu, 10 Sep 2020 14:32:23 +0000
+X-Originating-IP: [142.116.113.11]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: e6eb3b03-0934-4442-1003-08d85596559f
+X-MS-TrafficTypeDiagnostic: SN1PR12MB2447:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SN1PR12MB244721BF2BE36D48FDFBD5A192270@SN1PR12MB2447.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3826;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 1xbb+LmSeQvoJg1HqNY84Khxzh9bLz/Z/bd14BG0XeeNfArYH/wQbABxtbDVa4EE5O3lHD1X4EE0+11ceWyeeubhbggY3lF5WcrKpfwm49tlpG2lJ718MaNMkcQEWDB320T5XLkWQGcbYrboHq5AAy9GTnAUq8GYEES7EJyoMnESx+0t70uUelKIPHTyvCI6c/7PEiJ6gra7iJnCwzVV+I9AtRkxpYcnmdLKT0XyX8U83epd3HHai4LrYLYtkR9MVyHcGN51qbZusV6ZcVaAGYIoqUW7gpPrZdEp3tlL1zexmKtMhzuHcImHPEfOYimMJWPJC2ARv78hZVGD1424JQCscF+szdLNJ3j9LetVhsNM9xfCsd9XPHNw4AFaL6iw
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN1PR12MB2414.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(136003)(346002)(396003)(39860400002)(6486002)(8936002)(956004)(86362001)(26005)(16526019)(186003)(52116002)(31696002)(2906002)(5660300002)(478600001)(66476007)(36756003)(66556008)(6636002)(16576012)(2616005)(316002)(4326008)(83380400001)(8676002)(31686004)(44832011)(66946007)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: rytbtlN4TnT8ytyNZoWffpNkmMZ4iKDKV1Ojw2br06oT0hzTw/ayYXwGQfSQNVLHA4E2CDzzYN102iQIkF4uNDhjxycfB6StSze48eIlyX7GU75UbOKLjiQzxr7glgc0BBC2pPasxxYEZLsSaf12H++38WeURGxWSWl/T6gUwbnrcgW5cEQg4qN1W5Dnfw3Y1C9GjNSgA5d9c50GTwdXggZE0C6h7D4XFmRxklzZcNLifqrMltbB2p1sAUcYqEVBaDp02dVnwExXxpYzRUk1YtDJq1J2UBL09xFJZ+HDQXlQ3QA3MmuqnVH+RF0ep6aWqgP5ziopuETTb0ctx8FXe1P2T49F5xE0AEA6FxVVr67V++BhkIvm475ZmS5bkZpMrFWTVq2+aI+wbafafX/11qzCqU8FEdHRgs6HDRYy3tJ242zf2ypp8O9uzzloMF/D7IZ5gqxCSWTaPqdApCdNyERNSAB9aViOpgMSzu4ms8VlrqZGOGLKYSiMUHPJ2VD+Z9qD0SDvnODq2fVeGzEAQslQWeTztHT1U0mmb7YpHZ5QHC4cctAABhlHbIWoFC1Vh51DcU8inkcpVod1nBzuvsb2tfgPeww84yuXESMe8m1mZq7SBTGS6HpkNM284CofpgKx6ubLfBZQwrNK0mNfmg==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e6eb3b03-0934-4442-1003-08d85596559f
+X-MS-Exchange-CrossTenant-AuthSource: SN1PR12MB2414.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Sep 2020 14:32:24.4537
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: mXtRMXSs9qwmXy8kIXMxZz+vCBpTtAnU9W16lRwBuUnG6bKXCM+u4ONtHEdoswfli7uUtG/2ODtnjOF+3fNN5A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN1PR12MB2447
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/10/20 4:26 AM, Rasmus Villemoes wrote:
-> When building for an embedded target using Yocto, we're sometimes
-> observing that the version string that gets built into vmlinux (and
-> thus what uname -a reports) differs from the path under /lib/modules/
-> where modules get installed in the rootfs, but only in the length of
-> the -gabc123def suffix. Hence modprobe always fails.
-> 
-> The problem is that Yocto has the concept of "sstate" (shared state),
-> which allows different developers/buildbots/etc. to share build
-> artifacts, based on a hash of all the metadata that went into building
-> that artifact - and that metadata includes all dependencies (e.g. the
-> compiler used etc.). That normally works quite well; usually a clean
-> build (without using any sstate cache) done by one developer ends up
-> being binary identical to a build done on another host. However, one
-> thing that can cause two developers to end up with different builds
-> [and thus make one's vmlinux package incompatible with the other's
-> kernel-dev package], which is not captured by the metadata hashing, is
-> this `git describe`: The output of that can be affected by
-> 
-> (1) git version: before 2.11 git defaulted to a minimum of 7, since
-> 2.11 (git.git commit e6c587) the default is dynamic based on the
-> number of objects in the repo
-> (2) hence even if both run the same git version, the output can differ
-> based on how many remotes are being tracked (or just lots of local
-> development branches or plain old garbage)
-> (3) and of course somebody could have a core.abbrev config setting in
-> ~/.gitconfig
-> 
-> So in order to avoid `uname -a` output relying on such random details
-> of the build environment which are rather hard to ensure are
-> consistent between developers and buildbots, use an explicit
-> --abbrev=15 option (and for consistency, also use rev-parse --short=15
-> for the unlikely case of no signed tags being usable).
-> 
-> Now, why is 60 bits enough for everyone? It's not mathematically
-> guaranteed that git won't have to use 16 in some git repo, but it is
-> beyond unlikely: Even in a repo with 100M objects, the probability
-> that any given commit (i.e. the one being described) clashes with some
-> other object in the first 15 hex chars is less than 1e-10, and
-> currently a git repo tracking Linus', -stable and -rt only has around
-> 10M objects.
-> 
-> Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Am 2020-09-10 um 3:50 a.m. schrieb YueHaibing:
+> If KFD_SUPPORT_IOMMU_V2 is not set, gcc warns:
+>
+> drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_device.c:121:37: warning: ‘raven_device_info’ defined but not used [-Wunused-const-variable=]
+>  static const struct kfd_device_info raven_device_info = {
+>                                      ^~~~~~~~~~~~~~~~~
+>
+> As Huang Rui suggested, Raven already has the fallback path,
+> so it should be out of IOMMU v2 flag.
+>
+> Suggested-by: Huang Rui <ray.huang@amd.com>
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 
-Makes sense to me.
+Reviewed-by: Felix Kuehling <Felix.Kuehling@amd.com>
 
-Acked-by: Guenter Roeck <linux@roeck-us.net>
+I applied your patch to the amd-staging-drm-next branch.
+
+Thank you,
+  Felix
 
 > ---
-> I could probably fix things by adding a 'git config --local
-> core.abbrev 15' step to the Yocto build process after the repo to
-> build from has been cloned but before building has started. But in the
-> interest of binary reproducibility outside of just Yocto builds, I
-> think it's better if this lives in the kernel.
-> 
->  scripts/setlocalversion | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/scripts/setlocalversion b/scripts/setlocalversion
-> index 20f2efd57b11..c5262f0d953d 100755
-> --- a/scripts/setlocalversion
-> +++ b/scripts/setlocalversion
-> @@ -45,7 +45,7 @@ scm_version()
->  
->  	# Check for git and a git repo.
->  	if test -z "$(git rev-parse --show-cdup 2>/dev/null)" &&
-> -	   head=$(git rev-parse --verify --short HEAD 2>/dev/null); then
-> +	   head=$(git rev-parse --verify --short=15 HEAD 2>/dev/null); then
->  
->  		# If we are at a tagged commit (like "v2.6.30-rc6"), we ignore
->  		# it, because this version is defined in the top level Makefile.
-> @@ -59,7 +59,7 @@ scm_version()
->  			fi
->  			# If we are past a tagged commit (like
->  			# "v2.6.30-rc5-302-g72357d5"), we pretty print it.
-> -			if atag="$(git describe 2>/dev/null)"; then
-> +			if atag="$(git describe --abbrev=15 2>/dev/null)"; then
->  				echo "$atag" | awk -F- '{printf("-%05d-%s", $(NF-1),$(NF))}'
->  
->  			# If we don't have a tag at all we print -g{commitish}.
-> 
-
+>  drivers/gpu/drm/amd/amdkfd/kfd_device.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_device.c b/drivers/gpu/drm/amd/amdkfd/kfd_device.c
+> index 0e71a0543f98..e3fc6ed7b79c 100644
+> --- a/drivers/gpu/drm/amd/amdkfd/kfd_device.c
+> +++ b/drivers/gpu/drm/amd/amdkfd/kfd_device.c
+> @@ -503,8 +503,8 @@ static const struct kfd_device_info *kfd_supported_devices[][2] = {
+>  #ifdef KFD_SUPPORT_IOMMU_V2
+>  	[CHIP_KAVERI] = {&kaveri_device_info, NULL},
+>  	[CHIP_CARRIZO] = {&carrizo_device_info, NULL},
+> -	[CHIP_RAVEN] = {&raven_device_info, NULL},
+>  #endif
+> +	[CHIP_RAVEN] = {&raven_device_info, NULL},
+>  	[CHIP_HAWAII] = {&hawaii_device_info, NULL},
+>  	[CHIP_TONGA] = {&tonga_device_info, NULL},
+>  	[CHIP_FIJI] = {&fiji_device_info, &fiji_vf_device_info},
