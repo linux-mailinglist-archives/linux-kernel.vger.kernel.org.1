@@ -2,86 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A8B5264304
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 11:57:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62DB8264314
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 11:59:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730437AbgIJJ5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 05:57:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41174 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730553AbgIJJyG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 05:54:06 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB89FC061573
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 02:54:03 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id md22so1079159pjb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 02:54:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=F5h+9h0cZdkPW25qpRHYDsEGqxD1XBrnnk/6rX6atkY=;
-        b=LlEDCWgpeqDgpOjcmWPATPwqcDWL30ELT2gpQ0RKc+nsv0DmZl7KzR+wBzWa3iOVW1
-         hZoj8+bFhHUh00/hle1s8o7hTt4tCw27ur9NNvVYscHMUdlKcnPuo78LoWWf5x0kAyFY
-         L82uvFjD+9fe24lrLCvrE/3k9iNz4Eo4rXtBRQ5salrpPxO3Wsi6U77bQMi0iOawjSAa
-         m/jDOL+S/WFWakYspnhxAeCxKsonxnGD9xo3YoGuZGIqnkJX1/+YRoRErTaGApix9YhH
-         6Wg6UOgHxIYfG6xe1O9LgeOANY8BBnFYOCEaXlypuNSCsnZF5MFqTu6mzDUwx3ZAN4W7
-         sWqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=F5h+9h0cZdkPW25qpRHYDsEGqxD1XBrnnk/6rX6atkY=;
-        b=Q9key93z0FkXRJyYviMwRmCchAJijpxElc3M2WTm1A00XGED0zFj0lHwaiFMxWfeQK
-         zOv6TPhmrh8md9TxEyMUn9dSdp/Rhh44nVRU7uYo/Jg072BE4lyAcKeTw/IY29IysUTs
-         Nr1jjm8jwTurbCv3RjtRcykvNltddMcMyGzRoM442+NdXDqGq3LPLeUl8IvV8gYDsvnu
-         gtaUchwVuJ+is2c9pL4oCPQU1NO+MlnqUQn16oV5nPavAt0HaxUjLcWjp+pSSU3X348T
-         d1Fw0mtj9IlOBPWvzcEVLLrZhV5T5MKXbQqe+88R4xvFvPpsj4BgRLy/snW9XcYSzkZd
-         19oQ==
-X-Gm-Message-State: AOAM530R6LeYW11CLSQSBsLJMrLW5HVvyGBlBdVbk9VvLMJ1g6SsbE9Y
-        cYcygKLB7gi1/Thx0Os6l9vXLg==
-X-Google-Smtp-Source: ABdhPJyyjLldSPXR3NqdKk6r7B8vIALvfp17tpVuzMdZQmhZeoDWx+QzRuSQDy4vQkGfoH/AbRs4Rg==
-X-Received: by 2002:a17:902:b105:b029:d0:cbe1:e7b1 with SMTP id q5-20020a170902b105b02900d0cbe1e7b1mr4789265plr.34.1599731643373;
-        Thu, 10 Sep 2020 02:54:03 -0700 (PDT)
-Received: from localhost ([122.181.54.133])
-        by smtp.gmail.com with ESMTPSA id c3sm5514471pfo.120.2020.09.10.02.54.02
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 10 Sep 2020 02:54:02 -0700 (PDT)
-Date:   Thu, 10 Sep 2020 15:23:55 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Jassi Brar <jassisinghbrar@gmail.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH V2] dt-bindings: mailbox: add doorbell support to ARM MHU
-Message-ID: <20200910095355.s5lwv3mp2mcz2sdd@vireshk-i7>
-References: <ee7439aea0c2076aab5dab26d8266d5faab01b6b.1599632119.git.viresh.kumar@linaro.org>
- <CAL_JsqJadbhUSiVQWAL5uDzqpkDPWT+M7nGDVJ7Wyf4zHkPvEg@mail.gmail.com>
+        id S1730826AbgIJJ7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 05:59:50 -0400
+Received: from mga14.intel.com ([192.55.52.115]:59262 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730596AbgIJJ5Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 05:57:24 -0400
+IronPort-SDR: IkdEGsVYDeaSHd5zC8Fd3i1SzO3AaG5IbjMmMP1R6K/khjivYSWoMVXbHcnPb2exhCI+sS6nzb
+ a6wE20bz+Rlg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9739"; a="157782360"
+X-IronPort-AV: E=Sophos;i="5.76,412,1592895600"; 
+   d="scan'208";a="157782360"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2020 02:54:07 -0700
+IronPort-SDR: 3iiISJzVPsvq7qAGyQ55MzatYYoTRWENmLKuHQylsst8Jd+oXMVzz4BqbMfT01Ckx2SBEsrYSy
+ WfpwSu//TCFg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,412,1592895600"; 
+   d="scan'208";a="317858423"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga002.jf.intel.com with ESMTP; 10 Sep 2020 02:54:01 -0700
+Received: from [10.215.160.12] (rtanwar-MOBL.gar.corp.intel.com [10.215.160.12])
+        by linux.intel.com (Postfix) with ESMTP id 87C22580223;
+        Thu, 10 Sep 2020 02:53:58 -0700 (PDT)
+Subject: Re: [PATCH 2/2] Add driver for Moortec MR75203 PVT controller
+To:     Andy Shevchenko <andriy.shevchenko@intel.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>, jdelvare@suse.com,
+        p.zabel@pengutronix.de, linux-hwmon@vger.kernel.org,
+        robh+dt@kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, songjun.Wu@intel.com,
+        cheol.yong.kim@intel.com, qi-ming.wu@intel.com,
+        rtanwar@maxlinear.com
+References: <cover.1599634208.git.rahul.tanwar@linux.intel.com>
+ <ecb6794a8f2ef6576421e6d5fbdf4e6a91f06b91.1599634208.git.rahul.tanwar@linux.intel.com>
+ <a3b95ea8-372b-4f03-0c04-62ee9384fafb@roeck-us.net>
+ <c72665ba-b594-bbb0-00c5-ed763233d609@linux.intel.com>
+ <20200910094622.GO1891694@smile.fi.intel.com>
+From:   "Tanwar, Rahul" <rahul.tanwar@linux.intel.com>
+Message-ID: <457b8ff8-4093-3b82-5358-4b8460a1b012@linux.intel.com>
+Date:   Thu, 10 Sep 2020 17:53:57 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAL_JsqJadbhUSiVQWAL5uDzqpkDPWT+M7nGDVJ7Wyf4zHkPvEg@mail.gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <20200910094622.GO1891694@smile.fi.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09-09-20, 13:35, Rob Herring wrote:
-> I'd really like this converted to schema first given it's more than a
-> minor change, but I don't want to hold things up. (Though, where's the
-> new driver?)
 
-Sudeep will re-work his older patches to get the separate driver ready
-for inclusion. We were blocked on this idea for ever and so I didn't
-try playing with it until now :)
 
--- 
-viresh
+On 10/9/2020 5:46 pm, Andy Shevchenko wrote:
+> On Thu, Sep 10, 2020 at 03:27:11PM +0800, Tanwar, Rahul wrote:
+>> On 9/9/2020 11:05 pm, Guenter Roeck wrote:
+>>> On 9/8/20 11:52 PM, Rahul Tanwar wrote:
+> ...
+>
+>>>> +static int pvt_get_regmap(struct platform_device *pdev, char *reg_name)
+>>>> +{
+>>>> +	struct device *dev = &pdev->dev;
+>>>> +	struct pvt_device *pvt = platform_get_drvdata(pdev);
+>>> I am quite at loss how this is supposed to work. Platform driver
+>>> data is not initialized with a pointer to struct pvt_device at this point.
+>>> How does this code not crash ? What am I missing ?
+>> Big mistake on my part. Last minute change based on internal review feedback
+>> about moving platform_set_drvdata() at the end of probe. I will fix it in v2.
+>> Thanks.
+> Since IIRC it was me who suggested this I should say that reviewer can make
+> mistakes, on the other hand contributor should have had known their code to
+> refuse certain changes.
+>
+
+Totally agree. Overlooked in a hasty change..
+
+Regards,
+Rahul
+
