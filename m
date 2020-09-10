@@ -2,120 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 011C4264ACE
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 19:13:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3A64264ACD
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 19:13:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726415AbgIJRMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 13:12:38 -0400
-Received: from mga14.intel.com ([192.55.52.115]:55321 "EHLO mga14.intel.com"
+        id S1726781AbgIJRNj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 13:13:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37302 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726167AbgIJRKw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 13:10:52 -0400
-IronPort-SDR: O87W02/8X/3D2CO5mblc81Zdm2GR6AeytnTGW5Rhy5bYThU7DtHNasdy7tw2E2l33T22zmeRkw
- XZF314VI5cDw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9740"; a="157869318"
-X-IronPort-AV: E=Sophos;i="5.76,413,1592895600"; 
-   d="scan'208";a="157869318"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2020 10:10:51 -0700
-IronPort-SDR: y3sx8lMTfOuw2CWmGsmU5NWTdrMQUu/FoHHbxM6PaW6Bm+XOz1mC1rsaSguMbPKBBWT+a28ipy
- /9w6SGhO5lXA==
-X-IronPort-AV: E=Sophos;i="5.76,413,1592895600"; 
-   d="scan'208";a="300623572"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2020 10:10:50 -0700
-Date:   Thu, 10 Sep 2020 10:12:48 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     Auger Eric <eric.auger@redhat.com>
-Cc:     Jacob Pan <jacob.pan.linux@gmail.com>,
-        iommu@lists.linux-foundation.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>, Wu Hao <hao.wu@intel.com>,
-        jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH v2 9/9] iommu/vt-d: Store guest PASID during bind
-Message-ID: <20200910101248.19460882@jacob-builder>
-In-Reply-To: <60feda75-5862-c898-97b1-1f5eafdb8d8c@redhat.com>
-References: <1598070918-21321-1-git-send-email-jacob.jun.pan@linux.intel.com>
-        <1598070918-21321-10-git-send-email-jacob.jun.pan@linux.intel.com>
-        <60feda75-5862-c898-97b1-1f5eafdb8d8c@redhat.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.13.2 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
+        id S1726474AbgIJRMv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 13:12:51 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B811120C09;
+        Thu, 10 Sep 2020 17:12:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599757971;
+        bh=PUBpYQj0CxzLrTEIPelTfB5FM7z8aFgQE0RamhRKdGk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EKml8Bp/9LmNdjeMi1rCzFyiQzegEeGNrtKf/vFqrtC10kEjnhTIxRe8hB5Fle0t6
+         7uDN6w35OLtDdE66DdKTs0hbqzABuv0/xOPYY4y/aU5Q6aO8CQMGTJLFJhZB+mbNPD
+         xJtDa0Yi6FsRPugbXzyqZtdbxk2aEPJyCbwfgXWE=
+Date:   Thu, 10 Sep 2020 19:12:58 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Ajay Kaher <akaher@vmware.com>
+Cc:     sashal@kernel.org, alex.williamson@redhat.com, cohuck@redhat.com,
+        peterx@redhat.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        srivatsab@vmware.com, srivatsa@csail.mit.edu,
+        vsirnapalli@vmware.com
+Subject: Re: [PATCH v2 v4.14.y 0/3] vfio: Fix for CVE-2020-12888
+Message-ID: <20200910171258.GC1621093@kroah.com>
+References: <1599591263-46520-1-git-send-email-akaher@vmware.com>
+ <1599591263-46520-4-git-send-email-akaher@vmware.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1599591263-46520-4-git-send-email-akaher@vmware.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 1 Sep 2020 19:08:44 +0200
-Auger Eric <eric.auger@redhat.com> wrote:
-
-> Hi Jacob,
-> On 8/22/20 6:35 AM, Jacob Pan wrote:
-> > IOASID core maintains the guest-host mapping in the form of SPID and
-> > IOASID. This patch assigns the guest PASID (if valid) as SPID while
-> > binding guest page table with a host PASID. This mapping will be
-> > used for lookup and notifications.
-> > 
-> > Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
-> > ---
-> >  drivers/iommu/intel/svm.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> > 
-> > diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
-> > index d8a5efa75095..4c958b1aec4c 100644
-> > --- a/drivers/iommu/intel/svm.c
-> > +++ b/drivers/iommu/intel/svm.c
-> > @@ -406,6 +406,7 @@ int intel_svm_bind_gpasid(struct iommu_domain
-> > *domain, struct device *dev, if (data->flags &
-> > IOMMU_SVA_GPASID_VAL) { svm->gpasid = data->gpasid;
-> >  			svm->flags |= SVM_FLAG_GUEST_PASID;
-> > +			ioasid_attach_spid(data->hpasid,
-> > data->gpasid);  
-> don't you want to handle the returned value?
-Yes, I also need to add a check for duplicated SPID within a set.
-
-> >  		}
-> >  		svm->iommu = iommu;
-> >  		/*
-> > @@ -517,6 +518,7 @@ int intel_svm_unbind_gpasid(struct device *dev,
-> > int pasid) ioasid_attach_data(pasid, NULL);
-> >  				ioasid_notify(pasid, IOASID_UNBIND,
-> >  					IOASID_NOTIFY_SET);
-> > +				ioasid_attach_spid(pasid,
-> > INVALID_IOASID);  
-> So this answers my previous question ;-) but won't it enter the if
-> (!ioasid_data) path and fail to reset the spid?
+On Wed, Sep 09, 2020 at 12:24:23AM +0530, Ajay Kaher wrote:
+> CVE-2020-12888 Kernel: vfio: access to disabled MMIO space of some
+> devices may lead to DoS scenario
+>     
+> The VFIO modules allow users (guest VMs) to enable or disable access to the
+> devices' MMIO memory address spaces. If a user attempts to access (read/write)
+> the devices' MMIO address space when it is disabled, some h/w devices issue an
+> interrupt to the CPU to indicate a fatal error condition, crashing the system.
+> This flaw allows a guest user or process to crash the host system resulting in
+> a denial of service.
+>     
+> Patch 1/ is to force the user fault if PFNMAP vma might be DMA mapped
+> before user access.
+>     
+> Patch 2/ setup a vm_ops handler to support dynamic faulting instead of calling
+> remap_pfn_range(). Also provides a list of vmas actively mapping the area which
+> can later use to invalidate those mappings.
+>     
+> Patch 3/ block the user from accessing memory spaces which is disabled by using
+> new vma list support to zap, or invalidate, those memory mappings in order to
+> force them to be faulted back in on access.
+>     
+> Upstreamed patches link:
+> https://lore.kernel.org/kvm/158871401328.15589.17598154478222071285.stgit@gimli.home
 > 
-Sorry, i am not following. If there is no ioasid_data then there is no
-SPID to be stored.
-
-BTW, I plan to separate the APIs into two.
-ioasid_attach_spid
-ioasid_detach_spid
-
-Only ioasid_detach_spid will be calling synchronize RCU, then
-ioasid_attach_spid can be called under spinlock.
-
-Thanks,
-
-> Eric
-> >  				kfree(svm);
-> >  			}
-> >  		}
-> >   
+> Diff from v1:
+> Fixed build break problem.
 > 
-> _______________________________________________
-> iommu mailing list
-> iommu@lists.linux-foundation.org
-> https://lists.linuxfoundation.org/mailman/listinfo/iommu
+> [PATCH v2 v4.14.y 1/3]:
+> Backporting of upsream commit 41311242221e:
+> vfio/type1: Support faulting PFNMAP vmas
+>         
+> [PATCH v2 v4.14.y 2/3]:
+> Backporting of upsream commit 11c4cd07ba11:
+> vfio-pci: Fault mmaps to enable vma tracking
+>         
+> [PATCH v2 v4.14.y 3/3]:
+> Backporting of upsream commit abafbc551fdd:
+> vfio-pci: Invalidate mmaps and block MMIO access on disabled memory
 
-[Jacob Pan]
+This worked better, now all queued up, thanks!
+
+greg k-h
