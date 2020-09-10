@@ -2,95 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F57D265349
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:31:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7ECC265365
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:34:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726935AbgIJVbF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 17:31:05 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:2176 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730986AbgIJNwE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 09:52:04 -0400
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f5a2d3c0000>; Thu, 10 Sep 2020 06:42:20 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Thu, 10 Sep 2020 06:43:04 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Thu, 10 Sep 2020 06:43:04 -0700
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 10 Sep
- 2020 13:43:04 +0000
-Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Thu, 10 Sep 2020 13:43:04 +0000
-Received: from moonraker.nvidia.com (Not Verified[10.26.73.219]) by hqnvemgw03.nvidia.com with Trustwave SEG (v7,5,8,10121)
-        id <B5f5a2d660001>; Thu, 10 Sep 2020 06:43:03 -0700
-From:   Jon Hunter <jonathanh@nvidia.com>
-To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>
-CC:     <linux-i2c@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        Jon Hunter <jonathanh@nvidia.com>
-Subject: [PATCH 3/5] misc: eeprom: at24: Support custom device names for AT24 EEPROMs
-Date:   Thu, 10 Sep 2020 14:42:37 +0100
-Message-ID: <20200910134239.192030-4-jonathanh@nvidia.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200910134239.192030-1-jonathanh@nvidia.com>
-References: <20200910134239.192030-1-jonathanh@nvidia.com>
+        id S1728291AbgIJVeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 17:34:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57776 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730972AbgIJNuh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 09:50:37 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A53FE20809;
+        Thu, 10 Sep 2020 13:43:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599745385;
+        bh=HS8wsmWliqw+vjJ423NAWe4CfnIUGKglNawk6e/Lpxc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=v68CyWmYUwHBBsPt4GggNokqZGoCyVhYssoIlWXKk89FPtJaabSRsh9pjI+3fhDJ7
+         W+177d2NwJl1JZZEtCOB7BZy0gQe/Q8hbhtfocsskQ4WlX8Drl4bywg1MoNnirjWxD
+         NleEcOIZHybs7oeRQofnPYjrQ9jryVLrKXCzGT6Q=
+From:   Leon Romanovsky <leon@kernel.org>
+To:     iChristoph Hellwig <hch@lst.de>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Maor Gottlieb <maorg@nvidia.com>
+Subject: [PATCH rdma-next v1 0/4] scatterlist: add sg_alloc_table_append function
+Date:   Thu, 10 Sep 2020 16:42:55 +0300
+Message-Id: <20200910134259.1304543-1-leon@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1599745340; bh=ZGkEXEwpXqpjoIf4jocKKQvXhnOPyZdgty/NwZOE9tk=;
-        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
-         In-Reply-To:References:MIME-Version:X-NVConfidentiality:
-         Content-Transfer-Encoding:Content-Type;
-        b=pjNYe+6C9EeJTax/G0VbAx8Lyvsger6Gou4+6jpUnfsKE8WwKapop42uNARSwqdjQ
-         LvuqvcYUBrQEIeP1qZipOf1uiolOMzxu8b4g69Qfeyww7feSIjMzKJtoPmvn9MwrWu
-         W+MXzpDyrHBKm3tlMdbLkln45wGQ1WrAk3djL/tAi64NddMuT0NfW5WHUS4QIFhWds
-         2SrphB4SD2UHAm9blDz7XGOltpdEmci20/NodAHDL3r5YqnxKe8wtyXcBAVYiygHIl
-         Srk4/LSB98LhlSHhmxJhwTORKF/lEKc8XltGwhfcXDmr3cUtvjtDB7c+bYkxQTk6qQ
-         q2PM0g99/xJTQ==
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-By using the label property, a more descriptive name can be populated
-for AT24 EEPROMs NVMEM device. Update the AT24 driver to check to see
-if the label property is present and if so, use this as the name for
-NVMEM device.
+From: Leon Romanovsky <leonro@nvidia.com>
 
-Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
----
- drivers/misc/eeprom/at24.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+Changelog:
+v1:
+ * Changed _sg_chain to be __sg_chain
+ * Added dependency on ARCH_NO_SG_CHAIN
+ * Removed struct sg_append
+v0:
+ * https://lore.kernel.org/lkml/20200903121853.1145976-1-leon@kernel.org
 
-diff --git a/drivers/misc/eeprom/at24.c b/drivers/misc/eeprom/at24.c
-index 3f7a3bb6a36c..058be08a9a40 100644
---- a/drivers/misc/eeprom/at24.c
-+++ b/drivers/misc/eeprom/at24.c
-@@ -713,7 +713,15 @@ static int at24_probe(struct i2c_client *client)
- 			return err;
- 	}
-=20
--	nvmem_config.name =3D dev_name(dev);
-+	if (device_property_present(dev, "label")) {
-+		err =3D device_property_read_string(dev, "label",
-+						  &nvmem_config.name);
-+		if (err)
-+			return err;
-+	} else {
-+		nvmem_config.name =3D dev_name(dev);
-+	}
-+
- 	nvmem_config.dev =3D dev;
- 	nvmem_config.id =3D NVMEM_DEVID_NONE;
- 	nvmem_config.read_only =3D !writable;
---=20
-2.25.1
+--------------------------------------------------------------------------
+From Maor:
+
+This series adds a new constructor for a scatter gather table. Like
+sg_alloc_table_from_pages function, this function merges all contiguous
+chunks of the pages a into single scatter gather entry.
+
+In contrast to sg_alloc_table_from_pages, the new API allows chaining of
+new pages to already initialized SG table.
+
+This allows drivers to utilize the optimization of merging contiguous
+pages without a need to pre allocate all the pages and hold them in
+a very large temporary buffer prior to the call to SG table initialization.
+
+The first two patches refactor the code of sg_alloc_table_from_pages
+in order to have code sharing and add sg_alloc_next function to allow
+dynamic allocation of more entries in the SG table.
+
+The third patch introduces the new API.
+
+The last patch changes the Infiniband driver to use the new API. It
+removes duplicate functionality from the code and benefits the
+optimization of allocating dynamic SG table from pages.
+
+In huge pages system of 2MB page size, without this change, the SG table
+would contain x512 SG entries.
+E.g. for 100GB memory registration:
+
+             Number of entries      Size
+    Before        26214400          600.0MB
+    After            51200            1.2MB
+
+Thanks
+
+Maor Gottlieb (4):
+  lib/scatterlist: Refactor sg_alloc_table_from_pages
+  lib/scatterlist: Add support in dynamically allocation of SG entries
+  lib/scatterlist: Add support in dynamic allocation of SG table from
+    pages
+  RDMA/umem: Move to allocate SG table from pages
+
+ drivers/infiniband/Kconfig     |   1 +
+ drivers/infiniband/core/umem.c |  90 ++--------
+ include/linux/scatterlist.h    |  35 ++--
+ lib/scatterlist.c              | 292 +++++++++++++++++++++++++--------
+ 4 files changed, 255 insertions(+), 163 deletions(-)
+
+--
+2.26.2
 
