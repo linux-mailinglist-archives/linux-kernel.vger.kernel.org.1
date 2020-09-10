@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2F5D263DD6
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 08:59:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAC63263E6F
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 09:21:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730276AbgIJG73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 02:59:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41578 "EHLO
+        id S1730368AbgIJHVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 03:21:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729802AbgIJG5e (ORCPT
+        with ESMTP id S1726996AbgIJGzK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 02:57:34 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80F32C061346
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 23:55:12 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id a65so4458687wme.5
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 23:55:12 -0700 (PDT)
+        Thu, 10 Sep 2020 02:55:10 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCD7EC061795
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 23:54:56 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id z1so5422009wrt.3
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 23:54:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=QBwZYByjjh942d4ggJkaITmm4qS6KFDbT+209YIFm2k=;
-        b=o/wDvUp3hJQejPqXu9BVpd4DAZVvxNEGCvwNBjgtKaCHOvkvK2PixeedyU+euKj3uM
-         6RE7sSsFhFn7II5R/AT4j99dXRYjA64fISNqweLwk21m2ilur2CuKdp/ldA/0ExeQSGq
-         diVFzJGZeH2I02ScPXSS9m+HBcHIDpVwWqSW1r9F9iwqMgVKVdY4b2m6LsXoe2I6Rhrd
-         qtpxpuulD/8hye47v78oTqmg0QNkvrzcxD/6+noLrHjKzcw3SIkL670d75vQivrpQE5q
-         T54i9iRRejeNy+G8gWYcBfd7RPfc2DxpwcbWyOpeX0qNDjoHkUvj6rD+YIlXhopr6css
-         qhTg==
+        bh=DOjbJX83gJDY8f1/vIcwdpJ4Kow88m/y6XKP96xRsEA=;
+        b=oX8WKLXODC05S0G4JO+FCpWGIOn5GJf3bRMOm9VBdYdS2VaC0yQyUAT6SCAD/4NSBs
+         cOuQHU9kMdF7dNZDy6xtChcMJ9WW7yR1ZCeq03cPCiHQkFo7F/EkpPDSrVfp/tTWPw5H
+         boVVYgEpTx2yjZThhqHS0dvhD8XXYMzCIAW1hlvIZIlW5iB6NPoiyoduCsVj7MBqsRvi
+         SDmEhUoyRkCjPT0XHjlBmamoPVBdudNWyJd+3V6XjYEVUxwaR1UXhJ3itE7SDh5UXoGI
+         +jB7xNArviDybwhMjLp5YmYsk4Y8T5eQN1yWm/TwmUUNjUuM/PtBZaTGtInWO3YcIOhN
+         r0/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=QBwZYByjjh942d4ggJkaITmm4qS6KFDbT+209YIFm2k=;
-        b=owOFLcIqHP6eGQC6GndZls2ouP35S+GUFYQ/2MIY5qpHx/QE3A62PThVgHUTxzrf02
-         H2OfrZCvw40mvNamKymIiVf3kLULCDvmlJpqIM9C4Qo0VXpK19zJQ9oVNfZp4tylUA8c
-         w2Ycl6ABR1M/gVgiFljAZhUK2H19ilL8jZcp7/P0aBvLcVSmduo83oXA7mcNfLwPvV4Y
-         VcSCWHrcEEEDWA01TPle1LoA/C7s4CuISGtQB+J0WzwNFxzP8lWVM3zZsB0HMSCAH+OD
-         tvTvCGX18mDCxP9KEqJb7wQjLLy3gMWy1l4RXsXAbXzB7oxwTaVtMreAcIcBx4kQqVpB
-         2NgQ==
-X-Gm-Message-State: AOAM533c7+UUqx8gOOerf1irlLEtwaJ2Hl6DvONhKjRrw+6vhhhkzeuj
-        k1XHcAIj4VR7CZ+Y8qR4abETPg==
-X-Google-Smtp-Source: ABdhPJyzPwfgv9BHfQPFHkUwcAwFvGoFXu5+ZZChSk0rDJAdQiIj3E9ve0VgMnmySY7mUABMHevIVQ==
-X-Received: by 2002:a7b:c5c1:: with SMTP id n1mr6617171wmk.125.1599720910831;
-        Wed, 09 Sep 2020 23:55:10 -0700 (PDT)
+        bh=DOjbJX83gJDY8f1/vIcwdpJ4Kow88m/y6XKP96xRsEA=;
+        b=LZ8teDoFtMFHIkn3t0ZWdJ1OqG7oVoIvK48j+mD3w91dqz3r9Nf4HiMH+LgzrJ+rgo
+         uGO2j9gBVxsmLT8rHOR5mE1v5kG//sA5LRrnS9UyihCgD5FMnWDnI9KzUgYcPj/yzJpF
+         urxzJtsGTx/p8BSKnUxM4D3QQUIArMxjquuGCbNzfwzDdlkBGJNb/9LrOL5DlqrYEKlY
+         I7KKIQsZE5Fn1kURNv2q+f90oa5lUdi7lnLSYPoZ6L6ycPs9eajWwCetWm1jSroxYIY7
+         isqEjnbJhJ7a78LmlZYYoRC1tSAjPgMoNJ8RfG6zlPswKl6KZ//yL8Dc/I4vN0vSj8eh
+         +scw==
+X-Gm-Message-State: AOAM532kCcsM/mYqAAx4UjeQ+TRO9SeGqJq0wfYuqLa2tEoO8TY2VPqO
+        CtzXQJbRscA2DM946nTgmzxQTw==
+X-Google-Smtp-Source: ABdhPJwLmF4TuuY74OJxlrHdHWkPWbKZXPuKu4IXQMqWUN5VSy3PlE6l8uKF2KcRIDJBLXhwz785CA==
+X-Received: by 2002:adf:fd12:: with SMTP id e18mr7768207wrr.96.1599720895545;
+        Wed, 09 Sep 2020 23:54:55 -0700 (PDT)
 Received: from dell.default ([91.110.221.246])
-        by smtp.gmail.com with ESMTPSA id m3sm2444028wme.31.2020.09.09.23.55.09
+        by smtp.gmail.com with ESMTPSA id m3sm2444028wme.31.2020.09.09.23.54.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Sep 2020 23:55:10 -0700 (PDT)
+        Wed, 09 Sep 2020 23:54:55 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org
 Cc:     linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
@@ -56,9 +56,9 @@ Cc:     linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
         Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
         Luca Coelho <luciano.coelho@intel.com>,
         Intel Linux Wireless <linuxwifi@intel.com>
-Subject: [PATCH 15/29] iwlwifi: iwl-drv: Provide descriptions debugfs dentries
-Date:   Thu, 10 Sep 2020 07:54:17 +0100
-Message-Id: <20200910065431.657636-16-lee.jones@linaro.org>
+Subject: [PATCH 02/29] iwlwifi: rs: Demote non-compliant kernel-doc headers
+Date:   Thu, 10 Sep 2020 07:54:04 +0100
+Message-Id: <20200910065431.657636-3-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200910065431.657636-1-lee.jones@linaro.org>
 References: <20200910065431.657636-1-lee.jones@linaro.org>
@@ -69,15 +69,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Also demote a non-conforming kernel-doc function header.
+None of these headers attempt to document any function parameters.
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/net/wireless/intel/iwlwifi/iwl-drv.c:124: warning: Function parameter or member 'dbgfs_drv' not described in 'iwl_drv'
- drivers/net/wireless/intel/iwlwifi/iwl-drv.c:124: warning: Function parameter or member 'dbgfs_trans' not described in 'iwl_drv'
- drivers/net/wireless/intel/iwlwifi/iwl-drv.c:124: warning: Function parameter or member 'dbgfs_op_mode' not described in 'iwl_drv'
- drivers/net/wireless/intel/iwlwifi/iwl-drv.c:1329: warning: Function parameter or member 'ucode_raw' not described in 'iwl_req_fw_callback'
- drivers/net/wireless/intel/iwlwifi/iwl-drv.c:1329: warning: Function parameter or member 'context' not described in 'iwl_req_fw_callback'
+ drivers/net/wireless/intel/iwlwifi/dvm/rs.c:165: warning: cannot understand function prototype: 'const u16 expected_tpt_legacy[IWL_RATE_COUNT] = '
+ drivers/net/wireless/intel/iwlwifi/dvm/rs.c:329: warning: Function parameter or member 'priv' not described in 'rs_program_fix_rate'
+ drivers/net/wireless/intel/iwlwifi/dvm/rs.c:329: warning: Function parameter or member 'lq_sta' not described in 'rs_program_fix_rate'
+ drivers/net/wireless/intel/iwlwifi/dvm/rs.c:452: warning: Function parameter or member 'tbl' not described in 'rs_collect_tx_data'
+ drivers/net/wireless/intel/iwlwifi/dvm/rs.c:452: warning: Function parameter or member 'scale_index' not described in 'rs_collect_tx_data'
+ drivers/net/wireless/intel/iwlwifi/dvm/rs.c:452: warning: Function parameter or member 'attempts' not described in 'rs_collect_tx_data'
+ drivers/net/wireless/intel/iwlwifi/dvm/rs.c:452: warning: Function parameter or member 'successes' not described in 'rs_collect_tx_data'
+ drivers/net/wireless/intel/iwlwifi/dvm/rs.c:681: warning: Function parameter or member 'sta' not described in 'rs_use_green'
+ drivers/net/wireless/intel/iwlwifi/dvm/rs.c:702: warning: Function parameter or member 'lq_sta' not described in 'rs_get_supported_rates'
+ drivers/net/wireless/intel/iwlwifi/dvm/rs.c:702: warning: Function parameter or member 'hdr' not described in 'rs_get_supported_rates'
+ drivers/net/wireless/intel/iwlwifi/dvm/rs.c:702: warning: Function parameter or member 'rate_type' not described in 'rs_get_supported_rates'
+ drivers/net/wireless/intel/iwlwifi/dvm/rs.c:2628: warning: duplicate section name 'NOTE'
+ drivers/net/wireless/intel/iwlwifi/dvm/rs.c:2632: warning: Function parameter or member 'priv' not described in 'rs_initialize_lq'
+ drivers/net/wireless/intel/iwlwifi/dvm/rs.c:2632: warning: Function parameter or member 'sta' not described in 'rs_initialize_lq'
+ drivers/net/wireless/intel/iwlwifi/dvm/rs.c:2632: warning: Function parameter or member 'lq_sta' not described in 'rs_initialize_lq'
 
 Cc: Johannes Berg <johannes.berg@intel.com>
 Cc: Emmanuel Grumbach <emmanuel.grumbach@intel.com>
@@ -90,32 +100,67 @@ Cc: linux-wireless@vger.kernel.org
 Cc: netdev@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/net/wireless/intel/iwlwifi/iwl-drv.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/net/wireless/intel/iwlwifi/dvm/rs.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/wireless/intel/iwlwifi/iwl-drv.c b/drivers/net/wireless/intel/iwlwifi/iwl-drv.c
-index 04f14bfdd0914..2a9075b1b3747 100644
---- a/drivers/net/wireless/intel/iwlwifi/iwl-drv.c
-+++ b/drivers/net/wireless/intel/iwlwifi/iwl-drv.c
-@@ -102,6 +102,9 @@ static struct dentry *iwl_dbgfs_root;
-  * @fw_index: firmware revision to try loading
-  * @firmware_name: composite filename of ucode file to load
-  * @request_firmware_complete: the firmware has been obtained from user space
-+ * @dbgfs_drv: debugfs root directory entry
-+ * @dbgfs_trans: debugfs transport directory entry
-+ * @dbgfs_op_mode: debugfs op_mode directory entry
-  */
- struct iwl_drv {
- 	struct list_head list;
-@@ -1319,7 +1322,7 @@ static void _iwl_op_mode_stop(struct iwl_drv *drv)
- 	}
+diff --git a/drivers/net/wireless/intel/iwlwifi/dvm/rs.c b/drivers/net/wireless/intel/iwlwifi/dvm/rs.c
+index 4fa4eab2d7f38..548540dd0c0f7 100644
+--- a/drivers/net/wireless/intel/iwlwifi/dvm/rs.c
++++ b/drivers/net/wireless/intel/iwlwifi/dvm/rs.c
+@@ -151,7 +151,7 @@ static void rs_dbgfs_set_mcs(struct iwl_lq_sta *lq_sta,
+ {}
+ #endif
+ 
+-/**
++/*
+  * The following tables contain the expected throughput metrics for all rates
+  *
+  *	1, 2, 5.5, 11, 6, 9, 12, 18, 24, 36, 48, 54, 60 MBits
+@@ -318,7 +318,7 @@ static u8 rs_tl_add_packet(struct iwl_lq_sta *lq_data,
+ }
+ 
+ #ifdef CONFIG_MAC80211_DEBUGFS
+-/**
++/*
+  * Program the device to use fixed rate for frame transmit
+  * This is for debugging/testing only
+  * once the device start use fixed rate, we need to reload the module
+@@ -440,7 +440,7 @@ static s32 get_expected_tpt(struct iwl_scale_tbl_info *tbl, int rs_index)
+ 	return 0;
  }
  
 -/**
 +/*
-  * iwl_req_fw_callback - callback when firmware was loaded
+  * rs_collect_tx_data - Update the success/failure sliding window
   *
-  * If loaded successfully, copies the firmware into buffers
+  * We keep a sliding window of the last 62 packets transmitted
+@@ -673,7 +673,7 @@ static int rs_toggle_antenna(u32 valid_ant, u32 *rate_n_flags,
+ 	return 1;
+ }
+ 
+-/**
++/*
+  * Green-field mode is valid if the station supports it and
+  * there are no non-GF stations present in the BSS.
+  */
+@@ -689,7 +689,7 @@ static bool rs_use_green(struct ieee80211_sta *sta)
+ 	return false;
+ }
+ 
+-/**
++/*
+  * rs_get_supported_rates - get the available rates
+  *
+  * if management frame or broadcast frame only return
+@@ -2612,7 +2612,7 @@ static void rs_rate_scale_perform(struct iwl_priv *priv,
+ 	lq_sta->last_txrate_idx = index;
+ }
+ 
+-/**
++/*
+  * rs_initialize_lq - Initialize a station's hardware rate table
+  *
+  * The uCode's station table contains a table of fallback rates
 -- 
 2.25.1
 
