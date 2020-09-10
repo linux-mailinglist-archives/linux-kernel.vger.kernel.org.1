@@ -2,72 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B821426457B
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 13:51:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6902D264587
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 13:52:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725971AbgIJLuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 07:50:15 -0400
-Received: from mx2.suse.de ([195.135.220.15]:36158 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726494AbgIJLnp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 07:43:45 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 6A19AAD52;
-        Thu, 10 Sep 2020 11:31:11 +0000 (UTC)
-Date:   Thu, 10 Sep 2020 13:30:50 +0200
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Michal Hocko <mhocko@kernel.org>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        David Hildenbrand <david@redhat.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Subject: Re: [RFC 4/5] mm, page_alloc: cache pageset high and batch in struct
- zone
-Message-ID: <20200910113046.GA5848@linux>
-References: <20200907163628.26495-1-vbabka@suse.cz>
- <20200907163628.26495-5-vbabka@suse.cz>
+        id S1729507AbgIJLwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 07:52:08 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:11766 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727787AbgIJLvW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 07:51:22 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id A926BB0100AB96D96DFD;
+        Thu, 10 Sep 2020 19:32:01 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 10 Sep 2020 19:31:53 +0800
+From:   Jing Xiangfeng <jingxiangfeng@huawei.com>
+To:     <agross@kernel.org>, <bjorn.andersson@linaro.org>,
+        <mturquette@baylibre.com>, <sboyd@kernel.org>,
+        <tdas@codeaurora.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <jingxiangfeng@huawei.com>
+Subject: [PATCH v2] clk: qcom: lpass: Correct goto target in lpass_core_sc7180_probe()
+Date:   Thu, 10 Sep 2020 19:32:43 +0800
+Message-ID: <20200910113243.46036-1-jingxiangfeng@huawei.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200907163628.26495-5-vbabka@suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 07, 2020 at 06:36:27PM +0200, Vlastimil Babka wrote:
-   */
-> -static void setup_pageset(struct per_cpu_pageset *p);
-> +static void pageset_init(struct per_cpu_pageset *p);
+lpass_core_sc7180_probe() misses to call pm_clk_destroy() and
+pm_runtime_disable() in error paths. Correct goto target to fix it.
+This issue is found by code inspection.
 
-this belongs to the respective patches
+Fixes: edab812d802d ("clk: qcom: lpass: Add support for LPASS clock controller for SC7180")
+Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+---
+ drivers/clk/qcom/lpasscorecc-sc7180.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-> -static void zone_set_pageset_high_and_batch(struct zone *zone)
-> +static void zone_set_pageset_high_and_batch(struct zone *zone, bool force_update)
->  {
->  	unsigned long new_high;
->  	unsigned long new_batch;
-> @@ -6256,6 +6256,14 @@ static void zone_set_pageset_high_and_batch(struct zone *zone)
->  		new_batch = max(1UL, 1 * new_batch);
->  	}
->  
-> +	if (zone->pageset_high != new_high ||
-> +	    zone->pageset_batch != new_batch) {
-> +		zone->pageset_high = new_high;
-> +		zone->pageset_batch = new_batch;
-> +	} else if (!force_update) {
-> +		return;
-> +	}
-
-I am probably missimg something obvious, so sorry, but why do we need
-force_update here?
-AFAICS, we only want to call pageset_update() in case zone->pageset_high/batch
-and the new computed high/batch differs, so if everything is equal, why do we want
-to call it anyways?
-
+diff --git a/drivers/clk/qcom/lpasscorecc-sc7180.c b/drivers/clk/qcom/lpasscorecc-sc7180.c
+index d4c1864e1ee9..228d08f5d26f 100644
+--- a/drivers/clk/qcom/lpasscorecc-sc7180.c
++++ b/drivers/clk/qcom/lpasscorecc-sc7180.c
+@@ -420,17 +420,18 @@ static int lpass_core_sc7180_probe(struct platform_device *pdev)
+ 	pm_runtime_enable(&pdev->dev);
+ 	ret = pm_clk_create(&pdev->dev);
+ 	if (ret)
+-		return ret;
++		goto disable_pm_runtime;
+ 
+ 	ret = pm_clk_add(&pdev->dev, "iface");
+ 	if (ret < 0) {
+ 		dev_err(&pdev->dev, "failed to acquire iface clock\n");
+-		goto disable_pm_runtime;
++		goto destroy_pm_clk;
+ 	}
+ 
++	ret = -EINVAL;
+ 	clk_probe = of_device_get_match_data(&pdev->dev);
+ 	if (!clk_probe)
+-		return -EINVAL;
++		goto destroy_pm_clk;
+ 
+ 	ret = clk_probe(pdev);
+ 	if (ret)
 -- 
-Oscar Salvador
-SUSE L3
+2.26.0.106.g9fadedd
+
