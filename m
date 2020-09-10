@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36BBE264234
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 11:34:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85C4F264235
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 11:34:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730358AbgIJJeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 05:34:31 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:38812 "EHLO
+        id S1730736AbgIJJd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 05:33:27 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:38842 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730434AbgIJJXV (ORCPT
+        with ESMTP id S1730450AbgIJJXc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 05:23:21 -0400
-Date:   Thu, 10 Sep 2020 09:22:27 -0000
+        Thu, 10 Sep 2020 05:23:32 -0400
+Date:   Thu, 10 Sep 2020 09:22:28 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1599729748;
+        s=2020; t=1599729749;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=9ari3lIczztYXW1/eaJraFBBVNKB4nf4bETwAR0kfLE=;
-        b=AbIhSCPRlCkewjyvSMZb4YLJWeacfWMcEWaFcgF/yG5iiJaQZdHR4JU8NShi/rQfDGsFZ0
-        XX2FpUSnRM3noNAcsG0K/yRkQOpyLQuPpELxWyK3/a3nBfDD9ROCOw5myik+wDyRie3Ckn
-        Pg97Hlc0YkMJF9IkTPDXkKuCGWiF++6H+ZVYcnuj/qXhUdzQ2d3B5nBqppLaZpR0TyZ6eu
-        hL5L8hB5MAR4Wx/fO65tK9W1yZqQuYgjHqiP7HLBTNWJm/4hLN9wZD9WlIxuxEyP3z+MGG
-        SyqoHzC2AtzNjC6+sI/0ZDIx5TVFs4SWmoK8U6v/jglA20COa/JSVhWjT1qDGA==
+        bh=f5KBuFXDCkBTIRdXk+IROBfUg9GpeVlMxwgcRTooDJU=;
+        b=vS5/9BhuyPEczSCITA6snKFOJwTXVLm5Yo60kF5aHLgEDNLysIQWKSJjQJTp4yKmJqPpUr
+        qh/1TaVv5dv5kmAqiO3KmyR4iZw2Q8e7DLQAJDfO0eUkzMrQGpoNUE9ONZxR32YRH864Q7
+        nqr9rBZmJVqUCicz96VviT38E4dnmLtrKKAVX8zt+PI+05WAl6dFbNnMicdcVW5VSVgBi6
+        85A2AyBWaC8XEyQtlNAh6BSkY5n9axfV7P6Yh9gjClncQ9LCy9mveFazgTORtwfXrSs/zP
+        z1eibAQRMR2nOstmX/XPyF3ar1FXfzCuzaS1hO0P26gAtOYVa20CIY461Uii/g==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1599729748;
+        s=2020e; t=1599729749;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=9ari3lIczztYXW1/eaJraFBBVNKB4nf4bETwAR0kfLE=;
-        b=MJftior1AZU3DJLnK6WSL3K3C4acDnKVx7j5Z+rsG7d9r5EBZszI/f3z2e2PGpy9mrZ9rA
-        AK03uOtDspTtQcDA==
+        bh=f5KBuFXDCkBTIRdXk+IROBfUg9GpeVlMxwgcRTooDJU=;
+        b=ISjEgglOhVXtnSTiKFhEEJCLOJuX9mQ+bzKbQzJdLQtP19I7gRoLvhsUPFvafuaYC7h1EJ
+        jkwtEVwMEW/J9sAg==
 From:   "tip-bot2 for Joerg Roedel" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/seves] x86/boot/compressed/64: Disable red-zone usage
+Subject: [tip: x86/seves] x86/insn: Add insn_get_modrm_reg_off()
 Cc:     Joerg Roedel <jroedel@suse.de>, Borislav Petkov <bp@suse.de>,
-        Kees Cook <keescook@chromium.org>, x86 <x86@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200907131613.12703-13-joro@8bytes.org>
-References: <20200907131613.12703-13-joro@8bytes.org>
+In-Reply-To: <20200907131613.12703-11-joro@8bytes.org>
+References: <20200907131613.12703-11-joro@8bytes.org>
 MIME-Version: 1.0
-Message-ID: <159972974769.20229.1011179749041704677.tip-bot2@tip-bot2>
+Message-ID: <159972974863.20229.6794223447626019613.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -58,49 +58,84 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/seves branch of tip:
 
-Commit-ID:     6ba0efa46047936afa81460489cfd24bc95dd863
-Gitweb:        https://git.kernel.org/tip/6ba0efa46047936afa81460489cfd24bc95dd863
+Commit-ID:     7af1bd822dd45a669fc178a35cc8183922333d56
+Gitweb:        https://git.kernel.org/tip/7af1bd822dd45a669fc178a35cc8183922333d56
 Author:        Joerg Roedel <jroedel@suse.de>
-AuthorDate:    Mon, 07 Sep 2020 15:15:13 +02:00
+AuthorDate:    Mon, 07 Sep 2020 15:15:11 +02:00
 Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Mon, 07 Sep 2020 19:45:25 +02:00
+CommitterDate: Mon, 07 Sep 2020 19:45:24 +02:00
 
-x86/boot/compressed/64: Disable red-zone usage
+x86/insn: Add insn_get_modrm_reg_off()
 
-The x86-64 ABI defines a red-zone on the stack:
-
-  The 128-byte area beyond the location pointed to by %rsp is considered
-  to be reserved and shall not be modified by signal or interrupt
-  handlers. Therefore, functions may use this area for temporary data
-  that is not needed across function calls. In particular, leaf
-  functions may use this area for their entire stack frame, rather than
-  adjusting the stack pointer in the prologue and epilogue. This area is
-  known as the red zone.
-
-This is not compatible with exception handling, because the IRET frame
-written by the hardware at the stack pointer and the functions to handle
-the exception will overwrite the temporary variables of the interrupted
-function, causing undefined behavior. So disable red-zones for the
-pre-decompression boot code.
+Add a function to the instruction decoder which returns the pt_regs
+offset of the register specified in the reg field of the modrm byte.
 
 Signed-off-by: Joerg Roedel <jroedel@suse.de>
 Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Link: https://lkml.kernel.org/r/20200907131613.12703-13-joro@8bytes.org
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+Link: https://lkml.kernel.org/r/20200907131613.12703-11-joro@8bytes.org
 ---
- arch/x86/boot/compressed/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/include/asm/insn-eval.h |  1 +
+ arch/x86/lib/insn-eval.c         | 23 +++++++++++++++++++++++
+ 2 files changed, 24 insertions(+)
 
-diff --git a/arch/x86/boot/compressed/Makefile b/arch/x86/boot/compressed/Makefile
-index 3962f59..5343079 100644
---- a/arch/x86/boot/compressed/Makefile
-+++ b/arch/x86/boot/compressed/Makefile
-@@ -32,7 +32,7 @@ KBUILD_CFLAGS := -m$(BITS) -O2
- KBUILD_CFLAGS += -fno-strict-aliasing $(call cc-option, -fPIE, -fPIC)
- KBUILD_CFLAGS += -DDISABLE_BRANCH_PROFILING
- cflags-$(CONFIG_X86_32) := -march=i386
--cflags-$(CONFIG_X86_64) := -mcmodel=small
-+cflags-$(CONFIG_X86_64) := -mcmodel=small -mno-red-zone
- KBUILD_CFLAGS += $(cflags-y)
- KBUILD_CFLAGS += -mno-mmx -mno-sse
- KBUILD_CFLAGS += -ffreestanding
+diff --git a/arch/x86/include/asm/insn-eval.h b/arch/x86/include/asm/insn-eval.h
+index 392b4fe..f748f57 100644
+--- a/arch/x86/include/asm/insn-eval.h
++++ b/arch/x86/include/asm/insn-eval.h
+@@ -17,6 +17,7 @@
+ 
+ void __user *insn_get_addr_ref(struct insn *insn, struct pt_regs *regs);
+ int insn_get_modrm_rm_off(struct insn *insn, struct pt_regs *regs);
++int insn_get_modrm_reg_off(struct insn *insn, struct pt_regs *regs);
+ unsigned long insn_get_seg_base(struct pt_regs *regs, int seg_reg_idx);
+ int insn_get_code_seg_params(struct pt_regs *regs);
+ int insn_fetch_from_user(struct pt_regs *regs,
+diff --git a/arch/x86/lib/insn-eval.c b/arch/x86/lib/insn-eval.c
+index 2323c85..f20942c 100644
+--- a/arch/x86/lib/insn-eval.c
++++ b/arch/x86/lib/insn-eval.c
+@@ -20,6 +20,7 @@
+ 
+ enum reg_type {
+ 	REG_TYPE_RM = 0,
++	REG_TYPE_REG,
+ 	REG_TYPE_INDEX,
+ 	REG_TYPE_BASE,
+ };
+@@ -439,6 +440,13 @@ static int get_reg_offset(struct insn *insn, struct pt_regs *regs,
+ 			regno += 8;
+ 		break;
+ 
++	case REG_TYPE_REG:
++		regno = X86_MODRM_REG(insn->modrm.value);
++
++		if (X86_REX_R(insn->rex_prefix.value))
++			regno += 8;
++		break;
++
+ 	case REG_TYPE_INDEX:
+ 		regno = X86_SIB_INDEX(insn->sib.value);
+ 		if (X86_REX_X(insn->rex_prefix.value))
+@@ -808,6 +816,21 @@ int insn_get_modrm_rm_off(struct insn *insn, struct pt_regs *regs)
+ }
+ 
+ /**
++ * insn_get_modrm_reg_off() - Obtain register in reg part of the ModRM byte
++ * @insn:	Instruction containing the ModRM byte
++ * @regs:	Register values as seen when entering kernel mode
++ *
++ * Returns:
++ *
++ * The register indicated by the reg part of the ModRM byte. The
++ * register is obtained as an offset from the base of pt_regs.
++ */
++int insn_get_modrm_reg_off(struct insn *insn, struct pt_regs *regs)
++{
++	return get_reg_offset(insn, regs, REG_TYPE_REG);
++}
++
++/**
+  * get_seg_base_limit() - obtain base address and limit of a segment
+  * @insn:	Instruction. Must be valid.
+  * @regs:	Register values as seen when entering kernel mode
