@@ -2,78 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D994E264C3C
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 20:07:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA2A1264C61
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 20:11:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726837AbgIJSHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 14:07:10 -0400
-Received: from mga03.intel.com ([134.134.136.65]:8888 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726781AbgIJSGd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 14:06:33 -0400
-IronPort-SDR: ihsw14IEDztMFrsbGpSMqaAo10izxb84dtuwYqaYXw50kbAvP7ek/oBZ5pCOzNQNvvojWdOxMY
- MY20tK7KAKAw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9740"; a="158643332"
-X-IronPort-AV: E=Sophos;i="5.76,413,1592895600"; 
-   d="scan'208";a="158643332"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2020 11:06:13 -0700
-IronPort-SDR: TbgBTxIPfPO2q3x6WUpY71mIX7SVfd8A37B2i0+LloyCOO9FB+mrsi21XpYbGQaGB26TwRPORs
- yr/lw+0Tr2KQ==
-X-IronPort-AV: E=Sophos;i="5.76,413,1592895600"; 
-   d="scan'208";a="505920334"
-Received: from rdraharj-mobl1.amr.corp.intel.com (HELO [10.209.137.6]) ([10.209.137.6])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2020 11:06:11 -0700
-Subject: Re: [PATCH V6] ASoC: Intel: boards: Use FS as nau8825 sysclk in
- nau88125_* machine
-To:     Radoslaw Biernacki <rad@semihalf.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc:     Lech Betlej <Lech.Betlej@intel.com>, alsa-devel@alsa-project.org,
-        Todd Broch <tbroch@google.com>,
-        Harshapriya <harshapriya.n@intel.com>,
-        John Hsu <KCHSU0@nuvoton.com>, linux-kernel@vger.kernel.org,
-        michal.sienkiewicz@intel.com, Ben Zhang <benzh@chromium.org>,
-        Mac Chiang <mac.chiang@intel.com>,
-        Yong Zhi <yong.zhi@intel.com>, Marcin Wojtas <mw@semihalf.com>,
-        Vamshi Krishna <vamshi.krishna.gopal@intel.com>,
-        Alex Levin <levinale@google.com>
-References: <20200910172538.31425-1-rad@semihalf.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <ea119537-f998-b1fb-6665-648d78a25928@linux.intel.com>
-Date:   Thu, 10 Sep 2020 13:06:10 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726844AbgIJSLv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 14:11:51 -0400
+Received: from conssluserg-02.nifty.com ([210.131.2.81]:44720 "EHLO
+        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725807AbgIJSJl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 14:09:41 -0400
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44]) (authenticated)
+        by conssluserg-02.nifty.com with ESMTP id 08AI8SYc026504
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 03:08:28 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 08AI8SYc026504
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1599761308;
+        bh=vpW3QPcHXr6bjmCLt74cvbbZngeiHu+cInhD9vnp9CU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=k4cPC+75bD8QxOzFwBtlF22o1MuucYq8hG2qjpMbr4Uaozob3CpxHw5T2tFu1u2iV
+         SIs80qHbEE1rz0wRG8Hh9sN9qFeXw95OgbNTJzmZvd2biIPBr+AcdfkeUusW/lAvSW
+         WR+VkkHG9xTbmkqJHNEEoacJF0H86hnpk89y1u8CZqfU8czQ0PXiqwPaLLoToK6idZ
+         n4DdRnlqIn3dX8wSJdup4l6nGPrtkRWfio2a/IHQD+7a4fIQMD9zMyE/BxL4mpGmh7
+         80NtwpEOv5FjzQxB24h+ao5TUvyfgHX+alYS6GvPwn8lhA8pOo2Pn4KfRJavdSl4FN
+         dDfERf0VooX/w==
+X-Nifty-SrcIP: [209.85.216.44]
+Received: by mail-pj1-f44.google.com with SMTP id u3so409768pjr.3
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 11:08:28 -0700 (PDT)
+X-Gm-Message-State: AOAM533F/BZlVpgJUNu3O6QI1qPaXCiwi5x/C9SToAV3bwk4o5QJhOTN
+        LKLLt0oKxNmuk/Z16gkjPWnM4X0oWt3osb1OuEM=
+X-Google-Smtp-Source: ABdhPJxCn359oZVq73QCn35/MyIufOYyLNeY6iVxRtS9FRAUrGy1w8LE6tH2u/r8M4SN6ydviNHbQfeb4pb6SoVext8=
+X-Received: by 2002:a17:902:ac8b:b029:d0:89f4:6220 with SMTP id
+ h11-20020a170902ac8bb02900d089f46220mr6888021plr.8.1599761307850; Thu, 10 Sep
+ 2020 11:08:27 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200910172538.31425-1-rad@semihalf.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200624203200.78870-1-samitolvanen@google.com>
+ <20200903203053.3411268-1-samitolvanen@google.com> <CAKwvOdkbkvXdfXLzTNOj8m8_YWjL6=bSn4-AbRyd-5oYGJVNSw@mail.gmail.com>
+In-Reply-To: <CAKwvOdkbkvXdfXLzTNOj8m8_YWjL6=bSn4-AbRyd-5oYGJVNSw@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Fri, 11 Sep 2020 03:07:49 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARfoNg1wFi8oGar3bhzUXtNRMyuz0ksSh2hhzG_PdAMVg@mail.gmail.com>
+Message-ID: <CAK7LNARfoNg1wFi8oGar3bhzUXtNRMyuz0ksSh2hhzG_PdAMVg@mail.gmail.com>
+Subject: Re: [PATCH v2 00/28] Add support for Clang LTO
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     ian.bearman@microsoft.com,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Sep 11, 2020 at 2:46 AM 'Nick Desaulniers' via Clang Built
+Linux <clang-built-linux@googlegroups.com> wrote:
+>
+> Hey Ian,
+> It was nice to meet you at Linux plumbers.  You might want to take a
+> look at this series.  It implements builds of the Linux kernel with
+> LTO.  It would be good to get eyes on it and help review it from folks
+> working on this from the GCC angle.  The series has some configs that
+> split where Clang specific changes need to be made; it might be of
+> interest to think about what would the similar changes be needed for
+> GCC.  Also, congrats on your LWN article!
+> https://lwn.net/Articles/830300/
 
 
-On 9/10/20 12:25 PM, Radoslaw Biernacki wrote:
-> Since 256xFS clocks cannot be generated by SKL, the NAU8825 is
-> configured to re-generate its system clock from the BCLK using the
-> FLL. The link is configured to use a 48kHz frame rate, and 24 bits in
-> 25-bit slot. The SSP configuration is extracted from NHLT settings and
-> not dynamically changed. Listening tests and measurements do not show
-> any distortion or issues
-> 
-> Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
-> Signed-off-by: Yong Zhi <yong.zhi@intel.com>
-> Signed-off-by: Mac Chiang <mac.chiang@intel.com>
-> Signed-off-by: Ben Zhang <benzh@chromium.org>
-> Signed-off-by: Radoslaw Biernacki <rad@semihalf.com>
-> ---
+FYI.
 
-LGTM, thanks!
+Some people may remember GCC LTO was posted in 2014
+(and rejected by Linus).
 
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+https://lore.kernel.org/linux-kbuild/20140407201919.GA15838@sepie.suse.cz/
+
+
+In my understanding, GCC LTO does not work for relocatable objects
+because GNU linker is agnostic about LTO.
+
+GCC LTO was implemented in the final link stage (i.e. vmlinux)
+by using $(CC) as a linker driver.
+
+
+On the other hand, Clang LTO, in this series implementation,
+works in the pre-mospost stage (i.e. vmlinux.o).
+
+
+
+
+--
+Best Regards
+Masahiro Yamada
