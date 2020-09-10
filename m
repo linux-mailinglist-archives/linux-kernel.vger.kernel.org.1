@@ -2,134 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 202C0263E11
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 09:09:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54585263E00
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 09:06:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730312AbgIJHI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 03:08:57 -0400
-Received: from mail-eopbgr80115.outbound.protection.outlook.com ([40.107.8.115]:8065
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730158AbgIJHD0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 03:03:26 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YStqwuH6W9Ov0VyXKx1tNIVCrh7UEjUA+NJ56vdVFGTxxSOBr8RNslukNGnp6SEGy21id1W4AFjI9sIfiNjYhW1p5r9sGlC9ZHapr/SxW+QRA4hl0PGZPjqPWDDDG4Yc4WkJp3hhHCDQixVgD711eQrTk/crTFTOm5NtezSu1dx3JmEfnrv2ABeafHKZ4lxrBh3mhg8CMQWgcXmXGpFrVm1Y6yB+Ol5h8ord89mjHeA1Zb6PbpRvStKYdS3x/NBDmE4lXWdx2CBKA7xGLDwaLSFHQKGNkQFU7y5Zcs9ETwhYga2dZ6iR2ajBgPuekqMxJ4VrcwLkmG82NgomnOh8AQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bWseOgFCfX29rWyS6ZPW69w915xwz3ljue4OzoQKh1w=;
- b=k+56o5DldfYjuS8dMgzEY+d0Wa4Y1ou3rsOT5g0fApP25UnyIbo7lbXD+oYiBXcNru7gao550++heDZP0YWyjiJQlqv7XpM+sNelggPEERSyUeadHcA+X6wlYhL8R2KOkrAHAt6cMsr3BUxl8RdQMAOEdeKV7L6PlLsVARWjmLUA3fXtzuVWXBo2Q2/rQGAY8bK/YR0IyC6uZTe9e7dixgCkHwRjfDyk7LfkS+ZwAT3ME4gf9iHxDtd1UeKGXnPWwCCzxdoYjvyCuRVM+UJrXCQxofVRZCYrlOKd7L3O5iRzhv1kQqfqEBxnHfjOLbO6V3sMTKAmdKZu2YSyf0ISLA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=plvision.eu; dmarc=pass action=none header.from=plvision.eu;
- dkim=pass header.d=plvision.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plvision.eu;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bWseOgFCfX29rWyS6ZPW69w915xwz3ljue4OzoQKh1w=;
- b=JDxkZPMf8gFfqcDgPeUqwedw9sW/UwLkXDZJpJhMz8mj/ISFV41Lp6VwxsxL7ah5O+bglBoJJiLCJwqjpZoo8ISEKTPhxdxiOGJgpVSdOGAamkneNFZ/uMvSq9OaV+Iie8do+A+u21+JIzUcJAxhy7++TRTWi1mojJdtymNHxUw=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=plvision.eu;
-Received: from HE1P190MB0539.EURP190.PROD.OUTLOOK.COM (2603:10a6:7:56::28) by
- HE1P190MB0265.EURP190.PROD.OUTLOOK.COM (2603:10a6:7:55::22) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3348.15; Thu, 10 Sep 2020 07:03:21 +0000
-Received: from HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
- ([fe80::c1ab:71de:6bc2:89fe]) by HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
- ([fe80::c1ab:71de:6bc2:89fe%6]) with mapi id 15.20.3348.019; Thu, 10 Sep 2020
- 07:03:20 +0000
-Date:   Thu, 10 Sep 2020 10:03:16 +0300
-From:   Vadym Kochan <vadym.kochan@plvision.eu>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jiri Pirko <jiri@mellanox.com>,
-        Ido Schimmel <idosch@mellanox.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Oleksandr Mazur <oleksandr.mazur@plvision.eu>,
-        Serhiy Boiko <serhiy.boiko@plvision.eu>,
-        Serhiy Pshyk <serhiy.pshyk@plvision.eu>,
-        Volodymyr Mytnyk <volodymyr.mytnyk@plvision.eu>,
-        Taras Chornyi <taras.chornyi@plvision.eu>,
-        Andrii Savka <andrii.savka@plvision.eu>,
-        netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mickey Rachamim <mickeyr@marvell.com>
-Subject: Re: [PATCH net-next v7 5/6] net: marvell: prestera: Add Switchdev
- driver implementation
-Message-ID: <20200910070316.GD20411@plvision.eu>
-References: <20200904165222.18444-1-vadym.kochan@plvision.eu>
- <20200904165222.18444-6-vadym.kochan@plvision.eu>
- <CAHp75VedS=cnE-9KVMFS-CF9YwR_wrkGgwqHROhe0RD-G3O7YQ@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75VedS=cnE-9KVMFS-CF9YwR_wrkGgwqHROhe0RD-G3O7YQ@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: AM6PR10CA0076.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:209:8c::17) To HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
- (2603:10a6:7:56::28)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from plvision.eu (217.20.186.93) by AM6PR10CA0076.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:209:8c::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16 via Frontend Transport; Thu, 10 Sep 2020 07:03:18 +0000
-X-Originating-IP: [217.20.186.93]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e6da5d6f-2918-4f19-5236-08d8555799aa
-X-MS-TrafficTypeDiagnostic: HE1P190MB0265:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <HE1P190MB0265D35E5F7600154260297995270@HE1P190MB0265.EURP190.PROD.OUTLOOK.COM>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: h4Mosdx2JsakMhrwup/Xhyo7g7xr48B0RcCTMLWqmuF5RnSlyQB4f4BEEcSdlE4NTCTqlck3FZ74x9UaIzCB6SF9SobTZLalPXak12dhkdZQPRWz1CtibjO1ePO/113H6exp+xEeNx/oqpW/fmzuP6s6D+Sc7+ucPn0XWgyMxEh0Ll+SXTgL1WRCwyxxuWVmF38/4AKT14a55McvWzBHfBooJrNhFj6zGgE8UxfC1BXmF60cV6pIDN8+akGw4kY/wYBOnwjS706+lf34rW0WzIECePPx7kDgo+Ge5ov0UfqFCw+ZivnOqOxxxXdUddvG
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1P190MB0539.EURP190.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(346002)(366004)(396003)(39830400003)(136003)(376002)(8676002)(53546011)(956004)(2906002)(66946007)(1076003)(5660300002)(16526019)(4326008)(54906003)(8936002)(52116002)(478600001)(8886007)(36756003)(26005)(55016002)(66556008)(2616005)(44832011)(66476007)(7696005)(86362001)(316002)(83380400001)(186003)(4744005)(33656002)(6916009);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: SJ/dLrXASUS56+2mbKhzOgZzp2wvxBa+CBoIS5rAkFBSABD+LZPuwOqwt4JAcx4RS+YvgmVAlM7GkmlqZB88ZwKFaDr4wm7FvwWycnmS0PJVBImS30vwaHFq+eyEsze1EjAhxVEBJXlsDXtdkhzRMeRULb1otslrauQ+Z7beI21zZAVYjQhCuJRnTf29IBbyYSHEp4AIK0lcwYwP9Qi41oWxXCkp246qxKnZcCK8XxPiEuYwM5ps+8Z9ECyc3F4nHZ7nW0IDUMNa3KOBylCMQRQ3SLSCz/sGZdHX6eEpmmIosM18iFwX0BwrhV0MSp7HD2w9IfUVZWXLh/WjISXUjp2XB2swr7kN2OIY88Vx1itlUx3LvDiKZyBd8c6xQuTf2wJE06zugKhAvcmEnaIgbI55XJo7fP19eezogilwBCdo/ESnAcfg6O0Ra8/Fce6+THHLzL3Kp8GL19RMu5HZNDxyiTAF9wnDprMzW5ziLr553U2B8WX47VIJtJZi4FdDOyqcQZTUTpiIXS8OVafn0pU/3YJacszjLY73hwPZ8U0yH1nm0/kaMo1nFLHaJn+qk2jJ7WrrWybs8dxzj6+rBGBOvz1MySR8/03KdgZ9/0wMY6tuS0El4VNG3Ye6oy2JG81ggzaBsrVoEfJm5hTm9g==
-X-OriginatorOrg: plvision.eu
-X-MS-Exchange-CrossTenant-Network-Message-Id: e6da5d6f-2918-4f19-5236-08d8555799aa
-X-MS-Exchange-CrossTenant-AuthSource: HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Sep 2020 07:03:20.6314
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 03707b74-30f3-46b6-a0e0-ff0a7438c9c4
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: fCs9gJIiFM6Qwp4V8mZBeyvsOv3h/rPV3LLI23wBbClazUg7E/Tc4zv9kyTy7G1Wxu1KSN9YRLHBdBOUEFn8PA8iis8BFAtbCileGw54y4c=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1P190MB0265
+        id S1729992AbgIJHGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 03:06:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42910 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730277AbgIJHDn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 03:03:43 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0CCDC0613ED
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 00:03:42 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id l67so4589860ybb.7
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 00:03:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=cAxIDHIAu5nqfj/dy7DKq8nUC3kZ+oYozl0NSp+uVoc=;
+        b=RnP/BqkgjlRBjwBdbRVTo5s4usvYG1pROI5DR/pSPywRgzwcSdqJ+Tpo9IyoEFn+pW
+         kvvco52PBhPHsMVYq5G4um1085JUn/74mXPVxssLWR7i20bJgeMDGlzXiNPl6A7VGUFu
+         tV2Mwu2vCvWsoDR4e0RZIS31qnyjw90WRkIKbRa3nwgDKwl+k8CFLW7tvrDk1JK+8b9K
+         Ri/uqNoRHOlWn+aYoywGjGH90Ul2YRzZrdxGnwsCg8Hdae59YIDEuyI9MIfI6d6vbEFF
+         j8qxwkW06kvYWrT+PVwTlUXgO1x6TY+CZ1CpA0LAyGEyDjAdQ+uiCfSap+GK0teEB5HG
+         QmLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=cAxIDHIAu5nqfj/dy7DKq8nUC3kZ+oYozl0NSp+uVoc=;
+        b=f/YHq0k9Il3hmeMonw1Tu3ZdaoWiF220npVe2psEY/sGcfJA5gUqM6dlNyi577GWqG
+         xLosOCW0eXhPWl/ughQWiXNFyEtJUa3cxQggcFRDivjTxthGOenZMGjjfY8HLFCVL0e2
+         OI/4sHi/vGcnW4E+b0cL9Wqi7x0fjU92mMWmz1eQCgs7LXj02iMBHLPHnOK1JwlDD1Ic
+         t+8lEJa+2f2JA75V6wyAN7lj7wISawCeUpwvNYejj6rjK4jv+87aNgICe1bL1jptNyEq
+         GXCN+OY3Jx4ZSgyYq+NaanP/XvzucLlIBo3c1f+ywNghDKIUZfNN5IK5lp/yqqfGpvi6
+         UB+Q==
+X-Gm-Message-State: AOAM532fQUzu+MrglxOiXFL5J0g9AYhBXQjZE3lasx4venWI3FrAZNFr
+        VBKBPq571iQbh8mzLWcxlqpc9JY74nxgRw==
+X-Google-Smtp-Source: ABdhPJzMandSFJg72wbyCQXU5b0jQbuTABdf/gsTxIim5/05LEyse/hpxNMhgAY/HoZdZA+qM8ORQvCGhHsyTw==
+X-Received: from spirogrip.svl.corp.google.com ([2620:15c:2cb:201:42a8:f0ff:fe4d:3548])
+ (user=davidgow job=sendgmr) by 2002:a25:2d1:: with SMTP id
+ 200mr1111668ybc.210.1599721421325; Thu, 10 Sep 2020 00:03:41 -0700 (PDT)
+Date:   Thu, 10 Sep 2020 00:03:25 -0700
+Message-Id: <20200910070331.3358048-1-davidgow@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.526.ge36021eeef-goog
+Subject: [PATCH v13 0/5] KASAN-KUnit Integration
+From:   David Gow <davidgow@google.com>
+To:     trishalfonso@google.com, brendanhiggins@google.com,
+        aryabinin@virtuozzo.com, dvyukov@google.com, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, andreyknvl@google.com,
+        shuah@kernel.org, akpm@linux-foundation.org
+Cc:     David Gow <davidgow@google.com>, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com, kunit-dev@googlegroups.com,
+        linux-kselftest@vger.kernel.org, linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+This patchset contains everything needed to integrate KASAN and KUnit.
 
-On Fri, Sep 04, 2020 at 10:41:17PM +0300, Andy Shevchenko wrote:
-> On Fri, Sep 4, 2020 at 7:52 PM Vadym Kochan <vadym.kochan@plvision.eu> wrote:
-> >
-> > The following features are supported:
-> >
-> >     - VLAN-aware bridge offloading
-> >     - VLAN-unaware bridge offloading
-> >     - FDB offloading (learning, ageing)
-> >     - Switchport configuration
-> >
-> > Currently there are some limitations like:
-> >
-> >     - Only 1 VLAN-aware bridge instance supported
-> >     - FDB ageing timeout parameter is set globally per device
-> 
-> Similar comments as per previous patches.
-> 
-> > +       struct list_head vlans_list;
-> 
-> How this container is being protected against races?
-> 
+KUnit will be able to:
+(1) Fail tests when an unexpected KASAN error occurs
+(2) Pass tests when an expected KASAN error occurs
 
-It should be protected by rtnl lock from the Switchdev core:
+Convert KASAN tests to KUnit with the exception of copy_user_test
+because KUnit is unable to test those.
 
-    net/switchdev/switchdev.c:int switchdev_port_obj_add(...)
+Add documentation on how to run the KASAN tests with KUnit and what to
+expect when running these tests.
 
-which is called by:
+The dependencies for this patchset are all present in 5.9-rc1+.
 
-    net/bridge/br_switchdev.c:int br_switchdev_port_vlan_add(...)
+Changes from v12:
+ - Rebased on top of mainline (ab29a807)
+ - Updated to match latest KUnit guidelines (no longer rename the test)
+ - Fix some small issues with the documentation to match the correct
+   test name and mention the module name.
 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
+Changes from v11:
+ - Rebased on top of latest -next (20200810)
+ - Fixed a redundant memchr() call in kasan_memchr()
+ - Added Andrey's "Tested-by" to everything.
+
+Changes from v10:
+ - Fixed some whitespace issues in patch 2.
+ - Split out the renaming of the KUnit test suite into a separate patch.
+
+Changes from v9:
+ - Rebased on top of linux-next (20200731) + kselftest/kunit and [7]
+ - Note that the kasan_rcu_uaf test has not been ported to KUnit, and
+   remains in test_kasan_module. This is because:
+   (a) KUnit's expect failure will not check if the RCU stacktraces
+       show.
+   (b) KUnit is unable to link the failure to the test, as it occurs in
+       an RCU callback.
+
+Changes from v8:
+ - Rebased on top of kselftest/kunit
+ - (Which, with this patchset, should rebase cleanly on 5.8-rc7)
+ - Renamed the KUnit test suite, config name to patch the proposed
+   naming guidelines for KUnit tests[6]
+
+Changes from v7:
+ - Rebased on top of kselftest/kunit
+ - Rebased on top of v4 of the kunit resources API[1]
+ - Rebased on top of v4 of the FORTIFY_SOURCE fix[2,3,4]
+ - Updated the Kconfig entry to support KUNIT_ALL_TESTS
+
+Changes from v6:
+ - Rebased on top of kselftest/kunit
+ - Rebased on top of Daniel Axtens' fix for FORTIFY_SOURCE
+   incompatibilites [2]
+ - Removed a redundant report_enabled() check.
+ - Fixed some places with out of date Kconfig names in the
+   documentation.
+
+Changes from v5:
+ - Split out the panic_on_warn changes to a separate patch.
+ - Fix documentation to fewer to the new Kconfig names.
+ - Fix some changes which were in the wrong patch.
+ - Rebase on top of kselftest/kunit (currently identical to 5.7-rc1)
+
+Changes from v4:
+ - KASAN no longer will panic on errors if both panic_on_warn and
+   kasan_multishot are enabled.
+ - As a result, the KASAN tests will no-longer disable panic_on_warn.
+ - This also means panic_on_warn no-longer needs to be exported.
+ - The use of temporary "kasan_data" variables has been cleaned up
+   somewhat.
+ - A potential refcount/resource leak should multiple KASAN errors
+   appear during an assertion was fixed.
+ - Some wording changes to the KASAN test Kconfig entries.
+
+Changes from v3:
+ - KUNIT_SET_KASAN_DATA and KUNIT_DO_EXPECT_KASAN_FAIL have been
+ combined and included in KUNIT_DO_EXPECT_KASAN_FAIL() instead.
+ - Reordered logic in kasan_update_kunit_status() in report.c to be
+ easier to read.
+ - Added comment to not use the name "kasan_data" for any kunit tests
+ outside of KUNIT_EXPECT_KASAN_FAIL().
+
+Changes since v2:
+ - Due to Alan's changes in [1], KUnit can be built as a module.
+ - The name of the tests that could not be run with KUnit has been
+ changed to be more generic: test_kasan_module.
+ - Documentation on how to run the new KASAN tests and what to expect
+ when running them has been added.
+ - Some variables and functions are now static.
+ - Now save/restore panic_on_warn in a similar way to kasan_multi_shot
+ and renamed the init/exit functions to be more generic to accommodate.
+ - Due to [4] in kasan_strings, kasan_memchr, and
+ kasan_memcmp will fail if CONFIG_AMD_MEM_ENCRYPT is enabled so return
+ early and print message explaining this circumstance.
+ - Changed preprocessor checks to C checks where applicable.
+
+Changes since v1:
+ - Make use of Alan Maguire's suggestion to use his patch that allows
+   static resources for integration instead of adding a new attribute to
+   the kunit struct
+ - All KUNIT_EXPECT_KASAN_FAIL statements are local to each test
+ - The definition of KUNIT_EXPECT_KASAN_FAIL is local to the
+   test_kasan.c file since it seems this is the only place this will
+   be used.
+ - Integration relies on KUnit being builtin
+ - copy_user_test has been separated into its own file since KUnit
+   is unable to test these. This can be run as a module just as before,
+   using CONFIG_TEST_KASAN_USER
+ - The addition to the current task has been separated into its own
+   patch as this is a significant enough change to be on its own.
+
+
+[1] https://lore.kernel.org/linux-kselftest/CAFd5g46Uu_5TG89uOm0Dj5CMq+11cwjBnsd-k_CVy6bQUeU4Jw@mail.gmail.com/T/#t
+[2] https://lore.kernel.org/linux-mm/20200424145521.8203-1-dja@axtens.net/
+[3] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=adb72ae1915db28f934e9e02c18bfcea2f3ed3b7
+[4] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=47227d27e2fcb01a9e8f5958d8997cf47a820afc
+[5] https://bugzilla.kernel.org/show_bug.cgi?id=206337
+[6] https://lore.kernel.org/linux-kselftest/20200620054944.167330-1-davidgow@google.com/
+[7] https://lkml.org/lkml/2020/7/31/571
+[8] https://lore.kernel.org/linux-kselftest/8d43e88e-1356-cd63-9152-209b81b16746@linuxfoundation.org/T/#u
+
+
+David Gow (1):
+  mm: kasan: Do not panic if both panic_on_warn and kasan_multishot set
+
+Patricia Alfonso (4):
+  Add KUnit Struct to Current Task
+  KUnit: KASAN Integration
+  KASAN: Port KASAN Tests to KUnit
+  KASAN: Testing Documentation
+
+ Documentation/dev-tools/kasan.rst |  70 +++
+ include/kunit/test.h              |   5 +
+ include/linux/kasan.h             |   6 +
+ include/linux/sched.h             |   4 +
+ lib/Kconfig.kasan                 |  22 +-
+ lib/Makefile                      |   3 +-
+ lib/kunit/test.c                  |  13 +-
+ lib/test_kasan.c                  | 728 ++++++++++++------------------
+ lib/test_kasan_module.c           | 111 +++++
+ mm/kasan/report.c                 |  34 +-
+ 10 files changed, 553 insertions(+), 443 deletions(-)
+ create mode 100644 lib/test_kasan_module.c
+
+-- 
+2.28.0.526.ge36021eeef-goog
+
