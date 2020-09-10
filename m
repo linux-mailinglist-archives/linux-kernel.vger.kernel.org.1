@@ -2,159 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FD7726482A
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 16:45:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E89FC26487A
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 16:56:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730831AbgIJOpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 10:45:15 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:8003 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730853AbgIJOl2 (ORCPT
+        id S1730704AbgIJOzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 10:55:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59530 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731055AbgIJOwg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 10:41:28 -0400
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f5a3a8e0000>; Thu, 10 Sep 2020 07:39:10 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Thu, 10 Sep 2020 07:41:26 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Thu, 10 Sep 2020 07:41:26 -0700
-Received: from [10.2.173.224] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 10 Sep
- 2020 14:41:18 +0000
-From:   Zi Yan <ziy@nvidia.com>
-To:     David Hildenbrand <david@redhat.com>
-CC:     Michal Hocko <mhocko@suse.com>, Rik van Riel <riel@surriel.com>,
-        "Roman Gushchin" <guro@fb.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>, <linux-mm@kvack.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        David Nellans <dnellans@nvidia.com>,
-        <linux-kernel@vger.kernel.org>, Vlastimil Babka <vbabka@suse.cz>,
-        Mel Gorman <mgorman@suse.de>
-Subject: Re: [RFC PATCH 00/16] 1GB THP support on x86_64
-Date:   Thu, 10 Sep 2020 10:41:16 -0400
-X-Mailer: MailMate (1.13.1r5705)
-Message-ID: <3684BEAF-C8A2-4EEC-8FC2-55EA5F8F7DA5@nvidia.com>
-In-Reply-To: <46604da8-55d0-111d-7854-cbaa8bb65925@redhat.com>
-References: <20200902180628.4052244-1-zi.yan@sent.com>
- <20200903142300.bjq2um5y5nwocvar@box>
- <20200903163020.GG60440@carbon.dhcp.thefacebook.com>
- <8e677ead-206d-08dd-d73e-569bd3803e3b@redhat.com>
- <7E20392E-5ED7-4C22-9555-F3BAABF3CBE9@nvidia.com>
- <20200908143503.GE26850@dhcp22.suse.cz>
- <7ed82cb06074b30c2956638082c515fb179f69a3.camel@surriel.com>
- <20200909070445.GA7348@dhcp22.suse.cz>
- <054d02f3b34d9946905929ff268b685c91494b3e.camel@surriel.com>
- <6135d2c5-2a74-6ca8-4b3b-8ceb25c0d4b1@redhat.com>
- <20200910073213.GC28354@dhcp22.suse.cz>
- <9ffa345f-fd45-aeac-691d-54d1364bff6d@redhat.com>
- <C249991F-A64E-4262-892F-F1587B800264@nvidia.com>
- <46604da8-55d0-111d-7854-cbaa8bb65925@redhat.com>
+        Thu, 10 Sep 2020 10:52:36 -0400
+Received: from mail-vk1-xa41.google.com (mail-vk1-xa41.google.com [IPv6:2607:f8b0:4864:20::a41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73DC0C061799
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 07:42:44 -0700 (PDT)
+Received: by mail-vk1-xa41.google.com with SMTP id s127so1623973vkg.3
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 07:42:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Xn2z91UfCtrgcaftSJI2dNlH0TFk/vXw21rz//Drd/M=;
+        b=UVSPAVfNwE3+6oK7YYZjhiud+K7lnkgA2zgaHh02Rowe50M2AyiZS9odTByUXmtVxF
+         Di08SfgpXs/tjHW3UcuczZMqEczt1J/Rek8K66sVerDDfqDSau4pvge+N0mcHDWOLNBL
+         nHy3s4N6+sgOwEX3D20NKo0xUVYSDGqfM97OU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Xn2z91UfCtrgcaftSJI2dNlH0TFk/vXw21rz//Drd/M=;
+        b=blGYNsEz69LUgx4Y+owAaXinFXUhrwoiZVMdDiWoKQq3A6hs7Ggqa/uVmZT2csP8mt
+         RmLcY/SSuBU98M2zGODdlV7r++Cc0JsObOGi8nGJH/+SeMwO+lrg3Bh8rH97TcSjhuFg
+         omQJZacEI/2274hoqGS3g8N49mT3Ykqne+goHaBZVaWDdvQhG3Q0CPhgKxTbt7ku+Bs5
+         QEkvQhsUV1vnbWz8MPM9UDb1mG8DSdW/SwbfAud5a9PVEYRIwtUnOZLq4kIwvF4NCYli
+         wPdSlBa+pU2j42/AwK8uATJfD/6Gl0S0STvIKChchVz9gT1eO0CoG9+vzb2rEGAheAly
+         nIfA==
+X-Gm-Message-State: AOAM532KWqFukTOZ2z3oQA9FOUBYldT3ipG5DQ/+sh08JO9HD1hm/4Jp
+        pk08khteg+su7wlSrbp0ydHSHyG3kXiy7Q==
+X-Google-Smtp-Source: ABdhPJzHV3eJF3p0mKcm9cE8cMQ3QAQPktmoU4sOuzG4xlV7qQ4WFtR6qpflj7feLg7imr8qwira7A==
+X-Received: by 2002:a1f:988f:: with SMTP id a137mr4170220vke.8.1599748962984;
+        Thu, 10 Sep 2020 07:42:42 -0700 (PDT)
+Received: from mail-vs1-f41.google.com (mail-vs1-f41.google.com. [209.85.217.41])
+        by smtp.gmail.com with ESMTPSA id a59sm498393uaa.12.2020.09.10.07.42.42
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Sep 2020 07:42:42 -0700 (PDT)
+Received: by mail-vs1-f41.google.com with SMTP id a16so3498779vsp.12
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 07:42:42 -0700 (PDT)
+X-Received: by 2002:a67:d907:: with SMTP id t7mr4555810vsj.8.1599748961645;
+ Thu, 10 Sep 2020 07:42:41 -0700 (PDT)
 MIME-Version: 1.0
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: multipart/signed;
-        boundary="=_MailMate_0713686C-CFCA-464F-BC64-A68C619411CB_=";
-        micalg=pgp-sha512; protocol="application/pgp-signature"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1599748750; bh=pRebgiSFI4as2eohti5Cpwsoqc5C86yEFeEFsCxefD4=;
-        h=X-PGP-Universal:From:To:CC:Subject:Date:X-Mailer:Message-ID:
-         In-Reply-To:References:MIME-Version:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type;
-        b=qc4yzSS36rdj5VyVOKXvxaSDyr9aAcf1WQlH6J4xqILGBpD9HXxftkHNndNsVcHsF
-         WRD0GBeSVI3BT1RyyfChgESkDMR7YCla0DJ9oHuALuJJBEYg1zlXs+pKFUX+lkREcV
-         p98f2bNyyPdLXia7hK0OPKN7j00PS+ms4jH9LS5ZBRwzT+m9/CY1sliWn5YbooS6CJ
-         dsvU3v4wUq2xIrZqTigr8wXzmOj9j2THwoBVX3Ir5B+boLGmrrcWFbMiM6STKenBtJ
-         f4D1LuPpSfN06tvF1HGKRhXmu9Sr2rlR/o0KoG5h2Qct+eeEzPQqNjQaKfnSySi9Un
-         tCFDcT1gD0/3g==
+References: <1599742438-16811-1-git-send-email-skakit@codeaurora.org> <1599742438-16811-4-git-send-email-skakit@codeaurora.org>
+In-Reply-To: <1599742438-16811-4-git-send-email-skakit@codeaurora.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Thu, 10 Sep 2020 07:42:30 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=Wxo6ggLN39UMtMNwd6GOQwnEjA1MCxHjB6cmE9RTRMPA@mail.gmail.com>
+Message-ID: <CAD=FV=Wxo6ggLN39UMtMNwd6GOQwnEjA1MCxHjB6cmE9RTRMPA@mail.gmail.com>
+Subject: Re: [PATCH V5 3/4] arm64: dts: qcom: sc7180-trogdor: Add pinctrl and
+ interrupt config for BT UART
+To:     satya priya <skakit@codeaurora.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Akash Asthana <akashast@codeaurora.org>,
+        Roja Rani Yarubandi <rojay@codeaurora.org>,
+        msavaliy@qti.qualcomm.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=_MailMate_0713686C-CFCA-464F-BC64-A68C619411CB_=
-Content-Type: text/plain; charset="UTF-8"; markup=markdown
-Content-Transfer-Encoding: quoted-printable
+Hi,
 
-On 10 Sep 2020, at 10:34, David Hildenbrand wrote:
-
->>> As long as we stay in safe zone boundaries you get a benefit in most
->>> scenarios. As soon as we would have a (temporary) workload that would=
-
->>> require more unmovable allocations we would fallback to polluting som=
-e
->>> pageblocks only.
->>
->> The idea would work well until unmoveable pages begin to overflow into=
-
->> ZONE_PREFER_MOVABLE or we move the boundary of ZONE_PREFER_MOVABLE to
->> avoid unmoveable page overflow. The issue comes from the lifetime of
->> the unmoveable pages. Since some long-live ones can be around the boun=
-dary,
->> there is no guarantee that ZONE_PREFER_MOVABLE cannot grow back
->> even if other unmoveable pages are deallocated. Ultimately,
->> ZONE_PREFER_MOVABLE would be shrink to a small size and the situation =
-is
->> back to what we have now.
+On Thu, Sep 10, 2020 at 5:55 AM satya priya <skakit@codeaurora.org> wrote:
 >
-> As discussed this would not happen in the usual case in case we size it=
-
-> reasonable. Of course, if you push it to the extreme (which was never
-> suggested!), you would create mess. There is always a way to create a
-> mess if you abuse such mechanism. Also see Rik's reply regarding reclai=
-m.
+> Add a suitable sleep configuration for uart3 to support Bluetooth wakeup.
 >
->>
->> OK. I have a stupid question here. Why not just grow pageblock to a la=
-rger
->> size, like 1GB? So the fragmentation of unmoveable pages will be at la=
-rger
->> granularity. But it is less likely unmoveable pages will be allocated =
-at
->> a movable pageblock, since the kernel has 1GB pageblock for them after=
-
->> a pageblock stealing. If other kinds of pageblocks run out, moveable a=
-nd
->> reclaimable pages can fall back to unmoveable pageblocks.
->> What am I missing here?
+> If QUP function is selected in sleep state, UART RTS/RFR is pulled high
+> during suspend and BT SoC not able to send wakeup bytes. So, configure
+> GPIO mode in sleep state to keep it low during suspend.
 >
-> Oh no. For example pageblocks have to completely fit into a single
-> section (that's where metadata is maintained). Please refrain from
-> suggesting to increase the section size ;)
+> Signed-off-by: satya priya <skakit@codeaurora.org>
+> ---
+> Changes in V5:
+>  - Newly added in V5. This patch adds wakeup support for trogdor board files.
+>
+>  arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi | 48 ++++++++++++++++++++++++++++
+>  1 file changed, 48 insertions(+)
 
-Thank you for the explanation. I have no idea about the restrictions on
-pageblock and section. Out of curiosity, what prevents the growth of
-the section size?
+Note: I can't find this email on any of the mailing lists.  Can you
+check your config?  I tried:
 
-=E2=80=94
-Best Regards,
-Yan Zi
+http://lore.kernel.org/r/1599742438-16811-4-git-send-email-skakit@codeaurora.org
 
---=_MailMate_0713686C-CFCA-464F-BC64-A68C619411CB_=
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-Content-Type: application/pgp-signature; name="signature.asc"
+...and also checked patchwork servers.  I only see patch 1 and 2.  I
+think Bjorn usually applies from patchwork so this'll likely be a
+problem...
 
------BEGIN PGP SIGNATURE-----
 
-iQJDBAEBCgAtFiEEh7yFAW3gwjwQ4C9anbJR82th+ooFAl9aOwwPHHppeUBudmlk
-aWEuY29tAAoJEJ2yUfNrYfqKEt0QAIvPUh89vpiDtDpn4N8OsXxU9rrnmJVoMuSy
-03/mMkXmOPKwkaOyCrEHb1mMOFDM9F843V/T9zOItzXTCYqntXwsmgUGOEeIxwMV
-hcqfZ0Af5qfM1NpnAyHaRwOXhxozFDiu9hIIy5MMS0duBhZSN6z9PQeGd/MYebSM
-FrbipJVhm5ULm2bhoXkM2CY3RVcvfv60oLVghSlm+nwIFRTNw/+2jKMn/1K2GcaR
-Vx6idXhhHpGBi+CbuA2ZfEjDQLpFR+G7o3Kl0QiK4LesFFwOucgyw6Xust41ElsS
-6zefqe8mE7Q6Blo9rJX6d2+gY0hhGWmy3QRtOLWjUFfk+Jvl498r8AuK7HzTHaqU
-0vRV05AII3V0EDyaZ+qO3OQXgOaLg/xVw0WPHvHJIdKzYXYbB5IOr/lKv4kT1GE3
-dn6/o415q13LkH9glXcl1hSWQTtNqGDRd6xlPFuhQP2F+JPP54HHDU3JihIoI+Bn
-IErJUkYz1OiwY8VbUgF0e7+6NUjV6v+7Pzzv7QVHUEdrm07dcCOLUDEjY5jJOJvj
-yKPm/Q6ZaH+Mrbk91uq7GWcp2BL0igI7f/Bky0yOHe21de71CRT+WA+6ORVxJJA/
-zpazfasdK9DZ0ZIBtNwBCpLvAaH5EBxeCBCNb6CnZDMBFJAwca8UBdZX+kV3mEra
-UzykKsRX
-=marw
------END PGP SIGNATURE-----
+> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+> index a6b9beb..96b5331 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+> @@ -792,6 +792,11 @@ ap_spi_fp: &spi10 {
+>  #include <arm/cros-ec-sbs.dtsi>
+>
+>  &uart3 {
+> +       pinctrl-names = "default", "sleep";
+> +       pinctrl-1 = <&qup_uart3_sleep>;
+> +       interrupts-extended = <&intc GIC_SPI 604 IRQ_TYPE_LEVEL_HIGH>,
+> +                               <&tlmm 41 IRQ_TYPE_EDGE_FALLING>;
+> +
+>         status = "okay";
 
---=_MailMate_0713686C-CFCA-464F-BC64-A68C619411CB_=--
+Same comments here as for patch #2.
+
+
+>         bluetooth: bluetooth {
+> @@ -1345,4 +1350,47 @@ ap_spi_fp: &spi10 {
+>                         drive-strength = <2>;
+>                 };
+>         };
+> +
+> +       qup_uart3_sleep: qup-uart3-sleep {
+
+I believe things in this section are supposed to be sorted
+alphabetically.  Thus "qup..." should be sorted before "trackpad..."
