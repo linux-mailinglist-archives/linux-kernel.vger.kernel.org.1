@@ -2,160 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F196726451C
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 13:07:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40D89264521
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 13:09:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730544AbgIJLHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 07:07:33 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41812 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730478AbgIJLFT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 07:05:19 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 67064AF2C;
-        Thu, 10 Sep 2020 11:05:33 +0000 (UTC)
-Subject: Re: [RFC 5/5] mm, page_alloc: disable pcplists during page isolation
-To:     David Hildenbrand <david@redhat.com>,
-        Michal Hocko <mhocko@suse.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Mel Gorman <mgorman@techsingularity.net>
-References: <20200907163628.26495-1-vbabka@suse.cz>
- <20200907163628.26495-6-vbabka@suse.cz>
- <d5d5ef64-b239-0640-5640-75c7a3c78584@suse.cz>
- <20200909113647.GG7348@dhcp22.suse.cz>
- <b057e618-94f1-3f5a-a4f6-55fc93ac34eb@suse.cz>
- <5c5753b4-8cb9-fa02-a0fa-d5ca22731cbb@redhat.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <3d3b53db-aeaa-ff24-260b-36427fac9b1c@suse.cz>
-Date:   Thu, 10 Sep 2020 13:05:13 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1730449AbgIJLJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 07:09:02 -0400
+Received: from cmccmta2.chinamobile.com ([221.176.66.80]:12554 "EHLO
+        cmccmta2.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730413AbgIJLGz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 07:06:55 -0400
+Received: from spf.mail.chinamobile.com (unknown[172.16.121.3]) by rmmx-syy-dmz-app08-12008 (RichMail) with SMTP id 2ee85f5a0899992-8a133; Thu, 10 Sep 2020 19:06:01 +0800 (CST)
+X-RM-TRANSID: 2ee85f5a0899992-8a133
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from localhost.localdomain (unknown[223.112.105.130])
+        by rmsmtp-syy-appsvr02-12002 (RichMail) with SMTP id 2ee25f5a0896cdb-115c6;
+        Thu, 10 Sep 2020 19:06:01 +0800 (CST)
+X-RM-TRANSID: 2ee25f5a0896cdb-115c6
+From:   Tang Bin <tangbin@cmss.chinamobile.com>
+To:     gregkh@linuxfoundation.org, paul@pwsan.com, aaro.koskinen@iki.fi,
+        tony@atomide.com
+Cc:     linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Tang Bin <tangbin@cmss.chinamobile.com>,
+        Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+Subject: [PATCH] ARM: OMAP1: clock: Use IS_ERR_OR_NULL() to clean code
+Date:   Thu, 10 Sep 2020 19:06:40 +0800
+Message-Id: <20200910110640.4308-1-tangbin@cmss.chinamobile.com>
+X-Mailer: git-send-email 2.20.1.windows.1
 MIME-Version: 1.0
-In-Reply-To: <5c5753b4-8cb9-fa02-a0fa-d5ca22731cbb@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/10/20 12:29 PM, David Hildenbrand wrote:
-> On 09.09.20 13:55, Vlastimil Babka wrote:
->> On 9/9/20 1:36 PM, Michal Hocko wrote:
->>> On Wed 09-09-20 12:48:54, Vlastimil Babka wrote:
->>>> Here's a version that will apply on top of next-20200908. The first 4 patches need no change.
->>>> For callers that pair start_isolate_page_range() with
->>>> undo_isolated_page_range() properly, this is transparent. Currently that's
->>>> alloc_contig_range(). __offline_pages() doesn't call undo_isolated_page_range()
->>>> in the succes case, so it has to be carful to handle restoring pcp->high and batch
->>>> and unlocking pcp_batch_high_lock.
->>>
->>> I was hoping that it would be possible to have this completely hidden
->>> inside start_isolate_page_range code path.
->> 
->> I hoped so too, but we can't know the moment when all processes that were in the
->> critical part of freeing pages to pcplists have moved on (they might have been
->> rescheduled).
->> We could change free_unref_page() to disable IRQs sooner, before
->> free_unref_page_prepare(), or at least the get_pfnblock_migratetype() part. Then
->> after the single drain, we should be safe, AFAICS?
-> 
-> At least moving it before getting the migratetype should not be that severe?
-> 
->> RT guys might not be happy though, but it's much simpler than this patch. I
->> still like some of the cleanups in 1-4 though tbh :)
-> 
-> It would certainly make this patch much simpler. Do you have a prototype
-> lying around?
+Use IS_ERR_OR_NULL() to make the code cleaner.
 
-Below is the critical part, while writing it I realized that there's also
-free_unref_page_list() where it's more ugly.
+Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+---
+ arch/arm/mach-omap1/clock.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-So free_unref_page() simply moves the "determine migratetype" part under
-disabled interrupts. For free_unref_page_list() we optimistically determine them
-without disabling interrupts, and with disabled interrupts we check if zone has
-isolated pageblocks and thus we should not trust that value anymore. That's same
-pattern as free_pcppages_bulk uses.
-
-But unfortunately it means an extra page_zone() plus a test for each page on the
-list :/
-
-----8<----
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index defefed79cfb..57e2a341c95c 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -3103,18 +3103,21 @@ void mark_free_pages(struct zone *zone)
- }
- #endif /* CONFIG_PM */
- 
--static bool free_unref_page_prepare(struct page *page, unsigned long pfn)
-+static bool free_unref_page_prepare(struct page *page)
- {
--	int migratetype;
--
- 	if (!free_pcp_prepare(page))
- 		return false;
- 
--	migratetype = get_pfnblock_migratetype(page, pfn);
--	set_pcppage_migratetype(page, migratetype);
- 	return true;
- }
- 
-+static inline void free_unref_page_set_migratetype(struct page *page, unsigned long pfn)
-+{
-+	int migratetype	= get_pfnblock_migratetype(page, pfn);
-+
-+	set_pcppage_migratetype(page, migratetype);
-+}
-+
- static void free_unref_page_commit(struct page *page, unsigned long pfn)
- {
- 	struct zone *zone = page_zone(page);
-@@ -3156,10 +3159,17 @@ void free_unref_page(struct page *page)
+diff --git a/arch/arm/mach-omap1/clock.c b/arch/arm/mach-omap1/clock.c
+index bd5be8210..9d4a0ab50 100644
+--- a/arch/arm/mach-omap1/clock.c
++++ b/arch/arm/mach-omap1/clock.c
+@@ -612,7 +612,7 @@ int clk_enable(struct clk *clk)
  	unsigned long flags;
- 	unsigned long pfn = page_to_pfn(page);
+ 	int ret;
  
--	if (!free_unref_page_prepare(page, pfn))
-+	if (!free_unref_page_prepare(page))
+-	if (clk == NULL || IS_ERR(clk))
++	if (IS_ERR_OR_NULL(clk))
+ 		return -EINVAL;
+ 
+ 	spin_lock_irqsave(&clockfw_lock, flags);
+@@ -627,7 +627,7 @@ void clk_disable(struct clk *clk)
+ {
+ 	unsigned long flags;
+ 
+-	if (clk == NULL || IS_ERR(clk))
++	if (IS_ERR_OR_NULL(clk))
  		return;
  
-+	/*
-+	 * by disabling interrupts before reading pageblock's migratetype,
-+	 * we can guarantee that after changing a pageblock to MIGRATE_ISOLATE
-+	 * and drain_all_pages(), there's nobody who would read the old
-+	 * migratetype and put a page from isoalted pageblock to pcplists
-+	 */
- 	local_irq_save(flags);
-+	free_unref_page_set_migratetype(page, pfn);
- 	free_unref_page_commit(page, pfn);
- 	local_irq_restore(flags);
- }
-@@ -3176,9 +3186,10 @@ void free_unref_page_list(struct list_head *list)
- 	/* Prepare pages for freeing */
- 	list_for_each_entry_safe(page, next, list, lru) {
- 		pfn = page_to_pfn(page);
--		if (!free_unref_page_prepare(page, pfn))
-+		if (!free_unref_page_prepare(page))
- 			list_del(&page->lru);
- 		set_page_private(page, pfn);
-+		free_unref_page_set_migratetype(page, pfn);
- 	}
+ 	spin_lock_irqsave(&clockfw_lock, flags);
+@@ -650,7 +650,7 @@ unsigned long clk_get_rate(struct clk *clk)
+ 	unsigned long flags;
+ 	unsigned long ret;
  
- 	local_irq_save(flags);
-@@ -3187,6 +3198,8 @@ void free_unref_page_list(struct list_head *list)
+-	if (clk == NULL || IS_ERR(clk))
++	if (IS_ERR_OR_NULL(clk))
+ 		return 0;
  
- 		set_page_private(page, 0);
- 		trace_mm_page_free_batched(page);
-+		if (has_isolate_pageblock(page_zone(page)))
-+			free_unref_page_set_migratetype(page, pfn);
- 		free_unref_page_commit(page, pfn);
+ 	spin_lock_irqsave(&clockfw_lock, flags);
+@@ -670,7 +670,7 @@ long clk_round_rate(struct clk *clk, unsigned long rate)
+ 	unsigned long flags;
+ 	long ret;
  
- 		/*
+-	if (clk == NULL || IS_ERR(clk))
++	if (IS_ERR_OR_NULL(clk))
+ 		return 0;
+ 
+ 	spin_lock_irqsave(&clockfw_lock, flags);
+@@ -686,7 +686,7 @@ int clk_set_rate(struct clk *clk, unsigned long rate)
+ 	unsigned long flags;
+ 	int ret = -EINVAL;
+ 
+-	if (clk == NULL || IS_ERR(clk))
++	if (IS_ERR_OR_NULL(clk))
+ 		return ret;
+ 
+ 	spin_lock_irqsave(&clockfw_lock, flags);
+@@ -791,7 +791,7 @@ void clk_preinit(struct clk *clk)
+ 
+ int clk_register(struct clk *clk)
+ {
+-	if (clk == NULL || IS_ERR(clk))
++	if (IS_ERR_OR_NULL(clk))
+ 		return -EINVAL;
+ 
+ 	/*
+@@ -817,7 +817,7 @@ EXPORT_SYMBOL(clk_register);
+ 
+ void clk_unregister(struct clk *clk)
+ {
+-	if (clk == NULL || IS_ERR(clk))
++	if (IS_ERR_OR_NULL(clk))
+ 		return;
+ 
+ 	mutex_lock(&clocks_mutex);
+-- 
+2.20.1.windows.1
+
 
 
