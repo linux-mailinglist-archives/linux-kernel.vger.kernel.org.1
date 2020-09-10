@@ -2,55 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A115A264BF1
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 19:54:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98561264BE7
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 19:52:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726966AbgIJRxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 13:53:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44422 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726424AbgIJQPv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 12:15:51 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCBA2C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 09:15:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=FxWosVolwnMfdv5ZVUcxwHEUfhyRl2xLq4dMuRxI3V4=; b=KtsQglLraazFNT7GAvMGkp/5D5
-        9IuQF2tdaROc4TQT1ZFZG6jJCH5WL9q1BFHGpIvwPNh900WEupxsuH4F1qoVxynv9TbIKSQxmx7Dd
-        tZTEcLcRqmdTcdacmG6Jw7QZ/8wFVUrRiuP5APwOtfMDRd8rIGUiF7QlEyc2to5MxYuRDjEMfUpVi
-        x6VzUal2DGTwxI5dU8SFL9r9LxKtDM7eHc/Dn8uL3qbGcvc0CMWKHRNS/ICvTO8vVlFrjXQmkjNco
-        uyZxPl8zqPVBXoE3ypyntLHoSwPiOGD+HFb0OGrMbwSsF50uu8TkaOyl2m3J38yfj/8Qd5pQLPtWK
-        aZrOujZw==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kGPEh-0004Vc-3v; Thu, 10 Sep 2020 16:15:47 +0000
-Date:   Thu, 10 Sep 2020 17:15:47 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Pintu Kumar <pintu@codeaurora.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        akpm@linux-foundation.org, iamjoonsoo.kim@lge.com,
-        rientjes@google.com, penberg@kernel.org, cl@linux.com,
-        pintu.ping@gmail.com
-Subject: Re: [PATCH] mm/slab.h: Fix duplicate include file kmemleak.h
-Message-ID: <20200910161547.GT6583@casper.infradead.org>
-References: <0101017478cb7f12-16ae9fdb-ef30-4277-ab57-e31e12598466-000000@us-west-2.amazonses.com>
+        id S1727808AbgIJRwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 13:52:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33952 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725933AbgIJQQ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 12:16:27 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F0D97206A1;
+        Thu, 10 Sep 2020 16:16:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599754568;
+        bh=OgY5Qs0sNgX7gxePvw0EADB/4fq3LgqYdQ2QJdS4vac=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KHCKfGsKA3ReD9imzv70TocLnWw5iHbWlUxyg+ll6jDcY60h4lO0g7s+W6Ct8yzhG
+         lCmmijbG5GERgZMqeUjlrk7McAxgRxlhbzTsY+czFzji3d7z+JpmMa4X2Zk1o7G6pe
+         xnDuwaLrL1mnY2X5VtddJI7Uu9VMBJ37O1HHfmQg=
+Date:   Thu, 10 Sep 2020 18:16:15 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Rich Felker <dalias@libc.org>
+Cc:     linux-api@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] vfs: add fchmodat2 syscall
+Message-ID: <20200910161615.GA1180022@kroah.com>
+References: <20200910142335.GG3265@brightrain.aerifal.cx>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0101017478cb7f12-16ae9fdb-ef30-4277-ab57-e31e12598466-000000@us-west-2.amazonses.com>
+In-Reply-To: <20200910142335.GG3265@brightrain.aerifal.cx>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 04:13:56PM +0000, Pintu Kumar wrote:
-> As I was browsing through this code, I found that linux/kmemleak.h
-> was declared twice.
+On Thu, Sep 10, 2020 at 10:23:37AM -0400, Rich Felker wrote:
+> POSIX defines fchmodat as having a 4th argument, flags, that can be
+> AT_SYMLINK_NOFOLLOW. Support for changing the access mode of symbolic
+> links is optional (EOPNOTSUPP allowed if not supported), but this flag
+> is important even on systems where symlinks do not have access modes,
+> since it's the only way to safely change the mode of a file which
+> might be asynchronously replaced with a symbolic link, without a race
+> condition whereby the link target is changed.
 > 
-> When I run ./scripts/checkincludes.pl it reported the same:
-> mm/slab.h: linux/kmemleak.h is included more than once.
+> It's possible to emulate AT_SYMLINK_NOFOLLOW in userspace, and both
+> musl libc and glibc do this, by opening an O_PATH file descriptor and
+> performing chmod on the corresponding magic symlink in /proc/self/fd.
+> However, this requires procfs to be mounted and accessible.
+> 
+> It was determined (see glibc issue #14578 and commit a492b1e5ef) that,
+> on some filesystems, performing chmod on the link itself produces a
+> change in the inode's access mode, but returns an EOPNOTSUPP error.
+> This is non-conforming and wrong. Rather than try to fix all the
+> broken filesystem backends, block attempts to change the symlink
+> access mode via fchmodat2 at the frontend layer. This matches the
+> userspace emulation done in libc implementations. No change is made to
+> the underlying chmod_common(), so it's still possible to attempt
+> changes via procfs, if desired. If at some point all filesystems have
+> been fixed, this could be relaxed to allow filesystems to make their
+> own decision whether changing access mode of links is supported.
 
-Already reported yesterday and also on August 18th.
+A new syscall just because we have broken filesystems seems really odd,
+why not just fix the filesystems instead?
+
+thanks,
+
+greg k-h
