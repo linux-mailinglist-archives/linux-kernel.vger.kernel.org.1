@@ -2,107 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD68D2645D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 14:17:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 109062645E6
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 14:22:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729935AbgIJMRg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 08:17:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34976 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727830AbgIJMOw (ORCPT
+        id S1730662AbgIJMWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 08:22:51 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:41312 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730244AbgIJMUL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 08:14:52 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34936C061573;
-        Thu, 10 Sep 2020 05:14:52 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id g4so6454825wrs.5;
-        Thu, 10 Sep 2020 05:14:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jyI3JGvS09pRlrarbYuzfD+zuLzW1NzCe2jGGYIBcDE=;
-        b=mCN4TzrIUYpBOLakJPG6xEQSIk24b2s2JhsfEOEXfv8izTbw5LDD7HpLEQQFB1B/4o
-         7poO/MckeBmzEyoRZeLqUmtBJT/BgRpxXan6y3yAo0Cq3p4BGymtAWta1iXvGQgFa/xf
-         9QrEKLfTpszTgWAsI1Lo+2KuYgEM1QyW9NmShGNEhUZw+LHAYWYPIJo6BHLtcLhEmzBR
-         nbHJWz1zwCfb6pqHoz7zssivnvdugnRGsPkPL8kCZb9ASRvEH6uN+2TyAA/kAU1rR2kf
-         4WWQKJW6KDfzTftL6qgyUdgLEPA8YW2CnOyQqJDbFJOF31kwHxUvVNYETfbiCJxYt0Vt
-         YFCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jyI3JGvS09pRlrarbYuzfD+zuLzW1NzCe2jGGYIBcDE=;
-        b=MM0eB/azjqKmS1TjtUVLbkUEnNnfNqvjXnbw4xOTXI1mdm1Sq5UMj9jVFq+j3eYOEs
-         elryHkc5t095Ijp5jcZE878NpYegkWoWBFSTXsMVC7MNJcZZ5Gg7+xZwpJwrIZ+mVauJ
-         xZsWD6f/iFNMieccFjcnP9aUDAAmNfBcNjunfZeg0fNF07J+zDymqcuADMJx1fVZVU6L
-         Wt8jDZuyixnP39n+GKq7qoKmouQmx5hWmm0PeBiYrtSpR5FRik/fjRgexgRdLn4kzMsI
-         wUIRPlsPdavD+4o7TQ0BhcODmx53jOnrQeqKzo5BFnjA5nBvCtBlu1a5LM5H3dXFJg+N
-         9KIA==
-X-Gm-Message-State: AOAM531oYwJnn+35cNmJaSJoqvnYbYOO24m7YsldZehCS4rPUATQxae+
-        3ERi03vjMyF/hzXFjD0xHg==
-X-Google-Smtp-Source: ABdhPJzVfN023eROnRibeOiKUBH6YA47852elVbFAQPB+EmQUFMR4DFZREXxGNzrGwvFm2Rl/vKjpg==
-X-Received: by 2002:adf:e852:: with SMTP id d18mr9414224wrn.40.1599740090780;
-        Thu, 10 Sep 2020 05:14:50 -0700 (PDT)
-Received: from localhost.localdomain ([46.53.248.229])
-        by smtp.gmail.com with ESMTPSA id k8sm3510926wma.16.2020.09.10.05.14.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Sep 2020 05:14:50 -0700 (PDT)
-Date:   Thu, 10 Sep 2020 15:14:48 +0300
-From:   Alexey Dobriyan <adobriyan@gmail.com>
-To:     Tom Hromatka <tom.hromatka@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        fweisbec@gmail.com, tglx@linutronix.de, mingo@kernel.org
-Subject: Re: [RESEND PATCH 2/2] /proc/stat: Simplify iowait and idle
- calculations when cpu is offline
-Message-ID: <20200910121448.GA59606@localhost.localdomain>
-References: <20200909144122.77210-1-tom.hromatka@oracle.com>
- <20200909144122.77210-3-tom.hromatka@oracle.com>
+        Thu, 10 Sep 2020 08:20:11 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 9ADC91C0B9C; Thu, 10 Sep 2020 14:20:02 +0200 (CEST)
+Date:   Thu, 10 Sep 2020 14:20:02 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Marek =?iso-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>
+Cc:     netdev@vger.kernel.org, linux-leds@vger.kernel.org,
+        Dan Murphy <dmurphy@ti.com>,
+        =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Andrew Lunn <andrew@lunn.ch>, linux-kernel@vger.kernel.org,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH net-next + leds v2 3/7] net: phy: add simple incrementing
+ phyindex member to phy_device struct
+Message-ID: <20200910122002.GA7907@duo.ucw.cz>
+References: <20200909162552.11032-1-marek.behun@nic.cz>
+ <20200909162552.11032-4-marek.behun@nic.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="82I3+IH0IqGh5yIs"
 Content-Disposition: inline
-In-Reply-To: <20200909144122.77210-3-tom.hromatka@oracle.com>
+In-Reply-To: <20200909162552.11032-4-marek.behun@nic.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 09, 2020 at 08:41:22AM -0600, Tom Hromatka wrote:
->  static u64 get_idle_time(struct kernel_cpustat *kcs, int cpu)
->  {
-> -	u64 idle, idle_usecs = -1ULL;
-> +	u64 idle, idle_usecs;
->  
-> -	if (cpu_online(cpu))
-> -		idle_usecs = get_cpu_idle_time_us(cpu, NULL);
-> -
-> -	if (idle_usecs == -1ULL)
-> -		/* !NO_HZ or cpu offline so we can rely on cpustat.idle */
-> -		idle = kcs->cpustat[CPUTIME_IDLE];
-> -	else
-> -		idle = idle_usecs * NSEC_PER_USEC;
-> +	idle_usecs = get_cpu_idle_time_us(cpu, NULL);
-> +	idle = idle_usecs * NSEC_PER_USEC;
->  
->  	return idle;
->  }
->  
->  static u64 get_iowait_time(struct kernel_cpustat *kcs, int cpu)
->  {
-> -	u64 iowait, iowait_usecs = -1ULL;
-> -
-> -	if (cpu_online(cpu))
-> -		iowait_usecs = get_cpu_iowait_time_us(cpu, NULL);
-> +	u64 iowait, iowait_usecs;
->  
-> -	if (iowait_usecs == -1ULL)
-> -		/* !NO_HZ or cpu offline so we can rely on cpustat.iowait */
-> -		iowait = kcs->cpustat[CPUTIME_IOWAIT];
-> -	else
-> -		iowait = iowait_usecs * NSEC_PER_USEC;
-> +	iowait_usecs = get_cpu_iowait_time_us(cpu, NULL);
-> +	iowait = iowait_usecs * NSEC_PER_USEC;
 
-You can gc variables in both cases:
+--82I3+IH0IqGh5yIs
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-	return get_cpu_iowait_time_us() * NSEC_PER_USEC;
+Hi!
+
+> names are not suited for this, since in some situations a PHY device
+> name can look like this
+>   d0032004.mdio-mii:01
+> or even like this
+>   /soc/internal-regs@d0000000/mdio@32004/switch0@10/mdio:08
+> Clearly this cannot be used as the `device` part of a LED name.
+>=20
+> Signed-off-by: Marek Beh=FAn <marek.behun@nic.cz>
+> ---
+>  drivers/net/phy/phy_device.c | 3 +++
+>  include/linux/phy.h          | 3 +++
+>  2 files changed, 6 insertions(+)
+>=20
+> diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
+> index 8adfbad0a1e8f..38f56d39f1229 100644
+> --- a/drivers/net/phy/phy_device.c
+> +++ b/drivers/net/phy/phy_device.c
+> @@ -9,6 +9,7 @@
+> =20
+>  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+> =20
+> +#include <linux/atomic.h>
+>  #include <linux/bitmap.h>
+>  #include <linux/delay.h>
+>  #include <linux/errno.h>
+> @@ -892,6 +893,7 @@ EXPORT_SYMBOL(get_phy_device);
+>   */
+>  int phy_device_register(struct phy_device *phydev)
+>  {
+> +	static atomic_t phyindex;
+>  	int err;
+> =20
+>  	err =3D mdiobus_register_device(&phydev->mdio);
+
+I'd put the static out of the function... for greater visibility.
+
+Otherwise: Reviewed-by: Pavel Machek <pavel@ucw.cz>
+
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--82I3+IH0IqGh5yIs
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX1oZ8gAKCRAw5/Bqldv6
+8lBYAJ9tS6CVdgWfqKytotcj0k55tsWyTwCggMTOOpigKRw1boHuGHYIF6icthI=
+=pvlr
+-----END PGP SIGNATURE-----
+
+--82I3+IH0IqGh5yIs--
