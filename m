@@ -2,328 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B61E426535C
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:33:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67873265382
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:36:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728098AbgIJVdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 17:33:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37576 "EHLO
+        id S1728282AbgIJVgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 17:36:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726802AbgIJVcd (ORCPT
+        with ESMTP id S1726853AbgIJVgC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 17:32:33 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EBB1C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 14:32:32 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id n25so10105799ljj.4
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 14:32:32 -0700 (PDT)
+        Thu, 10 Sep 2020 17:36:02 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A50D9C061573
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 14:35:55 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id lo4so10871110ejb.8
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 14:35:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=PT5RewSLErP4ScRi2owXD3TsugrP80kcF1hvqbJMudU=;
-        b=Kx64mjnIaD20tcXvEM0BQWjIQfETdv9/KX7GdJ3ELP3iJDm15pe1jeA5eGgZ9Sb7C1
-         txt4kXnEUJQJ8KBHbuJwPFGoHJ7xGGyBR/BqPa8BYDUHMeYnxoF6NNJ35WK1bH2GWHT/
-         OLahqkAc2+JziRsf5CyIuFp0xUUN1U767NCZpa94bcFLsOAix1e9gFIyoJxog1alewph
-         OOeynGTzZZ+TaLZ32IoKsWhG76dz03af8zeNoMrNjTC/7i4blbbrxok14hBWBxJlhvx/
-         VZNH+EYtd/EC6tWFnFtpVo8MJKN8rFYPL3U7Cc/u3a58WvtbPdXfisyFhAn4LONwDb20
-         UgVg==
+        bh=VdtUto+8UVa+utOykTSZtVbT+HAuZQ1RHs3Ji6ziDM4=;
+        b=J6v0x4H4AlS7GM1DTSncQeQVHo5LjwGEVBL75InjolvlYUGtT6xNx3thTQr6DuaMag
+         hvMHqqsGaDS+Wgewib+ZgUzn1JVPSEgcvR/udk0buWBUATjUrNO3lT6LFPlqY38aJlSI
+         5mSssQKop+Zk01z+f+9O8RCG38FSgXlXy7vODJlwioZoxe353iaVptkoHs2fupw7krbX
+         rDgV71uRspd5Gl6rsEfYHYC12ilu7s96YIjrRANdkgEPoPYhC6sBd+/I0I897IpolfWm
+         pJPEm46EuUvdtcWzKs1Ql1EMLXtB7jpXROwgWbMQW5jg8OBkJY6aq3HErBL8wGGcUArY
+         HWKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=PT5RewSLErP4ScRi2owXD3TsugrP80kcF1hvqbJMudU=;
-        b=oNIsHVLIfKx+mCAGTyi7pkC2DBlu1+WNfq+yuI8X6X8gGEkPvZSF+dPuLgPN7e3vA2
-         P0upkU4Ur2L4ixdiEKUHZy1xYT2YD7RFFlEij4PM5XQMhnHqi1o1q8qx87fpP4XGLuTW
-         tvNus8YCYmvjF1aSSFAuEduVlg8F2jUCA4f/CkYJ7Os3u6CeiYoy3SZogBNAxN4X6Xdw
-         KjV16+wO12r2OybzU7eR9fg2rAIwpURttNYxTlw8UZiym2QJMbYiRyhGBLrPR8hp7D1e
-         zmp1a7Pd9RlZhCmxaYo+qNDO6wV0g2QIEU0/zXKlQMg7eeT58fAA5Wy6tWUaI4rNjKfO
-         db7A==
-X-Gm-Message-State: AOAM532ByxV4WXK2dUIYMcZGgSzYdWVGpiS0zGyCukgDHpLK5Mh3M7rY
-        qeUhwx6UjyYQsWAsW3kcQwiVKg4uroOsXDS4omohDA==
-X-Google-Smtp-Source: ABdhPJxKOrQhe9I0H+n3lmdZVu32MqhEB6ra+xjy+Mu67YGel8du2z2t9yktrh5y45ZORSGg8lgEyqEZMK0A5DWMDF0=
-X-Received: by 2002:a2e:98d1:: with SMTP id s17mr5317839ljj.188.1599773545804;
- Thu, 10 Sep 2020 14:32:25 -0700 (PDT)
+        bh=VdtUto+8UVa+utOykTSZtVbT+HAuZQ1RHs3Ji6ziDM4=;
+        b=QI6eRQfxlzzWNFxw2cwDjdGeO3QUFDTqO899kcx5/FDzISVnUIrSTn9nI7jpYnadJD
+         DC5LE8C8SOg/FK/blNhvykrPI6oke7dIkItKU2r6W3vW18afou/csuLOu69X2aJwyWe3
+         zWf9VGTGi24eDhrdvoBYc5xOrA4WzG97aFNHkvHszUXnmpKpZBQrz65IXKQfvJRRP/GS
+         pKccadt4s3CfQYb7Nn15BAoemEuC/Pz7kOqCUAuQshCis0n6uKS69uYy+hL9LTvXeeW3
+         lSMt8NzmYFwNCWE5f7pzwdWTOXXvtfOjZ5B20+VWh3hZITxFHll9gILcu5j1Mw6rYOtA
+         SOyw==
+X-Gm-Message-State: AOAM531L/R5D48KyPUSoDfFmzij13JUqLJOHZKMuhTdNa0Y6eAUSoFLC
+        q5lARG5wqvhNmegWpNeNBIXcxny6urrirpixLUqMZQ==
+X-Google-Smtp-Source: ABdhPJy1Ak3QJSIu8NxHxo3J0ITswUZlpAfKZRfg4oOneT5cmIRFzUVld6KFQE599iv5QEcUkm3ey9iJMOG4Q5PIaIY=
+X-Received: by 2002:a17:906:b156:: with SMTP id bt22mr10802676ejb.481.1599773754039;
+ Thu, 10 Sep 2020 14:35:54 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200714201540.3139140-1-rajatja@google.com> <CAA93t1rzHbTVCrXhz3YBExJS1FOHBe=GCnns9=q1Ry9zdWb4VA@mail.gmail.com>
- <CACK8Z6EbWikLjDr3xjRqzDNeyk-6Qwe67sOp3hczWd3xSQL3vQ@mail.gmail.com> <CAA93t1qkNDRW_AaYzV-sBJPGgYTnM1YKeNMTjOP9FR7Cf2Q7=w@mail.gmail.com>
-In-Reply-To: <CAA93t1qkNDRW_AaYzV-sBJPGgYTnM1YKeNMTjOP9FR7Cf2Q7=w@mail.gmail.com>
-From:   Rajat Jain <rajatja@google.com>
-Date:   Thu, 10 Sep 2020 14:31:49 -0700
-Message-ID: <CACK8Z6EdoyK=z71ucGXNeriVSEsUioMO3FCoQh3COwdAtfbtnA@mail.gmail.com>
-Subject: Re: [PATCH v5] PCI/ACS: Enable PCI_ACS_TB and disable only when
- needed for ATS
-To:     Rajat Jain <rajatxjain@gmail.com>
-Cc:     David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        "open list:AMD IOMMU (AMD-VI)" <iommu@lists.linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Raj Ashok <ashok.raj@intel.com>,
-        "Krishnakumar, Lalithambika" <lalithambika.krishnakumar@intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Prashant Malani <pmalani@google.com>,
-        Benson Leung <bleung@google.com>,
-        Todd Broch <tbroch@google.com>,
-        Alex Levin <levinale@google.com>,
-        Mattias Nissler <mnissler@google.com>,
-        Bernie Keany <bernie.keany@intel.com>,
-        Aaron Durbin <adurbin@google.com>,
-        Diego Rivas <diegorivas@google.com>,
-        Duncan Laurie <dlaurie@google.com>,
-        Furquan Shaikh <furquan@google.com>,
-        Jesse Barnes <jsbarnes@google.com>,
-        Christian Kellner <christian@kellner.me>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Oliver O'Halloran" <oohall@gmail.com>,
-        Saravana Kannan <saravanak@google.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>
+References: <20200910151221.751464-1-colin.king@canonical.com>
+In-Reply-To: <20200910151221.751464-1-colin.king@canonical.com>
+From:   Todd Kjos <tkjos@google.com>
+Date:   Thu, 10 Sep 2020 14:35:41 -0700
+Message-ID: <CAHRSSEzAtyDpR6xRVXyaDzDyBV3CvyiezSSK4hGU9BdbvJYiHQ@mail.gmail.com>
+Subject: Re: [PATCH][next] binder: remove redundant assignment to pointer n
+To:     Colin King <colin.king@canonical.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Christian Brauner <christian@brauner.io>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        "open list:ANDROID DRIVERS" <devel@driverdev.osuosl.org>,
+        kernel-janitors@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Bjorn,
-
-
-On Mon, Aug 17, 2020 at 3:50 PM Rajat Jain <rajatxjain@gmail.com> wrote:
+On Thu, Sep 10, 2020 at 8:12 AM Colin King <colin.king@canonical.com> wrote:
 >
-> Hello Bjorn,
+> From: Colin Ian King <colin.king@canonical.com>
 >
+> The pointer n is being initialized with a value that is
+> never read and it is being updated later with a new value. The
+> initialization is redundant and can be removed.
 >
-> On Sat, Aug 1, 2020 at 5:30 PM Rajat Jain <rajatja@google.com> wrote:
-> >
-> > Hi Bjorn,
-> >
-> >
-> > On Tue, Jul 14, 2020 at 1:24 PM Rajat Jain <rajatxjain@gmail.com> wrote:
-> > >
-> > > On Tue, Jul 14, 2020 at 1:15 PM Rajat Jain <rajatja@google.com> wrote:
-> > > >
-> > > > The ACS "Translation Blocking" bit blocks the translated addresses from
-> > > > the devices. We don't expect such traffic from devices unless ATS is
-> > > > enabled on them. A device sending such traffic without ATS enabled,
-> > > > indicates malicious intent, and thus should be blocked.
-> > > >
-> > > > Enable PCI_ACS_TB by default for all devices, and it stays enabled until
-> > > > atleast one of the devices downstream wants to enable ATS. It gets
-> > > > disabled to enable ATS on a device downstream it, and then gets enabled
-> > > > back on once all the downstream devices don't need ATS.
-> > > >
-> > > > Signed-off-by: Rajat Jain <rajatja@google.com>
-> >
-> > Just checking to see if you got a chance to look at this V5 patch.
->
-> Any feedback on this patch?
+> Addresses-Coverity: ("Unused value")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-Gentle reminder?
+Acked-by: Todd Kjos <tkjos@google.com>
 
-Thanks & Best Regards,
-
-Rajat
-
-
+> ---
+>  drivers/android/binder_alloc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> Thanks & Best Regards,
+> diff --git a/drivers/android/binder_alloc.c b/drivers/android/binder_alloc.c
+> index 910c53ba2c91..2f846b7ae8b8 100644
+> --- a/drivers/android/binder_alloc.c
+> +++ b/drivers/android/binder_alloc.c
+> @@ -347,7 +347,7 @@ static void debug_low_async_space_locked(struct binder_alloc *alloc, int pid)
+>          * and at some point we'll catch them in the act. This is more efficient
+>          * than keeping a map per pid.
+>          */
+> -       struct rb_node *n = alloc->free_buffers.rb_node;
+> +       struct rb_node *n;
+>         struct binder_buffer *buffer;
+>         size_t total_alloc_size = 0;
+>         size_t num_buffers = 0;
+> --
+> 2.27.0
 >
-> Rajat
->
-> >
-> > Thanks & Best Regards,
-> >
-> > Rajat
-> >
-> > > > ---
-> > > > Note that I'm ignoring the devices that require quirks to enable or
-> > > > disable ACS, instead of using the standard way for ACS configuration.
-> > > > The reason is that it would require adding yet another quirk table or
-> > > > quirk function pointer, that I don't know how to implement for those
-> > > > devices, and will neither have the devices to test that code.
-> > > >
-> > > > v5: Enable TB and disable ATS for all devices on boot. Disable TB later
-> > > >     only if needed to enable ATS on downstream devices.
-> > > > v4: Add braces to avoid warning from kernel robot
-> > > >     print warning for only external-facing devices.
-> > > > v3: print warning if ACS_TB not supported on external-facing/untrusted ports.
-> > > >     Minor code comments fixes.
-> > > > v2: Commit log change
-> > > >
-> > > >  drivers/pci/ats.c   |  5 ++++
-> > > >  drivers/pci/pci.c   | 57 +++++++++++++++++++++++++++++++++++++++++++++
-> > > >  drivers/pci/pci.h   |  2 ++
-> > > >  drivers/pci/probe.c |  2 +-
-> > > >  include/linux/pci.h |  2 ++
-> > > >  5 files changed, 67 insertions(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/drivers/pci/ats.c b/drivers/pci/ats.c
-> > > > index b761c1f72f67..e2ea9083f30f 100644
-> > > > --- a/drivers/pci/ats.c
-> > > > +++ b/drivers/pci/ats.c
-> > > > @@ -28,6 +28,9 @@ void pci_ats_init(struct pci_dev *dev)
-> > > >                 return;
-> > > >
-> > > >         dev->ats_cap = pos;
-> > > > +
-> > > > +       dev->ats_enabled = 1; /* To avoid WARN_ON from pci_disable_ats() */
-> > > > +       pci_disable_ats(dev);
-> > > >  }
-> > > >
-> > > >  /**
-> > > > @@ -82,6 +85,7 @@ int pci_enable_ats(struct pci_dev *dev, int ps)
-> > > >         }
-> > > >         pci_write_config_word(dev, dev->ats_cap + PCI_ATS_CTRL, ctrl);
-> > > >
-> > > > +       pci_disable_acs_trans_blocking(dev);
-> > > >         dev->ats_enabled = 1;
-> > > >         return 0;
-> > > >  }
-> > > > @@ -102,6 +106,7 @@ void pci_disable_ats(struct pci_dev *dev)
-> > > >         ctrl &= ~PCI_ATS_CTRL_ENABLE;
-> > > >         pci_write_config_word(dev, dev->ats_cap + PCI_ATS_CTRL, ctrl);
-> > > >
-> > > > +       pci_enable_acs_trans_blocking(dev);
-> > > >         dev->ats_enabled = 0;
-> > > >  }
-> > > >  EXPORT_SYMBOL_GPL(pci_disable_ats);
-> > > > diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> > > > index 73a862782214..614e3c1e8c56 100644
-> > > > --- a/drivers/pci/pci.c
-> > > > +++ b/drivers/pci/pci.c
-> > > > @@ -876,6 +876,9 @@ static void pci_std_enable_acs(struct pci_dev *dev)
-> > > >         /* Upstream Forwarding */
-> > > >         ctrl |= (cap & PCI_ACS_UF);
-> > > >
-> > > > +       /* Translation Blocking */
-> > > > +       ctrl |= (cap & PCI_ACS_TB);
-> > > > +
-> > > >         pci_write_config_word(dev, pos + PCI_ACS_CTRL, ctrl);
-> > > >  }
-> > > >
-> > > > @@ -904,6 +907,60 @@ static void pci_enable_acs(struct pci_dev *dev)
-> > > >         pci_disable_acs_redir(dev);
-> > > >  }
-> > > >
-> > > > +void pci_disable_acs_trans_blocking(struct pci_dev *pdev)
-> > > > +{
-> > > > +       u16 cap, ctrl, pos;
-> > > > +       struct pci_dev *dev;
-> > > > +
-> > > > +       if (!pci_acs_enable)
-> > > > +               return;
-> > > > +
-> > > > +       for (dev = pdev; dev; dev = pci_upstream_bridge(pdev)) {
-> > > > +
-> > > > +               pos = dev->acs_cap;
-> > > > +               if (!pos)
-> > > > +                       continue;
-> > > > +
-> > > > +               /*
-> > > > +                * Disable translation blocking when first downstream
-> > > > +                * device that needs it (for ATS) wants to enable ATS
-> > > > +                */
-> > > > +               if (++dev->ats_dependencies == 1) {
-> > >
-> > > I am a little worried about a potential race condition here. I know
-> > > that 2 PCI devices cannot be enumerating at the same time. Do we know
-> > > if multiple pci_enable_ats() and pci_disable_ats() function calls can
-> > > be simultaneously executing (even for different devices)? If so, we
-> > > may need an atomic_t variable for ats_dependencies.
-> > >
-> > > Thanks,
-> > >
-> > > Rajat
-> > >
-> > >
-> > > > +                       pci_read_config_word(dev, pos + PCI_ACS_CAP, &cap);
-> > > > +                       pci_read_config_word(dev, pos + PCI_ACS_CTRL, &ctrl);
-> > > > +                       ctrl &= ~(cap & PCI_ACS_TB);
-> > > > +                       pci_write_config_word(dev, pos + PCI_ACS_CTRL, ctrl);
-> > > > +               }
-> > > > +       }
-> > > > +}
-> > > > +
-> > > > +void pci_enable_acs_trans_blocking(struct pci_dev *pdev)
-> > > > +{
-> > > > +       u16 cap, ctrl, pos;
-> > > > +       struct pci_dev *dev;
-> > > > +
-> > > > +       if (!pci_acs_enable)
-> > > > +               return;
-> > > > +
-> > > > +       for (dev = pdev; dev; dev = pci_upstream_bridge(pdev)) {
-> > > > +
-> > > > +               pos = dev->acs_cap;
-> > > > +               if (!pos)
-> > > > +                       continue;
-> > > > +
-> > > > +               /*
-> > > > +                * Enable translation blocking when last downstream device
-> > > > +                * that depends on it (for ATS), doesn't need ATS anymore
-> > > > +                */
-> > > > +               if (--dev->ats_dependencies == 0) {
-> > > > +                       pci_read_config_word(dev, pos + PCI_ACS_CAP, &cap);
-> > > > +                       pci_read_config_word(dev, pos + PCI_ACS_CTRL, &ctrl);
-> > > > +                       ctrl |= (cap & PCI_ACS_TB);
-> > > > +                       pci_write_config_word(dev, pos + PCI_ACS_CTRL, ctrl);
-> > > > +               }
-> > > > +       }
-> > > > +}
-> > > > +
-> > > >  /**
-> > > >   * pci_restore_bars - restore a device's BAR values (e.g. after wake-up)
-> > > >   * @dev: PCI device to have its BARs restored
-> > > > diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
-> > > > index 12fb79fbe29d..f5d8ecb6ba96 100644
-> > > > --- a/drivers/pci/pci.h
-> > > > +++ b/drivers/pci/pci.h
-> > > > @@ -552,6 +552,8 @@ static inline int pci_dev_specific_disable_acs_redir(struct pci_dev *dev)
-> > > >         return -ENOTTY;
-> > > >  }
-> > > >  #endif
-> > > > +void pci_disable_acs_trans_blocking(struct pci_dev *dev);
-> > > > +void pci_enable_acs_trans_blocking(struct pci_dev *dev);
-> > > >
-> > > >  /* PCI error reporting and recovery */
-> > > >  pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
-> > > > diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
-> > > > index 8c40c00413e7..e2ff3a94e621 100644
-> > > > --- a/drivers/pci/probe.c
-> > > > +++ b/drivers/pci/probe.c
-> > > > @@ -2387,10 +2387,10 @@ static void pci_init_capabilities(struct pci_dev *dev)
-> > > >         pci_vpd_init(dev);              /* Vital Product Data */
-> > > >         pci_configure_ari(dev);         /* Alternative Routing-ID Forwarding */
-> > > >         pci_iov_init(dev);              /* Single Root I/O Virtualization */
-> > > > +       pci_acs_init(dev);              /* Access Control Services */
-> > > >         pci_ats_init(dev);              /* Address Translation Services */
-> > > >         pci_pri_init(dev);              /* Page Request Interface */
-> > > >         pci_pasid_init(dev);            /* Process Address Space ID */
-> > > > -       pci_acs_init(dev);              /* Access Control Services */
-> > > >         pci_ptm_init(dev);              /* Precision Time Measurement */
-> > > >         pci_aer_init(dev);              /* Advanced Error Reporting */
-> > > >         pci_dpc_init(dev);              /* Downstream Port Containment */
-> > > > diff --git a/include/linux/pci.h b/include/linux/pci.h
-> > > > index 7a40cd5caed0..31da4355f0fd 100644
-> > > > --- a/include/linux/pci.h
-> > > > +++ b/include/linux/pci.h
-> > > > @@ -480,6 +480,8 @@ struct pci_dev {
-> > > >         u16             ats_cap;        /* ATS Capability offset */
-> > > >         u8              ats_stu;        /* ATS Smallest Translation Unit */
-> > > >  #endif
-> > > > +       /* Total number of downstream devices below a bridge that need ATS */
-> > > > +       u8              ats_dependencies;
-> > > >  #ifdef CONFIG_PCI_PRI
-> > > >         u16             pri_cap;        /* PRI Capability offset */
-> > > >         u32             pri_reqs_alloc; /* Number of PRI requests allocated */
-> > > > --
-> > > > 2.27.0.389.gc38d7665816-goog
-> > > >
