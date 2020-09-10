@@ -2,102 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41800264613
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 14:32:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD24426461D
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 14:35:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730726AbgIJMcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 08:32:50 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:42502 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730722AbgIJM2n (ORCPT
+        id S1730423AbgIJMfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 08:35:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37312 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730694AbgIJMaR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 08:28:43 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 16CDC1C0B9D; Thu, 10 Sep 2020 14:28:35 +0200 (CEST)
-Date:   Thu, 10 Sep 2020 14:28:34 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Gene Chen <gene.chen.richtek@gmail.com>,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Dan Murphy <dmurphy@ti.com>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Gene Chen <gene_chen@richtek.com>, Wilma.Wu@mediatek.com,
-        shufan_lee@richtek.com, cy_huang@richtek.com,
-        benjamin.chao@mediatek.com
-Subject: Re: [PATCH v3 1/2] leds: mt6360: Add LED driver for MT6360
-Message-ID: <20200910122834.GE7907@duo.ucw.cz>
-References: <1599474459-20853-1-git-send-email-gene.chen.richtek@gmail.com>
- <1599474459-20853-2-git-send-email-gene.chen.richtek@gmail.com>
- <CAHp75VdLDvoQicP1nLnjOiit6qjaw9n7+LuJ-J3MtaoHUOa_2g@mail.gmail.com>
- <CAE+NS35FETQ9ASJeYP=Sa8dm7ohRBcdAwUioCAnHPY2TiD4pNA@mail.gmail.com>
- <20200910081814.GB28357@amd>
- <CAHp75Vds75jP47Fy78gxrg05J-CYQ7yD_EiDqizKkcW5rHL_RA@mail.gmail.com>
+        Thu, 10 Sep 2020 08:30:17 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CB04C061573;
+        Thu, 10 Sep 2020 05:30:09 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id o16so2950695pjr.2;
+        Thu, 10 Sep 2020 05:30:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sbUyJpejCvA3QH4e+Y9L0OkTzMxPfcFa5isJNJNYA7E=;
+        b=L83lmbXn62t2KoWiiJa4Ud37GMfgoGFWAg7J/Dc/LIscdl6vRTajTiCs/dMkXzGrt+
+         iVmZIHm+AnoSSXfsFfj4YZStKjbvqHIuq+xalIpfLf9Xua45jbFornXmnxodVvBvIdFo
+         YVG2n4mQPb707GtkHSmNF2bfWto+INtyObzvTNO/nP4m0sGuJLnSnf4PUneQHaXAvy2z
+         5T1T3pAdRbFghk8pNaHCo3oqR4XkO4K7dLyDe3B+wMDBCEfuhpP9NKZgB4LI7fqXLVTc
+         D4sMWDRJ1bTXp/Z5YqS72J6sYK6t9QFnSFdxcBSI9+rHOGr2YK9ns2R1BqCmRZHlIwpY
+         3OAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sbUyJpejCvA3QH4e+Y9L0OkTzMxPfcFa5isJNJNYA7E=;
+        b=lza1pPD7VFzAbLswIz2E73CEgVRmfTKMA7AcNzdgHxGxrkL2LSFSRhu5IP8voDJR3Y
+         k0yvu6ZHKlGoYdAkCs40VPwMKuJZmz+8vxpIuhgEbVUA/YOjzjgD/VkFT/o2B7L25u4a
+         t58kNFwijQyHk+Po3zpGQt6zTiveOJdWnRuKPp9qcC+NYwcFFjtuLH/UqlF/ADKkQw7N
+         z+WfpZvfi+mjm1xfmQ/1rT8uBdw4KjjezHUHOOInH8VQfqwYKJhZrwIIHTMH0qU9guz+
+         YNHOkNd9qeP/r0kY77BqqChz3+bPAaIwyXNqQw5H8aNXm6YlHlZ5TJjWXpjRYjn5+A7H
+         wmwQ==
+X-Gm-Message-State: AOAM530vOtCKtdw/6VwCVFMOFNUzk5xcRKS/MCa+Q0Y98992SOCcLAo/
+        t+9HKXihyidWeEDm0RScXWQ=
+X-Google-Smtp-Source: ABdhPJzekdrlUSUeFneXBL1UfmVjrIpSfafPXKDdBXV15YzmHyjigIVzGsaWWe4H2emR2rkp/hVR4Q==
+X-Received: by 2002:a17:90a:d488:: with SMTP id s8mr5244871pju.176.1599741008666;
+        Thu, 10 Sep 2020 05:30:08 -0700 (PDT)
+Received: from nish-HP-Pavilion ([2409:4072:6218:54d7:9928:e984:12bb:783d])
+        by smtp.gmail.com with ESMTPSA id s8sm6512727pfd.153.2020.09.10.05.30.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Sep 2020 05:30:07 -0700 (PDT)
+From:   Nishant Malpani <nish.malpani25@gmail.com>
+To:     jic23@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        andy.shevchenko@gmail.com,
+        Nishant Malpani <nish.malpani25@gmail.com>
+Subject: [PATCH v3 0/3] iio: gyro: adxrs290: Add triggered buffer & debugfs support
+Date:   Thu, 10 Sep 2020 17:59:57 +0530
+Message-Id: <20200910123000.16860-1-nish.malpani25@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="YkJPYEFdoxh/AXLE"
-Content-Disposition: inline
-In-Reply-To: <CAHp75Vds75jP47Fy78gxrg05J-CYQ7yD_EiDqizKkcW5rHL_RA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Introduce DATA_RDY trigger for triggered buffer setup; this enables continuous
+data capture. Additionally, add support for direct register access using the debugfs 
+iio interface. 
 
---YkJPYEFdoxh/AXLE
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The device-tree bindings documentation illustrates an example of using a GPIO irq
+line to trigger a data capture.
 
-On Thu 2020-09-10 14:34:54, Andy Shevchenko wrote:
-> On Thu, Sep 10, 2020 at 11:18 AM Pavel Machek <pavel@ucw.cz> wrote:
->=20
-> ...
->=20
-> > > > > +enum {
-> > > > > +       MT6360_LED_ISNK1 =3D 0,
-> > > > > +       MT6360_LED_ISNK2,
-> > > > > +       MT6360_LED_ISNK3,
-> > > > > +       MT6360_LED_ISNK4,
-> > > > > +       MT6360_LED_FLASH1,
-> > > > > +       MT6360_LED_FLASH2,
-> > > >
-> > > > > +       MT6360_MAX_LEDS,
-> > > >
-> > > > No comma for terminator entry.
-> > > >
-> > >
-> > > ACK
-> >
-> > Actually, that comma is fine. Its absence would be fine, too.
->=20
-> It is slightly better not to have to prevent (theoretical) rebase or
-> other similar issues when a new item can go behind the terminator. In
-> such a case compiler can easily tell you if something is wrong.
+Nishant Malpani (3):
+  iio: gyro: adxrs290: Add triggered buffer support
+  dt-bindings: iio: gyro: adxrs290: Add interrupts support
+  iio: gyro: adxrs290: Add debugfs register access support
 
-Okay, I see your point.
-									Pavel
+ .../bindings/iio/gyroscope/adi,adxrs290.yaml  |   6 +
+ drivers/iio/gyro/Kconfig                      |   2 +
+ drivers/iio/gyro/adxrs290.c                   | 237 ++++++++++++++++--
+ 3 files changed, 231 insertions(+), 14 deletions(-)
 
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
+-- 
+2.20.1
 
---YkJPYEFdoxh/AXLE
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX1ob8gAKCRAw5/Bqldv6
-8lViAJ9myb0j5o09GhH3AOC/vEPu/eVHrQCfURBxqy5ugClklDvSpz1f/ewdO60=
-=pYh1
------END PGP SIGNATURE-----
-
---YkJPYEFdoxh/AXLE--
