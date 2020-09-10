@@ -2,125 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1331F264E76
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:15:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39048264E38
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:06:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725833AbgIJTPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 15:15:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41942 "EHLO
+        id S1726931AbgIJTGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 15:06:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731265AbgIJQAn (ORCPT
+        with ESMTP id S1731448AbgIJQC0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 12:00:43 -0400
-Received: from mail-oo1-xc44.google.com (mail-oo1-xc44.google.com [IPv6:2607:f8b0:4864:20::c44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2570CC061795
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 09:00:10 -0700 (PDT)
-Received: by mail-oo1-xc44.google.com with SMTP id h8so1556736ooc.12
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 09:00:10 -0700 (PDT)
+        Thu, 10 Sep 2020 12:02:26 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B13C8C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 09:02:07 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id u21so8884772ljl.6
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 09:02:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=idAeA9NPrviZ9cr7wYnG5dNkEQPMk1g4dXWXMAeWeZw=;
-        b=bHXmm+NXe2hxUUFxQHd/9gJEqNC/Up/xUvXvedGdisFsrmQgfPogURwk+T30eMMnk1
-         jRzNoTlpBWooKXhpOvofPIT1BDrGSy1I8g6C388YxoIrp19SOv2baGvPXqUnQZS4a5bT
-         Z9DfL3ajxxE0iQXSTrihOF9mhrGwhovWoGorZ9Rw/GXQSWCbhnOhRhcgUelhZli5Jzee
-         m26AOmC6rX64dmNs64GlUrxKFGOVSUz8AsVUV7GivzzLcLQsCd5Ed7LVhQMt97KvrjUw
-         MfW/dU+kiJlG6MzWSnQY1xzuUwv/INn91DU7W63JVIU2knmi8FMRAAZu5QW7zXwZCH6H
-         CMEA==
+        bh=gXFL8zxGAkEAFklyf5PNn/rioB+MLXLEPv+A6IYV3Is=;
+        b=i6hq+vV98YA8q8Wcq6doLG+y5wjiyjWWL96kdQw0H+jDMxeA9Mj+NVqTkSuQ8Cvuzi
+         66mGBRjmRbCe9uCMwVNKAt1PgIRZYmt68YEjOSvJPvvH8zdiyELwSOGs7GgYgWzw54ws
+         MC8K5MYJ8ipMU0WZOqCAicBPqNbNhDMXRBDNFnCsWb6RoO0DyJQhfzijsLqCQrq9YBtU
+         TATSHj1U8l9J2pHnmzcIKjevg8aAQtqDezGDeSRun2tajWl072+qD4mHPnB/Uk28jBej
+         gD8NcxlU7ER8jI+FCE4AYxqnIymDHUbxmHzJfKUTcK43WNeC0qU86q+M9AU+YtZ2sYec
+         4pBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=idAeA9NPrviZ9cr7wYnG5dNkEQPMk1g4dXWXMAeWeZw=;
-        b=tU9/sg/4Wso1TYcM5J/u1QlbulkJQJDbEjR6sTkFuzdme63nPu8K/q1CuPjvpMJhmW
-         eSHDFxgPRq+SDVs5kFO3fUbhHbdxqJZ4tT5AMU2oMy/Wda/2wkW/zDGskLJQ2V/tCmlV
-         YA1tMcik1XCdhXmcengdU14SPafPfYH+UgouX4NmJWireqJH8i5nFpxRhfXlGVl2cG6W
-         tc6+y99/dXCjNjGPotx2xLmI9hG3zFcYzzg3P7J7+V5zTWvsTwuf8HSVTHS51Qmm9/Zt
-         vY03ghEn7gn2ieALhuOtPW/y2wBHqx9aDGY1LZ0noWyvVeTdFDpvoQ/roN/2Ake/XLlG
-         KZqw==
-X-Gm-Message-State: AOAM531PHcT+NHECyuTQ/KlmFbJNqD7DvWucP3A/OM3/aUtOnnLOky1g
-        Ft2NncNPRtErgGHJUkJ4S4eNAez+7JkvLaxsW/lJduQYQiO1BQ==
-X-Google-Smtp-Source: ABdhPJzbuAw6tV4jnzgCZ9l/O5vRNrAFGMw3y60rNky/LhuNDqBW2oold/quuNlzYyzwNPXrd8cTy6vXWEni8eUlgMY=
-X-Received: by 2002:a4a:a648:: with SMTP id j8mr4972141oom.44.1599753609477;
- Thu, 10 Sep 2020 09:00:09 -0700 (PDT)
+        bh=gXFL8zxGAkEAFklyf5PNn/rioB+MLXLEPv+A6IYV3Is=;
+        b=UKAQn7GsBjmmVaxEBV1SrS7pPAbySDbfAicmxROJj7JJAqMSMg/c364IQwCt/3VI0w
+         j9mOrctd5uDdi2oX5TR1AOEnVawy/Yz6fsRuJIhmuM3ReW1FZM8dO4l3BfeZllk0Mdxw
+         4RtioL7PojIrAPtvP92sgwhmX8Fo923YOWHcz3mxpqcKmciWVBSwff/3TYcOkb9Ov9Kz
+         LZMVFQcFfCC8kJyPXviZQMgOX4kEoqMYoGfJzK96vPs4g5FbDxy1iciSe8EEE0Z3adkO
+         CvvjQ8qg7o3m9Xvtj+nIdPEWYzBbt2q35AYGcq5lGgSSrArKmij5l90/zmXdsovE0lag
+         ZYUA==
+X-Gm-Message-State: AOAM530JEqyHOEZvk5j39+JDAY+leKC3nwoO5A7emTQNA9uuMQ1XOhh6
+        xFP3/8DcUb6jPunvEOjIUQiJm6Rjq/QgT823lJ8TIg==
+X-Google-Smtp-Source: ABdhPJz54WOPqVjLoiOAMEPFyivI7Bk2NO3KuFh9RoqJBEjdb4PNOM4gxm78bc2Klo+DIfoL656LWL7Khq/ccs7aPG0=
+X-Received: by 2002:a2e:92d6:: with SMTP id k22mr5137971ljh.332.1599753725639;
+ Thu, 10 Sep 2020 09:02:05 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200910150328.20545-1-oded.gabbay@gmail.com> <20200910155440.GC1151284@kroah.com>
-In-Reply-To: <20200910155440.GC1151284@kroah.com>
-From:   Oded Gabbay <oded.gabbay@gmail.com>
-Date:   Thu, 10 Sep 2020 18:59:41 +0300
-Message-ID: <CAFCwf132vzvEQ2Jrzme8SuK8OCSB8-QTXiwr5Rj96_hwi91TKQ@mail.gmail.com>
-Subject: Re: [PATCH 00/15] Adding GAUDI NIC code to habanalabs driver
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        SW_Drivers <SW_Drivers@habana.ai>
+References: <20200910084258.22293-1-songmuchun@bytedance.com>
+In-Reply-To: <20200910084258.22293-1-songmuchun@bytedance.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Thu, 10 Sep 2020 09:01:54 -0700
+Message-ID: <CALvZod5JQWGHUAPnj9S0pKFQreLPST441mZnp+h=fue_nnh1yQ@mail.gmail.com>
+Subject: Re: [PATCH] mm: memcontrol: Add the missing numa stat of anon and
+ file for cgroup v2
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 6:54 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+On Thu, Sep 10, 2020 at 1:46 AM Muchun Song <songmuchun@bytedance.com> wrote:
 >
-> On Thu, Sep 10, 2020 at 06:03:13PM +0300, Oded Gabbay wrote:
-> > This patch-set adds support for initializing and using the GAUDI NIC ports,
-> > functioning as scale-out interconnect when doing distributed Deep Learning
-> > training. The training can be performed over tens of thousands of GAUDIs
-> > and it is done using the RDMA-over-converged-Ethernet (RoCE) v2 protocol.
-> >
-> > Each GAUDI exposes 10x100GbE ports that are designed to scale-out the
-> > inter-GAUDI communication by integrating a complete communication engine
-> > on-die. This native integration allows users to use the same scaling
-> > technology, both inside the server and rack (termed as scale-up), as well
-> > as for scaling across racks (scale-out). The racks can be connected
-> > directly between GAUDI processors, or through any number of standard
-> > Ethernet switches.
-> >
-> > The driver exposes the NIC ports to the user as standard Ethernet ports by
-> > registering each port to the networking subsystem. This allows the user to
-> > manage the ports with standard tools such as ifconfig, ethtool, etc. It
-> > also enables us to connect to the Linux networking stack and thus support
-> > standard networking protocols, such as IPv4, IPv6, TCP, etc. In addition,
-> > we can also leverage protocols such as DCB for dynamically configuring
-> > priorities to avoid congestion.
-> >
-> > For each NIC port there is a matching QMAN entity. For RoCE, the user
-> > submits workloads to the NIC through the QMAN, same as he does for the
-> > compute engines. For regular Ethernet, the user sends and receives packets
-> > through the standard Ethernet sockets. Those sockets are used only as a
-> > control path. The data path that is used for AI training goes through the
-> > RoCE interface.
-> >
-> > It is important to note that there are some limitations and uniqueness
-> > in GAUDI's NIC H/W, compared to other networking adapters that enforced us
-> > to use a less-than-common driver design:
-> >
-> > 1. The NIC functionality is NOT exposed as different PCI Physical
-> >    Functions. There is a single PF which is used for compute and
-> >    networking, as the main goal of the NIC ports is to be used as
-> >    intra-communication and not as standard network interfaces. This
-> >    implies we can't connect different drivers to handle the networking
-> >    ports because it is the same device, from the kernel POV, as the
-> >    compute. Therefore, we must integrate the networking code into the
-> >    main habanalabs driver.
+> In the cgroup v1, we have a numa_stat interface. This is useful for
+> providing visibility into the numa locality information within an
+> memcg since the pages are allowed to be allocated from any physical
+> node. One of the use cases is evaluating application performance by
+> combining this information with the application's CPU allocation.
+> But the cgroup v2 does not. So this patch adds the missing information.
 >
-> That's kind of common, see the long threads on the netdev and IB mailing
-> lists about this type of issue on other networking cards today.  The
-> whole "virtual bus" code should help solve this, if Intel ever gets
-> around to posting a new version of that patch series one day...
->
-> But, because you are writing networking driver code here, you really
-> should run all of this by the netdev@vger.kernel.org maintainers and
-> developers, as they know how to review this interaction with the network
-> stack better than anyone else.
->
-> Care to resend it and cc: them too?
->
-> thanks,
->
-> greg k-h
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> ---
 
-Sure, np.
-Do you have someone specific or should I just send it to that mailing list ?
-I don't know anyone there.
-Oded
+I am actually working on exposing this info on v2 as well.
+
+>  mm/memcontrol.c | 46 ++++++++++++++++++++++++++++++++++++++++++++--
+>  1 file changed, 44 insertions(+), 2 deletions(-)
+>
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 75cd1a1e66c8..c779673f29b2 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -1492,10 +1492,34 @@ static bool mem_cgroup_wait_acct_move(struct mem_cgroup *memcg)
+>         return false;
+>  }
+>
+> +#ifdef CONFIG_NUMA
+> +static unsigned long memcg_node_page_state(struct mem_cgroup *memcg,
+> +                                          unsigned int nid,
+> +                                          enum node_stat_item idx)
+> +{
+> +       long x;
+> +       struct mem_cgroup_per_node *pn;
+> +       struct lruvec *lruvec = mem_cgroup_lruvec(memcg, NODE_DATA(nid));
+> +
+> +       VM_BUG_ON(nid >= nr_node_ids);
+> +
+> +       pn = container_of(lruvec, struct mem_cgroup_per_node, lruvec);
+> +       x = atomic_long_read(&pn->lruvec_stat[idx]);
+> +#ifdef CONFIG_SMP
+> +       if (x < 0)
+> +               x = 0;
+> +#endif
+> +       return x;
+> +}
+> +#endif
+> +
+>  static char *memory_stat_format(struct mem_cgroup *memcg)
+>  {
+>         struct seq_buf s;
+>         int i;
+> +#ifdef CONFIG_NUMA
+> +       int nid;
+> +#endif
+>
+>         seq_buf_init(&s, kmalloc(PAGE_SIZE, GFP_KERNEL), PAGE_SIZE);
+>         if (!s.buffer)
+> @@ -1512,12 +1536,30 @@ static char *memory_stat_format(struct mem_cgroup *memcg)
+>          * Current memory state:
+>          */
+>
+
+Let's not break the parsers of memory.stat. I would prefer a separate
+interface like v1 i.e. memory.numa_stat.
+
+> -       seq_buf_printf(&s, "anon %llu\n",
+> +       seq_buf_printf(&s, "anon %llu",
+>                        (u64)memcg_page_state(memcg, NR_ANON_MAPPED) *
+>                        PAGE_SIZE);
+> -       seq_buf_printf(&s, "file %llu\n",
+> +#ifdef CONFIG_NUMA
+> +       for_each_node_state(nid, N_MEMORY)
+> +               seq_buf_printf(&s, " N%d=%llu", nid,
+> +                              (u64)memcg_node_page_state(memcg, nid,
+> +                                                         NR_ANON_MAPPED) *
+> +                              PAGE_SIZE);
+> +#endif
+> +       seq_buf_putc(&s, '\n');
+> +
+> +       seq_buf_printf(&s, "file %llu",
+>                        (u64)memcg_page_state(memcg, NR_FILE_PAGES) *
+>                        PAGE_SIZE);
+> +#ifdef CONFIG_NUMA
+> +       for_each_node_state(nid, N_MEMORY)
+> +               seq_buf_printf(&s, " N%d=%llu", nid,
+> +                              (u64)memcg_node_page_state(memcg, nid,
+> +                                                         NR_FILE_PAGES) *
+> +                              PAGE_SIZE);
+> +#endif
+> +       seq_buf_putc(&s, '\n');
+> +
+
+The v1's numa_stat exposes the LRUs, why NR_ANON_MAPPED and NR_FILE_PAGES?
+
+Also I think exposing slab_[un]reclaimable per node would be beneficial as well.
+
+>         seq_buf_printf(&s, "kernel_stack %llu\n",
+>                        (u64)memcg_page_state(memcg, NR_KERNEL_STACK_KB) *
+>                        1024);
+> --
+> 2.20.1
+>
