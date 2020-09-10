@@ -2,115 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 959202640BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 10:58:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B75A12640C4
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 10:58:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730498AbgIJI6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 04:58:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37444 "EHLO mail.kernel.org"
+        id S1730516AbgIJI6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 04:58:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37480 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730437AbgIJI40 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 04:56:26 -0400
-Received: from localhost.localdomain (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1730269AbgIJI4g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 04:56:36 -0400
+Received: from localhost (unknown [122.179.50.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C4C6920C09;
-        Thu, 10 Sep 2020 08:56:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 14DE420795;
+        Thu, 10 Sep 2020 08:56:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599728180;
-        bh=0PJbxvzO5I5gMwLMCGZyMr4dYyj6eWzJKi8tvIfw5go=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=M15lyRNu+GUJ399GEB6RWtOfd2Huf3GoD7Y4J6wNiX2mVL8R2UaJR4CqkplFi01Op
-         b5MtW+7sNCMFtZA4N8jYufN5ROy2atU09kOCsaG7+nYogQgRWRMMhpm++Y/9JPfwaL
-         p/AXm+Z45K/Hv+r7kVizMjmJBqMy9s4fvleql/BA=
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Cc:     mhiramat@kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>, linux-kselftest@vger.kernel.org
-Subject: [PATCH v3 8/8] selftests/ftrace: Add %return suffix tests
-Date:   Thu, 10 Sep 2020 17:56:16 +0900
-Message-Id: <159972817653.428528.9180599115849301184.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <159972809455.428528.4737752126800169128.stgit@devnote2>
-References: <159972809455.428528.4737752126800169128.stgit@devnote2>
-User-Agent: StGit/0.19
+        s=default; t=1599728193;
+        bh=W3vn6IPX3x4GVD5wLkm0rOKmsSB3t0SDi1WFavSkmBY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=xX5gJvPE3VQkbMWyrdAVGi6va/lGWrlV0vP3lDBsGO75pS7K4OynYGmUrI2V/0Sk+
+         ot73jMr0fQeOPQZK/x9YAj50iADANGEUtaIuG1XJFLN7y4o8keq7eBFFkwcq74gRXR
+         xhaQN4IehDjFgdIWeWEJO4kiuaP2Dgxg6CFX3krU=
+Date:   Thu, 10 Sep 2020 14:26:21 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        yung-chuan.liao@linux.intel.com, sanyog.r.kale@intel.com,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] soundwire: bus: add enumerated slave to device list
+Message-ID: <20200910085621.GS77521@vkoul-mobl>
+References: <20200909082711.11670-1-srinivas.kandagatla@linaro.org>
+ <80081c70-9137-c9f0-9813-8166275ef7af@linux.intel.com>
+ <ab107351-dbde-7f6d-c588-11572aed5d2d@linaro.org>
+ <4cdcda10-bdc6-211f-d279-e74f57684b79@linux.intel.com>
+ <d0c71a83-9dc1-83c3-5cb1-d8fb7dc7f809@linaro.org>
+ <ed88432c-e21c-b5fc-3abc-5f574769b722@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <ed88432c-e21c-b5fc-3abc-5f574769b722@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add kprobe %return suffix testcase and syntax error tests
-for %return suffix.
+On 09-09-20, 12:00, Pierre-Louis Bossart wrote:
+> On 9/9/20 10:54 AM, Srinivas Kandagatla wrote:
+> > On 09/09/2020 15:39, Pierre-Louis Bossart wrote:
+> > > 
+> > > > > > Currently slave devices are only added either from device tree or acpi
+> > > > > > entries. However lets say, there is wrong or no entry of
+> > > > > > a slave device
+> > > > > > in DT that is enumerated, then there is no way for user to know all
+> > > > > > the enumerated devices on the bus.
+> > > > > 
+> > > > > Sorry Srinivas, I don't understand your point.
+> > > > > 
+> > > > > The sysfs entries will include all devices that are
+> > > > > described in platform firmware (be it DT or ACPI).
+> > > > 
+> > > > yes that is true, but it will not include all the enumerated
+> > > > devices on the bus!
+> > > > 
+> > > > In my case on a new board I was trying to figure out what
+> > > > devices are on the bus even before even adding any device tree
+> > > > entries!
+> > > 
+> > > We've seen this before but dynamic debug provides all the
+> > > information you need. see e.g. the logs from
+> > > https://sof-ci.01.org/linuxpr/PR2425/build4447/devicetest/
+> > > 
+> > > jf-cml-rvp-sdw-1 kernel: [  289.751974] soundwire sdw-master-0:
+> > > Slave attached, programming device number
+> > > jf-cml-rvp-sdw-1 kernel: [  289.752121] soundwire sdw-master-0: SDW
+> > > Slave Addr: 10025d070000 <<< HERE
+> > 
+> > Yes, I have noticed this too! This will be printed for every call to
+> > sdw_extract_slave_id()!
+> > 
+> > ...
+> > > 
+> > > Now I get your point but
+> > > a) you already have a dynamic debug trace to list all devices
+> > > b) adding 'undeclared' devices would make things quite murky and is
+> > > only half of the solution. We already struggle because we already
+> > > have 'ghost' devices in sysfs that are not physically present, and
+> > > no way to differentiate between the two. If we did add those
+> > > entries, then we'd need two new sysfs attributes such as
+> > > 'declared' and 'enumerated'.
+> > 
+> > I totally agree with you on dealing with the undeclared devices, which
+> > is unnecessary mess!
+> 
+> It's not necessarily that bad.
+> - if the intent is to have a single platform firmware that can deal with
+> different boards, it's a good thing.
+> - but if it's just sloppy platform firmware that just does copy-paste from
+> platform to platform then indeed it becomes a mess.
+> 
+> > May be we could make the enumerated devices discovery bit more verbose!
+> 
+> Maybe adding a device number sysfs entry would help, e.g. reporting
+> NotAttched or a value in [0,11] would tell you if the device is actually
+> present.
 
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
----
- .../ftrace/test.d/kprobe/kprobe_syntax_errors.tc   |    6 ++++++
- .../test.d/kprobe/kretprobe_return_suffix.tc       |   21 ++++++++++++++++++++
- .../ftrace/test.d/kprobe/uprobe_syntax_errors.tc   |    6 ++++++
- 3 files changed, 33 insertions(+)
- create mode 100644 tools/testing/selftests/ftrace/test.d/kprobe/kretprobe_return_suffix.tc
+Agreed, I cooked this patch to report verbose device status, let me know
+if you are okay with this. I think this would be useful regardless of
+current discussion.
 
-diff --git a/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_syntax_errors.tc b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_syntax_errors.tc
-index b4d834675e59..56b3f36c722b 100644
---- a/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_syntax_errors.tc
-+++ b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_syntax_errors.tc
-@@ -97,4 +97,10 @@ check_error 'p:kprobes/testevent _do_fork ^abcd=\"foo"'	# DIFF_ARG_TYPE
- check_error '^p:kprobes/testevent _do_fork abcd=\1'	# SAME_PROBE
- fi
+On Db845c I see:
+
+root@linaro-alip:/sys/bus/soundwire/devices# cat sdw:0:217:2010:0:1/status
+Attached
+root@linaro-alip:/sys/bus/soundwire/devices# cat sdw:0:217:2010:0:2/status
+Attached
+
+diff --git a/drivers/soundwire/sysfs_slave.c b/drivers/soundwire/sysfs_slave.c
+index f510071b0add..3b2765f10024 100644
+--- a/drivers/soundwire/sysfs_slave.c
++++ b/drivers/soundwire/sysfs_slave.c
+@@ -97,8 +97,27 @@ static ssize_t modalias_show(struct device *dev,
+ }
+ static DEVICE_ATTR_RO(modalias);
  
-+# %return suffix errors
-+if grep -q "place (kretprobe): .*%return.*" README; then
-+check_error 'p vfs_read^%hoge'		# BAD_ADDR_SUFFIX
-+check_error 'p ^vfs_read+10%return'	# BAD_RETPROBE
-+fi
++#define SDW_SLAVE_MAX (SDW_SLAVE_RESERVED + 1)
 +
- exit 0
-diff --git a/tools/testing/selftests/ftrace/test.d/kprobe/kretprobe_return_suffix.tc b/tools/testing/selftests/ftrace/test.d/kprobe/kretprobe_return_suffix.tc
-new file mode 100644
-index 000000000000..f07bd15cc033
---- /dev/null
-+++ b/tools/testing/selftests/ftrace/test.d/kprobe/kretprobe_return_suffix.tc
-@@ -0,0 +1,21 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0
-+# description: Kretprobe %%return suffix test
-+# requires: kprobe_events '<symbol>[+<offset>]%return':README
++static const char *const slave_status[SDW_SLAVE_MAX] = {
++	[SDW_SLAVE_UNATTACHED] =  "UNATTACHED",
++	[SDW_SLAVE_ATTACHED] = "Attached",
++	[SDW_SLAVE_ALERT] = "Alert",
++	[SDW_SLAVE_RESERVED] = "Reserved",
++};
 +
-+# Test for kretprobe by "r"
-+echo 'r:myprobeaccept vfs_read' > kprobe_events
-+RESULT1=`cat kprobe_events`
++static ssize_t status_show(struct device *dev,
++			   struct device_attribute *attr, char *buf)
++{
++	struct sdw_slave *slave = dev_to_sdw_dev(dev);
 +
-+# Test for kretprobe by "%return"
-+echo 'p:myprobeaccept vfs_read%return' > kprobe_events
-+RESULT2=`cat kprobe_events`
++	return sprintf(buf, "%s\n", slave_status[slave->status]);
++}
++static DEVICE_ATTR_RO(status);
 +
-+if [ "$RESULT1" != "$RESULT2" ]; then
-+	echo "Error: %return suffix didn't make a return probe."
-+	echo "r-command: $RESULT1"
-+	echo "%return: $RESULT2"
-+	exit_fail
-+fi
-+
-+echo > kprobe_events
-diff --git a/tools/testing/selftests/ftrace/test.d/kprobe/uprobe_syntax_errors.tc b/tools/testing/selftests/ftrace/test.d/kprobe/uprobe_syntax_errors.tc
-index 7b5b60c3c5a2..f5e3f9e4a01f 100644
---- a/tools/testing/selftests/ftrace/test.d/kprobe/uprobe_syntax_errors.tc
-+++ b/tools/testing/selftests/ftrace/test.d/kprobe/uprobe_syntax_errors.tc
-@@ -17,4 +17,10 @@ check_error 'p /bin/sh:10(10)^a'	# BAD_REFCNT_SUFFIX
- check_error 'p /bin/sh:10 ^@+ab'	# BAD_FILE_OFFS
- check_error 'p /bin/sh:10 ^@symbol'	# SYM_ON_UPROBE
- 
-+# %return suffix error
-+if grep -q "place (uprobe): .*%return.*" README; then
-+check_error 'p /bin/sh:10^%hoge'	# BAD_ADDR_SUFFIX
-+check_error 'p /bin/sh:10(10)^%return'	# BAD_REFCNT_SUFFIX
-+fi
-+
- exit 0
+ static struct attribute *slave_attrs[] = {
+ 	&dev_attr_modalias.attr,
++	&dev_attr_status.attr,
+ 	NULL,
+ };
+ ATTRIBUTE_GROUPS(slave);
 
+-- 
+~Vinod
