@@ -2,246 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D5D32648BA
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 17:29:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2F23264901
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 17:48:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731302AbgIJP30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 11:29:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33092 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731241AbgIJPFC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 11:05:02 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D071C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 08:04:14 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id c8so6658119edv.5
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 08:04:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=f9VqUEtIFQY2Ox8OWjG/8do232WTuGvYl5Af6vWbEzQ=;
-        b=TgZrNqXdCooZ+vGTL+pcfJQXrF92RiFsgeuHRqgRI+qBM1tHQP3i5Ss+snNzihWJ5r
-         M/uterYJ4J2l2azoVurrlZ4TapJTyx13ZF7/P5gjp2tJr80OC8mIEx99f9aX9bpnVHFp
-         farOdNvUw1gXRNF63v3+exftYa4QSb9QxpD1GVtoT+RxqjeH+O0ApGVTAAoZeYTzYl0Q
-         7VrHRegd9W/iI8Z8kG2bWWCd7POvMC+B+Bey0FVE91br+wBa068nnrBhrJvQI/vuCLuI
-         pmGFMkeFtAbzbqgf9E721AKoAjO5f7hn+8wqYtyssUXPE39rns1YgrgXWsVMcFRjl7Wm
-         WMEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=f9VqUEtIFQY2Ox8OWjG/8do232WTuGvYl5Af6vWbEzQ=;
-        b=kqUx7lSfXyFJGAuxOJ3V1G8SfAkKsk8st3+xfFrHp3rwfQTVXC7cHnJAJBQJFt3f9i
-         lVa5q0M2g3DNCF70AfUwirmET1rcF3Nf6pDdQbKoAbP4R4URmj5H4tWSuc1TzJHcpM4P
-         m9M6iKvK7YeaegiUIibd0+GgHlw70gI86VUpy2VDq4vbzJsJSOQhwjUv3fSCvq3bIRDz
-         mWNHhEtaJTIpdbSK/GYbRBVkondrVjkI2NwPiv7cbrFFQhWcygk1yzV/BRhm7OpvN74Y
-         4Jop70soTrCQMBieSuu3UAJ6ebLNRo2pKk7ff6zDA2+vEVuw3u8gyJVhob917gvVFaP0
-         bnHQ==
-X-Gm-Message-State: AOAM530k0bEYUqqhpFpsWy2Fr+bxT0KQCyd7bUHtw74e/8IXQklpOTXT
-        CGm41l5oPXCl8nb6PzxEHskPZL6g0NQ=
-X-Google-Smtp-Source: ABdhPJxeJYjoI6/xnUDyJb5YKtN7Ylh0WAVEuxa1XPdMIGgYnMsLC8pIT5jXxKSsxHT/EayryiL17w==
-X-Received: by 2002:a50:fc08:: with SMTP id i8mr10023619edr.257.1599750252497;
-        Thu, 10 Sep 2020 08:04:12 -0700 (PDT)
-Received: from ogabbay-VM.habana-labs.com ([213.57.90.10])
-        by smtp.gmail.com with ESMTPSA id o3sm7443925edt.79.2020.09.10.08.04.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Sep 2020 08:04:11 -0700 (PDT)
-From:   Oded Gabbay <oded.gabbay@gmail.com>
-To:     linux-kernel@vger.kernel.org, SW_Drivers@habana.ai
-Cc:     gregkh@linuxfoundation.org, Omer Shpigelman <oshpigelman@habana.ai>
-Subject: [PATCH 15/15] habanalabs/gaudi: add NIC init/fini calls from common code
-Date:   Thu, 10 Sep 2020 18:03:28 +0300
-Message-Id: <20200910150328.20545-16-oded.gabbay@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200910150328.20545-1-oded.gabbay@gmail.com>
-References: <20200910150328.20545-1-oded.gabbay@gmail.com>
+        id S1731426AbgIJPsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 11:48:12 -0400
+Received: from mx2.suse.de ([195.135.220.15]:35822 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731397AbgIJPno (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 11:43:44 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B1D59B012;
+        Thu, 10 Sep 2020 13:54:20 +0000 (UTC)
+Date:   Thu, 10 Sep 2020 15:54:04 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Oscar Salvador <osalvador@suse.de>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        akpm@linux-foundation.org, rafael@kernel.org,
+        nathanl@linux.ibm.com, cheloha@linux.ibm.com,
+        stable@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mm: don't rely on system state to detect hot-plug
+ operations
+Message-ID: <20200910135404.GJ28354@dhcp22.suse.cz>
+References: <4cdb54be-1a92-4ba4-6fee-3b415f3468a9@linux.ibm.com>
+ <20200909105914.GF7348@dhcp22.suse.cz>
+ <74a62b00-235e-7deb-2814-f3b240fea25e@linux.ibm.com>
+ <20200910072331.GB28354@dhcp22.suse.cz>
+ <31cfdf35-618f-6f56-ef16-0d999682ad02@linux.ibm.com>
+ <20200910111246.GE28354@dhcp22.suse.cz>
+ <bd6f2d09-f4e2-0a63-3511-e0f9bf283fe3@linux.ibm.com>
+ <20200910120343.GA6635@linux>
+ <20200910124755.GG28354@dhcp22.suse.cz>
+ <27e73d7d-c172-aa84-dad2-f97ed6123db4@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <27e73d7d-c172-aa84-dad2-f97ed6123db4@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Omer Shpigelman <oshpigelman@habana.ai>
+On Thu 10-09-20 14:49:28, David Hildenbrand wrote:
+> On 10.09.20 14:47, Michal Hocko wrote:
+> > On Thu 10-09-20 14:03:48, Oscar Salvador wrote:
+> >> On Thu, Sep 10, 2020 at 01:35:32PM +0200, Laurent Dufour wrote:
+> >>  
+> >>> That points has been raised by David, quoting him here:
+> >>>
+> >>>> IIRC, ACPI can hotadd memory while SCHEDULING, this patch would break that.
+> >>>>
+> >>>> Ccing Oscar, I think he mentioned recently that this is the case with ACPI.
+> >>>
+> >>> Oscar told that he need to investigate further on that.
+> >>
+> >> I think my reply got lost.
+> >>
+> >> We can see acpi hotplugs during SYSTEM_SCHEDULING:
+> >>
+> >> $QEMU -enable-kvm -machine pc -smp 4,sockets=4,cores=1,threads=1 -cpu host -monitor pty \
+> >>         -m size=$MEM,slots=255,maxmem=4294967296k  \
+> >>         -numa node,nodeid=0,cpus=0-3,mem=512 -numa node,nodeid=1,mem=512 \
+> >>         -object memory-backend-ram,id=memdimm0,size=134217728 -device pc-dimm,node=0,memdev=memdimm0,id=dimm0,slot=0 \
+> >>         -object memory-backend-ram,id=memdimm1,size=134217728 -device pc-dimm,node=0,memdev=memdimm1,id=dimm1,slot=1 \
+> >>         -object memory-backend-ram,id=memdimm2,size=134217728 -device pc-dimm,node=0,memdev=memdimm2,id=dimm2,slot=2 \
+> >>         -object memory-backend-ram,id=memdimm3,size=134217728 -device pc-dimm,node=0,memdev=memdimm3,id=dimm3,slot=3 \
+> >>         -object memory-backend-ram,id=memdimm4,size=134217728 -device pc-dimm,node=1,memdev=memdimm4,id=dimm4,slot=4 \
+> >>         -object memory-backend-ram,id=memdimm5,size=134217728 -device pc-dimm,node=1,memdev=memdimm5,id=dimm5,slot=5 \
+> >>         -object memory-backend-ram,id=memdimm6,size=134217728 -device pc-dimm,node=1,memdev=memdimm6,id=dimm6,slot=6 \
+> >>
+> >> kernel: [    0.753643] __add_memory: nid: 0 start: 0100000000 - 0108000000 (size: 134217728)
+> >> kernel: [    0.756950] register_mem_sect_under_node: system_state= 1
+> >>
+> >> kernel: [    0.760811]  register_mem_sect_under_node+0x4f/0x230
+> >> kernel: [    0.760811]  walk_memory_blocks+0x80/0xc0
+> >> kernel: [    0.760811]  link_mem_sections+0x32/0x40
+> >> kernel: [    0.760811]  add_memory_resource+0x148/0x250
+> >> kernel: [    0.760811]  __add_memory+0x5b/0x90
+> >> kernel: [    0.760811]  acpi_memory_device_add+0x130/0x300
+> >> kernel: [    0.760811]  acpi_bus_attach+0x13c/0x1c0
+> >> kernel: [    0.760811]  acpi_bus_attach+0x60/0x1c0
+> >> kernel: [    0.760811]  acpi_bus_scan+0x33/0x70
+> >> kernel: [    0.760811]  acpi_scan_init+0xea/0x21b
+> >> kernel: [    0.760811]  acpi_init+0x2f1/0x33c
+> >> kernel: [    0.760811]  do_one_initcall+0x46/0x1f4
+> > 
+> > Is there any actual usecase for a configuration like this? What is the
+> > point to statically define additional memory like this when the same can
+> > be achieved on the same command line?
+> 
+> You can online it movable right away to unplug later.
 
-Finally, enable the NIC engines. Initialize the NIC ports mask variable
-with full mask so all ports will be initialized.
+You can use movable_node for that. IIRC this would only all hotplugable
+memory as movable.
 
-Call the NIC init/fini from the common code.
+> Also, under QEMU, just do a reboot with hotplugged memory and you're in
+> the very same situation.
 
-Signed-off-by: Omer Shpigelman <oshpigelman@habana.ai>
-Reviewed-by: Oded Gabbay <oded.gabbay@gmail.com>
-Signed-off-by: Oded Gabbay <oded.gabbay@gmail.com>
----
- drivers/misc/habanalabs/common/device.c       | 18 +++++++++++++++
- drivers/misc/habanalabs/common/habanalabs.h   |  6 +++++
- .../misc/habanalabs/common/habanalabs_drv.c   |  1 +
- drivers/misc/habanalabs/common/pci.c          |  1 +
- drivers/misc/habanalabs/gaudi/gaudi.c         | 23 +++++++++++++++++++
- drivers/misc/habanalabs/goya/goya.c           | 12 ++++++++++
- 6 files changed, 61 insertions(+)
+OK, I didn't know that. I thought the memory would be presented as a
+normal memory after reboot. Thanks for the clarification.
 
-diff --git a/drivers/misc/habanalabs/common/device.c b/drivers/misc/habanalabs/common/device.c
-index 57f5b945fa41..8f8744e4f2c7 100644
---- a/drivers/misc/habanalabs/common/device.c
-+++ b/drivers/misc/habanalabs/common/device.c
-@@ -1077,6 +1077,12 @@ int hl_device_reset(struct hl_device *hdev, bool hard_reset,
- 			goto out_err;
- 		}
- 
-+		rc = hdev->asic_funcs->nic_init(hdev);
-+		if (rc) {
-+			dev_err(hdev->dev, "Failed to init NIC driver\n");
-+			goto out_err;
-+		}
-+
- 		hl_set_max_power(hdev);
- 	} else {
- 		rc = hdev->asic_funcs->soft_reset_late_init(hdev);
-@@ -1312,6 +1318,13 @@ int hl_device_init(struct hl_device *hdev, struct class *hclass)
- 		goto out_disabled;
- 	}
- 
-+	rc = hdev->asic_funcs->nic_init(hdev);
-+	if (rc) {
-+		dev_err(hdev->dev, "Failed to init NIC driver\n");
-+		rc = 0;
-+		goto out_disabled;
-+	}
-+
- 	/*
- 	 * Expose devices and sysfs nodes to user.
- 	 * From here there is no need to add char devices and create sysfs nodes
-@@ -1463,6 +1476,11 @@ void hl_device_fini(struct hl_device *hdev)
- 
- 	hl_cb_pool_fini(hdev);
- 
-+	/* the NIC uses the kernel context for MMU mappings, therefore must be
-+	 * cleaned before it
-+	 */
-+	hdev->asic_funcs->nic_fini(hdev);
-+
- 	/* Release kernel context */
- 	if ((hdev->kernel_ctx) && (hl_ctx_put(hdev->kernel_ctx) != 1))
- 		dev_err(hdev->dev, "kernel ctx is still alive\n");
-diff --git a/drivers/misc/habanalabs/common/habanalabs.h b/drivers/misc/habanalabs/common/habanalabs.h
-index 1f3735a64d88..1c1850114aa4 100644
---- a/drivers/misc/habanalabs/common/habanalabs.h
-+++ b/drivers/misc/habanalabs/common/habanalabs.h
-@@ -680,6 +680,10 @@ struct hl_info_mac_addr;
-  *                    then the timeout is the default timeout for the specific
-  *                    ASIC
-  * @get_hw_state: retrieve the H/W state
-+ * @nic_init: init the NIC H/W and I/F. This should be called in the final satge
-+ *            of the init flow, as we must not have anything that might fail
-+ *            during its initialization after the NIC init.
-+ * @nic_fini: perform NIC cleanup.
-  * @nic_control: Perform NIC related operations.
-  * @nic_cq_mmap: map the NIC CQ buffer.
-  * @pci_bars_map: Map PCI BARs.
-@@ -786,6 +790,8 @@ struct hl_asic_funcs {
- 	int (*send_cpu_message)(struct hl_device *hdev, u32 *msg,
- 				u16 len, u32 timeout, long *result);
- 	enum hl_device_hw_state (*get_hw_state)(struct hl_device *hdev);
-+	int (*nic_init)(struct hl_device *hdev);
-+	void (*nic_fini)(struct hl_device *hdev);
- 	int (*nic_control)(struct hl_device *hdev, u32 op, void *input,
- 				void *output);
- 	int (*nic_cq_mmap)(struct hl_device *hdev, struct vm_area_struct *vma);
-diff --git a/drivers/misc/habanalabs/common/habanalabs_drv.c b/drivers/misc/habanalabs/common/habanalabs_drv.c
-index df92afc1b9d5..fcb28975fac5 100644
---- a/drivers/misc/habanalabs/common/habanalabs_drv.c
-+++ b/drivers/misc/habanalabs/common/habanalabs_drv.c
-@@ -247,6 +247,7 @@ static void set_driver_behavior_per_device(struct hl_device *hdev)
- 	hdev->bmc_enable = 1;
- 	hdev->hard_reset_on_fw_events = 1;
- 	hdev->card_type = cpucp_card_type_pci;
-+	hdev->nic_ports_mask = 0x3FF;
- 	hdev->nic_ports_ext_mask = 0x3FF;
- 	hdev->nic_auto_neg_mask = 0x3FF;
- 	hdev->nic_load_fw = 0;
-diff --git a/drivers/misc/habanalabs/common/pci.c b/drivers/misc/habanalabs/common/pci.c
-index 923b2606e29f..c376ab4695ab 100644
---- a/drivers/misc/habanalabs/common/pci.c
-+++ b/drivers/misc/habanalabs/common/pci.c
-@@ -230,6 +230,7 @@ int hl_pci_set_inbound_region(struct hl_device *hdev, u8 region,
- 			lower_32_bits(pci_region->addr));
- 	rc |= hl_pci_iatu_write(hdev, offset + 0x18,
- 			upper_32_bits(pci_region->addr));
-+	/* Set bar type as memory */
- 	rc |= hl_pci_iatu_write(hdev, offset + 0x0, 0);
- 
- 	/* Enable + bar/address match + match enable + bar number */
-diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
-index eb733a48eb72..758a26b43cf2 100644
---- a/drivers/misc/habanalabs/gaudi/gaudi.c
-+++ b/drivers/misc/habanalabs/gaudi/gaudi.c
-@@ -882,6 +882,27 @@ static void gaudi_late_fini(struct hl_device *hdev)
- 	hdev->hl_chip_info->info = NULL;
- }
- 
-+static int gaudi_nic_init(struct hl_device *hdev)
-+{
-+	/*
-+	 * In init flow we initialize the NIC ports from scratch. In hard reset
-+	 * flow, we get here after the NIC ports were halted, hence we only
-+	 * need to reopen them.
-+	 */
-+	if (atomic_read(&hdev->in_reset)) {
-+		gaudi_nic_ports_reopen(hdev);
-+		return 0;
-+	}
-+
-+	return gaudi_nic_ports_init(hdev);
-+}
-+
-+static void gaudi_nic_fini(struct hl_device *hdev)
-+{
-+	/* must be called after MSI was disabled */
-+	gaudi_nic_ports_fini(hdev);
-+}
-+
- static void gaudi_nic_handle_rx(struct gaudi_nic_device *gaudi_nic)
- {
- 	/* at this point, interrupts were disabled by the H/W */
-@@ -7482,6 +7503,8 @@ static const struct hl_asic_funcs gaudi_funcs = {
- 	.get_eeprom_data = gaudi_get_eeprom_data,
- 	.send_cpu_message = gaudi_send_cpu_message,
- 	.get_hw_state = gaudi_get_hw_state,
-+	.nic_init = gaudi_nic_init,
-+	.nic_fini = gaudi_nic_fini,
- 	.nic_control = gaudi_nic_control,
- 	.nic_cq_mmap = gaudi_nic_cq_mmap,
- 	.pci_bars_map = gaudi_pci_bars_map,
-diff --git a/drivers/misc/habanalabs/goya/goya.c b/drivers/misc/habanalabs/goya/goya.c
-index 6e98c830f6a2..e753b3a0079f 100644
---- a/drivers/misc/habanalabs/goya/goya.c
-+++ b/drivers/misc/habanalabs/goya/goya.c
-@@ -5265,6 +5265,16 @@ static enum hl_device_hw_state goya_get_hw_state(struct hl_device *hdev)
- 	return RREG32(mmHW_STATE);
- }
- 
-+static int goya_nic_init(struct hl_device *hdev)
-+{
-+	return 0;
-+}
-+
-+static void goya_nic_fini(struct hl_device *hdev)
-+{
-+
-+}
-+
- static int goya_nic_control(struct hl_device *hdev, u32 op, void *input,
- 			void *output)
- {
-@@ -5405,6 +5415,8 @@ static const struct hl_asic_funcs goya_funcs = {
- 	.get_eeprom_data = goya_get_eeprom_data,
- 	.send_cpu_message = goya_send_cpu_message,
- 	.get_hw_state = goya_get_hw_state,
-+	.nic_init = goya_nic_init,
-+	.nic_fini = goya_nic_fini,
- 	.nic_control = goya_nic_control,
- 	.nic_cq_mmap = goya_nic_mmap,
- 	.pci_bars_map = goya_pci_bars_map,
 -- 
-2.17.1
-
+Michal Hocko
+SUSE Labs
