@@ -2,91 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 123B3264591
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 13:54:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5168C26459D
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 14:00:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730252AbgIJLyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 07:54:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59620 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726079AbgIJLvh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 07:51:37 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CE54C06179A
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 04:51:37 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id q13so8237863ejo.9
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 04:51:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Dn4K2T0JSEjR3GtfyAPlB1EWB29Nk5H6XeBf9p3Eoac=;
-        b=QurwhrVqZJsLzQ5azGYsIfpN1znbp76vYNJ+mIAtygMOhcYTjfXWR0nqFECGQPJVwh
-         S6yRg5r2CipGLggtHIq2iVZNf7hcHeDj7jCiGyleM+5uivGnIm6LLa3qm2CuBUoauZY+
-         ilIrLbCI+hW3P74WN7ACHholf2CQlJsugRUwR/sJIc8fC2yvCtmW/04V5WNhV83+DvfO
-         E6VP5B3I2qRjVN4ADa3R22FN+RhoJl2ZSacUQ7tchGoh3gInQvc3KuJNAhY0sOzftE3h
-         Ok+Vmnk0yREsQMF1IJI/fctpBT1zjqRCInHdwVJE1GhMMz1lyZZWu8PrK07H9E5NGuwU
-         PPyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Dn4K2T0JSEjR3GtfyAPlB1EWB29Nk5H6XeBf9p3Eoac=;
-        b=lV7T7w7gMsYiB2wxEj//apVRGb/W+Hb3bmjRDkjgKN65d+eg/f6C5vEARnyjYLgOZE
-         mKQ4Ene4I1++wyDyAHF7sX/tznWtiO+TzAGTfgWlO6dr7/YEbYjwQwximyYobLcyHdhQ
-         Sk2a+xR48bJ9U/AzpkybKVg6WRa9kZPFLHmFQVHLqvjtRXUn6Y8SPD51feOWnauauTVo
-         TlltcZk+ehKt8v0hPpANj4MQ9+AI3XNHGQgNkhPU2WWKnFBoGHOH6H4yaPw16nktrUzk
-         Wa7JMC5Vd46Oeh8P0zkuY7Moiw/EuqU6BmsJ4QEblt4NyAIk+AZz4WjqGVuvlVepxeRY
-         FkIg==
-X-Gm-Message-State: AOAM531e8cf+x6rPffVG96Pj665NITfq+POlz6PAOwqvWi9vz0kF3AbQ
-        9NHsSeF/j9xqDftvo2sAoNvko08iNWrIcchOz6Ywb5sPkKU=
-X-Google-Smtp-Source: ABdhPJxntOaycrjclXvSUCDNX+DpRy7/+hcfRM1X10oMJ0bQPMBZy4JhpcNses0vehYATdjR/zZi3Iv9FseB50UsNbs=
-X-Received: by 2002:a17:906:941a:: with SMTP id q26mr8085043ejx.496.1599738695660;
- Thu, 10 Sep 2020 04:51:35 -0700 (PDT)
+        id S1726494AbgIJL7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 07:59:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40194 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730544AbgIJLzb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 07:55:31 -0400
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BDE0E2075B;
+        Thu, 10 Sep 2020 11:55:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599738931;
+        bh=gPPcyn/tq/4FUyBAZRHDVT1Hgp+0p85nxiUqeEM9stk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=R+2PJqwvb/POPURnczQeZytNBDYrwNG3cB3AxjkMkIDgQ2PiA/mtKTPP9OocKvh3P
+         tCdzJDhwilBH0uR9FbsthykDsqEQTJL43DvQfiq0598xDxbq5GkCAKt0EwHNelHHEk
+         QKAMCW5EyF/wN8ScDWDAtYYVf53p29eWzzesmjHQ=
+Received: by mail-ed1-f48.google.com with SMTP id g4so6044279edk.0;
+        Thu, 10 Sep 2020 04:55:30 -0700 (PDT)
+X-Gm-Message-State: AOAM530so6r8TNeqlaylpuph2Ypc/7lSeivC5ylmR59aX/SQlgVk0bB7
+        8nCVM/XXzLmH/0lDHj0n/LXZAeUAK8Hiw2Wxllc=
+X-Google-Smtp-Source: ABdhPJx3loxbsLcMOjqHauv2rzhE2oJfoWMPP91+KqTvxXBJf5pfIsbyDngaUG90FaVG80CRKYGIpNE+nfedlmzEzm8=
+X-Received: by 2002:a05:6402:180a:: with SMTP id g10mr8750346edy.18.1599738929240;
+ Thu, 10 Sep 2020 04:55:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200827140020.159627-1-warthog618@gmail.com> <CACRpkdZZMbfpKy4gcfAzNq53LkYLcL9wm3Qtzyj_K8vkUW9RfQ@mail.gmail.com>
- <CAMpxmJXRY2wqqN3SzfJN+QTWAHYSYz4vEjLKWU82Y=PAmcm=5w@mail.gmail.com> <20200910111017.GT1891694@smile.fi.intel.com>
-In-Reply-To: <20200910111017.GT1891694@smile.fi.intel.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Thu, 10 Sep 2020 13:51:24 +0200
-Message-ID: <CAMpxmJXXg=b8rNaaq_J84Nyd_84JrLe82__W3BO3ZacAYit=RQ@mail.gmail.com>
-Subject: Re: [PATCH v5 00/20] gpio: cdev: add uAPI v2
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Kent Gibson <warthog618@gmail.com>,
+References: <20200907161141.31034-1-krzk@kernel.org> <20200907161141.31034-3-krzk@kernel.org>
+ <20200908202544.GB846754@bogus>
+In-Reply-To: <20200908202544.GB846754@bogus>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Thu, 10 Sep 2020 13:55:17 +0200
+X-Gmail-Original-Message-ID: <CAJKOXPdvfb2xY0nCh_Dyf1545b+q-BMYQJFrxLuLk6rh1acVoQ@mail.gmail.com>
+Message-ID: <CAJKOXPdvfb2xY0nCh_Dyf1545b+q-BMYQJFrxLuLk6rh1acVoQ@mail.gmail.com>
+Subject: Re: [PATCH 02/25] dt-bindings: iio: adc: exynos-adc: require second
+ interrupt with touch screen
+To:     Rob Herring <robh@kernel.org>
+Cc:     Kukjin Kim <kgene@kernel.org>, Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Jonathan Bakker <xc-racer2@live.ca>,
+        =?UTF-8?Q?Pawe=C5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
+        linux-arm-kernel@lists.infradead.org,
+        "linux-samsung-soc@vger.kernel.org" 
+        <linux-samsung-soc@vger.kernel.org>, devicetree@vger.kernel.org,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+        linux-iio@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 1:10 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
+On Tue, 8 Sep 2020 at 22:25, Rob Herring <robh@kernel.org> wrote:
 >
-> On Thu, Aug 27, 2020 at 06:02:03PM +0200, Bartosz Golaszewski wrote:
-> > On Thu, Aug 27, 2020 at 5:53 PM Linus Walleij <linus.walleij@linaro.org> wrote:
->
-> > please hold it maybe for one more week - I'd love to have some more
-> > people take a look at the user facing header at least. Andy is usually
-> > very thorough in his reviews so I'm Ccing him here.
+> On Mon, Sep 07, 2020 at 06:11:18PM +0200, Krzysztof Kozlowski wrote:
+> > The ADC in S3C/S5P/Exynos SoCs can be used also for handling touch
+> > screen.  In such case the second interrupt is required.  This second
+> > interrupt can be anyway provided, even without touch screens.  This
+> > fixes dtbs_check warnings like:
 > >
-> > I'll too skim through the series one more time.
+> >   arch/arm/boot/dts/s5pv210-aquila.dt.yaml: adc@e1700000: interrupts: [[23], [24]] is too long
+> >
+> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> > ---
+> >  .../bindings/iio/adc/samsung,exynos-adc.yaml      | 15 ++++++++++++++-
+> >  1 file changed, 14 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/Documentation/devicetree/bindings/iio/adc/samsung,exynos-adc.yaml b/Documentation/devicetree/bindings/iio/adc/samsung,exynos-adc.yaml
+> > index cc3c8ea6a894..89b4f9c252a6 100644
+> > --- a/Documentation/devicetree/bindings/iio/adc/samsung,exynos-adc.yaml
+> > +++ b/Documentation/devicetree/bindings/iio/adc/samsung,exynos-adc.yaml
+> > @@ -41,7 +41,10 @@ properties:
+> >      maxItems: 2
+> >
+> >    interrupts:
+> > -    maxItems: 1
+> > +    description:
+> > +      ADC interrupt followed by optional touchscreen interrupt.
+> > +    minItems: 1
+> > +    maxItems: 2
+> >
+> >    "#io-channel-cells":
+> >      const: 1
+> > @@ -107,6 +110,16 @@ allOf:
+> >            items:
+> >              - const: adc
+> >
+> > +  - if:
+> > +      properties:
+> > +        has-touchscreen:
+> > +          true
 >
-> Thank you, Bart.
->
-> I think you, guys know how to do that best. Unfortunately I was almost squeezed
-> under pile of several tasks and didn't find time for this.
->
+> This evaluates as true if 'has-touchscreen' is not present too. You
+> should use 'required' here.
 
-If we knew, we wouldn't be needing a v2. :)
+I see, thanks. I'll send a v2.
 
-> Meanwhile I have sent an updated fix for v1 as suggested by Arnd. It works for
-> me.
->
-
-Cool, I'll take a look at that.
-
-Bart
+Best regards,
+Krzysztof
