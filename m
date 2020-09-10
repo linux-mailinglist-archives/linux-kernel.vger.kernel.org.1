@@ -2,171 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A67B264909
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 17:50:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DCB32648E9
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 17:38:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731442AbgIJPt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 11:49:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731408AbgIJPsO (ORCPT
+        id S1730940AbgIJPiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 11:38:21 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:36916 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731305AbgIJPgt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 11:48:14 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9313FC06135D
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 08:10:29 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id w186so6411987qkd.1
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 08:10:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=IGv0f01H1HhwMLTOhjZhfHu2g8LxVsJgV1pDEfYUgDw=;
-        b=OLk8h2bgkMx23a6lKAISLlfAQbxOdT1UvNWDM9Zk6DHatbSGVbAHhfj7/QkR54l1rm
-         7d91OLwa5I5BFDa46HUCe2u5YIKKF7iZkfQGVUZwXBkVLOtQU1rMTEuS2YOP/A4N28Nh
-         OaR3h6vYn2g6YHgjvbU6b6KqfQkKa4ZNKWFkzx5yRTFbAouWKSLG0Y+HJuXypLnRDO1C
-         /p+eopFDX9lOqXJ5iyilR1G0IS0msV2EgzUi/8XlGm0UwB0i+O4JYL5JY9QXWMDvYWiy
-         JaCFeMCQ8DYNgBrrdkRhDwMsvdOgF8w7kYFilEVYxP/+fBz702MoGQCz4e65/5fZS+Qk
-         h+2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=IGv0f01H1HhwMLTOhjZhfHu2g8LxVsJgV1pDEfYUgDw=;
-        b=WLwmLB5ileSbqsZG5mTv/fjcYXa+bIG75sXkbB9Ry3yyIctankgZZL8RY5FM3gJuyu
-         2dCd1CnaTe82Xug1Wv0JvSaENFrQnPWcp2hVicAYj6IFbqXYb10z7cbj+U14lYqBKPq+
-         ImqS4KXuz3hDdzFbk2CVdHyRoKMofDpsKzcQ0tnaHA2Q2wjXFHs8b0dZv+zgShzyJacv
-         8pj9iTFrAbLXQ9Ley6y+GM8UYdvGNYUwXi6KA6oV/c8Anyckg5BEOfjLA6FJ9fBv+3Nt
-         hBtixvtvETdnfGwytlCsGivckRlkAprUhmOEC3siNCOy7wwHQykuQd2749cjvxziz/CO
-         A8gQ==
-X-Gm-Message-State: AOAM533z+xEcy+YF3PN3B9j7hJGSiMS2YqPSh2AlOrrbfEnn/ZiPRxRX
-        ZN5C68KQ2y+aO9e35oh+CHh7nA==
-X-Google-Smtp-Source: ABdhPJykgWiu1zjU+K7XkGZJ7ie1IxH4yzDlIW/0m/WeyP2P7YrPQaO2mutyhA53lMDex0T4CRnGTg==
-X-Received: by 2002:a05:620a:141a:: with SMTP id d26mr7906055qkj.97.1599750628651;
-        Thu, 10 Sep 2020 08:10:28 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id z74sm6914588qkb.11.2020.09.10.08.10.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Sep 2020 08:10:27 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kGODS-004MNk-Mg; Thu, 10 Sep 2020 12:10:26 -0300
-Date:   Thu, 10 Sep 2020 12:10:26 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     Alexander Gordeev <agordeev@linux.ibm.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Mike Rapoport <rppt@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        linux-x86 <x86@kernel.org>,
-        linux-arm <linux-arm-kernel@lists.infradead.org>,
-        linux-power <linuxppc-dev@lists.ozlabs.org>,
-        linux-sparc <sparclinux@vger.kernel.org>,
-        linux-um <linux-um@lists.infradead.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>
-Subject: Re: [RFC PATCH v2 1/3] mm/gup: fix gup_fast with dynamic page table
- folding
-Message-ID: <20200910151026.GL87483@ziepe.ca>
-References: <20200907180058.64880-1-gerald.schaefer@linux.ibm.com>
- <20200907180058.64880-2-gerald.schaefer@linux.ibm.com>
- <0dbc6ec8-45ea-0853-4856-2bc1e661a5a5@intel.com>
- <20200909142904.00b72921@thinkpad>
- <aacad1b7-f121-44a5-f01d-385cb0f6351e@intel.com>
- <20200909192534.442f8984@thinkpad>
- <20200909180324.GI87483@ziepe.ca>
- <20200910093925.GB29166@oc3871087118.ibm.com>
- <20200910130233.GK87483@ziepe.ca>
- <20200910152803.1a930afc@thinkpad>
+        Thu, 10 Sep 2020 11:36:49 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1kGOFJ-0006eU-Q1; Thu, 10 Sep 2020 15:12:21 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        =?UTF-8?q?Arve=20Hj=C3=B8nnev=C3=A5g?= <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Christian Brauner <christian@brauner.io>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        devel@driverdev.osuosl.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] binder: remove redundant assignment to pointer n
+Date:   Thu, 10 Sep 2020 16:12:21 +0100
+Message-Id: <20200910151221.751464-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200910152803.1a930afc@thinkpad>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 03:28:03PM +0200, Gerald Schaefer wrote:
-> On Thu, 10 Sep 2020 10:02:33 -0300
-> Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> 
-> > On Thu, Sep 10, 2020 at 11:39:25AM +0200, Alexander Gordeev wrote:
-> > 
-> > > As Gerald mentioned, it is very difficult to explain in a clear way.
-> > > Hopefully, one could make sense ot of it.  
-> > 
-> > I would say the page table API requires this invariant:
-> > 
-> >         pud = pud_offset(p4d, addr);
-> >         do {
-> > 		WARN_ON(pud != pud_offset(p4d, addr);
-> >                 next = pud_addr_end(addr, end);
-> >         } while (pud++, addr = next, addr != end);
-> > 
-> > ie pud++ is supposed to be a shortcut for 
-> >   pud_offset(p4d, next)
-> > 
-> > While S390 does not follow this. Fixing addr_end brings it into
-> > alignment by preventing pud++ from happening.
-> > 
-> > The only currently known side effect is that gup_fast crashes, but it
-> > sure is an unexpected thing.
-> 
-> It only is unexpected in a "top-level folding" world, see my other reply.
-> Consider it an optimization, which was possible because of how our dynamic
-> folding works, and e.g. because we can determine the correct pagetable
-> level from a pXd value in pXd_offset.
+From: Colin Ian King <colin.king@canonical.com>
 
-No, I disagree. The page walker API the arch presents has to have well
-defined semantics. For instance, there is an effort to define tests
-and invarients for the page table accesses to bring this understanding
-and uniformity:
+The pointer n is being initialized with a value that is
+never read and it is being updated later with a new value. The
+initialization is redundant and can be removed.
 
- mm/debug_vm_pgtable.c
+Addresses-Coverity: ("Unused value")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/android/binder_alloc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-If we fix S390 using the pX_addr_end() change then the above should be
-updated with an invariant to check it. I've added Anshuman for some
-thoughts..
+diff --git a/drivers/android/binder_alloc.c b/drivers/android/binder_alloc.c
+index 910c53ba2c91..2f846b7ae8b8 100644
+--- a/drivers/android/binder_alloc.c
++++ b/drivers/android/binder_alloc.c
+@@ -347,7 +347,7 @@ static void debug_low_async_space_locked(struct binder_alloc *alloc, int pid)
+ 	 * and at some point we'll catch them in the act. This is more efficient
+ 	 * than keeping a map per pid.
+ 	 */
+-	struct rb_node *n = alloc->free_buffers.rb_node;
++	struct rb_node *n;
+ 	struct binder_buffer *buffer;
+ 	size_t total_alloc_size = 0;
+ 	size_t num_buffers = 0;
+-- 
+2.27.0
 
-For better or worse, that invariant does exclude arches from using
-other folding techniques.
-
-The other solution would be to address the other side of != and adjust
-the pud++
-
-eg replcae pud++ with something like:
-  pud = pud_next_entry(p4d, pud, next)
-
-Such that:
-  pud_next_entry(p4d, pud, next) === pud_offset(p4d, next)
-
-In which case the invarient changes to 'callers can never do pointer
-arithmetic on the result of pXX_offset()' which is a bit harder to
-enforce.
-
-Jason
