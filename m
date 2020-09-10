@@ -2,96 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1AA226542E
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:52:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 437A4265426
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:52:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725933AbgIJVws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 17:52:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40650 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725440AbgIJVwh (ORCPT
+        id S1725919AbgIJVwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 17:52:02 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:39276 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725440AbgIJVt1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 17:52:37 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8F8CC061573;
-        Thu, 10 Sep 2020 14:45:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=Fg/b55yxoFWkolyAkcEjzousJpXve06w9VMuL5Sdnkk=; b=ZMcMkaW/c2U4wME0yN3lN8iyq
-        Cabjm7Hra/p2QLrT5mmKewtEBX98jKbULNaeCzksnOjXFd/KBPMjWzggqocB6CD3soSxk08QfgkWj
-        n9IShJX5HFbbZEejR0jEf+mNi4loEuaPf3zI+zz2liShClwNpC0+1q6T15cbGEijkp+yBWD2tqfjW
-        sbvjsE1c0h9pMsh/XzqMtZSYdfSDxQrX8/XS/GPQqcsqDjkuQrVtt1xRqvAF/iAJkp5MRdlrs/gHy
-        IgqIc3Q/VXMM0vvUJTXwsBbAHpB+d9p+sH/F9wMsGxVs53ENrxphr7fW4/Qo2vEIBhSJJI8gh1bKv
-        N7TWu3fvg==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:32992)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1kGUNG-0006e5-W4; Thu, 10 Sep 2020 22:44:59 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1kGUNC-0007bp-S9; Thu, 10 Sep 2020 22:44:54 +0100
-Date:   Thu, 10 Sep 2020 22:44:54 +0100
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Marek Behun <marek.behun@nic.cz>
-Cc:     Andrew Lunn <andrew@lunn.ch>, Pavel Machek <pavel@ucw.cz>,
-        netdev@vger.kernel.org, linux-leds@vger.kernel.org,
-        Dan Murphy <dmurphy@ti.com>,
-        =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
-        linux-kernel@vger.kernel.org,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH net-next + leds v2 6/7] net: phy: marvell: add support
- for LEDs controlled by Marvell PHYs
-Message-ID: <20200910214454.GE1551@shell.armlinux.org.uk>
-References: <20200909162552.11032-1-marek.behun@nic.cz>
- <20200909162552.11032-7-marek.behun@nic.cz>
- <20200910122341.GC7907@duo.ucw.cz>
- <20200910131541.GD3316362@lunn.ch>
- <20200910182434.GA22845@duo.ucw.cz>
- <20200910183154.GF3354160@lunn.ch>
- <20200910183435.GC1551@shell.armlinux.org.uk>
- <20200910223112.26b57dd6@nic.cz>
+        Thu, 10 Sep 2020 17:49:27 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-267-HYL6WVvkPS-KP8gHonLJJg-1; Thu, 10 Sep 2020 22:49:20 +0100
+X-MC-Unique: HYL6WVvkPS-KP8gHonLJJg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Thu, 10 Sep 2020 22:49:20 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Thu, 10 Sep 2020 22:49:20 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Linus Torvalds' <torvalds@linux-foundation.org>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>
+CC:     Leon Romanovsky <leon@kernel.org>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Colin Ian King <colin.king@canonical.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: RE: [PATCH -rc v1] gcov: Disable gcov build with GCC 10
+Thread-Topic: [PATCH -rc v1] gcov: Disable gcov build with GCC 10
+Thread-Index: AQHWh6dGqbQ7jRFJakCUCViQLEfKfKliaKAA
+Date:   Thu, 10 Sep 2020 21:49:20 +0000
+Message-ID: <a9d5b868b1eb4d8bb45364e9b917ca8f@AcuMS.aculab.com>
+References: <20200904155808.4997-1-leon@kernel.org>
+ <6fac3754-f8db-85f5-bdb1-b4c8e7ccc046@linux.ibm.com>
+ <CAHk-=wg6R-yQwZBBWB8EqQ1QWJGQe5njuGwax-HJtTUGsc5LxQ@mail.gmail.com>
+In-Reply-To: <CAHk-=wg6R-yQwZBBWB8EqQ1QWJGQe5njuGwax-HJtTUGsc5LxQ@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200910223112.26b57dd6@nic.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0.001
+X-Mimecast-Originator: aculab.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 10:31:12PM +0200, Marek Behun wrote:
-> On Thu, 10 Sep 2020 19:34:35 +0100
-> Russell King - ARM Linux admin <linux@armlinux.org.uk> wrote:
-> 
-> > On Thu, Sep 10, 2020 at 08:31:54PM +0200, Andrew Lunn wrote:
-> > > Generally the driver will default to the hardware reset blink
-> > > pattern. There are a few PHY drivers which change this at probe, but
-> > > not many. The silicon defaults are pretty good.  
-> > 
-> > The "right" blink pattern can be a matter of how the hardware is
-> > wired.  For example, if you have bi-colour LEDs and the PHY supports
-> > special bi-colour mixing modes.
-> > 
-> 
-> Have you seen such, Russell? This could be achieved via the multicolor
-> LED framework, but I don't have a device which uses such LEDs, so I
-> did not write support for this in the Marvell PHY driver.
-> 
-> (I guess I could test it though, since on my device LED0 and LED1
-> are used, and this to can be put into bi-colour LED mode.)
+RnJvbTogTGludXMgVG9ydmFsZHMNCj4gU2VudDogMTAgU2VwdGVtYmVyIDIwMjAgMjA6MTkNCj4g
+DQo+IE9uIFRodSwgU2VwIDEwLCAyMDIwIGF0IDU6NTIgQU0gUGV0ZXIgT2JlcnBhcmxlaXRlcg0K
+PiA8b2JlcnBhckBsaW51eC5pYm0uY29tPiB3cm90ZToNCj4gPg0KPiA+IEZpeCB0aGlzIGJ5IHVw
+ZGF0aW5nIHRoZSBpbi1rZXJuZWwgR0NPVl9DT1VOVEVSUyB2YWx1ZS4gQWxzbyByZS1lbmFibGUN
+Cj4gPiBjb25maWcgR0NPVl9LRVJORUwgZm9yIHVzZSB3aXRoIEdDQyAxMC4NCj4gDQo+IExvdmVs
+eS4NCj4gDQo+IElzIHRoZXJlIHNvbWUgd2F5IHdlIGNvdWxkIHNlZSB0aGlzIHZhbHVlIGF1dG9t
+YXRpY2FsbHksIG9yIGF0IGxlYXN0DQo+IGhhdmUgYSBjaGVjayBmb3IgaXQ/IFJpZ2h0IG5vdyBp
+dCdzIHRoYXQgX3ZlcnlfIG1hZ2ljYWwgbnVtYmVyIHRoYXQNCj4gZGVwZW5kcyBvbiBhIGdjYyB2
+ZXJzaW9uIGluIG9kZCBhbmQgdW5kb2N1bWVudGVkIHdheXMuLg0KPiANCj4gSU9XIC0gSSdtIGFz
+c3VtaW5nIHVzZXIgc3BhY2UgZ2NvdiBpbmZyYXN0cnVjdHVyZSBmaW5kcyB0aGlzIG51bWJlcg0K
+PiBzb21lIHdheSwgYW5kIHdvbmRlcmluZyBpZiB3ZSBjb3VsZG4ndCBkbyB0aGUgc2FtZT8NCj4g
+DQo+IE9yIGlzIHRoZSBnY292IHRvb2wgaXRzZWxmIGp1c3QgZG9pbmcgdGhlIHNhbWUga2luZCBv
+ZiB0aGluZywgYW5kDQo+IGhhdmluZyBtYWdpYyBudW1iZXJzPw0KPiANCj4gSSBnZXQgdGhlIGZl
+ZWxpbmcgdGhhdCBzb21lYm9keSB3aG8ga25vd3MgZ2NvdiB3b3VsZCBnbyAiWW91IGFyZSBqdXN0
+DQo+IGRvaW5nIHRoaXMgYWxsIGNvbXBsZXRlbHkgaW5jb3JyZWN0bHksIHlvdSBzaG91bGQgZG8g
+WFlaIiB3aGVuIHRoZXkNCj4gc2VlIHRoYXQgR0NPVl9DT1VOVEVSUyB0aGluZy4NCj4gDQo+IE1h
+eWJlIGp1c3QgYSBzY3JpcHQgdGhhdCBmaW5kcyB0aGUgcmlnaHQgaGVhZGVyIGZpbGUgaW4gdGhl
+IGdjYw0KPiBpbnN0YWxsYXRpb24gYW5kIGV4dHJhY3RzIGl0IGZyb20gdGhlcmUsIGlmIG9ubHkg
+dG8gdmVyaWZ5IHRoZSBtYWdpYw0KPiBudW1iZXIgdGhhdCB3ZSBoYXZlPw0KDQpJIHdhcyB3b25k
+ZXJpbmcgd2hhdCBoYXBwZW5zIGlmIGZpbGVzIGNvbXBpbGVkIHdpdGggZGlmZmVyZW50DQp2ZXJz
+aW9ucyBvZiBnY2MgZ2V0IGxpbmtlZCB0b2dldGhlcj8NCg0KTm90IHRvbyBmYXItZmV0Y2hlZCBm
+b3Igc29tZW9uZSB0byByZWxlYXNlIGEgLmEgZmlsZSBjb250YWluaW5nDQonZ2NvbnYnIG9iamVj
+dHMuDQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkg
+Um9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlv
+biBObzogMTM5NzM4NiAoV2FsZXMpDQo=
 
-I haven't, much to my dismay. The Macchiatobin would have been ideal -
-the 10G RJ45s have bi-colour on one side and green on the other. It
-would have been useful if they were wired to support the PHYs bi-
-colour mode.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
