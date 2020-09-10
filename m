@@ -2,162 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CFBC26433B
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 12:06:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A104D26432D
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 12:03:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730466AbgIJKGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 06:06:30 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:35564 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730260AbgIJKGS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 06:06:18 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08A9wWVq118520;
-        Thu, 10 Sep 2020 10:04:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to;
- s=corp-2020-01-29; bh=yKCTtiGzPUIRtEV0H7rFdmSehfsK8C0E+KdRzhKe1j8=;
- b=ecTzReWDjakbs0DI5D8yLBG0FlZZqPvLqkLO873YmIdsB6G/AXP8InIqQoIrDg1sS2vP
- KWBdb9vdcwkn0AxAr2VFysALJHDhbWonL0a0373/hU3KC9EGXJhnlKjSXCKDc+ca8Qyy
- SOL1j1oTkh/B9U65SPJcPaTny8n+22L8GBiSa8FeEIaXpFFDD9eDrmTKwEBUiBxYehMi
- 1+els2laUsqHBZVrplo4zDskqxO01pejfbvasvHs9ayKjxG/7MENVd5bVTYKBd/ifa4L
- vqHudTmiD8dPTYCADCEDrea6ig2yQpCt4ML85Q8yFJQfMxuGYYWrBpiWDU9VW3O10qjd yw== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 33c2mm72re-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 10 Sep 2020 10:04:52 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08AA0SjN118538;
-        Thu, 10 Sep 2020 10:02:51 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 33cmm0prwt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 10 Sep 2020 10:02:51 +0000
-Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08AA2jhR031400;
-        Thu, 10 Sep 2020 10:02:45 GMT
-Received: from localhost.localdomain (/73.243.10.6)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 10 Sep 2020 03:02:45 -0700
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.0.3.2.26\))
-Subject: Re: [RFC PATCH 00/16] 1GB THP support on x86_64
-From:   William Kucharski <william.kucharski@oracle.com>
-In-Reply-To: <53b360d4-8d16-892b-0f7f-5c4cd95208d8@redhat.com>
-Date:   Thu, 10 Sep 2020 04:02:44 -0600
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Matthew Wilcox <willy@infradead.org>, Zi Yan <ziy@nvidia.com>,
-        Roman Gushchin <guro@fb.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>, linux-mm@kvack.org,
-        Rik van Riel <riel@surriel.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        David Nellans <dnellans@nvidia.com>,
-        linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <F8242D9A-AB1C-4652-A0EC-C4F4CC670034@oracle.com>
-References: <20200902180628.4052244-1-zi.yan@sent.com>
- <20200903142300.bjq2um5y5nwocvar@box>
- <20200903163020.GG60440@carbon.dhcp.thefacebook.com>
- <8e677ead-206d-08dd-d73e-569bd3803e3b@redhat.com>
- <7E20392E-5ED7-4C22-9555-F3BAABF3CBE9@nvidia.com>
- <20200908142758.GF27537@casper.infradead.org>
- <20200909121117.GD87483@ziepe.ca>
- <20200909123244.GD6583@casper.infradead.org>
- <20200909131449.GF87483@ziepe.ca>
- <53b360d4-8d16-892b-0f7f-5c4cd95208d8@redhat.com>
-To:     David Hildenbrand <david@redhat.com>
-X-Mailer: Apple Mail (2.3654.0.3.2.26)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9739 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishscore=0 suspectscore=0
- spamscore=0 mlxlogscore=999 adultscore=0 malwarescore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009100093
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9739 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 priorityscore=1501
- phishscore=0 adultscore=0 bulkscore=0 clxscore=1011 mlxlogscore=999
- malwarescore=0 suspectscore=0 lowpriorityscore=0 spamscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009100093
+        id S1730381AbgIJKDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 06:03:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45542 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729781AbgIJKDd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 06:03:33 -0400
+Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BB9FC20882;
+        Thu, 10 Sep 2020 10:03:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599732211;
+        bh=tE0vK+lGJxMKuPHT7CyqR99KxgsVoHl0G44/ulvB++M=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=zefGfOxBbwaSpki54+vicMmqXgta+12bh5+L7P042Jk3UT1kOyugF1j48BCQT5K1f
+         admq6xZ9rrOd39q+l+mDaIE43fhDRuYF6WDbSKPQiTn29AfTmxpB1vR+Uzo7ljeMU+
+         19Ssj3SMgMUG2d7sSAMTm+yTLyqr3sINLSa2YF54=
+Received: by mail-ot1-f49.google.com with SMTP id c10so4827134otm.13;
+        Thu, 10 Sep 2020 03:03:31 -0700 (PDT)
+X-Gm-Message-State: AOAM531IfcQvbUYgVhRZx4xldab69NMoQbrjywsIY9NssDNSz9KWxrDv
+        MmqpxX6yct1WXYIBRCxG9/mLWfnbFcEzJTO5Gnw=
+X-Google-Smtp-Source: ABdhPJzM2MRG8rMTJKJfOP0RduKJh1ex1F4fmkrYko4U7RrgeomKqV16KFW80Wu4mw/3mRmN6RhDx+WrrWyMEKFvB5Q=
+X-Received: by 2002:a9d:6250:: with SMTP id i16mr3635338otk.77.1599732210910;
+ Thu, 10 Sep 2020 03:03:30 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200904155025.55718-1-xypron.glpk@gmx.de> <CAMj1kXGYpMMrQPgL-SNde75EbDX8RZBDrboEuMcjJ7-cyEJUXg@mail.gmail.com>
+ <CAOnJCU+DrXt=Fvq08dMJX=Nn0bEJr_V_1nPJvh6sRA-GqgV3OQ@mail.gmail.com>
+In-Reply-To: <CAOnJCU+DrXt=Fvq08dMJX=Nn0bEJr_V_1nPJvh6sRA-GqgV3OQ@mail.gmail.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Thu, 10 Sep 2020 13:03:19 +0300
+X-Gmail-Original-Message-ID: <CAMj1kXFKrD172-AU_45fd4UHXdxOKfjyy9R=teXxEAr9nFKP6w@mail.gmail.com>
+Message-ID: <CAMj1kXFKrD172-AU_45fd4UHXdxOKfjyy9R=teXxEAr9nFKP6w@mail.gmail.com>
+Subject: Re: [PATCH 1/1] efi/libstub: DRAM base calculation
+To:     Atish Patra <atishp@atishpatra.org>
+Cc:     Heinrich Schuchardt <xypron.glpk@gmx.de>,
+        Atish Patra <atish.patra@wdc.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Maxim Uvarov <maxim.uvarov@linaro.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 9 Sep 2020 at 23:37, Atish Patra <atishp@atishpatra.org> wrote:
+>
+> On Wed, Sep 9, 2020 at 1:17 AM Ard Biesheuvel <ardb@kernel.org> wrote:
+> >
+> > (+ Atish, Palmer)
+> >
+> > On Fri, 4 Sep 2020 at 18:50, Heinrich Schuchardt <xypron.glpk@gmx.de> wrote:
+> > >
+> > > In the memory map the regions with the lowest addresses may be of type
+> > > EFI_RESERVED_TYPE. The reserved areas may be discontinuous relative to the
+> > > rest of the memory. So for calculating the maximum loading address for the
+> > > device tree and the initial ramdisk image these reserved areas should not
+> > > be taken into account.
+> > >
+> > > Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
+> > > ---
+> > >  drivers/firmware/efi/libstub/efi-stub.c | 3 ++-
+> > >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/drivers/firmware/efi/libstub/efi-stub.c b/drivers/firmware/efi/libstub/efi-stub.c
+> > > index c2484bf75c5d..13058ac75765 100644
+> > > --- a/drivers/firmware/efi/libstub/efi-stub.c
+> > > +++ b/drivers/firmware/efi/libstub/efi-stub.c
+> > > @@ -106,7 +106,8 @@ static unsigned long get_dram_base(void)
+> > >         map.map_end = map.map + map_size;
+> > >
+> > >         for_each_efi_memory_desc_in_map(&map, md) {
+> > > -               if (md->attribute & EFI_MEMORY_WB) {
+> > > +               if (md->attribute & EFI_MEMORY_WB &&
+> > > +                   md->type != EFI_RESERVED_TYPE) {
+> > >                         if (membase > md->phys_addr)
+> > >                                 membase = md->phys_addr;
+> > >                 }
+> > > --
+> > > 2.28.0
+> > >
+> >
+> > This is not the right fix - on RPi2, for instance, which has some
+> > reserved memory at the base of DRAM, this change will result in the
+> > first 16 MB of memory to be wasted.
+> >
+> > What I would prefer to do is get rid of get_dram_base() entirely -
+> > arm64 does not use its return value in the first place, and for ARM,
+> > the only reason we need it is so that we can place the uncompressed
+> > kernel image as low in memory as possible, and there are probably
+> > better ways to do that. RISC-V just started using it too, but only
+> > passes it from handle_kernel_image() to efi_relocate_kernel(), and
+> > afaict, passing 0x0 there instead would not cause any problems.
+>
+> Yes. Passing 0x0 to efi_relocate_kernel will result in a failure in
+> efi_bs_call and it will fallback to
+> efi_low_alloc_above which will try to assign the lowest possible
+> available memory with 2MB alignment restriction.
+> The only disadvantage is an extra unnecessary call to UEFI firmware
+> which should be okay as it is not in the hotpath.
+>
 
-
-> On Sep 9, 2020, at 7:27 AM, David Hildenbrand <david@redhat.com> =
-wrote:
->=20
-> On 09.09.20 15:14, Jason Gunthorpe wrote:
->> On Wed, Sep 09, 2020 at 01:32:44PM +0100, Matthew Wilcox wrote:
->>=20
->>> But here's the thing ... we already allow
->>> 	mmap(MAP_POPULATE | MAP_HUGETLB | MAP_HUGE_1GB)
->>>=20
->>> So if we're not doing THP, what's the point of this thread?
->>=20
->> I wondered that too..
->>=20
->>> An madvise flag is a different beast; that's just letting the kernel
->>> know what the app thinks its behaviour will be.  The kernel can pay
->>=20
->> But madvise is too late, the VMA already has an address, if it is not
->> 1G aligned it cannot be 1G THP already.
->=20
-> That's why user space (like QEMU) is THP-aware and selects an address
-> that is aligned to the expected THP granularity (e.g., 2MB on x86_64).
-
-
-To me it's always seemed like there are two major divisions among THP =
-use
-cases:
-
-1) Applications that KNOW they would benefit from use of THPs, so they
-call madvise() with an appropriate parameter and explicitly inform the
-kernel of such
-
-2) Applications that know nothing about THP but there may be an
-advantage that comes from "automatic" THP mapping when possible.
-
-This is an approach that I am more familiar with that comes down to:
-
-    1) Is a VMA properly aligned for a (whatever size) THP?
-
-    2) Is the mapping request for a length >=3D (whatever size) THP?
-
-    3) Let's try allocating memory to map the space using (whatever =
-size)
-       THP, and:
-
-        -- If we succeed, great, awesome, let's do it.
-        -- If not, no big deal, map using as large a page as we CAN get.
-
-There of course are myriad performance implications to this. Processes
-that start early after boot have a better chance of getting a THP,
-but that also means frequently mapped large memory spaces have a better
-chance of being mapped in a shared manner via a THP, e.g. libc, X =
-servers
-or Firefox/Chrome. It also means that processes that would be mapped
-using THPs early in boot may not be if they should crash and need to be
-restarted.
-
-There are all sorts of tunables that would likely need to be in place to =
-make
-the second approach more viable, but I think it's certainly worth =
-investigating.
-
-The address selection you suggest is the basis of one of the patches I =
-wrote
-for a previous iteration of THP support (and that is in Matthew's THP =
-tree)
-that will try to round VM addresses to the proper alignment if possible =
-so a
-THP can then be used to map the area.
-
-
-
+The point is really that get_dram_base() does a similar call to
+GetMemoryMap() under the hood, so once we remove it, the worst case
+still does that once (in efi_low_alloc_above() invoked from
+efi_relocate_kernel) whereas the optimal case will no longer call it
+at all.
