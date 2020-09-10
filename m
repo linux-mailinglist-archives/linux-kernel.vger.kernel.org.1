@@ -2,57 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 329CF263F08
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 09:52:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99B24263F14
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 09:53:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729691AbgIJHwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 03:52:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33182 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726228AbgIJHwW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 03:52:22 -0400
-Received: from kernel.org (unknown [104.132.0.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4208F20809;
-        Thu, 10 Sep 2020 07:52:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599724341;
-        bh=ijucEkauTD7Oq3ltMK6SO/FeIANicHwPTK7VsIGPYl4=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=LNom3T6QTTA51pYBdbKQ74uZJ5by1QMhxIkfUmDr5vgd+7DNcUvRzfHinj7TCXRN3
-         DRqktnRsVwlfk8KfE23W1oaQaO+P6lala2NVBXFimEPYfIDcvNC0IVBpmI0Bchc40+
-         /ClkcpoeHh/P8J5a0Y2xqQz5+pp88mJu70SE3be0=
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200828154735.435374-1-jbrunet@baylibre.com>
-References: <20200828154735.435374-1-jbrunet@baylibre.com>
-Subject: Re: [PATCH] clk: meson: make shipped controller configurable
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Jerome Brunet <jbrunet@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        linux-amlogic@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-To:     Jerome Brunet <jbrunet@baylibre.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        linux-clk@vger.kernel.org
-Date:   Thu, 10 Sep 2020 00:52:19 -0700
-Message-ID: <159972433977.2295844.12910258806178190962@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+        id S1730236AbgIJHxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 03:53:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50570 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730025AbgIJHw6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 03:52:58 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A28DC061573
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 00:52:56 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id w1so5324104edr.3
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 00:52:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=vN12iXSe93FrYozqq5r2Omm4hmslv0t/kmDHtlJE9ZI=;
+        b=x4eQRdKfg0RY9zTkFU0gUMOdLG/E5FrZKotRF1B3H2YO5zS27dgHrV84H0WuJ52ZJS
+         +z6ydGAnhu0yTEcvHZtnF2EbCAVJXVfLfzn2W3l4lDdG0OBUVq/HJfyhj2Ga12cWsFQq
+         4I/ernKvfYfl4FMqdtg+W49FHlfvKJgUa9l2GR+Hqe13Ay2L9NMrxI9GhXqDk8LWlPz+
+         J1llg1x270YQuSvcevwyIymxn8ml/k8eN0CLNB6vZA1BWvzKvApyA2AU7HCT2mCuBlP3
+         RgBt2+4jav8Ssawga7FuDt1ZiSuVopUjdMx52pbKLhPAKuVTrRPAhmgTTqcNtdsldpiU
+         hEuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=vN12iXSe93FrYozqq5r2Omm4hmslv0t/kmDHtlJE9ZI=;
+        b=EhnndPhSq9uekS9rkNB+VmO2xZxyN0rbGqPzi8DWtxLCN2+oDJJMu+0TmWGH5GlpAo
+         LLDR0L5JSCwPurrGfFGv5oJT3ZDGACk/zpyEWxwK9aLb6Nj4nB0LmVgKGN6aYRvrtBnL
+         qQPdcwayd1hElj3mWgeFJUd9DEwrA2JSjhfu0CuSIKpyiDzLZ3gLfnN23exD0pHqS2Om
+         RcDLKWpeKnUbDg669wm5S/WndXLEqQeR0fLWlIG9ct0mcf5M8fcZ3acU1TiDZ68oUq2l
+         WGG3zkl+95JB16JFp4BmHEGyhItRHKUBuLMpqE9ky/cdytFzKfUc3ttq2y79oeNV8JH/
+         khiA==
+X-Gm-Message-State: AOAM5307CGbaJGTlUHllad4ujmeQdnjLfzFp1pbakPE5NcNRGeKDfNBH
+        oIRmaxiB8JJvTCIpxCgTZ68Tww==
+X-Google-Smtp-Source: ABdhPJw2BPEh1f8NHoqYvWJpzyvcWuUQF5T3Gq/nELgPfY74+EXJhH7ilI+eTdKH4UxgDRteSzze0Q==
+X-Received: by 2002:a50:84a2:: with SMTP id 31mr8187522edq.138.1599724374085;
+        Thu, 10 Sep 2020 00:52:54 -0700 (PDT)
+Received: from localhost.localdomain ([195.24.90.54])
+        by smtp.gmail.com with ESMTPSA id q26sm5742838ejr.97.2020.09.10.00.52.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Sep 2020 00:52:53 -0700 (PDT)
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+To:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Elliot Berman <eberman@codeaurora.org>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Subject: [PATCH v3 0/2] Venus - fix firmware load failure
+Date:   Thu, 10 Sep 2020 10:52:25 +0300
+Message-Id: <20200910075227.950-1-stanimir.varbanov@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Jerome Brunet (2020-08-28 08:47:35)
-> Add the necessary so bits so unnecessary amlogic clock controllers can be
+Hello,
 
-s/so//
+Two changes since v2:
+ * 1/2 drop pointless line remove.
+ * 2/2 call qcom_scm_pas_shutdown() in error path - spotted by Bjorn.
 
-> compiled out. This allows to save a few kB when necessary.
->=20
-> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
-> ---
+v2 can be found at [1].
 
-Reviewed-by: Stephen Boyd <sboyd@kernel.org>
+Regards,
+Stan
+
+[1] https://lkml.org/lkml/2020/8/17/323
+
+Stanimir Varbanov (2):
+  firmware: qcom_scm: Add memory protect virtual address ranges
+  venus: firmware: Set virtual address ranges
+
+ drivers/firmware/qcom_scm.c                  | 24 ++++++++++++++++++++
+ drivers/firmware/qcom_scm.h                  |  1 +
+ drivers/media/platform/qcom/venus/core.c     |  4 ++++
+ drivers/media/platform/qcom/venus/core.h     |  4 ++++
+ drivers/media/platform/qcom/venus/firmware.c | 19 +++++++++++++++-
+ include/linux/qcom_scm.h                     |  7 ++++++
+ 6 files changed, 58 insertions(+), 1 deletion(-)
+
+-- 
+2.17.1
+
