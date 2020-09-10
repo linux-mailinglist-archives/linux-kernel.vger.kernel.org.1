@@ -2,106 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E37152647A4
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 16:02:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E0682647E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 16:21:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730921AbgIJOC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 10:02:27 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:11776 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730992AbgIJNyu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 09:54:50 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id E32177AABAC7776F98AE;
-        Thu, 10 Sep 2020 21:52:30 +0800 (CST)
-Received: from huawei.com (10.90.53.225) by DGGEMS404-HUB.china.huawei.com
- (10.3.19.204) with Microsoft SMTP Server id 14.3.487.0; Thu, 10 Sep 2020
- 21:52:23 +0800
-From:   Zheng Bin <zhengbin13@huawei.com>
-To:     <pkshih@realtek.com>, <kvalo@codeaurora.org>,
-        <davem@davemloft.net>, <kuba@kernel.org>,
-        <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <yi.zhang@huawei.com>, <zhengbin13@huawei.com>
-Subject: [PATCH -next 3/3] rtlwifi: rtl8188ee: fix comparison pointer to bool warning in hw.c
-Date:   Thu, 10 Sep 2020 21:59:17 +0800
-Message-ID: <20200910135917.143723-4-zhengbin13@huawei.com>
-X-Mailer: git-send-email 2.26.0.106.g9fadedd
-In-Reply-To: <20200910135917.143723-1-zhengbin13@huawei.com>
-References: <20200910135917.143723-1-zhengbin13@huawei.com>
+        id S1730919AbgIJOVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 10:21:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42956 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731116AbgIJOKb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 10:10:31 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 53784206BE;
+        Thu, 10 Sep 2020 14:00:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599746451;
+        bh=NuAQLLVniMTiSvD3NX63hR8Ps+um5HbA+yYGRbERCBs=;
+        h=From:To:Cc:Subject:Date:From;
+        b=yEH2terUPqcySCZBBnx0Y3G3VIqdcs4YJwkjozcORo2pbdBF+K5w1y21JQDosuyP/
+         QrQN4hg/IYGip/gdhoH/ctYL6c2c9p4nXXbZ94MEaczBUdlrXwsCHHN80KDpU8jeyN
+         dH4Ubyx3F5KI623tIiGNT0mJ0TLEe3G3NxjZmASs=
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        Adit Ranadive <aditr@vmware.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Faisal Latif <faisal.latif@intel.com>,
+        Lijun Ou <oulijun@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Maor Gottlieb <maorg@mellanox.com>,
+        Michal Kalderon <mkalderon@marvell.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        VMware PV-Drivers <pv-drivers@vmware.com>,
+        Weihang Li <liweihang@huawei.com>,
+        "Wei Hu(Xavier)" <huwei87@hisilicon.com>,
+        Yishai Hadas <yishaih@nvidia.com>
+Subject: [PATCH rdma-next 00/10] Prepare drivers to move QP allocation to ib_core
+Date:   Thu, 10 Sep 2020 17:00:36 +0300
+Message-Id: <20200910140046.1306341-1-leon@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.90.53.225]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes coccicheck warning:
+From: Leon Romanovsky <leonro@nvidia.com>
 
-drivers/net/wireless/realtek/rtlwifi/rtl8188ee/hw.c:777:14-20: WARNING: Comparison to bool
-drivers/net/wireless/realtek/rtlwifi/rtl8188ee/hw.c:782:13-19: WARNING: Comparison to bool
-drivers/net/wireless/realtek/rtlwifi/rtl8188ee/hw.c:787:14-20: WARNING: Comparison to bool
-drivers/net/wireless/realtek/rtlwifi/rtl8188ee/hw.c:792:13-19: WARNING: Comparison to bool
-drivers/net/wireless/realtek/rtlwifi/rtl8188ee/hw.c:871:6-33: WARNING: Comparison to bool
-drivers/net/wireless/realtek/rtlwifi/rtl8188ee/hw.c:1070:5-13: WARNING: Comparison to bool
+Hi,
 
-Signed-off-by: Zheng Bin <zhengbin13@huawei.com>
----
- drivers/net/wireless/realtek/rtlwifi/rtl8188ee/hw.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+This series mainly changes mlx4, mlx5, and mthca drivers to future
+change of QP allocation scheme.
 
-diff --git a/drivers/net/wireless/realtek/rtlwifi/rtl8188ee/hw.c b/drivers/net/wireless/realtek/rtlwifi/rtl8188ee/hw.c
-index 4c8d71fbdd7a..63f9ea21962f 100644
---- a/drivers/net/wireless/realtek/rtlwifi/rtl8188ee/hw.c
-+++ b/drivers/net/wireless/realtek/rtlwifi/rtl8188ee/hw.c
-@@ -774,22 +774,22 @@ static bool _rtl88ee_llt_table_init(struct ieee80211_hw *hw)
+The rdmavt driver will be sent separately.
 
- 	for (i = 0; i < (txpktbuf_bndy - 1); i++) {
- 		status = _rtl88ee_llt_write(hw, i, i + 1);
--		if (true != status)
-+		if (!status)
- 			return status;
- 	}
+Thanks
 
- 	status = _rtl88ee_llt_write(hw, (txpktbuf_bndy - 1), 0xFF);
--	if (true != status)
-+	if (!status)
- 		return status;
+Leon Romanovsky (10):
+  RDMA/mlx5: Embed GSI QP into general mlx5_ib QP
+  RDMA/mlx5: Reuse existing fields in parent QP storage object
+  RDMA/mlx5: Change GSI QP to have same creation flow like other QPs
+  RDMA/mlx5: Delete not needed GSI QP signature QP type
+  RDMA/mlx4: Embed GSI QP into general mlx4_ib QP
+  RDMA/mlx4: Prepare QP allocation to remove from the driver
+  RDMA/core: Align write and ioctl checks of QP types
+  RDMA/drivers: Remove udata check from special QP
+  RDMA/mthca: Combine special QP struct with mthca QP
+  RDMA/i40iw: Remove intermediate pointer that points to the same struct
 
- 	for (i = txpktbuf_bndy; i < maxpage; i++) {
- 		status = _rtl88ee_llt_write(hw, i, (i + 1));
--		if (true != status)
-+		if (!status)
- 			return status;
- 	}
+ drivers/infiniband/core/uverbs_cmd.c         |  17 +-
+ drivers/infiniband/hw/hns/hns_roce_qp.c      |  57 ++--
+ drivers/infiniband/hw/i40iw/i40iw_verbs.c    |   9 +-
+ drivers/infiniband/hw/i40iw/i40iw_verbs.h    |   1 -
+ drivers/infiniband/hw/mlx4/mlx4_ib.h         |  25 +-
+ drivers/infiniband/hw/mlx4/qp.c              | 285 ++++++++-----------
+ drivers/infiniband/hw/mlx5/gsi.c             | 138 +++------
+ drivers/infiniband/hw/mlx5/main.c            |   6 +-
+ drivers/infiniband/hw/mlx5/mlx5_ib.h         |  28 +-
+ drivers/infiniband/hw/mlx5/qp.c              |  50 ++--
+ drivers/infiniband/hw/mthca/mthca_dev.h      |   2 +-
+ drivers/infiniband/hw/mthca/mthca_provider.c |  17 +-
+ drivers/infiniband/hw/mthca/mthca_provider.h |  27 +-
+ drivers/infiniband/hw/mthca/mthca_qp.c       |  75 +++--
+ drivers/infiniband/hw/qedr/verbs.c           |   8 -
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma_qp.c |   3 +-
+ 16 files changed, 329 insertions(+), 419 deletions(-)
 
- 	status = _rtl88ee_llt_write(hw, maxpage, txpktbuf_bndy);
--	if (true != status)
-+	if (!status)
- 		return status;
-
- 	return true;
-@@ -868,7 +868,7 @@ static bool _rtl88ee_init_mac(struct ieee80211_hw *hw)
- 	rtl_write_byte(rtlpriv, MSR, 0x00);
-
- 	if (!rtlhal->mac_func_enable) {
--		if (_rtl88ee_llt_table_init(hw) == false) {
-+		if (!_rtl88ee_llt_table_init(hw)) {
- 			rtl_dbg(rtlpriv, COMP_INIT, DBG_LOUD,
- 				"LLT table init fail\n");
- 			return false;
-@@ -1067,7 +1067,7 @@ int rtl88ee_hw_init(struct ieee80211_hw *hw)
- 	}
-
- 	rtstatus = _rtl88ee_init_mac(hw);
--	if (rtstatus != true) {
-+	if (!rtstatus) {
- 		pr_info("Init MAC failed\n");
- 		err = 1;
- 		goto exit;
 --
-2.26.0.106.g9fadedd
+2.26.2
 
