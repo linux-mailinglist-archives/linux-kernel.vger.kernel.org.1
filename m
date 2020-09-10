@@ -2,100 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45B10263F23
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 09:55:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F85E263F30
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 09:57:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730293AbgIJHy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 03:54:57 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:34066 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726792AbgIJHyp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 03:54:45 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08A7sen9078068;
-        Thu, 10 Sep 2020 02:54:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1599724480;
-        bh=xLqhM8JuqWpOLMHetzz/8/24VkctoaW/pS2UjG1I9j0=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=IOqH2X26tjkpkVPLBtpXQLFa0xKbnADsV53eCehLtJlDidoAlrsbZM5oIpPkPt2Si
-         33/J6ruOJ/ZuSSmsUugEAly3/FZwgxc9WHel6iN0GlnEinS5HEjWsWoaloIO+iNBMl
-         Re74c0JC1DYdpZ1Dc5Mfhe/KXYJZipznuZ0xVGxk=
-Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08A7se6s086300
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 10 Sep 2020 02:54:40 -0500
-Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 10
- Sep 2020 02:54:39 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 10 Sep 2020 02:54:39 -0500
-Received: from feketebors.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08A7sXCU123142;
-        Thu, 10 Sep 2020 02:54:38 -0500
-From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
-To:     <broonie@kernel.org>, <lgirdwood@gmail.com>, <robh+dt@kernel.org>
-CC:     <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH 2/2] ASoC: ti: j721e-evm: Add support for j7200-cpb audio
-Date:   Thu, 10 Sep 2020 10:54:33 +0300
-Message-ID: <20200910075433.26718-3-peter.ujfalusi@ti.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200910075433.26718-1-peter.ujfalusi@ti.com>
-References: <20200910075433.26718-1-peter.ujfalusi@ti.com>
+        id S1728709AbgIJH5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 03:57:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36080 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726816AbgIJH5r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 03:57:47 -0400
+Received: from kernel.org (unknown [104.132.0.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 49E4020829;
+        Thu, 10 Sep 2020 07:57:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599724667;
+        bh=4pKISiYZhY3EeSnAyleLcIQNYM/Dt5k93S8IrckrwTs=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=s78HttgmbSoO2M+1IKqaQXEEF0Dz6GoeOC9ac+QJmYnlh01qs9LpethP8h7oZ9lko
+         ++tmd3Dp5vC0lqd6buHZM2iRVZ9kroxrRpQkf8nhB0XsqmCfBaoSy/sDiITQ7JhLMt
+         X5BpSQIUP0JerYjBPciWzDYf+gc4Za0gH0aFuqps=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200829175704.GA10998@Kaladin>
+References: <20200829175704.GA10998@Kaladin>
+Subject: Re: [PATCH] clk: versatile: Add of_node_put() before return statement
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     mturquette@baylibre.com, Julia.Lawall@lip6.fr,
+        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+To:     Sumera Priyadarsini <sylphrenadin@gmail.com>,
+        linus.walleij@linaro.org
+Date:   Thu, 10 Sep 2020 00:57:45 -0700
+Message-ID: <159972466586.2295844.9075545722301677556@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When j7200 SOM is attached to the CPB we only have parent clock for 48KHz
-family and the rate of the parent clock is 2359296000Hz.
+Quoting Sumera Priyadarsini (2020-08-29 10:57:04)
+> Every iteration of for_each_available_child_of_node() decrements
+> the reference count of the previous node, however when control is
+> transferred from the middle of the loop, as in the case of a return
+> or break or goto, there is no decrement thus ultimately resulting in
+> a memory leak.
+>=20
+> Fix a potential memory leak in clk-impd1.c by inserting
+> of_node_put() before a return statement.
+>=20
+> Issue found with Coccinelle.
+>=20
+> Signed-off-by: Sumera Priyadarsini <sylphrenadin@gmail.com>
+> ---
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
----
- sound/soc/ti/j721e-evm.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
-
-diff --git a/sound/soc/ti/j721e-evm.c b/sound/soc/ti/j721e-evm.c
-index cb074af47a7d..f66674fd5f64 100644
---- a/sound/soc/ti/j721e-evm.c
-+++ b/sound/soc/ti/j721e-evm.c
-@@ -525,6 +525,14 @@ static const struct j721e_audio_match_data j721e_cpb_ivi_data = {
- 	},
- };
- 
-+static const struct j721e_audio_match_data j7200_cpb_data = {
-+	.board_type = J721E_BOARD_CPB,
-+	.num_links = 2, /* CPB pcm3168a */
-+	.pll_rates = {
-+		[J721E_CLK_PARENT_48000] = 2359296000, /* PLL4 */
-+	},
-+};
-+
- static const struct of_device_id j721e_audio_of_match[] = {
- 	{
- 		.compatible = "ti,j721e-cpb-audio",
-@@ -532,6 +540,9 @@ static const struct of_device_id j721e_audio_of_match[] = {
- 	}, {
- 		.compatible = "ti,j721e-cpb-ivi-audio",
- 		.data = &j721e_cpb_ivi_data,
-+	}, {
-+		.compatible = "ti,j7200-cpb-audio",
-+		.data = &j7200_cpb_data,
- 	},
- 	{ },
- };
--- 
-Peter
-
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
-
+Applied to clk-fixes
