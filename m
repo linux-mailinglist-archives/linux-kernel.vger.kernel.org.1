@@ -2,66 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26B80265164
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 22:53:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82777265155
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 22:52:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727796AbgIJUx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 16:53:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59322 "EHLO
+        id S1727010AbgIJUwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 16:52:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731220AbgIJOv7 (ORCPT
+        with ESMTP id S1730813AbgIJO6V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 10:51:59 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D032C06179B
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 07:50:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=carJyeF/DQ7x8PMcqrq+bkt1/xRqTM2W/ttF2nvAfHs=; b=hi70TzZFP012Zg3sUOsuFg1wn8
-        U+yznKpZwdVBZ4gK29aRMMjaI76rnCteGRjqKCRoMMM0S4hN1zGSFZProkWh4GGqNFajfxWf0a3rb
-        TnA4rhrQowWRL/y63Rs8QuixYYbUGMwkNIP7SmQ4XgNzq/MezqxdSMsLNlwv5T2spGOtpX7vn++dw
-        qx4BvrEEaanp2I5+qvl8lk0siibwK9ooBkh7r2LX1mjIrtAOH5me41jepBS8hZul7F0iqGZj/mb9z
-        T77LUA3EppRU6x+4/R25q4l7NgQ9AKD+QUq6bRIf7CFYyTn2ganUaqCzyTn0iRST9L6dNKiDoL7yv
-        dvQu5rew==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kGNu1-0007Ao-18; Thu, 10 Sep 2020 14:50:21 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id AD4CE3012DC;
-        Thu, 10 Sep 2020 16:50:18 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 9FD362B7765C0; Thu, 10 Sep 2020 16:50:18 +0200 (CEST)
-Date:   Thu, 10 Sep 2020 16:50:18 +0200
-From:   peterz@infradead.org
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, anna-maria@linutronix.de,
-        vbabka@suse.cz, mgorman@techsingularity.net, mhocko@suse.com,
-        linux-mm@kvack.org
-Subject: Re: kcompactd hotplug fail
-Message-ID: <20200910145018.GF35926@hirez.programming.kicks-ass.net>
-References: <20200910141006.GA1362448@hirez.programming.kicks-ass.net>
- <20200910143745.GE35926@hirez.programming.kicks-ass.net>
+        Thu, 10 Sep 2020 10:58:21 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32A12C061573
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 07:58:07 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id k25so5073151qtu.4
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 07:58:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=psWYZztgZCmOanZbN0KVSKVg8aC+fzD9jcmxhuC+NNI=;
+        b=uBOlTGMa94CWWF6b+8C6NaJQaNcmte0pvB20fB/uVnBUUG8bvWgUMpgmpjaAvmfxr7
+         AOtJ+KbVmezhukeZRCHFU6HqC8v/EauaFyhX9aa15oWd0ENqKLPrc8KSgg30BLwgc/yj
+         AapZ46xO0EI3jLRHYfn/B5QbXVDv9AKyvij0LRF3yZomuokQyFfGZCZuGmBYRJuT/lH+
+         cweg8VGv/ZI014+jDzWXQPJjA4oi3ZWbNm4yvus4D8czoI73PkA8zOT/lsnuJ0Or7lM6
+         Vv8DYVqjz6dYkI89w1eFdCBIcEOC0NR9mZBsy2hRME9X71MtGhDIwU80FS74v9831tWA
+         E5wg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=psWYZztgZCmOanZbN0KVSKVg8aC+fzD9jcmxhuC+NNI=;
+        b=YOL9Q95HdeWo+dYi7a0iLB3aaRsuNNpcBJVJfwkyRNMiRuDwnDGLqFbX7Gcy+Bjn69
+         w7+KHGZez5G6UgYfMPgKbAHy77k7vGZkGHcNiH0tGdQ7szSL7+6nXmufauRpHe2DuT1w
+         cluocKo9tmtl3j+S2nqo8lMqSbvoitxbYqRKdsKY5hJSU20hFyzZBT5zpxhecNCX8vcQ
+         iZxiGgq7A+E0kt0YNaKTYYPA0B0unedxC9HlU/ZsXhZ0JNYeRTLskkHDisaenGRfzrOY
+         zg51GWLpz/GRb0DsYI/OaJVcDNnsEkmh5vodf4DM3BpbYXTLmIwQREkfecO/WmJipPXf
+         j9Rw==
+X-Gm-Message-State: AOAM532GnD4lpu3MvLxl/PGTMG98LtYBJ91GpSjBGjPPoaufdEGlhENL
+        CKMAAoeiwJbWn7Pz0hhFghJy2VWjKAXjdFj+kZ4BFg==
+X-Google-Smtp-Source: ABdhPJyXKZK4qpETW5dxMgNJ4lmga0bIB3HhLdqOmOK7G/KhIAL9x+/iQr16cfal7ToieRC4QB+fxYBPp6QW6lBF30g=
+X-Received: by 2002:ac8:5215:: with SMTP id r21mr8150267qtn.257.1599749886066;
+ Thu, 10 Sep 2020 07:58:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200910143745.GE35926@hirez.programming.kicks-ass.net>
+References: <20200907134055.2878499-1-elver@google.com> <20200907134055.2878499-2-elver@google.com>
+In-Reply-To: <20200907134055.2878499-2-elver@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Thu, 10 Sep 2020 16:57:54 +0200
+Message-ID: <CACT4Y+aBpeQYOWGrCoaJ=HAa0BsSekyL88kcLBTGwc--C+Ch0w@mail.gmail.com>
+Subject: Re: [PATCH RFC 01/10] mm: add Kernel Electric-Fence infrastructure
+To:     Marco Elver <elver@google.com>
+Cc:     Alexander Potapenko <glider@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Lameter <cl@linux.com>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>, Qian Cai <cai@lca.pw>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux-MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 04:37:45PM +0200, peterz@infradead.org wrote:
-> On Thu, Sep 10, 2020 at 04:10:06PM +0200, peterz@infradead.org wrote:
-> > Hi,
-> > 
-> > While playing with hotplug, I ran into the below:
-> 
-> Ah, it could be I wrecked my kernel bad... :-(
-> 
-> I'll let you know if I can reproduce this on a pristine kernel.
+On Mon, Sep 7, 2020 at 3:41 PM Marco Elver <elver@google.com> wrote:
+> +config KFENCE_NUM_OBJECTS
+> +       int "Number of guarded objects available"
+> +       default 255
+> +       range 1 65535
+> +       help
+> +         The number of guarded objects available. For each KFENCE object, 2
+> +         pages are required; with one containing the object and two adjacent
+> +         ones used as guard pages.
 
-Yeah, sorry, I'll go search for one of them brown-paper things to wear.
+Hi Marco,
+
+Wonder if you tested build/boot with KFENCE_NUM_OBJECTS=65535? Can a
+compiler create such a large object?
+
+
+> +config KFENCE_FAULT_INJECTION
+> +       int "Fault injection for stress testing"
+> +       default 0
+> +       depends on EXPERT
+> +       help
+> +         The inverse probability with which to randomly protect KFENCE object
+> +         pages, resulting in spurious use-after-frees. The main purpose of
+> +         this option is to stress-test KFENCE with concurrent error reports
+> +         and allocations/frees. A value of 0 disables fault injection.
+
+I would name this differently. "FAULT_INJECTION" is already taken for
+a different thing, so it's a bit confusing.
+KFENCE_DEBUG_SOMETHING may be a better name.
+It would also be good to make it very clear in the short description
+that this is for testing of KFENCE itself. When I configure syzbot I
+routinely can't figure out if various DEBUG configs detect user
+errors, or enable additional unit tests, or something else.
+Maybe it should depend on DEBUG_KERNEL as well?
+
+> +/*
+> + * Get the canary byte pattern for @addr. Use a pattern that varies based on the
+> + * lower 3 bits of the address, to detect memory corruptions with higher
+> + * probability, where similar constants are used.
+> + */
+> +#define KFENCE_CANARY_PATTERN(addr) ((u8)0xaa ^ (u8)((unsigned long)addr & 0x7))
+
+(addr) in macro body
+
+> +       seq_con_printf(seq,
+> +                      "kfence-#%zd [0x" PTR_FMT "-0x" PTR_FMT
+
+PTR_FMT is only used in this file, should it be declared in report.c?
+
+Please post example reports somewhere. It's hard to figure out all
+details of the reporting/formatting.
