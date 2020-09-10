@@ -2,205 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C98D7264308
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 11:58:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D8FD264316
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 12:00:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730680AbgIJJ6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 05:58:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41464 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730764AbgIJJzs (ORCPT
+        id S1730541AbgIJKAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 06:00:07 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:45796 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730493AbgIJJ5C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 05:55:48 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38229C06179F
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 02:55:48 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id s2so2779184pjr.4
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 02:55:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=IaGTFnDJBMBefRV/KyfCTUkPl/xUCziFjmJJ4w4CjXw=;
-        b=Edlxp9JSKyIwQ3d/65GRMff66HrC1LW3hK1xF7+fYi4S6Ae7V+W1mIakpvOTcZon4U
-         uKl4ve/gMbyjqYC5YhLJXnXlJlPCtCu7YZDE0yKdmiBUnG/ZlxdUXJkg596ZDVjZwwhe
-         bh1seKT7/YWFj3gVY1RAzKdf1BvZPtlp5fuylziTmuSW7fJ0uqXqO0Hl9rYrYZhzt6vK
-         lAnwIFGqCsHGlHUHQSWZ++lQAX0n7wKlwA5octgAgeiMFwjkAnfwvmLXDjpsLbFj6YQb
-         BHICuApDFIBstBzxunt/ssewC+a8+qyGh0mam78c+TCYgHB+iRq57dCkJAQL2qOzYCLR
-         FlzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=IaGTFnDJBMBefRV/KyfCTUkPl/xUCziFjmJJ4w4CjXw=;
-        b=sFVaMSkRRoKKP2VV0u7FeNW5koM94oS/T1xw/PKs4w9mWUwdq3mS0oUbSMUhuIO66L
-         v+kyzamKy7yVvDCV6M17PlXnsrEGwuwRUAOQiMJUYKuz5QxTNAMRloNvCiDKF2HV49rD
-         zxEja9nyOgKoHZpz+zKh6jZHHPqfO4+vyqqQkq1QWDZVQZfsZxLOElrTsqyDBnbpWlR/
-         r6HZegwN2ZXx2ST/ufyHEKMbUh2ekUfeZbTiKkF8ioxT61cChtbJ4iprDq1EF+amivwj
-         n4+CaDZ5fXOzCT/1sCYVEJo/rwKUm67/39Pv0hsYWwZRQmDws14s5T5Xsc7C0QuAnhOV
-         dnDQ==
-X-Gm-Message-State: AOAM5327t/sVgRr/LoPvXFvSCWI5Y7/kIk+MONL6roGIJLi5fvkxvyGR
-        4HGLoelq8HJuHVZFgTwY7I//rg==
-X-Google-Smtp-Source: ABdhPJygFUaL7C711MVvp4VE0w8Sln3tVyFCklbJMeZp+qTd1iK1V5+XL+JPHZwQC6VD2MqmYq4ewQ==
-X-Received: by 2002:a17:90b:3105:: with SMTP id gc5mr4616714pjb.225.1599731746660;
-        Thu, 10 Sep 2020 02:55:46 -0700 (PDT)
-Received: from localhost ([122.181.54.133])
-        by smtp.gmail.com with ESMTPSA id s3sm5385018pfe.116.2020.09.10.02.55.45
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 10 Sep 2020 02:55:46 -0700 (PDT)
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        Jassi Brar <jaswinder.singh@linaro.org>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH V3 2/2] dt-bindings: mailbox: add doorbell support to ARM MHU
-Date:   Thu, 10 Sep 2020 15:25:19 +0530
-Message-Id: <5d448f579a41345130ae25d01bb94a6e293a6460.1599731645.git.viresh.kumar@linaro.org>
-X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
-In-Reply-To: <7f50b23d157a97242c79bd8f2ab649a9272b9b59.1599731645.git.viresh.kumar@linaro.org>
-References: <7f50b23d157a97242c79bd8f2ab649a9272b9b59.1599731645.git.viresh.kumar@linaro.org>
+        Thu, 10 Sep 2020 05:57:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599731809;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BKrok+4G3YivlFdtR5hJYqXNeCQUSOlGeu6cAcn1/oI=;
+        b=QuCRn09GMDhMLLllkX6rzVv9419j03dE5xKQXe5LCS8+6ECv06BWPD2WqFtTimTkQOGewI
+        Q3/15ctsmjOC9zkItHwhqNfuS3+0H34F6s3ZVNXIcPdzkrV7tGDvH7oVMybw/Ry2ETyPx0
+        5dOfeGLgKtZvW3cOH03UCm2hgK/dwGc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-258-BCBpAEiXO12tezHLeO3ZkA-1; Thu, 10 Sep 2020 05:56:45 -0400
+X-MC-Unique: BCBpAEiXO12tezHLeO3ZkA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C870C2FD00;
+        Thu, 10 Sep 2020 09:56:43 +0000 (UTC)
+Received: from [10.64.54.123] (vpn2-54-123.bne.redhat.com [10.64.54.123])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id E4E6C81F44;
+        Thu, 10 Sep 2020 09:56:41 +0000 (UTC)
+Reply-To: Gavin Shan <gshan@redhat.com>
+Subject: Re: [PATCH 2/2] arm64/mm: Use CONT_SHIFT to define CONT_PTE_SHIFT
+To:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
+        will@kernel.org, shan.gavin@gmail.com
+References: <20200908071931.47767-1-gshan@redhat.com>
+ <20200908071931.47767-2-gshan@redhat.com>
+ <459d0f64-fea9-a060-91a5-17a37834fb1b@arm.com>
+ <283283a2-f516-6890-ae25-101d2b1b46a2@redhat.com>
+ <966505a6-16f6-8129-804b-fcf890429fb8@arm.com>
+From:   Gavin Shan <gshan@redhat.com>
+Message-ID: <b253e307-eec4-3cd9-b921-2c6672120e9b@redhat.com>
+Date:   Thu, 10 Sep 2020 19:56:35 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.0
 MIME-Version: 1.0
+In-Reply-To: <966505a6-16f6-8129-804b-fcf890429fb8@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sudeep Holla <sudeep.holla@arm.com>
+Hi Anshuman,
 
-The ARM MHU's reference manual states following:
+On 9/10/20 7:28 PM, Anshuman Khandual wrote:
+> On 09/10/2020 02:01 PM, Gavin Shan wrote:
+>> On 9/10/20 4:17 PM, Anshuman Khandual wrote:
+>>> On 09/08/2020 12:49 PM, Gavin Shan wrote:
+>>>> The macro CONT_PTE_SHIFT actually depends on CONT_SHIFT, which has
+>>>> been defined in page-def.h, based on CONFIG_ARM64_CONT_SHIFT. Lets
+>>>> reflect the dependency.
+>>>>
+>>>> Signed-off-by: Gavin Shan <gshan@redhat.com>
+>>>> ---
+>>>>    arch/arm64/include/asm/pgtable-hwdef.h | 4 +---
+>>>>    1 file changed, 1 insertion(+), 3 deletions(-)
+>>>>
+>>>> diff --git a/arch/arm64/include/asm/pgtable-hwdef.h b/arch/arm64/include/asm/pgtable-hwdef.h
+>>>> index 8a399e666837..0bd9469f4323 100644
+>>>> --- a/arch/arm64/include/asm/pgtable-hwdef.h
+>>>> +++ b/arch/arm64/include/asm/pgtable-hwdef.h
+>>>> @@ -81,14 +81,12 @@
+>>>>    /*
+>>>>     * Contiguous page definitions.
+>>>>     */
+>>>> +#define CONT_PTE_SHIFT        (CONT_SHIFT + PAGE_SHIFT)
+>>>>    #ifdef CONFIG_ARM64_64K_PAGES
+>>>> -#define CONT_PTE_SHIFT        (5 + PAGE_SHIFT)
+>>>>    #define CONT_PMD_SHIFT        (5 + PMD_SHIFT)
+>>>>    #elif defined(CONFIG_ARM64_16K_PAGES)
+>>>> -#define CONT_PTE_SHIFT        (7 + PAGE_SHIFT)
+>>>>    #define CONT_PMD_SHIFT        (5 + PMD_SHIFT)
+>>>>    #else
+>>>> -#define CONT_PTE_SHIFT        (4 + PAGE_SHIFT)
+>>>>    #define CONT_PMD_SHIFT        (4 + PMD_SHIFT)
+>>>>    #endif
+>>> Could not a similar CONT_PMD be created from a new CONFIG_ARM64_CONT_PMD
+>>> config option, which would help unify CONT_PMD_SHIFT here as well ?
+>>>
+>>
+>> I was thinking of it, to have CONFIG_ARM64_CONT_PMD and defined the
+>> following macros in arch/arm64/include/asm/page-def.h:
+>>
+>>     #define CONT_PMD_SHIFT    CONFIG_ARM64_CONT_PMD_SHIFT
+>>     #define CONT_PMD_SIZE        (_AC(1, UL) << (CONT_PMD_SHIFT + PMD_SHIFT)
+>>     #define CONT_PMD_MASK        (~(CONT_PMD_SIZE - 1))
+>>
+>> PMD_SHIFT is variable because PMD could be folded into PUD or PGD,
+>> depending on the kernel configuration. PMD_SHIFT is declared
+> 
+> Even CONT_PMD_SHIFT via the new CONFIG_ARM64_CONT_PMD_SHIFT will
+> be a variable as well depending on page size.
+> 
 
-"The MHU drives the signal using a 32-bit register, with all 32 bits
-logically ORed together. The MHU provides a set of registers to enable
-software to set, clear, and check the status of each of the bits of this
-register independently.  The use of 32 bits for each interrupt line
-enables software to provide more information about the source of the
-interrupt. For example, each bit of the register can be associated with
-a type of event that can contribute to raising the interrupt."
+Yes, it depends on the variable PMD_SHIFT.
 
-This patch thus extends the MHU controller's DT binding to add support
-for doorbell mode.
+>> in arch/arm64/include/asm/pgtable-types.h, which isn't supposed
+>> to be included in "page-def.h".
+> 
+> Are there build failures if <pgtable-types.h> is included from <page-def.h> ?
+> 
 
-Though the same MHU hardware controller is used in the two modes, A new
-compatible string is added here to represent the combination of the MHU
-hardware and the firmware sitting on the other side (which expects each
-bit to represent a different signal now).
+Yes, something like this:
 
-Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
-Co-developed-by: Viresh Kumar <viresh.kumar@linaro.org>
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
----
-V3: Update the json schema and fix number of interrupt lines.
+   AS      arch/arm64/kernel/head.o
+In file included from ./arch/arm64/include/asm/pgtable-hwdef.h:8,
+                  from ./arch/arm64/include/asm/page-def.h:12,
+                  from ./arch/arm64/include/asm/page.h:11,
+                  from ./arch/arm64/include/asm/proc-fns.h:14,
+                  from ./arch/arm64/include/asm/pgtable.h:9,
+                  from ./include/linux/pgtable.h:6,
+                  from ./arch/arm64/include/asm/io.h:12,
+                  from ./include/linux/io.h:13,
+                  from drivers/bus/vexpress-config.c:9:
+./arch/arm64/include/asm/memory.h:91:55: warning: "PAGE_SHIFT" is not defined, evaluates to 0 [-Wundef]
+  #if defined(CONFIG_VMAP_STACK) && (MIN_THREAD_SHIFT < PAGE_SHIFT)
+                                                        ^~~~~~~~~~
+./arch/arm64/include/asm/memory.h:97:21: warning: "PAGE_SHIFT" is not defined, evaluates to 0 [-Wundef]
+  #if THREAD_SHIFT >= PAGE_SHIFT
+                      ^~~~~~~~~~
 
- .../devicetree/bindings/mailbox/arm,mhu.yaml  | 60 +++++++++++++++++--
- 1 file changed, 54 insertions(+), 6 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mailbox/arm,mhu.yaml b/Documentation/devicetree/bindings/mailbox/arm,mhu.yaml
-index 4e840cedb2e4..88980ba005a4 100644
---- a/Documentation/devicetree/bindings/mailbox/arm,mhu.yaml
-+++ b/Documentation/devicetree/bindings/mailbox/arm,mhu.yaml
-@@ -18,20 +18,40 @@ description: |
-   remote clears it after having read the data.  The last channel is specified to
-   be a 'Secure' resource, hence can't be used by Linux running NS.
- 
-+  The MHU hardware also allows operations in doorbell mode. The MHU drives the
-+  interrupt signal using a 32-bit register, with all 32-bits logically ORed
-+  together. It provides a set of registers to enable software to set, clear and
-+  check the status of each of the bits of this register independently. The use
-+  of 32 bits per interrupt line enables software to provide more information
-+  about the source of the interrupt. For example, each bit of the register can
-+  be associated with a type of event that can contribute to raising the
-+  interrupt. Each of the 32-bits can be used as "doorbell" to alert the remote
-+  processor.
-+
- # We need a select here so we don't match all nodes with 'arm,primecell'
- select:
-   properties:
-     compatible:
-       contains:
--        const: arm,mhu
-+        enum:
-+          - arm,mhu
-+          - arm,mhu-doorbell
-   required:
-     - compatible
- 
- properties:
-   compatible:
--    items:
--      - const: arm,mhu
--      - const: arm,primecell
-+    oneOf:
-+      - description: Data transfer mode
-+        items:
-+          - const: arm,mhu
-+          - const: arm,primecell
-+
-+      - description: Doorbell mode
-+        items:
-+          - const: arm,mhu-doorbell
-+          - const: arm,primecell
-+
- 
-   reg:
-     maxItems: 1
-@@ -50,8 +70,11 @@ description: |
-       - const: apb_pclk
- 
-   '#mbox-cells':
--    description: Index of the channel.
--    const: 1
-+    description: |
-+      Set to 1 in data transfer mode and represents index of the channel.
-+      Set to 2 in doorbell mode and represents index of the channel and doorbell
-+      number.
-+    enum: [ 1, 2 ]
- 
- required:
-   - compatible
-@@ -62,6 +85,7 @@ description: |
- additionalProperties: false
- 
- examples:
-+  # Data transfer mode.
-   - |
-     soc {
-         #address-cells = <2>;
-@@ -84,3 +108,27 @@ additionalProperties: false
-             mboxes = <&mhuA 1>; /* HP-NonSecure */
-         };
-     };
-+
-+  # Doorbell mode.
-+  - |
-+    soc {
-+        #address-cells = <2>;
-+        #size-cells = <2>;
-+
-+        mhuB: mailbox@2b2f0000 {
-+            #mbox-cells = <2>;
-+            compatible = "arm,mhu-doorbell", "arm,primecell";
-+            reg = <0 0x2b2f0000 0 0x1000>;
-+            interrupts = <0 36 4>, /* LP-NonSecure */
-+                         <0 35 4>, /* HP-NonSecure */
-+                         <0 37 4>; /* Secure */
-+            clocks = <&clock 0 2 1>;
-+            clock-names = "apb_pclk";
-+        };
-+
-+        mhu_client_scpi: scpi@2f000000 {
-+            compatible = "arm,scpi";
-+            reg = <0 0x2f000000 0 0x200>;
-+            mboxes = <&mhuB 1 4>; /* HP-NonSecure, 5th doorbell */
-+        };
-+    };
--- 
-2.25.0.rc1.19.g042ed3e048af
+>>
+>> So the peroper way to handle this might be drop the continuous page
+>> macros in page-def.h and introduce the following ones into pgtable-hwdef.h.
+>> I will post v2 to do this if it sounds good to you.
+> 
+> Sure, go ahead if that builds. But unifying both these macros seems cleaner.
+> 
+
+Thanks for your confirmation. v2 is on the way :)
+
+>>
+>>     #define CONT_PTE_SHIFT         (CONFIG_ARM64_CONT_PTE_SHIFT + PAGE_SHIFT)
+>>     #define CONT_PMD_SHIFT         (CONFIG_ARM64_CONT_PMD_SHIFT + PMD_SHIFT)
+>>
+
+Thanks,
+Gavin
 
