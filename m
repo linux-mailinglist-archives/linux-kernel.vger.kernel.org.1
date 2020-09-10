@@ -2,139 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7A6B263AAF
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 04:40:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E234A263A8B
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 04:33:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730788AbgIJCkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 22:40:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48580 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727900AbgIJCH4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 22:07:56 -0400
-Received: from localhost (52.sub-72-107-123.myvzw.com [72.107.123.52])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 95A38207DE;
-        Thu, 10 Sep 2020 02:07:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599703663;
-        bh=PzCYZ+ZLKI2hK96aTswj9Z4sauc8GxoDp1F2TjE+tOE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=VYv3I/YhstRPVnokLdnVWzdsNEB1ztLKHEoSNek/X1wbb9C75U5e2kFDdYoRfUh6n
-         7wV0ZLeq204viip6RzvDMtL16b9T2WBMuOt7N+VUsi6oWmZVTm3Nm2Wk5DxCHha3RO
-         e3qnBmRwYaZnRS0AYmbRxrGXRSF5b4vKevxvbnYg=
-Date:   Wed, 9 Sep 2020 21:07:42 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Xingxing Su <suxingxing@loongson.cn>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Rob Herring <robh@kernel.org>,
-        Scott Branden <scott.branden@broadcom.com>
-Subject: Re: [PATCH] PCI: Don't use Printk in raw_spinlocks
-Message-ID: <20200910020742.GA748627@bjorn-Precision-5520>
+        id S1730736AbgIJCde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 22:33:34 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:34520 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730796AbgIJCZQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 22:25:16 -0400
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08A2PCEq015256
+        for <linux-kernel@vger.kernel.org>; Wed, 9 Sep 2020 19:25:15 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=cyPxDfqqKL5Uzd94aW7bOSgHl42MxVutfMVoXupZePw=;
+ b=gqnkMlIhwX7iuy+aUrh5yUWTFNfwN9Jocy6SqW3ObMjN7cyaLfKVTdodCgIEKM43i9Vb
+ 7IdLxqoIYCKp+GNVYnmonHVV194FS2IgnAI4xoC8Du254p00TjNOG+nLTbzsNJ0iNCzK
+ ltwQItJ4l1GSf8A2Z4DywHIqvEhY8h0xjmI= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 33c8dwnj9x-13
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 19:25:15 -0700
+Received: from intmgw001.41.prn1.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 9 Sep 2020 19:24:56 -0700
+Received: by devvm1096.prn0.facebook.com (Postfix, from userid 111017)
+        id 3DD443D09C3D; Wed,  9 Sep 2020 19:24:51 -0700 (PDT)
+Smtp-Origin-Hostprefix: devvm
+From:   Roman Gushchin <guro@fb.com>
+Smtp-Origin-Hostname: devvm1096.prn0.facebook.com
+To:     Andrew Morton <akpm@linux-foundation.org>, <linux-mm@kvack.org>
+CC:     =Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>, <kernel-team@fb.com>,
+        <linux-kernel@vger.kernel.org>, Roman Gushchin <guro@fb.com>,
+        Vlastimil Babka <vbabka@suse.cz>
+Smtp-Origin-Cluster: prn0c01
+Subject: [PATCH] mm: memcg/slab: fix racy access to page->mem_cgroup in mem_cgroup_from_obj()
+Date:   Wed, 9 Sep 2020 19:24:35 -0700
+Message-ID: <20200910022435.2773735-1-guro@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1596245149-28628-1-git-send-email-suxingxing@loongson.cn>
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-09_17:2020-09-09,2020-09-09 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015
+ lowpriorityscore=0 malwarescore=0 adultscore=0 spamscore=0 mlxlogscore=609
+ phishscore=0 bulkscore=0 priorityscore=1501 mlxscore=0 impostorscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009100021
+X-FB-Internal: deliver
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+cc Mark, Florian, Rob, Scott]
+mem_cgroup_from_obj() checks the lowest bit of the page->mem_cgroup
+pointer to determine if the page has an attached obj_cgroup vector
+instead of a regular memcg pointer. If it's not set, it simple returns
+the page->mem_cgroup value as a struct mem_cgroup pointer.
 
-On Sat, Aug 01, 2020 at 09:25:49AM +0800, Xingxing Su wrote:
-> Do not use printk in raw_spinlocks, 
-> it will cause BUG: Invalid wait context.
-> 
-> The trace reported by lockdep follows.
-> 
-> [    2.986113] =============================
-> [    2.986115] [ BUG: Invalid wait context ]
-> [    2.986116] 5.8.0-rc1+ #11 Not tainted
-> [    2.986118] -----------------------------
-> [    2.986120] swapper/0/1 is trying to lock:
-> [    2.986122] ffffffff80f5ddd8 (console_owner){....}-{3:3}, at: console_unlock+0x284/0x820
-> [    2.986130] other info that might help us debug this:
-> [    2.986132] context-{5:5}
-> [    2.986134] 3 locks held by swapper/0/1:
-> [    2.986135]  #0: 98000007fa03c990 (&dev->mutex){....}-{0:0}, at: device_driver_attach+0x28/0x90
-> [    2.986144]  #1: ffffffff80fb83a8 (pci_lock){....}-{2:2}, at: pci_bus_write_config_word+0x60/0xb8
-> [    2.986152]  #2: ffffffff80f5ded0 (console_lock){+.+.}-{0:0}, at: vprintk_emit+0x1b0/0x3b8
-> [    2.986161] stack backtrace:
-> [    2.986163] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.8.0-rc1+ #11
-> [    2.986164] Stack : 0000000000001d67 98000000030be9b0 0000000000000001 7b2aba74f6c4785b
-> [    2.986172]         7b2aba74f6c4785b 0000000000000000 98000007f89cb438 ffffffff80e7dc80
-> [    2.986181]         0000000000000001 000000000000000a 0000000000000001 0000000000000001
-> [    2.986189]         ffffffff80f4e156 fffffffffffffffd ffffffff80cc2d98 fffffffff8000000
-> [    2.986197]         0000000024000000 ffffffff80f40000 0000000000000000 0000000000000000
-> [    2.986205]         ffffffff9500cce0 0000000000000000 ffffffff80f50000 ffffffff81546318
-> [    2.986213]         ffffffff81c4c3c0 0000000000000018 ffffffffbc000000 0000000000000000
-> [    2.986221]         ffffffff81340000 98000007f89c8000 98000007f89cb430 98000007f8a00000
-> [    2.986229]         ffffffff806be568 0000000000000000 0000000000000000 0000000000000000
-> [    2.986237]         0000000000000000 0000000000000000 ffffffff80211c1c 7b2aba74f6c4785b
-> [    2.986245]         ...
-> [    2.986250] Call Trace:
-> [    2.986251] [<ffffffff80211c1c>] show_stack+0x9c/0x130
-> [    2.986253] [<ffffffff806be568>] dump_stack+0xe8/0x150
-> [    2.986255] [<ffffffff802ad408>] __lock_acquire+0x570/0x3250
-> [    2.986257] [<ffffffff802abed0>] lock_acquire+0x118/0x558
-> [    2.986259] [<ffffffff802be764>] console_unlock+0x2e4/0x820
-> [    2.986261] [<ffffffff802c0a68>] vprintk_emit+0x1c0/0x3b8
-> [    2.986263] [<ffffffff807f45a8>] dev_vprintk_emit+0x1c8/0x210
-> [    2.986265] [<ffffffff807f462c>] dev_printk_emit+0x3c/0x60
-> [    2.986267] [<ffffffff807f499c>] _dev_warn+0x5c/0x80
-> [    2.986269] [<ffffffff806eea9c>] pci_generic_config_write32+0x154/0x160
-> [    2.986271] [<ffffffff806edca4>] pci_bus_write_config_word+0x84/0xb8
-> [    2.986273] [<ffffffff806f1664>] pci_setup_device+0x22c/0x768
-> [    2.986275] [<ffffffff806f26a0>] pci_scan_single_device+0xc8/0x100
-> [    2.986277] [<ffffffff806f2788>] pci_scan_slot+0xb0/0x178
-> [    2.986279] [<ffffffff806f3ae4>] pci_scan_child_bus_extend+0x5c/0x370
-> [    2.986281] [<ffffffff806f407c>] pci_scan_root_bus_bridge+0x6c/0xf0
-> [    2.986283] [<ffffffff806f411c>] pci_host_probe+0x1c/0xd8
-> [    2.986285] [<ffffffff807fa03c>] platform_drv_probe+0x54/0xb8
-> [    2.986287] [<ffffffff807f71f8>] really_probe+0x130/0x388
-> [    2.986289] [<ffffffff807f7594>] driver_probe_device+0x64/0xd8
-> [    2.986291] [<ffffffff807f7844>] device_driver_attach+0x84/0x90
-> [    2.986293] [<ffffffff807f7918>] __driver_attach+0xc8/0x128
-> [    2.986295] [<ffffffff807f4cac>] bus_for_each_dev+0x74/0xd8
-> [    2.986297] [<ffffffff807f6408>] bus_add_driver+0x170/0x250
-> [    2.986299] [<ffffffff807f899c>] driver_register+0x84/0x150
-> [    2.986301] [<ffffffff80200b08>] do_one_initcall+0x98/0x458
-> [    2.986303] [<ffffffff810212dc>] kernel_init_freeable+0x2c0/0x36c
-> [    2.986305] [<ffffffff80be7540>] kernel_init+0x10/0x128
-> [    2.986307] [<ffffffff80209d44>] ret_from_kernel_thread+0x14/0x1c
-> 
-> Signed-off-by: Xingxing Su <suxingxing@loongson.cn>
-> ---
->  drivers/pci/access.c | 3 ---
->  1 file changed, 3 deletions(-)
-> 
-> diff --git a/drivers/pci/access.c b/drivers/pci/access.c
-> index 79c4a2e..b3fc164 100644
-> --- a/drivers/pci/access.c
-> +++ b/drivers/pci/access.c
-> @@ -160,9 +160,6 @@ int pci_generic_config_write32(struct pci_bus *bus, unsigned int devfn,
->  	 * write happen to have any RW1C (write-one-to-clear) bits set, we
->  	 * just inadvertently cleared something we shouldn't have.
->  	 */
-> -	dev_warn_ratelimited(&bus->dev, "%d-byte config write to %04x:%02x:%02x.%d offset %#x may corrupt adjacent RW1C bits\n",
-> -			     size, pci_domain_nr(bus), bus->number,
-> -			     PCI_SLOT(devfn), PCI_FUNC(devfn), where);
+The commit 10befea91b61 ("mm: memcg/slab: use a single set of
+kmem_caches for all allocations") changed the moment when this bit
+is set: if previously it was set on the allocation of the slab page,
+now it can be set well after, when the first accounted object is
+allocated on this page.
 
-We just changed this printk (see [1]), but I think we still have this
-lockdep problem even after Mark's change.  So I guess we need another
-think about this.
+It opened a race: if page->mem_cgroup is set concurrently after the
+first page_has_obj_cgroups(page) check, a pointer to the obj_cgroups
+array can be returned as a memory cgroup pointer.
 
-Maybe we can print something when registering pci_ops that use
-pci_generic_config_write32()?
+A simple check for page->mem_cgroup pointer for NULL before the
+page_has_obj_cgroups() check fixes the race. Indeed, if the pointer
+is not NULL, it's either a simple mem_cgroup pointer or a pointer
+to obj_cgroup vector. The pointer can be asynchronously changed
+from NULL to (obj_cgroup_vec | 0x1UL), but can't be changed
+from a valid memcg pointer to objcg vector or back.
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci.git/commit/?h=pci/enumeration&id=92ff4b49c2a9
+If the object passed to mem_cgroup_from_obj() is a slab object
+and page->mem_cgroup is NULL, it means that the object is not
+accounted, so the function must return NULL.
 
->  	mask = ~(((1 << (size * 8)) - 1) << ((where & 0x3) * 8));
->  	tmp = readl(addr) & mask;
-> -- 
-> 2.1.0
-> 
+I've discovered the race looking at the code, so far I haven't seen it
+in the wild.
+
+Fixes: 10befea91b61 ("mm: memcg/slab: use a single set of kmem_caches for=
+ all allocations")
+Signed-off-by: Roman Gushchin <guro@fb.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Shakeel Butt <shakeelb@google.com>
+---
+ mm/memcontrol.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 75cd1a1e66c8..093526fec4bf 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -2923,6 +2923,17 @@ struct mem_cgroup *mem_cgroup_from_obj(void *p)
+=20
+ 	page =3D virt_to_head_page(p);
+=20
++	/*
++	 * If page->mem_cgroup is set, it's either a simple mem_cgroup pointer
++	 * or a pointer to obj_cgroup vector. In the latter case the lowest
++	 * bit of the pointer is set.
++	 * The page->mem_cgroup pointer can be asynchronously changed
++	 * from NULL to (obj_cgroup_vec | 0x1UL), but can't be changed
++	 * from a valid memcg pointer to objcg vector or back.
++	 */
++	if (!page->mem_cgroup)
++		return NULL;
++
+ 	/*
+ 	 * Slab objects are accounted individually, not per-page.
+ 	 * Memcg membership data for each individual object is saved in
+--=20
+2.26.2
+
