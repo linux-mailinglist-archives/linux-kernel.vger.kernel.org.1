@@ -2,80 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F8FF264D7B
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 20:43:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 156DC264D6C
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 20:42:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727771AbgIJSnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 14:43:25 -0400
-Received: from mail-il1-f196.google.com ([209.85.166.196]:44285 "EHLO
-        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726415AbgIJSSD (ORCPT
+        id S1727016AbgIJSmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 14:42:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35494 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726591AbgIJSSE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 14:18:03 -0400
-Received: by mail-il1-f196.google.com with SMTP id h11so6563235ilj.11;
-        Thu, 10 Sep 2020 11:18:02 -0700 (PDT)
+        Thu, 10 Sep 2020 14:18:04 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9C46C061757;
+        Thu, 10 Sep 2020 11:18:03 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id o16so419833pjr.2;
+        Thu, 10 Sep 2020 11:18:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=JFd3P1rOkLJ0aMveQe0KPg1GqwxvSb9Woluh1JdvYp0=;
+        b=Op9WewQIHeEQlS/RoU8M6xE18aOAsW92SSqLEXdoL6DIM5z/cvbSOLwC+TG9fVWhJr
+         kOMVkkvasCDay8WDHAqgzDL2YlJ64YeMuqpraanDfiFh3i7/3kwAX6ckuxPy/KWYt4T4
+         88q3U4GbhB0qu3CCh/tQi68jHL1OS3ODXVKm5yqODXCRmVVac5yQPNlaGwI70/v/EZ7t
+         SBpkwH1th3kNVmk+9VNUru7KzXB43xlOP9zMdh9me0fB1PsFUuVQirvnEBMZxKlwY9jp
+         +YpWAQiaJyPxSCrIeDU0ggjpErGNtb0PDJzN0cvLbPJBuLuaXXeYXERl9FICtmz8nWS/
+         aO8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Km+ilfssoEe+/1p9cVPzW4JFS2R1ND0MVv0bL/RJ3KA=;
-        b=Don4oH6oAOp/tlgJeGwCZCUutAuJsFfgbSasUuh9WPrbrCCB82IrespXJVuevda8F9
-         DuaZcM5dQEZWvNFifMHL/NK3QGQUxr67bjCejHvUz85ouPpeUb4TndyZL3pU0zZtcIbN
-         FpvPszLWPHgQCoZGWm131wEUpf+TNgPtF3+kPfcD1cPJ8l6cg/2bnOPC/mBWmP4I4MB2
-         zdq68V24U6Yk7VEHwTutp9ljmS9dAhHGvagYmsrG4y7g3mIA5B8/t1iCnSO/rKX4KMSv
-         HE3t/uZoixcSEpVzhETfPFrkparvXUKRvEhtRkJuX5DdgjpGWc1fVSeLIDlBOiLjOYUs
-         N1MA==
-X-Gm-Message-State: AOAM531tgbCFurahPzoI7wlHrjE416ifkW4UJf8X7WZBzQe3f7DFEri2
-        J1PQZhZuV0TI6zZj/mNZ3w==
-X-Google-Smtp-Source: ABdhPJy+jchPNAOwGP+KNIMYqdpVqnrsL4xX8ntPRCH549LF5iQzWhwqkjz2WczcZQva+Hj27kd1qg==
-X-Received: by 2002:a92:9186:: with SMTP id e6mr8300661ill.278.1599761882138;
-        Thu, 10 Sep 2020 11:18:02 -0700 (PDT)
-Received: from xps15 ([64.188.179.251])
-        by smtp.gmail.com with ESMTPSA id y10sm3147009ioy.25.2020.09.10.11.17.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=JFd3P1rOkLJ0aMveQe0KPg1GqwxvSb9Woluh1JdvYp0=;
+        b=sTRSyHNEEyWAtCvPfr3Pl09+8SJusX/WaEI9jzxGbZjF13JrtJyS+He0kLvn69zK64
+         7vY+9qNasDflhAn5nnuWBs647Pv3ORdW/nPcoKuYDnA461WFCPJ76ALyXKvh6Q0IOVp+
+         FnAeCTbNMnF0W5Aw4x/e2XdEUKZfLO1qPQFR9eErv5KExf0ubUJ2Ipc4la73Ht9Izgfu
+         J/aMWEtGe5SSQUR/BUOVrpaI8cigdULI3XBFyKZ2hl5lJZ4wo0+cgtxIC8yXLtsC6kj/
+         byCpYfuL2QuUsYSEY+dKQlyEwAi1yHJL1u5d1tvj2ZCQm4O+kSUZlR2COedDj3HhjJWA
+         d2IA==
+X-Gm-Message-State: AOAM5303ejn7xihi02JuKlh3g8x+b8xF1kPEIe35L8p2DbcS8c3Slkdg
+        EjmXaAySH9B8gUZ6dlBR1yg=
+X-Google-Smtp-Source: ABdhPJzkphfIrGONRGhkOvnxjIuDhqgQ5GuoK+0TLsSJppTv+BMsz6ImMXl+KGDeRe7/jApLXDLN1Q==
+X-Received: by 2002:a17:90a:bd91:: with SMTP id z17mr1101093pjr.139.1599761883254;
+        Thu, 10 Sep 2020 11:18:03 -0700 (PDT)
+Received: from [10.230.30.107] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id ca6sm2551066pjb.53.2020.09.10.11.18.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
         Thu, 10 Sep 2020 11:18:01 -0700 (PDT)
-Received: (nullmailer pid 622379 invoked by uid 1000);
-        Thu, 10 Sep 2020 18:17:56 -0000
-Date:   Thu, 10 Sep 2020 12:17:56 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Zhiqiang Hou <Zhiqiang.Hou@nxp.com>
-Cc:     bhelgaas@google.com, shawnguo@kernel.org, minghuan.Lian@nxp.com,
-        leoyang.li@nxp.com, linuxppc-dev@lists.ozlabs.org,
-        robh+dt@kernel.org, linux-arm-kernel@lists.infradead.org,
-        roy.zang@nxp.com, andrew.murray@arm.com, linux-pci@vger.kernel.org,
-        lorenzo.pieralisi@arm.com, gustavo.pimentel@synopsys.com,
-        mingkai.hu@nxp.com, linux-kernel@vger.kernel.org,
-        jingoohan1@gmail.com, kishon@ti.com, devicetree@vger.kernel.org
-Subject: Re: [PATCHv7 12/12] misc: pci_endpoint_test: Add driver data for
- Layerscape PCIe controllers
-Message-ID: <20200910181756.GA622331@bogus>
-References: <20200811095441.7636-1-Zhiqiang.Hou@nxp.com>
- <20200811095441.7636-13-Zhiqiang.Hou@nxp.com>
+Subject: Re: [PATCH 1/4] dt-bindings: spi: Add compatible string for brcmstb
+ SoCs
+To:     Ray Jui <ray.jui@broadcom.com>, Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kamal Dasu <kdasu.kdev@gmail.com>
+Cc:     linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com
+References: <20200910152539.45584-1-ray.jui@broadcom.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <583cb756-409d-afa6-0d4d-47100eb33e74@gmail.com>
+Date:   Thu, 10 Sep 2020 11:18:00 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.2.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200811095441.7636-13-Zhiqiang.Hou@nxp.com>
+In-Reply-To: <20200910152539.45584-1-ray.jui@broadcom.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 11 Aug 2020 17:54:41 +0800, Zhiqiang Hou wrote:
-> From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
-> 
-> The commit 0a121f9bc3f5 ("misc: pci_endpoint_test: Use streaming DMA
-> APIs for buffer allocation") changed to use streaming DMA APIs, however,
-> dma_map_single() might not return a 4KB aligned address, so add the
-> default_data as driver data for Layerscape PCIe controllers to make it
-> 4KB aligned.
-> 
-> Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
-> ---
-> V7:
->  - New patch.
-> 
->  drivers/misc/pci_endpoint_test.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
-> 
 
-Acked-by: Rob Herring <robh@kernel.org>
+
+On 9/10/2020 8:25 AM, Ray Jui wrote:
+> Add compatible string for brcmstb 7445 SoCs.
+> 
+> Signed-off-by: Ray Jui <ray.jui@broadcom.com>
+
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
