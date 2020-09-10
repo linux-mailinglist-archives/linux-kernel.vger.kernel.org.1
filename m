@@ -2,255 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35B1E2652A5
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:22:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8A072652A3
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:21:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728045AbgIJVWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 17:22:10 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:34786 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731092AbgIJOYG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 10:24:06 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 784D020182C;
-        Thu, 10 Sep 2020 16:17:04 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 940D0200788;
-        Thu, 10 Sep 2020 16:17:01 +0200 (CEST)
-Received: from 10.192.242.69 (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id E0D26402CA;
-        Thu, 10 Sep 2020 16:16:57 +0200 (CEST)
-From:   Shengjiu Wang <shengjiu.wang@nxp.com>
-To:     lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: ak4458: Add DSD support for ak4458 and ak4497
-Date:   Thu, 10 Sep 2020 22:10:32 +0800
-Message-Id: <1599747032-20055-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1728234AbgIJVVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 17:21:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55040 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731117AbgIJOYO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 10:24:14 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56A50C061387
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 07:12:14 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id y5so5460991otg.5
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 07:12:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kcGVZn8a+TssCx5V7/oWyKJ/qM6HLG6mmAZ+V9sySx8=;
+        b=c/e5qR7LPEjderXek+U3xgTpgL77Qrfecxnb6dt5fDoSQpfDhVsU5hfdVc/DB8V8e5
+         rt4nLO3Hk3YaGq0en00R7yN6TLbP6H2kZO7HEXL9nS7++wkphfursXDVygtlT1GWEmot
+         gehKBV+biiux876gKHzHTwMIX+zkCmuMD7eH0RZigPBf+MqU+nFiCMBZSYGZmY+tVJlF
+         aqt9xW4BOX61FwxN0R4Abz0tI0uYLlnkoi88XvNZYWL30aI7hlWeoI0Tl7TZC1f2ffYb
+         8qtU+itM2eSEB4zMZqI0PBK+i5O6AK7DfNiUX5UoXj0lNiWI6RolOOFuyDzd6eHRvDQL
+         7Qww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kcGVZn8a+TssCx5V7/oWyKJ/qM6HLG6mmAZ+V9sySx8=;
+        b=rIj8UtyuBwbBH3NkaNX3MWBkWNP7WZAW1NsEhpdA2HsqZUkJb3DgqWjrd3JmC/+rvR
+         ZYhcAhYHETo2wouWQnEpsag5KTso0Jhu3LJJFOrcm6GDVG8crIb2mRnuohwenYBij0kk
+         bY8HaSMyyaMCOxzlK4RXctkk1/LvKZECMW3/j31lj1eBwyKeA39mt2gi26WCtIfDVTH6
+         ad0YJk4v/kBYzNhI/TCI2/isjO0odC1OAeg+H6s1Grs0wwx8KWtPqFOeF7bCDU77b6N9
+         jVayEzzpzuYXGKkq4uO9jECFygmE/enSsMvsFE5OI0hMFnvyY+3IhohAABq4A5yerkfJ
+         OObg==
+X-Gm-Message-State: AOAM533S+QRLBtw1jpjK8UvRxc3HaWJHi9xv562D1CDLOoS4BVLKniqu
+        3uHIGnr232qJCEh8xlCXvtp4Q86t5Nc47fCwofcrSg==
+X-Google-Smtp-Source: ABdhPJw7bnzACBKvQQq7Sx1WBZDpFErocDIwp99VDe4AkTzqzXQ/WOsYfl6eSj9iXfz0s4IZ91iUT0l3c91VSUowd1A=
+X-Received: by 2002:a9d:3da1:: with SMTP id l30mr4255115otc.233.1599747133357;
+ Thu, 10 Sep 2020 07:12:13 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200910134429.3525408-1-masahiroy@kernel.org> <20200910134429.3525408-2-masahiroy@kernel.org>
+In-Reply-To: <20200910134429.3525408-2-masahiroy@kernel.org>
+From:   Marco Elver <elver@google.com>
+Date:   Thu, 10 Sep 2020 16:12:01 +0200
+Message-ID: <CANpmjNOcpNLe3T-Qf1gVkqxpLCPQ+yjJZ0wM79jCUrmet_QH0Q@mail.gmail.com>
+Subject: Re: [PATCH 2/2] kbuild: move CFLAGS_{KASAN,UBSAN,KCSAN} exports to
+ relevant Makefiles
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ak4458 can't support DSD512 format, but ak4497 can, so add
-a new variable in ak4458_drvdata to distinguish these two
-platform.
+On Thu, 10 Sep 2020 at 15:45, Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> Move CFLAGS_KASAN*, CFLAGS_UBSAN, CFLAGS_KCSAN to Makefile.kasan,
+> Makefile.ubsan, Makefile.kcsan, respectively.
+>
+> This commit also avoids the same -fsanitize=* flags being added to
+> CFLAGS_UBSAN multiple times.
+>
+> Prior to this commit, the ubsan flags were appended by the '+='
+> operator, without any initialization. Some build targets such as
+> 'make bindeb-pkg' recurses to the top Makefile, and ended up with
+> adding the same flags to CFLAGS_UBSAN twice.
+>
+> Clear CFLAGS_UBSAN with ':=' to make it a simply expanded variable.
+> This is better than a recursively expanded variable, which evaluates
+> $(call cc-option, ...) multiple times before Kbuild starts descending
+> to subdirectories.
+>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
+>
+>  Makefile               | 1 -
+>  scripts/Makefile.kasan | 2 ++
+>  scripts/Makefile.kcsan | 2 +-
+>  scripts/Makefile.ubsan | 3 +++
+>  4 files changed, 6 insertions(+), 2 deletions(-)
+>
+> diff --git a/Makefile b/Makefile
+> index ec2330ce0fc5..4b5a305e30d2 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -517,7 +517,6 @@ export KBUILD_HOSTCXXFLAGS KBUILD_HOSTLDFLAGS KBUILD_HOSTLDLIBS LDFLAGS_MODULE
+>
+>  export KBUILD_CPPFLAGS NOSTDINC_FLAGS LINUXINCLUDE OBJCOPYFLAGS KBUILD_LDFLAGS
+>  export KBUILD_CFLAGS CFLAGS_KERNEL CFLAGS_MODULE
+> -export CFLAGS_KASAN CFLAGS_KASAN_NOSANITIZE CFLAGS_UBSAN CFLAGS_KCSAN
+>  export KBUILD_AFLAGS AFLAGS_KERNEL AFLAGS_MODULE
+>  export KBUILD_AFLAGS_MODULE KBUILD_CFLAGS_MODULE KBUILD_LDFLAGS_MODULE
+>  export KBUILD_AFLAGS_KERNEL KBUILD_CFLAGS_KERNEL
+> diff --git a/scripts/Makefile.kasan b/scripts/Makefile.kasan
+> index 1532f1a41a8f..1e000cc2e7b4 100644
+> --- a/scripts/Makefile.kasan
+> +++ b/scripts/Makefile.kasan
+> @@ -47,3 +47,5 @@ CFLAGS_KASAN := -fsanitize=kernel-hwaddress \
+>                 $(instrumentation_flags)
+>
+>  endif # CONFIG_KASAN_SW_TAGS
+> +
+> +export CFLAGS_KASAN CFLAGS_KASAN_NOSANITIZE
+> diff --git a/scripts/Makefile.kcsan b/scripts/Makefile.kcsan
+> index c50f27b3ac56..cec50d74e0d0 100644
+> --- a/scripts/Makefile.kcsan
+> +++ b/scripts/Makefile.kcsan
+> @@ -9,7 +9,7 @@ endif
+>
+>  # Keep most options here optional, to allow enabling more compilers if absence
+>  # of some options does not break KCSAN nor causes false positive reports.
+> -CFLAGS_KCSAN := -fsanitize=thread \
+> +export CFLAGS_KCSAN := -fsanitize=thread \
+>         $(call cc-option,$(call cc-param,tsan-instrument-func-entry-exit=0) -fno-optimize-sibling-calls) \
+>         $(call cc-option,$(call cc-param,tsan-instrument-read-before-write=1)) \
+>         $(call cc-param,tsan-distinguish-volatile=1)
 
-In hw_params(), calculate bit clock according to different DSD
-format and configure DSD register.
+This doesn't apply to -next, which has some KCSAN changes for the next
+merge window. Although it seems git-merge figures out the resolution
+for the conflict automatically.
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- sound/soc/codecs/ak4458.c | 82 +++++++++++++++++++++++++++++++++++----
- sound/soc/codecs/ak4458.h |  5 ++-
- 2 files changed, 79 insertions(+), 8 deletions(-)
+Other than that,
 
-diff --git a/sound/soc/codecs/ak4458.c b/sound/soc/codecs/ak4458.c
-index 763e6839428f..9054964d5cfa 100644
---- a/sound/soc/codecs/ak4458.c
-+++ b/sound/soc/codecs/ak4458.c
-@@ -31,11 +31,13 @@ static const char *ak4458_supply_names[AK4458_NUM_SUPPLIES] = {
- struct ak4458_drvdata {
- 	struct snd_soc_dai_driver *dai_drv;
- 	const struct snd_soc_component_driver *comp_drv;
-+	bool  dsd512;	/* DSD512 is supported or not */
- };
- 
- /* AK4458 Codec Private Data */
- struct ak4458_priv {
- 	struct regulator_bulk_data supplies[AK4458_NUM_SUPPLIES];
-+	const struct ak4458_drvdata *drvdata;
- 	struct device *dev;
- 	struct regmap *regmap;
- 	struct gpio_desc *reset_gpiod;
-@@ -136,6 +138,10 @@ static const char * const ak4458_ats_select_texts[] = {
- /* DIF2 bit Audio Interface Format Setting(BICK fs) */
- static const char * const ak4458_dif_select_texts[] = {"32fs,48fs", "64fs",};
- 
-+/* DSD input pin select */
-+static const char * const ak4497_dsd_input_path_select[] = {
-+	"16_17_19pin", "3_4_5pin"};
-+
- static const struct soc_enum ak4458_dac1_dem_enum =
- 	SOC_ENUM_SINGLE(AK4458_01_CONTROL2, 1,
- 			ARRAY_SIZE(ak4458_dem_select_texts),
-@@ -175,6 +181,10 @@ static const struct soc_enum ak4458_dif_enum =
- 	SOC_ENUM_SINGLE(AK4458_00_CONTROL1, 3,
- 			ARRAY_SIZE(ak4458_dif_select_texts),
- 			ak4458_dif_select_texts);
-+static const struct soc_enum ak4497_dsdp_enum =
-+	SOC_ENUM_SINGLE(AK4458_09_DSD2, 2,
-+			ARRAY_SIZE(ak4497_dsd_input_path_select),
-+			ak4497_dsd_input_path_select);
- 
- static int get_digfil(struct snd_kcontrol *kcontrol,
- 		      struct snd_ctl_elem_value *ucontrol)
-@@ -282,6 +292,7 @@ static const struct snd_kcontrol_new ak4497_snd_controls[] = {
- 	SOC_ENUM("AK4497 Sound Mode", ak4458_sm_enum),
- 	SOC_ENUM("AK4497 Attenuation transition Time Setting",
- 		 ak4458_ats_enum),
-+	SOC_ENUM("AK4497 DSD Data Input Pin", ak4497_dsdp_enum),
- };
- 
- /* ak4497 dapm widgets */
-@@ -325,12 +336,54 @@ static int ak4458_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_soc_component *component = dai->component;
- 	struct ak4458_priv *ak4458 = snd_soc_component_get_drvdata(component);
- 	int pcm_width = max(params_physical_width(params), ak4458->slot_width);
--	int nfs1;
--	u8 format;
-+	u8 format, dsdsel0, dsdsel1;
-+	int nfs1, dsd_bclk;
- 
- 	nfs1 = params_rate(params);
- 	ak4458->fs = nfs1;
- 
-+	/* calculate bit clock */
-+	switch (params_format(params)) {
-+	case SNDRV_PCM_FORMAT_DSD_U8:
-+	case SNDRV_PCM_FORMAT_DSD_U16_LE:
-+	case SNDRV_PCM_FORMAT_DSD_U16_BE:
-+	case SNDRV_PCM_FORMAT_DSD_U32_LE:
-+	case SNDRV_PCM_FORMAT_DSD_U32_BE:
-+		dsd_bclk = nfs1 * params_physical_width(params);
-+		switch (dsd_bclk) {
-+		case 2822400:
-+			dsdsel0 = 0;
-+			dsdsel1 = 0;
-+			break;
-+		case 5644800:
-+			dsdsel0 = 1;
-+			dsdsel1 = 0;
-+			break;
-+		case 11289600:
-+			dsdsel0 = 0;
-+			dsdsel1 = 1;
-+			break;
-+		case 22579200:
-+			if (ak4458->drvdata->dsd512) {
-+				dsdsel0 = 1;
-+				dsdsel1 = 1;
-+			} else {
-+				dev_err(dai->dev, "DSD512 not supported.\n");
-+				return -EINVAL;
-+			}
-+			break;
-+		default:
-+			dev_err(dai->dev, "Unsupported dsd bclk.\n");
-+			return -EINVAL;
-+		}
-+
-+		snd_soc_component_update_bits(component, AK4458_06_DSD1,
-+					      AK4458_DSDSEL_MASK, dsdsel0);
-+		snd_soc_component_update_bits(component, AK4458_09_DSD2,
-+					      AK4458_DSDSEL_MASK, dsdsel1);
-+		break;
-+	}
-+
- 	/* Master Clock Frequency Auto Setting Mode Enable */
- 	snd_soc_component_update_bits(component, AK4458_00_CONTROL1, 0x80, 0x80);
- 
-@@ -355,6 +408,9 @@ static int ak4458_hw_params(struct snd_pcm_substream *substream,
- 		case SND_SOC_DAIFMT_DSP_B:
- 			format = AK4458_DIF_32BIT_MSB;
- 			break;
-+		case SND_SOC_DAIFMT_PDM:
-+			format = AK4458_DIF_32BIT_MSB;
-+			break;
- 		default:
- 			return -EINVAL;
- 		}
-@@ -393,6 +449,7 @@ static int ak4458_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 	case SND_SOC_DAIFMT_LEFT_J:
- 	case SND_SOC_DAIFMT_RIGHT_J:
- 	case SND_SOC_DAIFMT_DSP_B:
-+	case SND_SOC_DAIFMT_PDM:
- 		ak4458->fmt = fmt & SND_SOC_DAIFMT_FORMAT_MASK;
- 		break;
- 	default:
-@@ -401,6 +458,12 @@ static int ak4458_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 		return -EINVAL;
- 	}
- 
-+	/* DSD mode */
-+	snd_soc_component_update_bits(component, AK4458_02_CONTROL3,
-+				      AK4458_DP_MASK,
-+				      ak4458->fmt == SND_SOC_DAIFMT_PDM ?
-+				      AK4458_DP_MASK : 0);
-+
- 	ak4458_rstn_control(component, 0);
- 	ak4458_rstn_control(component, 1);
- 
-@@ -472,7 +535,10 @@ static int ak4458_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
- 
- #define AK4458_FORMATS	(SNDRV_PCM_FMTBIT_S16_LE |\
- 			 SNDRV_PCM_FMTBIT_S24_LE |\
--			 SNDRV_PCM_FMTBIT_S32_LE)
-+			 SNDRV_PCM_FMTBIT_S32_LE |\
-+			 SNDRV_PCM_FMTBIT_DSD_U8 |\
-+			 SNDRV_PCM_FMTBIT_DSD_U16_LE |\
-+			 SNDRV_PCM_FMTBIT_DSD_U32_LE)
- 
- static const unsigned int ak4458_rates[] = {
- 	8000, 11025,  16000, 22050,
-@@ -668,11 +734,13 @@ static const struct regmap_config ak4458_regmap = {
- static const struct ak4458_drvdata ak4458_drvdata = {
- 	.dai_drv = &ak4458_dai,
- 	.comp_drv = &soc_codec_dev_ak4458,
-+	.dsd512 = false,
- };
- 
- static const struct ak4458_drvdata ak4497_drvdata = {
- 	.dai_drv = &ak4497_dai,
- 	.comp_drv = &soc_codec_dev_ak4497,
-+	.dsd512 = true,
- };
- 
- static const struct dev_pm_ops ak4458_pm = {
-@@ -684,7 +752,6 @@ static const struct dev_pm_ops ak4458_pm = {
- static int ak4458_i2c_probe(struct i2c_client *i2c)
- {
- 	struct ak4458_priv *ak4458;
--	const struct ak4458_drvdata *drvdata;
- 	int ret, i;
- 
- 	ak4458 = devm_kzalloc(&i2c->dev, sizeof(*ak4458), GFP_KERNEL);
-@@ -698,7 +765,7 @@ static int ak4458_i2c_probe(struct i2c_client *i2c)
- 	i2c_set_clientdata(i2c, ak4458);
- 	ak4458->dev = &i2c->dev;
- 
--	drvdata = of_device_get_match_data(&i2c->dev);
-+	ak4458->drvdata = of_device_get_match_data(&i2c->dev);
- 
- 	ak4458->reset_gpiod = devm_gpiod_get_optional(ak4458->dev, "reset",
- 						      GPIOD_OUT_LOW);
-@@ -720,8 +787,9 @@ static int ak4458_i2c_probe(struct i2c_client *i2c)
- 		return ret;
- 	}
- 
--	ret = devm_snd_soc_register_component(ak4458->dev, drvdata->comp_drv,
--					      drvdata->dai_drv, 1);
-+	ret = devm_snd_soc_register_component(ak4458->dev,
-+					      ak4458->drvdata->comp_drv,
-+					      ak4458->drvdata->dai_drv, 1);
- 	if (ret < 0) {
- 		dev_err(ak4458->dev, "Failed to register CODEC: %d\n", ret);
- 		return ret;
-diff --git a/sound/soc/codecs/ak4458.h b/sound/soc/codecs/ak4458.h
-index f906215f7e4e..9548c5d78621 100644
---- a/sound/soc/codecs/ak4458.h
-+++ b/sound/soc/codecs/ak4458.h
-@@ -83,4 +83,7 @@
- #define AK4458_ATS_SHIFT	6
- #define AK4458_ATS_MASK		GENMASK(7, 6)
- 
--#endif /* _AK4458_H */
-+#define AK4458_DSDSEL_MASK		(0x1 << 0)
-+#define AK4458_DP_MASK			(0x1 << 7)
-+
-+#endif
--- 
-2.27.0
+Acked-by: Marco Elver <elver@google.com>
 
+Thank you!
+
+> diff --git a/scripts/Makefile.ubsan b/scripts/Makefile.ubsan
+> index 27348029b2b8..c661484ee01f 100644
+> --- a/scripts/Makefile.ubsan
+> +++ b/scripts/Makefile.ubsan
+> @@ -1,4 +1,7 @@
+>  # SPDX-License-Identifier: GPL-2.0
+> +
+> +export CFLAGS_UBSAN :=
+> +
+>  ifdef CONFIG_UBSAN_ALIGNMENT
+>        CFLAGS_UBSAN += $(call cc-option, -fsanitize=alignment)
+>  endif
+> --
+> 2.25.1
+>
