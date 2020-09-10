@@ -2,58 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84D9B2654FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 00:22:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDA25265504
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 00:25:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725837AbgIJWWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 18:22:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725294AbgIJWWi (ORCPT
+        id S1725831AbgIJWZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 18:25:24 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:41410 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725763AbgIJWZW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 18:22:38 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDFD1C061756;
-        Thu, 10 Sep 2020 15:22:37 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 4010C135ED631;
-        Thu, 10 Sep 2020 15:05:49 -0700 (PDT)
-Date:   Thu, 10 Sep 2020 15:22:35 -0700 (PDT)
-Message-Id: <20200910.152235.1512682061673845419.davem@davemloft.net>
-To:     krzk@kernel.org
-Cc:     kuba@kernel.org, robh+dt@kernel.org, k.opasiak@samsung.com,
-        kgene@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-nfc@lists.01.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org
-Subject: Re: [PATCH v3 0/8] nfc: s3fwrn5: Few cleanups
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200910161219.6237-1-krzk@kernel.org>
-References: <20200910161219.6237-1-krzk@kernel.org>
-X-Mailer: Mew version 6.8 on Emacs 27.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Thu, 10 Sep 2020 15:05:49 -0700 (PDT)
+        Thu, 10 Sep 2020 18:25:22 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08AMPIU0090114;
+        Thu, 10 Sep 2020 17:25:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1599776718;
+        bh=GjMJP+nWCUtiQwNsarcqurRBqCFISUNVgzR2BTmparY=;
+        h=From:To:CC:Subject:Date;
+        b=F9u6+z1H7wqbOHBaHNRVjb/2Hki0eCW4Q0WDeb408kQoysmWoS3AhGan7yP7la6MU
+         JEsf8QG/bnkZS2YuOwN6PAFk+IjbbeWMlFWi6m6KoYPv2xZ6zaQlxpikTUV705pAnX
+         zJRPEfTaB3rTKZNg3FUtko1+az/kjSNK86MWY25k=
+Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08AMPIhe091776
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 10 Sep 2020 17:25:18 -0500
+Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 10
+ Sep 2020 17:25:17 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 10 Sep 2020 17:25:17 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08AMPGr5017546;
+        Thu, 10 Sep 2020 17:25:17 -0500
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+To:     Tony Lindgren <tony@atomide.com>
+CC:     <linux-omap@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Sekhar Nori <nsekhar@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Murali Karicheri <m-karicheri2@ti.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>
+Subject: [PATCH next 0/3] ARM: dts: am437x: switch to new cpsw switch drv
+Date:   Fri, 11 Sep 2020 01:25:05 +0300
+Message-ID: <20200910222508.32417-1-grygorii.strashko@ti.com>
+X-Mailer: git-send-email 2.17.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Date: Thu, 10 Sep 2020 18:12:11 +0200
+Hi Tony,
 
-> Changes since v2:
-> 1. Fix dtschema ID after rename (patch 1/8).
-> 2. Apply patch 9/9 (defconfig change).
-> 
-> Changes since v1:
-> 1. Rename dtschema file and add additionalProperties:false, as Rob
->    suggested,
-> 2. Add Marek's tested-by,
-> 3. New patches: #4, #5, #6, #7 and #9.
+Since Kernel v5.5 commits:
+ 111cf1ab4da3 ("net: ethernet: ti: introduce cpsw switchdev based driver part 2 - switch")
+ ed3525eda4c4 ("net: ethernet: ti: introduce cpsw switchdev based driver part 1 - dual-emac")
+the new CPSW driver with switchdev support has been introduced and one
+am571x-idk board was converted to use it. And since that time (Nov 2019) no
+significant issues were reported for the new CPSW driver.
 
-Seires applied to net-next, thanks.
+Therefore it's time to switch all am437x boards to use new cpsw switch
+driver. Those boards have 1 or 2 Ext. ports wired and configured in dual_mac mode
+by default. The dual_mac mode has been preserved the same way between
+legacy and new driver, and one port devices works the same as 1 dual_mac port,
+so it's safe to switch drivers.
+
+Grygorii Strashko (3):
+  ARM: dts: am437x-l4: add dt node for new cpsw switchdev driver
+  ARM: dts: am437x: switch to new cpsw switch drv
+  ARM: dts: am437x-l4: drop legacy cpsw dt node
+
+ arch/arm/boot/dts/am4372.dtsi        |  4 +-
+ arch/arm/boot/dts/am437x-cm-t43.dts  | 14 +++--
+ arch/arm/boot/dts/am437x-gp-evm.dts  | 13 +++--
+ arch/arm/boot/dts/am437x-idk-evm.dts | 13 +++--
+ arch/arm/boot/dts/am437x-l4.dtsi     | 77 +++++++++++++++-------------
+ arch/arm/boot/dts/am437x-sk-evm.dts  | 14 +++--
+ arch/arm/boot/dts/am43x-epos-evm.dts | 13 +++--
+ 7 files changed, 78 insertions(+), 70 deletions(-)
+
+-- 
+2.17.1
+
