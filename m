@@ -2,151 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22A352651F0
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:05:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D54D265227
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:09:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726780AbgIJVFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 17:05:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33374 "EHLO
+        id S1726899AbgIJVIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 17:08:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728060AbgIJVFU (ORCPT
+        with ESMTP id S1725804AbgIJVHw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 17:05:20 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48CA0C061573;
-        Thu, 10 Sep 2020 14:05:18 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id jw11so644951pjb.0;
-        Thu, 10 Sep 2020 14:05:18 -0700 (PDT)
+        Thu, 10 Sep 2020 17:07:52 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77975C061573;
+        Thu, 10 Sep 2020 14:07:52 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id f18so5473592pfa.10;
+        Thu, 10 Sep 2020 14:07:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=u3ZSYZIE11VVPHHcA2Umq2k8ZqXKEUiv80isAt4/Bxs=;
-        b=YTfxPqUk4Uz3ZAivteNj8RKC2MZcFwnOy2aKX161D2TaIYwOPVmIBOWDSWCBj7JISC
-         4QXuctBSeEKDdm5wwW3Be0f2VtGnnhPwD9Q1NyH8uoYYX5csEE/IjYSOuLHHRdpASFjP
-         24JV4dJg8wg06CCbQBX9DaVoyRss1VkdmC9FrKW4rfdVU/stktfnlrIx7fHi+GJULkXn
-         cT1XUM5hw6C0mg9CEX2KWQQsBV9pZ+ppcb7UewuWgmERLz0h8pEoTfJHzuvq6viD/S/s
-         GHxlgd38hGFzDQeqJ8ARlQtyccMlDLsiea6E8+gBxOTBKnf9FBkcbJjDtpoqfT6wmK4W
-         kCqQ==
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=Li0nSbFdz+mC8RxoTVun9cvaUm8qgoK6MsIzH+38R3k=;
+        b=Ai11IEn3h4Xt+T9ffcUkHU+kkaykAv/kILQu8/Z8FY1WqSniTbyVBCnwUp3rQKOlo0
+         EgqUbCF4+pWHU8e3Td0WqI215nOfB7YNPaLf/4lHgM6mQcBJHfSP1mz7cI4KLI4RyEjP
+         /rqVgueX4UKU7lrR6snDLpSA2Q+SlnHDZo3fby5V20hA42M+4oSgBEQO/Q+kjxhYCxCe
+         fncaKXDQmhfqdaXUJvr7ao8yT0nlucHs1qfMs4jqVepjTwePWgaNwY6ffIK2/KW5hLQA
+         hXMMTq+6dAm7I/Dlx6Mr0CMs/NCG87mITKJfZW3bw+KJjuBA1qj6uJOqbOx7jaePcxdo
+         lVTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=u3ZSYZIE11VVPHHcA2Umq2k8ZqXKEUiv80isAt4/Bxs=;
-        b=g7G/fQ73YAbNA/0Gudbzrjb2zx8aDIkydvi40d0P9k6pkDbMfe5M3hXcghThUamO6d
-         dIZ6FzuIXqtxDC5Aa+jo3QmzE6HWO5CJJP0Gmh7sm0r2QiIdI65fhOhr5GkW+FpEqP96
-         Rrg7V8nH8FWQFKs2dKPd6IEXFhU1WmOPpjlM6Da3TPEsUZ3d1UPL9YSTp1ykXrimRt87
-         zb0ckEnVZe9MgnTjSIzwTnEwltvb8twq70B7IlyA9BVxttt9xMfhXJ0zTIC9r/suLDgQ
-         g4zayxqn5WTA/tb1XTEzpJRhKn5gAuY9+hxEcn+tbRcmM+gWkSsxV26/Zxr/tjH7w8k5
-         fkbw==
-X-Gm-Message-State: AOAM533twWVLa3Eslu1k8W7BO3fVp4QULVYK+NtkRCrBaH7OcSq6lr6O
-        rtEr8ppdZeWQS8VMV1+B3pWnqzYqD4E=
-X-Google-Smtp-Source: ABdhPJxMgRg+FNEDbF7a6Czn58yBRVG6yMKsz5u5qFIEKnOBNR7j1B1hXHvuNjYaXEzpymcM82Hdgg==
-X-Received: by 2002:a17:90a:481:: with SMTP id g1mr1663925pjg.157.1599771918100;
-        Thu, 10 Sep 2020 14:05:18 -0700 (PDT)
-Received: from [10.230.30.107] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id in10sm2686145pjb.11.2020.09.10.14.05.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Sep 2020 14:05:17 -0700 (PDT)
-Subject: Re: [PATCH 00/15] Adding GAUDI NIC code to habanalabs driver
-To:     Oded Gabbay <oded.gabbay@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        netdev@vger.kernel.org, SW_Drivers <SW_Drivers@habana.ai>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "David S. Miller" <davem@davemloft.net>
-References: <20200910161126.30948-1-oded.gabbay@gmail.com>
- <20200910130112.1f6bd9e9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAFCwf13SbXqjyu6JHKSTf-EqUxcBZUe4iAfggLhKXOi6DhXYcg@mail.gmail.com>
- <20200910132835.1bf7b638@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAFCwf127fssgiDEwYvv3rFW7iFFfKKZDE=oxDUbFBcwpz3yQkQ@mail.gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <a13199ce-0c73-920d-857d-3223144f41f0@gmail.com>
-Date:   Thu, 10 Sep 2020 14:05:15 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.2.1
-MIME-Version: 1.0
-In-Reply-To: <CAFCwf127fssgiDEwYvv3rFW7iFFfKKZDE=oxDUbFBcwpz3yQkQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=Li0nSbFdz+mC8RxoTVun9cvaUm8qgoK6MsIzH+38R3k=;
+        b=ZhyCU+AtnSq6XnkYq02vRj2Va1NlOouAqS7zX3+bJ39bQop/Ois6lsWeF2zJK7xnqn
+         c21WHbJRmmBYFQEemF2A/Eprw07IvZNA56D3hl5TEe7eFpODDjha9F8xeVp5D8ZYuLK4
+         RoZ3/lBnXpgjAYiZOGF6XL1CQ5cW4/2os1qpk0B0TunwklFieXi5oNnlp0UoIFgCeXDM
+         1Oo6Z3IKhNtR3BOVOFgoH/K+0KkqOCibL9DCqWtXS3oN9iwShgZL+WdheAUV5MOBbldl
+         GCBBebg4GVxO561foQDk0xVOZH6D0XzZfIFUm84k+OuRTPz2Bh/xSa9NLCPqqw/bAgk/
+         qVqA==
+X-Gm-Message-State: AOAM533Guu13ggaWupTLPUYQl2QANbnJmP6V1OowTizgfN6g/f5Ph2iZ
+        UMtgFJhC3b82RbaX3ir6NFM=
+X-Google-Smtp-Source: ABdhPJwFSjYOfpYq2rhihinFKuvAuIMZshJtCpVBe+dFyMykRxvaNxrYHAtXApgbXopQWYCIZKz6gw==
+X-Received: by 2002:a63:500e:: with SMTP id e14mr6019051pgb.36.1599772071871;
+        Thu, 10 Sep 2020 14:07:51 -0700 (PDT)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id a10sm6779410pfn.219.2020.09.10.14.07.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Sep 2020 14:07:51 -0700 (PDT)
+Date:   Thu, 10 Sep 2020 14:07:43 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Cong Wang <xiyou.wangcong@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     Paolo Abeni <pabeni@redhat.com>,
+        Kehuan Feng <kehuan.feng@gmail.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Jike Song <albcamus@gmail.com>, Josh Hunt <johunt@akamai.com>,
+        Jonas Bonn <jonas.bonn@netrounds.com>,
+        Michael Zhivich <mzhivich@akamai.com>,
+        David Miller <davem@davemloft.net>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>
+Message-ID: <5f5a959fbe236_c295820892@john-XPS-13-9370.notmuch>
+In-Reply-To: <CAM_iQpVqdVc5_LkhO4Qie7Ff+XXRTcpiptZsEVNh=o9E0GkcRQ@mail.gmail.com>
+References: <465a540e-5296-32e7-f6a6-79942dfe2618@netrounds.com>
+ <20200623134259.8197-1-mzhivich@akamai.com>
+ <1849b74f-163c-8cfa-baa5-f653159fefd4@akamai.com>
+ <CAM_iQpX1+dHB0kJF8gRfuDeAb9TsA9mB9H_Og8n8Hr19+EMLJA@mail.gmail.com>
+ <CAM_iQpWjQiG-zVs+e-V=8LvTFbRwgC4y4eoGERjezfAT0Fmm8g@mail.gmail.com>
+ <7fd86d97-6785-0b5f-1e95-92bc1da9df35@netrounds.com>
+ <500b4843cb7c425ea5449fe199095edd5f7feb0c.camel@redhat.com>
+ <25ca46e4-a8c1-1c88-d6a9-603289ff44c3@akamai.com>
+ <CANE52Ki8rZGDPLZkxY--RPeEG+0=wFeyCD6KKkeG1WREUwramw@mail.gmail.com>
+ <20200822032800.16296-1-hdanton@sina.com>
+ <CACS=qqKhsu6waaXndO5tQL_gC9TztuUQpqQigJA2Ac0y12czMQ@mail.gmail.com>
+ <20200825032312.11776-1-hdanton@sina.com>
+ <CACS=qqK-5g-QM_vczjY+A=3fi3gChei4cAkKweZ4Sn2L537DQA@mail.gmail.com>
+ <20200825162329.11292-1-hdanton@sina.com>
+ <CACS=qqKgiwdCR_5+z-vkZ0X8DfzOPD7_ooJ_imeBnx+X1zw2qg@mail.gmail.com>
+ <CACS=qqKptAQQGiMoCs1Zgs9S4ZppHhasy1AK4df2NxnCDR+vCw@mail.gmail.com>
+ <5f46032e.1c69fb81.9880c.7a6cSMTPIN_ADDED_MISSING@mx.google.com>
+ <CACS=qq+Yw734DWhETNAULyBZiy_zyjuzzOL-NO30AB7fd2vUOQ@mail.gmail.com>
+ <20200827125747.5816-1-hdanton@sina.com>
+ <CACS=qq+a0H=e8yLFu95aE7Hr0bQ9ytCBBn2rFx82oJnPpkBpvg@mail.gmail.com>
+ <CAM_iQpV-JMURzFApp-Zhxs3QN9j=Zdf6yqwOP=E42ERDHxe6Hw@mail.gmail.com>
+ <dd73f551d1fc89e457ffabd106cbf0bf401b747b.camel@redhat.com>
+ <CAM_iQpXZMeAGkq_=rG6KEabFNykszpRU_Hnv65Qk7yesvbRDrw@mail.gmail.com>
+ <5f51cbad3cc2_3eceb208fc@john-XPS-13-9370.notmuch>
+ <CAM_iQpVqdVc5_LkhO4Qie7Ff+XXRTcpiptZsEVNh=o9E0GkcRQ@mail.gmail.com>
+Subject: Re: Packet gets stuck in NOLOCK pfifo_fast qdisc
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/10/2020 1:32 PM, Oded Gabbay wrote:
-> On Thu, Sep 10, 2020 at 11:28 PM Jakub Kicinski <kuba@kernel.org> wrote:
->>
->> On Thu, 10 Sep 2020 23:16:22 +0300 Oded Gabbay wrote:
->>> On Thu, Sep 10, 2020 at 11:01 PM Jakub Kicinski <kuba@kernel.org> wrote:
->>>> On Thu, 10 Sep 2020 19:11:11 +0300 Oded Gabbay wrote:
->>>>>   create mode 100644 drivers/misc/habanalabs/gaudi/gaudi_nic.c
->>>>>   create mode 100644 drivers/misc/habanalabs/gaudi/gaudi_nic.h
->>>>>   create mode 100644 drivers/misc/habanalabs/gaudi/gaudi_nic_dcbnl.c
->>>>>   create mode 100644 drivers/misc/habanalabs/gaudi/gaudi_nic_debugfs.c
->>>>>   create mode 100644 drivers/misc/habanalabs/gaudi/gaudi_nic_ethtool.c
->>>>>   create mode 100644 drivers/misc/habanalabs/gaudi/gaudi_phy.c
->>>>>   create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic0_qm0_masks.h
->>>>>   create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic0_qm0_regs.h
->>>>>   create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic0_qm1_regs.h
->>>>>   create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic0_qpc0_masks.h
->>>>>   create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic0_qpc0_regs.h
->>>>>   create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic0_qpc1_regs.h
->>>>>   create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic0_rxb_regs.h
->>>>>   create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic0_rxe0_masks.h
->>>>>   create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic0_rxe0_regs.h
->>>>>   create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic0_rxe1_regs.h
->>>>>   create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic0_stat_regs.h
->>>>>   create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic0_tmr_regs.h
->>>>>   create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic0_txe0_masks.h
->>>>>   create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic0_txe0_regs.h
->>>>>   create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic0_txe1_regs.h
->>>>>   create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic0_txs0_masks.h
->>>>>   create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic0_txs0_regs.h
->>>>>   create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic0_txs1_regs.h
->>>>>   create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic1_qm0_regs.h
->>>>>   create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic1_qm1_regs.h
->>>>>   create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic2_qm0_regs.h
->>>>>   create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic2_qm1_regs.h
->>>>>   create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic3_qm0_regs.h
->>>>>   create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic3_qm1_regs.h
->>>>>   create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic4_qm0_regs.h
->>>>>   create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic4_qm1_regs.h
->>>>>   create mode 100644 drivers/misc/habanalabs/include/hw_ip/nic/nic_general.h
->>>>
->>>> The relevant code needs to live under drivers/net/(ethernet/).
->>>> For one thing our automation won't trigger for drivers in random
->>>> (/misc) part of the tree.
->>>
->>> Can you please elaborate on how to do this with a single driver that
->>> is already in misc ?
->>> As I mentioned in the cover letter, we are not developing a
->>> stand-alone NIC. We have a deep-learning accelerator with a NIC
->>> interface.
->>> Therefore, we don't have a separate PCI physical function for the NIC
->>> and I can't have a second driver registering to it.
->>
->> Is it not possible to move the files and still build them into a single
->> module?
-> hmm...
-> I actually didn't try that as I thought it will be very strange and
-> I'm not familiar with other drivers that build as a single ko but have
-> files spread out in different subsystems.
-> I don't feel it is a better option than what we did here.
+Cong Wang wrote:
+> On Thu, Sep 3, 2020 at 10:08 PM John Fastabend <john.fastabend@gmail.com> wrote:
+> > Maybe this would unlock us,
+> >
+> > diff --git a/net/core/dev.c b/net/core/dev.c
+> > index 7df6c9617321..9b09429103f1 100644
+> > --- a/net/core/dev.c
+> > +++ b/net/core/dev.c
+> > @@ -3749,7 +3749,7 @@ static inline int __dev_xmit_skb(struct sk_buff *skb, struct Qdisc *q,
+> >
+> >         if (q->flags & TCQ_F_NOLOCK) {
+> >                 rc = q->enqueue(skb, q, &to_free) & NET_XMIT_MASK;
+> > -               qdisc_run(q);
+> > +               __qdisc_run(q);
+> >
+> >                 if (unlikely(to_free))
+> >                         kfree_skb_list(to_free);
+> >
+> >
+> > Per other thread we also need the state deactivated check added
+> > back.
 > 
-> Will I need to split pull requests to different subsystem maintainers
-> ? For the same driver ?
-> Sounds to me this is not going to fly.
+> I guess no, because pfifo_dequeue() seems to require q->seqlock,
+> according to comments in qdisc_run(), so we can not just get rid of
+> qdisc_run_begin()/qdisc_run_end() here.
+> 
+> Thanks.
 
-Not necessarily, you can post your patches to all relevant lists and 
-seek maintainer review/acked-by tags from the relevant maintainers. This 
-is not unheard of with mlx5 for instance.
+Seems we would have to revert this as well then,
 
-Have you considered using notifiers to get your NIC driver registered 
-while the NIC code lives in a different module?
--- 
-Florian
+ commit 021a17ed796b62383f7623f4fea73787abddad77
+ Author: Paolo Abeni <pabeni@redhat.com>
+ Date:   Tue May 15 16:24:37 2018 +0200
+
+    pfifo_fast: drop unneeded additional lock on dequeue
+    
+    After the previous patch, for NOLOCK qdiscs, q->seqlock is
+    always held when the dequeue() is invoked, we can drop
+    any additional locking to protect such operation.
+
+Then I think it should be safe. Back when I was working on the ptr
+ring implementation I opted not to do a case without the spinlock
+because the performance benefit was minimal in the benchmarks I
+was looking at. I assumed at some point it would be worth going
+back to it, but just changing those to the __ptr_ring* cases is
+not safe without a lock. I remember having a discussion with Tsirkin
+about the details, but would have to go through the mail servers
+to find it.
+
+FWIW the initial perf looked like this, (https://lwn.net/Articles/698135/)
+
+nolock pfifo_fast
+1:  1417597 1407479 1418913 1439601 
+2:  1882009 1867799 1864374 1855950
+4:  1806736 1804261 1803697 1806994
+8:  1354318 1358686 1353145 1356645
+12: 1331928 1333079 1333476 1335544
+
+locked pfifo_fast
+1:  1471479 1469142 1458825 1456788 
+2:  1746231 1749490 1753176 1753780
+4:  1119626 1120515 1121478 1119220
+8:  1001471  999308 1000318 1000776
+12:  989269  992122  991590  986581
+
+As you can see measurable improvement on many cores. But, actually
+worse if you have enough nic queues to map 1:1 with cores.
+
+nolock mq
+1:    1417768  1438712  1449092  1426775
+2:    2644099  2634961  2628939  2712867
+4:    4866133  4862802  4863396  4867423
+8:    9422061  9464986  9457825  9467619
+12:  13854470 13213735 13664498 13213292  
+
+locked mq
+1:   1448374  1444208  1437459  1437088 
+2:   2687963  2679221  2651059  2691630
+4:   5153884  4684153  5091728  4635261
+8:   9292395  9625869  9681835  9711651
+12: 13553918 13682410 14084055 13946138
+
+So only better if you have more cores than hardware queues
+which was the case on some of the devices we had at the time.
+
+Thanks,
+John
