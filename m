@@ -2,150 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 444C72639CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 04:05:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B2242639D7
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 04:07:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730494AbgIJCEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 22:04:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50230 "EHLO
+        id S1730104AbgIJCHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 22:07:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730061AbgIJBrs (ORCPT
+        with ESMTP id S1730154AbgIJByb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 21:47:48 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 586A5C061346;
-        Wed,  9 Sep 2020 17:31:52 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Bn0FF6RSKz9sTX;
-        Thu, 10 Sep 2020 10:31:44 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1599697906;
-        bh=zM2MvQJLonAoEzgWZpxZMgRmgeYv2DIj99f9b8gCPEM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=aqS8zy9jbR5h+NhEp/pqxLRQDXartZx10IVyl+n99ZieCHurD8FHJ3YMSrYup7UUv
-         BKexs+a2bsBD4SJ36YxT7YGKYxlUGd/s8qZ9B0eTIkpwbVNYWskGK0ulUTYXZi0Y8p
-         HQ0Fnx7HU6k4unEA6BJ9shjeNDKIh72WKqdTQJYm3pVHZLpLriczQNaQCL0PjKqPmx
-         uOhAQlRcAPvhlt7YQSkWdC1rR2oK8BLo5DjH1zBrgkAsEc45OMjD2nsVHkVwWysYj+
-         eTh0FKFab8kylcTAunqXQvFITUXNTlaAOe28rNcmLkjLiLKOpTpbK9Y7UhQieUUs7N
-         LqO3p5l6EQ+mA==
-Date:   Thu, 10 Sep 2020 10:31:44 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Al Viro <viro@ZenIV.linux.org.uk>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: linux-next: manual merge of the vfs tree with the m68k tree
-Message-ID: <20200910103144.4612ba94@canb.auug.org.au>
+        Wed, 9 Sep 2020 21:54:31 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C39AC061348
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 17:32:43 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id w186so4393885qkd.1
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 17:32:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=a2Gw2QTQELKkuv4WuRMTiaWGDMDx+OUJI/W2YlhQu1g=;
+        b=hXt2sJaDB69f3HSWBntMKHKu2u6GbGPI56g1GWVWgEWffWRmRF/46fjhjzr4y+kjSS
+         olae3KV2INU6xY+5nmScaQwuyflGf/29D3hqz+AwidEpBRlgxwyecVGF+cVfQPTtLVoI
+         FqlW4hqo2j4lAXBkqf4P7uucl5pqZpkaibL/ASfdbjENd1k5Lj2lQAZYgMjhdfrXfQ/G
+         yabuHDKWP5Zd+KUB09u+iw39GatHXuF+7hFxQmBrzlDN1pJSILYoaj+goqHr9cPUO2WX
+         oeenuvj38miM7TkbMjGFMmJyXDGvcmQoD8deSnstcoxJQk/SZIv/p9q8mFYHuaIS0uc8
+         Sg6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=a2Gw2QTQELKkuv4WuRMTiaWGDMDx+OUJI/W2YlhQu1g=;
+        b=UeBhFMwCa+w58dZ5rdkyzO1C0ZrTvL5cvSnhlPXFVOwDUU//TrLJDLv+wXuJ8H0TPh
+         xfZKeRmf1JF0YjaZBF0nJlISQk31xTQqDhkbRt3RX+/yGHgnzsvJ2vsmjlWE2LCAbztZ
+         Qwa6cVCC83K2Us5eT3ResRPIQp4f5Hn2v3VYadrGuJXSzxcgJLpFXZ85yiYrrKeWUC2Q
+         Bx/OVAracOkfnlGwXXo4TeVNE+FcHSnW2f3Me9NxfgOXPP/OqK1a50aQitQTRz8Gwzp+
+         T899MPFTPQfRzuIJ8XBjwy8pVkJOseA+A5VuUb6l6/a9xZ8rdPgwTqn8FICrE3CkHDRY
+         hIFA==
+X-Gm-Message-State: AOAM5336q6C9r1ygEuLtciHOhkmcR+lDp5ZpsEfZms3LIBCQ+AqoMQMu
+        4/diVbI6t5O3Kj/DF3KY3EK3bA==
+X-Google-Smtp-Source: ABdhPJyF87ooDKnFqIaEGdhP2rgIRd+1mRdTS3gXo69eGiqrL3k3PYHB6g0UOzXsGTOXRmPbTwWZUg==
+X-Received: by 2002:a37:ac08:: with SMTP id e8mr5465238qkm.158.1599697962163;
+        Wed, 09 Sep 2020 17:32:42 -0700 (PDT)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id p68sm4427778qka.78.2020.09.09.17.32.38
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Wed, 09 Sep 2020 17:32:40 -0700 (PDT)
+Date:   Wed, 9 Sep 2020 17:32:37 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Alexander Duyck <alexander.duyck@gmail.com>
+cc:     Hugh Dickins <hughd@google.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Tejun Heo <tj@kernel.org>,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        kbuild test robot <lkp@intel.com>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, cgroups@vger.kernel.org,
+        Shakeel Butt <shakeelb@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Rong Chen <rong.a.chen@intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>, shy828301@gmail.com,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Minchan Kim <minchan@kernel.org>, Qian Cai <cai@lca.pw>
+Subject: Re: [PATCH v18 00/32] per memcg lru_lock: reviews
+In-Reply-To: <CAKgT0Uc_L-Tz_rVJiHc5GUK_ZWOs2wRvez4QGf2wwEjx38qnbg@mail.gmail.com>
+Message-ID: <alpine.LSU.2.11.2009091640490.10087@eggly.anvils>
+References: <1598273705-69124-1-git-send-email-alex.shi@linux.alibaba.com> <20200824114204.cc796ca182db95809dd70a47@linux-foundation.org> <alpine.LSU.2.11.2008241231460.1065@eggly.anvils> <alpine.LSU.2.11.2008262301240.4405@eggly.anvils>
+ <alpine.LSU.2.11.2009081640070.7256@eggly.anvils> <CAKgT0Uc_L-Tz_rVJiHc5GUK_ZWOs2wRvez4QGf2wwEjx38qnbg@mail.gmail.com>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Kiu3AQQV6MuEO+Z9N3b4o3=";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Kiu3AQQV6MuEO+Z9N3b4o3=
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, 9 Sep 2020, Alexander Duyck wrote:
+> On Tue, Sep 8, 2020 at 4:41 PM Hugh Dickins <hughd@google.com> wrote:
+> > [PATCH v18 28/32] mm/compaction: Drop locked from isolate_migratepages_block
+> > Most of this consists of replacing "locked" by "lruvec", which is good:
+> > but please fold those changes back into 20/32 (or would it be 17/32?
+> > I've not yet looked into the relationship between those two), so we
+> > can then see more clearly what change this 28/32 (will need renaming!)
+> > actually makes, to use lruvec_holds_page_lru_lock(). That may be a
+> > good change, but it's mixed up with the "locked"->"lruvec" at present,
+> > and I think you could have just used lruvec for locked all along
+> > (but of course there's a place where you'll need new_lruvec too).
+> 
+> I am good with my patch being folded in. No need to keep it separate.
 
-Hi all,
+Thanks.  Though it was only the "locked"->"lruvec" changes I was
+suggesting to fold back, to minimize the diff, so that we could
+see your use of lruvec_holds_page_lru_lock() more clearly - you
+had not introduced that function at the stage of the earlier patches.
 
-Today's linux-next merge of the vfs tree got a conflict in:
+But now that I stare at it again, using lruvec_holds_page_lru_lock()
+there doesn't look like an advantage to me: when it decides no, the
+same calculation is made all over again in mem_cgroup_page_lruvec(),
+whereas the code before only had to calculate it once.
 
-  arch/m68k/Kconfig
+So, the code before looks better to me: I wonder, do you think that
+rcu_read_lock() is more expensive than I think it?  There can be
+debug instrumentation that makes it heavier, but by itself it is
+very cheap (by design) - not worth branching around.
 
-between commit:
+> 
+> > [PATCH v18 29/32] mm: Identify compound pages sooner in isolate_migratepages_block
+> > NAK. I agree that isolate_migratepages_block() looks nicer this way, but
+> > take a look at prep_new_page() in mm/page_alloc.c: post_alloc_hook() is
+> > where set_page_refcounted() changes page->_refcount from 0 to 1, allowing
+> > a racing get_page_unless_zero() to succeed; then later prep_compound_page()
+> > is where PageHead and PageTails get set. So there's a small race window in
+> > which this patch could deliver a compound page when it should not.
+> 
+> So the main motivation for the patch was to avoid the case where we
+> are having to reset the LRU flag.
 
-  dc072012bc94 ("m68k: Sort selects in main Kconfig")
+That would be satisfying.  Not necessary, but I agree satisfying.
+Maybe depends also on your "skip" change, which I've not looked at yet?
 
-from the m68k tree and commit:
+> One question I would have is what if
+> we swapped the code block with the __isolate_lru_page_prepare section?
+> WIth that we would be taking a reference on the page, then verifying
+> the LRU flag is set, and then testing for compound page flag bit.
+> Would doing that close the race window since the LRU flag being set
+> should indicate that the allocation has already been completed has it
+> not?
 
-  5e6e9852d6f7 ("uaccess: add infrastructure for kernel builds with set_fs(=
-)")
+Yes, I think that would be safe, and would look better.  But I am
+very hesitant to give snap assurances here (I've twice missed out
+a vital PageLRU check from this sequence myself): it is very easy
+to deceive myself and only see it later.
 
-from the vfs tree.
+If you can see a bug in what's there before these patches, certainly
+we need to fix it.  But adding non-essential patches to the already
+overlong series risks delaying it.
 
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc arch/m68k/Kconfig
-index c830705bd3ac,dcf4ae8c9b21..000000000000
---- a/arch/m68k/Kconfig
-+++ b/arch/m68k/Kconfig
-@@@ -6,33 -6,33 +6,34 @@@ config M68
-  	select ARCH_HAS_BINFMT_FLAT
-  	select ARCH_HAS_DMA_PREP_COHERENT if HAS_DMA && MMU && !COLDFIRE
-  	select ARCH_HAS_SYNC_DMA_FOR_DEVICE if HAS_DMA
- +	select ARCH_HAVE_NMI_SAFE_CMPXCHG if RMW_INSNS
-  	select ARCH_MIGHT_HAVE_PC_PARPORT if ISA
-  	select ARCH_NO_PREEMPT if !COLDFIRE
- +	select ARCH_WANT_IPC_PARSE_VERSION
-  	select BINFMT_FLAT_ARGVP_ENVP_ON_STACK
-  	select DMA_DIRECT_REMAP if HAS_DMA && MMU && !COLDFIRE
- -	select HAVE_IDE
- -	select HAVE_AOUT if MMU
- -	select HAVE_ASM_MODVERSIONS
- -	select HAVE_DEBUG_BUGVERBOSE
- -	select GENERIC_IRQ_SHOW
-  	select GENERIC_ATOMIC64
- -	select NO_DMA if !MMU && !COLDFIRE
- -	select HAVE_UID16
- -	select VIRT_TO_BUS
- -	select ARCH_HAVE_NMI_SAFE_CMPXCHG if RMW_INSNS
-  	select GENERIC_CPU_DEVICES
-  	select GENERIC_IOMAP
- +	select GENERIC_IRQ_SHOW
-  	select GENERIC_STRNCPY_FROM_USER if MMU
-  	select GENERIC_STRNLEN_USER if MMU
- -	select ARCH_WANT_IPC_PARSE_VERSION
- +	select HAVE_AOUT if MMU
- +	select HAVE_ASM_MODVERSIONS
- +	select HAVE_DEBUG_BUGVERBOSE
-  	select HAVE_FUTEX_CMPXCHG if MMU && FUTEX
- +	select HAVE_IDE
-  	select HAVE_MOD_ARCH_SPECIFIC
- +	select HAVE_UID16
- +	select MMU_GATHER_NO_RANGE if MMU
-  	select MODULES_USE_ELF_REL
-  	select MODULES_USE_ELF_RELA
- -	select OLD_SIGSUSPEND3
- +	select NO_DMA if !MMU && !COLDFIRE
-  	select OLD_SIGACTION
- -	select MMU_GATHER_NO_RANGE if MMU
- +	select OLD_SIGSUSPEND3
-+ 	select SET_FS
- +	select UACCESS_MEMCPY if !MMU
- +	select VIRT_TO_BUS
- =20
-  config CPU_BIG_ENDIAN
-  	def_bool y
-
---Sig_/Kiu3AQQV6MuEO+Z9N3b4o3=
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9Zc/AACgkQAVBC80lX
-0GyV0gf/egqd3Vdhl/l19t9kD0GWq3RCX9QPeOFO/IZv+X6Iw5Um7BSS71FzuAzV
-vRyqBTyrqtANzo4TWjfGqkcA7bSRrZqg8S8dpZKLuBy/Hj59ExQzk2jiyvE9bEhm
-W6uyjBeBbuj+ZdhHMydXUIFsjfAg2cba8OcYyJ36pjzjHTrsrlI2tmqq7NK9LQ2a
-k3M1TY07qUPRUiNh8GajvClWv4NRkMx1z3J3kdHSu39RVvBmxdBKcncIsMc7poK8
-k8+a2D+rF3gJPfaIJUE03x12rv14pPcbH2A6G+bmZttj6vJ81ekibApVQI+gOz/j
-3y+DcNsTiVU+qvO6tKyG8BEARmeSyQ==
-=TN0r
------END PGP SIGNATURE-----
-
---Sig_/Kiu3AQQV6MuEO+Z9N3b4o3=--
+Hugh
