@@ -2,168 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6F74264D49
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 20:39:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E20DA264D25
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 20:35:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727024AbgIJSjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 14:39:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37958 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725804AbgIJSdr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727067AbgIJSfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 14:35:42 -0400
+Received: from mga12.intel.com ([192.55.52.136]:2108 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726920AbgIJSdr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 10 Sep 2020 14:33:47 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26F61C061573;
-        Thu, 10 Sep 2020 11:33:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=iUQLI4IkKhxmuIt5IQ92wfzZNFFmlqJHR5Mjgm7VnoA=; b=BA9fXgzR2ABZNFehO2jFdouN4b
-        iatHnAm3X02YEDHBkg5V7kpzguGHl7vVWOOyszawHEkfApPAg1CVxxTQddRDUlB2DXtjsIPebRC0H
-        +RSun9FiyBLil2BxMQTak8vbiwPaq02YTFwtoCHfj3fHL9EVOeHaJFkRRGNvBNMkGf76k2ekSGR8w
-        q+6P8md5vudIkfhhBaRydUlngTJBq7gdHAIuO2S8Wb8c5A7bhSSLnSPs5HtyvAHjness9QKziYg+o
-        4Su2kksd56Fv0Rz0NaXC5CIngX3owPQbylFWO6K+Gq+ygUkjYDxRzGzapwO8XsA13+zclT89KPb0o
-        e7QRA3hQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kGRNq-0005Ge-AD; Thu, 10 Sep 2020 18:33:22 +0000
-From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To:     linux-mm@kvack.org
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        William Kucharski <william.kucharski@oracle.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Matthew Auld <matthew.auld@intel.com>,
-        Huang Ying <ying.huang@intel.com>,
-        intel-gfx@lists.freedesktop.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 8/8] mm: Add find_lock_head
-Date:   Thu, 10 Sep 2020 19:33:18 +0100
-Message-Id: <20200910183318.20139-9-willy@infradead.org>
-X-Mailer: git-send-email 2.21.3
-In-Reply-To: <20200910183318.20139-1-willy@infradead.org>
-References: <20200910183318.20139-1-willy@infradead.org>
+IronPort-SDR: wSYNeRRvAS+P7TZvhEhi1sEKZvUy+NQrpPGTzkFoHCspugprrZyYf8Lg1qWU7sX3uGgEO9I6L0
+ oY3l2gCP+Uig==
+X-IronPort-AV: E=McAfee;i="6000,8403,9740"; a="138128098"
+X-IronPort-AV: E=Sophos;i="5.76,413,1592895600"; 
+   d="scan'208";a="138128098"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2020 11:33:43 -0700
+IronPort-SDR: 1a/KSLpHMr/+R7JtsXWE2hXmug66deTVdvrtfeesZwCdJX/YgF8I0vNKPFK65vrZ2aRx1LX4FP
+ uG4HpMCpUYFQ==
+X-IronPort-AV: E=Sophos;i="5.76,413,1592895600"; 
+   d="scan'208";a="334266515"
+Received: from rchatre-mobl.amr.corp.intel.com (HELO [10.209.150.7]) ([10.209.150.7])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2020 11:33:42 -0700
+Subject: Re: [PATCH v3 06/17] virt: acrn: Introduce VM management interfaces
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Shuo A Liu <shuo.a.liu@intel.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Yu Wang <yu1.wang@intel.com>, Zhi Wang <zhi.a.wang@intel.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>
+References: <20200909090836.46762-1-shuo.a.liu@intel.com>
+ <20200909090836.46762-7-shuo.a.liu@intel.com>
+ <20200909094516.GB607744@kroah.com>
+ <20200910061900.GI13723@shuo-intel.sh.intel.com>
+ <20200910162810.GB1265411@kroah.com>
+From:   Reinette Chatre <reinette.chatre@intel.com>
+Message-ID: <df5adcb4-152b-f7fc-fae8-8c93eb2b818b@intel.com>
+Date:   Thu, 10 Sep 2020 11:33:30 -0700
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200910162810.GB1265411@kroah.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a new FGP_HEAD flag which avoids calling find_subpage() and add a
-convenience wrapper for it.
+Hi Shuo and Greg,
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
----
- include/linux/pagemap.h | 32 ++++++++++++++++++++++++++------
- mm/filemap.c            |  9 ++++++---
- 2 files changed, 32 insertions(+), 9 deletions(-)
+On 9/10/2020 9:28 AM, Greg Kroah-Hartman wrote:
+> On Thu, Sep 10, 2020 at 02:19:00PM +0800, Shuo A Liu wrote:
+>> On Wed  9.Sep'20 at 11:45:16 +0200, Greg Kroah-Hartman wrote:
+>>> On Wed, Sep 09, 2020 at 05:08:25PM +0800, shuo.a.liu@intel.com wrote:
 
-diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
-index f374618b2c93..4e52a3ff92fb 100644
---- a/include/linux/pagemap.h
-+++ b/include/linux/pagemap.h
-@@ -278,6 +278,7 @@ pgoff_t page_cache_prev_miss(struct address_space *mapping,
- #define FGP_NOFS		0x00000010
- #define FGP_NOWAIT		0x00000020
- #define FGP_FOR_MMAP		0x00000040
-+#define FGP_HEAD		0x00000080
- 
- struct page *pagecache_get_page(struct address_space *mapping, pgoff_t offset,
- 		int fgp_flags, gfp_t cache_gfp_mask);
-@@ -309,18 +310,37 @@ static inline struct page *find_get_page_flags(struct address_space *mapping,
-  * @mapping: the address_space to search
-  * @offset: the page index
-  *
-- * Looks up the page cache slot at @mapping & @offset.  If there is a
-+ * Looks up the page cache entry at @mapping & @offset.  If there is a
-  * page cache page, it is returned locked and with an increased
-  * refcount.
-  *
-- * Otherwise, %NULL is returned.
-- *
-- * find_lock_page() may sleep.
-+ * Context: May sleep.
-+ * Return: A struct page or %NULL if there is no page in the cache for this
-+ * index.
-  */
- static inline struct page *find_lock_page(struct address_space *mapping,
--					pgoff_t offset)
-+					pgoff_t index)
-+{
-+	return pagecache_get_page(mapping, index, FGP_LOCK, 0);
-+}
-+
-+/**
-+ * find_lock_head - Locate, pin and lock a pagecache page.
-+ * @mapping: The address_space to search.
-+ * @offset: The page index.
-+ *
-+ * Looks up the page cache entry at @mapping & @offset.  If there is a
-+ * page cache page, its head page is returned locked and with an increased
-+ * refcount.
-+ *
-+ * Context: May sleep.
-+ * Return: A struct page which is !PageTail, or %NULL if there is no page
-+ * in the cache for this index.
-+ */
-+static inline struct page *find_lock_head(struct address_space *mapping,
-+					pgoff_t index)
- {
--	return pagecache_get_page(mapping, offset, FGP_LOCK, 0);
-+	return pagecache_get_page(mapping, index, FGP_LOCK | FGP_HEAD, 0);
- }
- 
- /**
-diff --git a/mm/filemap.c b/mm/filemap.c
-index 453535170b8d..e429e02317ef 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -1659,6 +1659,8 @@ struct page *find_lock_entry(struct address_space *mapping, pgoff_t index)
-  *
-  * * %FGP_ACCESSED - The page will be marked accessed.
-  * * %FGP_LOCK - The page is returned locked.
-+ * * %FGP_HEAD - If the page is present and a THP, return the head page
-+ *   rather than the exact page specified by the index.
-  * * %FGP_CREAT - If no page is present then a new page is allocated using
-  *   @gfp_mask and added to the page cache and the VM's LRU list.
-  *   The page is returned locked and with an increased refcount.
-@@ -1687,7 +1689,6 @@ struct page *pagecache_get_page(struct address_space *mapping, pgoff_t index,
- 		page = NULL;
- 	if (!page)
- 		goto no_page;
--	page = find_subpage(page, index);
- 
- 	if (fgp_flags & FGP_LOCK) {
- 		if (fgp_flags & FGP_NOWAIT) {
-@@ -1700,12 +1701,12 @@ struct page *pagecache_get_page(struct address_space *mapping, pgoff_t index,
- 		}
- 
- 		/* Has the page been truncated? */
--		if (unlikely(compound_head(page)->mapping != mapping)) {
-+		if (unlikely(page->mapping != mapping)) {
- 			unlock_page(page);
- 			put_page(page);
- 			goto repeat;
- 		}
--		VM_BUG_ON_PAGE(page->index != index, page);
-+		VM_BUG_ON_PAGE(!thp_contains(page, index), page);
- 	}
- 
- 	if (fgp_flags & FGP_ACCESSED)
-@@ -1715,6 +1716,8 @@ struct page *pagecache_get_page(struct address_space *mapping, pgoff_t index,
- 		if (page_is_idle(page))
- 			clear_page_idle(page);
- 	}
-+	if (!(fgp_flags & FGP_HEAD))
-+		page = find_subpage(page, index);
- 
- no_page:
- 	if (!page && (fgp_flags & FGP_CREAT)) {
--- 
-2.28.0
+...
+
+>>>>  /**
+>>>>   * struct acrn_vm - Properties of ACRN User VM.
+>>>> + * @dev:	The struct device this VM belongs to
+>>>> + * @list:	Entry within global list of all VMs
+>>>>   * @vmid:	User VM ID
+>>>> + * @vcpu_num:	Number of virtual CPUs in the VM
+>>>> + * @flags:	Flags (ACRN_VM_FLAG_*) of the VM. This is VM flag management
+>>>> + *		in HSM which is different from the &acrn_vm_creation.vm_flag.
+>>>>   */
+>>>>  struct acrn_vm {
+>>>> -	u16	vmid;
+>>>> +	struct device		*dev;
+>>>> +	struct list_head	list;
+>>>> +	u16			vmid;
+>>>> +	int			vcpu_num;
+>>>> +	unsigned long		flags;
+>>>>  };
+>>>>
+>>>> +struct acrn_vm *acrn_vm_create(struct acrn_vm *vm,
+>>>> +			       struct acrn_vm_creation *vm_param);
+>>>> +int acrn_vm_destroy(struct acrn_vm *vm);
+>>>> +
+>>>>  #endif /* __ACRN_HSM_DRV_H */
+>>>> diff --git a/drivers/virt/acrn/hsm.c b/drivers/virt/acrn/hsm.c
+>>>> index 28a3052ffa55..bc85a3c14f87 100644
+>>>> --- a/drivers/virt/acrn/hsm.c
+>>>> +++ b/drivers/virt/acrn/hsm.c
+>>>> @@ -19,6 +19,8 @@
+>>>>
+>>>>  #include "acrn_drv.h"
+>>>>
+>>>> +static struct miscdevice acrn_dev;
+>>>> +
+>>>>  /*
+>>>>   * When /dev/acrn_hsm is opened, a 'struct acrn_vm' object is created to
+>>>>   * represent a VM instance and continues to be associated with the opened file
+>>>> @@ -34,14 +36,77 @@ static int acrn_dev_open(struct inode *inode, struct file *filp)
+>>>>  		return -ENOMEM;
+>>>>
+>>>>  	vm->vmid = ACRN_INVALID_VMID;
+>>>> +	vm->dev = get_device(acrn_dev.this_device);
+>>>
+>>> You are grabbing a reference on a static structure?
+>>
+>> acrn_dev is static, but acrn_dev.this_device is not.
+> 
+> But you don't control that device, the misc device core does.
+> 
+>>>
+>>> Ugh, who reviewed this code before it was sent out???
+>>
+>> This part was just newly added according to your suggestion.. Please
+>> refer to
+>> https://lore.kernel.org/lkml/1946bf48-fda7-20e0-246d-93414a1a67f5@intel.com/
+> 
+> What you were doing there was wrong, and what you are doing here is just
+> odd.
+> 
+> Step back please, and describe exactly what you are trying to do.  And
+> then explain how grabbing a reference to the device reference count for
+> the misc device is going to help solve that issue.
+> 
+
+From what I understand this current path was entered after Greg's
+original suggestion from
+https://lore.kernel.org/lkml/20200828102704.GB1470435@kroah.com
+to replace the pr_xxx() calls with the more informative dev_xxx() ones.
+
+Perhaps all that is needed to follow the original suggestion is to
+replace the pr_xxx() calls with dev_xxx(acrn_dev.this_device, ...) ?
+
+(An example of this is drivers/input/serio/userio.c and some others)
+
+The device (acrn_dev.this_device) can be trusted to exist for the
+lifetime of the driver since it is removed on module unload where the
+misc device is unregistered.
+
+Reinette
+
 
