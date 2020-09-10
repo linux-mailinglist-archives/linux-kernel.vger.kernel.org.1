@@ -2,180 +2,675 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30AD926440F
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 12:28:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A820264417
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 12:29:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730991AbgIJK2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 06:28:45 -0400
-Received: from mail-eopbgr80059.outbound.protection.outlook.com ([40.107.8.59]:56195
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730921AbgIJK20 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 06:28:26 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LNnoY+KBehJIw0BVciC8MFqcvIhnp8HD4w98yjOvSw5qx6/WKSQzvX1MKUICj1kveIvaA3roEUFTCciEvdVJGaC7aHSEe4ajmvec8uVcPgJigM2vj/dzvQpk7fvCENpko6RMzvzEJXRPOPSDN+mZwCOYp2mkraQE1yaJsgO4tbAefsKuF8hBEXyLuXhhOsOzgeThzXofnThhh/+0bpeRs/yuhMi7LnWWJuQzWaBShBKX2IJhA9/xf62LF4dhcsMDImd10H1+dRIiX3aX5JUb2nT9rBEV8OOtPfwoa5pmk29+RT9bIPyYrsOKGLFqXP2uU+jThn+wuZ6BWrifoUZoeA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ulCXFmdY3o1nnGvMQFxtj+uqVeJh5sGS2t3LHrsHxbY=;
- b=XizqmDqZ/246QRdVh7A6ELho3curzxfHshTB1dtYjG4j5+d8LI36v1jLT2D5pbxyFASaX4i4DJVIItb6iiNV67kDxSZzSvsXKjOaRTMj8zDdT+8TEghs18rz2I7VBP3b6ZSVxXVWpv9fz9RsBTh2wFsNdJs0JVmfkAgcQ/NO5d8zsn4j9oO75GBETYOP53IueTQ9YLAii3hUAMMxvC3lFjk2x4RBoQSGs9gHKeRggTo1A5HW2vDDBG6xf2XvnS0bSZdbZDWcYCjadAndCtF+o0QXRXfMuYJFlz7RkUsCb3FsssKFuBnxBz5aqCk306Ibq2n7Ad/VEl9Yn+87iWs+qg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ulCXFmdY3o1nnGvMQFxtj+uqVeJh5sGS2t3LHrsHxbY=;
- b=JNWcWB7RboplJRLUADmNrt8wS7iWizwTKefHtQ5S1wE+q2mUTWU2s+JPQPnA6vv3ekqy1tvOKGEFydKlmxbDQKA1UOCTTFQFXOk9FLBsVSRXlB6ctm59NIXGcSmqpNlngunju6CrrQjQCKXKap/ZebthwbaVLanXwuplwEymzIg=
-Authentication-Results: pengutronix.de; dkim=none (message not signed)
- header.d=none;pengutronix.de; dmarc=none action=none header.from=oss.nxp.com;
-Received: from VI1PR0402MB3902.eurprd04.prod.outlook.com
- (2603:10a6:803:22::27) by VI1PR04MB4096.eurprd04.prod.outlook.com
- (2603:10a6:803:44::32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Thu, 10 Sep
- 2020 10:28:21 +0000
-Received: from VI1PR0402MB3902.eurprd04.prod.outlook.com
- ([fe80::5d66:84a7:26de:67c3]) by VI1PR0402MB3902.eurprd04.prod.outlook.com
- ([fe80::5d66:84a7:26de:67c3%6]) with mapi id 15.20.3370.016; Thu, 10 Sep 2020
- 10:28:21 +0000
-Date:   Thu, 10 Sep 2020 13:28:16 +0300
-From:   Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>
-To:     Lucas Stach <l.stach@pengutronix.de>
-Cc:     Daniel Vetter <daniel@ffwll.ch>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] drm/imx/dcss: fix compilation issue on 32bit
-Message-ID: <20200910102816.rx75lz3iwrkrdyld@fsr-ub1864-141>
-References: <20200910095250.7663-1-laurentiu.palcu@oss.nxp.com>
- <CAKMK7uGsJcg81a_cGebBgk3pwxj4VPrFfmV5AF+5fRyK3_Pigw@mail.gmail.com>
- <20200910102128.5agk4vxf2jeonw3q@fsr-ub1864-141>
- <a325e1594dff339ddd6858f0ac93698582a6000a.camel@pengutronix.de>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a325e1594dff339ddd6858f0ac93698582a6000a.camel@pengutronix.de>
-User-Agent: NeoMutt/20171215
-X-ClientProxiedBy: AM0PR10CA0012.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:208:17c::22) To VI1PR0402MB3902.eurprd04.prod.outlook.com
- (2603:10a6:803:22::27)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from fsr-ub1864-141 (83.217.231.2) by AM0PR10CA0012.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:17c::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16 via Frontend Transport; Thu, 10 Sep 2020 10:28:20 +0000
-X-Originating-IP: [83.217.231.2]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: fd75a3d0-5382-4af5-9507-08d855743d84
-X-MS-TrafficTypeDiagnostic: VI1PR04MB4096:
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB4096CDC4EE4D116310C08AEDBE270@VI1PR04MB4096.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: wp/Knj7wDPUONWtNdcIwH+fSirHZ9VY52JeZ8AWxBWVKAJYo9eKeZQc+5+rFswEE4pGwYHGj0vTrERBN5nJRLd2DDCnK3GbGedTEjJ5UeTUFtlYTaGPLZJg7zv2Hj7BWXg6cfzLIQPoqd5oB0NbBDt91037a7svwhaS28HmRFZ31ZEewaqdVmWaiOjri6pQrBkDsCTsYRy7oWgaoH/gUG59i4lE51AH9ijKPmLCCcC94ErZDzv7F2MUfYlJ+3fV0TZN7K2/JQvub74E+NIZaEh2X6lETcvGcIGl5a+xz0ypMW0QJcrhckgKKqL9oZNeEfB3nfYIwGrMIzQWibyd8FSWQunpm7Tx+21n8ngSt/+1Ucrl91fS2uTRW2PggYcz9x0N0q3mq7YSLz9HP/bv3+w==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0402MB3902.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(39860400002)(346002)(376002)(366004)(52116002)(55016002)(1076003)(316002)(6496006)(26005)(83380400001)(53546011)(83080400001)(4326008)(7416002)(9686003)(966005)(6666004)(54906003)(66556008)(66946007)(66476007)(5660300002)(8676002)(2906002)(44832011)(86362001)(33716001)(16526019)(478600001)(186003)(956004)(8936002)(6916009);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: 6NrufEg2SFriH5D0hzaR69dHzpRkWzh+oBySTD1IBeSBXAODr6O6H4p9mpgww/Bl+fgke5KKPKtr0c4eaRPVV6aOeBrj/0j7ELaMZ3mlvjJ6gv8JIkNaQa5pEdauHzoOzWTyJOrxDTwzLFhFfW2A5IdnCNdj4zvSYLenAPURQ0C7CdByWl9U3u7HMqNzvnkYpLSXa2qMNSlzk8TbIgNER/lf0PajML3Y/saapjLLGfLAfx139iH8heTe+IzmeDPBZxQicvG4RJEhhCU8yXEV05+hiq1GhsdyqGnN53KUKe0jXa0lp8IrbbFCT4pci8/Xvi5m/ye4vtcY1JPwFPAKwpGgawm0jwFjZWKumLSy02SbIv2h+eQr+NJiXQI5VEyKdjsxh5H+OlgzOluplpFruY4EWcnYGU7cCMvpQxuqxf1MJIjY8WrOjGUHXu90H2jW4N5rP8VNmUUjB2iuACVNU9D/whKexPXfev0S1Lrhp+4+5/h4miFLTp/7erV/4u6Xl5iiQlhvLhH4nv48RfcUlHVpaGM+YNRaxa6BlKFN/xh+Su0uXar1EKoZ03v8uznzxtu09gVeZWRAppAa+nGNtd2lzExUXaaN579yaNoyW2NMUYq+mpO/SFqZqiSzyp370wXgHoVgI/C8Gs5fy2pW6A==
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fd75a3d0-5382-4af5-9507-08d855743d84
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR0402MB3902.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Sep 2020 10:28:21.1490
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ou3nTtUpSBkDfrG5SBNUCzv+NqUOA8lQwG52VGdcm2QQELoK5HTRiNnQv2HOGPbRS3Sce6S2dweH/4q9WjZvTA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4096
+        id S1730694AbgIJK3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 06:29:17 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:42186 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730181AbgIJK3K (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 06:29:10 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08AA1SPF095006;
+        Thu, 10 Sep 2020 06:28:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id; s=pp1;
+ bh=M+cN51Eqpte7sQ9QUd/otK1GlfkLvFRcQAdEZoE4QtA=;
+ b=SqfqAuNQ9q9CoOyrKzIbv7OF+m8Jlbx8MuQvba5cJ+OVl65GNCsBaNJhngX2iRH0zqzR
+ n4Aq9BZNXUn+Abbnv99ycKhNkSVdXGg4mcEpDoTjznTmEKuLqd3H0nYiD02wtYOr05wv
+ cVZG5jVQ+gUjUwNvvYBdRIYl5DXRgtsNVyWB95IbzEjTUvhqApzajtsIS7KUe6gs7yHN
+ EVfL55M1hA+cQoibsE839BqZPDkwhj2rNGwxyyjK7diVze+uYk7ONGNsMh9z8er+6m7K
+ jPt9iDLPspeh/Dd1TEhdAqcrv3Urt3oNolLMdUoq4A2U8hPrh79hvjMa7hGidfuDzwra VA== 
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 33fguvkark-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Sep 2020 06:28:58 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08AASg8F031180;
+        Thu, 10 Sep 2020 10:28:53 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma05fra.de.ibm.com with ESMTP id 33f3yrggar-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Sep 2020 10:28:53 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08AASomk37159310
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 10 Sep 2020 10:28:50 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 728C542042;
+        Thu, 10 Sep 2020 10:28:50 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 01CB542047;
+        Thu, 10 Sep 2020 10:28:50 +0000 (GMT)
+Received: from funtu.home.com (unknown [9.171.39.140])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 10 Sep 2020 10:28:49 +0000 (GMT)
+From:   Harald Freudenberger <freude@linux.ibm.com>
+To:     linux390-list@tuxmaker.boeblingen.de.ibm.com,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
+Cc:     hca@linux.ibm.com, gor@linux.ibm.com, hch@lst.de,
+        borntraeger@de.ibm.com, Harald Freudenberger <freude@linux.ibm.com>
+Subject: [PATCH] s390/zcrypt: remove set_fs() invocation in zcrypt device driver
+Date:   Thu, 10 Sep 2020 12:28:38 +0200
+Message-Id: <20200910102838.28887-1-freude@linux.ibm.com>
+X-Mailer: git-send-email 2.17.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-10_01:2020-09-10,2020-09-10 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ clxscore=1011 impostorscore=0 adultscore=0 mlxlogscore=999 bulkscore=0
+ suspectscore=2 priorityscore=1501 phishscore=0 spamscore=0 mlxscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009100088
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lucas,
+This patch reworks the zcrypt device driver so that the set_fs()
+invocation is not needed any more. Instead there is a new flag bool
+userspace passed through all the functions which tells if the pointer
+arguments are userspace or kernelspace. Together with the two new
+inline functions z_copy_from_user() and z_copy_to_user() which either
+invoke copy_from_user (userspace is true) or memcpy (userspace is
+false) the zcrypt dd and the AP bus now has no requirement for
+the set_fs() functionality any more.
 
-On Thu, Sep 10, 2020 at 12:24:44PM +0200, Lucas Stach wrote:
-> On Do, 2020-09-10 at 13:21 +0300, Laurentiu Palcu wrote:
-> > On Thu, Sep 10, 2020 at 11:57:10AM +0200, Daniel Vetter wrote:
-> > > On Thu, Sep 10, 2020 at 11:53 AM Laurentiu Palcu
-> > > <laurentiu.palcu@oss.nxp.com> wrote:
-> > > > When compiling for 32bit platforms, the compilation fails with:
-> > > > 
-> > > > ERROR: modpost: "__aeabi_ldivmod"
-> > > > [drivers/gpu/drm/imx/dcss/imx-dcss.ko] undefined!
-> > > > ERROR: modpost: "__aeabi_uldivmod"
-> > > > [drivers/gpu/drm/imx/dcss/imx-dcss.ko] undefined!
-> > > > 
-> > > > This patch adds a dependency on ARM64 since no 32bit SoCs have DCSS, so far.
-> > > 
-> > > Usual way to fix this correctly is using the right division macros,
-> > > not limiting the driver to 64bit. But this works for now, would be
-> > > good to fix this properly for compile-testing and all that.
-> > 
-> > I didn't see the point in using the macros since this is running only on
-> > 64bit. Though I will probably revisit it and fix it properly in a
-> > subsequent patch.
-> > 
-> > > > Signed-off-by: Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>
-> > > > Reported-by: Daniel Vetter <daniel@ffwll.ch>
-> > > 
-> > > Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-> > > 
-> > > Please push to drm-misc-next.
-> > 
-> > About that, I may need some help pushing it.
-> 
-> I've already pushed a few minutes ago, so we don't disturb the build
-> tests any longer.
+Signed-off-by: Harald Freudenberger <freude@linux.ibm.com>
+---
+ drivers/s390/crypto/zcrypt_api.c      | 30 +++++------
+ drivers/s390/crypto/zcrypt_api.h      | 22 +++++++-
+ drivers/s390/crypto/zcrypt_ccamisc.c  | 32 +++--------
+ drivers/s390/crypto/zcrypt_ep11misc.c | 28 ++--------
+ drivers/s390/crypto/zcrypt_msgtype6.c | 78 +++++++++++++--------------
+ drivers/s390/crypto/zcrypt_msgtype6.h |  4 +-
+ 6 files changed, 88 insertions(+), 106 deletions(-)
 
-Thanks a lot,
-laurentiu
+diff --git a/drivers/s390/crypto/zcrypt_api.c b/drivers/s390/crypto/zcrypt_api.c
+index 4dbbfd88262c..a711728c3857 100644
+--- a/drivers/s390/crypto/zcrypt_api.c
++++ b/drivers/s390/crypto/zcrypt_api.c
+@@ -797,7 +797,7 @@ static long zcrypt_rsa_crt(struct ap_perms *perms,
+ 	return rc;
+ }
+ 
+-static long _zcrypt_send_cprb(struct ap_perms *perms,
++static long _zcrypt_send_cprb(bool userspace, struct ap_perms *perms,
+ 			      struct ica_xcRB *xcRB)
+ {
+ 	struct zcrypt_card *zc, *pref_zc;
+@@ -813,7 +813,7 @@ static long _zcrypt_send_cprb(struct ap_perms *perms,
+ 
+ 	xcRB->status = 0;
+ 	ap_init_message(&ap_msg);
+-	rc = get_cprb_fc(xcRB, &ap_msg, &func_code, &domain);
++	rc = get_cprb_fc(userspace, xcRB, &ap_msg, &func_code, &domain);
+ 	if (rc)
+ 		goto out;
+ 
+@@ -878,7 +878,7 @@ static long _zcrypt_send_cprb(struct ap_perms *perms,
+ 	if (*domain == AUTOSEL_DOM)
+ 		*domain = AP_QID_QUEUE(qid);
+ 
+-	rc = pref_zq->ops->send_cprb(pref_zq, xcRB, &ap_msg);
++	rc = pref_zq->ops->send_cprb(userspace, pref_zq, xcRB, &ap_msg);
+ 
+ 	spin_lock(&zcrypt_list_lock);
+ 	zcrypt_drop_queue(pref_zc, pref_zq, mod, weight);
+@@ -893,7 +893,7 @@ static long _zcrypt_send_cprb(struct ap_perms *perms,
+ 
+ long zcrypt_send_cprb(struct ica_xcRB *xcRB)
+ {
+-	return _zcrypt_send_cprb(&ap_perms, xcRB);
++	return _zcrypt_send_cprb(false, &ap_perms, xcRB);
+ }
+ EXPORT_SYMBOL(zcrypt_send_cprb);
+ 
+@@ -924,7 +924,7 @@ static bool is_desired_ep11_queue(unsigned int dev_qid,
+ 	return false;
+ }
+ 
+-static long _zcrypt_send_ep11_cprb(struct ap_perms *perms,
++static long _zcrypt_send_ep11_cprb(bool userspace, struct ap_perms *perms,
+ 				   struct ep11_urb *xcrb)
+ {
+ 	struct zcrypt_card *zc, *pref_zc;
+@@ -956,7 +956,7 @@ static long _zcrypt_send_ep11_cprb(struct ap_perms *perms,
+ 		}
+ 
+ 		uptr = (struct ep11_target_dev __force __user *) xcrb->targets;
+-		if (copy_from_user(targets, uptr,
++		if (z_copy_from_user(userspace, targets, uptr,
+ 				   target_num * sizeof(*targets))) {
+ 			func_code = 0;
+ 			rc = -EFAULT;
+@@ -964,7 +964,7 @@ static long _zcrypt_send_ep11_cprb(struct ap_perms *perms,
+ 		}
+ 	}
+ 
+-	rc = get_ep11cprb_fc(xcrb, &ap_msg, &func_code);
++	rc = get_ep11cprb_fc(userspace, xcrb, &ap_msg, &func_code);
+ 	if (rc)
+ 		goto out_free;
+ 
+@@ -1015,7 +1015,7 @@ static long _zcrypt_send_ep11_cprb(struct ap_perms *perms,
+ 	}
+ 
+ 	qid = pref_zq->queue->qid;
+-	rc = pref_zq->ops->send_ep11_cprb(pref_zq, xcrb, &ap_msg);
++	rc = pref_zq->ops->send_ep11_cprb(userspace, pref_zq, xcrb, &ap_msg);
+ 
+ 	spin_lock(&zcrypt_list_lock);
+ 	zcrypt_drop_queue(pref_zc, pref_zq, mod, weight);
+@@ -1032,7 +1032,7 @@ static long _zcrypt_send_ep11_cprb(struct ap_perms *perms,
+ 
+ long zcrypt_send_ep11_cprb(struct ep11_urb *xcrb)
+ {
+-	return _zcrypt_send_ep11_cprb(&ap_perms, xcrb);
++	return _zcrypt_send_ep11_cprb(false, &ap_perms, xcrb);
+ }
+ EXPORT_SYMBOL(zcrypt_send_ep11_cprb);
+ 
+@@ -1353,12 +1353,12 @@ static int zsecsendcprb_ioctl(struct ap_perms *perms, unsigned long arg)
+ 	if (copy_from_user(&xcRB, uxcRB, sizeof(xcRB)))
+ 		return -EFAULT;
+ 	do {
+-		rc = _zcrypt_send_cprb(perms, &xcRB);
++		rc = _zcrypt_send_cprb(true, perms, &xcRB);
+ 	} while (rc == -EAGAIN);
+ 	/* on failure: retry once again after a requested rescan */
+ 	if ((rc == -ENODEV) && (zcrypt_process_rescan()))
+ 		do {
+-			rc = _zcrypt_send_cprb(perms, &xcRB);
++			rc = _zcrypt_send_cprb(true, perms, &xcRB);
+ 		} while (rc == -EAGAIN);
+ 	if (rc)
+ 		ZCRYPT_DBF(DBF_DEBUG, "ioctl ZSENDCPRB rc=%d status=0x%x\n",
+@@ -1377,12 +1377,12 @@ static int zsendep11cprb_ioctl(struct ap_perms *perms, unsigned long arg)
+ 	if (copy_from_user(&xcrb, uxcrb, sizeof(xcrb)))
+ 		return -EFAULT;
+ 	do {
+-		rc = _zcrypt_send_ep11_cprb(perms, &xcrb);
++		rc = _zcrypt_send_ep11_cprb(true, perms, &xcrb);
+ 	} while (rc == -EAGAIN);
+ 	/* on failure: retry once again after a requested rescan */
+ 	if ((rc == -ENODEV) && (zcrypt_process_rescan()))
+ 		do {
+-			rc = _zcrypt_send_ep11_cprb(perms, &xcrb);
++			rc = _zcrypt_send_ep11_cprb(true, perms, &xcrb);
+ 		} while (rc == -EAGAIN);
+ 	if (rc)
+ 		ZCRYPT_DBF(DBF_DEBUG, "ioctl ZSENDEP11CPRB rc=%d\n", rc);
+@@ -1655,12 +1655,12 @@ static long trans_xcRB32(struct ap_perms *perms, struct file *filp,
+ 	xcRB64.priority_window = xcRB32.priority_window;
+ 	xcRB64.status = xcRB32.status;
+ 	do {
+-		rc = _zcrypt_send_cprb(perms, &xcRB64);
++		rc = _zcrypt_send_cprb(true, perms, &xcRB64);
+ 	} while (rc == -EAGAIN);
+ 	/* on failure: retry once again after a requested rescan */
+ 	if ((rc == -ENODEV) && (zcrypt_process_rescan()))
+ 		do {
+-			rc = _zcrypt_send_cprb(perms, &xcRB64);
++			rc = _zcrypt_send_cprb(true, perms, &xcRB64);
+ 		} while (rc == -EAGAIN);
+ 	xcRB32.reply_control_blk_length = xcRB64.reply_control_blk_length;
+ 	xcRB32.reply_data_length = xcRB64.reply_data_length;
+diff --git a/drivers/s390/crypto/zcrypt_api.h b/drivers/s390/crypto/zcrypt_api.h
+index 599e68bf53f7..b9085a3e6958 100644
+--- a/drivers/s390/crypto/zcrypt_api.h
++++ b/drivers/s390/crypto/zcrypt_api.h
+@@ -59,9 +59,9 @@ struct zcrypt_ops {
+ 	long (*rsa_modexpo)(struct zcrypt_queue *, struct ica_rsa_modexpo *);
+ 	long (*rsa_modexpo_crt)(struct zcrypt_queue *,
+ 				struct ica_rsa_modexpo_crt *);
+-	long (*send_cprb)(struct zcrypt_queue *, struct ica_xcRB *,
++	long (*send_cprb)(bool userspace, struct zcrypt_queue *, struct ica_xcRB *,
+ 			  struct ap_message *);
+-	long (*send_ep11_cprb)(struct zcrypt_queue *, struct ep11_urb *,
++	long (*send_ep11_cprb)(bool userspace, struct zcrypt_queue *, struct ep11_urb *,
+ 			       struct ap_message *);
+ 	long (*rng)(struct zcrypt_queue *, char *, struct ap_message *);
+ 	struct list_head list;		/* zcrypt ops list. */
+@@ -145,4 +145,22 @@ void zcrypt_device_status_mask_ext(struct zcrypt_device_status_ext *devstatus);
+ int zcrypt_device_status_ext(int card, int queue,
+ 			     struct zcrypt_device_status_ext *devstatus);
+ 
++static inline unsigned long z_copy_from_user(bool userspace,
++					     void *to, const void __user *from, unsigned long n)
++{
++	if (likely(userspace))
++		return copy_from_user(to, from, n);
++	memcpy(to, (void __force *) from, n);
++	return 0;
++}
++
++static inline unsigned long z_copy_to_user(bool userspace,
++					   void __user *to, const void *from, unsigned long n)
++{
++	if (likely(userspace))
++		return copy_to_user(to, from, n);
++	memcpy((void __force *) to, from, n);
++	return 0;
++}
++
+ #endif /* _ZCRYPT_API_H_ */
+diff --git a/drivers/s390/crypto/zcrypt_ccamisc.c b/drivers/s390/crypto/zcrypt_ccamisc.c
+index 3f5b61351cde..7d39b43ed3c0 100644
+--- a/drivers/s390/crypto/zcrypt_ccamisc.c
++++ b/drivers/s390/crypto/zcrypt_ccamisc.c
+@@ -248,24 +248,6 @@ static inline void prep_xcrb(struct ica_xcRB *pxcrb,
+ 	pxcrb->reply_control_blk_addr = (void __user *) prepcblk;
+ }
+ 
+-/*
+- * Helper function which calls zcrypt_send_cprb with
+- * memory management segment adjusted to kernel space
+- * so that the copy_from_user called within this
+- * function do in fact copy from kernel space.
+- */
+-static inline int _zcrypt_send_cprb(struct ica_xcRB *xcrb)
+-{
+-	int rc;
+-	mm_segment_t old_fs = get_fs();
+-
+-	set_fs(KERNEL_DS);
+-	rc = zcrypt_send_cprb(xcrb);
+-	set_fs(old_fs);
+-
+-	return rc;
+-}
+-
+ /*
+  * Generate (random) CCA AES DATA secure key.
+  */
+@@ -359,7 +341,7 @@ int cca_genseckey(u16 cardnr, u16 domain,
+ 	prep_xcrb(&xcrb, cardnr, preqcblk, prepcblk);
+ 
+ 	/* forward xcrb with request CPRB and reply CPRB to zcrypt dd */
+-	rc = _zcrypt_send_cprb(&xcrb);
++	rc = zcrypt_send_cprb(&xcrb);
+ 	if (rc) {
+ 		DEBUG_ERR("%s zcrypt_send_cprb (cardnr=%d domain=%d) failed, errno %d\n",
+ 			  __func__, (int) cardnr, (int) domain, rc);
+@@ -497,7 +479,7 @@ int cca_clr2seckey(u16 cardnr, u16 domain, u32 keybitsize,
+ 	prep_xcrb(&xcrb, cardnr, preqcblk, prepcblk);
+ 
+ 	/* forward xcrb with request CPRB and reply CPRB to zcrypt dd */
+-	rc = _zcrypt_send_cprb(&xcrb);
++	rc = zcrypt_send_cprb(&xcrb);
+ 	if (rc) {
+ 		DEBUG_ERR("%s zcrypt_send_cprb (cardnr=%d domain=%d) failed, rc=%d\n",
+ 			  __func__, (int) cardnr, (int) domain, rc);
+@@ -624,7 +606,7 @@ int cca_sec2protkey(u16 cardnr, u16 domain,
+ 	prep_xcrb(&xcrb, cardnr, preqcblk, prepcblk);
+ 
+ 	/* forward xcrb with request CPRB and reply CPRB to zcrypt dd */
+-	rc = _zcrypt_send_cprb(&xcrb);
++	rc = zcrypt_send_cprb(&xcrb);
+ 	if (rc) {
+ 		DEBUG_ERR("%s zcrypt_send_cprb (cardnr=%d domain=%d) failed, rc=%d\n",
+ 			  __func__, (int) cardnr, (int) domain, rc);
+@@ -850,7 +832,7 @@ int cca_gencipherkey(u16 cardnr, u16 domain, u32 keybitsize, u32 keygenflags,
+ 	prep_xcrb(&xcrb, cardnr, preqcblk, prepcblk);
+ 
+ 	/* forward xcrb with request CPRB and reply CPRB to zcrypt dd */
+-	rc = _zcrypt_send_cprb(&xcrb);
++	rc = zcrypt_send_cprb(&xcrb);
+ 	if (rc) {
+ 		DEBUG_ERR(
+ 			"%s zcrypt_send_cprb (cardnr=%d domain=%d) failed, rc=%d\n",
+@@ -1018,7 +1000,7 @@ static int _ip_cprb_helper(u16 cardnr, u16 domain,
+ 	prep_xcrb(&xcrb, cardnr, preqcblk, prepcblk);
+ 
+ 	/* forward xcrb with request CPRB and reply CPRB to zcrypt dd */
+-	rc = _zcrypt_send_cprb(&xcrb);
++	rc = zcrypt_send_cprb(&xcrb);
+ 	if (rc) {
+ 		DEBUG_ERR(
+ 			"%s zcrypt_send_cprb (cardnr=%d domain=%d) failed, rc=%d\n",
+@@ -1235,7 +1217,7 @@ int cca_cipher2protkey(u16 cardnr, u16 domain, const u8 *ckey,
+ 	prep_xcrb(&xcrb, cardnr, preqcblk, prepcblk);
+ 
+ 	/* forward xcrb with request CPRB and reply CPRB to zcrypt dd */
+-	rc = _zcrypt_send_cprb(&xcrb);
++	rc = zcrypt_send_cprb(&xcrb);
+ 	if (rc) {
+ 		DEBUG_ERR(
+ 			"%s zcrypt_send_cprb (cardnr=%d domain=%d) failed, rc=%d\n",
+@@ -1366,7 +1348,7 @@ int cca_query_crypto_facility(u16 cardnr, u16 domain,
+ 	prep_xcrb(&xcrb, cardnr, preqcblk, prepcblk);
+ 
+ 	/* forward xcrb with request CPRB and reply CPRB to zcrypt dd */
+-	rc = _zcrypt_send_cprb(&xcrb);
++	rc = zcrypt_send_cprb(&xcrb);
+ 	if (rc) {
+ 		DEBUG_ERR("%s zcrypt_send_cprb (cardnr=%d domain=%d) failed, rc=%d\n",
+ 			  __func__, (int) cardnr, (int) domain, rc);
+diff --git a/drivers/s390/crypto/zcrypt_ep11misc.c b/drivers/s390/crypto/zcrypt_ep11misc.c
+index 3c3d403abe92..60b6bec21c32 100644
+--- a/drivers/s390/crypto/zcrypt_ep11misc.c
++++ b/drivers/s390/crypto/zcrypt_ep11misc.c
+@@ -169,24 +169,6 @@ int ep11_check_aeskeyblob(debug_info_t *dbg, int dbflvl,
+ }
+ EXPORT_SYMBOL(ep11_check_aeskeyblob);
+ 
+-/*
+- * Helper function which calls zcrypt_send_ep11_cprb with
+- * memory management segment adjusted to kernel space
+- * so that the copy_from_user called within this
+- * function do in fact copy from kernel space.
+- */
+-static inline int _zcrypt_send_ep11_cprb(struct ep11_urb *urb)
+-{
+-	int rc;
+-	mm_segment_t old_fs = get_fs();
+-
+-	set_fs(KERNEL_DS);
+-	rc = zcrypt_send_ep11_cprb(urb);
+-	set_fs(old_fs);
+-
+-	return rc;
+-}
+-
+ /*
+  * Allocate and prepare ep11 cprb plus additional payload.
+  */
+@@ -399,7 +381,7 @@ static int ep11_query_info(u16 cardnr, u16 domain, u32 query_type,
+ 		 req, sizeof(*req) + sizeof(*req_pl),
+ 		 rep, sizeof(*rep) + sizeof(*rep_pl) + buflen);
+ 
+-	rc = _zcrypt_send_ep11_cprb(urb);
++	rc = zcrypt_send_ep11_cprb(urb);
+ 	if (rc) {
+ 		DEBUG_ERR(
+ 			"%s zcrypt_send_ep11_cprb(card=%d dom=%d) failed, rc=%d\n",
+@@ -637,7 +619,7 @@ int ep11_genaeskey(u16 card, u16 domain, u32 keybitsize, u32 keygenflags,
+ 		 req, sizeof(*req) + sizeof(*req_pl),
+ 		 rep, sizeof(*rep) + sizeof(*rep_pl));
+ 
+-	rc = _zcrypt_send_ep11_cprb(urb);
++	rc = zcrypt_send_ep11_cprb(urb);
+ 	if (rc) {
+ 		DEBUG_ERR(
+ 			"%s zcrypt_send_ep11_cprb(card=%d dom=%d) failed, rc=%d\n",
+@@ -757,7 +739,7 @@ static int ep11_cryptsingle(u16 card, u16 domain,
+ 		 req, sizeof(*req) + req_pl_size,
+ 		 rep, sizeof(*rep) + rep_pl_size);
+ 
+-	rc = _zcrypt_send_ep11_cprb(urb);
++	rc = zcrypt_send_ep11_cprb(urb);
+ 	if (rc) {
+ 		DEBUG_ERR(
+ 			"%s zcrypt_send_ep11_cprb(card=%d dom=%d) failed, rc=%d\n",
+@@ -905,7 +887,7 @@ static int ep11_unwrapkey(u16 card, u16 domain,
+ 		 req, sizeof(*req) + req_pl_size,
+ 		 rep, sizeof(*rep) + sizeof(*rep_pl));
+ 
+-	rc = _zcrypt_send_ep11_cprb(urb);
++	rc = zcrypt_send_ep11_cprb(urb);
+ 	if (rc) {
+ 		DEBUG_ERR(
+ 			"%s zcrypt_send_ep11_cprb(card=%d dom=%d) failed, rc=%d\n",
+@@ -1033,7 +1015,7 @@ static int ep11_wrapkey(u16 card, u16 domain,
+ 		 req, sizeof(*req) + req_pl_size,
+ 		 rep, sizeof(*rep) + sizeof(*rep_pl));
+ 
+-	rc = _zcrypt_send_ep11_cprb(urb);
++	rc = zcrypt_send_ep11_cprb(urb);
+ 	if (rc) {
+ 		DEBUG_ERR(
+ 			"%s zcrypt_send_ep11_cprb(card=%d dom=%d) failed, rc=%d\n",
+diff --git a/drivers/s390/crypto/zcrypt_msgtype6.c b/drivers/s390/crypto/zcrypt_msgtype6.c
+index d77991c74c25..3db901883a5c 100644
+--- a/drivers/s390/crypto/zcrypt_msgtype6.c
++++ b/drivers/s390/crypto/zcrypt_msgtype6.c
+@@ -388,7 +388,7 @@ struct type86_fmt2_msg {
+ 	struct type86_fmt2_ext fmt2;
+ } __packed;
+ 
+-static int XCRB_msg_to_type6CPRB_msgX(struct ap_message *ap_msg,
++static int XCRB_msg_to_type6CPRB_msgX(bool userspace, struct ap_message *ap_msg,
+ 				      struct ica_xcRB *xcRB,
+ 				      unsigned int *fcode,
+ 				      unsigned short **dom)
+@@ -465,8 +465,8 @@ static int XCRB_msg_to_type6CPRB_msgX(struct ap_message *ap_msg,
+ 	msg->hdr.FromCardLen2 = xcRB->reply_data_length;
+ 
+ 	/* prepare CPRB */
+-	if (copy_from_user(&(msg->cprbx), xcRB->request_control_blk_addr,
+-		    xcRB->request_control_blk_length))
++	if (z_copy_from_user(userspace, &(msg->cprbx), xcRB->request_control_blk_addr,
++			     xcRB->request_control_blk_length))
+ 		return -EFAULT;
+ 	if (msg->cprbx.cprb_len + sizeof(msg->hdr.function_code) >
+ 	    xcRB->request_control_blk_length)
+@@ -484,16 +484,16 @@ static int XCRB_msg_to_type6CPRB_msgX(struct ap_message *ap_msg,
+ 
+ 	/* copy data block */
+ 	if (xcRB->request_data_length &&
+-	    copy_from_user(req_data, xcRB->request_data_address,
+-		xcRB->request_data_length))
++	    z_copy_from_user(userspace, req_data, xcRB->request_data_address,
++			     xcRB->request_data_length))
+ 		return -EFAULT;
+ 
+ 	return 0;
+ }
+ 
+-static int xcrb_msg_to_type6_ep11cprb_msgx(struct ap_message *ap_msg,
+-				       struct ep11_urb *xcRB,
+-				       unsigned int *fcode)
++static int xcrb_msg_to_type6_ep11cprb_msgx(bool userspace, struct ap_message *ap_msg,
++					   struct ep11_urb *xcRB,
++					   unsigned int *fcode)
+ {
+ 	unsigned int lfmt;
+ 	static struct type6_hdr static_type6_ep11_hdr = {
+@@ -543,8 +543,8 @@ static int xcrb_msg_to_type6_ep11cprb_msgx(struct ap_message *ap_msg,
+ 	msg->hdr.FromCardLen1 = xcRB->resp_len;
+ 
+ 	/* Import CPRB data from the ioctl input parameter */
+-	if (copy_from_user(&(msg->cprbx.cprb_len),
+-			   (char __force __user *)xcRB->req, xcRB->req_len)) {
++	if (z_copy_from_user(userspace, &(msg->cprbx.cprb_len),
++			     (char __force __user *)xcRB->req, xcRB->req_len)) {
+ 		return -EFAULT;
+ 	}
+ 
+@@ -707,7 +707,7 @@ static int convert_type86_ica(struct zcrypt_queue *zq,
+  *
+  * Returns 0 on success or -EINVAL, -EFAULT, -EAGAIN in case of an error.
+  */
+-static int convert_type86_xcrb(struct zcrypt_queue *zq,
++static int convert_type86_xcrb(bool userspace, struct zcrypt_queue *zq,
+ 			       struct ap_message *reply,
+ 			       struct ica_xcRB *xcRB)
+ {
+@@ -715,15 +715,15 @@ static int convert_type86_xcrb(struct zcrypt_queue *zq,
+ 	char *data = reply->msg;
+ 
+ 	/* Copy CPRB to user */
+-	if (copy_to_user(xcRB->reply_control_blk_addr,
+-		data + msg->fmt2.offset1, msg->fmt2.count1))
++	if (z_copy_to_user(userspace, xcRB->reply_control_blk_addr,
++			   data + msg->fmt2.offset1, msg->fmt2.count1))
+ 		return -EFAULT;
+ 	xcRB->reply_control_blk_length = msg->fmt2.count1;
+ 
+ 	/* Copy data buffer to user */
+ 	if (msg->fmt2.count2)
+-		if (copy_to_user(xcRB->reply_data_addr,
+-			data + msg->fmt2.offset2, msg->fmt2.count2))
++		if (z_copy_to_user(userspace, xcRB->reply_data_addr,
++				   data + msg->fmt2.offset2, msg->fmt2.count2))
+ 			return -EFAULT;
+ 	xcRB->reply_data_length = msg->fmt2.count2;
+ 	return 0;
+@@ -738,7 +738,7 @@ static int convert_type86_xcrb(struct zcrypt_queue *zq,
+  *
+  * Returns 0 on success or -EINVAL, -EFAULT, -EAGAIN in case of an error.
+  */
+-static int convert_type86_ep11_xcrb(struct zcrypt_queue *zq,
++static int convert_type86_ep11_xcrb(bool userspace, struct zcrypt_queue *zq,
+ 				    struct ap_message *reply,
+ 				    struct ep11_urb *xcRB)
+ {
+@@ -749,8 +749,8 @@ static int convert_type86_ep11_xcrb(struct zcrypt_queue *zq,
+ 		return -EINVAL;
+ 
+ 	/* Copy response CPRB to user */
+-	if (copy_to_user((char __force __user *)xcRB->resp,
+-			 data + msg->fmt2.offset1, msg->fmt2.count1))
++	if (z_copy_to_user(userspace, (char __force __user *)xcRB->resp,
++			   data + msg->fmt2.offset1, msg->fmt2.count1))
+ 		return -EFAULT;
+ 	xcRB->resp_len = msg->fmt2.count1;
+ 	return 0;
+@@ -814,9 +814,9 @@ static int convert_response_ica(struct zcrypt_queue *zq,
+ 	}
+ }
+ 
+-static int convert_response_xcrb(struct zcrypt_queue *zq,
+-			    struct ap_message *reply,
+-			    struct ica_xcRB *xcRB)
++static int convert_response_xcrb(bool userspace, struct zcrypt_queue *zq,
++				 struct ap_message *reply,
++				 struct ica_xcRB *xcRB)
+ {
+ 	struct type86x_reply *msg = reply->msg;
+ 
+@@ -831,7 +831,7 @@ static int convert_response_xcrb(struct zcrypt_queue *zq,
+ 			return convert_error(zq, reply);
+ 		}
+ 		if (msg->cprbx.cprb_ver_id == 0x02)
+-			return convert_type86_xcrb(zq, reply, xcRB);
++			return convert_type86_xcrb(userspace, zq, reply, xcRB);
+ 		fallthrough;	/* wrong cprb version is an unknown response */
+ 	default: /* Unknown response type, this should NEVER EVER happen */
+ 		xcRB->status = 0x0008044DL; /* HDD_InvalidParm */
+@@ -848,8 +848,8 @@ static int convert_response_xcrb(struct zcrypt_queue *zq,
+ 	}
+ }
+ 
+-static int convert_response_ep11_xcrb(struct zcrypt_queue *zq,
+-	struct ap_message *reply, struct ep11_urb *xcRB)
++static int convert_response_ep11_xcrb(bool userspace, struct zcrypt_queue *zq,
++				      struct ap_message *reply, struct ep11_urb *xcRB)
+ {
+ 	struct type86_ep11_reply *msg = reply->msg;
+ 
+@@ -861,7 +861,7 @@ static int convert_response_ep11_xcrb(struct zcrypt_queue *zq,
+ 		if (msg->hdr.reply_code)
+ 			return convert_error(zq, reply);
+ 		if (msg->cprbx.cprb_ver_id == 0x04)
+-			return convert_type86_ep11_xcrb(zq, reply, xcRB);
++			return convert_type86_ep11_xcrb(userspace, zq, reply, xcRB);
+ 		fallthrough;	/* wrong cprb version is an unknown resp */
+ 	default: /* Unknown response type, this should NEVER EVER happen */
+ 		zq->online = 0;
+@@ -1095,9 +1095,9 @@ static long zcrypt_msgtype6_modexpo_crt(struct zcrypt_queue *zq,
+  * by the caller with ap_init_message(). Also the caller has to
+  * make sure ap_release_message() is always called even on failure.
+  */
+-unsigned int get_cprb_fc(struct ica_xcRB *xcRB,
+-				struct ap_message *ap_msg,
+-				unsigned int *func_code, unsigned short **dom)
++unsigned int get_cprb_fc(bool userspace, struct ica_xcRB *xcRB,
++			 struct ap_message *ap_msg,
++			 unsigned int *func_code, unsigned short **dom)
+ {
+ 	struct response_type resp_type = {
+ 		.type = CEXXC_RESPONSE_TYPE_XCRB,
+@@ -1112,7 +1112,7 @@ unsigned int get_cprb_fc(struct ica_xcRB *xcRB,
+ 	ap_msg->private = kmemdup(&resp_type, sizeof(resp_type), GFP_KERNEL);
+ 	if (!ap_msg->private)
+ 		return -ENOMEM;
+-	return XCRB_msg_to_type6CPRB_msgX(ap_msg, xcRB, func_code, dom);
++	return XCRB_msg_to_type6CPRB_msgX(userspace, ap_msg, xcRB, func_code, dom);
+ }
+ 
+ /**
+@@ -1122,9 +1122,9 @@ unsigned int get_cprb_fc(struct ica_xcRB *xcRB,
+  *	CEXxC device to the request distributor
+  * @xcRB: pointer to the send_cprb request buffer
+  */
+-static long zcrypt_msgtype6_send_cprb(struct zcrypt_queue *zq,
+-				    struct ica_xcRB *xcRB,
+-				    struct ap_message *ap_msg)
++static long zcrypt_msgtype6_send_cprb(bool userspace, struct zcrypt_queue *zq,
++				      struct ica_xcRB *xcRB,
++				      struct ap_message *ap_msg)
+ {
+ 	int rc;
+ 	struct response_type *rtype = (struct response_type *)(ap_msg->private);
+@@ -1135,7 +1135,7 @@ static long zcrypt_msgtype6_send_cprb(struct zcrypt_queue *zq,
+ 	if (rc == 0) {
+ 		rc = ap_msg->rc;
+ 		if (rc == 0)
+-			rc = convert_response_xcrb(zq, ap_msg, xcRB);
++			rc = convert_response_xcrb(userspace, zq, ap_msg, xcRB);
+ 	} else
+ 		/* Signal pending. */
+ 		ap_cancel_message(zq->queue, ap_msg);
+@@ -1150,9 +1150,9 @@ static long zcrypt_msgtype6_send_cprb(struct zcrypt_queue *zq,
+  * by the caller with ap_init_message(). Also the caller has to
+  * make sure ap_release_message() is always called even on failure.
+  */
+-unsigned int get_ep11cprb_fc(struct ep11_urb *xcrb,
+-				    struct ap_message *ap_msg,
+-				    unsigned int *func_code)
++unsigned int get_ep11cprb_fc(bool userspace, struct ep11_urb *xcrb,
++			     struct ap_message *ap_msg,
++			     unsigned int *func_code)
+ {
+ 	struct response_type resp_type = {
+ 		.type = CEXXC_RESPONSE_TYPE_EP11,
+@@ -1167,7 +1167,7 @@ unsigned int get_ep11cprb_fc(struct ep11_urb *xcrb,
+ 	ap_msg->private = kmemdup(&resp_type, sizeof(resp_type), GFP_KERNEL);
+ 	if (!ap_msg->private)
+ 		return -ENOMEM;
+-	return xcrb_msg_to_type6_ep11cprb_msgx(ap_msg, xcrb, func_code);
++	return xcrb_msg_to_type6_ep11cprb_msgx(userspace, ap_msg, xcrb, func_code);
+ }
+ 
+ /**
+@@ -1177,7 +1177,7 @@ unsigned int get_ep11cprb_fc(struct ep11_urb *xcrb,
+  *	  CEX4P device to the request distributor
+  * @xcRB: pointer to the ep11 user request block
+  */
+-static long zcrypt_msgtype6_send_ep11_cprb(struct zcrypt_queue *zq,
++static long zcrypt_msgtype6_send_ep11_cprb(bool userspace, struct zcrypt_queue *zq,
+ 					   struct ep11_urb *xcrb,
+ 					   struct ap_message *ap_msg)
+ {
+@@ -1237,7 +1237,7 @@ static long zcrypt_msgtype6_send_ep11_cprb(struct zcrypt_queue *zq,
+ 	if (rc == 0) {
+ 		rc = ap_msg->rc;
+ 		if (rc == 0)
+-			rc = convert_response_ep11_xcrb(zq, ap_msg, xcrb);
++			rc = convert_response_ep11_xcrb(userspace, zq, ap_msg, xcrb);
+ 	} else
+ 		/* Signal pending. */
+ 		ap_cancel_message(zq->queue, ap_msg);
+diff --git a/drivers/s390/crypto/zcrypt_msgtype6.h b/drivers/s390/crypto/zcrypt_msgtype6.h
+index 0de280a81dd4..0a0bf074206b 100644
+--- a/drivers/s390/crypto/zcrypt_msgtype6.h
++++ b/drivers/s390/crypto/zcrypt_msgtype6.h
+@@ -96,9 +96,9 @@ struct type86_fmt2_ext {
+ 	unsigned int	  offset4;	/* 0x00000000			*/
+ } __packed;
+ 
+-unsigned int get_cprb_fc(struct ica_xcRB *, struct ap_message *,
++unsigned int get_cprb_fc(bool userspace, struct ica_xcRB *, struct ap_message *,
+ 			 unsigned int *, unsigned short **);
+-unsigned int get_ep11cprb_fc(struct ep11_urb *, struct ap_message *,
++unsigned int get_ep11cprb_fc(bool userspace, struct ep11_urb *, struct ap_message *,
+ 			     unsigned int *);
+ unsigned int get_rng_fc(struct ap_message *, int *, unsigned int *);
+ 
+-- 
+2.17.1
 
-> 
-> Regards,
-> Lucas
-> 
-> > Apparently, my request for
-> > a legacy SSH account for contributing to drm-misc got stalled:
-> > 
-> > https://gitlab.freedesktop.org/freedesktop/freedesktop/-/issues/289
-> > 
-> > Thanks,
-> > laurentiu
-> > 
-> > > -Daniel
-> > > 
-> > > 
-> > > 
-> > > ---
-> > > >  drivers/gpu/drm/imx/dcss/Kconfig | 2 +-
-> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > 
-> > > > diff --git a/drivers/gpu/drm/imx/dcss/Kconfig b/drivers/gpu/drm/imx/dcss/Kconfig
-> > > > index 69860de8861f..2b17a964ff05 100644
-> > > > --- a/drivers/gpu/drm/imx/dcss/Kconfig
-> > > > +++ b/drivers/gpu/drm/imx/dcss/Kconfig
-> > > > @@ -3,7 +3,7 @@ config DRM_IMX_DCSS
-> > > >         select IMX_IRQSTEER
-> > > >         select DRM_KMS_CMA_HELPER
-> > > >         select VIDEOMODE_HELPERS
-> > > > -       depends on DRM && ARCH_MXC
-> > > > +       depends on DRM && ARCH_MXC && ARM64
-> > > >         help
-> > > >           Choose this if you have a NXP i.MX8MQ based system and want to use the
-> > > >           Display Controller Subsystem. This option enables DCSS support.
-> > > > --
-> > > > 2.17.1
-> > > > 
-> > > 
-> > > -- 
-> > > Daniel Vetter
-> > > Software Engineer, Intel Corporation
-> > > http://blog.ffwll.ch
-> 
