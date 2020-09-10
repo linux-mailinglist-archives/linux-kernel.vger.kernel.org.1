@@ -2,127 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F12E265143
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 22:50:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4A03265140
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 22:49:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727815AbgIJUuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 16:50:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51436 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726932AbgIJUU4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 16:20:56 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8777B221EA;
-        Thu, 10 Sep 2020 20:20:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599769255;
-        bh=EN8Ux1f40Gwbt7c8BI9OtZebo/fiQdq5Hs8XaO02MuA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cC54oQPVSUHFiKwGk7Ytv6VTyCltQC2OYgYqIL1BN7knZVhOZKy9523c6vulodT6j
-         uw1bWHuvSxSna8xmJFeZcdwzCCjpNygLqz4qpcurELJfipR6uu/j8tEQfaf+HlZuU9
-         qqhlv25t2ibIMDqKO/q7FgPwVVXM7rBpX933Q+4I=
-From:   paulmck@kernel.org
-To:     rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, dipankar@in.ibm.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        alexei.starovoitov@gmail.com, daniel@iogearbox.net,
-        jolsa@redhat.com, bpf@vger.kernel.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH RFC tip/core/rcu 4/4] rcu-tasks: Shorten per-grace-period sleep for RCU Tasks Trace
-Date:   Thu, 10 Sep 2020 13:20:52 -0700
-Message-Id: <20200910202052.5073-4-paulmck@kernel.org>
-X-Mailer: git-send-email 2.9.5
-In-Reply-To: <20200910201956.GA24190@paulmck-ThinkPad-P72>
-References: <20200910201956.GA24190@paulmck-ThinkPad-P72>
+        id S1727088AbgIJUt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 16:49:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726286AbgIJUVS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 16:21:18 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25B63C061573
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 13:21:18 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id o20so5357486pfp.11
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 13:21:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=t7QYn1yhWQ40fqsjl2bkOVXNzJEardYI1LG85/i6U4Y=;
+        b=BclfH4h6+3Bniz3hlYX1B8/uwcukDuLERmdv/too1YSZlXK9dBtB6T76hiHYKxbvf9
+         ygrdCHBb2d1zvH8fNVjO46IvyeFd1UQ1/ZyJKm4z7MgXVjH3rg/TxqlBaSg381uGWgSp
+         a0ksHPHgB/X4oFDK2ba/ovfJCDRHiImWHRs4Y=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=t7QYn1yhWQ40fqsjl2bkOVXNzJEardYI1LG85/i6U4Y=;
+        b=eU0ia4zHRfHThzh274IptxNS0TvdlbTrzvoX5tF+LKvrci0KKapQ8Vh8w6TEmvjm9m
+         8vFqjkvrfI1OLwuQL0rXcm6E2VYZvaGgTifqhFVd4qG1SDeCmvOCzdIfwzC8l0jgl/+G
+         yOAP4kR+uJC0uIUt5UDfGcJQV/kRivlXstGVXOug10Nu/Ha0pErbO4wd5KzGFexvnyHi
+         NnzmGdihL5LlpHGflYmY/DRin8pz+MyiFY869NfOnTBegoPwYnY6iCRToBxMqcMcSvpL
+         h2kWqfBdpRJTyF3PXZUFwGgBQgCYy4on8nYYfIh2TCXr6tTRmyrx+ViL8aTeZ2AzasSV
+         E9mQ==
+X-Gm-Message-State: AOAM531ihn9n3YaolxZgJixJW/6fDDQIOygL3IjsvGpjV1ZahU4MGtyy
+        jp7GDOh6NWEU4+W3BP3WTNXi3Q==
+X-Google-Smtp-Source: ABdhPJx0DRsV2uk7XRhN5WyrdQ3GN+smsELZkM+SGtSpILq3ccN5AWUrZdo9DI6cB7SYJM/QqYly8g==
+X-Received: by 2002:a63:4418:: with SMTP id r24mr5838961pga.8.1599769277620;
+        Thu, 10 Sep 2020 13:21:17 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id a13sm5241229pgq.41.2020.09.10.13.21.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Sep 2020 13:21:16 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     kernel-hardening@lists.openwall.com
+Cc:     Kees Cook <keescook@chromium.org>, John Wood <john.wood@gmx.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Subject: [RFC PATCH 1/6] security/fbfam: Add a Kconfig to enable the fbfam feature
+Date:   Thu, 10 Sep 2020 13:21:02 -0700
+Message-Id: <20200910202107.3799376-2-keescook@chromium.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200910202107.3799376-1-keescook@chromium.org>
+References: <20200910202107.3799376-1-keescook@chromium.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+From: John Wood <john.wood@gmx.com>
 
-The various RCU tasks flavors currently wait 100 milliseconds between each
-grace period in order to prevent CPU-bound loops and to favor efficiency
-over latency.  However, RCU Tasks Trace needs to have a grace-period
-latency of roughly 25 milliseconds, which is completely infeasible given
-the 100-millisecond per-grace-period sleep.  This commit therefore reduces
-this sleep duration to 5 milliseconds (or one jiffy, whichever is longer)
-in kernels built with CONFIG_TASKS_TRACE_RCU_READ_MB=y.
+Add a menu entry under "Security options" to enable the "Fork brute
+force attack mitigation" feature.
 
-Link: https://lore.kernel.org/bpf/CAADnVQK_AiX+S_L_A4CQWT11XyveppBbQSQgH_qWGyzu_E8Yeg@mail.gmail.com/
-Reported-by: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: <bpf@vger.kernel.org>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: John Wood <john.wood@gmx.com>
 ---
- kernel/rcu/tasks.h | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ security/Kconfig       |  1 +
+ security/fbfam/Kconfig | 10 ++++++++++
+ 2 files changed, 11 insertions(+)
+ create mode 100644 security/fbfam/Kconfig
 
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 2b4df23..a0eaed5 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -28,6 +28,7 @@ typedef void (*postgp_func_t)(struct rcu_tasks *rtp);
-  * @kthread_ptr: This flavor's grace-period/callback-invocation kthread.
-  * @gp_func: This flavor's grace-period-wait function.
-  * @gp_state: Grace period's most recent state transition (debugging).
-+ * @gp_sleep: Per-grace-period sleep to prevent CPU-bound looping.
-  * @init_fract: Initial backoff sleep interval.
-  * @gp_jiffies: Time of last @gp_state transition.
-  * @gp_start: Most recent grace-period start in jiffies.
-@@ -49,6 +50,7 @@ struct rcu_tasks {
- 	struct wait_queue_head cbs_wq;
- 	raw_spinlock_t cbs_lock;
- 	int gp_state;
-+	int gp_sleep;
- 	int init_fract;
- 	unsigned long gp_jiffies;
- 	unsigned long gp_start;
-@@ -233,7 +235,7 @@ static int __noreturn rcu_tasks_kthread(void *arg)
- 			cond_resched();
- 		}
- 		/* Paranoid sleep to keep this from entering a tight loop */
--		schedule_timeout_idle(HZ/10);
-+		schedule_timeout_idle(rtp->gp_sleep);
+diff --git a/security/Kconfig b/security/Kconfig
+index 7561f6f99f1d..00a90e25b8d5 100644
+--- a/security/Kconfig
++++ b/security/Kconfig
+@@ -290,6 +290,7 @@ config LSM
+ 	  If unsure, leave this as the default.
  
- 		set_tasks_gp_state(rtp, RTGS_WAIT_CBS);
- 	}
-@@ -557,6 +559,7 @@ EXPORT_SYMBOL_GPL(rcu_barrier_tasks);
+ source "security/Kconfig.hardening"
++source "security/fbfam/Kconfig"
  
- static int __init rcu_spawn_tasks_kthread(void)
- {
-+	rcu_tasks.gp_sleep = HZ / 10;
- 	rcu_tasks.init_fract = 10;
- 	rcu_tasks.pregp_func = rcu_tasks_pregp_step;
- 	rcu_tasks.pertask_func = rcu_tasks_pertask;
-@@ -690,6 +693,7 @@ EXPORT_SYMBOL_GPL(rcu_barrier_tasks_rude);
+ endmenu
  
- static int __init rcu_spawn_tasks_rude_kthread(void)
- {
-+	rcu_tasks_rude.gp_sleep = HZ / 10;
- 	rcu_spawn_tasks_kthread_generic(&rcu_tasks_rude);
- 	return 0;
- }
-@@ -1170,8 +1174,12 @@ EXPORT_SYMBOL_GPL(rcu_barrier_tasks_trace);
- static int __init rcu_spawn_tasks_trace_kthread(void)
- {
- 	if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB)) {
-+		rcu_tasks_trace.gp_sleep = HZ / 10;
- 		rcu_tasks_trace.init_fract = 10;
- 	} else {
-+		rcu_tasks_trace.gp_sleep = HZ / 200;
-+		if (rcu_tasks_trace.gp_sleep <= 0)
-+			rcu_tasks_trace.gp_sleep = 1;
- 		rcu_tasks_trace.init_fract = HZ / 5;
- 		if (rcu_tasks_trace.init_fract <= 0)
- 			rcu_tasks_trace.init_fract = 1;
+diff --git a/security/fbfam/Kconfig b/security/fbfam/Kconfig
+new file mode 100644
+index 000000000000..bbe7f6aad369
+--- /dev/null
++++ b/security/fbfam/Kconfig
+@@ -0,0 +1,10 @@
++# SPDX-License-Identifier: GPL-2.0
++config FBFAM
++	bool "Fork brute force attack mitigation"
++	default n
++	help
++	  This is a user defense that detects any fork brute force attack
++	  based on the application's crashing rate. When this measure is
++	  triggered the fork system call is blocked.
++
++	  If you are unsure how to answer this question, answer N.
 -- 
-2.9.5
+2.25.1
 
