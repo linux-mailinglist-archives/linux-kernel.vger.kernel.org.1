@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E7DD264270
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 11:38:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03FEC264257
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 11:36:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730602AbgIJJg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 05:36:56 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:38932 "EHLO
+        id S1730849AbgIJJgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 05:36:33 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:38690 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730353AbgIJJW1 (ORCPT
+        with ESMTP id S1730355AbgIJJW2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 05:22:27 -0400
-Date:   Thu, 10 Sep 2020 09:22:22 -0000
+        Thu, 10 Sep 2020 05:22:28 -0400
+Date:   Thu, 10 Sep 2020 09:22:23 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1599729742;
+        s=2020; t=1599729743;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=FA4tlg2njTohukM65NAP0aZkJKvv1mBtF1U20Qk+Q7c=;
-        b=DoLR2kRHFcgNtysmDRZDT4bGgDPBaz2zDRm7paB8qOp6Imj/v4yqyCKgEBznSpEb5oDQ1l
-        Fvb/mxNjxsVkRqnl8cupDAF7jPjDdpovFQK1w6WLRLLucA56AodWfziseuQPzBon/Nz7k0
-        8xtUTk1X7LxY53RLMqN4uBLaJWXqX2ucp97KKZH1JDQMrbf73Limse+P9LHftFGGj3bh4V
-        OFRfBwKTDIuiYzwApR7hEDT7oJjgTiieqP2penwV5hOZzwf5G1s7URDf95cnKG3SsZYu8x
-        HyaMdabdhYHgfyd9Tek++6g4MymN6IHhmxefEpLmls0bnnwRYikS+4KjR2JDdA==
+        bh=YTS37UTtC0lhNo11i8DerY4k47O2VOPT3uCPWsJb3GU=;
+        b=EMGjTAAocI4ixgA74dIHzUt82TmfckmPH0ZQyxmF1x2qToQB0n52uhAnS+DvzWtoL4E5d/
+        lXOwWeno2ZjfRyJodwhHVFnL/sFpRFl5VWz3mgRjDAmif7SrLLOToFcurfnOM9tveFXp9K
+        dG6esvQo/4b5AisUWQ8Sau68TtQ27HMXZxyTbqagQa44blHNTxHBxRoIQYAU46p3C5jZrF
+        1C2ade6pVJtxhk619B/ScwUoKgpwoO2EBKCKFiHpY2JVZclzhfxhkXkPAHQMZuoC2+yQO/
+        NgynExymu+xe+l2eQ8+vnk1DMoyexjd6MePM5jDZhFpDV9bNf4X1+xKPRsFvXQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1599729742;
+        s=2020e; t=1599729743;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=FA4tlg2njTohukM65NAP0aZkJKvv1mBtF1U20Qk+Q7c=;
-        b=y5AYEWJnapbXph+nF8VXIpfTZAh6AXY2DNVQRdo/gHqCW12l1R7KJ2dR6ZTVFp5pXGzono
-        cBX+a4tLGouRZbDg==
-From:   "tip-bot2 for Tom Lendacky" <tip-bot2@linutronix.de>
+        bh=YTS37UTtC0lhNo11i8DerY4k47O2VOPT3uCPWsJb3GU=;
+        b=by67diFKLqfcAQG3gM8Qf6zNZIjeEQabnDKjJHe3A1p7dFE0MmEoYfBiJRd4HZ+BFScivH
+        vR4VsmIds+ijnzDg==
+From:   "tip-bot2 for Joerg Roedel" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/seves] x86/sev-es: Add support for handling IOIO exceptions
-Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
-        Joerg Roedel <jroedel@suse.de>, Borislav Petkov <bp@suse.de>,
+Subject: [tip: x86/seves] x86/boot/compressed/64: Setup a GHCB-based VC
+ Exception handler
+Cc:     Joerg Roedel <jroedel@suse.de>, Borislav Petkov <bp@suse.de>,
         x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200907131613.12703-26-joro@8bytes.org>
-References: <20200907131613.12703-26-joro@8bytes.org>
+In-Reply-To: <20200907131613.12703-24-joro@8bytes.org>
+References: <20200907131613.12703-24-joro@8bytes.org>
 MIME-Version: 1.0
-Message-ID: <159972974218.20229.18333865131600086102.tip-bot2@tip-bot2>
+Message-ID: <159972974309.20229.16262792666530248267.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -58,296 +58,507 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/seves branch of tip:
 
-Commit-ID:     25189d08e5168c098c307a0eaae5b30c13a331ef
-Gitweb:        https://git.kernel.org/tip/25189d08e5168c098c307a0eaae5b30c13a331ef
-Author:        Tom Lendacky <thomas.lendacky@amd.com>
-AuthorDate:    Mon, 07 Sep 2020 15:15:26 +02:00
+Commit-ID:     597cfe48212a3f110ab0f918bf59791f453e65b7
+Gitweb:        https://git.kernel.org/tip/597cfe48212a3f110ab0f918bf59791f453e65b7
+Author:        Joerg Roedel <jroedel@suse.de>
+AuthorDate:    Mon, 07 Sep 2020 15:15:24 +02:00
 Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Mon, 07 Sep 2020 19:45:26 +02:00
+CommitterDate: Mon, 07 Sep 2020 19:45:25 +02:00
 
-x86/sev-es: Add support for handling IOIO exceptions
+x86/boot/compressed/64: Setup a GHCB-based VC Exception handler
 
-Add support for decoding and handling #VC exceptions for IOIO events.
+Install an exception handler for #VC exception that uses a GHCB. Also
+add the infrastructure for handling different exit-codes by decoding
+the instruction that caused the exception and error handling.
 
-[ jroedel@suse.de: Adapted code to #VC handling framework ]
-Co-developed-by: Joerg Roedel <jroedel@suse.de>
-Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
 Signed-off-by: Joerg Roedel <jroedel@suse.de>
 Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20200907131613.12703-26-joro@8bytes.org
+Link: https://lkml.kernel.org/r/20200907131613.12703-24-joro@8bytes.org
 ---
- arch/x86/boot/compressed/sev-es.c |  32 ++++-
- arch/x86/kernel/sev-es-shared.c   | 214 +++++++++++++++++++++++++++++-
- 2 files changed, 246 insertions(+)
+ arch/x86/Kconfig                           |   1 +-
+ arch/x86/boot/compressed/Makefile          |   5 +-
+ arch/x86/boot/compressed/idt_64.c          |   4 +-
+ arch/x86/boot/compressed/idt_handlers_64.S |   3 +-
+ arch/x86/boot/compressed/misc.c            |   7 +-
+ arch/x86/boot/compressed/misc.h            |   7 +-
+ arch/x86/boot/compressed/sev-es.c          | 111 ++++++++++++++-
+ arch/x86/include/asm/sev-es.h              |  39 +++++-
+ arch/x86/include/uapi/asm/svm.h            |   1 +-
+ arch/x86/kernel/sev-es-shared.c            | 154 ++++++++++++++++++++-
+ 10 files changed, 331 insertions(+), 1 deletion(-)
 
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 7101ac6..8289dd4 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -1521,6 +1521,7 @@ config AMD_MEM_ENCRYPT
+ 	select DYNAMIC_PHYSICAL_MASK
+ 	select ARCH_USE_MEMREMAP_PROT
+ 	select ARCH_HAS_FORCE_DMA_UNENCRYPTED
++	select INSTRUCTION_DECODER
+ 	help
+ 	  Say yes to enable support for the encryption of system memory.
+ 	  This requires an AMD processor that supports Secure Memory
+diff --git a/arch/x86/boot/compressed/Makefile b/arch/x86/boot/compressed/Makefile
+index 38f4a52..c01236a 100644
+--- a/arch/x86/boot/compressed/Makefile
++++ b/arch/x86/boot/compressed/Makefile
+@@ -44,6 +44,11 @@ KBUILD_CFLAGS += $(call cc-option,-fmacro-prefix-map=$(srctree)/=)
+ KBUILD_CFLAGS += -fno-asynchronous-unwind-tables
+ KBUILD_CFLAGS += -D__DISABLE_EXPORTS
+ 
++# sev-es.c indirectly inludes inat-table.h which is generated during
++# compilation and stored in $(objtree). Add the directory to the includes so
++# that the compiler finds it even with out-of-tree builds (make O=/some/path).
++CFLAGS_sev-es.o += -I$(objtree)/arch/x86/lib/
++
+ KBUILD_AFLAGS  := $(KBUILD_CFLAGS) -D__ASSEMBLY__
+ GCOV_PROFILE := n
+ UBSAN_SANITIZE :=n
+diff --git a/arch/x86/boot/compressed/idt_64.c b/arch/x86/boot/compressed/idt_64.c
+index f3ca732..804a502 100644
+--- a/arch/x86/boot/compressed/idt_64.c
++++ b/arch/x86/boot/compressed/idt_64.c
+@@ -46,5 +46,9 @@ void load_stage2_idt(void)
+ 
+ 	set_idt_entry(X86_TRAP_PF, boot_page_fault);
+ 
++#ifdef CONFIG_AMD_MEM_ENCRYPT
++	set_idt_entry(X86_TRAP_VC, boot_stage2_vc);
++#endif
++
+ 	load_boot_idt(&boot_idt_desc);
+ }
+diff --git a/arch/x86/boot/compressed/idt_handlers_64.S b/arch/x86/boot/compressed/idt_handlers_64.S
+index 92eb4df..22890e1 100644
+--- a/arch/x86/boot/compressed/idt_handlers_64.S
++++ b/arch/x86/boot/compressed/idt_handlers_64.S
+@@ -72,5 +72,6 @@ SYM_FUNC_END(\name)
+ EXCEPTION_HANDLER	boot_page_fault do_boot_page_fault error_code=1
+ 
+ #ifdef CONFIG_AMD_MEM_ENCRYPT
+-EXCEPTION_HANDLER	boot_stage1_vc do_vc_no_ghcb error_code=1
++EXCEPTION_HANDLER	boot_stage1_vc do_vc_no_ghcb		error_code=1
++EXCEPTION_HANDLER	boot_stage2_vc do_boot_stage2_vc	error_code=1
+ #endif
+diff --git a/arch/x86/boot/compressed/misc.c b/arch/x86/boot/compressed/misc.c
+index e478e40..267e7f9 100644
+--- a/arch/x86/boot/compressed/misc.c
++++ b/arch/x86/boot/compressed/misc.c
+@@ -442,6 +442,13 @@ asmlinkage __visible void *extract_kernel(void *rmode, memptr heap,
+ 	parse_elf(output);
+ 	handle_relocations(output, output_len, virt_addr);
+ 	debug_putstr("done.\nBooting the kernel.\n");
++
++	/*
++	 * Flush GHCB from cache and map it encrypted again when running as
++	 * SEV-ES guest.
++	 */
++	sev_es_shutdown_ghcb();
++
+ 	return output;
+ }
+ 
+diff --git a/arch/x86/boot/compressed/misc.h b/arch/x86/boot/compressed/misc.h
+index 01c0fb3..9995c70 100644
+--- a/arch/x86/boot/compressed/misc.h
++++ b/arch/x86/boot/compressed/misc.h
+@@ -115,6 +115,12 @@ static inline void console_init(void)
+ 
+ void set_sev_encryption_mask(void);
+ 
++#ifdef CONFIG_AMD_MEM_ENCRYPT
++void sev_es_shutdown_ghcb(void);
++#else
++static inline void sev_es_shutdown_ghcb(void) { }
++#endif
++
+ /* acpi.c */
+ #ifdef CONFIG_ACPI
+ acpi_physical_address get_rsdp_addr(void);
+@@ -144,5 +150,6 @@ extern struct desc_ptr boot_idt_desc;
+ /* IDT Entry Points */
+ void boot_page_fault(void);
+ void boot_stage1_vc(void);
++void boot_stage2_vc(void);
+ 
+ #endif /* BOOT_COMPRESSED_MISC_H */
 diff --git a/arch/x86/boot/compressed/sev-es.c b/arch/x86/boot/compressed/sev-es.c
-index 1e1fab5..61504eb 100644
+index 99c3bcd..fa62af7 100644
 --- a/arch/x86/boot/compressed/sev-es.c
 +++ b/arch/x86/boot/compressed/sev-es.c
-@@ -24,6 +24,35 @@
- struct ghcb boot_ghcb_page __aligned(PAGE_SIZE);
- struct ghcb *boot_ghcb;
+@@ -13,10 +13,17 @@
+ #include "misc.h"
  
-+/*
-+ * Copy a version of this function here - insn-eval.c can't be used in
-+ * pre-decompression code.
-+ */
-+static bool insn_has_rep_prefix(struct insn *insn)
-+{
-+	int i;
+ #include <asm/sev-es.h>
++#include <asm/trapnr.h>
++#include <asm/trap_pf.h>
+ #include <asm/msr-index.h>
+ #include <asm/ptrace.h>
+ #include <asm/svm.h>
+ 
++#include "error.h"
 +
-+	insn_get_prefixes(insn);
-+
-+	for (i = 0; i < insn->prefixes.nbytes; i++) {
-+		insn_byte_t p = insn->prefixes.bytes[i];
-+
-+		if (p == 0xf2 || p == 0xf3)
-+			return true;
-+	}
-+
-+	return false;
-+}
-+
-+/*
-+ * Only a dummy for insn_get_seg_base() - Early boot-code is 64bit only and
-+ * doesn't use segments.
-+ */
-+static unsigned long insn_get_seg_base(struct pt_regs *regs, int seg_reg_idx)
-+{
-+	return 0UL;
-+}
++struct ghcb boot_ghcb_page __aligned(PAGE_SIZE);
++struct ghcb *boot_ghcb;
 +
  static inline u64 sev_es_rd_ghcb_msr(void)
  {
  	unsigned long low, high;
-@@ -151,6 +180,9 @@ void do_boot_stage2_vc(struct pt_regs *regs, unsigned long exit_code)
- 		goto finish;
- 
- 	switch (exit_code) {
-+	case SVM_EXIT_IOIO:
-+		result = vc_handle_ioio(boot_ghcb, &ctxt);
-+		break;
- 	default:
- 		result = ES_UNSUPPORTED;
- 		break;
-diff --git a/arch/x86/kernel/sev-es-shared.c b/arch/x86/kernel/sev-es-shared.c
-index 7ac6e6b..bae7cf2 100644
---- a/arch/x86/kernel/sev-es-shared.c
-+++ b/arch/x86/kernel/sev-es-shared.c
-@@ -218,3 +218,217 @@ static enum es_result vc_insn_string_write(struct es_em_ctxt *ctxt,
- 
- 	return ret;
+@@ -38,8 +45,112 @@ static inline void sev_es_wr_ghcb_msr(u64 val)
+ 			"a"(low), "d" (high) : "memory");
  }
-+
-+#define IOIO_TYPE_STR  BIT(2)
-+#define IOIO_TYPE_IN   1
-+#define IOIO_TYPE_INS  (IOIO_TYPE_IN | IOIO_TYPE_STR)
-+#define IOIO_TYPE_OUT  0
-+#define IOIO_TYPE_OUTS (IOIO_TYPE_OUT | IOIO_TYPE_STR)
-+
-+#define IOIO_REP       BIT(3)
-+
-+#define IOIO_ADDR_64   BIT(9)
-+#define IOIO_ADDR_32   BIT(8)
-+#define IOIO_ADDR_16   BIT(7)
-+
-+#define IOIO_DATA_32   BIT(6)
-+#define IOIO_DATA_16   BIT(5)
-+#define IOIO_DATA_8    BIT(4)
-+
-+#define IOIO_SEG_ES    (0 << 10)
-+#define IOIO_SEG_DS    (3 << 10)
-+
-+static enum es_result vc_ioio_exitinfo(struct es_em_ctxt *ctxt, u64 *exitinfo)
+ 
++static enum es_result vc_decode_insn(struct es_em_ctxt *ctxt)
 +{
-+	struct insn *insn = &ctxt->insn;
-+	*exitinfo = 0;
++	char buffer[MAX_INSN_SIZE];
++	enum es_result ret;
 +
-+	switch (insn->opcode.bytes[0]) {
-+	/* INS opcodes */
-+	case 0x6c:
-+	case 0x6d:
-+		*exitinfo |= IOIO_TYPE_INS;
-+		*exitinfo |= IOIO_SEG_ES;
-+		*exitinfo |= (ctxt->regs->dx & 0xffff) << 16;
-+		break;
++	memcpy(buffer, (unsigned char *)ctxt->regs->ip, MAX_INSN_SIZE);
 +
-+	/* OUTS opcodes */
-+	case 0x6e:
-+	case 0x6f:
-+		*exitinfo |= IOIO_TYPE_OUTS;
-+		*exitinfo |= IOIO_SEG_DS;
-+		*exitinfo |= (ctxt->regs->dx & 0xffff) << 16;
-+		break;
++	insn_init(&ctxt->insn, buffer, MAX_INSN_SIZE, 1);
++	insn_get_length(&ctxt->insn);
 +
-+	/* IN immediate opcodes */
-+	case 0xe4:
-+	case 0xe5:
-+		*exitinfo |= IOIO_TYPE_IN;
-+		*exitinfo |= (u64)insn->immediate.value << 16;
-+		break;
++	ret = ctxt->insn.immediate.got ? ES_OK : ES_DECODE_FAILED;
 +
-+	/* OUT immediate opcodes */
-+	case 0xe6:
-+	case 0xe7:
-+		*exitinfo |= IOIO_TYPE_OUT;
-+		*exitinfo |= (u64)insn->immediate.value << 16;
-+		break;
++	return ret;
++}
 +
-+	/* IN register opcodes */
-+	case 0xec:
-+	case 0xed:
-+		*exitinfo |= IOIO_TYPE_IN;
-+		*exitinfo |= (ctxt->regs->dx & 0xffff) << 16;
-+		break;
-+
-+	/* OUT register opcodes */
-+	case 0xee:
-+	case 0xef:
-+		*exitinfo |= IOIO_TYPE_OUT;
-+		*exitinfo |= (ctxt->regs->dx & 0xffff) << 16;
-+		break;
-+
-+	default:
-+		return ES_DECODE_FAILED;
-+	}
-+
-+	switch (insn->opcode.bytes[0]) {
-+	case 0x6c:
-+	case 0x6e:
-+	case 0xe4:
-+	case 0xe6:
-+	case 0xec:
-+	case 0xee:
-+		/* Single byte opcodes */
-+		*exitinfo |= IOIO_DATA_8;
-+		break;
-+	default:
-+		/* Length determined by instruction parsing */
-+		*exitinfo |= (insn->opnd_bytes == 2) ? IOIO_DATA_16
-+						     : IOIO_DATA_32;
-+	}
-+	switch (insn->addr_bytes) {
-+	case 2:
-+		*exitinfo |= IOIO_ADDR_16;
-+		break;
-+	case 4:
-+		*exitinfo |= IOIO_ADDR_32;
-+		break;
-+	case 8:
-+		*exitinfo |= IOIO_ADDR_64;
-+		break;
-+	}
-+
-+	if (insn_has_rep_prefix(insn))
-+		*exitinfo |= IOIO_REP;
++static enum es_result vc_write_mem(struct es_em_ctxt *ctxt,
++				   void *dst, char *buf, size_t size)
++{
++	memcpy(dst, buf, size);
 +
 +	return ES_OK;
 +}
 +
-+static enum es_result vc_handle_ioio(struct ghcb *ghcb, struct es_em_ctxt *ctxt)
++static enum es_result vc_read_mem(struct es_em_ctxt *ctxt,
++				  void *src, char *buf, size_t size)
 +{
-+	struct pt_regs *regs = ctxt->regs;
-+	u64 exit_info_1, exit_info_2;
++	memcpy(buf, src, size);
++
++	return ES_OK;
++}
++
+ #undef __init
++#undef __pa
+ #define __init
++#define __pa(x)	((unsigned long)(x))
++
++#define __BOOT_COMPRESSED
++
++/* Basic instruction decoding support needed */
++#include "../../lib/inat.c"
++#include "../../lib/insn.c"
+ 
+ /* Include code for early handlers */
+ #include "../../kernel/sev-es-shared.c"
++
++static bool early_setup_sev_es(void)
++{
++	if (!sev_es_negotiate_protocol())
++		sev_es_terminate(GHCB_SEV_ES_REASON_PROTOCOL_UNSUPPORTED);
++
++	if (set_page_decrypted((unsigned long)&boot_ghcb_page))
++		return false;
++
++	/* Page is now mapped decrypted, clear it */
++	memset(&boot_ghcb_page, 0, sizeof(boot_ghcb_page));
++
++	boot_ghcb = &boot_ghcb_page;
++
++	/* Initialize lookup tables for the instruction decoder */
++	inat_init_tables();
++
++	return true;
++}
++
++void sev_es_shutdown_ghcb(void)
++{
++	if (!boot_ghcb)
++		return;
++
++	/*
++	 * GHCB Page must be flushed from the cache and mapped encrypted again.
++	 * Otherwise the running kernel will see strange cache effects when
++	 * trying to use that page.
++	 */
++	if (set_page_encrypted((unsigned long)&boot_ghcb_page))
++		error("Can't map GHCB page encrypted");
++}
++
++void do_boot_stage2_vc(struct pt_regs *regs, unsigned long exit_code)
++{
++	struct es_em_ctxt ctxt;
++	enum es_result result;
++
++	if (!boot_ghcb && !early_setup_sev_es())
++		sev_es_terminate(GHCB_SEV_ES_REASON_GENERAL_REQUEST);
++
++	vc_ghcb_invalidate(boot_ghcb);
++	result = vc_init_em_ctxt(&ctxt, regs, exit_code);
++	if (result != ES_OK)
++		goto finish;
++
++	switch (exit_code) {
++	default:
++		result = ES_UNSUPPORTED;
++		break;
++	}
++
++finish:
++	if (result == ES_OK) {
++		vc_finish_insn(&ctxt);
++	} else if (result != ES_RETRY) {
++		/*
++		 * For now, just halt the machine. That makes debugging easier,
++		 * later we just call sev_es_terminate() here.
++		 */
++		while (true)
++			asm volatile("hlt\n");
++	}
++}
+diff --git a/arch/x86/include/asm/sev-es.h b/arch/x86/include/asm/sev-es.h
+index 48a4403..6dc5244 100644
+--- a/arch/x86/include/asm/sev-es.h
++++ b/arch/x86/include/asm/sev-es.h
+@@ -9,7 +9,14 @@
+ #define __ASM_ENCRYPTED_STATE_H
+ 
+ #include <linux/types.h>
++#include <asm/insn.h>
+ 
++#define GHCB_SEV_INFO		0x001UL
++#define GHCB_SEV_INFO_REQ	0x002UL
++#define		GHCB_INFO(v)		((v) & 0xfffUL)
++#define		GHCB_PROTO_MAX(v)	(((v) >> 48) & 0xffffUL)
++#define		GHCB_PROTO_MIN(v)	(((v) >> 32) & 0xffffUL)
++#define		GHCB_PROTO_OUR		0x0001UL
+ #define GHCB_SEV_CPUID_REQ	0x004UL
+ #define		GHCB_CPUID_REQ_EAX	0
+ #define		GHCB_CPUID_REQ_EBX	1
+@@ -19,12 +26,44 @@
+ 					(((unsigned long)reg & 3) << 30) | \
+ 					(((unsigned long)fn) << 32))
+ 
++#define	GHCB_PROTOCOL_MAX	0x0001UL
++#define GHCB_DEFAULT_USAGE	0x0000UL
++
+ #define GHCB_SEV_CPUID_RESP	0x005UL
+ #define GHCB_SEV_TERMINATE	0x100UL
++#define		GHCB_SEV_TERMINATE_REASON(reason_set, reason_val)	\
++			(((((u64)reason_set) &  0x7) << 12) |		\
++			 ((((u64)reason_val) & 0xff) << 16))
++#define		GHCB_SEV_ES_REASON_GENERAL_REQUEST	0
++#define		GHCB_SEV_ES_REASON_PROTOCOL_UNSUPPORTED	1
+ 
+ #define	GHCB_SEV_GHCB_RESP_CODE(v)	((v) & 0xfff)
+ #define	VMGEXIT()			{ asm volatile("rep; vmmcall\n\r"); }
+ 
++enum es_result {
++	ES_OK,			/* All good */
++	ES_UNSUPPORTED,		/* Requested operation not supported */
++	ES_VMM_ERROR,		/* Unexpected state from the VMM */
++	ES_DECODE_FAILED,	/* Instruction decoding failed */
++	ES_EXCEPTION,		/* Instruction caused exception */
++	ES_RETRY,		/* Retry instruction emulation */
++};
++
++struct es_fault_info {
++	unsigned long vector;
++	unsigned long error_code;
++	unsigned long cr2;
++};
++
++struct pt_regs;
++
++/* ES instruction emulation context */
++struct es_em_ctxt {
++	struct pt_regs *regs;
++	struct insn insn;
++	struct es_fault_info fi;
++};
++
+ void do_vc_no_ghcb(struct pt_regs *regs, unsigned long exit_code);
+ 
+ static inline u64 lower_bits(u64 val, unsigned int bits)
+diff --git a/arch/x86/include/uapi/asm/svm.h b/arch/x86/include/uapi/asm/svm.h
+index 2e8a30f..c68d161 100644
+--- a/arch/x86/include/uapi/asm/svm.h
++++ b/arch/x86/include/uapi/asm/svm.h
+@@ -29,6 +29,7 @@
+ #define SVM_EXIT_WRITE_DR6     0x036
+ #define SVM_EXIT_WRITE_DR7     0x037
+ #define SVM_EXIT_EXCP_BASE     0x040
++#define SVM_EXIT_LAST_EXCP     0x05f
+ #define SVM_EXIT_INTR          0x060
+ #define SVM_EXIT_NMI           0x061
+ #define SVM_EXIT_SMI           0x062
+diff --git a/arch/x86/kernel/sev-es-shared.c b/arch/x86/kernel/sev-es-shared.c
+index 0bea323..7ac6e6b 100644
+--- a/arch/x86/kernel/sev-es-shared.c
++++ b/arch/x86/kernel/sev-es-shared.c
+@@ -9,6 +9,118 @@
+  * and is included directly into both code-bases.
+  */
+ 
++static void sev_es_terminate(unsigned int reason)
++{
++	u64 val = GHCB_SEV_TERMINATE;
++
++	/*
++	 * Tell the hypervisor what went wrong - only reason-set 0 is
++	 * currently supported.
++	 */
++	val |= GHCB_SEV_TERMINATE_REASON(0, reason);
++
++	/* Request Guest Termination from Hypvervisor */
++	sev_es_wr_ghcb_msr(val);
++	VMGEXIT();
++
++	while (true)
++		asm volatile("hlt\n" : : : "memory");
++}
++
++static bool sev_es_negotiate_protocol(void)
++{
++	u64 val;
++
++	/* Do the GHCB protocol version negotiation */
++	sev_es_wr_ghcb_msr(GHCB_SEV_INFO_REQ);
++	VMGEXIT();
++	val = sev_es_rd_ghcb_msr();
++
++	if (GHCB_INFO(val) != GHCB_SEV_INFO)
++		return false;
++
++	if (GHCB_PROTO_MAX(val) < GHCB_PROTO_OUR ||
++	    GHCB_PROTO_MIN(val) > GHCB_PROTO_OUR)
++		return false;
++
++	return true;
++}
++
++static void vc_ghcb_invalidate(struct ghcb *ghcb)
++{
++	memset(ghcb->save.valid_bitmap, 0, sizeof(ghcb->save.valid_bitmap));
++}
++
++static bool vc_decoding_needed(unsigned long exit_code)
++{
++	/* Exceptions don't require to decode the instruction */
++	return !(exit_code >= SVM_EXIT_EXCP_BASE &&
++		 exit_code <= SVM_EXIT_LAST_EXCP);
++}
++
++static enum es_result vc_init_em_ctxt(struct es_em_ctxt *ctxt,
++				      struct pt_regs *regs,
++				      unsigned long exit_code)
++{
++	enum es_result ret = ES_OK;
++
++	memset(ctxt, 0, sizeof(*ctxt));
++	ctxt->regs = regs;
++
++	if (vc_decoding_needed(exit_code))
++		ret = vc_decode_insn(ctxt);
++
++	return ret;
++}
++
++static void vc_finish_insn(struct es_em_ctxt *ctxt)
++{
++	ctxt->regs->ip += ctxt->insn.length;
++}
++
++static enum es_result sev_es_ghcb_hv_call(struct ghcb *ghcb,
++					  struct es_em_ctxt *ctxt,
++					  u64 exit_code, u64 exit_info_1,
++					  u64 exit_info_2)
++{
 +	enum es_result ret;
 +
-+	ret = vc_ioio_exitinfo(ctxt, &exit_info_1);
-+	if (ret != ES_OK)
-+		return ret;
++	/* Fill in protocol and format specifiers */
++	ghcb->protocol_version = GHCB_PROTOCOL_MAX;
++	ghcb->ghcb_usage       = GHCB_DEFAULT_USAGE;
 +
-+	if (exit_info_1 & IOIO_TYPE_STR) {
++	ghcb_set_sw_exit_code(ghcb, exit_code);
++	ghcb_set_sw_exit_info_1(ghcb, exit_info_1);
++	ghcb_set_sw_exit_info_2(ghcb, exit_info_2);
 +
-+		/* (REP) INS/OUTS */
++	sev_es_wr_ghcb_msr(__pa(ghcb));
++	VMGEXIT();
 +
-+		bool df = ((regs->flags & X86_EFLAGS_DF) == X86_EFLAGS_DF);
-+		unsigned int io_bytes, exit_bytes;
-+		unsigned int ghcb_count, op_count;
-+		unsigned long es_base;
-+		u64 sw_scratch;
++	if ((ghcb->save.sw_exit_info_1 & 0xffffffff) == 1) {
++		u64 info = ghcb->save.sw_exit_info_2;
++		unsigned long v;
 +
-+		/*
-+		 * For the string variants with rep prefix the amount of in/out
-+		 * operations per #VC exception is limited so that the kernel
-+		 * has a chance to take interrupts and re-schedule while the
-+		 * instruction is emulated.
-+		 */
-+		io_bytes   = (exit_info_1 >> 4) & 0x7;
-+		ghcb_count = sizeof(ghcb->shared_buffer) / io_bytes;
++		info = ghcb->save.sw_exit_info_2;
++		v = info & SVM_EVTINJ_VEC_MASK;
 +
-+		op_count    = (exit_info_1 & IOIO_REP) ? regs->cx : 1;
-+		exit_info_2 = min(op_count, ghcb_count);
-+		exit_bytes  = exit_info_2 * io_bytes;
-+
-+		es_base = insn_get_seg_base(ctxt->regs, INAT_SEG_REG_ES);
-+
-+		/* Read bytes of OUTS into the shared buffer */
-+		if (!(exit_info_1 & IOIO_TYPE_IN)) {
-+			ret = vc_insn_string_read(ctxt,
-+					       (void *)(es_base + regs->si),
-+					       ghcb->shared_buffer, io_bytes,
-+					       exit_info_2, df);
-+			if (ret)
-+				return ret;
-+		}
-+
-+		/*
-+		 * Issue an VMGEXIT to the HV to consume the bytes from the
-+		 * shared buffer or to have it write them into the shared buffer
-+		 * depending on the instruction: OUTS or INS.
-+		 */
-+		sw_scratch = __pa(ghcb) + offsetof(struct ghcb, shared_buffer);
-+		ghcb_set_sw_scratch(ghcb, sw_scratch);
-+		ret = sev_es_ghcb_hv_call(ghcb, ctxt, SVM_EXIT_IOIO,
-+					  exit_info_1, exit_info_2);
-+		if (ret != ES_OK)
-+			return ret;
-+
-+		/* Read bytes from shared buffer into the guest's destination. */
-+		if (exit_info_1 & IOIO_TYPE_IN) {
-+			ret = vc_insn_string_write(ctxt,
-+						   (void *)(es_base + regs->di),
-+						   ghcb->shared_buffer, io_bytes,
-+						   exit_info_2, df);
-+			if (ret)
-+				return ret;
-+
-+			if (df)
-+				regs->di -= exit_bytes;
-+			else
-+				regs->di += exit_bytes;
++		/* Check if exception information from hypervisor is sane. */
++		if ((info & SVM_EVTINJ_VALID) &&
++		    ((v == X86_TRAP_GP) || (v == X86_TRAP_UD)) &&
++		    ((info & SVM_EVTINJ_TYPE_MASK) == SVM_EVTINJ_TYPE_EXEPT)) {
++			ctxt->fi.vector = v;
++			if (info & SVM_EVTINJ_VALID_ERR)
++				ctxt->fi.error_code = info >> 32;
++			ret = ES_EXCEPTION;
 +		} else {
-+			if (df)
-+				regs->si -= exit_bytes;
-+			else
-+				regs->si += exit_bytes;
++			ret = ES_VMM_ERROR;
 +		}
-+
-+		if (exit_info_1 & IOIO_REP)
-+			regs->cx -= exit_info_2;
-+
-+		ret = regs->cx ? ES_RETRY : ES_OK;
-+
 +	} else {
++		ret = ES_OK;
++	}
 +
-+		/* IN/OUT into/from rAX */
++	return ret;
++}
 +
-+		int bits = (exit_info_1 & 0x70) >> 1;
-+		u64 rax = 0;
+ /*
+  * Boot VC Handler - This is the first VC handler during boot, there is no GHCB
+  * page yet, so it only supports the MSR based communication with the
+@@ -64,3 +176,45 @@ fail:
+ 	while (true)
+ 		asm volatile("hlt\n");
+ }
 +
-+		if (!(exit_info_1 & IOIO_TYPE_IN))
-+			rax = lower_bits(regs->ax, bits);
++static enum es_result vc_insn_string_read(struct es_em_ctxt *ctxt,
++					  void *src, char *buf,
++					  unsigned int data_size,
++					  unsigned int count,
++					  bool backwards)
++{
++	int i, b = backwards ? -1 : 1;
++	enum es_result ret = ES_OK;
 +
-+		ghcb_set_rax(ghcb, rax);
++	for (i = 0; i < count; i++) {
++		void *s = src + (i * data_size * b);
++		char *d = buf + (i * data_size);
 +
-+		ret = sev_es_ghcb_hv_call(ghcb, ctxt, SVM_EXIT_IOIO, exit_info_1, 0);
++		ret = vc_read_mem(ctxt, s, d, data_size);
 +		if (ret != ES_OK)
-+			return ret;
++			break;
++	}
 +
-+		if (exit_info_1 & IOIO_TYPE_IN) {
-+			if (!ghcb_rax_is_valid(ghcb))
-+				return ES_VMM_ERROR;
-+			regs->ax = lower_bits(ghcb->save.rax, bits);
-+		}
++	return ret;
++}
++
++static enum es_result vc_insn_string_write(struct es_em_ctxt *ctxt,
++					   void *dst, char *buf,
++					   unsigned int data_size,
++					   unsigned int count,
++					   bool backwards)
++{
++	int i, s = backwards ? -1 : 1;
++	enum es_result ret = ES_OK;
++
++	for (i = 0; i < count; i++) {
++		void *d = dst + (i * data_size * s);
++		char *b = buf + (i * data_size);
++
++		ret = vc_write_mem(ctxt, d, b, data_size);
++		if (ret != ES_OK)
++			break;
 +	}
 +
 +	return ret;
