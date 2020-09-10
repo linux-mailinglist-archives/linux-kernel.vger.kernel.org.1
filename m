@@ -2,124 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA38B263BA6
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 05:56:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A36C0263BC6
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 06:13:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728617AbgIJD4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 23:56:23 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:55858 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725773AbgIJD4V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 23:56:21 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 4A242310023CDB6C3C49;
-        Thu, 10 Sep 2020 11:56:18 +0800 (CST)
-Received: from localhost (10.174.179.108) by DGGEMS408-HUB.china.huawei.com
- (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Thu, 10 Sep 2020
- 11:56:12 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <arend.vanspriel@broadcom.com>, <franky.lin@broadcom.com>,
-        <hante.meuleman@broadcom.com>, <chi-hsien.lin@cypress.com>,
-        <wright.feng@cypress.com>, <kvalo@codeaurora.org>,
-        <davem@davemloft.net>, <kuba@kernel.org>, <lee.jones@linaro.org>
-CC:     <linux-wireless@vger.kernel.org>,
-        <brcm80211-dev-list.pdl@broadcom.com>,
-        <brcm80211-dev-list@cypress.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH] brcmsmac: phy_lcn: Remove unused variable lcnphy_rx_iqcomp_table_rev0
-Date:   Thu, 10 Sep 2020 11:56:00 +0800
-Message-ID: <20200910035600.21736-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.108]
-X-CFilter-Loop: Reflected
+        id S1726345AbgIJENo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 00:13:44 -0400
+Received: from a27-21.smtp-out.us-west-2.amazonses.com ([54.240.27.21]:37448
+        "EHLO a27-21.smtp-out.us-west-2.amazonses.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725773AbgIJENm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 00:13:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+        s=zsmsymrwgfyinv5wlfyidntwsjeeldzt; d=codeaurora.org; t=1599696157;
+        h=From:To:Cc:Subject:Date:Message-Id;
+        bh=Rtie8eEmO4OBgzmmJQ8JyZck8s/KP5C8npRs7rdJFBY=;
+        b=b713AXkJypMv8dFwRLrrqQGWZ0CfDHGSJNUBVBnPh6XQ5hhCKxsNi2zHhRNabk9S
+        BR9PDIYzpOyTRPp/xH82YbiJoAtoaZiK1859wwmR5TH60jU9YrQ8BsaS0/dmtzZpfXG
+        v4jk0tRuO0y9jLIl61SyW9Qnkds3IVQYFKVoYuHY=
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+        s=hsbnp7p3ensaochzwyq5wwmceodymuwv; d=amazonses.com; t=1599696157;
+        h=From:To:Cc:Subject:Date:Message-Id:Feedback-ID;
+        bh=Rtie8eEmO4OBgzmmJQ8JyZck8s/KP5C8npRs7rdJFBY=;
+        b=VibLV032BrVRD13lPEc5ur1T92X1wpP+TzJuWL5DX4H0vDjPROuWX4krIfR0444p
+        HCfnEZuOxCQpiDDT2aX148ExSOQcpwyGLeGfkY54Rj3NJhmLGAX9C62ol2v8TiZmvZ2
+        ELysLA6FCkMu3ovH8z7/lN8cF/o0md8jeCsZTfOc=
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C5B6BC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sidgup@codeaurora.org
+From:   Siddharth Gupta <sidgup@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, ohad@wizery.com
+Cc:     Siddharth Gupta <sidgup@codeaurora.org>,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, tsoni@codeaurora.org,
+        psodagud@codeaurora.org, rishabhb@codeaurora.org,
+        linux-doc@vger.kernel.org
+Subject: [PATCH v3 0/3] Introduce mini-dump support for remoteproc
+Date:   Thu, 10 Sep 2020 00:02:37 +0000
+Message-ID: <01010174755239f4-80e8cfe8-2445-40ac-a36f-b740fd1cdd4a-000000@us-west-2.amazonses.com>
+X-Mailer: git-send-email 2.7.4
+X-SES-Outgoing: 2020.09.10-54.240.27.21
+Feedback-ID: 1.us-west-2.CZuq2qbDmUIuT3qdvXlRHZZCpfZqZ4GtG9v3VKgRyF0=:AmazonSES
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-drivers/net/wireless/broadcom/brcm80211/brcmsmac/phy/phy_lcn.c:361:25: warning: ‘lcnphy_rx_iqcomp_table_rev0’ defined but not used [-Wunused-const-variable=]
- struct lcnphy_rx_iqcomp lcnphy_rx_iqcomp_table_rev0[] = {
-                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+Sometimes firmware sizes can be in ten's of MB's and reading
+all the memory during coredump can consume lot of time and
+memory.
+Introducing support for mini-dumps. Mini-dump contains smallest
+amount of useful information, that could help to debug subsystem
+crashes.
+During bootup memory is allocated in SMEM (Shared memory)
+in the form of a table that contains the physical
+addresses and sizes of the regions that are supposed to be
+collected during coredump. This memory is shared amongst all
+processors in a Qualcomm platform, so all remoteprocs
+fill in their entry in the global table once they are out
+of reset.
+This patch series adds support for parsing the global minidump
+table and uses the current coredump frameork to expose this memory
+to userspace during remoteproc's recovery.
 
-commit 38c95e0258a0 ("brcmsmac: phy_lcn: Remove a bunch of unused variables")
-left behind this, remove it.
+This patch series also integrates the patch:
+https://patchwork.kernel.org/patch/11695541/ sent by Siddharth.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- .../broadcom/brcm80211/brcmsmac/phy/phy_lcn.c | 55 -------------------
- 1 file changed, 55 deletions(-)
+Changelog: 
+v2 -> v3:
+- Refactored code to remove dependency on Qualcomm configs.
+- Renamed do_rproc_minidump to rproc_minidump and marked as exported
+  symbol.
 
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmsmac/phy/phy_lcn.c b/drivers/net/wireless/broadcom/brcm80211/brcmsmac/phy/phy_lcn.c
-index b8193c99e864..7071b63042cd 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmsmac/phy/phy_lcn.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmsmac/phy/phy_lcn.c
-@@ -357,61 +357,6 @@ u16 rxiq_cal_rf_reg[11] = {
- 	RADIO_2064_REG12A,
- };
- 
--static const
--struct lcnphy_rx_iqcomp lcnphy_rx_iqcomp_table_rev0[] = {
--	{1, 0, 0},
--	{2, 0, 0},
--	{3, 0, 0},
--	{4, 0, 0},
--	{5, 0, 0},
--	{6, 0, 0},
--	{7, 0, 0},
--	{8, 0, 0},
--	{9, 0, 0},
--	{10, 0, 0},
--	{11, 0, 0},
--	{12, 0, 0},
--	{13, 0, 0},
--	{14, 0, 0},
--	{34, 0, 0},
--	{38, 0, 0},
--	{42, 0, 0},
--	{46, 0, 0},
--	{36, 0, 0},
--	{40, 0, 0},
--	{44, 0, 0},
--	{48, 0, 0},
--	{52, 0, 0},
--	{56, 0, 0},
--	{60, 0, 0},
--	{64, 0, 0},
--	{100, 0, 0},
--	{104, 0, 0},
--	{108, 0, 0},
--	{112, 0, 0},
--	{116, 0, 0},
--	{120, 0, 0},
--	{124, 0, 0},
--	{128, 0, 0},
--	{132, 0, 0},
--	{136, 0, 0},
--	{140, 0, 0},
--	{149, 0, 0},
--	{153, 0, 0},
--	{157, 0, 0},
--	{161, 0, 0},
--	{165, 0, 0},
--	{184, 0, 0},
--	{188, 0, 0},
--	{192, 0, 0},
--	{196, 0, 0},
--	{200, 0, 0},
--	{204, 0, 0},
--	{208, 0, 0},
--	{212, 0, 0},
--	{216, 0, 0},
--};
--
- static const u32 lcnphy_23bitgaincode_table[] = {
- 	0x200100,
- 	0x200200,
+v1 -> v2:
+- 3 kernel test robot warnings have been resolved.
+- Introduced priv_cleanup op in order to making the cleaning of
+private elements used by the remoteproc more readable.
+- Removed rproc_cleanup_priv as it is no longer needed.
+- Switched to if/else format for rproc_alloc in order to keep 
+the static const decalaration of adsp_minidump_ops.
+
+Siddharth Gupta (3):
+  remoteproc: core: Add ops to enable custom coredump functionality
+  remoteproc: qcom: Add capability to collect minidumps
+  remoteproc: qcom: Add minidump id for sm8150 modem remoteproc
+
+ drivers/remoteproc/qcom_minidump.h          |  64 +++++++++++++
+ drivers/remoteproc/qcom_q6v5_pas.c          | 107 ++++++++++++++++++++-
+ drivers/remoteproc/remoteproc_core.c        |   6 +-
+ drivers/remoteproc/remoteproc_coredump.c    | 138 ++++++++++++++++++++++++++++
+ drivers/remoteproc/remoteproc_elf_helpers.h |  27 ++++++
+ include/linux/remoteproc.h                  |   5 +
+ 6 files changed, 344 insertions(+), 3 deletions(-)
+ create mode 100644 drivers/remoteproc/qcom_minidump.h
+
 -- 
-2.17.1
-
+Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
