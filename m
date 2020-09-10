@@ -2,78 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A21D264D2F
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 20:37:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53CFD264D4C
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 20:40:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726847AbgIJShw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 14:37:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38140 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726947AbgIJSe4 (ORCPT
+        id S1726896AbgIJSj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 14:39:57 -0400
+Received: from smtp-bc0a.mail.infomaniak.ch ([45.157.188.10]:43227 "EHLO
+        smtp-bc0a.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726979AbgIJSi7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 14:34:56 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74A7CC061573;
-        Thu, 10 Sep 2020 11:34:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=XvvanWtbPeA4+U1mCCCR48ZeV6gTrzWi5uy9br9sD0s=; b=qjVVztNNQjmwqqWtlblKT4jAX
-        DA3Eqkgq8nyvYV+HQJTYZPBDdc6MlSJC+aHzJaa4/SePOHMWEh1xKNhlTsw0VHGwjxUuyJsdd7eEj
-        C/uIDyKlOeUoWDzrXvssPlYwHK9vTLyag7q6gFXeF0bcaYteafyMgiV2BYiP1RR9Nwj7V64p//rJv
-        FwtGhy0X5T+4XHC8uY95eV7hyJZyvtcEp6WhkxfHwE98aA3TPKac+9pJDhpmtvBQHRS26iOLw6m19
-        UoqSnKZuzv/aaTvymhZWHqW8jKFmEdvh59SxiK1cZEK6p0DfmxTxpG+KC1jAxS4+jSOQAXwkbX+XR
-        vOOwhvnog==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:32988)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1kGRP5-0006UZ-CL; Thu, 10 Sep 2020 19:34:39 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1kGRP1-0007UP-CC; Thu, 10 Sep 2020 19:34:35 +0100
-Date:   Thu, 10 Sep 2020 19:34:35 +0100
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Pavel Machek <pavel@ucw.cz>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>,
-        netdev@vger.kernel.org, linux-leds@vger.kernel.org,
-        Dan Murphy <dmurphy@ti.com>,
-        =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
-        linux-kernel@vger.kernel.org,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH net-next + leds v2 6/7] net: phy: marvell: add support
- for LEDs controlled by Marvell PHYs
-Message-ID: <20200910183435.GC1551@shell.armlinux.org.uk>
-References: <20200909162552.11032-1-marek.behun@nic.cz>
- <20200909162552.11032-7-marek.behun@nic.cz>
- <20200910122341.GC7907@duo.ucw.cz>
- <20200910131541.GD3316362@lunn.ch>
- <20200910182434.GA22845@duo.ucw.cz>
- <20200910183154.GF3354160@lunn.ch>
+        Thu, 10 Sep 2020 14:38:59 -0400
+Received: from smtp-2-0001.mail.infomaniak.ch (unknown [10.5.36.108])
+        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4BnSM52Cg7zlhg0v;
+        Thu, 10 Sep 2020 20:38:25 +0200 (CEST)
+Received: from ns3096276.ip-94-23-54.eu (unknown [94.23.54.103])
+        by smtp-2-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4BnSM21tZXzlh8TG;
+        Thu, 10 Sep 2020 20:38:22 +0200 (CEST)
+Subject: Re: [RFC PATCH v9 0/3] Add introspect_access(2) (was O_MAYEXEC)
+To:     Mimi Zohar <zohar@linux.ibm.com>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, Aleksa Sarai <cyphar@cyphar.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Christian Heimes <christian@python.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Deven Bowers <deven.desai@linux.microsoft.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Eric Chiang <ericchiang@google.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        James Morris <jmorris@namei.org>, Jan Kara <jack@suse.cz>,
+        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        Matthew Garrett <mjg59@google.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        =?UTF-8?Q?Philippe_Tr=c3=a9buchet?= 
+        <philippe.trebuchet@ssi.gouv.fr>,
+        Scott Shell <scottsh@microsoft.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Steve Dower <steve.dower@python.org>,
+        Steve Grubb <sgrubb@redhat.com>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Thibaut Sautereau <thibaut.sautereau@clip-os.org>,
+        Vincent Strubel <vincent.strubel@ssi.gouv.fr>,
+        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+References: <20200910164612.114215-1-mic@digikod.net>
+ <20200910170424.GU6583@casper.infradead.org>
+ <f6e2358c-8e5e-e688-3e66-2cdd943e360e@digikod.net>
+ <a48145770780d36e90f28f1526805a7292eb74f6.camel@linux.ibm.com>
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Message-ID: <880bb4ee-89a2-b9b0-747b-0f779ceda995@digikod.net>
+Date:   Thu, 10 Sep 2020 20:38:21 +0200
+User-Agent: 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200910183154.GF3354160@lunn.ch>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <a48145770780d36e90f28f1526805a7292eb74f6.camel@linux.ibm.com>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 08:31:54PM +0200, Andrew Lunn wrote:
-> Generally the driver will default to the hardware reset blink
-> pattern. There are a few PHY drivers which change this at probe, but
-> not many. The silicon defaults are pretty good.
 
-The "right" blink pattern can be a matter of how the hardware is
-wired.  For example, if you have bi-colour LEDs and the PHY supports
-special bi-colour mixing modes.
+On 10/09/2020 20:08, Mimi Zohar wrote:
+> On Thu, 2020-09-10 at 19:21 +0200, Mickaël Salaün wrote:
+>> On 10/09/2020 19:04, Matthew Wilcox wrote:
+>>> On Thu, Sep 10, 2020 at 06:46:09PM +0200, Mickaël Salaün wrote:
+>>>> This ninth patch series rework the previous AT_INTERPRETED and O_MAYEXEC
+>>>> series with a new syscall: introspect_access(2) .  Access check are now
+>>>> only possible on a file descriptor, which enable to avoid possible race
+>>>> conditions in user space.
+>>>
+>>> But introspection is about examining _yourself_.  This isn't about
+>>> doing that.  It's about doing ... something ... to a script that you're
+>>> going to execute.  If the script were going to call the syscall, then
+>>> it might be introspection.  Or if the interpreter were measuring itself,
+>>> that would be introspection.  But neither of those would be useful things
+>>> to do, because an attacker could simply avoid doing them.
+>>
+> 
+> Michael, is the confusion here that IMA isn't measuring anything, but
+> verifying the integrity of the file?   The usecase, from an IMA
+> perspective, is enforcing a system wide policy requiring everything
+> executed to be signed.  In this particular use case, the interpreter is
+> asking the kernel if the script is signed with a permitted key.  The
+> signature may be an IMA signature or an EVM portable and immutable
+> signature, based on policy.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+There is also the use case of noexec mounts and file permissions. From
+user space point of view, it doesn't matter which kernel component is in
+charge of defining the policy. The syscall should then not be tied with
+a verification/integrity/signature/appraisal vocabulary, but simply an
+access control one.
+
+> 
+>> Picking a good name other than "access" (or faccessat2) is not easy. The
+>> idea with introspect_access() is for the calling task to ask the kernel
+>> if this task should allows to do give access to a kernel resource which
+>> is already available to this task. In this sense, we think that
+>> introspection makes sense because it is the choice of the task to allow
+>> or deny an access.
+>>
+>>>
+>>> So, bad name.  What might be better?  sys_security_check()?
+>>> sys_measure()?  sys_verify_fd()?  I don't know.
+>>>
+>>
+>> "security_check" looks quite broad, "measure" doesn't make sense here,
+>> "verify_fd" doesn't reflect that it is an access check. Yes, not easy,
+>> but if this is the only concern we are on the good track. :)
+> 
+> Maybe replacing the term "measure" with "integrity", but rather than
+> "integrity_check", something along the lines of fgetintegrity,
+> freadintegrity, fcheckintegrity.
+
+What about entrusted_access(2)? It reflects the fact that the kernel
+delegate to (trusted) user space tasks some access enforcements.
+
+> 
+> Mimi
+> 
+>>
+>>
+>> Other ideas:
+>> - interpret_access (mainly, but not only, for interpreters)
+>> - indirect_access
+>> - may_access
+>> - faccessat3
+> 
+> 
