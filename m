@@ -2,87 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73375263C89
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 07:39:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34444263C9A
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 07:41:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726865AbgIJFjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 01:39:14 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:35023 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725912AbgIJFjL (ORCPT
+        id S1726796AbgIJFls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 01:41:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58346 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725868AbgIJFkx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 01:39:11 -0400
-Received: by mail-wm1-f65.google.com with SMTP id y15so4483853wmi.0
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 22:39:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=h28yCpMqjTx42+9sKkj9v/1Q8KRAf6Z0CfZQB2q4PMg=;
-        b=qJP50gAOAWcTP3fCegsYOF0UtyZm8z6WSibih4iELyJ144MXwA3XOFO7hKKhsKK/vz
-         42Er752P4TgscNDbOfEITAJV+RHYcPpMCivt7IiN4dcaVFqincaob/qgi/YY305BDdSX
-         grDpKhHTbNlmETNuFIqKb5H2c7VMIXTN1peQJPkf0fs0tDLjbsEWRzSfzzlJSKJPZoFq
-         HdtDOMYDyB1dvN5l4eGqxK4p3ZAmHHNhZkVOrQROkMcu9jI2GxOYdDMVNB52m449Xiha
-         EYWU3d1gAfXq6ZmeCip/NUvbHNug24XvadolkUaaklbkPgPO7j3pRxF8y8hbKSvqNOzF
-         y8wQ==
-X-Gm-Message-State: AOAM5334pLTSBo/PWRQ/qliyOP8fLFmZ0bCJ4ViHgK900/Wz9tw0Q5En
-        TGRRzKais4FKIzzuA/kvQHaQe0+pQ3JSp/7sYMg=
-X-Google-Smtp-Source: ABdhPJyHxzM3qxhNqiwQaWSQKJMbTXpBMcGbCcgNgoIrQkYc5eFAhWJrFN8cAFSpiVXJ9xvf84qvPQ4RXiOxgP7NBHo=
-X-Received: by 2002:a05:600c:4142:: with SMTP id h2mr6587414wmm.128.1599716349451;
- Wed, 09 Sep 2020 22:39:09 -0700 (PDT)
+        Thu, 10 Sep 2020 01:40:53 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6C0AC061573;
+        Wed,  9 Sep 2020 22:40:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=GAlHdOT6xNBIXoRJTGjDfO8yxN+XWkHMSyYrbndYoes=; b=rXra2losZTDAUND7ZVSHxWZYp9
+        O0bLx1ptf6BcC5QeKhuW38Lf8UWBywKGkwCs/qUGI5fa6K3Wo47yLmh+ur6K/PaChoT/tGFAxhcfB
+        ub0IkMkCNn8zmoDDxv5Ga1FM9H3Llnp4yAc4H38rVR/D87e4VVNPsmj3sTrqj4NY/ll95s+l7RlB0
+        aeZms3/a23jfo8wlpZ1fWP3dtIV+nqpRDfJEM1YB/0RAcM9KRXd9eflYS3vfBKqRTkX8ewEJaAWKu
+        EB2yqu8Vmg5QAIVSz+rH5SsKaWoc/Avpgn0ZFhqfwiDyyGYPXlholm/TZWUcvLJuu7lgJQ3Z+5U2M
+        v9Uq/JMA==;
+Received: from [2001:4bb8:184:af1:d8d0:3027:a666:4c4e] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kGFK2-0001sv-Sk; Thu, 10 Sep 2020 05:40:39 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     iommu@lists.linux-foundation.org,
+        Russell King <linux@armlinux.org.uk>,
+        Santosh Shilimkar <ssantosh@kernel.org>
+Cc:     Jim Quinlan <james.quinlan@broadcom.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-sh@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-acpi@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-usb@vger.kernel.org
+Subject: support range based offsets in dma-direct
+Date:   Thu, 10 Sep 2020 07:40:35 +0200
+Message-Id: <20200910054038.324517-1-hch@lst.de>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20200910032632.511566-1-irogers@google.com> <20200910032632.511566-2-irogers@google.com>
-In-Reply-To: <20200910032632.511566-2-irogers@google.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Thu, 10 Sep 2020 14:38:58 +0900
-Message-ID: <CAM9d7cjiL92Y8pCurXUpVznDUYZ8F2N0H-fSW4sPi8=M3gGSfQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] perf metricgroup: Fix typo in comment.
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>, Kajol Jain <kjain@linux.ibm.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Thomas Richter <tmricht@linux.ibm.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 12:26 PM Ian Rogers <irogers@google.com> wrote:
->
-> Add missing character.
->
-> Signed-off-by: Ian Rogers <irogers@google.com>
+Hi all,
 
-Acked-by: Namhyung Kim <namhyung@kernel.org>
+this series adds range-based offsets to the dma-direct implementation.  The
+guts of the change are a patch from Jim with some modifications from me,
+but to do it nicely we need to ARM patches to prepare for it as well.
 
-Thanks
-Namhyung
-
-> ---
->  tools/perf/util/metricgroup.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-> index 8831b964288f..662f4e8777d5 100644
-> --- a/tools/perf/util/metricgroup.c
-> +++ b/tools/perf/util/metricgroup.c
-> @@ -150,7 +150,7 @@ static void expr_ids__exit(struct expr_ids *ids)
->  }
->
->  /**
-> - * Find a group of events in perf_evlist that correpond to those from a parsed
-> + * Find a group of events in perf_evlist that correspond to those from a parsed
->   * metric expression. Note, as find_evsel_group is called in the same order as
->   * perf_evlist was constructed, metric_no_merge doesn't need to test for
->   * underfilling a group.
-> --
-> 2.28.0.526.ge36021eeef-goog
->
+Diffstat:
+ arch/arm/common/dmabounce.c                        |    2 
+ arch/arm/include/asm/dma-direct.h                  |   69 +++++++++++++++++
+ arch/arm/include/asm/dma-mapping.h                 |   70 ------------------
+ arch/arm/mach-keystone/keystone.c                  |   21 +++--
+ arch/sh/drivers/pci/pcie-sh7786.c                  |    9 +-
+ arch/x86/pci/sta2x11-fixup.c                       |    6 +
+ drivers/acpi/arm64/iort.c                          |    6 +
+ drivers/base/core.c                                |    2 
+ drivers/gpu/drm/sun4i/sun4i_backend.c              |    8 +-
+ drivers/iommu/io-pgtable-arm.c                     |    2 
+ drivers/media/platform/sunxi/sun4i-csi/sun4i_csi.c |    9 ++
+ drivers/media/platform/sunxi/sun6i-csi/sun6i_csi.c |   11 ++
+ drivers/of/address.c                               |   73 ++++++++----------
+ drivers/of/device.c                                |   44 +++++++----
+ drivers/of/of_private.h                            |   11 +-
+ drivers/of/unittest.c                              |   34 ++++++--
+ drivers/remoteproc/remoteproc_core.c               |    4 -
+ drivers/staging/media/sunxi/cedrus/cedrus_hw.c     |   10 ++
+ drivers/usb/core/message.c                         |    5 -
+ drivers/usb/core/usb.c                             |    3 
+ include/linux/device.h                             |    4 -
+ include/linux/dma-direct.h                         |   52 +++++++++++--
+ include/linux/dma-mapping.h                        |   19 ++++
+ kernel/dma/coherent.c                              |    7 -
+ kernel/dma/direct.c                                |   81 ++++++++++++++++++++-
+ 25 files changed, 373 insertions(+), 189 deletions(-)
