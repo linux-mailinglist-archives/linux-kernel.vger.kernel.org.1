@@ -2,143 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC806263AFC
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 04:51:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB57E263B02
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 04:52:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729911AbgIJCvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 22:51:47 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:44595 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1730068AbgIJCuj (ORCPT
+        id S1728617AbgIJCwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 22:52:44 -0400
+Received: from gate2.alliedtelesis.co.nz ([202.36.163.20]:48742 "EHLO
+        gate2.alliedtelesis.co.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729135AbgIJCwF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 22:50:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599706234;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QJQOTeTVHeQk2Lc8CRwNu9NdRVyDZ7qS/l1V2jelAI8=;
-        b=Us/bEkXqNKvmHsSj7u57ZoxJyLU6clnWgPZx6BCPjyUHA2c+kW5YLf/au4NpxwEcfans3+
-        ofqkPkFyLTHf35LpxQUvRYa1R5G4jlZMOiZZuwBvwet4Yvu1XXH0yhpIsUTWZrA1cjzujJ
-        dQk2l0heUpOdNRPuG4DtCL/wMUjDxUY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-181-IKKAOBSFMvKLG1cL0f7GMw-1; Wed, 09 Sep 2020 22:50:30 -0400
-X-MC-Unique: IKKAOBSFMvKLG1cL0f7GMw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 80EAD1007464;
-        Thu, 10 Sep 2020 02:50:29 +0000 (UTC)
-Received: from llong.remote.csb (unknown [10.10.115.252])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9D7797E175;
-        Thu, 10 Sep 2020 02:50:28 +0000 (UTC)
-Subject: =?UTF-8?B?UmU6IOWbnuWkjTogW1BBVENIIHYzXSBkZWJ1Z29iamVjdHM6IGluc3Rh?=
- =?UTF-8?Q?ll_CPU_hotplug_callback?=
-To:     "Zhang, Qiang" <Qiang.Zhang@windriver.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@kernel.org" <mingo@kernel.org>,
-        "elver@google.com" <elver@google.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20200908062709.11441-1-qiang.zhang@windriver.com>
- <3bcdacd0-10c4-78c0-6e63-a73811a0ced6@redhat.com>
- <BYAPR11MB26324FE54B890DD73417F6B8FF270@BYAPR11MB2632.namprd11.prod.outlook.com>
-From:   Waiman Long <longman@redhat.com>
-Organization: Red Hat
-Message-ID: <fc7702c8-6d85-66ee-3220-8c1a3e9acf0b@redhat.com>
-Date:   Wed, 9 Sep 2020 22:50:27 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        Wed, 9 Sep 2020 22:52:05 -0400
+Received: from mmarshal3.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 1A5A4806B5;
+        Thu, 10 Sep 2020 14:51:57 +1200 (NZST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1599706317;
+        bh=lQhwDjP6TNS2Ik4pBM/Zgt2mpKx73CO14Av4nyUHdV0=;
+        h=From:To:Cc:Subject:Date;
+        b=Dl/XEokogax91p9/0956kDDlgva9mRwc6HTUWXhpsAx/lat3/xlutBsKDpTbVFWC+
+         hEqYYP8vF8ISmzC94Pm95DB9GaK6kbZPV7bmxh3VPQ8bJ9G4MZPsQAYj2q/YP3Fvvy
+         5rhUcg450FlhWEg2KjGFKj2+UqY8YVrXWFHPlOwW7bOnTguhu/UZ38UI9mbNUfxCGm
+         SQWEz2GE+v8eUwQ9RtC0Q3qPlsJbPPdnp1OHNglBnUDvFHltRAqhmMRtgbmKJegVJE
+         JY+wniQ5CRYWMsjy6Nlo6VrwPzrNKYIftExZxiGh5lX128w3ORRTtkVVeYwmi17N42
+         t1rHCz85oJdJA==
+Received: from smtp (Not Verified[10.32.16.33]) by mmarshal3.atlnz.lc with Trustwave SEG (v7,5,8,10121)
+        id <B5f5994cc0000>; Thu, 10 Sep 2020 14:51:56 +1200
+Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.20])
+        by smtp (Postfix) with ESMTP id DC6C913EEBA;
+        Thu, 10 Sep 2020 14:51:55 +1200 (NZST)
+Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
+        id C3FE5280076; Thu, 10 Sep 2020 14:51:56 +1200 (NZST)
+From:   Chris Packham <chris.packham@alliedtelesis.co.nz>
+To:     stern@rowland.harvard.edu, linux@prisktech.co.nz,
+        gregkh@linuxfoundation.org
+Cc:     linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>
+Subject: [PATCH] usb: host: ehci-platform: Add workaround for brcm,xgs-iproc-ehci
+Date:   Thu, 10 Sep 2020 14:51:53 +1200
+Message-Id: <20200910025154.20848-1-chris.packham@alliedtelesis.co.nz>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <BYAPR11MB26324FE54B890DD73417F6B8FF270@BYAPR11MB2632.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Transfer-Encoding: quoted-printable
+x-atlnz-ls: pat
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/9/20 9:48 PM, Zhang, Qiang wrote:
->
-> ________________________________________
-> 发件人: Waiman Long <longman@redhat.com>
-> 发送时间: 2020年9月9日 2:23
-> 收件人: Zhang, Qiang; tglx@linutronix.de; mingo@kernel.org; elver@google.com
-> 抄送: linux-kernel@vger.kernel.org
-> 主题: Re: [PATCH v3] debugobjects: install CPU hotplug callback
->
-> On 9/8/20 2:27 AM, qiang.zhang@windriver.com wrote:
->> From: Zqiang <qiang.zhang@windriver.com>
->>
->> Due to CPU hotplug, it may never be online after it's offline,
->> some objects in percpu pool is never free. in order to avoid
->> this happening, install CPU hotplug callback, call this callback
->> func to free objects in percpu pool when CPU going offline.
->>
->> Signed-off-by: Zqiang <qiang.zhang@windriver.com>
->> ---
->>    v1->v2:
->>    Modify submission information.
->>
->>    v2->v3:
->>    In CPU hotplug callback func, add clear percpu pool "obj_free" operation.
->>    capitalize 'CPU', and use shorter preprocessor sequence.
->>
->>    include/linux/cpuhotplug.h |  1 +
->>    lib/debugobjects.c         | 24 ++++++++++++++++++++++++
->>    2 files changed, 25 insertions(+)
->>
->> diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
->> index 3215023d4852..0c39d57e5342 100644
->> --- a/include/linux/cpuhotplug.h
->> +++ b/include/linux/cpuhotplug.h
->> @@ -36,6 +36,7 @@ enum cpuhp_state {
->>        CPUHP_X86_MCE_DEAD,
->>        CPUHP_VIRT_NET_DEAD,
->>        CPUHP_SLUB_DEAD,
->> +     CPUHP_DEBUG_OBJ_DEAD,
->>        CPUHP_MM_WRITEBACK_DEAD,
->>        CPUHP_MM_VMSTAT_DEAD,
->>        CPUHP_SOFTIRQ_DEAD,
->> diff --git a/lib/debugobjects.c b/lib/debugobjects.c
->> index fe4557955d97..bb69a02c3e7b 100644
->> --- a/lib/debugobjects.c
->> +++ b/lib/debugobjects.c
->> @@ -19,6 +19,7 @@
->>    #include <linux/slab.h>
->>    #include <linux/hash.h>
->>    #include <linux/kmemleak.h>
->> +#include <linux/cpu.h>
->>
->>    #define ODEBUG_HASH_BITS    14
->>    #define ODEBUG_HASH_SIZE    (1 << ODEBUG_HASH_BITS)
->> @@ -433,6 +434,24 @@ static void free_object(struct debug_obj *obj)
->>        }
->>    }
->>
->> +#ifdef CONFIG_HOTPLUG_CPU
->> +static int object_cpu_offline(unsigned int cpu)
->> +{
->> +     struct debug_percpu_free *percpu_pool;
->> +     struct hlist_node *tmp;
->> +     struct debug_obj *obj;
->> +
->> +     percpu_pool = per_cpu_ptr(&percpu_obj_pool, cpu);
->> +     hlist_for_each_entry_safe(obj, tmp, &percpu_pool->free_objs, node) {
->> +             hlist_del(&obj->node);
->> +             kmem_cache_free(obj_cache, obj);
->> +     }
->> +     percpu_pool->obj_free = 0;
->>> For pointer, it is better to use NULL for clarity.
->>> Cheers,
->>> Longman
-> Do you mean "->obj_free" variable ?   this represents the number of free objects in  percpu_pool .
->
-You are right. I got confused. Sorry for the noise.
+The ehci controller found in some Broadcom switches with integrated SoCs
+has an issue which causes a soft lockup with large transfers like you
+see when running ext4 on USB3 flash drive.
 
-Cheers,
-Longman
+Port the fix from the Broadcom XLDK to increase the OUT_THRESHOLD to
+avoid the problem.
+
+Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+---
+
+I don't have much data on what this change does. I can say it is needed t=
+o
+avoid a soft lockup when using a USB3 Flash drive formatted has ext4 (USB=
+2 +
+ext4 is OK, USB3 + fat is OK). I presume the affected combination ends up=
+ using
+larger transfers triggering the problem.
+
+The equivalent change in the Broadcom XLDK is
+
+	if (IS_ENABLED(CONFIG_USB_EHCI_XGS_IPROC))
+		ehci_writel(ehci, BCM_USB_FIFO_THRESHOLD,
+				&ehci->regs->reserved4[6]);
+
+This is problematic because it would unconditionally apply to all ehci
+controllers whenever CONFIG_USB_EHCI_XGS_IPROC is enabled (also reserved4=
+ only
+goes to 6 so technically it's indexing off the end of the array).
+
+I wasn't sure if I should add a new property or somehow detect the affect=
+ed
+host controller. I settled on using of_device_is_compatible() as that see=
+med
+the simplest thing to do.
+
+ drivers/usb/host/ehci-platform.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/drivers/usb/host/ehci-platform.c b/drivers/usb/host/ehci-pla=
+tform.c
+index 006c4f6188a5..0d2de8faa3c1 100644
+--- a/drivers/usb/host/ehci-platform.c
++++ b/drivers/usb/host/ehci-platform.c
+@@ -53,6 +53,9 @@ struct ehci_platform_priv {
+=20
+ static const char hcd_name[] =3D "ehci-platform";
+=20
++#define bcm_iproc_insnreg01	hostpc
++#define BCM_USB_FIFO_THRESHOLD	0x00800040
++
+ static int ehci_platform_reset(struct usb_hcd *hcd)
+ {
+ 	struct platform_device *pdev =3D to_platform_device(hcd->self.controlle=
+r);
+@@ -358,6 +361,9 @@ static int ehci_platform_probe(struct platform_device=
+ *dev)
+=20
+ 	device_wakeup_enable(hcd->self.controller);
+ 	device_enable_async_suspend(hcd->self.controller);
++	if (of_device_is_compatible(dev->dev.of_node, "brcm,xgs-iproc-ehci"))
++		ehci_writel(ehci, BCM_USB_FIFO_THRESHOLD,
++			    ehci->regs->bcm_iproc_insnreg01);
+ 	platform_set_drvdata(dev, hcd);
+=20
+ 	if (priv->quirk_poll)
+--=20
+2.28.0
 
