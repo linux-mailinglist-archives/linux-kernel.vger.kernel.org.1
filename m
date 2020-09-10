@@ -2,107 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74ABB264EF8
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:31:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0445264EFD
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:32:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727943AbgIJTbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 15:31:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48048 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726512AbgIJT3j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 15:29:39 -0400
-Received: from localhost.localdomain (unknown [194.230.155.174])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E811821D92;
-        Thu, 10 Sep 2020 19:29:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599766176;
-        bh=J+36KfiCj6ZqQvGQMiAmr/24p4yD+AflrA4ni1Zap14=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xPBKvVFpHggxzO23tGiSaky0KlkF4+un8LWAPbmZObck71qM/avY7UqWtG577qnY0
-         PnA5fZOLc357YA1FVO32FkV6B0h+ZvtEKxwKl3Jnz5KJxQ9pvava+qp9B+q6Tttgta
-         mqfZp2Q4IUeXW9ww6qq3T2nooXdigTyVomwfhcsc=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Corentin Labbe <clabbe.montjoie@gmail.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com
-Cc:     Iuliana Prodan <iuliana.prodan@nxp.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH v2 4/4] crypto: allwinner/sun8i - Simplify with dev_err_probe()
-Date:   Thu, 10 Sep 2020 21:29:19 +0200
-Message-Id: <20200910192919.12503-4-krzk@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200910192919.12503-1-krzk@kernel.org>
-References: <20200910192919.12503-1-krzk@kernel.org>
+        id S1728018AbgIJTcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 15:32:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46682 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726729AbgIJT3c (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 15:29:32 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEE33C061756;
+        Thu, 10 Sep 2020 12:29:31 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id BA57012A2C1E2;
+        Thu, 10 Sep 2020 12:12:43 -0700 (PDT)
+Date:   Thu, 10 Sep 2020 12:29:29 -0700 (PDT)
+Message-Id: <20200910.122929.1460871728363084990.davem@davemloft.net>
+To:     geliangtang@gmail.com
+Cc:     mathew.j.martineau@linux.intel.com, matthieu.baerts@tessares.net,
+        kuba@kernel.org, pabeni@redhat.com, fw@strlen.de,
+        peter.krystad@linux.intel.com, netdev@vger.kernel.org,
+        mptcp@lists.01.org, linux-kernel@vger.kernel.org
+Subject: Re: [MPTCP][PATCH v2 net 0/2] mptcp: fix subflow's
+ local_id/remote_id issues
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <cover.1599532593.git.geliangtang@gmail.com>
+References: <cover.1599532593.git.geliangtang@gmail.com>
+X-Mailer: Mew version 6.8 on Emacs 27.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Thu, 10 Sep 2020 12:12:44 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Common pattern of handling deferred probe can be simplified with
-dev_err_probe().  Less code and the error value gets printed.
+From: Geliang Tang <geliangtang@gmail.com>
+Date: Tue,  8 Sep 2020 10:49:37 +0800
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> v2:
+>  - add Fixes tags;
+>  - simply with 'return addresses_equal';
+>  - use 'reversed Xmas tree' way.
 
----
-
-Changes since v1:
-1. None
----
- drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c | 9 +++------
- drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c | 9 +++------
- 2 files changed, 6 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
-index 138759dc8190..e3c62051c595 100644
---- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
-+++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-core.c
-@@ -573,12 +573,9 @@ static int sun8i_ce_probe(struct platform_device *pdev)
- 		return irq;
- 
- 	ce->reset = devm_reset_control_get(&pdev->dev, NULL);
--	if (IS_ERR(ce->reset)) {
--		if (PTR_ERR(ce->reset) == -EPROBE_DEFER)
--			return PTR_ERR(ce->reset);
--		dev_err(&pdev->dev, "No reset control found\n");
--		return PTR_ERR(ce->reset);
--	}
-+	if (IS_ERR(ce->reset))
-+		return dev_err_probe(&pdev->dev, PTR_ERR(ce->reset),
-+				     "No reset control found\n");
- 
- 	mutex_init(&ce->mlock);
- 
-diff --git a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c
-index 9a23515783a6..576df8c8df51 100644
---- a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c
-+++ b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c
-@@ -545,12 +545,9 @@ static int sun8i_ss_probe(struct platform_device *pdev)
- 		return irq;
- 
- 	ss->reset = devm_reset_control_get(&pdev->dev, NULL);
--	if (IS_ERR(ss->reset)) {
--		if (PTR_ERR(ss->reset) == -EPROBE_DEFER)
--			return PTR_ERR(ss->reset);
--		dev_err(&pdev->dev, "No reset control found\n");
--		return PTR_ERR(ss->reset);
--	}
-+	if (IS_ERR(ss->reset))
-+		return dev_err_probe(&pdev->dev, PTR_ERR(ss->reset),
-+				     "No reset control found\n");
- 
- 	mutex_init(&ss->mlock);
- 
--- 
-2.17.1
-
+Series applied, thanks.
