@@ -2,121 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 585442647E6
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 16:21:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F38392647EB
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 16:23:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731031AbgIJOVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 10:21:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42950 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731114AbgIJOKb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 10:10:31 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7E99121D79;
-        Thu, 10 Sep 2020 13:44:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599745479;
-        bh=2rpnh2RBD5R8RyuJb8iyA1MzLro0dvc3KgNjFzIDVuE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bFaQIQNda2L/zgJFisbB6HcjzJzEwgktRzodCLDh5GSC2QkY63lALnClSCNIfic78
-         i9E4FbbSJu2aO8gccL/lgqJaVZrlPVgFwRVvIs5cwAiu9h/Gjc66jHBx3d6Ka4ayE8
-         u5PlTvF3xUplHGXeFQ5FPcP6mYpaS7ctOEayPkFw=
-Date:   Thu, 10 Sep 2020 16:44:35 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Peter Oberparleiter <oberpar@linux.ibm.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Colin Ian King <colin.king@canonical.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH -rc v1] gcov: Disable gcov build with GCC 10
-Message-ID: <20200910134435.GK421756@unreal>
-References: <20200904155808.4997-1-leon@kernel.org>
- <6fac3754-f8db-85f5-bdb1-b4c8e7ccc046@linux.ibm.com>
+        id S1731019AbgIJOW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 10:22:57 -0400
+Received: from condef-05.nifty.com ([202.248.20.70]:33543 "EHLO
+        condef-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730890AbgIJOK2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 10:10:28 -0400
+Received: from conuserg-10.nifty.com ([10.126.8.73])by condef-05.nifty.com with ESMTP id 08ADtFcv031606;
+        Thu, 10 Sep 2020 22:55:15 +0900
+Received: from oscar.flets-west.jp (softbank126090211135.bbtec.net [126.90.211.135]) (authenticated)
+        by conuserg-10.nifty.com with ESMTP id 08ADpSIv001308;
+        Thu, 10 Sep 2020 22:51:28 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-10.nifty.com 08ADpSIv001308
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1599745889;
+        bh=JHjawyNi+2UsmyXrYxyqMJXMi2+rCaAViXhyNLVuK8M=;
+        h=From:To:Cc:Subject:Date:From;
+        b=buyXflRaxjagpRHTL+9r/eT3QLgJLolWsUxnbjtXoDxjXWHVtUDCUi/5rTnV79Q5S
+         nULaajOuWCSJI3UtGUxIj3U8dZLZDsrJ0+ze+ED/FJXW+xt3ppN745E2vIs/CBKEKE
+         Oj61MLp+NUjjmvwkq5qHBzRP2F1gRnZv2qUgBIrAJkIUh+kg6d1p4fURxH9O4AC1nW
+         0+U0LHAF+8BgK8pkYpXrK5J0WWewIRwz55IN5QdNntD0Oh2JzqAq+wkIjWzaln1li0
+         2FvyHn/jDYwz47/UeJFtzUdUB25T0PvbTemNV53NpFvM23ty3AEwG37txOgD3awkDR
+         7cJBpo5TiyYUA==
+X-Nifty-SrcIP: [126.90.211.135]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Will Deacon <will@kernel.org>,
+        clang-built-linux@googlegroups.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/4] kbuild: remove cc-option test of -fno-strict-overflow
+Date:   Thu, 10 Sep 2020 22:51:17 +0900
+Message-Id: <20200910135120.3527468-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6fac3754-f8db-85f5-bdb1-b4c8e7ccc046@linux.ibm.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 02:52:01PM +0200, Peter Oberparleiter wrote:
-> On 04.09.2020 17:58, Leon Romanovsky wrote:
-> > GCOV built with GCC 10 doesn't initialize n_function variable.
-> > This produces different kernel panics as was seen by Colin in
-> > Ubuntu [1] and me in FC 32 [2].
-> >
-> > As a workaround, let's disable GCOV build for broken GCC 10 version.
-> >
-> > [1] https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1891288
-> > [2] https://lore.kernel.org/lkml/20200827133932.3338519-1-leon@kernel.org
-> > Cc: Colin Ian King <colin.king@canonical.com>
-> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
->
-> The following patch should fix the problem with gcov and GCC 10.
-> I successfully tested it with kernel 5.9-rc4 on s390 using GCC 10.1.1
-> and also with GCC 9.1.1 to see that it didn't break support for previous
-> GCC versions. In both cases there were no kernel panics and gcov worked
-> fine.
->
-> Could you try this patch to see if it also fixes the problem in your
-> environment?
+The minimal compiler versions, GCC 4.9 and Clang 10 support this flag.
 
-It worked for me, Thanks
-Tested-by: Leon Romanovsky <leonro@nvidia.com>
+Here is the godbolt:
+https://godbolt.org/z/odq8h9
 
->
-> ---8<---
-> From: Peter Oberparleiter <oberpar@linux.ibm.com>
-> Subject: [PATCH] gcov: add support for GCC 10.1
->
-> Using gcov to collect coverage data for kernels compiled with GCC 10.1
-> causes random malfunctions and kernel crashes. This is the result of a
-> changed GCOV_COUNTERS value in GCC 10.1 that causes a mismatch between
-> the layout of the gcov_info structure created by GCC profiling code and
-> the related structure used by the kernel.
->
-> Fix this by updating the in-kernel GCOV_COUNTERS value. Also re-enable
-> config GCOV_KERNEL for use with GCC 10.
->
-> Reported-by: Colin Ian King <colin.king@canonical.com>
-> Reported-by: Leon Romanovsky <leonro@nvidia.com>
-> Signed-off-by: Peter Oberparleiter <oberpar@linux.ibm.com>
-> ---
->  kernel/gcov/Kconfig   | 1 -
->  kernel/gcov/gcc_4_7.c | 4 +++-
->  2 files changed, 3 insertions(+), 2 deletions(-)
->
-> diff --git a/kernel/gcov/Kconfig b/kernel/gcov/Kconfig
-> index bb4b680e8455..3110c77230c7 100644
-> --- a/kernel/gcov/Kconfig
-> +++ b/kernel/gcov/Kconfig
-> @@ -4,7 +4,6 @@ menu "GCOV-based kernel profiling"
->  config GCOV_KERNEL
->  	bool "Enable gcov-based kernel profiling"
->  	depends on DEBUG_FS
-> -	depends on !CC_IS_GCC || GCC_VERSION < 100000
->  	select CONSTRUCTORS if !UML
->  	default n
->  	help
-> diff --git a/kernel/gcov/gcc_4_7.c b/kernel/gcov/gcc_4_7.c
-> index 908fdf5098c3..53c67c87f141 100644
-> --- a/kernel/gcov/gcc_4_7.c
-> +++ b/kernel/gcov/gcc_4_7.c
-> @@ -19,7 +19,9 @@
->  #include <linux/vmalloc.h>
->  #include "gcov.h"
->
-> -#if (__GNUC__ >= 7)
-> +#if (__GNUC__ >= 10)
-> +#define GCOV_COUNTERS			8
-> +#elif (__GNUC__ >= 7)
->  #define GCOV_COUNTERS			9
->  #elif (__GNUC__ > 5) || (__GNUC__ == 5 && __GNUC_MINOR__ >= 1)
->  #define GCOV_COUNTERS			10
-> --
-> 2.21.0
->
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
+
+ Makefile                          | 2 +-
+ arch/arm64/kernel/vdso32/Makefile | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 4b5a305e30d2..059b36f2ea53 100644
+--- a/Makefile
++++ b/Makefile
+@@ -922,7 +922,7 @@ KBUILD_CFLAGS += $(call cc-disable-warning, restrict)
+ KBUILD_CFLAGS += $(call cc-disable-warning, maybe-uninitialized)
+ 
+ # disable invalid "can't wrap" optimizations for signed / pointers
+-KBUILD_CFLAGS	+= $(call cc-option,-fno-strict-overflow)
++KBUILD_CFLAGS	+= -fno-strict-overflow
+ 
+ # clang sets -fmerge-all-constants by default as optimization, but this
+ # is non-conforming behavior for C and in fact breaks the kernel, so we
+diff --git a/arch/arm64/kernel/vdso32/Makefile b/arch/arm64/kernel/vdso32/Makefile
+index d6adb4677c25..dfffd55175a3 100644
+--- a/arch/arm64/kernel/vdso32/Makefile
++++ b/arch/arm64/kernel/vdso32/Makefile
+@@ -90,7 +90,7 @@ VDSO_CFLAGS  += -O2
+ # Some useful compiler-dependent flags from top-level Makefile
+ VDSO_CFLAGS += $(call cc32-option,-Wdeclaration-after-statement,)
+ VDSO_CFLAGS += $(call cc32-option,-Wno-pointer-sign)
+-VDSO_CFLAGS += $(call cc32-option,-fno-strict-overflow)
++VDSO_CFLAGS += -fno-strict-overflow
+ VDSO_CFLAGS += $(call cc32-option,-Werror=strict-prototypes)
+ VDSO_CFLAGS += $(call cc32-option,-Werror=date-time)
+ VDSO_CFLAGS += $(call cc32-option,-Werror=incompatible-pointer-types)
+-- 
+2.25.1
+
