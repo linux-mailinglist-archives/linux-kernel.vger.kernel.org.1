@@ -2,84 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A11D265008
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:59:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 526F0264F49
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:39:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726474AbgIJT7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 15:59:32 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:45084 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730465AbgIJPAp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 11:00:45 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 9B246581FA3E06A0396E;
-        Thu, 10 Sep 2020 22:05:33 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Thu, 10 Sep 2020
- 22:05:25 +0800
-From:   Jason Yan <yanaijie@huawei.com>
-To:     <arend.vanspriel@broadcom.com>, <franky.lin@broadcom.com>,
-        <hante.meuleman@broadcom.com>, <chi-hsien.lin@cypress.com>,
-        <wright.feng@cypress.com>, <kvalo@codeaurora.org>,
-        <davem@davemloft.net>, <kuba@kernel.org>, <lee.jones@linaro.org>,
-        <linux-wireless@vger.kernel.org>,
-        <brcm80211-dev-list.pdl@broadcom.com>,
-        <brcm80211-dev-list@cypress.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Jason Yan <yanaijie@huawei.com>, Hulk Robot <hulkci@huawei.com>
-Subject: [PATCH] brcmsmac: main: Eliminate empty brcms_c_down_del_timer()
-Date:   Thu, 10 Sep 2020 22:04:46 +0800
-Message-ID: <20200910140446.1168049-1-yanaijie@huawei.com>
-X-Mailer: git-send-email 2.25.4
+        id S1728009AbgIJTjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 15:39:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39124 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731303AbgIJPmg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 11:42:36 -0400
+Received: from brightrain.aerifal.cx (unknown [IPv6:2002:d80c:560d::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88731C0617A9
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 08:06:21 -0700 (PDT)
+Date:   Thu, 10 Sep 2020 10:19:36 -0400
+From:   Rich Felker <dalias@libc.org>
+To:     linux-sh@vger.kernel.org
+Cc:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Rob Landley <rob@landley.net>, linux-kernel@vger.kernel.org,
+        Yoshinori Sato <ysato@users.sourceforge.jp>
+Subject: [PATCH] sh: remove spurious circular inclusion from asm/smp.h
+Message-ID: <20200910141934.GF3265@brightrain.aerifal.cx>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This function does nothing so remove it. This addresses the following
-coccicheck warning:
+Commit 0cd39f4600ed4de8 added inclusion of smp.h to lockdep.h,
+creating a circular include dependency where arch/sh's asm/smp.h in
+turn includes spinlock.h which depends on lockdep.h. Since our
+asm/smp.h does not actually need spinlock.h, just remove it.
 
-drivers/net/wireless/broadcom/brcm80211/brcmsmac/main.c:5103:6-15:
-Unneeded variable: "callbacks". Return "0" on line 5105
-
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Jason Yan <yanaijie@huawei.com>
+Fixes: 0cd39f4600ed4de8 ("locking/seqlock, headers: Untangle the spaghetti monster")
+Signed-off-by: Rich Felker <dalias@libc.org>
 ---
- drivers/net/wireless/broadcom/brcm80211/brcmsmac/main.c | 9 ---------
- 1 file changed, 9 deletions(-)
+ arch/sh/include/asm/smp.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmsmac/main.c b/drivers/net/wireless/broadcom/brcm80211/brcmsmac/main.c
-index 21691581b532..763e0ec583d7 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmsmac/main.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmsmac/main.c
-@@ -5085,13 +5085,6 @@ int brcms_c_up(struct brcms_c_info *wlc)
- 	return 0;
- }
+diff --git a/arch/sh/include/asm/smp.h b/arch/sh/include/asm/smp.h
+index 1a0d7cf71c10..100bf241340b 100644
+--- a/arch/sh/include/asm/smp.h
++++ b/arch/sh/include/asm/smp.h
+@@ -8,7 +8,6 @@
  
--static uint brcms_c_down_del_timer(struct brcms_c_info *wlc)
--{
--	uint callbacks = 0;
--
--	return callbacks;
--}
--
- static int brcms_b_bmac_down_prep(struct brcms_hardware *wlc_hw)
- {
- 	bool dev_gone;
-@@ -5201,8 +5194,6 @@ uint brcms_c_down(struct brcms_c_info *wlc)
- 			callbacks++;
- 		wlc->WDarmed = false;
- 	}
--	/* cancel all other timers */
--	callbacks += brcms_c_down_del_timer(wlc);
+ #ifdef CONFIG_SMP
  
- 	wlc->pub->up = false;
- 
+-#include <linux/spinlock.h>
+ #include <linux/atomic.h>
+ #include <asm/current.h>
+ #include <asm/percpu.h>
 -- 
-2.25.4
+2.21.0
 
