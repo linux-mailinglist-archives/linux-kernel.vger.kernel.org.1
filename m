@@ -2,133 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C57B9265198
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 22:58:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A33B92651CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:02:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727852AbgIJU6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 16:58:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727927AbgIJU6L (ORCPT
+        id S1727908AbgIJVCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 17:02:33 -0400
+Received: from brightrain.aerifal.cx ([216.12.86.13]:52360 "EHLO
+        brightrain.aerifal.cx" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731168AbgIJOkD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 16:58:11 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24E6AC061756;
-        Thu, 10 Sep 2020 13:58:10 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id D5E5029BB25
-Received: by earth.universe (Postfix, from userid 1000)
-        id 35C1A3C0C84; Thu, 10 Sep 2020 22:58:06 +0200 (CEST)
-Date:   Thu, 10 Sep 2020 22:58:05 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        =?utf-8?Q?Myl=C3=A8ne?= Josserand 
-        <mylene.josserand@collabora.com>,
-        Linux Input <linux-input@vger.kernel.org>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Collabora Kernel ML <kernel@collabora.com>
-Subject: Re: [PATCHv2 3/4] Input: rotary-encoder - Use dev_err_probe
-Message-ID: <20200910205805.dxtg2ugq25cr5bhx@earth.universe>
-References: <20200907204045.95530-1-sebastian.reichel@collabora.com>
- <20200907204045.95530-4-sebastian.reichel@collabora.com>
- <CAL_JsqJ8E4Y-kaksCXBC=_sEf4Nz8bZr-4=_g5_PjWtQJm8jsA@mail.gmail.com>
+        Thu, 10 Sep 2020 10:40:03 -0400
+Date:   Thu, 10 Sep 2020 09:37:51 -0400
+From:   Rich Felker <dalias@libc.org>
+To:     Rob Landley <rob@landley.net>
+Cc:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        linux-sh@vger.kernel.org,
+        Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>,
+        linux-kernel@vger.kernel.org,
+        Yoshinori Sato <ysato@users.sourceforge.jp>
+Subject: Re: [PATCH] sh: fix syscall tracing
+Message-ID: <20200910133751.GE3265@brightrain.aerifal.cx>
+References: <20200903054803.GX3265@brightrain.aerifal.cx>
+ <e456a455-62cd-4f76-a69a-84d1e5b4d153@physik.fu-berlin.de>
+ <20200903161639.GE3265@brightrain.aerifal.cx>
+ <1a3f0f7e-f6e6-db4e-06ad-9c7d560a6265@physik.fu-berlin.de>
+ <20200907174436.GK3265@brightrain.aerifal.cx>
+ <3b8d5e6a-38d6-6eca-a49a-69e06680ec1c@physik.fu-berlin.de>
+ <c0685f0b-e997-39e9-8ae9-ee22c8e74a01@landley.net>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="nx2r6g6udosrjx7z"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAL_JsqJ8E4Y-kaksCXBC=_sEf4Nz8bZr-4=_g5_PjWtQJm8jsA@mail.gmail.com>
+In-Reply-To: <c0685f0b-e997-39e9-8ae9-ee22c8e74a01@landley.net>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Sep 10, 2020 at 06:02:05AM -0500, Rob Landley wrote:
+> On 9/10/20 4:55 AM, John Paul Adrian Glaubitz wrote:
+> > Hi Rich!
+> > 
+> > On 9/7/20 7:44 PM, Rich Felker wrote:
+> >>> Can we still get this merged as a hotfix for 5.9?
+> >>
+> >> Yes, fixes for regressions in the same release cycle are in-scope (the
+> >> whole point of having -rc's). I have at least one other fix that needs
+> >> to go in too and was just giving it a little time to make sure
+> >> everything's ok now and that there are no more.
+> > 
+> > Let me know if there is anything else left for testing.
+> 
+> Could you also merge the fix the build break, ala:
+> 
+> > The vmlinux image is a current vanilla Linux kernel using an initramfs filesystem:
+> > 
+> >   make ARCH=sh CROSS_COMPILE=sh2eb-linux-muslfdpic- j2_defconfig vmlinux
+> > 
+> > And trying to do that in current git dies with:
+> > 
+> >   CC      init/version.o
+> > In file included from ./include/linux/spinlock.h:318,
+> >                  from ./arch/sh/include/asm/smp.h:11,
+> >                  from ./include/linux/smp.h:82,
+> >                  from ./include/linux/lockdep.h:14,
+> >                  from ./include/linux/rcupdate.h:29,
+> >                  from ./include/linux/rculist.h:11,
+> >                  from ./include/linux/pid.h:5,
+> >                  from ./include/linux/sched.h:14,
+> >                  from ./include/linux/utsname.h:6,
+> >                  from init/version.c:14:
+> > ./include/linux/spinlock_api_smp.h: In function '__raw_spin_trylock':
+> > ./include/linux/spinlock_api_smp.h:90:3: error: implicit declaration of function
+> > 'spin_acquire'; did you mean 'xchg_acquire'? [-Werror=implicit-function-declaration]
+> >    90 |   spin_acquire(&lock->dep_map, 0, 1, _RET_IP_);
+> >       |   ^~~~~~~~~~~~
+> >       |   xchg_acquire
+> > ./include/linux/spinlock_api_smp.h:90:21: error: 'raw_spinlock_t' {aka 'struct
+> > raw_spinlock'} has no member named 'dep_map'
+> >    90 |   spin_acquire(&lock->dep_map, 0, 1, _RET_IP_);
+> >       |                     ^~
+> > 
+> > And so on and so forth for pages. I bisected it to:
+> > 
+> > commit 0cd39f4600ed4de859383018eb10f0f724900e1b
+> > Author: Peter Zijlstra <peterz@infradead.org>
+> > Date:   Thu Aug 6 14:35:11 2020 +0200
+> > 
+> >     locking/seqlock, headers: Untangle the spaghetti monster
+> 
+> Which I reported to Rich on the 2nd and he had me test a one line patch fixing
+> it (adding an extra #include) on the 3rd, but I just did a fresh pull and the
+> j2_defconfig build still broke a week later.
 
---nx2r6g6udosrjx7z
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Yes, that's presently the other regression fix I have queued for the
+second pull request.
 
-Hi Rob,
-
-On Wed, Sep 09, 2020 at 01:48:49PM -0600, Rob Herring wrote:
-> On Mon, Sep 7, 2020 at 2:40 PM Sebastian Reichel
-> <sebastian.reichel@collabora.com> wrote:
-> >
-> > Simplify driver a bit by making use of dev_err_probe.
-> >
-> > Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-> > ---
-> >  drivers/input/misc/rotary_encoder.c | 8 ++------
-> >  1 file changed, 2 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/drivers/input/misc/rotary_encoder.c b/drivers/input/misc/r=
-otary_encoder.c
-> > index e9a5dbb10513..16ad86fad7cb 100644
-> > --- a/drivers/input/misc/rotary_encoder.c
-> > +++ b/drivers/input/misc/rotary_encoder.c
-> > @@ -241,12 +241,8 @@ static int rotary_encoder_probe(struct platform_de=
-vice *pdev)
-> >                 device_property_read_bool(dev, "rotary-encoder,relative=
--axis");
-> >
-> >         encoder->gpios =3D devm_gpiod_get_array(dev, NULL, GPIOD_IN);
-> > -       if (IS_ERR(encoder->gpios)) {
-> > -               err =3D PTR_ERR(encoder->gpios);
-> > -               if (err !=3D -EPROBE_DEFER)
-> > -                       dev_err(dev, "unable to get gpios: %d\n", err);
-> > -               return err;
-> > -       }
-> > +       if (IS_ERR(encoder->gpios))
-> > +               return dev_err_probe(dev, PTR_ERR(encoder->gpios), "una=
-ble to get gpios\n");
->=20
-> I hadn't seen dev_err_probe...
-
-It got added in 5.8.
-
-> Just FYI, I'm working on a different fix here which is to print errors
-> in the subsystems instead. We already do this for IRQs, so why not
-> everything else? The original reason was no resource is sometimes not
-> an error, but now we have *_optional calls to handle this case for
-> most all subsystems. It's a coccinelle script (hacked up from
-> platform_get_irq.cocci) to convert all the drivers.
-
-Makes sense. I suppose dev_err_probe could be used within the
-framework(s) and is still useful for those resource frameworks not
-having _optional variants.
-
-FYI: There is a bunch of dev_err_probe for all kind of drivers
-being send out at the moment. I already received quite a few
-for the power-supply subsystem. Be prepared for conflicts.
-
-If this is about this specific instance: No hard feelings, I
-only cleaned up the driver a bit while adding new features
-and being able to easily test the cleanups on real HW. With
-some luck patch 4/4 applies without this one.
-
--- Sebastian
-
---nx2r6g6udosrjx7z
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl9ak1cACgkQ2O7X88g7
-+pp3QQ/9F5JQmMwmQUV7a6kriYUD4bNkjhdlp4k+y5+pPYKbFlN+UA6kF5aeKOZW
-YiYDTqPbtNfTxeYdwkky/Hq7fCigzwBpq+bunhTaMkEKHEqWTafozJS6sVP5lHTw
-ZW9asjTUqHYb8FHJF9Az6k5hMpdNO1sFGBQqLIYJS38ogryLowNkodqyQB08B+Sr
-wIWJ5YbqgmwAZR3ALkkwpmnIKGaPrNWXU9EEOmiQD/gfA7+/q1xFdCTyp55TJDzl
-boX9ilTkXmMsAiwjEimMLqCwJWoHwBrQ7pEKS2VldVvzX1Rw967d9xO61UNa+1W/
-g6XKghVfVxdzKs40AL9YoHHjwHyOQucFYy0zaGx3zTSzgAeXLO3mw69OTtxkTaya
-Ed0Sd/qUT0wBizM+pub/0RT4PHvaUnSnugBq/kSRu34GEFOnKB7ekeEeW4O8P7Pl
-TDKca0CNFEkW3/zSIflI5Gi1FO2hKR4ExK+sdZg9qzPHT5KHapjPpnTZHtX2BnyK
-PqJ0CvPZwNzQZwrFNB7a6E+ATesCko+58Vf5SSKwgYHxCRqpvL9xV3yz6/L/4Nlh
-C46/EqWha26v9QAWv6ppyokBOpSRPM1BJHaGv4iY9T775iYAHNKcVCmmNup032OX
-LpUUQNly2CD0cKg5nDHkxJn5C6I0tRadu1Pu2+2zzt3VME9iUXI=
-=2zx5
------END PGP SIGNATURE-----
-
---nx2r6g6udosrjx7z--
+Rich
