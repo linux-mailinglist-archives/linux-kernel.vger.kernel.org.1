@@ -2,75 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B736263B12
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 04:56:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 443B1263B17
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 04:58:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727782AbgIJC4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 22:56:36 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:11330 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729298AbgIJCzz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 22:55:55 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 60DAF3647B9752C439E5;
-        Thu, 10 Sep 2020 10:55:41 +0800 (CST)
-Received: from localhost (10.174.179.108) by DGGEMS408-HUB.china.huawei.com
- (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Thu, 10 Sep 2020
- 10:55:33 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <Felix.Kuehling@amd.com>, <alexander.deucher@amd.com>,
-        <christian.koenig@amd.com>, <airlied@linux.ie>, <daniel@ffwll.ch>,
-        <Yong.Zhao@amd.com>
-CC:     <amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
-        <linux-kernel@vger.kernel.org>, YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH -next] drm/amdkfd: Fix -Wunused-const-variable warning
-Date:   Thu, 10 Sep 2020 10:55:32 +0800
-Message-ID: <20200910025532.19616-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        id S1730030AbgIJC6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 22:58:08 -0400
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:33753 "EHLO
+        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727087AbgIJC5l (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 22:57:41 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id DA2F65C00F7;
+        Wed,  9 Sep 2020 22:57:23 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Wed, 09 Sep 2020 22:57:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=from
+        :to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm3; bh=Dv9G8vf2BZy5Sw/wGzgCeqKxjd
+        oYeYoETlbjpaAz4t0=; b=g/Vjh1JGv9G2xjnS0TYgirRufyIhD8cVoO/M0R67WR
+        /kUfrmIpP5b+oSocsiY8Wb6ylsJDdMQ15DNgILlO6yN32/mkx8vJMaRVVt5u+tDS
+        CMNK70raEYj2ZmFO0UqGMXIrVvKHd0hI1FIYAoynNEbI2usJN5RgNyd1xlGWbdfm
+        IthYzYxuO9jLB48j0a7GEe43ikghJbJVOIYu+ecMklp88lvJWZRi7EYL8+IVEAhz
+        ReHCmmdn1YmWff+sPSxq4JQyvVTfAkOjTtUgso+JLe+kmQRilactXGpIOPr5QsPm
+        l4lqyaIirFQ9xjjdkzjoRsu9GCz8C5QGU5ZqOYJCYSdA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=Dv9G8vf2BZy5Sw/wG
+        zgCeqKxjdoYeYoETlbjpaAz4t0=; b=ZO7kwr/pv7spUtjEZR8RXP9gTa/e13opl
+        6tneKYDQjYjiDD259URqHM+lrurYaP412m4l7kohn1xRLTgGhkfKNRnK+Q5jdPzA
+        sOLRFDpj5oxuLryKgXnzKeTEx1QFQ7XqpqIGIVPER3ZcWV5p8JOFlAagaHKsgMcc
+        O9V1XjXaNLffctPy8Y0TLcj/2jH1vRnUOFb4UxexSKo1r//Q/Kg/UaKXBk7xTbuo
+        GWTkTCLndwBRv1A93qkbbxMKQRTIa0tuhvZ5qzUkEMVnbKIPWmYRvegFsIXhbz2a
+        pgB3/q8wyKaYNl8224BDVQ+aC1CXO6VBr8dAbDYI7KSCOQnB+SeDw==
+X-ME-Sender: <xms:EpZZXz9VCDXJbSMFWlPtroqK0VUMCMqtWTtfUjKToW-Sj_gaFoe8gw>
+    <xme:EpZZX_sBLZFsuypAmlhRwYLGExqR85v7UJX7LCQwF-5hEHSnRqg-GnysB2-V_nK9U
+    IRcFnseGhYVQ0FT0A>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudehiedgieegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgggfestdekredtre
+    dttdenucfhrhhomheptehnughrvgifucflvghffhgvrhihuceorghnughrvgifsegrjhdr
+    ihgurdgruheqnecuggftrfgrthhtvghrnhepieetheduveelhfdvvdejleeuhfelteevhe
+    ffgfeitdefgeekjeefieevgfehhefgnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghen
+    ucfkphepudegrddvrddutdelrdekheenucevlhhushhtvghrufhiiigvpedtnecurfgrrh
+    grmhepmhgrihhlfhhrohhmpegrnhgurhgvfiesrghjrdhiugdrrghu
+X-ME-Proxy: <xmx:EpZZXxCytbShkaI9ajG7sGZRoZJGRmal7WpEdAotqZxnm6pYUVKkaQ>
+    <xmx:EpZZX_ec-nqmL9D12PRSNALELMUvv836OsO58gFsV9hAQYQI381JmQ>
+    <xmx:EpZZX4ODsqeaY2Bpz3pcMO_QEgmacCFZHFAZdHw5Qc3YYg3oqTjfqw>
+    <xmx:E5ZZX30sIIECRi4JW222zE0zo4Kl46Zthadgv2ke72i33X7BvFbldw>
+Received: from mistburn.lan (ppp14-2-109-85.adl-apt-pir-bras32.tpg.internode.on.net [14.2.109.85])
+        by mail.messagingengine.com (Postfix) with ESMTPA id AA345306902A;
+        Wed,  9 Sep 2020 22:57:19 -0400 (EDT)
+From:   Andrew Jeffery <andrew@aj.id.au>
+To:     linux-gpio@vger.kernel.org
+Cc:     linus.walleij@linaro.org, joel@jms.id.au,
+        johnny_huang@aspeedtech.com, linux-aspeed@lists.ozlabs.org,
+        openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/3] pinctrl: aspeed: AST2600 pinconf fixes
+Date:   Thu, 10 Sep 2020 12:26:28 +0930
+Message-Id: <20200910025631.2996342-1-andrew@aj.id.au>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.108]
-X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If KFD_SUPPORT_IOMMU_V2 is not set, gcc warns:
+Hello,
 
-drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_device.c:121:37: warning: ‘raven_device_info’ defined but not used [-Wunused-const-variable=]
- static const struct kfd_device_info raven_device_info = {
-                                     ^~~~~~~~~~~~~~~~~
+The AST2600 pinctrl driver was missing support for bias control on the 1.8V
+GPIO pins, and in the process of resolving that I discovered a couple of other
+bugs that are fixed in the first two patches of the series.
 
-Move it to ifdef block.
+v2 Tweaks some of the debug output and adds Joel's Reviewed-by tags.
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- drivers/gpu/drm/amd/amdkfd/kfd_device.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+v1 can be found here:
 
-diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_device.c b/drivers/gpu/drm/amd/amdkfd/kfd_device.c
-index 0e71a0543f98..cae4df259e26 100644
---- a/drivers/gpu/drm/amd/amdkfd/kfd_device.c
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_device.c
-@@ -116,7 +116,6 @@ static const struct kfd_device_info carrizo_device_info = {
- 	.num_xgmi_sdma_engines = 0,
- 	.num_sdma_queues_per_engine = 2,
- };
--#endif
- 
- static const struct kfd_device_info raven_device_info = {
- 	.asic_family = CHIP_RAVEN,
-@@ -135,6 +134,7 @@ static const struct kfd_device_info raven_device_info = {
- 	.num_xgmi_sdma_engines = 0,
- 	.num_sdma_queues_per_engine = 2,
- };
-+#endif
- 
- static const struct kfd_device_info hawaii_device_info = {
- 	.asic_family = CHIP_HAWAII,
+https://lore.kernel.org/linux-gpio/20200909114312.2863675-1-andrew@aj.id.au/
+
+Please review!
+
+Andrew
+
+Andrew Jeffery (3):
+  pinctrl: aspeed: Format pinconf debug consistent with pinmux
+  pinctrl: aspeed: Use the right pinconf mask
+  pinctrl: aspeed-g6: Add bias controls for 1.8V GPIO banks
+
+ drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c | 17 +++++++++++++++++
+ drivers/pinctrl/aspeed/pinctrl-aspeed.c    |  8 ++++----
+ 2 files changed, 21 insertions(+), 4 deletions(-)
+
 -- 
-2.17.1
-
+2.25.1
 
