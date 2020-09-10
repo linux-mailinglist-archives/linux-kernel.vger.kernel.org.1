@@ -2,249 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 415B5264EF2
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:30:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09FA1264F8C
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:46:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727007AbgIJT3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 15:29:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39994 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731417AbgIJPsR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 11:48:17 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0BFEC06134B;
-        Thu, 10 Sep 2020 08:08:26 -0700 (PDT)
-Date:   Thu, 10 Sep 2020 15:08:24 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1599750505;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8mOUuPAc1Yh5ijC7AXKvsVCLku6U1/7qBfQuuPRx/PI=;
-        b=yXo/mkZCdjezXKoLn795UU/z9vnZruhnfZ9MYyxtKFJfYfdVMXEbgg141eMhATNdcort0h
-        cNe6PG/R0mIGuiFyKFUfb3bdkqBfGEuVrmwiE0xJahxMAv0Rqm7AiBf6tfWjIoPPnMlAyr
-        LpngdCcUY1zhhkHyf0niYy5a2SFKg2Wmz5Exy0XwtkX2h13SbUOOsKWNBOJE2VQDr7Sq/T
-        VTFXa+JXkDiarkrUw65ekaZbXeoRERI3BCxkH+qP5F6YPiebMLCOYzJwLWt4zoVRh1Weu0
-        8vf/URzDr98/zQII2fnBHX0nOJMJq/FkPVZZAkyYmyjyKZ/jEmQKbul1tzurFQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1599750505;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8mOUuPAc1Yh5ijC7AXKvsVCLku6U1/7qBfQuuPRx/PI=;
-        b=T6o5vNnfPSNcUKzfHO8vx8oRf4kJBO/soPQBfz6AL8IyL7zdEVbGWU9tlCKtuyUY4br5KR
-        RTiYfQdwrLhwKcDA==
-From:   "tip-bot2 for Ahmed S. Darwish" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/core] seqlock: seqcount_t: Implement all read APIs as
- statement expressions
-Cc:     "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200904153231.11994-4-a.darwish@linutronix.de>
-References: <20200904153231.11994-4-a.darwish@linutronix.de>
+        id S1727019AbgIJTqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 15:46:09 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:11803 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1731314AbgIJPaq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 11:30:46 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id AACB954E49DA2BF4E598;
+        Thu, 10 Sep 2020 23:14:41 +0800 (CST)
+Received: from huawei.com (10.175.113.133) by DGGEMS407-HUB.china.huawei.com
+ (10.3.19.207) with Microsoft SMTP Server id 14.3.487.0; Thu, 10 Sep 2020
+ 23:14:36 +0800
+From:   Wang Hai <wanghai38@huawei.com>
+To:     <jeffrey.t.kirsher@intel.com>, <davem@davemloft.net>,
+        <kuba@kernel.org>, <intel-wired-lan@lists.osuosl.org>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH net-next] igb: Fix some kernel-doc warnings in e1000_82575.c
+Date:   Thu, 10 Sep 2020 23:11:55 +0800
+Message-ID: <20200910151155.35995-1-wanghai38@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Message-ID: <159975050461.20229.10164012380779845315.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.175.113.133]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the locking/core branch of tip:
+Fixes the following W=1 kernel build warning(s):
 
-Commit-ID:     52ac39e5db5148f70392edb654ad882ac8da88a8
-Gitweb:        https://git.kernel.org/tip/52ac39e5db5148f70392edb654ad882ac8da88a8
-Author:        Ahmed S. Darwish <a.darwish@linutronix.de>
-AuthorDate:    Fri, 04 Sep 2020 17:32:29 +02:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Thu, 10 Sep 2020 11:19:31 +02:00
+drivers/net/ethernet/intel/igb/e1000_82575.c:2563: warning: Excess function parameter 'addr' description in '__igb_access_emi_reg'
+drivers/net/ethernet/intel/igb/e1000_82575.c:2599: warning: Excess function parameter 'adv100m' description in 'igb_set_eee_i350'
+drivers/net/ethernet/intel/igb/e1000_82575.c:2655: warning: Excess function parameter 'adv100m' description in 'igb_set_eee_i354'
 
-seqlock: seqcount_t: Implement all read APIs as statement expressions
-
-The sequence counters read APIs are implemented as CPP macros, so they
-can take either seqcount_t or any of the seqcount_LOCKNAME_t variants.
-Such macros then get *directly* transformed to internal C functions that
-only take plain seqcount_t.
-
-Further commits need access to seqcount_LOCKNAME_t inside of the actual
-read APIs code. Thus transform all of the seqcount read APIs to pure GCC
-statement expressions instead.
-
-This will not break type-safety: all of the transformed APIs resolve to
-a _Generic() selection that does not have a "default" case.
-
-This will also not affect the transformed APIs readability: previously
-added kernel-doc above all of seqlock.h functions makes the expectations
-quite clear for call-site developers.
-
-Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20200904153231.11994-4-a.darwish@linutronix.de
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
 ---
- include/linux/seqlock.h | 94 +++++++++++++++++++---------------------
- 1 file changed, 45 insertions(+), 49 deletions(-)
+ drivers/net/ethernet/intel/igb/e1000_82575.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/seqlock.h b/include/linux/seqlock.h
-index 0b4a22f..f3b7827 100644
---- a/include/linux/seqlock.h
-+++ b/include/linux/seqlock.h
-@@ -184,6 +184,12 @@ __seqprop_##lockname##_ptr(seqcount_##lockname##_t *s)			\
- 	return &s->seqcount;						\
- }									\
- 									\
-+static __always_inline unsigned						\
-+__seqprop_##lockname##_sequence(const seqcount_##lockname##_t *s)	\
-+{									\
-+	return READ_ONCE(s->seqcount.sequence);				\
-+}									\
-+									\
- static __always_inline bool						\
- __seqprop_##lockname##_preemptible(const seqcount_##lockname##_t *s)	\
- {									\
-@@ -205,6 +211,11 @@ static inline seqcount_t *__seqprop_ptr(seqcount_t *s)
- 	return s;
- }
- 
-+static inline unsigned __seqprop_sequence(const seqcount_t *s)
-+{
-+	return READ_ONCE(s->sequence);
-+}
-+
- static inline bool __seqprop_preemptible(const seqcount_t *s)
- {
- 	return false;
-@@ -250,6 +261,7 @@ SEQCOUNT_LOCKNAME(ww_mutex,	struct ww_mutex,	true,	&s->lock->base)
- 	__seqprop_case((s),	ww_mutex,	prop))
- 
- #define __seqcount_ptr(s)		__seqprop(s, ptr)
-+#define __seqcount_sequence(s)		__seqprop(s, sequence)
- #define __seqcount_lock_preemptible(s)	__seqprop(s, preemptible)
- #define __seqcount_assert_lock_held(s)	__seqprop(s, assert)
- 
-@@ -268,21 +280,15 @@ SEQCOUNT_LOCKNAME(ww_mutex,	struct ww_mutex,	true,	&s->lock->base)
-  * Return: count to be passed to read_seqcount_retry()
-  */
- #define __read_seqcount_begin(s)					\
--	__read_seqcount_t_begin(__seqcount_ptr(s))
--
--static inline unsigned __read_seqcount_t_begin(const seqcount_t *s)
--{
--	unsigned ret;
--
--repeat:
--	ret = READ_ONCE(s->sequence);
--	if (unlikely(ret & 1)) {
--		cpu_relax();
--		goto repeat;
--	}
--	kcsan_atomic_next(KCSAN_SEQLOCK_REGION_MAX);
--	return ret;
--}
-+({									\
-+	unsigned seq;							\
-+									\
-+	while ((seq = __seqcount_sequence(s)) & 1)			\
-+		cpu_relax();						\
-+									\
-+	kcsan_atomic_next(KCSAN_SEQLOCK_REGION_MAX);			\
-+	seq;								\
-+})
- 
+diff --git a/drivers/net/ethernet/intel/igb/e1000_82575.c b/drivers/net/ethernet/intel/igb/e1000_82575.c
+index a32391e82762..50863fd87d53 100644
+--- a/drivers/net/ethernet/intel/igb/e1000_82575.c
++++ b/drivers/net/ethernet/intel/igb/e1000_82575.c
+@@ -2554,7 +2554,7 @@ static s32 igb_update_nvm_checksum_i350(struct e1000_hw *hw)
  /**
-  * raw_read_seqcount_begin() - begin a seqcount_t read section w/o lockdep
-@@ -291,14 +297,12 @@ repeat:
-  * Return: count to be passed to read_seqcount_retry()
-  */
- #define raw_read_seqcount_begin(s)					\
--	raw_read_seqcount_t_begin(__seqcount_ptr(s))
--
--static inline unsigned raw_read_seqcount_t_begin(const seqcount_t *s)
--{
--	unsigned ret = __read_seqcount_t_begin(s);
--	smp_rmb();
--	return ret;
--}
-+({									\
-+	unsigned seq = __read_seqcount_begin(s);			\
-+									\
-+	smp_rmb();							\
-+	seq;								\
-+})
- 
- /**
-  * read_seqcount_begin() - begin a seqcount_t read critical section
-@@ -307,13 +311,10 @@ static inline unsigned raw_read_seqcount_t_begin(const seqcount_t *s)
-  * Return: count to be passed to read_seqcount_retry()
-  */
- #define read_seqcount_begin(s)						\
--	read_seqcount_t_begin(__seqcount_ptr(s))
--
--static inline unsigned read_seqcount_t_begin(const seqcount_t *s)
--{
--	seqcount_lockdep_reader_access(s);
--	return raw_read_seqcount_t_begin(s);
--}
-+({									\
-+	seqcount_lockdep_reader_access(__seqcount_ptr(s));		\
-+	raw_read_seqcount_begin(s);					\
-+})
- 
- /**
-  * raw_read_seqcount() - read the raw seqcount_t counter value
-@@ -327,15 +328,13 @@ static inline unsigned read_seqcount_t_begin(const seqcount_t *s)
-  * Return: count to be passed to read_seqcount_retry()
-  */
- #define raw_read_seqcount(s)						\
--	raw_read_seqcount_t(__seqcount_ptr(s))
--
--static inline unsigned raw_read_seqcount_t(const seqcount_t *s)
--{
--	unsigned ret = READ_ONCE(s->sequence);
--	smp_rmb();
--	kcsan_atomic_next(KCSAN_SEQLOCK_REGION_MAX);
--	return ret;
--}
-+({									\
-+	unsigned seq = __seqcount_sequence(s);				\
-+									\
-+	smp_rmb();							\
-+	kcsan_atomic_next(KCSAN_SEQLOCK_REGION_MAX);			\
-+	seq;								\
-+})
- 
- /**
-  * raw_seqcount_begin() - begin a seqcount_t read critical section w/o
-@@ -355,16 +354,13 @@ static inline unsigned raw_read_seqcount_t(const seqcount_t *s)
-  * Return: count to be passed to read_seqcount_retry()
-  */
- #define raw_seqcount_begin(s)						\
--	raw_seqcount_t_begin(__seqcount_ptr(s))
--
--static inline unsigned raw_seqcount_t_begin(const seqcount_t *s)
--{
--	/*
--	 * If the counter is odd, let read_seqcount_retry() fail
--	 * by decrementing the counter.
--	 */
--	return raw_read_seqcount_t(s) & ~1;
--}
-+({									\
-+	/*								\
-+	 * If the counter is odd, let read_seqcount_retry() fail	\
-+	 * by decrementing the counter.					\
-+	 */								\
-+	raw_read_seqcount(s) & ~1;					\
-+})
- 
- /**
-  * __read_seqcount_retry() - end a seqcount_t read section w/o barrier
+  *  __igb_access_emi_reg - Read/write EMI register
+  *  @hw: pointer to the HW structure
+- *  @addr: EMI address to program
++ *  @address: EMI address to program
+  *  @data: pointer to value to read/write from/to the EMI address
+  *  @read: boolean flag to indicate read or write
+  **/
+@@ -2590,7 +2590,7 @@ s32 igb_read_emi_reg(struct e1000_hw *hw, u16 addr, u16 *data)
+  *  igb_set_eee_i350 - Enable/disable EEE support
+  *  @hw: pointer to the HW structure
+  *  @adv1G: boolean flag enabling 1G EEE advertisement
+- *  @adv100m: boolean flag enabling 100M EEE advertisement
++ *  @adv100M: boolean flag enabling 100M EEE advertisement
+  *
+  *  Enable/disable EEE based on setting in dev_spec structure.
+  *
+@@ -2646,7 +2646,7 @@ s32 igb_set_eee_i350(struct e1000_hw *hw, bool adv1G, bool adv100M)
+  *  igb_set_eee_i354 - Enable/disable EEE support
+  *  @hw: pointer to the HW structure
+  *  @adv1G: boolean flag enabling 1G EEE advertisement
+- *  @adv100m: boolean flag enabling 100M EEE advertisement
++ *  @adv100M: boolean flag enabling 100M EEE advertisement
+  *
+  *  Enable/disable EEE legacy mode based on setting in dev_spec structure.
+  *
+-- 
+2.17.1
+
