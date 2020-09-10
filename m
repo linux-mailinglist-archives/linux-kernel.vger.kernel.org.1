@@ -2,116 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33314264AAD
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 19:07:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2D84264AC7
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 19:12:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726853AbgIJRH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 13:07:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52650 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727088AbgIJRGp (ORCPT
+        id S1726968AbgIJRMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 13:12:21 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:26566 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726675AbgIJRJM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 13:06:45 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18566C0613ED
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 10:06:45 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id l39so2313620ybe.14
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 10:06:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to;
-        bh=adI7wIapGHyMuBg8Kx00Pr23ARAsrS6b/e9orFM8JOA=;
-        b=TxixLvjFpgGmwKdMeWaIR8kRBrFRRk06I6hOZ9AnaRZjohco0VkPVEq1D45uXsls+1
-         bXKkgPTkNAYkdNwC63x96d4F9C+deAvT6NOcfjza5Ista3qCP4u231q7B5emR4cawDf7
-         5TDSdzCNod5MEmQIsw7kq4ZBGbGR+XUXidwXtrHWD63lggQgGXd1Zok+9ldBzpH15208
-         Skljw+OPWZmt72AjmO+/jaiJZ1/T3c/1GL0+m4GkAtshks0hRWJMRtILLGhSb48mNiCL
-         zbpmVmsm58N5BnPMtjoj797wJVSBQG1KQwI0eqgFb0XRYuPeAgnnNDksnZLT+mdpcMVi
-         LJ2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to;
-        bh=adI7wIapGHyMuBg8Kx00Pr23ARAsrS6b/e9orFM8JOA=;
-        b=Mvy57Bpvg9QEh05UhssV2E5y0Q09qmYF6rFEgvhnNAZ1xRwqMox96nn07sPrJ4x1Ef
-         hFmX9e/sitY/fScOtZ6RzBams7iCR8onwdiRLYFSeSbH5LVWPwUfpbdKk3LgXuATJTYx
-         NgbD6+Fs8o2aNtC2Ewz/ADz+S1h9XXIq/3WbcEAFmkIy08PyMfEZGG8O1Mv5PVkGFgd7
-         lGFBY9yzhV2t2z2YCGchiKhaYTdz29elLspDgXzrh2PTjQIt6e+kKMd2ovxEpZctIhoT
-         nYaOJ9ttoEMkAbLkjdTxzkhfxtXT2K8rcZ0+w5Vndv/7MmRLxzMwC1jqWDGY1iGXacvX
-         S91g==
-X-Gm-Message-State: AOAM5310RMWBCepXlBucOh+L3qR25fEFI1LFElVAyWqexHrQ3qXx7iwN
-        5C/+Dku6aj8qFu7JxvmHD770Q7yNQ0LUm36U
-X-Google-Smtp-Source: ABdhPJyTReOFIEOH4u3OH8hr4+z1tGzkBXnTI1Wp04EnSFLUMzrekUKJ7atrss2kzIi0XvJ8DrKoGoqZaudODrpE
-X-Received: from chu-dev.c.googlers.com ([fda3:e722:ac3:10:24:72f4:c0a8:3cfb])
- (user=linchuyuan job=sendgmr) by 2002:a25:61c2:: with SMTP id
- v185mr14987007ybb.314.1599757604064; Thu, 10 Sep 2020 10:06:44 -0700 (PDT)
-Date:   Thu, 10 Sep 2020 17:06:38 +0000
-Message-Id: <20200910170638.1985729-1-linchuyuan@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.28.0.526.ge36021eeef-goog
-Subject: [PATCH] dt-bindings: hwmon: max20730: adding device tree doc for max20730
-From:   Chu Lin <linchuyuan@google.com>
-To:     linchuyuan@google.com, jdelvare@suse.com, linux@roeck-us.net,
-        robh+dt@kernel.org, linux-hwmon@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        qiongwang@google.com, zhongqil@google.com, jasonling@google.com,
-        belgaied@google.com
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 10 Sep 2020 13:09:12 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08AH5DM2116839;
+        Thu, 10 Sep 2020 13:08:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=qilzlS56H4QvuSWRp/oOCj8An/EyVcbeh6b059Wu1Uw=;
+ b=EYBhJJNU5006w3JWzXMvr6IDwOyibiam9QzfW13xlknHHkRr+aIWIng7UFmS6bOotzDb
+ 5lfmVi8OcQs5qrQwFM/p8dfjBliLZmRkvzKuWTkjLiNr4GaxYlRG6vt9bMXLTEzSygCw
+ vckVGWjTm4sFNJuONtYX6eLt9NjVBp4i/TD/P0lr1gOVILDmTMme9Ohaau2bE3L/3i/k
+ lpUCy/pwRXQ7w8KKJBiSAc6NnBHzNDLBHDTJfNoLkcqEJNvwaohOnF3helbYWNGo2ml4
+ epxy54qQiIclEE373bqTgka/jcK0fo1+41jOe3UuF/q6UGFmpAb2SUHZTApN7fFiAZdp rQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33fr31r7yt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Sep 2020 13:08:08 -0400
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08AH6CMB119744;
+        Thu, 10 Sep 2020 13:08:06 -0400
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33fr31r7xj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Sep 2020 13:08:06 -0400
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08AGwMEF016155;
+        Thu, 10 Sep 2020 17:08:03 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma04fra.de.ibm.com with ESMTP id 33f91w8ftk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Sep 2020 17:08:03 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08AH80PM25428362
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 10 Sep 2020 17:08:00 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 88F2442047;
+        Thu, 10 Sep 2020 17:08:00 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3171B4203F;
+        Thu, 10 Sep 2020 17:07:59 +0000 (GMT)
+Received: from thinkpad (unknown [9.171.93.242])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Thu, 10 Sep 2020 17:07:59 +0000 (GMT)
+Date:   Thu, 10 Sep 2020 19:07:57 +0200
+From:   Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Mike Rapoport <rppt@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        linux-x86 <x86@kernel.org>,
+        linux-arm <linux-arm-kernel@lists.infradead.org>,
+        linux-power <linuxppc-dev@lists.ozlabs.org>,
+        linux-sparc <sparclinux@vger.kernel.org>,
+        linux-um <linux-um@lists.infradead.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>
+Subject: Re: [RFC PATCH v2 1/3] mm/gup: fix gup_fast with dynamic page table
+ folding
+Message-ID: <20200910190757.153319d4@thinkpad>
+In-Reply-To: <20200910151026.GL87483@ziepe.ca>
+References: <20200907180058.64880-1-gerald.schaefer@linux.ibm.com>
+        <20200907180058.64880-2-gerald.schaefer@linux.ibm.com>
+        <0dbc6ec8-45ea-0853-4856-2bc1e661a5a5@intel.com>
+        <20200909142904.00b72921@thinkpad>
+        <aacad1b7-f121-44a5-f01d-385cb0f6351e@intel.com>
+        <20200909192534.442f8984@thinkpad>
+        <20200909180324.GI87483@ziepe.ca>
+        <20200910093925.GB29166@oc3871087118.ibm.com>
+        <20200910130233.GK87483@ziepe.ca>
+        <20200910152803.1a930afc@thinkpad>
+        <20200910151026.GL87483@ziepe.ca>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-10_05:2020-09-10,2020-09-10 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxscore=0
+ bulkscore=0 lowpriorityscore=0 phishscore=0 priorityscore=1501
+ impostorscore=0 adultscore=0 suspectscore=0 mlxlogscore=999 clxscore=1015
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009100157
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Testing:
-make dt_binding_check
+On Thu, 10 Sep 2020 12:10:26 -0300
+Jason Gunthorpe <jgg@ziepe.ca> wrote:
 
-Signed-off-by: Chu Lin <linchuyuan@google.com>
----
- .../devicetree/bindings/hwmon/max20730.txt    | 23 +++++++++++++++++++
- MAINTAINERS                                   |  1 +
- 2 files changed, 24 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/hwmon/max20730.txt
+> On Thu, Sep 10, 2020 at 03:28:03PM +0200, Gerald Schaefer wrote:
+> > On Thu, 10 Sep 2020 10:02:33 -0300
+> > Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> >   
+> > > On Thu, Sep 10, 2020 at 11:39:25AM +0200, Alexander Gordeev wrote:
+> > >   
+> > > > As Gerald mentioned, it is very difficult to explain in a clear way.
+> > > > Hopefully, one could make sense ot of it.    
+> > > 
+> > > I would say the page table API requires this invariant:
+> > > 
+> > >         pud = pud_offset(p4d, addr);
+> > >         do {
+> > > 		WARN_ON(pud != pud_offset(p4d, addr);
+> > >                 next = pud_addr_end(addr, end);
+> > >         } while (pud++, addr = next, addr != end);
+> > > 
+> > > ie pud++ is supposed to be a shortcut for 
+> > >   pud_offset(p4d, next)
+> > > 
+> > > While S390 does not follow this. Fixing addr_end brings it into
+> > > alignment by preventing pud++ from happening.
+> > > 
+> > > The only currently known side effect is that gup_fast crashes, but it
+> > > sure is an unexpected thing.  
+> > 
+> > It only is unexpected in a "top-level folding" world, see my other reply.
+> > Consider it an optimization, which was possible because of how our dynamic
+> > folding works, and e.g. because we can determine the correct pagetable
+> > level from a pXd value in pXd_offset.  
+> 
+> No, I disagree. The page walker API the arch presents has to have well
+> defined semantics. For instance, there is an effort to define tests
+> and invarients for the page table accesses to bring this understanding
+> and uniformity:
+> 
+>  mm/debug_vm_pgtable.c
+> 
+> If we fix S390 using the pX_addr_end() change then the above should be
+> updated with an invariant to check it. I've added Anshuman for some
+> thoughts..
 
-diff --git a/Documentation/devicetree/bindings/hwmon/max20730.txt b/Documentation/devicetree/bindings/hwmon/max20730.txt
-new file mode 100644
-index 000000000000..3afb42b04567
---- /dev/null
-+++ b/Documentation/devicetree/bindings/hwmon/max20730.txt
-@@ -0,0 +1,23 @@
-+max20730 properties
-+
-+Required properties:
-+- compatible: Must be one of the supported compatible strings:
-+	"maxim,max20730" for max20730
-+	"maxim,max20734" for max20734
-+	"maxim,max20743" for max20743
-+- reg: I2C address
-+
-+Optional properties:
-+
-+- vout-voltage-divider
-+	Resistance of the vout voltage divider.
-+	Two numbers, the first number is the output resistor,
-+	the second number is the total resistance.
-+
-+Example:
-+
-+max20730@10 {
-+	compatible = "maxim,max20730";
-+	reg = <0x10>;
-+	vout-voltage-divider = <1000 2000>;
-+};
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 0a6ac3f00ed5..a04bf34a65b8 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -12371,6 +12371,7 @@ W:	http://www.roeck-us.net/linux/drivers/
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git
- S:	Maintained
- F:	Documentation/devicetree/bindings/hwmon/ibm,cffps1.txt
-+F:	Documentation/devicetree/bindings/hwmon/max20730.txt
- F:	Documentation/devicetree/bindings/hwmon/max31785.txt
- F:	Documentation/devicetree/bindings/hwmon/ltc2978.txt
- F:	Documentation/hwmon/adm1275
--- 
-2.28.0.526.ge36021eeef-goog
+We are very aware of those tests, and actually a big supporter of the
+idea. Also part of the supported architectures already, and it has
+already helped us find / fix some s390 oddities.
 
+However, we did not see any issues wrt to our pagetable walking,
+neither with the current version, nor with the new generic approach.
+We do currently see other issues, Anshuman will know what I mean :-)
+
+> For better or worse, that invariant does exclude arches from using
+> other folding techniques.
+> 
+> The other solution would be to address the other side of != and adjust
+> the pud++
+> 
+> eg replcae pud++ with something like:
+>   pud = pud_next_entry(p4d, pud, next)
+> 
+> Such that:
+>   pud_next_entry(p4d, pud, next) === pud_offset(p4d, next)
+> 
+> In which case the invarient changes to 'callers can never do pointer
+> arithmetic on the result of pXX_offset()' which is a bit harder to
+> enforce.
+
+I might have lost track a bit. Are we still talking about possible
+functional impacts of either our current pagetable walking with s390
+(apart from gup_fast), or the proposed generic change (for s390, or
+others?)?
+
+Or is this rather some (other) generic issue / idea that you have,
+in order to put "some more structure / enforcement" to generic
+pagetable walkers?
