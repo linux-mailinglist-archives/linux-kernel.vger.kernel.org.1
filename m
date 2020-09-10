@@ -2,73 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AA63264673
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 14:59:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88ACA26468D
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 15:07:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730203AbgIJM72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 08:59:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36040 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730777AbgIJMwt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 08:52:49 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 351E720C09;
-        Thu, 10 Sep 2020 12:52:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599742343;
-        bh=9KB16qa8g5UTcrA9KtTZtF7YLYI9dYOREEUfdrIPmMs=;
-        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=Z7DT/ye01xUUhaR1XSTIZ4ytI/pnBQsOyg6nWptrYe6Ox4sP+ZiCaery0N1X3OObd
-         q4qPLqBtvbJNUppqH6ACZmsWYvAkJ1LS4eX3cBFyHIVSTJF1kh3U8d0FRwJuJCfb21
-         nMSMlyZI/xtYjGEJxhlTuG2q/6UWC6b0v0syyfe8=
-Date:   Thu, 10 Sep 2020 13:51:38 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     YueHaibing <yuehaibing@huawei.com>,
-        matti.vaittinen@fi.rohmeurope.com, lgirdwood@gmail.com
-Cc:     linux-power@fi.rohmeurope.com, linux-kernel@vger.kernel.org
-In-Reply-To: <20200910034240.37268-1-yuehaibing@huawei.com>
-References: <20200910034240.37268-1-yuehaibing@huawei.com>
-Subject: Re: [PATCH -next] regulator: bd718x7: Make some variable static
-Message-Id: <159974229313.39285.15320584146723145441.b4-ty@kernel.org>
+        id S1730450AbgIJNHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 09:07:06 -0400
+Received: from a27-188.smtp-out.us-west-2.amazonses.com ([54.240.27.188]:49512
+        "EHLO a27-188.smtp-out.us-west-2.amazonses.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730909AbgIJM6T (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 08:58:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+        s=zsmsymrwgfyinv5wlfyidntwsjeeldzt; d=codeaurora.org; t=1599742198;
+        h=MIME-Version:Content-Type:Content-Transfer-Encoding:Date:From:To:Cc:Subject:In-Reply-To:References:Message-ID;
+        bh=s775L7iCYKpGMncC/fTv63fok23Pnh/vNT1134dXG/I=;
+        b=Elr96xnzsEBEUVxFkM7+mD6XMQzh9xlVq4Brz8bIKJnMDvSi1h14zCUFkejWeOfW
+        R5SACiNIuAObBH2Pb82/9UAy99TS7GDOfNucN4Z2Euqhv8MST+nzqQBcb1yZ5s9Cieu
+        yzLU6A6PeyNu1POswfM/bDdYqidogQwTXneVxHkg=
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+        s=hsbnp7p3ensaochzwyq5wwmceodymuwv; d=amazonses.com; t=1599742198;
+        h=MIME-Version:Content-Type:Content-Transfer-Encoding:Date:From:To:Cc:Subject:In-Reply-To:References:Message-ID:Feedback-ID;
+        bh=s775L7iCYKpGMncC/fTv63fok23Pnh/vNT1134dXG/I=;
+        b=Wv3iIPZmLaD1mQJyPljMTQiUJ40ELe5fJ5rkE7TTk/pyGEVNsuHRr8997X2cDNW3
+        VxFwSm8ikScENv1tYJJ/UnEWPM0hQKxyOcXAtARDo5ZF+H+hdqvKqSRm4Kxulje5q5w
+        rxYqdhdLfUrgb/QP2LSW18r/xKRCcV+uXTapIEdE=
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 10 Sep 2020 12:49:58 +0000
+From:   skakit@codeaurora.org
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Akash Asthana <akashast@codeaurora.org>,
+        Roja Rani Yarubandi <rojay@codeaurora.org>,
+        msavaliy@qti.qualcomm.com
+Subject: Re: [PATCH V4 2/4] arm64: dts: qcom: sc7180: Improve the pin config
+ settings for CTS and TX
+In-Reply-To: <CAD=FV=XZgmQXCzVx3CdeOkAWC6zz8bNW+f6Qt1=O9ZSaGUr75g@mail.gmail.com>
+References: <1599145498-20707-1-git-send-email-skakit@codeaurora.org>
+ <1599145498-20707-3-git-send-email-skakit@codeaurora.org>
+ <CAD=FV=XZgmQXCzVx3CdeOkAWC6zz8bNW+f6Qt1=O9ZSaGUr75g@mail.gmail.com>
+Message-ID: <010101747810c24f-a169785b-0866-4932-a24e-80ff53393de2-000000@us-west-2.amazonses.com>
+X-Sender: skakit@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
+X-SES-Outgoing: 2020.09.10-54.240.27.188
+Feedback-ID: 1.us-west-2.CZuq2qbDmUIuT3qdvXlRHZZCpfZqZ4GtG9v3VKgRyF0=:AmazonSES
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Sep 2020 11:42:40 +0800, YueHaibing wrote:
-> Fix sparse warnings:
+Hi Doug,
+
+On 2020-09-10 02:58, Doug Anderson wrote:
+> Hi,
 > 
-> drivers/regulator/bd718x7-regulator.c:576:28: warning: symbol 'bd71847_swcontrol_ops' was not declared. Should it be static?
-> drivers/regulator/bd718x7-regulator.c:585:28: warning: symbol 'bd71847_hwcontrol_ops' was not declared. Should it be static?
-> drivers/regulator/bd718x7-regulator.c:902:28: warning: symbol 'bd71837_swcontrol_ops' was not declared. Should it be static?
-> drivers/regulator/bd718x7-regulator.c:913:28: warning: symbol 'bd71837_hwcontrol_ops' was not declared. Should it be static?
+> On Thu, Sep 3, 2020 at 8:07 AM satya priya <skakit@codeaurora.org> 
+> wrote:
+>> 
+>> --- a/arch/arm64/boot/dts/qcom/sc7180-idp.dts
+>> +++ b/arch/arm64/boot/dts/qcom/sc7180-idp.dts
+>> @@ -474,32 +474,30 @@
+>>  &qup_uart3_default {
+>>         pinconf-cts {
+>>                 /*
+>> -                * Configure a pull-down on 38 (CTS) to match the pull 
+>> of
+>> -                * the Bluetooth module.
+>> +                * Configure no-pull on CTS. As this is driven by BT, 
+>> do not
+>> +                * specify any pull in order to not conflict with BT 
+>> pulls.
+>>                  */
+>>                 pins = "gpio38";
+>> -               bias-pull-down;
+>> -               output-high;
+> 
+> Weird, how did that output-high sneak in there?  Glad it's going away.
+> 
+> 
+>> +               bias-disable;
+> 
+> I'm not convinced that the removal of the pul is the correct thing
+> here.  Specifically for the rx line the comment makes the argument
+> that if we power off the Bluetooth module then it will stop driving
+> this pin.  In that case if we remove the pull here then the line will
+> be floating and that can cause some extra power consumption as the
+> line floats between different logic levels.  Do you really need to
+> remove this pull?
+> 
 
-Applied to
+Okay, will keep the pull-down back for CTS.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
-
-Thanks!
-
-[1/1] regulator: bd718x7: Make some variable static
-      commit: 02f8eaab0cb644478c170237f354db32b718e5ff
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+> Same comment for the next patch where you add the sleep settings.
+> 
+> 
+> -Doug
