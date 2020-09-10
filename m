@@ -2,137 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 095C4265473
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:56:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FAB3265447
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:54:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728392AbgIJVma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 17:42:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42146 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729908AbgIJNDE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 09:03:04 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EC59C06179B
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 06:02:38 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id d20so5922269qka.5
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 06:02:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ZMHVjl3+9TgVg2XMpsqEGzDzTL85oyvjl7Ly6KJECZs=;
-        b=f2+BlMuUGxSPKYE1QP62oEt/bC0dGgrFO/pevuVdYEPal0FxZbbtojVdbZbQ6sqmoz
-         jaJs9e7Yg3oQ36AJtmPt+bWSweDM603M+W0NfngEfLnlu8waQhxBgX6HgQdgQkAOsQvN
-         Imc2Ip25I3geF80IGGT4DFhCwFFWUwFOfv4oqMhYXEEoXV/3te0bj60yPFJV8SXZ1nIN
-         1cOGfWeoU7Qerilj2IP4cT0hDPg8C8eGeDjj8ADKqV0CudBo5FDoF28Zeb24SsNY1XCA
-         ye3tKdEeX5uSb4xgr1Zl54/2+vf6Hqdh4TzuL59fwFBW+mdrXHCpM+fh1UX1VSvqoYEC
-         Wv+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZMHVjl3+9TgVg2XMpsqEGzDzTL85oyvjl7Ly6KJECZs=;
-        b=biYOQN+w6LtIPsW/ZsDJ12IYfA+gyd3JQJzBHBUZ2mzrZ9TYiVQmS8v4ogW9OxSZvK
-         EAePhIzPVeRNTzOVXWkVCgu/ScclPKIGNmCal7GgnceecJumiPqnGuDoL5oRloKpk22o
-         HAPt/oqcpbf1hf/FSnp5e2wO7I7mJxr5u/9kgtl8R43SyRcoUp+j+LMpSb8GPoDK9mvk
-         RIO7CzKzKcficGajy7zIqWwoOgcUOnfj6er7wja03XoqJbbTl5IpJ9u+tSm2k73Cf+YR
-         5bgArME1xhrm/aed7+pgfvFqjmFwYmxAjF7NKrvtoPuUIjiksftgbBxBwnG07MpQ9EyR
-         J+Vw==
-X-Gm-Message-State: AOAM531M7/KuCM28CGPGU/uhYy2EwLvb8axGlWqih59A61Tlg4SZ28vC
-        ryeZr8lw7JkaliJxy6uu0ccREA==
-X-Google-Smtp-Source: ABdhPJxqOTcVzVF1zXXEOkRZLnf0cpg1VMvwjaF3fePKiOG08DrkmppE8sGHLJTo61W1PPeWEXyFQQ==
-X-Received: by 2002:a05:620a:410:: with SMTP id 16mr7289645qkp.133.1599742955509;
-        Thu, 10 Sep 2020 06:02:35 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id i1sm6457907qkd.58.2020.09.10.06.02.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Sep 2020 06:02:34 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kGMDh-004Ksi-Dp; Thu, 10 Sep 2020 10:02:33 -0300
-Date:   Thu, 10 Sep 2020 10:02:33 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Alexander Gordeev <agordeev@linux.ibm.com>
-Cc:     Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Mike Rapoport <rppt@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        linux-x86 <x86@kernel.org>,
-        linux-arm <linux-arm-kernel@lists.infradead.org>,
-        linux-power <linuxppc-dev@lists.ozlabs.org>,
-        linux-sparc <sparclinux@vger.kernel.org>,
-        linux-um <linux-um@lists.infradead.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>
-Subject: Re: [RFC PATCH v2 1/3] mm/gup: fix gup_fast with dynamic page table
- folding
-Message-ID: <20200910130233.GK87483@ziepe.ca>
-References: <20200907180058.64880-1-gerald.schaefer@linux.ibm.com>
- <20200907180058.64880-2-gerald.schaefer@linux.ibm.com>
- <0dbc6ec8-45ea-0853-4856-2bc1e661a5a5@intel.com>
- <20200909142904.00b72921@thinkpad>
- <aacad1b7-f121-44a5-f01d-385cb0f6351e@intel.com>
- <20200909192534.442f8984@thinkpad>
- <20200909180324.GI87483@ziepe.ca>
- <20200910093925.GB29166@oc3871087118.ibm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200910093925.GB29166@oc3871087118.ibm.com>
+        id S1728631AbgIJVmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 17:42:52 -0400
+Received: from mga05.intel.com ([192.55.52.43]:31863 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725885AbgIJNCX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 09:02:23 -0400
+IronPort-SDR: zwKpcClAf3U2obN8Ddkyb51KU1fQn5EYV3mmJFJUTdbpDY/v7y/MrsT2tZD6w18j6Yfc6rHOxR
+ Kcd60y59uWRA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9739"; a="243341152"
+X-IronPort-AV: E=Sophos;i="5.76,413,1592895600"; 
+   d="scan'208";a="243341152"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2020 06:02:03 -0700
+IronPort-SDR: S1rFM1mUOCY51KMgy45KFAjTbE4MlcEArsGaQgoirdTTKovsol6uIHM3WlHOHti9ElPTdIxOoR
+ ocpbwya6fPmg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,413,1592895600"; 
+   d="scan'208";a="505828973"
+Received: from glass.png.intel.com ([172.30.181.92])
+  by fmsmga005.fm.intel.com with ESMTP; 10 Sep 2020 06:02:00 -0700
+From:   Wong Vee Khee <vee.khee.wong@intel.com>
+To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Cc:     Joao Pinto <Joao.Pinto@synopsys.com>,
+        Arnd Bergmann <arnd@arndb.de>, netdev@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Ong Boon Leong <boon.leong.ong@intel.com>,
+        Voon Wei Feng <weifeng.voon@intel.com>,
+        Wong Vee Khee <vee.khee.wong@intel.com>
+Subject: [PATCH net-next 2/3] net: stmmac: Fix incorrect location to set real_num_rx|tx_queues
+Date:   Thu, 10 Sep 2020 21:03:44 +0800
+Message-Id: <20200910130344.15013-1-vee.khee.wong@intel.com>
+X-Mailer: git-send-email 2.17.0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 11:39:25AM +0200, Alexander Gordeev wrote:
+From: Aashish Verma <aashishx.verma@intel.com>
 
-> As Gerald mentioned, it is very difficult to explain in a clear way.
-> Hopefully, one could make sense ot of it.
+netif_set_real_num_tx_queues() & netif_set_real_num_rx_queues() should be
+used to inform network stack about the real Tx & Rx queue (active) number
+in both stmmac_open() and stmmac_resume(), therefore, we move the code
+from stmmac_dvr_probe() to stmmac_hw_setup().
 
-I would say the page table API requires this invariant:
+Fixes: c02b7a914551 net: stmmac: use netif_set_real_num_{rx,tx}_queues
 
-        pud = pud_offset(p4d, addr);
-        do {
-		WARN_ON(pud != pud_offset(p4d, addr);
-                next = pud_addr_end(addr, end);
-        } while (pud++, addr = next, addr != end);
+Signed-off-by: Aashish Verma <aashishx.verma@intel.com>
+Signed-off-by: Ong Boon Leong <boon.leong.ong@intel.com>
+---
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-ie pud++ is supposed to be a shortcut for 
-  pud_offset(p4d, next)
-
-While S390 does not follow this. Fixing addr_end brings it into
-alignment by preventing pud++ from happening.
-
-The only currently known side effect is that gup_fast crashes, but it
-sure is an unexpected thing.
-
-This suggests another fix, which is to say that pud++ is undefined and
-pud_offset() must always be called, but I think that would cause worse
-codegen on all other archs.
-
-Jason
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+index 9302d8012a10..fea3b77892ab 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -2733,6 +2733,10 @@ static int stmmac_hw_setup(struct net_device *dev, bool init_ptp)
+ 		stmmac_enable_tbs(priv, priv->ioaddr, enable, chan);
+ 	}
+ 
++	/* Configure real RX and TX queues */
++	netif_set_real_num_rx_queues(dev, priv->plat->rx_queues_to_use);
++	netif_set_real_num_tx_queues(dev, priv->plat->tx_queues_to_use);
++
+ 	/* Start the ball rolling... */
+ 	stmmac_start_all_dma(priv);
+ 
+@@ -4883,10 +4887,6 @@ int stmmac_dvr_probe(struct device *device,
+ 
+ 	stmmac_check_ether_addr(priv);
+ 
+-	/* Configure real RX and TX queues */
+-	netif_set_real_num_rx_queues(ndev, priv->plat->rx_queues_to_use);
+-	netif_set_real_num_tx_queues(ndev, priv->plat->tx_queues_to_use);
+-
+ 	ndev->netdev_ops = &stmmac_netdev_ops;
+ 
+ 	ndev->hw_features = NETIF_F_SG | NETIF_F_IP_CSUM | NETIF_F_IPV6_CSUM |
+-- 
+2.17.0
 
