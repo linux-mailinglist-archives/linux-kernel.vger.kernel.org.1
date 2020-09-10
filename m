@@ -2,164 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C8FC2645F5
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 14:26:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 861282645FE
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 14:28:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730581AbgIJM0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 08:26:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36192 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730665AbgIJMWw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 08:22:52 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AF40C061756;
-        Thu, 10 Sep 2020 05:22:52 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id g4so6481897wrs.5;
-        Thu, 10 Sep 2020 05:22:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wbR7SoxQBCfjqgUzYEK//K0pUx9xypcrfOp3M+Xlkkk=;
-        b=BXIYKiGpUbcAZdgcVJHCCYYoWh8ku3rlrGTa7HWb520OhpwcV3vIS7yTGRo2QDZJ+8
-         3JG+b+MTgn+zh2YyfxY2fZU2Dbkn7WFzCDsBfFVUXpnFg/Ie0zObTKkbaxK+gUht53zG
-         nEwOymmTyrKOmK0evHwpI0AY343wYXmPDCYeVdnRlLWhP1upH7SnOtj4mXPpNz4UVWWC
-         8ffY6rhUxJe6Po/XgwnDuYAwbfocPRD3aOshRiCRIHum3UTIx164Koq3aV+hsBOhG0K1
-         uYfRMeP2OqVXRurq9BLBRD3SgzYrW39TyQYUef3oSxM62i8YiL0sE/TmC2Qyn80zSsuc
-         4nkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wbR7SoxQBCfjqgUzYEK//K0pUx9xypcrfOp3M+Xlkkk=;
-        b=IGmqL4giYbnUajeqozQRGbu1qDx1Q2VbgBkcRnSoZDjA7s4jP7UybqMQP18+/HxgMD
-         88zSsZ6n8y8Wd9U0fqGd9/G5MhNAEarR1ZCInit9ru99609ZYn7U1YVITxYX5a347l6P
-         FjPiP/oWt3ZKJzQj713eI3JIScExMpiMY0d95kxc89989+0CT+j2eQ1fE1+wI9eQgBoI
-         lp7xIrWQ692xu9jOQGkyaT0pyer7CoI8QTEiOIxuNOzxrfIjXHF5TGToeDb0B+FH33WL
-         CkT+f3cvwE1Sfv8zMltK2prEd5o7Nt0bwttUn0B7iz7jdv1OsQEd7mzH/GvJRq5qczUt
-         saig==
-X-Gm-Message-State: AOAM530Wp3qqZaeb3Mf/Q4iF3IPBsyjVdeLRsekE7IFjdIjf00xLqlDz
-        nmzkSoaxqKjQ1EIIbPj3pAE=
-X-Google-Smtp-Source: ABdhPJwPP1GdSmxn2sYE5qC2/b5Xv7umjvz/zLM1phsyVYV+ypqibgli0wj4n4g10BZwpE3oafve3A==
-X-Received: by 2002:adf:f042:: with SMTP id t2mr8335938wro.385.1599740570516;
-        Thu, 10 Sep 2020 05:22:50 -0700 (PDT)
-Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
-        by smtp.googlemail.com with ESMTPSA id v3sm3428918wmh.6.2020.09.10.05.22.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Sep 2020 05:22:49 -0700 (PDT)
-Date:   Thu, 10 Sep 2020 14:22:48 +0200
-From:   Corentin Labbe <clabbe.montjoie@gmail.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
-Subject: Re: [v2 PATCH] crypto: sun4i-ss - Fix sparse endianness markers
-Message-ID: <20200910122248.GA22506@Red>
-References: <202009061621.J89kO43Q%lkp@intel.com>
- <20200907062400.GA15841@gondor.apana.org.au>
- <20200907160029.GC11894@Red>
- <20200908050036.GA19817@gondor.apana.org.au>
+        id S1730321AbgIJM2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 08:28:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47908 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730211AbgIJMZG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 08:25:06 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2951F208FE;
+        Thu, 10 Sep 2020 12:25:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599740702;
+        bh=HZhllT4V05jsntTn2xHSiHXZT+8hG/vt2ZUpOD42NaU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=xS7s6stxB+Nk/1pHC1CM/RWPCvf3wBouzIXX0kXEFaPzPHnyY2KYhdjhJ+Rh4U7Bv
+         M4iDQQkyjuIqqe74WSTCZDRUkPvCrfoZlxXsK4BSCsRGxZlzlw2wLHgKAjFbxCEJT2
+         ZV94qt24nrNoJio8Z66oPBg+OSG+29dIMv4vMOTI=
+Date:   Thu, 10 Sep 2020 15:24:57 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Adit Ranadive <aditr@vmware.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        Christian Benvenuti <benve@cisco.com>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Devesh Sharma <devesh.sharma@broadcom.com>,
+        Faisal Latif <faisal.latif@intel.com>,
+        Gal Pressman <galpress@amazon.com>,
+        Lijun Ou <oulijun@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org,
+        Michal Kalderon <mkalderon@marvell.com>,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        Nelson Escobar <neescoba@cisco.com>,
+        Parvi Kaustubhi <pkaustub@cisco.com>,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Somnath Kotur <somnath.kotur@broadcom.com>,
+        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
+        VMware PV-Drivers <pv-drivers@vmware.com>,
+        Weihang Li <liweihang@huawei.com>,
+        "Wei Hu(Xavier)" <huwei87@hisilicon.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Yuval Shaia <yuval.shaia@oracle.com>,
+        Zhu Yanjun <yanjunz@nvidia.com>
+Subject: Re: [PATCH rdma-next v2 0/9] Restore failure of destroy commands
+Message-ID: <20200910122457.GI421756@unreal>
+References: <20200907120921.476363-1-leon@kernel.org>
+ <20200909180607.GA916941@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200908050036.GA19817@gondor.apana.org.au>
+In-Reply-To: <20200909180607.GA916941@nvidia.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 08, 2020 at 03:00:36PM +1000, Herbert Xu wrote:
-> On Mon, Sep 07, 2020 at 06:00:29PM +0200, Corentin Labbe wrote:
+On Wed, Sep 09, 2020 at 03:06:07PM -0300, Jason Gunthorpe wrote:
+> On Mon, Sep 07, 2020 at 03:09:12PM +0300, Leon Romanovsky wrote:
+> > From: Leon Romanovsky <leonro@nvidia.com>
 > >
-> > The put_unaligned should be _le32.
-> > 
-> > This fix the modprobe tcrypt fail.
-> 
-> Thanks.  Yes the original code was correct.
-> 
-> ---8<---
-> This patch also fixes the incorrect endianness markings in the
-> sun4i-ss driver.  It should have no effect in the genereated code.
-> 
-> Instead of using cpu_to_Xe32 followed by a memcpy, this patch
-> converts the final hash write to use put_unaligned_X instead.
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-> 
-> diff --git a/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-hash.c b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-hash.c
-> index dc35edd90034..1dff48558f53 100644
-> --- a/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-hash.c
-> +++ b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-hash.c
-> @@ -9,6 +9,7 @@
->   * You could find the datasheet in Documentation/arm/sunxi.rst
->   */
->  #include "sun4i-ss.h"
-> +#include <asm/unaligned.h>
->  #include <linux/scatterlist.h>
->  
->  /* This is a totally arbitrary value */
-> @@ -196,7 +197,7 @@ static int sun4i_hash(struct ahash_request *areq)
->  	struct sg_mapping_iter mi;
->  	int in_r, err = 0;
->  	size_t copied = 0;
-> -	__le32 wb = 0;
-> +	u32 wb = 0;
->  
->  	dev_dbg(ss->dev, "%s %s bc=%llu len=%u mode=%x wl=%u h0=%0x",
->  		__func__, crypto_tfm_alg_name(areq->base.tfm),
-> @@ -408,7 +409,7 @@ static int sun4i_hash(struct ahash_request *areq)
->  
->  		nbw = op->len - 4 * nwait;
->  		if (nbw) {
-> -			wb = cpu_to_le32(*(u32 *)(op->buf + nwait * 4));
-> +			wb = le32_to_cpup((__le32 *)(op->buf + nwait * 4));
->  			wb &= GENMASK((nbw * 8) - 1, 0);
->  
->  			op->byte_count += nbw;
-> @@ -417,7 +418,7 @@ static int sun4i_hash(struct ahash_request *areq)
->  
->  	/* write the remaining bytes of the nbw buffer */
->  	wb |= ((1 << 7) << (nbw * 8));
-> -	bf[j++] = le32_to_cpu(wb);
-> +	((__le32 *)bf)[j++] = cpu_to_le32(wb);
->  
->  	/*
->  	 * number of space to pad to obtain 64o minus 8(size) minus 4 (final 1)
-> @@ -479,16 +480,16 @@ static int sun4i_hash(struct ahash_request *areq)
->  	/* Get the hash from the device */
->  	if (op->mode == SS_OP_SHA1) {
->  		for (i = 0; i < 5; i++) {
-> +			v = readl(ss->base + SS_MD0 + i * 4);
->  			if (ss->variant->sha1_in_be)
-> -				v = cpu_to_le32(readl(ss->base + SS_MD0 + i * 4));
-> +				put_unaligned_le32(v, areq->result + i * 4);
->  			else
-> -				v = cpu_to_be32(readl(ss->base + SS_MD0 + i * 4));
-> -			memcpy(areq->result + i * 4, &v, 4);
-> +				put_unaligned_be32(v, areq->result + i * 4);
->  		}
->  	} else {
->  		for (i = 0; i < 4; i++) {
-> -			v = cpu_to_le32(readl(ss->base + SS_MD0 + i * 4));
-> -			memcpy(areq->result + i * 4, &v, 4);
-> +			v = readl(ss->base + SS_MD0 + i * 4);
-> +			put_unaligned_le32(v, areq->result + i * 4);
->  		}
->  	}
->  
+> > Changelog:
+> > v2:
+> >  * Rebased on top of the 524d8ffd07f0
+> >  * Removed "udata" check in destroy flows
+> >  * Changed ib_free_cq to return early
+> >  * Used Jason's suggestion to implement "RDMA/mlx5: Issue FW command to destroy
+> >    SRQ on reentry" patch.
+> > v1
+> >  * Changed returned value in efa_destroy_ah() from EINVAL to EOPNOTSUPP
+> >  * https://lore.kernel.org/lkml/20200830084010.102381-1-leon@kernel.org
+> > v0:
+> >  * https://lore.kernel.org/lkml/20200824103247.1088464-1-leon@kernel.org
+> >
+> > Hi,
+> >
+> > This series restores the ability to fail on destroy commands, due to the
+> > fact that mlx5_ib DEVX implementation interleaved ib_core objects
+> > with FW objects without sharing reference counters.
+> >
+> > In retrospect, every part of the mlx5_ib flow is correct.
+> >
+> > It started from IBTA which was written by HW engineers with HW in mind and
+> > they allowed to fail in destruction. FW implemented it with symmetrical
+> > interface like any other command and propagated error back to the kernel,
+> > which forwarded it to the libibverbs and kernel ULPs.
+> >
+> > Libibverbs was designed with IBTA spec in hand putting destroy errors in
+> > stone. Up till mlx5_ib DEVX, it worked well, because the IB verbs objects
+> > are counted by the kernel and ib_core ensures that FW destroy will success
+> > by managing various reference counters on such objects.
+> >
+> > The extension of the mlx5 driver changed this flow when allowed DEVX objects
+> > that are not managed by ib_core to be interleaved with the ones under ib_core
+> > responsibility.
+> >
+> > The drivers that want to implement DEVX flows must ensure that FW/HW
+> > destroys are performed as early as possible before any other internal
+> > cleanup. After HW destroys, drivers are not allowed to fail.
+> >
+> > This series includes two patches (WQ and "potential race") that will
+> > require extra work in mlx5_ib, they both theoretical. WQ is not in use
+> > in DEVX, but is needed to make interface symmetrical to other objects.
+> > "Potential race" is in ULP flow that ensures that SRQ is destroyed in
+> > proper order.
+> >
+> > Thanks
+> >
+> > Leon Romanovsky (9):
+> >   RDMA: Restore ability to fail on PD deallocate
+> >   RDMA: Restore ability to fail on AH destroy
+> >   RDMA/mlx5: Issue FW command to destroy SRQ on reentry
+> >   RDMA: Restore ability to fail on SRQ destroy
+> >   RDMA/core: Delete function indirection for alloc/free kernel CQ
+> >   RDMA: Allow fail of destroy CQ
+> >   RDMA: Change XRCD destroy return value
+> >   RDMA: Restore ability to return error for destroy WQ
+> >   RDMA: Make counters destroy symmetrical
+>
+> Thanks, applied to for-next with the changes I noted:
 
-I get some md5 error on both A20+BE:
-alg: ahash: md5 test failed (wrong result) on test vector \"random: psize=129 ksize=0\", cfg=\"random: inplace use_finup nosimd src_divs=[<reimport,nosimd>85.99%@+3999, 5.85%@+30, <reimport>0.96%@+25, <reimport,nosimd>5.9%@+2263, <flush,nosimd>2.11%@+1950] iv_offset=2 key_offset=43\"
-and A33+BE:
-[   84.469045] alg: ahash: md5 test failed (wrong result) on test vector \"random: psize=322 ksize=0\", cfg=\"random: inplace may_sleep use_finup src_divs=[<reimport>99.1%@+2668, <reimport>0.88%@alignmask+3630, 0.11%@+3403] iv_offset=33\"
-+[   84.469074] need:35966fc8 b31ea266 2bf064e9 f20f40ad
-+[   84.469084] have:e29e4491 f3b6effc fa366691 00e04bd9
-
-Thoses errors are random. (1 boot out of 2)
-
-The ahash-md5-sun4i-ss is set as "selftest: passed" and I didnt see any failling/absent test in /proc/crypto
-So what is this md5 which fail ?
-
-I am still investigating and will try on more platform.
+Thanks for taking care. LGTM.
