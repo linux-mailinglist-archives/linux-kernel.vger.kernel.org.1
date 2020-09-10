@@ -2,107 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97C69264049
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 10:45:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BD1D26404D
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 10:46:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730206AbgIJIpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 04:45:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58412 "EHLO
+        id S1730257AbgIJIpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 04:45:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729953AbgIJInP (ORCPT
+        with ESMTP id S1728626AbgIJIoN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 04:43:15 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A913C0613ED
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 01:43:15 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id 7so3854236pgm.11
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 01:43:15 -0700 (PDT)
+        Thu, 10 Sep 2020 04:44:13 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29A2CC061799
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 01:43:39 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id a3so5205941oib.4
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 01:43:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=at8Lpvb6ZG+uuZ2zkY59uCTG2IZirlY/86zTFsOHQQ0=;
-        b=OYY2o8e4CsppjSNiU2YO845RlYgH0tMoejqblRDnxLZA6lRQMhtxjsu5YaPOVhDeej
-         evNxHdOKwtC7K6+cZlbGxQkM+P8ecy1CD3+rieQvYMOftEZm/q0C0azussAbkNBRGzZB
-         kuOdC0yJUsq5GcBAjNodBB/2jyLOcpjtxXX+w=
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RM+6YCueDPy1nkorG5jfOVGfbj1m5UCHBF4PF2PU/iI=;
+        b=INguoyube130+8WwnXu/RYMh/Ju9WC30cNYDrviHqjIJBbZccMMVak/rSrOZ3ijhHR
+         OmyS41tmWGU9bUjUr28yjCNpFgi3MHy2KYoaUXyZmwIZPZiIiwAojnfIKdvrGosGbjPA
+         JydJiXyNitT7guWnNfOTvv7Z4wIAc2T/tudn8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=at8Lpvb6ZG+uuZ2zkY59uCTG2IZirlY/86zTFsOHQQ0=;
-        b=Qb4g4fmdkF/cuQ7YQv5hpzCUpy1i/z7k0d7JwgnI9zwKljxGjztHmbfFe6d15L/YUI
-         UbNAblAM07+JRLWy30zCdXzMD03xUGnKiy/qaxSFYf9p5MjzB5B1ezfC0wriQDuJpukZ
-         5cHOhOdfEcnCkUDdvQAt1NrkaLQsx13AmEaFbVtGv7Tw/84NpO/ehRMpUXxD8Wdps7xH
-         gg/2R4RpNRbc3rnHcMt2G6bP3dIhyte07IQcmZyxfGLIbdz8ra+rxae7j6uAiA69HWVN
-         4L93/bFDZzY+M6EOMdX2BPvBNCLWRbnxMMIKvKEtEulw+1cPpcNKqONE+IrpP9bTTO30
-         EKDw==
-X-Gm-Message-State: AOAM530n3xOi77XjjMc4aokfOs+Bbrj4owY8LTs8OcZMV9IX3Rv/pfmn
-        OA5HBLqcKgnVa12wn6EH47EOKg==
-X-Google-Smtp-Source: ABdhPJy4i66YtpnY+rXnse34jMAcOef11wf8p8b69pJSqZSLJMzUeBVe0lcNCyOzSjqX1DdmFTLv3g==
-X-Received: by 2002:a05:6a00:1507:b029:13e:d13d:a13c with SMTP id q7-20020a056a001507b029013ed13da13cmr4433394pfu.36.1599727394748;
-        Thu, 10 Sep 2020 01:43:14 -0700 (PDT)
-Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:1a60:24ff:fe89:3e93])
-        by smtp.gmail.com with ESMTPSA id x29sm4357645pga.23.2020.09.10.01.43.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Sep 2020 01:43:14 -0700 (PDT)
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-To:     linux-mediatek@lists.infradead.org
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Subject: [PATCH v2 2/2] arm64: dts: mt8183: Set uart to mmio32 iotype
-Date:   Thu, 10 Sep 2020 16:43:04 +0800
-Message-Id: <20200910084304.3429494-2-hsinyi@chromium.org>
-X-Mailer: git-send-email 2.28.0.526.ge36021eeef-goog
-In-Reply-To: <20200910084304.3429494-1-hsinyi@chromium.org>
-References: <20200910084304.3429494-1-hsinyi@chromium.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RM+6YCueDPy1nkorG5jfOVGfbj1m5UCHBF4PF2PU/iI=;
+        b=G4nQtatGcrwTb/d8jh/9IqF/GiZl2G5j0ccKHin/M+lbgS62S12FnKj5yWLw4vN0LS
+         cZAt61p6EtilCeznrQoF6d4jYTPkGOKt1nUeGVMbLTjl60OHI47YoUyVILSwLKYviz1G
+         5EM7+8YpWiHs9cTZFbka1VQi7o2wPZRna4j/Yu6vEDAGNjBy3dDn28ydelKbSAHKPs+R
+         6pXMdgkWlGioTbRmunXdCE03C50T8rauMS58TQGAh8IclrMo/ruE3KxBBRjOROSMMmLy
+         uJmuGPOphP7n65DNqd5Sh7Xbe8+tMuLQYNDORRjbU4uTc+TkMiTXVN8C0AL7XHH1o9dA
+         1V6g==
+X-Gm-Message-State: AOAM530MXiElTejmYpo7v8qL7Q2Rt8tNihMeIslJ3X4E9lXPwHhErAc1
+        ReciBZ8h4iVnRKMOI5YCzUo7P3YdY8ImwQ==
+X-Google-Smtp-Source: ABdhPJyOIgCy8bTT4F2F5B/dmdOHcoUL5mm7txNmA2slzYvEjfaq7NiBwgcqAqxP7Nw8xddEtE5Xrw==
+X-Received: by 2002:aca:da06:: with SMTP id r6mr3091923oig.88.1599727418170;
+        Thu, 10 Sep 2020 01:43:38 -0700 (PDT)
+Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com. [209.85.167.179])
+        by smtp.gmail.com with ESMTPSA id z5sm749795otp.16.2020.09.10.01.43.36
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Sep 2020 01:43:37 -0700 (PDT)
+Received: by mail-oi1-f179.google.com with SMTP id i17so5184172oig.10
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 01:43:36 -0700 (PDT)
+X-Received: by 2002:aca:1209:: with SMTP id 9mr2982017ois.94.1599727416353;
+ Thu, 10 Sep 2020 01:43:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200518174011.15543-1-ezequiel@collabora.com>
+ <20200518174011.15543-3-ezequiel@collabora.com> <CAPBb6MXezNVxPrJ05mpS1=yE8V81DjeQ2gA4pGfC8QQzgfUi8A@mail.gmail.com>
+In-Reply-To: <CAPBb6MXezNVxPrJ05mpS1=yE8V81DjeQ2gA4pGfC8QQzgfUi8A@mail.gmail.com>
+From:   Alexandre Courbot <acourbot@chromium.org>
+Date:   Thu, 10 Sep 2020 17:43:24 +0900
+X-Gmail-Original-Message-ID: <CAPBb6MVqq-3JLBe9k5WtYL-LHmXYwj7HFt8tAVLNnuqKJA0p9Q@mail.gmail.com>
+Message-ID: <CAPBb6MVqq-3JLBe9k5WtYL-LHmXYwj7HFt8tAVLNnuqKJA0p9Q@mail.gmail.com>
+Subject: Re: [PATCH v4 2/3] media: uapi: Add VP9 stateless decoder controls
+To:     Ezequiel Garcia <ezequiel@collabora.com>
+Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linux-rockchip@lists.infradead.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Tomasz Figa <tfiga@chromium.org>, kernel@collabora.com,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Jeffrey Kardatzke <jkardatzke@chromium.org>,
+        Gustavo Padovan <gustavo.padovan@collabora.com>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Set uart iotype to mmio32 to make earlycon work with stdout-path.
+On Thu, Sep 10, 2020 at 3:04 PM Alexandre Courbot <acourbot@chromium.org> wrote:
+>
+> Hi Ezequiel, sorry for the late review!
+>
+> On Tue, May 19, 2020 at 2:40 AM Ezequiel Garcia <ezequiel@collabora.com> wrote:
+> >
+> > From: Boris Brezillon <boris.brezillon@collabora.com>
+> >
+> > Add the VP9 stateless decoder controls plus the documentation that goes
+> > with it.
+> >
+> > Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
+> > Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+> > ---
+> >  .../userspace-api/media/v4l/biblio.rst        |  10 +
+> >  .../media/v4l/ext-ctrls-codec.rst             | 550 ++++++++++++++++++
+> >  drivers/media/v4l2-core/v4l2-ctrls.c          | 239 ++++++++
+> >  drivers/media/v4l2-core/v4l2-ioctl.c          |   1 +
+> >  include/media/v4l2-ctrls.h                    |   1 +
+> >  include/media/vp9-ctrls.h                     | 485 +++++++++++++++
 
-Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
----
- arch/arm64/boot/dts/mediatek/mt8183.dtsi | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-index 102105871db25..0bda97f912789 100644
---- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-@@ -374,6 +374,8 @@ uart0: serial@11002000 {
- 			interrupts = <GIC_SPI 91 IRQ_TYPE_LEVEL_LOW>;
- 			clocks = <&clk26m>, <&infracfg CLK_INFRA_UART0>;
- 			clock-names = "baud", "bus";
-+			reg-io-width = <4>;
-+			reg-shift = <2>;
- 			status = "disabled";
- 		};
- 
-@@ -384,6 +386,8 @@ uart1: serial@11003000 {
- 			interrupts = <GIC_SPI 92 IRQ_TYPE_LEVEL_LOW>;
- 			clocks = <&clk26m>, <&infracfg CLK_INFRA_UART1>;
- 			clock-names = "baud", "bus";
-+			reg-io-width = <4>;
-+			reg-shift = <2>;
- 			status = "disabled";
- 		};
- 
-@@ -394,6 +398,8 @@ uart2: serial@11004000 {
- 			interrupts = <GIC_SPI 93 IRQ_TYPE_LEVEL_LOW>;
- 			clocks = <&clk26m>, <&infracfg CLK_INFRA_UART2>;
- 			clock-names = "baud", "bus";
-+			reg-io-width = <4>;
-+			reg-shift = <2>;
- 			status = "disabled";
- 		};
- 
--- 
-2.28.0.526.ge36021eeef-goog
-
+Also another thing I missed: shouldn't the new pointer controls be
+added to union v4l2_ctrl_ptr in v4l2-ctrls.h?
