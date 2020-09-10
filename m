@@ -2,158 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CF33265019
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 22:03:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B17F265028
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 22:06:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726109AbgIJUDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 16:03:43 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:37496 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730839AbgIJPAo (ORCPT
+        id S1726811AbgIJUGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 16:06:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51618 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726639AbgIJUAy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 11:00:44 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08AEoV17193541;
-        Thu, 10 Sep 2020 11:00:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references; s=pp1;
- bh=jqNGQIciDmR7JgvUza3J1lCUoceHki+R182Zm5QX6MA=;
- b=YGQerkI2TvXvCw1fpi9YBvNSSA4Pk34gdLImR//e7JVdlMsCESG0qNoGG/Lb4ccHwbqV
- 17B0WPHU9P+ZUqjJJ18fH47QWT59WuD6D516SpTdLmNk7PGljvva/VMOHHoanfxd5Dgv
- n52y4hHBXZSmM5/7vI7lu2fOKbFT6rArCUCInuUr6I/9gThG1owBneqiJNtGqczkohXE
- 9G2rVw4Bf1M5m5uTvtxMupLD4v72LenTwp7yNhavEZMeumaI+HmxdsEnit6bwX4nn0Co
- zV30YEhM0mzmRZIvI8XmRZGnA92m2K1lvKKSB3oIxYSfj9+15uQgNaIuGHK6AkEsDVAJ gw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 33fp8wg7w6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Sep 2020 11:00:10 -0400
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08AEp9mm195235;
-        Thu, 10 Sep 2020 11:00:09 -0400
-Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 33fp8wg7vd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Sep 2020 11:00:09 -0400
-Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
-        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08AEqaYY018164;
-        Thu, 10 Sep 2020 15:00:08 GMT
-Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
-        by ppma02dal.us.ibm.com with ESMTP id 33c2a9t8h6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Sep 2020 15:00:08 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08AF02jo30802286
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 10 Sep 2020 15:00:02 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 41B1178069;
-        Thu, 10 Sep 2020 15:00:07 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id ED40778063;
-        Thu, 10 Sep 2020 15:00:05 +0000 (GMT)
-Received: from oc4221205838.ibm.com (unknown [9.211.91.207])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Thu, 10 Sep 2020 15:00:05 +0000 (GMT)
-From:   Matthew Rosato <mjrosato@linux.ibm.com>
-To:     alex.williamson@redhat.com, bhelgaas@google.com
-Cc:     schnelle@linux.ibm.com, pmorel@linux.ibm.com, mpe@ellerman.id.au,
-        oohall@gmail.com, cohuck@redhat.com, kevin.tian@intel.com,
-        hca@linux.ibm.com, gor@linux.ibm.com, borntraeger@de.ibm.com,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: [PATCH v5 3/3] vfio/pci: Decouple PCI_COMMAND_MEMORY bit checks from is_virtfn
-Date:   Thu, 10 Sep 2020 10:59:57 -0400
-Message-Id: <1599749997-30489-4-git-send-email-mjrosato@linux.ibm.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1599749997-30489-1-git-send-email-mjrosato@linux.ibm.com>
-References: <1599749997-30489-1-git-send-email-mjrosato@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-10_03:2020-09-10,2020-09-10 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 adultscore=0
- bulkscore=0 priorityscore=1501 phishscore=0 clxscore=1015 malwarescore=0
- mlxlogscore=999 lowpriorityscore=0 suspectscore=0 impostorscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009100130
+        Thu, 10 Sep 2020 16:00:54 -0400
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6317C061757;
+        Thu, 10 Sep 2020 13:00:47 -0700 (PDT)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kGSjq-00DvEU-NI; Thu, 10 Sep 2020 20:00:10 +0000
+Date:   Thu, 10 Sep 2020 21:00:10 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
+        Mimi Zohar <zohar@linux.ibm.com>, linux-kernel@vger.kernel.org,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Christian Heimes <christian@python.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Deven Bowers <deven.desai@linux.microsoft.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Eric Chiang <ericchiang@google.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        James Morris <jmorris@namei.org>, Jan Kara <jack@suse.cz>,
+        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        Matthew Garrett <mjg59@google.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Philippe =?iso-8859-1?Q?Tr=E9buchet?= 
+        <philippe.trebuchet@ssi.gouv.fr>,
+        Scott Shell <scottsh@microsoft.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Steve Dower <steve.dower@python.org>,
+        Steve Grubb <sgrubb@redhat.com>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Thibaut Sautereau <thibaut.sautereau@clip-os.org>,
+        Vincent Strubel <vincent.strubel@ssi.gouv.fr>,
+        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [RFC PATCH v9 0/3] Add introspect_access(2) (was O_MAYEXEC)
+Message-ID: <20200910200010.GF1236603@ZenIV.linux.org.uk>
+References: <20200910164612.114215-1-mic@digikod.net>
+ <20200910170424.GU6583@casper.infradead.org>
+ <f6e2358c-8e5e-e688-3e66-2cdd943e360e@digikod.net>
+ <a48145770780d36e90f28f1526805a7292eb74f6.camel@linux.ibm.com>
+ <880bb4ee-89a2-b9b0-747b-0f779ceda995@digikod.net>
+ <20200910184033.GX6583@casper.infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200910184033.GX6583@casper.infradead.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While it is true that devices with is_virtfn=1 will have a Memory Space
-Enable bit that is hard-wired to 0, this is not the only case where we
-see this behavior -- For example some bare-metal hypervisors lack
-Memory Space Enable bit emulation for devices not setting is_virtfn
-(s390). Fix this by instead checking for the newly-added
-no_command_memory bit which directly denotes the need for
-PCI_COMMAND_MEMORY emulation in vfio.
+On Thu, Sep 10, 2020 at 07:40:33PM +0100, Matthew Wilcox wrote:
+> On Thu, Sep 10, 2020 at 08:38:21PM +0200, Mickaël Salaün wrote:
+> > There is also the use case of noexec mounts and file permissions. From
+> > user space point of view, it doesn't matter which kernel component is in
+> > charge of defining the policy. The syscall should then not be tied with
+> > a verification/integrity/signature/appraisal vocabulary, but simply an
+> > access control one.
+> 
+> permission()?
 
-Fixes: abafbc551fdd ("vfio-pci: Invalidate mmaps and block MMIO access on disabled memory")
-Signed-off-by: Matthew Rosato <mjrosato@linux.ibm.com>
-Reviewed-by: Niklas Schnelle <schnelle@linux.ibm.com>
-Reviewed-by: Pierre Morel <pmorel@linux.ibm.com>
----
- drivers/vfio/pci/vfio_pci_config.c | 24 ++++++++++++++----------
- 1 file changed, 14 insertions(+), 10 deletions(-)
+int lsm(int fd, const char *how, char *error, int size);
 
-diff --git a/drivers/vfio/pci/vfio_pci_config.c b/drivers/vfio/pci/vfio_pci_config.c
-index d98843f..5076d01 100644
---- a/drivers/vfio/pci/vfio_pci_config.c
-+++ b/drivers/vfio/pci/vfio_pci_config.c
-@@ -406,7 +406,7 @@ bool __vfio_pci_memory_enabled(struct vfio_pci_device *vdev)
- 	 * PF SR-IOV capability, there's therefore no need to trigger
- 	 * faults based on the virtual value.
- 	 */
--	return pdev->is_virtfn || (cmd & PCI_COMMAND_MEMORY);
-+	return pdev->no_command_memory || (cmd & PCI_COMMAND_MEMORY);
- }
- 
- /*
-@@ -520,8 +520,8 @@ static int vfio_basic_config_read(struct vfio_pci_device *vdev, int pos,
- 
- 	count = vfio_default_config_read(vdev, pos, count, perm, offset, val);
- 
--	/* Mask in virtual memory enable for SR-IOV devices */
--	if (offset == PCI_COMMAND && vdev->pdev->is_virtfn) {
-+	/* Mask in virtual memory enable */
-+	if (offset == PCI_COMMAND && vdev->pdev->no_command_memory) {
- 		u16 cmd = le16_to_cpu(*(__le16 *)&vdev->vconfig[PCI_COMMAND]);
- 		u32 tmp_val = le32_to_cpu(*val);
- 
-@@ -589,9 +589,11 @@ static int vfio_basic_config_write(struct vfio_pci_device *vdev, int pos,
- 		 * shows it disabled (phys_mem/io, then the device has
- 		 * undergone some kind of backdoor reset and needs to be
- 		 * restored before we allow it to enable the bars.
--		 * SR-IOV devices will trigger this, but we catch them later
-+		 * SR-IOV devices will trigger this - for mem enable let's
-+		 * catch this now and for io enable it will be caught later
- 		 */
--		if ((new_mem && virt_mem && !phys_mem) ||
-+		if ((new_mem && virt_mem && !phys_mem &&
-+		     !pdev->no_command_memory) ||
- 		    (new_io && virt_io && !phys_io) ||
- 		    vfio_need_bar_restore(vdev))
- 			vfio_bar_restore(vdev);
-@@ -1734,12 +1736,14 @@ int vfio_config_init(struct vfio_pci_device *vdev)
- 				 vconfig[PCI_INTERRUPT_PIN]);
- 
- 		vconfig[PCI_INTERRUPT_PIN] = 0; /* Gratuitous for good VFs */
--
-+	}
-+	if (pdev->no_command_memory) {
- 		/*
--		 * VFs do no implement the memory enable bit of the COMMAND
--		 * register therefore we'll not have it set in our initial
--		 * copy of config space after pci_enable_device().  For
--		 * consistency with PFs, set the virtual enable bit here.
-+		 * VFs and devices that set pdev->no_command_memory do not
-+		 * implement the memory enable bit of the COMMAND register
-+		 * therefore we'll not have it set in our initial copy of
-+		 * config space after pci_enable_device().  For consistency
-+		 * with PFs, set the virtual enable bit here.
- 		 */
- 		*(__le16 *)&vconfig[PCI_COMMAND] |=
- 					cpu_to_le16(PCI_COMMAND_MEMORY);
--- 
-1.8.3.1
-
+Seriously, this is "ask LSM to apply special policy to file"; let's
+_not_ mess with flags, etc. for that; give it decent bandwidth
+and since it's completely opaque for the rest of the kernel,
+just a pass a string to be parsed by LSM as it sees fit.
