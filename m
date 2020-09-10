@@ -2,83 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 875FC264FB0
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:50:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5A4F264FC6
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:51:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726728AbgIJTuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 15:50:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56586 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726216AbgIJTtD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 15:49:03 -0400
-Received: from localhost (52.sub-72-107-123.myvzw.com [72.107.123.52])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0E3EA21556;
-        Thu, 10 Sep 2020 19:49:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599767343;
-        bh=fQPrOqT+dPGzhbvMzpauhMm/mvp1v3NIk76kgWfOD7o=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=DKM20eDAwuHYONhV12jFXqeC2HLdXGgogHQPtJuj5xFEUHldpKpWAOlE1rq6XO36d
-         Et3WGV5co/glraAfZ9lZXZ00mrO8xZLI0Uw50pDLZlv/dF1MZKmll4GCUIyoaT2z7S
-         IudFewmZXDDYL9/eOAHc+VL+eXBZNllc+QNoGI9E=
-Date:   Thu, 10 Sep 2020 14:49:01 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     sathyanarayanan.kuppuswamy@linux.intel.com
-Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ashok.raj@intel.com
-Subject: Re: [PATCH v8 1/5] PCI: Conditionally initialize host bridge
- native_* members
-Message-ID: <20200910194901.GA808976@bjorn-Precision-5520>
+        id S1726588AbgIJTvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 15:51:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49994 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725866AbgIJTuh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 15:50:37 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 357FEC0613ED
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 12:50:37 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id fa1so548121pjb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 12:50:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xDChIkAtb5Vukpnd8bJJRVf7fU2a+5XPgWV5S0nOt9o=;
+        b=GMLrSwZmHtAb7ckfKa7u7eqxr83FkDC1sG/gpb2HdAJ7QRD+yEt9AnrvUNRzaA9mSr
+         rsYXudCO+sEnI8MY+QRb6e87ZPH+k/EEssmqkNN8/ygzCn3nP/vi9P1wq+GB8iTl1O2L
+         xC/Nw1N4lLEdzCrTp+NZlBoguH2YonWZ+IwFSNlsXftiiq5/taPI3Yt9lfVYQywDGeFX
+         mQ8O9oLnHNJYcZaBpkb8+vndfLA7l4vpU4JTwhRa4k416jxLFL/qLesQLk0yDrkGfoVj
+         ctC/y+9Mo5VSiBvA9NDfWwnfAGhZmq+16PQG9a0IUTCptP+a+bWvtyH/iTJYlnJf4nX0
+         qNWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xDChIkAtb5Vukpnd8bJJRVf7fU2a+5XPgWV5S0nOt9o=;
+        b=L6425zMmpOUhkM0TimoGShivA+6l++l1b7iYQtNFg0fIiIt6DsP/0KPk3AQvtly+Ph
+         BZ7fGYTPlXhmtt++mAAlKaD1U4T2EN3G3/YQ75pYKAoNmMbc5nCt/PuyIO36K+JyVxBW
+         FsQHulc8ndUDD+w5I31K3Zh/nY7O5uwu7M0qe+jbC8CDMJsombsp9s69sTLCZar9F3rN
+         gQMpWOsyKMXIvsoT3n5IT7IfIq2NzSBwV5dI/55Ma6Ww5CoVoR/gNgDPNpn9gh2WKEMZ
+         tZy/4rPOCugknyhtY9gfXJJJ0vvezqdxVLku1g8k4VSZycpagSQo+sQBo+6EOJzVaQNr
+         ZLuA==
+X-Gm-Message-State: AOAM532sdppgck8lIxLAirdSCtYw7Cg9VkekvXnlGDJ1AubAcq3vg9KC
+        zCMZ4esT0uABfjjdUFkTQAQ/fQ==
+X-Google-Smtp-Source: ABdhPJyZYiVntwdGvOTjgASZ9NTGbtmfntR5sx4R5k7O0XZpReyPmnbzTe4k88faDRcbkzb73sG2hg==
+X-Received: by 2002:a17:90a:2ec8:: with SMTP id h8mr1482436pjs.173.1599767436537;
+        Thu, 10 Sep 2020 12:50:36 -0700 (PDT)
+Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
+        by smtp.gmail.com with ESMTPSA id l1sm6732257pfc.164.2020.09.10.12.50.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Sep 2020 12:50:36 -0700 (PDT)
+Date:   Thu, 10 Sep 2020 13:50:34 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     YueHaibing <yuehaibing@huawei.com>
+Cc:     ohad@wizery.com, bjorn.andersson@linaro.org, s-anna@ti.com,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 -next] remoteproc: k3-dsp: Fix return value check in
+ k3_dsp_rproc_of_get_memories()
+Message-ID: <20200910195034.GA586100@xps15>
+References: <20200902140614.28636-1-yuehaibing@huawei.com>
+ <20200905122503.17352-1-yuehaibing@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8a76b4a524d3915d42e894da7f4dbdec6c104512.1595649348.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <20200905122503.17352-1-yuehaibing@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 24, 2020 at 08:58:52PM -0700, sathyanarayanan.kuppuswamy@linux.intel.com wrote:
-> From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+On Sat, Sep 05, 2020 at 08:25:03PM +0800, YueHaibing wrote:
+> In case of error, the function devm_ioremap_wc() returns NULL pointer
+> not ERR_PTR(). The IS_ERR() test in the return value check should be
+> replaced with NULL test.
 > 
-> If CONFIG_PCIEPORTBUS is not enabled in kernel then initialing
-> struct pci_host_bridge PCIe specific native_* members to "1" is
-> incorrect. So protect the PCIe specific member initialization
-> with CONFIG_PCIEPORTBUS.
+> Fixes: 6edbe024ba17 ("remoteproc: k3-dsp: Add a remoteproc driver of K3 C66x DSPs")
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> Acked-by: Suman Anna <s-anna@ti.com>
 
-s/initialing/initializing/
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 
-> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
 > ---
->  drivers/pci/probe.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+> v2: return ENOMEM instead of EBUSY, use corret Fixes tag
+> ---
+>  drivers/remoteproc/ti_k3_dsp_remoteproc.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
-> index 2f66988cea25..a94b97564ceb 100644
-> --- a/drivers/pci/probe.c
-> +++ b/drivers/pci/probe.c
-> @@ -588,12 +588,14 @@ static void pci_init_host_bridge(struct pci_host_bridge *bridge)
->  	 * may implement its own AER handling and use _OSC to prevent the
->  	 * OS from interfering.
->  	 */
-> +#ifdef CONFIG_PCIEPORTBUS
->  	bridge->native_aer = 1;
->  	bridge->native_pcie_hotplug = 1;
-> -	bridge->native_shpc_hotplug = 1;
->  	bridge->native_pme = 1;
->  	bridge->native_ltr = 1;
-
-native_ltr isn't dependent on PCIEPORTBUS either, is it?  It's only
-used for ASPM.
-
->  	bridge->native_dpc = 1;
-> +#endif
-> +	bridge->native_shpc_hotplug = 1;
+> diff --git a/drivers/remoteproc/ti_k3_dsp_remoteproc.c b/drivers/remoteproc/ti_k3_dsp_remoteproc.c
+> index 9011e477290c..f373df35d7d0 100644
+> --- a/drivers/remoteproc/ti_k3_dsp_remoteproc.c
+> +++ b/drivers/remoteproc/ti_k3_dsp_remoteproc.c
+> @@ -445,10 +445,10 @@ static int k3_dsp_rproc_of_get_memories(struct platform_device *pdev,
 >  
->  	device_initialize(&bridge->dev);
->  }
+>  		kproc->mem[i].cpu_addr = devm_ioremap_wc(dev, res->start,
+>  							 resource_size(res));
+> -		if (IS_ERR(kproc->mem[i].cpu_addr)) {
+> +		if (!kproc->mem[i].cpu_addr) {
+>  			dev_err(dev, "failed to map %s memory\n",
+>  				data->mems[i].name);
+> -			return PTR_ERR(kproc->mem[i].cpu_addr);
+> +			return -ENOMEM;
+>  		}
+>  		kproc->mem[i].bus_addr = res->start;
+>  		kproc->mem[i].dev_addr = data->mems[i].dev_addr;
 > -- 
 > 2.17.1
+> 
 > 
