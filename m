@@ -2,141 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DB5C2643E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 12:25:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7E45264403
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 12:28:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730891AbgIJKZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 06:25:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46112 "EHLO
+        id S1726057AbgIJK2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 06:28:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730865AbgIJKZZ (ORCPT
+        with ESMTP id S1730851AbgIJK1v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 06:25:25 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AD79C061573;
-        Thu, 10 Sep 2020 03:25:24 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id k18so5236879wmj.5;
-        Thu, 10 Sep 2020 03:25:24 -0700 (PDT)
+        Thu, 10 Sep 2020 06:27:51 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21094C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 03:27:51 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id b124so4340130pfg.13
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 03:27:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=uDGopvs8aEy5CLN9XFvGzNsaYZBkoKWrQofytwNxzDI=;
-        b=TtLuCefBkaK7TlKv/Sk2EuMm6ot39a7QJqRt/iyU/N/NhshX+ZQAp9ewNvpTs+0Z72
-         8KF8R1rSgMj2lrRVEtQs7czdrs+vh7uMxahg7wcCNOCTeuhnnwrSWxkKefP8zzMlz8fr
-         d+hjZlUbxc3sSiCsaeL/0LSEK5HD/coEmRMSUD99K6bySVOliMuw67g1DHV2G65QWMcM
-         Awf7VI/yhh1E4RSovGaeLdgUdL8cZSyUB1aHo8KsNAE2Kvx1isaqgWevpgqpHKh5m6ux
-         9jZli4FVifj/fryrULBwtCJrFAQI+fI1nGfp1Vw1RyITZmyJEnxUULbMPtd87vHxZjMB
-         8spw==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LZQZwXwRu53YKSXrfkUA0WjeNn/V21ZhpJY2/Y12QvI=;
+        b=TzPt0pmdNspzQOTFKvx730AMrhJJADm6SbOatLVVciImg0+7g406SmECpp/TEcMqRk
+         286/u47cu3OOeQjZ7+aCD7K2ITZwnS4UZBphCBBO8VqHPC+2sdgt2jbpL5G3Gub1kWuI
+         9+oDszZ9EoGdzvisVMzMJPCPtuDYCqH3/GCiM62RQeEJ10KS1+Y+xCjkFR6M/WadeY9K
+         C/QDyORxqjQN5FX5TLy4T7XMzAZTj9AGV6avnS+GY+ksFyO9AY3OmtdXb2BTGGQrCjkG
+         ll3Cykr20wvPpmBg50/kGoK1zTizaFIWM2Q1FTnjyqpDm98rncC6qZIkvMW9w+D8hRPJ
+         f+ZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=uDGopvs8aEy5CLN9XFvGzNsaYZBkoKWrQofytwNxzDI=;
-        b=BotKYZxBCqHe0nh5HEfLI2FfqjMYFyf7Gm9rbUZIDovZnDDGIq/MYualKc4J8VGLSg
-         627OciUUuWLOqAGeX33aBNh0l8+GKr6CLOiFQvZxQ73mO6NmyKkBMXOsWRueWRmUHzB9
-         8CMwKd63kRLa/kz0EyQ96t10kH7I4fbca+Vi9zNbgBi1fk/7HbtUpveW37BM8sQI1GIE
-         ulQ05ZRSUd4QKUjUtQizFJjmCCOiXzarUdflNwCdLGHmKUNKW0dOgRcLGNhrCKMDM9Mj
-         GJbSWrwDCgzj5tUeTnMY/ZPCN7X17/lOXNughsrWcnmuaBp2HenRXqQkjv2Vn7RT/YeS
-         YKGg==
-X-Gm-Message-State: AOAM533p/tB6P42QVSXNy2BQj/+oqDxtYynRr4/DuKeue2XyvaVPyaZT
-        VhuHTM1nXTqJV9ekNdV35+w=
-X-Google-Smtp-Source: ABdhPJwEntZMPev9H0+UabGQF6k7v0hipNAbHGksKxQPqTzKVMcHb27HZfswdjmY9yMhPtph54h6PA==
-X-Received: by 2002:a1c:5a87:: with SMTP id o129mr8077545wmb.145.1599733522852;
-        Thu, 10 Sep 2020 03:25:22 -0700 (PDT)
-Received: from ziggy.stardust ([213.195.113.201])
-        by smtp.gmail.com with ESMTPSA id g143sm2937249wme.0.2020.09.10.03.25.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Sep 2020 03:25:22 -0700 (PDT)
-Subject: Re: [PATCH v2 1/2] arm64: dts: mt8173: Set uart to mmio32 iotype
-To:     Hsin-Yi Wang <hsinyi@chromium.org>,
-        linux-mediatek@lists.infradead.org
-Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Eddie Huang <eddie.huang@mediatek.com>
-References: <20200910084304.3429494-1-hsinyi@chromium.org>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <9ca1b7c0-9fec-27b7-ae08-c00613c3004c@gmail.com>
-Date:   Thu, 10 Sep 2020 12:25:21 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        bh=LZQZwXwRu53YKSXrfkUA0WjeNn/V21ZhpJY2/Y12QvI=;
+        b=ZbdKRdv9lNQJKYVu9wFs+FYihwQet9jXKQdHWYiajTdx6aY3MlU8Ze/uQNTERFczNE
+         9JBG3AwEAAovfMb20nBVjUlXftE5fhy4wX6mftyMZuJUN5tsLDY3EtfyZBqmoFfQDSmy
+         vqXs3UlreVXIHV/2S3y+EgQtxcOqKQdR7YpZrcPk0dY15VPUEcU1RsFL8N2xiYbQ6h5C
+         v+VDQ3P9wgq3oNZChU+BzftQQ03akDtBvF1bUbacNvLh670oRGT1TgLVM2KGG2HQKLQD
+         qPFd2KpwgFI926UTSoJflv+043a4GBvAHhVBbSRVkvWVz1J8iUgoJf6MFTMkYErebQn7
+         RAGQ==
+X-Gm-Message-State: AOAM530hTnS86g48pSRbwzYXdrPzHU+wk69zfaqszZaotZN4Bki/4vRx
+        Er9+EuTCNkafu8rkG6pLaPEocHW777fqyw==
+X-Google-Smtp-Source: ABdhPJwo5Opm062PHIrhNSfRQH8EwatTMoUC2rcPFPzEY+vMvxlwb0kB1iL/Zh9vB25/UPh/cJpcBQ==
+X-Received: by 2002:a62:52c8:0:b029:13e:d13d:a10b with SMTP id g191-20020a6252c80000b029013ed13da10bmr4696466pfb.39.1599733669949;
+        Thu, 10 Sep 2020 03:27:49 -0700 (PDT)
+Received: from localhost ([103.208.69.30])
+        by smtp.gmail.com with ESMTPSA id m14sm5392656pfo.202.2020.09.10.03.27.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Sep 2020 03:27:48 -0700 (PDT)
+From:   Amit Kucheria <amit.kucheria@linaro.org>
+X-Google-Original-From: Amit Kucheria <amitk@kernel.org>
+To:     linux-kernel@vger.kernel.org, srinivas.pandruvada@linux.intel.com,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     linux-pm@vger.kernel.org
+Subject: [PATCH] powercap: make documentation reflect code
+Date:   Thu, 10 Sep 2020 15:57:46 +0530
+Message-Id: <e40a76dbc4d17d0bc80daf95e259fcd6cc6d48e2.1599733531.git.amitk@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20200910084304.3429494-1-hsinyi@chromium.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Fix up documentation of the struct members to reflect reality. Also
+fixup a stray whitespace.
 
-On 10/09/2020 10:43, Hsin-Yi Wang wrote:
-> Set uart iotype to mmio32 to make earlycon work with stdout-path.
-> 
-> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-> ---
->   arch/arm64/boot/dts/mediatek/mt8173.dtsi | 8 ++++++++
->   1 file changed, 8 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8173.dtsi b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
-> index 5e046f9d48ce9..ca6ea71f5f435 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt8173.dtsi
-> +++ b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
-> @@ -613,6 +613,8 @@ uart0: serial@11002000 {
->   			interrupts = <GIC_SPI 83 IRQ_TYPE_LEVEL_LOW>;
->   			clocks = <&pericfg CLK_PERI_UART0_SEL>, <&pericfg CLK_PERI_UART0>;
->   			clock-names = "baud", "bus";
-> +			reg-io-width = <4>;
+Signed-off-by: Amit Kucheria <amitk@kernel.org>
+---
+ include/linux/powercap.h | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
-Why do we need that, we have
-device->port.iotype = UPIO_MEM32;
-in early_mtk8250_setup(). That should do the job already.
+diff --git a/include/linux/powercap.h b/include/linux/powercap.h
+index 4537f57f9e42f..3d557bbcd2c71 100644
+--- a/include/linux/powercap.h
++++ b/include/linux/powercap.h
+@@ -44,19 +44,18 @@ struct powercap_control_type_ops {
+ };
+ 
+ /**
+- * struct powercap_control_type- Defines a powercap control_type
+- * @name:		name of control_type
++ * struct powercap_control_type - Defines a powercap control_type
+  * @dev:		device for this control_type
+  * @idr:		idr to have unique id for its child
+- * @root_node:		Root holding power zones for this control_type
++ * @nr_zones:		counter for number of zones of this type
+  * @ops:		Pointer to callback struct
+- * @node_lock:		mutex for control type
++ * @lock:		mutex for control type
+  * @allocated:		This is possible that client owns the memory
+  *			used by this structure. In this case
+  *			this flag is set to false by framework to
+  *			prevent deallocation during release process.
+  *			Otherwise this flag is set to true.
+- * @ctrl_inst:		link to the control_type list
++ * @node:		linked-list node
+  *
+  * Defines powercap control_type. This acts as a container for power
+  * zones, which use same method to control power. E.g. RAPL, RAPL-PCI etc.
+@@ -129,7 +128,7 @@ struct powercap_zone_ops {
+  *			this flag is set to false by framework to
+  *			prevent deallocation during release process.
+  *			Otherwise this flag is set to true.
+- * @constraint_ptr:	List of constraints for this zone.
++ * @constraints:	List of constraints for this zone.
+  *
+  * This defines a power zone instance. The fields of this structure are
+  * private, and should not be used by client drivers.
+-- 
+2.25.1
 
-
-> +			reg-shift = <2>;
-
-Can't we just add
-device->port.regshift = 2;
-to early_mtk8250_setup()? I think that would be a cleaner solution. As the 
-serial device is the same for all SoCs, I don't expect any regression here.
-
-CCing Eddie to correct me, if I'm wrong :)
-
-Regards,
-Matthias
-
->   			status = "disabled";
->   		};
->   
-> @@ -623,6 +625,8 @@ uart1: serial@11003000 {
->   			interrupts = <GIC_SPI 84 IRQ_TYPE_LEVEL_LOW>;
->   			clocks = <&pericfg CLK_PERI_UART1_SEL>, <&pericfg CLK_PERI_UART1>;
->   			clock-names = "baud", "bus";
-> +			reg-io-width = <4>;
-> +			reg-shift = <2>;
->   			status = "disabled";
->   		};
->   
-> @@ -633,6 +637,8 @@ uart2: serial@11004000 {
->   			interrupts = <GIC_SPI 85 IRQ_TYPE_LEVEL_LOW>;
->   			clocks = <&pericfg CLK_PERI_UART2_SEL>, <&pericfg CLK_PERI_UART2>;
->   			clock-names = "baud", "bus";
-> +			reg-io-width = <4>;
-> +			reg-shift = <2>;
->   			status = "disabled";
->   		};
->   
-> @@ -643,6 +649,8 @@ uart3: serial@11005000 {
->   			interrupts = <GIC_SPI 86 IRQ_TYPE_LEVEL_LOW>;
->   			clocks = <&pericfg CLK_PERI_UART3_SEL>, <&pericfg CLK_PERI_UART3>;
->   			clock-names = "baud", "bus";
-> +			reg-io-width = <4>;
-> +			reg-shift = <2>;
->   			status = "disabled";
->   		};
->   
-> 
