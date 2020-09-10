@@ -2,69 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15D68264ECC
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:26:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A11D265008
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:59:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727908AbgIJT0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 15:26:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46152 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726899AbgIJT0S (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 15:26:18 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E0FCC061756;
-        Thu, 10 Sep 2020 12:26:08 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id B092F12A2A784;
-        Thu, 10 Sep 2020 12:09:20 -0700 (PDT)
-Date:   Thu, 10 Sep 2020 12:26:06 -0700 (PDT)
-Message-Id: <20200910.122606.1088855592206611092.davem@davemloft.net>
-To:     paul.davey@alliedtelesis.co.nz
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v2 0/3] Allow more than 255 IPv4 multicast
- interfaces
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200907220408.32385-1-paul.davey@alliedtelesis.co.nz>
-References: <20200907220408.32385-1-paul.davey@alliedtelesis.co.nz>
-X-Mailer: Mew version 6.8 on Emacs 27.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Thu, 10 Sep 2020 12:09:20 -0700 (PDT)
+        id S1726474AbgIJT7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 15:59:32 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:45084 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730465AbgIJPAp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 11:00:45 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 9B246581FA3E06A0396E;
+        Thu, 10 Sep 2020 22:05:33 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by DGGEMS412-HUB.china.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Thu, 10 Sep 2020
+ 22:05:25 +0800
+From:   Jason Yan <yanaijie@huawei.com>
+To:     <arend.vanspriel@broadcom.com>, <franky.lin@broadcom.com>,
+        <hante.meuleman@broadcom.com>, <chi-hsien.lin@cypress.com>,
+        <wright.feng@cypress.com>, <kvalo@codeaurora.org>,
+        <davem@davemloft.net>, <kuba@kernel.org>, <lee.jones@linaro.org>,
+        <linux-wireless@vger.kernel.org>,
+        <brcm80211-dev-list.pdl@broadcom.com>,
+        <brcm80211-dev-list@cypress.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Jason Yan <yanaijie@huawei.com>, Hulk Robot <hulkci@huawei.com>
+Subject: [PATCH] brcmsmac: main: Eliminate empty brcms_c_down_del_timer()
+Date:   Thu, 10 Sep 2020 22:04:46 +0800
+Message-ID: <20200910140446.1168049-1-yanaijie@huawei.com>
+X-Mailer: git-send-email 2.25.4
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Davey <paul.davey@alliedtelesis.co.nz>
-Date: Tue,  8 Sep 2020 10:04:05 +1200
+This function does nothing so remove it. This addresses the following
+coccicheck warning:
 
-> Currently it is not possible to use more than 255 multicast interfaces
-> for IPv4 due to the format of the igmpmsg header which only has 8 bits
-> available for the VIF ID.  There is space available in the igmpmsg
-> header to store the full VIF ID in the form of an unused byte following
-> the VIF ID field.  There is also enough space for the full VIF ID in
-> the Netlink cache notifications, however the value is currently taken
-> directly from the igmpmsg header and has thus already been truncated.
-> 
-> Adding the high byte of the VIF ID into the unused3 byte of igmpmsg
-> allows use of more than 255 IPv4 multicast interfaces. The full VIF ID
-> is  also available in the Netlink notification by assembling it from
-> both bytes from the igmpmsg.
-> 
-> Additionally this reveals a deficiency in the Netlink cache report
-> notifications, they lack any means for differentiating cache reports
-> relating to different multicast routing tables.  This is easily
-> resolved by adding the multicast route table ID to the cache reports.
-> 
-> changes in v2:
->  - Added high byte of VIF ID to igmpmsg struct replacing unused3
->    member.
->  - Assemble VIF ID in Netlink notification from both bytes in igmpmsg
->    header.
+drivers/net/wireless/broadcom/brcm80211/brcmsmac/main.c:5103:6-15:
+Unneeded variable: "callbacks". Return "0" on line 5105
 
-Series applied, thank you.
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Jason Yan <yanaijie@huawei.com>
+---
+ drivers/net/wireless/broadcom/brcm80211/brcmsmac/main.c | 9 ---------
+ 1 file changed, 9 deletions(-)
+
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmsmac/main.c b/drivers/net/wireless/broadcom/brcm80211/brcmsmac/main.c
+index 21691581b532..763e0ec583d7 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmsmac/main.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmsmac/main.c
+@@ -5085,13 +5085,6 @@ int brcms_c_up(struct brcms_c_info *wlc)
+ 	return 0;
+ }
+ 
+-static uint brcms_c_down_del_timer(struct brcms_c_info *wlc)
+-{
+-	uint callbacks = 0;
+-
+-	return callbacks;
+-}
+-
+ static int brcms_b_bmac_down_prep(struct brcms_hardware *wlc_hw)
+ {
+ 	bool dev_gone;
+@@ -5201,8 +5194,6 @@ uint brcms_c_down(struct brcms_c_info *wlc)
+ 			callbacks++;
+ 		wlc->WDarmed = false;
+ 	}
+-	/* cancel all other timers */
+-	callbacks += brcms_c_down_del_timer(wlc);
+ 
+ 	wlc->pub->up = false;
+ 
+-- 
+2.25.4
+
